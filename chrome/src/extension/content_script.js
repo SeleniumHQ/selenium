@@ -700,8 +700,8 @@ function selectElement(element) {
     //now that synthesising them gives appendMessage errors
     if (tagName == "option") {
       var select = element;
-      while (select.parentElement != null && select.tagName.toLowerCase() != "select") {
-        select = select.parentElement;
+      while (select.parentNode != null && select.tagName.toLowerCase() != "select") {
+        select = select.parentNode;
       }
       if (select.tagName.toLowerCase() == "select") {
         element = select;
@@ -757,7 +757,7 @@ function submitElement(element) {
       element.submit();
       return {statusCode: 0};
     }
-    element = element.parentElement;
+    element = element.parentNode;
   }
   return {statusCode: 12, value: {message: "Cannot submit an element not in a form"}};
 }
@@ -777,7 +777,7 @@ function toggleElement(element) {
     if (tagName == "option") {
       var parent = element;
       while (parent != null && parent.tagName.toLowerCase() != "select") {
-        parent = parent.parentElement;
+        parent = parent.parentNode;
       }
       if (parent == null) {
         throw {statusCode: 12, value: {message: "option tag had no select tag parent"}};
