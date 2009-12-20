@@ -131,7 +131,7 @@ ChromeDriver.xmlHttpRequest = null;
  * There is a patch to fix this on the Downloads page of the Selenium project
  * @type {string}
  */
-ChromeDriver.xmlHttpRequestUrl = "http://127.0.0.1:9700/chromeCommandExecutor";
+ChromeDriver.xmlHttpRequestUrl = "http://localhost:9700/chromeCommandExecutor";
 
 
 /**
