@@ -45,8 +45,11 @@ module Selenium
         end
       end
 
-      def element_id_from(arr)
-        arr.to_s.split("/").last
+      def element_id_from(id)
+        str = id.kind_of?(Array) ? id.first : id
+        after = str.split("/").last
+
+        after
       end
 
       def parse_cookie_string(str)
