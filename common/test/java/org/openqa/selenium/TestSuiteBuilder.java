@@ -51,6 +51,7 @@ public class TestSuiteBuilder {
   private Set<String> testMethodNames = new HashSet<String>();
   private Set<String> decorators = new LinkedHashSet<String>();
   private boolean includeJsApiTests = false;
+  private boolean outputTestNames = false;
 
   public TestSuiteBuilder() {
     baseDir = new File(".").getAbsoluteFile();
@@ -217,6 +218,9 @@ public class TestSuiteBuilder {
                                            keepDriver, freshDriver, restartDriver);
           }
         }
+        if (outputTestNames) {
+          test = new TestNameDecorator(test);
+        }
         suite.addTest(test);
       }
     }
@@ -300,6 +304,12 @@ public class TestSuiteBuilder {
   public TestSuiteBuilder includeJsApiTests() {
     this.includeJsApiTests = true;
     return includeJavascriptTests();
+  }
+  
+  public TestSuiteBuilder outputTestNames() {
+    outputTestNames = true;
+    
+    return this;
   }
 
   public TestSuiteBuilder usingNoDriver() {
