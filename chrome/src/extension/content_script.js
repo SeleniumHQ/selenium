@@ -882,7 +882,7 @@ function execute_(script, passedArgs, callback) {
     if (value.success) {
       args.push(value.value);
     } else {
-      ChromeDriverContentScript.port.postMessage(value.value);
+      ChromeDriverContentScript.port.postMessage({response: value.value, sequenceNumber: ChromeDriverContentScript.currentSequenceNumber});
       return;
     }
   }

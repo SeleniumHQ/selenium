@@ -140,6 +140,12 @@ ChromeDriver.requestSequenceNumber = 0;
 /**
  * @type {number}
  */
+ChromeDriver.lastReceivedSequenceNumber = -2;
+
+
+/**
+ * @type {number}
+ */
 ChromeDriver.getUrlRequestSequenceNumber = 0;
 
 
@@ -559,7 +565,7 @@ function parsePortMessage(message) {
   if (!message || !message.response || !message.response.value ||
       message.response.value.statusCode === undefined ||
       message.response.value.statusCode == null ||
-      message.sequenceNumber === undefined) {
+      message.sequenceNumber === undefined || message.sequenceNumber < ChromeDriver.lastReceivedSequenceNumber) {
     // Should only ever happen if we sent a bad request,
     // or the content script is broken
     console.log("Got invalid response from the content script.");
