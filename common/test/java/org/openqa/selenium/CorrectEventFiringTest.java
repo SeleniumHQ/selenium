@@ -149,8 +149,8 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
   @Ignore(value = {IPHONE, SELENESE})
   public void testShouldEmitOnChangeEventsWhenSelectingElements() {
     driver.get(javascriptPage);
-    WebElement select = driver.findElement(By.id("selector"));
-    List<WebElement> allOptions = select.findElements(By.tagName("option"));
+    //Intentionally not looking up the select tag.  See selenium r7937 for details.
+    List<WebElement> allOptions = driver.findElements(By.xpath("//select[@id='selector']//option"));
 
     String initialTextValue = driver.findElement(By.id("result")).getText();
 
