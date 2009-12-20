@@ -890,7 +890,7 @@ function execute_(script, passedArgs, callback) {
   var func = "function(){" + script + "}";
   var args = [];
   for (var i = 0; i < passedArgs.length; ++i) {
-    console.log("Parsing: " + passedArgs[i]);
+    console.log("Parsing: " + JSON.stringify(passedArgs[i]));
     var value = parseWrappedArguments(passedArgs[i]);
     if (value.success) {
       args.push(value.value);

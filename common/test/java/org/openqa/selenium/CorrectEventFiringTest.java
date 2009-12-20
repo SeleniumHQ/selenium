@@ -40,7 +40,6 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = CHROME_NON_WINDOWS, reason = "Failing on OS X")
   public void testShouldFireClickEventWhenClicking() {
     driver.get(javascriptPage);
 
@@ -50,7 +49,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {SELENESE, CHROME_NON_WINDOWS}, reason = "Chrome failing on OS X")
+  @Ignore(SELENESE)
   public void testShouldFireMouseDownEventWhenClicking() {
     driver.get(javascriptPage);
 
@@ -60,7 +59,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {SELENESE, CHROME_NON_WINDOWS}, reason = "Chrome failing on OS X")
+  @Ignore(SELENESE)
   public void testShouldFireMouseUpEventWhenClicking() {
     driver.get(javascriptPage);
 
@@ -70,7 +69,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({SELENESE, CHROME})
+  @Ignore(value = {SELENESE, CHROME})
   public void testShouldFireMouseOverEventWhenClicking() {
     driver.get(javascriptPage);
 
@@ -108,7 +107,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {SELENESE, CHROME_NON_WINDOWS}, reason = "Chrome failing on OS X")
+  @Ignore(SELENESE)
   public void testsShouldIssueMouseDownEvents() {
     driver.get(javascriptPage);
     driver.findElement(By.id("mousedown")).click();
@@ -118,7 +117,6 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {CHROME_NON_WINDOWS}, reason = "Chrome failing on OS X")
   public void testShouldIssueClickEvents() {
     driver.get(javascriptPage);
     driver.findElement(By.id("mouseclick")).click();
@@ -128,7 +126,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {SELENESE, CHROME_NON_WINDOWS}, reason = "Chrome failing on OS X")
+  @Ignore(SELENESE)
   public void testShouldIssueMouseUpEvents() {
     driver.get(javascriptPage);
     driver.findElement(By.id("mouseup")).click();
@@ -138,7 +136,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {IPHONE, SELENESE, CHROME_NON_WINDOWS}, reason = "Chrome failing on OS X")
+  @Ignore(value = {IPHONE, SELENESE})
   public void testMouseEventsShouldBubbleUpToContainingElements() {
     driver.get(javascriptPage);
     driver.findElement(By.id("child")).click();
@@ -148,7 +146,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {IPHONE, SELENESE, CHROME}, reason = "Non-native event firing is broken in Chrome.")
+  @Ignore(value = {IPHONE, SELENESE})
   public void testShouldEmitOnChangeEventsWhenSelectingElements() {
     driver.get(javascriptPage);
     WebElement select = driver.findElement(By.id("selector"));
@@ -168,7 +166,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {SELENESE, CHROME}, reason = "Non-native event firing is broken in Chrome.")
+  @Ignore(SELENESE)
   public void testShouldEmitOnChangeEventsWhenChangingTheStateOfACheckbox() {
     driver.get(javascriptPage);
     WebElement checkbox = driver.findElement(By.id("checkbox"));
@@ -189,7 +187,6 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {CHROME}, reason = "Non-native event firing is broken in Chrome.")
   public void testClearingAnElementShouldCauseTheOnChangeHandlerToFire() {
     driver.get(javascriptPage);
 
@@ -201,8 +198,8 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
   }
   
   @JavascriptEnabled
-  @Ignore(value = {SELENESE, CHROME, IPHONE},
-      reason = "Chrome: Non-native event firing is broken in Chrome.\n"
+  @Ignore(value = {SELENESE, IPHONE},
+      reason = "Chrome: Non-native event firing is broken in .\n"
                + "  Selenese: Fails when running in firefox.\n"
                + "  iPhone: sendKeys implementation is incorrect")
   public void testSendingKeysToAnotherElementShouldCauseTheBlurEventToFire() {
@@ -221,7 +218,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
   
   @JavascriptEnabled
   @Ignore(value = {SELENESE, CHROME, IPHONE},
-      reason = "Chrome: Non-native event firing is broken in Chrome.\n"
+      reason = ": Non-native event firing is broken in Chrome.\n"
                + "  Selenese: Fails when running in firefox.\n"
                + "  iPhone: sendKeys implementation is incorrect")
   public void testSendingKeysToAnElementShouldCauseTheFocusEventToFire() {
