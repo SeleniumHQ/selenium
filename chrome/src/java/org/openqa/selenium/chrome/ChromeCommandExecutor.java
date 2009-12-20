@@ -1,5 +1,3 @@
-//TODO(danielwh): Actually use JSON for the commands.  In fact, even valid JSON strings would be nice.
-
 package org.openqa.selenium.chrome;
 
 import com.google.common.collect.ImmutableMap;
