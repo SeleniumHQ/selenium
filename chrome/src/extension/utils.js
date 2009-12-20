@@ -176,7 +176,7 @@ Utils.getText = function(element) {
 
 Utils.fireHtmlEvent = function(element, eventName) {
     var args = [
-      {type: "ELEMENT", value: getElementId_(element)},
+      {type: "ELEMENT", value: addElementToInternalArray(element)},
       {type: "STRING", value: eventName}
     ];
 
@@ -197,7 +197,7 @@ Utils.fireMouseEventOn = function(element, eventName) {
 
 Utils.triggerMouseEvent = function(element, eventType, clientX, clientY) {
     var args = [
-      {type: "ELEMENT", value: getElementId_(element)},
+      {type: "ELEMENT", value: addElementToInternalArray(element)},
       {type: "STRING", value: eventType},
       {type: "NUMBER", value: clientX},
       {type: "NUMBER", value: clientY}

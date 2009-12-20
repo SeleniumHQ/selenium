@@ -87,7 +87,7 @@ function parsePortMessage(message) {
 
       if (element.click) {
         console.log("click");
-        execute("try { arguments[0].click(); } catch(e){}", {type: "ELEMENT", value: getElementId_(element)});
+        execute("try { arguments[0].click(); } catch(e){}", {type: "ELEMENT", value: addElementToInternalArray(element)});
       }
       response.value = {statusCode: 0};
       break;
@@ -502,6 +502,10 @@ function getElement(plural, lookupBy, lookupValue, id) {
   }
 }
 
+/**
+ * Adds the element to the internal element store, if it isn't already there.
+ * @return index of element in the array
+ */
 function addElementToInternalArray(element) {
   for (var existingElement in ChromeDriverContentScript.internalElementArray) {
     if (element == ChromeDriverContentScript.internalElementArray[existingElement]) {
@@ -543,23 +547,6 @@ function internalGetElement(elementIdAsString) {
   } else {
     throw {statusCode: 10, value: {message: "Element is obsolete"}};
   }
-}
-
-/**
- * Given an element, returning the index that can be used to locate it
- *
- * @param element the element to look up the internal ID of
- * @return A positive integer on success or -1 otherwise
- */
-function getElementId_(element) {
-  var length = ChromeDriverContentScript.internalElementArray.length;
-  for (var i = 0; i < length; i++) {
-    if (ChromeDriverContentScript.internalElementArray[i] === element) {
-      return i;
-    }
-  }
-
-  return -1;
 }
 
 /**
