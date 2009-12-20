@@ -11,7 +11,8 @@
     {
       "matches": ["http://*/*", "https://*/*", "file:///*"],
       "js": ["utils.js", "content_script.js"],
-      "run_at": "document_end"
+      "run_at": "document_end",
+      "all_frames": true
     }
   ],
   "plugins": [{"path": "npchromedriver.dll", "public": true}],
