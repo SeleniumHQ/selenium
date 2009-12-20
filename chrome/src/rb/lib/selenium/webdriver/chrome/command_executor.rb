@@ -33,7 +33,6 @@ module Selenium
          close_sockets
          @server.close
        rescue IOError
-         p $!, $@
          nil
        end
 
