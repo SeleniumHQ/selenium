@@ -20,10 +20,11 @@ public class ChromeBinary {
    * @param profileDir directory to use as the profile.
    * Should contain the empty text file "First Run Dev".
    * @param extensionDir directory which contains the WebDriver extension.
+   * @param serverUrl URL from which commands should be requested
    * @throws IOException wrapped in WebDriverException if process couldn't be
    * started.
    */
-  public void start(String profileDir, String extensionDir) throws IOException {
+  public void start(String profileDir, String extensionDir, String serverUrl) throws IOException {
     try {
       chromeProcess = new ProcessBuilder(
           getChromeFile(),
@@ -36,7 +37,7 @@ public class ChromeBinary {
           "--disable-popup-blocking",
           "--disable-prompt-on-repost",
           "--no-default-browser-check",
-          "about:blank")
+          serverUrl)
           .start();
     } catch (IOException e) {
       throw new WebDriverException(e);
