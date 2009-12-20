@@ -43,7 +43,7 @@ public class ChromeDriver implements WebDriver, SearchContext, JavascriptExecuto
   
   /**
    * Starts up a new instance of Chrome, with the required extension loaded,
-   * and has it connect to a new ChromeCommandExecutor on its port
+   * and has it connect to a new ChromeCommandExecutor on port 9700
    */
   public ChromeDriver() {
     init();
@@ -53,7 +53,8 @@ public class ChromeDriver implements WebDriver, SearchContext, JavascriptExecuto
     int retries = MAX_START_RETRIES;
     while ((executor == null || !executor.hasClient()) && retries > 0) {
       stopClient();
-      this.executor = new ChromeCommandExecutor();
+      //TODO(danielwh): Remove explicit port (blocked on crbug.com 11547)
+      this.executor = new ChromeCommandExecutor(9700);
       startClient();
       //In case this attempt fails, we increment how long we wait before sending a command
       chromeBinary.incrementBackoffBy(1);
@@ -101,8 +102,7 @@ public class ChromeDriver implements WebDriver, SearchContext, JavascriptExecuto
       
       chromeBinary.start(
           profileDir.getCanonicalFile().toString(),
-          extensionDir.getCanonicalFile().toString(),
-          "http://localhost:" + executor.getPort() + "/chromeCommandExecutor");
+          extensionDir.getCanonicalFile().toString());
     } catch (IOException e) {
       throw new WebDriverException(e);
     }

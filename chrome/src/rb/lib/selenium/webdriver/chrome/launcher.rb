@@ -21,10 +21,10 @@ module Selenium
           launcher
         end
 
-        def launch(server_url)
+        def launch
           create_extension
           create_profile
-          launch_chrome server_url
+          launch_chrome
 
           pid
         end
@@ -54,7 +54,7 @@ module Selenium
           touch "#{tmp_profile_dir}/First Run Dev"
         end
 
-        def launch_chrome(server_url)
+        def launch_chrome
           @process = ChildProcess.new Platform.wrap_in_quotes_if_necessary(binary_path),
                                       "--load-extension=#{Platform.wrap_in_quotes_if_necessary tmp_extension_dir}",
                                       "--user-data-dir=#{Platform.wrap_in_quotes_if_necessary tmp_profile_dir}",
@@ -62,7 +62,7 @@ module Selenium
                                       "--disable-hang-monitor",
                                       "--disable-popup-blocking",
                                       "--disable-prompt-on-repost",
-                                      server_url
+                                      "about:blank"
           @process.start
         end
 
