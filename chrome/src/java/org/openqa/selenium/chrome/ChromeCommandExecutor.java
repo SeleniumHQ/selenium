@@ -511,7 +511,7 @@ public class ChromeCommandExecutor {
       //We offer a reload to work around http://crbug.com/11547 on Mac
       acceptedSocket.getOutputStream().write(
           fillTwoHundred(
-          "<html><head><script type='text/javascript'>if (window.location.search == '') { window.location = window.location.href + '?reloaded'; }</script></head><body><p>ChromeDriver server started and connected.</p></body></html>",
+          "<html><head><script type='text/javascript'>if (window.location.search == '') { setTimeout(\"window.location = window.location.href + '?reloaded'\", 5000); }</script></head><body><p>ChromeDriver server started and connected.  Please leave this tab open.</p></body></html>",
           "Content-Type: text/html"));
       acceptedSocket.getOutputStream().flush();
       acceptedSocket.close();
