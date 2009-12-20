@@ -8,8 +8,7 @@ module Selenium
           @executor = CommandExecutor.new
 
           @launcher = Launcher.launcher
-          @launcher.launch
-          # TODO: @launcher.kill
+          @launcher.launch(@executor.uri)
         end
 
         def browser

@@ -126,12 +126,9 @@ ChromeDriver.xmlHttpRequest = null;
 
 /**
  * URL to ping for commands.
- * TODO(danielwh): Get this from the initial URL - see http://crbug.com/11547,
- * the ChromeDriverInternals wiki page.
- * There is a patch to fix this on the Downloads page of the Selenium project
  * @type {string}
  */
-ChromeDriver.xmlHttpRequestUrl = "http://localhost:9700/chromeCommandExecutor";
+ChromeDriver.xmlHttpRequestUrl = null;
 
 
 /**
@@ -195,6 +192,17 @@ resetCurrentlyWaitingOnContentScriptTime();
 ChromeDriver.waitForContentScriptIncrement = 100;
 
 chrome.extension.onConnect.addListener(function(port) {
+  if (ChromeDriver.xmlHttpRequestUrl == null) {
+    //This is the first content script, so is from the URL we need to connect to
+    ChromeDriver.xmlHttpRequestUrl = port.tab.url;
+    //Tell the ChromeCommandExecutor that we are here
+    sendResponseByXHR("", false);
+    return;
+  } else if (port.tab.url.indexOf(ChromeDriver.xmlHttpRequestUrl) == 0) {
+    //We have reloaded the xmlHttpRequest page.  Ignore the connection.
+    return;
+  }
+
   console.log("Connected to " + port.name);
   // Note: The frameset port *always* connects before any frame port.  After
   // that, the order is in page loading time
@@ -301,9 +309,6 @@ chrome.extension.onConnect.addListener(function(port) {
     }
   });
 });
-
-//Tell the ChromeCommandExecutor that we are here
-sendResponseByXHR({statusCode: 0}, false);
 
 /**
  * Sends the passed argument as the result of a command

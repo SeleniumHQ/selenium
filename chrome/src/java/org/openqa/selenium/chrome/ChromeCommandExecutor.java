@@ -48,12 +48,20 @@ public class ChromeCommandExecutor {
   private Map<DriverCommand, String[]> commands;
   
   /**
-   * Creates a new ChromeCommandExecutor which listens on a TCP port.
+   * Creates a new ChromeCommandExecutor which listens on a free TCP port.
+   * Doesn't return until the TCP port is connected to.
+   * @throws WebDriverException if could not bind to any port
+   */
+  public ChromeCommandExecutor() {
+    this(0);
+  }
+  
+  /**
+   * Creates a new ChromeCommandExecutor which listens on the passed TCP port.
    * Doesn't return until the TCP port is connected to.
    * @param port port on which to listen for the initial connection,
    * and dispatch commands
    * @throws WebDriverException if could not bind to port
-   * TODO(danielwh): Bind to a random port (blocked on crbug.com 11547)
    */
   public ChromeCommandExecutor(int port) {
     commands = ImmutableMap.<DriverCommand, String[]> builder()
@@ -121,6 +129,14 @@ public class ChromeCommandExecutor {
    */
   boolean hasClient() {
     return hasClient;
+  }
+  
+  /**
+   * Returns the port being listened on
+   * @return the port being listened on
+   */
+  public int getPort() {
+    return serverSocket.getLocalPort();
   }
   
   /**
@@ -438,8 +454,6 @@ public class ChromeCommandExecutor {
     while (!serverSocket.isClosed()) {// || serverSocket.isBound()) {
       Thread.yield();
     }
-    //TODO(danielwh): Remove this when using multiple ports (blocked on crbug.com 11547)
-    try { Thread.sleep(500); } catch (InterruptedException e) {}
   }
 
   /**
@@ -464,9 +478,22 @@ public class ChromeCommandExecutor {
       isListening = true;
       try {
         while (listen) {
-          sockets.add(serverSocket.accept());
-          hasClient = true;
-          hadClient = true;
+          Socket acceptedSocket = serverSocket.accept();
+          int r = acceptedSocket.getInputStream().read();
+          if (r != 'G') {
+            //Not a GET.
+            //Use browser sending a GET to sniff the URL we need to talk to,
+            //so we ignore any GET requests, but queue up any others,
+            //which we assume to be POSTs from the extension
+            sockets.add(acceptedSocket);
+            hasClient = true;
+            hadClient = true;
+          } else {
+            //The browser, rather than extension, is visiting the page
+            //Because the extension always uses POST
+            //Serve up a holding page and ignore the socket
+            respondWithHoldingPage(acceptedSocket);
+          }
         }
       } catch (SocketException e) {
         if (listen) {
@@ -480,6 +507,16 @@ public class ChromeCommandExecutor {
       }
     }
     
+    private void respondWithHoldingPage(Socket acceptedSocket) throws IOException {
+      //We offer a reload to work around http://crbug.com/11547 on Mac
+      acceptedSocket.getOutputStream().write(
+          fillTwoHundred(
+          "<html><head><script type='text/javascript'>if (window.location.search == '') { window.location = window.location.href + '?reloaded'; }</script></head><body><p>ChromeDriver server started and connected.</p></body></html>",
+          "Content-Type: text/html"));
+      acceptedSocket.getOutputStream().flush();
+      acceptedSocket.close();
+    }
+
     public void stopListening() {
       try {
         closeCurrentSockets();
