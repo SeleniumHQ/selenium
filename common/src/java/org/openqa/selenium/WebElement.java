@@ -122,7 +122,7 @@ public interface WebElement extends SearchContext {
      * Is the element currently enabled or not? This will generally return true
      * for everything but disabled input elements.
      *
-     * @return True if the element is enabled, false otherise.
+     * @return True if the element is enabled, false otherwise.
      */
     boolean isEnabled();
 

@@ -48,6 +48,11 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
     driver.get(formPage);
     WebElement inputElement = driver.findElement(By.xpath("//input[@id='working']"));
     assertThat(inputElement.getAttribute("disabled"), equalTo("false"));
+    assertThat(inputElement.isEnabled(), equalTo(true));
+    
+    WebElement pElement = driver.findElement(By.id("cheeseLiker"));
+    assertThat(pElement.getAttribute("disabled"), equalTo("false"));
+    assertThat(pElement.isEnabled(), equalTo(true));
   }
 
   @Ignore({IE, SELENESE})
