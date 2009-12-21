@@ -158,4 +158,11 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
 
     assertFalse(readonly.equals(notReadonly));
   }
+  
+  @Ignore(SELENESE)
+  public void testShouldGetNumericAtribute() {
+    driver.get(formPage);
+    WebElement element = driver.findElement(By.id("withText"));
+    assertThat(element.getAttribute("rows"), is("5"));
+  }
 }

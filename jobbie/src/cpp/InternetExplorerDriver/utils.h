@@ -38,6 +38,9 @@ limitations under the License.
 
 #define TRY  try 
 
+#define BASE_TEN_BASE 10
+#define MAX_DIGITS_OF_NUMBER 22
+
 #define SEND_MESSAGE_WITH_MARSHALLED_DATA(message, input_field) \
 	DataMarshaller& data = prepareCmData(input_field); \
 	sendThreadMsg(message, data);

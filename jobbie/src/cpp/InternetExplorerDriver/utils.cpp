@@ -39,8 +39,14 @@ LPCWSTR comvariant2cw(CComVariant& toConvert)
 
 		case VT_BSTR:
 			return bstr2cw(toConvert.bstrVal);
+    
+    case VT_I4: {
+      wchar_t *buffer = (wchar_t *)malloc(sizeof(wchar_t) * MAX_DIGITS_OF_NUMBER);
+      _i64tow_s(toConvert.lVal, buffer, MAX_DIGITS_OF_NUMBER, BASE_TEN_BASE);
+      return buffer;
+    }
 
-		case VT_EMPTY:
+    case VT_EMPTY:
 			return L"";
 
 		case VT_NULL:
