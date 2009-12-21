@@ -32,11 +32,9 @@ describe "Element" do
     end
   end
 
-  not_compliant_on :browser => :ie do # http://code.google.com/p/selenium/issues/detail?id=255
-    it "should get attribute value" do
-      driver.navigate.to url_for("formPage.html")
-      driver.find_element(:id, "withText").attribute("rows").should == "5"
-    end
+  it "should get attribute value" do
+    driver.navigate.to url_for("formPage.html")
+    driver.find_element(:id, "withText").attribute("rows").should == "5"
   end
 
   it "should toggle" do
