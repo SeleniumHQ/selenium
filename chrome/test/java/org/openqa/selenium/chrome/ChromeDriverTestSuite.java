@@ -106,7 +106,7 @@ public class ChromeDriverTestSuite extends TestCase {
     }
 
     private File locateTopLevelProjectDirectory() {
-      File dir = new File(".");
+      File dir = new File(".").getAbsoluteFile();
       do {
         File rakefile = new File(dir, "Rakefile");
         if (rakefile.exists()) {
