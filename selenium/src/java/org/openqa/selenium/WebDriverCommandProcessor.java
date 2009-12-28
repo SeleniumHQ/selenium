@@ -189,7 +189,12 @@ public class WebDriverCommandProcessor implements CommandProcessor {
   }
 
   public String doCommand(String commandName, String[] args) {
-    return (String) execute(commandName, args);
+    Object val = execute(commandName, args);
+    if (val == null) {
+      return null;
+    }
+
+    return val.toString();
   }
 
   public void setExtensionJs(String s) {
