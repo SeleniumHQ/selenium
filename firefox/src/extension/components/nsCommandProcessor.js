@@ -236,7 +236,14 @@ DelayedCommand.prototype.shouldDelayExecutionForPendingRequest_ = function() {
  * @private
  */
 DelayedCommand.prototype.executeInternal_ = function() {
-  if (this.shouldDelayExecutionForPendingRequest_()) {
+  var shouldDelay = true;
+  try {
+    shouldDelay = this.shouldDelayExecutionForPendingRequest_();
+  } catch(e) {
+    Utils.dumpn('Problem while checking if we should delay execution: ' + e);
+  }
+
+  if (shouldDelay) {
     return this.execute(this.sleepDelay_);
   }
 
