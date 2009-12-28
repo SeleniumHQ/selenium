@@ -17,12 +17,6 @@ limitations under the License.
 
 package org.openqa.selenium.firefox;
 
-import org.openqa.selenium.Platform;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.internal.FileHandler;
-import org.openqa.selenium.firefox.internal.Executable;
-import org.openqa.selenium.firefox.internal.Streams;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -34,59 +28,65 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.openqa.selenium.Platform;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.firefox.internal.Executable;
+import org.openqa.selenium.firefox.internal.Streams;
+import org.openqa.selenium.internal.FileHandler;
+
 import static java.util.concurrent.TimeUnit.SECONDS;
 
 public class FirefoxBinary {
-    private static final String NO_FOCUS_LIBRARY_NAME = "x_ignore_nofocus.so";
+  private static final String NO_FOCUS_LIBRARY_NAME = "x_ignore_nofocus.so";
 
-    private final Map<String, String> extraEnv = new HashMap<String, String>();
-    private final Executable executable;
-    private Process process;
-    private long timeout = SECONDS.toMillis(45);
-    private OutputStream stream;
-    private Thread outputWatcher;
+  private final Map<String, String> extraEnv = new HashMap<String, String>();
+  private final Executable executable;
+  private Process process;
+  private long timeout = SECONDS.toMillis(45);
+  private OutputStream stream;
+  private Thread outputWatcher;
 
-    public FirefoxBinary() {
-          this(null);
+  public FirefoxBinary() {
+    this(null);
+  }
+
+  public FirefoxBinary(File pathToFirefoxBinary) {
+    executable = new Executable(pathToFirefoxBinary);
+  }
+
+  protected boolean isOnLinux() {
+    return Platform.getCurrent().is(Platform.LINUX);
+  }
+
+  public void startProfile(FirefoxProfile profile, String... commandLineFlags) throws IOException {
+    String profileAbsPath = profile.getProfileDir().getAbsolutePath();
+    setEnvironmentProperty("XRE_PROFILE_PATH", profileAbsPath);
+    setEnvironmentProperty("MOZ_NO_REMOTE", "1");
+
+    if (isOnLinux()
+        && (profile.enableNativeEvents() || profile.alwaysLoadNoFocusLib())) {
+      modifyLinkLibraryPath(profile);
     }
 
-    public FirefoxBinary(File pathToFirefoxBinary) {
-      executable = new Executable(pathToFirefoxBinary);
+    List<String> commands = new ArrayList<String>();
+    commands.add(getExecutable().getPath());
+    commands.add("--verbose");
+    commands.addAll(Arrays.asList(commandLineFlags));
+    ProcessBuilder builder = new ProcessBuilder(commands);
+    builder.redirectErrorStream(true);
+    builder.environment().putAll(getExtraEnv());
+    getExecutable().setLibraryPath(builder, getExtraEnv());
+
+    if (stream == null) {
+      stream = getExecutable().getDefaultOutputStream();
     }
 
-    protected boolean isOnLinux() {
-      return Platform.getCurrent().is(Platform.LINUX);
-    }
+    startFirefoxProcess(builder);
 
-    public void startProfile(FirefoxProfile profile, String... commandLineFlags) throws IOException {
-      String profileAbsPath = profile.getProfileDir().getAbsolutePath();
-      setEnvironmentProperty("XRE_PROFILE_PATH", profileAbsPath);
-      setEnvironmentProperty("MOZ_NO_REMOTE", "1");
+    copeWithTheStrangenessOfTheMac(builder);
 
-      if (isOnLinux()
-          && (profile.enableNativeEvents() || profile.alwaysLoadNoFocusLib())) {
-        modifyLinkLibraryPath(profile);
-      }
-
-      List<String> commands = new ArrayList<String>();
-      commands.add(getExecutable().getPath());
-      commands.add("--verbose");
-      commands.addAll(Arrays.asList(commandLineFlags));
-      ProcessBuilder builder = new ProcessBuilder(commands);
-      builder.redirectErrorStream(true);
-      builder.environment().putAll(getExtraEnv());
-      getExecutable().setLibraryPath(builder, getExtraEnv());
-
-      if (stream == null) {
-        stream = getExecutable().getDefaultOutputStream();
-      }
-
-      startFirefoxProcess(builder);
-
-      copeWithTheStrangenessOfTheMac(builder);
-
-      startOutputWatcher();
-    }
+    startOutputWatcher();
+  }
 
   protected void startFirefoxProcess(ProcessBuilder builder) throws IOException {
     process = builder.start();
@@ -124,8 +124,8 @@ public class FirefoxBinary {
   }
 
   protected String extractAndCheck(FirefoxProfile profile, String noFocusSoName,
-      String jarPath32Bit, String jarPath64Bit) {
-    
+                                   String jarPath32Bit, String jarPath64Bit) {
+
     // 1. Extract x86/x_ignore_nofocus.so to profile.getLibsDir32bit
     // 2. Extract amd64/x_ignore_nofocus.so to profile.getLibsDir64bit
     // 3. Create a new LD_LIB_PATH string to contain:
@@ -134,15 +134,16 @@ public class FirefoxBinary {
     Set<String> pathsSet = new HashSet<String>();
     pathsSet.add(jarPath32Bit);
     pathsSet.add(jarPath64Bit);
-    
+
     StringBuilder builtPath = new StringBuilder();
 
     for (String path : pathsSet) {
       try {
-        
+
         FileHandler.copyResource(profile.getProfileDir(), getClass(), path +
-            File.separator + noFocusSoName);
-        
+                                                                      File.separator
+                                                                      + noFocusSoName);
+
       } catch (IOException e) {
         if (Boolean.getBoolean("webdriver.development")) {
           System.err.println(
@@ -211,57 +212,58 @@ public class FirefoxBinary {
     if (propertyName == null || value == null) {
       throw new WebDriverException(
           String.format("You must set both the property name and value: %s, %s", propertyName,
-                        value));
+              value));
     }
     extraEnv.put(propertyName, value);
   }
 
-    public void createProfile(String profileName) throws IOException {
-        ProcessBuilder builder = new ProcessBuilder(executable.getPath(), "--verbose", "-CreateProfile", profileName)
+  public void createProfile(String profileName) throws IOException {
+    ProcessBuilder builder =
+        new ProcessBuilder(executable.getPath(), "--verbose", "-CreateProfile", profileName)
             .redirectErrorStream(true);
-        builder.environment().put("MOZ_NO_REMOTE", "1");
-       if (stream == null) {
-          stream = executable.getDefaultOutputStream();
-        }
-
-      startFirefoxProcess(builder);
-
-      outputWatcher = new Thread(new OutputWatcher(process, stream));
-        outputWatcher.start();
+    builder.environment().put("MOZ_NO_REMOTE", "1");
+    if (stream == null) {
+      stream = executable.getDefaultOutputStream();
     }
 
-    /**
-     * Waits for the process to execute, returning the command output taken from the profile's execution.
-     * 
-     * @throws InterruptedException if we are interrupted while waiting for the process to launch
-     * @throws IOException if there is a problem with reading the input stream of the launching process
-     */
-    public void waitFor() throws InterruptedException, IOException {
-      process.waitFor();
+    startFirefoxProcess(builder);
+
+    outputWatcher = new Thread(new OutputWatcher(process, stream));
+    outputWatcher.start();
+  }
+
+  /**
+   * Waits for the process to execute, returning the command output taken from the profile's execution.
+   *
+   * @throws InterruptedException if we are interrupted while waiting for the process to launch
+   * @throws IOException          if there is a problem with reading the input stream of the launching process
+   */
+  public void waitFor() throws InterruptedException, IOException {
+    process.waitFor();
+  }
+
+  /**
+   * Gets all console output of the binary.
+   * Output retrieval is non-destructive and non-blocking.
+   *
+   * @return the console output of the executed binary.
+   * @throws IOException
+   */
+  public String getConsoleOutput() throws IOException {
+    if (process == null) {
+      return null;
     }
 
-    /**
-     * Gets all console output of the binary.  
-     * Output retrieval is non-destructive and non-blocking.
-     * 
-     * @return the console output of the executed binary.
-     * @throws IOException
-     */
-    public String getConsoleOutput() throws IOException {
-      if (process == null) {
-        return null;
-      }
-      
-      return Streams.drainStream(stream);
-    }
+    return Streams.drainStream(stream);
+  }
 
-    private void sleep(long timeInMillis) {
-        try {
-            Thread.sleep(timeInMillis);
-        } catch (InterruptedException e) {
-            throw new WebDriverException(e);
-        }
+  private void sleep(long timeInMillis) {
+    try {
+      Thread.sleep(timeInMillis);
+    } catch (InterruptedException e) {
+      throw new WebDriverException(e);
     }
+  }
 
   public void clean(FirefoxProfile profile) throws IOException {
     startProfile(profile, "-silent");
