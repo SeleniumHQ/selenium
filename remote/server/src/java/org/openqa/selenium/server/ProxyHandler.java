@@ -911,7 +911,7 @@ public class ProxyHandler extends AbstractHttpHandler {
         this.shutdownLock = shutdownLock;
     }
 
-    private static class SslRelay extends SslListener
+    public static class SslRelay extends SslListener
     {
         InetAddrPort _addr;
         File nukeDirOrFile;
