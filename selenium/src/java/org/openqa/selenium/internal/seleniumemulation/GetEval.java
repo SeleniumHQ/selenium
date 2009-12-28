@@ -51,6 +51,7 @@ public class GetEval extends SeleneseCommand<String> {
     script = SELENIUM_DOCUMENT_REF_REGEX.matcher(script).replaceAll("window.document");
     script = seleniumBaseUrl.matcher(script).replaceAll(baseUrl);
     script = script.replaceAll("\"", "\\\"");
+    script = script.replaceAll("'", "\\\\'");
     script = String.format("return eval('%s');", script);
 
     return String.valueOf(((JavascriptExecutor) driver).executeScript(script));
