@@ -18,6 +18,11 @@ limitations under the License.
 
 package org.openqa.selenium.firefox.internal;
 
+import java.io.IOException;
+import java.net.BindException;
+import java.net.InetSocketAddress;
+import java.net.Socket;
+
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.Command;
@@ -25,24 +30,19 @@ import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxLauncher;
 import org.openqa.selenium.firefox.FirefoxProfile;
 
-import java.io.IOException;
-import java.net.BindException;
-import java.net.InetSocketAddress;
-import java.net.Socket;
-
 public class NewProfileExtensionConnection extends AbstractExtensionConnection {
   private FirefoxBinary process;
   private FirefoxProfile profile;
   private int bufferSize = 4096;
 
   public NewProfileExtensionConnection(Lock lock, FirefoxBinary binary, FirefoxProfile profile, String host) throws IOException {
-    this.profile = profile;
     lock.lock(binary.getTimeout());
     try {
       int portToUse = determineNextFreePort(host, profile.getPort());
 
       binary.setOutputWatcher(new CircularOutputStream(bufferSize));
       process = new FirefoxLauncher(binary).startProfile(profile, portToUse);
+      this.profile = process.getProfile();
 
       setAddress(host, portToUse);
 
