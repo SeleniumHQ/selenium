@@ -284,6 +284,14 @@ public class WebDriverCommandProcessor implements CommandProcessor {
     });
   }
 
+  public boolean isMethodAvailable(String methodName) {
+    return seleneseMethods.containsKey(methodName);
+  }
+
+  public void addMethod(String methodName, SeleneseCommand command) {
+    seleneseMethods.put(methodName, command);
+  }
+
   public Map<String, SeleneseCommand> getMethodMap() {
     return seleneseMethods;
   }
