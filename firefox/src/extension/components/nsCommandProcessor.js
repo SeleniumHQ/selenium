@@ -196,36 +196,41 @@ DelayedCommand.prototype.execute = function(ms) {
  *     command for a pending request in the current window's nsILoadGroup.
  */
 DelayedCommand.prototype.shouldDelayExecutionForPendingRequest_ = function() {
-  if (this.loadGroup_.isPending()) {
-    var hasOnLoadBlocker = false;
-    var numPending = 0;
-    var requests = this.loadGroup_.requests;
-    while (requests.hasMoreElements()) {
-      var request =
-          requests.getNext().QueryInterface(Components.interfaces.nsIRequest);
-      if (request.isPending()) {
-        numPending += 1;
-        hasOnLoadBlocker = hasOnLoadBlocker ||
-            (request.name == 'about:document-onload-blocker');
+  try {
+    if (this.loadGroup_.isPending()) {
+      var hasOnLoadBlocker = false;
+      var numPending = 0;
+      var requests = this.loadGroup_.requests;
+      while (requests.hasMoreElements()) {
+        var request =
+            requests.getNext().QueryInterface(Components.interfaces.nsIRequest);
+        if (request.isPending()) {
+          numPending += 1;
+          hasOnLoadBlocker = hasOnLoadBlocker ||
+                             (request.name == 'about:document-onload-blocker');
 
-        if (numPending > 1) {
-          // More than one pending request, need to wait.
-          return true;
+          if (numPending > 1) {
+            // More than one pending request, need to wait.
+            return true;
+          }
         }
       }
-    }
 
-    if (numPending && !hasOnLoadBlocker) {
-      Utils.dumpn('Ignoring pending about:document-onload-blocker request');
-      // If we only have one pending request and it is not a
-      // document-onload-blocker, we need to wait.  We do not wait for
-      // document-onload-blocker requests since these are created when
-      // one of document.[open|write|writeln] is called. If document.close is
-      // never called, the document-onload-blocker request will not be
-      // completed.
-      return true;
+      if (numPending && !hasOnLoadBlocker) {
+        Utils.dumpn('Ignoring pending about:document-onload-blocker request');
+        // If we only have one pending request and it is not a
+        // document-onload-blocker, we need to wait.  We do not wait for
+        // document-onload-blocker requests since these are created when
+        // one of document.[open|write|writeln] is called. If document.close is
+        // never called, the document-onload-blocker request will not be
+        // completed.
+        return true;
+      }
     }
+  } catch(e) {
+    Utils.dumpn('Problem while checking if we should delay execution: ' + e);
   }
+
   return false;
 };
 
@@ -236,14 +241,7 @@ DelayedCommand.prototype.shouldDelayExecutionForPendingRequest_ = function() {
  * @private
  */
 DelayedCommand.prototype.executeInternal_ = function() {
-  var shouldDelay = true;
-  try {
-    shouldDelay = this.shouldDelayExecutionForPendingRequest_();
-  } catch(e) {
-    Utils.dumpn('Problem while checking if we should delay execution: ' + e);
-  }
-
-  if (shouldDelay) {
+  if (this.shouldDelayExecutionForPendingRequest_()) {
     return this.execute(this.sleepDelay_);
   }
 
