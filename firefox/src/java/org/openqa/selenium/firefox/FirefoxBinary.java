@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.openqa.selenium.Platform;
+import org.openqa.selenium.ProcessUtils;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.internal.Executable;
 import org.openqa.selenium.firefox.internal.Streams;
@@ -305,6 +306,10 @@ public class FirefoxBinary {
 
   public FirefoxProfile getProfile() {
     return profile;
+  }
+
+  public void quit() {
+    ProcessUtils.killProcess(process);
   }
 
   private static class OutputWatcher implements Runnable {

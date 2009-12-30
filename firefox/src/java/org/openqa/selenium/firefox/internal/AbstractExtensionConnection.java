@@ -157,6 +157,12 @@ public abstract class AbstractExtensionConnection implements ExtensionConnection
 
   public Response sendMessageAndWaitForResponse(Class<? extends RuntimeException> throwOnFailure,
                                                 Command command) {
+    sendMessage(command);
+
+    return waitForResponseFor(command.getCommandName());
+  }
+
+  protected void sendMessage(Command command) {
     String converted = convert(command);
 
     // Make this look like an HTTP request
@@ -173,8 +179,6 @@ public abstract class AbstractExtensionConnection implements ExtensionConnection
     } catch (IOException e) {
       throw new WebDriverException(e);
     }
-
-    return waitForResponseFor(command.getCommandName());
   }
 
   private String convert(Command command) {

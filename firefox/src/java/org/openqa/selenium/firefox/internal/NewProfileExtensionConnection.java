@@ -23,7 +23,6 @@ import java.net.BindException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 
-import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.Command;
 import org.openqa.selenium.firefox.FirefoxBinary;
@@ -93,36 +92,13 @@ public class NewProfileExtensionConnection extends AbstractExtensionConnection {
 
   public void quit() {
     try {
-      sendMessageAndWaitForResponse(WebDriverException.class, new Command(null, "quit"));
+      sendMessage(new Command(null, "quit"));
     } catch (Exception e) {
       // this is expected
     }
 
-    if (Platform.getCurrent().is(Platform.WINDOWS)) {
-      quitOnWindows();
-    } else {
-      quitOnOtherPlatforms();
-    }
+    process.quit();
 
     profile.clean();
-  }
-
-  private void quitOnOtherPlatforms() {
-    // Wait for process to die and return
-    try {
-      process.waitFor();
-    } catch (InterruptedException e) {
-      throw new WebDriverException(e);
-    } catch (IOException e) {
-      throw new WebDriverException(e);
-    }
-  }
-
-  private void quitOnWindows() {
-    try {
-      Thread.sleep(200);
-    } catch (InterruptedException e) {
-      throw new WebDriverException(e);
-    }
   }
 }
