@@ -292,6 +292,10 @@ public class WebDriverCommandProcessor implements CommandProcessor {
     seleneseMethods.put(methodName, command);
   }
 
+  public SeleneseCommand getMethod(String methodName) {
+    return seleneseMethods.get(methodName);
+  }
+
   private void setUpMethodMap() {
     ElementFinder elementFinder = new ElementFinder();
     JavascriptLibrary javascriptLibrary = new JavascriptLibrary();
