@@ -35,7 +35,8 @@ public class NewProfileExtensionConnection extends AbstractExtensionConnection {
   private FirefoxProfile profile;
   private int bufferSize = 4096;
 
-  public NewProfileExtensionConnection(Lock lock, FirefoxBinary binary, FirefoxProfile profile, String host) throws IOException {
+  public NewProfileExtensionConnection(Lock lock, FirefoxBinary binary, FirefoxProfile profile, String host)
+      throws IOException {
     lock.lock(binary.getTimeout());
     try {
       int portToUse = determineNextFreePort(host, profile.getPort());
@@ -58,11 +59,11 @@ public class NewProfileExtensionConnection extends AbstractExtensionConnection {
       super.connectToBrowser(timeToWaitInMilliSeconds);
     } catch (IOException e) {
       throw new WebDriverException(
-          String.format("Failed to connect to binary %s on port %d; process output follows: \n%s", 
+          String.format("Failed to connect to binary %s on port %d; process output follows: \n%s",
               process.toString(), profile.getPort(), process.getConsoleOutput()), e);
     } catch (WebDriverException e) {
       throw new WebDriverException(
-          String.format("Failed to connect to binary %s on port %d; process output follows: \n%s", 
+          String.format("Failed to connect to binary %s on port %d; process output follows: \n%s",
               process.toString(), profile.getPort(), process.getConsoleOutput()), e);
     }
   }
@@ -86,24 +87,25 @@ public class NewProfileExtensionConnection extends AbstractExtensionConnection {
       }
     }
 
-    throw new WebDriverException(String.format("Cannot find free port in the range %d to %d ", port, newport));
+    throw new WebDriverException(
+        String.format("Cannot find free port in the range %d to %d ", port, newport));
   }
 
   public void quit() {
-        try {
-            sendMessageAndWaitForResponse(WebDriverException.class, new Command(null, "quit"));
-        } catch (Exception e) {
-            // this is expected
-        }
-
-        if (Platform.getCurrent().is(Platform.WINDOWS)) {
-            quitOnWindows();
-        } else {
-            quitOnOtherPlatforms();
-        }
-
-        profile.clean();    
+    try {
+      sendMessageAndWaitForResponse(WebDriverException.class, new Command(null, "quit"));
+    } catch (Exception e) {
+      // this is expected
     }
+
+    if (Platform.getCurrent().is(Platform.WINDOWS)) {
+      quitOnWindows();
+    } else {
+      quitOnOtherPlatforms();
+    }
+
+    profile.clean();
+  }
 
   private void quitOnOtherPlatforms() {
     // Wait for process to die and return
