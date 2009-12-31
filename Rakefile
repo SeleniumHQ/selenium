@@ -350,6 +350,15 @@ java_jar(:name => "webdriver-remote-client",
                "remote/client/lib/runtime/*.jar",
              ])
 
+java_jar(:name => "selenium-common-js",
+    :resources => [
+      "common/src/js/core",
+      "common/src/js/jsunit",
+      {
+        "common/src/js/core/TestRunner.html" => "core/TestRunner.hta",
+        "common/src/js/core/RemoteRunner.html" => "core/RemoteRunner.hta",
+      }])
+
 java_jar(:name => "webdriver-remote-server",
     :srcs  => [ "remote/server/src/java/**/*.java" ],
     :resources => [
