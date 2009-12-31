@@ -20,6 +20,7 @@ public class BrowserConfigurationOptions {
 	public static final String BROWSER_EXECUTABLE_PATH = "executablePath";
 	public static final String TIMEOUT_IN_SECONDS = "timeoutInSeconds";
 	public static final String BROWSER_MODE = "mode";
+        public static final String COMMAND_LINE_FLAGS = "commandLineFlags";
 	
 	public static final int DEFAULT_TIMEOUT_IN_SECONDS = 30 * 60; // identical to RemoteControlConfiguration;
 
@@ -174,7 +175,16 @@ public class BrowserConfigurationOptions {
     protected String getBrowserMode() {
     	return options.get(BROWSER_MODE);
     }
+
+    public BrowserConfigurationOptions setCommandLineFlags(String cmdLineFlags) {
+      put(COMMAND_LINE_FLAGS, cmdLineFlags);
+      return this;
+    }
     
+    public String getCommandLineFlags() {
+      return get(COMMAND_LINE_FLAGS);
+    }
+     
     protected boolean canUse(String value) {
     	return (value != null && !"".equals(value));
     }
@@ -185,7 +195,7 @@ public class BrowserConfigurationOptions {
     	}
     }
     
-    protected boolean isSet(String key) {
+    public boolean isSet(String key) {
     	boolean result = false;
     	synchronized (options) {
     		result = (null != options.get(key));
@@ -193,7 +203,7 @@ public class BrowserConfigurationOptions {
         return result;
     }
     
-    protected String get(String key) {
+    public String get(String key) {
         return options.get(key);
     }
     

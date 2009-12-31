@@ -104,6 +104,14 @@ public class GoogleChromeLauncher extends AbstractBrowserLauncher {
         return process;
     }
 
+    private String getSecurityMode() {
+        String mode = browserConfigurationOptions.get("mode");
+        if (mode != null && mode.equals("disableSecurity"))
+            return "--disable-web-security";
+        else 
+            return "";
+    }
+
     private void createProfile(String sessionId, String url) {
         try {
             customProfileDir = LauncherUtils.createCustomProfileDir(sessionId);
@@ -173,6 +181,8 @@ public class GoogleChromeLauncher extends AbstractBrowserLauncher {
                 "--no-first-run",
                 // Set the user data (i.e. profile) directory.
                 "--user-data-dir=\"" + customProfileDir.getAbsolutePath() + "\"",
+                getSecurityMode(),
+                getCommandLineFlags(),
                 url
         };
     }

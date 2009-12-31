@@ -74,6 +74,18 @@ public class BrowserConfigurationOptions {
         return true;
     }
 
+    public boolean isCommandLineFlagsSet() {
+        String value = options.get("commandLineFlags");
+        if (value == null) 
+            return false;
+        else 
+            return true;
+    }
+    
+    public String getCommandLineFlags() {
+        return options.get("commandLineFlags");
+    }
+
     public int getTimeoutInSeconds() {
         String value = options.get("timeoutInSeconds");
         if (value == null) return RemoteControlConfiguration.DEFAULT_TIMEOUT_IN_SECONDS;

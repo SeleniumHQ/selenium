@@ -52,4 +52,10 @@ public abstract class AbstractBrowserLauncher implements BrowserLauncher {
         }
     }
 
+    protected String getCommandLineFlags() {
+        String cmdLineFlags = browserConfigurationOptions.getCommandLineFlags();
+        if (cmdLineFlags != null) 
+            return cmdLineFlags;
+        else return "";
+    }
 }
