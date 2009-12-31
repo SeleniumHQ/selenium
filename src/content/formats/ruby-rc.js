@@ -148,23 +148,27 @@ function formatComment(comment) {
 this.options = {
 	receiver: "@selenium",
 	header: 
-		'require "selenium"\n' +
 		'require "test/unit"\n' +
+		'require "rubygems"\n' +
+		'gem "selenium-client"\n' +
+		'require "selenium/client"\n' +
 		'\n' +
 		'class ${className} < Test::Unit::TestCase\n' +
+		'\n' +
 		'  def setup\n' +
 		'    @verification_errors = []\n' +
-		'    if $selenium\n' +
-		'      @selenium = $selenium\n' +
-		'    else\n' +
-		'      @selenium = Selenium::SeleniumDriver.new("localhost", 4444, "*chrome", "${baseURL}", 10000);\n' +
-		'      @selenium.start\n' +
-		'    end\n' +
-		'    @selenium.set_context("${methodName}")\n' +
+		'    @selenium = Selenium::Client::Driver.new \\\n' +
+		'      :host => "localhost",\n' +
+		'      :port => 4444,\n' + 
+		'      :browser => "*chrome",\n' + 
+		'      :url => "${baseURL}",\n' + 
+		'      :timeout_in_second => 60\n' +
+		'\n' +
+		'    @selenium.start_new_browser_session\n' +
 		'  end\n' +
 		'  \n' +
 		'  def teardown\n' +
-		'    @selenium.stop unless $selenium\n' +
+		'    @selenium.close_current_browser_session\n' +
 		'    assert_equal [], @verification_errors\n' +
 		'  end\n' +
 		'  \n' +
