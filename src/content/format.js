@@ -29,8 +29,7 @@ function FormatCollection(options) {
 						  new InternalFormat(options, "perl-rc", "Perl - Selenium RC", "perl-rc.js"),
 						  new InternalFormat(options, "php-rc", "PHP - Selenium RC", "php-rc.js"),
 						  new InternalFormat(options, "python-rc", "Python - Selenium RC", "python-rc.js"),
-						  new InternalFormat(options, "ruby-rc", "Ruby - Selenium RC", "ruby-rc.js"),
-						  new InternalFormat(options, "ruby", "Ruby - Selenium IDE 0.7 (deprecated)", "ruby.js")
+						  new InternalFormat(options, "ruby-rc", "Ruby - Selenium RC", "ruby-rc.js")
 						  ];
 	this.reloadFormats();
 }
