@@ -52,10 +52,10 @@ limitations under the License.
       <menu id="menu_edit" />
       <menu id="optionsMenu" />
     </menubar>
-    <toolbar class="sidebarToolbar">
+    <toolbar class="sidebarToolbar" id="sidebarToolbar_URL">
       <textbox id="baseURL" flex="1" tooltiptext="&baseURLTextbox.tooltip;"/>
     </toolbar>
-    <toolbar class="sidebarToolbar">
+    <toolbar class="sidebarToolbar" id="sidebarToolbar_controls">
       <toolbarbutton id="play-suite-button" label="Play TestSuite" class="icon" tooltiptext="&playButton.tooltip;" command="cmd_selenium_play_suite"/>
       <toolbarbutton id="play-button" label="Play" class="icon" tooltiptext="&playButton.tooltip;" command="cmd_selenium_play"/>
       <toolbarbutton id="pause-button" label="Pause" class="icon pause" tooltiptext="&pauseButton.tooltip;" command="cmd_selenium_pause"/>
@@ -66,7 +66,7 @@ limitations under the License.
       <toolbarseparator />
       <toolbarbutton id="record-button" label="Record" class="icon" tooltiptext="&recordButton.tooltip;" checked="true" onclick="this.checked = !this.checked" oncommand="window.editor.toggleRecordingEnabled(this.checked)"/>
     </toolbar>
-    <toolbar class="sidebarToolbar">
+    <toolbar class="sidebarToolbar" id="sidebarToolbar_speed">
       <stack id="speedSliderBox" />
     </toolbar>
   </toolbox>
