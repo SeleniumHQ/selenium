@@ -509,8 +509,8 @@ function parseRequest(request) {
       sendResponseToParsedRequest({statusCode: 0, value: []});
       break;
     }
-  // Falling through, as if we do have a page, we want to treat this like a
-  // normal request
+    // Falling through, as if we do have a page, we want to treat this like a
+    // normal request
   case "deleteAllCookies":
   case "deleteCookie":
     if (hasNoPage()) {
@@ -518,8 +518,8 @@ function parseRequest(request) {
       sendResponseToParsedRequest({statusCode: 0});
       break;
     }
-  // Falling through, as if we do have a page, we want to treat this like a
-  // normal request
+    // Falling through, as if we do have a page, we want to treat this like a
+    // normal request
   case "executeScript":
     if (hasNoPage()) {
       console.log("Not got a page, but asked to execute script, so sending error 17");
