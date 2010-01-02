@@ -174,7 +174,18 @@ Utils.getText = function(element) {
     return text.slice(start, end);
 };
 
-Utils.fireHtmlEvent = function(element, eventName) {
+/**
+ * Fires the event using Utils.fireEvent, and if the event returned true,
+ * perform callback, which will be passed on arguments
+ */
+Utils.fireHtmlEventAndConditionallyPerformAction = function(element, eventName, callback) {
+    Utils.fireHtmlEvent(element, eventName, function(evt) { if (JSON.parse(evt.newValue).value) { callback(); } });
+};
+
+Utils.fireHtmlEvent = function(element, eventName, callback) {
+    if (callback === undefined) {
+      callback = function() {};
+    }
     var args = [
       {type: "ELEMENT", value: addElementToInternalArray(element)},
       {type: "STRING", value: eventName}
@@ -185,9 +196,9 @@ Utils.fireHtmlEvent = function(element, eventName) {
     // http://code.google.com/p/chromium/issues/detail?id=29071
     var script = "var e = document.createEvent('HTMLEvents'); "
       + "e.initEvent(arguments[1], true, true); " 
-      + "arguments[0].dispatchEvent(e);";
+      + "return arguments[0].dispatchEvent(e);";
 
-    execute_(script, args, function(){});
+    execute_(script, args, callback);
 };
 
 

@@ -716,10 +716,8 @@ function sendElementKeys(element, keys, elementId) {
   if (oldFocusedElement != element) {
     //TODO: Work out a way of firing events,
     //now that synthesising them gives appendMessage errors
-    oldFocusedElement.blur();
-    Utils.fireHtmlEvent(oldFocusedElement, "blur");
-    element.focus();
-    Utils.fireHtmlEvent(element, "focus");
+    Utils.fireHtmlEventAndConditionallyPerformAction(oldFocusedElement, "blur", function() {oldFocusedElement.blur();});
+    Utils.fireHtmlEventAndConditionallyPerformAction(element, "focus", function() {element.focus();});
   }
   return {statusCode: "no-op", keys: keys, elementId: elementId};
 }
@@ -741,7 +739,7 @@ function sendElementNonNativeKeys(element, keys) {
 function submitElement(element) {
   while (element != null) {
     if (element.tagName.toLowerCase() == "form") {
-      element.submit();
+      Utils.fireHtmlEventAndConditionallyPerformAction(element, "submit", function() {element.submit();});
       return {statusCode: 0};
     }
     element = element.parentNode;
@@ -870,7 +868,8 @@ function parseWrappedArguments(argument) {
  * We can't share objects between content script and page, so have to wrap up arguments as JSON
  * @param script script to execute as a string
  * @param passedArgs array of arguments to pass to the script
- * @param callback function to call when the result is returned
+ * @param callback function to call when the result is returned.  Passed a DOMAttrModified event which should be parsed as returnFromJavascriptInPage
+ * TODO: Make the callback be passed the parsed result.
  */
 function execute_(script, passedArgs, callback) {
   console.log("executing " + script + ", args: " + JSON.stringify(passedArgs));

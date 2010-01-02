@@ -163,6 +163,13 @@
     <button type="button" id="switchFocus" onclick="document.getElementById('theworks').focus();">Switch focus</button>
     <button type="button" onclick="var element = document.getElementById('switchFocus'); var clickEvent = document.createEvent('MouseEvents'); clickEvent.initMouseEvent('click', true, true, null, 0, 0, 0, 0, 0,false, false, false, false, 0, element);element.dispatchEvent(clickEvent);">Do magic</button>
   </form>
+  
+  <form action="javascriptPage.html" id="submitListeningForm" onsubmit="appendMessage('form-onsubmit '); return false;">
+    <p>
+      <input id="submitListeningForm-text" type="text" onsubmit="appendMessage('text-onsubmit ')" onclick="appendMessage('text-onclick ');" />
+      <input id="submitListeningForm-submit" type="submit" onsubmit="appendMessage('submit-onsubmit ')" onclick="appendMessage('submit-onclick ');" />
+    </p>
+  </form>
 </div>
 
 <p id="suppressedParagraph" style="display: none">A paragraph suppressed using CSS display=none</p>
