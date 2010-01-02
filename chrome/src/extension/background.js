@@ -520,6 +520,14 @@ function parseRequest(request) {
     }
   // Falling through, as if we do have a page, we want to treat this like a
   // normal request
+  case "executeScript":
+    if (hasNoPage()) {
+      console.log("Not got a page, but asked to execute script, so sending error 17");
+      sendResponseToParsedRequest({statusCode: 17, value: {message: 'Was not on a page, so could not execute javascript'}});
+      break;
+    }
+    // Falling through, as if we do have a page, we want to treat this like a
+    // normal request
   default:
     var sequenceNumber = ChromeDriver.requestSequenceNumber;
     ChromeDriver.requestSequenceNumber++;

@@ -383,4 +383,18 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
     
     assertTrue(resultsList.size() > 0);
   }
+  
+  @NeedsFreshDriver
+  @NoDriverAfterTest
+  @Ignore //Reason for ignore: Failure indicates hang condition,
+          //which would break the test suite.  Really needs a timeout set.
+  public void testShouldThrowExceptionIfExecutingOnNoPage() {
+    try {
+      ((JavascriptExecutor)driver).executeScript("return 1;");
+    } catch (WebDriverException e) {
+      //Expected
+      return;
+    }
+    fail("Expected exception to be thrown");
+  }
 }
