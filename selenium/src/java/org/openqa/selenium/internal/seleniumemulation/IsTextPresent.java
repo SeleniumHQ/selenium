@@ -25,54 +25,29 @@ import com.google.common.collect.Maps;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 
 public class IsTextPresent extends SeleneseCommand<Boolean> {
   private static final Pattern TEXT_MATCHING_STRATEGY_AND_VALUE_PATTERN = Pattern.compile("^(\\p{Alpha}+):(.*)");
   private final Map<String, TextMatchingStrategy> textMatchingStrategies = Maps.newHashMap();
+  private JavascriptLibrary js;
 
-  public IsTextPresent() {
+  public IsTextPresent(JavascriptLibrary js) {
+    this.js = js;
     setUpTextMatchingStrategies();
   }
 
   @Override
   protected Boolean handleSeleneseCommand(WebDriver driver, String pattern, String ignored) {
     String text;
+    WebElement body = driver.findElement(By.xpath("/html/body"));
     if (driver instanceof JavascriptExecutor) {
-      // let's use the same getTextContent function provided by Selenium 1.0 in htmlutils.js if we can
-      JavascriptExecutor js = (JavascriptExecutor) driver;
-      String script = "if (!window.__seleniumCompat__getTextContent) {\n"
-                      + "  window.__seleniumCompat__getTextContent = function(element, preformatted) {\n"
-                      + "    if (element.style && (element.style.visibility == 'hidden' || element.style.display == 'none')) return '';\n"
-                      + "    if (element.nodeType == 3 /*Node.TEXT_NODE*/) {\n"
-                      + "      var text = element.data;\n"
-                      + "      if (!preformatted) {\n"
-                      + "        text = text.replace(/\\n|\\r|\\t/g, \" \");\n"
-                      + "      }\n"
-                      + "      \n"
-                      + "      return text;\n"
-                      + "    }\n"
-                      + "    if (element.nodeType == 1 /*Node.ELEMENT_NODE*/ && element.nodeName != 'SCRIPT') {\n"
-                      + "      var childrenPreformatted = preformatted || (element.tagName == \"PRE\");\n"
-                      + "      var text = \"\";\n"
-                      + "      for (var i = 0; i < element.childNodes.length; i++) {\n"
-                      + "        var child = element.childNodes.item(i);\n"
-                      + "        text += window.__seleniumCompat__getTextContent(child, childrenPreformatted);\n"
-                      + "        if (element.tagName == \"P\" || element.tagName == \"BR\" || element.tagName == \"HR\" || element.tagName == \"DIV\") {\n"
-                      + "          text += \"\\n\";\n"
-                      + "        }\n"
-                      + "      }\n"
-                      + "      return text;\n"
-                      + "    }\n"
-                      + "    return '';\n"
-                      + "  }\n"
-                      + "};\n"
-                      + "return window.__seleniumCompat__getTextContent(document.body);\n";
-      text = js.executeScript(script).toString();
+      text = (String) js.callEmbeddedHtmlUtils(driver, "getTextContent", body);
     } else {
       // bummer - no javascript support available. We can do it this way, but be warned: this can
       // be slow and cause some weird visual artifacts due to crazy scrolling as WebDriver determines
       // if some text is visible or not
-      text = driver.findElement(By.xpath("/html/body")).getText();
+      text = body.getText();
     }
     text = text.trim();
 

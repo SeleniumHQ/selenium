@@ -165,5 +165,37 @@ reassembleLocation : function(loc) {
         url += "#" + hash;
     }
     return url;
+},
+
+getTextContent: function(element, preformatted) {
+    if (element.style && (element.style.visibility == 'hidden' || element.style.display == 'none')) return '';
+    if (element.nodeType == 3 /*Node.TEXT_NODE*/) {
+        var text = element.data;
+        if (!preformatted) {
+            text = text.replace(/\n|\r|\t/g, " ");
+        }
+        return text;
+    }
+    if (element.nodeType == 1 /*Node.ELEMENT_NODE*/ && element.nodeName != 'SCRIPT') {
+        var childrenPreformatted = preformatted || (element.tagName == "PRE");
+        var text = "";
+        for (var i = 0; i < element.childNodes.length; i++) {
+            var child = element.childNodes.item(i);
+            text += this.getTextContent(child, childrenPreformatted);
+        }
+        // Handle block elements that introduce newlines
+        // -- From HTML spec:
+        //<!ENTITY % block
+        //     "P | %heading; | %list; | %preformatted; | DL | DIV | NOSCRIPT |
+        //      BLOCKQUOTE | F:wORM | HR | TABLE | FIELDSET | ADDRESS">
+        //
+        // TODO: should potentially introduce multiple newlines to separate blocks
+        if (element.tagName == "P" || element.tagName == "BR" || element.tagName == "HR" || element.tagName == "DIV") {
+            text += "\n";
+        }
+        return text;
+    }
+    return '';
 }
+
 };

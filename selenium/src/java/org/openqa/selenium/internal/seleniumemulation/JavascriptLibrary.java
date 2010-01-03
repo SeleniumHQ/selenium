@@ -47,7 +47,7 @@ public class JavascriptLibrary {
     ((JavascriptExecutor) driver).executeScript(builder.toString(), args.toArray());
   }
 
-  public void callEmbeddedHtmlUtils(WebDriver driver, String functionName, WebElement element, Object... values) {
+  public Object callEmbeddedHtmlUtils(WebDriver driver, String functionName, WebElement element, Object... values) {
     StringBuilder builder = new StringBuilder(readScript(htmlUtils));
 
     builder.append("return htmlutils.").append(functionName).append(".apply(htmlutils, arguments);");
@@ -56,7 +56,7 @@ public class JavascriptLibrary {
     args.add(element);
     args.addAll(Arrays.asList(values));
 
-    ((JavascriptExecutor) driver).executeScript(builder.toString(), args.toArray());
+    return ((JavascriptExecutor) driver).executeScript(builder.toString(), args.toArray());
   }
 
   public Object executeScript(WebDriver driver, String script, Object... args) {

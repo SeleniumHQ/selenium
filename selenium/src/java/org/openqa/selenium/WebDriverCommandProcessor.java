@@ -368,7 +368,7 @@ public class WebDriverCommandProcessor implements CommandProcessor {
     seleneseMethods.put("isElementPresent", new IsElementPresent(elementFinder));
     seleneseMethods.put("isOrdered", new IsOrdered(elementFinder, javascriptLibrary));
     seleneseMethods.put("isSomethingSelected", new IsSomethingSelected(select));
-    seleneseMethods.put("isTextPresent", new IsTextPresent());
+    seleneseMethods.put("isTextPresent", new IsTextPresent(javascriptLibrary));
     seleneseMethods.put("isVisible", new IsVisible(elementFinder));
     seleneseMethods.put("keyDown", new KeyEvent(elementFinder, javascriptLibrary, keyState, "doKeyDown"));
     seleneseMethods.put("keyPress", new TypeKeys(elementFinder));
