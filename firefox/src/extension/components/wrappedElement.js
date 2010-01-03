@@ -315,24 +315,36 @@ FirefoxDriver.prototype.hover = function(respond) {
   respond.send();
 };
 
-
 FirefoxDriver.prototype.submit = function(respond) {
   var element = Utils.getElementAt(respond.elementId, respond.context);
 
-  var submitElement = Utils.findForm(element);
-  if (submitElement) {
-    new WebLoadingListener(Utils.getBrowser(respond.context), function() {
+  if (element) {
+    while (element.parentNode != null && element.tagName.toLowerCase() != "form") {
+      element = element.parentNode;
+    }
+    if (element.tagName.toLowerCase() == "form") {
+      if (Utils.fireHtmlEvent(respond.context, element, "submit")) {
+        new WebLoadingListener(Utils.getBrowser(respond.context), function() {
+          respond.send();
+        });
+        element.submit();
+        return;
+      } else {
+        //Event was blocked, so don't submit
+        respond.send();
+        return;
+      }
+    } else {
+      respond.isError = true;
+      respond.response = "Element was not in a form so couldn't submit";
       respond.send();
-    });
-    if (submitElement["submit"])
-      submitElement.submit();
-    else
-      submitElement.click();
+      return;
+    }
   } else {
     respond.send();
+    return;
   }
 };
-
 
 FirefoxDriver.prototype.isSelected = function(respond) {
   var element = Utils.getElementAt(respond.elementId, respond.context);

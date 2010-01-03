@@ -234,8 +234,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
   	assertEventFired("focus");
   }
 
-  //Fails in FF but doesn't hang
-  @Ignore({IE, FIREFOX})
+  @Ignore(IE)
   public void testSubmittingFormFromFormElementShouldFireOnSubmitForThatForm() {
     driver.get(javascriptPage);
     WebElement formElement = driver.findElement(By.id("submitListeningForm"));
@@ -243,8 +242,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
     assertEventFired("form-onsubmit");
   }
   
-  //Hangs in FF
-  @Ignore(FIREFOX)
+  @Ignore(IE)
   public void testSubmittingFormFromFormInputSubmitElementShouldFireOnSubmitForThatForm() {
     driver.get(javascriptPage);
     WebElement submit = driver.findElement(By.id("submitListeningForm-submit"));
@@ -252,8 +250,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
     assertEventFired("form-onsubmit");
   }
   
-  //Hangs in FF
-  @Ignore(FIREFOX)
+  @Ignore(IE)
   public void testSubmittingFormFromFormInputTextElementShouldFireOnSubmitForThatFormAndNotClickOnThatInput() {
     driver.get(javascriptPage);
     WebElement submit = driver.findElement(By.id("submitListeningForm-submit"));
