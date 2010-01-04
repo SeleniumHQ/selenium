@@ -17,13 +17,13 @@ limitations under the License.
 
 package org.openqa.selenium.firefox;
 
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.internal.Cleanly;
-import org.openqa.selenium.internal.FileHandler;
-import org.openqa.selenium.internal.TemporaryFilesystem;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-
+import javax.xml.XMLConstants;
+import javax.xml.namespace.NamespaceContext;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathFactory;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
@@ -39,13 +39,12 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import javax.xml.XMLConstants;
-import javax.xml.namespace.NamespaceContext;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathFactory;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.internal.Cleanly;
+import org.openqa.selenium.internal.FileHandler;
+import org.openqa.selenium.internal.TemporaryFilesystem;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 
 public class FirefoxProfile {
   private static final String EXTENSION_NAME = "fxdriver@googlecode.com";
@@ -497,25 +496,5 @@ public class FirefoxProfile {
 
     public void clean() {
       TemporaryFilesystem.deleteTempDir(profileDir);
-    }
-    
-    public FirefoxProfile createCopy(int port) {
-      File to = TemporaryFilesystem.createTempDir("webdriver", "profilecopy");
-
-      try {
-        FileHandler.copy(profileDir, to);
-      } catch (IOException e) {
-        throw new WebDriverException(
-            "Cannot create copy of profile " + profileDir.getAbsolutePath(), e);
-      }
-      FirefoxProfile profile = new FirefoxProfile(to);
-      additionalPrefs.addTo(profile);
-      profile.setPort(port);
-      profile.setEnableNativeEvents(enableNativeEvents);
-      profile.setAlwaysLoadNoFocusLib(loadNoFocusLib);
-      profile.setAcceptUntrustedCertificates(acceptUntrustedCerts);
-      profile.updateUserPrefs();
-
-      return profile;
     }
 }

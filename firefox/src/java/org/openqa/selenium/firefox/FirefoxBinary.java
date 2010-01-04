@@ -61,7 +61,6 @@ public class FirefoxBinary {
   }
 
   public void startProfile(FirefoxProfile profile, String... commandLineFlags) throws IOException {
-    this.profile = profile;
     String profileAbsPath = profile.getProfileDir().getAbsolutePath();
     setEnvironmentProperty("XRE_PROFILE_PATH", profileAbsPath);
     setEnvironmentProperty("MOZ_NO_REMOTE", "1");
@@ -302,10 +301,6 @@ public class FirefoxBinary {
 
   public void setOutputWatcher(OutputStream stream) {
     this.stream = stream;
-  }
-
-  public FirefoxProfile getProfile() {
-    return profile;
   }
 
   public void quit() {

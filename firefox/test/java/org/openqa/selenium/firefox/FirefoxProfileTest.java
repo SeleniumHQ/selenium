@@ -78,9 +78,9 @@ public class FirefoxProfileTest extends TestCase {
   }
 
   private List<String> readGeneratedProperties(FirefoxProfile profile) throws Exception {
-    FirefoxProfile copiedProfile = profile.createCopy(8000);
+    profile.updateUserPrefs();
 
-    File prefs = new File(copiedProfile.getProfileDir(), "user.js");
+    File prefs = new File(profile.getProfileDir(), "user.js");
     BufferedReader reader = new BufferedReader(new FileReader(prefs));
 
     List<String> prefLines = new ArrayList<String>();

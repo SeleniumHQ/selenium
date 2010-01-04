@@ -75,7 +75,7 @@ import static org.openqa.selenium.OutputType.FILE;
 
 /**
  * An implementation of the {#link WebDriver} interface that drives Firefox. This works through a firefox extension,
- * which can be installed via the {#link FirefoxLauncher}. Important system variables are:
+ * which gets installed automatically if necessary. Important system variables are:
  * <ul>
  *  <li><b>webdriver.firefox.bin</b> - Which firefox binary to use (normally "firefox" on the PATH).</li>
  *  <li><b>webdriver.firefox.profile</b> - The name of the profile to use (normally "WebDriver").</li>
@@ -106,44 +106,26 @@ public class FirefoxDriver implements WebDriver, JavascriptExecutor, TakesScreen
       this(new FirefoxBinary(), null);
     }
 
-    public FirefoxDriver(String profileName) {
-      this(profileName, DEFAULT_PORT);
-    }
-
-  /**
-   * @deprecated Use "new ProfilesIni.getProfile(profileName)" and set the port on the returned profile
-   */
-    @Deprecated
-    public FirefoxDriver(String profileName, int port) {
-      this(new FirefoxBinary(), modifyProfile(profileName, port));
-    }
-
-    private static FirefoxProfile modifyProfile(String profileName, int port) {
-      FirefoxProfile profile = new ProfilesIni().getProfile(profileName);
-      profile.setPort(port);
-      return profile;
-    }
-
-    public FirefoxDriver(FirefoxProfile profile) {
+  public FirefoxDriver(FirefoxProfile profile) {
       this(new FirefoxBinary(), profile);
     }
-    
-    public FirefoxDriver(FirefoxBinary binary, FirefoxProfile profile) {
-      if (profile == null) {
-        String suggestedProfile = System.getProperty("webdriver.firefox.profile");
-        if (suggestedProfile != null) {
-          profile = new ProfilesIni().getProfile(suggestedProfile);
-        } else {
-          profile = ProfileManager.getInstance().createProfile(binary, DEFAULT_PORT);
-        }
-      } else {
-        profile.addWebDriverExtensionIfNeeded(false);
-      }
-      prepareEnvironment();
 
-      extension = connectTo(binary, profile, "localhost");
-      fixId();
+  public FirefoxDriver(FirefoxBinary binary, FirefoxProfile profile) {
+    FirefoxProfile profileToUse = profile;
+    String suggestedProfile = System.getProperty("webdriver.firefox.profile");
+    if (profileToUse == null && suggestedProfile != null) {
+      profileToUse = new ProfilesIni().getProfile(suggestedProfile);
+    } else if (profileToUse == null) {
+      profileToUse = new FirefoxProfile();
+      profileToUse.addWebDriverExtensionIfNeeded(false);
+    } else {
+      profileToUse.addWebDriverExtensionIfNeeded(false);
     }
+    prepareEnvironment();
+
+    extension = connectTo(binary, profileToUse, "localhost");
+    fixId();
+  }
 
     private FirefoxDriver(ExtensionConnection extension, Context context) {
       this.extension = extension;

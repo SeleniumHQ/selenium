@@ -26,7 +26,6 @@ import java.net.Socket;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.Command;
 import org.openqa.selenium.firefox.FirefoxBinary;
-import org.openqa.selenium.firefox.FirefoxLauncher;
 import org.openqa.selenium.firefox.FirefoxProfile;
 
 public class NewProfileExtensionConnection extends AbstractExtensionConnection {
@@ -36,17 +35,26 @@ public class NewProfileExtensionConnection extends AbstractExtensionConnection {
 
   public NewProfileExtensionConnection(Lock lock, FirefoxBinary binary, FirefoxProfile profile, String host)
       throws IOException {
-    lock.lock(binary.getTimeout());
+    this.profile = profile;
+    if (binary == null) {
+      this.process = new FirefoxBinary();
+    } else {
+      this.process = binary;
+    }
+
+    lock.lock(this.process.getTimeout());
     try {
       int portToUse = determineNextFreePort(host, profile.getPort());
 
-      binary.setOutputWatcher(new CircularOutputStream(bufferSize));
-      process = new FirefoxLauncher(binary).startProfile(profile, portToUse);
-      this.profile = process.getProfile();
+      this.process.setOutputWatcher(new CircularOutputStream(bufferSize));
+      profile.setPort(portToUse);
+      profile.updateUserPrefs();
+      this.process.clean(profile);
+      this.process.startProfile(profile);
 
       setAddress(host, portToUse);
 
-      connectToBrowser(binary.getTimeout());
+      connectToBrowser(this.process.getTimeout());
     } finally {
       lock.unlock();
     }
