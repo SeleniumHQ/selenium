@@ -22,7 +22,7 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 
 public class WaitForPageToLoad extends SeleneseCommand<Void> {
-  private int timeToWait = 50;
+  private int timeToWait = 100;
 
   /**
    * Overrides the default time to wait (in milliseconds) after a page has finished loading.
