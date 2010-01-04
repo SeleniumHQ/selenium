@@ -55,6 +55,7 @@ module Selenium
         end
 
         def launch_chrome(server_url)
+          check_binary_exists
           @process = ChildProcess.new Platform.wrap_in_quotes_if_necessary(binary_path),
                                       "--load-extension=#{Platform.wrap_in_quotes_if_necessary tmp_extension_dir}",
                                       "--user-data-dir=#{Platform.wrap_in_quotes_if_necessary tmp_profile_dir}",
@@ -64,6 +65,12 @@ module Selenium
                                       "--disable-prompt-on-repost",
                                       server_url
           @process.start
+        end
+
+        def check_binary_exists
+          unless File.file?(binary_path)
+            raise Error::WebDriverError, "Could not find Chrome binary. Make sure Chrome is installed (OS: #{Platform.os})"
+          end
         end
 
         def ext_path
@@ -95,7 +102,16 @@ module Selenium
           end
 
           def binary_path
-            @binary_path ||= "#{Platform.home}\\Local Settings\\Application Data\\Google\\Chrome\\Application\\chrome.exe"
+            @binary_path ||= begin
+              possible_paths = [
+                "#{ENV['USERPROFILE']}\\Local Settings\\Application Data\\Google\\Chrome\\Application\\chrome.exe",
+                "#{ENV['USERPROFILE']}\\AppData\\Local\\Google\\Chrome\\Application\\chrome.exe",
+                "#{Platform.home}\\Local Settings\\Application Data\\Google\\Chrome\\Application\\chrome.exe",
+                "#{Platform.home}\\AppData\\Local\\Google\\Chrome\\Application\\chrome.exe",
+              ]
+
+              possible_paths.find { |f| File.exist?(f) } || possible_paths.first
+            end
           end
 
         end

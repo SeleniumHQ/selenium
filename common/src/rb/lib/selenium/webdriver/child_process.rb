@@ -94,6 +94,7 @@ module Selenium
 
         def wait
           @process.waitFor
+          [nil, @process.exitValue] # no robust way to get pid here
         end
 
         def exit_value

@@ -16,8 +16,9 @@ module Selenium
             _, status = wait
           end
 
-          if status && !status.success?
-            raise Error::WebDriverError, "could not create base profile: (exit status: #{status.exitstatus})"
+
+          if status && status.to_i != 0
+            raise Error::WebDriverError, "could not create base profile: (exit status: #{status})"
           end
         end
 

@@ -8,8 +8,10 @@ module Selenium
        def initialize
          @server       = TCPServer.new("0.0.0.0", 0)
          @queue        = Queue.new
+
          @accepted_any = false
          @next_socket  = nil
+         @listening    = true
 
          Thread.new { start_run_loop }
        end
@@ -30,8 +32,9 @@ module Selenium
        end
 
        def close
+         stop_listening
          close_sockets
-         @server.close
+         @server.close unless @server.closed?
        rescue IOError
          nil
        end
@@ -47,7 +50,7 @@ module Selenium
        private
 
        def start_run_loop
-         loop do
+         while(@listening) do
            socket = @server.accept
 
            if socket.read(1) == "G" # initial GET(s)
@@ -56,8 +59,8 @@ module Selenium
              if accepted_any?
                @queue << socket
              else
-               @accepted_any = true
                read_response(socket)
+               @accepted_any = true
              end
            end
          end
@@ -68,7 +71,8 @@ module Selenium
        def read_response(socket)
          result = ''
          seen_double_crlf = false
-         while !socket.closed? && ((line = socket.gets.chomp) != "EOResponse")
+
+         while line = next_line(socket)
            seen_double_crlf = true if line.empty?
            result << "#{line}\n" if seen_double_crlf
          end
@@ -84,6 +88,23 @@ module Selenium
 
        def close_sockets
          @queue.pop.close until @queue.empty?
+         @next_socket.close if @next_socket
+       end
+
+       def stop_listening
+         @listening = false
+       end
+
+       def next_line(socket)
+        return if socket.closed?
+        input = socket.gets
+
+        raise Error::WebDriverError, "unexpected EOF from Chrome" if input.nil?
+
+        line = input.chomp
+        return if line == "EOResponse"
+
+        line
        end
 
        def write_holding_page_to(socket)

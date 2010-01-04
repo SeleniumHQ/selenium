@@ -45,7 +45,7 @@ module Selenium
 
         def app_server
           @app_server ||= begin
-            s = RackServer.new
+            s = RackServer.new("#{WebDriver.root}/common/src/web")
             s.start
 
             s
