@@ -19,11 +19,11 @@ package org.openqa.selenium;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.REMOTE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
-import org.openqa.selenium.internal.FindsByCssSelector;
 
 import java.util.List;
 
@@ -208,12 +208,11 @@ public class ChildrenFindingTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   public void testShouldBeAbleToFindAnElementByCssSelector() {
+    driver.get(nestedPage);
     if (!supportsSelectorApi()) {
       System.out.println("Skipping test: selector API not supported");
       return;
     }
-
-    driver.get(nestedPage);
     WebElement parent = driver.findElement(By.name("form2"));
 
     WebElement element = parent.findElement(By.cssSelector("*[name=\"selectomatic\"]"));
@@ -222,23 +221,17 @@ public class ChildrenFindingTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Ignore(value = CHROME, reason = "Chrome doesn't handle the many-pages situation well")
   public void testShouldBeAbleToFindAnElementsByCssSelector() {
+    driver.get(nestedPage);
     if (!supportsSelectorApi()) {
       System.out.println("Skipping test: selector API not supported");
       return;
     }
-
-    driver.get(nestedPage);
     WebElement parent = driver.findElement(By.name("form2"));
 
     List<WebElement> elements = parent.findElements(By.cssSelector("*[name=\"selectomatic\"]"));
 
     assertEquals(2, elements.size());
-  }
-
-  private Boolean supportsSelectorApi() {
-    return driver instanceof FindsByCssSelector &&
-        (Boolean) ((JavascriptExecutor) driver).executeScript(
-        "return document['querySelector'] !== undefined;");
   }
 }

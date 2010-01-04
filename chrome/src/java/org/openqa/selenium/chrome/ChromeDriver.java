@@ -13,6 +13,7 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.internal.FileHandler;
 import org.openqa.selenium.internal.FindsByClassName;
+import org.openqa.selenium.internal.FindsByCssSelector;
 import org.openqa.selenium.internal.FindsById;
 import org.openqa.selenium.internal.FindsByLinkText;
 import org.openqa.selenium.internal.FindsByName;
@@ -35,7 +36,7 @@ import java.util.List;
 import java.util.Set;
 
 public class ChromeDriver implements WebDriver, SearchContext, JavascriptExecutor, TakesScreenshot,
-  FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, FindsByXPath {
+  FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, FindsByXPath, FindsByCssSelector {
 
   private final static int MAX_START_RETRIES = 5;
   private ChromeCommandExecutor executor;
@@ -308,6 +309,14 @@ public class ChromeDriver implements WebDriver, SearchContext, JavascriptExecuto
   
   public List<WebElement> findElementsByPartialLinkText(String using) {
     return getElementsFrom(execute(FIND_ELEMENTS, "partial link text", using));
+  }
+  
+  public WebElement findElementByCssSelector(String using) {
+    return getElementFrom(execute(FIND_ELEMENT, "css", using));
+  }
+
+  public List<WebElement> findElementsByCssSelector(String using) {
+    return getElementsFrom(execute(FIND_ELEMENTS, "css", using));
   }
   
   WebElement getElementFrom(ChromeResponse response) {

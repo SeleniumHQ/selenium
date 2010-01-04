@@ -457,6 +457,9 @@ function getElement(plural, lookupBy, lookupValue, id) {
   case "tag name":
     elements = getElementsByXPath(root + "//" + lookupValue);
     break;
+  case "css":
+    elements = parent.querySelectorAll(lookupValue);
+    break;
   case "xpath":
     if (root != "" && lookupValue[0] != "/") {
       //Because xpath is relative to the parent, if there is a parent, and the lookup seems to be implied sub-lookup, we add a /

@@ -22,7 +22,6 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
-import org.openqa.selenium.internal.FindsByCssSelector;
 
 import java.util.List;
 
@@ -383,30 +382,21 @@ public class ElementFindingTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   public void testShouldBeAbleToFindAnElementByCssSelector() {
+    driver.get(xhtmlTestPage);
     if (!supportsSelectorApi()) {
       System.out.println("Skipping test: selector API not supported");
       return;
     }
-
-    driver.get(xhtmlTestPage);
-    
     driver.findElement(By.cssSelector("div.content"));
   }
 
   @JavascriptEnabled
   public void testShouldBeAbleToFindAnElementsByCssSelector() {
+    driver.get(xhtmlTestPage);
     if (!supportsSelectorApi()) {
       System.out.println("Skipping test: selector API not supported");
       return;
     }
-
-    driver.get(xhtmlTestPage);
-
     driver.findElements(By.cssSelector("p"));
   }
-
-  private Boolean supportsSelectorApi() {
-    return driver instanceof FindsByCssSelector &&
-        (Boolean) ((JavascriptExecutor) driver).executeScript(
-        "return document['querySelector'] !== undefined;");  }
 }

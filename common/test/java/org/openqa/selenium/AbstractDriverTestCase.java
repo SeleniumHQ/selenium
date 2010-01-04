@@ -24,6 +24,7 @@ import static org.hamcrest.core.IsNot.not;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.environment.TestEnvironment;
 import org.openqa.selenium.environment.webserver.AppServer;
+import org.openqa.selenium.internal.FindsByCssSelector;
 
 import junit.framework.TestCase;
 
@@ -127,5 +128,12 @@ public class AbstractDriverTestCase extends TestCase implements NeedsDriver {
     }
 
     return driver.getClass().getName();
+  }
+  
+  protected Boolean supportsSelectorApi() {
+    //Assumes a page is loaded on which javascript can be executed
+    return driver instanceof FindsByCssSelector &&
+        (Boolean) ((JavascriptExecutor) driver).executeScript(
+        "return document['querySelector'] !== undefined;");
   }
 }
