@@ -53,7 +53,7 @@ namespace OpenQA.Selenium
             Assert.IsTrue(one.Selected);
             Assert.IsFalse(two.Selected);
 
-            two.Selected = true;
+            two.Select();
             Assert.IsFalse(one.Selected);
             Assert.IsTrue(two.Selected);
         }
@@ -67,7 +67,7 @@ namespace OpenQA.Selenium
             ReadOnlyCollection<IWebElement> options = multiSelect.FindElements(By.TagName("option"));
             foreach (IWebElement option in options)
             {
-                option.Selected = true;
+                option.Select();
             }
 
             for (int i = 0; i < options.Count; i++)

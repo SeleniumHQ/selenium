@@ -117,7 +117,7 @@ namespace OpenQA.Selenium
             Assert.AreEqual(driver.FindElement(By.Id("pageNumber")).Text, "2");
 
             driver.SwitchTo().Frame("third");
-            driver.FindElement(By.Id("changeme")).Selected = true;
+            driver.FindElement(By.Id("changeme")).Select();
 
             driver.SwitchTo().Frame("second");
             Assert.AreEqual(driver.FindElement(By.Id("pageNumber")).Text, "2");

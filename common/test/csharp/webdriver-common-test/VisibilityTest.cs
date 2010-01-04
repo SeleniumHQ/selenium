@@ -97,7 +97,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = javascriptPage;
             IWebElement element = driver.FindElement(By.Id("untogglable"));
-            element.Selected = true;
+            element.Select();
         }
 
         [Test]

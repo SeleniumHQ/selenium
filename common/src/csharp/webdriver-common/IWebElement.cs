@@ -30,7 +30,6 @@ namespace OpenQA.Selenium
         bool Selected
         {
             get;
-            set;
         }
 
         void Clear();
@@ -39,6 +38,8 @@ namespace OpenQA.Selenium
         void Submit();
 
         void Click();
+
+        void Select();
 
         string GetAttribute(string attributeName);
 

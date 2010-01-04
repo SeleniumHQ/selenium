@@ -133,9 +133,9 @@ namespace OpenQA.Selenium
             driver.Url = formsPage;
             IWebElement checkbox = driver.FindElement(By.Id("checky"));
             Assert.AreEqual(checkbox.Selected, false);
-            checkbox.Selected = true;
+            checkbox.Select();
             Assert.AreEqual(checkbox.Selected, true);
-            checkbox.Selected = true;
+            checkbox.Select();
             Assert.AreEqual(checkbox.Selected, true);
         }
 
@@ -170,7 +170,7 @@ namespace OpenQA.Selenium
             driver.Url = formsPage;
             IWebElement radioButton = driver.FindElement(By.Id("nothing"));
             Assert.AreEqual(radioButton.Enabled, false);
-            radioButton.Selected = true;
+            radioButton.Select();
         }
 
         [Test]
@@ -179,7 +179,7 @@ namespace OpenQA.Selenium
             driver.Url = formsPage;
             IWebElement radioButton = driver.FindElement(By.Id("peas"));
             Assert.AreEqual(radioButton.Selected, false);
-            radioButton.Selected = true;
+            radioButton.Select();
             Assert.AreEqual(radioButton.Selected, true);
         }
 
@@ -272,7 +272,7 @@ namespace OpenQA.Selenium
             driver.Url = formsPage;
 
             IWebElement element = driver.FindElement(By.XPath("//title"));
-            element.Selected = true;
+            element.Select();
         }
 
         [Test]

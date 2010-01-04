@@ -169,9 +169,9 @@ namespace OpenQA.Selenium
             IWebElement foo = allOptions[0];
             IWebElement bar = allOptions[1];
 
-            foo.Selected = true;
+            foo.Select();
             Assert.AreEqual(driver.FindElement(By.Id("result")).Text, initialTextValue);
-            bar.Selected = true;
+            bar.Select();
             Assert.AreEqual(driver.FindElement(By.Id("result")).Text, "bar");
         }
 
@@ -184,7 +184,7 @@ namespace OpenQA.Selenium
             driver.Url = javascriptPage;
             IWebElement checkbox = driver.FindElement(By.Id("checkbox"));
 
-            checkbox.Selected = true;
+            checkbox.Select();
             Assert.AreEqual(driver.FindElement(By.Id("result")).Text, "checkbox thing");
         }
 

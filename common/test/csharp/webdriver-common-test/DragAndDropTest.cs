@@ -61,14 +61,14 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Chrome)]
         public void DragTooFar()
         {
-            // TODO (jimevan): This test fails on IE. Minimum location is not at 0, 0.
-            // Need to investigate.
             driver.Url = dragAndDropPage;
             IRenderedWebElement img = (IRenderedWebElement)driver.FindElement(By.Id("test1"));
-            //        Point expectedLocation = img.getLocation();
 
+            // Dragging too far left and up does not move the element. It will be at 
+            // its original location after the drag.
+            Point originalLocation = img.Location;
             img.DragAndDropBy(int.MinValue, int.MinValue);
-            Assert.AreEqual(new Point(0, 0), img.Location);
+            Assert.AreEqual(originalLocation, img.Location);
 
             img.DragAndDropBy(int.MaxValue, int.MaxValue);
             //We don't know where the img is dragged to , but we know it's not too

@@ -122,11 +122,12 @@ namespace OpenQA.Selenium.IE
                 ResultHandler.VerifyResultCode(result, "Checking if element is selected");
                 return (selected == 1);
             }
-            set
-            {
-                WebDriverResult result = NativeMethods.wdeSetSelected(elementHandle);
-                ResultHandler.VerifyResultCode(result, "(Un)selecting element");
-            }
+        }
+
+        public void Select()
+        {
+            WebDriverResult result = NativeMethods.wdeSetSelected(elementHandle);
+            ResultHandler.VerifyResultCode(result, "(Un)selecting element");
         }
 
         public bool Toggle()

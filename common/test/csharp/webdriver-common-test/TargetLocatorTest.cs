@@ -26,8 +26,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [ExpectedException(typeof(InvalidOperationException))]
-        [IgnoreBrowser(Browser.IE, "Seems to crash IE after the move to VS 2008")]
+        [ExpectedException(typeof(ArgumentNullException))]
         public void ShouldThrowExceptionAfterSwitchingToNullFrameName()
         {
             driver.Url = framesPage;
@@ -60,16 +59,16 @@ namespace OpenQA.Selenium
             driver.Url = framesPage;
             
             driver.SwitchTo().Frame("first");
-            Assert.AreEqual("Foo 1", driver.Title);
+            Assert.AreEqual("Page1", driver.Title);
 
             driver.SwitchTo().DefaultContent();
-            Assert.AreEqual("Foo 1", driver.Title);
+            Assert.AreEqual("Page1", driver.Title);
 
             driver.SwitchTo().Frame("second");
-            Assert.AreEqual("Foo 2", driver.Title);
+            Assert.AreEqual("Page2", driver.Title);
 
             driver.SwitchTo().DefaultContent();
-            Assert.AreEqual("Foo 1", driver.Title);
+            Assert.AreEqual("Page1", driver.Title);
         }
 
         [Test]
@@ -78,16 +77,16 @@ namespace OpenQA.Selenium
             driver.Url = framesPage;
             
             driver.SwitchTo().Frame(0);
-            Assert.AreEqual("Foo 1", driver.Title);
+            Assert.AreEqual("Page1", driver.Title);
 
             driver.SwitchTo().DefaultContent();
-            Assert.AreEqual("Foo 1", driver.Title);
+            Assert.AreEqual("Page1", driver.Title);
 
             driver.SwitchTo().Frame(1);
-            Assert.AreEqual("Foo 2", driver.Title);
+            Assert.AreEqual("Page2", driver.Title);
 
             driver.SwitchTo().DefaultContent();
-            Assert.AreEqual("Foo 1", driver.Title);
+            Assert.AreEqual("Page1", driver.Title);
         }
 
     }
