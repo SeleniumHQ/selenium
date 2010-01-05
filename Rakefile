@@ -235,8 +235,8 @@ xpi(:name => "firefox_xpi",
                     { :events_xpt => "components/" },
                     { :responseHandler_xpt => "components/" },
                     { :firefox_dll => "platform/WINNT_x86-msvc/components/webdriver-firefox.dll" },
-                    { :libnoblur_so => "platform/Linux_x86-gcc3/components/libwebdriver-firefox.so" },
-                    { :libnoblur_so_64 => "platform/Linux_x86_64-gcc3/components/libwebdriver-firefox.so" },
+                    { :libwebdriver_firefox_so => "platform/Linux_x86-gcc3/components/libwebdriver-firefox.so" },
+                    { :libwebdriver_firefox_so64 => "platform/Linux_x86_64-gcc3/components/libwebdriver-firefox.so" },
                   ],
     :out  => "webdriver-extension.zip")
 
