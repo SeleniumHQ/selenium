@@ -186,7 +186,6 @@ FindsByXPath, FindsByLinkText, FindsById, FindsByName, FindsByTagName, FindsByCl
     return parent.getElementsFrom(execute(DriverCommand.FIND_CHILD_ELEMENTS, this, "class name", using));
   }
   
-  @Override
   public WebElement findElementByCssSelector(String using) {
     return parent.getElementFrom(execute(DriverCommand.FIND_CHILD_ELEMENT, this, "css", using));
   }
