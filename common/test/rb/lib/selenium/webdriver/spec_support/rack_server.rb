@@ -20,6 +20,7 @@ module Selenium
             @pid = fork { run }
           end
           sleep 2
+          sleep 2 if Platform.win?
         end
 
         def run

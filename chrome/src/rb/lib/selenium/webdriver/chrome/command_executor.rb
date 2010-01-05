@@ -108,7 +108,8 @@ module Selenium
        end
 
        def write_holding_page_to(socket)
-         msg = "<html><head><script type='text/javascript'>if (window.location.search == '') { setTimeout(\"window.location = window.location.href + '?reloaded'\", 5000); }</script></head><body><p>ChromeDriver server started and connected.  Please leave this tab open.</p></body></html>"
+         msg = %[<html><head><script type='text/javascript'>if (window.location.search == '') { setTimeout("window.location = window.location.href + '?reloaded'", 5000); }</script></head><body><p>ChromeDriver server started and connected.  Please leave this tab open.</p></body></html>]
+
          socket.write HTML_TEMPLATE % [msg.length, msg]
          socket.close
        end
