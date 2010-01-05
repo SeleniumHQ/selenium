@@ -783,28 +783,46 @@ Editor.prototype.loadExtensions = function() {
 }
 
 Editor.prototype.loadSeleniumAPI = function() {
-	// load API document
-	var parser = new DOMParser();
-	var document = parser.parseFromString(FileUtils.readURL("chrome://selenium-ide/content/selenium/iedoc-core.xml"), "text/xml");
-	Command.apiDocument = document;
-	
-	// load functions
-	this.seleniumAPI = {};
-	
-	const subScriptLoader = Components.classes["@mozilla.org/moz/jssubscript-loader;1"]
-		.getService(Components.interfaces.mozIJSSubScriptLoader);
-	
-	subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium/scripts/selenium-api.js', this.seleniumAPI);
-	if (this.getOptions().userExtensionsURL) {
-		try {
-			ExtensionsLoader.loadSubScript(subScriptLoader, this.getOptions().userExtensionsURL, this.seleniumAPI);
-		} catch (error) {
+    // load API document
+    var parser = new DOMParser();
+    var document = parser.parseFromString(FileUtils.readURL("chrome://selenium-ide/content/selenium/iedoc-core.xml"), "text/xml");
+    Command.apiDocument = document;
+    
+    // load functions
+    this.seleniumAPI = {};
+    
+    const subScriptLoader = Components.classes["@mozilla.org/moz/jssubscript-loader;1"]
+        .getService(Components.interfaces.mozIJSSubScriptLoader);
+    
+    subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium/scripts/selenium-api.js', this.seleniumAPI);
+
+    // user supplied extensions
+    if (this.getOptions().userExtensionsURL) {
+        try {
+            ExtensionsLoader.loadSubScript(subScriptLoader, this.getOptions().userExtensionsURL, this.seleniumAPI);
+        } catch (error) {
             this.showAlert("Failed to load user-extensions.js!"
                 + "\nfiles=" + this.getOptions().userExtensionsURL
                 + "\nlineNumber=" + error.lineNumber
                 + "\nerror=" + error);
-		}
-	}
+        }
+    }
+
+    // plugin supplied extensions
+    var pluginProvided = SeleniumIDE.Preferences.getString("pluginProvidedUserExtensions");
+    if (typeof pluginProvided != 'undefined') {
+        try {
+            var split_pluginProvided = pluginProvided.split(" ");
+            for(sp = 0; sp < split_pluginProvided.length; sp++){
+                ExtensionsLoader.loadSubScript(subScriptLoader, split_pluginProvided[sp], this.seleniumAPI);
+            }
+        } catch (error) {
+            this.showAlert("Failed to load plugin provided js!"
+                + "\nfiles=" + pluginProvided
+                + "\nlineNumber=" + error.lineNumber
+                + "\nerror=" + error);
+        }
+    }
 }
 
 Editor.prototype.showReference = function(command) {
