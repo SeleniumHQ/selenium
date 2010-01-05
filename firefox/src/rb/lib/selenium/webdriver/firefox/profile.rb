@@ -16,14 +16,15 @@ module Selenium
           ["#{WebDriver.root}/firefox/prebuilt/nsIResponseHandler.xpt", "components/nsIResponseHandler.xpt"],
         ]
 
-        NATIVE = {
-          :windows => ["#{WebDriver.root}/firefox/prebuilt/Win32/Release/webdriver-firefox.dll", "platform/WINNT_x86-msvc/components/webdriver-firefox.dll"],
-          :linux   => ["#{WebDriver.root}/firefox/prebuilt/linux64/Release/libwebdriver-firefox.so", "platform/Linux/components/libwebdriver-firefox.so"]
-        }
+        NATIVE_WINDOWS = ["#{WebDriver.root}/firefox/prebuilt/Win32/Release/webdriver-firefox.dll", "platform/WINNT_x86-msvc/components/webdriver-firefox.dll"]
+        NATIVE_LINUX   = [
+          ["#{WebDriver.root}/firefox/prebuilt/linux/Release/libwebdriver-firefox.so", "platform/Linux_x86-gcc3/components/libwebdriver-firefox.so"],
+          ["#{WebDriver.root}/firefox/prebuilt/linux64/Release/libwebdriver-firefox.so", "platform/Linux_x86_64-gcc3/components/libwebdriver-firefox.so"]
+        ]
 
         NO_FOCUS = [
-          ["#{WebDriver.root}/firefox/prebuilt/linux64/Release/x_ignore_nofocus.so"    , "amd64/x_ignore_nofocus.so"],
-          ["#{WebDriver.root}/firefox/prebuilt/linux/Release/x_ignore_nofocus.so"      , "x86/x_ignore_nofocus.so"],
+          ["#{WebDriver.root}/firefox/prebuilt/linux64/Release/x_ignore_nofocus.so", "amd64/x_ignore_nofocus.so"],
+          ["#{WebDriver.root}/firefox/prebuilt/linux/Release/x_ignore_nofocus.so", "x86/x_ignore_nofocus.so"],
         ]
 
         SHARED = [
@@ -90,8 +91,16 @@ module Selenium
           from_to = XPTS + SHARED
 
           if native_events?
-            from_to << (NATIVE[Platform.os] || raise(Error::WebDriverError,
-                                                        "can't enable native events on #{Platform.os.inspect}"))
+            case Platform.os
+            when :linux
+              NATIVE_LINUX.each do |lib|
+                from_to << lib
+              end
+            when :windows
+              from_to << NATIVE_WINDOWS
+            else
+              raise Error::WebDriverError, "can't enable native events on #{Platform.os.inspect}"
+            end
           end
 
           if Platform.os == :linux || load_no_focus_lib?
