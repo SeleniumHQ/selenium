@@ -1,35 +1,47 @@
 package org.openqa.selenium.chrome;
 
-import java.io.File;
-import java.io.IOException;
-
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
+
+import java.io.File;
+import java.io.IOException;
 
 public class ChromeBinary {
   
   private static final int BACKOFF_INTERVAL = 2500;
 
   private static int linearBackoffCoefficient = 1;
+
+  private final ChromeProfile profile;
+  private final ChromeExtension extension;
   
   Process chromeProcess = null;
-  
+
+  /**
+   * Creates a new instance for managing an instance of Chrome using the given
+   * {@code profile} and {@code extension}.
+   *
+   * @param profile The Chrome profile to use.
+   * @param extension The extension to launch Chrome with.
+   */
+  public ChromeBinary(ChromeProfile profile, ChromeExtension extension) {
+    this.profile = profile;
+    this.extension = extension;
+  }
+
   /**
    * Starts the Chrome process for WebDriver.
    * Assumes the passed directories exist.
-   * @param profileDir directory to use as the profile.
-   * Should contain the empty text file "First Run Dev".
-   * @param extensionDir directory which contains the WebDriver extension.
    * @param serverUrl URL from which commands should be requested
    * @throws IOException wrapped in WebDriverException if process couldn't be
    * started.
    */
-  public void start(String profileDir, String extensionDir, String serverUrl) throws IOException {
+  public void start(String serverUrl) throws IOException {
     try {
       chromeProcess = new ProcessBuilder(
           getChromeFile(),
-          "--user-data-dir=" + profileDir,
-          "--load-extension=" + extensionDir,
+          "--user-data-dir=" + profile.getDirectory().getAbsolutePath(),
+          "--load-extension=" + extension.getDirectory().getAbsolutePath(),
           "--activate-on-launch",
           "--homepage=about:blank",
           "--no-first-run",

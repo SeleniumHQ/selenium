@@ -4,14 +4,12 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.OutputType;
-import org.openqa.selenium.Platform;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.Speed;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.internal.FileHandler;
 import org.openqa.selenium.internal.FindsByClassName;
 import org.openqa.selenium.internal.FindsByCssSelector;
 import org.openqa.selenium.internal.FindsById;
@@ -19,15 +17,12 @@ import org.openqa.selenium.internal.FindsByLinkText;
 import org.openqa.selenium.internal.FindsByName;
 import org.openqa.selenium.internal.FindsByTagName;
 import org.openqa.selenium.internal.FindsByXPath;
-import org.openqa.selenium.internal.TemporaryFilesystem;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.Context;
 import org.openqa.selenium.remote.DriverCommand;
 import static org.openqa.selenium.remote.DriverCommand.*;
 import org.openqa.selenium.remote.SessionId;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -39,34 +34,30 @@ public class ChromeDriver implements WebDriver, SearchContext, JavascriptExecuto
   FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, FindsByXPath, FindsByCssSelector {
 
   private final static int MAX_START_RETRIES = 5;
-  private ChromeCommandExecutor executor;
-  private ChromeBinary chromeBinary = new ChromeBinary();
-  
+  private final ChromeCommandExecutor executor;
+  private final ChromeBinary chromeBinary;
+
+  /**
+   * Starts up a new instance of Chrome using the specified profile and
+   * extension.
+   *
+   * @param profile The profile to use.
+   * @param extension The extension to use.
+   */
+  public ChromeDriver(ChromeProfile profile, ChromeExtension extension) {
+    chromeBinary = new ChromeBinary(profile, extension);
+    executor = new ChromeCommandExecutor();
+    startClient();
+  }
+
   /**
    * Starts up a new instance of Chrome, with the required extension loaded,
    * and has it connect to a new ChromeCommandExecutor on its port
+   *
+   * @see ChromeDriver(ChromeProfile, ChromeExtension)
    */
   public ChromeDriver() {
-    init();
-  }
-  
-  private void init() {
-    int retries = MAX_START_RETRIES;
-    while ((executor == null || !executor.hasClient()) && retries > 0) {
-      stopClient();
-      this.executor = new ChromeCommandExecutor();
-      startClient();
-      //In case this attempt fails, we increment how long we wait before sending a command
-      chromeBinary.incrementBackoffBy(1);
-      retries--;
-    }
-    //The last one attempt succeeded, so we reduce back to that time
-    chromeBinary.incrementBackoffBy(-1);
-
-    if (executor == null || !executor.hasClient()) {
-      stopClient();
-      throw new FatalChromeException("Cannot create chrome driver");  
-    }
+    this(new ChromeProfile(), new ChromeExtension());
   }
   
   /**
@@ -77,35 +68,23 @@ public class ChromeDriver implements WebDriver, SearchContext, JavascriptExecuto
    * hope we're in.  If these fail, throws exceptions.
    */
   protected void startClient() {
-    try {
-      File extensionDir = getExtensionDir();
-      if (!extensionDir.isDirectory()) {
-        throw new FileNotFoundException("Could not find extension directory" +
-            "(" + extensionDir + ").  Try setting webdriver.chrome.extensiondir."); 
+    for (int retries = MAX_START_RETRIES; !executor.hasClient() && retries > 0; retries--) {
+      stopClient();
+      try {
+        executor.startListening();
+        chromeBinary.start(getServerUrl());
+      } catch (IOException e) {
+        throw new WebDriverException(e);
       }
-      
-      //Copy over the correct manifest file
-      if (Platform.getCurrent().is(Platform.WINDOWS)) {
-        FileHandler.copy(new File(extensionDir, "manifest-win.json"),
-                         new File(extensionDir, "manifest.json"));
-      } else {
-        FileHandler.copy(new File(extensionDir, "manifest-nonwin.json"),
-                         new File(extensionDir, "manifest.json"));
-      }
-      
-      File profileDir = TemporaryFilesystem.createTempDir("profile", "");
-      File firstRunFile = new File(profileDir, "First Run Dev");
-      firstRunFile.createNewFile();
-      //TODO(danielwh): Maybe add Local State file with window_placement
-      
-      System.setProperty("webdriver.reap_profile", "false");
-      
-      chromeBinary.start(
-          profileDir.getCanonicalFile().toString(),
-          extensionDir.getCanonicalFile().toString(),
-          getServerUrl());
-    } catch (IOException e) {
-      throw new WebDriverException(e);
+      //In case this attempt fails, we increment how long we wait before sending a command
+      chromeBinary.incrementBackoffBy(1);
+    }
+    //The last one attempt succeeded, so we reduce back to that time
+    chromeBinary.incrementBackoffBy(-1);
+
+    if (!executor.hasClient()) {
+      stopClient();
+      throw new FatalChromeException("Cannot create chrome driver");
     }
   }
   
@@ -114,10 +93,7 @@ public class ChromeDriver implements WebDriver, SearchContext, JavascriptExecuto
    */
   protected void stopClient() {
     chromeBinary.kill();
-    if (executor != null) {
-      executor.stopListening();
-      executor = null;
-    }
+    executor.stopListening();
   }
   
   /**
@@ -139,7 +115,7 @@ public class ChromeDriver implements WebDriver, SearchContext, JavascriptExecuto
         //These exceptions may leave the extension hung, or in an
         //inconsistent state, so we restart Chrome
         stopClient();
-        init();
+        startClient();
       }
       if (e instanceof RuntimeException) {
         throw (RuntimeException)e;
@@ -149,35 +125,8 @@ public class ChromeDriver implements WebDriver, SearchContext, JavascriptExecuto
     }
   }
   
-  /**
-   * Locates the directory containing the extension to load Chrome with,
-   * trying to unzip the zipped extension if no explicit extension is set using
-   * the system property webdriver.chrome.extensiondir.
-   * @return the extension directory
-   * @throws IOException if tried to unzip extension but couldn't
-   */
-  protected File getExtensionDir() throws IOException {
-    File extensionDir = null;
-    String extensionDirSystemProperty = System.getProperty(
-        "webdriver.chrome.extensiondir");
-    if (extensionDirSystemProperty != null &&
-        extensionDirSystemProperty != "") {
-      //Default to reading from the property
-      extensionDir = new File(extensionDirSystemProperty);
-    } else {
-      //If property not set, try to unpack the zip from the jar
-      extensionDir = FileHandler.unzip(this.getClass().getResourceAsStream(
-          "/chrome-extension.zip"));
-    }
-    return extensionDir;
-  }
-  
   protected String getServerUrl() {
-    if (executor != null) {
-      return "http://localhost:" + executor.getPort() + "/chromeCommandExecutor";
-    } else {
-      throw new WebDriverException("No server started - try initing the ChromeDriver");
-    }
+    return "http://localhost:" + executor.getPort() + "/chromeCommandExecutor";
   }
 
   public void close() {

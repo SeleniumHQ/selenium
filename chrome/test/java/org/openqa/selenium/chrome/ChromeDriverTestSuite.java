@@ -17,22 +17,21 @@ limitations under the License.
 
 package org.openqa.selenium.chrome;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-
-import junit.framework.Assert;
-import junit.framework.Test;
-import junit.framework.TestCase;
-
 import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.CHROME_NON_WINDOWS;
-
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.TestSuiteBuilder;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.internal.FileHandler;
 import org.openqa.selenium.internal.TemporaryFilesystem;
+
+import junit.framework.Assert;
+import junit.framework.Test;
+import junit.framework.TestCase;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 public class ChromeDriverTestSuite extends TestCase {
   public static Test suite() throws Exception {
@@ -54,10 +53,10 @@ public class ChromeDriverTestSuite extends TestCase {
   
   public static class TestChromeDriver extends ChromeDriver {
     public TestChromeDriver() throws Exception {
-      super();
+      super(new ChromeProfile(), createExtension());
     }
-    @Override
-    protected void startClient() {
+
+    private static ChromeExtension createExtension() {
       File extensionSrcDir = FileHandler.locateInProject("chrome/src/extension");
       File extensionDstDir = TemporaryFilesystem.createTempDir("extension", "folder");
       String extensionDst;
@@ -70,7 +69,7 @@ public class ChromeDriverTestSuite extends TestCase {
       } catch (IOException e) {
         throw new WebDriverException(e);
       }
-      
+
       File dllToUse = new File(System.getProperty("webdriver.chrome.extensiondir"),
           "npchromedriver.dll");
       if (System.getProperty("webdriver.chrome.extensiondir") == null ||
@@ -83,10 +82,10 @@ public class ChromeDriverTestSuite extends TestCase {
           throw new WebDriverException(e);
         }
       }
-      super.startClient();
+      return new ChromeExtension(extensionDstDir);
     }
 
-    private void copyDll() throws IOException {
+    private static void copyDll() throws IOException {
       if (System.getProperty("os.name").startsWith("Windows")) {
         File topLevel = locateTopLevelProjectDirectory();
         File dllFrom = new File(System.getProperty("user.dir"),
@@ -105,7 +104,7 @@ public class ChromeDriverTestSuite extends TestCase {
       }
     }
 
-    private File locateTopLevelProjectDirectory() {
+    private static File locateTopLevelProjectDirectory() {
       File dir = new File(".").getAbsoluteFile();
       do {
         File rakefile = new File(dir, "Rakefile");
