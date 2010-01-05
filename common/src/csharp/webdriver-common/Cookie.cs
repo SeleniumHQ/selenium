@@ -11,39 +11,54 @@ namespace OpenQA.Selenium
         private string cookieValue;
         private string cookiePath;
         private string cookieDomain;
-        private DateTime cookieExpiry = DateTime.MinValue;
+        private DateTime? cookieExpiry = null;
 
-        public Cookie(string name, string value, string path, string domain, DateTime expiry)
+        public Cookie(string name, string value, string domain, string path, DateTime? expiry)
         {
             this.cookieName = name;
             this.cookieValue = value;
-            this.cookiePath = path;
+            if (!string.IsNullOrEmpty(path))
+            {
+                this.cookiePath = path;
+            }
+            else
+            {
+                this.cookiePath = "/";
+            }
             this.cookieDomain = domain;
-            this.cookieExpiry = expiry;
+            if (expiry != null)
+            {
+                this.cookieExpiry = expiry;
+            }
             Validate();
         }
 
-        public Cookie(string name, string value, string path, string domain)
-            : this(name, value, path, domain, DateTime.MinValue)
+        public Cookie(string name, string value, string path, DateTime? expiry)
+            : this(name, value, null, path, expiry)
         {
         }
 
         public Cookie(string name, string value)
-            : this(name, value, "/", "")
+            : this(name, value, "/", null)
         {
 
+        }
+
+        public Cookie(string name, string value, string path)
+            : this(name, value, path, null)
+        {
         }
 
         public override string ToString()
         {
             return cookieName + "=" + cookieValue
-                + (cookieExpiry.Equals(DateTime.MinValue) ? string.Empty : "; expires=" + cookieExpiry.ToLongDateString())
-                    + (string.IsNullOrEmpty(cookiePath) ? string.Empty : "; path=" + cookiePath);
-                    //+ ("".Equals(domain) ? "" : "; domain=" + domain);
+                + (cookieExpiry == null ? string.Empty : "; expires=" + cookieExpiry.Value.ToString("DDD MM/dd/yyyy hh:mm:ss z"))
+                    + (string.IsNullOrEmpty(cookiePath) ? string.Empty : "; path=" + cookiePath)
+                    + (string.IsNullOrEmpty(cookieDomain) ? string.Empty : "; domain=" + cookieDomain);
             //                + (isSecure ? ";secure;" : "");
         }
 
-        protected void Validate()
+        protected virtual void Validate()
         {
             if (string.IsNullOrEmpty(cookieName) || cookieValue == null || cookiePath == null)
             {
@@ -84,22 +99,22 @@ namespace OpenQA.Selenium
             return cookieName.GetHashCode();
         }
 
-        public String Name
+        public string Name
         {
             get { return cookieName; }
         }
 
-        public String Value
+        public string Value
         {
             get { return cookieValue; }
         }
 
-        public String Domain
+        public string Domain
         {
             get { return cookieDomain; }
         }
 
-        public String Path
+        public virtual string Path
         {
             get { return cookiePath; }
         }
@@ -109,7 +124,7 @@ namespace OpenQA.Selenium
             get { return false; } 
         }
 
-        public DateTime Expiry
+        public DateTime? Expiry
         {
             get { return cookieExpiry; }
         }

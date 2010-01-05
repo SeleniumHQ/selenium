@@ -4,16 +4,18 @@ using System.Text;
 
 namespace OpenQA.Selenium.Environment
 {
-   
-    // As of yet we don't need the complexity of the Java bindings' AppServers,
-    // as we are not launching the web server.
-    // As such I went with a simple UrlBuilder class instead.
     public class UrlBuilder
     {
         string protocol;
         string hostName;
         string port;
         string path;
+        string alternateHostName;
+
+        public string AlternateHostName
+        {
+            get { return alternateHostName; }
+        }
 
         public string HostName
         {
@@ -32,6 +34,7 @@ namespace OpenQA.Selenium.Environment
             port = EnvironmentManager.GetSettingValue("Port");
             // TODO(andre.nogueira): Remove trailing / from folder
             path = EnvironmentManager.GetSettingValue("Folder");
+            alternateHostName = System.Net.Dns.GetHostEntry(hostName).AddressList[0].ToString();
         }
 
         public string WhereIs(string page)
@@ -40,5 +43,9 @@ namespace OpenQA.Selenium.Environment
             return protocol + "://" + hostName + ":" + port + "/" + path + "/" + page;
         }
 
+        public string WhereElseIs(string page)
+        {
+            return protocol + "://" + alternateHostName + ":" + port + "/" + path + "/" + page;
+        }
     }
 }

@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Security.Permissions;
 using System.Text;
+using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium.IE
 {
@@ -397,14 +398,43 @@ namespace OpenQA.Selenium.IE
 
             public void AddCookie(Cookie cookie)
             {
-                String cookieString = cookie.ToString();
-                WebDriverResult result = NativeMethods.wdAddCookie(driver.handle, cookieString);
-                ResultHandler.VerifyResultCode(result, "Add Cookie");
+                //string cookieString = cookie.ToString();
+                //WebDriverResult result = NativeMethods.wdAddCookie(driver.handle, cookieString);
+                //ResultHandler.VerifyResultCode(result, "Add Cookie");
+                StringBuilder sb = new StringBuilder(cookie.Name);
+                sb.Append("=");
+                sb.Append(cookie.Value);
+                sb.Append("; ");
+                if (!string.IsNullOrEmpty(cookie.Path))
+                {
+                    sb.Append("path=");
+                    sb.Append(cookie.Path);
+                    sb.Append("; ");
+                }
+                if (!string.IsNullOrEmpty(cookie.Domain))
+                {
+                    string domain = cookie.Domain;
+                    int colon = domain.IndexOf(":");
+                    if (colon != -1)
+                    {
+                        domain = domain.Substring(0, colon);
+                    }
+                    sb.Append("domain=");
+                    sb.Append(domain);
+                    sb.Append("; ");
+                }
+                if (cookie.Expiry != null)
+                {
+                    sb.Append("expires=");
+                    sb.Append(cookie.Expiry.Value.ToString("ddd, d MMM yyyy hh:mm:ss z"));
+                }
+
+                driver.ExecuteScript("document.cookie = arguments[0]", sb.ToString());
             }
 
-            public Dictionary<string, Cookie> GetCookies()
+            public List<Cookie> GetCookies()
             {
-                string currentUrl = GetCurrentHost();
+                Uri currentUri = GetCurrentUri();
 
                 SafeStringWrapperHandle stringHandle = new SafeStringWrapperHandle();
                 WebDriverResult result = NativeMethods.wdGetCookies(driver.handle, ref stringHandle);
@@ -414,7 +444,7 @@ namespace OpenQA.Selenium.IE
                 {
                     allDomainCookies = wrapper.Value;
                 }
-                Dictionary<String, Cookie> toReturn = new Dictionary<string, Cookie>();
+                List<Cookie> toReturn = new List<Cookie>();
 
 
                 string[] cookies = allDomainCookies.Split(new string[] { "; " }, StringSplitOptions.RemoveEmptyEntries);
@@ -426,38 +456,146 @@ namespace OpenQA.Selenium.IE
                         continue;
                     }
 
-                    toReturn.Add(parts[0], new Cookie(parts[0], parts[1], currentUrl, ""));
+                    toReturn.Add(new ReturnedCookie(parts[0], parts[1], currentUri.Host, "", null, false, currentUri.ToString()));
                 }
 
                 return toReturn;
             }
 
+            public Cookie GetCookieNamed(string name)
+            {
+                Cookie cookieToReturn = null;
+                List<Cookie> allCookies = GetCookies();
+                foreach (Cookie currentCookie in allCookies)
+                {
+                    if (name.Equals(currentCookie.Name))
+                    {
+                        cookieToReturn = currentCookie;
+                        break;
+                    }
+                }
+
+                return cookieToReturn;
+            }
+
             public void DeleteAllCookies()
             {
-                Dictionary<string, Cookie> allCookies = GetCookies();
-                foreach (Cookie cookieToDelete in allCookies.Values)
+                List<Cookie> allCookies = GetCookies();
+                foreach (Cookie cookieToDelete in allCookies)
                 {
                     DeleteCookie(cookieToDelete);
                 }
             }
 
-            private string GetCurrentHost()
+            private Uri GetCurrentUri()
             {
-                Uri uri = new Uri(driver.Url);
-                return uri.Host;
+                Uri currentUri = null;
+                try
+                {
+                    currentUri = new Uri(driver.Url);
+                }
+                catch (UriFormatException e)
+                {
+                }
+
+                return currentUri;
             }
 
             public void DeleteCookie(Cookie cookie)
             {
+                //Uri currentUri = new Uri(driver.Url);
+                //DateTime dateInPast = DateTime.MinValue;
+                //AddCookie(new Cookie(cookie.Name, cookie.Value, currentUri.Host, currentUri.PathAndQuery, dateInPast));
+                if (cookie == null)
+                {
+                    throw new WebDriverException("Cookie to delete cannot be null");
+                }
 
-                DateTime dateInPast = new DateTime(1);
-                AddCookie(new Cookie(cookie.Name, "", cookie.Path, cookie.Domain, dateInPast));
+                string currentUrl = driver.Url;
+                try
+                {
+                    Uri uri = new Uri(currentUrl);
+
+                    Cookie toDelete = new NullPathCookie(cookie.Name, cookie.Value, uri.Host,
+                                                         uri.AbsolutePath, DateTime.MinValue);
+
+                    DeleteCookieByPath(toDelete);
+                }
+                catch (UriFormatException e)
+                {
+                    throw new WebDriverException("Cannot delete cookie: " + e.Message);
+                }
+
             }
 
             public void DeleteCookieNamed(string name)
             {
-                Cookie cookieToDelete = new Cookie(name, "", "/", "");
-                DeleteCookie(cookieToDelete);
+                DeleteCookie(GetCookieNamed(name));
+            }
+
+            private void DeleteCookieByPath(Cookie cookie)
+            {
+                Cookie toDelete = null;
+                string path = cookie.Path;
+
+                if (path != null)
+                {
+                    string[] segments = cookie.Path.Split(new char[] { '/' });
+                    StringBuilder currentPath = new StringBuilder();
+                    foreach (string segment in segments)
+                    {
+                        if (string.IsNullOrEmpty(segment))
+                            continue;
+
+                        currentPath.Append("/");
+                        currentPath.Append(segment);
+
+                        toDelete = new NullPathCookie(cookie.Name, cookie.Value,
+                                                             cookie.Domain, currentPath.ToString(),
+                                                             DateTime.MinValue);
+
+                        RecursivelyDeleteCookieByDomain(toDelete);
+                    }
+                }
+                toDelete = new NullPathCookie(cookie.Name, cookie.Value,
+                                                         cookie.Domain, "/",
+                                                         DateTime.MinValue);
+                RecursivelyDeleteCookieByDomain(toDelete);
+
+                toDelete = new NullPathCookie(cookie.Name, cookie.Value,
+                                                         cookie.Domain, null,
+                                                         DateTime.MinValue);
+                RecursivelyDeleteCookieByDomain(toDelete);
+            }
+
+            private void RecursivelyDeleteCookieByDomain(Cookie cookie)
+            {
+                AddCookie(cookie);
+
+                int dotIndex = cookie.Domain.IndexOf('.');
+                if (dotIndex == 0)
+                {
+                    String domain = cookie.Domain.Substring(1);
+                    Cookie toDelete =
+                      new NullPathCookie(cookie.Name, cookie.Value, domain,
+                                         cookie.Path, DateTime.MinValue);
+                    RecursivelyDeleteCookieByDomain(toDelete);
+                }
+                else if (dotIndex != -1)
+                {
+                    String domain = cookie.Domain.Substring(dotIndex);
+                    Cookie toDelete =
+                      new NullPathCookie(cookie.Name, cookie.Value, domain,
+                                         cookie.Path, DateTime.MinValue);
+                    RecursivelyDeleteCookieByDomain(toDelete);
+                }
+                else
+                {
+                    Cookie toDelete =
+                      new NullPathCookie(cookie.Name, cookie.Value, "",
+                                         cookie.Path, DateTime.MinValue);
+                    AddCookie(toDelete);
+                }
             }
         }
 
@@ -541,7 +679,7 @@ namespace OpenQA.Selenium.IE
                 {
                     throw new ArgumentNullException("url", "URL cannot be null.");
                 }
-                String address = url.AbsoluteUri;
+                string address = url.AbsoluteUri;
                 driver.Url = address;
             }
 
@@ -554,6 +692,22 @@ namespace OpenQA.Selenium.IE
             public void Refresh()
             {
                 throw new NotImplementedException("The refresh operation is not implemented.");
+            }
+        }
+
+        private class NullPathCookie : Cookie
+        {
+            private string cookiePath;
+
+            public NullPathCookie(string name, string value, string domain, string path, DateTime? expiry) :
+                base(name, value, domain, path, expiry)
+            {
+                this.cookiePath = path;
+            }
+
+            public override string Path
+            {
+                get { return cookiePath; }
             }
         }
     }
