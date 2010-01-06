@@ -105,7 +105,7 @@ module Selenium
 
           if Platform.os == :linux || load_no_focus_lib?
             from_to += NO_FOCUS
-            modify_link_library_path(NO_FOCUS.map { |source, dest| File.join(ext_path, dest) })
+            modify_link_library_path(NO_FOCUS.map { |source, dest| File.join(ext_path, File.dirname(dest)) })
           end
 
           from_to.each do |source, destination|
