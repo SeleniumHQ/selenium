@@ -33,6 +33,11 @@ namespace OpenQA.Selenium
             driver.Url = formsPage;
             IWebElement inputElement = driver.FindElement(By.XPath("//input[@id='working']"));
             Assert.AreEqual(inputElement.GetAttribute("disabled"), "false");
+            Assert.IsTrue(inputElement.Enabled);
+
+            IWebElement pElement = driver.FindElement(By.Id("cheeseLiker"));
+            Assert.AreEqual(pElement.GetAttribute("disabled"), "false");
+            Assert.IsTrue(pElement.Enabled);
         }
 
         [Test]
@@ -153,6 +158,14 @@ namespace OpenQA.Selenium
             string notReadOnly = textInput.GetAttribute("readonly");
 
             Assert.AreNotEqual(readOnlyAttribute, notReadOnly);
+        }
+
+        [Test]
+        public void ShouldGetNumericAtribute()
+        {
+            driver.Url = formsPage;
+            IWebElement element = driver.FindElement(By.Id("withText"));
+            Assert.AreEqual("5", element.GetAttribute("rows"));
         }
     }
 }

@@ -21,7 +21,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.ChromeNonWindows, "Failing on OS X")]
         public void ShouldFireClickEventWhenClicking()
         {
             driver.Url = javascriptPage;
@@ -33,7 +32,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.ChromeNonWindows, "Failing on OS X")]
         public void ShouldFireMouseDownEventWhenClicking()
         {
             driver.Url = javascriptPage;
@@ -45,7 +43,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.ChromeNonWindows, "Failing on OS X")]
         public void ShouldFireMouseUpEventWhenClicking()
         {
             driver.Url = javascriptPage;
@@ -107,7 +104,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.ChromeNonWindows, "Failing on OS X")]
         public void ShouldIssueMouseDownEvents()
         {
             driver.Url = javascriptPage;
@@ -119,7 +115,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.ChromeNonWindows, "Failing on OS X")]
         public void ShouldIssueClickEvents()
         {
             driver.Url = javascriptPage;
@@ -131,7 +126,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.ChromeNonWindows, "Failing on OS X")]
         public void ShouldIssueMouseUpEvents()
         {
             driver.Url = javascriptPage;
@@ -143,7 +137,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.ChromeNonWindows, "Failing on OS X")]
+        [IgnoreBrowser(Browser.IPhone)]
         public void MouseEventsShouldBubbleUpToContainingElements()
         {
             driver.Url = javascriptPage;
@@ -156,13 +150,12 @@ namespace OpenQA.Selenium
         [Test]
         [Category("Javascript")]
         //[IgnoreBrowser(SELENESE)]
-        //[IgnoreBrowser(Browser.IPHONE)]
-        [IgnoreBrowser(Browser.Chrome, "Non-native event firing is broken in Chrome.")]
+        [IgnoreBrowser(Browser.IPhone)]
         public void ShouldEmitOnChangeEventsWhenSelectingElements()
         {
             driver.Url = javascriptPage;
-            IWebElement select = driver.FindElement(By.Id("selector"));
-            ReadOnlyCollection<IWebElement> allOptions = select.FindElements(By.TagName("option"));
+            //Intentionally not looking up the select tag.  See selenium r7937 for details.
+            ReadOnlyCollection<IWebElement> allOptions = driver.FindElements(By.XPath("//select[@id='selector']//option"));
 
             String initialTextValue = driver.FindElement(By.Id("result")).Text;
 
@@ -178,7 +171,6 @@ namespace OpenQA.Selenium
         [Test]
         [Category("Javascript")]
         //[IgnoreBrowser(SELENESE)]
-        [IgnoreBrowser(Browser.Chrome, "Non-native event firing is broken in Chrome.")]
         public void ShouldEmitOnChangeEventsWhenChangingTheStateOfACheckbox()
         {
             driver.Url = javascriptPage;
@@ -202,7 +194,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.Chrome, "Non-native event firing is broken in Chrome.")]
         public void ClearingAnElementShouldCauseTheOnChangeHandlerToFire()
         {
             driver.Url = javascriptPage;
@@ -216,7 +207,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.Chrome, "Non-native event firing is broken in Chrome.")]
+        [IgnoreBrowser(Browser.IPhone, "SendKeys implementation is incorrect.")]
         public void SendingKeysToAnotherElementShouldCauseTheBlurEventToFire()
         {
             driver.Url = javascriptPage;
@@ -229,7 +220,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.Chrome, "Non-native event firing is broken in Chrome.")]
+        [IgnoreBrowser(Browser.IPhone, "SendKeys implementation is incorrect.")]
         public void SendingKeysToAnElementShouldCauseTheFocusEventToFire()
         {
             driver.Url = javascriptPage;

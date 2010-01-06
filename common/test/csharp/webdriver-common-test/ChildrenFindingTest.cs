@@ -48,6 +48,31 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.IE, "Multiple items of ID 1 exist in the page, returns subelements of *all* of them, not the one we selected. See issue 278.")]
+        [IgnoreBrowser(Browser.Remote, "Multiple items of ID 1 exist in the page, returns subelements of *all* of them, not the one we selected. See issue 278.")]
+        [IgnoreBrowser(Browser.HtmlUnit, "Multiple items of ID 1 exist in the page, returns subelements of *all* of them, not the one we selected. See issue 278.")]
+        public void FindElementsByXPathWithMultipleParentElementsOfSameId()
+        {
+            driver.Url = nestedPage;
+            IWebElement select = driver.FindElement(By.Id("1"));
+            ReadOnlyCollection<IWebElement> elements = select.FindElements(By.XPath("//option"));
+            Assert.AreEqual(4, elements.Count);
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.IE, "Issue 278.")]
+        [IgnoreBrowser(Browser.Remote, "Issue 278.")]
+        [IgnoreBrowser(Browser.HtmlUnit, "Issue 278.")]
+        public void FindsSubElementNotTopLevelElementWhenLookingUpSubElementByXPath()
+        {
+            driver.Url = simpleTestPage;
+            IWebElement parent = driver.FindElement(By.Id("containsSomeDiv"));
+            IWebElement child = parent.FindElement(By.XPath("//div[@name='someDiv']"));
+            Assert.IsFalse(child.Text.Contains("Top level"), "Child should not contain text Top level");
+            Assert.IsTrue(child.Text.Contains("Nested"), "Child should contain text Nested");
+        }
+
+        [Test]
         public void FindElementByName()
         {
             driver.Url = nestedPage;

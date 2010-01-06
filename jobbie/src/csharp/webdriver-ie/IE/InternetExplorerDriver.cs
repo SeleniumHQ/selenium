@@ -650,7 +650,12 @@ namespace OpenQA.Selenium.IE
 
             public IWebElement ActiveElement()
             {
-                throw new NotImplementedException("The method or operation is not implemented.");
+                SafeInternetExplorerWebElementHandle rawElement = new SafeInternetExplorerWebElementHandle();
+                WebDriverResult result = NativeMethods.wdSwitchToActiveElement(driver.handle, ref rawElement);
+
+                ResultHandler.VerifyResultCode(result, "Unable to find active element");
+
+                return new InternetExplorerWebElement(driver, rawElement);
             }
 
         }

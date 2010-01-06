@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using NUnit.Framework;
+using System.Collections.ObjectModel;
 
 namespace OpenQA.Selenium
 {
@@ -497,6 +498,44 @@ namespace OpenQA.Selenium
                 Assert.IsTrue(jquery.Length > 50000);
                 ExecuteScript(jquery, null);
             }
+        }
+
+        [Test]
+        [Category("Javascript")]
+        [IgnoreBrowser(Browser.IE)]
+        [IgnoreBrowser(Browser.Chrome)]
+        [IgnoreBrowser(Browser.Remote)]
+        [IgnoreBrowser(Browser.IPhone)]
+        public void testShouldBeAbleToExecuteScriptAndReturnElementsList()
+        {
+            driver.Url = formsPage;
+            String scriptToExec = "return document.getElementsByName('snack');";
+
+            ReadOnlyCollection<IWebElement> resultsList = (ReadOnlyCollection<IWebElement>)((IJavaScriptExecutor)driver).ExecuteScript(scriptToExec);
+
+            Assert.Greater(resultsList.Count, 0);
+        }
+
+        [Test]
+        [Ignore("Reason for ignore: Failure indicates hang condition, which would break the test suite. Really needs a timeout set.")]
+        public void ShouldThrowExceptionIfExecutingOnNoPage()
+        {
+            bool exceptionCaught = false;
+            CreateFreshDriver();
+            try
+            {
+                ((IJavaScriptExecutor)driver).ExecuteScript("return 1;");
+            }
+            catch (WebDriverException)
+            {
+                exceptionCaught = true;
+            }
+
+            if (!exceptionCaught)
+            {
+                Assert.Fail("Expected an exception to be caught");
+            }
+            CreateFreshDriver();
         }
 
         private object ExecuteScript(String script, params Object[] args)

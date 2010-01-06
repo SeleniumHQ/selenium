@@ -176,5 +176,21 @@ namespace OpenQA.Selenium
 
             Assert.AreEqual(driver.Title, "XHTML Test Page");
         }
+        
+        /// <summary>
+        /// see <a href="http://code.google.com/p/selenium/issues/detail?id=208">Issue 208</a>
+        /// </summary>
+        [Test]
+        [Category("Javascript")]
+        [IgnoreBrowser(Browser.IE, "Untested user-agent")]
+        [IgnoreBrowser(Browser.Chrome, "Untested user-agent")]
+        [IgnoreBrowser(Browser.IPhone, "Untested user-agent")]
+        public void ShouldNotHangIfDocumentOpenCallIsNeverFollowedByDocumentCloseCall()
+        {
+            driver.Url = documentWrite;
+
+            // If this command succeeds, then all is well.
+            driver.FindElement(By.XPath("//body"));
+        }
     }
 }

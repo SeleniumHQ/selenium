@@ -62,5 +62,14 @@ namespace OpenQA.Selenium
             Assert.IsNotNull(elements);
             Assert.AreEqual(3, elements.Count);
         }
+        
+        [Test]
+        public void CanGetLinkByLinkTestIgnoringTrailingWhitespace()
+        {
+            driver.Url = simpleTestPage;
+            IWebElement link = null;
+            link = driver.FindElement(By.LinkText("link with trailing space"));
+            Assert.AreEqual("linkWithTrailingSpace", link.GetAttribute("id"));
+        }
     }
 }
