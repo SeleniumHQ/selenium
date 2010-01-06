@@ -15,6 +15,7 @@ namespace OpenQA.Selenium.Environment
         private Browser browser;
         IWebDriver driver;
         UrlBuilder urlBuilder;
+        private string remoteCapabilities;
 
         private EnvironmentManager()
         {
@@ -24,6 +25,7 @@ namespace OpenQA.Selenium.Environment
             Assembly assembly = Assembly.Load(assemblyName);
             driverType = assembly.GetType(driverClassName);
             browser = (Browser) Enum.Parse(typeof(Browser), GetSettingValue("DriverName"));
+            remoteCapabilities = GetSettingValue("RemoteCapabilities");
 
             urlBuilder = new UrlBuilder();
         }
@@ -44,6 +46,11 @@ namespace OpenQA.Selenium.Environment
         public Browser Browser 
         {
             get { return browser; }
+        }
+
+        public string RemoteCapabilities
+        {
+            get { return remoteCapabilities; }
         }
 
         public IWebDriver GetCurrentDriver()

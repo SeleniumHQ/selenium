@@ -181,8 +181,34 @@ dotnet_library(:name => "build/x64/Release/webdriver-ie-test.dll",
                :arch => "x64",
                :prebuilt => "jobbie/prebuilt")
 
+dotnet_library(:name => "build/Win32/Release/WebDriver.Remote.dll",
+               :srcs => [ "remote/client/src/csharp/**/*.cs" ],
+               :solution => "WebDriver.sln",
+               :project => "webdriver-remote",
+               :arch => "Win32")
+
+dotnet_library(:name => "build/x64/Release/WebDriver.Remote.dll",
+               :srcs => [ "remote/client/src/csharp/**/*.cs" ],
+               :solution => "WebDriver.sln",
+               :project => "webdriver-remote",
+               :arch => "x64")
+
+dotnet_library(:name => "build/Win32/Release/webdriver-remote-test.dll",
+               :srcs => [ "remote/client/test/csharp/**/*.cs" ],
+               :solution => "WebDriver.sln",
+               :project => "webdriver-remote-test",
+               :arch => "Win32")
+
+dotnet_library(:name => "build/x64/Release/webdriver-remote-test.dll",
+               :srcs => [ "remote/client/test/csharp/**/*.cs" ],
+               :solution => "WebDriver.sln",
+               :project => "webdriver-remote-test",
+               :arch => "x64")
+
 task :dotnet => [ :'build/x64/Release/webdriver-ie-test.dll', :'build/Win32/Release/webdriver-ie-test.dll',
                   :'build/x64/Release/Webdriver.Ie.dll', :'build/Win32/Release/Webdriver.Ie.dll',
+                  :'build/x64/Release/webdriver-remote-test.dll', :'build/Win32/Release/webdriver-remote-test.dll',
+                  :'build/x64/Release/Webdriver.Remote.dll', :'build/Win32/Release/Webdriver.Remote.dll',
                   :'build/x64/Release/webdriver-common-test.dll', :'build/Win32/Release/webdriver-common-test.dll',
                   :'build/x64/Release/Webdriver.Common.dll', :'build/Win32/Release/Webdriver.Common.dll',
                   :ie_win32_dll, :ie_x64_dll ]

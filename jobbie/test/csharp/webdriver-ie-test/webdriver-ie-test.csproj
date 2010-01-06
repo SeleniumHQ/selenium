@@ -15,7 +15,7 @@
     <ProjectGuid>{ECF3B49F-68B0-4A2A-8559-6D7FB906AA88}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>OpenQa.Selenium.IE</RootNamespace>
+    <RootNamespace>OpenQA.Selenium.IE</RootNamespace>
     <AssemblyName>webdriver-ie-test</AssemblyName>
     <StartupObject>
     </StartupObject>

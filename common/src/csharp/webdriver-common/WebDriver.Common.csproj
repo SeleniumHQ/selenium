@@ -59,6 +59,7 @@
     <Compile Include="By.cs" />
     <Compile Include="Cookie.cs" />
     <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="Platform.cs" />
     <Compile Include="WebDriverResult.cs" />
     <Compile Include="Internal\IWrapsElement.cs" />
     <Compile Include="Keys.cs" />

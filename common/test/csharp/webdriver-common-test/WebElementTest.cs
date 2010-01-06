@@ -1,14 +1,13 @@
-using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using NUnit.Framework;
 
 namespace OpenQA.Selenium
 {
     [TestFixture]
     public class WebElementTest : DriverTestFixture
     {
-
         [Test]
         public void ShouldToggleElementAndCheckIfElementIsSelected()
         {
@@ -22,7 +21,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        //TODO(andre.nogueira): Revisit after exception types are implemented
         [ExpectedException(typeof(NotImplementedException))]
         public void ShouldThrowExceptionOnNonToggableElement()
         {
@@ -32,7 +30,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        //TODO(andre.nogueira): Revisit after exception types are implemented
         [ExpectedException(typeof(NoSuchElementException))]
         public void ShouldThrowExceptionOnNonExistingElement()
         {

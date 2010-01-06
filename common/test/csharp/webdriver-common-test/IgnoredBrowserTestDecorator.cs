@@ -50,7 +50,7 @@ namespace OpenQA.Selenium
                 Browser browser = (Browser)propVal;
 
                 if (browser.Equals(EnvironmentManager.Instance.Browser) ||
-                    browser.Equals(Browser.All))
+                    browser.Equals(Browser.All) || IsRemoteInstanceOfBrowser(browser))
                 {   
                     testCase.RunState = RunState.Ignored;
                     testCase.IgnoreReason = "Ignoring browser " +
@@ -61,7 +61,50 @@ namespace OpenQA.Selenium
             }
 
             return test;
-            
 		}
-	}
+
+        private bool IsRemoteInstanceOfBrowser(Browser desiredBrowser)
+        {
+            bool isRemoteInstance = false;
+            switch (desiredBrowser)
+            {
+                case Browser.IE:
+                    if (EnvironmentManager.Instance.RemoteCapabilities == "internet explorer")
+                    {
+                        isRemoteInstance = true;
+                    }
+                    break;
+
+                case Browser.Firefox:
+                    if (EnvironmentManager.Instance.RemoteCapabilities == "firefox")
+                    {
+                        isRemoteInstance = true;
+                    }
+                    break;
+
+                case Browser.HtmlUnit:
+                    if (EnvironmentManager.Instance.RemoteCapabilities == "htmlunit")
+                    {
+                        isRemoteInstance = true;
+                    }
+                    break;
+
+                case Browser.Chrome:
+                case Browser.ChromeNonWindows:
+                    if (EnvironmentManager.Instance.RemoteCapabilities == "chrome")
+                    {
+                        isRemoteInstance = true;
+                    }
+                    break;
+
+                case Browser.IPhone:
+                    if (EnvironmentManager.Instance.RemoteCapabilities == "iphone")
+                    {
+                        isRemoteInstance = true;
+                    }
+                    break;
+            }
+            return isRemoteInstance;
+        }
+    }
 }
