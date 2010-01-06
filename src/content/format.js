@@ -30,7 +30,7 @@ function FormatCollection(options) {
 						  new InternalFormat(options, "php-rc", "PHP - Selenium RC", "php-rc.js"),
 						  new InternalFormat(options, "python-rc", "Python - Selenium RC", "python-rc.js"),
 						  new InternalFormat(options, "ruby-rc", "Ruby (Test/Unit) - Selenium RC", "ruby-rc.js"),
-						  new InternalFormat(options, "ruby-rc", "Ruby (RSpec) - Selenium RC", "ruby-rc-rspec.js")
+						  new InternalFormat(options, "ruby-rc-rspec", "Ruby (RSpec) - Selenium RC", "ruby-rc-rspec.js")
 						  ];
 	this.reloadFormats();
 }
@@ -454,3 +454,26 @@ UserFormat.prototype.getSource = function() {
 	}
 }
 
+/**
+ * Format for plugin provided formats
+ */
+function PluginFormat(options, id, name, file, url) {
+	this.options = options;
+	this.id = id;
+	this.name = name;
+	this.url = url;
+}
+
+PluginFormat.prototype = new Format;
+
+PluginFormat.prototype.loadFormatter = function() {
+	return FormatCollection.loadFormatter(this.url);
+}
+
+PluginFormat.prototype.getSource = function() {
+	return FileUtils.readURL(this.url);
+}
+
+PluginFormat.prototype.getFormatURI = function() {
+    return this.url;
+}
