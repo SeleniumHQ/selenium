@@ -228,6 +228,8 @@ public class HtmlUnitWebElement implements RenderedWebElement,
   public void sendKeys(CharSequence... value) {
     assertElementNotStale();
 
+    String originalValue = getValue();
+
     if (!isDisplayed())
       throw new ElementNotVisibleException("You may only sendKeys to visible elements");
 
@@ -258,13 +260,14 @@ public class HtmlUnitWebElement implements RenderedWebElement,
         throw new WebDriverException(e);
       }
     } else if (element instanceof HtmlInput) {
+      HtmlInput input = (HtmlInput) element;
+
       String currentValue = getValue();
-      element
-          .setAttribute("value", (currentValue == null ? "" : currentValue) + builder.toString());
+      input.setValueAttribute((currentValue == null ? "" : currentValue) + builder.toString());
     } else if (element instanceof HtmlTextArea) {
       String currentValue = getValue();
-      ((HtmlTextArea) element)
-          .setText((currentValue == null ? "" : currentValue) + builder.toString());
+      ((HtmlTextArea) element).setText(
+          (currentValue == null ? "" : currentValue) + builder.toString());
     } else {
       throw new UnsupportedOperationException(
           "You may only set the value of elements that are input elements");

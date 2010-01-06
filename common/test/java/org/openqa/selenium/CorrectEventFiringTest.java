@@ -235,6 +235,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
   	assertEventFired("focus");
   }
 
+  @JavascriptEnabled
   @Ignore(IE)
   public void testSubmittingFormFromFormElementShouldFireOnSubmitForThatForm() {
     driver.get(javascriptPage);
@@ -242,7 +243,8 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
     formElement.submit();
     assertEventFired("form-onsubmit");
   }
-  
+
+  @JavascriptEnabled
   @Ignore(IE)
   public void testSubmittingFormFromFormInputSubmitElementShouldFireOnSubmitForThatForm() {
     driver.get(javascriptPage);
@@ -250,7 +252,8 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
     submit.submit();
     assertEventFired("form-onsubmit");
   }
-  
+
+  @JavascriptEnabled 
   @Ignore(IE)
   public void testSubmittingFormFromFormInputTextElementShouldFireOnSubmitForThatFormAndNotClickOnThatInput() {
     driver.get(javascriptPage);
@@ -260,6 +263,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
     assertEventNotFired("text-onclick");
   }
 
+  @JavascriptEnabled 
   @Ignore(value = {CHROME, SELENESE, IPHONE},
       reason = "Does not yet support file uploads")
   public void testUploadingFileShouldFireOnChangeEvent() throws IOException {
@@ -272,6 +276,9 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
     file.deleteOnExit();
 
     uploadElement.sendKeys(file.getAbsolutePath());
+    // Shift focus to something else because send key doesn't make the focus leave
+    driver.findElement(By.tagName("body")).click();
+
     assertThat(result.getText(), equalTo("changed"));
   }
 
