@@ -70,7 +70,8 @@ There should be a form here:
     </select>
 
     <input id="no-type" />
-    <input type="file" id="upload" />
+    <input type="file" id="upload" onchange="document.getElementById('fileResults').innerHTML = 'changed';" />
+    <span id="fileResults"></span>
 </form>
 
 <form method="get" action="resultPage.html">

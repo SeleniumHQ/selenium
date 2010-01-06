@@ -30,6 +30,7 @@ import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 
 import java.io.File;
+import java.io.IOException;
 
 public class FormHandlingTest extends AbstractDriverTestCase {
 
@@ -248,8 +249,8 @@ public class FormHandlingTest extends AbstractDriverTestCase {
 
 
   @Ignore(value = {CHROME, SELENESE, IPHONE},
-      reason = "ChromeDriver does not yet support file uploads")
-  public void testShouldBeAbleToAlterTheContentsOfAFileUploadInputElement() throws Exception {
+      reason = "Does not yet support file uploads")
+  public void testShouldBeAbleToAlterTheContentsOfAFileUploadInputElement() throws IOException {
     driver.get(formPage);
     WebElement uploadElement = driver.findElement(By.id("upload"));
     assertThat(uploadElement.getValue(), equalTo(""));

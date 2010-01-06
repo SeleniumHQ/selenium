@@ -427,6 +427,7 @@ Utils.type = function(context, element, text, opt_useNativeEvents) {
     var inputtype = element.getAttribute("type");
     if (inputtype && inputtype.toLowerCase() == "file") {
       element.value = text;
+      Utils.fireHtmlEvent(context, element, "change");
       return;
     }
   }
