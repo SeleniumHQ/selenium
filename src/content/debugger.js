@@ -52,6 +52,7 @@ function Debugger(editor) {
 		subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium/scripts/selenium-executionloop.js', this.runner);
 		subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium/scripts/selenium-browserbot.js', this.runner);
 		subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium/scripts/selenium-testrunner-original.js', this.runner);
+
 		if (this.editor.getOptions().userExtensionsURL) {
 			try {
 				ExtensionsLoader.loadSubScript(subScriptLoader, this.editor.getOptions().userExtensionsURL, this.runner);
@@ -59,6 +60,18 @@ function Debugger(editor) {
 				this.log.error("error loading user-extensions.js: " + error);
 			}
 		}
+		
+        var pluginProvided = SeleniumIDE.Preferences.getString("pluginProvidedUserExtensions");
+        if (typeof pluginProvided != 'undefined') {
+            try {
+                var split_pluginProvided = pluginProvided.split(" ");
+                for(sp = 0; sp < split_pluginProvided.length; sp++){
+                    ExtensionsLoader.loadSubScript(subScriptLoader, split_pluginProvided[sp], this.runner);
+                }
+            } catch (error) {
+                this.log.error("error loading plugin provided user extension: " + error);
+            }
+        }
 		subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium-runner.js', this.runner);
 
         this.editor.infoPanel.logView.setLog(this.runner.LOG);
