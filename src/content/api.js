@@ -18,3 +18,18 @@ API.prototype.addPluginProvidedUserExtension = function(url) {
         }
     }
 };
+
+// add the formatter at the provided chrome url to the list of other formatters provided by plugins
+API.prototype.addPluginProvidedFormatter = function(id, name, url) {
+    var options = {}
+    current = this.preferences.getString("pluginProvidedFormatters");
+    if (typeof current == "undefined") {
+        options["pluginProvidedFormatters"] = id + "," + name + "," + url;
+        this.preferences.save(options, "pluginProvidedFormatters");
+    } else {
+        if (current.search(url) == -1) {
+            options["pluginProvidedFormatters"] = current + ' ' + id + "," + name + "," + url;
+            this.preferences.save(options, "pluginProvidedFormatters");
+        }
+    }
+};

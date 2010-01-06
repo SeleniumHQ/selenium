@@ -145,8 +145,13 @@ FormatCollection.loadFormatter = function(url) {
 
 
 FormatCollection.prototype.reloadFormats = function() {
+	// user formats
 	this.userFormats = FormatCollection.loadUserFormats(this.options);
 	this.formats = this.presetFormats.concat(this.userFormats);
+	
+	// plugin formats
+	this.pluginFormats = FormatCollection.loadPluginFormats(this.options);
+	this.format = this.presetFormats.concat(this.pluginFormats);
 }
 
 FormatCollection.prototype.removeUserFormatAt = function(index) {
@@ -186,6 +191,18 @@ FormatCollection.prototype.getDefaultFormat = function() {
 	return this.findFormat("default");
 }
 
+FormatCollection.loadPluginFormats = function(options) {
+	var formats = [];
+
+	var pluginProvided = SeleniumIDE.Preferences.getString("pluginProvidedFormatters");
+    if (typeof pluginProvided != 'undefined') {
+    	for (var ppf = 0; ppf < this.pluginProvided.length; ppf++) {
+    		split_ppf = ppf.split(",");
+    		formats.push(new PluginFormat(options, split_ppf[0], split_ppf[1], split_ppf[2]));
+    	}
+    }
+	return formats;
+}
 
 /*
  * Format
@@ -457,7 +474,7 @@ UserFormat.prototype.getSource = function() {
 /**
  * Format for plugin provided formats
  */
-function PluginFormat(options, id, name, file, url) {
+function PluginFormat(options, id, name, url) {
 	this.options = options;
 	this.id = id;
 	this.name = name;

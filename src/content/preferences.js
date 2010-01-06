@@ -109,6 +109,9 @@ SeleniumIDE.Preferences.DEFAULT_OPTIONS = {
     "false",
 
     pluginProvidedUserExtensions:
+    "",
+    
+    pluginProvidedFormatters:
     ""
 };
 
