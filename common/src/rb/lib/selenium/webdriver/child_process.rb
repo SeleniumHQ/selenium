@@ -13,6 +13,8 @@ module Selenium
 
         if Platform.jruby?
           extend JRubyProcess
+        elsif Platform.ironruby?
+          extend IronRubyProcess
         elsif Platform.os == :windows
           extend WindowsProcess
         end
@@ -101,6 +103,32 @@ module Selenium
           @process.exitValue
         rescue java.lang.IllegalThreadStateException
           nil
+        end
+      end
+
+      module IronRubyProcess
+        def start
+          args = @args.dup
+
+          @process                           = System::Diagnostics::Process.new
+          @process.StartInfo.UseShellExecute = true
+          @process.StartInfo.FileName        = args.shift
+          @process.StartInfo.Arguments       = args.join ' '
+          @process.start
+
+          self
+        end
+
+        def kill
+          @process.Kill if @process
+        end
+
+        def wait
+          @process.WaitForExit if @process
+        end
+
+        def exit_value
+          @process.ExitCode
         end
       end
 

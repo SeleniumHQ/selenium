@@ -6,7 +6,7 @@ module Selenium
        JSON_TEMPLATE = "HTTP/1.1 200 OK\r\nContent-Length: %d\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n%s"
 
        def initialize
-         @server       = TCPServer.new("0.0.0.0", 0)
+         @server       = TCPServer.new(localhost, 0)
          @queue        = Queue.new
 
          @accepted_any = false
@@ -48,6 +48,10 @@ module Selenium
        end
 
        private
+
+       def localhost
+         Platform.ironruby? ? "localhost" : "0.0.0.0" # yeah, weird..
+       end
 
        def start_run_loop
          while(@listening) do

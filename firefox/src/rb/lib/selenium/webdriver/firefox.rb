@@ -20,3 +20,10 @@ module Selenium
     end
   end
 end
+
+
+# SocketError was added in Ruby 1.8.7.
+# If it's not defined, we add it here so it can be used in rescues.
+unless defined? SocketError
+  class SocketError < IOError; end
+end
