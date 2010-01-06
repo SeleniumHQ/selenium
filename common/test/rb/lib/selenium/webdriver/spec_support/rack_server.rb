@@ -14,7 +14,7 @@ module Selenium
         end
 
         def start
-          if [:windows, :java].include? Platform.platform
+          if Platform.jruby? || Platform.win?
             @thread = Thread.new { run }
           else
             @pid = fork { run }

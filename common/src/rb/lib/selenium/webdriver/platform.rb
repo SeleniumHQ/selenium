@@ -1,3 +1,5 @@
+require "rbconfig"
+
 module Selenium
   module WebDriver
     module Platform
@@ -10,43 +12,39 @@ module Selenium
       end
 
       def platform
-        @platform ||= case RUBY_PLATFORM
-                      when /java/
-                        :java
-                      when /mswin|msys|mingw32/
-                        :windows
-                      when /darwin/
-                        :macosx
-                      when /linux/
-                        :linux
-                      when /solaris|bsd/
-                        :unix
-                      else
-                        RUBY_PLATFORM
-                      end
+        @platform ||= begin
+          if defined? RUBY_ENGINE
+            RUBY_ENGINE.to_sym
+          else
+            :ruby
+          end
+        end
       end
 
       def os
         @os ||= begin
-          os = platform()
-
-          if os == :java
-            require "java"
-            os_name = java.lang.System.getProperty("os.name")
-            os = case os_name
-                  when /windows/i then :windows
-                  when /mac os/i  then :macosx
-                  when /linux/i   then :linux
-                  else                 os_name
-                  end
-          end
-
-          os
+           case Config::CONFIG['host_os']
+           when /mswin|msys|mingw32/
+             :windows
+           when /darwin|mac os/
+             :macosx
+           when /linux/
+             :linux
+           when /solaris|bsd/
+             :unix
+           else
+             # unlikely
+             raise Error::WebDriverError, "unknown os #{Config::CONFIG['host_os']}"
+           end
         end
       end
 
       def jruby?
-        platform == :java
+        platform == :jruby
+      end
+
+      def ironruby?
+        platform == :ironruby
       end
 
       def ruby187?
@@ -78,11 +76,11 @@ module Selenium
 end # Selenium
 
 if __FILE__ == $0
-  p :platform => WebDriver::Platform.platform,
-    :os       => WebDriver::Platform.os,
-    :ruby187? => WebDriver::Platform.ruby187?,
-    :ruby19?  => WebDriver::Platform.ruby19?,
-    :jruby?   => WebDriver::Platform.jruby?,
-    :win?     => WebDriver::Platform.win?,
-    :home     => WebDriver::Platform.home
+  p :platform => Selenium::WebDriver::Platform.platform,
+    :os       => Selenium::WebDriver::Platform.os,
+    :ruby187? => Selenium::WebDriver::Platform.ruby187?,
+    :ruby19?  => Selenium::WebDriver::Platform.ruby19?,
+    :jruby?   => Selenium::WebDriver::Platform.jruby?,
+    :win?     => Selenium::WebDriver::Platform.win?,
+    :home     => Selenium::WebDriver::Platform.home
 end
