@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Net.Sockets;
+using System.Globalization;
 
 namespace OpenQA.Selenium.Internal
 {
@@ -9,45 +10,40 @@ namespace OpenQA.Selenium.Internal
     {
         private string currentHost;
 
-        public ReturnedCookie(string name, string value, string domain, string path, DateTime? expiry, bool isSecure, string currentUrl)
+        public ReturnedCookie(string name, string value, string domain, string path, DateTime? expiry, bool isSecure, Uri currentUrl)
             : base(name, value, domain, path, expiry)
         {
             this.isSecure = isSecure;
-            if (!string.IsNullOrEmpty(currentUrl))
+            if (currentUrl != null)
             {
-                try
-                {
-                    this.currentHost = new Uri(currentUrl).Host;
-                }
-                catch (UriFormatException e)
-                {
-                    throw new WebDriverException("Couldn't convert currentUrl to URI, which should be impossible!", e);
-                }
+                this.currentHost = currentUrl.Host;
+            }
+            else
+            {
+                throw new ArgumentNullException("currentUrl", "Current URL of ReturnedCookie cannot be null");
             }
             Validate();
         }
 
         bool isSecure;
 
-        protected override void Validate()
+        protected void Validate()
         {
-            base.Validate();
-
             string currentDomain = Domain;
 
             if (!string.IsNullOrEmpty(currentDomain))
             {
                 try
                 {
-                    string domainToUse = currentDomain.StartsWith("http") ? currentDomain : "http://" + currentDomain;
+                    string domainToUse = currentDomain.StartsWith("http", StringComparison.OrdinalIgnoreCase) ? currentDomain : "http://" + currentDomain;
                     Uri url = new Uri(domainToUse);
                     System.Net.Dns.GetHostEntry(url.Host);
                 }
-                catch (UriFormatException e)
+                catch (UriFormatException)
                 {
-                    throw new ArgumentException(string.Format("URL not valid: {0}", currentDomain));
+                    throw new ArgumentException(string.Format(CultureInfo.InvariantCulture, "URL not valid: {0}", currentDomain));
                 }
-                catch (SocketException e)
+                catch (SocketException)
                 {
                     // Domains must not be resolvable - it is perfectly valid for a domain not to
                     // have an IP address - hence, just throwing is incorrect. As a safety measure,
@@ -55,7 +51,7 @@ namespace OpenQA.Selenium.Internal
                     // make sure some tests in CookieImplementationTest will pass.
                     if (currentHost == null || !currentHost.Contains(currentDomain))
                     {
-                        throw new ArgumentException(String.Format("Domain unknown: {0}", currentDomain));
+                        throw new ArgumentException(String.Format(CultureInfo.InvariantCulture, "Domain unknown: {0}", currentDomain));
                     }
                     // no IP - unreasonable in any modern os has localhost address.
                 }
@@ -70,7 +66,7 @@ namespace OpenQA.Selenium.Internal
         public override String ToString()
         {
             return Name + "=" + Value
-                + (Expiry == null ? string.Empty : "; expires=" + Expiry.Value.ToLongDateString())
+                + (Expiry == null ? string.Empty : "; expires=" + Expiry.Value.ToUniversalTime().ToString("ddd MM/dd/yyyy HH:mm:ss UTC", CultureInfo.InvariantCulture))
                     + (string.IsNullOrEmpty(Path) ? string.Empty : "; path=" + Path)
                     + (string.IsNullOrEmpty(Domain) ? string.Empty : "; domain=" + Domain)
                     + (isSecure ? ";secure;" : "");

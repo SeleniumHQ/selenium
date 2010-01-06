@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Globalization;
 
 namespace OpenQA.Selenium
 {
@@ -11,10 +12,25 @@ namespace OpenQA.Selenium
         private string cookieValue;
         private string cookiePath;
         private string cookieDomain;
-        private DateTime? cookieExpiry = null;
+        private DateTime? cookieExpiry;
 
         public Cookie(string name, string value, string domain, string path, DateTime? expiry)
         {
+            if (string.IsNullOrEmpty(name))
+            {
+                throw new ArgumentException("Cookie name cannot be null or empty string", "name");
+            }
+
+            if (value == null)
+            {
+                throw new ArgumentNullException("value", "Cookie value cannot be null");
+            }
+
+            if (name.IndexOf(';') != -1)
+            {
+                throw new ArgumentException("Cookie names cannot contain a ';': " + name, "name");
+            }
+
             this.cookieName = name;
             this.cookieValue = value;
             if (!string.IsNullOrEmpty(path))
@@ -30,7 +46,6 @@ namespace OpenQA.Selenium
             {
                 this.cookieExpiry = expiry;
             }
-            Validate();
         }
 
         public Cookie(string name, string value, string path, DateTime? expiry)
@@ -52,23 +67,10 @@ namespace OpenQA.Selenium
         public override string ToString()
         {
             return cookieName + "=" + cookieValue
-                + (cookieExpiry == null ? string.Empty : "; expires=" + cookieExpiry.Value.ToString("DDD MM/dd/yyyy hh:mm:ss z"))
+                + (cookieExpiry == null ? string.Empty : "; expires=" + cookieExpiry.Value.ToUniversalTime().ToString("ddd MM/dd/yyyy hh:mm:ss UTC", CultureInfo.InvariantCulture))
                     + (string.IsNullOrEmpty(cookiePath) ? string.Empty : "; path=" + cookiePath)
                     + (string.IsNullOrEmpty(cookieDomain) ? string.Empty : "; domain=" + cookieDomain);
             //                + (isSecure ? ";secure;" : "");
-        }
-
-        protected virtual void Validate()
-        {
-            if (string.IsNullOrEmpty(cookieName) || cookieValue == null || cookiePath == null)
-            {
-                throw new InvalidOperationException("Required attributes are not set or any non-null attribute set to null");
-            }
-
-            if (cookieName.IndexOf(';') != -1)
-            {
-                throw new InvalidOperationException("Cookie names cannot contain a ';': " + cookieName);
-            }
         }
 
         /**

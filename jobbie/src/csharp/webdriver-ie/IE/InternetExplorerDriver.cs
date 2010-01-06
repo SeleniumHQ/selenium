@@ -398,6 +398,9 @@ namespace OpenQA.Selenium.IE
 
             public void AddCookie(Cookie cookie)
             {
+                //wdAddCookie does not properly add cookies with expiration dates,
+                //thus cookies are not properly deleted. Use JavaScript execution,
+                //just like the Java implementation does.
                 //string cookieString = cookie.ToString();
                 //WebDriverResult result = NativeMethods.wdAddCookie(driver.handle, cookieString);
                 //ResultHandler.VerifyResultCode(result, "Add Cookie");
@@ -414,7 +417,7 @@ namespace OpenQA.Selenium.IE
                 if (!string.IsNullOrEmpty(cookie.Domain))
                 {
                     string domain = cookie.Domain;
-                    int colon = domain.IndexOf(":");
+                    int colon = domain.IndexOf(":", StringComparison.OrdinalIgnoreCase);
                     if (colon != -1)
                     {
                         domain = domain.Substring(0, colon);
@@ -426,13 +429,13 @@ namespace OpenQA.Selenium.IE
                 if (cookie.Expiry != null)
                 {
                     sb.Append("expires=");
-                    sb.Append(cookie.Expiry.Value.ToString("ddd, d MMM yyyy hh:mm:ss z"));
+                    sb.Append(cookie.Expiry.Value.ToUniversalTime().ToString("ddd MM/dd/yyyy HH:mm:ss UTC", CultureInfo.InvariantCulture));
                 }
 
                 driver.ExecuteScript("document.cookie = arguments[0]", sb.ToString());
             }
 
-            public List<Cookie> GetCookies()
+            public ReadOnlyCollection<Cookie> GetCookies()
             {
                 Uri currentUri = GetCurrentUri();
 
@@ -456,16 +459,16 @@ namespace OpenQA.Selenium.IE
                         continue;
                     }
 
-                    toReturn.Add(new ReturnedCookie(parts[0], parts[1], currentUri.Host, "", null, false, currentUri.ToString()));
+                    toReturn.Add(new ReturnedCookie(parts[0], parts[1], currentUri.Host, "", null, false, currentUri));
                 }
 
-                return toReturn;
+                return new ReadOnlyCollection<Cookie>(toReturn);
             }
 
             public Cookie GetCookieNamed(string name)
             {
                 Cookie cookieToReturn = null;
-                List<Cookie> allCookies = GetCookies();
+                ReadOnlyCollection<Cookie> allCookies = GetCookies();
                 foreach (Cookie currentCookie in allCookies)
                 {
                     if (name.Equals(currentCookie.Name))
@@ -480,7 +483,7 @@ namespace OpenQA.Selenium.IE
 
             public void DeleteAllCookies()
             {
-                List<Cookie> allCookies = GetCookies();
+                ReadOnlyCollection<Cookie> allCookies = GetCookies();
                 foreach (Cookie cookieToDelete in allCookies)
                 {
                     DeleteCookie(cookieToDelete);
@@ -494,7 +497,7 @@ namespace OpenQA.Selenium.IE
                 {
                     currentUri = new Uri(driver.Url);
                 }
-                catch (UriFormatException e)
+                catch (UriFormatException)
                 {
                 }
 

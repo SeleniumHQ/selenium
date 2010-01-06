@@ -19,6 +19,8 @@ namespace OpenQA.Selenium
             driver.FindElement(By.LinkText("Open new window")).Click();
             Assert.AreEqual("XHTML Test Page", driver.Title);
 
+            //TODO (jimevan): this is an ugly sleep. Remove when implicit waiting is implemented.
+            System.Threading.Thread.Sleep(500);
             driver.SwitchTo().Window("result");
             Assert.AreEqual("We Arrive Here", driver.Title);
 
