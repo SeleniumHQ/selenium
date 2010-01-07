@@ -44,18 +44,24 @@ module Selenium
       end
 
       def wait
-        raise "called wait with no pid" unless @pid
+        assert_started
         Process.waitpid2 @pid
       rescue Errno::ECHILD
         nil
       end
 
       def kill
-        Process.kill('TERM', @pid) if @pid
+        assert_started
+        Process.kill('TERM', @pid)
       end
 
       def kill!
-        Process.kill('KILL', @pid) if @pid
+        assert_started
+        Process.kill('KILL', @pid)
+      end
+
+      def assert_started
+        raise Error::WebDriverError, "process not started" unless @pid
       end
 
       module WindowsProcess
@@ -90,19 +96,26 @@ module Selenium
         end
 
         def kill
-          @process.destroy if @process
+          assert_started
+          @process.destroy
         end
         alias_method :kill!, :kill
 
         def wait
+          assert_started
           @process.waitFor
           [nil, @process.exitValue] # no robust way to get pid here
         end
 
         def exit_value
+          assert_started
           @process.exitValue
         rescue java.lang.IllegalThreadStateException
           nil
+        end
+
+        def assert_started
+          raise Error::WebDriverError, "process not started" unless @process
         end
       end
 
@@ -120,15 +133,30 @@ module Selenium
         end
 
         def kill
-          @process.Kill if @process
+          assert_started
+          @process.Kill
         end
 
         def wait
-          @process.WaitForExit if @process
+          assert_started
+          @process.WaitForExit
+          [pid, exit_value]
+        end
+
+        def pid
+          assert_started
+          @process.Id
         end
 
         def exit_value
+          assert_started
+          return unless @process.HasExited
+
           @process.ExitCode
+        end
+
+        def assert_started
+          raise Error::WebDriverError, "process not started" unless @process
         end
       end
 
