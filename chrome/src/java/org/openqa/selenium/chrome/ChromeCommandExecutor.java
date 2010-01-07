@@ -31,6 +31,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
+import java.util.Arrays;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class ChromeCommandExecutor {
@@ -148,12 +149,14 @@ public class ChromeCommandExecutor {
     if (!hasClient()) {
       throw new IllegalStateException("Cannot execute command without a client");
     }
+
+    //Respond to request with the command
+    String commandStringToSend = fillArgs(command);
+    byte[] data = fillTwoHundredWithJson(commandStringToSend);
+
     Socket socket = getOldestSocket();
     try {
-      //Respond to request with the command
-      String commandStringToSend;
-      commandStringToSend = fillArgs(command);
-      socket.getOutputStream().write(fillTwoHundredWithJson(commandStringToSend));
+      socket.getOutputStream().write(data);
       socket.getOutputStream().flush();
     } finally {
       socket.close();
