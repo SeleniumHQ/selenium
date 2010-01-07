@@ -296,7 +296,7 @@ dll(:name => "libwebdriver_firefox_so",
              FileList.new('firefox/src/cpp/webdriver-firefox/*.cpp'),
     :arch => "i386",
     :args => " -DXPCOM_GLUE  -DXPCOM_GLUE_USE_NSPR -I common/src/cpp/webdriver-interactions -I #{gecko_sdk}include -I /usr/include/nspr " + "`pkg-config gtk+-2.0 --cflags`",
-    :link_args => "-fno-rtti -fno-exceptions -shared  -fPIC -L/usr/lib32 -L#{gecko_sdk}lib -L#{gecko_sdk}bin -Wl,-rpath-link,#{gecko_sdk}bin -lxpcomglue_s -lxpcom -lnspr4 -lrt " + "`pkg-config gtk+-2.0 --libs`",
+    :link_args => "-fno-rtti -fno-exceptions -shared  -fPIC -L#{gecko_sdk}lib -L#{gecko_sdk}bin -Wl,-rpath-link,#{gecko_sdk}bin -lxpcomglue_s -lxpcom -lnspr4 -lrt ",
     :prebuilt => "firefox/prebuilt",
     :out  => "linux/Release/libwebdriver-firefox.so")
 
