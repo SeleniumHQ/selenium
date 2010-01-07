@@ -24,7 +24,7 @@ namespace OpenQA.Selenium.Environment
             string assemblyName = GetSettingValue("Assembly");
             Assembly assembly = Assembly.Load(assemblyName);
             driverType = assembly.GetType(driverClassName);
-            browser = (Browser) Enum.Parse(typeof(Browser), GetSettingValue("DriverName"));
+            browser = (Browser)Enum.Parse(typeof(Browser), GetSettingValue("DriverName"));
             remoteCapabilities = GetSettingValue("RemoteCapabilities");
 
             urlBuilder = new UrlBuilder();
