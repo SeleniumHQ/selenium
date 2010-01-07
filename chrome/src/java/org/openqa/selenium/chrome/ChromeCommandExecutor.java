@@ -31,7 +31,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
-import java.util.Arrays;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class ChromeCommandExecutor {
