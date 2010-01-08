@@ -12,12 +12,12 @@ rm -rf $TMP_DIR
 
 mkdir -p $TMP_DIR/content
 
-cp -R content $TMP_DIR/content
+cp -R content $TMP_DIR
 rm -rf $TMP_DIR/content/selenium-tests
 rm -rf $TMP_DIR/content/tests
-cp -R locale $TMP_DIR/locale
-cp -R skin $TMP_DIR/skin
-cp -R components $TMP_DIR/components
+cp -R locale $TMP_DIR
+cp -R skin $TMP_DIR
+cp -R components $TMP_DIR
 cp install.rdf $TMP_DIR
 cp chrome.manifest $TMP_DIR
 find $TMP_DIR -name ".svn" -type d -exec rm -rf {} \; 
