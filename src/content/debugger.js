@@ -65,7 +65,7 @@ function Debugger(editor) {
         if (typeof pluginProvided != 'undefined') {
             try {
                 var split_pluginProvided = pluginProvided.split(" ");
-                for(sp = 0; sp < split_pluginProvided.length; sp++){
+                for(var sp = 0; sp < split_pluginProvided.length; sp++){
                     ExtensionsLoader.loadSubScript(subScriptLoader, split_pluginProvided[sp], this.runner);
                 }
             } catch (error) {
