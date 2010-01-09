@@ -37,8 +37,8 @@ var BrowserBot = function(topLevelApplicationWindow) {
     this.currentWindow = this.topWindow;
     this.currentWindowName = null;
     this.allowNativeXpath = true;
-    this.xpathLibrary = this.defaultXpathLibrary = 'ajaxslt' // change to "javascript-xpath" for the newer, faster engine
-
+    this.xpathEvaluator = new XPathEvaluator('ajaxslt');  // change to "javascript-xpath" for the newer, faster engine
+    
     // We need to know this in advance, in case the frame closes unexpectedly
     this.isSubFrameSelected = false;
 
@@ -126,7 +126,26 @@ var BrowserBot = function(topLevelApplicationWindow) {
           return self.newPageLoaded && (self.isXhrSent ? (self.abortXhr || self.isXhrDone) : true); 
         }
     };
-
+    
+    this.setAllowNativeXPath = function(allow) {
+        this.xpathEvaluator.setAllowNativeXPath(allow);
+    };
+    
+    this.setIgnoreAttributesWithoutValue = function(ignore) {
+        this.xpathEvaluator.setIgnoreAttributesWithoutValue(ignore);
+    };
+    
+    this.addXPathEngine = function(engineName, engine) {
+        return this.xpathEvaluator.registerEngine(engineName, engine);
+    };
+    
+    this.setXPathEngine = function(engineName) {
+        this.xpathEvaluator.setCurrentEngine(engineName);
+    };
+    
+    this.getXPathEngine = function() {
+        return this.xpathEvaluator.getCurrentEngine();
+    };
 };
 
 // DGF PageBot exists for backwards compatibility with old user-extensions
@@ -1404,7 +1423,9 @@ BrowserBot.prototype.findElement = function(locator, win) {
  * we search separately by id and name.
  */
 BrowserBot.prototype.locateElementByIdentifier = function(identifier, inDocument, inWindow) {
-    return BrowserBot.prototype.locateElementById(identifier, inDocument, inWindow)
+    // HBC - use "this" instead of "BrowserBot.prototype"; otherwise we lose
+    // the non-prototype fields of the object!
+    return this.locateElementById(identifier, inDocument, inWindow)
             || BrowserBot.prototype.locateElementByName(identifier, inDocument, inWindow)
             || null;
 };
@@ -1420,8 +1441,7 @@ BrowserBot.prototype.locateElementById = function(identifier, inDocument, inWind
     else if (browserVersion.isIE || browserVersion.isOpera) {
         // SEL-484
         var xpath = '/descendant::*[@id=' + identifier.quoteForXPath() + ']';
-        return BrowserBot.prototype
-            .locateElementByXPath(xpath, inDocument, inWindow);
+        return this.locateElementByXPath(xpath, inDocument, inWindow);
     }
     else {
         return null;
@@ -1475,14 +1495,8 @@ BrowserBot.prototype.locateElementByDomTraversal.prefix = "dom";
  * begin with "//".
  */
 BrowserBot.prototype.locateElementByXPath = function(xpath, inDocument, inWindow) {
-    var results = eval_xpath(xpath, inDocument, {
-        returnOnFirstMatch          : true,
-        ignoreAttributesWithoutValue: this.ignoreAttributesWithoutValue,
-        allowNativeXpath            : this.allowNativeXpath,
-        xpathLibrary                : this.xpathLibrary,
-        namespaceResolver           : this._namespaceResolver
-    });
-    return (results.length > 0) ? results[0] : null;
+    return this.xpathEvaluator.selectSingleNode(inDocument, xpath, null,
+        this._namespaceResolver);
 };
 
 BrowserBot.prototype._namespaceResolver = function(prefix) {
@@ -1499,13 +1513,8 @@ BrowserBot.prototype._namespaceResolver = function(prefix) {
  * Returns the number of xpath results.
  */
 BrowserBot.prototype.evaluateXPathCount = function(xpath, inDocument) {
-    var results = eval_xpath(xpath, inDocument, {
-        ignoreAttributesWithoutValue: this.ignoreAttributesWithoutValue,
-        allowNativeXpath            : this.allowNativeXpath,
-        xpathLibrary                : this.xpathLibrary,
-        namespaceResolver           : this._namespaceResolver
-    });
-    return results.length;
+    return this.xpathEvaluator.countNodes(inDocument, xpath, null,
+        this._namespaceResolver);
 };
 
 /**

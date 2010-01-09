@@ -1073,6 +1073,380 @@ function parse_locator(locator)
 }
 
 /**
+ * An interface definition for XPath engine implementations; an instance of
+ * XPathEngine should be their prototype. Sub-implementations need only define
+ * overrides of the methods provided here.
+ */
+function XPathEngine() {
+// public
+    this.doc = null;
+
+    /**
+     * Returns whether the current runtime environment supports the use of this
+     * engine. Needs override.
+     */
+    this.isAvailable = function() { return false; };
+    
+    /**
+     * Sets the document to be used for evaluation. Always returns the current
+     * engine object so as to be chainable.
+     */
+    this.setDocument = function(newDocument) {
+        this.doc = newDocument;
+        return this;
+    };
+
+    /**
+     * Returns a possibly-empty list of nodes. Needs override.
+     */
+    this.selectNodes = function(xpath, contextNode, namespaceResolver) {
+        return [];
+    };
+    
+    /**
+     * Returns a single node, or null if no nodes were selected. This default
+     * implementation simply returns the first result of selectNodes(), or
+     * null.
+     */
+    this.selectSingleNode = function(xpath, contextNode, namespaceResolver) {
+        var nodes = this.selectNodes(xpath, contextNode, namespaceResolver);
+        return (nodes.length > 0 ? nodes[0] : null);
+    };
+    
+    /**
+     * Returns the number of matching nodes. This default implementation simply
+     * returns the length of the result of selectNodes(), which should be
+     * adequate for most sub-implementations.
+     */
+    this.countNodes = function(xpath, contextNode, namespaceResolver) {
+        return this.selectNodes(xpath, contextNode, namespaceResolver).length;
+    };
+    
+    /**
+     * An optimization; likely to be a no-op for many implementations. Always
+     * returns the current engine object so as to be chainable.
+     */
+    this.setIgnoreAttributesWithoutValue = function(ignore) { return this; };
+}
+
+/**
+ * Implements XPathEngine.
+ */
+function NativeEngine() {
+// public
+    // Override
+    this.isAvailable = function() {
+        return this.doc && this.doc.evaluate;
+    };
+    
+    // Override
+    this.selectNodes = function(xpath, contextNode, namespaceResolver) {
+        if (contextNode != this.doc) {
+            xpath = '.' + xpath;
+        }
+    
+        var nodes = [];
+        
+        try {
+            var xpathResult = this.doc.evaluate(xpath, contextNode,
+                namespaceResolver, 0, null);
+        }
+        catch (e) {
+            var msg = extractExceptionMessage(e);
+            throw new SeleniumError("Invalid xpath [1]: " + msg);
+        }
+        finally {
+            if (xpathResult == null) {
+                // If the result is null, we should still throw an Error.
+                throw new SeleniumError("Invalid xpath [2]: " + xpath); 
+            }
+        }
+        
+        var node = xpathResult.iterateNext();
+        
+        while (node) {
+            nodes.push(node);
+            node = xpathResult.iterateNext();
+        }
+        
+        return nodes;
+    };
+}
+
+NativeEngine.prototype = new XPathEngine();
+
+/**
+ * Implements XPathEngine.
+ */
+function AjaxsltEngine() {
+// private
+    var ignoreAttributesWithoutValue = false;
+    
+    function selectLogic(xpath, contextNode, namespaceResolver, firstMatch) {
+        // DGF set xpathdebug = true (using getEval, if you like) to turn on JS
+        // XPath debugging
+        //xpathdebug = true;
+        var context;
+        
+        if (contextNode == this.doc) {
+            context = new ExprContext(this.doc);
+        }
+        else {
+            // provide false values to get the default constructor values
+            context = new ExprContext(contextNode, false, false,
+                contextNode.parentNode);
+        }
+        
+        context.setCaseInsensitive(true);
+        context.setIgnoreAttributesWithoutValue(ignoreAttributesWithoutValue);
+        context.setReturnOnFirstMatch(firstMatch);
+        
+        try {
+            var xpathObj = xpathParse(xpath);
+        }
+        catch (e) {
+            var msg = extractExceptionMessage(e);
+            throw new SeleniumError("Invalid xpath [3]: " + msg);
+        }
+        
+        var nodes = []
+        var xpathResult = xpathObj.evaluate(context);
+        
+        if (xpathResult && xpathResult.value) {
+            for (var i = 0; i < xpathResult.value.length; ++i) {
+                nodes.push(xpathResult.value[i]);
+            }
+        }
+        
+        return nodes;
+    }
+    
+// public
+    // Override
+    this.isAvailable = function() { return true; };
+    
+    // Override
+    this.selectNodes = function(xpath, contextNode, namespaceResolver) {
+        return selectLogic(xpath, contextNode, namespaceResolver, false);
+    };
+    
+    // Override
+    this.selectSingleNode = function(xpath, contextNode, namespaceResolver) {
+        var nodes = selectLogic(xpath, contextNode, namespaceResolver, true);
+        return (nodes.length > 0 ? nodes[0] : null);
+    };
+    
+    // Override
+    this.setIgnoreAttributesWithoutValue = function(ignore) {
+        ignoreAttributesWithoutValue = ignore;
+        return this;
+    };
+}
+
+AjaxsltEngine.prototype = new XPathEngine();
+
+/**
+ * Implements XPathEngine.
+ */
+function JavascriptXPathEngine() {
+// private
+    var engineDoc = document;
+    
+// public
+    // Override
+    this.isAvailable = function() { return true; };
+    
+    // Override
+    this.selectNodes = function(xpath, contextNode, namespaceResolver) {
+        if (contextNode != this.doc) {
+            // Regarding use of the second argument to document.evaluate():
+            // http://groups.google.com/group/comp.lang.javascript/browse_thread/thread/a59ce20639c74ba1/a9d9f53e88e5ebb5
+            xpath = '.' + xpath;
+        }
+    
+        var nodes = [];
+        
+        try {
+            // When using the new and faster javascript-xpath library, we'll
+            // use the TestRunner's document object, not the App-Under-Test's
+            // document. The new library only modifies the TestRunner document
+            // with the new functionality.
+            var xpathResult = engineDoc.evaluate(xpath, contextNode,
+                namespaceResolver, 0, null);
+        }
+        catch (e) {
+            var msg = extractExceptionMessage(e);
+            throw new SeleniumError("Invalid xpath [1]: " + msg);
+        }
+        finally {
+            if (xpathResult == null) {
+                // If the result is null, we should still throw an Error.
+                throw new SeleniumError("Invalid xpath [2]: " + xpath); 
+            }
+        }
+        
+        var node = xpathResult.iterateNext();
+        
+        while (node) {
+            nodes.push(node);
+            node = xpathResult.iterateNext();
+        }
+        
+        return nodes;
+    };
+}
+
+JavascriptXPathEngine.prototype = new XPathEngine();
+
+/**
+ * An object responsible for handling XPath logic. New XPath engines can be
+ * registered to this evaluator on the fly.
+ *
+ * @param newDefaultEngineName  the name of the default XPath engine. Must be
+ *                              a non-native engine that is always available.
+ *                              Defaults to 'ajaxslt'.
+ */
+function XPathEvaluator(newDefaultEngineName) {
+// private
+    var nativeEngine = new NativeEngine();
+    var defaultEngineName = newDefaultEngineName || 'ajaxslt';
+    var engines = {
+        'ajaxslt'         : new AjaxsltEngine(),
+        'javascript-xpath': new JavascriptXPathEngine(),
+        'native'          : nativeEngine
+    };
+    
+    var currentEngineName = defaultEngineName;
+    var allowNativeXPath = true;
+    var ignoreAttributesWithoutValue = true;
+    
+    function preprocess(xpath) {
+        // Trim any trailing "/": not valid xpath, and remains from attribute
+        // locator.
+        if (xpath.charAt(xpath.length - 1) == '/') {
+            xpath = xpath.slice(0, -1);
+        }
+        // HUGE hack - remove namespace from xpath for IE
+        if (browserVersion && browserVersion.isIE) {
+            xpath = xpath.replace(/x:/g, '')
+        }
+        
+        return xpath;
+    }
+    
+    /** 
+     * Returns the most sensible engine given the settings and the document
+     * object.
+     */
+    function getEngineFor(inDocument) {
+        if (allowNativeXPath &&
+            nativeEngine.setDocument(inDocument).isAvailable()) {
+            return nativeEngine;
+        }
+        
+        var currentEngine = engines[currentEngineName];
+        
+        if (currentEngine &&
+            currentEngine.setDocument(inDocument).isAvailable()) {
+            return currentEngine;
+        }
+        
+        return engines[defaultEngineName].setDocument(inDocument);
+    }
+    
+    /**
+     * Dispatches an XPath evaluation method on the relevant engine for the
+     * given document, and returns the result
+     */
+    function dispatch(methodName, inDocument, xpath, contextNode, namespaceResolver) {
+        xpath = preprocess(xpath);
+    
+        if (! contextNode) {
+            contextNode = inDocument;
+        }
+        
+        return getEngineFor(inDocument)
+            .setIgnoreAttributesWithoutValue(ignoreAttributesWithoutValue)
+            [methodName](xpath, contextNode, namespaceResolver);
+    }
+    
+// public
+    /**
+     * Registers a new engine by name, and returns whether the registration was
+     * successful. Each registered engine must be an instance of XPathEngine.
+     * The engines registered by default - "ajaxslt", "javascript-xpath",
+     * "native", and "default" - can't be overwritten.
+     */
+    this.registerEngine = function(name, engine) {
+        // can't overwrite one of these
+        if (name == 'ajaxslt' ||
+            name == 'javascript-xpath' ||
+            name == 'native' ||
+            name == 'default') {
+            return false;
+        }
+        
+        if (! (engine instanceof XPathEngine)) {
+            return false;
+        }
+        
+        engines[name] = engine;
+        return true;
+    }
+    
+    this.getRegisteredEngine = function(name) {
+        return engines[name];
+    };
+    
+    this.setCurrentEngine = function(name) {
+        if (name == 'default') {
+            currentEngineName = defaultEngineName;
+        }
+        else if (! engines[name]) {
+            return;
+        }
+        else {
+            currentEngineName = name;
+        }
+    };
+    
+    this.getCurrentEngine = function() {
+        return currentEngineName || defaultEngineName;
+    };
+    
+    this.setAllowNativeXPath = function(allow) {
+        allowNativeXPath = allow;
+    }
+    
+    this.isAllowNativeXPath = function() {
+        return allowNativeXPath;
+    }
+    
+    this.setIgnoreAttributesWithoutValue = function(ignore) {
+        ignoreAttributesWithoutValue = ignore;
+    };
+    
+    this.isIgnoreAttributesWithoutValue = function() {
+        return ignoreAttributesWithoutValue;
+    };
+    
+    this.selectNodes = function(inDocument, xpath, contextNode, namespaceResolver) {
+        return dispatch('selectNodes', inDocument, xpath, contextNode,
+            namespaceResolver);
+    };
+    
+    this.selectSingleNode = function(inDocument, xpath, contextNode, namespaceResolver) {
+        return dispatch('selectSingleNode', inDocument, xpath, contextNode,
+            namespaceResolver);
+    };
+    
+    this.countNodes = function(inDocument, xpath, contextNode, namespaceResolver) {
+        return dispatch('countNodes', inDocument, xpath, contextNode,
+            namespaceResolver);
+    };
+};
+
+/**
  * Evaluates an xpath on a document, and returns a list containing nodes in the
  * resulting nodeset. The browserbot xpath methods are now backed by this
  * function. A context node may optionally be provided, and the xpath will be
@@ -1114,9 +1488,10 @@ function parse_locator(locator)
  */
 function eval_xpath(xpath, inDocument, opts)
 {
-    if (!opts) {
+    if (! opts) {
         var opts = {};
     }
+    
     var contextNode = opts.contextNode
         ? opts.contextNode : inDocument;
     var namespaceResolver = opts.namespaceResolver
@@ -1130,88 +1505,26 @@ function eval_xpath(xpath, inDocument, opts)
     var returnOnFirstMatch = (opts.returnOnFirstMatch != undefined)
         ? opts.returnOnFirstMatch : false;
 
-    // Trim any trailing "/": not valid xpath, and remains from attribute
-    // locator.
-    if (xpath.charAt(xpath.length - 1) == '/') {
-        xpath = xpath.slice(0, -1);
-    }
-    // HUGE hack - remove namespace from xpath for IE
-    if (browserVersion && browserVersion.isIE) {
-        xpath = xpath.replace(/x:/g, '')
-    }
+    var xpathEvaluator = eval_xpath.xpathEvaluator;
     
-    var nativeXpathAvailable = inDocument.evaluate;
-    var useNativeXpath = allowNativeXpath && nativeXpathAvailable;
-    var useDocumentEvaluate = useNativeXpath;
-
-    // When using the new and faster javascript-xpath library,
-    // we'll use the TestRunner's document object, not the App-Under-Test's document.
-    // The new library only modifies the TestRunner document with the new 
-    // functionality.
-    if (xpathLibrary == 'javascript-xpath' && !useNativeXpath) {
-        documentForXpath = document;
-        useDocumentEvaluate = true;
-    } else {
-        documentForXpath = inDocument;
-    }
-    var results = [];
+    xpathEvaluator.setCurrentEngine(xpathLibrary);
+    xpathEvaluator.setAllowNativeXPath(allowNativeXpath);
+    xpathEvaluator.setIgnoreAttributesWithoutValue(ignoreAttributesWithoutValue);
     
-    // this is either native xpath or javascript-xpath via TestRunner.evaluate 
-    if (useDocumentEvaluate) {
-        try {
-            // Regarding use of the second argument to document.evaluate():
-            // http://groups.google.com/group/comp.lang.javascript/browse_thread/thread/a59ce20639c74ba1/a9d9f53e88e5ebb5
-            var xpathResult = documentForXpath
-                .evaluate((contextNode == inDocument ? xpath : '.' + xpath),
-                    contextNode, namespaceResolver, 0, null);
-        }
-        catch (e) {
-            throw new SeleniumError("Invalid xpath [1]: " + extractExceptionMessage(e));
-        }
-        finally{
-            if (xpathResult == null) {
-                // If the result is null, we should still throw an Error.
-                throw new SeleniumError("Invalid xpath [2]: " + xpath); 
-            }
-        }
-        var result = xpathResult.iterateNext();
-        while (result) {
-            results.push(result);
-            result = xpathResult.iterateNext();
-        }
-        return results;
-    }
-
-    // If not, fall back to slower JavaScript implementation
-    // DGF set xpathdebug = true (using getEval, if you like) to turn on JS XPath debugging
-    //xpathdebug = true;
-    var context;
-    if (contextNode == inDocument) {
-        context = new ExprContext(inDocument);
+    if (returnOnFirstMatch) {
+        var result = xpathEvaluator.selectSingleNode(inDocument, xpath,
+            contextNode, namespaceResolver);
     }
     else {
-        // provide false values to get the default constructor values
-        context = new ExprContext(contextNode, false, false,
-            contextNode.parentNode);
+        var result = xpathEvaluator.selectNodes(inDocument, xpath, contextNode,
+            namespaceResolver);
     }
-    context.setCaseInsensitive(true);
-    context.setIgnoreAttributesWithoutValue(ignoreAttributesWithoutValue);
-    context.setReturnOnFirstMatch(returnOnFirstMatch);
-    var xpathObj;
-    try {
-        xpathObj = xpathParse(xpath);
-    }
-    catch (e) {
-        throw new SeleniumError("Invalid xpath [3]: " + extractExceptionMessage(e));
-    }
-    var xpathResult = xpathObj.evaluate(context);
-    if (xpathResult && xpathResult.value) {
-        for (var i = 0; i < xpathResult.value.length; ++i) {
-            results.push(xpathResult.value[i]);
-        }
-    }
-    return results;
+    
+    return result;
 }
+
+// construct this once
+eval_xpath.xpathEvaluator = new XPathEvaluator();
 
 /**
  * Returns the full resultset of a CSS selector evaluation.

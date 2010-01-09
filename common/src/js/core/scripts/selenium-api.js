@@ -2364,7 +2364,7 @@ Selenium.prototype.doAllowNativeXpath = function(allow) {
     if ("false" == allow || "0" == allow) { // The strings "false" and "0" are true values in JS
         allow = false;
     }
-    this.browserbot.allowNativeXpath = allow;
+    this.browserbot.setAllowNativeXPath(allow);
 }
 
 Selenium.prototype.doIgnoreAttributesWithoutValue = function(ignore) {
@@ -2386,7 +2386,7 @@ Selenium.prototype.doIgnoreAttributesWithoutValue = function(ignore) {
     if ('false' == ignore || '0' == ignore) {
         ignore = false;
     }
-    this.browserbot.ignoreAttributesWithoutValue = ignore;
+    this.browserbot.setIgnoreAttributesWithoutValue(ignore);
 }
 
 Selenium.prototype.doWaitForCondition = function(script, timeout) {
@@ -3132,7 +3132,7 @@ Selenium.prototype.doRemoveScript = function(scriptTagId) {
 
 Selenium.prototype.doUseXpathLibrary = function(libraryName) {
     /**
-	* Allows choice of one of the available libraries.
+    * Allows choice of one of the available libraries.
     * @param libraryName name of the desired library
     * Only the following three can be chosen:
     * <ul>
@@ -3140,22 +3140,16 @@ Selenium.prototype.doUseXpathLibrary = function(libraryName) {
     *   <li>"javascript-xpath" - Cybozu Labs' faster library</li>
     *   <li>"default" - The default library.  Currently the default library is "ajaxslt" .</li>
     * </ul>
-    * If libraryName isn't one of these three, then 
-    * no change will be made.
-    *   
+    * If libraryName isn't one of these three, it may be the name of another
+    * engine registered to the browserbot via addXPathEngine(). If it is not
+    * a registered engine either, then no change will be made.
     */
 
-    if (libraryName == "default") {
-        this.browserbot.xpathLibrary = this.browserbot.defaultXpathLibrary;
+    if (! this.browserbot.getXPathEngine(libraryName)) {
         return;
     }
-
-	if ((libraryName != 'ajaxslt') && (libraryName != 'javascript-xpath')) {
-		return;
-	}
-	
-	this.browserbot.xpathLibrary = libraryName;	
-	
+    
+    this.browserbot.setXPathEngine(libraryName);
 };
 
 /**
