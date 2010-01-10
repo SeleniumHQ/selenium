@@ -18,6 +18,7 @@ rm -rf $TMP_DIR/content/tests
 cp -R locale $TMP_DIR
 cp -R skin $TMP_DIR
 cp -R components $TMP_DIR
+cp -R content-files $TMP_DIR
 cp install.rdf $TMP_DIR
 cp chrome.manifest $TMP_DIR
 find $TMP_DIR -name ".svn" -type d -exec rm -rf {} \; 

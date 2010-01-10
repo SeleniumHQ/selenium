@@ -19,6 +19,7 @@ robocopy content %TMP_DIR%\content /E /XD .svn selenium-tests tests
 robocopy locale %TMP_DIR%\locale /E /XD .svn
 robocopy skin %TMP_DIR%\skin /E /XD .svn
 robocopy components %TMP_DIR%\components /E /XD .svn
+robocopy content-files %TMP_DIR%\content-files /E /XD .svn
 copy install.rdf %TMP_DIR%
 copy chrome.manifest %TMP_DIR%
 
