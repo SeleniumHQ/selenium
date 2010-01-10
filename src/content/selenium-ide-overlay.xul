@@ -39,19 +39,19 @@ limitations under the License.
 
   <broadcasterset id="mainBroadcasterSet">
     <broadcaster id="viewSeleniumIDESidebar"
-		 label="&selenium-ide.sidebar.title;"
-		 autoCheck="false"
-		 type="checkbox"
-		 group="sidebar"
-		 sidebarurl="chrome://selenium-ide/content/selenium-ide-sidebar.xul"
-		 sidebartitle="&selenium-ide.sidebar.title;"
-		 oncommand="toggleSidebar('viewSeleniumIDESidebar');" />
+         label="&selenium-ide.sidebar.title;"
+         autoCheck="false"
+         type="checkbox"
+         group="sidebar"
+         sidebarurl="chrome://selenium-ide/content/selenium-ide-sidebar.xul"
+         sidebartitle="&selenium-ide.sidebar.title;"
+         oncommand="toggleSidebar('viewSeleniumIDESidebar');" />
   </broadcasterset>
 
   <!--
   <keyset id="mainKeyset">
     <key id="key_viewSeleniumIDESidebar" command="viewSeleniumIDESidebar" 
-	 key="S" modifiers="alt,accel"/>
+     key="S" modifiers="alt,accel"/>
   </keyset>
   -->
 </overlay>
