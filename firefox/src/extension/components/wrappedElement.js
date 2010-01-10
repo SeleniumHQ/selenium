@@ -322,7 +322,7 @@ FirefoxDriver.prototype.submit = function(respond) {
     while (element.parentNode != null && element.tagName.toLowerCase() != "form") {
       element = element.parentNode;
     }
-    if (element.tagName.toLowerCase() == "form") {
+    if (element.tagName && element.tagName.toLowerCase() == "form") {
       if (Utils.fireHtmlEvent(respond.context, element, "submit")) {
         new WebLoadingListener(Utils.getBrowser(respond.context), function() {
           respond.send();
@@ -335,8 +335,10 @@ FirefoxDriver.prototype.submit = function(respond) {
         return;
       }
     } else {
-      respond.isError = true;
-      respond.response = "Element was not in a form so couldn't submit";
+      if (element.tagName) {
+        respond.isError = true;
+        respond.response = "Element was not in a form so couldn't submit";
+      }
       respond.send();
       return;
     }
