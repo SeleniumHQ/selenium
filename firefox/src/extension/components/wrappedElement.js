@@ -335,10 +335,8 @@ FirefoxDriver.prototype.submit = function(respond) {
         return;
       }
     } else {
-      if (element.tagName) {
-        respond.isError = true;
-        respond.response = "Element was not in a form so couldn't submit";
-      }
+      respond.isError = true;
+      respond.response = "Element was not in a form so couldn't submit";
       respond.send();
       return;
     }

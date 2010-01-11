@@ -66,6 +66,7 @@ function testShouldSubmitAFormWhenAnyElementWithinThatFormIsSubmitted(driver) {
 function testCannotSubmitANonFormElement(driver) {
   driver.get(TEST_PAGE.formPage);
   driver.findElement({xpath: '//body'}).submit();
+  driver.catchExpectedError();
   assertThat(driver.getTitle(), equals('We Leave From Here'));
 }
 
