@@ -137,7 +137,6 @@ namespace OpenQA.Selenium.Firefox
         public ReadOnlyCollection<string> GetWindowHandles()
         {
             object[] allHandles = (object[])ExecuteCommand(typeof(WebDriverException), "getWindowHandles", null);
-            Console.WriteLine(allHandles.ToString());
             List<string> toReturn = new List<string>();
             for (int i = 0; i < allHandles.Length; i++)
             {
