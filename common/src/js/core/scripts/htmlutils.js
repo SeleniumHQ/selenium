@@ -1136,6 +1136,11 @@ function NativeEngine() {
 // public
     // Override
     this.isAvailable = function() {
+        if (browserVersion && browserVersion.isIE) {
+            // javascript-xpath can fake out the check otherwise
+            return false;
+        }
+    
         return this.doc && this.doc.evaluate;
     };
     
@@ -1313,6 +1318,7 @@ function XPathEvaluator(newDefaultEngineName) {
     var engines = {
         'ajaxslt'         : new AjaxsltEngine(),
         'javascript-xpath': new JavascriptXPathEngine(),
+        //'rpc-optimizing'  : new MultiWindowRPCOptimizingEngine('test-doc-frame', new JavascriptXPathEngine()),
         'native'          : nativeEngine
     };
     
@@ -1505,6 +1511,10 @@ function eval_xpath(xpath, inDocument, opts)
     var returnOnFirstMatch = (opts.returnOnFirstMatch != undefined)
         ? opts.returnOnFirstMatch : false;
 
+    if (! eval_xpath.xpathEvaluator) {
+        eval_xpath.xpathEvaluator = new XPathEvaluator();
+    }
+    
     var xpathEvaluator = eval_xpath.xpathEvaluator;
     
     xpathEvaluator.setCurrentEngine(xpathLibrary);
@@ -1522,9 +1532,6 @@ function eval_xpath(xpath, inDocument, opts)
     
     return result;
 }
-
-// construct this once
-eval_xpath.xpathEvaluator = new XPathEvaluator();
 
 /**
  * Returns the full resultset of a CSS selector evaluation.
