@@ -3,15 +3,16 @@ module Selenium
     module Find
 
       FINDERS = {
-        :class             => 'ByClassName',
-        :class_name        => 'ByClassName',
-        :id                => 'ById',
-        :link_text         => 'ByLinkText',
-        :link              => 'ByLinkText',
-        :partial_link_text => 'ByPartialLinkText',
-        :name              => 'ByName',
-        :tag_name          => 'ByTagName',
-        :xpath             => 'ByXpath',
+        :class             => 'ClassName',
+        :class_name        => 'ClassName',
+        :css               => 'CssSelector',
+        :id                => 'Id',
+        :link              => 'LinkText',
+        :link_text         => 'LinkText',
+        :name              => 'Name',
+        :partial_link_text => 'PartialLinkText',
+        :tag_name          => 'TagName',
+        :xpath             => 'Xpath',
       }
 
       #
@@ -31,7 +32,7 @@ module Selenium
           raise ArgumentError, "cannot find element by #{how.inspect}"
         end
 
-        meth = "findElement#{by}"
+        meth = "findElementBy#{by}"
         what = what.to_s
 
         bridge.send meth, ref, what
@@ -52,7 +53,7 @@ module Selenium
           raise ArgumentError, "cannot find elements by #{how.inspect}"
         end
 
-        meth = "findElements#{by}"
+        meth = "findElementsBy#{by}"
         what = what.to_s
 
         bridge.send meth, ref, what

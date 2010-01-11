@@ -177,6 +177,14 @@ module Selenium
           find_elements_by 'xpath', xpath, parent
         end
 
+        def findElementByCssSelector(parent, selector)
+          find_element_by 'css selector', selector, parent
+        end
+
+        def findElementsByCssSelector(parent, selector)
+          find_elements_by 'css selector', selector, parent
+        end
+
 
         #
         # Element functions

@@ -76,6 +76,11 @@ describe "Driver" do
       driver.find_element(:xpath, "//h1").text.should == "XHTML Might Be The Future"
     end
 
+    it "should find by css selector" do
+      driver.navigate.to url_for("xhtmlTest.html")
+      driver.find_element(:css, "div.content")
+    end
+
     it "should find by tag name" do
       driver.navigate.to url_for("xhtmlTest.html")
       driver.find_element(:tag_name, 'div').attribute("class").should == "navigation"
@@ -114,6 +119,11 @@ describe "Driver" do
     it "should find by class name" do
       driver.navigate.to url_for("xhtmlTest.html")
       driver.find_elements(:class, "nameC").should have(2).things
+    end
+
+    it "should find by css selector" do
+      driver.navigate.to url_for("xhtmlTest.html")
+      driver.find_elements(:css, 'p')
     end
 
     it "should find children by field name" do
