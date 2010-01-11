@@ -9,12 +9,12 @@ using System.Globalization;
 
 namespace OpenQA.Selenium.IE
 {
-    class InternetExplorerWebElement : IRenderedWebElement, ISearchContext, ILocatable, IDisposable
+    public class InternetExplorerWebElement : IRenderedWebElement, ILocatable, IDisposable
     {
         private SafeInternetExplorerWebElementHandle elementHandle;
         private InternetExplorerDriver driver;
 
-        public InternetExplorerWebElement(InternetExplorerDriver driver, SafeInternetExplorerWebElementHandle wrapper)
+        internal InternetExplorerWebElement(InternetExplorerDriver driver, SafeInternetExplorerWebElementHandle wrapper)
         {
             this.driver = driver;
             this.elementHandle = wrapper;
@@ -148,7 +148,7 @@ namespace OpenQA.Selenium.IE
             return by.FindElement(new Finder(driver, elementHandle));
         }
 
-        public WebDriverResult AddToScriptArgs(SafeScriptArgsHandle scriptArgs)
+        internal WebDriverResult AddToScriptArgs(SafeScriptArgsHandle scriptArgs)
         {
             WebDriverResult result = NativeMethods.wdAddElementScriptArg(scriptArgs, elementHandle);
             ResultHandler.VerifyResultCode(result, "adding to script arguments");

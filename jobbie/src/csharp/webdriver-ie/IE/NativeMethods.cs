@@ -43,6 +43,9 @@ namespace OpenQA.Selenium.IE
         internal static extern WebDriverResult wdGoForward(SafeInternetExplorerDriverHandle driver);
 
         [DllImport("InternetExplorerDriver")]
+        internal static extern WebDriverResult wdRefresh(SafeInternetExplorerDriverHandle driver);
+
+        [DllImport("InternetExplorerDriver")]
         public static extern WebDriverResult wdClose(SafeInternetExplorerDriverHandle driver);
 
         [DllImport("InternetExplorerDriver", CharSet = CharSet.Unicode)]

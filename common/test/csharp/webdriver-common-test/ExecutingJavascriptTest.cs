@@ -506,12 +506,14 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Chrome)]
         [IgnoreBrowser(Browser.Remote)]
         [IgnoreBrowser(Browser.IPhone)]
-        public void testShouldBeAbleToExecuteScriptAndReturnElementsList()
+        public void ShouldBeAbleToExecuteScriptAndReturnElementsList()
         {
             driver.Url = formsPage;
             String scriptToExec = "return document.getElementsByName('snack');";
 
-            ReadOnlyCollection<IWebElement> resultsList = (ReadOnlyCollection<IWebElement>)((IJavaScriptExecutor)driver).ExecuteScript(scriptToExec);
+            object resultObject = ((IJavaScriptExecutor)driver).ExecuteScript(scriptToExec);
+
+            List<IWebElement> resultsList = (List<IWebElement>)resultObject;
 
             Assert.Greater(resultsList.Count, 0);
         }

@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{32122F8D-CD64-495A-B9B0-5516FF67C79F}</ProjectGuid>
+    <ProjectGuid>{5E7C67A1-1BF2-4A46-8C29-8A6DCF6E4543}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>OpenQA.Selenium.Remote</RootNamespace>
-    <AssemblyName>WebDriver.Remote</AssemblyName>
+    <RootNamespace>OpenQA.Selenium.Firefox</RootNamespace>
+    <AssemblyName>WebDriver.Firefox</AssemblyName>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkSubset>
@@ -33,9 +33,13 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Ionic.Zip.Reduced, Version=1.8.4.30, Culture=neutral, PublicKeyToken=edbe51ad942a3f5c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\third_party\csharp\dotnetzip-1.8\Ionic.Zip.Reduced.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json.Net20, Version=3.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\third_party\csharp\json-net-3.5r6\Newtonsoft.Json.Net20.dll</HintPath>
+      <HintPath>..\..\..\..\third_party\csharp\json-net-3.5r6\Newtonsoft.Json.Net20.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -45,27 +49,28 @@
   <ItemGroup>
     <Compile Include="Command.cs" />
     <Compile Include="Context.cs" />
-    <Compile Include="DesiredCapabilities.cs" />
-    <Compile Include="DriverCommand.cs" />
-    <Compile Include="ErrorResponse.cs" />
-    <Compile Include="GlobalSuppressions.cs" />
-    <Compile Include="HttpCommandExecutor.cs" />
-    <Compile Include="ICapabilities.cs" />
-    <Compile Include="ICommandExecutor.cs" />
-    <Compile Include="JsonConverters\CharArrayJsonConverter.cs" />
-    <Compile Include="JsonConverters\CookieJsonConverter.cs" />
-    <Compile Include="JsonConverters\PlatformJsonConverter.cs" />
-    <Compile Include="JsonConverters\ResponseValueJsonConverter.cs" />
+    <Compile Include="FirefoxBinary.cs" />
+    <Compile Include="FirefoxDriver.cs" />
+    <Compile Include="FirefoxProfile.cs" />
+    <Compile Include="FirefoxWebElement.cs" />
+    <Compile Include="IExtensionConnection.cs" />
+    <Compile Include="Internal\CharArrayJsonConverter.cs" />
+    <Compile Include="Internal\ContextJsonConverter.cs" />
+    <Compile Include="Internal\CookieJsonConverter.cs" />
+    <Compile Include="Internal\Executable.cs" />
+    <Compile Include="Internal\ExtensionConnection.cs" />
+    <Compile Include="Internal\ExtensionConnectionFactory.cs" />
+    <Compile Include="Internal\FirefoxProfileManager.cs" />
+    <Compile Include="Internal\ILock.cs" />
+    <Compile Include="Internal\IniFileReader.cs" />
+    <Compile Include="Internal\ResponseValueJsonConverter.cs" />
+    <Compile Include="Preferences.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RemoteWebDriver.cs" />
-    <Compile Include="RemoteWebElement.cs" />
-    <Compile Include="RenderedRemoteWebElement.cs" />
     <Compile Include="Response.cs" />
-    <Compile Include="SessionId.cs" />
-    <Compile Include="StackTraceElement.cs" />
+    <Compile Include="Internal\SocketLock.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\..\common\src\csharp\webdriver-common\WebDriver.Common.csproj">
+    <ProjectReference Include="..\..\..\..\common\src\csharp\webdriver-common\WebDriver.Common.csproj">
       <Project>{ABB9B87F-FEEA-410E-ACBF-26479B8C72B0}</Project>
       <Name>WebDriver.Common</Name>
     </ProjectReference>
@@ -79,8 +84,9 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>copy /y $(TargetDir) $(SolutionDir)build\Win32\$(ConfigurationName)
-$(SolutionDir)build\x64\$(ConfigurationName)
-copy /y $(TargetDir) $(SolutionDir)build\x64\$(ConfigurationName)</PostBuildEvent>
+    <PostBuildEvent>if not exist $(SolutionDir)build\Win32\$(ConfigurationName) md $(SolutionDir)build\Win32\$(ConfigurationName)
+copy /y $(TargetPath) $(SolutionDir)build\Win32\$(ConfigurationName)
+if not exist $(SolutionDir)build\x64\$(ConfigurationName) md $(SolutionDir)build\x64\$(ConfigurationName)
+copy /y $(TargetPath) $(SolutionDir)build\x64\$(ConfigurationName)</PostBuildEvent>
   </PropertyGroup>
 </Project>

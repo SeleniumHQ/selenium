@@ -6,7 +6,7 @@ using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium.Remote
 {
-    public class RemoteWebElement : IWebElement, ISearchContext, IFindsByLinkText, IFindsById, IFindsByName, IFindsByTagName, IFindsByClassName, IFindsByXPath, IFindsByPartialLinkText
+    public class RemoteWebElement : IWebElement, IFindsByLinkText, IFindsById, IFindsByName, IFindsByTagName, IFindsByClassName, IFindsByXPath, IFindsByPartialLinkText
     {
         RemoteWebDriver parentDriver;
         string elementId;

@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 
 namespace OpenQA.Selenium.IE
 {
-    class ElementCollection : IDisposable
+    internal class ElementCollection : IDisposable
     {
         InternetExplorerDriver driver;
         SafeWebElementCollectionHandle collectionHandle;

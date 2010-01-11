@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Newtonsoft.Json;
 
-namespace OpenQA.Selenium.Remote
+namespace OpenQA.Selenium.Firefox
 {
     internal class ResponseValueJsonConverter : JsonConverter
     {

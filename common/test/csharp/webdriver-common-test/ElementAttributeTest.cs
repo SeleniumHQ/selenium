@@ -16,7 +16,7 @@ namespace OpenQA.Selenium
             driver.Url = simpleTestPage;
             IWebElement head = driver.FindElement(By.XPath("/html"));
             string attribute = head.GetAttribute("cheese");
-            Assert.AreEqual(attribute, null);
+            Assert.IsNull(attribute);
         }
 
         [Test]
@@ -24,7 +24,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = simpleTestPage;
             IWebElement body = driver.FindElement(By.XPath("//body"));
-            Assert.AreEqual(body.GetAttribute("style"), string.Empty);
+            Assert.AreEqual(string.Empty, body.GetAttribute("style"));
         }
 
         [Test]
@@ -32,11 +32,11 @@ namespace OpenQA.Selenium
         {
             driver.Url = formsPage;
             IWebElement inputElement = driver.FindElement(By.XPath("//input[@id='working']"));
-            Assert.AreEqual(inputElement.GetAttribute("disabled"), "false");
+            Assert.AreEqual("false", inputElement.GetAttribute("disabled"));
             Assert.IsTrue(inputElement.Enabled);
 
             IWebElement pElement = driver.FindElement(By.Id("cheeseLiker"));
-            Assert.AreEqual(pElement.GetAttribute("disabled"), "false");
+            Assert.AreEqual("false", pElement.GetAttribute("disabled"));
             Assert.IsTrue(pElement.Enabled);
         }
 
@@ -48,7 +48,7 @@ namespace OpenQA.Selenium
 
             IWebElement multiSelect = driver.FindElement(By.Id("multi"));
             ReadOnlyCollection<IWebElement> options = multiSelect.FindElements(By.TagName("option"));
-            Assert.AreEqual(options[1].GetAttribute("index"), "1");
+            Assert.AreEqual("1", options[1].GetAttribute("index"));
         }
 
 
@@ -57,10 +57,10 @@ namespace OpenQA.Selenium
         {
             driver.Url = formsPage;
             IWebElement inputElement = driver.FindElement(By.XPath("//input[@id='notWorking']"));
-            Assert.AreEqual(inputElement.Enabled, false);
+            Assert.IsFalse(inputElement.Enabled);
 
             inputElement = driver.FindElement(By.XPath("//input[@id='working']"));
-            Assert.AreEqual(inputElement.Enabled, true);
+            Assert.IsTrue(inputElement.Enabled);
         }
 
         [Test]
@@ -68,7 +68,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = formsPage;
             IWebElement textArea = driver.FindElement(By.XPath("//textarea[@id='notWorkingArea']"));
-            Assert.AreEqual(textArea.Enabled, false);
+            Assert.IsFalse(textArea.Enabled);
         }
 
         [Test]
@@ -88,9 +88,9 @@ namespace OpenQA.Selenium
         {
             driver.Url = formsPage;
             IWebElement checkbox = driver.FindElement(By.XPath("//input[@id='checky']"));
-            Assert.AreEqual(checkbox.GetAttribute("checked"), "false");
+            Assert.AreEqual("false", checkbox.GetAttribute("checked"));
             checkbox.Select();
-            Assert.AreEqual(checkbox.GetAttribute("checked"), "true");
+            Assert.AreEqual("true", checkbox.GetAttribute("checked"));
         }
 
         [Test]
@@ -101,14 +101,14 @@ namespace OpenQA.Selenium
             IWebElement initiallyNotSelected = driver.FindElement(By.Id("peas"));
             IWebElement initiallySelected = driver.FindElement(By.Id("cheese_and_peas"));
 
-            Assert.AreEqual(neverSelected.GetAttribute("selected"), "false");
-            Assert.AreEqual(initiallyNotSelected.GetAttribute("selected"), "false");
-            Assert.AreEqual(initiallySelected.GetAttribute("selected"), "true");
+            Assert.AreEqual("false", neverSelected.GetAttribute("selected"), "false");
+            Assert.AreEqual("false", initiallyNotSelected.GetAttribute("selected"), "false");
+            Assert.AreEqual("true", initiallySelected.GetAttribute("selected"), "true");
 
             initiallyNotSelected.Select();
-            Assert.AreEqual(neverSelected.GetAttribute("selected"), "false");
-            Assert.AreEqual(initiallyNotSelected.GetAttribute("selected"), "true");
-            Assert.AreEqual(initiallySelected.GetAttribute("selected"), "false");
+            Assert.AreEqual("false", neverSelected.GetAttribute("selected"));
+            Assert.AreEqual("true", initiallyNotSelected.GetAttribute("selected"));
+            Assert.AreEqual("false", initiallySelected.GetAttribute("selected"));
         }
 
         [Test]
@@ -119,10 +119,10 @@ namespace OpenQA.Selenium
             ReadOnlyCollection<IWebElement> options = selectBox.FindElements(By.TagName("option"));
             IWebElement one = options[0];
             IWebElement two = options[1];
-            Assert.AreEqual(one.Selected, true);
-            Assert.AreEqual(two.Selected, false);
-            Assert.AreEqual(one.GetAttribute("selected"), "true");
-            Assert.AreEqual(two.GetAttribute("selected"), "false");
+            Assert.IsTrue(one.Selected);
+            Assert.IsFalse(two.Selected);
+            Assert.AreEqual("true", one.GetAttribute("selected"));
+            Assert.AreEqual("false", two.GetAttribute("selected"));
         }
 
         [Test]
@@ -133,7 +133,7 @@ namespace OpenQA.Selenium
             IWebElement heading = driver.FindElement(By.XPath("//h1"));
             String className = heading.GetAttribute("class");
 
-            Assert.AreEqual(className, "header");
+            Assert.AreEqual("header", className);
         }
 
         [Test]
@@ -143,7 +143,7 @@ namespace OpenQA.Selenium
 
             String value = driver.FindElement(By.Id("withText")).Value;
 
-            Assert.AreEqual(value, "Example text");
+            Assert.AreEqual("Example text", value);
         }
 
         [Test]

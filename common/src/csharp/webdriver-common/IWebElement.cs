@@ -30,7 +30,7 @@ namespace OpenQA.Selenium
     /// Generally, all interesting operations to do with interacting with a page will
     /// be performed through this interface. 
     /// </remarks>
-    public interface IWebElement
+    public interface IWebElement : ISearchContext
     {
         /// <summary>
         /// Gets a value indicating the tag name of this element.
@@ -166,20 +166,5 @@ namespace OpenQA.Selenium
         /// will toggle the element's state from selected to not selected, or from not selected 
         /// to selected.</remarks>
         bool Toggle();
-
-        /// <summary>
-        /// Finds the first <see cref="IWebElement"/> on the current page using the specified mechanism.
-        /// </summary>
-        /// <param name="by">A <see cref="By"/> object describing the mechanism used to find the element.</param>
-        /// <returns>The first <see cref="IWebElement"/> on the current page matching the criteria.</returns>
-        /// <exception cref="NoSuchElementException">If no matching elements are found.</exception>
-        IWebElement FindElement(By by);
-
-        /// <summary>
-        /// Finds all <see cref="IWebElement"/> on the current page using the specified mechanism.
-        /// </summary>
-        /// <param name="by">A <see cref="By"/> object describing the mechanism used to find the element.</param>
-        /// <returns>A <see cref="ReadOnlyCollection{T}"/> containing the <see cref="IWebElement">IWebElements</see> found on the page.</returns>
-        ReadOnlyCollection<IWebElement> FindElements(By by);
     }
 }

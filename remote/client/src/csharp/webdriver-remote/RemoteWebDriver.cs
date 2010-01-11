@@ -168,35 +168,47 @@ namespace OpenQA.Selenium.Remote
                 UnpackAndThrowOnError(commandResponse.Value);
             }
 
-            Dictionary<string, object> result = (Dictionary<string, object>)commandResponse.Value;
+            return ParseJavaScriptReturnValue(commandResponse.Value);
+        }
+
+        private object ParseJavaScriptReturnValue(object responseValue)
+        {
+            object returnValue = null;
+
+            Dictionary<string, object> result = (Dictionary<string, object>)responseValue;
 
             string type = (string)result["type"];
-            if (type == "NULL")
-                return null;
+            if (type != "NULL")
+            {
 
-            if (type == "ELEMENT")
-            {
-                string[] parts = result["value"].ToString().Split(new string[] { "/" }, StringSplitOptions.None);
-                RemoteWebElement element = CreateRemoteWebElement();
-                element.Id = parts[parts.Length - 1];
-                return element;
-            }
-            else if (result["value"] is double)
-            {
-                double resultValue = (double)result["value"];
-                long longValue;
-                bool isLong = long.TryParse(resultValue.ToString(CultureInfo.InvariantCulture), out longValue);
-                if (isLong)
+                if (type == "ELEMENT")
                 {
-                    return longValue;
+                    string[] parts = result["value"].ToString().Split(new string[] { "/" }, StringSplitOptions.None);
+                    RemoteWebElement element = CreateRemoteWebElement();
+                    element.Id = parts[parts.Length - 1];
+                    returnValue = element;
+                }
+                else if (result["value"] is double)
+                {
+                    double resultValue = (double)result["value"];
+                    long longValue;
+                    bool isLong = long.TryParse(resultValue.ToString(CultureInfo.InvariantCulture), out longValue);
+                    if (isLong)
+                    {
+                        returnValue = longValue;
+                    }
+                    else
+                    {
+                        returnValue = resultValue;
+                    }
                 }
                 else
                 {
-                    return resultValue;
+                    returnValue = result["value"];
                 }
             }
 
-            return result["value"];
+            return returnValue;
         }
 
         private static object ConvertObjectToJavaScriptObject(object arg)
@@ -584,10 +596,12 @@ namespace OpenQA.Selenium.Remote
         private class RemoteWebDriverOptions : IOptions
         {
             private RemoteWebDriver driver;
+
             public RemoteWebDriverOptions(RemoteWebDriver driver)
             {
                 this.driver = driver;
             }
+
             public void AddCookie(Cookie cookie)
             {
                 driver.Execute(DriverCommand.AddCookie, new object[] { cookie });
@@ -677,7 +691,6 @@ namespace OpenQA.Selenium.Remote
 
         private class RemoteNavigation : INavigation
         {
-
             private RemoteWebDriver driver;
             public RemoteNavigation(RemoteWebDriver driver)
             {

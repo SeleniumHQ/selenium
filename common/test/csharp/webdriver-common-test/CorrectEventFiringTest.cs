@@ -66,7 +66,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        //[IgnoreBrowser(SELENESE)]
         [IgnoreBrowser(Browser.Chrome)]
         [IgnoreBrowser(Browser.Firefox)]
         public void ShouldFireMouseMoveEventWhenClicking()
@@ -80,7 +79,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        //[IgnoreBrowser(SELENESE)]
         [IgnoreBrowser(Browser.Chrome, "Webkit bug 22261")]
         public void ShouldFireEventsInTheRightOrder()
         {
@@ -149,7 +147,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        //[IgnoreBrowser(SELENESE)]
         [IgnoreBrowser(Browser.IPhone)]
         public void ShouldEmitOnChangeEventsWhenSelectingElements()
         {
@@ -170,7 +167,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        //[IgnoreBrowser(SELENESE)]
         public void ShouldEmitOnChangeEventsWhenChangingTheStateOfACheckbox()
         {
             driver.Url = javascriptPage;

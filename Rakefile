@@ -180,7 +180,33 @@ dotnet_library(:name => "build/x64/Release/webdriver-ie-test.dll",
                :project => "webdriver-ie-test",
                :arch => "x64",
                :prebuilt => "jobbie/prebuilt")
+dotnet_library(:name => "build/Win32/Release/WebDriver.Firefox.dll",
+               :srcs => [ "firefox/src/csharp/**/*.cs" ],
+               :solution => "WebDriver.sln",
+               :project => "webdriver-firefox",
+               :arch => "Win32",
+               :prebuilt => "firefox/prebuilt")
 
+dotnet_library(:name => "build/x64/Release/WebDriver.Firefox.dll",
+               :srcs => [ "firefox/src/csharp/**/*.cs" ],
+               :solution => "WebDriver.sln",
+               :project => "webdriver-firefox",
+               :arch => "x64",
+               :prebuilt => "firefox/prebuilt")
+
+dotnet_library(:name => "build/Win32/Release/webdriver-firefox-test.dll",
+               :srcs => [ "firefox/test/csharp/**/*.cs" ],
+               :solution => "WebDriver.sln",
+               :project => "webdriver-firefox-test",
+               :arch => "Win32",
+               :prebuilt => "firefox/prebuilt")
+
+dotnet_library(:name => "build/x64/Release/webdriver-firefox-test.dll",
+               :srcs => [ "firefox/test/csharp/**/*.cs" ],
+               :solution => "WebDriver.sln",
+               :project => "webdriver-firefox-test",
+               :arch => "x64",
+               :prebuilt => "firefox/prebuilt")
 dotnet_library(:name => "build/Win32/Release/WebDriver.Remote.dll",
                :srcs => [ "remote/client/src/csharp/**/*.cs" ],
                :solution => "WebDriver.sln",
@@ -207,6 +233,8 @@ dotnet_library(:name => "build/x64/Release/webdriver-remote-test.dll",
 
 task :dotnet => [ :'build/x64/Release/webdriver-ie-test.dll', :'build/Win32/Release/webdriver-ie-test.dll',
                   :'build/x64/Release/Webdriver.Ie.dll', :'build/Win32/Release/Webdriver.Ie.dll',
+                  :'build/x64/Release/webdriver-firefox-test.dll', :'build/Win32/Release/webdriver-firefox-test.dll',
+                  :'build/x64/Release/Webdriver.Firefox.dll', :'build/Win32/Release/Webdriver.Firefox.dll',
                   :'build/x64/Release/webdriver-remote-test.dll', :'build/Win32/Release/webdriver-remote-test.dll',
                   :'build/x64/Release/Webdriver.Remote.dll', :'build/Win32/Release/Webdriver.Remote.dll',
                   :'build/x64/Release/webdriver-common-test.dll', :'build/Win32/Release/webdriver-common-test.dll',

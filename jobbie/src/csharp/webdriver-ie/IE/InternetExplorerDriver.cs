@@ -699,7 +699,8 @@ namespace OpenQA.Selenium.IE
 
             public void Refresh()
             {
-                throw new NotImplementedException("The refresh operation is not implemented.");
+                WebDriverResult result = NativeMethods.wdRefresh(driver.handle);
+                ResultHandler.VerifyResultCode(result, "Refreshing page");
             }
         }
 

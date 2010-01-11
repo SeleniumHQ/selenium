@@ -21,8 +21,6 @@ namespace OpenQA.Selenium
         public void ShouldFollowRedirectsSentInTheHttpResponseHeaders()
         {
             driver.Url = redirectPage;
-            //TODO (jimevan): this is an ugly sleep. Remove when implicit waiting is implemented.
-            System.Threading.Thread.Sleep(500);
             Assert.AreEqual(driver.Title, "We Arrive Here");
         }
 
@@ -30,8 +28,6 @@ namespace OpenQA.Selenium
         public void ShouldFollowMetaRedirects()
         {
             driver.Url = metaRedirectPage;
-            //TODO (jimevan): this is an ugly sleep. Remove when implicit waiting is implemented.
-            System.Threading.Thread.Sleep(500);
             Assert.AreEqual(driver.Title, "We Arrive Here");
         }
 

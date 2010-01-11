@@ -5,9 +5,9 @@ using System.Text;
 
 namespace OpenQA.Selenium.IE
 {
-    public static class ResultHandler
+    internal static class ResultHandler
     {
-        public static void VerifyResultCode(WebDriverResult resultCode, String message)
+        internal static void VerifyResultCode(WebDriverResult resultCode, String message)
         {
             switch (resultCode)
             {

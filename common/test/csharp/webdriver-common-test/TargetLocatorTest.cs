@@ -10,7 +10,7 @@ namespace OpenQA.Selenium
     {
 
         [Test]
-        [ExpectedException(typeof(InvalidOperationException))]
+        [ExpectedException(typeof(NoSuchFrameException))]
         public void ShouldThrowExceptionAfterSwitchingToNonExistingFrameIndex()
         {
             driver.Url = framesPage;
@@ -18,7 +18,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [ExpectedException(typeof(InvalidOperationException))]
+        [ExpectedException(typeof(NoSuchFrameException))]
         public void ShouldThrowExceptionAfterSwitchingToNonExistingFrameName()
         {
             driver.Url = framesPage;
@@ -38,9 +38,12 @@ namespace OpenQA.Selenium
         {
             driver.Url = iframesPage;
             driver.SwitchTo().Frame("iframe1");
-            Assert.AreEqual(formsTitle, driver.Title);
+            IWebElement element = driver.FindElement(By.Name("id-name1"));
+            Assert.IsNotNull(element);
+
             driver.SwitchTo().DefaultContent();
-            Assert.AreEqual(iframesTitle, driver.Title);
+            element = driver.FindElement(By.Id("iframe_page_heading"));
+            Assert.IsNotNull(element);
         }
 
         [Test]
@@ -48,9 +51,12 @@ namespace OpenQA.Selenium
         {
             driver.Url = iframesPage;
             driver.SwitchTo().Frame(0);
-            Assert.AreEqual(formsTitle, driver.Title);
+            IWebElement element = driver.FindElement(By.Name("id-name1"));
+            Assert.IsNotNull(element);
+
             driver.SwitchTo().DefaultContent();
-            Assert.AreEqual(iframesTitle, driver.Title);
+            element = driver.FindElement(By.Id("iframe_page_heading"));
+            Assert.IsNotNull(element);
         }
 
         [Test]
@@ -59,16 +65,16 @@ namespace OpenQA.Selenium
             driver.Url = framesPage;
             
             driver.SwitchTo().Frame("first");
-            Assert.AreEqual("Page1", driver.Title);
+            Assert.AreEqual(driver.FindElement(By.Id("pageNumber")).Text, "1");
 
             driver.SwitchTo().DefaultContent();
-            Assert.AreEqual("Page1", driver.Title);
+            Assert.AreEqual(driver.FindElement(By.Id("pageNumber")).Text, "1");
 
             driver.SwitchTo().Frame("second");
-            Assert.AreEqual("Page2", driver.Title);
+            Assert.AreEqual(driver.FindElement(By.Id("pageNumber")).Text, "2");
 
             driver.SwitchTo().DefaultContent();
-            Assert.AreEqual("Page1", driver.Title);
+            Assert.AreEqual(driver.FindElement(By.Id("pageNumber")).Text, "1");
         }
 
         [Test]
@@ -77,16 +83,16 @@ namespace OpenQA.Selenium
             driver.Url = framesPage;
             
             driver.SwitchTo().Frame(0);
-            Assert.AreEqual("Page1", driver.Title);
+            Assert.AreEqual(driver.FindElement(By.Id("pageNumber")).Text, "1");
 
             driver.SwitchTo().DefaultContent();
-            Assert.AreEqual("Page1", driver.Title);
+            Assert.AreEqual(driver.FindElement(By.Id("pageNumber")).Text, "1");
 
             driver.SwitchTo().Frame(1);
-            Assert.AreEqual("Page2", driver.Title);
+            Assert.AreEqual(driver.FindElement(By.Id("pageNumber")).Text, "2");
 
             driver.SwitchTo().DefaultContent();
-            Assert.AreEqual("Page1", driver.Title);
+            Assert.AreEqual(driver.FindElement(By.Id("pageNumber")).Text, "1");
         }
 
     }

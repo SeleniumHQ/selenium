@@ -19,6 +19,7 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "web", "common\src\web\", "{
 		Release.AspNetCompiler.Debug = "False"
 		VWDPort = "2310"
 		VWDDynamicPort = "false"
+		VWDVirtualPath = "/common"
 		DefaultWebSiteLanguage = "Visual C#"
 	EndProjectSection
 EndProject
@@ -47,6 +48,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebDriver.Remote", "remote\client\src\csharp\webdriver-remote\WebDriver.Remote.csproj", "{32122F8D-CD64-495A-B9B0-5516FF67C79F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "webdriver-remote-test", "remote\client\test\csharp\webdriver-remote-test\webdriver-remote-test.csproj", "{1D3DF4DB-6C11-480D-9774-F489B2EF62D8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebDriver.Firefox", "firefox\src\csharp\webdriver-firefox\WebDriver.Firefox.csproj", "{5E7C67A1-1BF2-4A46-8C29-8A6DCF6E4543}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "webdriver-firefox-test", "firefox\test\csharp\webdriver-firefox-test\webdriver-firefox-test.csproj", "{630FC167-169E-4CFD-83ED-9BA4AA8A0FB4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -266,6 +271,34 @@ Global
 		{1D3DF4DB-6C11-480D-9774-F489B2EF62D8}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{1D3DF4DB-6C11-480D-9774-F489B2EF62D8}.Release|Win32.ActiveCfg = Release|Any CPU
 		{1D3DF4DB-6C11-480D-9774-F489B2EF62D8}.Release|x64.ActiveCfg = Release|Any CPU
+		{5E7C67A1-1BF2-4A46-8C29-8A6DCF6E4543}.Debug|.NET.ActiveCfg = Debug|Any CPU
+		{5E7C67A1-1BF2-4A46-8C29-8A6DCF6E4543}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5E7C67A1-1BF2-4A46-8C29-8A6DCF6E4543}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5E7C67A1-1BF2-4A46-8C29-8A6DCF6E4543}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{5E7C67A1-1BF2-4A46-8C29-8A6DCF6E4543}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{5E7C67A1-1BF2-4A46-8C29-8A6DCF6E4543}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{5E7C67A1-1BF2-4A46-8C29-8A6DCF6E4543}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{5E7C67A1-1BF2-4A46-8C29-8A6DCF6E4543}.Release|.NET.ActiveCfg = Release|Any CPU
+		{5E7C67A1-1BF2-4A46-8C29-8A6DCF6E4543}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5E7C67A1-1BF2-4A46-8C29-8A6DCF6E4543}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5E7C67A1-1BF2-4A46-8C29-8A6DCF6E4543}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{5E7C67A1-1BF2-4A46-8C29-8A6DCF6E4543}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{5E7C67A1-1BF2-4A46-8C29-8A6DCF6E4543}.Release|Win32.ActiveCfg = Release|Any CPU
+		{5E7C67A1-1BF2-4A46-8C29-8A6DCF6E4543}.Release|x64.ActiveCfg = Release|Any CPU
+		{630FC167-169E-4CFD-83ED-9BA4AA8A0FB4}.Debug|.NET.ActiveCfg = Debug|Any CPU
+		{630FC167-169E-4CFD-83ED-9BA4AA8A0FB4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{630FC167-169E-4CFD-83ED-9BA4AA8A0FB4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{630FC167-169E-4CFD-83ED-9BA4AA8A0FB4}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{630FC167-169E-4CFD-83ED-9BA4AA8A0FB4}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{630FC167-169E-4CFD-83ED-9BA4AA8A0FB4}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{630FC167-169E-4CFD-83ED-9BA4AA8A0FB4}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{630FC167-169E-4CFD-83ED-9BA4AA8A0FB4}.Release|.NET.ActiveCfg = Release|Any CPU
+		{630FC167-169E-4CFD-83ED-9BA4AA8A0FB4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{630FC167-169E-4CFD-83ED-9BA4AA8A0FB4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{630FC167-169E-4CFD-83ED-9BA4AA8A0FB4}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{630FC167-169E-4CFD-83ED-9BA4AA8A0FB4}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{630FC167-169E-4CFD-83ED-9BA4AA8A0FB4}.Release|Win32.ActiveCfg = Release|Any CPU
+		{630FC167-169E-4CFD-83ED-9BA4AA8A0FB4}.Release|x64.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

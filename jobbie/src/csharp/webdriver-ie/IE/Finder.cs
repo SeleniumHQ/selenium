@@ -8,7 +8,7 @@ using System.Collections.ObjectModel;
 
 namespace OpenQA.Selenium.IE
 {
-    class Finder : ISearchContext, IFindsById, IFindsByLinkText, IFindsByName, IFindsByPartialLinkText, IFindsByTagName, IFindsByXPath, IFindsByClassName
+    internal class Finder : ISearchContext, IFindsById, IFindsByLinkText, IFindsByName, IFindsByPartialLinkText, IFindsByTagName, IFindsByXPath, IFindsByClassName
     {
         InternetExplorerDriver driver;
         SafeInternetExplorerWebElementHandle parent;
