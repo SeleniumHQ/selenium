@@ -356,12 +356,14 @@ public class FirefoxProfile {
         }
 
         Map<String, String> prefs = new HashMap<String, String>();
-
         if (userPrefs.exists()) {
             prefs = readExistingPrefs(userPrefs);
             if (!userPrefs.delete())
                 throw new WebDriverException("Cannot delete existing user preferences");
         }
+
+        // Allow users to override these settings
+        prefs.put("browser.startup.homepage", "\"about:blank\"");
 
         additionalPrefs.addTo(prefs);
 
@@ -396,7 +398,6 @@ public class FirefoxProfile {
         prefs.put("security.warn_viewing_mixed", "false");
         prefs.put("security.warn_viewing_mixed.show_once", "false");
         prefs.put("signon.rememberSignons", "false");
-        prefs.put("startup.homepage_welcome_url", "\"about:blank\"");
 
         // Which port should we listen on?
         prefs.put("webdriver_firefox_port", Integer.toString(port));
@@ -412,6 +413,9 @@ public class FirefoxProfile {
         // Settings to facilitate debugging the driver
         prefs.put("javascript.options.showInConsole", "true"); // Logs errors in chrome files to the Error Console.
         prefs.put("browser.dom.window.dump.enabled", "true");  // Enables the use of the dump() statement
+
+        // If the user sets the home page, we should also start up there
+        prefs.put("startup.homepage_welcome_url", prefs.get("browser.startup.homepage"));
 
         writeNewPrefs(prefs);
     }
