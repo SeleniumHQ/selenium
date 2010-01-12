@@ -106,6 +106,10 @@ public class JsonToBeanConverter {
       return (T) convertList((JSONArray) text);
     }
 
+    if (text == JSONObject.NULL) {
+      return null;
+    }
+
     JSONObject o;
     try {
       if (text instanceof JSONObject)

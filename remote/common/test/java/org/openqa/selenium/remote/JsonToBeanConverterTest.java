@@ -50,6 +50,17 @@ public class JsonToBeanConverterTest extends TestCase {
   }
 
   @SuppressWarnings("unchecked")
+  public void testCanPopulateAMapThatContainsNull() throws Exception {
+    JSONObject toConvert = new JSONObject();
+    toConvert.put("foo", JSONObject.NULL);
+
+    Map converted = new JsonToBeanConverter().convert(Map.class, toConvert.toString());
+    assertEquals(1, converted.size());
+    assertTrue(converted.containsKey("foo"));
+    assertNull(converted.get("foo"));
+  }
+
+  @SuppressWarnings("unchecked")
   public void testCanPopulateASimpleBean() throws Exception {
     JSONObject toConvert = new JSONObject();
     toConvert.put("value", "time");
