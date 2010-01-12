@@ -64,7 +64,7 @@ function Debugger(editor) {
         var pluginProvided = SeleniumIDE.Preferences.getString("pluginProvidedUserExtensions");
         if (typeof pluginProvided != 'undefined') {
             try {
-                var split_pluginProvided = pluginProvided.split(" ");
+                var split_pluginProvided = pluginProvided.split(",");
                 for(var sp = 0; sp < split_pluginProvided.length; sp++){
                     ExtensionsLoader.loadSubScript(subScriptLoader, split_pluginProvided[sp], this.runner);
                 }

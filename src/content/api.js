@@ -7,13 +7,14 @@ function API() {
 // -- or not if it already exists
 API.prototype.addPluginProvidedUserExtension = function(url) {
     var options = {};
+    
     var current = this.preferences.getString("pluginProvidedUserExtensions");
     if (typeof current == 'undefined'){
         options["pluginProvidedUserExtensions"] = url;
         this.preferences.save(options, "pluginProvidedUserExtensions");
     } else {
         if (current.search(url) == -1) {
-            options["pluginProvidedUserExtensions"] = current + ' ' + url;
+            options["pluginProvidedUserExtensions"] = current + ',' + url;
             this.preferences.save(options, "pluginProvidedUserExtensions");
         }
     }
