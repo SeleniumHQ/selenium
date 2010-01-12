@@ -656,7 +656,9 @@ Editor.prototype.playback = function(newWindow, resultCallback) {
     }
     var auto = resultCallback != null;
 
-    var extensionsURLs = ExtensionsLoader.getURLs(this.getOptions().userExtensionsURL);
+    var extensionsURLs = [];
+    extensionsURLs.push(ExtensionsLoader.getURLs(this.getOptions().userExtensionsURL));
+    extensionsURLs.push(ExtensionsLoader.getURLs(SeleniumIDE.Preferences.getString("pluginProvidedUserExtensions")));
     // Using chrome://selenium-ide-testrunner instead of chrome://selenium-ide because
     // we need to disable implicit XPCNativeWrapper to make TestRunner work
     this.showInBrowser('chrome://selenium-ide-testrunner/content/selenium/TestRunner.html?test=/content/PlayerTestSuite.html' + 
