@@ -335,6 +335,10 @@ module Selenium
                   :parameters => [name.to_s]
         end
 
+        def switchToDefaultContent
+          execute :switchToDefaultContent
+        end
+
         def switchToWindow(name)
           @context = execute  :switchToWindow,
                               :parameters => [name.to_s]

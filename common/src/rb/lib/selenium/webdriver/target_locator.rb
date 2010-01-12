@@ -49,6 +49,14 @@ module Selenium
         @bridge.switchToActiveElement
       end
 
+      #
+      # selects either the first frame on the page, or the main document when a page contains iframes.
+      #
+
+      def default_content
+        @bridge.switchToDefaultContent
+      end
+
     end # TargetLocator
   end # WebDriver
 end  # Selenium

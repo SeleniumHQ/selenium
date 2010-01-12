@@ -131,6 +131,10 @@ module Selenium
           execute :switchToFrame, :id => id
         end
 
+        def switchToDefaultContent
+          execute :switchToFrame, :id => nil
+        end
+
         def quit
           execute :quit
         end

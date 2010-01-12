@@ -90,6 +90,10 @@ module Selenium
           end
         end
 
+        def switchToDefaultContent
+          switchToFrame ""
+        end
+
         def quit
           getWindowHandles.each do |handle|
             begin

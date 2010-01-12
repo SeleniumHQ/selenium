@@ -54,6 +54,10 @@ module Selenium
                   :name    => id
         end
 
+        def switchToDefaultContent
+          execute :request => "switchToDefaultContent"
+        end
+
         def quit
           begin
             execute :request => 'quit'
