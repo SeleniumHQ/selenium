@@ -24,6 +24,8 @@ import utils
 
 
 class WebDriver(object):
+    name = "Firefox"
+
     """The main interface to use for testing,
     which represents an idealised web browser."""
     def __init__(self, profile=None, timeout=30):

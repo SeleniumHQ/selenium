@@ -24,19 +24,19 @@ import threading
 import urllib
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 
+def updir():
+    dirname = os.path.dirname
+    return dirname(dirname(__file__))
 
-try:
-    HTML_ROOT = os.path.join(os.getenv("WEBDRIVER"), "common_web")
-except Exception:
-    logging.error("Environment variable 'WEBDRIVER' is not set, unable to"
-                 " locate the test html files.")
-    sys.exit(-1)
-assert os.path.exists(HTML_ROOT), (
-    "Unable to locate the test html files from %s" % HTML_ROOT)
+WEBDRIVER = os.environ.get("WEBDRIVER", updir())
+HTML_ROOT = os.path.join(WEBDRIVER, "common_web")
+if not os.path.isdir(HTML_ROOT):
+    message = ("Can't find 'common_web' directory, try setting WEBDRIVER"
+               " environment variable")
+    logging.error(message)
+    assert 0, message
 
 DEFAULT_PORT = 8000
-sys.stderr = open("http_stderr_log.txt",'a')
-sys.stdout = open("http_stdout_log.txt",'a')
 
 class HtmlOnlyHandler(BaseHTTPRequestHandler):
     """Http handler."""
@@ -51,7 +51,11 @@ class HtmlOnlyHandler(BaseHTTPRequestHandler):
             self.wfile.write(html.read())
             html.close()
         except IOError:
-            self.send_response(404,'File Not Found: %s' % path)
+            self.send_error(404, 'File Not Found: %s' % path)
+
+    def log_message(self, format, *args):
+        """Override default to avoid trashing stderr"""
+        pass
 
 class SimpleWebServer(object):
     """A very basic web server."""
@@ -92,3 +96,35 @@ class SimpleWebServer(object):
             pass
         logging.info("Shutting down the webserver")
         self.thread.join()
+
+def main(argv=None):
+    from optparse import OptionParser
+    from time import sleep
+
+    if argv is None:
+        import sys
+        argv = sys.argv
+
+    parser = OptionParser("%prog [options]")
+    parser.add_option("-p", "--port", dest="port", type="int",
+            help="port to listen (default: %s)" % DEFAULT_PORT,
+            default=DEFAULT_PORT)
+
+    opts, args = parser.parse_args(argv[1:])
+    if args:
+        parser.error("wrong number of arguments") # Will exit
+
+    server = SimpleWebServer(opts.port)
+    server.start()
+    print "Server started on port %s, hit CTRL-C to quit" % opts.port
+    try:
+        while 1:
+            sleep(0.1)
+    except KeyboardInterrupt:
+        pass
+
+
+if __name__ == "__main__":
+    main()
+
+

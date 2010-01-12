@@ -1,3 +1,5 @@
+#!/usr/bin/python
+#
 # Copyright 2008-2009 WebDriver committers
 # Copyright 2008-2009 Google Inc.
 #
@@ -13,14 +15,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import common
 
-def get_driver(name, *args, **kw):
-    try:
-        # __import__ returns the top level module
-        top = __import__("webdriver.%s.webdriver" % name)
-        wd = getattr(getattr(top, name), "webdriver")
-    except (ImportError, AttributeError):
-        raise ValueError("There's no driver for `%s` browser" % name)
+import logging
+from webdriver.common_tests import api_examples
+from webdriver.ie.webdriver import WebDriver
 
-    return wd.WebDriver(*args, **kw)
+if __name__ == "__main__":
+    api_examples.run_tests(WebDriver())

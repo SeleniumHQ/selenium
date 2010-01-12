@@ -20,7 +20,10 @@ import socket
 import re
 import threading
 import time
-import simplejson
+try:
+    import json
+except ImportError: # Python < 2.6
+    import simplejson as json
 from ..common.exceptions import ErrorInResponseException
 
 _DEFAULT_TIMEOUT = 20
@@ -42,7 +45,7 @@ class ExtensionConnection(object):
 
     def element_command(self, cmd, element_id, *params):
         """Element level command."""
-        json_dump = simplejson.dumps({"parameters": params,
+        json_dump = json.dumps({"parameters": params,
                                       "context": self.context,
                                       "elementId": element_id,
                                       "commandName":cmd})
@@ -74,7 +77,7 @@ class ExtensionConnection(object):
         sections = re.findall(r'{.*}', resp)
         if sections:
             json_content = sections[0]
-            decoded = simplejson.loads(json_content)
+            decoded = json.loads(json_content)
             if decoded["isError"]:
                 raise ErrorInResponseException(
                     decoded['response'],

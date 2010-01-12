@@ -14,7 +14,6 @@
 # limitations under the License.
 
 import httplib
-import simplejson
 import logging
 import utils
 from ..common.exceptions import ErrorInResponseException
@@ -50,8 +49,8 @@ class RemoteConnection(object):
 
     def request(self, method, path, *params):
         if params:
-            payload = simplejson.dumps(params)
-            logging.debug("request:" + path + utils.format_json(params))
+            payload = utils.format_json(params)
+            logging.debug("request:" + path + payload)
         else:
             payload = ""
 
@@ -74,7 +73,7 @@ class RemoteConnection(object):
             redirected_url = resp.getheader("location")
             return self.get(redirected_url)
         if resp.status == 200 and data:
-            decoded_data = simplejson.loads(data)
+            decoded_data = utils.load_json(data)
             logging.debug("response:" + utils.format_json(decoded_data))
             if decoded_data["error"]:
                 raise ErrorInResponseException(

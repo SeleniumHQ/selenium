@@ -1,5 +1,4 @@
 import datetime
-import simplejson
 import time
 import unittest
 from webdriver.common.webserver import SimpleWebServer

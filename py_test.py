@@ -21,11 +21,13 @@ binding."""
 import os
 import shutil
 import subprocess
+import sys
 
 def run_script(script_name, *args):
-    return subprocess.Popen("python %s %s" %
-                            (script_name.replace("/", os.path.sep),
-                             " ".join(args)), shell=True)
+    command = [sys.executable, script_name.replace("/", os.path.sep)]
+    command.extend(args)
+
+    return subprocess.Popen(command)
 
 if __name__ == "__main__":
     base_dir = os.path.abspath(os.path.dirname(__file__))

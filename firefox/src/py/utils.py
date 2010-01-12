@@ -15,8 +15,7 @@
 
 """Utility functions."""
 
-from subprocess import Popen
-from subprocess import PIPE
+from subprocess import Popen, PIPE
 import logging
 import os
 import platform
@@ -43,7 +42,7 @@ def unzip_to_temp_dir(zip_file_name):
     zf = zipfile.ZipFile(zip_file_name)
 
     if zf.testzip() is not None:
-      return None
+        return None
 
     # Unzip the files into a temporary directory
     logging.info("Extracting zipped file: %s" % zip_file_name)
@@ -79,9 +78,33 @@ def unzip_to_temp_dir(zip_file_name):
         return tempdir
 
     except IOError, err:
-         logging.error("Error in extracting webdriver-extension.zip: %s" % err)
-         return None
+        logging.error("Error in extracting webdriver-extension.zip: %s" % err)
+        return None
 
+
+def _find_exe_in_registry():
+    from _winreg import OpenKey, QueryValue, HKEY_LOCAL_MACHINE
+    import shlex
+    keys = (
+       r"SOFTWARE\Classes\FirefoxHTML\shell\open\command",
+       r"SOFTWARE\Classes\Applications\firefox.exe\shell\open\command"
+    )
+    command = ""
+    for path in keys:
+        try:
+            key = OpenKey(HKEY_LOCAL_MACHINE, path)
+            command = QueryValue(key, "")
+            break
+        except WindowsError:
+            pass
+    else:
+        return ""
+
+    return shlex.split(command)[0]
+
+def _default_windows_location():
+    program_files = os.getenv("PROGRAMFILES", r"\Program Files")
+    return os.path.join(program_files, "Mozilla Firefox\\firefox.exe")
 
 def get_firefox_start_cmd():
     """Return the command to start firefox."""
@@ -89,10 +112,7 @@ def get_firefox_start_cmd():
     if platform.system() == "Darwin":
         start_cmd = ("/Applications/Firefox.app/Contents/MacOS/firefox-bin")
     elif platform.system() == "Windows":
-        program_files = os.getenv("PROGRAMFILES")
-        if program_files is None:
-            program_files = "\\Program Files"
-        start_cmd = os.path.join(program_files, "Mozilla Firefox\\firefox.exe")
+        start_cmd = _find_exe_in_registry() or _default_windows_location()
     else:
         # Maybe iceweasel (Debian) is another candidate...
         for ffname in ["firefox2", "firefox", "firefox-3.0"]:
@@ -104,7 +124,6 @@ def get_firefox_start_cmd():
                 start_cmd = cmd
                 break
     return start_cmd
-
 
 def get_firefox_app_data_dir():
     """Return the path to the firefox application data."""

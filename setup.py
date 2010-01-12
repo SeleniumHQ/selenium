@@ -49,23 +49,40 @@ setup(
    url='http://code.google.com/p/selenium/',
    package_dir={
                 'webdriver':'.',
+                'webdriver.ie': 'jobbie/src/py',
                 'webdriver.firefox': 'firefox/src/py',
+                'webdriver.chrome' : 'chrome/src/py',
+                'webdriver.chrome_tests': 'chrome/test/py',
                 'webdriver.common': 'common/src/py',
                 'webdriver.remote': 'remote/client/src/py',
                 'webdriver.common_tests': 'common/test/py',
                 'webdriver.common_web': 'common/src/web',
                 'webdriver.firefox_tests': 'firefox/test/py',
+                'webdriver.ie_tests': 'jobbie/test/py',
                 'webdriver.remote_tests': 'remote/client/test/py',
                 },
-   packages=['webdriver', 
+   packages=['webdriver',
              'webdriver.common',
              'webdriver.firefox',
+             'webdriver.ie',
+             'webdriver.chrome',
              'webdriver.remote',
              'webdriver.common_tests',
              'webdriver.common_web',
              'webdriver.firefox_tests',
+             'webdriver.ie_tests',
+             'webdriver.chrome_tests',
              'webdriver.remote_tests'],
    include_package_data=True,
    package_data={'': ['*.' + t for t in test_web_extensions], 
                 'webdriver.common_web':all_dirs_and_extensions}
 )
+
+# FIXME: Do manually
+# == IE ==
+# cp jobbie/prebuilt/Win32/Release/InternetExplorerDriver.dll \
+#        build/lib.<platform>/webdriver/ie
+# == Chrome ==
+# cp chrome/src/extension build/lib.<platform>/webdriver/chrome
+# On win32
+# cp chrome/prebuilt/Win32/Release/npchromedriver.dll build/lib/webdriver/chrome

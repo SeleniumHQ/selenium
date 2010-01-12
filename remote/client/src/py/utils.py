@@ -13,12 +13,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import simplejson
+try:
+    import json
+except ImportError: # < 2.6
+    import simplejson as json
 from ..common.exceptions import NoSuchElementException
 
 
 def format_json(json_struct):
-    return simplejson.dumps(json_struct, indent=4)
+    return json.dumps(json_struct, indent=4)
+
+def load_json(s):
+    return json.loads(s)
 
 def handle_find_element_exception(e):
     if ("Unable to find" in e.response["value"]["message"] or

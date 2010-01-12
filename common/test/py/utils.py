@@ -14,7 +14,10 @@
 # limitations under the License.
 
 import logging
-import simplejson
+try:
+    import json
+except ImportError: # Python < 2.6
+    import simplejson as json
 import socket
 import sys
 import unittest
@@ -61,4 +64,4 @@ def convert_cookie_to_json(cookie):
             cookie_dict["expiry"] = int(value) * 1000
         else:
             cookie_dict[key] = value
-    return simplejson.dumps(cookie_dict)
+    return json.dumps(cookie_dict)

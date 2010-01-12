@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 # Copyright 2008-2009 WebDriver committers
 # Copyright 2008-2009 Google Inc.
 #
@@ -13,7 +15,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-#!/usr/bin/python
 
 import datetime
 import logging
@@ -22,7 +23,6 @@ import re
 import tempfile
 import time
 import shutil
-import simplejson
 import socket
 import sys
 import unittest
@@ -33,8 +33,9 @@ import webdriver.remote.webdriver
 import webdriver.common_tests
 from webdriver.common_tests import utils
 
-webserver = SimpleWebServer()
+webserver = None
 driver = None
+
 
 def not_available_on_remote(func):
     def testMethod(self):
@@ -187,7 +188,8 @@ class ApiExampleTest (unittest.TestCase):
     def testGetPageSource(self):
         self._loadSimplePage()
         source = self.driver.get_page_source()
-        self.assertTrue(len(re.findall(r'<html>.*</html>', source, re.DOTALL)) > 0)
+        matches = re.findall(r'<html>.*</html>', source, re.DOTALL|re.I)
+        self.assertTrue(len(matches) > 0)
 
     def testIsEnabled(self):
         self._loadPage("formPage")
@@ -217,15 +219,21 @@ class ApiExampleTest (unittest.TestCase):
         self.assertEquals("We Arrive Here", self.driver.get_title())
 
     def testGetAttribute(self):
-        self._loadPage("xhtmlTest")
+        page = "xhtmlTest"
+        self._loadPage(page)
         elem = self.driver.find_element_by_id("id1")
-        self.assertEquals("#", elem.get_attribute("href"))
+        attr = elem.get_attribute("href")
+        # IE returns full URL
+        if self.driver.name == "IE":
+            attr = attr[len(self._pageURL(page)):]
+        self.assertEquals("#", attr)
 
     def testGetImplicitAttribute(self):
         self._loadPage("nestedElements")
         elems = self.driver.find_elements_by_xpath("//option")
-        for i in range(3):
-            self.assertEquals(i, int(elems[i].get_attribute("index")))
+        self.assert_(len(elems) >= 3)
+        for i, elem in enumerate(elems[:3]):
+            self.assertEquals(str(i), elem.get_attribute("index"))
 
     def testExecuteSimpleScript(self):
         self._loadPage("xhtmlTest")
@@ -270,13 +278,17 @@ class ApiExampleTest (unittest.TestCase):
         self.assertTrue(os.path.exists(file_name))
         shutil.rmtree(os.path.dirname(file_name))
 
+    def _pageURL(self, name):
+        return "http://localhost:%d/%s.html" % (webserver.port, name)
+
     def _loadSimplePage(self):
-        self.driver.get("http://localhost:%d/simpleTest.html" % webserver.port)
+        self._loadPage("simpleTest")
 
     def _loadPage(self, name):
-        self.driver.get("http://localhost:%d/%s.html" % (webserver.port, name))
+        self.driver.get(self._pageURL(name))
 
 def run_tests(driver_):
-    global driver
+    global driver, webserver
+    webserver = SimpleWebServer()
     driver = driver_
     utils.run_tests("api_examples.ApiExampleTest", driver, webserver)
