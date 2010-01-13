@@ -19,7 +19,7 @@ public class RemoteControlLauncher {
         String INDENT2X = INDENT+INDENT;
         printWrappedErrorLine("", "Usage: java -jar selenium-server.jar [-interactive] [options]\n");
         printWrappedErrorLine(INDENT, "-port <nnnn>: the port number the selenium server should use (default 4444)");
-        printWrappedErrorLine(INDENT, "-timeout <nnnn>: an integer number of seconds before we should give up");
+        printWrappedErrorLine(INDENT, "-timeout <nnnn>: specifies the number of seconds that you allow data to wait all in the communications queues before an exception is thrown.");
         printWrappedErrorLine(INDENT, "-interactive: puts you into interactive mode.  See the tutorial for more details");
         printWrappedErrorLine(INDENT, "-singleWindow: puts you into a mode where the test web site executes in a frame. This mode should only be selected if the application under test does not use frames.");
         printWrappedErrorLine(INDENT, "-profilesLocation: Specifies the directory that holds the profiles that java clients can use to start up selenium.  Currently supported for Firefox only.");
