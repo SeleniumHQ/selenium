@@ -7,6 +7,6 @@
 	<classpathentry kind="lib" path="lib/runtime/hamcrest-all-1.1.jar"/>
 	<classpathentry kind="lib" path="lib/runtime/jmock-2.4.0.jar"/>
 	<classpathentry kind="lib" path="lib/runtime/jmock-junit3-2.4.0.jar"/>
-	<classpathentry kind="var" path="WEBDRIVER_ROOT_FOLDER/third_party/java/google-collect-1.0-rc3.jar"/>
+        <classpathentry kind="var" path="WEBDRIVER_ROOT_FOLDER/third_party/java/google-collect-1.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
