@@ -366,6 +366,9 @@ public class FirefoxProfile {
 
         // Allow users to override these settings
         prefs.put("browser.startup.homepage", "\"about:blank\"");
+        // The user must be able to override this setting (to 1) in order to
+        // to change homepage on Firefox 3.0
+        prefs.put("browser.startup.page", "0");
 
         additionalPrefs.addTo(prefs);
 
@@ -381,7 +384,6 @@ public class FirefoxProfile {
         prefs.put("browser.search.update", "false");
         prefs.put("browser.sessionstore.resume_from_crash", "false");
         prefs.put("browser.shell.checkDefaultBrowser", "false");
-        prefs.put("browser.startup.page", "0");
         prefs.put("browser.tabs.warnOnClose", "false");
         prefs.put("browser.tabs.warnOnOpen", "false");
         prefs.put("dom.disable_open_during_load", "false");
