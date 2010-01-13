@@ -57,6 +57,7 @@ public class FirefoxProfile {
   private boolean enableNativeEvents;
   private boolean loadNoFocusLib;
   private boolean acceptUntrustedCerts;
+  private boolean untrustedCertIssuer;
 
   /**
    * Constructs a firefox profile from an existing, physical profile directory.
@@ -75,6 +76,7 @@ public class FirefoxProfile {
     enableNativeEvents = FirefoxDriver.DEFAULT_ENABLE_NATIVE_EVENTS;
     loadNoFocusLib = false;
     acceptUntrustedCerts = FirefoxDriver.ACCEPT_UNTRUSTED_CERTIFICATES;
+    untrustedCertIssuer = FirefoxDriver.ASSUME_UNTRUSTED_ISSUER;
 
     if (!profileDir.exists()) {
       throw new WebDriverException(MessageFormat.format("Profile directory does not exist: {0}",
@@ -409,6 +411,10 @@ public class FirefoxProfile {
         // Should we accept untrusted certificates or not?
         prefs.put("webdriver_accept_untrusted_certs",
             Boolean.toString(acceptUntrustedCerts));
+        
+        prefs.put("webdriver_assume_untrusted_issuer",
+            Boolean.toString(untrustedCertIssuer));
+         
 
         // Settings to facilitate debugging the driver
         prefs.put("javascript.options.showInConsole", "true"); // Logs errors in chrome files to the Error Console.
@@ -489,6 +495,28 @@ public class FirefoxProfile {
     
     public void setAcceptUntrustedCertificates(boolean acceptUntrustedSsl) {
       this.acceptUntrustedCerts = acceptUntrustedSsl;
+    }
+
+    /**
+     * By default, when accepting untrusted SSL certificates, assume that
+     * these certificates will come from an untrusted issuer or will be self
+     * signed.
+     * Due to limitation within Firefox, it is easy to find out if the
+     * certificate has expired or does not match the host it was served for,
+     * but hard to find out if the issuer of the certificate is untrusted.
+     * 
+     * By default, it is assumed that the certificates were not be issued from
+     * a trusted CA.
+     * 
+     * If you are receive an "untrusted site" prompt on Firefox when using a
+     * certificate that was issued by valid issuer, but has expired or 
+     * is being served served for a different host (e.g. production certificate
+     * served in a testing environment) set this to false.
+     *  
+     * @param untrustedIssuer whether to assume untrusted issuer or not.
+     */
+    public void setAssumeUntrustedCertificateIssuer(boolean untrustedIssuer) {
+      this.untrustedCertIssuer = untrustedIssuer;
     }
 
   public boolean isRunning() {

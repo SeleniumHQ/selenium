@@ -93,6 +93,9 @@ public class FirefoxDriver implements WebDriver, JavascriptExecutor, TakesScreen
       Platform.getCurrent().is(Platform.WINDOWS);
     // Accept untrusted SSL certificates.
     public static final boolean ACCEPT_UNTRUSTED_CERTIFICATES = true;
+    // Assume that the untrusted certificates will come from untrusted issuers
+    // or will be self signed.
+    public static final boolean ASSUME_UNTRUSTED_ISSUER = true;
 
     // Commands we can execute with needing to dismiss an active alert
     private final Set<String> alertWhiteListedCommands = new HashSet<String>() {{

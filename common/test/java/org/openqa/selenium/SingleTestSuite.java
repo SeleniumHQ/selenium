@@ -40,7 +40,7 @@ public class SingleTestSuite extends TestCase {
   private final static String SELENIUM = "org.openqa.selenium.SeleneseBackedWebDriver";
 
   public static Test suite() throws Exception {
-    String driver = HTML_UNIT_JS;
+    String driver = FIREFOX_TEST;
 
     System.setProperty("webdriver.development", "true");
     System.setProperty("jna.library.path", "..\\build;build");
@@ -54,8 +54,8 @@ public class SingleTestSuite extends TestCase {
         .usingDriver(driver)
         .keepDriverInstance()
         .includeJavascriptTests()
-        .onlyRun("CorrectEventFiringTest")
-        .method("testUploadingFileShouldFireOnChangeEvent")
+        .onlyRun("PageLoadingTest")
+        .method("testShouldBeAbleToAccessPagesWithAnInsecureSslCertificate")
         .exclude(ALL)
         .exclude(Ignore.Driver.SELENESE)
         .leaveRunning()
