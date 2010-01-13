@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.IO;
 using System.Collections.ObjectModel;
+using System.Globalization;
 
 namespace OpenQA.Selenium.Firefox.Internal
 {
@@ -28,21 +29,21 @@ namespace OpenQA.Selenium.Firefox.Internal
             string[] iniFileContent = File.ReadAllLines(fileName);
             foreach (string iniFileLine in iniFileContent)
             {
-                if (!string.IsNullOrEmpty(iniFileLine.Trim()) && !iniFileLine.StartsWith(";"))
+                if (!string.IsNullOrEmpty(iniFileLine.Trim()) && !iniFileLine.StartsWith(";", StringComparison.OrdinalIgnoreCase))
                 {
-                    if (iniFileLine.StartsWith("[") && iniFileLine.EndsWith("]"))
+                    if (iniFileLine.StartsWith("[", StringComparison.OrdinalIgnoreCase) && iniFileLine.EndsWith("]", StringComparison.OrdinalIgnoreCase))
                     {
                         if (!string.IsNullOrEmpty(sectionName))
                         {
                             iniFileStore.Add(sectionName, section);
                         }
-                        sectionName = iniFileLine.Substring(1, iniFileLine.Length - 2).ToLower();
+                        sectionName = iniFileLine.Substring(1, iniFileLine.Length - 2).ToUpperInvariant();
                         section = new Dictionary<string, string>();
                     }
                     else
                     {
                         string[] entryParts = iniFileLine.Split(new char[] { '=' }, 2);
-                        string name = entryParts[0].ToLower();
+                        string name = entryParts[0].ToUpperInvariant();
                         string value = string.Empty;
                         if (entryParts.Length > 1)
                         {
@@ -71,14 +72,14 @@ namespace OpenQA.Selenium.Firefox.Internal
                 throw new ArgumentNullException("sectionName", "Section name cannot be null or empty");
             }
 
-            string lowerCaseSectionName = sectionName.ToLower();
+            string lowerCaseSectionName = sectionName.ToUpperInvariant();
 
             if (string.IsNullOrEmpty(valueName))
             {
                 throw new ArgumentNullException("valueName", "Value name cannot be null or empty");
             }
 
-            string lowerCaseValueName = valueName.ToLower();
+            string lowerCaseValueName = valueName.ToUpperInvariant();
 
             if (!iniFileStore.ContainsKey(lowerCaseSectionName))
             {

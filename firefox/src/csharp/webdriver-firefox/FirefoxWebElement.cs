@@ -4,6 +4,7 @@ using System.Text;
 using System.Collections.ObjectModel;
 using System.Drawing;
 using OpenQA.Selenium.Internal;
+using System.Globalization;
 
 namespace OpenQA.Selenium.Firefox
 {
@@ -115,7 +116,7 @@ namespace OpenQA.Selenium.Firefox
                 // driver, where the boolean values are returned as strings.
                 if (result is bool)
                 {
-                    attributeValue = result.ToString().ToLower();
+                    attributeValue = result.ToString().ToLowerInvariant();
                 }
                 else
                 {
@@ -155,7 +156,7 @@ namespace OpenQA.Selenium.Firefox
                 Dictionary<string, object> locationObject = result as Dictionary<string, object>;
                 if (locationObject != null)
                 {
-                    locationPoint = new Point(int.Parse(locationObject["x"].ToString()), int.Parse(locationObject["y"].ToString()));
+                    locationPoint = new Point(int.Parse(locationObject["x"].ToString(), CultureInfo.InvariantCulture), int.Parse(locationObject["y"].ToString(), CultureInfo.InvariantCulture));
                 }
                 return locationPoint;
             }
@@ -170,7 +171,7 @@ namespace OpenQA.Selenium.Firefox
                 Dictionary<string, object> sizeObject = result as Dictionary<string, object>;
                 if (sizeObject != null)
                 {
-                    elementSize = new Size(int.Parse(sizeObject["width"].ToString()), int.Parse(sizeObject["height"].ToString()));
+                    elementSize = new Size(int.Parse(sizeObject["width"].ToString(), CultureInfo.InvariantCulture), int.Parse(sizeObject["height"].ToString(), CultureInfo.InvariantCulture));
                 }
                 return elementSize;
             }
@@ -215,22 +216,15 @@ namespace OpenQA.Selenium.Firefox
         {
             get
             {
-                try
+                Point locationPoint = new Point();
+                object result = ExecuteCommand(typeof(WebDriverException), "getLocationOnceScrolledIntoView", null);
+                Dictionary<string, object> locationObject = result as Dictionary<string, object>;
+                if (locationObject != null)
                 {
-                    Point locationPoint = new Point();
-                    object result = ExecuteCommand(typeof(WebDriverException), "getLocationOnceScrolledIntoView", null);
-                    Dictionary<string, object> locationObject = result as Dictionary<string, object>;
-                    if (locationObject != null)
-                    {
-                        locationPoint = new Point(int.Parse(locationObject["x"].ToString()), int.Parse(locationObject["y"].ToString()));
-                    }
+                    locationPoint = new Point(int.Parse(locationObject["x"].ToString(), CultureInfo.InvariantCulture), int.Parse(locationObject["y"].ToString(), CultureInfo.InvariantCulture));
+                }
 
-                    return locationPoint;
-                }
-                catch (Exception e)
-                {
-                    throw new WebDriverException("", e);
-                }
+                return locationPoint;
             }
         }
 
@@ -348,11 +342,12 @@ namespace OpenQA.Selenium.Firefox
                 other = ((IWrapsElement)obj).WrappedElement;
             }
 
-            if (!(other is FirefoxWebElement))
+            FirefoxWebElement otherAsElement = other as FirefoxWebElement;
+            if (otherAsElement == null)
             {
                 return false;
             }
-            return elementId == ((FirefoxWebElement)other).ElementId;
+            return elementId == otherAsElement.ElementId;
         }
 
         public override int GetHashCode()

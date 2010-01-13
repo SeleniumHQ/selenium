@@ -1,10 +1,9 @@
-using OpenQA.Selenium.IE;
-using OpenQA.Selenium.Internal;
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Collections.ObjectModel;
+using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium.IE
 {
@@ -42,7 +41,7 @@ namespace OpenQA.Selenium.IE
             WebDriverResult result = NativeMethods.wdFindElementsById(handle, parent, id, ref collectionHandle);
             ResultHandler.VerifyResultCode(result, "FindElementsById");
             List<IWebElement> elementList = new List<IWebElement>();
-            using (ElementCollection elements = new ElementCollection(driver, collectionHandle))
+            using (InternetExplorerWebElementCollection elements = new InternetExplorerWebElementCollection(driver, collectionHandle))
             {
                 elementList = elements.ToList();
             }
@@ -63,7 +62,7 @@ namespace OpenQA.Selenium.IE
             WebDriverResult result = NativeMethods.wdFindElementsByLinkText(handle, parent, linkText, ref collectionHandle);
             ResultHandler.VerifyResultCode(result, "FindElementsByLinkText");
             List<IWebElement> elementList = new List<IWebElement>();
-            using (ElementCollection elements = new ElementCollection(driver, collectionHandle))
+            using (InternetExplorerWebElementCollection elements = new InternetExplorerWebElementCollection(driver, collectionHandle))
             {
                 elementList = elements.ToList();
             }
@@ -84,7 +83,7 @@ namespace OpenQA.Selenium.IE
             WebDriverResult result = NativeMethods.wdFindElementsByName(handle, parent, name, ref collectionHandle);
             ResultHandler.VerifyResultCode(result, "FindElementsByName");
             List<IWebElement> elementList = new List<IWebElement>();
-            using (ElementCollection elements = new ElementCollection(driver, collectionHandle))
+            using (InternetExplorerWebElementCollection elements = new InternetExplorerWebElementCollection(driver, collectionHandle))
             {
                 elementList = elements.ToList();
             }
@@ -105,7 +104,7 @@ namespace OpenQA.Selenium.IE
             WebDriverResult result = NativeMethods.wdFindElementsByXPath(handle, parent, xpath, ref collectionHandle);
             ResultHandler.VerifyResultCode(result, "FindElementsByXPath");
             List<IWebElement> elementList = new List<IWebElement>();
-            using (ElementCollection elements = new ElementCollection(driver, collectionHandle))
+            using (InternetExplorerWebElementCollection elements = new InternetExplorerWebElementCollection(driver, collectionHandle))
             {
                 elementList = elements.ToList();
             }
@@ -126,7 +125,7 @@ namespace OpenQA.Selenium.IE
             WebDriverResult result = NativeMethods.wdFindElementsByTagName(handle, parent, tagName, ref collectionHandle);
             ResultHandler.VerifyResultCode(result, "FindElementsByTagName");
             List<IWebElement> elementList = new List<IWebElement>();
-            using (ElementCollection elements = new ElementCollection(driver, collectionHandle))
+            using (InternetExplorerWebElementCollection elements = new InternetExplorerWebElementCollection(driver, collectionHandle))
             {
                 elementList = elements.ToList();
             }
@@ -147,7 +146,7 @@ namespace OpenQA.Selenium.IE
             WebDriverResult result = NativeMethods.wdFindElementsByPartialLinkText(handle, parent, partialLinkText, ref collectionHandle);
             ResultHandler.VerifyResultCode(result, "FindElementsByPartialLinkText");
             List<IWebElement> elementList = new List<IWebElement>();
-            using (ElementCollection elements = new ElementCollection(driver, collectionHandle))
+            using (InternetExplorerWebElementCollection elements = new InternetExplorerWebElementCollection(driver, collectionHandle))
             {
                 elementList = elements.ToList();
             }
@@ -168,7 +167,7 @@ namespace OpenQA.Selenium.IE
             WebDriverResult result = NativeMethods.wdFindElementsByClassName(handle, parent, className, ref collectionHandle);
             ResultHandler.VerifyResultCode(result, "FindElementsByClassName");
             List<IWebElement> elementList = new List<IWebElement>();
-            using (ElementCollection elements = new ElementCollection(driver, collectionHandle))
+            using (InternetExplorerWebElementCollection elements = new InternetExplorerWebElementCollection(driver, collectionHandle))
             {
                 elementList = elements.ToList();
             }

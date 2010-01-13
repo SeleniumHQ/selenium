@@ -4,7 +4,7 @@ using System.Text;
 
 namespace OpenQA.Selenium.Firefox.Internal
 {
-    internal class ExtensionConnectionFactory
+    internal static class ExtensionConnectionFactory
     {
         public static ExtensionConnection ConnectTo(FirefoxBinary binary, FirefoxProfile profile, String host)
         {

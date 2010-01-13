@@ -9,7 +9,7 @@ using System.Globalization;
 
 namespace OpenQA.Selenium.IE
 {
-    public class InternetExplorerWebElement : IRenderedWebElement, ILocatable, IDisposable
+    public sealed class InternetExplorerWebElement : IRenderedWebElement, ILocatable, IDisposable
     {
         private SafeInternetExplorerWebElementHandle elementHandle;
         private InternetExplorerDriver driver;
@@ -266,7 +266,7 @@ namespace OpenQA.Selenium.IE
             NativeMethods.wdeMouseUpAt(hwnd, endX, endY);
         }
 
-        public void DragAndDropOn(IRenderedWebElement toElement)
+        public void DragAndDropOn(IRenderedWebElement element)
         {
             IntPtr hwnd = IntPtr.Zero;
             int x = 0;
@@ -281,7 +281,7 @@ namespace OpenQA.Selenium.IE
 
             NativeMethods.wdeMouseDownAt(hwnd, startX, startY);
 
-            SafeInternetExplorerWebElementHandle other = ((InternetExplorerWebElement)toElement).Wrapper;
+            SafeInternetExplorerWebElementHandle other = ((InternetExplorerWebElement)element).Wrapper;
             result = NativeMethods.wdeGetDetailsOnceScrolledOnToScreen(other, ref hwnd, ref x, ref y, ref width, ref height);
             ResultHandler.VerifyResultCode(result, "Unable to determine location of target once scrolled on to screen");
 

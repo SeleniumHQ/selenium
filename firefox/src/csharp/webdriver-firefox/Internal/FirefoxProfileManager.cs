@@ -61,13 +61,16 @@ namespace OpenQA.Selenium.Firefox.Internal
             return profile;
         }
 
-        public ReadOnlyCollection<FirefoxProfile> GetExistingProfiles()
+        public ReadOnlyCollection<FirefoxProfile> ExistingProfiles
         {
-            List<FirefoxProfile> profileList = new List<FirefoxProfile>(profiles.Values);
-            return new ReadOnlyCollection<FirefoxProfile>(profileList);
+            get
+            {
+                List<FirefoxProfile> profileList = new List<FirefoxProfile>(profiles.Values);
+                return new ReadOnlyCollection<FirefoxProfile>(profileList);
+            }
         }
 
-        private string GetApplicationDataDirectory()
+        private static string GetApplicationDataDirectory()
         {
             string appDataDirectory = string.Empty;
             switch (Environment.OSVersion.Platform)

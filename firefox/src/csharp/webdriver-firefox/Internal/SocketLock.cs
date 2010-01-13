@@ -5,6 +5,7 @@ using System.Net.Sockets;
 using System.Net;
 using System.Threading;
 using System.IO;
+using System.Globalization;
 
 namespace OpenQA.Selenium.Firefox.Internal
 {
@@ -58,7 +59,7 @@ namespace OpenQA.Selenium.Firefox.Internal
             } while (DateTime.Now < maxWait);
 
             throw new WebDriverException(
-                string.Format("Unable to bind to locking port {0} within {1} ms", lockPort, timeoutInMilliseconds));
+                string.Format(CultureInfo.InvariantCulture, "Unable to bind to locking port {0} within {1} ms", lockPort, timeoutInMilliseconds));
         }
 
         /**

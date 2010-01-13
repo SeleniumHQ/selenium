@@ -9,9 +9,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("ManagedInternetExplorerDriver")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Google")]
+[assembly: AssemblyCompany("WebDriver Committers")]
 [assembly: AssemblyProduct("ManagedInternetExplorerDriver")]
-[assembly: AssemblyCopyright("Copyright © Google 2008")]
+[assembly: AssemblyCopyright("Copyright © WebDriver Committers 2010")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -19,7 +19,6 @@ using System.Runtime.InteropServices;
 // to COM components.  If you need to access a type in this assembly from 
 // COM, set the ComVisible attribute to true on that type.
 [assembly: ComVisible(false)]
-
 
 [assembly: CLSCompliant(true)]
 

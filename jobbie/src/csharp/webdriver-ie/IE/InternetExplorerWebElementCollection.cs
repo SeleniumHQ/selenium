@@ -4,12 +4,12 @@ using System.Runtime.InteropServices;
 
 namespace OpenQA.Selenium.IE
 {
-    internal class ElementCollection : IDisposable
+    internal class InternetExplorerWebElementCollection : IDisposable
     {
         InternetExplorerDriver driver;
         SafeWebElementCollectionHandle collectionHandle;
 
-        public ElementCollection(InternetExplorerDriver driver, SafeWebElementCollectionHandle elements)
+        public InternetExplorerWebElementCollection(InternetExplorerDriver driver, SafeWebElementCollectionHandle elements)
         {
             this.driver = driver;
             collectionHandle = elements;

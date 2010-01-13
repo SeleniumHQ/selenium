@@ -6,6 +6,7 @@ using System.Reflection;
 using Ionic.Zip;
 using System.Xml;
 using System.Xml.XPath;
+using System.Globalization;
 
 namespace OpenQA.Selenium.Firefox
 {
@@ -36,12 +37,11 @@ namespace OpenQA.Selenium.Firefox
 
             profilePort = FirefoxDriver.DefaultPort;
             enableNativeEvents = FirefoxDriver.DefaultEnableNativeEvents;
-            loadNoFocusLibrary = false;
             acceptUntrustedCerts = FirefoxDriver.AcceptUntrustedCertificates;
 
             if (!Directory.Exists(profileDir))
             {
-                throw new WebDriverException(string.Format("Profile directory does not exist: {0}", profileDir));
+                throw new WebDriverException(string.Format(CultureInfo.InvariantCulture, "Profile directory does not exist: {0}", profileDir));
             }
         }
 
@@ -141,7 +141,7 @@ namespace OpenQA.Selenium.Firefox
             return copyComplete;
         }
 
-        private string ReadIdFromInstallRdf(string root)
+        private static string ReadIdFromInstallRdf(string root)
         {
             string id = null;
             try
@@ -182,7 +182,7 @@ namespace OpenQA.Selenium.Firefox
         }
 
         //Assumes that we only really care about the preferences, not the comments
-        private Dictionary<string, string> ReadExistingPrefs(string userPrefsFilePath)
+        private static Dictionary<string, string> ReadExistingPreferences(string userPrefsFilePath)
         {
             Dictionary<string, string> prefs = new Dictionary<string, string>();
 
@@ -191,7 +191,7 @@ namespace OpenQA.Selenium.Firefox
                 string[] fileLines = File.ReadAllLines(userPrefsFilePath);
                 foreach (string line in fileLines)
                 {
-                    if (line.StartsWith("user_pref(\""))
+                    if (line.StartsWith("user_pref(\"", StringComparison.OrdinalIgnoreCase))
                     {
                         string parsedLine = line.Substring("user_pref(\"".Length);
                         parsedLine = parsedLine.Substring(0, parsedLine.Length - ");".Length);
@@ -216,7 +216,7 @@ namespace OpenQA.Selenium.Firefox
 
         public void SetPreference(string name, int value)
         {
-            profileAdditionalPrefs.SetPreference(name, value.ToString());
+            profileAdditionalPrefs.SetPreference(name, value.ToString(CultureInfo.InvariantCulture));
         }
 
         public void SetPreference(string name, bool value)
@@ -224,7 +224,7 @@ namespace OpenQA.Selenium.Firefox
             profileAdditionalPrefs.SetPreference(name, value.ToString());
         }
 
-        public void updateUserPrefs()
+        public void UpdateUserPreferences()
         {
             if (profilePort == 0)
             {
@@ -235,7 +235,7 @@ namespace OpenQA.Selenium.Firefox
 
             if (File.Exists(userPrefs))
             {
-                prefs = ReadExistingPrefs(userPrefs);
+                prefs = ReadExistingPreferences(userPrefs);
                 try
                 {
                     File.Delete(userPrefs);
@@ -281,7 +281,7 @@ namespace OpenQA.Selenium.Firefox
             prefs.Add("startup.homepage_welcome_url", "\"about:blank\"");
 
             // Which port should we listen on?
-            prefs.Add("webdriver_firefox_port", profilePort.ToString());
+            prefs.Add("webdriver_firefox_port", profilePort.ToString(CultureInfo.InvariantCulture));
 
             // Should we use native events?
             prefs.Add("webdriver_enable_native_events", enableNativeEvents.ToString());
@@ -293,7 +293,7 @@ namespace OpenQA.Selenium.Firefox
             prefs.Add("javascript.options.showInConsole", "true"); // Logs errors in chrome files to the Error Console.
             prefs.Add("browser.dom.window.dump.enabled", "true");  // Enables the use of the dump() statement
 
-            WriteNewPrefs(prefs);
+            WriteNewPreferences(prefs);
         }
 
         public void DeleteExtensionsCacheIfItExists()
@@ -306,13 +306,13 @@ namespace OpenQA.Selenium.Firefox
             }
         }
 
-        protected void WriteNewPrefs(Dictionary<string, string> prefs)
+        protected void WriteNewPreferences(Dictionary<string, string> preferences)
         {
             using (TextWriter writer = File.CreateText(userPrefs))
             {
-                foreach (string prefKey in prefs.Keys)
+                foreach (string prefKey in preferences.Keys)
                 {
-                    writer.WriteLine(string.Format("user_pref(\"{0}\", {1});", prefKey, prefs[prefKey]));
+                    writer.WriteLine(string.Format(CultureInfo.InvariantCulture, "user_pref(\"{0}\", {1});", prefKey, preferences[prefKey]));
                 }
             }
         }

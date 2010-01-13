@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{5E7C67A1-1BF2-4A46-8C29-8A6DCF6E4543}</ProjectGuid>
+    <ProjectGuid>{FC3000BD-6144-46E6-BA7B-1CCE7E85DD27}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>OpenQA.Selenium.Firefox</RootNamespace>
-    <AssemblyName>WebDriver.Firefox</AssemblyName>
+    <RootNamespace>OpenQA.Selenium.Chrome</RootNamespace>
+    <AssemblyName>WebDriver.Chrome</AssemblyName>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkSubset>
@@ -19,7 +19,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\..\..\build\cli\Debug\</OutputPath>
+    <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -27,7 +27,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\..\..\build\cli\Release\</OutputPath>
+    <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -47,28 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Command.cs" />
-    <Compile Include="Context.cs" />
-    <Compile Include="FirefoxBinary.cs" />
-    <Compile Include="FirefoxDriver.cs" />
-    <Compile Include="FirefoxProfile.cs" />
-    <Compile Include="FirefoxWebElement.cs" />
-    <Compile Include="GlobalSuppressions.cs" />
-    <Compile Include="IExtensionConnection.cs" />
-    <Compile Include="Internal\CharArrayJsonConverter.cs" />
-    <Compile Include="Internal\ContextJsonConverter.cs" />
-    <Compile Include="Internal\CookieJsonConverter.cs" />
-    <Compile Include="Internal\Executable.cs" />
-    <Compile Include="Internal\ExtensionConnection.cs" />
-    <Compile Include="Internal\ExtensionConnectionFactory.cs" />
-    <Compile Include="Internal\FirefoxProfileManager.cs" />
-    <Compile Include="Internal\ILock.cs" />
-    <Compile Include="Internal\IniFileReader.cs" />
-    <Compile Include="Internal\ResponseValueJsonConverter.cs" />
-    <Compile Include="Preferences.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Response.cs" />
-    <Compile Include="Internal\SocketLock.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\common\src\csharp\webdriver-common\WebDriver.Common.csproj">
@@ -84,10 +63,4 @@
   <Target Name="AfterBuild">
   </Target>
   -->
-  <PropertyGroup>
-    <PostBuildEvent>if not exist $(SolutionDir)build\Win32\$(ConfigurationName) md $(SolutionDir)build\Win32\$(ConfigurationName)
-copy /y $(TargetPath) $(SolutionDir)build\Win32\$(ConfigurationName)
-if not exist $(SolutionDir)build\x64\$(ConfigurationName) md $(SolutionDir)build\x64\$(ConfigurationName)
-copy /y $(TargetPath) $(SolutionDir)build\x64\$(ConfigurationName)</PostBuildEvent>
-  </PropertyGroup>
 </Project>

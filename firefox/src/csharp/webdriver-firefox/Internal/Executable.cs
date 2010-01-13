@@ -4,6 +4,7 @@ using System.Text;
 using Microsoft.Win32;
 using System.IO;
 using System.Diagnostics;
+using System.Globalization;
 
 namespace OpenQA.Selenium.Firefox.Internal
 {
@@ -110,7 +111,7 @@ namespace OpenQA.Selenium.Firefox.Internal
                 throw new WebDriverException("Unable to determine the current version of FireFox using the registry, please make sure you have installed FireFox and Jssh correctly");
             }
 
-            var currentMain = mozillaKey.OpenSubKey(string.Format(@"{0}\Main", currentVersion));
+            var currentMain = mozillaKey.OpenSubKey(string.Format(CultureInfo.InvariantCulture, @"{0}\Main", currentVersion));
             if (currentMain == null)
             {
                 throw new WebDriverException(

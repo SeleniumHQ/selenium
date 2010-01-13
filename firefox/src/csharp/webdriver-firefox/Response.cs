@@ -4,6 +4,7 @@ using System.Text;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using System.Reflection;
+using System.Globalization;
 
 namespace OpenQA.Selenium.Firefox
 {
@@ -63,12 +64,12 @@ namespace OpenQA.Selenium.Firefox
             if (!isError)
                 return;
 
-            if (responseValue.ToString().StartsWith("element is obsolete"))
+            if (responseValue.ToString().StartsWith("element is obsolete", StringComparison.OrdinalIgnoreCase))
             {
                 throw new StaleElementReferenceException("Element is obsolete");
             }
 
-            if (responseValue.ToString().StartsWith("Element is not currently visible"))
+            if (responseValue.ToString().StartsWith("Element is not currently visible", StringComparison.OrdinalIgnoreCase))
             {
                 throw new ElementNotVisibleException("Element is not visible, and so cannot be interacted with");
             }
@@ -93,7 +94,7 @@ namespace OpenQA.Selenium.Firefox
                 {
                     message = responseValue.ToString();
                 }
-                toThrow = (Exception)constructor.Invoke(new object[] { string.Format("{0}: {1}", name, message) });
+                toThrow = (Exception)constructor.Invoke(new object[] { string.Format(CultureInfo.InvariantCulture, "{0}: {1}", name, message) });
             }
             catch (Exception)
             {

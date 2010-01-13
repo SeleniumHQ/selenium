@@ -69,7 +69,7 @@ namespace OpenQA.Selenium
             driver.Url = javascriptPage;
 
             IRenderedWebElement element = (IRenderedWebElement)driver.FindElement(By.Id("menu1"));
-            if (System.Environment.OSVersion.Platform != PlatformID.Win32Windows)
+            if (!Platform.CurrentPlatform.IsPlatformType(PlatformType.Windows))
             {
                 Console.WriteLine("Skipping hover test: needs native events");
                 return;
@@ -81,6 +81,7 @@ namespace OpenQA.Selenium
             ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].style.background = 'green'", element);
             element.Hover();
 
+            item = (IRenderedWebElement)driver.FindElement(By.Id("item1"));
             Assert.AreEqual("Item 1", item.Text);
         }
 

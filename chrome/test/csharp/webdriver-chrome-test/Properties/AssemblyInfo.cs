@@ -1,17 +1,16 @@
-﻿using System;
-using System.Reflection;
+﻿using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("ManagedFirefoxDriver")]
+[assembly: AssemblyTitle("webdriver-chrome-test")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("WebDriver Committers")]
-[assembly: AssemblyProduct("WebDriver")]
-[assembly: AssemblyCopyright("Copyright © WebDriver Committers 2010")]
+[assembly: AssemblyCompany("QALAB")]
+[assembly: AssemblyProduct("webdriver-chrome-test")]
+[assembly: AssemblyCopyright("Copyright © QALAB 2010")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -21,10 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("6f9cf8df-0c31-4c8c-9d87-f877f53e83ea")]
-
-// Mark the assembly as CLSCompliant for use with all CLS languages
-[assembly: CLSCompliant(true)]
+[assembly: Guid("0c8a9cf5-1d5c-4222-8978-a719b6297fac")]
 
 // Version information for an assembly consists of the following four values:
 //

@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("ManagedFirefoxDriver")]
+[assembly: AssemblyTitle("ManagedChromeDriver")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("WebDriver Committers")]
@@ -21,7 +21,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("6f9cf8df-0c31-4c8c-9d87-f877f53e83ea")]
+[assembly: Guid("aeb829aa-17be-4df6-8b4a-4743b292bf50")]
 
 // Mark the assembly as CLSCompliant for use with all CLS languages
 [assembly: CLSCompliant(true)]
