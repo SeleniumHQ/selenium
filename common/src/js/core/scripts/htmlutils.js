@@ -1314,9 +1314,7 @@ JavascriptXPathEngine.prototype = new XPathEngine();
 function XPathEvaluator(newDefaultEngineName) {
 // private
     var nativeEngine = new NativeEngine();
-    var defaultEngineName =
-        'rpc-optimizing';
-        //newDefaultEngineName || 'ajaxslt';
+    var defaultEngineName = newDefaultEngineName || 'ajaxslt';
     var engines = {
         'ajaxslt'         : new AjaxsltEngine(),
         'javascript-xpath': new JavascriptXPathEngine(),
