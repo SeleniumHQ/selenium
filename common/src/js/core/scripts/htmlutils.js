@@ -1314,11 +1314,12 @@ JavascriptXPathEngine.prototype = new XPathEngine();
 function XPathEvaluator(newDefaultEngineName) {
 // private
     var nativeEngine = new NativeEngine();
-    var defaultEngineName = newDefaultEngineName || 'ajaxslt';
+    var defaultEngineName =
+        'rpc-optimizing';
+        //newDefaultEngineName || 'ajaxslt';
     var engines = {
         'ajaxslt'         : new AjaxsltEngine(),
         'javascript-xpath': new JavascriptXPathEngine(),
-        //'rpc-optimizing'  : new MultiWindowRPCOptimizingEngine('test-doc-frame', new JavascriptXPathEngine()),
         'native'          : nativeEngine
     };
     
@@ -1450,7 +1451,16 @@ function XPathEvaluator(newDefaultEngineName) {
         return dispatch('countNodes', inDocument, xpath, contextNode,
             namespaceResolver);
     };
+    
+// initialization
+    this.init();
 };
+
+/**
+ * Gives the user an overridable hook for registering new XPath engines, for
+ * example from user extensions.
+ */
+XPathEvaluator.prototype.init = function() {};
 
 /**
  * Evaluates an xpath on a document, and returns a list containing nodes in the

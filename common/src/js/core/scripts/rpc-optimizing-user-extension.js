@@ -4440,7 +4440,7 @@ function BoundedCache(newMaxSize) {
     this.get = function(key) {
         if (map[key]) {
             map[key].usage = ++counter;
-            return map[key].optimized;
+            return map[key].value;
         }
         
         return null;
@@ -4597,7 +4597,7 @@ function XPathBuilder(newDocument) {
 ///////////////////////////////////////////////////////////////////////////////
 
 /**
- * @param newEngine             the XPath engine used to navigate this document
+ * @param newEngine  the XPath engine used to navigate this document
  */
 function MirroredDocument(newEngine) {
 // private
@@ -4606,6 +4606,7 @@ function MirroredDocument(newEngine) {
     var reflectionDoc;
     var namespaceResolver;
     var xpathBuilder = new XPathBuilder();
+    var pastReflections = new BoundedCache();
 
     /**
      * Appends elements represented by the given HTML to the given parent
@@ -4613,6 +4614,14 @@ function MirroredDocument(newEngine) {
      */
     function appendHTML(html, parentNode) {
         var scripts = jQuery.clean([ html ], null, parentNode);
+    }
+    
+    function getHeadHtml(doc) {
+        return doc.getElementsByTagName('head')[0].innerHTML;
+    }
+    
+    function getBodyHtml(doc) {
+        return doc.body.innerHTML;
     }
     
     /**
@@ -4689,12 +4698,24 @@ function MirroredDocument(newEngine) {
      * object.
      */
     this.reflect = function() {
-        var headHtml = originalDoc.getElementsByTagName('head')[0].innerHTML;
-        var bodyHtml = originalDoc.body.innerHTML;
+        var originalHtml = originalDoc.documentElement.innerHTML;
+        var pastReflectionHtml = pastReflections.get(originalHtml);
+        
+        if (pastReflectionHtml != null &&
+            pastReflectionHtml == reflectionDoc.documentElement.innerHTML) {
+            // the reflection is already accurate
+            return this;
+        }
+    
+        var headHtml = getHeadHtml(originalDoc);
+        var bodyHtml = getBodyHtml(originalDoc);
         
         try {
             copyHead(headHtml, reflectionDoc);
             copyBody(bodyHtml, reflectionDoc);
+            
+            pastReflections.put(originalHtml,
+                reflectionDoc.documentElement.innerHTML);
         }
         catch (e) {
             safe_log('warn', 'Document reflection failed: ' + e.message);
@@ -4729,8 +4750,14 @@ function XPathOptimizer(newEngine) {
     var engine = newEngine;
     var namespaceResolver;
     var mirror = new MirroredDocument(engine, namespaceResolver);
-    var cache = new BoundedCache(100);
     var xpathBuilder = new XPathBuilder();
+    
+    // keys are full document HTML strings, and values are mappings from
+    // XPath's to objects with two fields - "optimized" and "nodeCount" - where
+    // "optimized" is the optimized version of the XPath for single node
+    // selection, and "nodeCount" is the node count for the XPath on that
+    // document
+    var knownOptimizations = new BoundedCache(100);
     
     /**
      * Returns whether this optimizer is capable of optimizing XPath's for the
@@ -4778,6 +4805,18 @@ function XPathOptimizer(newEngine) {
      * If optimization fails, returns the original XPath.
      */
     this.optimize = function(xpath, contextNode) {
+        var originalHtml = mirror.getOriginal().documentElement.innerHTML;
+        var optimization = knownOptimizations.get(originalHtml);
+        
+        if (optimization &&
+            optimization[xpath] &&
+            optimization[xpath].optimized) {
+            // the optimized XPath for this document content was found in the
+            // cache!
+            safe_log('info', 'Found cached XPath optimization for ' + xpath);
+            return optimization[xpath].optimized;
+        }
+    
         mirror.reflect();
     
         if (contextNode) {
@@ -4794,26 +4833,22 @@ function XPathOptimizer(newEngine) {
         }
         
         if (isOptimizable(firstResult)) {
-            var cached = cache.get(xpath);
-            
-            if (cached) {
-                if (isXPathValid(cached, firstResult)) {
-                    return cached;
-                }
-                else {
-                    cache.remove(xpath);
-                }
-            }
-            
             var optimized = xpathBuilder.setDocument(mirror.getReflection())
                 .build(firstResult);
             
             if (optimized) {
-                if (isXPathValid(optimized, firstResult)) {
-                    safe_log('info', 'Using optimized path: ' + optimized);
-                    cache.put(xpath, optimized);
-                    return optimized;
+                safe_log('info', 'Found optimized XPath: ' + optimized);
+                    
+                if (optimization) {
+                    optimization[xpath].optimized = optimized;
                 }
+                else {
+                    optimization = {};
+                    optimization[xpath] = { optimized: optimized };
+                    knownOptimizations.put(originalHtml, optimization);
+                }
+                
+                return optimized;
             }
         }
         
@@ -4821,6 +4856,18 @@ function XPathOptimizer(newEngine) {
     };
     
     this.countNodes = function(xpath, contextNode) {
+        var originalHtml = mirror.getOriginal().documentElement.innerHTML;
+        var optimization = knownOptimizations.get(originalHtml);
+        
+        if (optimization &&
+            optimization[xpath] &&
+            optimization[xpath].nodeCount) {
+            // the node count for the XPath for this document content was found
+            // in the cache!
+            safe_log('info', 'Found cached node count for ' + xpath);
+            return optimization[xpath].nodeCount;
+        }
+        
         mirror.reflect();
         
         if (contextNode) {
@@ -4829,8 +4876,19 @@ function XPathOptimizer(newEngine) {
         
         // count the nodes using the test document, and circumvent
         // window RPC altogether
-        return engine.setDocument(mirror.getReflection())
+        var nodeCount = engine.setDocument(mirror.getReflection())
             .countNodes(xpath, contextNode, namespaceResolver);
+        
+        if (optimization) {
+            optimization[xpath].nodeCount = nodeCount;
+        }
+        else {
+            optimization = {};
+            optimization[xpath] = { nodeCount: nodeCount };
+            knownOptimizations.put(originalHtml, optimization);
+        }
+        
+        return nodeCount;
     };
 }
 
@@ -4946,3 +5004,9 @@ function MultiWindowRPCOptimizingEngine(newFrameName, newDelegateEngine) {
 }
 
 MultiWindowRPCOptimizingEngine.prototype = new XPathEngine();
+
+XPathEvaluator.prototype.init = function() {
+    this.registerEngine('rpc-optimizing', new MultiWindowRPCOptimizingEngine(
+        'test-doc-frame', new JavascriptXPathEngine()));
+    this.setCurrentEngine('rpc-optimizing');
+};
