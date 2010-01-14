@@ -4883,8 +4883,8 @@ function XPathOptimizer(newEngine) {
         
         if (! firstResult) {
             // either the element doesn't exist, or there was a failure to
-            // reflect the document accurately. Return the original xpath.
-            return xpath;
+            // reflect the document accurately
+            return null;
         }
         
         if (isOptimizable(firstResult)) {
@@ -4912,7 +4912,7 @@ function XPathOptimizer(newEngine) {
             }
         }
         
-        return xpath;
+        return null;
     };
     
     this.countNodes = function(xpath, contextNode) {
@@ -4980,6 +4980,8 @@ function XPathOptimizer(newEngine) {
  */
 function MultiWindowRPCOptimizingEngine(newFrameName, newDelegateEngine) {
 // private
+    var NO_RESULT = '__NO_NODE_RESULT';
+    
     var frameName = newFrameName;
     var engine = newDelegateEngine || new JavascriptXPathEngine();
     var optimizer = new XPathOptimizer(engine);
@@ -5067,6 +5069,11 @@ function MultiWindowRPCOptimizingEngine(newFrameName, newDelegateEngine) {
                 optimization[xpath] &&
                 optimization[xpath].node) {
                 var node = optimization[xpath].node;
+                
+                if (node == NO_RESULT) {
+                    return null;
+                }
+                
                 var sourceIndex = optimization[xpath].sourceIndex;
                 
                 // node is still valid? (test ok even if sourceIndex is null)
@@ -5091,27 +5098,44 @@ function MultiWindowRPCOptimizingEngine(newFrameName, newDelegateEngine) {
             
             if (optimization) {
                 if (optimization[xpath]) {
-                    optimization[xpath].node = node;
-                    optimization[xpath].sourceIndex = node.sourceIndex;
+                    if (node) {
+                        optimization[xpath].node = node;
+                        optimization[xpath].sourceIndex = node.sourceIndex;
+                    }
+                    else {
+                        optimization[xpath].node = NO_RESULT;
+                    }
                 }
                 else {
-                    optimization[xpath] = {
-                        node: node
-                        , sourceIndex: node.sourceIndex
-                    };
+                    if (node) {
+                        optimization[xpath] = {
+                            node: node
+                            , sourceIndex: node.sourceIndex
+                        };
+                    }
+                    else {
+                        optimization[xpath] = { node: NO_RESULT };
+                    }
                 }
             }
             else {
                 optimization = {};
-                optimization = {
-                    node: node
-                    , sourceIndex: node.sourceIndex
-                };
+                
+                if (node) {
+                    optimization = {
+                        node: node
+                        , sourceIndex: node.sourceIndex
+                    };
+                }
+                else {
+                    optimization = { node: NO_RESULT };
+                }
+                
                 knownOptimizations[html] = optimization;
             }
             
             return node;
-        }
+        } // if (isOptimizing())
         
         return engine.selectSingleNode(xpath, contextNode, namespaceResolver);
     };
