@@ -4800,11 +4800,14 @@ function XPathOptimizer(newEngine) {
     // keys are full document HTML strings, and values are mappings from
     // XPath's to objects which the following fields:
     //
-    //   - finder     the equivalent finder function for the XPath, for single
-    //                node selection
-    //   - nodeCount  the node count for the XPath with respect to the given
-    //                document content
-    //   - node       the actual, potentially invalidated, node
+    //   - finder       the equivalent finder function for the XPath, for
+    //                  single node selection
+    //   - nodeCount    the node count for the XPath with respect to the given
+    //                  document content
+    //   - node         the actual, potentially invalidated, node
+    //   - sourceIndex  the value of the sourceIndex attribute of the node at
+    //                  time of addition to the cache; this can be used to
+    //                  determine if the node has since changed positions
     //
     var knownOptimizations = new BoundedCache(100);
     
@@ -5064,9 +5067,10 @@ function MultiWindowRPCOptimizingEngine(newFrameName, newDelegateEngine) {
                 optimization[xpath] &&
                 optimization[xpath].node) {
                 var node = optimization[xpath].node;
+                var sourceIndex = optimization[xpath].sourceIndex;
                 
-                // node is still valid?
-                if (! isDetached(node)) {
+                // node is still valid? (test ok even if sourceIndex is null)
+                if (! isDetached(node) && node.sourceIndex == sourceIndex) {
                     safe_log('info', 'Found cached node for ' + xpath);
                     return node;
                 }
@@ -5088,14 +5092,21 @@ function MultiWindowRPCOptimizingEngine(newFrameName, newDelegateEngine) {
             if (optimization) {
                 if (optimization[xpath]) {
                     optimization[xpath].node = node;
+                    optimization[xpath].sourceIndex = node.sourceIndex;
                 }
                 else {
-                    optimization[xpath] = { node: node };
+                    optimization[xpath] = {
+                        node: node
+                        , sourceIndex: node.sourceIndex
+                    };
                 }
             }
             else {
                 optimization = {};
-                optimization = { node: node };
+                optimization = {
+                    node: node
+                    , sourceIndex: node.sourceIndex
+                };
                 knownOptimizations[html] = optimization;
             }
             
