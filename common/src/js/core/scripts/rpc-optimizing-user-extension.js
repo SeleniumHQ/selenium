@@ -5085,7 +5085,6 @@ function MultiWindowRPCOptimizingEngine(newFrameName, newDelegateEngine) {
                     namespaceResolver);
             }
             
-            /*
             if (optimization) {
                 if (optimization[xpath]) {
                     optimization[xpath].node = node;
@@ -5099,7 +5098,6 @@ function MultiWindowRPCOptimizingEngine(newFrameName, newDelegateEngine) {
                 optimization = { node: node };
                 knownOptimizations[html] = optimization;
             }
-            */
             
             return node;
         }
