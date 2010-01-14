@@ -36,11 +36,12 @@ public class SingleTestSuite extends TestCase {
   private final static String HTML_UNIT = "org.openqa.selenium.htmlunit.HtmlUnitDriver";
   private final static String HTML_UNIT_JS = "org.openqa.selenium.htmlunit.JavascriptEnabledHtmlUnitDriverTestSuite$HtmlUnitDriverForTest";
   private final static String IE = "org.openqa.selenium.ie.InternetExplorerDriver";
-  private final static String REMOTE = "org.openqa.selenium.remote.RemoteWebDriverTestSuite$RemoteWebDriverForTest";
+  private final static String REMOTE = "org.openqa.selenium.remote.server.RemoteWebDriverTestSuite$RemoteWebDriverForTest";
+  private final static String REMOTE_IE = "org.openqa.selenium.remote.server.RemoteWebDriverIeTestSuite$RemoteIeWebDriverForTest";
   private final static String SELENIUM = "org.openqa.selenium.SeleneseBackedWebDriver";
 
   public static Test suite() throws Exception {
-    String driver = FIREFOX_TEST;
+    String driver = REMOTE;
 
     System.setProperty("webdriver.development", "true");
     System.setProperty("jna.library.path", "..\\build;build");
@@ -54,16 +55,16 @@ public class SingleTestSuite extends TestCase {
         .usingDriver(driver)
         .keepDriverInstance()
         .includeJavascriptTests()
-        .onlyRun("PageLoadingTest")
-        .method("testShouldBeAbleToAccessPagesWithAnInsecureSslCertificate")
+        .onlyRun("I18nTest")
+        .method("testShouldBeAbleToReturnTheTextInAPage")
         .exclude(ALL)
         .exclude(Ignore.Driver.SELENESE)
         .leaveRunning()
         ;  // Yeah, this look strange :)
 
-    if (REMOTE.equals(driver)) {
+    if (REMOTE.equals(driver) || REMOTE_IE.equals(driver)) {
       builder.addSuiteDecorator(
-          "org.openqa.selenium.remote.RemoteWebDriverTestSuite$RemoteDriverServerStarter");
+          "org.openqa.selenium.remote.server.RemoteWebDriverTestSuite$RemoteDriverServerStarter");
     } else if (SELENIUM.equals(driver)) {
       builder.addSuiteDecorator(
           "org.openqa.selenium.SeleniumServerStarter");

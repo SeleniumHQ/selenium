@@ -64,6 +64,7 @@ public class Jetty6AppServer implements AppServer {
     addServlet("Redirecter", "/redirect", RedirectServlet.class);
     addServlet("InfinitePagerServer", "/page/*", PageServlet.class);
     addServlet("Uploader", "/upload", UploadServlet.class);
+    addServlet("Unusual encoding", "/encoding", EncodingServlet.class);
     addFilter(MultiPartFilter.class, "/upload", Handler.DEFAULT);
 
     listenOn(findFreePort());

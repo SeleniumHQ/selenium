@@ -23,6 +23,8 @@ import org.openqa.selenium.remote.server.rest.Renderer;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
 
 public class JsonResult implements Renderer {
 
@@ -41,11 +43,14 @@ public class JsonResult implements Renderer {
     Object result = request.getAttribute(propertyName);
 
     String json = new BeanToJsonConverter().convert(result);
+    byte[] data = Charset.forName("utf-8").encode(json).array();
 
-    int length = json == null ? 0 : json.getBytes().length;
+    int length = json == null ? 0 : data.length;
 
     response.setContentLength(length);
     response.setContentType("application/json");
-    response.getWriter().append(json).flush();
+    response.setCharacterEncoding("UTF-8");
+    response.getOutputStream().write(data);
+    response.getOutputStream().flush();
   }
 }
