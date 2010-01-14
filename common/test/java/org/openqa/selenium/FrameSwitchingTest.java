@@ -31,6 +31,15 @@ import org.openqa.selenium.environment.webserver.AppServer;
 @Ignore(IPHONE)
 public class FrameSwitchingTest extends AbstractDriverTestCase {
 
+  @Override
+  protected void tearDown() throws Exception {
+    try {
+      driver.switchTo().defaultContent();
+    } finally {
+      super.tearDown();
+    }
+  }
+
   @Ignore(SELENESE)
   public void testShouldContinueToReferToTheSameFrameOnceItHasBeenSelected() {
     driver.get(framesetPage);
@@ -97,21 +106,27 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
     driver.get(framesetPage);
     driver.switchTo().frame("third");
 
+    // This should replace frame "third" ...
     driver.findElement(By.id("submitButton")).click();
-    String hello = driver.findElement(By.id("greeting")).getText();
-    assertThat(hello, equalTo("Success!"));
-    driver.switchTo().defaultContent();
+    // driver should still be focused on frame "third" ...
+    assertThat(driver.findElement(By.id("greeting")).getText(), equalTo("Success!"));
+    // Make sure it was really frame "third" which was replaced ...
+    driver.switchTo().defaultContent().switchTo().frame("third");
+    assertThat(driver.findElement(By.id("greeting")).getText(), equalTo("Success!"));
   }
 
-  @Ignore({CHROME, FIREFOX, HTMLUNIT, IE, SELENESE})
+  @Ignore({CHROME, IE, SELENESE})
   public void testShouldBeAbleToClickInASubFrame() {
     driver.get(framesetPage);
     driver.switchTo().frame("sixth.iframe1");
 
+    // This should replaxe frame "iframe1" inside frame "sixth" ...
     driver.findElement(By.id("submitButton")).click();
-    driver.switchTo().frame("sixth");
-    String hello = driver.findElement(By.id("greeting")).getText();
-    assertThat(hello, equalTo("Success!"));
+    // driver should still be focused on frame "iframe1" inside frame "sixth" ...
+    assertThat(driver.findElement(By.id("greeting")).getText(), equalTo("Success!"));
+    // Make sure it was really frame "iframe1" inside frame "sixth" which was replaced ...
+    driver.switchTo().defaultContent().switchTo().frame("sixth.iframe1");
+    assertThat(driver.findElement(By.id("greeting")).getText(), equalTo("Success!"));
   }
 
   @Ignore(SELENESE)
