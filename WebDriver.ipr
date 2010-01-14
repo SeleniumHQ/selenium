@@ -697,7 +697,7 @@
     </library>
     <library name="third_party-buildtime">
       <CLASSES>
-        <root url="jar://$PROJECT_DIR$/third_party/java/google-collect-1.0-rc3.jar!/" />
+        <root url="jar://$PROJECT_DIR$/third_party/java/google-collect-1.0.jar!/" />
       </CLASSES>
       <JAVADOC />
       <SOURCES />
