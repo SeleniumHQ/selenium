@@ -161,42 +161,48 @@ namespace OpenQA.Selenium.Firefox.Internal
             }
             return libraryPropertyPathName;
         }
-  
-  public void SetLibraryPath(Process builder) {
-    string propertyName = GetLibraryPathPropertyName();
-    StringBuilder libraryPath = new StringBuilder();
-    
-    // If we have an env var set for the path, use it.
-    String env = GetEnvironmentVariable(propertyName, null);
-    if (env != null) {
-        libraryPath.Append(env).Append(Path.PathSeparator);
-    }
-    
-    // Check our extra env vars for the same var, and use it too.
-    if (builder.StartInfo.EnvironmentVariables.ContainsKey(propertyName)) {
-        libraryPath.Append(env).Append(Path.PathSeparator);
-    }
 
-    // Last, add the contents of the specified system property, defaulting to the binary's path.
-    
-    // On Snow Leopard, beware of problems the sqlite library    
-    string firefoxLibraryPath = Path.GetFullPath(binary);
-    if (Platform.CurrentPlatform.IsPlatformType(PlatformType.MacOSX) && Platform.CurrentPlatform.MinorVersion > 5) {
-      libraryPath.Append(libraryPath).Append(Path.PathSeparator);  
-    } else {
-      libraryPath.Append(firefoxLibraryPath).Append(Path.PathSeparator).Append(libraryPath);	
-    }
+        public void SetLibraryPath(Process builder)
+        {
+            string propertyName = GetLibraryPathPropertyName();
+            StringBuilder libraryPath = new StringBuilder();
 
-    // Add the library path to the builder.
-    if (builder.StartInfo.EnvironmentVariables.ContainsKey(propertyName))
-    {
-        builder.StartInfo.EnvironmentVariables[propertyName] = libraryPath.ToString();
-    }
-    else
-    {
-        builder.StartInfo.EnvironmentVariables.Add(propertyName, libraryPath.ToString());
-    }
-  }
+            // If we have an env var set for the path, use it.
+            String env = GetEnvironmentVariable(propertyName, null);
+            if (env != null)
+            {
+                libraryPath.Append(env).Append(Path.PathSeparator);
+            }
+
+            // Check our extra env vars for the same var, and use it too.
+            if (builder.StartInfo.EnvironmentVariables.ContainsKey(propertyName))
+            {
+                libraryPath.Append(env).Append(Path.PathSeparator);
+            }
+
+            // Last, add the contents of the specified system property, defaulting to the binary's path.
+
+            // On Snow Leopard, beware of problems the sqlite library    
+            string firefoxLibraryPath = Path.GetFullPath(binary);
+            if (Platform.CurrentPlatform.IsPlatformType(PlatformType.MacOSX) && Platform.CurrentPlatform.MinorVersion > 5)
+            {
+                libraryPath.Append(libraryPath).Append(Path.PathSeparator);
+            }
+            else
+            {
+                libraryPath.Append(firefoxLibraryPath).Append(Path.PathSeparator).Append(libraryPath);
+            }
+
+            // Add the library path to the builder.
+            if (builder.StartInfo.EnvironmentVariables.ContainsKey(propertyName))
+            {
+                builder.StartInfo.EnvironmentVariables[propertyName] = libraryPath.ToString();
+            }
+            else
+            {
+                builder.StartInfo.EnvironmentVariables.Add(propertyName, libraryPath.ToString());
+            }
+        }
 
         /**
          * Walk a PATH to locate binaries with a specified name. Binaries will be searched for in the

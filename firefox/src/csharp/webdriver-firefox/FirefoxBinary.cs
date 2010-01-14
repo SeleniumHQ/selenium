@@ -16,10 +16,8 @@ namespace OpenQA.Selenium.Firefox
         private Dictionary<string, string> extraEnv = new Dictionary<string, string>();
         private Executable executable;
         private Process process;
-        private long timeoutInMilliseconds = 4500;
+        private long timeoutInMilliseconds = 45000;
         private StreamReader stream;
-        //private Thread outputWatcher;
-        //private FirefoxProfile profile;
 
         public FirefoxBinary() :
             this(null)
@@ -84,17 +82,9 @@ namespace OpenQA.Selenium.Firefox
             }
         }
 
-        //protected void StartOutputWatcher() {
-        //  outputWatcher = new Thread(new OutputWatcher(process, stream), "Firefox output watcher");
-        //  outputWatcher.start();
-        //}
-
         internal Executable BinaryExecutable
         {
-            get
-            {
-                return executable;
-            }
+            get { return executable; }
         }
 
         protected Dictionary<string, string> ExtraEnvironmentVariables
@@ -123,7 +113,7 @@ namespace OpenQA.Selenium.Firefox
         }
 
         protected static string ExtractAndCheck(FirefoxProfile profile, string noFocusSoName,
-                                         string jarPath32Bit, string jarPath64Bit)
+                                         string libraryPath32Bit, string libraryPath64Bit)
         {
 
             // 1. Extract x86/x_ignore_nofocus.so to profile.getLibsDir32bit
@@ -132,8 +122,8 @@ namespace OpenQA.Selenium.Firefox
             //   profile.getLibsDir32bit + ":" + profile.getLibsDir64bit
 
             List<string> pathsSet = new List<string>();
-            pathsSet.Add(jarPath32Bit);
-            pathsSet.Add(jarPath64Bit);
+            pathsSet.Add(libraryPath32Bit);
+            pathsSet.Add(libraryPath64Bit);
 
             StringBuilder builtPath = new StringBuilder();
 
@@ -219,12 +209,12 @@ namespace OpenQA.Selenium.Firefox
             }
         }
 
-        public void SetEnvironmentProperty(String propertyName, String value)
+        public void SetEnvironmentProperty(string propertyName, string value)
         {
             if (string.IsNullOrEmpty(propertyName) || value == null)
             {
                 throw new WebDriverException(
-                    String.Format(CultureInfo.InvariantCulture, "You must set both the property name and value: {0}, {1}", propertyName,
+                    string.Format(CultureInfo.InvariantCulture, "You must set both the property name and value: {0}, {1}", propertyName,
                         value));
             }
             if (extraEnv.ContainsKey(propertyName))
@@ -237,11 +227,11 @@ namespace OpenQA.Selenium.Firefox
             }
         }
 
-        public void CreateProfile(String profileName)
+        public void CreateProfile(string profileName)
         {
             Process builder = new Process();
             builder.StartInfo.FileName = executable.ExecutablePath;
-            builder.StartInfo.Arguments = "--verbose -CreateProfile" + profileName;
+            builder.StartInfo.Arguments = "--verbose -CreateProfile " + profileName;
             builder.StartInfo.RedirectStandardError = true;
             builder.StartInfo.EnvironmentVariables.Add("MOZ_NO_REMOTE", "1");
             if (stream == null)
@@ -250,9 +240,6 @@ namespace OpenQA.Selenium.Firefox
             }
 
             StartFirefoxProcess(builder);
-
-            //outputWatcher = new Thread(new OutputWatcher(process, stream));
-            //outputWatcher.start();
         }
 
         /**
@@ -335,11 +322,6 @@ namespace OpenQA.Selenium.Firefox
             return "FirefoxBinary(" + executable.ExecutablePath + ")";
         }
 
-        //public void setOutputWatcher(OutputStream stream)
-        //{
-        //    this.stream = stream;
-        //}
-
         public void Quit()
         {
             // Suicide watch: First,  a second to see if the process will die on 
@@ -356,27 +338,5 @@ namespace OpenQA.Selenium.Firefox
                 process.Kill();
             }
         }
-
-        //private static class OutputWatcher  {
-        //  private Process process;
-        //  private Stream stream;
-
-        //  public OutputWatcher(Process process, Stream stream) {
-        //    this.process = process;
-        //    this.stream = stream;
-        //  }
-
-        //  public void Run() {
-        //    int in = 0;
-        //    while (in != -1) {
-        //      try {
-        //        in = process.getInputStream().read();
-        //        stream.Write(in);
-        //      } catch (IOException e) {
-        //        System.err.println(e);
-        //      }
-        //    }
-        //  }
-        //}
     }
 }

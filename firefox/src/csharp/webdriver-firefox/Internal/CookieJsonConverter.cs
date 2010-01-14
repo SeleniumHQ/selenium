@@ -4,7 +4,7 @@ using System.Globalization;
 using System.Text;
 using Newtonsoft.Json;
 
-namespace OpenQA.Selenium.Firefox
+namespace OpenQA.Selenium.Firefox.Internal
 {
     internal class CookieJsonConverter : JsonConverter
     {

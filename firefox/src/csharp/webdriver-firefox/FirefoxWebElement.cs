@@ -193,7 +193,7 @@ namespace OpenQA.Selenium.Firefox
 
         public void Hover()
         {
-            SendMessage(typeof(WebDriverException), "hover");
+            SendMessage(typeof(WebDriverException), "hover", new object[] {});
         }
 
         public void DragAndDropBy(int moveRightBy, int moveDownBy)

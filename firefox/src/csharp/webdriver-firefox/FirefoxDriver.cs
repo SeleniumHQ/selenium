@@ -50,16 +50,10 @@ namespace OpenQA.Selenium.Firefox
             PrepareEnvironment();
 
             extension = ConnectTo(binary, profileToUse, "localhost");
-            FixId();
+            FixSessionId();
         }
 
-        //private FirefoxDriver(ExtensionConnection extension, Context context)
-        //{
-        //    this.extension = extension;
-        //    this.context = context;
-        //}
-
-        internal static ExtensionConnection ConnectTo(FirefoxBinary binary, FirefoxProfile profile, String host)
+        internal static ExtensionConnection ConnectTo(FirefoxBinary binary, FirefoxProfile profile, string host)
         {
             return ExtensionConnectionFactory.ConnectTo(binary, profile, host);
         }
@@ -127,15 +121,16 @@ namespace OpenQA.Selenium.Firefox
             {
                 // All good
             }
-            catch (Exception ex)
+            catch (NullReferenceException)
             {
-                Console.WriteLine("Exception caught:" + ex.GetType().ToString() + " , " + ex.Message);
+                // Still good
             }
         }
 
         public void Quit()
         {
             extension.Quit();
+            Dispose();
         }
 
         public ReadOnlyCollection<string> GetWindowHandles()
@@ -313,6 +308,16 @@ namespace OpenQA.Selenium.Firefox
 
         public void Dispose()
         {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                extension.Dispose();
+            }
         }
 
         #endregion
@@ -346,7 +351,7 @@ namespace OpenQA.Selenium.Firefox
             return new ReadOnlyCollection<IWebElement>(elements);
         }
 
-        private void FixId()
+        private void FixSessionId()
         {
             string response = SendMessage(typeof(WebDriverException), "newSession");
             this.context = new Context(response);

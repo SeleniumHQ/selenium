@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Text;
 using System.IO;
 using System.Collections.ObjectModel;
+using OpenQA.Selenium.Firefox.Internal;
 
-namespace OpenQA.Selenium.Firefox.Internal
+namespace OpenQA.Selenium.Firefox
 {
     public class FirefoxProfileManager
     {
@@ -39,7 +40,7 @@ namespace OpenQA.Selenium.Firefox.Internal
                         {
                             fullPath = profilePath;
                         }
-                        FirefoxProfile profile = new FirefoxProfile(fullPath);
+                        FirefoxProfile profile = new FirefoxProfile(fullPath, true);
                         profiles.Add(name, profile);
                     }
                 }
@@ -49,13 +50,16 @@ namespace OpenQA.Selenium.Firefox.Internal
         public FirefoxProfile GetProfile(string profileName)
         {
             FirefoxProfile profile = null;
-            if (profiles.ContainsKey(profileName))
+            if (!string.IsNullOrEmpty(profileName))
             {
-                profile = profiles[profileName];
-
-                if (profile.Port == 0)
+                if (profiles.ContainsKey(profileName))
                 {
-                    profile.Port = FirefoxDriver.DefaultPort;
+                    profile = profiles[profileName];
+
+                    if (profile.Port == 0)
+                    {
+                        profile.Port = FirefoxDriver.DefaultPort;
+                    }
                 }
             }
             return profile;

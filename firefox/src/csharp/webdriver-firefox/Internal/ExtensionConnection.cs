@@ -13,8 +13,6 @@ namespace OpenQA.Selenium.Firefox.Internal
     internal class ExtensionConnection : IExtensionConnection
     {
         private Socket extensionSocket;
-        //private NetworkStream socketStream;
-        //private NetworkStream inputStream;
         private List<IPEndPoint> addresses = new List<IPEndPoint>();
         FirefoxProfile profile;
         FirefoxBinary process;
@@ -36,7 +34,6 @@ namespace OpenQA.Selenium.Firefox.Internal
             {
                 int portToUse = DetermineNextFreePort(host, profile.Port);
 
-                //this.process.setOutputWatcher(new CircularOutputStream(bufferSize));
                 profile.Port = portToUse;
                 profile.UpdateUserPreferences();
                 this.process.Clean(profile);
@@ -61,6 +58,7 @@ namespace OpenQA.Selenium.Firefox.Internal
             for (newport = port; newport < port + 200; newport++)
             {
                 Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+
                 IPHostEntry hostEntry = Dns.GetHostEntry(host);
                 IPEndPoint address = new IPEndPoint(hostEntry.AddressList[0], newport);
 
@@ -155,8 +153,6 @@ namespace OpenQA.Selenium.Firefox.Internal
             extensionSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
             extensionSocket.Connect(addr);
-            // inputStream = new NetworkStream(extensionSocket);
-            // socketStream = new NetworkStream(extensionSocket, true);
         }
 
         protected void ConnectToBrowser(long timeToWaitInMilliSeconds)
@@ -173,14 +169,7 @@ namespace OpenQA.Selenium.Firefox.Internal
                     }
                     catch (SocketException)
                     {
-                        try
-                        {
-                            System.Threading.Thread.Sleep(250);
-                        }
-                        catch (Exception ie)
-                        {
-                            throw new WebDriverException("Unexpected error connection to browser", ie);
-                        }
+                        System.Threading.Thread.Sleep(250);
                     }
                 }
             }
@@ -215,7 +204,6 @@ namespace OpenQA.Selenium.Firefox.Internal
             try
             {
                 byte[] messageBuffer = Encoding.UTF8.GetBytes(message.ToString());
-                //extensionSocket.Send(messageBuffer);
                 using (NetworkStream socketStream = new NetworkStream(extensionSocket))
                 {
                     socketStream.Write(messageBuffer, 0, messageBuffer.Length);
@@ -322,5 +310,18 @@ namespace OpenQA.Selenium.Firefox.Internal
             string returnedLine = Encoding.UTF8.GetString(raw, 0, count);
             return returnedLine;
         }
+
+        #region IDisposable Members
+
+        public void Dispose()
+        {
+            if (extensionSocket != null && extensionSocket.Connected)
+            {
+                extensionSocket.Close();
+            }
+            GC.SuppressFinalize(this);
+        }
+
+        #endregion
     }
 }

@@ -94,6 +94,7 @@
     <Compile Include="ExecutingJavascriptTest.cs" />
     <Compile Include="FormHandlingTests.cs" />
     <Compile Include="FrameSwitchingTest.cs" />
+    <Compile Include="I18Test.cs" />
     <Compile Include="IgnoreBrowserAttribute.cs" />
     <Compile Include="IgnoredBrowserTestDecorator.cs" />
     <Compile Include="JavascriptEnabledBrowserTest.cs" />

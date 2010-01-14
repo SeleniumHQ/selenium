@@ -4,7 +4,7 @@ using System.Text;
 
 namespace OpenQA.Selenium.Firefox
 {
-    internal interface IExtensionConnection
+    internal interface IExtensionConnection : IDisposable
     {
         bool IsConnected { get; }
         Response SendMessageAndWaitForResponse(Type throwOnFailure, Command command);

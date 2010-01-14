@@ -47,5 +47,10 @@ namespace OpenQA.Selenium.Environment
         {
             return protocol + "://" + alternateHostName + ":" + port + "/" + path + "/" + page;
         }
+
+        public string WhereIsSecure(string page)
+        {
+            return protocol + "s://" + alternateHostName + ":" + port + "/" + path + "/" + page;
+        }
     }
 }

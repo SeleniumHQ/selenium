@@ -61,7 +61,7 @@
     <Compile Include="Internal\Executable.cs" />
     <Compile Include="Internal\ExtensionConnection.cs" />
     <Compile Include="Internal\ExtensionConnectionFactory.cs" />
-    <Compile Include="Internal\FirefoxProfileManager.cs" />
+    <Compile Include="FirefoxProfileManager.cs" />
     <Compile Include="Internal\ILock.cs" />
     <Compile Include="Internal\IniFileReader.cs" />
     <Compile Include="Internal\ResponseValueJsonConverter.cs" />
