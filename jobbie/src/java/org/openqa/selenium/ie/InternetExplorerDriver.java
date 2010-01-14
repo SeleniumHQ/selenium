@@ -283,7 +283,7 @@ public class InternetExplorerDriver implements WebDriver, JavascriptExecutor {
     PointerByReference ptr = new PointerByReference();
     int result = lib.wdGetTitle(driver, ptr);
     if (result != SUCCESS) {
-      throw new IllegalStateException("Unable to get current URL: " + result);
+      throw new IllegalStateException("Unable to get title: " + result);
     }
 
     return new StringWrapper(lib, ptr).toString();
