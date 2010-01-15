@@ -196,11 +196,10 @@ FormatCollection.loadPluginFormats = function(options) {
     var formats = [];
     var pluginProvided = SeleniumIDE.Preferences.getString("pluginProvidedFormatters");
 
-    // if (typeof pluginProvided != 'undefined') {
     if (pluginProvided) {
         var split_pluginProvided = pluginProvided.split(",");
         for (var ppf = 0; ppf < split_pluginProvided.length; ppf++) {
-            var split_ppf = pluginProvided[ppf].split(";");
+            var split_ppf = split_pluginProvided[ppf].split(";");
             formats.push(new PluginFormat(options, split_ppf[0], split_ppf[1], split_ppf[2]));
         }
     }
