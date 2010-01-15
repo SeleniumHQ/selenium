@@ -7,7 +7,7 @@ using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium.IE
 {
-    internal class Finder : ISearchContext, IFindsById, IFindsByLinkText, IFindsByName, IFindsByPartialLinkText, IFindsByTagName, IFindsByXPath, IFindsByClassName
+    internal class Finder : ISearchContext, IFindsById, IFindsByLinkText, IFindsByName, IFindsByPartialLinkText, IFindsByTagName, IFindsByXPath, IFindsByClassName //, IFindsByCssSelector
     {
         InternetExplorerDriver driver;
         SafeInternetExplorerWebElementHandle parent;
@@ -173,6 +173,16 @@ namespace OpenQA.Selenium.IE
             }
             return new ReadOnlyCollection<IWebElement>(elementList);
         }
+
+        //public IWebElement FindElementByCssSelector(string cssSelector)
+        //{
+        //    throw new NotImplementedException("CSS selector is not supported in IE");
+        //}
+
+        //public ReadOnlyCollection<IWebElement> FindElementsByCssSelector(string cssSelector)
+        //{
+        //    throw new NotImplementedException("CSS selector is not supported in IE");
+        //}
 
         public IWebElement FindElement(By by)
         {

@@ -10,7 +10,7 @@ using Newtonsoft.Json;
 
 namespace OpenQA.Selenium.Firefox
 {
-    public class FirefoxDriver : IWebDriver, ISearchContext, IFindsById, IFindsByClassName, IFindsByLinkText, IFindsByName, IFindsByTagName, IFindsByXPath, IFindsByPartialLinkText, IJavaScriptExecutor
+    public class FirefoxDriver : IWebDriver, ISearchContext, IFindsById, IFindsByClassName, IFindsByLinkText, IFindsByName, IFindsByTagName, IFindsByXPath, IFindsByPartialLinkText, IFindsByCssSelector, IJavaScriptExecutor, ITakesScreenshot
     {
         public static readonly int DefaultPort = 7055;
         public static readonly bool DefaultEnableNativeEvents = Platform.CurrentPlatform.IsPlatformType(PlatformType.Windows);
@@ -290,6 +290,20 @@ namespace OpenQA.Selenium.Firefox
 
         #endregion
 
+        #region IFindsByCssSelector Members
+
+        public IWebElement FindElementByCssSelector(string cssSelector)
+        {
+            return FindElement("css selector", cssSelector);
+        }
+
+        public ReadOnlyCollection<IWebElement> FindElementsByCssSelector(string cssSelector)
+        {
+            return FindElements("css selector", cssSelector);
+        }
+
+        #endregion
+
         #region IJavaScriptExecutor Members
 
         public object ExecuteScript(string script, params object[] args)
@@ -301,6 +315,17 @@ namespace OpenQA.Selenium.Firefox
 
             object commandResponse = ExecuteCommand(typeof(InvalidOperationException), "executeScript", new object[] { script, convertedArgs });
             return ParseJavaScriptReturnValue(commandResponse);
+        }
+        #endregion
+
+        #region ITakesScreenshot Members
+        public Screenshot GetScreenshot()
+        {
+            // Get the screenshot as base64.
+            string base64 = SendMessage(typeof(WebDriverException), "getScreenshotAsBase64");
+            // ... and convert it.
+            return new Screenshot(base64);
+
         }
         #endregion
 

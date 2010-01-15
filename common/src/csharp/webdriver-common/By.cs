@@ -237,6 +237,30 @@ namespace OpenQA.Selenium
         }
 
         /// <summary>
+        /// Gets a mechanism to find elements by their cascading stylesheet (CSS) selector.
+        /// </summary>
+        /// <param name="cssSelectorToFind">The CSS selector to find.</param>
+        /// <returns>A <see cref="By"/> object the driver can use to find the elements.</returns>
+        public static By CssSelector(string cssSelectorToFind)
+        {
+            if (cssSelectorToFind == null)
+            {
+                throw new ArgumentNullException("cssSelectorToFind", "Cannot find elements when name CSS selector is null.");
+            }
+
+            By by = new By();
+            by.findElementMethod = delegate(ISearchContext context)
+            {
+                return ((IFindsByCssSelector)context).FindElementByCssSelector(cssSelectorToFind);
+            };
+            by.findElementsMethod = delegate(ISearchContext context)
+            {
+                return ((IFindsByCssSelector)context).FindElementsByCssSelector(cssSelectorToFind);
+            };
+            return by;
+        }
+
+        /// <summary>
         /// Finds the first element matching the criteria.
         /// </summary>
         /// <param name="context">An <see cref="ISearchContext"/> object to use to search for the elements.</param>

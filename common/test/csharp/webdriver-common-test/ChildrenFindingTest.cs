@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using NUnit.Framework;
 using System.Collections.ObjectModel;
+using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium
 {
@@ -20,7 +21,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [ExpectedException(typeof(NoSuchElementException))]
-        public void FindElementByXPathWhenNoMatch() 
+        public void FindElementByXPathWhenNoMatch()
         {
             driver.Url = nestedPage;
             IWebElement element = driver.FindElement(By.Name("form2"));
@@ -141,7 +142,7 @@ namespace OpenQA.Selenium
 
 
         [Test]
-        public void FindElementsByLinkTest() 
+        public void FindElementsByLinkTest()
         {
             driver.Url = nestedPage;
             IWebElement element = driver.FindElement(By.Name("div1"));
@@ -164,7 +165,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.IE)]
-        public void ShouldFindChildElementsByClassName() 
+        public void ShouldFindChildElementsByClassName()
         {
             driver.Url = nestedPage;
             IWebElement parent = driver.FindElement(By.Name("classes"));
@@ -176,7 +177,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.IE)]
-        public void ShouldFindChildrenByClassName() 
+        public void ShouldFindChildrenByClassName()
         {
             driver.Url = nestedPage;
             IWebElement parent = driver.FindElement(By.Name("classes"));
@@ -210,42 +211,47 @@ namespace OpenQA.Selenium
             Assert.AreEqual(2, elements.Count);
         }
 
-        //TODO (jimevan): Implement CSS Selector
-        //[Test]
-        //public void ShouldBeAbleToFindAnElementByCssSelector() {
-        //  if (!supportsSelectorApi()) {
-        //    System.out.println("Skipping test: selector API not supported");
-        //    return;
-        //  }
+        [Test]
+        [Category("Javascript")]
+        public void ShouldBeAbleToFindAnElementByCssSelector()
+        {
+            if (!SupportsSelectorApi())
+            {
+                Console.WriteLine("Skipping test: selector API not supported");
+                return;
+            }
 
-        //  driver.Url = nestedPage;
-        //  IWebElement parent = driver.FindElement(By.Name("form2"));
+            driver.Url = nestedPage;
+            IWebElement parent = driver.FindElement(By.Name("form2"));
 
-        //  IWebElement element = parent.FindElement(By.cssSelector("*[name=\"selectomatic\"]"));
+            IWebElement element = parent.FindElement(By.CssSelector("*[name=\"selectomatic\"]"));
 
-        //  Assert.AreEqual("2", element.GetAttribute("id"));
-        //}
+            Assert.AreEqual("2", element.GetAttribute("id"));
+        }
 
-        //[Test]
-        //[Category("Javascript")]
-        //public void ShouldBeAbleToFindAnElementsByCssSelector() {
-        //  if (!supportsSelectorApi()) {
-        //    System.out.println("Skipping test: selector API not supported");
-        //    return;
-        //  }
+        [Test]
+        [Category("Javascript")]
+        [IgnoreBrowser(Browser.Chrome, "Chrome doesn't handle the many-pages situation well")]
+        public void ShouldBeAbleToFindAnElementsByCssSelector()
+        {
+            if (!SupportsSelectorApi())
+            {
+                Console.WriteLine("Skipping test: selector API not supported");
+                return;
+            }
 
-        //  driver.Url = nestedPage;
-        //  IWebElement parent = driver.FindElement(By.Name("form2"));
+            driver.Url = nestedPage;
+            IWebElement parent = driver.FindElement(By.Name("form2"));
 
-        //  List<IWebElement> elements = parent.FindElements(By.cssSelector("*[name=\"selectomatic\"]"));
+            ReadOnlyCollection<IWebElement> elements = parent.FindElements(By.CssSelector("*[name=\"selectomatic\"]"));
 
-        //  Assert.AreEqual(2, elements.size());
-        //}
+            Assert.AreEqual(2, elements.Count);
+        }
 
-        //private Boolean supportsSelectorApi() {
-        //  return driver instanceof FindsByCssSelector &&
-        //      (Boolean) ((JavascriptExecutor) driver).executeScript(
-        //      "return document['querySelector'] !== undefined;");
-        //}
+        private bool SupportsSelectorApi()
+        {
+            return driver is IFindsByCssSelector &&
+                (bool)((IJavaScriptExecutor)driver).ExecuteScript("return document['querySelector'] !== undefined;");
+        }
     }
 }

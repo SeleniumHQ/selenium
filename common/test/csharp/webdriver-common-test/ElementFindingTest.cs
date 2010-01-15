@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using NUnit.Framework;
 using System.Collections.ObjectModel;
+using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium
 {
@@ -373,42 +374,40 @@ namespace OpenQA.Selenium
             driver.FindElement(By.XPath("//a[contains(.,'hello world')]"));
         }
 
-        //TODO (jimevan): Implement CSS Selection interfaces.
-        //[Test]
-        //[Category("Javascript")]
-        //public void ShouldBeAbleToFindAnElementByCssSelector()
-        //{
-        //    if (!SupportsSelectorApi())
-        //    {
-        //        Console.WriteLine("Skipping test: selector API not supported");
-        //        return;
-        //    }
+        [Test]
+        [Category("Javascript")]
+        public void ShouldBeAbleToFindAnElementByCssSelector()
+        {
+            if (!SupportsSelectorApi())
+            {
+                Console.WriteLine("Skipping test: selector API not supported");
+                return;
+            }
 
-        //    driver.Url = xhtmlTestPage;
+            driver.Url = xhtmlTestPage;
 
-        //    driver.FindElement(By.cssSelector("div.content"));
-        //}
+            driver.FindElement(By.CssSelector("div.content"));
+        }
 
-        //[Test]
-        //[Category("Javascript")]
-        //public void ShouldBeAbleToFindAnElementsByCssSelector()
-        //{
-        //    if (!SupportsSelectorApi())
-        //    {
-        //        Console.WriteLine("Skipping test: selector API not supported");
-        //        return;
-        //    }
+        [Test]
+        [Category("Javascript")]
+        public void ShouldBeAbleToFindAnElementsByCssSelector()
+        {
+            if (!SupportsSelectorApi())
+            {
+                Console.WriteLine("Skipping test: selector API not supported");
+                return;
+            }
 
-        //    driver.Url = xhtmlTestPage;
+            driver.Url = xhtmlTestPage;
 
-        //    driver.FindElements(By.cssSelector("p"));
-        //}
+            driver.FindElements(By.CssSelector("p"));
+        }
 
-        //private bool SupportsSelectorApi()
-        //{
-        //    return driver is FindsByCssSelector &&
-        //        (bool)((JavascriptExecutor)driver).executeScript(
-        //        "return document['querySelector'] !== undefined;");
-        //}
+        private bool SupportsSelectorApi()
+        {
+            return driver is IFindsByCssSelector &&
+                (bool)((IJavaScriptExecutor)driver).ExecuteScript("return document['querySelector'] !== undefined;");
+        }
     }
 }

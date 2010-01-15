@@ -8,7 +8,7 @@ using System.Globalization;
 
 namespace OpenQA.Selenium.Firefox
 {
-    public class FirefoxWebElement : IRenderedWebElement, ILocatable, IFindsById, IFindsByName, IFindsByTagName, IFindsByClassName, IFindsByLinkText, IFindsByPartialLinkText, IFindsByXPath
+    public class FirefoxWebElement : IRenderedWebElement, ILocatable, IFindsById, IFindsByName, IFindsByTagName, IFindsByClassName, IFindsByLinkText, IFindsByPartialLinkText, IFindsByXPath, IFindsByCssSelector
     {
         private FirefoxDriver parentDriver;
         private string elementId;
@@ -324,6 +324,20 @@ namespace OpenQA.Selenium.Firefox
         public ReadOnlyCollection<IWebElement> FindElementsByXPath(string xpath)
         {
             return FindChildElements("xpath", xpath);
+        }
+
+        #endregion
+
+        #region IFindsByCssSelector Members
+
+        public IWebElement FindElementByCssSelector(string cssSelector)
+        {
+            return FindChildElement("css selector", cssSelector);
+        }
+
+        public ReadOnlyCollection<IWebElement> FindElementsByCssSelector(string cssSelector)
+        {
+            return FindChildElements("css selector", cssSelector);
         }
 
         #endregion

@@ -108,6 +108,7 @@
     <Compile Include="SelectElementHandlingTest.cs" />
     <Compile Include="StaleElementReferenceTest.cs" />
     <Compile Include="TagNameTest.cs" />
+    <Compile Include="TakesScreenshotTest.cs" />
     <Compile Include="TargetLocatorTest.cs" />
     <Compile Include="TextHandlingTest.cs" />
     <Compile Include="TextPagesTest.cs" />
