@@ -297,7 +297,6 @@ public class ChromeCommandExecutor {
     if (rawJsonString.length() == 0) {
       return new ChromeResponse(0, null);
     }
-    System.out.println("RJS: " + rawJsonString);
     if ("\"QUIT\"".equals(rawJsonString)) {
       //Ugly hack...
       listeningThread.closeCurrentSockets();
