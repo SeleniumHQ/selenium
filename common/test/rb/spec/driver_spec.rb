@@ -21,7 +21,7 @@ describe "Driver" do
     end
   end
 
-  compliant_on :browser => [:firefox, :chrome] do
+  compliant_on :driver => [:firefox, :chrome] do
     it "should save a screenshot" do
       driver.navigate.to url_for("xhtmlTest.html")
       path = "screenshot_tmp.png"
@@ -76,7 +76,7 @@ describe "Driver" do
       driver.find_element(:xpath, "//h1").text.should == "XHTML Might Be The Future"
     end
 
-    not_compliant_on :browser => :ie do
+    not_compliant_on :driver => [:ie, :remote] do
       it "should find by css selector" do
         driver.navigate.to url_for("xhtmlTest.html")
         driver.find_element(:css, "div.content")
@@ -123,7 +123,7 @@ describe "Driver" do
       driver.find_elements(:class, "nameC").should have(2).things
     end
 
-    not_compliant_on :browser => :ie do
+    not_compliant_on :driver => [:ie, :remote] do
       it "should find by css selector" do
         driver.navigate.to url_for("xhtmlTest.html")
         driver.find_elements(:css, 'p')
