@@ -79,7 +79,7 @@ module Selenium
 
           wstring_to_bytestring raw_string
         ensure
-          Lib.wdFreeString(string_ptr)
+          Lib.wdFreeString(string_ptr) unless string_ptr.null?
           string_ptr_ref.free
         end
 
@@ -88,7 +88,7 @@ module Selenium
           length_ptr   = FFI::MemoryPointer.new :int
 
           check_error_code Lib.wdcGetElementCollectionLength(elements_ptr, length_ptr),
-          "Cannot extract elements from collection"
+                           "Cannot extract elements from collection"
 
           arr = []
 

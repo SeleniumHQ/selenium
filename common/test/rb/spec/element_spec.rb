@@ -37,6 +37,11 @@ describe "Element" do
     driver.find_element(:id, "withText").attribute("rows").should == "5"
   end
 
+  it "should return nil for non-existent attributes" do
+    driver.navigate.to url_for("formPage.html")
+    driver.find_element(:id, "withText").attribute("nonexistent").should be_nil
+  end
+
   it "should toggle" do
     driver.navigate.to url_for("formPage.html")
     driver.find_element(:id, "checky").toggle
