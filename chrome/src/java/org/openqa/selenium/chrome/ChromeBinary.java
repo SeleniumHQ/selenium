@@ -8,7 +8,7 @@ import java.io.IOException;
 
 public class ChromeBinary {
   
-  private static final int BACKOFF_INTERVAL = 15000;
+  private static final int BACKOFF_INTERVAL = 2500;
 
   private static int linearBackoffCoefficient = 1;
 
