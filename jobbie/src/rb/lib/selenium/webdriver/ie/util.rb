@@ -62,6 +62,7 @@ module Selenium
 
         def extract_string_from(string_ptr_ref)
           string_ptr = string_ptr_ref.get_pointer(0)
+          return if string_ptr.null? # getElementAttribute()
 
           length_ptr = FFI::MemoryPointer.new :int
 
