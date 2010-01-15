@@ -200,10 +200,16 @@ class JavaGen < BaseGenerator
       temp = "#{out}_temp"
       mkdir_p temp, :verbose => false
       
-      all = build_uberlist_(args[:deps], args[:standalone])
-      all.each do |dep|
-        sh "cd #{temp} && jar xf ../../#{dep}", :verbose => false
+      all = []
+      args[:deps].each do |d|
+        all += build_classpath_(d)
       end
+      all = all.sort.uniq.collect
+      
+      all.each do |dep|
+        next unless dep.to_s =~ /\.jar$/
+        sh "cd #{temp} && jar xf ../../#{dep}", :verbose => false
+      end      
 
       excludes = args[:exclude] || []
       excludes.each do |to_exclude|
