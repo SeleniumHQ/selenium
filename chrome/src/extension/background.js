@@ -297,14 +297,16 @@ chrome.extension.onConnect.addListener(function(port) {
     }
     if (ChromeDriver.isClosingTab) {
       //We are actively closing the tab, and expect a response to this
-      sendResponseToParsedRequest({statusCode: 0}, false)
       ChromeDriver.isClosingTab = false;
       if (ChromeDriver.tabs.length == 0) {
+        sendResponseToParsedRequest("QUIT", false)
         chrome.windows.getAll({}, function(windows) {
           for (var window in windows) {
             chrome.windows.remove(windows[window].id);
           }
         });
+      } else {
+        sendResponseToParsedRequest({statusCode: 0}, false)
       }
     }
   });
@@ -383,7 +385,7 @@ function handleXmlHttpRequestReadyStateChange() {
       if (request.request == "quit") {
         //We're only allowed to send a response if we're blocked waiting for one, so pretend
         console.log("SENDING QUIT XHR");
-        sendResponseByXHR(JSON.stringify({statusCode: 0}), false);
+        sendResponseByXHR("QUIT", false);
       } else {
         console.log("Got request to execute from XHR: " + this.responseText);
         parseRequest(request);

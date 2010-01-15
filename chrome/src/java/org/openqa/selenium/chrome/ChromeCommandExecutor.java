@@ -116,7 +116,7 @@ public class ChromeCommandExecutor {
    * @return whether an instance of Chrome is currently connected
    */
   boolean hasClient() {
-    return listeningThread != null && listeningThread.hasClient;
+    return listeningThread != null && listeningThread.hasClient && !listeningThread.sockets.isEmpty();
   }
   
   /**
@@ -295,6 +295,12 @@ public class ChromeCommandExecutor {
    */
   private ChromeResponse parseResponse(String rawJsonString) {
     if (rawJsonString.length() == 0) {
+      return new ChromeResponse(0, null);
+    }
+    System.out.println("RJS: " + rawJsonString);
+    if ("\"QUIT\"".equals(rawJsonString)) {
+      //Ugly hack...
+      listeningThread.closeCurrentSockets();
       return new ChromeResponse(0, null);
     }
     try {

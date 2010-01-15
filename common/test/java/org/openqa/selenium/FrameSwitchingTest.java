@@ -35,6 +35,8 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
   protected void tearDown() throws Exception {
     try {
       driver.switchTo().defaultContent();
+    } catch (Exception e) {
+      //May happen if the driver went away.
     } finally {
       super.tearDown();
     }
