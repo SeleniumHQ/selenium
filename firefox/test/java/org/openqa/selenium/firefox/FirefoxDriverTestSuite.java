@@ -52,6 +52,10 @@ public class FirefoxDriverTestSuite extends TestCase {
       super(createTemporaryProfile());
     }
 
+    public TestFirefoxDriver(FirefoxProfile profile) {
+      super(profile);
+    }
+
     private static FirefoxProfile createTemporaryProfile() {
       // Locate the extension directory
       File extensionSource = FileHandler.locateInProject("firefox/src/extension");

@@ -257,7 +257,7 @@ int wdFreeDriver(WebDriver* driver)
 	driver = NULL;
 
 	// Let the IE COM instance fade away
-	wait(2000);
+	wait(4000);
 
 	return SUCCESS;
 }
@@ -588,16 +588,55 @@ int wdeGetAttribute(WebElement* element, const wchar_t* name, StringWrapper** re
 	int res = verifyFresh(element);	if (res != SUCCESS) { return res; }
 
 	try {
-		const std::wstring originalString(element->element->getAttribute(name));
-		size_t length = originalString.length() + 1;
-		wchar_t* toReturn = new wchar_t[length];
+		std::wstring script(L"(function() { return function(){ ");
+		script += L"var e = arguments[0]; var attr = arguments[1]; var lattr = attr.toLowerCase(); ";
+		script += L"if (lattr == 'class') { attr = 'className' }; ";
+		script += L"if (lattr == 'readonly') { attr = 'readOnly' }; ";
+		script += L"if ('style' == lattr) { return ''; } ";
+		script += L"  if ('disabled' == lattr) { return e.disabled ? 'true' : 'false'; } ";
+		script += L"if (e.tagName.toLowerCase() == 'input') { ";
+        script += L"  var type = e.type.toLowerCase(); ";
+		script += L"  if (type == 'radio' && lattr == 'selected') { return e.checked == '' || e.checked == undefined ? 'false' : 'true' ; } ";
+		script += L"} ";
+		script += L"return e[attr] === undefined ? undefined : e[attr].toString(); ";
+		script += L"};})();";
 
-		wcscpy_s(toReturn, length, originalString.c_str());
+		ScriptArgs* args;
+		res = wdNewScriptArgs(&args, 2);
+		if (res != SUCCESS) {
+			return res;
+		}
+		wdAddElementScriptArg(args, element);
+		wdAddStringScriptArg(args, name);
 
-		StringWrapper* res = new StringWrapper();
-		res->text = toReturn;
-		
-		*result = res;
+		WebDriver* driver = new WebDriver();
+		driver->ie = element->element->getParent();
+		ScriptResult* scriptResult = NULL;
+		res = wdExecuteScript(driver, script.c_str(), args, &scriptResult);
+		wdFreeScriptArgs(args);
+		driver->ie = NULL;
+		delete driver;
+
+		if (res != SUCCESS) 
+		{
+			wdFreeScriptResult(scriptResult);
+			return res;
+		}
+
+		int type;
+		wdGetScriptResultType(scriptResult, &type);
+		if (type != 5) {
+			const std::wstring originalString(bstr2cw(scriptResult->result.bstrVal));
+			size_t length = originalString.length() + 1;
+			wchar_t* toReturn = new wchar_t[length];
+
+			wcscpy_s(toReturn, length, originalString.c_str());
+
+			*result = new StringWrapper();
+			(*result)->text = toReturn;
+		}
+
+		wdFreeScriptResult(scriptResult);
 
 		return SUCCESS;
 	} END_TRY;

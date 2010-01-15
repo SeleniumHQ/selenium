@@ -34,8 +34,6 @@ public:
 	bool isFresh();
 
     LPCWSTR getTagName();
-	LPCWSTR getAttribute(LPCWSTR name);
-	LPCWSTR getValue();
 	int sendKeys(LPCWSTR newValue);
 	void clear();
 	bool isSelected();

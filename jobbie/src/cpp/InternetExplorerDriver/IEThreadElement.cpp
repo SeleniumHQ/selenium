@@ -541,14 +541,6 @@ void IeThread::OnElementGetTagName(WPARAM w, LPARAM lp)
 	getTagName(pElement, ret);
 }
 
-void IeThread::OnElementGetAttribute(WPARAM w, LPARAM lp)
-{
-	SCOPETRACER
-	ON_THREAD_ELEMENT(data, pElement)
-
-	getAttribute(pElement, data.input_string_, data.output_string_);
-}
-
 void IeThread::getTextAreaValue(IHTMLElement *pElement, std::wstring& res)
 {
 	SCOPETRACER
@@ -557,16 +549,6 @@ void IeThread::getTextAreaValue(IHTMLElement *pElement, std::wstring& res)
 	textarea->get_value(&result);
 
 	res = combstr2cw(result);
-}
-
-void IeThread::OnElementGetValue(WPARAM w, LPARAM lp)
-{
-	SCOPETRACER
-	ON_THREAD_ELEMENT(data, pElement)
-
-	std::wstring& ret = data.output_string_;
-
-	getValue(pElement, ret);
 }
 
 void IeThread::OnElementClear(WPARAM w, LPARAM lp)
@@ -579,18 +561,22 @@ void IeThread::OnElementClear(WPARAM w, LPARAM lp)
 		return;
 	}
 
-	CComBSTR valueAttributeName(L"value");
-
-    // Get the current value, to see if we need to fire the onchange handler
-	std::wstring curr;
-	getValue(pElement, curr);
-	bool fireChange = curr.length() != 0;
+	CComQIPtr<IHTMLTextAreaElement> textArea(pElement);
+	CComQIPtr<IHTMLInputElement> inputElement(pElement);
+	CComBSTR v;
+	if (textArea) {
+		textArea->get_value(&v);
+	}
+	if (inputElement) {
+		inputElement->get_value(&v);
+	}
+	bool fireChange = v.Length() > 0;
 
 	element2->focus();
 
-	CComVariant empty(L"");
-	pElement->setAttribute(valueAttributeName, empty, 0);
-
+	if (textArea) textArea->put_value(L"");
+	if (inputElement) inputElement->put_value(L"");
+	
 	if (fireChange) {
 		CComPtr<IHTMLEventObj> eventObj;
 		newEventObject(pElement, eventObj);
@@ -874,52 +860,6 @@ void IeThread::getTagName(IHTMLElement *pElement, std::wstring& res)
 	pElement->get_tagName(&temp);
     res = combstr2cw(temp);
     transform(res.begin(), res.end(), res.begin(), tolower);
-}
-
-void IeThread::getAttribute(IHTMLElement *pElement, LPCWSTR name, std::wstring& res)
-{
-	SCOPETRACER
-	CComBSTR attributeName;
-	if (_wcsicmp(L"class", name) == 0) {
-		attributeName = L"className";
-	} else {
-		attributeName = name;
-	}
-
-	CComVariant value;
-	HRESULT hr = pElement->getAttribute(attributeName, 0, &value);
-	if (FAILED(hr)) {
-		LOGHR(WARN, hr) << "Unable to read attribute: " << attributeName << ". Returning default value";
-		res = L"";
-		return;
-	}
-
-	// Handle "read-only" with care. Any value indicates the field would be readonly, so
-	// returning "false" actually means the field is disabled. *sigh*
-	res = comvariant2cw(value);
-	if (_wcsicmp(L"readonly", attributeName) == 0) {
-		if (_wcsicmp(L"false", res.c_str()) == 0) {
-			res = L"";
-		} else {
-			res = L"true";
-		}
-	} else if (_wcsicmp(L"multiple", attributeName) == 0) {
-		CComBSTR tagName;
-		hr = pElement->get_tagName(&tagName);
-		if (FAILED(hr)) {
-			LOGHR(WARN, hr) << "Unable to determine tag name. Returning default value";
-			res = L"";
-			return;
-		}
-		if (tagName == L"SELECT") {
-			if (_wcsicmp(L"false", res.c_str()) == 0) {
-				res = L"";
-			} else {
-				res = L"multiple";
-			}
-		}
-	}
-
 }
 
 bool IeThread::isSelected(IHTMLElement *pElement)
@@ -1209,26 +1149,6 @@ bool IeThread::isEnabled(IHTMLElement *pElement)
 	elem3->get_disabled(&isDisabled);
 	return !isDisabled;
 }
-void IeThread::getValue(IHTMLElement *pElement, std::wstring& res)
-{
-	SCOPETRACER
-	
-	if (!pElement) {
-		return;
-	}
-
-	CComBSTR temp;
-	pElement->get_tagName(&temp);
-
-	if (_wcsicmp(L"textarea", combstr2cw(temp)) == 0)
-	{
-		getTextAreaValue(pElement, res);
-		return;
-	}
-
-	getAttribute(pElement, L"value", res);
-}
-
 
 const wchar_t* colourNames2hex[][2] = {
 	{ L"aqua",		L"#00ffff" },

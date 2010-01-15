@@ -55,28 +55,6 @@ LPCWSTR ElementWrapper::getTagName()
 	return data.output_string_.c_str();
 }
 
-LPCWSTR ElementWrapper::getAttribute(LPCWSTR name)
-{
-	SCOPETRACER
-
-	if (!_wcsicmp(getTagName(), L"input") && !_wcsicmp(name, L"selected")) {
-		SEND_MESSAGE_WITH_MARSHALLED_DATA(_WD_ELEM_GETATTRIBUTE, L"checked")
-		LPCWSTR result = data.output_string_.c_str();
-		  return (wcslen(result) == 0) ? L"false" : result;
-	}
-
-	SEND_MESSAGE_WITH_MARSHALLED_DATA(_WD_ELEM_GETATTRIBUTE, name)
-	return data.output_string_.c_str();
-}
-
-LPCWSTR ElementWrapper::getValue()
-{
-	SCOPETRACER
-	SEND_MESSAGE_WITH_MARSHALLED_DATA(_WD_ELEM_GETVALUE,)
-	return data.output_string_.c_str();
-}
-
-
 int ElementWrapper::sendKeys(LPCWSTR newValue)
 {
 	SCOPETRACER

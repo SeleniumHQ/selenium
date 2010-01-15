@@ -17,18 +17,17 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import java.util.List;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.core.IsNull.nullValue;
-import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
-
-import java.util.List;
 
 public class ElementAttributeTest extends AbstractDriverTestCase {
 
-  @Ignore({IE, SELENESE})
+  @Ignore(SELENESE)
   public void testShouldReturnNullWhenGettingTheValueOfAnAttributeThatIsNotListed() {
     driver.get(simpleTestPage);
     WebElement head = driver.findElement(By.xpath("/html"));
@@ -55,7 +54,7 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
     assertThat(pElement.isEnabled(), equalTo(true));
   }
 
-  @Ignore({IE, SELENESE})
+  @Ignore(SELENESE)
   public void testShouldReturnTheValueOfTheIndexAttrbuteEvenIfItIsMissing() {
     driver.get(formPage);
 

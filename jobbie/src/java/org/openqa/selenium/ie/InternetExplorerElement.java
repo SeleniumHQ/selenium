@@ -75,7 +75,7 @@ public class InternetExplorerElement implements RenderedWebElement, Locatable {
 
     errors.verifyErrorCode(result, "get attribute of");
 
-    return new StringWrapper(lib, wrapper).toString();
+    return wrapper.getValue() == null ? null : new StringWrapper(lib, wrapper).toString();
   }
 
   public String getText() {
