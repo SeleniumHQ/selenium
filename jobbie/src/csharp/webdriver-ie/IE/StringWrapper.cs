@@ -20,11 +20,12 @@ namespace OpenQA.Selenium.IE
             get
             {
                 int length = 0;
-                if (NativeMethods.wdStringLength(handle, ref length) != WebDriverResult.Success)
+                if (!handle.IsInvalid && NativeMethods.wdStringLength(handle, ref length) != WebDriverResult.Success)
                 {
                     Dispose();
                     throw new WebDriverException("Cannot determine length of string");
                 }
+
                 return length;
             }
         }
@@ -34,13 +35,19 @@ namespace OpenQA.Selenium.IE
             get
             {
                 int length = Length;
-                StringBuilder result = new StringBuilder(length);
-                if (NativeMethods.wdCopyString(handle, length, result) != WebDriverResult.Success)
+                string returnValue = null;
+                if (!handle.IsInvalid)
                 {
-                    Dispose();
-                    throw new WebDriverException("Cannot copy string from native data to .NET string");
+                    StringBuilder result = new StringBuilder(length);
+                    if (!handle.IsInvalid && NativeMethods.wdCopyString(handle, length, result) != WebDriverResult.Success)
+                    {
+                        Dispose();
+                        throw new WebDriverException("Cannot copy string from native data to .NET string");
+                    }
+                    returnValue = result.ToString();
                 }
-                return result.ToString();
+
+                return returnValue;
             }
         }
 

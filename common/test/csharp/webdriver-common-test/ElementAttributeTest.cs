@@ -10,7 +10,6 @@ namespace OpenQA.Selenium
     public class ElementAttributeTest : DriverTestFixture
     {
         [Test]
-        [IgnoreBrowser(Browser.IE)]
         public void ShouldReturnNullWhenGettingTheValueOfAnAttributeThatIsNotListed()
         {
             driver.Url = simpleTestPage;
@@ -41,7 +40,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IE)]
         public void ShouldReturnTheValueOfTheIndexAttrbuteEvenIfItIsMissing()
         {
             driver.Url = formsPage;

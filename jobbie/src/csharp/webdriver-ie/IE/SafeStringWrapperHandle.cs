@@ -16,7 +16,11 @@ namespace OpenQA.Selenium.IE
         {
             // The reference implementation (Java) ignores return codes
             // from this function call, so we will too.
-            NativeMethods.wdFreeString(handle);
+            if (!IsInvalid)
+            {
+                NativeMethods.wdFreeString(handle);
+            }
+
             return true;
         }
     }

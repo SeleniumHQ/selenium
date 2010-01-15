@@ -99,10 +99,13 @@ namespace OpenQA.Selenium.IE
             SafeStringWrapperHandle stringHandle = new SafeStringWrapperHandle();
             WebDriverResult result = NativeMethods.wdeGetAttribute(elementHandle, attributeName, ref stringHandle);
             ResultHandler.VerifyResultCode(result, string.Format(CultureInfo.InvariantCulture, "getting attribute '{0}' of the element", attributeName));
-            string returnValue = string.Empty;
-            using (StringWrapper wrapper = new StringWrapper(stringHandle))
+            string returnValue = null;
+            if (stringHandle != null)
             {
-                returnValue = wrapper.Value;
+                using (StringWrapper wrapper = new StringWrapper(stringHandle))
+                {
+                    returnValue = wrapper.Value;
+                }
             }
             return returnValue;
         }
