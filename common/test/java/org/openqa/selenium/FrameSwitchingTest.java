@@ -183,7 +183,7 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
   }
 
   @NoDriverAfterTest
-  @Ignore({IPHONE, SELENESE})
+  @Ignore({IPHONE, SELENESE, CHROME})
   public void testClosingTheFinalBrowserWindowShouldNotCauseAnExceptionToBeThrown() {
     driver.get(simpleTestPage);
     try {
