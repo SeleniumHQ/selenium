@@ -56,7 +56,7 @@ module Selenium
           if res.content_type == CONTENT_TYPE
             Response.new do |r|
               r.code         = res.code.to_i
-              r.payload      = JSON.parse(res.body)
+              r.payload      = JSON.parse(res.body.strip)
             end
           elsif res.code == '204'
             Response.new { |r| r.code = res.code.to_i }
