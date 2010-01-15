@@ -13,13 +13,6 @@
     <orderEntry type="module" module-name="common" />
     <orderEntry type="module-library">
       <library>
-        <CLASSES />
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
         <CLASSES>
           <root url="jar://$MODULE_DIR$/lib/runtime/jna.jar!/" />
         </CLASSES>
