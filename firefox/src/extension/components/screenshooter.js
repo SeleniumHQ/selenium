@@ -37,7 +37,7 @@ Screenshooter.grab = function(window) {
   canvas.width = width;
   canvas.height = height;
   var context = canvas.getContext('2d');
-  context.drawWindow(window, 0, 0, width, height, 'rgb(0,0,0)');
+  context.drawWindow(window, 0, 0, width, height, 'rgb(255,255,255)');
   return canvas;
 };
 
