@@ -3141,8 +3141,9 @@ Selenium.prototype.doUseXpathLibrary = function(libraryName) {
     *   <li>"default" - The default library.  Currently the default library is "ajaxslt" .</li>
     * </ul>
     * If libraryName isn't one of these three, it may be the name of another
-    * engine registered to the browserbot via addXPathEngine(). If it is not
-    * a registered engine either, then no change will be made.
+    * engine registered to the browserbot's XPathEvaluator, for example by
+    * overriding XPathEvaluator.prototype.init() . If it is not a registered
+    * engine either, then no change will be made.
     */
 
     if (! this.browserbot.getXPathEngine(libraryName)) {

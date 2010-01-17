@@ -135,10 +135,6 @@ var BrowserBot = function(topLevelApplicationWindow) {
         this.xpathEvaluator.setIgnoreAttributesWithoutValue(ignore);
     };
     
-    this.addXPathEngine = function(engineName, engine) {
-        return this.xpathEvaluator.registerEngine(engineName, engine);
-    };
-    
     this.setXPathEngine = function(engineName) {
         this.xpathEvaluator.setCurrentEngine(engineName);
     };

@@ -4790,6 +4790,53 @@ function MirroredDocument() {
 
 ///////////////////////////////////////////////////////////////////////////////
 
+function XPathOptimizationCache(newMaxSize) {
+// private
+    var cache = new BoundedCache(newMaxSize);
+
+// public
+    /**
+     * Returns the optimized item by document markup and XPath, or null if
+     * it is not found in the cache. Never calls put() on the underlying cache.
+     */
+    this.get = function(html, xpath) {
+        var byHtml = cache.get(html);
+        
+        return byHtml ? byHtml[xpath] : null;
+    };
+
+    /**
+     * Returns the optimization item by document markup and XPath. Returns an
+     * empty map object that has been added to the cache if the item did not
+     * exist previously. Never returns null.
+     */
+    this.getOrCreate = function(html, xpath) {
+        var byHtml = cache.get(html);
+        
+        if (byHtml == null) {
+            var result = {};
+            var optimizations = {};
+            
+            optimizations[xpath] = result;
+            cache.put(html, optimizations);
+            return result;
+        }
+        
+        var item = byHtml[xpath];
+        
+        if (item == null) {
+            var result = {};
+            
+            byHtml[xpath] = result;
+            return result;
+        }
+        
+        return item;
+    };
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 function XPathOptimizer(newEngine) {
 // private
     var engine = newEngine;
@@ -4809,7 +4856,7 @@ function XPathOptimizer(newEngine) {
     //                  time of addition to the cache; this can be used to
     //                  determine if the node has since changed positions
     //
-    var knownOptimizations = new BoundedCache(100);
+    var knownOptimizations = new XPathOptimizationCache(100);
     
     /**
      * Returns whether this optimizer is capable of optimizing XPath's for the
@@ -4858,11 +4905,10 @@ function XPathOptimizer(newEngine) {
      */
     this.getOptimizedFinder = function(xpath, contextNode) {
         var originalHtml = mirror.getOriginal().documentElement.innerHTML;
-        var optimization = knownOptimizations.get(originalHtml);
+        var optimization = knownOptimizations.get(originalHtml, xpath);
         
-        if (optimization &&
-            optimization[xpath]) {
-            var finder =  optimization[xpath].finder;
+        if (optimization) {
+            var finder =  optimization.finder;
             
             if (finder) {
                 // the optimized finder for this document content was found in
@@ -4871,7 +4917,7 @@ function XPathOptimizer(newEngine) {
                 return finder;
             }
         }
-    
+        
         mirror.reflect();
     
         if (contextNode) {
@@ -4893,20 +4939,13 @@ function XPathOptimizer(newEngine) {
             
             if (finder) {
                 safe_log('info', 'Found optimized finder: ' + finder);
-                    
-                if (optimization) {
-                    if (optimization[xpath]) {
-                        optimization[xpath].finder = finder;
-                    }
-                    else {
-                        optimization[xpath] = { finder: finder };
-                    }
+                
+                if (! optimization) {
+                    optimization = knownOptimizations
+                        .getOrCreate(originalHtml, xpath);
                 }
-                else {
-                    optimization = {};
-                    optimization[xpath] = { finder: finder };
-                    knownOptimizations.put(originalHtml, optimization);
-                }
+                
+                optimization.finder = finder;
                 
                 return finder;
             }
@@ -4917,15 +4956,17 @@ function XPathOptimizer(newEngine) {
     
     this.countNodes = function(xpath, contextNode) {
         var originalHtml = mirror.getOriginal().documentElement.innerHTML;
-        var optimization = knownOptimizations.get(originalHtml);
+        var optimization = knownOptimizations.get(originalHtml, xpath);
         
-        if (optimization &&
-            optimization[xpath] &&
-            optimization[xpath].nodeCount) {
-            // the node count for the XPath for this document content was found
-            // in the cache!
-            safe_log('info', 'Found cached node count for ' + xpath);
-            return optimization[xpath].nodeCount;
+        if (optimization) {
+            var nodeCount = optimization.nodeCount;
+            
+            if (nodeCount != null) {
+                // the node count for the XPath for this document content was
+                // found in the cache!
+                safe_log('info', 'Found cached node count for ' + xpath);
+                return nodeCount;
+            }
         }
         
         mirror.reflect();
@@ -4939,19 +4980,11 @@ function XPathOptimizer(newEngine) {
         var nodeCount = engine.setDocument(mirror.getReflection())
             .countNodes(xpath, contextNode, namespaceResolver);
         
-        if (optimization) {
-            if (optimization[xpath]) {
-                optimization[xpath].nodeCount = nodeCount;
-            }
-            else {
-                optimization[xpath] = { nodeCount: nodeCount };
-            }
+        if (! optimization) {
+            optimization = knownOptimizations.getOrCreate(originalHtml, xpath);
         }
-        else {
-            optimization = {};
-            optimization[xpath] = { nodeCount: nodeCount };
-            knownOptimizations.put(originalHtml, optimization);
-        }
+        
+        optimization.nodeCount = nodeCount;
         
         return nodeCount;
     };
@@ -5063,18 +5096,15 @@ function MultiWindowRPCOptimizingEngine(newFrameName, newDelegateEngine) {
         if (isOptimizing()) {
             var html = this.doc.documentElement.innerHTML;
             var knownOptimizations = optimizer.getKnownOptimizations();
-            var optimization = knownOptimizations[html];
+            var optimization = knownOptimizations.get(html, xpath);
             
-            if (optimization &&
-                optimization[xpath] &&
-                optimization[xpath].node) {
-                var node = optimization[xpath].node;
+            if (optimization) {
+                var node = optimization.node;
+                var sourceIndex = optimization.sourceIndex;
                 
                 if (node == NO_RESULT) {
                     return null;
                 }
-                
-                var sourceIndex = optimization[xpath].sourceIndex;
                 
                 // node is still valid? (test ok even if sourceIndex is null)
                 if (! isDetached(node) && node.sourceIndex == sourceIndex) {
@@ -5096,42 +5126,16 @@ function MultiWindowRPCOptimizingEngine(newFrameName, newDelegateEngine) {
                     namespaceResolver);
             }
             
-            if (optimization) {
-                if (optimization[xpath]) {
-                    if (node) {
-                        optimization[xpath].node = node;
-                        optimization[xpath].sourceIndex = node.sourceIndex;
-                    }
-                    else {
-                        optimization[xpath].node = NO_RESULT;
-                    }
-                }
-                else {
-                    if (node) {
-                        optimization[xpath] = {
-                            node: node
-                            , sourceIndex: node.sourceIndex
-                        };
-                    }
-                    else {
-                        optimization[xpath] = { node: NO_RESULT };
-                    }
-                }
+            if (! optimization) {
+                optimization = knownOptimizations.getOrCreate(html, xpath);
+            }
+            
+            if (node) {
+                optimization.node = node;
+                optimization.sourceIndex = node.sourceIndex;
             }
             else {
-                optimization = {};
-                
-                if (node) {
-                    optimization = {
-                        node: node
-                        , sourceIndex: node.sourceIndex
-                    };
-                }
-                else {
-                    optimization = { node: NO_RESULT };
-                }
-                
-                knownOptimizations[html] = optimization;
+                optimization.node = NO_RESULT;
             }
             
             return node;
