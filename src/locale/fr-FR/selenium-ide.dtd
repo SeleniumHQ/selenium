@@ -64,3 +64,5 @@
 <!ENTITY recentTestCmd.label "Recent Test Cases">
 
 <!ENTITY testCaseProperties.label "Properties...">
+
+<!ENTITY reloadExtButton.tooltip "Recharger">

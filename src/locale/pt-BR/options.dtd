@@ -18,3 +18,7 @@
 
 <!ENTITY options.enableUIElement.description "Enable UI-Element (experimental, requires IDE restart)">
 <!ENTITY options.enableUIElement.about "About UI-Element">
+
+<!ENTITY options.user-ext.reload.label "Atualizar">
+<!ENTITY options.user-ext.reload.tooltip "Atualizar Selenium Core e suas extensões">
+<!ENTITY options.showDeveloperTools.description "Ativar ferramentas para desenvolvedores">

@@ -65,3 +65,4 @@
 
 <!ENTITY testCaseProperties.label "Properties...">
 
+<!ENTITY reloadExtButton.tooltip "Reload">

@@ -64,3 +64,5 @@
 <!ENTITY recentTestCmd.label "最近開いたテストケース">
 
 <!ENTITY testCaseProperties.label "プロパティ...">
+
+<!ENTITY reloadExtButton.tooltip "リロード">

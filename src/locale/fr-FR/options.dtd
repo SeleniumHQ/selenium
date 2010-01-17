@@ -18,3 +18,8 @@
 
 <!ENTITY options.enableUIElement.description "Enable UI-Element (experimental, requires IDE restart)">
 <!ENTITY options.enableUIElement.about "About UI-Element">
+
+
+<!ENTITY options.user-ext.reload.label "Recharger">
+<!ENTITY options.user-ext.reload.tooltip "Recharger Selenium Core et ses extensions">
+<!ENTITY options.showDeveloperTools.description "Activer les outils développeur">
