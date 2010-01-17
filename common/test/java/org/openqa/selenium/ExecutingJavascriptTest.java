@@ -19,6 +19,7 @@ package org.openqa.selenium;
 
 import org.apache.commons.io.FileUtils;
 import static org.openqa.selenium.Ignore.Driver.CHROME;
+import static org.openqa.selenium.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.REMOTE;
@@ -354,7 +355,7 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(CHROME)
+  @Ignore({CHROME, FIREFOX})
   public void testShouldBeAbleToExecuteABigChunkOfJavascriptCode() throws IOException {
     driver.get(javascriptPage);
 
