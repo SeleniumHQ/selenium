@@ -20,7 +20,7 @@
 FirefoxDriver.prototype.click = function(respond) {
   var element = Utils.getElementAt(respond.elementId, respond.context);
 
-  if (!Utils.isDisplayed(element) && !Utils.isInHead(element)) {
+  if (!Utils.isDisplayed(element, true) && !Utils.isInHead(element)) {
     respond.isError = true;
     respond.response =
     "Element is not currently visible and so may not be clicked";
@@ -164,7 +164,7 @@ FirefoxDriver.prototype.getValue = function(respond) {
 FirefoxDriver.prototype.sendKeys = function(respond, value) {
   var element = Utils.getElementAt(respond.elementId, respond.context);
 
-  if (!Utils.isDisplayed(element) && !Utils.isInHead(element)) {
+  if (!Utils.isDisplayed(element, true) && !Utils.isInHead(element)) {
     respond.isError = true;
     respond.response =
     "Element is not currently visible and so may not be used for typing";
@@ -198,7 +198,7 @@ FirefoxDriver.prototype.sendKeys = function(respond, value) {
 FirefoxDriver.prototype.clear = function(respond) {
   var element = Utils.getElementAt(respond.elementId, respond.context);
 
-  if (!Utils.isDisplayed(element) && !Utils.isInHead(element)) {
+  if (!Utils.isDisplayed(element, true) && !Utils.isInHead(element)) {
     respond.isError = true;
     respond.response =
     "Element is not currently visible and so may not be cleared";
@@ -375,7 +375,7 @@ FirefoxDriver.prototype.isSelected = function(respond) {
 FirefoxDriver.prototype.setSelected = function(respond) {
   var element = Utils.getElementAt(respond.elementId, respond.context);
 
-  if (!Utils.isDisplayed(element) && !Utils.isInHead(element)) {
+  if (!Utils.isDisplayed(element, true) && !Utils.isInHead(element)) {
     respond.isError = true;
     respond.response =
     "Element is not currently visible and so may not be selected";
@@ -491,7 +491,7 @@ FirefoxDriver.prototype.toggle = function(respond) {
 
 FirefoxDriver.prototype.isDisplayed = function(respond) {
   var element = Utils.getElementAt(respond.elementId, respond.context);
-  respond.response = Utils.isDisplayed(element);
+  respond.response = Utils.isDisplayed(element, false);
   respond.send();
 };
 
@@ -525,7 +525,7 @@ FirefoxDriver.prototype.getSize = function(respond) {
 FirefoxDriver.prototype.dragElement = function(respond, movementString) {
   var element = Utils.getElementAt(respond.elementId, respond.context);
 
-  if (!Utils.isDisplayed(element) && !Utils.isInHead(element)) {
+  if (!Utils.isDisplayed(element, true) && !Utils.isInHead(element)) {
     respond.isError = true;
     respond.response =
     "Element is not currently visible and so may not be used for drag and drop";
@@ -601,7 +601,7 @@ FirefoxDriver.prototype.getValueOfCssProperty = function(respond,
 FirefoxDriver.prototype.getLocationOnceScrolledIntoView = function(respond) {
   var element = Utils.getElementAt(respond.elementId, respond.context);
 
-  if (!Utils.isDisplayed(element)) {
+  if (!Utils.isDisplayed(element, true)) {
     respond.response = undefined;
     respond.send();
     return;

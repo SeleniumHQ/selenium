@@ -154,7 +154,7 @@ function getTextFromNode(node, toReturn, textSoFar) {
 
     // Or is this just plain text?
     if (child.nodeName == "#text") {
-      if (Utils.isDisplayed(child)) {
+      if (Utils.isDisplayed(child, false)) {
         var textToAdd = child.nodeValue;
         textToAdd =
         textToAdd.replace(new RegExp(String.fromCharCode(160), "gm"), " ");
@@ -211,7 +211,10 @@ Utils.isInHead = function(element) {
 };
 
 
-Utils.isDisplayed = function(element) {
+/**
+ * Checks that the element is not hidden by dimensions or CSS
+ */
+Utils.isDisplayed = function(element, scrollIfNecessary) {
   // Ensure that we're dealing with an element.
   var el = element;
   while (el.nodeType != 1 && !(el.nodeType >= 9 && el.nodeType <= 11)) {
@@ -227,7 +230,7 @@ Utils.isDisplayed = function(element) {
     return false;
   }
 
-  var box = Utils.getLocationOnceScrolledIntoView(el);
+  var box = scrollIfNecessary ? Utils.getLocationOnceScrolledIntoView(el) : Utils.getLocation(el);
   // Elements with zero width or height are never displayed
   if (box.width == 0 || box.height == 0) {
     return false;
@@ -1086,13 +1089,7 @@ Utils.findElementsByXPath = function (xpath, contextNode, context) {
 };
 
 
-Utils.getLocationOnceScrolledIntoView = function(element) {
-  // Some elements may not a scrollIntoView function - for example,
-  // elements under an SVG element. Call those only if they exist.
-  if (typeof element.scrollIntoView == 'function') {
-    element.scrollIntoView(true);
-  }
-
+Utils.getLocation = function(element) {
   var retrieval = Utils.newInstance(
       "@mozilla.org/accessibleRetrieval;1", "nsIAccessibleRetrieval");
 
@@ -1173,6 +1170,17 @@ Utils.getLocationOnceScrolledIntoView = function(element) {
     width: box.width,
     height: box.height
   };
+};
+
+
+Utils.getLocationOnceScrolledIntoView = function(element) {
+  // Some elements may not a scrollIntoView function - for example,
+  // elements under an SVG element. Call those only if they exist.
+  if (typeof element.scrollIntoView == 'function') {
+    element.scrollIntoView(true);
+  }
+
+  return Utils.getLocation(element);
 };
 
 
