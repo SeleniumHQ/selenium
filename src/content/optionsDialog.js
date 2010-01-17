@@ -40,6 +40,11 @@ function loadFromOptions(options) {
 		if (e != null) {
 			if (e.checked != undefined) {
 				e.checked = options[name] == 'true';
+				
+				//initialize the reload-button state
+				if (name == "showDeveloperTools"){
+					document.getElementById("reload").disabled = !e.checked;
+				}
 			} else {
 				e.value = options[name];
 			}
@@ -276,3 +281,27 @@ var validations = {
 		}
 	}
 };
+
+
+/**
+ * Call the reload method of the current editor
+ */
+function reloadUserExtFile(){
+
+	try{
+			
+		SeleniumIDE.Loader.getEditors()[0].reload();
+	}catch(e){
+		alert("error :" + e);
+	}
+}
+
+/**
+ * Use to toggle the reload-button state
+ */
+function SDTToggle(){
+
+	document.getElementById('reload').disabled = !document.getElementById('showDeveloperTools').checked;
+}
+
+

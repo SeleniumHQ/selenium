@@ -22,6 +22,7 @@ this.Preferences = SeleniumIDE.Preferences;
  */
 function Application() {
     this.baseURL = "";
+    this.showDeveloperTools = false;
     this.options = Preferences.load();
     this.baseURLHistory = new StoredHistory("baseURLHistory", 20);
     this.testCase = null;
@@ -57,11 +58,24 @@ Application.prototype = {
     getBaseURLHistory: function() {
         return this.baseURLHistory.list();
     },
+    
+    //get the "showDeveloperTools" state
+    getShowDeveloperTools: function(){
+    	return this.showDeveloperTools;
+    },
+    
+    //set the "showDeveloperTools" state by the given state "show"
+    setShowDeveloperTools: function(show){
+    	this.showDeveloperTools = show == 'true' ? true : false;
+    	this.notify("showDevToolsChanged", this.showDeveloperTools);
+    },
 
     initOptions: function() {
         if (this.options.rememberBaseURL == 'true' && this.options.baseURL != null){
             this.setBaseURL(this.options.baseURL);
         }
+        //initializing the reload button
+        this.setShowDeveloperTools(this.options.showDeveloperTools);
         this.setOptions(this.options); // to notify optionsChanged to views
     },
     
@@ -71,6 +85,7 @@ Application.prototype = {
 
     setOptions: function(options) {
         this.options = options;
+        this.setShowDeveloperTools(this.options.showDeveloperTools+"");
         this.formats = new FormatCollection(options);
         this.currentFormat = this.formats.selectFormat(options.selectedFormat || null);
         this.clipboardFormat = this.formats.selectFormat(options.clipboardFormat || null);

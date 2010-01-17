@@ -170,4 +170,14 @@ Debugger.prototype.showElement = function(locator) {
 	this.runner.showElement(locator);
 }
 
+/*
+ * Use to reload the Selenium Core API 
+ * and its overrides and extensions (user-extensions file)
+ */
+Debugger.prototype.reInit = function(){
+
+	this.runner = null;
+	this.init();
+}
+
 observable(Debugger);

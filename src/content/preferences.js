@@ -112,6 +112,9 @@ SeleniumIDE.Preferences.DEFAULT_OPTIONS = {
     "",
     
     pluginProvidedFormatters:
-    ""
+    "",
+    
+    showDeveloperTools:
+    "false"
 };
 

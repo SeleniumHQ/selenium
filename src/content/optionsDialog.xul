@@ -66,6 +66,7 @@ limitations under the License.
       <hbox align="center">
 	<textbox id="userExtensionsURL" multiline="false" flex="1"/>
 	<button label="&options.browse;" oncommand="chooseFile('userExtensionsURL')"/>
+	<button id="reload" label="&options.user-ext.reload.label;" class="icon" tooltiptext="&options.user-ext.reload.tooltip;" oncommand="reloadUserExtFile()" disabled="true"/>
       </hbox>
 
       <separator class="thin"/>
@@ -80,6 +81,8 @@ limitations under the License.
       <checkbox id="rememberBaseURL" label="&options.rememberBaseURL.description;"/>
       <checkbox id="recordAssertTitle" label="&options.recordAssertTitle.description;"/>
       <checkbox id="recordAbsoluteURL" label="&options.recordAbsoluteURL.description;"/>
+      <command id="cmd_toggle" oncommand="SDTToggle();"/>
+      <checkbox id="showDeveloperTools" label="&options.showDeveloperTools.description;" command="cmd_toggle"/>
     </tabpanel>
     <tabpanel orient="vertical">
       <hbox flex="1">

@@ -65,6 +65,11 @@ function Editor(window) {
 
             clipboardFormatChanged: function(format) {
             },
+            
+            //use when the developer tools have to be enabled or not
+            showDevToolsChanged: function(){
+    			document.getElementById("reload-button").disabled = !self.app.getShowDeveloperTools();
+    		},
 
             _testCaseObserver: {
                 modifiedStateUpdated: function() {
@@ -160,6 +165,7 @@ Editor.controller = {
 		case "cmd_selenium_step":
 		case "cmd_selenium_testrunner":
         case "cmd_selenium_rollup":
+        case "cmd_selenium_reload":
 			return true;
 		default:
 			return false;
@@ -186,6 +192,8 @@ Editor.controller = {
             } else {
                 return false;
             }
+        case "cmd_selenium_reload":
+			return editor.app.isPlayable() && editor.selDebugger.state != Debugger.PLAYING && editor.app.getShowDeveloperTools();
 		case "cmd_selenium_play_suite":
             return editor.app.isPlayable() && editor.selDebugger.state != Debugger.PLAYING;
 		case "cmd_selenium_pause":
@@ -238,6 +246,14 @@ Editor.controller = {
                 alert('No rollup rules have been defined.');
             }
             break;
+        case "cmd_selenium_reload":
+        	
+        	try{
+        		editor.reload();
+        	}catch(e){
+        		alert('Reload error : '+e);
+        	}
+        	break;    
 		default:
 		}
 	},
@@ -303,7 +319,8 @@ Editor.prototype.updateSeleniumCommands = function() {
     , "cmd_selenium_pause"
     , "cmd_selenium_step"
     , "cmd_selenium_testrunner"
-    , "cmd_selenium_rollup"].forEach(function(cmd) {
+    , "cmd_selenium_rollup"
+    , "cmd_selenium_reload"].forEach(function(cmd) {
         goUpdateCommand(cmd);
     });
 }
@@ -825,6 +842,17 @@ Editor.prototype.loadSeleniumAPI = function() {
                 + "\nerror=" + error);
         }
     }
+}
+
+Editor.prototype.reload = function(){
+
+	try{
+		this.loadSeleniumAPI();
+		this.selDebugger.reInit();
+	}catch(e){
+		
+		alert("error reload: "+e);
+	}
 }
 
 Editor.prototype.showReference = function(command) {
