@@ -4604,6 +4604,8 @@ function FinderBuilder(newDocument) {
     
     function buildIdFinder(e) {
         if (e.id) {
+            var id = e.id;
+            
             return (function(targetDoc) {
                 return targetDoc.getElementById(id);
             });
