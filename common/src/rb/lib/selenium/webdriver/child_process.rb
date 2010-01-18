@@ -66,12 +66,10 @@ module Selenium
 
       module WindowsProcess
         def start
-          require "win32/process" # adds a dependency on windows
+          require "win32/process" # adds a dependency on windows - perhaps we could just use FFI instead?
           @pid = Process.create(
             :app_name        => @args.join(" "),
-            :process_inherit => true,
-            :thread_inherit  => true,
-            :inherit         => true
+            :inherit         => false # don't inherit open file handles
           ).process_id
 
           self

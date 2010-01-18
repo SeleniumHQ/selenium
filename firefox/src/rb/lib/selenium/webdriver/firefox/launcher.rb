@@ -1,3 +1,5 @@
+require "fcntl"
+
 module Selenium
   module WebDriver
     module Firefox
@@ -29,6 +31,8 @@ module Selenium
 
         def with_lock
           socket_lock = TCPServer.new(@host, @port - 1)
+          socket_lock.fcntl(Fcntl::F_SETFD, Fcntl::FD_CLOEXEC) if defined? Fcntl::FD_CLOEXEC
+
           yield
         ensure
           socket_lock.close if socket_lock
