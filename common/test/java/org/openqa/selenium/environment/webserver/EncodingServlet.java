@@ -31,10 +31,10 @@ public class EncodingServlet extends HttpServlet {
       throws ServletException, IOException {
 
     response.setContentType("text/html");
-    response.setCharacterEncoding("UTF-32");
-//    response.setCharacterEncoding("UTF-8");
+    // Data should be transferred using UTF-8. Pick a different encoding
+    response.setCharacterEncoding("UTF-16");
 
-    StringBuilder text = new StringBuilder("<html><title>Character encoding (UTF 32)</title>")
+    StringBuilder text = new StringBuilder("<html><title>Character encoding (UTF 16)</title>")
         .append("<body><p id='text'>")
         .append("\u05E9\u05DC\u05D5\u05DD")  // "Shalom"
         .append("</p></body></html>");
