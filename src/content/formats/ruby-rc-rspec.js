@@ -193,7 +193,6 @@ this.options = {
 		'      :browser => "*chrome",\n' + 
 		'      :url => "${baseURL}",\n' + 
 		'      :timeout_in_second => 60\n' +
-		'\n' +
 		'  end\n' +
 		'\n' +
 		'  before(:each) do\n' +
@@ -202,7 +201,7 @@ this.options = {
 		'  \n' +
 		'  append_after(:each) do\n' +
 		'    @selenium_driver.close_current_browser_session\n' +
-		'    assert_equal [], @verification_errors\n' +
+		'    @verification_errors.should == []\n' +
 		'  end\n' +
 		'  \n' +
 		'  it "${methodName}" do\n',
