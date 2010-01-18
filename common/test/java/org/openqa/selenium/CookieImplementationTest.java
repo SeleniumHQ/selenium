@@ -94,8 +94,9 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
 
     driver.manage().deleteAllCookies();
 
-    count = driver.manage().getCookies().size();
-    assertTrue(count == 0);
+    Set<Cookie> cookies = driver.manage().getCookies();
+    count = cookies.size();
+    assertTrue(cookies.toString(), count == 0);
   }
 
   @JavascriptEnabled
@@ -113,8 +114,10 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
 
     driver.manage().deleteCookieNamed(key1);
 
-    assertNull(driver.manage().getCookieNamed(key1));
-    assertNotNull(driver.manage().getCookieNamed(key2));
+    Set<Cookie> cookies = driver.manage().getCookies();
+
+    assertNull(cookies.toString(), driver.manage().getCookieNamed(key1));
+    assertNotNull(cookies.toString(), driver.manage().getCookieNamed(key2));
   }
 
   @Ignore(SELENESE)
@@ -129,8 +132,8 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
     options.deleteCookieNamed(cookieOneName);
     Set<Cookie> cookies = options.getCookies();
 
-    assertFalse(cookies.contains(cookie1));
-    assertTrue(cookies.contains(cookie2));
+    assertFalse(cookies.toString(), cookies.contains(cookie1));
+    assertTrue(cookies.toString(), cookies.contains(cookie2));
   }
 
   @Ignore(SELENESE)
@@ -153,8 +156,8 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
 
     driver.get(appServer.whereIs(""));
     cookies = options.getCookies();
-    assertFalse(cookies.contains(cookie1));
-    assertTrue(cookies.contains(cookie2));
+    assertFalse(cookies.toString(), cookies.contains(cookie1));
+    assertTrue(cookies.toString(), cookies.contains(cookie2));
   }
 
   @Ignore(SELENESE)
@@ -170,8 +173,8 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
     driver.get(appServer.whereIs("animals"));
     Set<Cookie> cookies = options.getCookies();
 
-    assertTrue(cookies.contains(cookie1));
-    assertFalse(cookies.contains(cookie2));
+    assertTrue(cookies.toString(), cookies.contains(cookie1));
+    assertFalse(cookies.toString(), cookies.contains(cookie2));
 
     driver.get(appServer.whereIs("galaxy"));
     cookies = options.getCookies();
@@ -275,7 +278,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
     driver.get(GlobalTestEnvironment.get().getAppServer().whereIs("child/grandchild"));
     driver.manage().deleteCookieNamed("rodent");
 
-    assertNull(driver.manage().getCookieNamed("rodent"));
+    assertNull(driver.manage().getCookies().toString(), driver.manage().getCookieNamed("rodent"));
 
     Set<Cookie> cookies = driver.manage().getCookies();
     assertEquals(2, cookies.size());
