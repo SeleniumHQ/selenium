@@ -4747,6 +4747,11 @@ function MirroredDocument() {
      * object.
      */
     this.reflect = function() {
+        if (reflectionDoc == originalDoc) {
+            // the reflection and the original are one and the same
+            return this;
+        }
+        
         var originalHtml = originalDoc.documentElement.innerHTML;
         var pastReflectionHtml = pastReflections.get(originalHtml);
         
@@ -4778,6 +4783,11 @@ function MirroredDocument() {
      * original document. Returns null if the reflected node can't be found.
      */
     this.getReflectedNode = function(originalNode) {
+        if (reflectionDoc == originalDoc) {
+            // the reflection and the original are one and the same
+            return originalNode;
+        }
+    
         if (originalNode == originalDoc) {
             return reflectionDoc;
         }
@@ -4923,7 +4933,7 @@ function XPathOptimizer(newEngine) {
         if (contextNode) {
             contextNode = mirror.getReflectedNode(contextNode);
         }
-    
+        
         var firstResult = engine.setDocument(mirror.getReflection())
             .selectSingleNode(xpath, contextNode, namespaceResolver);
         
@@ -5032,15 +5042,7 @@ function MultiWindowRPCOptimizingEngine(newFrameName, newDelegateEngine) {
         }
     }
     
-    /**
-     * Returns the "local" document as a frame in the Selenium runner document,
-     * creating it if it doesn't exist.
-     */
-    function getTestDocument() {
-        return window.frames[frameName].document;
-    };
-    
-    function isOptimizing() {
+    function isMultiWindowMode() {
         return (typeof(runOptions) != 'undefined' &&
             runOptions &&
             runOptions.isMultiWindowMode());
@@ -5093,67 +5095,58 @@ function MultiWindowRPCOptimizingEngine(newFrameName, newDelegateEngine) {
     
     // Override
     this.selectSingleNode = function(xpath, contextNode, namespaceResolver) {
-        if (isOptimizing()) {
-            var html = this.doc.documentElement.innerHTML;
-            var knownOptimizations = optimizer.getKnownOptimizations();
-            var optimization = knownOptimizations.get(html, xpath);
-            
-            if (optimization) {
-                var node = optimization.node;
-                var sourceIndex = optimization.sourceIndex;
-                
-                if (node == NO_RESULT) {
-                    return null;
-                }
-                
-                // node is still valid? (test ok even if sourceIndex is null)
-                if (! isDetached(node) && node.sourceIndex == sourceIndex) {
-                    safe_log('info', 'Found cached node for ' + xpath);
-                    return node;
-                }
-            }
-            
-            var node;
-            var finder = optimizer.setNamespaceResolver(namespaceResolver)
-                .setTestDocument(getTestDocument())
-                .getOptimizedFinder(xpath, contextNode);
-            
-            if (finder) {
-                node = finder(this.doc);
-            }
-            else {
-                node = engine.selectSingleNode(xpath, contextNode,
-                    namespaceResolver);
-            }
-            
-            if (! optimization) {
-                optimization = knownOptimizations.getOrCreate(html, xpath);
-            }
-            
-            if (node) {
-                optimization.node = node;
-                optimization.sourceIndex = node.sourceIndex;
-            }
-            else {
-                optimization.node = NO_RESULT;
-            }
-            
-            return node;
-        } // if (isOptimizing())
+        var html = this.doc.documentElement.innerHTML;
+        var knownOptimizations = optimizer.getKnownOptimizations();
+        var optimization = knownOptimizations.get(html, xpath);
         
-        return engine.selectSingleNode(xpath, contextNode, namespaceResolver);
+        if (optimization) {
+            var node = optimization.node;
+            var sourceIndex = optimization.sourceIndex;
+            
+            if (node == NO_RESULT) {
+                return null;
+            }
+            
+            // node is still valid? (test ok even if sourceIndex is null)
+            if (! isDetached(node) && node.sourceIndex == sourceIndex) {
+                safe_log('info', 'Found cached node for ' + xpath);
+                return node;
+            }
+        }
+        
+        var node;
+        var finder = optimizer.setNamespaceResolver(namespaceResolver)
+            .setTestDocument(this.getTestDocument())
+            .getOptimizedFinder(xpath, contextNode);
+        
+        if (finder) {
+            node = finder(this.doc);
+        }
+        else {
+            node = engine.selectSingleNode(xpath, contextNode,
+                namespaceResolver);
+        }
+        
+        if (! optimization) {
+            optimization = knownOptimizations.getOrCreate(html, xpath);
+        }
+        
+        if (node) {
+            optimization.node = node;
+            optimization.sourceIndex = node.sourceIndex;
+        }
+        else {
+            optimization.node = NO_RESULT;
+        }
+        
+        return node;
     };
     
     // Override
     this.countNodes = function(xpath, contextNode, namespaceResolver) {
-        if (isOptimizing()) {
-            return optimizer.setNamespaceResolver(namespaceResolver)
-                .setTestDocument(getTestDocument())
-                .countNodes(xpath, contextNode);
-        }
-
-        return engine.setDocument(this.doc)
-            .countNodes(xpath, contextNode, namespaceResolver);
+        return optimizer.setNamespaceResolver(namespaceResolver)
+            .setTestDocument(this.getTestDocument())
+            .countNodes(xpath, contextNode);
     };
     
     // Override
@@ -5162,11 +5155,24 @@ function MultiWindowRPCOptimizingEngine(newFrameName, newDelegateEngine) {
         return this;
     };
     
+    /**
+     * Returns the "local" document as a frame in the Selenium runner document.
+     */
+    this.getTestDocument = function() {
+        // made this a public method, because apparently private methods can't
+        // access "this" of the instance.
+        return (isMultiWindowMode()
+            ? window.frames[frameName].document
+            : this.doc);
+    };
+    
 // initialization
 
     // creating the frame and the document it contains is not a synchronous
     // operation (at least not for IE), so we should create it eagerly
-    createTestDocument();
+    if (isMultiWindowMode()) {
+        createTestDocument();
+    }
 }
 
 MultiWindowRPCOptimizingEngine.prototype = new XPathEngine();
