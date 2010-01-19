@@ -5,9 +5,17 @@ using System.Text;
 
 namespace OpenQA.Selenium.IE
 {
+    /// <summary>
+    /// Internal class for returning Results
+    /// </summary>
     internal static class ResultHandler
     {
-        internal static void VerifyResultCode(WebDriverResult resultCode, String message)
+        /// <summary>
+        /// Verifies the results
+        /// </summary>
+        /// <param name="resultCode">Code </param>
+        /// <param name="message"></param>
+        internal static void VerifyResultCode(WebDriverResult resultCode, string message)
         {
             switch (resultCode)
             {
@@ -25,8 +33,7 @@ namespace OpenQA.Selenium.IE
 
                 case WebDriverResult.ObsoleteElement:
                     throw new StaleElementReferenceException(
-                        string.Format(CultureInfo.InvariantCulture, "You may not {0} this element. It looks as if the reference is stale. " +
-                                      "Did you navigate away from the page with this element on?", message));
+                        string.Format(CultureInfo.InvariantCulture, "You may not {0} this element. It looks as if the reference is stale. " + "Did you navigate away from the page with this element on?", message));
 
                 case WebDriverResult.ElementNotDisplayed:
                     throw new ElementNotVisibleException(
@@ -62,6 +69,5 @@ namespace OpenQA.Selenium.IE
                     throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, "{0} ({1})", message, resultCode));
             }
         }
-
     }
 }

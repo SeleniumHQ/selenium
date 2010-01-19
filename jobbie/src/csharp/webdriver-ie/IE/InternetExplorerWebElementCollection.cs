@@ -4,17 +4,29 @@ using System.Runtime.InteropServices;
 
 namespace OpenQA.Selenium.IE
 {
+    /// <summary>
+    /// Collection of Elements from Internet Explorer
+    /// </summary>
     internal class InternetExplorerWebElementCollection : IDisposable
     {
-        InternetExplorerDriver driver;
-        SafeWebElementCollectionHandle collectionHandle;
+        private InternetExplorerDriver driver;
+        private SafeWebElementCollectionHandle collectionHandle;
 
+        /// <summary>
+        /// Initializes a new instance of the InternetExplorerWebElementCollection class
+        /// </summary>
+        /// <param name="driver">driver in use</param>
+        /// <param name="elements">Elements on the page</param>
         public InternetExplorerWebElementCollection(InternetExplorerDriver driver, SafeWebElementCollectionHandle elements)
         {
             this.driver = driver;
             collectionHandle = elements;
         }
 
+        /// <summary>
+        /// Converts a Collection of elements into a list
+        /// </summary>
+        /// <returns>List of IWebElement</returns>
         public List<IWebElement> ToList()
         {
             List<IWebElement> toReturn = new List<IWebElement>();
@@ -24,8 +36,9 @@ namespace OpenQA.Selenium.IE
             {
                 SafeInternetExplorerWebElementHandle wrapper = new SafeInternetExplorerWebElementHandle();
                 WebDriverResult result = NativeMethods.wdcGetElementAtIndex(collectionHandle, i, ref wrapper);
-                //OPTIMIZATION: Check for a success value, then run through the
-                //VerifyErrorCode which will throw the proper exception
+
+                // OPTIMIZATION: Check for a success value, then run through the
+                // VerifyErrorCode which will throw the proper exception
                 if (result != WebDriverResult.Success)
                 {
                     try
@@ -34,22 +47,25 @@ namespace OpenQA.Selenium.IE
                     }
                     catch (Exception e)
                     {
-                        //We need to process the exception to free the memory.
-                        //Then we can wrap and rethrow.
+                        // We need to process the exception to free the memory.
+                        // Then we can wrap and rethrow.
                         collectionHandle.FreeElementsOnDispose = true;
                         Dispose();
                         throw new WebDriverException("Could not retrieve element " + i + " from element collection", e);
                     }
                 }
+
                 toReturn.Add(new InternetExplorerWebElement(driver, wrapper));
-                
             }
-            //TODO(andre.nogueira): from the java code (elementcollection.java)... "Free memory from the collection"
+            ////TODO(andre.nogueira): from the java code (elementcollection.java)... "Free memory from the collection"
             return toReturn;
         }
 
         #region IDisposable Members
 
+        /// <summary>
+        /// Dispose of the object
+        /// </summary>
         public void Dispose()
         {
             collectionHandle.Dispose();

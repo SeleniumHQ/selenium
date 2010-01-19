@@ -1,22 +1,33 @@
 using System;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 using System.Globalization;
+using System.Runtime.InteropServices;
 using System.Security.Permissions;
 
 namespace OpenQA.Selenium.IE
 {
-    // TODO(andre.nogueira): StringCollection, ElementCollection and StringWrapperHandle should be consistent among them
+    /// <summary>
+    /// Class to handle
+    /// </summary>
+    /// TODO(andre.nogueira): StringCollection, ElementCollection and StringWrapperHandle should be consistent among them
     [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
-    class StringCollection : IDisposable
+    internal class StringCollection : IDisposable
     {
         private SafeStringCollectionHandle handle;
 
+        /// <summary>
+        /// Initializes a new instance of StringCollection class.
+        /// </summary>
+        /// <param name="elementCollectionHandle">element collection handler</param>
         public StringCollection(SafeStringCollectionHandle elementCollectionHandle)
         {
             handle = elementCollectionHandle;
         }
 
+        /// <summary>
+        /// Converts the Collection to a list
+        /// </summary>
+        /// <returns>A list of strings </returns>
         public List<string> ToList()
         {
             int elementCount = 0;
@@ -27,7 +38,7 @@ namespace OpenQA.Selenium.IE
                 throw new WebDriverException(string.Format(CultureInfo.InvariantCulture, "Cannot extract strings from collection: {0}", result));
             }
 
-            List<string> toReturn = new List<String>();
+            List<string> toReturn = new List<string>();
             for (int i = 0; i < elementCount; i++)
             {
                 SafeStringWrapperHandle stringHandle = new SafeStringWrapperHandle();
@@ -38,18 +49,22 @@ namespace OpenQA.Selenium.IE
                     Dispose();
                     throw new WebDriverException(string.Format(CultureInfo.InvariantCulture, "Cannot extract string from collection at index: {0} ({1})", i, result));
                 }
+
                 using (StringWrapper wrapper = new StringWrapper(stringHandle))
                 {
                     toReturn.Add(wrapper.Value);
                 }
             }
-            //TODO(andre.nogueira): from the java code (elementcollection.java)... "Free memory from the collection"
-            //Dispose();
+
+            // TODO(andre.nogueira): from the java code (elementcollection.java)... "Free memory from the collection"
+            // Dispose();
             return toReturn;
         }
 
         #region IDisposable Members
-
+        /// <summary>
+        /// Dispose of the object
+        /// </summary>
         public void Dispose()
         {
             handle.Dispose();

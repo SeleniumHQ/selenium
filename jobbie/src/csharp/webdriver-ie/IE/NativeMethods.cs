@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Runtime.InteropServices;
-using System.Security.Permissions;
 using System.Security;
+using System.Security.Permissions;
+using System.Text;
 
 namespace OpenQA.Selenium.IE
 {
+    /// <summary>
+    /// Wrapper class for using InternetExplorerDriver.dll C++
+    /// </summary>
     internal static class NativeMethods
     {
         #region Memory management functions
@@ -28,10 +31,13 @@ namespace OpenQA.Selenium.IE
 
         #region WebDriver functions
         [DllImport("InternetExplorerDriver")]
-        internal static extern WebDriverResult wdNewDriverInstance(ref SafeInternetExplorerDriverHandle handle);
+        internal static extern WebDriverResult wdFreeDriver(IntPtr driver);
 
         [DllImport("InternetExplorerDriver")]
-        public static extern WebDriverResult wdFreeDriver(IntPtr driver);
+        internal static extern WebDriverResult wdClose(SafeInternetExplorerDriverHandle driver);
+
+        [DllImport("InternetExplorerDriver")]
+        internal static extern WebDriverResult wdNewDriverInstance(ref SafeInternetExplorerDriverHandle handle);
 
         [DllImport("InternetExplorerDriver", CharSet = CharSet.Unicode)]
         internal static extern WebDriverResult wdGet(SafeInternetExplorerDriverHandle handle, string url);
@@ -44,9 +50,6 @@ namespace OpenQA.Selenium.IE
 
         [DllImport("InternetExplorerDriver")]
         internal static extern WebDriverResult wdRefresh(SafeInternetExplorerDriverHandle driver);
-
-        [DllImport("InternetExplorerDriver")]
-        public static extern WebDriverResult wdClose(SafeInternetExplorerDriverHandle driver);
 
         [DllImport("InternetExplorerDriver", CharSet = CharSet.Unicode)]
         internal static extern WebDriverResult wdGetVisible(SafeInternetExplorerDriverHandle handle, ref int visible);
@@ -66,8 +69,8 @@ namespace OpenQA.Selenium.IE
         [DllImport("InternetExplorerDriver", CharSet = CharSet.Unicode)]
         internal static extern WebDriverResult wdGetCookies(SafeInternetExplorerDriverHandle handle, ref SafeStringWrapperHandle cookies);
  
-        //[DllImport("InternetExplorerDriver", CharSet = CharSet.Unicode)]
-        //internal static extern WebDriverResult wdAddCookie(SafeInternetExplorerDriverHandle handle, string cookie);
+        ////[DllImport("InternetExplorerDriver", CharSet = CharSet.Unicode)]
+        ////internal static extern WebDriverResult wdAddCookie(SafeInternetExplorerDriverHandle handle, string cookie);
 
         [DllImport("InternetExplorerDriver")]
         internal static extern WebDriverResult wdSwitchToActiveElement(SafeInternetExplorerDriverHandle driver, ref SafeInternetExplorerWebElementHandle result);

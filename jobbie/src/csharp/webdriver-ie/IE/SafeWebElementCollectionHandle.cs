@@ -14,6 +14,9 @@ namespace OpenQA.Selenium.IE
         {
         }
 
+        /// <summary>
+        /// Gets or sets the value whether it should dispose free elements
+        /// </summary>
         public bool FreeElementsOnDispose
         {
             get { return freeElementsOnDispose; }
