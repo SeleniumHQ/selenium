@@ -13,6 +13,7 @@ namespace OpenQA.Selenium
     public class Screenshot
     {
         private string base64Encoded = string.Empty;
+        private byte[] byteArray = null;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Screenshot"/> class.
@@ -21,6 +22,7 @@ namespace OpenQA.Selenium
         public Screenshot(string base64EncodedScreenshot)
         {
             base64Encoded = base64EncodedScreenshot;
+            byteArray = Convert.FromBase64String(base64Encoded);
         }
 
         /// <summary>
@@ -36,15 +38,7 @@ namespace OpenQA.Selenium
         /// </summary>
         public byte[] AsByteArray
         {
-            get { return Convert.FromBase64String(base64Encoded); }
-        }
-
-        /// <summary>
-        /// Gets the value of the screenshot image as a <see cref="System.Drawing.Image"/> object.
-        /// </summary>
-        public Image AsImage
-        {
-            get { return Image.FromStream(new MemoryStream(AsByteArray)); }
+            get { return byteArray; }
         }
 
         /// <summary>
@@ -55,7 +49,11 @@ namespace OpenQA.Selenium
         /// to save the image to.</param>
         public void SaveAsFile(string fileName, ImageFormat format)
         {
-            AsImage.Save(fileName, format);
+            using (MemoryStream imageStream = new MemoryStream(byteArray))
+            {
+                Image screenshotImage = Image.FromStream(imageStream);
+                screenshotImage.Save(fileName, format);
+            }
         }
 
         /// <summary>
