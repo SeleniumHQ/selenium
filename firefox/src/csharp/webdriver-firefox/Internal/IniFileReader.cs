@@ -1,16 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using System.IO;
 using System.Collections.ObjectModel;
 using System.Globalization;
+using System.IO;
+using System.Text;
 
 namespace OpenQA.Selenium.Firefox.Internal
 {
+    /// <summary>
+    /// Parses and reads an INI file.
+    /// </summary>
     internal class IniFileReader
     {
-        private Dictionary<string, Dictionary<string, string>> iniFileStore = new Dictionary<string, Dictionary<string, string>>();
+        #region Private members
+        private Dictionary<string, Dictionary<string, string>> iniFileStore = new Dictionary<string, Dictionary<string, string>>(); 
+        #endregion
 
+        #region Constructor
+        /// <summary>
+        /// Initializes a new instance of the <see cref="IniFileReader"/> class.
+        /// </summary>
+        /// <param name="fileName">The full path to the .INI file to be read.</param>
         public IniFileReader(string fileName)
         {
             if (string.IsNullOrEmpty(fileName))
@@ -37,6 +47,7 @@ namespace OpenQA.Selenium.Firefox.Internal
                         {
                             iniFileStore.Add(sectionName, section);
                         }
+
                         sectionName = iniFileLine.Substring(1, iniFileLine.Length - 2).ToUpperInvariant();
                         section = new Dictionary<string, string>();
                     }
@@ -49,22 +60,37 @@ namespace OpenQA.Selenium.Firefox.Internal
                         {
                             value = entryParts[1];
                         }
+
                         section.Add(name, value);
                     }
                 }
             }
-            iniFileStore.Add(sectionName, section);
-        }
 
+            iniFileStore.Add(sectionName, section);
+        } 
+        #endregion
+
+        #region Properties
+        /// <summary>
+        /// Gets a <see cref="ReadOnlyCollection{T}"/> containing the names of the sections in the .INI file.
+        /// </summary>
         public ReadOnlyCollection<string> SectionNames
         {
             get
             {
                 List<string> keyList = new List<string>(iniFileStore.Keys);
-                return new ReadOnlyCollection<string>(keyList); 
+                return new ReadOnlyCollection<string>(keyList);
             }
-        }
+        } 
+        #endregion
 
+        #region Methods
+        /// <summary>
+        /// Gets a value from the .INI file.
+        /// </summary>
+        /// <param name="sectionName">The section in which to find the key-value pair.</param>
+        /// <param name="valueName">The key of the key-value pair.</param>
+        /// <returns>The value associated with the given section and key.</returns>
         public string GetValue(string sectionName, string valueName)
         {
             if (string.IsNullOrEmpty(sectionName))
@@ -95,5 +121,6 @@ namespace OpenQA.Selenium.Firefox.Internal
 
             return section[lowerCaseValueName];
         }
+        #endregion
     }
 }

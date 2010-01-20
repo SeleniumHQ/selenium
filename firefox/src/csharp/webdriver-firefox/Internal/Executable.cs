@@ -1,24 +1,33 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using Microsoft.Win32;
-using System.IO;
 using System.Diagnostics;
 using System.Globalization;
+using System.IO;
+using System.Text;
+using Microsoft.Win32;
 
 namespace OpenQA.Selenium.Firefox.Internal
 {
+    /// <summary>
+    /// Represents the executable file for Firefox.
+    /// </summary>
     internal class Executable
     {
+        #region Private members
         private static readonly string PlatformBinary = LocateFirefoxBinaryFromPlatform();
 
         private string binary;
+        #endregion
 
+        #region Constructor
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Executable"/> class.
+        /// </summary>
+        /// <param name="userSpecifiedBinaryPath">The path and file name to the Firefox executable.</param>
         public Executable(string userSpecifiedBinaryPath)
         {
             if (userSpecifiedBinaryPath != null)
             {
-
                 // It should exist and be a file.
                 if (File.Exists(userSpecifiedBinaryPath))
                 {
@@ -40,19 +49,71 @@ namespace OpenQA.Selenium.Firefox.Internal
             throw new WebDriverException("Cannot find firefox binary in PATH. " +
                 "Make sure firefox is installed. OS appears to be: " + Platform.CurrentPlatform);
         }
+        #endregion
 
+        #region Properites
+        /// <summary>
+        /// Gets the full path to the executable.
+        /// </summary>
         public string ExecutablePath
         {
-            get
+            get { return binary; }
+        } 
+        #endregion
+
+        #region Methods
+        /// <summary>
+        /// Sets the library path for the Firefox executable environment.
+        /// </summary>
+        /// <param name="builder">The <see cref="Process"/> used to execute the binary.</param>
+        public void SetLibraryPath(Process builder)
+        {
+            string propertyName = GetLibraryPathPropertyName();
+            StringBuilder libraryPath = new StringBuilder();
+
+            // If we have an env var set for the path, use it.
+            string env = GetEnvironmentVariable(propertyName, null);
+            if (env != null)
             {
-                return binary;
+                libraryPath.Append(env).Append(Path.PathSeparator);
             }
-        }
 
+            // Check our extra env vars for the same var, and use it too.
+            if (builder.StartInfo.EnvironmentVariables.ContainsKey(propertyName))
+            {
+                libraryPath.Append(env).Append(Path.PathSeparator);
+            }
 
-        /**
-         * Locates the firefox binary by platform.
-         */
+            // Last, add the contents of the specified system property, defaulting to the binary's path.
+
+            // On Snow Leopard, beware of problems the sqlite library    
+            string firefoxLibraryPath = Path.GetFullPath(binary);
+            if (Platform.CurrentPlatform.IsPlatformType(PlatformType.MacOSX) && Platform.CurrentPlatform.MinorVersion > 5)
+            {
+                libraryPath.Append(libraryPath).Append(Path.PathSeparator);
+            }
+            else
+            {
+                libraryPath.Append(firefoxLibraryPath).Append(Path.PathSeparator).Append(libraryPath);
+            }
+
+            // Add the library path to the builder.
+            if (builder.StartInfo.EnvironmentVariables.ContainsKey(propertyName))
+            {
+                builder.StartInfo.EnvironmentVariables[propertyName] = libraryPath.ToString();
+            }
+            else
+            {
+                builder.StartInfo.EnvironmentVariables.Add(propertyName, libraryPath.ToString());
+            }
+        } 
+        #endregion
+
+        #region Support methods
+        /// <summary>
+        /// Locates the Firefox binary by platform.
+        /// </summary>
+        /// <returns>The full path to the binary.</returns>
         private static string LocateFirefoxBinaryFromPlatform()
         {
             string binary = string.Empty;
@@ -66,6 +127,7 @@ namespace OpenQA.Selenium.Firefox.Internal
                 else
                 {
                     string relativePath = Path.Combine("Mozilla Firefox", "Firefox.exe");
+
                     // We try and guess common locations where FireFox might be installed
                     var tempPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), relativePath);
                     if (File.Exists(tempPath))
@@ -100,9 +162,9 @@ namespace OpenQA.Selenium.Firefox.Internal
                 binary = proc.StandardOutput.ReadToEnd().Trim();
             }
 
-
             return binary != null && File.Exists(binary) ? binary : FindBinary(new string[] { "firefox3", "firefox2", "firefox" });
         }
+
         private static string GetExecutablePathUsingRegistry(RegistryKey mozillaKey)
         {
             var currentVersion = (string)mozillaKey.GetValue("CurrentVersion");
@@ -128,13 +190,12 @@ namespace OpenQA.Selenium.Firefox.Internal
             return path;
         }
 
-        /**
-         * Retrieve an env var; if no var is set, returns the default
-         * 
-         * @param name the name of the variable
-         * @param defaultValue the default value of the variable
-         * @return the env var
-         */
+        /// <summary>
+        /// Retrieves an environment variable
+        /// </summary>
+        /// <param name="name">Name of the variable.</param>
+        /// <param name="defaultValue">Default value of the variable.</param>
+        /// <returns>The value of the variable. If no variable with that name is set, returns the default.</returns>
         private static string GetEnvironmentVariable(string name, string defaultValue)
         {
             string value = Environment.GetEnvironmentVariable(name);
@@ -142,12 +203,14 @@ namespace OpenQA.Selenium.Firefox.Internal
             {
                 value = defaultValue;
             }
+
             return value;
         }
 
-        /**
-         * Retrieves the platform specific env property name which contains the library path.
-         */
+        /// <summary>
+        /// Retrieves the platform specific environment property name which contains the library path.
+        /// </summary>
+        /// <returns>The platform specific environment property name which contains the library path.</returns>
         private static string GetLibraryPathPropertyName()
         {
             string libraryPropertyPathName = "LD_LIBRARY_PATH";
@@ -159,58 +222,16 @@ namespace OpenQA.Selenium.Firefox.Internal
             {
                 libraryPropertyPathName = "DYLD_LIBRARY_PATH";
             }
+
             return libraryPropertyPathName;
         }
 
-        public void SetLibraryPath(Process builder)
-        {
-            string propertyName = GetLibraryPathPropertyName();
-            StringBuilder libraryPath = new StringBuilder();
-
-            // If we have an env var set for the path, use it.
-            String env = GetEnvironmentVariable(propertyName, null);
-            if (env != null)
-            {
-                libraryPath.Append(env).Append(Path.PathSeparator);
-            }
-
-            // Check our extra env vars for the same var, and use it too.
-            if (builder.StartInfo.EnvironmentVariables.ContainsKey(propertyName))
-            {
-                libraryPath.Append(env).Append(Path.PathSeparator);
-            }
-
-            // Last, add the contents of the specified system property, defaulting to the binary's path.
-
-            // On Snow Leopard, beware of problems the sqlite library    
-            string firefoxLibraryPath = Path.GetFullPath(binary);
-            if (Platform.CurrentPlatform.IsPlatformType(PlatformType.MacOSX) && Platform.CurrentPlatform.MinorVersion > 5)
-            {
-                libraryPath.Append(libraryPath).Append(Path.PathSeparator);
-            }
-            else
-            {
-                libraryPath.Append(firefoxLibraryPath).Append(Path.PathSeparator).Append(libraryPath);
-            }
-
-            // Add the library path to the builder.
-            if (builder.StartInfo.EnvironmentVariables.ContainsKey(propertyName))
-            {
-                builder.StartInfo.EnvironmentVariables[propertyName] = libraryPath.ToString();
-            }
-            else
-            {
-                builder.StartInfo.EnvironmentVariables.Add(propertyName, libraryPath.ToString());
-            }
-        }
-
-        /**
-         * Walk a PATH to locate binaries with a specified name. Binaries will be searched for in the
-         * order they are provided.
-         * 
-         * @param binaryNames the binary names to search for
-         * @return the first binary found matching that name.
-         */
+        /// <summary>
+        /// Walk a PATH to locate binaries with a specified name. Binaries will be searched for in the
+        /// order they are provided.
+        /// </summary>
+        /// <param name="binaryNames">The binary names to search for.</param>
+        /// <returns>The first binary found matching that name.</returns>
         private static string FindBinary(string[] binaryNames)
         {
             string[] paths = Environment.GetEnvironmentVariable("PATH").Split(new char[] { Path.PathSeparator }, StringSplitOptions.None);
@@ -223,6 +244,7 @@ namespace OpenQA.Selenium.Firefox.Internal
                     {
                         return file;
                     }
+
                     if (Platform.CurrentPlatform.IsPlatformType(PlatformType.Windows))
                     {
                         string exe = Path.Combine(path, binaryName + ".exe");
@@ -233,7 +255,9 @@ namespace OpenQA.Selenium.Firefox.Internal
                     }
                 }
             }
+
             return null;
-        }
+        } 
+        #endregion
     }
 }

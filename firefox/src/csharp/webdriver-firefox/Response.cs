@@ -1,31 +1,37 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using Newtonsoft.Json.Linq;
-using Newtonsoft.Json;
-using System.Reflection;
 using System.Globalization;
+using System.Reflection;
+using System.Text;
+using Newtonsoft.Json;
 
 namespace OpenQA.Selenium.Firefox
 {
+    /// <summary>
+    /// Represents the response returned by a command.
+    /// </summary>
     internal class Response
     {
+        #region Private members
         private string methodName;
         private Context context;
         private object responseValue;
-        private bool isError;
+        private bool isError; 
+        #endregion
 
+        #region Constructor
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Response"/> class.
+        /// </summary>
         public Response()
         {
-        }
+        } 
+        #endregion
 
-        [JsonProperty("context")]
-        internal Context Context
-        {
-            get { return context; }
-            set { context = value; }
-        }
-
+        #region Properties
+        /// <summary>
+        /// Gets or sets the value of this response.
+        /// </summary>
         [JsonProperty("response")]
         [JsonConverter(typeof(ResponseValueJsonConverter))]
         public object ResponseValue
@@ -34,6 +40,9 @@ namespace OpenQA.Selenium.Firefox
             set { responseValue = value; }
         }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether this response is an error.
+        /// </summary>
         [JsonProperty("isError")]
         public bool IsError
         {
@@ -41,6 +50,9 @@ namespace OpenQA.Selenium.Firefox
             set { isError = value; }
         }
 
+        /// <summary>
+        /// Gets or sets the name of the command this is the response for.
+        /// </summary>
         [JsonProperty("commandName")]
         public string Command
         {
@@ -48,21 +60,28 @@ namespace OpenQA.Selenium.Firefox
             set { methodName = value; }
         }
 
-        public object GetExtraResult(string fieldName)
+        /// <summary>
+        /// Gets or sets the <see cref="Context"/> for this response.
+        /// </summary>
+        [JsonProperty("context")]
+        internal Context Context
         {
-            object extraResultValue = null;
-            Dictionary<string, object> resultObject = responseValue as Dictionary<string, object>;
-            if (resultObject != null)
-            {
-                extraResultValue = resultObject[fieldName];
-            }
-            return extraResultValue;
-        }
+            get { return context; }
+            set { context = value; }
+        } 
+        #endregion
 
-        public void IfNecessaryThrow(Type exceptionClass)
+        #region Methods
+        /// <summary>
+        /// Throws the specified exception, if necessary.
+        /// </summary>
+        /// <param name="exceptionClass">A <see cref="System.Type"/> object describing a <see cref="System.Exception"/>.</param>
+        internal void IfNecessaryThrow(Type exceptionClass)
         {
             if (!isError)
+            {
                 return;
+            }
 
             if (responseValue.ToString().StartsWith("element is obsolete", StringComparison.OrdinalIgnoreCase))
             {
@@ -88,12 +107,14 @@ namespace OpenQA.Selenium.Firefox
                     {
                         name = info["name"].ToString();
                     }
+
                     message = info["message"].ToString();
                 }
                 else
                 {
                     message = responseValue.ToString();
                 }
+
                 toThrow = (Exception)constructor.Invoke(new object[] { string.Format(CultureInfo.InvariantCulture, "{0}: {1}", name, message) });
             }
             catch (Exception)
@@ -102,6 +123,7 @@ namespace OpenQA.Selenium.Firefox
             }
 
             throw toThrow;
-        }
+        } 
+        #endregion
     }
 }

@@ -1,22 +1,35 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Net.Sockets;
+using System.Globalization;
 using System.IO;
-using Newtonsoft.Json;
 using System.Net;
 using System.Net.NetworkInformation;
-using System.Globalization;
+using System.Net.Sockets;
+using System.Text;
+using Newtonsoft.Json;
 
 namespace OpenQA.Selenium.Firefox.Internal
 {
+    /// <summary>
+    /// Represents the connection to the WebDriver Firefox extension.
+    /// </summary>
     internal class ExtensionConnection : IExtensionConnection
     {
+        #region Private members
         private Socket extensionSocket;
         private List<IPEndPoint> addresses = new List<IPEndPoint>();
-        FirefoxProfile profile;
-        FirefoxBinary process;
+        private FirefoxProfile profile;
+        private FirefoxBinary process; 
+        #endregion
 
+        #region Constructor
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ExtensionConnection"/> class.
+        /// </summary>
+        /// <param name="lockObject">An <see cref="ILock"/> object used to lock the mutex port before connection.</param>
+        /// <param name="binary">The <see cref="FirefoxBinary"/> on which to make the connection.</param>
+        /// <param name="profile">The <see cref="FirefoxProfile"/> creating the connection.</param>
+        /// <param name="host">The name of the host on which to connect to the Firefox extension (usually "localhost").</param>
         public ExtensionConnection(ILock lockObject, FirefoxBinary binary, FirefoxProfile profile, string host)
         {
             this.profile = profile;
@@ -47,9 +60,70 @@ namespace OpenQA.Selenium.Firefox.Internal
             {
                 lockObject.UnlockObject();
             }
+        } 
+        #endregion
+
+        #region IExtensionConnection Members
+        /// <summary>
+        /// Gets a value indicating whether the driver is connected to the extension.
+        /// </summary>
+        public bool IsConnected
+        {
+            get { return extensionSocket != null && extensionSocket.Connected; }
         }
 
-        protected static int DetermineNextFreePort(string host, int port)
+        /// <summary>
+        /// Sends a message to the extension and waits for a response.
+        /// </summary>
+        /// <param name="throwOnFailure">The <see cref="System.Type"/> of object to instantiate
+        /// if the command fails.</param>
+        /// <param name="command">The <see cref="Command"/> to execute.</param>
+        /// <returns>A <see cref="Response"/> that contains the data returned by the command.</returns>
+        public Response SendMessageAndWaitForResponse(Type throwOnFailure, Command command)
+        {
+            SendMessage(command);
+            Response returnedResponse = WaitForResponseForCommand(command.Name);
+            return returnedResponse;
+        }
+
+        /// <summary>
+        /// Closes the connection to the extension.
+        /// </summary>
+        public void Quit()
+        {
+            try
+            {
+                SendMessage(new Command(null, "quit", null));
+            }
+            catch (WebDriverException)
+            {
+                // this is expected
+            }
+
+            process.Quit();
+
+            profile.Clean();
+        }
+        #endregion
+
+        #region IDisposable Members
+        /// <summary>
+        /// Releases all resources associated with this <see cref="ExtensionConnection"/>.
+        /// </summary>
+        public void Dispose()
+        {
+            if (extensionSocket != null && extensionSocket.Connected)
+            {
+                extensionSocket.Close();
+            }
+
+            GC.SuppressFinalize(this);
+        }
+
+        #endregion
+
+        #region Support methods
+        private static int DetermineNextFreePort(string host, int port)
         {
             // Attempt to connect to the given port on the host
             // If we can't connect, then we're good to use it
@@ -81,20 +155,6 @@ namespace OpenQA.Selenium.Firefox.Internal
                 string.Format(CultureInfo.InvariantCulture, "Cannot find free port in the range {0} to {0} ", port, newport));
         }
 
-        protected void SetAddress(string host, int port)
-        {
-            if (string.Compare("localhost", host, StringComparison.OrdinalIgnoreCase) == 0)
-            {
-                addresses = ObtainLoopbackAddresses(port);
-            }
-            else
-            {
-                IPHostEntry hostEntry = Dns.GetHostEntry(host);
-                IPEndPoint hostEndPoint = new IPEndPoint(hostEntry.AddressList[0], port);
-                addresses.Add(hostEndPoint);
-            }
-        }
-
         private static List<IPEndPoint> ObtainLoopbackAddresses(int port)
         {
             List<IPEndPoint> endpoints = new List<IPEndPoint>();
@@ -111,42 +171,24 @@ namespace OpenQA.Selenium.Firefox.Internal
                         endpoints.Add(new IPEndPoint(uniCast.Address, port));
                     }
                 }
-
             }
+
             return endpoints;
         }
 
-        #region IExtensionConnection Members
-
-        public bool IsConnected
+        private void SetAddress(string host, int port)
         {
-            get { return extensionSocket != null && extensionSocket.Connected; }
-        }
-
-        public Response SendMessageAndWaitForResponse(Type throwOnFailure, Command command)
-        {
-            SendMessage(command);
-            Response returnedResponse = WaitForResponseForCommand(command.Name);
-            return returnedResponse;
-        }
-
-        public void Quit()
-        {
-            try
+            if (string.Compare("localhost", host, StringComparison.OrdinalIgnoreCase) == 0)
             {
-                SendMessage(new Command(null, "quit", null));
+                addresses = ObtainLoopbackAddresses(port);
             }
-            catch (WebDriverException)
+            else
             {
-                // this is expected
+                IPHostEntry hostEntry = Dns.GetHostEntry(host);
+                IPEndPoint hostEndPoint = new IPEndPoint(hostEntry.AddressList[0], port);
+                addresses.Add(hostEndPoint);
             }
-
-            process.Quit();
-
-            profile.Clean();
         }
-
-        #endregion
 
         private void Connect(IPEndPoint addr)
         {
@@ -155,7 +197,7 @@ namespace OpenQA.Selenium.Firefox.Internal
             extensionSocket.Connect(addr);
         }
 
-        protected void ConnectToBrowser(long timeToWaitInMilliSeconds)
+        private void ConnectToBrowser(long timeToWaitInMilliSeconds)
         {
             DateTime waitUntil = DateTime.Now.AddMilliseconds(timeToWaitInMilliSeconds);
             while (!IsConnected && waitUntil > DateTime.Now)
@@ -183,13 +225,13 @@ namespace OpenQA.Selenium.Firefox.Internal
                 else
                 {
                     IPEndPoint endPoint = (IPEndPoint)extensionSocket.RemoteEndPoint;
-                    throw new WebDriverException(string.Format(CultureInfo.InvariantCulture, "Unable to connect to host {0} on port {1} after {2} ms",
-                        endPoint.Address.ToString(), endPoint.Port.ToString(CultureInfo.InvariantCulture), timeToWaitInMilliSeconds));
+                    string formattedError = string.Format(CultureInfo.InvariantCulture, "Unable to connect to host {0} on port {1} after {2} ms", endPoint.Address.ToString(), endPoint.Port.ToString(CultureInfo.InvariantCulture), timeToWaitInMilliSeconds);
+                    throw new WebDriverException(formattedError);
                 }
             }
         }
 
-        protected void SendMessage(Command command)
+        private void SendMessage(Command command)
         {
             string converted = JsonConvert.SerializeObject(command, new JsonConverter[] { new ContextJsonConverter(), new CharArrayJsonConverter(), new CookieJsonConverter() });
 
@@ -224,7 +266,7 @@ namespace OpenQA.Selenium.Firefox.Internal
             }
             catch (IOException e)
             {
-                throw new WebDriverException("", e);
+                throw new WebDriverException(string.Empty, e);
             }
         }
 
@@ -236,6 +278,7 @@ namespace OpenQA.Selenium.Firefox.Internal
             {
                 return response;
             }
+
             throw new WebDriverException(
                 "Expected response to " + commandName + " but actually got: " + response.Command + " ("
                 + response.Command + ")");
@@ -275,6 +318,7 @@ namespace OpenQA.Selenium.Firefox.Internal
                     remaining[i] = (byte)socketStream.ReadByte();
                 }
             }
+
             string remainingString = Encoding.UTF8.GetString(remaining);
             Response returnedResponse = JsonConvert.DeserializeObject<Response>(remainingString, new JsonConverter[] { new ContextJsonConverter() });
             return returnedResponse;
@@ -289,39 +333,33 @@ namespace OpenQA.Selenium.Firefox.Internal
 
             using (NetworkStream socketStream = new NetworkStream(extensionSocket))
             {
-                for (; ; )
+                bool lineMarkerFound = false;
+                while (!lineMarkerFound)
                 {
                     int b = socketStream.ReadByte();
 
                     if (b == -1 || (char)b == '\n')
                     {
-                        break;
+                        lineMarkerFound = true;
                     }
-                    raw[count++] = (byte)b;
-                    if (count == size)
+
+                    if (!lineMarkerFound)
                     {
-                        size += growBy;
-                        byte[] temp = new byte[size];
-                        Array.Copy(raw, temp, count);
-                        raw = temp;
+                        raw[count++] = (byte)b;
+                        if (count == size)
+                        {
+                            size += growBy;
+                            byte[] temp = new byte[size];
+                            Array.Copy(raw, temp, count);
+                            raw = temp;
+                        }
                     }
                 }
             }
+
             string returnedLine = Encoding.UTF8.GetString(raw, 0, count);
             return returnedLine;
-        }
-
-        #region IDisposable Members
-
-        public void Dispose()
-        {
-            if (extensionSocket != null && extensionSocket.Connected)
-            {
-                extensionSocket.Close();
-            }
-            GC.SuppressFinalize(this);
-        }
-
+        } 
         #endregion
     }
 }

@@ -1,44 +1,119 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
+using System.Text;
 using System.Threading;
 using OpenQA.Selenium.Firefox.Internal;
-using System.Globalization;
 
 namespace OpenQA.Selenium.Firefox
 {
+    /// <summary>
+    /// Represents the binary associated with Firefox.
+    /// </summary>
+    /// <remarks>The <see cref="FirefoxBinary"/> class is responsible for instantiating the
+    /// Firefox process, and the operating system environment in which it runs.</remarks>
     public class FirefoxBinary
     {
-        private const string NoFocusLibraryName = "x_ignore_nofocus.so";
+        #region Constants
+        private const string NoFocusLibraryName = "x_ignore_nofocus.so"; 
+        #endregion
 
+        #region Private members
         private Dictionary<string, string> extraEnv = new Dictionary<string, string>();
         private Executable executable;
         private Process process;
         private long timeoutInMilliseconds = 45000;
-        private StreamReader stream;
+        private StreamReader stream; 
+        #endregion
 
+        #region Constructors
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FirefoxBinary"/> class.
+        /// </summary>
         public FirefoxBinary() :
             this(null)
-        { }
+        {
+        }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FirefoxBinary"/> class located at a specific file location.
+        /// </summary>
+        /// <param name="pathToFirefoxBinary">Full path and file name to the Firefox executable.</param>
         public FirefoxBinary(string pathToFirefoxBinary)
         {
             executable = new Executable(pathToFirefoxBinary);
+        } 
+        #endregion
+
+        #region Public properties
+        /// <summary>
+        /// Gets or sets the timeout (in milliseconds) to wait for command execution.
+        /// </summary>
+        public long TimeoutInMilliseconds
+        {
+            get { return timeoutInMilliseconds; }
+            set { timeoutInMilliseconds = value; }
         }
 
+        /// <summary>
+        /// Gets all console output of the binary.
+        /// </summary>
+        /// <remarks>Output retrieval is non-destructive and non-blocking.</remarks>
+        public string ConsoleOutput
+        {
+            get
+            {
+                if (process == null)
+                {
+                    return null;
+                }
+
+                return stream.ReadToEnd();
+            }
+        } 
+        #endregion
+
+        #region Support properties
+        /// <summary>
+        /// Gets the <see cref="Executable"/> associated with this <see cref="FirefoxBinary"/>.
+        /// </summary>
+        internal Executable BinaryExecutable
+        {
+            get { return executable; }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the current operating system is Linux.
+        /// </summary>
         protected static bool IsOnLinux
         {
             get { return Platform.CurrentPlatform.IsPlatformType(PlatformType.Linux); }
         }
 
+        /// <summary>
+        /// Gets a <see cref="Dictionary{System.String, System.String}"/> containing
+        /// any operating system environment variables beyond the defaults.
+        /// </summary>
+        protected Dictionary<string, string> ExtraEnvironmentVariables
+        {
+            get { return extraEnv; }
+        } 
+        #endregion
+
+        /// <summary>
+        /// Starts Firefox using the specified profile and command-line arguments.
+        /// </summary>
+        /// <param name="profile">The <see cref="FirefoxProfile"/> to use with this instance of Firefox.</param>
+        /// <param name="commandLineArguments">The command-line arguments to use in starting Firefox.</param>
         public void StartProfile(FirefoxProfile profile, string[] commandLineArguments)
         {
             if (commandLineArguments == null)
             {
                 commandLineArguments = new string[] { };
             }
+
             string profileAbsPath = profile.ProfileDirectory;
             SetEnvironmentProperty("XRE_PROFILE_PATH", profileAbsPath);
             SetEnvironmentProperty("MOZ_NO_REMOTE", "1");
@@ -47,11 +122,13 @@ namespace OpenQA.Selenium.Firefox
             {
                 ModifyLinkLibraryPath(profile);
             }
+
             StringBuilder commandLineArgs = new StringBuilder("--verbose");
             foreach (string commandLineArg in commandLineArguments)
             {
                 commandLineArgs.Append(" ").Append(commandLineArg);
             }
+
             Process builder = new Process();
             builder.StartInfo.FileName = BinaryExecutable.ExecutablePath;
             builder.StartInfo.Arguments = commandLineArgs.ToString();
@@ -63,15 +140,132 @@ namespace OpenQA.Selenium.Firefox
             {
                 builder.StartInfo.EnvironmentVariables.Add(environmentVar, extraEnv[environmentVar]);
             }
+
             BinaryExecutable.SetLibraryPath(builder);
 
             StartFirefoxProcess(builder);
 
             CopeWithTheStrangenessOfTheMac(builder);
 
-            //startOutputWatcher();
+            // startOutputWatcher();
         }
 
+        /// <summary>
+        /// Sets a variable to be used in the Firefox execution environment.
+        /// </summary>
+        /// <param name="propertyName">The name of the environment variable to set.</param>
+        /// <param name="value">The value of the environment variable to set.</param>
+        public void SetEnvironmentProperty(string propertyName, string value)
+        {
+            if (string.IsNullOrEmpty(propertyName) || value == null)
+            {
+                throw new WebDriverException(string.Format(CultureInfo.InvariantCulture, "You must set both the property name and value: {0}, {1}", propertyName, value));
+            }
+
+            if (extraEnv.ContainsKey(propertyName))
+            {
+                extraEnv[propertyName] = value;
+            }
+            else
+            {
+                extraEnv.Add(propertyName, value);
+            }
+        }
+
+        /// <summary>
+        /// Creates a named profile for Firefox.
+        /// </summary>
+        /// <param name="profileName">The name of the profile to create.</param>
+        public void CreateProfile(string profileName)
+        {
+            Process builder = new Process();
+            builder.StartInfo.FileName = executable.ExecutablePath;
+            builder.StartInfo.Arguments = "--verbose -CreateProfile " + profileName;
+            builder.StartInfo.RedirectStandardError = true;
+            builder.StartInfo.EnvironmentVariables.Add("MOZ_NO_REMOTE", "1");
+            if (stream == null)
+            {
+                stream = builder.StandardOutput;
+            }
+
+            StartFirefoxProcess(builder);
+        }
+
+        /// <summary>
+        /// Waits for the process to complete execution.
+        /// </summary>
+        public void WaitForProcessExit()
+        {
+            process.WaitForExit();
+        }
+
+        /// <summary>
+        /// Intializes the binary with the specified profile.
+        /// </summary>
+        /// <param name="profile">The <see cref="FirefoxProfile"/> to use to initialize the binary.</param>
+        public void Clean(FirefoxProfile profile)
+        {
+            StartProfile(profile, new string[] { "-silent" });
+            try
+            {
+                WaitForProcessExit();
+            }
+            catch (ThreadInterruptedException e)
+            {
+                throw new WebDriverException("Thread was interupted", e);
+            }
+
+            if (Platform.CurrentPlatform.IsPlatformType(PlatformType.Windows))
+            {
+                while (profile.IsRunning)
+                {
+                    Sleep(500);
+                }
+
+                do
+                {
+                    // Always sleep at least a half-second. This will allow
+                    // the lazy cleanup of the profile parent.lock file to 
+                    // be completed.
+                    Sleep(500);
+                }
+                while (profile.IsRunning);
+            }
+        }
+
+        /// <summary>
+        /// Stops the execution of this <see cref="FirefoxBinary"/>, terminating the process if necessary.
+        /// </summary>
+        public void Quit()
+        {
+            // Suicide watch: First,  a second to see if the process will die on 
+            // it's own (we will likely have asked the process to kill itself just 
+            // before calling this method).
+            if (!process.HasExited)
+            {
+                System.Threading.Thread.Sleep(1000);
+            }
+
+            // Murder option: The process is still alive, so kill it.
+            if (!process.HasExited)
+            {
+                process.Kill();
+            }
+        }
+
+        /// <summary>
+        /// Returns a <see cref="System.String">String</see> that represents the current <see cref="System.Object">Object</see>.
+        /// </summary>
+        /// <returns>A <see cref="System.String">String</see> that represents the current <see cref="System.Object">Object</see>.</returns>
+        public override string ToString()
+        {
+            return "FirefoxBinary(" + executable.ExecutablePath + ")";
+        }
+
+        /// <summary>
+        /// Starts the Firefox process.
+        /// </summary>
+        /// <param name="builder">A <see cref="Process"/> object used to start Firefox.</param>
         protected void StartFirefoxProcess(Process builder)
         {
             process = builder;
@@ -82,45 +276,24 @@ namespace OpenQA.Selenium.Firefox
             }
         }
 
-        internal Executable BinaryExecutable
+        private static void Sleep(int timeInMilliseconds)
         {
-            get { return executable; }
-        }
-
-        protected Dictionary<string, string> ExtraEnvironmentVariables
-        {
-            get { return extraEnv; }
-        }
-
-        protected void ModifyLinkLibraryPath(FirefoxProfile profile)
-        {
-            // Extract x_ignore_nofocus.so from x86, amd64 directories inside
-            // the jar into a real place in the filesystem and change LD_LIBRARY_PATH
-            // to reflect that.
-
-            string existingLdLibPath = Environment.GetEnvironmentVariable("LD_LIBRARY_PATH");
-            // The returned new ld lib path is terminated with ':'
-            string newLdLibPath = ExtractAndCheck(profile, NoFocusLibraryName, "x86", "amd64");
-            if (!string.IsNullOrEmpty(existingLdLibPath))
+            try
             {
-                newLdLibPath += existingLdLibPath;
+                Thread.Sleep(timeInMilliseconds);
             }
-
-            SetEnvironmentProperty("LD_LIBRARY_PATH", newLdLibPath);
-            // Set LD_PRELOAD to x_ignore_nofocus.so - this will be taken automagically
-            // from the LD_LIBRARY_PATH
-            SetEnvironmentProperty("LD_PRELOAD", NoFocusLibraryName);
+            catch (ThreadInterruptedException e)
+            {
+                throw new WebDriverException("Thread was interrupted", e);
+            }
         }
 
-        protected static string ExtractAndCheck(FirefoxProfile profile, string noFocusSoName,
-                                         string libraryPath32Bit, string libraryPath64Bit)
+        private static string ExtractAndCheck(FirefoxProfile profile, string noFocusSoName, string libraryPath32Bit, string libraryPath64Bit)
         {
-
             // 1. Extract x86/x_ignore_nofocus.so to profile.getLibsDir32bit
             // 2. Extract amd64/x_ignore_nofocus.so to profile.getLibsDir64bit
             // 3. Create a new LD_LIB_PATH string to contain:
-            //   profile.getLibsDir32bit + ":" + profile.getLibsDir64bit
-
+            //    profile.getLibsDir32bit + ":" + profile.getLibsDir64bit
             List<string> pathsSet = new List<string>();
             pathsSet.Add(libraryPath32Bit);
             pathsSet.Add(libraryPath64Bit);
@@ -129,21 +302,19 @@ namespace OpenQA.Selenium.Firefox
 
             foreach (string path in pathsSet)
             {
-                //try {
-
+                // TODO (JimEvans): Fix build to embed resources and to extract them here.
+                // try {
                 //  FileHandler.copyResource(profile.getProfileDir(), getClass(), path +
                 //                                                                File.separator
                 //                                                                + noFocusSoName);
-
-                //} catch (IOException e) {
+                // } catch (IOException e) {
                 //  if (Boolean.getBoolean("webdriver.development")) {
                 //    System.err.println(
                 //        "Exception unpacking required library, but in development mode. Continuing");
                 //  } else {
                 //    throw new WebDriverException(e);
                 //  }
-                //} // End catch.
-
+                // } // End catch.
                 string outSoPath = Path.Combine(profile.ProfileDirectory, path);
 
                 string file = Path.Combine(outSoPath, noFocusSoName);
@@ -157,6 +328,27 @@ namespace OpenQA.Selenium.Firefox
             }
 
             return builtPath.ToString();
+        }
+
+        private void ModifyLinkLibraryPath(FirefoxProfile profile)
+        {
+            // Extract x_ignore_nofocus.so from x86, amd64 directories inside
+            // the jar into a real place in the filesystem and change LD_LIBRARY_PATH
+            // to reflect that.
+            string existingLdLibPath = Environment.GetEnvironmentVariable("LD_LIBRARY_PATH");
+
+            // The returned new ld lib path is terminated with ':'
+            string newLdLibPath = ExtractAndCheck(profile, NoFocusLibraryName, "x86", "amd64");
+            if (!string.IsNullOrEmpty(existingLdLibPath))
+            {
+                newLdLibPath += existingLdLibPath;
+            }
+
+            SetEnvironmentProperty("LD_LIBRARY_PATH", newLdLibPath);
+
+            // Set LD_PRELOAD to x_ignore_nofocus.so - this will be taken automagically
+            // from the LD_LIBRARY_PATH
+            SetEnvironmentProperty("LD_PRELOAD", NoFocusLibraryName);
         }
 
         private void CopeWithTheStrangenessOfTheMac(Process builder)
@@ -206,136 +398,6 @@ namespace OpenQA.Selenium.Firefox
                 {
                     // Woot!
                 }
-            }
-        }
-
-        public void SetEnvironmentProperty(string propertyName, string value)
-        {
-            if (string.IsNullOrEmpty(propertyName) || value == null)
-            {
-                throw new WebDriverException(
-                    string.Format(CultureInfo.InvariantCulture, "You must set both the property name and value: {0}, {1}", propertyName,
-                        value));
-            }
-            if (extraEnv.ContainsKey(propertyName))
-            {
-                extraEnv[propertyName] = value;
-            }
-            else
-            {
-                extraEnv.Add(propertyName, value);
-            }
-        }
-
-        public void CreateProfile(string profileName)
-        {
-            Process builder = new Process();
-            builder.StartInfo.FileName = executable.ExecutablePath;
-            builder.StartInfo.Arguments = "--verbose -CreateProfile " + profileName;
-            builder.StartInfo.RedirectStandardError = true;
-            builder.StartInfo.EnvironmentVariables.Add("MOZ_NO_REMOTE", "1");
-            if (stream == null)
-            {
-                stream = builder.StandardOutput;
-            }
-
-            StartFirefoxProcess(builder);
-        }
-
-        /**
-         * Waits for the process to execute, returning the command output taken from the profile's execution.
-         *
-         * @throws InterruptedException if we are interrupted while waiting for the process to launch
-         * @throws IOException          if there is a problem with reading the input stream of the launching process
-         */
-        public void WaitForProcessExit()
-        {
-            process.WaitForExit();
-        }
-
-        /**
-         * Gets all console output of the binary.
-         * Output retrieval is non-destructive and non-blocking.
-         *
-         * @return the console output of the executed binary.
-         * @throws IOException
-         */
-        public string ConsoleOutput
-        {
-            get
-            {
-                if (process == null)
-                {
-                    return null;
-                }
-
-                return stream.ReadToEnd();
-            }
-        }
-
-        private static void Sleep(int timeInMillis)
-        {
-            try
-            {
-                Thread.Sleep(timeInMillis);
-            }
-            catch (ThreadInterruptedException e)
-            {
-                throw new WebDriverException("Thread was interrupted", e);
-            }
-        }
-
-        public void Clean(FirefoxProfile profile)
-        {
-            StartProfile(profile, new string[] { "-silent" });
-            try
-            {
-                WaitForProcessExit();
-            }
-            catch (ThreadInterruptedException e)
-            {
-                throw new WebDriverException("Thread was interupted", e);
-            }
-
-            if (Platform.CurrentPlatform.IsPlatformType(PlatformType.Windows))
-            {
-                while (profile.IsRunning)
-                {
-                    Sleep(500);
-                }
-
-                do
-                {
-                    Sleep(500);
-                } while (profile.IsRunning);
-            }
-        }
-
-        public long TimeoutInMilliseconds
-        {
-            get { return timeoutInMilliseconds; }
-            set { timeoutInMilliseconds = value; }
-        }
-
-        public override string ToString()
-        {
-            return "FirefoxBinary(" + executable.ExecutablePath + ")";
-        }
-
-        public void Quit()
-        {
-            // Suicide watch: First,  a second to see if the process will die on 
-            // it's own (we will likely have asked the process to kill itself just 
-            // before calling this method).
-            if (!process.HasExited)
-            {
-                System.Threading.Thread.Sleep(1000);
-            }
-
-            // Murder option: The process is still alive, so kill it.
-            if (!process.HasExited)
-            {
-                process.Kill();
             }
         }
     }

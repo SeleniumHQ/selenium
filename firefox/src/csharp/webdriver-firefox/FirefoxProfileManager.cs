@@ -1,20 +1,95 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using System.IO;
 using System.Collections.ObjectModel;
+using System.IO;
+using System.Text;
 using OpenQA.Selenium.Firefox.Internal;
 
 namespace OpenQA.Selenium.Firefox
 {
+    /// <summary>
+    /// Allows the user to enumerate and access existing named Firefox profiles.
+    /// </summary>
     public class FirefoxProfileManager
     {
-        private Dictionary<string, FirefoxProfile> profiles = new Dictionary<string, FirefoxProfile>();
+        #region Private members
+        private Dictionary<string, FirefoxProfile> profiles = new Dictionary<string, FirefoxProfile>(); 
+        #endregion
 
+        #region Constructor
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FirefoxProfileManager"/> class.
+        /// </summary>
         public FirefoxProfileManager()
         {
             string appDataDirectory = GetApplicationDataDirectory();
             ReadProfiles(appDataDirectory);
+        }
+        #endregion
+
+        #region Properties
+        /// <summary>
+        /// Gets a <see cref="ReadOnlyCollection{T}"/> containing <see cref="FirefoxProfiles"/>
+        /// representing the existing named profiles for Firefox.
+        /// </summary>
+        public ReadOnlyCollection<FirefoxProfile> ExistingProfiles
+        {
+            get
+            {
+                List<FirefoxProfile> profileList = new List<FirefoxProfile>(profiles.Values);
+                return new ReadOnlyCollection<FirefoxProfile>(profileList);
+            }
+        } 
+        #endregion
+
+        #region Public methods
+        /// <summary>
+        /// Gets a <see cref="FirefoxProfile"/> with a given name.
+        /// </summary>
+        /// <param name="profileName">The name of the profile to get.</param>
+        /// <returns>A <see cref="FirefoxProfile"/> with a given name.
+        /// Returns <see langword="null"/> if no profile with the given name exists.</returns>
+        public FirefoxProfile GetProfile(string profileName)
+        {
+            FirefoxProfile profile = null;
+            if (!string.IsNullOrEmpty(profileName))
+            {
+                if (profiles.ContainsKey(profileName))
+                {
+                    profile = profiles[profileName];
+
+                    if (profile.Port == 0)
+                    {
+                        profile.Port = FirefoxDriver.DefaultPort;
+                    }
+                }
+            }
+
+            return profile;
+        }
+
+        #endregion
+
+        #region Support methods
+        private static string GetApplicationDataDirectory()
+        {
+            string appDataDirectory = string.Empty;
+            switch (Environment.OSVersion.Platform)
+            {
+                case PlatformID.Unix:
+                    appDataDirectory = Path.Combine(".mozilla", "firefox");
+                    break;
+
+                case PlatformID.MacOSX:
+                    appDataDirectory = Path.Combine("Library", Path.Combine("Application Support", "Firefox"));
+                    break;
+
+                default:
+                    appDataDirectory = Path.Combine("Mozilla", "Firefox");
+                    break;
+            }
+
+            return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), appDataDirectory);
         }
 
         private void ReadProfiles(string appDataDirectory)
@@ -40,59 +115,13 @@ namespace OpenQA.Selenium.Firefox
                         {
                             fullPath = profilePath;
                         }
+
                         FirefoxProfile profile = new FirefoxProfile(fullPath, true);
                         profiles.Add(name, profile);
                     }
                 }
             }
-        }
-
-        public FirefoxProfile GetProfile(string profileName)
-        {
-            FirefoxProfile profile = null;
-            if (!string.IsNullOrEmpty(profileName))
-            {
-                if (profiles.ContainsKey(profileName))
-                {
-                    profile = profiles[profileName];
-
-                    if (profile.Port == 0)
-                    {
-                        profile.Port = FirefoxDriver.DefaultPort;
-                    }
-                }
-            }
-            return profile;
-        }
-
-        public ReadOnlyCollection<FirefoxProfile> ExistingProfiles
-        {
-            get
-            {
-                List<FirefoxProfile> profileList = new List<FirefoxProfile>(profiles.Values);
-                return new ReadOnlyCollection<FirefoxProfile>(profileList);
-            }
-        }
-
-        private static string GetApplicationDataDirectory()
-        {
-            string appDataDirectory = string.Empty;
-            switch (Environment.OSVersion.Platform)
-            {
-                case PlatformID.Unix:
-                    appDataDirectory = Path.Combine(".mozilla", "firefox");
-                    break;
-
-                case PlatformID.MacOSX:
-                    appDataDirectory = Path.Combine("Library", Path.Combine("Application Support", "Firefox"));
-                    break;
-
-                default:
-                    appDataDirectory = Path.Combine("Mozilla", "Firefox");
-                    break;
-            }
-
-            return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), appDataDirectory);
-        }
+        } 
+        #endregion
     }
 }

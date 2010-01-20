@@ -1,36 +1,46 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Net.Sockets;
-using System.Net;
-using System.Threading;
-using System.IO;
 using System.Globalization;
+using System.IO;
+using System.Net;
+using System.Net.Sockets;
+using System.Text;
+using System.Threading;
 
 namespace OpenQA.Selenium.Firefox.Internal
 {
+    /// <summary>
+    /// Provides a mutex-like lock on a socket.
+    /// </summary>
     internal class SocketLock : ILock
     {
-        private static int DelayBetweenSocketChecks = 100;
+        #region Private members
+        private static int delayBetweenSocketChecks = 100;
 
         private int lockPort;
-        private Socket lockSocket;
+        private Socket lockSocket; 
+        #endregion
 
-        /**
-         * Constructs a new SocketLock.  Attempts to lock the lock will attempt to acquire the
-         * specified port number, and wait for it to become free.
-         * 
-         * @param lockPort the port number to lock
-         */
+        #region Constructor
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SocketLock"/> class.
+        /// </summary>
+        /// <param name="lockPort">Port to use to acquire the lock.</param>
+        /// <remarks>The <see cref="SocketLock"/> class will attempt to acquire the
+        /// specified port number, and wait for it to become free.</remarks>
         public SocketLock(int lockPort)
         {
             this.lockPort = lockPort;
             lockSocket = new Socket(AddressFamily.InterNetwork, SocketType.Raw, ProtocolType.Icmp);
-        }
+        } 
+        #endregion
 
-        /**
-         * @inheritDoc
-         */
+        #region ILock Members
+        /// <summary>
+        /// Locks the mutex port.
+        /// </summary>
+        /// <param name="timeoutInMilliseconds">The amount of time (in milliseconds) to wait for 
+        /// the mutex port to become available.</param>
         public void LockObject(long timeoutInMilliseconds)
         {
             IPHostEntry hostEntry = Dns.GetHostEntry("localhost");
@@ -45,8 +55,11 @@ namespace OpenQA.Selenium.Firefox.Internal
                 try
                 {
                     if (IsLockFree(address))
+                    {
                         return;
-                    Thread.Sleep(DelayBetweenSocketChecks);
+                    }
+
+                    Thread.Sleep(delayBetweenSocketChecks);
                 }
                 catch (ThreadInterruptedException e)
                 {
@@ -56,15 +69,15 @@ namespace OpenQA.Selenium.Firefox.Internal
                 {
                     throw new WebDriverException("An unexpected error occured", e);
                 }
-            } while (DateTime.Now < maxWait);
+            }
+            while (DateTime.Now < maxWait);
 
-            throw new WebDriverException(
-                string.Format(CultureInfo.InvariantCulture, "Unable to bind to locking port {0} within {1} ms", lockPort, timeoutInMilliseconds));
+            throw new WebDriverException(string.Format(CultureInfo.InvariantCulture, "Unable to bind to locking port {0} within {1} ms", lockPort, timeoutInMilliseconds));
         }
 
-        /**
-         * @inheritDoc
-         */
+        /// <summary>
+        /// Unlocks the mutex port.
+        /// </summary>
         public void UnlockObject()
         {
             try
@@ -76,27 +89,24 @@ namespace OpenQA.Selenium.Firefox.Internal
                 throw new WebDriverException("An error occured unlocking the object", e);
             }
         }
+        #endregion
 
         #region IDisposable Members
-
+        /// <summary>
+        /// Releases all resources associated with this <see cref="SocketLock"/>
+        /// </summary>
         public void Dispose()
         {
             if (lockSocket != null && lockSocket.Connected)
             {
                 lockSocket.Close();
             }
+
             GC.SuppressFinalize(this);
         }
-
         #endregion
 
-        /**
-         * Test to see if the lock is free.  Returns instantaneously.
-         * 
-         * @param address the address to attempt to bind to
-         * @return true if the lock is locked; false if it is not
-         * @throws IOException if something goes catastrophically wrong with the socket
-         */
+        #region Support methods
         private bool IsLockFree(IPEndPoint address)
         {
             try
@@ -108,6 +118,7 @@ namespace OpenQA.Selenium.Firefox.Internal
             {
                 return false;
             }
-        }
+        } 
+        #endregion
     }
 }
