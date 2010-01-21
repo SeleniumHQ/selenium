@@ -39,7 +39,7 @@
 <!ENTITY logClear.label "Vider">
 <!ENTITY reference.label "R&#233;f&#233;rence">
 
-<!ENTITY contextMenu.cut.label "Coper">
+<!ENTITY contextMenu.cut.label "Couper">
 <!ENTITY contextMenu.copy.label "Copier">
 <!ENTITY contextMenu.paste.label "Coller">
 <!ENTITY contextMenu.delete.label "Effacer">
