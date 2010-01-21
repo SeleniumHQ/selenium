@@ -30,7 +30,7 @@ limitations under the License.
 %seleniumIdeDTD;
 ]>
 
-<window title="Selenium IDE"
+<window title="&selenium-ide.standalone.title;"
   id="selenium-ide"
   windowtype="global:selenium-ide"
   xmlns:html="http://www.w3.org/1999/xhtml"

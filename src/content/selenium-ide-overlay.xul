@@ -39,7 +39,7 @@ limitations under the License.
 
   <broadcasterset id="mainBroadcasterSet">
     <broadcaster id="viewSeleniumIDESidebar"
-         label="&selenium-ide.sidebar.title;"
+         label="&firefox.sidebar.view-menu.label;"
          autoCheck="false"
          type="checkbox"
          group="sidebar"
