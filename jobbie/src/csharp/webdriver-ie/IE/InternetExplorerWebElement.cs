@@ -1,17 +1,14 @@
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Globalization;
-using System.Runtime.InteropServices;
-using System.Text;
 
 using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium.IE
 {
     /// <summary>
-    /// InternetExplorerWebElement allows you to have access to specific items that are found on the page
+    /// InternetExplorerWebElement allows you to have access to specific items that are found on the page.
     /// </summary>
     /// <seealso cref="IRenderedWebElement"/>
     /// <seealso cref="ILocatable"/>
@@ -35,8 +32,8 @@ namespace OpenQA.Selenium.IE
         /// <summary>
         /// Initializes a new instance of the InternetExplorerWebElement class.
         /// </summary>
-        /// <param name="driver">Drive in use</param>
-        /// <param name="wrapper">Wrapper of the handle to get</param>
+        /// <param name="driver">Drive in use.</param>
+        /// <param name="wrapper">Wrapper of the handle to get.</param>
         internal InternetExplorerWebElement(InternetExplorerDriver driver, SafeInternetExplorerWebElementHandle wrapper)
         {
             this.driver = driver;
@@ -47,7 +44,7 @@ namespace OpenQA.Selenium.IE
         #region Properties
         #region Public Properties
         /// <summary>
-        /// Gets the text from the element
+        /// Gets the text from the element.
         /// </summary>
         public string Text
         {
@@ -68,7 +65,7 @@ namespace OpenQA.Selenium.IE
         }
 
         /// <summary>
-        /// Gets the DOM Tag of element
+        /// Gets the DOM Tag of element.
         /// </summary>
         public string TagName
         {
@@ -89,7 +86,7 @@ namespace OpenQA.Selenium.IE
         }
 
         /// <summary>
-        /// Gets a value indicating whether an element is currently enabled
+        /// Gets a value indicating whether an element is currently enabled.
         /// </summary>
         public bool Enabled
         {
@@ -125,7 +122,7 @@ namespace OpenQA.Selenium.IE
         }
 
         /// <summary>
-        /// Gets the Location of an element that is off the screen by scrolling and returns a Point object
+        /// Gets the Location of an element that is off the screen by scrolling and returns a Point object.
         /// </summary>
         public Point LocationOnScreenOnceScrolledIntoView
         {
@@ -146,7 +143,7 @@ namespace OpenQA.Selenium.IE
         }
 
         /// <summary>
-        /// Gets the Location of an element  and returns a Point object
+        /// Gets the Location of an element  and returns a Point object.
         /// </summary>
         public Point Location
         {
@@ -163,7 +160,7 @@ namespace OpenQA.Selenium.IE
         }
 
         /// <summary>
-        /// Gets the <see cref="Size"/> of the element on the page
+        /// Gets the <see cref="Size"/> of the element on the page.
         /// </summary>
         public Size Size
         {
@@ -181,7 +178,7 @@ namespace OpenQA.Selenium.IE
         }
 
         /// <summary>
-        /// Gets a value indicating whether the object is currently being displayed
+        /// Gets a value indicating whether the object is currently being displayed.
         /// </summary>
         public bool Displayed
         {
@@ -197,7 +194,7 @@ namespace OpenQA.Selenium.IE
 
         #region Internal properties
         /// <summary>
-        /// Gets the wrappers handle
+        /// Gets the wrappers handle.
         /// </summary>
         internal SafeInternetExplorerWebElementHandle Wrapper
         {
@@ -209,7 +206,7 @@ namespace OpenQA.Selenium.IE
         #region Methods
         #region Public Methods
         /// <summary>
-        /// Method to clear the text out of an Input element
+        /// Method to clear the text out of an Input element.
         /// </summary>
         public void Clear()
         {
@@ -218,9 +215,9 @@ namespace OpenQA.Selenium.IE
         }
 
         /// <summary>
-        /// Method for sending native key strokes to the browser
+        /// Method for sending native key strokes to the browser.
         /// </summary>
-        /// <param name="text">String containing what you would like to type onto the screen</param>
+        /// <param name="text">String containing what you would like to type onto the screen.</param>
         public void SendKeys(string text)
         {
             WebDriverResult result = NativeMethods.wdeSendKeys(elementHandle, text);            
@@ -240,7 +237,7 @@ namespace OpenQA.Selenium.IE
         /// <summary>
         /// Click this element. If this causes a new page to load, this method will block until the page has loaded. At this point, you should discard all references to this element and any further operations performed on this element 
         /// will have undefined behaviour unless you know that the element and the page will still be present. If this element is not clickable, then this operation is a no-op since it's pretty common for someone to accidentally miss 
-        /// the target when clicking in Real Life
+        /// the target when clicking in Real Life.
         /// </summary>
         public void Click()
         {
@@ -251,7 +248,7 @@ namespace OpenQA.Selenium.IE
         /// <summary>
         /// If this current element is a form, or an element within a form, then this will be submitted to the remote server. If this causes the current page to change, then this method will block until the new page is loaded.
         /// </summary>
-        /// <param name="attributeName">Attribute you wish to get details of</param>
+        /// <param name="attributeName">Attribute you wish to get details of.</param>
         /// <returns>The attribute's current value or null if the value is not set.</returns>
         public string GetAttribute(string attributeName)
         {
@@ -259,12 +256,9 @@ namespace OpenQA.Selenium.IE
             WebDriverResult result = NativeMethods.wdeGetAttribute(elementHandle, attributeName, ref stringHandle);
             ResultHandler.VerifyResultCode(result, string.Format(CultureInfo.InvariantCulture, "getting attribute '{0}' of the element", attributeName));
             string returnValue = null;
-            if (stringHandle != null)
+            using (StringWrapper wrapper = new StringWrapper(stringHandle))
             {
-                using (StringWrapper wrapper = new StringWrapper(stringHandle))
-                {
-                    returnValue = wrapper.Value;
-                }
+                returnValue = wrapper.Value;
             }
 
             return returnValue;
@@ -280,9 +274,9 @@ namespace OpenQA.Selenium.IE
         }
 
         /// <summary>
-        /// If the element is a checkbox this will toggle the elements state from selected to not selected, or from not selected to selected
+        /// If the element is a checkbox this will toggle the elements state from selected to not selected, or from not selected to selected.
         /// </summary>
-        /// <returns>Whether the toggled element is selected (true) or not (false) after this toggle is complete</returns>
+        /// <returns>Whether the toggled element is selected (true) or not (false) after this toggle is complete.</returns>
         public bool Toggle()
         {
             int toggled = 0;
@@ -292,14 +286,14 @@ namespace OpenQA.Selenium.IE
         }
 
         /// <summary>
-        /// Finds the elements on the page by using the <see cref="By"/> object and returns a ReadOnlyCollection of the Elements on the page
+        /// Finds the elements on the page by using the <see cref="By"/> object and returns a ReadOnlyCollection of the Elements on the page.
         /// </summary>
-        /// <param name="by">By object</param>
-        /// <returns>ReadOnlyCollection of IWebElement</returns>
+        /// <param name="by">By mechanism for finding the object.</param>
+        /// <returns>ReadOnlyCollection of IWebElement.</returns>
         /// <example>
         /// <code>
         /// IWebDriver driver = new InternetExplorerDriver();
-        /// ReadOnlyCollection<IWebElement> classList = driver.FindElements(By.ClassName("class"));
+        /// ReadOnlyCollection<![CDATA[<IWebElement>]]> classList = driver.FindElements(By.ClassName("class"));
         /// </code>
         /// </example>
         public ReadOnlyCollection<IWebElement> FindElements(By by)
@@ -308,10 +302,10 @@ namespace OpenQA.Selenium.IE
         }
 
         /// <summary>
-        /// Finds the first element in the page that matches the <see cref="By"/> object
+        /// Finds the first element in the page that matches the <see cref="By"/> object.
         /// </summary>
-        /// <param name="by">By mechanism</param>
-        /// <returns>IWebElement object so that you can interction that object</returns>
+        /// <param name="by">By mechanism.</param>
+        /// <returns>IWebElement object so that you can interction that object.</returns>
         /// <example>
         /// <code>
         /// IWebDriver driver = new InternetExplorerDriver();
@@ -343,7 +337,7 @@ namespace OpenQA.Selenium.IE
         }
 
         /// <summary>
-        /// Moves the mouse over the element to do a hover
+        /// Moves the mouse over the element to do a hover.
         /// </summary>
         public void Hover()
         {
@@ -365,10 +359,10 @@ namespace OpenQA.Selenium.IE
         }
 
         /// <summary>
-        /// Move to an element, MouseDown on the element and move it by passing in the how many pixels horizontally and vertically you wish to move it
+        /// Move to an element, MouseDown on the element and move it by passing in the how many pixels horizontally and vertically you wish to move it.
         /// </summary>
-        /// <param name="moveRightBy">Integer to move it left or right</param>
-        /// <param name="moveDownBy">Integer to move it up or down</param>
+        /// <param name="moveRightBy">Integer to move it left or right.</param>
+        /// <param name="moveDownBy">Integer to move it up or down.</param>
         public void DragAndDropBy(int moveRightBy, int moveDownBy)
         {
             IntPtr hwnd = IntPtr.Zero;
@@ -390,9 +384,9 @@ namespace OpenQA.Selenium.IE
         }
 
         /// <summary>
-        /// Drag and Drop an element to another element
+        /// Drag and Drop an element to another element.
         /// </summary>
-        /// <param name="element">Element you wish to drop on</param>
+        /// <param name="element">Element you wish to drop on.</param>
         public void DragAndDropOn(IRenderedWebElement element)
         {
             IntPtr hwnd = IntPtr.Zero;
@@ -421,10 +415,10 @@ namespace OpenQA.Selenium.IE
         }
 
         /// <summary>
-        /// Compares if two elements are equal
+        /// Compares if two elements are equal.
         /// </summary>
-        /// <param name="obj">Object to compare against</param>
-        /// <returns>A boolean if it is equal or not</returns>
+        /// <param name="obj">Object to compare against.</param>
+        /// <returns>A boolean if it is equal or not.</returns>
         public override bool Equals(object obj)
         {
             IWebElement other = obj as IWebElement;
@@ -449,9 +443,9 @@ namespace OpenQA.Selenium.IE
         }
 
         /// <summary>
-        /// Method to get the hash code of the element
+        /// Method to get the hash code of the element.
         /// </summary>
-        /// <returns>Interger of the hash code for the element</returns>
+        /// <returns>Interger of the hash code for the element.</returns>
         public override int GetHashCode()
         {
             return elementHandle.GetHashCode();
@@ -460,7 +454,7 @@ namespace OpenQA.Selenium.IE
         #region IDisposable Members
 
         /// <summary>
-        /// Dispose the Element
+        /// Dispose the Element.
         /// </summary>
         public void Dispose()
         {
@@ -469,14 +463,14 @@ namespace OpenQA.Selenium.IE
         }
 
         #endregion
-#endregion
+        #endregion
 
         #region Internal methods
         /// <summary>
-        /// 
+        /// Add to the script args.
         /// </summary>
-        /// <param name="scriptArgs"></param>
-        /// <returns></returns>
+        /// <param name="scriptArgs">Arguments to be added.</param>
+        /// <returns>A Driver result from adding it.</returns>
         internal WebDriverResult AddToScriptArgs(SafeScriptArgsHandle scriptArgs)
         {
             WebDriverResult result = NativeMethods.wdAddElementScriptArg(scriptArgs, elementHandle);
@@ -485,5 +479,5 @@ namespace OpenQA.Selenium.IE
         }
         #endregion
         #endregion
-    }       
+    }
 }

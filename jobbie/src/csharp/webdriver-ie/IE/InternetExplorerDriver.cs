@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
-using System.Security.Permissions;
 using System.Text;
 
 using OpenQA.Selenium.Internal;
@@ -62,18 +61,6 @@ namespace OpenQA.Selenium.IE
             if (result != WebDriverResult.Success)
             {
                 throw new WebDriverException(string.Format(CultureInfo.InvariantCulture, "Cannot create new browser instance: {0}", result.ToString()));
-            }
-        }
-
-        /// <summary>
-        /// Disposes of all unmanaged instances of InternetExplorerDriver
-        /// </summary>
-        public void Dispose()
-        {
-            if (!disposed)
-            {
-                handle.Dispose();
-                disposed = true;
             }
         }
 
@@ -152,7 +139,7 @@ namespace OpenQA.Selenium.IE
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the browser is visible 
+        /// Gets or sets a value indicating whether the browser is visible.
         /// </summary>
         public bool Visible
         {
@@ -172,14 +159,46 @@ namespace OpenQA.Selenium.IE
         }
 
         /// <summary>
-        /// Finds the elements on the page by using the <see cref="By"/> object and returns a ReadOnlyCollection of the Elements on the page
+        /// Gets the source of the page last loaded by the browser.
         /// </summary>
-        /// <param name="by">By object</param>
-        /// <returns>ReadOnlyCollection of IWebElement</returns>
+        public string PageSource
+        {
+            get
+            {
+                SafeStringWrapperHandle stringHandle = new SafeStringWrapperHandle();
+                WebDriverResult result = NativeMethods.wdGetPageSource(handle, ref stringHandle);
+                ResultHandler.VerifyResultCode(result, "Unable to get page source");
+                string returnValue = string.Empty;
+                using (StringWrapper wrapper = new StringWrapper(stringHandle))
+                {
+                    returnValue = wrapper.Value;
+                }
+
+                return returnValue;
+            }
+        }
+
+        /// <summary>
+        /// Disposes of all unmanaged instances of InternetExplorerDriver.
+        /// </summary>
+        public void Dispose()
+        {
+            if (!disposed)
+            {
+                handle.Dispose();
+                disposed = true;
+            }
+        }
+
+        /// <summary>
+        /// Finds the elements on the page by using the <see cref="By"/> object and returns a ReadOnlyCollection of the Elements on the page.
+        /// </summary>
+        /// <param name="by">By mechanism for finding the element.</param>
+        /// <returns>ReadOnlyCollection of IWebElement.</returns>
         /// <example>
         /// <code>
         /// IWebDriver driver = new InternetExplorerDriver();
-        /// ReadOnlyCollection<IWebElement> classList = driver.FindElements(By.ClassName("class"));
+        /// ReadOnlyCollection<![CDATA[<IWebElement>]]> classList = driver.FindElements(By.ClassName("class"));
         /// </code>
         /// </example>
         public ReadOnlyCollection<IWebElement> FindElements(By by)
@@ -188,10 +207,10 @@ namespace OpenQA.Selenium.IE
         }
 
         /// <summary>
-        /// Finds the first element in the page that matches the <see cref="By"/> object
+        /// Finds the first element in the page that matches the <see cref="By"/> object.
         /// </summary>
-        /// <param name="by">By object</param>
-        /// <returns>IWebElement object so that you can interction that object</returns>
+        /// <param name="by">By mechanism for finding the element.</param>
+        /// <returns>IWebElement object so that you can interction that object.</returns>
         /// <example>
         /// <code>
         /// IWebDriver driver = new InternetExplorerDriver();
@@ -204,15 +223,7 @@ namespace OpenQA.Selenium.IE
         }
 
         /// <summary>
-        /// Wait for the load to complete
-        /// </summary>
-        internal void WaitForLoadToComplete()
-        {
-            NativeMethods.wdWaitForLoadToComplete(handle);
-        }
-
-        /// <summary>
-        /// Closes the Browser
+        /// Closes the Browser.
         /// </summary>
         public void Close()
         {
@@ -224,7 +235,7 @@ namespace OpenQA.Selenium.IE
         }
 
         /// <summary>
-        /// Close the Browser and Dispose of WebDriver
+        /// Close the Browser and Dispose of WebDriver.
         /// </summary>
         public void Quit()
         {
@@ -255,27 +266,7 @@ namespace OpenQA.Selenium.IE
         }
 
         /// <summary>
-        /// Gets the source of the page last loaded by the browser.
-        /// </summary>
-        public string PageSource
-        {
-            get
-            {
-                SafeStringWrapperHandle stringHandle = new SafeStringWrapperHandle();
-                WebDriverResult result = NativeMethods.wdGetPageSource(handle, ref stringHandle);
-                ResultHandler.VerifyResultCode(result, "Unable to get page source");
-                string returnValue = string.Empty;
-                using (StringWrapper wrapper = new StringWrapper(stringHandle))
-                {
-                    returnValue = wrapper.Value;
-                }
-
-                return returnValue;
-            }
-        }
-
-        /// <summary>
-        /// Executes JavaScript in the context of the currently selected frame or window
+        /// Executes JavaScript in the context of the currently selected frame or window.
         /// </summary>
         /// <param name="script">The JavaScript code to execute.</param>
         /// <param name="args">The arguments to the script.</param>
@@ -312,6 +303,170 @@ namespace OpenQA.Selenium.IE
             }
 
             return toReturn;
+        }
+
+        /// <summary>
+        /// Method for returning a collection of WindowHandles that the driver has access to.
+        /// </summary>
+        /// <returns>Returns a ReadOnlyCollection of Window Handles.</returns>
+        /// <example>
+        /// IWebDriver driver = new InternetExplorerDriver();
+        /// ReadOnlyCollection<![CDATA[<string>]]> windowNames = driver.GetWindowHandles();
+        /// </example>
+        public ReadOnlyCollection<string> GetWindowHandles()
+        {
+            SafeStringCollectionHandle handlesPtr = new SafeStringCollectionHandle();
+            WebDriverResult result = NativeMethods.wdGetAllWindowHandles(handle, ref handlesPtr);
+
+            ResultHandler.VerifyResultCode(result, "Unable to obtain all window handles");
+
+            List<string> windowHandleList = new List<string>();
+            using (StringCollection windowHandleStringCollection = new StringCollection(handlesPtr))
+            {
+                windowHandleList = windowHandleStringCollection.ToList();
+            }
+
+            return new ReadOnlyCollection<string>(windowHandleList);
+        }
+
+        /// <summary>
+        /// Returns the Name of Window that the driver is working in.
+        /// </summary>
+        /// <returns>Returns the name of the Window.</returns>
+        /// <example>
+        /// IWebDriver driver = new InternetExplorerDriver();
+        /// string windowName = driver.GetWindowHandles();
+        /// </example>
+        public string GetWindowHandle()
+        {
+            SafeStringWrapperHandle stringHandle = new SafeStringWrapperHandle();
+            WebDriverResult result = NativeMethods.wdGetCurrentWindowHandle(handle, out stringHandle);
+            ResultHandler.VerifyResultCode(result, "Unable to obtain current window handle");
+            string handleValue = string.Empty;
+            using (StringWrapper wrapper = new StringWrapper(stringHandle))
+            {
+                handleValue = wrapper.Value;
+            }
+
+            return handleValue;
+        }
+
+        /// <summary>
+        /// Method to give you access to switch frames and windows.
+        /// </summary>
+        /// <returns>Returns an Object that allows you to Switch Frames and Windows.</returns>
+        /// <example>
+        /// <code>
+        /// IWebDriver driver = new InternetExplorerDriver();
+        /// driver.SwitchTo().Frame("FrameName");
+        /// </code>
+        /// </example>
+        public ITargetLocator SwitchTo()
+        {
+            return new InternetExplorerTargetLocator(this);
+        }
+
+        /// <summary>
+        /// Method For getting an object to set the Speed.
+        /// </summary>
+        /// <returns>Returns an IOptions object that allows the driver to set the speed and cookies and getting cookies.</returns>
+        /// <seealso cref="InternetExplorerOptions(IWebDriver driver)"/>
+        /// <example>
+        /// <code>
+        /// IWebDriver driver = new InternetExplorerDriver();
+        /// driver.Manage().GetCookies();
+        /// </code>
+        /// </example>
+        public IOptions Manage()
+        {
+            return new InternetExplorerOptions(this);
+        }
+
+        /// <summary>
+        /// Method to allow you to Navigate with WebDriver.
+        /// </summary>
+        /// <returns>Returns an INavigation Object that allows the driver to navigate in the browser.</returns>
+        /// <example>
+        /// <code>
+        ///     IWebDriver driver = new InternetExplorerDriver();
+        ///     driver.Navigate().GoToUrl("http://www.google.co.uk");
+        /// </code>
+        /// </example>
+        public INavigation Navigate()
+        {
+            return new InternetExplorerNavigation(this);
+        }
+
+        /// <summary>
+        /// Get the driver handle.
+        /// </summary>
+        /// <returns>The underlying handle.</returns>
+        internal SafeInternetExplorerDriverHandle GetUnderlayingHandle()
+        {
+            return handle;
+        }
+
+        /// <summary>
+        /// Wait for the load to complete.
+        /// </summary>
+        internal void WaitForLoadToComplete()
+        {
+            NativeMethods.wdWaitForLoadToComplete(handle);
+        }
+
+        private static WebDriverResult PopulateArguments(SafeScriptArgsHandle scriptArgs, object[] args)
+        {
+            WebDriverResult result = WebDriverResult.Success;
+
+            foreach (object arg in args)
+            {
+                string stringArg = arg as string;
+                InternetExplorerWebElement webElementArg = arg as InternetExplorerWebElement;
+
+                if (stringArg != null)
+                {
+                    result = NativeMethods.wdAddStringScriptArg(scriptArgs, stringArg);
+                }
+                else if (arg is bool)
+                {
+                    bool param = (bool)arg;
+                    result = NativeMethods.wdAddBooleanScriptArg(scriptArgs, !param ? 0 : 1);
+                }
+                else if (webElementArg != null)
+                {
+                    result = webElementArg.AddToScriptArgs(scriptArgs);
+                }
+                else if (arg is int || arg is short || arg is long)
+                {
+                    int param;
+                    bool parseSucceeded = int.TryParse(arg.ToString(), out param);
+                    if (!parseSucceeded)
+                    {
+                        throw new ArgumentException("Parameter is not recognized as an int: " + arg);
+                    }
+
+                    result = NativeMethods.wdAddNumberScriptArg(scriptArgs, param);
+                }
+                else if (arg is float || arg is double)
+                {
+                    double param;
+                    bool parseSucceeded = double.TryParse(arg.ToString(), out param);
+                    if (!parseSucceeded)
+                    {
+                        throw new ArgumentException("Parameter is not of recognized as a double: " + arg);
+                    }
+
+                    result = NativeMethods.wdAddDoubleScriptArg(scriptArgs, param);
+                }
+                else
+                {
+                    throw new ArgumentException("Parameter is not of recognized type: " + arg);
+                }
+
+                ResultHandler.VerifyResultCode(result, "Unable to add argument: " + arg);
+            }
+
+            return result;
         }
 
         private object ExtractReturnValue(SafeScriptResultHandle scriptResult)
@@ -386,167 +541,18 @@ namespace OpenQA.Selenium.IE
             return toReturn;
         }
 
-        private static WebDriverResult PopulateArguments(SafeScriptArgsHandle scriptArgs, object[] args)
-        {
-            WebDriverResult result = WebDriverResult.Success;
-
-            foreach (object arg in args)
-            {
-                string stringArg = arg as string;
-                InternetExplorerWebElement webElementArg = arg as InternetExplorerWebElement;
-
-                if (stringArg != null)
-                {
-                    result = NativeMethods.wdAddStringScriptArg(scriptArgs, stringArg);
-                }
-                else if (arg is bool)
-                {
-                    bool param = (bool)arg;
-                    result = NativeMethods.wdAddBooleanScriptArg(scriptArgs, !param ? 0 : 1);
-                }
-                else if (webElementArg != null)
-                {
-                    result = webElementArg.AddToScriptArgs(scriptArgs);
-                }
-                else if (arg is int || arg is short || arg is long)
-                {
-                    int param;
-                    bool parseSucceeded = int.TryParse(arg.ToString(), out param);
-                    if (!parseSucceeded)
-                    {
-                        throw new ArgumentException("Parameter is not recognized as an int: " + arg);
-                    }
-
-                    result = NativeMethods.wdAddNumberScriptArg(scriptArgs, param);
-                }
-                else if (arg is float || arg is double)
-                {
-                    double param;
-                    bool parseSucceeded = double.TryParse(arg.ToString(), out param);
-                    if (!parseSucceeded)
-                    {
-                        throw new ArgumentException("Parameter is not of recognized as a double: " + arg);
-                    }
-
-                    result = NativeMethods.wdAddDoubleScriptArg(scriptArgs, param);
-                }
-                else
-                {
-                    throw new ArgumentException("Parameter is not of recognized type: " + arg);
-                }
-
-                ResultHandler.VerifyResultCode(result, "Unable to add argument: " + arg);
-            }
-
-            return result;
-        }
-
         /// <summary>
-        /// Method for returning a collection of WindowHandles that the driver has access to
+        /// Provides a mechanism for setting options needed for the driver during the test.
         /// </summary>
-        /// <returns>Returns a ReadOnlyCollection of Window Handles</returns>
-        /// <example>
-        /// IWebDriver driver = new InternetExplorerDriver();
-        /// ReadOnlyCollection<string> windowNames = driver.GetWindowHandles();
-        /// </example>
-        public ReadOnlyCollection<string> GetWindowHandles()
-        {
-            SafeStringCollectionHandle handlesPtr = new SafeStringCollectionHandle();
-            WebDriverResult result = NativeMethods.wdGetAllWindowHandles(handle, ref handlesPtr);
-
-            ResultHandler.VerifyResultCode(result, "Unable to obtain all window handles");
-
-            List<string> windowHandleList = new List<string>();
-            using (StringCollection windowHandleStringCollection = new StringCollection(handlesPtr))
-            {
-                windowHandleList = windowHandleStringCollection.ToList();
-            }
-
-            return new ReadOnlyCollection<string>(windowHandleList);
-        }
-
-        /// <summary>
-        /// Returns the Name of Window that the driver is working in
-        /// </summary>
-        /// <returns>Returns the name of the Window</returns>
-        /// <example>
-        /// IWebDriver driver = new InternetExplorerDriver();
-        /// string windowName = driver.GetWindowHandles();
-        /// </example>
-        public string GetWindowHandle()
-        {
-            SafeStringWrapperHandle stringHandle = new SafeStringWrapperHandle();
-            WebDriverResult result = NativeMethods.wdGetCurrentWindowHandle(handle, out stringHandle);
-            ResultHandler.VerifyResultCode(result, "Unable to obtain current window handle");
-            string handleValue = string.Empty;
-            using (StringWrapper wrapper = new StringWrapper(stringHandle))
-            {
-                handleValue = wrapper.Value;
-            }
-
-            return handleValue;
-        }
-
-        /// <summary>
-        /// Method to give you access to switch frames and windows
-        /// </summary>
-        /// <returns>Returns an Object that allows you to Switch Frames and Windows</returns>
-        /// <example>
-        /// <code>
-        /// IWebDriver driver = new InternetExplorerDriver();
-        /// driver.SwitchTo().Frame("FrameName");
-        /// </code>
-        /// </example>
-        public ITargetLocator SwitchTo()
-        {
-            return new InternetExplorerTargetLocator(this);
-        }
-
-        /// <summary>
-        /// Method For getting an object to set the Speen
-        /// </summary>
-        /// <returns>Returns an IOptions object that allows the driver to set the speed and cookies and getting cookies</returns>
-        /// <seealso cref="InternetExplorerOptions(IWebDriver driver)"/>
-        /// <example>
-        /// <code>
-        /// IWebDriver driver = new InternetExplorerDriver();
-        /// driver.Manage().GetCookies();
-        /// </code>
-        /// </example>
-        public IOptions Manage()
-        {
-            return new InternetExplorerOptions(this);
-        }
-
-        /// <summary>
-        /// Method to allow you to Navigate with WebDriver
-        /// </summary>
-        /// <returns>Returns an INavigation Object that allows the driver to navigate in the browser</returns>
-        /// <example>
-        /// <code>
-        ///     IWebDriver driver = new InternetExplorerDriver();
-        ///     driver.Navigate().GoToUrl("http://www.google.co.uk");
-        /// </code>
-        /// </example>
-        public INavigation Navigate()
-        {
-            return new InternetExplorerNavigation(this);
-        }
-
-        internal SafeInternetExplorerDriverHandle GetUnderlayingHandle()
-        {
-            return handle;
-        }
-
         private class InternetExplorerOptions : IOptions
         {
             private Speed internalSpeed = Speed.Fast;
             private InternetExplorerDriver driver;
 
             /// <summary>
-            /// Initializes a new instance of InternetExplorerOptions class
+            /// Initializes a new instance of the InternetExplorerOptions class.
             /// </summary>
-            /// <param name="driver">Instance of the driver currently in use</param>
+            /// <param name="driver">Instance of the driver currently in use.</param>
             public InternetExplorerOptions(InternetExplorerDriver driver)
             {
                 this.driver = driver;
@@ -562,9 +568,9 @@ namespace OpenQA.Selenium.IE
             }
 
             /// <summary>
-            /// Method for creating a cookie in the browser
+            /// Method for creating a cookie in the browser.
             /// </summary>
-            /// <param name="cookie"><seealso cref="Cookie(string name, string value, string domain, string path, DateTime? expiry)"/> that represents a cookie in the browser</param>
+            /// <param name="cookie"><see cref="Cookie"/> that represents a cookie in the browser.</param>
             public void AddCookie(Cookie cookie)
             {
                 ////wdAddCookie does not properly add cookies with expiration dates,
@@ -608,9 +614,9 @@ namespace OpenQA.Selenium.IE
             }
 
             /// <summary>
-            /// Method for getting a Collection of Cookies that are present in the browser
+            /// Method for getting a Collection of Cookies that are present in the browser.
             /// </summary>
-            /// <returns>ReadOnlyCollection of Cookies in the browser</returns>
+            /// <returns>ReadOnlyCollection of Cookies in the browser.</returns>
             public ReadOnlyCollection<Cookie> GetCookies()
             {
                 Uri currentUri = GetCurrentUri();
@@ -642,10 +648,10 @@ namespace OpenQA.Selenium.IE
             }
 
             /// <summary>
-            /// Method for returning a getting a cookie by name
+            /// Method for returning a getting a cookie by name.
             /// </summary>
-            /// <param name="name">name of the cookie that needs to be returned</param>
-            /// <returns>The <seealso cref="Cookie(string name, string value, string domain, string path, DateTime? expiry)"/> with the name that was passed in</returns>
+            /// <param name="name">name of the cookie that needs to be returned.</param>
+            /// <returns>The <see cref="Cookie"/> with the name that was passed in.</returns>
             public Cookie GetCookieNamed(string name)
             {
                 Cookie cookieToReturn = null;
@@ -663,7 +669,7 @@ namespace OpenQA.Selenium.IE
             }
 
             /// <summary>
-            /// Delete All Cookies that are present in the browser
+            /// Delete All Cookies that are present in the browser.
             /// </summary>
             public void DeleteAllCookies()
             {
@@ -674,24 +680,10 @@ namespace OpenQA.Selenium.IE
                 }
             }
 
-            private Uri GetCurrentUri()
-            {
-                Uri currentUri = null;
-                try
-                {
-                    currentUri = new Uri(driver.Url);
-                }
-                catch (UriFormatException)
-                {
-                }
-
-                return currentUri;
-            }
-
             /// <summary>
-            /// Delete a cookie in the browser that is the
+            /// Delete a cookie in the browser that is the.
             /// </summary>
-            /// <param name="cookie">An object that represents a copy of the cookie that needs to be deleted</param>
+            /// <param name="cookie">An object that represents a copy of the cookie that needs to be deleted.</param>
             public void DeleteCookie(Cookie cookie)
             {
                 ////Uri currentUri = new Uri(driver.Url);
@@ -718,12 +710,26 @@ namespace OpenQA.Selenium.IE
             }
 
             /// <summary>
-            /// Delete the cookie by passing in the name of the cookie
+            /// Delete the cookie by passing in the name of the cookie.
             /// </summary>
-            /// <param name="name">The name of the cookie that is in the browser</param>
+            /// <param name="name">The name of the cookie that is in the browser.</param>
             public void DeleteCookieNamed(string name)
             {
                 DeleteCookie(GetCookieNamed(name));
+            }
+
+            private Uri GetCurrentUri()
+            {
+                Uri currentUri = null;
+                try
+                {
+                    currentUri = new Uri(driver.Url);
+                }
+                catch (UriFormatException)
+                {
+                }
+
+                return currentUri;
             }
 
             private void DeleteCookieByPath(Cookie cookie)
@@ -783,14 +789,17 @@ namespace OpenQA.Selenium.IE
             }
         }
 
+        /// <summary>
+        /// Provides a mechanism for finding elements on the page with locators.
+        /// </summary>
         private class InternetExplorerTargetLocator : ITargetLocator
         {
-            InternetExplorerDriver driver;
+            private InternetExplorerDriver driver;
 
             /// <summary>
             /// Initializes a new instance of the InternetExplorerTargetLocator class.
             /// </summary>
-            /// <param name="driver">The driver that is currently in use</param>
+            /// <param name="driver">The driver that is currently in use.</param>
             public InternetExplorerTargetLocator(InternetExplorerDriver driver)
             {
                 this.driver = driver;
@@ -798,20 +807,20 @@ namespace OpenQA.Selenium.IE
             
             /// <summary>
             /// Move to a different frame using its index. Indexes are Zero based and their may be issues if a 
-            /// frame is named as an integer
+            /// frame is named as an integer.
             /// </summary>
-            /// <param name="frameIndex">The index of the </param>
-            /// <returns>A WebDriver instance that is currently in use</returns>
+            /// <param name="frameIndex">The index of the frame.</param>
+            /// <returns>A WebDriver instance that is currently in use.</returns>
             public IWebDriver Frame(int frameIndex)
             {
                 return Frame(frameIndex.ToString(CultureInfo.InvariantCulture));
             }
 
             /// <summary>
-            /// Move to different frame using its name
+            /// Move to different frame using its name.
             /// </summary>
-            /// <param name="frameName">name of the frame</param>
-            /// <returns>A WebDriver instance that is currently in use</returns>
+            /// <param name="frameName">name of the frame.</param>
+            /// <returns>A WebDriver instance that is currently in use.</returns>
             public IWebDriver Frame(string frameName)
             {
                 if (frameName == null)
@@ -831,10 +840,10 @@ namespace OpenQA.Selenium.IE
             }
 
             /// <summary>
-            /// Change to the Window by passing in the name
+            /// Change to the Window by passing in the name.
             /// </summary>
-            /// <param name="windowName">name of the window that you wish to move to</param>
-            /// <returns>A WebDriver instance that is currently in use</returns>
+            /// <param name="windowName">name of the window that you wish to move to.</param>
+            /// <returns>A WebDriver instance that is currently in use.</returns>
             public IWebDriver Window(string windowName)
             {
                 WebDriverResult result = NativeMethods.wdSwitchToWindow(driver.handle, windowName);
@@ -842,11 +851,19 @@ namespace OpenQA.Selenium.IE
                 return driver;
             }
 
+            /// <summary>
+            /// Move the driver back to the default.
+            /// </summary>
+            /// <returns>Empty frame to the driver.</returns>
             public IWebDriver DefaultContent()
             {
                 return Frame(string.Empty);
             }
 
+            /// <summary>
+            /// Finds the currently active element.
+            /// </summary>
+            /// <returns>WebElement of the active element.</returns>
             public IWebElement ActiveElement()
             {
                 SafeInternetExplorerWebElementHandle rawElement = new SafeInternetExplorerWebElementHandle();
@@ -858,9 +875,12 @@ namespace OpenQA.Selenium.IE
             }
         }
 
+        /// <summary>
+        /// Provides a mechanism for Navigating with the driver.
+        /// </summary>
         private class InternetExplorerNavigation : INavigation
         {
-            InternetExplorerDriver driver;
+            private InternetExplorerDriver driver;
 
             /// <summary>
             /// Initializes a new instance of the InternetExplorerNavigation class.
@@ -872,7 +892,7 @@ namespace OpenQA.Selenium.IE
             }
 
             /// <summary>
-            /// Move the browser back
+            /// Move the browser back.
             /// </summary>
             public void Back()
             {
@@ -881,7 +901,7 @@ namespace OpenQA.Selenium.IE
             }
 
             /// <summary>
-            /// Move the browser forward
+            /// Move the browser forward.
             /// </summary>
             public void Forward()
             {
@@ -890,9 +910,9 @@ namespace OpenQA.Selenium.IE
             }
 
             /// <summary>
-            /// Navigate to a url for your test
+            /// Navigate to a url for your test.
             /// </summary>
-            /// <param name="url">Uri object of where you want the browser to go to</param>
+            /// <param name="url">Uri object of where you want the browser to go to.</param>
             public void GoToUrl(Uri url)
             {
                 if (url == null)
@@ -905,16 +925,16 @@ namespace OpenQA.Selenium.IE
             }
 
             /// <summary>
-            /// Navigate to a url for your test
+            /// Navigate to a url for your test.
             /// </summary>
-            /// <param name="url">string of the URL you want the browser to go to</param>
+            /// <param name="url">string of the URL you want the browser to go to.</param>
             public void GoToUrl(string url)
             {
                 driver.Url = url;
             }
 
             /// <summary>
-            /// Refresh the browser
+            /// Refresh the browser.
             /// </summary>
             public void Refresh()
             {
@@ -923,16 +943,30 @@ namespace OpenQA.Selenium.IE
             }
         }
 
+        /// <summary>
+        /// Provides a Null Path Cookie.
+        /// </summary>
         private class NullPathCookie : Cookie
         {
             private string cookiePath;
 
+            /// <summary>
+            /// Initializes a new instance of the NullPathCookie class.
+            /// </summary>
+            /// <param name="name">name of the cookie.</param>
+            /// <param name="value">value of the cookie.</param>
+            /// <param name="domain">domain of the cookie.</param>
+            /// <param name="path">path of the cookie.</param>
+            /// <param name="expiry">date when the cookie expires, can be null.</param>
             public NullPathCookie(string name, string value, string domain, string path, DateTime? expiry) :
                 base(name, value, domain, path, expiry)
             {
                 this.cookiePath = path;
             }
 
+            /// <summary>
+            /// Gets the value of the path from the cookie.
+            /// </summary>
             public override string Path
             {
                 get { return cookiePath; }
