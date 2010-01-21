@@ -4385,7 +4385,24 @@ jQuery.each([ "Height", "Width" ], function(i, name){
 ///////////////////////////////////////////////////////////////////////////////
 // make jQuery play nice
 
-jQuery.noConflict();
+function JQueryWrapper() {
+// public
+    /**
+     * The wrapper is an object, so it can't act like a function. We supply
+     * an explicit init() method to be used where jQuery() previously applied.
+     */
+    this.init = function(selector, context) {
+        return new this.jQuery.fn.init(selector, context);
+    };
+
+    this.clean = function(elems, context, fragment) {
+        return this.jQuery.clean(elems, context, fragment);
+    };
+}
+
+JQueryWrapper.prototype.jQuery = jQuery;
+
+jQuery.noConflict(true);  // extreme - bye bye window.jQuery
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -4658,6 +4675,7 @@ function MirroredDocument() {
     var namespaceResolver;
     var finderBuilder = new FinderBuilder();
     var pastReflections = new BoundedCache();
+    var jQuery = new JQueryWrapper();
 
     /**
      * Appends elements represented by the given HTML to the given parent
@@ -4688,7 +4706,7 @@ function MirroredDocument() {
             return;
         }
         
-        jQuery(head).empty();
+        jQuery.init(head).empty();
         
         appendHTML(headHtml, head);
     }
@@ -4715,7 +4733,7 @@ function MirroredDocument() {
         jQuery(doc.body).html(bodyHtml);
         */
         
-        jQuery(doc.body).empty();
+        jQuery.init(doc.body).empty();
         
         appendHTML(bodyHtml, doc.body);
     }
@@ -5180,7 +5198,9 @@ function MultiWindowRPCOptimizingEngine(newFrameName, newDelegateEngine) {
 MultiWindowRPCOptimizingEngine.prototype = new XPathEngine();
 
 XPathEvaluator.prototype.init = function() {
-    this.registerEngine('rpc-optimizing', new MultiWindowRPCOptimizingEngine(
+    this.registerEngine('rpc-optimizing-ajaxslt', new MultiWindowRPCOptimizingEngine(
+        'test-doc-frame', new AjaxsltEngine()));
+    this.registerEngine('rpc-optimizing-jsxpath', new MultiWindowRPCOptimizingEngine(
         'test-doc-frame', new JavascriptXPathEngine()));
-    this.setCurrentEngine('rpc-optimizing');
 };
+
