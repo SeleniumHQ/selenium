@@ -29,7 +29,7 @@ namespace OpenQA.Selenium.Firefox
 
         #region Properties
         /// <summary>
-        /// Gets a <see cref="ReadOnlyCollection{T}"/> containing <see cref="FirefoxProfiles"/>
+        /// Gets a <see cref="ReadOnlyCollection{T}"/> containing <see cref="FirefoxProfile">FirefoxProfiles</see>
         /// representing the existing named profiles for Firefox.
         /// </summary>
         public ReadOnlyCollection<FirefoxProfile> ExistingProfiles

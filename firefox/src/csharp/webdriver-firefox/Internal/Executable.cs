@@ -119,7 +119,7 @@ namespace OpenQA.Selenium.Firefox.Internal
             string binary = string.Empty;
             if (Platform.CurrentPlatform.IsPlatformType(PlatformType.Windows))
             {
-                var mozillaKey = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Mozilla\Mozilla Firefox");
+                RegistryKey mozillaKey = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Mozilla\Mozilla Firefox");
                 if (mozillaKey != null)
                 {
                     binary = GetExecutablePathUsingRegistry(mozillaKey);
@@ -129,7 +129,7 @@ namespace OpenQA.Selenium.Firefox.Internal
                     string relativePath = Path.Combine("Mozilla Firefox", "Firefox.exe");
 
                     // We try and guess common locations where FireFox might be installed
-                    var tempPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), relativePath);
+                    string tempPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), relativePath);
                     if (File.Exists(tempPath))
                     {
                         binary = tempPath;
@@ -167,20 +167,20 @@ namespace OpenQA.Selenium.Firefox.Internal
 
         private static string GetExecutablePathUsingRegistry(RegistryKey mozillaKey)
         {
-            var currentVersion = (string)mozillaKey.GetValue("CurrentVersion");
+            string currentVersion = (string)mozillaKey.GetValue("CurrentVersion");
             if (string.IsNullOrEmpty(currentVersion))
             {
                 throw new WebDriverException("Unable to determine the current version of FireFox using the registry, please make sure you have installed FireFox and Jssh correctly");
             }
 
-            var currentMain = mozillaKey.OpenSubKey(string.Format(CultureInfo.InvariantCulture, @"{0}\Main", currentVersion));
+            RegistryKey currentMain = mozillaKey.OpenSubKey(string.Format(CultureInfo.InvariantCulture, @"{0}\Main", currentVersion));
             if (currentMain == null)
             {
                 throw new WebDriverException(
                     "Unable to determine the current version of FireFox using the registry, please make sure you have installed FireFox and Jssh correctly");
             }
 
-            var path = (string)currentMain.GetValue("PathToExe");
+            string path = (string)currentMain.GetValue("PathToExe");
             if (!File.Exists(path))
             {
                 throw new WebDriverException(

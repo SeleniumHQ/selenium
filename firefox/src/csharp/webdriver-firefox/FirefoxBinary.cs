@@ -93,8 +93,8 @@ namespace OpenQA.Selenium.Firefox
         }
 
         /// <summary>
-        /// Gets a <see cref="Dictionary{System.String, System.String}"/> containing
-        /// any operating system environment variables beyond the defaults.
+        /// Gets a <see cref="Dictionary{K, V}"/> containing string key-value pairs
+        /// representing any operating system environment variables beyond the defaults.
         /// </summary>
         protected Dictionary<string, string> ExtraEnvironmentVariables
         {

@@ -335,7 +335,8 @@ namespace OpenQA.Selenium.Firefox
         /// <summary>
         /// Writes the specified preferences to the user preferences file.
         /// </summary>
-        /// <param name="preferences">A <see cref="Dictionary{System.String, System.String}"/> containing the preferences to write.</param>
+        /// <param name="preferences">A <see cref="Dictionary{K, V}"/> containing key-value pairs
+        /// representing the preferences to write.</param>
         protected void WriteNewPreferences(Dictionary<string, string> preferences)
         {
             using (TextWriter writer = File.CreateText(userPrefs))
@@ -475,7 +476,7 @@ namespace OpenQA.Selenium.Firefox
         /// <summary>
         /// Reads the existing preferences from the profile.
         /// </summary>
-        /// <returns>A <see cref="Dictionary{string, string}"/>containing the preferences.</returns>
+        /// <returns>A <see cref="Dictionary{K, V}"/>containing key-value pairs representing the preferences.</returns>
         /// <remarks>Assumes that we only really care about the preferences, not the comments</remarks>
         private Dictionary<string, string> ReadExistingPreferences()
         {

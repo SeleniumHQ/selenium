@@ -370,7 +370,6 @@ namespace OpenQA.Selenium.IE
         /// Method For getting an object to set the Speed.
         /// </summary>
         /// <returns>Returns an IOptions object that allows the driver to set the speed and cookies and getting cookies.</returns>
-        /// <seealso cref="InternetExplorerOptions(IWebDriver driver)"/>
         /// <example>
         /// <code>
         /// IWebDriver driver = new InternetExplorerDriver();
