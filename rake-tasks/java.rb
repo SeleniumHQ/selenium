@@ -208,6 +208,7 @@ class JavaGen < BaseGenerator
       
       all.each do |dep|
         next unless dep.to_s =~ /\.jar$/
+        next if dep.to_s =~ /\lib\// and args[:no_libs] == true
         sh "cd #{temp} && jar xf ../../#{dep}", :verbose => false
       end      
 

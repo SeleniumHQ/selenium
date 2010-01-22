@@ -701,7 +701,8 @@ java_uberjar(:name => "selenium-java",
                     :remote_client,
                     :selenium,
                     :support
-                  ])
+                  ],
+              :no_libs => true)
 
 task :release => [:'all_zip', :'selenium-server-standalone', :'selenium-server_zip'] do
   cp "build/selenium-server-standalone.jar", "build/selenium-server-standalone-#{version}.jar"
