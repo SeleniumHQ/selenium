@@ -6,7 +6,7 @@
 <!ENTITY firefox.sidebar.view-menu.label "&selenium-ide.name;">
 
 <!ENTITY newTestCmd.label "Nouveau test">
-<!ENTITY addTestCmd.label "Add Test Case...">
+<!ENTITY addTestCmd.label "Ajouter un cas de test...">
 <!ENTITY openCmd.label "Ouvrir...">
 <!ENTITY saveTestCmd.label "Sauver le test">
 <!ENTITY saveTestAsCmd.label "Sauver le test sous...">
@@ -19,7 +19,7 @@
 <!ENTITY runRadio.label "Lancer">
 <!ENTITY walkRadio.label "Pas-&#224;-pas">
 <!ENTITY stepRadio.label "Faire un pas">
-<!ENTITY playSuiteButton.tooltip "Play entire test suite">
+<!ENTITY playSuiteButton.tooltip "Jouer la suite de tests enti&#232;rement">
 <!ENTITY playButton.tooltip "Lancer depuis le d&#233;but ou depuis le point de d&#233;part">
 <!ENTITY pauseButton.tooltip "Pause / Relance">
 <!ENTITY stepButton.tooltip "Faire un pas">
@@ -56,18 +56,18 @@
 <!ENTITY contextMenu.execCommand.label "Ex&#233;cuter cette commande">
 
 <!ENTITY uiReference.label "UI-Element">
-<!ENTITY rollupReference.label "Rollup">
-<!ENTITY rollupButton.tooltip "Apply rollup rules">
+<!ENTITY rollupReference.label "Combinaison">
+<!ENTITY rollupButton.tooltip "Appliquer les r&#232;gles de combinaison">
 
-<!ENTITY suiteTree.testCase.label "Test Case">
-<!ENTITY newSuiteCmd.label "New Test Suite">
-<!ENTITY openSuiteCmd.label "Open Test Suite...">
-<!ENTITY saveSuiteCmd.label "Save Test Suite">
-<!ENTITY saveSuiteAsCmd.label "Save Test Suite As...">
-<!ENTITY exportSuiteCmd.label "Export Test Suite As...">
-<!ENTITY recentSuiteCmd.label "Recent Test Suites">
-<!ENTITY recentTestCmd.label "Recent Test Cases">
+<!ENTITY suiteTree.testCase.label "Cas de test">
+<!ENTITY newSuiteCmd.label "Nouvelle suite de tests">
+<!ENTITY openSuiteCmd.label "Ouvrir une suite de tests...">
+<!ENTITY saveSuiteCmd.label "Enregistrer une suite de tests">
+<!ENTITY saveSuiteAsCmd.label "Enregistrer la suite de tests sous...">
+<!ENTITY exportSuiteCmd.label "Exporter la suite de tests sous...">
+<!ENTITY recentSuiteCmd.label "Suites de tests r&#233;centes">
+<!ENTITY recentTestCmd.label "Cas de test r&#233;cents">
 
-<!ENTITY testCaseProperties.label "Properties...">
+<!ENTITY testCaseProperties.label "Propri&#233;t&#233;s...">
 
 <!ENTITY reloadExtButton.tooltip "Recharger">

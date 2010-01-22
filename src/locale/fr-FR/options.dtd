@@ -5,7 +5,7 @@
 <!ENTITY options.extensions.tip "Astuces pour les extensions: Fermez et r&#233;-ouvrez la fen&#234;tre de Selenium IDE pour que les changements prennent effet. Vous pouvez sp&#233;cifier plusieurs fichiers s&#233;par&#233;s par des virgules.">
 <!ENTITY options.rememberBaseURL.description "M&#233;moriser l'URL racine">
 <!ENTITY options.recordAssertTitle.description "Enregistrer assertTitle automatiquement">
-<!ENTITY options.recordAbsoluteURL.description "Record absolute URL"><!-- TODO -->
+<!ENTITY options.recordAbsoluteURL.description "Enregistrer l'URL absolue"><!-- TODO -->
 <!ENTITY options.browse "Parcourir...">
 
 <!ENTITY options.resetOptions "RAZ des options">
@@ -16,10 +16,10 @@
 <!ENTITY options.formats.delete-button.label "Supprimer">
 <!ENTITY options.formats.source-button.label "Source">
 
-<!ENTITY options.enableUIElement.description "Enable UI-Element (experimental, requires IDE restart)">
-<!ENTITY options.enableUIElement.about "About UI-Element">
+<!ENTITY options.enableUIElement.description "Activer UI-Element (exp&#233;rimentale, n&#233;cessite le red&#233;marrage de l'IDE)">
+<!ENTITY options.enableUIElement.about "A propos d'UI-Element">
 
 
 <!ENTITY options.user-ext.reload.label "Recharger">
 <!ENTITY options.user-ext.reload.tooltip "Recharger Selenium Core et ses extensions">
-<!ENTITY options.showDeveloperTools.description "Activer les outils développeur">
+<!ENTITY options.showDeveloperTools.description "Activer les outils d&#233;veloppeur">
