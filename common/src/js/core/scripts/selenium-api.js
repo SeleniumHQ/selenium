@@ -3134,16 +3134,18 @@ Selenium.prototype.doUseXpathLibrary = function(libraryName) {
     /**
     * Allows choice of one of the available libraries.
     * @param libraryName name of the desired library
-    * Only the following three can be chosen:
+    * Only the following can be chosen:
     * <ul>
     *   <li>"ajaxslt" - Google's library</li>
     *   <li>"javascript-xpath" - Cybozu Labs' faster library</li>
+    *   <li>"rpc-optimizing-ajaxslt" - the RPC optimizing strategy, delegating to ajaxslt</li>
+    *   <li>"rpc-optimizing-jsxpath" - the RPC optimizing strategy, delegating to javascript-xpath</li>
     *   <li>"default" - The default library.  Currently the default library is "ajaxslt" .</li>
     * </ul>
-    * If libraryName isn't one of these three, it may be the name of another
-    * engine registered to the browserbot's XPathEvaluator, for example by
-    * overriding XPathEvaluator.prototype.init() . If it is not a registered
-    * engine either, then no change will be made.
+    * If libraryName isn't one of these, it may be the name of another engine
+    * registered to the browserbot's XPathEvaluator, for example by overriding
+    * XPathEvaluator.prototype.init() . If it is not a registered engine
+    * either, then no change will be made.
     */
 
     if (! this.browserbot.getXPathEngine(libraryName)) {

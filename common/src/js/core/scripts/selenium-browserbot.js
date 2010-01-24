@@ -1436,8 +1436,22 @@ BrowserBot.prototype.locateElementById = function(identifier, inDocument, inWind
     }
     else if (browserVersion.isIE || browserVersion.isOpera) {
         // SEL-484
-        var xpath = '/descendant::*[@id=' + identifier.quoteForXPath() + ']';
-        return this.locateElementByXPath(xpath, inDocument, inWindow);
+        var elements = inDocument.getElementsByTagName('*');
+        
+        for (var i = 0, n = elements.length; i < n; ++i) {
+            element = elements[i];
+            
+            if (element.tagName.toLowerCase() == 'form') {
+                if (element.attributes['id'].nodeValue == identifier) {
+                    return element;
+                }
+            }
+            else if (element.getAttribute('id') == identifier) {
+                return element;
+            }
+        }
+        
+        return null;
     }
     else {
         return null;
