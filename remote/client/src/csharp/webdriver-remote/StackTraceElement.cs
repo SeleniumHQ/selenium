@@ -1,55 +1,66 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
 namespace OpenQA.Selenium.Remote
 {
+    /// <summary>
+    /// Gives properties to get a stack trace
+    /// </summary>
     public class StackTraceElement
     {
-        private string _fileName;
-        private string _className;
-        private int _lineNumber;
-        private string _methodName;
-        private bool _nativeMethod;
+        private string fileName;
+        private string className;
+        private int lineNumber;
+        private string methodName;
+        private bool nativeMethod;
 
+        /// <summary>
+        /// Gets or sets the value of the filename in the stack
+        /// </summary>
         [JsonProperty("fileName")]
         public string FileName
         {
-            get { return _fileName; }
-            set { _fileName = value; }
+            get { return fileName; }
+            set { fileName = value; }
         }
 
+        /// <summary>
+        /// Gets or sets the value of the Class name in the stack trace
+        /// </summary>
         [JsonProperty("className")]
         public string ClassName
         {
-            get { return _className; }
-            set { _className = value; }
+            get { return className; }
+            set { className = value; }
         }
 
+        /// <summary>
+        /// Gets or sets the line number
+        /// </summary>
         [JsonProperty("lineNumber")]
         public int LineNumber
         {
-            get { return _lineNumber; }
-            set { _lineNumber = value; }
+            get { return lineNumber; }
+            set { lineNumber = value; }
         }
 
+        /// <summary>
+        /// Gets or sets the Method name in the stack trace
+        /// </summary>
         [JsonProperty("methodName")]
         public string MethodName
         {
-            get { return _methodName; }
-            set { _methodName = value; }
+            get { return methodName; }
+            set { methodName = value; }
         }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether it was a native method
+        /// </summary>
         [JsonProperty("nativeMethod")]
         public bool NativeMethod
         {
-            get { return _nativeMethod; }
-            set { _nativeMethod = value; }
-        }
-
-        public StackTraceElement()
-        {
+            get { return nativeMethod; }
+            set { nativeMethod = value; }
         }
     }
 }

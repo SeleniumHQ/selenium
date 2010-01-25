@@ -1,37 +1,49 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Net;
 using System.Text;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 
 namespace OpenQA.Selenium.Remote
 {
+    /// <summary>
+    /// Provides a way of executing Commands over HTTP
+    /// </summary>
     public class HttpCommandExecutor : ICommandExecutor
     {
         private Dictionary<DriverCommand, CommandInfo> commandDictionary = new Dictionary<DriverCommand, CommandInfo>();
-        private Uri remoteServerUri = null;
+        private Uri remoteServerUri;
 
+        /// <summary>
+        /// Initializes a new instance of the HttpCommandExecutor class
+        /// </summary>
+        /// <param name="addressOfRemoteServer">Address of the WebDriver Server</param>
         public HttpCommandExecutor(Uri addressOfRemoteServer)
         {
             if (addressOfRemoteServer == null)
             {
                 throw new ArgumentNullException("addressOfRemoteServer", "You must specify a remote address to connect to");
             }
+
             remoteServerUri = addressOfRemoteServer;
             PopulateCommandDictionary();
         }
 
         #region ICommandExecutor Members
-
+        /// <summary>
+        /// Executes a command
+        /// </summary>
+        /// <param name="commandToExecute">The command you wish to execute</param>
+        /// <returns>A response from the browser</returns>
         public Response Execute(Command commandToExecute)
         {
             CommandInfo info = commandDictionary[commandToExecute.Name];
             HttpWebRequest.DefaultMaximumErrorResponseLength = -1;
             HttpWebRequest request = info.CreateWebRequest(remoteServerUri, commandToExecute);
             request.Accept = "application/json, image/png";
-            string payload = JsonConvert.SerializeObject(commandToExecute.Parameters, new JsonConverter[] {new PlatformJsonConverter(), new CookieJsonConverter(), new CharArrayJsonConverter()});
+            string payload = JsonConvert.SerializeObject(commandToExecute.Parameters, new JsonConverter[] { new PlatformJsonConverter(), new CookieJsonConverter(), new CharArrayJsonConverter() });
             if (request.Method == CommandInfo.PostCommand)
             {
                 byte[] data = Encoding.UTF8.GetBytes(payload);
@@ -41,6 +53,7 @@ namespace OpenQA.Selenium.Remote
                 requestStream.Write(data, 0, data.Length);
                 requestStream.Close();
             }
+
             return CreateResponse(request);
         }
 
@@ -56,8 +69,10 @@ namespace OpenQA.Selenium.Remote
                 {
                     nextSlashPosition = request.RequestUri.ToString().Length;
                 }
+
                 commandResponse.SessionId = request.RequestUri.ToString().Substring(sessionIdUrlPosition, nextSlashPosition - sessionIdUrlPosition);
             }
+
             // Context is obsolete. Add a dummy value.
             commandResponse.Context = "foo";
 
@@ -70,6 +85,7 @@ namespace OpenQA.Selenium.Remote
             {
                 webResponse = (HttpWebResponse)ex.Response;
             }
+
             string responseString = GetTextOfWebResponse(webResponse);
             if (webResponse.ContentType.StartsWith("application/json", StringComparison.OrdinalIgnoreCase))
             {
@@ -79,14 +95,16 @@ namespace OpenQA.Selenium.Remote
             {
                 commandResponse.Value = webResponse.StatusDescription;
             }
-            commandResponse.IsError = (webResponse.StatusCode < HttpStatusCode.OK || webResponse.StatusCode >= HttpStatusCode.MultipleChoices);
+
+            commandResponse.IsError = webResponse.StatusCode < HttpStatusCode.OK || webResponse.StatusCode >= HttpStatusCode.MultipleChoices;
             if (commandResponse.Value is string)
             {
                 // First, collapse all \r\n pairs to \n, then replace all \n with
                 // System.Environment.NewLine. This ensures the consistency of 
                 // the values.
-                commandResponse.Value = (((string)commandResponse.Value).Replace("\r\n", "\n").Replace("\n", System.Environment.NewLine));
+                commandResponse.Value = ((string)commandResponse.Value).Replace("\r\n", "\n").Replace("\n", System.Environment.NewLine);
             }
+
             return commandResponse;
         }
 
@@ -94,16 +112,18 @@ namespace OpenQA.Selenium.Remote
 
         private static string GetTextOfWebResponse(HttpWebResponse webResponse)
         {
-            System.IO.Stream responseStream = webResponse.GetResponseStream();
-            System.IO.StreamReader responseStreamReader = new System.IO.StreamReader(responseStream, Encoding.UTF8);
+            Stream responseStream = webResponse.GetResponseStream();
+            StreamReader responseStreamReader = new StreamReader(responseStream, Encoding.UTF8);
             string responseString = responseStreamReader.ReadToEnd();
             responseStreamReader.Close();
+
             // The response string from the Java remote server has trailing null
             // characters. This is due to the fix for issue 288.
             if (responseString.IndexOf('\0') >= 0)
             {
                 responseString = responseString.Substring(0, responseString.IndexOf('\0'));
             }
+
             return responseString;
         }
 
@@ -159,21 +179,46 @@ namespace OpenQA.Selenium.Remote
             commandDictionary.Add(DriverCommand.GetElementValueOfCssProperty, new CommandInfo(CommandInfo.GetCommand, "/session/:sessionId/:context/element/:id/css/:propertyName"));
         }
 
+        /// <summary>
+        /// Provides a way to get information from the command
+        /// </summary>
         private class CommandInfo
         {
+            /// <summary>
+            /// POST verb for the command info
+            /// </summary>
             public const string PostCommand = "POST";
+            
+            /// <summary>
+            /// GET verb for the command info
+            /// </summary>
             public const string GetCommand = "GET";
+            
+            /// <summary>
+            /// DELETE verb for the command info
+            /// </summary>
             public const string DeleteCommand = "DELETE";
 
             private string targetUrl;
             private string method;
 
+            /// <summary>
+            /// Initializes a new instance of the CommandInfo class
+            /// </summary>
+            /// <param name="method">Method of the Command</param>
+            /// <param name="targetUrl">Url the command will be executed against</param>
             public CommandInfo(string method, string targetUrl)
             {
                 this.targetUrl = targetUrl;
                 this.method = method;
             }
 
+            /// <summary>
+            /// Creates a webrequest for your command
+            /// </summary>
+            /// <param name="baseUri">Uri that will have the command run against</param>
+            /// <param name="commandToExecute">Command to execute</param>
+            /// <returns>A web request of what has been run</returns>
             public HttpWebRequest CreateWebRequest(Uri baseUri, Command commandToExecute)
             {
                 HttpWebRequest request = null;
@@ -186,6 +231,7 @@ namespace OpenQA.Selenium.Remote
                         urlParts[i] = GetCommandPropertyValue(urlPart, commandToExecute);
                     }
                 }
+
                 string relativeUrl = string.Join("/", urlParts);
                 Uri fullUri;
                 bool uriCreateSucceeded = Uri.TryCreate(baseUri, relativeUrl, out fullUri);
@@ -198,12 +244,14 @@ namespace OpenQA.Selenium.Remote
                 {
                     throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, "Unable to create URI from base {0} and relative path {1}", baseUri.ToString(), relativeUrl));
                 }
+
                 return request;
             }
 
             private static string GetCommandPropertyValue(string propertyName, Command commandToExecute)
             {
                 string propertyValue = string.Empty;
+
                 // Strip the leading colon
                 propertyName = propertyName.Substring(1);
 
@@ -232,6 +280,7 @@ namespace OpenQA.Selenium.Remote
                         }
                     }
                 }
+
                 return propertyValue;
             }
         }

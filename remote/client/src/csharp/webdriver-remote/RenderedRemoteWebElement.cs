@@ -2,14 +2,18 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
-using System.Text;
 
 namespace OpenQA.Selenium.Remote
 {
-    class RenderedRemoteWebElement : RemoteWebElement, IRenderedWebElement
+    /// <summary>
+    /// Provides a mechanism to find Rendered Elements on the page
+    /// </summary>
+    internal class RenderedRemoteWebElement : RemoteWebElement, IRenderedWebElement
     {
         #region IRenderedWebElement Members
-
+        /// <summary>
+        /// Gets the Location of an element and returns a Point object
+        /// </summary>
         public Point Location
         {
             get
@@ -24,6 +28,9 @@ namespace OpenQA.Selenium.Remote
             }
         }
 
+        /// <summary>
+        /// Gets the <see cref="Size"/> of the element on the page
+        /// </summary>
         public Size Size
         {
             get 
@@ -38,6 +45,9 @@ namespace OpenQA.Selenium.Remote
             }
         }
 
+        /// <summary>
+        /// Gets a value indicating whether the element is currently being displayed
+        /// </summary>
         public bool Displayed
         {
             get
@@ -49,6 +59,11 @@ namespace OpenQA.Selenium.Remote
             }
         }
 
+        /// <summary>
+        /// Method to return the value of a CSS Property
+        /// </summary>
+        /// <param name="propertyName">CSS property key</param>
+        /// <returns>string value of the CSS property</returns>
         public string GetValueOfCssProperty(string propertyName)
         {
             Dictionary<string, object> parameters = new Dictionary<string, object>();
@@ -58,6 +73,9 @@ namespace OpenQA.Selenium.Remote
             return commandResponse.Value.ToString();
         }
 
+        /// <summary>
+        /// Moves the mouse over the element to do a hover
+        /// </summary>
         public void Hover()
         {
             Dictionary<string, object> parameters = new Dictionary<string, object>();
@@ -65,6 +83,11 @@ namespace OpenQA.Selenium.Remote
             Parent.Execute(DriverCommand.HoverOverElement, new object[] { parameters });
         }
 
+        /// <summary>
+        /// Move to an element, MouseDown on the element and move it by passing in the how many pixels horizontally and vertically you wish to move it
+        /// </summary>
+        /// <param name="moveRightBy">Integer to move it left or right</param>
+        /// <param name="moveDownBy">Integer to move it up or down</param>
         public void DragAndDropBy(int moveRightBy, int moveDownBy)
         {
             Dictionary<string, object> parameters = new Dictionary<string, object>();
@@ -72,6 +95,10 @@ namespace OpenQA.Selenium.Remote
             Parent.Execute(DriverCommand.DragElement, new object[] { parameters, moveRightBy, moveDownBy });
         }
 
+        /// <summary>
+        /// Drag and Drop an element to another element
+        /// </summary>
+        /// <param name="element">Element you wish to drop on</param>
         public void DragAndDropOn(IRenderedWebElement element)
         {
             Point currentLocation = Location;
