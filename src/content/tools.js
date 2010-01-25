@@ -156,6 +156,10 @@ StringUtils.underscore = function(text) {
 		});
 }
 
+String.prototype.startsWith = function(str) {
+	return (this.match("^" + str) == str)
+}
+
 function Message(key, arg) {
     var strings = window.document.getElementById("strings");
     if (strings) {

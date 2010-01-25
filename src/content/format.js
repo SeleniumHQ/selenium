@@ -103,9 +103,17 @@ FormatCollection.loadFormatter = function(url) {
     format.log = new Log("Format");
     format.playable = true;
     format.remoteControl = false;
-    format.load = function(file) {
-        subScriptLoader.loadSubScript('chrome://selenium-ide/content/formats/' + file, format);
-    }
+	
+	format.load = function(file){
+		if (file.startsWith('chrome://')) {
+			//extensions may load in their own files so allow an absolute URL 
+			subScriptLoader.loadSubScript(file, format);
+		} else {
+			//otherwise assume this is a packaged format file
+			subScriptLoader.loadSubScript('chrome://selenium-ide/content/formats/' + file, format);
+		}
+	}
+
     for (prop in StringUtils) {
         // copy functions from StringUtils
         format[prop] = StringUtils[prop];
