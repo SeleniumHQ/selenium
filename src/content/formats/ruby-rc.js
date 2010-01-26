@@ -157,18 +157,18 @@ this.options = {
 		'\n' +
 		'  def setup\n' +
 		'    @verification_errors = []\n' +
-		'    @selenium = Selenium::Client::Driver.new \\\n' +
+		'    ${receiver} = Selenium::Client::Driver.new \\\n' +
 		'      :host => "localhost",\n' +
 		'      :port => 4444,\n' + 
 		'      :browser => "*chrome",\n' + 
 		'      :url => "${baseURL}",\n' + 
 		'      :timeout_in_second => 60\n' +
 		'\n' +
-		'    @selenium.start_new_browser_session\n' +
+		'    ${receiver}.start_new_browser_session\n' +
 		'  end\n' +
 		'  \n' +
 		'  def teardown\n' +
-		'    @selenium.close_current_browser_session\n' +
+		'    ${receiver}.close_current_browser_session\n' +
 		'    assert_equal [], @verification_errors\n' +
 		'  end\n' +
 		'  \n' +

@@ -230,7 +230,7 @@ this.options = {
 		'use Test::More "no_plan";\n' +
 		'use Test::Exception;\n' +
 		'\n' +
-		'my $sel = Test::WWW::Selenium->new( host => "localhost", \n' +
+		'my ${receiver} = Test::WWW::Selenium->new( host => "localhost", \n' +
 		'                                    port => 4444, \n' +
 		'                                    browser => "*chrome", \n' +
 		'                                    browser_url => "${baseURL}" );\n' +

@@ -177,8 +177,8 @@ options.header =
 	indents(2) + '[SetUp]\n' +
 	indents(2) + 'public void SetupTest()\n' +
 	indents(2) + '{\n' +
-	indents(3) + 'selenium = new DefaultSelenium("localhost", 4444, "*chrome", "${baseURL}");\n' +
-	indents(3) + 'selenium.Start();\n' +
+	indents(3) + '${receiver} = new DefaultSelenium("localhost", 4444, "*chrome", "${baseURL}");\n' +
+	indents(3) + '${receiver}.Start();\n' +
 	indents(3) + 'verificationErrors = new StringBuilder();\n' +
 	indents(2) + '}\n' +
 	indents(2) + '\n' +
@@ -187,7 +187,7 @@ options.header =
 	indents(2) + '{\n' +
 	indents(3) + 'try\n' +
 	indents(3) + '{\n' +
-	indents(4) + 'selenium.Stop();\n' +
+	indents(4) + '${receiver}.Stop();\n' +
 	indents(3) + '}\n' +
 	indents(3) + 'catch (Exception)\n' +
 	indents(3) + '{\n' +

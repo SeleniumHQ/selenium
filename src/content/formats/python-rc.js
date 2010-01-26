@@ -174,7 +174,7 @@ this.options = {
 	'        self.selenium.start()\n' +
 	'    \n' +
 	'    def ${methodName}(self):\n' +
-	'        sel = self.selenium\n',
+	'        ${receiver} = self.selenium\n',
 	footer:
 	'    \n' +
 	'    def tearDown(self):\n' +

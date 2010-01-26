@@ -183,7 +183,7 @@ this.options = {
 		'\n' +
 		'describe "${className}" do\n' +
 		'  attr_reader :selenium_driver\n' +
-		'  alias :page :selenium_driver\n' +
+		'  alias :${receiver} :selenium_driver\n' +
 		'\n' +
 		'  before(:all) do\n' +
 		'    @verification_errors = []\n' +
