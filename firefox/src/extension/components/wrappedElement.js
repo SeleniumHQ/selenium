@@ -607,7 +607,8 @@ FirefoxDriver.prototype.getLocationOnceScrolledIntoView = function(respond) {
     return;
   }
 
-  element.ownerDocument.body.focus();
+  var theDoc = element.ownerDocument;
+  theDoc.body.focus();
   element.scrollIntoView(true);
 
   var retrieval = Utils.newInstance(
@@ -625,18 +626,33 @@ FirefoxDriver.prototype.getLocationOnceScrolledIntoView = function(respond) {
     respond.send();
     return;
   } catch(e) {
-    // Element doesn't have an accessibility node
+    // Element doesn't have an accessibility node. Fall through
   }
 
-  // Fallback. Use the (deprecated) method to find out where the element is in
-  // the viewport. This should be fine to use because we only fall down this
-  // code path on older versions of Firefox (I think!)
-  var theDoc = Utils.getDocument(respond.context);
-  var box = theDoc.getBoxObjectFor(element);
+  // If we have the box object (which is deprecated) we could try using it
+  if (theDoc.getBoxObjectFor) {
+    // Fallback. Use the (deprecated) method to find out where the element is in
+    // the viewport. This should be fine to use because we only fall down this
+    // code path on older versions of Firefox (I think!)
 
+    var box = theDoc.getBoxObjectFor(element);
+
+    respond.response = {
+      x : box.screenX,
+      y : box.screenY
+    };
+    respond.send();
+  }
+
+  // Fine. Come up with a good guess. This should be the element location
+  // added to the current window location. It'll probably be off
+  var x = theDoc.defaultView.screenX;
+  var y = theDoc.defaultView.screenY;
+
+  var rect = element.getBoundingClientRect()
   respond.response = {
-    x : box.screenX,
-    y : box.screenY
-  };
+    x : x + rect.left,
+    y : y + rect.top  
+  }
   respond.send();
 };

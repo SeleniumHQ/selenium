@@ -41,7 +41,7 @@ public class SingleTestSuite extends TestCase {
   private final static String SELENIUM = "org.openqa.selenium.SeleneseBackedWebDriver";
 
   public static Test suite() throws Exception {
-    String driver = IE;
+    String driver = FIREFOX_TEST;
 
     System.setProperty("webdriver.development", "true");
     System.setProperty("jna.library.path", "..\\build;build");
@@ -56,9 +56,9 @@ public class SingleTestSuite extends TestCase {
         .keepDriverInstance()
         .includeJavascriptTests()
         .onlyRun("CorrectEventFiringTest")
-        .method("testClearingAnElementShouldCauseTheOnChangeHandlerToFire")
+//        .method("testShouldBeAbleToGetTheLocationOfAnElement")
         .exclude(ALL)
-        .exclude(Ignore.Driver.IE)
+        .exclude(Ignore.Driver.FIREFOX)
         .leaveRunning()
         ;  // Yeah, this look strange :)
 

@@ -31,7 +31,7 @@ import java.util.List;
 
 public class CorrectEventFiringTest extends AbstractDriverTestCase {
 
-  @Ignore(value = CHROME, reason = "Webkit bug 22261")
+  @Ignore(value = {CHROME, FIREFOX}, reason = "Webkit bug 22261. Firefox 3.6 wants focus")
   @JavascriptEnabled
   public void testShouldFireFocusEventWhenClicking() {
     driver.get(javascriptPage);
@@ -90,7 +90,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
     assertEventFired("mousemove");
   }
 
-  @Ignore(value = {CHROME, SELENESE}, reason = "Webkit bug 22261")
+  @Ignore(value = {CHROME, SELENESE, FIREFOX}, reason = "Webkit bug 22261. Firefox 3.6 wants focus")
   @JavascriptEnabled
   public void testShouldFireEventsInTheRightOrder() {
     driver.get(javascriptPage);
