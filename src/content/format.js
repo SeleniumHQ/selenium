@@ -160,7 +160,7 @@ FormatCollection.prototype.reloadFormats = function() {
     
     // plugin formats
     this.pluginFormats = FormatCollection.loadPluginFormats(this.options);
-    this.formats = this.presetFormats.concat(this.pluginFormats);
+    this.formats = this.formats.concat(this.pluginFormats);
 }
 
 FormatCollection.prototype.removeUserFormatAt = function(index) {
