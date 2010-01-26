@@ -174,7 +174,7 @@ getTextContent: function(element, preformatted) {
         if (!preformatted) {
             text = text.replace(/\n|\r|\t/g, " ");
         }
-        return text;
+        return text.replace(/&nbsp/, " ");
     }
     if (element.nodeType == 1 /*Node.ELEMENT_NODE*/ && element.nodeName != 'SCRIPT') {
         var childrenPreformatted = preformatted || (element.tagName == "PRE");
@@ -193,7 +193,7 @@ getTextContent: function(element, preformatted) {
         if (element.tagName == "P" || element.tagName == "BR" || element.tagName == "HR" || element.tagName == "DIV") {
             text += "\n";
         }
-        return text;
+        return text.replace(/&nbsp/, " ");
     }
     return '';
 }

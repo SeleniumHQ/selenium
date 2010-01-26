@@ -54,4 +54,13 @@ public class GlobTextMatchingStrategyTest extends TestCase {
 		boolean result = glob.isAMatch("This * test", "\t\r\nThis is a test of the open command.");
 		assertTrue(result);
 	}
+
+  public void testShouldMatchEvenWhenTextIsAtTheStartOfAString() {
+    GlobTextMatchingStrategy glob = new GlobTextMatchingStrategy();
+
+    // The second text contains the nbsp character.
+		boolean result = glob.isAMatch("this is the span",
+        "this is the span    first option second option third,,option Line 1 Line 2  th1th2abcdf1f2 ");
+		assertTrue(result);
+  }
 }

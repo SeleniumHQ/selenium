@@ -26,8 +26,9 @@ public class GlobTextMatchingStrategy implements TextMatchingStrategy {
     public boolean isAMatch(String compareThis, String with) {
         String regex = compareThis.replace(".", "\\.").replace("*", ".*").replace("?", ".?");
         Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE);
-        Matcher matcher = pattern.matcher(with);
+        String mutatedWith = with.replaceAll("\u00a0", " ");
+        Matcher matcher = pattern.matcher(mutatedWith);
 
-        return matcher.find();
+        return matcher.find() || with.contains(compareThis);
     }
 }
