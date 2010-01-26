@@ -75,6 +75,7 @@ interface ExportedWebDriverFunctions extends StdCallLibrary {
   
   // Options
   int wdAddCookie(Pointer driver, WString string);
+  int wdDeleteCookie(Pointer driver, WString string);
   int wdGetCookies(Pointer driver, PointerByReference wrapper);
   
   // Element collection functions

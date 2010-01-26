@@ -458,74 +458,16 @@ public class InternetExplorerDriver implements WebDriver, JavascriptExecutor {
         throw new WebDriverException("Cookie to delete cannot be null");
       }
 
-      String currentUrl = getCurrentUrl();
-      try {
-        URI uri = new URI(currentUrl);
-
-        Cookie toDelete = new NullPathCookie(cookie.getName(), cookie.getValue(), uri.getHost(),
-                                             uri.getPath(), new Date(0));
-
-        deleteCookieByPath(toDelete);
-      } catch (URISyntaxException e) {
-        throw new WebDriverException("Cannot delete cookie: " + e.getMessage());
-      }
-    }
-
-    private void deleteCookieByPath(Cookie cookie) {
-      String path = cookie.getPath();
-
-      if (path != null) {
-        String[] segments = cookie.getPath().split("/");
-        StringBuilder currentPath = new StringBuilder();
-        for (String segment : segments) {
-          if ("".equals(segment)) continue;
-
-          currentPath.append("/").append(segment);
-
-          Cookie toDelete = new NullPathCookie(cookie.getName(), cookie.getValue(),
-                                               cookie.getDomain(), currentPath.toString(),
-                                               new Date(0));
-
-          recursivelyDeleteCookieByDomain(toDelete);
-        }
-      }
-      Cookie toDelete = new NullPathCookie(cookie.getName(), cookie.getValue(),
-                                               cookie.getDomain(), "/",
-                                               new Date(0));
-      recursivelyDeleteCookieByDomain(toDelete);
-
-      toDelete = new NullPathCookie(cookie.getName(), cookie.getValue(),
-                                               cookie.getDomain(), null,
-                                               new Date(0));
-      recursivelyDeleteCookieByDomain(toDelete);
-    }
-
-    private void recursivelyDeleteCookieByDomain(Cookie cookie) {
-      addCookie(cookie);
-
-      int dotIndex = cookie.getDomain().indexOf('.');
-      if (dotIndex == 0) {
-        String domain = cookie.getDomain().substring(1);
-        Cookie toDelete =
-          new NullPathCookie(cookie.getName(), cookie.getValue(), domain,
-                             cookie.getPath(), new Date(0));
-        recursivelyDeleteCookieByDomain(toDelete);
-      } else if (dotIndex != -1) {
-        String domain = cookie.getDomain().substring(dotIndex);
-        Cookie toDelete =
-          new NullPathCookie(cookie.getName(), cookie.getValue(), domain,
-                             cookie.getPath(), new Date(0));
-        recursivelyDeleteCookieByDomain(toDelete);
-      } else {
-        Cookie toDelete =
-          new NullPathCookie(cookie.getName(), cookie.getValue(), "",
-                             cookie.getPath(), new Date(0));
-        addCookie(toDelete);
-      }
+      deleteCookieNamed(cookie.getName());
     }
 
     public void deleteCookieNamed(String name) {
-      deleteCookie(getCookieNamed(name));
+      if (name == null) {
+        throw new WebDriverException("Cookie to delete cannot be null");
+      }
+
+      int result = lib.wdDeleteCookie(driver, new WString(name));
+      errors.verifyErrorCode(result, "Cannot delete cookie " + name);
     }
 
     public Set<Cookie> getCookies() {

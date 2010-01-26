@@ -22,6 +22,7 @@ limitations under the License.
 #include "InternetExplorerDriver.h"
 #include "logging.h"
 #include "jsxpath.h"
+#include "cookies.h"
 #include "utils.h"
 #include <stdio.h>
 #include <iostream>
@@ -452,6 +453,30 @@ int wdAddCookie(WebDriver* driver, const wchar_t* cookie)
 	try {
 		return driver->ie->addCookie(cookie);
 	} END_TRY;
+}
+
+int wdDeleteCookie(WebDriver* driver, const wchar_t* cookieName)
+{
+	if (!driver || !driver->ie) return ENOSUCHDRIVER;
+
+	// Inject the XPath engine
+	std::wstring script;
+	for (int i = 0; DELETECOOKIES[i]; i++) {
+		script += DELETECOOKIES[i];
+	}
+	ScriptArgs* args;
+	int result = wdNewScriptArgs(&args, 1);
+	if (result != SUCCESS) {
+		return result;
+	}
+	wdAddStringScriptArg(args, cookieName);
+
+	ScriptResult* scriptResult = NULL;
+	result = wdExecuteScript(driver, script.c_str(), args, &scriptResult);
+	wdFreeScriptArgs(args);
+	if (scriptResult) delete scriptResult;
+
+	return result;
 }
 
 int wdSwitchToActiveElement(WebDriver* driver, WebElement** result)

@@ -75,6 +75,7 @@ EXPORT int wdGetPageSource(WebDriver* driver, StringWrapper** result);
 
 EXPORT int wdGetCookies(WebDriver* driver, StringWrapper** result);
 EXPORT int wdAddCookie(WebDriver* driver, const wchar_t* cookie);
+EXPORT int wdDeleteCookie(WebDriver* driver, const wchar_t* cookieName);
 
 EXPORT int wdSwitchToActiveElement(WebDriver* driver, WebElement** result);
 EXPORT int wdSwitchToWindow(WebDriver* driver, const wchar_t* name);
