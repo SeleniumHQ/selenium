@@ -19,7 +19,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\..\..\..\build\cli\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -27,7 +27,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>..\..\..\..\build\cli\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -47,12 +47,29 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ChromeCommandExecutor.cs" />
+    <Compile Include="ChromeBinary.cs" />
+    <Compile Include="ChromeCommand.cs" />
+    <Compile Include="ChromeCommandJsonConverter.cs" />
+    <Compile Include="ChromeDriver.cs" />
+    <Compile Include="ChromeExtension.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ChromeProfile.cs" />
+    <Compile Include="ChromeResponse.cs" />
+    <Compile Include="ChromeWebElement.cs" />
+    <Compile Include="CookieJsonConverter.cs" />
+    <Compile Include="FatalChromeException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\common\src\csharp\webdriver-common\WebDriver.Common.csproj">
       <Project>{ABB9B87F-FEEA-410E-ACBF-26479B8C72B0}</Project>
       <Name>WebDriver.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\remote\client\src\csharp\webdriver-remote\WebDriver.Remote.csproj">
+      <Project>{32122F8D-CD64-495A-B9B0-5516FF67C79F}</Project>
+      <Name>WebDriver.Remote</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
@@ -63,4 +80,10 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <PropertyGroup>
+    <PostBuildEvent>if not exist $(SolutionDir)build\Win32\$(ConfigurationName) md $(SolutionDir)build\Win32\$(ConfigurationName)
+copy /y $(TargetPath) $(SolutionDir)build\Win32\$(ConfigurationName)
+if not exist $(SolutionDir)build\x64\$(ConfigurationName) md $(SolutionDir)build\x64\$(ConfigurationName)
+copy /y $(TargetPath) $(SolutionDir)build\x64\$(ConfigurationName)</PostBuildEvent>
+  </PropertyGroup>
 </Project>

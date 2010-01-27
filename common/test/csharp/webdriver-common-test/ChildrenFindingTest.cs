@@ -215,13 +215,13 @@ namespace OpenQA.Selenium
         [Category("Javascript")]
         public void ShouldBeAbleToFindAnElementByCssSelector()
         {
+            driver.Url = nestedPage;
             if (!SupportsSelectorApi())
             {
                 Console.WriteLine("Skipping test: selector API not supported");
                 return;
             }
 
-            driver.Url = nestedPage;
             IWebElement parent = driver.FindElement(By.Name("form2"));
 
             IWebElement element = parent.FindElement(By.CssSelector("*[name=\"selectomatic\"]"));
@@ -234,13 +234,13 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Chrome, "Chrome doesn't handle the many-pages situation well")]
         public void ShouldBeAbleToFindAnElementsByCssSelector()
         {
+            driver.Url = nestedPage;
             if (!SupportsSelectorApi())
             {
                 Console.WriteLine("Skipping test: selector API not supported");
                 return;
             }
 
-            driver.Url = nestedPage;
             IWebElement parent = driver.FindElement(By.Name("form2"));
 
             ReadOnlyCollection<IWebElement> elements = parent.FindElements(By.CssSelector("*[name=\"selectomatic\"]"));
@@ -250,8 +250,10 @@ namespace OpenQA.Selenium
 
         private bool SupportsSelectorApi()
         {
-            return driver is IFindsByCssSelector &&
-                (bool)((IJavaScriptExecutor)driver).ExecuteScript("return document['querySelector'] !== undefined;");
+            IJavaScriptExecutor javascriptDriver = driver as IJavaScriptExecutor;
+            IFindsByCssSelector cssSelectorDriver = driver as IFindsByCssSelector;
+
+            return (cssSelectorDriver != null) && (javascriptDriver != null) && ((bool)javascriptDriver.ExecuteScript("return document['querySelector'] !== undefined;"));
         }
     }
 }
