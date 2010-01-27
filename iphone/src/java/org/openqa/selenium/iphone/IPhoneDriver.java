@@ -65,7 +65,7 @@ public class IPhoneDriver extends RemoteWebDriver implements TakesScreenshot {
    * @param remoteAddress The full URL of the remote client (device or 
    *                      simulator).
    * @throws Exception
-   * @see IPhoneDriver(String)
+   * @see #IPhoneDriver(String)
    */
   public IPhoneDriver(URL remoteAddress) throws Exception {
     super(remoteAddress, DesiredCapabilities.iphone());
@@ -75,7 +75,7 @@ public class IPhoneDriver extends RemoteWebDriver implements TakesScreenshot {
    * Create an IPhoneDriver connected to the remote address passed in.
    * @param remoteAddress The full URL of the remote client running iWebDriver.
    * @throws Exception
-   * @see IPhoneDriver(URL)
+   * @see #IPhoneDriver(URL)
    */
   public IPhoneDriver(String remoteAddress) throws Exception {
     this(new URL(remoteAddress));

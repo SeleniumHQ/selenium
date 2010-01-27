@@ -36,6 +36,7 @@ public class SnapshotScreenListener extends AbstractWebDriverEventListener {
     this.session = session;
   }
 
+  @Override
   public void onException(Throwable throwable, WebDriver driver) {
     String encoded;
     try {

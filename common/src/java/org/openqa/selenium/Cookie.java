@@ -18,7 +18,6 @@ limitations under the License.
 package org.openqa.selenium;
 
 import java.util.Date;
-import java.security.cert.CertPathBuilder;
 import java.text.SimpleDateFormat;
 
 public class Cookie {

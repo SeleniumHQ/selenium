@@ -50,6 +50,7 @@ public class ReturnedCookie extends Cookie {
     validate();
   }
 
+  @Override
   public boolean isSecure() {
     return isSecure;
   }

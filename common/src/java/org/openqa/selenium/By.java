@@ -67,6 +67,7 @@ public abstract class By {
           return ((FindsByXPath) context).findElementByXPath("*[@id = '" + id + "']");
         }
        
+        @Override
         public String toString() {
           return "By.id: " + id;
         }
@@ -283,6 +284,7 @@ public abstract class By {
                 "Driver does not support finding an element by selector: " + selector);
           }
 
+          @Override
           public List<WebElement> findElements(SearchContext context) {
             if (context instanceof FindsByCssSelector) {
               return ((FindsByCssSelector) context).findElementsByCssSelector(selector);

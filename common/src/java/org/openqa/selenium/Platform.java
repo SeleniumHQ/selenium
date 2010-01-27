@@ -35,6 +35,7 @@ public enum Platform {
    * any version of Windows.
    */
   WINDOWS("") {
+    @Override
     public boolean is(Platform compareWith) {
       return compareWith == WINDOWS || compareWith == XP || compareWith == VISTA;
     }
@@ -45,6 +46,7 @@ public enum Platform {
    * "\\documents and settings\\username"
    */
   XP("xp", "windows") {
+    @Override
     public boolean is(Platform compareWith) {
       return compareWith == WINDOWS || compareWith == XP;
     }
@@ -53,6 +55,7 @@ public enum Platform {
    * For versions of Windows that "feel like" Windows Vista.
    */
   VISTA("windows vista", "Windows Server 2008") {
+    @Override
     public boolean is(Platform compareWith) {
       return compareWith == WINDOWS || compareWith == VISTA;
     }
@@ -60,6 +63,7 @@ public enum Platform {
   MAC("mac", "darwin") {},
   UNIX("solaris", "bsd") {},
   LINUX("linux") {
+    @Override
     public boolean is(Platform compareWith) {
       return compareWith == UNIX || compareWith == LINUX;
     }
@@ -69,6 +73,7 @@ public enum Platform {
    * any operating system
    */
   ANY("") {
+    @Override
     public boolean is(Platform compareWith) {
       return true;
     }
