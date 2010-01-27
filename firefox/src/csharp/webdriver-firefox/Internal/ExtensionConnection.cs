@@ -134,7 +134,19 @@ namespace OpenQA.Selenium.Firefox.Internal
                 Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
                 IPHostEntry hostEntry = Dns.GetHostEntry(host);
-                IPEndPoint address = new IPEndPoint(hostEntry.AddressList[0], newport);
+
+                //Use the first IPv4 address that we find
+                IPAddress ipAddress = IPAddress.Parse("127.0.0.1");
+                foreach (IPAddress ip in hostEntry.AddressList)
+                {
+                    if (ip.AddressFamily == AddressFamily.InterNetwork)
+                    {
+                        ipAddress = ip;
+                        break;
+                    }
+                }
+
+                IPEndPoint address = new IPEndPoint(ipAddress, newport);
 
                 try
                 {
@@ -185,7 +197,19 @@ namespace OpenQA.Selenium.Firefox.Internal
             else
             {
                 IPHostEntry hostEntry = Dns.GetHostEntry(host);
-                IPEndPoint hostEndPoint = new IPEndPoint(hostEntry.AddressList[0], port);
+
+                //Use the first IPv4 address that we find
+                IPAddress ipAddress = IPAddress.Parse("127.0.0.1");
+                foreach (IPAddress ip in hostEntry.AddressList)
+                {
+                    if (ip.AddressFamily == AddressFamily.InterNetwork)
+                    {
+                        ipAddress = ip;
+                        break;
+                    }
+                }
+
+                IPEndPoint hostEndPoint = new IPEndPoint(ipAddress, port);
                 addresses.Add(hostEndPoint);
             }
         }
