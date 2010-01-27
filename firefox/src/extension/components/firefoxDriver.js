@@ -181,6 +181,20 @@ FirefoxDriver.prototype.getPageSource = function(respond) {
   respond.send();
 };
 
+var normalizeXPath = function(xpath, opt_contextNode) {
+  if (opt_contextNode && xpath) {
+    var parentXPath = Utils.getXPathOfElement(opt_contextNode);
+    if (parentXPath && parentXPath.length > 0) {
+      if (xpath[0] != '/' && xpath[0] != '(') {
+        return parentXPath + "/" + xpath;
+      } else {
+        return parentXPath + xpath;
+      }
+    }
+  }
+  return xpath;
+};
+
 
 /**
  * Searches for the first element in {@code theDocument} matching the given
@@ -194,13 +208,10 @@ FirefoxDriver.prototype.getPageSource = function(respond) {
  */
 FirefoxDriver.prototype.findElementByXPath_ = function(theDocument, xpath,
                                                        opt_contextNode) {
+  var contextNode = theDocument;
   if (opt_contextNode) {
-    var contextNode = opt_contextNode;
-    if (xpath) {
-      xpath = Utils.getXPathOfElement(contextNode) + (xpath[0] == "/" ? "" : "/") + xpath;
-    }
-  } else {
-    var contextNode = theDocument;
+    contextNode = opt_contextNode;
+    xpath = normalizeXPath(xpath, opt_contextNode);
   }
   return theDocument.evaluate(xpath, contextNode, null,
       Components.interfaces.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE, null).
@@ -220,13 +231,10 @@ FirefoxDriver.prototype.findElementByXPath_ = function(theDocument, xpath,
  */
 FirefoxDriver.prototype.findElementsByXPath_ = function(theDocument, xpath,
                                                         opt_contextNode) {
+  var contextNode = theDocument;
   if (opt_contextNode) {
-    var contextNode = opt_contextNode;
-    if (xpath) {
-      xpath = Utils.getXPathOfElement(contextNode) + (xpath[0] == "/" ? "" : "/") + xpath;
-    }
-  } else {
-    var contextNode = theDocument;
+    contextNode = opt_contextNode;
+    xpath = normalizeXPath(xpath, opt_contextNode);
   }
   var result = theDocument.evaluate(xpath, contextNode, null,
       Components.interfaces.nsIDOMXPathResult.ORDERED_NODE_ITERATOR_TYPE, null);
