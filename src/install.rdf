@@ -11,6 +11,7 @@
         <em:homepageURL>http://seleniumhq.org/projects/ide</em:homepageURL>
         <em:optionsURL>chrome://selenium-ide/content/optionsDialog.xul</em:optionsURL>
         <em:updateURL>https://addons.seleniumhq.org/se-ide/update.rdf</em:updateURL>
+        <em:iconURL>chrome://selenium-ide/content/images/selenium-ide-logo32.png</em:iconURL>
 
         <em:targetApplication>
           <Description>
