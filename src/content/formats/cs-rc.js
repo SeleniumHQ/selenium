@@ -207,5 +207,6 @@ options.footer =
 
 this.configForm = 
 	'<description>Variable for Selenium instance</description>' +
-	'<textbox id="options_receiver" />';
-
+	'<textbox id="options_receiver" />' +
+	'<description>Namespace</description>' +
+	'<textbox id="options_namespace" />';

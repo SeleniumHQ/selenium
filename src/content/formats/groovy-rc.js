@@ -201,6 +201,12 @@ options.footer = indents(1) + "}\n"
     + "}\n";
 
 this.configForm = 
+	'<description>Variable for Selenium instance</description>' +
+	'<textbox id="options_receiver" />' +
+	'<description>Package</description>' +
+	'<textbox id="options_packageName" />' +
+	'<description>Superclass</description>' +
+	'<textbox id="options_superClass" />' +
     '<description>Indent</description>' +
     '<menulist id="options_indent"><menupopup>' +
     '<menuitem label="Tab" value="tab" />' +
