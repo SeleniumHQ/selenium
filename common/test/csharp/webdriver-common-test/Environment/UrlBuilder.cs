@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Net.Sockets;
 using System.Text;
+using System.Net;
 
 namespace OpenQA.Selenium.Environment
 {
@@ -34,7 +36,17 @@ namespace OpenQA.Selenium.Environment
             port = EnvironmentManager.GetSettingValue("Port");
             // TODO(andre.nogueira): Remove trailing / from folder
             path = EnvironmentManager.GetSettingValue("Folder");
-            alternateHostName = System.Net.Dns.GetHostEntry(hostName).AddressList[0].ToString();
+            //Use the first IPv4 address that we find
+            IPAddress ipAddress = IPAddress.Parse("127.0.0.1");
+            foreach (IPAddress ip in Dns.GetHostEntry(hostName).AddressList)
+            {
+                if (ip.AddressFamily == AddressFamily.InterNetwork)
+                {
+                    ipAddress = ip;
+                    break;
+                }
+            }
+            alternateHostName = ipAddress.ToString();
         }
 
         public string WhereIs(string page)
