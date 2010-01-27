@@ -44,7 +44,19 @@ namespace OpenQA.Selenium.Firefox.Internal
         public void LockObject(long timeoutInMilliseconds)
         {
             IPHostEntry hostEntry = Dns.GetHostEntry("localhost");
-            IPEndPoint address = new IPEndPoint(hostEntry.AddressList[0], lockPort);
+
+            //Use the first IPv4 address that we find
+            IPAddress ipAddress = IPAddress.Parse("127.0.0.1");
+            foreach (IPAddress ip in hostEntry.AddressList)
+            {
+                if (ip.AddressFamily == AddressFamily.InterNetwork)
+                {
+                    ipAddress = ip;
+                    break;
+                }
+            }
+
+            IPEndPoint address = new IPEndPoint(ipAddress, lockPort);
 
             // Calculate the 'exit time' for our wait loop.
             DateTime maxWait = DateTime.Now.AddMilliseconds(timeoutInMilliseconds);
