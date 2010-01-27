@@ -10,6 +10,7 @@
         <em:type>2</em:type>
         <em:homepageURL>http://seleniumhq.org/projects/ide</em:homepageURL>
         <em:optionsURL>chrome://selenium-ide/content/optionsDialog.xul</em:optionsURL>
+        <em:updateURL>https://addons.seleniumhq.org/se-ide/update.rdf</em:updateURL>
 
         <em:targetApplication>
           <Description>

@@ -1,0 +1,23 @@
+<RDF:RDF xmlns:RDF="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+       xmlns:em="http://www.mozilla.org/2004/em-rdf#">
+  <RDF:Description about="urn:mozilla:extension:{a6fd85ed-e919-4a43-a5af-8da18bda539f}">
+    <em:updates>
+      <RDF:Seq>
+        <!-- one li for each new release; newest first according to some sources -->
+        <RDF:li>
+          <RDF:Description>
+            <em:version>1.0.5</em:version>
+            <em:targetApplication>
+              <RDF:Description>
+                <em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id> <!-- firefox -->
+                <em:minVersion>1.5</em:minVersion>
+                <em:maxVersion>3.6.*</em:maxVersion>
+                <em:updateLink>https://addons.seleniumhq.org/se-ide/selenium-ide-1.0.5.xpi</em:updateLink>
+              </RDF:Description>
+            </em:targetApplication>
+          </RDF:Description>
+        </RDF:li>
+      </RDF:Seq>
+    </em:updates>
+  </RDF:Description>
+</RDF:RDF>
