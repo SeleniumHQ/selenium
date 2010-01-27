@@ -43,7 +43,8 @@ function loadFromOptions(options) {
 				
 				//initialize the reload-button state
 				if (name == "showDeveloperTools"){
-					document.getElementById("reload").disabled = !e.checked;
+					document.getElementById("reload").hidden = !e.checked;
+					document.getElementById('reload').disabled = document.getElementById('reload').hidden
 				}
 			} else {
 				e.value = options[name];
@@ -301,7 +302,8 @@ function reloadUserExtFile(){
  */
 function SDTToggle(){
 
-	document.getElementById('reload').disabled = !document.getElementById('showDeveloperTools').checked;
+	document.getElementById('reload').hidden = !document.getElementById('showDeveloperTools').checked;
+	document.getElementById('reload').disabled = document.getElementById('reload').hidden;
 }
 
 

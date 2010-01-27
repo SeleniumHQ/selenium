@@ -68,7 +68,8 @@ function Editor(window) {
             
             //use when the developer tools have to be enabled or not
             showDevToolsChanged: function(){
-    			document.getElementById("reload-button").disabled = !self.app.getShowDeveloperTools();
+    			document.getElementById("reload-button").hidden = !self.app.getShowDeveloperTools();
+    			document.getElementById("reload-button").disabled = document.getElementById("reload-button").hidden;
     		},
 
             _testCaseObserver: {
