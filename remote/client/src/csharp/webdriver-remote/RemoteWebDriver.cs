@@ -197,7 +197,7 @@ namespace OpenQA.Selenium.Remote
         /// Method For getting an object to set the Speen
         /// </summary>
         /// <returns>Returns an IOptions object that allows the driver to set the speed and cookies and getting cookies</returns>
-        /// <seealso cref="InternetExplorerOptions(IWebDriver driver)"/>
+        /// <seealso cref="IOptions"/>
         /// <example>
         /// <code>
         /// IWebDriver driver = new InternetExplorerDriver();
@@ -971,7 +971,7 @@ namespace OpenQA.Selenium.Remote
             /// <summary>
             /// Method for creating a cookie in the browser
             /// </summary>
-            /// <param name="cookie"><seealso cref="Cookie(string name, string value, string domain, string path, DateTime? expiry)"/> that represents a cookie in the browser</param>
+            /// <param name="cookie"><see cref="Cookie"/> that represents a cookie in the browser</param>
             public void AddCookie(Cookie cookie)
             {
                 driver.Execute(DriverCommand.AddCookie, new object[] { cookie });
