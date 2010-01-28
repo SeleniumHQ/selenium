@@ -35,7 +35,7 @@ public class FirefoxDriverTestSuite extends TestCase {
 
 //    System.setProperty("webdriver.development", "true");
 //  System.setProperty("webdriver.firefox.useExisting", "true");
-    
+
     return new TestSuiteBuilder()
         .addSourceDir("firefox")
         .addSourceDir("common")
@@ -48,7 +48,7 @@ public class FirefoxDriverTestSuite extends TestCase {
   }
 
   public static class TestFirefoxDriver extends FirefoxDriver {
-    public TestFirefoxDriver() {
+    public TestFirefoxDriver() throws IOException {
       super(createTemporaryProfile());
     }
 
@@ -56,7 +56,7 @@ public class FirefoxDriverTestSuite extends TestCase {
       super(profile);
     }
 
-    private static FirefoxProfile createTemporaryProfile() {
+    private static FirefoxProfile createTemporaryProfile() throws IOException {
       // Locate the extension directory
       File extensionSource = FileHandler.locateInProject("firefox/src/extension");
       File dir = TemporaryFilesystem.createTempDir("firefoxdriver", "");
@@ -76,7 +76,7 @@ public class FirefoxDriverTestSuite extends TestCase {
       // Copy in the native events library/libraries
       Map<String, String> fromTo = new HashMap<String, String>();
       if (Platform.getCurrent().is(Platform.WINDOWS)) {
-        fromTo.put("Debug/webdriver-firefox.dll",
+        fromTo.put("Release/webdriver-firefox.dll",
         "platform/WINNT_x86-msvc/components/webdriver-firefox.dll");
       } else if (Platform.getCurrent().is(Platform.UNIX)) {
         fromTo.put("../linux64/Release/libwebdriver-firefox.so",
@@ -102,8 +102,12 @@ public class FirefoxDriverTestSuite extends TestCase {
       for (Map.Entry<String, String> entry : fromTo.entrySet()) {
         File source = new File(buildDir, entry.getKey());
         if (!source.exists()) {
-          System.out.println("File does not exist. Skipping: " + source);
-          continue;
+          System.out.println("File does not exist. Falling back: " + source);
+          source = FileHandler.locateInProject("firefox/prebuilt");
+          source = new File(source, entry.getKey());
+          if (!source.exists()) {
+            throw new RuntimeException("Unable to locate: " + source);
+          }
         }
         File toDir = extension;
         if (entry.getValue().contains("x_ignore_nofocus.so")) {
@@ -124,7 +128,11 @@ public class FirefoxDriverTestSuite extends TestCase {
       // Now delete all the .svn directories
       deleteSvnDirectories(extension);
 
-      return new FirefoxProfile(dir);
+      FirefoxProfile profile = new FirefoxProfile(dir);
+      if (Boolean.getBoolean("webdriver.firefox.debug")) {
+        profile.addExtension(FileHandler.locateInProject("third_party/firebug/firebug-1.5.0-fx.xpi"));
+      }
+      return profile;
     }
 
     private static void copyXpts(File extension) {

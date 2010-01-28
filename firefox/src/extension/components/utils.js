@@ -1120,9 +1120,10 @@ Utils.getLocation = function(element) {
       }
     }
 
-    // Firefox 3.0
+    // Firefox 3.0, but lacking client rect
     Utils.dumpn("Falling back to firefox3 mechanism");
     var accessible = retrieval.getAccessibleFor(element);
+
     var x = {}, y = {}, width = {}, height = {};
     accessible.getBounds(x, y, width, height);
 

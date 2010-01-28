@@ -38,14 +38,31 @@ FirefoxDriver.prototype.click = function(respond) {
 
   // I'm having trouble getting clicks to work on Firefox 2 on Windows. Always
   // fall back for that
-  // TODO(simon): Get native clicks working for gecko 1.8+
   var useNativeClick =
       versionChecker.compare(appInfo.platformVersion, "1.9") >= 0;
 
   if (this.enableNativeEvents && nativeEvents && node && useNativeClick) {
+    Utils.dumpn("Using native events for click");
     var loc = Utils.getLocationOnceScrolledIntoView(element);
     var x = loc.x + (loc.width ? loc.width / 2 : 0);
     var y = loc.y + (loc.height ? loc.height / 2 : 0);
+
+    // In Firefox 3.6, there's a shared window handle. We need to calculate an offset
+    // to add to the x and y locations.
+
+    // Get the ultimate parent frame
+    var current = element.ownerDocument.defaultView;
+    var ultimateParent = element.ownerDocument.defaultView.parent;
+    while (ultimateParent != current) {
+      current = ultimateParent;
+      ultimateParent = current.parent;
+    }
+    var offX = element.ownerDocument.defaultView.mozInnerScreenX - ultimateParent.mozInnerScreenX;
+    var offY = element.ownerDocument.defaultView.mozInnerScreenY - ultimateParent.mozInnerScreenY;
+
+    x += offX;
+    y += offY;
+
     try {
       nativeEvents.mouseMove(node, this.currentX, this.currentY, x, y);
       nativeEvents.click(node, x, y);
@@ -57,6 +74,8 @@ FirefoxDriver.prototype.click = function(respond) {
       // Make sure that we only fall through only if
       // the error returned from the native call indicates it's not
       // implemented.
+
+      Utils.dumpn("Detected error when clicking: " + e.name);
 
       if (e.name != "NS_ERROR_NOT_IMPLEMENTED") {
         respond.isError = true;
