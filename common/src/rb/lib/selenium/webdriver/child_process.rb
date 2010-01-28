@@ -84,11 +84,28 @@ module Selenium
         def start
           pb = java.lang.ProcessBuilder.new(@args)
 
-          # this isn't good
           env = pb.environment
           ENV.each { |k,v| env.put(k, v) }
 
           @process = pb.start
+
+          # Firefox 3.6 on Snow Leopard has a lot output on stderr, which makes
+          # the launch act funny if we don't do something to the streams
+
+          @process.getErrorStream.close
+          @process.getInputStream.close
+
+          # Closing the streams solves that problem, but on other platforms we might
+          # need to actually read them.
+
+          # Thread.new do
+          #   input, error = 0, 0
+          #   loop do
+          #     error = @process.getErrorStream.read if error != -1
+          #     input = @process.getInputStream.read if error != -1
+          #     break if error == -1 && input == -1
+          #   end
+          # end
 
           self
         end
