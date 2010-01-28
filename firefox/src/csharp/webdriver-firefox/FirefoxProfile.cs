@@ -420,6 +420,10 @@ namespace OpenQA.Selenium.Firefox
             Stream zipFileStream = null;
             if (!File.Exists(extensionZipPath))
             {
+                // TODO (JimEvans): We assume either (1) the .zip file exists in the same
+                // directory as this assembly, or (2) it exists inside the assembly as
+                // an embedded resource. We can't talk to Firefox if one of those
+                // conditions isn't met, but we need to wrap that up in a nicer error.
                 Assembly executingAssembly = Assembly.GetExecutingAssembly();
                 zipFileStream = executingAssembly.GetManifestResourceStream("WebDriver.FirefoxExt.zip");
             }

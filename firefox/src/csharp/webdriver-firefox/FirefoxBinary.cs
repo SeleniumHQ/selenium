@@ -303,24 +303,29 @@ namespace OpenQA.Selenium.Firefox
 
             foreach (string path in pathsSet)
             {
-                Assembly executingAssembly = Assembly.GetExecutingAssembly();
-                Stream libraryStream = executingAssembly.GetManifestResourceStream(string.Format("WebDriver.FirefoxNoFocus.{0}.dll", path));
-
                 string outSoPath = Path.Combine(profile.ProfileDirectory, path);
-
                 string file = Path.Combine(outSoPath, noFocusSoName);
 
-                Directory.CreateDirectory(outSoPath);
-                FileStream outputStream = File.Create(file);
-                byte[] buffer = new byte[1000];
-                int bytesRead = libraryStream.Read(buffer, 0, buffer.Length);
-                while (bytesRead >= 0)
+                string resourceName = string.Format("WebDriver.FirefoxNoFocus.{0}.dll", path);
+                Assembly executingAssembly = Assembly.GetExecutingAssembly();
+
+                List<string> resourceNames = new List<string>(executingAssembly.GetManifestResourceNames());
+                if (resourceNames.Contains(resourceName))
                 {
-                    outputStream.Write(buffer, 0, bytesRead);
-                    bytesRead = libraryStream.Read(buffer, 0, buffer.Length);
+                    Stream libraryStream = executingAssembly.GetManifestResourceStream(resourceName);
+
+                    Directory.CreateDirectory(outSoPath);
+                    FileStream outputStream = File.Create(file);
+                    byte[] buffer = new byte[1000];
+                    int bytesRead = libraryStream.Read(buffer, 0, buffer.Length);
+                    while (bytesRead >= 0)
+                    {
+                        outputStream.Write(buffer, 0, bytesRead);
+                        bytesRead = libraryStream.Read(buffer, 0, buffer.Length);
+                    }
+                    outputStream.Close();
+                    libraryStream.Close();
                 }
-                outputStream.Close();
-                libraryStream.Close();
 
                 if (!File.Exists(file))
                 {
@@ -328,7 +333,7 @@ namespace OpenQA.Selenium.Firefox
                                                  + "native events will not work.");
                 }
 
-                builtPath.Append(outSoPath).Append(":");
+                builtPath.Append(outSoPath).Append(Path.PathSeparator);
             }
 
             return builtPath.ToString();
