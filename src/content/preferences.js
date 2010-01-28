@@ -34,9 +34,21 @@ SeleniumIDE.Preferences = {
     },
     
     setString: function(name, value) {
-		var str = Components.classes["@mozilla.org/supports-string;1"].createInstance(Components.interfaces.nsISupportsString);
-		str.data = value;
-		this.branch.setComplexValue(name, Components.interfaces.nsISupportsString, str);
+        var str = Components.classes["@mozilla.org/supports-string;1"].createInstance(Components.interfaces.nsISupportsString);
+        str.data = value;
+        this.branch.setComplexValue(name, Components.interfaces.nsISupportsString, str);
+    },
+
+    getBool: function(name, defaultValue) {
+        if (this.branch && this.branch.prefHasUserValue(name)) {
+            return this.branch.getBoolPref(name);
+        } else {
+            return defaultValue;
+        }
+    },
+    
+    setBool: function(name, value) {
+        this.branch.setBoolPref(name, value);
     },
 
     getArray: function(name) {
@@ -56,54 +68,62 @@ SeleniumIDE.Preferences = {
         }
     },
     
-	load: function() {
-		var options = {};
-		var name;
-		for (name in this.DEFAULT_OPTIONS) {
-			options[name] = this.DEFAULT_OPTIONS[name];
-		}
-		var names = this.branch.getChildList('', []);
-		for (var i = 0; i < names.length; i++) {
-			name = names[i];
-			options[name] = this.getString(name, this.DEFAULT_OPTIONS[name] || '');
-		}
-		return options;
-	},
+    getType: function(name) {
+        return this.branch.getPrefType(name);
+    },
+    
+    load: function() {
+        var options = {};
+        var name;
+        for (name in this.DEFAULT_OPTIONS) {
+            options[name] = this.DEFAULT_OPTIONS[name];
+        }
+        var names = this.branch.getChildList('', []);
+        for (var i = 0; i < names.length; i++) {
+            name = names[i];
+            if (this.getType(name) == this.branch.PREF_BOOL) {
+                options[name] = this.getBool(name);
+            } else {
+                options[name] = this.getString(name, this.DEFAULT_OPTIONS[name] || '');
+            }
+        }
+        return options;
+    },
 
-	save: function(options, prop_name) {
-		if (prop_name) {
-			this.setString(prop_name, options[prop_name]);
-		} else {
-			this.branch.deleteBranch("formats");
-			var name;
-			for (name in options) {
-				this.setString(name, options[name]);
-			}
-		}
-	}
+    save: function(options, prop_name) {
+        if (prop_name) {
+            this.setString(prop_name, options[prop_name]);
+        } else {
+            this.branch.deleteBranch("formats");
+            var name;
+            for (name in options) {
+                this.setString(name, options[name]);
+            }
+        }
+    }
 }
 
 SeleniumIDE.Preferences.DEFAULT_OPTIONS = {
-	encoding: "UTF-8",
+    encoding: "UTF-8",
 
-	// This should be called 'userExtensionsPaths', but it is left for backward compatibility.
-	userExtensionsURL:
-	"",
+    // This should be called 'userExtensionsPaths', but it is left for backward compatibility.
+    userExtensionsURL:
+    "",
 
-	ideExtensionsPaths:
-	"",
-	
-	rememberBaseURL:
-	"true",
+    ideExtensionsPaths:
+    "",
+    
+    rememberBaseURL:
+    "true",
 
-	baseURL:
-	"",
+    baseURL:
+    "",
 
-	recordAssertTitle:
-	"false",
+    recordAssertTitle:
+    "false",
 
-	timeout:
-	"30000",
+    timeout:
+    "30000",
 
     recordAbsoluteURL:
     "false",
