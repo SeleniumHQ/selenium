@@ -12,7 +12,6 @@ namespace OpenQA.Selenium.Chrome
     public class ChromeCommandExecutor
     {
         private const string HostPageHtml = "<html><head><script type='text/javascript'>if (window.location.search == '') { setTimeout(\"window.location = window.location.href + '?reloaded'\", 5000); }</script></head><body><p>ChromeDriver server started and connected.  Please leave this tab open.</p></body></html>";
-        private const string HttpMessageString = "HTTP/1.1 200 OK\r\nContent-Length: {0}\r\nContent-Type: {1}\r\n\r\n{2}";
 
         private readonly string[] NoCommandArguments = new string[] { };
         private readonly string[] ElementIdCommandArgument = new string[] { "elementId" };
@@ -21,13 +20,9 @@ namespace OpenQA.Selenium.Chrome
         private bool executorHasClient;
         private Dictionary<DriverCommand, string[]> executorCommands;
 
-        private Socket mainSocket;
-        private List<SocketPacket> socketList = new List<SocketPacket>();
-        private ManualResetEvent postRequestComplete = new ManualResetEvent(false);
-
-        // Would love to use a Queue here, but for some reason, it doesn't work
-        // across the threads.
-        // private Queue<SocketPacket> socketQueue = new Queue<SocketPacket>();
+        private HttpListener mainListener;
+        private Queue<ExtensionRequestPacket> pendingRequestQueue = new Queue<ExtensionRequestPacket>();
+        private ManualResetEvent postRequestReceived = new ManualResetEvent(false);
 
         public ChromeCommandExecutor()
             : this(1234)
@@ -52,30 +47,23 @@ namespace OpenQA.Selenium.Chrome
 
         public void StartListening()
         {
-            // Create the listening socket...
-            mainSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            IPEndPoint ipLocal = new IPEndPoint(IPAddress.Any, executorPort);
-            // Bind to local IP Address...
-            mainSocket.Bind(ipLocal);
-            // Start listening...
-            mainSocket.Listen(4);
-            // Create the call back for any client connections...
-            mainSocket.BeginAccept(new AsyncCallback(OnClientConnect), null);
+            mainListener = new HttpListener();
+            mainListener.Prefixes.Add(string.Format("http://localhost:{0}/", executorPort));
+            mainListener.Start();
+            IAsyncResult result = mainListener.BeginGetContext(new AsyncCallback(OnClientConnect), mainListener);
         }
 
         public void StopListening()
         {
-            if (mainSocket != null)
-            {
-                mainSocket.Close();
-            }
-            foreach (SocketPacket workerSocket in socketList)
-            {
-                workerSocket.CurrentSocket.Close();
-            }
-            socketList.Clear();
-
             executorHasClient = false;
+            pendingRequestQueue.Clear();
+            if (mainListener != null)
+            {
+                if (mainListener.IsListening)
+                {
+                    mainListener.Close();
+                }
+            }
         }
 
         public ChromeResponse Execute(ChromeCommand commandToExecute)
@@ -87,15 +75,10 @@ namespace OpenQA.Selenium.Chrome
         private void SendMessage(ChromeCommand commandToExecute)
         {
             // Wait for a POST request to be pending from the Chrome extension.
-            TimeSpan ts = TimeSpan.FromSeconds(5);
-            bool signalReceived = postRequestComplete.WaitOne(ts);
+            // When one is received, get the packet from the queue.
+            bool signalReceived = postRequestReceived.WaitOne(TimeSpan.FromSeconds(5));
+            ExtensionRequestPacket packet = pendingRequestQueue.Dequeue();
 
-            // Get the packet from the list (and remove it).
-            SocketPacket packet = socketList[0];
-            socketList.RemoveAt(0);
-
-            // See the Queue comment at the top of this class.
-            // SocketPacket packet = socketQueue.Dequeue();
             // Get the parameter names to correctly serialize the command to JSON.
             commandToExecute.ParameterNames = executorCommands[commandToExecute.Name];
             string commandStringToSend = JsonConvert.SerializeObject(commandToExecute, new JsonConverter[] { new ChromeCommandJsonConverter(), new CookieJsonConverter() });
@@ -107,78 +90,76 @@ namespace OpenQA.Selenium.Chrome
         private ChromeResponse HandleResponse()
         {
             // Wait for a POST request to be pending from the Chrome extension.
-            postRequestComplete.WaitOne(TimeSpan.FromSeconds(5));
-            SocketPacket packet = socketList[0];
+            // Note that we need to leave the packet in the queue for the next
+            // send message.
+            postRequestReceived.WaitOne(TimeSpan.FromSeconds(5));
+            ExtensionRequestPacket packet = pendingRequestQueue.Peek();
 
             // Parse the packet content, and deserialize from a JSON object.
-            string responseString = ParseResponse(packet.ContentAsString);
-            ChromeResponse response = JsonConvert.DeserializeObject<ChromeResponse>(responseString);
-            if (response.StatusCode != 0)
+            string responseString = ParseResponse(packet.Content);
+            ChromeResponse response = new ChromeResponse();
+            if (!string.IsNullOrEmpty(responseString))
             {
-                string message = string.Empty;
-                Dictionary<string, object> responseValue = response.Value as Dictionary<string, object>;
-                if (responseValue != null && responseValue.ContainsKey("message"))
+                response = JsonConvert.DeserializeObject<ChromeResponse>(responseString);
+                if (response.StatusCode != 0)
                 {
-                    message = responseValue["message"].ToString();
-                }
+                    string message = string.Empty;
+                    Dictionary<string, object> responseValue = response.Value as Dictionary<string, object>;
+                    if (responseValue != null && responseValue.ContainsKey("message"))
+                    {
+                        message = responseValue["message"].ToString();
+                    }
 
-                switch (response.StatusCode)
-                {
-                    case 2:
-                        //Cookie error
-                        throw new WebDriverException(message);
-                    case 3:
-                        throw new NoSuchWindowException(message);
-                    case 7:
-                        throw new NoSuchElementException(message);
-                    case 8:
-                        throw new NoSuchFrameException(message);
-                    case 9:
-                        //Unknown command
-                        throw new NotImplementedException(message);
-                    case 10:
-                        throw new StaleElementReferenceException(message);
-                    case 11:
-                        throw new ElementNotVisibleException(message);
-                    case 12:
-                        //Invalid element state (e.g. disabled)
-                        throw new NotSupportedException(message);
-                    case 13:
-                        //Unhandled error
-                        throw new WebDriverException(message);
-                    case 17:
-                        //Bad javascript
-                        throw new WebDriverException(message);
-                    case 19:
-                        //Bad xpath
-                        throw new XPathLookupException(message);
-                    case 99:
-                        throw new WebDriverException("An error occured when sending a native event");
-                    case 500:
-                        if (message == string.Empty)
-                        {
-                            message = "An error occured due to the internals of Chrome. " +
-                            "This does not mean your test failed. " +
-                            "Try running your test again in isolation.";
-                        }
-                        throw new FatalChromeException(message);
+                    switch (response.StatusCode)
+                    {
+                        case 2:
+                            //Cookie error
+                            throw new WebDriverException(message);
+                        case 3:
+                            throw new NoSuchWindowException(message);
+                        case 7:
+                            throw new NoSuchElementException(message);
+                        case 8:
+                            throw new NoSuchFrameException(message);
+                        case 9:
+                            //Unknown command
+                            throw new NotImplementedException(message);
+                        case 10:
+                            throw new StaleElementReferenceException(message);
+                        case 11:
+                            throw new ElementNotVisibleException(message);
+                        case 12:
+                            //Invalid element state (e.g. disabled)
+                            throw new NotSupportedException(message);
+                        case 13:
+                            //Unhandled error
+                            throw new WebDriverException(message);
+                        case 17:
+                            //Bad javascript
+                            throw new InvalidOperationException(message);
+                        case 19:
+                            //Bad xpath
+                            throw new XPathLookupException(message);
+                        case 99:
+                            throw new WebDriverException("An error occured when sending a native event");
+                        case 500:
+                            if (message == string.Empty)
+                            {
+                                message = "An error occured due to the internals of Chrome. " +
+                                "This does not mean your test failed. " +
+                                "Try running your test again in isolation.";
+                            }
+                            throw new FatalChromeException(message);
+                    }
                 }
             }
-
             return response;
         }
 
         private string ParseResponse(string rawResponse)
         {
             string parsedResponse = string.Empty;
-            string[] responseParts = rawResponse.Split(new string[] { "\r\n\r\n" }, StringSplitOptions.None);
-            if (responseParts.Length == 2)
-            {
-                string responseHeaders = responseParts[0];
-                string responseContent = responseParts[1];
-                responseContent = responseContent.Substring(0, responseContent.IndexOf("\nEOResponse\n"));
-                parsedResponse = responseContent;
-            }
+            parsedResponse = rawResponse.Substring(0, rawResponse.IndexOf("\nEOResponse\n"));
 
             return parsedResponse;
         }
@@ -187,25 +168,32 @@ namespace OpenQA.Selenium.Chrome
         {
             try
             {
+                HttpListener listener = (HttpListener)asyncResult.AsyncState;
                 executorHasClient = true;
-                // Here we complete/end the BeginAccept() asynchronous call
-                // by calling EndAccept() - which returns the reference to
-                // a new Socket object
-                Socket workerSocket = mainSocket.EndAccept(asyncResult);
-                // Let the worker Socket do the further processing for the 
-                // just connected client
-                SocketPacket packet = new SocketPacket(workerSocket);
-                //activeSockets.Add(packet.ID, packet);
-                // Start receiving any data written by the connected client
-                // asynchronously
-                packet.CurrentSocket.BeginReceive(packet.DataBuffer, 0, packet.DataBuffer.Length, SocketFlags.None, new AsyncCallback(OnDataReceived), packet);
-                // Display this client connection as a status message on the GUI
 
-                Console.WriteLine("Client ID {0} connected", packet.ID);
+                // Here we complete/end the BeginGetContext() asynchronous call
+                // by calling EndGetContext() - which returns the reference to
+                // a new HttpListenerContext object. Then we can set up a new
+                // thread to listen for the next connection.
+                HttpListenerContext workerContext = listener.EndGetContext(asyncResult);
+                IAsyncResult newResult = listener.BeginGetContext(new AsyncCallback(OnClientConnect), listener);
 
-                // Since the main Socket is now free, it can go back and wait for
-                // other clients who are attempting to connect
-                mainSocket.BeginAccept(new AsyncCallback(OnClientConnect), null);
+                ExtensionRequestPacket packet = new ExtensionRequestPacket(workerContext);
+                // Console.WriteLine("ID {0} connected.", packet.ID);
+                if (packet.PacketType == ChromeExtensionPacketType.Get)
+                {
+                    // Console.WriteLine("Received GET request from from {0}", packet.ID);
+                    Send(packet, HostPageHtml, "text/html");
+                }
+                else
+                {
+                    // Console.WriteLine("Received from {0}:\n{1}", packet.ID, packet.Content);
+                    pendingRequestQueue.Enqueue(packet);
+                    postRequestReceived.Set();
+                    
+                }
+
+                // Console.WriteLine("ID {0} disconnected.", packet.ID);
             }
             catch (ObjectDisposedException)
             {
@@ -215,94 +203,34 @@ namespace OpenQA.Selenium.Chrome
             {
                 Console.WriteLine("ERROR:" + se.Message);
             }
-        }
-
-        // This the call back function which will be invoked when the socket
-        // detects any client writing of data on the stream
-        public void OnDataReceived(IAsyncResult asyncResult)
-        {
-            try
+            catch (HttpListenerException hle)
             {
-                SocketPacket socketData = (SocketPacket)asyncResult.AsyncState;
-
-                int receivedByteCount = 0;
-                // Complete the BeginReceive() asynchronous call by EndReceive() method
-                // which will return the number of characters written to the stream 
-                // by the client
-                receivedByteCount = socketData.CurrentSocket.EndReceive(asyncResult);
-                socketData.ProcessContent(receivedByteCount);
-                int bytesRemaining = socketData.CurrentSocket.Available;
-                if (bytesRemaining > 0 || (socketData.PacketType == ChromeExtensionPacketType.Post && !socketData.ContentAsString.Contains("EOResponse")))
+                // When we shut the HttpListener down, there will always still be
+                // a thread pending listening for a request. If there is no client
+                // connected, we may have a real problem here.
+                if (!executorHasClient)
                 {
-                    if (socketData.PacketType == ChromeExtensionPacketType.Post)
-                    {
-                        postRequestComplete.Reset();
-                    }
-                    // Continue the waiting for data on the Socket
-                    socketData.CurrentSocket.BeginReceive(socketData.DataBuffer, 0, socketData.DataBuffer.Length, SocketFlags.None, new AsyncCallback(OnDataReceived), socketData);
+                    Console.WriteLine(hle.Message);
                 }
-                else
-                {
-                    Console.WriteLine("Received from ID {0}:\n{1}", socketData.ID, socketData.ContentAsString);
-                    if (socketData.PacketType == ChromeExtensionPacketType.Get)
-                    {
-                        Send(socketData, HostPageHtml, "text/html");
-                    }
-                    else
-                    {
-                        socketList.Add(socketData);
-                        //socketQueue.Enqueue(socketData);
-                        postRequestComplete.Set();
-                    }
-                }
-            }
-            catch (ObjectDisposedException)
-            {
-                System.Diagnostics.Debugger.Log(0, "1", "\nOnDataReceived: Socket has been closed\n");
-            }
-            catch (SocketException se)
-            {
-                Console.WriteLine("ERROR:" + se.Message);
             }
         }
 
-        private void Send(SocketPacket packet, string data, string sendAsContentType)
+        private void Send(ExtensionRequestPacket packet, string data, string sendAsContentType)
         {
-            Socket handler = packet.CurrentSocket;
-
             if (packet.PacketType == ChromeExtensionPacketType.Post)
             {
-                postRequestComplete.Reset();
+                // Console.WriteLine("Sending to {0}:\n{1}", packet.ID, data);
+                // Reset the signal so that the processor will wait for another
+                // POST message.
+                postRequestReceived.Reset();
             }
             byte[] byteData = Encoding.UTF8.GetBytes(data);
-            int dataLength = byteData.Length;
-            string fullMessage = string.Format(HttpMessageString, dataLength, sendAsContentType, data);
-            Console.WriteLine("Sending to ID {0}:\n{1}", packet.ID, fullMessage);
-            byte[] fullMessageData = Encoding.UTF8.GetBytes(fullMessage);
-            
-            // Begin sending the data to the remote device.
-            handler.BeginSend(fullMessageData, 0, fullMessageData.Length, 0, new AsyncCallback(OnDataSent), packet);
-        }
-
-        private void OnDataSent(IAsyncResult ar)
-        {
-            try
-            {
-                SocketPacket packet = (SocketPacket)ar.AsyncState;
-                // Retrieve the socket from the state object.
-                Socket handler = packet.CurrentSocket;
-
-                // Complete sending the data to the remote device.
-                int bytesSent = handler.EndSend(ar);
-
-                handler.Shutdown(SocketShutdown.Both);
-                handler.Close();
-                Console.WriteLine("Client ID {0} disconnected.", packet.ID);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.ToString());
-            }
+            HttpListenerResponse response = packet.Context.Response;
+            response.StatusCode = 200;
+            response.StatusDescription = "OK";
+            response.ContentType = sendAsContentType;
+            response.ContentLength64 = byteData.LongLength;
+            response.Close(byteData, true);
         }
 
         private Dictionary<DriverCommand, string[]> InitializeCommandDictionary()
@@ -363,22 +291,36 @@ namespace OpenQA.Selenium.Chrome
             Post
         }
 
-        private class SocketPacket
+        private class ExtensionRequestPacket
         {
+            private HttpListenerContext packetContext;
             private ChromeExtensionPacketType extensionPacketType = ChromeExtensionPacketType.Unknown;
             private Guid packetId = Guid.NewGuid();
-            private Socket packetSocket;
-            private byte[] packetDataBuffer = new byte[1024];
-            private StringBuilder content = null;
+            private string content;
+
+            public ExtensionRequestPacket(HttpListenerContext currentContext)
+            {
+                packetContext = currentContext;
+
+                if (string.Compare(packetContext.Request.HttpMethod, "get", StringComparison.OrdinalIgnoreCase) == 0)
+                {
+                    extensionPacketType = ChromeExtensionPacketType.Get;
+                }
+                else
+                {
+                    extensionPacketType = ChromeExtensionPacketType.Post;
+                }
+
+                HttpListenerRequest request = packetContext.Request;
+                int length = (int)request.ContentLength64;
+                byte[] packetDataBuffer = new byte[length];
+                request.InputStream.Read(packetDataBuffer, 0, length);
+                content = Encoding.UTF8.GetString(packetDataBuffer);
+            }
 
             public Guid ID
             {
                 get { return packetId; }
-            }
-
-            public SocketPacket(Socket currentSocket)
-            {
-                packetSocket = currentSocket;
             }
 
             public ChromeExtensionPacketType PacketType
@@ -386,40 +328,14 @@ namespace OpenQA.Selenium.Chrome
                 get { return extensionPacketType; }
             }
 
-            public Socket CurrentSocket
+            public HttpListenerContext Context
             {
-                get { return packetSocket; }
+                get { return packetContext; }
             }
 
-            public byte[] DataBuffer
+            public string Content
             {
-                get { return packetDataBuffer; }
-            }
-
-            public void ProcessContent(int contentLength)
-            {
-                string currentContent = Encoding.UTF8.GetString(packetDataBuffer, 0, contentLength);
-                if (content == null)
-                {
-                    if (currentContent.StartsWith("G", StringComparison.OrdinalIgnoreCase))
-                    {
-                        extensionPacketType = ChromeExtensionPacketType.Get;
-                    }
-                    else
-                    {
-                        extensionPacketType = ChromeExtensionPacketType.Post;
-                    }
-                    content = new StringBuilder(currentContent);
-                }
-                else
-                {
-                    content.Append(currentContent);
-                }
-            }
-
-            public string ContentAsString
-            {
-                get { return content.ToString(); }
+                get { return content; }
             }
         }
     }
