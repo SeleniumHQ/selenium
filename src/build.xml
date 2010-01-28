@@ -111,6 +111,9 @@
     <attribute name="suffix" />
     <element name="jar-fileset" optional="true" />
     <sequential>
+      <copy todir="${build}/chrome/icons">
+        <fileset dir="icons" />
+      </copy>
       <delete file="${build}/chrome/${ant.project.name}.jar" />
       <zip destfile="${build}/chrome/${ant.project.name}.jar">
         <fileset dir="${output.path}">
@@ -119,16 +122,16 @@
       </zip>
       <zip destfile="${build}/${ant.project.name}-${app.version}@{suffix}.xpi">
         <fileset dir="${build}">
-	  <include name="chrome/*"/>
+	      <include name="chrome/**"/>
         </fileset>
         <fileset dir=".">
-	  <include name="install.rdf"/>
-	  <include name="components/**"/>
-	  <exclude name="components/*.idl"/>
-	  <include name="content-files/**"/>
+	      <include name="install.rdf"/>
+	      <include name="components/**"/>
+	      <exclude name="components/*.idl"/>
+	      <include name="content-files/**"/>
         </fileset>
         <fileset dir="production">
-	  <include name="chrome.manifest"/>
+	      <include name="chrome.manifest"/>
         </fileset>
       </zip>
     </sequential>
