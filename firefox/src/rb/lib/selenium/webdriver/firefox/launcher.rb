@@ -51,11 +51,11 @@ module Selenium
         def create_profile
           fetch_profile
 
-          @profile.delete_extensions_cache
-
           if @profile.nil?
             raise Error, WebDriverError, "could not find or create profile: #{profile.inspect}"
           end
+
+          @profile.delete_extensions_cache
 
           @profile.port = @port
           @profile.add_extension(true)
