@@ -144,7 +144,7 @@ class JavaGen < BaseGenerator
 
     if args[:system_properties] then
       args[:system_properties].each do |prop|
-        test_string += '-D#{prop} '
+        test_string += "-D#{prop} "
       end
     end
 
