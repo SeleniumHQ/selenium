@@ -410,11 +410,6 @@ namespace OpenQA.Selenium.Firefox
 
         private void InstallExtension(string extensionZipPath)
         {
-            if (!File.Exists(extensionZipPath))
-            {
-                throw new ArgumentException("Could not find extension source zip file: " + extensionZipPath, "extensionZipPath");
-            }
-
             string tempFileName = Path.Combine(Path.GetTempPath(), "webdriver");
             if (Directory.Exists(tempFileName))
             {
@@ -422,7 +417,17 @@ namespace OpenQA.Selenium.Firefox
             }
 
             Directory.CreateDirectory(tempFileName);
-            Stream zipFileStream = new FileStream(extensionZipPath, FileMode.Open, FileAccess.Read);
+            Stream zipFileStream = null;
+            if (!File.Exists(extensionZipPath))
+            {
+                Assembly executingAssembly = Assembly.GetExecutingAssembly();
+                zipFileStream = executingAssembly.GetManifestResourceStream("WebDriver.FirefoxExt.zip");
+            }
+            else
+            {
+                zipFileStream = new FileStream(extensionZipPath, FileMode.Open, FileAccess.Read);
+            }
+
             using (ZipFile extensionZipFile = ZipFile.Read(zipFileStream))
             {
                 extensionZipFile.ExtractExistingFile = ExtractExistingFileAction.OverwriteSilently;

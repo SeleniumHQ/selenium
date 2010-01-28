@@ -6,6 +6,7 @@ using System.IO;
 using System.Text;
 using System.Threading;
 using OpenQA.Selenium.Firefox.Internal;
+using System.Reflection;
 
 namespace OpenQA.Selenium.Firefox
 {
@@ -302,22 +303,25 @@ namespace OpenQA.Selenium.Firefox
 
             foreach (string path in pathsSet)
             {
-                // TODO (JimEvans): Fix build to embed resources and to extract them here.
-                // try {
-                //  FileHandler.copyResource(profile.getProfileDir(), getClass(), path +
-                //                                                                File.separator
-                //                                                                + noFocusSoName);
-                // } catch (IOException e) {
-                //  if (Boolean.getBoolean("webdriver.development")) {
-                //    System.err.println(
-                //        "Exception unpacking required library, but in development mode. Continuing");
-                //  } else {
-                //    throw new WebDriverException(e);
-                //  }
-                // } // End catch.
+                Assembly executingAssembly = Assembly.GetExecutingAssembly();
+                Stream libraryStream = executingAssembly.GetManifestResourceStream(string.Format("WebDriver.FirefoxNoFocus.{0}.dll", path));
+
                 string outSoPath = Path.Combine(profile.ProfileDirectory, path);
 
                 string file = Path.Combine(outSoPath, noFocusSoName);
+
+                Directory.CreateDirectory(outSoPath);
+                FileStream outputStream = File.Create(file);
+                byte[] buffer = new byte[1000];
+                int bytesRead = libraryStream.Read(buffer, 0, buffer.Length);
+                while (bytesRead >= 0)
+                {
+                    outputStream.Write(buffer, 0, bytesRead);
+                    bytesRead = libraryStream.Read(buffer, 0, buffer.Length);
+                }
+                outputStream.Close();
+                libraryStream.Close();
+
                 if (!File.Exists(file))
                 {
                     throw new WebDriverException("Could not locate " + path + ": "
