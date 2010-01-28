@@ -79,7 +79,7 @@ namespace OpenQA.Selenium.Firefox.Test
             }
             else
             {
-                Console.WriteLine("Not running start with named profile test: no default profile found");
+                Assert.Ignore("Skipping test: No profile named \"default\" found.");
             }
         }
 

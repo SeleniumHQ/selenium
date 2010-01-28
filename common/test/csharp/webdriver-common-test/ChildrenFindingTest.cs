@@ -218,8 +218,7 @@ namespace OpenQA.Selenium
             driver.Url = nestedPage;
             if (!SupportsSelectorApi())
             {
-                Console.WriteLine("Skipping test: selector API not supported");
-                return;
+                Assert.Ignore("Skipping test: selector API not supported");
             }
 
             IWebElement parent = driver.FindElement(By.Name("form2"));
@@ -237,8 +236,7 @@ namespace OpenQA.Selenium
             driver.Url = nestedPage;
             if (!SupportsSelectorApi())
             {
-                Console.WriteLine("Skipping test: selector API not supported");
-                return;
+                Assert.Ignore("Skipping test: selector API not supported");
             }
 
             IWebElement parent = driver.FindElement(By.Name("form2"));

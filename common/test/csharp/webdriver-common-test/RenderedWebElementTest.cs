@@ -71,8 +71,7 @@ namespace OpenQA.Selenium
             IRenderedWebElement element = (IRenderedWebElement)driver.FindElement(By.Id("menu1"));
             if (!Platform.CurrentPlatform.IsPlatformType(PlatformType.Windows))
             {
-                Console.WriteLine("Skipping hover test: needs native events");
-                return;
+                Assert.Ignore("Skipping test: Simulating hover needs native events");
             }
 
             IRenderedWebElement item = (IRenderedWebElement)driver.FindElement(By.Id("item1"));
@@ -105,10 +104,9 @@ namespace OpenQA.Selenium
             driver.Url = javascriptPage;
 
             IRenderedWebElement element = (IRenderedWebElement)driver.FindElement(By.Id("menu1"));
-            if (System.Environment.OSVersion.Platform != PlatformID.Win32Windows)
+            if (!Platform.CurrentPlatform.IsPlatformType(PlatformType.Windows))
             {
-                Console.WriteLine("Skipping hover test: needs native events");
-                return;
+                Assert.Ignore("Skipping test: Simulating hover needs native events");
             }
 
             element.Hover();

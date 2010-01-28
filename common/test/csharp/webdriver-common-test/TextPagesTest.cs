@@ -13,13 +13,11 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.IE)]
-        [IgnoreBrowser(Browser.Chrome)]
         [IgnoreBrowser(Browser.Firefox)]
         public void ShouldBeAbleToLoadASimplePageOfText()
         {
             driver.Url = textPage;
-
-            String source = driver.PageSource;
+            string source = driver.PageSource;
             Assert.AreEqual("Test", source);
         }
 

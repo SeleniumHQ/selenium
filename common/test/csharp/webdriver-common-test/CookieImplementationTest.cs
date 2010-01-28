@@ -46,8 +46,7 @@ namespace OpenQA.Selenium
             string[] hostNameParts = hostName.Split(new char[] { '.' });
             if (hostNameParts.Length < 3)
             {
-                Console.WriteLine("Cookies can only be set on fully-qualified domain names. Skipping.");
-                return;
+                Assert.Ignore("Skipping test: Cookies can only be set on fully-qualified domain names.");
             }
             driver.Url = macbethPage;
             IOptions options = driver.Manage();
@@ -298,8 +297,7 @@ namespace OpenQA.Selenium
             string name = GotoValidDomainAndClearCookies();
             if (name == null || nameRegex.IsMatch(name))
             {
-                Console.WriteLine("Skipping test: unable to find domain name to use");
-                return;
+                Assert.Ignore("Skipping test: Cookies can only be set on fully-qualified domain names.");
             }
 
             Assert.IsNull(driver.Manage().GetCookieNamed("name"));
@@ -325,8 +323,7 @@ namespace OpenQA.Selenium
             string name = GotoValidDomainAndClearCookies();
             if (name == null || nameRegex.IsMatch(name))
             {
-                Console.WriteLine("Skipping test: unable to find domain name to use");
-                return;
+                Assert.Ignore("Skipping test: Cookies can only be set on fully-qualified domain names.");
             }
             driver.Manage().DeleteAllCookies();
 

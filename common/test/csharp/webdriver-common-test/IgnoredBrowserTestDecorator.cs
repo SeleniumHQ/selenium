@@ -39,22 +39,26 @@ namespace OpenQA.Selenium
             // A test case might be ignored in more than one browser
             foreach (System.Attribute attr in ignoreAttr)
             {
-                // TODO(andre.nogueira): Check if a reason has been entered
-                // in the annotation, and if so include it in IgnoreReason.
-                object propVal = Reflect.GetPropertyValue(attr, "Value",
-                    BindingFlags.Public | BindingFlags.Instance);
+                object propVal = Reflect.GetPropertyValue(attr, "Value", BindingFlags.Public | BindingFlags.Instance);
+                object reasonValue = Reflect.GetPropertyValue(attr, "Reason", BindingFlags.Public | BindingFlags.Instance);
 
                 if (propVal == null)
+                {
                     return test;
+                }
+
+                string ignoreReason = "Ignoring browser " + EnvironmentManager.Instance.Browser.ToString() + ".";
+                if (reasonValue != null)
+                {
+                    ignoreReason = ignoreReason + " " + reasonValue.ToString();
+                }
 
                 Browser browser = (Browser)propVal;
 
-                if (browser.Equals(EnvironmentManager.Instance.Browser) ||
-                    browser.Equals(Browser.All) || IsRemoteInstanceOfBrowser(browser))
+                if (browser.Equals(EnvironmentManager.Instance.Browser) || browser.Equals(Browser.All) || IsRemoteInstanceOfBrowser(browser))
                 {   
                     testCase.RunState = RunState.Ignored;
-                    testCase.IgnoreReason = "Ignoring browser " +
-                        EnvironmentManager.Instance.Browser.ToString() + ".";
+                    testCase.IgnoreReason = ignoreReason;
                     
                     return testCase;
                 }

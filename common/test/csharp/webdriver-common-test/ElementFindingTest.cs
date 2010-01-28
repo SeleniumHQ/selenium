@@ -380,8 +380,7 @@ namespace OpenQA.Selenium
         {
             if (!SupportsSelectorApi())
             {
-                Console.WriteLine("Skipping test: selector API not supported");
-                return;
+                Assert.Ignore("Skipping test: selector API not supported");
             }
 
             driver.Url = xhtmlTestPage;
@@ -395,8 +394,7 @@ namespace OpenQA.Selenium
         {
             if (!SupportsSelectorApi())
             {
-                Console.WriteLine("Skipping test: selector API not supported");
-                return;
+                Assert.Ignore("Skipping test: selector API not supported");
             }
 
             driver.Url = xhtmlTestPage;

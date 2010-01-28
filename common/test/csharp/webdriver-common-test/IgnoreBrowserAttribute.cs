@@ -8,16 +8,17 @@ namespace OpenQA.Selenium
     {
 
         private Browser browser;
-        private string reason = "";
+        private string ignoreReason = string.Empty;
 
         public IgnoreBrowserAttribute(Browser browser)
         {
             this.browser = browser;
         }
 
-        public IgnoreBrowserAttribute(Browser browser, String reason) : this(browser)
+        public IgnoreBrowserAttribute(Browser browser, string reason)
+            : this(browser)
         {
-            this.reason = reason;
+            ignoreReason = reason;
         }
         
         public Browser Value
@@ -27,7 +28,7 @@ namespace OpenQA.Selenium
 
         public String Reason
         {
-            get { return Reason; }
+            get { return ignoreReason; }
         }
     }
 }
