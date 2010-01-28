@@ -15,7 +15,7 @@ module Selenium
         include BridgeHelper
 
         DEFAULT_OPTIONS = {
-          :url                  => "http://localhost:7055/",
+          :url                  => "http://localhost:4444/wd/hub",
           :http_client          => DefaultHttpClient,
           :desired_capabilities => Capabilities.firefox
         }
