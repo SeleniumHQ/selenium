@@ -185,6 +185,7 @@ function formatSuite(testSuite, filename) {
 
 this.options = {
 	receiver: "selenium",
+	environment: "*chrome",
 	packageName: "com.example.tests",
 	superClass: "SeleneseTestCase",
     indent:	'tab',
@@ -199,7 +200,7 @@ options.header =
 	"\n" +
     "public class ${className} extends ${superClass} {\n" + 
     "\tpublic void setUp() throws Exception {\n" +
-    '\t\tsetUp("${baseURL}", "*chrome");\n' +
+    '\t\tsetUp("${baseURL}", "${environment}");\n' +
     "\t}\n" +
     "\tpublic void ${methodName}() throws Exception {\n";
 
@@ -210,6 +211,8 @@ options.footer =
 this.configForm = 
 	'<description>Variable for Selenium instance</description>' +
 	'<textbox id="options_receiver" />' +
+	'<description>Environment</description>' +
+	'<textbox id="options_environment" />' +
 	'<description>Package</description>' +
 	'<textbox id="options_packageName" />' +
 	'<description>Superclass</description>' +

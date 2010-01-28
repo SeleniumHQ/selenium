@@ -27,3 +27,11 @@ options.header =
 	"\n" +
     "public class ${className} extends ${superClass} {\n" + 
     "\t@Test public void ${methodName}() throws Exception {\n";
+
+this.configForm = 
+	'<description>Variable for Selenium instance</description>' +
+	'<textbox id="options_receiver" />' +
+	'<description>Package</description>' +
+	'<textbox id="options_packageName" />' +
+	'<description>Superclass</description>' +
+	'<textbox id="options_superClass" />';

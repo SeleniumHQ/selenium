@@ -149,6 +149,7 @@ function formatComment(comment) {
 
 this.options = {
     receiver: "$this",
+	environment: "*chrome",
     header: 
         '<?php\n' +
         '\n' +
@@ -158,7 +159,7 @@ this.options = {
         '{\n' +
         '  function setUp()\n' +
         '  {\n' +
-        '    ${receiver}->setBrowser("*chrome");\n' +
+        '    ${receiver}->setBrowser("${environment}");\n' +
         '    ${receiver}->setBrowserUrl("${baseURL}");\n' +
         '  }\n' +
         '\n' +
@@ -176,4 +177,6 @@ this.options = {
 
 this.configForm = 
     '<description>Variable for Selenium instance</description>' +
-    '<textbox id="options_receiver" />';
+    '<textbox id="options_receiver" />' +
+	'<description>Environment</description>' +
+	'<textbox id="options_environment" />';

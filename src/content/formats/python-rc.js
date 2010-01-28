@@ -163,6 +163,9 @@ function formatComment(comment) {
 
 this.options = {
 	receiver: "sel",
+	rcHost: "localhost",
+	rcPort: "4444",
+	environment: "*chrome",
 	header:
 	'from selenium import selenium\n' +
 	'import unittest, time, re\n' +
@@ -170,7 +173,7 @@ this.options = {
 	'class ${className}(unittest.TestCase):\n' +
 	'    def setUp(self):\n' +
 	'        self.verificationErrors = []\n' +
-	'        self.selenium = selenium("localhost", 4444, "*chrome", "${baseURL}")\n' +
+	'        self.selenium = selenium("${rcHost}", ${rcPort}, "${environment}", "${baseURL}")\n' +
 	'        self.selenium.start()\n' +
 	'    \n' +
 	'    def ${methodName}(self):\n' +
@@ -190,6 +193,12 @@ this.options = {
 this.configForm = 
 	'<description>Variable for Selenium instance</description>' +
 	'<textbox id="options_receiver" />' +
+	'<description>Selenium RC host</description>' +
+	'<textbox id="options_rcHost" />' +
+	'<description>Selenium RC port</description>' +
+	'<textbox id="options_rcPort" />' +
+	'<description>Environment</description>' +
+	'<textbox id="options_environment" />' +
 	'<description>Header</description>' +
 	'<textbox id="options_header" multiline="true" flex="1" rows="4"/>' +
 	'<description>Footer</description>' +

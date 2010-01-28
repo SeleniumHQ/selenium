@@ -153,9 +153,12 @@ function formatComment(comment) {
 
 this.options = {
     receiver: "selenium",
+	rcHost: "localhost",
+	rcPort: "4444",
+	environment: "*chrome",
+	namespace: "SeleniumTests",
     indent:	'tab',
-    initialIndents:	'3',
-	namespace: "SeleniumTests"
+    initialIndents:	'3'
 };
 
 options.header =
@@ -177,7 +180,7 @@ options.header =
 	indents(2) + '[SetUp]\n' +
 	indents(2) + 'public void SetupTest()\n' +
 	indents(2) + '{\n' +
-	indents(3) + '${receiver} = new DefaultSelenium("localhost", 4444, "*chrome", "${baseURL}");\n' +
+	indents(3) + '${receiver} = new DefaultSelenium("${rcHost}", ${rcPort}, "${environment}", "${baseURL}");\n' +
 	indents(3) + '${receiver}.Start();\n' +
 	indents(3) + 'verificationErrors = new StringBuilder();\n' +
 	indents(2) + '}\n' +
@@ -208,5 +211,11 @@ options.footer =
 this.configForm = 
 	'<description>Variable for Selenium instance</description>' +
 	'<textbox id="options_receiver" />' +
+	'<description>Selenium RC host</description>' +
+	'<textbox id="options_rcHost" />' +
+	'<description>Selenium RC port</description>' +
+	'<textbox id="options_rcPort" />' +
+	'<description>Environment</description>' +
+	'<textbox id="options_environment" />' +
 	'<description>Namespace</description>' +
 	'<textbox id="options_namespace" />';

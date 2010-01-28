@@ -222,6 +222,9 @@ function formatComment(comment) {
 
 this.options = {
 	receiver: "$sel",
+	rcHost: "localhost",
+	rcPort: "4444",
+	environment: "*chrome",
 	header: 
 		'use strict;\n' +
 		'use warnings;\n' +
@@ -230,9 +233,9 @@ this.options = {
 		'use Test::More "no_plan";\n' +
 		'use Test::Exception;\n' +
 		'\n' +
-		'my ${receiver} = Test::WWW::Selenium->new( host => "localhost", \n' +
-		'                                    port => 4444, \n' +
-		'                                    browser => "*chrome", \n' +
+		'my ${receiver} = Test::WWW::Selenium->new( host => "${rcHost}", \n' +
+		'                                    port => ${rcPort}, \n' +
+		'                                    browser => "${environment}", \n' +
 		'                                    browser_url => "${baseURL}" );\n' +
 		'\n',
 	footer: "",
@@ -243,6 +246,12 @@ this.options = {
 this.configForm = 
 	'<description>Variable for Selenium instance</description>' +
 	'<textbox id="options_receiver" />' +
+	'<description>Selenium RC host</description>' +
+	'<textbox id="options_rcHost" />' +
+	'<description>Selenium RC port</description>' +
+	'<textbox id="options_rcPort" />' +
+	'<description>Environment</description>' +
+	'<textbox id="options_environment" />' +
 	'<description>Header</description>' +
 	'<textbox id="options_header" multiline="true" flex="1" rows="4"/>' +
 	'<description>Footer</description>' +

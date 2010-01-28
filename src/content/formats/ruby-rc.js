@@ -147,6 +147,9 @@ function formatComment(comment) {
 
 this.options = {
 	receiver: "@selenium",
+	rcHost: "localhost",
+	rcPort: "4444",
+	environment: "*chrome",
 	header: 
 		'require "test/unit"\n' +
 		'require "rubygems"\n' +
@@ -158,9 +161,9 @@ this.options = {
 		'  def setup\n' +
 		'    @verification_errors = []\n' +
 		'    ${receiver} = Selenium::Client::Driver.new \\\n' +
-		'      :host => "localhost",\n' +
-		'      :port => 4444,\n' + 
-		'      :browser => "*chrome",\n' + 
+		'      :host => "${rcHost}",\n' +
+		'      :port => ${rcPort},\n' + 
+		'      :browser => "${environment}",\n' + 
 		'      :url => "${baseURL}",\n' + 
 		'      :timeout_in_second => 60\n' +
 		'\n' +
@@ -183,6 +186,12 @@ this.options = {
 this.configForm = 
 	'<description>Variable for Selenium instance</description>' +
 	'<textbox id="options_receiver" />' +
+	'<description>Selenium RC host</description>' +
+	'<textbox id="options_rcHost" />' +
+	'<description>Selenium RC port</description>' +
+	'<textbox id="options_rcPort" />' +
+	'<description>Environment</description>' +
+	'<textbox id="options_environment" />' +
 	'<description>Header</description>' +
 	'<textbox id="options_header" multiline="true" flex="1" rows="4"/>' +
 	'<description>Footer</description>' +

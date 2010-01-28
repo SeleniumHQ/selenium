@@ -175,10 +175,11 @@ function formatComment(comment) {
 
 this.options = {
     receiver: "selenium",
+    environment: "*chrome",
     packageName: "com.example.tests",
     superClass: "GroovySeleneseTestCase",
-    indent:    '4',
-    initialIndents:    '2'
+    indent: '4',
+    initialIndents: '2'
 };
 
 options.getHeader = function() {
@@ -190,7 +191,7 @@ options.getHeader = function() {
         + "class ${className} extends ${superClass} {\n\n" 
         + indents(1) + "@Override\n"
         + indents(1) + "void setUp() throws Exception {\n"
-        + indents(2) + "super.setUp('${baseURL}', '*chrome')\n"
+        + indents(2) + "super.setUp('${baseURL}', '${environment}')\n"
         + indents(2) + "setDefaultTimeout(" + timeout + ")\n"
         + indents(2) + "setCaptureScreenshotOnFailure(false)\n"
         + indents(1) + "}\n\n"
@@ -203,6 +204,8 @@ options.footer = indents(1) + "}\n"
 this.configForm = 
 	'<description>Variable for Selenium instance</description>' +
 	'<textbox id="options_receiver" />' +
+	'<description>Environment</description>' +
+	'<textbox id="options_environment" />' +
 	'<description>Package</description>' +
 	'<textbox id="options_packageName" />' +
 	'<description>Superclass</description>' +
