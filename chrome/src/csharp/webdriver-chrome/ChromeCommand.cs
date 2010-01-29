@@ -1,27 +1,41 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using OpenQA.Selenium.Remote;
+﻿using System.Collections.Generic;
 using Newtonsoft.Json;
+using OpenQA.Selenium.Remote;
 
 namespace OpenQA.Selenium.Chrome
 {
+    /// <summary>
+    /// Provides a mechanism to Create Chrome Commands
+    /// </summary>
     public class ChromeCommand : Command
     {
         private static Dictionary<DriverCommand, string> commandNameMap;
         private string[] commandParameterNames;
 
+        /// <summary>
+        /// Initializes a new instance of the ChromeCommand class
+        /// </summary>
+        /// <param name="sessionId">Session ID of the Server</param>
+        /// <param name="context">Context of the Chrome Server</param>
+        /// <param name="commandName">Command to run</param>
+        /// <param name="parameters">Parameters for the command</param>
         public ChromeCommand(SessionId sessionId, Context context, DriverCommand commandName, object[] parameters)
             : base(sessionId, context, commandName, parameters)
         {
         }
 
+        /// <summary>
+        /// Gets or sets the parameter names
+        /// </summary>
         public string[] ParameterNames
         {
             get { return commandParameterNames; }
             set { commandParameterNames = value; }
         }
 
+        /// <summary>
+        /// Gets the request value 
+        /// </summary>
         [JsonProperty("request")]
         public string RequestValue
         {
@@ -34,6 +48,7 @@ namespace OpenQA.Selenium.Chrome
             {
                 InitializeCommandNameMap();
             }
+
             return commandNameMap[commandValue];
         }
 

@@ -1,59 +1,49 @@
-using System.IO;
-using OpenQA.Selenium;
-using System.Globalization;
 using System;
-//import org.openqa.selenium.WebDriverException;
-//import org.openqa.selenium.internal.TemporaryFilesystem;
-
-//import java.io.File;
-//import java.io.IOException;
+using System.Globalization;
+using System.IO;
 
 namespace OpenQA.Selenium.Chrome
 {
-
-    /**
-     * Manages the extension used by the {@link ChromeDriver}.
-     *
-     * @author jmleyba@google.com (Jason Leyba)
-     */
+    /// <summary>
+    /// Manages the extension used by the <see cref="ChromeDriver"/>.
+    /// </summary>
     public class ChromeProfile
     {
-
-        private static String REAP_PROFILE_PROPERTY = "webdriver.reap_profile";
-        private static String FIRST_RUN_FILE_NAME = "First Run Dev";
+        private const string ReapProfileProperty = "webdriver.reap_profile";
+        private const string FirstRunFileName = "First Run Dev";
 
         private static Random tempFileGenerator = new Random();
 
-        private string directory = null;
+        private string directory = string.Empty;
 
-        /**
-         * Create a new profile using the given directory. Assumes that the directory
-         * exists and has the required files.
-         *
-         * @param directory The directory to use.
-         */
+        /// <summary>
+        /// Initializes a new instance of the ChromeProfile class using the given directory. Assumes that the directory
+        /// exists and has the required files.
+        /// </summary>
+        /// <param name="directory">The directory to use.</param>
         public ChromeProfile(string directory)
         {
             this.directory = directory;
         }
 
-        /**
-         * Creates a new profile using a temporary directory.
-         */
-        public ChromeProfile() : this(createProfileDir())
+        /// <summary>
+        /// Initializes a new instance of the ChromeProfile class using the given directory. Assumes that the directory
+        /// exists and has the required files.
+        /// </summary>
+        public ChromeProfile()
+            : this(CreateProfileDir())
         {
         }
 
-        public string ProfileDirectory {
+        /// <summary>
+        /// Gets the value of the Profile Directory
+        /// </summary>
+        public string ProfileDirectory
+        {
             get { return directory; }
         }
 
-        ///**
-        // * Creates a temporary directory to use as the Chrome profile directory.
-        // *
-        // * @return File object for the created directory.
-        // */
-        private static string createProfileDir()
+        private static string CreateProfileDir()
         {
             try
             {
@@ -62,13 +52,14 @@ namespace OpenQA.Selenium.Chrome
                 {
                     Directory.Delete(profileDir, true);
                 }
+
                 Directory.CreateDirectory(profileDir);
-                string firstRunFile = Path.Combine(profileDir, FIRST_RUN_FILE_NAME + ".");
+                string firstRunFile = Path.Combine(profileDir, FirstRunFileName + ".");
                 FileStream firstRunFileStream = File.Create(firstRunFile);
                 firstRunFileStream.Close();
-                // TODO(danielwd): Maybe add Local State file with window_placement
 
-                //System.setProperty(REAP_PROFILE_PROPERTY, "false");
+                // TODO(danielwd): Maybe add Local State file with window_placement
+                // System.setProperty(REAP_PROFILE_PROPERTY, "false");
                 return profileDir;
             }
             catch (IOException e)

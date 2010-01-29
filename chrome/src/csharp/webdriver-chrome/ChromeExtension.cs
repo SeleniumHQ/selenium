@@ -1,42 +1,34 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.IO;
-using Ionic.Zip;
 using System.Reflection;
+using Ionic.Zip;
 
 namespace OpenQA.Selenium.Chrome
 {
+    /// <summary>
+    /// Provides a mechanism to Add the WebDriver Extension
+    /// </summary>
     internal class ChromeExtension
     {
-        /**
-         * System property used to specify which extension directory to use.
-         */
-        private const string CHROME_EXTENSION_DIRECTORY_PROPERTY = "webdriver.chrome.extensiondir";
-
-        private const string DEFAULT_EXTENSION_PATH = "/chrome-extension.zip";
-        private const string WINDOWS_MANIFEST_FILE = "manifest-win.json";
-        private const string NON_WINDOWS_MANIFEST_FILE = "manifest-nonwin.json";
-        private const string MANIFEST_FILE = "manifest.json";
+        // System property used to specify which extension directory to use.
+        private const string ChromeExtensionDirectoryProperty = "webdriver.chrome.extensiondir";
+        private const string DefaultExtensionPath = "/chrome-extension.zip";
+        private const string WindowsManifestFile = "manifest-win.json";
+        private const string NonWindowsManifestFile = "manifest-nonwin.json";
+        private const string ManifestFile = "manifest.json";
 
         private static string defaultExtensionDir;
-
         private string directory;
 
-        /**
-         * Create a new instance that manages the extension in the specified
-         * directory. Assumes that the directory exists and has the required
-         * files.
-
-         * @param directory The directory to use as the Chrome extension.
-         * @throws WebDriverException If the directory is not valid (e.g. does not
-         *     contain a manifest.json file).
-         */
+        /// <summary>
+        /// Initializes a new instance of the ChromeExtension class. Assumes that the directory exists and has the required
+        /// </summary>
+        /// <param name="directory">The directory to use as the Chrome extension.</param>
         public ChromeExtension(string directory)
         {
             try
             {
-                this.directory = checkExtensionForManifest(directory);
+                this.directory = CheckExtensionForManifest(directory);
             }
             catch (IOException e)
             {
@@ -44,32 +36,29 @@ namespace OpenQA.Selenium.Chrome
             }
         }
 
-        /**
-         * Creates a new instance using the directory specified by the criteria
-         * defined by {@link #findChromeExtensionDir()}.
-         *
-         * @see ChromeExtension(File)
-         * @see ChromeExtension#findChromeExtensionDir()
-         */
+        /// <summary>
+        /// Initializes a new instance of the ChromeExtension class. Assumes that the directory exists and has the required
+        /// </summary>
         public ChromeExtension()
-            : this(findChromeExtensionDir())
+            : this(FindChromeExtensionDir())
         {
         }
 
+        /// <summary>
+        /// Gets the Extension Directory
+        /// </summary>
         public string ExtensionDirectory
         {
             get { return directory; }
         }
 
-        /**
-         * Searches for the Chrome extension directory to use. Will first check the
-         * directory specified by the {@code webdriver.chrome.extensiondir} system
-         * property, and then will check the current classpath for
-         * {@code chrome-extension.zip}.
-         *
-         * @return The Chrome extension directory.
-         */
-        public static string findChromeExtensionDir()
+        /// <summary>
+        /// Searches for the Chrome extension directory to use. Will first check the
+        /// directory specified by the {@code webdriver.chrome.extensiondir} system
+        /// property, and then will check the current classpath for  {@code chrome-extension.zip}.
+        /// </summary>
+        /// <returns>The Chrome extension directory.</returns>
+        public static string FindChromeExtensionDir()
         {
             string directory = defaultExtensionDir;
             if (directory == null)
@@ -77,51 +66,47 @@ namespace OpenQA.Selenium.Chrome
                 directory = defaultExtensionDir;
                 if (directory == null)
                 {
-                    directory = defaultExtensionDir = loadExtension();
+                    directory = defaultExtensionDir = LoadExtension();
                 }
             }
+
             return directory;
         }
 
-        /**
-         * Verifies that the given {@code directory} is a valid Chrome extension
-         * directory. Will check if the directory has the required
-         * {@code manifest.json} file.  If not, it will check for the correct
-         * platform manifest and copy it over.
-         *
-         * @param directory The directory to check.
-         * @return The verified directory.
-         * @throws IOException If the directory is not valid.
-         */
-        private static string checkExtensionForManifest(string directory)
+        /// <summary>
+        /// Verifies that the given {@code directory} is a valid Chrome extension
+        /// directory. Will check if the directory has the required
+        /// {@code manifest.json} file.  If not, it will check for the correct
+        /// platform manifest and copy it over.     
+        /// </summary>
+        /// <param name="directory">The directory to check.</param>
+        /// <returns>The verified directory.</returns>
+        /// <exception cref="IOException">If the directory is not valid.</exception>
+        private static string CheckExtensionForManifest(string directory)
         {
             if (!Directory.Exists(directory))
             {
-                throw new FileNotFoundException(String.Format(
-                    "The specified directory is not a Chrome extension directory: {0}; Try setting {1}",
-                    directory, CHROME_EXTENSION_DIRECTORY_PROPERTY));
+                throw new FileNotFoundException(String.Format("The specified directory is not a Chrome extension directory: {0}; Try setting {1}", directory, ChromeExtensionDirectoryProperty));
             }
 
-            string manifestFile = Path.Combine(directory, MANIFEST_FILE);
+            string manifestFile = Path.Combine(directory, ManifestFile);
             if (!File.Exists(manifestFile))
             {
-                string platformManifest = Platform.CurrentPlatform.IsPlatformType(PlatformType.Windows)
-                    ? WINDOWS_MANIFEST_FILE : NON_WINDOWS_MANIFEST_FILE;
+                string platformManifest = Platform.CurrentPlatform.IsPlatformType(PlatformType.Windows) ? WindowsManifestFile : NonWindowsManifestFile;
 
                 string platformManifestFile = Path.Combine(directory, platformManifest);
                 if (!File.Exists(platformManifestFile))
                 {
-                    throw new FileNotFoundException(string.Format(
-                        "The specified extension has neither a {0} file, nor the platform template, {1}: {2}",
-                        MANIFEST_FILE, platformManifestFile, directory));
+                    throw new FileNotFoundException(string.Format("The specified extension has neither a {0} file, nor the platform template, {1}: {2}", ManifestFile, platformManifestFile, directory));
                 }
 
                 File.Copy(platformManifestFile, manifestFile, true);
             }
+
             return directory;
         }
 
-        private static string loadExtension()
+        private static string LoadExtension()
         {
             try
             {
@@ -180,7 +165,7 @@ namespace OpenQA.Selenium.Chrome
                         extensionZipFile.ExtractAll(extensionDir);
                     }
                 }
-                return checkExtensionForManifest(extensionDir);
+                return CheckExtensionForManifest(extensionDir);
             }
             catch (IOException e)
             {

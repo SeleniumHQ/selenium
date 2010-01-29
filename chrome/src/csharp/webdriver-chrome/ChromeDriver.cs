@@ -1,113 +1,137 @@
-using System.IO;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using OpenQA.Selenium;
-using OpenQA.Selenium.Remote;
-using System;
-using OpenQA.Selenium.Internal;
-using System.Threading;
 using System.Globalization;
+using System.IO;
+
+using OpenQA.Selenium.Internal;
+using OpenQA.Selenium.Remote;
 
 namespace OpenQA.Selenium.Chrome
 {
+    /// <summary>
+    /// Provides a mechanism to write tests against Chrome
+    /// </summary>
+    /// <example>
+    /// <code>
+    /// [TestFixture]
+    /// public class Testing
+    /// {
+    ///     private IWebDriver driver;
+    ///     <para></para>
+    ///     [SetUp]
+    ///     public void SetUp()
+    ///     {
+    ///         driver = new ChromeDriver();
+    ///     }
+    ///     <para></para>
+    ///     [Test]
+    ///     public void TestGoogle()
+    ///     {
+    ///         driver.Navigate().GoToUrl("http://www.google.co.uk");
+    ///         /*
+    ///         *   Rest of the test
+    ///         */
+    ///     }
+    ///     <para></para>
+    ///     [TearDown]
+    ///     public void TearDown()
+    ///     {
+    ///         driver.Quit();
+    ///     } 
+    /// }
+    /// </code>
+    /// </example>
     public class ChromeDriver : IWebDriver, ISearchContext, IJavaScriptExecutor,
       IFindsById, IFindsByClassName, IFindsByLinkText, IFindsByPartialLinkText, IFindsByName, IFindsByTagName,
       IFindsByXPath, IFindsByCssSelector
     {
-
-        private static int MAX_START_RETRIES = 5;
+        private const int MaxStartRetries = 5;
         private ChromeCommandExecutor executor;
         private ChromeBinary chromeBinary;
-
-        /**
-         * Starts up a new instance of Chrome using the specified profile and
-         * extension.
-         *
-         * @param profile The profile to use.
-         * @param extension The extension to use.
-         */
-        internal ChromeDriver(ChromeProfile profile, ChromeExtension extension)
-        {
-            chromeBinary = new ChromeBinary(profile, extension);
-            executor = new ChromeCommandExecutor();
-            StartClient();
-        }
-
-        /**
-         * Starts up a new instance of Chrome, with the required extension loaded,
-         * and has it connect to a new ChromeCommandExecutor on its port
-         *
-         * @see ChromeDriver(ChromeProfile, ChromeExtension)
-         */
+        
+        #region Constructors
+        /// <summary>
+        /// Initializes a new instance of the ChromeDriver class with the required extension loaded, and has it connect to a new ChromeCommandExecutor on its port
+        /// </summary>
         public ChromeDriver()
             : this(new ChromeProfile(), new ChromeExtension())
         {
         }
 
-        /**
-         * By default will try to load Chrome from system property
-         * webdriver.chrome.bin and the extension from
-         * webdriver.chrome.extensiondir.  If the former fails, will try to guess the
-         * path to Chrome.  If the latter fails, will try to unzip from the JAR we 
-         * hope we're in.  If these fail, throws exceptions.
-         */
-        protected void StartClient()
+        /// <summary>
+        /// Initializes a new instance of the ChromeDriver class using the specified profile and extension.
+        /// </summary>
+        /// <param name="profile">The profile to use.</param>
+        /// <param name="extension">The extension to use.</param>
+        private ChromeDriver(ChromeProfile profile, ChromeExtension extension)
         {
-            for (int retries = MAX_START_RETRIES; !executor.HasClient && retries > 0; retries--)
-            {
-                StopClient();
-                try
-                {
-                    executor.StartListening();
-                    chromeBinary.Start(GetServerUrl());
-                }
-                catch (IOException e)
-                {
-                    throw new WebDriverException("Could not start client", e);
-                }
-                //In case this attempt fails, we increment how long we wait before sending a command
-                chromeBinary.IncrementBackoffBy(2);
-            }
-            //The last one attempt succeeded, so we reduce back to that time
-            chromeBinary.IncrementBackoffBy(-1);
+            chromeBinary = new ChromeBinary(profile, extension);
+            executor = new ChromeCommandExecutor();
+            StartClient();
+        }
+        #endregion
 
-            if (!executor.HasClient)
-            {
-                StopClient();
-                throw new FatalChromeException("Cannot create chrome driver");
-            }
+        #region Properties
+        /// <summary>
+        /// Gets or sets the Url of the page
+        /// </summary>
+        public string Url
+        {
+            get { return Execute(DriverCommand.GetCurrentUrl).Value.ToString(); }
+            set { Execute(DriverCommand.Get, value); }
         }
 
-        /**
-         * Kills the started Chrome process and ChromeCommandExecutor if they exist
-         */
-        protected void StopClient()
+        /// <summary>
+        /// Gets the page source of the page under test
+        /// </summary>
+        public string PageSource
         {
-            chromeBinary.Kill();
-            executor.StopListening();
+            get { return Execute(DriverCommand.GetPageSource).Value.ToString(); }
         }
 
-        /**
-         * Executes a passed command using the current ChromeCommandExecutor
-         * @param driverCommand command to execute
-         * @param parameters parameters of command being executed
-         * @return response to the command (a Response wrapping a null value if none) 
-         */
-        public ChromeResponse Execute(DriverCommand driverCommand, params Object[] parameters)
+        /// <summary>
+        /// Gets the title of the page
+        /// </summary>
+        public string Title
         {
-            ChromeCommand command = new ChromeCommand(new SessionId("[No sessionId]"),
-                                          new Context("[No context]"),
-                                          driverCommand,
-                                          parameters);
+            get { return Execute(DriverCommand.GetTitle).Value.ToString(); }
+        }
+        #endregion
+
+        #region public methods
+        /// <summary>
+        /// Executes a passed command using the current ChromeCommandExecutor
+        /// </summary>
+        /// <param name="driverCommand">command to execute</param>
+        /// <param name="parameters">parameters of command being executed</param>
+        /// <returns>response to the command (a Response wrapping a null value if none)</returns>
+        public ChromeResponse Execute(DriverCommand driverCommand, params object[] parameters)
+        {
+            ChromeCommand command = new ChromeCommand(
+                new SessionId(
+                    "[No sessionId]"),
+                new Context("[No context]"),
+                driverCommand,
+                parameters);
             ChromeResponse commandResponse = null;
             try
             {
                 commandResponse = executor.Execute(command);
             }
+            catch (NotSupportedException nse)
+            {
+                string message = nse.Message.ToLower();
+                if (message.Contains("cannot toggle a") || message.Contains("cannot unselect a single element select"))
+                {
+                    throw new NotImplementedException();
+                }
+                throw;
+            }
             catch (ArgumentException)
             {
-                //These exceptions may leave the extension hung, or in an
-                //inconsistent state, so we restart Chrome
+                // These exceptions may leave the extension hung, or in an
+                // inconsistent state, so we restart Chrome
                 StopClient();
                 StartClient();
             }
@@ -116,73 +140,85 @@ namespace OpenQA.Selenium.Chrome
                 StopClient();
                 StartClient();
             }
+
             return commandResponse;
         }
-
-
-        protected String GetServerUrl()
-        {
-            return "http://localhost:" + executor.Port + "/chromeCommandExecutor";
-        }
-
+        
+        /// <summary>
+        /// Close the Browser
+        /// </summary>
         public void Close()
         {
             Execute(DriverCommand.Close);
         }
 
+        /// <summary>
+        /// Find the element on the page
+        /// </summary>
+        /// <param name="by">By mechanism</param>
+        /// <returns>A object of the Element</returns>
         public IWebElement FindElement(By by)
         {
             return by.FindElement(this);
         }
 
+        /// <summary>
+        /// Finds the elements using the By Mechanism
+        /// </summary>
+        /// <param name="by">By Mechanism</param>
+        /// <returns>A collection of Web Elements</returns>
         public ReadOnlyCollection<IWebElement> FindElements(By by)
         {
             return by.FindElements(this);
         }
 
-        public String Url
-        {
-            get { return Execute(DriverCommand.GetCurrentUrl).Value.ToString(); }
-            set { Execute(DriverCommand.Get, value); }
-        }
-
-        public String PageSource
-        {
-            get { return Execute(DriverCommand.GetPageSource).Value.ToString(); }
-        }
-
-        public String Title
-        {
-            get { return Execute(DriverCommand.GetTitle).Value.ToString(); }
-        }
-
-        public String GetWindowHandle()
+        /// <summary>
+        /// Gets the Window Handle
+        /// </summary>
+        /// <returns>returns a string with the window handle</returns>
+        public string GetWindowHandle()
         {
             return Execute(DriverCommand.GetCurrentWindowHandle).Value.ToString();
         }
 
-        //TODO(AndreNogueira):Uncomment and finish
-        public ReadOnlyCollection<String> GetWindowHandles()
+        /// <summary>
+        /// Gets the Window Handle
+        /// </summary>
+        /// <returns>returns a collection of string with the window handle</returns>
+        public ReadOnlyCollection<string> GetWindowHandles()
         {
+            // TODO(AndreNogueira):Uncomment and finish
             return null;
-            //List<string> windowHandles = (List<string>)Execute(DriverCommand.GetWindowHandles).Value;
-            //set<String> setOfHandles = new HashSet<String>();
-            //for (Object windowHandle : windowHandles) {
+
+            // List<string> windowHandles = (List<string>)Execute(DriverCommand.GetWindowHandles).Value;
+            // set<String> setOfHandles = new HashSet<String>();
+            // for (Object windowHandle : windowHandles) {
             //  setOfHandles.add((String)windowHandle);
-            //}
-            //return setOfHandles;
+            // }
+            // return setOfHandles;
         }
 
+        /// <summary>
+        /// Gives access to setting options on the browser
+        /// </summary>
+        /// <returns>Options instance</returns>
         public IOptions Manage()
         {
             return new ChromeOptions(this);
         }
 
+        /// <summary>
+        /// Gives access to navigating within the test
+        /// </summary>
+        /// <returns>Navigation instance</returns>
         public INavigation Navigate()
         {
             return new ChromeNavigation(this);
         }
 
+        /// <summary>
+        /// Causes the test to end and close the browser
+        /// </summary>
         public void Quit()
         {
             try
@@ -195,19 +231,329 @@ namespace OpenQA.Selenium.Chrome
             }
         }
 
+        /// <summary>
+        /// Gives access to switch to another element
+        /// </summary>
+        /// <returns>Target locator object</returns>
         public ITargetLocator SwitchTo()
         {
             return new ChromeTargetLocator(this);
         }
 
-        public object ExecuteScript(String script, params object[] args)
+        /// <summary>
+        /// Execute JavaScript on the page
+        /// </summary>
+        /// <param name="script">JavaScript to be executed</param>
+        /// <param name="args">Arguments needed for the script</param>
+        /// <returns>The response from the call</returns>
+        public object ExecuteScript(string script, params object[] args)
         {
             object[] convertedArgs = ConvertArgumentsToJavaScriptObjects(args);
             ChromeResponse response = Execute(DriverCommand.ExecuteScript, script, convertedArgs);
             object result = ParseJavaScriptReturnValue(response.Value);
             return result;
         }
+        
+        /// <summary>
+        /// Indicates whether the browser is javascript enabled
+        /// </summary>
+        /// <returns>A value indicating if it enabled</returns>
+        public bool IsJavascriptEnabled()
+        {
+            return true;
+        }
 
+        /// <summary>
+        /// Finds the first element matching the specified id.
+        /// </summary>
+        /// <param name="id">The id to match.</param>
+        /// <returns>The first <see cref="IWebElement"/> matching the criteria.</returns>
+        public IWebElement FindElementById(string id)
+        {
+            return GetElementFrom(Execute(DriverCommand.FindElement, "id", id));
+        }
+
+        /// <summary>
+        /// Finds all elements matching the specified id.
+        /// </summary>
+        /// <param name="id">The id to match.</param>
+        /// <returns>A <see cref="ReadOnlyCollection{T}"/> containing all
+        /// <see cref="IWebElement">IWebElements</see> matching the criteria.</returns>
+        public ReadOnlyCollection<IWebElement> FindElementsById(string id)
+        {
+            return GetElementsFrom(Execute(DriverCommand.FindElements, "id", id));
+        }
+
+        /// <summary>
+        /// Finds the first element matching the specified CSS class.
+        /// </summary>
+        /// <param name="className">The CSS class to match.</param>
+        /// <returns>The first <see cref="IWebElement"/> matching the criteria.</returns>
+        public IWebElement FindElementByClassName(string className)
+        {
+            return GetElementFrom(Execute(DriverCommand.FindElement, "class name", className));
+        }
+
+        /// <summary>
+        /// Finds all elements matching the specified CSS class.
+        /// </summary>
+        /// <param name="className">The CSS class to match.</param>
+        /// <returns>A <see cref="ReadOnlyCollection{T}"/> containing all
+        /// <see cref="IWebElement">IWebElements</see> matching the criteria.</returns>
+        public ReadOnlyCollection<IWebElement> FindElementsByClassName(string className)
+        {
+            return GetElementsFrom(Execute(DriverCommand.FindElements, "class name", className));
+        }
+
+        /// <summary>
+        /// Finds the first element matching the specified link text.
+        /// </summary>
+        /// <param name="linkText">The link text to match.</param>
+        /// <returns>The first <see cref="IWebElement"/> matching the criteria.</returns>
+        public IWebElement FindElementByLinkText(string linkText)
+        {
+            return GetElementFrom(Execute(DriverCommand.FindElement, "link text", linkText));
+        }
+
+        /// <summary>
+        /// Finds all elements matching the specified link text.
+        /// </summary>
+        /// <param name="linkText">The link text to match.</param>
+        /// <returns>A <see cref="ReadOnlyCollection{T}"/> containing all
+        /// <see cref="IWebElement">IWebElements</see> matching the criteria.</returns>
+        public ReadOnlyCollection<IWebElement> FindElementsByLinkText(string linkText)
+        {
+            return GetElementsFrom(Execute(DriverCommand.FindElements, "link text", linkText));
+        }
+
+        /// <summary>
+        /// Finds the first element matching the specified name.
+        /// </summary>
+        /// <param name="name">The name to match.</param>
+        /// <returns>The first <see cref="IWebElement"/> matching the criteria.</returns>
+        public IWebElement FindElementByName(string name)
+        {
+            return GetElementFrom(Execute(DriverCommand.FindElement, "name", name));
+        }
+
+        /// <summary>
+        /// Finds all elements matching the specified name.
+        /// </summary>
+        /// <param name="name">The name to match.</param>
+        /// <returns>A <see cref="ReadOnlyCollection{T}"/> containing all
+        /// <see cref="IWebElement">IWebElements</see> matching the criteria.</returns>
+        public ReadOnlyCollection<IWebElement> FindElementsByName(string name)
+        {
+            return GetElementsFrom(Execute(DriverCommand.FindElements, "name", name));
+        }
+
+        /// <summary>
+        /// Finds the first element matching the specified tag name.
+        /// </summary>
+        /// <param name="tagName">The tag name to match.</param>
+        /// <returns>The first <see cref="IWebElement"/> matching the criteria.</returns>
+        public IWebElement FindElementByTagName(string tagName)
+        {
+            return GetElementFrom(Execute(DriverCommand.FindElement, "tag name", tagName));
+        }
+
+        /// <summary>
+        /// Finds all elements matching the specified tag name.
+        /// </summary>
+        /// <param name="tagName">The tag name to match.</param>
+        /// <returns>A <see cref="ReadOnlyCollection{T}"/> containing all
+        /// <see cref="IWebElement">IWebElements</see> matching the criteria.</returns>
+        public ReadOnlyCollection<IWebElement> FindElementsByTagName(string tagName)
+        {
+            return GetElementsFrom(Execute(DriverCommand.FindElements, "tag name", tagName));
+        }
+
+        /// <summary>
+        /// Finds an element by xpath
+        /// </summary>
+        /// <param name="xpath">xpath to element</param>
+        /// <returns>The element found</returns>
+        public IWebElement FindElementByXPath(string xpath)
+        {
+            return GetElementFrom(Execute(DriverCommand.FindElement, "xpath", xpath));
+        }
+
+        /// <summary>
+        /// Finds all elements that match the xpath
+        /// </summary>
+        /// <param name="xpath">Xpath to element</param>
+        /// <returns>A collection of elements</returns>
+        public ReadOnlyCollection<IWebElement> FindElementsByXPath(string xpath)
+        {
+            return GetElementsFrom(Execute(DriverCommand.FindElements, "xpath", xpath));
+        }
+
+        /// <summary>
+        /// Finds the first element matching the specified partial link text.
+        /// </summary>
+        /// <param name="partialLinkText">The partial link text to match.</param>
+        /// <returns>The first <see cref="IWebElement"/> matching the criteria.</returns>
+        public IWebElement FindElementByPartialLinkText(string partialLinkText)
+        {
+            return GetElementFrom(Execute(DriverCommand.FindElement, "partial link text", partialLinkText));
+        }
+
+        /// <summary>
+        /// Finds all elements matching the specified partial link text.
+        /// </summary>
+        /// <param name="partialLinkText">The partial link text to match.</param>
+        /// <returns>A <see cref="ReadOnlyCollection{T}"/> containing all
+        /// <see cref="IWebElement">IWebElements</see> matching the criteria.</returns>
+        public ReadOnlyCollection<IWebElement> FindElementsByPartialLinkText(string partialLinkText)
+        {
+            return GetElementsFrom(Execute(DriverCommand.FindElements, "partial link text", partialLinkText));
+        }
+
+        /// <summary>
+        /// Finds the first element that matches the CSS Selector
+        /// </summary>
+        /// <param name="cssSelector">CSS Selector</param>
+        /// <returns>A Web Element</returns>
+        public IWebElement FindElementByCssSelector(string cssSelector)
+        {
+            return GetElementFrom(Execute(DriverCommand.FindElement, "css", cssSelector));
+        }
+
+        /// <summary>
+        /// Finds all the elements that match the CSS Selection
+        /// </summary>
+        /// <param name="cssSelector">CSS Selector</param>
+        /// <returns>A collection of elements that match</returns>
+        public ReadOnlyCollection<IWebElement> FindElementsByCssSelector(string cssSelector)
+        {
+            return GetElementsFrom(Execute(DriverCommand.FindElements, "css", cssSelector));
+        }
+
+        /// <summary>
+        /// Gets the element from the response coming back from Chrome
+        /// </summary>
+        /// <param name="response">The Chrome Response</param>
+        /// <returns>A Web Element if the Item is found</returns>
+        /// <exception cref="NoSuchElementException">Thrown if the item isn't found</exception>
+        public IWebElement GetElementFrom(ChromeResponse response)
+        {
+            if (response != null)
+            {
+                object result = response.Value;
+                object[] elements = (object[])result;
+                return new ChromeWebElement(this, (string)elements[0]);
+            }
+
+            throw new NoSuchElementException();
+        }
+
+        /// <summary>
+        /// Gets the elements from the response coming back from Chrome
+        /// </summary>
+        /// <param name="response">The Chrome Response</param>
+        /// <returns>A readonlycollection of WebElement</returns>
+        public ReadOnlyCollection<IWebElement> GetElementsFrom(ChromeResponse response)
+        {
+            List<IWebElement> elements = new List<IWebElement>();
+            object[] result = response.Value as object[];
+            if (result != null)
+            {
+                foreach (object element in result)
+                {
+                    elements.Add(new ChromeWebElement(this, (string)element));
+                }
+            }
+
+            return new ReadOnlyCollection<IWebElement>(elements);
+        }
+
+        /// <summary>
+        /// Finds all Child elements of an Element
+        /// </summary>
+        /// <param name="parent">Parent element</param>
+        /// <param name="by">By Mechanism</param>
+        /// <param name="search">Search String</param>
+        /// <returns>Collection of elements that meet the criteria</returns>
+        public ReadOnlyCollection<IWebElement> FindChildElements(ChromeWebElement parent, string by, string search)
+        {
+            return GetElementsFrom(Execute(DriverCommand.FindChildElements, parent, by, search));
+        }
+
+        #region IDisposable Members
+        /// <summary>
+        /// Dispose of the browser. Not currently implemented
+        /// </summary>
+        public void Dispose()
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #endregion
+
+        #region Protected Methods
+        /// <summary>
+        /// By default will try to load Chrome from system property
+        /// webdriver.chrome.bin and the extension from
+        /// webdriver.chrome.extensiondir.  If the former fails, will try to guess the
+        /// path to Chrome.  If the latter fails, will try to unzip from the JAR we 
+        /// hope we're in.  If these fail, throws exceptions.
+        /// </summary>
+        protected void StartClient()
+        {
+            int retries = MaxStartRetries;
+            while (retries > 0 && !executor.HasClient)
+            {
+                StopClient();
+                try
+                {
+                    executor.StartListening();
+                    chromeBinary.Start(GetServerUrl());
+                }
+                catch (IOException e)
+                {
+                    throw new WebDriverException("Could not start client", e);
+                }
+
+                if (!executor.HasClient)
+                {
+                    // In case this attempt fails, we increment how long we wait before sending a command
+                    chromeBinary.IncrementStartWaitInterval(1);
+                }
+                retries--;
+            }
+
+            // The last one attempt succeeded, so we reduce back to that time
+            //chromeBinary.IncrementBackoffBy(-1);
+
+            if (!executor.HasClient)
+            {
+                StopClient();
+                throw new FatalChromeException("Cannot create chrome driver");
+            }
+        }
+
+        /// <summary>
+        /// Kills the started Chrome process and ChromeCommandExecutor if they exist
+        /// </summary>
+        protected void StopClient()
+        {
+            chromeBinary.Kill();
+            executor.StopListening();
+        }
+
+        /// <summary>
+        /// Get the Server URL of the Chrome Server
+        /// </summary>
+        /// <returns>Server for Chrome Commands</returns>
+        protected string GetServerUrl()
+        {
+            return "http://localhost:" + executor.Port + "/chromeCommandExecutor";
+        }
+        #endregion
+
+        #region Private Methods
         private static object ConvertObjectToJavaScriptObject(object arg)
         {
             ChromeWebElement argAsElement = arg as ChromeWebElement;
@@ -296,158 +642,83 @@ namespace OpenQA.Selenium.Chrome
                 {
                     returnList.Add(ParseJavaScriptReturnValue(item));
                 }
+
                 returnValue = returnList;
             }
 
             return returnValue;
         }
+        #endregion
 
-        public bool IsJavascriptEnabled()
-        {
-            return true;
-        }
-
-        public IWebElement FindElementById(String id)
-        {
-            return GetElementFrom(Execute(DriverCommand.FindElement, "id", id));
-        }
-
-        public ReadOnlyCollection<IWebElement> FindElementsById(String id)
-        {
-            return GetElementsFrom(Execute(DriverCommand.FindElements, "id", id));
-        }
-
-        public IWebElement FindElementByClassName(String className)
-        {
-            return GetElementFrom(Execute(DriverCommand.FindElement, "class name", className));
-        }
-
-        public ReadOnlyCollection<IWebElement> FindElementsByClassName(String className)
-        {
-            return GetElementsFrom(Execute(DriverCommand.FindElements, "class name", className));
-        }
-
-        public IWebElement FindElementByLinkText(String linkText)
-        {
-            return GetElementFrom(Execute(DriverCommand.FindElement, "link text", linkText));
-        }
-
-        public ReadOnlyCollection<IWebElement> FindElementsByLinkText(String linkText)
-        {
-            return GetElementsFrom(Execute(DriverCommand.FindElements, "link text", linkText));
-        }
-
-        public IWebElement FindElementByName(String name)
-        {
-            return GetElementFrom(Execute(DriverCommand.FindElement, "name", name));
-        }
-
-        public ReadOnlyCollection<IWebElement> FindElementsByName(String name)
-        {
-            return GetElementsFrom(Execute(DriverCommand.FindElements, "name", name));
-        }
-
-        public IWebElement FindElementByTagName(String tagName)
-        {
-            return GetElementFrom(Execute(DriverCommand.FindElement, "tag name", tagName));
-        }
-
-        public ReadOnlyCollection<IWebElement> FindElementsByTagName(String tagName)
-        {
-            return GetElementsFrom(Execute(DriverCommand.FindElements, "tag name", tagName));
-        }
-
-        public IWebElement FindElementByXPath(String xpath)
-        {
-            return GetElementFrom(Execute(DriverCommand.FindElement, "xpath", xpath));
-        }
-
-        public ReadOnlyCollection<IWebElement> FindElementsByXPath(String xpath)
-        {
-            return GetElementsFrom(Execute(DriverCommand.FindElements, "xpath", xpath));
-        }
-
-        public IWebElement FindElementByPartialLinkText(String partialLinkText)
-        {
-            return GetElementFrom(Execute(DriverCommand.FindElement, "partial link text", partialLinkText));
-        }
-
-        public ReadOnlyCollection<IWebElement> FindElementsByPartialLinkText(String partialLinkText)
-        {
-            return GetElementsFrom(Execute(DriverCommand.FindElements, "partial link text", partialLinkText));
-        }
-
-        public IWebElement FindElementByCssSelector(String cssSelector)
-        {
-            return GetElementFrom(Execute(DriverCommand.FindElement, "css", cssSelector));
-        }
-
-        public ReadOnlyCollection<IWebElement> FindElementsByCssSelector(String cssSelector)
-        {
-            return GetElementsFrom(Execute(DriverCommand.FindElements, "css", cssSelector));
-        }
-
-        public IWebElement GetElementFrom(ChromeResponse response)
-        {
-            object result = response.Value;
-            object[] elements = (object[])result;
-            return new ChromeWebElement(this, (string)elements[0]);
-        }
-
-        public ReadOnlyCollection<IWebElement> GetElementsFrom(ChromeResponse response)
-        {
-            List<IWebElement> elements = new List<IWebElement>();
-            object[] result = response.Value as object[];
-            if (result != null)
-            {
-                foreach (object element in result)
-                {
-                    elements.Add(new ChromeWebElement(this, (string)element));
-                }
-            }
-            return new ReadOnlyCollection<IWebElement>(elements);
-        }
-
-        ReadOnlyCollection<IWebElement> FindChildElements(ChromeWebElement parent, String by, String search)
-        {
-            return GetElementsFrom(Execute(DriverCommand.FindChildElements, parent, by, search));
-        }
-
-        //TODO(AndreNogueira): implement
-        //public <X> X getScreenshotAs(OutputType<X> target) {
+        // TODO(AndreNogueira): implement
+        // public <X> X getScreenshotAs(OutputType<X> target) {
         //  return target.convertFromBase64Png(Execute(DriverCommand.Screenshot).Value.ToString());
-        //}
+        // }
 
-        class ChromeOptions : IOptions
+        /// <summary>
+        /// Provides a mechanism to add options to the browser
+        /// </summary>
+        private class ChromeOptions : IOptions
         {
-
             private ChromeDriver instance;
 
+            /// <summary>
+            /// Initializes a new instance of the ChromeOptions class
+            /// </summary>
+            /// <param name="instance">Driver currently in use</param>
             public ChromeOptions(ChromeDriver instance)
             {
                 this.instance = instance;
             }
 
+            /// <summary>
+            /// Gets or sets the speed of commands in Chrome. Not yet supported
+            /// </summary>
+            public Speed Speed
+            {
+                get { throw new NotImplementedException("Not yet supported in Chrome"); }
+                set { throw new NotImplementedException("Not yet supported in Chrome"); }
+            }
+
+            /// <summary>
+            /// Adds a cookie to the browser
+            /// </summary>
+            /// <param name="cookie">Instance of the cookie you wish to add</param>
             public void AddCookie(Cookie cookie)
             {
                 Execute(DriverCommand.AddCookie, cookie);
             }
 
+            /// <summary>
+            /// Delete all the Cookies
+            /// </summary>
             public void DeleteAllCookies()
             {
                 Execute(DriverCommand.DeleteAllCookies);
             }
 
+            /// <summary>
+            /// Delete a cookie by passing in a cookie object
+            /// </summary>
+            /// <param name="cookie">The cookie to be deleted</param>
             public void DeleteCookie(Cookie cookie)
             {
                 Execute(DriverCommand.DeleteCookie, cookie.Name);
             }
 
-            public void DeleteCookieNamed(String name)
+            /// <summary>
+            /// Delete a cookie by passing in the name
+            /// </summary>
+            /// <param name="name">Name of the cookie to be deleted</param>
+            public void DeleteCookieNamed(string name)
             {
                 Execute(DriverCommand.DeleteCookie, name);
             }
 
+            /// <summary>
+            /// Gets all the cookies available
+            /// </summary>
+            /// <returns>A readonly list of cookies</returns>
             public ReadOnlyCollection<Cookie> GetCookies()
             {
                 List<Cookie> cookieList = new List<Cookie>();
@@ -465,10 +736,16 @@ namespace OpenQA.Selenium.Chrome
                         }
                     }
                 }
+
                 return new ReadOnlyCollection<Cookie>(cookieList);
             }
 
-            public Cookie GetCookieNamed(String name)
+            /// <summary>
+            /// Get a cookie by name
+            /// </summary>
+            /// <param name="name">Name of the cookie</param>
+            /// <returns>A Cookie object if found else null</returns>
+            public Cookie GetCookieNamed(string name)
             {
                 // return (Cookie)Execute(DriverCommand.GetCookie, name).Value;
                 Cookie cookieToReturn = null;
@@ -485,111 +762,171 @@ namespace OpenQA.Selenium.Chrome
                 return cookieToReturn;
             }
 
-            public Speed Speed
-            {
-                get { throw new NotImplementedException("Not yet supported in Chrome"); }
-                set { throw new NotImplementedException("Not yet supported in Chrome"); }
-            }
-
+            /// <summary>
+            /// Execute commands on the browser
+            /// </summary>
+            /// <param name="command">Command to be executed</param>
+            /// <param name="arg">Any commands that the command requires</param>
+            /// <returns>A response from Chrome</returns>
             public ChromeResponse Execute(DriverCommand command, params object[] arg)
             {
                 return instance.Execute(command, arg);
             }
         }
 
-        class ChromeNavigation : INavigation
+        /// <summary>
+        /// Provides a way to navigate
+        /// </summary>
+        private class ChromeNavigation : INavigation
         {
-
             private ChromeDriver instance;
 
+            /// <summary>
+            /// Initializes a new instance of the ChromeNavigation class
+            /// </summary>
+            /// <param name="instance">Driver currently in use</param>
             public ChromeNavigation(ChromeDriver instance)
             {
                 this.instance = instance;
             }
 
+            /// <summary>
+            /// Make the browser go back
+            /// </summary>
             public void Back()
             {
                 Execute(DriverCommand.GoBack);
             }
 
+            /// <summary>
+            /// Make the browser go forward
+            /// </summary>
             public void Forward()
             {
                 Execute(DriverCommand.GoForward);
             }
 
-            public void GoToUrl(String url)
+            /// <summary>
+            /// Navigate to the URL
+            /// </summary>
+            /// <param name="url">Server under test URL</param>
+            public void GoToUrl(string url)
             {
                 instance.Url = url;
             }
 
+            /// <summary>
+            /// Navigate to the URL
+            /// </summary>
+            /// <param name="url">Server under test URL</param>
             public void GoToUrl(Uri url)
             {
+                if (url == null)
+                {
+                    throw new ArgumentNullException("url", "URL to go to cannot be null.");
+                }
+
                 instance.Url = url.AbsoluteUri;
             }
 
+            /// <summary>
+            /// Refresh the Browser
+            /// </summary>
             public void Refresh()
             {
                 Execute(DriverCommand.Refresh);
             }
 
+            /// <summary>
+            /// Execute commands on the browser
+            /// </summary>
+            /// <param name="command">Command to be executed</param>
+            /// <param name="arg">Any commands that the command requires</param>
+            /// <returns>A response from Chrome</returns>
             public ChromeResponse Execute(DriverCommand command, params object[] arg)
             {
                 return instance.Execute(command, arg);
             }
         }
 
-        class ChromeTargetLocator : ITargetLocator
+        /// <summary>
+        /// Provides a mechanism to find targets on the page
+        /// </summary>
+        private class ChromeTargetLocator : ITargetLocator
         {
-
             private ChromeDriver instance;
 
+            /// <summary>
+            /// Initializes a new instance of the ChromeTargetLocator class
+            /// </summary>
+            /// <param name="instance">Driver currently in use</param>
             public ChromeTargetLocator(ChromeDriver instance)
             {
                 this.instance = instance;
             }
 
+            /// <summary>
+            /// Finds the active element on the page
+            /// </summary>
+            /// <returns>The element on the page</returns>
             public IWebElement ActiveElement()
             {
                 return instance.GetElementFrom(Execute(DriverCommand.GetActiveElement));
             }
 
+            /// <summary>
+            /// Finds the default content on the page
+            /// </summary>
+            /// <returns>The element on the page</returns>
             public IWebDriver DefaultContent()
             {
                 Execute(DriverCommand.SwitchToDefaultContent);
                 return instance;
             }
 
+            /// <summary>
+            /// Switch to a frame
+            /// </summary>
+            /// <param name="frameIndex">Name of the frame you want to switch to</param>
+            /// <returns>The object of the frame</returns>
             public IWebDriver Frame(int frameIndex)
             {
                 Execute(DriverCommand.SwitchToFrameByIndex, frameIndex);
                 return instance;
             }
 
-            public IWebDriver Frame(String frameName)
+            /// <summary>
+            /// Switch to a frame
+            /// </summary>
+            /// <param name="frameName">Name of the frame you want to switch to</param>
+            /// <returns>The object of the frame</returns>
+            public IWebDriver Frame(string frameName)
             {
                 Execute(DriverCommand.SwitchToFrameByName, frameName);
                 return instance;
             }
 
-            public IWebDriver Window(String windowName)
+            /// <summary>
+            /// Switch to a window by name
+            /// </summary>
+            /// <param name="windowName">Name of the window</param>
+            /// <returns>Window element</returns>
+            public IWebDriver Window(string windowName)
             {
                 Execute(DriverCommand.SwitchToWindow, windowName);
                 return instance;
             }
 
+            /// <summary>
+            /// Execute commands on the browser
+            /// </summary>
+            /// <param name="command">Command to be executed</param>
+            /// <param name="arg">Any commands that the command requires</param>
+            /// <returns>A response from Chrome</returns>
             public ChromeResponse Execute(DriverCommand command, params object[] arg)
             {
                 return instance.Execute(command, arg);
             }
         }
-
-        #region IDisposable Members
-
-        public void Dispose()
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion
     }
 }
