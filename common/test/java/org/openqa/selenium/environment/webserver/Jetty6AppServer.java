@@ -47,10 +47,17 @@ public class Jetty6AppServer implements AppServer {
   private File jsSrcRoot;
   private File jsTestRoot;
   private File thirdPartyJsRoot;
-  private final Server server = new Server();
+  private final Server server;
   private WebAppContext context;
 
   public Jetty6AppServer() {
+    // Be quiet. Unless we want things to be chatty
+    if (!Boolean.getBoolean("webdriver.debug")) {
+      new NullLogger().disableLogging();
+    }
+
+    server = new Server();
+
     path = findRootOfWebApp();
     jsSrcRoot = findJsSrcWebAppRoot();
     jsTestRoot = findJsTestWebAppRoot();
