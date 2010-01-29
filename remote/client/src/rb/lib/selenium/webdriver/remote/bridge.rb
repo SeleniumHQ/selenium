@@ -88,6 +88,8 @@ module Selenium
         def create_session(desired_capabilities)
           resp = raw_execute :newSession, {}, desired_capabilities
           @session_id = resp['sessionId'] || raise(Error::WebDriverError, 'no sessionId in returned payload')
+          @context    = resp['context']
+
           Capabilities.json_create resp['value']
         end
 

@@ -13,7 +13,10 @@ module Selenium
 
         def error
           if payload['error']
-            JSON.parse(payload['value'])
+            value = payload['value']
+            # the remote server gets this wrong, where the value is double encoded as JSON
+            # the iphone driver does the right thing
+            value.kind_of?(String) ? JSON.parse(value) : value
           end
         end
 

@@ -102,7 +102,7 @@ module Selenium
           #   input, error = 0, 0
           #   loop do
           #     error = @process.getErrorStream.read if error != -1
-          #     input = @process.getInputStream.read if error != -1
+          #     input = @process.getInputStream.read if input != -1
           #     break if error == -1 && input == -1
           #   end
           # end
