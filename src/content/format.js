@@ -166,6 +166,9 @@ FormatCollection.prototype.reloadFormats = function() {
 FormatCollection.prototype.removeUserFormatAt = function(index) {
     this.userFormats.splice(index, 1);
     this.formats = this.presetFormats.concat(this.userFormats);
+    
+    // plugin formats need adding in here too
+    this.formats = this.formats.concat(this.pluginFormats);
 }
 
 FormatCollection.prototype.saveFormats = function() {
