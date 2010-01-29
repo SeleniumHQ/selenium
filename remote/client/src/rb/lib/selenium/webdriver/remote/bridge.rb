@@ -60,6 +60,14 @@ module Selenium
             raise ArgumentError, "unknown option#{'s' if opts.size != 1}: #{opts.inspect}"
           end
 
+          if desired_capabilities.kind_of?(Symbol)
+            unless Capabilities.respond_to?(desired_capabilities)
+              raise Error::WebDriverError, "invalid desired capability: #{desired_capabilities.inspect}"
+            end
+
+            desired_capabilities = Capabilities.send(desired_capabilities)
+          end
+
           uri = URI.parse(url)
           uri.path += "/" unless uri.path =~ /\/$/
 
