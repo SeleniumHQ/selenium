@@ -85,7 +85,7 @@ public class UrlEncoded extends MultiMap
      */
     public String encode()
     {
-        return encode(StringUtil.__ISO_8859_1,false);
+        return encode(StringUtil.__ISO_8859_1,true);
     }
     
     /* -------------------------------------------------------------- */
@@ -93,7 +93,7 @@ public class UrlEncoded extends MultiMap
      */
     public String encode(String charset)
     {
-        return encode(charset,false);
+        return encode(charset,true);
     }
     
     /* -------------------------------------------------------------- */
