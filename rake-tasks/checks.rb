@@ -71,9 +71,9 @@ end
 
 def iPhoneSDKPresent?
   return false unless xcode?
-  sdks = sh "xcodebuild -showsdks 1>/dev/null 2>/dev/null", :verbose => false
+  sdks = `xcodebuild -showsdks 2>&1`
+  return false unless $?.success?
   !!(sdks =~ /iphonesimulator/)
-  return true
 end
 
 def iPhoneSDK?
