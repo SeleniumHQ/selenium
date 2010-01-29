@@ -32,6 +32,7 @@ import org.openqa.selenium.internal.seleniumemulation.AltKeyDown;
 import org.openqa.selenium.internal.seleniumemulation.AltKeyUp;
 import org.openqa.selenium.internal.seleniumemulation.AssignId;
 import org.openqa.selenium.internal.seleniumemulation.AttachFile;
+import org.openqa.selenium.internal.seleniumemulation.CaptureScreenshotToString;
 import org.openqa.selenium.internal.seleniumemulation.Check;
 import org.openqa.selenium.internal.seleniumemulation.Click;
 import org.openqa.selenium.internal.seleniumemulation.Close;
@@ -313,6 +314,7 @@ public class WebDriverCommandProcessor implements CommandProcessor {
     seleneseMethods.put("altKeyUp", new AltKeyUp(keyState));
     seleneseMethods.put("assignId", new AssignId(javascriptLibrary, elementFinder));
     seleneseMethods.put("attachFile", new AttachFile(elementFinder));
+    seleneseMethods.put("captureScreenshotToString", new CaptureScreenshotToString());
     seleneseMethods.put("click", new Click(elementFinder));
     seleneseMethods.put("check", new Check(elementFinder));
     seleneseMethods.put("close", new Close());
