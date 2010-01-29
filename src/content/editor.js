@@ -268,8 +268,6 @@ Editor.prototype.showLoadErrors = function() {
 	}
 }
 
-Editor.DEFAULT_TITLE = "Selenium IDE";
-
 Editor.prototype.confirmClose = function() {
 	if (this.getTestCase() && this.getTestCase().modified) {
 		var promptService = Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
@@ -334,9 +332,9 @@ Editor.prototype.updateTitle = function() {
 	var title;
     var testCase = this.getTestCase();
 	if (testCase && testCase.file) {
-		title = testCase.file.leafName + " - " + Editor.DEFAULT_TITLE;
+		title = testCase.file.leafName + " - " + Editor.getString('selenium-ide.name') + " " + Editor.getString('selenium-ide.version');
 	} else {
-		title = Editor.DEFAULT_TITLE;
+		title = Editor.getString('selenium-ide.name') + " " + Editor.getString('selenium-ide.version');
 	}
 	if (testCase && testCase.modified) {
 		title += " *";
