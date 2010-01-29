@@ -10,7 +10,7 @@ import java.net.*;
 
 public class SeleniumServerStarter extends TestSetup {
 
-  private static final String SELENIUM_JAR = "third_party/selenium/selenium-server-1.0.1.jar";
+  private static final String SELENIUM_JAR = "build/selenium-server-standalone.jar";
   private Process serverProcess;
 
   public SeleniumServerStarter(Test test) {

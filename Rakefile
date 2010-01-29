@@ -537,7 +537,7 @@ java_test(:name => "webdriver-selenium-test",
           :deps => [
                      :test_common,
                      :htmlunit,
-                     :'selenium-server',
+                     :'selenium-server-standalone',
                      "selenium/lib/buildtime/*.jar",
                    ],
           :main => "org.testng.TestNG",
