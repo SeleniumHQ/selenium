@@ -13,7 +13,7 @@ require 'rake-tasks/selenium'
 require 'rake-tasks/mozilla'
 require 'rake-tasks/ruby'
 
-version = "2.0a1"
+version = "2.0a2"
 
 task :default => [:test]
 
