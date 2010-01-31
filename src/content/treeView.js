@@ -135,6 +135,12 @@ objectExtend(TreeView.prototype, {
                 return this.newCommand;
             }
         },
+        
+        /*Use to reload the command list*/
+        reloadSeleniumCommands: function(){
+        	
+        	this._loadSeleniumCommands();
+        },
 
         _loadSeleniumCommands: function() {
             var commands = [];

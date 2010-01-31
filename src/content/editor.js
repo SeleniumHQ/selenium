@@ -848,6 +848,7 @@ Editor.prototype.reload = function(){
 	try{
 		this.loadSeleniumAPI();
 		this.selDebugger.reInit();
+		this.treeView.reloadSeleniumCommands();
 	}catch(e){
 		
 		alert("error reload: "+e);
