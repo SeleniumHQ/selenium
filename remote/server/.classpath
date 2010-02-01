@@ -10,5 +10,11 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/webdriver-remote-client"/>
 	<classpathentry kind="lib" path="/webdriver-remote-common/lib/runtime/json-20080701.jar"/>
 	<classpathentry kind="lib" path="/webdriver-remote-common/lib/runtime/commons-codec-1.4.jar"/>
+	<classpathentry kind="lib" path="lib/runtime/bcprov-jdk15-135.jar"/>
+	<classpathentry kind="lib" path="lib/runtime/ant-1.6.5.jar"/>
+	<classpathentry kind="lib" path="lib/runtime/mx4j-tools-3.0.1.jar"/>
+	<classpathentry kind="lib" path="/webdriver-remote-client/lib/runtime/commons-logging-1.1.1.jar"/>
+	<classpathentry kind="lib" path="lib/buildtime/easymock-2.4.jar"/>
+	<classpathentry kind="lib" path="lib/buildtime/easymockclassextension-2.4.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

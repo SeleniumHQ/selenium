@@ -11,7 +11,7 @@
 	<classpathentry kind="lib" path="lib/runtime/selenium-java-client-driver-1.0.1.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/webdriver-remote-common"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/webdriver-remote-client"/>
-	<classpathentry kind="lib" path="/third-party/java/google-collect-1.0-rc3.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/webdriver-chrome"/>
+	<classpathentry kind="lib" path="/third-party/java/google-collect-1.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
