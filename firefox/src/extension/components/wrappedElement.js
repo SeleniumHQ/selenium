@@ -47,21 +47,27 @@ FirefoxDriver.prototype.click = function(respond) {
     var x = loc.x + (loc.width ? loc.width / 2 : 0);
     var y = loc.y + (loc.height ? loc.height / 2 : 0);
 
-    // In Firefox 3.6, there's a shared window handle. We need to calculate an offset
+    // In Firefox 3.6 and above, there's a shared window handle. We need to calculate an offset
     // to add to the x and y locations.
 
-    // Get the ultimate parent frame
-    var current = element.ownerDocument.defaultView;
-    var ultimateParent = element.ownerDocument.defaultView.parent;
-    while (ultimateParent != current) {
-      current = ultimateParent;
-      ultimateParent = current.parent;
-    }
-    var offX = element.ownerDocument.defaultView.mozInnerScreenX - ultimateParent.mozInnerScreenX;
-    var offY = element.ownerDocument.defaultView.mozInnerScreenY - ultimateParent.mozInnerScreenY;
+    var appInfo = Components.classes['@mozilla.org/xre/app-info;1'].
+        getService(Components.interfaces.nsIXULAppInfo);
+    var versionChecker = Components.classes['@mozilla.org/xpcom/version-comparator;1'].
+        getService(Components.interfaces.nsIVersionComparator);
+    if (versionChecker.compare(appInfo.version, '3.6') >= 0) {
+      // Get the ultimate parent frame
+      var current = element.ownerDocument.defaultView;
+      var ultimateParent = element.ownerDocument.defaultView.parent;
+      while (ultimateParent != current) {
+        current = ultimateParent;
+        ultimateParent = current.parent;
+      }
+      var offX = element.ownerDocument.defaultView.mozInnerScreenX - ultimateParent.mozInnerScreenX;
+      var offY = element.ownerDocument.defaultView.mozInnerScreenY - ultimateParent.mozInnerScreenY;
 
-    x += offX;
-    y += offY;
+      x += offX;
+      y += offY;
+    }
 
     try {
       nativeEvents.mouseMove(node, this.currentX, this.currentY, x, y);
