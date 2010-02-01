@@ -5,7 +5,7 @@ def iphone_test(args)
       system_properties = []
       args[:system_properties] = system_properties
     end
-    system_properties.push('webdriver.iphone.sdk=#{iPhoneSDKVersion?}')
+    system_properties.push("webdriver.iphone.sdk=#{iPhoneSDKVersion?}")
     java_test(args)
   else
     task args[:name]

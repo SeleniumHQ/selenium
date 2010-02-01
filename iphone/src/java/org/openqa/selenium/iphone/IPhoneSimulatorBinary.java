@@ -42,7 +42,7 @@ public class IPhoneSimulatorBinary extends SubProcess {
   private static final String IPHONE_SDK_PROPERTY = "webdriver.iphone.sdk";
 
   /** The default iPhone SDK to use. */
-  private static final String DEFAULT_SDK = "2.2.1";
+  private static final String DEFAULT_SDK = "3.1.2";
 
   private static final String SDK_LOCATION_FORMAT =
       "/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator%s.sdk";
@@ -71,7 +71,7 @@ public class IPhoneSimulatorBinary extends SubProcess {
     String sdkRoot = String.format(SDK_LOCATION_FORMAT,
         System.getProperty(IPHONE_SDK_PROPERTY, DEFAULT_SDK));
 
-    writer.write(new StringBuilder()
+    String scriptText = new StringBuilder()
         .append("#!/bin/bash\n")
         // We need to make sure iWebDriver and the iPhone Simulator are not running before
         // attempting to restart the app.
@@ -84,7 +84,10 @@ public class IPhoneSimulatorBinary extends SubProcess {
         .append("trap \"/usr/bin/killall \\\"iWebDriver\\\" || :;\n")
         .append("       /usr/bin/killall \\\"iPhone Simulator\\\" || :\" SIGINT SIGTERM\n")
         .append(String.format("\"%s\" -RegisterForSystemEvents\n", executable.getAbsolutePath()))
-        .toString());
+        .toString();
+    
+    System.out.println(scriptText);
+    writer.write(scriptText);
     writer.close();
     return script;
   }

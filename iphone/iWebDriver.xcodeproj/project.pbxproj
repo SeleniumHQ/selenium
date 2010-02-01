@@ -7,8 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		17C3C9FE0FE141BD00D65EA0 /* libjson.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 17C3C98B0FE1403F00D65EA0 /* libjson.a */; };
-		17C3CA1A0FE1427B00D65EA0 /* libjson.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 17C3C98B0FE1403F00D65EA0 /* libjson.a */; };
 		17D715560FE107B500CC479E /* HTTPPNGResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 17D715550FE107B500CC479E /* HTTPPNGResponse.m */; };
 		17D7163E0FE12CC100CC479E /* HTTPPNGResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 17D715550FE107B500CC479E /* HTTPPNGResponse.m */; };
 		1D3623260D0F684500981E51 /* iWebDriverAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D3623250D0F684500981E51 /* iWebDriverAppDelegate.m */; };
@@ -92,51 +90,15 @@
 		FD61E69E0FE151A4006E1274 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = FD61E69D0FE151A4006E1274 /* libsqlite3.dylib */; };
 		FD61E6A90FE151D2006E1274 /* WebDriverPreferences.m in Sources */ = {isa = PBXBuildFile; fileRef = FD61E6A60FE151D2006E1274 /* WebDriverPreferences.m */; };
 		FD61E6AA0FE151D2006E1274 /* WebDriverRequestFetcher.m in Sources */ = {isa = PBXBuildFile; fileRef = FD61E6A80FE151D2006E1274 /* WebDriverRequestFetcher.m */; };
+		FD90B657111690D500BE94EA /* NSObject+SBJSON.m in Sources */ = {isa = PBXBuildFile; fileRef = FD90B64C111690D500BE94EA /* NSObject+SBJSON.m */; };
+		FD90B658111690D500BE94EA /* NSString+SBJSON.m in Sources */ = {isa = PBXBuildFile; fileRef = FD90B64E111690D500BE94EA /* NSString+SBJSON.m */; };
+		FD90B659111690D500BE94EA /* SBJSON.m in Sources */ = {isa = PBXBuildFile; fileRef = FD90B650111690D500BE94EA /* SBJSON.m */; };
+		FD90B65A111690D500BE94EA /* SBJsonBase.m in Sources */ = {isa = PBXBuildFile; fileRef = FD90B652111690D500BE94EA /* SBJsonBase.m */; };
+		FD90B65B111690D500BE94EA /* SBJsonParser.m in Sources */ = {isa = PBXBuildFile; fileRef = FD90B654111690D500BE94EA /* SBJsonParser.m */; };
+		FD90B65C111690D500BE94EA /* SBJsonWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = FD90B656111690D500BE94EA /* SBJsonWriter.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		17C3C9860FE1403F00D65EA0 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 831964870F296888005D1D21 /* JSON.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 53D229810C96121600276605;
-			remoteInfo = JSON;
-		};
-		17C3C9880FE1403F00D65EA0 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 831964870F296888005D1D21 /* JSON.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 53D2298D0C96122A00276605;
-			remoteInfo = Tests;
-		};
-		17C3C98A0FE1403F00D65EA0 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 831964870F296888005D1D21 /* JSON.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = FE2BBD800D8B0D3900184787;
-			remoteInfo = libjson;
-		};
-		17C3C98C0FE1403F00D65EA0 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 831964870F296888005D1D21 /* JSON.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = FE2BBDAB0D8B0EE000184787;
-			remoteInfo = libjsontests;
-		};
-		17C3C98E0FE1403F00D65EA0 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 831964870F296888005D1D21 /* JSON.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 53EF4D400DC247B3005F5E6D;
-			remoteInfo = bench;
-		};
-		193EDAFC1062F5C6006762AC /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 831964870F296888005D1D21 /* JSON.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = FE2BBD7F0D8B0D3900184787;
-			remoteInfo = libjson;
-		};
 		8319647A0F29686E005D1D21 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 831964740F29686E005D1D21 /* CocoaHTTPServerLibrary.xcodeproj */;
@@ -192,7 +154,6 @@
 		831962700F27E79F005D1D21 /* UIResponder+SimulateTouch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIResponder+SimulateTouch.h"; sourceTree = "<group>"; };
 		831962710F27E79F005D1D21 /* UIResponder+SimulateTouch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIResponder+SimulateTouch.m"; sourceTree = "<group>"; };
 		831964740F29686E005D1D21 /* CocoaHTTPServerLibrary.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = CocoaHTTPServerLibrary.xcodeproj; path = "lib/buildtime-src/cocoahttpserver/CocoaHTTPServerLibrary.xcodeproj"; sourceTree = SOURCE_ROOT; };
-		831964870F296888005D1D21 /* JSON.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = JSON.xcodeproj; path = "lib/buildtime-src/json-framework/project/JSON.xcodeproj"; sourceTree = "<group>"; };
 		833103FC0F1D7F57000A38DB /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8331047E0F1EB2F7000A38DB /* NSException+WebDriver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSException+WebDriver.h"; sourceTree = "<group>"; };
 		8331047F0F1EB2F7000A38DB /* NSException+WebDriver.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSException+WebDriver.m"; sourceTree = "<group>"; };
@@ -247,6 +208,19 @@
 		FD61E6A60FE151D2006E1274 /* WebDriverPreferences.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WebDriverPreferences.m; sourceTree = "<group>"; };
 		FD61E6A70FE151D2006E1274 /* WebDriverRequestFetcher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebDriverRequestFetcher.h; sourceTree = "<group>"; };
 		FD61E6A80FE151D2006E1274 /* WebDriverRequestFetcher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WebDriverRequestFetcher.m; sourceTree = "<group>"; };
+		FD90B64A111690D500BE94EA /* JSON.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSON.h; sourceTree = "<group>"; };
+		FD90B64B111690D500BE94EA /* NSObject+SBJSON.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+SBJSON.h"; sourceTree = "<group>"; };
+		FD90B64C111690D500BE94EA /* NSObject+SBJSON.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+SBJSON.m"; sourceTree = "<group>"; };
+		FD90B64D111690D500BE94EA /* NSString+SBJSON.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+SBJSON.h"; sourceTree = "<group>"; };
+		FD90B64E111690D500BE94EA /* NSString+SBJSON.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+SBJSON.m"; sourceTree = "<group>"; };
+		FD90B64F111690D500BE94EA /* SBJSON.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SBJSON.h; sourceTree = "<group>"; };
+		FD90B650111690D500BE94EA /* SBJSON.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBJSON.m; sourceTree = "<group>"; };
+		FD90B651111690D500BE94EA /* SBJsonBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SBJsonBase.h; sourceTree = "<group>"; };
+		FD90B652111690D500BE94EA /* SBJsonBase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBJsonBase.m; sourceTree = "<group>"; };
+		FD90B653111690D500BE94EA /* SBJsonParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SBJsonParser.h; sourceTree = "<group>"; };
+		FD90B654111690D500BE94EA /* SBJsonParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBJsonParser.m; sourceTree = "<group>"; };
+		FD90B655111690D500BE94EA /* SBJsonWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SBJsonWriter.h; sourceTree = "<group>"; };
+		FD90B656111690D500BE94EA /* SBJsonWriter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBJsonWriter.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -254,7 +228,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				17C3CA1A0FE1427B00D65EA0 /* libjson.a in Frameworks */,
 				1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */,
 				1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */,
 				288765590DF743DE002DB57D /* CoreGraphics.framework in Frameworks */,
@@ -268,7 +241,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				17C3C9FE0FE141BD00D65EA0 /* libjson.a in Frameworks */,
 				83998A1D0EE763490074D106 /* Foundation.framework in Frameworks */,
 				649EDC8510C5988000E66D06 /* UIKit.framework in Frameworks */,
 				839D64580F2EB4A7009645BF /* CoreGraphics.framework in Frameworks */,
@@ -291,18 +263,6 @@
 			);
 			name = "Application Controllers";
 			path = src/objc/Classes;
-			sourceTree = "<group>";
-		};
-		17C3C97E0FE1403F00D65EA0 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				17C3C9870FE1403F00D65EA0 /* JSON.framework */,
-				17C3C9890FE1403F00D65EA0 /* Tests.octest */,
-				17C3C98B0FE1403F00D65EA0 /* libjson.a */,
-				17C3C98D0FE1403F00D65EA0 /* libjsontests.octest */,
-				17C3C98F0FE1403F00D65EA0 /* bench */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 		17D715530FE1078C00CC479E /* HTTP + PNG */ = {
@@ -352,6 +312,7 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
+				FD90B6481116904800BE94EA /* JSON Framework */,
 				839988BA0EE5F0500074D106 /* Tests */,
 				839986AC0EE3AA720074D106 /* Web server extensions */,
 				289233A00DB2D0730083E9F9 /* Main View */,
@@ -393,7 +354,6 @@
 			isa = PBXGroup;
 			children = (
 				FD61E69D0FE151A4006E1274 /* libsqlite3.dylib */,
-				831964870F296888005D1D21 /* JSON.xcodeproj */,
 				831964740F29686E005D1D21 /* CocoaHTTPServerLibrary.xcodeproj */,
 				83B927D20EE354060011DCC4 /* CFNetwork.framework */,
 				1DF5F4DF0D08C38300B7A737 /* UIKit.framework */,
@@ -521,6 +481,27 @@
 			name = "HTTP + JSON";
 			sourceTree = "<group>";
 		};
+		FD90B6481116904800BE94EA /* JSON Framework */ = {
+			isa = PBXGroup;
+			children = (
+				FD90B64A111690D500BE94EA /* JSON.h */,
+				FD90B64B111690D500BE94EA /* NSObject+SBJSON.h */,
+				FD90B64C111690D500BE94EA /* NSObject+SBJSON.m */,
+				FD90B64D111690D500BE94EA /* NSString+SBJSON.h */,
+				FD90B64E111690D500BE94EA /* NSString+SBJSON.m */,
+				FD90B64F111690D500BE94EA /* SBJSON.h */,
+				FD90B650111690D500BE94EA /* SBJSON.m */,
+				FD90B651111690D500BE94EA /* SBJsonBase.h */,
+				FD90B652111690D500BE94EA /* SBJsonBase.m */,
+				FD90B653111690D500BE94EA /* SBJsonParser.h */,
+				FD90B654111690D500BE94EA /* SBJsonParser.m */,
+				FD90B655111690D500BE94EA /* SBJsonWriter.h */,
+				FD90B656111690D500BE94EA /* SBJsonWriter.m */,
+			);
+			name = "JSON Framework";
+			path = "lib/buildtime-src/json-framework/project/Source";
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -536,7 +517,6 @@
 			);
 			dependencies = (
 				831964AA0F296940005D1D21 /* PBXTargetDependency */,
-				193EDAFD1062F5C6006762AC /* PBXTargetDependency */,
 			);
 			name = iWebDriver;
 			productName = iWebDriver;
@@ -584,10 +564,6 @@
 					ProductGroup = 831964770F29686E005D1D21 /* Products */;
 					ProjectRef = 831964740F29686E005D1D21 /* CocoaHTTPServerLibrary.xcodeproj */;
 				},
-				{
-					ProductGroup = 17C3C97E0FE1403F00D65EA0 /* Products */;
-					ProjectRef = 831964870F296888005D1D21 /* JSON.xcodeproj */;
-				},
 			);
 			projectRoot = "";
 			targets = (
@@ -598,41 +574,6 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		17C3C9870FE1403F00D65EA0 /* JSON.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = JSON.framework;
-			remoteRef = 17C3C9860FE1403F00D65EA0 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		17C3C9890FE1403F00D65EA0 /* Tests.octest */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = Tests.octest;
-			remoteRef = 17C3C9880FE1403F00D65EA0 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		17C3C98B0FE1403F00D65EA0 /* libjson.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libjson.a;
-			remoteRef = 17C3C98A0FE1403F00D65EA0 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		17C3C98D0FE1403F00D65EA0 /* libjsontests.octest */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = libjsontests.octest;
-			remoteRef = 17C3C98C0FE1403F00D65EA0 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		17C3C98F0FE1403F00D65EA0 /* bench */ = {
-			isa = PBXReferenceProxy;
-			fileType = "compiled.mach-o.executable";
-			path = bench;
-			remoteRef = 17C3C98E0FE1403F00D65EA0 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
 		8319647B0F29686E005D1D21 /* libCocoaHTTPServer.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -719,6 +660,12 @@
 				FD61E6AA0FE151D2006E1274 /* WebDriverRequestFetcher.m in Sources */,
 				17D715560FE107B500CC479E /* HTTPPNGResponse.m in Sources */,
 				64CF265310D190820029D641 /* Cookie.m in Sources */,
+				FD90B657111690D500BE94EA /* NSObject+SBJSON.m in Sources */,
+				FD90B658111690D500BE94EA /* NSString+SBJSON.m in Sources */,
+				FD90B659111690D500BE94EA /* SBJSON.m in Sources */,
+				FD90B65A111690D500BE94EA /* SBJsonBase.m in Sources */,
+				FD90B65B111690D500BE94EA /* SBJsonParser.m in Sources */,
+				FD90B65C111690D500BE94EA /* SBJsonWriter.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -765,11 +712,6 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		193EDAFD1062F5C6006762AC /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = libjson;
-			targetProxy = 193EDAFC1062F5C6006762AC /* PBXContainerItemProxy */;
-		};
 		831964AA0F296940005D1D21 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = CocoaHTTPServer;
@@ -788,21 +730,12 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CODE_SIGN_ENTITLEMENTS = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Matt Waddell";
 				COPY_PHASE_STRIP = NO;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					/Volumes/JSON_2.1.1,
-					"\"$(SDKROOT)$(SYSTEM_LIBRARY_DIR)/PrivateFrameworks\"",
-				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = src/objc/iWebDriver_Prefix.pch;
-				HEADER_SEARCH_PATHS = (
-					"$(COCOAHTTPSERVER_HEADERS)/**",
-					"$(JSON_HEADERS)/**",
-				);
+				HEADER_SEARCH_PATHS = "$(COCOAHTTPSERVER_HEADERS)/**";
 				INFOPLIST_FILE = Info.plist;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -811,7 +744,6 @@
 				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = iWebDriver;
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "7157E00A-B6DC-4ED0-B1A3-12C6F3ADEE16";
 				SKIP_INSTALL = YES;
 			};
 			name = Debug;
@@ -820,19 +752,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Matt Waddell";
 				COPY_PHASE_STRIP = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					/Volumes/JSON_2.1.1,
-					"\"$(SDKROOT)$(SYSTEM_LIBRARY_DIR)/PrivateFrameworks\"",
-				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = src/objc/iWebDriver_Prefix.pch;
-				HEADER_SEARCH_PATHS = (
-					"$(COCOAHTTPSERVER_HEADERS)/**",
-					"$(JSON_HEADERS)/**",
-				);
+				HEADER_SEARCH_PATHS = "$(COCOAHTTPSERVER_HEADERS)/**";
 				INFOPLIST_FILE = Info.plist;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -841,7 +764,6 @@
 				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = iWebDriver;
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "7157E00A-B6DC-4ED0-B1A3-12C6F3ADEE16";
 				SKIP_INSTALL = YES;
 			};
 			name = Release;
@@ -856,10 +778,7 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/UIKit.framework/Headers/UIKit.h";
-				HEADER_SEARCH_PATHS = (
-					"$(COCOAHTTPSERVER_HEADERS)/**",
-					"$(JSON_HEADERS)/**",
-				);
+				HEADER_SEARCH_PATHS = "$(COCOAHTTPSERVER_HEADERS)/**";
 				INFOPLIST_FILE = "Tests-Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
 				LIBRARY_SEARCH_PATHS = (
@@ -888,10 +807,7 @@
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/UIKit.framework/Headers/UIKit.h";
-				HEADER_SEARCH_PATHS = (
-					"$(COCOAHTTPSERVER_HEADERS)/**",
-					"$(JSON_HEADERS)/**",
-				);
+				HEADER_SEARCH_PATHS = "$(COCOAHTTPSERVER_HEADERS)/**";
 				INFOPLIST_FILE = "Tests-Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
 				LIBRARY_SEARCH_PATHS = (
@@ -916,15 +832,13 @@
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				COCOAHTTPSERVER_HEADERS = "$(PROJECT_DIR)/lib/buildtime-src/cocoahttpserver/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/usr/local/include";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Don't Code Sign";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				JSON_HEADERS = "$(PROJECT_DIR)/lib/buildtime-src/json-framework/project/Source/";
 				OBJROOT = "$(SYMROOT)";
 				ONLY_ACTIVE_ARCH = YES;
 				PREBINDING = NO;
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SDKROOT = iphoneos2.2.1;
 				SKIP_INSTALL = NO;
 			};
@@ -935,16 +849,14 @@
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				COCOAHTTPSERVER_HEADERS = "$(PROJECT_DIR)/lib/buildtime-src/cocoahttpserver/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/usr/local/include";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Don't Code Sign";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				JSON_HEADERS = "$(PROJECT_DIR)/lib/buildtime-src/json-framework/project/Source/";
 				OBJROOT = "$(SYMROOT)";
 				ONLY_ACTIVE_ARCH = YES;
 				PREBINDING = NO;
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
-				SDKROOT = iphoneos2.2.1;
+				SDKROOT = iphoneos3.1.2;
 				SKIP_INSTALL = NO;
 			};
 			name = Release;

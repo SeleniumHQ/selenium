@@ -326,7 +326,8 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				PREBINDING = NO;
-				SDKROOT = iphoneos2.2;
+				SDKROOT = iphoneos3.1.2;
+				VALID_ARCHS = "x86_64 i386 armv6 armv7";
 			};
 			name = Debug;
 		};
@@ -339,7 +340,8 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				PREBINDING = NO;
-				SDKROOT = iphoneos2.2;
+				SDKROOT = iphoneos3.1.2;
+				VALID_ARCHS = "x86_64 i386 armv6 armv7";
 			};
 			name = Release;
 		};

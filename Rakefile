@@ -638,7 +638,7 @@ iphone_test(:name => "webdriver-iphone-client-test",
 
 
 #### iPhone ####
-task :iphone_server => FileList['iphone/src/objc/**'] do
+task :iphone_server do
   sdk = iPhoneSDK?
   if sdk != nil then
     puts "Building iWebDriver iphone app"
