@@ -187,15 +187,15 @@ namespace OpenQA.Selenium.Chrome
         /// <returns>returns a collection of string with the window handle</returns>
         public ReadOnlyCollection<string> GetWindowHandles()
         {
-            // TODO(AndreNogueira):Uncomment and finish
-            return null;
-
-            // List<string> windowHandles = (List<string>)Execute(DriverCommand.GetWindowHandles).Value;
-            // set<String> setOfHandles = new HashSet<String>();
-            // for (Object windowHandle : windowHandles) {
-            //  setOfHandles.add((String)windowHandle);
-            // }
-            // return setOfHandles;
+            // TODONE: Updated it to C# rest in TODO
+            // TODO: Find out where the handles are generated.
+            object[] windowHandles = (object[]) Execute(DriverCommand.GetWindowHandles).Value;
+            List<string> setOfHandles = new List<string>();
+            foreach (string windowHandle in windowHandles)
+            {
+                setOfHandles.Add(windowHandle);
+            }
+            return setOfHandles.AsReadOnly();
         }
 
         /// <summary>
@@ -902,6 +902,10 @@ namespace OpenQA.Selenium.Chrome
             /// <returns>The object of the frame</returns>
             public IWebDriver Frame(string frameName)
             {
+                if (frameName == null)
+                {
+                    throw new ArgumentNullException();
+                }
                 Execute(DriverCommand.SwitchToFrameByName, frameName);
                 return instance;
             }
