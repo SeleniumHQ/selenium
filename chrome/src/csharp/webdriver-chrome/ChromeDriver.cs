@@ -6,6 +6,7 @@ using System.IO;
 
 using OpenQA.Selenium.Internal;
 using OpenQA.Selenium.Remote;
+using Newtonsoft.Json;
 
 namespace OpenQA.Selenium.Chrome
 {
@@ -686,7 +687,37 @@ namespace OpenQA.Selenium.Chrome
             /// <param name="cookie">Instance of the cookie you wish to add</param>
             public void AddCookie(Cookie cookie)
             {
-                Execute(DriverCommand.AddCookie, cookie);
+                // The extension expects a cookie as a JSON object, but as a string value
+                // which will be reparsed on the extension side.
+                Dictionary<string, object> cookieRepresentation = new Dictionary<string, object>();
+                cookieRepresentation.Add("name", cookie.Name);
+                cookieRepresentation.Add("value", cookie.Value);
+                cookieRepresentation.Add("secure", cookie.Secure.ToString().ToLowerInvariant());
+
+                if (!string.IsNullOrEmpty(cookie.Path))
+                {
+                    cookieRepresentation.Add("path", cookie.Path);
+                }
+                else
+                {
+                    cookieRepresentation.Add("path", string.Empty);
+                }
+
+                if (!string.IsNullOrEmpty(cookie.Domain))
+                {
+                    cookieRepresentation.Add("domain", cookie.Domain);
+                }
+                else
+                {
+                    cookieRepresentation.Add("domain", string.Empty);
+                }
+
+                if (cookie.Expiry != null)
+                {
+                    string dateValue = cookie.Expiry.Value.ToUniversalTime().ToString("ddd MM/dd/yyyy hh:mm:ss UTC", CultureInfo.InvariantCulture);
+                    cookieRepresentation.Add("expiry", dateValue);
+                }
+                Execute(DriverCommand.AddCookie, new object[] {cookieRepresentation});
             }
 
             /// <summary>

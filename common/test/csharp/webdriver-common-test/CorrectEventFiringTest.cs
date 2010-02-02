@@ -10,6 +10,7 @@ namespace OpenQA.Selenium
     public class CorrectEventFiringTest : DriverTestFixture
     {
         [Test]
+        [IgnoreBrowser(Browser.Chrome, "Webkit bug 22261")]
         public void ShouldFireFocusEventWhenClicking()
         {
             driver.Url = javascriptPage;

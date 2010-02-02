@@ -253,7 +253,7 @@ namespace OpenQA.Selenium.Chrome
                 // thread to listen for the next connection.
                 HttpListenerContext workerContext = listener.EndGetContext(asyncResult);
                 IAsyncResult newResult = listener.BeginGetContext(new AsyncCallback(OnClientConnect), listener);
-
+                
                 ExtensionRequestPacket packet = new ExtensionRequestPacket(workerContext);
 
                 // Console.WriteLine("ID {0} connected.", packet.ID);
@@ -304,6 +304,7 @@ namespace OpenQA.Selenium.Chrome
 
             byte[] byteData = Encoding.UTF8.GetBytes(data);
             HttpListenerResponse response = packet.Context.Response;
+            response.KeepAlive = true;
             response.StatusCode = 200;
             response.StatusDescription = "OK";
             response.ContentType = sendAsContentType;
@@ -390,10 +391,16 @@ namespace OpenQA.Selenium.Chrome
                     extensionPacketType = ChromeExtensionPacketType.Post;
                 }
 
+                DateTime readTimeout = DateTime.Now.AddSeconds(10);
                 HttpListenerRequest request = packetContext.Request;
                 int length = (int)request.ContentLength64;
                 byte[] packetDataBuffer = new byte[length];
-                request.InputStream.Read(packetDataBuffer, 0, length);
+                int totalBytesRead = request.InputStream.Read(packetDataBuffer, 0, length);
+                while (totalBytesRead < length && DateTime.Now <= readTimeout)
+                {
+                    totalBytesRead += request.InputStream.Read(packetDataBuffer, totalBytesRead, length - totalBytesRead);
+                }
+
                 content = Encoding.UTF8.GetString(packetDataBuffer);
             }
 

@@ -230,8 +230,22 @@ namespace OpenQA.Selenium.Chrome
         /// <returns>value of the attribute</returns>
         public string GetAttribute(string name)
         {
+            string attributeValue = null;
             object value = parent.Execute(DriverCommand.GetElementAttribute, elementId, name).Value;
-            return (value == null) ? null : value.ToString().ToLowerInvariant();
+            if (value != null)
+            {
+                bool booleanValue = false;
+                if (bool.TryParse(value.ToString(), out booleanValue))
+                {
+                    attributeValue = booleanValue.ToString().ToLowerInvariant();
+                }
+                else
+                {
+                    attributeValue = value.ToString();
+                }
+            }
+
+            return attributeValue;
         }
 
         /// <summary>
