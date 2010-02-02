@@ -64,10 +64,13 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
   }
 
   @Ignore(SELENESE)
-  public void testShouldFocusOnTheReplacementWhenAFrameFollowsALinkToA_TopTargettedPage() {
+  public void testShouldFocusOnTheReplacementWhenAFrameFollowsALinkToA_TopTargettedPage() throws Exception {
     driver.get(framesetPage);
 
     driver.findElement(By.linkText("top")).click();
+
+    // TODO(simon): Avoid going too fast when native events are there. 
+    Thread.sleep(1000);
 
     assertThat(driver.getTitle(), equalTo("XHTML Test Page"));
     assertThat(driver.findElement(By.xpath("/html/head/title")).getText(),
