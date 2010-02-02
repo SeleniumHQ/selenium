@@ -37,8 +37,8 @@ function testShouldAutomaticallyUseTheFirstFrameOnAPage(driver) {
   assertThat(pageNumber.getText(), equals("1"));
 }
 
-
-function testShouldFocusOnTheReplacementWhenAFrameFollowsALinkToA_TopTargettedPage(driver) {
+// TODO(simon): Uncomment once we've got implicit waits in place.
+function xtestShouldFocusOnTheReplacementWhenAFrameFollowsALinkToA_TopTargettedPage(driver) {
   driver.get(TEST_PAGE.framesetPage);
   driver.switchToFrame(0);
   driver.findElement({linkText: 'top'}).click();
