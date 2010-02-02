@@ -65,6 +65,7 @@
     <Compile Include="FirefoxProfileManager.cs" />
     <Compile Include="Internal\ILock.cs" />
     <Compile Include="Internal\IniFileReader.cs" />
+    <Compile Include="Internal\NativeMethods.cs" />
     <Compile Include="Internal\ResponseValueJsonConverter.cs" />
     <Compile Include="Preferences.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

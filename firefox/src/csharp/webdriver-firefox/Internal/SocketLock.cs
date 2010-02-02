@@ -31,8 +31,9 @@ namespace OpenQA.Selenium.Firefox.Internal
         public SocketLock(int lockPort)
         {
             this.lockPort = lockPort;
-            lockSocket = new Socket(AddressFamily.InterNetwork, SocketType.Raw, ProtocolType.Icmp);
-        } 
+            lockSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            PreventSocketInheritance();
+        }
         #endregion
 
         #region ILock Members
@@ -45,18 +46,18 @@ namespace OpenQA.Selenium.Firefox.Internal
         {
             IPHostEntry hostEntry = Dns.GetHostEntry("localhost");
 
-            //Use the first IPv4 address that we find
-            IPAddress ipAddress = IPAddress.Parse("127.0.0.1");
+            // Use the first IPv4 address that we find
+            IPAddress endPointAddress = IPAddress.Parse("127.0.0.1");
             foreach (IPAddress ip in hostEntry.AddressList)
             {
                 if (ip.AddressFamily == AddressFamily.InterNetwork)
                 {
-                    ipAddress = ip;
+                    endPointAddress = ip;
                     break;
                 }
             }
 
-            IPEndPoint address = new IPEndPoint(ipAddress, lockPort);
+            IPEndPoint address = new IPEndPoint(endPointAddress, lockPort);
 
             // Calculate the 'exit time' for our wait loop.
             DateTime maxWait = DateTime.Now.AddMilliseconds(timeoutInMilliseconds);
@@ -130,7 +131,16 @@ namespace OpenQA.Selenium.Firefox.Internal
             {
                 return false;
             }
-        } 
+        }
+
+        private void PreventSocketInheritance()
+        {
+            // TODO (JimEvans): Handle the non-Windows case.
+            if (Platform.CurrentPlatform.IsPlatformType(PlatformType.Windows))
+            {
+                NativeMethods.SetHandleInformation(lockSocket.Handle, NativeMethods.HandleInformation.Inherit | NativeMethods.HandleInformation.ProtectFromClose, NativeMethods.HandleInformation.None);
+            }
+        }
         #endregion
     }
 }

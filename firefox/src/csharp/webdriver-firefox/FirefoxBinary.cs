@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using OpenQA.Selenium.Firefox.Internal;
-using System.Reflection;
 
 namespace OpenQA.Selenium.Firefox
 {
@@ -306,7 +306,7 @@ namespace OpenQA.Selenium.Firefox
                 string outSoPath = Path.Combine(profile.ProfileDirectory, path);
                 string file = Path.Combine(outSoPath, noFocusSoName);
 
-                string resourceName = string.Format("WebDriver.FirefoxNoFocus.{0}.dll", path);
+                string resourceName = string.Format(CultureInfo.InvariantCulture, "WebDriver.FirefoxNoFocus.{0}.dll", path);
                 Assembly executingAssembly = Assembly.GetExecutingAssembly();
 
                 List<string> resourceNames = new List<string>(executingAssembly.GetManifestResourceNames());
@@ -323,6 +323,7 @@ namespace OpenQA.Selenium.Firefox
                         outputStream.Write(buffer, 0, bytesRead);
                         bytesRead = libraryStream.Read(buffer, 0, buffer.Length);
                     }
+
                     outputStream.Close();
                     libraryStream.Close();
                 }

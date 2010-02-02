@@ -135,18 +135,18 @@ namespace OpenQA.Selenium.Firefox.Internal
 
                 IPHostEntry hostEntry = Dns.GetHostEntry(host);
 
-                //Use the first IPv4 address that we find
-                IPAddress ipAddress = IPAddress.Parse("127.0.0.1");
+                // Use the first IPv4 address that we find
+                IPAddress endPointAddress = IPAddress.Parse("127.0.0.1");
                 foreach (IPAddress ip in hostEntry.AddressList)
                 {
                     if (ip.AddressFamily == AddressFamily.InterNetwork)
                     {
-                        ipAddress = ip;
+                        endPointAddress = ip;
                         break;
                     }
                 }
 
-                IPEndPoint address = new IPEndPoint(ipAddress, newport);
+                IPEndPoint address = new IPEndPoint(endPointAddress, newport);
 
                 try
                 {
@@ -198,18 +198,18 @@ namespace OpenQA.Selenium.Firefox.Internal
             {
                 IPHostEntry hostEntry = Dns.GetHostEntry(host);
 
-                //Use the first IPv4 address that we find
-                IPAddress ipAddress = IPAddress.Parse("127.0.0.1");
+                // Use the first IPv4 address that we find
+                IPAddress endPointAddress = IPAddress.Parse("127.0.0.1");
                 foreach (IPAddress ip in hostEntry.AddressList)
                 {
                     if (ip.AddressFamily == AddressFamily.InterNetwork)
                     {
-                        ipAddress = ip;
+                        endPointAddress = ip;
                         break;
                     }
                 }
 
-                IPEndPoint hostEndPoint = new IPEndPoint(ipAddress, port);
+                IPEndPoint hostEndPoint = new IPEndPoint(endPointAddress, port);
                 addresses.Add(hostEndPoint);
             }
         }
