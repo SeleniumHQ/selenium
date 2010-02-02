@@ -35,7 +35,7 @@ public class IsEditable extends SeleneseCommand<Boolean> {
     String readonly = "";
     if ("input".equals(tagName)) {
       readonly = element.getAttribute("readonly");
-      if (readonly == null) {
+      if (readonly == null || "false".equals(readonly)) {
         readonly = "";
       }
     }

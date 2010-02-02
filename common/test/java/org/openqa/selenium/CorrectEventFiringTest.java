@@ -236,7 +236,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(IE)
+  @Ignore({IE, SELENESE})
   public void testSubmittingFormFromFormElementShouldFireOnSubmitForThatForm() {
     driver.get(javascriptPage);
     WebElement formElement = driver.findElement(By.id("submitListeningForm"));
@@ -245,7 +245,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(IE)
+  @Ignore({IE, SELENESE})
   public void testSubmittingFormFromFormInputSubmitElementShouldFireOnSubmitForThatForm() {
     driver.get(javascriptPage);
     WebElement submit = driver.findElement(By.id("submitListeningForm-submit"));
@@ -254,7 +254,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled 
-  @Ignore(IE)
+  @Ignore({IE, SELENESE})
   public void testSubmittingFormFromFormInputTextElementShouldFireOnSubmitForThatFormAndNotClickOnThatInput() {
     driver.get(javascriptPage);
     WebElement submit = driver.findElement(By.id("submitListeningForm-submit"));

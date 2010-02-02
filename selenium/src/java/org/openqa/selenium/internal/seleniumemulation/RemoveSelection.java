@@ -33,7 +33,7 @@ public class RemoveSelection extends SeleneseCommand<Void> {
   @Override
   protected Void handleSeleneseCommand(WebDriver driver, String locator, String optionLocator) {
     WebElement element = elementFinder.findElement(driver, locator);
-    if (!"multiple".equals(element.getAttribute("multiple")))
+    if (!select.isMultiple(element)) 
       throw new SeleniumException("You may only remove a selection to a select that supports multiple selections");
     
     select.select(driver, locator, optionLocator, false, false);

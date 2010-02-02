@@ -615,10 +615,10 @@ int wdeGetAttribute(WebElement* element, const wchar_t* name, StringWrapper** re
 	try {
 		std::wstring script(L"(function() { return function(){ ");
 		script += L"var e = arguments[0]; var attr = arguments[1]; var lattr = attr.toLowerCase(); ";
-		script += L"if (lattr == 'class') { attr = 'className' }; ";
-		script += L"if (lattr == 'readonly') { attr = 'readOnly' }; ";
+		script += L"if ('class' == lattr) { attr = 'className' }; ";
+		script += L"if ('readonly' == lattr) { attr = 'readOnly' }; ";
 		script += L"if ('style' == lattr) { return ''; } ";
-		script += L"  if ('disabled' == lattr) { return e.disabled ? 'true' : 'false'; } ";
+		script += L"if ('disabled' == lattr) { return e.disabled ? 'true' : 'false'; } ";
 		script += L"if (e.tagName.toLowerCase() == 'input') { ";
         script += L"  var type = e.type.toLowerCase(); ";
 		script += L"  if (type == 'radio' && lattr == 'selected') { return e.checked == '' || e.checked == undefined ? 'false' : 'true' ; } ";

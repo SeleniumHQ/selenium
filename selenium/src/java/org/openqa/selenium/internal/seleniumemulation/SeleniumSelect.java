@@ -83,16 +83,21 @@ public class SeleniumSelect {
     return selectedOptions;
   }
 
+  public boolean isMultiple(WebElement theSelect) {
+    String multiple = theSelect.getAttribute("multiple");
+
+    if (multiple == null) { return false; }
+    if ("false".equals(multiple)) { return false; }
+    if ("".equals(multiple)) { return false; }
+
+    return true;
+  }
+
   public void select(WebDriver driver, String selectLocator, String optionLocator, boolean setSelected, boolean onlyOneOption) {
     WebElement select = finder.findElement(driver, selectLocator);
     List<WebElement> allOptions = select.findElements(By.tagName("option"));
 
-    boolean isMultiple = false;
-
-    String multiple = select.getAttribute("multiple");
-    if (multiple != null && !"".equals(multiple)) {
-      isMultiple = true;
-    }
+    boolean isMultiple = isMultiple(select);
 
     if (onlyOneOption && isMultiple) {
       new RemoveAllSelections(finder).apply(driver, new String[] { selectLocator });
