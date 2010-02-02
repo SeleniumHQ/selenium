@@ -354,7 +354,7 @@ namespace OpenQA.Selenium.Chrome
             commands.Add(DriverCommand.SwitchToDefaultContent, NoCommandArguments);
             commands.Add(DriverCommand.GetCurrentWindowHandle, NoCommandArguments);
             commands.Add(DriverCommand.GetWindowHandles, NoCommandArguments);
-            commands.Add(DriverCommand.SwitchToWindow, new string[] { "windowname" });
+            commands.Add(DriverCommand.SwitchToWindow, new string[] { "windowName" });
             commands.Add(DriverCommand.GetCurrentUrl, NoCommandArguments);
             commands.Add(DriverCommand.GetPageSource, NoCommandArguments);
             commands.Add(DriverCommand.GetTitle, NoCommandArguments);
