@@ -16,18 +16,24 @@
 
   </head>
   <body>
+    <script type="text/javascript" charset="utf-8">
+      if (window.top.frames.main) document.body.className = 'frames';
+    </script>
+    
     <div id="header">
       <div id="menu">
   
     <a href="../../_index.html">Index (F)</a> &raquo; 
-    <a href="../../Selenium.html" title="Selenium">Selenium</a> &raquo; <a href="../WebDriver.html" title="WebDriver">WebDriver</a>
+    <span class='title'><a href="../../Selenium.html" title="Selenium (module)">Selenium</a></span> &raquo; <span class='title'><a href="../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span>
      &raquo; 
     <span class="title">Find</span>
   
+  
+  <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
 </div>
 
       <div id="search">
-  <a id="class_list_link" href="#">Namespace List</a>
+  <a id="class_list_link" href="#">Class List</a>
   <a id="method_list_link" href="#">Method List</a>
   <a id ="file_list_link" href="#">File List</a>
 </div>
@@ -56,35 +62,25 @@
 </dl>
 <div class="clear"></div>
 
-<h2>Overview</h2><div class="docstring">
-  <div class="discussion">
-    <p>
-Find
-</p>
 
-
-  </div>
-</div>
-<div class="tags">
-  
-</div>
   <h2>Constant Summary</h2>
   
     <dl class="constants">
       
-        <dt id="FINDERS-constant ">FINDERS =
+        <dt id="FINDERS-constant" class="">FINDERS =
             <span class="summary_desc"></span>
         </dt>
         <dd><pre class="code"><span class='lbrace token'>{</span>
-  <span class='symbol val'>:class</span>             <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'ByClassName'</span><span class='comma token'>,</span>
-  <span class='symbol val'>:class_name</span>        <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'ByClassName'</span><span class='comma token'>,</span>
-  <span class='symbol val'>:id</span>                <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'ById'</span><span class='comma token'>,</span>
-  <span class='symbol val'>:link_text</span>         <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'ByLinkText'</span><span class='comma token'>,</span>
-  <span class='symbol val'>:link</span>              <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'ByLinkText'</span><span class='comma token'>,</span>
-  <span class='symbol val'>:partial_link_text</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'ByPartialLinkText'</span><span class='comma token'>,</span>
-  <span class='symbol val'>:name</span>              <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'ByName'</span><span class='comma token'>,</span>
-  <span class='symbol val'>:tag_name</span>          <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'ByTagName'</span><span class='comma token'>,</span>
-  <span class='symbol val'>:xpath</span>             <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'ByXpath'</span><span class='comma token'>,</span>
+  <span class='symbol val'>:class</span>             <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'ClassName'</span><span class='comma token'>,</span>
+  <span class='symbol val'>:class_name</span>        <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'ClassName'</span><span class='comma token'>,</span>
+  <span class='symbol val'>:css</span>               <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'CssSelector'</span><span class='comma token'>,</span>
+  <span class='symbol val'>:id</span>                <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'Id'</span><span class='comma token'>,</span>
+  <span class='symbol val'>:link</span>              <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'LinkText'</span><span class='comma token'>,</span>
+  <span class='symbol val'>:link_text</span>         <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'LinkText'</span><span class='comma token'>,</span>
+  <span class='symbol val'>:name</span>              <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'Name'</span><span class='comma token'>,</span>
+  <span class='symbol val'>:partial_link_text</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'PartialLinkText'</span><span class='comma token'>,</span>
+  <span class='symbol val'>:tag_name</span>          <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'TagName'</span><span class='comma token'>,</span>
+  <span class='symbol val'>:xpath</span>             <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'Xpath'</span><span class='comma token'>,</span>
 <span class='rbrace token'>}</span>
 </pre></dd>
       
@@ -153,7 +149,7 @@ Find all elements matching the given arguments.
       <div class="method_details first">
   <p class="signature first" id="find_element-instance_method">
   
-    - (<tt><a href="Element.html" title="WebDriver::Element">WebDriver::Element</a></tt>) <strong>find_element</strong>(*args) 
+    - (<tt><a href="Element.html" title="Selenium::WebDriver::Element (class)">WebDriver::Element</a></tt>) <strong>find_element</strong>(*args) 
   
 
   
@@ -198,7 +194,7 @@ Find the first element matching the given arguments.
   
     <li>
       
-        <span class='type'>(<tt><a href="Element.html" title="WebDriver::Element">WebDriver::Element</a></tt>)</span>
+        <span class='type'>(<tt><a href="Element.html" title="Selenium::WebDriver::Element (class)">WebDriver::Element</a></tt>)</span>
       
       
       
@@ -232,7 +228,6 @@ if the element doesn&#8217;t exist
       <pre class="lines">
 
 
-27
 28
 29
 30
@@ -243,10 +238,11 @@ if the element doesn&#8217;t exist
 35
 36
 37
-38</pre>
+38
+39</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/find.rb', line 27</span>
+      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/find.rb', line 28</span>
 
 <span class='def def kw'>def</span> <span class='find_element identifier id'>find_element</span><span class='lparen token'>(</span><span class='mult op'>*</span><span class='args identifier id'>args</span><span class='rparen token'>)</span>
   <span class='how identifier id'>how</span><span class='comma token'>,</span> <span class='what identifier id'>what</span> <span class='assign token'>=</span> <span class='extract_args identifier id'>extract_args</span><span class='lparen token'>(</span><span class='args identifier id'>args</span><span class='rparen token'>)</span>
@@ -255,7 +251,7 @@ if the element doesn&#8217;t exist
     <span class='raise identifier id'>raise</span> <span class='ArgumentError constant id'>ArgumentError</span><span class='comma token'>,</span> <span class='dstring node'>&quot;cannot find element by #{how.inspect}&quot;</span>
   <span class='end end kw'>end</span>
 
-  <span class='meth identifier id'>meth</span> <span class='assign token'>=</span> <span class='dstring node'>&quot;findElement#{by}&quot;</span>
+  <span class='meth identifier id'>meth</span> <span class='assign token'>=</span> <span class='dstring node'>&quot;findElementBy#{by}&quot;</span>
   <span class='what identifier id'>what</span> <span class='assign token'>=</span> <span class='what identifier id'>what</span><span class='dot token'>.</span><span class='to_s identifier id'>to_s</span>
 
   <span class='bridge identifier id'>bridge</span><span class='dot token'>.</span><span class='send identifier id'>send</span> <span class='meth identifier id'>meth</span><span class='comma token'>,</span> <span class='ref identifier id'>ref</span><span class='comma token'>,</span> <span class='what identifier id'>what</span>
@@ -269,7 +265,7 @@ if the element doesn&#8217;t exist
       <div class="method_details ">
   <p class="signature " id="find_elements-instance_method">
   
-    - (<tt>Array&lt;<a href="Element.html" title="WebDriver::Element">WebDriver::Element</a>&gt;</tt>) <strong>find_elements</strong>(*args) 
+    - (<tt>Array&lt;<a href="Element.html" title="Selenium::WebDriver::Element (class)">WebDriver::Element</a>&gt;</tt>) <strong>find_elements</strong>(*args) 
   
 
   
@@ -314,7 +310,7 @@ Find all elements matching the given arguments
   
     <li>
       
-        <span class='type'>(<tt>Array&lt;<a href="Element.html" title="WebDriver::Element">WebDriver::Element</a>&gt;</tt>)</span>
+        <span class='type'>(<tt>Array&lt;<a href="Element.html" title="Selenium::WebDriver::Element (class)">WebDriver::Element</a>&gt;</tt>)</span>
       
       
       
@@ -329,7 +325,6 @@ Find all elements matching the given arguments
       <pre class="lines">
 
 
-48
 49
 50
 51
@@ -340,10 +335,11 @@ Find all elements matching the given arguments
 56
 57
 58
-59</pre>
+59
+60</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/find.rb', line 48</span>
+      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/find.rb', line 49</span>
 
 <span class='def def kw'>def</span> <span class='find_elements identifier id'>find_elements</span><span class='lparen token'>(</span><span class='mult op'>*</span><span class='args identifier id'>args</span><span class='rparen token'>)</span>
   <span class='how identifier id'>how</span><span class='comma token'>,</span> <span class='what identifier id'>what</span> <span class='assign token'>=</span> <span class='extract_args identifier id'>extract_args</span><span class='lparen token'>(</span><span class='args identifier id'>args</span><span class='rparen token'>)</span>
@@ -352,7 +348,7 @@ Find all elements matching the given arguments
     <span class='raise identifier id'>raise</span> <span class='ArgumentError constant id'>ArgumentError</span><span class='comma token'>,</span> <span class='dstring node'>&quot;cannot find elements by #{how.inspect}&quot;</span>
   <span class='end end kw'>end</span>
 
-  <span class='meth identifier id'>meth</span> <span class='assign token'>=</span> <span class='dstring node'>&quot;findElements#{by}&quot;</span>
+  <span class='meth identifier id'>meth</span> <span class='assign token'>=</span> <span class='dstring node'>&quot;findElementsBy#{by}&quot;</span>
   <span class='what identifier id'>what</span> <span class='assign token'>=</span> <span class='what identifier id'>what</span><span class='dot token'>.</span><span class='to_s identifier id'>to_s</span>
 
   <span class='bridge identifier id'>bridge</span><span class='dot token'>.</span><span class='send identifier id'>send</span> <span class='meth identifier id'>meth</span><span class='comma token'>,</span> <span class='ref identifier id'>ref</span><span class='comma token'>,</span> <span class='what identifier id'>what</span>
@@ -368,9 +364,9 @@ Find all elements matching the given arguments
 </div>
     
     <div id="footer">
-  Generated on Thu Dec 17 17:13:34 2009 by 
+  Generated on Wed Feb  3 14:46:54 2010 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool">yard</a>
-  0.5.2 (ruby-1.8.7).
+  0.5.3 (ruby-1.8.7).
 </div>
 
   </body>

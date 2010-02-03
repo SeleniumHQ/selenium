@@ -16,18 +16,24 @@
 
   </head>
   <body>
+    <script type="text/javascript" charset="utf-8">
+      if (window.top.frames.main) document.body.className = 'frames';
+    </script>
+    
     <div id="header">
       <div id="menu">
   
     <a href="../../../_index.html">Index (W)</a> &raquo; 
-    <a href="../../../Selenium.html" title="Selenium">Selenium</a> &raquo; <a href="../../WebDriver.html" title="WebDriver">WebDriver</a> &raquo; <a href="../Error.html" title="Error">Error</a>
+    <span class='title'><a href="../../../Selenium.html" title="Selenium (module)">Selenium</a></span> &raquo; <span class='title'><a href="../../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span> &raquo; <span class='title'><a href="../Error.html" title="Selenium::WebDriver::Error (module)">Error</a></span>
      &raquo; 
     <span class="title">WebDriverError</span>
   
+  
+  <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
 </div>
 
       <div id="search">
-  <a id="class_list_link" href="#">Namespace List</a>
+  <a id="class_list_link" href="#">Class List</a>
   <a id="method_list_link" href="#">Method List</a>
   <a id ="file_list_link" href="#">File List</a>
 </div>
@@ -73,6 +79,10 @@
 </dl>
 <div class="clear"></div>
 
+<div id="subclasses">
+  <h2>Direct Known Subclasses</h2>
+  <p class="children"><a href="ElementNotDisplayedError.html" title="Selenium::WebDriver::Error::ElementNotDisplayedError (class)">ElementNotDisplayedError</a>, <a href="ElementNotEnabledError.html" title="Selenium::WebDriver::Error::ElementNotEnabledError (class)">ElementNotEnabledError</a>, <a href="ElementNotSelectedError.html" title="Selenium::WebDriver::Error::ElementNotSelectedError (class)">ElementNotSelectedError</a>, <a href="ExpectedError.html" title="Selenium::WebDriver::Error::ExpectedError (class)">ExpectedError</a>, <a href="IndexOutOfBoundsError.html" title="Selenium::WebDriver::Error::IndexOutOfBoundsError (class)">IndexOutOfBoundsError</a>, <a href="NoCollectionError.html" title="Selenium::WebDriver::Error::NoCollectionError (class)">NoCollectionError</a>, <a href="NoScriptResultError.html" title="Selenium::WebDriver::Error::NoScriptResultError (class)">NoScriptResultError</a>, <a href="NoStringError.html" title="Selenium::WebDriver::Error::NoStringError (class)">NoStringError</a>, <a href="NoStringLengthError.html" title="Selenium::WebDriver::Error::NoStringLengthError (class)">NoStringLengthError</a>, <a href="NoStringWrapperError.html" title="Selenium::WebDriver::Error::NoStringWrapperError (class)">NoStringWrapperError</a>, <a href="NoSuchCollectionError.html" title="Selenium::WebDriver::Error::NoSuchCollectionError (class)">NoSuchCollectionError</a>, <a href="NoSuchDocumentError.html" title="Selenium::WebDriver::Error::NoSuchDocumentError (class)">NoSuchDocumentError</a>, <a href="NoSuchDriverError.html" title="Selenium::WebDriver::Error::NoSuchDriverError (class)">NoSuchDriverError</a>, <a href="NoSuchElementError.html" title="Selenium::WebDriver::Error::NoSuchElementError (class)">NoSuchElementError</a>, <a href="NoSuchFrameError.html" title="Selenium::WebDriver::Error::NoSuchFrameError (class)">NoSuchFrameError</a>, <a href="NoSuchWindowError.html" title="Selenium::WebDriver::Error::NoSuchWindowError (class)">NoSuchWindowError</a>, <a href="NullPointerError.html" title="Selenium::WebDriver::Error::NullPointerError (class)">NullPointerError</a>, <a href="ObsoleteElementError.html" title="Selenium::WebDriver::Error::ObsoleteElementError (class)">ObsoleteElementError</a>, <a href="TimeOutError.html" title="Selenium::WebDriver::Error::TimeOutError (class)">TimeOutError</a>, <a href="UnexpectedJavascriptError.html" title="Selenium::WebDriver::Error::UnexpectedJavascriptError (class)">UnexpectedJavascriptError</a>, <a href="UnhandledError.html" title="Selenium::WebDriver::Error::UnhandledError (class)">UnhandledError</a>, <a href="UnknownScriptResultError.html" title="Selenium::WebDriver::Error::UnknownScriptResultError (class)">UnknownScriptResultError</a>, <a href="UnsupportedOperationError.html" title="Selenium::WebDriver::Error::UnsupportedOperationError (class)">UnsupportedOperationError</a></p>
+</div>
 
 
   
@@ -82,9 +92,9 @@
 </div>
     
     <div id="footer">
-  Generated on Thu Dec 17 17:13:24 2009 by 
+  Generated on Wed Feb  3 14:46:54 2010 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool">yard</a>
-  0.5.2 (ruby-1.8.7).
+  0.5.3 (ruby-1.8.7).
 </div>
 
   </body>

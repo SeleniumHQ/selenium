@@ -16,18 +16,24 @@
 
   </head>
   <body>
+    <script type="text/javascript" charset="utf-8">
+      if (window.top.frames.main) document.body.className = 'frames';
+    </script>
+    
     <div id="header">
       <div id="menu">
   
     <a href="../../_index.html">Index (D)</a> &raquo; 
-    <a href="../../Selenium.html" title="Selenium">Selenium</a> &raquo; <a href="../WebDriver.html" title="WebDriver">WebDriver</a>
+    <span class='title'><a href="../../Selenium.html" title="Selenium (module)">Selenium</a></span> &raquo; <span class='title'><a href="../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span>
      &raquo; 
     <span class="title">Driver</span>
   
+  
+  <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
 </div>
 
       <div id="search">
-  <a id="class_list_link" href="#">Namespace List</a>
+  <a id="class_list_link" href="#">Class List</a>
   <a id="method_list_link" href="#">Method List</a>
   <a id ="file_list_link" href="#">File List</a>
 </div>
@@ -64,7 +70,7 @@
   
     
       <dt class="r2">Includes:</dt>
-      <dd class="r2"><a href="Find.html" title="Selenium::WebDriver::Find">Selenium::WebDriver::Find</a></dd>
+      <dd class="r2"><a href="Find.html" title="Selenium::WebDriver::Find (module)">Find</a></dd>
       
     
   
@@ -89,13 +95,13 @@ The main class through which you control the browser.
   <h3>See Also:</h3>
   <ul class="see">
     
-      <li><a href="Find.html" title="Find">Find</a></li>
+      <li><a href="Find.html" title="Selenium::WebDriver::Find (module)">Find</a></li>
     
-      <li><a href="Navigation.html" title="Navigation">Navigation</a></li>
+      <li><a href="Navigation.html" title="Selenium::WebDriver::Navigation (class)">Navigation</a></li>
     
-      <li><a href="TargetLocator.html" title="TargetLocator">TargetLocator</a></li>
+      <li><a href="TargetLocator.html" title="Selenium::WebDriver::TargetLocator (class)">TargetLocator</a></li>
     
-      <li><a href="Options.html" title="Options">Options</a></li>
+      <li><a href="Options.html" title="Selenium::WebDriver::Options (class)">Options</a></li>
     
   </ul>
 
@@ -108,8 +114,8 @@ The main class through which you control the browser.
   
   
   
-  <h3 class="inherited">Constants included from <a href="Find.html" title="Selenium::WebDriver::Find">Selenium::WebDriver::Find</a></h3>
-  <p class="inherited"><a href="Find.html#FINDERS-constant" title="FINDERS">FINDERS</a></p>
+  <h3 class="inherited">Constants included from <a href="Find.html" title="Selenium::WebDriver::Find (module)">Find</a></h3>
+  <p class="inherited"><a href="Find.html#FINDERS-constant" title="Selenium::WebDriver::Find::FINDERS (constant)">FINDERS</a></p>
 
   <h2>Instance Attribute Summary</h2>
   <ul class="summary">
@@ -485,7 +491,7 @@ Get the title of the current page.
       <li class="public ">
   <span class="summary_signature">
     
-      <a href="#visible%3D-class_method" title="visible= (class method)">+ (Object) <strong>visible=</strong>(bool) </a>
+      <a href="#visible%3D-class_method" title="visible= (class method)">+ (Object) <strong>visible</strong>(bool) </a>
     
 
     
@@ -581,8 +587,8 @@ Get the window handles of open browser windows.
   
   
   
-  <h3 class="inherited">Methods included from <a href="Find.html" title="Selenium::WebDriver::Find">Selenium::WebDriver::Find</a></h3>
-  <p class="inherited"><a href="Find.html#find_element-instance_method" title="#find_element">#find_element</a>, <a href="Find.html#find_elements-instance_method" title="#find_elements">#find_elements</a></p>
+  <h3 class="inherited">Methods included from <a href="Find.html" title="Selenium::WebDriver::Find (module)">Find</a></h3>
+  <p class="inherited"><a href="Find.html#find_element-instance_method" title="Selenium::WebDriver::Find#find_element (method)">#find_element</a>, <a href="Find.html#find_elements-instance_method" title="Selenium::WebDriver::Find#find_elements (method)">#find_elements</a></p>
 <div id="constructor_details" class="method_details_list">
   <h2>Constructor Details</h2>
   
@@ -684,7 +690,7 @@ Returns the value of attribute bridge
       <div class="method_details first">
   <p class="signature first" id="[]-class_method">
   
-    + (<tt><a href="Element.html" title="WebDriver::Element">WebDriver::Element</a></tt>) <strong>[]</strong>(id) 
+    + (<tt><a href="Element.html" title="Selenium::WebDriver::Element (class)">WebDriver::Element</a></tt>) <strong>[]</strong>(id) 
   
 
   
@@ -718,15 +724,14 @@ Get the first element matching the given id.
   
     <li>
       
-        <span class='type'>(<tt><a href="Element.html" title="WebDriver::Element">WebDriver::Element</a></tt>)</span>
+        <span class='type'>(<tt><a href="Element.html" title="Selenium::WebDriver::Element (class)">WebDriver::Element</a></tt>)</span>
       
       
       
       
         &mdash;
         
-driver[&#8216;someElementId&#8217;] #=&gt;
-#&lt;WebDriver::Element:0x1011c3b88&gt;
+driver[&#8216;someElementId&#8217;] #=> #<WebDriver::Element:0x1011c3b88>
 
 
       
@@ -852,7 +857,7 @@ Get the URL of the current page
       <div class="method_details ">
   <p class="signature " id="execute_script-class_method">
   
-    + (<tt><a href="Element.html" title="WebDriver::Element">WebDriver::Element</a></tt>, ...) <strong>execute_script</strong>(script, *args) 
+    + (<tt><a href="Element.html" title="Selenium::WebDriver::Element (class)">WebDriver::Element</a></tt>, ...) <strong>execute_script</strong>(script, *args) 
   
 
   
@@ -892,7 +897,7 @@ JavaScript source to execute
   
     <li>
       
-        <span class='type'>(<tt><a href="Element.html" title="WebDriver::Element">WebDriver::Element</a></tt>, <tt>Integer</tt>, <tt>Float</tt>, <tt>Boolean</tt>, <tt>NilClass</tt>, <tt>String</tt>, <tt>Array</tt>)</span>
+        <span class='type'>(<tt><a href="Element.html" title="Selenium::WebDriver::Element (class)">WebDriver::Element</a></tt>, <tt>Integer</tt>, <tt>Float</tt>, <tt>Boolean</tt>, <tt>NilClass</tt>, <tt>String</tt>, <tt>Array</tt>)</span>
       
       
         <span class='name'>*args</span>
@@ -914,7 +919,7 @@ Arguments will be available in the given script as the
   
     <li>
       
-        <span class='type'>(<tt><a href="Element.html" title="WebDriver::Element">WebDriver::Element</a></tt>, <tt>Integer</tt>, <tt>Float</tt>, <tt>Boolean</tt>, <tt>NilClass</tt>, <tt>String</tt>, <tt>Array</tt>)</span>
+        <span class='type'>(<tt><a href="Element.html" title="Selenium::WebDriver::Element (class)">WebDriver::Element</a></tt>, <tt>Integer</tt>, <tt>Float</tt>, <tt>Boolean</tt>, <tt>NilClass</tt>, <tt>String</tt>, <tt>Array</tt>)</span>
       
       
       
@@ -954,7 +959,7 @@ The value returned from the script.
       <div class="method_details ">
   <p class="signature " id="for-class_method">
   
-    + (<tt><a href="" title="Driver">Driver</a></tt>) <strong>for</strong>(browser, *args) 
+    + (<tt><a href="" title="Selenium::WebDriver::Driver (class)">Driver</a></tt>) <strong>for</strong>(browser, *args) 
   
 
   
@@ -1011,7 +1016,7 @@ arguments passed to the Bridge.new
   
     <li>
       
-        <span class='type'>(<tt><a href="" title="Driver">Driver</a></tt>)</span>
+        <span class='type'>(<tt><a href="" title="Selenium::WebDriver::Driver (class)">Driver</a></tt>)</span>
       
       
       
@@ -1063,7 +1068,7 @@ arguments passed to the Bridge.new
            <span class='when when kw'>when</span> <span class='symbol val'>:firefox</span><span class='comma token'>,</span> <span class='symbol val'>:ff</span>
              <span class='WebDriver constant id'>WebDriver</span><span class='colon2 op'>::</span><span class='Firefox constant id'>Firefox</span><span class='colon2 op'>::</span><span class='Bridge constant id'>Bridge</span><span class='dot token'>.</span><span class='new identifier id'>new</span><span class='lparen token'>(</span><span class='mult op'>*</span><span class='args identifier id'>args</span><span class='rparen token'>)</span>
            <span class='else else kw'>else</span>
-             <span class='raise identifier id'>raise</span> <span class='ArgumentError constant id'>ArgumentError</span><span class='comma token'>,</span> <span class='dstring node'>&quot;unknown driver: #{driver.inspect}&quot;</span>
+             <span class='raise identifier id'>raise</span> <span class='ArgumentError constant id'>ArgumentError</span><span class='comma token'>,</span> <span class='dstring node'>&quot;unknown driver: #{browser.inspect}&quot;</span>
            <span class='end end kw'>end</span>
 
    <span class='driver identifier id'>driver</span> <span class='assign token'>=</span> <span class='new identifier id'>new</span><span class='lparen token'>(</span><span class='bridge identifier id'>bridge</span><span class='rparen token'>)</span>
@@ -1192,7 +1197,7 @@ A new Driver instance
       <div class="method_details ">
   <p class="signature " id="manage-class_method">
   
-    + (<tt><a href="Options.html" title="Options">Options</a></tt>) <strong>manage</strong> 
+    + (<tt><a href="Options.html" title="Selenium::WebDriver::Options (class)">Options</a></tt>) <strong>manage</strong> 
   
 
   
@@ -1208,7 +1213,7 @@ A new Driver instance
   
     <li>
       
-        <span class='type'>(<tt><a href="Options.html" title="Options">Options</a></tt>)</span>
+        <span class='type'>(<tt><a href="Options.html" title="Selenium::WebDriver::Options (class)">Options</a></tt>)</span>
       
       
       
@@ -1220,7 +1225,7 @@ A new Driver instance
   <h3>See Also:</h3>
   <ul class="see">
     
-      <li><a href="Options.html" title="Options">Options</a></li>
+      <li><a href="Options.html" title="Selenium::WebDriver::Options (class)">Options</a></li>
     
   </ul>
 
@@ -1249,7 +1254,7 @@ A new Driver instance
       <div class="method_details ">
   <p class="signature " id="navigate-class_method">
   
-    + (<tt><a href="Navigation.html" title="Navigation">Navigation</a></tt>) <strong>navigate</strong> 
+    + (<tt><a href="Navigation.html" title="Selenium::WebDriver::Navigation (class)">Navigation</a></tt>) <strong>navigate</strong> 
   
 
   
@@ -1265,7 +1270,7 @@ A new Driver instance
   
     <li>
       
-        <span class='type'>(<tt><a href="Navigation.html" title="Navigation">Navigation</a></tt>)</span>
+        <span class='type'>(<tt><a href="Navigation.html" title="Selenium::WebDriver::Navigation (class)">Navigation</a></tt>)</span>
       
       
       
@@ -1277,7 +1282,7 @@ A new Driver instance
   <h3>See Also:</h3>
   <ul class="see">
     
-      <li><a href="Navigation.html" title="Navigation">Navigation</a></li>
+      <li><a href="Navigation.html" title="Selenium::WebDriver::Navigation (class)">Navigation</a></li>
     
   </ul>
 
@@ -1439,7 +1444,7 @@ for Find
       <div class="method_details ">
   <p class="signature " id="switch_to-class_method">
   
-    + (<tt><a href="TargetLocator.html" title="TargetLocator">TargetLocator</a></tt>) <strong>switch_to</strong> 
+    + (<tt><a href="TargetLocator.html" title="Selenium::WebDriver::TargetLocator (class)">TargetLocator</a></tt>) <strong>switch_to</strong> 
   
 
   
@@ -1455,7 +1460,7 @@ for Find
   
     <li>
       
-        <span class='type'>(<tt><a href="TargetLocator.html" title="TargetLocator">TargetLocator</a></tt>)</span>
+        <span class='type'>(<tt><a href="TargetLocator.html" title="Selenium::WebDriver::TargetLocator (class)">TargetLocator</a></tt>)</span>
       
       
       
@@ -1467,7 +1472,7 @@ for Find
   <h3>See Also:</h3>
   <ul class="see">
     
-      <li><a href="TargetLocator.html" title="TargetLocator">TargetLocator</a></li>
+      <li><a href="TargetLocator.html" title="Selenium::WebDriver::TargetLocator (class)">TargetLocator</a></li>
     
   </ul>
 
@@ -1741,7 +1746,7 @@ Get the window handles of open browser windows.
   <h3>See Also:</h3>
   <ul class="see">
     
-      <li><a href="TargetLocator.html#window-instance_method" title="TargetLocator#window">TargetLocator#window</a></li>
+      <li><a href="TargetLocator.html#window-instance_method" title="Selenium::WebDriver::TargetLocator#window (method)">TargetLocator#window</a></li>
     
   </ul>
 
@@ -1772,9 +1777,9 @@ Get the window handles of open browser windows.
 </div>
     
     <div id="footer">
-  Generated on Thu Dec 17 17:13:32 2009 by 
+  Generated on Wed Feb  3 14:47:03 2010 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool">yard</a>
-  0.5.2 (ruby-1.8.7).
+  0.5.3 (ruby-1.8.7).
 </div>
 
   </body>

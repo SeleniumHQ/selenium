@@ -16,18 +16,24 @@
 
   </head>
   <body>
+    <script type="text/javascript" charset="utf-8">
+      if (window.top.frames.main) document.body.className = 'frames';
+    </script>
+    
     <div id="header">
       <div id="menu">
   
     <a href="../../_index.html">Index (B)</a> &raquo; 
-    <a href="../../Selenium.html" title="Selenium">Selenium</a> &raquo; <a href="../WebDriver.html" title="WebDriver">WebDriver</a>
+    <span class='title'><a href="../../Selenium.html" title="Selenium (module)">Selenium</a></span> &raquo; <span class='title'><a href="../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span>
      &raquo; 
     <span class="title">BridgeHelper</span>
   
+  
+  <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
 </div>
 
       <div id="search">
-  <a id="class_list_link" href="#">Namespace List</a>
+  <a id="class_list_link" href="#">Class List</a>
   <a id="method_list_link" href="#">Method List</a>
   <a id ="file_list_link" href="#">File List</a>
 </div>
@@ -77,7 +83,7 @@ Shared across bridges
       <li class="public ">
   <span class="summary_signature">
     
-      <a href="#element_id_from-instance_method" title="#element_id_from (instance method)">- (Object) <strong>element_id_from</strong>(arr) </a>
+      <a href="#element_id_from-instance_method" title="#element_id_from (instance method)">- (Object) <strong>element_id_from</strong>(id) </a>
     
 
     
@@ -164,7 +170,7 @@ Shared across bridges
       <div class="method_details first">
   <p class="signature first" id="element_id_from-instance_method">
   
-    - (<tt>Object</tt>) <strong>element_id_from</strong>(arr) 
+    - (<tt>Object</tt>) <strong>element_id_from</strong>(id) 
   
 
   
@@ -176,13 +182,19 @@ Shared across bridges
 
 48
 49
-50</pre>
+50
+51
+52
+53</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/bridge_helper.rb', line 48</span>
 
-<span class='def def kw'>def</span> <span class='element_id_from identifier id'>element_id_from</span><span class='lparen token'>(</span><span class='arr identifier id'>arr</span><span class='rparen token'>)</span>
-  <span class='arr identifier id'>arr</span><span class='dot token'>.</span><span class='to_s identifier id'>to_s</span><span class='dot token'>.</span><span class='split identifier id'>split</span><span class='lparen token'>(</span><span class='string val'>&quot;/&quot;</span><span class='rparen token'>)</span><span class='dot token'>.</span><span class='last identifier id'>last</span>
+<span class='def def kw'>def</span> <span class='element_id_from identifier id'>element_id_from</span><span class='lparen token'>(</span><span class='id identifier id'>id</span><span class='rparen token'>)</span>
+  <span class='str identifier id'>str</span> <span class='assign token'>=</span> <span class='id identifier id'>id</span><span class='dot token'>.</span><span class='kind_of? fid id'>kind_of?</span><span class='lparen token'>(</span><span class='Array constant id'>Array</span><span class='rparen token'>)</span> <span class='question op'>?</span> <span class='id identifier id'>id</span><span class='dot token'>.</span><span class='first identifier id'>first</span> <span class='colon op'>:</span> <span class='id identifier id'>id</span>
+  <span class='after identifier id'>after</span> <span class='assign token'>=</span> <span class='str identifier id'>str</span><span class='dot token'>.</span><span class='split identifier id'>split</span><span class='lparen token'>(</span><span class='string val'>&quot;/&quot;</span><span class='rparen token'>)</span><span class='dot token'>.</span><span class='last identifier id'>last</span>
+
+  <span class='after identifier id'>after</span>
 <span class='end end kw'>end</span>
 </pre>
     </td>
@@ -203,9 +215,6 @@ Shared across bridges
       <pre class="lines">
 
 
-52
-53
-54
 55
 56
 57
@@ -235,10 +244,13 @@ Shared across bridges
 81
 82
 83
-84</pre>
+84
+85
+86
+87</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/bridge_helper.rb', line 52</span>
+      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/bridge_helper.rb', line 55</span>
 
 <span class='def def kw'>def</span> <span class='parse_cookie_string identifier id'>parse_cookie_string</span><span class='lparen token'>(</span><span class='str identifier id'>str</span><span class='rparen token'>)</span>
   <span class='result identifier id'>result</span> <span class='assign token'>=</span> <span class='lbrace token'>{</span>
@@ -402,9 +414,9 @@ Shared across bridges
 </div>
     
     <div id="footer">
-  Generated on Thu Dec 17 17:13:26 2009 by 
+  Generated on Wed Feb  3 14:47:01 2010 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool">yard</a>
-  0.5.2 (ruby-1.8.7).
+  0.5.3 (ruby-1.8.7).
 </div>
 
   </body>

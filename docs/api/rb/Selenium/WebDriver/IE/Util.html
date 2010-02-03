@@ -16,18 +16,24 @@
 
   </head>
   <body>
+    <script type="text/javascript" charset="utf-8">
+      if (window.top.frames.main) document.body.className = 'frames';
+    </script>
+    
     <div id="header">
       <div id="menu">
   
     <a href="../../../_index.html">Index (U)</a> &raquo; 
-    <a href="../../../Selenium.html" title="Selenium">Selenium</a> &raquo; <a href="../../WebDriver.html" title="WebDriver">WebDriver</a> &raquo; <a href="../IE.html" title="IE">IE</a>
+    <span class='title'><a href="../../../Selenium.html" title="Selenium (module)">Selenium</a></span> &raquo; <span class='title'><a href="../../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span> &raquo; <span class='title'><a href="../IE.html" title="Selenium::WebDriver::IE (module)">IE</a></span>
      &raquo; 
     <span class="title">Util</span>
   
+  
+  <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
 </div>
 
       <div id="search">
-  <a id="class_list_link" href="#">Namespace List</a>
+  <a id="class_list_link" href="#">Class List</a>
   <a id="method_list_link" href="#">Method List</a>
   <a id ="file_list_link" href="#">File List</a>
 </div>
@@ -56,59 +62,48 @@
 </dl>
 <div class="clear"></div>
 
-<h2>Overview</h2><div class="docstring">
-  <div class="discussion">
-    <p>
-Util
-</p>
 
-
-  </div>
-</div>
-<div class="tags">
-  
-</div>
   <h2>Constant Summary</h2>
   
     <dl class="constants">
       
-        <dt id="CP_ACP-constant ">CP_ACP =
+        <dt id="CP_ACP-constant" class="">CP_ACP =
             <span class="summary_desc"></span>
         </dt>
         <dd><pre class="code"><span class='integer val'>0</span>
 </pre></dd>
       
-        <dt id="CP_OEMCP-constant ">CP_OEMCP =
+        <dt id="CP_OEMCP-constant" class="">CP_OEMCP =
             <span class="summary_desc"></span>
         </dt>
         <dd><pre class="code"><span class='integer val'>1</span>
 </pre></dd>
       
-        <dt id="CP_MACCP-constant ">CP_MACCP =
+        <dt id="CP_MACCP-constant" class="">CP_MACCP =
             <span class="summary_desc"></span>
         </dt>
         <dd><pre class="code"><span class='integer val'>2</span>
 </pre></dd>
       
-        <dt id="CP_THREAD_ACP-constant ">CP_THREAD_ACP =
+        <dt id="CP_THREAD_ACP-constant" class="">CP_THREAD_ACP =
             <span class="summary_desc"></span>
         </dt>
         <dd><pre class="code"><span class='integer val'>3</span>
 </pre></dd>
       
-        <dt id="CP_SYMBOL-constant ">CP_SYMBOL =
+        <dt id="CP_SYMBOL-constant" class="">CP_SYMBOL =
             <span class="summary_desc"></span>
         </dt>
         <dd><pre class="code"><span class='integer val'>42</span>
 </pre></dd>
       
-        <dt id="CP_UTF7-constant ">CP_UTF7 =
+        <dt id="CP_UTF7-constant" class="">CP_UTF7 =
             <span class="summary_desc"></span>
         </dt>
         <dd><pre class="code"><span class='integer val'>65000</span>
 </pre></dd>
       
-        <dt id="CP_UTF8-constant ">CP_UTF8 =
+        <dt id="CP_UTF8-constant" class="">CP_UTF8 =
             <span class="summary_desc"></span>
         </dt>
         <dd><pre class="code"><span class='integer val'>65001</span>
@@ -473,7 +468,6 @@ Util
       <pre class="lines">
 
 
-85
 86
 87
 88
@@ -499,17 +493,18 @@ Util
 108
 109
 110
-111</pre>
+111
+112</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'jobbie/src/rb/lib/selenium/webdriver/ie/util.rb', line 85</span>
+      <pre class="code"><span class="info file"># File 'jobbie/src/rb/lib/selenium/webdriver/ie/util.rb', line 86</span>
 
 <span class='def def kw'>def</span> <span class='extract_elements_from identifier id'>extract_elements_from</span><span class='lparen token'>(</span><span class='elements_ptr_ref identifier id'>elements_ptr_ref</span><span class='rparen token'>)</span>
   <span class='elements_ptr identifier id'>elements_ptr</span> <span class='assign token'>=</span> <span class='elements_ptr_ref identifier id'>elements_ptr_ref</span><span class='dot token'>.</span><span class='get_pointer identifier id'>get_pointer</span><span class='lparen token'>(</span><span class='integer val'>0</span><span class='rparen token'>)</span>
   <span class='length_ptr identifier id'>length_ptr</span>   <span class='assign token'>=</span> <span class='FFI constant id'>FFI</span><span class='colon2 op'>::</span><span class='MemoryPointer constant id'>MemoryPointer</span><span class='dot token'>.</span><span class='new identifier id'>new</span> <span class='symbol val'>:int</span>
 
   <span class='check_error_code identifier id'>check_error_code</span> <span class='Lib constant id'>Lib</span><span class='dot token'>.</span><span class='wdcGetElementCollectionLength identifier id'>wdcGetElementCollectionLength</span><span class='lparen token'>(</span><span class='elements_ptr identifier id'>elements_ptr</span><span class='comma token'>,</span> <span class='length_ptr identifier id'>length_ptr</span><span class='rparen token'>)</span><span class='comma token'>,</span>
-  <span class='string val'>&quot;Cannot extract elements from collection&quot;</span>
+                   <span class='string val'>&quot;Cannot extract elements from collection&quot;</span>
 
   <span class='arr identifier id'>arr</span> <span class='assign token'>=</span> <span class='lbrack token'>[</span><span class='rbrack token'>]</span>
 
@@ -570,13 +565,15 @@ Util
 80
 81
 82
-83</pre>
+83
+84</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'jobbie/src/rb/lib/selenium/webdriver/ie/util.rb', line 63</span>
 
 <span class='def def kw'>def</span> <span class='extract_string_from identifier id'>extract_string_from</span><span class='lparen token'>(</span><span class='string_ptr_ref identifier id'>string_ptr_ref</span><span class='rparen token'>)</span>
   <span class='string_ptr identifier id'>string_ptr</span> <span class='assign token'>=</span> <span class='string_ptr_ref identifier id'>string_ptr_ref</span><span class='dot token'>.</span><span class='get_pointer identifier id'>get_pointer</span><span class='lparen token'>(</span><span class='integer val'>0</span><span class='rparen token'>)</span>
+  <span class='return return kw'>return</span> <span class='if if_mod kw'>if</span> <span class='string_ptr identifier id'>string_ptr</span><span class='dot token'>.</span><span class='null? fid id'>null?</span> <span class='comment val'># getElementAttribute()</span>
 
   <span class='length_ptr identifier id'>length_ptr</span> <span class='assign token'>=</span> <span class='FFI constant id'>FFI</span><span class='colon2 op'>::</span><span class='MemoryPointer constant id'>MemoryPointer</span><span class='dot token'>.</span><span class='new identifier id'>new</span> <span class='symbol val'>:int</span>
 
@@ -593,7 +590,7 @@ Util
 
   <span class='wstring_to_bytestring identifier id'>wstring_to_bytestring</span> <span class='raw_string identifier id'>raw_string</span>
 <span class='ensure ensure kw'>ensure</span>
-  <span class='Lib constant id'>Lib</span><span class='dot token'>.</span><span class='wdFreeString identifier id'>wdFreeString</span><span class='lparen token'>(</span><span class='string_ptr identifier id'>string_ptr</span><span class='rparen token'>)</span>
+  <span class='Lib constant id'>Lib</span><span class='dot token'>.</span><span class='wdFreeString identifier id'>wdFreeString</span><span class='lparen token'>(</span><span class='string_ptr identifier id'>string_ptr</span><span class='rparen token'>)</span> <span class='unless unless_mod kw'>unless</span> <span class='string_ptr identifier id'>string_ptr</span><span class='dot token'>.</span><span class='null? fid id'>null?</span>
   <span class='string_ptr_ref identifier id'>string_ptr_ref</span><span class='dot token'>.</span><span class='free identifier id'>free</span>
 <span class='end end kw'>end</span>
 </pre>
@@ -692,7 +689,6 @@ Util
       <pre class="lines">
 
 
-114
 115
 116
 117
@@ -704,10 +700,11 @@ Util
 123
 124
 125
-126</pre>
+126
+127</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'jobbie/src/rb/lib/selenium/webdriver/ie/util.rb', line 114</span>
+      <pre class="code"><span class="info file"># File 'jobbie/src/rb/lib/selenium/webdriver/ie/util.rb', line 115</span>
 
 <span class='def def kw'>def</span> <span class='wstring_ptr identifier id'>wstring_ptr</span><span class='lparen token'>(</span><span class='str identifier id'>str</span><span class='rparen token'>)</span>
   <span class='str identifier id'>str</span>  <span class='assign token'>=</span> <span class='str identifier id'>str</span><span class='dot token'>.</span><span class='to_s identifier id'>to_s</span>
@@ -741,7 +738,6 @@ Util
       <pre class="lines">
 
 
-128
 129
 130
 131
@@ -754,10 +750,11 @@ Util
 138
 139
 140
-141</pre>
+141
+142</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'jobbie/src/rb/lib/selenium/webdriver/ie/util.rb', line 128</span>
+      <pre class="code"><span class="info file"># File 'jobbie/src/rb/lib/selenium/webdriver/ie/util.rb', line 129</span>
 
 <span class='def def kw'>def</span> <span class='wstring_to_bytestring identifier id'>wstring_to_bytestring</span><span class='lparen token'>(</span><span class='wstring identifier id'>wstring</span><span class='rparen token'>)</span>
   <span class='size identifier id'>size</span> <span class='assign token'>=</span> <span class='Kernel32 constant id'>Kernel32</span><span class='dot token'>.</span><span class='WideCharToMultiByte constant id'>WideCharToMultiByte</span><span class='lparen token'>(</span><span class='CP_UTF8 constant id'>CP_UTF8</span><span class='comma token'>,</span> <span class='integer val'>0</span><span class='comma token'>,</span> <span class='wstring identifier id'>wstring</span><span class='comma token'>,</span> <span class='integer val'>-1</span><span class='comma token'>,</span> <span class='nil nil kw'>nil</span><span class='comma token'>,</span> <span class='integer val'>0</span><span class='comma token'>,</span> <span class='nil nil kw'>nil</span><span class='comma token'>,</span> <span class='nil nil kw'>nil</span><span class='rparen token'>)</span>
@@ -784,9 +781,9 @@ Util
 </div>
     
     <div id="footer">
-  Generated on Thu Dec 17 17:13:26 2009 by 
+  Generated on Wed Feb  3 14:46:54 2010 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool">yard</a>
-  0.5.2 (ruby-1.8.7).
+  0.5.3 (ruby-1.8.7).
 </div>
 
   </body>

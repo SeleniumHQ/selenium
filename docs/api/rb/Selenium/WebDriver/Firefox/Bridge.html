@@ -16,18 +16,24 @@
 
   </head>
   <body>
+    <script type="text/javascript" charset="utf-8">
+      if (window.top.frames.main) document.body.className = 'frames';
+    </script>
+    
     <div id="header">
       <div id="menu">
   
     <a href="../../../_index.html">Index (B)</a> &raquo; 
-    <a href="../../../Selenium.html" title="Selenium">Selenium</a> &raquo; <a href="../../WebDriver.html" title="WebDriver">WebDriver</a> &raquo; <a href="../Firefox.html" title="Firefox">Firefox</a>
+    <span class='title'><a href="../../../Selenium.html" title="Selenium (module)">Selenium</a></span> &raquo; <span class='title'><a href="../../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span> &raquo; <span class='title'><a href="../Firefox.html" title="Selenium::WebDriver::Firefox (module)">Firefox</a></span>
      &raquo; 
     <span class="title">Bridge</span>
   
+  
+  <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
 </div>
 
       <div id="search">
-  <a id="class_list_link" href="#">Namespace List</a>
+  <a id="class_list_link" href="#">Class List</a>
   <a id="method_list_link" href="#">Method List</a>
   <a id ="file_list_link" href="#">File List</a>
 </div>
@@ -64,7 +70,7 @@
   
     
       <dt class="r2">Includes:</dt>
-      <dd class="r2"><a href="../BridgeHelper.html" title="Selenium::WebDriver::BridgeHelper">Selenium::WebDriver::BridgeHelper</a></dd>
+      <dd class="r2"><a href="../BridgeHelper.html" title="Selenium::WebDriver::BridgeHelper (module)">Selenium::WebDriver::BridgeHelper</a></dd>
       
     
   
@@ -75,18 +81,7 @@
 </dl>
 <div class="clear"></div>
 
-<h2>Overview</h2><div class="docstring">
-  <div class="discussion">
-    <p>
-Bridge
-</p>
 
-
-  </div>
-</div>
-<div class="tags">
-  
-</div>
 
   
   
@@ -329,6 +324,26 @@ Finders - TODO: should be shared with Chrome::Bridge.
       <li class="public ">
   <span class="summary_signature">
     
+      <a href="#findElementByCssSelector-instance_method" title="#findElementByCssSelector (instance method)">- (Object) <strong>findElementByCssSelector</strong>(parent, selector) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
       <a href="#findElementById-instance_method" title="#findElementById (instance method)">- (Object) <strong>findElementById</strong>(parent, id) </a>
     
 
@@ -450,6 +465,26 @@ Finders - TODO: should be shared with Chrome::Bridge.
   <span class="summary_signature">
     
       <a href="#findElementsByClassName-instance_method" title="#findElementsByClassName (instance method)">- (Object) <strong>findElementsByClassName</strong>(parent, class_name) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#findElementsByCssSelector-instance_method" title="#findElementsByCssSelector (instance method)">- (Object) <strong>findElementsByCssSelector</strong>(parent, selector) </a>
     
 
     
@@ -1216,6 +1251,26 @@ A new instance of Bridge.
       <li class="public ">
   <span class="summary_signature">
     
+      <a href="#switchToDefaultContent-instance_method" title="#switchToDefaultContent (instance method)">- (Object) <strong>switchToDefaultContent</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
       <a href="#switchToFrame-instance_method" title="#switchToFrame (instance method)">- (Object) <strong>switchToFrame</strong>(name) </a>
     
 
@@ -1280,15 +1335,15 @@ A new instance of Bridge.
   
   
   
-  <h3 class="inherited">Methods included from <a href="../BridgeHelper.html" title="Selenium::WebDriver::BridgeHelper">Selenium::WebDriver::BridgeHelper</a></h3>
-  <p class="inherited"><a href="../BridgeHelper.html#element_id_from-instance_method" title="#element_id_from">#element_id_from</a>, <a href="../BridgeHelper.html#parse_cookie_string-instance_method" title="#parse_cookie_string">#parse_cookie_string</a></p>
+  <h3 class="inherited">Methods included from <a href="../BridgeHelper.html" title="Selenium::WebDriver::BridgeHelper (module)">Selenium::WebDriver::BridgeHelper</a></h3>
+  <p class="inherited"><a href="../BridgeHelper.html#element_id_from-instance_method" title="Selenium::WebDriver::BridgeHelper#element_id_from (method)">#element_id_from</a>, <a href="../BridgeHelper.html#parse_cookie_string-instance_method" title="Selenium::WebDriver::BridgeHelper#parse_cookie_string (method)">#parse_cookie_string</a></p>
 <div id="constructor_details" class="method_details_list">
   <h2>Constructor Details</h2>
   
     <div class="method_details first">
   <p class="signature first" id="initialize-instance_method">
   
-    - (<tt><a href="" title="Bridge">Bridge</a></tt>) <strong>initialize</strong>(opts = {}) 
+    - (<tt><a href="" title="Selenium::WebDriver::Firefox::Bridge (class)">Bridge</a></tt>) <strong>initialize</strong>(opts = {}) 
   
 
   
@@ -1371,13 +1426,13 @@ A new instance of Bridge
       <pre class="lines">
 
 
-296
-297
-298
-299</pre>
+304
+305
+306
+307</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/bridge.rb', line 296</span>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/bridge.rb', line 304</span>
 
 <span class='def def kw'>def</span> <span class='addCookie identifier id'>addCookie</span><span class='lparen token'>(</span><span class='cookie identifier id'>cookie</span><span class='rparen token'>)</span>
   <span class='execute identifier id'>execute</span> <span class='symbol val'>:addCookie</span><span class='comma token'>,</span>
@@ -1431,14 +1486,14 @@ A new instance of Bridge
       <pre class="lines">
 
 
-212
-213
-214
-215
-216</pre>
+220
+221
+222
+223
+224</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/bridge.rb', line 212</span>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/bridge.rb', line 220</span>
 
 <span class='def def kw'>def</span> <span class='clearElement identifier id'>clearElement</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='rparen token'>)</span>
   <span class='comment val'># execute :clearElement, :element_id =&gt; element</span>
@@ -1475,14 +1530,14 @@ Element functions
       <pre class="lines">
 
 
-158
-159
-160
-161
-162</pre>
+166
+167
+168
+169
+170</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/bridge.rb', line 158</span>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/bridge.rb', line 166</span>
 
 <span class='def def kw'>def</span> <span class='clickElement identifier id'>clickElement</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='rparen token'>)</span>
   <span class='comment val'># execute :clickElement, :element_id =&gt; element</span>
@@ -1550,12 +1605,12 @@ FF-specific?
       <pre class="lines">
 
 
-317
-318
-319</pre>
+325
+326
+327</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/bridge.rb', line 317</span>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/bridge.rb', line 325</span>
 
 <span class='def def kw'>def</span> <span class='deleteAllCookies identifier id'>deleteAllCookies</span>
   <span class='execute identifier id'>execute</span> <span class='symbol val'>:deleteAllCookies</span>
@@ -1579,13 +1634,13 @@ FF-specific?
       <pre class="lines">
 
 
-301
-302
-303
-304</pre>
+309
+310
+311
+312</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/bridge.rb', line 301</span>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/bridge.rb', line 309</span>
 
 <span class='def def kw'>def</span> <span class='deleteCookie identifier id'>deleteCookie</span><span class='lparen token'>(</span><span class='name identifier id'>name</span><span class='rparen token'>)</span>
   <span class='execute identifier id'>execute</span> <span class='symbol val'>:deleteCookie</span><span class='comma token'>,</span>
@@ -1610,14 +1665,14 @@ FF-specific?
       <pre class="lines">
 
 
-266
-267
-268
-269
-270</pre>
+274
+275
+276
+277
+278</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/bridge.rb', line 266</span>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/bridge.rb', line 274</span>
 
 <span class='def def kw'>def</span> <span class='dragElement identifier id'>dragElement</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='comma token'>,</span> <span class='rigth_by identifier id'>rigth_by</span><span class='comma token'>,</span> <span class='down_by identifier id'>down_by</span><span class='rparen token'>)</span>
   <span class='execute identifier id'>execute</span> <span class='symbol val'>:dragElement</span><span class='comma token'>,</span>
@@ -1752,6 +1807,35 @@ Finders - TODO: should be shared with Chrome::Bridge
 
 <span class='def def kw'>def</span> <span class='findElementByClassName identifier id'>findElementByClassName</span><span class='lparen token'>(</span><span class='parent identifier id'>parent</span><span class='comma token'>,</span> <span class='class_name identifier id'>class_name</span><span class='rparen token'>)</span>
   <span class='find_element_by identifier id'>find_element_by</span> <span class='string val'>'class name'</span><span class='comma token'>,</span> <span class='class_name identifier id'>class_name</span><span class='comma token'>,</span> <span class='parent identifier id'>parent</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="findElementByCssSelector-instance_method">
+  
+    - (<tt>Object</tt>) <strong>findElementByCssSelector</strong>(parent, selector) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+154
+155
+156</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/bridge.rb', line 154</span>
+
+<span class='def def kw'>def</span> <span class='findElementByCssSelector identifier id'>findElementByCssSelector</span><span class='lparen token'>(</span><span class='parent identifier id'>parent</span><span class='comma token'>,</span> <span class='selector identifier id'>selector</span><span class='rparen token'>)</span>
+  <span class='find_element_by identifier id'>find_element_by</span> <span class='string val'>'css selector'</span><span class='comma token'>,</span> <span class='selector identifier id'>selector</span><span class='comma token'>,</span> <span class='parent identifier id'>parent</span>
 <span class='end end kw'>end</span>
 </pre>
     </td>
@@ -1955,6 +2039,35 @@ Finders - TODO: should be shared with Chrome::Bridge
 
 <span class='def def kw'>def</span> <span class='findElementsByClassName identifier id'>findElementsByClassName</span><span class='lparen token'>(</span><span class='parent identifier id'>parent</span><span class='comma token'>,</span> <span class='class_name identifier id'>class_name</span><span class='rparen token'>)</span>
   <span class='find_elements_by identifier id'>find_elements_by</span> <span class='string val'>'class name'</span><span class='comma token'>,</span> <span class='class_name identifier id'>class_name</span><span class='comma token'>,</span> <span class='parent identifier id'>parent</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="findElementsByCssSelector-instance_method">
+  
+    - (<tt>Object</tt>) <strong>findElementsByCssSelector</strong>(parent, selector) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+158
+159
+160</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/bridge.rb', line 158</span>
+
+<span class='def def kw'>def</span> <span class='findElementsByCssSelector identifier id'>findElementsByCssSelector</span><span class='lparen token'>(</span><span class='parent identifier id'>parent</span><span class='comma token'>,</span> <span class='selector identifier id'>selector</span><span class='rparen token'>)</span>
+  <span class='find_elements_by identifier id'>find_elements_by</span> <span class='string val'>'css selector'</span><span class='comma token'>,</span> <span class='selector identifier id'>selector</span><span class='comma token'>,</span> <span class='parent identifier id'>parent</span>
 <span class='end end kw'>end</span>
 </pre>
     </td>
@@ -2180,15 +2293,15 @@ Finders - TODO: should be shared with Chrome::Bridge
       <pre class="lines">
 
 
-306
-307
-308
-309
-310
-311</pre>
+314
+315
+316
+317
+318
+319</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/bridge.rb', line 306</span>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/bridge.rb', line 314</span>
 
 <span class='def def kw'>def</span> <span class='getAllCookies identifier id'>getAllCookies</span>
   <span class='data identifier id'>data</span> <span class='assign token'>=</span> <span class='execute identifier id'>execute</span> <span class='symbol val'>:getCookie</span>
@@ -2215,12 +2328,12 @@ Finders - TODO: should be shared with Chrome::Bridge
       <pre class="lines">
 
 
-321
-322
-323</pre>
+329
+330
+331</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/bridge.rb', line 321</span>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/bridge.rb', line 329</span>
 
 <span class='def def kw'>def</span> <span class='getCookieNamed identifier id'>getCookieNamed</span><span class='lparen token'>(</span><span class='name identifier id'>name</span><span class='rparen token'>)</span>
   <span class='getCookies identifier id'>getCookies</span><span class='dot token'>.</span><span class='find identifier id'>find</span> <span class='lbrace token'>{</span> <span class='bitor op'>|</span><span class='c identifier id'>c</span><span class='bitor op'>|</span> <span class='c identifier id'>c</span><span class='lbrack token'>[</span><span class='string val'>'name'</span><span class='rbrack token'>]</span> <span class='eq op'>==</span> <span class='name identifier id'>name</span> <span class='rbrace token'>}</span>
@@ -2302,15 +2415,15 @@ Finders - TODO: should be shared with Chrome::Bridge
       <pre class="lines">
 
 
-170
-171
-172
-173
-174
-175</pre>
+178
+179
+180
+181
+182
+183</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/bridge.rb', line 170</span>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/bridge.rb', line 178</span>
 
 <span class='def def kw'>def</span> <span class='getElementAttribute identifier id'>getElementAttribute</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='comma token'>,</span> <span class='name identifier id'>name</span><span class='rparen token'>)</span>
   <span class='comment val'># execute :getElementAttribute, :element_id =&gt; element, :parameters =&gt; [name]</span>
@@ -2337,16 +2450,16 @@ Finders - TODO: should be shared with Chrome::Bridge
       <pre class="lines">
 
 
-189
-190
-191
-192
-193
-194
-195</pre>
+197
+198
+199
+200
+201
+202
+203</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/bridge.rb', line 189</span>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/bridge.rb', line 197</span>
 
 <span class='def def kw'>def</span> <span class='getElementLocation identifier id'>getElementLocation</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='rparen token'>)</span>
   <span class='comment val'># data = execute :getElementLocation, :element_id =&gt; element</span>
@@ -2374,16 +2487,16 @@ Finders - TODO: should be shared with Chrome::Bridge
       <pre class="lines">
 
 
-197
-198
-199
-200
-201
-202
-203</pre>
+205
+206
+207
+208
+209
+210
+211</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/bridge.rb', line 197</span>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/bridge.rb', line 205</span>
 
 <span class='def def kw'>def</span> <span class='getElementSize identifier id'>getElementSize</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='rparen token'>)</span>
   <span class='comment val'># execute :getElementSize, :element_id =&gt; element</span>
@@ -2411,14 +2524,14 @@ Finders - TODO: should be shared with Chrome::Bridge
       <pre class="lines">
 
 
-164
-165
-166
-167
-168</pre>
+172
+173
+174
+175
+176</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/bridge.rb', line 164</span>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/bridge.rb', line 172</span>
 
 <span class='def def kw'>def</span> <span class='getElementTagName identifier id'>getElementTagName</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='rparen token'>)</span>
   <span class='comment val'># execute :getElementTagName, :element_id =&gt; element</span>
@@ -2444,14 +2557,14 @@ Finders - TODO: should be shared with Chrome::Bridge
       <pre class="lines">
 
 
-183
-184
-185
-186
-187</pre>
+191
+192
+193
+194
+195</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/bridge.rb', line 183</span>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/bridge.rb', line 191</span>
 
 <span class='def def kw'>def</span> <span class='getElementText identifier id'>getElementText</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='rparen token'>)</span>
   <span class='comment val'># execute :getElementText, :element_id =&gt; element</span>
@@ -2477,14 +2590,14 @@ Finders - TODO: should be shared with Chrome::Bridge
       <pre class="lines">
 
 
-177
-178
-179
-180
-181</pre>
+185
+186
+187
+188
+189</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/bridge.rb', line 177</span>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/bridge.rb', line 185</span>
 
 <span class='def def kw'>def</span> <span class='getElementValue identifier id'>getElementValue</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='rparen token'>)</span>
   <span class='comment val'># execute :getElementValue, :element_id =&gt; element</span>
@@ -2510,15 +2623,15 @@ Finders - TODO: should be shared with Chrome::Bridge
       <pre class="lines">
 
 
-253
-254
-255
-256
-257
-258</pre>
+261
+262
+263
+264
+265
+266</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/bridge.rb', line 253</span>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/bridge.rb', line 261</span>
 
 <span class='def def kw'>def</span> <span class='getElementValueOfCssProperty identifier id'>getElementValueOfCssProperty</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='comma token'>,</span> <span class='prop identifier id'>prop</span><span class='rparen token'>)</span>
   <span class='comment val'># execute :getElementValueOfCssProperty, :element_id =&gt; element, :parameters =&gt; [prop]</span>
@@ -2603,18 +2716,18 @@ Finders - TODO: should be shared with Chrome::Bridge
       <pre class="lines">
 
 
-286
-287
-288
-289
-290
-291
-292
-293
-294</pre>
+294
+295
+296
+297
+298
+299
+300
+301
+302</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/bridge.rb', line 286</span>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/bridge.rb', line 294</span>
 
 <span class='def def kw'>def</span> <span class='getSpeed identifier id'>getSpeed</span>
   <span class='case case kw'>case</span> <span class='execute identifier id'>execute</span><span class='lparen token'>(</span><span class='symbol val'>:getMouseSpeed</span><span class='rparen token'>)</span>
@@ -2760,14 +2873,14 @@ Finders - TODO: should be shared with Chrome::Bridge
       <pre class="lines">
 
 
-260
-261
-262
-263
-264</pre>
+268
+269
+270
+271
+272</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/bridge.rb', line 260</span>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/bridge.rb', line 268</span>
 
 <span class='def def kw'>def</span> <span class='hoverOverElement identifier id'>hoverOverElement</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='rparen token'>)</span>
   <span class='execute identifier id'>execute</span> <span class='symbol val'>:hover</span><span class='comma token'>,</span>
@@ -2793,14 +2906,14 @@ Finders - TODO: should be shared with Chrome::Bridge
       <pre class="lines">
 
 
-229
-230
-231
-232
-233</pre>
+237
+238
+239
+240
+241</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/bridge.rb', line 229</span>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/bridge.rb', line 237</span>
 
 <span class='def def kw'>def</span> <span class='isElementDisplayed identifier id'>isElementDisplayed</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='rparen token'>)</span>
   <span class='comment val'># execute :isElementDisplayed, :element_id =&gt; element</span>
@@ -2826,13 +2939,13 @@ Finders - TODO: should be shared with Chrome::Bridge
       <pre class="lines">
 
 
-218
-219
-220
-221</pre>
+226
+227
+228
+229</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/bridge.rb', line 218</span>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/bridge.rb', line 226</span>
 
 <span class='def def kw'>def</span> <span class='isElementEnabled identifier id'>isElementEnabled</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='rparen token'>)</span>
   <span class='comment val'># execute :isElementEnabled, :element_id =&gt; element</span>
@@ -2857,14 +2970,14 @@ Finders - TODO: should be shared with Chrome::Bridge
       <pre class="lines">
 
 
-223
-224
-225
-226
-227</pre>
+231
+232
+233
+234
+235</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/bridge.rb', line 223</span>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/bridge.rb', line 231</span>
 
 <span class='def def kw'>def</span> <span class='isElementSelected identifier id'>isElementSelected</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='rparen token'>)</span>
   <span class='comment val'># execute :isElementSelected, :element_id =&gt; element</span>
@@ -2954,15 +3067,15 @@ Finders - TODO: should be shared with Chrome::Bridge
       <pre class="lines">
 
 
-205
-206
-207
-208
-209
-210</pre>
+213
+214
+215
+216
+217
+218</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/bridge.rb', line 205</span>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/bridge.rb', line 213</span>
 
 <span class='def def kw'>def</span> <span class='sendKeysToElement identifier id'>sendKeysToElement</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='comma token'>,</span> <span class='string identifier id'>string</span><span class='rparen token'>)</span>
   <span class='comment val'># execute :sendKeysToElement, :element_id =&gt; element, :parameters =&gt; [string.split(//u)]</span>
@@ -2989,14 +3102,14 @@ Finders - TODO: should be shared with Chrome::Bridge
       <pre class="lines">
 
 
-247
-248
-249
-250
-251</pre>
+255
+256
+257
+258
+259</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/bridge.rb', line 247</span>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/bridge.rb', line 255</span>
 
 <span class='def def kw'>def</span> <span class='setElementSelected identifier id'>setElementSelected</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='rparen token'>)</span>
   <span class='comment val'># execute :setElementSelected, :element_id =&gt; element</span>
@@ -3022,21 +3135,21 @@ Finders - TODO: should be shared with Chrome::Bridge
       <pre class="lines">
 
 
-273
-274
-275
-276
-277
-278
-279
-280
 281
 282
 283
-284</pre>
+284
+285
+286
+287
+288
+289
+290
+291
+292</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/bridge.rb', line 273</span>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/bridge.rb', line 281</span>
 
 <span class='def def kw'>def</span> <span class='setSpeed identifier id'>setSpeed</span><span class='lparen token'>(</span><span class='speed identifier id'>speed</span><span class='rparen token'>)</span>
   <span class='pixel_speed identifier id'>pixel_speed</span> <span class='assign token'>=</span> <span class='case case kw'>case</span> <span class='speed identifier id'>speed</span>
@@ -3069,14 +3182,14 @@ Finders - TODO: should be shared with Chrome::Bridge
       <pre class="lines">
 
 
-235
-236
-237
-238
-239</pre>
+243
+244
+245
+246
+247</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/bridge.rb', line 235</span>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/bridge.rb', line 243</span>
 
 <span class='def def kw'>def</span> <span class='submitElement identifier id'>submitElement</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='rparen token'>)</span>
   <span class='comment val'># execute :submitElement, :element_id =&gt; element</span>
@@ -3106,15 +3219,44 @@ Finders - TODO: should be shared with Chrome::Bridge
       <pre class="lines">
 
 
-335
-336
-337</pre>
+347
+348
+349</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/bridge.rb', line 335</span>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/bridge.rb', line 347</span>
 
 <span class='def def kw'>def</span> <span class='switchToActiveElement identifier id'>switchToActiveElement</span>
   <span class='Element constant id'>Element</span><span class='dot token'>.</span><span class='new identifier id'>new</span> <span class='self self kw'>self</span><span class='comma token'>,</span> <span class='element_id_from identifier id'>element_id_from</span><span class='lparen token'>(</span><span class='execute identifier id'>execute</span><span class='lparen token'>(</span><span class='symbol val'>:switchToActiveElement</span><span class='rparen token'>)</span><span class='rparen token'>)</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="switchToDefaultContent-instance_method">
+  
+    - (<tt>Object</tt>) <strong>switchToDefaultContent</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+338
+339
+340</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/bridge.rb', line 338</span>
+
+<span class='def def kw'>def</span> <span class='switchToDefaultContent identifier id'>switchToDefaultContent</span>
+  <span class='execute identifier id'>execute</span> <span class='symbol val'>:switchToDefaultContent</span>
 <span class='end end kw'>end</span>
 </pre>
     </td>
@@ -3135,13 +3277,13 @@ Finders - TODO: should be shared with Chrome::Bridge
       <pre class="lines">
 
 
-325
-326
-327
-328</pre>
+333
+334
+335
+336</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/bridge.rb', line 325</span>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/bridge.rb', line 333</span>
 
 <span class='def def kw'>def</span> <span class='switchToFrame identifier id'>switchToFrame</span><span class='lparen token'>(</span><span class='name identifier id'>name</span><span class='rparen token'>)</span>
   <span class='execute identifier id'>execute</span> <span class='symbol val'>:switchToFrame</span><span class='comma token'>,</span>
@@ -3166,13 +3308,13 @@ Finders - TODO: should be shared with Chrome::Bridge
       <pre class="lines">
 
 
-330
-331
-332
-333</pre>
+342
+343
+344
+345</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/bridge.rb', line 330</span>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/bridge.rb', line 342</span>
 
 <span class='def def kw'>def</span> <span class='switchToWindow identifier id'>switchToWindow</span><span class='lparen token'>(</span><span class='name identifier id'>name</span><span class='rparen token'>)</span>
   <span class='@context ivar id'>@context</span> <span class='assign token'>=</span> <span class='execute identifier id'>execute</span>  <span class='symbol val'>:switchToWindow</span><span class='comma token'>,</span>
@@ -3197,14 +3339,14 @@ Finders - TODO: should be shared with Chrome::Bridge
       <pre class="lines">
 
 
-241
-242
-243
-244
-245</pre>
+249
+250
+251
+252
+253</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/bridge.rb', line 241</span>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/bridge.rb', line 249</span>
 
 <span class='def def kw'>def</span> <span class='toggleElement identifier id'>toggleElement</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='rparen token'>)</span>
   <span class='comment val'># execute :toggleElement, :element_id =&gt; element</span>
@@ -3222,9 +3364,9 @@ Finders - TODO: should be shared with Chrome::Bridge
 </div>
     
     <div id="footer">
-  Generated on Thu Dec 17 17:13:33 2009 by 
+  Generated on Wed Feb  3 14:47:04 2010 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool">yard</a>
-  0.5.2 (ruby-1.8.7).
+  0.5.3 (ruby-1.8.7).
 </div>
 
   </body>

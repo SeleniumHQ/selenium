@@ -79,10 +79,18 @@ function toggleSearchFrame(id, link) {
 
 function linkSummaries() {
   $('.summary_signature').click(function() {
-    window.parent.location = $(this).find('a').attr('href');
+    document.location = $(this).find('a').attr('href');
   });
 }
 
+function framesInit() {
+  if (window.top.frames.main) {
+    document.body.className = 'frames';
+    $('#menu .noframes a').attr('href', document.location);
+  }
+}
+
+$(framesInit);
 $(createSourceLinks);
 $(createDefineLinks);
 $(createFullTreeLinks);

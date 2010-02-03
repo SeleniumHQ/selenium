@@ -16,18 +16,24 @@
 
   </head>
   <body>
+    <script type="text/javascript" charset="utf-8">
+      if (window.top.frames.main) document.body.className = 'frames';
+    </script>
+    
     <div id="header">
       <div id="menu">
   
     <a href="../../_index.html">Index (F)</a> &raquo; 
-    <a href="../../Selenium.html" title="Selenium">Selenium</a> &raquo; <a href="../WebDriver.html" title="WebDriver">WebDriver</a>
+    <span class='title'><a href="../../Selenium.html" title="Selenium (module)">Selenium</a></span> &raquo; <span class='title'><a href="../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span>
      &raquo; 
     <span class="title">Firefox</span>
   
+  
+  <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
 </div>
 
       <div id="search">
-  <a id="class_list_link" href="#">Namespace List</a>
+  <a id="class_list_link" href="#">Class List</a>
   <a id="method_list_link" href="#">Method List</a>
   <a id ="file_list_link" href="#">File List</a>
 </div>
@@ -51,33 +57,22 @@
   
   
     <dt class="r1 last">Defined in:</dt>
-    <dd class="r1 last">firefox/src/rb/lib/selenium/webdriver/firefox/util.rb<span class="defines">,<br />
-  firefox/src/rb/lib/selenium/webdriver/firefox.rb,<br /> firefox/src/rb/lib/selenium/webdriver/firefox/binary.rb,<br /> firefox/src/rb/lib/selenium/webdriver/firefox/bridge.rb,<br /> firefox/src/rb/lib/selenium/webdriver/firefox/profile.rb,<br /> firefox/src/rb/lib/selenium/webdriver/firefox/launcher.rb,<br /> firefox/src/rb/lib/selenium/webdriver/firefox/profiles_ini.rb,<br /> firefox/src/rb/lib/selenium/webdriver/firefox/extension_connection.rb</span>
+    <dd class="r1 last">firefox/src/rb/lib/selenium/webdriver/firefox.rb<span class="defines">,<br />
+  firefox/src/rb/lib/selenium/webdriver/firefox/util.rb,<br /> firefox/src/rb/lib/selenium/webdriver/firefox/binary.rb,<br /> firefox/src/rb/lib/selenium/webdriver/firefox/bridge.rb,<br /> firefox/src/rb/lib/selenium/webdriver/firefox/profile.rb,<br /> firefox/src/rb/lib/selenium/webdriver/firefox/launcher.rb,<br /> firefox/src/rb/lib/selenium/webdriver/firefox/profiles_ini.rb,<br /> firefox/src/rb/lib/selenium/webdriver/firefox/extension_connection.rb</span>
 </dd>
   
 </dl>
 <div class="clear"></div>
 
-<h2>Overview</h2><div class="docstring">
-  <div class="discussion">
-    <p>
-Firefox
-</p>
-
-
-  </div>
-</div>
-<div class="tags">
-  
-</div><h2>Defined Under Namespace</h2>
+<h2>Defined Under Namespace</h2>
 <p class="children">
    
     
-      <strong class="modules">Modules:</strong> <a href="Firefox/Util.html" title="Util">Util</a>
+      <strong class="modules">Modules:</strong> <a href="Firefox/Util.html" title="Selenium::WebDriver::Firefox::Util (module)">Util</a>
     
    
     
-      <strong class="classes">Classes:</strong> <a href="Firefox/Binary.html" title="Binary">Binary</a>, <a href="Firefox/Bridge.html" title="Bridge">Bridge</a>, <a href="Firefox/ExtensionConnection.html" title="ExtensionConnection">ExtensionConnection</a>, <a href="Firefox/Launcher.html" title="Launcher">Launcher</a>, <a href="Firefox/Profile.html" title="Profile">Profile</a>, <a href="Firefox/ProfilesIni.html" title="ProfilesIni">ProfilesIni</a>
+      <strong class="classes">Classes:</strong> <a href="Firefox/Binary.html" title="Selenium::WebDriver::Firefox::Binary (class)">Binary</a>, <a href="Firefox/Bridge.html" title="Selenium::WebDriver::Firefox::Bridge (class)">Bridge</a>, <a href="Firefox/ExtensionConnection.html" title="Selenium::WebDriver::Firefox::ExtensionConnection (class)">ExtensionConnection</a>, <a href="Firefox/Launcher.html" title="Selenium::WebDriver::Firefox::Launcher (class)">Launcher</a>, <a href="Firefox/Profile.html" title="Selenium::WebDriver::Firefox::Profile (class)">Profile</a>, <a href="Firefox/ProfilesIni.html" title="Selenium::WebDriver::Firefox::ProfilesIni (class)">ProfilesIni</a>
     
   
 </p>
@@ -86,22 +81,22 @@ Firefox
   
     <dl class="constants">
       
-        <dt id="DEFAULT_PROFILE_NAME-constant ">DEFAULT_PROFILE_NAME =
+        <dt id="DEFAULT_PROFILE_NAME-constant" class="">DEFAULT_PROFILE_NAME =
             <span class="summary_desc"></span>
         </dt>
         <dd><pre class="code"><span class='string val'>&quot;WebDriver&quot;</span><span class='dot token'>.</span><span class='freeze identifier id'>freeze</span>
 </pre></dd>
       
-        <dt id="DEFAULT_PORT-constant ">DEFAULT_PORT =
+        <dt id="DEFAULT_PORT-constant" class="">DEFAULT_PORT =
             <span class="summary_desc"></span>
         </dt>
         <dd><pre class="code"><span class='integer val'>7055</span>
 </pre></dd>
       
-        <dt id="DEFAULT_ENABLE_NATIVE_EVENTS-constant ">DEFAULT_ENABLE_NATIVE_EVENTS =
+        <dt id="DEFAULT_ENABLE_NATIVE_EVENTS-constant" class="">DEFAULT_ENABLE_NATIVE_EVENTS =
             <span class="summary_desc"></span>
         </dt>
-        <dd><pre class="code"><span class='Platform constant id'>Platform</span><span class='dot token'>.</span><span class='win? fid id'>win?</span>
+        <dd><pre class="code"><span class='lbrack token'>[</span><span class='symbol val'>:windows</span><span class='comma token'>,</span> <span class='symbol val'>:linux</span><span class='rbrack token'>]</span><span class='dot token'>.</span><span class='include? fid id'>include?</span> <span class='Platform constant id'>Platform</span><span class='dot token'>.</span><span class='os identifier id'>os</span>
 </pre></dd>
       
     </dl>
@@ -113,9 +108,9 @@ Firefox
 </div>
     
     <div id="footer">
-  Generated on Thu Dec 17 17:13:24 2009 by 
+  Generated on Wed Feb  3 14:46:56 2010 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool">yard</a>
-  0.5.2 (ruby-1.8.7).
+  0.5.3 (ruby-1.8.7).
 </div>
 
   </body>

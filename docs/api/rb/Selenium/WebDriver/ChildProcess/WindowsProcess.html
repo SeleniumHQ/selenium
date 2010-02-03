@@ -16,18 +16,24 @@
 
   </head>
   <body>
+    <script type="text/javascript" charset="utf-8">
+      if (window.top.frames.main) document.body.className = 'frames';
+    </script>
+    
     <div id="header">
       <div id="menu">
   
     <a href="../../../_index.html">Index (W)</a> &raquo; 
-    <a href="../../../Selenium.html" title="Selenium">Selenium</a> &raquo; <a href="../../WebDriver.html" title="WebDriver">WebDriver</a> &raquo; <a href="../ChildProcess.html" title="ChildProcess">ChildProcess</a>
+    <span class='title'><a href="../../../Selenium.html" title="Selenium (module)">Selenium</a></span> &raquo; <span class='title'><a href="../../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span> &raquo; <span class='title'><a href="../ChildProcess.html" title="Selenium::WebDriver::ChildProcess (class)">ChildProcess</a></span>
      &raquo; 
     <span class="title">WindowsProcess</span>
   
+  
+  <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
 </div>
 
       <div id="search">
-  <a id="class_list_link" href="#">Namespace List</a>
+  <a id="class_list_link" href="#">Class List</a>
   <a id="method_list_link" href="#">Method List</a>
   <a id ="file_list_link" href="#">File List</a>
 </div>
@@ -123,12 +129,12 @@
       <pre class="lines">
 
 
-72
-73
-74</pre>
+78
+79
+80</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/child_process.rb', line 72</span>
+      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/child_process.rb', line 78</span>
 
 <span class='def def kw'>def</span> <span class='kill identifier id'>kill</span>
   <span class='kill! fid id'>kill!</span>
@@ -152,28 +158,24 @@
       <pre class="lines">
 
 
-60
-61
-62
-63
-64
-65
-66
-67
 68
 69
-70</pre>
+70
+71
+72
+73
+74
+75
+76</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/child_process.rb', line 60</span>
+      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/child_process.rb', line 68</span>
 
 <span class='def def kw'>def</span> <span class='start identifier id'>start</span>
-  <span class='require identifier id'>require</span> <span class='string val'>&quot;win32/process&quot;</span> <span class='comment val'># adds a dependency on windows</span>
+  <span class='require identifier id'>require</span> <span class='string val'>&quot;win32/process&quot;</span> <span class='comment val'># adds a dependency on windows - perhaps we could just use FFI instead?</span>
   <span class='@pid ivar id'>@pid</span> <span class='assign token'>=</span> <span class='Process constant id'>Process</span><span class='dot token'>.</span><span class='create identifier id'>create</span><span class='lparen token'>(</span>
     <span class='symbol val'>:app_name</span>        <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='@args ivar id'>@args</span><span class='dot token'>.</span><span class='join identifier id'>join</span><span class='lparen token'>(</span><span class='string val'>&quot; &quot;</span><span class='rparen token'>)</span><span class='comma token'>,</span>
-    <span class='symbol val'>:process_inherit</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='true true kw'>true</span><span class='comma token'>,</span>
-    <span class='symbol val'>:thread_inherit</span>  <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='true true kw'>true</span><span class='comma token'>,</span>
-    <span class='symbol val'>:inherit</span>         <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='true true kw'>true</span>
+    <span class='symbol val'>:inherit</span>         <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='false false kw'>false</span> <span class='comment val'># don't inherit open file handles</span>
   <span class='rparen token'>)</span><span class='dot token'>.</span><span class='process_id identifier id'>process_id</span>
 
   <span class='self self kw'>self</span>
@@ -189,9 +191,9 @@
 </div>
     
     <div id="footer">
-  Generated on Thu Dec 17 17:13:26 2009 by 
+  Generated on Wed Feb  3 14:46:54 2010 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool">yard</a>
-  0.5.2 (ruby-1.8.7).
+  0.5.3 (ruby-1.8.7).
 </div>
 
   </body>

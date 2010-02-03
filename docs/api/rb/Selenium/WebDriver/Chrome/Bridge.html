@@ -16,18 +16,24 @@
 
   </head>
   <body>
+    <script type="text/javascript" charset="utf-8">
+      if (window.top.frames.main) document.body.className = 'frames';
+    </script>
+    
     <div id="header">
       <div id="menu">
   
     <a href="../../../_index.html">Index (B)</a> &raquo; 
-    <a href="../../../Selenium.html" title="Selenium">Selenium</a> &raquo; <a href="../../WebDriver.html" title="WebDriver">WebDriver</a> &raquo; <a href="../Chrome.html" title="Chrome">Chrome</a>
+    <span class='title'><a href="../../../Selenium.html" title="Selenium (module)">Selenium</a></span> &raquo; <span class='title'><a href="../../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span> &raquo; <span class='title'><a href="../Chrome.html" title="Selenium::WebDriver::Chrome (module)">Chrome</a></span>
      &raquo; 
     <span class="title">Bridge</span>
   
+  
+  <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
 </div>
 
       <div id="search">
-  <a id="class_list_link" href="#">Namespace List</a>
+  <a id="class_list_link" href="#">Class List</a>
   <a id="method_list_link" href="#">Method List</a>
   <a id ="file_list_link" href="#">File List</a>
 </div>
@@ -64,7 +70,7 @@
   
     
       <dt class="r2">Includes:</dt>
-      <dd class="r2"><a href="../BridgeHelper.html" title="Selenium::WebDriver::BridgeHelper">Selenium::WebDriver::BridgeHelper</a></dd>
+      <dd class="r2"><a href="../BridgeHelper.html" title="Selenium::WebDriver::BridgeHelper (module)">Selenium::WebDriver::BridgeHelper</a></dd>
       
     
   
@@ -75,18 +81,7 @@
 </dl>
 <div class="clear"></div>
 
-<h2>Overview</h2><div class="docstring">
-  <div class="discussion">
-    <p>
-Bridge
-</p>
 
-
-  </div>
-</div>
-<div class="tags">
-  
-</div>
 
   
   
@@ -323,6 +318,26 @@ Element functions.
       <li class="public ">
   <span class="summary_signature">
     
+      <a href="#findElementByCssSelector-instance_method" title="#findElementByCssSelector (instance method)">- (Object) <strong>findElementByCssSelector</strong>(parent, selector) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
       <a href="#findElementById-instance_method" title="#findElementById (instance method)">- (Object) <strong>findElementById</strong>(parent, id) </a>
     
 
@@ -444,6 +459,26 @@ Element functions.
   <span class="summary_signature">
     
       <a href="#findElementsByClassName-instance_method" title="#findElementsByClassName (instance method)">- (Object) <strong>findElementsByClassName</strong>(parent, class_name) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#findElementsByCssSelector-instance_method" title="#findElementsByCssSelector (instance method)">- (Object) <strong>findElementsByCssSelector</strong>(parent, selector) </a>
     
 
     
@@ -1190,6 +1225,26 @@ A new instance of Bridge.
       <li class="public ">
   <span class="summary_signature">
     
+      <a href="#switchToDefaultContent-instance_method" title="#switchToDefaultContent (instance method)">- (Object) <strong>switchToDefaultContent</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
       <a href="#switchToFrame-instance_method" title="#switchToFrame (instance method)">- (Object) <strong>switchToFrame</strong>(id) </a>
     
 
@@ -1254,15 +1309,15 @@ A new instance of Bridge.
   
   
   
-  <h3 class="inherited">Methods included from <a href="../BridgeHelper.html" title="Selenium::WebDriver::BridgeHelper">Selenium::WebDriver::BridgeHelper</a></h3>
-  <p class="inherited"><a href="../BridgeHelper.html#element_id_from-instance_method" title="#element_id_from">#element_id_from</a>, <a href="../BridgeHelper.html#parse_cookie_string-instance_method" title="#parse_cookie_string">#parse_cookie_string</a>, <a href="../BridgeHelper.html#unwrap_script_argument-instance_method" title="#unwrap_script_argument">#unwrap_script_argument</a>, <a href="../BridgeHelper.html#wrap_script_argument-instance_method" title="#wrap_script_argument">#wrap_script_argument</a></p>
+  <h3 class="inherited">Methods included from <a href="../BridgeHelper.html" title="Selenium::WebDriver::BridgeHelper (module)">Selenium::WebDriver::BridgeHelper</a></h3>
+  <p class="inherited"><a href="../BridgeHelper.html#element_id_from-instance_method" title="Selenium::WebDriver::BridgeHelper#element_id_from (method)">#element_id_from</a>, <a href="../BridgeHelper.html#parse_cookie_string-instance_method" title="Selenium::WebDriver::BridgeHelper#parse_cookie_string (method)">#parse_cookie_string</a>, <a href="../BridgeHelper.html#unwrap_script_argument-instance_method" title="Selenium::WebDriver::BridgeHelper#unwrap_script_argument (method)">#unwrap_script_argument</a>, <a href="../BridgeHelper.html#wrap_script_argument-instance_method" title="Selenium::WebDriver::BridgeHelper#wrap_script_argument (method)">#wrap_script_argument</a></p>
 <div id="constructor_details" class="method_details_list">
   <h2>Constructor Details</h2>
   
     <div class="method_details first">
   <p class="signature first" id="initialize-instance_method">
   
-    - (<tt><a href="" title="Bridge">Bridge</a></tt>) <strong>initialize</strong> 
+    - (<tt><a href="" title="Selenium::WebDriver::Chrome::Bridge (class)">Bridge</a></tt>) <strong>initialize</strong> 
   
 
   
@@ -1288,8 +1343,7 @@ A new instance of Bridge
 9
 10
 11
-12
-13</pre>
+12</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 7</span>
@@ -1298,8 +1352,7 @@ A new instance of Bridge
   <span class='@executor ivar id'>@executor</span> <span class='assign token'>=</span> <span class='CommandExecutor constant id'>CommandExecutor</span><span class='dot token'>.</span><span class='new identifier id'>new</span>
 
   <span class='@launcher ivar id'>@launcher</span> <span class='assign token'>=</span> <span class='Launcher constant id'>Launcher</span><span class='dot token'>.</span><span class='launcher identifier id'>launcher</span>
-  <span class='@launcher ivar id'>@launcher</span><span class='dot token'>.</span><span class='launch identifier id'>launch</span>
-  <span class='comment val'># TODO: @launcher.kill</span>
+  <span class='@launcher ivar id'>@launcher</span><span class='dot token'>.</span><span class='launch identifier id'>launch</span><span class='lparen token'>(</span><span class='@executor ivar id'>@executor</span><span class='dot token'>.</span><span class='uri identifier id'>uri</span><span class='rparen token'>)</span>
 <span class='end end kw'>end</span>
 </pre>
     </td>
@@ -1327,13 +1380,13 @@ A new instance of Bridge
       <pre class="lines">
 
 
-107
-108
-109
-110</pre>
+110
+111
+112
+113</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 107</span>
+      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 110</span>
 
 <span class='def def kw'>def</span> <span class='addCookie identifier id'>addCookie</span><span class='lparen token'>(</span><span class='cookie identifier id'>cookie</span><span class='rparen token'>)</span>
   <span class='execute identifier id'>execute</span> <span class='symbol val'>:request</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'addCookie'</span><span class='comma token'>,</span>
@@ -1358,12 +1411,12 @@ A new instance of Bridge
       <pre class="lines">
 
 
+14
 15
-16
-17</pre>
+16</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 15</span>
+      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 14</span>
 
 <span class='def def kw'>def</span> <span class='browser identifier id'>browser</span>
   <span class='symbol val'>:chrome</span>
@@ -1387,13 +1440,13 @@ A new instance of Bridge
       <pre class="lines">
 
 
-232
-233
-234
-235</pre>
+243
+244
+245
+246</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 232</span>
+      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 243</span>
 
 <span class='def def kw'>def</span> <span class='clearElement identifier id'>clearElement</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='rparen token'>)</span>
   <span class='execute identifier id'>execute</span> <span class='symbol val'>:request</span>   <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'clearElement'</span><span class='comma token'>,</span>
@@ -1429,13 +1482,13 @@ Element functions
       <pre class="lines">
 
 
-186
-187
-188
-189</pre>
+197
+198
+199
+200</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 186</span>
+      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 197</span>
 
 <span class='def def kw'>def</span> <span class='clickElement identifier id'>clickElement</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='rparen token'>)</span>
   <span class='execute identifier id'>execute</span> <span class='symbol val'>:request</span>   <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'clickElement'</span><span class='comma token'>,</span>
@@ -1460,12 +1513,12 @@ Element functions
       <pre class="lines">
 
 
-68
-69
-70</pre>
+71
+72
+73</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 68</span>
+      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 71</span>
 
 <span class='def def kw'>def</span> <span class='close identifier id'>close</span>
   <span class='execute identifier id'>execute</span> <span class='symbol val'>:request</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'close'</span>
@@ -1489,12 +1542,12 @@ Element functions
       <pre class="lines">
 
 
-121
-122
-123</pre>
+124
+125
+126</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 121</span>
+      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 124</span>
 
 <span class='def def kw'>def</span> <span class='deleteAllCookies identifier id'>deleteAllCookies</span>
   <span class='execute identifier id'>execute</span> <span class='symbol val'>:request</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'deleteAllCookies'</span>
@@ -1518,13 +1571,13 @@ Element functions
       <pre class="lines">
 
 
-112
-113
-114
-115</pre>
+115
+116
+117
+118</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 112</span>
+      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 115</span>
 
 <span class='def def kw'>def</span> <span class='deleteCookie identifier id'>deleteCookie</span><span class='lparen token'>(</span><span class='name identifier id'>name</span><span class='rparen token'>)</span>
   <span class='execute identifier id'>execute</span> <span class='symbol val'>:request</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'deleteCookie'</span><span class='comma token'>,</span>
@@ -1570,13 +1623,13 @@ Element functions
       <pre class="lines">
 
 
-283
-284
-285
-286</pre>
+294
+295
+296
+297</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 283</span>
+      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 294</span>
 
 <span class='def def kw'>def</span> <span class='dragElement identifier id'>dragElement</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='comma token'>,</span> <span class='rigth_by identifier id'>rigth_by</span><span class='comma token'>,</span> <span class='down_by identifier id'>down_by</span><span class='rparen token'>)</span>
   <span class='raise identifier id'>raise</span> <span class='UnsupportedOperationError constant id'>UnsupportedOperationError</span><span class='comma token'>,</span> <span class='string val'>&quot;drag and drop unsupported in Chrome&quot;</span>
@@ -1601,12 +1654,12 @@ Element functions
       <pre class="lines">
 
 
+18
 19
-20
-21</pre>
+20</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 19</span>
+      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 18</span>
 
 <span class='def def kw'>def</span> <span class='driver_extensions identifier id'>driver_extensions</span>
   <span class='lbrack token'>[</span><span class='DriverExtensions constant id'>DriverExtensions</span><span class='colon2 op'>::</span><span class='TakesScreenshot constant id'>TakesScreenshot</span><span class='rbrack token'>]</span>
@@ -1630,19 +1683,19 @@ Element functions
       <pre class="lines">
 
 
-96
-97
-98
 99
 100
 101
 102
 103
 104
-105</pre>
+105
+106
+107
+108</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 96</span>
+      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 99</span>
 
 <span class='def def kw'>def</span> <span class='executeScript identifier id'>executeScript</span><span class='lparen token'>(</span><span class='script identifier id'>script</span><span class='comma token'>,</span> <span class='mult op'>*</span><span class='args identifier id'>args</span><span class='rparen token'>)</span>
   <span class='typed_args identifier id'>typed_args</span> <span class='assign token'>=</span> <span class='args identifier id'>args</span><span class='dot token'>.</span><span class='map identifier id'>map</span> <span class='lbrace token'>{</span> <span class='bitor op'>|</span><span class='e identifier id'>e</span><span class='bitor op'>|</span> <span class='wrap_script_argument identifier id'>wrap_script_argument</span><span class='lparen token'>(</span><span class='e identifier id'>e</span><span class='rparen token'>)</span> <span class='rbrace token'>}</span>
@@ -1673,15 +1726,44 @@ Element functions
       <pre class="lines">
 
 
-125
-126
-127</pre>
+128
+129
+130</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 125</span>
+      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 128</span>
 
 <span class='def def kw'>def</span> <span class='findElementByClassName identifier id'>findElementByClassName</span><span class='lparen token'>(</span><span class='parent identifier id'>parent</span><span class='comma token'>,</span> <span class='class_name identifier id'>class_name</span><span class='rparen token'>)</span>
   <span class='find_element_by identifier id'>find_element_by</span> <span class='string val'>'class name'</span><span class='comma token'>,</span> <span class='class_name identifier id'>class_name</span><span class='comma token'>,</span> <span class='parent identifier id'>parent</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="findElementByCssSelector-instance_method">
+  
+    - (<tt>Object</tt>) <strong>findElementByCssSelector</strong>(parent, selector) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+184
+185
+186</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 184</span>
+
+<span class='def def kw'>def</span> <span class='findElementByCssSelector identifier id'>findElementByCssSelector</span><span class='lparen token'>(</span><span class='parent identifier id'>parent</span><span class='comma token'>,</span> <span class='selector identifier id'>selector</span><span class='rparen token'>)</span>
+  <span class='find_element_by identifier id'>find_element_by</span> <span class='string val'>'css selector'</span><span class='comma token'>,</span> <span class='selector identifier id'>selector</span><span class='comma token'>,</span> <span class='parent identifier id'>parent</span>
 <span class='end end kw'>end</span>
 </pre>
     </td>
@@ -1702,12 +1784,12 @@ Element functions
       <pre class="lines">
 
 
-133
-134
-135</pre>
+136
+137
+138</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 133</span>
+      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 136</span>
 
 <span class='def def kw'>def</span> <span class='findElementById identifier id'>findElementById</span><span class='lparen token'>(</span><span class='parent identifier id'>parent</span><span class='comma token'>,</span> <span class='id identifier id'>id</span><span class='rparen token'>)</span>
   <span class='find_element_by identifier id'>find_element_by</span> <span class='string val'>'id'</span><span class='comma token'>,</span> <span class='id identifier id'>id</span><span class='comma token'>,</span> <span class='parent identifier id'>parent</span>
@@ -1731,12 +1813,12 @@ Element functions
       <pre class="lines">
 
 
-141
-142
-143</pre>
+144
+145
+146</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 141</span>
+      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 144</span>
 
 <span class='def def kw'>def</span> <span class='findElementByLinkText identifier id'>findElementByLinkText</span><span class='lparen token'>(</span><span class='parent identifier id'>parent</span><span class='comma token'>,</span> <span class='link_text identifier id'>link_text</span><span class='rparen token'>)</span>
   <span class='find_element_by identifier id'>find_element_by</span> <span class='string val'>'link text'</span><span class='comma token'>,</span> <span class='link_text identifier id'>link_text</span><span class='comma token'>,</span> <span class='parent identifier id'>parent</span>
@@ -1760,12 +1842,12 @@ Element functions
       <pre class="lines">
 
 
-157
-158
-159</pre>
+160
+161
+162</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 157</span>
+      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 160</span>
 
 <span class='def def kw'>def</span> <span class='findElementByName identifier id'>findElementByName</span><span class='lparen token'>(</span><span class='parent identifier id'>parent</span><span class='comma token'>,</span> <span class='name identifier id'>name</span><span class='rparen token'>)</span>
   <span class='find_element_by identifier id'>find_element_by</span> <span class='string val'>'name'</span><span class='comma token'>,</span> <span class='name identifier id'>name</span><span class='comma token'>,</span> <span class='parent identifier id'>parent</span>
@@ -1789,12 +1871,12 @@ Element functions
       <pre class="lines">
 
 
-149
-150
-151</pre>
+152
+153
+154</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 149</span>
+      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 152</span>
 
 <span class='def def kw'>def</span> <span class='findElementByPartialLinkText identifier id'>findElementByPartialLinkText</span><span class='lparen token'>(</span><span class='parent identifier id'>parent</span><span class='comma token'>,</span> <span class='link_text identifier id'>link_text</span><span class='rparen token'>)</span>
   <span class='find_element_by identifier id'>find_element_by</span> <span class='string val'>'partial link text'</span><span class='comma token'>,</span> <span class='link_text identifier id'>link_text</span><span class='comma token'>,</span> <span class='parent identifier id'>parent</span>
@@ -1818,12 +1900,12 @@ Element functions
       <pre class="lines">
 
 
-165
-166
-167</pre>
+168
+169
+170</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 165</span>
+      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 168</span>
 
 <span class='def def kw'>def</span> <span class='findElementByTagName identifier id'>findElementByTagName</span><span class='lparen token'>(</span><span class='parent identifier id'>parent</span><span class='comma token'>,</span> <span class='tag_name identifier id'>tag_name</span><span class='rparen token'>)</span>
   <span class='find_element_by identifier id'>find_element_by</span> <span class='string val'>'tag name'</span><span class='comma token'>,</span> <span class='tag_name identifier id'>tag_name</span><span class='comma token'>,</span> <span class='parent identifier id'>parent</span>
@@ -1847,12 +1929,12 @@ Element functions
       <pre class="lines">
 
 
-173
-174
-175</pre>
+176
+177
+178</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 173</span>
+      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 176</span>
 
 <span class='def def kw'>def</span> <span class='findElementByXpath identifier id'>findElementByXpath</span><span class='lparen token'>(</span><span class='parent identifier id'>parent</span><span class='comma token'>,</span> <span class='xpath identifier id'>xpath</span><span class='rparen token'>)</span>
   <span class='find_element_by identifier id'>find_element_by</span> <span class='string val'>'xpath'</span><span class='comma token'>,</span> <span class='xpath identifier id'>xpath</span><span class='comma token'>,</span> <span class='parent identifier id'>parent</span>
@@ -1876,15 +1958,44 @@ Element functions
       <pre class="lines">
 
 
-129
-130
-131</pre>
+132
+133
+134</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 129</span>
+      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 132</span>
 
 <span class='def def kw'>def</span> <span class='findElementsByClassName identifier id'>findElementsByClassName</span><span class='lparen token'>(</span><span class='parent identifier id'>parent</span><span class='comma token'>,</span> <span class='class_name identifier id'>class_name</span><span class='rparen token'>)</span>
   <span class='find_elements_by identifier id'>find_elements_by</span> <span class='string val'>'class name'</span><span class='comma token'>,</span> <span class='class_name identifier id'>class_name</span><span class='comma token'>,</span> <span class='parent identifier id'>parent</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="findElementsByCssSelector-instance_method">
+  
+    - (<tt>Object</tt>) <strong>findElementsByCssSelector</strong>(parent, selector) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+188
+189
+190</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 188</span>
+
+<span class='def def kw'>def</span> <span class='findElementsByCssSelector identifier id'>findElementsByCssSelector</span><span class='lparen token'>(</span><span class='parent identifier id'>parent</span><span class='comma token'>,</span> <span class='selector identifier id'>selector</span><span class='rparen token'>)</span>
+  <span class='find_elements_by identifier id'>find_elements_by</span> <span class='string val'>'css selector'</span><span class='comma token'>,</span> <span class='selector identifier id'>selector</span><span class='comma token'>,</span> <span class='parent identifier id'>parent</span>
 <span class='end end kw'>end</span>
 </pre>
     </td>
@@ -1905,12 +2016,12 @@ Element functions
       <pre class="lines">
 
 
-137
-138
-139</pre>
+140
+141
+142</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 137</span>
+      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 140</span>
 
 <span class='def def kw'>def</span> <span class='findElementsById identifier id'>findElementsById</span><span class='lparen token'>(</span><span class='parent identifier id'>parent</span><span class='comma token'>,</span> <span class='id identifier id'>id</span><span class='rparen token'>)</span>
   <span class='find_elements_by identifier id'>find_elements_by</span> <span class='string val'>'id'</span><span class='comma token'>,</span> <span class='id identifier id'>id</span><span class='comma token'>,</span> <span class='parent identifier id'>parent</span>
@@ -1934,12 +2045,12 @@ Element functions
       <pre class="lines">
 
 
-145
-146
-147</pre>
+148
+149
+150</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 145</span>
+      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 148</span>
 
 <span class='def def kw'>def</span> <span class='findElementsByLinkText identifier id'>findElementsByLinkText</span><span class='lparen token'>(</span><span class='parent identifier id'>parent</span><span class='comma token'>,</span> <span class='link_text identifier id'>link_text</span><span class='rparen token'>)</span>
   <span class='find_elements_by identifier id'>find_elements_by</span> <span class='string val'>'link text'</span><span class='comma token'>,</span> <span class='link_text identifier id'>link_text</span><span class='comma token'>,</span> <span class='parent identifier id'>parent</span>
@@ -1963,12 +2074,12 @@ Element functions
       <pre class="lines">
 
 
-161
-162
-163</pre>
+164
+165
+166</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 161</span>
+      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 164</span>
 
 <span class='def def kw'>def</span> <span class='findElementsByName identifier id'>findElementsByName</span><span class='lparen token'>(</span><span class='parent identifier id'>parent</span><span class='comma token'>,</span> <span class='name identifier id'>name</span><span class='rparen token'>)</span>
   <span class='find_elements_by identifier id'>find_elements_by</span> <span class='string val'>'name'</span><span class='comma token'>,</span> <span class='name identifier id'>name</span><span class='comma token'>,</span> <span class='parent identifier id'>parent</span>
@@ -1992,12 +2103,12 @@ Element functions
       <pre class="lines">
 
 
-153
-154
-155</pre>
+156
+157
+158</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 153</span>
+      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 156</span>
 
 <span class='def def kw'>def</span> <span class='findElementsByPartialLinkText identifier id'>findElementsByPartialLinkText</span><span class='lparen token'>(</span><span class='parent identifier id'>parent</span><span class='comma token'>,</span> <span class='link_text identifier id'>link_text</span><span class='rparen token'>)</span>
   <span class='find_elements_by identifier id'>find_elements_by</span> <span class='string val'>'partial link text'</span><span class='comma token'>,</span> <span class='link_text identifier id'>link_text</span><span class='comma token'>,</span> <span class='parent identifier id'>parent</span>
@@ -2021,12 +2132,12 @@ Element functions
       <pre class="lines">
 
 
-169
-170
-171</pre>
+172
+173
+174</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 169</span>
+      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 172</span>
 
 <span class='def def kw'>def</span> <span class='findElementsByTagName identifier id'>findElementsByTagName</span><span class='lparen token'>(</span><span class='parent identifier id'>parent</span><span class='comma token'>,</span> <span class='tag_name identifier id'>tag_name</span><span class='rparen token'>)</span>
   <span class='find_elements_by identifier id'>find_elements_by</span> <span class='string val'>'tag name'</span><span class='comma token'>,</span> <span class='tag_name identifier id'>tag_name</span><span class='comma token'>,</span> <span class='parent identifier id'>parent</span>
@@ -2050,12 +2161,12 @@ Element functions
       <pre class="lines">
 
 
-177
-178
-179</pre>
+180
+181
+182</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 177</span>
+      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 180</span>
 
 <span class='def def kw'>def</span> <span class='findElementsByXpath identifier id'>findElementsByXpath</span><span class='lparen token'>(</span><span class='parent identifier id'>parent</span><span class='comma token'>,</span> <span class='xpath identifier id'>xpath</span><span class='rparen token'>)</span>
   <span class='find_elements_by identifier id'>find_elements_by</span> <span class='string val'>'xpath'</span><span class='comma token'>,</span> <span class='xpath identifier id'>xpath</span><span class='comma token'>,</span> <span class='parent identifier id'>parent</span>
@@ -2079,13 +2190,13 @@ Element functions
       <pre class="lines">
 
 
+22
 23
 24
-25
-26</pre>
+25</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 23</span>
+      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 22</span>
 
 <span class='def def kw'>def</span> <span class='get identifier id'>get</span><span class='lparen token'>(</span><span class='url identifier id'>url</span><span class='rparen token'>)</span>
   <span class='execute identifier id'>execute</span> <span class='symbol val'>:request</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'get'</span><span class='comma token'>,</span>
@@ -2114,12 +2225,12 @@ Element functions
       <pre class="lines">
 
 
-273
-274
-275</pre>
+284
+285
+286</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 273</span>
+      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 284</span>
 
 <span class='def def kw'>def</span> <span class='getActiveElement identifier id'>getActiveElement</span>
   <span class='Element constant id'>Element</span><span class='dot token'>.</span><span class='new identifier id'>new</span> <span class='self self kw'>self</span><span class='comma token'>,</span> <span class='element_id_from identifier id'>element_id_from</span><span class='lparen token'>(</span><span class='execute identifier id'>execute</span><span class='lparen token'>(</span><span class='symbol val'>:request</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'getActiveElement'</span><span class='rparen token'>)</span><span class='rparen token'>)</span>
@@ -2143,12 +2254,12 @@ Element functions
       <pre class="lines">
 
 
-117
-118
-119</pre>
+120
+121
+122</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 117</span>
+      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 120</span>
 
 <span class='def def kw'>def</span> <span class='getAllCookies identifier id'>getAllCookies</span>
   <span class='execute identifier id'>execute</span> <span class='symbol val'>:request</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'getCookies'</span>
@@ -2172,12 +2283,12 @@ Element functions
       <pre class="lines">
 
 
+35
 36
-37
-38</pre>
+37</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 36</span>
+      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 35</span>
 
 <span class='def def kw'>def</span> <span class='getCurrentUrl identifier id'>getCurrentUrl</span>
   <span class='execute identifier id'>execute</span> <span class='symbol val'>:request</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'getCurrentUrl'</span>
@@ -2201,12 +2312,12 @@ Element functions
       <pre class="lines">
 
 
-80
-81
-82</pre>
+83
+84
+85</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 80</span>
+      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 83</span>
 
 <span class='def def kw'>def</span> <span class='getCurrentWindowHandle identifier id'>getCurrentWindowHandle</span>
   <span class='execute identifier id'>execute</span> <span class='symbol val'>:request</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'getCurrentWindowHandle'</span>
@@ -2230,14 +2341,14 @@ Element functions
       <pre class="lines">
 
 
-196
-197
-198
-199
-200</pre>
+207
+208
+209
+210
+211</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 196</span>
+      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 207</span>
 
 <span class='def def kw'>def</span> <span class='getElementAttribute identifier id'>getElementAttribute</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='comma token'>,</span> <span class='name identifier id'>name</span><span class='rparen token'>)</span>
   <span class='execute identifier id'>execute</span> <span class='symbol val'>:request</span>   <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'getElementAttribute'</span><span class='comma token'>,</span>
@@ -2263,15 +2374,15 @@ Element functions
       <pre class="lines">
 
 
-212
-213
-214
-215
-216
-217</pre>
+223
+224
+225
+226
+227
+228</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 212</span>
+      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 223</span>
 
 <span class='def def kw'>def</span> <span class='getElementLocation identifier id'>getElementLocation</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='rparen token'>)</span>
   <span class='data identifier id'>data</span> <span class='assign token'>=</span> <span class='execute identifier id'>execute</span> <span class='symbol val'>:request</span>   <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'getElementLocation'</span><span class='comma token'>,</span>
@@ -2298,15 +2409,15 @@ Element functions
       <pre class="lines">
 
 
-219
-220
-221
-222
-223
-224</pre>
+230
+231
+232
+233
+234
+235</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 219</span>
+      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 230</span>
 
 <span class='def def kw'>def</span> <span class='getElementSize identifier id'>getElementSize</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='rparen token'>)</span>
   <span class='data identifier id'>data</span> <span class='assign token'>=</span> <span class='execute identifier id'>execute</span> <span class='symbol val'>:request</span>   <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'getElementSize'</span><span class='comma token'>,</span>
@@ -2333,13 +2444,13 @@ Element functions
       <pre class="lines">
 
 
-191
-192
-193
-194</pre>
+202
+203
+204
+205</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 191</span>
+      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 202</span>
 
 <span class='def def kw'>def</span> <span class='getElementTagName identifier id'>getElementTagName</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='rparen token'>)</span>
   <span class='execute identifier id'>execute</span> <span class='symbol val'>:request</span>   <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'getElementTagName'</span><span class='comma token'>,</span>
@@ -2364,13 +2475,13 @@ Element functions
       <pre class="lines">
 
 
-207
-208
-209
-210</pre>
+218
+219
+220
+221</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 207</span>
+      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 218</span>
 
 <span class='def def kw'>def</span> <span class='getElementText identifier id'>getElementText</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='rparen token'>)</span>
   <span class='execute identifier id'>execute</span> <span class='symbol val'>:request</span>   <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'getElementText'</span><span class='comma token'>,</span>
@@ -2395,13 +2506,13 @@ Element functions
       <pre class="lines">
 
 
-202
-203
-204
-205</pre>
+213
+214
+215
+216</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 202</span>
+      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 213</span>
 
 <span class='def def kw'>def</span> <span class='getElementValue identifier id'>getElementValue</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='rparen token'>)</span>
   <span class='execute identifier id'>execute</span> <span class='symbol val'>:request</span>   <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'getElementValue'</span><span class='comma token'>,</span>
@@ -2426,14 +2537,14 @@ Element functions
       <pre class="lines">
 
 
-267
-268
-269
-270
-271</pre>
+278
+279
+280
+281
+282</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 267</span>
+      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 278</span>
 
 <span class='def def kw'>def</span> <span class='getElementValueOfCssProperty identifier id'>getElementValueOfCssProperty</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='comma token'>,</span> <span class='prop identifier id'>prop</span><span class='rparen token'>)</span>
   <span class='execute identifier id'>execute</span> <span class='symbol val'>:request</span>   <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'getElementValueOfCssProperty'</span><span class='comma token'>,</span>
@@ -2459,12 +2570,12 @@ Element functions
       <pre class="lines">
 
 
+43
 44
-45
-46</pre>
+45</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 44</span>
+      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 43</span>
 
 <span class='def def kw'>def</span> <span class='getPageSource identifier id'>getPageSource</span>
   <span class='execute identifier id'>execute</span> <span class='symbol val'>:request</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'getPageSource'</span>
@@ -2488,12 +2599,12 @@ Element functions
       <pre class="lines">
 
 
-84
-85
-86</pre>
+87
+88
+89</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 84</span>
+      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 87</span>
 
 <span class='def def kw'>def</span> <span class='getScreenshotAsBase64 identifier id'>getScreenshotAsBase64</span>
   <span class='execute identifier id'>execute</span> <span class='symbol val'>:request</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;screenshot&quot;</span>
@@ -2517,12 +2628,12 @@ Element functions
       <pre class="lines">
 
 
-92
-93
-94</pre>
+95
+96
+97</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 92</span>
+      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 95</span>
 
 <span class='def def kw'>def</span> <span class='getSpeed identifier id'>getSpeed</span>
   <span class='@speed ivar id'>@speed</span>
@@ -2546,12 +2657,12 @@ Element functions
       <pre class="lines">
 
 
+39
 40
-41
-42</pre>
+41</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 40</span>
+      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 39</span>
 
 <span class='def def kw'>def</span> <span class='getTitle identifier id'>getTitle</span>
   <span class='execute identifier id'>execute</span> <span class='symbol val'>:request</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'getTitle'</span>
@@ -2575,12 +2686,12 @@ Element functions
       <pre class="lines">
 
 
-76
-77
-78</pre>
+79
+80
+81</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 76</span>
+      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 79</span>
 
 <span class='def def kw'>def</span> <span class='getWindowHandles identifier id'>getWindowHandles</span>
   <span class='execute identifier id'>execute</span> <span class='symbol val'>:request</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'getWindowHandles'</span>
@@ -2604,12 +2715,12 @@ Element functions
       <pre class="lines">
 
 
+27
 28
-29
-30</pre>
+29</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 28</span>
+      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 27</span>
 
 <span class='def def kw'>def</span> <span class='goBack identifier id'>goBack</span>
   <span class='execute identifier id'>execute</span> <span class='symbol val'>:request</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'goBack'</span>
@@ -2633,12 +2744,12 @@ Element functions
       <pre class="lines">
 
 
+31
 32
-33
-34</pre>
+33</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 32</span>
+      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 31</span>
 
 <span class='def def kw'>def</span> <span class='goForward identifier id'>goForward</span>
   <span class='execute identifier id'>execute</span> <span class='symbol val'>:request</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'goForward'</span>
@@ -2662,13 +2773,13 @@ Element functions
       <pre class="lines">
 
 
-278
-279
-280
-281</pre>
+289
+290
+291
+292</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 278</span>
+      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 289</span>
 
 <span class='def def kw'>def</span> <span class='hoverOverElement identifier id'>hoverOverElement</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='rparen token'>)</span>
   <span class='execute identifier id'>execute</span> <span class='symbol val'>:request</span>   <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'hoverOverElement'</span><span class='comma token'>,</span>
@@ -2693,13 +2804,13 @@ Element functions
       <pre class="lines">
 
 
-247
-248
-249
-250</pre>
+258
+259
+260
+261</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 247</span>
+      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 258</span>
 
 <span class='def def kw'>def</span> <span class='isElementDisplayed identifier id'>isElementDisplayed</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='rparen token'>)</span>
   <span class='execute identifier id'>execute</span> <span class='symbol val'>:request</span>   <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'isElementDisplayed'</span><span class='comma token'>,</span>
@@ -2724,13 +2835,13 @@ Element functions
       <pre class="lines">
 
 
-237
-238
-239
-240</pre>
+248
+249
+250
+251</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 237</span>
+      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 248</span>
 
 <span class='def def kw'>def</span> <span class='isElementEnabled identifier id'>isElementEnabled</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='rparen token'>)</span>
   <span class='execute identifier id'>execute</span> <span class='symbol val'>:request</span>   <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'isElementEnabled'</span><span class='comma token'>,</span>
@@ -2755,13 +2866,13 @@ Element functions
       <pre class="lines">
 
 
-242
-243
-244
-245</pre>
+253
+254
+255
+256</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 242</span>
+      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 253</span>
 
 <span class='def def kw'>def</span> <span class='isElementSelected identifier id'>isElementSelected</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='rparen token'>)</span>
   <span class='execute identifier id'>execute</span> <span class='symbol val'>:request</span>   <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'isElementSelected'</span><span class='comma token'>,</span>
@@ -2786,18 +2897,18 @@ Element functions
       <pre class="lines">
 
 
-58
-59
-60
 61
 62
 63
 64
 65
-66</pre>
+66
+67
+68
+69</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 58</span>
+      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 61</span>
 
 <span class='def def kw'>def</span> <span class='quit identifier id'>quit</span>
   <span class='begin begin kw'>begin</span>
@@ -2827,12 +2938,12 @@ Element functions
       <pre class="lines">
 
 
-72
-73
-74</pre>
+75
+76
+77</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 72</span>
+      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 75</span>
 
 <span class='def def kw'>def</span> <span class='refresh identifier id'>refresh</span>
   <span class='execute identifier id'>execute</span> <span class='symbol val'>:request</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'refresh'</span>
@@ -2856,14 +2967,14 @@ Element functions
       <pre class="lines">
 
 
-226
-227
-228
-229
-230</pre>
+237
+238
+239
+240
+241</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 226</span>
+      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 237</span>
 
 <span class='def def kw'>def</span> <span class='sendKeysToElement identifier id'>sendKeysToElement</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='comma token'>,</span> <span class='string identifier id'>string</span><span class='rparen token'>)</span>
   <span class='execute identifier id'>execute</span> <span class='symbol val'>:request</span>   <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'sendKeysToElement'</span><span class='comma token'>,</span>
@@ -2889,13 +3000,13 @@ Element functions
       <pre class="lines">
 
 
-262
-263
-264
-265</pre>
+273
+274
+275
+276</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 262</span>
+      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 273</span>
 
 <span class='def def kw'>def</span> <span class='setElementSelected identifier id'>setElementSelected</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='rparen token'>)</span>
   <span class='execute identifier id'>execute</span> <span class='symbol val'>:request</span>   <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'setElementSelected'</span><span class='comma token'>,</span>
@@ -2920,12 +3031,12 @@ Element functions
       <pre class="lines">
 
 
-88
-89
-90</pre>
+91
+92
+93</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 88</span>
+      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 91</span>
 
 <span class='def def kw'>def</span> <span class='setSpeed identifier id'>setSpeed</span><span class='lparen token'>(</span><span class='value identifier id'>value</span><span class='rparen token'>)</span>
   <span class='@speed ivar id'>@speed</span> <span class='assign token'>=</span> <span class='value identifier id'>value</span>
@@ -2949,17 +3060,46 @@ Element functions
       <pre class="lines">
 
 
-252
-253
-254
-255</pre>
+263
+264
+265
+266</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 252</span>
+      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 263</span>
 
 <span class='def def kw'>def</span> <span class='submitElement identifier id'>submitElement</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='rparen token'>)</span>
   <span class='execute identifier id'>execute</span> <span class='symbol val'>:request</span>   <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'submitElement'</span><span class='comma token'>,</span>
           <span class='symbol val'>:elementId</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='element identifier id'>element</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="switchToDefaultContent-instance_method">
+  
+    - (<tt>Object</tt>) <strong>switchToDefaultContent</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+57
+58
+59</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 57</span>
+
+<span class='def def kw'>def</span> <span class='switchToDefaultContent identifier id'>switchToDefaultContent</span>
+  <span class='execute identifier id'>execute</span> <span class='symbol val'>:request</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;switchToDefaultContent&quot;</span>
 <span class='end end kw'>end</span>
 </pre>
     </td>
@@ -2980,13 +3120,13 @@ Element functions
       <pre class="lines">
 
 
+52
 53
 54
-55
-56</pre>
+55</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 53</span>
+      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 52</span>
 
 <span class='def def kw'>def</span> <span class='switchToFrame identifier id'>switchToFrame</span><span class='lparen token'>(</span><span class='id identifier id'>id</span><span class='rparen token'>)</span>
   <span class='execute identifier id'>execute</span> <span class='symbol val'>:request</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'switchToFrameByName'</span><span class='comma token'>,</span>
@@ -3011,13 +3151,13 @@ Element functions
       <pre class="lines">
 
 
+47
 48
 49
-50
-51</pre>
+50</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 48</span>
+      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 47</span>
 
 <span class='def def kw'>def</span> <span class='switchToWindow identifier id'>switchToWindow</span><span class='lparen token'>(</span><span class='name identifier id'>name</span><span class='rparen token'>)</span>
   <span class='execute identifier id'>execute</span> <span class='symbol val'>:request</span>    <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'switchToWindow'</span><span class='comma token'>,</span>
@@ -3042,13 +3182,13 @@ Element functions
       <pre class="lines">
 
 
-257
-258
-259
-260</pre>
+268
+269
+270
+271</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 257</span>
+      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 268</span>
 
 <span class='def def kw'>def</span> <span class='toggleElement identifier id'>toggleElement</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='rparen token'>)</span>
   <span class='execute identifier id'>execute</span> <span class='symbol val'>:request</span>   <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'toggleElement'</span><span class='comma token'>,</span>
@@ -3065,9 +3205,9 @@ Element functions
 </div>
     
     <div id="footer">
-  Generated on Thu Dec 17 17:13:25 2009 by 
+  Generated on Wed Feb  3 14:46:59 2010 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool">yard</a>
-  0.5.2 (ruby-1.8.7).
+  0.5.3 (ruby-1.8.7).
 </div>
 
   </body>

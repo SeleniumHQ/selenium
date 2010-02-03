@@ -16,18 +16,24 @@
 
   </head>
   <body>
+    <script type="text/javascript" charset="utf-8">
+      if (window.top.frames.main) document.body.className = 'frames';
+    </script>
+    
     <div id="header">
       <div id="menu">
   
     <a href="../../../_index.html">Index (L)</a> &raquo; 
-    <a href="../../../Selenium.html" title="Selenium">Selenium</a> &raquo; <a href="../../WebDriver.html" title="WebDriver">WebDriver</a> &raquo; <a href="../Chrome.html" title="Chrome">Chrome</a>
+    <span class='title'><a href="../../../Selenium.html" title="Selenium (module)">Selenium</a></span> &raquo; <span class='title'><a href="../../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span> &raquo; <span class='title'><a href="../Chrome.html" title="Selenium::WebDriver::Chrome (module)">Chrome</a></span>
      &raquo; 
     <span class="title">Launcher</span>
   
+  
+  <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
 </div>
 
       <div id="search">
-  <a id="class_list_link" href="#">Namespace List</a>
+  <a id="class_list_link" href="#">Class List</a>
   <a id="method_list_link" href="#">Method List</a>
   <a id ="file_list_link" href="#">File List</a>
 </div>
@@ -75,18 +81,11 @@
 </dl>
 <div class="clear"></div>
 
-<h2>Overview</h2><div class="docstring">
-  <div class="discussion">
-    <p>
-Launcher
-</p>
-
-
-  </div>
+<div id="subclasses">
+  <h2>Direct Known Subclasses</h2>
+  <p class="children"><a href="Launcher/UnixLauncher.html" title="Selenium::WebDriver::Chrome::Launcher::UnixLauncher (class)">Launcher::UnixLauncher</a>, <a href="Launcher/WindowsLauncher.html" title="Selenium::WebDriver::Chrome::Launcher::WindowsLauncher (class)">Launcher::WindowsLauncher</a></p>
 </div>
-<div class="tags">
-  
-</div>
+
 
   
   <h2>Instance Attribute Summary</h2>
@@ -174,7 +173,7 @@ Returns the value of attribute pid.
       <li class="public ">
   <span class="summary_signature">
     
-      <a href="#launch-instance_method" title="#launch (instance method)">- (Object) <strong>launch</strong> </a>
+      <a href="#launch-instance_method" title="#launch (instance method)">- (Object) <strong>launch</strong>(server_url) </a>
     
 
     
@@ -336,7 +335,7 @@ Returns the value of attribute pid
       <div class="method_details ">
   <p class="signature " id="launch-instance_method">
   
-    - (<tt>Object</tt>) <strong>launch</strong> 
+    - (<tt>Object</tt>) <strong>launch</strong>(server_url) 
   
 
   
@@ -357,10 +356,10 @@ Returns the value of attribute pid
     <td>
       <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/launcher.rb', line 24</span>
 
-<span class='def def kw'>def</span> <span class='launch identifier id'>launch</span>
+<span class='def def kw'>def</span> <span class='launch identifier id'>launch</span><span class='lparen token'>(</span><span class='server_url identifier id'>server_url</span><span class='rparen token'>)</span>
   <span class='create_extension identifier id'>create_extension</span>
   <span class='create_profile identifier id'>create_profile</span>
-  <span class='launch_chrome identifier id'>launch_chrome</span>
+  <span class='launch_chrome identifier id'>launch_chrome</span> <span class='server_url identifier id'>server_url</span>
 
   <span class='pid identifier id'>pid</span>
 <span class='end end kw'>end</span>
@@ -375,9 +374,9 @@ Returns the value of attribute pid
 </div>
     
     <div id="footer">
-  Generated on Thu Dec 17 17:13:31 2009 by 
+  Generated on Wed Feb  3 14:46:59 2010 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool">yard</a>
-  0.5.2 (ruby-1.8.7).
+  0.5.3 (ruby-1.8.7).
 </div>
 
   </body>

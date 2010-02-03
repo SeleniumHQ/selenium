@@ -16,18 +16,24 @@
 
   </head>
   <body>
+    <script type="text/javascript" charset="utf-8">
+      if (window.top.frames.main) document.body.className = 'frames';
+    </script>
+    
     <div id="header">
       <div id="menu">
   
     <a href="../../_index.html">Index (E)</a> &raquo; 
-    <a href="../../Selenium.html" title="Selenium">Selenium</a> &raquo; <a href="../WebDriver.html" title="WebDriver">WebDriver</a>
+    <span class='title'><a href="../../Selenium.html" title="Selenium (module)">Selenium</a></span> &raquo; <span class='title'><a href="../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span>
      &raquo; 
     <span class="title">Element</span>
   
+  
+  <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
 </div>
 
       <div id="search">
-  <a id="class_list_link" href="#">Namespace List</a>
+  <a id="class_list_link" href="#">Class List</a>
   <a id="method_list_link" href="#">Method List</a>
   <a id ="file_list_link" href="#">File List</a>
 </div>
@@ -64,7 +70,7 @@
   
     
       <dt class="r2">Includes:</dt>
-      <dd class="r2"><a href="Find.html" title="Selenium::WebDriver::Find">Selenium::WebDriver::Find</a></dd>
+      <dd class="r2"><a href="Find.html" title="Selenium::WebDriver::Find (module)">Find</a></dd>
       
     
   
@@ -75,18 +81,7 @@
 </dl>
 <div class="clear"></div>
 
-<h2>Overview</h2><div class="docstring">
-  <div class="discussion">
-    <p>
-Element
-</p>
 
-
-  </div>
-</div>
-<div class="tags">
-  
-</div>
   <h2>Constant Summary</h2>
   
 
@@ -95,8 +90,8 @@ Element
   
   
   
-  <h3 class="inherited">Constants included from <a href="Find.html" title="Selenium::WebDriver::Find">Selenium::WebDriver::Find</a></h3>
-  <p class="inherited"><a href="Find.html#FINDERS-constant" title="FINDERS">FINDERS</a></p>
+  <h3 class="inherited">Constants included from <a href="Find.html" title="Selenium::WebDriver::Find (module)">Find</a></h3>
+  <p class="inherited"><a href="Find.html#FINDERS-constant" title="Selenium::WebDriver::Find::FINDERS (constant)">FINDERS</a></p>
 
   <h2>Instance Attribute Summary</h2>
   <ul class="summary">
@@ -650,15 +645,15 @@ Get the value of this element.
   
   
   
-  <h3 class="inherited">Methods included from <a href="Find.html" title="Selenium::WebDriver::Find">Selenium::WebDriver::Find</a></h3>
-  <p class="inherited"><a href="Find.html#find_element-instance_method" title="#find_element">#find_element</a>, <a href="Find.html#find_elements-instance_method" title="#find_elements">#find_elements</a></p>
+  <h3 class="inherited">Methods included from <a href="Find.html" title="Selenium::WebDriver::Find (module)">Find</a></h3>
+  <p class="inherited"><a href="Find.html#find_element-instance_method" title="Selenium::WebDriver::Find#find_element (method)">#find_element</a>, <a href="Find.html#find_elements-instance_method" title="Selenium::WebDriver::Find#find_elements (method)">#find_elements</a></p>
 <div id="constructor_details" class="method_details_list">
   <h2>Constructor Details</h2>
   
     <div class="method_details first">
   <p class="signature first" id="initialize-instance_method">
   
-    - (<tt><a href="" title="Element">Element</a></tt>) <strong>initialize</strong>(bridge, id) 
+    - (<tt><a href="" title="Selenium::WebDriver::Element (class)">Element</a></tt>) <strong>initialize</strong>(bridge, id) 
   
 
   
@@ -858,12 +853,12 @@ Clear this element
       <pre class="lines">
 
 
-96
-97
-98</pre>
+106
+107
+108</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/element.rb', line 96</span>
+      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/element.rb', line 106</span>
 
 <span class='def def kw'>def</span> <span class='clear identifier id'>clear</span>
   <span class='bridge identifier id'>bridge</span><span class='dot token'>.</span><span class='clearElement identifier id'>clearElement</span> <span class='@id ivar id'>@id</span>
@@ -951,12 +946,12 @@ Is the element displayed?
       <pre class="lines">
 
 
-126
-127
-128</pre>
+136
+137
+138</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/element.rb', line 126</span>
+      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/element.rb', line 136</span>
 
 <span class='def def kw'>def</span> <span class='displayed? fid id'>displayed?</span>
   <span class='bridge identifier id'>bridge</span><span class='dot token'>.</span><span class='isElementDisplayed identifier id'>isElementDisplayed</span> <span class='@id ivar id'>@id</span>
@@ -1029,12 +1024,12 @@ number of pixels to drag down
       <pre class="lines">
 
 
-199
-200
-201</pre>
+209
+210
+211</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/element.rb', line 199</span>
+      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/element.rb', line 209</span>
 
 <span class='def def kw'>def</span> <span class='drag_and_drop_by identifier id'>drag_and_drop_by</span><span class='lparen token'>(</span><span class='right_by identifier id'>right_by</span><span class='comma token'>,</span> <span class='down_by identifier id'>down_by</span><span class='rparen token'>)</span>
   <span class='bridge identifier id'>bridge</span><span class='dot token'>.</span><span class='dragElement identifier id'>dragElement</span> <span class='@id ivar id'>@id</span><span class='comma token'>,</span> <span class='right_by identifier id'>right_by</span><span class='comma token'>,</span> <span class='down_by identifier id'>down_by</span>
@@ -1067,7 +1062,7 @@ Drag and drop this element on the given element
   
     <li>
       
-        <span class='type'>(<tt><a href="" title="WebDriver::Element">WebDriver::Element</a></tt>)</span>
+        <span class='type'>(<tt><a href="" title="Selenium::WebDriver::Element (class)">WebDriver::Element</a></tt>)</span>
       
       
         <span class='name'>other</span>
@@ -1084,18 +1079,18 @@ Drag and drop this element on the given element
       <pre class="lines">
 
 
-209
-210
-211
-212
-213
-214
-215
-216
-217</pre>
+219
+220
+221
+222
+223
+224
+225
+226
+227</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/element.rb', line 209</span>
+      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/element.rb', line 219</span>
 
 <span class='def def kw'>def</span> <span class='drag_and_drop_on identifier id'>drag_and_drop_on</span><span class='lparen token'>(</span><span class='other identifier id'>other</span><span class='rparen token'>)</span>
   <span class='current_location identifier id'>current_location</span> <span class='assign token'>=</span> <span class='location identifier id'>location</span><span class='lparen token'>(</span><span class='rparen token'>)</span>
@@ -1149,12 +1144,12 @@ Is the element enabled?
       <pre class="lines">
 
 
-106
-107
-108</pre>
+116
+117
+118</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/element.rb', line 106</span>
+      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/element.rb', line 116</span>
 
 <span class='def def kw'>def</span> <span class='enabled? fid id'>enabled?</span>
   <span class='bridge identifier id'>bridge</span><span class='dot token'>.</span><span class='isElementEnabled identifier id'>isElementEnabled</span> <span class='@id ivar id'>@id</span>
@@ -1189,12 +1184,12 @@ Hover over this element. Not applicable to all browsers.
       <pre class="lines">
 
 
-166
-167
-168</pre>
+176
+177
+178</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/element.rb', line 166</span>
+      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/element.rb', line 176</span>
 
 <span class='def def kw'>def</span> <span class='hover identifier id'>hover</span>
   <span class='bridge identifier id'>bridge</span><span class='dot token'>.</span><span class='hoverOverElement identifier id'>hoverOverElement</span> <span class='@id ivar id'>@id</span>
@@ -1237,7 +1232,7 @@ Hover over this element. Not applicable to all browsers.
       <div class="method_details ">
   <p class="signature " id="location-instance_method">
   
-    - (<tt><a href="Point.html" title="WebDriver::Point">WebDriver::Point</a></tt>) <strong>location</strong> 
+    - (<tt><a href="Point.html" title="Selenium::WebDriver::Point (class)">WebDriver::Point</a></tt>) <strong>location</strong> 
   
 
   
@@ -1256,7 +1251,7 @@ Get the location of this element.
   
     <li>
       
-        <span class='type'>(<tt><a href="Point.html" title="WebDriver::Point">WebDriver::Point</a></tt>)</span>
+        <span class='type'>(<tt><a href="Point.html" title="Selenium::WebDriver::Point (class)">WebDriver::Point</a></tt>)</span>
       
       
       
@@ -1271,12 +1266,12 @@ Get the location of this element.
       <pre class="lines">
 
 
-176
-177
-178</pre>
+186
+187
+188</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/element.rb', line 176</span>
+      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/element.rb', line 186</span>
 
 <span class='def def kw'>def</span> <span class='location identifier id'>location</span>
   <span class='bridge identifier id'>bridge</span><span class='dot token'>.</span><span class='getElementLocation identifier id'>getElementLocation</span> <span class='@id ivar id'>@id</span>
@@ -1311,12 +1306,12 @@ for Find and execute_script
       <pre class="lines">
 
 
-244
-245
-246</pre>
+254
+255
+256</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/element.rb', line 244</span>
+      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/element.rb', line 254</span>
 
 <span class='def def kw'>def</span> <span class='ref identifier id'>ref</span>
   <span class='@id ivar id'>@id</span>
@@ -1351,12 +1346,12 @@ Select this element
       <pre class="lines">
 
 
-134
-135
-136</pre>
+144
+145
+146</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/element.rb', line 134</span>
+      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/element.rb', line 144</span>
 
 <span class='def def kw'>def</span> <span class='select identifier id'>select</span>
   <span class='bridge identifier id'>bridge</span><span class='dot token'>.</span><span class='setElementSelected identifier id'>setElementSelected</span> <span class='@id ivar id'>@id</span>
@@ -1404,12 +1399,12 @@ Is the element selected?
       <pre class="lines">
 
 
-116
-117
-118</pre>
+126
+127
+128</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/element.rb', line 116</span>
+      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/element.rb', line 126</span>
 
 <span class='def def kw'>def</span> <span class='selected? fid id'>selected?</span>
   <span class='bridge identifier id'>bridge</span><span class='dot token'>.</span><span class='isElementSelected identifier id'>isElementSelected</span> <span class='@id ivar id'>@id</span>
@@ -1446,12 +1441,21 @@ Send keystrokes to this element
   
     <li>
       
-        <span class='type'>(<tt>String</tt>, <tt>Symbol</tt>)</span>
+        <span class='type'>(<tt>String</tt>, <tt>Symbol</tt>, <tt>Array</tt>)</span>
       
       
-        <span class='name'></span>
+        <span class='name'>Examples:</span>
       
       
+      
+        &mdash;
+        
+element.send_keys &#8220;foo&#8221; #=> value: &#8216;foo&#8217;
+element.send_keys &#8220;tet&#8221;, :arrow_left, &#8220;s&#8221; #=>
+value: &#8216;test&#8217; element.send_keys [:control, &#8216;a&#8217;],
+:space #=> value: &#8217; &#8216;
+
+
       
     </li>
   
@@ -1460,7 +1464,7 @@ Send keystrokes to this element
   <h3>See Also:</h3>
   <ul class="see">
     
-      <li><a href="Keys.html#KEYS-constant" title="Keys::KEYS">Keys::KEYS</a></li>
+      <li><a href="Keys.html#KEYS-constant" title="Selenium::WebDriver::Keys::KEYS (constant)">Keys::KEYS</a></li>
     
   </ul>
 
@@ -1470,23 +1474,31 @@ Send keystrokes to this element
       <pre class="lines">
 
 
-81
-82
-83
-84
-85
-86
 87
 88
-89</pre>
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/element.rb', line 81</span>
+      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/element.rb', line 87</span>
 
 <span class='def def kw'>def</span> <span class='send_keys identifier id'>send_keys</span><span class='lparen token'>(</span><span class='mult op'>*</span><span class='args identifier id'>args</span><span class='rparen token'>)</span>
   <span class='args identifier id'>args</span><span class='dot token'>.</span><span class='each identifier id'>each</span> <span class='do do kw'>do</span> <span class='bitor op'>|</span><span class='arg identifier id'>arg</span><span class='bitor op'>|</span>
-    <span class='if if kw'>if</span> <span class='arg identifier id'>arg</span><span class='dot token'>.</span><span class='kind_of? fid id'>kind_of?</span><span class='lparen token'>(</span><span class='Symbol constant id'>Symbol</span><span class='rparen token'>)</span>
+    <span class='case case kw'>case</span> <span class='arg identifier id'>arg</span>
+    <span class='when when kw'>when</span> <span class='Symbol constant id'>Symbol</span>
       <span class='arg identifier id'>arg</span> <span class='assign token'>=</span> <span class='Keys constant id'>Keys</span><span class='lbrack token'>[</span><span class='arg identifier id'>arg</span><span class='rbrack token'>]</span>
+    <span class='when when kw'>when</span> <span class='Array constant id'>Array</span>
+      <span class='arg identifier id'>arg</span> <span class='assign token'>=</span> <span class='arg identifier id'>arg</span><span class='dot token'>.</span><span class='map identifier id'>map</span> <span class='lbrace token'>{</span> <span class='bitor op'>|</span><span class='e identifier id'>e</span><span class='bitor op'>|</span> <span class='e identifier id'>e</span><span class='dot token'>.</span><span class='kind_of? fid id'>kind_of?</span><span class='lparen token'>(</span><span class='Symbol constant id'>Symbol</span><span class='rparen token'>)</span> <span class='question op'>?</span> <span class='Keys constant id'>Keys</span><span class='lbrack token'>[</span><span class='e identifier id'>e</span><span class='rbrack token'>]</span> <span class='colon op'>:</span> <span class='e identifier id'>e</span> <span class='rbrace token'>}</span><span class='dot token'>.</span><span class='join identifier id'>join</span>
+      <span class='arg identifier id'>arg</span> <span class='lshft op'>&lt;&lt;</span> <span class='Keys constant id'>Keys</span><span class='lbrack token'>[</span><span class='symbol val'>:null</span><span class='rbrack token'>]</span>
     <span class='end end kw'>end</span>
 
     <span class='bridge identifier id'>bridge</span><span class='dot token'>.</span><span class='sendKeysToElement identifier id'>sendKeysToElement</span><span class='lparen token'>(</span><span class='@id ivar id'>@id</span><span class='comma token'>,</span> <span class='arg identifier id'>arg</span><span class='dot token'>.</span><span class='to_s identifier id'>to_s</span><span class='rparen token'>)</span>
@@ -1501,7 +1513,7 @@ Send keystrokes to this element
       <div class="method_details ">
   <p class="signature " id="size-instance_method">
   
-    - (<tt><a href="Dimension.html" title="WebDriver::Dimension">WebDriver::Dimension</a></tt>) <strong>size</strong> 
+    - (<tt><a href="Dimension.html" title="Selenium::WebDriver::Dimension (class)">WebDriver::Dimension</a></tt>) <strong>size</strong> 
   
 
   
@@ -1520,7 +1532,7 @@ Get the size of this element
   
     <li>
       
-        <span class='type'>(<tt><a href="Dimension.html" title="WebDriver::Dimension">WebDriver::Dimension</a></tt>)</span>
+        <span class='type'>(<tt><a href="Dimension.html" title="Selenium::WebDriver::Dimension (class)">WebDriver::Dimension</a></tt>)</span>
       
       
       
@@ -1535,12 +1547,12 @@ Get the size of this element
       <pre class="lines">
 
 
-186
-187
-188</pre>
+196
+197
+198</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/element.rb', line 186</span>
+      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/element.rb', line 196</span>
 
 <span class='def def kw'>def</span> <span class='size identifier id'>size</span>
   <span class='bridge identifier id'>bridge</span><span class='dot token'>.</span><span class='getElementSize identifier id'>getElementSize</span> <span class='@id ivar id'>@id</span>
@@ -1575,12 +1587,12 @@ Get the value of the given CSS property
       <pre class="lines">
 
 
-158
-159
-160</pre>
+168
+169
+170</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/element.rb', line 158</span>
+      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/element.rb', line 168</span>
 
 <span class='def def kw'>def</span> <span class='style identifier id'>style</span><span class='lparen token'>(</span><span class='prop identifier id'>prop</span><span class='rparen token'>)</span>
   <span class='bridge identifier id'>bridge</span><span class='dot token'>.</span><span class='getElementValueOfCssProperty identifier id'>getElementValueOfCssProperty</span> <span class='@id ivar id'>@id</span><span class='comma token'>,</span> <span class='prop identifier id'>prop</span>
@@ -1615,12 +1627,12 @@ Submit this element
       <pre class="lines">
 
 
-142
-143
-144</pre>
+152
+153
+154</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/element.rb', line 142</span>
+      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/element.rb', line 152</span>
 
 <span class='def def kw'>def</span> <span class='submit identifier id'>submit</span>
   <span class='bridge identifier id'>bridge</span><span class='dot token'>.</span><span class='submitElement identifier id'>submitElement</span> <span class='@id ivar id'>@id</span>
@@ -1761,12 +1773,12 @@ Toggle this element
       <pre class="lines">
 
 
-150
-151
-152</pre>
+160
+161
+162</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/element.rb', line 150</span>
+      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/element.rb', line 160</span>
 
 <span class='def def kw'>def</span> <span class='toggle identifier id'>toggle</span>
   <span class='bridge identifier id'>bridge</span><span class='dot token'>.</span><span class='toggleElement identifier id'>toggleElement</span> <span class='@id ivar id'>@id</span>
@@ -1835,9 +1847,9 @@ Get the value of this element
 </div>
     
     <div id="footer">
-  Generated on Thu Dec 17 17:13:31 2009 by 
+  Generated on Wed Feb  3 14:47:01 2010 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool">yard</a>
-  0.5.2 (ruby-1.8.7).
+  0.5.3 (ruby-1.8.7).
 </div>
 
   </body>

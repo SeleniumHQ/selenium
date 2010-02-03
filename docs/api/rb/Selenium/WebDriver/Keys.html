@@ -16,18 +16,24 @@
 
   </head>
   <body>
+    <script type="text/javascript" charset="utf-8">
+      if (window.top.frames.main) document.body.className = 'frames';
+    </script>
+    
     <div id="header">
       <div id="menu">
   
     <a href="../../_index.html">Index (K)</a> &raquo; 
-    <a href="../../Selenium.html" title="Selenium">Selenium</a> &raquo; <a href="../WebDriver.html" title="WebDriver">WebDriver</a>
+    <span class='title'><a href="../../Selenium.html" title="Selenium (module)">Selenium</a></span> &raquo; <span class='title'><a href="../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span>
      &raquo; 
     <span class="title">Keys</span>
   
+  
+  <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
 </div>
 
       <div id="search">
-  <a id="class_list_link" href="#">Namespace List</a>
+  <a id="class_list_link" href="#">Class List</a>
   <a id="method_list_link" href="#">Method List</a>
   <a id ="file_list_link" href="#">File List</a>
 </div>
@@ -56,23 +62,12 @@
 </dl>
 <div class="clear"></div>
 
-<h2>Overview</h2><div class="docstring">
-  <div class="discussion">
-    <p>
-Keys
-</p>
 
-
-  </div>
-</div>
-<div class="tags">
-  
-</div>
   <h2>Constant Summary</h2>
   
     <dl class="constants">
       
-        <dt id="KEYS-constant ">KEYS =
+        <dt id="KEYS-constant" class="">KEYS =
             <span class="summary_desc"></span>
         </dt>
         <dd><pre class="code"><span class='lbrace token'>{</span>
@@ -80,7 +75,7 @@ Keys
   <span class='symbol val'>:null</span>         <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;\xEE\x80\x80&quot;</span><span class='comma token'>,</span>
   <span class='symbol val'>:cancel</span>       <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;\xEE\x80\x81&quot;</span><span class='comma token'>,</span>
   <span class='symbol val'>:help</span>         <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;\xEE\x80\x82&quot;</span><span class='comma token'>,</span>
-  <span class='symbol val'>:back_space</span>   <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;\xEE\x80\x83&quot;</span><span class='comma token'>,</span>
+  <span class='symbol val'>:backspace</span>    <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;\xEE\x80\x83&quot;</span><span class='comma token'>,</span>
   <span class='symbol val'>:tab</span>          <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;\xEE\x80\x84&quot;</span><span class='comma token'>,</span>
   <span class='symbol val'>:clear</span>        <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;\xEE\x80\x85&quot;</span><span class='comma token'>,</span>
   <span class='symbol val'>:return</span>       <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;\xEE\x80\x86&quot;</span><span class='comma token'>,</span>
@@ -190,15 +185,15 @@ Keys
       <pre class="lines">
 
 
-74
-75
-76</pre>
+78
+79
+80</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/keys.rb', line 74</span>
+      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/keys.rb', line 78</span>
 
 <span class='def def kw'>def</span> <span class='self self kw'>self</span><span class='dot token'>.</span><span class='lbrack token'>[</span><span class='rbrack token'>]</span><span class='lparen token'>(</span><span class='key identifier id'>key</span><span class='rparen token'>)</span>
-  <span class='KEYS constant id'>KEYS</span><span class='lbrack token'>[</span><span class='key identifier id'>key</span><span class='rbrack token'>]</span> <span class='orop op'>||</span> <span class='raise identifier id'>raise</span><span class='lparen token'>(</span><span class='Error constant id'>Error</span><span class='colon2 op'>::</span><span class='UnsupportedOperationError constant id'>UnsupportedOperationError</span><span class='comma token'>,</span> <span class='dstring node'>&quot;no such key #{e.inspect}&quot;</span><span class='rparen token'>)</span>
+  <span class='KEYS constant id'>KEYS</span><span class='lbrack token'>[</span><span class='key identifier id'>key</span><span class='rbrack token'>]</span> <span class='orop op'>||</span> <span class='raise identifier id'>raise</span><span class='lparen token'>(</span><span class='Error constant id'>Error</span><span class='colon2 op'>::</span><span class='UnsupportedOperationError constant id'>UnsupportedOperationError</span><span class='comma token'>,</span> <span class='dstring node'>&quot;no such key #{key.inspect}&quot;</span><span class='rparen token'>)</span>
 <span class='end end kw'>end</span>
 </pre>
     </td>
@@ -211,9 +206,9 @@ Keys
 </div>
     
     <div id="footer">
-  Generated on Thu Dec 17 17:13:26 2009 by 
+  Generated on Wed Feb  3 14:46:55 2010 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool">yard</a>
-  0.5.2 (ruby-1.8.7).
+  0.5.3 (ruby-1.8.7).
 </div>
 
   </body>

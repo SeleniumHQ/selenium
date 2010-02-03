@@ -16,18 +16,24 @@
 
   </head>
   <body>
+    <script type="text/javascript" charset="utf-8">
+      if (window.top.frames.main) document.body.className = 'frames';
+    </script>
+    
     <div id="header">
       <div id="menu">
   
     <a href="../_index.html">Index (W)</a> &raquo; 
-    <a href="../Selenium.html" title="Selenium">Selenium</a>
+    <span class='title'><a href="../Selenium.html" title="Selenium (module)">Selenium</a></span>
      &raquo; 
     <span class="title">WebDriver</span>
   
+  
+  <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
 </div>
 
       <div id="search">
-  <a id="class_list_link" href="#">Namespace List</a>
+  <a id="class_list_link" href="#">Class List</a>
   <a id="method_list_link" href="#">Method List</a>
   <a id ="file_list_link" href="#">File List</a>
 </div>
@@ -58,26 +64,15 @@
 </dl>
 <div class="clear"></div>
 
-<h2>Overview</h2><div class="docstring">
-  <div class="discussion">
-    <p>
-WebDriver
-</p>
-
-
-  </div>
-</div>
-<div class="tags">
-  
-</div><h2>Defined Under Namespace</h2>
+<h2>Defined Under Namespace</h2>
 <p class="children">
    
     
-      <strong class="modules">Modules:</strong> <a href="WebDriver/BridgeHelper.html" title="BridgeHelper">BridgeHelper</a>, <a href="WebDriver/Chrome.html" title="Chrome">Chrome</a>, <a href="WebDriver/DriverExtensions.html" title="DriverExtensions">DriverExtensions</a>, <a href="WebDriver/Error.html" title="Error">Error</a>, <a href="WebDriver/Find.html" title="Find">Find</a>, <a href="WebDriver/Firefox.html" title="Firefox">Firefox</a>, <a href="WebDriver/IE.html" title="IE">IE</a>, <a href="WebDriver/Keys.html" title="Keys">Keys</a>, <a href="WebDriver/Platform.html" title="Platform">Platform</a>, <a href="WebDriver/Remote.html" title="Remote">Remote</a>
+      <strong class="modules">Modules:</strong> <a href="WebDriver/BridgeHelper.html" title="Selenium::WebDriver::BridgeHelper (module)">BridgeHelper</a>, <a href="WebDriver/Chrome.html" title="Selenium::WebDriver::Chrome (module)">Chrome</a>, <a href="WebDriver/DriverExtensions.html" title="Selenium::WebDriver::DriverExtensions (module)">DriverExtensions</a>, <a href="WebDriver/Error.html" title="Selenium::WebDriver::Error (module)">Error</a>, <a href="WebDriver/Find.html" title="Selenium::WebDriver::Find (module)">Find</a>, <a href="WebDriver/Firefox.html" title="Selenium::WebDriver::Firefox (module)">Firefox</a>, <a href="WebDriver/IE.html" title="Selenium::WebDriver::IE (module)">IE</a>, <a href="WebDriver/Keys.html" title="Selenium::WebDriver::Keys (module)">Keys</a>, <a href="WebDriver/Platform.html" title="Selenium::WebDriver::Platform (module)">Platform</a>, <a href="WebDriver/Remote.html" title="Selenium::WebDriver::Remote (module)">Remote</a>
     
    
     
-      <strong class="classes">Classes:</strong> <a href="WebDriver/ChildProcess.html" title="ChildProcess">ChildProcess</a>, <a href="WebDriver/Dimension.html" title="Dimension">Dimension</a>, <a href="WebDriver/Driver.html" title="Driver">Driver</a>, <a href="WebDriver/Element.html" title="Element">Element</a>, <a href="WebDriver/Navigation.html" title="Navigation">Navigation</a>, <a href="WebDriver/Options.html" title="Options">Options</a>, <a href="WebDriver/Point.html" title="Point">Point</a>, <a href="WebDriver/TargetLocator.html" title="TargetLocator">TargetLocator</a>
+      <strong class="classes">Classes:</strong> <a href="WebDriver/ChildProcess.html" title="Selenium::WebDriver::ChildProcess (class)">ChildProcess</a>, <a href="WebDriver/Dimension.html" title="Selenium::WebDriver::Dimension (class)">Dimension</a>, <a href="WebDriver/Driver.html" title="Selenium::WebDriver::Driver (class)">Driver</a>, <a href="WebDriver/Element.html" title="Selenium::WebDriver::Element (class)">Element</a>, <a href="WebDriver/Navigation.html" title="Selenium::WebDriver::Navigation (class)">Navigation</a>, <a href="WebDriver/Options.html" title="Selenium::WebDriver::Options (class)">Options</a>, <a href="WebDriver/Point.html" title="Selenium::WebDriver::Point (class)">Point</a>, <a href="WebDriver/TargetLocator.html" title="Selenium::WebDriver::TargetLocator (class)">TargetLocator</a>
     
   
 </p>
@@ -148,12 +143,12 @@ WebDriver
       <pre class="lines">
 
 
-48
-49
-50</pre>
+61
+62
+63</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver.rb', line 48</span>
+      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver.rb', line 61</span>
 
 <span class='def def kw'>def</span> <span class='self self kw'>self</span><span class='dot token'>.</span><span class='for identifier id'>for</span><span class='lparen token'>(</span><span class='mult op'>*</span><span class='args identifier id'>args</span><span class='rparen token'>)</span>
   <span class='WebDriver constant id'>WebDriver</span><span class='colon2 op'>::</span><span class='Driver constant id'>Driver</span><span class='dot token'>.</span><span class='for identifier id'>for</span><span class='lparen token'>(</span><span class='mult op'>*</span><span class='args identifier id'>args</span><span class='rparen token'>)</span>
@@ -177,12 +172,12 @@ WebDriver
       <pre class="lines">
 
 
-44
-45
-46</pre>
+57
+58
+59</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver.rb', line 44</span>
+      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver.rb', line 57</span>
 
 <span class='def def kw'>def</span> <span class='self self kw'>self</span><span class='dot token'>.</span><span class='root identifier id'>root</span>
   <span class='@root ivar id'>@root</span> <span class='opasgn op'>||=</span> <span class='File constant id'>File</span><span class='dot token'>.</span><span class='expand_path identifier id'>expand_path</span><span class='lparen token'>(</span><span class='File constant id'>File</span><span class='dot token'>.</span><span class='join identifier id'>join</span><span class='lparen token'>(</span><span class='File constant id'>File</span><span class='dot token'>.</span><span class='dirname identifier id'>dirname</span><span class='lparen token'>(</span><span class='__FILE__ __file__ kw'>__FILE__</span><span class='rparen token'>)</span><span class='comma token'>,</span> <span class='string val'>&quot;..&quot;</span><span class='comma token'>,</span> <span class='string val'>&quot;..&quot;</span><span class='comma token'>,</span> <span class='string val'>&quot;..&quot;</span><span class='comma token'>,</span> <span class='string val'>&quot;..&quot;</span><span class='comma token'>,</span> <span class='string val'>&quot;..&quot;</span><span class='rparen token'>)</span><span class='rparen token'>)</span>
@@ -198,9 +193,9 @@ WebDriver
 </div>
     
     <div id="footer">
-  Generated on Thu Dec 17 17:13:26 2009 by 
+  Generated on Wed Feb  3 14:46:58 2010 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool">yard</a>
-  0.5.2 (ruby-1.8.7).
+  0.5.3 (ruby-1.8.7).
 </div>
 
   </body>

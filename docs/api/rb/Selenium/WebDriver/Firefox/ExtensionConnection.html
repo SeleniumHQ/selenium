@@ -16,18 +16,24 @@
 
   </head>
   <body>
+    <script type="text/javascript" charset="utf-8">
+      if (window.top.frames.main) document.body.className = 'frames';
+    </script>
+    
     <div id="header">
       <div id="menu">
   
     <a href="../../../_index.html">Index (E)</a> &raquo; 
-    <a href="../../../Selenium.html" title="Selenium">Selenium</a> &raquo; <a href="../../WebDriver.html" title="WebDriver">WebDriver</a> &raquo; <a href="../Firefox.html" title="Firefox">Firefox</a>
+    <span class='title'><a href="../../../Selenium.html" title="Selenium (module)">Selenium</a></span> &raquo; <span class='title'><a href="../../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span> &raquo; <span class='title'><a href="../Firefox.html" title="Selenium::WebDriver::Firefox (module)">Firefox</a></span>
      &raquo; 
     <span class="title">ExtensionConnection</span>
   
+  
+  <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
 </div>
 
       <div id="search">
-  <a id="class_list_link" href="#">Namespace List</a>
+  <a id="class_list_link" href="#">Class List</a>
   <a id="method_list_link" href="#">Method List</a>
   <a id ="file_list_link" href="#">File List</a>
 </div>
@@ -71,18 +77,7 @@
 </dl>
 <div class="clear"></div>
 
-<h2>Overview</h2><div class="docstring">
-  <div class="discussion">
-    <p>
-ExtensionConnection
-</p>
 
-
-  </div>
-</div>
-<div class="tags">
-  
-</div>
 
 
   <h2>Instance Method Summary</h2>
@@ -261,7 +256,7 @@ A new instance of ExtensionConnection.
     <div class="method_details first">
   <p class="signature first" id="initialize-instance_method">
   
-    - (<tt><a href="" title="ExtensionConnection">ExtensionConnection</a></tt>) <strong>initialize</strong>(host, port) 
+    - (<tt><a href="" title="Selenium::WebDriver::Firefox::ExtensionConnection (class)">ExtensionConnection</a></tt>) <strong>initialize</strong>(host, port) 
   
 
   
@@ -370,7 +365,7 @@ A new instance of ExtensionConnection
     <span class='loop identifier id'>loop</span> <span class='do do kw'>do</span>
       <span class='begin begin kw'>begin</span>
         <span class='return return kw'>return</span> <span class='new_socket identifier id'>new_socket</span>
-      <span class='rescue rescue kw'>rescue</span> <span class='Errno constant id'>Errno</span><span class='colon2 op'>::</span><span class='ECONNREFUSED constant id'>ECONNREFUSED</span><span class='comma token'>,</span> <span class='Errno constant id'>Errno</span><span class='colon2 op'>::</span><span class='ENOTCONN constant id'>ENOTCONN</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='e identifier id'>e</span>
+      <span class='rescue rescue kw'>rescue</span> <span class='Errno constant id'>Errno</span><span class='colon2 op'>::</span><span class='ECONNREFUSED constant id'>ECONNREFUSED</span><span class='comma token'>,</span> <span class='Errno constant id'>Errno</span><span class='colon2 op'>::</span><span class='ENOTCONN constant id'>ENOTCONN</span><span class='comma token'>,</span> <span class='SocketError constant id'>SocketError</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='e identifier id'>e</span>
         <span class='$stderr gvar id'>$stderr</span><span class='dot token'>.</span><span class='puts identifier id'>puts</span> <span class='dstring node'>&quot;#{self} caught #{e.message} for #{@host}:#{@port}&quot;</span> <span class='if if_mod kw'>if</span> <span class='$DEBUG gvar id'>$DEBUG</span>
         <span class='sleep identifier id'>sleep</span> <span class='integer val'>0</span><span class='integer val'>.25</span>
       <span class='end end kw'>end</span>
@@ -620,9 +615,9 @@ A new instance of ExtensionConnection
 </div>
     
     <div id="footer">
-  Generated on Thu Dec 17 17:13:25 2009 by 
+  Generated on Wed Feb  3 14:46:56 2010 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool">yard</a>
-  0.5.2 (ruby-1.8.7).
+  0.5.3 (ruby-1.8.7).
 </div>
 
   </body>

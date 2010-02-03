@@ -16,18 +16,24 @@
 
   </head>
   <body>
+    <script type="text/javascript" charset="utf-8">
+      if (window.top.frames.main) document.body.className = 'frames';
+    </script>
+    
     <div id="header">
       <div id="menu">
   
     <a href="../../../_index.html">Index (D)</a> &raquo; 
-    <a href="../../../Selenium.html" title="Selenium">Selenium</a> &raquo; <a href="../../WebDriver.html" title="WebDriver">WebDriver</a> &raquo; <a href="../Remote.html" title="Remote">Remote</a>
+    <span class='title'><a href="../../../Selenium.html" title="Selenium (module)">Selenium</a></span> &raquo; <span class='title'><a href="../../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span> &raquo; <span class='title'><a href="../Remote.html" title="Selenium::WebDriver::Remote (module)">Remote</a></span>
      &raquo; 
     <span class="title">DefaultHttpClient</span>
   
+  
+  <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
 </div>
 
       <div id="search">
-  <a id="class_list_link" href="#">Namespace List</a>
+  <a id="class_list_link" href="#">Class List</a>
   <a id="method_list_link" href="#">Method List</a>
   <a id ="file_list_link" href="#">File List</a>
 </div>
@@ -71,26 +77,21 @@
 </dl>
 <div class="clear"></div>
 
-<h2>Overview</h2><div class="docstring">
-  <div class="discussion">
-    <p>
-DefaultHttpClient
-</p>
 
-
-  </div>
-</div>
-<div class="tags">
-  
-</div>
   <h2>Constant Summary</h2>
   
     <dl class="constants">
       
-        <dt id="CONTENT_TYPE-constant ">CONTENT_TYPE =
+        <dt id="CONTENT_TYPE-constant" class="">CONTENT_TYPE =
             <span class="summary_desc"></span>
         </dt>
         <dd><pre class="code"><span class='string val'>&quot;application/json&quot;</span>
+</pre></dd>
+      
+        <dt id="DEFAULT_HEADERS-constant" class="">DEFAULT_HEADERS =
+            <span class="summary_desc"></span>
+        </dt>
+        <dd><pre class="code"><span class='lbrace token'>{</span> <span class='string val'>&quot;Accept&quot;</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='CONTENT_TYPE constant id'>CONTENT_TYPE</span> <span class='rbrace token'>}</span>
 </pre></dd>
       
     </dl>
@@ -154,7 +155,7 @@ A new instance of DefaultHttpClient.
     <div class="method_details first">
   <p class="signature first" id="initialize-instance_method">
   
-    - (<tt><a href="" title="DefaultHttpClient">DefaultHttpClient</a></tt>) <strong>initialize</strong>(url) 
+    - (<tt><a href="" title="Selenium::WebDriver::Remote::DefaultHttpClient (class)">DefaultHttpClient</a></tt>) <strong>initialize</strong>(url) 
   
 
   
@@ -175,12 +176,12 @@ A new instance of DefaultHttpClient
       <pre class="lines">
 
 
-11
 12
-13</pre>
+13
+14</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/default_http_client.rb', line 11</span>
+      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/default_http_client.rb', line 12</span>
 
 <span class='def def kw'>def</span> <span class='initialize identifier id'>initialize</span><span class='lparen token'>(</span><span class='url identifier id'>url</span><span class='rparen token'>)</span>
   <span class='@server_url ivar id'>@server_url</span> <span class='assign token'>=</span> <span class='url identifier id'>url</span>
@@ -211,7 +212,6 @@ A new instance of DefaultHttpClient
       <pre class="lines">
 
 
-15
 16
 17
 18
@@ -240,15 +240,16 @@ A new instance of DefaultHttpClient
 41
 42
 43
-44</pre>
+44
+45</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/default_http_client.rb', line 15</span>
+      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/default_http_client.rb', line 16</span>
 
 <span class='def def kw'>def</span> <span class='call identifier id'>call</span><span class='lparen token'>(</span><span class='verb identifier id'>verb</span><span class='comma token'>,</span> <span class='url identifier id'>url</span><span class='comma token'>,</span> <span class='mult op'>*</span><span class='args identifier id'>args</span><span class='rparen token'>)</span>
   <span class='response identifier id'>response</span> <span class='assign token'>=</span> <span class='nil nil kw'>nil</span>
   <span class='url identifier id'>url</span>      <span class='assign token'>=</span> <span class='@server_url ivar id'>@server_url</span><span class='dot token'>.</span><span class='merge identifier id'>merge</span><span class='lparen token'>(</span><span class='url identifier id'>url</span><span class='rparen token'>)</span> <span class='unless unless_mod kw'>unless</span> <span class='url identifier id'>url</span><span class='dot token'>.</span><span class='kind_of? fid id'>kind_of?</span><span class='lparen token'>(</span><span class='URI constant id'>URI</span><span class='rparen token'>)</span>
-  <span class='headers identifier id'>headers</span>  <span class='assign token'>=</span> <span class='lbrace token'>{</span> <span class='string val'>&quot;Accept&quot;</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='CONTENT_TYPE constant id'>CONTENT_TYPE</span> <span class='rbrace token'>}</span>
+  <span class='headers identifier id'>headers</span>  <span class='assign token'>=</span> <span class='DEFAULT_HEADERS constant id'>DEFAULT_HEADERS</span><span class='dot token'>.</span><span class='dup identifier id'>dup</span>
 
   <span class='if if kw'>if</span> <span class='args identifier id'>args</span><span class='dot token'>.</span><span class='any? fid id'>any?</span>
     <span class='headers identifier id'>headers</span><span class='dot token'>.</span><span class='merge! fid id'>merge!</span><span class='lparen token'>(</span><span class='string val'>&quot;Content-Type&quot;</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='dstring node'>&quot;#{CONTENT_TYPE}; charset=utf-8&quot;</span><span class='rparen token'>)</span>
@@ -286,9 +287,9 @@ A new instance of DefaultHttpClient
 </div>
     
     <div id="footer">
-  Generated on Thu Dec 17 17:13:27 2009 by 
+  Generated on Wed Feb  3 14:46:59 2010 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool">yard</a>
-  0.5.2 (ruby-1.8.7).
+  0.5.3 (ruby-1.8.7).
 </div>
 
   </body>

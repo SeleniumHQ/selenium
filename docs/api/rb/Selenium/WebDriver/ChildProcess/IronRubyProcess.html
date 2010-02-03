@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
   <head>
     <meta name="Content-Type" content="text/html; charset=UTF-8" />
-<title>Module: Selenium::WebDriver::ChildProcess::JRubyProcess</title>
+<title>Module: Selenium::WebDriver::ChildProcess::IronRubyProcess</title>
 <link rel="stylesheet" href="../../../css/style.css" type="text/css" media="screen" charset="utf-8" />
 <link rel="stylesheet" href="../../../css/common.css" type="text/css" media="screen" charset="utf-8" />
 
@@ -23,10 +23,10 @@
     <div id="header">
       <div id="menu">
   
-    <a href="../../../_index.html">Index (J)</a> &raquo; 
+    <a href="../../../_index.html">Index (I)</a> &raquo; 
     <span class='title'><a href="../../../Selenium.html" title="Selenium (module)">Selenium</a></span> &raquo; <span class='title'><a href="../../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span> &raquo; <span class='title'><a href="../ChildProcess.html" title="Selenium::WebDriver::ChildProcess (class)">ChildProcess</a></span>
      &raquo; 
-    <span class="title">JRubyProcess</span>
+    <span class="title">IronRubyProcess</span>
   
   
   <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
@@ -43,7 +43,7 @@
     
     <iframe id="search_frame"></iframe>
     
-    <div id="content"><h1>Module: Selenium::WebDriver::ChildProcess::JRubyProcess 
+    <div id="content"><h1>Module: Selenium::WebDriver::ChildProcess::IronRubyProcess 
   
   
 </h1>
@@ -116,7 +116,25 @@
     
 
     
-      (also: #kill!)
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#pid-instance_method" title="#pid (instance method)">- (Object) <strong>pid</strong> </a>
+    
+
     
   </span>
   
@@ -212,12 +230,12 @@
       <pre class="lines">
 
 
-132
-133
-134</pre>
+173
+174
+175</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/child_process.rb', line 132</span>
+      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/child_process.rb', line 173</span>
 
 <span class='def def kw'>def</span> <span class='assert_started identifier id'>assert_started</span>
   <span class='raise identifier id'>raise</span> <span class='Error constant id'>Error</span><span class='colon2 op'>::</span><span class='WebDriverError constant id'>WebDriverError</span><span class='comma token'>,</span> <span class='string val'>&quot;process not started&quot;</span> <span class='unless unless_mod kw'>unless</span> <span class='@process ivar id'>@process</span>
@@ -241,21 +259,21 @@
       <pre class="lines">
 
 
-125
-126
-127
-128
-129
-130</pre>
+166
+167
+168
+169
+170
+171</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/child_process.rb', line 125</span>
+      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/child_process.rb', line 166</span>
 
 <span class='def def kw'>def</span> <span class='exit_value identifier id'>exit_value</span>
   <span class='assert_started identifier id'>assert_started</span>
-  <span class='@process ivar id'>@process</span><span class='dot token'>.</span><span class='exitValue identifier id'>exitValue</span>
-<span class='rescue rescue kw'>rescue</span> <span class='java identifier id'>java</span><span class='dot token'>.</span><span class='lang identifier id'>lang</span><span class='dot token'>.</span><span class='IllegalThreadStateException constant id'>IllegalThreadStateException</span>
-  <span class='nil nil kw'>nil</span>
+  <span class='return return kw'>return</span> <span class='unless unless_mod kw'>unless</span> <span class='@process ivar id'>@process</span><span class='dot token'>.</span><span class='HasExited constant id'>HasExited</span>
+
+  <span class='@process ivar id'>@process</span><span class='dot token'>.</span><span class='ExitCode constant id'>ExitCode</span>
 <span class='end end kw'>end</span>
 </pre>
     </td>
@@ -270,9 +288,36 @@
   
 
   
-    <span class="aliases">Also known as:
-    <span class="names"><span id='kill!-instance_method'>kill!</span></span>
-    </span>
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+150
+151
+152
+153</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/child_process.rb', line 150</span>
+
+<span class='def def kw'>def</span> <span class='kill identifier id'>kill</span>
+  <span class='assert_started identifier id'>assert_started</span>
+  <span class='@process ivar id'>@process</span><span class='dot token'>.</span><span class='Kill constant id'>Kill</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="pid-instance_method">
+  
+    - (<tt>Object</tt>) <strong>pid</strong> 
+  
+
   
 </p><table class="source_code">
   <tr>
@@ -280,17 +325,17 @@
       <pre class="lines">
 
 
-113
-114
-115
-116</pre>
+161
+162
+163
+164</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/child_process.rb', line 113</span>
+      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/child_process.rb', line 161</span>
 
-<span class='def def kw'>def</span> <span class='kill identifier id'>kill</span>
+<span class='def def kw'>def</span> <span class='pid identifier id'>pid</span>
   <span class='assert_started identifier id'>assert_started</span>
-  <span class='@process ivar id'>@process</span><span class='dot token'>.</span><span class='destroy identifier id'>destroy</span>
+  <span class='@process ivar id'>@process</span><span class='dot token'>.</span><span class='Id constant id'>Id</span>
 <span class='end end kw'>end</span>
 </pre>
     </td>
@@ -311,63 +356,29 @@
       <pre class="lines">
 
 
-84
-85
-86
-87
-88
-89
-90
-91
-92
-93
-94
-95
-96
-97
-98
-99
-100
-101
-102
-103
-104
-105
-106
-107
-108
-109
-110
-111</pre>
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/child_process.rb', line 84</span>
+      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/child_process.rb', line 138</span>
 
 <span class='def def kw'>def</span> <span class='start identifier id'>start</span>
-  <span class='pb identifier id'>pb</span> <span class='assign token'>=</span> <span class='java identifier id'>java</span><span class='dot token'>.</span><span class='lang identifier id'>lang</span><span class='dot token'>.</span><span class='ProcessBuilder constant id'>ProcessBuilder</span><span class='dot token'>.</span><span class='new identifier id'>new</span><span class='lparen token'>(</span><span class='@args ivar id'>@args</span><span class='rparen token'>)</span>
+  <span class='args identifier id'>args</span> <span class='assign token'>=</span> <span class='@args ivar id'>@args</span><span class='dot token'>.</span><span class='dup identifier id'>dup</span>
 
-  <span class='env identifier id'>env</span> <span class='assign token'>=</span> <span class='pb identifier id'>pb</span><span class='dot token'>.</span><span class='environment identifier id'>environment</span>
-  <span class='ENV constant id'>ENV</span><span class='dot token'>.</span><span class='each identifier id'>each</span> <span class='lbrace token'>{</span> <span class='bitor op'>|</span><span class='k identifier id'>k</span><span class='comma token'>,</span><span class='v identifier id'>v</span><span class='bitor op'>|</span> <span class='env identifier id'>env</span><span class='dot token'>.</span><span class='put identifier id'>put</span><span class='lparen token'>(</span><span class='k identifier id'>k</span><span class='comma token'>,</span> <span class='v identifier id'>v</span><span class='rparen token'>)</span> <span class='rbrace token'>}</span>
-
-  <span class='@process ivar id'>@process</span> <span class='assign token'>=</span> <span class='pb identifier id'>pb</span><span class='dot token'>.</span><span class='start identifier id'>start</span>
-
-  <span class='comment val'># Firefox 3.6 on Snow Leopard has a lot output on stderr, which makes</span>
-  <span class='comment val'># the launch act funny if we don't do something to the streams</span>
-
-  <span class='@process ivar id'>@process</span><span class='dot token'>.</span><span class='getErrorStream identifier id'>getErrorStream</span><span class='dot token'>.</span><span class='close identifier id'>close</span>
-  <span class='@process ivar id'>@process</span><span class='dot token'>.</span><span class='getInputStream identifier id'>getInputStream</span><span class='dot token'>.</span><span class='close identifier id'>close</span>
-
-  <span class='comment val'># Closing the streams solves that problem, but on other platforms we might</span>
-  <span class='comment val'># need to actually read them.</span>
-
-  <span class='comment val'># Thread.new do</span>
-  <span class='comment val'>#   input, error = 0, 0</span>
-  <span class='comment val'>#   loop do</span>
-  <span class='comment val'>#     error = @process.getErrorStream.read if error != -1</span>
-  <span class='comment val'>#     input = @process.getInputStream.read if input != -1</span>
-  <span class='comment val'>#     break if error == -1 &amp;&amp; input == -1</span>
-  <span class='comment val'>#   end</span>
-  <span class='comment val'># end</span>
+  <span class='@process ivar id'>@process</span>                           <span class='assign token'>=</span> <span class='System constant id'>System</span><span class='colon2 op'>::</span><span class='Diagnostics constant id'>Diagnostics</span><span class='colon2 op'>::</span><span class='Process constant id'>Process</span><span class='dot token'>.</span><span class='new identifier id'>new</span>
+  <span class='@process ivar id'>@process</span><span class='dot token'>.</span><span class='StartInfo constant id'>StartInfo</span><span class='dot token'>.</span><span class='UseShellExecute constant id'>UseShellExecute</span> <span class='assign token'>=</span> <span class='true true kw'>true</span>
+  <span class='@process ivar id'>@process</span><span class='dot token'>.</span><span class='StartInfo constant id'>StartInfo</span><span class='dot token'>.</span><span class='FileName constant id'>FileName</span>        <span class='assign token'>=</span> <span class='args identifier id'>args</span><span class='dot token'>.</span><span class='shift identifier id'>shift</span>
+  <span class='@process ivar id'>@process</span><span class='dot token'>.</span><span class='StartInfo constant id'>StartInfo</span><span class='dot token'>.</span><span class='Arguments constant id'>Arguments</span>       <span class='assign token'>=</span> <span class='args identifier id'>args</span><span class='dot token'>.</span><span class='join identifier id'>join</span> <span class='string val'>' '</span>
+  <span class='@process ivar id'>@process</span><span class='dot token'>.</span><span class='start identifier id'>start</span>
 
   <span class='self self kw'>self</span>
 <span class='end end kw'>end</span>
@@ -390,19 +401,19 @@
       <pre class="lines">
 
 
-119
-120
-121
-122
-123</pre>
+155
+156
+157
+158
+159</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/child_process.rb', line 119</span>
+      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/child_process.rb', line 155</span>
 
 <span class='def def kw'>def</span> <span class='wait identifier id'>wait</span>
   <span class='assert_started identifier id'>assert_started</span>
-  <span class='@process ivar id'>@process</span><span class='dot token'>.</span><span class='waitFor identifier id'>waitFor</span>
-  <span class='lbrack token'>[</span><span class='nil nil kw'>nil</span><span class='comma token'>,</span> <span class='@process ivar id'>@process</span><span class='dot token'>.</span><span class='exitValue identifier id'>exitValue</span><span class='rbrack token'>]</span> <span class='comment val'># no robust way to get pid here</span>
+  <span class='@process ivar id'>@process</span><span class='dot token'>.</span><span class='WaitForExit constant id'>WaitForExit</span>
+  <span class='lbrack token'>[</span><span class='pid identifier id'>pid</span><span class='comma token'>,</span> <span class='exit_value identifier id'>exit_value</span><span class='rbrack token'>]</span>
 <span class='end end kw'>end</span>
 </pre>
     </td>
@@ -415,7 +426,7 @@
 </div>
     
     <div id="footer">
-  Generated on Wed Feb  3 14:46:58 2010 by 
+  Generated on Wed Feb  3 14:47:00 2010 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool">yard</a>
   0.5.3 (ruby-1.8.7).
 </div>
