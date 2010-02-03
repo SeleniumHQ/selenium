@@ -74,13 +74,13 @@ namespace OpenQA.Selenium
         {
             driver.Url = macbethPage;
             IOptions options = driver.Manage();
-            Cookie cookie = new Cookie("Lisa", "Simpson", EnvironmentManager.Instance.UrlBuilder.HostName, EnvironmentManager.Instance.UrlBuilder.Path + "IDoNotExist", null);
+            Cookie cookie = new Cookie("Lisa", "Simpson", EnvironmentManager.Instance.UrlBuilder.HostName, "/" + EnvironmentManager.Instance.UrlBuilder.Path + "IDoNotExist", null);
             options.AddCookie(cookie);
             ReadOnlyCollection<Cookie> cookies = options.GetCookies();
             Assert.IsFalse(cookies.Contains(cookie), "Invalid cookie was returned");
         }
 
-        // TODO(jimevan): Disabling this test for now. If your network is using
+        // TODO(JimEvans): Disabling this test for now. If your network is using
         // something like OpenDNS or Google DNS which you may be automatically
         // redirected to a search page, which will be a valid page and will allow a
         // cookie to be created. Need to investigate further.

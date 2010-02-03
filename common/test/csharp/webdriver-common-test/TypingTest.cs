@@ -276,7 +276,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.ChromeNonWindows, "untested user agents")]
+        [IgnoreBrowser(Browser.Chrome, "untested user agents")]
         [IgnoreBrowser(Browser.HtmlUnit, "untested user agents")]
         public void ShouldReportKeyCodeOfArrowKeysUpDownEvents()
         {
@@ -371,7 +371,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.ChromeNonWindows, "untested user agents")]
+        [IgnoreBrowser(Browser.Chrome, "untested user agents")]
         [IgnoreBrowser(Browser.HtmlUnit, "untested user agents")]
         public void AllPrintableKeys()
         {

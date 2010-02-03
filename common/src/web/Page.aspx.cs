@@ -5,8 +5,6 @@ public partial class Page : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        Thread.Sleep(200);
-
         Response.ContentType = "text/html";
 
         int lastIndex = Request.PathInfo.LastIndexOf("/");
