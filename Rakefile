@@ -451,7 +451,8 @@ java_uberjar(:name => "selenium-server",
              :exclude => [
                            "META-INF/BCKEY.*"
                          ],
-             :main => "org.openqa.selenium.server.SeleniumServer")
+             :main => "org.openqa.selenium.server.SeleniumServer",
+             :no_libs => true)
              
 task :'selenium-server_zip' do
   temp = "build/selenium-server_zip"
