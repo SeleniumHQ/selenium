@@ -284,5 +284,11 @@ WDBadCertListenerModule.prototype.canUnload = function(aCompMgr) {
 };
 
 function NSGetModule(comMgr, fileSpec) {
-  return new WDBadCertListenerModule();
+  var appInfo = Components.classes['@mozilla.org/xre/app-info;1'].
+    getService(Components.interfaces.nsIXULAppInfo);
+  var versionChecker = Components.classes['@mozilla.org/xpcom/version-comparator;1'].
+    getService(Components.interfaces.nsIVersionComparator);
+  if (versionChecker.compare(appInfo.version, '3.0') >= 0) {
+    return new WDBadCertListenerModule();
+  }
 }
