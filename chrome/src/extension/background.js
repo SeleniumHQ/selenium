@@ -424,7 +424,7 @@ function parseRequest(request) {
       var len = ChromeDriver.tabs.length;
       for (var i = 0; i < len; i++) {
         if (ChromeDriver.tabs[i].selected) {
-          sendResponseToParsedRequest({statusCode: 0, value:  ChromeDriver.tabs[i].id}, false);
+          sendResponseToParsedRequest({statusCode: 0, value:  ChromeDriver.tabs[i].windowName}, false);
         }
       }
 
@@ -434,7 +434,7 @@ function parseRequest(request) {
           var len = ChromeDriver.tabs.length;
           for (var i = 0; i < len; i++) {
             if (ChromeDriver.tabs[i].tabId == tab.id) {
-              sendResponseToParsedRequest({statusCode: 0, value: ChromeDriver.tabs[i].tabId}, false);
+              sendResponseToParsedRequest({statusCode: 0, value: ChromeDriver.tabs[i].windowName}, false);
               return;
             }
           }
@@ -442,7 +442,7 @@ function parseRequest(request) {
       });
     } else {
       // Wow. I can't see this being error prone in the slightest
-      var handle = ChromeDriver.activePort.sender.tab.id;
+      var handle = ChromeDriver.windowHandlePrefix + "_" + ChromeDriver.activePort.sender.tab.id;
       sendResponseToParsedRequest({statusCode: 0, value:  handle}, false);
     };
     break;
@@ -575,7 +575,7 @@ function parsePortMessage(message) {
       "Received response from content script: " + JSON.stringify(message));
   if (!message || !message.response || !message.response.value ||
       message.response.value.statusCode === undefined ||
-      message.response.value.statusCode == null ||
+      message.response.value.statusCode === null ||
       message.sequenceNumber === undefined || message.sequenceNumber < ChromeDriver.lastReceivedSequenceNumber) {
     // Should only ever happen if we sent a bad request,
     // or the content script is broken
@@ -601,7 +601,7 @@ function parsePortMessage(message) {
   case 19: //org.openqa.selenium.XPathLookupException
   case 99: //org.openqa.selenium.WebDriverException [Native event]
     toSend = {statusCode: message.response.value.statusCode, value: null};
-    if (message.response.value !== undefined && message.response.value != null &&
+    if (message.response.value !== undefined && message.response.value !== null &&
         message.response.value.value !== undefined) {
       toSend.value = message.response.value.value;
     }
@@ -779,9 +779,9 @@ function switchToFrame(name, index) {
       break;
     }
   }
-  if (name !== undefined && name != null) {
+  if (name !== undefined && name !== null) {
     switchToFrameByName(name);
-  } else if (index !== undefined && index != null) {
+  } else if (index !== undefined && index !== null) {
     getFrameNameFromIndex(index);
   } else {
     sendResponseToParsedRequest({
