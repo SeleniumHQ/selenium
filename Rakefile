@@ -593,14 +593,14 @@ java_test(:name => "debug_jsapi",
           :deps => [ :firefox, :test_common ],
           :main => "org.openqa.selenium.environment.webserver.Jetty6AppServer")
 
-task :javadocs => [:common, :firefox, :htmlunit, :jobbie, :remote, :support, :chrome] do
+task :javadocs => [:common, :firefox, :htmlunit, :jobbie, :remote, :support, :chrome, :selenium] do
   mkdir_p "build/javadoc", :verbose => false
    sourcepath = ""
    classpath = "support/lib/runtime/hamcrest-all-1.1.jar"
-   %w(common firefox jobbie htmlunit support remote/common remote/client chrome).each do |m|
+   %w(common firefox jobbie htmlunit support remote/common remote/client chrome selenium).each do |m|
      sourcepath += ":#{m}/src/java"
    end
-   cmd = "javadoc -d build/javadoc -sourcepath #{sourcepath} -classpath #{classpath} -subpackages org.openqa.selenium"
+   cmd = "javadoc -d build/javadoc -sourcepath #{sourcepath} -classpath #{classpath} -subpackages org.openqa.selenium -subpackages com.thoughtworks"
    if (windows?) 
      cmd = cmd.gsub(/\//, "\\").gsub(/:/, ";") 
    end
