@@ -1,4 +1,4 @@
-<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="BuildManagedCode" ToolsVersion="3.5">
   <PropertyGroup>
     <TrunkRoot>$(MSBuildProjectDirectory)\..\..</TrunkRoot>
     <BuildOutputDirectory>$(TrunkRoot)\build\dotnet</BuildOutputDirectory>
@@ -209,7 +209,7 @@
   </Target>
 
   <Target Name="BuildDocs" DependsOnTargets="BuildManagedCode">
-    <MSBuild Projects="webdriver.shfbproj"
+    <MSBuild Projects="$(MSBuildProjectDirectory)\webdriverdocs.shfbproj"
              Targets="CoreCleanHelp;CoreBuildHelp"
              Properties="CustomBeforeSHFBTargets=$(MSBuildProjectDirectory)\webdriverdocs.settings.proj;OutputPath=$(BuildOutputDirectory)\docs;DocSourceDirectory=$(BuildOutputDirectory)"/>
     <Copy SourceFiles="$(BuildOutputDirectory)\docs\WebDriver.chm"
