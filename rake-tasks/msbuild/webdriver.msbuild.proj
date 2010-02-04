@@ -1,0 +1,344 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <PropertyGroup>
+    <TrunkRoot>$(MSBuildProjectDirectory)\..\..</TrunkRoot>
+    <BuildOutputDirectory>$(TrunkRoot)\build\dotnet</BuildOutputDirectory>
+    <ThirdPartyToolsDirectory>$(TrunkRoot)\third_party\csharp</ThirdPartyToolsDirectory>
+    <NUnitDirectory>$(ThirdPartyToolsDirectory)\nunit-2.4.8\bin</NUnitDirectory>
+    <JsonAssemblyPath>$(ThirdPartyToolsDirectory)\json-net-3.5r6\Newtonsoft.Json.Net20.dll</JsonAssemblyPath>
+    <ZipAssemblyPath>$(ThirdPartyToolsDirectory)\dotnetzip-1.9\Ionic.Zip.Reduced.dll</ZipAssemblyPath>
+  </PropertyGroup>
+ 
+  <ItemGroup>
+    <OutputFiles Include="$(BuildOutputDirectory)\**"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ReferenceAssemblies Include="$(JsonAssemblyPath)"/>
+    <ReferenceAssemblies Include="$(ZipAssemblyPath)"/> 
+  </ItemGroup>
+
+  <ItemGroup>
+    <CommonSourceFiles Include="$(TrunkRoot)\common\src\csharp\**\*.cs"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <CommonReferences Include="System.dll"/> 
+    <CommonReferences Include="System.Data.dll"/> 
+    <CommonReferences Include="System.Drawing.dll"/> 
+    <CommonReferences Include="System.XML.dll"/> 
+  </ItemGroup>
+
+  <Target Name="BuildCommon">
+    <Message Text="Building WebDriver.Common.dll"/>
+    <MakeDir Directories="$(BuildOutputDirectory)" Condition="!Exists('($(BuildOutputDirectory)')"/>
+    <Csc Sources="@(CommonSourceFiles)"
+         OutputAssembly="$(BuildOutputDirectory)WebDriver.Common.dll"
+         References="@(CommonReferences)"
+         TargetType="library"
+         DebugType="pdbonly"
+         Optimize="true"
+         AllowUnsafeBlocks="false"
+         DocumentationFile="$(BuildOutputDirectory)\WebDriver.Common.xml"
+    />
+  </Target>
+
+  <ItemGroup>
+    <RemoteSourceFiles Include="$(TrunkRoot)\remote\client\src\csharp\**\*.cs"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <RemoteReferences Include="@(CommonReferences)"/> 
+    <RemoteReferences Include="$(JsonAssemblyPath)"/> 
+    <RemoteReferences Include="$(BuildOutputDirectory)\WebDriver.Common.dll"/> 
+  </ItemGroup>
+
+  <Target Name="BuildRemote" DependsOnTargets="BuildCommon">
+    <Message Text="Building WebDriver.Remote.dll"/>
+    <Csc Sources="@(RemoteSourceFiles)"
+         References="@(RemoteReferences)"
+         OutputAssembly="$(BuildOutputDirectory)\WebDriver.Remote.dll"
+         TargetType="library"
+         DebugType="pdbonly"
+         Optimize="true"
+         AllowUnsafeBlocks="false"
+         DocumentationFile="$(BuildOutputDirectory)\WebDriver.Remote.xml"
+    />
+    <Copy SourceFiles="@(ReferenceAssemblies)"
+          DestinationFolder="$(BuildOutputDirectory)"
+          Condition="!Exists('$(BuildOutputDirectory)\%(Filename)%(Extension)')"
+    />
+  </Target>
+
+  <ItemGroup>
+    <IESourceFiles Include="$(TrunkRoot)\jobbie\src\csharp\**\*.cs"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <IEReferences Include="@(CommonReferences)"/> 
+    <IEReferences Include="$(BuildOutputDirectory)\WebDriver.Common.dll"/> 
+  </ItemGroup>
+
+  <ItemGroup>
+    <IEResources Include="$(TrunkRoot)\build\Win32\Release\InternetExplorerDriver.dll">
+      <LogicalName>WebDriver.InternetExplorerDriver.x86.dll</LogicalName>
+    </IEResources>
+    <IEResources Include="$(TrunkRoot)\build\x64\Release\InternetExplorerDriver.dll">
+      <LogicalName>WebDriver.InternetExplorerDriver.x64.dll</LogicalName> 
+    </IEResources>
+  </ItemGroup>
+
+  <Target Name="BuildIE" DependsOnTargets="BuildCommon">
+    <Error Text="Could not find 32-bit InternetExplorerDriver.dll. Expected to find it in $(TrunkRoot)\build\Win32\Release."
+           Condition="!Exists('$(TrunkRoot)\build\Win32\Release\InternetExplorerDriver.dll')"/>
+    <Error Text="Could not find 64-bit InternetExplorerDriver.dll. Expected to find it in $(TrunkRoot)\build\x64\Release."
+           Condition="!Exists('$(TrunkRoot)\build\x64\Release\InternetExplorerDriver.dll')"/>
+    <Message Text="Building WebDriver.IE.dll"/>
+    <Csc Sources="@(IESourceFiles)"
+         References="@(IEReferences)"
+         Resources="@(IEResources)"
+         OutputAssembly="$(BuildOutputDirectory)\WebDriver.IE.dll"
+         TargetType="library"
+         DebugType="pdbonly"
+         Optimize="true"
+         AllowUnsafeBlocks="false"
+         DocumentationFile="$(BuildOutputDirectory)\WebDriver.IE.xml"
+    />
+  </Target>
+
+  <ItemGroup>
+    <FirefoxSourceFiles Include="$(TrunkRoot)\firefox\src\csharp\**\*.cs"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <FirefoxReferences Include="@(CommonReferences)"/>
+    <FirefoxReferences Include="@(ReferenceAssemblies)"/>
+    <FirefoxReferences Include="$(BuildOutputDirectory)\WebDriver.Common.dll"/> 
+  </ItemGroup>
+
+  <ItemGroup>
+     <FirefoxResources Include="$(TrunkRoot)\firefox\prebuilt\Linux\Release\x_ignore_nofocus.so">
+      <LogicalName>WebDriver.FirefoxNoFocus.x86.dll</LogicalName>
+    </FirefoxResources>
+    <FirefoxResources Include="$(TrunkRoot)\firefox\prebuilt\Linux64\Release\x_ignore_nofocus.so">
+      <LogicalName>WebDriver.FirefoxNoFocus.amd64.dll</LogicalName> 
+    </FirefoxResources>
+    <FirefoxResources Include="$(TrunkRoot)\build\webdriver-extension.zip">
+      <LogicalName>WebDriver.FirefoxExt.zip</LogicalName> 
+    </FirefoxResources>
+  </ItemGroup>
+
+  <Target Name="BuildFirefox" DependsOnTargets="BuildCommon">
+    <Error Text="Could not find webdriver-extension.zip. Expected to find it in $(TrunkRoot)\build."
+           Condition="!Exists('$(TrunkRoot)\build\webdriver-extension.zip')"/>
+    <Message Text="Building WebDriver.Firefox.dll"/>
+    <Csc Sources="@(FirefoxSourceFiles)"
+         References="@(FirefoxReferences)"
+         Resources="@(FirefoxResources)"
+         OutputAssembly="$(BuildOutputDirectory)\WebDriver.Firefox.dll"
+         TargetType="library"
+         DebugType="pdbonly"
+         Optimize="true"
+         AllowUnsafeBlocks="false"
+         DocumentationFile="$(BuildOutputDirectory)\WebDriver.Firefox.xml"
+    />
+    <Copy SourceFiles="@(ReferenceAssemblies)"
+          DestinationFolder="$(BuildOutputDirectory)"
+          Condition="!Exists('$(BuildOutputDirectory)\%(Filename)%(Extension)')"
+    />
+  </Target>
+
+  <ItemGroup>
+    <ChromeSourceFiles Include="$(TrunkRoot)\chrome\src\csharp\**\*.cs"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ChromeReferences Include="@(CommonReferences)"/>
+    <ChromeReferences Include="@(ReferenceAssemblies)"/>
+    <ChromeReferences Include="$(BuildOutputDirectory)\WebDriver.Common.dll"/> 
+    <ChromeReferences Include="$(BuildOutputDirectory)\WebDriver.Remote.dll"/> 
+  </ItemGroup>
+
+  <ItemGroup>
+    <ChromeResources Include="$(TrunkRoot)\build\chrome-extension.zip">
+      <LogicalName>WebDriver.ChromeExt.zip</LogicalName> 
+    </ChromeResources>
+    <!--ChromeResources Include="$(TrunkRoot)\build\Win32\Release\chrome-extension.zip">
+      <LogicalName>WebDriver.ChromeExt.x86.zip</LogicalName> 
+    </ChromeResources-->
+    <!--ChromeResources Include="$(TrunkRoot)\build\x64\Release\chrome-extension.zip">
+      <LogicalName>WebDriver.ChromeExt.x64.zip</LogicalName> 
+    </ChromeResources-->
+  </ItemGroup>
+
+  <Target Name="BuildChrome" DependsOnTargets="BuildCommon;BuildRemote">
+    <Error Text="Could not find chrome-extension.zip. Expected to find it in $(TrunkRoot)\build."
+           Condition="!Exists('$(TrunkRoot)\build\chrome-extension.zip')"/>
+    <!--Error Text="Could not find 32-bit chrome-extension.zip. Expected to find it in $(TrunkRoot)\build\Win32\Release\."
+           Condition="!Exists('$(TrunkRoot)\build\Win32\Release\chrome-extension.zip')"/-->
+    <!--Error Text="Could not find 64-bit chrome-extension.zip. Expected to find it in $(TrunkRoot)\build\x64\Release."
+           Condition="!Exists('$(TrunkRoot)\build\x64\Release\chrome-extension.zip')"/-->
+    <Message Text="Building WebDriver.Chrome.dll"/>
+    <Csc Sources="@(ChromeSourceFiles)"
+         References="@(ChromeReferences)"
+         Resources="@(ChromeResources)"
+         OutputAssembly="$(BuildOutputDirectory)\WebDriver.Chrome.dll"
+         DebugType="pdbonly"
+         TargetType="library"
+         Optimize="true"
+         AllowUnsafeBlocks="false"
+    />
+    <Copy SourceFiles="@(ReferenceAssemblies)"
+          DestinationFolder="$(BuildOutputDirectory)"
+          Condition="!Exists('$(BuildOutputDirectory)\%(Filename)%(Extension)')"
+    />
+  </Target>
+
+  <Target Name="BuildNativeCode">
+    <MSBuild Projects="$(TrunkRoot)\WebDriver.sln" Properties="Configuration=Release;Platform=Win32"/>
+    <MSBuild Projects="$(TrunkRoot)\WebDriver.sln" Properties="Configuration=Release;Platform=x64"/>
+  </Target>
+
+  <Target Name="Clean">
+    <Delete Files="@(OutputFiles)" Condition="Exists('$(BuildOutputDirectory)')"/>
+  </Target>
+
+  <Target Name="BuildManagedCode" DependsOnTargets="BuildCommon;BuildRemote;BuildIE;BuildFirefox;BuildChrome">
+  </Target>
+
+  <Target Name="RebuildManagedCode" DependsOnTargets="Clean;BuildCommon;BuildRemote;BuildIE;BuildFirefox;BuildChrome">
+  </Target>
+
+  <Target Name="BuildDocs" DependsOnTargets="BuildManagedCode">
+    <MSBuild Projects="webdriver.shfbproj"
+             Targets="CoreCleanHelp;CoreBuildHelp"
+             Properties="CustomBeforeSHFBTargets=$(MSBuildProjectDirectory)\webdriverdocs.settings.proj;OutputPath=$(BuildOutputDirectory)\docs;DocSourceDirectory=$(BuildOutputDirectory)"/>
+    <Copy SourceFiles="$(BuildOutputDirectory)\docs\WebDriver.chm"
+          DestinationFolder="$(BuildOutputDirectory)" />
+    <Delete Files="$(BuildOutputDirectory)\docs\WebDriver.chm" />
+  </Target>
+
+  <ItemGroup>
+    <NUnitReferences Include="$(NUnitDirectory)\nunit.core.dll"/>
+    <NUnitReferences Include="$(NUnitDirectory)\nunit.core.interfaces.dll"/>
+    <NUnitReferences Include="$(NUnitDirectory)\nunit.framework.dll"/>
+    <NUnitReferences Include="$(NUnitDirectory)\bin\nunit.mocks.dll"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <CommonTestReferences Include="@(NUnitReferences)"/>
+    <CommonTestReferences Include="$(BuildOutputDirectory)\WebDriver.Common.dll"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <CommonTestSourceFiles Include="$(TrunkRoot)\common\test\csharp\**\*.cs"/>
+  </ItemGroup>
+
+  <Target Name="BuildCommonTest" DependsOnTargets="BuildCommon">
+    <Message Text="Building WebDriver.Common.UnitTests.dll"/>
+    <Csc Sources="@(CommonTestSourceFiles)"
+         References="@(CommonTestReferences)"
+         OutputAssembly="$(BuildOutputDirectory)\webdriver-common-test.dll"
+         DebugType="pdbonly"
+         TargetType="library"
+         Optimize="true"
+         AllowUnsafeBlocks="false"
+    />
+    <Copy SourceFiles="@(CommonTestReferences)"
+          DestinationFolder="$(BuildOutputDirectory)"
+          Condition="!Exists('$(BuildOutputDirectory)\%(Filename)%(Extension)')"
+    />
+  </Target>
+
+  <ItemGroup>
+    <IETestSourceFiles Include="$(TrunkRoot)\jobbie\$(UnitTestSourceFiles)"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <IETestSettingsFiles Include="$(TrunkRoot)\jobbie\test\csharp\**\*.config"/>
+    <IETestSettingsFiles Include="$(TrunkRoot)\jobbie\test\csharp\**\*.nunit"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <IETestReferences Include="@(CommonTestReferences)"/>
+    <IETestReferences Include="$(BuildOutputDirectory)\WebDriver.IE.dll"/>
+    <IETestReferences Include="$(BuildOutputDirectory)\webdriver-common-test.dll"/>
+  </ItemGroup>
+
+  <Target Name="TestIE" DependsOnTargets="BuildIE;BuildCommonTest">
+    <Message Text="Testing IE"/>
+    <Csc Sources="@(IETestSourceFiles)"
+         References="@(IETestReferences)"
+         OutputAssembly="$(BuildOutputDirectory)\webdriver-ie-test.dll"
+         DebugType="pdbonly"
+         TargetType="library"
+         Optimize="true"
+         AllowUnsafeBlocks="false"
+    />
+    <Copy SourceFiles="@(IETestSettingsFiles)"
+          DestinationFolder="$(BuildOutputDirectory)"
+    />
+    <Exec Command="(NUnitDirectory)\nunit-console.exe $(BuildOutputDirectory)\webdriver-ie-test.nunit"/>
+  </Target>
+
+  <ItemGroup>
+    <FirefoxTestSourceFiles Include="$(TrunkRoot)\firefox\test\csharp\**\*.cs"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <FirefoxTestSettingsFiles Include="$(TrunkRoot)\firefox\test\csharp\**\*.config"/>
+    <FirefoxTestSettingsFiles Include="$(TrunkRoot)\firefox\test\csharp\**\*.nunit"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <FirefoxTestReferences Include="@(CommonTestReferences)"/>
+    <FirefoxTestReferences Include="$(BuildOutputDirectory)\WebDriver.Firefox.dll"/>
+    <FirefoxTestReferences Include="$(BuildOutputDirectory)\webdriver-common-test.dll"/>
+  </ItemGroup>
+
+  <Target Name="TestFirefox" DependsOnTargets="BuildFirefox;BuildCommonTest">
+    <Message Text="Testing Firefox"/>
+    <Csc Sources="@(FirefoxTestSourceFiles)"
+         References="@(FirefoxTestReferences)"
+         OutputAssembly="$(BuildOutputDirectory)\webdriver-firefox-test.dll"
+         DebugType="pdbonly"
+         TargetType="library"
+         Optimize="true"
+         AllowUnsafeBlocks="false"
+    />
+    <Copy SourceFiles="@(FirefoxTestSettingsFiles)"
+          DestinationFolder="$(BuildOutputDirectory)"
+    />
+    <Exec Command="(NUnitDirectory)\nunit-console.exe $(BuildOutputDirectory)\webdriver-firefox-test.nunit"/>
+  </Target>
+
+  <ItemGroup>
+    <ChromeTestSourceFiles Include="$(TrunkRoot)\chrome\test\csharp\**\*.cs"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ChromeTestSettingsFiles Include="$(TrunkRoot)\chrome\test\csharp\**\*.config"/>
+    <ChromeTestSettingsFiles Include="$(TrunkRoot)\chrome\test\csharp\**\*.nunit"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ChromeTestReferences Include="@(CommonTestReferences)"/>
+    <ChromeTestReferences Include="$(BuildOutputDirectory)\WebDriver.Chrome.dll"/>
+    <ChromeTestReferences Include="$(BuildOutputDirectory)\webdriver-common-test.dll"/>
+  </ItemGroup>
+
+  <Target Name="TestChrome" DependsOnTargets="BuildChrome;BuildCommonTest">
+    <Message Text="Testing Chrome"/>
+    <Csc Sources="@(ChromeTestSourceFiles)"
+         References="@(ChromeTestReferences)"
+         OutputAssembly="$(BuildOutputDirectory)\webdriver-chrome-test.dll"
+         DebugType="pdbonly"
+         TargetType="library"
+         Optimize="true"
+         AllowUnsafeBlocks="false"
+    />
+    <Copy SourceFiles="@(ChromeTestSettingsFiles)"
+          DestinationFolder="$(BuildOutputDirectory)"
+    />
+    <Exec Command="(NUnitDirectory)\nunit-console.exe $(BuildOutputDirectory)\webdriver-chrome-test.nunit"/>
+  </Target>
+</Project>
