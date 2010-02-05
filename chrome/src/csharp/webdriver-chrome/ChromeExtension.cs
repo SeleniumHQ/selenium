@@ -159,12 +159,14 @@ namespace OpenQA.Selenium.Chrome
 
                         zipFileStream = executingAssembly.GetManifestResourceStream(resourceName);
                     }
+
                     using (ZipFile extensionZipFile = ZipFile.Read(zipFileStream))
                     {
                         extensionZipFile.ExtractExistingFile = ExtractExistingFileAction.OverwriteSilently;
                         extensionZipFile.ExtractAll(extensionDir);
                     }
                 }
+
                 return CheckExtensionForManifest(extensionDir);
             }
             catch (IOException e)

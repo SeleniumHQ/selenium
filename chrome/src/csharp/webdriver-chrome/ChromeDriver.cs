@@ -6,7 +6,6 @@ using System.IO;
 
 using OpenQA.Selenium.Internal;
 using OpenQA.Selenium.Remote;
-using Newtonsoft.Json;
 
 namespace OpenQA.Selenium.Chrome
 {
@@ -127,17 +126,13 @@ namespace OpenQA.Selenium.Chrome
                 {
                     throw new NotImplementedException();
                 }
+
                 throw;
             }
-            catch (ArgumentException)
+            catch (Exception)
             {
-                // These exceptions may leave the extension hung, or in an
+                // Exceptions may leave the extension hung, or in an
                 // inconsistent state, so we restart Chrome
-                StopClient();
-                StartClient();
-            }
-            catch (FatalChromeException)
-            {
                 StopClient();
                 StartClient();
             }
@@ -188,14 +183,13 @@ namespace OpenQA.Selenium.Chrome
         /// <returns>returns a collection of string with the window handle</returns>
         public ReadOnlyCollection<string> GetWindowHandles()
         {
-            // TODONE: Updated it to C# rest in TODO
-            // TODO: Find out where the handles are generated.
             object[] windowHandles = (object[]) Execute(DriverCommand.GetWindowHandles).Value;
             List<string> setOfHandles = new List<string>();
             foreach (string windowHandle in windowHandles)
             {
                 setOfHandles.Add(windowHandle);
             }
+
             return setOfHandles.AsReadOnly();
         }
 
@@ -522,12 +516,12 @@ namespace OpenQA.Selenium.Chrome
                     // In case this attempt fails, we increment how long we wait before sending a command
                     chromeBinary.IncrementStartWaitInterval(1);
                 }
+
                 retries--;
             }
 
             // The last one attempt succeeded, so we reduce back to that time
-            //chromeBinary.IncrementBackoffBy(-1);
-
+            // chromeBinary.IncrementBackoffBy(-1);
             if (!executor.HasClient)
             {
                 StopClient();
@@ -717,7 +711,8 @@ namespace OpenQA.Selenium.Chrome
                     string dateValue = cookie.Expiry.Value.ToUniversalTime().ToString("ddd MM/dd/yyyy hh:mm:ss UTC", CultureInfo.InvariantCulture);
                     cookieRepresentation.Add("expiry", dateValue);
                 }
-                Execute(DriverCommand.AddCookie, new object[] {cookieRepresentation});
+
+                Execute(DriverCommand.AddCookie, new object[] { cookieRepresentation });
             }
 
             /// <summary>
@@ -937,6 +932,7 @@ namespace OpenQA.Selenium.Chrome
                 {
                     throw new ArgumentNullException();
                 }
+
                 Execute(DriverCommand.SwitchToFrameByName, frameName);
                 return instance;
             }
