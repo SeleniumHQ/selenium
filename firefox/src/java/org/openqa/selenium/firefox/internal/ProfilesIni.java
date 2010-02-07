@@ -21,6 +21,8 @@ import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
+import org.openqa.selenium.internal.FileHandler;
+import org.openqa.selenium.internal.TemporaryFilesystem;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -110,12 +112,31 @@ public class ProfilesIni {
   }
 
   public FirefoxProfile getProfile(String profileName) {
-    FirefoxProfile profile = profiles.get(profileName);
-    if (profile == null)
+    FirefoxProfile liveProfile = profiles.get(profileName);
+    if (liveProfile == null)
       return null;
+
+    // Make a copy of the profile to use
+    File tempDir = TemporaryFilesystem.createTempDir("userprofile", "copy");
+    try {
+      FileHandler.copy(liveProfile.getProfileDir(), tempDir);
+
+      // Delete the old compreg.dat file so that our new extension is registered
+      File compreg = new File(tempDir, "compreg.dat");
+      if (compreg.exists()) {
+        if (!compreg.delete()) {
+          throw new WebDriverException("Cannot delete file from copy of profile " + profileName);
+        }
+      }
+    } catch (IOException e) {
+      throw new WebDriverException(e);
+    }
+
+    FirefoxProfile profile = new ProfileFromDirectory(tempDir);
 
     if (profile.getPort() == 0)
       profile.setPort(FirefoxDriver.DEFAULT_PORT);
+    
     return profile;
   }
   

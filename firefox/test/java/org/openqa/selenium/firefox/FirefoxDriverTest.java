@@ -30,7 +30,6 @@ import org.openqa.selenium.Ignore;
 import org.openqa.selenium.NeedsFreshDriver;
 import org.openqa.selenium.NoDriverAfterTest;
 import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
@@ -118,12 +117,12 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
   public void testShouldBeAbleToStartANamedProfile() {
     FirefoxProfile profile = new ProfilesIni().getProfile("default");
 
-//    if (profile != null) {
-//      WebDriver firefox = new FirefoxDriver("default");
-//      firefox.quit();
-//    } else {
-//      System.out.println("Not running start with named profile test: no default profile found");
-//    }
+    if (profile != null) {
+      WebDriver firefox = new FirefoxDriver(profile);
+      firefox.quit();
+    } else {
+      System.out.println("Not running start with named profile test: no default profile found");
+    }
   }
 
   @Ignore

@@ -120,10 +120,8 @@ public class FirefoxDriver implements WebDriver, JavascriptExecutor, TakesScreen
       profileToUse = new ProfilesIni().getProfile(suggestedProfile);
     } else if (profileToUse == null) {
       profileToUse = new FirefoxProfile();
-      profileToUse.addWebDriverExtensionIfNeeded(false);
-    } else {
-      profileToUse.addWebDriverExtensionIfNeeded(false);
     }
+    profileToUse.addWebDriverExtensionIfNeeded(false);
     prepareEnvironment();
 
     extension = connectTo(binary, profileToUse, "localhost");

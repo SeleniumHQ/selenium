@@ -52,14 +52,19 @@ public class FirefoxDriverTestSuite extends TestCase {
       super(createTemporaryProfile());
     }
 
-    public TestFirefoxDriver(FirefoxProfile profile) {
-      super(profile);
+    public TestFirefoxDriver(FirefoxProfile profile) throws IOException {
+      super(copyExtensionTo(profile));
     }
 
     private static FirefoxProfile createTemporaryProfile() throws IOException {
-      // Locate the extension directory
-      File extensionSource = FileHandler.locateInProject("firefox/src/extension");
       File dir = TemporaryFilesystem.createTempDir("firefoxdriver", "");
+      return copyExtensionTo(new FirefoxProfile(dir));
+    }
+
+    private static FirefoxProfile copyExtensionTo(FirefoxProfile p) throws IOException {
+      File extensionSource = FileHandler.locateInProject("firefox/src/extension");
+
+      File dir = p.getProfileDir();
       File extension = new File(dir, "extensions/fxdriver@googlecode.com");
 
       try {
