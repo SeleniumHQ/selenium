@@ -404,6 +404,41 @@ java_jar(:name => "webdriver-remote-client",
                "remote/client/lib/runtime/*.jar",
              ])
 
+java_jar(:name => "selenium-ide",
+    :resources => [
+      { "ide/src/extension/content" => "/" },
+      { "ide/src/extension/locale" => "/" },
+      { "ide/src/extension/skin" => "/" },
+      { "common/src/js/core/*" => "content/selenium" },
+      { "common/src/js/jsunit" => "content" },
+      { "common/src/js/core/TestRunner.html" => "content/selenium/TestRunner.hta" },
+      { "selenium/test/js/html" => "content/selenium-tests/tests" },
+      { "selenium/test/js/*.html" => "content/selenium-tests/tests" },
+      { "selenium/test/js/*.js" => "content/selenium-tests/tests" },
+      { "selenium/test/js/dogfood" => "content/selenium-tests/tests"},
+      { "selenium/test/js/events" => "content/selenium-tests/tests"},
+    ]
+)
+
+xpt(:name => "ide-auto-complete",
+    :src  => [ "ide/src/extension/idl/SeleniumIDEGenericAutoCompleteSearch.idl" ],
+    :prebuilt => "ide/prebuilt",
+    :out  => "SeleniumIDEGenericAutoCompleteSearch.xpt")
+
+xpi(:name => "ide",
+    :srcs => [],
+    :deps => [],
+    :resources => [
+                    { :"selenium-ide" => "chrome/" },
+                    { "ide/src/extension/chrome/" => "/" },
+                    { :"ide-auto-complete" => "components/" },
+                    { "ide/src/extension/components/SeleniumIDEGenericAutoCompleteSearch.js" => "components/" },
+                    { "ide/src/extension/install.rdf" => "/" },
+                    { "ide/src/extension/chrome.manifest" => "/" },
+                    { "common/src/js/core/scripts/selenium-testrunner.js" => "content-files/" }
+                  ],
+    :out => "selenium-ide.xpi")
+
 java_jar(:name => "selenium-common-js",
     :resources => [
       "common/src/js/core",
