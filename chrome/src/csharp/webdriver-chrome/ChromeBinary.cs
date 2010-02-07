@@ -107,10 +107,11 @@ namespace OpenQA.Selenium.Chrome
                 else if (Platform.CurrentPlatform.IsPlatformType(PlatformType.Vista))
                 {
                     chromeFile = Path.Combine(Path.GetTempPath(), "..\\Google\\Chrome\\Application\\chrome.exe");
-
-                    // TODO(Andre.Nogueira): Skipping for now, revisit later with Mono?
-                    // } else if (Platform.CurrentPlatform.IsPlatformType(PlatformType.Unix)) {
-                    //   chromeFileString.Append("/usr/bin/google-chrome");
+                }
+                else if (Platform.CurrentPlatform.IsPlatformType(PlatformType.Unix))
+                {
+                    chromeFile = "/usr/bin/google-chrome";
+                 
                     // } else if (Platform.CurrentPlatform.IsPlatformType(PlatformType.MacOSX)) {
                     //  string[] paths = new string[] {
                     //    "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
