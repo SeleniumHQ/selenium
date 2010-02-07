@@ -1,0 +1,11 @@
+# chrome.manifest to be used when packaged into xpi archive
+content	selenium-ide	jar:chrome/selenium-ide.jar!/content/ xpcnativewrappers=yes
+content selenium-ide-platform jar:chrome/selenium-ide.jar!/content/ platform
+content	selenium-ide-testrunner	jar:chrome/selenium-ide.jar!/content/ xpcnativewrappers=no contentaccessible=yes
+overlay	chrome://browser/content/browser.xul	chrome://selenium-ide/content/selenium-ide-overlay.xul
+locale selenium-ide en-US jar:chrome/selenium-ide.jar!/locale/en-US/
+locale selenium-ide fr-FR jar:chrome/selenium-ide.jar!/locale/fr-FR/
+locale selenium-ide ja-JP jar:chrome/selenium-ide.jar!/locale/ja-JP/
+locale selenium-ide pt-BR jar:chrome/selenium-ide.jar!/locale/pt-BR/
+skin selenium-ide classic/1.0 jar:chrome/selenium-ide.jar!/skin/classic/
+skin selenium-ide-platform classic/1.0 jar:chrome/selenium-ide.jar!/skin/classic/platforms/ appversion>=3.0

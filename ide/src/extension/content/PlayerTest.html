@@ -1,0 +1,20 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html; charset=UTF-8" http-equiv="content-type">
+  <title>Test Open</title>
+	<script language="JavasSript" type="text/javascript">
+function loadTest() {
+  var index = location.search.substr(1);
+  if (index && /^\d+/.test(index)) {
+    top.editor.loadTestCaseToTestRunner(document.getElementById("testTable"), 
+                                        parseInt(index));
+  }
+}
+	</script>
+</head>
+<body onload="loadTest()">
+	<div id="testTable">
+	</div>
+</body>
+</html>

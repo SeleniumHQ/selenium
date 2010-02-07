@@ -1,4 +1,5 @@
 def find_file(file)
+  puts "Copying #{file}"
   if file.is_a? Symbol
     # Grab the "out" of the task represented by this symbol
     t = Rake::Task[file]
@@ -6,7 +7,7 @@ def find_file(file)
   end
   
   if (file.is_a? Symbol)
-    puts "Symbol! #{file}"
+    file = file.to_s
   end
   
   if File.exists?(file)

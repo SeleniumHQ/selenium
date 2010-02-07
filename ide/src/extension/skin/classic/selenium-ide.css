@@ -1,0 +1,298 @@
+.error { 
+  color: #FF0000;
+}
+
+/*
+ * Tree View
+ */
+treechildren::-moz-tree-cell-text(comment)
+{
+  color: #AA33AA;
+}
+
+treechildren::-moz-tree-cell(recordIndex)
+{
+  border-top: 1px solid #008800;
+}
+
+treechildren::-moz-tree-row(commandFailed)
+{
+  background-color: #FFCCCC;
+}
+
+treechildren::-moz-tree-row(commandPassed)
+{
+  background-color: #CCFFCC;
+}
+
+treechildren::-moz-tree-row(commandDone)
+{
+  background-color: #EEFFEE;
+}
+
+treechildren::-moz-tree-row(commandSelectedForReplacement)
+{
+  background-color: #cef;
+}
+
+treechildren::-moz-tree-row(debugIndex)
+{
+  background-color: #FFFFCC;
+}
+
+/*
+treechildren::-moz-tree-row(selected, focus)
+{
+  background-color: Highlight !important;
+}
+*/
+
+treechildren::-moz-tree-image(breakpoint)
+{
+  list-style-image: url("treeView-icons.png");
+  -moz-image-region: rect(0px 24px 12px 12px);
+  -moz-box-align: center;
+}
+
+treechildren::-moz-tree-image(startpoint)
+{
+  list-style-image: url("treeView-icons.png");
+  -moz-image-region: rect(0px 12px 12px 0px);
+  -moz-box-align: center;
+}
+
+.autocomplete-treebody::-moz-tree-cell-text(treecolAutoCompleteComment) {
+  color: #aaaaaa;
+}
+/*
+ * Test Suite View
+ */
+
+treechildren::-moz-tree-cell-text(currentTestCase)
+{
+  font-weight: bold;
+}
+
+
+/*
+ * Log Console
+ */
+
+#logBox {
+  margin: 8px;
+  border: 1px solid #aaa;
+}
+
+#logMenu {
+  border-bottom: 1px solid #aaa;
+}
+
+.console-tab {
+  height: 20px;
+  border-width: 0 1px 0 0;
+  border-style: solid;
+  border-color: #AAA;
+  margin: 0;
+}
+
+.console-tab label { 
+  font-size: 9pt;
+}
+
+.console-tab .toolbarbutton-text { 
+  color: #666666;
+}
+
+.console-tab[selected] { 
+  background-color: #FFFFFF;
+}
+
+.console-tab[selected] .toolbarbutton-text {
+  color: #000000;
+}
+
+.console-button label {
+  margin-left: 7px;
+  font-size: 9pt;
+}
+
+/*
+#logLabel { 
+  font-weight: bold;
+}
+*/
+
+/*
+ * Toolbar icons
+ */
+
+toolbarbutton.icon {
+  padding: 2px 4px 2px 4px;
+  margin: 0;
+  border: 0;
+}
+
+toolbarbutton:hover:not([disabled="true"]) { 
+  background-color: #aaaaaa;
+}
+
+toolbarbutton.icon:not([disabled="true"]) { 
+  list-style-image: url("icons.png");
+}
+
+toolbarbutton.icon[disabled="true"] { 
+  list-style-image: url("icons_disabled.png");
+}
+
+toolbarbutton.icon image {
+  margin-right: 0px;
+}
+
+toolbarbutton.icon label {
+  display: none;
+}
+
+#play-suite-button { 
+  -moz-image-region: rect(0px 121px 16px 96px);
+}
+#play-button { 
+  -moz-image-region: rect(0px 146px 16px 121px);
+}
+.pause#pause-button { 
+  -moz-image-region: rect(0px 32px 16px 16px);
+}
+.resume#pause-button { 
+  -moz-image-region: rect(0px 80px 16px 64px);
+}
+#record-button:not([checked="true"]) { 
+  -moz-image-region: rect(0px 48px 16px 32px);
+}
+#record-button[checked="true"] {
+  -moz-image-region: rect(16px 48px 32px 32px);
+  background-color: rgba(225, 225, 225, 0.3);
+}
+#step-button { 
+  -moz-image-region: rect(0px 64px 16px 48px);
+}
+#testrunner-button { 
+  -moz-image-region: rect(0px 96px 16px 80px);
+}
+
+#rollup-button:not([disabled="true"]) {
+    list-style-image: url("spiral.png");
+}
+#rollup-button[disabled="true"] {
+    list-style-image: url("spiral_disabled.png");
+}
+
+#reload-button:not([disabled="true"]) {
+    list-style-image: url("reload.png");
+}
+#reload-button[disabled="true"] {
+    list-style-image: url("reload_disabled.png");
+}
+
+
+tab label { 
+  font-size: 8.5pt;
+}
+
+/*
+ * Slider
+ */
+
+#speedSliderBox {
+  margin-left: 8px;
+  margin-right: 8px;
+}
+
+#speedSliderBox label {
+  margin-top: 0;
+  font-size: 9px;
+  font-family: Lucida Grande, Verdana;
+}
+
+#speedSliderBox .spacer {
+  height: 5px;
+}
+
+#speedSliderBox slider {
+  margin-top: 3px;
+}
+
+#speedSliderBox .slider-middle {
+  background: url("slider-middle.png");
+  background-position: left 8px;
+  background-repeat: repeat-x;
+}
+
+#speedSliderBox .slider-left {
+  background: url("slider.png");
+  background-position: left 8px;
+  background-repeat: no-repeat;
+  width: 5px !important;
+}
+
+#speedSliderBox .slider-right {
+  background: url("slider.png");
+  background-position: right 8px;
+  background-repeat: no-repeat;
+  width: 5px;
+}
+
+#speedSliderBox thumb {
+  -moz-appearance: none !important;
+  border: none;
+  background: url("slider-thumb.png");
+  background-repeat: no-repeat;
+  background-position: 0 1px;
+  width: 13px;
+  height: 13px;
+  min-width: 13px;
+}
+
+#speedSliderBox thumb > gripper {
+  /* hide gripper image on Windows */
+  -moz-appearance: none;
+}
+
+#tableViewUnavailable {
+  -moz-opacity:0.8;
+}
+
+#tableViewUnavailable label {
+  width: 100%;
+  text-align: center;
+}
+
+#suiteProgressBar {
+  background: url("progress-background.png");
+  height: 16px;
+  width: 100%;
+  margin: 3px 3px 3px 4px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: #444444 #eeeeee #eeeeee #444444;
+}
+
+#suiteProgressIndicator.success {
+  background: url("progress-success.png");
+}
+
+#suiteProgressIndicator.failure {
+  background: url("progress-failure.png");
+}
+
+#suiteProgressRuns {
+  font-weight: bold;
+  color: #008800;
+  text-align: right;
+}
+
+#suiteProgressFailures {
+  font-weight: bold;
+  color: #ee0000;
+  text-align: right;
+}
+
+

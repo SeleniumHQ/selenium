@@ -93,6 +93,7 @@ class JavaGen < BaseGenerator
           res.each do |from, to|
             dir = to.gsub(/\/.*?$/, "")
             mkdir_p "#{temp}/#{dir}", :verbose => false
+            mkdir_p "#{temp}/#{to}" unless File.file? from
             cp_r find_file(from), "#{temp}/#{to}"
           end
         else
