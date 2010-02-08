@@ -434,7 +434,7 @@ xpi(:name => "ide",
                     { :"ide-auto-complete" => "components/" },
                     { "ide/src/extension/components/SeleniumIDEGenericAutoCompleteSearch.js" => "components/" },
                     { "ide/src/extension/install.rdf" => "/" },
-                    { "ide/src/extension/chrome.manifest" => "/" },
+                    { "ide/src/extension/chrome.manifest.production" => "/chrome.manifest" },
                     { "common/src/js/core/scripts/selenium-testrunner.js" => "content-files/" }
                   ],
     :out => "selenium-ide.xpi")
