@@ -3,6 +3,22 @@ function API() {
     this.preferences = SeleniumIDE.Preferences;
 };
 
+// add our plugin to the main list of selenium plugins
+API.prototype.addPlugin = function(id) {
+    var options = {};
+    
+    var current = this.preferences.getString("plugins");
+    if (!current || current.length == 0) {
+        options["plugins"] = id;
+        this.preferences.save(options, "plugins");
+    } else {
+        if (current.search(id) == -1) {
+            options["plugins"] = current + ',' + id;
+            this.preferences.save(options, "plugins");
+        }
+    }
+};
+
 // add the provided chrome url to the list of user extensions provided through plugins
 // -- or not if it already exists
 API.prototype.addPluginProvidedUserExtension = function(url) {
