@@ -1,5 +1,5 @@
 function API() {
-    this.verison = 0.1;	
+    this.verison = 0.2;	
     this.preferences = SeleniumIDE.Preferences;
 };
 
@@ -67,6 +67,7 @@ var seIDEAPIObserver = {
 branch.setCharPref("pluginProvidedUserExtensions", "");
             branch.setCharPref("pluginProvidedUserExtensions", "");
             branch.setCharPref("pluginProvidedFormatters", "");
+            branch.setCharPref("plugins", "");
             this.unregister();
         }
     },
