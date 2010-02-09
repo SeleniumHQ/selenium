@@ -12,6 +12,7 @@ require 'rake-tasks/iphone'
 require 'rake-tasks/selenium'
 require 'rake-tasks/mozilla'
 require 'rake-tasks/ruby'
+require 'rake-tasks/se-ide'
 
 version = "2.0a2"
 
