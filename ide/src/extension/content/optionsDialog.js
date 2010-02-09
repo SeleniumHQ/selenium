@@ -75,6 +75,8 @@ function loadOptions() {
 
 	loadFormatList();
 	selectFormat("default");
+	
+	loadPluginList();
 }
 
 function loadFormatList() {
@@ -306,4 +308,23 @@ function SDTToggle(){
 	document.getElementById('reload').disabled = document.getElementById('reload').hidden;
 }
 
+function loadPluginList() {
+    var list = document.getElementById("plugin-list");
+    for (var i = list.getRowCount() - 1; i >= 0; i--) {
+        list.removeItemAt(i);
+    }
+    
+    var plugins = this.Preferences.getString("plugins").split(",");
+    
+    for (var i = 0; i < plugins.length; i++) {
+        list.appendItem(plugins[i]);
+    }
+}
 
+function updatePluginOptions() {
+
+}
+
+function updatePluginSelection() {
+    
+}

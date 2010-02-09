@@ -22,15 +22,15 @@ limitations under the License.
 %optionsDTD;
 ]>
 <dialog buttons="accept,cancel,extra2"
-	buttonlabelextra2="&options.resetOptions;"
-	id="selenium-ide-options"
-	ondialogaccept="saveOptions()"
-	ondialogextra2="loadDefaultOptions()"
-	onload="loadOptions()"
-	title="Selenium IDE Options"
-	width="520"
-	height="600"
-	xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+  buttonlabelextra2="&options.resetOptions;"
+  id="selenium-ide-options"
+  ondialogaccept="saveOptions()"
+  ondialogextra2="loadDefaultOptions()"
+  onload="loadOptions()"
+  title="Selenium IDE Options"
+  width="520"
+  height="600"
+  xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
   <script type="application/x-javascript" src="chrome://selenium-ide/content/preferences.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/tools.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/xhtml-entities.js"/>
@@ -45,35 +45,36 @@ limitations under the License.
   <tabs orient="horizontal">
     <tab label="&options.general.label;"/>
     <tab label="&options.formats.label;"/>
+    <tab label="Plugins"/>
   </tabs>
   <tabpanels flex="1">
     <tabpanel orient="vertical">
       <description>&options.encoding.description;</description>
       <hbox align="center">
-	<textbox id="encoding" multiline="false" oninput="validate()"/>
-	<label id="encodingError" value="" class="error"/>
+  <textbox id="encoding" multiline="false" oninput="validate()"/>
+  <label id="encodingError" value="" class="error"/>
       </hbox>
       
       <separator class="thin"/>
       <description>&options.timeout.description;</description>
       <hbox align="center">
-	<textbox id="timeout" multiline="false" oninput="validate()"/>
-	<label id="timeoutError" value="" class="error"/>
+  <textbox id="timeout" multiline="false" oninput="validate()"/>
+  <label id="timeoutError" value="" class="error"/>
       </hbox>
 
       <separator class="thin"/>
       <description>&options.userExtensionsPaths.description;</description>
       <hbox align="center">
-	<textbox id="userExtensionsURL" multiline="false" flex="1"/>
-	<button label="&options.browse;" oncommand="chooseFile('userExtensionsURL')"/>
-	<button id="reload" label="&options.user-ext.reload.label;" class="icon" tooltiptext="&options.user-ext.reload.tooltip;" oncommand="reloadUserExtFile()" disabled="true"/>
+  <textbox id="userExtensionsURL" multiline="false" flex="1"/>
+  <button label="&options.browse;" oncommand="chooseFile('userExtensionsURL')"/>
+  <button id="reload" label="&options.user-ext.reload.label;" class="icon" tooltiptext="&options.user-ext.reload.tooltip;" oncommand="reloadUserExtFile()" disabled="true"/>
       </hbox>
 
       <separator class="thin"/>
       <description>&options.ideExtensionsPaths.description;</description>
       <hbox align="center">
-	<textbox id="ideExtensionsPaths" multiline="false" flex="1"/>
-	<button label="&options.browse;" oncommand="chooseFile('ideExtensionsPaths')"/>
+  <textbox id="ideExtensionsPaths" multiline="false" flex="1"/>
+  <button label="&options.browse;" oncommand="chooseFile('ideExtensionsPaths')"/>
       </hbox>
       <description class="tip">&options.extensions.tip;</description>
 
@@ -86,19 +87,30 @@ limitations under the License.
     </tabpanel>
     <tabpanel orient="vertical">
       <hbox flex="1">
-	<listbox id="format-list" onselect="updateFormatSelection()" width="100"/>
-	<vbox flex="1" width="300">
-	  <label id="format-name"/>
-	  <box id="format-config"/>
-	</vbox>
+        <listbox id="format-list" onselect="updateFormatSelection()" width="100"/>
+        <vbox flex="1" width="300">
+          <label id="format-name"/>
+          <box id="format-config"/>
+        </vbox>
       </hbox>
       <hbox>
-	<button label="&options.formats.add-button.label;" oncommand="createNewFormat()"/>
-	<button id="rename-button" label="&options.formats.rename-button.label;" oncommand="renameFormat()"/>
-	<button id="delete-button" label="&options.formats.delete-button.label;" oncommand="deleteFormat()"/>
-	<button label="&options.formats.source-button.label;" oncommand="openFormatSource()"/>
+        <button label="&options.formats.add-button.label;" oncommand="createNewFormat()"/>
+        <button id="rename-button" label="&options.formats.rename-button.label;" oncommand="renameFormat()"/>
+        <button id="delete-button" label="&options.formats.delete-button.label;" oncommand="deleteFormat()"/>
+        <button label="&options.formats.source-button.label;" oncommand="openFormatSource()"/>
       </hbox>
     </tabpanel>
+    <tabpanel orient="vertical" id="pluginsPanel">
+      <hbox flex="1">
+        <hbox flex="1">
+          <listbox id="plugin-list" onselect="updatePluginSelection()" width="100"/>
+        </hbox>
+        <vbox flex="1" width="300">
+          <label id="plugin-name"/>
+          <box id="plugin-config"/>
+        </vbox>
+      </hbox>
+    </tabpanel>    
   </tabpanels>
 </tabbox>
 </dialog>
