@@ -221,7 +221,7 @@
     <NUnitReferences Include="$(NUnitDirectory)\nunit.core.dll"/>
     <NUnitReferences Include="$(NUnitDirectory)\nunit.core.interfaces.dll"/>
     <NUnitReferences Include="$(NUnitDirectory)\nunit.framework.dll"/>
-    <NUnitReferences Include="$(NUnitDirectory)\bin\nunit.mocks.dll"/>
+    <NUnitReferences Include="$(NUnitDirectory)\nunit.mocks.dll"/>
   </ItemGroup>
 
   <ItemGroup>
@@ -277,7 +277,7 @@
     <Copy SourceFiles="@(IETestSettingsFiles)"
           DestinationFolder="$(BuildOutputDirectory)"
     />
-    <Exec Command="(NUnitDirectory)\nunit-console.exe $(BuildOutputDirectory)\webdriver-ie-test.nunit"/>
+    <Exec Command="$(NUnitDirectory)\nunit-console.exe $(BuildOutputDirectory)\webdriver-ie-test.nunit"/>
   </Target>
 
   <ItemGroup>
@@ -308,7 +308,7 @@
     <Copy SourceFiles="@(FirefoxTestSettingsFiles)"
           DestinationFolder="$(BuildOutputDirectory)"
     />
-    <Exec Command="(NUnitDirectory)\nunit-console.exe $(BuildOutputDirectory)\webdriver-firefox-test.nunit"/>
+    <Exec Command="$(NUnitDirectory)\nunit-console.exe $(BuildOutputDirectory)\webdriver-firefox-test.nunit"/>
   </Target>
 
   <ItemGroup>
@@ -339,6 +339,6 @@
     <Copy SourceFiles="@(ChromeTestSettingsFiles)"
           DestinationFolder="$(BuildOutputDirectory)"
     />
-    <Exec Command="(NUnitDirectory)\nunit-console.exe $(BuildOutputDirectory)\webdriver-chrome-test.nunit"/>
+    <Exec Command="$(NUnitDirectory)\nunit-console.exe $(BuildOutputDirectory)\webdriver-chrome-test.nunit"/>
   </Target>
 </Project>
