@@ -73,7 +73,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.IE)]
+        [IgnoreBrowser(Browser.IE, "IE driver returns code 4 for arrays, which conflicts with the code for IWebElement return values.")]
         public void ShouldBeAbleToExecuteSimpleJavascriptAndReturnAnArray()
         {
             if (!(driver is IJavaScriptExecutor))
@@ -394,7 +394,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.IE)]
         public void ShouldBeAbleToPassAnArrayAsArgument()
         {
             if (!(driver is IJavaScriptExecutor))
@@ -502,9 +501,8 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.IE)]
+        [IgnoreBrowser(Browser.IE, "IE driver returns code 4 for arrays, which conflicts with the code for single IWebElement return values.")]
         [IgnoreBrowser(Browser.Chrome)]
-        [IgnoreBrowser(Browser.Remote)]
         [IgnoreBrowser(Browser.IPhone)]
         public void ShouldBeAbleToExecuteScriptAndReturnElementsList()
         {

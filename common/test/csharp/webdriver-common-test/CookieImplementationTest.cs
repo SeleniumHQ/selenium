@@ -57,7 +57,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IE, "add cookie to unrelated domain silently fails for IE.")]
+        [IgnoreBrowser(Browser.IE, "Add cookie to unrelated domain silently fails for IE.")]
         [ExpectedException(typeof(WebDriverException))]
         public void ShouldNotShowCookieAddedToDifferentDomain()
         {
@@ -287,7 +287,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IE)]
         public void ShouldBeAbleToAddToADomainWhichIsRelatedToTheCurrentDomain()
         {
             driver.Url = simpleTestPage;
@@ -312,8 +311,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IE)]
-        [IgnoreBrowser(Browser.Remote)]
         public void ShouldBeAbleToIncludeLeadingPeriodInDomainName()
         {
             driver.Url = simpleTestPage;
@@ -357,9 +354,12 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IE)]
+        [IgnoreBrowser(Browser.IE, "IE cookies do not conform to RFC, so setting cookie on domain fails.")]
         public void ShouldBeAbleToSetDomainToTheCurrentDomain()
         {
+            driver.Url = simpleTestPage;
+            driver.Manage().DeleteAllCookies();
+
             Uri url = new Uri(driver.Url);
             String host = url.Host + ":" + url.Port.ToString();
 
@@ -413,9 +413,12 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IE)]
+        [IgnoreBrowser(Browser.IE, "IE cookies do not conform to RFC, so setting cookie on domain fails.")]
         public void ShouldIgnoreThePortNumberOfTheHostWhenSettingTheCookie()
         {
+            driver.Url = simpleTestPage;
+            driver.Manage().DeleteAllCookies();
+
             Uri uri = new Uri(driver.Url);
             String host = string.Format("{0}:{1}", uri.Host, uri.Port);
 
@@ -427,7 +430,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IE)]
         public void CookieIntegrity()
         {
             string url = EnvironmentManager.Instance.UrlBuilder.WhereElseIs("animals");

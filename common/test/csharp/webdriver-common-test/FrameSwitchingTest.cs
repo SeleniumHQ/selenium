@@ -92,19 +92,24 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.Chrome)]
-        [IgnoreBrowser(Browser.Firefox)]
         [IgnoreBrowser(Browser.HtmlUnit)]
-        [IgnoreBrowser(Browser.IE)]
         public void ShouldBeAbleToClickInASubFrame()
         {
             driver.Url = framesetPage;
             driver.SwitchTo().Frame("sixth.iframe1");
 
+            // This should replaxe frame "iframe1" inside frame "sixth" ...
             driver.FindElement(By.Id("submitButton")).Click();
             //TODO (jimevan): this is an ugly sleep. Remove when implicit waiting is implemented.
             System.Threading.Thread.Sleep(500);
-            driver.SwitchTo().Frame("sixth");
+
+            // driver should still be focused on frame "iframe1" inside frame "sixth" ...
             String hello = driver.FindElement(By.Id("greeting")).Text;
+            Assert.AreEqual(hello, "Success!");
+
+            // Make sure it was really frame "iframe1" inside frame "sixth" which was replaced ...
+            driver.SwitchTo().DefaultContent().SwitchTo().Frame("sixth.iframe1");
+            hello = driver.FindElement(By.Id("greeting")).Text;
             Assert.AreEqual(hello, "Success!");
         }
 
@@ -142,7 +147,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Firefox)]
+        [IgnoreBrowser(Browser.Firefox, "Frame parsing issue with both parent and child as indexes")]
         public void ShouldSwitchToChildFramesTreatingParentAndChildNumbersAsIndex()
         {
             driver.Url = framesetPage;
@@ -153,7 +158,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.Chrome)]
-        [IgnoreBrowser(Browser.IE)]
         [ExpectedException(typeof(NoSuchFrameException))]
         public void ShouldThrowFrameNotFoundExceptionLookingUpSubFramesWithSuperFrameNames()
         {

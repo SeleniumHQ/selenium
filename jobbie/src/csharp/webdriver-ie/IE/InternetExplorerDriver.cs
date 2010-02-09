@@ -50,6 +50,9 @@ namespace OpenQA.Selenium.IE
     {
         private bool disposed;
         private SafeInternetExplorerDriverHandle handle;
+        private InternetExplorerNavigation navigation;
+        private InternetExplorerOptions options;
+        private InternetExplorerTargetLocator targetLocator;
 
         /// <summary>
         /// Initializes a new instance of the InternetExplorerDriver class.
@@ -363,7 +366,12 @@ namespace OpenQA.Selenium.IE
         /// </example>
         public ITargetLocator SwitchTo()
         {
-            return new InternetExplorerTargetLocator(this);
+            if (targetLocator == null)
+            {
+                targetLocator = new InternetExplorerTargetLocator(this);
+            }
+
+            return targetLocator;
         }
 
         /// <summary>
@@ -378,7 +386,12 @@ namespace OpenQA.Selenium.IE
         /// </example>
         public IOptions Manage()
         {
-            return new InternetExplorerOptions(this);
+            if (options == null)
+            {
+                options = new InternetExplorerOptions(this);
+            }
+
+            return options;
         }
 
         /// <summary>
@@ -393,7 +406,12 @@ namespace OpenQA.Selenium.IE
         /// </example>
         public INavigation Navigate()
         {
-            return new InternetExplorerNavigation(this);
+            if (navigation == null)
+            {
+                navigation = new InternetExplorerNavigation(this);
+            }
+
+            return navigation;
         }
 
         /// <summary>

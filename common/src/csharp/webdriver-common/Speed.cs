@@ -87,5 +87,35 @@ namespace OpenQA.Selenium
 
             return toReturn;
         }
+
+        /// <summary>
+        /// Serves as a hash function for a particular type.
+        /// </summary>
+        /// <returns>A hash code for the current <see cref="System.Object">Object</see>.</returns>
+        public override int GetHashCode()
+        {
+            return speedDescription.GetHashCode();
+        }
+
+        /// <summary>
+        /// Determines whether the specified <see cref="System.Object">Object</see> is equal 
+        /// to the current <see cref="System.Object">Object</see>.
+        /// </summary>
+        /// <param name="obj">The <see cref="System.Object">Object</see> to compare with the 
+        /// current <see cref="System.Object">Object</see>.</param>
+        /// <returns><see langword="true"/> if the specified <see cref="System.Object">Object</see>
+        /// is equal to the current <see cref="System.Object">Object</see>; otherwise,
+        /// <see langword="false"/>.</returns>
+        public override bool Equals(object obj)
+        {
+            bool isEqual = false;
+            Speed otherObject = obj as Speed;
+            if (otherObject != null)
+            {
+                isEqual = string.Compare(otherObject.Description, speedDescription, StringComparison.OrdinalIgnoreCase) == 0;
+            }
+
+            return base.Equals(obj);
+        }
     }
 }

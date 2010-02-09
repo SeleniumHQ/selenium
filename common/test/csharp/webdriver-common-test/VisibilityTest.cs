@@ -115,7 +115,7 @@ namespace OpenQA.Selenium
         [Test]
         [Category("Javascript")]
         [IgnoreBrowser(Browser.HtmlUnit)]
-        [IgnoreBrowser(Browser.IE)]
+        [IgnoreBrowser(Browser.IE, "IE reports zero width and height elements as displayed")]
         public void ShouldNotAllowAnElementWithZeroHeightToBeCountedAsDisplayed()
         {
             driver.Url = javascriptPage;
@@ -128,7 +128,7 @@ namespace OpenQA.Selenium
         [Test]
         [Category("Javascript")]
         [IgnoreBrowser(Browser.HtmlUnit)]
-        [IgnoreBrowser(Browser.IE)]
+        [IgnoreBrowser(Browser.IE, "IE reports zero width and height elements as displayed")]
         public void ShouldNotAllowAnElementWithZeroWidthToBeCountedAsDisplayed()
         {
             driver.Url = javascriptPage;

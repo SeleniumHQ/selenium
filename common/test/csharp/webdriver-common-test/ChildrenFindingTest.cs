@@ -50,7 +50,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.IE, "Multiple items of ID 1 exist in the page, returns subelements of *all* of them, not the one we selected. See issue 278.")]
-        [IgnoreBrowser(Browser.Remote, "Multiple items of ID 1 exist in the page, returns subelements of *all* of them, not the one we selected. See issue 278.")]
         [IgnoreBrowser(Browser.HtmlUnit, "Multiple items of ID 1 exist in the page, returns subelements of *all* of them, not the one we selected. See issue 278.")]
         public void FindElementsByXPathWithMultipleParentElementsOfSameId()
         {
@@ -62,7 +61,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.IE, "Issue 278.")]
-        [IgnoreBrowser(Browser.Remote, "Issue 278.")]
         [IgnoreBrowser(Browser.HtmlUnit, "Issue 278.")]
         public void FindsSubElementNotTopLevelElementWhenLookingUpSubElementByXPath()
         {
@@ -164,7 +162,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IE)]
         public void ShouldFindChildElementsByClassName()
         {
             driver.Url = nestedPage;
@@ -176,7 +173,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IE)]
         public void ShouldFindChildrenByClassName()
         {
             driver.Url = nestedPage;

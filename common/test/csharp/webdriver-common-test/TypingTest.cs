@@ -231,10 +231,9 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.ChromeNonWindows, "firefox specific not yet tested in htmlunit. Firefox demands to have the focus on the window already.")]
+        [IgnoreBrowser(Browser.ChromeNonWindows, "event firing broken.")]
         [IgnoreBrowser(Browser.Chrome, "event firing broken.")]
-        [IgnoreBrowser(Browser.IE, "firefox specific not yet tested in htmlunit. Firefox demands to have the focus on the window already.")]
-        [IgnoreBrowser(Browser.Firefox, "firefox specific not yet tested in htmlunit. Firefox demands to have the focus on the window already.")]
+        [IgnoreBrowser(Browser.Firefox, "Firefox demands to have the focus on the window already.")]
         public void ShouldFireFocusKeyEventsInTheRightOrder()
         {
             driver.Url = javascriptPage;
@@ -249,7 +248,7 @@ namespace OpenQA.Selenium
         [Test]
         [Category("Javascript")]
         [IgnoreBrowser(Browser.Chrome, "firefox-specific")]
-        [IgnoreBrowser(Browser.IE, "firefox-specific")]
+        [IgnoreBrowser(Browser.IE, "Firefox-specific test. IE does not report key press event.")]
         [IgnoreBrowser(Browser.HtmlUnit, "firefox-specific")]
         public void ShouldReportKeyCodeOfArrowKeys()
         {
@@ -638,7 +637,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.IE, "firefox-specific")]
+        [IgnoreBrowser(Browser.IE, "Firefox-specific test. IE does not report key press event.")]
         [IgnoreBrowser(Browser.Chrome, "firefox-specific")]
         public void GenerateKeyPressEventEvenWhenElementPreventsDefault()
         {
@@ -654,7 +653,7 @@ namespace OpenQA.Selenium
         [Test]
         [Category("Javascript")]
         [IgnoreBrowser(Browser.HtmlUnit)]
-        [IgnoreBrowser(Browser.IE)]
+        [IgnoreBrowser(Browser.IE, "IFrame content not updating in IE page.")]
         [IgnoreBrowser(Browser.Chrome, "See crbug 20773")]
         public void TypingIntoAnIFrameWithContentEditableOrDesignModeSet()
         {
@@ -675,7 +674,6 @@ namespace OpenQA.Selenium
         [Test]
         [Category("Javascript")]
         [IgnoreBrowser(Browser.HtmlUnit)]
-        [IgnoreBrowser(Browser.IE)]
         [IgnoreBrowser(Browser.Chrome, "See crbug 20773")]
         public void NonPrintableCharactersShouldWorkWithContentEditableOrDesignModeSet()
         {

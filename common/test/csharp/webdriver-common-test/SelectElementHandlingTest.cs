@@ -10,7 +10,6 @@ namespace OpenQA.Selenium
     public class SelectElementHandlingTest : DriverTestFixture
     {
         [Test]
-        [IgnoreBrowser(Browser.IE)]
         public void ShouldBePossibleToDeselectASingleOptionFromASelectWhichAllowsMultipleChoices()
         {
             driver.Url = formsPage;
@@ -30,7 +29,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IE)]
+        [IgnoreBrowser(Browser.IE, "IE driver allows deselecting option from a single-select selectlist")]
         [ExpectedException(typeof(NotImplementedException))]
         public void ShouldNotBeAbleToDeselectAnOptionFromANormalSelect()
         {

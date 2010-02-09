@@ -161,7 +161,7 @@ namespace OpenQA.Selenium
         //}
 
         [Test]
-        [IgnoreBrowser(Browser.IE)]
+        [IgnoreBrowser(Browser.IE, "Refresh does not work properly for IE.")]
         public void ShouldBeAbleToRefreshAPage()
         {
             driver.Url = xhtmlTestPage;

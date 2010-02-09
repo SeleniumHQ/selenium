@@ -12,8 +12,8 @@ namespace OpenQA.Selenium
         private string textPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("plain.txt");
 
         [Test]
-        [IgnoreBrowser(Browser.IE)]
-        [IgnoreBrowser(Browser.Firefox)]
+        [IgnoreBrowser(Browser.IE, "IE renders plain text pages as HTML with <pre> tags.")]
+        [IgnoreBrowser(Browser.Firefox, "Firefox renders plain text pages as HTML with <pre> tags.")]
         public void ShouldBeAbleToLoadASimplePageOfText()
         {
             driver.Url = textPage;
@@ -31,7 +31,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IE)]
+        [IgnoreBrowser(Browser.IE, "IE allows addition of cookie on text pages")]
         [IgnoreBrowser(Browser.Chrome)]
         [ExpectedException(typeof(WebDriverException))]
         public void ShouldThrowExceptionWhenAddingCookieToAPageThatIsNotHtml()

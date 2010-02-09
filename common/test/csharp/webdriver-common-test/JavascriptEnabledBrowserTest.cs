@@ -76,7 +76,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.IE)]
+        [IgnoreBrowser(Browser.IE, "JavaScript execution is asynchronous with the driver in IE")]
         [IgnoreBrowser(Browser.ChromeNonWindows, "Chrome failing on OS X")]
         [IgnoreBrowser(Browser.IPhone, "does not detect that a new page loaded.")]
         public void ShouldWaitForLoadsToCompleteAfterJavascriptCausesANewPageToLoad()
@@ -90,7 +90,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.IE)]
+        [IgnoreBrowser(Browser.IE, "JavaScript execution is asynchronous with the driver in IE")]
         [IgnoreBrowser(Browser.ChromeNonWindows, "Chrome failing on OS X")]
         [IgnoreBrowser(Browser.IPhone, "does not detect that a new page loaded.")]
         public void ShouldBeAbleToFindElementAfterJavascriptCausesANewPageToLoad()
@@ -206,7 +206,6 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.IE, "not properly tested")]
         [IgnoreBrowser(Browser.Firefox, "Window demands focus to work.")]
         [IgnoreBrowser(Browser.Chrome, "Event firing is broken")]
-        [IgnoreBrowser(Browser.Remote, "not properly tested")]
         public void ChangeEventIsFiredAppropriatelyWhenFocusIsLost()
         {
             driver.Url = javascriptPage;

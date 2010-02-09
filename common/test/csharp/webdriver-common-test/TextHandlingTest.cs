@@ -187,9 +187,9 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Firefox)]
+        [IgnoreBrowser(Browser.Firefox, "Difference in DOM rendering engines. Firefox places new line characters for paragraph elements only after the element.")]
         [IgnoreBrowser(Browser.HtmlUnit)]
-        [IgnoreBrowser(Browser.IE)]
+        [IgnoreBrowser(Browser.IE, "Difference in DOM rendering engines. IE preserves trailing space on first line")]
         [IgnoreBrowser(Browser.Chrome)]
         public void ShouldHandleNestedBlockLevelElements()
         {
@@ -197,8 +197,8 @@ namespace OpenQA.Selenium
 
             string text = driver.FindElement(By.Id("nestedblocks")).Text;
 
-            Assert.AreEqual(text, "Cheese" + newLine + "Some text" + newLine + "Some more text" + newLine
-                                + "and also" + newLine + "Brie");
+            Assert.AreEqual("Cheese" + newLine + "Some text" + newLine + "Some more text" + newLine
+                                + "and also" + newLine + "Brie", text);
         }
 
         [Test]

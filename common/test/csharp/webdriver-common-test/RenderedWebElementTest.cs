@@ -29,7 +29,7 @@ namespace OpenQA.Selenium
         [Test]
         [Category("Javascript")]
         [IgnoreBrowser(Browser.Chrome, "WebKit bug 28804")]
-        [IgnoreBrowser(Browser.IE)]
+        [IgnoreBrowser(Browser.IE, "Position and size are always integer in IE")]
         public void ShouldHandleNonIntegerPositionAndSize()
         {
             driver.Url = rectanglesPage;
@@ -96,9 +96,9 @@ namespace OpenQA.Selenium
             Assert.IsTrue(size.Height > 0, "Height expected to be greater than 0");
         }
 
-        [Test]
-        [Category("Javascript")]
-        [Ignore]
+        //[Test]
+        //[Category("Javascript")]
+        //[Ignore]
         public void CanClickOnSuckerFishMenuItem()
         {
             driver.Url = javascriptPage;

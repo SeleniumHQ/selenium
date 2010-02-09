@@ -38,8 +38,10 @@ namespace OpenQA.Selenium.IE
                         Dispose();
                         throw new WebDriverException("Cannot copy string from native data to .NET string");
                     }
+
                     returnValue = result.ToString();
                 }
+
                 return returnValue;
             }
         }

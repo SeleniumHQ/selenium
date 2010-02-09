@@ -31,8 +31,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IE)]
-        [IgnoreBrowser(Browser.Remote)]
+        [IgnoreBrowser(Browser.IE, "HashCode valid only for elements with ID assigned by the driver. Not the case with IE.")]
         public void FindElementHashCodeShouldMatchEquality()
         {
             driver.Url = (simpleTestPage);
@@ -43,8 +42,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IE)]
-        [IgnoreBrowser(Browser.Remote)]
+        [IgnoreBrowser(Browser.IE, "HashCode valid only for elements with ID assigned by the driver. Not the case with IE.")]
         public void FindElementsHashCodeShouldMatchEquality()
         {
             driver.Url = (simpleTestPage);

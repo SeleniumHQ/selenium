@@ -10,22 +10,17 @@ namespace OpenQA.Selenium
     public class PartialLinkTextMatchTest : DriverTestFixture
     {
         [Test]
-        [IgnoreBrowser(Browser.Remote)]
-        [IgnoreBrowser(Browser.IE)]
         public void LinkWithFormattingTags()
         {
             driver.Url = simpleTestPage;
             IWebElement elem = driver.FindElement(By.Id("links"));
 
-            IWebElement res =
-                elem.FindElement(By.PartialLinkText("link with formatting tags"));
+            IWebElement res = elem.FindElement(By.PartialLinkText("link with formatting tags"));
             Assert.IsNotNull(res);
             Assert.AreEqual("link with formatting tags", res.Text);
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Remote)]
-        [IgnoreBrowser(Browser.IE)]
         public void LinkWithLeadingSpaces()
         {
             driver.Url = simpleTestPage;
@@ -37,8 +32,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Remote)]
-        [IgnoreBrowser(Browser.IE)]
         public void LinkWithTrailingSpace()
         {
             driver.Url = simpleTestPage;
@@ -51,8 +44,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Remote)]
-        [IgnoreBrowser(Browser.IE)]
         public void FindMultipleElements()
         {
             driver.Url = simpleTestPage;

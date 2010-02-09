@@ -57,7 +57,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.IE)]
+        [IgnoreBrowser(Browser.IE, "Dragging too far in IE causes the element not to move, instead of moving to 0,0.")]
         [IgnoreBrowser(Browser.HtmlUnit)]
         [IgnoreBrowser(Browser.Chrome)]
         public void DragTooFar()
@@ -79,7 +79,6 @@ namespace OpenQA.Selenium
         [Test]
         [Category("Javascript")]
         [IgnoreBrowser(Browser.HtmlUnit)]
-        [IgnoreBrowser(Browser.IE)]
         [IgnoreBrowser(Browser.Chrome)]
         public void MouseSpeed()
         {
@@ -95,7 +94,7 @@ namespace OpenQA.Selenium
         [Test]
         [Category("Javascript")]
         [IgnoreBrowser(Browser.HtmlUnit)]
-        [IgnoreBrowser(Browser.IE)]
+        [IgnoreBrowser(Browser.IE, "Location property not taking scroll position into account")]
         [IgnoreBrowser(Browser.Chrome)]
         public void ShouldAllowUsersToDragAndDropToElementsOffTheCurrentViewPort()
         {
