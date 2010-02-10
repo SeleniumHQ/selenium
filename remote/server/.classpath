@@ -16,5 +16,7 @@
 	<classpathentry kind="lib" path="/webdriver-remote-client/lib/runtime/commons-logging-1.1.1.jar"/>
 	<classpathentry kind="lib" path="lib/buildtime/easymock-2.4.jar"/>
 	<classpathentry kind="lib" path="lib/buildtime/easymockclassextension-2.4.jar"/>
+	<classpathentry kind="lib" path="/webdriver-remote-client/lib/runtime/commons-httpclient-3.1.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/webdriver-firefox"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
