@@ -8,10 +8,13 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/webdriver-internet-explorer"/>
 	<classpathentry kind="lib" path="lib/buildtime/testng-5.8-jdk15.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/webdriver-htmlunit"/>
-	<classpathentry kind="lib" path="lib/runtime/selenium-java-client-driver-1.0.1.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/webdriver-remote-common"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/webdriver-remote-client"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/webdriver-chrome"/>
 	<classpathentry kind="lib" path="/third-party/java/google-collect-1.0.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/webdriver-support"/>
+	<classpathentry kind="lib" path="lib/buildtime/easymock-2.4.jar"/>
+	<classpathentry kind="lib" path="lib/buildtime/easymockclassextension-2.4.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/webdriver-remote-server"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
