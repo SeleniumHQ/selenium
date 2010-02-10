@@ -95,7 +95,15 @@ namespace OpenQA.Selenium.Chrome
         /// </summary>
         public string Title
         {
-            get { return Execute(DriverCommand.GetTitle).Value.ToString(); }
+            get
+            {
+                string titleValue = Execute(DriverCommand.GetTitle).Value.ToString();
+
+                // Chrome extension in 4.x returns trailing whitespace and new line chars
+                // for title. We need to trim them out.
+                titleValue = titleValue.Replace(Environment.NewLine, string.Empty).Trim();
+                return titleValue;
+            }
         }
         #endregion
 
@@ -129,7 +137,14 @@ namespace OpenQA.Selenium.Chrome
 
                 throw;
             }
-            catch (Exception)
+            catch (ArgumentException)
+            {
+                // Exceptions may leave the extension hung, or in an
+                // inconsistent state, so we restart Chrome
+                StopClient();
+                StartClient();
+            }
+            catch (FatalChromeException)
             {
                 // Exceptions may leave the extension hung, or in an
                 // inconsistent state, so we restart Chrome
