@@ -37,13 +37,13 @@ public class RemoteWebDriverIeTestSuite extends TestCase {
       return toReturn;
     }
 
-    System.setProperty("webdriver.development", "true");
-    String arch = System.getProperty("os.arch").toLowerCase() + "/";
-    if (arch.contains("64")) {
-      System.setProperty("jna.library.path", "..\\build\\x64\\Debug;build\\x64\\Debug");
-    } else {
-      System.setProperty("jna.library.path", "..\\build\\Win32\\Debug;build\\Win32\\Debug");
-    }
+//    System.setProperty("webdriver.development", "true");
+//    String arch = System.getProperty("os.arch").toLowerCase() + "/";
+//    if (arch.contains("64")) {
+//      System.setProperty("jna.library.path", "..\\build\\x64\\Debug;build\\x64\\Debug");
+//    } else {
+//      System.setProperty("jna.library.path", "..\\build\\Win32\\Debug;build\\Win32\\Debug");
+//    }
 
     Test rawSuite =
         new TestSuiteBuilder()

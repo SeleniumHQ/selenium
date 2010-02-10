@@ -20,12 +20,10 @@ package org.openqa.selenium;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
+import com.google.common.base.Supplier;
 import com.google.common.collect.Maps;
 import com.thoughtworks.selenium.CommandProcessor;
 import com.thoughtworks.selenium.SeleniumException;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.internal.seleniumemulation.AddLocationStrategy;
 import org.openqa.selenium.internal.seleniumemulation.AddSelection;
 import org.openqa.selenium.internal.seleniumemulation.AltKeyDown;
@@ -131,8 +129,8 @@ public class WebDriverCommandProcessor implements CommandProcessor {
   private final Map<String, SeleneseCommand> seleneseMethods = Maps.newHashMap();
   private final String baseUrl;
   private final Timer timer;
+  private Supplier<WebDriver> maker;
   private WebDriver driver;
-  private Capabilities likeThis;
 
   /**
    * Create an instance that will later be configured by calling
@@ -142,7 +140,8 @@ public class WebDriverCommandProcessor implements CommandProcessor {
    * @param baseUrl The URL from which relative URLs should be based on
    */
   public WebDriverCommandProcessor(String baseUrl) {
-    this(baseUrl, null);
+    // Firefox seems like a reasonable default
+    this(baseUrl, new SuppliesWebDriver(DesiredCapabilities.firefox()));
   }
 
   /**
@@ -153,15 +152,7 @@ public class WebDriverCommandProcessor implements CommandProcessor {
    * @param likeThis Typically a {@link org.openqa.selenium.remote.DesiredCapabilities} instance
    */
   public WebDriverCommandProcessor(String baseUrl, Capabilities likeThis) {
-    if (baseUrl.endsWith("/")) {
-      this.baseUrl = baseUrl.substring(0, baseUrl.length() - 1);
-    } else {
-      this.baseUrl = baseUrl;
-    }
-
-    this.likeThis = likeThis;
-
-    this.timer = new Timer(30000);
+    this(baseUrl, new SuppliesWebDriver(likeThis));
   }
 
   /**
@@ -171,11 +162,28 @@ public class WebDriverCommandProcessor implements CommandProcessor {
    *
    * @param driver The driver to wrap
    * @param baseUrl The URL from which relative URLs should be based on
+   * @deprecated Signature is out of order
    */
   public WebDriverCommandProcessor(WebDriver driver, String baseUrl) {
-    this(baseUrl);
+    this(baseUrl, driver);
+  }
+
+  public WebDriverCommandProcessor(String baseUrl, WebDriver driver) {
+    this(baseUrl, new ExplodingSupplier());
     this.driver = driver;
     setUpMethodMap();
+  }
+
+  public WebDriverCommandProcessor(String baseUrl, Supplier<WebDriver> maker) {
+    this.maker = maker;
+
+    if (baseUrl.endsWith("/")) {
+      this.baseUrl = baseUrl.substring(0, baseUrl.length() - 1);
+    } else {
+      this.baseUrl = baseUrl;
+    }
+
+    this.timer = new Timer(30000);
   }
 
   /**
@@ -203,7 +211,7 @@ public class WebDriverCommandProcessor implements CommandProcessor {
   }
 
   public void start() {
-    start(likeThis);
+    start((Object) null);
   }
 
   public void start(String s) {
@@ -215,29 +223,9 @@ public class WebDriverCommandProcessor implements CommandProcessor {
       throw new SeleniumException("You may not start more than one session at a time");
     }
 
-    if (o == null) {
-      throw new SeleniumException("Please specify a Capabilities object to allow configuration");
-    }
+    driver = maker.get();
 
-    if (!(o instanceof Capabilities)) {
-      throw new SeleniumException("Unable to process: " + o);
-    }
-
-    driver = newDriverFrom((Capabilities) o);
     setUpMethodMap();
-  }
-
-  protected WebDriver newDriverFrom(Capabilities capabilities) {
-    String browser = capabilities.getBrowserName();
-    if (DesiredCapabilities.firefox().getBrowserName().equals(browser)) {
-      return new FirefoxDriver();
-    } else if (DesiredCapabilities.internetExplorer().getBrowserName().equals(browser)) {
-      return new InternetExplorerDriver();
-    } else if (DesiredCapabilities.chrome().getBrowserName().equals(browser)) {
-      return new ChromeDriver();
-    }
-
-    throw new SeleniumException("Unable to determine which driver to use: " + capabilities);
   }
 
   public void stop() {
@@ -302,8 +290,6 @@ public class WebDriverCommandProcessor implements CommandProcessor {
     JavascriptLibrary javascriptLibrary = new JavascriptLibrary();
     KeyState keyState = new KeyState();
 
-    // TODO(simon): Switch to wrapping all calls in a timed future
-    // Default to 30 seconds on the timer
     SeleniumSelect select = new SeleniumSelect(elementFinder);
     Windows windows = new Windows(driver);
 

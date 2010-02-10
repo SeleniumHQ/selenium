@@ -17,11 +17,16 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import com.google.common.base.Supplier;
 import com.thoughtworks.selenium.DefaultSelenium;
 
 public class WebDriverBackedSelenium extends DefaultSelenium {
+  public WebDriverBackedSelenium(Supplier<WebDriver> maker, String baseUrl) {
+    super(new WebDriverCommandProcessor(baseUrl, maker));
+  }
+
   public WebDriverBackedSelenium(WebDriver baseDriver, String baseUrl) {
-    super(new WebDriverCommandProcessor(baseDriver, baseUrl));
+    super(new WebDriverCommandProcessor(baseUrl, baseDriver));
   }
 
   public WebDriver getUnderlyingWebDriver() {
