@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.IO;
 using System.Reflection;
 using Ionic.Zip;
@@ -86,7 +87,7 @@ namespace OpenQA.Selenium.Chrome
         {
             if (!Directory.Exists(directory))
             {
-                throw new FileNotFoundException(String.Format("The specified directory is not a Chrome extension directory: {0}; Try setting {1}", directory, ChromeExtensionDirectoryProperty));
+                throw new FileNotFoundException(string.Format(CultureInfo.InvariantCulture, "The specified directory is not a Chrome extension directory: {0}; Try setting {1}", directory, ChromeExtensionDirectoryProperty));
             }
 
             string manifestFile = Path.Combine(directory, ManifestFile);
@@ -97,7 +98,7 @@ namespace OpenQA.Selenium.Chrome
                 string platformManifestFile = Path.Combine(directory, platformManifest);
                 if (!File.Exists(platformManifestFile))
                 {
-                    throw new FileNotFoundException(string.Format("The specified extension has neither a {0} file, nor the platform template, {1}: {2}", ManifestFile, platformManifestFile, directory));
+                    throw new FileNotFoundException(string.Format(CultureInfo.InvariantCulture, "The specified extension has neither a {0} file, nor the platform template, {1}: {2}", ManifestFile, platformManifestFile, directory));
                 }
 
                 File.Copy(platformManifestFile, manifestFile, true);
@@ -144,19 +145,23 @@ namespace OpenQA.Selenium.Chrome
                     }
                     else
                     {
+                        // TODO (JimEvans): Chrome extension only builds for 32-bit Chrome
+                        // right now. Therefore, we don't need to do any OS bit-ness at the
+                        // moment. When a 64-bit Chrome version is available, we'll use this
+                        // code.
                         // We're compiled as Any CPU, which will run as a 64-bit process
                         // on 64-bit OS, and 32-bit process on 32-bit OS. Thus, checking
                         // the size of IntPtr is good enough.
-                        string resourceName = "WebDriver.ChromeExt.{0}.zip";
-                        if (IntPtr.Size == 8)
-                        {
-                            resourceName = string.Format(resourceName, "x64");
-                        }
-                        else
-                        {
-                            resourceName = string.Format(resourceName, "x86");
-                        }
-
+                        // string resourceName = "WebDriver.ChromeExt.{0}.zip";
+                        // if (IntPtr.Size == 8)
+                        // {
+                        //     resourceName = string.Format(CultureInfo.InvariantCulture, resourceName, "x64");
+                        // }
+                        // else
+                        // {
+                        //     resourceName = string.Format(CultureInfo.InvariantCulture, resourceName, "x86");
+                        // }
+                        string resourceName = "WebDriver.ChromeExt.zip";
                         zipFileStream = executingAssembly.GetManifestResourceStream(resourceName);
                     }
 

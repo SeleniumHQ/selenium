@@ -107,6 +107,15 @@ namespace OpenQA.Selenium.Chrome
         }
         #endregion
 
+        /// <summary>
+        /// Gets the Server URL of the Chrome Server
+        /// </summary>
+        /// <returns>Server for Chrome Commands</returns>
+        protected string ServerUrl
+        {
+            get { return "http://localhost:" + executor.Port + "/chromeCommandExecutor"; }
+        }
+
         #region public methods
         /// <summary>
         /// Executes a passed command using the current ChromeCommandExecutor
@@ -129,7 +138,7 @@ namespace OpenQA.Selenium.Chrome
             }
             catch (NotSupportedException nse)
             {
-                string message = nse.Message.ToLower();
+                string message = nse.Message.ToLowerInvariant();
                 if (message.Contains("cannot toggle a") || message.Contains("cannot unselect a single element select"))
                 {
                     throw new NotImplementedException();
@@ -262,15 +271,6 @@ namespace OpenQA.Selenium.Chrome
             ChromeResponse response = Execute(DriverCommand.ExecuteScript, script, convertedArgs);
             object result = ParseJavaScriptReturnValue(response.Value);
             return result;
-        }
-        
-        /// <summary>
-        /// Indicates whether the browser is javascript enabled
-        /// </summary>
-        /// <returns>A value indicating if it enabled</returns>
-        public bool IsJavascriptEnabled()
-        {
-            return true;
         }
 
         /// <summary>
@@ -445,7 +445,7 @@ namespace OpenQA.Selenium.Chrome
         /// <param name="response">The Chrome Response</param>
         /// <returns>A Web Element if the Item is found</returns>
         /// <exception cref="NoSuchElementException">Thrown if the item isn't found</exception>
-        public IWebElement GetElementFrom(ChromeResponse response)
+        public IWebElement GetElementFrom(Response response)
         {
             if (response != null)
             {
@@ -462,7 +462,7 @@ namespace OpenQA.Selenium.Chrome
         /// </summary>
         /// <param name="response">The Chrome Response</param>
         /// <returns>A readonlycollection of WebElement</returns>
-        public ReadOnlyCollection<IWebElement> GetElementsFrom(ChromeResponse response)
+        public ReadOnlyCollection<IWebElement> GetElementsFrom(Response response)
         {
             List<IWebElement> elements = new List<IWebElement>();
             object[] result = response.Value as object[];
@@ -491,13 +491,29 @@ namespace OpenQA.Selenium.Chrome
 
         #region IDisposable Members
         /// <summary>
-        /// Dispose of the browser. Not currently implemented
+        /// Dispose of the browser.
         /// </summary>
         public void Dispose()
         {
-            throw new NotImplementedException();
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
+        /// <summary>
+        /// Releases all resources associated with this <see cref="ChromeCommandExecutor"/>.
+        /// </summary>
+        /// <param name="disposing"><see langword="true"/> to release only managed resources;
+        /// <see langword="false"/> to release managed and unmanaged resources.</param>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (executor != null)
+                {
+                    executor.Dispose();
+                }
+            }
+        }
         #endregion
 
         #endregion
@@ -519,7 +535,7 @@ namespace OpenQA.Selenium.Chrome
                 try
                 {
                     executor.StartListening();
-                    chromeBinary.Start(GetServerUrl());
+                    chromeBinary.Start(ServerUrl);
                 }
                 catch (IOException e)
                 {
@@ -529,7 +545,7 @@ namespace OpenQA.Selenium.Chrome
                 if (!executor.HasClient)
                 {
                     // In case this attempt fails, we increment how long we wait before sending a command
-                    chromeBinary.IncrementStartWaitInterval(1);
+                    ChromeBinary.IncrementStartWaitInterval(1);
                 }
 
                 retries--;
@@ -551,15 +567,6 @@ namespace OpenQA.Selenium.Chrome
         {
             chromeBinary.Kill();
             executor.StopListening();
-        }
-
-        /// <summary>
-        /// Get the Server URL of the Chrome Server
-        /// </summary>
-        /// <returns>Server for Chrome Commands</returns>
-        protected string GetServerUrl()
-        {
-            return "http://localhost:" + executor.Port + "/chromeCommandExecutor";
         }
         #endregion
 
@@ -945,7 +952,7 @@ namespace OpenQA.Selenium.Chrome
             {
                 if (frameName == null)
                 {
-                    throw new ArgumentNullException();
+                    throw new ArgumentNullException("frameName");
                 }
 
                 Execute(DriverCommand.SwitchToFrameByName, frameName);

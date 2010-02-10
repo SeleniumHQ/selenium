@@ -226,12 +226,12 @@ namespace OpenQA.Selenium.Chrome
         /// <summary>
         /// Gets an attribute of the element
         /// </summary>
-        /// <param name="name">Attribute you want the value of</param>
+        /// <param name="attributeName">Attribute you want the value of</param>
         /// <returns>value of the attribute</returns>
-        public string GetAttribute(string name)
+        public string GetAttribute(string attributeName)
         {
             string attributeValue = null;
-            object value = parent.Execute(DriverCommand.GetElementAttribute, elementId, name).Value;
+            object value = parent.Execute(DriverCommand.GetElementAttribute, elementId, attributeName).Value;
             if (value != null)
             {
                 bool booleanValue = false;
@@ -474,23 +474,25 @@ namespace OpenQA.Selenium.Chrome
         /// <returns>A value indicating whether they are the same</returns>
         public override bool Equals(object obj)
         {
-            if (!(obj is IWebElement))
+            IWebElement other = obj as IWebElement;
+            if (other == null)
             {
                 return false;
             }
 
-            IWebElement other = (IWebElement)obj;
-            if (other is IWrapsElement)
+            IWrapsElement elementWrapper = other as IWrapsElement;
+            if (elementWrapper != null)
             {
-                other = ((IWrapsElement)obj).WrappedElement;
+                other = elementWrapper.WrappedElement;
             }
 
-            if (!(other is ChromeWebElement))
+            ChromeWebElement otherChromeWebElement = other as ChromeWebElement;
+            if (otherChromeWebElement == null)
             {
                 return false;
             }
 
-            return elementId.Equals(((ChromeWebElement)other).elementId);
+            return elementId.Equals(otherChromeWebElement.ElementId);
         }
         #endregion
     }

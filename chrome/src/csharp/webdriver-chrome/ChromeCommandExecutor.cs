@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
-
 using Newtonsoft.Json;
 using OpenQA.Selenium.Remote;
 
@@ -13,7 +13,7 @@ namespace OpenQA.Selenium.Chrome
     /// <summary>
     /// Provides a mechanism to execute commands on the browser
     /// </summary>
-    public class ChromeCommandExecutor
+    public class ChromeCommandExecutor : IDisposable
     {
         private const string HostPageHtml = "<html><head><script type='text/javascript'>if (window.location.search == '') { setTimeout(\"window.location = window.location.href + '?reloaded'\", 5000); }</script></head><body><p>ChromeDriver server started and connected.  Please leave this tab open.</p></body></html>";
 
@@ -96,7 +96,7 @@ namespace OpenQA.Selenium.Chrome
         public void StartListening()
         {
             mainListener = new HttpListener();
-            mainListener.Prefixes.Add(string.Format("http://localhost:{0}/", executorPort));
+            mainListener.Prefixes.Add(string.Format(CultureInfo.InvariantCulture, "http://localhost:{0}/", executorPort));
             mainListener.Start();
             mainListener.BeginGetContext(new AsyncCallback(OnClientConnect), mainListener);
         }
@@ -130,7 +130,46 @@ namespace OpenQA.Selenium.Chrome
         }
         #endregion
 
+        #region IDisposable Members
+        /// <summary>
+        /// Releases all resources associated with this <see cref="ChromeCommandExecutor"/>.
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Releases all resources associated with this <see cref="ChromeCommandExecutor"/>.
+        /// </summary>
+        /// <param name="disposing"><see langword="true"/> to release only managed resources;
+        /// <see langword="false"/> to release managed and unmanaged resources.</param>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (mainListener != null && mainListener.IsListening)
+                {
+                    mainListener.Close();
+                }
+
+                if (postRequestReceived != null)
+                {
+                    postRequestReceived.Close();
+                }
+            }
+        }
+        #endregion
+
         #region Private Methods
+        private static string ParseResponse(string rawResponse)
+        {
+            string parsedResponse = string.Empty;
+            parsedResponse = rawResponse.Substring(0, rawResponse.IndexOf("\nEOResponse\n", StringComparison.Ordinal));
+            return parsedResponse;
+        }
+
         private void SendMessage(ChromeCommand commandToExecute)
         {
             // Wait for a POST request to be pending from the Chrome extension.
@@ -218,7 +257,7 @@ namespace OpenQA.Selenium.Chrome
                         case 99:
                             throw new WebDriverException("An error occured when sending a native event");
                         case 500:
-                            if (message == string.Empty)
+                            if (string.IsNullOrEmpty(message))
                             {
                                 message = "An error occured due to the internals of Chrome. " +
                                 "This does not mean your test failed. " +
@@ -231,13 +270,6 @@ namespace OpenQA.Selenium.Chrome
             }
 
             return response;
-        }
-
-        private string ParseResponse(string rawResponse)
-        {
-            string parsedResponse = string.Empty;
-            parsedResponse = rawResponse.Substring(0, rawResponse.IndexOf("\nEOResponse\n"));
-            return parsedResponse;
         }
 
         private void OnClientConnect(IAsyncResult asyncResult)

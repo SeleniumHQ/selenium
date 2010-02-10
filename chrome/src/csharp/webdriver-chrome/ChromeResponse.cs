@@ -1,3 +1,4 @@
+using System.Globalization;
 using Newtonsoft.Json;
 using OpenQA.Selenium.Remote;
 
@@ -27,7 +28,7 @@ namespace OpenQA.Selenium.Chrome
         /// <returns>String Representation of the class</returns>
         public override string ToString()
         {
-            return string.Format("({0}: {1})", statusCode, Value);
+            return string.Format(CultureInfo.InvariantCulture, "({0}: {1})", statusCode, Value);
         }
     }
 }

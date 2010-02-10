@@ -37,6 +37,15 @@ namespace OpenQA.Selenium.Chrome
         }
 
         /// <summary>
+        /// Increases the wait time
+        /// </summary>
+        /// <param name="diff">How long to wait</param>
+        public static void IncrementStartWaitInterval(int diff)
+        {
+            linearStartWaitCoefficient += diff;
+        }
+
+        /// <summary>
         ///  Starts the Chrome process for WebDriver. Assumes the passed directories exist.
         /// </summary>
         /// <param name="serverUrl">URL from which commands should be requested</param>
@@ -77,20 +86,11 @@ namespace OpenQA.Selenium.Chrome
         }
 
         /// <summary>
-        /// Increases the wait time
-        /// </summary>
-        /// <param name="diff">How long to wait</param>
-        public void IncrementStartWaitInterval(int diff)
-        {
-            linearStartWaitCoefficient += diff;
-        }
-
-        /// <summary>
         /// Locates the Chrome executable on the current platform. First looks in the webdriver.chrome.bin property, then searches
         /// through the default expected locations.
         /// </summary>
         /// <returns>chrome.exe path</returns>
-        private string GetChromeFile()
+        private static string GetChromeFile()
         {
             string chromeFile = string.Empty;
             string chromeFileSystemProperty = null; // System.getProperty("webdriver.chrome.bin");

@@ -60,6 +60,7 @@
     <Compile Include="ChromeWebElement.cs" />
     <Compile Include="CookieJsonConverter.cs" />
     <Compile Include="FatalChromeException.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
