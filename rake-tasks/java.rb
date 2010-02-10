@@ -91,10 +91,19 @@ class JavaGen < BaseGenerator
         
         if (res.kind_of? Hash) 
           res.each do |from, to|
+            Dir["#{temp}/#{to}/**.svn"].each { |file| rm_rf file }
             dir = to.gsub(/\/.*?$/, "")
             mkdir_p "#{temp}/#{dir}", :verbose => false
-            mkdir_p "#{temp}/#{to}" unless File.file? from.to_s
-            cp_r find_file(from), "#{temp}/#{to}"
+            
+            begin
+              if File.directory? from
+                mkdir_p "#{temp}/#{to}"
+              end
+              cp_r find_file(from), "#{temp}/#{to}"
+            rescue
+              Dir["#{temp}/**/.svn"].each { |file| rm_rf file }
+              cp_r find_file(from), "#{temp}/#{to}"
+            end
           end
         else
           target = res.gsub(/build\//, '')
