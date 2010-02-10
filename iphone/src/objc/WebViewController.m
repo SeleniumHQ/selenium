@@ -26,6 +26,7 @@
 #import <objc/runtime.h>
 #import "RootViewController.h"
 #import <QuartzCore/QuartzCore.h>
+#import <QuartzCore/CATransaction.h>
 
 @implementation WebViewController
 
@@ -218,9 +219,22 @@
 // using performSelectorOnMainThread:... which doesn't return a value - so
 // the return value is passed back through a class parameter.
 - (void)jsEvalInternal:(NSString *)script {
+  // We wrap the eval command in a CATransaction so that we can explicitly
+  // force any UI updates that might occur as a side effect of executing the
+  // javascript to finish rendering before we return control back to the HTTP
+  // server thread. We actually found some cases where the rendering was
+  // finishing before control returned and so the core animation framework would
+  // defer committing its implicit transaction until the next iteration of the
+  // HTTP server thread's run loop. However, because you're only allowed to
+  // update the UI on the main application thread, committing it on the HTTP
+  // server thread would cause the whole application to crash.
+  // This feels like it shouldn't be necessary but it was the only way we could
+  // find to avoid the problem.
+  [CATransaction begin];
   [lastJSResult_ release];
   lastJSResult_ = [[[self webView]
                    stringByEvaluatingJavaScriptFromString:script] retain];
+  [CATransaction commit];
 
   NSLog(@"jsEval: %@ -> %@", script, lastJSResult_);
 }

@@ -20,6 +20,8 @@
 		289233AE0DB2D0DB0083E9F9 /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 289233A90DB2D0DB0083E9F9 /* MainViewController.m */; };
 		289233AF0DB2D0DB0083E9F9 /* RootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 289233AB0DB2D0DB0083E9F9 /* RootViewController.m */; };
 		289233B00DB2D0DB0083E9F9 /* FlipsideViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 289233AD0DB2D0DB0083E9F9 /* FlipsideViewController.m */; };
+		642C489F112260150064EB9C /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 642C489E112260150064EB9C /* QuartzCore.framework */; };
+		642C48A4112260480064EB9C /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 642C48A3112260480064EB9C /* QuartzCore.framework */; };
 		644F14ED10AB4EF400858ECA /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 644F14EC10AB4EF400858ECA /* Settings.bundle */; };
 		649EDC0210C5981B00E66D06 /* WebDriverUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = FD61E6980FE150E5006E1274 /* WebDriverUtilities.m */; };
 		649EDC0310C5983700E66D06 /* FlipsideViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 289233AD0DB2D0DB0083E9F9 /* FlipsideViewController.m */; };
@@ -143,6 +145,8 @@
 		289233AD0DB2D0DB0083E9F9 /* FlipsideViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FlipsideViewController.m; path = Classes/FlipsideViewController.m; sourceTree = "<group>"; };
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		32CA4F630368D1EE00C91783 /* iWebDriver_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iWebDriver_Prefix.pch; sourceTree = "<group>"; };
+		642C489E112260150064EB9C /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		642C48A3112260480064EB9C /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		644F14EC10AB4EF400858ECA /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		64CF265110D190820029D641 /* Cookie.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Cookie.h; sourceTree = "<group>"; };
 		64CF265210D190820029D641 /* Cookie.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Cookie.m; sourceTree = "<group>"; };
@@ -234,6 +238,7 @@
 				83B927D30EE354060011DCC4 /* CFNetwork.framework in Frameworks */,
 				831964A60F29692E005D1D21 /* libCocoaHTTPServer.a in Frameworks */,
 				FD61E69E0FE151A4006E1274 /* libsqlite3.dylib in Frameworks */,
+				642C489F112260150064EB9C /* QuartzCore.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -247,6 +252,7 @@
 				83998A1C0EE763490074D106 /* CFNetwork.framework in Frameworks */,
 				839D642B0F2EB400009645BF /* libCocoaHTTPServer.a in Frameworks */,
 				649EDC8610C5989200E66D06 /* libsqlite3.dylib in Frameworks */,
+				642C48A4112260480064EB9C /* QuartzCore.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -324,6 +330,8 @@
 				19C28FACFE9D520D11CA2CBB /* Products */,
 				833103FC0F1D7F57000A38DB /* Info.plist */,
 				644F14EC10AB4EF400858ECA /* Settings.bundle */,
+				642C489E112260150064EB9C /* QuartzCore.framework */,
+				642C48A3112260480064EB9C /* QuartzCore.framework */,
 			);
 			name = CustomTemplate;
 			sourceTree = "<group>";
