@@ -63,7 +63,7 @@ namespace :se_ide do
         end
       end
       listoffiles.close()
-	#rm base_ide_dir + "/proxy_files.txt"
+	rm base_ide_dir + "/proxy_files.txt"
     end
     
     rm "ide/src/extension/components/SeleniumIDEGenericAutoCompleteSearch.xpt"
