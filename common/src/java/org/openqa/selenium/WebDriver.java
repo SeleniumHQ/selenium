@@ -78,7 +78,9 @@ public interface WebDriver extends SearchContext {
     /**
      * The title of the current page.
      *
-     * @return The title of the current page, or null if one is not already set
+     * @return The title of the current page,
+     * with leading and trailing whitespace stripped,
+     * or null if one is not already set
      */
     String getTitle();
 

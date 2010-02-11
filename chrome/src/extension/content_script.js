@@ -170,7 +170,7 @@ function parsePortMessage(message) {
       response.wait = false;
       break;
     case "getTitle":
-      response.value = {statusCode: 0, value: ChromeDriverContentScript.currentDocument.title};
+      response.value = {statusCode: 0, value: Utils.trim(ChromeDriverContentScript.currentDocument.title)};
       response.wait = false;
       break;
     case "getCurrentUrl":

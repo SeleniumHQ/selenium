@@ -226,3 +226,6 @@ Utils.triggerMouseEvent = function(element, eventType, clientX, clientY) {
     execute_(script, args, function(){});
 };
 
+Utils.trim = function(str) {
+  return str.replace(/^\s*/, "").replace(/\s*$/, "");
+}
