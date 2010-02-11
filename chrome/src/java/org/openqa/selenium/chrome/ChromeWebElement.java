@@ -2,6 +2,7 @@ package org.openqa.selenium.chrome;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.RenderedWebElement;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.internal.FindsByClassName;
@@ -12,6 +13,7 @@ import org.openqa.selenium.internal.FindsByName;
 import org.openqa.selenium.internal.FindsByTagName;
 import org.openqa.selenium.internal.FindsByXPath;
 import org.openqa.selenium.internal.Locatable;
+import org.openqa.selenium.internal.WrapsDriver;
 import org.openqa.selenium.internal.WrapsElement;
 
 import java.awt.Dimension;
@@ -19,7 +21,8 @@ import java.awt.Point;
 import java.util.List;
 
 public class ChromeWebElement implements RenderedWebElement, Locatable, 
-FindsByXPath, FindsByLinkText, FindsById, FindsByName, FindsByTagName, FindsByClassName, FindsByCssSelector {
+  FindsByXPath, FindsByLinkText, FindsById, FindsByName, FindsByTagName,
+  FindsByClassName, FindsByCssSelector, WrapsDriver {
 
   private final ChromeDriver parent;
   private final String elementId;
@@ -220,5 +223,13 @@ FindsByXPath, FindsByLinkText, FindsById, FindsByName, FindsByTagName, FindsByCl
     }
 
     return elementId.equals(((ChromeWebElement)other).elementId);
+  }
+
+  /* (non-Javadoc)
+   * @see org.openqa.selenium.internal.WrapsDriver#getContainingDriver()
+   */
+  @Override
+  public WebDriver getWrappedDriver() {
+    return parent;
   }
 }

@@ -36,6 +36,7 @@ limitations under the License.
 package org.openqa.selenium.htmlunit;
 
 import com.gargoylesoftware.htmlunit.Page;
+
 import com.gargoylesoftware.htmlunit.ScriptException;
 import com.gargoylesoftware.htmlunit.SgmlPage;
 import com.gargoylesoftware.htmlunit.html.DomNode;
@@ -58,9 +59,9 @@ import com.gargoylesoftware.htmlunit.html.HtmlHiddenInput;
 import com.gargoylesoftware.htmlunit.html.StyledElement;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.StaleElementReferenceException;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.RenderedWebElement;
@@ -69,6 +70,7 @@ import org.openqa.selenium.internal.FindsById;
 import org.openqa.selenium.internal.FindsByLinkText;
 import org.openqa.selenium.internal.FindsByTagName;
 import org.openqa.selenium.internal.FindsByXPath;
+import org.openqa.selenium.internal.WrapsDriver;
 import org.openqa.selenium.internal.WrapsElement;
 import org.w3c.dom.Attr;
 import org.w3c.dom.NamedNodeMap;
@@ -86,7 +88,7 @@ import static org.openqa.selenium.Keys.RETURN;
 import net.sourceforge.htmlunit.corejs.javascript.Undefined;
 
 public class HtmlUnitWebElement implements RenderedWebElement,
-    FindsById, FindsByLinkText, FindsByXPath, FindsByTagName {
+    FindsById, FindsByLinkText, FindsByXPath, FindsByTagName, WrapsDriver {
 
   protected final HtmlUnitDriver parent;
   protected final HtmlElement element;
@@ -836,5 +838,12 @@ public class HtmlUnitWebElement implements RenderedWebElement,
   @Override
   public int hashCode() {
     return element.hashCode();
+  }
+
+  /* (non-Javadoc)
+   * @see org.openqa.selenium.internal.WrapsDriver#getContainingDriver()
+   */
+  public WebDriver getWrappedDriver() {
+    return parent;
   }
 }

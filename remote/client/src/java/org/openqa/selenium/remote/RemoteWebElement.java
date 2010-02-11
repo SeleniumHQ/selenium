@@ -19,6 +19,7 @@ package org.openqa.selenium.remote;
 
 import com.google.common.collect.ImmutableMap;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.internal.FindsByClassName;
 import org.openqa.selenium.internal.FindsById;
@@ -26,12 +27,13 @@ import org.openqa.selenium.internal.FindsByLinkText;
 import org.openqa.selenium.internal.FindsByName;
 import org.openqa.selenium.internal.FindsByTagName;
 import org.openqa.selenium.internal.FindsByXPath;
+import org.openqa.selenium.internal.WrapsDriver;
 import org.openqa.selenium.internal.WrapsElement;
 
 import java.util.List;
 
 public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById, FindsByName,
-    FindsByTagName, FindsByClassName, FindsByXPath {
+    FindsByTagName, FindsByClassName, FindsByXPath, WrapsDriver {
 
   protected String id;
   protected RemoteWebDriver parent;
@@ -230,5 +232,13 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
   @Override
   public int hashCode() {
     return id.hashCode();
+  }
+
+  /* (non-Javadoc)
+   * @see org.openqa.selenium.internal.WrapsDriver#getContainingDriver()
+   */
+  @Override
+  public WebDriver getWrappedDriver() {
+    return parent;
   }
 }

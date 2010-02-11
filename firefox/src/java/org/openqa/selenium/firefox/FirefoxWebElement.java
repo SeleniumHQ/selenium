@@ -25,6 +25,7 @@ import org.json.JSONArray;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.RenderedWebElement;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.internal.FindsByClassName;
@@ -35,6 +36,7 @@ import org.openqa.selenium.internal.FindsByName;
 import org.openqa.selenium.internal.FindsByTagName;
 import org.openqa.selenium.internal.FindsByXPath;
 import org.openqa.selenium.internal.Locatable;
+import org.openqa.selenium.internal.WrapsDriver;
 import org.openqa.selenium.internal.WrapsElement;
 
 import java.awt.*;
@@ -43,9 +45,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 
-public class FirefoxWebElement implements RenderedWebElement, Locatable, 
+public class FirefoxWebElement implements RenderedWebElement, Locatable,
         FindsByXPath, FindsByLinkText, FindsById, FindsByCssSelector,
-    FindsByName, FindsByTagName, FindsByClassName {
+    FindsByName, FindsByTagName, FindsByClassName, WrapsDriver {
     private final FirefoxDriver parent;
     private final String elementId;
 
@@ -299,5 +301,12 @@ public class FirefoxWebElement implements RenderedWebElement, Locatable,
   @Override
   public int hashCode() {
     return elementId.hashCode();
+  }
+
+  /* (non-Javadoc)
+   * @see org.openqa.selenium.internal.WrapsDriver#getContainingDriver()
+   */
+  public WebDriver getWrappedDriver() {
+    return parent;
   }
 }
