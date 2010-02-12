@@ -9,13 +9,18 @@ module Selenium
         SOCKET_LOCK_TIMEOUT = 45
 
 
-        def initialize(binary, port = DEFAULT_PORT, profile_name = DEFAULT_PROFILE_NAME)
+        def initialize(binary, port = DEFAULT_PORT, profile = DEFAULT_PROFILE_NAME)
           @binary       = binary
           @port         = port.to_i
-          @profile_name = profile_name
-          @profile      = nil
 
-          # need to be really specific about what port to use
+          if profile.kind_of? Profile
+            @profile = profile
+          else
+            @profile_name = profile
+            @profile      = nil
+          end
+
+          # need to be really specific about what host to use
           #
           # on os x, "localhost" will resolve to 3 different addresses (see /etc/hosts)
           # Ruby will loop over these and happily bind to the same port on each one,
@@ -69,16 +74,17 @@ module Selenium
         end
 
         def create_profile
-          fetch_profile
-
-          if @profile.nil?
-            raise Error, WebDriverError, "could not find or create profile: #{profile.inspect}"
+          unless @profile
+            fetch_profile
+            if @profile.nil?
+              raise Error, WebDriverError, "could not find or create profile: #{profile.inspect}"
+            end
           end
 
           @profile.delete_extensions_cache
 
           @profile.port = @port
-          @profile.add_extension(true)
+          @profile.add_webdriver_extension(true)
           @profile.update_user_prefs
         end
 
@@ -136,7 +142,7 @@ module Selenium
             raise "unable to find or create new profile" unless existing
           end
 
-          @profile = existing.create_copy
+          @profile = existing
         end
 
         def assert_profile

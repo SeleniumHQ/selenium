@@ -4,24 +4,25 @@ module Selenium
       class ProfilesIni
 
         def initialize
-          @path = File.join(Util.app_data_path, "profiles.ini")
-          @profiles = {}
-          parse if File.exist?(@path)
+          @ini_path = File.join(Util.app_data_path, "profiles.ini")
+          @profile_paths = {}
+
+          parse if File.exist?(@ini_path)
         end
 
         def [](name)
-          @profiles[name]
+          Profile.new @profile_paths[name]
         end
 
         def refresh
-          @profiles.clear
+          @profile_paths.clear
           parse
         end
 
         private
 
         def parse
-          string      = File.read @path
+          string      = File.read @ini_path
           name        = nil
           is_relative = nil
           path        = nil
@@ -29,8 +30,8 @@ module Selenium
           string.split("\n").each do |line|
             case line
             when /^\[Profile/
-              if p = new_profile(name, is_relative, path)
-                @profiles[name] = p
+              if p = path_for(name, is_relative, path)
+                @profile_paths[name] = p
                 name, path = nil
               end
             when /^Name=(.+)$/
@@ -42,16 +43,14 @@ module Selenium
             end
           end
 
-          if p = new_profile(name, is_relative, path)
-            @profiles[name] = p
+          if p = path_for(name, is_relative, path)
+            @profile_paths[name] = p
           end
         end
 
-        def new_profile(name, is_relative, path)
+        def path_for(name, is_relative, path)
           return unless [name, path].any?
           path = is_relative ? File.join(Util.app_data_path, path) : path
-
-          Profile.new(path)
         end
 
       end # ProfilesIni

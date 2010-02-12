@@ -32,7 +32,8 @@ module Selenium
         ]
 
         attr_reader :name, :directory
-        attr_accessor :port, :secure_ssl, :native_events, :load_no_focus_lib
+        attr_writer :secure_ssl, :native_events, :load_no_focus_lib
+        attr_accessor :port
 
         class << self
 
@@ -47,17 +48,18 @@ module Selenium
         end
 
         def initialize(directory = nil)
-          if directory
-            @directory = directory
-          else
-            @directory = Dir.mktmpdir("webdriver-profile")
-          end
+          @directory = directory ? create_tmp_copy(directory) : Dir.mktmpdir("webdriver-profile")
 
-          unless File.directory?(@directory)
+          unless File.directory? @directory
             raise Error::WebDriverError, "Profile directory does not exist: #{@directory.inspect}"
           end
 
-          @extension_source = DEFAULT_EXTENSION_SOURCE # make configurable?
+          # TODO: replace constants with options hash
+          @port              = DEFAULT_PORT
+          @extension_source  = DEFAULT_EXTENSION_SOURCE
+          @native_events     = DEFAULT_ENABLE_NATIVE_EVENTS
+          @secure_ssl        = DEFAULT_SECURE_SSL
+          @load_no_focus_lib = DEFAULT_LOAD_NO_FOCUS_LIB
         end
 
         def absolute_path
@@ -69,19 +71,19 @@ module Selenium
         end
 
         def update_user_prefs
-          prefs = existing_user_prefs.merge DEFAULT_PREFERENCES
+          prefs = current_user_prefs.merge DEFAULT_PREFERENCES
           prefs['webdriver_firefox_port'] = @port
-          prefs['webdriver_accept_untrusted_certs'] = 'true' unless @secure_ssl == true
+          prefs['webdriver_accept_untrusted_certs'] = 'true' unless secure_ssl?
           prefs['webdriver_enable_native_events'] = 'true' if native_events?
 
           write_prefs prefs
         end
 
-        def add_extension(force = false)
+        def add_webdriver_extension(force_creation = false)
           ext_path = File.join(extensions_dir, EXTENSION_NAME)
 
           if File.exists?(ext_path)
-            return unless force
+            return unless force_creation
           end
 
           FileUtils.rm_rf ext_path
@@ -103,7 +105,7 @@ module Selenium
             end
           end
 
-          if Platform.os == :linux || load_no_focus_lib?
+          if load_no_focus_lib?
             from_to += NO_FOCUS
             modify_link_library_path(NO_FOCUS.map { |source, dest| File.join(ext_path, File.dirname(dest)) })
           end
@@ -117,20 +119,7 @@ module Selenium
           delete_extensions_cache
         end
 
-        def create_copy
-          tmp_directory = Dir.mktmpdir("webdriver-rb-profilecopy")
-
-          # TODO: must be a better way..
-          FileUtils.rm_rf tmp_directory
-          FileUtils.mkdir_p File.dirname(tmp_directory), :mode => 0700
-          FileUtils.cp_r @directory, tmp_directory
-
-          Profile.new(tmp_directory)
-        end
-
-        def port
-          @port ||= Firefox::DEFAULT_PORT
-        end
+        # TODO: add_extension
 
         def extensions_dir
           @extensions_dir ||= File.join(directory, "extensions")
@@ -157,17 +146,32 @@ module Selenium
         end
 
         def native_events?
-          !!(@native_events ||= Firefox::DEFAULT_ENABLE_NATIVE_EVENTS)
+          @native_events == true
         end
 
         def load_no_focus_lib?
-          !!(@load_no_focus_lib ||= false)
+          @load_no_focus_lib == true
         end
 
+        def secure_ssl?
+          @secure_ssl == true
+        end
 
         private
 
-        def existing_user_prefs
+        def create_tmp_copy(directory)
+          tmp_directory = Dir.mktmpdir("webdriver-rb-profilecopy")
+
+          # TODO: must be a better way..
+          FileUtils.rm_rf tmp_directory
+          FileUtils.mkdir_p File.dirname(tmp_directory), :mode => 0700
+          FileUtils.cp_r directory, tmp_directory
+
+          tmp_directory
+        end
+
+
+        def current_user_prefs
           return {} unless File.exist?(user_prefs_path)
 
           prefs = {}

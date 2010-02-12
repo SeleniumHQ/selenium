@@ -203,5 +203,19 @@ describe "Driver" do
       driver.execute_script("return arguments[0] + arguments[1];", "one", "two").should == "onetwo"
     end
   end
+
+  compliant_on :driver => :firefox do
+    describe ".new" do
+      it "should take a Firefox::Profile instance as argument" do
+        begin
+          profile = Selenium::WebDriver::Firefox::Profile.new
+          driver = Selenium::WebDriver.for :firefox, :profile => profile
+        ensure
+          driver.quit if driver
+        end
+      end
+    end
+  end
+
 end
 

@@ -16,6 +16,8 @@ module Selenium
        DEFAULT_PROFILE_NAME         = "WebDriver".freeze
        DEFAULT_PORT                 = 7055
        DEFAULT_ENABLE_NATIVE_EVENTS = [:windows, :linux].include? Platform.os
+       DEFAULT_SECURE_SSL           = false
+       DEFAULT_LOAD_NO_FOCUS_LIB    = Platform.os == :linux
 
     end
   end
