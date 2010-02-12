@@ -33,6 +33,11 @@ module Selenium
           @driver_instance ||= new_driver_instance
         end
 
+        def reset_driver!
+          @driver_instance.quit if @driver_instance
+          @driver_instance = new_driver_instance
+        end
+
         def new_driver_instance
           if driver == :remote
             cap = WebDriver::Remote::Capabilities.send(ENV['REMOTE_BROWSER_VERSION'] || 'firefox')

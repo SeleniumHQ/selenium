@@ -32,7 +32,15 @@ module Selenium
         if block_given?
           original = @bridge.getCurrentWindowHandle
           @bridge.switchToWindow id
+
           yield
+
+          current_handles = @bridge.getWindowHandles
+
+          if current_handles.size == 1
+            original = current_handles.shift
+          end
+
           @bridge.switchToWindow original
         else
           @bridge.switchToWindow id

@@ -7,6 +7,10 @@ module Selenium
           GlobalTestEnv.driver_instance
         end
 
+        def reset_driver!
+          GlobalTestEnv.reset_driver!
+        end
+
         def url_for(filename)
           GlobalTestEnv.url_for filename
         end

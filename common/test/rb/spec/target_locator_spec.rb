@@ -14,6 +14,38 @@ describe "WebDriver::TargetLocator" do
 
     driver.switch_to.window("result")
     driver.title.should == "We Arrive Here"
+
+    reset_driver!
+  end
+
+  it "should switch to a window and back when given a block" do
+    driver.navigate.to url_for("xhtmlTest.html")
+
+    driver.find_element(:link, "Open new window").click
+    driver.title.should == "XHTML Test Page"
+
+    driver.switch_to.window("result") do
+      driver.title.should == "We Arrive Here"
+    end
+
+    driver.title.should == "XHTML Test Page"
+
+    reset_driver!
+  end
+
+  it "should use the original window if the block closes the popup" do
+    driver.navigate.to url_for("xhtmlTest.html")
+
+    driver.find_element(:link, "Open new window").click
+    driver.title.should == "XHTML Test Page"
+
+    driver.switch_to.window("result") do
+      driver.title.should == "We Arrive Here"
+      driver.close
+    end
+
+    driver.title.should == "XHTML Test Page"
+    reset_driver!
   end
 
   it "should switch to default content" do
