@@ -1304,6 +1304,7 @@ int wdFindElementsByXPath(WebDriver* driver, WebElement* element, const wchar_t*
 			WebElement* e;
 			wdGetElementScriptResult(getElemRes, driver, &e);
 			elements->elements->push_back(e->element);
+			//TODO(eranm): Probably missing wdFreeScriptArgs
 		}
 		SafeArrayDestroy(queryArgs);
 
@@ -1446,7 +1447,14 @@ int wdGetScriptResultType(ScriptResult* result, int* type)
 			break;
 
 		case VT_DISPATCH:
-			*type = 4;
+			{
+				CComQIPtr<IHTMLElement> isElem(result->result.pdispVal);
+				if (isElem) {
+					*type = 4;
+				} else {
+					*type = 8;
+				}
+			}
 			break;
 			// Fall through
 
