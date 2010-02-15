@@ -1,7 +1,7 @@
 # Platform checks
 
 def windows?
-  RUBY_PLATFORM.downcase.include?("win32")
+  RUBY_PLATFORM.downcase.include?("win32") || RUBY_PLATFORM.downcase.include?("mingw32")
 end
 
 def mac?
