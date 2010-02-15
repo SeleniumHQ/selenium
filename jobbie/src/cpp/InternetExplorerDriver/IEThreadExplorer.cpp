@@ -27,6 +27,7 @@ limitations under the License.
 #include "utils.h"
 #include "windowHandling.h"
 #include "InternalCustomMessage.h"
+#include "ScreenshotCapture.h"
 
 using namespace std;
 
@@ -429,6 +430,38 @@ void IeThread::OnCloseWindow(WPARAM w, LPARAM lp)
 	if (FAILED(pBody->ieThreaded->Quit())) {
 	    LOG(WARN) << "Unable to quit IE instance.";
 	}
+}
+
+void IeThread::OnCaptureScreenshot(WPARAM w, LPARAM lp)
+{
+	SCOPETRACER
+	ON_THREAD_COMMON(data)
+	captureScreenshot(data.output_string_);
+}
+
+void IeThread::captureScreenshot(std::wstring& res)
+{
+  HRESULT hr;
+
+  ScreenshotCapture screenshotCapture(pBody->ieThreaded);
+  CComPtr<IHTMLDocument2> doc;
+  getDocument(&doc);
+  if (!doc) {
+    LOG(WARN) << "Unable to get document reference";
+    return;
+  }
+  hr = screenshotCapture.CaptureBrowser(doc);
+  if (FAILED(hr)) {
+    // Problem capturing browser window.
+    LOG(WARN) << "Capturing the browser failed";
+    res = L"";
+    return;
+  }
+  hr = screenshotCapture.GetBase64Data(res);
+  if (FAILED(hr)) {
+    // Problem getting base64 data.
+    res = L"";
+  }
 }
 
 bool browserMatches(const wchar_t* name, IWebBrowser2* browser)

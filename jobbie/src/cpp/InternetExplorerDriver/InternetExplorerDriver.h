@@ -83,6 +83,8 @@ public:
 
 	int executeScript(const wchar_t *script, SAFEARRAY* args, CComVariant* result, bool tryAgain = true);
 
+  LPCWSTR captureScreenshotAsBase64();
+
 private:
 
 	int speed;

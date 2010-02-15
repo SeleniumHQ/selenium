@@ -76,6 +76,8 @@ limitations under the License.
 #define _WD_GETACTIVEELEMENT			WM_USER+82
 #define _WD_SWITCHWINDOW				WM_USER+83
 
+#define _WD_CAPTURESCREENSHOT    WM_USER+84
+
 // ==============================================================
 //     HEART BEATS
 // ==============================================================

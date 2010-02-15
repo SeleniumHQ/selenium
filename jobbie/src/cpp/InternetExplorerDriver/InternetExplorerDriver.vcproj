@@ -399,6 +399,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ScreenshotCapture.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ScopeTracer.cpp"
 				>
 			</File>
@@ -462,6 +466,10 @@
 			</File>
 			<File
 				RelativePath=".\jsxpath.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ScreenshotCapture.h"
 				>
 			</File>
 			<File

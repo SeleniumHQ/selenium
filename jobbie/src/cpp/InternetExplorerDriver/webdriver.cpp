@@ -1551,4 +1551,24 @@ int wdeMouseMoveTo(HWND hwnd, long duration, long fromX, long fromY, long toX, l
 	return SUCCESS;
 }
 
+int wdCaptureScreenshotAsBase64(WebDriver* driver, StringWrapper** result) {
+	*result = NULL;
+	if (!driver || !driver->ie) return ENOSUCHDRIVER;
+
+	try {
+		const std::wstring originalString(driver->ie->captureScreenshotAsBase64());
+		size_t length = originalString.length() + 1;
+		wchar_t* toReturn = new wchar_t[length];
+
+		wcscpy_s(toReturn, length, originalString.c_str());
+
+		StringWrapper* res = new StringWrapper();
+		res->text = toReturn;
+		
+		*result = res;
+
+		return SUCCESS;
+	} END_TRY;
+}
+
 }

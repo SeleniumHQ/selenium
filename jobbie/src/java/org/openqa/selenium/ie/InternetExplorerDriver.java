@@ -42,7 +42,9 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchWindowException;
+import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Speed;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
@@ -52,7 +54,7 @@ import org.openqa.selenium.internal.TemporaryFilesystem;
 
 import static org.openqa.selenium.ie.ExportedWebDriverFunctions.SUCCESS;
 
-public class InternetExplorerDriver implements WebDriver, JavascriptExecutor {
+public class InternetExplorerDriver implements WebDriver, JavascriptExecutor, TakesScreenshot {
 
   private static ExportedWebDriverFunctions lib;
   private Pointer driver;
@@ -342,6 +344,17 @@ public class InternetExplorerDriver implements WebDriver, JavascriptExecutor {
 
   protected void waitForLoadToComplete() {
     lib.wdWaitForLoadToComplete(driver);
+  }
+
+  public <X> X getScreenshotAs(OutputType<X> target) throws WebDriverException {
+	// Get the screenshot as base64.
+	PointerByReference ptr = new PointerByReference();
+	int result = lib.wdCaptureScreenshotAsBase64(driver, ptr);
+	if (result != SUCCESS) {
+	  throw new IllegalStateException("Unable to capture screenshot: " + result);
+    }
+    // ... and convert it.
+    return target.convertFromBase64Png(new StringWrapper(lib, ptr).toString());
   }
 
   @Override

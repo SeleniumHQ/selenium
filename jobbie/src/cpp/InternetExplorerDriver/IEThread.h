@@ -127,6 +127,7 @@ protected:
 	bool getEval(IHTMLDocument2* doc, DISPID* evalId, bool* added);
 	void removeScript(IHTMLDocument2* doc);
 	bool createAnonymousFunction(IDispatch* scriptEngine, DISPID evalId, const wchar_t *script, VARIANT* result);
+  void captureScreenshot(std::wstring& res);
 
           void OnStartIE(WPARAM, LPARAM);
           void OnGetFramesCollection(WPARAM, LPARAM);
@@ -181,6 +182,7 @@ protected:
 		  void OnGetCookies(WPARAM, LPARAM);
 		  void OnAddCookie(WPARAM, LPARAM);
 		  void OnWaitForNavigationToFinish(WPARAM, LPARAM);
+      void OnCaptureScreenshot(WPARAM, LPARAM);
 
 		  void OnElementRelease(WPARAM, LPARAM);
 

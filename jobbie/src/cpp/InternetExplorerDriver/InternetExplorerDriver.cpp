@@ -413,6 +413,12 @@ int InternetExplorerDriver::getSpeed()
 	return speed;
 }
 
+LPCWSTR InternetExplorerDriver::captureScreenshotAsBase64()
+{
+	SCOPETRACER
+	SEND_MESSAGE_WITH_MARSHALLED_DATA(_WD_CAPTURESCREENSHOT,)
+	return data.output_string_.c_str();
+}
 
 /////////////////////////////////////////////////////////////
 

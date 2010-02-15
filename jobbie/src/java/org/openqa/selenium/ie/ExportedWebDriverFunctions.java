@@ -112,6 +112,8 @@ interface ExportedWebDriverFunctions extends StdCallLibrary {
   int wdGetAllWindowHandles(Pointer driver, PointerByReference rawHandles);
   int wdGetCurrentWindowHandle(Pointer driver, PointerByReference handle);
 
+  // Screenshot capturing
+  int wdCaptureScreenshotAsBase64(Pointer driver, PointerByReference string);
 
   public static class HWND extends PointerType { }
   

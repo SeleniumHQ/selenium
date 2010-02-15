@@ -154,6 +154,7 @@ BOOL IeThread::DispatchThreadMessageEx(MSG* pMsg)
 	CUSTOM_MESSAGE_MAP ( _WD_GETACTIVEELEMENT, OnGetActiveElement )
 	CUSTOM_MESSAGE_MAP ( _WD_CLOSEWINDOW, OnCloseWindow )
 	CUSTOM_MESSAGE_MAP ( _WD_SWITCHWINDOW, OnSwitchToWindow )
+	CUSTOM_MESSAGE_MAP ( _WD_CAPTURESCREENSHOT, OnCaptureScreenshot )
 
 	 return FALSE;
 }

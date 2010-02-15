@@ -158,6 +158,9 @@ EXPORT int wdeMouseDownAt(HWND hwnd, long windowX, long windowY);
 EXPORT int wdeMouseUpAt(HWND hwnd, long windowX, long windowY);
 EXPORT int wdeMouseMoveTo(HWND hwnd, long duration, long fromX, long fromY, long toX, long toY);
 
+// Screenshot capturing
+EXPORT int wdCaptureScreenshotAsBase64(WebDriver* driver, StringWrapper** result);
+
 #ifdef __cplusplus
 }
 #endif
