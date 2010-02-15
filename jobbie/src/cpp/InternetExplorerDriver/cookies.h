@@ -1,6 +1,6 @@
 wchar_t* DELETECOOKIES[] = {
 L"(function() { return function(){ \n",
-L"var trim = function(str) { return str.replace(/^\s*/, '').replace(/\s*$/, ''); }\n",
+L"var trim = function(str) { return str.replace(/^\\s*/, '').replace(/\\s*$/, ''); }\n",
 L"var getCookieByName = function(cookieName, doc) {\n",
 L"    var ck = document.cookie;\n",
 L"    if (!ck) return null;\n",
