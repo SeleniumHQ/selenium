@@ -16,6 +16,10 @@ def cygwin?
   RUBY_PLATFORM.downcase.include?("cygwin")
 end
 
+def unix?
+  linux? or mac?
+end
+
 def classpath_separator?
   if cygwin? then
     ";"

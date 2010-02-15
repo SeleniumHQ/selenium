@@ -5,7 +5,7 @@ namespace :se_ide do
   files = []
 
   task :setup_proxy do
-    if linux?
+    if unix?
       # the files in core -- except for the scripts directory which already exists in the target
       ln_s Dir.glob(base_ide_dir + "/common/src/js/core/*").select { |fn| fn != base_ide_dir + "/common/src/js/core/scripts" },
            "ide/src/extension/content/selenium"
@@ -29,7 +29,7 @@ namespace :se_ide do
     end
     
     # jsunit
-    if linux?
+    if unix?
       ln_s Dir.glob(base_ide_dir + "/common/src/js/jsunit"), "ide/src/extension/content/", :force => true
     elsif windows?
       f = Dir.glob(base_ide_dir + "/common/src/js/jsunit")
@@ -53,7 +53,7 @@ namespace :se_ide do
   end
   
   task :remove_proxy do
-    if linux?
+    if unix?
       Dir.glob("ide/**/*").select { |fn| rm fn if File.symlink?(fn) }
     elsif windows?
       listoffiles = File.open(base_ide_dir + "/proxy_files.txt", "r")
