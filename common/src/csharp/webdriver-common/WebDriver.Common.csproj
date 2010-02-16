@@ -61,6 +61,7 @@
     <Compile Include="Cookie.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Internal\IFindsByCssSelector.cs" />
+    <Compile Include="Internal\IWrapsDriver.cs" />
     <Compile Include="Platform.cs" />
     <Compile Include="ITakesScreenshot.cs" />
     <Compile Include="Screenshot.cs" />

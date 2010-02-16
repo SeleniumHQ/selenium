@@ -2,7 +2,6 @@ using System;
 using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Globalization;
-
 using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium.IE
@@ -23,7 +22,7 @@ namespace OpenQA.Selenium.IE
     /// }
     /// </code>
     /// </example>
-    public sealed class InternetExplorerWebElement : IRenderedWebElement, ILocatable, IDisposable
+    public sealed class InternetExplorerWebElement : IRenderedWebElement, ILocatable, IDisposable, IWrapsDriver
     {
         private SafeInternetExplorerWebElementHandle elementHandle;
         private InternetExplorerDriver driver;
@@ -189,6 +188,14 @@ namespace OpenQA.Selenium.IE
                 ResultHandler.VerifyResultCode(result, "get the Displayed property");
                 return displayed == 1;
             }
+        }
+
+        /// <summary>
+        /// Gets the <see cref="IWebDriver"/> used to find this element.
+        /// </summary>
+        public IWebDriver WrappedDriver
+        {
+            get { return driver; }
         }
         #endregion
 

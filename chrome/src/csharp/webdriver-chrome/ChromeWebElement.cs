@@ -11,7 +11,7 @@ namespace OpenQA.Selenium.Chrome
     /// <summary>
     /// Provides a mechanism to get elements off the page for test
     /// </summary>
-    public class ChromeWebElement : IRenderedWebElement, ILocatable, IFindsByXPath, IFindsByLinkText, IFindsByPartialLinkText, IFindsById, IFindsByName, IFindsByTagName, IFindsByClassName, IFindsByCssSelector
+    public class ChromeWebElement : IRenderedWebElement, ILocatable, IFindsByXPath, IFindsByLinkText, IFindsByPartialLinkText, IFindsById, IFindsByName, IFindsByTagName, IFindsByClassName, IFindsByCssSelector, IWrapsDriver
     {
         private ChromeDriver parent;
         private string elementId;
@@ -30,14 +30,6 @@ namespace OpenQA.Selenium.Chrome
         #endregion
 
         #region Properties
-        /// <summary>
-        /// Gets the Element Id
-        /// </summary>
-        public string ElementId
-        {
-            get { return elementId; }
-        }
-
         /// <summary>
         /// Gets the location of the element
         /// </summary>
@@ -153,6 +145,22 @@ namespace OpenQA.Selenium.Chrome
                 ChromeResponse r = parent.Execute(DriverCommand.IsElementDisplayed, elementId);
                 return (bool)r.Value;
             }
+        }
+
+        /// <summary>
+        /// Gets the <see cref="IWebDriver"/> used to find this element.
+        /// </summary>
+        public IWebDriver WrappedDriver
+        {
+            get { return parent; }
+        }
+
+        /// <summary>
+        /// Gets the Element Id
+        /// </summary>
+        internal string ElementId
+        {
+            get { return elementId; }
         }
         #endregion
 

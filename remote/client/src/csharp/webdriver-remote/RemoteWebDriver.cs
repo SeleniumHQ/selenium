@@ -934,6 +934,7 @@ namespace OpenQA.Selenium.Remote
             return toReturn;
         }
         #endregion
+
         /// <summary>
         /// Provides a mechanism for setting options needed for the driver during the test.
         /// </summary>

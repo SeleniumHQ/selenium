@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using NUnit.Framework;
+using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium
 {
@@ -130,6 +131,22 @@ namespace OpenQA.Selenium
             Assert.AreEqual("mousedown", mousedown.GetAttribute("id"));
             Assert.AreEqual("dynamo", dynamo.GetAttribute("id"));
 
+        }
+
+        [Test]
+        public void ElementShouldImplementWrapsDriver()
+        {
+            driver.Url = simpleTestPage;
+            IWebElement parent = driver.FindElement(By.Id("containsSomeDiv"));
+            Assert.IsTrue(parent is IWrapsDriver);
+        }
+
+        [Test]
+        public void ElementShouldReturnOriginDriver()
+        {
+            driver.Url = simpleTestPage;
+            IWebElement parent = driver.FindElement(By.Id("containsSomeDiv"));
+            Assert.IsTrue(((IWrapsDriver)parent).WrappedDriver == driver);
         }
 
     }

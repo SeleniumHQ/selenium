@@ -29,7 +29,7 @@ namespace OpenQA.Selenium.Firefox
     /// <summary>
     /// Allows the user to control elements on a page in Firefox.
     /// </summary>
-    public class FirefoxWebElement : IRenderedWebElement, ILocatable, IFindsById, IFindsByName, IFindsByTagName, IFindsByClassName, IFindsByLinkText, IFindsByPartialLinkText, IFindsByXPath, IFindsByCssSelector
+    public class FirefoxWebElement : IRenderedWebElement, ILocatable, IFindsById, IFindsByName, IFindsByTagName, IFindsByClassName, IFindsByLinkText, IFindsByPartialLinkText, IFindsByXPath, IFindsByCssSelector, IWrapsDriver
     {
         #region Private members
         private FirefoxDriver parentDriver;
@@ -211,6 +211,16 @@ namespace OpenQA.Selenium.Firefox
             }
         }
 
+        #endregion
+
+        #region IWrapsDriver Members
+        /// <summary>
+        /// Gets the <see cref="IWebDriver"/> used to find this element.
+        /// </summary>
+        public IWebDriver WrappedDriver
+        {
+            get { return parentDriver; }
+        }
         #endregion
 
         #region Support properties

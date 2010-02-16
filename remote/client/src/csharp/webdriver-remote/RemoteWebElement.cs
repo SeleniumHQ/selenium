@@ -9,31 +9,22 @@ namespace OpenQA.Selenium.Remote
     /// </summary>
     /// <seealso cref="IRenderedWebElement"/>
     /// <seealso cref="ILocatable"/>
-    public class RemoteWebElement : IWebElement, IFindsByLinkText, IFindsById, IFindsByName, IFindsByTagName, IFindsByClassName, IFindsByXPath, IFindsByPartialLinkText
+    public class RemoteWebElement : IWebElement, IFindsByLinkText, IFindsById, IFindsByName, IFindsByTagName, IFindsByClassName, IFindsByXPath, IFindsByPartialLinkText, IWrapsDriver
     {
         private RemoteWebDriver parentDriver;
         private string elementId;
 
+        #region IWrapsDriver Members
         /// <summary>
-        /// Gets or sets the ID of the element
+        /// Gets the <see cref="IWebDriver"/> used to find this element.
         /// </summary>
-        public string Id
-        {
-            get { return elementId; }
-            set { elementId = value; }
-        }
-
-        /// <summary>
-        /// Gets or sets the RemoteWebDriver used to find the element
-        /// </summary>
-        public RemoteWebDriver Parent
+        public IWebDriver WrappedDriver
         {
             get { return parentDriver; }
-            set { parentDriver = value; }
         }
+        #endregion
 
-        #region IWebElement Members
-
+        #region IWebElement Properties
         /// <summary>
         /// Gets the DOM Tag of element
         /// </summary>
@@ -103,7 +94,29 @@ namespace OpenQA.Selenium.Remote
                 return (bool)commandResponse.Value;
             }
         }
+        #endregion
 
+        #region Internal Properties
+        /// <summary>
+        /// Gets or sets the ID of the element
+        /// </summary>
+        internal string Id
+        {
+            get { return elementId; }
+            set { elementId = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the RemoteWebDriver used to find the element
+        /// </summary>
+        internal RemoteWebDriver Parent
+        {
+            get { return parentDriver; }
+            set { parentDriver = value; }
+        }
+        #endregion
+
+        #region IWebElement Methods
         /// <summary>
         /// Select or unselect element. This operation only applies to input elements such as checkboxes, options in a select and radio buttons.
         /// </summary>
@@ -538,6 +551,8 @@ namespace OpenQA.Selenium.Remote
         }
 
         #endregion
+
+        #region Overrides
         /// <summary>
         /// Method to get the hash code of the element
         /// </summary>
@@ -580,5 +595,6 @@ namespace OpenQA.Selenium.Remote
             object value = response.Value;
             return value != null && value is bool && (bool)value;
         }
+        #endregion
     }
 }
