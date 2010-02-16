@@ -46,14 +46,17 @@ namespace OpenQA.Selenium.IE
     /// }
     /// </code>
     /// </example>
-    public sealed class InternetExplorerDriver : IWebDriver, ISearchContext, IJavaScriptExecutor
+    public sealed class InternetExplorerDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, ITakesScreenshot
     {
+        #region Private members
         private bool disposed;
         private SafeInternetExplorerDriverHandle handle;
         private InternetExplorerNavigation navigation;
         private InternetExplorerOptions options;
         private InternetExplorerTargetLocator targetLocator;
+        #endregion
 
+        #region Constructor
         /// <summary>
         /// Initializes a new instance of the InternetExplorerDriver class.
         /// </summary>
@@ -66,7 +69,9 @@ namespace OpenQA.Selenium.IE
                 throw new WebDriverException(string.Format(CultureInfo.InvariantCulture, "Cannot create new browser instance: {0}", result.ToString()));
             }
         }
+        #endregion
 
+        #region IWebDriver Members
         /// <summary>
         /// Gets or sets the URL the browser is currently displaying.
         /// </summary>
@@ -179,50 +184,6 @@ namespace OpenQA.Selenium.IE
 
                 return returnValue;
             }
-        }
-
-        /// <summary>
-        /// Disposes of all unmanaged instances of InternetExplorerDriver.
-        /// </summary>
-        public void Dispose()
-        {
-            if (!disposed)
-            {
-                handle.Dispose();
-                disposed = true;
-            }
-        }
-
-        /// <summary>
-        /// Finds the elements on the page by using the <see cref="By"/> object and returns a ReadOnlyCollection of the Elements on the page.
-        /// </summary>
-        /// <param name="by">By mechanism for finding the element.</param>
-        /// <returns>ReadOnlyCollection of IWebElement.</returns>
-        /// <example>
-        /// <code>
-        /// IWebDriver driver = new InternetExplorerDriver();
-        /// ReadOnlyCollection<![CDATA[<IWebElement>]]> classList = driver.FindElements(By.ClassName("class"));
-        /// </code>
-        /// </example>
-        public ReadOnlyCollection<IWebElement> FindElements(By by)
-        {
-            return by.FindElements(new Finder(this, new SafeInternetExplorerWebElementHandle()));
-        }
-
-        /// <summary>
-        /// Finds the first element in the page that matches the <see cref="By"/> object.
-        /// </summary>
-        /// <param name="by">By mechanism for finding the element.</param>
-        /// <returns>IWebElement object so that you can interction that object.</returns>
-        /// <example>
-        /// <code>
-        /// IWebDriver driver = new InternetExplorerDriver();
-        /// IWebElement elem = driver.FindElement(By.Name("q"));
-        /// </code>
-        /// </example>
-        public IWebElement FindElement(By by)
-        {
-            return by.FindElement(new Finder(this, new SafeInternetExplorerWebElementHandle()));
         }
 
         /// <summary>
@@ -413,7 +374,83 @@ namespace OpenQA.Selenium.IE
 
             return navigation;
         }
+        #endregion
 
+        #region ISearchContext Members
+        /// <summary>
+        /// Finds the elements on the page by using the <see cref="By"/> object and returns a ReadOnlyCollection of the Elements on the page.
+        /// </summary>
+        /// <param name="by">By mechanism for finding the element.</param>
+        /// <returns>ReadOnlyCollection of IWebElement.</returns>
+        /// <example>
+        /// <code>
+        /// IWebDriver driver = new InternetExplorerDriver();
+        /// ReadOnlyCollection<![CDATA[<IWebElement>]]> classList = driver.FindElements(By.ClassName("class"));
+        /// </code>
+        /// </example>
+        public ReadOnlyCollection<IWebElement> FindElements(By by)
+        {
+            return by.FindElements(new Finder(this, new SafeInternetExplorerWebElementHandle()));
+        }
+
+        /// <summary>
+        /// Finds the first element in the page that matches the <see cref="By"/> object.
+        /// </summary>
+        /// <param name="by">By mechanism for finding the element.</param>
+        /// <returns>IWebElement object so that you can interction that object.</returns>
+        /// <example>
+        /// <code>
+        /// IWebDriver driver = new InternetExplorerDriver();
+        /// IWebElement elem = driver.FindElement(By.Name("q"));
+        /// </code>
+        /// </example>
+        public IWebElement FindElement(By by)
+        {
+            return by.FindElement(new Finder(this, new SafeInternetExplorerWebElementHandle()));
+        }
+        #endregion
+
+        #region ITakesScreenshot Members
+        /// <summary>
+        /// Gets a <see cref="Screenshot"/> object representing the image of the page on the screen.
+        /// </summary>
+        /// <returns>A <see cref="Screenshot"/> object containing the image.</returns>
+        public Screenshot GetScreenshot()
+        {
+            Screenshot currentScreenshot = null;
+            SafeStringWrapperHandle stringHandle = new SafeStringWrapperHandle();
+            WebDriverResult result = NativeMethods.wdCaptureScreenshotAsBase64(handle, out stringHandle);
+            ResultHandler.VerifyResultCode(result, "Unable to get screenshot");
+            string screenshotValue = string.Empty;
+            using (StringWrapper wrapper = new StringWrapper(stringHandle))
+            {
+                screenshotValue = wrapper.Value;
+            }
+
+            if (!string.IsNullOrEmpty(screenshotValue))
+            {
+                currentScreenshot = new Screenshot(screenshotValue);
+            }
+
+            return currentScreenshot;
+        }
+        #endregion
+
+        #region IDisposable Members
+        /// <summary>
+        /// Disposes of all unmanaged instances of InternetExplorerDriver.
+        /// </summary>
+        public void Dispose()
+        {
+            if (!disposed)
+            {
+                handle.Dispose();
+                disposed = true;
+            }
+        }
+        #endregion
+
+        #region Internal and private support members
         /// <summary>
         /// Get the driver handle.
         /// </summary>
@@ -545,19 +582,23 @@ namespace OpenQA.Selenium.IE
                     }
 
                     throw new WebDriverException(message);
+
                 case 7:
                     double doubleVal;
                     result = NativeMethods.wdGetDoubleScriptResult(scriptResult, out doubleVal);
                     ResultHandler.VerifyResultCode(result, "Cannot extract number result");
                     toReturn = doubleVal;
                     break;
+
                 default:
                     throw new WebDriverException("Cannot determine result type");
             }
 
             return toReturn;
         }
+        #endregion
 
+        #region IOptions class
         /// <summary>
         /// Provides a mechanism for setting options needed for the driver during the test.
         /// </summary>
@@ -805,7 +846,9 @@ namespace OpenQA.Selenium.IE
                 }
             }
         }
+        #endregion
 
+        #region ITargetLocator class
         /// <summary>
         /// Provides a mechanism for finding elements on the page with locators.
         /// </summary>
@@ -891,7 +934,9 @@ namespace OpenQA.Selenium.IE
                 return new InternetExplorerWebElement(driver, rawElement);
             }
         }
+        #endregion
 
+        #region INavigation class
         /// <summary>
         /// Provides a mechanism for Navigating with the driver.
         /// </summary>
@@ -959,7 +1004,9 @@ namespace OpenQA.Selenium.IE
                 ResultHandler.VerifyResultCode(result, "Refreshing page");
             }
         }
+        #endregion
 
+        #region Private support classes
         /// <summary>
         /// Provides a Null Path Cookie.
         /// </summary>
@@ -989,5 +1036,6 @@ namespace OpenQA.Selenium.IE
                 get { return cookiePath; }
             }
         }
+        #endregion
     }
 }

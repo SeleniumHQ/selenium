@@ -86,6 +86,9 @@ namespace OpenQA.Selenium.IE
 
         [DllImport("InternetExplorerDriver")]
         internal static extern WebDriverResult wdGetCurrentWindowHandle(SafeInternetExplorerDriverHandle driver, out SafeStringWrapperHandle handle);
+
+        [DllImport("InternetExplorerDriver")]
+        internal static extern WebDriverResult wdCaptureScreenshotAsBase64(SafeInternetExplorerDriverHandle driver, out SafeStringWrapperHandle handle);
         #endregion
 
         #region Element functions
