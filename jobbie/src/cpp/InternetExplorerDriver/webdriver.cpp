@@ -1448,15 +1448,9 @@ int wdGetScriptResultType(ScriptResult* result, int* type)
 
 		case VT_DISPATCH:
 			{
-				CComQIPtr<IHTMLElement> isElem(result->result.pdispVal);
-				if (isElem) {
-					*type = 4;
-				} else {
-					*type = 8;
-				}
+				*type = 4;
 			}
 			break;
-			// Fall through
 
 		case VT_EMPTY:
 			*type = 5;
