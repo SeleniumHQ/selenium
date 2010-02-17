@@ -933,6 +933,8 @@ void IeThread::OnSelectElementByClassName(WPARAM w, LPARAM lp)
 		curr->get_className(&nameRead);
 		if(!nameRead) continue;
 
+    nameRead = StripTrailingWhitespace(nameRead);
+
 		for ( wchar_t *token = wcstok_s(nameRead, seps, &next_token);
 			  token;
 			  token = wcstok_s( NULL, seps, &next_token) )
@@ -1027,6 +1029,8 @@ void IeThread::OnSelectElementsByClassName(WPARAM w, LPARAM lp)
 
 		curr->get_className(&nameRead);
 		if(!nameRead) continue;
+
+    nameRead = StripTrailingWhitespace(nameRead);
 
 		for ( wchar_t *token = wcstok_s(nameRead, seps, &next_token);
 			  token;

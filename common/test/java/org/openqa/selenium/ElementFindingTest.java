@@ -149,6 +149,21 @@ public class ElementFindingTest extends AbstractDriverTestCase {
     WebElement element = driver.findElement(By.className("nameBnoise"));
     assertThat(element.getText(), equalTo("An H2 title"));
   }
+  
+  public void testShouldFindElementByClassWhenItsNameIsSurroundedByWhitespace() {
+    driver.get(xhtmlTestPage);
+    
+    WebElement element = driver.findElement(By.className("spaceAround"));
+    assertThat(element.getText(), equalTo("Spaced out"));
+  }
+  
+  public void testShouldFindElementsByClassWhenItsNameIsSurroundedByWhitespace() {
+    driver.get(xhtmlTestPage);
+    
+    List<WebElement> elements = driver.findElements(By.className("spaceAround"));
+    assertThat(elements.size(), equalTo(1));
+    assertThat(elements.get(0).getText(), equalTo("Spaced out"));
+  }
 
   public void testShouldNotFindElementsByClassWhenTheNameQueriedIsShorterThanCandidateName() {
     driver.get(xhtmlTestPage);
