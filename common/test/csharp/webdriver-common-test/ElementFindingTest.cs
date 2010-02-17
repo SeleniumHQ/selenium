@@ -81,7 +81,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [ExpectedException(typeof(NoSuchElementException))]
-        public void ShouldNotBeAbleTofindElementsBasedOnIdIfTheElementIsNotThere()
+        public void ShouldNotBeAbleToFindElementsBasedOnIdIfTheElementIsNotThere()
         {
             driver.Url = formsPage;
 
@@ -152,6 +152,25 @@ namespace OpenQA.Selenium
 
             IWebElement element = driver.FindElement(By.ClassName("nameBnoise"));
             Assert.AreEqual(element.Text, "An H2 title");
+        }
+
+        [Test]
+        public void ShouldFindElementByClassWhenItsNameIsSurroundedByWhitespace()
+        {
+            driver.Url = xhtmlTestPage;
+
+            IWebElement element = driver.FindElement(By.ClassName("spaceAround"));
+            Assert.AreEqual("Spaced out", element.Text);
+        }
+
+        [Test]
+        public void ShouldFindElementsByClassWhenItsNameIsSurroundedByWhitespace()
+        {
+            driver.Url = xhtmlTestPage;
+
+            ReadOnlyCollection<IWebElement> elements = driver.FindElements(By.ClassName("spaceAround"));
+            Assert.AreEqual(1, elements.Count);
+            Assert.AreEqual("Spaced out", elements[0].Text);
         }
 
         [Test]
@@ -285,7 +304,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        public void ShouldfindAnElementBasedOnTagName()
+        public void ShouldFindAnElementBasedOnTagName()
         {
             driver.Url = formsPage;
 
