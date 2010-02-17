@@ -520,10 +520,12 @@ void IeThread::findCurrentFrame(IHTMLWindow2 **result)
 
 		// Find the frame
 		CComVariant frameHolder;
-		frames->item(&index, &frameHolder);
+		hr = frames->item(&index, &frameHolder);
 
 		interimResult.Release();
-		interimResult = frameHolder.pdispVal;
+		if (!FAILED(hr)) {
+			interimResult = frameHolder.pdispVal;
+		}
 
 		if (!interimResult) { break; } // pathToFrame does not match. Exit.
 
