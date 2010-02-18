@@ -10,6 +10,13 @@ namespace OpenQA.Selenium.Chrome
     /// </summary>
     internal class ChromeBinary
     {
+        private static readonly string[] chromePaths = new string[] 
+        {
+            "/usr/bin/google-chrome",
+            "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+            string.Concat("/Users/", Environment.UserName, "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome")
+        };
+
         private const int ShutdownWaitInterval = 2000;
         private const int StartWaitInterval = 2500;
         private static int linearStartWaitCoefficient = 1;
@@ -54,7 +61,7 @@ namespace OpenQA.Selenium.Chrome
         {
             try
             {
-                chromeProcess = Process.Start(GetChromeFile(), String.Concat(Arguments, serverUrl));
+                chromeProcess = Process.Start(new ProcessStartInfo(GetChromeFile(), String.Concat(Arguments, serverUrl)) { UseShellExecute = false });
             }
             catch (IOException e)
             { // TODO(AndreNogueira): Check exception type thrown when process.start fails
@@ -69,7 +76,7 @@ namespace OpenQA.Selenium.Chrome
         /// </summary>
         public void Kill()
         {
-            if (!(chromeProcess == null) && !chromeProcess.HasExited)
+            if ((chromeProcess != null) && !chromeProcess.HasExited)
             {
                 // Ask nicely to close.
                 chromeProcess.CloseMainWindow();
@@ -93,7 +100,7 @@ namespace OpenQA.Selenium.Chrome
         private static string GetChromeFile()
         {
             string chromeFile = string.Empty;
-            string chromeFileSystemProperty = null; // System.getProperty("webdriver.chrome.bin");
+            string chromeFileSystemProperty = Environment.GetEnvironmentVariable("webdriver.chrome.bin");
             if (chromeFileSystemProperty != null)
             {
                 chromeFile = chromeFileSystemProperty;
@@ -110,31 +117,30 @@ namespace OpenQA.Selenium.Chrome
                 }
                 else if (Platform.CurrentPlatform.IsPlatformType(PlatformType.Unix))
                 {
-                    chromeFile = "/usr/bin/google-chrome";
-                 
-                    // } else if (Platform.CurrentPlatform.IsPlatformType(PlatformType.MacOSX)) {
-                    //  string[] paths = new string[] {
-                    //    "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
-                    //    "/Users/" + System.getProperty("user.name") +
-                    //        "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"};
-                    //  bool foundPath = false;
-                    //  foreach (string path in paths) {
-                    //    FileInfo binary = new FileInfo(path);
-                    //    if (binary.Exists) {
-                    //      chromeFileString.Append(binary.FullName);
-                    //      foundPath = true;
-                    //      break;
-                    //    }
-                    //  }
-                    //  if (!foundPath) {
-                    //    throw new WebDriverException("Couldn't locate Chrome.  " +
-                    //        "Set webdriver.chrome.bin");
-                    //  }
+                    // Thanks to a bug in Mono Mac and Linux will be treated the same  https://bugzilla.novell.com/show_bug.cgi?id=515570 but adding this in case
+                    string chromeFileString = string.Empty;
+                    bool foundPath = false;
+                    foreach (string path in chromePaths)
+                    {
+                        FileInfo binary = new FileInfo(path);
+                        if (binary.Exists)
+                        {
+                            chromeFileString = binary.FullName;
+                            foundPath = true;
+                            break;
+                        }
+                    }
+
+                    if (!foundPath)
+                    {
+                        throw new WebDriverException("Couldn't locate Chrome. Set webdriver.chrome.bin");
+                    }
+
+                    chromeFile = chromeFileString;
                 }
                 else
                 {
-                    throw new WebDriverException("Unsupported operating system.  " +
-                        "Could not locate Chrome.  Set webdriver.chrome.bin");
+                    throw new WebDriverException("Unsupported operating system. Could not locate Chrome.  Set webdriver.chrome.bin");
                 }
             }
 
