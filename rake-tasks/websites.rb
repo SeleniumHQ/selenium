@@ -1,4 +1,4 @@
-namespace :websites
+namespace :websites do
   task :addons do
     cp_r "websites/addons.seleniumhq.org/", "/var/www/domains/seleniumhq.org/addons/htdocs"
   end
