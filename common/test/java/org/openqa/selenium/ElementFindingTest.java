@@ -157,6 +157,7 @@ public class ElementFindingTest extends AbstractDriverTestCase {
     assertThat(element.getText(), equalTo("Spaced out"));
   }
   
+  @Ignore(SELENESE)
   public void testShouldFindElementsByClassWhenItsNameIsSurroundedByWhitespace() {
     driver.get(xhtmlTestPage);
     
