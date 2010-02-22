@@ -37,10 +37,10 @@ def copy_single_resource_(from, to)
   from = find_file(from)
   if from.kind_of? FileList
     from.each do |f|
-      cp_r f, "#{to}", :verbose => false
+      cp_r f, "#{to}", :verbose => false, :remove_destination => true 
     end
   else
-    cp_r from, "#{to}", :verbose => false
+    cp_r from, "#{to}", :verbose => false, :remove_destination => true 
   end
 end
 

@@ -48,15 +48,6 @@ to work-around a bug in IE on Win2K whereby the HTA application doesn't function
         <script language="JavaScript" type="text/javascript" src="xpath/xpath.js"></script>
         <script language="JavaScript" type="text/javascript" src="xpath/javascript-xpath-0.1.11.js"></script>
         <script language="JavaScript" type="text/javascript" src="scripts/user-extensions.js"></script>
-        <script language="JavaScript" type="text/javascript">
-            function openDomViewer() {
-                var autFrame = document.getElementById('selenium_myiframe');
-                var autFrameDocument = new SeleniumFrame(autFrame).getDocument();
-                this.rootDocument = autFrameDocument;
-                var domViewer = window.open(getDocumentBase(document) + 'domviewer/domviewer.html');
-                return false;
-            }
-        </script>
 </head>
 
 <body onLoad="onSeleniumLoad();">
@@ -77,7 +68,7 @@ to work-around a bug in IE on Win2K whereby the HTA application doesn't function
     <table class="layout">
         <tr class="selenium">
             <th width="25%" height="1" class="header">
-                <h1><a href="http://selenium.openqa.org" title="The Selenium Project">Selenium</a> TestRunner
+                <h1><a href="http://seleniumhq.org" title="The Selenium Project">Selenium</a> TestRunner
                 </h1>
             </th>
         </tr>
@@ -88,16 +79,16 @@ to work-around a bug in IE on Win2K whereby the HTA application doesn't function
 
                     <div id="imageButtonPanel">
                         <button type="button" id="runSuite" onClick="htmlTestRunner.startTestSuite();"
-                                title="Run All tests" accesskey="a">
+                                title="Run All tests [a]" accesskey="a">
                         </button>
                         <button type="button" id="runSeleniumTest" onClick="htmlTestRunner.runSingleTest();"
-                                title="Run the Selected test" accesskey="r">
+                                title="Run the Selected test [r]" accesskey="r">
                         </button>
                         <button type="button" id="pauseTest" disabled="disabled"
-                                title="Pause/Continue" accesskey="p" class="cssPauseTest">
+                                title="Pause/Continue [p]" accesskey="p" class="cssPauseTest">
                         </button>
                         <button type="button" id="stepTest" disabled="disabled"
-                                title="Step" accesskey="s">
+                                title="Step [s]" accesskey="s">
                         </button>
                     </div>
 
@@ -147,9 +138,6 @@ to work-around a bug in IE on Win2K whereby the HTA application doesn't function
                 <fieldset>
                     <legend>Tools</legend>
 
-                    <button type="button" id="domViewer1" onClick="openDomViewer();">
-                        View DOM
-                    </button>
                     <button type="button" onClick="LOG.show();">
                         Show Log
                     </button>

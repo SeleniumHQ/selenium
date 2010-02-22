@@ -405,22 +405,6 @@ java_jar(:name => "webdriver-remote-client",
                "remote/client/lib/runtime/*.jar",
              ])
 
-java_jar(:name => "selenium-ide",
-    :resources => [
-      { "ide/src/extension/content" => "/" },
-      { "ide/src/extension/locale" => "/" },
-      { "ide/src/extension/skin" => "/" },
-      { "common/src/js/core/*" => "content/selenium" },
-      { "common/src/js/jsunit" => "content" },
-      { "common/src/js/core/TestRunner.html" => "content/selenium/TestRunner.hta" },
-      { "selenium/test/js/html" => "content/selenium-tests/tests" },
-      { "selenium/test/js/*.html" => "content/selenium-tests/tests" },
-      { "selenium/test/js/*.js" => "content/selenium-tests/tests" },
-      { "selenium/test/js/dogfood" => "content/selenium-tests/tests"},
-      { "selenium/test/js/events" => "content/selenium-tests/tests"},
-    ]
-)
-
 xpt(:name => "ide-auto-complete",
     :src  => [ "ide/src/extension/idl/SeleniumIDEGenericAutoCompleteSearch.idl" ],
     :prebuilt => "ide/prebuilt",
@@ -430,15 +414,18 @@ xpi(:name => "ide",
     :srcs => [],
     :deps => [],
     :resources => [
-                    { :"selenium-ide" => "chrome/" },
                     { "ide/src/extension/chrome/" => "/" },
+                    { "common/src/js/core/*" => "chrome/content/selenium/"},
+                    { "ide/src/extension/content" => "chrome/" },
+                    { "ide/src/extension/skin" => "chrome/" },
+                    { "ide/src/extension/locale" => "chrome/" },
                     { :"ide-auto-complete" => "components/" },
                     { "ide/src/extension/components/SeleniumIDEGenericAutoCompleteSearch.js" => "components/" },
                     { "ide/src/extension/install.rdf" => "/" },
                     { "ide/src/extension/chrome.manifest.production" => "/chrome.manifest" },
                     { "common/src/js/core/scripts/selenium-testrunner.js" => "content-files/" }
                   ],
-    :out => "selenium-ide.xpi")
+    :out => "selenium-ide-1.0.5.xpi")
 
 java_jar(:name => "selenium-common-js",
     :resources => [

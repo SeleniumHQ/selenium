@@ -24,7 +24,7 @@ class SessionExtensionJsResource extends URLResource {
     public SessionExtensionJsResource(String extensionJs)
         throws MalformedURLException
     {
-        super(new URL("http://selenium.openqa.org"), null);
+        super(new URL("http://seleniumhq.org"), null);
         this.extensionJs = extensionJs;
     }
     
