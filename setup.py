@@ -15,8 +15,28 @@
 # limitations under the License.
 
 from glob import glob
-import os
+import os, shutil
+import subprocess
 from setuptools import setup
+from setuptools.command.install import install as _install
+
+class install(_install):
+    def run(self):
+        _install.run(self)
+
+        # Ugly hack to use rake to build webdriver-extension.zip
+        # and put it where we're looking for it
+        root_dir = os.path.abspath(os.path.dirname(__file__))
+        artifacts_dir = os.path.join(root_dir, 'build/lib/webdriver/build_artifacts')
+        webdriver_extension = os.path.join(root_dir, 'build/webdriver-extension.zip')
+        os.chdir(root_dir)
+        subprocess.call(['rake', 'firefox_xpi'])
+        try:
+            os.makedirs(artifacts_dir)
+        except OSError:
+            # Dir was already created
+            pass
+        shutil.copy(webdriver_extension, artifacts_dir)
 
 TEST_WEB_DIR = 'common/src/web'
 
@@ -43,6 +63,7 @@ for dir in test_web_dirs:
         all_dirs_and_extensions.append(dir + '/*.' + ext)
 
 setup(
+   cmdclass={'install': install},
    name='webdriver',
    version="0.7",
    description='Python bindings for WebDriver',
@@ -74,7 +95,7 @@ setup(
              'webdriver.chrome_tests',
              'webdriver.remote_tests'],
    include_package_data=True,
-   package_data={'': ['*.' + t for t in test_web_extensions], 
+   package_data={'': ['*.' + t for t in test_web_extensions],
                 'webdriver.common_web':all_dirs_and_extensions}
 )
 

@@ -13,6 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from __future__ import with_statement
+
 try:
     from ..common.exceptions import RemoteDriverServerException
 except (ImportError, ValueError):
