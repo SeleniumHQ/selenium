@@ -17,13 +17,15 @@ limitations under the License.
 
 package org.openqa.selenium.firefox;
 
-import javax.xml.XMLConstants;
-import javax.xml.namespace.NamespaceContext;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathFactory;
+import org.openqa.selenium.Proxy;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.Proxy.ProxyType;
+import org.openqa.selenium.internal.Cleanly;
+import org.openqa.selenium.internal.FileHandler;
+import org.openqa.selenium.internal.TemporaryFilesystem;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
@@ -39,12 +41,13 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.internal.Cleanly;
-import org.openqa.selenium.internal.FileHandler;
-import org.openqa.selenium.internal.TemporaryFilesystem;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
+import javax.xml.XMLConstants;
+import javax.xml.namespace.NamespaceContext;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathFactory;
 
 public class FirefoxProfile {
   private static final String EXTENSION_NAME = "fxdriver@googlecode.com";
@@ -347,6 +350,45 @@ public class FirefoxProfile {
     public void setPreference(String key, int value) {
         additionalPrefs.setPreference(key, value);
     }
+    
+    /**
+     * Set proxy preferences for this profile.
+     * 
+     * @param proxy The proxy preferences.
+     * @return The profile, for further settings.
+     */
+    public FirefoxProfile setProxyPreferences(Proxy proxy) {
+      if (proxy.getProxyType() == ProxyType.UNSPECIFIED) {
+        return this;
+      }
+      setPreference("network.proxy.type", proxy.getProxyType().ordinal());
+      switch (proxy.getProxyType()) {
+        case MANUAL:
+          setManualProxyPreference("ftp", proxy.getFtpProxy());
+          setManualProxyPreference("http", proxy.getHttpProxy());
+          setManualProxyPreference("ssl", proxy.getSslProxy());
+          if (proxy.getNoProxy() != null) {
+            setPreference("network.proxy.no_proxies_on", proxy.getNoProxy());
+          }
+          break;
+        case PAC:
+          setPreference("network.proxy.autoconfig_url", proxy.getProxyAutoconfigUrl());
+          break;
+      }
+      return this;
+    }
+    
+    private void setManualProxyPreference(String key, String settingString) {
+      if (settingString == null) {
+        return;
+      }
+      String[] hostPort = settingString.split(":");
+      setPreference("network.proxy." + key, hostPort[0]);
+      if (hostPort.length > 1) {
+        setPreference("network.proxy." + key + "_port", Integer.parseInt(hostPort[1]));
+      }
+    }
+
 
     protected Preferences getAdditionalPreferences() {
       return additionalPrefs;

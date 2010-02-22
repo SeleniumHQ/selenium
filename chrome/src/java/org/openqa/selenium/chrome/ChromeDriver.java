@@ -54,7 +54,7 @@ public class ChromeDriver implements WebDriver, SearchContext, JavascriptExecuto
    * Starts up a new instance of Chrome, with the required extension loaded,
    * and has it connect to a new ChromeCommandExecutor on its port
    *
-   * @see ChromeDriver(ChromeProfile, ChromeExtension)
+   * @see #ChromeDriver(ChromeProfile, ChromeExtension)
    */
   public ChromeDriver() {
     this(new ChromeProfile(), new ChromeExtension());

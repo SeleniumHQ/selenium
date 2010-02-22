@@ -1,10 +1,16 @@
 package org.openqa.selenium.chrome;
 
 import org.openqa.selenium.Platform;
+import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.Proxy.ProxyType;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
 public class ChromeBinary {
   
@@ -38,18 +44,8 @@ public class ChromeBinary {
    */
   public void start(String serverUrl) throws IOException {
     try {
-      chromeProcess = new ProcessBuilder(
-          getChromeFile(),
-          "--user-data-dir=" + profile.getDirectory().getAbsolutePath(),
-          "--load-extension=" + extension.getDirectory().getAbsolutePath(),
-          "--activate-on-launch",
-          "--homepage=about:blank",
-          "--no-first-run",
-          "--disable-hang-monitor",
-          "--disable-popup-blocking",
-          "--disable-prompt-on-repost",
-          "--no-default-browser-check",
-          serverUrl)
+      List<String> commandline = getCommandline(serverUrl);
+      chromeProcess = new ProcessBuilder(commandline)
           .start();
     } catch (IOException e) {
       throw new WebDriverException(e);
@@ -59,6 +55,44 @@ public class ChromeBinary {
     } catch (InterruptedException e) {
       //Nothing sane to do here
     }
+  }
+
+  // Visible for testing.
+  public List<String> getCommandline(String serverUrl) throws IOException {
+    ArrayList<String> commandline = new ArrayList<String>(Arrays.asList(
+        getChromeFile(),
+        "--user-data-dir=" + profile.getDirectory().getAbsolutePath(),
+        "--load-extension=" + extension.getDirectory().getAbsolutePath(),
+        "--activate-on-launch",
+        "--homepage=about:blank",
+        "--no-first-run",
+        "--disable-hang-monitor",
+        "--disable-popup-blocking",
+        "--disable-prompt-on-repost",
+        "--no-default-browser-check"
+    ));
+    appendProxyArguments(commandline)
+        .add(serverUrl);
+    return commandline;
+  }
+  
+  private ArrayList<String> appendProxyArguments(ArrayList<String> commandline) {
+    Proxy proxy = profile.getProxy();
+    if (proxy == null) {
+      return commandline;
+    }
+    if (proxy.getProxyAutoconfigUrl() != null) {
+      commandline.add("--proxy-pac-url=" + proxy.getProxyAutoconfigUrl());
+    } else if (proxy.getHttpProxy() != null) {
+      commandline.add("--proxy-server=" + proxy.getHttpProxy());
+    } else if (proxy.isAutodetect()) {
+      commandline.add("--proxy-auto-detect");
+    } else if (proxy.getProxyType() == ProxyType.DIRECT) {
+      commandline.add("--no-proxy-server");
+    } else if (proxy.getProxyType() != ProxyType.SYSTEM) {
+      throw new IllegalStateException("Unsupported proxy setting");
+    }
+    return commandline;
   }
   
   public void kill() {

@@ -17,7 +17,12 @@ limitations under the License.
 
 package org.openqa.selenium.firefox;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+
 import junit.framework.TestCase;
+
+import org.openqa.selenium.Proxy;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -28,7 +33,8 @@ import java.util.List;
 public class FirefoxProfileTest extends TestCase {
 
   private FirefoxProfile profile;
-
+  
+  @Override
   protected void setUp() throws Exception {
     super.setUp();
 
@@ -63,6 +69,44 @@ public class FirefoxProfileTest extends TestCase {
     assertTrue("Did not see integer value being set correctly", seenCheese);
   }
 
+  public void testManualProxy() throws Exception {
+    profile.setProxyPreferences(
+        new Proxy()
+        .setHttpProxy("foo:123")
+        .setFtpProxy("bar:234")
+        .setSslProxy("baz:345")
+        .setNoProxy("localhost"));
+    List<String> prefLines = readGeneratedProperties(profile);
+    String prefs = new ArrayList<String>(prefLines).toString();
+    assertThat(prefs, containsString("network.proxy.http\", \"foo\""));
+    assertThat(prefs, containsString("network.proxy.http_port\", 123"));
+    assertThat(prefs, containsString("network.proxy.ftp\", \"bar\""));
+    assertThat(prefs, containsString("network.proxy.ftp_port\", 234"));
+    assertThat(prefs, containsString("network.proxy.ssl\", \"baz\""));
+    assertThat(prefs, containsString("network.proxy.ssl_port\", 345"));
+    assertThat(prefs, containsString("network.proxy.no_proxies_on\", \"localhost\""));
+    assertThat(prefs, containsString("network.proxy.type\", 1"));
+  }
+  
+  public void testProxyAutoconfigUrl() throws Exception {
+    profile.setProxyPreferences(
+        new Proxy()
+        .setProxyAutoconfigUrl("http://foo/bar.pac"));
+    List<String> prefLines = readGeneratedProperties(profile);
+    String prefs = new ArrayList<String>(prefLines).toString();
+    assertThat(prefs, containsString("network.proxy.autoconfig_url\", \"http://foo/bar.pac\""));
+    assertThat(prefs, containsString("network.proxy.type\", 2"));
+  }
+  
+  public void testProxyAutodetect() throws Exception {
+    profile.setProxyPreferences(
+        new Proxy()
+        .setAutodetect(true));
+    List<String> prefLines = readGeneratedProperties(profile);
+    String prefs = new ArrayList<String>(prefLines).toString();
+    assertThat(prefs, containsString("network.proxy.type\", 4"));
+  }
+  
   public void testShouldSetBooleanPreferences() throws Exception {
     profile.setPreference("cheese", false);
 

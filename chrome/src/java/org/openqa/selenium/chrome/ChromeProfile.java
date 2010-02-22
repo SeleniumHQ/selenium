@@ -17,6 +17,7 @@ limitations under the License.
 
 package org.openqa.selenium.chrome;
 
+import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.internal.TemporaryFilesystem;
 
@@ -34,6 +35,7 @@ public class ChromeProfile {
   private static final String FIRST_RUN_FILE_NAME = "First Run Dev";
 
   private final File directory;
+  private Proxy proxy;
 
   /**
    * Create a new profile using the given directory. Assumes that the directory
@@ -73,5 +75,13 @@ public class ChromeProfile {
     } catch (IOException e) {
       throw new WebDriverException(e);
     }
+  }
+
+  public Proxy getProxy() {
+    return proxy;
+  }
+
+  public void setProxy(Proxy proxy) {
+    this.proxy = proxy;
   }
 }
