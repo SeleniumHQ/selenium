@@ -1,0 +1,11 @@
+prune *
+global-include build/webdriver-extension.zip
+recursive-include common/src/py *.py
+recursive-include common/test/py *.py
+recursive-include chrome/src/py *.py
+recursive-include chrome/test/py *.py
+recursive-include firefox/src/py *.py
+recursive-include jobbie/src/py *.py
+recursive-include jobbie/test/py *.py
+recursive-include remote/client/src/py *.py
+recursive-include remote/client/test/py *.py

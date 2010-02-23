@@ -27,11 +27,11 @@ import socket
 import sys
 import unittest
 from wsgiref.handlers import format_date_time
-from webdriver.common.exceptions import *
-from webdriver.common.webserver import SimpleWebServer
-import webdriver.remote.webdriver
-import webdriver.common_tests
-from webdriver.common_tests import utils
+from selenium.common.exceptions import *
+from selenium.common.webserver import SimpleWebServer
+import selenium.remote.webdriver
+import selenium.common_tests
+from selenium.common_tests import utils
 
 webserver = None
 driver = None
@@ -39,7 +39,7 @@ driver = None
 
 def not_available_on_remote(func):
     def testMethod(self):
-        if type(self.driver) == webdriver.remote.webdriver.WebDriver:
+        if type(self.driver) == selenium.remote.webdriver.WebDriver:
             return lambda x: None
         else:
             return func(self)

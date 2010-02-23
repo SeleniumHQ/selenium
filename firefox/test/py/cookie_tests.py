@@ -15,8 +15,8 @@
 
 #!/usr/bin/python
 import logging
-from webdriver.common_tests import cookie_tests
-from webdriver.firefox.webdriver import WebDriver
+from selenium.common_tests import cookie_tests
+from selenium.firefox.webdriver import WebDriver
 
 if __name__ == "__main__":
     logging.getLogger().setLevel(logging.WARN)

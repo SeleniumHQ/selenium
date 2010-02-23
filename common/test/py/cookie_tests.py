@@ -1,9 +1,9 @@
 import datetime
 import time
 import unittest
-from webdriver.common.webserver import SimpleWebServer
-from webdriver.common_tests import utils
-from webdriver.common_tests.utils import require_online
+from selenium.common.webserver import SimpleWebServer
+from selenium.common_tests import utils
+from selenium.common_tests.utils import require_online
 
 webserver = SimpleWebServer()
 

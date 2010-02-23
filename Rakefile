@@ -645,7 +645,7 @@ task :test_firefox_py => [:firefox, :firefox_xpi] do
         end
     end
     sh "build/python/bin/python setup.py build install", :verbose => true
-    sh "build/python/bin/python build/lib/webdriver/py_test.py", :verbose => true
+    sh "build/python/bin/python build/lib/selenium/py_test.py", :verbose => true
   end
 end
 

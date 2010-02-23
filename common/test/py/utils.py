@@ -30,7 +30,7 @@ def run_tests(test_case, driver, webserver):
     try:
         testLoader = unittest.TestLoader()
         testRunner = unittest.TextTestRunner()
-        test_case_name = "webdriver.common_tests.%s" % test_case
+        test_case_name = "selenium.common_tests.%s" % test_case
         if len(sys.argv) > 1:
             testMethod = sys.argv[1]
             testRunner.run(

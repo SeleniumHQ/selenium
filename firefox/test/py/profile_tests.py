@@ -20,10 +20,10 @@ import os
 import tempfile
 import time
 import unittest
-from webdriver.firefox.webdriver import WebDriver
-from webdriver.common.webserver import SimpleWebServer
-from webdriver.common_tests import utils
-from webdriver.firefox.firefox_profile import FirefoxProfile
+from selenium.firefox.webdriver import WebDriver
+from selenium.common.webserver import SimpleWebServer
+from selenium.common_tests import utils
+from selenium.firefox.firefox_profile import FirefoxProfile
 
 WEB_SERVER_PORT = 8000
 class ProfileTests(unittest.TestCase):

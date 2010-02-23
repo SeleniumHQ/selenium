@@ -17,8 +17,8 @@
 
 
 import logging
-from webdriver.common_tests import api_examples
-from webdriver.firefox.webdriver import WebDriver
+from selenium.common_tests import api_examples
+from selenium.firefox.webdriver import WebDriver
 
 if __name__ == "__main__":
     api_examples.run_tests(WebDriver())
