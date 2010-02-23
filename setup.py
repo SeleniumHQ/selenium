@@ -65,7 +65,7 @@ for dir in test_web_dirs:
 setup(
    cmdclass={'install': install},
    name='selenium',
-   version="0.7",
+   version="2.0-dev",
    description='Python bindings for WebDriver',
    url='http://code.google.com/p/selenium/',
    package_dir={
