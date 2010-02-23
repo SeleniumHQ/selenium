@@ -77,6 +77,9 @@ AutoCompleteResult.prototype = {
 	getValueAt: function(index) {
 		return this.result[index][0];
 	},
+	getImageAt : function (index) {
+		return '';
+	},
 	removeValueAt: function(rowIndex, removeFromDb) {
 	},
     QueryInterface: function (uuid) {
