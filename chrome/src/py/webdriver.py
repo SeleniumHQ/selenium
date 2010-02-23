@@ -15,6 +15,8 @@
 
 __all__ = [ "WebDriver", "WebDriverError", "NoSuchElementException" ]
 
+from __future__ import with_statement
+
 try:
     from ..common.exceptions import NoSuchElementException
 except (ImportError, ValueError):
