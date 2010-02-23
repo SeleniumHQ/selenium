@@ -34,11 +34,15 @@ public class ProxyTest extends TestCase {
     assertFalse(proxy.isAutodetect());
     try {
       proxy.setAutodetect(true);
+      fail("Didn't throw expected assertion");
     } catch (IllegalStateException e) {
+      // Success - expected.
     }
     try {
       proxy.setProxyAutoconfigUrl("http://aaaa");
+      fail("Didn't throw expected assertion");
     } catch (IllegalStateException e) {
+      // Success - expected.
     }
   }
 
@@ -49,13 +53,16 @@ public class ProxyTest extends TestCase {
     assertFalse(proxy.isAutodetect());
     try {
       proxy.setAutodetect(true);
+      fail("Didn't throw expected assertion");
     } catch (IllegalStateException e) {
+      // Success - expected.
     }
     assertNull(proxy.getHttpProxy());
     try {
       proxy.setHttpProxy("foo");
+      fail("Didn't throw expected assertion");
     } catch (IllegalStateException e) {
+      // Success - expected.
     }
-
   }
 }
