@@ -27,7 +27,7 @@ class install(_install):
         # Ugly hack to use rake to build webdriver-extension.zip
         # and put it where we're looking for it
         root_dir = os.path.abspath(os.path.dirname(__file__))
-        artifacts_dir = os.path.join(root_dir, 'build/lib/webdriver/build_artifacts')
+        artifacts_dir = os.path.join(root_dir, 'build/lib/selenium/build_artifacts')
         webdriver_extension = os.path.join(root_dir, 'build/webdriver-extension.zip')
         os.chdir(root_dir)
         subprocess.call(['rake', 'firefox_xpi'])
@@ -64,39 +64,39 @@ for dir in test_web_dirs:
 
 setup(
    cmdclass={'install': install},
-   name='webdriver',
+   name='selenium',
    version="0.7",
    description='Python bindings for WebDriver',
    url='http://code.google.com/p/selenium/',
    package_dir={
-                'webdriver':'.',
-                'webdriver.ie': 'jobbie/src/py',
-                'webdriver.firefox': 'firefox/src/py',
-                'webdriver.chrome' : 'chrome/src/py',
-                'webdriver.chrome_tests': 'chrome/test/py',
-                'webdriver.common': 'common/src/py',
-                'webdriver.remote': 'remote/client/src/py',
-                'webdriver.common_tests': 'common/test/py',
-                'webdriver.common_web': 'common/src/web',
-                'webdriver.firefox_tests': 'firefox/test/py',
-                'webdriver.ie_tests': 'jobbie/test/py',
-                'webdriver.remote_tests': 'remote/client/test/py',
+                'selenium':'.',
+                'selenium.ie': 'jobbie/src/py',
+                'selenium.firefox': 'firefox/src/py',
+                'selenium.chrome' : 'chrome/src/py',
+                'selenium.chrome_tests': 'chrome/test/py',
+                'selenium.common': 'common/src/py',
+                'selenium.remote': 'remote/client/src/py',
+                'selenium.common_tests': 'common/test/py',
+                'selenium.common_web': 'common/src/web',
+                'selenium.firefox_tests': 'firefox/test/py',
+                'selenium.ie_tests': 'jobbie/test/py',
+                'selenium.remote_tests': 'remote/client/test/py',
                 },
-   packages=['webdriver',
-             'webdriver.common',
-             'webdriver.firefox',
-             'webdriver.ie',
-             'webdriver.chrome',
-             'webdriver.remote',
-             'webdriver.common_tests',
-             'webdriver.common_web',
-             'webdriver.firefox_tests',
-             'webdriver.ie_tests',
-             'webdriver.chrome_tests',
-             'webdriver.remote_tests'],
+   packages=['selenium',
+             'selenium.common',
+             'selenium.firefox',
+             'selenium.ie',
+             'selenium.chrome',
+             'selenium.remote',
+             'selenium.common_tests',
+             'selenium.common_web',
+             'selenium.firefox_tests',
+             'selenium.ie_tests',
+             'selenium.chrome_tests',
+             'selenium.remote_tests'],
    include_package_data=True,
    package_data={'': ['*.' + t for t in test_web_extensions],
-                'webdriver.common_web':all_dirs_and_extensions}
+                'selenium.common_web':all_dirs_and_extensions}
 )
 
 # FIXME: Do manually
