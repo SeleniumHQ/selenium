@@ -644,8 +644,11 @@ task :test_firefox_py => [:firefox, :firefox_xpi] do
             puts ""
         end
     end
+    sh "build/python/bin/easy_install pip", :verbose => true
+    sh "build/python/bin/pip install simplejson", :verbose => true
+    sh "build/python/bin/pip install py", :verbose => true
     sh "build/python/bin/python setup.py build install", :verbose => true
-    sh "build/python/bin/python build/lib/selenium/py_test.py", :verbose => true
+    sh "build/python/bin/py.test build/lib/selenium/firefox_tests", :verbose => true
   end
 end
 

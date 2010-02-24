@@ -1,16 +1,15 @@
 import datetime
 import time
 import unittest
-from selenium.common.webserver import SimpleWebServer
 from selenium.common_tests import utils
 from selenium.common_tests.utils import require_online
 
-webserver = SimpleWebServer()
 
 class CookieTest(unittest.TestCase):
+
     def setUp(self):
-        self.driver = driver
-        self.driver.get("http://localhost:%d/simpleTest.html" % webserver.port)
+        self.driver.get("http://localhost:%d/simpleTest.html" %
+            self.webserver.port)
         timestamp = time.mktime(datetime.datetime.now().timetuple()) + 100
         self.COOKIE_A = {"name": "foo",
                          "value": "bar",
@@ -41,8 +40,3 @@ class CookieTest(unittest.TestCase):
         self.assertTrue(len(cookie) > 0)
         self.assertEquals("PREF", cookie[0]["name"])
         self.assertTrue("google" in cookie[0]["domain"])
-                
-def run_tests(driver_):
-    global driver
-    driver = driver_
-    utils.run_tests("cookie_tests.CookieTest", driver, webserver)

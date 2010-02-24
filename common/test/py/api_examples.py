@@ -16,28 +16,19 @@
 # limitations under the License.
 
 
-import datetime
-import logging
 import os
 import re
 import tempfile
 import time
 import shutil
-import socket
-import sys
 import unittest
-from wsgiref.handlers import format_date_time
-from selenium.common.exceptions import *
-from selenium.common.webserver import SimpleWebServer
+from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import ErrorInResponseException
 import selenium.remote.webdriver
-import selenium.common_tests
-from selenium.common_tests import utils
-
-webserver = None
-driver = None
 
 
 def not_available_on_remote(func):
+
     def testMethod(self):
         if type(self.driver) == selenium.remote.webdriver.WebDriver:
             return lambda x: None
@@ -48,12 +39,6 @@ def not_available_on_remote(func):
 
 class ApiExampleTest (unittest.TestCase):
 
-    def setUp(self):
-        self.driver = driver
-
-    def tearDown(self):
-        pass
-
     def testGetTitle(self):
         self._loadSimplePage()
         title = self.driver.get_title()
@@ -63,7 +48,7 @@ class ApiExampleTest (unittest.TestCase):
         self._loadSimplePage()
         url = self.driver.get_current_url()
         self.assertEquals("http://localhost:%d/simpleTest.html"
-                          % webserver.port, url)
+                          % self.webserver.port, url)
 
     def testFindElementsByXPath(self):
         self._loadSimplePage()
@@ -279,16 +264,10 @@ class ApiExampleTest (unittest.TestCase):
         shutil.rmtree(os.path.dirname(file_name))
 
     def _pageURL(self, name):
-        return "http://localhost:%d/%s.html" % (webserver.port, name)
+        return "http://localhost:%d/%s.html" % (self.webserver.port, name)
 
     def _loadSimplePage(self):
         self._loadPage("simpleTest")
 
     def _loadPage(self, name):
         self.driver.get(self._pageURL(name))
-
-def run_tests(driver_):
-    global driver, webserver
-    webserver = SimpleWebServer()
-    driver = driver_
-    utils.run_tests("api_examples.ApiExampleTest", driver, webserver)

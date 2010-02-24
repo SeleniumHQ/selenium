@@ -30,7 +30,7 @@ class install(_install):
         artifacts_dir = os.path.join(root_dir, 'build/lib/selenium/build_artifacts')
         webdriver_extension = os.path.join(root_dir, 'build/webdriver-extension.zip')
         os.chdir(root_dir)
-        subprocess.call(['rake', 'firefox_xpi'])
+        #subprocess.call(['rake', 'firefox_xpi'])
         try:
             os.makedirs(artifacts_dir)
         except OSError:

@@ -393,6 +393,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
       response = executor.execute(command);
       amendElementValueIfNecessary(response);
     } catch (Exception e) {
+      response.setContext(e.toString());
       response.setError(true);
       response.setValue(e.getStackTrace());
     }
@@ -427,7 +428,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
 
   private Response throwIfResponseFailed(Response response) {
     if (response.getValue() instanceof StackTraceElement[]) {
-      WebDriverException runtimeException = new WebDriverException();
+      WebDriverException runtimeException = new WebDriverException(response.getContext());
       runtimeException.setStackTrace((StackTraceElement[]) response.getValue());
       throw runtimeException;
     }
