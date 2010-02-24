@@ -255,13 +255,17 @@ public class Select {
   protected String escapeQuotes(String toEscape) {
     // Convert strings with both quotes and ticks into: foo'"bar -> concat("foo'", '"', "bar")
     if (toEscape.indexOf("\"") > -1 && toEscape.indexOf("'") > -1) {
+      boolean quoteIsLast = false;
+      if (toEscape.indexOf("\"") == toEscape.length() -1) {
+        quoteIsLast = true;
+      }
       String[] substrings = toEscape.split("\"");
 
       StringBuilder quoted = new StringBuilder("concat(");
-      for (int i = 0; i < substrings.length - 1; i++) {
-        quoted.append("\"").append(substrings[i]).append("\", '\"', ");
+      for (int i = 0; i < substrings.length; i++) {
+        quoted.append("\"").append(substrings[i]).append("\"");
+        quoted.append(((i == substrings.length -1) ? (quoteIsLast ? ", '\"')" : ")") : ", '\"', "));
       }
-      quoted.append("\"").append(substrings[substrings.length - 1]).append("\")");
       return quoted.toString();
     }
 

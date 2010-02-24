@@ -18,7 +18,6 @@ limitations under the License.
 package org.openqa.selenium.support.ui;
 
 import org.jmock.Expectations;
-import org.jmock.Sequence;
 import org.jmock.integration.junit3.MockObjectTestCase;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
@@ -352,6 +351,24 @@ public class SelectTest extends MockObjectTestCase {
     String result = select.escapeQuotes("f\"o'o");
 
     assertEquals("concat(\"f\", '\"', \"o'o\")", result);
+  }
+  
+  /**
+   * Tests that escapeQuotes returns concatenated strings when the given
+   * string contains a tick and and ends with a quote.
+   */
+  public void testShouldProvideConcatenatedStringsWhenStringEndsWithQuote() {
+    final WebElement element = mock(WebElement.class);
+
+    checking(new Expectations() {{
+      allowing(element).getTagName(); will(returnValue("select"));
+      allowing(element).getAttribute("multiple"); will(returnValue("multiple"));
+    }});
+
+    Select select = new Select(element);
+    String result = select.escapeQuotes("'\"");
+
+    assertEquals("concat(\"'\", '\"')", result);
   }
 
   public void testShouldFallBackToSlowLooksUpsWhenGetByVisibleTextFailsAndThereIsASpace() {
