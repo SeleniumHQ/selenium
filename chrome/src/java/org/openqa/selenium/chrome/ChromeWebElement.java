@@ -226,9 +226,8 @@ public class ChromeWebElement implements RenderedWebElement, Locatable,
   }
 
   /* (non-Javadoc)
-   * @see org.openqa.selenium.internal.WrapsDriver#getContainingDriver()
+   * @see org.openqa.selenium.internal.WrapsDriver#getWrappedDriver()
    */
-  @Override
   public WebDriver getWrappedDriver() {
     return parent;
   }
