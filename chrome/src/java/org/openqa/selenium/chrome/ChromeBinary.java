@@ -118,11 +118,7 @@ public class ChromeBinary {
     String chromeFileString = System.getProperty("webdriver.chrome.bin");
     if (chromeFileString == null) {
       if (Platform.getCurrent().is(Platform.WINDOWS)) {
-        try {
-          chromeFileString = getWindowsLocation();
-        } catch (Exception e) {
-          chromeFileString = null;
-        }
+        chromeFileString = getWindowsBinaryLocation();
       } else if (Platform.getCurrent().is(Platform.UNIX)) {
         chromeFileString = "/usr/bin/google-chrome";
       } else if (Platform.getCurrent().is(Platform.MAC)) {
@@ -150,24 +146,33 @@ public class ChromeBinary {
     return chromeFileString;
   }
   
-  protected static final String getWindowsLocation() throws Exception {
+  /**
+   * Returns null if couldn't read value from registry
+   */
+  protected static final String getWindowsBinaryLocation() {
     //TODO: Promote org.openqa.selenium.server.browserlaunchers.WindowsUtils
     //to common and reuse that to read the registry
     if (!Platform.WINDOWS.is(Platform.getCurrent())) {
       throw new UnsupportedOperationException("Cannot get registry value on non-Windows systems");
     }
-    Process process = Runtime.getRuntime().exec(
-        "reg query \"HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths\\chrome.exe\" /v \"\"");
-    BufferedReader reader = new BufferedReader(new InputStreamReader(
-        process.getInputStream()));
-    process.waitFor();
-    String line;
-    while ((line = reader.readLine()) != null) {
-      if (line.contains("    ")) {
-        String[] tokens = line.split("REG_SZ");
-        return tokens[tokens.length - 1].trim();
+    try {
+      Process process = Runtime.getRuntime().exec(
+          "reg query \"HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths\\chrome.exe\" /v \"\"");
+      BufferedReader reader = new BufferedReader(new InputStreamReader(
+          process.getInputStream()));
+      process.waitFor();
+      String line;
+      while ((line = reader.readLine()) != null) {
+        if (line.contains("    ")) {
+          String[] tokens = line.split("REG_SZ");
+          return tokens[tokens.length - 1].trim();
+        }
       }
+    } catch (IOException e) {
+      //Drop through to return null
+    } catch (InterruptedException e) {
+      //Drop through to return null
     }
-    throw new Exception("Couldn't read registry value");
+    return null;
   }
 }
