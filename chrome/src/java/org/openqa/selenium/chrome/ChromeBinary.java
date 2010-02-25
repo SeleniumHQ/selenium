@@ -5,8 +5,10 @@ import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.Proxy.ProxyType;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -120,24 +122,23 @@ public class ChromeBinary {
     if (chromeFileSystemProperty != null) {
       chromeFile = new File(chromeFileSystemProperty);
     } else {
+      boolean foundPath = false;
       StringBuilder chromeFileString = new StringBuilder();
-      if (Platform.getCurrent().is(Platform.XP)) {
-        chromeFileString.append(System.getProperty("user.home"))
-                        .append("\\Local Settings\\Application Data\\")
-                        .append("Google\\Chrome\\Application\\chrome.exe");
-      } else if (Platform.getCurrent().is(Platform.VISTA)) {
-        //HOPEFULLY this is somewhat consistent...
-        chromeFileString.append(System.getProperty("java.io.tmpdir"))
-                        .append("..\\")
-                        .append("Google\\Chrome\\Application\\chrome.exe");
+      if (Platform.getCurrent().is(Platform.WINDOWS)) {
+        try {
+          chromeFileString.append(getWindowsLocation());
+          foundPath = true;
+        } catch (Exception e) {
+          foundPath = false;
+        }
       } else if (Platform.getCurrent().is(Platform.UNIX)) {
         chromeFileString.append("/usr/bin/google-chrome");
+        foundPath = true;
       } else if (Platform.getCurrent().is(Platform.MAC)) {
         String[] paths = new String[] {
           "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
           "/Users/" + System.getProperty("user.name") +
               "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"};
-        boolean foundPath = false;
         for (String path : paths) {
           File binary = new File(path);
           if (binary.exists()) {
@@ -146,16 +147,37 @@ public class ChromeBinary {
             break;
           }
         }
-        if (!foundPath) {
-          throw new WebDriverException("Couldn't locate Chrome.  " +
-              "Set webdriver.chrome.bin");
-        }
       } else {
         throw new WebDriverException("Unsupported operating system.  " +
             "Could not locate Chrome.  Set webdriver.chrome.bin");
       }
+      if (!foundPath) {
+        throw new WebDriverException("Couldn't locate Chrome.  " +
+            "Set webdriver.chrome.bin");
+      }
       chromeFile = new File(chromeFileString.toString());
     }
     return chromeFile.getCanonicalFile().toString();
+  }
+  
+  protected static final String getWindowsLocation() throws Exception {
+    //TODO: Promote org.openqa.selenium.server.browserlaunchers.WindowsUtils
+    //to common and reuse that to read the registry
+    if (!Platform.WINDOWS.is(Platform.getCurrent())) {
+      throw new UnsupportedOperationException("Cannot get registry value on non-Windows systems");
+    }
+    Process process = Runtime.getRuntime().exec(
+        "reg query \"HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths\\chrome.exe\" /v \"\"");
+    BufferedReader reader = new BufferedReader(new InputStreamReader(
+        process.getInputStream()));
+    process.waitFor();
+    String line;
+    while ((line = reader.readLine()) != null) {
+      if (line.contains("    ")) {
+        String[] tokens = line.split("REG_SZ");
+        return tokens[tokens.length - 1].trim();
+      }
+    }
+    throw new Exception("Couldn't read registry value");
   }
 }
