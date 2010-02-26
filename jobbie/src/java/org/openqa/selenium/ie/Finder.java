@@ -64,7 +64,7 @@ class Finder implements SearchContext, FindsByClassName, FindsById, FindsByLinkT
     PointerByReference rawElement = new PointerByReference();
     int result = lib.wdFindElementByClassName(driver, element, new WString(using), rawElement);
 
-    handleErrorCode("id", using, result);
+    handleErrorCode("class name", using, result);
 
     return new InternetExplorerElement(lib, parent, rawElement.getValue());
   }
@@ -81,7 +81,7 @@ class Finder implements SearchContext, FindsByClassName, FindsById, FindsByLinkT
     PointerByReference elements = new PointerByReference();
     int result = lib.wdFindElementsByClassName(driver, element, new WString(using), elements);
 
-    handleErrorCode("id", using, result);
+    handleErrorCode("class name", using, result);
 
     return new ElementCollection(lib, parent, elements.getValue()).toList();
   }
