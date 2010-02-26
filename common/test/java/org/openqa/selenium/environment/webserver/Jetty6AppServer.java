@@ -17,13 +17,6 @@ limitations under the License.
 
 package org.openqa.selenium.environment.webserver;
 
-import junit.framework.Assert;
-
-import javax.servlet.Servlet;
-import java.io.File;
-import java.io.IOException;
-import java.net.ServerSocket;
-
 import org.mortbay.jetty.Connector;
 import org.mortbay.jetty.Handler;
 import org.mortbay.jetty.Server;
@@ -32,6 +25,13 @@ import org.mortbay.jetty.security.SslSocketConnector;
 import org.mortbay.jetty.webapp.WebAppContext;
 import org.mortbay.servlet.MultiPartFilter;
 import org.openqa.selenium.NetworkUtils;
+
+import junit.framework.Assert;
+
+import javax.servlet.Servlet;
+import java.io.File;
+import java.io.IOException;
+import java.net.ServerSocket;
 
 public class Jetty6AppServer implements AppServer {
 
@@ -72,6 +72,7 @@ public class Jetty6AppServer implements AppServer {
     addServlet("InfinitePagerServer", "/page/*", PageServlet.class);
     addServlet("Uploader", "/upload", UploadServlet.class);
     addServlet("Unusual encoding", "/encoding", EncodingServlet.class);
+    addServlet("Sleeper", "/sleep", SleepingServlet.class);
     addFilter(MultiPartFilter.class, "/upload", Handler.DEFAULT);
 
     listenOn(findFreePort());

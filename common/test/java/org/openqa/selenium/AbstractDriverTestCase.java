@@ -56,6 +56,7 @@ public class AbstractDriverTestCase extends TestCase implements NeedsDriver {
   protected String uploadPage;
   protected String svgPage;
   protected String documentWrite;
+  protected String sleepingPage;
 
   public void setDriver(WebDriver driver) {
     this.driver = driver;
@@ -87,6 +88,7 @@ public class AbstractDriverTestCase extends TestCase implements NeedsDriver {
     uploadPage = appServer.whereIs("upload.html");
     svgPage = appServer.whereIs("svgPiechart.xhtml");
     documentWrite = appServer.whereIs("document_write_in_onload.html");
+    sleepingPage = appServer.whereIs("sleep");
 
     String hostName = environment.getAppServer().getHostName();
     String alternateHostName = environment.getAppServer().getAlternateHostName();

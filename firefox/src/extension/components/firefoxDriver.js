@@ -564,8 +564,12 @@ FirefoxDriver.prototype.goForward = function(respond) {
 FirefoxDriver.prototype.refresh = function(respond) {
   var browser = Utils.getBrowser(respond.context);
   browser.contentWindow.location.reload(true);
-
-  respond.send();
+  // Wait for the reload to finish before sending the response.
+  new WebLoadingListener(browser, function() {
+    // Reset to the top frame.
+    respond.context.frameId = "?";
+    respond.send();
+  });
 };
 
 
