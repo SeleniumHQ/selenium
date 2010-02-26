@@ -63,7 +63,7 @@ public class ChromeBinary {
   // Visible for testing.
   public List<String> getCommandline(String serverUrl) throws IOException {
     ArrayList<String> commandline = new ArrayList<String>(Arrays.asList(
-        getChromeFile(),
+        getChromeBinaryLocation(),
         "--user-data-dir=" + profile.getDirectory().getAbsolutePath(),
         "--load-extension=" + extension.getDirectory().getAbsolutePath(),
         "--activate-on-launch",
@@ -116,7 +116,7 @@ public class ChromeBinary {
    * @return chrome.exe
    * @throws IOException if file could not be found/accessed
    */
-  protected String getChromeFile() throws IOException {
+  protected String getChromeBinaryLocation() throws IOException {
     if (!isChromeBinaryLocationKnown()) {
       chromeBinaryLocation = System.getProperty("webdriver.chrome.bin");
       if (chromeBinaryLocation == null) {
