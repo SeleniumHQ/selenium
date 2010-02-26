@@ -63,7 +63,6 @@ long getLengthOf(SAFEARRAY* ary);
 bool checkValidDOM(IHTMLElement* r);
 
 char* ConvertLPCWSTRToLPSTR (LPCWSTR lpwszStrIn);
-void ConvertLPCWSTRToLPSTR (LPCWSTR lpwszStrIn, std::string &out);
 
 wchar_t *StripTrailingWhitespace(wchar_t *str);
 
