@@ -420,6 +420,13 @@ LPCWSTR InternetExplorerDriver::captureScreenshotAsBase64()
 	return data.output_string_.c_str();
 }
 
+LPCWSTR InternetExplorerDriver::getScriptResultType(CComVariant* result)
+{
+  SCOPETRACER
+  SEND_MESSAGE_WITH_MARSHALLED_DATA(_WD_GETSCRIPTRESULTOBJECTTYPE, result)
+  return data.output_string_.c_str();
+}
+
 /////////////////////////////////////////////////////////////
 
 bool InternetExplorerDriver::sendThreadMsg(UINT msg, DataMarshaller& data)
@@ -477,3 +484,9 @@ DataMarshaller& InternetExplorerDriver::prepareCmData(int v)
 	return data;
 }
 
+DataMarshaller& InternetExplorerDriver::prepareCmData(CComVariant *pDispatch)
+{
+  DataMarshaller& data = prepareCmData();
+  data.input_variant_ = pDispatch;
+  return data;
+}

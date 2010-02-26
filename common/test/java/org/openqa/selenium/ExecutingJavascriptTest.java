@@ -94,7 +94,25 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
 
   @SuppressWarnings("unchecked")
   @JavascriptEnabled
-  @Ignore({IE, SELENESE, IPHONE})
+  public void testShouldBeAbleToExecuteSimpleJavascriptAndAStringsArray() {
+    if (!(driver instanceof JavascriptExecutor)) {
+      return;
+    }
+
+    driver.get(javascriptPage);
+    List<Object> expectedResult = new ArrayList<Object>();
+    expectedResult.add("zero");
+    expectedResult.add("one");
+    expectedResult.add("two");
+    Object result = ((JavascriptExecutor) driver).executeScript(
+    "return ['zero', 'one', 'two'];");
+
+    ExecutingJavascriptTest.compareLists(expectedResult, (List<Object>) result);
+  }
+
+  @SuppressWarnings("unchecked")
+  @JavascriptEnabled
+  @Ignore({SELENESE, IPHONE})
   public void testShouldBeAbleToExecuteSimpleJavascriptAndReturnAnArray() {
     if (!(driver instanceof JavascriptExecutor)) {
       return;
@@ -108,12 +126,13 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
     subList.add(false);
     expectedResult.add(subList);
     Object result = executeScript("return ['zero', [true, false]];");
+    assertNotNull(result);
     assertTrue("result was: " + result + " (" + result.getClass() + ")", result instanceof List);
     List<Object> list = (List<Object>) result;
     assertTrue(compareLists(expectedResult, list));
   }
 
-  private boolean compareLists(List<?> first, List<?> second) {
+  private static boolean compareLists(List<?> first, List<?> second) {
     if (first.size() != second.size()) {
       return false;
     }
@@ -374,7 +393,7 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
   
   @SuppressWarnings("unchecked")
   @JavascriptEnabled
-  @Ignore({SELENESE, IE, CHROME, REMOTE, IPHONE})
+  @Ignore({SELENESE, CHROME, REMOTE, IPHONE})
   public void testShouldBeAbleToExecuteScriptAndReturnElementsList() {
     driver.get(formPage);
     String scriptToExec = "return document.getElementsByName('snack');";

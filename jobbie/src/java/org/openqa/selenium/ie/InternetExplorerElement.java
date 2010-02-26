@@ -74,7 +74,8 @@ public class InternetExplorerElement implements RenderedWebElement, Locatable,
 
   public String getAttribute(String name) {
     PointerByReference wrapper = new PointerByReference();
-    int result = lib.wdeGetAttribute(element, new WString(name), wrapper);
+    int result = lib.wdeGetAttribute(
+        parent.getDriverPointer(), element, new WString(name), wrapper);
 
     errors.verifyErrorCode(result, "get attribute of");
 

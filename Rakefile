@@ -368,9 +368,9 @@ java_test(:name => "webdriver-firefox-test",
                    ])
 
 java_test(:name => "webdriver-single-testsuite",
-          :srcs  => [ "common/test/java/org/openqa/selenium/SingleTestSuite.java" ],
+          :srcs  => [ "common/test/java/org/openqa/selenium/SingleTestSuite.java"],
           :deps => [
-                     :'webdriver-firefox',
+                     :'webdriver-ie',
                      :'webdriver-common-test',
                    ])
 

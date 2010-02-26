@@ -17,26 +17,15 @@ limitations under the License.
 
 package org.openqa.selenium.ie;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import static org.openqa.selenium.ie.ExportedWebDriverFunctions.SUCCESS;
 
 import com.sun.jna.Native;
 import com.sun.jna.NativeLong;
 import com.sun.jna.Pointer;
 import com.sun.jna.WString;
-import com.sun.jna.ptr.DoubleByReference;
 import com.sun.jna.ptr.IntByReference;
-import com.sun.jna.ptr.NativeLongByReference;
 import com.sun.jna.ptr.PointerByReference;
+
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Cookie;
@@ -52,7 +41,15 @@ import org.openqa.selenium.internal.FileHandler;
 import org.openqa.selenium.internal.ReturnedCookie;
 import org.openqa.selenium.internal.TemporaryFilesystem;
 
-import static org.openqa.selenium.ie.ExportedWebDriverFunctions.SUCCESS;
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class InternetExplorerDriver implements WebDriver, JavascriptExecutor, TakesScreenshot {
 
@@ -163,7 +160,7 @@ public class InternetExplorerDriver implements WebDriver, JavascriptExecutor, Ta
       result = lib.wdExecuteScript(driver, new WString(script), scriptArgs, scriptResultRef);
 
       errors.verifyErrorCode(result, "Cannot execute script");
-      return extractReturnValue(scriptResultRef);
+      return new JavascriptResultCollection(lib, this).extractReturnValue(scriptResultRef);
     } finally {
       lib.wdFreeScriptArgs(scriptArgs);
     }
@@ -171,72 +168,6 @@ public class InternetExplorerDriver implements WebDriver, JavascriptExecutor, Ta
 
   public boolean isJavascriptEnabled() {
     return true;
-  }
-
-  private Object extractReturnValue(PointerByReference scriptResultRef) {
-    int result;
-    Pointer scriptResult = scriptResultRef.getValue();
-
-    IntByReference type = new IntByReference();
-    result = lib.wdGetScriptResultType(scriptResult, type);
-
-    errors.verifyErrorCode(result, "Cannot determine result type");
-
-    try {
-      Object toReturn;
-      switch (type.getValue()) {
-        case 1:
-          PointerByReference wrapper = new PointerByReference();
-          result = lib.wdGetStringScriptResult(scriptResult, wrapper);
-          errors.verifyErrorCode(result, "Cannot extract string result");
-          toReturn = new StringWrapper(lib, wrapper).toString();
-          break;
-
-        case 2:
-          NativeLongByReference value = new NativeLongByReference();
-          result = lib.wdGetNumberScriptResult(scriptResult, value);
-          errors.verifyErrorCode(result, "Cannot extract number result");
-          toReturn = value.getValue().longValue();
-          break;
-
-        case 3:
-          IntByReference boolVal = new IntByReference();
-          result = lib.wdGetBooleanScriptResult(scriptResult, boolVal);
-          errors.verifyErrorCode(result, "Cannot extract boolean result");
-          toReturn = boolVal.getValue() == 1 ? Boolean.TRUE : Boolean.FALSE;
-          break;
-
-        case 4:
-          PointerByReference element = new PointerByReference();
-          result = lib.wdGetElementScriptResult(scriptResult, driver, element);
-          errors.verifyErrorCode(result, "Cannot extract element result");
-          toReturn = new InternetExplorerElement(lib, this, element.getValue());
-          break;
-
-        case 5:
-          toReturn = null;
-          break;
-
-        case 6:
-          PointerByReference message = new PointerByReference();
-          result = lib.wdGetStringScriptResult(scriptResult, message);
-          errors.verifyErrorCode(result, "Cannot extract string result");
-          throw new WebDriverException(new StringWrapper(lib, message).toString());
-
-        case 7:
-          DoubleByReference doubleVal = new DoubleByReference();
-          result = lib.wdGetDoubleScriptResult(scriptResult, doubleVal);
-          errors.verifyErrorCode(result, "Cannot extract double result");
-          toReturn = doubleVal.getValue();
-          break;
-
-        default:
-          throw new WebDriverException("Cannot determine result type");
-      }
-      return toReturn;
-    } finally {
-      lib.wdFreeScriptResult(scriptResult);
-    }
   }
 
   private int populateArguments(int result, Pointer scriptArgs, Object... args) {
@@ -262,7 +193,6 @@ public class InternetExplorerDriver implements WebDriver, JavascriptExecutor, Ta
     }
     return result;
   }
-
 
   public void get(String url) {
     int result = lib.wdGet(driver, new WString(url));
@@ -344,6 +274,10 @@ public class InternetExplorerDriver implements WebDriver, JavascriptExecutor, Ta
 
   protected void waitForLoadToComplete() {
     lib.wdWaitForLoadToComplete(driver);
+  }
+  
+  public Pointer getDriverPointer() {
+    return driver;
   }
 
   public <X> X getScreenshotAs(OutputType<X> target) throws WebDriverException {

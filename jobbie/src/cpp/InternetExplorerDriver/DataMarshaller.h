@@ -46,6 +46,7 @@ public:
 	long			input_long_;
 	IHTMLElement	*input_html_element_;
 	SAFEARRAY		*input_safe_array_;
+	CComVariant  *input_variant_;
 
 	// WARNING can only be set by worker thread
 	std::wstring	output_string_;

@@ -33,6 +33,7 @@ void DataMarshaller::resetInputs()
 	input_string_ = NULL;
 	input_safe_array_ = NULL;
 	scope_caller_ = NULL;
+	input_variant_ = NULL;
 }
 
 void DataMarshaller::resetOutputs()

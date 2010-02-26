@@ -427,8 +427,9 @@ void IeThread::OnCloseWindow(WPARAM w, LPARAM lp)
 	if (FAILED(pBody->ieThreaded->Stop())) {
 	    LOG(INFO) << "Unable to stop IE instance";
 	}
-	if (FAILED(pBody->ieThreaded->Quit())) {
-	    LOG(WARN) << "Unable to quit IE instance.";
+        HRESULT hr = pBody->ieThreaded->Quit();
+	if (FAILED(hr)) {
+	    LOGHR(WARN, hr) << "Unable to quit IE instance.";
 	}
 }
 
@@ -463,6 +464,51 @@ void IeThread::captureScreenshot(std::wstring& res)
     res = L"";
   }
 }
+
+void IeThread::OnGetScriptResultObjectType(WPARAM w, LPARAM lp)
+{
+  SCOPETRACER
+  ON_THREAD_COMMON(data)
+
+  data.output_string_ = getStriptResultObjectType(data.input_variant_);
+}
+
+std::wstring IeThread::getStriptResultObjectType(CComVariant* scriptResult)
+{
+  CComQIPtr<IHTMLElementCollection> isCol(scriptResult->pdispVal);
+  if (isCol) {
+    return L"HtmlCollection";
+  }
+
+  CComQIPtr<IHTMLElement> isElem(scriptResult->pdispVal);
+  if (isElem) {
+    return L"HtmlElement";
+  }
+
+  // Other possible interfaces: IHTMLFrameBase, IHTMLFrameElement
+  // The distinction is not important for now.
+
+  CComPtr<ITypeInfo> typeinfo;
+  HRESULT getTypeInfoRes = scriptResult->pdispVal->GetTypeInfo(0, LOCALE_USER_DEFAULT, &typeinfo);
+  TYPEATTR* typeAttr;
+  CComBSTR name;
+  if (SUCCEEDED(getTypeInfoRes) && SUCCEEDED(typeinfo->GetTypeAttr(&typeAttr))
+    && SUCCEEDED(typeinfo->GetDocumentation(-1, &name, 0, 0, 0))) {
+    // If the name is JScriptTypeInfo then *assume* this is a Javascript array.
+    // Note that Javascript can return functions which will have the same
+    // type - the only way to be sure is to run some more Javascript code to
+    // see if this object has a length attribute. This does not seem necessary
+    // now.
+    // (For future reference, GUID is {C59C6B12-F6C1-11CF-8835-00A0C911E8B2})
+    typeinfo->ReleaseTypeAttr(typeAttr);
+    if (name == L"JScriptTypeInfo") {
+      return L"JavascriptArray";
+    }
+  }
+
+  return L"Unknown";
+}
+
 
 bool browserMatches(const wchar_t* name, IWebBrowser2* browser)
 {
@@ -559,5 +605,3 @@ void IeThread::OnSwitchToFrame(WPARAM w, LPARAM lp)
 	
 	data.output_bool_ = (doc != NULL);
 }
-
-

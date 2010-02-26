@@ -41,7 +41,7 @@ public class SingleTestSuite extends TestCase {
   private final static String SELENIUM = "org.openqa.selenium.SeleneseBackedWebDriver";
 
   public static Test suite() throws Exception {
-    String driver = FIREFOX_TEST;
+    String driver = IE;
 
     System.setProperty("webdriver.development", "true");
     System.setProperty("jna.library.path", "..\\build;build");
@@ -51,15 +51,19 @@ public class SingleTestSuite extends TestCase {
                                                       
     TestSuiteBuilder builder = new TestSuiteBuilder()
         .addSourceDir("common")
-        .addSourceDir("firefox")
+        .addSourceDir("jobbie")
         .usingDriver(driver)
         .keepDriverInstance()
         .includeJavascriptTests()
-        .onlyRun("CorrectEventFiringTest")
-//        .method("testShouldBeAbleToGetTheLocationOfAnElement")
+        .onlyRun("ExecutingJavascriptTest")
+        .method("testShouldBeAbleToExecuteSimpleJavascriptAndReturnAnArray")
+        .method("testShouldBeAbleToExecuteSimpleJavascriptAndAStringsArray")
+        .method("testShouldBeAbleToExecuteScriptAndReturnElementsList")
+        .method("testShouldBeAbleToExecuteSimpleJavascriptAndReturnAWebElement")
         .exclude(ALL)
-        .exclude(Ignore.Driver.FIREFOX)
-        .leaveRunning()
+        .exclude(Ignore.Driver.IE)
+        .outputTestNames()
+        //.leaveRunning()
         ;  // Yeah, this look strange :)
 
     if (REMOTE.equals(driver) || REMOTE_IE.equals(driver)) {

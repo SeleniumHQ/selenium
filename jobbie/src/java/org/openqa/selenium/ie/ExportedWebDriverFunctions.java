@@ -51,7 +51,7 @@ interface ExportedWebDriverFunctions extends StdCallLibrary {
   int wdeClear(Pointer element);
   int wdeClick(Pointer element);
   int wdeIsEnabled(Pointer element, IntByReference selected);
-  int wdeGetAttribute(Pointer element, WString string, PointerByReference wrapper);
+  int wdeGetAttribute(Pointer driver, Pointer element, WString string, PointerByReference wrapper);
   int wdeGetValueOfCssProperty(Pointer element, WString name, PointerByReference wrapper);
   int wdeIsSelected(Pointer element, IntByReference selected);
   int wdeSetSelected(Pointer element);
@@ -97,12 +97,16 @@ interface ExportedWebDriverFunctions extends StdCallLibrary {
   int wdAddDoubleScriptArg(Pointer scriptArgs, double number);
   int wdAddElementScriptArg(Pointer scriptArgs, Pointer element);
   int wdExecuteScript(Pointer driver, WString script, Pointer scriptArgs, PointerByReference scriptResultRef);
-  int wdGetScriptResultType(Pointer result, IntByReference type);
+  int wdGetScriptResultType(Pointer driver, Pointer result, IntByReference type);
   int wdGetStringScriptResult(Pointer result, PointerByReference wrapper);
   int wdGetNumberScriptResult(Pointer result, NativeLongByReference value);
   int wdGetDoubleScriptResult(Pointer result, DoubleByReference value);
   int wdGetBooleanScriptResult(Pointer result, IntByReference value);
   int wdGetElementScriptResult(Pointer result, Pointer driver, PointerByReference element);
+  int wdGetArrayLengthScriptResult(Pointer driver, Pointer result, IntByReference length);
+  int wdGetArrayItemFromScriptResult(Pointer driver, Pointer result, int index,
+      PointerByReference arrayItem);
+
 
   // Things that should be interactions
   int wdeMouseDownAt(HWND hwnd, NativeLong windowX, NativeLong windowY);
