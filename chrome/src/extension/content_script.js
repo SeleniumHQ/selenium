@@ -923,7 +923,7 @@ function execute_(script, passedArgs, callback) {
                             'val = JSON.stringify(val);' +
                           '}' +
                           //Fire mutation event with newValue set to the JSON of our return value
-                          'e.initMutationEvent("DOMAttrModified", true, false, null, null, "{value: " + val + "}", null, 0);' +
+                          'e.initMutationEvent("DOMAttrModified", true, false, null, null, \'{\"value\": \' + val + \'}\', null, 0);' +
                         '} catch (exn) {' +
                           //Fire mutation event with prevValue set to EXCEPTION to indicate an error in the script
                           'e.initMutationEvent("DOMAttrModified", true, false, null, "EXCEPTION", null, null, 0);' +
