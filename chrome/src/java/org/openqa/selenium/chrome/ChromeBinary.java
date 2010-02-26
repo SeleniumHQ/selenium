@@ -22,6 +22,8 @@ public class ChromeBinary {
   private final ChromeProfile profile;
   private final ChromeExtension extension;
   
+  protected String chromeBinaryLocation = null;
+  
   Process chromeProcess = null;
 
   /**
@@ -115,35 +117,40 @@ public class ChromeBinary {
    * @throws IOException if file could not be found/accessed
    */
   protected String getChromeFile() throws IOException {
-    String chromeFileString = System.getProperty("webdriver.chrome.bin");
-    if (chromeFileString == null) {
-      if (Platform.getCurrent().is(Platform.WINDOWS)) {
-        chromeFileString = getWindowsBinaryLocation();
-      } else if (Platform.getCurrent().is(Platform.UNIX)) {
-        chromeFileString = "/usr/bin/google-chrome";
-      } else if (Platform.getCurrent().is(Platform.MAC)) {
-        String[] paths = new String[] {
-          "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
-          "/Users/" + System.getProperty("user.name") +
-              "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"};
-        for (String path : paths) {
-          File binary = new File(path);
-          if (binary.exists()) {
-            chromeFileString = binary.getCanonicalFile().getAbsoluteFile().toString();
-            break;
+    if (!isChromeBinaryLocationKnown()) {
+      chromeBinaryLocation = System.getProperty("webdriver.chrome.bin");
+      if (chromeBinaryLocation == null) {
+        if (Platform.getCurrent().is(Platform.WINDOWS)) {
+          chromeBinaryLocation = getWindowsBinaryLocation();
+        } else if (Platform.getCurrent().is(Platform.UNIX)) {
+          chromeBinaryLocation = "/usr/bin/google-chrome";
+        } else if (Platform.getCurrent().is(Platform.MAC)) {
+          String[] paths = new String[] {
+            "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+            "/Users/" + System.getProperty("user.name") +
+                "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"};
+          for (String path : paths) {
+            File binary = new File(path);
+            if (binary.exists()) {
+              chromeBinaryLocation = binary.getCanonicalFile().getAbsoluteFile().toString();
+              break;
+            }
           }
+        } else {
+          throw new WebDriverException("Unsupported operating system.  " +
+              "Could not locate Chrome.  Set webdriver.chrome.bin");
         }
-      } else {
-        throw new WebDriverException("Unsupported operating system.  " +
-            "Could not locate Chrome.  Set webdriver.chrome.bin");
       }
-      if (chromeFileString == null ||
-          !new File(chromeFileString.toString()).exists()) {
+      if (!isChromeBinaryLocationKnown()) {
         throw new WebDriverException("Couldn't locate Chrome.  " +
             "Set webdriver.chrome.bin");
       }
     }
-    return chromeFileString;
+    return chromeBinaryLocation;
+  }
+  
+  protected boolean isChromeBinaryLocationKnown() {
+    return chromeBinaryLocation != null && new File(chromeBinaryLocation).exists();
   }
   
   /**
