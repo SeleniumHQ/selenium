@@ -66,8 +66,7 @@ class FirefoxProfile(object):
         self.name = name
         self.port = port
         if (extension_path is None):
-            self.extension_path = os.path.join(os.path.dirname(__file__), '..',
-              'build_artifacts', 'webdriver-extension.zip')
+            self.extension_path = os.path.join(os.path.dirname(__file__), 'webdriver-extension.zip')
         else:
 	    self.extension_path = extension_path
 

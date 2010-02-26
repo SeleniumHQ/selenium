@@ -631,24 +631,25 @@ task :javadocs => [:common, :firefox, :htmlunit, :jobbie, :remote, :support, :ch
 end
 
 task :test_firefox_py => [:firefox, :firefox_xpi] do
-  # This requires virtualenv
-  # To install virtualenv:
-  #     easy_install virtualenv
   if python? then
     sh "virtualenv build/python", :verbose => true do |ok, res|
         if ! ok
             puts ""
             puts "PYTHON DEPENDENCY ERROR: Virtualenv not found."
-            puts "Please run '[sudo] easy_install install virtualenv' or"
-            puts "           '[sudo] pip install virtualenv'"
+            puts "Please run '[sudo] pip install virtualenv'"
             puts ""
         end
     end
-    sh "build/python/bin/easy_install pip", :verbose => true
-    sh "build/python/bin/pip install simplejson", :verbose => true
-    sh "build/python/bin/pip install py", :verbose => true
-    sh "build/python/bin/python setup.py build install", :verbose => true
-    sh "build/python/bin/py.test build/lib/selenium/firefox_tests", :verbose => true
+    sh "build/python/bin/pip install simplejson py", :verbose => true
+    cp 'build/webdriver-extension.zip', "firefox/src/py/", :verbose => true
+    sh "build/python/bin/python setup.py build", :verbose => true
+    if File.exists?('build/python/bin/py.test')
+        py_test = 'build/python/bin/py.test'
+    else
+        py_test = 'py.test'
+    end
+    test_dir = Dir.glob('build/lib**/selenium/firefox_tests').first
+    sh py_test, test_dir, :verbose => true
   end
 end
 

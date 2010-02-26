@@ -14,53 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from glob import glob
-import os, shutil
-import subprocess
 from setuptools import setup
-from setuptools.command.install import install as _install
-
-class install(_install):
-    def run(self):
-        _install.run(self)
-
-        # Ugly hack to use rake to build webdriver-extension.zip
-        # and put it where we're looking for it
-        root_dir = os.path.abspath(os.path.dirname(__file__))
-        artifacts_dir = os.path.join(root_dir, 'build/lib/selenium/build_artifacts')
-        webdriver_extension = os.path.join(root_dir, 'build/webdriver-extension.zip')
-        os.chdir(root_dir)
-        #subprocess.call(['rake', 'firefox_xpi'])
-        try:
-            os.makedirs(artifacts_dir)
-        except OSError:
-            # Dir was already created
-            pass
-        shutil.copy(webdriver_extension, artifacts_dir)
-
-TEST_WEB_DIR = 'common/src/web'
-
-def get_extensions_list(in_dir):
-    files_list = []
-    for dirname, subdirs, filenames in os.walk(in_dir):
-        if (dirname.find('.svn') == -1):
-            files_list.extend(filenames)
-    return set([t.split('.')[-1] for t in files_list if len(t.split('.')) > 0])
-
-def get_dirs_list(in_dir):
-    ret_list = []
-    for dirname, subdirs, filenames in os.walk(in_dir):
-        if (dirname.find('.svn') == -1):
-            ret_list.append(dirname.replace(TEST_WEB_DIR + '/', ''))
-    return ret_list
-
-test_web_dirs = get_dirs_list(TEST_WEB_DIR)
-test_web_extensions = get_extensions_list(TEST_WEB_DIR)
-
-all_dirs_and_extensions = []
-for dir in test_web_dirs:
-    for ext in test_web_extensions:
-        all_dirs_and_extensions.append(dir + '/*.' + ext)
+from setuptools.command.install import install
 
 setup(
    cmdclass={'install': install},
@@ -95,8 +50,7 @@ setup(
              'selenium.chrome_tests',
              'selenium.remote_tests'],
    include_package_data=True,
-   package_data={'': ['*.' + t for t in test_web_extensions],
-                'selenium.common_web':all_dirs_and_extensions}
+   install_requires=['distribute'],
 )
 
 # FIXME: Do manually
