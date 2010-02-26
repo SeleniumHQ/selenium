@@ -18,11 +18,9 @@ limitations under the License.
 package org.openqa.selenium.chrome;
 
 import org.openqa.selenium.Proxy;
-import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.internal.TemporaryFilesystem;
 
 import java.io.File;
-import java.io.IOException;
 
 /**
  * Manages the extension used by the {@link ChromeDriver}.
@@ -32,7 +30,6 @@ import java.io.IOException;
 public class ChromeProfile {
 
   private static final String REAP_PROFILE_PROPERTY = "webdriver.reap_profile";
-  private static final String FIRST_RUN_FILE_NAME = "First Run Dev";
 
   private final File directory;
   private Proxy proxy;
@@ -64,17 +61,10 @@ public class ChromeProfile {
    * @return File object for the created directory.
    */
   private static File createProfileDir() {
-    try {
-      File tempProfileDir = TemporaryFilesystem.createTempDir("profile", "");
-      File firstRunFile = new File(tempProfileDir, FIRST_RUN_FILE_NAME);
-      firstRunFile.createNewFile();
-      // TODO(danielwd): Maybe add Local State file with window_placement
+    File tempProfileDir = TemporaryFilesystem.createTempDir("profile", "");
 
-      System.setProperty(REAP_PROFILE_PROPERTY, "false");
-      return tempProfileDir;
-    } catch (IOException e) {
-      throw new WebDriverException(e);
-    }
+    System.setProperty(REAP_PROFILE_PROPERTY, "false");
+    return tempProfileDir;
   }
 
   public Proxy getProxy() {
