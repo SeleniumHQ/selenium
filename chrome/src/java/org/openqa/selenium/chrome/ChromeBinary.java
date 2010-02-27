@@ -121,7 +121,10 @@ public class ChromeBinary {
       chromeBinaryLocation = System.getProperty("webdriver.chrome.bin");
       if (chromeBinaryLocation == null) {
         if (Platform.getCurrent().is(Platform.WINDOWS)) {
-          chromeBinaryLocation = getWindowsBinaryLocation();
+          chromeBinaryLocation = getWindowsBinaryLocationFromRegistry();
+          if (chromeBinaryLocation == null) {
+            chromeBinaryLocation = getDefaultWindowsBinaryLocation();
+          }
         } else if (Platform.getCurrent().is(Platform.UNIX)) {
           chromeBinaryLocation = "/usr/bin/google-chrome";
         } else if (Platform.getCurrent().is(Platform.MAC)) {
@@ -156,7 +159,7 @@ public class ChromeBinary {
   /**
    * Returns null if couldn't read value from registry
    */
-  protected static final String getWindowsBinaryLocation() {
+  protected static final String getWindowsBinaryLocationFromRegistry() {
     //TODO: Promote org.openqa.selenium.server.browserlaunchers.WindowsUtils
     //to common and reuse that to read the registry
     if (!Platform.WINDOWS.is(Platform.getCurrent())) {
@@ -181,5 +184,18 @@ public class ChromeBinary {
       //Drop through to return null
     }
     return null;
+  }
+  
+  protected static final String getDefaultWindowsBinaryLocation() {
+    StringBuilder path = new StringBuilder();
+    path.append(System.getProperty("user.home"));
+    //XXX: Not localised for other languages
+    if (Platform.VISTA.is(Platform.getCurrent())) {
+      path.append("\\AppData\\Local");
+    } else if (Platform.XP.is(Platform.getCurrent())) {
+      path.append("\\Local Settings\\Application Data");
+    }
+    path.append("\\Google\\Chrome\\Application\\chrome.exe");
+    return path.toString();
   }
 }

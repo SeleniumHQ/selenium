@@ -54,7 +54,7 @@ public enum Platform {
   /**
    * For versions of Windows that "feel like" Windows Vista.
    */
-  VISTA("windows vista", "Windows Server 2008") {
+  VISTA("windows vista", "Windows Server 2008", "windows 7") {
     @Override
     public boolean is(Platform compareWith) {
       return compareWith == WINDOWS || compareWith == VISTA;
