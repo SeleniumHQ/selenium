@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
+using Microsoft.Win32;
 
 namespace OpenQA.Selenium.Chrome
 {
@@ -23,6 +24,7 @@ namespace OpenQA.Selenium.Chrome
         private ChromeProfile profile;
         private ChromeExtension extension;
         private Process chromeProcess;
+        private static string chromeFile = string.Empty;
 
         /// <summary>
         /// Initializes a new instance of the ChromeBinary class using the given <see cref="ChromeProfile"/> and <see cref="extension"/>.
@@ -99,52 +101,84 @@ namespace OpenQA.Selenium.Chrome
         /// <returns>chrome.exe path</returns>
         private static string GetChromeFile()
         {
-            string chromeFile = string.Empty;
-            string chromeFileSystemProperty = Environment.GetEnvironmentVariable("webdriver.chrome.bin");
-            if (chromeFileSystemProperty != null)
+            if (!IsChromeBinaryLocationKnown())
             {
-                chromeFile = chromeFileSystemProperty;
-            }
-            else
-            {
-                if (Platform.CurrentPlatform.IsPlatformType(PlatformType.XP))
+                string chromeFileSystemProperty = Environment.GetEnvironmentVariable("webdriver.chrome.bin");
+                if (chromeFileSystemProperty != null)
                 {
-                    chromeFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Google\\Chrome\\Application\\chrome.exe");
-                }
-                else if (Platform.CurrentPlatform.IsPlatformType(PlatformType.Vista))
-                {
-                    chromeFile = Path.Combine(Path.GetTempPath(), "..\\Google\\Chrome\\Application\\chrome.exe");
-                }
-                else if (Platform.CurrentPlatform.IsPlatformType(PlatformType.Unix))
-                {
-                    // Thanks to a bug in Mono Mac and Linux will be treated the same  https://bugzilla.novell.com/show_bug.cgi?id=515570 but adding this in case
-                    string chromeFileString = string.Empty;
-                    bool foundPath = false;
-                    foreach (string path in chromePaths)
-                    {
-                        FileInfo binary = new FileInfo(path);
-                        if (binary.Exists)
-                        {
-                            chromeFileString = binary.FullName;
-                            foundPath = true;
-                            break;
-                        }
-                    }
-
-                    if (!foundPath)
-                    {
-                        throw new WebDriverException("Couldn't locate Chrome. Set webdriver.chrome.bin");
-                    }
-
-                    chromeFile = chromeFileString;
+                    chromeFile = chromeFileSystemProperty;
                 }
                 else
                 {
-                    throw new WebDriverException("Unsupported operating system. Could not locate Chrome.  Set webdriver.chrome.bin");
+                    if (Platform.CurrentPlatform.IsPlatformType(PlatformType.XP) || Platform.CurrentPlatform.IsPlatformType(PlatformType.Vista))
+                    {
+                        try
+                        {
+                            chromeFile = ChromePathFromRegistry;
+
+                        }
+                        catch (NullReferenceException)
+                        {
+                            if (Platform.CurrentPlatform.IsPlatformType(PlatformType.XP))
+                            {
+                                chromeFile =
+                                    Path.Combine(
+                                        Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                                        "Google\\Chrome\\Application\\chrome.exe");
+                            }else
+                            {
+                                chromeFile = Path.Combine(Path.GetTempPath(),
+                                                          "..\\Google\\Chrome\\Application\\chrome.exe");
+                            }
+                        }
+                    }
+                    else if (Platform.CurrentPlatform.IsPlatformType(PlatformType.Unix))
+                    {
+                        // Thanks to a bug in Mono Mac and Linux will be treated the same  https://bugzilla.novell.com/show_bug.cgi?id=515570 but adding this in case
+                        string chromeFileString = string.Empty;
+                        bool foundPath = false;
+                        foreach (string path in chromePaths)
+                        {
+                            FileInfo binary = new FileInfo(path);
+                            if (binary.Exists)
+                            {
+                                chromeFileString = binary.FullName;
+                                foundPath = true;
+                                break;
+                            }
+                        }
+
+                        if (!foundPath)
+                        {
+                            throw new WebDriverException("Couldn't locate Chrome. Set webdriver.chrome.bin");
+                        }
+
+                        chromeFile = chromeFileString;
+                    }
+                    else
+                    {
+                        throw new WebDriverException(
+                            "Unsupported operating system. Could not locate Chrome.  Set webdriver.chrome.bin");
+                    }
                 }
             }
 
             return chromeFile;
+        }
+
+        private static bool IsChromeBinaryLocationKnown()
+        {
+            return !string.IsNullOrEmpty(chromeFile) && File.Exists(chromeFile);
+        }
+
+        private static string ChromePathFromRegistry
+        {
+            get
+            {
+                return Registry.LocalMachine.OpenSubKey(
+                                    "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths\\chrome.exe").
+                                    ToString();
+            }
         }
     }
 }
