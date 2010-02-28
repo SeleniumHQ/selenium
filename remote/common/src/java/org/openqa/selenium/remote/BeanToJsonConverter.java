@@ -89,7 +89,7 @@ public class BeanToJsonConverter {
 
   private Map<String, Object> convertJsonObject(JSONObject jsonObject) {
     Map<String, Object> toReturn = new HashMap<String, Object>();
-    Iterator allKeys = jsonObject.keys();
+    Iterator<?> allKeys = jsonObject.keys();
     while (allKeys.hasNext()) {
       String key = (String) allKeys.next();
 

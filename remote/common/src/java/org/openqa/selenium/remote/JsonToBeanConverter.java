@@ -156,7 +156,7 @@ public class JsonToBeanConverter {
   }
 
   private boolean isEnum(Class<?> clazz, Object text) {
-    return clazz.isEnum() || text instanceof Enum;
+    return clazz.isEnum() || text instanceof Enum<?>;
   }
 
   private Object convert(Object toConvert) throws Exception {

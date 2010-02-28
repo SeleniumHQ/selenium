@@ -22,8 +22,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.io.IOException;
-import java.nio.charset.Charset;
-import java.util.Arrays;
 
 /**
  * Captures the last N bytes of output.

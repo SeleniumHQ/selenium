@@ -1,7 +1,6 @@
 package org.openqa.selenium.server.commands;
 
 import java.util.Map;
-import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class AddCustomRequestHeaderCommand extends Command {

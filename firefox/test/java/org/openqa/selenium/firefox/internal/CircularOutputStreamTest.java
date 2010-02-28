@@ -20,7 +20,6 @@ package org.openqa.selenium.firefox.internal;
 
 import junit.framework.TestCase;
 
-import java.nio.charset.Charset;
 import java.io.PrintStream;
 import java.io.ByteArrayOutputStream;
 

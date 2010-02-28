@@ -17,7 +17,6 @@ limitations under the License.
 
 package org.openqa.selenium;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import static org.openqa.selenium.Ignore.Driver.IE;

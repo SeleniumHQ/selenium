@@ -6,7 +6,6 @@ import static org.hamcrest.Matchers.containsString;
 import junit.framework.TestCase;
 
 import org.openqa.selenium.Proxy;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.Proxy.ProxyType;
 
 import java.io.IOException;

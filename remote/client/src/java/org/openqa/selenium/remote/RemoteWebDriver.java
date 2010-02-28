@@ -383,7 +383,6 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     return toReturn;
   }
 
-  @SuppressWarnings({"unchecked"})
   protected Response execute(DriverCommand driverCommand, Object... parameters) {
     Command command = new Command(sessionId, new Context("foo"), driverCommand, parameters);
 

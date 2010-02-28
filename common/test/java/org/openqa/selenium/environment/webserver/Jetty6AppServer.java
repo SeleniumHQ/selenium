@@ -244,7 +244,7 @@ public class Jetty6AppServer implements AppServer {
     }
   }
 
-  public void addFilter(Class filter, String path, int dispatches) {
+  public void addFilter(Class<?> filter, String path, int dispatches) {
     context.addFilter(filter, path, dispatches);
   }
 

@@ -76,7 +76,6 @@ public class MacProxyManager {
     }
     
     /** change the network settings to enable use of our proxy */
-    @SuppressWarnings("unused")
     public void changeNetworkSettings() throws IOException {
         if (networkService == null) {
             getCurrentNetworkSettings();
@@ -358,7 +357,6 @@ public class MacProxyManager {
     /** Copy OS X network settings into Java's per-user persistent preference store 
      * @see Preferences
      * */
-    @SuppressWarnings("unused")
     public void backupNetworkSettings() throws IOException {
         // Don't clobber our old backup if we 
         // never got the chance to restore for some reason 

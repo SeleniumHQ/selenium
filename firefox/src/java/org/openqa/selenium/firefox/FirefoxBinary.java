@@ -46,7 +46,6 @@ public class FirefoxBinary {
   private long timeout = SECONDS.toMillis(45);
   private OutputStream stream;
   private Thread outputWatcher;
-  private FirefoxProfile profile;
 
   public FirefoxBinary() {
     this(null);

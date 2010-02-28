@@ -24,7 +24,6 @@ import static org.openqa.selenium.Ignore.Driver.REMOTE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 
 import java.util.List;
-import org.junit.Test;
 
 public class SvgElementTest extends AbstractDriverTestCase {
 

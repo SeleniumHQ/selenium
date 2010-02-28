@@ -17,19 +17,12 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server;
 
-import junit.framework.TestCase;
-
-import org.openqa.selenium.environment.webserver.AppServer;
-import org.openqa.selenium.environment.webserver.Jetty6AppServer;
-import org.openqa.selenium.remote.server.DriverServlet;
 import org.openqa.selenium.remote.ScreenshotException;
 import org.openqa.selenium.AbstractDriverTestCase;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.JavascriptEnabled;
 import org.openqa.selenium.JavascriptExecutor;
-
-import java.io.File;
 
 public class RemoteWebDriverTest extends AbstractDriverTestCase {
   public void testShouldBeAbleToGrabASnapshotOnException() {

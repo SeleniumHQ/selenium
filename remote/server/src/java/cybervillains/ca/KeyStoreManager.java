@@ -421,7 +421,6 @@ public class KeyStoreManager {
 	 * @return
 	 * @throws KeyStoreException
 	 */
-	@SuppressWarnings("unused")
     public synchronized X509Certificate getSigningCert() throws KeyStoreException {
 		return _caCert;
 	}
@@ -433,7 +432,6 @@ public class KeyStoreManager {
 	 * @throws NoSuchAlgorithmException
 	 * @throws UnrecoverableKeyException
 	 */
-	@SuppressWarnings("unused")
     public synchronized PrivateKey getSigningPrivateKey() throws KeyStoreException, NoSuchAlgorithmException, UnrecoverableKeyException {
 		return _caPrivKey;
 	}

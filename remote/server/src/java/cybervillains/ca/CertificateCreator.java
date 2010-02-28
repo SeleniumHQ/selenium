@@ -111,7 +111,7 @@ public class CertificateCreator {
 	 * @throws NoSuchAlgorithmException
 	 * @throws NoSuchProviderException
 	 */
-	@SuppressWarnings({ "deprecation", "unused" })
+	@SuppressWarnings("deprecation")
     public static X509Certificate generateStdSSLServerCertificate(
 			final PublicKey newPubKey,
 			final X509Certificate caCert,

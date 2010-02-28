@@ -72,9 +72,8 @@ public class FileHandlerTest extends TestCase {
     ZipEntry entry = new ZipEntry(testFile.getName());
     out.putNextEntry(entry);
     FileInputStream in = new FileInputStream(testFile);
-    int len;
     byte[] buffer = new byte[16384];
-    while ((len = in.read(buffer, 0, 16384)) != -1) {
+    while (in.read(buffer, 0, 16384) != -1) {
       out.write(buffer);
     }
     out.flush();
