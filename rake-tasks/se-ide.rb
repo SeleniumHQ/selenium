@@ -12,6 +12,7 @@ namespace :se_ide do
       # and now the script dir
       ln_s Dir.glob(base_ide_dir + "/common/src/js/core/scripts/*").select { |fn| fn != base_ide_dir + "/common/src/js/core/scripts/selenium-testrunner.js"},
            "ide/src/extension/content/selenium/scripts"
+      mkdir "ide/src/extension/content-files"
       ln_s Dir.glob(base_ide_dir + "/common/src/js/core/scripts/selenium-testrunner.js"), "ide/src/extension/content-files"
     elsif windows?
       # the files in core -- except for the scripts directory which already exists in the target
@@ -74,9 +75,9 @@ namespace :se_ide do
         end
       end
       listoffiles.close()
-	rm base_ide_dir + "/proxy_files.txt"
+      rm base_ide_dir + "/proxy_files.txt"
     end
-    
+    rmdir "ide/src/extension/content-files"
     rm "ide/src/extension/components/SeleniumIDEGenericAutoCompleteSearch.xpt"
   end
 end
