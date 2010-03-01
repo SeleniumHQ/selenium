@@ -40,7 +40,7 @@ function joinExpression(expression) {
 }
 
 function assignToVariable(type, variable, expression) {
-    return variable + " = " + expression.toString();
+    return "$" + variable + " = " + expression.toString();
 }
 function waitFor(expression) {
     return "for ($second = 0; ; $second++) {\n" +
@@ -61,51 +61,51 @@ function assertOrVerifyFailure(line, isAssert) {
         line + "\n" +
         failStatement + "\n" +
         "} catch (Exception $e) {}\n";
-}
+};
 
 Equals.prototype.toString = function() {
     return this.e1.toString() + " == " + this.e2.toString();
-}
+};
 
 Equals.prototype.assert = function() {
     return "$this->assertEquals(" + this.e1.toString() + ", " + this.e2.toString() + ");";
-}
+};
 
 Equals.prototype.verify = function() {
     return verify(this.assert());
-}
+};
 
 NotEquals.prototype.toString = function() {
     return this.e1.toString() + " != " + this.e2.toString();
-}
+};
 
 NotEquals.prototype.assert = function() {
     return "$this->assertNotEquals(" + this.e1.toString() + ", " + this.e2.toString() + ");";
-}
+};
 
 NotEquals.prototype.verify = function() {
     return verify(this.assert());
-}
+};
 
 RegexpMatch.prototype.toString = function() {
   return "(bool)preg_match(/" + this.pattern.replace(/\//g, "\\/") + "/," + this.expression + ");";
-}
+};
 
 RegexpNotMatch.prototype.toString = function() {
     return "(bool)preg_match(/" + this.pattern.replace(/\//g, "\\/") + "/," + this.expression + ");";
-}
+};
 
 function pause(milliseconds) {
     return "sleep(" + (parseInt(milliseconds) / 1000) + ");";
-}
+};
 
 function echo(message) {
-    return "print(" + xlateArgument(message) + ' . "\\n");'
-}
+    return "print(" + xlateArgument(message) + ' . "\\n");';
+};
 
 function statement(expression) {
     return expression.toString() + ';';
-}
+};
 
 function array(value) {
     var str = 'array(';
@@ -115,11 +115,11 @@ function array(value) {
     }
     str += ')';
     return str;
-}
+};
 
 function nonBreakingSpace() {
     return "\"\\xa0\"";
-}
+};
 
 CallSelenium.prototype.toString = function() {
     var result = '';
@@ -139,7 +139,7 @@ CallSelenium.prototype.toString = function() {
     }
     result += ')';
     return result;
-}
+};
 
 function formatComment(comment) {
     return comment.comment.replace(/.+/mg, function(str) {
@@ -157,13 +157,13 @@ this.options = {
         '\n' +
         'class Example extends PHPUnit_Extensions_SeleniumTestCase\n' +
         '{\n' +
-        '  function setUp()\n' +
+        '  protected function setUp()\n' +
         '  {\n' +
         '    ${receiver}->setBrowser("${environment}");\n' +
         '    ${receiver}->setBrowserUrl("${baseURL}");\n' +
         '  }\n' +
         '\n' +
-        '  function testMyTestCase()\n' +
+        '  public function testMyTestCase()\n' +
         '  {\n',
 
     footer:
