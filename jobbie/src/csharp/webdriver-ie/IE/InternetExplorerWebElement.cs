@@ -260,7 +260,8 @@ namespace OpenQA.Selenium.IE
         public string GetAttribute(string attributeName)
         {
             SafeStringWrapperHandle stringHandle = new SafeStringWrapperHandle();
-            WebDriverResult result = NativeMethods.wdeGetAttribute(elementHandle, attributeName, ref stringHandle);
+            SafeInternetExplorerDriverHandle driverHandle = driver.GetUnderlayingHandle();
+            WebDriverResult result = NativeMethods.wdeGetAttribute(driverHandle, elementHandle, attributeName, ref stringHandle);
             ResultHandler.VerifyResultCode(result, string.Format(CultureInfo.InvariantCulture, "getting attribute '{0}' of the element", attributeName));
             string returnValue = null;
             using (StringWrapper wrapper = new StringWrapper(stringHandle))

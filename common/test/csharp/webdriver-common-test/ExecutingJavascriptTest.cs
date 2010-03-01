@@ -10,8 +10,8 @@ namespace OpenQA.Selenium
     public class ExecutingJavascriptTest : DriverTestFixture
     {
 
-        [Category("Javascript")]
         [Test]
+        [Category("Javascript")]
         public void ShouldBeAbleToExecuteSimpleJavascriptAndReturnAString()
         {
             if (!(driver is IJavaScriptExecutor))
@@ -25,8 +25,8 @@ namespace OpenQA.Selenium
             Assert.AreEqual("XHTML Test Page", result);
         }
 
-        [Category("Javascript")]
         [Test]
+        [Category("Javascript")]
         public void ShouldBeAbleToExecuteSimpleJavascriptAndReturnALong()
         {
             if (!(driver is IJavaScriptExecutor))
@@ -40,8 +40,8 @@ namespace OpenQA.Selenium
             Assert.AreEqual((long)"XHTML Test Page".Length, (long)result);
         }
 
-        [Category("Javascript")]
         [Test]
+        [Category("Javascript")]
         public void ShouldBeAbleToExecuteSimpleJavascriptAndReturnAWebElement()
         {
             if (!(driver is IJavaScriptExecutor))
@@ -55,8 +55,8 @@ namespace OpenQA.Selenium
             Assert.IsTrue(result is IWebElement);
         }
 
-        [Category("Javascript")]
         [Test]
+        [Category("Javascript")]
         public void ShouldBeAbleToExecuteSimpleJavascriptAndReturnABoolean()
         {
             if (!(driver is IJavaScriptExecutor))
@@ -73,7 +73,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.IE, "IE driver returns code 4 for arrays, which conflicts with the code for IWebElement return values.")]
         public void ShouldBeAbleToExecuteSimpleJavascriptAndReturnAnArray()
         {
             if (!(driver is IJavaScriptExecutor))
@@ -150,9 +149,9 @@ namespace OpenQA.Selenium
             Assert.AreEqual((double)expectedResult, result);
         }
 
+        [Test]
         [Category("Javascript")]
         [ExpectedException(typeof(InvalidOperationException))]
-        [Test]
         public void ShouldThrowAnExceptionWhenTheJavascriptIsBad()
         {
             if (!(driver is IJavaScriptExecutor))
@@ -501,7 +500,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.IE, "IE driver returns code 4 for arrays, which conflicts with the code for single IWebElement return values.")]
         [IgnoreBrowser(Browser.Chrome)]
         [IgnoreBrowser(Browser.IPhone)]
         public void ShouldBeAbleToExecuteScriptAndReturnElementsList()

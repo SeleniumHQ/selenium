@@ -23,7 +23,7 @@ namespace OpenQA.Selenium.IE
         internal static extern WebDriverResult wdFreeScriptArgs(IntPtr scriptArgs);
 
         [DllImport("InternetExplorerDriver")]
-        internal static extern WebDriverResult wdFreeScriptResult(IntPtr scriptArgs);
+        internal static extern WebDriverResult wdFreeScriptResult(IntPtr scriptResult);
         #endregion
 
         #region WebDriver functions
@@ -96,7 +96,7 @@ namespace OpenQA.Selenium.IE
         internal static extern WebDriverResult wdeClick(SafeInternetExplorerWebElementHandle wrapper);
 
         [DllImport("InternetExplorerDriver", CharSet = CharSet.Unicode)]
-        internal static extern WebDriverResult wdeGetAttribute(SafeInternetExplorerWebElementHandle wrapper, [MarshalAs(UnmanagedType.LPWStr)] string attributeName, ref SafeStringWrapperHandle result);
+        internal static extern WebDriverResult wdeGetAttribute(SafeInternetExplorerDriverHandle driver, SafeInternetExplorerWebElementHandle wrapper, [MarshalAs(UnmanagedType.LPWStr)] string attributeName, ref SafeStringWrapperHandle result);
 
         [DllImport("InternetExplorerDriver")]
         internal static extern WebDriverResult wdeGetValueOfCssProperty(SafeInternetExplorerWebElementHandle handle, [MarshalAs(UnmanagedType.LPWStr)] string attributeName, ref SafeStringWrapperHandle result);
@@ -208,7 +208,7 @@ namespace OpenQA.Selenium.IE
         internal static extern WebDriverResult wdExecuteScript(SafeInternetExplorerDriverHandle driver, string script, SafeScriptArgsHandle scriptArgs, ref SafeScriptResultHandle scriptRes);
 
         [DllImport("InternetExplorerDriver")]
-        internal static extern WebDriverResult wdGetScriptResultType(SafeScriptResultHandle scriptResult, out int type);
+        internal static extern WebDriverResult wdGetScriptResultType(SafeInternetExplorerDriverHandle driver, SafeScriptResultHandle scriptResult, out int type);
 
         [DllImport("InternetExplorerDriver", CharSet = CharSet.Unicode)]
         internal static extern WebDriverResult wdGetStringScriptResult(SafeScriptResultHandle scriptResult, ref SafeStringWrapperHandle resultString);
@@ -224,6 +224,12 @@ namespace OpenQA.Selenium.IE
 
         [DllImport("InternetExplorerDriver")]
         internal static extern WebDriverResult wdGetElementScriptResult(SafeScriptResultHandle scriptResult, SafeInternetExplorerDriverHandle driver, out SafeInternetExplorerWebElementHandle value);
+
+        [DllImport("InternetExplorerDriver")]
+        internal static extern WebDriverResult wdGetArrayLengthScriptResult(SafeInternetExplorerDriverHandle driver, SafeScriptResultHandle scriptResult, out int arrayLength);
+
+        [DllImport("InternetExplorerDriver")]
+        internal static extern WebDriverResult wdGetArrayItemFromScriptResult(SafeInternetExplorerDriverHandle driver, SafeScriptResultHandle scriptResult, int itemIndex, out SafeScriptResultHandle item); 
         #endregion
 
         #region Element collection functions
