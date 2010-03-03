@@ -174,28 +174,28 @@ function Message(key, arg) {
 }
 
 var ExtensionsLoader = {
-	getURLs: function(commaSeparatedPaths) {
-		var urls = [];
-		if (commaSeparatedPaths) {
-			commaSeparatedPaths.split(/,/).forEach(function(path) {
-					path = path.replace(/^\s*/, '');
-					path = path.replace(/\s*$/, '');
-					if (!path.match(/^(file|chrome):/)) {
-						path = FileUtils.fileURI(FileUtils.getFile(path));
-					}
-					urls.push(path);
-				});
-		}
-		return urls;
-	},
-	
-	loadSubScript: function(loader, paths, obj) {
-		this.getURLs(paths).forEach(function(url) {
-				if (url) {
-					loader.loadSubScript(url, obj);
-				}
-			});
-	}
+  getURLs: function(commaSeparatedPaths) {
+    var urls = [];
+    if (commaSeparatedPaths) {
+      commaSeparatedPaths.split(/,/).forEach(function(path) {
+          path = path.replace(/^\s*/, '');
+          path = path.replace(/\s*$/, '');
+          if (!path.match(/^(file|chrome):/)) {
+            path = FileUtils.fileURI(FileUtils.getFile(path));
+          }
+          urls.push(path);
+        });
+    }
+    return urls;
+  },
+  
+  loadSubScript: function(loader, paths, obj) {
+    this.getURLs(paths).forEach(function(url) {
+        if (url) {
+          loader.loadSubScript(url, obj);
+        }
+      });
+  }
 };
 
 /**
