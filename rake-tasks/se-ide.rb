@@ -10,7 +10,7 @@ namespace :se_ide do
       ln_s Dir.glob(base_ide_dir + "/common/src/js/core/*").select { |fn| fn != base_ide_dir + "/common/src/js/core/scripts" },
            "ide/src/extension/content/selenium"
       # and now the script dir
-      ln_s Dir.glob(base_ide_dir + "/common/src/js/core/scripts/*").select { |fn| fn != base_ide_dir + "/common/src/js/core/scripts/selenium-testrunner.js"},
+      ln_s Dir.glob(base_ide_dir + "/common/src/js/core/scripts/*").select { |fn| not [base_ide_dir + "/common/src/js/core/scripts/selenium-testrunner.js", base_ide_dir + "/common/src/js/core/scripts/user-extensions.js"].include?(fn)},
            "ide/src/extension/content/selenium/scripts"
       mkdir "ide/src/extension/content-files"
       ln_s Dir.glob(base_ide_dir + "/common/src/js/core/scripts/selenium-testrunner.js"), "ide/src/extension/content-files"
@@ -23,7 +23,7 @@ namespace :se_ide do
       end
 
       # and now the script dir
-      f = Dir.glob(base_ide_dir + "/common/src/js/core/scripts/*").select { |fn| fn != base_ide_dir + "/common/src/js/core/scripts/selenium-testrunner.js"}
+      f = Dir.glob(base_ide_dir + "/common/src/js/core/scripts/*").select { |fn| not [base_ide_dir + "/common/src/js/core/scripts/selenium-testrunner.js", base_ide_dir + "/common/src/js/core/scripts/user-extensions.js"].include?(fn)},
       f.each do |c|
         files << c.gsub(base_ide_dir + "/common/src/js/core/scripts", "ide/src/extension/content/selenium/scripts")
         cp c, "ide/src/extension/content/selenium/scripts"
@@ -34,6 +34,14 @@ namespace :se_ide do
       f = Dir.glob(base_ide_dir + "/common/src/js/core/scripts/selenium-testrunner.js")
       f.each do |c|
         files << base_ide_dir + "ide/src/extension/content-files/selenium-testrunner.js"
+        cp c, "ide/src/extension/content-files"
+      end
+
+      # no, really, this lis lastly; user-extensions.js
+      mkdir "ide/src/extension/content-files"
+      f = Dir.glob(base_ide_dir + "/common/src/js/core/scripts/user-extensions.js")
+      f.each do |c|
+        files << base_ide_dir + "ide/src/extension/content-files/user-extensions.js"
         cp c, "ide/src/extension/content-files"
       end
     end
