@@ -13,6 +13,7 @@ require 'rake-tasks/selenium'
 require 'rake-tasks/mozilla'
 require 'rake-tasks/ruby'
 require 'rake-tasks/se-ide'
+require 'rake-tasks/ie_code_generator'
 
 version = "2.0a2"
 
@@ -242,11 +243,27 @@ task :dotnet => [ :'build/x64/Release/webdriver-ie-test.dll', :'build/Win32/Rele
                   :'build/x64/Release/Webdriver.Common.dll', :'build/Win32/Release/Webdriver.Common.dll',
                   :ie_win32_dll, :ie_x64_dll ]
 
+# Generate a C++ Header file for mapping between magic numbers and #defines
+# in the C++ code.
+ie_generate_type_mapping(:name => "ie_result_type_cpp",
+                         :src => "jobbie/src/common/result_types.txt",
+                         :type => "cpp",
+                         :out => "cpp/InternetExplorerDriver/IEReturnTypes.h")
+
+# Generate a Java class for mapping between magic numbers and Java static
+# class members describing them.
+ie_generate_type_mapping(:name => "ie_result_type_java",
+                         :src => "jobbie/src/common/result_types.txt",
+                         :type => "java",
+                         :out => "java/org/openqa/selenium/ie/IeReturnTypes.java")
+
 java_jar(:name => "webdriver-ie",
     :srcs  => [ "jobbie/src/java/**/*.java" ],
     :deps => [
                :'webdriver-common',
-               "jobbie/lib/runtime/*.jar"
+               "jobbie/lib/runtime/*.jar",
+               :ie_result_type_java,
+               :ie_result_type_cpp
              ],
     :resources => [
                {:ie_win32_dll => "x86/InternetExplorerDriver.dll"},
@@ -759,3 +776,4 @@ task :'selenium-java_zip' do
   mv "#{temp}/selenium-java.jar", "#{temp}/selenium-java-#{version}.jar"
   sh "cd #{temp} && jar cMf ../selenium-java.zip *", :verbose => false
 end
+

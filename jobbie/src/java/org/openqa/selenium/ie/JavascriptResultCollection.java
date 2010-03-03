@@ -26,6 +26,7 @@ import com.sun.jna.ptr.NativeLongByReference;
 import com.sun.jna.ptr.PointerByReference;
 
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.ie.IeReturnTypes;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -79,52 +80,52 @@ public class JavascriptResultCollection {
     try {
       Object toReturn;
       switch (type.getValue()) {
-        case 1: // String
+        case IeReturnTypes.STRING: // String
           PointerByReference wrapper = new PointerByReference();
           result = lib.wdGetStringScriptResult(scriptResult, wrapper);
           errors.verifyErrorCode(result, "Cannot extract string result");
           toReturn = new StringWrapper(lib, wrapper).toString();
           break;
 
-        case 2: // Long
+        case IeReturnTypes.LONG: // Long
           NativeLongByReference value = new NativeLongByReference();
           result = lib.wdGetNumberScriptResult(scriptResult, value);
           errors.verifyErrorCode(result, "Cannot extract number result");
           toReturn = value.getValue().longValue();
           break;
 
-        case 3: // Boolean
+        case IeReturnTypes.BOOLEAN: // Boolean
           IntByReference boolVal = new IntByReference();
           result = lib.wdGetBooleanScriptResult(scriptResult, boolVal);
           errors.verifyErrorCode(result, "Cannot extract boolean result");
           toReturn = boolVal.getValue() == 1 ? Boolean.TRUE : Boolean.FALSE;
           break;
 
-        case 4: // WebElement
+        case IeReturnTypes.ELEMENT: // WebElement
           PointerByReference element = new PointerByReference();
           result = lib.wdGetElementScriptResult(scriptResult, driver, element);
           errors.verifyErrorCode(result, "Cannot extract element result");
           toReturn = new InternetExplorerElement(lib, parent, element.getValue());
           break;
 
-        case 5: // Nothing
+        case IeReturnTypes.EMPTY: // Nothing
           toReturn = null;
           break;
 
-        case 6: // An exception
+        case IeReturnTypes.EXCEPTION: // An exception
           PointerByReference message = new PointerByReference();
           result = lib.wdGetStringScriptResult(scriptResult, message);
           errors.verifyErrorCode(result, "Cannot extract string result");
           throw new WebDriverException(new StringWrapper(lib, message).toString());
 
-        case 7: // Double
+        case IeReturnTypes.DOUBLE: // Double
           DoubleByReference doubleVal = new DoubleByReference();
           result = lib.wdGetDoubleScriptResult(scriptResult, doubleVal);
           errors.verifyErrorCode(result, "Cannot extract double result");
           toReturn = doubleVal.getValue();
           break;
           
-        case 8: // Array
+        case IeReturnTypes.ARRAY: // Array
           IntByReference arrayLength = new IntByReference();
           result = lib.wdGetArrayLengthScriptResult(
               driver, scriptResult, arrayLength);

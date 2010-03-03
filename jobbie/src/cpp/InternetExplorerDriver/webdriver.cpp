@@ -24,6 +24,7 @@ limitations under the License.
 #include "jsxpath.h"
 #include "cookies.h"
 #include "utils.h"
+#include "IEReturnTypes.h"
 #include <stdio.h>
 #include <iostream>
 #include <string>
@@ -650,7 +651,7 @@ int wdeGetAttribute(WebDriver* driver, WebElement* element, const wchar_t* name,
 
 		int type;
 		wdGetScriptResultType(driver, scriptResult, &type);
-		if (type != 5) {
+		if (type != TYPE_EMPTY) {
 			const std::wstring originalString(bstr2cw(scriptResult->result.bstrVal));
 			size_t length = originalString.length() + 1;
 			wchar_t* toReturn = new wchar_t[length];
@@ -1210,7 +1211,7 @@ int wdFindElementByXPath(WebDriver* driver, WebElement* element, const wchar_t* 
 		if (result == SUCCESS) {
 			int type = 0;
 			result = wdGetScriptResultType(driver, queryResult, &type);
-			if (type != 5) {
+			if (type != TYPE_EMPTY) {
 				result = wdGetElementScriptResult(queryResult, driver, out);
 			} else {
 				result = ENOSUCHELEMENT;
@@ -1434,16 +1435,16 @@ int wdGetScriptResultType(WebDriver* driver, ScriptResult* result, int* type)
 
 	switch (result->result.vt) {
 		case VT_BSTR:
-			*type = 1;
+			*type = TYPE_STRING;
 			break;
 
 		case VT_I4:
 		case VT_I8:
-			*type = 2;
+			*type = TYPE_LONG;
 			break;
 
 		case VT_BOOL:
-			*type = 3;
+			*type = TYPE_BOOLEAN;
 			break;
 
 		case VT_DISPATCH:
@@ -1457,24 +1458,24 @@ int wdGetScriptResultType(WebDriver* driver, ScriptResult* result, int* type)
 			  // indicate the driver that this is ultimately an array.
 			  if ((itemTypeStr == "JavascriptArray") ||
 			      (itemTypeStr == "HtmlCollection")) {
-			    *type = 8;
+			    *type = TYPE_ARRAY;
 			  } else {
-			    *type = 4;
+			    *type = TYPE_ELEMENT;
 			  }
 			}
 			break;
 
 		case VT_EMPTY:
-			*type = 5;
+			*type = TYPE_EMPTY;
 			break;
 
 		case VT_USERDEFINED:
-			*type = 6;
+			*type = TYPE_EXCEPTION;
 			break;
 
 		case VT_R4:
 		case VT_R8:
-			*type = 7;
+			*type = TYPE_DOUBLE;
 			break;
 
 		default:
