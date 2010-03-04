@@ -951,7 +951,7 @@ Selenium.prototype.doOpen = function(url, ignoreResponseCode) {
    *
    */
     if (ignoreResponseCode == null) {
-        this.browserbot.ignoreResponseCode = false;
+        this.browserbot.ignoreResponseCode = true;
     } else if (ignoreResponseCode.toLowerCase() == "true") {
         this.browserbot.ignoreResponseCode = true;
     } else {
