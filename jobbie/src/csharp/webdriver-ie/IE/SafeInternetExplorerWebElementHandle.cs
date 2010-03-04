@@ -25,7 +25,7 @@ namespace OpenQA.Selenium.IE
         {
             // The reference implementation (Java) ignores return codes
             // from this function call, so we will too.
-            NativeMethods.wdeFreeElement(handle);
+            NativeDriverLibrary.Instance.FreeElement(handle);
             return true;
         }
     }

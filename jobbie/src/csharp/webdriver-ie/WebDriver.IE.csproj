@@ -61,9 +61,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="IE\NativeDriverLibrary.cs" />
+    <Compile Include="IE\NativeMethods.cs" />
     <Compile Include="IE\SafeScriptResultHandle.cs" />
     <Compile Include="IE\InternetExplorerWebElementCollection.cs" />
-    <Compile Include="IE\NativeMethods.cs" />
     <Compile Include="IE\ResultHandler.cs" />
     <Compile Include="IE\SafeScriptArgsHandle.cs" />
     <Compile Include="IE\SafeStringCollectionHandle.cs" />

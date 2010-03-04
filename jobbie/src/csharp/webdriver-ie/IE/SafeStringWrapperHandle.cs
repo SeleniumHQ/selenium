@@ -27,7 +27,7 @@ namespace OpenQA.Selenium.IE
             // from this function call, so we will too.
             if (!IsInvalid)
             {
-                NativeMethods.wdFreeString(handle);
+                NativeDriverLibrary.Instance.FreeString(handle);
             }
 
             return true;

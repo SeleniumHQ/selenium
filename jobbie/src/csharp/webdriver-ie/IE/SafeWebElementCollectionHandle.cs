@@ -40,7 +40,7 @@ namespace OpenQA.Selenium.IE
                 freeElementsArgument = 1;
             }
 
-            NativeMethods.wdFreeElementCollection(handle, freeElementsArgument);
+            NativeDriverLibrary.Instance.FreeElementCollection(handle, freeElementsArgument);
             return true;
         }
     }

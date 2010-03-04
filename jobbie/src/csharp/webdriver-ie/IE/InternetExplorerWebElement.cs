@@ -50,7 +50,7 @@ namespace OpenQA.Selenium.IE
             get
             {
                 SafeStringWrapperHandle stringHandle = new SafeStringWrapperHandle();
-                WebDriverResult result = NativeMethods.wdeGetText(elementHandle, ref stringHandle);
+                WebDriverResult result = NativeDriverLibrary.Instance.GetElementText(elementHandle, ref stringHandle);
                 ResultHandler.VerifyResultCode(result, "get the Text property");
                 string returnValue = string.Empty;
                 using (StringWrapper wrapper = new StringWrapper(stringHandle))
@@ -71,7 +71,7 @@ namespace OpenQA.Selenium.IE
             get
             {
                 SafeStringWrapperHandle stringHandle = new SafeStringWrapperHandle();
-                WebDriverResult result = NativeMethods.wdeGetTagName(elementHandle, ref stringHandle);
+                WebDriverResult result = NativeDriverLibrary.Instance.GetElementTagName(elementHandle, ref stringHandle);
                 ResultHandler.VerifyResultCode(result, "get the Value property");
                 string returnValue = string.Empty;
                 using (StringWrapper wrapper = new StringWrapper(stringHandle))
@@ -92,7 +92,7 @@ namespace OpenQA.Selenium.IE
             get
             {
                 int enabled = 0;
-                WebDriverResult result = NativeMethods.wdeIsEnabled(elementHandle, ref enabled);
+                WebDriverResult result = NativeDriverLibrary.Instance.IsElementEnabled(elementHandle, ref enabled);
                 ResultHandler.VerifyResultCode(result, "get the Enabled property");
                 return enabled == 1;
             }
@@ -114,7 +114,7 @@ namespace OpenQA.Selenium.IE
             get
             {
                 int selected = 0;
-                WebDriverResult result = NativeMethods.wdeIsSelected(elementHandle, ref selected);
+                WebDriverResult result = NativeDriverLibrary.Instance.IsElementSelected(elementHandle, ref selected);
                 ResultHandler.VerifyResultCode(result, "Checking if element is selected");
                 return selected == 1;
             }
@@ -134,7 +134,7 @@ namespace OpenQA.Selenium.IE
                 int height = 0;
                 IntPtr hwnd = IntPtr.Zero;
 
-                WebDriverResult result = NativeMethods.wdeGetDetailsOnceScrolledOnToScreen(elementHandle, ref hwnd, ref x, ref y, ref width, ref height);
+                WebDriverResult result = NativeDriverLibrary.Instance.GetElementDetailsOnceScrolledOnToScreen(elementHandle, ref hwnd, ref x, ref y, ref width, ref height);
                 ResultHandler.VerifyResultCode(result, "get the location once scrolled onto the screen");
                 location = new Point(x, y);
                 return location;
@@ -151,7 +151,7 @@ namespace OpenQA.Selenium.IE
                 Point elementLocation = Point.Empty;
                 int x = 0;
                 int y = 0;
-                WebDriverResult result = NativeMethods.wdeGetLocation(elementHandle, ref x, ref y);
+                WebDriverResult result = NativeDriverLibrary.Instance.GetElementLocation(elementHandle, ref x, ref y);
                 ResultHandler.VerifyResultCode(result, "get the location");
                 elementLocation = new Point(x, y);
                 return elementLocation;
@@ -168,7 +168,7 @@ namespace OpenQA.Selenium.IE
                 Size elementSize = Size.Empty;
                 int width = 0;
                 int height = 0;
-                WebDriverResult result = NativeMethods.wdeGetSize(elementHandle, ref width, ref height);
+                WebDriverResult result = NativeDriverLibrary.Instance.GetElementSize(elementHandle, ref width, ref height);
 
                 ResultHandler.VerifyResultCode(result, "get the size");
                 elementSize = new Size(width, height);
@@ -184,7 +184,7 @@ namespace OpenQA.Selenium.IE
             get
             {
                 int displayed = 0;
-                WebDriverResult result = NativeMethods.wdeIsDisplayed(elementHandle, ref displayed);
+                WebDriverResult result = NativeDriverLibrary.Instance.IsElementDisplayed(elementHandle, ref displayed);
                 ResultHandler.VerifyResultCode(result, "get the Displayed property");
                 return displayed == 1;
             }
@@ -217,7 +217,7 @@ namespace OpenQA.Selenium.IE
         /// </summary>
         public void Clear()
         {
-            WebDriverResult result = NativeMethods.wdeClear(elementHandle);
+            WebDriverResult result = NativeDriverLibrary.Instance.ClearElement(elementHandle);
             ResultHandler.VerifyResultCode(result, "clear the element");
         }
 
@@ -227,7 +227,7 @@ namespace OpenQA.Selenium.IE
         /// <param name="text">String containing what you would like to type onto the screen.</param>
         public void SendKeys(string text)
         {
-            WebDriverResult result = NativeMethods.wdeSendKeys(elementHandle, text);            
+            WebDriverResult result = NativeDriverLibrary.Instance.SendKeysToElement(elementHandle, text);            
             ResultHandler.VerifyResultCode(result, "send keystrokes to the element");
         }
 
@@ -237,7 +237,7 @@ namespace OpenQA.Selenium.IE
         /// </summary>
         public void Submit()
         {
-            WebDriverResult result = NativeMethods.wdeSubmit(elementHandle);
+            WebDriverResult result = NativeDriverLibrary.Instance.SubmitElement(elementHandle);
             ResultHandler.VerifyResultCode(result, "submit the element");
         }
 
@@ -248,7 +248,7 @@ namespace OpenQA.Selenium.IE
         /// </summary>
         public void Click()
         {
-            WebDriverResult result = NativeMethods.wdeClick(elementHandle);
+            WebDriverResult result = NativeDriverLibrary.Instance.ClickElement(elementHandle);
             ResultHandler.VerifyResultCode(result, "click the element");
         }
 
@@ -261,7 +261,7 @@ namespace OpenQA.Selenium.IE
         {
             SafeStringWrapperHandle stringHandle = new SafeStringWrapperHandle();
             SafeInternetExplorerDriverHandle driverHandle = driver.GetUnderlayingHandle();
-            WebDriverResult result = NativeMethods.wdeGetAttribute(driverHandle, elementHandle, attributeName, ref stringHandle);
+            WebDriverResult result = NativeDriverLibrary.Instance.GetElementAttribute(driverHandle, elementHandle, attributeName, ref stringHandle);
             ResultHandler.VerifyResultCode(result, string.Format(CultureInfo.InvariantCulture, "getting attribute '{0}' of the element", attributeName));
             string returnValue = null;
             using (StringWrapper wrapper = new StringWrapper(stringHandle))
@@ -277,7 +277,7 @@ namespace OpenQA.Selenium.IE
         /// </summary>
         public void Select()
         {
-            WebDriverResult result = NativeMethods.wdeSetSelected(elementHandle);
+            WebDriverResult result = NativeDriverLibrary.Instance.SetElementSelected(elementHandle);
             ResultHandler.VerifyResultCode(result, "(Un)selecting element");
         }
 
@@ -288,7 +288,7 @@ namespace OpenQA.Selenium.IE
         public bool Toggle()
         {
             int toggled = 0;
-            WebDriverResult result = NativeMethods.wdeToggle(elementHandle, ref toggled);
+            WebDriverResult result = NativeDriverLibrary.Instance.ToggleElement(elementHandle, ref toggled);
             ResultHandler.VerifyResultCode(result, "Toggling element");
             return toggled == 1;
         }
@@ -333,7 +333,7 @@ namespace OpenQA.Selenium.IE
         public string GetValueOfCssProperty(string propertyName)
         {
             SafeStringWrapperHandle stringHandle = new SafeStringWrapperHandle();
-            WebDriverResult result = NativeMethods.wdeGetValueOfCssProperty(elementHandle, propertyName, ref stringHandle);
+            WebDriverResult result = NativeDriverLibrary.Instance.GetElementValueOfCssProperty(elementHandle, propertyName, ref stringHandle);
             ResultHandler.VerifyResultCode(result, string.Format(CultureInfo.InvariantCulture, "get the value of CSS property '{0}'", propertyName));
             string returnValue = string.Empty;
             using (StringWrapper wrapper = new StringWrapper(stringHandle))
@@ -354,14 +354,14 @@ namespace OpenQA.Selenium.IE
             int y = 0;
             int width = 0;
             int height = 0;
-            WebDriverResult result = NativeMethods.wdeGetDetailsOnceScrolledOnToScreen(elementHandle, ref hwnd, ref x, ref y, ref width, ref height);
+            WebDriverResult result = NativeDriverLibrary.Instance.GetElementDetailsOnceScrolledOnToScreen(elementHandle, ref hwnd, ref x, ref y, ref width, ref height);
 
             ResultHandler.VerifyResultCode(result, "hover");
 
             int midX = x + (width / 2);
             int midY = y + (height / 2);
 
-            result = NativeMethods.wdeMouseMoveTo(hwnd, 100, 0, 0, midX, midY);
+            result = NativeDriverLibrary.Instance.MouseMoveTo(hwnd, 100, 0, 0, midX, midY);
 
             ResultHandler.VerifyResultCode(result, "hover mouse move");
         }
@@ -378,17 +378,17 @@ namespace OpenQA.Selenium.IE
             int y = 0;
             int width = 0;
             int height = 0;
-            WebDriverResult result = NativeMethods.wdeGetDetailsOnceScrolledOnToScreen(elementHandle, ref hwnd, ref x, ref y, ref width, ref height);
+            WebDriverResult result = NativeDriverLibrary.Instance.GetElementDetailsOnceScrolledOnToScreen(elementHandle, ref hwnd, ref x, ref y, ref width, ref height);
             ResultHandler.VerifyResultCode(result, "Unable to determine location once scrolled on to screen");
 
-            NativeMethods.wdeMouseDownAt(hwnd, x, y);
+            NativeDriverLibrary.Instance.MouseDownAt(hwnd, x, y);
 
             int endX = x + moveRightBy;
             int endY = y + moveDownBy;
 
             int duration = driver.Manage().Speed.Timeout;
-            NativeMethods.wdeMouseMoveTo(hwnd, duration, x, y, endX, endY);
-            NativeMethods.wdeMouseUpAt(hwnd, endX, endY);
+            NativeDriverLibrary.Instance.MouseMoveTo(hwnd, duration, x, y, endX, endY);
+            NativeDriverLibrary.Instance.MouseUpAt(hwnd, endX, endY);
         }
 
         /// <summary>
@@ -402,24 +402,24 @@ namespace OpenQA.Selenium.IE
             int y = 0;
             int width = 0;
             int height = 0;
-            WebDriverResult result = NativeMethods.wdeGetDetailsOnceScrolledOnToScreen(elementHandle, ref hwnd, ref x, ref y, ref width, ref height);
+            WebDriverResult result = NativeDriverLibrary.Instance.GetElementDetailsOnceScrolledOnToScreen(elementHandle, ref hwnd, ref x, ref y, ref width, ref height);
             ResultHandler.VerifyResultCode(result, "Unable to determine location once scrolled on to screen");
 
             int startX = x + (width / 2);
             int startY = y + (height / 2);
 
-            NativeMethods.wdeMouseDownAt(hwnd, startX, startY);
+            NativeDriverLibrary.Instance.MouseDownAt(hwnd, startX, startY);
 
             SafeInternetExplorerWebElementHandle other = ((InternetExplorerWebElement)element).Wrapper;
-            result = NativeMethods.wdeGetDetailsOnceScrolledOnToScreen(other, ref hwnd, ref x, ref y, ref width, ref height);
+            result = NativeDriverLibrary.Instance.GetElementDetailsOnceScrolledOnToScreen(other, ref hwnd, ref x, ref y, ref width, ref height);
             ResultHandler.VerifyResultCode(result, "Unable to determine location of target once scrolled on to screen");
 
             int endX = x + (width / 2);
             int endY = y + (height / 2);
 
             int duration = driver.Manage().Speed.Timeout;
-            NativeMethods.wdeMouseMoveTo(hwnd, duration, startX, startY, endX, endY);
-            NativeMethods.wdeMouseUpAt(hwnd, endX, endY);
+            NativeDriverLibrary.Instance.MouseMoveTo(hwnd, duration, startX, startY, endX, endY);
+            NativeDriverLibrary.Instance.MouseUpAt(hwnd, endX, endY);
         }
 
         /// <summary>
@@ -481,7 +481,7 @@ namespace OpenQA.Selenium.IE
         /// <returns>A Driver result from adding it.</returns>
         internal WebDriverResult AddToScriptArgs(SafeScriptArgsHandle scriptArgs)
         {
-            WebDriverResult result = NativeMethods.wdAddElementScriptArg(scriptArgs, elementHandle);
+            WebDriverResult result = NativeDriverLibrary.Instance.AddElementScriptArg(scriptArgs, elementHandle);
             ResultHandler.VerifyResultCode(result, "adding to script arguments");
             return result;
         }

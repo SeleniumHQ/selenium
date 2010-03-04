@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Text;
-
 using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium.IE
@@ -63,7 +62,7 @@ namespace OpenQA.Selenium.IE
         public InternetExplorerDriver()
         {
             handle = new SafeInternetExplorerDriverHandle();
-            WebDriverResult result = NativeMethods.wdNewDriverInstance(ref handle);
+            WebDriverResult result = NativeDriverLibrary.Instance.NewDriverInstance(ref handle);
             if (result != WebDriverResult.Success)
             {
                 throw new WebDriverException(string.Format(CultureInfo.InvariantCulture, "Cannot create new browser instance: {0}", result.ToString()));
@@ -84,7 +83,7 @@ namespace OpenQA.Selenium.IE
             {
                 SafeStringWrapperHandle stringHandle = new SafeStringWrapperHandle();
 
-                WebDriverResult result = NativeMethods.wdGetCurrentUrl(handle, ref stringHandle);
+                WebDriverResult result = NativeDriverLibrary.Instance.GetCurrentUrl(handle, ref stringHandle);
                 if (result != WebDriverResult.Success)
                 {
                     stringHandle.Dispose();
@@ -112,7 +111,7 @@ namespace OpenQA.Selenium.IE
                     throw new ArgumentNullException("value", "Argument 'url' cannot be null.");
                 }
 
-                WebDriverResult result = NativeMethods.wdGet(handle, value);
+                WebDriverResult result = NativeDriverLibrary.Instance.ChangeCurrentUrl(handle, value);
                 if (result != WebDriverResult.Success)
                 {
                     ResultHandler.VerifyResultCode(result, string.Format(CultureInfo.InvariantCulture, "Cannot go to '{0}': {1}", value, result.ToString()));
@@ -129,7 +128,7 @@ namespace OpenQA.Selenium.IE
             {
                 SafeStringWrapperHandle stringHandle = new SafeStringWrapperHandle();
 
-                WebDriverResult result = NativeMethods.wdGetTitle(handle, ref stringHandle);
+                WebDriverResult result = NativeDriverLibrary.Instance.GetTitle(handle, ref stringHandle);
                 if (result != WebDriverResult.Success)
                 {
                     stringHandle.Dispose();
@@ -154,14 +153,14 @@ namespace OpenQA.Selenium.IE
             get
             {
                 int visible = 0;
-                WebDriverResult result = NativeMethods.wdGetVisible(handle, ref visible);
+                WebDriverResult result = NativeDriverLibrary.Instance.GetVisible(handle, ref visible);
                 ResultHandler.VerifyResultCode(result, "Unable to determine if browser is visible");
                 return visible == 1;
             }
 
             set
             {
-                WebDriverResult result = NativeMethods.wdSetVisible(handle, value ? 1 : 0);
+                WebDriverResult result = NativeDriverLibrary.Instance.SetVisible(handle, value ? 1 : 0);
                 ResultHandler.VerifyResultCode(result, "Unable to change the visibility of the browser");
             }
         }
@@ -174,7 +173,7 @@ namespace OpenQA.Selenium.IE
             get
             {
                 SafeStringWrapperHandle stringHandle = new SafeStringWrapperHandle();
-                WebDriverResult result = NativeMethods.wdGetPageSource(handle, ref stringHandle);
+                WebDriverResult result = NativeDriverLibrary.Instance.GetPageSource(handle, ref stringHandle);
                 ResultHandler.VerifyResultCode(result, "Unable to get page source");
                 string returnValue = string.Empty;
                 using (StringWrapper wrapper = new StringWrapper(stringHandle))
@@ -191,7 +190,7 @@ namespace OpenQA.Selenium.IE
         /// </summary>
         public void Close()
         {
-            WebDriverResult result = NativeMethods.wdClose(handle);
+            WebDriverResult result = NativeDriverLibrary.Instance.Close(handle);
             if (result != WebDriverResult.Success)
             {
                 throw new InvalidOperationException("Unable to close driver: " + result.ToString());
@@ -267,7 +266,7 @@ namespace OpenQA.Selenium.IE
         {
             object toReturn = null;
             SafeScriptArgsHandle scriptArgsHandle = new SafeScriptArgsHandle();
-            WebDriverResult result = NativeMethods.wdNewScriptArgs(ref scriptArgsHandle, args.Length);
+            WebDriverResult result = NativeDriverLibrary.Instance.NewScriptArgs(ref scriptArgsHandle, args.Length);
             ResultHandler.VerifyResultCode(result, "Unable to create new script arguments array");
 
             try
@@ -277,7 +276,7 @@ namespace OpenQA.Selenium.IE
                 script = "(function() { return function(){" + script + "};})();";
 
                 SafeScriptResultHandle scriptResultHandle = new SafeScriptResultHandle();
-                result = NativeMethods.wdExecuteScript(handle, script, scriptArgsHandle, ref scriptResultHandle);
+                result = NativeDriverLibrary.Instance.ExecuteScript(handle, script, scriptArgsHandle, ref scriptResultHandle);
 
                 ResultHandler.VerifyResultCode(result, "Cannot execute script");
 
@@ -303,7 +302,7 @@ namespace OpenQA.Selenium.IE
         public ReadOnlyCollection<string> GetWindowHandles()
         {
             SafeStringCollectionHandle handlesPtr = new SafeStringCollectionHandle();
-            WebDriverResult result = NativeMethods.wdGetAllWindowHandles(handle, ref handlesPtr);
+            WebDriverResult result = NativeDriverLibrary.Instance.GetAllWindowHandles(handle, ref handlesPtr);
 
             ResultHandler.VerifyResultCode(result, "Unable to obtain all window handles");
 
@@ -327,7 +326,7 @@ namespace OpenQA.Selenium.IE
         public string GetWindowHandle()
         {
             SafeStringWrapperHandle stringHandle = new SafeStringWrapperHandle();
-            WebDriverResult result = NativeMethods.wdGetCurrentWindowHandle(handle, out stringHandle);
+            WebDriverResult result = NativeDriverLibrary.Instance.GetCurrentWindowHandle(handle, ref stringHandle);
             ResultHandler.VerifyResultCode(result, "Unable to obtain current window handle");
             string handleValue = string.Empty;
             using (StringWrapper wrapper = new StringWrapper(stringHandle))
@@ -442,7 +441,7 @@ namespace OpenQA.Selenium.IE
         {
             Screenshot currentScreenshot = null;
             SafeStringWrapperHandle stringHandle = new SafeStringWrapperHandle();
-            WebDriverResult result = NativeMethods.wdCaptureScreenshotAsBase64(handle, out stringHandle);
+            WebDriverResult result = NativeDriverLibrary.Instance.CaptureScreenshotAsBase64(handle, ref stringHandle);
             ResultHandler.VerifyResultCode(result, "Unable to get screenshot");
             string screenshotValue = string.Empty;
             using (StringWrapper wrapper = new StringWrapper(stringHandle))
@@ -488,7 +487,7 @@ namespace OpenQA.Selenium.IE
         /// </summary>
         internal void WaitForLoadToComplete()
         {
-            NativeMethods.wdWaitForLoadToComplete(handle);
+            NativeDriverLibrary.Instance.WaitForLoadToComplete(handle);
         }
 
         private static WebDriverResult PopulateArguments(SafeScriptArgsHandle scriptArgs, object[] args)
@@ -502,12 +501,12 @@ namespace OpenQA.Selenium.IE
 
                 if (stringArg != null)
                 {
-                    result = NativeMethods.wdAddStringScriptArg(scriptArgs, stringArg);
+                    result = NativeDriverLibrary.Instance.AddStringScriptArg(scriptArgs, stringArg);
                 }
                 else if (arg is bool)
                 {
                     bool param = (bool)arg;
-                    result = NativeMethods.wdAddBooleanScriptArg(scriptArgs, !param ? 0 : 1);
+                    result = NativeDriverLibrary.Instance.AddBooleanScriptArg(scriptArgs, !param ? 0 : 1);
                 }
                 else if (webElementArg != null)
                 {
@@ -522,7 +521,7 @@ namespace OpenQA.Selenium.IE
                         throw new ArgumentException("Parameter is not recognized as an int: " + arg);
                     }
 
-                    result = NativeMethods.wdAddNumberScriptArg(scriptArgs, param);
+                    result = NativeDriverLibrary.Instance.AddNumberScriptArg(scriptArgs, param);
                 }
                 else if (arg is float || arg is double)
                 {
@@ -533,7 +532,7 @@ namespace OpenQA.Selenium.IE
                         throw new ArgumentException("Parameter is not of recognized as a double: " + arg);
                     }
 
-                    result = NativeMethods.wdAddDoubleScriptArg(scriptArgs, param);
+                    result = NativeDriverLibrary.Instance.AddDoubleScriptArg(scriptArgs, param);
                 }
                 else
                 {
@@ -551,7 +550,7 @@ namespace OpenQA.Selenium.IE
             WebDriverResult result;
 
             int type;
-            result = NativeMethods.wdGetScriptResultType(handle, scriptResult, out type);
+            result = NativeDriverLibrary.Instance.GetScriptResultType(handle, scriptResult, out type);
 
             ResultHandler.VerifyResultCode(result, "Cannot determine result type");
 
@@ -562,7 +561,7 @@ namespace OpenQA.Selenium.IE
                 {
                     case 1:
                         SafeStringWrapperHandle stringHandle = new SafeStringWrapperHandle();
-                        result = NativeMethods.wdGetStringScriptResult(scriptResult, ref stringHandle);
+                        result = NativeDriverLibrary.Instance.GetStringScriptResult(scriptResult, ref stringHandle);
                         ResultHandler.VerifyResultCode(result, "Cannot extract string result");
                         using (StringWrapper wrapper = new StringWrapper(stringHandle))
                         {
@@ -573,21 +572,21 @@ namespace OpenQA.Selenium.IE
 
                     case 2:
                         long longVal;
-                        result = NativeMethods.wdGetNumberScriptResult(scriptResult, out longVal);
+                        result = NativeDriverLibrary.Instance.GetNumberScriptResult(scriptResult, out longVal);
                         ResultHandler.VerifyResultCode(result, "Cannot extract number result");
                         toReturn = longVal;
                         break;
 
                     case 3:
                         int boolVal;
-                        result = NativeMethods.wdGetBooleanScriptResult(scriptResult, out boolVal);
+                        result = NativeDriverLibrary.Instance.GetBooleanScriptResult(scriptResult, out boolVal);
                         ResultHandler.VerifyResultCode(result, "Cannot extract boolean result");
                         toReturn = boolVal == 1 ? true : false;
                         break;
 
                     case 4:
                         SafeInternetExplorerWebElementHandle element;
-                        result = NativeMethods.wdGetElementScriptResult(scriptResult, handle, out element);
+                        result = NativeDriverLibrary.Instance.GetElementScriptResult(scriptResult, handle, out element);
                         ResultHandler.VerifyResultCode(result, "Cannot extract element result");
                         toReturn = new InternetExplorerWebElement(this, element);
                         break;
@@ -598,7 +597,7 @@ namespace OpenQA.Selenium.IE
 
                     case 6:
                         SafeStringWrapperHandle messageHandle = new SafeStringWrapperHandle();
-                        result = NativeMethods.wdGetStringScriptResult(scriptResult, ref messageHandle);
+                        result = NativeDriverLibrary.Instance.GetStringScriptResult(scriptResult, ref messageHandle);
                         ResultHandler.VerifyResultCode(result, "Cannot extract string result");
                         string message = string.Empty;
                         using (StringWrapper wrapper = new StringWrapper(messageHandle))
@@ -610,7 +609,7 @@ namespace OpenQA.Selenium.IE
 
                     case 7:
                         double doubleVal;
-                        result = NativeMethods.wdGetDoubleScriptResult(scriptResult, out doubleVal);
+                        result = NativeDriverLibrary.Instance.GetDoubleScriptResult(scriptResult, out doubleVal);
                         ResultHandler.VerifyResultCode(result, "Cannot extract number result");
                         toReturn = doubleVal;
                         break;
@@ -618,14 +617,14 @@ namespace OpenQA.Selenium.IE
                     case 8:
                         bool allArrayItemsAreElements = true;
                         int arrayLength = 0;
-                        result = NativeMethods.wdGetArrayLengthScriptResult(handle, scriptResult, out arrayLength);
+                        result = NativeDriverLibrary.Instance.GetArrayLengthScriptResult(handle, scriptResult, out arrayLength);
                         ResultHandler.VerifyResultCode(result, "Cannot extract array length."); 
                         List<object> list = new List<object>();
                         for (int i = 0; i < arrayLength; i++) 
                         {         
                             // Get reference to object
                             SafeScriptResultHandle currItemHandle = new SafeScriptResultHandle();
-                            WebDriverResult getItemResult = NativeMethods.wdGetArrayItemFromScriptResult(handle, scriptResult, i, out currItemHandle);
+                            WebDriverResult getItemResult = NativeDriverLibrary.Instance.GetArrayItemFromScriptResult(handle, scriptResult, i, out currItemHandle);
                             if (getItemResult != WebDriverResult.Success)
                             {
                                 // Note about memory management: Usually memory for this item
@@ -633,7 +632,7 @@ namespace OpenQA.Selenium.IE
                                 // ExtractReturnValue. It is freed explicitly here since a
                                 // recursive call will not happen.
                                 currItemHandle.Dispose();
-                                throw new WebDriverException(string.Format("Cannot extract element from collection at index: {0} ({1})", i, result));
+                                throw new WebDriverException(string.Format(CultureInfo.InvariantCulture, "Cannot extract element from collection at index: {0} ({1})", i, result));
                             }
 
                             object arrayItem = ExtractReturnValue(currItemHandle);
@@ -713,7 +712,7 @@ namespace OpenQA.Selenium.IE
                 ////thus cookies are not properly deleted. Use JavaScript execution,
                 ////just like the Java implementation does.
                 ////string cookieString = cookie.ToString();
-                ////WebDriverResult result = NativeMethods.wdAddCookie(driver.handle, cookieString);
+                ////WebDriverResult result = NativeDriverLibrary.Instance.AddCookie(driver.handle, cookieString);
                 ////ResultHandler.VerifyResultCode(result, "Add Cookie");
                 StringBuilder sb = new StringBuilder(cookie.Name);
                 sb.Append("=");
@@ -758,7 +757,7 @@ namespace OpenQA.Selenium.IE
                 Uri currentUri = GetCurrentUri();
 
                 SafeStringWrapperHandle stringHandle = new SafeStringWrapperHandle();
-                WebDriverResult result = NativeMethods.wdGetCookies(driver.handle, ref stringHandle);
+                WebDriverResult result = NativeDriverLibrary.Instance.GetCookies(driver.handle, ref stringHandle);
                 ResultHandler.VerifyResultCode(result, "Getting Cookies");
                 string allDomainCookies = string.Empty;
                 using (StringWrapper wrapper = new StringWrapper(stringHandle))
@@ -970,7 +969,7 @@ namespace OpenQA.Selenium.IE
                     throw new ArgumentNullException("frameName", "Frame name cannot be null");
                 }
 
-                WebDriverResult res = NativeMethods.wdSwitchToFrame(driver.handle, frameName);
+                WebDriverResult res = NativeDriverLibrary.Instance.SwitchToFrame(driver.handle, frameName);
                 ResultHandler.VerifyResultCode(res, "switch to frame " + frameName);
                 ////TODO(andre.nogueira): If this fails, driver cannot be used and has to be
                 ////set to a valid frame... What's the best way of doing this?
@@ -984,7 +983,7 @@ namespace OpenQA.Selenium.IE
             /// <returns>A WebDriver instance that is currently in use.</returns>
             public IWebDriver Window(string windowName)
             {
-                WebDriverResult result = NativeMethods.wdSwitchToWindow(driver.handle, windowName);
+                WebDriverResult result = NativeDriverLibrary.Instance.SwitchToWindow(driver.handle, windowName);
                 ResultHandler.VerifyResultCode(result, "Could not switch to window " + windowName);
                 return driver;
             }
@@ -1005,7 +1004,7 @@ namespace OpenQA.Selenium.IE
             public IWebElement ActiveElement()
             {
                 SafeInternetExplorerWebElementHandle rawElement = new SafeInternetExplorerWebElementHandle();
-                WebDriverResult result = NativeMethods.wdSwitchToActiveElement(driver.handle, ref rawElement);
+                WebDriverResult result = NativeDriverLibrary.Instance.SwitchToActiveElement(driver.handle, ref rawElement);
 
                 ResultHandler.VerifyResultCode(result, "Unable to find active element");
 
@@ -1036,7 +1035,7 @@ namespace OpenQA.Selenium.IE
             /// </summary>
             public void Back()
             {
-                WebDriverResult result = NativeMethods.wdGoBack(driver.handle);
+                WebDriverResult result = NativeDriverLibrary.Instance.GoBack(driver.handle);
                 ResultHandler.VerifyResultCode(result, "Going back in history");
             }
 
@@ -1045,7 +1044,7 @@ namespace OpenQA.Selenium.IE
             /// </summary>
             public void Forward()
             {
-                WebDriverResult result = NativeMethods.wdGoForward(driver.handle);
+                WebDriverResult result = NativeDriverLibrary.Instance.GoForward(driver.handle);
                 ResultHandler.VerifyResultCode(result, "Going forward in history");
             }
 
@@ -1078,7 +1077,7 @@ namespace OpenQA.Selenium.IE
             /// </summary>
             public void Refresh()
             {
-                WebDriverResult result = NativeMethods.wdRefresh(driver.handle);
+                WebDriverResult result = NativeDriverLibrary.Instance.Refresh(driver.handle);
                 ResultHandler.VerifyResultCode(result, "Refreshing page");
             }
         }

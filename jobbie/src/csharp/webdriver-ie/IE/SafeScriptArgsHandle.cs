@@ -23,7 +23,7 @@ namespace OpenQA.Selenium.IE
         /// <returns>True if released</returns>
         protected override bool ReleaseHandle()
         {
-            NativeMethods.wdFreeScriptArgs(handle);
+            NativeDriverLibrary.Instance.FreeScriptArgs(handle);
             return true;
         }
     }

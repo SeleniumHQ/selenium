@@ -30,11 +30,11 @@ namespace OpenQA.Selenium.IE
         {
             List<IWebElement> toReturn = new List<IWebElement>();
             int numberOfElements = 0;
-            NativeMethods.wdcGetElementCollectionLength(collectionHandle, ref numberOfElements);
+            NativeDriverLibrary.Instance.GetElementCollectionLength(collectionHandle, ref numberOfElements);
             for (int i = 0; i < numberOfElements; i++)
             {
                 SafeInternetExplorerWebElementHandle wrapper = new SafeInternetExplorerWebElementHandle();
-                WebDriverResult result = NativeMethods.wdcGetElementAtIndex(collectionHandle, i, ref wrapper);
+                WebDriverResult result = NativeDriverLibrary.Instance.GetElementAtIndex(collectionHandle, i, ref wrapper);
 
                 // OPTIMIZATION: Check for a success value, then run through the
                 // VerifyErrorCode which will throw the proper exception

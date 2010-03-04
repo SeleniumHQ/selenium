@@ -30,7 +30,7 @@ namespace OpenQA.Selenium.IE
         public List<string> ToList()
         {
             int elementCount = 0;
-            WebDriverResult result = NativeMethods.wdcGetStringCollectionLength(handle, ref elementCount);
+            WebDriverResult result = NativeDriverLibrary.Instance.GetStringCollectionLength(handle, ref elementCount);
             if (result != WebDriverResult.Success)
             {
                 Dispose();
@@ -41,7 +41,7 @@ namespace OpenQA.Selenium.IE
             for (int i = 0; i < elementCount; i++)
             {
                 SafeStringWrapperHandle stringHandle = new SafeStringWrapperHandle();
-                result = NativeMethods.wdcGetStringAtIndex(handle, i, ref stringHandle);
+                result = NativeDriverLibrary.Instance.GetStringAtIndex(handle, i, ref stringHandle);
                 if (result != WebDriverResult.Success)
                 {
                     stringHandle.Dispose();
