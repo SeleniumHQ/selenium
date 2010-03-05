@@ -96,7 +96,6 @@ public class AjaxElementLocator extends DefaultElementLocator {
    * @param element The element to use
    * @return Whether or not it meets your criteria for "found"
    */
-  @SuppressWarnings({"UnusedDeclaration"})
   protected boolean isElementUsable(WebElement element) {
     return true;
   }

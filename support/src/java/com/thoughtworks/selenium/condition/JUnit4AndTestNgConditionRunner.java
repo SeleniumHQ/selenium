@@ -19,8 +19,6 @@ package com.thoughtworks.selenium.condition;
 
 import com.thoughtworks.selenium.Selenium;
 
-import junit.framework.Assert;
-
 /**
  * {@inhreritDoc}
  * <p/>

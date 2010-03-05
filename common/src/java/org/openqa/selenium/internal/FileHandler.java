@@ -80,7 +80,7 @@ public class FileHandler {
     }
   }
 
-  public static void copyResource(File outputDir, Class forClassLoader, String... names)
+  public static void copyResource(File outputDir, Class<?> forClassLoader, String... names)
       throws IOException {
     for (String name : names) {
       InputStream is = locateResource(forClassLoader, name);
@@ -92,7 +92,7 @@ public class FileHandler {
     }
   }
 
-  private static InputStream locateResource(Class forClassLoader, String name) throws IOException {
+  private static InputStream locateResource(Class<?> forClassLoader, String name) throws IOException {
     String arch = System.getProperty("os.arch").toLowerCase() + "/";
     String[] alternatives = {name, "/" + name, arch + name, "/" + arch + name};
 

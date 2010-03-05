@@ -59,7 +59,7 @@ public class ByChainedTest extends MockObjectTestCase {
     final AllDriver driver = mock(AllDriver.class);
     final WebElement elem1 = mock(WebElement.class, "webElement1");
     final WebElement elem2 = mock(WebElement.class, "webElement2");
-    final List<WebElement> elems12 = new ArrayList();
+    final List<WebElement> elems12 = new ArrayList<WebElement>();
     elems12.add(elem1);
     elems12.add(elem2);
 
@@ -75,7 +75,7 @@ public class ByChainedTest extends MockObjectTestCase {
     final AllDriver driver = mock(AllDriver.class);
     final WebElement elem1 = mock(WebElement.class, "webElement1");
     final WebElement elem2 = mock(WebElement.class, "webElement2");
-    final List<WebElement> elems12 = new ArrayList();
+    final List<WebElement> elems12 = new ArrayList<WebElement>();
     elems12.add(elem1);
     elems12.add(elem2);
 
@@ -89,9 +89,9 @@ public class ByChainedTest extends MockObjectTestCase {
 
   public void testFindElementOneByEmpty() {
     final AllDriver driver = mock(AllDriver.class);
-    final WebElement elem1 = mock(WebElement.class, "webElement1");
+	final WebElement elem1 = mock(WebElement.class, "webElement1");
     final WebElement elem2 = mock(WebElement.class, "webElement2");
-    final List<WebElement> elems = new ArrayList();
+    final List<WebElement> elems = new ArrayList<WebElement>();
 
     checking(new Expectations() {{
       one(driver).findElementsByName("cheese"); will(returnValue(elems));
@@ -110,7 +110,7 @@ public class ByChainedTest extends MockObjectTestCase {
     final AllDriver driver = mock(AllDriver.class);
     final WebElement elem1 = mock(WebElement.class, "webElement1");
     final WebElement elem2 = mock(WebElement.class, "webElement2");
-    final List<WebElement> elems = new ArrayList();
+    final List<WebElement> elems = new ArrayList<WebElement>();
 
     checking(new Expectations() {{
       one(driver).findElementsByName("cheese"); will(returnValue(elems));
@@ -127,15 +127,15 @@ public class ByChainedTest extends MockObjectTestCase {
     final WebElement elem3 = mock(AllElement.class, "webElement3");
     final WebElement elem4 = mock(AllElement.class, "webElement4");
     final WebElement elem5 = mock(AllElement.class, "webElement5");
-    final List<WebElement> elems12 = new ArrayList();
+    final List<WebElement> elems12 = new ArrayList<WebElement>();
     elems12.add(elem1);
     elems12.add(elem2);
-    final List<WebElement> elems34 = new ArrayList();
+    final List<WebElement> elems34 = new ArrayList<WebElement>();
     elems34.add(elem3);
     elems34.add(elem4);
-    final List<WebElement> elems5 = new ArrayList();
+    final List<WebElement> elems5 = new ArrayList<WebElement>();
     elems5.add(elem5);
-    final List<WebElement> elems345 = new ArrayList();
+    final List<WebElement> elems345 = new ArrayList<WebElement>();
     elems345.addAll(elems34);
     elems345.addAll(elems5);
 
@@ -157,16 +157,16 @@ public class ByChainedTest extends MockObjectTestCase {
     final WebElement elem4 = mock(AllElement.class, "webElement4");
     final WebElement elem5 = mock(AllElement.class, "webElement5");
 
-    final List<WebElement> elems = new ArrayList();
-    final List<WebElement> elems12 = new ArrayList();
+    final List<WebElement> elems = new ArrayList<WebElement>();
+    final List<WebElement> elems12 = new ArrayList<WebElement>();
     elems12.add(elem1);
     elems12.add(elem2);
-    final List<WebElement> elems34 = new ArrayList();
+    final List<WebElement> elems34 = new ArrayList<WebElement>();
     elems34.add(elem3);
     elems34.add(elem4);
-    final List<WebElement> elems5 = new ArrayList();
+    final List<WebElement> elems5 = new ArrayList<WebElement>();
     elems5.add(elem5);
-    final List<WebElement> elems345 = new ArrayList();
+    final List<WebElement> elems345 = new ArrayList<WebElement>();
     elems345.addAll(elems34);
     elems345.addAll(elems5);
 
@@ -191,16 +191,16 @@ public class ByChainedTest extends MockObjectTestCase {
     final WebElement elem4 = mock(AllElement.class, "webElement4");
     final WebElement elem5 = mock(AllElement.class, "webElement5");
 
-    final List<WebElement> elems = new ArrayList();
-    final List<WebElement> elems12 = new ArrayList();
+    final List<WebElement> elems = new ArrayList<WebElement>();
+    final List<WebElement> elems12 = new ArrayList<WebElement>();
     elems12.add(elem1);
     elems12.add(elem2);
-    final List<WebElement> elems34 = new ArrayList();
+    final List<WebElement> elems34 = new ArrayList<WebElement>();
     elems34.add(elem3);
     elems34.add(elem4);
-    final List<WebElement> elems5 = new ArrayList();
+    final List<WebElement> elems5 = new ArrayList<WebElement>();
     elems5.add(elem5);
-    final List<WebElement> elems345 = new ArrayList();
+    final List<WebElement> elems345 = new ArrayList<WebElement>();
     elems345.addAll(elems34);
     elems345.addAll(elems5);
 
@@ -220,16 +220,16 @@ public class ByChainedTest extends MockObjectTestCase {
     final WebElement elem4 = mock(AllElement.class, "webElement4");
     final WebElement elem5 = mock(AllElement.class, "webElement5");
 
-    final List<WebElement> elems = new ArrayList();
-    final List<WebElement> elems12 = new ArrayList();
+    final List<WebElement> elems = new ArrayList<WebElement>();
+    final List<WebElement> elems12 = new ArrayList<WebElement>();
     elems12.add(elem1);
     elems12.add(elem2);
-    final List<WebElement> elems34 = new ArrayList();
+    final List<WebElement> elems34 = new ArrayList<WebElement>();
     elems34.add(elem3);
     elems34.add(elem4);
-    final List<WebElement> elems5 = new ArrayList();
+    final List<WebElement> elems5 = new ArrayList<WebElement>();
     elems5.add(elem5);
-    final List<WebElement> elems345 = new ArrayList();
+    final List<WebElement> elems345 = new ArrayList<WebElement>();
     elems345.addAll(elems34);
     elems345.addAll(elems5);
 
@@ -251,16 +251,16 @@ public class ByChainedTest extends MockObjectTestCase {
     final WebElement elem4 = mock(AllElement.class, "webElement4");
     final WebElement elem5 = mock(AllElement.class, "webElement5");
 
-    final List<WebElement> elems = new ArrayList();
-    final List<WebElement> elems12 = new ArrayList();
+    final List<WebElement> elems = new ArrayList<WebElement>();
+    final List<WebElement> elems12 = new ArrayList<WebElement>();
     elems12.add(elem1);
     elems12.add(elem2);
-    final List<WebElement> elems34 = new ArrayList();
+    final List<WebElement> elems34 = new ArrayList<WebElement>();
     elems34.add(elem3);
     elems34.add(elem4);
-    final List<WebElement> elems5 = new ArrayList();
+    final List<WebElement> elems5 = new ArrayList<WebElement>();
     elems5.add(elem5);
-    final List<WebElement> elems345 = new ArrayList();
+    final List<WebElement> elems345 = new ArrayList<WebElement>();
     elems345.addAll(elems34);
     elems345.addAll(elems5);
 

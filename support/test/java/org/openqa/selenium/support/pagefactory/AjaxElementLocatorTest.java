@@ -91,9 +91,7 @@ public class AjaxElementLocatorTest extends MockObjectTestCase {
     }
   }
   
-  private class MonkeyedAjaxElementLocator extends AjaxElementLocator {
-    private int count;
-    
+  private class MonkeyedAjaxElementLocator extends AjaxElementLocator {    
     public MonkeyedAjaxElementLocator(Clock clock, WebDriver driver, Field field, int timeOutInSeconds) {
       super(clock, driver, field, timeOutInSeconds);
     }

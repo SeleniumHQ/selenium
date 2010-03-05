@@ -17,8 +17,6 @@ limitations under the License.
 
 package org.openqa.selenium.firefox.internal;
 
-import java.util.concurrent.TimeUnit;
-
 public interface Lock {
   void lock(long timeoutInMillis);
   void unlock();

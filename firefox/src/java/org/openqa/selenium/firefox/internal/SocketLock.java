@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.net.BindException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Implements {@link Lock} via an implementation that uses a well-known server socket.
