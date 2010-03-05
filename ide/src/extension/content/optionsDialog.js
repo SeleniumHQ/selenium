@@ -315,9 +315,12 @@ function loadPluginList() {
     }
     
     var plugins = this.Preferences.getString("plugins").split(",");
-    
+
+    var extman = Components.classes["@mozilla.org/extensions/manager;1"].createInstance(Components.interfaces.nsIExtensionManager);
+    var p;
     for (var i = 0; i < plugins.length; i++) {
-        list.appendItem(plugins[i]);
+        p = extman.getItemForID(plugins[i]);
+        list.appendItem(p.name, p.id); 
     }
 }
 
@@ -326,5 +329,5 @@ function updatePluginOptions() {
 }
 
 function updatePluginSelection() {
-    
+
 }
