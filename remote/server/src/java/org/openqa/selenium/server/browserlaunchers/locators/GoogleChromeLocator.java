@@ -33,7 +33,7 @@ public class GoogleChromeLocator extends SingleBrowserLocator {
     }
 
     protected String[] standardlauncherFilenames() {
-        return new String[]{"chrome.exe", "google-chrome"};
+        return new String[]{"chrome.exe", "google-chrome","Google Chrome"};
     }
 
     protected String browserPathOverridePropertyName() {
@@ -65,7 +65,8 @@ public class GoogleChromeLocator extends SingleBrowserLocator {
      */
     protected String[] usualUnixLauncherLocations() {
         return new String[]{
-                "/usr/bin"
+                "/usr/bin",
+                "/Applications/Google Chrome.app/Contents/MacOS",                  
         };
     }
 
