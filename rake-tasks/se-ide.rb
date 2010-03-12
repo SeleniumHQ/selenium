@@ -23,22 +23,26 @@ namespace :se_ide do
       end
 
       # and now the script dir
-      f = Dir.glob(base_ide_dir + "/common/src/js/core/scripts/*").select { |fn| not [base_ide_dir + "/common/src/js/core/scripts/selenium-testrunner.js", base_ide_dir + "/common/src/js/core/scripts/user-extensions.js"].include?(fn)},
+      f = Dir.glob(base_ide_dir + "/common/src/js/core/scripts/*").select { |fn| ![base_ide_dir + "/common/src/js/core/scripts/selenium-testrunner.js", base_ide_dir + "/common/src/js/core/scripts/user-extensions.js"].include?(fn)}
       f.each do |c|
         files << c.gsub(base_ide_dir + "/common/src/js/core/scripts", "ide/src/extension/content/selenium/scripts")
         cp c, "ide/src/extension/content/selenium/scripts"
       end
       
-      # and lastly the scriptrunner
+      # create the content-files directory
+      if File.directory? "ide/src/extension/content-files"
+      	rm_r "ide/src/extension/content-files"
+      end
       mkdir "ide/src/extension/content-files"
+
+      # and lastly the scriptrunner
       f = Dir.glob(base_ide_dir + "/common/src/js/core/scripts/selenium-testrunner.js")
       f.each do |c|
         files << base_ide_dir + "ide/src/extension/content-files/selenium-testrunner.js"
         cp c, "ide/src/extension/content-files"
       end
 
-      # no, really, this lis lastly; user-extensions.js
-      mkdir "ide/src/extension/content-files"
+      # no, really, this is lastly; user-extensions.js
       f = Dir.glob(base_ide_dir + "/common/src/js/core/scripts/user-extensions.js")
       f.each do |c|
         files << base_ide_dir + "ide/src/extension/content-files/user-extensions.js"
