@@ -176,7 +176,7 @@ namespace OpenQA.Selenium.Chrome
             get
             {
                 return Registry.LocalMachine.OpenSubKey(
-                                    "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths\\chrome.exe").
+                                    "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths\\").GetValue("chrome.exe").
                                     ToString();
             }
         }
