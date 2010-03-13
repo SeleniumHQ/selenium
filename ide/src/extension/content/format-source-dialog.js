@@ -21,8 +21,10 @@ function loadDialog() {
 	sourceTextbox.value = this.formatInfo.getSource();
 	if (!this.formatInfo.saveFormat) {
 		// preset format
-		sourceTextbox.readonly = true;
+		sourceTextbox.setAttribute("readonly","true");
 		document.getElementById("note").hidden = false;
+	}else{
+		sourceTextbox.removeAttribute("readonly");		
 	}
 	if (!this.formatInfo.id) {
 		// new format
@@ -40,7 +42,10 @@ function saveDialog() {
 			return false;
 		}
 	}
-	this.formatInfo.saveFormat(document.getElementById('format-source').value);
-	this.formatInfo.saved = true;
-	return true;
+	//only save an editable format
+	if (this.formatInfo.saveFormat){
+		this.formatInfo.saveFormat(document.getElementById('format-source').value);
+		this.formatInfo.saved = true;
+		return true;
+	}
 }
