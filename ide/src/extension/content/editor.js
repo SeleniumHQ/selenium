@@ -526,9 +526,10 @@ Editor.prototype.addCommand = function(command,target,value,window,insertBeforeL
                 // popup
                 var windowName = window.name;
                 if (window.name == '') {
-                    windowName = 'null';
-                }
-                this.addCommand('selectWindow', "name=" + windowName, '', window);
+					this.addCommand('selectWindow', 'null', '', window);
+                }else{
+					this.addCommand('selectWindow', "name=" + windowName, '', window);
+				}
             }
         }
 	}
