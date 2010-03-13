@@ -19,8 +19,10 @@ package org.openqa.selenium.internal.selenesedriver;
 
 import com.thoughtworks.selenium.Selenium;
 
+import java.util.Map;
+
 public class ClickElement extends ElementFunction<Void> {
-  public Void apply(Selenium selenium, Object... args) {
+  public Void apply(Selenium selenium, Map<String, ?> args) {
     selenium.click(getLocator(args));
     return null;
   }

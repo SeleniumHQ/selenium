@@ -6,24 +6,14 @@ module Selenium
         attr_accessor :unguarded
 
         def driver
-          # TODO: find a better way to do this
-          @driver ||= if $LOAD_PATH.any? { |p| p.include?("remote/client") }
-                        :remote
-                      elsif $LOAD_PATH.any? { |p| p.include?("jobbie") }
-                        :ie
-                      elsif $LOAD_PATH.any? { |p| p.include?("chrome") }
-                        :chrome
-                      elsif $LOAD_PATH.any? { |p| p.include?("firefox") }
-                        :firefox
-                      else
-                        raise "not sure what driver to run specs for"
-                      end
+          # TODO: get rid of ENV
+          (ENV['WD_SPEC_DRIVER'] || raise("must set WD_SPEC_DRIVER")).to_sym
         end
 
         def browser
           if driver == :remote
             # TODO: get rid of ENV
-            (ENV['REMOTE_BROWSER_VERSION'] || :firefox).to_sym
+            (ENV['WD_REMOTE_BROWSER'] || :firefox).to_sym
           else
             driver
           end
@@ -40,7 +30,7 @@ module Selenium
 
         def new_driver_instance
           if driver == :remote
-            cap = WebDriver::Remote::Capabilities.send(ENV['REMOTE_BROWSER_VERSION'] || 'firefox')
+            cap = WebDriver::Remote::Capabilities.send(ENV['WD_REMOTE_BROWSER'] || 'firefox')
             WebDriver::Driver.for :remote, :url => "http://localhost:6000/",
                                            :desired_capabilities => cap
           else

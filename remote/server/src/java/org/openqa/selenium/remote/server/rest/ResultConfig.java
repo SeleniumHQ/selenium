@@ -36,7 +36,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
@@ -190,14 +189,15 @@ public class ResultConfig {
 
   @SuppressWarnings("unchecked")
   private void setJsonParameters(HttpServletRequest request, Handler handler) throws Exception {
-    BufferedReader reader = new BufferedReader(request.getReader());
+    BufferedReader reader = request.getReader();
     StringBuilder builder = new StringBuilder();
     for (String line = reader.readLine(); line != null; line=reader.readLine())
       builder.append(line);
 
     String raw = builder.toString();
-    if (raw.startsWith("[")) {
-      List<Object> parameters = new JsonToBeanConverter().convert(List.class, builder.toString());
+    if (raw.length() > 0) {
+      Map<String, Object> parameters = (Map<String, Object>) new JsonToBeanConverter()
+          .convert(HashMap.class, builder.toString());
 
       ((JsonParametersAware) handler).setJsonParameters(parameters);
     }

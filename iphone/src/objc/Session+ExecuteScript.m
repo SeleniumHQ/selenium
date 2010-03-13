@@ -1,5 +1,5 @@
 //
-//  Context+ExecuteScript.m
+//  Session+ExecuteScript.m
 //  iWebDriver
 //
 //  Copyright 2009 Google Inc.
@@ -16,53 +16,81 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-#import "Context+ExecuteScript.h"
+#import "Session+ExecuteScript.h"
 #import "HTTPVirtualDirectory+AccessViewController.h"
 #import "NSObject+SBJSON.h"
 #import "WebViewController.h"
 #import "NSException+WebDriver.h"
 #import "Element.h"
 #import "ElementStore.h"
+#import "errorcodes.h"
 
-@implementation Context (ExecuteScript)
+@implementation Session (ExecuteScript)
 
-// The arguments passed to executeScript look like [{value:123 type:"NUMBER"}]
-- (NSString *)convertArgumentsToJavascript:(NSArray *)arguments {
+#pragma mark Argument Parsing
+
+// The arguments passed to executeScript may be any JSON value. DOM elements are
+// encoded as {"ELEMENT": id}, where id is the ID assigned by the |ElementStore|
+// when the element is first found on the page.
+- (NSString *)convertValueToJavascript:(id)value {
+  // No type checking/error checking involved here. Script arguments are written
+  // to JSON, but since they were parsed from the request, we already know they
+  // are valid JSON values.
+  if ([value isKindOfClass:[NSArray class]]) {
+    NSArray* arrayValue = (NSArray*) value;
+    return [self convertArrayToJavascript:arrayValue];
+  } else if ([value isKindOfClass:[NSDictionary class]]) {
+    return [self convertDictionaryToJavascript:(NSDictionary*)value];
+  } else {
+    return [value JSONFragment];
+  }
+}
+
+- (NSString *)convertArrayToJavascript:(NSArray *)array {
   NSMutableString *converted = [NSMutableString stringWithCapacity:128];
   [converted appendString:@"["];
   
-  for (id element in arguments) {
-    if ([element isKindOfClass:[NSArray class]]) {
-      [converted appendString:[self convertArgumentsToJavascript:element]];
-    } else if (![element isKindOfClass:[NSDictionary class]]) {
-      NSLog(@"Could not parse argument %@", element);
-     @throw([NSException webDriverExceptionWithMessage:
-             [NSString stringWithFormat:@"Could not parse argument %@",
-              element]
-                                        webDriverClass:
-             @"org.openqa.selenium.WebDriverException"]);
-    } else {
-      NSDictionary *arg = (NSDictionary *)element;
-      id value = [arg objectForKey:@"value"];
-      NSString *type = [arg objectForKey:@"type"];
-      if ([type isEqualToString:@"ELEMENT"]) {
-        [converted appendString:[[self elementStore]
-                                 jsLocatorForElementWithId:(NSString *)value]];
-      } else {
-        [converted appendString:[value JSONFragment]];
-      }
-    }
+  for (id element in array) {
+    [converted appendString:[self convertValueToJavascript:element]];
     [converted appendString:@","];
   }
   [converted appendString:@"]"];
   return converted;
 }
 
+- (NSString *)convertDictionaryToJavascript:(NSDictionary *)dictionary {
+  id elementId = [dictionary objectForKey:@"ELEMENT"];
+  if (elementId != nil && [elementId isKindOfClass:[NSString class]]) {
+    return [[self elementStore]
+            jsLocatorForElementWithId:(NSString *)elementId];
+  }
+  NSMutableString *converted = [NSMutableString stringWithCapacity:128];
+  [converted appendString:@"{"];
+  NSArray* keys = [dictionary allKeys];
+  BOOL addComma = NO;
+  for (id value in keys) {
+    if (addComma) {
+      [converted appendString:@","];
+    } else {
+      addComma = YES;
+    }
+    [converted appendString:[value JSONFragment]];
+    [converted appendString:@":"];
+    [converted appendString:[self convertValueToJavascript:
+                             [dictionary objectForKey:value]]];
+  }
+  [converted appendString:@"}"];
+  return converted;
+}
+
+#pragma mark Resource Handler
+
 // Execute the script given. Returns a dictionary with type: and value:
 // properties.
-- (NSDictionary *)executeScript:(NSString *)code
-                  withArguments:(NSArray *)arguments {
-  NSString *argsAsString = [self convertArgumentsToJavascript:arguments];
+- (NSDictionary *)executeScript:(NSDictionary *)arguments {
+  NSString *code = [arguments objectForKey:@"script"];
+  NSString *argsAsString = [self convertValueToJavascript:
+                            [arguments objectForKey:@"args"]];
 
   // Execute the script and store the result in 'result'; if any errors occur,
   // store them in the 'error' variable.
@@ -84,8 +112,7 @@
     NSString *error = [[self viewController] jsEval:@"error.message || error"];
     @throw([NSException webDriverExceptionWithMessage:
             [NSString stringWithFormat:@"JS ERROR: %@", error]
-                                       webDriverClass:
-            @"org.openqa.selenium.WebDriverException"]);
+                                        andStatusCode:EUNHANDLEDERROR]);
   }
 
   // We need to know what the result type was so we can send the proper value
@@ -101,26 +128,17 @@
                      " }\n"
                      "})();"];
 
-  // Now that we have the result, we need to return it like:
-  //   {type: 'VALUE', value: 'true'}.
-  // If the method returned null or undefined, we should return
-  //   {type: 'NULL'}
-  // ... And if the method returns an element we should return it like this:
-  //   {type: 'ELEMENT', value: 'element/123'}
+  // Now that we have the result, we need to return it as a valid JSON value.
+  // All DOM elements in the result will be encoded as {"ELEMENT":id}, where id
+  // is an ID assigned by the |ElementStore|.
   
   if ([type isEqualToString:@"NULL"]) {
-    // Return {type: 'NULL'}
-    return [NSDictionary dictionaryWithObjectsAndKeys:
-            @"NULL", @"type", nil];
+    return nil;
   } else if ([type isEqualToString:@"ELEMENT"]) {
     // The function returned an element. Cache the element in the local
     // |ElementStore| (in the virtual directory).
     Element *elem = [[self elementStore] elementFromJSObject:@"result"];
-    
-    // Return {type: 'ELEMENT', value: 'element/123'}
-    return [NSDictionary dictionaryWithObjectsAndKeys:
-            [elem url], @"value",
-            @"ELEMENT", @"type", nil];
+    return [elem idDictionary];
   } else {
     id value;
     if ([type isEqualToString:@"NUMBER"]) {
@@ -134,13 +152,10 @@
       // Result could be a string, array, or generic object. Currently, we do
       // not support arrays or generic objects (which could conceivably be
       // converted to a map).
-      // TODO(webdriver-eng): add support for arrays and maps
+      // TODO: add support for arrays and maps
       value = result;
     }
-    // Return {type: 'VALUE', value: 'cheese'}
-    return [NSDictionary dictionaryWithObjectsAndKeys:
-            value, @"value",
-            @"VALUE", @"type", nil];
+    return value;
   }
 }
 

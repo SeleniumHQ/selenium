@@ -22,6 +22,7 @@
 #import "WebDriverResource.h"
 #import "NSException+WebDriver.h"
 #import "WebViewController.h"
+#import "errorcodes.h"
 
 @implementation Element (FindElement)
 
@@ -31,28 +32,19 @@
   // And this represents the elements/
   HTTPVirtualDirectory *findElements = [HTTPVirtualDirectory virtualDirectory];
   
-  NSArray *searchMethods = [NSArray arrayWithObjects:@"xpath",
-                            @"name",
-                            @"id",
-                            @"link+text",
-                            @"class+name",
-                            @"tag+name",
-                            @"partial+link+text",
-                            nil];
-  
-  for (NSString *method in searchMethods) {
-    [findElement setResource:
-     [WebDriverResource resourceWithTarget:self
-                                 GETAction:NULL
-                                POSTAction:@selector(findElementUsing:)]
-                    withName:method];
-    
-    [findElements setResource:
-     [WebDriverResource resourceWithTarget:self
-                                 GETAction:NULL
-                                POSTAction:@selector(findElementsUsing:)]
-                     withName:method];    
-  }
+  [findElement setIndex:[WebDriverResource
+                         resourceWithTarget:self
+                         GETAction:NULL
+                         POSTAction:@selector(findElementUsing:)
+                         PUTAction:NULL
+                         DELETEAction:NULL]];
+
+  [findElements setIndex:[WebDriverResource
+                          resourceWithTarget:self
+                          GETAction:NULL
+                          POSTAction:@selector(findElementsUsing:)
+                          PUTAction:NULL
+                          DELETEAction:NULL]];
   
   [self setResource:findElement withName:@"element"];
   [self setResource:findElements withName:@"elements"];
@@ -67,7 +59,7 @@
   
   NSMutableArray *output = [NSMutableArray arrayWithCapacity:[array count]];
   for (Element *elem in array) {
-    [output addObject:[elem url]];
+    [output addObject:[elem idDictionary]];
   }
   return output;
 }
@@ -102,7 +94,7 @@
   if ([[self viewController] jsElementIsNullOrUndefined:container]) {
     @throw [NSException webDriverExceptionWithMessage:
             [NSString stringWithFormat:@"Invalid xpath expression: %@", xpath]
-                                       webDriverClass:nil];
+                                        andStatusCode:EUNEXPECTEDJSERROR];
   }
   
   return [elementStore_ elementsFromJSArray:container];
@@ -248,13 +240,14 @@
   return [self findElementsByMethod:method query:query];
 }
 
-- (NSArray *)findElementUsing:(NSDictionary *)dict {
+- (NSDictionary *)findElementUsing:(NSDictionary *)dict {
+  NSLog(@"findElementUsing:%@", [dict description]);
   NSArray *results = [self findElementsUsing:dict];
   if (results && [results count] > 0)
-    return [NSArray arrayWithObject:[results objectAtIndex:0]];
+    return [results objectAtIndex:0];
   else
     @throw([NSException
             webDriverExceptionWithMessage:@"Unable to locate element"
-                           webDriverClass:@"org.openqa.selenium.NoSuchElementException"]);
+            andStatusCode:ENOSUCHELEMENT]);
 }
 @end

@@ -26,7 +26,6 @@ goog.provide('webdriver.FakeCommandProcessor');
 goog.require('goog.structs.Map');
 goog.require('goog.testing.asserts');
 goog.require('webdriver.AbstractCommandProcessor');
-goog.require('webdriver.Context');
 
 
 /**
@@ -52,17 +51,13 @@ goog.inherits(webdriver.FakeCommandProcessor,
  * @param {webdriver.CommandName} commandName The name of the command to set a
  *     response for.
  * @param {boolean} isFailure Whether the response is for a failure.
- * @param {webdriver.Context} context The context to include in the response.
  * @param {*} value The value of the response.
  * @param {*} opt_error Any errors to include with the response; if defined and
  *     non-null, the response will automatically be a failure.
  */
 webdriver.FakeCommandProcessor.prototype.setCannedResponse = function(
-    commandName,  isFailure, context, value, opt_error) {
-  context = goog.isString(context) ?
-            webdriver.Context.fromString(context) : context;
-  isFailure = isFailure || goog.isDef(opt_error);
-  var response = new webdriver.Response(isFailure, context, value, opt_error);
+    commandName, code, value) {
+  var response = new webdriver.Response(code, value);
   this.cannedResponses_.set(commandName, response);
 };
 
@@ -85,7 +80,8 @@ webdriver.FakeCommandProcessor.prototype.dispatchDriverCommand = function(
     command) {
   var cannedResponse = this.cannedResponses_.get(command.name, null);
   if (!cannedResponse) {
-    cannedResponse = new webdriver.Response(true, null, null,
+    cannedResponse = new webdriver.Response(
+        webdriver.Response.Code.UNKNOWN_COMMAND,
         Error('Unexpected command: ' + command.name));
   }
   command.setResponse(cannedResponse);

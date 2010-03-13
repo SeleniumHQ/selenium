@@ -21,13 +21,13 @@
 
 @class ElementStore;
 
-// This represents a web element accessible via :context/element/X where X is
+// This represents a web element accessible via :session/element/X where X is
 // the element's elementId. (These are numbers indexed from 0, with 0 reserved
 // for the document).
 @interface Element : HTTPVirtualDirectory {
  @private
   // The ID of the element. The element is accessible in JS at
-  // ELEM_ARRAY[id] or in REST at .../context/element/id
+  // ELEM_ARRAY[id] or in REST at .../session/element/id
   NSString *elementId_;
   
   // A link back to the element store. Needed for creating new elements.
@@ -49,7 +49,15 @@
 // Same as |elementFromJSObject:inStore:| above, but using the element's store.
 - (Element *)elementFromJSObject:(NSString *)object;
 
-// Get the relative URL for this element (relative to the context).
+// Returns the key for the element ID in the dictionary returned by
+// |idDictionary|.
++ (NSString *)elementIdKey;
+
+// Get the JSON dictionary with this element's ID for transmission
+// over the wire: |{"ELEMENT": "elementId"}|.
+- (NSDictionary *)idDictionary;
+
+// Get the relative URL for this element (relative to the session).
 - (NSString *)url;
 
 // Is this element the document?

@@ -20,20 +20,21 @@
 #import "ElementStore.h"
 
 // This category implements the findElement[s] methods accessable on
-// :context/element and :context/elements.
+// :session/element and :session/elements.
 // The methods simply forward the requests to the document |Element|'s
 // findElement methods.
 @interface ElementStore (FindElement)
 
-// Find and return a single element found after searching with the given search
-// method and query. The search method can be 'class', 'name', 'id',
-// 'link text' and 'class name'.
+// Find and return a single element found after searching with the given query.
+// The query should be sent in a dict which looks like:
+// {"value":"test_id_out", "using": "id"}
+// The search method can be 'class', 'name', 'id', 'link text', and 'class name'.
 // Throws an exception if no element can be found.
-- (NSArray *)findElementByMethod:(NSString *)method query:(NSString *)query;
+- (NSArray *)findElement:(NSDictionary *)data;
 
-// Find and return all matching elements for the search method and query.
-// Valid search methods are the same as for |findElementByMethod:query:| above.
+// Find and return all matching elements for the search query.
+// The search query should be defined the same as for |findElement:| above.
 // Throws an exception if no element can be found.
-- (NSArray *)findElementsByMethod:(NSString *)method query:(NSString *)query;
+- (NSArray *)findElements:(NSDictionary *)data;
 
 @end

@@ -22,7 +22,7 @@ import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.rest.ResultType;
 
-import java.util.Collections;
+import com.google.common.collect.ImmutableMap;
 
 public class FindActiveElement extends WebDriverHandler {
     private Response response;
@@ -36,7 +36,7 @@ public class FindActiveElement extends WebDriverHandler {
 
       WebElement element = getDriver().switchTo().activeElement();
       String elementId = getKnownElements().add(element);
-      response.setValue(Collections.singletonList(String.format("element/%s", elementId)));
+      response.setValue(ImmutableMap.of("ELEMENT", elementId));
 
       return ResultType.SUCCESS;
     }

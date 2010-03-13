@@ -15,13 +15,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package org.openqa.selenium.firefox.internal;
+package org.openqa.selenium.remote.internal;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.OutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 
 /**
  * Captures the last N bytes of output.
@@ -34,20 +34,23 @@ public class CircularOutputStream extends OutputStream {
   private byte[] buffer;
   private FileOutputStream out_log;
 
-  public CircularOutputStream(int maxSize) {
+  public CircularOutputStream(File outputFile, int maxSize) {
     buffer = new byte[maxSize];
-    String firefoxLogFile = System.getProperty("webdriver.firefox.logfile");
-    if (firefoxLogFile != null) {
+    if (outputFile != null) {
       try {
-        out_log = new FileOutputStream(new File(firefoxLogFile));
+        out_log = new FileOutputStream(outputFile);
       } catch (FileNotFoundException e) {
         out_log = null;
       }
     }
   }
 
-  public CircularOutputStream() {
-    this(DEFAULT_SIZE);
+  public CircularOutputStream(File outputFile) {
+    this(outputFile, DEFAULT_SIZE);
+  }
+
+  public CircularOutputStream(int maxSize) {
+    this(null, maxSize);
   }
 
   @Override
@@ -79,8 +82,13 @@ public class CircularOutputStream extends OutputStream {
       return new String(toReturn);
     }
 
-    System.arraycopy(buffer, start, toReturn, 0, buffer.length - start);
-    System.arraycopy(buffer, 0, toReturn, buffer.length - start, end);
+    int copyStart = buffer.length - start;
+    if (copyStart == buffer.length) {
+      copyStart = 0;
+    }
+
+    System.arraycopy(buffer, start, toReturn, 0, copyStart);
+    System.arraycopy(buffer, 0, toReturn, copyStart, end);
     return new String(toReturn);
   }
 }

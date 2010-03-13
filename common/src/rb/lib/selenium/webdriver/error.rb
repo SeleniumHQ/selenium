@@ -11,13 +11,13 @@ module Selenium
       class NoSuchDriverError < WebDriverError; end            # 6
       class NoSuchElementError < WebDriverError; end           # 7
       class NoSuchFrameError < WebDriverError; end             # 8
-      # NotImplementedError                                    # 9 - just use Ruby's
+      class UnknownCommandError < WebDriverError; end          # 9
       class ObsoleteElementError < WebDriverError; end         # 10
       class ElementNotDisplayedError < WebDriverError; end     # 11
       class ElementNotEnabledError < WebDriverError; end       # 12
       class UnhandledError < WebDriverError; end               # 13
       class ExpectedError < WebDriverError; end                # 14
-      class ElementNotSelectedError < WebDriverError; end      # 15
+      class ElementNotSelectableError < WebDriverError; end    # 15
       class NoSuchDocumentError < WebDriverError; end          # 16
       class UnexpectedJavascriptError < WebDriverError; end    # 17
       class NoScriptResultError < WebDriverError; end          # 18
@@ -26,6 +26,8 @@ module Selenium
       class TimeOutError < WebDriverError; end                 # 21
       class NullPointerError < WebDriverError; end             # 22
       class NoSuchWindowError < WebDriverError; end            # 23
+      class InvalidCookieDomainError < WebDriverError; end     # 24
+      class UnableToSetCookieError < WebDriverError; end       # 25
       class UnsupportedOperationError < WebDriverError; end
 
       Errors = [
@@ -37,13 +39,13 @@ module Selenium
         NoSuchDriverError,
         NoSuchElementError,
         NoSuchFrameError,
-        NotImplementedError,
+        UnknownCommandError,
         ObsoleteElementError,
         ElementNotDisplayedError,
         ElementNotEnabledError,
         UnhandledError,
         ExpectedError,
-        ElementNotSelectedError,
+        ElementNotSelectableError,
         NoSuchDocumentError,
         UnexpectedJavascriptError,
         NoScriptResultError,
@@ -51,7 +53,9 @@ module Selenium
         NoSuchCollectionError,
         TimeOutError,
         NullPointerError,
-        NoSuchWindowError
+        NoSuchWindowError,
+        InvalidCookieDomainError,
+        UnableToSetCookieError
       ]
 
       class << self

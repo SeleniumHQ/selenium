@@ -8,7 +8,7 @@ module Selenium
 
       def home
         # jruby has an issue with ENV['HOME'] on Windows
-        @home ||= Platform.jruby? ? java.lang.System.getProperty('user.home') : ENV['HOME']
+        @home ||= Platform.jruby? ? Java.java.lang.System.getProperty('user.home') : ENV['HOME']
       end
 
       def platform

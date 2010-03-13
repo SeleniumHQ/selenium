@@ -21,31 +21,31 @@
 
 // This class wraps a standard obj-c method into a method which webdriver can
 // call. Method arguments are passed in through PUT/POST data. The data is
-// a JSON array. The array elements sequentially match the method arguments.
-// The return value from the method is passed back through a |WebDriverResponse|
-// object.
+// a JSON object of named parameters. The return value from the method is passed
+// back through a |WebDriverResponse| object.
 //
-// For example, the client (WebDriver) might POST to /session/1001/foo/element
-// with data ["name","form2"] . The |Element| virtual directory maps
-// /element to a |WebDriverResource| using the method:
+// For example, the client (WebDriver) might POST to /session/1001/element
+// with data {"using":"name","value":"form2"}. The |Element| virtual directory
+// maps /element to a |WebDriverResource| using the method:
 // -(NSArray *)findElementBy:(NSString)method withQuery:(NSString *)query;
 // |WebDriverResource| calls the method as:
-//   [target findElementBy:@"name" withQuery:@"form2"];
-// The method returns an array of strings. |WebDriverResource| (with help from
-// |WebDriverResponse| and |JSONRESTResource|) converts that
-// return value back into JSON and wraps it in a |WebDriverResponse|:
+//   [target findElement:data];
+// where |data| is the parsed JSON data.  The method returns a dictionary with
+// the mapped GUID.  |WebDriverResource| (with help from |WebDriverResponse| and
+// |JSONRESTResource|) converts that return value back into JSON and wraps it
+// in a |WebDriverResponse|:
 // {
-//   value:["element/1"],
-//   context:"foo",
+//   value:{"ELEMENT":1},
 //   sessionId:"1001",
-//   error:false
+//   status:0,
 // }
 // This is then sent back to the client in response.
 //
 // Methods can throw exceptions to signal errors. These exceptions are sent back
 // to WebDriver. If the method throws an exception, the value property in the
 // response is the exception object (or details of the exception object) and
-// error: is set to true.
+// status: is set to the code indicated by the exception (or set to
+// |EUNHANDLEDERROR| if the exception userInfo does not specify a status code.
 //
 // For more details of the protocol see:
 //   http://code.google.com/p/webdriver/wiki/JsonWireProtocol
@@ -55,15 +55,13 @@
   
   // These two fields are needed for when we make |WebDriverResponse|s.
   // Due to the architecture of |VirtualDirectory|, we have to cache the
-  // session and context like this.
+  // session like this.
   NSString *session_;
-  NSString *context_;
   
   BOOL allowOptionalArguments_;
 }
 
 @property (nonatomic, copy) NSString *session;
-@property (nonatomic, copy) NSString *context;
 
 // Allow some of the method's arguments to be optional. If optional arguments
 // are not specified, nil is passed in in their place.

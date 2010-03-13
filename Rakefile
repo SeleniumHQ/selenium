@@ -367,11 +367,13 @@ java_jar(:name => "webdriver-firefox",
     :srcs  => [ "firefox/src/java/**/*.java" ],
     :deps => [
                :common,
+               :remote_client,
+               :remote_common,
                :firefox_xpi,
                :libnoblur,
                "firefox/lib/runtime/*.jar"
              ],
-    :resources => [ 
+    :resources => [
                     :firefox_xpi,
                     { "linux/Release/x_ignore_nofocus.so" => "x86/x_ignore_nofocus.so" },
                     { "linux64/Release/x_ignore_nofocus.so" => "amd64/x_ignore_nofocus.so" }
@@ -493,7 +495,7 @@ java_uberjar(:name => "selenium-server",
                          ],
              :main => "org.openqa.selenium.server.SeleniumServer",
              :no_libs => true)
-             
+
 task :'selenium-server_zip' do
   temp = "build/selenium-server_zip"
   mkdir_p temp
@@ -601,17 +603,17 @@ java_jar(:name => "selenium-core",
 
 selenium_test(:name => "test_core_firefox",
               :srcs => [ "common/test/js/core/*.js" ],
-              :deps => [ 
+              :deps => [
                 :"webdriver-remote-server",
-                :"selenium-core" 
+                :"selenium-core"
               ],
               :browser => "*chrome" )
-        
+
 selenium_test(:name => "test_core_ie",
               :srcs => [ "common/test/js/core/*.js" ],
-              :deps => [ 
+              :deps => [
                 :"webdriver-remote-server",
-                :"selenium-core" 
+                :"selenium-core"
               ],
               :browser => "*iexploreproxy")
 
@@ -641,13 +643,14 @@ task :javadocs => [:common, :firefox, :htmlunit, :jobbie, :remote, :support, :ch
      sourcepath += ":#{m}/src/java"
    end
    cmd = "javadoc -d build/javadoc -sourcepath #{sourcepath} -classpath #{classpath} -subpackages org.openqa.selenium -subpackages com.thoughtworks"
-   if (windows?) 
-     cmd = cmd.gsub(/\//, "\\").gsub(/:/, ";") 
+   if (windows?)
+     cmd = cmd.gsub(/\//, "\\").gsub(/:/, ";")
    end
    sh cmd
 end
 
-task :test_firefox_py => [:firefox, :firefox_xpi] do
+# Installs the webdriver python bindings using virtualenv for testing.
+task :webdriver_py => [:chrome, :firefox, :firefox_xpi, :remote_client] do
   if python? then
     sh "virtualenv build/python", :verbose => true do |ok, res|
         if ! ok
@@ -657,15 +660,77 @@ task :test_firefox_py => [:firefox, :firefox_xpi] do
             puts ""
         end
     end
+
     sh "build/python/bin/pip install simplejson py", :verbose => true
+
+    # Copy browser extensions over to src so setup.py will pick them up. This is such a hack.
+    cp 'build/chrome-extension.zip', "chrome/src/py/", :verbose => true
     cp 'build/webdriver-extension.zip', "firefox/src/py/", :verbose => true
+
     sh "build/python/bin/python setup.py build", :verbose => true
+
+    # Remove the extensions we copied to src.
+    rm "chrome/src/py/chrome-extension.zip", :verbose => true
+    rm "firefox/src/py/webdriver-extension.zip", :verbose => true
+  end
+end
+
+task :test_chrome_py => :webdriver_py do
+  if python? then
+    sh "virtualenv build/python", :verbose => true do |ok, res|
+        if ! ok
+            puts ""
+            puts "PYTHON DEPENDENCY ERROR: Virtualenv not found."
+            puts "Please run '[sudo] pip install virtualenv'"
+            puts ""
+        end
+    end
+    if File.exists?('build/python/bin/py.test')
+        py_test = 'build/python/bin/py.test'
+    else
+        py_test = 'py.test'
+    end
+    test_dir = Dir.glob('build/lib**/selenium/chrome_tests').first
+    sh py_test, test_dir, :verbose => true
+  end
+end
+
+task :test_firefox_py => :webdriver_py do
+  if python? then
+    sh "virtualenv build/python", :verbose => true do |ok, res|
+        if ! ok
+            puts ""
+            puts "PYTHON DEPENDENCY ERROR: Virtualenv not found."
+            puts "Please run '[sudo] pip install virtualenv'"
+            puts ""
+        end
+    end
     if File.exists?('build/python/bin/py.test')
         py_test = 'build/python/bin/py.test'
     else
         py_test = 'py.test'
     end
     test_dir = Dir.glob('build/lib**/selenium/firefox_tests').first
+    sh py_test, test_dir, :verbose => true
+  end
+end
+
+task :test_remote_py => [:webdriver_py, :'selenium-server-standalone'] do
+  if python? then
+    sh "virtualenv build/python", :verbose => true do |ok, res|
+        if ! ok
+            puts ""
+            puts "PYTHON DEPENDENCY ERROR: Virtualenv not found."
+            puts "Please run '[sudo] pip install virtualenv'"
+            puts ""
+        end
+    end
+    if File.exists?('build/python/bin/py.test')
+        py_test = 'build/python/bin/py.test'
+    else
+        py_test = 'py.test'
+    end
+    test_dir = Dir.glob('build/lib**/selenium/remote_tests').first
     sh py_test, test_dir, :verbose => true
   end
 end

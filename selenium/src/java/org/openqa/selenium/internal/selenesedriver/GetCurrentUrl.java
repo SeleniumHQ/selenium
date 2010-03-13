@@ -19,11 +19,11 @@ package org.openqa.selenium.internal.selenesedriver;
 
 import com.thoughtworks.selenium.Selenium;
 
-import org.openqa.selenium.internal.selenesedriver.SeleneseFunction;
+import java.util.Map;
 
 public class GetCurrentUrl implements SeleneseFunction<String> {
 
-  public String apply(Selenium selenium, Object... args) {
+  public String apply(Selenium selenium, Map<String, ?> args) {
     return selenium.getLocation();
   }
 }

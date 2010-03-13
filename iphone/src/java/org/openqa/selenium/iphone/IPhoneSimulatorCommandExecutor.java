@@ -1,26 +1,50 @@
+/*
+ Copyright 2007-2010 WebDriver committers
+ Copyright 2007-2010 Google Inc.
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+ http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+ */
+
 package org.openqa.selenium.iphone;
 
+import com.google.common.annotations.VisibleForTesting;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.HttpCommandExecutor;
 import org.openqa.selenium.remote.Response;
-import org.openqa.selenium.remote.internal.SubProcess;
 
 import java.io.IOException;
+import java.net.ConnectException;
 import java.net.HttpURLConnection;
+import java.net.ProtocolException;
 import java.net.URL;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * A {@link CommandExecutor} that communicates with an iPhone Simulator
  * running on localhost in a subprocess. Before executing each command, the
  * {@link IPhoneSimulatorCommandExecutor} will verify that the simulator is
- * still running and throw an {@link IPhoneSimulatorDiedException} if it is
- * not.
+ * still running and throw an {@link IPhoneSimulatorNotRunningException} if it
+ * is not.
  *
  * @author jmleyba@gmail.com (Jason Leyba)
  */
 public class IPhoneSimulatorCommandExecutor implements CommandExecutor {
+
+  private static final Logger LOG =
+      Logger.getLogger(IPhoneSimulatorCommandExecutor.class.getName());
 
   private final CommandExecutor delegate;
   private final IPhoneSimulatorBinary binary;
@@ -30,6 +54,10 @@ public class IPhoneSimulatorCommandExecutor implements CommandExecutor {
     this.delegate = new HttpCommandExecutor(url);
     this.binary = binary;
     this.appUrl = url;
+  }
+
+  @VisibleForTesting IPhoneSimulatorBinary getBinary() {
+    return binary;
   }
 
   public void startClient() {
@@ -48,6 +76,8 @@ public class IPhoneSimulatorCommandExecutor implements CommandExecutor {
         connection.setRequestMethod("TRACE");
         connection.connect();
         responding = true;
+      } catch (ProtocolException e) {
+        responding = false;
       } catch (IOException e) {
         responding = false;
       } finally {
@@ -63,17 +93,32 @@ public class IPhoneSimulatorCommandExecutor implements CommandExecutor {
   }
 
   public Response execute(Command command) throws Exception {
-    if (binary.getState().equals(SubProcess.State.FINISHED)) {
-      throw new IPhoneSimulatorDiedException();
-    } else if (binary.getState().equals(SubProcess.State.NOT_RUNNING)) {
-      throw new IPhoneSimulatorNotStartedException();
+    if (!binary.isRunning()) {
+      throw new IPhoneSimulatorNotRunningException();
     }
-    return delegate.execute(command);
+
+    try {
+      return delegate.execute(command);
+    } catch (ConnectException e) {
+      LOG.log(Level.WARNING, "Connection refused?", e);
+      if (!binary.isRunning()) {
+        throw new IPhoneSimulatorNotRunningException("The iPhone Simulator died!", e);
+      }
+      throw e;
+    }
   }
 
-  public static class IPhoneSimulatorDiedException extends WebDriverException {
-  }
+  public static class IPhoneSimulatorNotRunningException extends WebDriverException {
+    public IPhoneSimulatorNotRunningException() {
+      super("The iPhone Simulator is not currently running!");
+    }
 
-  public static class IPhoneSimulatorNotStartedException extends WebDriverException {
+    public IPhoneSimulatorNotRunningException(Throwable cause) {
+      super("The iPhone Simulator is not currently running!", cause);
+    }
+
+    public IPhoneSimulatorNotRunningException(String message, Throwable cause) {
+      super(message, cause);
+    }
   }
 }

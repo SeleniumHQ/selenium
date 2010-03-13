@@ -16,12 +16,13 @@
 """WebElement implementation."""
 import urllib
 import utils
+from command import Command
 from ..common.exceptions import ErrorInResponseException
 from ..common.exceptions import NoSuchElementException
 
 class WebElement(object):
     """Represents an HTML element.
-    
+
     Generally, all interesting operations to do with interacting with a page
     will be performed through this interface."""
     def __init__(self, parent, id_):
@@ -30,59 +31,81 @@ class WebElement(object):
 
     def get_text(self):
         """Gets the text of the element."""
-        return self._get("text")
+        return self._execute(Command.GET_ELEMENT_TEXT)['value']
 
     def click(self):
         """Clicks the element."""
-        self._post("click", {"id": self.id})
+        self._execute(Command.CLICK_ELEMENT)
 
     def submit(self):
         """Submits a form."""
-        self._post("submit", {"id": self.id})
+        self._execute(Command.SUBMIT_ELEMENT)
 
     def get_value(self):
         """Gets the value of the element's value attribute."""
-        return self._get("value")
+        return self._execute(Command.GET_ELEMENT_VALUE)['value']
 
     def clear(self):
         """Clears the text if it's a text entry element."""
-        self._post("clear", {"id": self.id})
+        self._execute(Command.CLEAR_ELEMENT)
 
     def get_attribute(self, name):
         """Gets the attribute value."""
-        return self._get("attribute/%s" % name)
+        resp = self._execute(Command.GET_ELEMENT_ATTRIBUTE, {'name':name})
+        return resp['value']
 
     def toggle(self):
         """Toggles the element state."""
-        self._post("toggle", {"id": self.id})
+        self._execute(Command.TOGGLE_ELEMENT)
 
     def is_selected(self):
         """Whether the element is selected."""
-        return self._get("selected")
+        return self._execute(Command.IS_ELEMENT_SELECTED)['value']
 
     def set_selected(self):
         """Selects an elmeent."""
-        self._post("selected", {"id": self.id})
+        self._execute(Command.SET_ELEMENT_SELECTED)
 
     def is_enabled(self):
         """Whether the element is enabled."""
-        return self._get("enabled")
-        
+        return self._execute(Command.IS_ELEMENT_ENABLED)['value']
+
     def is_displayed(self):
         """Whether the element would be visible to a user"""
-        return self._get("displayed")
+        return self._execute(Command.IS_ELEMENT_DISPLAYED)['value']
 
     def find_element_by_id(self, id_):
         """Finds element by id."""
         return self._get_elem_by("id", id_)
 
+    def find_elements_by_id(self, id_):
+        return self._get_elems_by("id", id_)
+
     def find_element_by_name(self, name):
         """Find element by name."""
         return self._get_elem_by("name", name)
+        
+    def find_elements_by_name(self, name):
+        return self._get_elems_by("name", name)
 
     def find_element_by_link_text(self, link_text):
         """Finds element by link text."""
         return self._get_elem_by("link text", link_text)
+        
+    def find_elements_by_link_text(self, link_text):
+        return self._get_elems_by("link text", link_text)
+        
+    def find_element_by_partial_link_text(self, link_text):
+        return self._get_elem_by("partial link text", link_text)
+        
+    def find_elements_by_partial_link_text(self, link_text):
+        return self._get_elems_by("partial link text", link_text)
+        
+    def find_element_by_tag_name(self, name):
+        return self._get_elem_by("tag name", name)
+        
+    def find_elements_by_tag_name(self, name):
+        return self._get_elems_by("tag name", name)
 
     def find_element_by_xpath(self, xpath):
         """Finds element by xpath."""
@@ -90,16 +113,11 @@ class WebElement(object):
 
     def find_elements_by_xpath(self, xpath):
         """Finds elements within the elements by xpath."""
-        resp = self._post("elements/xpath",
-                          {"using": "xpath", "value": xpath})
-        elems = []
-        for token in resp:
-            elems.append(self._get_elem(token))
-        return elems
+        return self._get_elems_by("xpath", xpath)
 
     def send_keys(self, *value):
         """Simulates typing into the element."""
-        self._post("value", {"id": self.id, "value":value})
+        self._execute(Command.SEND_KEYS_TO_ELEMENT, {'value':value})
 
     @property
     def parent(self):
@@ -109,28 +127,25 @@ class WebElement(object):
     def id(self):
         return self._id
 
-    def _get(self, path, *params):
-        """Sends the command using http GET method."""
-        return utils.return_value_if_exists(
-            utils.get_root_parent(self).conn.get(
-                ("element/%s/" % self.id) + path, *params))
+    def _execute(self, command, params=None):
+        """Executes a command against the underlying HTML element.
 
-    def _post(self, path, *params):
-        """Sends the command using http POST method."""
-        return utils.return_value_if_exists(
-            utils.get_root_parent(self).conn.post(
-                ("element/%s/" % self.id) + path, *params))
+        Args:
+          command: The name of the command to execute as a string.
+          params: A dictionary of named parameters to send with the command.
 
-    def _get_elem(self, resp_value):
-        """Creates a WebElement from a response token."""
-        return WebElement(self, resp_value.split("/")[1])
+        Returns:
+          The command's JSON response loaded into a dictionary object.
+        """
+        if not params:
+            params = {}
+        params['id'] = self._id
+        return self._parent._execute(command, params)
 
     def _get_elem_by(self, by, value):
-        try:
-            resp = self._post(urllib.quote("element/%s" % by),
-                              {"using": by, "value": value})
-            if not resp:
-                raise NoSuchElementException()
-            return self._get_elem(resp[0])
-        except ErrorInResponseException, ex:
-            utils.handle_find_element_exception(ex)
+        return self._execute(Command.FIND_CHILD_ELEMENT,
+                             {"using": by, "value": value})['value']
+
+    def _get_elems_by(self, by, value):
+        return self._execute(Command.FIND_CHILD_ELEMENTS,
+                             {"using": by, "value": value})['value']

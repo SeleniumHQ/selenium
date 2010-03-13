@@ -19,7 +19,6 @@ package org.openqa.selenium.remote.server;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.Capabilities;
-import org.openqa.selenium.remote.Context;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.events.EventFiringWebDriver;
 
@@ -68,7 +67,7 @@ public class Session {
     return future.get();
   }
 
-  public WebDriver getDriver(Context context) {
+  public WebDriver getDriver() {
     return driver;
   }
 

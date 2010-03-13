@@ -23,9 +23,10 @@ import java.util.Map;
 
 public class GetElementAttribute extends ElementFunction<String> {
 
-  public String apply(Selenium selenium, Object... args) {
+  public String apply(Selenium selenium, Map<String, ?> args) {
     String locator = getLocator(args);
 
-    return selenium.getAttribute(locator + "@" + ((Map) args[0]).get("name"));
+    String name = (String) args.get("name");
+    return selenium.getAttribute(locator + "@" + name);
   }
 }

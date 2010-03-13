@@ -15,7 +15,8 @@ class CookieTest(unittest.TestCase):
                          "value": "bar",
                          "expires": str(int(timestamp)) + "000",
                          "domain": "localhost",
-                         "path": "/"}
+                         "path": "/",
+                         "secure": False}
 
     def testAddCookie(self):
         self.driver.add_cookie(utils.convert_cookie_to_json(self.COOKIE_A))

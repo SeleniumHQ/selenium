@@ -2,6 +2,7 @@ package org.openqa.selenium.firefox.internal;
 
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.remote.internal.CircularOutputStream;
 
 import java.io.File;
 import java.io.OutputStream;
@@ -217,6 +218,8 @@ public class Executable {
   }
 
   public OutputStream getDefaultOutputStream() {
-    return new CircularOutputStream();
+    String firefoxLogFile = System.getProperty("webdriver.firefox.logfile");
+    File logFile = firefoxLogFile == null ? null : new File(firefoxLogFile);
+    return new CircularOutputStream(logFile);
   }
 }

@@ -30,7 +30,6 @@ goog.require('goog.events.EventTarget');
 goog.require('webdriver.By.Locator');
 goog.require('webdriver.Command');
 goog.require('webdriver.CommandName');
-goog.require('webdriver.Context');
 goog.require('webdriver.Response');
 goog.require('webdriver.WebElement');
 goog.require('webdriver.timing');
@@ -111,13 +110,6 @@ webdriver.WebDriver = function(commandProcessor) {
   this.isPaused_ = false;
 
   /**
-   * This instances current context (window and frame ID).
-   * @type {webdriver.Context}
-   * @private
-   */
-  this.context_ = new webdriver.Context();
-
-  /**
    * This instance's current session ID.  Set with the
    * {@code webdriver.WebDriver.prototype.newSession} command.
    * @type {?string}
@@ -159,15 +151,15 @@ webdriver.WebDriver.EventType = {
 
 
 /**
- * Enumeration of the supported mouse speeds.
+ * Enumeration of the supported input speeds.
  * @enum {number}
- * @see webdriver.WebDriver.prototype.setMouseSpeed
- * @see webdriver.WebDriver.prototype.getMouseSpeed
+ * @see webdriver.WebDriver.prototype.setSpeed
+ * @see webdriver.WebDriver.prototype.getSpeed
  */
 webdriver.WebDriver.Speed = {
-  SLOW: 1,
-  MEDIUM: 10,
-  FAST: 100
+  SLOW: 'SLOW',
+  MEDIUM: 'MEDIUM',
+  FAST: 'FAST'
 };
 
 
@@ -191,7 +183,6 @@ webdriver.WebDriver.prototype.disposeInternal = function() {
   delete this.pendingCommands_;
   delete this.queuedCommands_;
   delete this.isPaused_;
-  delete this.context_;
   delete this.sessionLocked_;
   delete this.sessionId_;
   delete this.commandInterval_;
@@ -203,13 +194,11 @@ webdriver.WebDriver.prototype.disposeInternal = function() {
 /**
  * Queues a command to execute.
  * @param {webdriver.CommandName} name The name of the command to execute.
- * @param {webdriver.WebElement} opt_element The element that is the target
- *     of the new command.
  * @return {webdriver.Command} The new command.
  * @protected
  */
-webdriver.WebDriver.prototype.addCommand = function(name, opt_element) {
-  var command = new webdriver.Command(this, name, opt_element);
+webdriver.WebDriver.prototype.addCommand = function(name) {
+  var command = new webdriver.Command(this, name);
   goog.array.peek(this.queuedCommands_).push(command);
   return command;
 };
@@ -229,7 +218,7 @@ webdriver.WebDriver.prototype.isIdle = function() {
   // not process any more commands, so we consider this idle.
   var pendingCommand = goog.array.peek(this.pendingCommands_);
   if (pendingCommand && pendingCommand.isFinished() &&
-      pendingCommand.getResponse().isFailure) {
+      !pendingCommand.getResponse().isSuccess()) {
     return true;
   }
   return !pendingCommand && this.queuedCommands_.length == 1 &&
@@ -297,7 +286,7 @@ webdriver.WebDriver.prototype.processCommands_ = function() {
     return;
   }
 
-  if (pendingCommand && pendingCommand.getResponse().isFailure) {
+  if (pendingCommand && !pendingCommand.getResponse().isSuccess()) {
     // Or should we be throwing this to be caught by window.onerror?
     this.logger_.severe(
         'Unhandled command failure; halting command processing:\n' +
@@ -330,23 +319,6 @@ webdriver.WebDriver.prototype.processCommands_ = function() {
  */
 webdriver.WebDriver.prototype.getSessionId = function() {
   return this.sessionId_;
-};
-
-
-/**
- * @return {webdriver.Context} This instance's current context.
- */
-webdriver.WebDriver.prototype.getContext = function() {
-  return this.context_;
-};
-
-
-/**
- * Sets this driver's context.
- * @param {webdriver.Context} context The new context.
- */
-webdriver.WebDriver.prototype.setContext = function(context) {
-  return this.context_ = context;
 };
 
 
@@ -445,7 +417,7 @@ webdriver.WebDriver.prototype.pause = function() {
  *     sleep.
  */
 webdriver.WebDriver.prototype.sleep = function(ms) {
-  this.addCommand(webdriver.CommandName.SLEEP).setParameters(ms);
+  this.addCommand(webdriver.CommandName.SLEEP).setParameter('ms', ms);
 };
 
 
@@ -465,7 +437,8 @@ webdriver.WebDriver.prototype.callFunction = function(fn, opt_selfObj,
   var previousCommand = goog.array.peek(frame);
   args.push(previousCommand ? previousCommand.getFutureResult() : null);
   return this.addCommand(webdriver.CommandName.FUNCTION).
-      setParameters(fn, opt_selfObj, args).
+      setParameter('function', goog.bind(fn, opt_selfObj)).
+      setParameter('args', args).
       getFutureResult();
 };
 
@@ -528,7 +501,8 @@ webdriver.WebDriver.prototype.wait = function(conditionFn, timeout, opt_self,
   }
 
   this.addCommand(webdriver.CommandName.WAIT).
-      setParameters(pollFunction, null, [0, null]);
+      setParameter('function', pollFunction).
+      setParameter('args', [0, null]);
 };
 
 
@@ -575,8 +549,7 @@ webdriver.WebDriver.prototype.newSession = function() {
 webdriver.WebDriver.prototype.switchToWindow = function(name) {
   this.callFunction(function() {
     this.addCommand(webdriver.CommandName.SWITCH_TO_WINDOW).
-        setParameters(name);
-    this.callFunction(this.setContext, this);
+        setParameter('name', name);
   }, this);
 };
 
@@ -593,13 +566,8 @@ webdriver.WebDriver.prototype.switchToWindow = function(name) {
  */
 webdriver.WebDriver.prototype.switchToFrame = function(frame) {
   this.callFunction(function() {
-    var commandName = webdriver.CommandName.SWITCH_TO_FRAME;
-    var command;
-    if (goog.isString(frame) || goog.isNumber(frame)) {
-      command = this.addCommand(commandName).setParameters(frame);
-    } else {
-      command = this.addCommand(commandName, frame);
-    }
+    this.addCommand(webdriver.CommandName.SWITCH_TO_FRAME).
+        setParameter('id', frame);
   }, this);
 };
 
@@ -609,10 +577,7 @@ webdriver.WebDriver.prototype.switchToFrame = function(frame) {
  * contains iframes.
  */
 webdriver.WebDriver.prototype.switchToDefaultContent = function() {
-  this.callFunction(function() {
-    this.addCommand(webdriver.CommandName.SWITCH_TO_DEFAULT_CONTENT).
-        setParameters(null);
-  }, this);
+  return this.switchToFrame(null);
 };
 
 
@@ -659,27 +624,26 @@ webdriver.WebDriver.prototype.close = function() {
  * Helper function for converting an argument to a script into a parameter
  * object to send with the {@code webdriver.Command}.
  * @param {*} arg The value to convert.
- * @return {Object} A JSON object with "type" and "value" properties.
+ * @return {*} The converted value.
  * @see {webdriver.WebDriver.prototype.executeScript}
  * @private
  */
 webdriver.WebDriver.wrapScriptArgument_ = function(arg) {
-  var type, value;
   if (arg instanceof webdriver.WebElement) {
-    type = 'ELEMENT';
-    value = arg.getId();
+    return {'ELEMENT': arg.getId()};
+  } else if (arg == null || !goog.isDef(arg)) {
+    return null;
   } else if (goog.isBoolean(arg) ||
              goog.isNumber(arg) ||
              goog.isString(arg)) {
-    type = goog.typeOf(arg).toUpperCase();
-    value = arg;
+    return arg;
   } else if (goog.isArray(arg)) {
-    type = goog.typeOf(arg).toUpperCase();
-    value = goog.array.map(arg, webdriver.WebDriver.wrapScriptArgument_);
-  } else {
+    return goog.array.map(arg, webdriver.WebDriver.wrapScriptArgument_);
+  } else if (goog.isFunction(arg)) {
     throw new Error('Invalid script argument type: ' + goog.typeOf(arg));
+  } else {
+    return goog.object.map(arg, webdriver.WebDriver.wrapScriptArgument_);
   }
-  return {'type': type, 'value': value};
 };
 
 
@@ -691,19 +655,17 @@ webdriver.WebDriver.wrapScriptArgument_ = function(arg) {
  * @private
  */
 webdriver.WebDriver.prototype.unwrapScriptResult_ = function(result) {
-  switch (result.type) {
-    case 'ELEMENT':
-      var element = new webdriver.WebElement(this);
-      element.getId().setValue(result.value);
-      return element;
-
-    case 'ARRAY':
-      return goog.array.map(result.value, goog.bind(
-          this.unwrapScriptResult_, this));
-
-    default:
-      return result.value;
+  if (goog.isArray(result)) {
+    return goog.array.map(result, goog.bind(this.unwrapScriptResult_, this));
   }
+
+  if (result != null && goog.isObject(result) && 'ELEMENT' in result) {
+    var element = new webdriver.WebElement(this);
+    element.getId().setValue(result['ELEMENT']);
+    return element;
+  }
+
+  return result;
 };
 
 
@@ -721,7 +683,8 @@ webdriver.WebDriver.prototype.executeScript = function(script, var_args) {
       webdriver.WebDriver.wrapScriptArgument_);
   return this.callFunction(function() {
     this.addCommand(webdriver.CommandName.EXECUTE_SCRIPT).
-        setParameters(script, args);
+        setParameter("script", script).
+        setParameter("args", args);
     return this.callFunction(function(prevResult) {
       return this.unwrapScriptResult_(prevResult);
     }, this);
@@ -736,7 +699,7 @@ webdriver.WebDriver.prototype.executeScript = function(script, var_args) {
 webdriver.WebDriver.prototype.get = function(url) {
   this.callFunction(function() {
     this.addCommand(webdriver.CommandName.GET).
-        setParameters(url.toString());
+        setParameter('url', url.toString());
   }, this);
 };
 
@@ -745,7 +708,7 @@ webdriver.WebDriver.prototype.get = function(url) {
  * Navigate backwards in the current browser window's history.
  */
 webdriver.WebDriver.prototype.back = function() {
-  this.addCommand(webdriver.CommandName.BACK);
+  this.addCommand(webdriver.CommandName.GO_BACK);
 };
 
 
@@ -753,7 +716,7 @@ webdriver.WebDriver.prototype.back = function() {
  * Navigate forwards in the current browser window's history.
  */
 webdriver.WebDriver.prototype.forward = function() {
-  this.addCommand(webdriver.CommandName.FORWARD);
+  this.addCommand(webdriver.CommandName.GO_FORWARD);
 };
 
 
@@ -796,9 +759,14 @@ webdriver.WebDriver.prototype.getTitle = function() {
 webdriver.WebDriver.prototype.findElement = function(by) {
   var webElement = new webdriver.WebElement(this);
   var locator = webdriver.By.Locator.checkLocator(by);
-  var command = this.addCommand(webdriver.CommandName.FIND_ELEMENT).
-      setParameters(locator.type, locator.target);
-  webElement.getId().setValue(command.getFutureResult());
+  this.callFunction(function() {
+    var command = this.addCommand(webdriver.CommandName.FIND_ELEMENT).
+        setParameter("using", locator.type).
+        setParameter("value", locator.target);
+    this.callFunction(function(id) {
+      webElement.getId().setValue(id['ELEMENT']);
+    });
+  }, this);
   return webElement;
 };
 
@@ -816,7 +784,8 @@ webdriver.WebDriver.prototype.isElementPresent = function(by) {
   var locator = webdriver.By.Locator.checkLocator(by);
   return this.callFunction(function() {
     var findCommand = this.addCommand(webdriver.CommandName.FIND_ELEMENT).
-        setParameters(locator.type, locator.target);
+        setParameter("using", locator.type).
+        setParameter("value", locator.target);
     var commandFailed = false;
     var key = goog.events.listenOnce(findCommand,
         webdriver.Command.ERROR_EVENT, function(e) {
@@ -853,13 +822,14 @@ webdriver.WebDriver.prototype.findElements = function(by) {
   var locator = webdriver.By.Locator.checkLocator(by);
   return this.callFunction(function() {
     this.addCommand(webdriver.CommandName.FIND_ELEMENTS).
-        setParameters(locator.type, locator.target);
+        setParameter("using", locator.type).
+        setParameter("value", locator.target);
     return this.callFunction(function(ids) {
       var elements = [];
       for (var i = 0; i < ids.length; i++) {
         if (ids[i]) {
           var element = new webdriver.WebElement(this);
-          element.getId().setValue(ids[i]);
+          element.getId().setValue(ids[i]['ELEMENT']);
           elements.push(element);
         }
       }
@@ -870,21 +840,21 @@ webdriver.WebDriver.prototype.findElements = function(by) {
 
 
 /**
- * Adjust the speed of the mouse for mouse related commands.
+ * Adjust the speed of user input.
  * @param {webdriver.WebDriver.Speed} speed The new speed setting.
  */
-webdriver.WebDriver.prototype.setMouseSpeed = function(speed) {
-  this.addCommand(webdriver.CommandName.SET_MOUSE_SPEED).
-      setParameters(speed);
+webdriver.WebDriver.prototype.setSpeed = function(speed) {
+  this.addCommand(webdriver.CommandName.SET_SPEED).
+      setParameter("speed", speed);
 };
 
 
 /**
- * Fetch the current mouse speed.
+ * Fetch the current user input speed.
  * @return {webdriver.Future} A Future whose value will be set by this driver
  *     when the query command completes.
  */
-webdriver.WebDriver.prototype.getMouseSpeed = function() {
-  return this.addCommand(webdriver.CommandName.GET_MOUSE_SPEED).
+webdriver.WebDriver.prototype.getSpeed = function() {
+  return this.addCommand(webdriver.CommandName.GET_SPEED).
       getFutureResult();
 };

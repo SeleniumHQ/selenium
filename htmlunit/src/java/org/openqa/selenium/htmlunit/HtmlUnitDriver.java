@@ -59,12 +59,14 @@ import net.sourceforge.htmlunit.corejs.javascript.Undefined;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Cookie;
+import org.openqa.selenium.InvalidCookieDomainException;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.NoSuchFrameException;
 import org.openqa.selenium.NoSuchWindowException;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.Speed;
+import org.openqa.selenium.UnableToSetCookieException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
@@ -833,7 +835,7 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
     public void addCookie(Cookie cookie) {
       Page page = lastPage();
       if (!(page instanceof HtmlPage)) {
-        throw new WebDriverException("You may not set cookies on a page that is not HTML");
+        throw new UnableToSetCookieException("You may not set cookies on a page that is not HTML");
       }
 
       String domain = getDomainForCookie();
@@ -851,7 +853,7 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
       }
 
       if ("".equals(domain)) {
-        throw new WebDriverException(
+        throw new InvalidCookieDomainException(
             "Domain must not be an empty string. Consider using null instead");
       }
 
@@ -864,7 +866,7 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
       domain = domain.startsWith(".") ? domain : "." + domain;
 
       if (!expectedDomain.endsWith(domain)) {
-        throw new WebDriverException(
+        throw new InvalidCookieDomainException(
             String.format(
                 "You may only add cookies that would be visible to the current domain: %s => %s",
                 domain, expectedDomain));

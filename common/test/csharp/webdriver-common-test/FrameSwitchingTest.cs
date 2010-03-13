@@ -39,10 +39,10 @@ namespace OpenQA.Selenium
 
             driver.FindElement(By.LinkText("top")).Click();
             //TODO (jimevan): this is an ugly sleep. Remove when implicit waiting is implemented.
-            System.Threading.Thread.Sleep(500);
+            System.Threading.Thread.Sleep(1000);
 
-            Assert.AreEqual(driver.Title, "XHTML Test Page");
-            Assert.AreEqual(driver.FindElement(By.XPath("/html/head/title")).Text, "XHTML Test Page");
+            Assert.AreEqual("XHTML Test Page", driver.Title);
+            Assert.AreEqual("XHTML Test Page", driver.FindElement(By.XPath("/html/head/title")).Text);
         }
 
         [Test]

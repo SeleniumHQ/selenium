@@ -21,11 +21,11 @@
 
 // The |FindElement| category finds elements underneath self in the DOM.
 // These methods are exposed via the URLs:
-// :context/element/elementId/element[s]/{xpath|name|id|link+text|class+name}
+// :session/element/elementId/element[s]/{xpath|name|id|link+text|class+name}
 //
 // |FindElement| also indirectly handles the global findElement methods
 // accessible via: 
-// :context/element[s] (with method and query sent in POST).
+// :session/element[s] (with method and query sent in POST).
 // These search requests are recieved by |ElementStore| and then forwarded here
 // via the document |Element|.
 @interface Element (FindElement)
@@ -43,5 +43,5 @@
 - (NSArray *)findElementsUsing:(NSDictionary *)dict;
 
 // As |findElementsUsing:| above, but only returns one argument.
-- (NSArray *)findElementUsing:(NSDictionary *)dict;
+- (NSDictionary *)findElementUsing:(NSDictionary *)dict;
 @end

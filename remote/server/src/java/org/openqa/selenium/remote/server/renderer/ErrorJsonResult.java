@@ -32,7 +32,7 @@ public class ErrorJsonResult extends JsonResult {
 
   public void render(HttpServletRequest request, HttpServletResponse response, Handler handler)
       throws Exception {
-    response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+    response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
     super.render(request, response, handler);
   }
 }

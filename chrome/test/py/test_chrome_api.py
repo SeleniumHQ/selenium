@@ -19,6 +19,20 @@
 import logging
 from webdriver.common_tests import api_examples
 from webdriver.chrome.webdriver import WebDriver
+from selenium.common.webserver import SimpleWebServer
 
-if __name__ == "__main__":
-    api_examples.run_tests(WebDriver())
+
+def setup_module(module):
+    webserver = SimpleWebServer()
+    webserver.start()
+    ChromeApiExampleTest.webserver = webserver
+    ChromeApiExampleTest.driver = WebDriver()
+
+
+class ChromeApiExampleTest(api_examples.ApiExampleTest):
+    pass
+
+
+def teardown_module(module):
+    ChromeApiExampleTest.driver.quit()
+    ChromeApiExampleTest.webserver.stop()

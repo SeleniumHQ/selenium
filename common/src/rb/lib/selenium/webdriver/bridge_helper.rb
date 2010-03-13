@@ -7,49 +7,20 @@ module Selenium
 
     module BridgeHelper
 
-      def wrap_script_argument(arg)
-        case arg
-        when Integer, Float
-          { :type => "NUMBER", :value => arg }
-        when TrueClass, FalseClass, NilClass
-          { :type => "BOOLEAN", :value => !!arg }
-        when Element
-          { :type => "ELEMENT", :value => arg.ref }
-        when String
-          { :type => "STRING", :value => arg.to_s }
-        when Array # Enumerable?
-          arg.map { |e| wrap_script_argument(e) }
-        else
-          raise TypeError, "Parameter is not of recognized type: #{arg.inspect}:#{arg.class}"
-        end
-      end
-
-      def unwrap_script_argument(arg)
+      def unwrap_script_result(arg)
         if arg.kind_of?(Array)
-          arg.map { |e| unwrap_script_argument(e) }
+          arg.map { |e| unwrap_script_result(e) }
         else
-          case arg["type"]
-          when "NULL"
-            nil
-          when "ELEMENT"
-            Element.new self, element_id_from(arg["value"])
-          when "POINT"
-            Point.new arg['x'], arg['y']
-          when "DIMENSION"
-            Dimension.new arg['width'], arg['height']
-          when "COOKIE"
-            {:name => arg['name'], :value => arg['value']}
+          if arg.kind_of?(Hash) && arg.member?("ELEMENT")
+            Element.new self, element_id_from(arg)
           else
-            arg["value"]
+            arg
           end
         end
       end
 
       def element_id_from(id)
-        str = id.kind_of?(Array) ? id.first : id
-        after = str.split("/").last
-
-        after
+        id['ELEMENT']
       end
 
       def parse_cookie_string(str)

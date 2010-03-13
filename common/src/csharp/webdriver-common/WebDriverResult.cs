@@ -141,6 +141,16 @@ namespace OpenQA.Selenium
         /// <summary>
         /// No window matching the criteria exists.
         /// </summary>
-        NoSuchWindow = 23
+        NoSuchWindow = 23,
+        
+        /// <summary>
+        /// An illegal attempt was made to set a cookie under a different domain than the current page.
+        /// </summary>
+        InvalidCookieDomain = 24,
+
+        /// <summary>
+        /// A request to set a cookie's value could not be satisfied.
+        /// </summary>
+        UnableToSetCookie = 25
     }
 }

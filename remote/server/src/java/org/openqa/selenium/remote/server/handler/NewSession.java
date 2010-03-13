@@ -25,7 +25,6 @@ import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.rest.Handler;
 import org.openqa.selenium.remote.server.rest.ResultType;
 
-import java.util.List;
 import java.util.Map;
 
 public class NewSession implements Handler, JsonParametersAware {
@@ -38,8 +37,9 @@ public class NewSession implements Handler, JsonParametersAware {
   }
 
   @SuppressWarnings({"unchecked"})
-  public void setJsonParameters(List<Object> allParameters) throws Exception {
-    desiredCapabilities = new DesiredCapabilities((Map<String, Object>) allParameters.get(0));
+  public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
+    desiredCapabilities = new DesiredCapabilities(
+        (Map<String, Object>) allParameters.get("desiredCapabilities"));
   }
 
   public ResultType handle() throws Exception {

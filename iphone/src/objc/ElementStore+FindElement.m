@@ -22,21 +22,14 @@
 
 @implementation ElementStore (FindElement)
 
-- (NSArray *)findElementsByMethod:(NSString *)method query:(NSString *)query {
+- (NSArray *)findElements:(NSDictionary *)data {
   // Just forward the request to the document element.
-  return [[self document] findElementsByMethod:method query:query];
+  return [[self document] findElementsUsing:data];
 }
 
-// This method is the same as above, but it only returns one value.
-// I'm not sure why it returns that single value in an array, but thats the
-// spec.
-- (NSArray *)findElementByMethod:(NSString *)method query:(NSString *)query {
-  NSArray *allElements = [self findElementsByMethod:method query:query];
-  if (allElements != nil && [allElements count] >= 1)
-    return [NSArray arrayWithObject:[allElements objectAtIndex:0]];
-  else
-    @throw([NSException webDriverExceptionWithMessage:@"Unable to locate element"
-                                       webDriverClass:@"org.openqa.selenium.NoSuchElementException"]);
+- (NSArray *)findElement:(NSDictionary *)data {
+  // Just forward the request to the document element.
+  return [[self document] findElementUsing:data];
 }
 
 @end

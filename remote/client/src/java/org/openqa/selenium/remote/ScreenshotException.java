@@ -28,6 +28,11 @@ public class ScreenshotException extends WebDriverException {
     this.screenshot = screenGrab;
   }
 
+  public ScreenshotException(String screenGrab, Throwable cause) {
+    super("Screen shot has been taken", cause);
+    this.screenshot = screenGrab;
+  }
+
   public String getBase64EncodedScreenshot() {
     return screenshot;
   }

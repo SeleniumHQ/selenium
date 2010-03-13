@@ -55,6 +55,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.JsonToBeanConverter;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.DriverCommand;
+import org.openqa.selenium.remote.ErrorCodes;
 import static org.openqa.selenium.remote.DriverCommand.*;
 
 import java.io.File;
@@ -63,6 +64,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class SeleneseCommandExecutor implements CommandExecutor {
+  private final ErrorCodes errorCodes;
   private final Selenium instance;
   private Map<DriverCommand, SeleneseFunction> functions;
 
@@ -74,6 +76,7 @@ public class SeleneseCommandExecutor implements CommandExecutor {
 
   public SeleneseCommandExecutor(CommandProcessor processor) {
     instance = new DefaultSelenium(processor);
+    errorCodes = new ErrorCodes();
 
     prepareCommands();
   }
@@ -96,7 +99,6 @@ public class SeleneseCommandExecutor implements CommandExecutor {
 
   private Response prepareExceptionResponse(Exception e) throws Exception {
     Response response = new Response();
-    response.setError(true);
 
     Exception toUse = e;
     if (e instanceof SeleniumException) {
@@ -105,6 +107,7 @@ public class SeleneseCommandExecutor implements CommandExecutor {
         toUse = new StaleElementReferenceException(e.getMessage(), e);
       }
     }
+    response.setStatus(errorCodes.toStatusCode(toUse));
 
     // It's like a lesson in inefficiency
     Object raw = new JsonToBeanConverter().convert(Map.class, new BeanToJsonConverter().convert(toUse));

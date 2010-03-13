@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace OpenQA.Selenium.Remote
 {
@@ -8,26 +9,19 @@ namespace OpenQA.Selenium.Remote
     public class Command
     {
         private SessionId commandSessionId;
-        private Context commandContext;
         private DriverCommand commandName;
-        private object[] commandParameters;
+        private Dictionary<string, object> commandParameters = new Dictionary<string, object>();
 
         /// <summary>
         /// Initializes a new instance of the Command class
         /// </summary>
         /// <param name="sessionId">Session ID the driver is using</param>
-        /// <param name="context">Context the driver is running</param>
         /// <param name="name">Name of the command</param>
         /// <param name="parameters">Parameters for that command</param>
-        public Command(SessionId sessionId, Context context, DriverCommand name, object[] parameters)
+        public Command(SessionId sessionId, DriverCommand name, Dictionary<string, object> parameters)
         {
             commandSessionId = sessionId;
-            commandContext = context;
-            if (parameters == null)
-            {
-                commandParameters = new object[0];
-            }
-            else
+            if (parameters != null)
             {
                 commandParameters = parameters;
             }
@@ -38,25 +32,14 @@ namespace OpenQA.Selenium.Remote
         /// <summary>
         /// Gets the SessionID of the command
         /// </summary>
-        [JsonProperty("sessionId")]
         public SessionId SessionId
         {
             get { return commandSessionId; }
         }
 
         /// <summary>
-        /// Gets the current context
-        /// </summary>
-        [JsonProperty("context")]
-        public Context Context
-        {
-            get { return commandContext; }
-        }
-
-        /// <summary>
         /// Gets the command name
         /// </summary>
-        [JsonProperty("commandName")]
         public DriverCommand Name
         {
             get { return commandName; }
@@ -65,10 +48,26 @@ namespace OpenQA.Selenium.Remote
         /// <summary>
         /// Gets the parameters of the command
         /// </summary>
-        [JsonProperty("parameters")]
-        public object[] Parameters
+        public Dictionary<string, object> Parameters
         {
             get { return commandParameters; }
+        }
+
+        /// <summary>
+        /// Gets the parameters of the command as a JSON-encoded string.
+        /// </summary>
+        public string ParametersAsJsonString
+        {
+            get
+            {
+                string parametersString = string.Empty;
+                if (commandParameters != null && commandParameters.Count > 0)
+                {
+                    parametersString = JsonConvert.SerializeObject(commandParameters, new JsonConverter[] { new PlatformJsonConverter(), new CookieJsonConverter(), new CharArrayJsonConverter() });
+                }
+
+                return parametersString;
+            }
         }
         
         /// <summary>
@@ -77,7 +76,7 @@ namespace OpenQA.Selenium.Remote
         /// <returns>A string representation of the Command Object</returns>
         public override string ToString()
         {
-            return string.Concat("[", SessionId, ", ", Context, "]: ", Name, " ", Parameters.ToString());
+            return string.Concat("[", SessionId, "]: ", Name, " ", Parameters.ToString());
         }
     }
 }

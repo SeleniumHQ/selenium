@@ -33,3 +33,20 @@
 - (id)initForElement:(Element *)element;
 
 @end
+
+// This represents the element/:elementId/attribute/:name virtual directory.
+// This directory is dynamically added by |Attribute| the first time a request
+// is received for |:name|.
+@interface NamedAttribute : HTTPVirtualDirectory {
+  @private
+  Element* element_;
+  NSString* name_;
+}
+
++ (NamedAttribute *)namedAttributeDirectoryForElement:(Element *)element
+                                              andName:(NSString *)name;
+- (id)initForElement:(Element *)element
+             andName:(NSString *)name;
+- (NSString *)getAttribute;
+
+@end

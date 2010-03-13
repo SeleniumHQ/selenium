@@ -29,8 +29,40 @@ class InvalidSwitchToTargetException(Exception):
     def __init__(self, msg=None):
         Exception.__init__(self, msg)
 
+class NoSuchFrameException(InvalidSwitchToTargetException):
+    def __init__(self, msg=None):
+        InvalidSwitchToTargetException.__init__(self, msg)
+
+class NoSuchWindowException(InvalidSwitchToTargetException):
+    def __init__(self, msg=None):
+        InvalidSwitchToTargetException.__init__(self, msg)
+
 class NoSuchElementException(Exception):
     """find_element_by_* can't find the element."""
+    def __init__(self, msg=None):
+        Exception.__init__(self, msg)
+
+class StaleElementReferenceException(Exception):
+    def __init__(self, msg=None):
+        Exception.__init__(self, msg)
+
+class ElementNotVisibleException(Exception):
+    def __init__(self, msg=None):
+        Exception.__init__(self, msg)
+
+class InvalidElementStateException(Exception):
+    def __init__(self, msg=None):
+        Exception.__init__(self, msg)
+
+class ElementNotSelectableException(Exception):
+    def __init__(self, msg=None):
+        Exception.__init__(self, msg)
+
+class InvalidCookieDomainException(Exception):
+    def __init__(self, msg=None):
+        Exception.__init__(self, msg)
+
+class UnableToSetCookieException(Exception):
     def __init__(self, msg=None):
         Exception.__init__(self, msg)
 

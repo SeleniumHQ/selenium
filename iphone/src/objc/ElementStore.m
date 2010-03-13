@@ -25,6 +25,7 @@
 #import "ElementStore+FindElement.h"
 #import "Element.h"
 #import "NSException+WebDriver.h"
+#import "errorcodes.h"
 
 static const NSString *JSARRAY = @"_WEBDRIVER_ELEM_CACHE";
 
@@ -47,7 +48,7 @@ static const NSString *JSARRAY = @"_WEBDRIVER_ELEM_CACHE";
   
   [self setIndex:[WebDriverResource resourceWithTarget:self
                                              GETAction:NULL
-                                            POSTAction:@selector(findElementByMethod:query:)]];
+                                            POSTAction:@selector(findElement:)]];
   
   document_ = [self elementFromJSObject:@"document"];
   
@@ -96,7 +97,7 @@ static const NSString *JSARRAY = @"_WEBDRIVER_ELEM_CACHE";
   if (![isStale isEqualToString:@"false"]) {
     @throw [NSException
             webDriverExceptionWithMessage:@"Element is stale"
-            webDriverClass:@"org.openqa.selenium.StaleElementReferenceException"];
+                            andStatusCode:EOBSOLETEELEMENT];
   }
   return [NSString stringWithFormat:@"%@[%@]", JSARRAY, elementId];
 }

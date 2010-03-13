@@ -91,8 +91,8 @@ module Selenium
        end
 
        def close_sockets
-         @queue.pop.close until @queue.empty?
          @next_socket.close if @next_socket
+         @queue.pop.close until @queue.empty?
        end
 
        def stop_listening

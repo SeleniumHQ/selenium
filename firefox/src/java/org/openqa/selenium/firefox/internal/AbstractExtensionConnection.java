@@ -17,54 +17,99 @@ limitations under the License.
 
 package org.openqa.selenium.firefox.internal;
 
-import java.io.BufferedInputStream;
+import org.openqa.selenium.Platform;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.firefox.ExtensionConnection;
+import org.openqa.selenium.firefox.NotConnectedException;
+import org.openqa.selenium.remote.Command;
+import org.openqa.selenium.remote.CommandExecutor;
+import org.openqa.selenium.remote.DriverCommand;
+import org.openqa.selenium.remote.HttpCommandExecutor;
+import org.openqa.selenium.remote.Response;
+
 import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
 import java.net.ConnectException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.net.MalformedURLException;
 import java.net.NetworkInterface;
-import java.net.Socket;
-import java.net.SocketAddress;
 import java.net.SocketException;
-import java.net.UnknownHostException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.openqa.selenium.Platform;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.firefox.Command;
-import org.openqa.selenium.firefox.ExtensionConnection;
-import org.openqa.selenium.firefox.NotConnectedException;
-import org.openqa.selenium.firefox.Response;
+/**
+ * Base class used for executing commands against an HTTP server embedded in the
+ * FirefoxDriver browser extension.
+ */
+public abstract class AbstractExtensionConnection implements CommandExecutor, ExtensionConnection {
 
-public abstract class AbstractExtensionConnection implements ExtensionConnection {
-  private Socket socket;
-  private Set<SocketAddress> addresses;
-  private OutputStreamWriter out;
-  private BufferedInputStream in;
+  private final HttpCommandExecutor delegate;
+  private final long connectTimeout;
 
-  protected void setAddress(String host, int port) {
+  /**
+   * Creates a new connection using the given delegate for processing HTTP
+   * requests.
+   *
+   * @param delegate The object to delegate commands to.
+   * @param connectTimeout The amount of time, in milliseconds, to wait before
+   *     timing out an attempt to connect to the extension.
+   */
+  protected AbstractExtensionConnection(HttpCommandExecutor delegate,
+                                        long connectTimeout) {
+    this.delegate = delegate;
+    this.connectTimeout = connectTimeout;
+  }
+
+  /**
+   * Creates a new connection that will communicate with the extension located
+   * at the given host and port.
+   *
+   * @param host Host the Firefox extension is running on.
+   * @param port Port the extension is listening to.
+   * @param connectTimeout The amount of time, in milliseconds, to wait before
+   *     timing out an attempt to connect to the extension.
+   * @throws Exception If an initialization error occurs.
+   * @see AbstractExtensionConnection(HttpCommandExecutor, long)
+   */
+  protected AbstractExtensionConnection(String host, int port, long connectTimeout)
+      throws Exception {
+    this(new HttpCommandExecutor(buildUrl(host, port)), connectTimeout);
+  }
+
+  /**
+   * Builds the URL for the Firefox extension running on the given host and
+   * port. If the host is {@code localhost}, an attempt will be made to find the
+   * correct loopback address.
+   *
+   * @param host The hostname the extension is running on.
+   * @param port The port the extension is listening on.
+   * @return The URL of the Firefox extension.
+   */
+  private static URL buildUrl(String host, int port) {
     if ("localhost".equals(host)) {
-      addresses = obtainLoopbackAddresses(port);
+      for (InetSocketAddress address : obtainLoopbackAddresses(port)) {
+        try {
+          return new URL("http", address.getHostName(), address.getPort(), "/hub");
+        } catch (MalformedURLException ignored) {
+          // Do nothing; loop and try next address.
+        }
+      }
+      throw new WebDriverException("Unable to find loopback address for localhost");
     } else {
       try {
-        SocketAddress hostAddress = new InetSocketAddress(InetAddress.getByName(host), port);
-        addresses = Collections.singleton(hostAddress);
-      } catch (UnknownHostException e) {
+        return new URL("http", host, port, "/hub");
+      } catch (MalformedURLException e) {
         throw new WebDriverException(e);
       }
     }
   }
 
-  private Set<SocketAddress> obtainLoopbackAddresses(int port) {
-    Set<SocketAddress> localhosts = new HashSet<SocketAddress>();
+  private static Set<InetSocketAddress> obtainLoopbackAddresses(int port) {
+    Set<InetSocketAddress> localhosts = new HashSet<InetSocketAddress>();
 
     try {
       Enumeration<NetworkInterface> allInterfaces = NetworkInterface.getNetworkInterfaces();
@@ -74,7 +119,7 @@ public abstract class AbstractExtensionConnection implements ExtensionConnection
         while (allAddresses.hasMoreElements()) {
           InetAddress addr = allAddresses.nextElement();
           if (addr.isLoopbackAddress()) {
-            SocketAddress socketAddress = new InetSocketAddress(addr, port);
+            InetSocketAddress socketAddress = new InetSocketAddress(addr, port);
             localhosts.add(socketAddress);
           }
         }
@@ -89,7 +134,7 @@ public abstract class AbstractExtensionConnection implements ExtensionConnection
           Enumeration<InetAddress> possibleLoopbacks = linuxLoopback.getInetAddresses();
           while (possibleLoopbacks.hasMoreElements()) {
             InetAddress inetAddress = possibleLoopbacks.nextElement();
-            SocketAddress socketAddress = new InetSocketAddress(inetAddress, port);
+            InetSocketAddress socketAddress = new InetSocketAddress(inetAddress, port);
             localhosts.add(socketAddress);
           }
         }
@@ -115,170 +160,45 @@ public abstract class AbstractExtensionConnection implements ExtensionConnection
     }
 
     if (firstAddress != null) {
-      SocketAddress socketAddress = new InetSocketAddress(firstAddress, port);
+      InetSocketAddress socketAddress = new InetSocketAddress(firstAddress, port);
       return Collections.singleton(socketAddress);
     }
 
     throw new WebDriverException("Unable to find loopback address for localhost");
   }
 
-  protected void connectToBrowser(long timeToWaitInMilliSeconds) throws IOException {
-    long waitUntil = System.currentTimeMillis() + timeToWaitInMilliSeconds;
+  public void start() throws IOException {
+    long waitUntil = System.currentTimeMillis() + connectTimeout;
     while (!isConnected() && waitUntil > System.currentTimeMillis()) {
-      for (SocketAddress addr : addresses) {
-        try {
-          connect(addr);
-          break;
-        } catch (ConnectException e) {
-          try {
-            Thread.sleep(250);
-          } catch (InterruptedException ie) {
-            throw new WebDriverException(ie);
-          }
-        }
-      }
+      // Do nothing
     }
 
     if (!isConnected()) {
-      throw new NotConnectedException(socket, timeToWaitInMilliSeconds);
+      throw new NotConnectedException(
+          delegate.getAddressOfRemoteServer(), connectTimeout);
     }
-  }
-
-  private void connect(SocketAddress addr) throws IOException {
-    socket = new Socket();
-    socket.connect(addr);
-    in = new BufferedInputStream(socket.getInputStream());
-    out = new OutputStreamWriter(socket.getOutputStream(), "UTF-8");
   }
 
   public boolean isConnected() {
-    return socket != null && socket.isConnected();
-  }
-
-  public Response sendMessageAndWaitForResponse(Class<? extends RuntimeException> throwOnFailure,
-                                                Command command) {
-    sendMessage(command);
-
-    return waitForResponseFor(command.getCommandName());
-  }
-
-  protected void sendMessage(Command command) {
-    String converted = convert(command);
-
-    // Make this look like an HTTP request
-    StringBuilder message = new StringBuilder();
-    message.append("GET / HTTP/1.1\n");
-    message.append("Host: localhost\n");
-    message.append("Content-Length: ");
-    message.append(converted.length()).append("\n\n");
-    message.append(converted).append("\n");
-
     try {
-      out.write(message.toString());
-      out.flush();
+      // TODO: use a more intelligent way of testing if the server is ready.
+      getDelegate().getAddressOfRemoteServer().openConnection().connect();
+      return true;
     } catch (IOException e) {
-      throw new WebDriverException(e);
+      // Cannot connect yet.
+      return false;
     }
   }
 
-  private String convert(Command command) {
-    JSONObject json = new JSONObject();
-    try {
-      json.put("commandName", command.getCommandName());
-      json.put("context", String.valueOf(command.getContext()));
-      json.put("elementId", command.getElementId());
-
-      JSONArray params = new JSONArray();
-      for (Object o : command.getParameters()) {
-        params.put(o);
-      }
-
-      json.put("parameters", params);
-    } catch (JSONException e) {
-      throw new WebDriverException(e);
-    }
-
-    try {
-      // Force encoding as UTF-8.
-      byte[] bytes = json.toString().getBytes("UTF-8");
-      return new String(bytes, "UTF-8");
-    } catch (UnsupportedEncodingException e) {
-      // If UTF-8 is missing from Java, we've got problems
-      throw new IllegalStateException("Cannot convert string to UTF-8");
-    }
+  public Response execute(Command command) throws Exception {
+    return delegate.execute(command);
   }
 
-  private Response waitForResponseFor(String command) {
-    try {
-      return readLoop(command);
-    } catch (IOException e) {
-      throw new WebDriverException(e);
-    }
+  protected HttpCommandExecutor getDelegate() {
+    return delegate;
   }
 
-  private Response readLoop(String command) throws IOException {
-    Response response = nextResponse();
-
-    if (command.equals(response.getCommand())) {
-      return response;
-    }
-    throw new WebDriverException(
-        "Expected response to " + command + " but actually got: " + response.getCommand() + " ("
-        + response.getCommand() + ")");
-  }
-
-  private Response nextResponse() throws IOException {
-    String line = readLine();
-
-    // Expected input will be of the form:
-    // Header: Value
-    // \n
-    // JSON object
-    //
-    // The only expected header is "Length"
-
-    // Read headers
-    int count = 0;
-    String[] parts = line.split(":", 2);
-    if ("Length".equals(parts[0])) {
-      count = Integer.parseInt(parts[1].trim());
-    }
-
-    // Wait for the blank line
-    while (line.length() != 0) {
-      line = readLine();
-    }
-
-    // Read the rest of the response.
-    byte[] remaining = new byte[count];
-    for (int i = 0; i < count; i++) {
-      remaining[i] = (byte) in.read();
-    }
-
-    return new Response(new String(remaining, "UTF-8"));
-  }
-
-  private String readLine() throws IOException {
-    int size = 4096;
-    int growBy = 1024;
-    byte[] raw = new byte[size];
-    int count = 0;
-
-    for (; ;) {
-      int b = in.read();
-
-      if (b == -1 || (char) b == '\n') {
-        break;
-      }
-      raw[count++] = (byte) b;
-      if (count == size) {
-        size += growBy;
-        byte[] temp = new byte[size];
-        System.arraycopy(raw, 0, temp, 0, count);
-        raw = temp;
-      }
-    }
-
-    return new String(raw, 0, count, "UTF-8");
+  protected long getConnectTimeout() {
+    return connectTimeout;
   }
 }

@@ -26,8 +26,8 @@ import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.rest.ResultType;
 
-import java.util.Collections;
-import java.util.List;
+import com.google.common.collect.ImmutableMap;
+
 import java.util.Map;
 
 public class FindChildElement extends WebElementHandler implements JsonParametersAware {
@@ -39,10 +39,9 @@ public class FindChildElement extends WebElementHandler implements JsonParameter
   }
 
   @SuppressWarnings("unchecked")
-  public void setJsonParameters(List<Object> allParameters) throws Exception {
-    Map params = (Map) allParameters.get(0);
-    String method = (String) params.get("using");
-    String selector = (String) params.get("value");
+  public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
+    String method = (String) allParameters.get("using");
+    String selector = (String) allParameters.get("value");
 
     by = new BySelector().pickFrom(method, selector);
   }
@@ -53,7 +52,7 @@ public class FindChildElement extends WebElementHandler implements JsonParameter
     WebElement element = getElement().findElement(by);
     String elementId = getKnownElements().add(element);
 
-    response.setValue(Collections.singletonList(String.format("element/%s", elementId)));
+    response.setValue(ImmutableMap.of("ELEMENT", elementId));
 
     return ResultType.SUCCESS;
   }

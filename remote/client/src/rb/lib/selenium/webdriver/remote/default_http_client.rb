@@ -5,7 +5,7 @@ module Selenium
     module Remote
       class DefaultHttpClient
         CONTENT_TYPE    = "application/json"
-        DEFAULT_HEADERS = { "Accept" => CONTENT_TYPE }
+        DEFAULT_HEADERS = { "Accept" => CONTENT_TYPE, "Content-Length" => "0" }
 
         class RetryException < StandardError; end
 
@@ -13,25 +13,31 @@ module Selenium
           @server_url = url
         end
 
-        def call(verb, url, *args)
+        def call(verb, url, command_hash)
           response = nil
           url      = @server_url.merge(url) unless url.kind_of?(URI)
           headers  = DEFAULT_HEADERS.dup
 
-          if args.any?
-            headers.merge!("Content-Type" => "#{CONTENT_TYPE}; charset=utf-8")
-            payload = args.to_json
-            puts "   >>> #{payload}" if $DEBUG
+          if command_hash
+            payload = command_hash.to_json
+            headers["Content-Type"] = "#{CONTENT_TYPE}; charset=utf-8"
+            headers["Content-Length"] = payload.bytesize.to_s if [:post, :put].include?(verb)
+
+            if $DEBUG
+              puts "   >>> #{payload}"
+              puts "     > #{headers.inspect}"
+            end
           end
 
           begin
             request = Net::HTTP.const_get(verb.to_s.capitalize).new(url.path, headers)
-
             # TODO: should be checking against a maximum redirect count
             http.request(request, payload) do |res|
               if res.kind_of? Net::HTTPRedirection
                 verb, payload = :get, nil
                 url           = URI.parse(res["Location"])
+                headers       = DEFAULT_HEADERS.dup
+
                 raise RetryException
               else
                 response = create_response(res)

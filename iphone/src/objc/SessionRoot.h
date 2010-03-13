@@ -1,8 +1,8 @@
 //
-//  Context+ExecuteScript.h
+//  SessionRoot.h
 //  iWebDriver
 //
-//  Copyright 2009 Google Inc.
+//  Copyright 2010 Google Inc.
 //
 //  Licensed under the Apache License, Version 2.0 (the "License");
 //  you may not use this file except in compliance with the License.
@@ -16,13 +16,18 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
+
 #import <Foundation/Foundation.h>
-#import "Context.h"
+#import "HTTPVirtualDirectory.h"
 
-// This category implements the :context/execute function.
-@interface Context (ExecuteScript)
+// This |HTTPVirtualDirectory| matches the /session directory that serves as the
+// root of the WebDriver REST service.
+@interface SessionRoot : HTTPVirtualDirectory {
+  int nextId_;
+}
 
-- (NSDictionary *)executeScript:(NSString *)code
-                  withArguments:(NSArray *)arguments;
+- (NSObject<HTTPResponse> *)createSessionWithData:(id)desiredCapabilities
+                                           method:(NSString*)method;
+- (void)deleteSessionWithId:(int)sessionId;
 
-@end
+@end;

@@ -9,21 +9,31 @@
 #import "NSException+WebDriver.h"
 
 
+static NSString* const WEBDRIVER_EXCEPTION_NAME = @"kWebDriverException";
+
+
 @implementation NSException (WebDriver)
 
 + (NSException *)webDriverExceptionWithMessage:(NSString *)message
-                                webDriverClass:(NSString *)javaClass {
+                                 andStatusCode:(int)statusCode {
   // TODO: Work out how to send a proper stack trace
+  NSDictionary *value = [NSDictionary dictionaryWithObjectsAndKeys:
+                         message, @"message",
+                         [NSArray array], @"stackTrace",
+                         nil];
+
   NSDictionary *userDict = [NSDictionary dictionaryWithObjectsAndKeys:
-                            message, @"localizedMessage",
-                            message, @"message",
-                            javaClass, @"class",
-                            [NSArray array], @"stackTrace",
+                            [NSNumber numberWithInt:statusCode], @"status",
+                            value, @"value",
                             nil];
   
-  return [NSException exceptionWithName:@"kWebDriverException"
+  return [NSException exceptionWithName:WEBDRIVER_EXCEPTION_NAME
                                  reason:message
                                userInfo:userDict];
+}
+
++ (NSString *)webdriverExceptionName {
+  return WEBDRIVER_EXCEPTION_NAME;
 }
 
 @end

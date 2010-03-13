@@ -1,14 +1,13 @@
 package org.openqa.selenium.remote.internal;
 
+import org.openqa.selenium.ProcessUtils;
 import org.openqa.selenium.WebDriverException;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.concurrent.FutureTask;
 
 /**
  * Basic class for working with subprocesses. Methods are provided for
@@ -19,19 +18,12 @@ import java.util.concurrent.FutureTask;
  */
 public class SubProcess {
 
-  /**
-   * Each {@link SubProcess} requires three threads: one to monitor the process
-   * to detect if it unexpectedly dies, one for reading from the process input
-   * stream, and one for reading from the process error stream.
-   */
-  private static final int THREADS_PER_SUBPROCESS = 3;
-
+  private final Object lock = new Object();
   private final ProcessBuilder processBuilder;
   private final OutputStream outputStream;
 
   private ExecutorService executorService;
   private Process currentProcess;
-  private FutureTask<Integer> babySitter;
   private Future<?> outputWatcher;
 
   /**
@@ -42,7 +34,7 @@ public class SubProcess {
    * @see SubProcess(ProcessBuilder, OutputStream)
    */
   public SubProcess(ProcessBuilder processBuilder) {
-    this(processBuilder, System.out);
+    this(processBuilder, nullOutputStream());
   }
 
   /**
@@ -51,8 +43,7 @@ public class SubProcess {
    * output to stdout.
    *
    * @param processBuilder Used to launch new processes.
-   * @param outputStream The stream to redirect all process output to. If
-   *     {@code null}, all output will be ignored.
+   * @param outputStream The stream to redirect all process output to.
    */
   public SubProcess(ProcessBuilder processBuilder,
                     OutputStream outputStream) {
@@ -60,7 +51,6 @@ public class SubProcess {
     this.outputStream = outputStream;
     this.executorService = null;
     this.currentProcess = null;
-    this.babySitter = null;
   }
 
   /**
@@ -71,36 +61,50 @@ public class SubProcess {
    *     process.
    */
   public void launch() {
-    if (currentProcess == null) {
-      try {
-        currentProcess = processBuilder.start();
-        babySitter = new FutureTask<Integer>(new Callable<Integer>() {
-          public Integer call() throws Exception {
-            return currentProcess.waitFor();
-          }
-        });
-        executorService = Executors.newFixedThreadPool(THREADS_PER_SUBPROCESS);
-        executorService.submit(babySitter);
-        if (outputStream != null) {
+    synchronized (lock) {
+      if (!isRunning()) {
+        try {
+          currentProcess = processBuilder.start();
+          executorService = Executors.newSingleThreadExecutor();
           outputWatcher = executorService.submit(
               new OutputWatcher(currentProcess.getInputStream(), outputStream));
+        } catch (IOException e) {
+          throw new WebDriverException(e);
         }
-      } catch (IOException e) {
-        throw new WebDriverException(e);
       }
     }
   }
 
   /**
-   * Returns the current state of this instance.
-   *
-   * @return The current state of this instance.
+   * 
+   * @return The exit value for the managed subprocess.
+   * @throws IllegalThreadStateException If the managed subprocess was never
+   *     started, or if it was started but has not terminated yet.
    */
-  public State getState() {
-    if (babySitter == null) {
-      return State.NOT_RUNNING;
+  public int exitValue() {
+    synchronized (lock) {
+      if (currentProcess == null) {
+        throw new IllegalThreadStateException("Process has not yet launched");
+      }
+      return currentProcess.exitValue();
     }
-    return babySitter.isDone() ? State.FINISHED : State.RUNNING;
+  }
+
+  /**
+   * @return Whether the managed subprocess is currently running.
+   */
+  public boolean isRunning() {
+    synchronized (lock) {
+      if (currentProcess == null) {
+        return false;
+      }
+      try {
+        exitValue();
+        return false;
+      } catch (IllegalThreadStateException ignored) {
+        return true;
+      }
+    }
   }
 
   /**
@@ -110,53 +114,21 @@ public class SubProcess {
    * @see Process#destroy()
    */
   public void shutdown() {
-    babySitter = cancelFuture(babySitter);
-    outputWatcher = cancelFuture(outputWatcher);
-
-    if (executorService != null) {
-      executorService.shutdownNow();
-      executorService = null;
-    }
-
-    if (currentProcess != null) {
-      currentProcess.destroy();
-      currentProcess = null;
+    synchronized (lock) {
+      if (isRunning()) {
+        outputWatcher.cancel(true);
+        executorService.shutdownNow();
+        ProcessUtils.killProcess(currentProcess);
+      }
     }
   }
 
-  private <T extends Future> T cancelFuture(T future) {
-    if (future != null) {
-      future.cancel(true);
-    }
-    return null;
-  }
-
-  /**
-   * Enumeration of the possible {@code SubProcess} states that can be returned
-   * by {@link SubProcess#getState()}
-   *
-   * @see SubProcess#getState()
-   */
-  public static enum State {
-    /**
-     * The {@code SubProcess} is not currently running.
-     */
-    NOT_RUNNING,
-
-    /**
-     * The {@code SubProcess} has launched a {@link Process} and it is still
-     * running.
-     *
-     * @see SubProcess#launch()
-     */
-    RUNNING,
-
-    /**
-     * The {@code SubProcess} has launched a {@link Process} and it finished
-     * without being explicitly {@link SubProcess#shutdown() shutdown}
-     *
-     * @see SubProcess#shutdown()
-     */
-    FINISHED
+  private static OutputStream nullOutputStream() {
+    return new OutputStream() {
+      @Override
+      public void write(int i) throws IOException {
+        // Do nothing
+      }
+    };
   }
 }

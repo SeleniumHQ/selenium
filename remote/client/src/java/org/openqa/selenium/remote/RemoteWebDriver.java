@@ -17,7 +17,19 @@ limitations under the License.
 
 package org.openqa.selenium.remote;
 
+import java.net.URL;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import com.google.common.base.Function;
+import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Cookie;
@@ -35,24 +47,15 @@ import org.openqa.selenium.internal.FindsByTagName;
 import org.openqa.selenium.internal.FindsByXPath;
 import org.openqa.selenium.internal.ReturnedCookie;
 
-import java.lang.reflect.Constructor;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, FindsByXPath {
+
+  private final ErrorHandler errorHandler = new ErrorHandler();
 
   private CommandExecutor executor;
   private Capabilities capabilities;
   private SessionId sessionId;
-  
+
   protected Process clientProcess;
 
   public RemoteWebDriver(CommandExecutor executor, Capabilities desiredCapabilities) {
@@ -71,16 +74,24 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
 
   @SuppressWarnings({"unchecked"})
   protected void startSession(Capabilities desiredCapabilities) {
-    Response response = execute(DriverCommand.NEW_SESSION, desiredCapabilities);
+    Response response = execute(DriverCommand.NEW_SESSION,
+        ImmutableMap.of("desiredCapabilities", desiredCapabilities));
 
     Map<String, Object> rawCapabilities = (Map<String, Object>) response.getValue();
     String browser = (String) rawCapabilities.get("browserName");
     String version = (String) rawCapabilities.get("version");
+
+    String platformString = rawCapabilities.containsKey("operatingSystem")
+        ? (String) rawCapabilities.get("operatingSystem")
+        : (String) rawCapabilities.get("platform");
+
     Platform platform;
-    if (rawCapabilities.containsKey("operatingSystem")) {
-      platform = Platform.valueOf((String) rawCapabilities.get("operatingSystem"));
-    } else {
-      platform = Platform.valueOf((String) rawCapabilities.get("platform"));
+    try {
+      platform = Platform.valueOf(platformString);
+    } catch (IllegalArgumentException e) {
+      // The server probably responded with a name matching the os.name
+      // system property. Try to recover and parse this.
+      platform = Platform.extractFromSysProperty(platformString);
     }
 
 
@@ -94,7 +105,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
    * Method called before
    * {@link #startSession(Capabilities) starting a new session}.  The default
    * implementation is a no-op, but subtypes should override this method to
-   * define custom behavior. 
+   * define custom behavior.
    */
   protected void startClient() {
   }
@@ -105,16 +116,20 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
   protected void stopClient() {
   }
 
+  public ErrorHandler getErrorHandler() {
+    return errorHandler;
+  }
+
   public CommandExecutor getCommandExecutor() {
     return executor;
   }
-  
+
   public Capabilities getCapabilities() {
     return capabilities;
   }
 
   public void get(String url) {
-    execute(DriverCommand.GET, url);
+    execute(DriverCommand.GET, ImmutableMap.of("url", url));
   }
 
   public String getTitle() {
@@ -134,77 +149,73 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     return by.findElement(this);
   }
 
+  protected WebElement findElement(String by, String using) {
+    Response response = execute(DriverCommand.FIND_ELEMENT,
+        ImmutableMap.of("using", by, "value", using));
+    return (WebElement) response.getValue();
+  }
+
+  @SuppressWarnings("unchecked")
+  protected List<WebElement> findElements(String by, String using) {
+    Response response = execute(DriverCommand.FIND_ELEMENTS,
+        ImmutableMap.of("using", by, "value", using));
+    return (List<WebElement>) response.getValue();
+  }
 
   public WebElement findElementById(String using) {
-    Response response = execute(DriverCommand.FIND_ELEMENT, "id", using);
-    return getElementFrom(response);
+    return findElement("id", using);
   }
 
   public List<WebElement> findElementsById(String using) {
-    Response response = execute(DriverCommand.FIND_ELEMENTS, "id", using);
-    return getElementsFrom(response);
+    return findElements("id", using);
   }
 
-
   public WebElement findElementByLinkText(String using) {
-    Response response = execute(DriverCommand.FIND_ELEMENT, "link text", using);
-    return getElementFrom(response);
+    return findElement("link text", using);
   }
 
   public List<WebElement> findElementsByLinkText(String using) {
-    Response response = execute(DriverCommand.FIND_ELEMENTS, "link text", using);
-    return getElementsFrom(response);
+    return findElements("link text", using);
   }
 
   public WebElement findElementByPartialLinkText(String using) {
-    Response response = execute(DriverCommand.FIND_ELEMENT, "partial link text", using);
-    return getElementFrom(response);
+    return findElement("partial link text", using);
   }
 
   public List<WebElement> findElementsByPartialLinkText(String using) {
-    Response response = execute(DriverCommand.FIND_ELEMENTS, "partial link text", using);
-    return getElementsFrom(response);
+    return findElements("partial link text", using);
   }
 
   public WebElement findElementByTagName(String using) {
-    Response response = execute(DriverCommand.FIND_ELEMENT, "tag name", using);
-    return getElementFrom(response);
+    return findElement("tag name", using);
   }
 
   public List<WebElement> findElementsByTagName(String using) {
-    Response response = execute(DriverCommand.FIND_ELEMENTS, "tag name", using);
-    return getElementsFrom(response);
-
+    return findElements("tag name", using);
   }
 
   public WebElement findElementByName(String using) {
-    Response response = execute(DriverCommand.FIND_ELEMENT, "name", using);
-    return getElementFrom(response);
+    return findElement("name", using);
   }
 
   public List<WebElement> findElementsByName(String using) {
-    Response response = execute(DriverCommand.FIND_ELEMENTS, "name", using);
-    return getElementsFrom(response);
+    return findElements("name", using);
   }
 
   public WebElement findElementByClassName(String using) {
-    Response response = execute(DriverCommand.FIND_ELEMENT, "class name", using);
-    return getElementFrom(response);
+    return findElement("class name", using);
   }
 
   public List<WebElement> findElementsByClassName(String using) {
-    Response response = execute(DriverCommand.FIND_ELEMENTS, "class name", using);
-    return getElementsFrom(response);
+    return findElements("class name", using);
   }
 
   public WebElement findElementByXPath(String using) {
-    Response response = execute(DriverCommand.FIND_ELEMENT, "xpath", using);
-    return getElementFrom(response);
+    return findElement("xpath", using);
   }
 
   public List<WebElement> findElementsByXPath(String using) {
-    Response response = execute(DriverCommand.FIND_ELEMENTS, "xpath", using);
-    return getElementsFrom(response);
+    return findElements("xpath", using);
   }
 
   // Misc
@@ -235,7 +246,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
   }
 
   public String getWindowHandle() {
-    return (String) execute(DriverCommand.GET_CURRENT_WINDOW_HANDLE).getValue();
+    return String.valueOf(execute(DriverCommand.GET_CURRENT_WINDOW_HANDLE).getValue());
   }
 
   public Object executeScript(String script, Object... args) {
@@ -246,98 +257,19 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     // Escape the quote marks
     script = script.replaceAll("\"", "\\\"");
 
-    Object[] convertedArgs = convertToJsObjects(args);
+    Iterable<Object> convertedArgs = Iterables.transform(
+        Lists.newArrayList(args), new WebElementToJsonConverter());
 
-    Command command;
-    if (convertedArgs != null && convertedArgs.length > 0)
-      command = new Command(
-          sessionId, new Context("foo"), DriverCommand.EXECUTE_SCRIPT, script, convertedArgs);
-    else
-      command = new Command(sessionId, new Context("foo"), DriverCommand.EXECUTE_SCRIPT, script);
-    Response response;
-    try {
-      response = executor.execute(command);
-    } catch (Exception e) {
-      throw new WebDriverException(e);
-    }
-    if (response.isError())
-      throwIfResponseFailed(response);
+    Map<String, ?> params = ImmutableMap.of(
+        "script", script,
+        "args", Lists.newArrayList(convertedArgs));
 
-    Map<String, Object> result = (Map<String, Object>) response.getValue();
-
-    String type = (String) result.get("type");
-    if ("NULL".equals(type))
-      return null;
-
-    if ("ELEMENT".equals(type)) {
-      String[] parts = ((String) result.get("value")).split("/");
-      RemoteWebElement element = newRemoteWebElement();
-      element.setId(parts[parts.length - 1]);
-      return element;
-    } else if (result.get("value") instanceof Number) {
-      if (result.get("value") instanceof Float || result.get("value") instanceof Double) {
-        return ((Number) result.get("value")).doubleValue();
-      }
-      return ((Number) result.get("value")).longValue();
-    }
-
-    return result.get("value");
+    return execute(DriverCommand.EXECUTE_SCRIPT, params).getValue();
   }
 
   public boolean isJavascriptEnabled() {
     return capabilities.isJavascriptEnabled();
   }
-
-  private Object[] convertToJsObjects(Object[] args) {
-    if (args.length == 0)
-      return null;
-
-    Object[] converted = new Object[args.length];
-    for (int i = 0; i < args.length; i++) {
-      converted[i] = convertToJsObject(args[i]);
-    }
-
-    return converted;
-  }
-
-  private Object convertToJsObject(Object arg) {
-    Map<String, Object> converted = new HashMap<String, Object>();
-
-    if (arg instanceof String) {
-      converted.put("type", "STRING");
-      converted.put("value", arg);
-    } else if (arg instanceof Number) {
-      converted.put("type", "NUMBER");
-      if (arg instanceof Float || arg instanceof Double) {
-        converted.put("value", ((Number) arg).doubleValue());
-      } else {
-        converted.put("value", ((Number) arg).longValue());
-      }
-    } else if (arg instanceof Boolean) {
-      converted.put("type", "BOOLEAN");
-      converted.put("value", ((Boolean) arg).booleanValue());
-    } else if (arg.getClass() == boolean.class) {
-      converted.put("type", "BOOLEAN");
-      converted.put("value", arg);
-    } else if (arg instanceof RemoteWebElement) {
-      converted.put("type", "ELEMENT");
-      converted.put("value", ((RemoteWebElement) arg).getId());
-    } else if (arg instanceof Collection<?>) {
-      Collection<?> args = ((Collection<?>)arg);
-      Object[] list = new Object[args.size()];
-      int i = 0;
-      for (Object o : args) {
-        list[i] = convertToJsObject(o);
-        i++;
-      }
-      return list;
-    } else {
-      throw new IllegalArgumentException("Argument is of an illegal type: " + arg);
-    }
-
-    return converted;
-  }
-
 
   public TargetLocator switchTo() {
     return new RemoteTargetLocator();
@@ -351,12 +283,14 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     return new RemoteWebDriverOptions();
   }
 
-  protected WebElement getElementFrom(Response response) {
-    List<WebElement> elements = getElementsFrom(response);
-    return elements.get(0);
-  }
-
-  private RemoteWebElement newRemoteWebElement() {
+  /**
+   * Creates a new {@link RemoteWebElement} that is a child of this instance.
+   * Subtypes should override this method to customize the type of
+   * RemoteWebElement returned.
+   *
+   * @return A new RemoteWebElement that is a child of this instance.
+   */
+  protected RemoteWebElement newRemoteWebElement() {
     RemoteWebElement toReturn;
     if (capabilities.isJavascriptEnabled()) {
       toReturn = new RenderedRemoteWebElement();
@@ -367,150 +301,35 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     return toReturn;
   }
 
-  @SuppressWarnings({"unchecked"})
-  protected List<WebElement> getElementsFrom(Response response) {
-    List<WebElement> toReturn = new ArrayList<WebElement>();
-    List<String> urls = (List<String>) response.getValue();
-    for (String url : urls) {
-      // We cheat here, because we know that the URL for an element ends with its ID.
-      // This is lazy and bad. We should, instead, go to each of the URLs in turn.
-      String[] parts = url.split("/");
-      RemoteWebElement element = newRemoteWebElement();
-      element.setId(parts[parts.length - 1]);
-      toReturn.add(element);
-    }
+  protected Response execute(DriverCommand driverCommand, Map<String, ?> parameters) {
+    Command command = new Command(sessionId, driverCommand, parameters);
 
-    return toReturn;
-  }
-
-  protected Response execute(DriverCommand driverCommand, Object... parameters) {
-    Command command = new Command(sessionId, new Context("foo"), driverCommand, parameters);
-
-    Response response = new Response();
+    Response response;
 
     try {
       response = executor.execute(command);
-      amendElementValueIfNecessary(response);
+
+      // Unwrap the response value by converting any JSON objects of the form
+      // {"ELEMENT": id} to RemoteWebElements.
+      Object value = new JsonToWebElementConverter().apply(response.getValue());
+      response.setValue(value);
+    } catch (RuntimeException e) {
+      throw e;
     } catch (Exception e) {
-      response.setContext(e.toString());
-      response.setError(true);
-      response.setValue(e.getStackTrace());
+      throw new WebDriverException(e);
     }
 
-    if (response.isError()) {
-      return throwIfResponseFailed(response);
-    }
-
-    return response;
+    return errorHandler.throwIfResponseFailed(response);
   }
 
-  private void amendElementValueIfNecessary(Response response) {
-    if (!(response.getValue() instanceof RemoteWebElement))
-      return;
-
-    // Ensure that the parent is set properly
-    RemoteWebElement existingElement = (RemoteWebElement) response.getValue();
-    existingElement.setParent(this);
-
-    if (!getCapabilities().isJavascriptEnabled())
-      return;
-
-    if (response.getValue() instanceof RenderedRemoteWebElement)
-      return;  // Good, nothing to do
-
-    RenderedRemoteWebElement replacement = new RenderedRemoteWebElement();
-    replacement.setId(existingElement.getId());
-    replacement.setParent(this);
-
-    response.setValue(replacement);
-  }
-
-  private Response throwIfResponseFailed(Response response) {
-    if (response.getValue() instanceof StackTraceElement[]) {
-      WebDriverException runtimeException = new WebDriverException(response.getContext());
-      runtimeException.setStackTrace((StackTraceElement[]) response.getValue());
-      throw runtimeException;
-    }
-
-    Map rawException;
-    try {
-      rawException = (Map) response.getValue();
-    } catch (ClassCastException e) {
-      throw new RuntimeException(String.valueOf(response.getValue()));
-    }
-
-    RuntimeException toThrow = null;
-    try {
-      String screenGrab = (String) rawException.get("screen");
-      String message = (String) rawException.get("message");
-      String className = (String) rawException.get("class");
-
-      Class<?> aClass;
-      try {
-        aClass = Class.forName(className);
-        if (!RuntimeException.class.isAssignableFrom(aClass)) {
-          aClass = WebDriverException.class;
-        }
-      } catch (ClassNotFoundException e) {
-        aClass = WebDriverException.class;
-      }
-
-      if (screenGrab != null) {
-        try {
-          Constructor<? extends RuntimeException> constructor =
-              (Constructor<? extends RuntimeException>) aClass
-                  .getConstructor(String.class, Throwable.class);
-          toThrow = constructor.newInstance(message, new ScreenshotException(screenGrab));
-        } catch (NoSuchMethodException e) {
-          // Fine. Fall through
-        } catch (OutOfMemoryError e) {
-          // It can happens sometimes. Fall through
-        }
-      }
-
-      if (toThrow == null) {
-      try {
-        Constructor<? extends RuntimeException> constructor =
-            (Constructor<? extends RuntimeException>) aClass.getConstructor(String.class);
-        toThrow = constructor.newInstance(message);
-      } catch (NoSuchMethodException e) {
-        toThrow = (WebDriverException) aClass.newInstance();
-      }
-      }
-
-      List<Map> elements = (List<Map>) rawException.get("stackTrace");
-      if (elements != null) {
-        StackTraceElement[] trace = new StackTraceElement[elements.size()];
-  
-        int lastInsert = 0;
-        for (Map values : elements) {
-          // I'm so sorry.
-          Long lineNumber = (Long) values.get("lineNumber");
-          if (lineNumber == null) {
-            continue;
-          }
-  
-          trace[lastInsert++] = new StackTraceElement((String) values.get("className"),
-                  (String) values.get("methodName"),
-                  (String) values.get("fileName"),
-                  lineNumber.intValue());
-          }
-  
-          if (lastInsert == elements.size()) {
-          toThrow.setStackTrace(trace);
-        }
-      }
-    } catch (Exception e) {
-      toThrow = new WebDriverException(e);
-    }
-
-    throw toThrow;
+  protected Response execute(DriverCommand command) {
+    return execute(command, ImmutableMap.<String, Object>of());
   }
 
   private class RemoteWebDriverOptions implements Options {
 
     public void addCookie(Cookie cookie) {
-      execute(DriverCommand.ADD_COOKIE, cookie);
+      execute(DriverCommand.ADD_COOKIE, ImmutableMap.of("cookie", cookie));
     }
 
     public void deleteCookieNamed(String name) {
@@ -539,7 +358,8 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
           String path = (String) rawCookie.get("path");
           String domain = (String) rawCookie.get("domain");
           Boolean secure = (Boolean) rawCookie.get("secure");
-          toReturn.add(new ReturnedCookie(name, value, domain, path, null, secure, getCurrentUrl()));
+          toReturn.add(
+              new ReturnedCookie(name, value, domain, path, null, secure, getCurrentUrl()));
         }
 
         return toReturn;
@@ -566,7 +386,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     }
 
     public void setSpeed(Speed speed) {
-      execute(DriverCommand.SET_SPEED, speed);
+      execute(DriverCommand.SET_SPEED, ImmutableMap.of("speed", speed));
     }
   }
 
@@ -593,7 +413,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     }
   }
 
-  private class RemoteTargetLocator implements TargetLocator {
+  protected class RemoteTargetLocator implements TargetLocator {
 
     public WebDriver frame(int frameIndex) {
       execute(DriverCommand.SWITCH_TO_FRAME, ImmutableMap.of("id", frameIndex));
@@ -619,7 +439,80 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
 
     public WebElement activeElement() {
       Response response = execute(DriverCommand.GET_ACTIVE_ELEMENT);
-      return getElementFrom(response);
+      return (WebElement) response.getValue();
+    }
+  }
+
+  /**
+   * Converts {@link WebElement} objects to their JSON representation. Will
+   * recursively convert Lists and Maps to catch nested references.
+   */
+  private class WebElementToJsonConverter implements Function<Object, Object> {
+    public Object apply(Object arg) {
+      if (arg == null || arg instanceof String || arg instanceof Boolean ||
+          arg instanceof Number) {
+        return arg;
+      }
+
+      if (arg instanceof RemoteWebElement) {
+        return ImmutableMap.of("ELEMENT", ((RemoteWebElement) arg).getId());
+      }
+
+      if (arg instanceof Collection<?>) {
+        Collection<?> args = (Collection<?>) arg;
+        return Collections2.transform(args, this);
+      }
+
+      if (arg instanceof Map<?, ?>) {
+        Map<?, ?> args = (Map<?, ?>) arg;
+        Map<String, Object> converted = Maps.newHashMapWithExpectedSize(args.size());
+        for (Map.Entry<?, ?> entry : args.entrySet()) {
+          Object key = entry.getKey();
+          if (!(key instanceof String)) {
+            throw new IllegalArgumentException(
+                "All keys in Map script arguments must be strings: " + key.getClass().getName());
+          }
+          converted.put((String) key, apply(entry.getValue()));
+        }
+        return converted;
+      }
+
+      throw new IllegalArgumentException("Argument is of an illegal type: "
+          + arg.getClass().getName());
+    }
+  }
+
+  /**
+   * Reconstitutes {@link WebElement}s from their JSON representation. Will
+   * recursively convert Lists and Maps to catch nested references. All other
+   * values pass through the converter unchanged.
+   */
+  private class JsonToWebElementConverter implements Function<Object, Object> {
+    public Object apply(Object result) {
+      if (result instanceof Collection<?>) {
+        Collection<?> results = (Collection<?>) result;
+        return Lists.newArrayList(Iterables.transform(results, this));
+      }
+
+      if (result instanceof Map<?, ?>) {
+        Map<?, ?> resultAsMap = (Map<?, ?>) result;
+        if (resultAsMap.containsKey("ELEMENT")) {
+          RemoteWebElement element = newRemoteWebElement();
+          element.setId(String.valueOf(resultAsMap.get("ELEMENT")));
+          return element;
+        } else {
+          return Maps.transformValues(resultAsMap, this);
+        }
+      }
+
+      if (result instanceof Number) {
+        if (result instanceof Float || result instanceof Double) {
+          return ((Number) result).doubleValue();
+        }
+        return ((Number) result).longValue();
+      }
+
+      return result;
     }
   }
 }

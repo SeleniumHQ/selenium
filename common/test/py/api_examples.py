@@ -54,7 +54,7 @@ class ApiExampleTest (unittest.TestCase):
         self._loadSimplePage()
         elem = self.driver.find_element_by_xpath("//h1")
         self.assertEquals("Heading", elem.get_text())
-        
+
     def testFindElementByXpathThrowNoSuchElementException(self):
         self._loadSimplePage()
         try:
@@ -62,7 +62,6 @@ class ApiExampleTest (unittest.TestCase):
         except NoSuchElementException:
             pass
 
-    @not_available_on_remote #TODO: the remote driver is still giving NSE
     def testFindElementByXpathThrowErrorInResponseExceptionForInvalidXPath(self):
         self._loadSimplePage()
         try:
@@ -124,7 +123,6 @@ class ApiExampleTest (unittest.TestCase):
         elem = self.driver.find_element_by_xpath("//form[@name='someForm']/input[@id='username']")
         self.assertEquals("some text", elem.get_value())
 
-    @not_available_on_remote
     def testFindElementByTagName(self):
         self._loadPage("simpleTest")
         elems = self.driver.find_elements_by_tag_name("div")
@@ -133,7 +131,6 @@ class ApiExampleTest (unittest.TestCase):
         elems = self.driver.find_elements_by_tag_name("iframe")
         self.assertEquals(0, len(elems))
 
-    @not_available_on_remote
     def testFindElementByTagNameWithinElement(self):
         self._loadPage("simpleTest")
         div = self.driver.find_element_by_id("multiline")
@@ -162,7 +159,7 @@ class ApiExampleTest (unittest.TestCase):
         checkbox = self.driver.find_element_by_id("checky")
         checkbox.toggle()
         checkbox.submit()
-  
+
     def testSwitchFrameByName(self):
         self._loadPage("frameset")
         self.driver.switch_to_frame("third");
@@ -235,19 +232,23 @@ class ApiExampleTest (unittest.TestCase):
         result = self.driver.execute_script("return arguments[0] == 'fish' ? 'fish' : 'not fish';", "fish")
         self.assertEquals("fish", result)
 
+    def testExecuteScriptWithMultipleArgs(self):
+        self._loadPage("xhtmlTest")
+        result = self.driver.execute_script(
+            "return arguments[0] + arguments[1]", 1, 2)
+        self.assertEquals(3, result)
+
     def testExecuteScriptWithElementArgs(self):
         self._loadPage("javascriptPage")
         button = self.driver.find_element_by_id("plainButton")
         result = self.driver.execute_script("arguments[0]['flibble'] = arguments[0].getAttribute('id'); return arguments[0]['flibble'];", button)
         self.assertEquals("plainButton", result)
 
-    @not_available_on_remote
     def testFindElementsByPartialLinkText(self):
-        """PartialLink match is not yet implemented on Remote Driver"""
         self._loadPage("xhtmlTest")
         elem = self.driver.find_element_by_partial_link_text("new window")
         elem.click()
-        
+
     def testIsElementDisplayed(self):
         self._loadPage("javascriptPage")
         visible = self.driver.find_element_by_id("displayed").is_displayed()

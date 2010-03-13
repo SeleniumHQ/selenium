@@ -19,8 +19,10 @@ package org.openqa.selenium.internal.selenesedriver;
 
 import com.thoughtworks.selenium.Selenium;
 
+import java.util.Map;
+
 public class IsElementDisplayed extends ElementFunction<Boolean> {
-  public Boolean apply(Selenium selenium, Object... args) {
+  public Boolean apply(Selenium selenium, Map<String, ?> args) {
     String locator = getLocator(args);
 
     return selenium.isVisible(locator);

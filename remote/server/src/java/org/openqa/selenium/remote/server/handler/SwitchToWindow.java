@@ -18,9 +18,12 @@ limitations under the License.
 package org.openqa.selenium.remote.server.handler;
 
 import org.openqa.selenium.remote.server.DriverSessions;
+import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.rest.ResultType;
 
-public class SwitchToWindow extends WebDriverHandler {
+import java.util.Map;
+
+public class SwitchToWindow extends WebDriverHandler implements JsonParametersAware {
 
   private String name;
 
@@ -30,6 +33,10 @@ public class SwitchToWindow extends WebDriverHandler {
 
   public void setName(String name) {
     this.name = name;
+  }
+
+  public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
+    setName((String) allParameters.get("name"));
   }
 
   public ResultType call() throws Exception {

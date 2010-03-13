@@ -17,18 +17,23 @@ limitations under the License.
 
 package org.openqa.selenium.remote;
 
-import java.util.Arrays;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class Command {
 
   private SessionId sessionId;
-  private Context context;
   private DriverCommand name;
-  private Object[] parameters;
+  private Map<String, ?> parameters;
 
-  public Command(SessionId sessionId, Context context, DriverCommand name, Object... parameters) {
+  public Command(SessionId sessionId, DriverCommand name) {
+    this(sessionId, name, new HashMap<String, Object>());
+  }
+
+  public Command(SessionId sessionId, DriverCommand name, Map<String, ?> parameters) {
     this.sessionId = sessionId;
-    this.context = context;
     this.parameters = parameters;
     this.name = name;
   }
@@ -37,19 +42,16 @@ public class Command {
     return sessionId;
   }
 
-  public Context getContext() {
-    return context;
-  }
-
   public DriverCommand getName() {
     return name;
   }
 
-  public Object[] getParameters() {
+  public Map<String, ?> getParameters() {
     return parameters;
   }
-  
+
+  @Override
   public String toString() {
-    return "[" + sessionId + ", " + context + "]: " + name + " " + Arrays.toString(parameters);
+    return "[" + sessionId + ", " + "]: " + name + " " + new JSONObject(parameters).toString();
   }
 }

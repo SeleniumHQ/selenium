@@ -111,7 +111,6 @@ module Selenium
             begin
               connection = ExtensionConnection.new(@host, @port)
               connection.connect(1)
-              connection.close
 
               connect
               return

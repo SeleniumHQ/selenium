@@ -17,14 +17,26 @@
  */
 
 
-function FirefoxDriver(server, enableNativeEvents) {
+function FirefoxDriver(server, enableNativeEvents, win) {
   this.server = server;
-  this.mouseSpeed = 1;
   this.enableNativeEvents = enableNativeEvents;
+  this.window = win;
 
   this.currentX = 0;
   this.currentY = 0;
 }
+
+
+/**
+ * Enumeration of supported speed values.
+ * @enum {number}
+ */
+FirefoxDriver.Speed = {
+  SLOW: 1,
+  MEDIUM: 10,
+  FAST: 100
+};
+
 
 FirefoxDriver.prototype.__defineGetter__("id", function() {
   if (!this.id_) {
@@ -36,15 +48,16 @@ FirefoxDriver.prototype.__defineGetter__("id", function() {
 
 
 FirefoxDriver.prototype.getCurrentWindowHandle = function(respond) {
-  respond.response = this.id;
+  respond.value = this.id;
   respond.send();
 };
 
 
-FirefoxDriver.prototype.get = function(respond, url) {
+FirefoxDriver.prototype.get = function(respond, parameters) {
+  var url = parameters.url;
   // Check to see if the given url is the same as the current one, but
   // with a different anchor tag.
-  var current = Utils.getBrowser(respond.context).contentWindow.location;
+  var current = respond.session.getWindow().location;
   var ioService =
       Utils.getService("@mozilla.org/network/io-service;1", "nsIIOService");
   var currentUri = ioService.newURI(current, "", null);
@@ -62,16 +75,17 @@ FirefoxDriver.prototype.get = function(respond, url) {
   }
 
   if (loadEventExpected) {
-    new WebLoadingListener(Utils.getBrowser(respond.context), function() {
+    new WebLoadingListener(respond.session.getBrowser(), function() {
       // TODO: Rescue the URI and response code from the event
       var responseText = "";
-      respond.context.frameId = "?";
-      respond.response = responseText;
+      // Focus on the top window.
+      respond.session.setWindow(respond.session.getBrowser().contentWindow);
+      respond.value = responseText;
       respond.send();
     });
   }
 
-  Utils.getBrowser(respond.context).loadURI(url);
+  respond.session.getBrowser().loadURI(url);
 
   if (!loadEventExpected) {
     respond.send();
@@ -89,12 +103,16 @@ FirefoxDriver.prototype.close = function(respond) {
 
   // Here we go!
   try {
-    var browser = Utils.getBrowser(respond.context);
+    var browser = respond.session.getBrowser();
     createSwitchFile("close:" + browser.id);
     browser.contentWindow.close();
   } catch(e) {
     dump(e);
   }
+
+  // Send the response so the client doesn't get a connection refused socket
+  // error.
+  respond.send();
 
   // If we're on a Mac we might have closed all the windows but not quit, so
   // ensure that we do actually quit :)
@@ -103,18 +121,13 @@ FirefoxDriver.prototype.close = function(respond) {
     appService.quit(forceQuit);
     return;  // The client should catch the fact that the socket suddenly closes
   }
-
-  // If we're still running, return
-  respond.send();
 };
 
 
-FirefoxDriver.prototype.executeScript = function(respond, script) {
-  var doc = Utils.getDocument(respond.context);
-  var window = doc ? doc.defaultView :
-               Utils.getBrowser(respond.context).contentWindow;
+FirefoxDriver.prototype.executeScript = function(respond, parameters) {
+  var window = respond.session.getWindow();
+  var doc = window.document;
 
-  var parameters = new Array();
   var runScript;
 
   // Pre 2.0.0.15
@@ -123,11 +136,11 @@ FirefoxDriver.prototype.executeScript = function(respond, script) {
       return window.eval(scriptSrc);
     };
   } else {
-    runScript = function(scriptSrc) {
+    runScript = function(scriptSrc, args) {
       window = window.wrappedJSObject;
       var sandbox = new Components.utils.Sandbox(window);
       sandbox.window = window;
-      sandbox.__webdriverParams = parameters;
+      sandbox.__webdriverParams = args;
       sandbox.document = window.document;
       sandbox.unsafeWindow = window;
       sandbox.__proto__ = window;
@@ -136,48 +149,44 @@ FirefoxDriver.prototype.executeScript = function(respond, script) {
     };
   }
 
+  var converted = Utils.unwrapParameters(
+      parameters.args, respond.session.getDocument());
+
   try {
-    var scriptSrc = "var __webdriverFunc = function(){" + script.shift()
+    var scriptSrc = "var __webdriverFunc = function(){" + parameters.script
         + "};  __webdriverFunc.apply(window, __webdriverParams);";
-
-    var convert = script.shift();
-
-    Utils.unwrapParameters(convert, parameters, respond.context);
-
-    var result = runScript(scriptSrc, parameters);
-
-    respond.response = Utils.wrapResult(result, respond.context);
-
+    var result = runScript(scriptSrc, converted);
   } catch (e) {
-    respond.isError = true;
-    respond.response = e;
+    Utils.dumpn(JSON.stringify(e));
+    throw new WebDriverError(ErrorCode.UNEXPECTED_JAVASCRIPT_ERROR, e);
   }
+
+  respond.value = Utils.wrapResult(result, respond.session.getDocument());
   respond.send();
 };
 
 
 FirefoxDriver.prototype.getCurrentUrl = function(respond) {
-  var url = Utils.getDocument(respond.context).defaultView.location;
+  var url = respond.session.getWindow().location;
   if (!url) {
-    url = Utils.getBrowser(respond.context).contentWindow.location;
+    url = respond.session.getBrowser().contentWindow.location;
   }
-  respond.response = "" + url;
+  respond.value = "" + url;
   respond.send();
 };
 
 
-FirefoxDriver.prototype.title = function(respond) {
-  var browser = Utils.getBrowser(respond.context);
-  respond.response = browser.contentTitle;
+FirefoxDriver.prototype.getTitle = function(respond) {
+  respond.value = respond.session.getBrowser().contentTitle;
   respond.send();
 };
 
 
 FirefoxDriver.prototype.getPageSource = function(respond) {
-  var source = Utils.getDocument(respond.context).
+  var source = respond.session.getDocument().
       getElementsByTagName("html")[0].innerHTML;
 
-  respond.response = "<html>" + source + "</html>";
+  respond.value = "<html>" + source + "</html>";
   respond.send();
 };
 
@@ -278,9 +287,9 @@ FirefoxDriver.ElementLocator = {
 FirefoxDriver.prototype.findElementInternal_ = function(respond, method,
                                                         selector,
                                                         opt_parentElementId) {
-  var theDocument = Utils.getDocument(respond.context);
+  var theDocument = respond.session.getDocument();
   var rootNode = typeof opt_parentElementId == 'string' ?
-      Utils.getElementAt(opt_parentElementId, respond.context) : theDocument;
+      Utils.getElementAt(opt_parentElementId, theDocument) : theDocument;
 
   var element;
   switch (method) {
@@ -310,10 +319,9 @@ FirefoxDriver.prototype.findElementInternal_ = function(respond, method,
       if (rootNode['querySelector']) {
         element = rootNode.querySelector(selector);
       } else {
-        respond.isError = true;
-        respond.response = "CSS Selectors not supported natively";
-        respond.send();
-      }      
+        throw new WebDriverError(ErrorCode.UNKNOWN_COMMAND,
+            "CSS Selectors not supported natively");
+      }
       break;
 
     case FirefoxDriver.ElementLocator.TAG_NAME:
@@ -340,22 +348,22 @@ FirefoxDriver.prototype.findElementInternal_ = function(respond, method,
       break;
 
     default:
-      respond.response = 'Unsupported element locator method: ' + method;
-      respond.isError = true;
-      respond.send();
+      throw new WebDriverError(ErrorCode.UNKNOWN_COMMAND,
+          'Unsupported element locator method: ' + method);
       return;
   }
 
   if (element) {
-    respond.response = Utils.addToKnownElements(element, respond.context);
+    var id = Utils.addToKnownElements(element, respond.session.getDocument());
+    respond.value = {'ELEMENT': id};
+    respond.send();
   } else {
-    respond.response = 'Unable to locate element: ' + JSON.stringify({
-      method: method,
-      selector: selector
-    });
-    respond.isError = true;
+    throw new WebDriverError(ErrorCode.NO_SUCH_ELEMENT,
+        'Unable to locate element: ' + JSON.stringify({
+            method: method,
+            selector: selector
+        }));
   }
-  respond.send();
 };
 
 
@@ -363,12 +371,14 @@ FirefoxDriver.prototype.findElementInternal_ = function(respond, method,
  * Finds an element on the current page. The response value will be the UUID of
  * the located element, or an error message if an element could not be found.
  * @param {Response} respond Object to send the command response with.
- * @param {Array.<string>} parameters A two-element array: the first element
- *     should be a method listen in the {@code Firefox.ElementLocator} enum, and
- *     the second should be what to search for.
+ * @param {{using: string, value: string}} parameters A JSON object
+ *     specifying the search parameters:
+ *     - using: A method to search with, as defined in the
+ *       {@code Firefox.ElementLocator} enum.
+ *     - value: What to search for.
  */
 FirefoxDriver.prototype.findElement = function(respond, parameters) {
-  this.findElementInternal_(respond, parameters[0], parameters[1]);
+  this.findElementInternal_(respond, parameters.using, parameters.value);
 };
 
 
@@ -377,17 +387,15 @@ FirefoxDriver.prototype.findElement = function(respond, parameters) {
  * search parameter. The response value will be the UUID of the located element,
  * or an error message if an element could not be found.
  * @param {Response} respond Object to send the command response with.
- * @param {Array.<{id:string, using:string, value:string}>} parameters A single
- *     element array. The array element should define what to search for with
- *     the following fields:
+ * @param {{id: string, using: string, value: string}} parameters A JSON object
+ *     specifying the search parameters:
  *     - id: UUID of the element to base the search from.
  *     - using: A method to search with, as defined in the
  *       {@code Firefox.ElementLocator} enum.
  *     - value: What to search for.
  */
 FirefoxDriver.prototype.findChildElement = function(respond, parameters) {
-  var map = parameters[0];
-  this.findElementInternal_(respond, map.using, map.value, map.id);
+  this.findElementInternal_(respond, parameters.using, parameters.value, parameters.id);
 };
 
 
@@ -405,9 +413,9 @@ FirefoxDriver.prototype.findChildElement = function(respond, parameters) {
 FirefoxDriver.prototype.findElementsInternal_ = function(respond, method,
                                                          selector,
                                                          opt_parentElementId) {
-  var theDocument = Utils.getDocument(respond.context);
+  var theDocument = respond.session.getDocument();
   var rootNode = typeof opt_parentElementId == 'string' ?
-      Utils.getElementAt(opt_parentElementId, respond.context) : theDocument;
+      Utils.getElementAt(opt_parentElementId, theDocument) : theDocument;
 
   var elements;
   switch (method) {
@@ -430,9 +438,8 @@ FirefoxDriver.prototype.findElementsInternal_ = function(respond, method,
       if (rootNode['querySelector']) {
         elements = rootNode.querySelectorAll(selector);
       } else {
-        respond.isError = true;
-        respond.response = "CSS Selectors not supported natively";
-        respond.send();
+        throw new WebDriverError(ErrorCode.UNKNOWN_COMMAND,
+            "CSS Selectors not supported natively");
       }
       break;
 
@@ -462,19 +469,20 @@ FirefoxDriver.prototype.findElementsInternal_ = function(respond, method,
       break;
 
     default:
-      respond.response = 'Unsupported element locator method: ' + method;
-      respond.isError = true;
-      respond.send();
+      throw new WebDriverError(ErrorCode.UNKNOWN_COMMAND,
+          'Unsupported element locator method: ' + method);
       return;
   }
 
   var elementIds = [];
   for (var j = 0; j < elements.length; j++) {
     var element = elements[j];
-    elementIds.push(Utils.addToKnownElements(element, respond.context));
+    var elementId = Utils.addToKnownElements(
+        element, respond.session.getDocument());
+    elementIds.push({'ELEMENT': elementId});
   }
 
-  respond.response = elementIds;
+  respond.value = elementIds;
   respond.send();
 };
 
@@ -483,12 +491,14 @@ FirefoxDriver.prototype.findElementsInternal_ = function(respond, method,
  * Searches for multiple elements on the page. The response value will be an
  * array of UUIDs for the located elements.
  * @param {Response} respond Object to send the command response with.
- * @param {Array.<string>} parameters A two-element array: the first element
- *     should be the type of locator strategy to use, the second is the target
- *     of the search.
+ * @param {{using: string, value: string}} parameters A JSON object
+ *     specifying the search parameters:
+ *     - using: A method to search with, as defined in the
+ *       {@code Firefox.ElementLocator} enum.
+ *     - value: What to search for.
  */
 FirefoxDriver.prototype.findElements = function(respond, parameters) {
-  this.findElementsInternal_(respond, parameters[0], parameters[1]);
+  this.findElementsInternal_(respond, parameters.using, parameters.value);
 };
 
 
@@ -496,51 +506,46 @@ FirefoxDriver.prototype.findElements = function(respond, parameters) {
  * Searches for multiple elements on the page that are children of the
  * corresponding search parameter. The response value will be an array of UUIDs
  * for the located elements.
- * @param {Array.<{id:string, using:string, value:string}>} parameters A single
- *     element array. The array element should define what to search for with
- *     the following fields:
+ * @param {{id: string, using: string, value: string}} parameters A JSON object
+ *     specifying the search parameters:
  *     - id: UUID of the element to base the search from.
  *     - using: A method to search with, as defined in the
  *       {@code Firefox.ElementLocator} enum.
  *     - value: What to search for.
  */
 FirefoxDriver.prototype.findChildElements = function(respond, parameters) {
-  var map = parameters[0];
-  this.findElementsInternal_(respond, map.using, map.value, map.id);
+  this.findElementsInternal_(respond, parameters.using, parameters.value, parameters.id);
 };
 
 
-FirefoxDriver.prototype.switchToFrame = function(respond, frameId) {
-  var browser = Utils.getBrowser(respond.context);
-  var frameDoc = Utils.findDocumentInFrame(browser, frameId[0]);
-
-  if (frameDoc) {
-    respond.context = new Context(respond.context.windowId, frameId[0]);
-    respond.send();
+FirefoxDriver.prototype.switchToFrame = function(respond, parameters) {
+  var browser = respond.session.getBrowser();
+  if (parameters.id == null) {
+    respond.session.setWindow(respond.session.getBrowser().contentWindow);
   } else {
-    respond.isError = true;
-    respond.response = "Cannot find frame with id: " + frameId.toString();
-    respond.send();
+    var frameDoc = Utils.findDocumentInFrame(browser, parameters.id);
+    if (frameDoc) {
+      respond.session.setWindow(frameDoc.defaultView);
+    } else {
+      throw new WebDriverError(ErrorCode.NO_SUCH_FRAME,
+          "Cannot find frame with id: " + parameters.id);
+    }
   }
-};
-
-
-FirefoxDriver.prototype.switchToDefaultContent = function(respond) {
-  respond.context.frameId = "?";
   respond.send();
 };
 
 
-FirefoxDriver.prototype.switchToActiveElement = function(respond) {
-  var element = Utils.getActiveElement(respond.context);
+FirefoxDriver.prototype.getActiveElement = function(respond) {
+  var element = Utils.getActiveElement(respond.session.getDocument());
+  var id = Utils.addToKnownElements(element, respond.session.getDocument());
 
-  respond.response = Utils.addToKnownElements(element, respond.context);
+  respond.value = {'ELEMENT':id};
   respond.send();
 };
 
 
 FirefoxDriver.prototype.goBack = function(respond) {
-  var browser = Utils.getBrowser(respond.context);
+  var browser = respond.session.getBrowser();
 
   if (browser.canGoBack) {
     browser.goBack();
@@ -551,7 +556,7 @@ FirefoxDriver.prototype.goBack = function(respond) {
 
 
 FirefoxDriver.prototype.goForward = function(respond) {
-  var browser = Utils.getBrowser(respond.context);
+  var browser = respond.session.getBrowser();
 
   if (browser.canGoForward) {
     browser.goForward();
@@ -562,23 +567,23 @@ FirefoxDriver.prototype.goForward = function(respond) {
 
 
 FirefoxDriver.prototype.refresh = function(respond) {
-  var browser = Utils.getBrowser(respond.context);
+  var browser = respond.session.getBrowser();
   browser.contentWindow.location.reload(true);
   // Wait for the reload to finish before sending the response.
-  new WebLoadingListener(browser, function() {
-    // Reset to the top frame.
-    respond.context.frameId = "?";
+  new WebLoadingListener(respond.session.getBrowser(), function() {
+    // Reset to the top window.
+    respond.session.setWindow(browser.contentWindow);
     respond.send();
   });
 };
 
 
-FirefoxDriver.prototype.addCookie = function(respond, cookieString) {
-  var cookie;
-  cookie = eval('(' + cookieString[0] + ')');
+FirefoxDriver.prototype.addCookie = function(respond, parameters) {
+  var cookie = parameters.cookie;
 
   if (cookie.expiry) {
-    cookie.expiry = new Date(cookie.expiry);
+    cookie.expiry = cookie.expiry.time ? new Date(cookie.expiry.time) :
+                                         new Date(cookie.expiry);
   } else {
     var date = new Date();
     date.setYear(2030);
@@ -588,16 +593,14 @@ FirefoxDriver.prototype.addCookie = function(respond, cookieString) {
   cookie.expiry = cookie.expiry.getTime() / 1000; // Stored in seconds
 
   if (!cookie.domain) {
-    var location = Utils.getBrowser(respond.context).contentWindow.location;
+    var location = respond.session.getBrowser().contentWindow.location;
     cookie.domain = location.hostname;
   } else {
-    var currLocation = Utils.getBrowser(respond.context).contentWindow.location;
+    var currLocation = respond.session.getBrowser().contentWindow.location;
     var currDomain = currLocation.host;
     if (currDomain.indexOf(cookie.domain) == -1) {  // Not quite right, but close enough
-      respond.isError = true;
-      respond.response = "You may only set cookies for the current domain";
-      respond.send();
-      return;
+      throw new WebDriverError(ErrorCode.INVALID_COOKIE_DOMAIN,
+          "You may only set cookies for the current domain");
     }
   }
 
@@ -608,12 +611,10 @@ FirefoxDriver.prototype.addCookie = function(respond, cookieString) {
     cookie.domain = cookie.domain.replace(/:\d+$/, "");
   }
 
-  var document = Utils.getDocument(respond.context);
+  var document = respond.session.getDocument();
   if (!document || !document.contentType.match(/html/i)) {
-    respond.isError = true;
-    respond.response = "You may only set cookies on html documents";
-    respond.send();
-    return;
+    throw new WebDriverError(ErrorCode.UNABLE_TO_SET_COOKIE,
+        "You may only set cookies on html documents");
   }
 
   var cookieManager =
@@ -661,37 +662,37 @@ function getVisibleCookies(location) {
   return results;
 };
 
-FirefoxDriver.prototype.getCookie = function(respond) {
-  var cookieToString = function(c) {
-    return c.name + "=" + c.value + ";" + "domain=" + c.host + ";"
-        + "path=" + c.path + ";" + "expires=" + c.expires + ";"
-        + (c.isSecure ? "secure ;" : "");
-  };
-
+FirefoxDriver.prototype.getCookies = function(respond) {
   var toReturn = [];
-  var cookies = getVisibleCookies(Utils.getBrowser(respond.context).
+  var cookies = getVisibleCookies(respond.session.getBrowser().
       contentWindow.location);
   for (var i = 0; i < cookies.length; i++) {
-    toReturn.push(cookieToString(cookies[i]));
+    var cookie = cookies[i];
+    toReturn.push({
+      'name': cookie.name,
+      'value': cookie.value,
+      'path': cookie.path,
+      'domain': cookie.host,
+      'secure': cookie.isSecure
+    });
   }
 
-  respond.response = toReturn;
+  respond.value = toReturn;
   respond.send();
 };
 
 
 // This is damn ugly, but it turns out that just deleting a cookie from the document
 // doesn't always do The Right Thing
-FirefoxDriver.prototype.deleteCookie = function(respond, cookieString) {
+FirefoxDriver.prototype.deleteCookie = function(respond, parameters) {
+  var toDelete = parameters.name;
   var cm = Utils.getService("@mozilla.org/cookiemanager;1", "nsICookieManager");
-  // TODO(simon): Well, this is dumb. Sorry
-  var toDelete = eval('(' + cookieString + ')');
 
-  var cookies = getVisibleCookies(Utils.getBrowser(respond.context).
+  var cookies = getVisibleCookies(respond.session.getBrowser().
       contentWindow.location);
   for (var i = 0; i < cookies.length; i++) {
     var cookie = cookies[i];
-    if (cookie.name == toDelete.name) {
+    if (cookie.name == toDelete) {
       cm.remove(cookie.host, cookie.name, cookie.path, false);
     }
   }
@@ -702,7 +703,7 @@ FirefoxDriver.prototype.deleteCookie = function(respond, cookieString) {
 
 FirefoxDriver.prototype.deleteAllCookies = function(respond) {
   var cm = Utils.getService("@mozilla.org/cookiemanager;1", "nsICookieManager");
-  var cookies = getVisibleCookies(Utils.getBrowser(respond.context).
+  var cookies = getVisibleCookies(respond.session.getBrowser().
       contentWindow.location);
 
   for (var i = 0; i < cookies.length; i++) {
@@ -714,50 +715,64 @@ FirefoxDriver.prototype.deleteAllCookies = function(respond) {
 };
 
 
-FirefoxDriver.prototype.setMouseSpeed = function(respond, speed) {
-  this.mouseSpeed = speed.shift();
+FirefoxDriver.prototype.setSpeed = function(respond, parameters) {
+  if (!(parameters.speed in FirefoxDriver.Speed)) {
+    var validSpeeds = [];
+    for (var prop in FirefoxDriver.Speed) {
+      validSpeeds.push(prop);
+    }
+    throw new WebDriverError(ErrorCode.UNHANDLED_ERROR,
+        'Speed value expected to be one of ' + JSON.stringify(validSpeeds) +
+        ', but was "' + parameters.speed + '"');
+  }
+  respond.session.setInputSpeed(FirefoxDriver.Speed[parameters.speed]);
   respond.send();
 };
 
 
-FirefoxDriver.prototype.getMouseSpeed = function(respond) {
-  respond.response = this.mouseSpeed;
+FirefoxDriver.prototype.getSpeed = function(respond) {
+  var speed = respond.session.getInputSpeed();
+  for (var prop in FirefoxDriver.Speed) {
+    if (FirefoxDriver.Speed[prop] == speed) {
+      respond.value = prop;
+    }
+  }
   respond.send();
 };
 
 
 FirefoxDriver.prototype.saveScreenshot = function(respond, pngFile) {
-  var window = Utils.getBrowser(respond.context).contentWindow;
+  var window = respond.session.getBrowser().contentWindow;
   try {
     var canvas = Screenshooter.grab(window);
     try {
       Screenshooter.save(canvas, pngFile);
     } catch(e) {
-      respond.isError = true;
-      respond.response = 'Could not save screenshot to ' + pngFile + ' - ' + e;
+      throw new WebDriverError(ErrorCode.UNHANDLED_ERROR,
+          'Could not save screenshot to ' + pngFile + ' - ' + e);
     }
   } catch(e) {
-    respond.isError = true;
-    respond.response = 'Could not take screenshot of current page - ' + e;
+    throw new WebDriverError(ErrorCode.UNHANDLED_ERROR,
+        'Could not take screenshot of current page - ' + e);
   }
   respond.send();
 };
 
 
-FirefoxDriver.prototype.getScreenshotAsBase64 = function(respond) {
-  var window = Utils.getBrowser(respond.context).contentWindow;
+FirefoxDriver.prototype.screenshot = function(respond) {
+  var window = respond.session.getBrowser().contentWindow;
   try {
     var canvas = Screenshooter.grab(window);
-    respond.isError = false;
-    respond.response = Screenshooter.toBase64(canvas);
+    respond.value = Screenshooter.toBase64(canvas);
   } catch (e) {
-    respond.isError = true;
-    respond.response = 'Could not take screenshot of current page - ' + e;
+    throw new WebDriverError(ErrorCode.UNHANDLED_ERROR,
+        'Could not take screenshot of current page - ' + e);
   }
   respond.send();
 };
 
-FirefoxDriver.prototype.dismissAlert = function(respond, alertText) {
+FirefoxDriver.prototype.dismissAlert = function(respond, parameters) {
+  var alertText = parameters.text;
   // TODO(simon): Is there a type for alerts?
   var wm = Utils.getService("@mozilla.org/appshell/window-mediator;1", "nsIWindowMediator");
   var allWindows = wm.getEnumerator("");

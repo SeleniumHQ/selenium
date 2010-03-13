@@ -1,8 +1,8 @@
 package org.openqa.selenium.iphone;
 
-import junit.framework.TestCase;
+import org.openqa.selenium.AbstractDriverTestCase;
 
-public class CreateIPhoneDriverTest extends TestCase {
+public class CreateIPhoneDriverTest extends AbstractDriverTestCase {
   public void testCreateDriver() throws Exception {
     new IPhoneDriver();
   }

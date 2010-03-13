@@ -19,11 +19,11 @@ package org.openqa.selenium.internal.selenesedriver;
 
 import com.thoughtworks.selenium.Selenium;
 
-import org.openqa.selenium.internal.selenesedriver.SeleneseFunction;
+import java.util.Map;
 
 public class GetUrl implements SeleneseFunction<Void> {
-  public Void apply(Selenium selenium, Object... args) {
-    selenium.open((String) args[0]);
+  public Void apply(Selenium selenium, Map<String, ?> args) {
+    selenium.open((String) args.get("url"));
     return null;
   }
 }

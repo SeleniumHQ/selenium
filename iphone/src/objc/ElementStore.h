@@ -21,8 +21,8 @@
 
 @class Element;
 
-// This represents the /:session/:context/element 'directory'.
-// All the elements are in :context/element/X where X is the element's id.
+// This represents the /:session/element 'directory'.
+// All the elements are in /element/X where X is the element's id.
 // The elements are kept in a JS array on the webpage.
 // TODO: Fix memory leak of elements never being destroyed when new pages
 // are navigated to.

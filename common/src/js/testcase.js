@@ -124,7 +124,9 @@ webdriver.TestCase.prototype.startTest_ = function() {
     // all of its subcommands so we can continue the test.
     goog.events.listen(driver, webdriver.Command.ERROR_EVENT,
         function(e) {
+//          console.error('error event!');
           var failingCommand = (/** @type {webdriver.Command} */e.target);
+//          console.dir(failingCommand);
           if (!failingCommand.getResponse()) {
             // This should never happen, but just in case.
             test.errors.push('Unknown error');

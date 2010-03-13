@@ -19,12 +19,14 @@
 #import "WebDriverResponse.h"
 #import "HTTPJSONResponse.h"
 #import "HTTPPNGResponse.h"
+#import "NSException+WebDriver.h"
+#import "errorcodes.h"
 
 @implementation WebDriverResponse
 
 // These need to be dynamic so we can make sure to clear the cached response
 // if it exists when these are changed.
-@dynamic isError, value, sessionId, context;
+@dynamic status, value, sessionId;
 
 - (id)initWithValue:(id)theValue {
   if (![super init])
@@ -32,20 +34,35 @@
   
   [self setValue:theValue];
 
-  // The sessionId and context are automatically set by |Context|.
-  [self setContext:@"unknown"];
+  // The sessionId is set automatically by |Session|.
   [self setSessionId:@"unknown"];
 
   return self;
 }
 
 - (id)initWithError:(id)error {
-  id value = [error isKindOfClass:[NSException class]] ? [error userInfo]
-                                                       : error;
-  if (![self initWithValue:value])
-    return nil;
+  NSLog(@"Creating WebDriverResponse with:\n%@", [error description]);
+  if (![error isKindOfClass:[NSException class]]) {
+    if (![self initWithValue:error]) {
+      return nil;
+    }
+  } else {
+    NSDictionary* errorData = [error userInfo];
+    if ([error name] == [NSException webdriverExceptionName]) {
+      if (![self initWithValue:[errorData objectForKey:@"value"]]) {
+        return nil;
+      }
+      status_ = [[errorData objectForKey:@"status"] intValue];
+    } else if (![self initWithValue:errorData]) {
+      return nil;
+    }
+  }
   
-  [self setIsError:YES];
+  // If we didn't set a status above, go ahead and use a generic now.
+  if (status_ == SUCCESS) {
+    status_ = EUNHANDLEDERROR;
+  }
+
   return self;
 }
 
@@ -63,7 +80,6 @@
   // an exception.
   [value_ release];
   [sessionId_ release];
-  [context_ release];
   [response_ release];
   [super dealloc];
 }
@@ -72,8 +88,7 @@
   NSMutableDictionary *dict = [NSMutableDictionary dictionary];
   [dict setValue:value_ forKey:@"value"];
   [dict setValue:sessionId_ forKey:@"sessionId"];
-  [dict setValue:context_ forKey:@"context"];
-  [dict setValue:[NSNumber numberWithBool:isError_] forKey:@"error"];
+  [dict setValue:[NSNumber numberWithInt:status_] forKey:@"status"];
   return dict;
 }
 
@@ -133,17 +148,36 @@
 }
 
 - (NSString *)description {
-  return [NSString stringWithFormat:@"{ value:%@ error:%d }", value_, isError_];
+  return [NSString stringWithFormat:@"{ status: %d, value:%@ }",
+          status_, value_];
+}
+
+- (int)errorStatusCode {
+  if (status_ == SUCCESS) {
+    return 200;
+  } else if (status_ > 399 && status_ < 500) {
+    return status_;
+  } else {
+    return 500;
+  }
 }
 
 #pragma mark Properties
 
 - (BOOL)isError {
-  return isError_;
+  return status_ != SUCCESS;
 }
 
 - (void)setIsError:(BOOL)newIsError {
-  isError_ = newIsError;
+  [self setStatus:(newIsError ? EUNHANDLEDERROR : SUCCESS)];
+}
+
+- (int)status {
+  return status_;
+}
+
+- (void)setStatus:(int)newStatus {
+  status_ = newStatus;
   [self setResponseDirty];
 }
 
@@ -166,16 +200,6 @@
 - (void)setSessionId:(NSString *)newSessionId {
   [sessionId_ release];
   sessionId_ = [newSessionId copy];
-  [self setResponseDirty];
-}
-
-- (NSString *)context {
-  return [[context_ retain] autorelease];
-}
-
-- (void)setContext:(NSString *)newContext {
-  [context_ release];
-  context_ = [newContext copy];
   [self setResponseDirty];
 }
 

@@ -42,7 +42,7 @@
 }
 
 - (NSString *)contentType {
-  return @"application/json";
+  return @"application/json; charset=UTF-8";
 }
 
 @end

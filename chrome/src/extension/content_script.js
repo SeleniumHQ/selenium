@@ -51,10 +51,10 @@ function parsePortMessage(message) {
   console.log("Received request: " + JSON.stringify(message) + " (" + window.name + ")");
   //wait indicates whether this is a potentially page-changing change (see background.js's sendResponseByXHR)
   var response = {response: message.request.request, value: null, wait: true};
-  if (message.request.elementId !== undefined && message.request.elementId != null) {
-    //If it seems an elementId has been passed, try to resolve that to an element
+  if (message.request.id !== undefined && message.request.id != null) {
+    //If it seems an id has been passed, try to resolve that to an element
     try {
-      var element = internalGetElement(message.request.elementId);
+      var element = internalGetElement(message.request.id);
     } catch(e) {
       response.value = e;
       ChromeDriverContentScript.port.postMessage({response: response, sequenceNumber: message.sequenceNumber});
@@ -71,7 +71,7 @@ function parsePortMessage(message) {
       response.value = clearElement(element);
       break;
     case "clickElement":
-      response.value = clickElement(element, message.request.elementId);
+      response.value = clickElement(element, message.request.id);
       break;
     case "nonNativeClickElement":
       //TODO(danielwh): Focus/blur events for non-native clicking
@@ -87,7 +87,9 @@ function parsePortMessage(message) {
 
       if (element.click) {
         console.log("click");
-        execute("try { arguments[0].click(); } catch(e){}", {type: "ELEMENT", value: addElementToInternalArray(element)});
+        execute("try { arguments[0].click(); } catch(e){}", [{
+          type: "ELEMENT", value: addElementToInternalArray(element)
+        }]);
       }
       response.value = {statusCode: 0};
       break;
@@ -128,11 +130,11 @@ function parsePortMessage(message) {
       response.wait = false;
       break;
     case "getElementAttribute":
-      response.value = getElementAttribute(element, message.request.attribute);
+      response.value = getElementAttribute(element, message.request.name);
       response.wait = false;
       break;
     case "getElementValueOfCssProperty":
-      response.value = {statusCode: 0, value: getStyle(element, message.request.css)};
+      response.value = {statusCode: 0, value: getStyle(element, message.request.propertyName)};
       response.wait = false;
       break;
     case "getElementLocation":
@@ -186,7 +188,7 @@ function parsePortMessage(message) {
       response.value = {statusCode: 0};
       break;
     case "hoverOverElement":
-      response.value = hoverElement(element, message.request.elementId);
+      response.value = hoverElement(element, message.request.id);
       break;
     case "injectEmbed":
       injectEmbed();
@@ -208,7 +210,12 @@ function parsePortMessage(message) {
       response.value = {statusCode: 0};
       break;
     case "sendKeysToElement":
-      response.value = sendElementKeys(element, message.request.keys, message.request.elementId);
+      if (typeof message.request.value.splice == 'function' &&
+          typeof message.request.value.join == 'function') {
+        // Looks like we were given an array of strings. Join them together.
+        message.request.value = message.request.value.join('');
+      }
+      response.value = sendElementKeys(element, message.request.value, message.request.id);
       response.wait = false;
       break;
     case "sendElementNonNativeKeys":
@@ -219,7 +226,7 @@ function parsePortMessage(message) {
       response.value = selectElement(element);
       break;
     case "getActiveElement":
-      response.value = {statusCode: 0, value: [addElementToInternalArray(ChromeDriverContentScript.currentDocument.activeElement).toString()]};
+      response.value = {statusCode: 0, value: {'ELEMENT':addElementToInternalArray(ChromeDriverContentScript.currentDocument.activeElement).toString()}};
       response.wait = false;
       break;
     case "switchToNamedIFrameIfOneExists":
@@ -284,7 +291,7 @@ function deleteCookie(cookieName) {
     var fullpath = cookieDocument.location.pathname;
   }
   var hostParts = cookieDocument.location.hostname.split(".");
-  
+
   fullpath = fullpath.split('/');
   fullpath.pop(); //Get rid of the file
   //TODO(danielwh): Tidy up these loops and this repeated code
@@ -297,17 +304,17 @@ function deleteCookie(cookieName) {
     cookieDocument.cookie = cookieName + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/' + path;
     //Delete cookie without trailing /
     cookieDocument.cookie = cookieName + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/' + path.substring(0, path.length - 1);
-    
+
     var domain = "";
     for (var i = hostParts.length - 1; i >= 0; --i) {
       domain = "." + hostParts[i] + domain;
       //Delete cookie with trailing /
       cookieDocument.cookie = cookieName + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/' + path + ";domain=" + domain;
-      
+
       cookieDocument.cookie = cookieName + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/' + path + ";domain=" + domain;
       //Delete cookie without trailing /
       cookieDocument.cookie = cookieName + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/' + path.substring(0, path.length - 1) + ";domain=" + domain;
-      
+
       cookieDocument.cookie = cookieName + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/' + path.substring(0, path.length - 1) + ";domain=" + domain.substring(1);
     }
   }
@@ -392,15 +399,15 @@ function setCookie(cookie) {
     var currLocation = ChromeDriverContentScript.currentDocument.location;
     var currDomain = currLocation.host;
   }
-  
+
   if (currLocation.port != 80) { currDomain += ":" + currLocation.port; }
   if (cookie.domain != null && cookie.domain !== undefined &&
       currDomain.indexOf(cookie.domain) == -1) {
       // Not quite right, but close enough. (See r783)
-    return {statusCode: 2, value: {
+    return {statusCode: 24, value: {
             message: "You may only set cookies for the current domain"}};
   } else if (guessPageType() != "html") {
-    return {statusCode: 2, value: {
+    return {statusCode: 25, value: {
             message: "You may only set cookies on html documents"}};
   } else {
     cookieDocument.cookie = cookie.name + '=' + escape(cookie.value) +
@@ -486,12 +493,15 @@ function getElement(plural, lookupBy, lookupValue, id) {
           message: "Unable to find element with " + lookupBy + " " + lookupValue}};
     }
   } else {
-    var elementsToReturnArray = [];
+    var toReturn;
     if (plural) {
+      toReturn = [];
       //Add all found elements to the page's elements, and push each to the array to return
       var addedElements = addElementsToInternalArray(elements);
       for (var addedElement in addedElements) {
-        elementsToReturnArray.push(addedElements[addedElement].toString());
+        toReturn.push({
+          'ELEMENT': addedElements[addedElement].toString()
+        });
       }
     } else {
       if (!elements[0]) {
@@ -499,9 +509,11 @@ function getElement(plural, lookupBy, lookupValue, id) {
           message: "Unable to find element with " + lookupBy + " " + lookupValue}};
       }
       //Add the first found elements to the page's elements, and push it to the array to return
-      elementsToReturnArray.push(addElementToInternalArray(elements[0]).toString());
+      toReturn = {
+        'ELEMENT': addElementToInternalArray(elements[0]).toString()
+      };
     }
-    return {statusCode: 0, value: elementsToReturnArray};
+    return {statusCode: 0, value: toReturn};
   }
 }
 
@@ -565,7 +577,7 @@ function clickElement(element, elementId) {
   element.scrollIntoView(true);
   var size = getOffsetSizeFromSubElements(element);
   var coords = getElementCoords(element);
-  return {statusCode: "no-op", elementId: elementId,
+  return {statusCode: "no-op", id: elementId,
           x: parseInt(coords[0] - ChromeDriverContentScript.currentDocument.body.scrollLeft + (size.width ? size.width / 2 : 0)),
           y: parseInt(coords[1] - ChromeDriverContentScript.currentDocument.body.scrollTop + (size.height ? size.height / 2 : 0))};
 }
@@ -584,7 +596,7 @@ function hoverElement(element, elementId) {
   var size = getOffsetSizeFromSubElements(element)
   var coords = getElementCoords(element);
   console.log("element.clientX: " + element.clientX);
-  return {statusCode: "no-op", elementId: elementId,
+  return {statusCode: "no-op", id: elementId,
       oldX: 0,
       oldY: 0,
       newX: coords[0] - ChromeDriverContentScript.currentDocument.body.scrollLeft + (size.width ? size.width / 2 : 0),
@@ -722,7 +734,7 @@ function sendElementKeys(element, keys, elementId) {
     Utils.fireHtmlEventAndConditionallyPerformAction(oldFocusedElement, "blur", function() {oldFocusedElement.blur();});
     Utils.fireHtmlEventAndConditionallyPerformAction(element, "focus", function() {element.focus();});
   }
-  return {statusCode: "no-op", keys: keys, elementId: elementId};
+  return {statusCode: "no-op", keys: keys, id: elementId};
 }
 
 /**
@@ -791,7 +803,7 @@ function toggleElement(element) {
     return e;
   }
   console.log("New value: " + newValue);
-  
+
   if (changed) {
     //TODO: Work out a way of firing events,
     //now that synthesising them gives appendMessage errors
@@ -830,38 +842,60 @@ function sniffForMetaRedirects() {
   return {statusCode: "no-op", value: false};
 }
 
-function parseWrappedArguments(argument) {
-  //Parse the arguments into actual values (which are wrapped up in JSON)
-  if (argument.length !== undefined) {
-    var array = [];
-    for (var i = 0; i < argument.length; ++i) {
-      array.push(parseWrappedArguments(argument[i]));
+function parseWrappedArguments(wrappedArguments) {
+  var converted = [];
+  while (wrappedArguments && wrappedArguments.length > 0) {
+    var t = wrappedArguments.shift();
+    switch (typeof t) {
+      case 'number':
+      case 'string':
+      case 'boolean':
+        converted.push(t);
+        break;
+
+      case 'object':
+        if (t == null) {
+          converted.push(null);
+
+        } else if (typeof t.length === 'number' &&
+            !(t.propertyIsEnumerable('length'))) {
+          converted.push(parseWrappedArguments(t));
+
+        } else if (typeof t['ELEMENT'] === 'string' ||
+                   typeof t['ELEMENT'] === 'number') {
+          //Wrap up as a special object with the element's canonical xpath,
+          // which the page can work out
+          var element_id = t['ELEMENT'];
+          var element = null;
+          try {
+            element = internalGetElement(element_id);
+          } catch (e) {
+            throw {
+              statusCode: 10,
+              message:'Tried to use obsolete element as a JavaScript argument.'
+            };
+          }
+          converted.push({
+            webdriverElementXPath: getXPathOfElement(element)
+          });
+
+        } else {
+          var convertedObj = {};
+          for (var prop in t) {
+            convertedObj[prop] = parseWrappedArguments(t[prop]);
+          }
+          converted.push(convertedObj);
+        }
+        break;
+
+      default:
+        throw {
+          statusCode: 17,
+          message: 'Bad javascript argument: ' + (typeof t)
+        };
     }
-    return {success: true, value: array};
   }
-  switch (argument.type) {
-  case "ELEMENT":
-    //Wrap up as a special object with the element's canonical xpath, which the page can work out
-    var element_id = argument.value;
-    var element = null;
-    try {
-      element = internalGetElement(element_id);
-    } catch (e) {
-      return {success: false, value: {response: "execute", value:
-          {statusCode: 10,
-           message: "Tried use obsolete element as argument when executing javascript."}}};
-    }
-    return {success: true, value: {webdriverElementXPath: getXPathOfElement(element)}};
-    break;
-  //Intentional falling through because Javascript will parse things properly
-  case "STRING":
-  case "BOOLEAN":
-  case "NUMBER":
-    return {success: true, value: argument.value};
-    break;
-  }
-  return {success: false, value: {statusCode: 17,
-        message: "Bad argument to javascript."}}
+  return converted;
 }
 
 /**
@@ -869,70 +903,137 @@ function parseWrappedArguments(argument) {
  * Returns by callback to returnFromJavascriptInPage.
  * Yes, this is *horribly* hacky.
  * We can't share objects between content script and page, so have to wrap up arguments as JSON
- * @param script script to execute as a string
- * @param passedArgs array of arguments to pass to the script
+ * @param {string} script The javascript snippet to execute in the current page.
+ * @param {Array.<*>} passedArgs An array of JSON arguments to pass to the
+ *     injected script. DOMElements should be specified as JSON objects of the
+ *     form {ELEMENT: string}.
  * @param callback function to call when the result is returned.  Passed a DOMAttrModified event which should be parsed as returnFromJavascriptInPage
  * TODO: Make the callback be passed the parsed result.
  */
 function execute_(script, passedArgs, callback) {
   console.log("executing " + script + ", args: " + JSON.stringify(passedArgs));
   var func = "function(){" + script + "}";
-  var args = [];
-  for (var i = 0; i < passedArgs.length; ++i) {
-    console.log("Parsing: " + JSON.stringify(passedArgs[i]));
-    var value = parseWrappedArguments(passedArgs[i]);
-    if (value.success) {
-      args.push(value.value);
-    } else {
-      ChromeDriverContentScript.port.postMessage({response: value.value, sequenceNumber: ChromeDriverContentScript.currentSequenceNumber});
-      return;
-    }
+  var args;
+  try {
+    args = parseWrappedArguments(passedArgs);
+  } catch (ex) {
+    ChromeDriverContentScript.port.postMessage({
+      response: {
+        statusCode: (ex.statusCode || 17),
+        message: (ex.message || ex.toString())
+      },
+      sequenceNumber: ChromeDriverContentScript.currentSequenceNumber
+    });
+    return;
   }
+
   //Add a script tag to the page, containing the script we wish to execute
   var scriptTag = ChromeDriverContentScript.currentDocument.createElement('script');
   var argsString = JSON.stringify(args).replace(/"/g, "\\\"");
-  scriptTag.innerText = 'var e = document.createEvent("MutationEvent");' +
-                        //Dump our arguments in an array
-                        'var args = JSON.parse("' + argsString + '");' +
-                        'var element = null;' +
-                        'for (var i = 0; i < args.length; ++i) {' +
-                          'if (args[i] && typeof(args[i]) == "object" && args[i].webdriverElementXPath) {' +
-                            //If this is an element (because it has the proper xpath), turn it into an actual element object
-                            'args[i] = document.evaluate(args[i].webdriverElementXPath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;' +
-                          '}' +
-                        '}' +
-                        'try {' +
-                          'var val = eval(' + func + ').apply(window, args);' +
-                          'if (typeof(val) == "string") { val = JSON.stringify(val); }' +
-                          //TODO(danielwh): Deal with the undefined != null case better
-                          'else if (val === undefined) { val = null; }' +
-                          'else if (typeof(val) == "object" && val && val.nodeType == 1) {' +
-                            //If we're returning an element, turn it into a special xpath-containing object
-                            'var path = "";' +
-                            'for (; val && val.nodeType == 1; val = val.parentNode) {' +
-                              'var index = 1;' +
-                              'for (var sibling = val.previousSibling; sibling; sibling = sibling.previousSibling) {' +
-                                'if (sibling.nodeType == 1 && sibling.tagName && sibling.tagName == val.tagName) {' +
-                                  'index++;' +
-                                '}' +
-                              '}' +
-                              'path = "/" + val.tagName + "[" + index + "]" + path;' +
-                            '}' +
-                            'val = JSON.stringify({webdriverElementXPath: path});' +
-                          '} else {' +
-                            'val = JSON.stringify(val);' +
-                          '}' +
-                          //Fire mutation event with newValue set to the JSON of our return value
-                          'e.initMutationEvent("DOMAttrModified", true, false, null, null, \'{\"value\": \' + val + \'}\', null, 0);' +
-                        '} catch (exn) {' +
-                          //Fire mutation event with prevValue set to EXCEPTION to indicate an error in the script
-                          'e.initMutationEvent("DOMAttrModified", true, false, null, "EXCEPTION", null, null, 0);' +
-                        '}' +
-                        'document.getElementsByTagName("script")[document.getElementsByTagName("script").length - 1].dispatchEvent(e);' +
-                        'document.getElementsByTagName("html")[0].removeChild(document.getElementsByTagName("script")[document.getElementsByTagName("script").length - 1]);';
+
+  // We use the fact that Function.prototype.toString() will decompile this to
+  // its source code so we can inject it into the page in a SCRIPT tag.
+  function executeInjectedScript(fn, argsAsString) {
+    var e = document.createEvent("MutationEvent");
+    var args = JSON.parse(argsAsString);
+    var element = null;
+    for (var i = 0; i < args.length; i++) {
+      if (args[i] && typeof args[i] == 'object' &&
+          args[i].webdriverElementXPath) {
+        //If this is an element (because it has the proper xpath), turn it into
+        //an actual element object
+        args[i] = document.evaluate(args[i].webdriverElementXPath, document,
+            null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+      }
+    }
+    try {
+      var val = fn.apply(window, args);
+
+      // prepares the injected script result to be converted to json to be sent
+      // back to the content script.
+      function convertResultToJson(result) {
+        switch (typeof result) {
+          case 'string':
+          case 'number':
+          case 'boolean':
+            return result;
+          case 'undefined':
+            return null;
+          case 'object':
+            if (result == null) {
+              return result;
+            }
+            // Result was an array.
+            if (typeof result.length === 'number' &&
+                !(result.propertyIsEnumerable('length'))) {
+              var converted = [];
+              for (var i = 0; i < result.length; i++) {
+                converted.push(convertResultToJson(result[i]));
+              }
+              return converted;
+            }
+            // Result is a DOMNode; make sure it's a DOMElement
+            if (typeof result.nodeType == 'number') {
+              if (result.nodeType != 1) {
+                // Non-valid JSON value; we'll fail over when trying to
+                // stringify this, so fail early.
+                throw Error('Invalid script return type: result.nodeType == ' +
+                    result.nodeType);
+              }
+              var path = '';
+              for (; result && result.nodeType == 1;
+                  result = result.parentNode) {
+                var index = 1;
+                for (var sibling = result.previousSibling; sibling;
+                    sibling = sibling.previousSibling) {
+                  if (sibling.nodeType == 1 && sibling.tagName &&
+                      sibling.tagName == result.tagName) {
+                    index++;
+                  }
+                }
+                path = '/' + result.tagName + '[' + index + ']' + path;
+              }
+              return {webdriverElementXPath: path};
+            }
+            // Result is an object; convert each property.
+            var converted = {};
+            for (var prop in result) {
+              converted[prop] = convertResultToJson(result[prop]);
+            }
+            return converted;
+
+          case 'function':
+          default:
+            throw Error('Invalid script return type: ' + (typeof result));
+        }  // switch
+      }
+
+      val = JSON.stringify({
+        value: convertResultToJson(val)
+      });
+      console.info('returning from injected script: ' + val);
+      //Fire mutation event with newValue set to the JSON of our return value
+      e.initMutationEvent(
+          "DOMAttrModified", true, false, null, null, val, null, 0);
+    } catch (ex) {
+      //Fire mutation event with prevValue set to EXCEPTION to indicate an error
+      //in the script
+      console.error('injected script failed: ' + ex.toString());
+      e.initMutationEvent("DOMAttrModified", true, false, null, "EXCEPTION",
+          null, null, 0);
+    }
+    var scriptTags = document.getElementsByTagName("script");
+    var scriptTag = scriptTags[scriptTags.length - 1];
+    scriptTag.dispatchEvent(e);
+    document.documentElement.removeChild(scriptTag);
+  }
+
+  scriptTag.innerHTML =
+      '(' + executeInjectedScript + ')(' + func + ', "' + argsString + '");';
+
   scriptTag.addEventListener('DOMAttrModified', callback, false);
-  console.log("Injecting script element");
-  ChromeDriverContentScript.currentDocument.getElementsByTagName("html")[0].appendChild(scriptTag);
+  ChromeDriverContentScript.currentDocument.documentElement.
+      appendChild(scriptTag);
 }
 
 function execute(script, passedArgs) {
@@ -940,29 +1041,49 @@ function execute(script, passedArgs) {
 }
 
 function parseReturnValueFromScript(result) {
-  console.log("Parsing: " + JSON.stringify(result));
-  var value = {"type":"NULL"};
-  if (result !== undefined && result != null && typeof(result) == "object") {
-    if (result.webdriverElementXPath) {
-      //If we're returning an element, turn it into an actual element object
-      value = {value: addElementToInternalArray(getElementsByXPath(result.webdriverElementXPath)[0]).toString(), type:"ELEMENT"};
-    } else if (result.length !== undefined) {
-      value = [];
-      for (var i = 0; i < result.length; ++i) {
-        value.push(parseReturnValueFromScript(result[i]));
+  switch (typeof result) {
+    case 'string':
+    case 'number':
+    case 'boolean':
+      return result;
+
+    case 'object':
+      if (result == null) {
+        return result;
       }
-    }
-  } else if (result !== undefined && result != null) {
-    switch (typeof(result)) {
-    //Intentional falling through because we treat all "VALUE"s the same
-    case "string":
-    case "number":
-    case "boolean":
-      value = {value: result, type: "VALUE"};
-      break;
-    }
+
+      // Received an array, parse each element.
+      if (typeof result.length === 'number' &&
+          !(result.propertyIsEnumerable('length'))) {
+        var converted = [];
+        for (var i = 0; i < result.length; i++) {
+          converted.push(parseReturnValueFromScript(result[i]));
+        }
+        return converted;
+      }
+
+      // Script returned an element; return it's cached ID.
+      if (typeof result.webdriverElementXPath === 'string') {
+        //If we're returning an element, turn it into an actual element object
+        var element = getElementsByXPath(result.webdriverElementXPath)[0];
+        return {'ELEMENT': addElementToInternalArray(element).toString()};
+      }
+
+      // We were given a plain-old JSON object. Parse each property.
+      var convertedObj = {};
+      for (var prop in result) {
+        convertedObj[prop] = parseReturnValueFromScript(result[prop]);
+      }
+      return convertedObj;
+
+    // The script we inject to the page should never give us a result of type
+    // 'function' or 'undefined', so we do not need to check for those, but
+    // just go ahead and return null for completeness.
+    case 'function':
+    case 'undefined':
+    default:
+      return null;
   }
-  return value;
 }
 
 /**
@@ -972,11 +1093,11 @@ function returnFromJavascriptInPage(e) {
   if (e.prevValue == "EXCEPTION") {
     ChromeDriverContentScript.port.postMessage({sequenceNumber: ChromeDriverContentScript.currentSequenceNumber,
         response: {response: "execute", value: {statusCode: 17,
-        message: "Tried to execute bad javascript."}}});
+        value: {message: "Tried to execute bad javascript."}}}});
     return;
   }
   console.log("Got result");
-  console.log("Result was: " + e.newValue.value);
+  console.log("Result was: " + e.newValue);
   var result = JSON.parse(e.newValue).value;
   var value = parseReturnValueFromScript(result);
   console.log("Return value: " + JSON.stringify(value));
@@ -1013,7 +1134,7 @@ function returnFromGetFrameNameFromIndexJavascriptInPage(e) {
   if (e.prevValue == "EXCEPTION") {
     ChromeDriverContentScript.port.postMessage({sequenceNumber: ChromeDriverContentScript.currentSequenceNumber,
         response: {response: "getFrameNameFromIndex", value: {statusCode: 8,
-        message: "No such frame"}}});
+        value: {message: "No such frame"}}}});
   } else {
     ChromeDriverContentScript.port.postMessage({sequenceNumber: ChromeDriverContentScript.currentSequenceNumber,
         response: {response: "getFrameNameFromIndex", value: {statusCode: "no-op",

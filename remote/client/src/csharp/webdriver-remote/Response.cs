@@ -8,10 +8,9 @@ namespace OpenQA.Selenium.Remote
     /// </summary>
     public class Response
     {
-        private bool responseIsError;
         private object responseValue;
         private string responseSessionId;
-        private string responseContext;
+        private WebDriverResult responseStatus;
 
         /// <summary>
         /// Initializes a new instance of the Response class
@@ -24,25 +23,13 @@ namespace OpenQA.Selenium.Remote
         /// Initializes a new instance of the Response class
         /// </summary>
         /// <param name="sessionId">Session ID in use</param>
-        /// <param name="context">Context for the current element</param>
-        public Response(SessionId sessionId, Context context)
+        public Response(SessionId sessionId)
         {
             responseSessionId = sessionId.ToString();
-            responseContext = context.ToString();
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether there is an error
-        /// </summary>
-        [JsonProperty("error")]
-        public bool IsError
-        {
-            get { return responseIsError; }
-            set { responseIsError = value; }
-        }
-
-        /// <summary>
-        /// Gets or sets the value from JSON
+        /// Gets or sets the value from JSON.
         /// </summary>
         [JsonConverter(typeof(ResponseValueJsonConverter))]
         [JsonProperty("value")]
@@ -53,7 +40,7 @@ namespace OpenQA.Selenium.Remote
         }
 
         /// <summary>
-        /// Gets or sets the session ID
+        /// Gets or sets the session ID.
         /// </summary>
         [JsonProperty("sessionId")]
         public string SessionId
@@ -63,22 +50,22 @@ namespace OpenQA.Selenium.Remote
         }
 
         /// <summary>
-        /// Gets or sets the context of the driver
+        /// Gets or sets the status value of the response.
         /// </summary>
-        [JsonProperty("context")]
-        public string Context
+        [JsonProperty("status")]
+        public WebDriverResult Status
         {
-            get { return responseContext; }
-            set { responseContext = value; }
+            get { return responseStatus; }
+            set { responseStatus = value; }
         }
 
         /// <summary>
-        /// Returns the object as a string
+        /// Returns the object as a string.
         /// </summary>
-        /// <returns>A string with the Session ID,Context, if there was an error and the value from JSON</returns>
+        /// <returns>A string with the Session ID, status value, and the value from JSON.</returns>
         public override string ToString()
         {
-            return string.Format(CultureInfo.InvariantCulture, "({0} {1} {2}: {3})", SessionId, Context, IsError, Value);
+            return string.Format(CultureInfo.InvariantCulture, "({0} {1}: {2})", SessionId, Status, Value);
         }
     }
 }

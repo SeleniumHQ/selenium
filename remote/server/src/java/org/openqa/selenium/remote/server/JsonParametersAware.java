@@ -17,9 +17,9 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server;
 
-import java.util.List;
+import java.util.Map;
 
 public interface JsonParametersAware {
 
-  void setJsonParameters(List<Object> allParameters) throws Exception;
+  void setJsonParameters(Map<String, Object> allParameters) throws Exception;
 }

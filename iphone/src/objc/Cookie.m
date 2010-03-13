@@ -17,13 +17,14 @@
 //  limitations under the License.
 
 #import "Cookie.h"
-#import "Context.h"
 #import "HTTPStaticResource.h"
 #import "HTTPVirtualDirectory+AccessViewController.h"
 #import "NSException+WebDriver.h"
 #import "NSString+SBJSON.h"
+#import "WebDriverResource.h"
 #import "WebDriverResponse.h"
 #import "WebViewController.h"
+#import "errorcodes.h"
 
 @implementation Cookie
 
@@ -33,6 +34,14 @@
     return nil;
   }
   sessionId_ = sessionId;
+  
+  [self setIndex:
+   [WebDriverResource resourceWithTarget:self
+                               GETAction:@selector(getCookies)
+                              POSTAction:@selector(addCookie:)
+                               PUTAction:NULL
+                            DELETEAction:@selector(deleteAllCookies)]];
+  
   return self;
 }
 
@@ -50,18 +59,6 @@
   NSArray* theCookies = [cookieStorage cookiesForURL:[self currentUrl]];
   for (NSHTTPCookie *cookie in theCookies) {
     [cookieStorage deleteCookie:cookie];
-  }
-}
-
-- (void) deleteCookie:(NSString *)name {
-  NSHTTPCookieStorage* cookieStorage =
-  [NSHTTPCookieStorage sharedHTTPCookieStorage];
-  NSArray* theCookies = [cookieStorage cookiesForURL:[self currentUrl]];
-  for (NSHTTPCookie *cookie in theCookies) {
-    if ([[cookie name] isEqualToString:name]) {
-      [cookieStorage deleteCookie:cookie];
-      break;
-    }
   }
 }
 
@@ -91,6 +88,7 @@
 }
 
 - (void)addCookie:(NSDictionary *)cookie {
+  cookie = [cookie objectForKey:@"cookie"];
   NSURL* currentUrl = [self currentUrl];
   NSString* domain = [cookie objectForKey:@"domain"];
   
@@ -104,8 +102,7 @@
               [NSString stringWithFormat:
                @"You may only set cookies for the current domain:"
                " Expected <%@>, but was <%@>", [currentUrl host], domain]
-                                         webDriverClass:
-              @"java.lang.IllegalArgumentException"];
+                                          andStatusCode:EINVALIDCOOKIEDOMAIN];
     }
   }
   
@@ -141,77 +138,76 @@
    setCookies:cookieToAdd forURL:currentUrl mainDocumentURL:nil];
 }
 
-- (NSArray *)getArgumentListFromData:(NSData *)data {
-  id requestData = nil;
-  
-  if ([data length] > 0) {
-    NSString *dataString = [[NSString alloc] initWithData:data
-                                                 encoding:NSUTF8StringEncoding];
-    requestData = [dataString JSONFragmentValue];
-    [dataString release];
-  }
-  
-  if (requestData != nil && ![requestData isKindOfClass:[NSArray class]]) {
-    NSLog(@"Invalid argument list - Expecting an array but given %@",
-          requestData);
-    return nil;
-  }
-  
-  return (NSArray *)requestData;
-}
-
-- (id<HTTPResponse,NSObject>)httpResponseForQuery:(NSString *)query
-                                           method:(NSString *)method
-                                         withData:(NSData *)theData {
-  // Check the query. It should match /session/:session/:context/cookie. If
-  // the method is DELETE, then it may match
-  // /session/:session/:context/cookie/:name, where :name is the name of the
-  // cookie to delete.
-  WebDriverResponse* response = nil;
-  id result = nil;
-  @try {
-    if ([method isEqualToString:@"GET"]) {
-      result = [self getCookies];
-    } else if ([method isEqualToString:@"POST"]) {
-      NSArray* arguments = [self getArgumentListFromData:theData];
-      NSDictionary* cookieData = [arguments objectAtIndex:0];
-      [self addCookie:cookieData];
-    } else if ([method isEqualToString:@"DELETE"]) {
-      // Check the query to see what type of delete to do. If the query is just
-      // /hub/session/:session/:context/cookie, delete everything. Otherwise, it
-      // should be /hub/session/:session/:context/cookie/:name, where :name is
-      // the cookie to delete.
-      NSArray* parts = [query componentsSeparatedByString:@"/"];
-      if ([parts count] == 6) {
-        [self deleteAllCookies];
-      } else if ([parts count] == 7) {
-        [self deleteCookie:[parts lastObject]];
-      } else {
-        return nil;  // Query we can't handle.
-      }
-    } else {
-      response = [WebDriverResponse responseWithError:
-                  [NSString stringWithFormat:@"Invalid method for resource; %@",
-                   method]];
+- (id<HTTPResource>)elementWithQuery:(NSString *)query {
+  if ([query length] > 0) {
+    NSString *cookieName = [query substringFromIndex:1];
+    id<HTTPResource> resource = [contents objectForKey:cookieName];
+    if (resource == nil) {
+      [self setResource:[NamedCookie namedCookie:cookieName]
+               withName:cookieName];
     }
   }
-  @catch (NSException* e) {
-    response = [WebDriverResponse responseWithError:e];
-  }
-  
-  // If response != nil, there was an error.
-  if (response == nil) {
-    response = [WebDriverResponse responseWithValue:result];
-  }
-  
-  [response setSessionId:[NSString stringWithFormat:@"%d", sessionId_]];
-  [response setContext:[Context contextName]];
-  return response;
-}
-
-- (id<HTTPResource>)elementWithQuery:(NSString *)query {
-  return self;
+  return [super elementWithQuery:query];
 }
 
 @end
 
+@implementation NamedCookie
+
+- (id)initWithName:(NSString *)name {
+  if (![super init]) {
+    return nil;
+  }
+  name_ = name;
+  [self setIndex:
+   [WebDriverResource resourceWithTarget:self
+                               GETAction:@selector(getCookie)
+                              POSTAction:NULL
+                               PUTAction:NULL
+                            DELETEAction:@selector(deleteCookie)]];
+  return self;
+}
+
++ (NamedCookie *)namedCookie:(NSString *)name {
+  return [[[NamedCookie alloc] initWithName:name] autorelease];
+}
+
+- (NSDictionary *)getCookie {
+  NSHTTPCookieStorage* cookieStorage =
+      [NSHTTPCookieStorage sharedHTTPCookieStorage];
+  NSURL* currentUrl = [NSURL URLWithString:[[self viewController] URL]];
+  NSArray* theCookies = [cookieStorage cookiesForURL:currentUrl];
+  for (NSHTTPCookie *cookie in theCookies) {
+    if ([[cookie name] isEqualToString:name_]) {
+      NSMutableDictionary* cookieDict =
+          [NSMutableDictionary dictionaryWithObjectsAndKeys:
+           [cookie name], @"name",
+           [cookie value], @"value",
+           [cookie domain], @"domain",
+           [cookie path], @"path",
+           [NSNumber numberWithBool:[cookie isSecure]], @"secure",
+           nil];
+      NSDate* expires = [cookie expiresDate];
+      if (expires != nil) {
+        [cookieDict setObject:[expires description] forKey:@"expires"];
+      }
+      return cookieDict;
+    }
+  }
+  return nil;
+}
+
+- (void)deleteCookie {
+  NSHTTPCookieStorage* cookieStorage =
+      [NSHTTPCookieStorage sharedHTTPCookieStorage];
+  NSURL* currentUrl = [NSURL URLWithString:[[self viewController] URL]];
+  NSArray* theCookies = [cookieStorage cookiesForURL:currentUrl];
+  for (NSHTTPCookie *cookie in theCookies) {
+    if ([[cookie name] isEqualToString:name_]) {
+      [cookieStorage deleteCookie:cookie];
+      break;
+    }
+  }
+}
+
+@end

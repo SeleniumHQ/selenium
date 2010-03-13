@@ -64,4 +64,4 @@ def convert_cookie_to_json(cookie):
             cookie_dict["expiry"] = int(value) * 1000
         else:
             cookie_dict[key] = value
-    return json.dumps(cookie_dict)
+    return cookie_dict

@@ -17,22 +17,21 @@ limitations under the License.
 
 package org.openqa.selenium.internal.selenesedriver;
 
-import com.thoughtworks.selenium.Selenium;
-
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.internal.selenesedriver.SeleneseFunction;
+
+import com.google.common.collect.ImmutableMap;
+import com.thoughtworks.selenium.Selenium;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.Collections;
-import java.util.List;
+import java.util.Map;
 
-public class FindElement implements SeleneseFunction<List<String>> {
+public class FindElement implements SeleneseFunction<Map<String, String>> {
 
-  public List<String> apply(Selenium selenium, Object... args) {
-    String how = (String) args[0];
-    String using = (String) args[1];
+  public Map<String, String> apply(Selenium selenium, Map<String, ?> args) {
+    String how = (String) args.get("using");
+    String using = (String) args.get("value");
 
     String locator = null;
     if ("class name".equals(how)) {
@@ -60,7 +59,7 @@ public class FindElement implements SeleneseFunction<List<String>> {
           // Deeply unlikely if we're running on a conforming JVM
           throw new RuntimeException(e);
         }
-        return Collections.singletonList("ignored/" + locator);
+        return ImmutableMap.of("ELEMENT", locator);
       } else {
         throw new NoSuchElementException("Cannot find element by " + locator);
       }

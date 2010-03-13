@@ -64,6 +64,10 @@
       <Project>{1580564D-B6B8-4BD8-A120-001E3E8E5BE6}</Project>
       <Name>webdriver-common-test</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\..\remote\client\src\csharp\webdriver-remote\WebDriver.Remote.csproj">
+      <Project>{32122F8D-CD64-495A-B9B0-5516FF67C79F}</Project>
+      <Name>WebDriver.Remote</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\src\csharp\webdriver-firefox\WebDriver.Firefox.csproj">
       <Project>{5E7C67A1-1BF2-4A46-8C29-8A6DCF6E4543}</Project>
       <Name>WebDriver.Firefox</Name>

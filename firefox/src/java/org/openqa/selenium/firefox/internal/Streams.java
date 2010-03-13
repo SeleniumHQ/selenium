@@ -17,6 +17,8 @@ limitations under the License.
 
 package org.openqa.selenium.firefox.internal;
 
+import org.openqa.selenium.remote.internal.CircularOutputStream;
+
 import java.io.IOException;
 import java.io.OutputStream;
 

@@ -20,9 +20,11 @@ package org.openqa.selenium.ie;
 import static org.openqa.selenium.ie.ExportedWebDriverFunctions.SUCCESS;
 
 import org.openqa.selenium.ElementNotVisibleException;
+import org.openqa.selenium.InvalidCookieDomainException;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.NoSuchFrameException;
 import org.openqa.selenium.StaleElementReferenceException;
+import org.openqa.selenium.UnableToSetCookieException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.NoSuchWindowException;
 
@@ -77,6 +79,12 @@ class ErrorHandler {
 
     case 23:
       throw new NoSuchWindowException(message);
+
+    case 24:
+      throw new InvalidCookieDomainException(message);
+
+    case 25:
+      throw new UnableToSetCookieException(message);
 
     default: 
       throw new IllegalStateException(String.format("%s (%d)", message, errorCode));

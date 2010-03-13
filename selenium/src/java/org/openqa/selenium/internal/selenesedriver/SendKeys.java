@@ -22,10 +22,10 @@ import com.thoughtworks.selenium.Selenium;
 import java.util.Map;
 
 public class SendKeys extends ElementFunction<Void> {
-  public Void apply(Selenium selenium, Object... args) {
+  public Void apply(Selenium selenium, Map<String, ?> args) {
     String locator = getLocator(args);
 
-    CharSequence[] allKeys = (CharSequence[]) ((Map) args[0]).get("value");
+    CharSequence[] allKeys = (CharSequence[]) args.get("value");
 
     StringBuilder builder = new StringBuilder();
     for (CharSequence seq : allKeys) {

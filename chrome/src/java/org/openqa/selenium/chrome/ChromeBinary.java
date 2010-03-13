@@ -2,29 +2,44 @@ package org.openqa.selenium.chrome;
 
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.Proxy;
+import static org.openqa.selenium.Proxy.ProxyType;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.Proxy.ProxyType;
+import org.openqa.selenium.remote.internal.CircularOutputStream;
+import org.openqa.selenium.remote.internal.SubProcess;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.net.ServerSocket;
 import java.util.List;
 
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.Lists;
+
 public class ChromeBinary {
-  
+
+  private static final String CHROME_LOG_FILE_PROPERTY = "webdriver.chrome.logFile";
   private static final int BACKOFF_INTERVAL = 2500;
 
-  private static int linearBackoffCoefficient = 1;
+  private volatile int linearBackoffCoefficient = 1;
 
   private final ChromeProfile profile;
   private final ChromeExtension extension;
-  
+  private final int port;
+  private final SubProcess chromeProcess;
+
   protected String chromeBinaryLocation = null;
-  
-  Process chromeProcess = null;
+
+  /**
+   * @param profile The Chrome profile to use.
+   * @param extension The extension to launch Chrome with.
+   * @throws WebDriverException If an error occurs locating the Chrome executable.
+   * @see ChromeBinary(ChromeProfile, ChromeExtension, int)
+   */
+  public ChromeBinary(ChromeProfile profile, ChromeExtension extension) {
+    this(profile, extension, 0);
+  }
 
   /**
    * Creates a new instance for managing an instance of Chrome using the given
@@ -32,27 +47,69 @@ public class ChromeBinary {
    *
    * @param profile The Chrome profile to use.
    * @param extension The extension to launch Chrome with.
+   * @param port Which port to start Chrome on, or 0 for any free port.
+   * @throws WebDriverException If an error occurs locating the Chrome executable.
    */
-  public ChromeBinary(ChromeProfile profile, ChromeExtension extension) {
+  public ChromeBinary(ChromeProfile profile, ChromeExtension extension, int port) {
     this.profile = profile;
     this.extension = extension;
+    this.port = port == 0 ? findFreePort() : port;
+    String serverUrl = String.format("http://localhost:%d/chromeCommandExecutor", this.port);
+
+    ProcessBuilder builder;
+    try {
+      List<String> commandline = getCommandline(serverUrl);
+      builder = new ProcessBuilder(commandline);
+    } catch (IOException e) {
+      throw new WebDriverException(e);
+    }
+
+    File logFile = getLogFile();
+    this.chromeProcess = logFile == null
+        ? new SubProcess(builder)
+        : new SubProcess(builder, new CircularOutputStream(logFile));
+  }
+
+  private static File getLogFile() {
+    String logFile = System.getProperty(CHROME_LOG_FILE_PROPERTY);
+    return logFile == null ? null : new File(logFile);
+  }
+
+  private static int findFreePort() {
+    ServerSocket serverSocket = null;
+    try {
+      serverSocket = new ServerSocket(0);
+      return serverSocket.getLocalPort();
+    } catch (IOException e) {
+      throw new WebDriverException(e);
+    } finally {
+      if (serverSocket != null) {
+        try {
+          serverSocket.close();
+        } catch (IOException ignored) {
+          // Oh well
+        }
+      }
+    }
+  }
+
+  public ChromeProfile getProfile() {
+    return profile;
+  }
+
+  public ChromeExtension getExtension() {
+    return extension;
+  }
+
+  public int getPort() {
+    return port;
   }
 
   /**
    * Starts the Chrome process for WebDriver.
-   * Assumes the passed directories exist.
-   * @param serverUrl URL from which commands should be requested
-   * @throws IOException wrapped in WebDriverException if process couldn't be
-   * started.
    */
-  public void start(String serverUrl) throws IOException {
-    try {
-      List<String> commandline = getCommandline(serverUrl);
-      chromeProcess = new ProcessBuilder(commandline)
-          .start();
-    } catch (IOException e) {
-      throw new WebDriverException(e);
-    }
+  public void start() {
+    chromeProcess.launch();
     try {
       Thread.sleep(BACKOFF_INTERVAL * linearBackoffCoefficient);
     } catch (InterruptedException e) {
@@ -60,9 +117,8 @@ public class ChromeBinary {
     }
   }
 
-  // Visible for testing.
-  public List<String> getCommandline(String serverUrl) throws IOException {
-    ArrayList<String> commandline = new ArrayList<String>(Arrays.asList(
+  @VisibleForTesting List<String> getCommandline(String serverUrl) throws IOException {
+    List<String> commandline = Lists.newArrayList(Lists.newArrayList(
         getChromeBinaryLocation(),
         "--user-data-dir=" + profile.getDirectory().getAbsolutePath(),
         "--load-extension=" + extension.getDirectory().getAbsolutePath(),
@@ -78,8 +134,8 @@ public class ChromeBinary {
         .add(serverUrl);
     return commandline;
   }
-  
-  private ArrayList<String> appendProxyArguments(ArrayList<String> commandline) {
+
+  private List<String> appendProxyArguments(List<String> commandline) {
     Proxy proxy = profile.getProxy();
     if (proxy == null) {
       return commandline;
@@ -97,18 +153,26 @@ public class ChromeBinary {
     }
     return commandline;
   }
-  
-  public void kill() {
-    if (chromeProcess != null) {
-      chromeProcess.destroy();
-      chromeProcess = null;
-    }
+
+  /**
+   * @return Whether the Chrome process managed by this instance is still
+   *     running.
+   */
+  public boolean isRunning() {
+    return chromeProcess.isRunning();
   }
-  
+
+  /**
+   * Kills the Chrome process managed by this instance.
+   */
+  public void kill() {
+    chromeProcess.shutdown();
+  }
+
   public void incrementBackoffBy(int diff) {
     linearBackoffCoefficient += diff;
   }
-  
+
   /**
    * Locates the Chrome executable on the current platform.
    * First looks in the webdriver.chrome.bin property, then searches
@@ -151,11 +215,11 @@ public class ChromeBinary {
     }
     return chromeBinaryLocation;
   }
-  
+
   protected boolean isChromeBinaryLocationKnown() {
     return chromeBinaryLocation != null && new File(chromeBinaryLocation).exists();
   }
-  
+
   /**
    * Returns null if couldn't read value from registry
    */
@@ -185,7 +249,7 @@ public class ChromeBinary {
     }
     return null;
   }
-  
+
   protected static final String getDefaultWindowsBinaryLocation() {
     StringBuilder path = new StringBuilder();
     path.append(System.getProperty("user.home"));

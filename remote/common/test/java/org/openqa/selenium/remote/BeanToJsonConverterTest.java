@@ -140,14 +140,6 @@ public class BeanToJsonConverterTest extends TestCase {
     assertEquals("some id", converted.getString("value"));
   }
 
-  public void testShouldBeAbleToConvertAContext() throws JSONException {
-    Context context = new Context("some context");
-    String json = new BeanToJsonConverter().convert(context);
-    JSONObject converted = new JSONObject(json);
-
-    assertEquals("some context", converted.getString("value"));
-  }
-
   public void testShouldBeAbleToConvertAJsonObject() throws JSONException {
     JSONObject obj = new JSONObject();
     obj.put("key", "value");

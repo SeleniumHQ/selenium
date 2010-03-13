@@ -54,8 +54,9 @@
 // Get the URL of the page we're looking at
 - (NSString *)URL;
 
-// Navigate to a URL
-- (void)setURL:(NSString *)urlString;
+// Navigate to a URL.
+// The URL should be specified by the |url| key in the |urlMap|.
+- (void)setURL:(NSDictionary *)urlMap;
 
 - (void)forward;
 - (void)back;

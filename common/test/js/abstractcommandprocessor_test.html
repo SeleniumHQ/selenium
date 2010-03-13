@@ -10,6 +10,10 @@
   </script>
   <script>
 
+    function FakeCommand(parameters) {
+      this.parameters = parameters;
+    };
+
     function assertArraysEqual(expected, actual) {
       assertTrue('Expected is not an array', goog.isArray(expected));
       assertTrue('Actual is not an array', goog.isArray(actual));
@@ -20,47 +24,52 @@
 
 
     function testShouldResolvePrimitiveParamsToThemselves() {
-      var command = {
-        parameters: [123, 'abc', true, false, undefined, null, 456.789,
-                     goog.nullFunction]
-      };
+      var command = new FakeCommand({
+        value: [123, 'abc', true, false, undefined, null, 456.789,
+                goog.nullFunction]
+      });
       webdriver.AbstractCommandProcessor.resolveFutureParams_(command);
 
       var expected = [123, 'abc', true, false, undefined, null, 456.789,
                       goog.nullFunction];
-      assertArraysEqual(expected, command.parameters);
+      assertNotUndefined(command.parameters.value);
+      assertTrue('Was: ' + goog.typeOf(command.parameters.value),
+          goog.isArray(command.parameters.value));
+      assertArraysEqual(expected, command.parameters.value);
     }
 
 
     function testShouldResolveFutureParametersToTheirValue() {
-      var command = {
-        parameters: [new webdriver.Future(null)]
-      };
-      command.parameters[0].setValue('abc123');
+      var command = new FakeCommand({
+        value: new webdriver.Future(null)
+      });
+      command.parameters.value.setValue('abc123');
       webdriver.AbstractCommandProcessor.resolveFutureParams_(command);
-      assertArraysEqual(['abc123'], command.parameters);
+      assertNotUndefined(command.parameters.value);
+      assertEquals('abc123', command.parameters.value);
     }
 
 
     function testShouldResolveFuturesEmbeddedInRecordObjectsToTheirValue() {
-      var command = {
-        parameters: [{future: new webdriver.Future(null)}]
-      };
-      command.parameters[0].future.setValue('abc123');
+      var command = new FakeCommand({
+        value: {future: new webdriver.Future(null)}
+      });
+      command.parameters.value.future.setValue('abc123');
       webdriver.AbstractCommandProcessor.resolveFutureParams_(command);
-      assertEquals(1, command.parameters.length);
-      assertEquals('abc123', command.parameters[0].future);
+      assertNotUndefined(command.parameters.value);
+      assertNotUndefined(command.parameters.value.future);
+      assertEquals('abc123', command.parameters.value.future);
     }
 
     function testShouldResolveFuturesInAnArrayToTheirValue() {
-      var command = {
-        parameters: [[new webdriver.Future(null), new webdriver.Future(null)]]
-      };
-      command.parameters[0][0].setValue('abc123');
-      command.parameters[0][1].setValue('456def');
+      var command = new FakeCommand({
+        array: [[new webdriver.Future(null), new webdriver.Future(null)]]
+      });
+      command.parameters.array[0][0].setValue('abc123');
+      command.parameters.array[0][1].setValue('456def');
       webdriver.AbstractCommandProcessor.resolveFutureParams_(command);
-      assertEquals(1, command.parameters.length);
-      assertArraysEqual(['abc123', '456def'], command.parameters[0]);
+      assertEquals(1, command.parameters.array.length);
+      assertArraysEqual(['abc123', '456def'], command.parameters.array[0]);
     }
   </script>
 </head>

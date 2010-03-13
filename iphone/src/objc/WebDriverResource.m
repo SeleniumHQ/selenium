@@ -20,11 +20,11 @@
 #import "WebDriverResponse.h"
 #import "NSString+SBJSON.h"
 #import "MainViewController.h"
+#import "errorcodes.h"
 
 @implementation WebDriverResource
 
 @synthesize session = session_,
-  context = context_,
   allowOptionalArguments = allowOptionalArguments_;
 
 - (id)initWithTarget:(id)target
@@ -88,7 +88,6 @@
   [target_ release];
   [methodActions_ release];
   [self setSession:nil];
-  [self setContext:nil];
   
   [super dealloc];
 }
@@ -96,15 +95,14 @@
 
 #pragma mark Creating a response
 
-// Set the response's session and context
+// Set the response's session
 - (void)configureWebDriverResponse:(WebDriverResponse *)response {
   [response setSessionId:session_];
-  [response setContext:context_];
 }
 
-// Make an array of objects containing the method arguments. Return nil on
+// Make an dictionary of objects containing the method arguments. Return nil on
 // error.
-- (NSArray *)getArgumentListFromData:(NSData *)data {
+- (NSDictionary *)getArgumentDictionaryFromData:(NSData *)data {
   id requestData = nil;
   
   if ([data length] > 0) {
@@ -118,20 +116,20 @@
   
   // The request data should contain an array of arguments.
   if (requestData != nil
-      && ![requestData isKindOfClass:[NSArray class]]) {
-    NSLog(@"Invalid argument list - Expecting an array but given %@",
+      && ![requestData isKindOfClass:[NSDictionary class]]) {
+    NSLog(@"Invalid argument list - Expecting a dictionary but given %@",
           requestData);
     return nil;
   }
   
-  return (NSArray *)requestData;
+  return (NSDictionary *)requestData;
 }
 
 // Create and return an invocator for the specified method. Returns nil on
 // error.
 - (NSInvocation *)createInvocationWithSelector:(SEL)selector
                                      signature:(NSMethodSignature *)method
-                                     arguments:(NSArray *)arguments {
+                                     arguments:(NSDictionary *)arguments {
   NSInvocation *invocation
     = [NSInvocation invocationWithMethodSignature:method];
   [invocation setSelector:selector];
@@ -139,52 +137,30 @@
   
   if (arguments != nil) {
     // The first two arguments in the method are the target and selector.
-    // NSInvocation will fill them in for us. We start with the 3rd argument.
-    for (int i = 2; i < [method numberOfArguments]; i++) {
-      id arg;
-      if (i - 2 < [arguments count]) {
-        arg = [arguments objectAtIndex:i - 2];
-      }
-      else if (allowOptionalArguments_) {
-        arg = nil;
-      }
-      else {
-        NSLog(@"Too many arguments for method %@", method);
-        return nil;
-      }
-      
-      // The first 2 arguments are the target and selector.
-      [invocation setArgument:&arg atIndex:i];
+    // NSInvocation will fill them in for us.  The 3rd argument should be
+    // a dictionary of additional command parameters, initialized from the
+    // request JSON data.
+    if ([method numberOfArguments] > 2) {
+      [invocation setArgument:&arguments atIndex:2];
     }
   }
-  
+
   return invocation;
 }
 
 // Validate the arguments are valid for this HTTP method + signature. Return
 // a |WebDriverResponse| containing the error if we encountered one.
-- (WebDriverResponse *)validateArgumentList:(NSArray *)arguments
-                              forHTTPMethod:(NSString *)method
-                                  signature:(NSMethodSignature *)signature {
+- (WebDriverResponse *)validateArgumentDictionary:(NSDictionary *)arguments
+                                    forHTTPMethod:(NSString *)method
+                                        signature:(NSMethodSignature *)signature {
   
-  // If it was a PUT or POST, POST data is required (though an empty array list
+  // If it was a PUT or POST, POST data is required (though an empty dictionary
   // may still be allowed).
   if (([method isEqualToString:@"PUT"] || [method isEqualToString:@"POST"])
       && arguments == nil) {
-    return [WebDriverResponse responseWithError:@"Invalid argument list"];
+    return [WebDriverResponse responseWithError:@"Invalid arguments"];
   }
-    
-  // The argument lists should match in number.
-  // (Note: the method signature assumes the first two arguments are self
-  // and selector - so we need to subtract 2.)
-  if (!allowOptionalArguments_ && 
-      [arguments count] != ([signature numberOfArguments] - 2)) {
-    return [WebDriverResponse responseWithError:
-              [NSString stringWithFormat:
-                 @"Incorrect number of arguments for method %@ - expected %d",
-                 signature, [signature numberOfArguments] - 2]];
-  }
-    
+
   // TODO(josephg): check argument type as well as number.
   
   return nil;
@@ -222,20 +198,26 @@
   SEL selector = [[methodActions_ objectForKey:method] pointerValue];
   NSMethodSignature *methodSignature = [target_ methodSignatureForSelector:selector];
   WebDriverResponse *response = nil;
-	
+
   if (methodSignature == nil) {
+    // Return a "405 Method Not Allowed" message. We should be setting an
+    // "Allowed" header whose value is the list of methods supported by this
+    // resource, but the CocoaHTTPServer framework we're using doesn't seem to
+    // support it.
+    // TODO: patch the server for headers
     response = [WebDriverResponse responseWithError:
-                [NSString stringWithFormat:@"Invalid method for resource: %@",
-                 method]];
+                [NSString stringWithFormat:
+                 @"Invalid method for resource: %@ %@", method, query]];
+    [response setStatus:405];
     [self configureWebDriverResponse:response];
     return response;
   }
   
-  NSArray *arguments = [self getArgumentListFromData:theData];
+  NSDictionary *arguments = [self getArgumentDictionaryFromData:theData];
   
-  response = [self validateArgumentList:arguments
-                          forHTTPMethod:method
-                              signature:methodSignature];
+  response = [self validateArgumentDictionary:arguments
+                                forHTTPMethod:method
+                                    signature:methodSignature];
   
   // response != nil if validation failed.
   if (response != nil) {

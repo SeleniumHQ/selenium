@@ -23,6 +23,7 @@ limitations under the License.
 goog.provide('webdriver.Command');
 goog.provide('webdriver.CommandName');
 goog.provide('webdriver.Response');
+goog.provide('webdriver.Response.Code');
 
 goog.require('goog.array');
 goog.require('goog.events.EventTarget');
@@ -35,13 +36,10 @@ goog.require('webdriver.Future');
  * {@code webdriver.AbstractCommandProcessor}.
  * @param {webdriver.WebDriver} driver The driver that this is a command for.
  * @param {webdriver.CommandName} name The name of this command.
- * @param {webdriver.WebElement} opt_element The element to perform this
- *     command on. If not defined, the command will be performed relative to
- *     the document root.
  * @constructor
  * @extends {goog.events.EventTarget}
  */
-webdriver.Command = function(driver, name, opt_element) {
+webdriver.Command = function(driver, name) {
   goog.events.EventTarget.call(this);
 
   /**
@@ -67,17 +65,10 @@ webdriver.Command = function(driver, name, opt_element) {
   this.name = name;
 
   /**
-   * The element to perform this command on. If not defined, the command will be
-   * performed relative to the document root.
-   * @type {webdriver.WebElement}
-   */
-  this.element = opt_element;
-
-  /**
    * The parameters to this command.
-   * @type {Array.<*>}
+   * @type {Object}
    */
-  this.parameters = [];
+  this.parameters = {};
 
   /**
    * The response to this command.
@@ -103,7 +94,6 @@ webdriver.Command.prototype.disposeInternal = function() {
   delete this.driver_;
   delete this.futureResult_;
   delete this.name;
-  delete this.element;
   delete this.parameters;
   delete this.response;
 };
@@ -149,18 +139,19 @@ webdriver.Command.prototype.isFinished = function() {
 
 
 /**
- * Set the parameters to send with this command.
- * @param {*} var_args The arguments to send to this command.
+ * Sets a parameter to send with this command.
+ * @param {string} name The parameter name.
+ * @param {*} var_args The parameter value.
  * @return {webdriver.Command} A self reference.
  */
-webdriver.Command.prototype.setParameters = function(var_args) {
-  this.parameters = goog.array.slice(arguments, 0);
+webdriver.Command.prototype.setParameter = function(name, value) {
+  this.parameters[name] = value;
   return this;
 };
 
 
 /**
- * @return {Array.<*>} The parameters to send with this command.
+ * @return {Object} The parameters to send with this command.
  */
 webdriver.Command.prototype.getParameters = function() {
   return this.parameters;
@@ -186,9 +177,8 @@ webdriver.Command.prototype.setResponse = function(response) {
     return;
   }
   this.response = response;
-  this.driver_.setContext(this.response.context);
-  if (!this.response.isFailure) {
-    this.futureResult_.setValue(this.response.value);
+  if (this.response.getStatus() == webdriver.Response.Code.SUCCESS) {
+    this.futureResult_.setValue(this.response.getValue());
   } else {
     this.dispatchEvent(webdriver.Command.ERROR_EVENT);
   }
@@ -210,67 +200,114 @@ webdriver.CommandName = {
   // Commands dispatched to the browser driver. -------------------------------
   NEW_SESSION: 'newSession',
   DELETE_SESSION: 'deleteSession',
-  QUIT: 'quit',
-  GET_CURRENT_WINDOW_HANDLE: 'getCurrentWindowHandle',
-  GET_WINDOW_HANDLES: 'getWindowHandles',
-  GET_CURRENT_URL: 'getCurrentUrl',
+
   CLOSE: 'close',
-  SWITCH_TO_WINDOW: 'switchToWindow',
-  SWITCH_TO_FRAME: 'switchToFrame',
-  SWITCH_TO_DEFAULT_CONTENT: 'switchToDefaultContent',
+  QUIT: 'quit',
+
   GET: 'get',
-  FORWARD: 'goForward',
-  BACK: 'goBack',
+  GO_BACK: 'goBack',
+  GO_FORWARD: 'goForward',
   REFRESH: 'refresh',
-  GET_TITLE: 'title',
-  GET_PAGE_SOURCE: 'getPageSource',
-  EXECUTE_SCRIPT: 'executeScript',
-  GET_MOUSE_SPEED: 'getMouseSpeed',
-  SET_MOUSE_SPEED: 'setMouseSpeed',
+
+  ADD_COOKIE: 'addCookie',
+  GET_COOKIE: 'getCookie',
+  GET_ALL_COOKIES: 'getCookies',
+  DELETE_COOKIE: 'deleteCookie',
+  DELETE_ALL_COOKIES: 'deleteAllCookies',
+
   FIND_ELEMENT: 'findElement',
   FIND_ELEMENTS: 'findElements',
   FIND_CHILD_ELEMENT: 'findChildElement',
   FIND_CHILD_ELEMENTS: 'findChildElements',
+
+  CLEAR_ELEMENT: 'clearElement',
+  CLICK_ELEMENT: 'clickElement',
+  HOVER_OVER_ELEMNET: 'hoverOverElement',
+  SEND_KEYS_TO_ELEMENT: 'sendKeysToElement',
+  SUBMIT_ELEMENT: 'submitElement',
+  TOGGLE_ELEMENT: 'toggleElement',
+
+  GET_CURRENT_WINDOW_HANDLE: 'getCurrentWindowHandle',
+  GET_WINDOW_HANDLES: 'getWindowHandles',
+
+  SWITCH_TO_WINDOW: 'switchToWindow',
+  SWITCH_TO_FRAME: 'switchToFrame',
+  SWITCH_TO_DEFAULT_CONTENT: 'switchToDefaultContent',
   GET_ACTIVE_ELEMENT: 'getActiveElement',
-  SET_VISIBLE: 'setVisible',
-  GET_VISIBLE: 'getVisible',
-  CLICK: 'click',
-  CLEAR: 'clear',
-  SUBMIT: 'submit',
-  GET_TEXT: 'getText',
-  SEND_KEYS: 'sendKeys',
-  GET_VALUE: 'getValue',
-  GET_TAG_NAME: 'getTagName',
-  IS_SELECTED: 'isSelected',
-  SET_SELECTED: 'setSelected',
-  TOGGLE: 'toggle',
-  IS_ENABLED: 'isEnabled',
-  IS_DISPLAYED: 'isDisplayed',
-  GET_LOCATION: 'getLocation',
-  GET_SIZE: 'getSize',
-  GET_ATTRIBUTE: 'getAttribute',
+
+  GET_CURRENT_URL: 'getCurrentUrl',
+  GET_PAGE_SOURCE: 'getPageSource',
+  GET_TITLE: 'getTitle',
+
+  EXECUTE_SCRIPT: 'executeScript',
+
+  GET_SPEED: 'getSpeed',
+  SET_SPEED: 'setSpeed',
+
+  SET_BROWSE_VISIBLE: 'setBrowserVisible',
+  IS_BROWSER_VISIBLE: 'isBrowserVisible',
+
+  GET_ELEMENT_TEXT: 'getElementText',
+  GET_ELEMENT_VALUE: 'getElementValue',
+  GET_ELEMENT_TAG_NAME: 'getElementTagName',
+  SET_ELEMENT_SELECTED: 'setElementSelected',
   DRAG_ELEMENT: 'dragElement',
-  GET_VALUE_OF_CSS_PROPERTY: 'getValueOfCssProperty'
+  IS_ELEMENT_SELECTED: 'isElementSelected',
+  IS_ELEMENT_ENABLED: 'isElementEnabled',
+  IS_ELEMENT_DISPLAYED: 'isElementDisplayed',
+  GET_ELEMENT_LOCATION: 'getElementLocation',
+  GET_ELEMENT_LOCATION_ONCE_SCROLLED_INTO_VIEW:
+      'getElementLocationOnceScrolledIntoView',
+  GET_ELEMENT_SIZE: 'getElementSize',
+  GET_ELEMENT_ATTRIBUTE: 'getElementAttribute',
+  GET_ELEMENT_VALUE_OF_CSS_PROPERTY: 'getElementValueOfCssProperty',
+  ELEMENT_EQUALS: 'elementEquals',
+
+  SCREENSHOT: 'screenshot',
+  DIMISS_ALERT: 'dimissAlert'
 };
 
 
 /**
  * Encapsulates a response to a {@code webdriver.Command}.
- * @param {boolean} isFailure Whether the command resulted in an error. If
- *     {@code true}, then {@code value} contains the error message.
- * @param {webdriver.Context} context The (potentially new) context resulting
- *     from the command.
+ * @param {webdriver.Response.Code} status The status code for this response.
  * @param {*} value The value of the response, the meaning of which depends
  *     on the command.
- * @parma {Error} opt_error An error that caused this command to fail
- *     prematurely.
  * @constructor
  */
-webdriver.Response = function(isFailure, context, value, opt_error) {
-  this.isFailure = isFailure;
-  this.context = context;
-  this.value = value;
-  this.errors = goog.array.slice(arguments, 3);
+webdriver.Response = function(status, value) {
+
+  /**
+   * The status code for this response.
+   * @type {webdriver.Response.Code}
+   * @private
+   */
+  this.status_ = status;
+
+  /**
+   * The value for this response.
+   * @type {*}
+   * @private
+   */
+  this.value_ = value;
+};
+
+
+/** @return {webdriver.Response.Code} The status code for this response. */
+webdriver.Response.prototype.getStatus = function() {
+  return this.status_;
+};
+
+
+/** @return {*} The value of this response. */
+webdriver.Response.prototype.getValue = function() {
+  return this.value_;
+};
+
+
+/** @return {!boolean} Whether this is a response to a successful command. */
+webdriver.Response.prototype.isSuccess = function() {
+  return this.status_ == webdriver.Response.Code.SUCCESS;
 };
 
 
@@ -279,26 +316,65 @@ webdriver.Response = function(isFailure, context, value, opt_error) {
  *     failure response.
  */
 webdriver.Response.prototype.getErrorMessage = function() {
-  if (!this.isFailure) {
+  if (this.status_ == webdriver.Response.Code.SUCCESS) {
     return null;
   }
-  var message = [];
-  if (goog.isString(this.value)) {
-    message.push(this.value);
-  } else if (null != this.value && goog.isDef(this.value.message)) {
-    message.push(this.value.message);
-    if (goog.isDef(this.value.fileName)) {
-      message.push(this.value.fileName + '@' + this.value.lineNumber);
-    }
+
+  if (!this.value_) {
+    return 'Unknown error';  // Really should never happen
   }
-  goog.array.extend(message, goog.array.map(this.errors, function(error) {
-    if (goog.isString(error)) {
-      return error;
+
+  if (goog.isDef(this.value_['message'])) {
+    var message = [this.value_['message']];
+
+    var stackTrace = this.value_['stackTrace'];
+    if (goog.isArray(stackTrace)) {
+      goog.array.extend(message, goog.array.map(this.value_['stackTrace'],
+          function(frame) {
+            var buffer = [];
+
+            // className is provided by remote java servers
+            var className = frame['className'];
+            if (goog.isDef(className)) {
+              buffer.push(className + '.');
+            }
+            buffer.push(frame['methodName'] || '<anonymous function>');
+            buffer.push('() at ');
+            // fileName will be undefined if the method call was to an XPCOM
+            // interface.
+            buffer.push(frame['fileName'] || '<unknown file>');
+            buffer.push(':');
+            buffer.push(frame['lineNumber']);
+            return buffer.join('');
+          }));
+    } else if (goog.isDef(stackTrace)) {
+      message.push(stackTrace);
+    } else if (goog.isDef(this.value_.stack)) {
+      message.push(goog.testing.stacktrace.canonicalize(this.value_.stack));
     }
-    var errMsg = error.message || error.description || error.toString();
-    var stack = error.stack ?
-        goog.testing.stacktrace.canonicalize(error.stack) : error['stackTrace'];
-    return errMsg + '\n' + stack;
-  }));
-  return message.join('\n');
+    return message.join('\n');
+  } else {
+    return this.value_.toString();
+  }
+};
+
+
+/**
+ * Error codes used by the wire protocol.
+ * @enum {number}
+ */
+webdriver.Response.Code = {
+  /* keep in sync with codes in org.openqa.selenium.remote.ErrorCodes */
+  SUCCESS: 0,
+  COOKIE_ERROR: 2,
+  NO_SUCH_WINDOW: 3,
+  NO_SUCH_ELEMENT: 7,
+  NO_SUCH_FRAME: 8,
+  UNKNOWN_COMMAND: 9,
+  STALE_ELEMENT_REFERENCE: 10,
+  ELEMENT_NOT_VISIBLE: 11,
+  INVALID_ELEMENT_STATE: 12,
+  UNHANDLED_ERROR: 13,
+  UNEXPECTED_JAVASCRIPT_ERROR: 17,
+  XPATH_LOOKUP_ERROR: 19
 };

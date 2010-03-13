@@ -21,12 +21,12 @@
 
 @class HTTPJSONResponse;
 
-// |WebDriverResponse| mirrors the |Response| class in webdriver. It is the
-// return type for all of WebDriver's RPC methods.
+// |WebDriverResponse| encapsulates the information for a response to a
+// WebDriver RPC method, as defined by the WebDriver wire protocol.
 //
 // This is implemented as a proxy around an HTTPResponse. When the standard
 // HTTPResponse methods are called, the data in WebDriverResponse's fields are
-// baked into an HTTPJSONResponse and the data fields (isError, value, etc)
+// baked into an HTTPJSONResponse and the data fields (status, value, sessionId)
 // become immutable.
 // 
 // Don't confuse HTTPResponse (a response to an HTTP message) and a
@@ -35,24 +35,24 @@
 @interface WebDriverResponse : NSObject {
   // These fields mirror their equivalents in WebDriver.
   
-  // Did the method call generate an error?
-  BOOL isError_;
+  // The status code for this response. A non-zero value indicates some error
+  // occurred.
+  int status_;
+  
   // The value the method returned or the exception generated
   id value_;
   
   // The active session
   NSString *sessionId_;
-  // The active context
-  NSString *context_;
 
   // We're a proxy around this response.
   HTTPDataResponse *response_;
 }
 
 @property (nonatomic) BOOL isError;
+@property (nonatomic) int status;
 @property (nonatomic, retain) id value;
 @property (nonatomic, copy) NSString *sessionId;
-@property (nonatomic, copy) NSString *context;
 
 - (id)initWithValue:(id)value;
 - (id)initWithError:(id)error;

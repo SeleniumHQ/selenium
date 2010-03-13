@@ -34,10 +34,8 @@ public class SendKeys extends WebElementHandler implements JsonParametersAware {
   }
 
   @SuppressWarnings({"unchecked"})
-  public void setJsonParameters(List<Object> allParameters) throws Exception {
-    Map namedParameters = (Map) allParameters.get(0);
-
-    List<String> rawKeys = (List) namedParameters.get("value");
+  public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
+    List<String> rawKeys = (List<String>) allParameters.get("value");
     for (String key : rawKeys) {
       keys.add(key);
     }

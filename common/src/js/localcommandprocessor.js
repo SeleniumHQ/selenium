@@ -31,7 +31,6 @@ goog.require('goog.json');
 goog.require('goog.object');
 goog.require('webdriver.AbstractCommandProcessor');
 goog.require('webdriver.CommandName');
-goog.require('webdriver.Context');
 goog.require('webdriver.Response');
 
 
@@ -128,9 +127,7 @@ webdriver.LocalCommandProcessor.onResponse_ = function(command, e) {
       'receiving:\n' + jsonResponse);
 
   var response = new webdriver.Response(
-      rawResponse['isError'],
-      webdriver.Context.fromString(rawResponse['context']),
-      rawResponse['response']);
+      rawResponse['status'], rawResponse['value']);
 
   // Only code in this file should be dispatching command events and listening
   // for response events, so this is safe. If someone else decided to attach a
@@ -146,24 +143,13 @@ webdriver.LocalCommandProcessor.onResponse_ = function(command, e) {
  */
 webdriver.LocalCommandProcessor.prototype.dispatchDriverCommand = function(
     command) {
-  if (command.getName() == webdriver.CommandName.SEND_KEYS) {
-    command.setParameters(command.getParameters().join(''));
-  }
-
   var jsonCommand = {
-    'commandName': command.getName(),
-    'context': command.getDriver().getContext().toString(),
+    'name': command.getName(),
+    'sessionId': {
+      'value': command.getDriver().getSessionId()
+    },
     'parameters': command.getParameters()
   };
-
-  if (command.element) {
-    try {
-      jsonCommand['elementId'] = command.element.getId().getValue();
-    } catch (ex) {
-      window.console.dir(command);
-      throw ex;
-    }
-  }
 
   jsonCommand = goog.json.serialize(jsonCommand);
   goog.debug.Logger.getLogger('webdriver.LocalCommandProcessor').fine(

@@ -29,6 +29,13 @@ function WebDriverServer() {
   // loaded and cause a "too deep recursion" error.
   var overrideService = Components.classes["@mozilla.org/security/certoverride;1"]
       .getService(Components.interfaces.nsICertOverrideService);
+
+  /**
+   * This server's request dispatcher.
+   * @type {Dispatcher}
+   * @private
+   */
+  this.dispatcher_ = new Dispatcher();
 }
 
 
@@ -44,10 +51,7 @@ WebDriverServer.prototype.newDriver = function(window) {
     prefs.getBoolPref("webdriver_enable_native_events") : false;
     Utils.dumpn('Enable native events: ' + this.enableNativeEvents);
   }
-  window.fxdriver = new FirefoxDriver(this, this.enableNativeEvents);
-  // Yuck. But it allows us to refer to it later.
-  window.fxdriver.window = window;
-
+  window.fxdriver = new FirefoxDriver(this, this.enableNativeEvents, window);
   return window.fxdriver;
 };
 
@@ -59,7 +63,7 @@ WebDriverServer.prototype.getNextId = function() {
 
 WebDriverServer.prototype.onSocketAccepted = function(socket, transport) {
   try {
-    var socketListener = new SocketListener(transport);
+    var socketListener = new SocketListener(this.dispatcher_, transport);
   } catch(e) {
     dump(e);
   }

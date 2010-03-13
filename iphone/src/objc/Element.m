@@ -29,6 +29,9 @@
 #import "WebViewController.h"
 #import "NSString+SBJSON.h"
 #import "NSException+WebDriver.h"
+#import "errorcodes.h"
+
+static NSString* const ELEMENT_ID_KEY = @"ELEMENT";
 
 @implementation Element
 
@@ -108,6 +111,11 @@
   return [store elementFromJSObject:object];
 }
 
++ (NSString *)elementIdKey {
+  return ELEMENT_ID_KEY;
+}
+
+
 // Same as |elementFromJSObject:inStore:| above, but using the element's store.
 - (Element *)elementFromJSObject:(NSString *)object {
   return [Element elementFromJSObject:object inStore:elementStore_];
@@ -130,7 +138,13 @@
   }
 }
 
-// Get the element's URL relative to the context.
+- (NSDictionary *)idDictionary {
+  return [NSDictionary dictionaryWithObjectsAndKeys:
+          [self elementId], [Element elementIdKey],
+          nil];
+}
+
+// Get the element's URL relative to the session.
 - (NSString *)url {
   return [NSString stringWithFormat:@"element/%@", [self elementId]];
 }
@@ -246,7 +260,11 @@
     "  var current = elem;\n"
     "  while (current && current != elem.ownerDocument.body) {\n"
     "    if (current.tagName.toLowerCase() == 'form') {\n"
-    "      current.submit();\n"
+    "      var e = current.ownerDocument.createEvent('HTMLEvents');\n"
+    "      e.initEvent('submit', true, true);\n"
+    "      if (current.dispatchEvent(e)) {\n"
+    "        current.submit();\n"
+    "      }\n"
     "      return;\n"
     "    }\n"
     "    current = current.parentNode;\n"
@@ -312,14 +330,14 @@
     @throw [NSException
             webDriverExceptionWithMessage:@"You may not select an unselectable "
                                            "element"
-            webDriverClass:@"java.lang.UnsupportedOperationException"];
+            andStatusCode:EELEMENTNOTSELECTED];
   }
 
   if ([self isEnabled] == [NSNumber numberWithBool:NO]) {
     @throw [NSException
             webDriverExceptionWithMessage:@"You may not select a disabled "
                                            "element"
-            webDriverClass:@"java.lang.UnsupportedOperationException"];
+            andStatusCode:EELEMENTNOTENABLED];
   }
 
   NSString* locator = [self jsLocator];
@@ -331,7 +349,7 @@
       @throw [NSException
               webDriverExceptionWithMessage:@"You may not select an "
                                              "unselectable element"
-              webDriverClass:@"java.lang.UnsupportedOperationException"];
+              andStatusCode:EELEMENTNOTSELECTED];
     }
   }
   
@@ -367,7 +385,7 @@
 
 - (NSNumber *)isEnabled {
   BOOL enabled = [[[self viewController]
-                  jsEval:[NSString stringWithFormat:@"%@.disabled",
+                  jsEval:[NSString stringWithFormat:@"!!%@.disabled",
                           [self jsLocator]]] isEqualToString:@"false"];
   
   return [NSNumber numberWithBool:enabled];
@@ -419,7 +437,7 @@
   if ([self isDisplayed] == [NSNumber numberWithBool:NO]) {
     @throw [NSException
             webDriverExceptionWithMessage:@"Element is not visible"
-            webDriverClass:@"org.openqa.selenium.ElementNotVisibleException"];
+            andStatusCode:EELEMENTNOTDISPLAYED];
   }
 }
 

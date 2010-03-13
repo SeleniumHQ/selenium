@@ -23,6 +23,7 @@ import static org.openqa.selenium.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
+import static org.openqa.selenium.Ignore.Driver.SELENESE;
 
 
 public class I18nTest extends AbstractDriverTestCase {
@@ -63,7 +64,7 @@ public class I18nTest extends AbstractDriverTestCase {
     assertEquals(tmunot, input.getValue());
   }
 
-  @Ignore(IE)
+  @Ignore(value = {IE, SELENESE})
   public void testShouldBeAbleToReturnTheTextInAPage() {
     String url = GlobalTestEnvironment.get()
         .getAppServer()

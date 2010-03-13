@@ -15,12 +15,8 @@
 
 from __future__ import with_statement
 
-try:
-    from ..common.exceptions import RemoteDriverServerException
-except (ImportError, ValueError):
-    class RemoteDriverServerException(Exception):
-        pass
-
+from ..common.exceptions import RemoteDriverServerException
+from ..remote import utils
 from subprocess import Popen
 import httplib
 from BaseHTTPServer import HTTPServer
@@ -43,8 +39,8 @@ INITIAL_HTML = '''
 <html>
     <head>
     <script type='text/javascript'>
-            if (window.location.search == '') { 
-                setTimeout("window.location = window.location.href + '?reloaded'", 5000); 
+            if (window.location.search == '') {
+                setTimeout("window.location = window.location.href + '?reloaded'", 5000);
             }
     </script>
     </head>
@@ -142,7 +138,27 @@ def touch(filename):
     with open(filename, "ab"):
         pass
 
+def _copy_zipped_extension(extension_zip):
+    extension_dir = utils.unzip_to_temp_dir(extension_zip)
+    if extension_dir:
+        if platform == "win32":
+            manifest = "manifest-win.json"
+        else:
+            manifest = "manifest-nonwin.json"
+        copy(join(extension_dir, manifest),
+             join(extension_dir, "manifest.json"))
+        return extension_dir
+
 def create_extension_dir():
+    extension_dir = _copy_zipped_extension("chrome-extension.zip")
+    if extension_dir:
+        return extension_dir
+
+    extension_dir = join(dirname(abspath(__file__)), "chrome-extension.zip")
+    extension_dir = _copy_zipped_extension(extension_dir)
+    if extension_dir:
+        return extension_dir
+
     path = mkdtemp()
 
     # FIXME: Copied manually
@@ -198,7 +214,7 @@ def run_server(timeout=10):
     server.command_queue = Queue()
     server.result_queue = Queue()
     t = Thread(target=server.serve_forever)
-    t.daemon = 1
+    t.daemon = True
     t.start()
 
     start = time()
@@ -221,17 +237,21 @@ class ChromeDriver:
         self._chrome = None
 
     def start(self):
-        self._server = run_server()
         self._extension_dir = create_extension_dir()
         self._profile_dir = create_profile_dir()
+        self._server = run_server()
         self._chrome = run_chrome(self._extension_dir, self._profile_dir,
-                                 self._server.server_port)
+                                  self._server.server_port)
 
     def stop(self):
         if self._chrome:
-            self._chrome.kill()
-            self._chrome.wait()
-            self._chrome = None
+            try:
+                self._chrome.kill()
+                self._chrome.wait()
+                self._chrome = None
+            except AttributeError:
+                # POpen.kill is a python 2.6 API...
+                pass
 
         if self._server:
             self._server.server_close()
@@ -245,7 +265,9 @@ class ChromeDriver:
             except IOError:
                 pass
 
-    def execute(self, command):
-        self._server.command_queue.put(command)
+    def execute(self, command, params):
+        to_send = params.copy()
+        to_send["request"] = command
+        self._server.command_queue.put(to_send)
         return self._server.result_queue.get()
 

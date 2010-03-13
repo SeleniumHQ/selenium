@@ -22,7 +22,7 @@ import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.rest.ResultType;
 
-import java.util.List;
+import java.util.Map;
 
 public class SetMouseSpeed extends WebDriverHandler implements JsonParametersAware {
   private Speed speed;
@@ -31,8 +31,8 @@ public class SetMouseSpeed extends WebDriverHandler implements JsonParametersAwa
     super(sessions);
   }
 
-  public void setJsonParameters(List<Object> allParameters) throws Exception {
-    speed = Speed.valueOf((String) allParameters.get(0));
+  public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
+    speed = Speed.valueOf((String) allParameters.get("speed"));
   }
 
   public ResultType call() throws Exception {

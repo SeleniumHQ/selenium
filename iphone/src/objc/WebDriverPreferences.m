@@ -57,9 +57,11 @@ static WebDriverPreferences *singleton = nil;
 }
 
 + (void) initPreferences {
-  NSString* mode = [[NSUserDefaults standardUserDefaults]
-                    stringForKey:PREF_MODE];
-  if (mode == nil) {
+  NSUserDefaults* userDefaults = [NSUserDefaults standardUserDefaults];
+  id mode = [userDefaults objectForKey:PREF_MODE];
+  id port = [userDefaults objectForKey:PREF_SERVER_MODE_PORT_NUMBER];
+
+  if (mode == nil || port == nil) {
     NSLog(@"Initializing app settings to default values.");
 
     NSString* bundlePath = [[NSBundle mainBundle] bundlePath];
@@ -114,8 +116,8 @@ static WebDriverPreferences *singleton = nil;
     [defaults setObject:@"0" forKey:PREF_MEMORY_CACHE_CAPACITY];
   }
   cachePolicy_ = [defaults integerForKey:PREF_CACHE_POLICY];
-  
-	
+
+
   if ([mode_ isEqualToString:@"Client"]) {
     connectorAddr_ = [defaults stringForKey:PREF_CLIENT_MODE_CONNECTOR_ADDRESS];
     if (!connectorAddr_) {

@@ -109,7 +109,7 @@ public enum Platform {
     return extractFromSysProperty(System.getProperty("os.name"));
   }
 
-  protected static Platform extractFromSysProperty(String osName) {
+  public static Platform extractFromSysProperty(String osName) {
     osName = osName.toLowerCase();
     Platform mostLikely = UNIX;
     String previousMatch = null;

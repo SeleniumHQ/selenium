@@ -323,6 +323,14 @@ namespace OpenQA.Selenium.Firefox
                     Console.WriteLine("Exception found deleting '" + directoryToDelete
                         + "' on retry " + numberOfRetries + ": " + ex.Message);
                 }
+                catch (UnauthorizedAccessException unauthorizedEx)
+                {
+                    // If we hit an exception (like file still in use), wait a half second
+                    // and try again. If we still hit an exception, go ahead and let it through.
+                    System.Threading.Thread.Sleep(500);
+                    Console.WriteLine("Exception found deleting '" + directoryToDelete
+                        + "' on retry " + numberOfRetries + ": " + unauthorizedEx.Message);
+                }
                 finally
                 {
                     numberOfRetries++;

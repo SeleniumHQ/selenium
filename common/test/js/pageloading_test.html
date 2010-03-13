@@ -128,6 +128,14 @@ function testShouldBeAbleToRefreshAPage(driver) {
   driver.refresh();
   assertThat(driver.getTitle(), equals("XHTML Test Page"));
 }
+
+
+function testShouldWaitForLoadsToCompleteAfterJavascriptCausesANewPageToLoad(
+    driver) {
+  driver.get(TEST_PAGE.formPage);
+  driver.findElement(By.id('changeme')).setSelected();
+  assertThat(driver.getTitle(), equals('Page3'));
+}
   </script>
 </head>
 <body>

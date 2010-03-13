@@ -45,7 +45,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Command.cs" />
-    <Compile Include="Context.cs" />
     <Compile Include="DesiredCapabilities.cs" />
     <Compile Include="DriverCommand.cs" />
     <Compile Include="ErrorResponse.cs" />

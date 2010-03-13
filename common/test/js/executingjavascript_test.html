@@ -95,6 +95,46 @@ function testScriptsWithArrayReturnValues(driver) {
 }
 
 
+function testScriptWithSimpleObjectLiteralReturnValue(driver) {
+  driver.get(TEST_PAGE.xhtmlTestPage);
+  driver.executeScript('return {"body": document.body, "simple": true};');
+  driver.callFunction(function(response) {
+    assertTrue(goog.isObject(response);
+
+    assertTrue('body' in response);
+    var element = response['body'];
+    assertTrue(element instanceof webdriver.WebElement);
+    assertThat(element.getTagName(), equals('body'));
+
+    assertTrue('simple' in response);
+    assertEquals('boolean', goog.typeOf(response['simple']));
+    assertTrue(response['simple']);
+  });
+}
+
+
+function testScriptWithNestedObjectLiteralReturnValue(driver) {
+  driver.get(TEST_PAGE.xhtmlTestPage);
+  driver.executeScript(
+    'return {"element":{"body": document.body}, "color": "blue"}');
+  driver.callFunction(function(response) {
+    assertTrue(goog.isObject(response);
+
+    assertTrue('element' in response);
+    var element = response['element'];
+
+    assertTrue('body' in element);
+    var body = element['body'];
+    assertTrue(body instanceof webdriver.WebElement);
+    assertThat(body.getTagName(), equals('body'));
+
+    assertTrue('color' in response);
+    assertEquals('string', goog.typeOf(response['color']));
+    assertEquals('blue', response['color']);
+  });
+}
+
+
 function testThrowsAnExceptionWhenTheJavascriptIsBad(driver) {
   driver.get(TEST_PAGE.xhtmlTestPage);
   driver.executeScript('return squiggle();');
@@ -160,19 +200,10 @@ function testThrowsAnExceptionIfAnArgumentIsNotValid(driver) {
   try {
     driver.executeScript(script, goog.nullFunction);
     fail('Should have rejected invalid argument type: function' +
-         '\nValid argument types are: string, boolean, number, and ' +
+         '\nValid argument types are JSON values and ' +
          'webdriver.WebElement objects');
   } catch (expected) {
     assertEquals('Invalid script argument type: function', expected.message);
-  }
-
-  try {
-    driver.executeScript(script, {});
-    fail('Should have rejected invalid argument type: object' +
-         '\nValid argument types are: string, boolean, number, and ' +
-         'webdriver.WebElement objects');
-  } catch (expected) {
-    assertEquals('Invalid script argument type: object', expected.message);
   }
 }
 

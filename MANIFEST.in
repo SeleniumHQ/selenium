@@ -4,6 +4,7 @@ recursive-include common/src/web *.txt *.Config
 recursive-include common/src/py *.py
 recursive-include common/test/py *.py
 recursive-include chrome/src/py *.py
+recursive-include chrome/src/py *.zip
 recursive-include chrome/test/py *.py
 recursive-include firefox/src/py *.py
 recursive-include firefox/src/py *.zip

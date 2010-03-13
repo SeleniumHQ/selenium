@@ -85,7 +85,7 @@ static WebDriverRequestFetcher *singleton = nil;
 }
 
 // Return whether a query is to find an element in the form of 
-//     /hub/session/%session_id/%context/element
+//     /hub/session/%session_id/element
 + (BOOL) isFindElementQuery:(NSString*) query {
   NSArray* pathItems = [query componentsSeparatedByString:@"/"];
   NSString* api = [pathItems lastObject];
@@ -226,9 +226,8 @@ static WebDriverRequestFetcher *singleton = nil;
   // the queries of actions, which is in the form of /hub/session/1002/foo/element/6
   NSString *elemInfo = [[elemResp objectForKey:@"value"] objectAtIndex:0];
   NSString *elemId = [[elemInfo componentsSeparatedByString:@"/"] objectAtIndex:1]; 
-  NSString *queryPrefix = [NSString stringWithFormat:@"/hub/session/%@/%@/%@/", 
+  NSString *queryPrefix = [NSString stringWithFormat:@"/hub/session/%@/%@/", 
                            [elemResp objectForKey:@"sessionId"],
-                           [elemResp objectForKey:@"context"], 
                            elemInfo];
  
   // Perform actions on the found element.

@@ -18,15 +18,14 @@ limitations under the License.
 package org.openqa.selenium.internal.selenesedriver;
 
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.internal.selenesedriver.SeleneseFunction;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.Map;
 
 public abstract class ElementFunction<T> implements SeleneseFunction<T> {
-  public String getLocator(Object[] parameters) {
-    String locator = (String) ((Map) parameters[0]).get("id");
+  public String getLocator(Map<String, ?> parameters) {
+    String locator = (String) parameters.get("id");
 
     try {
       return URLDecoder.decode(locator, "utf-8");

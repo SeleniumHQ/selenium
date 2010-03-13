@@ -24,7 +24,9 @@ import junit.framework.TestSuite;
 
 import java.io.File;
 import java.net.URL;
+import java.util.Map;
 
+import com.google.common.collect.Maps;
 import org.openqa.selenium.TestSuiteBuilder;
 import org.openqa.selenium.environment.webserver.AppServer;
 import org.openqa.selenium.environment.webserver.Jetty6AppServer;
@@ -101,10 +103,13 @@ public class RemoteWebDriverTestSuite extends TestCase {
       appServer.start();
 
       if (isInDevMode()) {
+        Map<String, Object> payload = Maps.newHashMap();
+        payload.put("capabilities", DesiredCapabilities.firefox());
+        payload.put("class", "org.openqa.selenium.firefox.FirefoxDriverTestSuite$TestFirefoxDriver");
+
         new HttpRequest(
             HttpRequest.Method.POST, "http://localhost:6000/common/hub/config/drivers",
-            DesiredCapabilities.firefox(),
-            "org.openqa.selenium.firefox.FirefoxDriverTestSuite$TestFirefoxDriver");
+            payload);
       }
 
       super.setUp();

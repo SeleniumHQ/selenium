@@ -7,6 +7,7 @@ using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Text;
 using Newtonsoft.Json;
+using OpenQA.Selenium.Remote;
 
 namespace OpenQA.Selenium.Firefox.Internal
 {
@@ -16,10 +17,10 @@ namespace OpenQA.Selenium.Firefox.Internal
     internal class ExtensionConnection : IExtensionConnection
     {
         #region Private members
-        private Socket extensionSocket;
         private List<IPEndPoint> addresses = new List<IPEndPoint>();
         private FirefoxProfile profile;
-        private FirefoxBinary process; 
+        private FirefoxBinary process;
+        private HttpCommandExecutor executor;
         #endregion
 
         #region Constructor
@@ -54,7 +55,8 @@ namespace OpenQA.Selenium.Firefox.Internal
 
                 SetAddress(host, portToUse);
 
-                ConnectToBrowser(this.process.TimeoutInMilliseconds);
+                // TODO (JimEvans): Get a better url algorithm.
+                executor = new HttpCommandExecutor(new Uri(string.Format(CultureInfo.InvariantCulture, "http://{0}:{1}/hub/", host, portToUse)));
             }
             finally
             {
@@ -65,25 +67,11 @@ namespace OpenQA.Selenium.Firefox.Internal
 
         #region IExtensionConnection Members
         /// <summary>
-        /// Gets a value indicating whether the driver is connected to the extension.
+        /// Starts the connection to the extension.
         /// </summary>
-        public bool IsConnected
+        public void Start()
         {
-            get { return extensionSocket != null && extensionSocket.Connected; }
-        }
-
-        /// <summary>
-        /// Sends a message to the extension and waits for a response.
-        /// </summary>
-        /// <param name="throwOnFailure">The <see cref="System.Type"/> of object to instantiate
-        /// if the command fails.</param>
-        /// <param name="command">The <see cref="Command"/> to execute.</param>
-        /// <returns>A <see cref="Response"/> that contains the data returned by the command.</returns>
-        public Response SendMessageAndWaitForResponse(Type throwOnFailure, Command command)
-        {
-            SendMessage(command);
-            Response returnedResponse = WaitForResponseForCommand(command.Name);
-            return returnedResponse;
+            ConnectToBrowser(this.process.TimeoutInMilliseconds);
         }
 
         /// <summary>
@@ -91,35 +79,23 @@ namespace OpenQA.Selenium.Firefox.Internal
         /// </summary>
         public void Quit()
         {
-            try
-            {
-                SendMessage(new Command(null, "quit", null));
-            }
-            catch (WebDriverException)
-            {
-                // this is expected
-            }
-
+            // This should only be called after the QUIT command has been sent,
+            // so go ahead and clean up our process and profile.
             process.Quit();
-
             profile.Clean();
         }
         #endregion
 
-        #region IDisposable Members
+        #region ICommandExecutor Members
         /// <summary>
-        /// Releases all resources associated with this <see cref="ExtensionConnection"/>.
+        /// Executes a command
         /// </summary>
-        public void Dispose()
+        /// <param name="commandToExecute">The command you wish to execute</param>
+        /// <returns>A response from the browser</returns>
+        public Response Execute(Command commandToExecute)
         {
-            if (extensionSocket != null && extensionSocket.Connected)
-            {
-                extensionSocket.Close();
-            }
-
-            GC.SuppressFinalize(this);
+            return executor.Execute(commandToExecute);
         }
-
         #endregion
 
         #region Support methods
@@ -214,23 +190,21 @@ namespace OpenQA.Selenium.Firefox.Internal
             }
         }
 
-        private void Connect(IPEndPoint addr)
-        {
-            extensionSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-
-            extensionSocket.Connect(addr);
-        }
-
         private void ConnectToBrowser(long timeToWaitInMilliSeconds)
         {
+            // Attempt to connect to the browser extension on a Socket.
+            // A successful connection means the browser is running and
+            // the extension has been properly initialized.
+            Socket extensionSocket = null;
             DateTime waitUntil = DateTime.Now.AddMilliseconds(timeToWaitInMilliSeconds);
-            while (!IsConnected && waitUntil > DateTime.Now)
+            while (!IsSocketConnected(extensionSocket) && waitUntil > DateTime.Now)
             {
                 foreach (IPEndPoint addr in addresses)
                 {
                     try
                     {
-                        Connect(addr);
+                        extensionSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                        extensionSocket.Connect(addr);
                         break;
                     }
                     catch (SocketException)
@@ -240,7 +214,9 @@ namespace OpenQA.Selenium.Firefox.Internal
                 }
             }
 
-            if (!IsConnected)
+            // If the socket was either not created or not connected successfully,
+            // throw an exception. Otherwise, close the socket connection.
+            if (!IsSocketConnected(extensionSocket))
             {
                 if (extensionSocket == null || extensionSocket.RemoteEndPoint == null)
                 {
@@ -253,137 +229,16 @@ namespace OpenQA.Selenium.Firefox.Internal
                     throw new WebDriverException(formattedError);
                 }
             }
-        }
-
-        private void SendMessage(Command command)
-        {
-            string converted = JsonConvert.SerializeObject(command, new JsonConverter[] { new ContextJsonConverter(), new CharArrayJsonConverter(), new CookieJsonConverter() });
-
-            // Make this look like an HTTP request
-            StringBuilder message = new StringBuilder();
-            message.Append("GET / HTTP/1.1\n");
-            message.Append("Host: localhost\n");
-            message.Append("Content-Length: ");
-            message.Append(converted.Length).Append("\n\n");
-            message.Append(converted).Append("\n");
-
-            try
+            else
             {
-                byte[] messageBuffer = Encoding.UTF8.GetBytes(message.ToString());
-                using (NetworkStream socketStream = new NetworkStream(extensionSocket))
-                {
-                    socketStream.Write(messageBuffer, 0, messageBuffer.Length);
-                    socketStream.Flush();
-                }
-            }
-            catch (IOException e)
-            {
-                throw new WebDriverException("Error found sending message", e);
+                extensionSocket.Close();
             }
         }
 
-        private Response WaitForResponseForCommand(string commandName)
+        private bool IsSocketConnected(Socket extensionSocket)
         {
-            try
-            {
-                return ReadLoop(commandName);
-            }
-            catch (IOException e)
-            {
-                throw new WebDriverException(string.Empty, e);
-            }
+            return extensionSocket != null && extensionSocket.Connected;
         }
-
-        private Response ReadLoop(string commandName)
-        {
-            Response response = GetNextResponse();
-
-            if (commandName == response.Command)
-            {
-                return response;
-            }
-
-            throw new WebDriverException(
-                "Expected response to " + commandName + " but actually got: " + response.Command + " ("
-                + response.Command + ")");
-        }
-
-        private Response GetNextResponse()
-        {
-            string line = ReadNextLine();
-
-            // Expected input will be of the form:
-            // Header: Value
-            // \n
-            // JSON object
-            //
-            // The only expected header is "Length"
-
-            // Read headers
-            int count = 0;
-            string[] parts = line.Split(new string[] { ":" }, 2, StringSplitOptions.None);
-            if (string.Compare(parts[0], "Length", StringComparison.OrdinalIgnoreCase) == 0)
-            {
-                count = int.Parse(parts[1].Trim(), CultureInfo.InvariantCulture);
-            }
-
-            // Wait for the blank line
-            while (line.Length != 0)
-            {
-                line = ReadNextLine();
-            }
-
-            // Read the rest of the response.
-            byte[] remaining = new byte[count];
-            using (NetworkStream socketStream = new NetworkStream(extensionSocket, false))
-            {
-                for (int i = 0; i < count; i++)
-                {
-                    remaining[i] = (byte)socketStream.ReadByte();
-                }
-            }
-
-            string remainingString = Encoding.UTF8.GetString(remaining);
-            Response returnedResponse = JsonConvert.DeserializeObject<Response>(remainingString, new JsonConverter[] { new ContextJsonConverter() });
-            return returnedResponse;
-        }
-
-        private string ReadNextLine()
-        {
-            int size = 4096;
-            int growBy = 1024;
-            byte[] raw = new byte[size];
-            int count = 0;
-
-            using (NetworkStream socketStream = new NetworkStream(extensionSocket))
-            {
-                bool lineMarkerFound = false;
-                while (!lineMarkerFound)
-                {
-                    int b = socketStream.ReadByte();
-
-                    if (b == -1 || (char)b == '\n')
-                    {
-                        lineMarkerFound = true;
-                    }
-
-                    if (!lineMarkerFound)
-                    {
-                        raw[count++] = (byte)b;
-                        if (count == size)
-                        {
-                            size += growBy;
-                            byte[] temp = new byte[size];
-                            Array.Copy(raw, temp, count);
-                            raw = temp;
-                        }
-                    }
-                }
-            }
-
-            string returnedLine = Encoding.UTF8.GetString(raw, 0, count);
-            return returnedLine;
-        } 
         #endregion
     }
 }

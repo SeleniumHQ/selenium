@@ -27,6 +27,9 @@ import static org.openqa.selenium.Ignore.Driver.SELENESE;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.environment.webserver.AppServer;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
 @Ignore(IPHONE)
 public class FrameSwitchingTest extends AbstractDriverTestCase {
 
@@ -191,7 +194,12 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
     try {
       driver.close();
     } catch (Exception e) {
-      fail("This is not expected. " + e.getMessage());
+      StringWriter sw = new StringWriter();
+      PrintWriter pw = new PrintWriter(sw);
+      e.printStackTrace(pw);
+      pw.flush();
+      pw.close();
+      fail("This is not expected. " + sw);
     }
   }
 

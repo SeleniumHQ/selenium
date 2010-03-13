@@ -17,8 +17,6 @@ limitations under the License.
 
 package org.openqa.selenium.remote;
 
-import junit.framework.TestCase;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import org.json.JSONArray;
@@ -26,8 +24,11 @@ import org.json.JSONObject;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.Platform;
 
+import junit.framework.TestCase;
+
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -179,16 +180,16 @@ public class JsonToBeanConverterTest extends TestCase {
     String[] value = {"Cheese", "Peas"};
 
     Response response = new Response();
-    response.setContext("foo");
     response.setSessionId("bar");
     response.setValue(value);
-    response.setError(true);
+    response.setStatus(1512);
 
     String json = new BeanToJsonConverter().convert(response);
     Response converted = new JsonToBeanConverter().convert(Response.class, json);
 
+    assertEquals("bar", response.getSessionId());
     assertEquals(2, ((List) converted.getValue()).size());
-    assertTrue(converted.isError());
+    assertEquals(1512, response.getStatus());
   }
 
   public void testShouldConvertObjectsInArraysToMaps() throws Exception {
@@ -219,26 +220,18 @@ public class JsonToBeanConverterTest extends TestCase {
     assertEquals("id", sessionId.toString());
   }
 
-  public void testShouldBeAbleToReconsituteAContext() throws Exception {
-    String json = new BeanToJsonConverter().convert(new Context("ctxt"));
-    Context context = new JsonToBeanConverter().convert(Context.class, json);
-
-    assertEquals("ctxt", context.toString());
-  }
-
   public void testShouldBeAbleToConvertACommand() throws Exception {
     SessionId sessionId = new SessionId("session id");
-    Context context = new Context("context");
-    Command original = new Command(sessionId, context, DriverCommand.NEW_SESSION, "cheese");
+    Command original = new Command(sessionId, DriverCommand.NEW_SESSION,
+        new HashMap<String, String>(){{put("food", "cheese");}});
     String raw = new BeanToJsonConverter().convert(original);
     Command converted = new JsonToBeanConverter().convert(Command.class, raw);
 
     assertEquals(sessionId.toString(), converted.getSessionId().toString());
-    assertEquals(context.toString(), converted.getContext().toString());
     assertEquals(original.getName(), converted.getName());
 
-    assertTrue(converted.getParameters().length == 1);
-    assertEquals("cheese", converted.getParameters()[0]);
+    assertEquals(1, converted.getParameters().keySet().size());
+    assertEquals("cheese", converted.getParameters().get("food"));
   }
 
   public static class SimpleBean {

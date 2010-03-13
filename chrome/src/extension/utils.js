@@ -187,8 +187,8 @@ Utils.fireHtmlEvent = function(element, eventName, callback) {
       callback = function() {};
     }
     var args = [
-      {type: "ELEMENT", value: addElementToInternalArray(element)},
-      {type: "STRING", value: eventName}
+      {"ELEMENT": addElementToInternalArray(element)},
+      eventName
     ];
 
     // We need to do this because event handlers refer to functions that
@@ -208,10 +208,10 @@ Utils.fireMouseEventOn = function(element, eventName) {
 
 Utils.triggerMouseEvent = function(element, eventType, clientX, clientY) {
     var args = [
-      {type: "ELEMENT", value: addElementToInternalArray(element)},
-      {type: "STRING", value: eventType},
-      {type: "NUMBER", value: clientX},
-      {type: "NUMBER", value: clientY}
+      {"ELEMENT": addElementToInternalArray(element)},
+      eventType,
+      clientX,
+      clientY
     ];
 
     // We need to do this because event handlers refer to functions that
@@ -227,5 +227,5 @@ Utils.triggerMouseEvent = function(element, eventType, clientX, clientY) {
 };
 
 Utils.trim = function(str) {
-  return str.replace(/^\s*/, "").replace(/\s*$/, "");
-}
+    return str.replace(/^\s*/, "").replace(/\s*$/, "");
+};

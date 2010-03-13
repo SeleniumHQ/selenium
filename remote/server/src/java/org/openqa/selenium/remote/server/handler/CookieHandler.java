@@ -19,12 +19,11 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.handler;
 
-import java.util.List;
-import java.util.Map;
-
 import org.openqa.selenium.internal.ReturnedCookie;
 import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.JsonParametersAware;
+
+import java.util.Map;
 
 public abstract class CookieHandler extends WebDriverHandler implements JsonParametersAware {
 
@@ -35,12 +34,12 @@ public abstract class CookieHandler extends WebDriverHandler implements JsonPara
   }
 
   @SuppressWarnings({"unchecked"})
-  public void setJsonParameters(List<Object> allParameters) throws Exception {
+  public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
     if (allParameters == null) {
       return;
     }
 
-    rawCookie = (Map<String, Object>) allParameters.get(0);
+    rawCookie = (Map<String, Object>) allParameters.get("cookie");
   }
 
   protected ReturnedCookie createCookie() {

@@ -88,8 +88,8 @@ namespace OpenQA.Selenium
             subList.Add(false);
             expectedResult.Add(subList);
             object result = ExecuteScript("return ['zero', [true, false]];");
-            Assert.IsTrue(result is List<object>, "result was: " + result + " (" + result.GetType().Name + ")");
-            List<object> list = (List<object>)result;
+            Assert.IsTrue(result is ReadOnlyCollection<object>, "result was: " + result + " (" + result.GetType().Name + ")");
+            ReadOnlyCollection<object> list = (ReadOnlyCollection<object>)result;
             //Assert.IsTrue(CompareLists(expectedResult, list));
         }
 
@@ -509,7 +509,7 @@ namespace OpenQA.Selenium
 
             object resultObject = ((IJavaScriptExecutor)driver).ExecuteScript(scriptToExec);
 
-            List<IWebElement> resultsList = (List<IWebElement>)resultObject;
+            ReadOnlyCollection<IWebElement> resultsList = (ReadOnlyCollection<IWebElement>)resultObject;
 
             Assert.Greater(resultsList.Count, 0);
         }

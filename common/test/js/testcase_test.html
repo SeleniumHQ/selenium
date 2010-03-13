@@ -13,7 +13,6 @@
       goog.require('webdriver.FakeCommandProcessor');
       goog.require('webdriver.Command');
       goog.require('webdriver.CommandName');
-      goog.require('webdriver.Context');
       goog.require('webdriver.Response');
       goog.require('webdriver.TestCase');
       goog.require('webdriver.TestCase.Test');
@@ -25,13 +24,14 @@
     <script>
       var ASYNC_TEST_CASE = goog.testing.AsyncTestCase.createAndInstall();
       var IGNORE_ARGUMENT = new goog.testing.mockmatchers.IgnoreArgument();
-      var TEST_CONTEXT = new webdriver.Context('windowId', 'frameId');
       var TEST_SESSION = 'testSessionId';
 
-      var RESPOND_OK = new webdriver.Response(false, TEST_CONTEXT, 'ok');
-      var RESPOND_FAILURE = new webdriver.Response(true, TEST_CONTEXT, 'failure');
+      var RESPOND_OK = new webdriver.Response(
+          webdriver.Response.Code.SUCCESS, 'ok');
+      var RESPOND_FAILURE = new webdriver.Response(
+          webdriver.Response.Code.UNHANDLED_ERROR, 'failure');
       var RESPOND_ERROR = new webdriver.Response(
-          true, TEST_CONTEXT, null, Error('boom'));
+          webdriver.Response.Code.UNHANDLED_ERROR, Error('boom'));
 
       // goog.testing.AsyncTestCase incorrectly hooks into the global test
       // runner so it can record any async errors (such as when fail is
@@ -53,8 +53,7 @@
 
         // Set a canned response for the new session command, which will be
         // issued for each test.
-        commandProcessor.setCannedResponse(webdriver.CommandName.NEW_SESSION,
-            false, new webdriver.Context('windowId', 'frameId'));
+        commandProcessor.setCannedResponse(webdriver.CommandName.NEW_SESSION, false);
 
         driver = new webdriver.WebDriver(commandProcessor);
       }

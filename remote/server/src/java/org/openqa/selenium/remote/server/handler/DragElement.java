@@ -24,7 +24,7 @@ import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.rest.ResultType;
 
-import java.util.List;
+import java.util.Map;
 
 public class DragElement extends WebElementHandler implements JsonParametersAware {
 
@@ -35,9 +35,9 @@ public class DragElement extends WebElementHandler implements JsonParametersAwar
     super(sessions);
   }
 
-  public void setJsonParameters(List<Object> allParameters) throws Exception {
-    x = ((Long) allParameters.get(1)).intValue();
-    y = ((Long) allParameters.get(2)).intValue();
+  public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
+    x = ((Long) allParameters.get("x")).intValue();
+    y = ((Long) allParameters.get("y")).intValue();
   }
 
   public ResultType call() throws Exception {

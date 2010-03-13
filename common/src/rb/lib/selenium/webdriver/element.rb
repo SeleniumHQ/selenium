@@ -255,6 +255,17 @@ module Selenium
         @id
       end
 
+      #
+      # Convert to a WebElement JSON Object for transmission over the wire:
+      # http://code.google.com/p/selenium/wiki/JsonWireProtocol#Basic_Concepts_And_Terms
+      #
+
+      def to_json(*args)
+        {:ELEMENT => @id}.to_json(*args)
+      end
+
+      #
+
 
 
     end # Element

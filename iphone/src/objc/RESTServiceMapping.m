@@ -23,6 +23,7 @@
 #import "HTTPRedirectResponse.h"
 #import "JSONRESTResource.h"
 #import "Session.h"
+#import "SessionRoot.h"
 #import "HTTPResponse+Utility.h"
 #import "RootViewController.h"
 

@@ -21,14 +21,18 @@ package org.openqa.selenium.remote.server.handler;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.remote.JsonToBeanConverter;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.rest.ResultType;
 
-import java.util.LinkedHashSet;
+import com.google.common.base.Function;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Sets;
+
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class FindElements extends WebDriverHandler implements JsonParametersAware {
@@ -40,10 +44,9 @@ public class FindElements extends WebDriverHandler implements JsonParametersAwar
     super(sessions);
   }
 
-  public void setJsonParameters(List<Object> allParameters) throws Exception {
-    JsonToBeanConverter converter = new JsonToBeanConverter();
-    String method = converter.convert(String.class, allParameters.get(0));
-    String selector = converter.convert(String.class, allParameters.get(1));
+  public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
+    String method = (String) allParameters.get("using");
+    String selector = (String) allParameters.get("value");
 
     by = new BySelector().pickFrom(method, selector);
   }
@@ -51,16 +54,15 @@ public class FindElements extends WebDriverHandler implements JsonParametersAwar
   public ResultType call() throws Exception {
     response = newResponse();
 
-    Set<String> urls = new LinkedHashSet<String>();
     List<WebElement> elements = getDriver().findElements(by);
-    for (WebElement element : elements) {
-      String elementId = getKnownElements().add(element);
+    Set<Map<String, String>> elementIds = Sets.newLinkedHashSet(
+        Iterables.transform(elements, new Function<WebElement, Map<String, String>>() {
+          public Map<String, String> apply(WebElement element) {
+            return ImmutableMap.of("ELEMENT", getKnownElements().add(element));
+          }
+        }));
 
-      // URL will be relative to the current one.
-      urls.add(String.format("element/%s", elementId));
-    }
-
-    response.setValue(urls);
+    response.setValue(elementIds);
     return ResultType.SUCCESS;
   }
 

@@ -16,12 +16,13 @@ limitations under the License.
 */
 
 
-package org.openqa.selenium.firefox.internal;
+package org.openqa.selenium.remote.internal;
 
 import junit.framework.TestCase;
 
-import java.io.PrintStream;
 import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import java.io.PrintWriter;
 
 public class CircularOutputStreamTest extends TestCase {
   public void testShouldReturnTheEntireWrittenContentIfSmallerThanTheBufferSize() throws Exception {
@@ -91,5 +92,22 @@ public class CircularOutputStreamTest extends TestCase {
     cops.close();
 
     assertEquals(expected, seen);
+  }
+
+  public void testCircularness() {
+    CircularOutputStream os = new CircularOutputStream(5);
+    PrintWriter pw = new PrintWriter(os, true);
+
+    pw.write("12345");
+    pw.flush();
+    assertEquals("12345", os.toString());
+
+    pw.write("6");
+    pw.flush();
+    assertEquals("23456", os.toString());
+
+    pw.write("789");
+    pw.flush();
+    assertEquals("56789", os.toString());
   }
 }

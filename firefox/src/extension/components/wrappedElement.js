@@ -17,15 +17,23 @@
  */
 
 
-FirefoxDriver.prototype.click = function(respond) {
-  var element = Utils.getElementAt(respond.elementId, respond.context);
+FirefoxDriver.prototype.elementEquals = function(respond, parameters) {
+  var elementA = Utils.getElementAt(parameters.id,
+                                    respond.session.getDocument());
+  var elementB = Utils.getElementAt(parameters.other,
+                                    respond.session.getDocument());
+  respond.value = elementA == elementB;
+  respond.send();
+};
+
+
+FirefoxDriver.prototype.clickElement = function(respond, parameters) {
+  var element = Utils.getElementAt(parameters.id,
+                                   respond.session.getDocument());
 
   if (!Utils.isDisplayed(element, true) && !Utils.isInHead(element)) {
-    respond.isError = true;
-    respond.response =
-    "Element is not currently visible and so may not be clicked";
-    respond.send();
-    return;
+    throw new WebDriverError(ErrorCode.ELEMENT_NOT_VISIBLE,
+        "Element is not currently visible and so may not be clicked");
   }
 
   var nativeEvents = Utils.getNativeEvents();
@@ -84,10 +92,7 @@ FirefoxDriver.prototype.click = function(respond) {
       Utils.dumpn("Detected error when clicking: " + e.name);
 
       if (e.name != "NS_ERROR_NOT_IMPLEMENTED") {
-        respond.isError = true;
-        respond.response = e.toString();
-        respond.send();
-        return;
+        throw new WebDriverError(ErrorCode.INVALID_ELEMENT_STATE, e);
       }
 
       // Fall through to the synthesized click code.
@@ -95,11 +100,12 @@ FirefoxDriver.prototype.click = function(respond) {
   }
 
   Utils.dumpn("Falling back to synthesized click");
-  var currentlyActive = Utils.getActiveElement(respond.context);
+  var doc = respond.session.getDocument()
+  var currentlyActive = Utils.getActiveElement(doc);
 
-  Utils.fireMouseEventOn(respond.context, element, "mouseover");
-  Utils.fireMouseEventOn(respond.context, element, "mousemove");
-  Utils.fireMouseEventOn(respond.context, element, "mousedown");
+  Utils.fireMouseEventOn(element, "mouseover");
+  Utils.fireMouseEventOn(element, "mousemove");
+  Utils.fireMouseEventOn(element, "mousedown");
   if (element != currentlyActive) {
     // Some elements may not have blur, focus functions - for example,
     // elements under an SVG element. Call those only if they exist.
@@ -111,10 +117,10 @@ FirefoxDriver.prototype.click = function(respond) {
     }
   }
 
-  Utils.fireMouseEventOn(respond.context, element, "mouseup");
-  Utils.fireMouseEventOn(respond.context, element, "click");
+  Utils.fireMouseEventOn(element, "mouseup");
+  Utils.fireMouseEventOn(element, "click");
 
-  var browser = Utils.getBrowser(respond.context);
+  var browser = respond.session.getBrowser();
   var alreadyReplied = false;
 
   var clickListener = new WebLoadingListener(browser, function(event) {
@@ -145,6 +151,8 @@ FirefoxDriver.prototype.click = function(respond) {
 
 
   if (contentWindow.closed) {
+    // Nulls out the session; client will have to switch to another
+    // window on their own.
     respond.send();
     return;
   }
@@ -152,52 +160,51 @@ FirefoxDriver.prototype.click = function(respond) {
 };
 
 
-FirefoxDriver.prototype.getText = function(respond) {
-  var element = Utils.getElementAt(respond.elementId, respond.context);
+FirefoxDriver.prototype.getElementText = function(respond, parameters) {
+  var element = Utils.getElementAt(parameters.id,
+                                   respond.session.getDocument());
 
   if (element.tagName == "TITLE") {
-    respond.response = Utils.getBrowser(respond.context).contentTitle;
+    respond.value = respond.session.getBrowser().contentTitle;
   } else {
-    respond.response = Utils.getText(element, true);
+    respond.value = Utils.getText(element, true);
   }
 
   respond.send();
 };
 
 
-FirefoxDriver.prototype.getValue = function(respond) {
-  var element = Utils.getElementAt(respond.elementId, respond.context);
+FirefoxDriver.prototype.getElementValue = function(respond, parameters) {
+  var element = Utils.getElementAt(parameters.id,
+                                   respond.session.getDocument());
 
   if (element["value"] !== undefined) {
-    respond.response = element.value;
+    respond.value = element.value;
     respond.send();
     return;
   }
 
   if (element.hasAttribute("value")) {
-    respond.response = element.getAttribute("value");
+    respond.value = element.getAttribute("value");
     respond.send();
     return;
   }
 
-  respond.isError = true;
-  respond.response = "No match";
-  respond.send();
+  throw new WebDriverError(ErrorCode.INVALID_ELEMENT_STATE,
+      'Element does not have a value attribute');
 };
 
 
-FirefoxDriver.prototype.sendKeys = function(respond, value) {
-  var element = Utils.getElementAt(respond.elementId, respond.context);
+FirefoxDriver.prototype.sendKeysToElement = function(respond, parameters) {
+  var element = Utils.getElementAt(parameters.id,
+                                   respond.session.getDocument());
 
   if (!Utils.isDisplayed(element, true) && !Utils.isInHead(element)) {
-    respond.isError = true;
-    respond.response =
-    "Element is not currently visible and so may not be used for typing";
-    respond.send();
-    return;
+    throw new WebDriverError(ErrorCode.ELEMENT_NOT_VISIBLE,
+        "Element is not currently visible and so may not be used for typing");
   }
 
-  var currentlyActive = Utils.getActiveElement(respond.context);
+  var currentlyActive = Utils.getActiveElement(respond.session.getDocument());
   if (currentlyActive != element) {
     currentlyActive.blur();
     element.focus();
@@ -214,26 +221,24 @@ FirefoxDriver.prototype.sendKeys = function(respond, value) {
     use = element.ownerDocument.getElementsByTagName("html")[0];
   }
 
-  Utils.type(respond.context, use, value[0], this.enableNativeEvents);
+  Utils.type(respond.session.getDocument(), use, parameters.value.join(''), this.enableNativeEvents);
 
   respond.send();
 };
 
 
-FirefoxDriver.prototype.clear = function(respond) {
-  var element = Utils.getElementAt(respond.elementId, respond.context);
+FirefoxDriver.prototype.clearElement = function(respond, parameters) {
+  var element = Utils.getElementAt(parameters.id,
+                                   respond.session.getDocument());
 
   if (!Utils.isDisplayed(element, true) && !Utils.isInHead(element)) {
-    respond.isError = true;
-    respond.response =
-    "Element is not currently visible and so may not be cleared";
-    respond.send();
-    return;
+    throw new WebDriverError(ErrorCode.ELEMENT_NOT_VISIBLE,
+        "Element is not currently visible and so may not be cleared");
   }
 
   var isTextField = element["value"] !== undefined;
 
-  var currentlyActive = Utils.getActiveElement(respond.context);
+  var currentlyActive = Utils.getActiveElement(respond.session.getDocument());
   if (currentlyActive != element) {
     currentlyActive.blur();
     element.focus();
@@ -253,37 +258,39 @@ FirefoxDriver.prototype.clear = function(respond) {
   }
 
   if (currentValue !== undefined && currentValue != "") {
-    Utils.fireHtmlEvent(respond.context, element, "change");
+    Utils.fireHtmlEvent(element, "change");
   }
 
   respond.send();
 };
 
 
-FirefoxDriver.prototype.getTagName = function(respond) {
-  var element = Utils.getElementAt(respond.elementId, respond.context);
+FirefoxDriver.prototype.getElementTagName = function(respond, parameters) {
+  var element = Utils.getElementAt(parameters.id,
+                                   respond.session.getDocument());
 
-  respond.response = element.tagName.toLowerCase();
+  respond.value = element.tagName.toLowerCase();
   respond.send();
 };
 
 
-FirefoxDriver.prototype.getAttribute = function(respond, value) {
-  var element = Utils.getElementAt(respond.elementId, respond.context);
+FirefoxDriver.prototype.getElementAttribute = function(respond, parameters) {
+  var element = Utils.getElementAt(parameters.id,
+                                   respond.session.getDocument());
 
-  var attributeName = value[0];
+  var attributeName = parameters.name;
 
   if (element.hasAttribute(attributeName)) {
-    respond.response = element.getAttribute(attributeName);
+    respond.value = element.getAttribute(attributeName);
     // Is this block necessary?
     if (attributeName.toLowerCase() == "disabled") {
-      respond.response = element.disabled;
+      respond.value = element.disabled;
     } else if (attributeName.toLowerCase() == "selected") {
-      respond.response = element.selected;
+      respond.value = element.selected;
     } else if (attributeName.toLowerCase() == "checked") {
-      respond.response = element.checked;
+      respond.value = element.checked;
     } else if (attributeName.toLowerCase() == "readonly") {
-      respond.response = element.readOnly;
+      respond.value = element.readOnly;
     }
 
     respond.send();
@@ -293,32 +300,41 @@ FirefoxDriver.prototype.getAttribute = function(respond, value) {
   attributeName = attributeName.toLowerCase();
 
   if (attributeName == "disabled") {
-    respond.response = (element.disabled === undefined ? false : element.disabled);
+    respond.value = (element.disabled === undefined ? false : element.disabled);
     respond.send();
     return;
   } else if ((attributeName == "checked" || attributeName == "selected") &&
              element.tagName.toLowerCase() == "input") {
-    respond.response = element.checked;
+    respond.value = element.checked;
     respond.send();
     return;
   } else if (attributeName == "selected" && element.tagName.toLowerCase()
       == "option") {
-    respond.response = element.selected;
+    respond.value = element.selected;
     respond.send();
     return;
   } else if (attributeName == "index" && element.tagName.toLowerCase()
       == "option") {
-    respond.response = element.index;
+    respond.value = element.index;
     respond.send();
     return;
   }
-  respond.response = null;
+  respond.value = null;
   respond.send();
 };
 
 
-FirefoxDriver.prototype.hover = function(respond) {
-  var element = Utils.getElementAt(respond.elementId, respond.context);
+FirefoxDriver.prototype.isElementEnabled = function(respond, parameters) {
+  var element = Utils.getElementAt(parameters.id,
+                                   respond.session.getDocument());
+  respond.value = !!!element.disabled;
+  respond.send();
+};
+
+
+FirefoxDriver.prototype.hoverOverElement = function(respond, parameters) {
+  var element = Utils.getElementAt(parameters.id,
+                                   respond.session.getDocument());
 
   var events = Utils.getNativeEvents();
   var node = Utils.getNodeForNativeEvents(element);
@@ -333,23 +349,25 @@ FirefoxDriver.prototype.hover = function(respond) {
     this.currentX = x;
     this.currentY = y;
   } else {
-    respond.isError = true;
-    respond.response = "Unable to hover over element";
+    // TODO: use the correct error type here.
+    throw new WebDriverError(ErrorCode.INVALID_ELEMENT_STATE,
+        "Unable to hover over element");
   }
 
   respond.send();
 };
 
-FirefoxDriver.prototype.submit = function(respond) {
-  var element = Utils.getElementAt(respond.elementId, respond.context);
+FirefoxDriver.prototype.submitElement = function(respond, parameters) {
+  var element = Utils.getElementAt(parameters.id,
+                                   respond.session.getDocument());
 
   if (element) {
     while (element.parentNode != null && element.tagName.toLowerCase() != "form") {
       element = element.parentNode;
     }
     if (element.tagName && element.tagName.toLowerCase() == "form") {
-      if (Utils.fireHtmlEvent(respond.context, element, "submit")) {
-        new WebLoadingListener(Utils.getBrowser(respond.context), function() {
+      if (Utils.fireHtmlEvent(element, "submit")) {
+        new WebLoadingListener(respond.session.getBrowser(), function() {
           respond.send();
         });
         element.submit();
@@ -360,10 +378,8 @@ FirefoxDriver.prototype.submit = function(respond) {
         return;
       }
     } else {
-      respond.isError = true;
-      respond.response = "Element was not in a form so couldn't submit";
-      respond.send();
-      return;
+      throw new WebDriverError(ErrorCode.INVALID_ELEMENT_STATE,
+          "Element was not in a form so couldn't submit");
     }
   } else {
     respond.send();
@@ -371,8 +387,9 @@ FirefoxDriver.prototype.submit = function(respond) {
   }
 };
 
-FirefoxDriver.prototype.isSelected = function(respond) {
-  var element = Utils.getElementAt(respond.elementId, respond.context);
+FirefoxDriver.prototype.isElementSelected = function(respond, parameters) {
+  var element = Utils.getElementAt(parameters.id,
+                                   respond.session.getDocument());
 
   var selected = false;
 
@@ -392,87 +409,87 @@ FirefoxDriver.prototype.isSelected = function(respond) {
   } catch(e) {
   }
 
-  respond.response = selected;
+  respond.value = selected;
   respond.send();
 };
 
 
-FirefoxDriver.prototype.setSelected = function(respond) {
-  var element = Utils.getElementAt(respond.elementId, respond.context);
+FirefoxDriver.prototype.setElementSelected = function(respond, parameters) {
+  var element = Utils.getElementAt(parameters.id,
+                                   respond.session.getDocument());
 
   if (!Utils.isDisplayed(element, true) && !Utils.isInHead(element)) {
-    respond.isError = true;
-    respond.response =
-    "Element is not currently visible and so may not be selected";
-    respond.send();
-    return;
+    throw new WebDriverError(ErrorCode.ELEMENT_NOT_VISIBLE,
+        "Element is not currently visible and so may not be selected");
   }
 
-  var wasSet = "You may not select an unselectable element";
-  respond.isError = true;
-
-  try {
-    var inputElement =
-        element.QueryInterface(Components.interfaces.nsIDOMHTMLInputElement);
-    if (inputElement.disabled) {
-      respond.response = "You may not select a disabled element";
-      respond.send();
-      return;
+  function safeQueryInterface(element, queryFor) {
+    try {
+      return element.QueryInterface(queryFor);
+    } catch (ignored) {
+      return null;
     }
-  } catch(e) {
   }
 
-  try {
-    var option =
-        element.QueryInterface(Components.interfaces.nsIDOMHTMLOptionElement);
+  var option = safeQueryInterface(
+      element, Components.interfaces.nsIDOMHTMLOptionElement);
+  if (option) {
     var select = element;
-    while (select.parentNode != null && select.tagName.toLowerCase() != "select") {
+    while (select.parentNode && select.tagName.toLowerCase() != 'select') {
       select = select.parentNode;
     }
-    if (select.tagName.toLowerCase() == "select") {
-      select = select.QueryInterface(Components.interfaces.nsIDOMHTMLSelectElement);
-    } else {
+    select = safeQueryInterface(
+        select, Components.interfaces.nsIDOMHTMLSelectElement);
+    if (!select) {
       //If we're not within a select element, fire the event from the option, and hope that it bubbles up
       Utils.dumpn("Falling back to event firing from option, not select element");
       select = option;
     }
-    respond.isError = false;
+
     if (!option.selected) {
       option.selected = true;
-      Utils.fireHtmlEvent(respond.context, select, "change");
+      Utils.fireHtmlEvent(select, 'change');
     }
-    wasSet = "";
-  } catch(e) {
+
+    respond.status = ErrorCode.SUCCESS;
+    respond.value = '';
+    respond.send();
+    return;
   }
 
-  try {
-    var checkbox =
-        element.QueryInterface(Components.interfaces.nsIDOMHTMLInputElement);
-    respond.isError = false;
-    if (checkbox.type == "checkbox" || checkbox.type == "radio") {
-      if (!checkbox.checked) {
-        checkbox.checked = true;
-        Utils.fireHtmlEvent(respond.context, checkbox, "change");
+  var inputElement = safeQueryInterface(
+      element, Components.interfaces.nsIDOMHTMLInputElement);
+  if (inputElement) {
+    if (inputElement.disabled) {
+      throw new WebDriverError(ErrorCode.INVALID_ELEMENT_STATE,
+          "You may not select a disabled element");
+    }
+
+    if (inputElement.type == 'checkbox' || inputElement.type == 'radio') {
+      if (!inputElement.checked) {
+        inputElement.checked = true;
+        Utils.fireHtmlEvent(inputElement, 'change');
       }
-      wasSet = "";
+
+      respond.status = ErrorCode.SUCCESS;
+      respond.value = '';
+      respond.send();
+      return;
     }
-  } catch(e) {
   }
 
-  respond.response = wasSet;
-  respond.send();
+  throw new WebDriverError(ErrorCode.INVALID_ELEMENT_STATE,
+      'You may not select an unselectable element');
 };
 
 
-FirefoxDriver.prototype.toggle = function(respond) {
-  var element = Utils.getElementAt(respond.elementId, respond.context);
+FirefoxDriver.prototype.toggleElement = function(respond, parameters) {
+  var element = Utils.getElementAt(parameters.id,
+                                   respond.session.getDocument());
 
   if (!Utils.isDisplayed(element) && !Utils.isInHead(element)) {
-    respond.isError = true;
-    respond.response =
-    "Element is not currently visible and so may not be toggled";
-    respond.send();
-    return;
+    throw new WebDriverError(ErrorCode.ELEMENT_NOT_VISIBLE,
+        "Element is not currently visible and so may not be toggled");
   }
 
   try {
@@ -480,7 +497,8 @@ FirefoxDriver.prototype.toggle = function(respond) {
         element.QueryInterface(Components.interfaces.nsIDOMHTMLInputElement);
     if (checkbox.type == "checkbox") {
       checkbox.checked = !checkbox.checked;
-      Utils.fireHtmlEvent(respond.context, checkbox, "change");
+      Utils.fireHtmlEvent(checkbox, "change");
+      respond.value = checkbox.checked;
       respond.send();
       return;
     }
@@ -499,47 +517,50 @@ FirefoxDriver.prototype.toggle = function(respond) {
 
     if (select && select.multiple) {
       option.selected = !option.selected;
-      Utils.fireHtmlEvent(respond.context, option, "change");
+      Utils.fireHtmlEvent(option, "change");
+      respond.value = option.selected;
       respond.send();
       return;
     }
   } catch(e) {
   }
 
-  respond.isError = true;
-  respond.response =
+    throw new WebDriverError(ErrorCode.INVALID_ELEMENT_STATE,
       "You may only toggle an element that is either a checkbox or an "  +
-      "option in a select that allows multiple selections";
+      "option in a select that allows multiple selections");
+};
+
+
+FirefoxDriver.prototype.isElementDisplayed = function(respond, parameters) {
+  var element = Utils.getElementAt(parameters.id,
+                                   respond.session.getDocument());
+  respond.value = Utils.isDisplayed(element, false);
   respond.send();
 };
 
 
-FirefoxDriver.prototype.isDisplayed = function(respond) {
-  var element = Utils.getElementAt(respond.elementId, respond.context);
-  respond.response = Utils.isDisplayed(element, false);
-  respond.send();
-};
+FirefoxDriver.prototype.getElementLocation = function(respond, parameters) {
+  var element = Utils.getElementAt(parameters.id,
+                                   respond.session.getDocument());
 
+  var location = Utils.getElementLocation(element);
 
-FirefoxDriver.prototype.getLocation = function(respond) {
-  var element = Utils.getElementAt(respond.elementId, respond.context);
-
-  var location = Utils.getElementLocation(element, respond.context);
-
-  respond.response = {
+  respond.value = {
     x: Math.round(location.x),
     y: Math.round(location.y)
   };
+
   respond.send();
 };
 
 
-FirefoxDriver.prototype.getSize = function(respond) {
-  var element = Utils.getElementAt(respond.elementId, respond.context);
+FirefoxDriver.prototype.getElementSize = function(respond, parameters) {
+  var element = Utils.getElementAt(parameters.id,
+                                   respond.session.getDocument());
 
   var box = Utils.getLocationOnceScrolledIntoView(element);
 
-  respond.response = {
+  respond.value = {
     width: Math.round(box.width),
     height: Math.round(box.height)
   };
@@ -547,27 +568,26 @@ FirefoxDriver.prototype.getSize = function(respond) {
 };
 
 
-FirefoxDriver.prototype.dragElement = function(respond, movementString) {
-  var element = Utils.getElementAt(respond.elementId, respond.context);
+FirefoxDriver.prototype.dragElement = function(respond, parameters) {
+  var element = Utils.getElementAt(parameters.id,
+                                   respond.session.getDocument());
 
   if (!Utils.isDisplayed(element, true) && !Utils.isInHead(element)) {
-    respond.isError = true;
-    respond.response =
-    "Element is not currently visible and so may not be used for drag and drop";
-    respond.send();
-    return;
+    throw new WebDriverError(ErrorCode.ELEMENT_NOT_VISIBLE,
+        "Element is not currently visible and so may not be used for " +
+        "drag and drop");
   }
 
   // Scroll the first element into view
   //  element.scrollIntoView(true);
 
-  var clientStartXY = Utils.getElementLocation(element, respond.context);
+  var clientStartXY = Utils.getElementLocation(element);
 
   var clientStartX = clientStartXY.x;
   var clientStartY = clientStartXY.y;
 
-  var movementX = movementString[0];
-  var movementY = movementString[1];
+  var movementX = parameters.x;
+  var movementY = parameters.y;
 
   var clientFinishX = ((clientStartX + movementX) < 0) ? 0 : (clientStartX
       + movementX);
@@ -582,7 +602,7 @@ FirefoxDriver.prototype.dragElement = function(respond, movementString) {
   if (clientFinishY > body.scrollHeight)
     clientFinishY = body.scrollHeight;
 
-  var mouseSpeed = this.mouseSpeed;
+  var mouseSpeed = respond.session.getInputSpeed();
   var move = function(current, dest) {
     if (current == dest) return current;
     if (Math.abs(current - dest) < mouseSpeed) return dest;
@@ -607,27 +627,29 @@ FirefoxDriver.prototype.dragElement = function(respond, movementString) {
   // send the mouseup to that
   Utils.triggerMouseEvent(element, 'mouseup', clientFinishX, clientFinishY);
 
-  var finalLoc = Utils.getElementLocation(element, respond.context)
+  var finalLoc = Utils.getElementLocation(element);
 
-  respond.response = finalLoc.x + "," + finalLoc.y;
+  respond.value = finalLoc.x + "," + finalLoc.y;
   respond.send();
 };
 
 
-FirefoxDriver.prototype.getValueOfCssProperty = function(respond,
-                                                         propertyName) {
-  var element = Utils.getElementAt(respond.elementId, respond.context);
-
-  respond.response = Utils.getStyleProperty(element, propertyName); // Coeerce to a string
+FirefoxDriver.prototype.getElementValueOfCssProperty = function(respond,
+                                                                parameters) {
+  var element = Utils.getElementAt(parameters.id,
+                                   respond.session.getDocument());
+  respond.value = Utils.getStyleProperty(element, parameters.propertyName); // Coeerce to a string
   respond.send();
 };
 
 
-FirefoxDriver.prototype.getLocationOnceScrolledIntoView = function(respond) {
-  var element = Utils.getElementAt(respond.elementId, respond.context);
+FirefoxDriver.prototype.getElementLocationOnceScrolledIntoView = function(
+    respond, parameters) {
+  var element = Utils.getElementAt(parameters.id,
+                                   respond.session.getDocument());
 
   if (!Utils.isDisplayed(element, true)) {
-    respond.response = undefined;
+    respond.value = undefined;
     respond.send();
     return;
   }
@@ -644,7 +666,7 @@ FirefoxDriver.prototype.getLocationOnceScrolledIntoView = function(respond) {
     var x = {}, y = {}, width = {}, height = {};
     accessible.getBounds(x, y, width, height);
 
-    respond.response = {
+    respond.value = {
       x : x.value,
       y : y.value
     };
@@ -655,6 +677,7 @@ FirefoxDriver.prototype.getLocationOnceScrolledIntoView = function(respond) {
   }
 
   // If we have the box object (which is deprecated) we could try using it
+  var theDoc = respond.session.getDocument();
   if (theDoc.getBoxObjectFor) {
     // Fallback. Use the (deprecated) method to find out where the element is in
     // the viewport. This should be fine to use because we only fall down this
@@ -662,7 +685,7 @@ FirefoxDriver.prototype.getLocationOnceScrolledIntoView = function(respond) {
 
     var box = theDoc.getBoxObjectFor(element);
 
-    respond.response = {
+    respond.value = {
       x : box.screenX,
       y : box.screenY
     };
@@ -675,7 +698,7 @@ FirefoxDriver.prototype.getLocationOnceScrolledIntoView = function(respond) {
   var y = theDoc.defaultView.screenY;
 
   var rect = element.getBoundingClientRect()
-  respond.response = {
+  respond.value = {
     x : x + rect.left,
     y : y + rect.top  
   }

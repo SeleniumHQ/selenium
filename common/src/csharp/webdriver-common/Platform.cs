@@ -41,6 +41,13 @@ namespace OpenQA.Selenium
         Windows,
 
         /// <summary>
+        /// Any Windows NT-based version of Microsoft Windows. This value is never returned 
+        /// by a driver, but can be used to find drivers with certain capabilities. This value
+        /// is equivalent to PlatformType.Windows.
+        /// </summary>
+        WinNT = Windows,
+
+        /// <summary>
         /// Versions of Microsoft Windows that are compatible with Windows XP.
         /// </summary>
         XP,

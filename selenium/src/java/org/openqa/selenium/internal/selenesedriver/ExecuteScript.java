@@ -17,13 +17,14 @@ limitations under the License.
 
 package org.openqa.selenium.internal.selenesedriver;
 
-import com.thoughtworks.selenium.Selenium;
 import com.google.common.collect.Maps;
+import com.thoughtworks.selenium.Selenium;
 
+import java.util.List;
 import java.util.Map;
 
 public class ExecuteScript implements SeleneseFunction<Object> {
-  public Object apply(Selenium selenium, Object... args) {
+  public Object apply(Selenium selenium, Map<String, ?> args) {
     String script = prepareScript(args);
 
     System.out.println("script = " + script);
@@ -33,16 +34,17 @@ public class ExecuteScript implements SeleneseFunction<Object> {
     return populateReturnValue(value);
   }
 
-  private String prepareScript(Object... args) {
-    String script = String.format("(function() { %s })();", args[0])
+  private String prepareScript(Map<String, ?> parameters) {
+    String script = (String) parameters.get("script");
+    script = String.format("(function() { %s })();", script)
         .replaceAll("\\bwindow\\.", "selenium.browserbot.getCurrentWindow().")
         .replaceAll("\\bdocument\\.", "selenium.browserbot.getDocument().");
 
-    if (args.length > 1) {
-      Object[] scriptArgs = (Object[]) args[1];
-      for (int i = 0; i < scriptArgs.length; i++) {
+    List<?> args = (List<?>) parameters.get("args");
+    if (!args.isEmpty()) {
+      for (int i = 0; i < args.size(); i++) {
         script = script.replaceAll("arguments\\[\\s*" + i + "\\s*\\]",
-            getArgumentValue(scriptArgs[i]));
+            getArgumentValue(args.get(i)));
       }
     }
 
@@ -50,38 +52,27 @@ public class ExecuteScript implements SeleneseFunction<Object> {
   }
 
   private String getArgumentValue(Object arg) {
-    if (arg instanceof Map) {
-      Map<String, Object> raw = (Map<String, Object>) arg;
-      if ("STRING".equals(raw.get("type"))) {
-        return String.format("'%s'", ((String) raw.get("value")).replaceAll("'", "\\'"));
-      }
-      return String.valueOf(raw.get("value"));
+    if (arg == null) {
+      return null;
+    } else if (arg instanceof String) {
+      return String.format("'%s'", ((String) arg).replaceAll("'", "\\'"));
+    } else {
+      return String.valueOf(arg);
     }
-
-    return null;
   }
 
-  private Map<String, Object> populateReturnValue(String value) {
-    Map<String, Object> toReturn = Maps.newHashMap();
-
+  private Object populateReturnValue(String value) {
     if ("__undefined__".equals(value)) {
-      toReturn.put("type", "STRING");
-      toReturn.put("value", null);
+      return null;
     } else if (value.matches("^\\d+$")) {
-      toReturn.put("type", "NUMBER");
-      toReturn.put("value", Long.parseLong(value));
+      return Long.parseLong(value);
     } else if (value.matches("^\\d+\\.\\d+$")) {
-      toReturn.put("type", "NUMBER");
-      toReturn.put("value", Double.parseDouble(value));
+      return Double.parseDouble(value);
     } else if ("true".equals(value) || "false".equals(value)) {
-      toReturn.put("type", "BOOLEAN");
-      toReturn.put("value", Boolean.parseBoolean(value));
+      return Boolean.parseBoolean(value);
     } else {
       // Falll back to a string
-      toReturn.put("type", "STRING");
-      toReturn.put("value", value);
+      return value;
     }
-    
-    return toReturn;
   }
 }

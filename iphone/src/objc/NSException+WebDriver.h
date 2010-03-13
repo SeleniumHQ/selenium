@@ -13,6 +13,8 @@
 @interface NSException (WebDriver)
 
 + (NSException *)webDriverExceptionWithMessage:(NSString *)message
-                                webDriverClass:(NSString *)javaClass;
+                                 andStatusCode:(int)statusCode;
+
++ (NSString *)webdriverExceptionName;
 
 @end

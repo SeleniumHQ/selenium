@@ -87,6 +87,7 @@ namespace OpenQA.Selenium.Remote
 
                 writer.WritePropertyName("secure");
                 writer.WriteValue(cookieValue.Secure);
+                writer.WriteEndObject();
             }
         }
     }

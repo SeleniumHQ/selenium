@@ -36,7 +36,13 @@ public class ExtensionConnectionFactory {
                 // Fine. No running instance
             } catch (IOException e) {
               // Fine. No running instance.
+            } catch (Exception e) {
+              // Something else happened, just ignore it.
             }
+        }
+
+        if (binary == null) {
+          binary = new FirefoxBinary();
         }
 
         try {

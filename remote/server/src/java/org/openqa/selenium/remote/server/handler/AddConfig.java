@@ -17,9 +17,6 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.handler;
 
-import java.util.List;
-import java.util.Map;
-
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.Capabilities;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -27,8 +24,9 @@ import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.rest.Handler;
 import org.openqa.selenium.remote.server.rest.ResultType;
-
 import static org.openqa.selenium.remote.server.rest.ResultType.SUCCESS;
+
+import java.util.Map;
 
 public class AddConfig implements Handler, JsonParametersAware {
   private final DriverSessions allSessions;
@@ -39,9 +37,11 @@ public class AddConfig implements Handler, JsonParametersAware {
     this.allSessions = allSessions;
   }
 
-  public void setJsonParameters(List<Object> allParameters) throws Exception {
-    desiredCapabilities = new DesiredCapabilities((Map<String, Object>) allParameters.get(0));
-    className = (String) allParameters.get(1);
+  @SuppressWarnings("unchecked")
+  public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
+    Map<String, Object> capabilitiesMap = (Map<String, Object>) allParameters.get("capabilities");
+    desiredCapabilities = new DesiredCapabilities(capabilitiesMap);
+    className = (String) allParameters.get("class");
   }
 
   public ResultType handle() throws Exception {

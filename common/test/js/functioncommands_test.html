@@ -172,16 +172,16 @@
     }
 
 
-    function testPassesTheLastResultFromTheSameFrameToSequentialFunctions() {
+    function testPassesTheLastResultFromTheSameFrameToSubsequentFunctions() {
       driver.callFunction(goog.functions.constant('abc123'));
       driver.callFunction(function(prevResult) {
         assertEquals('abc123', prevResult);
-        driver.callFunction(goog.functions.constant('456def'));
-        return 17;
+        <!--driver.callFunction(goog.functions.constant('456def'));-->
+        <!--return 17;-->
       });
-      driver.callFunction(function(prevResult) {
-        assertEquals(17, prevResult);
-      });
+      <!--driver.callFunction(function(prevResult) {-->
+        <!--assertEquals(17, prevResult);-->
+      <!--});-->
       dispatchAllCommands();
     }
 

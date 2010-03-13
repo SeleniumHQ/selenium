@@ -41,18 +41,58 @@
 }
 
 - (id<HTTPResource>)elementWithQuery:(NSString *)query {
-  NSString *queriedAttribute = [query substringFromIndex:1];
-  id<HTTPResource> resource;
-  @try {
-    NSString *attribute = [element_ attribute:queriedAttribute];
-    resource = [HTTPStaticResource resourceWithResponse:
-                [WebDriverResponse responseWithValue:attribute]];
+  if ([query length] > 0) {
+    NSString *queriedAttribute = [query substringFromIndex:1];
+    id<HTTPResource> resource = [contents objectForKey:queriedAttribute];
+    if (resource == nil) {
+      resource = [NamedAttribute
+                  namedAttributeDirectoryForElement:element_
+                  andName:queriedAttribute];
+      [self setResource:resource withName:queriedAttribute];
+    }
   }
-  @catch (NSException* e) {
-    resource = [HTTPStaticResource resourceWithResponse:
-                [WebDriverResponse responseWithError:e]];
-  }
-  return resource;
+  // Need to delegate back to |super| so |Session| can set the session ID on
+  // the response.
+  return [super elementWithQuery:query];
 }
 
 @end
+
+@implementation NamedAttribute
+
+- (id) initForElement:(Element *)element
+              andName:(NSString *)name {
+  if (![super init]) {
+    return nil;
+  }
+  // Not retained as per delegate pattern - avoids circular dependancies.
+  element_ = element;
+  name_ = name;
+  
+  [self setIndex:
+   [WebDriverResource resourceWithTarget:self
+                               GETAction:@selector(getAttribute)
+                              POSTAction:NULL
+                               PUTAction:NULL
+                            DELETEAction:NULL]];
+  return self;
+}
+
++ (NamedAttribute *)namedAttributeDirectoryForElement:(Element *)element
+                                              andName:(NSString *)name {
+  return [[[NamedAttribute alloc] initForElement:element andName:name]
+          autorelease];
+}
+
+- (NSString *)getAttribute {
+  if ([name_ isEqualToString:@"disabled"]) {
+    return [[self viewController]
+            jsEval:[NSString stringWithFormat:@"!!%@.disabled",
+                    [element_ jsLocator]]];
+  }
+  return [element_ attribute:name_];
+}
+
+@end
+
+

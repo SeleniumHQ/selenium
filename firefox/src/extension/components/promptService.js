@@ -100,11 +100,11 @@ DrivenPromptService.prototype.alert = function(aParent, aDialogTitle, aText) {
 
   if (driver && driver.response_) {
     var res = driver.response_;
-    // TODO(simon): We can't rely on the normal JSON library here because it might not be available
-    //              Come up with a cleaner way of doing this.
-    var json = "{ title: \"" + aDialogTitle + "\", text: \"" + aText + "\", __webdriverType: 'alert' }";
-
-    res.response = json;
+    res.value = {
+      title: aDialogTitle,
+      text: aText,
+      __webdriverType: 'alert'
+    };
     res.send();
   } else {
     // TODO(simon): we should prevent the next command from blocking.

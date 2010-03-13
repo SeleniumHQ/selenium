@@ -18,6 +18,7 @@
 """A script for running the unit test and example tests for the python
 binding."""
 
+import optparse
 import os
 import shutil
 import subprocess
@@ -30,6 +31,20 @@ def run_script(script_name, *args):
     return subprocess.Popen(command)
 
 if __name__ == "__main__":
+    usage = 'usage: %prog [options] arg'
+    parser = optparse.OptionParser(usage)
+    parser.add_option('-d', '--driver', dest='driver', action='store',
+                      default='firefox', type='choice',
+                      choices=['chrome', 'firefox', 'remote'],
+                      help='Which driver to test.')
+    (options, args) = parser.parse_args()
+
+    driver_tests_dict = {
+      'chrome': ['api_examples'],
+      'firefox': ['api_examples', 'cookie_tests', 'firefox_launcher_tests'],
+      'remote': ['api_examples'],
+    }
+
     base_dir = os.path.abspath(os.path.dirname(__file__))
     print 'base_dir:',base_dir
     os.environ["WEBDRIVER"] = base_dir
@@ -37,8 +52,8 @@ if __name__ == "__main__":
                                              os.path.join(base_dir, "../../../", "firefox", "lib-src"),
                                              os.path.join(base_dir, '..')])
     try:
-        for test in ["api_examples", "cookie_tests", "firefox_launcher_tests"]:
-            process = run_script(os.path.join(base_dir, "firefox_tests/%s.py" % test))
+        for test in driver_tests_dict[options.driver]:
+            process = run_script(os.path.join(base_dir, "%s_tests/%s.py" % (options.driver, test)))
             assert process.wait() == 0, "Test %s failed" % test
     finally:
         try:

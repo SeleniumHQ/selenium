@@ -18,12 +18,13 @@ limitations under the License.
 package org.openqa.selenium.internal.selenesedriver;
 
 import com.thoughtworks.selenium.Selenium;
-
 import org.openqa.selenium.WebDriverException;
+
+import java.util.Map;
 
 public class SubmitElement extends ElementFunction<Void> {
 
-  public Void apply(Selenium selenium, Object... args) {
+  public Void apply(Selenium selenium, Map<String, ?> args) {
     String locator = getLocator(args);
 
     String eval = submitJs.replace("LOCATOR", locator);

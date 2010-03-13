@@ -94,7 +94,8 @@ public enum DriverCommand {
   GET_ELEMENT_VALUE_OF_CSS_PROPERTY("getElementValueOfCssProperty"),
   ELEMENT_EQUALS("elementEquals"),
 
-  SCREENSHOT("screenshot");
+  SCREENSHOT("screenshot"),
+  DISMISS_ALERT("dismissAlert");
 
   private final String commandName;
 

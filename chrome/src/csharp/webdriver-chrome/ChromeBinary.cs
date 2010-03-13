@@ -1,6 +1,9 @@
 using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
+using System.Net;
+using System.Net.Sockets;
 using System.Threading;
 using Microsoft.Win32;
 
@@ -11,7 +14,7 @@ namespace OpenQA.Selenium.Chrome
     /// </summary>
     internal class ChromeBinary
     {
-        private static readonly string[] chromePaths = new string[] 
+        private static readonly string[] chromePaths = new string[]
         {
             "/usr/bin/google-chrome",
             "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
@@ -24,31 +27,59 @@ namespace OpenQA.Selenium.Chrome
         private ChromeProfile profile;
         private ChromeExtension extension;
         private Process chromeProcess;
+        private int listeningPort;
         private static string chromeFile = string.Empty;
 
         /// <summary>
-        /// Initializes a new instance of the ChromeBinary class using the given <see cref="ChromeProfile"/> and <see cref="extension"/>.
+        /// Initializes a new instance of the ChromeBinary class using the given <see cref="ChromeProfile"/> and <see cref="ChromeExtension"/>.
         /// </summary>
         /// <param name="profile">The Chrome profile to use.</param>
         /// <param name="extension">The extension to launch Chrome with.</param>
         internal ChromeBinary(ChromeProfile profile, ChromeExtension extension)
+            : this(profile, extension, 0)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the ChromeBinary class using the given <see cref="ChromeProfile"/>, <see cref="ChromeExtension"/> and port value.
+        /// </summary>
+        /// <param name="profile">The Chrome profile to use.</param>
+        /// <param name="extension">The extension to launch Chrome with.</param>
+        /// <param name="port">The port on which to listen for commands.</param>
+        internal ChromeBinary(ChromeProfile profile, ChromeExtension extension, int port)
         {
             this.profile = profile;
             this.extension = extension;
+            if (port == 0)
+            {
+                FindFreePort();
+            }
+            else
+            {
+                this.listeningPort = port;
+            }
+        }
+
+        /// <summary>
+        /// Gets the port number on which the <see cref="ChromeExtension"/> should listen for commands.
+        /// </summary>
+        public int Port
+        {
+            get { return listeningPort; }
         }
 
         private string Arguments
         {
             get
             {
-                return String.Concat(" --user-data-dir=\"", profile.ProfileDirectory, "\"", " --load-extension=\"", extension.ExtensionDirectory, "\"", " --activate-on-launch", " --homepage=about:blank", " --no-first-run", " --disable-hang-monitor", " --disable-popup-blocking", " --disable-prompt-on-repost", " --no-default-browser-check ");
+                return string.Concat(" --user-data-dir=\"", profile.ProfileDirectory, "\"", " --load-extension=\"", extension.ExtensionDirectory, "\"", " --activate-on-launch", " --homepage=about:blank", " --no-first-run", " --disable-hang-monitor", " --disable-popup-blocking", " --disable-prompt-on-repost", " --no-default-browser-check ");
             }
         }
 
         /// <summary>
-        /// Increases the wait time
+        /// Increases the wait time used for starting the Chrome process.
         /// </summary>
-        /// <param name="diff">How long to wait</param>
+        /// <param name="diff">Interval by which to increase the wait time.</param>
         public static void IncrementStartWaitInterval(int diff)
         {
             linearStartWaitCoefficient += diff;
@@ -57,13 +88,12 @@ namespace OpenQA.Selenium.Chrome
         /// <summary>
         ///  Starts the Chrome process for WebDriver. Assumes the passed directories exist.
         /// </summary>
-        /// <param name="serverUrl">URL from which commands should be requested</param>
         /// <exception cref="WebDriverException">When it can't launch will throw an error</exception>
-        public void Start(string serverUrl)
+        public void Start()
         {
             try
             {
-                chromeProcess = Process.Start(new ProcessStartInfo(GetChromeFile(), String.Concat(Arguments, serverUrl)) { UseShellExecute = false });
+                chromeProcess = Process.Start(new ProcessStartInfo(GetChromeFile(), string.Concat(Arguments, string.Format(CultureInfo.InvariantCulture, "http://localhost:{0}/chromeCommandExecutor", listeningPort)) { UseShellExecute = false });
             }
             catch (IOException e)
             { // TODO(AndreNogueira): Check exception type thrown when process.start fails
@@ -164,6 +194,19 @@ namespace OpenQA.Selenium.Chrome
             }
 
             return chromeFile;
+        }
+
+        private void FindFreePort()
+        {
+            // Locate a free port on the local machine by binding a socket to
+            // an IPEndPoint using IPAddress.Any and port 0. The socket will
+            // select a free port.
+            Socket portSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            IPEndPoint socketEndPoint = new IPEndPoint(IPAddress.Any, 0);
+            portSocket.Bind(socketEndPoint);
+            socketEndPoint = (IPEndPoint)portSocket.LocalEndPoint;
+            listeningPort = socketEndPoint.Port;
+            portSocket.Close();
         }
 
         private static bool IsChromeBinaryLocationKnown()

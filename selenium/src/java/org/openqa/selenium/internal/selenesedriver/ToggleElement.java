@@ -19,8 +19,10 @@ package org.openqa.selenium.internal.selenesedriver;
 
 import com.thoughtworks.selenium.Selenium;
 
+import java.util.Map;
+
 public class ToggleElement extends ElementFunction<Boolean> {
-  public Boolean apply(Selenium selenium, Object... args) {
+  public Boolean apply(Selenium selenium, Map<String, ?> args) {
     String locator = getLocator(args);
 
     String type = selenium.getAttribute(locator + "@type");

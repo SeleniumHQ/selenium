@@ -159,12 +159,6 @@ public class BeanToJsonConverter {
       return converted;
     }
 
-    if (toConvert instanceof Context) {
-      JSONObject converted = new JSONObject();
-      converted.put("value", toConvert.toString());
-      return converted;
-    }
-
     if (toConvert instanceof SessionId) {
       JSONObject converted = new JSONObject();
       converted.put("value", toConvert.toString());

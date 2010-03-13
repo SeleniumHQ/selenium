@@ -19,9 +19,8 @@ limitations under the License.
 
 package org.openqa.selenium.remote;
 
-import org.openqa.selenium.RenderedWebElement;
-
 import com.google.common.collect.ImmutableMap;
+import org.openqa.selenium.RenderedWebElement;
 
 import java.awt.Dimension;
 import java.awt.Point;
@@ -56,7 +55,8 @@ public class RenderedRemoteWebElement extends RemoteWebElement implements Render
   }
 
   public void dragAndDropBy(int moveRightBy, int moveDownBy) {
-    parent.execute(DriverCommand.DRAG_ELEMENT, ImmutableMap.of("id", id), moveRightBy, moveDownBy);
+    parent.execute(DriverCommand.DRAG_ELEMENT,
+        ImmutableMap.of("id", id, "x", moveRightBy, "y", moveDownBy));
   }
 
   public void dragAndDropOn(RenderedWebElement element) {

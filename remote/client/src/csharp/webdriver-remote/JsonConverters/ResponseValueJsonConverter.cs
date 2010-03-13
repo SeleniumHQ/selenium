@@ -39,7 +39,7 @@ namespace OpenQA.Selenium.Remote
         /// <param name="serializer">JSON Serializer </param>
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
-            throw new NotImplementedException();
+            writer.WriteValue(value);
         }
 
         private object ProcessToken(JsonReader reader)

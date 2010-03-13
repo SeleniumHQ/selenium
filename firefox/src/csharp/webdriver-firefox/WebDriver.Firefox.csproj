@@ -48,17 +48,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Command.cs" />
-    <Compile Include="Context.cs" />
     <Compile Include="FirefoxBinary.cs" />
     <Compile Include="FirefoxDriver.cs" />
     <Compile Include="FirefoxProfile.cs" />
     <Compile Include="FirefoxWebElement.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="IExtensionConnection.cs" />
-    <Compile Include="Internal\CharArrayJsonConverter.cs" />
-    <Compile Include="Internal\ContextJsonConverter.cs" />
-    <Compile Include="Internal\CookieJsonConverter.cs" />
     <Compile Include="Internal\Executable.cs" />
     <Compile Include="Internal\ExtensionConnection.cs" />
     <Compile Include="Internal\ExtensionConnectionFactory.cs" />
@@ -66,16 +61,18 @@
     <Compile Include="Internal\ILock.cs" />
     <Compile Include="Internal\IniFileReader.cs" />
     <Compile Include="Internal\NativeMethods.cs" />
-    <Compile Include="Internal\ResponseValueJsonConverter.cs" />
     <Compile Include="Preferences.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Response.cs" />
     <Compile Include="Internal\SocketLock.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\common\src\csharp\webdriver-common\WebDriver.Common.csproj">
       <Project>{ABB9B87F-FEEA-410E-ACBF-26479B8C72B0}</Project>
       <Name>WebDriver.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\remote\client\src\csharp\webdriver-remote\WebDriver.Remote.csproj">
+      <Project>{32122F8D-CD64-495A-B9B0-5516FF67C79F}</Project>
+      <Name>WebDriver.Remote</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
