@@ -28,6 +28,7 @@ limitations under the License.
   <script type="application/x-javascript" src="chrome://selenium-ide/content/file-utils.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/format.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/format-source-dialog.js"/>
+  <stringbundle id="strings" src="chrome://selenium-ide/locale/selenium-ide.properties" />
   <vbox flex="1">
     <hbox id="name-box" align="center" hidden="true">
       <label value="Name of the format:"/>

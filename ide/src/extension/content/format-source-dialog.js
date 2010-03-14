@@ -24,7 +24,9 @@ function loadDialog() {
 		sourceTextbox.setAttribute("readonly","true");
 		document.getElementById("note").hidden = false;
 	}else{
-		sourceTextbox.removeAttribute("readonly");		
+		sourceTextbox.removeAttribute("readonly");
+		var saveLabel = document.getElementById("strings").getString('format.save.label');
+		document.documentElement.getButton("accept").setAttribute("label",saveLabel);
 	}
 	if (!this.formatInfo.id) {
 		// new format
@@ -46,6 +48,8 @@ function saveDialog() {
 	if (this.formatInfo.saveFormat){
 		this.formatInfo.saveFormat(document.getElementById('format-source').value);
 		this.formatInfo.saved = true;
+		window['selenium-ide-format-source'].close();
 		return true;
 	}
+	
 }
