@@ -93,7 +93,7 @@ namespace OpenQA.Selenium.Chrome
         {
             try
             {
-                chromeProcess = Process.Start(new ProcessStartInfo(GetChromeFile(), string.Concat(Arguments, string.Format(CultureInfo.InvariantCulture, "http://localhost:{0}/chromeCommandExecutor", listeningPort)) { UseShellExecute = false });
+                chromeProcess = Process.Start(new ProcessStartInfo(GetChromeFile(), string.Concat(Arguments, string.Format(CultureInfo.InvariantCulture, "http://localhost:{0}/chromeCommandExecutor", listeningPort))) { UseShellExecute = false });
             }
             catch (IOException e)
             { // TODO(AndreNogueira): Check exception type thrown when process.start fails
