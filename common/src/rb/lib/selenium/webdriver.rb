@@ -1,21 +1,25 @@
 require "tmpdir"
 require "fileutils"
 
-def have_yajl?
-  require "yajl/json_gem"
-  true
-rescue LoadError
-  false
-end
+have_yajl = lambda {
+  begin
+    require "yajl/json_gem"
+    true
+  rescue LoadError
+    false
+  end
+}
 
-def have_json?
-  require "json"
-  true
-rescue LoadError
-  false
-end
+have_json = lambda {
+  begin
+    require "json"
+    true
+  rescue LoadError
+    false
+  end
+}
 
-unless have_yajl? || have_json?
+unless have_yajl.call || have_json.call
   raise LoadError, <<-END
 
        You need to require rubygems or install one of these gems:
