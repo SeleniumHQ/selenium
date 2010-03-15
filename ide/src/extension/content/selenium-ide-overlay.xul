@@ -31,7 +31,7 @@ limitations under the License.
   </menupopup>
 
   <menupopup id="menu_ToolsPopup">
-    <menuitem label="Selenium IDE" oncommand="SeleniumIDE.Loader.openRecorder();" insertbefore="sanitizeSeparator,prefSep" accesskey="N" class="menuitem-iconic" image="chrome://selenium-ide/content/images/selenium-ide-logo16.png"/>
+    <menuitem id="menu_ToolsPopupItem" label="Selenium IDE" oncommand="SeleniumIDE.Loader.openRecorder();" insertbefore="sanitizeSeparator,prefSep" accesskey="N" class="menuitem-iconic" image="chrome://selenium-ide/content/images/selenium-ide-logo16.png"/>
   </menupopup>
 
   <popup id="contentAreaContextMenu">
