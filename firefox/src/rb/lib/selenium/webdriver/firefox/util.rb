@@ -17,6 +17,10 @@ module Selenium
           end
         end
 
+        def stringified?(str)
+          str =~ /^".*"$/
+        end
+
       end # Util
     end # Firefox
   end # WebDriver

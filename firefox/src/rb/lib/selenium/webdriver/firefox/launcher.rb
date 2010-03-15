@@ -82,7 +82,6 @@ module Selenium
           end
 
           @profile.delete_extensions_cache
-
           @profile.port = @port
           @profile.add_webdriver_extension(true)
           @profile.update_user_prefs
