@@ -20,7 +20,7 @@ module Selenium
         attach_function :wdCopyString,                        [:pointer, :int, :pointer                                   ], :int
         attach_function :wdeClear,                            [:pointer                                                   ], :int
         attach_function :wdeClick,                            [:pointer                                                   ], :int
-        attach_function :wdeGetAttribute,                     [:pointer, :pointer, :pointer                               ], :int
+        attach_function :wdeGetAttribute,                     [:pointer, :pointer, :pointer, :pointer                     ], :int
         attach_function :wdeGetDetailsOnceScrolledOnToScreen, [:pointer, :pointer, :pointer, :pointer, :pointer, :pointer ], :int
         attach_function :wdeGetLocation,                      [:pointer, :pointer, :pointer                               ], :int
         attach_function :wdeGetSize,                          [:pointer, :pointer, :pointer                               ], :int
@@ -60,6 +60,8 @@ module Selenium
         attach_function :wdFreeString,                        [:pointer                                                   ], :int
         attach_function :wdFreeStringCollection,              [:pointer                                                   ], :int
         attach_function :wdGet,                               [:pointer, :pointer                                         ], :int
+        attach_function :wdGetArrayLengthScriptResult,        [:pointer, :pointer, :pointer                               ], :int
+        attach_function :wdGetArrayItemFromScriptResult,      [:pointer, :pointer, :int, :pointer                         ], :int
         attach_function :wdGetAllWindowHandles,               [:pointer, :pointer                                         ], :int
         attach_function :wdGetBooleanScriptResult,            [:pointer, :pointer                                         ], :int
         attach_function :wdGetCookies,                        [:pointer, :pointer                                         ], :int
@@ -69,7 +71,7 @@ module Selenium
         attach_function :wdGetElementScriptResult,            [:pointer, :pointer, :pointer                               ], :int
         attach_function :wdGetNumberScriptResult,             [:pointer, :pointer                                         ], :int
         attach_function :wdGetPageSource,                     [:pointer, :pointer                                         ], :int
-        attach_function :wdGetScriptResultType,               [:pointer, :pointer                                         ], :int
+        attach_function :wdGetScriptResultType,               [:pointer, :pointer, :pointer                               ], :int
         attach_function :wdGetStringScriptResult,             [:pointer, :pointer                                         ], :int
         attach_function :wdGetTitle,                          [:pointer, :pointer                                         ], :int
         attach_function :wdGetVisible,                        [:pointer, :pointer                                         ], :int

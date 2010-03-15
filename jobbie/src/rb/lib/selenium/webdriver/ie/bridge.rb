@@ -335,7 +335,7 @@ module Selenium
 
         def getElementAttribute(element_pointer, name)
           create_string do |string_pointer|
-            check_error_code Lib.wdeGetAttribute(element_pointer, wstring_ptr(name), string_pointer),
+            check_error_code Lib.wdeGetAttribute(@driver_pointer, element_pointer, wstring_ptr(name), string_pointer),
                              "unable to get attribute #{name.inspect}"
           end
         end
@@ -506,48 +506,69 @@ module Selenium
           script_result    = pointer_ref.get_pointer(0)
 
           pointers_to_free << type_pointer = FFI::MemoryPointer.new(:int)
-          result       = Lib.wdGetScriptResultType(script_result, type_pointer)
+          result       = Lib.wdGetScriptResultType(@driver_pointer, script_result, type_pointer)
 
           check_error_code result, "Cannot determine result type"
+          result_type = type_pointer.get_int(0)
 
-          case type_pointer.get_int(0)
-          when 1
+          case result_type
+          when 1 # String
             create_string do |wrapper|
               check_error_code Lib.wdGetStringScriptResult(script_result, wrapper), "Cannot extract string result"
             end
-          when 2
+          when 2 # Long
             pointers_to_free << long_pointer = FFI::MemoryPointer.new(:long)
             check_error_code Lib.wdGetNumberScriptResult(script_result, long_pointer),
                              "Cannot extract number result"
 
             long_pointer.get_long(0)
-          when 3
+          when 3 # Boolean
             pointers_to_free << int_pointer = FFI::MemoryPointer.new(:int)
             check_error_code Lib.wdGetBooleanScriptResult(script_result, int_pointer),
                              "Cannot extract boolean result"
 
             int_pointer.get_int(0) == 1
-          when 4
-            element_pointer = FFI::MemoryPointer.new(:pointer)
+          when 4 # WebElement
+            pointers_to_free << element_pointer = FFI::MemoryPointer.new(:pointer)
             check_error_code Lib.wdGetElementScriptResult(script_result, @driver_pointer, element_pointer),
                              "Cannot extract element result"
 
             Element.new(self, element_pointer.get_pointer(0))
-          when 5
+          when 5 # Nothing
             nil
-          when 6
+          when 6 # Exception
             message = create_string do |string_pointer|
               check_error_code Lib.wdGetStringScriptResult(script_result, string_pointer), "Cannot extract string result"
             end
 
-            raise WebDriverError, message
-          when 7
+            raise Error::WebDriverError, message
+          when 7 # Double
             pointers_to_free << double_pointer = FFI::MemoryPointer.new(:double)
             check_error_code Lib.wdGetDoubleScriptResult(script_result, double_pointer), "Cannot extract double result"
 
             double_pointer.get_double(0)
+          when 8 # Array
+            pointers_to_free << array_length_pointer = FFI::MemoryPointer.new(:int)
+            check_error_code Lib.wdGetArrayLengthScriptResult(@driver_pointer, script_result, array_length_pointer),
+                             "Cannot extract array length"
+
+            arr = []
+            array_length_pointer.get_int(0).times do |idx|
+              current_item_pointer = FFI::MemoryPointer.new(:pointer)
+              result_code = Lib.wdGetArrayItemFromScriptResult(@driver_pointer, script_result, idx, current_item_pointer)
+
+              # free the pointer if the call failed
+              if Error.for_code(result_code)
+                Lib.wdFreeScriptResult(current_item_pointer.get_pointer(0))
+                check_error_code result_code
+              end
+
+              arr << extract_return_value(current_item_pointer)
+            end
+
+            arr
           else
-            raise WebDriverError, "Cannot determine result type"
+            raise Error::WebDriverError, "Cannot determine result type (#{result_type.inspect})"
           end
         ensure
           Lib.wdFreeScriptResult(script_result) if script_result

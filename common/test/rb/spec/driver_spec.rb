@@ -174,6 +174,11 @@ describe "Driver" do
       lambda { driver.execute_script("return squiggle();") }.should raise_error
     end
 
+    it "should return arrays" do
+      driver.navigate.to url_for("xhtmlTest.html")
+      driver.execute_script('return ["zero", "one", "two"];').should == %w[zero one two]
+    end
+
     it "should be able to call functions on the page" do
       driver.navigate.to url_for("javascriptPage.html")
       driver.execute_script("displayMessage('I like cheese');")
