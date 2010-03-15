@@ -22,3 +22,5 @@
 <!ENTITY options.user-ext.reload.label "Atualizar">
 <!ENTITY options.user-ext.reload.tooltip "Atualizar Selenium Core e suas extensões">
 <!ENTITY options.showDeveloperTools.description "Ativar ferramentas para desenvolvedores">
+
+<!ENTITY options.recordOnOpen.description "Start recording immediately on open">

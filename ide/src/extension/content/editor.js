@@ -117,7 +117,14 @@ function Editor(window) {
 	//window.controllers.appendController(controller);
 
     this.app.newTestSuite();
-    this.toggleRecordingEnabled(true);
+    if (this.app.options.recordOnOpen && this.app.options.recordOnOpen == 'true') {
+      document.getElementById("record-button").checked = true;
+      this.toggleRecordingEnabled(true);
+    } else {
+      document.getElementById("record-button").checked = false;
+      this.toggleRecordingEnabled(false);      
+    }
+
 	this.updateViewTabs();
     this.infoPanel = new Editor.InfoPanel(this);
     

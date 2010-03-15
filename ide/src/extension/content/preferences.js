@@ -92,16 +92,24 @@ SeleniumIDE.Preferences = {
 
     save: function(options, prop_name) {
         if (prop_name) {
-            this.setString(prop_name, options[prop_name]);
+            if (this.getType(prop_name) == this.branch.PREF_BOOL) {
+                this.setBool(prop_name, options[prop_name]);
+            } else {
+                this.setString(prop_name, options[prop_name]);
+            }
         } else {
             this.branch.deleteBranch("formats");
             var name;
             for (name in options) {
-                this.setString(name, options[name]);
+              if (this.getType(name) == this.branch.PREF_BOOL) {
+                  this.setBool(name, options[name]);
+              } else {
+                  this.setString(name, options[name]);
+              }
             }
         }
     }
-}
+};
 
 SeleniumIDE.Preferences.DEFAULT_OPTIONS = {
     encoding: "UTF-8",
@@ -138,6 +146,9 @@ SeleniumIDE.Preferences.DEFAULT_OPTIONS = {
     "",
     
     showDeveloperTools:
-    "false"
+    "false",
+    
+    recordOnOpen:
+    "true"
 };
 

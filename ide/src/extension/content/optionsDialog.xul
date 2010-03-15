@@ -84,6 +84,7 @@ limitations under the License.
       <checkbox id="recordAbsoluteURL" label="&options.recordAbsoluteURL.description;"/>
       <command id="cmd_toggle" oncommand="SDTToggle();"/>
       <checkbox id="showDeveloperTools" label="&options.showDeveloperTools.description;" command="cmd_toggle"/>
+      <checkbox id="recordOnOpen" label="&options.recordOnOpen.description;"/>
     </tabpanel>
     <tabpanel orient="vertical">
       <hbox flex="1">
@@ -107,6 +108,7 @@ limitations under the License.
         </hbox>
         <vbox flex="1" width="300">
           <label id="plugin-name"/>
+          <box id="plugin-info"/>
           <box id="plugin-config"/>
         </vbox>
       </hbox>
