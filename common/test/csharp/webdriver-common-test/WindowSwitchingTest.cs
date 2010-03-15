@@ -30,6 +30,7 @@ namespace OpenQA.Selenium
             driver.FindElement(By.Id("iframe_page_heading"));
             driver.SwitchTo().Frame("iframe1");
             Assert.AreEqual(driver.GetWindowHandle(), handle);
+            driver.Close();
 
             driver.SwitchTo().Window(current);
             //Assert.AreEqual("XHTML Test Page", driver.Title);
@@ -55,10 +56,13 @@ namespace OpenQA.Selenium
 
             // Some (semi-)clean up..
             driver.Url = macbethPage;
+            driver.SwitchTo().Window(handle2);
+            driver.Close();
             driver.SwitchTo().Window(handle1);
         }
 
         [Test]
+        [NeedsFreshDriver(AfterTest = true)]
         //[IgnoreBrowser(Browser.IE, "Can't close handle and use it afterwards in IE driver")]
         public void CloseShouldCloseCurrentHandleOnly()
         {
@@ -79,9 +83,6 @@ namespace OpenQA.Selenium
 
             Assert.IsFalse(handles.Contains(handle2), "Invalid handle still in handle list");
             Assert.IsTrue(handles.Contains(handle1), "Valid handle not in handle list");
-
-            // Clean up after ourselves
-            EnvironmentManager.Instance.CreateFreshDriver();
         }
 
         [Test]
@@ -102,11 +103,10 @@ namespace OpenQA.Selenium
 
 
         [Test]
+        [NeedsFreshDriver(BeforeTest = true, AfterTest = true)]
         //[IgnoreBrowser(Browser.Firefox)]
         public void ShouldBeAbleToIterateOverAllOpenWindows()
         {
-            CreateFreshDriver();
-
             driver.Url = xhtmlTestPage;
             driver.FindElement(By.Name("windowOne")).Click();
             SleepBecauseWindowsTakeTimeToOpen();
@@ -125,7 +125,6 @@ namespace OpenQA.Selenium
             }
 
             Assert.AreEqual(3, allWindowHandles.Count);
-            CreateFreshDriver();
         }
 
         [Test]
@@ -209,10 +208,10 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [NeedsFreshDriver(BeforeTest = true, AfterTest = true)]
         [IgnoreBrowser(Browser.ChromeNonWindows, "Chrome failing on OS X")]
         public void CanCloseWindowWhenMultipleWindowsAreOpen()
         {
-            CreateFreshDriver();
             driver.Url = xhtmlTestPage;
             driver.FindElement(By.Name("windowOne")).Click();
 
@@ -230,16 +229,14 @@ namespace OpenQA.Selenium
             
             allWindowHandles = driver.GetWindowHandles();
             Assert.AreEqual(1, allWindowHandles.Count);
-            CreateFreshDriver();
         }
 
         [Test]
+        [NeedsFreshDriver(BeforeTest = true, AfterTest = true)]
         public void ClosingOnlyWindowShouldNotCauseTheBrowserToHang()
         {
-            CreateFreshDriver();
             driver.Url = xhtmlTestPage;
             driver.Close();
-            CreateFreshDriver();
         }
 
         private void SleepBecauseWindowsTakeTimeToOpen()

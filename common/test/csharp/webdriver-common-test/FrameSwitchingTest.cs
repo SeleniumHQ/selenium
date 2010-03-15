@@ -165,12 +165,13 @@ namespace OpenQA.Selenium
             driver.SwitchTo().Frame("fourth.second");
 
         }
+
         [Test]
+        [NeedsFreshDriver(AfterTest = true)]
         public void ClosingTheFinalBrowserWindowShouldNotCauseAnExceptionToBeThrown()
         {
             driver.Url = simpleTestPage;
             driver.Close();
-            CreateFreshDriver();
         }
 
         [Test]

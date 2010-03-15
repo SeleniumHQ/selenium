@@ -361,11 +361,11 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [NeedsFreshDriver(BeforeTest = true)]
         [ExpectedException(typeof(NoSuchElementException))]
         public void ShouldNotBeAbleToLocateASingleElementOnABlankPage()
         {
             // Note we're on the default start page for the browser at this point.
-            CreateFreshDriver();
             driver.FindElement(By.Id("nonExistantButton"));
         }
 

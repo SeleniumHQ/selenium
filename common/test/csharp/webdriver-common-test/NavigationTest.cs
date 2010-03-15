@@ -9,9 +9,9 @@ namespace OpenQA.Selenium
     {
 
         [Test]
+        [NeedsFreshDriver(BeforeTest = true)]
         public void ShouldNotHaveProblemNavigatingWithNoPagesBrowsed()
         {
-            CreateFreshDriver();
             INavigation navigation;
             navigation = driver.Navigate();
             navigation.Back();

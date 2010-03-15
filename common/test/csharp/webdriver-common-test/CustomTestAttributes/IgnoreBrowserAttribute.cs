@@ -2,11 +2,9 @@ using System;
 
 namespace OpenQA.Selenium
 {
-
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
     public class IgnoreBrowserAttribute : Attribute
     {
-
         private Browser browser;
         private string ignoreReason = string.Empty;
 
@@ -26,7 +24,7 @@ namespace OpenQA.Selenium
             get { return browser; }
         }
 
-        public String Reason
+        public string Reason
         {
             get { return ignoreReason; }
         }

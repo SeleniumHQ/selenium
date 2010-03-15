@@ -81,11 +81,10 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [NeedsFreshDriver(BeforeTest = true)]
         [IgnoreBrowser(Browser.IPhone)]
         public void ShouldDoNothingIfThereIsNothingToGoBackTo()
         {
-            driver.Close();
-            CreateFreshDriver();
             string originalTitle = driver.Title;
             driver.Url = formsPage;
 

@@ -515,11 +515,11 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [NeedsFreshDriver(BeforeTest = true, AfterTest = true)]
         [Ignore("Reason for ignore: Failure indicates hang condition, which would break the test suite. Really needs a timeout set.")]
         public void ShouldThrowExceptionIfExecutingOnNoPage()
         {
             bool exceptionCaught = false;
-            CreateFreshDriver();
             try
             {
                 ((IJavaScriptExecutor)driver).ExecuteScript("return 1;");
@@ -533,7 +533,6 @@ namespace OpenQA.Selenium
             {
                 Assert.Fail("Expected an exception to be caught");
             }
-            CreateFreshDriver();
         }
 
         private object ExecuteScript(String script, params Object[] args)

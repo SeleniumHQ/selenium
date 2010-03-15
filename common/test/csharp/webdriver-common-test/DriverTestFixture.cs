@@ -49,6 +49,12 @@ namespace OpenQA.Selenium
 
         protected IWebDriver driver;
 
+        public IWebDriver DriverInstance
+        {
+            get { return driver; }
+            set { driver = value; }
+        }
+
         [TestFixtureSetUp]
         public void SetUp()
         {
@@ -58,7 +64,7 @@ namespace OpenQA.Selenium
         [TestFixtureTearDown]
         public void TearDown()
         {
-            EnvironmentManager.Instance.CloseCurrentDriver();
+            // EnvironmentManager.Instance.CloseCurrentDriver();
         }
         
         /*

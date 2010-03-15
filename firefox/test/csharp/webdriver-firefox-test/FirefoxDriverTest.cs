@@ -84,6 +84,7 @@ namespace OpenQA.Selenium.Firefox.Test
         }
 
         [Test]
+        [NeedsFreshDriver(BeforeTest = true, AfterTest = true)]
         public void FocusRemainsInOriginalWindowWhenOpeningNewWindow()
         {
             if (PlatformHasNativeEvents() == false)
@@ -92,7 +93,6 @@ namespace OpenQA.Selenium.Firefox.Test
             }
             // Scenario: Open a new window, make sure the current window still gets
             // native events (keyboard events in this case).
-            CreateFreshDriver();
             driver.Url = xhtmlTestPage;
 
             driver.FindElement(By.Name("windowOne")).Click();
@@ -105,10 +105,10 @@ namespace OpenQA.Selenium.Firefox.Test
             keyReporter.SendKeys("ABC DEF");
 
             Assert.AreEqual("ABC DEF", keyReporter.Value);
-            CreateFreshDriver();
         }
 
         [Test]
+        [NeedsFreshDriver(BeforeTest = true, AfterTest = true)]
         public void SwitchingWindowShouldSwitchFocus()
         {
             if (PlatformHasNativeEvents() == false)
@@ -117,8 +117,6 @@ namespace OpenQA.Selenium.Firefox.Test
             }
             // Scenario: Open a new window, switch to it, make sure it gets native events.
             // Then switch back to the original window, make sure it gets native events.
-            CreateFreshDriver();
-
             driver.Url = xhtmlTestPage;
 
             string originalWinHandle = driver.GetWindowHandle();
@@ -152,7 +150,6 @@ namespace OpenQA.Selenium.Firefox.Test
             IWebElement keyReporter2 = driver.FindElement(By.Id("keyReporter"));
             keyReporter2.SendKeys("QWERTY");
             Assert.AreEqual("QWERTY", keyReporter2.Value);
-            CreateFreshDriver();
         }
 
         [Test]
@@ -169,6 +166,7 @@ namespace OpenQA.Selenium.Firefox.Test
         }
 
         [Test]
+        [NeedsFreshDriver(BeforeTest = true, AfterTest = true)]
         public void ClosingWindowAndSwitchingToOriginalSwitchesFocus()
         {
             if (PlatformHasNativeEvents() == false)
@@ -177,8 +175,6 @@ namespace OpenQA.Selenium.Firefox.Test
             }
             // Scenario: Open a new window, switch to it, close it, switch back to the
             // original window - make sure it gets native events.
-            CreateFreshDriver();
-
             driver.Url = xhtmlTestPage;
             string originalWinHandle = driver.GetWindowHandle();
 
@@ -206,7 +202,6 @@ namespace OpenQA.Selenium.Firefox.Test
             IWebElement keyReporter = driver.FindElement(By.Id("keyReporter"));
             keyReporter.SendKeys("ABC DEF");
             Assert.AreEqual("ABC DEF", keyReporter.Value);
-            CreateFreshDriver();
         }
 
         //[Test]
