@@ -1,6 +1,8 @@
 module Selenium
   module WebDriver
     module Remote
+
+      # @private
       class Response
 
         attr_accessor :code

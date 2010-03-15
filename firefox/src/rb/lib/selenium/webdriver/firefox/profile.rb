@@ -45,6 +45,18 @@ module Selenium
           end
         end
 
+        #
+        # Create a new Profile instance
+        #
+        # @example User configured profile
+        #
+        #   profile = Selenium::WebDriver::Firefox::Profile.new
+        #   profile['network.proxy.http'] = 'localhost'
+        #   profile['network.proxy.http_port'] = 9090
+        #
+        #   driver = Selenium::WebDriver.for :firefox, :profile => profile
+        #
+
         def initialize(directory = nil)
           @directory = directory ? create_tmp_copy(directory) : Dir.mktmpdir("webdriver-profile")
 
@@ -64,8 +76,7 @@ module Selenium
 
         #
         # Set a preference for this particular profile.
-        #
-        # See http://preferential.mozdev.org/preferences.html for a list of preferences.
+        # @see http://preferential.mozdev.org/preferences.html
         #
 
         def []=(key, value)

@@ -1,6 +1,11 @@
 module Selenium
   module WebDriver
     module IE
+
+      #
+      # @private
+      #
+
       module Lib
         extend FFI::Library
 

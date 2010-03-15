@@ -2,6 +2,8 @@ require "rbconfig"
 
 module Selenium
   module WebDriver
+
+    # @private
     module Platform
 
       module_function

@@ -6,3 +6,12 @@ require "fileutils"
 require "thread"
 require "socket"
 
+module Selenium
+  module WebDriver
+
+    # @private
+    module Chrome
+    end
+
+  end
+end

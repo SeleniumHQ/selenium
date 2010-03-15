@@ -7,6 +7,8 @@ require "selenium/webdriver/remote/commands"
 
 module Selenium
   module WebDriver
+
+    # @private
     module Remote
 
     end

@@ -61,6 +61,10 @@ module Selenium
       @root ||= File.expand_path(File.join(File.dirname(__FILE__), "..", "..", "..", "..", ".."))
     end
 
+    #
+    # @see Selenium::WebDriver::Driver.for
+    #
+
     def self.for(*args)
       WebDriver::Driver.for(*args)
     end

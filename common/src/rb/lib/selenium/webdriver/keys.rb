@@ -6,8 +6,7 @@ module Selenium
 
       #
       # @see Element#send_keys
-      #
-      # http://www.google.com.au/search?&q=unicode+pua&btnG=Search
+      # @see http://www.google.com.au/search?&q=unicode+pua&btnG=Search
       #
 
       KEYS = {

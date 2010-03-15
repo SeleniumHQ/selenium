@@ -1,6 +1,8 @@
 module Selenium
   module WebDriver
     module Firefox
+
+      # @private
       module Util
         module_function
 

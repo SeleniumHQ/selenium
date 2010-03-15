@@ -72,6 +72,10 @@ begin
     t.files   += Dir['jobbie/src/rb/lib/**/*.rb']
     t.files   += Dir['remote/client/src/rb/lib/**/*.rb']
     t.options += %w[--verbose --readme common/src/rb/README --output-dir build/rubydocs]
+
+    if ENV['minimal']
+      t.options << "--no-private"
+    end
   end
 rescue LoadError
   task :rubydocs do

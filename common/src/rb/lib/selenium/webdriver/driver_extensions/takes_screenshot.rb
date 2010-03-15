@@ -1,5 +1,10 @@
 module Selenium
   module WebDriver
+
+    #
+    # @private
+    #
+
     module DriverExtensions
       module TakesScreenshot
 

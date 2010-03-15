@@ -4,6 +4,8 @@ module Selenium
     #
     # Cross platform child process launcher
     #
+    # @private
+    #
 
     class ChildProcess
       attr_reader :pid

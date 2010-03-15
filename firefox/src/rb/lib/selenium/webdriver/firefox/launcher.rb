@@ -3,11 +3,12 @@ require "fcntl"
 module Selenium
   module WebDriver
     module Firefox
+
+      # @private
       class Launcher
 
         attr_reader :binary, :connection
         SOCKET_LOCK_TIMEOUT = 45
-
 
         def initialize(binary, port = DEFAULT_PORT, profile = DEFAULT_PROFILE_NAME)
           @binary       = binary

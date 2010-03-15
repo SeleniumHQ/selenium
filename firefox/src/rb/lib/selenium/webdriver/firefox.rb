@@ -11,6 +11,8 @@ require "selenium/webdriver/firefox/bridge"
 
 module Selenium
   module WebDriver
+
+    # @private
     module Firefox
 
        DEFAULT_PROFILE_NAME         = "WebDriver".freeze

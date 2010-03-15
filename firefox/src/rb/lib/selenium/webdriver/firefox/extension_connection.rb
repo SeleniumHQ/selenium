@@ -1,6 +1,8 @@
 module Selenium
   module WebDriver
     module Firefox
+
+      # @private
       class ExtensionConnection
 
         def initialize(host, port)

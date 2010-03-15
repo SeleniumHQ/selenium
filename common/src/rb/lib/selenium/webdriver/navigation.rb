@@ -6,17 +6,33 @@ module Selenium
         @bridge = driver.bridge
       end
 
+      #
+      # Navigate to the given URL
+      #
+
       def to(url)
         @bridge.get url
       end
+
+      #
+      # Move back a single entry in the browser's history.
+      #
 
       def back
         @bridge.goBack
       end
 
+      #
+      # Move forward a single entry in the browser's history.
+      #
+
       def forward
         @bridge.goForward
       end
+
+      #
+      # Refresh the current page.
+      #
 
       def refresh
         @bridge.refresh

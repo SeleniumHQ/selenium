@@ -1,5 +1,7 @@
 module Selenium
   module WebDriver
+
+    # @private
     module IE
       # TODO: x64
       DLL = "#{WebDriver.root}/jobbie/prebuilt/Win32/Release/InternetExplorerDriver.dll"

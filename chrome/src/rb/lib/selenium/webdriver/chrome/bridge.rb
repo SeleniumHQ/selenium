@@ -1,6 +1,8 @@
 module Selenium
   module WebDriver
     module Chrome
+
+      # @private
       class Bridge < Remote::Bridge
 
         def initialize

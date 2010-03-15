@@ -1,6 +1,11 @@
 module Selenium
   module WebDriver
     module IE
+
+      #
+      # @private
+      #
+
       module Util
         CP_ACP         = 0
         CP_OEMCP       = 1

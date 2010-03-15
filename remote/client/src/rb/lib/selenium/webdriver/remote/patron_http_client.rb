@@ -3,6 +3,8 @@ require "patron"
 module Selenium
   module WebDriver
     module Remote
+
+      # @private
       class PatronHttpClient
         CONTENT_TYPE    = "application/json"
         DEFAULT_HEADERS = { "Accept" => CONTENT_TYPE, "Content-Length" => "0" }

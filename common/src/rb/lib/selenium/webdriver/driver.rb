@@ -20,46 +20,51 @@ module Selenium
         #
         # Create a new Driver instance with the correct bridge for the given browser
         #
-        # @param browser [Symbol]
+        # @param browser [:ie, :internet_explorer, :remote, :chrome, :firefox, :ff]
         #   the driver type to use
         # @param *rest
-        #   arguments passed to the Bridge.new
+        #   arguments passed to Bridge.new
         #
         # @return [Driver]
+        #
+        # @example
+        #
+        #   Driver.for :firefox, :profile => "some-profile"
+        #   Driver.for :firefox, :profile => Profile.new
+        #   Driver.for :remote,  :url => "http://localhost:4444/wd/hub", :desired_capabilities => caps
         #
 
         def for(browser, *args)
           bridge = case browser
                    when :ie, :internet_explorer
-                     WebDriver::IE::Bridge.new(*args)
+                     IE::Bridge.new(*args)
                    when :remote
-                     WebDriver::Remote::Bridge.new(*args)
+                     Remote::Bridge.new(*args)
                    when :chrome
-                     WebDriver::Chrome::Bridge.new(*args)
+                     Chrome::Bridge.new(*args)
                    when :firefox, :ff
-                     WebDriver::Firefox::Bridge.new(*args)
+                     Firefox::Bridge.new(*args)
                    else
                      raise ArgumentError, "unknown driver: #{browser.inspect}"
                    end
 
-           driver = new(bridge)
-
-           unless bridge.driver_extensions.empty?
-             driver.extend(*bridge.driver_extensions)
-           end
-
-           driver
+           new(bridge)
         end
       end
 
       #
-      # A new Driver instance
+      # A new Driver instance with the given bridge
       #
       # @api private
       #
 
       def initialize(bridge)
         @bridge = bridge
+
+        # TODO: refactor this away
+        unless @bridge.driver_extensions.empty?
+          extend(*@bridge.driver_extensions)
+        end
       end
 
       def inspect
@@ -240,7 +245,7 @@ module Selenium
       #
       # for Find
       #
-      # @api private
+      # @private
       #
 
       def ref

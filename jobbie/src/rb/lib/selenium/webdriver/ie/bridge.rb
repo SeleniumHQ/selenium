@@ -2,6 +2,10 @@ module Selenium
   module WebDriver
     module IE
 
+      #
+      # @private
+      #
+
       class Bridge
         include Util
 
