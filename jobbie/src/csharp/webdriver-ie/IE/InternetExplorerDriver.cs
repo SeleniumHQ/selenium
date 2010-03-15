@@ -653,11 +653,11 @@ namespace OpenQA.Selenium.IE
                                 elementList.Add((IWebElement)item);
                             }
 
-                            toReturn = elementList;
+                            toReturn = elementList.AsReadOnly();
                         }
                         else
                         {
-                            toReturn = list;
+                            toReturn = list.AsReadOnly();
                         }
 
                         break; 
