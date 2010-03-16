@@ -25,7 +25,10 @@ namespace OpenQA.Selenium.Remote
         /// <param name="sessionId">Session ID in use</param>
         public Response(SessionId sessionId)
         {
-            responseSessionId = sessionId.ToString();
+            if (sessionId != null)
+            {
+                responseSessionId = sessionId.ToString();
+            }
         }
 
         /// <summary>
@@ -57,6 +60,15 @@ namespace OpenQA.Selenium.Remote
         {
             get { return responseStatus; }
             set { responseStatus = value; }
+        }
+
+        /// <summary>
+        /// Returns this object as a JSON-encoded string.
+        /// </summary>
+        /// <returns>A JSON-encoded string representing this <see cref="Response"/> object.</returns>
+        public string ToJson()
+        {
+            return JsonConvert.SerializeObject(this, new CookieJsonConverter());
         }
 
         /// <summary>

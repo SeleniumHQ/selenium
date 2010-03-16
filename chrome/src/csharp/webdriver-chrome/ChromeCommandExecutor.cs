@@ -383,7 +383,6 @@ namespace OpenQA.Selenium.Chrome
 
             commandNameMap.Add(DriverCommand.SwitchToWindow, "switchToWindow");
             commandNameMap.Add(DriverCommand.SwitchToFrame, "switchToFrame");
-            commandNameMap.Add(DriverCommand.SwitchToDefaultContent, "switchToDefaultContent");
             commandNameMap.Add(DriverCommand.GetActiveElement, "getActiveElement");
 
             commandNameMap.Add(DriverCommand.GetCurrentUrl, "getCurrentUrl");

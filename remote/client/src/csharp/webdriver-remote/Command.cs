@@ -13,7 +13,17 @@ namespace OpenQA.Selenium.Remote
         private Dictionary<string, object> commandParameters = new Dictionary<string, object>();
 
         /// <summary>
-        /// Initializes a new instance of the Command class
+        /// Initializes a new instance of the Command class using a command name and a JSON-encoded string for the parameters.
+        /// </summary>
+        /// <param name="name">Name of the command</param>
+        /// <param name="jsonParameters">Parameters for the command as a JSON-encoded string.</param>
+        public Command(DriverCommand name, string jsonParameters)
+            : this(null, name, ConvertParametersFromJson(jsonParameters))
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the Command class for a Session
         /// </summary>
         /// <param name="sessionId">Session ID the driver is using</param>
         /// <param name="name">Name of the command</param>
@@ -77,6 +87,17 @@ namespace OpenQA.Selenium.Remote
         public override string ToString()
         {
             return string.Concat("[", SessionId, "]: ", Name, " ", Parameters.ToString());
+        }
+
+        /// <summary>
+        /// Gets the command parameters as a <see cref="Dictionary{K, V}"/>, with a string key, and an object value.
+        /// </summary>
+        /// <param name="value">The JSON-encoded string representing the command parameters.</param>
+        /// <returns>A <see cref="Dictionary{K, V}"/> with a string keys, and an object value. </returns>
+        private static Dictionary<string, object> ConvertParametersFromJson(string value)
+        {
+            Dictionary<string, object> parameters = JsonConvert.DeserializeObject<Dictionary<string, object>>(value, new ResponseValueJsonConverter());
+            return parameters;
         }
     }
 }

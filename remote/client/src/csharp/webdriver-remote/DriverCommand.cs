@@ -1,8 +1,5 @@
 ﻿namespace OpenQA.Selenium.Remote
 {
-    /// <summary>
-    /// Commands that be used by the driver
-    /// </summary>
     public enum DriverCommand
     {
         /// <summary>
@@ -14,7 +11,7 @@
         /// Represents a New Session command
         /// </summary>
         NewSession,
-        
+
         /// <summary>
         /// Represents the Get Session Capabilities command
         /// </summary>
@@ -144,11 +141,6 @@
         /// Represents SwitchToFrame command
         /// </summary>
         SwitchToFrame,
-
-        /// <summary>
-        /// Represents SwitchToDefaultContent command
-        /// </summary>
-        SwitchToDefaultContent,
 
         /// <summary>
         /// Represents GetActiveElement command
