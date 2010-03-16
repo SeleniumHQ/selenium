@@ -164,6 +164,11 @@ namespace OpenQA.Selenium.Firefox.Internal
             return endpoints;
         }
 
+        private static bool IsSocketConnected(Socket extensionSocket)
+        {
+            return extensionSocket != null && extensionSocket.Connected;
+        }
+
         private void SetAddress(string host, int port)
         {
             if (string.Compare("localhost", host, StringComparison.OrdinalIgnoreCase) == 0)
@@ -233,11 +238,6 @@ namespace OpenQA.Selenium.Firefox.Internal
             {
                 extensionSocket.Close();
             }
-        }
-
-        private bool IsSocketConnected(Socket extensionSocket)
-        {
-            return extensionSocket != null && extensionSocket.Connected;
         }
         #endregion
     }

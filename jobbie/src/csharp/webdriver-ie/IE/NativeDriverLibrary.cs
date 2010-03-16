@@ -4,6 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Security.Permissions;
 using System.Text;
 using OpenQA.Selenium;
 using OpenQA.Selenium.IE;
@@ -110,11 +111,12 @@ namespace OpenQA.Selenium.IE
         #region Private member variables
         private static NativeDriverLibrary libraryInstance;
         private static object lockObject = new object();
+        private static Random tempFileGenerator = new Random();
 
         private IntPtr nativeLibraryHandle = IntPtr.Zero;
         #endregion
 
-        #region Constructor
+        #region Constructor/Destructor
         /// <summary>
         /// Prevents a default instance of the <see cref="NativeDriverLibrary"/> class from being created.
         /// </summary>
@@ -127,7 +129,12 @@ namespace OpenQA.Selenium.IE
             int errorCode = Marshal.GetLastWin32Error();
             if (nativeLibraryHandle == IntPtr.Zero)
             {
+                Console.WriteLine("error found loading dll: {0}", errorCode);
                 throw new WebDriverException(string.Format(CultureInfo.InvariantCulture, "An error (code: {0}) occured while attempting to load the native code library", errorCode));
+            }
+            else
+            {
+                Console.WriteLine("Library loaded successfully");
             }
         }
         #endregion
@@ -1417,37 +1424,6 @@ namespace OpenQA.Selenium.IE
         #endregion
 
         #region Private methods
-        private static string GetNativeLibraryPath()
-        {
-            Assembly executingAssembly = Assembly.GetExecutingAssembly();
-            string currentDirectory = executingAssembly.Location;
-
-            // If we're shadow copying,. fiddle with 
-            // the codebase instead 
-            if (AppDomain.CurrentDomain.ShadowCopyFiles)
-            {
-                Uri uri = new Uri(executingAssembly.CodeBase);
-                currentDirectory = uri.LocalPath;
-            }
-
-            string nativeLibraryPath = Path.Combine(Path.GetDirectoryName(currentDirectory), LibraryName);
-            if (!File.Exists(nativeLibraryPath))
-            {
-                string resourceName = GetNativeLibraryResourceName();
-
-                if (executingAssembly.GetManifestResourceInfo(resourceName) == null)
-                {
-                    throw new WebDriverException("The native code library (InternetExplorerDriver.dll) could not be found in the current directory nor as an embedded resource.");
-                }
-
-                nativeLibraryPath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName() + "." + LibraryName);
-                Stream libraryStream = executingAssembly.GetManifestResourceStream(resourceName);
-                ExtractNativeLibrary(nativeLibraryPath, libraryStream);
-            }
-
-            return nativeLibraryPath;
-        }
-
         private static string GetNativeLibraryResourceName()
         {
             // We're compiled as Any CPU, which will run as a 64-bit process
@@ -1471,7 +1447,7 @@ namespace OpenQA.Selenium.IE
             FileStream outputStream = File.Create(nativeLibraryPath);
             byte[] buffer = new byte[1000];
             int bytesRead = libraryStream.Read(buffer, 0, buffer.Length);
-            while (bytesRead >= 0)
+            while (bytesRead > 0)
             {
                 outputStream.Write(buffer, 0, bytesRead);
                 bytesRead = libraryStream.Read(buffer, 0, buffer.Length);
@@ -1479,6 +1455,77 @@ namespace OpenQA.Selenium.IE
 
             outputStream.Close();
             libraryStream.Close();
+        }
+
+        private static string GetNativeLibraryPath()
+        {
+            Assembly executingAssembly = Assembly.GetExecutingAssembly();
+            string currentDirectory = executingAssembly.Location;
+
+            // If we're shadow copying,. fiddle with 
+            // the codebase instead 
+            if (AppDomain.CurrentDomain.ShadowCopyFiles)
+            {
+                Uri uri = new Uri(executingAssembly.CodeBase);
+                currentDirectory = uri.LocalPath;
+            }
+
+            string nativeLibraryPath = Path.Combine(Path.GetDirectoryName(currentDirectory), LibraryName);
+            if (!File.Exists(nativeLibraryPath))
+            {
+                string resourceName = GetNativeLibraryResourceName();
+
+                if (executingAssembly.GetManifestResourceInfo(resourceName) == null)
+                {
+                    throw new WebDriverException("The native code library (InternetExplorerDriver.dll) could not be found in the current directory nor as an embedded resource.");
+                }
+
+                string nativeLibraryFolderName = string.Format(CultureInfo.InvariantCulture, "webdriver{0}libs", tempFileGenerator.Next());
+                string nativeLibraryDirectory = Path.Combine(Path.GetTempPath(), nativeLibraryFolderName);
+                if (!Directory.Exists(nativeLibraryDirectory))
+                {
+                    Directory.CreateDirectory(nativeLibraryDirectory);
+                }
+
+                nativeLibraryPath = Path.Combine(nativeLibraryDirectory, LibraryName);
+                Stream libraryStream = executingAssembly.GetManifestResourceStream(resourceName);
+                ExtractNativeLibrary(nativeLibraryPath, libraryStream);
+            }
+
+            return nativeLibraryPath;
+        }
+
+        private static void DeleteLibraryDirectory(string nativeLibraryDirectory)
+        {
+            int numberOfRetries = 0;
+            while (Directory.Exists(nativeLibraryDirectory) && numberOfRetries < 10)
+            {
+                try
+                {
+                    Directory.Delete(nativeLibraryDirectory, true);
+                }
+                catch (IOException)
+                {
+                    // If we hit an exception (like file still in use), wait a half second
+                    // and try again. If we still hit an exception, go ahead and let it through.
+                    System.Threading.Thread.Sleep(500);
+                }
+                catch (UnauthorizedAccessException)
+                {
+                    // If we hit an exception (like file still in use), wait a half second
+                    // and try again. If we still hit an exception, go ahead and let it through.
+                    System.Threading.Thread.Sleep(500);
+                }
+                finally
+                {
+                    numberOfRetries++;
+                }
+
+                if (Directory.Exists(nativeLibraryDirectory))
+                {
+                    Console.WriteLine("Unable to delete native library directory '{0}'", nativeLibraryDirectory);
+                }
+            }
         }
         #endregion
     }

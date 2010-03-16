@@ -121,6 +121,7 @@ namespace OpenQA.Selenium.Chrome
         protected override void StopClient()
         {
             ((ChromeCommandExecutor)CommandExecutor).Stop();
+            
         }
 
         /// <summary>
@@ -160,7 +161,7 @@ namespace OpenQA.Selenium.Chrome
         /// Creates a <see cref="RemoteWebElement"/> with the specified ID.
         /// </summary>
         /// <param name="elementId">The ID of this element.</param>
-        /// <returns>A <see cref="RemoteWebElement"/> with the specified ID. For the FirefoxDriver this will be a <see cref="FirefoxWebElement"/>.</returns>
+        /// <returns>A <see cref="RemoteWebElement"/> with the specified ID. For the ChromeDriver this will be a <see cref="ChromeWebElement"/>.</returns>
         protected override RemoteWebElement CreateElement(string elementId)
         {
             return new ChromeWebElement(this, elementId);

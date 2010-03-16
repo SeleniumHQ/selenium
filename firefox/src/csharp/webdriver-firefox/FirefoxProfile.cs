@@ -308,35 +308,8 @@ namespace OpenQA.Selenium.Firefox
                 directoryToDelete = profileDir;
             }
 
-            int numberOfRetries = 0;
-            while (Directory.Exists(directoryToDelete) && numberOfRetries < 10)
-            {
-                try
-                {
-                    Directory.Delete(directoryToDelete, true);
-                }
-                catch (IOException ex)
-                {
-                    // If we hit an exception (like file still in use), wait a half second
-                    // and try again. If we still hit an exception, go ahead and let it through.
-                    System.Threading.Thread.Sleep(500);
-                    Console.WriteLine("Exception found deleting '" + directoryToDelete
-                        + "' on retry " + numberOfRetries + ": " + ex.Message);
-                }
-                catch (UnauthorizedAccessException unauthorizedEx)
-                {
-                    // If we hit an exception (like file still in use), wait a half second
-                    // and try again. If we still hit an exception, go ahead and let it through.
-                    System.Threading.Thread.Sleep(500);
-                    Console.WriteLine("Exception found deleting '" + directoryToDelete
-                        + "' on retry " + numberOfRetries + ": " + unauthorizedEx.Message);
-                }
-                finally
-                {
-                    numberOfRetries++;
-                }
-            }
-        } 
+            DeleteDirectory(directoryToDelete);
+        }
         #endregion
 
         #region Support methods
@@ -373,6 +346,39 @@ namespace OpenQA.Selenium.Firefox
             string directoryPath = Path.Combine(Path.GetTempPath(), directoryName);
             return directoryPath;
         }
+
+        private static void DeleteDirectory(string directoryToDelete)
+        {
+            int numberOfRetries = 0;
+            while (Directory.Exists(directoryToDelete) && numberOfRetries < 10)
+            {
+                try
+                {
+                    Directory.Delete(directoryToDelete, true);
+                }
+                catch (IOException)
+                {
+                    // If we hit an exception (like file still in use), wait a half second
+                    // and try again. If we still hit an exception, go ahead and let it through.
+                    System.Threading.Thread.Sleep(500);
+                }
+                catch (UnauthorizedAccessException)
+                {
+                    // If we hit an exception (like file still in use), wait a half second
+                    // and try again. If we still hit an exception, go ahead and let it through.
+                    System.Threading.Thread.Sleep(500);
+                }
+                finally
+                {
+                    numberOfRetries++;
+                }
+
+                if (Directory.Exists(directoryToDelete))
+                {
+                    Console.WriteLine("Unable to delete profile directory '{0}'", directoryToDelete);
+                }
+            }
+        } 
 
         private static string ReadIdFromInstallRdf(string root)
         {

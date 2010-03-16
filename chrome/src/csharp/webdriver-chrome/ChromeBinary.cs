@@ -24,11 +24,11 @@ namespace OpenQA.Selenium.Chrome
         private const int ShutdownWaitInterval = 2000;
         private const int StartWaitInterval = 2500;
         private static int linearStartWaitCoefficient = 1;
+        private static string chromeFile = string.Empty;
         private ChromeProfile profile;
         private ChromeExtension extension;
         private Process chromeProcess;
         private int listeningPort;
-        private static string chromeFile = string.Empty;
 
         /// <summary>
         /// Initializes a new instance of the ChromeBinary class using the given <see cref="ChromeProfile"/> and <see cref="ChromeExtension"/>.
@@ -66,6 +66,16 @@ namespace OpenQA.Selenium.Chrome
         public int Port
         {
             get { return listeningPort; }
+        }
+
+        private static string ChromePathFromRegistry
+        {
+            get
+            {
+                return Registry.LocalMachine.OpenSubKey(
+                                    "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths\\").GetValue("chrome.exe").
+                                    ToString();
+            }
         }
 
         private string Arguments
@@ -121,6 +131,7 @@ namespace OpenQA.Selenium.Chrome
                 }
 
                 chromeProcess = null;
+                DeleteProfileDirectory(profile.ProfileDirectory);
             }
         }
 
@@ -145,7 +156,6 @@ namespace OpenQA.Selenium.Chrome
                         try
                         {
                             chromeFile = ChromePathFromRegistry;
-
                         }
                         catch (NullReferenceException)
                         {
@@ -155,10 +165,10 @@ namespace OpenQA.Selenium.Chrome
                                     Path.Combine(
                                         Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                                         "Google\\Chrome\\Application\\chrome.exe");
-                            }else
+                            }
+                            else
                             {
-                                chromeFile = Path.Combine(Path.GetTempPath(),
-                                                          "..\\Google\\Chrome\\Application\\chrome.exe");
+                                chromeFile = Path.Combine(Path.GetTempPath(), "..\\Google\\Chrome\\Application\\chrome.exe");
                             }
                         }
                     }
@@ -196,6 +206,44 @@ namespace OpenQA.Selenium.Chrome
             return chromeFile;
         }
 
+        private static bool IsChromeBinaryLocationKnown()
+        {
+            return !string.IsNullOrEmpty(chromeFile) && File.Exists(chromeFile);
+        }
+
+        private static void DeleteProfileDirectory(string directoryToDelete)
+        {
+            int numberOfRetries = 0;
+            while (Directory.Exists(directoryToDelete) && numberOfRetries < 10)
+            {
+                try
+                {
+                    Directory.Delete(directoryToDelete, true);
+                }
+                catch (IOException)
+                {
+                    // If we hit an exception (like file still in use), wait a half second
+                    // and try again. If we still hit an exception, go ahead and let it through.
+                    System.Threading.Thread.Sleep(500);
+                }
+                catch (UnauthorizedAccessException)
+                {
+                    // If we hit an exception (like file still in use), wait a half second
+                    // and try again. If we still hit an exception, go ahead and let it through.
+                    System.Threading.Thread.Sleep(500);
+                }
+                finally
+                {
+                    numberOfRetries++;
+                }
+
+                if (Directory.Exists(directoryToDelete))
+                {
+                    Console.WriteLine("Unable to delete profile directory '{0}'", directoryToDelete);
+                }
+            }
+        } 
+
         private void FindFreePort()
         {
             // Locate a free port on the local machine by binding a socket to
@@ -207,21 +255,6 @@ namespace OpenQA.Selenium.Chrome
             socketEndPoint = (IPEndPoint)portSocket.LocalEndPoint;
             listeningPort = socketEndPoint.Port;
             portSocket.Close();
-        }
-
-        private static bool IsChromeBinaryLocationKnown()
-        {
-            return !string.IsNullOrEmpty(chromeFile) && File.Exists(chromeFile);
-        }
-
-        private static string ChromePathFromRegistry
-        {
-            get
-            {
-                return Registry.LocalMachine.OpenSubKey(
-                                    "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths\\").GetValue("chrome.exe").
-                                    ToString();
-            }
         }
     }
 }

@@ -18,6 +18,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <RemoteDescendentReferences Include="@(CommonReferences)"/>
+    <RemoteDescendentReferences Include="@(ReferenceAssemblies)"/>
+    <RemoteDescendentReferences Include="$(BuildOutputDirectory)\WebDriver.Common.dll"/> 
+    <RemoteDescendentReferences Include="$(BuildOutputDirectory)\WebDriver.Remote.dll"/> 
+  </ItemGroup>
+
+  <ItemGroup>
     <CommonSourceFiles Include="$(TrunkRoot)\common\src\csharp\**\*.cs"/>
   </ItemGroup>
 
@@ -32,7 +39,7 @@
     <Message Text="Building WebDriver.Common.dll"/>
     <MakeDir Directories="$(BuildOutputDirectory)" Condition="!Exists('($(BuildOutputDirectory)')"/>
     <Csc Sources="@(CommonSourceFiles)"
-         OutputAssembly="$(BuildOutputDirectory)WebDriver.Common.dll"
+         OutputAssembly="$(BuildOutputDirectory)\WebDriver.Common.dll"
          References="@(CommonReferences)"
          TargetType="library"
          DebugType="pdbonly"
@@ -110,12 +117,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <FirefoxReferences Include="@(CommonReferences)"/>
-    <FirefoxReferences Include="@(ReferenceAssemblies)"/>
-    <FirefoxReferences Include="$(BuildOutputDirectory)\WebDriver.Common.dll"/> 
-  </ItemGroup>
-
-  <ItemGroup>
      <FirefoxResources Include="$(TrunkRoot)\firefox\prebuilt\Linux\Release\x_ignore_nofocus.so">
       <LogicalName>WebDriver.FirefoxNoFocus.x86.dll</LogicalName>
     </FirefoxResources>
@@ -132,7 +133,7 @@
            Condition="!Exists('$(TrunkRoot)\build\webdriver-extension.zip')"/>
     <Message Text="Building WebDriver.Firefox.dll"/>
     <Csc Sources="@(FirefoxSourceFiles)"
-         References="@(FirefoxReferences)"
+         References="@(RemoteDescendentReferences)"
          Resources="@(FirefoxResources)"
          OutputAssembly="$(BuildOutputDirectory)\WebDriver.Firefox.dll"
          TargetType="library"
@@ -149,13 +150,6 @@
 
   <ItemGroup>
     <ChromeSourceFiles Include="$(TrunkRoot)\chrome\src\csharp\**\*.cs"/>
-  </ItemGroup>
-
-  <ItemGroup>
-    <ChromeReferences Include="@(CommonReferences)"/>
-    <ChromeReferences Include="@(ReferenceAssemblies)"/>
-    <ChromeReferences Include="$(BuildOutputDirectory)\WebDriver.Common.dll"/> 
-    <ChromeReferences Include="$(BuildOutputDirectory)\WebDriver.Remote.dll"/> 
   </ItemGroup>
 
   <ItemGroup>
@@ -179,13 +173,14 @@
            Condition="!Exists('$(TrunkRoot)\build\x64\Release\chrome-extension.zip')"/-->
     <Message Text="Building WebDriver.Chrome.dll"/>
     <Csc Sources="@(ChromeSourceFiles)"
-         References="@(ChromeReferences)"
+         References="@(RemoteDescendentReferences)"
          Resources="@(ChromeResources)"
          OutputAssembly="$(BuildOutputDirectory)\WebDriver.Chrome.dll"
          DebugType="pdbonly"
          TargetType="library"
          Optimize="true"
          AllowUnsafeBlocks="false"
+         DocumentationFile="$(BuildOutputDirectory)\WebDriver.Chrome.xml"
     />
     <Copy SourceFiles="@(ReferenceAssemblies)"
           DestinationFolder="$(BuildOutputDirectory)"
@@ -250,7 +245,7 @@
   </Target>
 
   <ItemGroup>
-    <IETestSourceFiles Include="$(TrunkRoot)\jobbie\$(UnitTestSourceFiles)"/>
+    <IETestSourceFiles Include="$(TrunkRoot)\jobbie\test\csharp\**\*.cs"/>
   </ItemGroup>
 
   <ItemGroup>
@@ -292,6 +287,7 @@
   <ItemGroup>
     <FirefoxTestReferences Include="@(CommonTestReferences)"/>
     <FirefoxTestReferences Include="$(BuildOutputDirectory)\WebDriver.Firefox.dll"/>
+    <FirefoxTestReferences Include="$(BuildOutputDirectory)\WebDriver.Remote.dll"/>
     <FirefoxTestReferences Include="$(BuildOutputDirectory)\webdriver-common-test.dll"/>
   </ItemGroup>
 
