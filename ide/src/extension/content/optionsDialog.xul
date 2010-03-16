@@ -39,6 +39,7 @@ limitations under the License.
   <script type="application/x-javascript" src="chrome://selenium-ide/content/testCase.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/file-utils.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/format.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/plugin.js"/>
   <stringbundle id="strings" src="chrome://selenium-ide/locale/selenium-ide.properties" />
   
 <tabbox flex="1">

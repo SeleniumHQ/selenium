@@ -44,7 +44,7 @@ function loadFromOptions(options) {
 				//initialize the reload-button state
 				if (name == "showDeveloperTools"){
 					document.getElementById("reload").hidden = !e.checked;
-					document.getElementById('reload').disabled = document.getElementById('reload').hidden
+					document.getElementById('reload').disabled = document.getElementById('reload').hidden;
 				}
 			} else {
 				e.value = options[name];
@@ -58,7 +58,7 @@ function loadDefaultOptions() {
 		loadFromOptions(Preferences.DEFAULT_OPTIONS);
 		for (name in this.options) {
 			if (/^formats\./.test(name)) {
-				delete this.options[name]
+				delete this.options[name];
 			}
 		}
 		if (this.format) {
@@ -68,15 +68,16 @@ function loadDefaultOptions() {
 }
 
 function loadOptions() {
-	var options = Preferences.load();
-	loadFromOptions(options);
-	this.formats = new FormatCollection(options);
-	this.options = options;
+  var options = Preferences.load();
+  loadFromOptions(options);
+  this.formats = new FormatCollection(options);
+  this.options = options;
 
-	loadFormatList();
-	selectFormat("default");
-	
-	loadPluginList();
+  loadFormatList();
+  selectFormat("default");
+
+  this.plugins = new PluginCollection(this.Preferences.getString("plugins"));
+  loadPluginList();
 }
 
 function loadFormatList() {
@@ -84,8 +85,8 @@ function loadFormatList() {
 	for (var i = list.getRowCount() - 1; i >= 0; i--) {
 		list.removeItemAt(i);
 	}
-	for (var i = 0; i < this.formats.formats.length; i++) {
-		var format = this.formats.formats[i];
+	for (var j = 0; j < this.formats.formats.length; j++) {
+		var format = this.formats.formats[j];
 		list.appendItem(format.name, format.id);
 	}
 }
@@ -135,10 +136,11 @@ function updateFormatSelection() {
 
 function showFormatDialog() {
 	var formatListBox = document.getElementById("format-list");
+	var formatId;
 	if (formatListBox.selectedItem) {
-		var formatId = formatListBox.selectedItem.value;
+		formatId = formatListBox.selectedItem.value;
 	} else {
-		var formatId = 'default';
+		formatId = 'default';
 	}
 	var formatInfo = this.formats.findFormat(formatId);
 	
@@ -308,39 +310,70 @@ function SDTToggle(){
 	document.getElementById('reload').disabled = document.getElementById('reload').hidden;
 }
 
+//
+// plugins
+//
 function loadPluginList() {
     var list = document.getElementById("plugin-list");
     for (var i = list.getRowCount() - 1; i >= 0; i--) {
         list.removeItemAt(i);
     }
     
-    var plugins = this.Preferences.getString("plugins").split(",");
-
-    var extman = Components.classes["@mozilla.org/extensions/manager;1"].createInstance(Components.interfaces.nsIExtensionManager);
     var p;
-    for (var i = 0; i < plugins.length; i++) {
-        p = extman.getItemForID(plugins[i]);
-        list.appendItem(p.name, p.id); 
+    for (var j = 0; j < this.plugins.plugins.length; j++) {
+        p = this.plugins.plugins[j];
+        list.appendItem(p.name, p.id);
     }
-    
-    list.selectItem(list.getItemAtIndex(0));
+
+    list = document.getElementById("plugin-list");
+    selectPlugin(list.getItemAtIndex(0).value);
 }
 
-function updatePluginOptions() {
-
+function selectPlugin(id) {
+  document.getElementById("plugin-list").value = id;
+  showPluginInfo();
 }
 
 function updatePluginSelection() {
-  var selected = document.getElementById("plugin-list").value;
-  
-  var dir = Components.classes["@mozilla.org/file/directory_service;1"].  
-                       getService(Components.interfaces.nsIProperties).  
-                       get("ProfD", Components.interfaces.nsIFile);
-  dir.append("extensions");
-  dir.append(selected);
+  showPluginInfo();
+}
 
-  var extman = Components.classes["@mozilla.org/extensions/manager;1"].createInstance(Components.interfaces.nsIExtensionManager);
-  var p = extman.getItemForID(selected);
-  
-  document.getElementById("plugin-name").value = p.name;
+// TODO - this is a copy/paste from formats/html.js that needs to be moved to a common place
+function copyElement(doc, element) {
+    var copy = doc.createElement(element.nodeName.toLowerCase());
+    var atts = element.attributes;
+    var i;
+    for (i = 0; atts != null && i < atts.length; i++) {
+        copy.setAttribute(atts[i].name, atts[i].value);
+    }
+    var childNodes = element.childNodes;
+    for (i = 0; i < childNodes.length; i++) {
+        if (childNodes[i].nodeType == 1) { // element
+            copy.appendChild(copyElement(doc, childNodes[i]));
+        } else if (childNodes[i].nodeType == 3) { // text
+            copy.appendChild(doc.createTextNode(childNodes[i].nodeValue));
+        }
+    }
+    return copy;
+}
+
+function showPluginInfo() {
+  var pluginId = document.getElementById("plugin-list").value;
+  var pluginInfo = this.plugins.findPlugin(pluginId);
+
+  document.getElementById("plugin-name").value = pluginInfo.name;
+  var content = '';
+  content = content + '<description>' + pluginInfo.description + '</description>';
+  content = content + '<separator class="thin"/><description>Version ' + pluginInfo.version + '</description>';
+
+  content = content + '<separator class="thin"/>' + '<description>Created By ' + pluginInfo.creator + '</description>';
+
+  var infoBox = document.getElementById("plugin-info");
+  var xml = '<vbox id="plugin-info" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">' + content + '</vbox>';
+  var parser = new DOMParser();
+  var element = parser.parseFromString(xml, "text/xml").documentElement;
+  // If we directly return this element, "permission denied" exception occurs
+  // when the user clicks on the buttons or textboxes. I haven't figured out the reason, 
+  // but as a workaround I'll just re-create the element and make a deep copy.
+  infoBox.parentNode.replaceChild(copyElement(document, element), infoBox);
 }
