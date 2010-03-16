@@ -129,12 +129,7 @@ namespace OpenQA.Selenium.IE
             int errorCode = Marshal.GetLastWin32Error();
             if (nativeLibraryHandle == IntPtr.Zero)
             {
-                Console.WriteLine("error found loading dll: {0}", errorCode);
                 throw new WebDriverException(string.Format(CultureInfo.InvariantCulture, "An error (code: {0}) occured while attempting to load the native code library", errorCode));
-            }
-            else
-            {
-                Console.WriteLine("Library loaded successfully");
             }
         }
         #endregion
