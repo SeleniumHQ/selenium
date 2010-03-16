@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{1D3DF4DB-6C11-480D-9774-F489B2EF62D8}</ProjectGuid>
+    <ProjectGuid>{32122F8D-CD64-495A-B9B0-5516FF67C79F}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>OpenQA.Selenium.Remote</RootNamespace>
-    <AssemblyName>webdriver-remote-test</AssemblyName>
+    <AssemblyName>WebDriver.Remote</AssemblyName>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkSubset>
@@ -19,7 +19,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\..\..\..\build\cli\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -27,40 +27,49 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\..\..\build\cli\Debug\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <OutputPath>..\..\..\..\build\cli\Release\</OutputPath>
+    <DefineConstants>TRACE;CODE_ANALYSIS</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>..\..\..\..\build\cli\Release\WebDriver.Remote.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json.Net20, Version=3.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\third_party\csharp\json-net-3.5r6\Newtonsoft.Json.Net20.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Command.cs" />
+    <Compile Include="CommandInfo.cs" />
+    <Compile Include="CommandInfoRepository.cs" />
+    <Compile Include="DesiredCapabilities.cs" />
+    <Compile Include="DriverCommand.cs" />
+    <Compile Include="ErrorResponse.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="HttpCommandExecutor.cs" />
+    <Compile Include="ICapabilities.cs" />
+    <Compile Include="ICommandExecutor.cs" />
+    <Compile Include="JsonConverters\CharArrayJsonConverter.cs" />
+    <Compile Include="JsonConverters\CookieJsonConverter.cs" />
+    <Compile Include="JsonConverters\PlatformJsonConverter.cs" />
+    <Compile Include="JsonConverters\ResponseValueJsonConverter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TestInternetExplorerRemoteWebDriver.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="webdriver-remote-test.config">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="webdriver-remote-test.nunit">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <Compile Include="RemoteWebDriver.cs" />
+    <Compile Include="RemoteWebElement.cs" />
+    <Compile Include="RenderedRemoteWebElement.cs" />
+    <Compile Include="Response.cs" />
+    <Compile Include="SessionId.cs" />
+    <Compile Include="StackTraceElement.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\..\common\src\csharp\webdriver-common\WebDriver.Common.csproj">
       <Project>{ABB9B87F-FEEA-410E-ACBF-26479B8C72B0}</Project>
       <Name>WebDriver.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\..\..\common\test\csharp\webdriver-common-test\webdriver-common-test.csproj">
-      <Project>{1580564D-B6B8-4BD8-A120-001E3E8E5BE6}</Project>
-      <Name>webdriver-common-test</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\src\csharp\webdriver-remote-client\WebDriver.Remote.csproj">
-      <Project>{32122F8D-CD64-495A-B9B0-5516FF67C79F}</Project>
-      <Name>WebDriver.Remote</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

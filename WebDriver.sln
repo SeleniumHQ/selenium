@@ -45,7 +45,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "selenium-unit-tests", "sele
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "selenium-integration-tests", "selenium\test\csharp\IntegrationTests\selenium-integration-tests.csproj", "{42D1B587-9544-452F-8B76-4F2A65BC9BE5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebDriver.Remote", "remote\client\src\csharp\webdriver-remote\WebDriver.Remote.csproj", "{32122F8D-CD64-495A-B9B0-5516FF67C79F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebDriver.Remote", "remote\client\src\csharp\webdriver-remote-client\WebDriver.Remote.csproj", "{32122F8D-CD64-495A-B9B0-5516FF67C79F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "webdriver-remote-test", "remote\client\test\csharp\webdriver-remote-test\webdriver-remote-test.csproj", "{1D3DF4DB-6C11-480D-9774-F489B2EF62D8}"
 EndProject

@@ -70,7 +70,7 @@
       <Project>{ABB9B87F-FEEA-410E-ACBF-26479B8C72B0}</Project>
       <Name>WebDriver.Common</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\..\remote\client\src\csharp\webdriver-remote\WebDriver.Remote.csproj">
+    <ProjectReference Include="..\..\..\..\remote\client\src\csharp\webdriver-remote-client\WebDriver.Remote.csproj">
       <Project>{32122F8D-CD64-495A-B9B0-5516FF67C79F}</Project>
       <Name>WebDriver.Remote</Name>
     </ProjectReference>
