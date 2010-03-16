@@ -7,5 +7,6 @@
 	<classpathentry kind="lib" path="/webdriver-remote-common/lib/runtime/json-20080701.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/webdriver-remote-common"/>
 	<classpathentry kind="lib" path="/third-party/java/google-collect-1.0.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/webdriver-remote-client"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>
