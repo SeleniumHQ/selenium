@@ -19,8 +19,8 @@ module Selenium
           else
             @pid = fork { run }
           end
-          sleep 2
-          sleep 3 if Platform.win?
+
+          sleep 0.1 until listening?
         end
 
         def run
@@ -38,6 +38,13 @@ module Selenium
             Process.kill('KILL', @pid)
             Process.waitpid(@pid)
           end
+        end
+
+        def listening?
+          TCPSocket.new(HOST, PORT).close
+          true
+        rescue
+          false
         end
 
       end # RackServer
