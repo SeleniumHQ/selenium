@@ -5,5 +5,8 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/webdriver-common"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/runtime/json-20080701.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/webdriver-remote-common"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/webdriver-remote-client"/>
+	<classpathentry kind="lib" path="/third-party/java/google-collect-1.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
