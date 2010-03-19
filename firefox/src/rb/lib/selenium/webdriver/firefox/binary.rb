@@ -7,7 +7,6 @@ module Selenium
 
         def initialize
           ENV['MOZ_NO_REMOTE'] = '1' # able to launch multiple instances
-          check_binary_exists
         end
 
         def create_base_profile(name)
@@ -17,7 +16,6 @@ module Selenium
           Timeout.timeout(15, Error::TimeOutError) do
             _, status = wait
           end
-
 
           if status && status.to_i != 0
             raise Error::WebDriverError, "could not create base profile: (exit status: #{status})"
@@ -31,7 +29,7 @@ module Selenium
         end
 
         def execute(*extra_args)
-          args = [path, "-no-remote", "--verbose"] + extra_args
+          args = [self.class.path, "-no-remote", "--verbose"] + extra_args
           @process = ChildProcess.new(*args).start
         end
 
@@ -65,43 +63,50 @@ module Selenium
 
         private
 
-        def path
-          @path ||= case Platform.os
-                    when :macosx
-                      "/Applications/Firefox.app/Contents/MacOS/firefox-bin"
-                    when :windows
-                      windows_path
-                    when :linux, :unix
-                      "/usr/bin/firefox"
-                    else
-                      raise "Unknown platform: #{Platform.os}"
-                    end
-        end
+        class << self
+          def path
+            @path ||= case Platform.os
+                      when :macosx
+                        "/Applications/Firefox.app/Contents/MacOS/firefox-bin"
+                      when :windows
+                        windows_path
+                      when :linux, :unix
+                        Platform.find_binary("firefox3", "firefox2", "firefox") || "/usr/bin/firefox"
+                      else
+                        raise "Unknown platform: #{Platform.os}"
+                      end
 
-        def check_binary_exists
-          unless File.file?(path)
-            raise Error::WebDriverError, "Could not find Firefox binary. Make sure Firefox is installed (OS: #{Platform.os})"
-          end
-        end
-
-        def windows_path
-          windows_registry_path || (ENV['PROGRAMFILES'] || "\\Program Files") + "\\Mozilla Firefox\\firefox.exe"
-        end
-
-        def windows_registry_path
-          return if Platform.jruby? || Platform.ironruby?
-          require "win32/registry"
-
-          lm = Win32::Registry::HKEY_LOCAL_MACHINE
-          lm.open("SOFTWARE\\Mozilla\\Mozilla Firefox") do |reg|
-            main = lm.open("SOFTWARE\\Mozilla\\Mozilla Firefox\\#{reg.keys[0]}\\Main")
-            if entry = main.find {|key, type, data| key =~ /pathtoexe/i}
-              return entry.last
+            unless File.file?(@path)
+              raise Error::WebDriverError, "Could not find Firefox binary. Make sure Firefox is installed (OS: #{Platform.os})"
             end
+
+            @path
           end
-        rescue Win32::Registry::Error
-          raise Error::WebDriverError, "Firefox not found in Windows registry, please make sure you have it installed."
-        end
+
+          private
+
+          def windows_path
+            windows_registry_path || "#{ ENV['PROGRAMFILES'] || "\\Program Files" }\\Mozilla Firefox\\firefox.exe"
+          end
+
+          def windows_registry_path
+            return if Platform.ironruby?
+            require "win32/registry"
+
+            lm = Win32::Registry::HKEY_LOCAL_MACHINE
+            lm.open("SOFTWARE\\Mozilla\\Mozilla Firefox") do |reg|
+              main = lm.open("SOFTWARE\\Mozilla\\Mozilla Firefox\\#{reg.keys[0]}\\Main")
+              if entry = main.find {|key, type, data| key =~ /pathtoexe/i}
+                return entry.last
+              end
+            end
+          rescue LoadError
+            # older JRuby or IronRuby does not have win32/registry
+            nil
+          rescue Win32::Registry::Error
+            raise Error::WebDriverError, "Firefox not found in the Windows registry. Make sure Firefox is installed"
+          end
+        end # class << self
 
       end # Binary
     end # Firefox
