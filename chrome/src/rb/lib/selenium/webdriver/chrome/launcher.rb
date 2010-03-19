@@ -23,6 +23,13 @@ module Selenium
           launcher
         end
 
+        def self.binary_path
+          @binary_path ||= (
+            path = possible_paths.find { |f| File.exist?(f) }
+            path || raise(Error::WebDriverError, "Could not find Chrome binary. Make sure Chrome is installed (OS: #{Platform.os})")
+          )
+        end
+
         def launch(server_url)
           create_extension
           create_profile
@@ -57,8 +64,7 @@ module Selenium
         end
 
         def launch_chrome(server_url)
-          check_binary_exists
-          @process = ChildProcess.new Platform.wrap_in_quotes_if_necessary(binary_path),
+          @process = ChildProcess.new Platform.wrap_in_quotes_if_necessary(self.class.binary_path),
                                       "--load-extension=#{Platform.wrap_in_quotes_if_necessary tmp_extension_dir}",
                                       "--user-data-dir=#{Platform.wrap_in_quotes_if_necessary tmp_profile_dir}",
                                       "--activate-on-launch",
@@ -67,12 +73,6 @@ module Selenium
                                       "--disable-prompt-on-repost",
                                       server_url
           @process.start
-        end
-
-        def check_binary_exists
-          unless File.file?(binary_path)
-            raise Error::WebDriverError, "Could not find Chrome binary. Make sure Chrome is installed (OS: #{Platform.os})"
-          end
         end
 
         def ext_path
@@ -98,36 +98,44 @@ module Selenium
         end
 
         class WindowsLauncher < Launcher
+          def self.possible_paths
+            [
+              registry_path,
+              "#{ENV['USERPROFILE']}\\Local Settings\\Application Data\\Google\\Chrome\\Application\\chrome.exe",
+              "#{ENV['USERPROFILE']}\\AppData\\Local\\Google\\Chrome\\Application\\chrome.exe",
+              "#{Platform.home}\\Local Settings\\Application Data\\Google\\Chrome\\Application\\chrome.exe",
+              "#{Platform.home}\\AppData\\Local\\Google\\Chrome\\Application\\chrome.exe",
+            ].compact
+          end
+
+          def self.registry_path
+            require "win32/registry"
+
+            reg = Win32::Registry::HKEY_LOCAL_MACHINE.open("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths\\chrome.exe")
+            reg[""]
+          rescue LoadError
+            # older JRuby and IronRuby does not have win32/registry
+            nil
+          rescue Win32::Registry::Error
+            nil
+          end
+
           def linked_lib_path
             # TODO: x64
             @linked_lib_path ||= "#{WebDriver.root}/chrome/prebuilt/Win32/Release/npchromedriver.dll"
           end
-
-          def binary_path
-            @binary_path ||= begin
-              possible_paths = [
-                "#{ENV['USERPROFILE']}\\Local Settings\\Application Data\\Google\\Chrome\\Application\\chrome.exe",
-                "#{ENV['USERPROFILE']}\\AppData\\Local\\Google\\Chrome\\Application\\chrome.exe",
-                "#{Platform.home}\\Local Settings\\Application Data\\Google\\Chrome\\Application\\chrome.exe",
-                "#{Platform.home}\\AppData\\Local\\Google\\Chrome\\Application\\chrome.exe",
-              ]
-
-              possible_paths.find { |f| File.exist?(f) } || possible_paths.first
-            end
-          end
-
         end
 
         class UnixLauncher < Launcher
-          def binary_path
-            @binary_path ||= "/usr/bin/google-chrome"
+          def self.possible_paths
+            [Platform.find_binary("google-chrome"), "/usr/bin/google-chrome"].compact
           end
 
         end
 
         class MacOSXLauncher < UnixLauncher
-          def binary_path
-            @binary_path ||= "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+          def self.possible_paths
+            ["/Applications/Google Chrome.app/Contents/MacOS/Google Chrome", "#{Platform.home}/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"]
           end
         end
 

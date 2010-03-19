@@ -90,7 +90,6 @@ module Selenium
           end
 
           def windows_registry_path
-            return if Platform.ironruby?
             require "win32/registry"
 
             lm = Win32::Registry::HKEY_LOCAL_MACHINE
