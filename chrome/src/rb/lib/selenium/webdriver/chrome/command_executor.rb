@@ -71,7 +71,7 @@ module Selenium
             end
           end
         rescue IOError, Errno::EBADF
-          raise unless @server.closed?
+          raise if @listening
         end
 
         def read_response(socket)

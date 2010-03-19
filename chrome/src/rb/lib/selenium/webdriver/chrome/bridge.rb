@@ -30,8 +30,8 @@ module Selenium
           rescue IOError
           end
 
-          @launcher.kill
           @executor.close
+          @launcher.kill
         end
 
         def getScreenshot
