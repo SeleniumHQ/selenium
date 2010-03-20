@@ -133,8 +133,8 @@ limitations under the License.
       <menuitem label="&saveTestCmd.label;" command="cmd_save" key="save-key" accesskey="S"/>
       <menuitem label="&saveTestAsCmd.label;" oncommand="window.editor.saveNewTestCase();" accesskey="A"/>
       <menu label="&exportCmd.label;" accesskey="E">
-  <menupopup id="popup_export_formats" onpopupshowing="window.editor.populateFormatsPopup(this)" oncommand="window.editor.exportTestCaseWithFormat(window.editor.app.getFormats().selectFormat(event.target.getAttribute('value')))">
-  </menupopup>
+        <menupopup id="popup_export_formats" onpopupshowing="window.editor.populateFormatsPopup(this)" oncommand="window.editor.exportTestCaseWithFormat(window.editor.app.getFormats().selectFormat(event.target.getAttribute('value')))">
+        </menupopup>
       </menu>
       <menu label="&recentTestCmd.label;">
         <menupopup id="popup_recent_tests" onpopupshowing="window.editor.app.recentTestCases.populateMenu(this)" oncommand="window.editor.app.loadTestCaseWithNewSuite(event.target.getAttribute('value'))" />
@@ -173,12 +173,12 @@ limitations under the License.
     <menupopup id="options-popup" onpopupshowing="window.editor.onPopupOptions()">
       <menuitem label="&optionsCmd.label;" oncommand="window.editor.openSeleniumIDEPreferences();" accesskey="O"/>
       <menu label="&formatCmd.label;" accesskey="F">
-  <menupopup id="popup_formats" onpopupshowing="window.editor.populateFormatsPopup(this, window.editor.app.getCurrentFormat())" oncommand="window.editor.app.setCurrentFormat(window.editor.app.formats.selectFormat(event.target.getAttribute('value')))">
-  </menupopup>
+        <menupopup id="popup_formats" onpopupshowing="window.editor.populateFormatsPopup(this, window.editor.app.getCurrentFormat())" oncommand="window.editor.app.setCurrentFormat(window.editor.app.formats.selectFormat(event.target.getAttribute('value')))">
+        </menupopup>
       </menu>
       <menu id="clipboardFormatMenu" label="&clipboardFormatCmd.label;">
-  <menupopup id="popup_clipboard_formats" onpopupshowing="window.editor.populateFormatsPopup(this, window.editor.app.clipboardFormat)" oncommand="window.editor.app.setClipboardFormat(window.editor.app.formats.selectFormat(event.target.getAttribute('value')))">
-  </menupopup>
+        <menupopup id="popup_clipboard_formats" onpopupshowing="window.editor.populateFormatsPopup(this, window.editor.app.clipboardFormat)" oncommand="window.editor.app.setClipboardFormat(window.editor.app.formats.selectFormat(event.target.getAttribute('value')))">
+        </menupopup>
       </menu>
       <menuitem id="internalTestsMenu" label="Test Selenium IDE" oncommand="window.editor.showInBrowser('chrome://selenium-ide/content/tests/index.html');" />
     </menupopup>
@@ -193,14 +193,14 @@ limitations under the License.
     <vbox>
       <vbox class="spacer" />
       <stack class="slider-box" flex="1" >
-  <hbox class="slider-background">
-    <hbox class="slider-left" />
-    <hbox class="slider-middle" flex="1" />
-    <hbox class="slider-right" />
-  </hbox>
-  <slider id="speedSlider" width="80" curpos="0" maxpos="1000">
-    <thumb />
-  </slider>
+          <hbox class="slider-background">
+            <hbox class="slider-left" />
+            <hbox class="slider-middle" flex="1" />
+            <hbox class="slider-right" />
+          </hbox>
+          <slider id="speedSlider" width="80" curpos="0" maxpos="1000">
+            <thumb />
+          </slider>
       </stack>
     </vbox>
   </stack>
@@ -209,7 +209,7 @@ limitations under the License.
     <tree id="suiteTree" flex="1" enableColumnDrag="false" hidecolumnpicker="true" width="80"
           context="suiteContextMenu">
       <treecols>
-  <treecol label="&suiteTree.testCase.label;" flex="1" />
+        <treecol label="&suiteTree.testCase.label;" flex="1" />
       </treecols>
       <treechildren />
     </tree>

@@ -42,13 +42,13 @@ limitations under the License.
   <script type="application/x-javascript" src="chrome://selenium-ide/content/plugin.js"/>
   <stringbundle id="strings" src="chrome://selenium-ide/locale/selenium-ide.properties" />
   
-<tabbox flex="1">
-  <tabs orient="horizontal">
+<tabbox  id="optionsTabbox"flex="1">
+  <tabs id="optionsTabs" orient="horizontal">
     <tab label="&options.general.label;"/>
     <tab label="&options.formats.label;"/>
     <tab label="Plugins"/>
   </tabs>
-  <tabpanels flex="1">
+  <tabpanels id="general" flex="1">
     <tabpanel orient="vertical">
       <description>&options.encoding.description;</description>
       <hbox align="center">
@@ -87,7 +87,7 @@ limitations under the License.
       <checkbox id="showDeveloperTools" label="&options.showDeveloperTools.description;" command="cmd_toggle"/>
       <checkbox id="recordOnOpen" label="&options.recordOnOpen.description;"/>
     </tabpanel>
-    <tabpanel orient="vertical">
+    <tabpanel id="formats" orient="vertical">
       <hbox flex="1">
         <listbox id="format-list" onselect="updateFormatSelection()" width="100"/>
         <vbox flex="1" width="300">
