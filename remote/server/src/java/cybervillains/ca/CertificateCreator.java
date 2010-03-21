@@ -131,8 +131,10 @@ public class CertificateCreator {
 		v3CertGen.setSubjectDN(new X500Principal(subject));
 		v3CertGen.setSignatureAlgorithm(CertificateCreator.SIGN_ALGO);
 		v3CertGen.setPublicKey(newPubKey);
-		v3CertGen.setNotAfter(new Date(System.currentTimeMillis() + 30L * 60 * 60 * 24 * 30 * 12));
-		v3CertGen.setNotBefore(new Date(System.currentTimeMillis() - 1000L * 60 * 60 * 24 * 30 *12));
+    // 5 years in the future
+		v3CertGen.setNotAfter(new Date(System.currentTimeMillis() + 1000L * 60 * 60 * 24 * 30 * 12 * 5));
+    // 1 year in the past
+		v3CertGen.setNotBefore(new Date(System.currentTimeMillis() - 1000L * 60 * 60 * 24 * 30 * 12));
 		v3CertGen.setIssuerDN(caCert.getSubjectX500Principal());
 		
 		// Firefox actually tracks serial numbers within a CA and refuses to validate if it sees duplicates
