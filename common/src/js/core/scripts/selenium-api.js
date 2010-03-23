@@ -950,7 +950,7 @@ Selenium.prototype.doOpen = function(url, ignoreResponseCode) {
    * @param ignoreResponseCode (optional) turn off ajax head request functionality
    *
    */
-    if (ignoreResponseCode == null) {
+    if (ignoreResponseCode == null || ignoreResponseCode.length == 0) {
         this.browserbot.ignoreResponseCode = true;
     } else if (ignoreResponseCode.toLowerCase() == "true") {
         this.browserbot.ignoreResponseCode = true;
