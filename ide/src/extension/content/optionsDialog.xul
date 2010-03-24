@@ -42,7 +42,7 @@ limitations under the License.
   <script type="application/x-javascript" src="chrome://selenium-ide/content/plugin.js"/>
   <stringbundle id="strings" src="chrome://selenium-ide/locale/selenium-ide.properties" />
   
-<tabbox  id="optionsTabbox"flex="1">
+<tabbox id="optionsTabbox" flex="1">
   <tabs id="optionsTabs" orient="horizontal">
     <tab label="&options.general.label;"/>
     <tab label="&options.formats.label;"/>
