@@ -444,7 +444,7 @@ xpi(:name => "ide",
                     { "ide/src/extension/chrome.manifest.production" => "/chrome.manifest" },
                     { "common/src/js/core/scripts/selenium-testrunner.js" => "content-files/" }
                   ],
-    :out => "selenium-ide-1.0.6-SNAPSHOT.xpi")
+    :out => "selenium-ide-1.0.6.xpi")
 
 java_jar(:name => "selenium-common-js",
     :resources => [
