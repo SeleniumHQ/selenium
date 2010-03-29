@@ -85,12 +85,18 @@ describe "Element" do
 
   it "should get location" do
     driver.navigate.to url_for("xhtmlTest.html")
-    driver.find_element(:class, "header").location.should be_instance_of(WebDriver::Point)
+    loc = driver.find_element(:class, "header").location
+
+    loc.x.should >= 0
+    loc.y.should >= 0
   end
 
   it "should get size" do
     driver.navigate.to url_for("xhtmlTest.html")
     size = driver.find_element(:class, "header").size
+
+    size.width.should > 0
+    size.height.should > 0
   end
 
   not_compliant_on :browser => :chrome do

@@ -50,7 +50,7 @@ require "selenium/webdriver/element"
 module Selenium
   module WebDriver
     Point     = Struct.new(:x, :y)
-    Dimension = Struct.new(:width, :heigth)
+    Dimension = Struct.new(:width, :height)
 
     autoload :IE,      'selenium/webdriver/ie'
     autoload :Remote,  'selenium/webdriver/remote'
