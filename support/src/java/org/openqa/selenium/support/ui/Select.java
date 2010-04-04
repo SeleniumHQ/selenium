@@ -154,7 +154,7 @@ public class Select {
     for (WebElement option : getOptions()) {
       if (match.equals(option.getAttribute("index"))) {
         option.setSelected();
-        if (isMultiple()) {  return;  }
+        if (!isMultiple()) {  return;  }
       }
     }
   }
@@ -174,7 +174,7 @@ public class Select {
     List<WebElement> options = element.findElements(By.xpath(builder.toString()));
     for (WebElement option : options) {
       option.setSelected();
-      if (isMultiple()) {  return;  }
+      if (!isMultiple()) {  return;  }
     }
   }
 
