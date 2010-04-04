@@ -44,3 +44,31 @@ var suiteTreeDragObserver = {
     onDragOver: function (aEvent, aFlavour, aDragSession) {},
     getSupportedFlavours: function() {return null; }
 };
+
+
+
+/**
+ * Object used to observe dnd on the commands of the current testcase
+ */
+var commandsDragObserver = {
+
+    onDragStart: function (aEvent, aXferData, aDragAction) {
+
+        try{
+            var selectedIndex = document.getElementById('commands').currentIndex;
+            if (selectedIndex == -1)
+                return;
+
+            aXferData.data = new TransferData();
+            aXferData.data.addDataForFlavour("text/unicode", selectedIndex.toString());
+            aDragAction.action = Ci.nsIDragService.DRAGDROP_ACTION_MOVE;
+
+        }catch(e){
+            new Log("DND").error("onDragStart error: "+e);
+        }
+    },
+    onDrop: function (aEvent, aXferData, aDragSession) {},
+    onDragExit: function (aEvent, aDragSession) {},
+    onDragOver: function (aEvent, aFlavour, aDragSession) {},
+    getSupportedFlavours: function() {return null; }
+};

@@ -348,12 +348,16 @@ TestCase.prototype.recordModifiedInCommands = function() {
 
 	var _splice = commands.splice;
 	commands.splice = function(index, removeCount, command) {
-		if (command != null) {
-			_splice.call(commands, index, removeCount, command);
+
+                var removed = null;
+		if (command !== undefined && command != null) {
+			removed = _splice.call(commands, index, removeCount, command);
 		} else {
-			_splice.call(commands, index, removeCount);
+			removed = _splice.call(commands, index, removeCount);
 		}
 		self.setModified();
+
+                return removed;
 	}
 
 	var _pop = commands.pop;
