@@ -169,5 +169,68 @@ objectExtend(SuiteTreeView.prototype, {
             if (row == this.currentTestCaseIndex) {
                 props.AppendElement(XulUtils.atomService.getAtom("currentTestCase"));
             }
+        },
+
+        getParentIndex: function(index){return -1;},
+
+        getSourceIndexFromDrag: function () {
+            try{
+                var dragService = Cc["@mozilla.org/widget/dragservice;1"].
+                               getService().QueryInterface(Ci.nsIDragService);
+                var dragSession = dragService.getCurrentSession();
+                var transfer = Cc["@mozilla.org/widget/transferable;1"].
+                               createInstance(Ci.nsITransferable);
+
+                transfer.addDataFlavor("text/unicode");
+                dragSession.getData(transfer, 0);
+
+                var dataObj = {};
+                var len = {};
+                var sourceIndex = -1;
+                var out = {};
+
+                transfer.getAnyTransferData(out, dataObj, len);
+
+                if (dataObj.value) {
+                    sourceIndex = dataObj.value.QueryInterface(Ci.nsISupportsString).data;
+                    sourceIndex = parseInt(sourceIndex.substring(0, len.value));
+                }
+
+                return sourceIndex;
+
+            }catch(e){
+                new Log("DND").error("getSourceIndexFromDrag error: "+e);
+            }
+        },
+
+        canDrop: function(targetIndex, orientation) {
+                var sourceIndex = this.getSourceIndexFromDrag();
+
+                return (sourceIndex != -1 &&
+                        sourceIndex != targetIndex &&
+                        sourceIndex != (targetIndex + orientation));
+        },
+
+        drop: function(dropIndex, orientation) {
+            try{
+               var sourceIndex = this.getSourceIndexFromDrag();
+
+               if (dropIndex > sourceIndex) {
+                   if (orientation == Ci.nsITreeView.DROP_BEFORE)
+                       dropIndex--;
+               }else{
+                   if (orientation == Ci.nsITreeView.DROP_AFTER)
+                       dropIndex++;
+               }
+
+               var removedRow = this.getTestSuite().tests.splice(sourceIndex, 1)[0];
+               this.getTestSuite().tests.splice(dropIndex, 0, removedRow);
+
+               this.treebox.invalidate();
+               this.selection.clearSelection();
+               this.selection.select(dropIndex);
+           }catch(e){
+               new Log("DND").error("drop error : "+e);
+           }
         }
     });

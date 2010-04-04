@@ -24,6 +24,8 @@ limitations under the License.
 <overlay id="selenium-ide-common" 
          xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
   <script type="application/x-javascript" src="chrome://global/content/globalOverlay.js"/>
+  <script type="application/x-javascript" src="chrome://global/content/nsDragAndDrop.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/dnd-observers.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/preferences.js"/>
   <!-- import misc.js before tools.js, because both declare a Log object -->
   <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium/xpath/misc.js"/>
@@ -212,7 +214,7 @@ limitations under the License.
       <treecols>
         <treecol label="&suiteTree.testCase.label;" flex="1" />
       </treecols>
-      <treechildren />
+      <treechildren ondraggesture="nsDragAndDrop.startDrag(event, suiteTreeDragObserver);"/>
     </tree>
     <hbox id="suiteProgressBar">
       <box id="suiteProgressIndicator" height="16" class="success" />
