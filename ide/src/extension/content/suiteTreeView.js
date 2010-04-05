@@ -196,6 +196,18 @@ objectExtend(SuiteTreeView.prototype, {
                     sourceIndex = parseInt(sourceIndex.substring(0, len.value));
                 }
 
+                var start = new Object();
+                var end = new Object();
+                var numRanges = this.selection.getRangeCount();
+                var n = 0;
+                for (var t = 0; t < numRanges && n <=1; t++){
+                    this.selection.getRangeAt(t,start,end);
+                    for (var v = start.value; v <= end.value && n <=1; v++){
+                       n++;
+                    }
+                }
+                sourceIndex = n > 1 ? -1 : sourceIndex;
+                
                 return sourceIndex;
 
             }catch(e){
@@ -215,20 +227,23 @@ objectExtend(SuiteTreeView.prototype, {
             try{
                var sourceIndex = this.getSourceIndexFromDrag();
 
-               if (dropIndex > sourceIndex) {
-                   if (orientation == Ci.nsITreeView.DROP_BEFORE)
-                       dropIndex--;
-               }else{
-                   if (orientation == Ci.nsITreeView.DROP_AFTER)
-                       dropIndex++;
+               if (sourceIndex != -1){
+
+                   if (dropIndex > sourceIndex) {
+                       if (orientation == Ci.nsITreeView.DROP_BEFORE)
+                           dropIndex--;
+                   }else{
+                       if (orientation == Ci.nsITreeView.DROP_AFTER)
+                           dropIndex++;
+                   }
+
+                   var removedRow = this.getTestSuite().tests.splice(sourceIndex, 1)[0];
+                   this.getTestSuite().tests.splice(dropIndex, 0, removedRow);
+
+                   this.treebox.invalidate();
+                   this.selection.clearSelection();
+                   this.selection.select(dropIndex);
                }
-
-               var removedRow = this.getTestSuite().tests.splice(sourceIndex, 1)[0];
-               this.getTestSuite().tests.splice(dropIndex, 0, removedRow);
-
-               this.treebox.invalidate();
-               this.selection.clearSelection();
-               this.selection.select(dropIndex);
            }catch(e){
                new Log("DND").error("drop error : "+e);
            }

@@ -261,7 +261,7 @@ objectExtend(TreeView.prototype, {
          */
         executeAction: function(action) {
             this.undoStack.push(action);
-            this.redoStack.splice(0, this.redoStack.length);
+            this.redoStack.splice(0);
             action.execute();
             window.updateCommands("undo");
         },
@@ -588,6 +588,18 @@ objectExtend(TreeView.prototype, {
                     sourceIndex = parseInt(sourceIndex.substring(0, len.value));
                 }
 
+                var start = new Object();
+                var end = new Object();
+                var numRanges = this.selection.getRangeCount();
+                var n = 0;
+                for (var t = 0; t < numRanges; t++){
+                    this.selection.getRangeAt(t,start,end);
+                    for (var v = start.value; v <= end.value; v++){
+                       n++;
+                    }
+                }
+                sourceIndex = n > 1 ? -1 : sourceIndex;
+
                 return sourceIndex;
 
             }catch(e){
@@ -606,7 +618,8 @@ objectExtend(TreeView.prototype, {
         drop: function(dropIndex, orientation) {
 
             var sourceIndex = this.getSourceIndexFromDrag();
-            this.executeAction(new TreeView.dndCommandAction(this, sourceIndex, dropIndex, orientation));
+            if (sourceIndex != -1)
+                this.executeAction(new TreeView.dndCommandAction(this, sourceIndex, dropIndex, orientation));
         }
     });
 
