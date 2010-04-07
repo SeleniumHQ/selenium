@@ -20,7 +20,7 @@
     <orderEntry type="module" module-name="common" exported="" />
     <orderEntry type="module" module-name="remote-client" exported="" />
     <orderEntry type="module" module-name="remote-common" exported="" />
-    <orderEntry type="module" module-name="support" />
+    <orderEntry type="module" module-name="support" exported="" />
     <orderEntry type="module-library">
       <library>
         <CLASSES>

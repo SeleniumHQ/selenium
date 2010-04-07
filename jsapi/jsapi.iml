@@ -16,9 +16,8 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="module" module-name="common" />
-    <orderEntry type="module" module-name="firefox" />
-    <orderEntry type="module" module-name="chrome" />
+    <orderEntry type="module" module-name="common" exported="" />
+    <orderEntry type="module" module-name="remote-server" exported="" />
   </component>
 </module>
 
