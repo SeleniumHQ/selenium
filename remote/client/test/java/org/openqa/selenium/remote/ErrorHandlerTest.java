@@ -17,6 +17,12 @@
 
 package org.openqa.selenium.remote;
 
+import junit.framework.TestCase;
+
+import java.util.Map;
+
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
 import org.openqa.selenium.ElementNotVisibleException;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.NoSuchFrameException;
@@ -25,21 +31,12 @@ import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.XPathLookupException;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
-import junit.framework.TestCase;
-
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.util.Map;
-
 /**
  * Unit tests for {@link ErrorHandler}.
  *
  * @author jmleyba@gmail.com (Jason Leyba)
  */
 public class ErrorHandlerTest extends TestCase {
-
   private ErrorHandler handler;
 
   @Override
@@ -117,7 +114,6 @@ public class ErrorHandlerTest extends TestCase {
       assertNull("Should not have a cause", expected.getCause());
     }
   }
-
 
   @SuppressWarnings({"ThrowableInstanceNeverThrown"})
   public void testCauseShouldUseTheNamedClassIfAvailableOnTheClassPath() {
@@ -320,7 +316,11 @@ public class ErrorHandlerTest extends TestCase {
       String message = "Frames differ at index [" + i + "]; expected:<"
           + expected[i] + "> but was:<" + actual[i] + ">";
 
-      assertEquals(message, expected[i].getFileName(), actual[i].getFileName());
+      // This took too long to track down
+      if (!(expected[i].getFileName() == null &&
+            actual[i].getFileName().equals("<unknown file>"))) {
+        assertEquals(message, expected[i].getFileName(), actual[i].getFileName());
+      }
       assertEquals(message, expected[i].getClassName(), actual[i].getClassName());
       assertEquals(message, expected[i].getMethodName(), actual[i].getMethodName());
       assertEquals(message, expected[i].getLineNumber(), actual[i].getLineNumber());

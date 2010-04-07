@@ -17,21 +17,24 @@ limitations under the License.
 
 package org.openqa.selenium.remote;
 
-import org.openqa.selenium.Platform;
-
+import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Map;
 
-public class DesiredCapabilities implements Capabilities {
+import org.openqa.selenium.Platform;
 
-  private String browserName;
-  private String version;
-  private Platform platform;
-  private boolean javascriptEnabled;
+import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
+import static org.openqa.selenium.remote.CapabilityType.PLATFORM;
+import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_JAVASCRIPT;
+import static org.openqa.selenium.remote.CapabilityType.VERSION;
+
+public class DesiredCapabilities implements Capabilities, Serializable {
+  private final Map<String, Object> capabilities = new HashMap<String, Object>();
 
   public DesiredCapabilities(String browser, String version, Platform platform) {
-    this.browserName = browser;
-    this.version = version;
-    this.platform = platform;
+    setCapability(BROWSER_NAME, browser);
+    setCapability(VERSION, version);
+    setCapability(PLATFORM, platform);
   }
 
   public DesiredCapabilities() {
@@ -39,56 +42,67 @@ public class DesiredCapabilities implements Capabilities {
   }
 
   public DesiredCapabilities(Map<String, Object> rawMap) {
-    browserName = (String) rawMap.get("browserName");
-    version = (String) rawMap.get("version");
-    javascriptEnabled = (Boolean) rawMap.get("javascriptEnabled");
-    if (rawMap.containsKey("operatingSystem")) {
-      Object os = rawMap.get("operatingSystem");
-      if (os instanceof String) {
-        platform = Platform.valueOf((String) os);
-      } else if (os instanceof Platform) {
-        platform = (Platform) os;
-      }
-    }
-    if (rawMap.containsKey("platform")) {
-      Object raw = rawMap.get("platform");
-      if (raw instanceof String)
-        platform = Platform.valueOf((String) raw);
-      else if (raw instanceof Platform)
-        platform = (Platform) raw;
-    }
+    capabilities.putAll(rawMap);
   }
 
   public String getBrowserName() {
-    return browserName;
+    return (String) capabilities.get(BROWSER_NAME);
   }
 
   public void setBrowserName(String browserName) {
-    this.browserName = browserName;
+    setCapability(BROWSER_NAME, browserName);
   }
 
   public String getVersion() {
-    return version;
+    return (String) capabilities.get(VERSION);
   }
 
   public void setVersion(String version) {
-    this.version = version;
+    setCapability(VERSION, version);
   }
 
   public Platform getPlatform() {
-    return platform;
+    if (capabilities.containsKey(PLATFORM)) {
+      Object raw = capabilities.get(PLATFORM);
+      if (raw instanceof String) {
+        return Platform.valueOf((String) raw);
+      } else if (raw instanceof Platform) {
+        return (Platform) raw;
+      }
+    }
+    return null;
   }
 
   public void setPlatform(Platform platform) {
-    this.platform = platform;
+    setCapability(PLATFORM, platform);
   }
 
   public boolean isJavascriptEnabled() {
-    return javascriptEnabled;
+    if (capabilities.containsKey(SUPPORTS_JAVASCRIPT)) {
+      Object raw = capabilities.get(SUPPORTS_JAVASCRIPT);
+      if (raw instanceof String) {
+        return Boolean.parseBoolean((String) raw);
+      } else if (raw instanceof Boolean) {
+        return ((Boolean) raw).booleanValue();
+      }
+    }
+    return true;
   }
 
   public void setJavascriptEnabled(boolean javascriptEnabled) {
-    this.javascriptEnabled = javascriptEnabled;
+    setCapability(SUPPORTS_JAVASCRIPT, javascriptEnabled);
+  }
+
+  private void setCapability(String capabilityName, boolean value) {
+    capabilities.put(capabilityName, value);
+  }
+
+  public void setCapability(String capabilityName, String value) {
+    capabilities.put(capabilityName, value);
+  }
+
+  private void setCapability(String capabilityName, Platform value) {
+    capabilities.put(capabilityName, value);
   }
 
   public static DesiredCapabilities firefox() {
@@ -115,10 +129,7 @@ public class DesiredCapabilities implements Capabilities {
   
   @Override
   public String toString() {
-    return String
-        .format(
-            "Capabilities [browserName=%s, javascriptEnabled=%s, platform=%s, version=%s]",
-            browserName, javascriptEnabled, platform, version);
+    return String.format("Capabilities [%s]", capabilities);
   }
 
   @Override
@@ -132,29 +143,11 @@ public class DesiredCapabilities implements Capabilities {
 
     DesiredCapabilities that = (DesiredCapabilities) o;
 
-    if (javascriptEnabled != that.javascriptEnabled) {
-      return false;
-    }
-    if (browserName != null ? !browserName.equals(that.browserName) : that.browserName != null) {
-      return false;
-    }
-    if (!platform.is(that.platform)) {
-      return false;
-    }
-    if (version != null ? !version.equals(that.version) : that.version != null) {
-      return false;
-    }
-
-    return true;
+    return capabilities.equals(that.capabilities);
   }
 
   @Override
   public int hashCode() {
-    int result;
-    result = (browserName != null ? browserName.hashCode() : 0);
-    result = 31 * result + (version != null ? version.hashCode() : 0);
-    result = 31 * result + (platform != null ? platform.hashCode() : 0);
-    result = 31 * result + (javascriptEnabled ? 1 : 0);
-    return result;
+    return capabilities.hashCode();
   }
 }

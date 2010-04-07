@@ -64,7 +64,7 @@ public class RemoteWebDriverIeTestSuite extends TestCase {
             .excludePattern(".*\\.browserlaunchers\\..*")
             .excludePattern(".*FunctionalTest")
             .excludePattern(".*UnitTest")
-            .excludePattern(".*LauncherTest")            
+            .excludePattern(".*LauncherTest")
             .create();
 
     TestSuite toReturn = new TestSuite();

@@ -92,6 +92,7 @@ public class DriverFactoryTest extends TestCase {
 
   public void testShouldConsiderJavascriptCapabilities() {
     DesiredCapabilities nojavascript = new DesiredCapabilities("browser", "v1", Platform.LINUX);
+    nojavascript.setJavascriptEnabled(false);
     DesiredCapabilities javascript = new DesiredCapabilities("browser", "v1", Platform.LINUX);
     javascript.setJavascriptEnabled(true);
 
