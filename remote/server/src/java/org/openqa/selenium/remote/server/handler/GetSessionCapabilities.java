@@ -17,8 +17,8 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.handler;
 
-import org.openqa.selenium.Platform;
-import org.openqa.selenium.remote.Capabilities;
+import java.util.Map;
+
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.Session;
@@ -36,8 +36,9 @@ public class GetSessionCapabilities extends WebDriverHandler {
     Session session = sessions.get(sessionId);
 
     response = newResponse();
-    // Hard code it for HtmlUnit for now
-    response.setValue(session.getCapabilities());
+    Map<String, Object> capabilities = session.getCapabilities().asMap();
+    describeSession(capabilities);
+    response.setValue(capabilities);
 
     return ResultType.SUCCESS;
   }
@@ -46,40 +47,7 @@ public class GetSessionCapabilities extends WebDriverHandler {
     return response;
   }
 
-  public class ReadOnlyCapabilities implements Capabilities {
-
-    private final String browser;
-    private final String version;
-    private final Platform platform;
-    private final boolean supportsJavascript;
-
-    public ReadOnlyCapabilities(String browser, String version, Platform platform,
-                                boolean supportsJavascript) {
-      this.browser = browser;
-      this.version = version;
-      this.platform = platform;
-      this.supportsJavascript = supportsJavascript;
-    }
-
-    public String getBrowserName() {
-      return browser;
-    }
-
-    public Platform getPlatform() {
-      return platform;
-    }
-
-    public String getVersion() {
-      return version;
-    }
-
-    public boolean isJavascriptEnabled() {
-      return supportsJavascript;
-    }
-  }
-  
-  @Override
-  public String toString() {
-    return "[describe session]";
+  protected void describeSession(Map<String, Object> capabilities) {
+    // Does nothing further by default.
   }
 }

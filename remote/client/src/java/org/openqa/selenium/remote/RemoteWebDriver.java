@@ -78,13 +78,15 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
         ImmutableMap.of("desiredCapabilities", desiredCapabilities));
 
     Map<String, Object> rawCapabilities = (Map<String, Object>) response.getValue();
-    String browser = (String) rawCapabilities.get("browserName");
-    String version = (String) rawCapabilities.get("version");
-
-    String platformString = rawCapabilities.containsKey("operatingSystem")
-        ? (String) rawCapabilities.get("operatingSystem")
-        : (String) rawCapabilities.get("platform");
-
+    DesiredCapabilities returnedCapabilities = new DesiredCapabilities();
+    for (Map.Entry<String, Object> entry : rawCapabilities.entrySet()) {
+      // Handle the platform later
+      if ("platform".equals(entry.getKey())) {
+        continue;
+      }
+      returnedCapabilities.setCapability(entry.getKey(), entry.getValue());
+    }
+    String platformString = (String) rawCapabilities.get("platform");
     Platform platform;
     try {
       platform = Platform.valueOf(platformString);
@@ -93,10 +95,8 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
       // system property. Try to recover and parse this.
       platform = Platform.extractFromSysProperty(platformString);
     }
+    returnedCapabilities.setPlatform(platform);
 
-
-    DesiredCapabilities returnedCapabilities = new DesiredCapabilities(browser, version, platform);
-    returnedCapabilities.setJavascriptEnabled((Boolean) rawCapabilities.get("javascriptEnabled"));
     capabilities = returnedCapabilities;
     sessionId = new SessionId(response.getSessionId());
   }

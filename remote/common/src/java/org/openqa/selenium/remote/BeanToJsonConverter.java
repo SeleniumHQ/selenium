@@ -165,6 +165,10 @@ public class BeanToJsonConverter {
       return converted;
     }
 
+    if (toConvert instanceof Capabilities) {
+      return new JSONObject(((Capabilities) toConvert).asMap());
+    }
+
     try {
       return mapObject(toConvert, maxDepth - 1);
     } catch(Exception e) {

@@ -149,6 +149,16 @@ public class BeanToJsonConverterTest extends TestCase {
     assertEquals("value", converted.getString("key"));
   }
 
+  public void testShouldBeAbleToConvertACapabilityObject() throws JSONException {
+    DesiredCapabilities caps = new DesiredCapabilities();
+    caps.setCapability("key", "alpha");
+
+    String json = new BeanToJsonConverter().convert(caps);
+    JSONObject converted = new JSONObject(json);
+
+    assertEquals("alpha", converted.getString("key"));
+  }
+
   private static class SimpleBean {
 
     public String getFoo() {

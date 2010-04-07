@@ -687,11 +687,7 @@ namespace OpenQA.Selenium.Remote
             string browser = (string)rawCapabilities["browserName"];
             string version = (string)rawCapabilities["version"];
             Platform platform;
-            if (rawCapabilities.ContainsKey("operatingSystem"))
-            {
-                platform = new Platform((PlatformType)Enum.Parse(typeof(PlatformType), (string)rawCapabilities["operatingSystem"], true));
-            }
-            else
+            if (rawCapabilities.ContainsKey("platform"))
             {
                 platform = new Platform((PlatformType)Enum.Parse(typeof(PlatformType), (string)rawCapabilities["platform"], true));
             }

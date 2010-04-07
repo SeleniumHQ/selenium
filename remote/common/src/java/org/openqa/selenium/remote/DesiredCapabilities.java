@@ -18,6 +18,7 @@ limitations under the License.
 package org.openqa.selenium.remote;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -93,7 +94,11 @@ public class DesiredCapabilities implements Capabilities, Serializable {
     setCapability(SUPPORTS_JAVASCRIPT, javascriptEnabled);
   }
 
-  private void setCapability(String capabilityName, boolean value) {
+  public Object getCapability(String capabilityName) {
+    return capabilities.get(capabilityName);
+  }
+
+  public void setCapability(String capabilityName, boolean value) {
     capabilities.put(capabilityName, value);
   }
 
@@ -101,8 +106,22 @@ public class DesiredCapabilities implements Capabilities, Serializable {
     capabilities.put(capabilityName, value);
   }
 
-  private void setCapability(String capabilityName, Platform value) {
+  public void setCapability(String capabilityName, Platform value) {
     capabilities.put(capabilityName, value);
+  }
+
+  public Map<String, Object> asMap() {
+    return Collections.unmodifiableMap(capabilities);
+  }
+
+  protected void setCapability(String key, Object value) {
+    if (value instanceof Boolean) {
+      setCapability(key, ((Boolean) value).booleanValue());
+    } else if (value instanceof Platform) {
+      setCapability(key, (Platform) value);
+    } else if (value instanceof String) {
+      setCapability(key, (String) value);
+    }
   }
 
   public static DesiredCapabilities firefox() {
@@ -125,8 +144,6 @@ public class DesiredCapabilities implements Capabilities, Serializable {
     return new DesiredCapabilities("chrome", "", Platform.ANY);
   }
 
-  
-  
   @Override
   public String toString() {
     return String.format("Capabilities [%s]", capabilities);

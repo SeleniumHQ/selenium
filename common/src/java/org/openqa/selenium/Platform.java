@@ -45,7 +45,7 @@ public enum Platform {
    * ones that store files in "\Program Files\" and documents under
    * "\\documents and settings\\username"
    */
-  XP("xp", "windows") {
+  XP("xp", "windows", "winnt") {
     @Override
     public boolean is(Platform compareWith) {
       return compareWith == WINDOWS || compareWith == XP;

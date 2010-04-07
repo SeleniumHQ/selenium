@@ -234,6 +234,16 @@ public class JsonToBeanConverterTest extends TestCase {
     assertEquals("cheese", converted.getParameters().get("food"));
   }
 
+  public void testShouldConvertCapabilitiesToAMapAndIncludeCustomValues() throws Exception {
+    DesiredCapabilities caps = new DesiredCapabilities();
+    caps.setCapability("furrfu", "fishy");
+
+    String raw = new BeanToJsonConverter().convert(caps);
+    Capabilities converted = new JsonToBeanConverter().convert(Capabilities.class, raw);
+
+    assertEquals("fishy", converted.getCapability("furrfu"));
+  }
+
   public static class SimpleBean {
 
     private String value;

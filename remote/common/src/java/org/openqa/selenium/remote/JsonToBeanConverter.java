@@ -89,6 +89,17 @@ public class JsonToBeanConverter {
       return (T) new SessionId(value);
     }
 
+    if (Capabilities.class.equals(clazz)) {
+      JSONObject object = new JSONObject((String) text);
+      DesiredCapabilities caps = new DesiredCapabilities();
+      Iterator allKeys = object.keys();
+      while (allKeys.hasNext()) {
+        String key = (String) allKeys.next();
+        caps.setCapability(key, object.get(key));
+      }
+      return (T) caps;
+    }
+
     if (text != null && text instanceof String && !((String) text).startsWith("{") && Object.class
         .equals(clazz)) {
       return (T) text;

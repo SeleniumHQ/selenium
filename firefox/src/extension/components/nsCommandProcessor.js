@@ -539,8 +539,6 @@ nsCommandProcessor.prototype.getSessionCapabilities = function(response) {
     'browserName': 'firefox',
     'version': appInfo.version,
     'javascriptEnabled': true,
-    // TODO: standardize on which one?
-    'operatingSystem': xulRuntime.OS,  // same as System.getProperty("os.name")?
     'platform': xulRuntime.OS          // same as Platform.valueOf("name");
   };
   response.send();

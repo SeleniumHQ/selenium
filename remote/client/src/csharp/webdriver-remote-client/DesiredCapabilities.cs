@@ -50,21 +50,6 @@ namespace OpenQA.Selenium.Remote
             name = (string)rawMap["browserName"];
             browserVersion = (string)rawMap["version"];
             javascriptEnabled = (bool)rawMap["javascriptEnabled"];
-            if (rawMap.ContainsKey("operatingSystem"))
-            {
-                object os = rawMap["operatingSystem"];
-                string operatingSystemAsString = os as string;
-                Platform operatingSystemAsPlatform = os as Platform;
-                if (operatingSystemAsString != null)
-                {
-                    PlatformType platformInfo = (PlatformType)Enum.Parse(typeof(PlatformType), operatingSystemAsString, true);
-                    browserPlatform = new Platform(platformInfo);
-                }
-                else if (operatingSystemAsPlatform != null)
-                {
-                    browserPlatform = operatingSystemAsPlatform;
-                }
-            }
 
             if (rawMap.ContainsKey("platform"))
             {

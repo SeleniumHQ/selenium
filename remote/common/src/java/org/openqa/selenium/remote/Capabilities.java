@@ -17,6 +17,8 @@ limitations under the License.
 
 package org.openqa.selenium.remote;
 
+import java.util.Map;
+
 import org.openqa.selenium.Platform;
 
 public interface Capabilities {
@@ -28,4 +30,8 @@ public interface Capabilities {
   String getVersion();
 
   boolean isJavascriptEnabled();
+
+  Map<String, Object> asMap();
+
+  Object getCapability(String capabilityName);
 }
