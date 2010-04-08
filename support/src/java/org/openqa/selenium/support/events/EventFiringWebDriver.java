@@ -24,6 +24,7 @@ import org.openqa.selenium.RenderedWebElement;
 import org.openqa.selenium.Speed;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.internal.WrapsDriver;
 import org.openqa.selenium.internal.WrapsElement;
 
 import java.awt.*;
@@ -45,7 +46,7 @@ import java.util.Set;
  *
  * @author Michael Tamm
  */
-public class EventFiringWebDriver implements WebDriver, JavascriptExecutor {
+public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, WrapsDriver {
 
     private final WebDriver driver;
     private final List<WebDriverEventListener> eventListeners = new ArrayList<WebDriverEventListener>();
@@ -114,19 +115,12 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor {
         return this;
     }
 
-    /**
-     * Getter to access the encapsulated WebDriver.
-     * A typical example for having to use this getter is when this class is 
-     * wrapping a RemoteWebDriver, and we need to perform some queries on it 
-     * (such as calling getCapabilities).
-     * 
-     * @return the encapsulated WebDriver.
-     */
-    public WebDriver getDriver() {
-        return driver;
-    }
-    
-    public void get(String url) {
+
+  public WebDriver getWrappedDriver() {
+    return driver;
+  }
+
+  public void get(String url) {
         dispatcher.beforeNavigateTo(url, driver);
         driver.get(url);
         dispatcher.afterNavigateTo(url, driver);

@@ -24,9 +24,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.remote.server.handler.AddConfig;
 import org.openqa.selenium.remote.server.handler.AddCookie;
+import org.openqa.selenium.remote.server.handler.CaptureScreenshot;
 import org.openqa.selenium.remote.server.handler.ChangeUrl;
 import org.openqa.selenium.remote.server.handler.ClearElement;
 import org.openqa.selenium.remote.server.handler.ClickElement;
@@ -143,6 +143,9 @@ public class DriverServlet extends HttpServlet {
         .on(ResultType.SUCCESS, new JsonResult(":response"));
 
     getMapper.bind("/session/:sessionId/source", GetPageSource.class)
+        .on(ResultType.SUCCESS, new JsonResult(":response"));
+
+    getMapper.bind("/session/:sessionId/screenshot", CaptureScreenshot.class)
         .on(ResultType.SUCCESS, new JsonResult(":response"));
 
     getMapper.bind("/session/:sessionId/title", GetTitle.class)

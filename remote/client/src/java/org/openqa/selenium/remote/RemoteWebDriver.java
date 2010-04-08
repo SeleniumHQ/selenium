@@ -89,7 +89,11 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     String platformString = (String) rawCapabilities.get("platform");
     Platform platform;
     try {
-      platform = Platform.valueOf(platformString);
+      if (platformString == null || "".equals(platformString)) {
+        platform = Platform.ANY;
+      } else {
+        platform = Platform.valueOf(platformString);
+      }
     } catch (IllegalArgumentException e) {
       // The server probably responded with a name matching the os.name
       // system property. Try to recover and parse this.
