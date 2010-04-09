@@ -83,7 +83,6 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
     secondDriver.quit();
   }
 
-  @Ignore
     public void testShouldBeAbleToStartFromAUniqueProfile() {
       FirefoxProfile profile = new FirefoxProfile();
 
@@ -96,7 +95,6 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
       }
     }
 
-    @Ignore(FIREFOX)
     public void testANewProfileShouldAllowSettingAdditionalParameters() {
       FirefoxProfile profile = new FirefoxProfile();
       profile.setPreference("browser.startup.homepage", formPage);
@@ -125,7 +123,6 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
     }
   }
 
-  @Ignore
   public void testShouldBeAbleToStartANewInstanceEvenWithVerboseLogging() {
     FirefoxBinary binary = new FirefoxBinary();
     binary.setEnvironmentProperty("NSPR_LOG_MODULES", "all:5");
