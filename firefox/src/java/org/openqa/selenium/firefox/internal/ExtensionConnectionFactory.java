@@ -21,35 +21,17 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.ExtensionConnection;
 import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxProfile;
-import org.openqa.selenium.firefox.NotConnectedException;
-
-import java.io.IOException;
 
 public class ExtensionConnectionFactory {
-    public static ExtensionConnection connectTo(FirefoxBinary binary, FirefoxProfile profile, String host) {
-      final int profilePort = profile.getPort();
-        boolean isDev = Boolean.getBoolean("webdriver.firefox.useExisting");
-        if (isDev) {
-            try {
-                return new RunningInstanceConnection(host, profilePort);
-            } catch (NotConnectedException e) {
-                // Fine. No running instance
-            } catch (IOException e) {
-              // Fine. No running instance.
-            } catch (Exception e) {
-              // Something else happened, just ignore it.
-            }
-        }
+  public static ExtensionConnection connectTo(FirefoxBinary binary, FirefoxProfile profile, String host) {
+    final int profilePort = profile.getPort();
 
-        if (binary == null) {
-          binary = new FirefoxBinary();
-        }
-
-        try {
-          Lock lock = new SocketLock(profilePort - 1);
-          return new NewProfileExtensionConnection(lock, binary, profile, host);
-        } catch (Exception e) {
-          throw new WebDriverException(e);
-        }
+    try {
+      Lock lock = new SocketLock(profilePort - 1);
+      FirefoxBinary bin = binary == null ? new FirefoxBinary() : binary;
+      return new NewProfileExtensionConnection(lock, bin, profile, host);
+    } catch (Exception e) {
+      throw new WebDriverException(e);
     }
+  }
 }
