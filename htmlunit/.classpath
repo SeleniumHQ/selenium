@@ -3,7 +3,6 @@
 	<classpathentry kind="src" output="build/classes" path="src/java"/>
 	<classpathentry kind="src" output="build/test-classes" path="test/java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/webdriver-common"/>
 	<classpathentry kind="lib" path="lib/runtime/commons-collections-3.2.1.jar"/>
 	<classpathentry kind="lib" path="lib/runtime/commons-httpclient-3.1.jar"/>
 	<classpathentry kind="lib" path="lib/runtime/commons-io-1.4.jar"/>
@@ -19,5 +18,6 @@
 	<classpathentry kind="lib" path="lib/runtime/htmlunit-core-js-2.6.jar"/>
 	<classpathentry kind="lib" path="lib/runtime/nekohtml-1.9.13.jar"/>
 	<classpathentry kind="lib" path="lib/runtime/xercesImpl-2.9.1.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/selenium-common"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>

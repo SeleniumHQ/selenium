@@ -7,7 +7,7 @@
 	</classpathentry>
 	<classpathentry kind="src" output="build/test-classes" path="test/java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/webdriver-common"/>
 	<classpathentry kind="lib" path="lib/runtime/jna.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/selenium-common"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>

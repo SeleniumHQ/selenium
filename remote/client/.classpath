@@ -7,9 +7,9 @@
 	<classpathentry kind="lib" path="lib/runtime/commons-lang-2.4.jar"/>
 	<classpathentry kind="lib" path="lib/runtime/commons-logging-1.1.1.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/webdriver-common"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/webdriver-remote-common"/>
 	<classpathentry kind="lib" path="lib/runtime/commons-collections-3.2.1.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/google-collect-1.0.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/selenium-common"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/selenium-remote-common"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
