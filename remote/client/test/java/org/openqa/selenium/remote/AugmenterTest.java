@@ -88,7 +88,7 @@ public class AugmenterTest {
         return MyInterface.class;
       }
 
-      public InterfaceImplementation getImplementation(CommandExecutor executor) {
+      public InterfaceImplementation getImplementation(Object value) {
         return new InterfaceImplementation() {
           public Object invoke(ExecuteMethod executeMethod, Method method, Object... args) {
             return "Hello World";
