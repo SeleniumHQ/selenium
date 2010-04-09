@@ -21,16 +21,33 @@ package org.openqa.selenium.firefox.internal;
 import java.io.File;
 import java.io.IOException;
 import java.net.BindException;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.net.MalformedURLException;
+import java.net.NetworkInterface;
 import java.net.Socket;
+import java.net.SocketException;
+import java.net.URL;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.Set;
 
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.firefox.ExtensionConnection;
 import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxProfile;
+import org.openqa.selenium.firefox.NotConnectedException;
+import org.openqa.selenium.remote.Command;
+import org.openqa.selenium.remote.CommandExecutor;
+import org.openqa.selenium.remote.HttpCommandExecutor;
+import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.internal.CircularOutputStream;
 
-public class NewProfileExtensionConnection extends AbstractExtensionConnection {
-
+public class NewProfileExtensionConnection implements CommandExecutor, ExtensionConnection {
+  private final HttpCommandExecutor delegate;
+  private final long connectTimeout;
   private final FirefoxBinary process;
   private final FirefoxProfile profile;
   private final Lock lock;
@@ -38,27 +55,35 @@ public class NewProfileExtensionConnection extends AbstractExtensionConnection {
 
   public NewProfileExtensionConnection(Lock lock, FirefoxBinary binary, FirefoxProfile profile,
                                        String host) throws Exception {
-    super(host, determineNextFreePort(host, profile.getPort()), binary.getTimeout());
+    delegate = new HttpCommandExecutor(buildUrl(host, determineNextFreePort(profile.getPort())));
+    this.connectTimeout = binary.getTimeout();
     this.lock = lock;
     this.profile = profile;
     this.process = binary;
   }
 
   public void start() throws IOException {
-    lock.lock(getConnectTimeout());
+    lock.lock(connectTimeout);
     try {
       String firefoxLogFile = System.getProperty("webdriver.firefox.logfile");
       File logFile = firefoxLogFile == null ? null : new File(firefoxLogFile);
-      this.process
-          .setOutputWatcher(new CircularOutputStream(logFile, bufferSize));
+      this.process.setOutputWatcher(new CircularOutputStream(logFile, bufferSize));
 
-      profile.setPort(getDelegate().getAddressOfRemoteServer().getPort());
+      profile.setPort(delegate.getAddressOfRemoteServer().getPort());
       profile.updateUserPrefs();
 
       this.process.clean(profile);
       this.process.startProfile(profile);
 
-      super.start();
+      long waitUntil = System.currentTimeMillis() + connectTimeout;
+      while (!isConnected() && waitUntil > System.currentTimeMillis()) {
+        // Do nothing
+      }
+
+      if (!isConnected()) {
+        throw new NotConnectedException(
+            delegate.getAddressOfRemoteServer(), connectTimeout);
+      }
     } catch (IOException e) {
       throw new WebDriverException(
           String.format("Failed to connect to binary %s on port %d; process output follows: \n%s",
@@ -72,14 +97,18 @@ public class NewProfileExtensionConnection extends AbstractExtensionConnection {
     }
   }
 
-  protected static int determineNextFreePort(String host, int port) throws IOException {
+  public Response execute(Command command) throws Exception {
+    return delegate.execute(command);
+  }
+
+  protected static int determineNextFreePort(int port) throws IOException {
     // Attempt to connect to the given port on the host
     // If we can't connect, then we're good to use it
     int newport;
 
     for (newport = port; newport < port + 200; newport++) {
       Socket socket = new Socket();
-      InetSocketAddress address = new InetSocketAddress(host, newport);
+      InetSocketAddress address = new InetSocketAddress("localhost", newport);
 
       try {
         socket.bind(address);
@@ -100,5 +129,104 @@ public class NewProfileExtensionConnection extends AbstractExtensionConnection {
     // so go ahead and clean up our process and profile.
     process.quit();
     profile.clean();
+  }
+
+  /**
+   * Builds the URL for the Firefox extension running on the given host and
+   * port. If the host is {@code localhost}, an attempt will be made to find the
+   * correct loopback address.
+   *
+   * @param host The hostname the extension is running on.
+   * @param port The port the extension is listening on.
+   * @return The URL of the Firefox extension.
+   */
+  private static URL buildUrl(String host, int port) {
+    if ("localhost".equals(host)) {
+      for (InetSocketAddress address : obtainLoopbackAddresses(port)) {
+        try {
+          return new URL("http", address.getHostName(), address.getPort(), "/hub");
+        } catch (MalformedURLException ignored) {
+          // Do nothing; loop and try next address.
+        }
+      }
+      throw new WebDriverException("Unable to find loopback address for localhost");
+    } else {
+      try {
+        return new URL("http", host, port, "/hub");
+      } catch (MalformedURLException e) {
+        throw new WebDriverException(e);
+      }
+    }
+  }
+
+  private static Set<InetSocketAddress> obtainLoopbackAddresses(int port) {
+    Set<InetSocketAddress> localhosts = new HashSet<InetSocketAddress>();
+
+    try {
+      Enumeration<NetworkInterface> allInterfaces = NetworkInterface.getNetworkInterfaces();
+      while (allInterfaces.hasMoreElements()) {
+        NetworkInterface iface = allInterfaces.nextElement();
+        Enumeration<InetAddress> allAddresses = iface.getInetAddresses();
+        while (allAddresses.hasMoreElements()) {
+          InetAddress addr = allAddresses.nextElement();
+          if (addr.isLoopbackAddress()) {
+            InetSocketAddress socketAddress = new InetSocketAddress(addr, port);
+            localhosts.add(socketAddress);
+          }
+        }
+      }
+
+      // On linux, loopback addresses are named "lo". See if we can find that. We do this
+      // craziness because sometimes the loopback device is given an IP range that falls outside
+      // of 127/24
+      if (Platform.getCurrent()
+          .is(Platform.UNIX)) {
+        NetworkInterface linuxLoopback = NetworkInterface.getByName("lo");
+        if (linuxLoopback != null) {
+          Enumeration<InetAddress> possibleLoopbacks = linuxLoopback.getInetAddresses();
+          while (possibleLoopbacks.hasMoreElements()) {
+            InetAddress inetAddress = possibleLoopbacks.nextElement();
+            InetSocketAddress socketAddress = new InetSocketAddress(inetAddress, port);
+            localhosts.add(socketAddress);
+          }
+        }
+      }
+    } catch (SocketException e) {
+      throw new WebDriverException(e);
+    }
+
+    if (!localhosts.isEmpty()) {
+      return localhosts;
+    }
+
+    // Nothing found. Grab the first address we can find
+    NetworkInterface firstInterface;
+    try {
+      firstInterface = NetworkInterface.getNetworkInterfaces().nextElement();
+    } catch (SocketException e) {
+      throw new WebDriverException(e);
+    }
+    InetAddress firstAddress = null;
+    if (firstInterface != null) {
+      firstAddress = firstInterface.getInetAddresses().nextElement();
+    }
+
+    if (firstAddress != null) {
+      InetSocketAddress socketAddress = new InetSocketAddress(firstAddress, port);
+      return Collections.singleton(socketAddress);
+    }
+
+    throw new WebDriverException("Unable to find loopback address for localhost");
+  }
+
+  public boolean isConnected() {
+    try {
+      // TODO: use a more intelligent way of testing if the server is ready.
+      delegate.getAddressOfRemoteServer().openConnection().connect();
+      return true;
+    } catch (IOException e) {
+      // Cannot connect yet.
+      return false;
+    }
   }
 }
