@@ -85,6 +85,7 @@ namespace OpenQA.Selenium.Remote
         public Platform Platform
         {
             get { return browserPlatform; }
+            set { browserPlatform = value; }
         }
 
         /// <summary>
