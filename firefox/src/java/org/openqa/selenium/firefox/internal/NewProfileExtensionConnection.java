@@ -18,16 +18,16 @@ limitations under the License.
 
 package org.openqa.selenium.firefox.internal;
 
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.firefox.FirefoxBinary;
-import org.openqa.selenium.firefox.FirefoxProfile;
-import org.openqa.selenium.remote.internal.CircularOutputStream;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.BindException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.firefox.FirefoxBinary;
+import org.openqa.selenium.firefox.FirefoxProfile;
+import org.openqa.selenium.remote.internal.CircularOutputStream;
 
 public class NewProfileExtensionConnection extends AbstractExtensionConnection {
 
@@ -49,7 +49,8 @@ public class NewProfileExtensionConnection extends AbstractExtensionConnection {
     try {
       String firefoxLogFile = System.getProperty("webdriver.firefox.logfile");
       File logFile = firefoxLogFile == null ? null : new File(firefoxLogFile);
-      this.process.setOutputWatcher(new CircularOutputStream(logFile, bufferSize));
+      this.process
+          .setOutputWatcher(new CircularOutputStream(logFile, bufferSize));
 
       profile.setPort(getDelegate().getAddressOfRemoteServer().getPort());
       profile.updateUserPrefs();

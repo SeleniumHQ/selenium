@@ -50,39 +50,40 @@ import static org.openqa.selenium.OutputType.FILE;
  * An implementation of the {#link WebDriver} interface that drives Firefox. This works through a firefox extension,
  * which gets installed automatically if necessary. Important system variables are:
  * <ul>
- *  <li><b>webdriver.firefox.bin</b> - Which firefox binary to use (normally "firefox" on the PATH).</li>
- *  <li><b>webdriver.firefox.profile</b> - The name of the profile to use (normally "WebDriver").</li>
+ * <li><b>webdriver.firefox.bin</b> - Which firefox binary to use (normally "firefox" on the PATH).</li>
+ * <li><b>webdriver.firefox.profile</b> - The name of the profile to use (normally "WebDriver").</li>
  * </ul>
- *
+ * <p/>
  * When the driver starts, it will make a copy of the profile it is using, rather than using that profile directly.
  * This allows multiple instances of firefox to be started.
  */
 public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot, FindsByCssSelector {
 
-    public static final int DEFAULT_PORT = 7055;
-    // For now, only enable native events on Windows
-    public static final boolean DEFAULT_ENABLE_NATIVE_EVENTS =
-      Platform.getCurrent().is(Platform.WINDOWS);
-    // Accept untrusted SSL certificates.
-    public static final boolean ACCEPT_UNTRUSTED_CERTIFICATES = true;
-    // Assume that the untrusted certificates will come from untrusted issuers
-    // or will be self signed.
-    public static final boolean ASSUME_UNTRUSTED_ISSUER = true;
+  public static final int DEFAULT_PORT = 7055;
+  // For now, only enable native events on Windows
+  public static final boolean DEFAULT_ENABLE_NATIVE_EVENTS =
+      Platform.getCurrent()
+          .is(Platform.WINDOWS);
+  // Accept untrusted SSL certificates.
+  public static final boolean ACCEPT_UNTRUSTED_CERTIFICATES = true;
+  // Assume that the untrusted certificates will come from untrusted issuers
+  // or will be self signed.
+  public static final boolean ASSUME_UNTRUSTED_ISSUER = true;
 
-    // Commands we can execute with needing to dismiss an active alert
-    private final Set<DriverCommand> alertWhiteListedCommands = new HashSet<DriverCommand>() {{
-      add(DriverCommand.DISMISS_ALERT);
-    }};
+  // Commands we can execute with needing to dismiss an active alert
+  private final Set<DriverCommand> alertWhiteListedCommands = new HashSet<DriverCommand>() {{
+    add(DriverCommand.DISMISS_ALERT);
+  }};
 
-    private FirefoxAlert currentAlert;
+  private FirefoxAlert currentAlert;
 
   public FirefoxDriver() {
-      this(new FirefoxBinary(), null);
-    }
+    this(new FirefoxBinary(), null);
+  }
 
   public FirefoxDriver(FirefoxProfile profile) {
-      this(new FirefoxBinary(), profile);
-    }
+    this(new FirefoxBinary(), profile);
+  }
 
   public FirefoxDriver(FirefoxBinary binary, FirefoxProfile profile) {
     super(createExtensionConnection(binary, profile), DesiredCapabilities.firefox());
@@ -91,7 +92,7 @@ public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot, F
   /**
    * Establishes a connection to the Firefox extension.
    *
-   * @param binary The binary to use for launching Firefox.
+   * @param binary  The binary to use for launching Firefox.
    * @param profile The profile template to launch Firefox with.
    * @return The established extension connection.
    */
@@ -129,95 +130,99 @@ public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot, F
   }
 
   public WebElement findElementByCssSelector(String using) {
-    if (using == null)
-     throw new IllegalArgumentException("Cannot find elements when the css selector is null.");
+    if (using == null) {
+      throw new IllegalArgumentException("Cannot find elements when the css selector is null.");
+    }
 
     return findElement("css selector", using);
   }
 
   public List<WebElement> findElementsByCssSelector(String using) {
-    if (using == null)
-     throw new IllegalArgumentException("Cannot find elements when the css selector is null.");
+    if (using == null) {
+      throw new IllegalArgumentException("Cannot find elements when the css selector is null.");
+    }
 
     return findElements("css selector", using);
   }
 
-    @Override
-    public TargetLocator switchTo() {
-        return new FirefoxTargetLocator();
+  @Override
+  public TargetLocator switchTo() {
+    return new FirefoxTargetLocator();
+  }
+
+  @Override
+  protected Response execute(DriverCommand driverCommand, Map<String, ?> parameters) {
+    if (currentAlert != null) {
+      if (!alertWhiteListedCommands.contains(driverCommand)) {
+        ((FirefoxTargetLocator) switchTo()).alert()
+            .dismiss();
+        throw new UnhandledAlertException(driverCommand.toString());
+      }
     }
 
-    @Override
-    protected Response execute(DriverCommand driverCommand, Map<String, ?> parameters) {
-      if (currentAlert != null) {
-        if (!alertWhiteListedCommands.contains(driverCommand)) {
-          ((FirefoxTargetLocator) switchTo()).alert().dismiss();
-          throw new UnhandledAlertException(driverCommand.toString());
-        }
+    Response response = super.execute(driverCommand, parameters);
+
+    Object rawResponse = response.getValue();
+    if (rawResponse instanceof Map) {
+      Map map = (Map) rawResponse;
+      if (map.containsKey("__webdriverType")) {
+        // Looks like have an alert. construct it
+        currentAlert = new FirefoxAlert((String) map.get("text"));
+        response.setValue(null);
       }
-
-      Response response = super.execute(driverCommand, parameters);
-
-      Object rawResponse = response.getValue();
-      if (rawResponse instanceof Map) {
-        Map map = (Map) rawResponse;
-        if (map.containsKey("__webdriverType")) {
-          // Looks like have an alert. construct it
-          currentAlert = new FirefoxAlert((String) map.get("text"));
-          response.setValue(null);
-        }
-      }
-
-      return response;
     }
+
+    return response;
+  }
 
   @Override
   public boolean isJavascriptEnabled() {
     return true;
   }
 
-    private class FirefoxTargetLocator extends RemoteTargetLocator {
-        // TODO: this needs to be on an interface
-        public Alert alert() {
-          if (currentAlert != null) {
-            return currentAlert;
-          }
+  private class FirefoxTargetLocator extends RemoteTargetLocator {
+    // TODO: this needs to be on an interface
 
-          throw new NoAlertPresentException();
-        }
-    }
-
-    public <X> X getScreenshotAs(OutputType<X> target) {
-      // Get the screenshot as base64.
-      String base64 = execute(DriverCommand.SCREENSHOT).getValue().toString();
-      // ... and convert it.
-      return target.convertFromBase64Png(base64);
-    }
-
-    /**
-     * Saves a screenshot of the current page into the given file.
-     *
-     * @deprecated Use getScreenshotAs(file), which returns a temporary file.
-     */
-    @Deprecated
-    public void saveScreenshot(File pngFile) {
-      if (pngFile == null) {
-          throw new IllegalArgumentException("Method parameter pngFile must not be null");
+    public Alert alert() {
+      if (currentAlert != null) {
+        return currentAlert;
       }
 
-      File tmpfile = getScreenshotAs(FILE);
-
-      File dir = pngFile.getParentFile();
-      if (dir != null && !dir.exists() && !dir.mkdirs()) {
-          throw new WebDriverException("Could not create directory " + dir.getAbsolutePath());
-      }
-
-      try {
-        FileHandler.copy(tmpfile, pngFile);
-      } catch (IOException e) {
-        throw new WebDriverException(e);
-      }
+      throw new NoAlertPresentException();
     }
+  }
+
+  public <X> X getScreenshotAs(OutputType<X> target) {
+    // Get the screenshot as base64.
+    String base64 = execute(DriverCommand.SCREENSHOT).getValue().toString();
+    // ... and convert it.
+    return target.convertFromBase64Png(base64);
+  }
+
+  /**
+   * Saves a screenshot of the current page into the given file.
+   *
+   * @deprecated Use getScreenshotAs(file), which returns a temporary file.
+   */
+  @Deprecated
+  public void saveScreenshot(File pngFile) {
+    if (pngFile == null) {
+      throw new IllegalArgumentException("Method parameter pngFile must not be null");
+    }
+
+    File tmpfile = getScreenshotAs(FILE);
+
+    File dir = pngFile.getParentFile();
+    if (dir != null && !dir.exists() && !dir.mkdirs()) {
+      throw new WebDriverException("Could not create directory " + dir.getAbsolutePath());
+    }
+
+    try {
+      FileHandler.copy(tmpfile, pngFile);
+    } catch (IOException e) {
+      throw new WebDriverException(e);
+    }
+  }
 
   private class FirefoxAlert implements Alert {
     private String text;
