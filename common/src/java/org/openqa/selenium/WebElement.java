@@ -23,6 +23,12 @@ import java.util.List;
 /**
  * Represents an HTML element. Generally, all interesting operations to do with
  * interacting with a page will be performed through this interface.
+ *
+ * All method calls will do a freshness check to ensure that the element
+ * reference is still valid. This essentially determines whether or not the
+ * element is still attached to the DOM. If this test fails, then an
+ * {@link org.openqa.selenium.StaleElementReferenceException} is thrown, and
+ * all future calls to this instance will fail.
  */
 public interface WebElement extends SearchContext {
     /**
