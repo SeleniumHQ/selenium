@@ -11,7 +11,7 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/selenium-common"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/selenium-firefox"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/selenium-htmlunit"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/selenium-jobbie"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/selenium-internet-explorer"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/selenium-remote-client"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/selenium-remote-common"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/selenium-remote-server"/>
