@@ -8,7 +8,6 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="common" exported="" />
     <orderEntry type="module" module-name="remote-common" exported="" />
     <orderEntry type="module" module-name="third_party" exported="" />
     <orderEntry type="module-library" exported="">

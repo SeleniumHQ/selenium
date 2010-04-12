@@ -1,5 +1,6 @@
 package org.openqa.selenium.server.browserlaunchers;
 
+import com.thoughtworks.selenium.SeleniumException;
 import org.apache.commons.logging.Log;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
@@ -7,6 +8,7 @@ import org.apache.tools.ant.taskdefs.Copy;
 import org.apache.tools.ant.taskdefs.Delete;
 import org.apache.tools.ant.types.FileSet;
 import org.openqa.jetty.log.LogFactory;
+import org.openqa.selenium.remote.ProxyPac;
 import org.openqa.selenium.server.SeleniumServer;
 import org.openqa.selenium.server.ClassPathResource;
 
@@ -112,41 +114,79 @@ public class LauncherUtils {
 	
 	
 	public static File makeProxyPAC(File parentDir, int port, boolean proxySeleniumTrafficOnly, String configuredProxy, String proxyPort, String nonProxyHosts, boolean avoidProxy) throws FileNotFoundException {
-		if (!avoidProxy) {
-            proxySeleniumTrafficOnly = false;
+    if (!avoidProxy) {
+      proxySeleniumTrafficOnly = false;
+    }
+
+    ProxyPac pac = new ProxyPac();
+
+    if (configuredProxy != null) {
+      String proxyToUse = configuredProxy;
+      if (proxyPort != null) {
+        proxyToUse += ":" + proxyPort;
+      }
+      pac.defaults().toProxy(proxyToUse);
+    }
+
+    String defaultProxy = "DIRECT";
+    if (configuredProxy != null) {
+      defaultProxy = "PROXY " + configuredProxy;
+      if (proxyPort != null) {
+        defaultProxy += ":" + proxyPort;
+      }
+    }
+
+    String seleniumServerAsProxy = "localhost:" + port + "; " + defaultProxy;
+    if (proxySeleniumTrafficOnly) {
+      pac.map("*/selenium-server/*").toProxy(seleniumServerAsProxy);
+      if (nonProxyHosts != null && nonProxyHosts.trim().length() > 0) {
+        String[] hosts = nonProxyHosts.split("\\|");
+        for (String host : hosts) {
+          pac.mapHost(host).toNoProxy();
         }
-        File proxyPAC = new File(parentDir, "proxy.pac");
-		PrintStream out = new PrintStream(new FileOutputStream(proxyPAC));
-		String defaultProxy = "DIRECT";
-		if (configuredProxy != null) {
-			defaultProxy = "PROXY " + configuredProxy;
-			if (proxyPort != null) {
-				defaultProxy += ":" + proxyPort;
-			}
-		}
-		out.println("function FindProxyForURL(url, host) {");
-		if (proxySeleniumTrafficOnly) {
-			out.println("    if(shExpMatch(url, '*/selenium-server/*')) {");
-		}
-		out.println("        return 'PROXY localhost:" + Integer.toString(port) + "; " + defaultProxy + "';");
-		if (proxySeleniumTrafficOnly) {
-		    if (nonProxyHosts != null && nonProxyHosts.trim().length() > 0) {
-		        String[] hosts = nonProxyHosts.split("\\|");
-		        for (String host : hosts) {
-		            out.println("    } else if (shExpMatch(host, '"+host+"')) {");
-		            out.println("        return 'DIRECT';");
-		        }
-		    }
-    		if (configuredProxy != null) {
-    			out.println("    } else {");
-    			out.println("        return '" + defaultProxy + "';");
-    		}
-			out.println("    }");
-		}
-		out.println("}");
-		out.close();
-		return proxyPAC;
-	}
+      }
+    } else {
+      pac.defaults().toProxy(seleniumServerAsProxy);
+    }
+
+    try {
+      File pacFile = new File(parentDir, "proxy.pac");
+      Writer out = new FileWriter(pacFile);
+      pac.outputTo(out);
+      out.close();
+      return pacFile;
+    } catch (IOException e) {
+      throw new SeleniumException("Unable to configure proxy. Selenium will not work.");
+    }
+//		String defaultProxy = "DIRECT";
+//		if (configuredProxy != null) {
+//			defaultProxy = "PROXY " + configuredProxy;
+//			if (proxyPort != null) {
+//				defaultProxy += ":" + proxyPort;
+//			}
+//		}
+//		out.println("function FindProxyForURL(url, host) {");
+//		if (proxySeleniumTrafficOnly) {
+//			out.println("    if(shExpMatch(url, '*/selenium-server/*')) {");
+//		}
+//		out.println("        return 'PROXY localhost:" + Integer.toString(port) + "; " + defaultProxy + "';");
+//		if (proxySeleniumTrafficOnly) {
+//		    if (nonProxyHosts != null && nonProxyHosts.trim().length() > 0) {
+//		        String[] hosts = nonProxyHosts.split("\\|");
+//		        for (String host : hosts) {
+//		            out.println("    } else if (shExpMatch(host, '"+host+"')) {");
+//		            out.println("        return 'DIRECT';");
+//		        }
+//		    }
+//    		if (configuredProxy != null) {
+//    			out.println("    } else {");
+//    			out.println("        return '" + defaultProxy + "';");
+//    		}
+//			out.println("    }");
+//		}
+//		out.println("}");
+
+  }
 
 	/**
 	 * Strips the specified URL so it only includes a protocal, hostname and
