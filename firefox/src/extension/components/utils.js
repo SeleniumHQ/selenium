@@ -1303,7 +1303,7 @@ Utils.wrapResult = function(result, doc) {
     default:
       return result;
   }
-}
+};
 
 /**
  * Gets canonical xpath of the passed element, e.g. /HTML[1]/BODY[1]/P[1]
