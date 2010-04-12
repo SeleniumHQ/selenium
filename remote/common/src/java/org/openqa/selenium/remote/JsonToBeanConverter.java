@@ -24,6 +24,7 @@ import org.json.JSONObject;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -155,9 +156,10 @@ public class JsonToBeanConverter {
           pac.defaults().toProxy(object.getString("defaultProxy"));
         }
       }
-//    if (defaultProxy.length() > 0) {
-//      toReturn.put("", defaultProxy);
-//    }
+
+      if (object.has("deriveFrom")) {
+        pac.deriveFrom(new URI(object.getString("deriveFrom")));
+      }
 
       return (T) pac;
     }

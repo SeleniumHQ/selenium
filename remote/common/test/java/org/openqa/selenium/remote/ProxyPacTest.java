@@ -2,9 +2,9 @@ package org.openqa.selenium.remote;
 
 import junit.framework.TestCase;
 
-import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.io.StringWriter;
 
 public class ProxyPacTest extends TestCase {
@@ -81,22 +81,35 @@ public class ProxyPacTest extends TestCase {
     assertTrue(config, config.endsWith("return 'DIRECT';\n}\n"));
   }
 
-  public void testShouldSerializeAndDeserialize() throws Exception {
+  // This is going to be a whole heap of fun.
+  public void testShouldAllowAPacToBeBasedOffAnExistingPacFile() throws IOException {
+    // We should allow people to override the settings in the given pac
+    // The strategy will be to rename the method we care about to something else
+    // And then include the original (JS) source code. How badly can this fail?
+
+    File example = File.createTempFile("example", "pac");
+    example.deleteOnExit();
+    FileWriter out = new FileWriter(example);
+    out.append(EXAMPLE_PAC);
+    out.close();
+
     ProxyPac pac = new ProxyPac();
-    pac.map("*/selenium/*").toProxy("http://localhost:8080/selenium-server");
-    pac.map("/[a-zA-Z]{4}.microsoft.com/").toProxy("http://localhost:1010/selenium-server/");
-    pac.map("/flibble*").toNoProxy();
-    pac.mapHost("www.google.com").toProxy("http://fishy.com/");
-    pac.mapHost("seleniumhq.org").toNoProxy();
-    pac.defaults().toNoProxy();
+    pac.map("/foobar/*").toNoProxy();
+    pac.defaults().toProxy("http://example.com:8080/se-server");
+    pac.deriveFrom(example.toURI());
+    String converted = captureOutput(pac);
 
-    String converted = new BeanToJsonConverter().convert(pac);
-    ProxyPac thawed = new JsonToBeanConverter().convert(ProxyPac.class, converted);
-
-    String expected = captureOutput(pac);
-    String actual = captureOutput(thawed);
-
-    assertEquals(expected, actual);
+    assertEquals(converted,
+        "function originalFindProxyForURL(u, h) {  if (u.contains('fishy') return 'DIRECT'; }\n"
+       + "function isFishy() { return false; }\n"
+       + "function FindProxyForURL(url, host) {\n"
+       + "  if (shExpMatch(url, '/foobar/*')) { return 'DIRECT'; }\n"
+       + "\n"
+       + "  var value = originalFindProxyForURL(host, url);\n"
+       + "  if (value) { return value; }\n"
+       + "\n"
+       + "  return 'PROXY http://example.com:8080/se-server';\n"
+       + "}\n", converted);
   }
 
   private String captureOutput(ProxyPac pac) throws IOException {
@@ -108,4 +121,10 @@ public class ProxyPacTest extends TestCase {
   private static final String EMPTY_PAC =
       "function FindProxyForURL(url, host) {\n"
       + "}\n";
+
+  private static final String EXAMPLE_PAC =
+      "function FindProxyForURL(u, h) {"
+      + "  if (u.contains('fishy') return 'DIRECT'; }\n"
+      + ""
+      + "function isFishy() { return false; }";
 }

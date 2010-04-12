@@ -103,7 +103,7 @@ public class LauncherUtilsUnitTest extends TestCase {
             + "}\n");
         doProxyPacTest(true, "someHost", "448", "confProxy", true, 999, "function FindProxyForURL(url, host) {\n"
             + "  if (shExpMatch(host, 'someHost')) { return 'DIRECT'; }\n"
-            + "   if (shExpMatch(url, '*/selenium-server/*')) { return 'PROXY localhost:999; PROXY confProxy:448'; }\n"
+            + "  if (shExpMatch(url, '*/selenium-server/*')) { return 'PROXY localhost:999; PROXY confProxy:448'; }\n"
             + "  return 'PROXY confProxy:448';\n"
             + "}\n");
         doProxyPacTest(false, "someHost", "448", "confProxy", true, 999, "function FindProxyForURL(url, host) {\n"
@@ -150,7 +150,7 @@ public class LauncherUtilsUnitTest extends TestCase {
                 "");
         doProxyPacTest(true, "someHost", "448", null, true, 999, "function FindProxyForURL(url, host) {\n"
             + "  if (shExpMatch(host, 'someHost')) { return 'DIRECT'; }\n"
-            + "   if (shExpMatch(url, '*/selenium-server/*')) { return 'PROXY localhost:999; DIRECT'; }\n"
+            + "  if (shExpMatch(url, '*/selenium-server/*')) { return 'PROXY localhost:999; DIRECT'; }\n"
             + "}\n");
         doProxyPacTest(false, "someHost", "448", null, true, 999, "function FindProxyForURL(url, host) {\n" +
                 "  return \'PROXY localhost:999; DIRECT\';\n" +
@@ -197,7 +197,7 @@ public class LauncherUtilsUnitTest extends TestCase {
                 "");
         doProxyPacTest(true, "someHost", null, "confProxy", true, 999, "function FindProxyForURL(url, host) {\n"
            + "  if (shExpMatch(host, 'someHost')) { return 'DIRECT'; }\n"
-           + "   if (shExpMatch(url, '*/selenium-server/*')) { return 'PROXY localhost:999; PROXY confProxy'; }\n"
+           + "  if (shExpMatch(url, '*/selenium-server/*')) { return 'PROXY localhost:999; PROXY confProxy'; }\n"
            + "  return 'PROXY confProxy';\n"
            + "}\n");
         doProxyPacTest(false, "someHost", null, "confProxy", true, 999, "function FindProxyForURL(url, host) {\n" +
@@ -245,7 +245,7 @@ public class LauncherUtilsUnitTest extends TestCase {
                 "");
         doProxyPacTest(true, "someHost", null, null, true, 999, "function FindProxyForURL(url, host) {\n"
             + "  if (shExpMatch(host, 'someHost')) { return 'DIRECT'; }\n"
-            + "   if (shExpMatch(url, '*/selenium-server/*')) { return 'PROXY localhost:999; DIRECT'; }\n"
+            + "  if (shExpMatch(url, '*/selenium-server/*')) { return 'PROXY localhost:999; DIRECT'; }\n"
             + "}\n");
         doProxyPacTest(false, "someHost", null, null, true, 999, "function FindProxyForURL(url, host) {\n" +
                 "  return \'PROXY localhost:999; DIRECT\';\n" +

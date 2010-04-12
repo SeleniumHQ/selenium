@@ -1,8 +1,13 @@
 package org.openqa.selenium.remote;
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.io.Serializable;
 import java.io.Writer;
+import java.net.URI;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -34,6 +39,7 @@ public class ProxyPac implements Serializable {
   private final Map<String, String> proxiedHosts = new HashMap<String, String>();
   // TODO(simon): Is this right? Really?
   private String defaultProxy = "";  // Does nothing. Emulates old behaviour of Selenium
+  private URI deriveFrom;
 
   /**
    * Output the PAC file to the given writer.
@@ -42,6 +48,8 @@ public class ProxyPac implements Serializable {
    * @throws IOException Should the underlying writer fail.
    */
   public void outputTo(Writer writer) throws IOException {
+    appendSuperPac(writer);
+
     writer.append("function FindProxyForURL(url, host) {\n");
 
     appendDirectHosts(writer);
@@ -50,6 +58,8 @@ public class ProxyPac implements Serializable {
     appendProxiedUrls(writer);
     appendProxiedRegExUrls(writer);
 
+    appendFallbackToSuperPac(writer);
+
     if (!"".equals(defaultProxy)) {
       writer.append("  return ").append(defaultProxy).append(";\n");
     }
@@ -57,11 +67,37 @@ public class ProxyPac implements Serializable {
     writer.append("}\n");
   }
 
+  private void appendSuperPac(Writer writer) throws IOException {
+    if (deriveFrom == null) {
+      return;
+    }
+
+    // TODO(simon): This is going to be a cause of bugs. Should detect encoding of incoming data.
+    Reader reader = new InputStreamReader((InputStream) deriveFrom.toURL().getContent());
+    StringBuilder content = new StringBuilder();
+    for (int i = reader.read(); i != -1; i = reader.read()) {
+      content.append((char) i);
+    }
+
+    writer.append(content.toString().replace("FindProxyForURL", "originalFindProxyForURL"));
+    writer.append("\n");
+  }
+
+  private void appendFallbackToSuperPac(Writer writer) throws IOException {
+    if (deriveFrom == null) {
+      return;
+    }
+
+    writer.append("\n")
+        .append("  var value = originalFindProxyForURL(host, url);\n")
+        .append("  if (value) { return value; }\n\n");
+  }
+
   private void appendDirectHosts(Writer writer) throws IOException {
     for (String host : this.directHosts) {
       writer.append("  if (shExpMatch(host, '")
           .append(host)
-          .append("')) { return 'DIRECT'; }\n ");
+          .append("')) { return 'DIRECT'; }\n");
     }
   }
 
@@ -79,7 +115,7 @@ public class ProxyPac implements Serializable {
     for (String url : this.directUrls) {
       writer.append("  if (shExpMatch(url, '")
           .append(url)
-          .append("')) { return 'DIRECT'; }\n ");
+          .append("')) { return 'DIRECT'; }\n");
     }
   }
 
@@ -141,7 +177,17 @@ public class ProxyPac implements Serializable {
       toReturn.put("defaultProxy", defaultProxy);
     }
 
+    if (deriveFrom != null) {
+      toReturn.put("deriveFrom", deriveFrom.toString());
+    }
+
     return toReturn;
+  }
+
+  public ProxyPac deriveFrom(URI uri) {
+    // Store the uri for now
+    this.deriveFrom = uri;
+    return this;
   }
 
   public class ProxyUrlVia {
