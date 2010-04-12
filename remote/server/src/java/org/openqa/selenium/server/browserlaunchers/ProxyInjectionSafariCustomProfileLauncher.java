@@ -30,7 +30,7 @@ public class ProxyInjectionSafariCustomProfileLauncher extends SafariCustomProfi
     @Override
     protected void changeRegistrySettings() throws IOException {
         wpm.setChangeMaxConnections(alwaysChangeMaxConnections);
-        wpm.changeRegistrySettings(browserConfigurationOptions.is("ensureCleanSession"), browserConfigurationOptions.is("avoidProxy"));
+        wpm.changeRegistrySettings(browserConfigurationOptions);
     }
     
     public static void setChangeMaxConnections(boolean changeMaxConnections) {

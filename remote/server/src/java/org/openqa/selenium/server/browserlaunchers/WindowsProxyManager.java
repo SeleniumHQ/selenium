@@ -29,6 +29,7 @@ import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.taskdefs.ExecTask;
 import org.openqa.jetty.log.LogFactory;
+import org.openqa.selenium.server.BrowserConfigurationOptions;
 import org.openqa.selenium.server.SeleniumServer;
 import org.openqa.selenium.server.browserlaunchers.WindowsUtils.WindowsRegistryException;
 import org.openqa.selenium.server.log.AntJettyLoggerBuildListener;
@@ -141,7 +142,7 @@ public class WindowsProxyManager {
         REG_KEY_BASE = base;
     }
 
-    protected void changeRegistrySettings(boolean ensureCleanSession, boolean avoidProxy) throws IOException {
+    protected void changeRegistrySettings(BrowserConfigurationOptions options) throws IOException {
     	log.info("Modifying registry settings...");
     	HudsuckrSettings settings;
     	if (oldSettings == null) {
@@ -151,7 +152,7 @@ public class WindowsProxyManager {
     		String proxyServer = "127.0.0.1:" + portDriversShouldContact;
             settings = new HudsuckrSettings(oldSettings.connection, true, true, false, false, proxyServer, "(null)", "(null)");
         } else {
-            File proxyPAC = LauncherUtils.makeProxyPAC(customProxyPACDir, port, avoidProxy);
+            File proxyPAC = LauncherUtils.makeProxyPAC(customProxyPACDir, port, options);
 
             String newURL = "file://" + proxyPAC.getAbsolutePath().replace('\\', '/');
             settings = new HudsuckrSettings(oldSettings.connection, true, false, true, false, "(null)", "(null)", newURL);
@@ -200,7 +201,7 @@ public class WindowsProxyManager {
         }
         
         // Hide pre-existing user cookies if -ensureCleanSession is set
-        if (ensureCleanSession) {
+        if (options.isEnsuringCleanSession()) {
           hidePreexistingCookies();
           deleteTemporaryInternetFiles();
         }

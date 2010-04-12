@@ -29,7 +29,7 @@ public class ProxyInjectionInternetExplorerCustomProxyLauncher extends InternetE
     @Override
     protected void changeRegistrySettings() throws IOException {
         wpm.setChangeMaxConnections(alwaysChangeMaxConnections);
-        wpm.changeRegistrySettings(browserConfigurationOptions.is("ensureCleanSession"), browserConfigurationOptions.is("avoidProxy"));
+        wpm.changeRegistrySettings(browserConfigurationOptions);
     }
 
     public static void setChangeMaxConnections(boolean changeMaxConnections) {

@@ -53,7 +53,7 @@ public class InternetExplorerCustomProxyLauncher extends AbstractBrowserLauncher
     }
 
     protected void changeRegistrySettings() throws IOException {
-        wpm.changeRegistrySettings(browserConfigurationOptions.is("ensureCleanSession"), browserConfigurationOptions.is("avoidProxy"));
+        wpm.changeRegistrySettings(browserConfigurationOptions);
     }
     
     @Override

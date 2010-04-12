@@ -8,6 +8,8 @@ import java.io.IOException;
 
 import junit.framework.TestCase;
 
+import org.openqa.selenium.server.BrowserConfigurationOptions;
+
 public class MakeProxyPacUnitTest extends TestCase {
     public MakeProxyPacUnitTest(String name) {
         super(name);
@@ -28,8 +30,10 @@ public class MakeProxyPacUnitTest extends TestCase {
         LauncherUtils.recursivelyDeleteDir(parentDir);
     }
 
-    private String makeProxyPAC() throws FileNotFoundException, IOException {
-        LauncherUtils.makeProxyPAC(parentDir, 4444, proxySeleniumTrafficOnly, httpProxyHost, httpProxyPort, httpNonProxyHosts, avoidProxy);
+    private String makeProxyPAC() throws IOException {
+      BrowserConfigurationOptions options = new BrowserConfigurationOptions();
+      options.setAvoidProxy(true);
+      LauncherUtils.makeProxyPAC(parentDir, 4444, proxySeleniumTrafficOnly, httpProxyHost, httpProxyPort, httpNonProxyHosts, options);
         return readEntirePacFile();
     }
     private String readEntirePacFile() throws IOException {
@@ -45,6 +49,7 @@ public class MakeProxyPacUnitTest extends TestCase {
     }
     
     public void testBasic() throws IOException {
+        proxySeleniumTrafficOnly = false;
         String pac = makeProxyPAC();
         String expected = "function FindProxyForURL(url, host) " +
         		"{ return 'PROXY localhost:4444; DIRECT'; }";
@@ -75,8 +80,9 @@ public class MakeProxyPacUnitTest extends TestCase {
             "{ if (shExpMatch(url, '*/selenium-server/*')) { return 'PROXY localhost:4444; DIRECT'; } }";
         assertEquals(expected, pac);
     }
-    
+
     public void testConfiguredProxy() throws IOException {
+      proxySeleniumTrafficOnly = false;
     	httpProxyHost = "foo";
     	String pac = makeProxyPAC();
         String expected = "function FindProxyForURL(url, host) " +

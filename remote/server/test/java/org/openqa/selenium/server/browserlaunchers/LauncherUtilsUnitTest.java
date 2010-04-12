@@ -8,6 +8,8 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import org.openqa.selenium.server.BrowserConfigurationOptions;
+
 public class LauncherUtilsUnitTest extends TestCase {
 
     private static String COOKIE_SUFFIX = "txt";
@@ -286,7 +288,9 @@ public class LauncherUtilsUnitTest extends TestCase {
             proxyPacFile.delete();
         }
         try {
-            LauncherUtils.makeProxyPAC(parentDir, port, proxySeleniumTrafficOnly, configuredProxy, proxyPort, nonProxyHosts, avoidProxy);
+          BrowserConfigurationOptions options = new BrowserConfigurationOptions();
+          options.setAvoidProxy(avoidProxy);
+          LauncherUtils.makeProxyPAC(parentDir, port, proxySeleniumTrafficOnly, configuredProxy, proxyPort, nonProxyHosts, options);
         } catch (FileNotFoundException e) {
             fail();
         }

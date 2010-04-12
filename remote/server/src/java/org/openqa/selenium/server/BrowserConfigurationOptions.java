@@ -4,6 +4,10 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.thoughtworks.selenium.SeleniumException;
+import org.openqa.selenium.remote.JsonToBeanConverter;
+import org.openqa.selenium.remote.ProxyPac;
+
 public class BrowserConfigurationOptions {
 
     private Map<String,String> options = new HashMap<String,String>();
@@ -91,7 +95,32 @@ public class BrowserConfigurationOptions {
         if (value == null) return RemoteControlConfiguration.DEFAULT_TIMEOUT_IN_SECONDS;
         return Integer.parseInt(value);
     }
-    
+
+    public boolean isAvoidingProxy() {
+      return is("avoidProxy");
+    }
+
+    public void setAvoidProxy(boolean avoidProxy) {
+      set("avoidProxy", avoidProxy);
+    }
+
+    public ProxyPac getProxyConfig() {
+      String raw = get("proxy");
+      if (raw == null) {
+        return null;
+      }
+
+      try {
+        return new JsonToBeanConverter().convert(ProxyPac.class, raw);
+      } catch (Exception e) {
+        throw new SeleniumException("Unable to retrieve proxy configuration", e);
+      }
+    }
+
+    public boolean isEnsuringCleanSession() {
+      return is("ensureCleanSession");
+    }
+
     public boolean is(String key) {
         String value = options.get(key);
         if (value == null) return false;
