@@ -26,6 +26,8 @@ import org.openqa.selenium.Platform;
 
 import junit.framework.TestCase;
 
+import java.io.StringWriter;
+import java.io.Writer;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -242,6 +244,26 @@ public class JsonToBeanConverterTest extends TestCase {
     Capabilities converted = new JsonToBeanConverter().convert(Capabilities.class, raw);
 
     assertEquals("fishy", converted.getCapability("furrfu"));
+  }
+
+  public void testShouldBeAbleToReconstituteAProxyPac() throws Exception {
+    ProxyPac pac = new ProxyPac();
+    pac.map("*/selenium/*").toProxy("http://localhost:8080/selenium-server");
+    pac.map("/[a-zA-Z]{4}.microsoft.com/").toProxy("http://localhost:1010/selenium-server/");
+    pac.map("/flibble*").toNoProxy();
+    pac.mapHost("www.google.com").toProxy("http://fishy.com/");
+    pac.mapHost("seleniumhq.org").toNoProxy();
+    pac.defaults().toNoProxy();
+
+    String raw = new BeanToJsonConverter().convert(pac);
+    ProxyPac converted = new JsonToBeanConverter().convert(ProxyPac.class, raw);
+
+    Writer source = new StringWriter();
+    pac.outputTo(source);
+    Writer derived = new StringWriter();
+    converted.outputTo(derived);
+
+    assertEquals(source.toString(), derived.toString());
   }
 
   public static class SimpleBean {

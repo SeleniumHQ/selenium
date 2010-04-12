@@ -169,6 +169,10 @@ public class BeanToJsonConverter {
       return new JSONObject(((Capabilities) toConvert).asMap());
     }
 
+    if (toConvert instanceof ProxyPac) {
+      return new JSONObject(((ProxyPac) toConvert).asMap());
+    }
+
     try {
       return mapObject(toConvert, maxDepth - 1);
     } catch(Exception e) {

@@ -2,7 +2,9 @@ package org.openqa.selenium.remote;
 
 import junit.framework.TestCase;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.io.StringWriter;
 
 public class ProxyPacTest extends TestCase {
@@ -77,6 +79,24 @@ public class ProxyPacTest extends TestCase {
     pac.defaults().toNoProxy();
     config = captureOutput(pac);
     assertTrue(config, config.endsWith("return 'DIRECT';\n}\n"));
+  }
+
+  public void testShouldSerializeAndDeserialize() throws Exception {
+    ProxyPac pac = new ProxyPac();
+    pac.map("*/selenium/*").toProxy("http://localhost:8080/selenium-server");
+    pac.map("/[a-zA-Z]{4}.microsoft.com/").toProxy("http://localhost:1010/selenium-server/");
+    pac.map("/flibble*").toNoProxy();
+    pac.mapHost("www.google.com").toProxy("http://fishy.com/");
+    pac.mapHost("seleniumhq.org").toNoProxy();
+    pac.defaults().toNoProxy();
+
+    String converted = new BeanToJsonConverter().convert(pac);
+    ProxyPac thawed = new JsonToBeanConverter().convert(ProxyPac.class, converted);
+
+    String expected = captureOutput(pac);
+    String actual = captureOutput(thawed);
+
+    assertEquals(expected, actual);
   }
 
   private String captureOutput(ProxyPac pac) throws IOException {

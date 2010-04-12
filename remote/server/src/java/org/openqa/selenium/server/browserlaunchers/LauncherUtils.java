@@ -158,34 +158,6 @@ public class LauncherUtils {
     } catch (IOException e) {
       throw new SeleniumException("Unable to configure proxy. Selenium will not work.");
     }
-//		String defaultProxy = "DIRECT";
-//		if (configuredProxy != null) {
-//			defaultProxy = "PROXY " + configuredProxy;
-//			if (proxyPort != null) {
-//				defaultProxy += ":" + proxyPort;
-//			}
-//		}
-//		out.println("function FindProxyForURL(url, host) {");
-//		if (proxySeleniumTrafficOnly) {
-//			out.println("    if(shExpMatch(url, '*/selenium-server/*')) {");
-//		}
-//		out.println("        return 'PROXY localhost:" + Integer.toString(port) + "; " + defaultProxy + "';");
-//		if (proxySeleniumTrafficOnly) {
-//		    if (nonProxyHosts != null && nonProxyHosts.trim().length() > 0) {
-//		        String[] hosts = nonProxyHosts.split("\\|");
-//		        for (String host : hosts) {
-//		            out.println("    } else if (shExpMatch(host, '"+host+"')) {");
-//		            out.println("        return 'DIRECT';");
-//		        }
-//		    }
-//    		if (configuredProxy != null) {
-//    			out.println("    } else {");
-//    			out.println("        return '" + defaultProxy + "';");
-//    		}
-//			out.println("    }");
-//		}
-//		out.println("}");
-
   }
 
 	/**

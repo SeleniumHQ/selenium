@@ -1,19 +1,29 @@
 package org.openqa.selenium.remote;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.io.Writer;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import com.thoughtworks.selenium.SeleniumException;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONTokener;
+
+import static java.util.Collections.unmodifiableMap;
+import static java.util.Collections.unmodifiableSet;
+
 /**
  * A representation of a proxy configuration file.
  */
-public class ProxyPac {
+public class ProxyPac implements Serializable {
   // Note that we put the dash character at the end of the pattern
-  private static final Pattern acceptableShExpPattern = 
+  private static final Pattern acceptableShExpPattern =
       Pattern.compile("[\\w\\*\\?:/\\.-]*");
 
   // Make an effort to preserve the ordering the user asked for.
@@ -49,7 +59,7 @@ public class ProxyPac {
 
   private void appendDirectHosts(Writer writer) throws IOException {
     for (String host : this.directHosts) {
-    writer.append("  if (shExpMatch(host, '")
+      writer.append("  if (shExpMatch(host, '")
           .append(host)
           .append("')) { return 'DIRECT'; }\n ");
     }
@@ -67,7 +77,7 @@ public class ProxyPac {
 
   private void appendDirectUrls(Writer writer) throws IOException {
     for (String url : this.directUrls) {
-    writer.append("  if (shExpMatch(url, '")
+      writer.append("  if (shExpMatch(url, '")
           .append(url)
           .append("')) { return 'DIRECT'; }\n ");
     }
@@ -105,6 +115,35 @@ public class ProxyPac {
     return new DefaultProxy();
   }
 
+  public Map asMap() {
+    Map<String, Object> toReturn = new HashMap<String, Object>();
+    if (directUrls.size() > 0) {
+      toReturn.put("directUrls", unmodifiableSet(directUrls));
+    }
+
+    if (proxiedUrls.size() > 0) {
+      toReturn.put("proxiedUrls", unmodifiableMap(proxiedUrls));
+    }
+
+    if (proxiedRegexUrls.size() > 0) {
+      toReturn.put("proxiedRegexUrls", unmodifiableMap(proxiedRegexUrls));
+    }
+
+    if (directHosts.size() > 0) {
+      toReturn.put("directHosts", unmodifiableSet(directHosts));
+    }
+
+    if (proxiedHosts.size() > 0) {
+      toReturn.put("proxiedHosts", unmodifiableMap(proxiedHosts));
+    }
+
+    if (defaultProxy.length() > 0) {
+      toReturn.put("defaultProxy", defaultProxy);
+    }
+
+    return toReturn;
+  }
+
   public class ProxyUrlVia {
     private String outgoingUrl;
 
@@ -122,6 +161,7 @@ public class ProxyPac {
     }
 
     // See: http://support.microsoft.com/kb/274204
+
     private boolean isIeIncompatibleRegEx(String outgoingUrl) {
       return !acceptableShExpPattern.matcher(outgoingUrl).matches();
     }
@@ -151,9 +191,9 @@ public class ProxyPac {
   }
 
   public class DefaultProxy {
-     public ProxyPac toNoProxy() {
-       defaultProxy = "'DIRECT'";
-       return ProxyPac.this;
+    public ProxyPac toNoProxy() {
+      defaultProxy = "'DIRECT'";
+      return ProxyPac.this;
     }
 
     public ProxyPac toProxy(String proxyVia) {

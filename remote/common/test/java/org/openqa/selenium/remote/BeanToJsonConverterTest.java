@@ -159,6 +159,28 @@ public class BeanToJsonConverterTest extends TestCase {
     assertEquals("alpha", converted.getString("key"));
   }
 
+  public void testShouldConvertAProxyPacProperly() throws JSONException {
+    ProxyPac pac = new ProxyPac();
+    pac.map("*/selenium/*").toProxy("http://localhost:8080/selenium-server");
+    pac.map("/[a-zA-Z]{4}.microsoft.com/").toProxy("http://localhost:1010/selenium-server/");
+    pac.map("/flibble*").toNoProxy();
+    pac.mapHost("www.google.com").toProxy("http://fishy.com/");
+    pac.mapHost("seleniumhq.org").toNoProxy();
+    pac.defaults().toNoProxy();
+
+    String json = new BeanToJsonConverter().convert(pac);
+    JSONObject converted = new JSONObject(json);
+
+    assertEquals("http://localhost:8080/selenium-server",
+        converted.getJSONObject("proxiedUrls").get("*/selenium/*"));
+    assertEquals("http://localhost:1010/selenium-server/",
+        converted.getJSONObject("proxiedRegexUrls").get("/[a-zA-Z]{4}.microsoft.com/"));
+    assertEquals("/flibble*", converted.getJSONArray("directUrls").get(0));
+    assertEquals("seleniumhq.org", converted.getJSONArray("directHosts").get(0));
+    assertEquals("http://fishy.com/", converted.getJSONObject("proxiedHosts").get("www.google.com"));
+    assertEquals("'DIRECT'", converted.get("defaultProxy"));
+  }
+
   private static class SimpleBean {
 
     public String getFoo() {
