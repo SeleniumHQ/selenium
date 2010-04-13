@@ -101,7 +101,7 @@ public class NewProfileExtensionConnection implements CommandExecutor, Extension
     return delegate.execute(command);
   }
 
-  protected static int determineNextFreePort(int port) throws IOException {
+  protected int determineNextFreePort(int port) throws IOException {
     // Attempt to connect to the given port on the host
     // If we can't connect, then we're good to use it
     int newport;
