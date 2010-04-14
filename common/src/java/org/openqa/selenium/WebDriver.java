@@ -170,12 +170,12 @@ public interface WebDriver extends SearchContext {
    * @return An option interface
    * @see org.openqa.selenium.WebDriver.Options
    */
-  public Options manage();
+  Options manage();
 
   /**
    * An interface for managing stuff you would do in a browser menu
    */
-  public interface Options {
+  interface Options {
 
     /**
      * Add a specific cookie. If the cookie's domain name is left blank, it
@@ -239,7 +239,7 @@ public interface WebDriver extends SearchContext {
   /**
    * Used to locate a given frame or window.
    */
-  public interface TargetLocator {
+  interface TargetLocator {
     /**
      * Select a frame by its (zero-based) index. That is, if a page has
      * three frames, the first frame would be at index "0", the second at
@@ -292,7 +292,7 @@ public interface WebDriver extends SearchContext {
 //        Alert alert();
   }
 
-  public interface Navigation {
+  interface Navigation {
     /**
      * Move back a single "item" in the browser's history.
      */
