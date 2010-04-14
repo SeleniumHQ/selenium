@@ -1,5 +1,6 @@
 package org.openqa.selenium;
 
+import static org.junit.Assert.assertEquals;
 import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
@@ -40,8 +41,7 @@ public class UploadTest extends AbstractDriverTestCase {
     driver.switchTo().frame("upload_target");
 
     WebElement body = driver.findElement(By.xpath("//body"));
-    assertEquals("Page source is: " + driver.getPageSource(),
-        LOREM_IPSUM_TEXT, body.getText());
+    assertEquals("Page source is: " + driver.getPageSource(), LOREM_IPSUM_TEXT, body.getText());
   }
 
   private File createTmpFile(String content) throws IOException {

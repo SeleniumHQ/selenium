@@ -2,6 +2,8 @@ package org.openqa.selenium;
 
 import java.util.List;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.REMOTE;
@@ -15,7 +17,7 @@ public class ElementEqualityTest extends AbstractDriverTestCase {
     
     WebElement body = driver.findElement(By.tagName("body"));
     WebElement xbody = driver.findElement(By.xpath("//body"));
-    
+
     assertEquals(body, xbody);
   }
 
@@ -24,7 +26,7 @@ public class ElementEqualityTest extends AbstractDriverTestCase {
     driver.get(simpleTestPage);
     
     List<WebElement> ps = driver.findElements(By.tagName("p"));
-    
+
     assertFalse(ps.get(0).equals(ps.get(1)));
   }
 
@@ -33,7 +35,7 @@ public class ElementEqualityTest extends AbstractDriverTestCase {
     driver.get(simpleTestPage);
     WebElement body = driver.findElement(By.tagName("body"));
     WebElement xbody = driver.findElement(By.xpath("//body"));
-    
+
     assertEquals(body.hashCode(), xbody.hashCode());
   }
   
@@ -42,7 +44,7 @@ public class ElementEqualityTest extends AbstractDriverTestCase {
     driver.get(simpleTestPage);
     List<WebElement> body = driver.findElements(By.tagName("body"));
     List<WebElement> xbody = driver.findElements(By.xpath("//body"));
-    
+
     assertEquals(body.get(0).hashCode(), xbody.get(0).hashCode());
   }
 }

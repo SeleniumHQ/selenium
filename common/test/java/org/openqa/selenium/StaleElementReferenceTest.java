@@ -17,6 +17,7 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import static org.junit.Assert.fail;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 
 public class StaleElementReferenceTest extends AbstractDriverTestCase {

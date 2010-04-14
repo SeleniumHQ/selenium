@@ -1,5 +1,8 @@
 package org.openqa.selenium;
 
+import org.junit.Assert;
+
+import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;

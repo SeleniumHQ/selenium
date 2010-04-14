@@ -17,11 +17,16 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.REMOTE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 
 import java.util.Collection;
+
+import org.junit.Assert;
 
 public class PartialLinkTextMatchTest extends AbstractDriverTestCase {
 

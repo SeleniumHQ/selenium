@@ -22,6 +22,9 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.fail;
 import static org.openqa.selenium.Ignore.Driver.FIREFOX;
 
 import org.openqa.selenium.AbstractDriverTestCase;
@@ -44,7 +47,7 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
 
         try {
             driver.findElement(By.id("notThere"));
-            fail("Should not be able to select element by id here");
+          fail("Should not be able to select element by id here");
         } catch (NoSuchElementException e) {
             // This is expected
         }
@@ -187,7 +190,7 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
 
     // There should be two windows. We should also see each of the window titles at least once.
     assertEquals(2, allWindowHandles.size());
-    
+
     allWindowHandles.remove(originalWinHandle);
     String newWinHandle = (String) allWindowHandles.toArray()[0];
     
@@ -229,7 +232,7 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
     Set<String> allWindowHandles = driver.getWindowHandles();
     // There should be two windows. We should also see each of the window titles at least once.
     assertEquals(2, allWindowHandles.size());
-    
+
     allWindowHandles.remove(originalWinHandle);
     String newWinHandle = (String) allWindowHandles.toArray()[0];
     // Switch to the new window.

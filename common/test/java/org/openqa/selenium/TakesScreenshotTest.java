@@ -17,6 +17,7 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.OutputType.*;
 
 import java.io.File;

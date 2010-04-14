@@ -24,6 +24,7 @@ import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
+
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 
 public class PageLoadingTest extends AbstractDriverTestCase {

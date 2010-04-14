@@ -19,6 +19,7 @@ package org.openqa.selenium;
 
 import java.lang.reflect.Method;
 
+import static org.junit.Assert.assertEquals;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;

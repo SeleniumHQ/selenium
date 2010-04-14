@@ -28,7 +28,13 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
+import org.junit.Assert;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
@@ -156,11 +162,10 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
     expected.put("abc", "123");
     expected.put("tired", false);
 
-    assertEquals("Expected:<" + expected + ">, but was:<" + map + ">",
-        expected.size(), map.size());
+    assertEquals("Expected:<" + expected + ">, but was:<" + map + ">", expected.size(),
+        map.size());
     for (Map.Entry<String, Object> entry : expected.entrySet()) {
-      assertEquals("Difference at key:<" + entry.getKey() + ">",
-          entry.getValue(), map.get(entry.getKey()));
+      assertEquals("Difference at key:<" + entry.getKey() + ">", entry.getValue(), map.get(entry.getKey()));
     }
   }
 
@@ -469,7 +474,7 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
     
     List<WebElement> resultsList = (List<WebElement>) ((JavascriptExecutor) driver)
       .executeScript(scriptToExec);
-    
+
     assertTrue(resultsList.size() > 0);
   }
   
