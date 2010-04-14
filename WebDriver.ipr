@@ -654,6 +654,61 @@
     </option>
   </component>
   <component name="SvnBranchConfigurationManager">
+    <option name="myConfigurationMap">
+      <map>
+        <entry key="$PROJECT_DIR$">
+          <value>
+            <SvnBranchConfiguration>
+              <option name="branchMap">
+                <map>
+                  <entry key="https://selenium.googlecode.com/svn/branches">
+                    <value>
+                      <list />
+                    </value>
+                  </entry>
+                  <entry key="https://selenium.googlecode.com/svn/plugins">
+                    <value>
+                      <list />
+                    </value>
+                  </entry>
+                  <entry key="https://selenium.googlecode.com/svn/selenium-grid-website">
+                    <value>
+                      <list />
+                    </value>
+                  </entry>
+                  <entry key="https://selenium.googlecode.com/svn/tags">
+                    <value>
+                      <list />
+                    </value>
+                  </entry>
+                  <entry key="https://selenium.googlecode.com/svn/websites">
+                    <value>
+                      <list />
+                    </value>
+                  </entry>
+                  <entry key="https://selenium.googlecode.com/svn/wiki">
+                    <value>
+                      <list />
+                    </value>
+                  </entry>
+                </map>
+              </option>
+              <option name="branchUrls">
+                <list>
+                  <option value="https://selenium.googlecode.com/svn/branches" />
+                  <option value="https://selenium.googlecode.com/svn/plugins" />
+                  <option value="https://selenium.googlecode.com/svn/selenium-grid-website" />
+                  <option value="https://selenium.googlecode.com/svn/tags" />
+                  <option value="https://selenium.googlecode.com/svn/websites" />
+                  <option value="https://selenium.googlecode.com/svn/wiki" />
+                </list>
+              </option>
+              <option name="trunkUrl" value="https://selenium.googlecode.com/svn/trunk" />
+            </SvnBranchConfiguration>
+          </value>
+        </entry>
+      </map>
+    </option>
     <option name="myVersion" value="124" />
     <option name="mySupportsUserInfoFilter" value="true" />
   </component>
@@ -671,7 +726,6 @@
   <component name="libraryTable">
     <library name="common-buildtime">
       <CLASSES>
-        <root url="jar://$PROJECT_DIR$/common/lib/buildtime/junit-dep-4.4.jar!/" />
         <root url="jar://$PROJECT_DIR$/common/lib/buildtime/hamcrest-all-1.1.jar!/" />
         <root url="jar://$PROJECT_DIR$/common/lib/buildtime/jmock-2.4.0.jar!/" />
         <root url="jar://$PROJECT_DIR$/common/lib/buildtime/jmock-junit3-2.4.0.jar!/" />
@@ -687,9 +741,12 @@
         <root url="jar://$PROJECT_DIR$/common/lib/buildtime/servlet-api-2.5-6.1.9.jar!/" />
         <root url="jar://$PROJECT_DIR$/common/lib/buildtime/jetty-6.1.9.jar!/" />
         <root url="jar://$PROJECT_DIR$/common/lib/buildtime/commons-io-1.4.jar!/" />
+        <root url="jar://$PROJECT_DIR$/third_party/java/junit/junit-dep-4.8.1.jar!/" />
       </CLASSES>
       <JAVADOC />
-      <SOURCES />
+      <SOURCES>
+        <root url="jar://$PROJECT_DIR$/third_party/java/junit/junit-4.8.1-src.jar!/" />
+      </SOURCES>
     </library>
     <library name="third_party-buildtime">
       <CLASSES>

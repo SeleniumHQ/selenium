@@ -3,8 +3,8 @@
 	<classpathentry kind="src" output="build/classes" path="src/java"/>
 	<classpathentry kind="src" output="build/test-classes" path="test/java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry exported="true" kind="lib" path="/third-party/java/junit/junit-dep-4.8.1.jar" sourcepath="/third-party/java/junit/junit-4.8.1-src.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/buildtime/hamcrest-all-1.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/buildtime/junit-dep-4.4.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/buildtime/jmock-2.4.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/buildtime/jmock-junit3-2.4.0.jar"/>
 	<classpathentry kind="lib" path="lib/buildtime/servlet-api-2.5-6.1.9.jar"/>

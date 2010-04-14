@@ -98,7 +98,8 @@ java_jar(:name => 'webdriver-common-test',
          :resources => [ "common/test/java/org/openqa/selenium/messages.properties" => "org/openqa/selenium/messages.properties" ],
          :deps => [
            :'webdriver-common',
-           "common/lib/buildtime/*.jar"
+           "common/lib/buildtime/*.jar",
+           "third_party/java/junit/junit-dep-4.8.1.jar"
          ])
 
 java_jar(:name => 'webdriver-htmlunit',
