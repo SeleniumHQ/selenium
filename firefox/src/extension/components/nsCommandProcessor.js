@@ -233,6 +233,7 @@ DelayedCommand.prototype.shouldDelayExecutionForPendingRequest_ = function() {
     }
   } catch(e) {
     Utils.dumpn('Problem while checking if we should delay execution: ' + e);
+    return true;
   }
 
   return false;
