@@ -57,7 +57,6 @@ import com.gargoylesoftware.htmlunit.html.HtmlSelect;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import com.gargoylesoftware.htmlunit.html.HtmlTextArea;
 import com.gargoylesoftware.htmlunit.html.HtmlHiddenInput;
-import com.gargoylesoftware.htmlunit.html.StyledElement;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
@@ -774,13 +773,9 @@ public class HtmlUnitWebElement implements RenderedWebElement,
   }
 
   private String getEffectiveStyle(HtmlElement htmlElement, String propertyName) {
-    if (!(htmlElement instanceof StyledElement)) {
-      return "";
-    }
-
     HtmlElement current = htmlElement;
     String value = "inherit";
-    while (current instanceof StyledElement && "inherit".equals(value)) {
+    while (current instanceof HtmlElement && "inherit".equals(value)) {
       // Hat-tip to the Selenium team
       Object result = parent.executeScript(
           "if (window.getComputedStyle) { " +

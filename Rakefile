@@ -106,7 +106,10 @@ java_jar(:name => 'webdriver-htmlunit',
          :srcs => [ 'htmlunit/src/java/**/*.java'],
          :deps => [
            :'webdriver-common',
-           'htmlunit/lib/runtime/*.jar'
+           'htmlunit/lib/runtime/*.jar',
+           'third_party/java/htmlunit/htmlunit-2.7.jar',
+           'third_party/java/htmlunit/htmlunit-core-js-2.7.jar',
+           'third_party/java/nekohtml/nekohtml-1.9.14.jar',
           ])
 
 java_test(:name => 'webdriver-htmlunit-test',

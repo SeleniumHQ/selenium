@@ -266,7 +266,7 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
     }
 
     WebResponse response = page.getWebResponse();
-    return response.getRequestUrl().toString();
+    return response.getRequestSettings().getUrl().toString();
   }
 
   public String getTitle() {
@@ -842,8 +842,8 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
       verifyDomain(cookie, domain);
 
       webClient.getCookieManager().addCookie(
-          new org.apache.commons.httpclient.Cookie(domain, cookie.getName(), cookie.getValue(),
-                                                   cookie.getPath(), cookie.getExpiry(), cookie.isSecure()));
+          new com.gargoylesoftware.htmlunit.util.Cookie(domain, cookie.getName(), cookie.getValue(),
+                               cookie.getPath(), cookie.getExpiry(), cookie.isSecure()));
     }
 
     private void verifyDomain(Cookie cookie, String expectedDomain) {
@@ -887,10 +887,10 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
     public void deleteCookieNamed(String name) {
       CookieManager cookieManager = webClient.getCookieManager();
 
-      Set<org.apache.commons.httpclient.Cookie>
-          rawCookies =
-          webClient.getCookieManager().getCookies(getHostName());
-      for (org.apache.commons.httpclient.Cookie cookie : rawCookies) {
+      URL url = lastPage().getWebResponse().getRequestSettings().getUrl();
+      Set<com.gargoylesoftware.htmlunit.util.Cookie> rawCookies =
+          webClient.getCookieManager().getCookies(url);
+      for (com.gargoylesoftware.htmlunit.util.Cookie cookie : rawCookies) {
         if (name.equals(cookie.getName())) {
           cookieManager.removeCookie(cookie);
         }
@@ -906,15 +906,16 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
     }
 
     public Set<Cookie> getCookies() {
-      Set<org.apache.commons.httpclient.Cookie>
+      URL url = lastPage().getWebResponse().getRequestSettings().getUrl();
+      Set<com.gargoylesoftware.htmlunit.util.Cookie>
           rawCookies =
-          webClient.getCookieManager().getCookies(getHostName());
+          webClient.getCookieManager().getCookies(url);
 
       Set<Cookie> retCookies = new HashSet<Cookie>();
-      for (org.apache.commons.httpclient.Cookie c : rawCookies) {
+      for (com.gargoylesoftware.htmlunit.util.Cookie c : rawCookies) {
         if (c.getPath() != null && getPath().startsWith(c.getPath())) {
           retCookies.add(new ReturnedCookie(c.getName(), c.getValue(), c.getDomain(), c.getPath(),
-                                            c.getExpiryDate(), c.getSecure(), getCurrentUrl()));
+                                            c.getExpires(), c.isSecure(), getCurrentUrl()));
         }
       }
       return retCookies;

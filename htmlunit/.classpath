@@ -19,5 +19,8 @@
 	<classpathentry kind="lib" path="lib/runtime/nekohtml-1.9.13.jar"/>
 	<classpathentry kind="lib" path="lib/runtime/xercesImpl-2.9.1.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/selenium-common"/>
+	<classpathentry kind="lib" path="/third-party/java/htmlunit/htmlunit-2.7.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/htmlunit/htmlunit-core-js-2.7.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/nekohtml/nekohtml-1.9.14.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>
