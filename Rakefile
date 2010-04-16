@@ -15,7 +15,7 @@ require 'rake-tasks/ruby'
 require 'rake-tasks/se-ide'
 require 'rake-tasks/ie_code_generator'
 
-version = "2.0a2"
+version = "2.0a3"
 
 task :default => [:test]
 
