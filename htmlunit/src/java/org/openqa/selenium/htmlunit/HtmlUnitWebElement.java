@@ -38,6 +38,7 @@ package org.openqa.selenium.htmlunit;
 import com.gargoylesoftware.htmlunit.Page;
 
 import com.gargoylesoftware.htmlunit.ScriptException;
+import com.gargoylesoftware.htmlunit.ScriptResult;
 import com.gargoylesoftware.htmlunit.SgmlPage;
 import com.gargoylesoftware.htmlunit.html.DomNode;
 import com.gargoylesoftware.htmlunit.html.DomText;
@@ -177,7 +178,15 @@ public class HtmlUnitWebElement implements RenderedWebElement,
     }
 
     if (submit == null) {
-      throw new WebDriverException("Cannot locate element used to submit form");
+      if (parent.isJavascriptEnabled()) {
+        ScriptResult eventResult = form.fireEvent("submit");
+        if (!ScriptResult.isFalse(eventResult)) {
+          parent.executeScript("arguments[0].submit()", form);
+        }
+        return;
+      } else {
+        throw new WebDriverException("Cannot locate element used to submit form");
+      }
     }
     try {
       submit.click();
