@@ -134,6 +134,7 @@ public class FirefoxDriverTestSuite extends TestCase {
       deleteSvnDirectories(extension);
 
       FirefoxProfile profile = new FirefoxProfile(dir);
+      p.getAdditionalPreferences().addTo(profile);
       if (Boolean.getBoolean("webdriver.debug")) {
         profile.addExtension(FileHandler.locateInProject("third_party/firebug/firebug-1.5.0-fx.xpi"));
       }

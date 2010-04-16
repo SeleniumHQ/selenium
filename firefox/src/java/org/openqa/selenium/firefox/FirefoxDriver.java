@@ -105,13 +105,13 @@ public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot, F
 
   @Override
   protected void startClient() {
-    LazyCommandExecutor executor = (LazyCommandExecutor) getCommandExecutor();
-    FirefoxProfile profileToUse = getProfile(executor.profile);
+    LazyCommandExecutor exe = (LazyCommandExecutor) getCommandExecutor();
+    FirefoxProfile profileToUse = getProfile(exe.profile);
     profileToUse.addWebDriverExtensionIfNeeded(false);
 
     // TODO(simon): Make this not sinfully ugly
-    ExtensionConnection connection = connectTo(executor.binary, profileToUse, "localhost");
-    executor.setConnection(connection);
+    ExtensionConnection connection = connectTo(exe.binary, profileToUse, "localhost");
+    exe.setConnection(connection);
 
     try {
       connection.start();

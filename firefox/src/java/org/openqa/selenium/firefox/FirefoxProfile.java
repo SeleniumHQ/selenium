@@ -350,7 +350,7 @@ public class FirefoxProfile {
     public void setPreference(String key, int value) {
         additionalPrefs.setPreference(key, value);
     }
-    
+
     /**
      * Set proxy preferences for this profile.
      * 
@@ -400,17 +400,18 @@ public class FirefoxProfile {
         }
 
         Map<String, String> prefs = new HashMap<String, String>();
-        if (userPrefs.exists()) {
-            prefs = readExistingPrefs(userPrefs);
-            if (!userPrefs.delete())
-                throw new WebDriverException("Cannot delete existing user preferences");
-        }
 
         // Allow users to override these settings
         prefs.put("browser.startup.homepage", "\"about:blank\"");
         // The user must be able to override this setting (to 1) in order to
         // to change homepage on Firefox 3.0
         prefs.put("browser.startup.page", "0");
+
+        if (userPrefs.exists()) {
+            prefs = readExistingPrefs(userPrefs);
+            if (!userPrefs.delete())
+                throw new WebDriverException("Cannot delete existing user preferences");
+        }
 
         additionalPrefs.addTo(prefs);
 
@@ -466,6 +467,10 @@ public class FirefoxProfile {
 
         // If the user sets the home page, we should also start up there
         prefs.put("startup.homepage_welcome_url", prefs.get("browser.startup.homepage"));
+
+        if (!"about:blank".equals(prefs.get("browser.startup.homepage"))) {
+          prefs.put("browser.startup.page", "1");
+        }
 
         writeNewPrefs(prefs);
     }
