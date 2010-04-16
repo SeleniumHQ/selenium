@@ -35,6 +35,8 @@ public class ObjectStateAssumptionsTest extends AbstractDriverTestCase {
       throw new IllegalStateException("Assumptions broken for a fresh WebDriver instance", npe);
     } catch (WebDriverException e) {
       // this is fine.
+    } catch (UnsupportedOperationException e) {
+      // This is okay too.
     }
   }
 
