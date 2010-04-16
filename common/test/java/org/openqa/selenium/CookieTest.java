@@ -29,15 +29,6 @@ public class CookieTest extends TestCase {
     new ReturnedCookie("Fish", "cod", "", "", null, false, null);
   }
 
-  public void testShouldThrowAnExceptionWhenTheDomainIsBad() {
-    try {
-      new ReturnedCookie("Fish", "cod", "127.0.0.-1", null, null, false, null);
-      fail();
-    } catch (IllegalArgumentException e) {
-      // This is expected
-    }
-  }
-
   public void testShouldThrowAnExceptionWhenSemiColonExistsInTheCookieAttribute() {
     try {
       new ReturnedCookie("hi;hi", "value", null, null, null, false, null);

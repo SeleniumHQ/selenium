@@ -17,21 +17,13 @@ limitations under the License.
 
 package org.openqa.selenium.internal;
 
-import java.net.InetAddress;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.openqa.selenium.Cookie;
-import org.openqa.selenium.WebDriverException;
 
 public class ReturnedCookie extends Cookie {
   private final boolean isSecure;
-  private String currentHost;
   private boolean readyForValidation;
 
   public ReturnedCookie(String name, String value, String domain, String path, Date expiry, boolean isSecure, String currentUrl) {
@@ -40,15 +32,6 @@ public class ReturnedCookie extends Cookie {
     readyForValidation = true;
 
     this.isSecure = isSecure;
-
-    // get the host from the current URL
-    if (currentUrl != null) {
-      try {
-        this.currentHost = new URI(currentUrl).getHost();
-      } catch (URISyntaxException e) {
-        throw new WebDriverException("Couldn't convert currentUrl to URI, which should be impossible!", e);
-      }
-    }
 
     validate();
   }
@@ -65,27 +48,6 @@ public class ReturnedCookie extends Cookie {
     }
 
     super.validate();
-
-    String domain = getDomain();
-
-    if (domain != null && !"".equals(domain)) {
-      try {
-        String domainToUse = domain.startsWith("http") ? domain : "http://" + domain;
-        URL url = new URL(domainToUse);
-        InetAddress.getByName(url.getHost());
-      } catch (MalformedURLException e) {
-        throw new IllegalArgumentException(String.format("URL not valid: %s", domain));
-      } catch (UnknownHostException e) {
-        // Domains must not be resolvable - it is perfectly valid for a domain not to
-        // have an IP address - hence, just throwing is incorrect. As a safety measure,
-        // check to see if the domain is a part of the fqdn of the local host - this will
-        // make sure some tests in CookieImplementationTest will pass.
-        if (currentHost == null || !currentHost.contains(domain)) {
-          throw new IllegalArgumentException(String.format("Domain unknown: %s", domain));
-        }
-        // no IP - unreasonable in any modern os has localhost address.
-      }
-    }
   }
 
   @Override
