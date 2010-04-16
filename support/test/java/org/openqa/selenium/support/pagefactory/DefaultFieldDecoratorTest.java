@@ -23,12 +23,18 @@ import static org.hamcrest.core.IsNull.notNullValue;
 import static org.hamcrest.core.IsNull.nullValue;
 import org.jmock.integration.junit3.MockObjectTestCase;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 
 import java.lang.reflect.Field;
 
 /**
  */
 public class DefaultFieldDecoratorTest extends MockObjectTestCase {
+
+  // Unusued fields are used by tests. Do not remove!
+  private WebElement element1;
+  private WebElement element2;
+  private Integer num;
 
   private FieldDecorator createDecoratorWithNullLocator() {
     return new DefaultFieldDecorator(new ElementLocatorFactory() {
