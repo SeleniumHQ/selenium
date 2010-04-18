@@ -61,6 +61,7 @@ public class FirefoxBinary {
 
   public void startProfile(FirefoxProfile profile, String... commandLineFlags) throws IOException {
     String profileAbsPath = profile.getProfileDir().getAbsolutePath();
+    setEnvironmentProperty("XRE_PROFILE_PATH", profileAbsPath);
     setEnvironmentProperty("MOZ_NO_REMOTE", "1");
 
     if (isOnLinux()
@@ -70,8 +71,6 @@ public class FirefoxBinary {
 
     List<String> commands = new ArrayList<String>();
     commands.add(getExecutable().getPath());
-    commands.add("-profile");
-    commands.add(profileAbsPath);
     commands.add("--verbose");
     commands.addAll(Arrays.asList(commandLineFlags));
     ProcessBuilder builder = new ProcessBuilder(commands);
