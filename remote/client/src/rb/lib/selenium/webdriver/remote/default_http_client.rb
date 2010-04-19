@@ -31,25 +31,7 @@ module Selenium
             end
           end
 
-          begin
-            request = Net::HTTP.const_get(verb.to_s.capitalize).new(url.path, headers)
-            # TODO: should be checking against a maximum redirect count
-            http.request(request, payload) do |res|
-              if res.kind_of? Net::HTTPRedirection
-                verb, payload = :get, nil
-                url           = URI.parse(res["Location"])
-                headers       = DEFAULT_HEADERS.dup
-
-                raise RetryException
-              else
-                response = create_response(res)
-              end
-            end
-
-            response
-          rescue RetryException
-            retry
-          end
+          request verb, url, headers, payload
         end
 
         private
@@ -57,6 +39,18 @@ module Selenium
         def http
           # ignoring SSL for now
           @http ||= Net::HTTP.new @server_url.host, @server_url.port
+        end
+
+        def request(verb, url, headers, payload)
+          request  = Net::HTTP.const_get(verb.to_s.capitalize).new(url.path, headers)
+          response = http.request(request, payload)
+
+          # TODO: should be checking against a maximum redirect count
+          if response.kind_of? Net::HTTPRedirection
+            request(:get, URI.parse(response['Location']), DEFAULT_HEADERS.dup, nil)
+          else
+            create_response response
+          end
         end
 
         def create_response(res)
