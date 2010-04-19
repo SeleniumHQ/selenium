@@ -1,7 +1,5 @@
 package org.openqa.selenium;
 
-import org.junit.Assert;
-
 import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.IE;
@@ -15,7 +13,7 @@ public class SlowLoadingPageTest extends AbstractDriverTestCase {
   @Ignore(value = {IE, IPHONE, SELENESE}, reason = "Untested browsers")
   public void testShouldBlockUnitlPageLoads() {
     long start = System.currentTimeMillis();
-    driver.get(sleepingPage + "?time=" + LOAD_TIME_IN_SECONDS);
+    driver.get(pages.sleepingPage + "?time=" + LOAD_TIME_IN_SECONDS);
     long now = System.currentTimeMillis();
     assertEllapsed(LOAD_TIME_IN_SECONDS * 1000, now - start);
   }
@@ -23,7 +21,7 @@ public class SlowLoadingPageTest extends AbstractDriverTestCase {
   @Ignore(value = {IE, IPHONE, SELENESE, CHROME}, reason = "Chrome: doesn't work; Others: untested")
   public void testRefreshShouldBlockUntilPageLoads() {
     long start = System.currentTimeMillis();
-    driver.get(sleepingPage + "?time=" + LOAD_TIME_IN_SECONDS);
+    driver.get(pages.sleepingPage + "?time=" + LOAD_TIME_IN_SECONDS);
     assertEllapsed(LOAD_TIME_IN_SECONDS * 1000, System.currentTimeMillis() - start);
     long refreshed = System.currentTimeMillis();
     driver.navigate().refresh();

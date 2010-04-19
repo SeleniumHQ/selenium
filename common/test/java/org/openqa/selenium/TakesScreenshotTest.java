@@ -28,7 +28,7 @@ public class TakesScreenshotTest extends AbstractDriverTestCase {
       return;
     }
 
-    driver.get(simpleTestPage);
+    driver.get(pages.simpleTestPage);
     File tempFile = getScreenshot().getScreenshotAs(OutputType.FILE);
     assertTrue(tempFile.exists());
     assertTrue(tempFile.length() > 0);
@@ -40,7 +40,7 @@ public class TakesScreenshotTest extends AbstractDriverTestCase {
       return;
     }
 
-    driver.get(simpleTestPage);
+    driver.get(pages.simpleTestPage);
     String screenshot = getScreenshot().getScreenshotAs(BASE64);
     assertTrue(screenshot.length() > 0);
   }

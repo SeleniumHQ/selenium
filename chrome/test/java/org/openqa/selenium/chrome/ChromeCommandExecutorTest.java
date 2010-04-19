@@ -35,7 +35,7 @@ public class ChromeCommandExecutorTest extends AbstractDriverTestCase {
     executor.getBinary().kill();
 
     try {
-      chrome.get(simpleTestPage);
+      chrome.get(pages.simpleTestPage);
       fail("Should have detected that chrome is no longer running");
     } catch (ChromeNotRunningException expected) {
       // Do nothing

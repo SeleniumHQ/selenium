@@ -30,26 +30,26 @@ import org.openqa.selenium.environment.GlobalTestEnvironment;
 public class PageLoadingTest extends AbstractDriverTestCase {
 
   public void testShouldWaitForDocumentToBeLoaded() {
-    driver.get(simpleTestPage);
+    driver.get(pages.simpleTestPage);
 
     assertThat(driver.getTitle(), equalTo("Hello WebDriver"));
   }
 
   public void testShouldFollowRedirectsSentInTheHttpResponseHeaders() {
-    driver.get(redirectPage);
+    driver.get(pages.redirectPage);
 
     assertThat(driver.getTitle(), equalTo("We Arrive Here"));
   }
 
   public void testShouldFollowMetaRedirects() throws Exception {
-    driver.get(metaRedirectPage);
+    driver.get(pages.metaRedirectPage);
     assertThat(driver.getTitle(), equalTo("We Arrive Here"));
   }
 
   @Ignore(SELENESE)
   public void testShouldBeAbleToGetAFragmentOnTheCurrentPage() {
-    driver.get(xhtmlTestPage);
-    driver.get(xhtmlTestPage + "#text");
+    driver.get(pages.xhtmlTestPage);
+    driver.get(pages.xhtmlTestPage + "#text");
     driver.findElement(By.id("id1"));
   }
 
@@ -73,7 +73,7 @@ public class PageLoadingTest extends AbstractDriverTestCase {
 
   @Ignore({IPHONE, SELENESE})
   public void testShouldBeAbleToLoadAPageWithFramesetsAndWaitUntilAllFramesAreLoaded() {
-    driver.get(framesetPage);
+    driver.get(pages.framesetPage);
 
     driver.switchTo().frame(0);
     WebElement pageNumber = driver.findElement(By.xpath("//span[@id='pageNumber']"));
@@ -88,7 +88,7 @@ public class PageLoadingTest extends AbstractDriverTestCase {
   @NeedsFreshDriver
   public void testSouldDoNothingIfThereIsNothingToGoBackTo() {
     String originalTitle = driver.getTitle();
-    driver.get(formPage);
+    driver.get(pages.formPage);
 
     driver.navigate().back();
     // We may have returned to the browser's home page
@@ -97,7 +97,7 @@ public class PageLoadingTest extends AbstractDriverTestCase {
 
   @Ignore(SELENESE)
   public void testShouldBeAbleToNavigateBackInTheBrowserHistory() {
-    driver.get(formPage);
+    driver.get(pages.formPage);
 
     driver.findElement(By.id("imageButton")).submit();
     assertThat(driver.getTitle(), equalTo("We Arrive Here"));
@@ -108,7 +108,7 @@ public class PageLoadingTest extends AbstractDriverTestCase {
 
   @Ignore(SELENESE)
   public void testShouldBeAbleToNavigateBackInTheBrowserHistoryInPresenceOfIframes() {
-    driver.get(xhtmlTestPage);
+    driver.get(pages.xhtmlTestPage);
 
     driver.findElement(By.name("sameWindow")).click();
     assertThat(driver.getTitle(), equalTo("This page has iframes"));
@@ -119,7 +119,7 @@ public class PageLoadingTest extends AbstractDriverTestCase {
 
   @Ignore(SELENESE)
   public void testShouldBeAbleToNavigateForwardsInTheBrowserHistory() {
-    driver.get(formPage);
+    driver.get(pages.formPage);
 
     driver.findElement(By.id("imageButton")).submit();
     assertThat(driver.getTitle(), equalTo("We Arrive Here"));
@@ -142,7 +142,7 @@ public class PageLoadingTest extends AbstractDriverTestCase {
 
   @Ignore({IE, SELENESE})
   public void testShouldBeAbleToRefreshAPage() {
-    driver.get(xhtmlTestPage);
+    driver.get(pages.xhtmlTestPage);
 
     driver.navigate().refresh();
 
@@ -158,7 +158,7 @@ public class PageLoadingTest extends AbstractDriverTestCase {
   @JavascriptEnabled
   public void testShouldNotHangIfDocumentOpenCallIsNeverFollowedByDocumentCloseCall()
       throws Exception {
-    driver.get(documentWrite);
+    driver.get(pages.documentWrite);
 
     // If this command succeeds, then all is well.
     driver.findElement(By.xpath("//body"));

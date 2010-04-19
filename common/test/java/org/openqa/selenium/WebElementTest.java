@@ -30,14 +30,14 @@ import org.openqa.selenium.internal.WrapsDriver;
 public class WebElementTest extends AbstractDriverTestCase {
   @Ignore(SELENESE)
   public void testElementImplementsWrapsDriver() {
-    driver.get(simpleTestPage);
+    driver.get(pages.simpleTestPage);
     WebElement parent = driver.findElement(By.id("containsSomeDiv"));
     assertTrue(parent instanceof WrapsDriver);
   }
   
   @Ignore(SELENESE)
   public void testElementReturnsOriginDriver() {
-    driver.get(simpleTestPage);
+    driver.get(pages.simpleTestPage);
     WebElement parent = driver.findElement(By.id("containsSomeDiv"));
     assertTrue(((WrapsDriver) parent).getWrappedDriver() == driver);
   }

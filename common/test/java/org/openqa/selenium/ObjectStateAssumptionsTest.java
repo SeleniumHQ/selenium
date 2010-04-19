@@ -46,7 +46,7 @@ public class ObjectStateAssumptionsTest extends AbstractDriverTestCase {
    */
   @Ignore(SELENESE)
   public void testinitializedWebDriverDoesNotThrowNPE() {
-    driver.get(simpleTestPage);
+    driver.get(pages.simpleTestPage);
     try {
       variousMethodCallsToCheckAssumptions();
     } catch (NullPointerException npe) {

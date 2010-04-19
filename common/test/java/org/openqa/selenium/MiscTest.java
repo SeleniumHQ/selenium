@@ -25,17 +25,17 @@ import static org.openqa.selenium.Ignore.Driver.SELENESE;
 public class MiscTest extends AbstractDriverTestCase {
 
   public void testShouldReportTheCurrentUrlCorrectly() {
-    driver.get(simpleTestPage);
-    assertThat(driver.getCurrentUrl(), equalTo(simpleTestPage));
+    driver.get(pages.simpleTestPage);
+    assertThat(driver.getCurrentUrl(), equalTo(pages.simpleTestPage));
 
-    driver.get(javascriptPage);
-    assertThat(driver.getCurrentUrl(), equalTo(javascriptPage));
+    driver.get(pages.javascriptPage);
+    assertThat(driver.getCurrentUrl(), equalTo(pages.javascriptPage));
   }
 
   @JavascriptEnabled
   @Ignore(SELENESE)
   public void testShouldReturnTheSourceOfAPage() {
-    driver.get(simpleTestPage);
+    driver.get(pages.simpleTestPage);
 
     String source = driver.getPageSource().toLowerCase();
 

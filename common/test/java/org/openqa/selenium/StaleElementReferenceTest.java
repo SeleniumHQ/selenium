@@ -23,9 +23,9 @@ import static org.openqa.selenium.Ignore.Driver.SELENESE;
 public class StaleElementReferenceTest extends AbstractDriverTestCase {
 
   public void testOldPage() {
-    driver.get(simpleTestPage);
+    driver.get(pages.simpleTestPage);
     WebElement elem = driver.findElement(By.id("links"));
-    driver.get(xhtmlTestPage);
+    driver.get(pages.xhtmlTestPage);
     try {
       elem.click();
       fail();
@@ -37,9 +37,9 @@ public class StaleElementReferenceTest extends AbstractDriverTestCase {
   @JavascriptEnabled
   @Ignore(SELENESE)
   public void testShouldNotCrashWhenCallingGetSizeOnAnObsoleteElement() {
-    driver.get(simpleTestPage);
+    driver.get(pages.simpleTestPage);
     RenderedWebElement elem = (RenderedWebElement) driver.findElement(By.id("links"));
-    driver.get(xhtmlTestPage);
+    driver.get(pages.xhtmlTestPage);
     try {
       elem.getSize();
       fail();
@@ -51,9 +51,9 @@ public class StaleElementReferenceTest extends AbstractDriverTestCase {
   @JavascriptEnabled
   @Ignore(SELENESE)
   public void testShouldNotCrashWhenQueryingTheAttributeOfAStaleElement() {
-    driver.get(xhtmlTestPage);
+    driver.get(pages.xhtmlTestPage);
     WebElement heading = driver.findElement(By.xpath("//h1"));
-    driver.get(simpleTestPage);
+    driver.get(pages.simpleTestPage);
     try {
       heading.getAttribute("class");
       fail();

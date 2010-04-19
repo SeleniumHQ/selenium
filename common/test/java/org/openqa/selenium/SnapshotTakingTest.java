@@ -29,7 +29,7 @@ public class SnapshotTakingTest extends AbstractDriverTestCase {
       return;
     }
 
-    driver.get(simpleTestPage);
+    driver.get(pages.simpleTestPage);
 
     File temp = File.createTempFile("snapshot", "png");
     temp.deleteOnExit();

@@ -26,13 +26,11 @@ import static org.openqa.selenium.Ignore.Driver.SELENESE;
 
 import java.util.Collection;
 
-import org.junit.Assert;
-
 public class PartialLinkTextMatchTest extends AbstractDriverTestCase {
 
   @Ignore({IE, REMOTE, SELENESE})
   public void testLinkWithFormattingTags() {
-    driver.get(simpleTestPage);
+    driver.get(pages.simpleTestPage);
     WebElement elem = driver.findElement(By.id("links"));
 
     WebElement res =
@@ -43,7 +41,7 @@ public class PartialLinkTextMatchTest extends AbstractDriverTestCase {
 
   @Ignore({IE, REMOTE, SELENESE})
   public void testLinkWithLeadingSpaces() {
-    driver.get(simpleTestPage);
+    driver.get(pages.simpleTestPage);
     WebElement elem = driver.findElement(By.id("links"));
 
     WebElement res = elem.findElement(By.partialLinkText("link with leading space"));
@@ -53,7 +51,7 @@ public class PartialLinkTextMatchTest extends AbstractDriverTestCase {
 
   @Ignore({IE, REMOTE, SELENESE})
   public void testLinkWithTrailingSpace() {
-    driver.get(simpleTestPage);
+    driver.get(pages.simpleTestPage);
     WebElement elem = driver.findElement(By.id("links"));
 
     WebElement res =
@@ -64,7 +62,7 @@ public class PartialLinkTextMatchTest extends AbstractDriverTestCase {
 
   @Ignore({IE, REMOTE, SELENESE})
   public void testFindMultipleElements() {
-    driver.get(simpleTestPage);
+    driver.get(pages.simpleTestPage);
     WebElement elem = driver.findElement(By.id("links"));
 
     Collection<WebElement> elements =
@@ -74,7 +72,7 @@ public class PartialLinkTextMatchTest extends AbstractDriverTestCase {
   }
   
   public void testCanGetLinkByLinkTestIgnoringTrailingWhitespace() {
-    driver.get(simpleTestPage);
+    driver.get(pages.simpleTestPage);
     WebElement link = null;
     try {
       link = driver.findElement(By.linkText("link with trailing space"));

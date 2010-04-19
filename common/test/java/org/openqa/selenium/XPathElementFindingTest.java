@@ -27,7 +27,7 @@ import java.util.List;
 public class XPathElementFindingTest extends AbstractDriverTestCase {
 
   public void testShouldThrowAnExceptionWhenThereIsNoLinkToClickAndItIsFoundWithXPath() {
-    driver.get(xhtmlTestPage);
+    driver.get(pages.xhtmlTestPage);
 
     try {
       driver.findElement(By.xpath("//a[@id='Not here']"));
@@ -38,7 +38,7 @@ public class XPathElementFindingTest extends AbstractDriverTestCase {
   }
 
   public void testShouldThrowAnExceptionWhenThereIsNoLinkToClick() {
-    driver.get(xhtmlTestPage);
+    driver.get(pages.xhtmlTestPage);
 
     try {
       driver.findElement(By.xpath("//a[@id='Not here']"));
@@ -49,14 +49,14 @@ public class XPathElementFindingTest extends AbstractDriverTestCase {
   }
 
   public void testShouldFindSingleElementByXPath() {
-    driver.get(xhtmlTestPage);
+    driver.get(pages.xhtmlTestPage);
     WebElement element = driver.findElement(By.xpath("//h1"));
     assertThat(element.getText(), equalTo("XHTML Might Be The Future"));
   }
 
   @Ignore(SELENESE)
   public void testShouldFindElementsByXPath() {
-    driver.get(xhtmlTestPage);
+    driver.get(pages.xhtmlTestPage);
     List<WebElement> divs = driver.findElements(By.xpath("//div"));
 
     assertThat(divs.size(), equalTo(8));
@@ -64,7 +64,7 @@ public class XPathElementFindingTest extends AbstractDriverTestCase {
 
   @Ignore(SELENESE)
   public void testShouldBeAbleToFindManyElementsRepeatedlyByXPath() {
-    driver.get(xhtmlTestPage);
+    driver.get(pages.xhtmlTestPage);
     String xpathString = "//node()[contains(@id,'id')]";
     assertThat(driver.findElements(By.xpath(xpathString)).size(), equalTo(3));
 
@@ -73,14 +73,14 @@ public class XPathElementFindingTest extends AbstractDriverTestCase {
   }
 
   public void testShouldBeAbleToIdentifyElementsByClass() {
-    driver.get(xhtmlTestPage);
+    driver.get(pages.xhtmlTestPage);
 
     String header = driver.findElement(By.xpath("//h1[@class='header']")).getText();
     assertThat(header, equalTo("XHTML Might Be The Future"));
   }
 
   public void testShouldBeAbleToSearchForMultipleAttributes() {
-    driver.get(formPage);
+    driver.get(pages.formPage);
 
     try {
       driver.findElement(
@@ -91,7 +91,7 @@ public class XPathElementFindingTest extends AbstractDriverTestCase {
   }
 
   public void testShouldLocateElementsWithGivenText() {
-    driver.get(xhtmlTestPage);
+    driver.get(pages.xhtmlTestPage);
 
     try {
       driver.findElement(By.xpath("//a[text()='click me']"));

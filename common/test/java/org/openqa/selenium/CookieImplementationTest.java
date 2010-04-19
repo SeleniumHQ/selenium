@@ -23,7 +23,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 
-import org.junit.Assert;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.environment.webserver.AppServer;
 import static org.openqa.selenium.Ignore.Driver.IE;
@@ -41,7 +40,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
   protected void setUp() throws Exception {
     super.setUp();
 
-    driver.get(simpleTestPage);
+    driver.get(pages.simpleTestPage);
     driver.manage().deleteAllCookies();
   }
 
@@ -84,7 +83,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
     driver.manage().addCookie(one);
     driver.manage().addCookie(two);
 
-    driver.get(simpleTestPage);
+    driver.get(pages.simpleTestPage);
     cookies = driver.manage().getCookies();
     assertEquals(count + 2, cookies.size());
 
@@ -145,7 +144,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
 
   @Ignore(SELENESE)
   public void testAddCookiesWithDifferentPathsThatAreRelatedToOurs() {
-    driver.get(simpleTestPage);
+    driver.get(pages.simpleTestPage);
     driver.manage().deleteAllCookies();
 
     Cookie cookie1 = new Cookie("fish", "cod", "/common/animals");
@@ -264,7 +263,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
     WebDriver.Options options = driver.manage();
     options.addCookie(cookie1);
 
-    driver.get(javascriptPage);
+    driver.get(pages.javascriptPage);
     Set<Cookie> cookies = options.getCookies();
     assertTrue(cookies.contains(cookie1));
   }
@@ -274,11 +273,11 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
     Cookie cookie1 = new Cookie("fish", "cod");
     driver.manage().addCookie(cookie1);
 
-    driver.get(childPage);
+    driver.get(pages.childPage);
     Cookie cookie2 = new Cookie("rodent", "hamster", "/common/child");
     driver.manage().addCookie(cookie2);
 
-    driver.get(grandchildPage);
+    driver.get(pages.grandchildPage);
     Cookie cookie3 = new Cookie("dog", "dalmation", "/common/child/grandchild/");
     driver.manage().addCookie(cookie3);
 
@@ -293,7 +292,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
     assertTrue(cookies.contains(cookie3));
 
     driver.manage().deleteAllCookies();
-    driver.get(grandchildPage);
+    driver.get(pages.grandchildPage);
 
     cookies = driver.manage().getCookies();
     assertEquals(0, cookies.size());

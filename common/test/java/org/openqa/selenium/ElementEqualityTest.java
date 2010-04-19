@@ -13,7 +13,7 @@ import static org.openqa.selenium.Ignore.Driver.SELENESE;
 public class ElementEqualityTest extends AbstractDriverTestCase {
   @Ignore(SELENESE)
   public void testElementEqualityShouldWork() {
-    driver.get(simpleTestPage);
+    driver.get(pages.simpleTestPage);
     
     WebElement body = driver.findElement(By.tagName("body"));
     WebElement xbody = driver.findElement(By.xpath("//body"));
@@ -23,7 +23,7 @@ public class ElementEqualityTest extends AbstractDriverTestCase {
 
   @Ignore(SELENESE)
   public void testElementInequalityShouldWork() {
-    driver.get(simpleTestPage);
+    driver.get(pages.simpleTestPage);
     
     List<WebElement> ps = driver.findElements(By.tagName("p"));
 
@@ -32,7 +32,7 @@ public class ElementEqualityTest extends AbstractDriverTestCase {
 
   @Ignore({IE, REMOTE, SELENESE})
   public void testFindElementHashCodeShouldMatchEquality() {
-    driver.get(simpleTestPage);
+    driver.get(pages.simpleTestPage);
     WebElement body = driver.findElement(By.tagName("body"));
     WebElement xbody = driver.findElement(By.xpath("//body"));
 
@@ -41,7 +41,7 @@ public class ElementEqualityTest extends AbstractDriverTestCase {
   
   @Ignore({IE, REMOTE, SELENESE})
   public void testFindElementsHashCodeShouldMatchEquality() {
-    driver.get(simpleTestPage);
+    driver.get(pages.simpleTestPage);
     List<WebElement> body = driver.findElements(By.tagName("body"));
     List<WebElement> xbody = driver.findElements(By.xpath("//body"));
 

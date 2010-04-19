@@ -33,7 +33,7 @@ public class SaveScreenshotTest extends AbstractDriverTestCase {
     public void testDeprecatedSaveScreenshot() throws IOException {
         File tempFile = File.createTempFile("formPage", ".png");
         assertThat(tempFile.length(), is(0L));
-        driver.get(formPage);
+        driver.get(pages.formPage);
         try {
             ((FirefoxDriver) driver).saveScreenshot(tempFile);
             assertThat(tempFile.length(), is(greaterThan(0L)));

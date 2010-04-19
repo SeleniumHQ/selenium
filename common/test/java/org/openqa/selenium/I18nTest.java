@@ -43,12 +43,12 @@ public class I18nTest extends AbstractDriverTestCase {
 
   @Ignore({HTMLUNIT, IE, FIREFOX, IPHONE})
   public void testCn() {
-    driver.get(chinesePage);
+    driver.get(pages.chinesePage);
     driver.findElement(By.linkText(Messages.getString("I18nTest.link1"))).click();
   }
 
   public void testEnteringHebrewTextFromLeftToRight() {
-    driver.get(chinesePage);
+    driver.get(pages.chinesePage);
     WebElement input = driver.findElement(By.name("i18n"));
 
     input.sendKeys(shalom);
@@ -57,7 +57,7 @@ public class I18nTest extends AbstractDriverTestCase {
   }
 
   public void testEnteringHebrewTextFromRightToLeft() {
-    driver.get(chinesePage);
+    driver.get(pages.chinesePage);
     WebElement input = driver.findElement(By.name("i18n"));
 
     input.sendKeys(tmunot);

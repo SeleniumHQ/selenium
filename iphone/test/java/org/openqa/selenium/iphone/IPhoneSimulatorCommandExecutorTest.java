@@ -39,7 +39,7 @@ public class IPhoneSimulatorCommandExecutorTest extends AbstractDriverTestCase {
     assertEquals(0, executor.getBinary().getKillScript().start().waitFor());
 
     try {
-      driver.get(simpleTestPage);
+      driver.get(pages.simpleTestPage);
       fail("Should have thrown a " +
            IPhoneSimulatorCommandExecutor.IPhoneSimulatorNotRunningException.class.getName());
     } catch (IPhoneSimulatorCommandExecutor.IPhoneSimulatorNotRunningException expected) {

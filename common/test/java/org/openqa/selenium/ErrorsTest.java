@@ -15,7 +15,7 @@ public class ErrorsTest extends AbstractDriverTestCase {
   @JavascriptEnabled
   @Ignore(value = Ignore.Driver.IE, reason = "IE does not support onerror")
   public void testShouldNotGenerateErrorsWhenOpeningANewPage() {
-    driver.get(errorsPage);
+    driver.get(pages.errorsPage);
     Object result = ((JavascriptExecutor) driver).
         executeScript("return window.ERRORS.join('\\n');");
     assertEquals("Should have no errors", "", result);

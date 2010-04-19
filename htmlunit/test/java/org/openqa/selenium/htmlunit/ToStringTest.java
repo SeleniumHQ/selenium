@@ -26,7 +26,7 @@ import org.openqa.selenium.WebElement;
 public class ToStringTest extends AbstractDriverTestCase {
 
     public void testToString() {
-        driver.get(xhtmlTestPage);
+        driver.get(pages.xhtmlTestPage);
 
         WebElement a = driver.findElement(By.id("id1"));
         assertThat(a.toString(), is("<a id=\"id1\" href=\"#\">"));

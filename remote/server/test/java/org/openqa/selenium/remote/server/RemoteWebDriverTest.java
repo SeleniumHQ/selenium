@@ -35,7 +35,7 @@ import static org.openqa.selenium.OutputType.BASE64;
 
 public class RemoteWebDriverTest extends AbstractDriverTestCase {
   public void testShouldBeAbleToGrabASnapshotOnException() {
-    driver.get(simpleTestPage);
+    driver.get(pages.simpleTestPage);
 
     try {
       driver.findElement(By.id("doesnayexist"));
@@ -68,7 +68,7 @@ public class RemoteWebDriverTest extends AbstractDriverTestCase {
       System.out.println("Skipping test: remote driver cannot take screenshots");
     }
 
-    driver.get(formPage);
+    driver.get(pages.formPage);
     WebDriver toUse = new Augmenter().augment(driver);
     String screenshot = ((TakesScreenshot) toUse).getScreenshotAs(BASE64);
 
