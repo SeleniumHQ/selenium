@@ -34,6 +34,7 @@ end
 
 
 require "selenium/webdriver/core_ext/dir"
+require "selenium/webdriver/core_ext/string"
 require "selenium/webdriver/error"
 require "selenium/webdriver/platform"
 require "selenium/webdriver/child_process"
