@@ -1,15 +1,13 @@
 
 class DotNet < BaseGenerator
   def library(args)
-    task args[:name].to_sym => FileList[args[:srcs]] do
+    task args[:name].to_sym => args[:project] do
       if msbuild?
-        sh "devenv #{args[:solution]} /project #{args[:project]} Release /rebuild", :verbose => false
+        sh "msbuild #{args[:project]} /t:#{args[:target]}"
       else
         copy_prebuilt(args[:prebuilt], args[:name])
       end
     end
-
-    task args[:name].to_sym => args[:solution]
   end
 end
 
