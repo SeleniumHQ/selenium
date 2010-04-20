@@ -30,8 +30,13 @@ module Selenium
 
         def new_driver_instance
           if driver == :remote
-            cap = WebDriver::Remote::Capabilities.send(ENV['WD_REMOTE_BROWSER'] || 'firefox')
-            WebDriver::Driver.for :remote, :desired_capabilities => cap
+            opts = {
+              :desired_capabilities => WebDriver::Remote::Capabilities.send(ENV['WD_REMOTE_BROWSER'] || 'firefox')
+            }
+
+            opts.merge!(:url => "http://localhost:6000") if Platform.jruby?
+
+            WebDriver::Driver.for :remote, opts
           else
             WebDriver::Driver.for driver
           end
