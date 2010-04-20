@@ -27,18 +27,18 @@ import java.net.ServerSocket;
 
 @SuppressWarnings("unused")
 public class SingleTestSuite extends TestCase {
-  private final static String CHROME = "org.openqa.selenium.chrome.ChromeDriver";
-  private final static String CHROME_TEST = "org.openqa.selenium.chrome.ChromeDriverTestSuite$TestChromeDriver";
+  private static final String CHROME = "org.openqa.selenium.chrome.ChromeDriver";
+  private static final String CHROME_TEST = "org.openqa.selenium.chrome.ChromeDriverTestSuite$TestChromeDriver";
 
-  private final static String FIREFOX = "org.openqa.selenium.firefox.FirefoxDriver";
-  private final static String FIREFOX_TEST = "org.openqa.selenium.firefox.FirefoxDriverTestSuite$TestFirefoxDriver";
+  private static final String FIREFOX = "org.openqa.selenium.firefox.FirefoxDriver";
+  private static final String FIREFOX_TEST = "org.openqa.selenium.firefox.FirefoxDriverTestSuite$TestFirefoxDriver";
  
-  private final static String HTML_UNIT = "org.openqa.selenium.htmlunit.HtmlUnitDriver";
-  private final static String HTML_UNIT_JS = "org.openqa.selenium.htmlunit.JavascriptEnabledHtmlUnitDriverTestSuite$HtmlUnitDriverForTest";
-  private final static String IE = "org.openqa.selenium.ie.InternetExplorerDriver";
-  private final static String REMOTE = "org.openqa.selenium.remote.server.RemoteWebDriverTestSuite$RemoteWebDriverForTest";
-  private final static String REMOTE_IE = "org.openqa.selenium.remote.server.RemoteWebDriverIeTestSuite$RemoteIeWebDriverForTest";
-  private final static String SELENIUM = "org.openqa.selenium.SeleneseBackedWebDriver";
+  private static final String HTML_UNIT = "org.openqa.selenium.htmlunit.HtmlUnitDriver";
+  private static final String HTML_UNIT_JS = "org.openqa.selenium.htmlunit.JavascriptEnabledHtmlUnitDriverTestSuite$HtmlUnitDriverForTest";
+  private static final String IE = "org.openqa.selenium.ie.InternetExplorerDriver";
+  private static final String REMOTE = "org.openqa.selenium.remote.server.RemoteWebDriverTestSuite$RemoteWebDriverForTest";
+  private static final String REMOTE_IE = "org.openqa.selenium.remote.server.RemoteWebDriverIeTestSuite$RemoteIeWebDriverForTest";
+  private static final String SELENIUM = "org.openqa.selenium.SeleneseBackedWebDriver";
 
   public static Test suite() throws Exception {
     String driver = FIREFOX_TEST;
