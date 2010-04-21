@@ -77,8 +77,42 @@
 </dl>
 <div class="clear"></div>
 
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+
+  </div>
+</div>
+<div class="tags">
+  
+</div>
 
 
+  <h2>Class Method Summary</h2>
+
+  <ul class="summary">
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#path-class_method" title="path (class method)">+ (Object) <strong>path</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+  </ul>
 
   <h2>Instance Method Summary</h2>
 
@@ -277,17 +311,15 @@ A new instance of Binary
       <pre class="lines">
 
 
-6
-7
 8
-9</pre>
+9
+10</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/binary.rb', line 6</span>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/binary.rb', line 8</span>
 
 <span class='def def kw'>def</span> <span class='initialize identifier id'>initialize</span>
   <span class='ENV constant id'>ENV</span><span class='lbrack token'>[</span><span class='string val'>'MOZ_NO_REMOTE'</span><span class='rbrack token'>]</span> <span class='assign token'>=</span> <span class='string val'>'1'</span> <span class='comment val'># able to launch multiple instances</span>
-  <span class='check_binary_exists identifier id'>check_binary_exists</span>
 <span class='end end kw'>end</span>
 </pre>
     </td>
@@ -297,6 +329,71 @@ A new instance of Binary
   
 </div>
 
+
+  <div id="class_method_details" class="method_details_list">
+    <h2>Class Method Details</h2>
+    
+    
+      <div class="method_details first">
+  <p class="signature first" id="path-class_method">
+  
+    + (<tt>Object</tt>) <strong>path</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/binary.rb', line 67</span>
+
+<span class='def def kw'>def</span> <span class='path identifier id'>path</span>
+  <span class='@path ivar id'>@path</span> <span class='opasgn op'>||=</span> <span class='case case kw'>case</span> <span class='Platform constant id'>Platform</span><span class='dot token'>.</span><span class='os identifier id'>os</span>
+            <span class='when when kw'>when</span> <span class='symbol val'>:macosx</span>
+              <span class='string val'>&quot;/Applications/Firefox.app/Contents/MacOS/firefox-bin&quot;</span>
+            <span class='when when kw'>when</span> <span class='symbol val'>:windows</span>
+              <span class='windows_path identifier id'>windows_path</span>
+            <span class='when when kw'>when</span> <span class='symbol val'>:linux</span><span class='comma token'>,</span> <span class='symbol val'>:unix</span>
+              <span class='Platform constant id'>Platform</span><span class='dot token'>.</span><span class='find_binary identifier id'>find_binary</span><span class='lparen token'>(</span><span class='string val'>&quot;firefox3&quot;</span><span class='comma token'>,</span> <span class='string val'>&quot;firefox2&quot;</span><span class='comma token'>,</span> <span class='string val'>&quot;firefox&quot;</span><span class='rparen token'>)</span> <span class='orop op'>||</span> <span class='string val'>&quot;/usr/bin/firefox&quot;</span>
+            <span class='else else kw'>else</span>
+              <span class='raise identifier id'>raise</span> <span class='dstring node'>&quot;Unknown platform: #{Platform.os}&quot;</span>
+            <span class='end end kw'>end</span>
+
+  <span class='unless unless kw'>unless</span> <span class='File constant id'>File</span><span class='dot token'>.</span><span class='file? fid id'>file?</span><span class='lparen token'>(</span><span class='@path ivar id'>@path</span><span class='rparen token'>)</span>
+    <span class='raise identifier id'>raise</span> <span class='Error constant id'>Error</span><span class='colon2 op'>::</span><span class='WebDriverError constant id'>WebDriverError</span><span class='comma token'>,</span> <span class='dstring node'>&quot;Could not find Firefox binary. Make sure Firefox is installed (OS: #{Platform.os})&quot;</span>
+  <span class='end end kw'>end</span>
+
+  <span class='@path ivar id'>@path</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
 
   <div id="instance_method_details" class="method_details_list">
     <h2>Instance Method Details</h2>
@@ -368,7 +465,6 @@ A new instance of Binary
       <pre class="lines">
 
 
-11
 12
 13
 14
@@ -383,7 +479,7 @@ A new instance of Binary
 23</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/binary.rb', line 11</span>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/binary.rb', line 12</span>
 
 <span class='def def kw'>def</span> <span class='create_base_profile identifier id'>create_base_profile</span><span class='lparen token'>(</span><span class='name identifier id'>name</span><span class='rparen token'>)</span>
   <span class='execute identifier id'>execute</span><span class='lparen token'>(</span><span class='string val'>&quot;-CreateProfile&quot;</span><span class='comma token'>,</span> <span class='name identifier id'>name</span><span class='rparen token'>)</span>
@@ -392,7 +488,6 @@ A new instance of Binary
   <span class='Timeout constant id'>Timeout</span><span class='dot token'>.</span><span class='timeout identifier id'>timeout</span><span class='lparen token'>(</span><span class='integer val'>15</span><span class='comma token'>,</span> <span class='Error constant id'>Error</span><span class='colon2 op'>::</span><span class='TimeOutError constant id'>TimeOutError</span><span class='rparen token'>)</span> <span class='do do kw'>do</span>
     <span class='_ identifier id'>_</span><span class='comma token'>,</span> <span class='status identifier id'>status</span> <span class='assign token'>=</span> <span class='wait identifier id'>wait</span>
   <span class='end end kw'>end</span>
-
 
   <span class='if if kw'>if</span> <span class='status identifier id'>status</span> <span class='andop op'>&amp;&amp;</span> <span class='status identifier id'>status</span><span class='dot token'>.</span><span class='to_i identifier id'>to_i</span> <span class='neq op'>!=</span> <span class='integer val'>0</span>
     <span class='raise identifier id'>raise</span> <span class='Error constant id'>Error</span><span class='colon2 op'>::</span><span class='WebDriverError constant id'>WebDriverError</span><span class='comma token'>,</span> <span class='dstring node'>&quot;could not create base profile: (exit status: #{status})&quot;</span>
@@ -426,7 +521,7 @@ A new instance of Binary
       <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/binary.rb', line 31</span>
 
 <span class='def def kw'>def</span> <span class='execute identifier id'>execute</span><span class='lparen token'>(</span><span class='mult op'>*</span><span class='extra_args identifier id'>extra_args</span><span class='rparen token'>)</span>
-  <span class='args identifier id'>args</span> <span class='assign token'>=</span> <span class='lbrack token'>[</span><span class='path identifier id'>path</span><span class='comma token'>,</span> <span class='string val'>&quot;-no-remote&quot;</span><span class='comma token'>,</span> <span class='string val'>&quot;--verbose&quot;</span><span class='rbrack token'>]</span> <span class='plus op'>+</span> <span class='extra_args identifier id'>extra_args</span>
+  <span class='args identifier id'>args</span> <span class='assign token'>=</span> <span class='lbrack token'>[</span><span class='self self kw'>self</span><span class='dot token'>.</span><span class='class identifier id'>class</span><span class='dot token'>.</span><span class='path identifier id'>path</span><span class='comma token'>,</span> <span class='string val'>&quot;-no-remote&quot;</span><span class='comma token'>,</span> <span class='string val'>&quot;--verbose&quot;</span><span class='rbrack token'>]</span> <span class='plus op'>+</span> <span class='extra_args identifier id'>extra_args</span>
   <span class='@process ivar id'>@process</span> <span class='assign token'>=</span> <span class='ChildProcess constant id'>ChildProcess</span><span class='dot token'>.</span><span class='new identifier id'>new</span><span class='lparen token'>(</span><span class='mult op'>*</span><span class='args identifier id'>args</span><span class='rparen token'>)</span><span class='dot token'>.</span><span class='start identifier id'>start</span>
 <span class='end end kw'>end</span>
 </pre>
@@ -560,7 +655,7 @@ A new instance of Binary
 </div>
     
     <div id="footer">
-  Generated on Wed Feb  3 14:46:57 2010 by 
+  Generated on Wed Apr 21 13:31:06 2010 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool">yard</a>
   0.5.3 (ruby-1.8.7).
 </div>

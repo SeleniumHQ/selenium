@@ -595,6 +595,29 @@ Get the text content of this element.
       <li class="public ">
   <span class="summary_signature">
     
+      <a href="#to_json-instance_method" title="#to_json (instance method)">- (Object) <strong>to_json</strong>(*args) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc">
+Convert to a WebElement JSON Object for transmission over the wire.
+
+</span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
       <a href="#toggle-instance_method" title="#toggle (instance method)">- (Object) <strong>toggle</strong> </a>
     
 
@@ -1450,10 +1473,10 @@ Send keystrokes to this element
       
         &mdash;
         
-element.send_keys &#8220;foo&#8221; #=> value: &#8216;foo&#8217;
-element.send_keys &#8220;tet&#8221;, :arrow_left, &#8220;s&#8221; #=>
-value: &#8216;test&#8217; element.send_keys [:control, &#8216;a&#8217;],
-:space #=> value: &#8217; &#8216;
+element.send_keys &quot;foo&quot; #=&gt; value: &#8216;foo&#8217;
+element.send_keys &quot;tet&quot;, :arrow_left, &quot;s&quot; #=&gt; value:
+&#8216;test&#8217; element.send_keys [:control, &#8216;a&#8217;], :space
+#=&gt; value: &#8217; &#8216;
 
 
       
@@ -1750,6 +1773,53 @@ Get the text content of this element
 </div>
     
       <div class="method_details ">
+  <p class="signature " id="to_json-instance_method">
+  
+    - (<tt>Object</tt>) <strong>to_json</strong>(*args) 
+  
+
+  
+</p><div class="docstring">
+  <div class="discussion">
+    <p>
+Convert to a WebElement JSON Object for transmission over the wire.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+  <h3>See Also:</h3>
+  <ul class="see">
+    
+      <li><a href="http://code.google.com/p/selenium/wiki/JsonWireProtocol#Basic_Concepts_And_Terms" title="http://code.google.com/p/selenium/wiki/JsonWireProtocol#Basic_Concepts_And_Terms">http://code.google.com/p/selenium/wiki/JsonWireProtocol#Basic_Concepts_And_Terms</a></li>
+    
+  </ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+265
+266
+267</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/element.rb', line 265</span>
+
+<span class='def def kw'>def</span> <span class='to_json identifier id'>to_json</span><span class='lparen token'>(</span><span class='mult op'>*</span><span class='args identifier id'>args</span><span class='rparen token'>)</span>
+  <span class='lbrace token'>{</span> <span class='symbol val'>:ELEMENT</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='@id ivar id'>@id</span> <span class='rbrace token'>}</span><span class='dot token'>.</span><span class='to_json identifier id'>to_json</span><span class='lparen token'>(</span><span class='mult op'>*</span><span class='args identifier id'>args</span><span class='rparen token'>)</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
   <p class="signature " id="toggle-instance_method">
   
     - (<tt>Object</tt>) <strong>toggle</strong> 
@@ -1847,7 +1917,7 @@ Get the value of this element
 </div>
     
     <div id="footer">
-  Generated on Wed Feb  3 14:47:01 2010 by 
+  Generated on Wed Apr 21 13:31:02 2010 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool">yard</a>
   0.5.3 (ruby-1.8.7).
 </div>

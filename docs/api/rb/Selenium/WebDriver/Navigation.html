@@ -99,7 +99,10 @@
   
 
   
-    <span class="summary_desc"></span>
+    <span class="summary_desc">
+Move back a single entry in the browser&#8217;s history.
+
+</span>
   
 </li>
 
@@ -119,7 +122,10 @@
   
 
   
-    <span class="summary_desc"></span>
+    <span class="summary_desc">
+Move forward a single entry in the browser&#8217;s history.
+
+</span>
   
 </li>
 
@@ -164,7 +170,10 @@ A new instance of Navigation.
   
 
   
-    <span class="summary_desc"></span>
+    <span class="summary_desc">
+Refresh the current page.
+
+</span>
   
 </li>
 
@@ -184,7 +193,10 @@ A new instance of Navigation.
   
 
   
-    <span class="summary_desc"></span>
+    <span class="summary_desc">
+Navigate to the given URL.
+
+</span>
   
 </li>
 
@@ -247,18 +259,29 @@ A new instance of Navigation
   
 
   
-</p><table class="source_code">
+</p><div class="docstring">
+  <div class="discussion">
+    <p>
+Move back a single entry in the browser&#8217;s history.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-13
-14
-15</pre>
+21
+22
+23</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/navigation.rb', line 13</span>
+      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/navigation.rb', line 21</span>
 
 <span class='def def kw'>def</span> <span class='back identifier id'>back</span>
   <span class='@bridge ivar id'>@bridge</span><span class='dot token'>.</span><span class='goBack identifier id'>goBack</span>
@@ -276,18 +299,29 @@ A new instance of Navigation
   
 
   
-</p><table class="source_code">
+</p><div class="docstring">
+  <div class="discussion">
+    <p>
+Move forward a single entry in the browser&#8217;s history.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-17
-18
-19</pre>
+29
+30
+31</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/navigation.rb', line 17</span>
+      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/navigation.rb', line 29</span>
 
 <span class='def def kw'>def</span> <span class='forward identifier id'>forward</span>
   <span class='@bridge ivar id'>@bridge</span><span class='dot token'>.</span><span class='goForward identifier id'>goForward</span>
@@ -305,18 +339,29 @@ A new instance of Navigation
   
 
   
-</p><table class="source_code">
+</p><div class="docstring">
+  <div class="discussion">
+    <p>
+Refresh the current page.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-21
-22
-23</pre>
+37
+38
+39</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/navigation.rb', line 21</span>
+      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/navigation.rb', line 37</span>
 
 <span class='def def kw'>def</span> <span class='refresh identifier id'>refresh</span>
   <span class='@bridge ivar id'>@bridge</span><span class='dot token'>.</span><span class='refresh identifier id'>refresh</span>
@@ -334,18 +379,29 @@ A new instance of Navigation
   
 
   
-</p><table class="source_code">
+</p><div class="docstring">
+  <div class="discussion">
+    <p>
+Navigate to the given URL
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-9
-10
-11</pre>
+13
+14
+15</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/navigation.rb', line 9</span>
+      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/navigation.rb', line 13</span>
 
 <span class='def def kw'>def</span> <span class='to identifier id'>to</span><span class='lparen token'>(</span><span class='url identifier id'>url</span><span class='rparen token'>)</span>
   <span class='@bridge ivar id'>@bridge</span><span class='dot token'>.</span><span class='get identifier id'>get</span> <span class='url identifier id'>url</span>
@@ -361,7 +417,7 @@ A new instance of Navigation
 </div>
     
     <div id="footer">
-  Generated on Wed Feb  3 14:46:53 2010 by 
+  Generated on Wed Apr 21 13:31:04 2010 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool">yard</a>
   0.5.3 (ruby-1.8.7).
 </div>

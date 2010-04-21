@@ -77,7 +77,15 @@
 </dl>
 <div class="clear"></div>
 
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
 
+  </div>
+</div>
+<div class="tags">
+  
+</div>
   <h2>Constant Summary</h2>
   
     <dl class="constants">
@@ -297,7 +305,7 @@ Returns the value of attribute connection.
       <li class="public ">
   <span class="summary_signature">
     
-      <a href="#initialize-instance_method" title="#initialize (instance method)">- (Launcher) <strong>initialize</strong>(binary, port = DEFAULT_PORT, profile_name = DEFAULT_PROFILE_NAME) </a>
+      <a href="#initialize-instance_method" title="#initialize (instance method)">- (Launcher) <strong>initialize</strong>(binary, port = DEFAULT_PORT, profile = DEFAULT_PROFILE_NAME) </a>
     
 
     
@@ -406,7 +414,7 @@ A new instance of Launcher.
     <div class="method_details first">
   <p class="signature first" id="initialize-instance_method">
   
-    - (<tt><a href="" title="Selenium::WebDriver::Firefox::Launcher (class)">Launcher</a></tt>) <strong>initialize</strong>(binary, port = DEFAULT_PORT, profile_name = DEFAULT_PROFILE_NAME) 
+    - (<tt><a href="" title="Selenium::WebDriver::Firefox::Launcher (class)">Launcher</a></tt>) <strong>initialize</strong>(binary, port = DEFAULT_PORT, profile = DEFAULT_PROFILE_NAME) 
   
 
   
@@ -427,7 +435,6 @@ A new instance of Launcher
       <pre class="lines">
 
 
-12
 13
 14
 15
@@ -440,18 +447,29 @@ A new instance of Launcher
 22
 23
 24
-25</pre>
+25
+26
+27
+28
+29
+30
+31</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/launcher.rb', line 12</span>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/launcher.rb', line 13</span>
 
-<span class='def def kw'>def</span> <span class='initialize identifier id'>initialize</span><span class='lparen token'>(</span><span class='binary identifier id'>binary</span><span class='comma token'>,</span> <span class='port identifier id'>port</span> <span class='assign token'>=</span> <span class='DEFAULT_PORT constant id'>DEFAULT_PORT</span><span class='comma token'>,</span> <span class='profile_name identifier id'>profile_name</span> <span class='assign token'>=</span> <span class='DEFAULT_PROFILE_NAME constant id'>DEFAULT_PROFILE_NAME</span><span class='rparen token'>)</span>
+<span class='def def kw'>def</span> <span class='initialize identifier id'>initialize</span><span class='lparen token'>(</span><span class='binary identifier id'>binary</span><span class='comma token'>,</span> <span class='port identifier id'>port</span> <span class='assign token'>=</span> <span class='DEFAULT_PORT constant id'>DEFAULT_PORT</span><span class='comma token'>,</span> <span class='profile identifier id'>profile</span> <span class='assign token'>=</span> <span class='DEFAULT_PROFILE_NAME constant id'>DEFAULT_PROFILE_NAME</span><span class='rparen token'>)</span>
   <span class='@binary ivar id'>@binary</span>       <span class='assign token'>=</span> <span class='binary identifier id'>binary</span>
   <span class='@port ivar id'>@port</span>         <span class='assign token'>=</span> <span class='port identifier id'>port</span><span class='dot token'>.</span><span class='to_i identifier id'>to_i</span>
-  <span class='@profile_name ivar id'>@profile_name</span> <span class='assign token'>=</span> <span class='profile_name identifier id'>profile_name</span>
-  <span class='@profile ivar id'>@profile</span>      <span class='assign token'>=</span> <span class='nil nil kw'>nil</span>
 
-  <span class='comment val'># need to be really specific about what port to use</span>
+  <span class='if if kw'>if</span> <span class='profile identifier id'>profile</span><span class='dot token'>.</span><span class='kind_of? fid id'>kind_of?</span> <span class='Profile constant id'>Profile</span>
+    <span class='@profile ivar id'>@profile</span> <span class='assign token'>=</span> <span class='profile identifier id'>profile</span>
+  <span class='else else kw'>else</span>
+    <span class='@profile_name ivar id'>@profile_name</span> <span class='assign token'>=</span> <span class='profile identifier id'>profile</span>
+    <span class='@profile ivar id'>@profile</span>      <span class='assign token'>=</span> <span class='nil nil kw'>nil</span>
+  <span class='end end kw'>end</span>
+
+  <span class='comment val'># need to be really specific about what host to use</span>
   <span class='comment val'>#</span>
   <span class='comment val'># on os x, &quot;localhost&quot; will resolve to 3 different addresses (see /etc/hosts)</span>
   <span class='comment val'># Ruby will loop over these and happily bind to the same port on each one,</span>
@@ -497,12 +515,12 @@ Returns the value of attribute binary
       <pre class="lines">
 
 
-8
-9
-10</pre>
+10
+11
+12</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/launcher.rb', line 8</span>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/launcher.rb', line 10</span>
 
 <span class='def def kw'>def</span> <span class='binary identifier id'>binary</span>
   <span class='@binary ivar id'>@binary</span>
@@ -540,12 +558,12 @@ Returns the value of attribute connection
       <pre class="lines">
 
 
-8
-9
-10</pre>
+10
+11
+12</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/launcher.rb', line 8</span>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/launcher.rb', line 10</span>
 
 <span class='def def kw'>def</span> <span class='connection identifier id'>connection</span>
   <span class='@connection ivar id'>@connection</span>
@@ -576,12 +594,12 @@ Returns the value of attribute connection
       <pre class="lines">
 
 
-142
-143
-144</pre>
+147
+148
+149</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/launcher.rb', line 142</span>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/launcher.rb', line 147</span>
 
 <span class='def def kw'>def</span> <span class='assert_profile identifier id'>assert_profile</span>
   <span class='raise identifier id'>raise</span> <span class='string val'>&quot;must create_profile first&quot;</span> <span class='if if_mod kw'>if</span> <span class='@profile ivar id'>@profile</span><span class='dot token'>.</span><span class='nil? fid id'>nil?</span>
@@ -605,13 +623,13 @@ Returns the value of attribute connection
       <pre class="lines">
 
 
-96
-97
-98
-99</pre>
+102
+103
+104
+105</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/launcher.rb', line 96</span>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/launcher.rb', line 102</span>
 
 <span class='def def kw'>def</span> <span class='connect identifier id'>connect</span>
   <span class='@connection ivar id'>@connection</span> <span class='assign token'>=</span> <span class='ExtensionConnection constant id'>ExtensionConnection</span><span class='dot token'>.</span><span class='new identifier id'>new</span><span class='lparen token'>(</span><span class='@host ivar id'>@host</span><span class='comma token'>,</span> <span class='@port ivar id'>@port</span><span class='rparen token'>)</span>
@@ -657,12 +675,6 @@ Returns the value of attribute connection
       <pre class="lines">
 
 
-101
-102
-103
-104
-105
-106
 107
 108
 109
@@ -675,10 +687,15 @@ Returns the value of attribute connection
 116
 117
 118
-119</pre>
+119
+120
+121
+122
+123
+124</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/launcher.rb', line 101</span>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/launcher.rb', line 107</span>
 
 <span class='def def kw'>def</span> <span class='connect_until_stable identifier id'>connect_until_stable</span>
   <span class='max_time identifier id'>max_time</span> <span class='assign token'>=</span> <span class='Time constant id'>Time</span><span class='dot token'>.</span><span class='now identifier id'>now</span> <span class='plus op'>+</span> <span class='integer val'>60</span>
@@ -687,7 +704,6 @@ Returns the value of attribute connection
     <span class='begin begin kw'>begin</span>
       <span class='connection identifier id'>connection</span> <span class='assign token'>=</span> <span class='ExtensionConnection constant id'>ExtensionConnection</span><span class='dot token'>.</span><span class='new identifier id'>new</span><span class='lparen token'>(</span><span class='@host ivar id'>@host</span><span class='comma token'>,</span> <span class='@port ivar id'>@port</span><span class='rparen token'>)</span>
       <span class='connection identifier id'>connection</span><span class='dot token'>.</span><span class='connect identifier id'>connect</span><span class='lparen token'>(</span><span class='integer val'>1</span><span class='rparen token'>)</span>
-      <span class='connection identifier id'>connection</span><span class='dot token'>.</span><span class='close identifier id'>close</span>
 
       <span class='connect identifier id'>connect</span>
       <span class='return return kw'>return</span>
@@ -718,34 +734,34 @@ Returns the value of attribute connection
       <pre class="lines">
 
 
-71
-72
-73
-74
-75
-76
 77
 78
 79
 80
 81
 82
-83</pre>
+83
+84
+85
+86
+87
+88
+89</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/launcher.rb', line 71</span>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/launcher.rb', line 77</span>
 
 <span class='def def kw'>def</span> <span class='create_profile identifier id'>create_profile</span>
-  <span class='fetch_profile identifier id'>fetch_profile</span>
-
-  <span class='if if kw'>if</span> <span class='@profile ivar id'>@profile</span><span class='dot token'>.</span><span class='nil? fid id'>nil?</span>
-    <span class='raise identifier id'>raise</span> <span class='Error constant id'>Error</span><span class='comma token'>,</span> <span class='WebDriverError constant id'>WebDriverError</span><span class='comma token'>,</span> <span class='dstring node'>&quot;could not find or create profile: #{profile.inspect}&quot;</span>
+  <span class='unless unless kw'>unless</span> <span class='@profile ivar id'>@profile</span>
+    <span class='fetch_profile identifier id'>fetch_profile</span>
+    <span class='if if kw'>if</span> <span class='@profile ivar id'>@profile</span><span class='dot token'>.</span><span class='nil? fid id'>nil?</span>
+      <span class='raise identifier id'>raise</span> <span class='Error constant id'>Error</span><span class='comma token'>,</span> <span class='WebDriverError constant id'>WebDriverError</span><span class='comma token'>,</span> <span class='dstring node'>&quot;could not find or create profile: #{profile.inspect}&quot;</span>
+    <span class='end end kw'>end</span>
   <span class='end end kw'>end</span>
 
   <span class='@profile ivar id'>@profile</span><span class='dot token'>.</span><span class='delete_extensions_cache identifier id'>delete_extensions_cache</span>
-
   <span class='@profile ivar id'>@profile</span><span class='dot token'>.</span><span class='port identifier id'>port</span> <span class='assign token'>=</span> <span class='@port ivar id'>@port</span>
-  <span class='@profile ivar id'>@profile</span><span class='dot token'>.</span><span class='add_extension identifier id'>add_extension</span><span class='lparen token'>(</span><span class='true true kw'>true</span><span class='rparen token'>)</span>
+  <span class='@profile ivar id'>@profile</span><span class='dot token'>.</span><span class='add_webdriver_extension identifier id'>add_webdriver_extension</span><span class='lparen token'>(</span><span class='true true kw'>true</span><span class='rparen token'>)</span>
   <span class='@profile ivar id'>@profile</span><span class='dot token'>.</span><span class='update_user_prefs identifier id'>update_user_prefs</span>
 <span class='end end kw'>end</span>
 </pre>
@@ -767,21 +783,21 @@ Returns the value of attribute connection
       <pre class="lines">
 
 
-129
-130
-131
-132
-133
 134
 135
 136
 137
 138
 139
-140</pre>
+140
+141
+142
+143
+144
+145</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/launcher.rb', line 129</span>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/launcher.rb', line 134</span>
 
 <span class='def def kw'>def</span> <span class='fetch_profile identifier id'>fetch_profile</span>
   <span class='existing identifier id'>existing</span> <span class='assign token'>=</span> <span class='Profile constant id'>Profile</span><span class='dot token'>.</span><span class='from_name identifier id'>from_name</span> <span class='@profile_name ivar id'>@profile_name</span>
@@ -793,7 +809,7 @@ Returns the value of attribute connection
     <span class='raise identifier id'>raise</span> <span class='string val'>&quot;unable to find or create new profile&quot;</span> <span class='unless unless_mod kw'>unless</span> <span class='existing identifier id'>existing</span>
   <span class='end end kw'>end</span>
 
-  <span class='@profile ivar id'>@profile</span> <span class='assign token'>=</span> <span class='existing identifier id'>existing</span><span class='dot token'>.</span><span class='create_copy identifier id'>create_copy</span>
+  <span class='@profile ivar id'>@profile</span> <span class='assign token'>=</span> <span class='existing identifier id'>existing</span>
 <span class='end end kw'>end</span>
 </pre>
     </td>
@@ -814,18 +830,18 @@ Returns the value of attribute connection
       <pre class="lines">
 
 
-61
-62
-63
-64
-65
-66
 67
 68
-69</pre>
+69
+70
+71
+72
+73
+74
+75</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/launcher.rb', line 61</span>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/launcher.rb', line 67</span>
 
 <span class='def def kw'>def</span> <span class='find_free_port identifier id'>find_free_port</span>
   <span class='port identifier id'>port</span> <span class='assign token'>=</span> <span class='@port ivar id'>@port</span>
@@ -876,16 +892,16 @@ Returns the value of attribute connection
       <pre class="lines">
 
 
-121
-122
-123
-124
-125
 126
-127</pre>
+127
+128
+129
+130
+131
+132</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/launcher.rb', line 121</span>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/launcher.rb', line 126</span>
 
 <span class='def def kw'>def</span> <span class='free_port? fid id'>free_port?</span><span class='lparen token'>(</span><span class='port identifier id'>port</span><span class='rparen token'>)</span>
   <span class='s identifier id'>s</span> <span class='assign token'>=</span> <span class='TCPServer constant id'>TCPServer</span><span class='dot token'>.</span><span class='new identifier id'>new</span><span class='lparen token'>(</span><span class='@host ivar id'>@host</span><span class='comma token'>,</span> <span class='port identifier id'>port</span><span class='rparen token'>)</span>
@@ -913,20 +929,20 @@ Returns the value of attribute connection
       <pre class="lines">
 
 
-27
-28
-29
-30
-31
-32
 33
 34
 35
 36
-37</pre>
+37
+38
+39
+40
+41
+42
+43</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/launcher.rb', line 27</span>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/launcher.rb', line 33</span>
 
 <span class='def def kw'>def</span> <span class='launch identifier id'>launch</span>
   <span class='with_lock identifier id'>with_lock</span> <span class='do do kw'>do</span>
@@ -958,13 +974,13 @@ Returns the value of attribute connection
       <pre class="lines">
 
 
-85
-86
-87
-88</pre>
+91
+92
+93
+94</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/launcher.rb', line 85</span>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/launcher.rb', line 91</span>
 
 <span class='def def kw'>def</span> <span class='start identifier id'>start</span>
   <span class='assert_profile identifier id'>assert_profile</span>
@@ -989,14 +1005,14 @@ Returns the value of attribute connection
       <pre class="lines">
 
 
-90
-91
-92
-93
-94</pre>
+96
+97
+98
+99
+100</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/launcher.rb', line 90</span>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/launcher.rb', line 96</span>
 
 <span class='def def kw'>def</span> <span class='start_silent_and_wait identifier id'>start_silent_and_wait</span>
   <span class='assert_profile identifier id'>assert_profile</span>
@@ -1043,12 +1059,6 @@ Returns the value of attribute connection
       <pre class="lines">
 
 
-39
-40
-41
-42
-43
-44
 45
 46
 47
@@ -1063,10 +1073,16 @@ Returns the value of attribute connection
 56
 57
 58
-59</pre>
+59
+60
+61
+62
+63
+64
+65</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/launcher.rb', line 39</span>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/launcher.rb', line 45</span>
 
 <span class='def def kw'>def</span> <span class='with_lock identifier id'>with_lock</span>
   <span class='max_time identifier id'>max_time</span> <span class='assign token'>=</span> <span class='Time constant id'>Time</span><span class='dot token'>.</span><span class='now identifier id'>now</span> <span class='plus op'>+</span> <span class='SOCKET_LOCK_TIMEOUT constant id'>SOCKET_LOCK_TIMEOUT</span>
@@ -1100,7 +1116,7 @@ Returns the value of attribute connection
 </div>
     
     <div id="footer">
-  Generated on Wed Feb  3 14:46:58 2010 by 
+  Generated on Wed Apr 21 13:31:01 2010 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool">yard</a>
   0.5.3 (ruby-1.8.7).
 </div>

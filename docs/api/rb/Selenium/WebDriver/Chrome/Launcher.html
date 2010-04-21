@@ -81,7 +81,15 @@
 </dl>
 <div class="clear"></div>
 
-<div id="subclasses">
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+
+  </div>
+</div>
+<div class="tags">
+  
+</div><div id="subclasses">
   <h2>Direct Known Subclasses</h2>
   <p class="children"><a href="Launcher/UnixLauncher.html" title="Selenium::WebDriver::Chrome::Launcher::UnixLauncher (class)">Launcher::UnixLauncher</a>, <a href="Launcher/WindowsLauncher.html" title="Selenium::WebDriver::Chrome::Launcher::WindowsLauncher (class)">Launcher::WindowsLauncher</a></p>
 </div>
@@ -123,6 +131,26 @@ Returns the value of attribute pid.
   <h2>Class Method Summary</h2>
 
   <ul class="summary">
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#binary_path-class_method" title="binary_path (class method)">+ (Object) <strong>binary_path</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
     
       <li class="public ">
   <span class="summary_signature">
@@ -223,12 +251,12 @@ Returns the value of attribute pid
       <pre class="lines">
 
 
-7
-8
-9</pre>
+9
+10
+11</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/launcher.rb', line 7</span>
+      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/launcher.rb', line 9</span>
 
 <span class='def def kw'>def</span> <span class='pid identifier id'>pid</span>
   <span class='@pid ivar id'>@pid</span>
@@ -247,7 +275,42 @@ Returns the value of attribute pid
     
     
       <div class="method_details first">
-  <p class="signature first" id="launcher-class_method">
+  <p class="signature first" id="binary_path-class_method">
+  
+    + (<tt>Object</tt>) <strong>binary_path</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+26
+27
+28
+29
+30
+31</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/launcher.rb', line 26</span>
+
+<span class='def def kw'>def</span> <span class='self self kw'>self</span><span class='dot token'>.</span><span class='binary_path identifier id'>binary_path</span>
+  <span class='@binary_path ivar id'>@binary_path</span> <span class='opasgn op'>||=</span> <span class='lparen token'>(</span>
+    <span class='path identifier id'>path</span> <span class='assign token'>=</span> <span class='possible_paths identifier id'>possible_paths</span><span class='dot token'>.</span><span class='find identifier id'>find</span> <span class='lbrace token'>{</span> <span class='bitor op'>|</span><span class='f identifier id'>f</span><span class='bitor op'>|</span> <span class='File constant id'>File</span><span class='dot token'>.</span><span class='exist? fid id'>exist?</span><span class='lparen token'>(</span><span class='f identifier id'>f</span><span class='rparen token'>)</span> <span class='rbrace token'>}</span>
+    <span class='path identifier id'>path</span> <span class='orop op'>||</span> <span class='raise identifier id'>raise</span><span class='lparen token'>(</span><span class='Error constant id'>Error</span><span class='colon2 op'>::</span><span class='WebDriverError constant id'>WebDriverError</span><span class='comma token'>,</span> <span class='dstring node'>&quot;Could not find Chrome binary. Make sure Chrome is installed (OS: #{Platform.os})&quot;</span><span class='rparen token'>)</span>
+  <span class='rparen token'>)</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="launcher-class_method">
   
     + (<tt>Object</tt>) <strong>launcher</strong> 
   
@@ -259,8 +322,6 @@ Returns the value of attribute pid
       <pre class="lines">
 
 
-9
-10
 11
 12
 13
@@ -272,10 +333,12 @@ Returns the value of attribute pid
 19
 20
 21
-22</pre>
+22
+23
+24</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/launcher.rb', line 9</span>
+      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/launcher.rb', line 11</span>
 
 <span class='def def kw'>def</span> <span class='self self kw'>self</span><span class='dot token'>.</span><span class='launcher identifier id'>launcher</span>
   <span class='launcher identifier id'>launcher</span> <span class='assign token'>=</span>  <span class='case case kw'>case</span> <span class='Platform constant id'>Platform</span><span class='dot token'>.</span><span class='os identifier id'>os</span>
@@ -316,12 +379,12 @@ Returns the value of attribute pid
       <pre class="lines">
 
 
-32
-33
-34</pre>
+41
+42
+43</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/launcher.rb', line 32</span>
+      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/launcher.rb', line 41</span>
 
 <span class='def def kw'>def</span> <span class='kill identifier id'>kill</span>
   <span class='@process ivar id'>@process</span><span class='dot token'>.</span><span class='kill identifier id'>kill</span>
@@ -345,16 +408,16 @@ Returns the value of attribute pid
       <pre class="lines">
 
 
-24
-25
-26
-27
-28
-29
-30</pre>
+33
+34
+35
+36
+37
+38
+39</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/launcher.rb', line 24</span>
+      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/launcher.rb', line 33</span>
 
 <span class='def def kw'>def</span> <span class='launch identifier id'>launch</span><span class='lparen token'>(</span><span class='server_url identifier id'>server_url</span><span class='rparen token'>)</span>
   <span class='create_extension identifier id'>create_extension</span>
@@ -374,7 +437,7 @@ Returns the value of attribute pid
 </div>
     
     <div id="footer">
-  Generated on Wed Feb  3 14:46:59 2010 by 
+  Generated on Wed Apr 21 13:31:08 2010 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool">yard</a>
   0.5.3 (ruby-1.8.7).
 </div>

@@ -319,8 +319,6 @@ A new instance of ChildProcess
       <pre class="lines">
 
 
-11
-12
 13
 14
 15
@@ -329,10 +327,12 @@ A new instance of ChildProcess
 18
 19
 20
-21</pre>
+21
+22
+23</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/child_process.rb', line 11</span>
+      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/child_process.rb', line 13</span>
 
 <span class='def def kw'>def</span> <span class='initialize identifier id'>initialize</span><span class='lparen token'>(</span><span class='mult op'>*</span><span class='args identifier id'>args</span><span class='rparen token'>)</span>
   <span class='@args ivar id'>@args</span> <span class='assign token'>=</span> <span class='args identifier id'>args</span>
@@ -383,12 +383,12 @@ Returns the value of attribute pid
       <pre class="lines">
 
 
-9
-10
-11</pre>
+11
+12
+13</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/child_process.rb', line 9</span>
+      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/child_process.rb', line 11</span>
 
 <span class='def def kw'>def</span> <span class='pid identifier id'>pid</span>
   <span class='@pid ivar id'>@pid</span>
@@ -440,12 +440,12 @@ Returns the value of attribute pid
       <pre class="lines">
 
 
-63
-64
-65</pre>
+65
+66
+67</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/child_process.rb', line 63</span>
+      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/child_process.rb', line 65</span>
 
 <span class='def def kw'>def</span> <span class='assert_started identifier id'>assert_started</span>
   <span class='raise identifier id'>raise</span> <span class='Error constant id'>Error</span><span class='colon2 op'>::</span><span class='WebDriverError constant id'>WebDriverError</span><span class='comma token'>,</span> <span class='string val'>&quot;process not started&quot;</span> <span class='unless unless_mod kw'>unless</span> <span class='@pid ivar id'>@pid</span>
@@ -469,13 +469,13 @@ Returns the value of attribute pid
       <pre class="lines">
 
 
-29
-30
 31
-32</pre>
+32
+33
+34</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/child_process.rb', line 29</span>
+      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/child_process.rb', line 31</span>
 
 <span class='def def kw'>def</span> <span class='exit_value identifier id'>exit_value</span>
   <span class='pid identifier id'>pid</span><span class='comma token'>,</span> <span class='status identifier id'>status</span> <span class='assign token'>=</span> <span class='Process constant id'>Process</span><span class='dot token'>.</span><span class='waitpid2 identifier id'>waitpid2</span><span class='lparen token'>(</span><span class='@pid ivar id'>@pid</span><span class='comma token'>,</span> <span class='Process constant id'>Process</span><span class='colon2 op'>::</span><span class='WNOHANG constant id'>WNOHANG</span><span class='rparen token'>)</span>
@@ -500,13 +500,13 @@ Returns the value of attribute pid
       <pre class="lines">
 
 
-53
-54
 55
-56</pre>
+56
+57
+58</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/child_process.rb', line 53</span>
+      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/child_process.rb', line 55</span>
 
 <span class='def def kw'>def</span> <span class='kill identifier id'>kill</span>
   <span class='assert_started identifier id'>assert_started</span>
@@ -531,13 +531,13 @@ Returns the value of attribute pid
       <pre class="lines">
 
 
-58
-59
 60
-61</pre>
+61
+62
+63</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/child_process.rb', line 58</span>
+      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/child_process.rb', line 60</span>
 
 <span class='def def kw'>def</span> <span class='kill! fid id'>kill!</span>
   <span class='assert_started identifier id'>assert_started</span>
@@ -562,8 +562,6 @@ Returns the value of attribute pid
       <pre class="lines">
 
 
-34
-35
 36
 37
 38
@@ -572,10 +570,12 @@ Returns the value of attribute pid
 41
 42
 43
-44</pre>
+44
+45
+46</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/child_process.rb', line 34</span>
+      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/child_process.rb', line 36</span>
 
 <span class='def def kw'>def</span> <span class='start identifier id'>start</span>
   <span class='@pid ivar id'>@pid</span> <span class='assign token'>=</span> <span class='fork identifier id'>fork</span> <span class='do do kw'>do</span>
@@ -628,14 +628,14 @@ Returns the value of attribute pid
       <pre class="lines">
 
 
-23
-24
 25
 26
-27</pre>
+27
+28
+29</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/child_process.rb', line 23</span>
+      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/child_process.rb', line 25</span>
 
 <span class='def def kw'>def</span> <span class='ugly_death? fid id'>ugly_death?</span>
   <span class='code identifier id'>code</span> <span class='assign token'>=</span> <span class='exit_value identifier id'>exit_value</span><span class='lparen token'>(</span><span class='rparen token'>)</span>
@@ -661,15 +661,15 @@ Returns the value of attribute pid
       <pre class="lines">
 
 
-46
-47
 48
 49
 50
-51</pre>
+51
+52
+53</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/child_process.rb', line 46</span>
+      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/child_process.rb', line 48</span>
 
 <span class='def def kw'>def</span> <span class='wait identifier id'>wait</span>
   <span class='assert_started identifier id'>assert_started</span>
@@ -688,7 +688,7 @@ Returns the value of attribute pid
 </div>
     
     <div id="footer">
-  Generated on Wed Feb  3 14:47:03 2010 by 
+  Generated on Wed Apr 21 13:31:06 2010 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool">yard</a>
   0.5.3 (ruby-1.8.7).
 </div>

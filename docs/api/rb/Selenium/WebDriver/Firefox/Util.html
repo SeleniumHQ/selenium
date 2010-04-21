@@ -62,7 +62,15 @@
 </dl>
 <div class="clear"></div>
 
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
 
+  </div>
+</div>
+<div class="tags">
+  
+</div>
 
 
   <h2>Instance Method Summary</h2>
@@ -73,6 +81,26 @@
   <span class="summary_signature">
     
       <a href="#app_data_path-instance_method" title="#app_data_path (instance method)">- (Object) <strong>app_data_path</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#stringified%3F-instance_method" title="#stringified? (instance method)">- (Boolean) <strong>stringified?</strong>(str) </a>
     
 
     
@@ -109,8 +137,6 @@
       <pre class="lines">
 
 
-7
-8
 9
 10
 11
@@ -120,10 +146,12 @@
 15
 16
 17
-18</pre>
+18
+19
+20</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/util.rb', line 7</span>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/util.rb', line 9</span>
 
 <span class='def def kw'>def</span> <span class='app_data_path identifier id'>app_data_path</span>
   <span class='case case kw'>case</span> <span class='Platform constant id'>Platform</span><span class='dot token'>.</span><span class='os identifier id'>os</span>
@@ -143,12 +171,62 @@
 </table>
 </div>
     
+      <div class="method_details ">
+  <p class="signature " id="stringified?-instance_method">
+  
+    - (<tt>Boolean</tt>) <strong>stringified?</strong>(str) 
+  
+
+  
+</p><div class="docstring">
+  <div class="discussion">
+    
+
+  </div>
+</div>
+<div class="tags">
+  <h3>Returns:</h3>
+<ul class="return">
+  
+    <li>
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+22
+23
+24</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/util.rb', line 22</span>
+
+<span class='def def kw'>def</span> <span class='stringified? fid id'>stringified?</span><span class='lparen token'>(</span><span class='str identifier id'>str</span><span class='rparen token'>)</span>
+  <span class='str identifier id'>str</span> <span class='match op'>=~</span> <span class='regexp val'>/^&quot;.*&quot;$/</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
   </div>
 
 </div>
     
     <div id="footer">
-  Generated on Wed Feb  3 14:46:57 2010 by 
+  Generated on Wed Apr 21 13:31:09 2010 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool">yard</a>
   0.5.3 (ruby-1.8.7).
 </div>

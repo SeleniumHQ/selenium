@@ -290,12 +290,12 @@ get the active element
       <pre class="lines">
 
 
-48
-49
-50</pre>
+56
+57
+58</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/target_locator.rb', line 48</span>
+      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/target_locator.rb', line 56</span>
 
 <span class='def def kw'>def</span> <span class='active_element identifier id'>active_element</span>
   <span class='@bridge ivar id'>@bridge</span><span class='dot token'>.</span><span class='switchToActiveElement identifier id'>switchToActiveElement</span>
@@ -331,12 +331,12 @@ page contains iframes.
       <pre class="lines">
 
 
-56
-57
-58</pre>
+64
+65
+66</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/target_locator.rb', line 56</span>
+      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/target_locator.rb', line 64</span>
 
 <span class='def def kw'>def</span> <span class='default_content identifier id'>default_content</span>
   <span class='@bridge ivar id'>@bridge</span><span class='dot token'>.</span><span class='switchToDefaultContent identifier id'>switchToDefaultContent</span>
@@ -445,7 +445,15 @@ A window handle
 37
 38
 39
-40</pre>
+40
+41
+42
+43
+44
+45
+46
+47
+48</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/target_locator.rb', line 31</span>
@@ -454,7 +462,15 @@ A window handle
   <span class='if if kw'>if</span> <span class='block_given? fid id'>block_given?</span>
     <span class='original identifier id'>original</span> <span class='assign token'>=</span> <span class='@bridge ivar id'>@bridge</span><span class='dot token'>.</span><span class='getCurrentWindowHandle identifier id'>getCurrentWindowHandle</span>
     <span class='@bridge ivar id'>@bridge</span><span class='dot token'>.</span><span class='switchToWindow identifier id'>switchToWindow</span> <span class='id identifier id'>id</span>
+
     <span class='yield yield kw'>yield</span>
+
+    <span class='current_handles identifier id'>current_handles</span> <span class='assign token'>=</span> <span class='@bridge ivar id'>@bridge</span><span class='dot token'>.</span><span class='getWindowHandles identifier id'>getWindowHandles</span>
+
+    <span class='if if kw'>if</span> <span class='current_handles identifier id'>current_handles</span><span class='dot token'>.</span><span class='size identifier id'>size</span> <span class='eq op'>==</span> <span class='integer val'>1</span>
+      <span class='original identifier id'>original</span> <span class='assign token'>=</span> <span class='current_handles identifier id'>current_handles</span><span class='dot token'>.</span><span class='shift identifier id'>shift</span>
+    <span class='end end kw'>end</span>
+
     <span class='@bridge ivar id'>@bridge</span><span class='dot token'>.</span><span class='switchToWindow identifier id'>switchToWindow</span> <span class='original identifier id'>original</span>
   <span class='else else kw'>else</span>
     <span class='@bridge ivar id'>@bridge</span><span class='dot token'>.</span><span class='switchToWindow identifier id'>switchToWindow</span> <span class='id identifier id'>id</span>
@@ -471,7 +487,7 @@ A window handle
 </div>
     
     <div id="footer">
-  Generated on Wed Feb  3 14:46:58 2010 by 
+  Generated on Wed Apr 21 13:31:07 2010 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool">yard</a>
   0.5.3 (ruby-1.8.7).
 </div>

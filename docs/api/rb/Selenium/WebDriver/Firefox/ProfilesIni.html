@@ -77,7 +77,15 @@
 </dl>
 <div class="clear"></div>
 
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
 
+  </div>
+</div>
+<div class="tags">
+  
+</div>
 
 
   <h2>Instance Method Summary</h2>
@@ -177,19 +185,21 @@ A new instance of ProfilesIni
       <pre class="lines">
 
 
-6
-7
 8
 9
-10</pre>
+10
+11
+12
+13</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/profiles_ini.rb', line 6</span>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/profiles_ini.rb', line 8</span>
 
 <span class='def def kw'>def</span> <span class='initialize identifier id'>initialize</span>
-  <span class='@path ivar id'>@path</span> <span class='assign token'>=</span> <span class='File constant id'>File</span><span class='dot token'>.</span><span class='join identifier id'>join</span><span class='lparen token'>(</span><span class='Util constant id'>Util</span><span class='dot token'>.</span><span class='app_data_path identifier id'>app_data_path</span><span class='comma token'>,</span> <span class='string val'>&quot;profiles.ini&quot;</span><span class='rparen token'>)</span>
-  <span class='@profiles ivar id'>@profiles</span> <span class='assign token'>=</span> <span class='lbrace token'>{</span><span class='rbrace token'>}</span>
-  <span class='parse identifier id'>parse</span> <span class='if if_mod kw'>if</span> <span class='File constant id'>File</span><span class='dot token'>.</span><span class='exist? fid id'>exist?</span><span class='lparen token'>(</span><span class='@path ivar id'>@path</span><span class='rparen token'>)</span>
+  <span class='@ini_path ivar id'>@ini_path</span> <span class='assign token'>=</span> <span class='File constant id'>File</span><span class='dot token'>.</span><span class='join identifier id'>join</span><span class='lparen token'>(</span><span class='Util constant id'>Util</span><span class='dot token'>.</span><span class='app_data_path identifier id'>app_data_path</span><span class='comma token'>,</span> <span class='string val'>&quot;profiles.ini&quot;</span><span class='rparen token'>)</span>
+  <span class='@profile_paths ivar id'>@profile_paths</span> <span class='assign token'>=</span> <span class='lbrace token'>{</span><span class='rbrace token'>}</span>
+
+  <span class='parse identifier id'>parse</span> <span class='if if_mod kw'>if</span> <span class='File constant id'>File</span><span class='dot token'>.</span><span class='exist? fid id'>exist?</span><span class='lparen token'>(</span><span class='@ini_path ivar id'>@ini_path</span><span class='rparen token'>)</span>
 <span class='end end kw'>end</span>
 </pre>
     </td>
@@ -217,15 +227,15 @@ A new instance of ProfilesIni
       <pre class="lines">
 
 
-12
-13
-14</pre>
+15
+16
+17</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/profiles_ini.rb', line 12</span>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/profiles_ini.rb', line 15</span>
 
 <span class='def def kw'>def</span> <span class='aref op'>[]</span><span class='lparen token'>(</span><span class='name identifier id'>name</span><span class='rparen token'>)</span>
-  <span class='@profiles ivar id'>@profiles</span><span class='lbrack token'>[</span><span class='name identifier id'>name</span><span class='rbrack token'>]</span>
+  <span class='Profile constant id'>Profile</span><span class='dot token'>.</span><span class='new identifier id'>new</span> <span class='@profile_paths ivar id'>@profile_paths</span><span class='lbrack token'>[</span><span class='name identifier id'>name</span><span class='rbrack token'>]</span>
 <span class='end end kw'>end</span>
 </pre>
     </td>
@@ -246,16 +256,16 @@ A new instance of ProfilesIni
       <pre class="lines">
 
 
-16
-17
-18
-19</pre>
+19
+20
+21
+22</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/profiles_ini.rb', line 16</span>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/profiles_ini.rb', line 19</span>
 
 <span class='def def kw'>def</span> <span class='refresh identifier id'>refresh</span>
-  <span class='@profiles ivar id'>@profiles</span><span class='dot token'>.</span><span class='clear identifier id'>clear</span>
+  <span class='@profile_paths ivar id'>@profile_paths</span><span class='dot token'>.</span><span class='clear identifier id'>clear</span>
   <span class='parse identifier id'>parse</span>
 <span class='end end kw'>end</span>
 </pre>
@@ -269,7 +279,7 @@ A new instance of ProfilesIni
 </div>
     
     <div id="footer">
-  Generated on Wed Feb  3 14:47:01 2010 by 
+  Generated on Wed Apr 21 13:31:05 2010 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool">yard</a>
   0.5.3 (ruby-1.8.7).
 </div>

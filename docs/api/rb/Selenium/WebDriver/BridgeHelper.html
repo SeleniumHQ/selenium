@@ -123,27 +123,7 @@ Shared across bridges
       <li class="public ">
   <span class="summary_signature">
     
-      <a href="#unwrap_script_argument-instance_method" title="#unwrap_script_argument (instance method)">- (Object) <strong>unwrap_script_argument</strong>(arg) </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"></span>
-  
-</li>
-
-    
-      <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#wrap_script_argument-instance_method" title="#wrap_script_argument (instance method)">- (Object) <strong>wrap_script_argument</strong>(arg) </a>
+      <a href="#unwrap_script_result-instance_method" title="#unwrap_script_result (instance method)">- (Object) <strong>unwrap_script_result</strong>(arg) </a>
     
 
     
@@ -180,21 +160,15 @@ Shared across bridges
       <pre class="lines">
 
 
-48
-49
-50
-51
-52
-53</pre>
+24
+25
+26</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/bridge_helper.rb', line 48</span>
+      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/bridge_helper.rb', line 24</span>
 
 <span class='def def kw'>def</span> <span class='element_id_from identifier id'>element_id_from</span><span class='lparen token'>(</span><span class='id identifier id'>id</span><span class='rparen token'>)</span>
-  <span class='str identifier id'>str</span> <span class='assign token'>=</span> <span class='id identifier id'>id</span><span class='dot token'>.</span><span class='kind_of? fid id'>kind_of?</span><span class='lparen token'>(</span><span class='Array constant id'>Array</span><span class='rparen token'>)</span> <span class='question op'>?</span> <span class='id identifier id'>id</span><span class='dot token'>.</span><span class='first identifier id'>first</span> <span class='colon op'>:</span> <span class='id identifier id'>id</span>
-  <span class='after identifier id'>after</span> <span class='assign token'>=</span> <span class='str identifier id'>str</span><span class='dot token'>.</span><span class='split identifier id'>split</span><span class='lparen token'>(</span><span class='string val'>&quot;/&quot;</span><span class='rparen token'>)</span><span class='dot token'>.</span><span class='last identifier id'>last</span>
-
-  <span class='after identifier id'>after</span>
+  <span class='id identifier id'>id</span><span class='lbrack token'>[</span><span class='string val'>'ELEMENT'</span><span class='rbrack token'>]</span>
 <span class='end end kw'>end</span>
 </pre>
     </td>
@@ -215,42 +189,42 @@ Shared across bridges
       <pre class="lines">
 
 
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
 55
 56
 57
 58
 59
-60
-61
-62
-63
-64
-65
-66
-67
-68
-69
-70
-71
-72
-73
-74
-75
-76
-77
-78
-79
-80
-81
-82
-83
-84
-85
-86
-87</pre>
+60</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/bridge_helper.rb', line 55</span>
+      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/bridge_helper.rb', line 28</span>
 
 <span class='def def kw'>def</span> <span class='parse_cookie_string identifier id'>parse_cookie_string</span><span class='lparen token'>(</span><span class='str identifier id'>str</span><span class='rparen token'>)</span>
   <span class='result identifier id'>result</span> <span class='assign token'>=</span> <span class='lbrace token'>{</span>
@@ -292,72 +266,9 @@ Shared across bridges
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="unwrap_script_argument-instance_method">
+  <p class="signature " id="unwrap_script_result-instance_method">
   
-    - (<tt>Object</tt>) <strong>unwrap_script_argument</strong>(arg) 
-  
-
-  
-</p><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-27
-28
-29
-30
-31
-32
-33
-34
-35
-36
-37
-38
-39
-40
-41
-42
-43
-44
-45
-46</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/bridge_helper.rb', line 27</span>
-
-<span class='def def kw'>def</span> <span class='unwrap_script_argument identifier id'>unwrap_script_argument</span><span class='lparen token'>(</span><span class='arg identifier id'>arg</span><span class='rparen token'>)</span>
-  <span class='if if kw'>if</span> <span class='arg identifier id'>arg</span><span class='dot token'>.</span><span class='kind_of? fid id'>kind_of?</span><span class='lparen token'>(</span><span class='Array constant id'>Array</span><span class='rparen token'>)</span>
-    <span class='arg identifier id'>arg</span><span class='dot token'>.</span><span class='map identifier id'>map</span> <span class='lbrace token'>{</span> <span class='bitor op'>|</span><span class='e identifier id'>e</span><span class='bitor op'>|</span> <span class='unwrap_script_argument identifier id'>unwrap_script_argument</span><span class='lparen token'>(</span><span class='e identifier id'>e</span><span class='rparen token'>)</span> <span class='rbrace token'>}</span>
-  <span class='else else kw'>else</span>
-    <span class='case case kw'>case</span> <span class='arg identifier id'>arg</span><span class='lbrack token'>[</span><span class='string val'>&quot;type&quot;</span><span class='rbrack token'>]</span>
-    <span class='when when kw'>when</span> <span class='string val'>&quot;NULL&quot;</span>
-      <span class='nil nil kw'>nil</span>
-    <span class='when when kw'>when</span> <span class='string val'>&quot;ELEMENT&quot;</span>
-      <span class='Element constant id'>Element</span><span class='dot token'>.</span><span class='new identifier id'>new</span> <span class='self self kw'>self</span><span class='comma token'>,</span> <span class='element_id_from identifier id'>element_id_from</span><span class='lparen token'>(</span><span class='arg identifier id'>arg</span><span class='lbrack token'>[</span><span class='string val'>&quot;value&quot;</span><span class='rbrack token'>]</span><span class='rparen token'>)</span>
-    <span class='when when kw'>when</span> <span class='string val'>&quot;POINT&quot;</span>
-      <span class='Point constant id'>Point</span><span class='dot token'>.</span><span class='new identifier id'>new</span> <span class='arg identifier id'>arg</span><span class='lbrack token'>[</span><span class='string val'>'x'</span><span class='rbrack token'>]</span><span class='comma token'>,</span> <span class='arg identifier id'>arg</span><span class='lbrack token'>[</span><span class='string val'>'y'</span><span class='rbrack token'>]</span>
-    <span class='when when kw'>when</span> <span class='string val'>&quot;DIMENSION&quot;</span>
-      <span class='Dimension constant id'>Dimension</span><span class='dot token'>.</span><span class='new identifier id'>new</span> <span class='arg identifier id'>arg</span><span class='lbrack token'>[</span><span class='string val'>'width'</span><span class='rbrack token'>]</span><span class='comma token'>,</span> <span class='arg identifier id'>arg</span><span class='lbrack token'>[</span><span class='string val'>'height'</span><span class='rbrack token'>]</span>
-    <span class='when when kw'>when</span> <span class='string val'>&quot;COOKIE&quot;</span>
-      <span class='lbrace token'>{</span><span class='symbol val'>:name</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='arg identifier id'>arg</span><span class='lbrack token'>[</span><span class='string val'>'name'</span><span class='rbrack token'>]</span><span class='comma token'>,</span> <span class='symbol val'>:value</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='arg identifier id'>arg</span><span class='lbrack token'>[</span><span class='string val'>'value'</span><span class='rbrack token'>]</span><span class='rbrace token'>}</span>
-    <span class='else else kw'>else</span>
-      <span class='arg identifier id'>arg</span><span class='lbrack token'>[</span><span class='string val'>&quot;value&quot;</span><span class='rbrack token'>]</span>
-    <span class='end end kw'>end</span>
-  <span class='end end kw'>end</span>
-<span class='end end kw'>end</span>
-</pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <p class="signature " id="wrap_script_argument-instance_method">
-  
-    - (<tt>Object</tt>) <strong>wrap_script_argument</strong>(arg) 
+    - (<tt>Object</tt>) <strong>unwrap_script_result</strong>(arg) 
   
 
   
@@ -367,8 +278,6 @@ Shared across bridges
       <pre class="lines">
 
 
-10
-11
 12
 13
 14
@@ -379,28 +288,20 @@ Shared across bridges
 19
 20
 21
-22
-23
-24
-25</pre>
+22</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/bridge_helper.rb', line 10</span>
+      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/bridge_helper.rb', line 12</span>
 
-<span class='def def kw'>def</span> <span class='wrap_script_argument identifier id'>wrap_script_argument</span><span class='lparen token'>(</span><span class='arg identifier id'>arg</span><span class='rparen token'>)</span>
-  <span class='case case kw'>case</span> <span class='arg identifier id'>arg</span>
-  <span class='when when kw'>when</span> <span class='Integer constant id'>Integer</span><span class='comma token'>,</span> <span class='Float constant id'>Float</span>
-    <span class='lbrace token'>{</span> <span class='symbol val'>:type</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;NUMBER&quot;</span><span class='comma token'>,</span> <span class='symbol val'>:value</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='arg identifier id'>arg</span> <span class='rbrace token'>}</span>
-  <span class='when when kw'>when</span> <span class='TrueClass constant id'>TrueClass</span><span class='comma token'>,</span> <span class='FalseClass constant id'>FalseClass</span><span class='comma token'>,</span> <span class='NilClass constant id'>NilClass</span>
-    <span class='lbrace token'>{</span> <span class='symbol val'>:type</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;BOOLEAN&quot;</span><span class='comma token'>,</span> <span class='symbol val'>:value</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='notop op'>!</span><span class='notop op'>!</span><span class='arg identifier id'>arg</span> <span class='rbrace token'>}</span>
-  <span class='when when kw'>when</span> <span class='Element constant id'>Element</span>
-    <span class='lbrace token'>{</span> <span class='symbol val'>:type</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;ELEMENT&quot;</span><span class='comma token'>,</span> <span class='symbol val'>:value</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='arg identifier id'>arg</span><span class='dot token'>.</span><span class='ref identifier id'>ref</span> <span class='rbrace token'>}</span>
-  <span class='when when kw'>when</span> <span class='String constant id'>String</span>
-    <span class='lbrace token'>{</span> <span class='symbol val'>:type</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;STRING&quot;</span><span class='comma token'>,</span> <span class='symbol val'>:value</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='arg identifier id'>arg</span><span class='dot token'>.</span><span class='to_s identifier id'>to_s</span> <span class='rbrace token'>}</span>
-  <span class='when when kw'>when</span> <span class='Array constant id'>Array</span> <span class='comment val'># Enumerable?</span>
-    <span class='arg identifier id'>arg</span><span class='dot token'>.</span><span class='map identifier id'>map</span> <span class='lbrace token'>{</span> <span class='bitor op'>|</span><span class='e identifier id'>e</span><span class='bitor op'>|</span> <span class='wrap_script_argument identifier id'>wrap_script_argument</span><span class='lparen token'>(</span><span class='e identifier id'>e</span><span class='rparen token'>)</span> <span class='rbrace token'>}</span>
+<span class='def def kw'>def</span> <span class='unwrap_script_result identifier id'>unwrap_script_result</span><span class='lparen token'>(</span><span class='arg identifier id'>arg</span><span class='rparen token'>)</span>
+  <span class='if if kw'>if</span> <span class='arg identifier id'>arg</span><span class='dot token'>.</span><span class='kind_of? fid id'>kind_of?</span><span class='lparen token'>(</span><span class='Array constant id'>Array</span><span class='rparen token'>)</span>
+    <span class='arg identifier id'>arg</span><span class='dot token'>.</span><span class='map identifier id'>map</span> <span class='lbrace token'>{</span> <span class='bitor op'>|</span><span class='e identifier id'>e</span><span class='bitor op'>|</span> <span class='unwrap_script_result identifier id'>unwrap_script_result</span><span class='lparen token'>(</span><span class='e identifier id'>e</span><span class='rparen token'>)</span> <span class='rbrace token'>}</span>
   <span class='else else kw'>else</span>
-    <span class='raise identifier id'>raise</span> <span class='TypeError constant id'>TypeError</span><span class='comma token'>,</span> <span class='dstring node'>&quot;Parameter is not of recognized type: #{arg.inspect}:#{arg.class}&quot;</span>
+    <span class='if if kw'>if</span> <span class='arg identifier id'>arg</span><span class='dot token'>.</span><span class='kind_of? fid id'>kind_of?</span><span class='lparen token'>(</span><span class='Hash constant id'>Hash</span><span class='rparen token'>)</span> <span class='andop op'>&amp;&amp;</span> <span class='arg identifier id'>arg</span><span class='dot token'>.</span><span class='member? fid id'>member?</span><span class='lparen token'>(</span><span class='string val'>&quot;ELEMENT&quot;</span><span class='rparen token'>)</span>
+      <span class='Element constant id'>Element</span><span class='dot token'>.</span><span class='new identifier id'>new</span> <span class='self self kw'>self</span><span class='comma token'>,</span> <span class='element_id_from identifier id'>element_id_from</span><span class='lparen token'>(</span><span class='arg identifier id'>arg</span><span class='rparen token'>)</span>
+    <span class='else else kw'>else</span>
+      <span class='arg identifier id'>arg</span>
+    <span class='end end kw'>end</span>
   <span class='end end kw'>end</span>
 <span class='end end kw'>end</span>
 </pre>
@@ -414,7 +315,7 @@ Shared across bridges
 </div>
     
     <div id="footer">
-  Generated on Wed Feb  3 14:47:01 2010 by 
+  Generated on Wed Apr 21 13:31:05 2010 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool">yard</a>
   0.5.3 (ruby-1.8.7).
 </div>

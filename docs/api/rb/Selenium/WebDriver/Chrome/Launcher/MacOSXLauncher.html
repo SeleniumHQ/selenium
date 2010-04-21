@@ -93,14 +93,14 @@
   
   
 
-  <h2>Instance Method Summary</h2>
+  <h2>Class Method Summary</h2>
 
   <ul class="summary">
     
       <li class="public ">
   <span class="summary_signature">
     
-      <a href="#binary_path-instance_method" title="#binary_path (instance method)">- (Object) <strong>binary_path</strong> </a>
+      <a href="#possible_paths-class_method" title="possible_paths (class method)">+ (Object) <strong>possible_paths</strong> </a>
     
 
     
@@ -130,18 +130,18 @@
   
   
   <h3 class="inherited">Methods inherited from <a href="../Launcher.html" title="Selenium::WebDriver::Chrome::Launcher (class)"></a></h3>
-  <p class="inherited"><a href="../Launcher.html#kill-instance_method" title="Selenium::WebDriver::Chrome::Launcher#kill (method)">#kill</a>, <a href="../Launcher.html#launch-instance_method" title="Selenium::WebDriver::Chrome::Launcher#launch (method)">#launch</a>, <a href="../Launcher.html#launcher-class_method" title="Selenium::WebDriver::Chrome::Launcher.launcher (method)">launcher</a></p>
+  <p class="inherited"><a href="../Launcher.html#binary_path-class_method" title="Selenium::WebDriver::Chrome::Launcher.binary_path (method)">binary_path</a>, <a href="../Launcher.html#kill-instance_method" title="Selenium::WebDriver::Chrome::Launcher#kill (method)">#kill</a>, <a href="../Launcher.html#launch-instance_method" title="Selenium::WebDriver::Chrome::Launcher#launch (method)">#launch</a>, <a href="../Launcher.html#launcher-class_method" title="Selenium::WebDriver::Chrome::Launcher.launcher (method)">launcher</a></p>
 
   
 
-  <div id="instance_method_details" class="method_details_list">
-    <h2>Instance Method Details</h2>
+  <div id="class_method_details" class="method_details_list">
+    <h2>Class Method Details</h2>
     
     
       <div class="method_details first">
-  <p class="signature first" id="binary_path-instance_method">
+  <p class="signature first" id="possible_paths-class_method">
   
-    - (<tt>Object</tt>) <strong>binary_path</strong> 
+    + (<tt>Object</tt>) <strong>possible_paths</strong> 
   
 
   
@@ -151,15 +151,15 @@
       <pre class="lines">
 
 
-127
-128
-129</pre>
+137
+138
+139</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/launcher.rb', line 127</span>
+      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/launcher.rb', line 137</span>
 
-<span class='def def kw'>def</span> <span class='binary_path identifier id'>binary_path</span>
-  <span class='@binary_path ivar id'>@binary_path</span> <span class='opasgn op'>||=</span> <span class='string val'>&quot;/Applications/Google Chrome.app/Contents/MacOS/Google Chrome&quot;</span>
+<span class='def def kw'>def</span> <span class='self self kw'>self</span><span class='dot token'>.</span><span class='possible_paths identifier id'>possible_paths</span>
+  <span class='lbrack token'>[</span><span class='string val'>&quot;/Applications/Google Chrome.app/Contents/MacOS/Google Chrome&quot;</span><span class='comma token'>,</span> <span class='dstring node'>&quot;#{Platform.home}/Applications/Google Chrome.app/Contents/MacOS/Google Chrome&quot;</span><span class='rbrack token'>]</span>
 <span class='end end kw'>end</span>
 </pre>
     </td>
@@ -172,7 +172,7 @@
 </div>
     
     <div id="footer">
-  Generated on Wed Feb  3 14:46:57 2010 by 
+  Generated on Wed Apr 21 13:31:06 2010 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool">yard</a>
   0.5.3 (ruby-1.8.7).
 </div>

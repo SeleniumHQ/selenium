@@ -87,14 +87,14 @@
   
   
 
-  <h2>Instance Method Summary</h2>
+  <h2>Class Method Summary</h2>
 
   <ul class="summary">
     
       <li class="public ">
   <span class="summary_signature">
     
-      <a href="#binary_path-instance_method" title="#binary_path (instance method)">- (Object) <strong>binary_path</strong> </a>
+      <a href="#possible_paths-class_method" title="possible_paths (class method)">+ (Object) <strong>possible_paths</strong> </a>
     
 
     
@@ -110,6 +110,32 @@
   
 </li>
 
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#registry_path-class_method" title="registry_path (class method)">+ (Object) <strong>registry_path</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+  </ul>
+
+  <h2>Instance Method Summary</h2>
+
+  <ul class="summary">
     
       <li class="public ">
   <span class="summary_signature">
@@ -139,18 +165,18 @@
   
   
   <h3 class="inherited">Methods inherited from <a href="../Launcher.html" title="Selenium::WebDriver::Chrome::Launcher (class)"></a></h3>
-  <p class="inherited"><a href="../Launcher.html#kill-instance_method" title="Selenium::WebDriver::Chrome::Launcher#kill (method)">#kill</a>, <a href="../Launcher.html#launch-instance_method" title="Selenium::WebDriver::Chrome::Launcher#launch (method)">#launch</a>, <a href="../Launcher.html#launcher-class_method" title="Selenium::WebDriver::Chrome::Launcher.launcher (method)">launcher</a></p>
+  <p class="inherited"><a href="../Launcher.html#binary_path-class_method" title="Selenium::WebDriver::Chrome::Launcher.binary_path (method)">binary_path</a>, <a href="../Launcher.html#kill-instance_method" title="Selenium::WebDriver::Chrome::Launcher#kill (method)">#kill</a>, <a href="../Launcher.html#launch-instance_method" title="Selenium::WebDriver::Chrome::Launcher#launch (method)">#launch</a>, <a href="../Launcher.html#launcher-class_method" title="Selenium::WebDriver::Chrome::Launcher.launcher (method)">launcher</a></p>
 
   
 
-  <div id="instance_method_details" class="method_details_list">
-    <h2>Instance Method Details</h2>
+  <div id="class_method_details" class="method_details_list">
+    <h2>Class Method Details</h2>
     
     
       <div class="method_details first">
-  <p class="signature first" id="binary_path-instance_method">
+  <p class="signature first" id="possible_paths-class_method">
   
-    - (<tt>Object</tt>) <strong>binary_path</strong> 
+    + (<tt>Object</tt>) <strong>possible_paths</strong> 
   
 
   
@@ -160,33 +186,27 @@
       <pre class="lines">
 
 
+101
+102
+103
 104
 105
 106
 107
 108
-109
-110
-111
-112
-113
-114
-115</pre>
+109</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/launcher.rb', line 104</span>
+      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/launcher.rb', line 101</span>
 
-<span class='def def kw'>def</span> <span class='binary_path identifier id'>binary_path</span>
-  <span class='@binary_path ivar id'>@binary_path</span> <span class='opasgn op'>||=</span> <span class='begin begin kw'>begin</span>
-    <span class='possible_paths identifier id'>possible_paths</span> <span class='assign token'>=</span> <span class='lbrack token'>[</span>
-      <span class='dstring node'>&quot;#{ENV['USERPROFILE']}\\Local Settings\\Application Data\\Google\\Chrome\\Application\\chrome.exe&quot;</span><span class='comma token'>,</span>
-      <span class='dstring node'>&quot;#{ENV['USERPROFILE']}\\AppData\\Local\\Google\\Chrome\\Application\\chrome.exe&quot;</span><span class='comma token'>,</span>
-      <span class='dstring node'>&quot;#{Platform.home}\\Local Settings\\Application Data\\Google\\Chrome\\Application\\chrome.exe&quot;</span><span class='comma token'>,</span>
-      <span class='dstring node'>&quot;#{Platform.home}\\AppData\\Local\\Google\\Chrome\\Application\\chrome.exe&quot;</span><span class='comma token'>,</span>
-    <span class='rbrack token'>]</span>
-
-    <span class='possible_paths identifier id'>possible_paths</span><span class='dot token'>.</span><span class='find identifier id'>find</span> <span class='lbrace token'>{</span> <span class='bitor op'>|</span><span class='f identifier id'>f</span><span class='bitor op'>|</span> <span class='File constant id'>File</span><span class='dot token'>.</span><span class='exist? fid id'>exist?</span><span class='lparen token'>(</span><span class='f identifier id'>f</span><span class='rparen token'>)</span> <span class='rbrace token'>}</span> <span class='orop op'>||</span> <span class='possible_paths identifier id'>possible_paths</span><span class='dot token'>.</span><span class='first identifier id'>first</span>
-  <span class='end end kw'>end</span>
+<span class='def def kw'>def</span> <span class='self self kw'>self</span><span class='dot token'>.</span><span class='possible_paths identifier id'>possible_paths</span>
+  <span class='lbrack token'>[</span>
+    <span class='registry_path identifier id'>registry_path</span><span class='comma token'>,</span>
+    <span class='dstring node'>&quot;#{ENV['USERPROFILE']}\\Local Settings\\Application Data\\Google\\Chrome\\Application\\chrome.exe&quot;</span><span class='comma token'>,</span>
+    <span class='dstring node'>&quot;#{ENV['USERPROFILE']}\\AppData\\Local\\Google\\Chrome\\Application\\chrome.exe&quot;</span><span class='comma token'>,</span>
+    <span class='dstring node'>&quot;#{Platform.home}\\Local Settings\\Application Data\\Google\\Chrome\\Application\\chrome.exe&quot;</span><span class='comma token'>,</span>
+    <span class='dstring node'>&quot;#{Platform.home}\\AppData\\Local\\Google\\Chrome\\Application\\chrome.exe&quot;</span><span class='comma token'>,</span>
+  <span class='rbrack token'>]</span><span class='dot token'>.</span><span class='compact identifier id'>compact</span>
 <span class='end end kw'>end</span>
 </pre>
     </td>
@@ -195,7 +215,58 @@
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="linked_lib_path-instance_method">
+  <p class="signature " id="registry_path-class_method">
+  
+    + (<tt>Object</tt>) <strong>registry_path</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/launcher.rb', line 111</span>
+
+<span class='def def kw'>def</span> <span class='self self kw'>self</span><span class='dot token'>.</span><span class='registry_path identifier id'>registry_path</span>
+  <span class='require identifier id'>require</span> <span class='string val'>&quot;win32/registry&quot;</span>
+
+  <span class='reg identifier id'>reg</span> <span class='assign token'>=</span> <span class='Win32 constant id'>Win32</span><span class='colon2 op'>::</span><span class='Registry constant id'>Registry</span><span class='colon2 op'>::</span><span class='HKEY_LOCAL_MACHINE constant id'>HKEY_LOCAL_MACHINE</span><span class='dot token'>.</span><span class='open identifier id'>open</span><span class='lparen token'>(</span><span class='string val'>&quot;SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths\\chrome.exe&quot;</span><span class='rparen token'>)</span>
+  <span class='reg identifier id'>reg</span><span class='lbrack token'>[</span><span class='string val'>&quot;&quot;</span><span class='rbrack token'>]</span>
+<span class='rescue rescue kw'>rescue</span> <span class='LoadError constant id'>LoadError</span>
+  <span class='comment val'># older JRuby and IronRuby does not have win32/registry</span>
+  <span class='nil nil kw'>nil</span>
+<span class='rescue rescue kw'>rescue</span> <span class='Win32 constant id'>Win32</span><span class='colon2 op'>::</span><span class='Registry constant id'>Registry</span><span class='colon2 op'>::</span><span class='Error constant id'>Error</span>
+  <span class='nil nil kw'>nil</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
+
+  <div id="instance_method_details" class="method_details_list">
+    <h2>Instance Method Details</h2>
+    
+    
+      <div class="method_details first">
+  <p class="signature first" id="linked_lib_path-instance_method">
   
     - (<tt>Object</tt>) <strong>linked_lib_path</strong> 
   
@@ -207,13 +278,13 @@
       <pre class="lines">
 
 
-99
-100
-101
-102</pre>
+123
+124
+125
+126</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/launcher.rb', line 99</span>
+      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/launcher.rb', line 123</span>
 
 <span class='def def kw'>def</span> <span class='linked_lib_path identifier id'>linked_lib_path</span>
   <span class='comment val'># TODO: x64</span>
@@ -230,7 +301,7 @@
 </div>
     
     <div id="footer">
-  Generated on Wed Feb  3 14:46:55 2010 by 
+  Generated on Wed Apr 21 13:31:01 2010 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool">yard</a>
   0.5.3 (ruby-1.8.7).
 </div>
