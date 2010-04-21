@@ -184,13 +184,13 @@ A new instance of PatronHttpClient
       <pre class="lines">
 
 
+12
+13
 14
-15
-16
-17</pre>
+15</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/patron_http_client.rb', line 14</span>
+      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/patron_http_client.rb', line 12</span>
 
 <span class='def def kw'>def</span> <span class='initialize identifier id'>initialize</span><span class='lparen token'>(</span><span class='url identifier id'>url</span><span class='rparen token'>)</span>
   <span class='@session ivar id'>@session</span> <span class='assign token'>=</span> <span class='Patron constant id'>Patron</span><span class='colon2 op'>::</span><span class='Session constant id'>Session</span><span class='dot token'>.</span><span class='new identifier id'>new</span>
@@ -222,6 +222,8 @@ A new instance of PatronHttpClient
       <pre class="lines">
 
 
+17
+18
 19
 20
 21
@@ -240,12 +242,10 @@ A new instance of PatronHttpClient
 34
 35
 36
-37
-38
-39</pre>
+37</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/patron_http_client.rb', line 19</span>
+      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/patron_http_client.rb', line 17</span>
 
 <span class='def def kw'>def</span> <span class='call identifier id'>call</span><span class='lparen token'>(</span><span class='verb identifier id'>verb</span><span class='comma token'>,</span> <span class='url identifier id'>url</span><span class='comma token'>,</span> <span class='command_hash identifier id'>command_hash</span><span class='rparen token'>)</span>
   <span class='DEFAULT_HEADERS constant id'>DEFAULT_HEADERS</span><span class='dot token'>.</span><span class='each identifier id'>each</span> <span class='do do kw'>do</span> <span class='bitor op'>|</span><span class='key identifier id'>key</span><span class='comma token'>,</span> <span class='val identifier id'>val</span><span class='bitor op'>|</span>
@@ -279,7 +279,7 @@ A new instance of PatronHttpClient
 </div>
     
     <div id="footer">
-  Generated on Wed Apr 21 13:31:07 2010 by 
+  Generated on Wed Apr 21 13:36:24 2010 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool">yard</a>
   0.5.3 (ruby-1.8.7).
 </div>

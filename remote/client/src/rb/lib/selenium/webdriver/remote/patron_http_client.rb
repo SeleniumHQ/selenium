@@ -9,8 +9,6 @@ module Selenium
         CONTENT_TYPE    = "application/json"
         DEFAULT_HEADERS = { "Accept" => CONTENT_TYPE, "Content-Length" => "0" }
 
-        class RetryException < StandardError; end
-
         def initialize(url)
           @session = Patron::Session.new
           @session.base_url = url
