@@ -26,7 +26,7 @@ except ImportError: # < 2.6
 if not hasattr(json, 'dumps'):
     import simplejson as json
 
-from ..common.exceptions import NoSuchElementException
+from selenium.common.exceptions import NoSuchElementException
 
 
 def format_json(json_struct):

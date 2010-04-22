@@ -28,10 +28,10 @@ except ImportError: # Python < 2.6
 if not hasattr(json, 'dumps'):
   import simplejson as json
 
-from ..common.exceptions import ErrorInResponseException
+from selenium.common.exceptions import ErrorInResponseException
 
-from ..remote.command import Command
-from ..remote.remote_connection import RemoteConnection
+from selenium.remote.command import Command
+from selenium.remote.remote_connection import RemoteConnection
 
 _DEFAULT_TIMEOUT = 20
 _DEFAULT_PORT = 7055

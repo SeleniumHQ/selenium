@@ -21,7 +21,7 @@ import os
 import platform
 import tempfile
 import zipfile
-from ..common.exceptions import NoSuchElementException
+from selenium.common.exceptions import NoSuchElementException
 
 
 def handle_find_element_exception(ex):
@@ -148,5 +148,3 @@ def get_firefox_app_data_dir():
 
     logging.info("Application data is found at %s" % app_data_dir)
     return app_data_dir
-
-

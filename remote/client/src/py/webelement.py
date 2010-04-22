@@ -17,8 +17,8 @@
 import urllib
 import utils
 from command import Command
-from ..common.exceptions import ErrorInResponseException
-from ..common.exceptions import NoSuchElementException
+from selenium.common.exceptions import ErrorInResponseException
+from selenium.common.exceptions import NoSuchElementException
 
 class WebElement(object):
     """Represents an HTML element.

@@ -16,10 +16,10 @@
 import base64
 from datetime import datetime
 import httplib
-from ..common.exceptions import ErrorInResponseException
-from ..common.exceptions import InvalidSwitchToTargetException
-from ..remote.command import Command
-from ..remote.webdriver import WebDriver as RemoteWebDriver
+from selenium.common.exceptions import ErrorInResponseException
+from selenium.common.exceptions import InvalidSwitchToTargetException
+from selenium.remote.command import Command
+from selenium.remote.webdriver import WebDriver as RemoteWebDriver
 from webelement import WebElement
 from firefoxlauncher import FirefoxLauncher
 from firefox_profile import FirefoxProfile

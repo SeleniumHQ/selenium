@@ -16,9 +16,9 @@
 """The WebDriver implementation."""
 
 from command import Command
-from ..common.exceptions import ErrorInResponseException
-from ..common.exceptions import InvalidSwitchToTargetException
-from ..common.exceptions import NoSuchElementException
+from selenium.common.exceptions import ErrorInResponseException
+from selenium.common.exceptions import InvalidSwitchToTargetException
+from selenium.common.exceptions import NoSuchElementException
 from errorhandler import ErrorHandler
 import logging
 import utils

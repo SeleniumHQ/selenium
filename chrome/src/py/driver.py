@@ -15,8 +15,8 @@
 
 from __future__ import with_statement
 
-from ..common.exceptions import RemoteDriverServerException
-from ..remote import utils
+from selenium.common.exceptions import RemoteDriverServerException
+from selenium.remote import utils
 from subprocess import Popen
 import httplib
 from BaseHTTPServer import HTTPServer
@@ -27,6 +27,10 @@ try:
     import json
 except ImportError:
     import simplejson as json
+
+if not hasattr(json, 'dumps'):
+    import simplejson as json
+
 from time import sleep, time
 from urllib import urlopen
 from os.path import expanduser, join, dirname, abspath, isdir, isfile
@@ -270,4 +274,3 @@ class ChromeDriver:
         to_send["request"] = command
         self._server.command_queue.put(to_send)
         return self._server.result_queue.get()
-

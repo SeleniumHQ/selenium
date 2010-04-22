@@ -13,12 +13,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from ..common.exceptions import ErrorInResponseException
-from ..common.exceptions import NoSuchElementException
+from selenium.common.exceptions import ErrorInResponseException
+from selenium.common.exceptions import NoSuchElementException
 from extensionconnection import ExtensionConnection
 import utils
-from ..remote import utils as remote_utils
-from ..remote.webelement import WebElement as RemoteWebElement
+from selenium.remote import utils as remote_utils
+from selenium.remote.webelement import WebElement as RemoteWebElement
 
 class WebElement(RemoteWebElement):
     """Represents an HTML element.
