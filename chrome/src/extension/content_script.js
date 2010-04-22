@@ -114,21 +114,12 @@ function parsePortMessage(message) {
       response.wait = false;
       break;
     case "findChildElement":
-      response.value = getElement(false, message.request.using, message.request.value, message.request.id);
-      response.wait = false;
-      break;
     case "findChildElements":
-      response.value = getElement(true, message.request.using, message.request.value, message.request.id);
-      response.wait = false;
-      break;
     case "findElement":
-      response.value = getElement(false, message.request.using, message.request.value);
-      response.wait = false;
-      break;
     case "findElements":
-      response.value = getElement(true, message.request.using, message.request.value);
       response.wait = false;
-      break;
+      findElement(message, response);
+      return;  // Nothing more to do.
     case "getElementAttribute":
       response.value = getElementAttribute(element, message.request.name);
       response.wait = false;
@@ -420,21 +411,94 @@ function setCookie(cookie) {
 }
 
 /**
- * Get an element, or a set of elements, by some lookup
- * Called by both findElement and findElements
- * @param plural true if want array of all elements, false if singular element
- * @param parsed array showing how to look up, e.g. ["id", "cheese"] or
- *               [{"id": 0, using: "id", value: "cheese"}]
+ * Responds to a request to find an element on the page.
+ * @param {Object} message The request from the background page.
+ * @param {Object} resp The response to send when the search has completed.
  */
-function getElement(plural, lookupBy, lookupValue, id) {
+function findElement(message, resp) {
+  var req = message.request;
+  var startTime = new Date().getTime();
+  var plural = req.request == 'findChildElements' ||
+               req.request == 'findElements';
+  var wait = message.implicitWait;
+
+  function send(response) {
+    ChromeDriverContentScript.port.postMessage({
+      response: response,
+      sequenceNumber: message.sequenceNumber
+    });
+    console.log("Sent response: " + JSON.stringify(response) +
+        " (seq:" + message.sequenceNumber + ")");
+  }
+
+  function doSearch() {
+    var found;
+    try {
+      found = getElement(req.using, req.value, req.id);
+    } catch (ex) {
+      console.error('Caught exception; sending error response', ex);
+      send({
+        statusCode: 13,
+        value: {
+          message: "An unexpected error occured while executing " +
+              req.request + ", exception dump: " + ex
+        }
+      });
+    }
+
+    var done = !wait || found.length;
+    if (done) {
+      if (!plural && !found.length) {
+        resp.value = {
+          statusCode: 7,
+          value: {
+            message: 'After ' + (new Date().getTime() - startTime) + 'ms, ' +
+                'unable to find element with ' +
+                req.using + ' ' + req.value
+          }
+        };
+      } else {
+        resp.value = {
+          statusCode: 0,
+          value: (plural ? found : found[0])
+        };
+      }
+      send(resp);
+    } else if (new Date().getTime() - startTime > wait) {
+      if (plural) {
+        resp.value = {statusCode: 0, value: []};
+      } else {
+        resp.value = {
+          statusCode: 7,
+          value: {
+            message: 'Unable to find element with ' +
+                req.using + ' ' + req.value
+          }
+        };
+      }
+      send(resp);
+    } else {
+      setTimeout(doSearch, 100);
+    }
+  }
+
+  doSearch();
+}
+
+
+/**
+ * Get an element, or a set of elements, by some lookup
+ * @param {string} lookupBy The lookup strategy to use.
+ * @param {string} lookupValue What to lookup.
+ * @param {string} id Internal ID of the parent element to restrict the lookup
+ *     to.
+ * @return {Array} An array of the elements matching the search criteria.
+ */
+function getElement(lookupBy, lookupValue, id) {
   var root = "";
   var parent = null;
   if (id !== undefined && id != null) {
-    try {
-      parent = internalGetElement(id);
-    } catch (e) {
-      return e;
-    }
+    parent = internalGetElement(id);
     //Looking for children
     root = getXPathOfElement(parent);
   } else {
@@ -483,38 +547,20 @@ function getElement(plural, lookupBy, lookupValue, id) {
   if (attribute != '') {
     elements = getElementsByXPath(root + "//*[@" + attribute + "='" + lookupValue + "']");
   }
+
   if (elements == null || elements.length == 0) {
-    if (plural) {
-      //Fine, no elements matched
-      return {statusCode: 0, value: []};
-    } else {
-      //Problem - we were expecting an element
-      return {statusCode: 7, value: {
-          message: "Unable to find element with " + lookupBy + " " + lookupValue}};
-    }
-  } else {
-    var toReturn;
-    if (plural) {
-      toReturn = [];
-      //Add all found elements to the page's elements, and push each to the array to return
-      var addedElements = addElementsToInternalArray(elements);
-      for (var addedElement in addedElements) {
-        toReturn.push({
-          'ELEMENT': addedElements[addedElement].toString()
-        });
-      }
-    } else {
-      if (!elements[0]) {
-        return {statusCode: 7, value: {
-          message: "Unable to find element with " + lookupBy + " " + lookupValue}};
-      }
-      //Add the first found elements to the page's elements, and push it to the array to return
-      toReturn = {
-        'ELEMENT': addElementToInternalArray(elements[0]).toString()
-      };
-    }
-    return {statusCode: 0, value: toReturn};
+    return [];
   }
+
+  var toReturn = [];
+  //Add all found elements to the page's elements, and push each to the array to return
+  var addedElements = addElementsToInternalArray(elements);
+  for (var addedElement in addedElements) {
+    toReturn.push({
+      'ELEMENT': addedElements[addedElement].toString()
+    });
+  }
+  return toReturn;
 }
 
 /**

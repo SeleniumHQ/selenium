@@ -116,12 +116,15 @@ public class SeleneseCommandExecutor implements CommandExecutor {
   }
 
   private void prepareCommands() {
+    FindElement findElement = new FindElement();
+    
     functions = ImmutableMap.<DriverCommand, SeleneseFunction>builder()
         .put(CLEAR_ELEMENT, new ClearElement())
         .put(CLICK_ELEMENT, new ClickElement())
         .put(GET_CURRENT_URL, new GetCurrentUrl())
         .put(EXECUTE_SCRIPT, new ExecuteScript())
-        .put(FIND_ELEMENT, new FindElement())
+        .put(FIND_ELEMENT, findElement)
+        .put(IMPLICITLY_WAIT, findElement.implicitlyWait())
         .put(GET, new GetUrl())
         .put(GET_ELEMENT_ATTRIBUTE, new GetElementAttribute())
         .put(GET_ELEMENT_TEXT, new GetElementText())

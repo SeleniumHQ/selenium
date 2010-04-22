@@ -50,6 +50,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 public class InternetExplorerDriver implements WebDriver, JavascriptExecutor, TakesScreenshot {
 
@@ -467,6 +468,17 @@ public class InternetExplorerDriver implements WebDriver, JavascriptExecutor, Ta
 
     public void setSpeed(Speed speed) {
       InternetExplorerDriver.this.speed = speed;
+    }
+
+    public Timeouts timeouts() {
+      return new InternetExplorerTimeouts();
+    }
+  }
+
+  private class InternetExplorerTimeouts implements Timeouts {
+    public Timeouts implicitlyWait(long time, TimeUnit unit) {
+      // TODO: implement
+      throw new UnsupportedOperationException("Not yet implemented");
     }
   }
 

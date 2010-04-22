@@ -282,11 +282,16 @@ FirefoxDriver.ElementLocator = {
  *     details on what the selector should be for each element.
  * @param {string} opt_parentElementId If defined, the search will be restricted
  *     to the corresponding element's subtree.
+ * @param {number=} opt_startTime When this search operation started. Defaults
+ *     to the current time.
  * @private
  */
 FirefoxDriver.prototype.findElementInternal_ = function(respond, method,
                                                         selector,
-                                                        opt_parentElementId) {
+                                                        opt_parentElementId,
+                                                        opt_startTime) {
+  var startTime = typeof opt_startTime == 'number' ? opt_startTime :
+                                                     new Date().getTime();
   var theDocument = respond.session.getDocument();
   var rootNode = typeof opt_parentElementId == 'string' ?
       Utils.getElementAt(opt_parentElementId, theDocument) : theDocument;
@@ -358,11 +363,24 @@ FirefoxDriver.prototype.findElementInternal_ = function(respond, method,
     respond.value = {'ELEMENT': id};
     respond.send();
   } else {
-    throw new WebDriverError(ErrorCode.NO_SUCH_ELEMENT,
-        'Unable to locate element: ' + JSON.stringify({
-            method: method,
-            selector: selector
-        }));
+    var wait = respond.session.getImplicitWait();
+    if (wait == 0 || new Date().getTime() - startTime > wait) {
+      respond.sendError(new WebDriverError(ErrorCode.NO_SUCH_ELEMENT,
+          'Unable to locate element: ' + JSON.stringify({
+              method: method,
+              selector: selector
+          })));
+    } else {
+      var self = this;
+      var timer = Components.classes['@mozilla.org/timer;1'].
+          createInstance(Components.interfaces.nsITimer);
+      timer.initWithCallback({
+        notify: function() {
+          self.findElementInternal_(respond, method, selector,
+              opt_parentElementId, startTime);
+        }
+      }, 10, Components.interfaces.nsITimer.TYPE_ONE_SHOT);
+    }
   }
 };
 
@@ -408,11 +426,16 @@ FirefoxDriver.prototype.findChildElement = function(respond, parameters) {
  *     details on what the selector should be for each element.
  * @param {string} opt_parentElementId If defined, the search will be restricted
  *     to the corresponding element's subtree.
+ * @param {number=} opt_startTime When this search operation started. Defaults
+ *     to the current time.
  * @private
  */
 FirefoxDriver.prototype.findElementsInternal_ = function(respond, method,
                                                          selector,
-                                                         opt_parentElementId) {
+                                                         opt_parentElementId,
+                                                         opt_startTime) {
+  var startTime = typeof opt_startTime == 'number' ? opt_startTime :
+                                                     new Date().getTime();
   var theDocument = respond.session.getDocument();
   var rootNode = typeof opt_parentElementId == 'string' ?
       Utils.getElementAt(opt_parentElementId, theDocument) : theDocument;
@@ -482,8 +505,21 @@ FirefoxDriver.prototype.findElementsInternal_ = function(respond, method,
     elementIds.push({'ELEMENT': elementId});
   }
 
-  respond.value = elementIds;
-  respond.send();
+  var wait = respond.session.getImplicitWait();
+  if (wait && !elementIds.length && new Date().getTime() - startTime <= wait) {
+    var self = this;
+    var timer = Components.classes['@mozilla.org/timer;1'].
+        createInstance(Components.interfaces.nsITimer);
+    timer.initWithCallback({
+      notify: function() {
+        self.findElementsInternal_(respond, method, selector,
+            opt_parentElementId, startTime);
+      }
+    }, 10, Components.interfaces.nsITimer.TYPE_ONE_SHOT);
+  } else {
+    respond.value = elementIds;
+    respond.send();
+  }
 };
 
 
@@ -737,6 +773,12 @@ FirefoxDriver.prototype.getSpeed = function(respond) {
       respond.value = prop;
     }
   }
+  respond.send();
+};
+
+
+FirefoxDriver.prototype.implicitlyWait = function(respond, parameters) {
+  respond.session.setImplicitWait(parameters.ms);
   respond.send();
 };
 

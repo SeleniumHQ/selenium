@@ -95,6 +95,20 @@ wdSession.prototype.window_ = null;
 wdSession.prototype.inputSpeed_ = 1;
 
 
+/**
+ * The amount of time, in milliseconds, this session should wait for an element
+ * to be located when performing a search.
+ * When searching for a single element, the driver will wait up to this amount
+ * of time for the element to be located before returning an error.
+ * When searching for multiple elements, the driver will wait up to this amount
+ * of time for at least one element to be located before returning an empty
+ * list.
+ * @type {number}
+ * @private
+ */
+wdSession.prototype.implicitWait_ = 0;
+
+
 /** @see nsISupports.QueryInterface */
 wdSession.prototype.QueryInterface = function(aIID) {
   if (aIID.equals(Components.interfaces.nsISupports)) {
@@ -191,6 +205,25 @@ wdSession.prototype.getInputSpeed = function() {
  */
 wdSession.prototype.setInputSpeed = function(speed) {
   this.inputSpeed_ = speed;
+};
+
+
+/**
+ * @return {number} The amount of time, in milliseconds, this session should
+ *     wait for an element to be located on the page.
+ */
+wdSession.prototype.getImplicitWait = function() {
+  return this.implicitWait_;
+};
+
+
+/**
+ * Sets the amount of time, in milliseconds, this session should wait for an
+ * element to be located on the page.
+ * @param {number} wait The amount of time to wait.
+ */
+wdSession.prototype.setImplicitWait = function(wait) {
+  this.implicitWait_ = Math.max(wait, 0);
 };
 
 

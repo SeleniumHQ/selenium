@@ -78,6 +78,7 @@ import org.w3c.dom.NamedNodeMap;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 import java.awt.Point;
@@ -598,14 +599,12 @@ public class HtmlUnitWebElement implements RenderedWebElement,
 
   public WebElement findElement(By by) {
     assertElementNotStale();
-
-    return by.findElement(this);
+    return parent.findElement(by, this);
   }
 
   public List<WebElement> findElements(By by) {
     assertElementNotStale();
-
-    return by.findElements(this);
+    return parent.findElements(by, this);
   }
 
   public WebElement findElementById(String id) {

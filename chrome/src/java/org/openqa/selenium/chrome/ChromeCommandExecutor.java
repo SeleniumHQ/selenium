@@ -95,6 +95,7 @@ public class ChromeCommandExecutor implements CommandExecutor {
         .put(GET_TITLE, NO_ARGS)
         .put(EXECUTE_SCRIPT, new String[] {"script", "args"})
         .put(SCREENSHOT, NO_ARGS)
+        .put(IMPLICITLY_WAIT, new String[] {"ms"})
         .build();
   }
 

@@ -41,6 +41,7 @@ public class Pages {
   public String documentWrite;
   public String sleepingPage;
   public String errorsPage;
+  public String dynamicPage;
 
   public Pages(AppServer appServer) {
     simpleTestPage = appServer.whereIs("simpleTest.html");
@@ -64,5 +65,6 @@ public class Pages {
     documentWrite = appServer.whereIs("document_write_in_onload.html");
     sleepingPage = appServer.whereIs("sleep");
     errorsPage = appServer.whereIs("errors.html");
+    dynamicPage = appServer.whereIs("dynamic.html");
   }
 }

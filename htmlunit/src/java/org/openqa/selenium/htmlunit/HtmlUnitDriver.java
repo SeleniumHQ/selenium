@@ -29,6 +29,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.CookieManager;
@@ -90,6 +91,7 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
   private ProxyConfig proxyConfig;
   private final BrowserVersion version;
   private Speed speed = Speed.FAST;
+  private long implicitWait = 0;
 
   public HtmlUnitDriver(BrowserVersion version) {
     this.version = version;
@@ -278,11 +280,11 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
   }
 
   public WebElement findElement(By by) {
-    return by.findElement(this);
+    return findElement(by, this);
   }
 
   public List<WebElement> findElements(By by) {
-    return by.findElements(this);
+    return findElements(by, this);
   }
 
   public String getPageSource() {
@@ -948,6 +950,18 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
       URL current = lastPage().getWebResponse().getRequestUrl();
       return current.getHost();
     }
+
+    public Timeouts timeouts() {
+      return new HtmlUnitTimeouts();
+    }
+  }
+
+  class HtmlUnitTimeouts implements Timeouts {
+    public Timeouts implicitlyWait(long time, TimeUnit unit) {
+      HtmlUnitDriver.this.implicitWait =
+          TimeUnit.MILLISECONDS.convert(Math.max(0, time), unit);
+      return this;
+    }
   }
 
   public WebElement findElementByPartialLinkText(String using) {
@@ -976,5 +990,40 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
       }
     }
     return elements;
+  }
+
+  WebElement findElement(By locator, SearchContext context) {
+    long start = System.currentTimeMillis();
+    while (true) {
+      try {
+        return locator.findElement(context);
+      } catch (NoSuchElementException e) {
+        if (System.currentTimeMillis() - start > implicitWait) {
+          throw e;
+        }
+        sleepQuietly(100);
+      }
+    }
+  }
+
+  List<WebElement> findElements(By by, SearchContext context) {
+    long start = System.currentTimeMillis();
+    List<WebElement> found;
+    do {
+      found = by.findElements(context);
+      if (found.isEmpty()) {
+        sleepQuietly(100);
+      } else {
+        break;
+      }
+    } while (System.currentTimeMillis() - start <= implicitWait);
+    return found;
+  }
+
+  private static void sleepQuietly(long ms) {
+    try {
+      Thread.sleep(ms);
+    } catch (InterruptedException ignored) {
+    }
   }
 }

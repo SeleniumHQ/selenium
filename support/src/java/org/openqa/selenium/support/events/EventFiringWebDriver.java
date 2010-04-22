@@ -38,6 +38,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 /**
  * A wrapper around an arbitrary {@link WebDriver} instance
@@ -451,6 +452,23 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Wrap
         public void setSpeed(Speed speed) {
             options.setSpeed(speed);
         }
+
+      public Timeouts timeouts() {
+        return new EventFiringTimeouts(options.timeouts());
+      }
+    }
+
+    private class EventFiringTimeouts implements Timeouts {
+      private final Timeouts timeouts;
+
+      EventFiringTimeouts(Timeouts timeouts) {
+        this.timeouts = timeouts;
+      }
+
+      public Timeouts implicitlyWait(long time, TimeUnit unit) {
+        timeouts.implicitlyWait(time, unit);
+        return this;
+      }
     }
 
     private class EventFiringTargetLocator implements TargetLocator {

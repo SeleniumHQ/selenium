@@ -180,6 +180,19 @@ ChromeDriver.timeoutUntilGiveUpOnContentScriptLoading = 5000;
  */
 ChromeDriver.currentlyWaitingUntilGiveUpOnContentScriptLoading;
 
+/**
+ * The amount of time, in milliseconds, to wait for an element to be located
+ * when performing a search.
+ * When searching for a single element, the driver will wait up to this amount
+ * of time for the element to be located before returning an error.
+ * When searching for multiple elements, the driver will wait up to this amount
+ * of time for at least one element to be located before returning an empty
+ * list.
+ * @type {number}
+ * @private
+ */
+ChromeDriver.implicitWait_ = 0;
+
 //Set ChromeDriver.currentlyWaitingUntilGiveUpOnContentScriptLoading;
 resetCurrentlyWaitingOnContentScriptTime();
 
@@ -488,6 +501,10 @@ function parseRequest(request) {
   case "screenshot":
     getScreenshot();
     break;
+  case "implicitlyWait":
+    ChromeDriver.implicitWait_ = request.ms || 0;
+    sendResponseToParsedRequest({status: 0});
+    break;
   case "clickElement":
   case "hoverOverElement":
     // Falling through, as native events are handled the same
@@ -547,7 +564,8 @@ function parseRequest(request) {
     ChromeDriver.requestSequenceNumber++;
     sendMessageOnActivePortAndAlsoKeepTrackOfIt({
       request: request,
-      sequenceNumber: sequenceNumber
+      sequenceNumber: sequenceNumber,
+      implicitWait: ChromeDriver.implicitWait_
     });
     break;
   }

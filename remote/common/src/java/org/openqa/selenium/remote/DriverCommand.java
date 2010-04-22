@@ -95,7 +95,8 @@ public enum DriverCommand {
   ELEMENT_EQUALS("elementEquals"),
 
   SCREENSHOT("screenshot"),
-  DISMISS_ALERT("dismissAlert");
+  DISMISS_ALERT("dismissAlert"),
+  IMPLICITLY_WAIT("implicitlyWait");
 
   private final String commandName;
 

@@ -63,6 +63,7 @@ import org.openqa.selenium.remote.server.handler.GetTitle;
 import org.openqa.selenium.remote.server.handler.GoBack;
 import org.openqa.selenium.remote.server.handler.GoForward;
 import org.openqa.selenium.remote.server.handler.HoverOverElement;
+import org.openqa.selenium.remote.server.handler.ImplicitlyWait;
 import org.openqa.selenium.remote.server.handler.NewSession;
 import org.openqa.selenium.remote.server.handler.RefreshPage;
 import org.openqa.selenium.remote.server.handler.SendKeys;
@@ -230,6 +231,9 @@ public class DriverServlet extends HttpServlet {
     getMapper.bind("/session/:sessionId/speed", GetMouseSpeed.class)
         .on(ResultType.SUCCESS, new JsonResult(":response"));
     postMapper.bind("/session/:sessionId/speed", SetMouseSpeed.class)
+        .on(ResultType.SUCCESS, new EmptyResult());
+
+    postMapper.bind("/session/:sessionId/timeouts/implicit_wait", ImplicitlyWait.class)
         .on(ResultType.SUCCESS, new EmptyResult());
   }
 

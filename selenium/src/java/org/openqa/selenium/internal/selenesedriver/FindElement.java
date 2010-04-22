@@ -29,6 +29,8 @@ import java.util.Map;
 
 public class FindElement implements SeleneseFunction<Map<String, String>> {
 
+  private long implicitlyWait = 0;
+
   public Map<String, String> apply(Selenium selenium, Map<String, ?> args) {
     String how = (String) args.get("using");
     String using = (String) args.get("value");
@@ -49,23 +51,34 @@ public class FindElement implements SeleneseFunction<Map<String, String>> {
     } else {
       throw new WebDriverException("Cannot determine locator mechanism from: " + how);
     }
-    
+
     if (locator != null) {
-      if (selenium.isElementPresent(locator)) {
-        // Escape the locator
-        try {
-          locator = URLEncoder.encode(locator, "utf-8");
-        } catch (UnsupportedEncodingException e) {
-          // Deeply unlikely if we're running on a conforming JVM
-          throw new RuntimeException(e);
+      long startTime = System.currentTimeMillis();
+      do {
+        if (selenium.isElementPresent(locator)) {
+          // Escape the locator
+          try {
+            locator = URLEncoder.encode(locator, "utf-8");
+          } catch (UnsupportedEncodingException e) {
+            // Deeply unlikely if we're running on a conforming JVM
+            throw new RuntimeException(e);
+          }
+          return ImmutableMap.of("ELEMENT", locator);
         }
-        return ImmutableMap.of("ELEMENT", locator);
-      } else {
-        throw new NoSuchElementException("Cannot find element by " + locator);
-      }
+      } while (System.currentTimeMillis() - startTime <= implicitlyWait);
     }
 
-    // we should never get here
-    throw new WebDriverException("Cannot find element using " + locator);
+    throw new NoSuchElementException("Cannot find element using " + locator);
+  }
+
+  public ImplicitWait implicitlyWait() {
+    return new ImplicitWait();
+  }
+
+  public class ImplicitWait implements SeleneseFunction<Object> {
+    public Object apply(Selenium selenium, Map<String, ?> args) {
+      FindElement.this.implicitlyWait = ((Number) args.get("ms")).longValue();
+      return null;
+    }
   }
 }

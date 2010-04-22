@@ -21,6 +21,7 @@ package org.openqa.selenium;
 import java.net.URL;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -234,6 +235,37 @@ public interface WebDriver extends SearchContext {
      * @param speed
      */
     void setSpeed(Speed speed);
+
+    /**
+     * Returns the interface for managing driver timeouts.
+     */
+    Timeouts timeouts();
+  }
+
+  /**
+   * An interface for managing timeout behavior for WebDriver instances.
+   */
+  interface Timeouts {
+
+    /**
+     * Specifies the amount of time the driver should wait when searching for an
+     * element if it is not immediately present.
+     * <p/>
+     * When searching for a single element, the driver should poll the page
+     * until the element has been found, or this timeout expires before throwing
+     * a {@link NoSuchElementException}. When searching for multiple elements,
+     * the driver should poll the page until at least one element has been found
+     * or this timeout has expired.
+     * <p/>
+     * Increasing the implicit wait timeout should be used judiciously as it
+     * will have an adverse effect on test run time, especially when used with
+     * slower location strategies like XPath.
+     *
+     * @param time The amount of time to wait.
+     * @param unit The unit of measure for {@code time}.
+     * @return A self reference.
+     */
+    Timeouts implicitlyWait(long time, TimeUnit unit);
   }
 
   /**

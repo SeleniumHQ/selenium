@@ -24,6 +24,7 @@
     </orderEntry>
     <orderEntry type="module" module-name="remote-client" />
     <orderEntry type="module" module-name="remote-common" />
+    <orderEntry type="module" module-name="htmlunit" />
   </component>
   <component name="org.twodividedbyzero.idea.findbugs">
     <option name="_basePreferences">

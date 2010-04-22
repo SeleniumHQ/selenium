@@ -24,6 +24,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
@@ -391,6 +392,19 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
 
     public void setSpeed(Speed speed) {
       execute(DriverCommand.SET_SPEED, ImmutableMap.of("speed", speed));
+    }
+
+    public Timeouts timeouts() {
+      return new RemoteTimeouts();
+    }
+  }
+
+  protected class RemoteTimeouts implements Timeouts {
+
+    public Timeouts implicitlyWait(long time, TimeUnit unit) {
+      execute(DriverCommand.IMPLICITLY_WAIT, ImmutableMap.of("ms",
+          TimeUnit.MILLISECONDS.convert(Math.max(0, time), unit)));
+      return this;
     }
   }
 
