@@ -18,6 +18,7 @@ limitations under the License.
 
 package org.openqa.selenium.firefox;
 
+import static java.lang.Thread.sleep;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
@@ -25,8 +26,10 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
+import static org.openqa.selenium.DevMode.isInDevMode;
 import static org.openqa.selenium.Ignore.Driver.FIREFOX;
 
+import org.junit.Assert;
 import org.openqa.selenium.AbstractDriverTestCase;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Ignore;
@@ -140,7 +143,7 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
 
   private void sleepBecauseWindowsTakeTimeToOpen() {
     try {
-      Thread.sleep(1000);
+      sleep(1000);
     } catch (InterruptedException e) {
       fail("Interrupted");
     }
@@ -285,5 +288,57 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
     } finally {
       driver2.quit();
     }
+  }
+
+  public void testShouldAllowTwoInstancesOfFirefoxAtTheSameTimeInDifferentThreads()
+      throws InterruptedException {
+    class FirefoxRunner implements Runnable {
+      private WebDriver myDriver;
+      private String url;
+
+      public FirefoxRunner(String url) {
+        this.url = url;
+      }
+
+      public void run() {
+        if (isInDevMode()) {
+          myDriver = new FirefoxDriverTestSuite.TestFirefoxDriver();
+        } else {
+          myDriver = new FirefoxDriver();
+        }
+
+        myDriver.get(url);
+      }
+
+      public void quit() {
+        if (myDriver != null) {
+          myDriver.quit();
+        }
+      }
+
+      public void assertOnRightPage() {
+        Assert.assertEquals(url, myDriver.getCurrentUrl());
+      }
+    }
+
+    FirefoxRunner runnable1 = new FirefoxRunner(pages.formPage);
+    Thread thread1 = new Thread(runnable1);
+    FirefoxRunner runnable2 = new FirefoxRunner(pages.xhtmlTestPage);
+    Thread thread2 = new Thread(runnable2);
+
+    try {
+      thread1.start();
+      thread2.start();
+
+      thread1.join();
+      thread2.join();
+
+      runnable1.assertOnRightPage();
+      runnable1.assertOnRightPage();
+    } finally {
+      runnable1.quit();
+      runnable2.quit();
+    }
+
   }
 }

@@ -5,8 +5,6 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.util.Set;
-import java.util.List;
 
 import org.openqa.selenium.SeleniumTestEnvironment;
 import org.openqa.selenium.WebDriver;
@@ -23,7 +21,8 @@ import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Optional;
 import org.testng.annotations.Parameters;
 import org.testng.Assert;
-import com.google.common.collect.Lists;
+
+import static org.openqa.selenium.DevMode.isInDevMode;
 
 public class SeleneseTestNgHelper extends SeleneseTestBase
 {
@@ -46,7 +45,7 @@ public class SeleneseTestNgHelper extends SeleneseTestBase
 
         WebDriver driver = null;
         if (browserString.contains("firefox") || browserString.contains("chrome")) {
-          if (isInDevMode()) {
+          if (isInDevMode(FirefoxDriver.class, "/webdriver-extension.zip")) {
             System.setProperty("webdriver.development", "true");
             driver = Class.forName("org.openqa.selenium.firefox.FirefoxDriverTestSuite$TestFirefoxDriver")
                 .asSubclass(WebDriver.class).newInstance();
@@ -54,7 +53,7 @@ public class SeleneseTestNgHelper extends SeleneseTestBase
             driver = new FirefoxDriver();
           }
         } else if (browserString.contains("ie") || browserString.contains("hta")) {
-          if (isInDevMode()) {
+          if (isInDevMode(FirefoxDriver.class, "/webdriver-extension.zip")) {
             System.setProperty("webdriver.development", "true");
             System.setProperty("jna.library.path", "..\\build;build");
           }
@@ -69,10 +68,6 @@ public class SeleneseTestNgHelper extends SeleneseTestBase
 
         staticSelenium = selenium;
     }
-
-  private boolean isInDevMode() {
-    return FirefoxDriver.class.getResource("/webdriver-extension.zip") == null;
-  }
 
   @BeforeClass
     @Parameters({"selenium.restartSession"})

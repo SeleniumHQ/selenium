@@ -1,6 +1,6 @@
 /*
-Copyright 2007-2009 WebDriver committers
-Copyright 2007-2009 Google Inc.
+Copyright 2007-2010 WebDriver committers
+Copyright 2007-2010 Google Inc.
 Portions copyright 2007 ThoughtWorks, Inc
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -46,16 +46,18 @@ import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.internal.CircularOutputStream;
 
 public class NewProfileExtensionConnection implements CommandExecutor, ExtensionConnection {
-  private final HttpCommandExecutor delegate;
   private final long connectTimeout;
   private final FirefoxBinary process;
   private final FirefoxProfile profile;
+  private final String host;
   private final Lock lock;
+
   private final int bufferSize = 4096;
+  private HttpCommandExecutor delegate;
 
   public NewProfileExtensionConnection(Lock lock, FirefoxBinary binary, FirefoxProfile profile,
                                        String host) throws Exception {
-    delegate = new HttpCommandExecutor(buildUrl(host, determineNextFreePort(profile.getPort())));
+    this.host = host;
     this.connectTimeout = binary.getTimeout();
     this.lock = lock;
     this.profile = profile;
@@ -65,6 +67,7 @@ public class NewProfileExtensionConnection implements CommandExecutor, Extension
   public void start() throws IOException {
     lock.lock(connectTimeout);
     try {
+      delegate = new HttpCommandExecutor(buildUrl(host, determineNextFreePort(profile.getPort())));
       String firefoxLogFile = System.getProperty("webdriver.firefox.logfile");
       File logFile = firefoxLogFile == null ? null : new File(firefoxLogFile);
       this.process.setOutputWatcher(new CircularOutputStream(logFile, bufferSize));
@@ -92,6 +95,8 @@ public class NewProfileExtensionConnection implements CommandExecutor, Extension
       throw new WebDriverException(
           String.format("Failed to connect to binary %s on port %d; process output follows: \n%s",
               process.toString(), profile.getPort(), process.getConsoleOutput()), e);
+    } catch (Exception e) {
+      throw new WebDriverException(e);
     } finally {
       lock.unlock();
     }

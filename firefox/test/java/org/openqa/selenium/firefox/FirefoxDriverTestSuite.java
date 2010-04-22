@@ -48,20 +48,20 @@ public class FirefoxDriverTestSuite extends TestCase {
   }
 
   public static class TestFirefoxDriver extends FirefoxDriver {
-    public TestFirefoxDriver() throws IOException {
+    public TestFirefoxDriver() {
       super(createTemporaryProfile());
     }
 
-    public TestFirefoxDriver(FirefoxProfile profile) throws IOException {
+    public TestFirefoxDriver(FirefoxProfile profile) {
       super(copyExtensionTo(profile));
     }
 
-    private static FirefoxProfile createTemporaryProfile() throws IOException {
+    private static FirefoxProfile createTemporaryProfile() {
       File dir = TemporaryFilesystem.createTempDir("firefoxdriver", "");
       return copyExtensionTo(new FirefoxProfile(dir));
     }
 
-    private static FirefoxProfile copyExtensionTo(FirefoxProfile p) throws IOException {
+    private static FirefoxProfile copyExtensionTo(FirefoxProfile p) {
       File extensionSource = FileHandler.locateInProject("firefox/src/extension");
 
       File dir = p.getProfileDir();
@@ -136,7 +136,11 @@ public class FirefoxDriverTestSuite extends TestCase {
       FirefoxProfile profile = new FirefoxProfile(dir);
       p.getAdditionalPreferences().addTo(profile);
       if (Boolean.getBoolean("webdriver.debug")) {
-        profile.addExtension(FileHandler.locateInProject("third_party/firebug/firebug-1.5.0-fx.xpi"));
+        try {
+          profile.addExtension(FileHandler.locateInProject("third_party/firebug/firebug-1.5.0-fx.xpi"));
+        } catch (IOException e) {
+          throw new RuntimeException(e);
+        }
       }
       return profile;
     }

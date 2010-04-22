@@ -56,7 +56,7 @@ public class SingleTestSuite extends TestCase {
         .keepDriverInstance()
         .includeJavascriptTests()
         .onlyRun("FirefoxDriverTest")
-        .method("testANewProfileShouldAllowSettingAdditionalParameters")
+        .method("testShouldAllowTwoInstancesOfFirefoxAtTheSameTimeInDifferentThreads")
         .exclude(ALL)
         .exclude(Ignore.Driver.FIREFOX)
         .outputTestNames()
