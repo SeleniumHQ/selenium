@@ -22,6 +22,10 @@ try:
     import json
 except ImportError: # < 2.6
     import simplejson as json
+
+if not hasattr(json, 'dumps'):
+    import simplejson as json
+
 from ..common.exceptions import NoSuchElementException
 
 

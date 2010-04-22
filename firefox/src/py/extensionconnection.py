@@ -24,6 +24,10 @@ try:
     import json
 except ImportError: # Python < 2.6
     import simplejson as json
+
+if not hasattr(json, 'dumps'):
+  import simplejson as json
+
 from ..common.exceptions import ErrorInResponseException
 
 from ..remote.command import Command
