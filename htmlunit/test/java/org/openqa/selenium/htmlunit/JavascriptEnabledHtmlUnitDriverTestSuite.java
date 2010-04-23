@@ -41,7 +41,7 @@ public class JavascriptEnabledHtmlUnitDriverTestSuite extends TestCase {
 
   public static class HtmlUnitDriverForTest extends HtmlUnitDriver {
     public HtmlUnitDriverForTest() {
-      super(BrowserVersion.FIREFOX_2);
+      super(BrowserVersion.FIREFOX_3);
       setJavascriptEnabled(true);
     }
   }

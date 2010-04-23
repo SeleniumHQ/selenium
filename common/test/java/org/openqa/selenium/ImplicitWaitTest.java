@@ -1,6 +1,8 @@
 package org.openqa.selenium;
 
 import org.junit.Test;
+
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
@@ -11,17 +13,30 @@ import java.util.concurrent.TimeUnit;
 /**
  * @author jmleyba@gmail.com (Jason Leyba)
  */
-@Ignore(value = {IE, IPHONE})
+@Ignore(value = {IPHONE})
 public class ImplicitWaitTest extends AbstractDriverTestCase {
+
+  @Override
+  protected void setUp() throws Exception {
+    super.setUp();
+
+    driver.manage().timeouts().implicitlyWait(0, MILLISECONDS);
+  }
+
+  @Override
+  protected void tearDown() throws Exception {
+    driver.manage().timeouts().implicitlyWait(0, MILLISECONDS);
+    
+    super.tearDown();
+  }
 
   @Test
   @JavascriptEnabled
-  @NeedsFreshDriver
   public void testShouldImplicitlyWaitForASingleElement() {
     driver.get(pages.dynamicPage);
     WebElement add = driver.findElement(By.id("adder"));
 
-    driver.manage().timeouts().implicitlyWait(1100, TimeUnit.MILLISECONDS);
+    driver.manage().timeouts().implicitlyWait(1100, MILLISECONDS);
 
     add.click();
     driver.findElement(By.id("box0"));  // All is well if this doesn't throw.
@@ -29,10 +44,9 @@ public class ImplicitWaitTest extends AbstractDriverTestCase {
 
   @Test
   @JavascriptEnabled
-  @NeedsFreshDriver
   public void testShouldStillFailToFindAnElementWhenImplicitWaitsAreEnabled() {
     driver.get(pages.dynamicPage);
-    driver.manage().timeouts().implicitlyWait(500, TimeUnit.MILLISECONDS);
+    driver.manage().timeouts().implicitlyWait(500, MILLISECONDS);
     try {
       driver.findElement(By.id("box0"));
       fail("Expected to throw.");
@@ -42,11 +56,10 @@ public class ImplicitWaitTest extends AbstractDriverTestCase {
 
   @Test
   @JavascriptEnabled
-  @NeedsFreshDriver
   public void testShouldReturnAfterFirstAttemptToFindOneAfterDisablingImplicitWaits() {
     driver.get(pages.dynamicPage);
-    driver.manage().timeouts().implicitlyWait(1100, TimeUnit.MILLISECONDS);
-    driver.manage().timeouts().implicitlyWait(0, TimeUnit.MILLISECONDS);
+    driver.manage().timeouts().implicitlyWait(1100, MILLISECONDS);
+    driver.manage().timeouts().implicitlyWait(0, MILLISECONDS);
     try {
       driver.findElement(By.id("box0"));
       fail("Expected to throw.");
@@ -56,13 +69,12 @@ public class ImplicitWaitTest extends AbstractDriverTestCase {
 
   @Test
   @JavascriptEnabled
-  @NeedsFreshDriver
   @Ignore(SELENESE)
   public void testShouldImplicitlyWaitUntilAtLeastOneElementIsFoundWhenSearchingForMany() {
     driver.get(pages.dynamicPage);
     WebElement add = driver.findElement(By.id("adder"));
 
-    driver.manage().timeouts().implicitlyWait(1100, TimeUnit.MILLISECONDS);
+    driver.manage().timeouts().implicitlyWait(2000, MILLISECONDS);
     add.click();
     add.click();
 
@@ -72,25 +84,23 @@ public class ImplicitWaitTest extends AbstractDriverTestCase {
 
   @Test
   @JavascriptEnabled
-  @NeedsFreshDriver
   @Ignore(SELENESE)
   public void testShouldStillFailToFindAnElemenstWhenImplicitWaitsAreEnabled() {
     driver.get(pages.dynamicPage);
-    driver.manage().timeouts().implicitlyWait(500, TimeUnit.MILLISECONDS);
+    driver.manage().timeouts().implicitlyWait(500, MILLISECONDS);
     List<WebElement> elements = driver.findElements(By.className("redbox"));
     assertTrue(elements.isEmpty());
   }
 
   @Test
   @JavascriptEnabled
-  @NeedsFreshDriver
   @Ignore(SELENESE)
   public void testShouldReturnAfterFirstAttemptToFindManyAfterDisablingImplicitWaits() {
     driver.get(pages.dynamicPage);
     WebElement add = driver.findElement(By.id("adder"));
 
-    driver.manage().timeouts().implicitlyWait(1100, TimeUnit.MILLISECONDS);
-    driver.manage().timeouts().implicitlyWait(0, TimeUnit.MILLISECONDS);
+    driver.manage().timeouts().implicitlyWait(1100, MILLISECONDS);
+    driver.manage().timeouts().implicitlyWait(0, MILLISECONDS);
     add.click();
 
     List<WebElement> elements = driver.findElements(By.className("redbox"));
