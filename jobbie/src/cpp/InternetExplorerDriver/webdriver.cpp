@@ -45,6 +45,7 @@ limitations under the License.
 
 struct WebDriver {
     InternetExplorerDriver *ie;
+	long implicitWaitTimeout;
 };
 
 struct WebElement {
@@ -74,6 +75,16 @@ struct StringCollection {
 };
 
 InternetExplorerDriver* openIeInstance = NULL;
+
+clock_t endAt(WebDriver* driver) {
+	clock_t end = clock() + (driver->implicitWaitTimeout / 1000 * CLOCKS_PER_SEC);
+	if (driver->implicitWaitTimeout > 0 && driver->implicitWaitTimeout < 1000) 
+	{
+		end += 1 * CLOCKS_PER_SEC;
+	}
+
+	return end;
+}
 
 extern "C"
 {
@@ -273,6 +284,7 @@ int wdNewDriverInstance(WebDriver** result)
    
 		driver->ie = new InternetExplorerDriver();
 		driver->ie->setVisible(true);
+		driver->implicitWaitTimeout = 0;
 
 		openIeInstance = driver->ie;
 
@@ -865,18 +877,25 @@ int wdFindElementById(WebDriver* driver, WebElement* element, const wchar_t* id,
 	}
 
 	try {
-		ElementWrapper* wrapper;
-		int res = ie->selectElementById(elem, id, &wrapper);
+		clock_t end = endAt(driver);
+		int res = EUNHANDLEDERROR;
 
-		if (res != SUCCESS) {
-			return res;
-		}
+		do { 
+			ElementWrapper* wrapper;
+			res = ie->selectElementById(elem, id, &wrapper);
 
-		WebElement* toReturn = new WebElement();
-		toReturn->element = wrapper;
+			if (res != SUCCESS) {
+				continue;
+			}
 
-		*result = toReturn;
-		return SUCCESS;
+			WebElement* toReturn = new WebElement();
+			toReturn->element = wrapper;
+
+			*result = toReturn;
+			return SUCCESS;
+		} while (clock() < end);
+
+		return res;
 	} END_TRY;
 }
 
@@ -914,18 +933,25 @@ int wdFindElementByName(WebDriver* driver, WebElement* element, const wchar_t* n
 	}
 
 	try {
-		ElementWrapper* wrapper;
-		int res = ie->selectElementByName(elem, name, &wrapper);
+		clock_t end = endAt(driver);
+		int res = EUNHANDLEDERROR;
 
-		if (res != SUCCESS) {
-			return res;
-		}
+		do {
+			ElementWrapper* wrapper;
+			int res = ie->selectElementByName(elem, name, &wrapper);
 
-		WebElement* toReturn = new WebElement();
-		toReturn->element = wrapper;
+			if (res != SUCCESS) {
+				continue;
+			}
 
-		*result = toReturn;
-		return SUCCESS;
+			WebElement* toReturn = new WebElement();
+			toReturn->element = wrapper;
+
+			*result = toReturn;
+			return SUCCESS;
+		} while (clock() < end);
+
+		return res;
 	} END_TRY;
 }
 
@@ -960,18 +986,25 @@ int wdFindElementByClassName(WebDriver* driver, WebElement* element, const wchar
 	}
 
 	try {
-		ElementWrapper* wrapper;
-		int res = ie->selectElementByClassName(elem, className, &wrapper);
+		clock_t end = endAt(driver);
+		int res = EUNHANDLEDERROR;
 
-		if (res != SUCCESS) {
-			return res;
-		}
+		do {
+			ElementWrapper* wrapper;
+			int res = ie->selectElementByClassName(elem, className, &wrapper);
 
-		WebElement* toReturn = new WebElement();
-		toReturn->element = wrapper;
+			if (res != SUCCESS) {
+				continue;
+			}
 
-		*result = toReturn;
-		return SUCCESS;
+			WebElement* toReturn = new WebElement();
+			toReturn->element = wrapper;
+
+			*result = toReturn;
+			return SUCCESS;
+		} while (clock() < end);
+
+		return res;
 	} END_TRY;
 }
 
@@ -1008,18 +1041,25 @@ int wdFindElementByLinkText(WebDriver* driver, WebElement* element, const wchar_
 	}
 
 	try {
-		ElementWrapper* wrapper;
-		int res = ie->selectElementByLink(elem, linkText, &wrapper);
+		clock_t end = endAt(driver);
+		int res = EUNHANDLEDERROR;
 
-		if (res != SUCCESS) {
-			return res;
-		}
+		do {
+			ElementWrapper* wrapper;
+			int res = ie->selectElementByLink(elem, linkText, &wrapper);
 
-		WebElement* toReturn = new WebElement();
-		toReturn->element = wrapper;
+			if (res != SUCCESS) {
+				continue;
+			}
 
-		*result = toReturn;
-		return SUCCESS;
+			WebElement* toReturn = new WebElement();
+			toReturn->element = wrapper;
+
+			*result = toReturn;
+			return SUCCESS;
+		} while (clock() < end);
+
+		return res;
 	} END_TRY;
 }
 
@@ -1056,18 +1096,25 @@ int wdFindElementByPartialLinkText(WebDriver* driver, WebElement* element, const
 	}
 
 	try {
-		ElementWrapper* wrapper;
-		int res = ie->selectElementByPartialLink(elem, linkText, &wrapper);
+		clock_t end = endAt(driver);
+		int res = EUNHANDLEDERROR;
 
-		if (res != SUCCESS) {
-			return res;
-		}
+		do {
+			ElementWrapper* wrapper;
+			int res = ie->selectElementByPartialLink(elem, linkText, &wrapper);
 
-		WebElement* toReturn = new WebElement();
-		toReturn->element = wrapper;
+			if (res != SUCCESS) {
+				continue;
+			}
 
-		*result = toReturn;
-		return SUCCESS;
+			WebElement* toReturn = new WebElement();
+			toReturn->element = wrapper;
+
+			*result = toReturn;
+			return SUCCESS;
+		} while (clock() < end);
+
+		return res;
 	} END_TRY;
 }
 
@@ -1104,19 +1151,26 @@ int wdFindElementByTagName(WebDriver* driver, WebElement* element, const wchar_t
 	}
 
 	try {
-		ElementWrapper* wrapper;
-		int res = ie->selectElementByTagName(elem, name, &wrapper);
+		clock_t end = endAt(driver);
+		int res = EUNHANDLEDERROR;
 
-		if (res != SUCCESS) {
-			return res;
-		}
+		do {
+			ElementWrapper* wrapper;
+			int res = ie->selectElementByTagName(elem, name, &wrapper);
 
-		WebElement* toReturn = new WebElement();
-		toReturn->element = wrapper;
+			if (res != SUCCESS) {
+				continue;
+			}
 
-		*result = toReturn;
+			WebElement* toReturn = new WebElement();
+			toReturn->element = wrapper;
 
-		return SUCCESS;
+			*result = toReturn;
+
+			return SUCCESS;
+		} while (clock() < end);
+
+		return res;
 	} END_TRY;
 }
 
@@ -1168,56 +1222,65 @@ int wdFindElementByXPath(WebDriver* driver, WebElement* element, const wchar_t* 
 	if (!driver || !driver->ie) { return ENOSUCHDRIVER; }
 
 	try {
-		int result = injectXPathEngine(driver);
-		// TODO(simon): Why does the injecting sometimes fail?
-		/*
-		if (result != SUCCESS) {
-			return result;
-		}
-		*/
+		clock_t end = endAt(driver);
+		int result = EUNHANDLEDERROR;
 
-		// Call it
-		std::wstring query;
-		if (element) {
-			query += L"(function() { return function(){var res = document.__webdriver_evaluate(arguments[0], arguments[1], null, 7, null); return res.snapshotItem(0) ;};})();";
-		} else {
-			query += L"(function() { return function(){var res = document.__webdriver_evaluate(arguments[0], document, null, 7, null); return res.snapshotLength != 0 ? res.snapshotItem(0) : undefined ;};})();";
-		}
-
-		ScriptArgs* queryArgs;
-		result = wdNewScriptArgs(&queryArgs, 2);
-		if (result != SUCCESS) {
-			wdFreeScriptArgs(queryArgs);
-			return result;
-		}
-		result = wdAddStringScriptArg(queryArgs, xpath);
-		if (result != SUCCESS) {
-			wdFreeScriptArgs(queryArgs);
-			return result;
-		}
-		if (element) {
-			result = wdAddElementScriptArg(queryArgs, element);
-		}
-		if (result != SUCCESS) {
-			wdFreeScriptArgs(queryArgs);
-			return result;
-		}
-
-		ScriptResult* queryResult;
-		result = wdExecuteScript(driver, query.c_str(), queryArgs, &queryResult);
-		wdFreeScriptArgs(queryArgs);
-
-		// And be done
-		if (result == SUCCESS) {
-			int type = 0;
-			result = wdGetScriptResultType(driver, queryResult, &type);
-			if (type != TYPE_EMPTY) {
-				result = wdGetElementScriptResult(queryResult, driver, out);
-			} else {
-				result = ENOSUCHELEMENT;
+		do {
+			result = injectXPathEngine(driver);
+			// TODO(simon): Why does the injecting sometimes fail?
+			/*
+			if (result != SUCCESS) {
+				return result;
 			}
-		}
-		wdFreeScriptResult(queryResult);
+			*/
+
+			// Call it
+			std::wstring query;
+			if (element) {
+				query += L"(function() { return function(){var res = document.__webdriver_evaluate(arguments[0], arguments[1], null, 7, null); return res.snapshotItem(0) ;};})();";
+			} else {
+				query += L"(function() { return function(){var res = document.__webdriver_evaluate(arguments[0], document, null, 7, null); return res.snapshotLength != 0 ? res.snapshotItem(0) : undefined ;};})();";
+			}
+
+			ScriptArgs* queryArgs;
+			result = wdNewScriptArgs(&queryArgs, 2);
+			if (result != SUCCESS) {
+				wdFreeScriptArgs(queryArgs);
+				continue;
+			}
+			result = wdAddStringScriptArg(queryArgs, xpath);
+			if (result != SUCCESS) {
+				wdFreeScriptArgs(queryArgs);
+				continue;
+			}
+			if (element) {
+				result = wdAddElementScriptArg(queryArgs, element);
+			}
+			if (result != SUCCESS) {
+				wdFreeScriptArgs(queryArgs);
+				continue;
+			}
+
+			ScriptResult* queryResult;
+			result = wdExecuteScript(driver, query.c_str(), queryArgs, &queryResult);
+			wdFreeScriptArgs(queryArgs);
+
+			// And be done
+			if (result == SUCCESS) {
+				int type = 0;
+				result = wdGetScriptResultType(driver, queryResult, &type);
+				if (type != TYPE_EMPTY) {
+					result = wdGetElementScriptResult(queryResult, driver, out);
+				} else {
+					result = ENOSUCHELEMENT;
+					wdFreeScriptResult(queryResult);
+					continue;
+				}
+			}
+			wdFreeScriptResult(queryResult);
+
+			return result;
+		} while (clock() < end);
 
 		return result;
 	} END_TRY;
@@ -1641,6 +1704,16 @@ int wdCaptureScreenshotAsBase64(WebDriver* driver, StringWrapper** result) {
 
 		return SUCCESS;
 	} END_TRY;
+}
+
+int wdSetImplicitWaitTimeout(WebDriver* driver, long timeoutInMillis)
+{
+	if (!driver || !driver->ie) return ENOSUCHDRIVER;
+
+	cout << "Time out in ms: " << timeoutInMillis << endl;
+	driver->implicitWaitTimeout = timeoutInMillis;
+
+	return SUCCESS;
 }
 
 }

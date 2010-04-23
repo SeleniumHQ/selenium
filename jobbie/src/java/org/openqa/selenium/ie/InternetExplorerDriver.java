@@ -477,8 +477,10 @@ public class InternetExplorerDriver implements WebDriver, JavascriptExecutor, Ta
 
   private class InternetExplorerTimeouts implements Timeouts {
     public Timeouts implicitlyWait(long time, TimeUnit unit) {
-      // TODO: implement
-      throw new UnsupportedOperationException("Not yet implemented");
+      NativeLong timeout = new NativeLong(unit.toMillis(time));
+      int result = lib.wdSetImplicitWaitTimeout(driver, timeout);
+      errors.verifyErrorCode(result, "Unable to set implicit wait timeout.");
+      return this;
     }
   }
 

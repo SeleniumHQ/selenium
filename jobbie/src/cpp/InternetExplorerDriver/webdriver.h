@@ -165,6 +165,8 @@ EXPORT int wdeMouseMoveTo(HWND hwnd, long duration, long fromX, long fromY, long
 // Screenshot capturing
 EXPORT int wdCaptureScreenshotAsBase64(WebDriver* driver, StringWrapper** result);
 
+EXPORT int wdSetImplicitWaitTimeout(WebDriver* driver, long timeoutInMillis);
+
 #ifdef __cplusplus
 }
 #endif

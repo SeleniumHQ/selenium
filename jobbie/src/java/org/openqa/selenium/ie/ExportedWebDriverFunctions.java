@@ -119,6 +119,8 @@ interface ExportedWebDriverFunctions extends StdCallLibrary {
   // Screenshot capturing
   int wdCaptureScreenshotAsBase64(Pointer driver, PointerByReference string);
 
+  int wdSetImplicitWaitTimeout(Pointer driver, NativeLong timeoutInMillis);
+
   public static class HWND extends PointerType { }
   
   public static class HWNDByReference extends ByReference {
