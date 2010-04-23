@@ -1,5 +1,5 @@
 function API() {
-    this.verison = 0.2;	
+    this.verison = 0.3;	
     this.preferences = SeleniumIDE.Preferences;
 };
 
