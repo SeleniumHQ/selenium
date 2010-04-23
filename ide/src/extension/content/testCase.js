@@ -73,51 +73,58 @@ Command.innerHTML = function(element) {
 }
 
 Command.loadAPI = function() {
-	if (!this.functions) {
-		var document = this.apiDocument;
-		var functionElements = document.documentElement.getElementsByTagName("function");
-		var functions = {};
-		for (var i = 0; i < functionElements.length; i++) {
-			var element = functionElements.item(i);
-			var def = new CommandDefinition(String(element.attributes.getNamedItem('name').value));
-			var returns = element.getElementsByTagName("return");
-			if (returns.length > 0) {
-				var returnType = new String(returns.item(0).attributes.getNamedItem("type").value);
-				returnType = returnType.replace(/string/, "String");
-				def.returnType = returnType;
-				def.returnDescription = this.innerHTML(returns.item(0));
-			}
-			var comments = element.getElementsByTagName("comment");
-			if (comments.length > 0) {
-				def.comment = this.innerHTML(comments.item(0));
-			}
-			var params = element.getElementsByTagName("param");
-			for (var j = 0; j < params.length; j++) {
-				var paramElement = params.item(j);
-				var param = {};
-				param.name = String(paramElement.attributes.getNamedItem('name').value);
-                param.description = this.innerHTML(paramElement);
-				def.params.push(param);
-			}
-			functions[def.name] = def;
-            // generate negative accessors
-			if (def.name.match(/^(is|get)/)) {
-				def.isAccessor = true;
-				functions["!" + def.name] = def.negativeAccessor();
-			}
-			if (def.name.match(/^assert/)) { // only assertSelected should match
-				var verifyDef = new CommandDefinition(def.name);
-				verifyDef.params = def.params;
-				functions["verify" + def.name.substring(6)] = verifyDef;
-			}
-		}
-		functions['assertFailureOnNext'] = new CommandDefinition('assertFailureOnNext');
-		functions['verifyFailureOnNext'] = new CommandDefinition('verifyFailureOnNext');
-		functions['assertErrorOnNext'] = new CommandDefinition('assertErrorOnNext');
-		functions['verifyErrorOnNext'] = new CommandDefinition('verifyErrorOnNext');
-		this.functions = functions;
-	}
-	return this.functions;
+  if (!this.functions) {
+    var document;
+    var documents = this.apiDocuments;
+    var functions = {};
+    for (var d = 0; d < documents.length; d++) {
+      document = documents[d];
+      var functionElements = document.documentElement.getElementsByTagName("function");
+      for (var i = 0; i < functionElements.length; i++) {
+        var element = functionElements.item(i);
+        var def = new CommandDefinition(String(element.attributes.getNamedItem('name').value));
+        var returns = element.getElementsByTagName("return");
+        if (returns.length > 0) {
+          var returnType = new String(returns.item(0).attributes.getNamedItem("type").value);
+          returnType = returnType.replace(/string/, "String");
+          def.returnType = returnType;
+          def.returnDescription = this.innerHTML(returns.item(0));
+        }
+        var comments = element.getElementsByTagName("comment");
+        if (comments.length > 0) {
+          def.comment = this.innerHTML(comments.item(0));
+        }
+        var params = element.getElementsByTagName("param");
+        for (var j = 0; j < params.length; j++) {
+          var paramElement = params.item(j);
+          var param = {};
+          param.name = String(paramElement.attributes.getNamedItem('name').value);
+          param.description = this.innerHTML(paramElement);
+          def.params.push(param);
+        }
+        functions[def.name] = def;
+        if (d == 1) {
+          alert(def.name);
+        }
+        // generate negative accessors
+        if (def.name.match(/^(is|get)/)) {
+          def.isAccessor = true;
+          functions["!" + def.name] = def.negativeAccessor();
+        }
+        if (def.name.match(/^assert/)) { // only assertSelected should match
+          var verifyDef = new CommandDefinition(def.name);
+          verifyDef.params = def.params;
+          functions["verify" + def.name.substring(6)] = verifyDef;
+        }
+      }
+    }
+    functions['assertFailureOnNext'] = new CommandDefinition('assertFailureOnNext');
+    functions['verifyFailureOnNext'] = new CommandDefinition('verifyFailureOnNext');
+    functions['assertErrorOnNext'] = new CommandDefinition('assertErrorOnNext');
+    functions['verifyErrorOnNext'] = new CommandDefinition('verifyErrorOnNext');
+    this.functions = functions;
+  }
+  return this.functions;
 }
 
 function CommandDefinition(name) {

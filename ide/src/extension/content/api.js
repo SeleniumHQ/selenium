@@ -21,16 +21,16 @@ API.prototype.addPlugin = function(id) {
 
 // add the provided chrome url to the list of user extensions provided through plugins
 // -- or not if it already exists
-API.prototype.addPluginProvidedUserExtension = function(url) {
+API.prototype.addPluginProvidedUserExtension = function(js_url, xml_url) {
     var options = {};
     
     var current = this.preferences.getString("pluginProvidedUserExtensions");
     if (!current || current.length == 0){
-        options["pluginProvidedUserExtensions"] = url;
+        options["pluginProvidedUserExtensions"] = js_url + ';' + xml_url;
         this.preferences.save(options, "pluginProvidedUserExtensions");
     } else {
-        if (current.search(url) == -1) {
-            options["pluginProvidedUserExtensions"] = current + ',' + url;
+        if (current.search(js_url) == -1) {
+            options["pluginProvidedUserExtensions"] = current + ',' + js_url + ';' + xml_url;
             this.preferences.save(options, "pluginProvidedUserExtensions");
         }
     }
@@ -38,7 +38,7 @@ API.prototype.addPluginProvidedUserExtension = function(url) {
 
 // add the formatter at the provided chrome url to the list of other formatters provided by plugins
 API.prototype.addPluginProvidedFormatter = function(id, name, url) {
-    var options = {}
+    var options = {};
     
     var current = this.preferences.getString("pluginProvidedFormatters");
     if (!current || current.length == 0)  {
@@ -79,6 +79,6 @@ branch.setCharPref("pluginProvidedUserExtensions", "");
         var observerService = Components.classes["@mozilla.org/observer-service;1"].getService(Components.interfaces.nsIObserverService);
         observerService.removeObserver(this, "quit-application-granted");
     }
-}
+};
 
 window.addEventListener("load", initializeSeIDEAPIObserver, false);

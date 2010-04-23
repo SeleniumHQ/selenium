@@ -683,7 +683,10 @@ Editor.prototype.playback = function(newWindow, resultCallback) {
     var extensionsURLs = [];
     var userProvidedPlugins = ExtensionsLoader.getURLs(this.getOptions().userExtensionsURL);
     if (userProvidedPlugins.length != 0) {
-        extensionsURLs.push(userProvidedPlugins);
+        for(var sp = 0; sp < userProvidedPlugins.length; sp++){
+            var sp_userProvidedPlugins = userProvidedPlugins[sp].split(";");
+            extensionsURLs.push(sp_userProvidedPlugins[0]);
+        }
     }
     extensionsURLs.push(ExtensionsLoader.getURLs(SeleniumIDE.Preferences.getString("pluginProvidedUserExtensions")));
     // Using chrome://selenium-ide-testrunner instead of chrome://selenium-ide because
@@ -815,7 +818,7 @@ Editor.prototype.loadSeleniumAPI = function() {
     // load API document
     var parser = new DOMParser();
     var document = parser.parseFromString(FileUtils.readURL("chrome://selenium-ide/content/selenium/iedoc-core.xml"), "text/xml");
-    Command.apiDocument = document;
+    Command.apiDocuments = new Array(document);
     
     // load functions
     this.seleniumAPI = {};
@@ -843,7 +846,11 @@ Editor.prototype.loadSeleniumAPI = function() {
         try {
             var split_pluginProvided = pluginProvided.split(",");
             for(var sp = 0; sp < split_pluginProvided.length; sp++){
-                ExtensionsLoader.loadSubScript(subScriptLoader, split_pluginProvided[sp], this.seleniumAPI);
+                var js_url = split_pluginProvided[sp].split(";");
+                ExtensionsLoader.loadSubScript(subScriptLoader, js_url[0], this.seleniumAPI);
+                if (js_url[1] != 'undefined') {
+                  Command.apiDocuments.push(parser.parseFromString(FileUtils.readURL(js_url[1]), "text/xml"));
+                }
             }
         } catch (error) {
             this.showAlert("Failed to load plugin provided js!"
