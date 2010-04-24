@@ -70,5 +70,11 @@ namespace OpenQA.Selenium
         /// Deletes all cookies from the page.
         /// </summary>
         void DeleteAllCookies();
+
+        /// <summary>
+        /// Provides access to the timeouts defined for this driver.
+        /// </summary>
+        /// <returns>An object implementing the <see cref="ITimeouts"/> interface.</returns>
+        ITimeouts Timeouts();
     }
 }

@@ -42,6 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AssemblyTeardown.cs" />
     <Compile Include="FirefoxDriverTest.cs" />
     <Compile Include="FirefoxProfileManagerTest.cs" />
     <Compile Include="FirefoxProfileTests.cs" />

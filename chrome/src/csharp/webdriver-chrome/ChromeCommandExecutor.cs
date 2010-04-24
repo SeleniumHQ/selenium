@@ -413,6 +413,7 @@ namespace OpenQA.Selenium.Chrome
             commandNameMap.Add(DriverCommand.ElementEquals, "elementEquals");
 
             commandNameMap.Add(DriverCommand.Screenshot, "screenshot");
+            commandNameMap.Add(DriverCommand.ImplicitlyWait, "implicitlyWait");
         }
         #endregion
 

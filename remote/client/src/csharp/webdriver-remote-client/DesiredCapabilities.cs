@@ -79,7 +79,7 @@ namespace OpenQA.Selenium.Remote
         }
 
         /// <summary>
-        /// Gets the platform
+        /// Gets or sets the platform
         /// </summary>
         [JsonProperty("platform")]
         public Platform Platform

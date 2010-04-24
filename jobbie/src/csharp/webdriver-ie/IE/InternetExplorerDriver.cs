@@ -853,6 +853,15 @@ namespace OpenQA.Selenium.IE
                 DeleteCookie(GetCookieNamed(name));
             }
 
+            /// <summary>
+            /// Provides access to the timeouts defined for this driver.
+            /// </summary>
+            /// <returns>An object implementing the <see cref="ITimeouts"/> interface.</returns>
+            public ITimeouts Timeouts()
+            {
+                return new InternetExplorerTimeouts(driver);
+            }
+
             private Uri GetCurrentUri()
             {
                 Uri currentUri = null;
@@ -922,6 +931,52 @@ namespace OpenQA.Selenium.IE
                     AddCookie(toDelete);
                 }
             }
+
+            #region ITimeouts class
+            /// <summary>
+            /// Defines the interface through which the user can define timeouts.
+            /// </summary>
+            private class InternetExplorerTimeouts : ITimeouts
+            {
+                private InternetExplorerDriver driver;
+
+                /// <summary>
+                /// Initializes a new instance of the InternetExplorerTimeouts class
+                /// </summary>
+                /// <param name="driver">The driver that is currently in use</param>
+                public InternetExplorerTimeouts(InternetExplorerDriver driver)
+                {
+                    this.driver = driver;
+                }
+
+                #region ITimeouts Members
+                /// <summary>
+                /// Specifies the amount of time the driver should wait when searching for an
+                /// element if it is not immediately present.
+                /// </summary>
+                /// <param name="timeToWait">A <see cref="TimeSpan"/> structure defining the amount of time to wait.</param>
+                /// <returns>A self reference</returns>
+                /// <remarks>
+                /// When searching for a single element, the driver should poll the page
+                /// until the element has been found, or this timeout expires before throwing
+                /// a <see cref="ElementNotFoundException"/>. When searching for multiple elements,
+                /// the driver should poll the page until at least one element has been found
+                /// or this timeout has expired.
+                /// <para>
+                /// Increasing the implicit wait timeout should be used judiciously as it
+                /// will have an adverse effect on test run time, especially when used with
+                /// slower location strategies like XPath.
+                /// </para>
+                /// </remarks>
+                public ITimeouts ImplicitlyWait(TimeSpan timeToWait)
+                {
+                    int timeInMilliseconds = Convert.ToInt32(timeToWait.TotalMilliseconds);
+                    WebDriverResult result = NativeDriverLibrary.Instance.SetImplicitWaitTimeout(driver.handle, timeInMilliseconds);
+                    return this;
+                }
+                #endregion
+            }
+            #endregion
         }
         #endregion
 

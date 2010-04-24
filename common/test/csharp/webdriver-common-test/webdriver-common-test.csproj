@@ -96,6 +96,7 @@
     <Compile Include="FrameSwitchingTest.cs" />
     <Compile Include="I18Test.cs" />
     <Compile Include="CustomTestAttributes\IgnoreBrowserAttribute.cs" />
+    <Compile Include="ImplicitWaitTest.cs" />
     <Compile Include="JavascriptEnabledBrowserTest.cs" />
     <Compile Include="MiscTest.cs" />
     <Compile Include="NavigationTest.cs" />

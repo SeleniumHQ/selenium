@@ -699,7 +699,6 @@ namespace OpenQA.Selenium.Remote
                 platform = new Platform(PlatformType.Any);
             }
 
-            
             returnedCapabilities.IsJavaScriptEnabled = (bool)rawCapabilities["javascriptEnabled"];
             returnedCapabilities.Platform = platform;
             capabilities = returnedCapabilities;
@@ -992,6 +991,7 @@ namespace OpenQA.Selenium.Remote
                 this.driver = driver;
             }
 
+            #region IOptions
             /// <summary>
             /// Gets or sets the speed with which actions are executed in the browser.
             /// </summary>
@@ -1119,6 +1119,61 @@ namespace OpenQA.Selenium.Remote
                     throw new WebDriverException("Unexpected problem getting cookies", e);
                 }
             }
+
+            /// <summary>
+            /// Provides access to the timeouts defined for this driver.
+            /// </summary>
+            /// <returns>An object implementing the <see cref="ITimeouts"/> interface.</returns>
+            public ITimeouts Timeouts()
+            {
+                return new RemoteTimeouts(driver);
+            }
+
+            /// <summary>
+            /// Defines the interface through which the user can define timeouts.
+            /// </summary>
+            private class RemoteTimeouts : ITimeouts
+            {
+                private RemoteWebDriver driver;
+
+                /// <summary>
+                /// Initializes a new instance of the RemoteTimeouts class
+                /// </summary>
+                /// <param name="driver">The driver that is currently in use</param>
+                public RemoteTimeouts(RemoteWebDriver driver)
+                {
+                    this.driver = driver;
+                }
+
+                #region ITimeouts Members
+                /// <summary>
+                /// Specifies the amount of time the driver should wait when searching for an
+                /// element if it is not immediately present.
+                /// </summary>
+                /// <param name="timeToWait">A <see cref="TimeSpan"/> structure defining the amount of time to wait.</param>
+                /// <returns>A self reference</returns>
+                /// <remarks>
+                /// When searching for a single element, the driver should poll the page
+                /// until the element has been found, or this timeout expires before throwing
+                /// a <see cref="NoSuchElementException"/>. When searching for multiple elements,
+                /// the driver should poll the page until at least one element has been found
+                /// or this timeout has expired.
+                /// <para>
+                /// Increasing the implicit wait timeout should be used judiciously as it
+                /// will have an adverse effect on test run time, especially when used with
+                /// slower location strategies like XPath.
+                /// </para>
+                /// </remarks>
+                public ITimeouts ImplicitlyWait(TimeSpan timeToWait)
+                {
+                    Dictionary<string, object> parameters = new Dictionary<string, object>();
+                    parameters.Add("ms", timeToWait.TotalMilliseconds);
+                    Response response = driver.Execute(DriverCommand.ImplicitlyWait, parameters);
+                    return this;
+                }
+                #endregion
+            }
+            #endregion
         }
 
         /// <summary>
@@ -1137,6 +1192,7 @@ namespace OpenQA.Selenium.Remote
                 this.driver = driver;
             }
 
+            #region INavigation members
             /// <summary>
             /// Move the browser back
             /// </summary>
@@ -1183,6 +1239,7 @@ namespace OpenQA.Selenium.Remote
             {
                 driver.Execute(DriverCommand.Refresh, null);
             }
+            #endregion
         }
 
         /// <summary>
@@ -1201,6 +1258,7 @@ namespace OpenQA.Selenium.Remote
                 this.driver = driver;
             }
 
+            #region ITargetLocator members
             /// <summary>
             /// Move to a different frame using its index
             /// </summary>
@@ -1266,6 +1324,7 @@ namespace OpenQA.Selenium.Remote
                 Response response = driver.Execute(DriverCommand.GetActiveElement, null);
                 return driver.GetElementFromResponse(response);
             }
+            #endregion
         }
     }
 }

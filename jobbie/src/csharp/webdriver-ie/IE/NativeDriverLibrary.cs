@@ -46,6 +46,7 @@ namespace OpenQA.Selenium.IE
         private const string GetAllWindowHandlesFunctionName = "wdGetAllWindowHandles";
         private const string GetCurrentWindowHandleFunctionName = "wdGetCurrentWindowHandle";
         private const string CaptureScreenshotFunctionName = "wdCaptureScreenshotAsBase64";
+        private const string SetImplicitWaitTimeoutFunctionName = "wdSetImplicitWaitTimeout";
 
         private const string ClickElementFunctionName = "wdeClick";
         private const string GetElementAttributeFunctionName = "wdeGetAttribute";
@@ -595,6 +596,20 @@ namespace OpenQA.Selenium.IE
             IntPtr functionPointer = NativeMethods.GetProcAddress(nativeLibraryHandle, CaptureScreenshotFunctionName);
             StringReturningDriverFunction captureScreenshotFunction = Marshal.GetDelegateForFunctionPointer(functionPointer, typeof(StringReturningDriverFunction)) as StringReturningDriverFunction;
             WebDriverResult result = captureScreenshotFunction(driverHandle, ref screenshotWrapperHandle);
+            return result;
+        }
+
+        /// <summary>
+        /// Sets the timeout used for implicitly waiting for an element to appear on the page.
+        /// </summary>
+        /// <param name="driverHandle">A handle to the instance of the <see cref="InternetExplorerDriver"/> class.</param>
+        /// <param name="timeoutInMillis">The amount of time, in milliseconds, before returning that an element was not found.</param>
+        /// <returns>A <see cref="WebDriverResult"/> value indicating success or failure.</returns>
+        internal WebDriverResult SetImplicitWaitTimeout(SafeInternetExplorerDriverHandle driverHandle, int timeoutInMillis)
+        {
+            IntPtr functionPointer = NativeMethods.GetProcAddress(nativeLibraryHandle, SetImplicitWaitTimeoutFunctionName);
+            IntParameterDriverFunction setImplicitWaitTimeoutFunction  = Marshal.GetDelegateForFunctionPointer(functionPointer, typeof(IntParameterDriverFunction)) as IntParameterDriverFunction;
+            WebDriverResult result = setImplicitWaitTimeoutFunction(driverHandle, timeoutInMillis);
             return result;
         }
         #endregion

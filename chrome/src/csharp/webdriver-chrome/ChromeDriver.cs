@@ -121,7 +121,6 @@ namespace OpenQA.Selenium.Chrome
         protected override void StopClient()
         {
             ((ChromeCommandExecutor)CommandExecutor).Stop();
-            
         }
 
         /// <summary>

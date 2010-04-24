@@ -55,10 +55,10 @@ namespace OpenQA.Selenium
             Assert.Contains(handle2, handles, "Should have contained result handle");
 
             // Some (semi-)clean up..
-            driver.Url = macbethPage;
             driver.SwitchTo().Window(handle2);
             driver.Close();
             driver.SwitchTo().Window(handle1);
+            driver.Url = macbethPage;
         }
 
         [Test]

@@ -1,5 +1,8 @@
 ﻿namespace OpenQA.Selenium.Remote
 {
+    /// <summary>
+    /// Values describing the list of commands understood by a remote server using the JSON wire protocol.
+    /// </summary>
     public enum DriverCommand
     {
         /// <summary>
@@ -260,6 +263,11 @@
         /// <summary>
         /// Represents Screenshot command
         /// </summary>
-        Screenshot
+        Screenshot, 
+
+        /// <summary>
+        /// Represents the ImplicitlyWait command
+        /// </summary>
+        ImplicitlyWait
     }
 }

@@ -46,6 +46,7 @@ namespace OpenQA.Selenium
         public string documentWrite = EnvironmentManager.Instance.UrlBuilder.WhereElseIs("document_write_in_onload.html");
         public string chinesePage = EnvironmentManager.Instance.UrlBuilder.WhereIs("cn-test.html");
         public string svgPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("svgPiechart.xhtml");
+        public string dynamicPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("dynamic.html");
 
         protected IWebDriver driver;
 
