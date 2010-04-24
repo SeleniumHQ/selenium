@@ -26,76 +26,89 @@ import org.openqa.selenium.server.browserlaunchers.locators.Firefox3Locator;
 
 public class FirefoxLauncher implements BrowserLauncher {
 
-    final BrowserLauncher realLauncher;
-    
-    public FirefoxLauncher(BrowserConfigurationOptions browserOptions, RemoteControlConfiguration configuration, String sessionId, String browserLaunchLocation) throws InvalidBrowserExecutableException {
-        String browserName = "firefox";
-        BrowserLocator locator = new Firefox2or3Locator();
-        String version = browserOptions.get("version");
-        if ("2".equals(version)) {
-            browserName = "firefox2";
-            locator = new Firefox2Locator();
-        }
-        if ("3".equals(version)) {
-            browserName = "firefox3";
-            locator = new Firefox3Locator();
-        }
-        String mode = browserOptions.get("mode");
-        if (mode == null) mode = "chrome";
-        if ("default".equals(mode)) mode = "chrome";
-        
-        BrowserInstallation installation = ApplicationRegistry.instance().browserInstallationCache().locateBrowserInstallation(
-                browserName, browserLaunchLocation, locator);
-        
-        if (installation == null) {
-          throw new InvalidBrowserExecutableException("The specified path to the browser executable is invalid.");
-        }
-        
-        if ("chrome".equals(mode)) {
-            realLauncher = new FirefoxChromeLauncher(browserOptions, configuration, sessionId, installation);
-            return;
-        }
-        
-        boolean proxyInjectionMode = browserOptions.is("proxyInjectionMode") || "proxyInjection".equals(mode);
-        
-        // You can't just individually configure a browser for PI mode; it's a server-level configuration parameter
-        boolean globalProxyInjectionMode = configuration.getProxyInjectionModeArg();
-        if (proxyInjectionMode && !globalProxyInjectionMode) {
-            if (proxyInjectionMode) {
-                throw new RuntimeException("You requested proxy injection mode, but this server wasn't configured with -proxyInjectionMode on the command line");
-            }
-        }
-        
-        // if user didn't request PI, but the server is configured that way, just switch up to PI
-        proxyInjectionMode = globalProxyInjectionMode;
-        if (proxyInjectionMode) {
-            realLauncher = new ProxyInjectionFirefoxCustomProfileLauncher(browserOptions, configuration, sessionId, installation);
-            return;
-        }
-        
-        // the mode isn't "chrome" or "proxyInjection"; at this point it had better be "proxy"
-        if (!"proxy".equals(mode)) {
-            throw new RuntimeException("Unrecognized browser mode: " + mode);
-        }
-        
-        realLauncher = new FirefoxCustomProfileLauncher(browserOptions, configuration, sessionId, installation);
-                
+  final BrowserLauncher realLauncher;
+
+  public FirefoxLauncher(BrowserConfigurationOptions browserOptions, RemoteControlConfiguration configuration, String sessionId, String browserLaunchLocation)
+      throws InvalidBrowserExecutableException {
+    String browserName = "firefox";
+    BrowserLocator locator = new Firefox2or3Locator();
+    String version = browserOptions.get("version");
+    if ("2".equals(version)) {
+      browserName = "firefox2";
+      locator = new Firefox2Locator();
+    }
+    if ("3".equals(version)) {
+      browserName = "firefox3";
+      locator = new Firefox3Locator();
+    }
+    String mode = browserOptions.get("mode");
+    if (mode == null) {
+      mode = "chrome";
+    }
+    if ("default".equals(mode)) {
+      mode = "chrome";
     }
 
-    public void close() {
-        realLauncher.close();
+    BrowserInstallation installation =
+        ApplicationRegistry.instance().browserInstallationCache().locateBrowserInstallation(
+            browserName, browserLaunchLocation, locator);
+
+    if (installation == null) {
+      throw new InvalidBrowserExecutableException(
+          "The specified path to the browser executable is invalid.");
     }
 
-    public Process getProcess() {
-        return realLauncher.getProcess();
+    if ("chrome".equals(mode)) {
+      realLauncher =
+          new FirefoxChromeLauncher(browserOptions, configuration, sessionId, installation);
+      return;
     }
 
-    public void launchHTMLSuite(String suiteUrl, String baseUrl) {
-        realLauncher.launchHTMLSuite(suiteUrl, baseUrl);
+    boolean proxyInjectionMode =
+        browserOptions.is("proxyInjectionMode") || "proxyInjection".equals(mode);
+
+    // You can't just individually configure a browser for PI mode; it's a server-level configuration parameter
+    boolean globalProxyInjectionMode = configuration.getProxyInjectionModeArg();
+    if (proxyInjectionMode && !globalProxyInjectionMode) {
+      if (proxyInjectionMode) {
+        throw new RuntimeException(
+            "You requested proxy injection mode, but this server wasn't configured with -proxyInjectionMode on the command line");
+      }
     }
 
-    public void launchRemoteSession(String url) {
-        realLauncher.launchRemoteSession(url);
+    // if user didn't request PI, but the server is configured that way, just switch up to PI
+    proxyInjectionMode = globalProxyInjectionMode;
+    if (proxyInjectionMode) {
+      realLauncher =
+          new ProxyInjectionFirefoxCustomProfileLauncher(browserOptions, configuration, sessionId,
+              installation);
+      return;
     }
+
+    // the mode isn't "chrome" or "proxyInjection"; at this point it had better be "proxy"
+    if (!"proxy".equals(mode)) {
+      throw new RuntimeException("Unrecognized browser mode: " + mode);
+    }
+
+    realLauncher =
+        new FirefoxCustomProfileLauncher(browserOptions, configuration, sessionId, installation);
+
+  }
+
+  public void close() {
+    realLauncher.close();
+  }
+
+  public Process getProcess() {
+    return realLauncher.getProcess();
+  }
+
+  public void launchHTMLSuite(String suiteUrl, String baseUrl) {
+    realLauncher.launchHTMLSuite(suiteUrl, baseUrl);
+  }
+
+  public void launchRemoteSession(String url) {
+    realLauncher.launchRemoteSession(url);
+  }
 
 }

@@ -66,7 +66,9 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
 
     // don't set the library path on Snow Leopard
     Platform platform = Platform.getCurrent();
-    if (!platform.is(Platform.MAC) || ((platform.is(Platform.MAC)) && platform.getMajorVersion() <= 10 && platform.getMinorVersion() <= 5)) {
+    if (!platform.is(Platform.MAC) || ((platform.is(Platform.MAC))
+                                       && platform.getMajorVersion() <= 10
+                                       && platform.getMinorVersion() <= 5)) {
       shell.setLibraryPath(browserInstallation.libraryPath());
     }
     // Set MOZ_NO_REMOTE in order to ensure we always get a new Firefox process

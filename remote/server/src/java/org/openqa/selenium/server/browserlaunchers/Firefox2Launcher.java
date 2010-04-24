@@ -23,10 +23,11 @@ import org.openqa.selenium.server.browserlaunchers.locators.Firefox2Locator;
 
 public class Firefox2Launcher extends FirefoxChromeLauncher {
 
-    public Firefox2Launcher(BrowserConfigurationOptions browserOptions, RemoteControlConfiguration configuration, String sessionId, String browserLaunchLocation) {
-        super(browserOptions, configuration,
-                sessionId, ApplicationRegistry.instance().browserInstallationCache().locateBrowserInstallation(
-                        "firefox2", browserLaunchLocation, new Firefox2Locator()));        
-    }
+  public Firefox2Launcher(BrowserConfigurationOptions browserOptions, RemoteControlConfiguration configuration, String sessionId, String browserLaunchLocation) {
+    super(browserOptions, configuration,
+        sessionId,
+        ApplicationRegistry.instance().browserInstallationCache().locateBrowserInstallation(
+            "firefox2", browserLaunchLocation, new Firefox2Locator()));
+  }
 
 }
