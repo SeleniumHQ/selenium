@@ -68,6 +68,14 @@
 
     <build>
         <sourceDirectory>src/java</sourceDirectory>
+        <resources>
+            <resource>
+                <directory>src/java</directory>
+                <includes>
+                    <include>org/openqa/selenium/internal/seleniumemulation/*.js</include>
+                </includes>
+            </resource>
+        </resources>
         <testSourceDirectory>test/java</testSourceDirectory>
     </build>
 

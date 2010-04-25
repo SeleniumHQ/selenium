@@ -39,6 +39,22 @@
 
 	<build>
 		<sourceDirectory>src/java</sourceDirectory>
+		<resources>
+			<resource>
+				<directory>prebuilt/linux/release</directory>
+				<includes>
+					<include>x_ignore_nofocus.so</include>
+				</includes>
+				<targetPath>x86</targetPath>
+			</resource>
+			<resource>
+				<directory>prebuilt/linux64/release</directory>
+				<includes>
+					<include>x_ignore_nofocus.so</include>
+				</includes>
+				<targetPath>amd64</targetPath>
+			</resource>
+		</resources>
 		<testSourceDirectory>test/java</testSourceDirectory>
 		<plugins>
 			<!-- See http://maven.apache.org/plugins/maven-antrun-plugin -->
@@ -67,10 +83,6 @@
 								<copy file="prebuilt/linux64/Release/libwebdriver-firefox.so" todir="target/webdriver-extension/platform/Linux_x86_64-gcc3/components" />
 								<mkdir dir="target/classes" />
 								<zip destfile="target/classes/webdriver-extension.zip" basedir="target/webdriver-extension" />
-								<mkdir dir="target/classes/x86" />
-								<copy todir="target/classes/x86" file="prebuilt/linux/release/x_ignore_nofocus.so" />
-								<mkdir dir="target/classes/amd64" />
-								<copy todir="target/classes/amd64" file="prebuilt/linux64/release/x_ignore_nofocus.so" />
 							</tasks>
 						</configuration>
 						<goals>
