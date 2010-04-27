@@ -83,6 +83,7 @@ module Selenium
           @tmp_extension_dir ||= begin
             dir = Dir.mktmpdir("webdriver-chrome-extension")
             Platform.make_writable(dir)
+            FileReaper << dir
 
             dir
           end
@@ -92,6 +93,7 @@ module Selenium
           @tmp_profile_dir ||= begin
             dir = Dir.mktmpdir("webdriver-chrome-profile")
             Platform.make_writable(dir)
+            FileReaper << dir
 
             dir
           end

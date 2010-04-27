@@ -64,6 +64,8 @@ module Selenium
             raise Error::WebDriverError, "Profile directory does not exist: #{@directory.inspect}"
           end
 
+          FileReaper << @directory
+
           # TODO: replace constants with options hash
           @port              = DEFAULT_PORT
           @extension_source  = DEFAULT_EXTENSION_SOURCE
