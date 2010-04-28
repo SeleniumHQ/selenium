@@ -110,6 +110,12 @@ java_jar(:name => 'webdriver-htmlunit',
            'third_party/java/htmlunit/htmlunit-2.7.jar',
            'third_party/java/htmlunit/htmlunit-core-js-2.7.jar',
            'third_party/java/nekohtml/nekohtml-1.9.14.jar',
+           'third_party/java/commons-httpclient/commons-httpclient-3.1.jar',
+           'third_party/java/commons-codec/commons-codec-1.4.jar',
+           'third_party/java/commons-collections/commons-collections-3.2.1.jar',
+           'third_party/java/commons-lang/commons-lang-2.4.jar',
+           'third_party/java/commons-logging/commons-logging-1.1.1.jar',
+           'third_party/java/commons-io/commons-io-1.4.jar'
           ])
 
 java_test(:name => 'webdriver-htmlunit-test',
@@ -266,7 +272,7 @@ java_jar(:name => "webdriver-firefox",
                :remote_common,
                :firefox_xpi,
                :libnoblur,
-               "firefox/lib/runtime/*.jar"
+               "third_party/java/json/json-20080701.jar"
              ],
     :resources => [
                     :firefox_xpi,
@@ -307,8 +313,9 @@ java_jar(:name => "webdriver-remote-common",
          :srcs => [ "remote/common/src/java/**/*.java" ],
          :deps => [
                :common,
-               "remote/common/lib/runtime/*.jar",
+               "third_party/java/commons-codec/commons-codec-1.4.jar",
                "third_party/java/google-collect-1.0.jar",
+               "third_party/java/json/json-20080701.jar"
              ])
 
 java_jar(:name => "webdriver-remote-client",
@@ -316,7 +323,11 @@ java_jar(:name => "webdriver-remote-client",
     :deps => [
                :common,
                :'webdriver-remote-common',
-               "remote/client/lib/runtime/*.jar",
+               'third_party/java/commons-httpclient/commons-httpclient-3.1.jar',
+               'third_party/java/commons-collections/commons-collections-3.2.1.jar',
+               'third_party/java/commons-lang/commons-lang-2.4.jar',
+               'third_party/java/commons-logging/commons-logging-1.1.1.jar',
+               'third_party/java/commons-io/commons-io-1.4.jar'
              ])
 
 xpt(:name => "ide-auto-complete",
