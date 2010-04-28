@@ -42,6 +42,7 @@ public class Pages {
   public String sleepingPage;
   public String errorsPage;
   public String dynamicPage;
+  public String slowIframes;
 
   public Pages(AppServer appServer) {
     simpleTestPage = appServer.whereIs("simpleTest.html");
@@ -66,5 +67,6 @@ public class Pages {
     sleepingPage = appServer.whereIs("sleep");
     errorsPage = appServer.whereIs("errors.html");
     dynamicPage = appServer.whereIs("dynamic.html");
+    slowIframes = appServer.whereIs("slow_loading_iframes.html");
   }
 }

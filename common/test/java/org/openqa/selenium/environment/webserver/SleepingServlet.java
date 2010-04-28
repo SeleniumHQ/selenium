@@ -19,12 +19,16 @@ limitations under the License.
 package org.openqa.selenium.environment.webserver;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class SleepingServlet extends HttpServlet {
+
+  private static final String RESPONSE_STRING_FORMAT =
+      "<html><head><title>Done</title></head><body>Slept for %ss</body></html>";
 
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws IOException {
@@ -39,6 +43,7 @@ public class SleepingServlet extends HttpServlet {
 
     response.setContentType("text/html");
 
-    response.getOutputStream().println("<html><head><title>Done</title><head><body></body></html>");
+    response.getOutputStream().println(
+        String.format(RESPONSE_STRING_FORMAT, duration));
   }
 }
