@@ -77,6 +77,10 @@ module Selenium
         @bridge.setSpeed(speed.to_s.upcase)
       end
 
+      def timeouts
+        @timeouts ||= Timeouts.new(@bridge)
+      end
+
     end # Options
   end # WebDriver
 end # Selenium

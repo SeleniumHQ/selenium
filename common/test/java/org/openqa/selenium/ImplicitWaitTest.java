@@ -85,7 +85,7 @@ public class ImplicitWaitTest extends AbstractDriverTestCase {
   @Test
   @JavascriptEnabled
   @Ignore(SELENESE)
-  public void testShouldStillFailToFindAnElemenstWhenImplicitWaitsAreEnabled() {
+  public void testShouldStillFailToFindElementsWhenImplicitWaitsAreEnabled() {
     driver.get(pages.dynamicPage);
     driver.manage().timeouts().implicitlyWait(500, MILLISECONDS);
     List<WebElement> elements = driver.findElements(By.className("redbox"));

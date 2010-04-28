@@ -8,6 +8,7 @@ class Selenium::WebDriver::Remote::Bridge
   command :newSession,                      :post,    "session"
   command :getCapabilities,                 :get,     "session/:session_id"
   command :quit,                            :delete,  "session/:session_id"
+  command :setImplicitWaitTimeout,          :post,    "session/:session_id/timeouts/implicit_wait"
   command :getCurrentWindowHandle,          :get,     "session/:session_id/window_handle"
   command :getWindowHandles,                :get,     "session/:session_id/window_handles"
   command :getCurrentUrl,                   :get,     "session/:session_id/url"

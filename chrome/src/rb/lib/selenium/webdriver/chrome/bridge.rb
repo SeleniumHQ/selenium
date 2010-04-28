@@ -62,6 +62,10 @@ module Selenium
           execute :deleteCookie, :name => name
         end
 
+        def setImplicitWaitTimeout(milliseconds)
+          execute :implicitlyWait, :ms => milliseconds
+        end
+
         private
 
         def execute(command_name, opts = {}, args = nil)

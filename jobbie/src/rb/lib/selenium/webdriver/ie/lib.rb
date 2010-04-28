@@ -85,6 +85,7 @@ module Selenium
         attach_function :wdNewDriverInstance,                 [:pointer                                                   ], :int
         attach_function :wdNewScriptArgs,                     [:pointer, :int                                             ], :int
         attach_function :wdRefresh,                           [:pointer,                                                  ], :int
+        attach_function :wdSetImplicitWaitTimeout,            [:pointer, :long                                            ], :int
         attach_function :wdSetVisible,                        [:pointer, :int                                             ], :int
         attach_function :wdStringLength,                      [:pointer, :pointer                                         ], :int
         attach_function :wdSwitchToActiveElement,             [:pointer, :pointer                                         ], :int

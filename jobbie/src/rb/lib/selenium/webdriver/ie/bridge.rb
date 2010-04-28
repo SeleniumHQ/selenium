@@ -77,6 +77,11 @@ module Selenium
                            "unable to change the visibility of the browser"
         end
 
+        def setImplicitWaitTimeout(milliseconds)
+          check_error_code Lib.wdSetImplicitWaitTimeout(@driver_pointer, milliseconds),
+                           "unable to set implicit wait timeout"
+        end
+
         def switchToWindow(id)
           check_error_code Lib.wdSwitchToWindow(@driver_pointer, wstring_ptr(id)),
                            "unable to locate window #{id.inspect}"

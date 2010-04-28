@@ -93,6 +93,14 @@ module Selenium
           execute :get, {}, :url => url
         end
 
+        def getCapabilities
+          Capabilities.json_create execute(:getCapabilities)
+        end
+
+        def setImplicitWaitTimeout(milliseconds)
+          execute :setImplicitWaitTimeout, {}, :ms => milliseconds
+        end
+
         def goBack
           execute :goBack
         end
@@ -326,10 +334,6 @@ module Selenium
 
         def dragElement(element, rigth_by, down_by)
           execute :dragElement, {:id => element}, :x => rigth_by, :y => down_by
-        end
-
-        def getCapabilities
-          Capabilities.json_create execute(:getCapabilities)
         end
 
         private
