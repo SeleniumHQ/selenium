@@ -171,11 +171,21 @@ public class BrowserConfigurationOptions {
     }
   }
 
+  /**
+   * Setting safely implies not overriding existing values, and not allowing
+   * null to be set.
+   *
+   * @param key   The key to set
+   * @param value The value to set it to.
+   */
   public void setSafely(String key, Object value) {
     if (value == null) {
       return;
     }
-    set(key, value);
+
+    if (!options.containsKey(key)) {
+      set(key, value);
+    }
   }
 
   /**
