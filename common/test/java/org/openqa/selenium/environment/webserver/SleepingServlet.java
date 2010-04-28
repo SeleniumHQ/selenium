@@ -19,7 +19,6 @@ limitations under the License.
 package org.openqa.selenium.environment.webserver;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
