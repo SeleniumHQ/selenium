@@ -17,6 +17,8 @@ require 'rake-tasks/ie_code_generator'
 
 version = "2.0a4"
 
+verbose = false
+
 task :default => [:test]
 
 # TODO(simon): Shatter the build file into subdirectories, then remove these
@@ -748,3 +750,11 @@ task :'selenium-java_zip' do
   sh "cd #{temp} && jar cMf ../selenium-java.zip *", :verbose => false
 end
 
+desc 'Install prerequisites for the build. You may need to run this as root or Administrator'
+task :setup do
+  sh "gem install Antwrap yard"
+  
+  if python?
+    sh "easy_install virtualenv"
+  end
+end
