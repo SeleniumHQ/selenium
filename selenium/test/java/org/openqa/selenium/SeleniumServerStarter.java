@@ -6,7 +6,10 @@ import junit.framework.Test;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.*;
+
+import org.openqa.selenium.internal.PortProber;
+
+import static org.openqa.selenium.internal.PortProber.pollPort;
 
 public class SeleniumServerStarter extends TestSetup {
 
@@ -29,7 +32,9 @@ public class SeleniumServerStarter extends TestSetup {
     String port = startSeleniumServer(seleniumJar);
 
     // Wait until the server process is running (port 4444)
-    pollPort(Integer.valueOf(port));
+    if (!pollPort(Integer.valueOf(port))) {
+      throw new RuntimeException("Unable to start selenium server");
+    }
 
     new Thread(new Runnable() {
       public void run() {
@@ -68,23 +73,6 @@ public class SeleniumServerStarter extends TestSetup {
       dir = dir.getParentFile();
     }
     return seleniumJar;
-  }
-
-  private void pollPort(int port) {
-    long end = System.currentTimeMillis() + 150000;
-    while (System.currentTimeMillis() < end) {
-      try {
-        InetSocketAddress address = new InetSocketAddress(InetAddress.getByName(null), port);
-
-        Socket socket = new Socket();
-        socket.connect(address, 15000);
-        return;
-      } catch (ConnectException e) {
-        // Ignore this
-      } catch (Exception e) {
-        throw new RuntimeException(e);
-      }
-    }
   }
 
   @Override

@@ -21,9 +21,7 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
-
-import java.io.IOException;
-import java.net.ServerSocket;
+import static org.openqa.selenium.internal.PortProber.findFreePort;
 
 public class SeleneseWebDriverTestSuite extends TestCase {
 
@@ -38,13 +36,5 @@ public class SeleneseWebDriverTestSuite extends TestCase {
         .keepDriverInstance()
         .addSuiteDecorator("org.openqa.selenium.SeleniumServerStarter")
         .create();
-  }
-
-
-  private static int findFreePort() throws IOException {
-    ServerSocket serverSocket = new ServerSocket(0);
-    int port = serverSocket.getLocalPort();
-    serverSocket.close();
-    return port;
   }
 }
