@@ -32,8 +32,9 @@ public class MakeProxyPacUnitTest extends TestCase {
 
     private String makeProxyPAC() throws IOException {
       BrowserConfigurationOptions options = new BrowserConfigurationOptions();
-      options.setAvoidProxy(true);
-      LauncherUtils.makeProxyPAC(parentDir, 4444, proxySeleniumTrafficOnly, httpProxyHost, httpProxyPort, httpNonProxyHosts, options);
+      options.setOnlyProxySeleniumTraffic(proxySeleniumTrafficOnly);
+      options.setAvoidProxy(avoidProxy);
+      LauncherUtils.makeProxyPAC(parentDir, 4444, httpProxyHost, httpProxyPort, httpNonProxyHosts, options);
         return readEntirePacFile();
     }
     private String readEntirePacFile() throws IOException {

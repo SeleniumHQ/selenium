@@ -21,6 +21,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static org.openqa.selenium.server.browserlaunchers.ProxyUtils.isOnlyProxyingSelenium;
+
 /**
  * Various static utility functions used to launch browsers
  */
@@ -91,32 +93,24 @@ public class LauncherUtils {
     }
   }
 
-  protected static File makeProxyPAC(File parentDir, int port, BrowserConfigurationOptions options)
-      throws FileNotFoundException {
-    return makeProxyPAC(parentDir, port, true, options);
-  }
-
-
   /**
    * Generate a proxy.pac file, configuring a dynamic proxy. <p/> If
    * proxySeleniumTrafficOnly is true, then the proxy applies only to URLs
    * containing "/selenium-server/". Otherwise the proxy applies to all URLs.
-   *
-   * @param avoidProxy TODO
    */
-  protected static File makeProxyPAC(File parentDir, int port, boolean proxySeleniumTrafficOnly, BrowserConfigurationOptions options)
+  protected static File makeProxyPAC(File parentDir, int port, BrowserConfigurationOptions options)
       throws FileNotFoundException {
-    return makeProxyPAC(parentDir, port, proxySeleniumTrafficOnly,
+    return makeProxyPAC(parentDir, port,
         System.getProperty("http.proxyHost"),
         System.getProperty("http.proxyPort"),
         System.getProperty("http.nonProxyHosts"), options);
   }
 
 
-  public static File makeProxyPAC(File parentDir, int port, boolean proxySeleniumTrafficOnly, String configuredProxy, String proxyPort, String nonProxyHosts, BrowserConfigurationOptions options)
+  public static File makeProxyPAC(File parentDir, int port, String configuredProxy, String proxyPort, String nonProxyHosts, BrowserConfigurationOptions options)
       throws FileNotFoundException {
     ProxyPac pac =
-        newProxyPac(port, proxySeleniumTrafficOnly, configuredProxy, proxyPort, nonProxyHosts,
+        newProxyPac(port, configuredProxy, proxyPort, nonProxyHosts,
             options);
 
     try {
@@ -130,11 +124,7 @@ public class LauncherUtils {
     }
   }
 
-  private static ProxyPac newProxyPac(int port, boolean proxySeleniumTrafficOnly, String configuredProxy, String proxyPort, String nonProxyHosts, BrowserConfigurationOptions options) {
-    if (!options.isAvoidingProxy()) {
-      proxySeleniumTrafficOnly = false;
-    }
-
+  private static ProxyPac newProxyPac(int port, String configuredProxy, String proxyPort, String nonProxyHosts, BrowserConfigurationOptions options) {
     ProxyPac existingConfig = options.getProxyConfig();
     ProxyPac pac = existingConfig == null ? new ProxyPac() : existingConfig;
 
@@ -155,7 +145,7 @@ public class LauncherUtils {
     }
 
     String seleniumServerAsProxy = "localhost:" + port + "; " + defaultProxy;
-    if (proxySeleniumTrafficOnly) {
+    if (isOnlyProxyingSelenium(options)) {
       pac.map("*/selenium-server/*").toProxy(seleniumServerAsProxy);
       if (nonProxyHosts != null && nonProxyHosts.trim().length() > 0) {
         String[] hosts = nonProxyHosts.split("\\|");
@@ -366,29 +356,19 @@ public class LauncherUtils {
     return result;
   }
 
-  protected enum ProxySetting {
-    NO_PROXY, PROXY_SELENIUM_TRAFFIC_ONLY, PROXY_EVERYTHING
-  }
-
-  protected static void generatePacAndPrefJs(File customProfileDir, int port, ProxySetting proxySetting,
-                                             String homePage, boolean changeMaxConnections, int timeoutInSeconds, BrowserConfigurationOptions options)
+  protected static void generatePacAndPrefJs(File customProfileDir, int port, String homePage,
+      boolean changeMaxConnections, int timeoutInSeconds, BrowserConfigurationOptions options)
       throws FileNotFoundException {
-    // We treat PROXY_SELENIUM_TRAFFIC_ONLY as a suggestion; if the user didn't explicitly
-    // allow us to proxy selenium traffic only, then we'll proxy everything
-    if (proxySetting == ProxySetting.PROXY_SELENIUM_TRAFFIC_ONLY && options.isAvoidingProxy()) {
-      proxySetting = ProxySetting.PROXY_EVERYTHING;
-    }
+
 
     File prefsJS = new File(customProfileDir, "prefs.js");
     PrintStream out = new PrintStream(new FileOutputStream(prefsJS, true));
     // Don't ask if we want to switch default browsers
     out.println("user_pref('browser.shell.checkDefaultBrowser', false);");
 
-    if (proxySetting != ProxySetting.NO_PROXY || options.getProxyConfig() != null) {
-      boolean proxySeleniumTrafficOnly = (proxySetting == ProxySetting.PROXY_SELENIUM_TRAFFIC_ONLY);
+    if (options.isProxyRequired()) {
       // Configure us as the local proxy
-      File proxyPAC =
-          LauncherUtils.makeProxyPAC(customProfileDir, port, proxySeleniumTrafficOnly, options);
+      File proxyPAC = LauncherUtils.makeProxyPAC(customProfileDir, port, options);
       out.println("user_pref('network.proxy.type', 2);");
       out.println("user_pref('network.proxy.autoconfig_url', '"
                   + pathToBrowserURL(proxyPAC.getAbsolutePath()) + "');");

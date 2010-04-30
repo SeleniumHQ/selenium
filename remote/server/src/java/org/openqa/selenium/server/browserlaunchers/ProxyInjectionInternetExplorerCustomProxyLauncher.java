@@ -25,6 +25,7 @@ public class ProxyInjectionInternetExplorerCustomProxyLauncher
                                                            RemoteControlConfiguration configuration, String sessionId, String browserLaunchLocation) {
 
     super(browserOptions, configuration, sessionId, browserLaunchLocation);
+    browserOptions.setProxyEverything(true);
   }
 
   @Override

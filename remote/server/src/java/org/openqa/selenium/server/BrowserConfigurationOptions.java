@@ -31,6 +31,7 @@ public class BrowserConfigurationOptions {
   private boolean hasOptions = false;
 
   public BrowserConfigurationOptions(String browserConfiguration) {
+    setProxyRequired(true);
     //"name=value;name=value"
     String[] optionsPairList = browserConfiguration.split(";");
     for (int i = 0; i < optionsPairList.length; i++) {
@@ -45,6 +46,7 @@ public class BrowserConfigurationOptions {
   }
 
   public BrowserConfigurationOptions() {
+    setProxyRequired(true);
   }
 
   public String serialize() {
@@ -124,6 +126,30 @@ public class BrowserConfigurationOptions {
 
   public void setAvoidProxy(boolean avoidProxy) {
     set("avoidProxy", avoidProxy);
+  }
+
+  public void setOnlyProxySeleniumTraffic(boolean onlyProxySeleniumTraffic) {
+    set("onlyProxySeleniumTraffic", onlyProxySeleniumTraffic);
+  }
+
+  public boolean isOnlyProxyingSeleniumTraffic() {
+    return is("onlyProxySeleniumTraffic");
+  }
+
+  public void setProxyEverything(boolean proxyEverything) {
+    set("proxyEverything", proxyEverything);
+  }
+
+  public boolean isProxyingEverything() {
+    return is("proxyEverything");
+  }
+
+  public void setProxyRequired(boolean proxyRequired) {
+    set("proxyRequired", proxyRequired);
+  }
+
+  public boolean isProxyRequired() {
+    return is("proxyRequired") || getProxyConfig() != null;
   }
 
   public ProxyPac getProxyConfig() {

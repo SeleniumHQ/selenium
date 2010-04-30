@@ -31,7 +31,7 @@ import org.openqa.selenium.server.RemoteControlConfiguration;
 import org.openqa.selenium.server.browserlaunchers.locators.Firefox2or3Locator;
 
 public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
-  private static Log LOGGER = LogFactory.getLog(FirefoxChromeLauncher.class);
+  private static final Log LOGGER = LogFactory.getLog(FirefoxChromeLauncher.class);
 
   private File customProfileDir = null;
   private String[] cmdarray;
@@ -187,13 +187,14 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
   }
 
   protected void generatePacAndPrefJs(String homePage) throws IOException {
-    LauncherUtils.ProxySetting proxySetting = LauncherUtils.ProxySetting.NO_PROXY;
+    browserConfigurationOptions.setProxyRequired(false);
     if (browserConfigurationOptions.is("captureNetworkTraffic") || browserConfigurationOptions.is(
         "addCustomRequestHeaders")) {
-      proxySetting = LauncherUtils.ProxySetting.PROXY_EVERYTHING;
+      browserConfigurationOptions.setProxyEverything(true);
+      browserConfigurationOptions.setProxyRequired(true);
     }
 
-    LauncherUtils.generatePacAndPrefJs(customProfileDir, getPort(), proxySetting, homePage,
+    LauncherUtils.generatePacAndPrefJs(customProfileDir, getPort(), homePage,
         changeMaxConnections, getTimeout(), browserConfigurationOptions);
   }
 

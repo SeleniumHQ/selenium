@@ -34,7 +34,6 @@ public class FirefoxCustomProfileLauncher extends AbstractBrowserLauncher {
     private BrowserInstallation browserInstallation;
     private Process process;
     
-    protected LauncherUtils.ProxySetting proxySetting = LauncherUtils.ProxySetting.PROXY_SELENIUM_TRAFFIC_ONLY;
     private static boolean alwaysChangeMaxConnections = false;
     protected boolean changeMaxConnections = alwaysChangeMaxConnections;
 
@@ -51,6 +50,9 @@ public class FirefoxCustomProfileLauncher extends AbstractBrowserLauncher {
 
     public FirefoxCustomProfileLauncher(BrowserConfigurationOptions browserOptions, RemoteControlConfiguration configuration, String sessionId, BrowserInstallation browserInstallation) {
         super(sessionId, configuration, browserOptions);
+        browserOptions.setProxyEverything(false);
+        browserOptions.setAvoidProxy(true);
+        browserOptions.setOnlyProxySeleniumTraffic(true);
         init();
         this.browserInstallation = browserInstallation;
         shell.setLibraryPath(browserInstallation.libraryPath());
@@ -108,7 +110,7 @@ public class FirefoxCustomProfileLauncher extends AbstractBrowserLauncher {
             LauncherUtils.copySingleFileWithOverwrite(new File(firefoxProfileTemplate, "cert8.db"), new File(customProfileDir, "cert8.db"), true);
         }
 
-        LauncherUtils.generatePacAndPrefJs(customProfileDirectory, getPort(), proxySetting, null, changeMaxConnections, getTimeout(), browserConfigurationOptions);
+        LauncherUtils.generatePacAndPrefJs(customProfileDirectory, getPort(), null, changeMaxConnections, getTimeout(), browserConfigurationOptions);
     }
 
     /** Implementation identical to that in FirefoxChromeLauncher. **/

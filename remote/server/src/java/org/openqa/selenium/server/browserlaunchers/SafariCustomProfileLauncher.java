@@ -53,7 +53,6 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
   }
 
   public SafariCustomProfileLauncher(BrowserConfigurationOptions browserOptions, RemoteControlConfiguration configuration, String sessionId, String browserLaunchLocation) {
-
     super(sessionId, configuration, browserOptions);
 
     this.browserInstallation = locateSafari(browserLaunchLocation);

@@ -19,6 +19,7 @@ public abstract class AbstractBrowserLauncher implements BrowserLauncher {
   public AbstractBrowserLauncher(String sessionId, RemoteControlConfiguration configuration, BrowserConfigurationOptions browserOptions) {
     this.sessionId = sessionId;
     this.configuration = configuration;
+    configuration.copySettingsIntoBrowserOptions(browserOptions);
     this.browserConfigurationOptions = browserOptions;
   }
 
