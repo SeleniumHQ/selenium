@@ -17,22 +17,24 @@ import java.io.IOException;
  *
  * @author nelsons
  */
-public class ProxyInjectionInternetExplorerCustomProxyLauncher extends InternetExplorerCustomProxyLauncher {
-    private static boolean alwaysChangeMaxConnections = true;
+public class ProxyInjectionInternetExplorerCustomProxyLauncher
+    extends InternetExplorerCustomProxyLauncher {
+  private static boolean alwaysChangeMaxConnections = true;
 
-    public ProxyInjectionInternetExplorerCustomProxyLauncher(BrowserConfigurationOptions browserOptions,
-                                                             RemoteControlConfiguration configuration, String sessionId, String browserLaunchLocation) {
+  public ProxyInjectionInternetExplorerCustomProxyLauncher(BrowserConfigurationOptions browserOptions,
+                                                           RemoteControlConfiguration configuration, String sessionId, String browserLaunchLocation) {
 
-        super(browserOptions, configuration, sessionId, browserLaunchLocation);
-    }
+    super(browserOptions, configuration, sessionId, browserLaunchLocation);
+  }
 
-    @Override
-    protected void changeRegistrySettings() throws IOException {
-        wpm.setChangeMaxConnections(alwaysChangeMaxConnections);
-        wpm.changeRegistrySettings(browserConfigurationOptions);
-    }
+  @Override
+  protected void changeRegistrySettings() throws IOException {
+    wpm.setChangeMaxConnections(alwaysChangeMaxConnections);
+    wpm.changeRegistrySettings(browserConfigurationOptions);
+  }
 
-    public static void setChangeMaxConnections(boolean changeMaxConnections) {
-        ProxyInjectionInternetExplorerCustomProxyLauncher.alwaysChangeMaxConnections = changeMaxConnections;
-    }
+  public static void setChangeMaxConnections(boolean changeMaxConnections) {
+    ProxyInjectionInternetExplorerCustomProxyLauncher.alwaysChangeMaxConnections =
+        changeMaxConnections;
+  }
 }
