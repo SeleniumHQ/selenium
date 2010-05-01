@@ -663,7 +663,9 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
 
       // Walk over all parts of the frame identifier, each time looking for a frame
       // with a name or ID matching this part of the identifier (separated by '.').
-      for (String currentFrameId : name.split("\\.")) {
+      String[] frames = name.split("\\.");
+      for (int i = 0; i < frames.length; ++i) {
+        final String currentFrameId = frames[i];
         final HtmlPage page = (HtmlPage) window.getEnclosedPage();
         
         if (isNumericFrameIdValid(currentFrameId, page)) {
@@ -676,7 +678,12 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
           boolean nextFrameFound = false;
           for (final FrameWindow frameWindow : page.getFrames()) {
             final String frameName = frameWindow.getName();
-            final String frameId = frameWindow.getFrameElement().getId(); 
+            final String frameId = frameWindow.getFrameElement().getId();
+            final String remainingFrameId = joinFrom(frames, i, '.');
+            if (frameName.equals(remainingFrameId) || frameId.equals(remainingFrameId)) {
+              currentWindow = frameWindow;
+              return HtmlUnitDriver.this;
+            }
             if (frameName.equals(currentFrameId) || frameId.equals(currentFrameId)) {
               window = frameWindow;
               nextFrameFound = true;
@@ -692,6 +699,17 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
       
       currentWindow = window;
       return HtmlUnitDriver.this;
+    }
+
+    private String joinFrom(String[] frames, int initial, char joiner) {
+      StringBuilder builder = new StringBuilder();
+      for (int i = initial; i < frames.length; ++i) {
+        builder.append(frames[i]).append(joiner);
+      }
+      if (builder.length() > 0) {
+        builder.deleteCharAt(builder.length() - 1);
+      }
+      return builder.toString();
     }
 
     private boolean isNumericFrameIdValid(String currentFrameId, HtmlPage page) {

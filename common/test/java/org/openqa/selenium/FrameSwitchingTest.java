@@ -242,6 +242,13 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
       // This is expected
     }
   }
+  
+  @Ignore(reason = "As yet unimplemented", value = {SELENESE, IE})
+  public void testShouldBeAbleToSwitchToTopLevelFrameWithDotInNameAssumingNoParentAndChildFrameExistWithTheSameName() {
+    driver.get(pages.framesetPage);
+    driver.switchTo().frame("seventh.withadot");
+    assertThat(driver.findElement(By.id("pageNumber")).getText(), equalTo("3"));
+  }
 
   @Ignore(SELENESE)
   public void testShouldBeAbleToFindElementsInIframesByName() {

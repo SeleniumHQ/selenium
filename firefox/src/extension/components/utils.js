@@ -956,6 +956,10 @@ Utils.findFrame = function(browser, frameId) {
       var found = false;
       for (var j = 0; j < frame.frames.length; j++) {
         var f = frame.frames[j];
+        var wholeRestOfName = names.slice(i).join(".");
+        if (f.name == wholeRestOfName || f.frameElement.id == wholeRestOfName) {
+          return f;
+        }
         if (f.name == names[i] || f.frameElement.id == names[i]) {
           frame = f;
           found = true;
