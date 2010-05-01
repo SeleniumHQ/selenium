@@ -1,0 +1,6 @@
+java_library(name = "xml",
+  deps = [
+    "xalan-2.7.1.jar",
+    "xercesImpl-2.9.1.jar",
+    "xml-apis-1.3.04.jar"
+  ])

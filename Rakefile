@@ -2,6 +2,15 @@ require 'rake'
 require 'rake/testtask'
 require 'rake/rdoctask'
 
+verbose(false)
+
+# The CrazyFun build grammar. There's no magic here, just ruby
+require 'rake-tasks/crazy_fun'
+require 'rake-tasks/crazy_fun/mappings/java'
+require 'rake-tasks/crazy_fun/mappings/javascript'
+#require 'rake-tasks/crazy_fun/mappings/mozilla'
+
+# The original build rules
 require 'rake-tasks/task-gen'
 require 'rake-tasks/checks'
 require 'rake-tasks/dotnet'
@@ -17,16 +26,51 @@ require 'rake-tasks/ie_code_generator'
 
 version = "2.0a4"
 
-verbose = false
+# The build system used by webdriver is layered on top of rake, and we call it
+# "crazy fun" for no readily apparent reason.
 
+# First off, create a new CrazyFun object.
+crazy_fun = CrazyFun.new
+
+# Secondly, we add the handlers, which are responsible for turning a build 
+# rule into a (series of) rake tasks. For example if we're looking at a file
+# in subdirectory "subdir" contains the line:
+#
+# java_library(:name => "example", :srcs => ["foo.java"])
+#
+# we would generate a rake target of "//subdir:example" which would generate
+# a Java JAR at "build/subdir/example.jar". 
+# 
+# If crazy fun doesn't know how to handle a particular output type ("java_library"
+# in the example above) then it will throw an exception, stopping the build
+JavaMappings.new.add_all(crazy_fun)
+JavascriptMappings.new.add_all(crazy_fun)
+#MozillaMappings.new.add_all(crazy_fun)
+
+# Not every platform supports building every binary needed, so we sometimes
+# need to fall back to prebuilt binaries. The prebuilt binaries are stored in
+# a directory structure identical to that used in the "build" folder, but
+# rooted at one of the following locations:
+["chrome/prebuilt", "common/prebuilt", "firefox/prebuilt", "jobbie/prebuilt"].each do |pre|
+  crazy_fun.prebuilt_roots << pre
+end
+
+# Finally, find every file named "build.desc" in the project, and generate
+# rake tasks from them. These tasks are normal rake tasks, and can be invoked
+# from rake. 
+crazy_fun.create_tasks(Dir["**/build.desc"])
+
+# Notice that because we're using rake, anything you can do in a normal rake
+# build can also be done here. For example, here we set the default task
 task :default => [:test]
+
 
 # TODO(simon): Shatter the build file into subdirectories, then remove these
 task :all => [:'selenium-java']
 task :all_zip => [:'selenium-java_zip']
 task :chrome => [:'webdriver-chrome']
-task :common => [:'webdriver-common']
-task :htmlunit => [:'webdriver-htmlunit']
+task :common => [ "//common" ]
+task :htmlunit => [ "//htmlunit" ]
 task :ie => [:'webdriver-ie']
 task :firefox => [:'webdriver-firefox']
 task :jobbie => [:ie]
@@ -92,38 +136,19 @@ java_test(:name => "webdriver-chrome-test",
                      :'webdriver-remote-common-test'
                    ])
 
-java_jar(:name => 'webdriver-common',
-         :srcs => [ 'common/src/java/**/*.java' ])
-
 java_jar(:name => 'webdriver-common-test',
          :srcs  => [ "common/test/java/**/*.java" ],
          :resources => [ "common/test/java/org/openqa/selenium/messages.properties" => "org/openqa/selenium/messages.properties" ],
          :deps => [
-           :'webdriver-common',
+           "//common",
            "common/lib/buildtime/*.jar",
            "third_party/java/junit/junit-dep-4.8.1.jar"
          ])
 
-java_jar(:name => 'webdriver-htmlunit',
-         :srcs => [ 'htmlunit/src/java/**/*.java'],
-         :deps => [
-           :'webdriver-common',
-           'htmlunit/lib/runtime/*.jar',
-           'third_party/java/htmlunit/htmlunit-2.7.jar',
-           'third_party/java/htmlunit/htmlunit-core-js-2.7.jar',
-           'third_party/java/nekohtml/nekohtml-1.9.14.jar',
-           'third_party/java/commons-httpclient/commons-httpclient-3.1.jar',
-           'third_party/java/commons-codec/commons-codec-1.4.jar',
-           'third_party/java/commons-collections/commons-collections-3.2.1.jar',
-           'third_party/java/commons-lang/commons-lang-2.4.jar',
-           'third_party/java/commons-logging/commons-logging-1.1.1.jar',
-           'third_party/java/commons-io/commons-io-1.4.jar'
-          ])
-
 java_test(:name => 'webdriver-htmlunit-test',
           :srcs  => [ "htmlunit/test/java/**/*.java" ],
           :deps => [
-            :htmlunit,
+            "//htmlunit",
             :'webdriver-common-test',
           ])
 
@@ -163,7 +188,7 @@ ie_generate_type_mapping(:name => "ie_result_type_java",
 java_jar(:name => "webdriver-ie",
     :srcs  => [ "jobbie/src/java/**/*.java" ],
     :deps => [
-               :'webdriver-common',
+               "//common",
                "jobbie/lib/runtime/*.jar",
                :ie_result_type_java,
                :ie_result_type_cpp
@@ -314,7 +339,7 @@ java_test(:name => "webdriver-support-test",
 java_jar(:name => "webdriver-remote-common",
          :srcs => [ "remote/common/src/java/**/*.java" ],
          :deps => [
-               :common,
+               "//common",
                "third_party/java/commons-codec/commons-codec-1.4.jar",
                "third_party/java/google-collect-1.0.jar",
                "third_party/java/json/json-20080701.jar"
@@ -323,7 +348,7 @@ java_jar(:name => "webdriver-remote-common",
 java_jar(:name => "webdriver-remote-client",
     :srcs  => [ "remote/client/src/java/**/*.java" ],
     :deps => [
-               :common,
+               "//common",
                :'webdriver-remote-common',
                'third_party/java/commons-httpclient/commons-httpclient-3.1.jar',
                'third_party/java/commons-collections/commons-collections-3.2.1.jar',
@@ -387,7 +412,7 @@ java_jar(:name => "webdriver-remote-server",
     ],
     :deps => [
                :chrome,
-               :htmlunit,
+               "//htmlunit",
                :ie,
                :firefox,
                :remote_common,
@@ -487,7 +512,7 @@ java_test(:name => "webdriver-selenium-test",
                    ],
           :deps => [
                      :test_common,
-                     :htmlunit,
+                     "//htmlunit",
                      :'selenium-server-standalone',
                      "selenium/lib/buildtime/*.jar",
                    ],
@@ -498,7 +523,7 @@ java_test(:name => "webdriver-selenese-test",
           :srcs => [ "selenium/test/java/**/*.java" ],
           :deps => [
                      :test_common,
-                     :htmlunit,
+                     "//htmlunit",
                      :'selenium-server-standalone',
                      "selenium/lib/buildtime/*.jar",
                    ])
@@ -543,7 +568,7 @@ java_test(:name => "debug_jsapi",
           :deps => [ :firefox, :test_common ],
           :main => "org.openqa.selenium.environment.webserver.Jetty6AppServer")
 
-task :javadocs => [:common, :firefox, :htmlunit, :jobbie, :remote, :support, :chrome, :selenium] do
+task :javadocs => [:common, :firefox, "//htmlunit", :jobbie, :remote, :support, :chrome, :selenium] do
   mkdir_p "build/javadoc", :verbose => false
    sourcepath = ""
    classpath = "support/lib/runtime/hamcrest-all-1.1.jar"
@@ -725,7 +750,7 @@ end
 java_uberjar(:name => "selenium-java",
              :deps => [
                     :chrome,
-                    :htmlunit,
+                    "//htmlunit",
                     :ie,
                     :firefox,
                     :remote_client,

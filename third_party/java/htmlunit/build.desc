@@ -1,0 +1,12 @@
+java_library(name = "htmlunit",
+  deps = [
+    "htmlunit-2.7.jar",
+    "htmlunit-core-js-2.7.jar",
+    "//third_party/java/commons-collections",
+    "//third_party/java/commons-lang",
+    "//third_party/java/commons-httpclient",
+    "//third_party/java/cssparser",
+    "//third_party/java/nekohtml",
+    "//third_party/java/serializer",
+    "//third_party/java/xml"
+  ])

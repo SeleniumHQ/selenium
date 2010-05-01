@@ -1,0 +1,4 @@
+java_library(name = "commons-codec",
+  deps = [
+    "commons-codec-1.4.jar"
+  ])

@@ -1,0 +1,4 @@
+java_library(name = "serializer",
+  deps = [
+    "serializer-2.7.1.jar"
+  ])

@@ -1,0 +1,4 @@
+java_library(name = "sac",
+  deps = [
+    "sac-1.3.jar"
+  ])

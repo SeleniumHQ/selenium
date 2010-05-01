@@ -1,0 +1,3 @@
+java_library(name = "common",
+  srcs = [ "src/java/**/*.java" ]
+)

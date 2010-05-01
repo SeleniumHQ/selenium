@@ -1,0 +1,6 @@
+java_library(name = "commons-httpclient",
+  deps = [
+    "commons-httpclient-3.1.jar",
+    "//third_party/java/commons-codec",
+    "//third_party/java/commons-logging"
+  ])
