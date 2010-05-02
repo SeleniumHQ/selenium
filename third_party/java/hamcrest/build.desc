@@ -1,0 +1,2 @@
+java_library(name = "hamcrest",
+  deps = [ "hamcrest-all-1.1.jar" ])

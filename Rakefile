@@ -2,7 +2,7 @@ require 'rake'
 require 'rake/testtask'
 require 'rake/rdoctask'
 
-verbose(false)
+verbose false
 
 # The CrazyFun build grammar. There's no magic here, just ruby
 require 'rake-tasks/crazy_fun'
@@ -84,9 +84,9 @@ task :support => [:'webdriver-support']
 task :iphone_client => [:'webdriver-iphone-client']
 task :iphone => [:iphone_server, :iphone_client]
 
-task :test_common => [:'webdriver-common-test']
+task :test_common => [ "//common:test" ]
 task :test_chrome => [:'webdriver-chrome-test']
-task :test_htmlunit => [:'webdriver-htmlunit-test']
+task :test_htmlunit => [ "//htmlunit:test:run" ]
 task :test_ie => [:'webdriver-ie-test']
 task :test_jobbie => [:test_ie]
 task :test_jsapi => :'webdriver-jsapi-test'
@@ -135,22 +135,6 @@ java_test(:name => "webdriver-chrome-test",
                      :chrome,
                      :'webdriver-remote-common-test'
                    ])
-
-java_jar(:name => 'webdriver-common-test',
-         :srcs  => [ "common/test/java/**/*.java" ],
-         :resources => [ "common/test/java/org/openqa/selenium/messages.properties" => "org/openqa/selenium/messages.properties" ],
-         :deps => [
-           "//common",
-           "common/lib/buildtime/*.jar",
-           "third_party/java/junit/junit-dep-4.8.1.jar"
-         ])
-
-java_test(:name => 'webdriver-htmlunit-test',
-          :srcs  => [ "htmlunit/test/java/**/*.java" ],
-          :deps => [
-            "//htmlunit",
-            :'webdriver-common-test',
-          ])
 
 dll(:name => "ie_win32_dll",
     :src  => [ "common/src/cpp/webdriver-interactions/**/*", "jobbie/src/cpp/InternetExplorerDriver/**/*" ],
@@ -311,14 +295,14 @@ java_test(:name => "webdriver-firefox-test",
           :srcs  => [ "firefox/test/java/**/*.java" ],
           :deps => [
                      :'webdriver-firefox',
-                     :'webdriver-common-test',
+                     "//common:test",
                    ])
 
 java_test(:name => "webdriver-single-testsuite",
           :srcs  => [ "common/test/java/org/openqa/selenium/SingleTestSuite.java"],
           :deps => [
                      :'webdriver-ie',
-                     :'webdriver-common-test',
+                     "//common:test",
                    ])
 
 java_jar(:name => "webdriver-support",

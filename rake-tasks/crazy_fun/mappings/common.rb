@@ -162,6 +162,13 @@ class Tasks
       return [ task_name(dir, dep) ]
     end
     
-    throw "Unmatched dependency type"
+    if dep.is_a? Hash
+      dep.each do |k, v|
+        # We only care about the keys
+        return dep_type(dir, k)
+      end
+    end
+    
+    throw "Unmatched dependency type: #{dep.class}"
   end
 end

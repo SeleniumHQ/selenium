@@ -4,3 +4,11 @@ java_library(name = "htmlunit",
     "//common",
     "//third_party/java/htmlunit"
   ])
+  
+java_test(name = "test",
+  srcs = [ "test/java/**/*.java" ],
+  deps = [
+    ":htmlunit",
+    "//common:test",
+    "//third_party/java/junit"
+  ])

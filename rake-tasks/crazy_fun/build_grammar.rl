@@ -33,13 +33,15 @@ class BuildFile
        @lhs.push MapEntry.new 
      }
      action start_string { 
-       puts "Starting string" if @debug
-       @lhs.push StringType.new 
+       if @data[@p + 1].chr == ':'
+         puts "Starting symbol" if @debug
+         @lhs.push SymbolType.new
+         @p = @p + 1
+       else
+         puts "Starting string" if @debug
+         @lhs.push StringType.new 
+       end
      }  
-     action start_symbol { 
-       puts "Starting symbol" if @debug
-       @lhs.push SymbolType.new 
-     }
      action start_type { 
        puts "Starting type" if @debug
        # Unwind the stack until the top is another OutputType (or it's empty)

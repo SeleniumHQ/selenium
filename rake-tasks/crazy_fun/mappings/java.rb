@@ -108,7 +108,7 @@ class AddDepedencies < BaseJava
     target = Rake::Task[target_name]
     add_dependencies(target, dir, args[:deps])
     add_dependencies(target, dir, args[:srcs])
-    add_dependencies(target, dir, args[:resources])    
+    add_dependencies(target, dir, args[:resources])
   end
 end
 
@@ -169,6 +169,29 @@ class CopyResources < BaseJava
           out = Rake::Task[task_name(dir, res)].out
         elsif (Rake::Task.task_defined?(res)) 
           out = Rake::Task[res].out
+        elsif (res.is_a? Hash)
+          # Copy the key to "out_dir + value"
+          res.each do |from, to|
+            if from.is_a? Symbol
+              cp Rake::Task[task_name(dir, from)].out, out_dir + "/" + to;
+            else
+              Dir["#{out_dir}/#{to}/**.svn"].each { |file| rm_rf file }
+              tdir = to.gsub(/\/.*?$/, "")
+              mkdir_p "#{out_dir}/#{tdir}"
+            
+              begin
+                if File.directory? from
+                  mkdir_p "#{out_dir}/#{to}"
+                end
+                cp_r find_file(dir + "/" + from), "#{out_dir}/#{to}"
+              rescue
+                Dir["#{out_dir}/**/.svn"].each { |file| rm_rf file }
+                cp_r find_file(dir + "/" + from), "#{out_dir}/#{to}"
+              end
+            end
+          end
+          
+          next
         else
           out = res
         end

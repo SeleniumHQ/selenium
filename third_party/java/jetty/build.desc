@@ -1,0 +1,8 @@
+java_library(name = "jetty",
+  deps = [
+    "jetty-6.1.9.jar",
+    "jetty-util-6.1.9.jar",
+    "//third_party/java/jasper",
+    "//third_party/java/servlet-api",
+    "//third_party/java/slf4j"
+  ])

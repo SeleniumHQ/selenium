@@ -3,7 +3,7 @@
 
 class BuildFile
   
-# line 71 "rake-tasks/crazy_fun/build_grammar.rl"
+# line 73 "rake-tasks/crazy_fun/build_grammar.rl"
 
       
    def parse(data)
@@ -15,11 +15,10 @@ class << self
 end
 self._build_grammar_actions = [
 	0, 1, 0, 1, 2, 1, 3, 1, 
-	4, 1, 5, 1, 8, 1, 10, 1, 
-	11, 2, 1, 10, 2, 4, 5, 2, 
-	6, 10, 2, 11, 8, 3, 0, 1, 
-	10, 3, 7, 9, 10, 4, 11, 7, 
-	9, 10
+	5, 1, 7, 1, 9, 1, 10, 2, 
+	1, 9, 2, 4, 5, 2, 10, 7, 
+	3, 0, 1, 9, 3, 6, 8, 9, 
+	4, 10, 6, 8, 9
 ]
 
 class << self
@@ -28,10 +27,9 @@ class << self
 end
 self._build_grammar_key_offsets = [
 	0, 0, 6, 8, 14, 19, 24, 33, 
-	37, 43, 44, 49, 51, 53, 65, 71, 
-	72, 77, 82, 84, 96, 101, 102, 106, 
-	107, 112, 113, 118, 123, 128, 130, 142, 
-	144, 155, 161
+	37, 42, 43, 48, 50, 55, 56, 61, 
+	66, 70, 71, 75, 76, 80, 81, 86, 
+	91, 96, 102
 ]
 
 class << self
@@ -43,23 +41,16 @@ self._build_grammar_trans_keys = [
 	40, 95, 48, 57, 97, 122, 32, 9, 
 	13, 97, 122, 32, 9, 13, 97, 122, 
 	32, 61, 95, 9, 13, 48, 57, 97, 
-	122, 32, 61, 9, 13, 32, 34, 58, 
-	91, 9, 13, 34, 32, 41, 44, 9, 
-	13, 10, 13, 97, 122, 32, 41, 44, 
-	95, 9, 13, 48, 57, 65, 90, 97, 
-	122, 32, 34, 58, 123, 9, 13, 34, 
+	122, 32, 61, 9, 13, 32, 34, 91, 
+	9, 13, 34, 32, 41, 44, 9, 13, 
+	10, 13, 32, 34, 123, 9, 13, 34, 
 	32, 44, 93, 9, 13, 32, 41, 44, 
-	9, 13, 97, 122, 32, 44, 93, 95, 
-	9, 13, 48, 57, 65, 90, 97, 122, 
-	32, 34, 58, 9, 13, 34, 32, 61, 
-	9, 13, 62, 32, 34, 58, 9, 13, 
+	9, 13, 32, 34, 9, 13, 34, 32, 
+	61, 9, 13, 62, 32, 34, 9, 13, 
 	34, 32, 44, 125, 9, 13, 32, 44, 
 	125, 9, 13, 32, 44, 93, 9, 13, 
-	97, 122, 32, 44, 95, 125, 9, 13, 
-	48, 57, 65, 90, 97, 122, 97, 122, 
-	32, 61, 95, 9, 13, 48, 57, 65, 
-	90, 97, 122, 32, 35, 9, 13, 97, 
-	122, 32, 35, 9, 13, 97, 122, 0
+	32, 35, 9, 13, 97, 122, 32, 35, 
+	9, 13, 97, 122, 0
 ]
 
 class << self
@@ -68,9 +59,8 @@ class << self
 end
 self._build_grammar_single_lengths = [
 	0, 2, 2, 2, 1, 1, 3, 2, 
-	4, 1, 3, 2, 0, 4, 4, 1, 
-	3, 3, 0, 4, 3, 1, 2, 1, 
-	3, 1, 3, 3, 3, 0, 4, 0, 
+	3, 1, 3, 2, 3, 1, 3, 3, 
+	2, 1, 2, 1, 2, 1, 3, 3, 
 	3, 2, 2
 ]
 
@@ -80,10 +70,9 @@ class << self
 end
 self._build_grammar_range_lengths = [
 	0, 2, 0, 2, 2, 2, 3, 1, 
-	1, 0, 1, 0, 1, 4, 1, 0, 
-	1, 1, 1, 4, 1, 0, 1, 0, 
-	1, 0, 1, 1, 1, 1, 4, 1, 
-	4, 2, 2
+	1, 0, 1, 0, 1, 0, 1, 1, 
+	1, 0, 1, 0, 1, 0, 1, 1, 
+	1, 2, 2
 ]
 
 class << self
@@ -92,10 +81,9 @@ class << self
 end
 self._build_grammar_index_offsets = [
 	0, 0, 5, 8, 13, 17, 21, 28, 
-	32, 38, 40, 45, 48, 50, 59, 65, 
-	67, 72, 77, 79, 88, 93, 95, 99, 
-	101, 106, 108, 113, 118, 123, 125, 134, 
-	136, 144, 149
+	32, 37, 39, 44, 47, 52, 54, 59, 
+	64, 68, 70, 74, 76, 80, 82, 87, 
+	92, 97, 102
 ]
 
 class << self
@@ -107,22 +95,16 @@ self._build_grammar_indicies = [
 	4, 5, 5, 5, 1, 6, 6, 7, 
 	1, 8, 8, 9, 1, 10, 12, 11, 
 	10, 11, 11, 1, 13, 14, 13, 1, 
-	14, 15, 16, 17, 14, 1, 19, 18, 
-	20, 21, 4, 20, 1, 23, 23, 22, 
-	24, 1, 19, 21, 4, 25, 19, 25, 
-	25, 25, 1, 26, 27, 28, 29, 26, 
-	1, 31, 30, 32, 26, 33, 32, 1, 
-	19, 21, 4, 19, 1, 34, 1, 31, 
-	35, 37, 36, 31, 36, 36, 36, 1, 
-	38, 39, 40, 38, 1, 42, 41, 43, 
-	44, 43, 1, 45, 1, 45, 46, 47, 
-	45, 1, 49, 48, 50, 51, 52, 50, 
-	1, 53, 38, 54, 53, 1, 31, 35, 
-	37, 31, 1, 55, 1, 50, 51, 56, 
-	52, 50, 56, 56, 56, 1, 57, 1, 
-	42, 59, 58, 42, 58, 58, 58, 1, 
-	60, 61, 60, 62, 1, 23, 22, 23, 
-	3, 1, 0
+	14, 15, 16, 14, 1, 18, 17, 19, 
+	20, 4, 19, 1, 22, 22, 21, 23, 
+	24, 25, 23, 1, 27, 26, 28, 23, 
+	29, 28, 1, 18, 20, 4, 18, 1, 
+	30, 31, 30, 1, 33, 32, 34, 35, 
+	34, 1, 36, 1, 36, 37, 36, 1, 
+	39, 38, 40, 41, 42, 40, 1, 43, 
+	30, 44, 43, 1, 27, 45, 46, 27, 
+	1, 47, 48, 47, 49, 1, 22, 21, 
+	22, 3, 1, 0
 ]
 
 class << self
@@ -132,12 +114,11 @@ end
 self._build_grammar_trans_targs = [
 	1, 0, 2, 3, 4, 3, 5, 6, 
 	5, 6, 7, 6, 8, 7, 8, 9, 
-	12, 14, 9, 10, 10, 33, 11, 34, 
-	13, 13, 14, 15, 18, 20, 15, 16, 
-	16, 17, 19, 14, 19, 17, 20, 21, 
-	31, 21, 22, 22, 23, 24, 25, 29, 
-	25, 26, 27, 20, 28, 27, 28, 30, 
-	30, 32, 32, 23, 34, 11, 3
+	12, 9, 10, 10, 25, 11, 26, 12, 
+	13, 16, 13, 14, 14, 15, 16, 17, 
+	17, 18, 18, 19, 20, 21, 21, 22, 
+	23, 16, 24, 23, 24, 12, 15, 26, 
+	11, 3
 ]
 
 class << self
@@ -145,14 +126,13 @@ class << self
 	private :_build_grammar_trans_actions, :_build_grammar_trans_actions=
 end
 self._build_grammar_trans_actions = [
-	0, 0, 0, 33, 15, 13, 1, 29, 
-	0, 17, 15, 13, 15, 0, 0, 9, 
-	0, 3, 13, 15, 0, 26, 0, 11, 
-	23, 13, 0, 9, 0, 5, 13, 15, 
-	0, 0, 23, 15, 13, 15, 0, 20, 
-	7, 13, 15, 0, 0, 0, 9, 0, 
-	13, 15, 15, 15, 15, 0, 0, 23, 
-	13, 23, 13, 15, 26, 15, 37
+	0, 0, 0, 28, 13, 11, 1, 24, 
+	0, 15, 13, 11, 13, 0, 0, 7, 
+	3, 11, 13, 0, 21, 0, 9, 0, 
+	7, 5, 11, 13, 0, 0, 0, 18, 
+	11, 13, 0, 0, 0, 7, 11, 13, 
+	13, 13, 13, 0, 0, 13, 13, 21, 
+	13, 32
 ]
 
 class << self
@@ -163,8 +143,7 @@ self._build_grammar_eof_actions = [
 	0, 0, 0, 0, 0, 0, 0, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 15, 0
+	0, 13, 0
 ]
 
 class << self
@@ -174,7 +153,7 @@ self.build_grammar_start = 1;
 class << self
 	attr_accessor :build_grammar_first_final
 end
-self.build_grammar_first_final = 33;
+self.build_grammar_first_final = 25;
 class << self
 	attr_accessor :build_grammar_error
 end
@@ -186,24 +165,24 @@ end
 self.build_grammar_en_main = 1;
 
 
-# line 75 "rake-tasks/crazy_fun/build_grammar.rl"
+# line 77 "rake-tasks/crazy_fun/build_grammar.rl"
 
      @data = data
      @data = @data.unpack("c*") if @data.is_a?(String)
 
      
-# line 196 "rake-tasks/crazy_fun/build_grammar.rb"
+# line 175 "rake-tasks/crazy_fun/build_grammar.rb"
 begin
 	 @p ||= 0
 	pe ||=  @data.length
 	cs = build_grammar_start
 end
 
-# line 80 "rake-tasks/crazy_fun/build_grammar.rl"
+# line 82 "rake-tasks/crazy_fun/build_grammar.rl"
 
      begin
        
-# line 207 "rake-tasks/crazy_fun/build_grammar.rb"
+# line 186 "rake-tasks/crazy_fun/build_grammar.rb"
 begin
 	_klen, _trans, _keys, _acts, _nacts = nil
 	_goto_level = 0
@@ -333,20 +312,18 @@ when 5 then
 # line 35 "rake-tasks/crazy_fun/build_grammar.rl"
 		begin
  
-       puts "Starting string" if @debug
-       @lhs.push StringType.new 
+       if @data[@p + 1].chr == ':'
+         puts "Starting symbol" if @debug
+         @lhs.push SymbolType.new
+         @p = @p + 1
+       else
+         puts "Starting string" if @debug
+         @lhs.push StringType.new 
+       end
      		end
 # line 35 "rake-tasks/crazy_fun/build_grammar.rl"
 when 6 then
-# line 39 "rake-tasks/crazy_fun/build_grammar.rl"
-		begin
- 
-       puts "Starting symbol" if @debug
-       @lhs.push SymbolType.new 
-     		end
-# line 39 "rake-tasks/crazy_fun/build_grammar.rl"
-when 7 then
-# line 43 "rake-tasks/crazy_fun/build_grammar.rl"
+# line 45 "rake-tasks/crazy_fun/build_grammar.rl"
 		begin
  
        puts "Starting type" if @debug
@@ -358,37 +335,37 @@ when 7 then
        
        @lhs.push OutputType.new 
      		end
-# line 43 "rake-tasks/crazy_fun/build_grammar.rl"
-when 8 then
-# line 54 "rake-tasks/crazy_fun/build_grammar.rl"
+# line 45 "rake-tasks/crazy_fun/build_grammar.rl"
+when 7 then
+# line 56 "rake-tasks/crazy_fun/build_grammar.rl"
 		begin
 
        while (!@lhs.empty?)
           leave
         end
      		end
-# line 54 "rake-tasks/crazy_fun/build_grammar.rl"
-when 9 then
-# line 60 "rake-tasks/crazy_fun/build_grammar.rl"
+# line 56 "rake-tasks/crazy_fun/build_grammar.rl"
+when 8 then
+# line 62 "rake-tasks/crazy_fun/build_grammar.rl"
 		begin
  
        puts "Starting type name" if @debug
        @lhs.push NameType.new 
      		end
-# line 60 "rake-tasks/crazy_fun/build_grammar.rl"
-when 10 then
-# line 65 "rake-tasks/crazy_fun/build_grammar.rl"
+# line 62 "rake-tasks/crazy_fun/build_grammar.rl"
+when 9 then
+# line 67 "rake-tasks/crazy_fun/build_grammar.rl"
 		begin
  @lhs[-1] << @data[@p].chr 		end
-# line 65 "rake-tasks/crazy_fun/build_grammar.rl"
-when 11 then
-# line 66 "rake-tasks/crazy_fun/build_grammar.rl"
+# line 67 "rake-tasks/crazy_fun/build_grammar.rl"
+when 10 then
+# line 68 "rake-tasks/crazy_fun/build_grammar.rl"
 		begin
 
        leave
      		end
-# line 66 "rake-tasks/crazy_fun/build_grammar.rl"
-# line 392 "rake-tasks/crazy_fun/build_grammar.rb"
+# line 68 "rake-tasks/crazy_fun/build_grammar.rl"
+# line 369 "rake-tasks/crazy_fun/build_grammar.rb"
 			end # action switch
 		end
 	end
@@ -416,14 +393,14 @@ when 11 then
 		__nacts -= 1
 		__acts += 1
 		case _build_grammar_actions[__acts - 1]
-when 11 then
-# line 66 "rake-tasks/crazy_fun/build_grammar.rl"
+when 10 then
+# line 68 "rake-tasks/crazy_fun/build_grammar.rl"
 		begin
 
        leave
      		end
-# line 66 "rake-tasks/crazy_fun/build_grammar.rl"
-# line 427 "rake-tasks/crazy_fun/build_grammar.rb"
+# line 68 "rake-tasks/crazy_fun/build_grammar.rl"
+# line 404 "rake-tasks/crazy_fun/build_grammar.rb"
 		end # eof action switch
 	end
 	if _trigger_goto
@@ -437,7 +414,7 @@ end
 	end
 	end
 
-# line 83 "rake-tasks/crazy_fun/build_grammar.rl"
+# line 85 "rake-tasks/crazy_fun/build_grammar.rl"
      rescue
        puts show_bad_line       
        throw $!
