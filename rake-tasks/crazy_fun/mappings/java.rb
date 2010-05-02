@@ -12,6 +12,7 @@ class JavaMappings
     fun.add_mapping("java_library", CrazyFunJava::CopyResources.new)
     fun.add_mapping("java_library", CrazyFunJava::Jar.new)
     fun.add_mapping("java_library", CrazyFunJava::TidyTempDir.new)
+    fun.add_mapping("java_library", CrazyFunJava::CreateSourceJar.new)
     
     fun.add_mapping("java_test", CrazyFunJava::CheckPreconditions.new)
     fun.add_mapping("java_test", CrazyFunJava::CreateTask.new)
@@ -23,6 +24,7 @@ class JavaMappings
     fun.add_mapping("java_test", CrazyFunJava::Jar.new)
     fun.add_mapping("java_test", CrazyFunJava::TidyTempDir.new)
     fun.add_mapping("java_test", CrazyFunJava::RunTests.new)
+    fun.add_mapping("java_test", CrazyFunJava::CreateSourceJar.new)
   end
 end
 
@@ -39,8 +41,25 @@ class BaseJava < Tasks
     jar.gsub("/", Platform.dir_separator)
   end
 
+  def srcs_name(dir, name)
+    name = task_name(dir, name)
+    jar = "build/" + (name.slice(2 ... name.length)) + "-src"
+    jar = jar.sub(":", "/")
+    jar << ".jar"
+
+    jar.gsub("/", Platform.dir_separator)
+  end
+
   def temp_dir(dir, name)
     jar_name(dir, name) + "_temp"
+  end
+  
+  def package_name(file)
+    fragments = file.split("/")
+    while fragments[0] and /^(com|net|org|uk|de)$/.match(fragments[0]).nil?
+      fragments.shift
+    end
+    fragments[0 .. -2].join("/")
   end
   
   def class_name(file_name)
@@ -296,5 +315,33 @@ class ClassPath
   end
 end
 
+class CreateSourceJar < BaseJava
+  def handle(fun, dir, args)
+    return if args[:srcs].nil?
+
+    jar = srcs_name(dir, args[:name])
+    temp_dir = "#{jar}_temp"
+
+    file jar do
+      puts "Preparing sources: #{task_name(dir, args[:name])}:srcs as #{jar}"
+      rm_rf temp_dir
+      mkdir_p temp_dir
+      args[:srcs].each do |src|
+        files = FileList[dir + "/" + src]
+        Rake::Task[jar].enhance(files)
+        files.each do |file|
+          next unless File.file? file
+          dir = package_name file
+          mkdir_p "#{temp_dir}/#{dir}"
+          cp_r file, "#{temp_dir}/#{dir}"
+        end
+      end
+      zip(temp_dir, jar)
+      rm_rf temp_dir
+    end
+    
+    task "#{task_name(dir, args[:name])}:srcs" => [jar]
+  end
+end
 
 end # End of java module
