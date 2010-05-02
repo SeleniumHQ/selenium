@@ -310,7 +310,7 @@ java_jar(:name => "webdriver-remote-common",
          :deps => [
                "//common",
                "third_party/java/commons-codec/commons-codec-1.4.jar",
-               "third_party/java/google-collect-1.0.jar",
+               "third_party/java/google-collect/google-collect-1.0.jar",
                "third_party/java/json/json-20080701.jar"
              ])
 
@@ -695,7 +695,7 @@ task :remote_release => [:remote] do
 
   cp Dir.glob('remote/common/lib/runtime/*.jar'), 'build/dist/remote_client'
   cp Dir.glob('remote/client/lib/runtime/*.jar'), 'build/dist/remote_client'
-  cp 'third_party/java/google-collect-1.0.jar', 'build/dist/remote_client'
+  cp 'third_party/java/google-collect/google-collect-1.0.jar', 'build/dist/remote_client'
 
   sh "cd build/dist && zip -r webdriver-remote-client-#{version}.zip remote_client/*"
   rm_rf "build/dist/remote_client", :verbose => false
@@ -708,7 +708,7 @@ task :remote_release => [:remote] do
 
   cp Dir.glob('remote/common/lib/runtime/*.jar'), 'build/dist/remote_server'
   cp Dir.glob('remote/server/lib/runtime/*.jar'), 'build/dist/remote_server'
-  cp 'third_party/java/google-collect-1.0.jar', 'build/dist/remote_server'
+  cp 'third_party/java/google-collect/google-collect-1.0.jar', 'build/dist/remote_server'
 
   rm Dir.glob('build/dist/remote_server/servlet*.jar')
 
