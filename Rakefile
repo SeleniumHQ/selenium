@@ -80,7 +80,7 @@ task :remote_common => [:'webdriver-remote-common']
 task :remote_client => [:'webdriver-remote-client']
 task :remote_server => [:'webdriver-remote-server']
 task :selenium => [:'webdriver-selenium']
-task :support => [:'webdriver-support']
+task :support => [ "//support" ]
 task :iphone_client => [:'webdriver-iphone-client']
 task :iphone => [:iphone_server, :iphone_client]
 
@@ -93,7 +93,7 @@ task :test_jsapi => :'webdriver-jsapi-test'
 task :test_firefox => [:'webdriver-firefox-test']
 task :test_remote => [:'webdriver-selenium-server-test']
 task :test_selenium => [:'webdriver-selenium-server-test', :'webdriver-selenium-test', :'webdriver-selenese-test']
-task :test_support => [:'webdriver-support-test']
+task :test_support => [ "//support:test:run" ]
 task :test_iphone_client => [:'webdriver-iphone-client-test']
 task :test_iphone => [:test_iphone_server, :test_iphone_client]
 
@@ -303,21 +303,6 @@ java_test(:name => "webdriver-single-testsuite",
           :deps => [
                      :'webdriver-ie',
                      "//common:test",
-                   ])
-
-java_jar(:name => "webdriver-support",
-    :srcs  => [ "support/src/java/**/*.java" ],
-    :deps => [
-               :common,
-               "support/lib/runtime/*.jar",
-               "third_party/java/google-collect-1.0.jar",
-             ])
-
-java_test(:name => "webdriver-support-test",
-          :srcs  => [ "support/test/java/**/*.java" ],
-          :deps => [
-                     :support,
-                     :test_common,
                    ])
 
 java_jar(:name => "webdriver-remote-common",
@@ -555,7 +540,7 @@ java_test(:name => "debug_jsapi",
 task :javadocs => [:common, :firefox, "//htmlunit", :jobbie, :remote, :support, :chrome, :selenium] do
   mkdir_p "build/javadoc", :verbose => false
    sourcepath = ""
-   classpath = "support/lib/runtime/hamcrest-all-1.1.jar"
+   classpath = "third_party/java/hamcrest/hamcrest-all-1.1.jar"
    %w(common firefox jobbie htmlunit support remote/common remote/client chrome selenium).each do |m|
      sourcepath += ":#{m}/src/java"
    end

@@ -1,0 +1,16 @@
+java_library(name = "support",
+  srcs = [ "src/java/**/*.java" ],
+  deps = [
+    "//common",
+    "//third_party/java/google-collect",
+    "//third_party/java/jmock",
+    "//third_party/java/junit",
+    "//third_party/java/hamcrest"
+  ])
+  
+java_test(name = "test",
+  srcs = [ "test/java/**/*.java"],
+  deps = [
+    ":support",
+    "//common:test"
+  ])

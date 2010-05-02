@@ -1,0 +1,2 @@
+java_library(name = "google-collect",
+  deps = [ "google-collect-1.0.jar" ])
