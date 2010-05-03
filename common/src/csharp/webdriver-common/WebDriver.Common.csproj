@@ -62,6 +62,7 @@
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Internal\IFindsByCssSelector.cs" />
     <Compile Include="Internal\IWrapsDriver.cs" />
+    <Compile Include="Internal\ResourceUtilities.cs" />
     <Compile Include="ITimeouts.cs" />
     <Compile Include="Platform.cs" />
     <Compile Include="ITakesScreenshot.cs" />

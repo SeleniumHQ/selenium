@@ -186,6 +186,14 @@ namespace OpenQA.Selenium.IE
         }
 
         /// <summary>
+        /// Gets a value indicating whether JavaScript is enabled for this browser.
+        /// </summary>
+        public bool IsJavaScriptEnabled
+        {
+            get { return true; }
+        }
+
+        /// <summary>
         /// Closes the Browser.
         /// </summary>
         public void Close()

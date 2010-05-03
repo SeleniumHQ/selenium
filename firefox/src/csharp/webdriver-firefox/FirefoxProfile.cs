@@ -7,6 +7,7 @@ using System.Text;
 using System.Xml;
 using System.Xml.XPath;
 using Ionic.Zip;
+using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium.Firefox
 {
@@ -17,7 +18,9 @@ namespace OpenQA.Selenium.Firefox
     {
         #region Constants
         private const string ExtensionName = "fxdriver@googlecode.com";
-        private const string EmNamespaceUri = "http://www.mozilla.org/2004/em-rdf#"; 
+        private const string EmNamespaceUri = "http://www.mozilla.org/2004/em-rdf#";
+        private const string ExtensionFileName = "webdriver-extension.zip";
+        private const string ExtensionResourceId = "WebDriver.FirefoxExt.zip";
         #endregion
 
         #region Private members
@@ -164,7 +167,7 @@ namespace OpenQA.Selenium.Firefox
                 currentDirectory = uri.LocalPath;
             }
 
-            InstallExtension(Path.Combine(Path.GetDirectoryName(currentDirectory), "webdriver-extension.zip"));
+            InstallExtension();
         }
 
         /// <summary>
@@ -422,7 +425,7 @@ namespace OpenQA.Selenium.Firefox
             return id;
         }
 
-        private void InstallExtension(string extensionZipPath)
+        private void InstallExtension()
         {
             string tempFileName = Path.Combine(Path.GetTempPath(), "webdriver");
             if (Directory.Exists(tempFileName))
@@ -431,21 +434,7 @@ namespace OpenQA.Selenium.Firefox
             }
 
             Directory.CreateDirectory(tempFileName);
-            Stream zipFileStream = null;
-            if (!File.Exists(extensionZipPath))
-            {
-                // TODO (JimEvans): We assume either (1) the .zip file exists in the same
-                // directory as this assembly, or (2) it exists inside the assembly as
-                // an embedded resource. We can't talk to Firefox if one of those
-                // conditions isn't met, but we need to wrap that up in a nicer error.
-                Assembly executingAssembly = Assembly.GetExecutingAssembly();
-                zipFileStream = executingAssembly.GetManifestResourceStream("WebDriver.FirefoxExt.zip");
-            }
-            else
-            {
-                zipFileStream = new FileStream(extensionZipPath, FileMode.Open, FileAccess.Read);
-            }
-
+            Stream zipFileStream = ResourceUtilities.GetResourceStream(ExtensionFileName, ExtensionResourceId);
             using (ZipFile extensionZipFile = ZipFile.Read(zipFileStream))
             {
                 extensionZipFile.ExtractExistingFile = ExtractExistingFileAction.OverwriteSilently;

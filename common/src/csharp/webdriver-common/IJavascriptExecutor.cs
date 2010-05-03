@@ -62,5 +62,10 @@ namespace OpenQA.Selenium
         /// </para>
         /// </remarks>
         object ExecuteScript(string script, params object[] args);
+
+        /// <summary>
+        /// Gets a value indicating whether JavaScript is enabled for this browser.
+        /// </summary>
+        bool IsJavaScriptEnabled { get; }
     }
 }
