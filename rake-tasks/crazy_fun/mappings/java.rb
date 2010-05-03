@@ -32,7 +32,6 @@ end
 module Antwrap
   module AntwrapClassLoader
     def load_ant_libs(ant_home)
-      puts "called: #{ant_home}"
       jars = match(ant_home) {|p| ext = p[-4...p.size]; ext && ext.downcase == '.jar'} 
       
       if(RUBY_PLATFORM == 'java')
