@@ -1,0 +1,15 @@
+java_library(name = "common",
+  srcs = [ "src/java/**/*.java" ],
+  deps = [
+      "//common",
+      "//third_party/java/commons-codec",
+      "//third_party/java/google-collect",
+      "//third_party/java/json"
+    ])
+
+java_library(name = "test",
+  srcs = [ "test/java/**/*.java" ],
+  deps = [
+    ":common",
+    "//common:test"
+  ])

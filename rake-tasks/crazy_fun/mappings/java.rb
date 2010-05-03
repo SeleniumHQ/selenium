@@ -1,4 +1,4 @@
-
+require 'antwrap'
 require 'rake-tasks/crazy_fun/mappings/common'
 
 class JavaMappings
@@ -28,7 +28,59 @@ class JavaMappings
   end
 end
 
+# Monkey-patch ant wrap so it works with where we store ant
+module Antwrap
+  module AntwrapClassLoader
+    def load_ant_libs(ant_home)
+      puts "called: #{ant_home}"
+      jars = match(ant_home) {|p| ext = p[-4...p.size]; ext && ext.downcase == '.jar'} 
+      
+      if(RUBY_PLATFORM == 'java')
+        jars.each {|jar| require jar }
+      else
+        Rjb::load(jars.join(File::PATH_SEPARATOR), [])
+      end
+      
+    end
+    
+    module_function :load_ant_libs
+  end
+end
+
 module CrazyFunJava
+
+  
+  @ant = Antwrap::AntProject.new(:name => 'selenium', 
+    :ant_home => 'third_party/java/ant', :basedir => '.')
+  @ant.project.setProperty('XmlLogger.file', 'build/build_log.xml')
+
+  # Silence logging to the console, and output to the xml build file
+  @ant.project.getBuildListeners().get(0).setMessageOutputLevel(verbose ? 2 : 0)
+
+  def self.import(class_name)
+    if RUBY_PLATFORM == 'java'
+      clazz = include_class(class_name)
+    else
+      clazz = Rjb::import(class_name)
+    end
+    clazz
+  end
+
+  logger = CrazyFunJava::import('org.apache.tools.ant.XmlLogger').new
+  logger.setMessageOutputLevel(2)
+  logger.buildStarted(nil)
+  
+  at_exit do
+    if File.exists? 'build'
+      final_event = CrazyFunJava::import('org.apache.tools.ant.BuildEvent').new(@ant.project)
+      logger.buildFinished(final_event)
+    end
+  end
+  @ant.project.addBuildListener(logger)
+
+  def self.ant
+    @ant
+  end
   
 class BaseJava < Tasks
       
@@ -153,18 +205,23 @@ class Javac < BaseJava
       
       mkdir_p out_dir
       
-      cp = ClassPath.new(jar_name(dir, args[:name]))
+      cp = ClassPath.new(jar_name(dir, args[:name])).all
       
-      cmd = "javac -target 5 -source 5 "
-      cmd << "-d #{out_dir} "
-      cmd << "-cp " + cp.to_s + " " unless cp.empty?
-
-      args[:srcs].each do |src|
-        cmd << to_filelist(dir, src).join(" ")
-        cmd << " "
+      # Compile
+      CrazyFunJava.ant.path(:id => "#{args[:name]}.path") do |ant|
+        cp.each do |jar|
+          ant.pathelement(:location => jar)
+        end
       end
+      CrazyFunJava.ant.javac(:srcdir => '.', :destdir => out_dir, :includeAntRuntime => false) do |ant|
+        ant.classpath(:refid => "#{args[:name]}.path")
+        args[:srcs].each do |src_glob|
+          ant.include(:name => [dir, src_glob].join(File::SEPARATOR))
+        end
+      end
+      
 
-      sh cmd
+      #sh cmd
     end
     
     desc "Build #{jar}"
@@ -296,6 +353,10 @@ class ClassPath
   
   def to_s
     @cp.join(Platform.env_separator)
+  end
+  
+  def all
+    @cp
   end
   
   private 

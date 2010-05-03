@@ -1,0 +1,15 @@
+java_library(name = "chrome",
+  srcs = [ "src/java/**/*.java" ],
+  deps = [
+    "//common",
+    "//remote/client",
+    "build/chrome-extension.zip"
+  ],
+  resources = [ "build/chrome-extension.zip" ])
+
+java_test(name = "test",
+  srcs  = [ "test/java/**/*.java" ],
+  deps = [
+    "//remote/common:test",
+    ":chrome"
+  ])

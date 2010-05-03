@@ -41,7 +41,7 @@ class CrazyFun
   
   def create_tasks(files)
     files.each do |f|
-      puts "Parsing #{f}" unless !verbose
+      puts "Parsing #{f}" if verbose
       outputs = BuildFile.new().parse_file(f)
       outputs.each do |type|
         if !@mappings.has_key? type.name

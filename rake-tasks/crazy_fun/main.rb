@@ -174,7 +174,7 @@ class BuildFile
     
     n += 1
     
-    while @data[n].chr != "\n"
+    while @data[n] && @data[n].chr != "\n"
       current_line << @data[n].chr
       n += 1
     end

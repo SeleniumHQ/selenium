@@ -68,7 +68,7 @@ task :default => [:test]
 # TODO(simon): Shatter the build file into subdirectories, then remove these
 task :all => [:'selenium-java']
 task :all_zip => [:'selenium-java_zip']
-task :chrome => [:'webdriver-chrome']
+task :chrome => [ "//chrome" ]
 task :common => [ "//common" ]
 task :htmlunit => [ "//htmlunit" ]
 task :ie => [:'webdriver-ie']
@@ -76,8 +76,8 @@ task :firefox => [:'webdriver-firefox']
 task :jobbie => [:ie]
 task :jsapi => :'webdriver-jsapi'
 task :remote => [:remote_common, :remote_server, :remote_client]
-task :remote_common => [:'webdriver-remote-common']
-task :remote_client => [:'webdriver-remote-client']
+task :remote_common => ["//remote/common"]
+task :remote_client => ["//remote/client"]
 task :remote_server => [:'webdriver-remote-server']
 task :selenium => [:'webdriver-selenium']
 task :support => [ "//support" ]
@@ -85,7 +85,7 @@ task :iphone_client => [:'webdriver-iphone-client']
 task :iphone => [:iphone_server, :iphone_client]
 
 task :test_common => [ "//common:test" ]
-task :test_chrome => [:'webdriver-chrome-test']
+task :test_chrome => [ "//chrome:test" ]
 task :test_htmlunit => [ "//htmlunit:test:run" ]
 task :test_ie => [:'webdriver-ie-test']
 task :test_jobbie => [:test_ie]
@@ -118,23 +118,6 @@ task :clean do
   rm_rf 'build/', :verbose => false
   rm_rf 'iphone/build/', :verbose => false
 end
-
-java_jar(:name => "webdriver-chrome",
-    :srcs  => [ "chrome/src/java/**/*.java" ],
-    :deps => [
-               :common,
-               :remote_client,
-               :chrome_extension,
-               "remote/common/lib/runtime/*.jar"
-             ],
-    :resources => [ :'chrome_extension' ])
-
-java_test(:name => "webdriver-chrome-test",
-          :srcs  => [ "chrome/test/java/**/*.java" ],
-          :deps => [
-                     :chrome,
-                     :'webdriver-remote-common-test'
-                   ])
 
 dll(:name => "ie_win32_dll",
     :src  => [ "common/src/cpp/webdriver-interactions/**/*", "jobbie/src/cpp/InternetExplorerDriver/**/*" ],
@@ -305,27 +288,6 @@ java_test(:name => "webdriver-single-testsuite",
                      "//common:test",
                    ])
 
-java_jar(:name => "webdriver-remote-common",
-         :srcs => [ "remote/common/src/java/**/*.java" ],
-         :deps => [
-               "//common",
-               "third_party/java/commons-codec/commons-codec-1.4.jar",
-               "third_party/java/google-collect/google-collect-1.0.jar",
-               "third_party/java/json/json-20080701.jar"
-             ])
-
-java_jar(:name => "webdriver-remote-client",
-    :srcs  => [ "remote/client/src/java/**/*.java" ],
-    :deps => [
-               "//common",
-               :'webdriver-remote-common',
-               'third_party/java/commons-httpclient/commons-httpclient-3.1.jar',
-               'third_party/java/commons-collections/commons-collections-3.2.1.jar',
-               'third_party/java/commons-lang/commons-lang-2.4.jar',
-               'third_party/java/commons-logging/commons-logging-1.1.1.jar',
-               'third_party/java/commons-io/commons-io-1.4.jar'
-             ])
-
 xpt(:name => "ide-auto-complete",
     :src  => [ "ide/src/extension/idl/SeleniumIDEGenericAutoCompleteSearch.idl" ],
     :prebuilt => "ide/prebuilt",
@@ -416,13 +378,6 @@ java_uberjar(:name => "selenium-server-standalone",
                          ],
              :main => "org.openqa.selenium.server.SeleniumServer")
 
-java_jar(:name => "webdriver-remote-common-test",
-          :srcs => [ "remote/common/test/java/**/*.java" ],
-          :deps => [
-                     :remote_common,
-                     :test_common
-                   ])
-
 java_test(:name => "webdriver-selenium-server-test",
           :srcs => [
                      "remote/client/test/java/**/*.java",
@@ -434,7 +389,7 @@ java_test(:name => "webdriver-selenium-server-test",
                      :remote_client,
                      :remote_server,
                      :test_common,
-                     :'webdriver-remote-common-test',
+                     "//remote/common:test",
                      "remote/server/lib/buildtime/*.jar"
                    ])
 
@@ -458,6 +413,8 @@ xpi(:name => "chrome_extension",
                      { :chrome_dll => "npchromedriver.dll" }
                   ],
     :out => "chrome-extension.zip")
+task "chrome/build/chrome-extension.zip" => :'chrome_extension'
+Rake::Task["build/chrome-extension.zip"].out = "build/chrome-extension.zip"
 
 java_jar(:name => "webdriver-selenium",
     :srcs  => [ "selenium/src/java/**/*.java" ],
