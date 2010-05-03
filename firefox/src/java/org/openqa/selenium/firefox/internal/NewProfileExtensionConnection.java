@@ -78,14 +78,22 @@ public class NewProfileExtensionConnection implements CommandExecutor, Extension
       this.process.clean(profile);
       this.process.startProfile(profile);
 
+      // There is currently no mechanism for the profile to notify us when it has started
+      // successfully and is ready for requests.  Instead, we must loop until we're able to
+      // open a connection with the server, at which point it should be safe to continue
+      // (since the extension shouldn't accept connections until it is ready for requests).
       long waitUntil = System.currentTimeMillis() + connectTimeout;
-      while (!isConnected() && waitUntil > System.currentTimeMillis()) {
-        // Do nothing
-      }
+      while (!isConnected()) {
+        if (waitUntil < System.currentTimeMillis()) {
+          throw new NotConnectedException(
+              delegate.getAddressOfRemoteServer(), connectTimeout);
+        }
 
-      if (!isConnected()) {
-        throw new NotConnectedException(
-            delegate.getAddressOfRemoteServer(), connectTimeout);
+        try {
+          Thread.sleep(100);
+        } catch(InterruptedException ignored) {
+          // Do nothing
+        }
       }
     } catch (IOException e) {
       throw new WebDriverException(
