@@ -8,19 +8,10 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/../remote/common/lib/runtime/json-20080701.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module" module-name="common" />
-    <orderEntry type="module" module-name="remote-common" />
-    <orderEntry type="library" name="third_party-buildtime" level="project" />
-    <orderEntry type="module" module-name="remote-client" />
+    <orderEntry type="module" module-name="common" exported="" />
+    <orderEntry type="module" module-name="remote-common" exported="" />
+    <orderEntry type="library" exported="" name="third_party-buildtime" level="project" />
+    <orderEntry type="module" module-name="remote-client" exported="" />
   </component>
 </module>
 

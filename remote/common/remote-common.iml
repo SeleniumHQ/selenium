@@ -22,7 +22,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/runtime/commons-codec-1.4.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../third_party/java/json/json-20080701.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -31,7 +31,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../third_party/java/json/json-20080701.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../third_party/java/commons-codec/commons-codec-1.4.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

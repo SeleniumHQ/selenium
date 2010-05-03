@@ -10,10 +10,10 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="common" />
-    <orderEntry type="module" module-name="remote-client" />
-    <orderEntry type="module" module-name="remote-common" />
-    <orderEntry type="module" module-name="htmlunit" />
+    <orderEntry type="module" module-name="common" exported="" />
+    <orderEntry type="module" module-name="remote-client" exported="" />
+    <orderEntry type="module" module-name="remote-common" exported="" />
+    <orderEntry type="module" module-name="htmlunit" exported="" />
   </component>
   <component name="org.twodividedbyzero.idea.findbugs">
     <option name="_basePreferences">
