@@ -11,7 +11,6 @@ def mac?
 end
 
 def linux?
-  puts "In linux check: #{RbConfig::CONFIG['host_os']}"
   (/linux/ =~ RbConfig::CONFIG['host_os']) != nil
 end
 

@@ -72,8 +72,6 @@ class Compile < BaseXpt
       elsif (linux? or mac?)
         gecko += (linux? ? "linux" : "mac")
       else
-	require 'rbconfig'
-	puts "Platform is: #{RbConfig::CONFIG['host_os']}"
         # TODO(simon): Should just copy the prebuilt xpt
       end
 

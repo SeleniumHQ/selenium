@@ -30,7 +30,11 @@ class CrazyFun
     end
     
     prebuilt_roots.each do |root|
-      src = "#{root}/#{of}".gsub("/", Platform.dir_separator) 
+      if root.split("/")[0] == of.split("/")[0]
+        src = "#{root}/#{of.split('/')[1 .. -1].join('/')}".gsub("/", Platform.dir_separator) 
+      else
+        src = "#{root}/#{of}".gsub("/", Platform.dir_separator) 
+      end
       if (File.exists? src)
         return src
       end
