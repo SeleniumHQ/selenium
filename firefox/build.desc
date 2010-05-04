@@ -1,0 +1,9 @@
+mozilla_xpt(name = "native_events_xpt",
+  srcs = [ "src/cpp/webdriver-firefox/nsINativeEvents.idl" ])
+
+mozilla_xpt(name = "command_processor_xpt",
+  srcs = [ "src/extension/idl/nsICommandProcessor.idl" ])
+
+mozilla_xpt(name = "response_handler_xpt",
+  srcs = [ "src/extension/idl/nsIResponseHandler.idl" ])
+
