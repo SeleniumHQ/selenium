@@ -16,7 +16,7 @@ end
 
 module Platform
   def Platform.windows?
-    RUBY_PLATFORM.downcase.include?("win32")
+    (/mswin|msys|mingw32/ =~ RbConfig::CONFIG['host_os']) != nil
   end
 
   def windows?
@@ -24,11 +24,11 @@ module Platform
   end
 
   def mac?
-    RUBY_PLATFORM.downcase.include?("darwin")
+    (/darwin|mac os/ =~ RbConfig::CONFIG['host_os']) != nil
   end
 
   def linux?
-    RUBY_PLATFORM.downcase.include?("linux")
+    (/linux/ =~ RbConfig::CONFIG['host_os']) != nil
   end
 
   def cygwin?

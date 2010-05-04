@@ -8,7 +8,7 @@ verbose false
 require 'rake-tasks/crazy_fun'
 require 'rake-tasks/crazy_fun/mappings/java'
 require 'rake-tasks/crazy_fun/mappings/javascript'
-#require 'rake-tasks/crazy_fun/mappings/mozilla'
+require 'rake-tasks/crazy_fun/mappings/mozilla'
 
 # The original build rules
 require 'rake-tasks/task-gen'
@@ -45,7 +45,7 @@ crazy_fun = CrazyFun.new
 # in the example above) then it will throw an exception, stopping the build
 JavaMappings.new.add_all(crazy_fun)
 JavascriptMappings.new.add_all(crazy_fun)
-#MozillaMappings.new.add_all(crazy_fun)
+MozillaMappings.new.add_all(crazy_fun)
 
 # Not every platform supports building every binary needed, so we sometimes
 # need to fall back to prebuilt binaries. The prebuilt binaries are stored in
@@ -173,22 +173,6 @@ java_test(:name => "webdriver-ie-test",
                    ],
           :run  => windows?)
 
-xpt(:name => "events_xpt",
-    :src  => [ "firefox/src/cpp/webdriver-firefox/nsINativeEvents.idl" ],
-    :prebuilt => "firefox/prebuilt",
-    :out  => "nsINativeEvents.xpt")
-
-xpt(:name => "responseHandler_xpt",
-    :src => [ "firefox/src/extension/idl/nsIResponseHandler.idl" ],
-    :prebuilt => "firefox/prebuilt",
-    :out => "nsIResponseHandler.xpt")
-
-xpt(:name => "commandProcessor_xpt",
-    :src => [ "firefox/src/extension/idl/nsICommandProcessor.idl" ],
-    :deps => [ :responseHandler_xpt ],
-    :prebuilt => "firefox/prebuilt",
-    :out => "nsICommandProcessor.xpt")
-
 xpi(:name => "firefox_xpi",
     :srcs  => [ "firefox/src/extension/**" ],
     :deps => [
@@ -198,9 +182,9 @@ xpi(:name => "firefox_xpi",
     :resources => [
                     { "firefox/src/extension/components/*.js" => "components/" },
                     { "common/src/js/extension/*.js" => "content/" },
-                    { :commandProcessor_xpt => "components/" },
-                    { :events_xpt => "components/" },
-                    { :responseHandler_xpt => "components/" },
+                    { :"//firefox:command_processor_xpt" => "components/" },
+                    { :"//firefox:native_events_xpt" => "components/" },
+                    { :"//firefox:response_handler_xpt" => "components/" },
                     { :firefox_dll => "platform/WINNT_x86-msvc/components/webdriver-firefox.dll" },
                     { :libwebdriver_firefox_so => "platform/Linux_x86-gcc3/components/libwebdriver-firefox.so" },
                     { :libwebdriver_firefox_so64 => "platform/Linux_x86_64-gcc3/components/libwebdriver-firefox.so" },
@@ -212,7 +196,7 @@ dll(:name => "firefox_dll",
     :solution => "WebDriver.sln",
     :out  => "Win32/Release/webdriver-firefox.dll",
     :deps  => [ 
-                :events_xpt,
+                "//firefox:native_events_xpt",
               ],
     :prebuilt => "firefox/prebuilt")
 
@@ -288,10 +272,10 @@ java_test(:name => "webdriver-single-testsuite",
                      "//common:test",
                    ])
 
-xpt(:name => "ide-auto-complete",
-    :src  => [ "ide/src/extension/idl/SeleniumIDEGenericAutoCompleteSearch.idl" ],
-    :prebuilt => "ide/prebuilt",
-    :out  => "SeleniumIDEGenericAutoCompleteSearch.xpt")
+#xpt(:name => "ide-auto-complete",
+#    :src  => [ "ide/src/extension/idl/SeleniumIDEGenericAutoCompleteSearch.idl" ],
+#    :prebuilt => "ide/prebuilt",
+#    :out  => "SeleniumIDEGenericAutoCompleteSearch.xpt")
 
 xpi(:name => "ide",
     :srcs => [],

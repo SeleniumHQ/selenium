@@ -1,5 +1,6 @@
 
 require 'rake-tasks/crazy_fun/mappings/common'
+require 'rake-tasks/checks.rb'
 
 class MozillaMappings
   def add_all(fun)
@@ -64,13 +65,15 @@ class Compile < BaseXpt
     
     file xpt do
       puts "Building: #{task_name(dir, args[:name])} as #{xpt}"
-      
+     
       gecko = "third_party#{Platform.dir_separator}gecko-1.9.0.11#{Platform.dir_separator}"
       if (windows?)
         gecko += "win32"
       elsif (linux? or mac?)
         gecko += (linux? ? "linux" : "mac")
       else
+	require 'rbconfig'
+	puts "Platform is: #{RbConfig::CONFIG['host_os']}"
         # TODO(simon): Should just copy the prebuilt xpt
       end
 

@@ -1,15 +1,18 @@
+require 'rbconfig'
+
 # Platform checks
 
 def windows?
-  RUBY_PLATFORM.downcase.include?("win32") || RUBY_PLATFORM.downcase.include?("mingw32")
+  (/mswin|msys|mingw32/ =~ RbConfig::CONFIG['host_os']) != nil
 end
 
 def mac?
-  RUBY_PLATFORM.downcase.include?("darwin")
+  (/darwin|mac os/ =~ RbConfig::CONFIG['host_os']) != nil
 end
 
 def linux?
-  RUBY_PLATFORM.downcase.include?("linux")
+  puts "In linux check: #{RbConfig::CONFIG['host_os']}"
+  (/linux/ =~ RbConfig::CONFIG['host_os']) != nil
 end
 
 def cygwin?
