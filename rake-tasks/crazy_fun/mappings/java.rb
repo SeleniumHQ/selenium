@@ -33,6 +33,7 @@ module Antwrap
   module AntwrapClassLoader
     def load_ant_libs(ant_home)
       jars = match(ant_home) {|p| ext = p[-4...p.size]; ext && ext.downcase == '.jar'} 
+      jars.push 'third_party/java/eclipse_compiler/ecj-3.5.2.jar'
       
       if(RUBY_PLATFORM == 'java')
         jars.each {|jar| require jar }
@@ -52,6 +53,7 @@ module CrazyFunJava
   @ant = Antwrap::AntProject.new(:name => 'selenium', 
     :ant_home => 'third_party/java/ant', :basedir => '.')
   @ant.project.setProperty('XmlLogger.file', 'build/build_log.xml')
+  @ant.project.setProperty('build.compiler', 'org.eclipse.jdt.core.JDTCompilerAdapter');
 
   # Silence logging to the console, and output to the xml build file
   @ant.project.getBuildListeners().get(0).setMessageOutputLevel(verbose ? 2 : 0)
@@ -212,7 +214,9 @@ class Javac < BaseJava
           ant.pathelement(:location => jar)
         end
       end
-      CrazyFunJava.ant.javac(:srcdir => '.', :destdir => out_dir, :includeAntRuntime => false) do |ant|
+      CrazyFunJava.ant.javac(:srcdir => '.', :destdir => out_dir, :includeAntRuntime => false, 
+			     :optimize => true, :debug => true, :nowarn => true,
+			     :source => '1.5', :target => '1.5') do |ant|
         ant.classpath(:refid => "#{args[:name]}.path")
         args[:srcs].each do |src_glob|
           ant.include(:name => [dir, src_glob].join(File::SEPARATOR))
