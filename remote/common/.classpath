@@ -2,9 +2,9 @@
 <classpath>
 	<classpathentry kind="src" output="build/classes" path="src/java"/>
 	<classpathentry kind="src" output="build/test-classes" path="test/java"/>
-	<classpathentry kind="lib" path="lib/runtime/json-20080701.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="lib/runtime/commons-codec-1.4.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/selenium-common"/>
+	<classpathentry kind="lib" path="/third-party/java/commons-codec/commons-codec-1.4.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/json/json-20080701.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

@@ -6,6 +6,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/selenium-common"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/selenium-remote-client"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/selenium-remote-common"/>
-	<classpathentry kind="lib" path="/third-party/java/google-collect-1.0.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/google-collect/google-collect-1.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

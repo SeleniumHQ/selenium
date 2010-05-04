@@ -3,24 +3,21 @@
 	<classpathentry kind="src" output="build/classes" path="src/java"/>
 	<classpathentry kind="src" output="build/test-classes" path="test/java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="lib/runtime/commons-collections-3.2.1.jar"/>
-	<classpathentry kind="lib" path="lib/runtime/commons-httpclient-3.1.jar"/>
-	<classpathentry kind="lib" path="lib/runtime/commons-io-1.4.jar"/>
-	<classpathentry kind="lib" path="lib/runtime/commons-lang-2.4.jar"/>
-	<classpathentry kind="lib" path="lib/runtime/commons-logging-1.1.1.jar"/>
-	<classpathentry kind="lib" path="lib/runtime/cssparser-0.9.5.jar"/>
-	<classpathentry kind="lib" path="lib/runtime/sac-1.3.jar"/>
-	<classpathentry kind="lib" path="lib/runtime/serializer-2.7.1.jar"/>
-	<classpathentry kind="lib" path="lib/runtime/xalan-2.7.1.jar"/>
-	<classpathentry kind="lib" path="lib/runtime/xml-apis-1.3.04.jar"/>
-	<classpathentry kind="lib" path="lib/runtime/commons-codec-1.4.jar"/>
-	<classpathentry kind="lib" path="lib/runtime/htmlunit-2.6.jar"/>
-	<classpathentry kind="lib" path="lib/runtime/htmlunit-core-js-2.6.jar"/>
-	<classpathentry kind="lib" path="lib/runtime/nekohtml-1.9.13.jar"/>
-	<classpathentry kind="lib" path="lib/runtime/xercesImpl-2.9.1.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/selenium-common"/>
 	<classpathentry kind="lib" path="/third-party/java/htmlunit/htmlunit-2.7.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/htmlunit/htmlunit-core-js-2.7.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/nekohtml/nekohtml-1.9.14.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/commons-codec/commons-codec-1.4.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/commons-collections/commons-collections-3.2.1.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/commons-httpclient/commons-httpclient-3.1.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/commons-io/commons-io-1.4.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/commons-lang/commons-lang-2.4.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/commons-logging/commons-logging-1.1.1.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/cssparser/cssparser-0.9.5.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/sac/sac-1.3.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/serializer/serializer-2.7.1.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/xml/xalan-2.7.1.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/xml/xercesImpl-2.9.1.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/xml/xml-apis-1.3.04.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>

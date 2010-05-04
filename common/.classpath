@@ -3,21 +3,21 @@
 	<classpathentry kind="src" output="build/classes" path="src/java"/>
 	<classpathentry kind="src" output="build/test-classes" path="test/java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry exported="true" kind="lib" path="/third-party/java/junit/junit-dep-4.8.1.jar" sourcepath="/third-party/java/junit/junit-4.8.1-src.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/buildtime/hamcrest-all-1.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/buildtime/jmock-2.4.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/buildtime/jmock-junit3-2.4.0.jar"/>
-	<classpathentry kind="lib" path="lib/buildtime/servlet-api-2.5-6.1.9.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/buildtime/jetty-util-6.1.9.jar"/>
-	<classpathentry kind="lib" path="lib/buildtime/jasper-compiler-5.5.15.jar"/>
-	<classpathentry kind="lib" path="lib/buildtime/jasper-compiler-jdt-5.5.15.jar"/>
-	<classpathentry kind="lib" path="lib/buildtime/jasper-runtime-5.5.15.jar"/>
-	<classpathentry kind="lib" path="lib/buildtime/slf4j-api-1.3.1.jar"/>
-	<classpathentry kind="lib" path="lib/buildtime/slf4j-simple-1.3.1.jar"/>
-	<classpathentry kind="lib" path="lib/buildtime/jcl104-over-slf4j-1.3.1.jar"/>
-	<classpathentry kind="lib" path="lib/buildtime/jsp-api-2.0.jar"/>
-	<classpathentry kind="lib" path="lib/buildtime/commons-el-1.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/buildtime/jetty-6.1.9.jar"/>
-	<classpathentry kind="lib" path="lib/buildtime/commons-io-1.4.jar"/>
+  <classpathentry kind="lib" path="/third-party/java/commons-el/commons-el-1.0.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/commons-io/commons-io-1.4.jar"/>
+  <classpathentry exported="true" kind="lib" path="/third-party/java/hamcrest/hamcrest-all-1.1.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/jasper/jasper-compiler-5.5.15.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/jasper/jasper-compiler-jdt-5.5.15.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/jasper/jasper-runtime-5.5.15.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/jasper/jsp-api-2.0.jar"/>
+  <classpathentry exported="true" kind="lib" path="/third-party/java/jetty/jetty-6.1.9.jar"/>
+	<classpathentry exported="true" kind="lib" path="/third-party/java/jetty/jetty-util-6.1.9.jar"/>
+	<classpathentry exported="true" kind="lib" path="/third-party/java/jmock/jmock-2.4.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="/third-party/java/jmock/jmock-junit3-2.4.0.jar"/>
+  <classpathentry exported="true" kind="lib" path="/third-party/java/junit/junit-dep-4.8.1.jar" sourcepath="/third-party/java/junit/junit-4.8.1-src.jar"/>
+  <classpathentry kind="lib" path="/third-party/java/servlet-api/servlet-api-2.5-6.1.9.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/slf4j/slf4j-api-1.3.1.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/slf4j/slf4j-simple-1.3.1.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/slf4j/jcl104-over-slf4j-1.3.1.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>

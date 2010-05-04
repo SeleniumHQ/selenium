@@ -14,11 +14,11 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/selenium-remote-client"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/selenium-remote-common"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/selenium-support"/>
-	<classpathentry kind="lib" path="/selenium-remote-common/lib/runtime/commons-codec-1.4.jar"/>
-	<classpathentry kind="lib" path="/selenium-remote-common/lib/runtime/json-20080701.jar"/>
-	<classpathentry kind="lib" path="/selenium-remote-client/lib/runtime/commons-httpclient-3.1.jar"/>
-	<classpathentry kind="lib" path="/selenium-remote-client/lib/runtime/commons-logging-1.1.1.jar"/>
-	<classpathentry kind="lib" path="/selenium-remote-client/lib/runtime/commons-collections-3.2.1.jar"/>
-	<classpathentry kind="lib" path="/third-party/java/google-collect-1.0.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/commons-codec/commons-codec-1.4.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/commons-collections/commons-collections-3.2.1.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/commons-httpclient/commons-httpclient-3.1.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/commons-logging/commons-logging-1.1.1.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/google-collect/google-collect-1.0.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/json/json-20080701.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
