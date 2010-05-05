@@ -23,26 +23,46 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 
 public class PortProber {
+  private final static Random random = new Random();
+
   public static int findFreePort() {
+    for (int i = 0; i < 5; i++) {
+      int seedPort = createAcceptablePort();
+      int suggestedPort = checkPortIsFree(seedPort);
+      if (suggestedPort != -1) {
+        return suggestedPort;
+      }
+    }
+    throw new RuntimeException("Unable to find a free port");
+  }
+
+  private static int createAcceptablePort() {
+    synchronized (random) {
+      int seed = random.nextInt();
+      // avoid protected ports
+      while (seed < 1025 || seed > 65534) {
+        seed = random.nextInt();
+      }
+
+      return seed;
+    }
+  }
+
+  private static int checkPortIsFree(int port) {
     ServerSocket socket = null;
     try {
-      socket = new ServerSocket(0);
-      return socket.getLocalPort();
+      socket = new ServerSocket(port);
+      int localPort = socket.getLocalPort();
+      socket.close();
+      return localPort;
     } catch (IOException e) {
-      throw new RuntimeException(e);
-    } finally {
-      if (socket != null) {
-        try {
-          socket.close();
-        } catch (IOException e) {
-          // Throw this away
-        }
-      }
+      return -1;
     }
   }
 
