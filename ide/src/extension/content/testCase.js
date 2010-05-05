@@ -77,12 +77,22 @@ Command.loadAPI = function() {
     var document;
     var documents = this.apiDocuments;
     var functions = {};
+    // document.length will be 1 by default, but will grow with plugins
     for (var d = 0; d < documents.length; d++) {
+      // set the current document. again, by default this is the iedoc-core.xml
       document = documents[d];
+      
+      // <function name="someName">
+      //   <param name="targetName">description</param>
+      //   <param name="valueName">description</param> -- optional
+      //   <return type="string">description</return> -- optional
+      //   <comment>description for ide here</comment>
+      // </function>
       var functionElements = document.documentElement.getElementsByTagName("function");
       for (var i = 0; i < functionElements.length; i++) {
         var element = functionElements.item(i);
         var def = new CommandDefinition(String(element.attributes.getNamedItem('name').value));
+        
         var returns = element.getElementsByTagName("return");
         if (returns.length > 0) {
           var returnType = new String(returns.item(0).attributes.getNamedItem("type").value);
@@ -90,10 +100,12 @@ Command.loadAPI = function() {
           def.returnType = returnType;
           def.returnDescription = this.innerHTML(returns.item(0));
         }
+        
         var comments = element.getElementsByTagName("comment");
         if (comments.length > 0) {
           def.comment = this.innerHTML(comments.item(0));
         }
+        
         var params = element.getElementsByTagName("param");
         for (var j = 0; j < params.length; j++) {
           var paramElement = params.item(j);
@@ -102,6 +114,7 @@ Command.loadAPI = function() {
           param.description = this.innerHTML(paramElement);
           def.params.push(param);
         }
+        
         functions[def.name] = def;
 
         // generate negative accessors
