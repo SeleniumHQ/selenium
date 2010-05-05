@@ -66,7 +66,7 @@ function Debugger(editor) {
             try {
                 var split_pluginProvided = pluginProvided.split(",");
                 for(var sp = 0; sp < split_pluginProvided.length; sp++){
-                    var js_pluginProvided = split_pluginProvided[sp].split(",");
+                    var js_pluginProvided = split_pluginProvided[sp].split(";");
                     ExtensionsLoader.loadSubScript(subScriptLoader, js_pluginProvided[0], this.runner);
                 }
             } catch (error) {
