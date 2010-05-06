@@ -34,6 +34,7 @@ module Antwrap
     def load_ant_libs(ant_home)
       jars = match(ant_home) {|p| ext = p[-4...p.size]; ext && ext.downcase == '.jar'} 
       jars.push 'third_party/java/eclipse_compiler/ecj-3.5.2.jar'
+      jars.push 'third_party/java/junit/junit-dep-4.8.1.jar'
       
       if(RUBY_PLATFORM == 'java')
         jars.each {|jar| require jar }
@@ -301,6 +302,7 @@ class RunTests < BaseJava
     
     desc "Run the tests for #{task_name}"
     task "#{task_name}:run" => [task_name] do
+      puts "Testing: #{task_name}"
       # Find the list of tests
       tests = [] 
       (args[:srcs] || []).each do |src|
@@ -313,14 +315,26 @@ class RunTests < BaseJava
       cp.push jar_name(dir, args[:name])
       
       tests = args[:class].nil? ? tests : "#{args[:class]}.java"
+      mkdir_p 'build/test_logs'
       
       tests.each do |test|
-        cmd = "java -Xmx128m -Xms128m "
-        cmd << '-cp ' + cp.to_s
-        cmd << " junit.textui.TestRunner "
-        cmd << class_name(test)
-        
-        sh cmd
+	CrazyFunJava.ant.junit(:fork => true, :forkmode => 'once', :showoutput => true,
+			       :printsummary => 'on', :haltonerror => true, :haltonfailure => true) do |ant|
+	  ant.classpath do |ant_cp|
+	    cp.all.each do |jar|
+	      ant_cp.pathelement(:location => jar)
+	    end
+	  end
+
+	  ant.formatter(:type => 'plain', :usefile => false)
+	  ant.formatter(:type => 'xml')
+
+	  class_name = test.gsub('\\', '/').split('/')[-1]
+	  name = "#{package_name(test)}.#{class_name}".gsub('/', '.').gsub('\\', '.').gsub('.java', '')
+
+          ant.test(:name => name, :todir => 'build/test_logs')
+
+	end
       end
     end
   end
