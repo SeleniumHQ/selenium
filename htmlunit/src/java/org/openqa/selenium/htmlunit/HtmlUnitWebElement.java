@@ -259,7 +259,7 @@ public class HtmlUnitWebElement implements RenderedWebElement,
     HtmlUnitWebElement oldActiveElement =
         ((HtmlUnitWebElement)parent.switchTo().activeElement());
     if (parent.isJavascriptEnabled() &&
-        !oldActiveElement.equals(element) &&
+        !oldActiveElement.equals(this) &&
         !oldActiveElement.getTagName().toLowerCase().equals("body")) {
       oldActiveElement.element.blur();
       element.focus();

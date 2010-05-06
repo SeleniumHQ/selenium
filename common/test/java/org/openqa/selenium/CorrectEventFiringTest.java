@@ -236,6 +236,39 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
   	element.sendKeys("foo");
   	assertEventFired("focus");
   }
+  
+  @JavascriptEnabled
+  public void testSendingKeysToAFocusedElementShouldNotBlurThatElement() {
+    if (browserNeedsFocusOnThisOs(driver)) {
+      System.out.println("Skipping this test because browser demands focus");
+      return;
+    }
+    
+    driver.get(pages.javascriptPage);
+    WebElement element = driver.findElement(By.id("theworks"));
+    element.click();
+    
+    //Wait until focused
+    boolean focused = false;
+    WebElement result = driver.findElement(By.id("result"));
+    for (int i = 0; i < 5; ++i) {
+      String fired = result.getText();
+      if (fired.contains("focus")) {
+        focused = true;
+        break;
+      }
+      try {
+        Thread.sleep(200);
+      } catch (InterruptedException e) {
+      }
+    }
+    if (!focused) {
+      fail("Clicking on element didn't focus it in time - can't proceed so failing");
+    }
+    
+    element.sendKeys("a");
+    assertEventNotFired("blur");
+  }
 
   @JavascriptEnabled
   @Ignore({IE, SELENESE})
