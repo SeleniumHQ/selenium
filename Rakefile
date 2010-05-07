@@ -9,6 +9,7 @@ require 'rake-tasks/crazy_fun'
 require 'rake-tasks/crazy_fun/mappings/java'
 require 'rake-tasks/crazy_fun/mappings/javascript'
 require 'rake-tasks/crazy_fun/mappings/mozilla'
+require 'rake-tasks/crazy_fun/mappings/rake'
 
 # The original build rules
 require 'rake-tasks/task-gen'
@@ -46,6 +47,7 @@ crazy_fun = CrazyFun.new
 JavaMappings.new.add_all(crazy_fun)
 JavascriptMappings.new.add_all(crazy_fun)
 MozillaMappings.new.add_all(crazy_fun)
+RakeMappings.new.add_all(crazy_fun)
 
 # Not every platform supports building every binary needed, so we sometimes
 # need to fall back to prebuilt binaries. The prebuilt binaries are stored in
@@ -72,7 +74,7 @@ task :chrome => [ "//chrome" ]
 task :common => [ "//common" ]
 task :htmlunit => [ "//htmlunit" ]
 task :ie => [:'webdriver-ie']
-task :firefox => [:'webdriver-firefox']
+task :firefox => [ "//firefox" ]
 task :jobbie => [:ie]
 task :jsapi => :'webdriver-jsapi'
 task :remote => [:remote_common, :remote_server, :remote_client]
@@ -90,7 +92,7 @@ task :test_htmlunit => [ "//htmlunit:test:run" ]
 task :test_ie => [:'webdriver-ie-test']
 task :test_jobbie => [:test_ie]
 task :test_jsapi => :'webdriver-jsapi-test'
-task :test_firefox => [:'webdriver-firefox-test']
+task :test_firefox => [ "//firefox:test:run" ]
 task :test_remote => [:'webdriver-selenium-server-test']
 task :test_selenium => [:'webdriver-selenium-server-test', :'webdriver-selenium-test', :'webdriver-selenese-test']
 task :test_support => [ "//support:test:run" ]
@@ -173,24 +175,6 @@ java_test(:name => "webdriver-ie-test",
                    ],
           :run  => windows?)
 
-xpi(:name => "firefox_xpi",
-    :srcs  => [ "firefox/src/extension/**" ],
-    :deps => [
-               :firefox_dll,
-               :libwebdriver_firefox,
-             ],
-    :resources => [
-                    { "firefox/src/extension/components/*.js" => "components/" },
-                    { "common/src/js/extension/*.js" => "content/" },
-                    { :"//firefox:command_processor_xpt" => "components/" },
-                    { :"//firefox:native_events_xpt" => "components/" },
-                    { :"//firefox:response_handler_xpt" => "components/" },
-                    { :firefox_dll => "platform/WINNT_x86-msvc/components/webdriver-firefox.dll" },
-                    { :libwebdriver_firefox_so => "platform/Linux_x86-gcc3/components/libwebdriver-firefox.so" },
-                    { :libwebdriver_firefox_so64 => "platform/Linux_x86_64-gcc3/components/libwebdriver-firefox.so" },
-                  ],
-    :out  => "webdriver-extension.zip")
-
 dll(:name => "firefox_dll",
     :src  => [ "common/src/cpp/webdriver-interactions/**/*", "jobbie/src/cpp/webdriver-firefox/**/*" ],
     :solution => "WebDriver.sln",
@@ -242,40 +226,12 @@ dll(:name => "libwebdriver_firefox_so64",
 
 task :libwebdriver_firefox => [:libwebdriver_firefox_so, :libwebdriver_firefox_so64]
 
-java_jar(:name => "webdriver-firefox",
-    :srcs  => [ "firefox/src/java/**/*.java" ],
-    :deps => [
-               :common,
-               :remote_client,
-               :remote_common,
-               :firefox_xpi,
-               :libnoblur,
-               "third_party/java/json/json-20080701.jar"
-             ],
-    :resources => [
-                    :firefox_xpi,
-                    { "linux/Release/x_ignore_nofocus.so" => "x86/x_ignore_nofocus.so" },
-                    { "linux64/Release/x_ignore_nofocus.so" => "amd64/x_ignore_nofocus.so" }
-                  ])
-
-java_test(:name => "webdriver-firefox-test",
-          :srcs  => [ "firefox/test/java/**/*.java" ],
-          :deps => [
-                     :'webdriver-firefox',
-                     "//common:test",
-                   ])
-
 java_test(:name => "webdriver-single-testsuite",
           :srcs  => [ "common/test/java/org/openqa/selenium/SingleTestSuite.java"],
           :deps => [
                      :'webdriver-firefox',
                      "//common:test",
                    ])
-
-#xpt(:name => "ide-auto-complete",
-#    :src  => [ "ide/src/extension/idl/SeleniumIDEGenericAutoCompleteSearch.idl" ],
-#    :prebuilt => "ide/prebuilt",
-#    :out  => "SeleniumIDEGenericAutoCompleteSearch.xpt")
 
 xpi(:name => "ide",
     :srcs => [],
