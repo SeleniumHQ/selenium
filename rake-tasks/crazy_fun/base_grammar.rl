@@ -6,7 +6,7 @@
 
   map_value = string;
   map_key = string;
-  map_entry = map_key >start_map_entry space* '=>' space* map_value %leaving;
+  map_entry = map_key >start_map_entry space* ':' space* map_value %leaving;
   map_entries = space* map_entry space* (',' space* map_entry space*)*;
   map = '{' >start_map map_entries '}' %leaving;
 

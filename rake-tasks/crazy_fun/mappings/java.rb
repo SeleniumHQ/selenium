@@ -49,8 +49,6 @@ module Antwrap
 end
 
 module CrazyFunJava
-
-  
   @ant = Antwrap::AntProject.new(:name => 'selenium', 
     :ant_home => 'third_party/java/ant', :basedir => '.')
   @ant.project.setProperty('XmlLogger.file', 'build/build_log.xml')
@@ -253,7 +251,14 @@ class CopyResources < BaseJava
           # Copy the key to "out_dir + value"
           res.each do |from, to|
             if from.is_a? Symbol
-              cp Rake::Task[task_name(dir, from)].out, out_dir + "/" + to;
+              target = Rake::Task[task_name(dir, from)].out
+              if File.directory? target
+                dest = File.join(out_dir, to)
+              else
+                dest = File.dirname(File.join(out_dir, to))
+              end
+              mkdir_p dest
+              cp_r target, dest
             else
               Dir["#{out_dir}/#{to}/**.svn"].each { |file| rm_rf file }
               tdir = to.gsub(/\/.*?$/, "")
@@ -318,23 +323,27 @@ class RunTests < BaseJava
       mkdir_p 'build/test_logs'
       
       tests.each do |test|
-	CrazyFunJava.ant.junit(:fork => true, :forkmode => 'once', :showoutput => true,
-			       :printsummary => 'on', :haltonerror => true, :haltonfailure => true) do |ant|
-	  ant.classpath do |ant_cp|
-	    cp.all.each do |jar|
-	      ant_cp.pathelement(:location => jar)
-	    end
-	  end
+	      CrazyFunJava.ant.junit(:fork => true, :forkmode => 'once', :showoutput => true,
+			                         :printsummary => 'on', :haltonerror => true, :haltonfailure => true) do |ant|
+	        ant.classpath do |ant_cp|
+	          cp.all.each do |jar|
+	            ant_cp.pathelement(:location => jar)
+	          end
+	        end
 
-	  ant.formatter(:type => 'plain', :usefile => false)
-	  ant.formatter(:type => 'xml')
+#          logger = StdOutLogger.new
+#          puts "#{logger}"
+#          element = org.apache.tools.ant.taskdefs.optional.junit.FormatterElement.new()
+#          element.setClassname(logger.class.to_s)
+#          ant.addFormatter(element)
 
-	  class_name = test.gsub('\\', '/').split('/')[-1]
-	  name = "#{package_name(test)}.#{class_name}".gsub('/', '.').gsub('\\', '.').gsub('.java', '')
+	        ant.formatter(:type => 'plain', :usefile => false)
+	        ant.formatter(:type => 'xml')
 
+	        class_name = test.gsub('\\', '/').split('/')[-1]
+	        name = "#{package_name(test)}.#{class_name}".gsub('/', '.').gsub('\\', '.').gsub('.java', '')
           ant.test(:name => name, :todir => 'build/test_logs')
-
-	end
+        end
       end
     end
   end
@@ -419,6 +428,18 @@ class CreateSourceJar < BaseJava
     end
     
     task "#{task_name(dir, args[:name])}:srcs" => [jar]
+  end
+end
+
+class StdOutLogger 
+  include org.apache.tools.ant.taskdefs.optional.junit.JUnitResultFormatter
+  
+  def startTest(ignored)
+    print '.'
+  end
+  
+  def each()
+    puts "Called"
   end
 end
 

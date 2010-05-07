@@ -66,7 +66,7 @@ class FirefoxProfile(object):
         self.name = name
         self.port = port
         if (extension_path is None):
-            self.extension_path = os.path.join(os.path.dirname(__file__), 'webdriver-extension.zip')
+            self.extension_path = os.path.join(os.path.dirname(__file__), 'webdriver.xpi')
         else:
 	    self.extension_path = extension_path
 
@@ -134,7 +134,7 @@ class FirefoxProfile(object):
 
         if force_create or not os.path.exists(extension_dir):
             extension_source_path = utils.unzip_to_temp_dir(
-                "webdriver-extension.zip")
+                "webdriver.xpi")
 
             if (extension_source_path is None or
                 not os.path.exists(extension_source_path)):

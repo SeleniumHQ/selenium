@@ -19,7 +19,7 @@ namespace OpenQA.Selenium.Firefox
         #region Constants
         private const string ExtensionName = "fxdriver@googlecode.com";
         private const string EmNamespaceUri = "http://www.mozilla.org/2004/em-rdf#";
-        private const string ExtensionFileName = "webdriver-extension.zip";
+        private const string ExtensionFileName = "webdriver.xpi";
         private const string ExtensionResourceId = "WebDriver.FirefoxExt.zip";
         #endregion
 

@@ -139,6 +139,7 @@ class AddDependencies < BaseXpi
     all_deps = []
     all_deps += args[:content] || []
     all_deps += args[:components] || []
+    all_deps += args[:resources] || []
     all_deps.push args[:chrome] unless args[:chrome].nil?
     all_deps.push args[:install] unless args[:install].nil?
     
@@ -160,6 +161,7 @@ class Build < BaseXpi
       copy_all(dir, { args[:install] => "install.rdf"}, temp) unless args[:install].nil?
       copy_all(dir, args[:content], temp + Platform.dir_separator + "content") unless args[:content].nil?
       copy_all(dir, args[:components], temp + Platform.dir_separator + "components") unless args[:components].nil?
+      copy_all(dir, args[:resources], temp) unless args[:resources].nil?
 
       zip(temp, xpi)
       

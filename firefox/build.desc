@@ -1,3 +1,21 @@
+java_library(name = "firefox",
+  srcs = [ "src/java/**/*.java"],
+  resources = [
+    ":webdriver",
+    { ":libnoblur_so" : "x86/x_ignore_nofocus.so" },
+    { ":libnoblur_so_64" : "amd64/x_ignore_nofocus.so" }
+  ],
+  deps = [
+    "//remote/client"
+  ])
+
+java_test(name = "test",
+  srcs  = [ "test/java/**/*.java" ],
+  deps = [
+    ":firefox",
+    "//remote/client:test"
+  ])
+
 mozilla_xpt(name = "native_events_xpt",
   srcs = [ "src/cpp/webdriver-firefox/nsINativeEvents.idl" ])
 
@@ -7,3 +25,43 @@ mozilla_xpt(name = "command_processor_xpt",
 mozilla_xpt(name = "response_handler_xpt",
   srcs = [ "src/extension/idl/nsIResponseHandler.idl" ])
 
+mozilla_xpi(name = "webdriver",
+  content = [
+    "src/extension/content/**/*.js",
+    "src/extension/content/fxdriver.xul",
+    "//common:dom_messenger"
+  ],
+  components = [
+    "src/extension/components/*.js",
+    ":native_events_xpt",
+    ":command_processor_xpt",
+    ":response_handler_xpt"
+  ],
+  resources = [    
+    { ":firefox_dll" : "platform/WINNT_x86-msvc/components" },
+    { ":libwebdriver_firefox_so" : "platform/Linux_x86-gcc3/components" },
+    { ":libwebdriver_firefox_so64" : "platform/Linux_x86_64-gcc3/components" }
+  ],
+  chrome = "src/extension/chrome.manifest",
+  install = "src/extension/install.rdf")
+  
+# Temporary rules while we migrate
+rake_task(name = "firefox_dll",
+  task_name = "firefox_dll",
+  out = "build/Win32/Release/webdriver-firefox.dll")
+  
+rake_task(name = "libwebdriver_firefox_so",
+  task_name = "libwebdriver_firefox_so",
+  out = "build/linux/Release/libwebdriver-firefox.so")
+  
+rake_task(name = "libwebdriver_firefox_so64",
+  task_name = "libwebdriver_firefox_so64",
+  out = "build/linux64/Release/libwebdriver-firefox.so")
+
+rake_task(name = "libnoblur_so_64",
+  task_name = "libnoblur_so_64",
+  out = "build/linux64/Release/x_ignore_nofocus.so")
+  
+rake_task(name = "libnoblur_so",
+  task_name = "libnoblur_so",
+  out = "build/linux/Release/x_ignore_nofocus.so")

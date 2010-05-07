@@ -108,5 +108,5 @@ def unzip_to_temp_dir(zip_file_name):
 
     except IOError, err:
         logging.error(
-            "Error in extracting webdriver-extension.zip: %s" % err)
+            "Error in extracting webdriver.xpi: %s" % err)
         return None

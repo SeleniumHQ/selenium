@@ -116,13 +116,20 @@ class Tasks
   def copy_symbol(dir, src, dest)
     from = Rake::Task[task_name(dir, src)].out
     
-    cp_r from, to_dir(dest)
+    puts "Copying symbol #{src} from #{from} to #{dest} as #{to_dir(dest)}"
+    if File.directory? from
+      cp_r from, to_dir(dest)
+    else
+      puts "Creating #{File.dirname(dest)}"
+      mkdir_p File.dirname(dest)
+      cp from, dest
+    end
   end
 
   def copy_array(dir, src, dest)
     src.each do |item|
       if item.is_a? Hash
-        raise StandardError, "Undetermined type: #{item.class}"
+        copy_hash(dir, item, dest)
       elsif item.is_a? Array
         raise StandardError, "Undetermined type: #{item.class}"
       elsif item.is_a? String
@@ -137,7 +144,11 @@ class Tasks
   
   def copy_hash(dir, src, dest)
     src.each do |key, value|
-      cp_r dir + Platform.dir_separator + key, dest + Platform.dir_separator + value
+      if key.is_a? Symbol
+        copy_symbol(dir, key, dest + Platform.dir_separator + value)
+      else
+        cp_r dir + Platform.dir_separator + key, dest + Platform.dir_separator + value
+      end
     end
     
   end

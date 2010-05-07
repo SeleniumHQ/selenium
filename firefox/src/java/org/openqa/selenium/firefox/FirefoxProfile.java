@@ -99,7 +99,7 @@ public class FirefoxProfile {
     }
 
     try {
-      addExtension(FirefoxProfile.class, "webdriver-extension.zip");
+      addExtension(FirefoxProfile.class, "webdriver.xpi");
     } catch (IOException e) {
       if (!Boolean.getBoolean("webdriver.development")) {
         throw new WebDriverException("Failed to install webdriver extension", e);
