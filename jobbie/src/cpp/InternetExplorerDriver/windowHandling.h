@@ -18,3 +18,4 @@ limitations under the License.
 #include <vector>
 
 void getBrowsers(std::vector<IWebBrowser2*>* allBrowsers);
+void getTopLevelWindows(std::vector<HWND>* allWindows);

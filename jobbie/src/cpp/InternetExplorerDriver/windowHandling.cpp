@@ -127,7 +127,32 @@ BOOL CALLBACK findTopLevelWindows(HWND hwnd, LPARAM arg)
 	return TRUE;
 }
 
+BOOL CALLBACK findTopLevelWindowFrames(HWND hwnd, LPARAM arg) 
+{
+		// Could this be an IE instance?
+	// 8 == "IeFrame\0"
+	// 21 == "Shell DocObject View\0";
+	char name[21];
+	if (GetClassNameA(hwnd, name, 21) == 0) {
+	// No match found. Skip
+		return TRUE;
+	}
+	
+	if (strcmp("IEFrame", name) != 0 && strcmp("Shell DocObject View", name) != 0) {
+		return TRUE;
+	}
+
+	((vector<HWND>*)arg)->push_back(hwnd);
+
+	return TRUE;
+}
+
 void getBrowsers(vector<IWebBrowser2*>* allBrowsers)
 {
 	EnumWindows(findTopLevelWindows, (LPARAM)allBrowsers);
+}
+
+void getTopLevelWindows(std::vector<HWND>* allWindows) 
+{
+	EnumWindows(findTopLevelWindowFrames, (LPARAM) allWindows);
 }

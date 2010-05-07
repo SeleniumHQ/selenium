@@ -25,6 +25,7 @@ limitations under the License.
 #include "cookies.h"
 #include "utils.h"
 #include "IEReturnTypes.h"
+#include "windowHandling.h"
 #include <stdio.h>
 #include <iostream>
 #include <string>
@@ -84,6 +85,54 @@ clock_t endAt(WebDriver* driver) {
 	}
 
 	return end;
+}
+
+int terminateIe() 
+{
+	std::vector<HWND> allWindows;
+	getTopLevelWindows(&allWindows);
+
+	// Wait until all open windows are gone. Common case, no worries
+	while (allWindows.size() > 0) {
+		allWindows.clear();
+		getTopLevelWindows(&allWindows);
+		for (vector<HWND>::iterator curr = allWindows.begin();
+			curr != allWindows.end();
+			curr++) {
+			SendMessage(*curr, WM_CLOSE, NULL, NULL);
+		}
+
+		// Pause to allow IE to process the message. If we don't do this and
+		// we're using IE 8, and "Restore previous session" is enabled (an
+		// increasingly common state) then a modal system dialog will be 
+		// displayed to the user. Not what we want.
+		wait(500);
+	}
+
+	// If it's longer than this, we're on a very strange system
+	wchar_t taskkillPath[256];
+	if (!ExpandEnvironmentStrings(L"%SystemRoot%\\system32\\taskkill.exe", taskkillPath, 256)) 
+	{
+		cerr << "Unable to find taskkill application" << endl;
+		return EUNHANDLEDERROR;
+	}
+
+	std::wstring args = L" /f /im iexplore.exe";
+	STARTUPINFO startup_info;
+	memset(&startup_info, 0, sizeof(startup_info));
+	startup_info.cb = sizeof(startup_info);
+
+	PROCESS_INFORMATION process_info;
+	if (!CreateProcessW(taskkillPath, &args[0], NULL, NULL, false, DETACHED_PROCESS, NULL, NULL, &startup_info, &process_info)) 
+	{
+		cerr << "Could not execute taskkill. Bailing: " << GetLastError() << endl;
+		return EUNHANDLEDERROR;
+	}
+	WaitForSingleObject(process_info.hProcess, INFINITE);
+	CloseHandle(process_info.hThread);
+	CloseHandle(process_info.hProcess);
+
+	return SUCCESS;
 }
 
 extern "C"
@@ -261,7 +310,7 @@ int wdFreeDriver(WebDriver* driver)
 	if (!driver || !driver->ie) return ENOSUCHDRIVER;
 
 	try {
-		driver->ie->close();
+		terminateIe();
 	} catch (...) {
 		// Fine. We're quitting anyway.
 	}
@@ -280,7 +329,27 @@ int wdNewDriverInstance(WebDriver** result)
 	*result = NULL;
 	TRY
 	{
-	    WebDriver *driver = new WebDriver();
+		terminateIe();
+/*
+		wchar_t iePath[256];
+		if (!ExpandEnvironmentStrings(L"%ProgramFiles%\\Internet Explorer\\iexplore.exe", iePath, 256)) 
+		{
+			cerr << "Unable to find IE" << endl;
+			return EUNHANDLEDERROR;
+		}
+
+		memset(&startup_info, 0, sizeof(startup_info));
+		startup_info.cb = sizeof(startup_info);
+		args = L"about:blank";
+
+		if (!CreateProcessW(iePath, &args[0], NULL, NULL, false, 0, NULL, NULL, &startup_info, &process_info)) 
+		{
+			cerr << "Could not execute IE. Bailing: " << GetLastError() << endl;
+			return EUNHANDLEDERROR;
+		}
+*/
+
+		WebDriver *driver = new WebDriver();
    
 		driver->ie = new InternetExplorerDriver();
 		driver->ie->setVisible(true);
