@@ -5,7 +5,7 @@ java_library(name = "common",
 java_library(name = "test",
   srcs = [ "test/java/**/*.java"],
   resources = [
-    { "test/java/org/openqa/selenium/messages.properties" => "org/openqa/selenium/messages.properties" }
+    { "test/java/org/openqa/selenium/messages.properties" : "org/openqa/selenium/messages.properties" }
   ],
   deps = [
     ":common",
@@ -15,3 +15,9 @@ java_library(name = "test",
     "//third_party/java/jmock",
     "//third_party/java/junit"
   ])
+
+rake_task(
+  name = "dom_messenger",
+  task_name = "common/src/js/extension/dommessenger.js",
+  out = "common/src/js/extension/dommessenger.js"
+)
