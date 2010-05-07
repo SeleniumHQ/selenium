@@ -25,6 +25,9 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.core.IsNull.nullValue;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.openqa.selenium.Ignore.Driver.CHROME;
+import static org.openqa.selenium.Ignore.Driver.FIREFOX;
+import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 
 public class ElementAttributeTest extends AbstractDriverTestCase {
@@ -64,8 +67,7 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
     List<WebElement> options = multiSelect.findElements(By.tagName("option"));
     assertThat(options.get(1).getAttribute("index"), equalTo("1"));
   }
-
-
+  
   public void testShouldIndicateTheElementsThatAreDisabledAreNotEnabled() {
     driver.get(pages.formPage);
     WebElement inputElement = driver.findElement(By.xpath("//input[@id='notWorking']"));
@@ -73,6 +75,39 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
 
     inputElement = driver.findElement(By.xpath("//input[@id='working']"));
     assertThat(inputElement.isEnabled(), is(true));
+  }
+  
+  public void testElementsShouldBeDisabledIfTheyAreDisabledUsingRandomDisabledStrings() {
+    driver.get(pages.formPage);
+    WebElement disabledTextElement1 = driver.findElement(By.id("disabledTextElement1"));
+    assertThat(disabledTextElement1.isEnabled(), is(false));
+
+    WebElement disabledTextElement2 = driver.findElement(By.id("disabledTextElement2"));
+    assertThat(disabledTextElement2.isEnabled(), is(false));
+    
+    WebElement disabledSubmitElement = driver.findElement(By.id("disabledSubmitElement"));
+    assertThat(disabledSubmitElement.isEnabled(), is(false));
+  }
+  
+  @Ignore(value = IE, reason = "Issue 514")
+  public void testShouldNotBeAbleToTypeToElementsIfTheyAreDisabledUsingRandomDisabledStrings() {
+    driver.get(pages.formPage);
+    WebElement disabledTextElement1 = driver.findElement(By.id("disabledTextElement1"));
+    disabledTextElement1.sendKeys("foo");
+    assertThat(disabledTextElement1.getText(), is(""));
+
+    WebElement disabledTextElement2 = driver.findElement(By.id("disabledTextElement2"));
+    disabledTextElement2.sendKeys("bar");
+    assertThat(disabledTextElement2.getText(), is(""));
+  }
+
+  @Ignore(value = {FIREFOX, CHROME}, reason = "Issue 514")
+  public void testShouldNotBeAbleToSubmitFormsWithDisabledSubmitButtons() {
+    driver.get(pages.formPage);
+    WebElement disabledSubmitElement = driver.findElement(By.id("disabledSubmitElement"));
+    assertThat(disabledSubmitElement.isEnabled(), is(false));
+    disabledSubmitElement.submit();
+    assertThat(driver.getTitle(), is("We Leave From Here"));
   }
 
   public void testShouldIndicateWhenATextAreaIsDisabled() {
