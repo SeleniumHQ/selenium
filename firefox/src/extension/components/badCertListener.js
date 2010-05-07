@@ -130,7 +130,8 @@ WdCertOverrideService.prototype.certificateIssuerUntrusted_ = function
 // and the hostname the certificate was issued for, 0 otherwise.
 WdCertOverrideService.prototype.certificateHostnameMismatch_ = function
   (theCert, aHost) {
-  if (theCert.commonName !== aHost) {
+  commonNameRE = new RegExp(theCert.commonName.replace('*', '\\w+'));
+  if (aHost.match(commonNameRE) === null) {
     localdump("Host name mismatch: cert: " + theCert.commonName + " get: " + aHost);
     return this.ERROR_MISMATCH;
   }
