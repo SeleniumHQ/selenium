@@ -399,6 +399,9 @@ xpi(:name => "chrome_extension",
     :out => "chrome-extension.zip")
 task "chrome/build/chrome-extension.zip" => :'chrome_extension'
 Rake::Task["build/chrome-extension.zip"].out = "build/chrome-extension.zip"
+task "chrome\\build\\chrome-extension.zip" => :'chrome_extension'
+Rake::Task["build/chrome-extension.zip"].out = "build/chrome-extension.zip"
+
 
 java_jar(:name => "webdriver-selenium",
     :srcs  => [ "selenium/src/java/**/*.java" ],
