@@ -107,7 +107,7 @@ class BaseJava < Tasks
   end
   
   def package_name(file)
-    fragments = file.split("/")
+    fragments = file.gsub('\\', '/').split("/")
     while fragments[0] and /^(com|net|org|uk|de)$/.match(fragments[0]).nil?
       fragments.shift
     end
@@ -331,17 +331,11 @@ class RunTests < BaseJava
 	          end
 	        end
 
-#          logger = StdOutLogger.new
-#          puts "#{logger}"
-#          element = org.apache.tools.ant.taskdefs.optional.junit.FormatterElement.new()
-#          element.setClassname(logger.class.to_s)
-#          ant.addFormatter(element)
-
 	        ant.formatter(:type => 'plain', :usefile => false)
 	        ant.formatter(:type => 'xml')
 
 	        class_name = test.gsub('\\', '/').split('/')[-1]
-	        name = "#{package_name(test)}.#{class_name}".gsub('/', '.').gsub('\\', '.').gsub('.java', '')
+	        name = "#{package_name(test)}.#{class_name}".gsub('\\', '/').gsub('/', '.').gsub('.java', '')
           ant.test(:name => name, :todir => 'build/test_logs')
         end
       end
@@ -428,18 +422,6 @@ class CreateSourceJar < BaseJava
     end
     
     task "#{task_name(dir, args[:name])}:srcs" => [jar]
-  end
-end
-
-class StdOutLogger 
-  include org.apache.tools.ant.taskdefs.optional.junit.JUnitResultFormatter
-  
-  def startTest(ignored)
-    print '.'
-  end
-  
-  def each()
-    puts "Called"
   end
 end
 
