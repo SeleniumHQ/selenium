@@ -21,3 +21,19 @@ rake_task(
   task_name = "common/src/js/extension/dommessenger.js",
   out = "common/src/js/extension/dommessenger.js"
 )
+
+rake_file(
+  name = "js_core",
+  src = "src/js/core")
+
+rake_file(
+  name = "js_jsunit",
+  src = "src/js/jsunit")  
+  
+rake_file(
+  name = "test_runner_html",
+  src = "src/js/core/TestRunner.html")
+  
+rake_file(
+  name = "remote_runner_html",
+  src = "src/js/core/RemoteRunner.html")  

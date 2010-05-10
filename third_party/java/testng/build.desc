@@ -1,0 +1,2 @@
+java_library(name = "testng",
+  deps = [ "testng-5.8-jdk15.jar" ])

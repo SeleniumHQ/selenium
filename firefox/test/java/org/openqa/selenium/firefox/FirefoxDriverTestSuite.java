@@ -147,9 +147,9 @@ public class FirefoxDriverTestSuite extends TestCase {
 
     private static void copyXpts(File extension) {
       Map<String, String> components = new HashMap<String, String>() {{
-        put("build/nsINativeEvents.xpt", "components/nsINativeEvents.xpt");
-        put("build/nsICommandProcessor.xpt", "components/nsICommandProcessor.xpt");
-        put("build/nsIResponseHandler.xpt", "components/nsIResponseHandler.xpt");
+        put("build/firefox/nsINativeEvents.xpt", "components/nsINativeEvents.xpt");
+        put("build/firefox/nsICommandProcessor.xpt", "components/nsICommandProcessor.xpt");
+        put("build/firefox/nsIResponseHandler.xpt", "components/nsIResponseHandler.xpt");
       }};
 
       for (Map.Entry<String, String> component : components.entrySet()) {

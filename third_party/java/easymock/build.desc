@@ -1,0 +1,6 @@
+java_library(name = "easymock",
+  deps = [
+    "easymock-2.4.jar",
+    "easymockclassextension-2.4.jar",
+    "//third_party/java/cglib"
+  ])

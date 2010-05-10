@@ -101,7 +101,7 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
     assertThat(disabledTextElement2.getText(), is(""));
   }
 
-  @Ignore(value = {FIREFOX, CHROME}, reason = "Issue 514")
+  @Ignore(value = {FIREFOX, CHROME, SELENESE}, reason = "Issue 514")
   public void testShouldNotBeAbleToSubmitFormsWithDisabledSubmitButtons() {
     driver.get(pages.formPage);
     WebElement disabledSubmitElement = driver.findElement(By.id("disabledSubmitElement"));

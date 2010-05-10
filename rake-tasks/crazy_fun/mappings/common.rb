@@ -116,11 +116,9 @@ class Tasks
   def copy_symbol(dir, src, dest)
     from = Rake::Task[task_name(dir, src)].out
     
-    puts "Copying symbol #{src} from #{from} to #{dest} as #{to_dir(dest)}"
     if File.directory? from
       cp_r from, to_dir(dest)
     else
-      puts "Creating #{File.dirname(dest)}"
       mkdir_p File.dirname(dest)
       cp from, dest
     end

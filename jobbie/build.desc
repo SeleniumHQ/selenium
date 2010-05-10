@@ -1,0 +1,36 @@
+# TODO(simon): This should really be "ie"
+java_library(name = "jobbie",
+  srcs  = [ "src/java/**/*.java" ],
+  resources = [
+    {":ie_win32_dll" : "x86/InternetExplorerDriver.dll"},
+    {":ie_x64_dll" : "amd64/InternetExplorerDriver.dll"}
+  ],
+  deps = [
+    ":ie_result_type_cpp",
+    ":ie_result_type_java",
+    "//common",
+    "//third_party/java/jna"
+  ])
+
+java_test(name = "test",
+  srcs  = [ "test/java/**/*.java" ],
+  deps = [
+    ":jobbie",
+    "//common:test"
+  ])
+
+rake_task(name = "ie_result_type_java",
+  task_name = "ie_result_type_java",
+  out = "jobbie/src/java/org/openqa/selenium/ie/IeReturnTypes.java")
+
+rake_task(name = "ie_result_type_cpp",
+  task_name = "ie_result_type_cpp",
+  out = "jobbie/src/cpp/InternetExplorerDriver/IEReturnTypes.h")
+
+rake_task(name = "ie_win32_dll",
+  task_name = "ie_win32_dll",
+  out = "build/Win32/Release/InternetExplorerDriver.dll")
+
+rake_task(name = "ie_x64_dll",
+  task_name = "ie_x64_dll",
+  out = "build/x64/Release/InternetExplorerDriver.dll")

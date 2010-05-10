@@ -1,0 +1,34 @@
+java_library(name = "selenium",
+  srcs = [ "src/java/**/*.java" ],
+  deps = [
+    "//chrome",
+    "//jobbie",
+    "//firefox",
+    "//support"
+  ],
+  resources = [
+    { "src/java/org/openqa/selenium/internal/seleniumemulation/injectableSelenium.js" : "org/openqa/selenium/internal/seleniumemulation/injectableSelenium.js" },
+    { "src/java/org/openqa/selenium/internal/seleniumemulation/htmlutils.js" : "org/openqa/selenium/internal/seleniumemulation/htmlutils.js" }
+  ])
+
+java_library(name = "test",
+  srcs = [ "test/java/**/*.java" ],
+  resources = [
+    { "test/java/com/thoughtworks/selenium/testHelpers.js" : "com/thoughtworks/selenium/testHelpers.js" }
+  ],
+  deps = [ 
+    ":selenium",
+    "//common:test",
+    "//remote/server",
+    "//third_party/java/testng"
+  ])
+
+java_test(name = "test-selenese",
+  srcs = [ "test/java/**/*.java" ],
+  deps = [
+    "//common:test",
+    "//firefox:test",
+    "//htmlunit",
+    "//remote/server:server:uber",
+    "//third_party/java/easymock",
+    "//third_party/java/testng"])

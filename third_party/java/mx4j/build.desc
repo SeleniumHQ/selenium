@@ -1,0 +1,2 @@
+java_library(name = "mx4j",
+  deps = [ "mx4j-tools-3.0.1.jar" ])

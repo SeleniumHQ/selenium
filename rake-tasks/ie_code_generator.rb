@@ -71,14 +71,16 @@ end
 def ie_generate_type_mapping(args)
   types_mapping_file = args[:src]
   generated_file = "jobbie/src/#{args[:out]}"
-  generator = TypeDefinitionsGenerator.new types_mapping_file
-  method_name = "generate_#{args[:type]}_definitions"
-  if generator.respond_to?(method_name) then
-    generator.send(method_name, generated_file)
-  else
-    puts "Cannot generate definitions for #{args[:type]}"
+
+  file generated_file => args[:src] do
+    generator = TypeDefinitionsGenerator.new types_mapping_file
+    method_name = "generate_#{args[:type]}_definitions"
+    if generator.respond_to?(method_name) then
+      generator.send(method_name, generated_file)
+    else
+      puts "Cannot generate definitions for #{args[:type]}"
+    end
   end
 
   task "#{args[:name]}" => generated_file
-  task args[:out] => generated_file
 end

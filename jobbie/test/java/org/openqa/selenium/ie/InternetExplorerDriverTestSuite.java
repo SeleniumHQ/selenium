@@ -19,8 +19,13 @@ package org.openqa.selenium.ie;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 import static org.openqa.selenium.Ignore.Driver.IE;
+import static org.openqa.selenium.Platform.WINDOWS;
+
+import org.openqa.selenium.EmptyTest;
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.TestSuiteBuilder;
 
 public class InternetExplorerDriverTestSuite extends TestCase {
@@ -33,13 +38,19 @@ public class InternetExplorerDriverTestSuite extends TestCase {
       System.setProperty("jna.library.path", "..\\build\\Win32\\Debug;build\\Win32\\Debug");
     }
 
-    return new TestSuiteBuilder()
-        .addSourceDir("common")
-        .addSourceDir("jobbie")
-        .usingDriver(InternetExplorerDriver.class)
-        .exclude(IE)
-        .includeJavascriptTests()
-        .keepDriverInstance()
-        .create();
+    if (Platform.getCurrent().is(WINDOWS)) {
+      return new TestSuiteBuilder()
+          .addSourceDir("common")
+          .addSourceDir("jobbie")
+          .usingDriver(InternetExplorerDriver.class)
+          .exclude(IE)
+          .includeJavascriptTests()
+          .keepDriverInstance()
+          .create();
+    }
+
+    TestSuite toReturn = new TestSuite();
+    toReturn.addTestSuite(EmptyTest.class);
+    return toReturn;
   }
 }

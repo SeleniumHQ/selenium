@@ -45,7 +45,7 @@ public class SeleneseTestNgHelper extends SeleneseTestBase
 
         WebDriver driver = null;
         if (browserString.contains("firefox") || browserString.contains("chrome")) {
-          if (isInDevMode(FirefoxDriver.class, "/webdriver-extension.zip")) {
+          if (isInDevMode(FirefoxDriver.class, "webdriver.xpi")) {
             System.setProperty("webdriver.development", "true");
             driver = Class.forName("org.openqa.selenium.firefox.FirefoxDriverTestSuite$TestFirefoxDriver")
                 .asSubclass(WebDriver.class).newInstance();
@@ -53,7 +53,7 @@ public class SeleneseTestNgHelper extends SeleneseTestBase
             driver = new FirefoxDriver();
           }
         } else if (browserString.contains("ie") || browserString.contains("hta")) {
-          if (isInDevMode(FirefoxDriver.class, "/webdriver-extension.zip")) {
+          if (isInDevMode(FirefoxDriver.class, "webdriver.xpi")) {
             System.setProperty("webdriver.development", "true");
             System.setProperty("jna.library.path", "..\\build;build");
           }

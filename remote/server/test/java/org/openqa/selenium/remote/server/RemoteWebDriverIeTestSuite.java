@@ -22,6 +22,8 @@ import junit.framework.TestSuite;
 import junit.framework.TestCase;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.REMOTE;
+
+import org.openqa.selenium.EmptyTest;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.TestSuiteBuilder;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -75,12 +77,6 @@ public class RemoteWebDriverIeTestSuite extends TestCase {
   public static class RemoteIeWebDriverForTest extends RemoteWebDriver {
     public RemoteIeWebDriverForTest() throws Exception {
       super(new URL("http://localhost:6000/common/hub"), DesiredCapabilities.internetExplorer());
-    }
-  }
-
-  public static class EmptyTest extends TestCase {
-    public void testDoNothingButLetTheSuiteWork() {
-      // Does nothing
     }
   }
 }

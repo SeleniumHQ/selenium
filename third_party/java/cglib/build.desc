@@ -1,0 +1,4 @@
+java_library(name = "cglib",
+  deps = [
+    "cglib-nodep-2.1_3.jar"
+  ])

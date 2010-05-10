@@ -1,0 +1,36 @@
+java_library(name = "server",
+  srcs = [ "src/java/**/*.java" ],
+  main = "org.openqa.selenium.server.SeleniumServer",
+  resources = [
+    { "src/java/org/openqa/jetty/http/mime.properties" : "org/openqa/jetty/http/mime.properties" },
+    { "src/java/org/openqa/jetty/http/encoding.properties" : "org/openqa/jetty/http/encoding.properties" },
+    "src/java/customProfileDirCUSTFF",
+    "src/java/customProfileDirCUSTFFCHROME",
+    "src/java/cybervillains",
+    "src/java/hudsuckr",
+    "src/java/killableprocess",
+    "src/java/konqueror",
+    "src/java/opera",
+    "src/java/sslSupport",
+    "src/java/VERSION.txt",
+    "//common:js_core",
+    "//common:js_jsunit",
+    {
+      "//common:test_runner_html" : "core/TestRunner.hta",
+      "//common:remote_runner_html" : "core/RemoteRunner.hta"
+    }
+  ],
+  deps = [
+    "//chrome",
+    "//firefox",
+    "//htmlunit",
+    "//jobbie",
+    "//remote/common",
+    "//selenium",
+    "//support",
+    "//third_party/java/ant",
+    "//third_party/java/bcprov",
+    "//third_party/java/easymock",
+    "//third_party/java/mx4j",
+    "//third_party/java/servlet-api"
+  ])

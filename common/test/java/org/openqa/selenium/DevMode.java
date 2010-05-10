@@ -20,7 +20,7 @@ package org.openqa.selenium;
 
 public class DevMode {
   public static boolean isInDevMode() {
-    return isInDevMode("/webdriver-extension.zip");
+    return isInDevMode("/webdriver.xpi");
   }
 
   public static boolean isInDevMode(String nameOfRequiredResource) {
@@ -28,6 +28,7 @@ public class DevMode {
   }
 
   public static boolean isInDevMode(Class<?> resourceLoaderClazz, String nameOfRequiredResource) {
-    return resourceLoaderClazz.getResource(nameOfRequiredResource) == null;
+    return resourceLoaderClazz.getResource(nameOfRequiredResource) == null &&
+        resourceLoaderClazz.getResource("/" + nameOfRequiredResource) == null;
   }
 }

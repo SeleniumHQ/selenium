@@ -5,6 +5,10 @@ class RakeMappings
     fun.add_mapping("rake_task", CrazyFunRake::CheckPreconditions.new)
     fun.add_mapping("rake_task", CrazyFunRake::CreateTask.new)
     fun.add_mapping("rake_task", CrazyFunRake::CreateShortTask.new)
+    
+    fun.add_mapping("rake_file", CrazyFunRake::CheckFilePreconditions.new)
+    fun.add_mapping("rake_file", CrazyFunRake::CreateFileTask.new)
+    fun.add_mapping("rake_file", CrazyFunRake::CreateShortTask.new)
   end
 end
   
@@ -25,6 +29,34 @@ module CrazyFunRake
     end
   end
   
+  class CheckFilePreconditions
+    def handle(fun, dir, args)
+      raise StandardError, "name must be set" if args[:name].nil?
+      raise StandardError, "name must be set" if args[:src].nil?
+      
+      # The "one output rule" means that the srcs must either be a directory
+      # or a single file.
+      all_files = FileList[File.join(dir, args[:src])]
+      raise StandardError, "src must be a single file or directory" unless all_files.length == 1
+    end
+  end
+
+  class CreateFileTask < Tasks
+    def handle(fun, dir, args)
+      name = task_name(dir, args[:name])
+      
+      src = File.join(dir, args[:src])
+      if File.directory? src
+        file name => FileList[File.join(src, "**")]        
+      else
+        file name => src
+      end
+#      out = args[:out].nil? ? args[:name] : args[:out]
+      
+      Rake::Task[name].out = src
+    end
+  end
+  
   class CreateShortTask < Tasks
     def handle(fun, dir, args)
       name = task_name(dir, args[:name])
@@ -34,7 +66,7 @@ module CrazyFunRake
 
         task short_name => name
 
-        Rake::Task[short_name].out = args[:out]
+        Rake::Task[short_name].out = Rake::Task[name].out
       end
     end
   end

@@ -13,7 +13,7 @@ import static org.openqa.selenium.internal.PortProber.pollPort;
 
 public class SeleniumServerStarter extends TestSetup {
 
-  private static final String SELENIUM_JAR = "build/selenium-server-standalone.jar";
+  private static final String SELENIUM_JAR = "build/remote/server/server-standalone.jar";
   private Process serverProcess;
 
   public SeleniumServerStarter(Test test) {

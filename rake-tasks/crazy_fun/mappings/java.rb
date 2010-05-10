@@ -13,6 +13,7 @@ class JavaMappings
     fun.add_mapping("java_library", CrazyFunJava::Jar.new)
     fun.add_mapping("java_library", CrazyFunJava::TidyTempDir.new)
     fun.add_mapping("java_library", CrazyFunJava::CreateSourceJar.new)
+    fun.add_mapping("java_library", CrazyFunJava::CreateUberJar.new)
     
     fun.add_mapping("java_test", CrazyFunJava::CheckPreconditions.new)
     fun.add_mapping("java_test", CrazyFunJava::CreateTask.new)
@@ -41,7 +42,6 @@ module Antwrap
       else
         Rjb::load(jars.join(File::PATH_SEPARATOR), [])
       end
-      
     end
     
     module_function :load_ant_libs
@@ -53,6 +53,8 @@ module CrazyFunJava
     :ant_home => 'third_party/java/ant', :basedir => '.')
   @ant.project.setProperty('XmlLogger.file', 'build/build_log.xml')
   @ant.project.setProperty('build.compiler', 'org.eclipse.jdt.core.JDTCompilerAdapter');
+  @ant.taskdef(:name => 'jarjar', :classname => 'com.tonicsystems.jarjar.JarJarTask',
+               :classpath => 'third_party/java/jarjar/jarjar-1.0.jar')
 
   # Silence logging to the console, and output to the xml build file
   @ant.project.getBuildListeners().get(0).setMessageOutputLevel(verbose ? 2 : 0)
@@ -96,6 +98,15 @@ class BaseJava < Tasks
   def srcs_name(dir, name)
     name = task_name(dir, name)
     jar = "build/" + (name.slice(2 ... name.length)) + "-src"
+    jar = jar.sub(":", "/")
+    jar << ".jar"
+
+    jar.gsub("/", Platform.dir_separator)
+  end
+
+  def uber_name(dir, name)
+    name = task_name(dir, name)
+    jar = "build/" + (name.slice(2 ... name.length)) + "-standalone"
     jar = jar.sub(":", "/")
     jar << ".jar"
 
@@ -221,9 +232,6 @@ class Javac < BaseJava
           ant.include(:name => [dir, src_glob].join(File::SEPARATOR))
         end
       end
-      
-
-      #sh cmd
     end
     
     desc "Build #{jar}"
@@ -250,35 +258,45 @@ class CopyResources < BaseJava
         elsif (res.is_a? Hash)
           # Copy the key to "out_dir + value"
           res.each do |from, to|
-            if from.is_a? Symbol
-              target = Rake::Task[task_name(dir, from)].out
+            possible_task = task_name(dir, from)
+            if Rake::Task.task_defined?(possible_task) and Rake::Task[possible_task].out
+              target = Rake::Task[possible_task].out
+              
               if File.directory? target
                 dest = File.join(out_dir, to)
+                mkdir_p dest
+                cp_r target, dest
               else
-                dest = File.dirname(File.join(out_dir, to))
+                dest = File.join(out_dir, to)
+                mkdir_p File.dirname(dest)
+                cp_r target, dest
               end
-              mkdir_p dest
-              cp_r target, dest
             else
-              Dir["#{out_dir}/#{to}/**.svn"].each { |file| rm_rf file }
               tdir = to.gsub(/\/.*?$/, "")
               mkdir_p "#{out_dir}/#{tdir}"
+              src = find_file(File.join(dir, from))
             
               begin
-                if File.directory? from
+                if File.directory? src
                   mkdir_p "#{out_dir}/#{to}"
+                else 
+                  mkdir_p File.join(out_dir, File.dirname(to))
                 end
-                cp_r find_file(dir + "/" + from), "#{out_dir}/#{to}"
+                cp_r src, "#{out_dir}/#{to}"
               rescue
                 Dir["#{out_dir}/**/.svn"].each { |file| rm_rf file }
-                cp_r find_file(dir + "/" + from), "#{out_dir}/#{to}"
+                cp_r src, "#{out_dir}/#{to}"
               end
             end
           end
           
           next
         else
-          out = res
+          if File.exists? res
+            out = res
+          else
+            out = File.join(dir, res)
+          end
         end
         
         cp_r out, out_dir
@@ -294,7 +312,14 @@ class Jar < BaseJava
     jar = jar_name(dir, args[:name])
 
     file jar do
-      zip(temp_dir(dir, args[:name]), jar)
+      CrazyFunJava.ant.jar(:jarfile => jar, :basedir => temp_dir(dir, args[:name]), 
+          :excludes => '.svn') do |ant|
+        if (args[:main])
+          ant.manifest do |ant|
+            ant.attribute(:name => 'Main-Class', :value => args[:main])
+          end
+        end
+      end
     end
   end
 end
@@ -323,13 +348,13 @@ class RunTests < BaseJava
       mkdir_p 'build/test_logs'
       
       tests.each do |test|
-	      CrazyFunJava.ant.junit(:fork => true, :forkmode => 'once', :showoutput => true,
-			                         :printsummary => 'on', :haltonerror => true, :haltonfailure => true) do |ant|
+  	    CrazyFunJava.ant.junit(:fork => true, :forkmode => 'once', :showoutput => true,
+	  	                         :printsummary => 'on', :haltonerror => true, :haltonfailure => true) do |ant|
 	        ant.classpath do |ant_cp|
 	          cp.all.each do |jar|
-	            ant_cp.pathelement(:location => jar)
-	          end
-	        end
+              ant_cp.pathelement(:location => jar)
+            end
+  	      end
 
 	        ant.formatter(:type => 'plain', :usefile => false)
 	        ant.formatter(:type => 'xml')
@@ -422,6 +447,33 @@ class CreateSourceJar < BaseJava
     end
     
     task "#{task_name(dir, args[:name])}:srcs" => [jar]
+  end
+end
+
+class CreateUberJar < BaseJava
+  def handle(fun, dir, args)
+    jar = uber_name(dir, args[:name])
+    
+    file jar => jar_name(dir, args[:name]) do
+      puts "Uber-jar: #{task_name(dir, args[:name])} as #{jar}"
+      
+      mkdir_p File.dirname(jar)
+      
+      cp = ClassPath.new(jar_name(dir, args[:name])).all
+      cp.push(jar_name(dir, args[:name]))
+      
+      CrazyFunJava.ant.jarjar(:jarfile => jar) do |ant|
+        cp.each do |j|
+          ant.zipfileset(:src => j, :excludes => "META-INF/BCKEY.DSA,META-INF/BCKEY.SF")
+        end
+        if (args[:main])
+          ant.manifest do |ant|
+            ant.attribute(:name => 'Main-Class', :value => args[:main])
+          end
+        end
+      end
+    end
+    task task_name(dir, args[:name]) + ":uber" => jar
   end
 end
 
