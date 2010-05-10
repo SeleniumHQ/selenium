@@ -16,3 +16,14 @@ java_library(name = "test",
     ":client",
     "//remote/common:test"
   ])
+
+java_library(name = "combined",
+  deps = [
+    ":client",
+    "//chrome",
+    "//firefox",
+    "//htmlunit",
+    "//jobbie",
+    "//selenium",
+    "//support"
+  ])

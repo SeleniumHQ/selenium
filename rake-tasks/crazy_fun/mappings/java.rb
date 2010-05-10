@@ -14,7 +14,8 @@ class JavaMappings
     fun.add_mapping("java_library", CrazyFunJava::TidyTempDir.new)
     fun.add_mapping("java_library", CrazyFunJava::CreateSourceJar.new)
     fun.add_mapping("java_library", CrazyFunJava::CreateUberJar.new)
-    
+    fun.add_mapping("java_library", CrazyFunJava::CreateProjectJar.new)
+
     fun.add_mapping("java_test", CrazyFunJava::CheckPreconditions.new)
     fun.add_mapping("java_test", CrazyFunJava::CreateTask.new)
     fun.add_mapping("java_test", CrazyFunJava::CreateShortNameTask.new)
@@ -95,18 +96,9 @@ class BaseJava < Tasks
     jar.gsub("/", Platform.dir_separator)
   end
 
-  def srcs_name(dir, name)
+  def custom_name(dir, name, custom)
     name = task_name(dir, name)
-    jar = "build/" + (name.slice(2 ... name.length)) + "-src"
-    jar = jar.sub(":", "/")
-    jar << ".jar"
-
-    jar.gsub("/", Platform.dir_separator)
-  end
-
-  def uber_name(dir, name)
-    name = task_name(dir, name)
-    jar = "build/" + (name.slice(2 ... name.length)) + "-standalone"
+    jar = "build/" + (name.slice(2 ... name.length)) + "-" + custom
     jar = jar.sub(":", "/")
     jar << ".jar"
 
@@ -163,6 +155,8 @@ class CreateTask < BaseJava
     
     if args[:srcs]
       file jar_name(dir, args[:name])
+    else
+      task jar_name(dir, args[:name])
     end
   end
 end
@@ -191,6 +185,14 @@ class AddDepedencies < BaseJava
     add_dependencies(target, dir, args[:deps])
     add_dependencies(target, dir, args[:srcs])
     add_dependencies(target, dir, args[:resources])
+
+    if (args[:srcs].nil?)
+      target_name = jar_name(dir, args[:name])
+      target = Rake::Task[target_name]
+      add_dependencies(target, dir, args[:deps])
+      add_dependencies(target, dir, args[:resources])
+    end
+
   end
 end
 
@@ -425,7 +427,7 @@ class CreateSourceJar < BaseJava
   def handle(fun, dir, args)
     return if args[:srcs].nil?
 
-    jar = srcs_name(dir, args[:name])
+    jar = custom_name(dir, args[:name], "src")
     temp_dir = "#{jar}_temp"
 
     file jar do
@@ -452,15 +454,23 @@ end
 
 class CreateUberJar < BaseJava
   def handle(fun, dir, args)
-    jar = uber_name(dir, args[:name])
+    jar = custom_name(dir, args[:name], "standalone")
+
+    if (args[:srcs])
+      deps = jar_name(dir, args[:name])
+    else
+      deps = args[:deps].collect do |dep|
+        task_name(dir, dep)
+      end
+    end
     
-    file jar => jar_name(dir, args[:name]) do
+    file jar => deps do
       puts "Uber-jar: #{task_name(dir, args[:name])} as #{jar}"
       
       mkdir_p File.dirname(jar)
       
       cp = ClassPath.new(jar_name(dir, args[:name])).all
-      cp.push(jar_name(dir, args[:name]))
+      cp.push(jar_name(dir, args[:name])) if args[:srcs]
       
       CrazyFunJava.ant.jarjar(:jarfile => jar) do |ant|
         cp.each do |j|
@@ -474,6 +484,44 @@ class CreateUberJar < BaseJava
       end
     end
     task task_name(dir, args[:name]) + ":uber" => jar
+  end
+end
+
+class CreateProjectJar < BaseJava
+  def handle(fun, dir, args)
+    jar = custom_name(dir, args[:name], "nodeps")
+
+    if (args[:srcs])
+      deps = jar_name(dir, args[:name])
+    else
+      deps = args[:deps].collect do |dep|
+        task_name(dir, dep)
+      end
+    end
+
+    file jar => deps do
+      puts "Project-jar: #{task_name(dir, args[:name])} as #{jar}"
+
+      mkdir_p File.dirname(jar)
+
+      cp = ClassPath.new(jar_name(dir, args[:name])).all
+      cp.push(jar_name(dir, args[:name])) if args[:srcs]
+
+      CrazyFunJava.ant.jarjar(:jarfile => jar) do |ant|
+        cp.each do |j|
+          unless (j.to_s =~ /^third_party/)
+            ant.zipfileset(:src => j, :excludes => "META-INF/BCKEY.DSA,META-INF/BCKEY.SF")
+          end
+        end
+        if (args[:main])
+          ant.manifest do |ant|
+            ant.attribute(:name => 'Main-Class', :value => args[:main])
+          end
+        end
+      end
+    end
+    task task_name(dir, args[:name]) + ":project" => jar
+    Rake::Task[jar].out = jar
   end
 end
 

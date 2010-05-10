@@ -509,18 +509,6 @@ task :remote_release => [:remote] do
   rm_rf "build/dist/remote_server", :verbose => false
 end
 
-java_uberjar(:name => "selenium-java",
-             :deps => [
-                    :chrome,
-                    "//htmlunit",
-                    :ie,
-                    :firefox,
-                    :remote_client,
-                    :selenium,
-                    :support
-                  ],
-              :no_libs => true)
-
 task :release => [:'all_zip', :'selenium-server-standalone', :'selenium-server_zip'] do
   cp "build/selenium-server-standalone.jar", "build/selenium-server-standalone-#{version}.jar"
   cp "build/selenium-java.zip", "build/selenium-java-#{version}.zip"
@@ -544,4 +532,16 @@ task :setup do
   if python?
     sh "easy_install virtualenv"
   end
+end
+
+desc 'Build the selenium client jars'
+task 'selenium-java' => 'build/selenium-java.jar'
+file 'build/selenium-java.jar' => '//remote/client:combined:project' do
+  cp 'build/remote/client/combined-nodeps.jar', 'build/selenium-java.jar'
+end
+
+desc 'Build the standalone server'
+task 'selenium-server-standalone' => 'build/selenium-server-standalone.jar'
+file 'build/selenium-server-standalone.jar' => '//remote/server:server:uber' do
+  cp 'build/remote/server/server-standalone.jar', 'build/selenium-server-standalone.jar'
 end
