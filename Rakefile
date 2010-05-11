@@ -345,7 +345,7 @@ task :javadocs => [:common, :firefox, "//htmlunit", :jobbie, :remote, :support, 
 end
 
 # Installs the webdriver python bindings using virtualenv for testing.
-task :webdriver_py => [:chrome, :firefox, :firefox_xpi, :remote_client] do
+task :webdriver_py => [:chrome, :firefox, "//firefox:webdriver", :remote_client] do
   if python? then
     sh "virtualenv build/python", :verbose => true do |ok, res|
         if ! ok
@@ -360,13 +360,13 @@ task :webdriver_py => [:chrome, :firefox, :firefox_xpi, :remote_client] do
 
     # Copy browser extensions over to src so setup.py will pick them up. This is such a hack.
     cp 'build/chrome-extension.zip', "chrome/src/py/", :verbose => true
-    cp 'build/webdriver-extension.zip', "firefox/src/py/", :verbose => true
+    cp 'build/firefox/webdriver.xpi', "firefox/src/py/", :verbose => true
 
     sh "build/python/bin/python setup.py build", :verbose => true
 
     # Remove the extensions we copied to src.
     rm "chrome/src/py/chrome-extension.zip", :verbose => true
-    rm "firefox/src/py/webdriver-extension.zip", :verbose => true
+    rm "firefox/src/py/webdriver.xpi", :verbose => true
   end
 end
 
