@@ -17,8 +17,8 @@
 
 
 import logging
-from webdriver.common_tests import api_examples
-from webdriver.chrome.webdriver import WebDriver
+from selenium.common_tests import api_examples
+from selenium.chrome.webdriver import WebDriver
 from selenium.common.webserver import SimpleWebServer
 
 
