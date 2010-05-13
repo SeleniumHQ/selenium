@@ -15,10 +15,15 @@
 
 import common
 
+FIREFOX = "firefox"
+IE = "ie"
+CHROME = "chrome"
+REMOTE = "remote"
+
 def get_driver(name, *args, **kw):
     try:
         # __import__ returns the top level module
-        top = __import__("webdriver.%s.webdriver" % name)
+        top = __import__("selenium.%s.webdriver" % name)
         wd = getattr(getattr(top, name), "webdriver")
     except (ImportError, AttributeError):
         raise ValueError("There's no driver for `%s` browser" % name)
