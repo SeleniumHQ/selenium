@@ -54,7 +54,7 @@ class JavaGen < BaseGenerator
       classpath = build_classpath_(args[:name].to_sym)
 
       temp = "#{out}_classes"
-      mkdir_p temp, :verbose => false
+      mkdir_p temp
 
       puts "Building: #{args[:name]} as #{out}"
 
@@ -74,7 +74,7 @@ class JavaGen < BaseGenerator
         begin
           # Compile
           cmd = "javac -cp #{classpath.join(classpath_separator?)} -g -source 5 -target 5 -d #{temp} @#{src_file}"
-          sh cmd, :verbose => false
+          sh cmd
         ensure
           # Delete the temporary file
           File.delete src_file
@@ -93,7 +93,7 @@ class JavaGen < BaseGenerator
           res.each do |from, to|
             Dir["#{temp}/#{to}/**.svn"].each { |file| rm_rf file }
             dir = to.gsub(/\/.*?$/, "")
-            mkdir_p "#{temp}/#{dir}", :verbose => false
+            mkdir_p "#{temp}/#{dir}"
             
             begin
               if File.directory? from
@@ -113,9 +113,9 @@ class JavaGen < BaseGenerator
 
       Dir["#{temp}/**/.svn"].each { |file| rm_rf file }
       cmd = "cd #{temp} && jar cMf ../../#{out} *"
-      sh cmd, :verbose => false
+      sh cmd
 
-      rm_rf temp, :verbose => false
+      rm_rf temp
     end
     
     add_zip_task_(args)
@@ -132,15 +132,15 @@ class JavaGen < BaseGenerator
       classpath = build_classpath_(args[:name].to_sym)
       temp = "#{zip_out}_temp"
       
-      mkdir_p temp, :verbose => false
+      mkdir_p temp
       
       classpath.each do |f|
         copy_resource_(f, temp) if f =~ /\.jar/
       end
       
-      sh "cd #{temp} && jar cMf ../../#{zip_out} *", :verbose => false
+      sh "cd #{temp} && jar cMf ../../#{zip_out} *"
       
-      rm_rf temp, :verbose => false
+      rm_rf temp
     end
   end
   
@@ -166,12 +166,12 @@ class JavaGen < BaseGenerator
     test_string += ' ' + args[:args] if args[:args]
 
     if args[:tests].length == 0
-      result = sh test_string, :verbose => false
+      result = sh test_string
     else
       args[:tests].each do |test|
         puts "Running: #{test}\n"
         test_string += " #{test} "
-        result = sh test_string, :verbose => false
+        result = sh test_string
       end
     end
 
@@ -212,7 +212,7 @@ class JavaGen < BaseGenerator
       
       # Take each dependency, extract and then rezip
       temp = "#{out}_temp"
-      mkdir_p temp, :verbose => false
+      mkdir_p temp
       
       all = []
       args[:deps].each do |d|
@@ -223,7 +223,7 @@ class JavaGen < BaseGenerator
       all.each do |dep|
         next unless dep.to_s =~ /\.jar$/
         next if (dep.to_s =~ /\lib\// or dep.to_s =~ /^third_party\//) and args[:no_libs] == true
-        sh "cd #{temp} && jar xf ../../#{dep}", :verbose => false
+        sh "cd #{temp} && jar xf ../../#{dep}"
       end      
 
       excludes = args[:exclude] || []
@@ -251,8 +251,8 @@ class JavaGen < BaseGenerator
         File.open(manifest_file, "w") do |f| f.write(manifest.join("")) end
       end
             
-      sh "cd #{temp} && jar cMf ../../#{out} *", :verbose => false
-      rm_rf temp, :verbose => false
+      sh "cd #{temp} && jar cMf ../../#{out} *"
+      rm_rf temp
     end
     
     add_zip_task_(args)
@@ -295,7 +295,7 @@ class JavaGen < BaseGenerator
     
     file out do
       temp = "#{out}_temp"
-      mkdir_p "#{temp}/WEB-INF/lib", :verbose => false
+      mkdir_p "#{temp}/WEB-INF/lib"
       
       # Copy the resources. They're easy
       copy_resource_(args[:resources], temp) unless args[:resources].nil?
@@ -308,8 +308,8 @@ class JavaGen < BaseGenerator
       
       Dir["#{temp}/**/.svn"].each { |file| rm_rf file }
             
-      sh "cd #{temp} && jar cMf ../../#{out} *", :verbose => false
-      rm_rf temp, :verbose => false
+      sh "cd #{temp} && jar cMf ../../#{out} *"
+      rm_rf temp
     end
         
     task args[:name] => out

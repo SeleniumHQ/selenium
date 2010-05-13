@@ -14,13 +14,13 @@ class OriginalMozilla < BaseGenerator
       # Set up a temporary directory
       target = "build/#{args[:out]}.temp"
       if (File.exists?(target))
-        rm_rf target, :verbose => false
+        rm_rf target
       end
-      mkdir_p target, :verbose => false
+      mkdir_p target
 
       # Copy the sources into it
       FileList[args[:srcs]].each do |src|
-        cp_r "#{src}", target, :verbose => false
+        cp_r "#{src}", target
       end
 
       # Copy the resources into the desired location
@@ -29,9 +29,9 @@ class OriginalMozilla < BaseGenerator
       end
 
       # Package up into the output file
-      rm_r Dir.glob("#{target}/**/.svn"), :verbose => false
-      sh "cd #{target} && jar cMf ../#{args[:out]} *", :verbose => false
-      rm_r target, :verbose => false
+      rm_r Dir.glob("#{target}/**/.svn")
+      sh "cd #{target} && jar cMf ../#{args[:out]} *"
+      rm_r target
     end
   end
 end

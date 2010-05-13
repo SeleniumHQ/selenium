@@ -118,8 +118,8 @@ task :test => [
               ]
 
 task :clean do
-  rm_rf 'build/', :verbose => false
-  rm_rf 'iphone/build/', :verbose => false
+  rm_rf 'build/'
+  rm_rf 'iphone/build/'
 end
 
 dll(:name => "ie_win32_dll",
@@ -233,11 +233,11 @@ xpi(:name => "ide",
 task :'selenium-server_zip' do
   temp = "build/selenium-server_zip"
   mkdir_p temp
-  sh "cd #{temp} && jar xf ../selenium-server.zip", :verbose => false
+  sh "cd #{temp} && jar xf ../selenium-server.zip"
   rm_f "build/selenium-server.zip"
   Dir["#{temp}/webdriver-*.jar"].each { |file| rm_rf file }
   mv "#{temp}/selenium-server.jar", "#{temp}/selenium-server-#{version}.jar"
-  sh "cd #{temp} && jar cMf ../selenium-server.zip *", :verbose => false
+  sh "cd #{temp} && jar cMf ../selenium-server.zip *"
 end
 
 java_test(:name => "webdriver-selenium-server-test",
@@ -331,7 +331,7 @@ java_test(:name => "debug_jsapi",
           :main => "org.openqa.selenium.environment.webserver.Jetty6AppServer")
 
 task :javadocs => [:common, :firefox, "//htmlunit", :jobbie, :remote, :support, :chrome, :selenium] do
-  mkdir_p "build/javadoc", :verbose => false
+  mkdir_p "build/javadoc"
    sourcepath = ""
    classpath = "third_party/java/hamcrest/hamcrest-all-1.1.jar"
    %w(common firefox jobbie htmlunit support remote/common remote/client chrome selenium).each do |m|
@@ -459,7 +459,7 @@ task :iphone_server do
   sdk = iPhoneSDK?
   if sdk != nil then
     puts "Building iWebDriver iphone app"
-    sh "cd iphone && xcodebuild -sdk #{sdk} ARCHS=i386 -target iWebDriver >/dev/null", :verbose => false
+    sh "cd iphone && xcodebuild -sdk #{sdk} ARCHS=i386 -target iWebDriver >/dev/null"
   else
     puts "XCode not found. Not building the iphone driver."
   end
@@ -480,7 +480,7 @@ def version
 end
 
 task :remote_release => [:remote] do
-  mkdir_p "build/dist/remote_client", :verbose => false
+  mkdir_p "build/dist/remote_client"
 
   cp 'remote/build/webdriver-remote-client.jar', 'build/dist/remote_client'
   cp 'remote/build/webdriver-remote-common.jar', 'build/dist/remote_client'
@@ -491,9 +491,9 @@ task :remote_release => [:remote] do
   cp 'third_party/java/google-collect/google-collect-1.0.jar', 'build/dist/remote_client'
 
   sh "cd build/dist && zip -r webdriver-remote-client-#{version}.zip remote_client/*"
-  rm_rf "build/dist/remote_client", :verbose => false
+  rm_rf "build/dist/remote_client"
 
-  mkdir_p "build/dist/remote_server", :verbose => false
+  mkdir_p "build/dist/remote_server"
 
   cp 'remote/build/webdriver-remote-server.jar', 'build/dist/remote_server'
   cp 'remote/build/webdriver-remote-common.jar', 'build/dist/remote_server'
@@ -506,7 +506,7 @@ task :remote_release => [:remote] do
   rm Dir.glob('build/dist/remote_server/servlet*.jar')
 
   sh "cd build/dist && zip -r webdriver-remote-server-#{version}.zip remote_server/*"
-  rm_rf "build/dist/remote_server", :verbose => false
+  rm_rf "build/dist/remote_server"
 end
 
 task :release => [:'all_zip', :'selenium-server-standalone', :'selenium-server_zip'] do
@@ -518,11 +518,11 @@ end
 task :'selenium-java_zip' do
   temp = "build/selenium-java_zip"
   mkdir_p temp
-  sh "cd #{temp} && jar xf ../selenium-java.zip", :verbose => false
+  sh "cd #{temp} && jar xf ../selenium-java.zip"
   rm_f "build/selenium-java.zip"
   Dir["#{temp}/webdriver-*.jar"].each { |file| rm_rf file }
   mv "#{temp}/selenium-java.jar", "#{temp}/selenium-java-#{version}.jar"
-  sh "cd #{temp} && jar cMf ../selenium-java.zip *", :verbose => false
+  sh "cd #{temp} && jar cMf ../selenium-java.zip *"
 end
 
 desc 'Install prerequisites for the build. You may need to run this as root or Administrator'
