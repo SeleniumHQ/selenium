@@ -350,6 +350,7 @@ class RunTests < BaseJava
       mkdir_p 'build/test_logs'
       
       tests.each do |test|
+        CrazyFunJava.ant.project.getBuildListeners().get(0).setMessageOutputLevel(2) if ENV['log']
   	    CrazyFunJava.ant.junit(:fork => true, :forkmode => 'once', :showoutput => true,
 	  	                         :printsummary => 'on', :haltonerror => true, :haltonfailure => true) do |ant|
 	        ant.classpath do |ant_cp|
@@ -358,13 +359,14 @@ class RunTests < BaseJava
             end
   	      end
 
-	        ant.formatter(:type => 'plain', :usefile => false)
+	        ant.formatter(:type => 'plain')
 	        ant.formatter(:type => 'xml')
 
 	        class_name = test.gsub('\\', '/').split('/')[-1]
 	        name = "#{package_name(test)}.#{class_name}".gsub('\\', '/').gsub('/', '.').gsub('.java', '')
           ant.test(:name => name, :todir => 'build/test_logs')
         end
+        CrazyFunJava.ant.project.getBuildListeners().get(0).setMessageOutputLevel(verbose ? 2 : 0)
       end
     end
   end
