@@ -1,0 +1,17 @@
+mozilla_xpt(name = "ide-auto-complete",
+    srcs  = [ "src/extension/idl/SeleniumIDEGenericAutoCompleteSearch.idl" ])
+
+mozilla_xpi(name = "selenium-ide",
+  content = [
+    "src/extension/chrome",
+    "src/extension/content",
+    "//common:js_core",
+    "src/extension/skin",
+    "src/extension/locale"
+  ],
+  components = [
+    ":ide-auto-complete",
+    "src/extension/components/SeleniumIDEGenericAutoCompleteSearch.js"
+  ],
+  chrome = "src/extension/chrome.manifest.production",
+  install = "src/extension/install.rdf")

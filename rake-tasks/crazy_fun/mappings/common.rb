@@ -110,7 +110,7 @@ class Tasks
       from = to_filelist(dir, src)
     end
     
-    cp_r from, to_dir(dest)
+    cp_r from, to_dir(dest), :remove_destination => true
   end
   
   def copy_symbol(dir, src, dest)

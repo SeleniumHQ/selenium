@@ -53,7 +53,7 @@ RakeMappings.new.add_all(crazy_fun)
 # need to fall back to prebuilt binaries. The prebuilt binaries are stored in
 # a directory structure identical to that used in the "build" folder, but
 # rooted at one of the following locations:
-["chrome/prebuilt", "common/prebuilt", "firefox/prebuilt", "jobbie/prebuilt"].each do |pre|
+["chrome/prebuilt", "common/prebuilt", "firefox/prebuilt", "jobbie/prebuilt", "ide/prebuilt"].each do |pre|
   crazy_fun.prebuilt_roots << pre
 end
 
@@ -72,6 +72,7 @@ task :all => [:'selenium-java']
 task :all_zip => [:'selenium-java_zip']
 task :chrome => [ "//chrome" ]
 task :common => [ "//common" ]
+task :common_core => [ "//common:core" ]
 task :htmlunit => [ "//htmlunit" ]
 task :ie => [ "//jobbie" ]
 task :firefox => [ "//firefox" ]
@@ -86,6 +87,7 @@ task :support => [ "//support" ]
 task :iphone_client => [:'webdriver-iphone-client']
 task :iphone => [:iphone_server, :iphone_client]
 task :'selenium-server-standalone' => ["//remote/server:server:uber"]
+task :ide => [ "//ide:selenium-ide" ]
 
 task :test_common => [ "//common:test" ]
 task :test_chrome => [ "//chrome:test:run" ]
@@ -213,23 +215,6 @@ java_test(:name => "webdriver-single-testsuite",
                      "//common:test",
                    ])
 
-xpi(:name => "ide",
-    :srcs => [],
-    :deps => [],
-    :resources => [
-                    { "ide/src/extension/chrome/" => "/" },
-                    { "common/src/js/core/*" => "chrome/content/selenium/"},
-                    { "ide/src/extension/content" => "chrome/" },
-                    { "ide/src/extension/skin" => "chrome/" },
-                    { "ide/src/extension/locale" => "chrome/" },
-                    { :"ide-auto-complete" => "components/" },
-                    { "ide/src/extension/components/SeleniumIDEGenericAutoCompleteSearch.js" => "components/" },
-                    { "ide/src/extension/install.rdf" => "/" },
-                    { "ide/src/extension/chrome.manifest.production" => "/chrome.manifest" },
-                    { "common/src/js/core/scripts/selenium-testrunner.js" => "content-files/" }
-                  ],
-    :out => "selenium-ide-1.0.7-SNAPSHOT.xpi")
-
 task :'selenium-server_zip' do
   temp = "build/selenium-server_zip"
   mkdir_p temp
@@ -273,7 +258,6 @@ task "chrome/build/chrome-extension.zip" => :'chrome_extension'
 Rake::Task["build/chrome-extension.zip"].out = "build/chrome-extension.zip"
 task "chrome\\build\\chrome-extension.zip" => :'chrome_extension'
 Rake::Task["build/chrome-extension.zip"].out = "build/chrome-extension.zip"
-
 
 java_test(:name => "webdriver-selenium-test",
           :srcs => [ "selenium/test/java/**/*.java" ],
