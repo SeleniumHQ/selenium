@@ -25,9 +25,9 @@ import java.util.prefs.Preferences;
 import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
-import org.apache.tools.ant.BuildException;
 import org.openqa.jetty.log.LogFactory;
 import org.openqa.selenium.internal.CommandLine;
+import org.openqa.selenium.internal.FileHandler;
 import org.openqa.selenium.server.BrowserConfigurationOptions;
 import org.openqa.selenium.server.browserlaunchers.WindowsUtils.WindowsRegistryException;
 
@@ -230,10 +230,8 @@ public class WindowsProxyManager {
     File globalCacheDir = new File(cachePath);
     File iexploreCacheDir = new File(globalCacheDir, "Content.IE5");
     if (iexploreCacheDir.exists()) {
-      try {
-        LauncherUtils.recursivelyDeleteDir(iexploreCacheDir);
-      } catch (BuildException e) {
-      } // Errors are expected here; the index.dat file is undeletable
+      // Errors are expected here; the index.dat file is undeletable. Ignore return value
+      FileHandler.delete(iexploreCacheDir);
     }
   }
 
