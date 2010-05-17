@@ -28,6 +28,8 @@ import org.apache.commons.logging.Log;
 import org.openqa.jetty.log.LogFactory;
 import org.openqa.selenium.internal.CommandLine;
 import org.openqa.selenium.internal.FileHandler;
+import org.openqa.selenium.internal.Maps;
+import org.openqa.selenium.internal.TemporaryFilesystem;
 import org.openqa.selenium.server.BrowserConfigurationOptions;
 import org.openqa.selenium.server.browserlaunchers.WindowsUtils.WindowsRegistryException;
 
@@ -58,11 +60,9 @@ public class WindowsProxyManager {
     this.portDriversShouldContact = portDriversShouldContact;
     this.customPACappropriate = customPACappropriate;
     this.port = port;
-    customProxyPACDir = LauncherUtils.createCustomProfileDir(sessionId);
-    if (customProxyPACDir.exists()) {
-      LauncherUtils.recursivelyDeleteDir(customProxyPACDir);
-    }
-    customProxyPACDir.mkdir();
+
+    customProxyPACDir = TemporaryFilesystem.createTempDir(sessionId, "");
+
     init();
   }
 
@@ -289,11 +289,16 @@ public class WindowsProxyManager {
   protected static boolean hideCookies(File cookieDir,
                                        String cookieSuffix, File hiddenCookieDir) {
     boolean result = false;
-    LauncherUtils.recursivelyDeleteDir(hiddenCookieDir);
+    FileHandler.delete(hiddenCookieDir);
     if (cookieDir.exists()) {
       log.info("Copying cookies from " + cookieDir.getAbsolutePath() +
                " to " + hiddenCookieDir.getAbsolutePath());
-      LauncherUtils.copyDirectory(cookieDir, cookieSuffix, hiddenCookieDir);
+      try {
+        FileHandler.copy(cookieDir, hiddenCookieDir, cookieSuffix);
+      } catch (IOException e) {
+        log.warn("Unable to back up original cookies. Continuing");
+        // We used to ignore this, continue to do so
+      }
       log.info("Deleting original cookies...");
       deleteFlatDirContents(cookieDir, cookieSuffix);
       result = true;
@@ -332,8 +337,13 @@ public class WindowsProxyManager {
     if (hiddenCookieDir.exists()) {
       log.info("Copying cookies from " + hiddenCookieDir.getAbsolutePath() +
                " to " + cookieDir.getAbsolutePath());
-      LauncherUtils.copyDirectory(hiddenCookieDir, cookieDir);
-      LauncherUtils.recursivelyDeleteDir(hiddenCookieDir);
+      try {
+        FileHandler.copy(hiddenCookieDir, cookieDir);
+      } catch (IOException e) {
+        log.warn("Unable to restore cookies.", e);
+        // We used to ignore this, so just keep on trucking
+      }
+      FileHandler.delete(hiddenCookieDir);
       result = true;
     }
     return result;
@@ -495,7 +505,7 @@ public class WindowsProxyManager {
   }
 
   private HudsuckrSettings parseHudsuckrSettings(String hudsuckrOutput) {
-    Map<String, String> settings = LauncherUtils.parseDictionary(hudsuckrOutput, HUDSUCKR_LINE);
+    Map<String, String> settings = Maps.parseDictionary(hudsuckrOutput, HUDSUCKR_LINE, false);
     String connection, server, bypass, pacUrl;
     boolean direct, proxy, pac, wpad;
     for (HudsuckrKey key : HudsuckrKey.values()) {

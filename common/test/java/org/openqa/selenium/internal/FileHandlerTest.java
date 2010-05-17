@@ -57,6 +57,18 @@ public class FileHandlerTest extends TestCase {
     }
   }
 
+  @Test public void testFileCopyCanFilterBySuffix() throws IOException {
+    File source = TemporaryFilesystem.createTempDir("filehandler", "source");
+    File textFile = File.createTempFile("example", ".txt", source);
+    File xmlFile = File.createTempFile("example", ".xml", source);
+    File dest = TemporaryFilesystem.createTempDir("filehandler", "dest");
+
+    FileHandler.copy(source, dest, ".txt");
+
+    assertTrue(new File(dest, textFile.getName()).exists());
+    assertFalse(new File(dest, xmlFile.getName()).exists());
+  }
+
   private File writeTestZip(File file, int files) throws IOException {
     ZipOutputStream out = new ZipOutputStream(new FileOutputStream(file));
     for (int i = 0; i < files; i++) {

@@ -29,6 +29,7 @@ import org.apache.commons.logging.Log;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.taskdefs.ExecTask;
 import org.openqa.jetty.log.LogFactory;
+import org.openqa.selenium.internal.Maps;
 import org.openqa.selenium.server.log.AntJettyLoggerBuildListener;
 
 /**
@@ -213,7 +214,8 @@ public class MacProxyManager {
         getPrimaryNetworkServiceName();
         String output = runNetworkSetup("-getwebproxy", networkService);
         log.debug(output);
-        Map<String,String> dictionary = LauncherUtils.parseDictionary(output.toString(), NETWORKSETUP_LINE);
+      Map<String,String> dictionary =
+          Maps.parseDictionary(output.toString(), NETWORKSETUP_LINE, false);
         String strEnabled = verifyKey("Enabled", dictionary, "networksetup", output);
         boolean enabled = isTrueOrSomething(strEnabled);
         String server = verifyKey("Server", dictionary, "networksetup", output);
@@ -278,11 +280,11 @@ public class MacProxyManager {
         // and communicated with it line-by-line using stdin/stdout
         String output = runScutil("show State:/Network/Global/IPv4");
         log.debug(output);
-        Map<String,String> dictionary = LauncherUtils.parseDictionary(output.toString(), SCUTIL_LINE);
+      Map<String,String> dictionary = Maps.parseDictionary(output.toString(), SCUTIL_LINE, false);
         String primaryInterface = verifyKey("PrimaryInterface", dictionary, "scutil", output);
         output = runNetworkSetup("-listnetworkserviceorder");
         log.debug(output);
-        dictionary = LauncherUtils.parseDictionary(output.toString(), NETWORKSETUP_LISTORDER_LINE, true);
+      dictionary = Maps.parseDictionary(output.toString(), NETWORKSETUP_LISTORDER_LINE, true);
         String userDefinedName = verifyKey(primaryInterface, dictionary, "networksetup -listnetworksetuporder", output); 
         networkService = userDefinedName;
         return userDefinedName;

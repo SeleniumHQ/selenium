@@ -1,5 +1,24 @@
 package org.openqa.selenium.server.browserlaunchers;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
+import java.io.Writer;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import com.thoughtworks.selenium.SeleniumException;
 import org.apache.commons.logging.Log;
 import org.apache.tools.ant.BuildException;
@@ -8,18 +27,10 @@ import org.apache.tools.ant.taskdefs.Copy;
 import org.apache.tools.ant.taskdefs.Delete;
 import org.apache.tools.ant.types.FileSet;
 import org.openqa.jetty.log.LogFactory;
+import org.openqa.selenium.internal.Maps;
 import org.openqa.selenium.remote.ProxyPac;
 import org.openqa.selenium.server.BrowserConfigurationOptions;
 import org.openqa.selenium.server.ClassPathResource;
-
-import java.io.*;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static org.openqa.selenium.server.browserlaunchers.ProxyUtils.isOnlyProxyingSelenium;
 
@@ -470,32 +481,4 @@ public class LauncherUtils {
     }
     return url;
   }
-
-  /**
-   * Run the specified pattern on each line of the data to extract a dictionary
-   */
-  public static Map<String, String> parseDictionary(String data, Pattern pattern, boolean reverse) {
-    Map<String, String> map = new HashMap<String, String>();
-    for (String line : data.split("\n")) {
-      Matcher m = pattern.matcher(line);
-      if (!m.find()) {
-        continue;
-      }
-      String name, value;
-      if (reverse) {
-        name = m.group(2);
-        value = m.group(1);
-      } else {
-        name = m.group(1);
-        value = m.group(2);
-      }
-      map.put(name, value);
-    }
-    return map;
-  }
-
-  public static Map<String, String> parseDictionary(String data, Pattern pattern) {
-    return parseDictionary(data, pattern, false);
-	}
-
 }

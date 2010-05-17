@@ -169,17 +169,25 @@ public class FileHandler {
   }
   
   public static void copy(File from, File to) throws IOException {
-    if (!from.exists()) {
+    copy(from, to, new NoFilter());
+  }
+
+  public static void copy(File source, File dest, String suffix) throws IOException {
+    copy(source, dest, new FileSuffixFilter(suffix));
+  }
+
+  private static void copy(File source, File dest, Filter onlyCopy) throws IOException {
+    if (!source.exists()) {
       return;
     }
-    
-    if (from.isDirectory()) {
-      copyDir(from, to);
+
+    if (source.isDirectory()) {
+      copyDir(source, dest, onlyCopy);
     } else {
-      copyFile(from, to);
+      copyFile(source, dest, onlyCopy);
     }
   }
-  
+
   /**
    * Locates a file in the current project
    * @param path path to file to locate from root of project
@@ -205,7 +213,11 @@ public class FileHandler {
         "Could not find " + path + " in the project"));
   }
 
-  private static void copyDir(File from, File to) throws IOException {
+  private static void copyDir(File from, File to, Filter onlyCopy) throws IOException {
+    if (!onlyCopy.isRequired(from)) {
+      return;
+    }
+
     // Create the target directory.
     createDir(to);
 
@@ -213,12 +225,16 @@ public class FileHandler {
     String[] children = from.list();
     for (String child : children) {
       if (!".parentlock".equals(child) && !"parent.lock".equals(child)) {
-        copy(new File(from, child), new File(to, child));
+        copy(new File(from, child), new File(to, child), onlyCopy);
       }
     }
   }
 
-  private static void copyFile(File from, File to) throws IOException{
+  private static void copyFile(File from, File to, Filter onlyCopy) throws IOException{
+    if (!onlyCopy.isRequired(from)) {
+      return;
+    }
+
     FileChannel out = null;
     FileChannel in = null;
     try {
@@ -263,5 +279,34 @@ public class FileHandler {
       }
     }
     return null;
+  }
+
+  /**
+   * Used by file operations to determine whether or not to make use of a file.
+   */
+  public interface Filter {
+    /**
+     * @param file File to be considered.
+     * @return Whether or not to make use of the file in this oprtation.
+     */
+    boolean isRequired(File file);
+  }
+
+  private static class FileSuffixFilter implements Filter {
+    private final String suffix;
+
+    public FileSuffixFilter(String suffix) {
+      this.suffix = suffix;
+    }
+
+    public boolean isRequired(File file) {
+      return file.isDirectory() || file.getAbsolutePath().endsWith(suffix);
+    }
+  }
+
+  private static class NoFilter implements Filter {
+    public boolean isRequired(File file) {
+      return true;
+    }
   }
 }
