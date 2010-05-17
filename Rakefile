@@ -209,11 +209,15 @@ dll(:name => "libwebdriver_firefox_so64",
 task :libwebdriver_firefox => [:libwebdriver_firefox_so, :libwebdriver_firefox_so64]
 
 java_test(:name => "webdriver-single-testsuite",
-          :srcs  => [ "common/test/java/org/openqa/selenium/SingleTestSuite.java"],
+          :srcs  => [ "common/test/java/org/openqa/selenium/SingleTestSuite.java",
+                      "htmlunit/test/java/**/*.java",
+                      "support/test/java/**/*.java"],
           :deps => [
-                     :'webdriver-firefox',
+                     :'htmlunit',
                      "//common:test",
-                   ])
+                     "//support:support",
+                   ],
+          :test_suite => "SingleTestSuite")
 
 task :'selenium-server_zip' do
   temp = "build/selenium-server_zip"

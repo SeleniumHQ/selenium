@@ -192,6 +192,10 @@ class JavaGen < BaseGenerator
         end
         tests.compact!
 
+        if (!args[:test_suite].nil?)
+          tests.reject! {|clazz| clazz !~ /#{args[:test_suite]}/}
+        end
+
         args[:tests] = tests
         run_test_ args
       else 
