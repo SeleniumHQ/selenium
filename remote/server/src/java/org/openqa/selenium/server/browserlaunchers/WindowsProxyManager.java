@@ -26,13 +26,10 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.Project;
-import org.apache.tools.ant.taskdefs.ExecTask;
 import org.openqa.jetty.log.LogFactory;
+import org.openqa.selenium.internal.CommandLine;
 import org.openqa.selenium.server.BrowserConfigurationOptions;
-import org.openqa.selenium.server.SeleniumServer;
 import org.openqa.selenium.server.browserlaunchers.WindowsUtils.WindowsRegistryException;
-import org.openqa.selenium.server.log.AntJettyLoggerBuildListener;
 
 public class WindowsProxyManager {
   static Log log = LogFactory.getLog(WindowsProxyManager.class);
@@ -482,25 +479,21 @@ public class WindowsProxyManager {
   }
 
   private String runHudsuckr(String... args) {
-    Project p = new Project();
-    p.addBuildListener(new AntJettyLoggerBuildListener(log));
-    ExecTask exec = new ExecTask();
-    exec.setProject(p);
-    exec.setTaskType("hudsuckr");
-    exec.setExecutable(extractHudsuckr().getAbsolutePath());
-    exec.setFailonerror(false);
-    exec.setResultProperty("result");
-    exec.setOutputproperty("output");
-    for (Object arg : args) {
-      exec.createArg().setValue(String.valueOf(arg));
-    }
-    exec.execute();
-    String output = p.getProperty("output");
-    String result = p.getProperty("result");
-    if (!"0".equals(result)) {
-      throw new RuntimeException("exec return code " + result + ": " + output);
+    String path = extractHudsuckr().getAbsolutePath();
+    log.debug("Running hudsuckr: " + path);
+    try {
+    CommandLine command = new CommandLine(path, args);
+    command.execute();
+    log.debug("Executed successfully");
+    String output = command.getStdOut();
+    if (!command.isSuccessful()) {
+      throw new RuntimeException("exec return code " + command.getExitCode() + ": " + output);
     }
     return output;
+    } catch (RuntimeException e) {
+      log.warn("Failed to execute hudsuckr successfully: ", e);
+    }
+    return null;
   }
 
   private HudsuckrSettings parseHudsuckrSettings(String hudsuckrOutput) {
