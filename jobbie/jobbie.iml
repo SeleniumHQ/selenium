@@ -10,11 +10,11 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="common" />
-    <orderEntry type="module-library">
+    <orderEntry type="module" module-name="common" exported="" />
+    <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/runtime/jna.jar!/" />
+          <root url="jar://$MODULE_DIR$/../third_party/java/jna/jna.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
