@@ -27,8 +27,6 @@ public class ExecuteScript implements SeleneseFunction<Object> {
   public Object apply(Selenium selenium, Map<String, ?> args) {
     String script = prepareScript(args);
 
-    System.out.println("script = " + script);
-
     String value = selenium.getEval(script);
 
     return populateReturnValue(value);
