@@ -158,7 +158,7 @@ public class WindowsProxyManager {
       settings = new HudsuckrSettings(oldSettings.connection, true, true, false, false, proxyServer,
           "(null)", "(null)");
     } else {
-      File proxyPAC = LauncherUtils.makeProxyPAC(customProxyPACDir, port, options);
+      File proxyPAC = Proxies.makeProxyPAC(customProxyPACDir, port, options);
 
       String newURL = "file://" + proxyPAC.getAbsolutePath().replace('\\', '/');
       settings =

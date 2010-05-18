@@ -47,7 +47,7 @@ public class ProxyUtilsTest {
       options.setAvoidProxy(row[1]);
       options.setProxyEverything(row[2]);
 
-      Assert.assertEquals("Failure on row: " + i, row[3], ProxyUtils.isProxyingAllTraffic(options));
+      Assert.assertEquals("Failure on row: " + i, row[3], Proxies.isProxyingAllTraffic(options));
     }
 
   }
