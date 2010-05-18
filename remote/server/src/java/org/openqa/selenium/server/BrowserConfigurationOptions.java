@@ -22,6 +22,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.thoughtworks.selenium.SeleniumException;
+import org.openqa.selenium.remote.Capabilities;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.JsonToBeanConverter;
 import org.openqa.selenium.remote.ProxyPac;
 
@@ -29,6 +31,7 @@ public class BrowserConfigurationOptions {
 
   private Map<String, String> options = new HashMap<String, String>();
   private boolean hasOptions = false;
+  public static final String AVOID_PROXY = "avoidProxy";
 
   public BrowserConfigurationOptions(String browserConfiguration) {
     setProxyRequired(true);
@@ -121,11 +124,11 @@ public class BrowserConfigurationOptions {
   }
 
   public boolean isAvoidingProxy() {
-    return is("avoidProxy");
+    return is(AVOID_PROXY);
   }
 
   public void setAvoidProxy(boolean avoidProxy) {
-    set("avoidProxy", avoidProxy);
+    set(AVOID_PROXY, avoidProxy);
   }
 
   public void setOnlyProxySeleniumTraffic(boolean onlyProxySeleniumTraffic) {
@@ -221,5 +224,13 @@ public class BrowserConfigurationOptions {
   @Override
   public String toString() {
     return serialize();
+  }
+
+  public Capabilities asCapabilities() {
+    DesiredCapabilities caps = new DesiredCapabilities();
+    for (Map.Entry<String, String> entry : options.entrySet()) {
+      caps.setCapability(entry.getKey(), entry.getValue());
+    }
+    return caps;
   }
 }

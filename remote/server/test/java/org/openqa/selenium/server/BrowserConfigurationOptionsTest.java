@@ -3,6 +3,10 @@ package org.openqa.selenium.server;
 
 import junit.framework.TestCase;
 
+import org.openqa.selenium.remote.Capabilities;
+
+import static org.openqa.selenium.server.BrowserConfigurationOptions.AVOID_PROXY;
+
 public class BrowserConfigurationOptionsTest extends TestCase {
 
   public void testInitializationWithNoOptions() {
@@ -48,5 +52,18 @@ public class BrowserConfigurationOptionsTest extends TestCase {
       options.set("profile", test);
       assertEquals(options.serialize(), options.toString());
     }
+  }
+
+  public void testCanBeConvertedToACapabilitiesObject() {
+    BrowserConfigurationOptions options = new BrowserConfigurationOptions();
+    options.setAvoidProxy(true);
+    options.setSingleWindow(true);
+
+    Capabilities caps = options.asCapabilities();
+
+    // Because "proxyRequired" is set
+    assertEquals(3, caps.asMap().size());
+
+    assertEquals(options.get(AVOID_PROXY), caps.getCapability(AVOID_PROXY));
   }
 }

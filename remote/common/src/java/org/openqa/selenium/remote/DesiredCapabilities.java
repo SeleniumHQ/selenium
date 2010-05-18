@@ -98,6 +98,14 @@ public class DesiredCapabilities implements Capabilities, Serializable {
     return capabilities.get(capabilityName);
   }
 
+  public boolean is(String capabilityName) {
+    Object cap = getCapability(capabilityName);
+    if (cap == null) {
+      return false;
+    }
+    return cap instanceof Boolean ? (Boolean) cap : true;
+  }
+
   public void setCapability(String capabilityName, boolean value) {
     capabilities.put(capabilityName, value);
   }

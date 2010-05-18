@@ -21,6 +21,9 @@ import java.util.Map;
 
 import org.openqa.selenium.Platform;
 
+/**
+ * Describes a series of key/value pairs that encapsulate aspects of a browser.
+ */
 public interface Capabilities {
 
   String getBrowserName();
@@ -31,7 +34,22 @@ public interface Capabilities {
 
   boolean isJavascriptEnabled();
 
+  /**
+   * @return The capabilities as a Map
+   */
   Map<String, Object> asMap();
 
+  /**
+   * @see org.openqa.selenium.remote.CapabilityType
+   * @param capabilityName The capability to return.
+   * @return The value, or null if not set.
+   */
   Object getCapability(String capabilityName);
+
+  /**
+   * @see org.openqa.selenium.remote.CapabilityType
+   * @param capabilityName The capability to check.
+   * @return Whether or not the value is not null and not false.
+   */
+  boolean is(String capabilityName);
 }
