@@ -33,8 +33,9 @@ public class MakeProxyPacUnitTest extends TestCase {
       BrowserConfigurationOptions options = new BrowserConfigurationOptions();
       options.setOnlyProxySeleniumTraffic(proxySeleniumTrafficOnly);
       options.setAvoidProxy(avoidProxy);
-      Proxies.makeProxyPAC(parentDir, 4444, httpProxyHost, httpProxyPort, httpNonProxyHosts, options);
-        return readEntirePacFile();
+      Proxies
+          .makeProxyPAC(parentDir, 4444, httpProxyHost, httpProxyPort, httpNonProxyHosts, options.asCapabilities());
+      return readEntirePacFile();
     }
     private String readEntirePacFile() throws IOException {
         FileReader fileReader = new FileReader(pacFile);

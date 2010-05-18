@@ -291,7 +291,7 @@ public class LauncherUtilsUnitTest extends TestCase {
           BrowserConfigurationOptions options = new BrowserConfigurationOptions();
           options.setAvoidProxy(avoidProxy);
           options.setOnlyProxySeleniumTraffic(proxySeleniumTrafficOnly);
-          Proxies.makeProxyPAC(parentDir, port, configuredProxy, proxyPort, nonProxyHosts, options);
+          Proxies.makeProxyPAC(parentDir, port, configuredProxy, proxyPort, nonProxyHosts, options.asCapabilities());
         } catch (FileNotFoundException e) {
             fail();
         }

@@ -307,7 +307,7 @@ public class LauncherUtils {
 
     if (options.isProxyRequired()) {
       // Configure us as the local proxy
-      File proxyPAC = Proxies.makeProxyPAC(customProfileDir, port, options);
+      File proxyPAC = Proxies.makeProxyPAC(customProfileDir, port, options.asCapabilities());
       out.println("user_pref('network.proxy.type', 2);");
       out.println("user_pref('network.proxy.autoconfig_url', '"
                   + pathToBrowserURL(proxyPAC.getAbsolutePath()) + "');");

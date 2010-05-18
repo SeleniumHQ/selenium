@@ -103,7 +103,7 @@ public class DesiredCapabilities implements Capabilities, Serializable {
     if (cap == null) {
       return false;
     }
-    return cap instanceof Boolean ? (Boolean) cap : true;
+    return cap instanceof Boolean ? (Boolean) cap : Boolean.parseBoolean(String.valueOf(cap));
   }
 
   public void setCapability(String capabilityName, boolean value) {

@@ -5,7 +5,7 @@ import junit.framework.TestCase;
 
 import org.openqa.selenium.remote.Capabilities;
 
-import static org.openqa.selenium.server.BrowserConfigurationOptions.AVOID_PROXY;
+import static org.openqa.selenium.server.BrowserConfigurationOptions.AVOIDING_PROXY;
 
 public class BrowserConfigurationOptionsTest extends TestCase {
 
@@ -64,6 +64,6 @@ public class BrowserConfigurationOptionsTest extends TestCase {
     // Because "proxyRequired" is set
     assertEquals(3, caps.asMap().size());
 
-    assertEquals(options.get(AVOID_PROXY), caps.getCapability(AVOID_PROXY));
+    assertEquals(options.get(AVOIDING_PROXY), caps.getCapability(AVOIDING_PROXY));
   }
 }

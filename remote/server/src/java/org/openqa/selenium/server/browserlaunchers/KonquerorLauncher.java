@@ -39,7 +39,8 @@ public class KonquerorLauncher extends AbstractBrowserLauncher {
         ResourceExtractor.extractResourcePath(getClass(), KONQUEROR_PROFILE_SRC_LOCATION, profileDest);
 
 
-        File pacFile = Proxies.makeProxyPAC(new File(KONQUEROR_PROFILE_DEST_LOCATION), getPort(), browserConfigurationOptions);
+      File pacFile = Proxies.makeProxyPAC(new File(KONQUEROR_PROFILE_DEST_LOCATION), getPort(),
+          browserConfigurationOptions.asCapabilities());
 
         File kioslaverc = new File(KONQUEROR_PROFILE_DEST_LOCATION, "kioslaverc");
         PrintStream out = new PrintStream(new FileOutputStream(kioslaverc));

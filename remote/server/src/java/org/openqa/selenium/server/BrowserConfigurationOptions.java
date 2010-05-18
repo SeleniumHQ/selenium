@@ -31,7 +31,10 @@ public class BrowserConfigurationOptions {
 
   private Map<String, String> options = new HashMap<String, String>();
   private boolean hasOptions = false;
-  public static final String AVOID_PROXY = "avoidProxy";
+  public static final String AVOIDING_PROXY = "avoidProxy";
+  public static final String PROXY_PAC = "proxy";
+  public static final String ONLY_PROXYING_SELENIUM_TRAFFIC = "onlyProxySeleniumTraffic";
+  public static final String PROXYING_EVERYTHING = "proxyEverything";
 
   public BrowserConfigurationOptions(String browserConfiguration) {
     setProxyRequired(true);
@@ -124,27 +127,27 @@ public class BrowserConfigurationOptions {
   }
 
   public boolean isAvoidingProxy() {
-    return is(AVOID_PROXY);
+    return is(AVOIDING_PROXY);
   }
 
   public void setAvoidProxy(boolean avoidProxy) {
-    set(AVOID_PROXY, avoidProxy);
+    set(AVOIDING_PROXY, avoidProxy);
   }
 
   public void setOnlyProxySeleniumTraffic(boolean onlyProxySeleniumTraffic) {
-    set("onlyProxySeleniumTraffic", onlyProxySeleniumTraffic);
+    set(ONLY_PROXYING_SELENIUM_TRAFFIC, onlyProxySeleniumTraffic);
   }
 
   public boolean isOnlyProxyingSeleniumTraffic() {
-    return is("onlyProxySeleniumTraffic");
+    return is(ONLY_PROXYING_SELENIUM_TRAFFIC);
   }
 
   public void setProxyEverything(boolean proxyEverything) {
-    set("proxyEverything", proxyEverything);
+    set(PROXYING_EVERYTHING, proxyEverything);
   }
 
   public boolean isProxyingEverything() {
-    return is("proxyEverything");
+    return is(PROXYING_EVERYTHING);
   }
 
   public void setProxyRequired(boolean proxyRequired) {
@@ -156,7 +159,7 @@ public class BrowserConfigurationOptions {
   }
 
   public ProxyPac getProxyConfig() {
-    String raw = get("proxy");
+    String raw = get(PROXY_PAC);
     if (raw == null) {
       return null;
     }

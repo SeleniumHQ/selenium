@@ -25,28 +25,33 @@ import java.io.IOException;
 import java.io.Writer;
 
 import com.thoughtworks.selenium.SeleniumException;
+import org.openqa.selenium.remote.Capabilities;
 import org.openqa.selenium.remote.ProxyPac;
 import org.openqa.selenium.server.BrowserConfigurationOptions;
 
+import static org.openqa.selenium.server.BrowserConfigurationOptions.AVOIDING_PROXY;
+import static org.openqa.selenium.server.BrowserConfigurationOptions.ONLY_PROXYING_SELENIUM_TRAFFIC;
+import static org.openqa.selenium.server.BrowserConfigurationOptions.PROXYING_EVERYTHING;
+import static org.openqa.selenium.server.BrowserConfigurationOptions.PROXY_PAC;
+
 public class Proxies {
+
   /**
    * Generate a proxy.pac file, configuring a dynamic proxy. <p/> If
    * proxySeleniumTrafficOnly is true, then the proxy applies only to URLs
    * containing "/selenium-server/". Otherwise the proxy applies to all URLs.
    */
-  protected static File makeProxyPAC(File parentDir, int port, BrowserConfigurationOptions options)
+  protected static File makeProxyPAC(File parentDir, int port, Capabilities capabilities)
       throws FileNotFoundException {
     return makeProxyPAC(parentDir, port,
         System.getProperty("http.proxyHost"),
         System.getProperty("http.proxyPort"),
-        System.getProperty("http.nonProxyHosts"), options);
+        System.getProperty("http.nonProxyHosts"), capabilities);
   }
 
-  public static File makeProxyPAC(File parentDir, int port, String configuredProxy, String proxyPort, String nonProxyHosts, BrowserConfigurationOptions options)
+  public static File makeProxyPAC(File parentDir, int port, String configuredProxy, String proxyPort, String nonProxyHosts, Capabilities capabilities)
       throws FileNotFoundException {
-    ProxyPac pac =
-        newProxyPac(port, configuredProxy, proxyPort, nonProxyHosts,
-            options);
+    ProxyPac pac = newProxyPac(port, configuredProxy, proxyPort, nonProxyHosts, capabilities);
 
     try {
       File pacFile = new File(parentDir, "proxy.pac");
@@ -59,8 +64,8 @@ public class Proxies {
     }
   }
 
-  static ProxyPac newProxyPac(int port, String configuredProxy, String proxyPort, String nonProxyHosts, BrowserConfigurationOptions options) {
-    ProxyPac existingConfig = options.getProxyConfig();
+  static ProxyPac newProxyPac(int port, String configuredProxy, String proxyPort, String nonProxyHosts, Capabilities capabilities) {
+    ProxyPac existingConfig = (ProxyPac) capabilities.getCapability(PROXY_PAC);
     ProxyPac pac = existingConfig == null ? new ProxyPac() : existingConfig;
 
     if (configuredProxy != null) {
@@ -80,7 +85,7 @@ public class Proxies {
     }
 
     String seleniumServerAsProxy = "localhost:" + port + "; " + defaultProxy;
-    if (isOnlyProxyingSelenium(options)) {
+    if (isOnlyProxyingSelenium(capabilities)) {
       pac.map("*/selenium-server/*").toProxy(seleniumServerAsProxy);
       if (nonProxyHosts != null && nonProxyHosts.trim().length() > 0) {
         String[] hosts = nonProxyHosts.split("\\|");
@@ -94,18 +99,18 @@ public class Proxies {
     return pac;
   }
 
-  public static boolean isProxyingAllTraffic(BrowserConfigurationOptions options) {
+  public static boolean isProxyingAllTraffic(Capabilities capabilities) {
     // According to the original logic of Selenium Server, the only time when
     // the selenium sever wouldn't be proxying all traffic was when it was
     // configured to only proxy selenium traffic, was avoid the proxy and had
     // not been asked to proxy everything. Modeling that first before tidying
     // up the logic.
-    return !(options.isOnlyProxyingSeleniumTraffic() &&
-             options.isAvoidingProxy() &&
-             !options.isProxyingEverything());
+    return !(capabilities.is(ONLY_PROXYING_SELENIUM_TRAFFIC) &&
+             capabilities.is(AVOIDING_PROXY) &&
+             !capabilities.is(PROXYING_EVERYTHING));
   }
 
-  public static boolean isOnlyProxyingSelenium(BrowserConfigurationOptions options) {
-    return !isProxyingAllTraffic(options);
+  public static boolean isOnlyProxyingSelenium(Capabilities capabilities) {
+    return !isProxyingAllTraffic(capabilities);
   }
 }
