@@ -62,6 +62,15 @@ public class CommandLine {
     }
   }
 
+  public void executeAsync() {
+    new Thread() {
+      @Override
+      public void run() {
+        execute();
+      }
+    }.start();
+  }
+
   public boolean isSuccessful() {
     return 0 == getExitCode();
   }
@@ -81,6 +90,12 @@ public class CommandLine {
     }
 
     return drainer.getStdOut();
+  }
+
+  public void destroy() {
+    if (!executed) {
+      throw new IllegalStateException("Cannot quit a process that's not running: " + commandAndArgs[0]);
+    }
   }
 
   private static class StreamDrainer implements Runnable {

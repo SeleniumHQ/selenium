@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.openqa.selenium.internal.CommandLine;
 import org.openqa.selenium.internal.PortProber;
 
 import static org.openqa.selenium.internal.PortProber.pollPort;
@@ -14,7 +15,7 @@ import static org.openqa.selenium.internal.PortProber.pollPort;
 public class SeleniumServerStarter extends TestSetup {
 
   private static final String SELENIUM_JAR = "build/remote/server/server-standalone.jar";
-  private Process serverProcess;
+  private CommandLine command;
 
   public SeleniumServerStarter(Test test) {
     super(test);
@@ -36,29 +37,15 @@ public class SeleniumServerStarter extends TestSetup {
       throw new RuntimeException("Unable to start selenium server");
     }
 
-    new Thread(new Runnable() {
-      public void run() {
-        InputStream is = serverProcess.getInputStream();
-        try {
-          int c = 0;
-          while ((c = is.read()) != -1) {
-            System.err.print((char) c);
-          }
-        } catch (IOException e) {
-        }
-      }
-    }).start();
-
     super.setUp();
   }
 
   private String startSeleniumServer(File seleniumJar) throws IOException {
     String port = System.getProperty("webdriver.selenium.server.port", "5555");
-    ProcessBuilder builder = new ProcessBuilder(
-        "java", "-jar", seleniumJar.getAbsolutePath(),
-        "-port", port);
-    builder.redirectErrorStream(true);
-    serverProcess = builder.start();
+
+    command = new CommandLine("java", "-jar", seleniumJar.getAbsolutePath(), "-port", port);
+    command.executeAsync();
+
     return port;
   }
 
@@ -77,8 +64,8 @@ public class SeleniumServerStarter extends TestSetup {
 
   @Override
   protected void tearDown() throws Exception {
-    if (serverProcess != null) {
-      serverProcess.destroy();
+    if (command != null) {
+      command.destroy();
     }
 
     super.tearDown();
