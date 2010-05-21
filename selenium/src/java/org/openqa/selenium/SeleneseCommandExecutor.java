@@ -48,7 +48,6 @@ import org.openqa.selenium.internal.selenesedriver.SubmitElement;
 import org.openqa.selenium.internal.selenesedriver.ToggleElement;
 import org.openqa.selenium.internal.selenesedriver.ExecuteScript;
 import org.openqa.selenium.remote.BeanToJsonConverter;
-import org.openqa.selenium.remote.Capabilities;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -60,7 +59,6 @@ import static org.openqa.selenium.remote.DriverCommand.*;
 
 import java.io.File;
 import java.net.URL;
-import java.util.HashMap;
 import java.util.Map;
 
 public class SeleneseCommandExecutor implements CommandExecutor {

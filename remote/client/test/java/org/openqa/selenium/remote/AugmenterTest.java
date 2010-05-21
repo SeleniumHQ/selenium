@@ -21,6 +21,7 @@ import java.lang.reflect.Method;
 
 import org.junit.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.StubDriver;
 import org.openqa.selenium.TakesScreenshot;

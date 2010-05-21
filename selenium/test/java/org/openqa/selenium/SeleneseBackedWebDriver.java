@@ -17,7 +17,6 @@ limitations under the License.
 
 package org.openqa.selenium;
 
-import org.openqa.selenium.remote.Capabilities;
 import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;

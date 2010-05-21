@@ -22,7 +22,6 @@ import com.thoughtworks.selenium.SeleniumException;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
-import org.openqa.selenium.remote.Capabilities;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 // In two minds about whether to make this class part of the public API

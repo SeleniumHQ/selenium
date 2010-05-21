@@ -3,7 +3,7 @@ package org.openqa.selenium.server;
 
 import junit.framework.TestCase;
 
-import org.openqa.selenium.remote.Capabilities;
+import org.openqa.selenium.Capabilities;
 
 import static org.openqa.selenium.server.BrowserConfigurationOptions.AVOIDING_PROXY;
 

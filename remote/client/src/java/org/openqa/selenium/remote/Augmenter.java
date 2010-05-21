@@ -31,7 +31,7 @@ import org.openqa.selenium.WebDriver;
 /**
  * Enhance the interfaces implemented by an instance of the
  * {@link org.openqa.selenium.remote.RemoteWebDriver} based on the returned
- * {@link org.openqa.selenium.remote.Capabilities} of the driver.
+ * {@link org.openqa.selenium.Capabilities} of the driver.
  *
  * Note: this class is still experimental. Use at your own risk.
  */

@@ -22,6 +22,7 @@ package org.openqa.selenium.remote;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.browserlaunchers.DoNotUseProxyPac;
 

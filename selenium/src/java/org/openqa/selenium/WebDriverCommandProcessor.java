@@ -113,7 +113,6 @@ import org.openqa.selenium.internal.seleniumemulation.WaitForPopup;
 import org.openqa.selenium.internal.seleniumemulation.WindowFocus;
 import org.openqa.selenium.internal.seleniumemulation.WindowMaximize;
 import org.openqa.selenium.internal.seleniumemulation.Windows;
-import org.openqa.selenium.remote.Capabilities;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import static org.openqa.selenium.internal.seleniumemulation.SeleniumSelect.Property.ID;
@@ -134,7 +133,7 @@ public class WebDriverCommandProcessor implements CommandProcessor {
 
   /**
    * Create an instance that will later be configured by calling
-   * {@link #start(Object)} with a {@link org.openqa.selenium.remote.Capabilities}
+   * {@link #start(Object)} with a {@link Capabilities}
    * instance.
    *
    * @param baseUrl The URL from which relative URLs should be based on

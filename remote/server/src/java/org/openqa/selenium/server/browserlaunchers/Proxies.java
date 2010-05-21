@@ -26,7 +26,7 @@ import java.io.Writer;
 
 import com.thoughtworks.selenium.SeleniumException;
 import org.openqa.selenium.browserlaunchers.DoNotUseProxyPac;
-import org.openqa.selenium.remote.Capabilities;
+import org.openqa.selenium.Capabilities;
 
 import static org.openqa.selenium.server.BrowserConfigurationOptions.AVOIDING_PROXY;
 import static org.openqa.selenium.server.BrowserConfigurationOptions.ONLY_PROXYING_SELENIUM_TRAFFIC;
