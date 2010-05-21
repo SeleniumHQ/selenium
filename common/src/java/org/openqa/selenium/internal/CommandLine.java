@@ -19,10 +19,15 @@ package org.openqa.selenium.internal;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Map;
 
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
+
+import static org.openqa.selenium.Platform.WINDOWS;
 
 public class CommandLine {
   private final String[] commandAndArgs;
@@ -32,11 +37,46 @@ public class CommandLine {
 
   public CommandLine(String executable, String... args) {
     commandAndArgs = new String[args.length + 1];
-    commandAndArgs[0] = executable;
+    commandAndArgs[0] = findExecutable(executable);
     int index = 1;
     for (String arg : args) {
       commandAndArgs[index++] = arg;
     }
+  }
+
+  public static String findExecutable(String named) {
+    File file = new File(named);
+    if (file.canExecute()) {
+      return named;
+    }
+
+    Map<String, String> env = System.getenv();
+    String pathName = "PATH";
+    if (!env.containsKey("PATH")) {
+      for (String key : env.keySet()) {
+        if ("path".equalsIgnoreCase(key)) {
+          pathName = key;
+          break;
+        }
+      }
+    }
+
+    String path = env.get(pathName);
+    String[] endings = new String[] {""};
+    if (Platform.getCurrent().is(WINDOWS)) {
+      endings = new String[] { "", ".exe", ".com", ".bat"};
+    }
+
+    for (String segment : path.split(File.pathSeparator)) {
+      for (String ending : endings) {
+        file = new File(segment, named + ending);
+        if (file.canExecute()) {
+          return file.getAbsolutePath();
+        }
+      }
+    }
+
+    return null;
   }
 
   public void execute() {

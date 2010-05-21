@@ -386,9 +386,8 @@ public class WindowsUtils {
       reg = regExe.getAbsolutePath();
       return reg;
     }
-    regExe = AsyncExecute.whichExec("reg.exe");
-    if (regExe != null && regExe.exists()) {
-      reg = regExe.getAbsolutePath();
+    reg = CommandLine.findExecutable("reg.exe");
+    if (reg != null) {
       return reg;
     }
     log.error("OS Version: " + System.getProperty("os.version"));
