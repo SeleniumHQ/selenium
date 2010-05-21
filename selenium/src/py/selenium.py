@@ -18,7 +18,6 @@ __docformat__ = "restructuredtext en"
 
 import httplib
 import urllib
-import re
 
 class selenium:
     """
@@ -206,20 +205,17 @@ class selenium:
             body += "&sessionId=" + unicode(self.sessionId)
         headers = {"Content-Type": "application/x-www-form-urlencoded; charset=utf-8"}
         conn.request("POST", "/selenium-server/driver/", body, headers)
-    
+
         response = conn.getresponse()
-        #print response.status, response.reason
         data = unicode(response.read(), "UTF-8")
-        result = response.reason
-        #print "Selenium Result: " + repr(data) + "\n\n"
         if (not data.startswith('OK')):
             raise Exception, data
         return data
-    
+
     def get_string(self, verb, args):
         result = self.do_command(verb, args)
         return result[3:]
-    
+
     def get_string_array(self, verb, args):
         csv = self.get_string(verb, args)
         token = ""
@@ -259,7 +255,7 @@ class selenium:
     
     def get_boolean_array(self, verb, args):
         boolarr = self.get_string_array(verb, args)
-        for i in range(len(boolarr)):
+        for i, boolstr in enumerate(boolarr):
             if ("true" == boolstr):
                 boolarr[i] = True
                 continue
