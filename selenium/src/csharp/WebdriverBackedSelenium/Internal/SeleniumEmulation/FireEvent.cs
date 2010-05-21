@@ -5,21 +5,19 @@ using OpenQA.Selenium;
 
 namespace Selenium.Internal.SeleniumEmulation
 {
-    class FireEvent : SeleneseCommand
+    internal class FireEvent : SeleneseCommand
     {
-        JavaScriptLibrary library;
-        ElementFinder finder;
+        private ElementFinder finder;
 
-        public FireEvent(ElementFinder elementFinder, JavaScriptLibrary javascriptLibrary)
+        public FireEvent(ElementFinder elementFinder)
         {
-            library = javascriptLibrary;
             finder = elementFinder;
         }
 
         protected override object HandleSeleneseCommand(IWebDriver driver, string locator, string value)
         {
             IWebElement element = finder.FindElement(driver, locator);
-            library.CallEmbeddedSelenium(driver, "doFireEvent", element, value);
+            JavaScriptLibrary.CallEmbeddedSelenium(driver, "doFireEvent", element, value);
 
             return null;
         }

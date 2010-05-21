@@ -2,12 +2,12 @@ using System.Text.RegularExpressions;
 
 namespace Selenium.Internal.SeleniumEmulation
 {
-    public class RegExTextMatchingStrategy : ITextMatchingStrategy
+    internal class RegexTextMatchingStrategy : ITextMatchingStrategy
     {
-        public bool IsAMatch(string compareThis, string with)
+        public bool IsAMatch(string compareThis, string compareTo)
         {
             var pattern = new Regex(compareThis, RegexOptions.Multiline);
-            Match matcher = pattern.Match(with);
+            Match matcher = pattern.Match(compareTo);
             return matcher.Success;
         }
     }

@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Globalization;
+using System.Text;
 using OpenQA.Selenium;
 
 namespace Selenium.Internal.SeleniumEmulation
 {
-    class DragAndDrop : SeleneseCommand
+    internal class DragAndDrop : SeleneseCommand
     {
         private ElementFinder finder;
 
@@ -17,11 +17,11 @@ namespace Selenium.Internal.SeleniumEmulation
 
         protected override object HandleSeleneseCommand(IWebDriver driver, string locator, string value)
         {
-            string[] parts = value.Split(new string[] {","}, 2, StringSplitOptions.None);
-            int xDelta = int.Parse(parts[0], CultureInfo.InvariantCulture);
-            int yDelta = int.Parse(parts[1], CultureInfo.InvariantCulture);
+            string[] parts = value.Split(new string[] { "," }, 2, StringSplitOptions.None);
+            int deltaX = int.Parse(parts[0], CultureInfo.InvariantCulture);
+            int deltaY = int.Parse(parts[1], CultureInfo.InvariantCulture);
 
-            ((IRenderedWebElement)finder.FindElement(driver, locator)).DragAndDropBy(xDelta, yDelta);
+            ((IRenderedWebElement)finder.FindElement(driver, locator)).DragAndDropBy(deltaX, deltaY);
 
             return null;
         }

@@ -6,7 +6,7 @@ using OpenQA.Selenium;
 
 namespace Selenium.Internal.SeleniumEmulation
 {
-    class GetAllLinks : SeleneseCommand
+    internal class GetAllLinks : SeleneseCommand
     {
         protected override object HandleSeleneseCommand(IWebDriver driver, string locator, string value)
         {

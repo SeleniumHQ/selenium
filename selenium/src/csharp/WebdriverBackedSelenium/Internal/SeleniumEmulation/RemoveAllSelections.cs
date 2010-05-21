@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Text;
 using OpenQA.Selenium;
-using System.Collections.ObjectModel;
 
 namespace Selenium.Internal.SeleniumEmulation
 {
-    class RemoveAllSelections : SeleneseCommand
+    internal class RemoveAllSelections : SeleneseCommand
     {
         private ElementFinder finder;
 

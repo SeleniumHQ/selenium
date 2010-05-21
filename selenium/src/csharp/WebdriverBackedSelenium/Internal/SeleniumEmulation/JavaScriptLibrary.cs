@@ -1,20 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using OpenQA.Selenium;
-using System.IO;
 using OpenQA.Selenium.Internal;
 
 namespace Selenium.Internal.SeleniumEmulation
 {
-    class JavaScriptLibrary
+    internal static class JavaScriptLibrary
     {
-        private const string injectableSelenium = "injectableSelenium.js";
-        private const string htmlUtils = "htmlutils.js";
+        private const string InjectableSeleniumResourceName = "injectableSelenium.js";
+        private const string HtmlUtilsResourceName = "htmlutils.js";
 
-        public void CallEmbeddedSelenium(IWebDriver driver, string functionName, IWebElement element, params object[] values)
+        public static void CallEmbeddedSelenium(IWebDriver driver, string functionName, IWebElement element, params object[] values)
         {
-            StringBuilder builder = new StringBuilder(ReadScript(injectableSelenium));
+            StringBuilder builder = new StringBuilder(ReadScript(InjectableSeleniumResourceName));
             builder.Append("return browserbot.").Append(functionName).Append(".apply(browserbot, arguments);");
 
             List<object> args = new List<object>();
@@ -24,9 +24,9 @@ namespace Selenium.Internal.SeleniumEmulation
             ((IJavaScriptExecutor)driver).ExecuteScript(builder.ToString(), args.ToArray());
         }
 
-        public object CallEmbeddedHtmlUtils(IWebDriver driver, string functionName, IWebElement element, params object[] values)
+        public static object CallEmbeddedHtmlUtils(IWebDriver driver, string functionName, IWebElement element, params object[] values)
         {
-            StringBuilder builder = new StringBuilder(ReadScript(htmlUtils));
+            StringBuilder builder = new StringBuilder(ReadScript(HtmlUtilsResourceName));
 
             builder.Append("return htmlutils.").Append(functionName).Append(".apply(htmlutils, arguments);");
 
@@ -37,7 +37,7 @@ namespace Selenium.Internal.SeleniumEmulation
             return ((IJavaScriptExecutor)driver).ExecuteScript(builder.ToString(), args.ToArray());
         }
 
-        public Object ExecuteScript(IWebDriver driver, string script, params object[] args)
+        public static object ExecuteScript(IWebDriver driver, string script, params object[] args)
         {
             IJavaScriptExecutor executor = driver as IJavaScriptExecutor;
             if (executor == null)
@@ -48,10 +48,9 @@ namespace Selenium.Internal.SeleniumEmulation
             {
                 return executor.ExecuteScript(script, args);
             }
-
         }
 
-        public string ReadScript(string script)
+        private static string ReadScript(string script)
         {
             string extractedScript = string.Empty;
             Stream resourceStream = ResourceUtilities.GetResourceStream(script, script);

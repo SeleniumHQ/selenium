@@ -1,21 +1,20 @@
-
 using System;
+using System.Globalization;
 using OpenQA.Selenium;
 
 namespace Selenium
 {
-
-
-    public class DomTraversalLookupStrategy : ILookupStrategy
+    internal class DomTraversalLookupStrategy : ILookupStrategy
     {
-        public OpenQA.Selenium.IWebElement Find(IWebDriver driver, string use)
+        public IWebElement Find(IWebDriver driver, string use)
         {
-            if (!(driver is IJavaScriptExecutor))
+            IJavaScriptExecutor executor = driver as IJavaScriptExecutor;
+            if (executor == null)
             {
                 throw new NotSupportedException("DOM lookups only work when the driver supports Javascript");
             }
-            IJavaScriptExecutor executor = (IJavaScriptExecutor)driver;
-            return (IWebElement) executor.ExecuteScript(String.Format("return %s", use));
+
+            return (IWebElement)executor.ExecuteScript(string.Format(CultureInfo.InvariantCulture, "return {0}", use));
         }
     }
 }

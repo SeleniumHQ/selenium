@@ -5,7 +5,7 @@ using OpenQA.Selenium;
 
 namespace Selenium.Internal.SeleniumEmulation
 {
-    class GetAllWindowTitles : SeleneseCommand
+    internal class GetAllWindowTitles : SeleneseCommand
     {
         protected override object HandleSeleneseCommand(IWebDriver driver, string locator, string value)
         {

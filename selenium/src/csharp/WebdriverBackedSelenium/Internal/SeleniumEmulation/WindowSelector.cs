@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Text;
 using OpenQA.Selenium;
-using System.Collections.ObjectModel;
 
 namespace Selenium.Internal.SeleniumEmulation
 {
-    class WindowSelector
+    internal class WindowSelector
     {
         private Dictionary<string, string> lastFrame = new Dictionary<string, string>();
         private string originalWindowHandle;
@@ -28,13 +28,13 @@ namespace Selenium.Internal.SeleniumEmulation
             }
             else
             {
-                if (windowId.StartsWith("title="))
+                if (windowId.StartsWith("title=", StringComparison.Ordinal))
                 {
                     SelectWindowWithTitle(driver, windowId.Substring("title=".Length));
                     return;
                 }
 
-                if (windowId.StartsWith("name="))
+                if (windowId.StartsWith("name=", StringComparison.Ordinal))
                 {
                     windowId = windowId.Substring("name=".Length);
                 }
@@ -43,7 +43,7 @@ namespace Selenium.Internal.SeleniumEmulation
                 {
                     driver.SwitchTo().Window(windowId);
                 }
-                catch (NoSuchWindowException e)
+                catch (NoSuchWindowException)
                 {
                     SelectWindowWithTitle(driver, windowId);
                 }
@@ -56,7 +56,7 @@ namespace Selenium.Internal.SeleniumEmulation
                 {
                     SelectFrame(driver, lastFrame[driver.GetWindowHandle()]);
                 }
-                catch (SeleniumException e)
+                catch (SeleniumException)
                 {
                     lastFrame.Remove(driver.GetWindowHandle());
                 }
@@ -81,23 +81,6 @@ namespace Selenium.Internal.SeleniumEmulation
             {
                 throw new SeleniumException(e.Message);
             }
-
-        }
-
-        private void SelectWindowWithTitle(IWebDriver driver, string title)
-        {
-            string current = driver.GetWindowHandle();
-            foreach (string handle in driver.GetWindowHandles())
-            {
-                driver.SwitchTo().Window(handle);
-                if (title == driver.Title)
-                {
-                    return;
-                }
-            }
-
-            driver.SwitchTo().Window(current);
-            throw new SeleniumException("Unable to select window with title: " + title);
         }
 
         /**
@@ -119,6 +102,7 @@ namespace Selenium.Internal.SeleniumEmulation
         public void SelectBlankWindow(IWebDriver driver)
         {
             string current = driver.GetWindowHandle();
+
             // Find the first window without a "name" attribute
             ReadOnlyCollection<string> handles = driver.GetWindowHandles();
             foreach (string handle in handles)
@@ -130,6 +114,7 @@ namespace Selenium.Internal.SeleniumEmulation
                 {
                     continue;
                 }
+
                 driver.SwitchTo().Window(handle);
                 string value = ((IJavaScriptExecutor)driver).ExecuteScript("return window.name;").ToString();
                 if (string.IsNullOrEmpty(value))
@@ -138,9 +123,31 @@ namespace Selenium.Internal.SeleniumEmulation
                     return;
                 }
             }
+
             // We couldn't find it
             driver.SwitchTo().Window(current);
             throw new SeleniumException("Unable to select window _blank");
+        }
+
+        private static void SelectWindowWithTitle(IWebDriver driver, string title)
+        {
+            bool windowSuccessfullySwitched = false;
+            string current = driver.GetWindowHandle();
+            foreach (string handle in driver.GetWindowHandles())
+            {
+                driver.SwitchTo().Window(handle);
+                if (title == driver.Title)
+                {
+                    windowSuccessfullySwitched = true;
+                    break;
+                }
+            }
+
+            if (!windowSuccessfullySwitched)
+            {
+                driver.SwitchTo().Window(current);
+                throw new SeleniumException("Unable to select window with title: " + title);
+            }
         }
     }
 }

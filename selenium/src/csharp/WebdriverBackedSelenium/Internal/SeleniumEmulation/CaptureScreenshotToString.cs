@@ -5,7 +5,10 @@ using OpenQA.Selenium;
 
 namespace Selenium.Internal.SeleniumEmulation
 {
-    class CaptureScreenshotToString : SeleneseCommand
+    /// <summary>
+    /// Defines the command for the captureScreenshotToString keyword.
+    /// </summary>
+    internal class CaptureScreenshotToString : SeleneseCommand
     {
         protected override object HandleSeleneseCommand(IWebDriver driver, string locator, string value)
         {

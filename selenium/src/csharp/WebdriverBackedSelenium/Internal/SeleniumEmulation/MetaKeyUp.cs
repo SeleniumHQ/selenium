@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using OpenQA.Selenium;
 
 namespace Selenium.Internal.SeleniumEmulation
 {
-    class MetaKeyUp : SeleneseCommand
+    internal class MetaKeyUp : SeleneseCommand
     {
         private KeyState keyState;
 
@@ -13,7 +14,7 @@ namespace Selenium.Internal.SeleniumEmulation
             this.keyState = keyState;
         }
 
-        protected override object HandleSeleneseCommand(OpenQA.Selenium.IWebDriver driver, string locator, string value)
+        protected override object HandleSeleneseCommand(IWebDriver driver, string locator, string value)
         {
             keyState.MetaKeyDown = false;
             return null;

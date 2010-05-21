@@ -5,7 +5,7 @@ using OpenQA.Selenium;
 
 namespace Selenium.Internal.SeleniumEmulation
 {
-    class DragAndDropToObject : SeleneseCommand
+    internal class DragAndDropToObject : SeleneseCommand
     {
         private ElementFinder finder;
 

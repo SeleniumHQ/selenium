@@ -1,10 +1,10 @@
 namespace Selenium.Internal.SeleniumEmulation
 {
-    public class ExactTextMatchingStrategy : ITextMatchingStrategy
+    internal class ExactTextMatchingStrategy : ITextMatchingStrategy
     {
-        public bool IsAMatch(string compareThis, string with)
+        public bool IsAMatch(string compareThis, string compareTo)
         {
-            return with.Contains(compareThis);
+            return compareTo.Contains(compareThis);
         }
     }
 }

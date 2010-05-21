@@ -1,39 +1,42 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 using OpenQA.Selenium;
 
 namespace Selenium.Internal.SeleniumEmulation
 {
-    class WaitForPageToLoad : SeleneseCommand
+    internal class WaitForPageToLoad : SeleneseCommand
     {
         private int timeToWaitAfterPageLoad = 100;
 
-        public int TimeToWaitAfterPageLoad
-        {
-            get { return timeToWaitAfterPageLoad; }
-            set { timeToWaitAfterPageLoad = value; }
-        }
-
         protected override object HandleSeleneseCommand(IWebDriver driver, string locator, string value)
         {
-            PageLoadWaiter waiter = new PageLoadWaiter(driver, locator, timeToWaitAfterPageLoad);
-            waiter.Wait("Failed to resolve " + locator, long.Parse(value));
+            string waitMessage = "Failed to resolve " + locator;
+            PageLoadWaiter waiter = new PageLoadWaiter(driver, timeToWaitAfterPageLoad);
+            if (!string.IsNullOrEmpty(value))
+            {
+                waiter.Wait(waitMessage, long.Parse(value, CultureInfo.InvariantCulture));
+            }
+            else
+            {
+                waiter.Wait(waitMessage);
+            }
+
             return null;
         }
 
         private class PageLoadWaiter : Waiter
         {
             private IWebDriver driver;
-            private string script;
             private int timeToWaitAfterPageLoad;
             private DateTime started = DateTime.Now;
 
-            public PageLoadWaiter(IWebDriver driver, string script, int timeToWaitAfterPageLoad)
+            public PageLoadWaiter(IWebDriver driver, int timeToWaitAfterPageLoad)
                 : base()
             {
                 this.driver = driver;
-                this.script = script;
+                this.timeToWaitAfterPageLoad = timeToWaitAfterPageLoad;
             }
 
             public override bool Until()
@@ -59,6 +62,7 @@ namespace Selenium.Internal.SeleniumEmulation
                 {
                     // Possible page reload. Fine
                 }
+
                 return false;
             }
         }

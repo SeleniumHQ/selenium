@@ -5,7 +5,7 @@ using OpenQA.Selenium;
 
 namespace Selenium.Internal.SeleniumEmulation
 {
-    class FindSelectedOptionProperties : SeleneseCommand
+    internal class FindSelectedOptionProperties : SeleneseCommand
     {
         private SeleniumOptionSelector selector;
         private SeleniumOptionSelector.Property property;

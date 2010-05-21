@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Selenium.Internal.SeleniumEmulation
 {
-    class DeleteCookie : SeleneseCommand
+    internal class DeleteCookie : SeleneseCommand
     {
         protected override object HandleSeleneseCommand(OpenQA.Selenium.IWebDriver driver, string name, string ignored)
         {

@@ -5,7 +5,10 @@ using OpenQA.Selenium;
 
 namespace Selenium.Internal.SeleniumEmulation
 {
-    class Click : SeleneseCommand
+    /// <summary>
+    /// Defines the command for the click keyword.
+    /// </summary>
+    internal class Click : SeleneseCommand
     {
         private ElementFinder finder;
 

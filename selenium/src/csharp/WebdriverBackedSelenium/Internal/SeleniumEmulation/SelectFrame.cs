@@ -5,9 +5,9 @@ using OpenQA.Selenium;
 
 namespace Selenium.Internal.SeleniumEmulation
 {
-    class SelectFrame : SeleneseCommand
+    internal class SelectFrame : SeleneseCommand
     {
-        WindowSelector windows;
+        private WindowSelector windows;
 
         public SelectFrame(WindowSelector windowSelector)
         {

@@ -4,9 +4,9 @@ using System.Text;
 
 namespace Selenium.Internal.SeleniumEmulation
 {
-    class IsChecked : SeleneseCommand
+    internal class IsChecked : SeleneseCommand
     {
-        ElementFinder finder;
+        private ElementFinder finder;
 
         public IsChecked(ElementFinder finder)
         {

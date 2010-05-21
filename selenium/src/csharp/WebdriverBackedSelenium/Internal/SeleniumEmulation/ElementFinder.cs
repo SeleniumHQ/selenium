@@ -1,22 +1,34 @@
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using Selenium;
 using OpenQA.Selenium;
 
 namespace Selenium.Internal.SeleniumEmulation
 {
-    public class ElementFinder
+    internal class ElementFinder
     {
-        private Dictionary<String, ILookupStrategy> lookupStrategies = new Dictionary<String, ILookupStrategy>();
-        public static Regex StrategyPattern = new Regex("^([a-zA-Z]+)=(.*)");
+        public static readonly Regex StrategyPattern = new Regex("^([a-zA-Z]+)=(.*)");
+        private Dictionary<string, ILookupStrategy> lookupStrategies = new Dictionary<string, ILookupStrategy>();
 
         public ElementFinder()
         {
             SetUpElementFindingStrategies();
         }
 
-        public IWebElement FindElement(IWebDriver driver, string locator)
+        internal static string DetermineLocator(string locator)
+        {
+            string result = locator;
+            Match m = StrategyPattern.Match(locator);
+
+            if (m.Success)
+            {
+                result = m.Groups[2].Value;
+            }
+
+            return result;
+        }
+
+        internal IWebElement FindElement(IWebDriver driver, string locator)
         {
             IWebElement result;
             ILookupStrategy strategy = FindStrategy(locator);
@@ -25,7 +37,7 @@ namespace Selenium.Internal.SeleniumEmulation
             {
                 result = strategy.Find(driver, use);
             }
-            catch (NoSuchElementException e)
+            catch (NoSuchElementException)
             {
                 throw new SeleniumException("Element " + locator + " not found.");
             }
@@ -33,9 +45,9 @@ namespace Selenium.Internal.SeleniumEmulation
             return result;
         }
 
-        public ILookupStrategy FindStrategy(String locator)
+        internal ILookupStrategy FindStrategy(string locator)
         {
-            String strategyName = "implicit";
+            string strategyName = "implicit";
             Match m = StrategyPattern.Match(locator);
 
             if (m.Success)
@@ -52,20 +64,7 @@ namespace Selenium.Internal.SeleniumEmulation
             return strategy;
         }
 
-        public string DetermineLocator(String locator)
-        {
-            String result = locator;
-            Match m = StrategyPattern.Match(locator);
-
-            if (m.Success)
-            {
-                result = m.Groups[2].Value;
-            }
-
-            return result;
-        }
-
-        public void AddStrategy(string strategyName, ILookupStrategy strategy)
+        internal void AddStrategy(string strategyName, ILookupStrategy strategy)
         {
             lookupStrategies.Add(strategyName, strategy);
         }

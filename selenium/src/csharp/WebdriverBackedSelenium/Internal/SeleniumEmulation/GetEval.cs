@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
 using OpenQA.Selenium;
 
 namespace Selenium.Internal.SeleniumEmulation
 {
-    class GetEval : SeleneseCommand
+    internal class GetEval : SeleneseCommand
     {
         // Regular expression for scripts that reference the current window.
         private static readonly Regex SeleniumWindowReferenceRegex = new Regex("selenium\\.(browserbot|page\\(\\))\\.getCurrentWindow\\(\\)");
@@ -17,9 +18,9 @@ namespace Selenium.Internal.SeleniumEmulation
         private Regex seleniumBaseUrlRegex = new Regex("selenium\\.browserbot\\.baseUrl");
         private string url;
 
-        public GetEval(string baseUrl)
+        public GetEval(Uri baseUrl)
         {
-            this.url = '"' + baseUrl + '"';
+            this.url = '"' + baseUrl.ToString() + '"';
         }
 
         protected override object HandleSeleneseCommand(IWebDriver driver, string locator, string value)
@@ -30,7 +31,7 @@ namespace Selenium.Internal.SeleniumEmulation
             script = seleniumBaseUrlRegex.Replace(script, url);
             script = script.Replace("\"", "\\\"");
             script = script.Replace("'", "\\\\'");
-            script = string.Format("return eval('{0}');", script);
+            script = string.Format(CultureInfo.InvariantCulture, "return eval('{0}');", script);
 
             return ((IJavaScriptExecutor)driver).ExecuteScript(script);
         }

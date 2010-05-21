@@ -1,18 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
 using OpenQA.Selenium;
 
 namespace Selenium.Internal.SeleniumEmulation
 {
-    class CreateCookie : SeleneseCommand
+    /// <summary>
+    /// Defines the command for the createCookie keyword.
+    /// </summary>
+    internal class CreateCookie : SeleneseCommand
     {
         private readonly Regex NameValuePairRegex = new Regex("([^\\s=\\[\\]\\(\\),\"\\/\\?@:;]+)=([^=\\[\\]\\(\\),\"\\/\\?@:;]*)");
         private readonly Regex MaxAgeRegex = new Regex("max_age=(\\d+)");
         private readonly Regex PathRegex = new Regex("path=([^\\s,]+)[,]?");
 
-        protected override object HandleSeleneseCommand(OpenQA.Selenium.IWebDriver driver, string locator, string value)
+        protected override object HandleSeleneseCommand(IWebDriver driver, string locator, string value)
         {
             if (!NameValuePairRegex.IsMatch(locator))
             {
@@ -27,7 +31,7 @@ namespace Selenium.Internal.SeleniumEmulation
             if (MaxAgeRegex.IsMatch(value))
             {
                 Match maxAgeMatch = MaxAgeRegex.Match(value);
-                maxAge = DateTime.Now.AddSeconds(int.Parse(maxAgeMatch.Groups[0].Value));
+                maxAge = DateTime.Now.AddSeconds(int.Parse(maxAgeMatch.Groups[0].Value, CultureInfo.InvariantCulture));
             }
 
             string path = string.Empty;
@@ -37,7 +41,7 @@ namespace Selenium.Internal.SeleniumEmulation
                 path = pathMatch.Groups[0].Value;
                 try
                 {
-                    if (path.StartsWith("http"))
+                    if (path.StartsWith("http", StringComparison.Ordinal))
                     {
                         path = new Uri(path).AbsolutePath;
                     }

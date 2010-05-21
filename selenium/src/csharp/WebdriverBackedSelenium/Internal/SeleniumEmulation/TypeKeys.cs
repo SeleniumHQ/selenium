@@ -5,15 +5,16 @@ using OpenQA.Selenium;
 
 namespace Selenium.Internal.SeleniumEmulation
 {
-    class TypeKeys : SeleneseCommand
+    internal class TypeKeys : SeleneseCommand
     {
-        ElementFinder finder;
+        private ElementFinder finder;
 
         public TypeKeys(ElementFinder elementFinder)
         {
             finder = elementFinder;
         }
-        protected override object HandleSeleneseCommand(OpenQA.Selenium.IWebDriver driver, string locator, string value)
+
+        protected override object HandleSeleneseCommand(IWebDriver driver, string locator, string value)
         {
             value = value.Replace("\\38", Keys.ArrowUp);
             value = value.Replace("\\40", Keys.ArrowDown);

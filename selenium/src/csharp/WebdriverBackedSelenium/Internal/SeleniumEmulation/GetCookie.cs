@@ -5,7 +5,7 @@ using OpenQA.Selenium;
 
 namespace Selenium.Internal.SeleniumEmulation
 {
-    class GetCookie : SeleneseCommand
+    internal class GetCookie : SeleneseCommand
     {
         protected override object HandleSeleneseCommand(IWebDriver driver, string locator, string value)
         {
@@ -15,6 +15,7 @@ namespace Selenium.Internal.SeleniumEmulation
                 builder.Append(c.ToString());
                 builder.Append("; ");
             }
+            
             return builder.ToString();
         }
     }

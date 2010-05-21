@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using OpenQA.Selenium;
 using System.Collections.ObjectModel;
+using System.Text;
 using System.Text.RegularExpressions;
+using OpenQA.Selenium;
 
 namespace Selenium.Internal.SeleniumEmulation
 {
-    class SeleniumOptionSelector
+    internal class SeleniumOptionSelector
     {
         private Dictionary<string, IOptionSelectStrategy> optionSelectStrategies = new Dictionary<string, IOptionSelectStrategy>();
         private ElementFinder finder;
@@ -24,6 +24,23 @@ namespace Selenium.Internal.SeleniumEmulation
             Index,
             Text,
             Value,
+        }
+
+        public static bool IsMultiSelect(IWebElement theSelect)
+        {
+            string multiple = theSelect.GetAttribute("multiple");
+
+            if (string.IsNullOrEmpty(multiple))
+            {
+                return false;
+            }
+
+            if (multiple == "false")
+            {
+                return false;
+            }
+
+            return true;
         }
 
         public List<string> GetOptions(IWebDriver driver, string selectLocator, Property property, bool fetchAll)
@@ -68,22 +85,6 @@ namespace Selenium.Internal.SeleniumEmulation
             return selectedOptions;
         }
 
-        public bool IsMultiSelect(IWebElement theSelect)
-        {
-            string multiple = theSelect.GetAttribute("multiple");
-
-            if (string.IsNullOrEmpty(multiple))
-            {
-                return false;
-            }
-            if (multiple == "false")
-            {
-                return false;
-            }
-
-            return true;
-        }
-
         public void Select(IWebDriver driver, string selectLocator, string optionLocator, bool setSelected, bool onlyOneOption)
         {
             IWebElement select = finder.FindElement(driver, selectLocator);
@@ -106,6 +107,7 @@ namespace Selenium.Internal.SeleniumEmulation
                 strategyName = matches[0].Value;
                 use = matches[1].Value;
             }
+
             if (use == null)
             {
                 use = string.Empty;
@@ -119,7 +121,7 @@ namespace Selenium.Internal.SeleniumEmulation
                     strategyName + " (from " + optionLocator + ") is not a method for selecting options");
             }
 
-            if (!strategy.Select(allOptions, use, setSelected, isMultiple))
+            if (!strategy.SelectOption(allOptions, use, setSelected, isMultiple))
             {
                 throw new SeleniumException(optionLocator + " is not an option");
             }

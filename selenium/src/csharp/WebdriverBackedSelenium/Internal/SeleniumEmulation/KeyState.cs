@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Selenium.Internal.SeleniumEmulation
 {
-    class KeyState
+    internal class KeyState
     {
         private bool altKeyDown;
         private bool controlKeyDown;
@@ -34,7 +34,5 @@ namespace Selenium.Internal.SeleniumEmulation
             get { return metaKeyDown; }
             set { metaKeyDown = value; }
         }
-
-
     }
 }

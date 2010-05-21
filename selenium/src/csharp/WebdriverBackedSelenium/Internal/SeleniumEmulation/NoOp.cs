@@ -5,7 +5,7 @@ using OpenQA.Selenium;
 
 namespace Selenium.Internal.SeleniumEmulation
 {
-    class NoOp : SeleneseCommand
+    internal class NoOp : SeleneseCommand
     {
         private object returnValue;
 

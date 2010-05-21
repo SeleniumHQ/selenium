@@ -1,25 +1,24 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Selenium.Internal.SeleniumEmulation;
 using OpenQA.Selenium;
 
 namespace Selenium.Internal.SeleniumEmulation
 {
-    class Open : SeleneseCommand
+    internal class Open : SeleneseCommand
     {
         private string baseUrl;
 
-        public Open(string baseUrl)
+        public Open(Uri baseUrl)
         {
-            this.baseUrl = baseUrl;
+            this.baseUrl = baseUrl.ToString();
         }
 
-        protected override Object HandleSeleneseCommand(IWebDriver driver, string url, string ignored)
+        protected override object HandleSeleneseCommand(IWebDriver driver, string url, string ignored)
         {
-            String urlToOpen = url.Contains("://") ?
+            string urlToOpen = url.Contains("://") ?
                                url :
-                               baseUrl + (!url.StartsWith("/") ? "/" : "") + url;
+                               baseUrl + (!url.StartsWith("/", StringComparison.Ordinal) ? "/" : string.Empty) + url;
 
             driver.Url = urlToOpen;
             return null;

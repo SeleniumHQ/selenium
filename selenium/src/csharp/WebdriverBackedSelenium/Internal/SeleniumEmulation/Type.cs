@@ -1,18 +1,16 @@
-using OpenQA.Selenium;
 using System;
+using OpenQA.Selenium;
 
 namespace Selenium.Internal.SeleniumEmulation
 {
-    class Type : SeleneseCommand
+    internal class Type : SeleneseCommand
     {
         private ElementFinder finder;
-        private JavaScriptLibrary library;
         private KeyState state;
 
-        public Type(JavaScriptLibrary js, ElementFinder elementFinder, KeyState keyState)
+        public Type(ElementFinder elementFinder, KeyState keyState)
         {
             this.finder = elementFinder;
-            this.library = js;
             this.state = keyState;
         }
 
@@ -29,12 +27,13 @@ namespace Selenium.Internal.SeleniumEmulation
             IJavaScriptExecutor executor = driver as IJavaScriptExecutor;
             if (executor != null && executor.IsJavaScriptEnabled)
             {
-                library.CallEmbeddedSelenium(driver, "replaceText", element, stringToType);
+                JavaScriptLibrary.CallEmbeddedSelenium(driver, "replaceText", element, stringToType);
             }
             else
             {
                 element.SendKeys(stringToType);
             }
+
             return null;
         }
     }

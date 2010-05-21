@@ -1,14 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Selenium;
 using OpenQA.Selenium;
 
 namespace Selenium.Internal.SeleniumEmulation
 {
-    public abstract class SeleneseCommand
+    internal abstract class SeleneseCommand
     {
-        public object Apply(IWebDriver driver, String[] args)
+        internal object Apply(IWebDriver driver, string[] args)
         {
             switch (args.Length)
             {
@@ -26,6 +25,6 @@ namespace Selenium.Internal.SeleniumEmulation
             }
         }
 
-        protected abstract object HandleSeleneseCommand(IWebDriver driver, String locator, String value);
+        protected abstract object HandleSeleneseCommand(IWebDriver driver, string locator, string value);
     }
 }

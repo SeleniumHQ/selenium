@@ -4,7 +4,10 @@ using System.Text;
 
 namespace Selenium.Internal.SeleniumEmulation
 {
-    class Close : SeleneseCommand
+    /// <summary>
+    /// Defines the command for the close keyword.
+    /// </summary>
+    internal class Close : SeleneseCommand
     {
         protected override object HandleSeleneseCommand(OpenQA.Selenium.IWebDriver driver, string locator, string value)
         {

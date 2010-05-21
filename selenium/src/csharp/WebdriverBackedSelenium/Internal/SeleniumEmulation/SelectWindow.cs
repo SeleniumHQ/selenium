@@ -5,7 +5,7 @@ using OpenQA.Selenium;
 
 namespace Selenium.Internal.SeleniumEmulation
 {
-    class SelectWindow : SeleneseCommand
+    internal class SelectWindow : SeleneseCommand
     {
         private WindowSelector windows;
 

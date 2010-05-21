@@ -1,19 +1,20 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using OpenQA.Selenium;
 
 namespace Selenium.Internal.SeleniumEmulation
 {
-    class Submit : SeleneseCommand
+    internal class Submit : SeleneseCommand
     {
-        ElementFinder finder;
+        private ElementFinder finder;
 
         public Submit(ElementFinder finder)
         {
             this.finder = finder;
         }
 
-        protected override object HandleSeleneseCommand(OpenQA.Selenium.IWebDriver driver, string locator, string value)
+        protected override object HandleSeleneseCommand(IWebDriver driver, string locator, string value)
         {
             finder.FindElement(driver, locator).Submit();
             return null;

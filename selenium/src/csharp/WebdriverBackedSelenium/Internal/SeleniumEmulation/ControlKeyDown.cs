@@ -4,7 +4,10 @@ using System.Text;
 
 namespace Selenium.Internal.SeleniumEmulation
 {
-    class ControlKeyDown : SeleneseCommand
+    /// <summary>
+    /// Defines the command for the controlKeyDown keyword.
+    /// </summary>
+    internal class ControlKeyDown : SeleneseCommand
     {
         private KeyState keyState;
 

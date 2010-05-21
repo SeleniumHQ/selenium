@@ -4,7 +4,10 @@ using System.Text;
 
 namespace Selenium.Internal.SeleniumEmulation
 {
-    class AltKeyDown : SeleneseCommand
+    /// <summary>
+    /// Defines the command for the altKeyDown keyword.
+    /// </summary>
+    internal class AltKeyDown : SeleneseCommand
     {
         private KeyState keyState;
 

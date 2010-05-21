@@ -5,7 +5,7 @@ using OpenQA.Selenium;
 
 namespace Selenium.Internal.SeleniumEmulation
 {
-    class GetElementIndex : SeleneseCommand
+    internal class GetElementIndex : SeleneseCommand
     {
         private const string ElementIndexFinderScript =
 @"var _isCommentOrEmptyTextNode = function(node) {
@@ -23,18 +23,16 @@ while ((previousSibling = element.previousSibling) != null) {
 return index;";
 
         private ElementFinder finder;
-        private JavaScriptLibrary library;
 
-        public GetElementIndex(ElementFinder elementFinder, JavaScriptLibrary javascriptLibrary)
+        public GetElementIndex(ElementFinder elementFinder)
         {
             finder = elementFinder;
-            library = javascriptLibrary;
         }
 
         protected override object HandleSeleneseCommand(IWebDriver driver, string locator, string value)
         {
             IWebElement element = finder.FindElement(driver, locator);
-            return library.ExecuteScript(driver, ElementIndexFinderScript, element);
+            return JavaScriptLibrary.ExecuteScript(driver, ElementIndexFinderScript, element);
         }
     }
 }

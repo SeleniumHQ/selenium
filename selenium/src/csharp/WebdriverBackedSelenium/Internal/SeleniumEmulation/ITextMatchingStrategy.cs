@@ -4,8 +4,8 @@ using System.Text;
 
 namespace Selenium.Internal.SeleniumEmulation
 {
-    public interface ITextMatchingStrategy
+    internal interface ITextMatchingStrategy
     {
-        bool IsAMatch(String compareThis, String with);
+        bool IsAMatch(string compareThis, string compareTo);
     }
 }

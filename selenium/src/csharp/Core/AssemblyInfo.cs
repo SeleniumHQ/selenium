@@ -1,3 +1,4 @@
+using System;
 using System.Reflection;
 //
 // General Information about an assembly is controlled through the following 
@@ -7,3 +8,6 @@ using System.Reflection;
 [assembly : AssemblyTitle("Selenium .NET Client Driver")]
 [assembly : AssemblyDescription("")]
 [assembly : AssemblyConfiguration("")]
+
+// Mark the assembly as CLSCompliant for use with all CLS languages
+[assembly: CLSCompliant(true)]

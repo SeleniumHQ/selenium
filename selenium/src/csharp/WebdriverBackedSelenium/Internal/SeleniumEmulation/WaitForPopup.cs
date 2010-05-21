@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 using OpenQA.Selenium;
 
 namespace Selenium.Internal.SeleniumEmulation
 {
-    class WaitForPopup : SeleneseCommand
+    internal class WaitForPopup : SeleneseCommand
     {
         private WindowSelector windows;
 
@@ -16,10 +17,19 @@ namespace Selenium.Internal.SeleniumEmulation
 
         protected override object HandleSeleneseCommand(IWebDriver driver, string locator, string value)
         {
-            long millis = long.Parse(value);
+            string waitMessage = string.Format(CultureInfo.InvariantCulture, "Timed out waiting for {0}. Waited {1}", locator, value);
             string current = driver.GetWindowHandle();
             PopupWaiter waiter = new PopupWaiter(driver, locator, windows);
-            waiter.Wait(string.Format("Timed out waiting for {0}. Waited {1}", locator, value), millis);
+            if (!string.IsNullOrEmpty(value))
+            {
+                long millis = long.Parse(value, CultureInfo.InvariantCulture);
+                waiter.Wait(waitMessage, millis);
+            }
+            else
+            {
+                waiter.Wait(waitMessage);
+            }
+
             return null;
         }
 
@@ -48,15 +58,16 @@ namespace Selenium.Internal.SeleniumEmulation
                     {
                         driver.SwitchTo().Window(windowId);
                     }
+
                     return driver.Url != "about:blank";
                 }
                 catch (SeleniumException)
                 {
                     // Swallow
                 }
+
                 return false;
             }
         }
-
     }
 }

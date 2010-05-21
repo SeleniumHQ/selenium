@@ -5,7 +5,7 @@ using OpenQA.Selenium;
 
 namespace Selenium.Internal.SeleniumEmulation
 {
-    class SelectOption : SeleneseCommand
+    internal class SelectOption : SeleneseCommand
     {
         private SeleniumOptionSelector selector;
 

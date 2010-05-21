@@ -6,7 +6,7 @@ using OpenQA.Selenium;
 
 namespace Selenium.Internal.SeleniumEmulation
 {
-    class GetAllButtons : SeleneseCommand
+    internal class GetAllButtons : SeleneseCommand
     {
         protected override object HandleSeleneseCommand(IWebDriver driver, string locator, string value)
         {
@@ -15,8 +15,8 @@ namespace Selenium.Internal.SeleniumEmulation
 
             foreach (IWebElement input in allInputs)
             {
-                string type = input.GetAttribute("type").ToLowerInvariant();
-                if (type == "button" || type == "submit" || type == "reset")
+                string type = input.GetAttribute("type").ToUpperInvariant();
+                if (type == "BUTTON" || type == "SUBMIT" || type == "RESET")
                 {
                     ids.Add(input.GetAttribute("id"));
                 }

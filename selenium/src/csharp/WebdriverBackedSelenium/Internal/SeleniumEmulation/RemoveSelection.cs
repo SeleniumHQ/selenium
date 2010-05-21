@@ -5,7 +5,7 @@ using OpenQA.Selenium;
 
 namespace Selenium.Internal.SeleniumEmulation
 {
-    class RemoveSelection : SeleneseCommand
+    internal class RemoveSelection : SeleneseCommand
     {
         private ElementFinder finder;
         private SeleniumOptionSelector selector;
@@ -19,7 +19,7 @@ namespace Selenium.Internal.SeleniumEmulation
         protected override object HandleSeleneseCommand(IWebDriver driver, string locator, string value)
         {
             IWebElement element = finder.FindElement(driver, locator);
-            if (!selector.IsMultiSelect(element))
+            if (!SeleniumOptionSelector.IsMultiSelect(element))
             {
                 throw new SeleniumException("You may only remove a selection to a select that supports multiple selections");
             }

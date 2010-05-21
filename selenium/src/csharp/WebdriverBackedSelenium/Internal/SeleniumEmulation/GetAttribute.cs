@@ -5,7 +5,7 @@ using OpenQA.Selenium;
 
 namespace Selenium.Internal.SeleniumEmulation
 {
-    class GetAttribute : SeleneseCommand
+    internal class GetAttribute : SeleneseCommand
     {
         private ElementFinder finder;
 
@@ -16,7 +16,7 @@ namespace Selenium.Internal.SeleniumEmulation
 
         protected override object HandleSeleneseCommand(IWebDriver driver, string locator, string value)
         {
-            int attributePos = locator.LastIndexOf("@");
+            int attributePos = locator.LastIndexOf("@", StringComparison.Ordinal);
             string elementLocator = locator.Substring(0, attributePos);
             string attributeName = locator.Substring(attributePos + 1);
 

@@ -1,19 +1,20 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using OpenQA.Selenium;
 
 namespace Selenium.Internal.SeleniumEmulation
 {
-    class GetText : SeleneseCommand
+    internal class GetText : SeleneseCommand
     {
-        ElementFinder finder;
+        private ElementFinder finder;
 
         public GetText(ElementFinder finder)
         {
             this.finder = finder;
         }
 
-        protected override object HandleSeleneseCommand(OpenQA.Selenium.IWebDriver driver, string locator, string ignored)
+        protected override object HandleSeleneseCommand(IWebDriver driver, string locator, string ignored)
         {
             return finder.FindElement(driver, locator).Text;
         }

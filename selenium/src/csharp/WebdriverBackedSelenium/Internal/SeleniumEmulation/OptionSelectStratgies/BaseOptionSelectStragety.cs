@@ -5,9 +5,9 @@ using OpenQA.Selenium;
 
 namespace Selenium.Internal.SeleniumEmulation
 {
-    public abstract class BaseOptionSelectStragety : IOptionSelectStrategy
+    internal abstract class BaseOptionSelectStrategy : IOptionSelectStrategy
     {
-        public bool Select(ReadOnlyCollection<IWebElement> fromOptions, string selectThis, bool setSelected, bool allowMultipleSelect)
+        public bool SelectOption(ReadOnlyCollection<IWebElement> fromOptions, string selectThis, bool setSelected, bool allowMultipleSelect)
         {
             bool matchMade = false;
             IEnumerator<IWebElement> allOptions = fromOptions.GetEnumerator();
@@ -27,15 +27,17 @@ namespace Selenium.Internal.SeleniumEmulation
                         option.Toggle();
                     }
                 }
+
                 matchMade |= matchThisTime;
                 if (matchMade && !allowMultipleSelect)
                 {
                     return true;
                 }
             }
+
             return matchMade;
         }
 
-        protected abstract bool SelectOption(IWebElement option, String selectThis);
+        protected abstract bool SelectOption(IWebElement optionElement, string selectThis);
     }
 }

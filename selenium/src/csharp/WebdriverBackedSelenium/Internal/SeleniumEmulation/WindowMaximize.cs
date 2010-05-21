@@ -1,21 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using OpenQA.Selenium;
 
 namespace Selenium.Internal.SeleniumEmulation
 {
-    class WindowMaximize : SeleneseCommand
+    internal class WindowMaximize : SeleneseCommand
     {
-        private JavaScriptLibrary library;
-
-        public WindowMaximize(JavaScriptLibrary js)
+        protected override object HandleSeleneseCommand(IWebDriver driver, string locator, string value)
         {
-            library = js;
-        }
-
-        protected override object HandleSeleneseCommand(OpenQA.Selenium.IWebDriver driver, string locator, string value)
-        {
-            library.ExecuteScript(driver, "if (window.screen) { window.moveTo(0, 0); window.resizeTo(window.screen.availWidth, window.screen.availHeight);};");
+            JavaScriptLibrary.ExecuteScript(driver, "if (window.screen) { window.moveTo(0, 0); window.resizeTo(window.screen.availWidth, window.screen.availHeight);};");
             return null;
         }
     }

@@ -2,11 +2,11 @@ using OpenQA.Selenium;
 
 namespace Selenium.Internal.SeleniumEmulation
 {
-    public class IdOptionSelectStrategy : BaseOptionSelectStragety
+    internal class IdOptionSelectStrategy : BaseOptionSelectStrategy
     {
-        protected override bool SelectOption(IWebElement option, string selectThis)
+        protected override bool SelectOption(IWebElement optionElement, string selectThis)
         {
-            string id = option.GetAttribute("id");
+            string id = optionElement.GetAttribute("id");
             return selectThis.Equals(id);
         }
     }

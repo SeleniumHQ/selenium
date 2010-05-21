@@ -6,7 +6,7 @@ using OpenQA.Selenium;
 
 namespace Selenium.Internal.SeleniumEmulation
 {
-    class GetAllFields : SeleneseCommand
+    internal class GetAllFields : SeleneseCommand
     {
         protected override object HandleSeleneseCommand(IWebDriver driver, string locator, string value)
         {
@@ -15,8 +15,8 @@ namespace Selenium.Internal.SeleniumEmulation
 
             foreach (IWebElement input in allInputs)
             {
-                string type = input.GetAttribute("type").ToLowerInvariant();
-                if (type == "text")
+                string type = input.GetAttribute("type").ToUpperInvariant();
+                if (type == "TEXT")
                 {
                     ids.Add(input.GetAttribute("id"));
                 }

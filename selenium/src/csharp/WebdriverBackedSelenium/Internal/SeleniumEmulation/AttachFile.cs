@@ -5,7 +5,10 @@ using OpenQA.Selenium;
 
 namespace Selenium.Internal.SeleniumEmulation
 {
-    class AttachFile : SeleneseCommand
+    /// <summary>
+    /// Defines the command for the attachFile keyword.
+    /// </summary>
+    internal class AttachFile : SeleneseCommand
     {
         private ElementFinder finder;
 

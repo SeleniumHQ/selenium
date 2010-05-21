@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Text;
 using OpenQA.Selenium;
-using System.Drawing;
 
 namespace Selenium.Internal.SeleniumEmulation
 {
-    class GetElementPositionTop : SeleneseCommand
+    internal class GetElementPositionTop : SeleneseCommand
     {
         private ElementFinder finder;
 

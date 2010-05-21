@@ -5,22 +5,23 @@ using OpenQA.Selenium;
 
 namespace Selenium.Internal.SeleniumEmulation
 {
-    class Uncheck : SeleneseCommand
+    internal class Uncheck : SeleneseCommand
     {
-        ElementFinder finder;
+        private ElementFinder finder;
 
         public Uncheck(ElementFinder finder)
         {
             this.finder = finder;
         }
 
-        protected override object HandleSeleneseCommand(OpenQA.Selenium.IWebDriver driver, string locator, string ignored)
+        protected override object HandleSeleneseCommand(IWebDriver driver, string locator, string ignored)
         {
             IWebElement element = finder.FindElement(driver, locator);
             if (element.Selected == true)
             {
                 element.Toggle();
             }
+
             return null;
         }
     }

@@ -5,15 +5,13 @@ using OpenQA.Selenium;
 
 namespace Selenium.Internal.SeleniumEmulation
 {
-    class IsOrdered : SeleneseCommand
+    internal class IsOrdered : SeleneseCommand
     {
         private ElementFinder finder;
-        private JavaScriptLibrary library;
 
-        public IsOrdered(ElementFinder elementFinder, JavaScriptLibrary js)
+        public IsOrdered(ElementFinder elementFinder)
         {
             this.finder = elementFinder;
-            this.library = js;
         }
 
         protected override object HandleSeleneseCommand(IWebDriver driver, string locator, string value)
@@ -33,7 +31,7 @@ namespace Selenium.Internal.SeleniumEmulation
               "    }\n" +
               "    return false;\n";
 
-            bool? result = (bool)library.ExecuteScript(driver, ordered, one, two);
+            bool? result = (bool)JavaScriptLibrary.ExecuteScript(driver, ordered, one, two);
             return result != null && result.Value;
         }
     }

@@ -5,7 +5,7 @@ using OpenQA.Selenium;
 
 namespace Selenium.Internal.SeleniumEmulation
 {
-    class DoubleClick : SeleneseCommand
+    internal class DoubleClick : SeleneseCommand
     {
         private ElementFinder finder;
 
@@ -14,7 +14,7 @@ namespace Selenium.Internal.SeleniumEmulation
             this.finder = finder;
         }
 
-        protected override Object HandleSeleneseCommand(IWebDriver driver, string locator, string value)
+        protected override object HandleSeleneseCommand(IWebDriver driver, string locator, string value)
         {
             IWebElement element = finder.FindElement(driver, locator);
             element.Click();

@@ -5,17 +5,15 @@ using OpenQA.Selenium;
 
 namespace Selenium.Internal.SeleniumEmulation
 {
-    class KeyEvent : SeleneseCommand
+    internal class KeyEvent : SeleneseCommand
     {
         private ElementFinder finder;
-        private JavaScriptLibrary library;
         private KeyState keyState;
         private string eventName;
 
-        public KeyEvent(ElementFinder elementFinder, JavaScriptLibrary js, KeyState state, String eventName)
+        public KeyEvent(ElementFinder elementFinder, KeyState state, string eventName)
         {
             this.finder = elementFinder;
-            this.library = js;
             this.keyState = state;
             this.eventName = eventName;
         }
@@ -30,7 +28,8 @@ namespace Selenium.Internal.SeleniumEmulation
                 keyState.ShiftKeyDown, 
                 keyState.MetaKeyDown 
             };
-            library.CallEmbeddedSelenium(driver, eventName, finder.FindElement(driver, locator), parameters);
+
+            JavaScriptLibrary.CallEmbeddedSelenium(driver, eventName, finder.FindElement(driver, locator), parameters);
 
             return null;
         }

@@ -1,21 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
-using OpenQA.Selenium;
 using System.Text.RegularExpressions;
+using OpenQA.Selenium;
 
 namespace Selenium.Internal.SeleniumEmulation
 {
-    class GetTable : SeleneseCommand
+    internal class GetTable : SeleneseCommand
     {
         private static readonly Regex TableParts = new Regex("(.*)\\.(\\d+)\\.(\\d+)");
         private ElementFinder finder;
-        private JavaScriptLibrary library;
 
-        public GetTable(ElementFinder elementFinder, JavaScriptLibrary js)
+        public GetTable(ElementFinder elementFinder)
         {
             this.finder = elementFinder;
-            this.library = js;
         }
 
         protected override object HandleSeleneseCommand(IWebDriver driver, string locator, string value)
@@ -29,8 +28,8 @@ namespace Selenium.Internal.SeleniumEmulation
 
             Match tableMatch = TableParts.Match(locator);
             string tableName = tableMatch.Groups[0].Value;
-            long row = int.Parse(tableMatch.Groups[1].Value);
-            long col = int.Parse(tableMatch.Groups[2].Value);
+            long row = int.Parse(tableMatch.Groups[1].Value, CultureInfo.InvariantCulture);
+            long col = int.Parse(tableMatch.Groups[2].Value, CultureInfo.InvariantCulture);
 
             IWebElement table = finder.FindElement(driver, tableName);
 
@@ -40,7 +39,7 @@ namespace Selenium.Internal.SeleniumEmulation
                 "if (col > table.rows[row].cells.length) { return \"Cannot access column \" + col + \" - table row has \" + table.rows[row].cells.length + \" columns\"; }" +
                 "return table.rows[row].cells[col];";
 
-            object returnValue = library.ExecuteScript(driver, script, table, row, col);
+            object returnValue = JavaScriptLibrary.ExecuteScript(driver, script, table, row, col);
             IWebElement elementReturned = returnValue as IWebElement;
             if (elementReturned != null)
             {
@@ -51,7 +50,7 @@ namespace Selenium.Internal.SeleniumEmulation
                 throw new SeleniumException(returnValue.ToString());
             }
 
-            return returnValue;
+            return tableString;
         }
     }
 }

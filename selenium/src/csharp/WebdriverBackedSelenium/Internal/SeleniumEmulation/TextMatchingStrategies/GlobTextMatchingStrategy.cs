@@ -2,14 +2,14 @@ using System.Text.RegularExpressions;
 
 namespace Selenium.Internal.SeleniumEmulation
 {
-    public class GlobTextMatchingStrategy : ITextMatchingStrategy
+    internal class GlobTextMatchingStrategy : ITextMatchingStrategy
     {
-        public bool IsAMatch(string compareThis, string with)
+        public bool IsAMatch(string compareThis, string compareTo)
         {
             string regex = compareThis.Replace(".", "\\.").Replace("*", ".*").Replace("?", ".?");
             var pattern = new Regex(regex, RegexOptions.Multiline);
 
-            Match matcher = pattern.Match(with);
+            Match matcher = pattern.Match(compareTo);
 
             return matcher.Success;
         }

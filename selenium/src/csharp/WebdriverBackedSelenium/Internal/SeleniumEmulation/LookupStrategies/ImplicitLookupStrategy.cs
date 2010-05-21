@@ -4,17 +4,15 @@ using OpenQA.Selenium;
 
 namespace Selenium
 {
-
-
-    public class ImplicitLookupStrategy : ILookupStrategy
+    internal class ImplicitLookupStrategy : ILookupStrategy
     {
-        public OpenQA.Selenium.IWebElement Find(IWebDriver driver, string use)
+        public IWebElement Find(IWebDriver driver, string use)
         {
-            if (use.StartsWith("document."))
+            if (use.StartsWith("document.", StringComparison.Ordinal))
             {
                 return new DomTraversalLookupStrategy().Find(driver, use);
             }
-            else if (use.StartsWith("//"))
+            else if (use.StartsWith("//", StringComparison.Ordinal))
             {
                 return new XPathLookupStrategy().Find(driver, use);
             }

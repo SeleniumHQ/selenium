@@ -5,9 +5,13 @@ using OpenQA.Selenium;
 
 namespace Selenium.Internal.SeleniumEmulation
 {
-    class Check : SeleneseCommand
+    /// <summary>
+    /// Defines the command for the check keyword.
+    /// </summary>
+    internal class Check : SeleneseCommand
     {
         private ElementFinder finder;
+        
         public Check(ElementFinder elementFinder)
         {
             finder = elementFinder;
