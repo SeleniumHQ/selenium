@@ -28,6 +28,11 @@ namespace OpenQA.Selenium
     public interface IJavaScriptExecutor
     {
         /// <summary>
+        /// Gets a value indicating whether JavaScript is enabled for this browser.
+        /// </summary>
+        bool IsJavaScriptEnabled { get; }
+
+        /// <summary>
         /// Executes JavaScript in the context of the currently selected frame or window.
         /// </summary>
         /// <param name="script">The JavaScript code to execute.</param>
@@ -62,10 +67,5 @@ namespace OpenQA.Selenium
         /// </para>
         /// </remarks>
         object ExecuteScript(string script, params object[] args);
-
-        /// <summary>
-        /// Gets a value indicating whether JavaScript is enabled for this browser.
-        /// </summary>
-        bool IsJavaScriptEnabled { get; }
     }
 }

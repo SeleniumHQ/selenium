@@ -19,10 +19,10 @@ namespace OpenQA.Selenium.Chrome
         private const string NonWindowsManifestFile = "manifest-nonwin.json";
         private const string ManifestFile = "manifest.json";
         private const string ExtensionFileName = "chrome-extension.zip";
+
+        // private const string ExtensionResourceId = "WebDriver.ChromeExt.zip";
         private const string ExtensionResourceId = "WebDriver.ChromeExt.zip";
         
-        // private const string ExtensionResourceId = "WebDriver.ChromeExt.zip";
-
         private static string defaultExtensionDir;
         private string directory;
 
