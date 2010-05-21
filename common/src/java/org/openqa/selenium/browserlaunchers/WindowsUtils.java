@@ -14,7 +14,7 @@
  *  limitations under the License.
  *
  */
-package org.openqa.selenium.server.browserlaunchers;
+package org.openqa.selenium.browserlaunchers;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.ByteArrayInputStream;
@@ -29,9 +29,8 @@ import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.logging.Log;
-import org.openqa.jetty.log.LogFactory;
 import org.openqa.selenium.internal.CommandLine;
+import org.openqa.selenium.internal.Trace;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -39,13 +38,14 @@ import org.w3c.dom.Text;
 
 public class WindowsUtils {
 
-  static Log log = LogFactory.getLog(WindowsUtils.class);
+  public static Boolean regVersion1 = null;
+  
+  private static Trace log;
   private static final boolean THIS_IS_WINDOWS = File.pathSeparator.equals(";");
   private static String wmic = null;
   private static File wbem = null;
   private static String taskkill = null;
   private static String reg = null;
-  private static Boolean regVersion1 = null;
   private static Properties env = null;
 
   /**
@@ -78,10 +78,25 @@ public class WindowsUtils {
     try {
       killByName(name);
     } catch (WindowsRegistryException e) {
-      log.warn(e);
+      warn(e);
     }
   }
 
+  private static void warn(Throwable e) {
+    if (log != null) log.warn(e);
+}
+
+  private static void warn(String message) {
+    if (log != null) log.warn(message);
+  }
+
+  private static void info(String message) {
+    if (log != null) log.info(message);
+  }
+
+  private static void error(String message) {
+    if (log != null) log.error(message);
+  }
 
   /**
    * Searches the process list for a process with the specified command line and kills it
@@ -125,24 +140,24 @@ public class WindowsUtils {
       Matcher m = cmd.matcher(commandLine);
       if (m.matches()) {
         String processID = (String) procMap.get(commandLine);
-        StringBuffer logMessage = new StringBuffer("Killing PID ");
+        StringBuilder logMessage = new StringBuilder("Killing PID ");
         logMessage.append(processID);
         logMessage.append(": ");
         logMessage.append(commandLine);
-        log.info(logMessage);
+        info(logMessage.toString());
         killPID(processID);
-        log.info("Killed");
+        info("Killed");
         killedOne = true;
       }
     }
     if (!killedOne) {
-      StringBuffer errorMessage = new StringBuffer("Didn't find any matches for");
+      StringBuilder errorMessage = new StringBuilder("Didn't find any matches for");
       for (int i = 0; i < cmdarray.length; i++) {
         errorMessage.append(" '");
         errorMessage.append(cmdarray[i]);
         errorMessage.append('\'');
       }
-      log.warn(errorMessage);
+      warn(errorMessage.toString());
     }
   }
 
@@ -160,10 +175,10 @@ public class WindowsUtils {
    * @throws Exception - if something goes wrong while reading the process list
    */
   public static Map procMap() throws Exception {
-    log.info("Reading Windows Process List...");
+    info("Reading Windows Process List...");
     String output = executeCommand(findWMIC(), "process", "list", "full", "/format:rawxml.xsl");
 //    exec.setFailonerror(true);
-    log.info("Done, searching for processes to kill...");
+    info("Done, searching for processes to kill...");
     // WMIC drops an ugly zero-length batch file; clean that up
     File TempWmicBatchFile = new File("TempWmicBatchFile.bat");
     if (TempWmicBatchFile.exists()) {
@@ -323,7 +338,7 @@ public class WindowsUtils {
         return wmic;
       }
     }
-    log.warn("Couldn't find wmic! Hope it's on the path...");
+    warn("Couldn't find wmic! Hope it's on the path...");
     wmic = "wmic";
     return wmic;
   }
@@ -340,7 +355,7 @@ public class WindowsUtils {
     File systemRoot = findSystemRoot();
     wbem = new File(systemRoot, "system32/wbem");
     if (!wbem.exists()) {
-      log.error("Couldn't find wbem!");
+      error("Couldn't find wbem!");
       return null;
     }
     return wbem;
@@ -361,7 +376,7 @@ public class WindowsUtils {
       taskkill = taskkillExe.getAbsolutePath();
       return taskkill;
     }
-    log.warn("Couldn't find taskkill! Hope it's on the path...");
+    warn("Couldn't find taskkill! Hope it's on the path...");
     taskkill = "taskkill";
     return taskkill;
   }
@@ -390,7 +405,7 @@ public class WindowsUtils {
     if (reg != null) {
       return reg;
     }
-    log.error("OS Version: " + System.getProperty("os.version"));
+    error("OS Version: " + System.getProperty("os.version"));
     throw new WindowsRegistryException("Couldn't find reg.exe!\n" +
                                        "Please download it from Microsoft and install it in a standard location.\n"
                                        +
@@ -639,19 +654,4 @@ public class WindowsUtils {
     return THIS_IS_WINDOWS;
   }
 
-  @SuppressWarnings("serial")
-  static class WindowsRegistryException extends RuntimeException {
-    WindowsRegistryException(Exception e) {
-      super(generateMessage(), e);
-    }
-
-    private static String generateMessage() {
-      return "Problem while managing the registry, OS Version '" +
-             System.getProperty("os.version") + "', regVersion1 = " + regVersion1;
-    }
-
-    WindowsRegistryException(String message) {
-      this(new RuntimeException(message));
-    }
-  }
 }

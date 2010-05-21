@@ -26,12 +26,13 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.openqa.jetty.log.LogFactory;
+import org.openqa.selenium.browserlaunchers.WindowsUtils;
 import org.openqa.selenium.internal.CommandLine;
 import org.openqa.selenium.internal.FileHandler;
 import org.openqa.selenium.internal.Maps;
 import org.openqa.selenium.internal.TemporaryFilesystem;
 import org.openqa.selenium.server.BrowserConfigurationOptions;
-import org.openqa.selenium.server.browserlaunchers.WindowsUtils.WindowsRegistryException;
+import org.openqa.selenium.browserlaunchers.WindowsRegistryException;
 
 public class WindowsProxyManager {
   static Log log = LogFactory.getLog(WindowsProxyManager.class);

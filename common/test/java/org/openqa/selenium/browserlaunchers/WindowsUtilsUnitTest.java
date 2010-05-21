@@ -14,13 +14,15 @@
  *  limitations under the License.
  *
  */
-package org.openqa.selenium.server.browserlaunchers;
+package org.openqa.selenium.browserlaunchers;
 
 import junit.framework.TestCase;
 
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.openqa.selenium.browserlaunchers.WindowsUtils;
 
 public class WindowsUtilsUnitTest extends TestCase {
 
@@ -45,14 +47,6 @@ public class WindowsUtilsUnitTest extends TestCase {
         if (!WindowsUtils.thisIsWindows()) return;
         Map p =WindowsUtils.loadEnvironment();
         assertFalse("Environment appears to be empty!", p.isEmpty());
-//            for (Iterator i = p.keySet().iterator(); i.hasNext();) {
-//                String key = (String) i.next();
-//                String value = (String) p.get(key);
-//                System.out.print(key);
-//                System.out.print('=');
-//                System.out.println(value);
-//            }
-        assertNotNull("SystemRoot env var apparently not set on Windows!", WindowsUtils.findSystemRoot());
     }
     public void testWMIC() {
         if (!WindowsUtils.thisIsWindows()) return;

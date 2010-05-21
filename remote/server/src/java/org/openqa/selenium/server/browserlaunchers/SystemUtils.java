@@ -1,6 +1,6 @@
 package org.openqa.selenium.server.browserlaunchers;
 
-import org.openqa.selenium.server.browserlaunchers.WindowsUtils;
+import org.openqa.selenium.browserlaunchers.WindowsUtils;
 import org.apache.tools.ant.taskdefs.condition.Os;
 
 /**

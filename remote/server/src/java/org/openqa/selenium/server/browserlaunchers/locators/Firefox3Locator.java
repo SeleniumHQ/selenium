@@ -1,6 +1,6 @@
 package org.openqa.selenium.server.browserlaunchers.locators;
 
-import org.openqa.selenium.server.browserlaunchers.WindowsUtils;
+import org.openqa.selenium.browserlaunchers.WindowsUtils;
 
 import java.io.File;
 import java.io.FilenameFilter;

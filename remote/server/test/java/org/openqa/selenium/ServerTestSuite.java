@@ -7,9 +7,10 @@ package org.openqa.selenium;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+
+import org.openqa.selenium.browserlaunchers.WindowsUtils;
 import org.openqa.selenium.server.LinuxHTMLRunnerFunctionalTest;
 import org.openqa.selenium.server.WindowsHTMLRunnerFunctionalTest;
-import org.openqa.selenium.server.browserlaunchers.WindowsUtils;
 
 
 public class ServerTestSuite extends TestCase {

@@ -2,6 +2,7 @@ package org.openqa.selenium.server.browserlaunchers.locators;
 
 import org.apache.commons.logging.Log;
 import org.openqa.jetty.log.LogFactory;
+import org.openqa.selenium.browserlaunchers.WindowsUtils;
 import org.openqa.selenium.server.browserlaunchers.*;
 
 import java.io.File;
