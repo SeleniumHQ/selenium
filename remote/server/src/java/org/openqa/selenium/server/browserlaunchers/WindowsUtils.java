@@ -16,6 +16,7 @@
  */
 package org.openqa.selenium.server.browserlaunchers;
 
+import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -30,14 +31,10 @@ import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.xml.parsers.DocumentBuilderFactory;
-
 import org.apache.commons.logging.Log;
-import org.apache.tools.ant.Project;
-import org.apache.tools.ant.taskdefs.ExecTask;
 import org.apache.tools.ant.taskdefs.Execute;
-import org.apache.tools.ant.types.Environment;
 import org.openqa.jetty.log.LogFactory;
+import org.openqa.selenium.internal.CommandLine;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -559,27 +556,13 @@ public class WindowsUtils {
   }
 
   private static String executeCommand(String commandName, String... args) {
-    Project p = new Project();
-    ExecTask exec = new ExecTask();
-    exec.setProject(p);
-    exec.setExecutable(commandName);
-    exec.setTaskType(commandName);
-    exec.setFailonerror(false);
-    exec.setResultProperty("result");
-    exec.setOutputproperty("output");
+    CommandLine cmd = new CommandLine(commandName, args);
+    cmd.execute();
 
-    for (String arg : args) {
-      exec.createArg().setValue(arg);
+    String output = cmd.getStdOut();
+    if (!cmd.isSuccessful()) {
+      throw new WindowsRegistryException("exec return code " + cmd.getExitCode() + ": " + output);
     }
-
-    exec.execute();
-    String result = p.getProperty("result");
-    String output = p.getProperty("output");
-    log.debug(output);
-    if (!"0".equals(result)) {
-      throw new WindowsRegistryException("exec return code " + result + ": " + output);
-    }
-
     return output;
   }
 
