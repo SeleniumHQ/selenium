@@ -21,18 +21,15 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
-import org.apache.tools.ant.taskdefs.Execute;
 import org.openqa.jetty.log.LogFactory;
 import org.openqa.selenium.internal.CommandLine;
 import org.w3c.dom.Document;
@@ -48,7 +45,6 @@ public class WindowsUtils {
   private static File wbem = null;
   private static String taskkill = null;
   private static String reg = null;
-  //"C:\\NTRESKIT\\reg.exe";
   private static Boolean regVersion1 = null;
   private static Properties env = null;
 
@@ -211,18 +207,9 @@ public class WindowsUtils {
     if (env != null) {
       return env;
     }
-    // DGF lifted directly from Ant's Property task
     env = new Properties();
-    Vector osEnv = Execute.getProcEnvironment();
-    for (Enumeration e = osEnv.elements(); e.hasMoreElements();) {
-      String entry = (String) e.nextElement();
-      int pos = entry.indexOf('=');
-      if (pos == -1) {
-        log.warn("Ignoring: " + entry);
-      } else {
-        env.put(entry.substring(0, pos),
-            entry.substring(pos + 1));
-      }
+    for (Map.Entry<String, String> entry : System.getenv().entrySet()) {
+      env.put(entry.getKey(), entry.getValue());
     }
     return env;
   }
