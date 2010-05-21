@@ -25,7 +25,7 @@ import com.thoughtworks.selenium.SeleniumException;
 import org.openqa.selenium.remote.Capabilities;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.JsonToBeanConverter;
-import org.openqa.selenium.remote.ProxyPac;
+import org.openqa.selenium.remote.DoNotUseProxyPac;
 
 public class BrowserConfigurationOptions {
 
@@ -158,14 +158,14 @@ public class BrowserConfigurationOptions {
     return is("proxyRequired") || getProxyConfig() != null;
   }
 
-  public ProxyPac getProxyConfig() {
+  public DoNotUseProxyPac getProxyConfig() {
     String raw = get(PROXY_PAC);
     if (raw == null) {
       return null;
     }
 
     try {
-      return new JsonToBeanConverter().convert(ProxyPac.class, raw);
+      return new JsonToBeanConverter().convert(DoNotUseProxyPac.class, raw);
     } catch (Exception e) {
       throw new SeleniumException("Unable to retrieve proxy configuration", e);
     }

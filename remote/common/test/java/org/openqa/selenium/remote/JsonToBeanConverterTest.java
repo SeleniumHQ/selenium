@@ -247,7 +247,7 @@ public class JsonToBeanConverterTest extends TestCase {
   }
 
   public void testShouldBeAbleToReconstituteAProxyPac() throws Exception {
-    ProxyPac pac = new ProxyPac();
+    DoNotUseProxyPac pac = new DoNotUseProxyPac();
     pac.map("*/selenium/*").toProxy("http://localhost:8080/selenium-server");
     pac.map("/[a-zA-Z]{4}.microsoft.com/").toProxy("http://localhost:1010/selenium-server/");
     pac.map("/flibble*").toNoProxy();
@@ -256,7 +256,7 @@ public class JsonToBeanConverterTest extends TestCase {
     pac.defaults().toNoProxy();
 
     String raw = new BeanToJsonConverter().convert(pac);
-    ProxyPac converted = new JsonToBeanConverter().convert(ProxyPac.class, raw);
+    DoNotUseProxyPac converted = new JsonToBeanConverter().convert(DoNotUseProxyPac.class, raw);
 
     Writer source = new StringWriter();
     pac.outputTo(source);

@@ -31,9 +31,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import static java.util.Collections.unmodifiableMap;
-import static java.util.Collections.unmodifiableSet;
-
 public class JsonToBeanConverter {
 
   @SuppressWarnings("unchecked")
@@ -104,9 +101,9 @@ public class JsonToBeanConverter {
       return (T) caps;
     }
 
-    if (ProxyPac.class.equals(clazz)) {
+    if (DoNotUseProxyPac.class.equals(clazz)) {
       JSONObject object = new JSONObject((String) text);
-      ProxyPac pac = new ProxyPac();
+      DoNotUseProxyPac pac = new DoNotUseProxyPac();
 
       if (object.has("directUrls")) {
         JSONArray allUrls = object.getJSONArray("directUrls");

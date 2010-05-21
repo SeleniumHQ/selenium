@@ -26,8 +26,7 @@ import java.io.Writer;
 
 import com.thoughtworks.selenium.SeleniumException;
 import org.openqa.selenium.remote.Capabilities;
-import org.openqa.selenium.remote.ProxyPac;
-import org.openqa.selenium.server.BrowserConfigurationOptions;
+import org.openqa.selenium.remote.DoNotUseProxyPac;
 
 import static org.openqa.selenium.server.BrowserConfigurationOptions.AVOIDING_PROXY;
 import static org.openqa.selenium.server.BrowserConfigurationOptions.ONLY_PROXYING_SELENIUM_TRAFFIC;
@@ -51,7 +50,7 @@ public class Proxies {
 
   public static File makeProxyPAC(File parentDir, int port, String configuredProxy, String proxyPort, String nonProxyHosts, Capabilities capabilities)
       throws FileNotFoundException {
-    ProxyPac pac = newProxyPac(port, configuredProxy, proxyPort, nonProxyHosts, capabilities);
+    DoNotUseProxyPac pac = newProxyPac(port, configuredProxy, proxyPort, nonProxyHosts, capabilities);
 
     try {
       File pacFile = new File(parentDir, "proxy.pac");
@@ -64,9 +63,9 @@ public class Proxies {
     }
   }
 
-  static ProxyPac newProxyPac(int port, String configuredProxy, String proxyPort, String nonProxyHosts, Capabilities capabilities) {
-    ProxyPac existingConfig = (ProxyPac) capabilities.getCapability(PROXY_PAC);
-    ProxyPac pac = existingConfig == null ? new ProxyPac() : existingConfig;
+  static DoNotUseProxyPac newProxyPac(int port, String configuredProxy, String proxyPort, String nonProxyHosts, Capabilities capabilities) {
+    DoNotUseProxyPac existingConfig = (DoNotUseProxyPac) capabilities.getCapability(PROXY_PAC);
+    DoNotUseProxyPac pac = existingConfig == null ? new DoNotUseProxyPac() : existingConfig;
 
     if (configuredProxy != null) {
       String proxyToUse = configuredProxy;

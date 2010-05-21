@@ -5,7 +5,7 @@ import java.util.Map;
 
 import org.openqa.selenium.remote.BeanToJsonConverter;
 import org.openqa.selenium.remote.JsonToBeanConverter;
-import org.openqa.selenium.remote.ProxyPac;
+import org.openqa.selenium.remote.DoNotUseProxyPac;
 
 /**
  * Contains parameters for a single Selenium browser session.
@@ -189,19 +189,19 @@ public class BrowserConfigurationOptions {
       return get(COMMAND_LINE_FLAGS);
     }
 
-    public BrowserConfigurationOptions setProxyConfig(ProxyPac pac) {
+    public BrowserConfigurationOptions setProxyConfig(DoNotUseProxyPac pac) {
       put(PROXY_CONFIG, new BeanToJsonConverter().convert(pac));
       return this;
     }
 
-    public ProxyPac getProxyConfig() {
+    public DoNotUseProxyPac getProxyConfig() {
       String raw = get(PROXY_CONFIG);
       if (raw == null) {
         return null;
       }
 
       try {
-        return new JsonToBeanConverter().convert(ProxyPac.class, raw);
+        return new JsonToBeanConverter().convert(DoNotUseProxyPac.class, raw);
       } catch (Exception e) {
         throw new SeleniumException("Unable to retrieve proxy configuration", e);
       }

@@ -1,6 +1,5 @@
 package org.openqa.selenium.remote;
 
-import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -8,17 +7,11 @@ import java.io.Reader;
 import java.io.Serializable;
 import java.io.Writer;
 import java.net.URI;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
-
-import com.thoughtworks.selenium.SeleniumException;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.JSONTokener;
 
 import static java.util.Collections.unmodifiableMap;
 import static java.util.Collections.unmodifiableSet;
@@ -26,7 +19,7 @@ import static java.util.Collections.unmodifiableSet;
 /**
  * A representation of a proxy configuration file.
  */
-public class ProxyPac implements Serializable {
+public class DoNotUseProxyPac implements Serializable {
   // Note that we put the dash character at the end of the pattern
   private static final Pattern acceptableShExpPattern =
       Pattern.compile("[\\w\\*\\?:/\\.-]*");
@@ -184,7 +177,7 @@ public class ProxyPac implements Serializable {
     return toReturn;
   }
 
-  public ProxyPac deriveFrom(URI uri) {
+  public DoNotUseProxyPac deriveFrom(URI uri) {
     // Store the uri for now
     this.deriveFrom = uri;
     return this;
@@ -197,13 +190,13 @@ public class ProxyPac implements Serializable {
       this.outgoingUrl = outgoingUrl;
     }
 
-    public ProxyPac toProxy(String proxyVia) {
+    public DoNotUseProxyPac toProxy(String proxyVia) {
       if (isIeIncompatibleRegEx(outgoingUrl)) {
         proxiedRegexUrls.put(outgoingUrl, proxyVia);
       } else {
         proxiedUrls.put(outgoingUrl, proxyVia);
       }
-      return ProxyPac.this;
+      return DoNotUseProxyPac.this;
     }
 
     // See: http://support.microsoft.com/kb/274204
@@ -212,9 +205,9 @@ public class ProxyPac implements Serializable {
       return !acceptableShExpPattern.matcher(outgoingUrl).matches();
     }
 
-    public ProxyPac toNoProxy() {
-      ProxyPac.this.directUrls.add(outgoingUrl);
-      return ProxyPac.this;
+    public DoNotUseProxyPac toNoProxy() {
+      DoNotUseProxyPac.this.directUrls.add(outgoingUrl);
+      return DoNotUseProxyPac.this;
     }
   }
 
@@ -225,26 +218,26 @@ public class ProxyPac implements Serializable {
       this.host = host;
     }
 
-    public ProxyPac toProxy(String proxyVia) {
+    public DoNotUseProxyPac toProxy(String proxyVia) {
       proxiedHosts.put(host, proxyVia);
-      return ProxyPac.this;
+      return DoNotUseProxyPac.this;
     }
 
-    public ProxyPac toNoProxy() {
+    public DoNotUseProxyPac toNoProxy() {
       directHosts.add(host);
-      return ProxyPac.this;
+      return DoNotUseProxyPac.this;
     }
   }
 
   public class DefaultProxy {
-    public ProxyPac toNoProxy() {
+    public DoNotUseProxyPac toNoProxy() {
       defaultProxy = "'DIRECT'";
-      return ProxyPac.this;
+      return DoNotUseProxyPac.this;
     }
 
-    public ProxyPac toProxy(String proxyVia) {
+    public DoNotUseProxyPac toProxy(String proxyVia) {
       defaultProxy = "'PROXY " + proxyVia + "'";
-      return ProxyPac.this;
+      return DoNotUseProxyPac.this;
     }
   }
 }

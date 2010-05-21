@@ -160,7 +160,7 @@ public class BeanToJsonConverterTest extends TestCase {
   }
 
   public void testShouldConvertAProxyPacProperly() throws JSONException {
-    ProxyPac pac = new ProxyPac();
+    DoNotUseProxyPac pac = new DoNotUseProxyPac();
     pac.map("*/selenium/*").toProxy("http://localhost:8080/selenium-server");
     pac.map("/[a-zA-Z]{4}.microsoft.com/").toProxy("http://localhost:1010/selenium-server/");
     pac.map("/flibble*").toNoProxy();
