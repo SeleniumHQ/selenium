@@ -19,9 +19,11 @@ package org.openqa.selenium.server.browserlaunchers;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Vector;
@@ -70,29 +72,7 @@ public class WindowsUtils {
    * Kill processes by name
    */
   public static void killByName(String name) {
-    Project p = new Project();
-    ExecTask exec = new ExecTask();
-    exec.setProject(p);
-    exec.setExecutable("taskkill");
-    Environment.Variable path = new Environment.Variable();
-    path.setKey(getExactPathEnvKey());
-    path.setFile(findWBEM());
-    exec.addEnv(path);
-    exec.setTaskType("taskkill");
-    exec.setFailonerror(false);
-    exec.createArg().setValue("/f");
-    exec.createArg().setValue("/im");
-    exec.createArg().setValue(name);
-    exec.setResultProperty("result");
-    exec.setOutputproperty("output");
-    exec.execute();
-    String result = p.getProperty("result");
-    String output = p.getProperty("output");
-    log.info(output);
-    if (!"0".equals(result)) {
-      throw new WindowsRegistryException("exec return code " + result + ": " + output);
-    }
-
+    executeCommand("taskkill", "/f", "/im", name);
   }
 
   /**
@@ -108,6 +88,7 @@ public class WindowsUtils {
       log.warn(e);
     }
   }
+
 
   /**
    * Searches the process list for a process with the specified command line and kills it
@@ -176,27 +157,7 @@ public class WindowsUtils {
    * Kills the specified process ID
    */
   private static void killPID(String processID) {
-    Project p = new Project();
-    ExecTask exec = new ExecTask();
-    exec.setProject(p);
-    exec.setExecutable("taskkill");
-    Environment.Variable path = new Environment.Variable();
-    path.setKey(getExactPathEnvKey());
-    path.setFile(findWBEM());
-    exec.addEnv(path);
-    exec.setTaskType("taskkill");
-    exec.setFailonerror(false);
-    exec.createArg().setValue("/pid");
-    exec.createArg().setValue(processID);
-    exec.setResultProperty("result");
-    exec.setOutputproperty("output");
-    exec.execute();
-    String result = p.getProperty("result");
-    String output = p.getProperty("output");
-    log.info(output);
-    if (!"0".equals(result)) {
-      throw new WindowsRegistryException("exec return code " + result + ": " + output);
-    }
+    executeCommand("taskkill", "/pid", processID);
   }
 
   /**
@@ -206,26 +167,16 @@ public class WindowsUtils {
    * @throws Exception - if something goes wrong while reading the process list
    */
   public static Map procMap() throws Exception {
-    Project p = new Project();
-    ExecTask exec = new ExecTask();
-    exec.setProject(p);
-    exec.setTaskType("wmic");
-    exec.setExecutable(findWMIC());
-    exec.setFailonerror(true);
-    exec.createArg().setValue("process");
-    exec.createArg().setValue("list");
-    exec.createArg().setValue("full");
-    exec.createArg().setValue("/format:rawxml.xsl");
-    exec.setOutputproperty("proclist");
     log.info("Reading Windows Process List...");
-    exec.execute();
+    String output = executeCommand(findWMIC(), "process", "list", "full", "/format:rawxml.xsl");
+//    exec.setFailonerror(true);
     log.info("Done, searching for processes to kill...");
     // WMIC drops an ugly zero-length batch file; clean that up
     File TempWmicBatchFile = new File("TempWmicBatchFile.bat");
     if (TempWmicBatchFile.exists()) {
       TempWmicBatchFile.delete();
     }
-    String output = p.getProperty("proclist");
+
     // TODO This would be faster if it used SAX instead of DOM
     Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder()
         .parse(new ByteArrayInputStream(output.getBytes()));
@@ -467,17 +418,8 @@ public class WindowsUtils {
     if (regVersion1 != null) {
       return regVersion1.booleanValue();
     }
-    Project p = new Project();
-    ExecTask exec = new ExecTask();
-    exec.setProject(p);
-    exec.setTaskType("reg");
-    exec.setExecutable(findReg());
-    exec.setFailonerror(false);
-    exec.createArg().setValue("/?");
-    exec.setOutputproperty("regout");
-    exec.setResultProperty("result");
-    exec.execute();
-    String output = p.getProperty("regout");
+
+    String output = executeCommand(findReg(), "/?");
     boolean version1 = output.indexOf("version 1.0") != -1;
     regVersion1 = new Boolean(version1);
     return version1;
@@ -572,104 +514,100 @@ public class WindowsUtils {
   }
 
   public static boolean doesRegistryValueExist(String key) {
+    List<String> args = new ArrayList();
+    args.add("query");
 
-    Project p = new Project();
-    ExecTask exec = new ExecTask();
-    exec.setProject(p);
-    exec.setTaskType("reg");
-    exec.setExecutable(findReg());
-    exec.setFailonerror(false);
-    exec.createArg().setValue("query");
     if (isRegExeVersion1()) {
-      exec.createArg().setValue(key);
+      args.add(key);
     } else {
       RegKeyValue r = new RegKeyValue(key);
-      exec.createArg().setValue(r.key);
-      exec.createArg().setValue("/v");
-      exec.createArg().setValue(r.value);
+      args.add(r.key);
+      args.add("/v");
+      args.add(r.value);
     }
-    exec.setOutputproperty("regout");
-    exec.setResultProperty("result");
-    exec.execute();
-    int result = Integer.parseInt(p.getProperty("result"));
-    if (0 == result) {
+
+    try {
+      executeCommand(findReg(), args.toArray(new String[args.size()]));
       return true;
+    } catch (WindowsRegistryException e) {
+      return false;
     }
-    return false;
   }
 
   public static void writeStringRegistryValue(String key, String data)
       throws WindowsRegistryException {
+    List<String> args = new ArrayList<String>();
+    if (isRegExeVersion1()) {
+      if (doesRegistryValueExist(key)) {
+        args.add("update");
+      } else {
+        args.add("add");
+      }
+      args.add(key + "=" + data);
+    } else {
+      args.add("add");
+      RegKeyValue r = new RegKeyValue(key);
+      args.add(r.key);
+      args.add("/v");
+      args.add(r.value);
+      args.add("/d");
+      args.add(data);
+      args.add("/f");
+    }
 
+    executeCommand(findReg(), args.toArray(new String[args.size()]));
+  }
+
+  private static String executeCommand(String commandName, String... args) {
     Project p = new Project();
     ExecTask exec = new ExecTask();
     exec.setProject(p);
-    exec.setTaskType("reg");
-    exec.setExecutable(findReg());
+    exec.setExecutable(commandName);
+    exec.setTaskType(commandName);
     exec.setFailonerror(false);
     exec.setResultProperty("result");
     exec.setOutputproperty("output");
-    if (isRegExeVersion1()) {
-      if (doesRegistryValueExist(key)) {
-        exec.createArg().setValue("update");
-      } else {
-        exec.createArg().setValue("add");
-      }
-      exec.createArg().setValue(key + "=" + data);
-    } else {
-      exec.createArg().setValue("add");
-      RegKeyValue r = new RegKeyValue(key);
-      exec.createArg().setValue(r.key);
-      exec.createArg().setValue("/v");
-      exec.createArg().setValue(r.value);
-      exec.createArg().setValue("/d");
-      exec.createArg().setValue(data);
-      exec.createArg().setValue("/f");
+
+    for (String arg : args) {
+      exec.createArg().setValue(arg);
     }
+
     exec.execute();
     String result = p.getProperty("result");
     String output = p.getProperty("output");
+    log.debug(output);
     if (!"0".equals(result)) {
       throw new WindowsRegistryException("exec return code " + result + ": " + output);
     }
+
+    return output;
   }
 
   public static void writeIntRegistryValue(String key, int data) {
-    Project p = new Project();
-    ExecTask exec = new ExecTask();
-    exec.setProject(p);
-    exec.setTaskType("reg");
-    exec.setExecutable(findReg());
-    exec.setFailonerror(false);
-    exec.setResultProperty("result");
-    exec.setOutputproperty("output");
+    List<String> args = new ArrayList<String>();
     if (isRegExeVersion1()) {
       if (doesRegistryValueExist(key)) {
-        exec.createArg().setValue("update");
-        exec.createArg().setValue(key + "=" + Integer.toString(data));
+        args.add("update");
+        args.add(key + "=" + Integer.toString(data));
       } else {
-        exec.createArg().setValue("add");
-        exec.createArg().setValue(key + "=" + Integer.toString(data));
-        exec.createArg().setValue("REG_DWORD");
+        args.add("add");
+        args.add(key + "=" + Integer.toString(data));
+        args.add("REG_DWORD");
       }
     } else {
-      exec.createArg().setValue("add");
+      args.add("add");
       RegKeyValue r = new RegKeyValue(key);
-      exec.createArg().setValue(r.key);
-      exec.createArg().setValue("/v");
-      exec.createArg().setValue(r.value);
-      exec.createArg().setValue("/t");
-      exec.createArg().setValue("REG_DWORD");
-      exec.createArg().setValue("/d");
-      exec.createArg().setValue(Integer.toString(data));
-      exec.createArg().setValue("/f");
+      args.add(r.key);
+      args.add("/v");
+      args.add(r.value);
+      args.add("/t");
+      args.add("REG_DWORD");
+      args.add("/d");
+      args.add(Integer.toString(data));
+      args.add("/f");
     }
-    exec.execute();
-    String result = p.getProperty("result");
-    String output = p.getProperty("output");
-    if (!"0".equals(result)) {
-      throw new WindowsRegistryException("exec return code " + result + ": " + output);
-    }
+
+    executeCommand(findReg(), args.toArray(new String[args.size()]));
   }
 
   public static void writeBooleanRegistryValue(String key, boolean data) {
@@ -677,59 +615,39 @@ public class WindowsUtils {
   }
 
   public static void deleteRegistryValue(String key) {
-    Project p = new Project();
-    ExecTask exec = new ExecTask();
-    exec.setProject(p);
-    exec.setTaskType("reg");
-    exec.setExecutable(findReg());
-    exec.setFailonerror(false);
-    exec.setResultProperty("result");
-    exec.setOutputproperty("output");
+    List<String> args = new ArrayList<String>();
     if (isRegExeVersion1()) {
-      exec.createArg().setValue("delete");
-      exec.createArg().setValue(key);
-      exec.createArg().setValue("/FORCE");
+      args.add("delete");
+      args.add(key);
+      args.add("/FORCE");
     } else {
       RegKeyValue r = new RegKeyValue(key);
-      exec.createArg().setValue("delete");
-      exec.createArg().setValue(r.key);
-      exec.createArg().setValue("/v");
-      exec.createArg().setValue(r.value);
-      exec.createArg().setValue("/f");
+      args.add("delete");
+      args.add(r.key);
+      args.add("/v");
+      args.add(r.value);
+      args.add("/f");
     }
-    exec.execute();
-    String result = p.getProperty("result");
-    String output = p.getProperty("output");
-    if (!"0".equals(result)) {
-      throw new WindowsRegistryException("exec return code " + result + ": " + output);
-    }
+
+    executeCommand(findReg(), args.toArray(new String[args.size()]));
   }
 
   /**
    * Executes reg.exe to query the registry
    */
   private static String runRegQuery(String key) {
-    Project p = new Project();
-    ExecTask exec = new ExecTask();
-    exec.setProject(p);
-    exec.setTaskType("reg");
-    exec.setExecutable(findReg());
-    exec.setFailonerror(false);
-    exec.setResultProperty("result");
-    exec.setOutputproperty("output");
-    exec.createArg().setValue("query");
+    List<String> args = new ArrayList<String>();
+    args.add("query");
     if (isRegExeVersion1()) {
-      exec.createArg().setValue(key);
+      args.add(key);
     } else {
       RegKeyValue r = new RegKeyValue(key);
-      exec.createArg().setValue(r.key);
-      exec.createArg().setValue("/v");
-      exec.createArg().setValue(r.value);
+      args.add(r.key);
+      args.add("/v");
+      args.add(r.value);
     }
-    exec.setOutputproperty("regout");
-    exec.execute();
-    String output = p.getProperty("regout");
-    return output;
+
+    return executeCommand(findReg(), args.toArray(new String[args.size()]));
   }
 
   private static class RegKeyValue {
