@@ -24,6 +24,7 @@ import java.util.Map;
 import com.thoughtworks.selenium.SeleniumException;
 import org.openqa.selenium.browserlaunchers.DoNotUseProxyPac;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.remote.CapabilityNames;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.JsonToBeanConverter;
 
@@ -31,10 +32,6 @@ public class BrowserConfigurationOptions {
 
   private Map<String, String> options = new HashMap<String, String>();
   private boolean hasOptions = false;
-  public static final String AVOIDING_PROXY = "avoidProxy";
-  public static final String PROXY_PAC = "proxy";
-  public static final String ONLY_PROXYING_SELENIUM_TRAFFIC = "onlyProxySeleniumTraffic";
-  public static final String PROXYING_EVERYTHING = "proxyEverything";
 
   public BrowserConfigurationOptions(String browserConfiguration) {
     setProxyRequired(true);
@@ -127,27 +124,27 @@ public class BrowserConfigurationOptions {
   }
 
   public boolean isAvoidingProxy() {
-    return is(AVOIDING_PROXY);
+    return is(CapabilityNames.ForSeleniumServer.AVOIDING_PROXY);
   }
 
   public void setAvoidProxy(boolean avoidProxy) {
-    set(AVOIDING_PROXY, avoidProxy);
+    set(CapabilityNames.ForSeleniumServer.AVOIDING_PROXY, avoidProxy);
   }
 
   public void setOnlyProxySeleniumTraffic(boolean onlyProxySeleniumTraffic) {
-    set(ONLY_PROXYING_SELENIUM_TRAFFIC, onlyProxySeleniumTraffic);
+    set(CapabilityNames.ForSeleniumServer.ONLY_PROXYING_SELENIUM_TRAFFIC, onlyProxySeleniumTraffic);
   }
 
   public boolean isOnlyProxyingSeleniumTraffic() {
-    return is(ONLY_PROXYING_SELENIUM_TRAFFIC);
+    return is(CapabilityNames.ForSeleniumServer.ONLY_PROXYING_SELENIUM_TRAFFIC);
   }
 
   public void setProxyEverything(boolean proxyEverything) {
-    set(PROXYING_EVERYTHING, proxyEverything);
+    set(CapabilityNames.ForSeleniumServer.PROXYING_EVERYTHING, proxyEverything);
   }
 
   public boolean isProxyingEverything() {
-    return is(PROXYING_EVERYTHING);
+    return is(CapabilityNames.ForSeleniumServer.PROXYING_EVERYTHING);
   }
 
   public void setProxyRequired(boolean proxyRequired) {
@@ -159,7 +156,7 @@ public class BrowserConfigurationOptions {
   }
 
   public DoNotUseProxyPac getProxyConfig() {
-    String raw = get(PROXY_PAC);
+    String raw = get(CapabilityNames.ForSeleniumServer.PROXY_PAC);
     if (raw == null) {
       return null;
     }

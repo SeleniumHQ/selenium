@@ -28,10 +28,10 @@ import com.thoughtworks.selenium.SeleniumException;
 import org.openqa.selenium.browserlaunchers.DoNotUseProxyPac;
 import org.openqa.selenium.Capabilities;
 
-import static org.openqa.selenium.server.BrowserConfigurationOptions.AVOIDING_PROXY;
-import static org.openqa.selenium.server.BrowserConfigurationOptions.ONLY_PROXYING_SELENIUM_TRAFFIC;
-import static org.openqa.selenium.server.BrowserConfigurationOptions.PROXYING_EVERYTHING;
-import static org.openqa.selenium.server.BrowserConfigurationOptions.PROXY_PAC;
+import static org.openqa.selenium.remote.CapabilityNames.ForSeleniumServer.AVOIDING_PROXY;
+import static org.openqa.selenium.remote.CapabilityNames.ForSeleniumServer.ONLY_PROXYING_SELENIUM_TRAFFIC;
+import static org.openqa.selenium.remote.CapabilityNames.ForSeleniumServer.PROXYING_EVERYTHING;
+import static org.openqa.selenium.remote.CapabilityNames.ForSeleniumServer.PROXY_PAC;
 
 public class Proxies {
 
