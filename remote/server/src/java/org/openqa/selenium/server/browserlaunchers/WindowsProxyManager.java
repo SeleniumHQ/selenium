@@ -474,15 +474,18 @@ public class WindowsProxyManager {
   }
 
   private File extractHudsuckr() {
-    File hudsuckr = new File(customProxyPACDir, "hudsuckr.exe");
+    File hudsuckr = new File(customProxyPACDir, "hudsuckr/hudsuckr.exe");
     if (hudsuckr.exists()) {
       return hudsuckr;
     }
     try {
-      ResourceExtractor
-          .extractResourcePath(WindowsProxyManager.class, "/hudsuckr/hudsuckr.exe", hudsuckr);
+      FileHandler.copyResource(customProxyPACDir, WindowsProxyManager.class, "hudsuckr/hudsuckr.exe");
     } catch (IOException e) {
       throw new RuntimeException("Bug extracting hudsuckr", e);
+    }
+
+    if (!hudsuckr.exists()) {
+      throw new RuntimeException("Bug extracting hudscukr: cannot extract file: " + hudsuckr);
     }
     return hudsuckr;
   }

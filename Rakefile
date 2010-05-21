@@ -102,10 +102,10 @@ task :test_support => [ "//support:test:run" ]
 task :test_iphone_client => [:'webdriver-iphone-client-test']
 task :test_iphone => [:test_iphone_server, :test_iphone_client]
 
-task :test_core => [:'test_core_firefox']
 if (windows?)
   task :test_core => [:'test_core_ie']
 end
+task :test_core => [:'test_core_firefox']
 
 task :build => [:all, :iphone, :remote, :selenium]
 task :test => [
