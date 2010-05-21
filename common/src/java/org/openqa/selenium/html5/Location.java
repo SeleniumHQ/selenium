@@ -43,4 +43,9 @@ public class Location {
   public double getAltitude() {
     return altitude;
   }
+  
+  public String toString() {
+    return String.format("Latitude: %s, Longitude: %s, Altitude: %s",
+        latitude, longitude, altitude);
+  }
 }

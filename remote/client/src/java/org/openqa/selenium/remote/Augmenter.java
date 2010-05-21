@@ -27,6 +27,10 @@ import java.util.Map;
 import java.util.Set;
 
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.remote.html5.AddApplicationCache;
+import org.openqa.selenium.remote.html5.AddBrowserConnection;
+import org.openqa.selenium.remote.html5.AddDatabaseStorage;
+import org.openqa.selenium.remote.html5.AddLocationContext;
 import org.openqa.selenium.browserlaunchers.CapabilityType;
 
 /**
@@ -42,6 +46,10 @@ public class Augmenter {
 
   public Augmenter() {
     addAugmentation(CapabilityType.TAKES_SCREENSHOT, new AddTakesScreenshot());
+    addAugmentation(CapabilityType.SUPPORTS_SQL_DATABASE, new AddDatabaseStorage());
+    addAugmentation(CapabilityType.SUPPORTS_LOCATION_CONTEXT, new AddLocationContext());
+    addAugmentation(CapabilityType.SUPPORTS_APPLICATION_CACHE, new AddApplicationCache());
+    addAugmentation(CapabilityType.SUPPORTS_BROWSER_CONNECTION, new AddBrowserConnection());
   }
 
   /**

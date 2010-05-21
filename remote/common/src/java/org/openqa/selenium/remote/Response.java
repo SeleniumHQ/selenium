@@ -55,6 +55,6 @@ public class Response {
   }
 
   public String toString() {
-    return String.format("(%s %s %s: %s)", getSessionId(), getStatus(), getValue());
+    return String.format("(%s %s: %s)", getSessionId(), getStatus(), getValue());
   }
 }

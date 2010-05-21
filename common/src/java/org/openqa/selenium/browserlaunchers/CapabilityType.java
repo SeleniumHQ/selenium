@@ -26,6 +26,10 @@ public interface CapabilityType {
   String SUPPORTS_JAVASCRIPT = "javascriptEnabled";
   String TAKES_SCREENSHOT = "takesScreenshot";
   String VERSION = "version";
+  String SUPPORTS_SQL_DATABASE = "databaseEnabled";
+  String SUPPORTS_LOCATION_CONTEXT = "locationContextEnabled";
+  String SUPPORTS_APPLICATION_CACHE = "applicationCacheEnabled";
+  String SUPPORTS_BROWSER_CONNECTION = "browserConnectionEnabled";
 
   interface ForSeleniumServer {
     String AVOIDING_PROXY = "avoidProxy";

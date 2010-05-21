@@ -36,6 +36,7 @@ import org.openqa.selenium.remote.server.handler.DeleteNamedCookie;
 import org.openqa.selenium.remote.server.handler.DeleteSession;
 import org.openqa.selenium.remote.server.handler.DescribeElement;
 import org.openqa.selenium.remote.server.handler.DragElement;
+import org.openqa.selenium.remote.server.handler.ExecuteSQL;
 import org.openqa.selenium.remote.server.handler.ExecuteScript;
 import org.openqa.selenium.remote.server.handler.FindActiveElement;
 import org.openqa.selenium.remote.server.handler.FindChildElement;
@@ -44,6 +45,8 @@ import org.openqa.selenium.remote.server.handler.FindElement;
 import org.openqa.selenium.remote.server.handler.FindElements;
 import org.openqa.selenium.remote.server.handler.GetAllCookies;
 import org.openqa.selenium.remote.server.handler.GetAllWindowHandles;
+import org.openqa.selenium.remote.server.handler.GetAppCache;
+import org.openqa.selenium.remote.server.handler.GetAppCacheStatus;
 import org.openqa.selenium.remote.server.handler.GetCssProperty;
 import org.openqa.selenium.remote.server.handler.GetCurrentUrl;
 import org.openqa.selenium.remote.server.handler.GetCurrentWindowHandle;
@@ -55,6 +58,7 @@ import org.openqa.selenium.remote.server.handler.GetElementSelected;
 import org.openqa.selenium.remote.server.handler.GetElementSize;
 import org.openqa.selenium.remote.server.handler.GetElementText;
 import org.openqa.selenium.remote.server.handler.GetElementValue;
+import org.openqa.selenium.remote.server.handler.GetLocationContext;
 import org.openqa.selenium.remote.server.handler.GetMouseSpeed;
 import org.openqa.selenium.remote.server.handler.GetPageSource;
 import org.openqa.selenium.remote.server.handler.GetSessionCapabilities;
@@ -64,10 +68,13 @@ import org.openqa.selenium.remote.server.handler.GoBack;
 import org.openqa.selenium.remote.server.handler.GoForward;
 import org.openqa.selenium.remote.server.handler.HoverOverElement;
 import org.openqa.selenium.remote.server.handler.ImplicitlyWait;
+import org.openqa.selenium.remote.server.handler.IsBrowserOnline;
 import org.openqa.selenium.remote.server.handler.NewSession;
 import org.openqa.selenium.remote.server.handler.RefreshPage;
 import org.openqa.selenium.remote.server.handler.SendKeys;
+import org.openqa.selenium.remote.server.handler.SetBrowserConnection;
 import org.openqa.selenium.remote.server.handler.SetElementSelected;
+import org.openqa.selenium.remote.server.handler.SetLocationContext;
 import org.openqa.selenium.remote.server.handler.SetMouseSpeed;
 import org.openqa.selenium.remote.server.handler.SubmitElement;
 import org.openqa.selenium.remote.server.handler.SwitchToFrame;
@@ -235,6 +242,24 @@ public class DriverServlet extends HttpServlet {
 
     postMapper.bind("/session/:sessionId/timeouts/implicit_wait", ImplicitlyWait.class)
         .on(ResultType.SUCCESS, new EmptyResult());
+    
+    postMapper.bind("/session/:sessionId/execute_sql", ExecuteSQL.class)
+        .on(ResultType.SUCCESS, new JsonResult(":response"));
+    
+    getMapper.bind("/session/:sessionId/location", GetLocationContext.class)
+        .on(ResultType.SUCCESS, new JsonResult(":response"));
+    postMapper.bind("/session/:sessionId/location", SetLocationContext.class)
+        .on(ResultType.SUCCESS, new EmptyResult());
+    
+    getMapper.bind("/session/:sessionId/application_cache", GetAppCache.class)
+        .on(ResultType.SUCCESS, new JsonResult(":response"));
+    getMapper.bind("/session/:sessionId/application_cache/status", GetAppCacheStatus.class)
+        .on(ResultType.SUCCESS, new JsonResult(":response"));
+    
+    postMapper.bind("/session/:sessionId/browser_connection", SetBrowserConnection.class)
+    .on(ResultType.SUCCESS, new EmptyResult());
+    getMapper.bind("/session/:sessionId/browser_connection", IsBrowserOnline.class)
+        .on(ResultType.SUCCESS, new JsonResult(":response"));
   }
 
   protected ResultConfig addNewGetMapping(String path, Class<? extends Handler> implementationClass) {

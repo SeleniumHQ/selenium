@@ -96,7 +96,15 @@ public enum DriverCommand {
 
   SCREENSHOT("screenshot"),
   DISMISS_ALERT("dismissAlert"),
-  IMPLICITLY_WAIT("implicitlyWait");
+  IMPLICITLY_WAIT("implicitlyWait"),
+  
+  EXECUTE_SQL("executeSQL"),
+  GET_LOCATION("getLocation"),
+  SET_LOCATION("setLocation"),
+  GET_APP_CACHE("getAppCache"),
+  GET_APP_CACHE_STATUS("getStatus"),
+  IS_BROWSER_ONLINE("isBrowserOnline"),
+  SET_BROWSER_ONLINE("setBrowserOnline");
 
   private final String commandName;
 

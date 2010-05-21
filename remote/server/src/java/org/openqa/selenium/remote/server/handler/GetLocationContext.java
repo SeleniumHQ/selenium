@@ -17,37 +17,30 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.handler;
 
-import org.openqa.selenium.TakesScreenshot;
-import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.html5.LocationContext;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.rest.ResultType;
 
-import static org.openqa.selenium.OutputType.BASE64;
-
-public class CaptureScreenshot extends WebDriverHandler {
-
+public class GetLocationContext extends WebDriverHandler {
   private Response response;
-
-  public CaptureScreenshot(DriverSessions sessions) {
-    super(sessions);
+  
+  public GetLocationContext(DriverSessions sessions) {
+    super(sessions);  
   }
-
-  public ResultType call() throws Exception {
-    response = newResponse();
-
-    WebDriver driver = unwrap(getDriver());
-
-    response.setValue(((TakesScreenshot) driver).getScreenshotAs(BASE64));
-    return ResultType.SUCCESS;
-  }
-
+  
   public Response getResponse() {
     return response;
   }
-
+  
+  public ResultType call() throws Exception {
+    response = newResponse();
+    response.setValue(((LocationContext) unwrap(getDriver())).location());
+    return ResultType.SUCCESS;
+  }
+  
   @Override
   public String toString() {
-    return "[take screenshot]";
+    return "[get location context]";
   }
 }

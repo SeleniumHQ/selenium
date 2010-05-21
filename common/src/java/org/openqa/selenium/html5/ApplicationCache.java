@@ -36,5 +36,5 @@ public interface ApplicationCache {
    *
    * @return {@link AppCacheStatus}
    */
-  AppCacheStatus status();
+  AppCacheStatus getStatus();
 }

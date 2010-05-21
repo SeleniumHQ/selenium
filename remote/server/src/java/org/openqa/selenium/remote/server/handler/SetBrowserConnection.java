@@ -17,37 +17,31 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.handler;
 
-import org.openqa.selenium.TakesScreenshot;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.remote.Response;
+import java.util.Map;
+
+import org.openqa.selenium.html5.BrowserConnection;
 import org.openqa.selenium.remote.server.DriverSessions;
+import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.rest.ResultType;
 
-import static org.openqa.selenium.OutputType.BASE64;
-
-public class CaptureScreenshot extends WebDriverHandler {
-
-  private Response response;
-
-  public CaptureScreenshot(DriverSessions sessions) {
+public class SetBrowserConnection extends WebDriverHandler implements JsonParametersAware {
+  private boolean online;
+  
+  public SetBrowserConnection(DriverSessions sessions) {
     super(sessions);
+  }
+  
+  public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
+    online = (Boolean) allParameters.get("state");
   }
 
   public ResultType call() throws Exception {
-    response = newResponse();
-
-    WebDriver driver = unwrap(getDriver());
-
-    response.setValue(((TakesScreenshot) driver).getScreenshotAs(BASE64));
+    ((BrowserConnection) unwrap(getDriver())).setOnline(online);
     return ResultType.SUCCESS;
   }
-
-  public Response getResponse() {
-    return response;
-  }
-
+  
   @Override
   public String toString() {
-    return "[take screenshot]";
+    return String.format("[set browser connection : %s]", online);
   }
 }

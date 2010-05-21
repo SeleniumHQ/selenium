@@ -18,7 +18,6 @@ limitations under the License.
 package org.openqa.selenium.remote;
 
 import java.net.URL;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -26,12 +25,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import com.google.common.base.Function;
-import com.google.common.collect.Collections2;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Cookie;
@@ -48,6 +41,13 @@ import org.openqa.selenium.internal.FindsByName;
 import org.openqa.selenium.internal.FindsByTagName;
 import org.openqa.selenium.internal.FindsByXPath;
 import org.openqa.selenium.internal.ReturnedCookie;
+import org.openqa.selenium.remote.internal.JsonToWebElementConverter;
+import org.openqa.selenium.remote.internal.WebElementToJsonConverter;
+
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, FindsByXPath {
@@ -317,7 +317,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
 
       // Unwrap the response value by converting any JSON objects of the form
       // {"ELEMENT": id} to RemoteWebElements.
-      Object value = new JsonToWebElementConverter().apply(response.getValue());
+      Object value = new JsonToWebElementConverter(this).apply(response.getValue());
       response.setValue(value);
     } catch (RuntimeException e) {
       throw e;
@@ -459,79 +459,6 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     public WebElement activeElement() {
       Response response = execute(DriverCommand.GET_ACTIVE_ELEMENT);
       return (WebElement) response.getValue();
-    }
-  }
-
-  /**
-   * Converts {@link WebElement} objects to their JSON representation. Will
-   * recursively convert Lists and Maps to catch nested references.
-   */
-  private class WebElementToJsonConverter implements Function<Object, Object> {
-    public Object apply(Object arg) {
-      if (arg == null || arg instanceof String || arg instanceof Boolean ||
-          arg instanceof Number) {
-        return arg;
-      }
-
-      if (arg instanceof RemoteWebElement) {
-        return ImmutableMap.of("ELEMENT", ((RemoteWebElement) arg).getId());
-      }
-
-      if (arg instanceof Collection<?>) {
-        Collection<?> args = (Collection<?>) arg;
-        return Collections2.transform(args, this);
-      }
-
-      if (arg instanceof Map<?, ?>) {
-        Map<?, ?> args = (Map<?, ?>) arg;
-        Map<String, Object> converted = Maps.newHashMapWithExpectedSize(args.size());
-        for (Map.Entry<?, ?> entry : args.entrySet()) {
-          Object key = entry.getKey();
-          if (!(key instanceof String)) {
-            throw new IllegalArgumentException(
-                "All keys in Map script arguments must be strings: " + key.getClass().getName());
-          }
-          converted.put((String) key, apply(entry.getValue()));
-        }
-        return converted;
-      }
-
-      throw new IllegalArgumentException("Argument is of an illegal type: "
-          + arg.getClass().getName());
-    }
-  }
-
-  /**
-   * Reconstitutes {@link WebElement}s from their JSON representation. Will
-   * recursively convert Lists and Maps to catch nested references. All other
-   * values pass through the converter unchanged.
-   */
-  private class JsonToWebElementConverter implements Function<Object, Object> {
-    public Object apply(Object result) {
-      if (result instanceof Collection<?>) {
-        Collection<?> results = (Collection<?>) result;
-        return Lists.newArrayList(Iterables.transform(results, this));
-      }
-
-      if (result instanceof Map<?, ?>) {
-        Map<?, ?> resultAsMap = (Map<?, ?>) result;
-        if (resultAsMap.containsKey("ELEMENT")) {
-          RemoteWebElement element = newRemoteWebElement();
-          element.setId(String.valueOf(resultAsMap.get("ELEMENT")));
-          return element;
-        } else {
-          return Maps.transformValues(resultAsMap, this);
-        }
-      }
-
-      if (result instanceof Number) {
-        if (result instanceof Float || result instanceof Double) {
-          return ((Number) result).doubleValue();
-        }
-        return ((Number) result).longValue();
-      }
-
-      return result;
     }
   }
 }

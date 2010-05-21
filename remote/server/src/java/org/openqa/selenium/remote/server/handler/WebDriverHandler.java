@@ -18,6 +18,7 @@ limitations under the License.
 package org.openqa.selenium.remote.server.handler;
 
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.internal.WrapsDriver;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.server.DriverSessions;
@@ -87,5 +88,13 @@ public abstract class WebDriverHandler implements Handler, Callable<ResultType> 
       session.execute(task);
     else
       task.run();
+  }
+  
+  protected WebDriver unwrap(WebDriver driver) {
+    WebDriver toReturn = driver;
+    while (toReturn instanceof WrapsDriver) {
+      toReturn = ((WrapsDriver) toReturn).getWrappedDriver();
+    }
+    return toReturn;
   }
 }

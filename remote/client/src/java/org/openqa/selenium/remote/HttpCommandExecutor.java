@@ -17,9 +17,70 @@ limitations under the License.
 
 package org.openqa.selenium.remote;
 
-import org.openqa.selenium.WebDriverException;
+import static org.openqa.selenium.remote.DriverCommand.ADD_COOKIE;
+import static org.openqa.selenium.remote.DriverCommand.CLEAR_ELEMENT;
+import static org.openqa.selenium.remote.DriverCommand.CLICK_ELEMENT;
+import static org.openqa.selenium.remote.DriverCommand.CLOSE;
+import static org.openqa.selenium.remote.DriverCommand.DELETE_ALL_COOKIES;
+import static org.openqa.selenium.remote.DriverCommand.DELETE_COOKIE;
+import static org.openqa.selenium.remote.DriverCommand.DRAG_ELEMENT;
+import static org.openqa.selenium.remote.DriverCommand.ELEMENT_EQUALS;
+import static org.openqa.selenium.remote.DriverCommand.EXECUTE_SCRIPT;
+import static org.openqa.selenium.remote.DriverCommand.EXECUTE_SQL;
+import static org.openqa.selenium.remote.DriverCommand.FIND_CHILD_ELEMENT;
+import static org.openqa.selenium.remote.DriverCommand.FIND_CHILD_ELEMENTS;
+import static org.openqa.selenium.remote.DriverCommand.FIND_ELEMENT;
+import static org.openqa.selenium.remote.DriverCommand.FIND_ELEMENTS;
+import static org.openqa.selenium.remote.DriverCommand.GET;
+import static org.openqa.selenium.remote.DriverCommand.GET_ACTIVE_ELEMENT;
+import static org.openqa.selenium.remote.DriverCommand.GET_ALL_COOKIES;
+import static org.openqa.selenium.remote.DriverCommand.GET_APP_CACHE;
+import static org.openqa.selenium.remote.DriverCommand.GET_APP_CACHE_STATUS;
+import static org.openqa.selenium.remote.DriverCommand.GET_CURRENT_URL;
+import static org.openqa.selenium.remote.DriverCommand.GET_CURRENT_WINDOW_HANDLE;
+import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_ATTRIBUTE;
+import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_LOCATION;
+import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_LOCATION_ONCE_SCROLLED_INTO_VIEW;
+import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_SIZE;
+import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_TAG_NAME;
+import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_TEXT;
+import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_VALUE;
+import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_VALUE_OF_CSS_PROPERTY;
+import static org.openqa.selenium.remote.DriverCommand.GET_LOCATION;
+import static org.openqa.selenium.remote.DriverCommand.GET_PAGE_SOURCE;
+import static org.openqa.selenium.remote.DriverCommand.GET_SPEED;
+import static org.openqa.selenium.remote.DriverCommand.GET_TITLE;
+import static org.openqa.selenium.remote.DriverCommand.GET_WINDOW_HANDLES;
+import static org.openqa.selenium.remote.DriverCommand.GO_BACK;
+import static org.openqa.selenium.remote.DriverCommand.GO_FORWARD;
+import static org.openqa.selenium.remote.DriverCommand.HOVER_OVER_ELEMENT;
+import static org.openqa.selenium.remote.DriverCommand.IMPLICITLY_WAIT;
+import static org.openqa.selenium.remote.DriverCommand.IS_BROWSER_ONLINE;
+import static org.openqa.selenium.remote.DriverCommand.IS_BROWSER_VISIBLE;
+import static org.openqa.selenium.remote.DriverCommand.IS_ELEMENT_DISPLAYED;
+import static org.openqa.selenium.remote.DriverCommand.IS_ELEMENT_ENABLED;
+import static org.openqa.selenium.remote.DriverCommand.IS_ELEMENT_SELECTED;
+import static org.openqa.selenium.remote.DriverCommand.NEW_SESSION;
+import static org.openqa.selenium.remote.DriverCommand.QUIT;
+import static org.openqa.selenium.remote.DriverCommand.REFRESH;
+import static org.openqa.selenium.remote.DriverCommand.SCREENSHOT;
+import static org.openqa.selenium.remote.DriverCommand.SEND_KEYS_TO_ELEMENT;
+import static org.openqa.selenium.remote.DriverCommand.SET_BROWSER_ONLINE;
+import static org.openqa.selenium.remote.DriverCommand.SET_BROWSER_VISIBLE;
+import static org.openqa.selenium.remote.DriverCommand.SET_ELEMENT_SELECTED;
+import static org.openqa.selenium.remote.DriverCommand.SET_LOCATION;
+import static org.openqa.selenium.remote.DriverCommand.SET_SPEED;
+import static org.openqa.selenium.remote.DriverCommand.SUBMIT_ELEMENT;
+import static org.openqa.selenium.remote.DriverCommand.SWITCH_TO_FRAME;
+import static org.openqa.selenium.remote.DriverCommand.SWITCH_TO_WINDOW;
+import static org.openqa.selenium.remote.DriverCommand.TOGGLE_ELEMENT;
 
-import com.google.common.collect.ImmutableMap;
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.util.Map;
+
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
@@ -28,13 +89,9 @@ import org.apache.commons.httpclient.methods.DeleteMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
-import static org.openqa.selenium.remote.DriverCommand.*;
+import org.openqa.selenium.WebDriverException;
 
-import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.util.Map;
+import com.google.common.collect.ImmutableMap;
 
 public class HttpCommandExecutor implements CommandExecutor {
 
@@ -134,6 +191,13 @@ public class HttpCommandExecutor implements CommandExecutor {
         .put(GET_ELEMENT_VALUE_OF_CSS_PROPERTY,
              get("/session/:sessionId/element/:id/css/:propertyName"))
         .put(IMPLICITLY_WAIT, post("/session/:sessionId/timeouts/implicit_wait"))
+        .put(EXECUTE_SQL, post("/session/:sessionId/execute_sql"))
+        .put(GET_LOCATION, get("/session/:sessionId/location"))
+        .put(SET_LOCATION, post("/session/:sessionId/location"))
+        .put(GET_APP_CACHE, get("/session/:sessionId/application_cache"))
+        .put(GET_APP_CACHE_STATUS, get("/session/:sessionId/application_cache/status"))
+        .put(IS_BROWSER_ONLINE, get("/session/:sessionId/browser_connection"))
+        .put(SET_BROWSER_ONLINE, post("/session/:sessionId/browser_connection"))
         .build();
   }
 
