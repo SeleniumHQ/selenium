@@ -55,7 +55,7 @@ public class InternetExplorerCustomProxyLauncher extends AbstractBrowserLauncher
   }
 
   protected void changeRegistrySettings() throws IOException {
-    wpm.changeRegistrySettings(browserConfigurationOptions);
+    wpm.changeRegistrySettings(browserConfigurationOptions.asCapabilities());
   }
 
   @Override

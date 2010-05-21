@@ -31,7 +31,7 @@ public class ProxyInjectionInternetExplorerCustomProxyLauncher
   @Override
   protected void changeRegistrySettings() throws IOException {
     wpm.setChangeMaxConnections(alwaysChangeMaxConnections);
-    wpm.changeRegistrySettings(browserConfigurationOptions);
+    wpm.changeRegistrySettings(browserConfigurationOptions.asCapabilities());
   }
 
   public static void setChangeMaxConnections(boolean changeMaxConnections) {

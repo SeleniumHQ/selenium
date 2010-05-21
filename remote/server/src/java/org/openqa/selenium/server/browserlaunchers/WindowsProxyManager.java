@@ -26,13 +26,15 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.openqa.jetty.log.LogFactory;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.browserlaunchers.WindowsRegistryException;
 import org.openqa.selenium.browserlaunchers.WindowsUtils;
 import org.openqa.selenium.internal.CommandLine;
 import org.openqa.selenium.internal.FileHandler;
 import org.openqa.selenium.internal.Maps;
 import org.openqa.selenium.internal.TemporaryFilesystem;
-import org.openqa.selenium.server.BrowserConfigurationOptions;
-import org.openqa.selenium.browserlaunchers.WindowsRegistryException;
+
+import static org.openqa.selenium.remote.CapabilityType.ForSeleniumServer.ENSURING_CLEAN_SESSION;
 
 public class WindowsProxyManager {
   static Log log = LogFactory.getLog(WindowsProxyManager.class);
@@ -148,7 +150,7 @@ public class WindowsProxyManager {
     REG_KEY_BASE = base;
   }
 
-  protected void changeRegistrySettings(BrowserConfigurationOptions options) throws IOException {
+  protected void changeRegistrySettings(Capabilities options) throws IOException {
     log.info("Modifying registry settings...");
     HudsuckrSettings settings;
     if (oldSettings == null) {
@@ -159,7 +161,7 @@ public class WindowsProxyManager {
       settings = new HudsuckrSettings(oldSettings.connection, true, true, false, false, proxyServer,
           "(null)", "(null)");
     } else {
-      File proxyPAC = Proxies.makeProxyPAC(customProxyPACDir, port, options.asCapabilities());
+      File proxyPAC = Proxies.makeProxyPAC(customProxyPACDir, port, options);
 
       String newURL = "file://" + proxyPAC.getAbsolutePath().replace('\\', '/');
       settings =
@@ -215,7 +217,7 @@ public class WindowsProxyManager {
     }
 
     // Hide pre-existing user cookies if -ensureCleanSession is set
-    if (options.isEnsuringCleanSession()) {
+    if (options.is(ENSURING_CLEAN_SESSION)) {
       hidePreexistingCookies();
       deleteTemporaryInternetFiles();
     }

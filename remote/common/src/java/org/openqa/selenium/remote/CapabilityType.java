@@ -32,6 +32,7 @@ public interface CapabilityType {
     String ONLY_PROXYING_SELENIUM_TRAFFIC = "onlyProxySeleniumTraffic";
     String PROXYING_EVERYTHING = "proxyEverything";
     String PROXY_PAC = "proxy";
+    String ENSURING_CLEAN_SESSION = "ensureCleanSession";
   }
 }
   
