@@ -26,4 +26,12 @@ public interface CapabilityType {
   String SUPPORTS_JAVASCRIPT = "javascriptEnabled";
   String TAKES_SCREENSHOT = "takesScreenshot";
   String VERSION = "version";
+
+  interface ForSeleniumServer {
+    String AVOIDING_PROXY = "avoidProxy";
+    String ONLY_PROXYING_SELENIUM_TRAFFIC = "onlyProxySeleniumTraffic";
+    String PROXYING_EVERYTHING = "proxyEverything";
+    String PROXY_PAC = "proxy";
+  }
 }
+  

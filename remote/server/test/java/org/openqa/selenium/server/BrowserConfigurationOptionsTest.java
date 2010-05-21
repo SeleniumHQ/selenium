@@ -5,7 +5,7 @@ import junit.framework.TestCase;
 
 import org.openqa.selenium.Capabilities;
 
-import static org.openqa.selenium.remote.CapabilityNames.ForSeleniumServer.AVOIDING_PROXY;
+import static org.openqa.selenium.remote.CapabilityType.ForSeleniumServer.AVOIDING_PROXY;
 
 public class BrowserConfigurationOptionsTest extends TestCase {
 

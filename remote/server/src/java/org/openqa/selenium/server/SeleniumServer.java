@@ -42,6 +42,7 @@ import org.openqa.selenium.browserlaunchers.WindowsUtils;
 import org.openqa.selenium.remote.server.DriverServlet;
 import org.openqa.selenium.server.BrowserSessionFactory.BrowserSessionInfo;
 import org.openqa.selenium.server.browserlaunchers.AsyncExecute;
+import org.openqa.selenium.server.browserlaunchers.ResourceExtractor;
 import org.openqa.selenium.server.cli.RemoteControlLauncher;
 import org.openqa.selenium.server.htmlrunner.HTMLLauncher;
 import org.openqa.selenium.server.htmlrunner.HTMLResultsListener;
@@ -194,6 +195,7 @@ public class SeleniumServer {
         configuration = RemoteControlLauncher.parseLauncherOptions(args);
         checkArgsSanity(configuration);
 
+        ResourceExtractor.traceWith(new JettyLoggingTrace(ResourceExtractor.class));
         WindowsUtils.traceWith(new JettyLoggingTrace(WindowsUtils.class));
 
         System.setProperty("org.openqa.jetty.http.HttpRequest.maxFormContentSize", "0"); // default max is 200k; zero is infinite
