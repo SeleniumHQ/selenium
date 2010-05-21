@@ -61,6 +61,10 @@ public class WindowsUtils {
 
   }
 
+  public static void traceWith(Trace log) {
+    WindowsUtils.log = log;
+  }
+
   /**
    * Kill processes by name
    */
