@@ -24,6 +24,7 @@ import static org.hamcrest.Matchers.is;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.openqa.selenium.browserlaunchers.DoNotUseProxyPac;
 
 import java.awt.*;
 import java.util.HashMap;

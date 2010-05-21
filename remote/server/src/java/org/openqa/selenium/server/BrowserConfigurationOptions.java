@@ -22,10 +22,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.thoughtworks.selenium.SeleniumException;
+import org.openqa.selenium.browserlaunchers.DoNotUseProxyPac;
 import org.openqa.selenium.remote.Capabilities;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.JsonToBeanConverter;
-import org.openqa.selenium.remote.DoNotUseProxyPac;
 
 public class BrowserConfigurationOptions {
 

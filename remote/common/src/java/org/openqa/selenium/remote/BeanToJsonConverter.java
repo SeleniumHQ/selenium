@@ -23,6 +23,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.browserlaunchers.DoNotUseProxyPac;
 
 import java.beans.BeanInfo;
 import java.beans.Introspector;

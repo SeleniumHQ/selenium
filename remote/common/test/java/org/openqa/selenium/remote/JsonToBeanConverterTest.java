@@ -23,6 +23,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.Platform;
+import org.openqa.selenium.browserlaunchers.DoNotUseProxyPac;
 
 import junit.framework.TestCase;
 

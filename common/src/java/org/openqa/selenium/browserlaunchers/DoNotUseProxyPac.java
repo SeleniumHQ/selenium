@@ -1,4 +1,4 @@
-package org.openqa.selenium.remote;
+package org.openqa.selenium.browserlaunchers;
 
 import java.io.IOException;
 import java.io.InputStream;

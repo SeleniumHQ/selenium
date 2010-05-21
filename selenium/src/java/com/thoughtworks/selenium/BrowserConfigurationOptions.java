@@ -5,7 +5,7 @@ import java.util.Map;
 
 import org.openqa.selenium.remote.BeanToJsonConverter;
 import org.openqa.selenium.remote.JsonToBeanConverter;
-import org.openqa.selenium.remote.DoNotUseProxyPac;
+import org.openqa.selenium.browserlaunchers.DoNotUseProxyPac;
 
 /**
  * Contains parameters for a single Selenium browser session.
