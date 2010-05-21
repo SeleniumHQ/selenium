@@ -38,6 +38,7 @@ import org.openqa.jetty.jetty.Server;
 import org.openqa.jetty.jetty.servlet.ServletHandler;
 import org.openqa.jetty.util.MultiException;
 import org.openqa.selenium.NetworkUtils;
+import org.openqa.selenium.browserlaunchers.WindowsProxyManager;
 import org.openqa.selenium.browserlaunchers.WindowsUtils;
 import org.openqa.selenium.remote.server.DriverServlet;
 import org.openqa.selenium.server.BrowserSessionFactory.BrowserSessionInfo;
@@ -196,6 +197,7 @@ public class SeleniumServer {
         checkArgsSanity(configuration);
 
         ResourceExtractor.traceWith(new JettyLoggingTrace(ResourceExtractor.class));
+        WindowsProxyManager.traceWith(new JettyLoggingTrace(WindowsProxyManager.class));
         WindowsUtils.traceWith(new JettyLoggingTrace(WindowsUtils.class));
 
         System.setProperty("org.openqa.jetty.http.HttpRequest.maxFormContentSize", "0"); // default max is 200k; zero is infinite

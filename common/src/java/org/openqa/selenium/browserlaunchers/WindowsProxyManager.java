@@ -14,7 +14,7 @@
  *  limitations under the License.
  *
  */
-package org.openqa.selenium.server.browserlaunchers;
+package org.openqa.selenium.browserlaunchers;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -24,20 +24,16 @@ import java.util.Map;
 import java.util.prefs.Preferences;
 import java.util.regex.Pattern;
 
-import org.apache.commons.logging.Log;
-import org.openqa.jetty.log.LogFactory;
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.browserlaunchers.WindowsRegistryException;
-import org.openqa.selenium.browserlaunchers.WindowsUtils;
 import org.openqa.selenium.internal.CommandLine;
 import org.openqa.selenium.internal.FileHandler;
 import org.openqa.selenium.internal.Maps;
 import org.openqa.selenium.internal.TemporaryFilesystem;
+import org.openqa.selenium.internal.Trace;
 
-import static org.openqa.selenium.remote.CapabilityType.ForSeleniumServer.ENSURING_CLEAN_SESSION;
 
 public class WindowsProxyManager {
-  static Log log = LogFactory.getLog(WindowsProxyManager.class);
+  private static Trace log = new NullTrace();
   protected static final String REG_KEY_BACKUP_READY = "BackupReady";
 
   // All Cookies end in ".txt"
@@ -150,7 +146,7 @@ public class WindowsProxyManager {
     REG_KEY_BASE = base;
   }
 
-  protected void changeRegistrySettings(Capabilities options) throws IOException {
+  public void changeRegistrySettings(Capabilities options) throws IOException {
     log.info("Modifying registry settings...");
     HudsuckrSettings settings;
     if (oldSettings == null) {
@@ -217,7 +213,7 @@ public class WindowsProxyManager {
     }
 
     // Hide pre-existing user cookies if -ensureCleanSession is set
-    if (options.is(ENSURING_CLEAN_SESSION)) {
+    if (options.is(CapabilityType.ForSeleniumServer.ENSURING_CLEAN_SESSION)) {
       hidePreexistingCookies();
       deleteTemporaryInternetFiles();
     }
@@ -384,6 +380,10 @@ public class WindowsProxyManager {
 
   private void backupReady(boolean backupReady) {
     prefs.putBoolean(REG_KEY_BACKUP_READY, backupReady);
+  }
+
+  public static void traceWith(Trace log) {
+    WindowsProxyManager.log = log;
   }
 
   private enum RegKey {

@@ -16,7 +16,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package org.openqa.selenium.server.browserlaunchers;
+package org.openqa.selenium.browserlaunchers;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -26,12 +26,11 @@ import java.io.Writer;
 
 import com.thoughtworks.selenium.SeleniumException;
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.browserlaunchers.DoNotUseProxyPac;
 
-import static org.openqa.selenium.remote.CapabilityType.ForSeleniumServer.AVOIDING_PROXY;
-import static org.openqa.selenium.remote.CapabilityType.ForSeleniumServer.ONLY_PROXYING_SELENIUM_TRAFFIC;
-import static org.openqa.selenium.remote.CapabilityType.ForSeleniumServer.PROXYING_EVERYTHING;
-import static org.openqa.selenium.remote.CapabilityType.ForSeleniumServer.PROXY_PAC;
+import static org.openqa.selenium.browserlaunchers.CapabilityType.ForSeleniumServer;
+import static org.openqa.selenium.browserlaunchers.CapabilityType.ForSeleniumServer.AVOIDING_PROXY;
+import static org.openqa.selenium.browserlaunchers.CapabilityType.ForSeleniumServer.ONLY_PROXYING_SELENIUM_TRAFFIC;
+import static org.openqa.selenium.browserlaunchers.CapabilityType.ForSeleniumServer.PROXYING_EVERYTHING;
 
 public class Proxies {
 
@@ -40,7 +39,7 @@ public class Proxies {
    * proxySeleniumTrafficOnly is true, then the proxy applies only to URLs
    * containing "/selenium-server/". Otherwise the proxy applies to all URLs.
    */
-  protected static File makeProxyPAC(File parentDir, int port, Capabilities capabilities)
+  public static File makeProxyPAC(File parentDir, int port, Capabilities capabilities)
       throws FileNotFoundException {
     return makeProxyPAC(parentDir, port,
         System.getProperty("http.proxyHost"),
@@ -64,7 +63,8 @@ public class Proxies {
   }
 
   static DoNotUseProxyPac newProxyPac(int port, String configuredProxy, String proxyPort, String nonProxyHosts, Capabilities capabilities) {
-    DoNotUseProxyPac existingConfig = (DoNotUseProxyPac) capabilities.getCapability(PROXY_PAC);
+    DoNotUseProxyPac existingConfig = (DoNotUseProxyPac) capabilities.getCapability(
+        ForSeleniumServer.PROXY_PAC);
     DoNotUseProxyPac pac = existingConfig == null ? new DoNotUseProxyPac() : existingConfig;
 
     if (configuredProxy != null) {

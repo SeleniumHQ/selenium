@@ -40,7 +40,7 @@ public class WindowsUtils {
 
   public static Boolean regVersion1 = null;
   
-  private static Trace log;
+  private static Trace log = new NullTrace();
   private static final boolean THIS_IS_WINDOWS = File.pathSeparator.equals(";");
   private static String wmic = null;
   private static File wbem = null;
@@ -82,24 +82,8 @@ public class WindowsUtils {
     try {
       killByName(name);
     } catch (WindowsRegistryException e) {
-      warn(e);
+      log.warn(e);
     }
-  }
-
-  private static void warn(Throwable e) {
-    if (log != null) log.warn(e);
-}
-
-  private static void warn(String message) {
-    if (log != null) log.warn(message);
-  }
-
-  private static void info(String message) {
-    if (log != null) log.info(message);
-  }
-
-  private static void error(String message) {
-    if (log != null) log.error(message);
   }
 
   /**
@@ -148,9 +132,9 @@ public class WindowsUtils {
         logMessage.append(processID);
         logMessage.append(": ");
         logMessage.append(commandLine);
-        info(logMessage.toString());
+        log.info(logMessage.toString());
         killPID(processID);
-        info("Killed");
+        log.info("Killed");
         killedOne = true;
       }
     }
@@ -161,7 +145,7 @@ public class WindowsUtils {
         errorMessage.append(cmdarray[i]);
         errorMessage.append('\'');
       }
-      warn(errorMessage.toString());
+      log.warn(errorMessage.toString());
     }
   }
 
@@ -179,10 +163,10 @@ public class WindowsUtils {
    * @throws Exception - if something goes wrong while reading the process list
    */
   public static Map procMap() throws Exception {
-    info("Reading Windows Process List...");
+    log.info("Reading Windows Process List...");
     String output = executeCommand(findWMIC(), "process", "list", "full", "/format:rawxml.xsl");
 //    exec.setFailonerror(true);
-    info("Done, searching for processes to kill...");
+    log.info("Done, searching for processes to kill...");
     // WMIC drops an ugly zero-length batch file; clean that up
     File TempWmicBatchFile = new File("TempWmicBatchFile.bat");
     if (TempWmicBatchFile.exists()) {
@@ -342,7 +326,7 @@ public class WindowsUtils {
         return wmic;
       }
     }
-    warn("Couldn't find wmic! Hope it's on the path...");
+    log.warn("Couldn't find wmic! Hope it's on the path...");
     wmic = "wmic";
     return wmic;
   }
@@ -359,7 +343,7 @@ public class WindowsUtils {
     File systemRoot = findSystemRoot();
     wbem = new File(systemRoot, "system32/wbem");
     if (!wbem.exists()) {
-      error("Couldn't find wbem!");
+      log.error("Couldn't find wbem!");
       return null;
     }
     return wbem;
@@ -380,7 +364,7 @@ public class WindowsUtils {
       taskkill = taskkillExe.getAbsolutePath();
       return taskkill;
     }
-    warn("Couldn't find taskkill! Hope it's on the path...");
+    log.warn("Couldn't find taskkill! Hope it's on the path...");
     taskkill = "taskkill";
     return taskkill;
   }
@@ -409,7 +393,7 @@ public class WindowsUtils {
     if (reg != null) {
       return reg;
     }
-    error("OS Version: " + System.getProperty("os.version"));
+    log.error("OS Version: " + System.getProperty("os.version"));
     throw new WindowsRegistryException("Couldn't find reg.exe!\n" +
                                        "Please download it from Microsoft and install it in a standard location.\n"
                                        +

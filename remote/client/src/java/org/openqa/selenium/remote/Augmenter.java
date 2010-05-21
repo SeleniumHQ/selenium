@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.browserlaunchers.CapabilityType;
 
 /**
  * Enhance the interfaces implemented by an instance of the

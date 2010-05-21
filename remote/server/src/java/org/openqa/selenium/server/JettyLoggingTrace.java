@@ -15,6 +15,10 @@ public class JettyLoggingTrace implements Trace {
     log.debug(message);
   }
 
+  public void debug(String message, Throwable throwable) {
+    log.debug(message, throwable);
+  }
+
   public void info(String message) {
     log.info(message);
   }
@@ -25,6 +29,10 @@ public class JettyLoggingTrace implements Trace {
 
   public void warn(String message) {
     log.warn(message);
+  }
+
+  public void warn(String message, Throwable throwable) {
+    log.warn(message, throwable);
   }
 
   public void error(String message) {

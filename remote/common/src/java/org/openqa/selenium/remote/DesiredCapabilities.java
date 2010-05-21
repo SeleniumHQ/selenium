@@ -25,10 +25,10 @@ import java.util.Map;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Platform;
 
-import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
-import static org.openqa.selenium.remote.CapabilityType.PLATFORM;
-import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_JAVASCRIPT;
-import static org.openqa.selenium.remote.CapabilityType.VERSION;
+import static org.openqa.selenium.browserlaunchers.CapabilityType.BROWSER_NAME;
+import static org.openqa.selenium.browserlaunchers.CapabilityType.PLATFORM;
+import static org.openqa.selenium.browserlaunchers.CapabilityType.SUPPORTS_JAVASCRIPT;
+import static org.openqa.selenium.browserlaunchers.CapabilityType.VERSION;
 
 public class DesiredCapabilities implements Capabilities, Serializable {
   private final Map<String, Object> capabilities = new HashMap<String, Object>();

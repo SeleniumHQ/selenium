@@ -16,6 +16,7 @@ import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import org.openqa.selenium.browserlaunchers.NullTrace;
 import org.openqa.selenium.internal.FileHandler;
 import org.openqa.selenium.internal.Trace;
 
@@ -23,7 +24,7 @@ import static org.openqa.selenium.server.browserlaunchers.LauncherUtils.getSelen
 
 
 public class ResourceExtractor {
-    private static Trace log;
+    private static Trace log = new NullTrace();
     private static final int BUF_SIZE = 8192;
     
     public static File extractResourcePath(String resourcePath, File dest) throws IOException {
@@ -62,7 +63,7 @@ public class ResourceExtractor {
         ZipFile z = new ZipFile(jarFile, ZipFile.OPEN_READ);
         String zipStyleResourcePath = resourcePath.substring(1) + "/"; 
         ZipEntry ze = z.getEntry(zipStyleResourcePath);
-        debug( "Extracting "+resourcePath+" to " + dest.getAbsolutePath() );
+        log.debug( "Extracting "+resourcePath+" to " + dest.getAbsolutePath() );
         if (ze != null) {
             // DGF If it's a directory, then we need to look at all the entries
             for (Enumeration entries = z.entries(); entries.hasMoreElements();) {
@@ -87,10 +88,6 @@ public class ResourceExtractor {
 
   public static void traceWith(Trace log) {
     ResourceExtractor.log = log;
-  }
-
-  private static void debug(String message) {
-    if (log != null) log.debug(message);
   }
 
   private static File getJarFileFromUrl(URL url) {

@@ -1,9 +1,13 @@
-package org.openqa.selenium.server.browserlaunchers;
+package org.openqa.selenium.browserlaunchers;
 
 import junit.framework.TestCase;
 
 import java.io.File;
 import java.io.IOException;
+
+import org.openqa.selenium.browserlaunchers.WindowsProxyManager;
+import org.openqa.selenium.internal.FileHandler;
+import org.openqa.selenium.internal.TemporaryFilesystem;
 
 public class WindowsProxyManagerUnitTest extends TestCase {
   
@@ -13,7 +17,7 @@ public class WindowsProxyManagerUnitTest extends TestCase {
     assertTrue(srcDir.exists());
     File[] files = srcDir.listFiles();
     assertEquals(0, files.length);
-    LauncherUtils.deleteTryTryAgain(srcDir, 1);
+    FileHandler.delete(srcDir);
     assertFalse(srcDir.exists());
   }
   
@@ -23,7 +27,7 @@ public class WindowsProxyManagerUnitTest extends TestCase {
     assertTrue(srcDir.exists());
     File[] files = srcDir.listFiles();
     assertEquals(1, files.length);
-    LauncherUtils.deleteTryTryAgain(srcDir, 1);
+    FileHandler.delete(srcDir);
     assertFalse(srcDir.exists());
   }
   
@@ -43,9 +47,9 @@ public class WindowsProxyManagerUnitTest extends TestCase {
     assertTrue(destDir.exists());
     assertEquals(1, destDir.listFiles().length);
     assertEquals(0, srcDir.listFiles().length);
-    LauncherUtils.deleteTryTryAgain(srcDir, 1);
+    FileHandler.delete(srcDir);
     assertFalse(srcDir.exists());
-    LauncherUtils.deleteTryTryAgain(destDir, 1);
+    FileHandler.delete(destDir);
     assertFalse(destDir.exists());
   }
   
@@ -66,9 +70,9 @@ public class WindowsProxyManagerUnitTest extends TestCase {
     assertEquals(1, destDir.listFiles().length);
     assertEquals(0, srcDir.listFiles().length);
     
-    LauncherUtils.deleteTryTryAgain(srcDir, 1);
+    FileHandler.delete(srcDir);
     assertFalse(srcDir.exists());
-    LauncherUtils.deleteTryTryAgain(destDir, 1);
+    FileHandler.delete(destDir);
     assertFalse(destDir.exists());
   }
   
@@ -82,9 +86,9 @@ public class WindowsProxyManagerUnitTest extends TestCase {
     assertTrue(cookieDir.exists());
     assertEquals(1, cookieDir.listFiles().length);
     
-    LauncherUtils.deleteTryTryAgain(cookieDir, 1);
+    FileHandler.delete(cookieDir);
     assertFalse(cookieDir.exists());
-    LauncherUtils.deleteTryTryAgain(hiddenDir, 1);
+    FileHandler.delete(hiddenDir);
     assertFalse(hiddenDir.exists());
   }
   
@@ -99,9 +103,9 @@ public class WindowsProxyManagerUnitTest extends TestCase {
     assertTrue(destDir.exists());
     assertEquals(1, destDir.listFiles().length);
     
-    LauncherUtils.deleteTryTryAgain(srcDir, 1);
+    FileHandler.delete(srcDir);
     assertFalse(srcDir.exists());
-    LauncherUtils.deleteTryTryAgain(destDir, 1);
+    FileHandler.delete(destDir);
     assertFalse(destDir.exists());
   }
   
@@ -119,11 +123,9 @@ public class WindowsProxyManagerUnitTest extends TestCase {
   }
   
   private File getNonexistentDir() {
-    File tempDir = new File(System.getProperty("java.io.tmpdir"));
-    File destDir = new File(tempDir, "rc-wpmt-dest");
-    destDir.deleteOnExit();
+    File destDir = TemporaryFilesystem.createTempDir("rc-wpmt-dest", "tmp");
+    destDir.delete();
     assertFalse(destDir.exists());
     return destDir;
   }
-  
 }

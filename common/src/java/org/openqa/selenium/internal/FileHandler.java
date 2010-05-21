@@ -173,7 +173,7 @@ public class FileHandler {
   }
 
   public static void copy(File source, File dest, String suffix) throws IOException {
-    copy(source, dest, new FileSuffixFilter(suffix));
+    copy(source, dest, suffix == null ? new NoFilter() : new FileSuffixFilter(suffix));
   }
 
   private static void copy(File source, File dest, Filter onlyCopy) throws IOException {

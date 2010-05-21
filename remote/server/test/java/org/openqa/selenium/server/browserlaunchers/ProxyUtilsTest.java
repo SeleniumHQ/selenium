@@ -19,6 +19,7 @@ package org.openqa.selenium.server.browserlaunchers;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.openqa.selenium.browserlaunchers.Proxies;
 import org.openqa.selenium.server.BrowserConfigurationOptions;
 
 public class ProxyUtilsTest {
