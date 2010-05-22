@@ -123,14 +123,14 @@
     <FirefoxResources Include="$(TrunkRoot)\firefox\prebuilt\Linux64\Release\x_ignore_nofocus.so">
       <LogicalName>WebDriver.FirefoxNoFocus.amd64.dll</LogicalName> 
     </FirefoxResources>
-    <FirefoxResources Include="$(TrunkRoot)\build\webdriver-extension.zip">
+    <FirefoxResources Include="$(TrunkRoot)\build\firefox\webdriver.xpi">
       <LogicalName>WebDriver.FirefoxExt.zip</LogicalName> 
     </FirefoxResources>
   </ItemGroup>
 
   <Target Name="BuildFirefox" DependsOnTargets="BuildCommon">
     <Error Text="Could not find webdriver-extension.zip. Expected to find it in $(TrunkRoot)\build."
-           Condition="!Exists('$(TrunkRoot)\build\webdriver-extension.zip')"/>
+           Condition="!Exists('$(TrunkRoot)\build\firefox\webdriver.xpi')"/>
     <Message Text="Building WebDriver.Firefox.dll"/>
     <Csc Sources="@(FirefoxSourceFiles)"
          References="@(RemoteDescendentReferences)"
@@ -188,6 +188,50 @@
     />
   </Target>
 
+  <ItemGroup>
+    <SeleniumCoreSourceFiles Include="$(TrunkRoot)\selenium\src\csharp\core\**\*.cs"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <SeleniumCoreReferences Include="@(CommonReferences)"/>
+    <SeleniumCoreReferences Include="System.Web.dll"/>
+  </ItemGroup>
+
+  <Target Name="BuildSeleniumCore">
+    <Message Text="Building ThoughtWorks.Selenium.Core.dll"/>
+    <Csc Sources="@(SeleniumCoreSourceFiles)"
+         References="@(CommonReferences)"
+         OutputAssembly="$(BuildOutputDirectory)\ThoughtWorks.Selenium.Core.dll"
+         DebugType="pdbonly"
+         TargetType="library"
+         Optimize="true"
+         AllowUnsafeBlocks="false"
+         DocumentationFile="$(BuildOutputDirectory)\Core.xml"
+    />
+  </Target>
+
+  <ItemGroup>
+    <WebDriverBackedSeleniumSourceFiles Include="$(TrunkRoot)\selenium\src\csharp\WebDriverBackedSelenium\**\*.cs"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <WebDriverBackedSeleniumReferences Include="@(CommonReferences)"/>
+    <WebDriverBackedSeleniumReferences Include="$(BuildOutputDirectory)\WebDriver.Common.dll"/> 
+    <WebDriverBackedSeleniumReferences Include="$(BuildOutputDirectory)\ThoughtWorks.Selenium.Core.dll"/> 
+  </ItemGroup>
+
+  <Target Name="BuildWebDriverBackedSelenium" DependsOnTargets="BuildCommon;BuildSeleniumCore">
+    <Message Text="Building WebDriverBackedSelenium.dll"/>
+    <Csc Sources="@(WebDriverBackedSeleniumSourceFiles)"
+         References="@(WebDriverBackedSeleniumReferences)"
+         OutputAssembly="$(BuildOutputDirectory)\WebDriverBackedSelenium.dll"
+         DebugType="pdbonly"
+         TargetType="library"
+         Optimize="true"
+         AllowUnsafeBlocks="false"
+    />
+  </Target>
+
   <Target Name="BuildNativeCode">
     <MSBuild Projects="$(TrunkRoot)\WebDriver.sln" Properties="Configuration=Release;Platform=Win32"/>
     <MSBuild Projects="$(TrunkRoot)\WebDriver.sln" Properties="Configuration=Release;Platform=x64"/>
@@ -197,10 +241,10 @@
     <Delete Files="@(OutputFiles)" Condition="Exists('$(BuildOutputDirectory)')"/>
   </Target>
 
-  <Target Name="BuildManagedCode" DependsOnTargets="BuildCommon;BuildRemote;BuildIE;BuildFirefox;BuildChrome">
+  <Target Name="BuildManagedCode" DependsOnTargets="BuildCommon;BuildRemote;BuildIE;BuildFirefox;BuildChrome;BuildSeleniumCore;BuildWebDriverBackedSelenium">
   </Target>
 
-  <Target Name="RebuildManagedCode" DependsOnTargets="Clean;BuildCommon;BuildRemote;BuildIE;BuildFirefox;BuildChrome">
+  <Target Name="RebuildManagedCode" DependsOnTargets="Clean;BuildCommon;BuildRemote;BuildIE;BuildFirefox;BuildChrome;BuildSeleniumCore;BuildWebDriverBackedSelenium">
   </Target>
 
   <Target Name="BuildDocs" DependsOnTargets="BuildManagedCode">
