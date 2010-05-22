@@ -38,9 +38,9 @@ mozilla_xpi(name = "webdriver",
     ":response_handler_xpt"
   ],
   resources = [    
-    { ":firefox_dll" : "platform/WINNT_x86-msvc/components" },
-    { ":libwebdriver_firefox_so" : "platform/Linux_x86-gcc3/components" },
-    { ":libwebdriver_firefox_so64" : "platform/Linux_x86_64-gcc3/components" }
+    { ":firefox_dll" : "platform/WINNT_x86-msvc/components/webdriver-firefox.dll" },
+    { ":libwebdriver_firefox_so" : "platform/Linux_x86-gcc3/components/libwebdriver-firefox.so" },
+    { ":libwebdriver_firefox_so64" : "platform/Linux_x86_64-gcc3/components/libwebdriver-firefox.so" }
   ],
   chrome = "src/extension/chrome.manifest",
   install = "src/extension/install.rdf")
