@@ -318,6 +318,16 @@ java_test(:name => "debug_jsapi",
           :deps => [ :firefox, :test_common ],
           :main => "org.openqa.selenium.environment.webserver.Jetty6AppServer")
 
+# Copy things around to make life easier when packaging IDE
+file "build/ide/selenium" => "//common:js_core" do
+  rm_rf "build/ide/selenium"
+  mkdir_p "build/ide"
+  puts Rake::Task["//common:js_core"].out
+  cp_r Rake::Task["//common:js_core"].out + "/", "build/ide/selenium/"
+  Dir["build/ide/selenium/**/.svn"].each { |file| rm_rf file }
+end
+task "rename_core" => "build/ide/selenium"
+
 task :javadocs => [:common, :firefox, "//htmlunit", :jobbie, :remote, :support, :chrome, :selenium] do
   mkdir_p "build/javadoc"
    sourcepath = ""
