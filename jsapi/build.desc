@@ -1,0 +1,20 @@
+
+# Comprehensive test suite for testing the JS API in isolation against all of
+# the supported browsers. This should be included in the :test task; for that we
+# defer to the suites for the individual drivers.
+java_test(name = "test",
+  srcs = [ "test/java/**/*.java" ],
+  deps = [ 
+    "//firefox", 
+    "//chrome",
+    "//common:test"])
+
+# Simply starts the Jetty6AppServer for manually testing the JS API tests.
+# After starting, open a browser to http://localhost:$PORT/js/test, where $PORT
+# is the port the server was started on.
+java_library(name = "debug",
+  deps = [ 
+    "//firefox", 
+    "//common:test"
+  ],
+  main = "org.openqa.selenium.environment.webserver.Jetty6AppServer")

@@ -12,6 +12,7 @@ class JavaMappings
     fun.add_mapping("java_library", CrazyFunJava::CopyResources.new)
     fun.add_mapping("java_library", CrazyFunJava::Jar.new)
     fun.add_mapping("java_library", CrazyFunJava::TidyTempDir.new)
+    fun.add_mapping("java_library", CrazyFunJava::RunBinary.new)
     fun.add_mapping("java_library", CrazyFunJava::CreateSourceJar.new)
     fun.add_mapping("java_library", CrazyFunJava::CreateUberJar.new)
     fun.add_mapping("java_library", CrazyFunJava::CreateProjectJar.new)
@@ -326,6 +327,44 @@ class Jar < BaseJava
   end
 end
 
+class RunBinary < BaseJava  
+  def handle(fun, dir, args)
+    if (args[:main].nil?)
+      return
+    end  
+  
+    task_name = task_name(dir, args[:name])
+  
+    desc "Run the binary for #{task_name}"
+    task "#{task_name}:run" => [task_name] do
+      puts "Running: #{task_name}"
+    
+      cp = ClassPath.new(task_name)
+      cp.push jar_name(dir, args[:name])
+    
+      CrazyFunJava.ant.project.getBuildListeners().get(0).setMessageOutputLevel(2) if ENV['log']
+
+      # Ugly. We do this because CrazyFunJava.ant.java complains about too many arguments 
+      path = Java.org.apache.tools.ant.types.Path.new(CrazyFunJava.ant.project)      
+      cp.all.each do |jar|
+        elem = path.createPathElement()
+        elem.setPath(jar)
+        path.add(elem)
+      end
+
+      task = Java.org.apache.tools.ant.taskdefs.Java.new()
+      task.setProject(CrazyFunJava.ant.project)
+      task.setTaskName(task_name)
+      task.setFork(true)
+      task.setClassname(args[:main])
+      task.setClasspath(path)
+      task.execute()
+    
+      CrazyFunJava.ant.project.getBuildListeners().get(0).setMessageOutputLevel(verbose ? 2 : 0)
+    end
+  end
+end
+
 class RunTests < BaseJava
   def handle(fun, dir, args)
 #    raise FailedPrecondition, "java_test targets need :srcs defined" if args[:srcs].nil || ar?
@@ -349,6 +388,10 @@ class RunTests < BaseJava
       tests = args[:class].nil? ? tests : "#{args[:class]}.java"
       mkdir_p 'build/test_logs'
       
+      if (args[:test_suite])
+        tests = [ args[:test_suite] ]
+      end      
+      
       tests.each do |test|
         CrazyFunJava.ant.project.getBuildListeners().get(0).setMessageOutputLevel(2) if ENV['log']
   	    CrazyFunJava.ant.junit(:fork => true, :forkmode => 'once', :showoutput => true,
@@ -363,7 +406,12 @@ class RunTests < BaseJava
 	        ant.formatter(:type => 'xml')
 
 	        class_name = test.gsub('\\', '/').split('/')[-1]
-	        name = "#{package_name(test)}.#{class_name}".gsub('\\', '/').gsub('/', '.').gsub('.java', '')
+  	      name = "#{package_name(test)}.#{class_name}".gsub('\\', '/').gsub('/', '.').gsub('.java', '')
+	        
+	        if name =~ /^\./
+	          name = test
+          end
+	        
           ant.test(:name => name, :todir => 'build/test_logs')
         end
         CrazyFunJava.ant.project.getBuildListeners().get(0).setMessageOutputLevel(verbose ? 2 : 0)

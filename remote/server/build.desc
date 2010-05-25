@@ -34,3 +34,10 @@ java_library(name = "server",
     "//third_party/java/mx4j",
     "//third_party/java/servlet-api"
   ])
+
+java_library(name = "jsapi",
+  srcs = [ "test/java/**/JsApi*.java" ],
+  deps = [ 
+    "//common:test",
+    "//firefox"
+  ])

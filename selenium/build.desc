@@ -32,3 +32,14 @@ java_test(name = "test-selenese",
     "//remote/server:server:uber",
     "//third_party/java/easymock",
     "//third_party/java/testng"])
+
+java_test(name = "single",
+  deps = [
+    ":test",
+    "//chrome:test",
+    "//htmlunit:test",    
+    "//firefox:test",
+    "//jobbie:test"
+  ],
+  test_suite = "org.openqa.selenium.SingleTestSuite")
+  

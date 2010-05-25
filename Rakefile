@@ -78,7 +78,7 @@ task :htmlunit => [ "//htmlunit" ]
 task :ie => [ "//jobbie" ]
 task :firefox => [ "//firefox" ]
 task :jobbie => [:ie]
-task :jsapi => :'webdriver-jsapi'
+task :jsapi => "//jsapi:debug:run"
 task :remote => [:remote_common, :remote_server, :remote_client]
 task :remote_common => ["//remote/common"]
 task :remote_client => ["//remote/client"]
@@ -95,7 +95,7 @@ task :test_chrome => [ "//chrome:test:run" ]
 task :test_htmlunit => [ "//htmlunit:test:run" ]
 task :test_ie => [ "//jobbie:test:run" ]
 task :test_jobbie => [ "//jobbie:test:run" ]
-task :test_jsapi => :'webdriver-jsapi-test'
+task :test_jsapi => "//jsapi:test:run"
 task :test_firefox => [ "//firefox:test:run" ]
 task :test_remote => [:'webdriver-selenium-server-test']
 task :test_selenium => [:'webdriver-selenium-server-test', :'webdriver-selenium-test', "//selenium:test-selenese:run", :'test_core']
@@ -209,17 +209,6 @@ dll(:name => "libwebdriver_firefox_so64",
 
 task :libwebdriver_firefox => [:libwebdriver_firefox_so, :libwebdriver_firefox_so64]
 
-java_test(:name => "webdriver-single-testsuite",
-          :srcs  => [ "selenium/test/java/org/openqa/selenium/SingleTestSuite.java"],
-          :deps => [
-                     "//selenium:test",
-                     "//jobbie:test",
-                     "//firefox:test",
-                     "//htmlunit:test",
-                     "//chrome:test"
-                   ],
-          :test_suite => "SingleTestSuite")
-
 task :'selenium-server_zip' do
   temp = "build/selenium-server_zip"
   mkdir_p temp
@@ -300,24 +289,6 @@ selenium_test(:name => "test_core_ie",
                 :"selenium-core"
               ],
               :browser => "*iexploreproxy")
-
-java_jar(:name => "webdriver-jsapi",
-    :srcs => [ "remote/server/test/java/**/JsApi*.java" ],
-    :deps => [ :firefox, :test_common ])
-
-# Comprehensive test suite for testing the JS API in isolation against all of
-# the supported browsers. This should be included in the :test task; for that we
-# defer to the suites for the individual drivers.
-java_test(:name => "webdriver-jsapi-test",
-          :srcs => [ "jsapi/test/java/**/*.java" ],
-          :deps => [ :firefox, :chrome, :test_common ])
-
-# Simply starts the Jetty6AppServer for manually testing the JS API tests.
-# After starting, open a browser to http://localhost:$PORT/js/test, where $PORT
-# is the port the server was started on.
-java_test(:name => "debug_jsapi",
-          :deps => [ :firefox, :test_common ],
-          :main => "org.openqa.selenium.environment.webserver.Jetty6AppServer")
 
 # Copy things around to make life easier when packaging IDE
 file "build/ide/selenium" => "//common:js_core" do
@@ -434,24 +405,6 @@ task :test_selenium_py => [:'selenium-core', :'selenium-server-standalone'] do
         sh "python2.6 selenium/test/py/runtests.py", :verbose => true
     end
 end
-
-# Place-holder tasks
-java_jar(:name => "webdriver-iphone-client",
-         :srcs  => [ "iphone/src/java/**/*.java" ],
-         :deps => [
-                    :common,
-                    :remote_common,
-                    :remote_client
-                  ])
-
-iphone_test(:name => "webdriver-iphone-client-test",
-            :srcs => [ "iphone/test/java/**/*.java" ],
-            :deps => [
-                       :test_common,
-                       :iphone_server,
-                       :iphone_client
-                     ])
-
 
 #### iPhone ####
 task :iphone_server do
