@@ -55,6 +55,12 @@ module Selenium
           string = capture_write { @profile.update_user_prefs }
           string.should include('user_pref("webdriver_accept_untrusted_certs", true)')
         end
+
+        it "should change the setting for untrusted certificate issuer" do
+          @profile.assume_untrusted_certificate_issuer = false
+          string = capture_write { @profile.update_user_prefs }
+          string.should include('user_pref("webdriver_assume_untrusted_issuer", false)')
+        end
       end
 
     end # Firefox

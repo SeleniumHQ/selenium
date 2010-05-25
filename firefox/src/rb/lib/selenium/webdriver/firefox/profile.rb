@@ -71,6 +71,7 @@ module Selenium
           @extension_source  = DEFAULT_EXTENSION_SOURCE
           @native_events     = DEFAULT_ENABLE_NATIVE_EVENTS
           @secure_ssl        = DEFAULT_SECURE_SSL
+          @untrusted_issuer  = DEFAULT_ASSUME_UNTRUSTED_ISSUER
           @load_no_focus_lib = DEFAULT_LOAD_NO_FOCUS_LIB
 
           @additional_prefs  = {}
@@ -113,9 +114,10 @@ module Selenium
           prefs.merge! @additional_prefs
           prefs.merge! DEFAULT_PREFERENCES
 
-          prefs['webdriver_firefox_port']           = @port
-          prefs['webdriver_accept_untrusted_certs'] = !secure_ssl?
-          prefs['webdriver_enable_native_events']   = native_events?
+          prefs['webdriver_firefox_port']            = @port
+          prefs['webdriver_accept_untrusted_certs']  = !secure_ssl?
+          prefs['webdriver_enable_native_events']    = native_events?
+          prefs['webdriver_assume_untrusted_issuer'] = assume_untrusted_certificate_issuer?
 
           # If the user sets the home page, we should also start up there
           prefs["startup.homepage_welcome_url"] = prefs["browser.startup.homepage"]
@@ -199,6 +201,14 @@ module Selenium
 
         def secure_ssl?
           @secure_ssl == true
+        end
+
+        def assume_untrusted_certificate_issuer?
+          @untrusted_issuer == true
+        end
+
+        def assume_untrusted_certificate_issuer=(bool)
+          @untrusted_issuer = bool
         end
 
         private
