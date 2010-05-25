@@ -20,7 +20,6 @@ require 'rake-tasks/c'
 require 'rake-tasks/java'
 require 'rake-tasks/iphone'
 require 'rake-tasks/selenium'
-require 'rake-tasks/mozilla'
 require 'rake-tasks/ruby'
 require 'rake-tasks/se-ide'
 require 'rake-tasks/ie_code_generator'
@@ -241,18 +240,6 @@ dll(:name => "chrome_dll",
     :out  => 'Win32/Release/npchromedriver.dll',
     :prebuilt => "chrome/prebuilt")
 
-xpi(:name => "chrome_extension",
-    :srcs  => [ "chrome/src/extension/**" ],
-    :deps => [ :chrome_dll ],
-    :resources => [
-                     { :chrome_dll => "npchromedriver.dll" }
-                  ],
-    :out => "chrome-extension.zip")
-task "chrome/build/chrome-extension.zip" => :'chrome_extension'
-Rake::Task["build/chrome-extension.zip"].out = "build/chrome-extension.zip"
-task "chrome\\build\\chrome-extension.zip" => :'chrome_extension'
-Rake::Task["build/chrome-extension.zip"].out = "build/chrome-extension.zip"
-
 java_test(:name => "webdriver-selenium-test",
           :srcs => [ "selenium/test/java/**/*.java" ],
           :resources => [
@@ -329,7 +316,7 @@ task :webdriver_py => [:chrome, :firefox, "//firefox:webdriver", :remote_client]
     sh "build/python/bin/pip install simplejson py", :verbose => true
 
     # Copy browser extensions over to src so setup.py will pick them up. This is such a hack.
-    cp 'build/chrome-extension.zip', "chrome/src/py/", :verbose => true
+    cp 'build/chrome/chrome-extension.zip', "chrome/src/py/", :verbose => true
     cp 'build/firefox/webdriver.xpi', "firefox/src/py/", :verbose => true
 
     sh "build/python/bin/python setup.py build", :verbose => true

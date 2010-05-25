@@ -103,14 +103,19 @@ module Xpi
 class BaseXpi < Tasks
   include Platform
 
-  def xpi_name(dir, name)
-    xpi = task_name(dir, name)
+  def xpi_name(dir, args)
+    xpi = task_name(dir, args[:name])
     
     xpi = "build/" + (xpi.slice(2 ... xpi.length))
     xpi = xpi.sub(":", "/")
     xpi << ".xpi"
 
     xpi.gsub("/", Platform.dir_separator)
+    
+    if args[:out]
+      xpi = File.join(File.dirname(xpi), args[:out])
+    end
+    xpi
   end
 end
   
@@ -123,7 +128,7 @@ end
 class CreateTask < BaseXpi
   def handle(fun, dir, args)
     task_name = task_name(dir, args[:name])
-    xpi = xpi_name(dir, args[:name]) 
+    xpi = xpi_name(dir, args) 
     
     file xpi
     
@@ -143,14 +148,14 @@ class AddDependencies < BaseXpi
     all_deps.push args[:chrome] unless args[:chrome].nil?
     all_deps.push args[:install] unless args[:install].nil?
     
-    task = Rake::Task[xpi_name(dir, args[:name])]
+    task = Rake::Task[xpi_name(dir, args)]
     add_dependencies(task, dir, all_deps)
   end
 end
   
 class Build < BaseXpi
   def handle(fun, dir, args)
-    xpi = xpi_name(dir, args[:name])
+    xpi = xpi_name(dir, args)
     
     file xpi do 
       puts "Preparing: #{task_name(dir, args[:name])} as #{xpi}"
