@@ -41,6 +41,20 @@ module Selenium
         it "should raise an error if the value is already stringified" do
           lambda { @profile['foo.bar'] = '"stringified"' }.should raise_error(ArgumentError)
         end
+
+        it "should enable secure SSL" do
+          @profile.secure_ssl = true
+
+          string = capture_write { @profile.update_user_prefs }
+          string.should include('user_pref("webdriver_accept_untrusted_certs", false)')
+        end
+
+        it "should disable secure SSL" do
+          @profile.secure_ssl = false
+
+          string = capture_write { @profile.update_user_prefs }
+          string.should include('user_pref("webdriver_accept_untrusted_certs", true)')
+        end
       end
 
     end # Firefox

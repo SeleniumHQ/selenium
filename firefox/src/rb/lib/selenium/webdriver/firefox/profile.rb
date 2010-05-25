@@ -114,9 +114,11 @@ module Selenium
           prefs.merge! DEFAULT_PREFERENCES
 
           prefs['webdriver_firefox_port']           = @port
-          prefs['webdriver_accept_untrusted_certs'] = 'true' unless secure_ssl?
-          prefs['webdriver_enable_native_events']   = 'true' if native_events?
-          prefs["startup.homepage_welcome_url"]     = prefs["browser.startup.homepage"] # If the user sets the home page, we should also start up there
+          prefs['webdriver_accept_untrusted_certs'] = !secure_ssl?
+          prefs['webdriver_enable_native_events']   = native_events?
+
+          # If the user sets the home page, we should also start up there
+          prefs["startup.homepage_welcome_url"] = prefs["browser.startup.homepage"]
 
           write_prefs prefs
         end
