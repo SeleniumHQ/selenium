@@ -26,6 +26,7 @@ require 'rake-tasks/se-ide'
 require 'rake-tasks/ie_code_generator'
 
 version = "2.0a4"
+ide_version = "1.0.7-SNAPSHOT"
 
 # The build system used by webdriver is layered on top of rake, and we call it
 # "crazy fun" for no readily apparent reason.
@@ -542,4 +543,9 @@ desc 'Build the standalone server'
 task 'selenium-server-standalone' => 'build/selenium-server-standalone.jar'
 file 'build/selenium-server-standalone.jar' => '//remote/server:server:uber' do
   cp 'build/remote/server/server-standalone.jar', 'build/selenium-server-standalone.jar'
+end
+
+desc 'Build and package Selenium IDE'
+task :release_ide  => [:ide] do
+  cp 'build/ide/selenium-ide.xpi', "build/ide/selenium-ide-#{ide_version}.xpi"
 end
