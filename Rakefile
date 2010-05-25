@@ -210,13 +210,13 @@ dll(:name => "libwebdriver_firefox_so64",
 task :libwebdriver_firefox => [:libwebdriver_firefox_so, :libwebdriver_firefox_so64]
 
 java_test(:name => "webdriver-single-testsuite",
-          :srcs  => [ "common/test/java/org/openqa/selenium/SingleTestSuite.java",
-                      "htmlunit/test/java/**/*.java",
-                      "support/test/java/**/*.java"],
+          :srcs  => [ "selenium/test/java/org/openqa/selenium/SingleTestSuite.java"],
           :deps => [
-                     :'htmlunit',
-                     "//common:test",
-                     "//support:support",
+                     "//selenium:test",
+                     "//jobbie:test",
+                     "//firefox:test",
+                     "//htmlunit:test",
+                     "//chrome:test"
                    ],
           :test_suite => "SingleTestSuite")
 
