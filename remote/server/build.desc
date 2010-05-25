@@ -35,6 +35,21 @@ java_library(name = "server",
     "//third_party/java/servlet-api"
   ])
 
+# webdriver-selenium-server-test
+java_test(name = "test",
+  srcs = [
+    "//remote/client:test",
+    "test/java/org/openqa/selenium/remote/**/*.java",
+    "test/java/org/openqa/selenium/server/**/*.java",
+    "test/java/org/openqa/selenium/testworker/**/*.java"
+  ],
+  deps = [
+    ":server",
+    "//remote/client",
+    "//common:test",
+    "//remote/common:test",
+    "//firefox:test"])
+
 java_library(name = "jsapi",
   srcs = [ "test/java/**/JsApi*.java" ],
   deps = [ 

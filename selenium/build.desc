@@ -33,6 +33,21 @@ java_test(name = "test-selenese",
     "//third_party/java/easymock",
     "//third_party/java/testng"])
 
+java_test(name = "selenium_test",
+  srcs = [ "test/java/**/*.java" ],
+  resources = [
+    { "test/java/com/thoughtworks/selenium/testHelpers.js" : "com/thoughtworks/selenium/testHelpers.js" }
+  ],
+  deps = [
+    "//common:test",
+    "//htmlunit",
+    "//remote/server:server:uber",
+    "//third_party/java/easymock",
+    "//third_party/java/testng"
+  ],
+  main = "org.testng.TestNG",
+  args = "selenium/test/java/webdriver-selenium-suite.xml")
+
 java_test(name = "single",
   deps = [
     ":test",

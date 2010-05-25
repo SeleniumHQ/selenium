@@ -133,6 +133,31 @@ class BaseJava < Tasks
     
     paths.join(".")
   end
+  
+  def ant_java_task(task_name, classname, classpath, args = nil)
+    # Ugly. We do this because CrazyFunJava.ant.java complains about too many arguments 
+    path = Java.org.apache.tools.ant.types.Path.new(CrazyFunJava.ant.project)      
+    classpath.all.each do |jar|
+      elem = path.createPathElement()
+      elem.setPath(jar)
+      path.add(elem)
+    end
+
+    task = Java.org.apache.tools.ant.taskdefs.Java.new()
+    task.setProject(CrazyFunJava.ant.project)
+    task.setTaskName(task_name)
+    task.setFork(true)
+    task.setClassname(classname)
+    task.setClasspath(path)
+    
+    if (args)
+      arg = task.createArg()
+      arg.setLine(args)
+    end
+    
+    task.execute()
+  end
+  
 end
   
 class FailedPrecondition < StandardError
@@ -344,21 +369,7 @@ class RunBinary < BaseJava
     
       CrazyFunJava.ant.project.getBuildListeners().get(0).setMessageOutputLevel(2) if ENV['log']
 
-      # Ugly. We do this because CrazyFunJava.ant.java complains about too many arguments 
-      path = Java.org.apache.tools.ant.types.Path.new(CrazyFunJava.ant.project)      
-      cp.all.each do |jar|
-        elem = path.createPathElement()
-        elem.setPath(jar)
-        path.add(elem)
-      end
-
-      task = Java.org.apache.tools.ant.taskdefs.Java.new()
-      task.setProject(CrazyFunJava.ant.project)
-      task.setTaskName(task_name)
-      task.setFork(true)
-      task.setClassname(args[:main])
-      task.setClasspath(path)
-      task.execute()
+      ant_java_task(task_name, args[:main], cp)
     
       CrazyFunJava.ant.project.getBuildListeners().get(0).setMessageOutputLevel(verbose ? 2 : 0)
     end
@@ -378,6 +389,7 @@ class RunTests < BaseJava
       tests = [] 
       (args[:srcs] || []).each do |src|
         srcs = to_filelist(dir, src).each do |f|
+          next if f.to_s =~ /SingleTestSuite\.java$/
           tests.push f if f.to_s =~ /TestSuite\.java$/
         end
       end
@@ -392,29 +404,33 @@ class RunTests < BaseJava
         tests = [ args[:test_suite] ]
       end      
       
-      tests.each do |test|
-        CrazyFunJava.ant.project.getBuildListeners().get(0).setMessageOutputLevel(2) if ENV['log']
-  	    CrazyFunJava.ant.junit(:fork => true, :forkmode => 'once', :showoutput => true,
-	  	                         :printsummary => 'on', :haltonerror => true, :haltonfailure => true) do |ant|
-	        ant.classpath do |ant_cp|
-	          cp.all.each do |jar|
-              ant_cp.pathelement(:location => jar)
+      if (args[:main]) 
+        ant_java_task(task_name, args[:main], cp, args[:args])
+      else
+        tests.each do |test|
+          CrazyFunJava.ant.project.getBuildListeners().get(0).setMessageOutputLevel(2) if ENV['log']
+  	      CrazyFunJava.ant.junit(:fork => true, :forkmode => 'once', :showoutput => true,
+	  	                          :printsummary => 'on', :haltonerror => true, :haltonfailure => true) do |ant|
+  	        ant.classpath do |ant_cp|
+	            cp.all.each do |jar|
+                ant_cp.pathelement(:location => jar)
+              end
+  	        end
+
+	          ant.formatter(:type => 'plain')
+  	        ant.formatter(:type => 'xml')
+
+	          class_name = test.gsub('\\', '/').split('/')[-1]
+  	        name = "#{package_name(test)}.#{class_name}".gsub('\\', '/').gsub('/', '.').gsub('.java', '')
+	        
+	          if name =~ /^\./
+	            name = test
             end
-  	      end
-
-	        ant.formatter(:type => 'plain')
-	        ant.formatter(:type => 'xml')
-
-	        class_name = test.gsub('\\', '/').split('/')[-1]
-  	      name = "#{package_name(test)}.#{class_name}".gsub('\\', '/').gsub('/', '.').gsub('.java', '')
 	        
-	        if name =~ /^\./
-	          name = test
+            ant.test(:name => name, :todir => 'build/test_logs')
           end
-	        
-          ant.test(:name => name, :todir => 'build/test_logs')
+          CrazyFunJava.ant.project.getBuildListeners().get(0).setMessageOutputLevel(verbose ? 2 : 0)
         end
-        CrazyFunJava.ant.project.getBuildListeners().get(0).setMessageOutputLevel(verbose ? 2 : 0)
       end
     end
   end

@@ -96,8 +96,8 @@ task :test_ie => [ "//jobbie:test:run" ]
 task :test_jobbie => [ "//jobbie:test:run" ]
 task :test_jsapi => "//jsapi:test:run"
 task :test_firefox => [ "//firefox:test:run" ]
-task :test_remote => [:'webdriver-selenium-server-test']
-task :test_selenium => [:'webdriver-selenium-server-test', :'webdriver-selenium-test', "//selenium:test-selenese:run", :'test_core']
+task :test_remote => [ "//remote/server:test:run" ]
+task :test_selenium => [ "//selenium:selenium_test:run", "//selenium:test-selenese:run", :'test_core']
 task :test_support => [ "//support:test:run" ]
 task :test_iphone_client => [:'webdriver-iphone-client-test']
 task :test_iphone => [:test_iphone_server, :test_iphone_client]
@@ -218,42 +218,11 @@ task :'selenium-server_zip' do
   sh "cd #{temp} && jar cMf ../selenium-server.zip *"
 end
 
-java_test(:name => "webdriver-selenium-server-test",
-          :srcs => [
-                     "remote/client/test/java/**/*.java",
-                     "remote/server/test/java/org/openqa/selenium/remote/**/*.java",
-                     "remote/server/test/java/org/openqa/selenium/server/**/*.java",
-                     "remote/server/test/java/org/openqa/selenium/testworker/**/*.java"
-                   ],
-          :deps => [
-                     :remote_client,
-                     :remote_server,
-                     :test_common,
-                     "//remote/common:test",
-                     "//firefox:test",
-                     "remote/server/lib/buildtime/*.jar"
-                   ])
-
 dll(:name => "chrome_dll",
     :src  => [ "common/src/cpp/webdriver-interactions/**/*", "chome/src/cpp/**/*" ],
     :solution => "WebDriver.sln",
     :out  => 'Win32/Release/npchromedriver.dll',
     :prebuilt => "chrome/prebuilt")
-
-java_test(:name => "webdriver-selenium-test",
-          :srcs => [ "selenium/test/java/**/*.java" ],
-          :resources => [
-                     { "selenium/test/java/com/thoughtworks/selenium/testHelpers.js" => "com/thoughtworks/selenium/testHelpers.js" },
-                   ],
-          :deps => [
-                     "//common:test",
-                     "//htmlunit",
-                     :'selenium-server-standalone',
-                     "//third_party/java/easymock",
-                     "//third_party/java/testng"
-                   ],
-          :main => "org.testng.TestNG",
-          :args => "selenium/test/java/webdriver-selenium-suite.xml")
 
 java_jar(:name => "selenium-core",
          :resources => [
