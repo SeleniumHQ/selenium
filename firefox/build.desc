@@ -16,6 +16,18 @@ java_test(name = "test",
     "//remote/client:test"
   ])
 
+ruby_test(
+  srcs = [
+    "common/test/rb/spec/**/*_spec.rb",
+    "firefox/test/rb/spec/**/*_spec.rb"
+  ],
+  include = [
+    "firefox/src/rb/lib",
+    "remote/client/src/rb/lib"
+  ],
+  driver_name = "firefox"
+)
+
 mozilla_xpt(name = "native_events_xpt",
   srcs = [ "src/cpp/webdriver-firefox/nsINativeEvents.idl" ])
 
@@ -37,23 +49,23 @@ mozilla_xpi(name = "webdriver",
     ":command_processor_xpt",
     ":response_handler_xpt"
   ],
-  resources = [    
+  resources = [
     { ":firefox_dll" : "platform/WINNT_x86-msvc/components/webdriver-firefox.dll" },
     { ":libwebdriver_firefox_so" : "platform/Linux_x86-gcc3/components/libwebdriver-firefox.so" },
     { ":libwebdriver_firefox_so64" : "platform/Linux_x86_64-gcc3/components/libwebdriver-firefox.so" }
   ],
   chrome = "src/extension/chrome.manifest",
   install = "src/extension/install.rdf")
-  
+
 # Temporary rules while we migrate
 rake_task(name = "firefox_dll",
   task_name = "firefox_dll",
   out = "build/Win32/Release/webdriver-firefox.dll")
-  
+
 rake_task(name = "libwebdriver_firefox_so",
   task_name = "libwebdriver_firefox_so",
   out = "build/linux/Release/libwebdriver-firefox.so")
-  
+
 rake_task(name = "libwebdriver_firefox_so64",
   task_name = "libwebdriver_firefox_so64",
   out = "build/linux64/Release/libwebdriver-firefox.so")
@@ -61,7 +73,7 @@ rake_task(name = "libwebdriver_firefox_so64",
 rake_task(name = "libnoblur_so_64",
   task_name = "libnoblur_so_64",
   out = "build/linux64/Release/x_ignore_nofocus.so")
-  
+
 rake_task(name = "libnoblur_so",
   task_name = "libnoblur_so",
   out = "build/linux/Release/x_ignore_nofocus.so")

@@ -33,21 +33,22 @@ ide_version = "1.0.7-SNAPSHOT"
 # First off, create a new CrazyFun object.
 crazy_fun = CrazyFun.new
 
-# Secondly, we add the handlers, which are responsible for turning a build 
+# Secondly, we add the handlers, which are responsible for turning a build
 # rule into a (series of) rake tasks. For example if we're looking at a file
 # in subdirectory "subdir" contains the line:
 #
 # java_library(:name => "example", :srcs => ["foo.java"])
 #
 # we would generate a rake target of "//subdir:example" which would generate
-# a Java JAR at "build/subdir/example.jar". 
-# 
+# a Java JAR at "build/subdir/example.jar".
+#
 # If crazy fun doesn't know how to handle a particular output type ("java_library"
 # in the example above) then it will throw an exception, stopping the build
 JavaMappings.new.add_all(crazy_fun)
 JavascriptMappings.new.add_all(crazy_fun)
 MozillaMappings.new.add_all(crazy_fun)
 RakeMappings.new.add_all(crazy_fun)
+RubyMappings.new.add_all(crazy_fun)
 
 # Not every platform supports building every binary needed, so we sometimes
 # need to fall back to prebuilt binaries. The prebuilt binaries are stored in
@@ -59,7 +60,7 @@ end
 
 # Finally, find every file named "build.desc" in the project, and generate
 # rake tasks from them. These tasks are normal rake tasks, and can be invoked
-# from rake. 
+# from rake.
 crazy_fun.create_tasks(Dir["**/build.desc"])
 
 # Notice that because we're using rake, anything you can do in a normal rake
@@ -161,7 +162,7 @@ dll(:name => "firefox_dll",
     :src  => [ "common/src/cpp/webdriver-interactions/**/*", "jobbie/src/cpp/webdriver-firefox/**/*" ],
     :solution => "WebDriver.sln",
     :out  => "Win32/Release/webdriver-firefox.dll",
-    :deps  => [ 
+    :deps  => [
                 "//firefox:native_events_xpt",
               ],
     :prebuilt => "firefox/prebuilt")
@@ -191,12 +192,12 @@ dll(:name => "libwebdriver_firefox_so",
     :prebuilt => "firefox/prebuilt",
     :out  => "linux/Release/libwebdriver-firefox.so")
 
-# There is no official 64 bit gecko SDK. Fall back to trying to use the one on 
-# system, but be ready for this to fail. I have a Ubuntu machine, so that's 
+# There is no official 64 bit gecko SDK. Fall back to trying to use the one on
+# system, but be ready for this to fail. I have a Ubuntu machine, so that's
 # what I'm basing this on. I understand that's a Bad Idea
 
 gecko_devels = FileList.new("/usr/lib/xulrunner-devel-1.9.*/sdk")
-local_gecko = gecko_devels.empty? ? "" : gecko_devels.to_a[0] + "/" 
+local_gecko = gecko_devels.empty? ? "" : gecko_devels.to_a[0] + "/"
 
 dll(:name => "libwebdriver_firefox_so64",
     :src  => FileList.new('common/src/cpp/webdriver-interactions/*_linux.cpp') + FileList.new('firefox/src/cpp/webdriver-firefox/native_events.cpp'),
@@ -436,7 +437,7 @@ end
 desc 'Install prerequisites for the build. You may need to run this as root or Administrator'
 task :setup do
   sh "gem install Antwrap yard"
-  
+
   if python?
     sh "easy_install virtualenv"
   end
