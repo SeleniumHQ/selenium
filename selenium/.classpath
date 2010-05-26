@@ -3,7 +3,6 @@
 	<classpathentry kind="src" output="build/client/classes" path="src/java"/>
 	<classpathentry kind="src" output="build/client/test-classes" path="test/java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="lib/buildtime/testng-5.8-jdk15.jar"/>
 	<classpathentry kind="lib" path="lib/buildtime/easymock-2.4.jar"/>
 	<classpathentry kind="lib" path="lib/buildtime/easymockclassextension-2.4.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/selenium-chrome"/>
@@ -16,5 +15,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/selenium-remote-server"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/selenium-support"/>
 	<classpathentry kind="lib" path="/third-party/java/google-collect/google-collect-1.0.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/testng/testng-5.8-jdk15.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
