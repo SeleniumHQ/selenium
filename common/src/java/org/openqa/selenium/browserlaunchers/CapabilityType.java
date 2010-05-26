@@ -30,12 +30,13 @@ public interface CapabilityType {
   String SUPPORTS_LOCATION_CONTEXT = "locationContextEnabled";
   String SUPPORTS_APPLICATION_CACHE = "applicationCacheEnabled";
   String SUPPORTS_BROWSER_CONNECTION = "browserConnectionEnabled";
+  String PROXY = "proxy";
 
   interface ForSeleniumServer {
     String AVOIDING_PROXY = "avoidProxy";
     String ONLY_PROXYING_SELENIUM_TRAFFIC = "onlyProxySeleniumTraffic";
     String PROXYING_EVERYTHING = "proxyEverything";
-    String PROXY_PAC = "proxy";
+    String PROXY_PAC = "proxy_pac";
     String ENSURING_CLEAN_SESSION = "ensureCleanSession";
   }
 }

@@ -26,11 +26,13 @@ import java.io.Writer;
 
 import com.thoughtworks.selenium.SeleniumException;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.Proxy;
 
 import static org.openqa.selenium.browserlaunchers.CapabilityType.ForSeleniumServer;
 import static org.openqa.selenium.browserlaunchers.CapabilityType.ForSeleniumServer.AVOIDING_PROXY;
 import static org.openqa.selenium.browserlaunchers.CapabilityType.ForSeleniumServer.ONLY_PROXYING_SELENIUM_TRAFFIC;
 import static org.openqa.selenium.browserlaunchers.CapabilityType.ForSeleniumServer.PROXYING_EVERYTHING;
+import static org.openqa.selenium.browserlaunchers.CapabilityType.PROXY;
 
 public class Proxies {
 
@@ -51,6 +53,11 @@ public class Proxies {
       throws FileNotFoundException {
     DoNotUseProxyPac pac = newProxyPac(port, configuredProxy, proxyPort, nonProxyHosts, capabilities);
 
+    Proxy proxy = (Proxy) capabilities.getCapability(PROXY);
+    if (proxy != null && proxy.getHttpProxy() != null) {
+      pac.defaults().toProxy(proxy.getHttpProxy());
+    }
+
     try {
       File pacFile = new File(parentDir, "proxy.pac");
       Writer out = new FileWriter(pacFile);
@@ -66,6 +73,14 @@ public class Proxies {
     DoNotUseProxyPac existingConfig = (DoNotUseProxyPac) capabilities.getCapability(
         ForSeleniumServer.PROXY_PAC);
     DoNotUseProxyPac pac = existingConfig == null ? new DoNotUseProxyPac() : existingConfig;
+
+    Object tempProxy = capabilities.getCapability(CapabilityType.PROXY);
+    if (tempProxy != null) {
+      Proxy proxy = (Proxy) tempProxy;
+      if (proxy.getHttpProxy() != null) {
+        pac.defaults().toProxy(proxy.getHttpProxy());
+      }
+    }
 
     if (configuredProxy != null) {
       String proxyToUse = configuredProxy;

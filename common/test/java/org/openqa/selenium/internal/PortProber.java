@@ -75,10 +75,7 @@ public class PortProber {
     long end = System.currentTimeMillis() + unit.toMillis(timeout);
     while (System.currentTimeMillis() < end) {
       try {
-        InetSocketAddress address = new InetSocketAddress(InetAddress.getByName(null), port);
-
-        Socket socket = new Socket();
-        socket.connect(address, 15000);
+        Socket socket = new Socket("localhost", port);
         socket.close();
         return true;
       } catch (ConnectException e) {

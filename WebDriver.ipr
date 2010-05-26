@@ -197,6 +197,7 @@
       <entry name="?*.jpeg" />
       <entry name="?*.jpg" />
       <entry name="?*.js" />
+      <entry name="*.exe" />
     </wildcardResourcePatterns>
     <annotationProcessing enabled="false" useClasspath="true" />
   </component>

@@ -34,6 +34,7 @@ public class CommandLine {
   private StreamDrainer drainer;
   private int exitCode;
   private boolean executed;
+  private Process proc;
 
   public CommandLine(String executable, String... args) {
     commandAndArgs = new String[args.length + 1];
@@ -85,7 +86,7 @@ public class CommandLine {
 
       ProcessBuilder builder = new ProcessBuilder(commandAndArgs);
       builder.redirectErrorStream(true);
-      Process proc = builder.start();
+      proc = builder.start();
 
       drainer = new StreamDrainer(proc);
       Thread thread = new Thread(drainer, "Command line drainer: " + commandAndArgs[0]);
@@ -109,6 +110,19 @@ public class CommandLine {
         execute();
       }
     }.start();
+
+    Runtime.getRuntime().addShutdownHook(new Thread() {
+      @Override
+      public void run() {
+        if (proc != null) {
+          try {
+            proc.exitValue();
+          } catch (IllegalThreadStateException e) {
+            proc.destroy();
+          }
+        }
+      }
+    });
   }
 
   public boolean isSuccessful() {
@@ -136,6 +150,8 @@ public class CommandLine {
     if (!executed) {
       throw new IllegalStateException("Cannot quit a process that's not running: " + commandAndArgs[0]);
     }
+
+    proc.destroy();
   }
 
   private static class StreamDrainer implements Runnable {
