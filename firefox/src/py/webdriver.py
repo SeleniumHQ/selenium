@@ -14,17 +14,14 @@
 # limitations under the License.
 
 import base64
-from datetime import datetime
 import httplib
 from selenium.common.exceptions import ErrorInResponseException
-from selenium.common.exceptions import InvalidSwitchToTargetException
 from selenium.remote.command import Command
 from selenium.remote.webdriver import WebDriver as RemoteWebDriver
 from webelement import WebElement
 from firefoxlauncher import FirefoxLauncher
 from firefox_profile import FirefoxProfile
 from extensionconnection import ExtensionConnection
-import utils
 import urllib2
 
 
@@ -34,7 +31,7 @@ class WebDriver(RemoteWebDriver):
 
     def __init__(self, profile=None, timeout=30):
         """Creates a webdriver instance.
-        
+
         Args:
           profile: a FirefoxProfile object (it can also be a profile name,
                    but the support for that may be removed in future, it is
@@ -53,7 +50,7 @@ class WebDriver(RemoteWebDriver):
             command_executor=ExtensionConnection(timeout),
             browser_name='firefox', platform='ANY', version='',
             javascript_enabled=True)
-            
+
     def _execute(self, command, params=None):
         try:
             return RemoteWebDriver._execute(self, command, params)
@@ -67,7 +64,7 @@ class WebDriver(RemoteWebDriver):
             # an error
             if command != Command.QUIT:
                 raise e
-            
+
 
     def create_web_element(self, element_id):
         """Override from RemoteWebDriver to use firefox.WebElement."""

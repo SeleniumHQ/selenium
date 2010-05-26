@@ -17,18 +17,15 @@
 
 import logging
 import socket
-import re
-import threading
 import time
 try:
     import json
 except ImportError: # Python < 2.6
     import simplejson as json
 
+# FIXME: What is this?
 if not hasattr(json, 'dumps'):
   import simplejson as json
-
-from selenium.common.exceptions import ErrorInResponseException
 
 from selenium.remote.command import Command
 from selenium.remote.remote_connection import RemoteConnection

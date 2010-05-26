@@ -18,12 +18,10 @@
 import ConfigParser
 import logging
 import os
-import platform
 import re
 import shutil
 import subprocess
 import tempfile
-import zipfile
 import utils
 
 DEFAULT_PORT = 7055
