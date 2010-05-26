@@ -23,7 +23,7 @@ try:
 except ImportError: # Python < 2.6
     import simplejson as json
 
-# FIXME: What is this?
+# Some old JSON libraries don't have "dumps", make sure we have a good one
 if not hasattr(json, 'dumps'):
   import simplejson as json
 
