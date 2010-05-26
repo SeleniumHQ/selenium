@@ -931,9 +931,12 @@ public class ProxyHandler extends AbstractHttpHandler {
             URI uri=request.getURI();
 
             // Convert the URI to a proxy URL
-            uri.setScheme("https");
-            uri.setHost(_addr.getHost());
-            uri.setPort(_addr.getPort());
+            //
+            // NOTE: Don't just add a host + port to the request URI, since this causes the URI to
+            // get "dirty" and be rewritten, potentially breaking the proxy slightly. Instead,
+            // create a brand new URI that includes the protocol, the host, and the port, but leaves
+            // intact the path + query string "as is" so that it does not get rewritten.
+            request.setURI(new URI("https://" + _addr.getHost() + ":" + _addr.getPort() + uri.toString()));
         }
 
         public void stop() throws InterruptedException {

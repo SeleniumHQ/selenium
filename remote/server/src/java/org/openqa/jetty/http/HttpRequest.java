@@ -411,7 +411,11 @@ public class HttpRequest extends HttpMessage
         return _uri;
     }
 
-    /* ------------------------------------------------------------ */
+    public void setURI(URI uri) {
+      _uri = uri;
+    }
+
+  /* ------------------------------------------------------------ */
     /**
      * Get the request Scheme. The scheme is obtained from an absolute URI. If the URI in the
      * request is not absolute, then the connections default scheme is returned. If there is no
