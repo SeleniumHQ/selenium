@@ -3,7 +3,7 @@ class RubyMappings
   def add_all(fun)
     fun.add_mapping "ruby_test", CheckArgs.new
     fun.add_mapping "ruby_test", AddDefaults.new
-    fun.add_mapping "ruby_test", JRubyTest.new   # this probably needs //common:test as a dependency
+    fun.add_mapping "ruby_test", JRubyTest.new
     fun.add_mapping "ruby_test", MRITest.new
 
     # TODO: fun.add_mapping("rubygem", RubyGem.new)
@@ -39,7 +39,7 @@ class RubyMappings
       require = ["third_party/jruby/json-jruby.jar"] + Array(args[:require])
 
       desc "Run ruby tests for #{dir} (jruby)"
-      task task_name(dir, "test:jruby") do
+      t = task task_name(dir, "test:jruby") do
         ENV['WD_SPEC_DRIVER'] = args[:driver_name] # TODO: get rid of ENV
 
         jruby :include => args[:include],
@@ -47,6 +47,12 @@ class RubyMappings
               :command => args[:command],
               :files   => args[:srcs]
       end
+
+      # TODO:
+      # Specifying dependencies here isn't ideal, but it's the easiest way to
+      # avoid a lot of duplication in the build files, since this dep only applies to this task.
+      # Maybe add a jruby_dep argument?
+      add_dependencies(t, dir, "//common:test")
     end
   end
 
@@ -54,7 +60,7 @@ class RubyMappings
     def handle(fun, dir, args)
       desc "Run ruby tests for #{dir} (mri)"
       task task_name(dir, "test:mri") do
-        ENV['WD_SPEC_DRIVER'] = args[:driver_name] # TODO: get rid of this
+        ENV['WD_SPEC_DRIVER'] = args[:driver_name] # TODO: get rid of ENV
 
         ruby :include => args[:include],
              :require => args[:require],
