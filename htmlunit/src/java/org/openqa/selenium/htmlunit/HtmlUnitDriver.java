@@ -59,18 +59,22 @@ import net.sourceforge.htmlunit.corejs.javascript.ScriptableObject;
 import net.sourceforge.htmlunit.corejs.javascript.Undefined;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.InvalidCookieDomainException;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.NoSuchFrameException;
 import org.openqa.selenium.NoSuchWindowException;
+import org.openqa.selenium.Proxy;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.Speed;
 import org.openqa.selenium.UnableToSetCookieException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.browserlaunchers.CapabilityType;
+import org.openqa.selenium.browserlaunchers.Proxies;
 import org.openqa.selenium.internal.FindsById;
 import org.openqa.selenium.internal.FindsByLinkText;
 import org.openqa.selenium.internal.FindsByName;
@@ -143,6 +147,48 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
   private HtmlUnitDriver(boolean enableJavascript, WebWindow currentWindow) {
     this(enableJavascript);
     this.currentWindow = currentWindow;
+  }
+
+  public HtmlUnitDriver(Capabilities capabilities) {
+    this(determineBrowserVersion(capabilities));
+    if (capabilities.getCapability(CapabilityType.PROXY) != null) {
+      Proxy proxy = Proxies.extractProxy(capabilities);
+      String fullProxy = proxy.getHttpProxy();
+      if (fullProxy != null) {
+        int index = fullProxy.indexOf(":");
+        if (index != -1) {
+          String host = fullProxy.substring(0, index);
+          int port = Integer.parseInt(fullProxy.substring(index + 1));
+          setProxy(host, port);
+        } else {
+          setProxy(fullProxy, 0);
+        }
+      }
+    }
+  }
+
+  private static BrowserVersion determineBrowserVersion(Capabilities capabilities) {
+    String browserName = capabilities.getBrowserName();
+    if ("firefox".equals(browserName)) {
+      return BrowserVersion.FIREFOX_3;
+    }
+    if ("internet explorer".equals(browserName)) {
+      // Try and convert the version
+      try {
+        int version = Integer.parseInt(capabilities.getVersion());
+        switch (version) {
+          case 6:
+            return BrowserVersion.INTERNET_EXPLORER_6;
+          case 7:
+            return BrowserVersion.INTERNET_EXPLORER_7;
+          case 8:
+            return BrowserVersion.INTERNET_EXPLORER_8;
+        }
+      } catch (NumberFormatException e) {
+        return BrowserVersion.INTERNET_EXPLORER_8;
+      }
+    }
+    return BrowserVersion.getDefault();
   }
 
   private WebClient createWebClient(BrowserVersion version) {
