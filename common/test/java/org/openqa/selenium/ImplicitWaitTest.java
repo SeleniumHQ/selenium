@@ -36,7 +36,7 @@ public class ImplicitWaitTest extends AbstractDriverTestCase {
     driver.get(pages.dynamicPage);
     WebElement add = driver.findElement(By.id("adder"));
 
-    driver.manage().timeouts().implicitlyWait(1100, MILLISECONDS);
+    driver.manage().timeouts().implicitlyWait(3000, MILLISECONDS);
 
     add.click();
     driver.findElement(By.id("box0"));  // All is well if this doesn't throw.
@@ -58,7 +58,7 @@ public class ImplicitWaitTest extends AbstractDriverTestCase {
   @JavascriptEnabled
   public void testShouldReturnAfterFirstAttemptToFindOneAfterDisablingImplicitWaits() {
     driver.get(pages.dynamicPage);
-    driver.manage().timeouts().implicitlyWait(1100, MILLISECONDS);
+    driver.manage().timeouts().implicitlyWait(3000, MILLISECONDS);
     driver.manage().timeouts().implicitlyWait(0, MILLISECONDS);
     try {
       driver.findElement(By.id("box0"));

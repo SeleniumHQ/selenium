@@ -43,7 +43,7 @@ public class DesiredCapabilities implements Capabilities, Serializable {
     // no-arg constructor
   }
 
-  public DesiredCapabilities(Map<String, Object> rawMap) {
+  public DesiredCapabilities(Map<String, ?> rawMap) {
     capabilities.putAll(rawMap);
   }
 
@@ -119,18 +119,12 @@ public class DesiredCapabilities implements Capabilities, Serializable {
     capabilities.put(capabilityName, value);
   }
 
-  public Map<String, Object> asMap() {
+  public Map<String, ?> asMap() {
     return Collections.unmodifiableMap(capabilities);
   }
 
-  protected void setCapability(String key, Object value) {
-    if (value instanceof Boolean) {
-      setCapability(key, ((Boolean) value).booleanValue());
-    } else if (value instanceof Platform) {
-      setCapability(key, (Platform) value);
-    } else if (value instanceof String) {
-      setCapability(key, (String) value);
-    }
+  public void setCapability(String key, Object value) {
+    capabilities.put(key, value);
   }
 
   public static DesiredCapabilities firefox() {

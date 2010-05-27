@@ -23,6 +23,7 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.util.Map;
 
 import com.thoughtworks.selenium.SeleniumException;
 import org.openqa.selenium.Capabilities;
@@ -53,7 +54,7 @@ public class Proxies {
       throws FileNotFoundException {
     DoNotUseProxyPac pac = newProxyPac(port, configuredProxy, proxyPort, nonProxyHosts, capabilities);
 
-    Proxy proxy = (Proxy) capabilities.getCapability(PROXY);
+    Proxy proxy = extractProxy(capabilities);
     if (proxy != null && proxy.getHttpProxy() != null) {
       pac.defaults().toProxy(proxy.getHttpProxy());
     }
@@ -69,6 +70,20 @@ public class Proxies {
     }
   }
 
+  protected static Proxy extractProxy(Capabilities capabilities) {
+    Object rawProxy = capabilities.getCapability(PROXY);
+    Proxy proxy = null;
+    if (rawProxy != null) {
+      if (rawProxy instanceof Proxy) {
+        proxy = (Proxy) rawProxy;
+      } else if (rawProxy instanceof Map) {
+        //noinspection unchecked
+        proxy = new Proxy((Map<String, ?>) rawProxy);
+      }
+    }
+    return proxy;
+  }
+
   static DoNotUseProxyPac newProxyPac(int port, String configuredProxy, String proxyPort, String nonProxyHosts, Capabilities capabilities) {
     DoNotUseProxyPac existingConfig = (DoNotUseProxyPac) capabilities.getCapability(
         ForSeleniumServer.PROXY_PAC);
@@ -76,7 +91,7 @@ public class Proxies {
 
     Object tempProxy = capabilities.getCapability(CapabilityType.PROXY);
     if (tempProxy != null) {
-      Proxy proxy = (Proxy) tempProxy;
+      Proxy proxy = extractProxy(capabilities);
       if (proxy.getHttpProxy() != null) {
         pac.defaults().toProxy(proxy.getHttpProxy());
       }

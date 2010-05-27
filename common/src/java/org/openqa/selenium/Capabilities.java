@@ -37,7 +37,7 @@ public interface Capabilities {
   /**
    * @return The capabilities as a Map
    */
-  Map<String, Object> asMap();
+  Map<String, ?> asMap();
 
   /**
    * @see org.openqa.selenium.remote.CapabilityType

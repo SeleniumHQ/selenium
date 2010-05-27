@@ -21,9 +21,14 @@ import junit.framework.TestCase;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+
+import com.google.common.collect.ImmutableMap;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.openqa.selenium.Platform;
+import org.openqa.selenium.Proxy;
+import org.openqa.selenium.browserlaunchers.CapabilityType;
 import org.openqa.selenium.browserlaunchers.DoNotUseProxyPac;
 
 import java.awt.*;
@@ -180,6 +185,22 @@ public class BeanToJsonConverterTest extends TestCase {
     assertEquals("seleniumhq.org", converted.getJSONArray("directHosts").get(0));
     assertEquals("http://fishy.com/", converted.getJSONObject("proxiedHosts").get("www.google.com"));
     assertEquals("'DIRECT'", converted.get("defaultProxy"));
+  }
+
+  public void testShouldConvertAProxyCorrectly() throws JSONException {
+    Proxy proxy = new Proxy();
+    proxy.setHttpProxy("localhost:4444");
+
+    DesiredCapabilities caps = new DesiredCapabilities("foo", "1", Platform.LINUX);
+    caps.setCapability(CapabilityType.PROXY, proxy);
+    Map<String, ?> asMap = ImmutableMap.of("desiredCapabilities", caps);
+    Command command = new Command(new SessionId("empty"), DriverCommand.NEW_SESSION, asMap);
+
+    String json = new BeanToJsonConverter().convert(command.getParameters());
+    JSONObject converted = new JSONObject(json);
+    JSONObject capsAsMap = converted.getJSONObject("desiredCapabilities");
+
+    assertEquals(json, proxy.getHttpProxy(), capsAsMap.getJSONObject("proxy").get("httpProxy"));
   }
 
   private static class SimpleBean {

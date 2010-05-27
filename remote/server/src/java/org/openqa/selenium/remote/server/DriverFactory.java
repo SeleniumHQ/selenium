@@ -17,11 +17,18 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -75,8 +82,24 @@ public class DriverFactory {
   public WebDriver newInstance(Capabilities capabilities) {
     Class<? extends WebDriver> clazz = getBestMatchFor(capabilities);
 
+    // Try and call the single arg constructor that takes a capabilities first
+    return callConstructor(clazz, capabilities);
+  }
+
+  private WebDriver callConstructor(Class<? extends WebDriver> from, Capabilities capabilities) {
     try {
-      return clazz.newInstance();
+      Constructor<? extends WebDriver> constructor = from.getConstructor(Capabilities.class);
+      return constructor.newInstance(capabilities);
+    } catch (NoSuchMethodException e) {
+      try {
+        return from.newInstance();
+      } catch (InstantiationException e1) {
+        throw new WebDriverException(e);
+      } catch (IllegalAccessException e1) {
+        throw new WebDriverException(e);
+      }
+    } catch (InvocationTargetException e) {
+      throw new WebDriverException(e);
     } catch (InstantiationException e) {
       throw new WebDriverException(e);
     } catch (IllegalAccessException e) {

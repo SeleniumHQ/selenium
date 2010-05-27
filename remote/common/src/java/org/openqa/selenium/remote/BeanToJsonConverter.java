@@ -168,11 +168,11 @@ public class BeanToJsonConverter {
     }
 
     if (toConvert instanceof Capabilities) {
-      return new JSONObject(((Capabilities) toConvert).asMap());
+      return convertObject(((Capabilities) toConvert).asMap(), maxDepth - 1);
     }
 
     if (toConvert instanceof DoNotUseProxyPac) {
-      return new JSONObject(((DoNotUseProxyPac) toConvert).asMap());
+      return convertObject(((DoNotUseProxyPac) toConvert).asMap(), maxDepth -1);
     }
 
     try {

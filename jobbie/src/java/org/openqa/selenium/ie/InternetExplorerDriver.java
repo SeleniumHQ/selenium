@@ -92,7 +92,6 @@ public class InternetExplorerDriver implements WebDriver, JavascriptExecutor, Ta
 
     // Because of the way that the proxying is currently implemented,
     // we can only set a single host.
-    Proxy proxy = (Proxy) caps.getCapability(PROXY);
 
     try {
       proxyManager.backupRegistrySettings();

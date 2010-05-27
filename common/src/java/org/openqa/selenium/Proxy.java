@@ -1,6 +1,8 @@
 // Copyright 2007-2009 WebDriver committers
 package org.openqa.selenium;
 
+import java.util.Map;
+
 /**
  * Configuration parameters for using proxies in WebDriver.
  * <p/>
@@ -26,14 +28,41 @@ public class Proxy {
     UNSPECIFIED
   }
 
-  ProxyType proxyType = ProxyType.UNSPECIFIED;
-  boolean autodetect = false;
-  String ftpProxy;
-  String httpProxy;
-  String noProxy;
-  String proxyAutoconfigUrl;
-  String sslProxy;
+  private ProxyType proxyType = ProxyType.UNSPECIFIED;
+  private boolean autodetect = false;
+  private String ftpProxy;
+  private String httpProxy;
+  private String noProxy;
+  private String proxyAutoconfigUrl;
+  private String sslProxy;
 
+  public Proxy() {
+    // Empty default constructor
+  }
+
+  public Proxy(Map<String, ?> raw) {
+    if (raw.containsKey("proxyType")) {
+      setProxyType(ProxyType.valueOf((String) raw.get("proxyType")));
+    }
+    if (raw.containsKey("ftpProxy")) {
+      setFtpProxy((String) raw.get("ftpProxy"));
+    }
+    if (raw.containsKey("httpProxy")) {
+      setHttpProxy((String) raw.get("httpProxy"));
+    }
+    if (raw.containsKey("noProxy")) {
+      setNoProxy((String) raw.get("noProxy"));
+    }
+    if (raw.containsKey("proxyAutoconfigUrl")) {
+      setProxyAutoconfigUrl((String) raw.get("proxyAutoconfigUrl"));
+    }
+    if (raw.containsKey("sslProxy")) {
+      setSslProxy((String) raw.get("sslProxy"));
+    }
+    if (raw.containsKey("autodetect")) {
+      setAutodetect((Boolean) raw.get("autodetect"));
+    }
+  }
 
   public ProxyType getProxyType() {
     return this.proxyType;
@@ -55,6 +84,9 @@ public class Proxy {
   }
 
   public Proxy setAutodetect(boolean autodetect) {
+    if (this.autodetect == autodetect) {
+      return this;
+    }
     verifyProxyTypeCompatilibily(ProxyType.AUTODETECT);
     this.proxyType = ProxyType.AUTODETECT;
     this.autodetect = autodetect;

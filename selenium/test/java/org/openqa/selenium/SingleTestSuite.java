@@ -41,7 +41,7 @@ public class SingleTestSuite extends TestCase {
   private static final String SELENIUM = "org.openqa.selenium.SeleneseBackedWebDriver";
 
   public static Test suite() throws Exception {
-    String driver = HTML_UNIT_JS;
+    String driver = REMOTE_IE;
 
     System.setProperty("webdriver.development", "true");
     System.setProperty("jna.library.path", "..\\build;build");
@@ -55,8 +55,8 @@ public class SingleTestSuite extends TestCase {
         .usingDriver(driver)
         .keepDriverInstance()
         .includeJavascriptTests()
-        .onlyRun("PageLoadingTest")
-        .method("testShouldWaitForDocumentToBeLoaded")
+        .onlyRun("ImplicitWaitTest")
+//        .method("testShouldWaitForDocumentToBeLoaded")
         .exclude(ALL)
         .exclude(Ignore.Driver.IE)
         .outputTestNames()

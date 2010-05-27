@@ -36,7 +36,7 @@ public class GetSessionCapabilities extends WebDriverHandler {
     Session session = sessions.get(sessionId);
 
     response = newResponse();
-    Map<String, Object> capabilities = session.getCapabilities().asMap();
+    Map<String, ?> capabilities = session.getCapabilities().asMap();
     describeSession(capabilities);
     response.setValue(capabilities);
 
@@ -47,7 +47,7 @@ public class GetSessionCapabilities extends WebDriverHandler {
     return response;
   }
 
-  protected void describeSession(Map<String, Object> capabilities) {
+  protected void describeSession(Map<String, ?> capabilities) {
     // Does nothing further by default.
   }
 }

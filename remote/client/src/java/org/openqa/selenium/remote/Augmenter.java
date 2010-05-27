@@ -84,11 +84,11 @@ public class Augmenter {
       return driver;
     }
 
-    Map<String,Object> capabilities = ((RemoteWebDriver) driver).getCapabilities().asMap();
+    Map<String, ?> capabilities = ((RemoteWebDriver) driver).getCapabilities().asMap();
 
     CompoundHandler handler = new CompoundHandler((RemoteWebDriver) driver);
 
-    for (Map.Entry<String, Object> capablityName : capabilities.entrySet()) {
+    for (Map.Entry<String, ?> capablityName : capabilities.entrySet()) {
       AugmenterProvider augmenter = augmentors.get(capablityName.getKey());
       if (augmenter == null) {
         continue;

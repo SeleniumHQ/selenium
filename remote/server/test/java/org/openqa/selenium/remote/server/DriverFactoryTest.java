@@ -19,6 +19,7 @@ package org.openqa.selenium.remote.server;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Platform;
+import org.openqa.selenium.StubDriver;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
@@ -102,7 +103,30 @@ public class DriverFactoryTest extends TestCase {
     assertEquals(DriverOne.class, factory.getBestMatchFor(nojavascript));
     assertEquals(DriverTwo.class, factory.getBestMatchFor(javascript));
   }
-  
+
+  public void testShouldCallAConstructorTakingACapabilitiesArgInPreferenceToANoArgOne() {
+    DesiredCapabilities caps = new DesiredCapabilities();
+    caps.setBrowserName("example");
+    factory.registerDriver(caps, CapabilitiesDriver.class);
+
+    CapabilitiesDriver driver = (CapabilitiesDriver) factory.newInstance(caps);
+
+    assertEquals(caps, driver.getCapabilities());
+  }
+
   public static abstract class DriverOne implements WebDriver {}
   public static abstract class DriverTwo implements WebDriver {}
+
+  public static class CapabilitiesDriver extends StubDriver {
+    private Capabilities caps;
+
+    public CapabilitiesDriver() {}
+    public CapabilitiesDriver(Capabilities caps) {
+      this.caps = caps;
+    }
+
+    public Capabilities getCapabilities() {
+      return caps;
+    }
+  }
 }
