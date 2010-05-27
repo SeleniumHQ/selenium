@@ -412,8 +412,8 @@ function testShouldFindElementsByTagName(driver) {
   driver.findElements({tagName: 'input'});
   driver.callFunction(function(response) {
     assertEquals(
-        'Should have found 20 input elements',
-        20, response.length);
+        'Should have found 23 input elements',
+        23, response.length);
   });
 }
 
