@@ -30,13 +30,17 @@ import java.util.Set;
 
 import com.google.common.collect.ImmutableMap;
 import org.openqa.selenium.Alert;
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Platform;
+import org.openqa.selenium.Proxy;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.UnhandledAlertException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.browserlaunchers.CapabilityType;
+import org.openqa.selenium.browserlaunchers.Proxies;
 import org.openqa.selenium.firefox.internal.Lock;
 import org.openqa.selenium.firefox.internal.NewProfileExtensionConnection;
 import org.openqa.selenium.firefox.internal.ProfilesIni;
@@ -51,6 +55,7 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.Response;
 
 import static org.openqa.selenium.OutputType.FILE;
+import static org.openqa.selenium.browserlaunchers.CapabilityType.PROXY;
 
 
 /**
@@ -65,6 +70,9 @@ import static org.openqa.selenium.OutputType.FILE;
  * This allows multiple instances of firefox to be started.
  */
 public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot, FindsByCssSelector {
+  public static final String BINARY = "firefox_binary";
+  public static final String PROFILE = "firefox_profile";
+
   public static final int DEFAULT_PORT = 7055;
   // For now, only enable native events on Windows
   public static final boolean DEFAULT_ENABLE_NATIVE_EVENTS =
@@ -94,6 +102,36 @@ public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot, F
 
   public FirefoxDriver(FirefoxProfile profile) {
     this(new FirefoxBinary(), profile);
+  }
+
+  public FirefoxDriver(Capabilities capabilities) {
+    this(getBinary(capabilities), extractProfile(capabilities));
+  }
+
+  private static FirefoxProfile extractProfile(Capabilities capabilities) {
+    FirefoxProfile profile = new FirefoxProfile();
+
+    if (capabilities.getCapability(PROFILE) != null) {
+      Object raw = capabilities.getCapability(PROFILE);
+      if (raw instanceof FirefoxProfile) {
+        profile = (FirefoxProfile) raw;
+      }
+    }
+
+    if (capabilities.getCapability(PROXY) != null) {
+      Proxy proxy = Proxies.extractProxy(capabilities);
+      profile.setProxyPreferences(proxy);
+    }
+
+    return profile;
+  }
+
+  private static FirefoxBinary getBinary(Capabilities capabilities) {
+    if (capabilities.getCapability(BINARY) != null) {
+      File file = new File((String) capabilities.getCapability(BINARY));
+      new FirefoxBinary(file);
+    }
+    return new FirefoxBinary();
   }
 
   public FirefoxDriver(FirefoxBinary binary, FirefoxProfile profile) {

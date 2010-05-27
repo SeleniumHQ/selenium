@@ -362,14 +362,18 @@ public class FirefoxProfile {
         return this;
       }
       setPreference("network.proxy.type", proxy.getProxyType().ordinal());
+
       switch (proxy.getProxyType()) {
-        case MANUAL:
+        case MANUAL:// By default, assume we're proxying the lot
+          setPreference("network.proxy.no_proxies_on", "");
+
           setManualProxyPreference("ftp", proxy.getFtpProxy());
           setManualProxyPreference("http", proxy.getHttpProxy());
           setManualProxyPreference("ssl", proxy.getSslProxy());
           if (proxy.getNoProxy() != null) {
             setPreference("network.proxy.no_proxies_on", proxy.getNoProxy());
           }
+          
           break;
         case PAC:
           setPreference("network.proxy.autoconfig_url", proxy.getProxyAutoconfigUrl());

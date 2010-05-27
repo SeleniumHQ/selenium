@@ -70,7 +70,7 @@ public class Proxies {
     }
   }
 
-  protected static Proxy extractProxy(Capabilities capabilities) {
+  public static Proxy extractProxy(Capabilities capabilities) {
     Object rawProxy = capabilities.getCapability(PROXY);
     Proxy proxy = null;
     if (rawProxy != null) {

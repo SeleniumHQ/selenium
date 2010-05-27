@@ -20,10 +20,13 @@ package org.openqa.selenium.firefox;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import static org.openqa.selenium.Ignore.Driver.FIREFOX;
+
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.TestSuiteBuilder;
 import org.openqa.selenium.internal.FileHandler;
 import org.openqa.selenium.internal.TemporaryFilesystem;
+import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.io.File;
 import java.io.IOException;
@@ -54,6 +57,16 @@ public class FirefoxDriverTestSuite extends TestCase {
 
     public TestFirefoxDriver(FirefoxProfile profile) {
       super(copyExtensionTo(profile));
+    }
+
+    public TestFirefoxDriver(Capabilities capabilities) {
+      super(tweakCapabilities(capabilities));
+    }
+
+    private static Capabilities tweakCapabilities(Capabilities caps) {
+      DesiredCapabilities tweaked = new DesiredCapabilities(caps.asMap());
+      tweaked.setCapability(PROFILE, createTemporaryProfile());
+      return tweaked;
     }
 
     private static FirefoxProfile createTemporaryProfile() {
