@@ -129,6 +129,8 @@ public class InternetExplorerDriver implements WebDriver, JavascriptExecutor, Ta
   public void quit() {
     if (proxyManager != null) {
       proxyManager.restoreRegistrySettings(true);
+    }
+    if (cleanupThread != null) {
       Runtime.getRuntime().removeShutdownHook(cleanupThread);
     }
 
