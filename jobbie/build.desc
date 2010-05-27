@@ -24,9 +24,7 @@ ruby_test(
     "common/test/rb/spec/**/*_spec.rb",
     "jobbie/test/rb/spec/**/*_spec.rb"
   ],
-  include = [
-    "jobbie/src/rb/lib"
-  ],
+  include = ["jobbie/src/rb/lib"],
   driver_name = "ie"
 )
 

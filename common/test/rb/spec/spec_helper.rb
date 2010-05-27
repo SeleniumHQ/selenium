@@ -6,11 +6,14 @@ include Selenium
 
 if WebDriver::Platform.jruby?
   require "java"
-  
-  [ Dir["build/common/*.jar"], Dir["third_party/java/{jetty,servlet-api}/*.jar"] ].flatten.each do |jar|
-    require jar
-  end
-  
+
+  jars = [
+    Dir["build/**/*.jar"],
+    Dir["third_party/java/{jetty,servlet-api}/*.jar"]
+  ].flatten
+
+  jars.each { |jar| require jar }
+
   GlobalTestEnv = WebDriver::SpecSupport::JRubyTestEnvironment.new
 else
   GlobalTestEnv = WebDriver::SpecSupport::TestEnvironment.new

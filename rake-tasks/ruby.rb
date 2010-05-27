@@ -5,6 +5,7 @@ class RubyMappings
     fun.add_mapping "ruby_test", AddDefaults.new
     fun.add_mapping "ruby_test", JRubyTest.new
     fun.add_mapping "ruby_test", MRITest.new
+    fun.add_mapping "ruby_test", AddDependencies.new
 
     # TODO: fun.add_mapping("rubygem", RubyGem.new)
     # TODO: fun.add_mapping("rubydocs", RubyDocs.new)
@@ -34,25 +35,40 @@ class RubyMappings
     end
   end
 
+  class AddDependencies < RubyTasks
+    def handle(fun, dir, args)
+      jruby_task = Rake::Task[task_name(dir, "test:jruby")]
+      mri_task   = Rake::Task[task_name(dir, "test:mri")]
+
+      # TODO:
+      # Specifying a dependency here isn't ideal, but it's the easiest way to
+      # avoid a lot of duplication in the build files, since this dep only applies to this task.
+      # Maybe add a jruby_dep argument?
+      add_dependencies jruby_task, dir, ["//common:test"]
+
+      if args.has_key?(:deps)
+        add_dependencies jruby_task, dir, args[:deps]
+        add_dependencies mri_task, dir, args[:deps]
+      end
+    end
+  end
+
   class JRubyTest < RubyTasks
     def handle(fun, dir, args)
-      require = ["third_party/jruby/json-jruby.jar"] + Array(args[:require])
+      req = ["third_party/jruby/json-jruby.jar"] + args[:require]
 
       desc "Run ruby tests for #{dir} (jruby)"
       t = task task_name(dir, "test:jruby") do
+        puts "Running: #{args[:driver_name]} ruby tests (jruby)"
         ENV['WD_SPEC_DRIVER'] = args[:driver_name] # TODO: get rid of ENV
 
-        jruby :include => args[:include],
-              :require => require,
-              :command => args[:command],
-              :files   => args[:srcs]
+        jruby :include     => args[:include],
+              :require     => req,
+              :command     => args[:command],
+              :files       => args[:srcs],
+              :objectspace => dir.include?("jobbie") # hack
       end
 
-      # TODO:
-      # Specifying dependencies here isn't ideal, but it's the easiest way to
-      # avoid a lot of duplication in the build files, since this dep only applies to this task.
-      # Maybe add a jruby_dep argument?
-      add_dependencies(t, dir, "//common:test")
     end
   end
 
@@ -60,6 +76,7 @@ class RubyMappings
     def handle(fun, dir, args)
       desc "Run ruby tests for #{dir} (mri)"
       task task_name(dir, "test:mri") do
+        puts "Running: #{args[:driver_name]} ruby tests (mri)"
         ENV['WD_SPEC_DRIVER'] = args[:driver_name] # TODO: get rid of ENV
 
         ruby :include => args[:include],
@@ -73,6 +90,9 @@ class RubyMappings
 end # RubyMappings
 
 class RubyRunner
+
+  JRUBY_JAR = "third_party/jruby/jruby-complete-1.5.0.RC2.jar"
+
   def self.run(impl, opts)
     cmd = []
 
@@ -80,7 +100,7 @@ class RubyRunner
     when :jruby
       cmd << "java"
       cmd << "-Djava.awt.headless=true" if opts[:headless]
-      cmd << "-jar" << "third_party/jruby/jruby-complete-1.5.0.RC2.jar"
+      cmd << "-jar" << JRUBY_JAR
     else
       cmd << impl.to_s
     end
@@ -96,6 +116,8 @@ class RubyRunner
 
     cmd << "-S" << opts[:command] if opts.has_key? :command
     cmd += Array(opts[:files]) if opts.has_key? :files
+
+    puts cmd.join ' '
 
     sh(*cmd)
   end
@@ -113,51 +135,6 @@ def ruby(opts)
 end
 
 
-
-task :test_remote_rb => [:test_common, :remote_server] do
-  ENV['WD_SPEC_DRIVER'] = 'remote'
-  jruby :include  => [".", "common/src/rb/lib", "remote/client/src/rb/lib", "common/test/rb/lib"],
-        :require  => ["third_party/jruby/json-jruby.jar", Dir["third_party/java/google-collect-*.jar"].first, "remote/client/lib/runtime/commons-httpclient-3.1.jar"],
-        :command  => "-S spec",
-        :files    => Dir['{common,remote/client}/test/rb/spec/**/*spec.rb']
-        # :headless => true
-end
-
-task :test_ie_rb => :test_common do
-  ENV['WD_SPEC_DRIVER'] = 'ie'
-  jruby :include => [".", "common/src/rb/lib", "jobbie/src/rb/lib", "common/test/rb/lib"],
-        :require => ["third_party/jruby/json-jruby.jar"],
-        :command => "-X+O -S spec", # needs ObjectSpace
-        :files   => Dir['common/test/rb/spec/**/*spec.rb']
-end
-
-#
-# remote
-#
-
-task :test_remote_chrome_rb => :test_common do
-  ENV['WD_SPEC_DRIVER'] = 'remote'
-  ENV['WD_REMOTE_BROWSER'] = 'chrome'
-  Rake::Task[:test_remote_rb].invoke
-end
-
-task :test_remote_firefox_rb => :firefox do
-  ENV['WD_SPEC_DRIVER'] = 'remote'
-  ENV['WD_REMOTE_BROWSER'] = 'firefox'
-  Rake::Task[:test_remote_rb].invoke
-end
-
-task :test_remote_ie_rb => :ie do
-  ENV['WD_SPEC_DRIVER'] = 'remote'
-  ENV['WD_REMOTE_BROWSER'] = 'internet_explorer'
-  Rake::Task[:test_remote_rb].invoke
-end
-
-task :test_remote_chrome_rb => :chrome do
-  ENV['WD_SPEC_DRIVER'] = 'remote'
-  ENV['WD_REMOTE_BROWSER'] = 'chrome'
-  Rake::Task[:test_remote_rb].invoke
-end
 
 #
 # docs

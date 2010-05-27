@@ -10,7 +10,16 @@ module Selenium
         def remote_server
           @remote_server ||= begin
             puts "starting remote server"
-            Dir['remote/common/lib/**/*.jar'].each { |j| require j }
+
+            # ugh - got to be a better way
+            [
+              Dir["third_party/java/json/*.jar"],
+              Dir["third_party/java/jasper/*.jar"],
+              Dir["third_party/java/commons-logging/*.jar"],
+              Dir["third_party/java/commons-httpclient/*.jar"],
+              Dir["third_party/java/commons-codec/*.jar"],
+              Dir["third_party/java/google-collect/*.jar"],
+            ].flatten.each { |jar| require jar }
 
             context = org.mortbay.jetty.servlet.Context.new
             context.setContextPath("/")

@@ -34,7 +34,10 @@ module Selenium
               :desired_capabilities => WebDriver::Remote::Capabilities.send(ENV['WD_REMOTE_BROWSER'] || 'firefox')
             }
 
-            opts.merge!(:url => "http://localhost:6000") if Platform.jruby?
+            if Platform.jruby?
+              # if we're running on JRuby, we're using in-process Jetty on this URL
+              opts.merge!(:url => "http://localhost:6000")
+            end
 
             WebDriver::Driver.for :remote, opts
           else
@@ -52,7 +55,7 @@ module Selenium
         end
 
         def remote_server
-          raise NotImplementedError, "no remote server impl. in ruby/MRI yet"
+          raise NotImplementedError, "no remote server implementation on MRI yet"
         end
 
         def quit

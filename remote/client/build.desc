@@ -12,7 +12,7 @@ java_library(name = "client",
 
 java_library(name = "test",
   srcs = [ "src/java/**/*.java" ],
-  deps = [ 
+  deps = [
     ":client",
     "//remote/common:test"
   ])
@@ -27,3 +27,16 @@ java_library(name = "combined",
     "//selenium",
     "//support"
   ])
+
+ruby_test(
+  srcs = [
+    "common/test/rb/spec/**/*_spec.rb",
+    "remote/client/test/rb/spec/**/*_spec.rb"
+  ],
+  include = ["remote/client/src/rb/lib"],
+  deps = [
+    "//remote/server:server",
+    "//remote/server:test"
+  ],
+  driver_name = "remote"
+)
