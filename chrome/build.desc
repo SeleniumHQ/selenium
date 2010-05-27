@@ -4,14 +4,26 @@ java_library(name = "chrome",
     "//common",
     "//remote/client"
   ],
-  resources = [ ":chrome_extension" ])
+ resources = [ ":chrome_extension" ])
 
 java_test(name = "test",
-  srcs  = [ "test/java/**/*.java" ],
+  srcs = [ "test/java/**/*.java" ],
   deps = [
     "//remote/common:test",
     ":chrome"
-  ])
+])
+
+ruby_test(
+  srcs = [
+    "common/test/rb/spec/**/*_spec.rb",
+    "chrome/test/rb/spec/**/*_spec.rb"
+  ],
+  include = [
+    "chrome/src/rb/lib",
+    "remote/client/src/rb/lib"
+  ],
+  driver_name = "chrome"
+)
 
 mozilla_xpi(name = "chrome_extension",
   srcs  = [ "src/extension/**" ],
