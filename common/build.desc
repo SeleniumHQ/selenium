@@ -37,3 +37,41 @@ rake_file(
 rake_file(
   name = "remote_runner_html",
   src = "src/js/core/RemoteRunner.html")  
+
+rubydocs(
+  srcs = [
+    "chrome/src/rb/lib/**/*.rb",
+    "common/src/rb/lib/**/*.rb",
+    "firefox/src/rb/lib/**/*.rb",
+    "jobbie/src/rb/lib/**/*.rb",
+    "remote/client/src/rb/lib/**/*.rb"
+  ],
+  readme = "common/src/rb/README",
+  output_dir = "build/rubydocs"
+)
+
+rubygem(
+  version = "0.0.19pre1",
+  require_paths = [
+    "common/src/rb/lib",
+    "firefox/src/rb/lib",
+    "chrome/src/rb/lib",
+    "jobbie/src/rb/lib",
+    "remote/client/src/rb/lib"
+  ],
+  srcs = [
+    "COPYING",
+    "common/src/rb/**/*",
+    "common/src/js/**/*",
+    "firefox/src/rb/**/*",
+    "firefox/src/extension/**/*",
+    "firefox/prebuilt/**/*",
+    "chrome/src/rb/**/*",
+    "chrome/src/extension/**/*",
+    "chrome/prebuilt/**/*.dll",
+    "jobbie/src/rb/**/*",
+    "jobbie/prebuilt/**/InternetExplorerDriver.dll",
+    "remote/client/src/rb/**/*"
+  ],
+  output_dir = "build/gem"
+)
