@@ -59,7 +59,7 @@ namespace Selenium.Internal.SeleniumEmulation
                 extractedScript = reader.ReadToEnd();
             }
 
-            return script;
+            return extractedScript;
         }
     }
 }

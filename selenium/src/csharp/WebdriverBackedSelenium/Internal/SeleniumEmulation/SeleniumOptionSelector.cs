@@ -9,7 +9,7 @@ namespace Selenium.Internal.SeleniumEmulation
 {
     internal class SeleniumOptionSelector
     {
-        private Dictionary<string, IOptionSelectStrategy> optionSelectStrategies = new Dictionary<string, IOptionSelectStrategy>();
+        private static Dictionary<string, IOptionSelectStrategy> optionSelectStrategies = new Dictionary<string, IOptionSelectStrategy>();
         private ElementFinder finder;
 
         public SeleniumOptionSelector(ElementFinder finder)
@@ -103,9 +103,9 @@ namespace Selenium.Internal.SeleniumEmulation
 
             if (matcher.IsMatch(optionLocator))
             {
-                MatchCollection matches = matcher.Matches(optionLocator);
-                strategyName = matches[0].Value;
-                use = matches[1].Value;
+                Match matches = matcher.Match(optionLocator);
+                strategyName = matches.Groups[1].Value;
+                use = matches.Groups[2].Value;
             }
 
             if (use == null)
@@ -129,11 +129,14 @@ namespace Selenium.Internal.SeleniumEmulation
 
         private void SetUpOptionFindingStrategies()
         {
-            optionSelectStrategies.Add("implicit", new LabelOptionSelectStrategy());
-            optionSelectStrategies.Add("id", new IdOptionSelectStrategy());
-            optionSelectStrategies.Add("index", new IndexOptionSelectStrategy());
-            optionSelectStrategies.Add("label", new LabelOptionSelectStrategy());
-            optionSelectStrategies.Add("value", new ValueOptionSelectStrategy());
+            if (optionSelectStrategies.Count == 0)
+            {
+                optionSelectStrategies.Add("implicit", new LabelOptionSelectStrategy());
+                optionSelectStrategies.Add("id", new IdOptionSelectStrategy());
+                optionSelectStrategies.Add("index", new IndexOptionSelectStrategy());
+                optionSelectStrategies.Add("label", new LabelOptionSelectStrategy());
+                optionSelectStrategies.Add("value", new ValueOptionSelectStrategy());
+            }
         }
     }
 }

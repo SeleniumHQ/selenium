@@ -153,7 +153,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ChromeResources Include="$(TrunkRoot)\build\chrome-extension.zip">
+    <ChromeResources Include="$(TrunkRoot)\build\chrome\chrome-extension.zip">
       <LogicalName>WebDriver.ChromeExt.zip</LogicalName> 
     </ChromeResources>
     <!--ChromeResources Include="$(TrunkRoot)\build\Win32\Release\chrome-extension.zip">
@@ -166,7 +166,7 @@
 
   <Target Name="BuildChrome" DependsOnTargets="BuildCommon;BuildRemote">
     <Error Text="Could not find chrome-extension.zip. Expected to find it in $(TrunkRoot)\build."
-           Condition="!Exists('$(TrunkRoot)\build\chrome-extension.zip')"/>
+           Condition="!Exists('$(TrunkRoot)\build\chrome\chrome-extension.zip')"/>
     <!--Error Text="Could not find 32-bit chrome-extension.zip. Expected to find it in $(TrunkRoot)\build\Win32\Release\."
            Condition="!Exists('$(TrunkRoot)\build\Win32\Release\chrome-extension.zip')"/-->
     <!--Error Text="Could not find 64-bit chrome-extension.zip. Expected to find it in $(TrunkRoot)\build\x64\Release."
@@ -220,10 +220,20 @@
     <WebDriverBackedSeleniumReferences Include="$(BuildOutputDirectory)\ThoughtWorks.Selenium.Core.dll"/> 
   </ItemGroup>
 
+  <ItemGroup>
+    <WebDriverBackedSeleniumResources Include="$(TrunkRoot)\selenium\src\java\org\openqa\selenium\internal\seleniumemulation\htmlutils.js">
+      <LogicalName>htmlutils.js</LogicalName> 
+    </WebDriverBackedSeleniumResources>
+    <WebDriverBackedSeleniumResources Include="$(TrunkRoot)\selenium\src\java\org\openqa\selenium\internal\seleniumemulation\injectableSelenium.js">
+      <LogicalName>injectableSelenium.js</LogicalName> 
+    </WebDriverBackedSeleniumResources>
+  </ItemGroup>
+
   <Target Name="BuildWebDriverBackedSelenium" DependsOnTargets="BuildCommon;BuildSeleniumCore">
     <Message Text="Building WebDriverBackedSelenium.dll"/>
     <Csc Sources="@(WebDriverBackedSeleniumSourceFiles)"
          References="@(WebDriverBackedSeleniumReferences)"
+         Resources="@(WebDriverBackedSeleniumResources)"
          OutputAssembly="$(BuildOutputDirectory)\WebDriverBackedSelenium.dll"
          DebugType="pdbonly"
          TargetType="library"
