@@ -22,7 +22,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.remote.Capabilities;
 import org.openqa.selenium.Platform;
 
 import static org.openqa.selenium.browserlaunchers.CapabilityType.BROWSER_NAME;
