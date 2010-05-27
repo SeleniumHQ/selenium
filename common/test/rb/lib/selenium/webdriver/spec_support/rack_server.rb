@@ -24,7 +24,7 @@ module Selenium
         end
 
         def run
-          Rack::Handler::WEBrick.run(@app, :Host => HOST, :Port => PORT)
+          handler.run(@app, :Host => HOST, :Port => PORT)
         end
 
         def where_is(file)
@@ -45,6 +45,14 @@ module Selenium
           true
         rescue
           false
+        end
+
+        private
+
+        def handler
+          # WEBrick/Windows/Ruby threads/blocking IO - not the best combo
+          # mongrel does the trick.
+          Platform.win? ? Rack::Handler::Mongrel : Rack::Handler::WEBrick
         end
 
       end # RackServer
