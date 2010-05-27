@@ -19,6 +19,18 @@ java_test(name = "test",
     "//common:test"
   ])
 
+ruby_test(
+  srcs = [
+    "common/test/rb/spec/**/*_spec.rb",
+    "jobbie/test/rb/spec/**/*_spec.rb"
+  ],
+  include = [
+    "jobbie/src/rb/lib"
+  ],
+  driver_name = "ie"
+)
+
+
 rake_task(name = "ie_result_type_java",
   task_name = "ie_result_type_java",
   out = "jobbie/src/java/org/openqa/selenium/ie/IeReturnTypes.java")
