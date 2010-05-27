@@ -9,7 +9,12 @@ module Selenium
       module Lib
         extend FFI::Library
 
-        ffi_lib WebDriver::IE::DLL
+        if Platform.bits == 64
+          ffi_lib WebDriver::IE::DLLS[:x64]
+        else
+          ffi_lib WebDriver::IE::DLLS[:win32]
+        end
+
 
         attach_function :wdAddBooleanScriptArg,               [:pointer, :int                                             ], :int
         attach_function :wdAddCookie,                         [:pointer, :pointer                                         ], :int

@@ -25,7 +25,7 @@ module Selenium
 
       def os
         @os ||= begin
-           case Config::CONFIG['host_os']
+           case RbConfig::CONFIG['host_os']
            when /mswin|msys|mingw32/
              :windows
            when /darwin|mac os/
@@ -36,9 +36,19 @@ module Selenium
              :unix
            else
              # unlikely
-             raise Error::WebDriverError, "unknown os #{Config::CONFIG['host_os']}"
+             raise Error::WebDriverError, "unknown os #{RbConfig::CONFIG['host_os']}"
            end
         end
+      end
+
+      def bits
+        @bits ||= (
+          if %w[x86_64 amd64 i686].include? RbConfig::CONFIG['host_cpu']
+            64
+          else
+            32
+          end
+        )
       end
 
       def jruby?
