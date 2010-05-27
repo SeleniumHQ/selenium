@@ -87,9 +87,9 @@ public class ErrorHandler {
       }
     }
 
-    RuntimeException toThrow = null;
+    Throwable toThrow = null;
     try {
-      Constructor<? extends RuntimeException> constructor =
+      Constructor<? extends Throwable> constructor =
           outerErrorType.getConstructor(String.class, Throwable.class);
       toThrow = constructor.newInstance(message, cause);
     } catch (Exception e) {
@@ -100,7 +100,7 @@ public class ErrorHandler {
 
     if (toThrow == null) {
       try {
-        Constructor<? extends RuntimeException> constructor =
+        Constructor<? extends Throwable> constructor =
             outerErrorType.getConstructor(String.class);
         toThrow = constructor.newInstance(message);
       } catch (Exception e) {
@@ -110,7 +110,15 @@ public class ErrorHandler {
       }
     }
 
-    throw (toThrow != null) ? toThrow : new WebDriverException(message, cause);
+    if (toThrow == null) {
+      throw new WebDriverException(message, cause);
+    }
+
+    if (!(toThrow instanceof RuntimeException)) {
+      throw new RuntimeException(toThrow);
+    }
+
+    throw (RuntimeException) toThrow;
   }
 
   private Throwable rebuildServerError(Map<String, Object> rawErrorData) {
