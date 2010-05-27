@@ -842,7 +842,7 @@ Editor.prototype.loadSeleniumAPI = function() {
 
     // plugin supplied extensions
     var pluginProvided = SeleniumIDE.Preferences.getString("pluginProvidedUserExtensions");
-    if (typeof pluginProvided != 'undefined') {
+    if (typeof pluginProvided != 'undefined' && pluginProvided.length != 0) {
         try {
             var split_pluginProvided = pluginProvided.split(",");
             for(var sp = 0; sp < split_pluginProvided.length; sp++){

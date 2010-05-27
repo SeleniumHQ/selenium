@@ -9,6 +9,7 @@ locale selenium-ide en-US chrome/locale/en-US/
 locale selenium-ide fr-FR chrome/locale/fr-FR/
 locale selenium-ide ja-JP chrome/locale/ja-JP/
 locale selenium-ide pt-BR chrome/locale/pt-BR/
+locale selenium-ide sv-SE chrome/locale/sv-SE/
 
 skin selenium-ide classic/1.0 chrome/skin/classic/
 skin selenium-ide-platform classic/1.0 chrome/skin/classic/platforms/ appversion>=3.0

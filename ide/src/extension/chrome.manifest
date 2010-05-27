@@ -9,6 +9,7 @@ locale selenium-ide en-US locale/en-US/
 locale selenium-ide fr-FR locale/fr-FR/
 locale selenium-ide ja-JP locale/ja-JP/
 locale selenium-ide pt-BR locale/pt-BR/
+locale selenium-ide sv-SE locale/sv-SE/
 
 skin selenium-ide classic/1.0 skin/classic/
 skin selenium-ide-platform classic/1.0 skin/classic/platforms/ appversion>=3.0

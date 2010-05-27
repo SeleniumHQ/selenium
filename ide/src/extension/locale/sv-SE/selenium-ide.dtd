@@ -1,0 +1,73 @@
+<!ENTITY selenium-ide.name "Selenium IDE">
+<!ENTITY selenium-ide.version "1.0.7">
+<!ENTITY selenium-ide.sidebar.title "&selenium-ide.name; &selenium-ide.version;">
+<!ENTITY selenium-ide.standalone.title "&selenium-ide.name; &selenium-ide.version;">
+
+<!ENTITY firefox.sidebar.view-menu.label "&selenium-ide.name;">
+
+<!ENTITY newTestCmd.label "Nytt testfall">
+<!ENTITY addTestCmd.label "Lägg till testfall...">
+<!ENTITY openCmd.label "Öppna...">
+<!ENTITY saveTestCmd.label "Spara testfall">
+<!ENTITY saveTestAsCmd.label "Spara testfall som...">
+<!ENTITY exportCmd.label "Exportera testfall som...">
+<!ENTITY optionsCmd.label "Alternativ...">
+<!ENTITY formatCmd.label "Format">
+<!ENTITY clipboardFormatCmd.label "Urklippsformat">
+<!ENTITY tableTab.label "Tabell">
+<!ENTITY sourceTab.label "Källkod">
+<!ENTITY runRadio.label "Kör">
+<!ENTITY walkRadio.label "Gå">
+<!ENTITY stepRadio.label "Stega">
+<!ENTITY playSuiteButton.tooltip "Spela upp hela testsviten">
+<!ENTITY playButton.tooltip "Spela upp aktuellt testfall">
+<!ENTITY pauseButton.tooltip "Paus / Återgå">
+<!ENTITY stepButton.tooltip "Stega">
+<!ENTITY testrunnerButton.tooltip "Spela upp med Selenium TestRunner">
+<!ENTITY recordButton.tooltip "Spela in">
+<!ENTITY baseURL.label "Bas-URL">
+<!ENTITY baseURLTextbox.tooltip "Ange URL till webbplatsen du testar. Används för att spela upp kommandot &quot;open&quot;.">
+
+<!ENTITY fileMenu.label "Arkiv">
+<!ENTITY optionsMenu.label "Alternativ">
+
+<!ENTITY command.label "Kommando">
+<!ENTITY target.label "Mål">
+<!ENTITY value.label "Värde">
+<!ENTITY findTarget.label "Lokalisera">
+
+<!ENTITY logConsole.label "Logg">
+<!ENTITY logFilter.debug.label "Debug">
+<!ENTITY logFilter.info.label "Info">
+<!ENTITY logFilter.warn.label "Varning">
+<!ENTITY logFilter.error.label "Fel">
+<!ENTITY logClear.label "Töm">
+<!ENTITY reference.label "Referens">
+
+<!ENTITY contextMenu.cut.label "Klipp ut">
+<!ENTITY contextMenu.copy.label "Kopiera">
+<!ENTITY contextMenu.paste.label "Klistra in">
+<!ENTITY contextMenu.delete.label "Radera">
+<!ENTITY contextMenu.insertCommand.label "Infoga nytt kommando">
+<!ENTITY contextMenu.insertComment.label "Infoga ny kommentar">
+<!ENTITY contextMenu.clear.label "Rensa allt">
+<!ENTITY contextMenu.breakpoint.label "Växla brytpunkt">
+<!ENTITY contextMenu.startpoint.label "Ange / Ta bort startpunkt">
+<!ENTITY contextMenu.execCommand.label "Kör detta kommando">
+
+<!ENTITY uiReference.label "UI-Element">
+<!ENTITY rollupReference.label "Rollup">
+<!ENTITY rollupButton.tooltip "Applicera rollup-regler">
+
+<!ENTITY suiteTree.testCase.label "Testfall">
+<!ENTITY newSuiteCmd.label "Ny testsvit">
+<!ENTITY openSuiteCmd.label "Öppna testsvit...">
+<!ENTITY saveSuiteCmd.label "Spara testsvit">
+<!ENTITY saveSuiteAsCmd.label "Spara testsvit som...">
+<!ENTITY exportSuiteCmd.label "Exportera testsvit som...">
+<!ENTITY recentSuiteCmd.label "Tidigare testsviter">
+<!ENTITY recentTestCmd.label "Tidigare testfall">
+
+<!ENTITY testCaseProperties.label "Egenskaper...">
+
+<!ENTITY reloadExtButton.tooltip "Ladda om">
