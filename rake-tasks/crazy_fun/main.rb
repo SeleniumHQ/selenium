@@ -180,7 +180,7 @@ class BuildFile
     end
     
     error_msg = "Parse error (#{line}, #{column}) "
-    error_msg << "in file '#{@filename}'" unless @file_name.nil?
+    error_msg << "in file '#{@file_name}'" unless @file_name.nil?
     error_msg << "\n\n"
     error_msg << current_line
     
