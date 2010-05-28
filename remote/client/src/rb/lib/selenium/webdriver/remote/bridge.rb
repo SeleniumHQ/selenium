@@ -350,7 +350,6 @@ module Selenium
 
         def find_elements_by(how, what, parent = nil)
           if parent
-            # TODO: why is how sent twice in the payload?
             ids = execute :findChildElements, {:id => parent}, {:using => how, :value => what}
           else
             ids = execute :findElements, {}, {:using => how, :value => what}

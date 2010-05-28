@@ -6,6 +6,7 @@ module Selenium
 
       # @private
       class DefaultHttpClient
+        MAX_REDIRECTS   = 20 # same as chromium/gecko
         CONTENT_TYPE    = "application/json"
         DEFAULT_HEADERS = { "Accept" => CONTENT_TYPE, "Content-Length" => "0" }
 
@@ -39,13 +40,16 @@ module Selenium
           @http ||= Net::HTTP.new @server_url.host, @server_url.port
         end
 
-        def request(verb, url, headers, payload)
+        def request(verb, url, headers, payload, redirects = 0)
           request  = Net::HTTP.const_get(verb.to_s.capitalize).new(url.path, headers)
           response = http.request(request, payload)
 
           # TODO: should be checking against a maximum redirect count
           if response.kind_of? Net::HTTPRedirection
-            request(:get, URI.parse(response['Location']), DEFAULT_HEADERS.dup, nil)
+            if redirects >= MAX_REDIRECTS
+              raise Error::WebDriverError, "too many redirects"
+            end
+            request(:get, URI.parse(response['Location']), DEFAULT_HEADERS.dup, nil, redirects + 1)
           else
             create_response response
           end
@@ -61,7 +65,7 @@ module Selenium
           elsif res.code == '204'
             Response.new { |r| r.code = res.code.to_i }
           else
-            raise "Unexpected content type: #{res.content_type.inspect} (#{res.code})\n#{res.body}"
+            raise Error::WebDriverError, "unexpected content type: #{res.content_type.inspect} (#{res.code})\n#{res.body}"
           end
         end
 
