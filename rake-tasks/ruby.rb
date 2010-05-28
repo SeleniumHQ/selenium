@@ -63,10 +63,10 @@ class RubyMappings
         ENV['WD_SPEC_DRIVER'] = args[:driver_name] # TODO: get rid of ENV
 
         jruby :include     => args[:include],
-        :require     => req,
-        :command     => args[:command],
-        :files       => args[:srcs],
-        :objectspace => dir.include?("jobbie") # hack
+              :require     => req,
+              :command     => args[:command],
+              :files       => args[:srcs],
+              :objectspace => dir.include?("jobbie") # hack
       end
 
     end
@@ -203,6 +203,7 @@ class RubyRunner
       cmd << "java"
       cmd << "-Djava.awt.headless=true" if opts[:headless]
       cmd << "-jar" << JRUBY_JAR
+      cmd << "-X+O" if opts[:objectspace]
     else
       cmd << impl.to_s
     end
