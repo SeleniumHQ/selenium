@@ -44,7 +44,6 @@ module Selenium
           request  = Net::HTTP.const_get(verb.to_s.capitalize).new(url.path, headers)
           response = http.request(request, payload)
 
-          # TODO: should be checking against a maximum redirect count
           if response.kind_of? Net::HTTPRedirection
             if redirects >= MAX_REDIRECTS
               raise Error::WebDriverError, "too many redirects"
