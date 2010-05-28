@@ -10,43 +10,47 @@ module Selenium
 
       def home
         # jruby has an issue with ENV['HOME'] on Windows
-        @home ||= Platform.jruby? ? Java.java.lang.System.getProperty('user.home') : ENV['HOME']
+        @home ||= jruby? ? ENV_JAVA['user.home'] : ENV['HOME']
       end
 
       def platform
-        @platform ||= begin
+        @platform ||= (
           if defined? RUBY_ENGINE
             RUBY_ENGINE.to_sym
           else
             :ruby
           end
-        end
+        )
       end
 
       def os
-        @os ||= begin
-           case RbConfig::CONFIG['host_os']
-           when /mswin|msys|mingw32/
-             :windows
-           when /darwin|mac os/
-             :macosx
-           when /linux/
-             :linux
-           when /solaris|bsd/
-             :unix
-           else
-             # unlikely
-             raise Error::WebDriverError, "unknown os #{RbConfig::CONFIG['host_os']}"
-           end
-        end
+        @os ||= (
+          host_os = RbConfig::CONFIG['host_os']
+          case host_os
+          when /mswin|msys|mingw32/
+            :windows
+          when /darwin|mac os/
+            :macosx
+          when /linux/
+            :linux
+          when /solaris|bsd/
+            :unix
+          else
+            raise Error::WebDriverError, "unknown os: #{host_os.inspect}"
+          end
+        )
       end
 
-      def bits
-        @bits ||= (
-          if %w[x86_64 amd64 i686].include? RbConfig::CONFIG['host_cpu']
-            64
+      def bitsize
+        @bitsize ||= (
+          if defined?(FFI::BITSIZE)
+            FFI::BITSIZE
+          elsif defined?(FFI)
+            FFI.type_size :pointer
+          elsif jruby?
+            Integer(ENV_JAVA['sun.arch.data.model'])
           else
-            32
+            1.size == 4 ? 32 : 64
           end
         )
       end
@@ -108,5 +112,6 @@ if __FILE__ == $0
     :ruby19?  => Selenium::WebDriver::Platform.ruby19?,
     :jruby?   => Selenium::WebDriver::Platform.jruby?,
     :win?     => Selenium::WebDriver::Platform.win?,
-    :home     => Selenium::WebDriver::Platform.home
+    :home     => Selenium::WebDriver::Platform.home,
+    :bitsize  => Selenium::WebDriver::Platform.bitsize
 end
