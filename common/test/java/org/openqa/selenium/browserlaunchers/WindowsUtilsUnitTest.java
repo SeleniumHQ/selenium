@@ -47,6 +47,7 @@ public class WindowsUtilsUnitTest extends TestCase {
         if (!WindowsUtils.thisIsWindows()) return;
         Map p =WindowsUtils.loadEnvironment();
         assertFalse("Environment appears to be empty!", p.isEmpty());
+        assertNotNull("SystemRoot env var apparently not set on Windows!", WindowsUtils.findSystemRoot());
     }
     public void testWMIC() {
         if (!WindowsUtils.thisIsWindows()) return;
