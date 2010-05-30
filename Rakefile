@@ -10,6 +10,7 @@ require 'rake-tasks/crazy_fun/mappings/java'
 require 'rake-tasks/crazy_fun/mappings/javascript'
 require 'rake-tasks/crazy_fun/mappings/mozilla'
 require 'rake-tasks/crazy_fun/mappings/rake'
+require 'rake-tasks/crazy_fun/mappings/ruby'
 
 # The original build rules
 require 'rake-tasks/task-gen'
@@ -20,7 +21,6 @@ require 'rake-tasks/c'
 require 'rake-tasks/java'
 require 'rake-tasks/iphone'
 require 'rake-tasks/selenium'
-require 'rake-tasks/ruby'
 require 'rake-tasks/se-ide'
 require 'rake-tasks/ie_code_generator'
 

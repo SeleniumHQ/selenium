@@ -236,5 +236,3 @@ def ruby(opts)
   # otherwise sh("ruby", ...) will reuse the current JVM
   RubyRunner.run :ruby, opts
 end
-
-
