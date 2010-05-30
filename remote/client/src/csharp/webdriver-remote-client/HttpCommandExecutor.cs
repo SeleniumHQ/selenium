@@ -26,6 +26,11 @@ namespace OpenQA.Selenium.Remote
                 throw new ArgumentNullException("addressOfRemoteServer", "You must specify a remote address to connect to");
             }
 
+            if (!addressOfRemoteServer.AbsoluteUri.EndsWith("/"))
+            {
+                addressOfRemoteServer = new Uri(addressOfRemoteServer.ToString() + "/");
+            }
+
             remoteServerUri = addressOfRemoteServer;
         }
 
