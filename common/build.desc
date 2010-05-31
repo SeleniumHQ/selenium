@@ -61,6 +61,8 @@ rubygem(
   ],
   srcs = [
     "COPYING",
+    "common/src/rb/CHANGES",
+    "common/src/rb/README",
     "common/src/rb/**/*",
     "common/src/js/**/*",
     "firefox/src/rb/**/*",

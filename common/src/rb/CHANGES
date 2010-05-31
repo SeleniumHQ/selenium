@@ -1,0 +1,11 @@
+2010-05-31
+==========
+
+* Add a max redirect check to the remote driver
+* Add Firefox::Profile#assume_untrusted_certificate_issuer=
+* Add implicit waits (Selenium::WebDriver::Timeouts)
+* at_exit hook to clean temporary profiles
+* Fix for Errno::ECONNABORTED errors on Windows
+* Fix issue where Firefox::Profile#secure_ssl= would have no effect
+* Fix issue where locating elements by :css would fail in the Chrome driver.
+* IE driver now works on 64-bit rubies.
