@@ -18,7 +18,7 @@ module Selenium
           end
 
           @launcher.launch
-          super :url => @launcher.connection.url, :desired_capabilities => :firefox
+          super :url => @launcher.url, :desired_capabilities => :firefox
         end
 
         def browser

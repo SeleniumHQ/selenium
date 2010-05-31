@@ -7,8 +7,8 @@ module Selenium
       # @private
       class Launcher
 
-        attr_reader :binary, :connection
-        SOCKET_LOCK_TIMEOUT = 45
+        SOCKET_LOCK_TIMEOUT       = 45
+        STABLE_CONNECTION_TIMEOUT = 60
 
         def initialize(binary, port = DEFAULT_PORT, profile = DEFAULT_PROFILE_NAME)
           @binary       = binary
@@ -28,6 +28,10 @@ module Selenium
           # making it completely unusable for our purposes.
           #
           @host = "127.0.0.1"
+        end
+
+        def url
+          "http://#{@host}:#{@port}/hub"
         end
 
         def launch
@@ -59,8 +63,7 @@ module Selenium
             end
           end
 
-          raise Error::WebDriverError,
-            "Unable to bind to locking port #{locking_port} within #{SOCKET_LOCK_TIMEOUT} seconds"
+          raise Error::WebDriverError, "unable to bind to locking port #{locking_port} within #{SOCKET_LOCK_TIMEOUT} seconds"
         ensure
           socket_lock.close if socket_lock
         end
@@ -100,28 +103,23 @@ module Selenium
           @binary.wait
         end
 
-        def connect
-          @connection = ExtensionConnection.new(@host, @port)
-          @connection.connect(5)
-        end
-
         def connect_until_stable
-          max_time = Time.now + 60
+          max_time = Time.now + STABLE_CONNECTION_TIMEOUT
 
           until Time.now >= max_time
-            begin
-              connection = ExtensionConnection.new(@host, @port)
-              connection.connect(1)
-
-              connect
-              return
-            rescue Timeout::Error => e
-              puts "#{self} caught #{e.message}" if $DEBUG
-              # ok
-            end
+            return if can_connect?
+            sleep 0.25
           end
 
-          raise Error::WebDriverError, "unable to obtain stable firefox connection"
+          raise Error::WebDriverError, "unable to obtain stable firefox connection in #{STABLE_CONNECTION_TIMEOUT} seconds"
+        end
+
+        def can_connect?
+          TCPSocket.new(@host, @port).close
+          true
+        rescue Errno::ECONNREFUSED, Errno::ENOTCONN, SocketError => e
+          $stderr.puts "#{e.message} for #{@host}:#{@port}" if $DEBUG
+          false
         end
 
         def free_port?(port)

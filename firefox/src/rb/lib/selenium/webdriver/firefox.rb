@@ -5,7 +5,6 @@ require "selenium/webdriver/firefox/util"
 require "selenium/webdriver/firefox/binary"
 require "selenium/webdriver/firefox/profiles_ini"
 require "selenium/webdriver/firefox/profile"
-require "selenium/webdriver/firefox/extension_connection"
 require "selenium/webdriver/firefox/launcher"
 require "selenium/webdriver/firefox/bridge"
 
