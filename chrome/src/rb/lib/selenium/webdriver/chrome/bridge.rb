@@ -47,11 +47,11 @@ module Selenium
         end
 
         def findElementByCssSelector(parent, selector)
-          find_element_by 'css selector', selector, parent
+          find_element_by 'css', selector, parent
         end
 
         def findElementsByCssSelector(parent, selector)
-          find_elements_by 'css selector', selector, parent
+          find_elements_by 'css', selector, parent
         end
 
         def getAllCookies
