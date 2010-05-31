@@ -42,12 +42,19 @@ module Selenium
 
         def request(verb, url, headers, payload, redirects = 0)
           request  = Net::HTTP.const_get(verb.to_s.capitalize).new(url.path, headers)
-          response = http.request(request, payload)
+
+          retried = false
+          begin
+            response = http.request(request, payload)
+          rescue Errno::ECONNABORTED
+            # this happens sometimes on windows?!
+            raise if retried
+            retried = true
+            retry
+          end
 
           if response.kind_of? Net::HTTPRedirection
-            if redirects >= MAX_REDIRECTS
-              raise Error::WebDriverError, "too many redirects"
-            end
+            raise Error::WebDriverError, "too many redirects" if redirects >= MAX_REDIRECTS
             request(:get, URI.parse(response['Location']), DEFAULT_HEADERS.dup, nil, redirects + 1)
           else
             create_response response

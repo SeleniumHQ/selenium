@@ -66,6 +66,7 @@ module Selenium
 
         def start_threaded
           @thread = Thread.new { run }
+          sleep 0.5
         end
 
         def start_windows
