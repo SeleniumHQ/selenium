@@ -15,7 +15,10 @@ h2 {
   font-size: 1.4em;
   margin: 1.8em 0 0.5em;
 }
+h2 small { font-weight: normal; font-size: 0.7em; display: block; float: right; }
 .clear { clear: both; }
+.inline { display: inline; }
+.inline p:first-child { display: inline; }
 .docstring h1, .docstring h2, .docstring h3, .docstring h4 { padding: 0; border: 0; border-bottom: 1px dotted #bbb; }
 .docstring h1 { font-size: 1.2em; }
 .docstring h2 { font-size: 1.1em; }
@@ -29,6 +32,7 @@ h2 {
 .note.todo { background: #ffffc5; border-color: #ececaa; }
 .note.returns_void { background: #efefef; }
 .note.deprecated { background: #ffe5e5; border-color: #e9dada; }
+.note.private { background: #ffffc5; border-color: #ececaa; }
 .note.title { text-transform: lowercase; padding: 1px 5px; margin-left: 5px; font-size: 0.9em; font-family: "Lucida Sans", "Lucida Grande", Verdana, Arial, sans-serif; }
 h1 .note.title { font-size: 0.5em; font-weight: normal; padding: 3px 5px; position: relative; top: -3px; text-transform: capitalize; }
 .note.title.constructor { color: #fff; background: #6a98d6; border-color: #6689d6; } 
@@ -95,7 +99,9 @@ dl.constants dd { width: 75%; white-space: pre; font-family: monospace; margin-b
 
 .summary_desc { margin-left: 32px; display: block; font-family: sans-serif; }
 .summary_desc tt { font-size: 0.9em; }
-dl.constants .summary_desc { font-size: 0.9em; font-weight: normal; }
+dl.constants .docstring { margin-left: 32px; font-size: 0.9em; font-weight: normal; }
+dl.constants .discussion *:first-child { margin-top: 0; }
+dl.constants .discussion *:last-child { margin-bottom: 0; }
 
 .method_details { border-top: 1px dotted #aaa; margin-top: 15px; padding-top: 0; }
 .method_details.first { border: 0; }
@@ -114,7 +120,7 @@ p.signature .aliases .names { font-family: Monaco, Consolas, Courier, monospace;
 .tags ul { margin-top: 5px; padding-left: 30px; list-style: square; }
 .tags ul li { margin-bottom: 3px; }
 .tags ul .name { font-family: monospace; font-weight: bold; }
-.tags ul p.note { padding: 3px 6px; }
+.tags ul .note { padding: 3px 6px; }
 .tags { margin-bottom: 12px; }
 
 .tags .examples h3 { margin-bottom: 10px; }
@@ -155,6 +161,8 @@ ul.summary li { margin-bottom: 5px; }
   -moz-border-radius: 3px; -webkit-border-radius: 3px; 
 }
 .summary_signature:hover { background: #eeeeff; cursor: pointer; }
+ul.summary.compact li { display: inline; margin-right: 5px; line-height: 2.6em;}
+ul.summary.compact .summary_signature { padding: 5px 7px; padding-right: 4px; }
 #content .summary_signature:hover a:link, 
 #content .summary_signature:hover a:visited {
   background: transparent;
@@ -194,6 +202,7 @@ ul.fullTree li.next:before { font-size: 1.2em; content: '\2B06'; color: #bbb; di
 
 #menu { font-size: 1.3em; color: #bbb; top: -5px; position: relative; }
 #menu .title, #menu a { font-size: 0.7em; }
+#menu .title a { font-size: 1em; }
 #menu .title { color: #555; }
 #menu a:link, #menu a:visited { color: #333; text-decoration: none; border-bottom: 1px dotted #bbd; }
 #menu a:hover { color: #05a; }
@@ -224,8 +233,8 @@ li.r2 { background: #fafafa; }
   overflow-y: scroll;
   border: 1px solid #999;
   border-collapse: collapse;
-  -webkit-box-shadow: -2px 5px 25px #aaa;
-  -moz-box-shadow: -2px 5px 25px #aaa;
+  -webkit-box-shadow: -7px 5px 25px #aaa;
+  -moz-box-shadow: -7px 5px 25px #aaa;
   -moz-border-radius: 2px;
   -webkit-border-radius: 2px;
 }

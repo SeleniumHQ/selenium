@@ -2,7 +2,7 @@
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
   <head>
-    <meta name="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="Content-Type" content="text/html; charset=utf-8" />
 <title>Module: Selenium::WebDriver::Find</title>
 <link rel="stylesheet" href="../../css/style.css" type="text/css" media="screen" charset="utf-8" />
 <link rel="stylesheet" href="../../css/common.css" type="text/css" media="screen" charset="utf-8" />
@@ -43,7 +43,8 @@
     
     <iframe id="search_frame"></iframe>
     
-    <div id="content"><h1>Module: Selenium::WebDriver::Find 
+    <div id="content"><h1>Module: Selenium::WebDriver::Find
+  
   
   
 </h1>
@@ -56,8 +57,13 @@
     
   
   
-    <dt class="r1 last">Defined in:</dt>
-    <dd class="r1 last">common/src/rb/lib/selenium/webdriver/find.rb</dd>
+    <dt class="r1">Included in:</dt>
+    <dd class="r1"><a href="Driver.html" title="Selenium::WebDriver::Driver (class)">Driver</a>, <a href="Element.html" title="Selenium::WebDriver::Element (class)">Element</a>, <a href="Remote/Bridge.html" title="Selenium::WebDriver::Remote::Bridge (class)">Remote::Bridge</a></dd>
+    
+  
+  
+    <dt class="r2 last">Defined in:</dt>
+    <dd class="r2 last">common/src/rb/lib/selenium/webdriver/find.rb</dd>
   
 </dl>
 <div class="clear"></div>
@@ -68,7 +74,7 @@
     <dl class="constants">
       
         <dt id="FINDERS-constant" class="">FINDERS =
-            <span class="summary_desc"></span>
+          
         </dt>
         <dd><pre class="code"><span class='lbrace token'>{</span>
   <span class='symbol val'>:class</span>             <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'ClassName'</span><span class='comma token'>,</span>
@@ -89,11 +95,15 @@
 
 
 
-  <h2>Instance Method Summary</h2>
+  
+    <h2>
+      Instance Method Summary
+      <small>(<a href="#" class="summary_toggle">collapse</a>)</small>
+    </h2>
 
-  <ul class="summary">
-    
-      <li class="public ">
+    <ul class="summary">
+      
+        <li class="public ">
   <span class="summary_signature">
     
       <a href="#find_element-instance_method" title="#find_element (instance method)">- (WebDriver::Element) <strong>find_element</strong>(*args) </a>
@@ -106,17 +116,18 @@
   
   
   
+  
 
   
-    <span class="summary_desc">
+    <span class="summary_desc"><div class='inline'><p>
 Find the first element matching the given arguments.
-
-</span>
+</p>
+</div></span>
   
 </li>
 
-    
-      <li class="public ">
+      
+        <li class="public ">
   <span class="summary_signature">
     
       <a href="#find_elements-instance_method" title="#find_elements (instance method)">- (Array&lt;WebDriver::Element&gt;) <strong>find_elements</strong>(*args) </a>
@@ -129,17 +140,20 @@ Find the first element matching the given arguments.
   
   
   
+  
 
   
-    <span class="summary_desc">
+    <span class="summary_desc"><div class='inline'><p>
 Find all elements matching the given arguments.
-
-</span>
+</p>
+</div></span>
   
 </li>
 
-    
-  </ul>
+      
+    </ul>
+  
+
 
 
   <div id="instance_method_details" class="method_details_list">
@@ -179,7 +193,7 @@ Find the first element matching the given arguments.
   
     <li>
       
-        <span class='type'>(<tt>String</tt>)</span>
+        <span class='type'>(<tt><a href="../../String.html" title="String (class)">String</a></tt>)</span>
       
       
         <span class='name'>what</span>
@@ -213,10 +227,10 @@ Find the first element matching the given arguments.
       
       
         &mdash;
-        
+        <div class='inline'><p>
 if the element doesn&#8217;t exist
-
-
+</p>
+</div>
       
     </li>
   
@@ -295,7 +309,7 @@ Find all elements matching the given arguments
   
     <li>
       
-        <span class='type'>(<tt>String</tt>)</span>
+        <span class='type'>(<tt><a href="../../String.html" title="String (class)">String</a></tt>)</span>
       
       
         <span class='name'>what</span>
@@ -364,9 +378,9 @@ Find all elements matching the given arguments
 </div>
     
     <div id="footer">
-  Generated on Wed Apr 21 13:36:21 2010 by 
+  Generated on Mon May 31 17:07:33 2010 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool">yard</a>
-  0.5.3 (ruby-1.8.7).
+  0.5.5 (ruby-1.8.7).
 </div>
 
   </body>

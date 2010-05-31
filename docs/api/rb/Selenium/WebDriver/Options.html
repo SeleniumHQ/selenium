@@ -2,7 +2,7 @@
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
   <head>
-    <meta name="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="Content-Type" content="text/html; charset=utf-8" />
 <title>Class: Selenium::WebDriver::Options</title>
 <link rel="stylesheet" href="../../css/style.css" type="text/css" media="screen" charset="utf-8" />
 <link rel="stylesheet" href="../../css/common.css" type="text/css" media="screen" charset="utf-8" />
@@ -43,7 +43,8 @@
     
     <iframe id="search_frame"></iframe>
     
-    <div id="content"><h1>Class: Selenium::WebDriver::Options 
+    <div id="content"><h1>Class: Selenium::WebDriver::Options
+  
   
   
 </h1>
@@ -71,6 +72,7 @@
     
   
   
+  
     <dt class="r2 last">Defined in:</dt>
     <dd class="r2 last">common/src/rb/lib/selenium/webdriver/options.rb</dd>
   
@@ -80,11 +82,15 @@
 
 
 
-  <h2>Instance Method Summary</h2>
+  
+    <h2>
+      Instance Method Summary
+      <small>(<a href="#" class="summary_toggle">collapse</a>)</small>
+    </h2>
 
-  <ul class="summary">
-    
-      <li class="public ">
+    <ul class="summary">
+      
+        <li class="public ">
   <span class="summary_signature">
     
       <a href="#add_cookie-instance_method" title="#add_cookie (instance method)">- (Object) <strong>add_cookie</strong>(opts = {}) </a>
@@ -97,17 +103,18 @@
   
   
   
+  
 
   
-    <span class="summary_desc">
+    <span class="summary_desc"><div class='inline'><p>
 Add a cookie to the browser.
-
-</span>
+</p>
+</div></span>
   
 </li>
 
-    
-      <li class="public ">
+      
+        <li class="public ">
   <span class="summary_signature">
     
       <a href="#all_cookies-instance_method" title="#all_cookies (instance method)">- (Array&lt;Hash&gt;) <strong>all_cookies</strong> </a>
@@ -120,17 +127,18 @@ Add a cookie to the browser.
   
   
   
+  
 
   
-    <span class="summary_desc">
+    <span class="summary_desc"><div class='inline'><p>
 Get all cookies.
-
-</span>
+</p>
+</div></span>
   
 </li>
 
-    
-      <li class="public ">
+      
+        <li class="public ">
   <span class="summary_signature">
     
       <a href="#delete_all_cookies-instance_method" title="#delete_all_cookies (instance method)">- (Object) <strong>delete_all_cookies</strong> </a>
@@ -143,17 +151,18 @@ Get all cookies.
   
   
   
+  
 
   
-    <span class="summary_desc">
+    <span class="summary_desc"><div class='inline'><p>
 Delete all cookies.
-
-</span>
+</p>
+</div></span>
   
 </li>
 
-    
-      <li class="public ">
+      
+        <li class="public ">
   <span class="summary_signature">
     
       <a href="#delete_cookie-instance_method" title="#delete_cookie (instance method)">- (Object) <strong>delete_cookie</strong>(name) </a>
@@ -166,17 +175,18 @@ Delete all cookies.
   
   
   
+  
 
   
-    <span class="summary_desc">
+    <span class="summary_desc"><div class='inline'><p>
 Delete the cookie with the given name.
-
-</span>
+</p>
+</div></span>
   
 </li>
 
-    
-      <li class="public ">
+      
+        <li class="public ">
   <span class="summary_signature">
     
       <a href="#initialize-instance_method" title="#initialize (instance method)">- (Options) <strong>initialize</strong>(driver) </a>
@@ -191,17 +201,18 @@ Delete the cookie with the given name.
   
   
   
+  
 
   
-    <span class="summary_desc">
+    <span class="summary_desc"><div class='inline'><p>
 A new instance of Options.
-
-</span>
+</p>
+</div></span>
   
 </li>
 
-    
-      <li class="public ">
+      
+        <li class="public ">
   <span class="summary_signature">
     
       <a href="#speed-instance_method" title="#speed (instance method)">- (Object) <strong>speed</strong> </a>
@@ -214,14 +225,15 @@ A new instance of Options.
   
   
   
+  
 
   
-    <span class="summary_desc"></span>
+    <span class="summary_desc"><div class='inline'></div></span>
   
 </li>
 
-    
-      <li class="public ">
+      
+        <li class="public ">
   <span class="summary_signature">
     
       <a href="#speed%3D-instance_method" title="#speed= (instance method)">- (Object) <strong>speed</strong>(speed) </a>
@@ -234,14 +246,38 @@ A new instance of Options.
   
   
   
+  
 
   
-    <span class="summary_desc"></span>
+    <span class="summary_desc"><div class='inline'></div></span>
   
 </li>
 
+      
+        <li class="public ">
+  <span class="summary_signature">
     
-  </ul>
+      <a href="#timeouts-instance_method" title="#timeouts (instance method)">- (Object) <strong>timeouts</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+    </ul>
+  
+
 <div id="constructor_details" class="method_details_list">
   <h2>Constructor Details</h2>
   
@@ -324,10 +360,10 @@ Add a cookie to the browser
       
       
         &mdash;
-        
+        <div class='inline'><p>
 the options to create a cookie with.
-
-
+</p>
+</div>
       
     </li>
   
@@ -340,35 +376,35 @@ the options to create a cookie with.
     <ul class="option">
       
         <li>
-          <span class="type">(<tt>String</tt>)</span>
+          <span class="type">(<tt><a href="../../String.html" title="String (class)">String</a></tt>)</span>
           <span class="name">:name</span>
           <span class="default">
             
               <span class="na">N/A</span>
             
           </span>
-          &mdash;
+          &mdash;<div class='inline'><p>
 A name
-
-
+</p>
+</div>
         </tr>
       
         <li>
-          <span class="type">(<tt>String</tt>)</span>
+          <span class="type">(<tt><a href="../../String.html" title="String (class)">String</a></tt>)</span>
           <span class="name">:value</span>
           <span class="default">
             
               <span class="na">N/A</span>
             
           </span>
-          &mdash;
+          &mdash;<div class='inline'><p>
 A value
-
-
+</p>
+</div>
         </tr>
       
         <li>
-          <span class="type">(<tt>String</tt>)</span>
+          <span class="type">(<tt><a href="../../String.html" title="String (class)">String</a></tt>)</span>
           <span class="name">:path</span>
           <span class="default">
             
@@ -376,14 +412,14 @@ A value
               <tt>'/'</tt>
             
           </span>
-          &mdash;
+          &mdash;<div class='inline'><p>
 A path
-
-
+</p>
+</div>
         </tr>
       
         <li>
-          <span class="type">(<tt>String</tt>)</span>
+          <span class="type">(<tt><a href="../../String.html" title="String (class)">String</a></tt>)</span>
           <span class="name">:secure</span>
           <span class="default">
             
@@ -391,10 +427,10 @@ A path
               <tt>false</tt>
             
           </span>
-          &mdash;
+          &mdash;<div class='inline'><p>
 A boolean
-
-
+</p>
+</div>
         </tr>
       
     </ul>
@@ -410,10 +446,10 @@ A boolean
       
       
         &mdash;
-        
+        <div class='inline'><p>
 if :name or :value is not specified
-
-
+</p>
+</div>
       
     </li>
   
@@ -481,10 +517,10 @@ Get all cookies
       
       
         &mdash;
-        
+        <div class='inline'><p>
 list of cookies
-
-
+</p>
+</div>
       
     </li>
   
@@ -592,7 +628,7 @@ Delete the cookie with the given name
   
     <li>
       
-        <span class='type'>(<tt>String</tt>)</span>
+        <span class='type'>(<tt><a href="../../String.html" title="String (class)">String</a></tt>)</span>
       
       
         <span class='name'>name</span>
@@ -600,10 +636,10 @@ Delete the cookie with the given name
       
       
         &mdash;
-        
+        <div class='inline'><p>
 the name of the cookie to delete
-
-
+</p>
+</div>
       
     </li>
   
@@ -689,14 +725,43 @@ the name of the cookie to delete
 </table>
 </div>
     
+      <div class="method_details ">
+  <p class="signature " id="timeouts-instance_method">
+  
+    - (<tt>Object</tt>) <strong>timeouts</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+80
+81
+82</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/options.rb', line 80</span>
+
+<span class='def def kw'>def</span> <span class='timeouts identifier id'>timeouts</span>
+  <span class='@timeouts ivar id'>@timeouts</span> <span class='opasgn op'>||=</span> <span class='Timeouts constant id'>Timeouts</span><span class='dot token'>.</span><span class='new identifier id'>new</span><span class='lparen token'>(</span><span class='@bridge ivar id'>@bridge</span><span class='rparen token'>)</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
   </div>
 
 </div>
     
     <div id="footer">
-  Generated on Wed Apr 21 13:36:18 2010 by 
+  Generated on Mon May 31 17:07:37 2010 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool">yard</a>
-  0.5.3 (ruby-1.8.7).
+  0.5.5 (ruby-1.8.7).
 </div>
 
   </body>

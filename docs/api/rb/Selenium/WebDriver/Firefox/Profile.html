@@ -2,7 +2,7 @@
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
   <head>
-    <meta name="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="Content-Type" content="text/html; charset=utf-8" />
 <title>Class: Selenium::WebDriver::Firefox::Profile</title>
 <link rel="stylesheet" href="../../../css/style.css" type="text/css" media="screen" charset="utf-8" />
 <link rel="stylesheet" href="../../../css/common.css" type="text/css" media="screen" charset="utf-8" />
@@ -43,7 +43,8 @@
     
     <iframe id="search_frame"></iframe>
     
-    <div id="content"><h1>Class: Selenium::WebDriver::Firefox::Profile 
+    <div id="content"><h1>Class: Selenium::WebDriver::Firefox::Profile
+  
   
   
 </h1>
@@ -71,6 +72,7 @@
     
   
   
+  
     <dt class="r2 last">Defined in:</dt>
     <dd class="r2 last">firefox/src/rb/lib/selenium/webdriver/firefox/profile.rb</dd>
   
@@ -83,37 +85,37 @@
     <dl class="constants">
       
         <dt id="ANONYMOUS_PROFILE_NAME-constant" class="">ANONYMOUS_PROFILE_NAME =
-            <span class="summary_desc"></span>
+          
         </dt>
         <dd><pre class="code"><span class='string val'>&quot;WEBDRIVER_ANONYMOUS_PROFILE&quot;</span>
 </pre></dd>
       
         <dt id="EXTENSION_NAME-constant" class="">EXTENSION_NAME =
-            <span class="summary_desc"></span>
+          
         </dt>
         <dd><pre class="code"><span class='string val'>&quot;fxdriver@googlecode.com&quot;</span>
 </pre></dd>
       
         <dt id="EM_NAMESPACE_URI-constant" class="">EM_NAMESPACE_URI =
-            <span class="summary_desc"></span>
+          
         </dt>
         <dd><pre class="code"><span class='string val'>&quot;http://www.mozilla.org/2004/em-rdf#&quot;</span>
 </pre></dd>
       
         <dt id="NO_FOCUS_LIBRARY_NAME-constant" class="">NO_FOCUS_LIBRARY_NAME =
-            <span class="summary_desc"></span>
+          
         </dt>
         <dd><pre class="code"><span class='string val'>&quot;x_ignore_nofocus.so&quot;</span>
 </pre></dd>
       
         <dt id="DEFAULT_EXTENSION_SOURCE-constant" class="">DEFAULT_EXTENSION_SOURCE =
-            <span class="summary_desc"></span>
+          
         </dt>
         <dd><pre class="code"><span class='File constant id'>File</span><span class='dot token'>.</span><span class='expand_path identifier id'>expand_path</span><span class='lparen token'>(</span><span class='dstring node'>&quot;#{WebDriver.root}/firefox/src/extension&quot;</span><span class='rparen token'>)</span>
 </pre></dd>
       
         <dt id="XPTS-constant" class="">XPTS =
-            <span class="summary_desc"></span>
+          
         </dt>
         <dd><pre class="code"><span class='lbrack token'>[</span>
   <span class='lbrack token'>[</span><span class='dstring node'>&quot;#{WebDriver.root}/firefox/prebuilt/nsINativeEvents.xpt&quot;</span><span class='comma token'>,</span> <span class='string val'>&quot;components/nsINativeEvents.xpt&quot;</span><span class='rbrack token'>]</span><span class='comma token'>,</span>
@@ -123,13 +125,13 @@
 </pre></dd>
       
         <dt id="NATIVE_WINDOWS-constant" class="">NATIVE_WINDOWS =
-            <span class="summary_desc"></span>
+          
         </dt>
         <dd><pre class="code"><span class='lbrack token'>[</span><span class='dstring node'>&quot;#{WebDriver.root}/firefox/prebuilt/Win32/Release/webdriver-firefox.dll&quot;</span><span class='comma token'>,</span> <span class='string val'>&quot;platform/WINNT_x86-msvc/components/webdriver-firefox.dll&quot;</span><span class='rbrack token'>]</span>
 </pre></dd>
       
         <dt id="NATIVE_LINUX-constant" class="">NATIVE_LINUX =
-            <span class="summary_desc"></span>
+          
         </dt>
         <dd><pre class="code"><span class='lbrack token'>[</span>
   <span class='lbrack token'>[</span><span class='dstring node'>&quot;#{WebDriver.root}/firefox/prebuilt/linux/Release/libwebdriver-firefox.so&quot;</span><span class='comma token'>,</span> <span class='string val'>&quot;platform/Linux_x86-gcc3/components/libwebdriver-firefox.so&quot;</span><span class='rbrack token'>]</span><span class='comma token'>,</span>
@@ -138,7 +140,7 @@
 </pre></dd>
       
         <dt id="NO_FOCUS-constant" class="">NO_FOCUS =
-            <span class="summary_desc"></span>
+          
         </dt>
         <dd><pre class="code"><span class='lbrack token'>[</span>
   <span class='lbrack token'>[</span><span class='dstring node'>&quot;#{WebDriver.root}/firefox/prebuilt/linux64/Release/x_ignore_nofocus.so&quot;</span><span class='comma token'>,</span> <span class='string val'>&quot;amd64/x_ignore_nofocus.so&quot;</span><span class='rbrack token'>]</span><span class='comma token'>,</span>
@@ -147,7 +149,7 @@
 </pre></dd>
       
         <dt id="SHARED-constant" class="">SHARED =
-            <span class="summary_desc"></span>
+          
         </dt>
         <dd><pre class="code"><span class='lbrack token'>[</span>
   <span class='lbrack token'>[</span><span class='dstring node'>&quot;#{WebDriver.root}/common/src/js/extension/dommessenger.js&quot;</span><span class='comma token'>,</span> <span class='string val'>&quot;content/dommessenger.js&quot;</span><span class='rbrack token'>]</span>
@@ -155,7 +157,7 @@
 </pre></dd>
       
         <dt id="OVERRIDABLE_PREFERENCES-constant" class="">OVERRIDABLE_PREFERENCES =
-            <span class="summary_desc"></span>
+          
         </dt>
         <dd><pre class="code"><span class='lbrace token'>{</span>
   <span class='string val'>&quot;browser.startup.page&quot;</span>     <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'0'</span><span class='comma token'>,</span>
@@ -164,7 +166,7 @@
 </pre></dd>
       
         <dt id="DEFAULT_PREFERENCES-constant" class="">DEFAULT_PREFERENCES =
-            <span class="summary_desc"></span>
+          
         </dt>
         <dd><pre class="code"><span class='lbrace token'>{</span>
   <span class='string val'>&quot;app.update.auto&quot;</span>                           <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'false'</span><span class='comma token'>,</span>
@@ -203,7 +205,7 @@
   
 
 
-  <h2>Instance Attribute Summary</h2>
+  <h2>Instance Attribute Summary <small>(<a href="#" class="summary_toggle">collapse</a>)</small></h2>
   <ul class="summary">
     
       <li class="public ">
@@ -222,12 +224,13 @@
   
   
   
+  
 
   
-    <span class="summary_desc">
+    <span class="summary_desc"><div class='inline'><p>
 Returns the value of attribute directory.
-
-</span>
+</p>
+</div></span>
   
 </li>
 
@@ -248,12 +251,13 @@ Returns the value of attribute directory.
   
   
   
+  
 
   
-    <span class="summary_desc">
+    <span class="summary_desc"><div class='inline'><p>
 Sets the attribute load_no_focus_lib.
-
-</span>
+</p>
+</div></span>
   
 </li>
 
@@ -274,12 +278,13 @@ Sets the attribute load_no_focus_lib.
   
   
   
+  
 
   
-    <span class="summary_desc">
+    <span class="summary_desc"><div class='inline'><p>
 Returns the value of attribute name.
-
-</span>
+</p>
+</div></span>
   
 </li>
 
@@ -300,12 +305,13 @@ Returns the value of attribute name.
   
   
   
+  
 
   
-    <span class="summary_desc">
+    <span class="summary_desc"><div class='inline'><p>
 Sets the attribute native_events.
-
-</span>
+</p>
+</div></span>
   
 </li>
 
@@ -326,12 +332,13 @@ Sets the attribute native_events.
   
   
   
+  
 
   
-    <span class="summary_desc">
+    <span class="summary_desc"><div class='inline'><p>
 Returns the value of attribute port.
-
-</span>
+</p>
+</div></span>
   
 </li>
 
@@ -352,12 +359,13 @@ Returns the value of attribute port.
   
   
   
+  
 
   
-    <span class="summary_desc">
+    <span class="summary_desc"><div class='inline'><p>
 Sets the attribute secure_ssl.
-
-</span>
+</p>
+</div></span>
   
 </li>
 
@@ -365,11 +373,15 @@ Sets the attribute secure_ssl.
   </ul>
 
 
-  <h2>Class Method Summary</h2>
+  
+    <h2>
+      Class Method Summary
+      <small>(<a href="#" class="summary_toggle">collapse</a>)</small>
+    </h2>
 
-  <ul class="summary">
-    
-      <li class="public ">
+    <ul class="summary">
+      
+        <li class="public ">
   <span class="summary_signature">
     
       <a href="#from_name-class_method" title="from_name (class method)">+ (Object) <strong>from_name</strong>(name) </a>
@@ -382,14 +394,15 @@ Sets the attribute secure_ssl.
   
   
   
+  
 
   
-    <span class="summary_desc"></span>
+    <span class="summary_desc"><div class='inline'></div></span>
   
 </li>
 
-    
-      <li class="public ">
+      
+        <li class="public ">
   <span class="summary_signature">
     
       <a href="#ini-class_method" title="ini (class method)">+ (Object) <strong>ini</strong> </a>
@@ -402,23 +415,27 @@ Sets the attribute secure_ssl.
   
   
   
+  
 
   
-    <span class="summary_desc"></span>
+    <span class="summary_desc"><div class='inline'></div></span>
   
 </li>
 
-    
-  </ul>
+      
+    </ul>
+  
+    <h2>
+      Instance Method Summary
+      <small>(<a href="#" class="summary_toggle">collapse</a>)</small>
+    </h2>
 
-  <h2>Instance Method Summary</h2>
-
-  <ul class="summary">
-    
-      <li class="public ">
+    <ul class="summary">
+      
+        <li class="public ">
   <span class="summary_signature">
     
-      <a href="#%5B%5D%3D-instance_method" title="#[]= (instance method)">- (Object) <strong>[]</strong>(key, value) </a>
+      <a href="#%5B%5D%3D-instance_method" title="#[]= (instance method)">- (Object) <strong>[]=</strong>(key, value) </a>
     
 
     
@@ -428,17 +445,18 @@ Sets the attribute secure_ssl.
   
   
   
+  
 
   
-    <span class="summary_desc">
+    <span class="summary_desc"><div class='inline'><p>
 Set a preference for this particular profile.
-
-</span>
+</p>
+</div></span>
   
 </li>
 
-    
-      <li class="public ">
+      
+        <li class="public ">
   <span class="summary_signature">
     
       <a href="#absolute_path-instance_method" title="#absolute_path (instance method)">- (Object) <strong>absolute_path</strong> </a>
@@ -451,14 +469,15 @@ Set a preference for this particular profile.
   
   
   
+  
 
   
-    <span class="summary_desc"></span>
+    <span class="summary_desc"><div class='inline'></div></span>
   
 </li>
 
-    
-      <li class="public ">
+      
+        <li class="public ">
   <span class="summary_signature">
     
       <a href="#add_webdriver_extension-instance_method" title="#add_webdriver_extension (instance method)">- (Object) <strong>add_webdriver_extension</strong>(force_creation = false) </a>
@@ -471,14 +490,57 @@ Set a preference for this particular profile.
   
   
   
+  
 
   
-    <span class="summary_desc"></span>
+    <span class="summary_desc"><div class='inline'></div></span>
   
 </li>
 
+      
+        <li class="public ">
+  <span class="summary_signature">
     
-      <li class="public ">
+      <a href="#assume_untrusted_certificate_issuer%3D-instance_method" title="#assume_untrusted_certificate_issuer= (instance method)">- (Object) <strong>assume_untrusted_certificate_issuer</strong>(bool) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#assume_untrusted_certificate_issuer%3F-instance_method" title="#assume_untrusted_certificate_issuer? (instance method)">- (Boolean) <strong>assume_untrusted_certificate_issuer?</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
   <span class="summary_signature">
     
       <a href="#delete_extensions_cache-instance_method" title="#delete_extensions_cache (instance method)">- (Object) <strong>delete_extensions_cache</strong> </a>
@@ -491,14 +553,15 @@ Set a preference for this particular profile.
   
   
   
+  
 
   
-    <span class="summary_desc"></span>
+    <span class="summary_desc"><div class='inline'></div></span>
   
 </li>
 
-    
-      <li class="public ">
+      
+        <li class="public ">
   <span class="summary_signature">
     
       <a href="#extensions_dir-instance_method" title="#extensions_dir (instance method)">- (Object) <strong>extensions_dir</strong> </a>
@@ -511,17 +574,18 @@ Set a preference for this particular profile.
   
   
   
+  
 
   
-    <span class="summary_desc">
+    <span class="summary_desc"><div class='inline'><p>
 TODO: add_extension.
-
-</span>
+</p>
+</div></span>
   
 </li>
 
-    
-      <li class="public ">
+      
+        <li class="public ">
   <span class="summary_signature">
     
       <a href="#initialize-instance_method" title="#initialize (instance method)">- (Profile) <strong>initialize</strong>(directory = nil) </a>
@@ -536,17 +600,18 @@ TODO: add_extension.
   
   
   
+  
 
   
-    <span class="summary_desc">
+    <span class="summary_desc"><div class='inline'><p>
 Create a new Profile instance.
-
-</span>
+</p>
+</div></span>
   
 </li>
 
-    
-      <li class="public ">
+      
+        <li class="public ">
   <span class="summary_signature">
     
       <a href="#load_no_focus_lib%3F-instance_method" title="#load_no_focus_lib? (instance method)">- (Boolean) <strong>load_no_focus_lib?</strong> </a>
@@ -559,14 +624,15 @@ Create a new Profile instance.
   
   
   
+  
 
   
-    <span class="summary_desc"></span>
+    <span class="summary_desc"><div class='inline'></div></span>
   
 </li>
 
-    
-      <li class="public ">
+      
+        <li class="public ">
   <span class="summary_signature">
     
       <a href="#modify_link_library_path-instance_method" title="#modify_link_library_path (instance method)">- (Object) <strong>modify_link_library_path</strong>(paths) </a>
@@ -579,14 +645,15 @@ Create a new Profile instance.
   
   
   
+  
 
   
-    <span class="summary_desc"></span>
+    <span class="summary_desc"><div class='inline'></div></span>
   
 </li>
 
-    
-      <li class="public ">
+      
+        <li class="public ">
   <span class="summary_signature">
     
       <a href="#native_events%3F-instance_method" title="#native_events? (instance method)">- (Boolean) <strong>native_events?</strong> </a>
@@ -599,14 +666,15 @@ Create a new Profile instance.
   
   
   
+  
 
   
-    <span class="summary_desc"></span>
+    <span class="summary_desc"><div class='inline'></div></span>
   
 </li>
 
-    
-      <li class="public ">
+      
+        <li class="public ">
   <span class="summary_signature">
     
       <a href="#secure_ssl%3F-instance_method" title="#secure_ssl? (instance method)">- (Boolean) <strong>secure_ssl?</strong> </a>
@@ -619,14 +687,15 @@ Create a new Profile instance.
   
   
   
+  
 
   
-    <span class="summary_desc"></span>
+    <span class="summary_desc"><div class='inline'></div></span>
   
 </li>
 
-    
-      <li class="public ">
+      
+        <li class="public ">
   <span class="summary_signature">
     
       <a href="#update_user_prefs-instance_method" title="#update_user_prefs (instance method)">- (Object) <strong>update_user_prefs</strong> </a>
@@ -639,14 +708,15 @@ Create a new Profile instance.
   
   
   
+  
 
   
-    <span class="summary_desc"></span>
+    <span class="summary_desc"><div class='inline'></div></span>
   
 </li>
 
-    
-      <li class="public ">
+      
+        <li class="public ">
   <span class="summary_signature">
     
       <a href="#user_prefs_path-instance_method" title="#user_prefs_path (instance method)">- (Object) <strong>user_prefs_path</strong> </a>
@@ -659,14 +729,17 @@ Create a new Profile instance.
   
   
   
+  
 
   
-    <span class="summary_desc"></span>
+    <span class="summary_desc"><div class='inline'></div></span>
   
 </li>
 
-    
-  </ul>
+      
+    </ul>
+  
+
 <div id="constructor_details" class="method_details_list">
   <h2>Constructor Details</h2>
   
@@ -691,16 +764,16 @@ Create a new Profile instance
   <div class="examples">
     <h3>Examples:</h3>
     
-      <h4>
+      <h4><div class='inline'><p>
 User configured profile
-
-</h4>
+</p>
+</div></h4>
       <pre class="example code">
-  <span class='profile identifier id'>profile</span> <span class='assign token'>=</span> <span class='Selenium constant id'>Selenium</span><span class='colon2 op'>::</span><span class='WebDriver constant id'>WebDriver</span><span class='colon2 op'>::</span><span class='Firefox constant id'>Firefox</span><span class='colon2 op'>::</span><span class='Profile constant id'>Profile</span><span class='dot token'>.</span><span class='new identifier id'>new</span>
-  <span class='profile identifier id'>profile</span><span class='lbrack token'>[</span><span class='string val'>'network.proxy.http'</span><span class='rbrack token'>]</span> <span class='assign token'>=</span> <span class='string val'>'localhost'</span>
-  <span class='profile identifier id'>profile</span><span class='lbrack token'>[</span><span class='string val'>'network.proxy.http_port'</span><span class='rbrack token'>]</span> <span class='assign token'>=</span> <span class='integer val'>9090</span>
+<span class='profile identifier id'>profile</span> <span class='assign token'>=</span> <span class='Selenium constant id'>Selenium</span><span class='colon2 op'>::</span><span class='WebDriver constant id'>WebDriver</span><span class='colon2 op'>::</span><span class='Firefox constant id'>Firefox</span><span class='colon2 op'>::</span><span class='Profile constant id'>Profile</span><span class='dot token'>.</span><span class='new identifier id'>new</span>
+<span class='profile identifier id'>profile</span><span class='lbrack token'>[</span><span class='string val'>'network.proxy.http'</span><span class='rbrack token'>]</span> <span class='assign token'>=</span> <span class='string val'>'localhost'</span>
+<span class='profile identifier id'>profile</span><span class='lbrack token'>[</span><span class='string val'>'network.proxy.http_port'</span><span class='rbrack token'>]</span> <span class='assign token'>=</span> <span class='integer val'>9090</span>
 
-  <span class='driver identifier id'>driver</span> <span class='assign token'>=</span> <span class='Selenium constant id'>Selenium</span><span class='colon2 op'>::</span><span class='WebDriver constant id'>WebDriver</span><span class='dot token'>.</span><span class='for identifier id'>for</span> <span class='symbol val'>:firefox</span><span class='comma token'>,</span> <span class='symbol val'>:profile</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='profile identifier id'>profile</span>
+<span class='driver identifier id'>driver</span> <span class='assign token'>=</span> <span class='Selenium constant id'>Selenium</span><span class='colon2 op'>::</span><span class='WebDriver constant id'>WebDriver</span><span class='dot token'>.</span><span class='for identifier id'>for</span> <span class='symbol val'>:firefox</span><span class='comma token'>,</span> <span class='symbol val'>:profile</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='profile identifier id'>profile</span>
 </pre>
     
   </div>
@@ -726,7 +799,10 @@ User configured profile
 72
 73
 74
-75</pre>
+75
+76
+77
+78</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/profile.rb', line 60</span>
@@ -738,11 +814,14 @@ User configured profile
     <span class='raise identifier id'>raise</span> <span class='Error constant id'>Error</span><span class='colon2 op'>::</span><span class='WebDriverError constant id'>WebDriverError</span><span class='comma token'>,</span> <span class='dstring node'>&quot;Profile directory does not exist: #{@directory.inspect}&quot;</span>
   <span class='end end kw'>end</span>
 
+  <span class='FileReaper constant id'>FileReaper</span> <span class='lshft op'>&lt;&lt;</span> <span class='@directory ivar id'>@directory</span>
+
   <span class='comment val'># TODO: replace constants with options hash</span>
   <span class='@port ivar id'>@port</span>              <span class='assign token'>=</span> <span class='DEFAULT_PORT constant id'>DEFAULT_PORT</span>
   <span class='@extension_source ivar id'>@extension_source</span>  <span class='assign token'>=</span> <span class='DEFAULT_EXTENSION_SOURCE constant id'>DEFAULT_EXTENSION_SOURCE</span>
   <span class='@native_events ivar id'>@native_events</span>     <span class='assign token'>=</span> <span class='DEFAULT_ENABLE_NATIVE_EVENTS constant id'>DEFAULT_ENABLE_NATIVE_EVENTS</span>
   <span class='@secure_ssl ivar id'>@secure_ssl</span>        <span class='assign token'>=</span> <span class='DEFAULT_SECURE_SSL constant id'>DEFAULT_SECURE_SSL</span>
+  <span class='@untrusted_issuer ivar id'>@untrusted_issuer</span>  <span class='assign token'>=</span> <span class='DEFAULT_ASSUME_UNTRUSTED_ISSUER constant id'>DEFAULT_ASSUME_UNTRUSTED_ISSUER</span>
   <span class='@load_no_focus_lib ivar id'>@load_no_focus_lib</span> <span class='assign token'>=</span> <span class='DEFAULT_LOAD_NO_FOCUS_LIB constant id'>DEFAULT_LOAD_NO_FOCUS_LIB</span>
 
   <span class='@additional_prefs ivar id'>@additional_prefs</span>  <span class='assign token'>=</span> <span class='lbrace token'>{</span><span class='rbrace token'>}</span>
@@ -834,10 +913,10 @@ Sets the attribute load_no_focus_lib
       
       
         &mdash;
-        
+        <div class='inline'><p>
 the value to set the attribute load_no_focus_lib to.
-
-
+</p>
+</div>
       
     </li>
   
@@ -941,10 +1020,10 @@ Sets the attribute native_events
       
       
         &mdash;
-        
+        <div class='inline'><p>
 the value to set the attribute native_events to.
-
-
+</p>
+</div>
       
     </li>
   
@@ -1048,10 +1127,10 @@ Sets the attribute secure_ssl
       
       
         &mdash;
-        
+        <div class='inline'><p>
 the value to set the attribute secure_ssl to.
-
-
+</p>
+</div>
       
     </li>
   
@@ -1171,7 +1250,7 @@ Set a preference for this particular profile.
   <h3>See Also:</h3>
   <ul class="see">
     
-      <li><a href="http://preferential.mozdev.org/preferences.html" title="http://preferential.mozdev.org/preferences.html">http://preferential.mozdev.org/preferences.html</a></li>
+      <li><a href="http://preferential.mozdev.org/preferences.html" target="_parent" title="http://preferential.mozdev.org/preferences.html">http://preferential.mozdev.org/preferences.html</a></li>
     
   </ul>
 
@@ -1181,9 +1260,6 @@ Set a preference for this particular profile.
       <pre class="lines">
 
 
-82
-83
-84
 85
 86
 87
@@ -1196,10 +1272,13 @@ Set a preference for this particular profile.
 94
 95
 96
-97</pre>
+97
+98
+99
+100</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/profile.rb', line 82</span>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/profile.rb', line 85</span>
 
 <span class='def def kw'>def</span> <span class='aset op'>[]=</span><span class='lparen token'>(</span><span class='key identifier id'>key</span><span class='comma token'>,</span> <span class='value identifier id'>value</span><span class='rparen token'>)</span>
   <span class='case case kw'>case</span> <span class='value identifier id'>value</span>
@@ -1236,16 +1315,16 @@ Set a preference for this particular profile.
       <pre class="lines">
 
 
-99
-100
-101
 102
 103
 104
-105</pre>
+105
+106
+107
+108</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/profile.rb', line 99</span>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/profile.rb', line 102</span>
 
 <span class='def def kw'>def</span> <span class='absolute_path identifier id'>absolute_path</span>
   <span class='if if kw'>if</span> <span class='Platform constant id'>Platform</span><span class='dot token'>.</span><span class='win? fid id'>win?</span>
@@ -1273,12 +1352,6 @@ Set a preference for this particular profile.
       <pre class="lines">
 
 
-122
-123
-124
-125
-126
-127
 128
 129
 130
@@ -1311,10 +1384,16 @@ Set a preference for this particular profile.
 157
 158
 159
-160</pre>
+160
+161
+162
+163
+164
+165
+166</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/profile.rb', line 122</span>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/profile.rb', line 128</span>
 
 <span class='def def kw'>def</span> <span class='add_webdriver_extension identifier id'>add_webdriver_extension</span><span class='lparen token'>(</span><span class='force_creation identifier id'>force_creation</span> <span class='assign token'>=</span> <span class='false false kw'>false</span><span class='rparen token'>)</span>
   <span class='ext_path identifier id'>ext_path</span> <span class='assign token'>=</span> <span class='File constant id'>File</span><span class='dot token'>.</span><span class='join identifier id'>join</span><span class='lparen token'>(</span><span class='extensions_dir identifier id'>extensions_dir</span><span class='comma token'>,</span> <span class='EXTENSION_NAME constant id'>EXTENSION_NAME</span><span class='rparen token'>)</span>
@@ -1362,6 +1441,85 @@ Set a preference for this particular profile.
 </div>
     
       <div class="method_details ">
+  <p class="signature " id="assume_untrusted_certificate_issuer=-instance_method">
+  
+    - (<tt>Object</tt>) <strong>assume_untrusted_certificate_issuer=</strong>(bool) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+210
+211
+212</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/profile.rb', line 210</span>
+
+<span class='def def kw'>def</span> <span class='assume_untrusted_certificate_issuer= identifier id'>assume_untrusted_certificate_issuer=</span><span class='lparen token'>(</span><span class='bool identifier id'>bool</span><span class='rparen token'>)</span>
+  <span class='@untrusted_issuer ivar id'>@untrusted_issuer</span> <span class='assign token'>=</span> <span class='bool identifier id'>bool</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="assume_untrusted_certificate_issuer?-instance_method">
+  
+    - (<tt>Boolean</tt>) <strong>assume_untrusted_certificate_issuer?</strong> 
+  
+
+  
+</p><div class="docstring">
+  <div class="discussion">
+    
+
+  </div>
+</div>
+<div class="tags">
+  <h3>Returns:</h3>
+<ul class="return">
+  
+    <li>
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+206
+207
+208</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/profile.rb', line 206</span>
+
+<span class='def def kw'>def</span> <span class='assume_untrusted_certificate_issuer? fid id'>assume_untrusted_certificate_issuer?</span>
+  <span class='@untrusted_issuer ivar id'>@untrusted_issuer</span> <span class='eq op'>==</span> <span class='true true kw'>true</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
   <p class="signature " id="delete_extensions_cache-instance_method">
   
     - (<tt>Object</tt>) <strong>delete_extensions_cache</strong> 
@@ -1374,13 +1532,13 @@ Set a preference for this particular profile.
       <pre class="lines">
 
 
-172
-173
-174
-175</pre>
+178
+179
+180
+181</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/profile.rb', line 172</span>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/profile.rb', line 178</span>
 
 <span class='def def kw'>def</span> <span class='delete_extensions_cache identifier id'>delete_extensions_cache</span>
   <span class='cache identifier id'>cache</span> <span class='assign token'>=</span> <span class='File constant id'>File</span><span class='dot token'>.</span><span class='join identifier id'>join</span><span class='lparen token'>(</span><span class='directory identifier id'>directory</span><span class='comma token'>,</span> <span class='string val'>&quot;extensions.cache&quot;</span><span class='rparen token'>)</span>
@@ -1416,12 +1574,12 @@ TODO: add_extension
       <pre class="lines">
 
 
-164
-165
-166</pre>
+170
+171
+172</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/profile.rb', line 164</span>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/profile.rb', line 170</span>
 
 <span class='def def kw'>def</span> <span class='extensions_dir identifier id'>extensions_dir</span>
   <span class='@extensions_dir ivar id'>@extensions_dir</span> <span class='opasgn op'>||=</span> <span class='File constant id'>File</span><span class='dot token'>.</span><span class='join identifier id'>join</span><span class='lparen token'>(</span><span class='directory identifier id'>directory</span><span class='comma token'>,</span> <span class='string val'>&quot;extensions&quot;</span><span class='rparen token'>)</span>
@@ -1466,12 +1624,12 @@ TODO: add_extension
       <pre class="lines">
 
 
-192
-193
-194</pre>
+198
+199
+200</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/profile.rb', line 192</span>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/profile.rb', line 198</span>
 
 <span class='def def kw'>def</span> <span class='load_no_focus_lib? fid id'>load_no_focus_lib?</span>
   <span class='@load_no_focus_lib ivar id'>@load_no_focus_lib</span> <span class='eq op'>==</span> <span class='true true kw'>true</span>
@@ -1495,19 +1653,19 @@ TODO: add_extension
       <pre class="lines">
 
 
-177
-178
-179
-180
-181
-182
 183
 184
 185
-186</pre>
+186
+187
+188
+189
+190
+191
+192</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/profile.rb', line 177</span>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/profile.rb', line 183</span>
 
 <span class='def def kw'>def</span> <span class='modify_link_library_path identifier id'>modify_link_library_path</span><span class='lparen token'>(</span><span class='paths identifier id'>paths</span><span class='rparen token'>)</span>
   <span class='old_path identifier id'>old_path</span> <span class='assign token'>=</span> <span class='ENV constant id'>ENV</span><span class='lbrack token'>[</span><span class='string val'>'LD_LIBRARY_PATH'</span><span class='rbrack token'>]</span>
@@ -1559,12 +1717,12 @@ TODO: add_extension
       <pre class="lines">
 
 
-188
-189
-190</pre>
+194
+195
+196</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/profile.rb', line 188</span>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/profile.rb', line 194</span>
 
 <span class='def def kw'>def</span> <span class='native_events? fid id'>native_events?</span>
   <span class='@native_events ivar id'>@native_events</span> <span class='eq op'>==</span> <span class='true true kw'>true</span>
@@ -1609,12 +1767,12 @@ TODO: add_extension
       <pre class="lines">
 
 
-196
-197
-198</pre>
+202
+203
+204</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/profile.rb', line 196</span>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/profile.rb', line 202</span>
 
 <span class='def def kw'>def</span> <span class='secure_ssl? fid id'>secure_ssl?</span>
   <span class='@secure_ssl ivar id'>@secure_ssl</span> <span class='eq op'>==</span> <span class='true true kw'>true</span>
@@ -1638,9 +1796,6 @@ TODO: add_extension
       <pre class="lines">
 
 
-107
-108
-109
 110
 111
 112
@@ -1651,10 +1806,16 @@ TODO: add_extension
 117
 118
 119
-120</pre>
+120
+121
+122
+123
+124
+125
+126</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/profile.rb', line 107</span>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/profile.rb', line 110</span>
 
 <span class='def def kw'>def</span> <span class='update_user_prefs identifier id'>update_user_prefs</span>
   <span class='prefs identifier id'>prefs</span> <span class='assign token'>=</span> <span class='current_user_prefs identifier id'>current_user_prefs</span>
@@ -1663,10 +1824,13 @@ TODO: add_extension
   <span class='prefs identifier id'>prefs</span><span class='dot token'>.</span><span class='merge! fid id'>merge!</span> <span class='@additional_prefs ivar id'>@additional_prefs</span>
   <span class='prefs identifier id'>prefs</span><span class='dot token'>.</span><span class='merge! fid id'>merge!</span> <span class='DEFAULT_PREFERENCES constant id'>DEFAULT_PREFERENCES</span>
 
-  <span class='prefs identifier id'>prefs</span><span class='lbrack token'>[</span><span class='string val'>'webdriver_firefox_port'</span><span class='rbrack token'>]</span>           <span class='assign token'>=</span> <span class='@port ivar id'>@port</span>
-  <span class='prefs identifier id'>prefs</span><span class='lbrack token'>[</span><span class='string val'>'webdriver_accept_untrusted_certs'</span><span class='rbrack token'>]</span> <span class='assign token'>=</span> <span class='string val'>'true'</span> <span class='unless unless_mod kw'>unless</span> <span class='secure_ssl? fid id'>secure_ssl?</span>
-  <span class='prefs identifier id'>prefs</span><span class='lbrack token'>[</span><span class='string val'>'webdriver_enable_native_events'</span><span class='rbrack token'>]</span>   <span class='assign token'>=</span> <span class='string val'>'true'</span> <span class='if if_mod kw'>if</span> <span class='native_events? fid id'>native_events?</span>
-  <span class='prefs identifier id'>prefs</span><span class='lbrack token'>[</span><span class='string val'>&quot;startup.homepage_welcome_url&quot;</span><span class='rbrack token'>]</span>     <span class='assign token'>=</span> <span class='prefs identifier id'>prefs</span><span class='lbrack token'>[</span><span class='string val'>&quot;browser.startup.homepage&quot;</span><span class='rbrack token'>]</span> <span class='comment val'># If the user sets the home page, we should also start up there</span>
+  <span class='prefs identifier id'>prefs</span><span class='lbrack token'>[</span><span class='string val'>'webdriver_firefox_port'</span><span class='rbrack token'>]</span>            <span class='assign token'>=</span> <span class='@port ivar id'>@port</span>
+  <span class='prefs identifier id'>prefs</span><span class='lbrack token'>[</span><span class='string val'>'webdriver_accept_untrusted_certs'</span><span class='rbrack token'>]</span>  <span class='assign token'>=</span> <span class='notop op'>!</span><span class='secure_ssl? fid id'>secure_ssl?</span>
+  <span class='prefs identifier id'>prefs</span><span class='lbrack token'>[</span><span class='string val'>'webdriver_enable_native_events'</span><span class='rbrack token'>]</span>    <span class='assign token'>=</span> <span class='native_events? fid id'>native_events?</span>
+  <span class='prefs identifier id'>prefs</span><span class='lbrack token'>[</span><span class='string val'>'webdriver_assume_untrusted_issuer'</span><span class='rbrack token'>]</span> <span class='assign token'>=</span> <span class='assume_untrusted_certificate_issuer? fid id'>assume_untrusted_certificate_issuer?</span>
+
+  <span class='comment val'># If the user sets the home page, we should also start up there</span>
+  <span class='prefs identifier id'>prefs</span><span class='lbrack token'>[</span><span class='string val'>&quot;startup.homepage_welcome_url&quot;</span><span class='rbrack token'>]</span> <span class='assign token'>=</span> <span class='prefs identifier id'>prefs</span><span class='lbrack token'>[</span><span class='string val'>&quot;browser.startup.homepage&quot;</span><span class='rbrack token'>]</span>
 
   <span class='write_prefs identifier id'>write_prefs</span> <span class='prefs identifier id'>prefs</span>
 <span class='end end kw'>end</span>
@@ -1689,12 +1853,12 @@ TODO: add_extension
       <pre class="lines">
 
 
-168
-169
-170</pre>
+174
+175
+176</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/profile.rb', line 168</span>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/profile.rb', line 174</span>
 
 <span class='def def kw'>def</span> <span class='user_prefs_path identifier id'>user_prefs_path</span>
   <span class='@user_prefs_path ivar id'>@user_prefs_path</span> <span class='opasgn op'>||=</span> <span class='File constant id'>File</span><span class='dot token'>.</span><span class='join identifier id'>join</span><span class='lparen token'>(</span><span class='directory identifier id'>directory</span><span class='comma token'>,</span> <span class='string val'>&quot;user.js&quot;</span><span class='rparen token'>)</span>
@@ -1710,9 +1874,9 @@ TODO: add_extension
 </div>
     
     <div id="footer">
-  Generated on Wed Apr 21 13:36:17 2010 by 
+  Generated on Mon May 31 17:07:42 2010 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool">yard</a>
-  0.5.3 (ruby-1.8.7).
+  0.5.5 (ruby-1.8.7).
 </div>
 
   </body>

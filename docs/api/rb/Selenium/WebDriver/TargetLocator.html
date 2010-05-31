@@ -2,7 +2,7 @@
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
   <head>
-    <meta name="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="Content-Type" content="text/html; charset=utf-8" />
 <title>Class: Selenium::WebDriver::TargetLocator</title>
 <link rel="stylesheet" href="../../css/style.css" type="text/css" media="screen" charset="utf-8" />
 <link rel="stylesheet" href="../../css/common.css" type="text/css" media="screen" charset="utf-8" />
@@ -43,7 +43,8 @@
     
     <iframe id="search_frame"></iframe>
     
-    <div id="content"><h1>Class: Selenium::WebDriver::TargetLocator 
+    <div id="content"><h1>Class: Selenium::WebDriver::TargetLocator
+  
   
   
 </h1>
@@ -71,6 +72,7 @@
     
   
   
+  
     <dt class="r2 last">Defined in:</dt>
     <dd class="r2 last">common/src/rb/lib/selenium/webdriver/target_locator.rb</dd>
   
@@ -80,11 +82,15 @@
 
 
 
-  <h2>Instance Method Summary</h2>
+  
+    <h2>
+      Instance Method Summary
+      <small>(<a href="#" class="summary_toggle">collapse</a>)</small>
+    </h2>
 
-  <ul class="summary">
-    
-      <li class="public ">
+    <ul class="summary">
+      
+        <li class="public ">
   <span class="summary_signature">
     
       <a href="#active_element-instance_method" title="#active_element (instance method)">- (WebDriver::Element) <strong>active_element</strong> </a>
@@ -97,17 +103,18 @@
   
   
   
+  
 
   
-    <span class="summary_desc">
+    <span class="summary_desc"><div class='inline'><p>
 get the active element.
-
-</span>
+</p>
+</div></span>
   
 </li>
 
-    
-      <li class="public ">
+      
+        <li class="public ">
   <span class="summary_signature">
     
       <a href="#default_content-instance_method" title="#default_content (instance method)">- (Object) <strong>default_content</strong> </a>
@@ -120,18 +127,19 @@ get the active element.
   
   
   
+  
 
   
-    <span class="summary_desc">
+    <span class="summary_desc"><div class='inline'><p>
 selects either the first frame on the page, or the main document when a
 page contains iframes.
-
-</span>
+</p>
+</div></span>
   
 </li>
 
-    
-      <li class="public ">
+      
+        <li class="public ">
   <span class="summary_signature">
     
       <a href="#frame-instance_method" title="#frame (instance method)">- (Object) <strong>frame</strong>(id) </a>
@@ -144,17 +152,18 @@ page contains iframes.
   
   
   
+  
 
   
-    <span class="summary_desc">
+    <span class="summary_desc"><div class='inline'><p>
 switch to the frame with the given id.
-
-</span>
+</p>
+</div></span>
   
 </li>
 
-    
-      <li class="public ">
+      
+        <li class="public ">
   <span class="summary_signature">
     
       <a href="#initialize-instance_method" title="#initialize (instance method)">- (TargetLocator) <strong>initialize</strong>(driver) </a>
@@ -169,17 +178,18 @@ switch to the frame with the given id.
   
   
   
+  <span class="private note title">Private</span>
 
   
-    <span class="summary_desc">
+    <span class="summary_desc"><div class='inline'><p>
 A new instance of TargetLocator.
-
-</span>
+</p>
+</div></span>
   
 </li>
 
-    
-      <li class="public ">
+      
+        <li class="public ">
   <span class="summary_signature">
     
       <a href="#window-instance_method" title="#window (instance method)">- (Object) <strong>window</strong>(id) </a>
@@ -192,17 +202,20 @@ A new instance of TargetLocator.
   
   
   
+  
 
   
-    <span class="summary_desc">
+    <span class="summary_desc"><div class='inline'><p>
 switch to the frame with the given id.
-
-</span>
+</p>
+</div></span>
   
 </li>
 
-    
-  </ul>
+      
+    </ul>
+  
+
 <div id="constructor_details" class="method_details_list">
   <h2>Constructor Details</h2>
   
@@ -215,7 +228,11 @@ switch to the frame with the given id.
   
 </p><div class="docstring">
   <div class="discussion">
-    <p>
+    <p class="note private">
+  <strong>This method is part of a private API.</strong> 
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+<p>
 A new instance of TargetLocator
 </p>
 
@@ -421,10 +438,10 @@ block execution.
       
       
         &mdash;
-        
+        <div class='inline'><p>
 A window handle
-
-
+</p>
+</div>
       
     </li>
   
@@ -487,9 +504,9 @@ A window handle
 </div>
     
     <div id="footer">
-  Generated on Wed Apr 21 13:36:24 2010 by 
+  Generated on Mon May 31 17:07:41 2010 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool">yard</a>
-  0.5.3 (ruby-1.8.7).
+  0.5.5 (ruby-1.8.7).
 </div>
 
   </body>

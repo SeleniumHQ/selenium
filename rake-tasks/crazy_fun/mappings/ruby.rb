@@ -80,9 +80,9 @@ class RubyMappings
         ENV['WD_SPEC_DRIVER'] = args[:driver_name] # TODO: get rid of ENV
 
         ruby :include => args[:include],
-        :require => args[:require],
-        :command => args[:command],
-        :files   => args[:srcs]
+             :require => args[:require],
+             :command => args[:command],
+             :files   => args[:srcs]
       end
     end
   end
@@ -97,13 +97,13 @@ class RubyMappings
     end
 
     def define_task(args)
-      files      = args[:srcs] || raise("no :srcs specified for rubydocs")
+      files      = args[:files] || raise("no :files specified for rubydocs")
       output_dir = args[:output_dir] || raise("no :output_dir specified for rubydocs")
 
       files  = Array(files).map { |glob| Dir[glob] }.flatten
 
       YARD::Rake::YardocTask.new("ruby:docs") do |t|
-        t.files = files
+        t.files = args[:files]
         t.options << "--verbose"
         t.options << "--readme" << args[:readme] if args.has_key?(:readme)
         t.options << "--output-dir" << output_dir

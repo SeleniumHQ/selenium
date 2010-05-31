@@ -2,7 +2,7 @@
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
   <head>
-    <meta name="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="Content-Type" content="text/html; charset=utf-8" />
 <title>Class: Selenium::WebDriver::Remote::DefaultHttpClient</title>
 <link rel="stylesheet" href="../../../css/style.css" type="text/css" media="screen" charset="utf-8" />
 <link rel="stylesheet" href="../../../css/common.css" type="text/css" media="screen" charset="utf-8" />
@@ -43,7 +43,8 @@
     
     <iframe id="search_frame"></iframe>
     
-    <div id="content"><h1>Class: Selenium::WebDriver::Remote::DefaultHttpClient 
+    <div id="content"><h1>Class: Selenium::WebDriver::Remote::DefaultHttpClient
+  
   
   
 </h1>
@@ -71,6 +72,7 @@
     
   
   
+  
     <dt class="r2 last">Defined in:</dt>
     <dd class="r2 last">remote/client/src/rb/lib/selenium/webdriver/remote/default_http_client.rb</dd>
   
@@ -90,14 +92,31 @@
   
     <dl class="constants">
       
+        <dt id="MAX_REDIRECTS-constant" class="">MAX_REDIRECTS =
+          <div class="docstring">
+  <div class="discussion">
+    <p>
+same as chromium/gecko
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+</div>
+        </dt>
+        <dd><pre class="code"><span class='integer val'>20</span>
+</pre></dd>
+      
         <dt id="CONTENT_TYPE-constant" class="">CONTENT_TYPE =
-            <span class="summary_desc"></span>
+          
         </dt>
         <dd><pre class="code"><span class='string val'>&quot;application/json&quot;</span>
 </pre></dd>
       
         <dt id="DEFAULT_HEADERS-constant" class="">DEFAULT_HEADERS =
-            <span class="summary_desc"></span>
+          
         </dt>
         <dd><pre class="code"><span class='lbrace token'>{</span> <span class='string val'>&quot;Accept&quot;</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='CONTENT_TYPE constant id'>CONTENT_TYPE</span><span class='comma token'>,</span> <span class='string val'>&quot;Content-Length&quot;</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;0&quot;</span> <span class='rbrace token'>}</span>
 </pre></dd>
@@ -107,11 +126,15 @@
 
 
 
-  <h2>Instance Method Summary</h2>
+  
+    <h2>
+      Instance Method Summary
+      <small>(<a href="#" class="summary_toggle">collapse</a>)</small>
+    </h2>
 
-  <ul class="summary">
-    
-      <li class="public ">
+    <ul class="summary">
+      
+        <li class="public ">
   <span class="summary_signature">
     
       <a href="#call-instance_method" title="#call (instance method)">- (Object) <strong>call</strong>(verb, url, command_hash) </a>
@@ -124,14 +147,15 @@
   
   
   
+  
 
   
-    <span class="summary_desc"></span>
+    <span class="summary_desc"><div class='inline'></div></span>
   
 </li>
 
-    
-      <li class="public ">
+      
+        <li class="public ">
   <span class="summary_signature">
     
       <a href="#initialize-instance_method" title="#initialize (instance method)">- (DefaultHttpClient) <strong>initialize</strong>(url) </a>
@@ -146,17 +170,20 @@
   
   
   
+  
 
   
-    <span class="summary_desc">
+    <span class="summary_desc"><div class='inline'><p>
 A new instance of DefaultHttpClient.
-
-</span>
+</p>
+</div></span>
   
 </li>
 
-    
-  </ul>
+      
+    </ul>
+  
+
 <div id="constructor_details" class="method_details_list">
   <h2>Constructor Details</h2>
   
@@ -184,12 +211,12 @@ A new instance of DefaultHttpClient
       <pre class="lines">
 
 
-12
 13
-14</pre>
+14
+15</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/default_http_client.rb', line 12</span>
+      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/default_http_client.rb', line 13</span>
 
 <span class='def def kw'>def</span> <span class='initialize identifier id'>initialize</span><span class='lparen token'>(</span><span class='url identifier id'>url</span><span class='rparen token'>)</span>
   <span class='@server_url ivar id'>@server_url</span> <span class='assign token'>=</span> <span class='url identifier id'>url</span>
@@ -220,7 +247,6 @@ A new instance of DefaultHttpClient
       <pre class="lines">
 
 
-16
 17
 18
 19
@@ -237,10 +263,11 @@ A new instance of DefaultHttpClient
 30
 31
 32
-33</pre>
+33
+34</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/default_http_client.rb', line 16</span>
+      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/default_http_client.rb', line 17</span>
 
 <span class='def def kw'>def</span> <span class='call identifier id'>call</span><span class='lparen token'>(</span><span class='verb identifier id'>verb</span><span class='comma token'>,</span> <span class='url identifier id'>url</span><span class='comma token'>,</span> <span class='command_hash identifier id'>command_hash</span><span class='rparen token'>)</span>
   <span class='response identifier id'>response</span> <span class='assign token'>=</span> <span class='nil nil kw'>nil</span>
@@ -271,9 +298,9 @@ A new instance of DefaultHttpClient
 </div>
     
     <div id="footer">
-  Generated on Wed Apr 21 13:36:18 2010 by 
+  Generated on Mon May 31 17:07:45 2010 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool">yard</a>
-  0.5.3 (ruby-1.8.7).
+  0.5.5 (ruby-1.8.7).
 </div>
 
   </body>

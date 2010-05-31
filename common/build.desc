@@ -39,12 +39,9 @@ rake_file(
   src = "src/js/core/RemoteRunner.html")  
 
 rubydocs(
-  srcs = [
-    "chrome/src/rb/lib/**/*.rb",
-    "common/src/rb/lib/**/*.rb",
-    "firefox/src/rb/lib/**/*.rb",
-    "jobbie/src/rb/lib/**/*.rb",
-    "remote/client/src/rb/lib/**/*.rb"
+  files = [
+    "{chrome,common,firefox,jobbie,remote/client}/src/rb/lib/**/*.rb",
+    "common/src/rb/CHANGES"
   ],
   readme = "common/src/rb/README",
   output_dir = "build/rubydocs"
