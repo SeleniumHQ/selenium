@@ -49,6 +49,7 @@ module Selenium
           until Time.now > max_time
             begin
               socket_lock = TCPServer.new(@host, locking_port)
+              # make sure the fd is not inherited by firefox
               socket_lock.fcntl(Fcntl::F_SETFD, Fcntl::FD_CLOEXEC) if defined? Fcntl::FD_CLOEXEC
 
               yield

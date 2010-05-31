@@ -44,6 +44,7 @@ describe "WebDriver::TargetLocator" do
       driver.close
     end
 
+    driver.current_url.should include("xhtmlTest.html")
     driver.title.should == "XHTML Test Page"
     reset_driver!
   end
