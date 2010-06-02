@@ -203,6 +203,12 @@ public class BeanToJsonConverterTest extends TestCase {
     assertEquals(json, proxy.getHttpProxy(), capsAsMap.getJSONObject("proxy").get("httpProxy"));
   }
 
+  public void testShouldCallToJsonMethodIfPresent() {
+    String json = new BeanToJsonConverter().convert(new JsonAware("converted"));
+    
+    assertEquals("converted", json);
+  }
+  
   private static class SimpleBean {
 
     public String getFoo() {
@@ -257,5 +263,17 @@ public class BeanToJsonConverterTest extends TestCase {
     };
 
     public abstract void eat(String foodStuff);
+  }
+  
+  public class JsonAware {
+    private String convertedValue;
+    
+    public JsonAware(String convertedValue) {
+      this.convertedValue = convertedValue;
+    }
+
+    public String toJson() {
+      return convertedValue;
+    }
   }
 }

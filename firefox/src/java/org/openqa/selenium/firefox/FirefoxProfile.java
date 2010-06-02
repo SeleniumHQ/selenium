@@ -23,6 +23,7 @@ import org.openqa.selenium.Proxy.ProxyType;
 import org.openqa.selenium.internal.Cleanly;
 import org.openqa.selenium.internal.FileHandler;
 import org.openqa.selenium.internal.TemporaryFilesystem;
+import org.openqa.selenium.internal.Zip;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
@@ -582,4 +583,18 @@ public class FirefoxProfile {
     public void clean() {
       TemporaryFilesystem.deleteTempDir(profileDir);
     }
+
+  public String toJson() throws IOException {
+    updateUserPrefs();
+
+    return new Zip().zip(profileDir);
+  }
+
+  public static FirefoxProfile fromJson(String json) throws IOException {
+    File dir = TemporaryFilesystem.createTempDir("webdriver", "duplicated");
+
+    new Zip().unzip(json, dir);
+
+    return new FirefoxProfile(dir);
+  }
 }

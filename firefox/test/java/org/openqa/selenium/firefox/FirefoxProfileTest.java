@@ -20,15 +20,17 @@ package org.openqa.selenium.firefox;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 
-import junit.framework.TestCase;
-
-import org.openqa.selenium.Proxy;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import junit.framework.TestCase;
+
+import org.openqa.selenium.Proxy;
+import org.openqa.selenium.internal.FileHandler;
 
 public class FirefoxProfileTest extends TestCase {
 
@@ -119,6 +121,22 @@ public class FirefoxProfileTest extends TestCase {
     }
 
     assertTrue("Did not see integer value being set correctly", seenCheese);
+  }
+
+  public void testShouldConvertItselfIntoAMeaningfulRepresentation() throws IOException {
+    FirefoxProfile profile = new FirefoxProfile();
+    profile.setPreference("i.like.cheese", true);
+
+    String json = profile.toJson();
+
+    assertNotNull(json);
+
+    FirefoxProfile recovered = FirefoxProfile.fromJson(json);
+
+    File prefs = new File(recovered.getProfileDir(), "user.js");
+    assertTrue(prefs.exists());
+    
+    assertTrue(FileHandler.readAsString(prefs).contains("i.like.cheese"));
   }
 
   private List<String> readGeneratedProperties(FirefoxProfile profile) throws Exception {

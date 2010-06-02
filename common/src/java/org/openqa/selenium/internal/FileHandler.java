@@ -19,73 +19,45 @@ limitations under the License.
 
 package org.openqa.selenium.internal;
 
-import org.openqa.selenium.WebDriverException;
-
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.channels.FileChannel;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.io.IOException;
-import java.io.BufferedInputStream;
-import java.io.OutputStream;
-import java.io.BufferedOutputStream;
-import java.io.FileOutputStream;
-import java.io.FileInputStream;
+
+import org.openqa.selenium.WebDriverException;
 
 /**
  * Utility methods for common filesystem activities
  */
 public class FileHandler {
-  private static final int BUF_SIZE = 16384; // "big"
   private static final Method JDK6_SETWRITABLE = findJdk6SetWritableMethod();
   private static final File CHMOD_SETWRITABLE = findChmodCommand();
 
+  // TODO(simon): Move to using Zip class
   public static File unzip(InputStream resource) throws IOException {
     File output = TemporaryFilesystem.createTempDir("unzip", "stream");
-    
-    ZipInputStream zipStream = new ZipInputStream(new BufferedInputStream(resource, BUF_SIZE));
-    ZipEntry entry = zipStream.getNextEntry();
-    while (entry != null) {
-      if (entry.isDirectory()) {
-        createDir(new File(output, entry.getName()));
-      } else {
-        unzipFile(output, zipStream, entry.getName());
-      }
-      entry = zipStream.getNextEntry();
-    }
+
+    new Zip().unzip(resource, output);
 
     return output;
   }
 
-  private static void unzipFile(File output, InputStream zipStream, String name)
-      throws IOException {
-    File toWrite = new File(output, name);
-
-    if (!createDir(toWrite.getParentFile()))
-       throw new IOException("Cannot create parent director for: " + name);
-
-    OutputStream out = new BufferedOutputStream(new FileOutputStream(toWrite), BUF_SIZE);
-    try {
-      byte[] buffer = new byte[BUF_SIZE];
-      int read;
-      while ((read = zipStream.read(buffer)) != -1) {
-        out.write(buffer, 0, read);
-      }
-    } finally {
-      out.close();
-    }
-  }
-
   public static void copyResource(File outputDir, Class<?> forClassLoader, String... names)
       throws IOException {
+    Zip zip = new Zip();
+
     for (String name : names) {
       InputStream is = locateResource(forClassLoader, name);
       try {
-        unzipFile(outputDir, is, name);
+        zip.unzipFile(outputDir, is, name);
       } finally {
         Cleanly.close(is);
       }
@@ -167,7 +139,7 @@ public class FileHandler {
 
     return deleted && toDelete.canWrite() && toDelete.delete();
   }
-  
+
   public static void copy(File from, File to) throws IOException {
     copy(from, to, new NoFilter());
   }
@@ -191,24 +163,20 @@ public class FileHandler {
   /**
    * Locates a file in the current project
    * @param path path to file to locate from root of project
-   * @return file being saught, if it exists
+   * @return file being sought, if it exists
    * @throws WebDriverException wrapped FileNotFoundException if file could
    * not be found
    */
   public static File locateInProject(String path) {
-    // It'll be one of these. Probably
-    String[] locations = {
-      "../",  // IDEA
-      ".",     // Eclipse
-    };
-
-    for (String location : locations) {
-      File file = new File(location, path);
-      if (file.exists()) {
-        return file;
+    File dir = new File(".").getAbsoluteFile();
+    while (dir != null) {
+      File needle = new File(dir, path);
+      if (needle.exists()) {
+        return needle;
       }
+      dir = dir.getParentFile();
     }
-
+    
     throw new WebDriverException(new FileNotFoundException(
         "Could not find " + path + " in the project"));
   }
@@ -241,7 +209,7 @@ public class FileHandler {
       in = new FileInputStream(from).getChannel();
       out = new FileOutputStream(to).getChannel();
       final long length = in.size();
-      
+
       final long copied = in.transferTo(0, in.size(), out);
       if (copied != length) {
         throw new IOException("Could not transfer all bytes.");
@@ -263,12 +231,12 @@ public class FileHandler {
       return null;
     }
   }
-  
+
   /**
    * In JDK5 and earlier, we have to use a chmod command from the path.
    */
   private static File findChmodCommand() {
-    
+
     // Search the path for chmod
     String allPaths = System.getenv("PATH");
     String[] paths = allPaths.split(File.pathSeparator);
@@ -307,6 +275,26 @@ public class FileHandler {
   private static class NoFilter implements Filter {
     public boolean isRequired(File file) {
       return true;
+    }
+  }
+
+  public static String readAsString(File toRead) throws IOException {
+    Reader reader = null;
+    try {
+      reader = new BufferedReader(new FileReader(toRead));
+      StringBuilder builder = new StringBuilder();
+    
+      char[] buffer = new char[4096];
+      int read;
+      while ((read = reader.read(buffer)) != -1) {
+        char[] target = new char[read];
+        System.arraycopy(buffer, 0, target, 0, read);
+        builder.append(target);
+      }
+    
+      return builder.toString();
+    } finally {
+      Cleanly.close(reader);
     }
   }
 }

@@ -49,6 +49,11 @@ class Preferences {
     profile.getAdditionalPreferences().additionalPrefs.putAll(additionalPrefs);
   }
 
+  // Visible for testing
+  protected Object getPreference(String key) {
+    return additionalPrefs.get(key);
+  }
+  
   private boolean isStringified(String value) {
     // Assume we a string is stringified (i.e. wrapped in " ") when
     // the first character == " and the last character == "

@@ -22,6 +22,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Map;
 
 import org.openqa.selenium.Platform;
@@ -30,6 +32,7 @@ import org.openqa.selenium.WebDriverException;
 import static org.openqa.selenium.Platform.WINDOWS;
 
 public class CommandLine {
+  private static final Method JDK6_CAN_EXECUTE = findJdk6CanExecuteMethod();
   private final String[] commandAndArgs;
   private StreamDrainer drainer;
   private int exitCode;
@@ -47,7 +50,7 @@ public class CommandLine {
 
   public static String findExecutable(String named) {
     File file = new File(named);
-    if (file.canExecute()) {
+    if (canExecute(file)) {
       return named;
     }
 
@@ -71,7 +74,7 @@ public class CommandLine {
     for (String segment : path.split(File.pathSeparator)) {
       for (String ending : endings) {
         file = new File(segment, named + ending);
-        if (file.canExecute()) {
+        if (canExecute(file)) {
           return file.getAbsolutePath();
         }
       }
@@ -154,11 +157,33 @@ public class CommandLine {
     proc.destroy();
   }
 
+  private static boolean canExecute(File file) {
+    if (JDK6_CAN_EXECUTE != null) {
+      try {
+        return (Boolean) JDK6_CAN_EXECUTE.invoke(file);
+      } catch (IllegalAccessException e) {
+        // Do nothing
+      } catch (InvocationTargetException e) {
+        // Still do nothing
+      }
+    }
+    return true;
+  }
+
+  private static Method findJdk6CanExecuteMethod() {
+    try {
+      return File.class.getMethod("setWritable", Boolean.class);
+    } catch (NoSuchMethodException e) {
+      return null;
+    }
+  }
+
+
   private static class StreamDrainer implements Runnable {
     private final Process toWatch;
     private ByteArrayOutputStream inputOut;
 
-    public StreamDrainer(Process toWatch) {
+    StreamDrainer(Process toWatch) {
       this.toWatch = toWatch;
     }
 

@@ -30,6 +30,7 @@ import java.beans.BeanInfo;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Array;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -59,7 +60,7 @@ public class BeanToJsonConverter {
 
     try {
       Object converted = convertObject(object, MAX_DEPTH);
-      if (converted instanceof JSONObject || converted instanceof JSONArray) {
+      if (converted instanceof JSONObject || converted instanceof JSONArray || converted instanceof String) {
         return converted.toString();
       }
 
@@ -174,12 +175,37 @@ public class BeanToJsonConverter {
     if (toConvert instanceof DoNotUseProxyPac) {
       return convertObject(((DoNotUseProxyPac) toConvert).asMap(), maxDepth -1);
     }
+    
+    Method toJson = getToJsonMethod(toConvert);
+    if (toJson != null) {
+      try {
+        return toJson.invoke(toConvert);
+      } catch (IllegalArgumentException e) {
+        throw new WebDriverException(e);
+      } catch (IllegalAccessException e) {
+        throw new WebDriverException(e);
+      } catch (InvocationTargetException e) {
+        throw new WebDriverException(e);
+      }
+    }
 
     try {
       return mapObject(toConvert, maxDepth - 1);
     } catch(Exception e) {
       throw new WebDriverException(e);
     }
+  }
+
+  private Method getToJsonMethod(Object toConvert) {
+    try {
+      return toConvert.getClass().getMethod("toJson");
+    } catch (SecurityException e) {
+      // fall through
+    } catch (NoSuchMethodException e) {
+      // fall through
+    }
+    
+    return null;
   }
 
   private Object mapObject(Object toConvert, int maxDepth) throws Exception {

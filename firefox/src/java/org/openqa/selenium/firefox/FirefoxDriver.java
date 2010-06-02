@@ -18,17 +18,16 @@ limitations under the License.
 
 package org.openqa.selenium.firefox;
 
+import static org.openqa.selenium.OutputType.FILE;
+import static org.openqa.selenium.browserlaunchers.CapabilityType.PROXY;
+
 import java.io.File;
 import java.io.IOException;
-import java.net.BindException;
-import java.net.InetSocketAddress;
-import java.net.Socket;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.google.common.collect.ImmutableMap;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.NoAlertPresentException;
@@ -39,7 +38,6 @@ import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.UnhandledAlertException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.browserlaunchers.CapabilityType;
 import org.openqa.selenium.browserlaunchers.Proxies;
 import org.openqa.selenium.firefox.internal.Lock;
 import org.openqa.selenium.firefox.internal.NewProfileExtensionConnection;
@@ -54,8 +52,7 @@ import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.Response;
 
-import static org.openqa.selenium.OutputType.FILE;
-import static org.openqa.selenium.browserlaunchers.CapabilityType.PROXY;
+import com.google.common.collect.ImmutableMap;
 
 
 /**
@@ -91,8 +88,6 @@ public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot, F
 
   private FirefoxAlert currentAlert;
 
-
-  private final LazyCommandExecutor executor;
   protected FirefoxBinary binary;
   protected FirefoxProfile profile;
 
@@ -115,6 +110,12 @@ public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot, F
       Object raw = capabilities.getCapability(PROFILE);
       if (raw instanceof FirefoxProfile) {
         profile = (FirefoxProfile) raw;
+      } else if (raw instanceof String) {
+        try {
+          profile = FirefoxProfile.fromJson((String) raw);
+        } catch (IOException e) {
+          throw new WebDriverException(e);
+        }
       }
     }
 
@@ -138,7 +139,6 @@ public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot, F
     super(new LazyCommandExecutor(binary, profile), DesiredCapabilities.firefox());
     this.binary = binary;
     this.profile = profile;
-    executor = (LazyCommandExecutor) getCommandExecutor();
   }
 
   @Override

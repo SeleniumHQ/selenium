@@ -65,7 +65,18 @@ public class FirefoxDriverTestSuite extends TestCase {
 
     private static Capabilities tweakCapabilities(Capabilities caps) {
       DesiredCapabilities tweaked = new DesiredCapabilities(caps.asMap());
-      tweaked.setCapability(PROFILE, createTemporaryProfile());
+      if (tweaked.getCapability(PROFILE) == null) {
+        tweaked.setCapability(PROFILE, createTemporaryProfile());
+      } else {
+        try {
+          FirefoxProfile profile = 
+              FirefoxProfile.fromJson((String) tweaked.getCapability(PROFILE));
+          copyExtensionTo(profile);
+          tweaked.setCapability(PROFILE, profile);
+        } catch (IOException e) {
+          throw new RuntimeException(e);
+        }
+      }
       return tweaked;
     }
 

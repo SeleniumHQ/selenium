@@ -65,7 +65,6 @@ public class DriverSessions {
       registerDriver(caps, Class.forName(className).asSubclass(WebDriver.class));
     } catch (ClassNotFoundException e) {
       // OK. Fall through. We just won't be able to create these
-      e.printStackTrace();
     } catch (NoClassDefFoundError e) {
       // OK. Missing a dependency, which is obviously a Bad Thing
       // TODO(simon): Log this!
