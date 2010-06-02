@@ -37,6 +37,7 @@ class CrazyFun
       else
         src = "#{root}/#{of}".gsub("/", Platform.dir_separator)
       end
+      
       if (File.exists? src)
         return src
       end
