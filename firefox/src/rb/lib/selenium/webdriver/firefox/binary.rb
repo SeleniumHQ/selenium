@@ -49,6 +49,10 @@ module Selenium
           end
         end
 
+        def quit
+          @process.ensure_death if @process
+        end
+
         def kill
           @process.kill if @process
         end
@@ -95,7 +99,7 @@ module Selenium
             lm = Win32::Registry::HKEY_LOCAL_MACHINE
             lm.open("SOFTWARE\\Mozilla\\Mozilla Firefox") do |reg|
               main = lm.open("SOFTWARE\\Mozilla\\Mozilla Firefox\\#{reg.keys[0]}\\Main")
-              if entry = main.find {|key, type, data| key =~ /pathtoexe/i}
+              if entry = main.find { |key, type, data| key =~ /pathtoexe/i }
                 return entry.last
               end
             end

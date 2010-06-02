@@ -31,7 +31,7 @@ module Selenium
           end
 
           @executor.close
-          @launcher.kill
+          @launcher.quit
         end
 
         def getScreenshot

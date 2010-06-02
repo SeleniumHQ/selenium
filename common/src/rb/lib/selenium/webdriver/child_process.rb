@@ -23,10 +23,13 @@ module Selenium
       end
 
       def ugly_death?
-        code = exit_value()
-        # if exit_val is nil, the process is still alive
+        code = exit_value
         code && code != 0
       end
+
+      #
+      # Returns the exit value of the process, or nil if it's still alive.
+      #
 
       def exit_value
         pid, status = Process.waitpid2(@pid, Process::WNOHANG)
@@ -43,6 +46,52 @@ module Selenium
         end
 
         self
+      end
+
+      #
+      # Tries increasingly harsher methods to make the process die within
+      # a reasonable time
+      #
+
+      def ensure_death
+        begin
+          $stderr.puts "wait_nonblock(5) -> #{self}" if $DEBUG
+          return wait_nonblock(5)
+        rescue Error::TimeOutError
+          # try next
+        end
+
+        $stderr.puts "TERM -> #{self}" if $DEBUG
+        kill
+
+        begin
+          $stderr.puts "wait_nonblock(5) -> #{self}" if $DEBUG
+          return wait_nonblock(5)
+        rescue Error::TimeOutError
+          # try next
+        end
+
+        $stderr.puts "KILL -> #{self}" if $DEBUG
+        kill!
+
+        $stderr.puts "wait_nonblock(5) -> #{self}" if $DEBUG
+        wait_nonblock(5)
+      rescue Errno::ECHILD
+        # great!
+        true
+      end
+
+      def wait_nonblock(timeout)
+        end_time = Time.now + timeout
+        until Time.now > end_time || exited = exit_value
+          sleep 0.1
+        end
+
+        unless exited
+          raise Error::TimeOutError, "process still alive after #{timeout} seconds"
+        end
+
+        exited
       end
 
       def wait
@@ -75,6 +124,13 @@ module Selenium
           ).process_id
 
           self
+        end
+        
+        def wait_nonblock(timeout)
+          return super if defined?(Process::WNOHANG) 
+          Timeout.timeout(timeout, Error::TimeOutError) { wait }
+        rescue Process::Error
+          # no handle, great
         end
 
         def kill

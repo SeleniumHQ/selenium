@@ -38,8 +38,8 @@ module Selenium
           pid
         end
 
-        def kill
-          @process.kill
+        def quit
+          @process.ensure_death
         end
 
         private

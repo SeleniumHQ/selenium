@@ -31,7 +31,7 @@ module Selenium
 
         def quit
           super
-          @binary.wait rescue nil # might raise on windows
+          @binary.quit
 
           nil
         end
