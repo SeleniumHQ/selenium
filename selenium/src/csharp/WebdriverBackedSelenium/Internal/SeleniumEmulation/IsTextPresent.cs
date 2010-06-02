@@ -48,7 +48,7 @@ namespace Selenium.Internal.SeleniumEmulation
 
         private void SetUpTextMatchingStrategies()
         {
-            if(textMatchingStrategies.Count == 0)
+            if (textMatchingStrategies.Count == 0)
             {
                 textMatchingStrategies.Add("implicit", new GlobTextMatchingStrategy());
                 textMatchingStrategies.Add("glob", new GlobTextMatchingStrategy());

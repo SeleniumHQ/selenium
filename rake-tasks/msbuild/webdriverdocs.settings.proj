@@ -1,8 +1,8 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <DocumentationSources>
-      <!--DocumentationSource sourceFile="$(DocSourceDirectory)\WebDriver.Chrome.dll" xmlns="" />
-      <DocumentationSource sourceFile="$(DocSourceDirectory)\WebDriver.Chrome.xml" xmlns="" /-->
+      <DocumentationSource sourceFile="$(DocSourceDirectory)\WebDriver.Chrome.dll" xmlns="" />
+      <DocumentationSource sourceFile="$(DocSourceDirectory)\WebDriver.Chrome.xml" xmlns="" />
       <DocumentationSource sourceFile="$(DocSourceDirectory)\WebDriver.Common.dll" xmlns="" />
       <DocumentationSource sourceFile="$(DocSourceDirectory)\WebDriver.Common.xml" xmlns="" />
       <DocumentationSource sourceFile="$(DocSourceDirectory)\WebDriver.Firefox.dll" xmlns="" />
@@ -11,6 +11,8 @@
       <DocumentationSource sourceFile="$(DocSourceDirectory)\WebDriver.IE.xml" xmlns="" />
       <DocumentationSource sourceFile="$(DocSourceDirectory)\WebDriver.Remote.dll" xmlns="" />
       <DocumentationSource sourceFile="$(DocSourceDirectory)\WebDriver.Remote.xml" xmlns="" />
+      <DocumentationSource sourceFile="$(DocSourceDirectory)\WebDriver.Remote.Common.dll" xmlns="" />
+      <DocumentationSource sourceFile="$(DocSourceDirectory)\WebDriver.Remote.Common.xml" xmlns="" />
     </DocumentationSources>
   </PropertyGroup>
 </Project>

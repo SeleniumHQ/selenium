@@ -72,6 +72,16 @@ namespace OpenQA.Selenium.Remote
         }
 
         /// <summary>
+        /// Returns a new <see cref="Response"/> from a JSON-encoded string.
+        /// </summary>
+        /// <param name="jsonString">The JSON string to deserialize into a <see cref="Response"/>.</param>
+        /// <returns>A <see cref="Response"/> object described by the JSON string.</returns>
+        public static Response FromJson(string jsonString)
+        {
+            return JsonConvert.DeserializeObject<Response>(jsonString);
+        }
+
+        /// <summary>
         /// Returns the object as a string.
         /// </summary>
         /// <returns>A string with the Session ID, status value, and the value from JSON.</returns>

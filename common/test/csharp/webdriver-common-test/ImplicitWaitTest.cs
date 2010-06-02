@@ -17,7 +17,7 @@ namespace OpenQA.Selenium
             driver.Url = dynamicPage;
             IWebElement add = driver.FindElement(By.Id("adder"));
 
-            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromMilliseconds(1100));
+            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromMilliseconds(3000));
 
             add.Click();
             driver.FindElement(By.Id("box0"));  // All is well if this doesn't throw.
@@ -41,7 +41,7 @@ namespace OpenQA.Selenium
         public void ShouldReturnAfterFirstAttemptToFindOneAfterDisablingImplicitWaits()
         {
             driver.Url = dynamicPage;
-            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromMilliseconds(1100));
+            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromMilliseconds(3000));
             driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromMilliseconds(0));
             driver.FindElement(By.Id("box0"));
         }
@@ -54,7 +54,7 @@ namespace OpenQA.Selenium
             driver.Url = dynamicPage;
             IWebElement add = driver.FindElement(By.Id("adder"));
 
-            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromMilliseconds(1100));
+            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromMilliseconds(2000));
             add.Click();
             add.Click();
 

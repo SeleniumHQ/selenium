@@ -59,6 +59,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "webdriver-chrome-test", "ch
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebDriverBackedSelenium", "selenium\src\csharp\WebDriverBackedSelenium\WebDriverBackedSelenium.csproj", "{0EAF6AA9-B712-464B-A11B-FA3CF7577D80}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebDriver.Remote.Common", "remote\common\src\csharp\webdriver-remote-common\WebDriver.Remote.Common.csproj", "{C2A1DAE4-BB20-4367-8ADC-D32EEA392D17}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|.NET = Debug|.NET
@@ -383,6 +385,22 @@ Global
 		{0EAF6AA9-B712-464B-A11B-FA3CF7577D80}.Release|x64.ActiveCfg = Release|x86
 		{0EAF6AA9-B712-464B-A11B-FA3CF7577D80}.Release|x86.ActiveCfg = Release|x86
 		{0EAF6AA9-B712-464B-A11B-FA3CF7577D80}.Release|x86.Build.0 = Release|x86
+		{C2A1DAE4-BB20-4367-8ADC-D32EEA392D17}.Debug|.NET.ActiveCfg = Debug|Any CPU
+		{C2A1DAE4-BB20-4367-8ADC-D32EEA392D17}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C2A1DAE4-BB20-4367-8ADC-D32EEA392D17}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C2A1DAE4-BB20-4367-8ADC-D32EEA392D17}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{C2A1DAE4-BB20-4367-8ADC-D32EEA392D17}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{C2A1DAE4-BB20-4367-8ADC-D32EEA392D17}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{C2A1DAE4-BB20-4367-8ADC-D32EEA392D17}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{C2A1DAE4-BB20-4367-8ADC-D32EEA392D17}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C2A1DAE4-BB20-4367-8ADC-D32EEA392D17}.Release|.NET.ActiveCfg = Release|Any CPU
+		{C2A1DAE4-BB20-4367-8ADC-D32EEA392D17}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C2A1DAE4-BB20-4367-8ADC-D32EEA392D17}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C2A1DAE4-BB20-4367-8ADC-D32EEA392D17}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{C2A1DAE4-BB20-4367-8ADC-D32EEA392D17}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{C2A1DAE4-BB20-4367-8ADC-D32EEA392D17}.Release|Win32.ActiveCfg = Release|Any CPU
+		{C2A1DAE4-BB20-4367-8ADC-D32EEA392D17}.Release|x64.ActiveCfg = Release|Any CPU
+		{C2A1DAE4-BB20-4367-8ADC-D32EEA392D17}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

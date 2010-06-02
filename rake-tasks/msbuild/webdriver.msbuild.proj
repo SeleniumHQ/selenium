@@ -22,6 +22,7 @@
     <RemoteDescendentReferences Include="@(ReferenceAssemblies)"/>
     <RemoteDescendentReferences Include="$(BuildOutputDirectory)\WebDriver.Common.dll"/> 
     <RemoteDescendentReferences Include="$(BuildOutputDirectory)\WebDriver.Remote.dll"/> 
+    <RemoteDescendentReferences Include="$(BuildOutputDirectory)\WebDriver.Remote.Common.dll"/> 
   </ItemGroup>
 
   <ItemGroup>
@@ -50,16 +51,43 @@
   </Target>
 
   <ItemGroup>
+    <RemoteCommonSourceFiles Include="$(TrunkRoot)\remote\common\src\csharp\**\*.cs"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <RemoteCommonReferences Include="@(CommonReferences)"/> 
+    <RemoteCommonReferences Include="$(JsonAssemblyPath)"/> 
+    <RemoteCommonReferences Include="$(BuildOutputDirectory)\WebDriver.Common.dll"/> 
+  </ItemGroup>
+
+  <Target Name="BuildRemoteCommon" DependsOnTargets="BuildCommon">
+    <Message Text="Building WebDriver.Remote.Common.dll"/>
+    <Csc Sources="@(RemoteCommonSourceFiles)"
+         References="@(RemoteCommonReferences)"
+         OutputAssembly="$(BuildOutputDirectory)\WebDriver.Remote.Common.dll"
+         TargetType="library"
+         DebugType="pdbonly"
+         Optimize="true"
+         AllowUnsafeBlocks="false"
+         DocumentationFile="$(BuildOutputDirectory)\WebDriver.Remote.Common.xml"
+    />
+    <Copy SourceFiles="@(ReferenceAssemblies)"
+          DestinationFolder="$(BuildOutputDirectory)"
+          Condition="!Exists('$(BuildOutputDirectory)\%(Filename)%(Extension)')"
+    />
+  </Target>
+
+  <ItemGroup>
     <RemoteSourceFiles Include="$(TrunkRoot)\remote\client\src\csharp\**\*.cs"/>
   </ItemGroup>
 
   <ItemGroup>
     <RemoteReferences Include="@(CommonReferences)"/> 
-    <RemoteReferences Include="$(JsonAssemblyPath)"/> 
     <RemoteReferences Include="$(BuildOutputDirectory)\WebDriver.Common.dll"/> 
+    <RemoteReferences Include="$(BuildOutputDirectory)\WebDriver.Remote.Common.dll"/> 
   </ItemGroup>
 
-  <Target Name="BuildRemote" DependsOnTargets="BuildCommon">
+  <Target Name="BuildRemote" DependsOnTargets="BuildRemoteCommon">
     <Message Text="Building WebDriver.Remote.dll"/>
     <Csc Sources="@(RemoteSourceFiles)"
          References="@(RemoteReferences)"
@@ -128,7 +156,7 @@
     </FirefoxResources>
   </ItemGroup>
 
-  <Target Name="BuildFirefox" DependsOnTargets="BuildCommon">
+  <Target Name="BuildFirefox" DependsOnTargets="BuildRemote">
     <Error Text="Could not find webdriver-extension.zip. Expected to find it in $(TrunkRoot)\build."
            Condition="!Exists('$(TrunkRoot)\build\firefox\webdriver.xpi')"/>
     <Message Text="Building WebDriver.Firefox.dll"/>
@@ -164,7 +192,7 @@
     </ChromeResources-->
   </ItemGroup>
 
-  <Target Name="BuildChrome" DependsOnTargets="BuildCommon;BuildRemote">
+  <Target Name="BuildChrome" DependsOnTargets="BuildRemote">
     <Error Text="Could not find chrome-extension.zip. Expected to find it in $(TrunkRoot)\build."
            Condition="!Exists('$(TrunkRoot)\build\chrome\chrome-extension.zip')"/>
     <!--Error Text="Could not find 32-bit chrome-extension.zip. Expected to find it in $(TrunkRoot)\build\Win32\Release\."
@@ -251,10 +279,10 @@
     <Delete Files="@(OutputFiles)" Condition="Exists('$(BuildOutputDirectory)')"/>
   </Target>
 
-  <Target Name="BuildManagedCode" DependsOnTargets="BuildCommon;BuildRemote;BuildIE;BuildFirefox;BuildChrome;BuildSeleniumCore;BuildWebDriverBackedSelenium">
+  <Target Name="BuildManagedCode" DependsOnTargets="BuildCommon;BuildRemoteCommon;BuildRemote;BuildIE;BuildFirefox;BuildChrome;BuildSeleniumCore;BuildWebDriverBackedSelenium">
   </Target>
 
-  <Target Name="RebuildManagedCode" DependsOnTargets="Clean;BuildCommon;BuildRemote;BuildIE;BuildFirefox;BuildChrome;BuildSeleniumCore;BuildWebDriverBackedSelenium">
+  <Target Name="RebuildManagedCode" DependsOnTargets="Clean;BuildCommon;BuildRemoteCommon;BuildRemote;BuildIE;BuildFirefox;BuildChrome;BuildSeleniumCore;BuildWebDriverBackedSelenium">
   </Target>
 
   <Target Name="BuildDocs" DependsOnTargets="BuildManagedCode">

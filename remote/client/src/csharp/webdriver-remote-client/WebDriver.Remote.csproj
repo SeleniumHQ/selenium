@@ -34,42 +34,27 @@
     <DocumentationFile>..\..\..\..\build\cli\Release\WebDriver.Remote.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json.Net20, Version=3.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\third_party\csharp\json-net-3.5r6\Newtonsoft.Json.Net20.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Command.cs" />
-    <Compile Include="CommandInfo.cs" />
-    <Compile Include="CommandInfoRepository.cs" />
-    <Compile Include="DesiredCapabilities.cs" />
-    <Compile Include="DriverCommand.cs" />
-    <Compile Include="ErrorResponse.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="HttpCommandExecutor.cs" />
-    <Compile Include="ICapabilities.cs" />
-    <Compile Include="ICommandExecutor.cs" />
-    <Compile Include="JsonConverters\CharArrayJsonConverter.cs" />
-    <Compile Include="JsonConverters\CookieJsonConverter.cs" />
-    <Compile Include="JsonConverters\PlatformJsonConverter.cs" />
-    <Compile Include="JsonConverters\ResponseValueJsonConverter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RemoteWebDriver.cs" />
     <Compile Include="RemoteWebElement.cs" />
     <Compile Include="RenderedRemoteWebElement.cs" />
-    <Compile Include="Response.cs" />
-    <Compile Include="SessionId.cs" />
-    <Compile Include="StackTraceElement.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\..\common\src\csharp\webdriver-common\WebDriver.Common.csproj">
       <Project>{ABB9B87F-FEEA-410E-ACBF-26479B8C72B0}</Project>
       <Name>WebDriver.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\common\src\csharp\webdriver-remote-common\WebDriver.Remote.Common.csproj">
+      <Project>{C2A1DAE4-BB20-4367-8ADC-D32EEA392D17}</Project>
+      <Name>WebDriver.Remote.Common</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

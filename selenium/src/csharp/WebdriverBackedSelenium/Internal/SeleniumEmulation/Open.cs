@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Selenium.Internal.SeleniumEmulation;
 using OpenQA.Selenium;
+using Selenium.Internal.SeleniumEmulation;
 
 namespace Selenium.Internal.SeleniumEmulation
 {

@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 namespace OpenQA.Selenium.Remote
 {
     /// <summary>
-    /// Class to Create the capabilities of the browser you require for <see cref="RemoteWebDriver"/>. 
+    /// Class to Create the capabilities of the browser you require for <see cref="IWebDriver"/>. 
     /// If you wish to use default values use the static methods
     /// </summary>
     public class DesiredCapabilities : ICapabilities

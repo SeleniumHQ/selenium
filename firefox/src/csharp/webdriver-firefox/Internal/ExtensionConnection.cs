@@ -6,7 +6,6 @@ using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Text;
-using Newtonsoft.Json;
 using OpenQA.Selenium.Remote;
 
 namespace OpenQA.Selenium.Firefox.Internal

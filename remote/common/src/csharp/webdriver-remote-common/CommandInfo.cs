@@ -26,6 +26,8 @@ namespace OpenQA.Selenium.Remote
         /// </summary>
         public const string DeleteCommand = "DELETE";
 
+        private const string SessionIdPropertyName = "sessionId";
+
         private string resourcePath;
         private string method;
 
@@ -98,7 +100,7 @@ namespace OpenQA.Selenium.Remote
             // Strip the curly braces
             propertyName = propertyName.Substring(1, propertyName.Length - 2);
 
-            if (propertyName == "sessionId")
+            if (propertyName == SessionIdPropertyName)
             {
                 if (commandToExecute.SessionId != null)
                 {

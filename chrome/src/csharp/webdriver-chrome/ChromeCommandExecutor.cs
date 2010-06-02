@@ -6,7 +6,6 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
-using Newtonsoft.Json;
 using OpenQA.Selenium.Remote;
 
 namespace OpenQA.Selenium.Chrome
@@ -259,7 +258,7 @@ namespace OpenQA.Selenium.Chrome
             Response response = new Response();
             if (!string.IsNullOrEmpty(responseString))
             {
-                response = JsonConvert.DeserializeObject<Response>(responseString);
+                response = Response.FromJson(responseString);
                 if (response.Status == WebDriverResult.Success)
                 {
                     string valueAsString = response.Value as string;

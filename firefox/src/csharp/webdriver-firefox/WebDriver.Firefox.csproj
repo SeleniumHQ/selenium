@@ -38,10 +38,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\third_party\csharp\dotnetzip-1.9\Ionic.Zip.Reduced.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json.Net20, Version=3.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\third_party\csharp\json-net-3.5r6\Newtonsoft.Json.Net20.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -73,6 +69,10 @@
     <ProjectReference Include="..\..\..\..\remote\client\src\csharp\webdriver-remote-client\WebDriver.Remote.csproj">
       <Project>{32122F8D-CD64-495A-B9B0-5516FF67C79F}</Project>
       <Name>WebDriver.Remote</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\remote\common\src\csharp\webdriver-remote-common\WebDriver.Remote.Common.csproj">
+      <Project>{C2A1DAE4-BB20-4367-8ADC-D32EEA392D17}</Project>
+      <Name>WebDriver.Remote.Common</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
