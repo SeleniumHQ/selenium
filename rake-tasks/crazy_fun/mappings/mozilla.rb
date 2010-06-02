@@ -8,10 +8,10 @@ class MozillaMappings
     fun.add_mapping("mozilla_xpt", Mozilla::Xpt::CreateTask.new)
     fun.add_mapping("mozilla_xpt", Mozilla::Xpt::Compile.new)
     
-    fun.add_mapping("mozilla_xpi", Mozilla::Xpi::CheckPreconditions.new)
-    fun.add_mapping("mozilla_xpi", Mozilla::Xpi::CreateTask.new)
-    fun.add_mapping("mozilla_xpi", Mozilla::Xpi::AddDependencies.new)
-    fun.add_mapping("mozilla_xpi", Mozilla::Xpi::Build.new)
+    fun.add_mapping("mozilla_extension", Mozilla::Xpi::CheckPreconditions.new)
+    fun.add_mapping("mozilla_extension", Mozilla::Xpi::CreateTask.new)
+    fun.add_mapping("mozilla_extension", Mozilla::Xpi::AddDependencies.new)
+    fun.add_mapping("mozilla_extension", Mozilla::Xpi::Build.new)
   end
 end
 

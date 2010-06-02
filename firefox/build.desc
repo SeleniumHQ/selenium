@@ -2,8 +2,8 @@ java_library(name = "firefox",
   srcs = [ "src/java/**/*.java"],
   resources = [
     ":webdriver",
-    { ":libnoblur_so" : "x86/x_ignore_nofocus.so" },
-    { ":libnoblur_so_64" : "amd64/x_ignore_nofocus.so" }
+    { ":noblur" : "x86/x_ignore_nofocus.so" },
+    { ":noblur64" : "amd64/x_ignore_nofocus.so" }
   ],
   deps = [
     "//remote/client"
@@ -37,7 +37,7 @@ mozilla_xpt(name = "command_processor_xpt",
 mozilla_xpt(name = "response_handler_xpt",
   srcs = [ "src/extension/idl/nsIResponseHandler.idl" ])
 
-mozilla_xpi(name = "webdriver",
+mozilla_extension(name = "webdriver",
   content = [
     "src/extension/content/**/*.js",
     "src/extension/content/fxdriver.xul",
@@ -57,6 +57,14 @@ mozilla_xpi(name = "webdriver",
   chrome = "src/extension/chrome.manifest",
   install = "src/extension/install.rdf")
 
+gcc_library(name = "noblur",
+  srcs = [ "src/cpp/linux-specific/*.c" ],
+  arch = "i386")
+
+gcc_library(name = "noblur64",
+  srcs = [ "src/cpp/linux-specific/*.c" ],
+  arch = "amd64")
+
 # Temporary rules while we migrate
 rake_task(name = "firefox_dll",
   task_name = "firefox_dll",
@@ -69,11 +77,3 @@ rake_task(name = "libwebdriver_firefox_so",
 rake_task(name = "libwebdriver_firefox_so64",
   task_name = "libwebdriver_firefox_so64",
   out = "build/linux64/Release/libwebdriver-firefox.so")
-
-rake_task(name = "libnoblur_so_64",
-  task_name = "libnoblur_so_64",
-  out = "build/linux64/Release/x_ignore_nofocus.so")
-
-rake_task(name = "libnoblur_so",
-  task_name = "libnoblur_so",
-  out = "build/linux/Release/x_ignore_nofocus.so")

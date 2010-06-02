@@ -25,7 +25,7 @@ ruby_test(
   driver_name = "chrome"
 )
 
-mozilla_xpi(name = "chrome_extension",
+mozilla_extension(name = "chrome_extension",
   srcs  = [ "src/extension/**" ],
   resources = [
     { ":chrome_dll" : "npchromedriver.dll" },

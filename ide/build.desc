@@ -4,7 +4,7 @@ mozilla_xpt(name = "ide-auto-complete",
 # In the ideal world, we'd use "core" directly, but we need
 # to also change the name to "selenium". The nasty hack works
 # around this
-mozilla_xpi(name = "selenium-ide",
+mozilla_extension(name = "selenium-ide",
   components = [
     "src/extension/components/SeleniumIDEGenericAutoCompleteSearch.js",
     ":ide-auto-complete"

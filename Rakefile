@@ -6,6 +6,7 @@ verbose false
 
 # The CrazyFun build grammar. There's no magic here, just ruby
 require 'rake-tasks/crazy_fun'
+require 'rake-tasks/crazy_fun/mappings/gcc'
 require 'rake-tasks/crazy_fun/mappings/java'
 require 'rake-tasks/crazy_fun/mappings/javascript'
 require 'rake-tasks/crazy_fun/mappings/mozilla'
@@ -44,6 +45,7 @@ crazy_fun = CrazyFun.new
 #
 # If crazy fun doesn't know how to handle a particular output type ("java_library"
 # in the example above) then it will throw an exception, stopping the build
+GccMappings.new.add_all(crazy_fun)
 JavaMappings.new.add_all(crazy_fun)
 JavascriptMappings.new.add_all(crazy_fun)
 MozillaMappings.new.add_all(crazy_fun)
@@ -167,20 +169,6 @@ dll(:name => "firefox_dll",
               ],
     :prebuilt => "firefox/prebuilt")
 
-dll(:name => "libnoblur_so_64",
-    :src  => FileList['firefox/src/cpp/linux-specific/*.c'],
-    :arch => "amd64",
-    :prebuilt => "firefox/prebuilt",
-    :out  => "linux64/Release/x_ignore_nofocus.so")
-
-dll(:name => "libnoblur_so",
-    :src  => FileList['firefox/src/cpp/linux-specific/*.c'],
-    :arch => "i386",
-    :prebuilt => "firefox/prebuilt",
-    :out  => "linux/Release/x_ignore_nofocus.so")
-
-task :libnoblur => [:libnoblur_so, :libnoblur_so_64]
-
 gecko_sdk = "third_party/gecko-1.9.0.11/linux/"
 
 dll(:name => "libwebdriver_firefox_so",
@@ -206,8 +194,6 @@ dll(:name => "libwebdriver_firefox_so64",
     :link_args => "-Wall -Os -L#{local_gecko}lib -L#{local_gecko}bin -Wl,-rpath-link,#{local_gecko}bin -lxpcomglue_s -lxpcom -lnspr4 -lrt `pkg-config gtk+-2.0 --libs` -fno-rtti -fno-exceptions -shared  -fPIC",
     :prebuilt => "firefox/prebuilt",
     :out  => "linux64/Release/libwebdriver-firefox.so")
-
-task :libwebdriver_firefox => [:libwebdriver_firefox_so, :libwebdriver_firefox_so64]
 
 task :'selenium-server_zip' do
   temp = "build/selenium-server_zip"
@@ -363,6 +349,16 @@ task :test_selenium_py => [:'selenium-core', :'selenium-server-standalone'] do
     end
 end
 
+
+iphone_test(:name => "webdriver-iphone-client-test",
+            :srcs => [ "iphone/test/java/**/*.java" ],
+            :deps => [
+                       :test_common,
+                       :iphone_server,
+                       :iphone_client
+                     ])
+
+
 #### iPhone ####
 task :iphone_server do
   sdk = iPhoneSDK?
@@ -432,15 +428,6 @@ task :'selenium-java_zip' do
   Dir["#{temp}/webdriver-*.jar"].each { |file| rm_rf file }
   mv "#{temp}/selenium-java.jar", "#{temp}/selenium-java-#{version}.jar"
   sh "cd #{temp} && jar cMf ../selenium-java.zip *"
-end
-
-desc 'Install prerequisites for the build. You may need to run this as root or Administrator'
-task :setup do
-  sh "gem install Antwrap yard"
-
-  if python?
-    sh "easy_install virtualenv"
-  end
 end
 
 desc 'Build the selenium client jars'
