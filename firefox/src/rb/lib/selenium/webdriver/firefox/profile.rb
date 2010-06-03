@@ -27,8 +27,8 @@ module Selenium
         ]
 
         NO_FOCUS = [
-          ["#{WebDriver.root}/firefox/prebuilt/amd64/Release/#{NO_FOCUS_LIBRARY_NAME}", "amd64/#{NO_FOCUS_LIBRARY_NAME}"],
-          ["#{WebDriver.root}/firefox/prebuilt/i386/Release/#{NO_FOCUS_LIBRARY_NAME}", "x86/#{NO_FOCUS_LIBRARY_NAME}"],
+          ["#{WebDriver.root}/firefox/prebuilt/amd64/libnoblur64.so", "amd64/libnoblur64.so"],
+          ["#{WebDriver.root}/firefox/prebuilt/i386/libnoblur.so", "x86/libnoblur.so"],
         ]
 
         SHARED = [
