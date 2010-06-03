@@ -6,7 +6,7 @@ module Selenium
         ANONYMOUS_PROFILE_NAME = "WEBDRIVER_ANONYMOUS_PROFILE"
         EXTENSION_NAME         = "fxdriver@googlecode.com"
         EM_NAMESPACE_URI       = "http://www.mozilla.org/2004/em-rdf#"
-        NO_FOCUS_LIBRARY_NAME  = "x_ignore_nofocus.so"
+        NO_FOCUS_LIBRARY_NAME  = "libnoblur.so"
 
         DEFAULT_EXTENSION_SOURCE = File.expand_path("#{WebDriver.root}/firefox/src/extension")
 
@@ -16,15 +16,19 @@ module Selenium
           ["#{WebDriver.root}/firefox/prebuilt/nsIResponseHandler.xpt", "components/nsIResponseHandler.xpt"],
         ]
 
-        NATIVE_WINDOWS = ["#{WebDriver.root}/firefox/prebuilt/Win32/Release/webdriver-firefox.dll", "platform/WINNT_x86-msvc/components/webdriver-firefox.dll"]
+        NATIVE_WINDOWS = [
+          "#{WebDriver.root}/firefox/prebuilt/Win32/Release/webdriver-firefox.dll",
+          "platform/WINNT_x86-msvc/components/webdriver-firefox.dll"
+        ]
+
         NATIVE_LINUX   = [
           ["#{WebDriver.root}/firefox/prebuilt/linux/Release/libwebdriver-firefox.so", "platform/Linux_x86-gcc3/components/libwebdriver-firefox.so"],
           ["#{WebDriver.root}/firefox/prebuilt/linux64/Release/libwebdriver-firefox.so", "platform/Linux_x86_64-gcc3/components/libwebdriver-firefox.so"]
         ]
 
         NO_FOCUS = [
-          ["#{WebDriver.root}/firefox/prebuilt/linux64/Release/x_ignore_nofocus.so", "amd64/x_ignore_nofocus.so"],
-          ["#{WebDriver.root}/firefox/prebuilt/linux/Release/x_ignore_nofocus.so", "x86/x_ignore_nofocus.so"],
+          ["#{WebDriver.root}/firefox/prebuilt/amd64/Release/#{NO_FOCUS_LIBRARY_NAME}", "amd64/#{NO_FOCUS_LIBRARY_NAME}"],
+          ["#{WebDriver.root}/firefox/prebuilt/i386/Release/#{NO_FOCUS_LIBRARY_NAME}", "x86/#{NO_FOCUS_LIBRARY_NAME}"],
         ]
 
         SHARED = [
