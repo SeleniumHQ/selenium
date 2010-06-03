@@ -66,11 +66,11 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     startSession(desiredCapabilities);
   }
 
-  public RemoteWebDriver(Capabilities desiredCapabilities) throws Exception {
+  public RemoteWebDriver(Capabilities desiredCapabilities) {
     this((URL) null, desiredCapabilities);
   }
 
-  public RemoteWebDriver(URL remoteAddress, Capabilities desiredCapabilities) throws Exception {
+  public RemoteWebDriver(URL remoteAddress, Capabilities desiredCapabilities) {
     this(new HttpCommandExecutor(remoteAddress), desiredCapabilities);
   }
 

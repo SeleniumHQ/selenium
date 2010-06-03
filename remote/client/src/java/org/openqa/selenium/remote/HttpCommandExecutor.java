@@ -85,6 +85,7 @@ import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.URI;
+import org.apache.commons.httpclient.URIException;
 import org.apache.commons.httpclient.methods.DeleteMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
@@ -123,18 +124,28 @@ public class HttpCommandExecutor implements CommandExecutor {
   private Map<DriverCommand, CommandInfo> nameToUrl;
   private HttpClient client;
 
-  public HttpCommandExecutor(URL addressOfRemoteServer) throws Exception {
+  public HttpCommandExecutor(URL addressOfRemoteServer) {
     if (addressOfRemoteServer == null) {
       String remoteServer = System.getProperty("webdriver.remote.server");
-      addressOfRemoteServer = remoteServer == null ? null : new URL(remoteServer);
-
+      if (remoteServer != null) {
+        try {
+          addressOfRemoteServer = new URL(remoteServer);
+        } catch (MalformedURLException e) {
+          throw new WebDriverException(e);
+        }
+      }
       if (addressOfRemoteServer == null)
         throw new IllegalArgumentException("You must specify a remote address to connect to");
     }
 
     this.remotePath = addressOfRemoteServer.getPath();
 
-    URI uri = new URI(addressOfRemoteServer.toString(), false);
+    URI uri;
+    try {
+      uri = new URI(addressOfRemoteServer.toString(), false);
+    } catch (URIException e) {
+      throw new WebDriverException(e);
+    }
     client = new HttpClient();
     client.getHostConfiguration().setHost(uri);
 
