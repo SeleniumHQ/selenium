@@ -140,7 +140,8 @@ module Selenium
 
       module JRubyProcess
         def start
-          pb = Java::java.lang.ProcessBuilder.new(@args)
+          require 'java'
+          pb = java.lang.ProcessBuilder.new(@args)
 
           env = pb.environment
           ENV.each { |k,v| env.put(k, v) }
