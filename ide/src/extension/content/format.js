@@ -58,7 +58,7 @@ FormatCollection.loadUserFormats = function(options) {
         return [];
     }
     var text = FileUtils.readFile(formatFile);
-    var conv = FileUtils.getUnicodeConverter('UTF-8');
+    var conv = FileUtils.getUnicodeConverter(SeleniumIDE.Preferences.getString("encoding", "UTF-8"));
     text = conv.ConvertToUnicode(text);
     var formats = [];
     while (text.length > 0) {
@@ -78,7 +78,7 @@ FormatCollection.saveUserFormats = function(formats) {
     for (var i = 0; i < formats.length; i++) {
         text += formats[i].id + ',' + formats[i].name + "\n";
     }
-    var conv = FileUtils.getUnicodeConverter('UTF-8');
+    var conv = FileUtils.getUnicodeConverter(SeleniumIDE.Preferences.getString("encoding", "UTF-8"));
     text = conv.ConvertFromUnicode(text);
     
     var formatFile = FormatCollection.getFormatDir();
@@ -323,7 +323,7 @@ Format.prototype.saveSuiteAsNew = function(testSuite, exportTest) {
             
             var filename = filepath[filepath.length -1];
             var output = FileUtils.openFileOutputStream(file);
-            var converter = FileUtils.getUnicodeConverter("UTF-8");
+            var converter = FileUtils.getUnicodeConverter(SeleniumIDE.Preferences.getString("encoding", "UTF-8"));
             var text = converter.ConvertFromUnicode(formatter
                 .formatSuite(testSuite, filename));
             
