@@ -307,7 +307,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     return toReturn;
   }
 
-  protected Response execute(DriverCommand driverCommand, Map<String, ?> parameters) {
+  protected Response execute(String driverCommand, Map<String, ?> parameters) {
     Command command = new Command(sessionId, driverCommand, parameters);
 
     Response response;
@@ -328,7 +328,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     return errorHandler.throwIfResponseFailed(response);
   }
 
-  protected Response execute(DriverCommand command) {
+  protected Response execute(String command) {
     return execute(command, ImmutableMap.<String, Object>of());
   }
 

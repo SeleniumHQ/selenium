@@ -38,7 +38,7 @@ public class ExecuteMethod {
    * @param parameters The parameters to execute that command with
    * @return The result of {@link Response#getValue()}.
    */
-  public Object execute(DriverCommand commandName, Map<String, ?> parameters) {
+  public Object execute(String commandName, Map<String, ?> parameters) {
     Response response;
 
     if (parameters == null || parameters.size() == 0) {

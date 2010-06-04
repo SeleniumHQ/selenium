@@ -17,120 +17,87 @@ limitations under the License.
 
 package org.openqa.selenium.remote;
 
-import java.util.EnumSet;
-
 /**
- * Enumeration of all of the commands supported by the WebDriver JSON wire
- * protocol.
+ * An empty interface defining constants for the standard commands defined in
+ * the WebDriver JSON wire protocol.
  *
- * This file should be kept in sync with common/src/js/command.js
- *  
  * @author jmleyba@gmail.com (Jason Leyba)
  */
-public enum DriverCommand {
-  NEW_SESSION("newSession"),
-  DELETE_SESSION("deleteSession"),
+public interface DriverCommand {
+  String NEW_SESSION = "newSession";
 
-  CLOSE("close"),
-  QUIT("quit"),
+  String CLOSE = "close";
+  String QUIT = "quit";
 
-  GET("get"),
-  GO_BACK("goBack"),
-  GO_FORWARD("goForward"),
-  REFRESH("refresh"),
+  String GET = "get";
+  String GO_BACK = "goBack";
+  String GO_FORWARD = "goForward";
+  String REFRESH = "refresh";
 
-  ADD_COOKIE("addCookie"),
-  GET_COOKIE("getCookie"),
-  GET_ALL_COOKIES("getCookies"),
-  DELETE_COOKIE("deleteCookie"),
-  DELETE_ALL_COOKIES("deleteAllCookies"),
+  String ADD_COOKIE = "addCookie";
+  String GET_COOKIE = "getCookie";
+  String GET_ALL_COOKIES = "getCookies";
+  String DELETE_COOKIE = "deleteCookie";
+  String DELETE_ALL_COOKIES = "deleteAllCookies";
 
-  FIND_ELEMENT("findElement"),
-  FIND_ELEMENTS("findElements"),
-  FIND_CHILD_ELEMENT("findChildElement"),
-  FIND_CHILD_ELEMENTS("findChildElements"),
+  String FIND_ELEMENT = "findElement";
+  String FIND_ELEMENTS = "findElements";
+  String FIND_CHILD_ELEMENT = "findChildElement";
+  String FIND_CHILD_ELEMENTS = "findChildElements";
 
-  CLEAR_ELEMENT("clearElement"),
-  CLICK_ELEMENT("clickElement"),
-  HOVER_OVER_ELEMENT("hoverOverElement"),
-  SEND_KEYS_TO_ELEMENT("sendKeysToElement"),
-  SUBMIT_ELEMENT("submitElement"),
-  TOGGLE_ELEMENT("toggleElement"),
+  String CLEAR_ELEMENT = "clearElement";
+  String CLICK_ELEMENT = "clickElement";
+  String HOVER_OVER_ELEMENT = "hoverOverElement";
+  String SEND_KEYS_TO_ELEMENT = "sendKeysToElement";
+  String SUBMIT_ELEMENT = "submitElement";
+  String TOGGLE_ELEMENT = "toggleElement";
 
-  GET_CURRENT_WINDOW_HANDLE("getCurrentWindowHandle"),
-  GET_WINDOW_HANDLES("getWindowHandles"),
+  String GET_CURRENT_WINDOW_HANDLE = "getCurrentWindowHandle";
+  String GET_WINDOW_HANDLES = "getWindowHandles";
 
-  SWITCH_TO_WINDOW("switchToWindow"),
-  SWITCH_TO_FRAME("switchToFrame"),
-  SWITCH_TO_FRAME_BY_INDEX("switchToFrameByIndex"),  // TODO(jleyba): standardize Chrome frame switching
-  SWITCH_TO_FRAME_BY_NAME("switchToFrameByName"),    //
-  SWITCH_TO_DEFAULT_CONTENT("switchToDefaultContent"),
-  GET_ACTIVE_ELEMENT("getActiveElement"),
+  String SWITCH_TO_WINDOW = "switchToWindow";
+  String SWITCH_TO_FRAME = "switchToFrame";
+  String SWITCH_TO_FRAME_BY_INDEX = "switchToFrameByIndex";  // TODO(jleyba): standardize Chrome frame switching
+  String SWITCH_TO_FRAME_BY_NAME = "switchToFrameByName";    //
+  String SWITCH_TO_DEFAULT_CONTENT = "switchToDefaultContent";
+  String GET_ACTIVE_ELEMENT = "getActiveElement";
 
-  GET_CURRENT_URL("getCurrentUrl"),
-  GET_PAGE_SOURCE("getPageSource"),
-  GET_TITLE("getTitle"),
+  String GET_CURRENT_URL = "getCurrentUrl";
+  String GET_PAGE_SOURCE = "getPageSource";
+  String GET_TITLE = "getTitle";
 
-  EXECUTE_SCRIPT("executeScript"),
+  String EXECUTE_SCRIPT = "executeScript";
 
-  GET_SPEED("getSpeed"),
-  SET_SPEED("setSpeed"),
+  String GET_SPEED = "getSpeed";
+  String SET_SPEED = "setSpeed";
 
-  SET_BROWSER_VISIBLE("setBrowserVisible"),
-  IS_BROWSER_VISIBLE("isBrowserVisible"),
+  String SET_BROWSER_VISIBLE = "setBrowserVisible";
+  String IS_BROWSER_VISIBLE = "isBrowserVisible";
 
-  GET_ELEMENT_TEXT("getElementText"),
-  GET_ELEMENT_VALUE("getElementValue"),
-  GET_ELEMENT_TAG_NAME("getElementTagName"),
-  SET_ELEMENT_SELECTED("setElementSelected"),
-  DRAG_ELEMENT("dragElement"),
-  IS_ELEMENT_SELECTED("isElementSelected"),
-  IS_ELEMENT_ENABLED("isElementEnabled"),
-  IS_ELEMENT_DISPLAYED("isElementDisplayed"),
-  GET_ELEMENT_LOCATION("getElementLocation"),
-  GET_ELEMENT_LOCATION_ONCE_SCROLLED_INTO_VIEW("getElementLocationOnceScrolledIntoView"),
-  GET_ELEMENT_SIZE("getElementSize"),
-  GET_ELEMENT_ATTRIBUTE("getElementAttribute"),
-  GET_ELEMENT_VALUE_OF_CSS_PROPERTY("getElementValueOfCssProperty"),
-  ELEMENT_EQUALS("elementEquals"),
+  String GET_ELEMENT_TEXT = "getElementText";
+  String GET_ELEMENT_VALUE = "getElementValue";
+  String GET_ELEMENT_TAG_NAME = "getElementTagName";
+  String SET_ELEMENT_SELECTED = "setElementSelected";
+  String DRAG_ELEMENT = "dragElement";
+  String IS_ELEMENT_SELECTED = "isElementSelected";
+  String IS_ELEMENT_ENABLED = "isElementEnabled";
+  String IS_ELEMENT_DISPLAYED = "isElementDisplayed";
+  String GET_ELEMENT_LOCATION = "getElementLocation";
+  String GET_ELEMENT_LOCATION_ONCE_SCROLLED_INTO_VIEW = "getElementLocationOnceScrolledIntoView";
+  String GET_ELEMENT_SIZE = "getElementSize";
+  String GET_ELEMENT_ATTRIBUTE = "getElementAttribute";
+  String GET_ELEMENT_VALUE_OF_CSS_PROPERTY = "getElementValueOfCssProperty";
+  String ELEMENT_EQUALS = "elementEquals";
 
-  SCREENSHOT("screenshot"),
-  DISMISS_ALERT("dismissAlert"),
-  IMPLICITLY_WAIT("implicitlyWait"),
+  String SCREENSHOT = "screenshot";
+  String DISMISS_ALERT = "dismissAlert";
+  String IMPLICITLY_WAIT = "implicitlyWait";
   
-  EXECUTE_SQL("executeSQL"),
-  GET_LOCATION("getLocation"),
-  SET_LOCATION("setLocation"),
-  GET_APP_CACHE("getAppCache"),
-  GET_APP_CACHE_STATUS("getStatus"),
-  IS_BROWSER_ONLINE("isBrowserOnline"),
-  SET_BROWSER_ONLINE("setBrowserOnline");
-
-  private final String commandName;
-
-  private DriverCommand(String name) {
-    this.commandName = name;
-  }
-
-  @Override
-  public String toString() {
-    return this.commandName;
-  }
-
-  /**
-   * Retrieves the enumerated {@link DriverCommand} based on its {@link #commandName} property.
-   * 
-   * @param name The name to lookup.
-   * @return The converted value.
-   * @throws IllegalArgumentException
-   */
-  public static DriverCommand fromName(String name) {
-    for (DriverCommand driverCommand : EnumSet.allOf(DriverCommand.class)) {
-      if (driverCommand.commandName.equals(name)) {
-        return driverCommand;
-      }
-    }
-    throw new IllegalArgumentException(
-        "No such " + DriverCommand.class.getName() + " with name '" + name + "'");
-  }
+  String EXECUTE_SQL = "executeSQL";
+  String GET_LOCATION = "getLocation";
+  String SET_LOCATION = "setLocation";
+  String GET_APP_CACHE = "getAppCache";
+  String GET_APP_CACHE_STATUS = "getStatus";
+  String IS_BROWSER_ONLINE = "isBrowserOnline";
+  String SET_BROWSER_ONLINE = "setBrowserOnline";
 }

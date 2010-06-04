@@ -82,7 +82,7 @@ public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot, F
   public static final boolean ASSUME_UNTRUSTED_ISSUER = true;
 
   // Commands we can execute with needing to dismiss an active alert
-  private final Set<DriverCommand> alertWhiteListedCommands = new HashSet<DriverCommand>() {{
+  private final Set<String> alertWhiteListedCommands = new HashSet<String>() {{
     add(DriverCommand.DISMISS_ALERT);
   }};
 
@@ -217,7 +217,7 @@ public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot, F
   }
 
   @Override
-  protected Response execute(DriverCommand driverCommand, Map<String, ?> parameters) {
+  protected Response execute(String driverCommand, Map<String, ?> parameters) {
     if (currentAlert != null) {
       if (!alertWhiteListedCommands.contains(driverCommand)) {
         ((FirefoxTargetLocator) switchTo()).alert()

@@ -182,7 +182,7 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
     return findElements("tag name", using);
   }
 
-  protected Response execute(DriverCommand command, Map<String, ?> parameters) {
+  protected Response execute(String command, Map<String, ?> parameters) {
     return parent.execute(command, parameters);
   }
 

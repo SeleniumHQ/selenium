@@ -121,7 +121,7 @@ public class HttpCommandExecutor implements CommandExecutor {
     public abstract HttpMethod createMethod(String url);
   }
 
-  private Map<DriverCommand, CommandInfo> nameToUrl;
+  private Map<String, CommandInfo> nameToUrl;
   private HttpClient client;
 
   public HttpCommandExecutor(URL addressOfRemoteServer) {
@@ -149,7 +149,7 @@ public class HttpCommandExecutor implements CommandExecutor {
     client = new HttpClient();
     client.getHostConfiguration().setHost(uri);
 
-    nameToUrl = ImmutableMap.<DriverCommand, CommandInfo>builder()
+    nameToUrl = ImmutableMap.<String, CommandInfo>builder()
         .put(NEW_SESSION, post("/session"))
         .put(QUIT, delete("/session/:sessionId"))
         .put(GET_CURRENT_WINDOW_HANDLE, get("/session/:sessionId/window_handle"))

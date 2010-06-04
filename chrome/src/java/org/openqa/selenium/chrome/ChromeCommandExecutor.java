@@ -40,7 +40,7 @@ public class ChromeCommandExecutor implements CommandExecutor {
   //Whether the listening thread should listen
   private volatile boolean listen = false;
   ListeningThread listeningThread;
-  private Map<DriverCommand, String[]> commands;
+  private Map<String, String[]> commands;
   
   /**
    * Creates a new ChromeCommandExecutor which listens on a free TCP port.
@@ -51,7 +51,7 @@ public class ChromeCommandExecutor implements CommandExecutor {
    */
   public ChromeCommandExecutor(ChromeBinary binary) {
     this.binary = binary;
-    this.commands = ImmutableMap.<DriverCommand, String[]> builder()
+    this.commands = ImmutableMap.<String, String[]> builder()
         .put(CLOSE, NO_ARGS)
         .put(QUIT, NO_ARGS)
         .put(GET, new String[] {"url"})

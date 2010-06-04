@@ -25,14 +25,14 @@ import java.util.Map;
 public class Command {
 
   private SessionId sessionId;
-  private DriverCommand name;
+  private String name;
   private Map<String, ?> parameters;
 
-  public Command(SessionId sessionId, DriverCommand name) {
+  public Command(SessionId sessionId, String name) {
     this(sessionId, name, new HashMap<String, Object>());
   }
 
-  public Command(SessionId sessionId, DriverCommand name, Map<String, ?> parameters) {
+  public Command(SessionId sessionId, String name, Map<String, ?> parameters) {
     this.sessionId = sessionId;
     this.parameters = parameters;
     this.name = name;
@@ -42,7 +42,7 @@ public class Command {
     return sessionId;
   }
 
-  public DriverCommand getName() {
+  public String getName() {
     return name;
   }
 

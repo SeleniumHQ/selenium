@@ -68,7 +68,7 @@ public class ChromeDriver extends RemoteWebDriver implements  TakesScreenshot, F
    * @return response to the command (a Response wrapping a null value if none) 
    */
   @Override
-  protected Response execute(DriverCommand driverCommand, Map<String, ?> parameters) {
+  protected Response execute(String driverCommand, Map<String, ?> parameters) {
     try {
       return super.execute(driverCommand, parameters);
     } catch (Exception e) {
