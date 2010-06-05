@@ -2,20 +2,13 @@ package org.openqa.selenium;
 
 import junit.framework.TestCase;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.environment.InProcessTestEnvironment;
 import org.openqa.selenium.environment.TestEnvironment;
 import org.openqa.selenium.firefox.FirefoxDriverTestSuite;
 import org.openqa.selenium.internal.CommandLine;
-import org.openqa.selenium.internal.PortProber;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.HttpRequest;
-import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.server.RemoteControlConfiguration;
-import org.openqa.selenium.server.SeleniumServer;
 
 import static org.openqa.selenium.Ignore.Driver.ALL;
 import static org.openqa.selenium.browserlaunchers.CapabilityType.ForSeleniumServer.ENSURING_CLEAN_SESSION;
@@ -85,8 +78,7 @@ public class SetProxyTest extends TestCase {
     HttpRequest request = new HttpRequest(HttpRequest.Method.POST,
         "http://localhost:" + proxyInstance.getPort()
         + "/dwr/call/plaincall/ProxyServer.getBlocks.dwr", payload);
-    String response = request.getResponse();
-    return response;
+    return request.getResponse();
   }
 
   private static class DefaultProxy {
@@ -111,31 +103,6 @@ public class SetProxyTest extends TestCase {
 
     public int getPort() {
       return port;
-    }
-  }
-
-  private static class SeleniumServerInstance {
-    private SeleniumServer seleniumServer;
-    private int serverPort;
-
-    public void start() throws Exception {
-      serverPort = PortProber.findFreePort();
-      RemoteControlConfiguration config = new RemoteControlConfiguration();
-      config.setPort(serverPort);
-      seleniumServer = new SeleniumServer(config);
-      seleniumServer.boot();
-    }
-
-    public void stop() {
-      seleniumServer.stop();
-    }
-
-    public int getPort() {
-      return serverPort;
-    }
-
-    public URL getWebDriverUrl() throws MalformedURLException {
-      return new URL("http://localhost:" + serverPort + "/wd/hub");
     }
   }
 }
