@@ -133,7 +133,7 @@ Response.prototype = {
   set status(newStatus) { this.json_.status = newStatus; },
   get status()          { return this.json_.status; },
   set value(val)     { this.json_.value = val; },
-  get value()        { return this.json_.value; },
+  get value()        { return this.json_.value; }
 };
 
 
@@ -540,7 +540,9 @@ nsCommandProcessor.prototype.getSessionCapabilities = function(response) {
     'browserName': 'firefox',
     'version': appInfo.version,
     'javascriptEnabled': true,
-    'platform': xulRuntime.OS          // same as Platform.valueOf("name");
+    'platform': xulRuntime.OS,          // same as Platform.valueOf("name");
+    'cssSelectorsEnabled': true,
+    'takesScreenshot': true
   };
   response.send();
 };

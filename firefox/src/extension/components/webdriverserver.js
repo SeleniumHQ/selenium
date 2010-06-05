@@ -44,7 +44,7 @@ WebDriverServer.prototype.newDriver = function(window) {
     var prefs =
         Utils.getService("@mozilla.org/preferences-service;1", "nsIPrefBranch");
     if (!prefs.prefHasUserValue("webdriver_enable_native_events")) {
-      Utils.dumpn('webdriver_enable_native_events not set; defaulting to true');
+      Utils.dumpn('webdriver_enable_native_events not set; defaulting to false');
     }
     this.enableNativeEvents =
     prefs.prefHasUserValue("webdriver_enable_native_events") ?
