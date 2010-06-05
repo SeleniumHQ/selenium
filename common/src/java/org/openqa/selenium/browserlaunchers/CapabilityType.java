@@ -30,6 +30,7 @@ public interface CapabilityType {
   String SUPPORTS_LOCATION_CONTEXT = "locationContextEnabled";
   String SUPPORTS_APPLICATION_CACHE = "applicationCacheEnabled";
   String SUPPORTS_BROWSER_CONNECTION = "browserConnectionEnabled";
+  String SUPPORTS_FINDING_BY_CSS = "cssSelectorsEnabled";
   String PROXY = "proxy";
 
   interface ForSeleniumServer {
