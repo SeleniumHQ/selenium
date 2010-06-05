@@ -22,6 +22,7 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.browserlaunchers.CapabilityType;
+import org.openqa.selenium.internal.FindsByCssSelector;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.events.EventFiringWebDriver;
@@ -98,6 +99,9 @@ public class Session {
     caps.setJavascriptEnabled(instance instanceof JavascriptExecutor);
     if (instance instanceof TakesScreenshot) {
       caps.setCapability(CapabilityType.TAKES_SCREENSHOT, true);
+    }
+    if (instance instanceof FindsByCssSelector) {
+      caps.setCapability(CapabilityType.SUPPORTS_FINDING_BY_CSS, true);
     }
     this.capabilities = caps;
   }
