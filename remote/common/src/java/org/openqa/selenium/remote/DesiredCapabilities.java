@@ -45,6 +45,10 @@ public class DesiredCapabilities implements Capabilities, Serializable {
 
   public DesiredCapabilities(Map<String, ?> rawMap) {
     capabilities.putAll(rawMap);
+    Object value = capabilities.get(PLATFORM);
+    if (value instanceof String) {
+      capabilities.put(PLATFORM, Platform.valueOf((String) value));
+    }
   }
 
   public String getBrowserName() {
