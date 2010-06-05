@@ -50,9 +50,11 @@ import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.remote.RemoteWebElement;
 import org.openqa.selenium.remote.Response;
 
 import com.google.common.collect.ImmutableMap;
+import org.openqa.selenium.remote.internal.JsonToWebElementConverter;
 
 
 /**
@@ -139,6 +141,12 @@ public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot, F
     super(new LazyCommandExecutor(binary, profile), DesiredCapabilities.firefox());
     this.binary = binary;
     this.profile = profile;
+    setElementConverter(new JsonToWebElementConverter(this) {
+      @Override
+      protected RemoteWebElement newRemoteWebElement() {
+        return new FirefoxWebElement(FirefoxDriver.this);
+      }
+    });
   }
 
   @Override

@@ -41,7 +41,7 @@ public class SingleTestSuite extends TestCase {
   private static final String SELENIUM = "org.openqa.selenium.SeleneseBackedWebDriver";
 
   public static Test suite() throws Exception {
-    String driver = REMOTE_IE;
+    String driver = FIREFOX_TEST;
 
     System.setProperty("webdriver.development", "true");
     System.setProperty("jna.library.path", "..\\build;build");
@@ -55,10 +55,10 @@ public class SingleTestSuite extends TestCase {
         .usingDriver(driver)
         .keepDriverInstance()
         .includeJavascriptTests()
-        .onlyRun("ImplicitWaitTest")
-//        .method("testShouldWaitForDocumentToBeLoaded")
+        .onlyRun("ChildrenFindingTest")
+        .method("testShouldBeAbleToFindAnElementByCssSelector")
         .exclude(ALL)
-        .exclude(Ignore.Driver.IE)
+        .exclude(Ignore.Driver.FIREFOX)
         .outputTestNames()
         //.leaveRunning()
         ;  // Yeah, this look strange :)

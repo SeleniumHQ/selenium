@@ -59,9 +59,16 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
   private SessionId sessionId;
 
   protected Process clientProcess;
+  private JsonToWebElementConverter converter;
+
+  // For cglib
+  protected RemoteWebDriver() {
+    converter = new JsonToWebElementConverter(this);
+  }
 
   public RemoteWebDriver(CommandExecutor executor, Capabilities desiredCapabilities) {
     this.executor = executor;
+    converter = new JsonToWebElementConverter(this);
     startClient();
     startSession(desiredCapabilities);
   }
@@ -296,6 +303,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
    *
    * @return A new RemoteWebElement that is a child of this instance.
    */
+  @Deprecated
   protected RemoteWebElement newRemoteWebElement() {
     RemoteWebElement toReturn;
     if (capabilities.isJavascriptEnabled()) {
@@ -305,6 +313,10 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     }
     toReturn.setParent(this);
     return toReturn;
+  }
+
+  protected void setElementConverter(JsonToWebElementConverter converter) {
+    this.converter = converter;
   }
 
   protected Response execute(String driverCommand, Map<String, ?> parameters) {
@@ -317,7 +329,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
 
       // Unwrap the response value by converting any JSON objects of the form
       // {"ELEMENT": id} to RemoteWebElements.
-      Object value = new JsonToWebElementConverter(this).apply(response.getValue());
+      Object value = converter.apply(response.getValue());
       response.setValue(value);
     } catch (RuntimeException e) {
       throw e;

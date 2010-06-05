@@ -71,7 +71,7 @@ public class JsonToWebElementConverter implements Function<Object, Object> {
     return result;
   }
   
-  private RemoteWebElement newRemoteWebElement() {
+  protected RemoteWebElement newRemoteWebElement() {
     RemoteWebElement toReturn;
     if (driver.getCapabilities().isJavascriptEnabled()) {
       toReturn = new RenderedRemoteWebElement();
