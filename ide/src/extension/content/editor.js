@@ -553,7 +553,7 @@ Editor.prototype.addCommand = function(command,target,value,window,insertBeforeL
         this.getTestCase().commands.splice(index, 0, command);
         this.view.rowInserted(index);
     } else {
-        this.lastCommandIndex = this.view.getRecordIndex();
+        this.lastCommandIndex = this.getTestCase().commands.length;
         this.getTestCase().commands.splice(this.lastCommandIndex, 0, command);
         this.view.rowInserted(this.lastCommandIndex);
         this.timeoutID = setTimeout("editor.clearLastCommand()", 300);
