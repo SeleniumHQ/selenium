@@ -1,0 +1,9 @@
+java_library(name = "jetty",
+  srcs = [
+    "jetty/**/*.java"
+  ],
+  deps = [
+    "//third_party/java/commons-logging",
+    "//third_party/java/mx4j",
+    "//third_party/java/servlet-api"
+  ])
