@@ -13,12 +13,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import common
-
 FIREFOX = "firefox"
 IE = "ie"
 CHROME = "chrome"
 REMOTE = "remote"
+
+# Backward compatiblity (until I find someone who's better at me with setup.py
+# this stays)
+from selenium.selenium.selenium import selenium
 
 def get_driver(name, *args, **kw):
     try:
