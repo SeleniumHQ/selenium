@@ -20,6 +20,7 @@ import os
 import socket
 import subprocess
 import time
+import urllib
 from selenium.common.webserver import SimpleWebServer
 from selenium.common_tests import api_examples
 from selenium.remote.webdriver import WebDriver
@@ -27,9 +28,21 @@ from selenium.remote.webdriver import WebDriver
 SERVER_ADDR = "localhost"
 DEFAULT_PORT = 4444
 
+def wait_for_server(url, timeout):
+    start = time.time()
+    while time.time() - start < timeout:
+        try:
+            urllib.urlopen(url)
+            return 1
+        except IOError:
+            time.sleep(0.2)
+
+    return 0
+
 def setup_module(module):
     _socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server_proc = None
+    url = "http://%s:%d/wd/hub" % (SERVER_ADDR, DEFAULT_PORT)
     try:
         _socket.connect((SERVER_ADDR, DEFAULT_PORT))
         print ("The remote driver server is already running or something else"
@@ -37,10 +50,12 @@ def setup_module(module):
     except:
         print ("Starting the remote driver server")
         RemoteApiExampleTest.server_proc = subprocess.Popen(
-            "java -jar selenium-server-standalone.jar",
+            "java -jar build/remote/server/server-standalone.jar",
             shell=True)
-        time.sleep(5)
+
+        assert wait_for_server(url, 10), "can't connect"
         print "Server should be online"
+
     webserver = SimpleWebServer()
     webserver.start()
     RemoteApiExampleTest.webserver = webserver
@@ -50,8 +65,16 @@ class RemoteApiExampleTest(api_examples.ApiExampleTest):
     pass
 
 def teardown_module(module):
-    RemoteApiExampleTest.driver.quit()
-    RemoteApiExampleTest.webserver.stop()
+    try:
+        RemoteApiExampleTest.driver.quit()
+    except AttributeError:
+        pass
+    try:
+        RemoteApiExampleTest.webserver.stop()
+    except AttributeError:
+        pass
+    
+    # FIXME: This does not seem to work, the server process lingers
     try:
         os.kill(RemoteApiExampleTest.server_proc.pid, 9)
     except:
