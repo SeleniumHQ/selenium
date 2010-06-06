@@ -52,7 +52,7 @@ class WebElement(object):
     def get_attribute(self, name):
         """Gets the attribute value."""
         resp = self._execute(Command.GET_ELEMENT_ATTRIBUTE, {'name':name})
-        return resp['value']
+        return str(resp['value'])
 
     def toggle(self):
         """Toggles the element state."""
