@@ -36,7 +36,7 @@ setup(
         'selenium.firefox_tests': 'firefox/test/py',
         'selenium.ie_tests': 'jobbie/test/py',
         'selenium.remote_tests': 'remote/client/test/py',
-        'selenium.selenuim': 'selenium/src/py'
+        'selenium.selenium': 'selenium/src/py',
     },
     packages=['selenium',
               'selenium.common',
@@ -49,7 +49,7 @@ setup(
               'selenium.firefox_tests',
               'selenium.ie_tests',
               'selenium.chrome_tests',
-              'selenium.remote_tests'
+              'selenium.remote_tests',
               'selenium.selenium'],
 
     include_package_data=True,
