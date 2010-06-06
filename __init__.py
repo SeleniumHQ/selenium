@@ -20,7 +20,7 @@ REMOTE = "remote"
 
 # Backward compatiblity (until I find someone who's better at me with setup.py
 # this stays)
-from selenium.selenium.selenium import selenium
+from selenium.selenium import selenium
 
 def get_driver(name, *args, **kw):
     try:
