@@ -21,8 +21,8 @@ import socket
 import subprocess
 import time
 from selenium.common.webserver import SimpleWebServer
-from webdriver.common_tests import api_examples
-from webdriver.remote.webdriver import WebDriver
+from selenium.common_tests import api_examples
+from selenium.remote.webdriver import WebDriver
 
 SERVER_ADDR = "localhost"
 DEFAULT_PORT = 4444
