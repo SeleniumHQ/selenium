@@ -62,15 +62,6 @@ class ApiExampleTest (unittest.TestCase):
         except NoSuchElementException:
             pass
 
-    def testFindElementByXpathThrowErrorInResponseExceptionForInvalidXPath(self):
-        self._loadSimplePage()
-        try:
-            self.driver.find_element_by_xpath("//a[")
-        except NoSuchElementException, ex:
-            self.fail(ex)
-        except ErrorInResponseException:
-            pass
-
     def testFindElementsByXpath(self):
         self._loadPage("nestedElements")
         elems = self.driver.find_elements_by_xpath("//option")
