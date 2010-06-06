@@ -302,3 +302,30 @@ class WebDriver(object):
     def _find_elements_by(self, by, value):
         return self._execute(Command.FIND_ELEMENTS,
                              {'using': by, 'value': value})['value']
+
+
+def connect(name, version="", server="http://localhost:4444", platform=None,
+            javascript_enabled=True, path="/wd/hub"):
+    """Convenience function to connect to a server
+       Args:
+           name - A string indicating which browser to request a new
+               session for from the remote server.  Should be one of
+               {mobile safari|firefox|internet explorer|htmlunit|chrome}.
+           version - A string indicating a specific browser version to request,
+               or an empty string ot use any available browser. Defaults to the
+               empty string.
+           server - Server location (without path). Defaults to
+               "http://localhost:4444".
+           platform - A string indicating the desired platform to request from
+               the remote server. Should be one of
+               {WINDOWS|XP|VISTA|MAC|LINUX|UNIX|ANY} or None. Defaults to None.
+           javascript_enabled - Whether the requested browser should support
+               JavaScript.  Defaults to True.
+           path - path in server url. Defaults to "/wd/hub/"
+    """
+    if not path.startswith("/"):
+        path = "/" + path
+    url = "%s%s" % (server, path)
+    wd = WebDriver(url, name, platform, version, javascript_enabled)
+
+    return wd
