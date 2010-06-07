@@ -46,7 +46,7 @@ module Selenium
           retried = false
           begin
             response = http.request(request, payload)
-          rescue Errno::ECONNABORTED
+          rescue Errno::ECONNABORTED, Errno::ECONNRESET
             # this happens sometimes on windows?!
             raise if retried
             retried = true
