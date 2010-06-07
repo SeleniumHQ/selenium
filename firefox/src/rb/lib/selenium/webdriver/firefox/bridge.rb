@@ -13,12 +13,22 @@ module Selenium
             opts.delete(:profile) || DEFAULT_PROFILE_NAME
           )
 
+          http_client = opts.delete(:http_client)
+
           unless opts.empty?
             raise ArgumentError, "unknown option#{'s' if opts.size != 1}: #{opts.inspect}"
           end
 
           @launcher.launch
-          super :url => @launcher.url, :desired_capabilities => :firefox
+
+          remote_opts = {
+            :url                  => @launcher.url,
+            :desired_capabilities => :firefox
+          }
+
+          remote_opts.merge!(:http_client => http_client) if http_client
+
+          super(remote_opts)
         end
 
         def browser
