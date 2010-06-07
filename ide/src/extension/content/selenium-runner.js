@@ -105,7 +105,7 @@ objectExtend(IDETestLoop.prototype, {
             TestLoop.call(this, commandFactory);
             this.handler = handler;
         },
-        
+
         continueTestWhenConditionIsTrue: function() {
             if (shouldAbortCurrentCommand()) {
                 this.result = {};
@@ -117,7 +117,7 @@ objectExtend(IDETestLoop.prototype, {
                 TestLoop.prototype.continueTestWhenConditionIsTrue.call(this);
             }
         },
-        
+
         nextCommand: function() {
             if (testCase.debugContext.debugIndex >= 0)
                 editor.view.rowUpdated(testCase.debugContext.debugIndex);
@@ -125,14 +125,14 @@ objectExtend(IDETestLoop.prototype, {
             if (command == null) return null;
             return new SeleniumCommand(command.command, command.target, command.value);
         },
-        
+
         commandStarted: function() {
             // editor.setState("playing");
             //setState(Debugger.PLAYING);
             editor.view.rowUpdated(testCase.debugContext.debugIndex);
             editor.view.scrollToRow(testCase.debugContext.debugIndex);
         },
-        
+
         commandComplete: function(result) {
             this._checkExpectedFailure(result);
             if (result.failed) {
@@ -161,7 +161,7 @@ objectExtend(IDETestLoop.prototype, {
                 editor.view.rowUpdated(testCase.debugContext.debugIndex);
             }
         },
-        
+
         // override _testComplete to ensure testComplete is called even when
         // ensureNoUnhandledPopups throws any errors
         _testComplete: function() {
@@ -196,20 +196,20 @@ function Logger() {
 	var levels = ["log","debug","info","warn","error"];
     this.maxEntries = 2000;
 	this.entries = [];
-	
+
 	levels.forEach(function(level) {
 					   self[level] = function(message) {
 						   self.log(message, level);
 					   }
 				   });
-	
+
 	this.observers = [];
-	
+
 	this.exception = function(exception) {
         var msg = "Unexpected Exception: " + describe(exception, ', ');
         this.error(msg);
 	}
-	
+
 	this.log = function(message, level) {
 		var entry = {
 			message: message,
@@ -256,7 +256,7 @@ function createSelenium(baseURL, useLastWindow) {
 	    var wm = Components.classes["@mozilla.org/appshell/window-mediator;1"].getService(Components.interfaces.nsIWindowMediator);
 	    window = wm.getMostRecentWindow('navigator:browser');
     }
-	
+
     this.lastWindow = window;
 
     var contentWindow = window.getBrowser().selectedBrowser.contentWindow;
@@ -269,7 +269,7 @@ function createSelenium(baseURL, useLastWindow) {
 function start(baseURL, handler, useLastWindow) {
 	//if (!stopAndDo("start", baseURL)) return;
     resetCurrentTest();
-	
+
     selenium = createSelenium(baseURL, useLastWindow);
     selenium.browserbot.selectWindow(null);
 
@@ -277,7 +277,7 @@ function start(baseURL, handler, useLastWindow) {
 	commandFactory.registerAll(selenium);
 
 	currentTest = new IDETestLoop(commandFactory, handler);
-		
+
 	currentTest.getCommandInterval = function() { return getInterval(); }
 	testCase.debugContext.reset();
 	currentTest.start();
@@ -289,12 +289,12 @@ function executeCommand(baseURL, command) {
     resetCurrentTest();
 
     selenium = createSelenium(baseURL);
-    
+
 	commandFactory = new CommandHandlerFactory();
 	commandFactory.registerAll(selenium);
-	
+
     currentTest = new IDETestLoop(commandFactory);
-    
+
 	currentTest.getCommandInterval = function() { return 0; }
 	var first = true;
 	currentTest.nextCommand = function() {
@@ -345,7 +345,7 @@ function continueCurrentTest() {
 function showElement(locator) {
 	var wm = Components.classes["@mozilla.org/appshell/window-mediator;1"].getService(Components.interfaces.nsIWindowMediator);
 	var contentWindow = wm.getMostRecentWindow('navigator:browser').getBrowser().contentWindow;
-	
+
     //var pageBot = contentWindow._test_pageBot;
     //if (pageBot == null) {
     var pageBot = new MozillaBrowserBot(contentWindow);
@@ -356,19 +356,31 @@ function showElement(locator) {
     //}
 
     try {
-        var e = pageBot.findElement(locator);
+        try {
+            var e = pageBot.findElement(locator);
+        } catch (error) {   // Samit: Fix: Table locators in the form "tableName.row.column" fail
+            // Retry if the locator matches "tableName.row.column", e.g. "mytable.3.4"
+            var pattern = /(.*)\.(\d+)\.(\d+)/;
+
+            if(pattern.test(locator)) {
+                var pieces = locator.match(pattern);
+                // if there is an exception the outer try will catch it
+                var table = pageBot.findElement(pieces[1]);
+                e = table.rows[pieces[2]].cells[pieces[3]];
+            }
+        }
         if (e) {
             var flasher = Components.classes["@mozilla.org/inspector/flasher;1"].createInstance()
                 .QueryInterface(Components.interfaces.inIFlasher);
             flasher.color = "#88ff88";
             flasher.thickness = 2;
             flasher.invert = false;
-            
+
             flasher.scrollElementIntoView(e);
             flasher.drawElementOutline(e);
-            
+
             var flashIndex = 0;
-            
+
             function animateFlasher() {
                 var timeout = 0;
                 if (flashIndex % 2 == 0) {
@@ -383,9 +395,9 @@ function showElement(locator) {
                     setTimeout(animateFlasher, timeout);
                 }
             }
-            
+
             setTimeout(animateFlasher, 300);
-            
+
         } else {
             LOG.error("locator not found: " + locator);
         }
