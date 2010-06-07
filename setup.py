@@ -17,11 +17,25 @@
 from setuptools import setup
 from setuptools.command.install import install
 
+from os.path import dirname, join
+
+def find_longdesc():
+    for path in ("docs/api/py/index.rst", "docs/index.rst"):
+        try:
+            index = join(dirname(__file__), path)
+            return open(index).read()
+        except IOError:
+            pass
+
+    print "WARNING: Can't find index.rst"
+    return ""
+
 setup(
     cmdclass={'install': install},
     name='selenium',
     version="2.0-dev",
     description='Python bindings for WebDriver',
+    long_description=find_longdesc(),
     url='http://code.google.com/p/selenium/',
     package_dir={
         'selenium':'.',
@@ -30,6 +44,7 @@ setup(
         'selenium.chrome' : 'chrome/src/py',
         'selenium.chrome_tests': 'chrome/test/py',
         'selenium.common': 'common/src/py',
+        'selenium.docs': 'docs/api/py',
         'selenium.remote': 'remote/client/src/py',
         'selenium.common_tests': 'common/test/py',
         'selenium.common_web': 'common/src/web',
@@ -40,6 +55,7 @@ setup(
     },
     packages=['selenium',
               'selenium.common',
+              'selenium.docs',
               'selenium.firefox',
               'selenium.ie',
               'selenium.chrome',
