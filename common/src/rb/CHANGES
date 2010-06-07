@@ -1,3 +1,8 @@
+2010-06-03
+==========
+
+* Fix bug where Firefox would hang on quit().
+
 2010-05-31
 ==========
 
