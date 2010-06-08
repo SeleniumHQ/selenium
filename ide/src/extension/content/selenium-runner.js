@@ -101,6 +101,13 @@ storedVars.space = ' ';
 var IDETestLoop = classCreate();
 objectExtend(IDETestLoop.prototype, TestLoop.prototype);
 objectExtend(IDETestLoop.prototype, {
+        start : function() {
+            selenium.reset();
+            selenium.doSetTimeout(editor.app.getOptions().timeout);
+            LOG.debug("currentTest.start()");
+            this.continueTest();
+        },
+
         initialize: function(commandFactory, handler) {
             TestLoop.call(this, commandFactory);
             this.handler = handler;
@@ -220,12 +227,12 @@ function Logger() {
 		};
 		this.entries.push(entry);
         if (this.entries.length > this.maxEntries) this.entries.shift();
-		this.observers.forEach(function(o) { o.onAppendEntry(entry) });
+		this.observers.forEach(function(o) {o.onAppendEntry(entry)});
 	}
 
 	this.clear = function() {
 		this.entries.splice(0, this.entries.length);
-		this.observers.forEach(function(o) { o.onClear() });
+		this.observers.forEach(function(o) {o.onClear()});
 	}
 }
 
@@ -278,7 +285,7 @@ function start(baseURL, handler, useLastWindow) {
 
 	currentTest = new IDETestLoop(commandFactory, handler);
 
-	currentTest.getCommandInterval = function() { return getInterval(); }
+	currentTest.getCommandInterval = function() {return getInterval();}
 	testCase.debugContext.reset();
 	currentTest.start();
     //setState(Debugger.PLAYING);
@@ -295,7 +302,7 @@ function executeCommand(baseURL, command) {
 
     currentTest = new IDETestLoop(commandFactory);
 
-	currentTest.getCommandInterval = function() { return 0; }
+	currentTest.getCommandInterval = function() {return 0;}
 	var first = true;
 	currentTest.nextCommand = function() {
 		if (first) {
