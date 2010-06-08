@@ -127,7 +127,7 @@ limitations under the License.
 	  <vbox id="tableViewUnavailable" />
 	</stack>
 	<tabpanel orient="vertical">
-	  <textbox id="source" multiline="true" flex="1" onchange="window.editor.sourceView.syncModel()" wrap="off" readonly="true"/>
+	  <textbox id="source" multiline="true" flex="1" onchange="window.editor.sourceView.syncModel()" wrap="off"/>
 	</tabpanel>
       </tabpanels>
     </tabbox>
