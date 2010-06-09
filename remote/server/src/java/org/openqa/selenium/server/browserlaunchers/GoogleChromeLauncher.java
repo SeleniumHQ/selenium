@@ -179,6 +179,10 @@ public class GoogleChromeLauncher extends AbstractBrowserLauncher {
                 "--start-maximized",
                 // Makes sure that no first time run dialog boxes are shown
                 "--no-first-run",
+                // Make sure the browser window is activated when launched (Windows does this by default, but needed for Mac)
+                "--activate-on-launch",
+                // Don't ask to be the default browser
+                "--no-default-browser-check",
                 // Set the user data (i.e. profile) directory.
                 "--user-data-dir=\"" + customProfileDir.getAbsolutePath() + "\"",
                 getSecurityMode(),
