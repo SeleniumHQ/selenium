@@ -202,6 +202,8 @@ public class WindowsProxyManager {
 
     WindowsUtils.writeBooleanRegistryValue(RegKey.WARN_ON_FORM_SUBMIT.key, false);
 
+    WindowsUtils.writeIntRegistryValue(RegKey.DISPLAY_MIXED_CONTENT.key, 0);
+
     // DGF Don't manage proxy settings the IE4 way; use hudsuckr instead
 //        if (WindowsUtils.doesRegistryValueExist(RegKey.PROXY_OVERRIDE.key)) {
 //            WindowsUtils.deleteRegistryValue(RegKey.PROXY_OVERRIDE.key);
@@ -408,6 +410,9 @@ public class WindowsProxyManager {
     WARN_ON_FORM_SUBMIT(REG_KEY_BASE
                         + "\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\Zones\\3\\1601",
         boolean.class),
+    DISPLAY_MIXED_CONTENT(REG_KEY_BASE
+                        + "\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\Zones\\3\\1609",
+        int.class),
     //DGF Don't manage proxy settings the IE4 way; use hudsuckr instead
     //AUTOCONFIG_URL(REG_KEY_BASE + "\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\AutoConfigURL", String.class),
     //PROXY_ENABLE(REG_KEY_BASE + "\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\ProxyEnable", boolean.class),
