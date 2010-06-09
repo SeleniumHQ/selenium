@@ -34,7 +34,7 @@ setup(
     cmdclass={'install': install},
     name='selenium',
     version="2.0-dev",
-    description='Python bindings for WebDriver',
+    description='Python bindings for Selenium',
     long_description=find_longdesc(),
     url='http://code.google.com/p/selenium/',
     package_dir={
