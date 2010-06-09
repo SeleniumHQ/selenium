@@ -23,7 +23,6 @@
 <!ENTITY playButton.tooltip "Spela upp aktuellt testfall">
 <!ENTITY pauseButton.tooltip "Paus / Återgå">
 <!ENTITY stepButton.tooltip "Stega">
-<!ENTITY testrunnerButton.tooltip "Spela upp med Selenium TestRunner">
 <!ENTITY recordButton.tooltip "Spela in">
 <!ENTITY baseURL.label "Bas-URL">
 <!ENTITY baseURLTextbox.tooltip "Ange URL till webbplatsen du testar. Används för att spela upp kommandot &quot;open&quot;.">

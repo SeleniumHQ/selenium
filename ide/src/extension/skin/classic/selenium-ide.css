@@ -174,9 +174,6 @@ toolbarbutton.icon label {
 #step-button { 
   -moz-image-region: rect(0px 64px 16px 48px);
 }
-#testrunner-button { 
-  -moz-image-region: rect(0px 96px 16px 80px);
-}
 
 #rollup-button:not([disabled="true"]) {
     list-style-image: url("spiral.png");

@@ -79,7 +79,6 @@ limitations under the License.
       <toolbarbutton id="pause-button" label="Pause" class="icon pause" tooltiptext="&pauseButton.tooltip;" command="cmd_selenium_pause"/>
       <toolbarbutton id="step-button" label="Step" class="icon" tooltiptext="&stepButton.tooltip;" command="cmd_selenium_step"/>
       <toolbarseparator/>
-      <toolbarbutton id="testrunner-button" label="&testrunnerButton.tooltip;" class="icon" tooltiptext="&testrunnerButton.tooltip;" command="cmd_selenium_testrunner"/>
       <toolbarbutton id="rollup-button" label="Rollup" class="icon" tooltiptext="&rollupButton.tooltip;" command="cmd_selenium_rollup"/>
       <toolbarbutton id="reload-button" label="Reload" class="icon" tooltiptext="&reloadExtButton.tooltip;" command="cmd_selenium_reload" hidden="true"/>
       <toolbarspacer flex="1"/>

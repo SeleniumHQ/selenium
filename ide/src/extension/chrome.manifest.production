@@ -1,7 +1,6 @@
 # chrome.manifest for development
 content selenium-ide  chrome/content/ xpcnativewrappers=yes
 content selenium-ide-platform chrome/content/ platform
-content selenium-ide-testrunner chrome/content/ xpcnativewrappers=no contentaccessible=yes
 
 overlay chrome://browser/content/browser.xul  chrome://selenium-ide/content/selenium-ide-overlay.xul
 

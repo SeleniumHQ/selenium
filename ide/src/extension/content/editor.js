@@ -171,7 +171,6 @@ Editor.controller = {
 		case "cmd_selenium_play_suite":
 		case "cmd_selenium_pause":
 		case "cmd_selenium_step":
-		case "cmd_selenium_testrunner":
         case "cmd_selenium_rollup":
         case "cmd_selenium_reload":
 			return true;
@@ -191,7 +190,6 @@ Editor.controller = {
 		case "cmd_save_suite":
 		case "cmd_save_suite_as":
 			return true;
-		case "cmd_selenium_testrunner":
         case "cmd_selenium_play":
             return editor.app.isPlayable() && editor.selDebugger.state != Debugger.PLAYING;
         case "cmd_selenium_rollup":
@@ -239,9 +237,6 @@ Editor.controller = {
 			break;
 		case "cmd_selenium_step":
 			editor.selDebugger.doContinue(true);
-			break;
-		case "cmd_selenium_testrunner":
-			editor.playback();
 			break;
         case "cmd_selenium_rollup":
             if (Editor.rollupManager) {
@@ -324,7 +319,6 @@ Editor.prototype.updateSeleniumCommands = function() {
     , "cmd_selenium_play"
     , "cmd_selenium_pause"
     , "cmd_selenium_step"
-    , "cmd_selenium_testrunner"
     , "cmd_selenium_rollup"
     , "cmd_selenium_reload"].forEach(function(cmd) {
         goUpdateCommand(cmd);
@@ -395,7 +389,6 @@ Editor.prototype.loadRecorderFor = function(contentWindow, isRootDocument) {
 		this.recordTitle(contentWindow);
 	}
 	Recorder.register(this, contentWindow);
-	this.exposeEditorToTestRunner(contentWindow);
 }
 
 Editor.prototype.toggleRecordingEnabled = function(enabled) {
@@ -597,25 +590,6 @@ Editor.prototype.openSeleniumIDEPreferences = function() {
 	window.openDialog("chrome://selenium-ide/content/optionsDialog.xul", "options", "chrome,modal,resizable", null);
 }
 
-Editor.prototype.exposeEditorToTestRunner = function(contentWindow) {
-	if (this.loadTestRunner && contentWindow.location && contentWindow.location.href) {
-		var location = contentWindow.location.href;
-		var n = location.indexOf('?');
-		if (n >= 0) {
-			location = location.substring(0, n);
-		}
-		if ('chrome://selenium-ide-testrunner/content/PlayerTestSuite.html' == location) {
-            var window = contentWindow.top;
-            if (window.wrappedJSObject) {
-                window = window.wrappedJSObject;
-            }
-			this.log.debug('setting editor to TestRunner window ' + window);
-			window.editor = this;
-			this.loadTestRunner = false;
-		}
-	}
-}
-
 Editor.prototype.showInBrowser = function(url, newWindow) {
     if (newWindow) {
         return this.window.open(url);
@@ -662,61 +636,6 @@ Editor.prototype.playTestSuite = function() {
             self.playCurrentTestCase(arguments.callee, index, total);
         }
     })();
-}
-
-Editor.prototype.playback = function(newWindow, resultCallback) {
-	// disable recording
-	this.setRecordingEnabled(false);
-
-	this.loadTestRunner = true;
-    if (resultCallback) {
-        var self = this;
-        this.testRunnerResultCallback = function(result, window) {
-            self.testRunnerResultCallback = null;
-            return resultCallback.call(self, result, window);
-        }
-    } else {
-        this.testRunnerResultCallback = null;
-    }
-    var auto = resultCallback != null;
-
-    var extensionsURLs = [];
-    var userProvidedPlugins = ExtensionsLoader.getURLs(this.getOptions().userExtensionsURL);
-    if (userProvidedPlugins.length != 0) {
-        for(var sp = 0; sp < userProvidedPlugins.length; sp++){
-            var sp_userProvidedPlugins = userProvidedPlugins[sp].split(";");
-            extensionsURLs.push(sp_userProvidedPlugins[0]);
-        }
-    }
-    extensionsURLs.push(ExtensionsLoader.getURLs(SeleniumIDE.Preferences.getString("pluginProvidedUserExtensions")));
-    // Using chrome://selenium-ide-testrunner instead of chrome://selenium-ide because
-    // we need to disable implicit XPCNativeWrapper to make TestRunner work
-    this.showInBrowser('chrome://selenium-ide-testrunner/content/selenium/TestRunner.html?test=/content/PlayerTestSuite.html' + 
-                       '&userExtensionsURL=' + encodeURI(extensionsURLs.join()) +
-                       '&baseUrl=' + this.app.getBaseURL() +
-                       (auto ? "&auto=true" : ""), 
-                       newWindow);
-}
-
-Editor.prototype.loadTestSuiteToTestRunner = function(e) {
-    var content = "<table id=\"suiteTable\" cellpadding=\"1\" cellspacing=\"1\" border=\"1\" class=\"selenium\"><tbody>\n";
-    content += "<tr><td><b>Test Suite</b></td></tr>\n";
-    var testSuite = this.app.getTestSuite();
-    for (var i = 0; i < testSuite.tests.length; i++) {
-        var testCase = testSuite.tests[i];
-        content += "<tr><td><a href=\"PlayerTest.html?" + i + "\">" +
-            testCase.getTitle() + "</a></td></tr>\n";
-    }
-    content += "</tbody></table>\n";
-    e.innerHTML = content;
-}
-
-Editor.prototype.loadTestCaseToTestRunner = function(e, index) {
-    this.log.debug("loading test index #" + index + " into test runner");
-    var testSuite = this.app.getTestSuite();
-    var testCaseInfo = testSuite.tests[index];
-    var testCase = testCaseInfo.content || this.app.getCurrentFormat().loadFile(testCaseInfo.getFile(), false);
-	e.innerHTML = this.app.getFormats().getDefaultFormat().getFormatter().format(testCase, testCaseInfo.getTitle(), false, true);
 }
 
 Editor.prototype.openLogWindow = function() {

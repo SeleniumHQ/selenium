@@ -23,7 +23,6 @@
 <!ENTITY playButton.tooltip "Executar do começo ou do ponto de início">
 <!ENTITY pauseButton.tooltip "Pausar / Reiniciar">
 <!ENTITY stepButton.tooltip "Iterar">
-<!ENTITY testrunnerButton.tooltip "Executar com Selenium TestRunner">
 <!ENTITY recordButton.tooltip "Gravar">
 <!ENTITY baseURL.label "URL Base">
 <!ENTITY baseURLTextbox.tooltip "Informe a URL do website a ser testado. Este valor é usado para executar o comando &quot;open.&quot;">
