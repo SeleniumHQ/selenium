@@ -100,4 +100,18 @@ public interface DriverCommand {
   String GET_APP_CACHE_STATUS = "getStatus";
   String IS_BROWSER_ONLINE = "isBrowserOnline";
   String SET_BROWSER_ONLINE = "setBrowserOnline";
+  
+  String GET_LOCAL_STORAGE_ITEM = "getLocalStorageItem";
+  String GET_LOCAL_STORAGE_KEYS = "getLocalStorageKeys";
+  String SET_LOCAL_STORAGE_ITEM = "setLocalStorageItem";
+  String REMOVE_LOCAL_STORAGE_ITEM = "removeLocalStorageItem";
+  String CLEAR_LOCAL_STORAGE = "clearLocalStorage";
+  String GET_LOCAL_STORAGE_SIZE = "getLocalStorageSize";
+
+  String GET_SESSION_STORAGE_ITEM = "getSessionStorageItem";
+  String GET_SESSION_STORAGE_KEYS = "getSessionStorageKey";
+  String SET_SESSION_STORAGE_ITEM = "setSessionStorageItem";
+  String REMOVE_SESSION_STORAGE_ITEM = "removeSessionStorageItem";
+  String CLEAR_SESSION_STORAGE = "clearSessionStorage";
+  String GET_SESSION_STORAGE_SIZE = "getSessionStorageSize";
 }

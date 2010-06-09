@@ -19,6 +19,8 @@ package org.openqa.selenium.remote;
 
 import static org.openqa.selenium.remote.DriverCommand.ADD_COOKIE;
 import static org.openqa.selenium.remote.DriverCommand.CLEAR_ELEMENT;
+import static org.openqa.selenium.remote.DriverCommand.CLEAR_LOCAL_STORAGE;
+import static org.openqa.selenium.remote.DriverCommand.CLEAR_SESSION_STORAGE;
 import static org.openqa.selenium.remote.DriverCommand.CLICK_ELEMENT;
 import static org.openqa.selenium.remote.DriverCommand.CLOSE;
 import static org.openqa.selenium.remote.DriverCommand.DELETE_ALL_COOKIES;
@@ -46,8 +48,14 @@ import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_TAG_NAME;
 import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_TEXT;
 import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_VALUE;
 import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_VALUE_OF_CSS_PROPERTY;
+import static org.openqa.selenium.remote.DriverCommand.GET_LOCAL_STORAGE_ITEM;
+import static org.openqa.selenium.remote.DriverCommand.GET_LOCAL_STORAGE_KEYS;
+import static org.openqa.selenium.remote.DriverCommand.GET_LOCAL_STORAGE_SIZE;
 import static org.openqa.selenium.remote.DriverCommand.GET_LOCATION;
 import static org.openqa.selenium.remote.DriverCommand.GET_PAGE_SOURCE;
+import static org.openqa.selenium.remote.DriverCommand.GET_SESSION_STORAGE_ITEM;
+import static org.openqa.selenium.remote.DriverCommand.GET_SESSION_STORAGE_KEYS;
+import static org.openqa.selenium.remote.DriverCommand.GET_SESSION_STORAGE_SIZE;
 import static org.openqa.selenium.remote.DriverCommand.GET_SPEED;
 import static org.openqa.selenium.remote.DriverCommand.GET_TITLE;
 import static org.openqa.selenium.remote.DriverCommand.GET_WINDOW_HANDLES;
@@ -63,12 +71,16 @@ import static org.openqa.selenium.remote.DriverCommand.IS_ELEMENT_SELECTED;
 import static org.openqa.selenium.remote.DriverCommand.NEW_SESSION;
 import static org.openqa.selenium.remote.DriverCommand.QUIT;
 import static org.openqa.selenium.remote.DriverCommand.REFRESH;
+import static org.openqa.selenium.remote.DriverCommand.REMOVE_LOCAL_STORAGE_ITEM;
+import static org.openqa.selenium.remote.DriverCommand.REMOVE_SESSION_STORAGE_ITEM;
 import static org.openqa.selenium.remote.DriverCommand.SCREENSHOT;
 import static org.openqa.selenium.remote.DriverCommand.SEND_KEYS_TO_ELEMENT;
 import static org.openqa.selenium.remote.DriverCommand.SET_BROWSER_ONLINE;
 import static org.openqa.selenium.remote.DriverCommand.SET_BROWSER_VISIBLE;
 import static org.openqa.selenium.remote.DriverCommand.SET_ELEMENT_SELECTED;
+import static org.openqa.selenium.remote.DriverCommand.SET_LOCAL_STORAGE_ITEM;
 import static org.openqa.selenium.remote.DriverCommand.SET_LOCATION;
+import static org.openqa.selenium.remote.DriverCommand.SET_SESSION_STORAGE_ITEM;
 import static org.openqa.selenium.remote.DriverCommand.SET_SPEED;
 import static org.openqa.selenium.remote.DriverCommand.SUBMIT_ELEMENT;
 import static org.openqa.selenium.remote.DriverCommand.SWITCH_TO_FRAME;
@@ -209,6 +221,20 @@ public class HttpCommandExecutor implements CommandExecutor {
         .put(GET_APP_CACHE_STATUS, get("/session/:sessionId/application_cache/status"))
         .put(IS_BROWSER_ONLINE, get("/session/:sessionId/browser_connection"))
         .put(SET_BROWSER_ONLINE, post("/session/:sessionId/browser_connection"))
+        
+        .put(GET_LOCAL_STORAGE_ITEM, get("/session/:sessionId/local_storage/item/:key"))
+        .put(GET_LOCAL_STORAGE_KEYS, get("/session/:sessionId/local_storage/keys"))
+        .put(SET_LOCAL_STORAGE_ITEM, post("/session/:sessionId/local_storage/item"))
+        .put(REMOVE_LOCAL_STORAGE_ITEM, delete("/session/:sessionId/local_storage/remove/:key"))
+        .put(CLEAR_LOCAL_STORAGE, delete("/session/:sessionId/local_storage/clear"))
+        .put(GET_LOCAL_STORAGE_SIZE, get("/session/:sessionId/local_storage/size"))
+        
+        .put(GET_SESSION_STORAGE_ITEM, get("/session/:sessionId/session_storage/item/:key"))
+        .put(GET_SESSION_STORAGE_KEYS, get("/session/:sessionId/session_storage/keys"))
+        .put(SET_SESSION_STORAGE_ITEM, post("/session/:sessionId/session_storage/item"))
+        .put(REMOVE_SESSION_STORAGE_ITEM, delete("/session/:sessionId/session_storage/remove/:key"))
+        .put(CLEAR_SESSION_STORAGE, delete("/session/:sessionId/session_storage/clear"))
+        .put(GET_SESSION_STORAGE_SIZE, get("/session/:sessionId/session_storage/size"))
         .build();
   }
 

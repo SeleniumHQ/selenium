@@ -32,6 +32,8 @@ public interface CapabilityType {
   String SUPPORTS_BROWSER_CONNECTION = "browserConnectionEnabled";
   String SUPPORTS_FINDING_BY_CSS = "cssSelectorsEnabled";
   String PROXY = "proxy";
+  
+  String SUPPORTS_WEB_STORAGE = "webStorageEnabled";
 
   interface ForSeleniumServer {
     String AVOIDING_PROXY = "avoidProxy";

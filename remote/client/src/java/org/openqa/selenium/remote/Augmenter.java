@@ -31,6 +31,7 @@ import org.openqa.selenium.remote.html5.AddApplicationCache;
 import org.openqa.selenium.remote.html5.AddBrowserConnection;
 import org.openqa.selenium.remote.html5.AddDatabaseStorage;
 import org.openqa.selenium.remote.html5.AddLocationContext;
+import org.openqa.selenium.remote.html5.AddWebStorage;
 import org.openqa.selenium.browserlaunchers.CapabilityType;
 
 /**
@@ -50,6 +51,7 @@ public class Augmenter {
     addAugmentation(CapabilityType.SUPPORTS_LOCATION_CONTEXT, new AddLocationContext());
     addAugmentation(CapabilityType.SUPPORTS_APPLICATION_CACHE, new AddApplicationCache());
     addAugmentation(CapabilityType.SUPPORTS_BROWSER_CONNECTION, new AddBrowserConnection());
+    addAugmentation(CapabilityType.SUPPORTS_WEB_STORAGE, new AddWebStorage());
   }
 
   /**

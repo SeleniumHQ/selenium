@@ -22,6 +22,11 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.browserlaunchers.CapabilityType;
+import org.openqa.selenium.html5.ApplicationCache;
+import org.openqa.selenium.html5.BrowserConnection;
+import org.openqa.selenium.html5.DatabaseStorage;
+import org.openqa.selenium.html5.LocationContext;
+import org.openqa.selenium.html5.WebStorage;
 import org.openqa.selenium.internal.FindsByCssSelector;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -99,6 +104,16 @@ public class Session {
     caps.setJavascriptEnabled(instance instanceof JavascriptExecutor);
     if (instance instanceof TakesScreenshot) {
       caps.setCapability(CapabilityType.TAKES_SCREENSHOT, true);
+    } else if (instance instanceof DatabaseStorage) {
+      caps.setCapability(CapabilityType.SUPPORTS_SQL_DATABASE, true);
+    } else if (instance instanceof LocationContext) {
+      caps.setCapability(CapabilityType.SUPPORTS_LOCATION_CONTEXT, true);
+    } else if (instance instanceof ApplicationCache) {
+      caps.setCapability(CapabilityType.SUPPORTS_APPLICATION_CACHE, true);
+    } else if (instance instanceof BrowserConnection) {
+      caps.setCapability(CapabilityType.SUPPORTS_BROWSER_CONNECTION, true);
+    } else if (instance instanceof WebStorage) {
+      caps.setCapability(CapabilityType.SUPPORTS_WEB_STORAGE, true);
     }
     if (instance instanceof FindsByCssSelector) {
       caps.setCapability(CapabilityType.SUPPORTS_FINDING_BY_CSS, true);

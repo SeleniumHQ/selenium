@@ -53,7 +53,7 @@ public class AddApplicationCache implements AugmenterProvider {
             toReturn.add(entry);
           }
           return toReturn;
-        } else if ("getAppCacheStatus".equals(method.getName())) {
+        } else if ("getStatus".equals(method.getName())) {
           String result = (String) executeMethod.execute(DriverCommand.GET_APP_CACHE_STATUS, null);
           return AppCacheStatus.valueOf(result);
         }

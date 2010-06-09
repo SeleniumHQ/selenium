@@ -81,6 +81,18 @@ import org.openqa.selenium.remote.server.handler.SubmitElement;
 import org.openqa.selenium.remote.server.handler.SwitchToFrame;
 import org.openqa.selenium.remote.server.handler.SwitchToWindow;
 import org.openqa.selenium.remote.server.handler.ToggleElement;
+import org.openqa.selenium.remote.server.handler.html5.ClearLocalStorage;
+import org.openqa.selenium.remote.server.handler.html5.ClearSessionStorage;
+import org.openqa.selenium.remote.server.handler.html5.GetLocalStorageItem;
+import org.openqa.selenium.remote.server.handler.html5.GetLocalStorageKeys;
+import org.openqa.selenium.remote.server.handler.html5.GetLocalStorageSize;
+import org.openqa.selenium.remote.server.handler.html5.GetSessionStorageItem;
+import org.openqa.selenium.remote.server.handler.html5.GetSessionStorageKeys;
+import org.openqa.selenium.remote.server.handler.html5.GetSessionStorageSize;
+import org.openqa.selenium.remote.server.handler.html5.RemoveLocalStorageItem;
+import org.openqa.selenium.remote.server.handler.html5.RemoveSessionStorageItem;
+import org.openqa.selenium.remote.server.handler.html5.SetLocalStorageItem;
+import org.openqa.selenium.remote.server.handler.html5.SetSessionStorageItem;
 import org.openqa.selenium.remote.server.renderer.EmptyResult;
 import org.openqa.selenium.remote.server.renderer.ForwardResult;
 import org.openqa.selenium.remote.server.renderer.JsonErrorExceptionResult;
@@ -259,6 +271,32 @@ public class DriverServlet extends HttpServlet {
     postMapper.bind("/session/:sessionId/browser_connection", SetBrowserConnection.class)
     .on(ResultType.SUCCESS, new EmptyResult());
     getMapper.bind("/session/:sessionId/browser_connection", IsBrowserOnline.class)
+        .on(ResultType.SUCCESS, new JsonResult(":response"));
+    
+    getMapper.bind("/session/:sessionId/local_storage/item/:key", GetLocalStorageItem.class)
+        .on(ResultType.SUCCESS, new JsonResult(":response"));
+    getMapper.bind("/session/:sessionId/local_storage/keys", GetLocalStorageKeys.class)
+        .on(ResultType.SUCCESS, new JsonResult(":response"));
+    postMapper.bind("/session/:sessionId/local_storage/item", SetLocalStorageItem.class)
+        .on(ResultType.SUCCESS, new EmptyResult());
+    deleteMapper.bind("/session/:sessionId/local_storage/remove/:key", RemoveLocalStorageItem.class)
+        .on(ResultType.SUCCESS, new JsonResult(":response"));
+    deleteMapper.bind("/session/:sessionId/local_storage/clear", ClearLocalStorage.class)
+        .on(ResultType.SUCCESS, new JsonResult(":response"));
+    getMapper.bind("/session/:sessionId/local_storage/size", GetLocalStorageSize.class)
+        .on(ResultType.SUCCESS, new JsonResult(":response"));
+    
+    getMapper.bind("/session/:sessionId/session_storage/item/:key", GetSessionStorageItem.class)
+        .on(ResultType.SUCCESS, new JsonResult(":response"));
+    getMapper.bind("/session/:sessionId/session_storage/keys", GetSessionStorageKeys.class)
+        .on(ResultType.SUCCESS, new JsonResult(":response"));
+    postMapper.bind("/session/:sessionId/session_storage/keys", SetSessionStorageItem.class)
+        .on(ResultType.SUCCESS, new EmptyResult());
+    deleteMapper.bind("/session/:sessionId/session_storage/remove/:key", RemoveSessionStorageItem.class)
+        .on(ResultType.SUCCESS, new JsonResult(":response"));
+    deleteMapper.bind("/session/:sessionId/session_storage/clear", ClearSessionStorage.class)
+        .on(ResultType.SUCCESS, new JsonResult(":response"));
+    getMapper.bind("/session/:sessionId/session_storage/size", GetSessionStorageSize.class)
         .on(ResultType.SUCCESS, new JsonResult(":response"));
   }
 
