@@ -108,13 +108,16 @@ public class FirefoxDriverTestSuite extends TestCase {
         fromTo.put("Release/webdriver-firefox.dll",
         "platform/WINNT_x86-msvc/components/webdriver-firefox.dll");
       } else if (Platform.getCurrent().is(Platform.UNIX)) {
-        fromTo.put("../linux64/Release/libwebdriver-firefox.so",
+        // point buildDir to the general build dir, since Firefox components
+        // for linux are in two separate dirs.
+        buildDir = FileHandler.locateInProject("build");
+        fromTo.put("linux64/Release/libwebdriver-firefox.so",
         "platform/Linux/components/libwebdriver-firefox.so");
       
-        fromTo.put("../linux64/Release/x_ignore_nofocus.so",
+        fromTo.put("firefox/i386/libnoblur.so",
         "amd64/x_ignore_nofocus.so");
         
-        fromTo.put("../linux/Release/x_ignore_nofocus.so",
+        fromTo.put("firefox/amd64/libnoblur64.so",
         "x86/x_ignore_nofocus.so");
       }
 
