@@ -15,33 +15,33 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package org.openqa.selenium.remote.server.handler;
+package org.openqa.selenium.remote.server.handler.html5;
 
-import java.util.Map;
-
-import org.openqa.selenium.html5.BrowserConnection;
+import org.openqa.selenium.html5.LocationContext;
+import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.server.DriverSessions;
-import org.openqa.selenium.remote.server.JsonParametersAware;
+import org.openqa.selenium.remote.server.handler.WebDriverHandler;
 import org.openqa.selenium.remote.server.rest.ResultType;
 
-public class SetBrowserConnection extends WebDriverHandler implements JsonParametersAware {
-  private boolean online;
+public class GetLocationContext extends WebDriverHandler {
+  private Response response;
   
-  public SetBrowserConnection(DriverSessions sessions) {
-    super(sessions);
+  public GetLocationContext(DriverSessions sessions) {
+    super(sessions);  
   }
   
-  public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
-    online = (Boolean) allParameters.get("state");
+  public Response getResponse() {
+    return response;
   }
-
+  
   public ResultType call() throws Exception {
-    ((BrowserConnection) unwrap(getDriver())).setOnline(online);
+    response = newResponse();
+    response.setValue(((LocationContext) unwrap(getDriver())).location());
     return ResultType.SUCCESS;
   }
   
   @Override
   public String toString() {
-    return String.format("[set browser connection : %s]", online);
+    return "[get location context]";
   }
 }

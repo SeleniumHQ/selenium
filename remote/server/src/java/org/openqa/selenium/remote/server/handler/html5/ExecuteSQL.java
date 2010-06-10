@@ -15,7 +15,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package org.openqa.selenium.remote.server.handler;
+package org.openqa.selenium.remote.server.handler.html5;
 
 import java.util.List;
 import java.util.Map;
@@ -24,6 +24,7 @@ import org.openqa.selenium.html5.DatabaseStorage;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.JsonParametersAware;
+import org.openqa.selenium.remote.server.handler.WebDriverHandler;
 import org.openqa.selenium.remote.server.handler.internal.ArgumentConverter;
 import org.openqa.selenium.remote.server.handler.internal.ResultConverter;
 import org.openqa.selenium.remote.server.rest.ResultType;
