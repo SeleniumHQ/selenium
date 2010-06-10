@@ -188,8 +188,9 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
 
   protected void generatePacAndPrefJs(String homePage) throws IOException {
     browserConfigurationOptions.setProxyRequired(false);
-    if (browserConfigurationOptions.is("captureNetworkTraffic") || browserConfigurationOptions.is(
-        "addCustomRequestHeaders")) {
+    if (browserConfigurationOptions.is("captureNetworkTraffic") ||
+        browserConfigurationOptions.is("addCustomRequestHeaders") ||
+        browserConfigurationOptions.is("trustAllSSLCertificates")) {
       browserConfigurationOptions.setProxyEverything(true);
       browserConfigurationOptions.setProxyRequired(true);
     }
