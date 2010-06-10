@@ -87,6 +87,16 @@ public class ErrorHandler {
       }
     }
 
+    if (cause == null) {
+      // The stacktrace from the server was unavailable or could not be
+      // deserialized.
+      // In this case, the stacktrace will be pointless - it will point to the
+      // exception as generated from this class, which is technically correct
+      // but utterly useless. Let the user know that.
+      message = message + " (Note: The stack trace from the server side " +
+          "is missing. The locally-generated stack trace is useless.)";
+    }
+
     Throwable toThrow = null;
     try {
       Constructor<? extends Throwable> constructor =
