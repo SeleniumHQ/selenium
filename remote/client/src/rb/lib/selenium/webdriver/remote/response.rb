@@ -5,28 +5,26 @@ module Selenium
       # @private
       class Response
 
-        attr_accessor :code
-        attr_writer   :payload
+        attr_reader :code, :payload
+        attr_writer :payload
 
-        def initialize
-          yield self if block_given?
+        def initialize(code, payload = nil)
+          @code    = code
+          @payload = payload || {}
+
           assert_ok
         end
 
         def error
-          Error.for_code(payload['status'])
+          Error.for_code @payload['status']
         end
 
         def error_message
-          payload['value']['message']
+          @payload['value']['message']
         end
 
         def [](key)
-          payload[key]
-        end
-
-        def payload
-          @payload ||= {}
+          @payload[key]
         end
 
         private

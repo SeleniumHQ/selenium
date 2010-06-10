@@ -395,18 +395,9 @@ module Selenium
         def default_options
           {
             :url                  => "http://localhost:4444/wd/hub",
-            # TODO(jari): enable Patron when http://github.com/toland/patron/issues/issue/13 is fixed
-            :http_client          => DefaultHttpClient,
+            :http_client          => Http::Default,
             :desired_capabilities => Capabilities.firefox
           }
-        end
-
-        def http_client_class
-          require "selenium/webdriver/remote/patron_http_client"
-          PatronHttpClient
-        rescue LoadError
-          # patron not available
-          DefaultHttpClient
         end
 
       end # Bridge
