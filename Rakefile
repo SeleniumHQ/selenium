@@ -104,6 +104,7 @@ task :test_selenium => [ "//selenium:selenium_test:run", "//selenium:test-selene
 task :test_support => [ "//support:test:run" ]
 task :test_iphone_client => [:'webdriver-iphone-client-test']
 task :test_iphone => [:test_iphone_server, :test_iphone_client]
+task :test_singlesuite => [ "//selenium:single:run" ]
 
 if (windows?)
   task :test_core => [:'test_core_ie']

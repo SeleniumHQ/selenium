@@ -49,6 +49,7 @@ java_test(name = "selenium_test",
   args = "selenium/test/java/webdriver-selenium-suite.xml")
 
 java_test(name = "single",
+  srcs = [ "test/java/org/openqa/selenium/SingleTestSuite.java" ],
   deps = [
     ":test",
     "//chrome:test",

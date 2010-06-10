@@ -43,7 +43,7 @@ public class SingleTestSuite extends TestCase {
   public static Test suite() throws Exception {
     String driver = FIREFOX_TEST;
 
-    System.setProperty("webdriver.development", "true");
+    //System.setProperty("webdriver.development", "true");
     System.setProperty("jna.library.path", "..\\build;build");
     System.setProperty("webdriver.selenium.server.port", String.valueOf(findFreePort()));
 //    System.setProperty("webdriver.firefox.useExisting", "true");
@@ -55,12 +55,12 @@ public class SingleTestSuite extends TestCase {
         .usingDriver(driver)
         .keepDriverInstance()
         .includeJavascriptTests()
-        .onlyRun("ChildrenFindingTest")
-        .method("testShouldBeAbleToFindAnElementByCssSelector")
+        .onlyRun("TypingTest")
+        //.method("testShouldBeAbleToFindAnElementByCssSelector")
         .exclude(ALL)
         .exclude(Ignore.Driver.FIREFOX)
         .outputTestNames()
-        //.leaveRunning()
+        .leaveRunning()
         ;  // Yeah, this look strange :)
 
     if (REMOTE.equals(driver) || REMOTE_IE.equals(driver)) {
