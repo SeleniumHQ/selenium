@@ -18,6 +18,7 @@ from setuptools import setup
 from setuptools.command.install import install
 
 from os.path import dirname, join
+import re
 
 def find_longdesc():
     for path in ("docs/api/py/index.rst", "docs/index.rst"):
@@ -30,10 +31,15 @@ def find_longdesc():
     print "WARNING: Can't find index.rst"
     return ""
 
+def revision():
+    svn_rev = "$Revision$"
+    match = re.search("\d+", svn_rev)
+    return match.group() or "unknown"
+
 setup(
     cmdclass={'install': install},
     name='selenium',
-    version="2.0-dev-$Revision$",
+    version="2.0-dev-%s" % revision(),
     description='Python bindings for Selenium',
     long_description=find_longdesc(),
     url='http://code.google.com/p/selenium/',
