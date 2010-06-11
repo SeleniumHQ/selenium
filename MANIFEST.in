@@ -17,3 +17,5 @@ recursive-include remote/client/test/py *.py
 include selenium/src/py/selenium.py
 include selenium/src/py/__init__.py
 include docs/api/py/index.rst
+recursive-include selenium.egg-info *
+
