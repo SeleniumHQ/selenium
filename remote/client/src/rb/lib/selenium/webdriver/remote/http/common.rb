@@ -36,14 +36,16 @@ module Selenium
           end
 
           def create_response(code, body, content_type)
+            code, body, content_type = code.to_i, body.to_s.strip, content_type.to_s
             puts "<- #{body}\n" if $DEBUG
 
             if content_type.include? CONTENT_TYPE
+              raise Error::WebDriverError, "empty body: #{content_type.inspect} (#{code})\n#{body}" if body.empty?
               Response.new(code, JSON.parse(body))
             elsif code == 204
               Response.new(code)
             else
-              raise Error::WebDriverError, "unexpected content type: #{content_type} (#{code})\n#{body}"
+              raise Error::WebDriverError, "unexpected content type: #{content_type.inspect} (#{code})\n#{body}"
             end
           end
 

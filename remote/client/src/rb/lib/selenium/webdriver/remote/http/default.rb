@@ -31,7 +31,7 @@ module Selenium
               raise Error::WebDriverError, "too many redirects" if redirects >= MAX_REDIRECTS
               request(:get, URI.parse(response['Location']), DEFAULT_HEADERS.dup, nil, redirects + 1)
             else
-              create_response response.code.to_i, response.body.strip, response.content_type
+              create_response response.code, response.body, response.content_type
             end
           end
 
