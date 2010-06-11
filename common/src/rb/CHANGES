@@ -1,3 +1,11 @@
+2010-06-11
+==========
+
+* User can specify :http_client for the Firefox driver.
+* Refactor HTTP client code
+* Add Remote::Http::Curb as an alternative to the default (net/http) client.
+
+
 2010-06-03
 ==========
 
