@@ -43,8 +43,7 @@
     
     <iframe id="search_frame"></iframe>
     
-    <div id="content"><h1>Class: Selenium::WebDriver::Firefox::Bridge
-  
+    <div id="content"><h1>Class: Selenium::WebDriver::Firefox::Bridge 
   
   
 </h1>
@@ -111,10 +110,7 @@
   
 
   
-    <h2>
-      Instance Method Summary
-      <small>(<a href="#" class="summary_toggle">collapse</a>)</small>
-    </h2>
+    <h2>Instance Method Summary</h2>
 
     <ul class="summary">
       
@@ -126,7 +122,6 @@
 
     
   </span>
-  
   
   
   
@@ -152,7 +147,6 @@
   
   
   
-  
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -168,7 +162,6 @@
 
     
   </span>
-  
   
   
   
@@ -194,7 +187,6 @@
   
   
   
-  
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -210,7 +202,6 @@
 
     
   </span>
-  
   
   
   
@@ -238,7 +229,6 @@
   
   
   
-  
 
   
     <span class="summary_desc"><div class='inline'><p>
@@ -257,7 +247,6 @@ A new instance of Bridge.
 
     
   </span>
-  
   
   
   
@@ -344,7 +333,17 @@ A new instance of Bridge
 19
 20
 21
-22</pre>
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/bridge.rb', line 8</span>
@@ -357,12 +356,22 @@ A new instance of Bridge
     <span class='opts identifier id'>opts</span><span class='dot token'>.</span><span class='delete identifier id'>delete</span><span class='lparen token'>(</span><span class='symbol val'>:profile</span><span class='rparen token'>)</span> <span class='orop op'>||</span> <span class='DEFAULT_PROFILE_NAME constant id'>DEFAULT_PROFILE_NAME</span>
   <span class='rparen token'>)</span>
 
+  <span class='http_client identifier id'>http_client</span> <span class='assign token'>=</span> <span class='opts identifier id'>opts</span><span class='dot token'>.</span><span class='delete identifier id'>delete</span><span class='lparen token'>(</span><span class='symbol val'>:http_client</span><span class='rparen token'>)</span>
+
   <span class='unless unless kw'>unless</span> <span class='opts identifier id'>opts</span><span class='dot token'>.</span><span class='empty? fid id'>empty?</span>
     <span class='raise identifier id'>raise</span> <span class='ArgumentError constant id'>ArgumentError</span><span class='comma token'>,</span> <span class='dstring node'>&quot;unknown option#{'s' if opts.size != 1}: #{opts.inspect}&quot;</span>
   <span class='end end kw'>end</span>
 
   <span class='@launcher ivar id'>@launcher</span><span class='dot token'>.</span><span class='launch identifier id'>launch</span>
-  <span class='super super kw'>super</span> <span class='symbol val'>:url</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='@launcher ivar id'>@launcher</span><span class='dot token'>.</span><span class='connection identifier id'>connection</span><span class='dot token'>.</span><span class='url identifier id'>url</span><span class='comma token'>,</span> <span class='symbol val'>:desired_capabilities</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='symbol val'>:firefox</span>
+
+  <span class='remote_opts identifier id'>remote_opts</span> <span class='assign token'>=</span> <span class='lbrace token'>{</span>
+    <span class='symbol val'>:url</span>                  <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='@launcher ivar id'>@launcher</span><span class='dot token'>.</span><span class='url identifier id'>url</span><span class='comma token'>,</span>
+    <span class='symbol val'>:desired_capabilities</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='symbol val'>:firefox</span>
+  <span class='rbrace token'>}</span>
+
+  <span class='remote_opts identifier id'>remote_opts</span><span class='dot token'>.</span><span class='merge! fid id'>merge!</span><span class='lparen token'>(</span><span class='symbol val'>:http_client</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='http_client identifier id'>http_client</span><span class='rparen token'>)</span> <span class='if if_mod kw'>if</span> <span class='http_client identifier id'>http_client</span>
+
+  <span class='super super kw'>super</span><span class='lparen token'>(</span><span class='remote_opts identifier id'>remote_opts</span><span class='rparen token'>)</span>
 <span class='end end kw'>end</span>
 </pre>
     </td>
@@ -390,12 +399,12 @@ A new instance of Bridge
       <pre class="lines">
 
 
-24
-25
-26</pre>
+34
+35
+36</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/bridge.rb', line 24</span>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/bridge.rb', line 34</span>
 
 <span class='def def kw'>def</span> <span class='browser identifier id'>browser</span>
   <span class='symbol val'>:firefox</span>
@@ -419,12 +428,12 @@ A new instance of Bridge
       <pre class="lines">
 
 
-28
-29
-30</pre>
+38
+39
+40</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/bridge.rb', line 28</span>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/bridge.rb', line 38</span>
 
 <span class='def def kw'>def</span> <span class='driver_extensions identifier id'>driver_extensions</span>
   <span class='lbrack token'>[</span><span class='DriverExtensions constant id'>DriverExtensions</span><span class='colon2 op'>::</span><span class='TakesScreenshot constant id'>TakesScreenshot</span><span class='rbrack token'>]</span>
@@ -448,12 +457,12 @@ A new instance of Bridge
       <pre class="lines">
 
 
-43
-44
-45</pre>
+53
+54
+55</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/bridge.rb', line 43</span>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/bridge.rb', line 53</span>
 
 <span class='def def kw'>def</span> <span class='findElementByCssSelector identifier id'>findElementByCssSelector</span><span class='lparen token'>(</span><span class='parent identifier id'>parent</span><span class='comma token'>,</span> <span class='selector identifier id'>selector</span><span class='rparen token'>)</span>
   <span class='find_element_by identifier id'>find_element_by</span> <span class='string val'>'css selector'</span><span class='comma token'>,</span> <span class='selector identifier id'>selector</span><span class='comma token'>,</span> <span class='parent identifier id'>parent</span>
@@ -477,12 +486,12 @@ A new instance of Bridge
       <pre class="lines">
 
 
-47
-48
-49</pre>
+57
+58
+59</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/bridge.rb', line 47</span>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/bridge.rb', line 57</span>
 
 <span class='def def kw'>def</span> <span class='findElementsByCssSelector identifier id'>findElementsByCssSelector</span><span class='lparen token'>(</span><span class='parent identifier id'>parent</span><span class='comma token'>,</span> <span class='selector identifier id'>selector</span><span class='rparen token'>)</span>
   <span class='find_elements_by identifier id'>find_elements_by</span> <span class='string val'>'css selector'</span><span class='comma token'>,</span> <span class='selector identifier id'>selector</span><span class='comma token'>,</span> <span class='parent identifier id'>parent</span>
@@ -506,12 +515,12 @@ A new instance of Bridge
       <pre class="lines">
 
 
-39
-40
-41</pre>
+49
+50
+51</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/bridge.rb', line 39</span>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/bridge.rb', line 49</span>
 
 <span class='def def kw'>def</span> <span class='getScreenshot identifier id'>getScreenshot</span>
   <span class='execute identifier id'>execute</span> <span class='symbol val'>:screenshot</span>
@@ -535,19 +544,19 @@ A new instance of Bridge
       <pre class="lines">
 
 
-32
-33
-34
-35
-36
-37</pre>
+42
+43
+44
+45
+46
+47</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/bridge.rb', line 32</span>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/bridge.rb', line 42</span>
 
 <span class='def def kw'>def</span> <span class='quit identifier id'>quit</span>
   <span class='super super kw'>super</span>
-  <span class='@binary ivar id'>@binary</span><span class='dot token'>.</span><span class='wait identifier id'>wait</span> <span class='rescue rescue kw'>rescue</span> <span class='nil nil kw'>nil</span> <span class='comment val'># might raise on windows</span>
+  <span class='@binary ivar id'>@binary</span><span class='dot token'>.</span><span class='quit identifier id'>quit</span>
 
   <span class='nil nil kw'>nil</span>
 <span class='end end kw'>end</span>
@@ -562,9 +571,9 @@ A new instance of Bridge
 </div>
     
     <div id="footer">
-  Generated on Mon May 31 17:07:42 2010 by 
+  Generated on Fri Jun 11 14:24:27 2010 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool">yard</a>
-  0.5.5 (ruby-1.8.7).
+  0.5.4 (ruby-1.8.7).
 </div>
 
   </body>

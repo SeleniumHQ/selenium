@@ -43,8 +43,7 @@
     
     <iframe id="search_frame"></iframe>
     
-    <div id="content"><h1>Class: Selenium::WebDriver::Chrome::Launcher
-  
+    <div id="content"><h1>Class: Selenium::WebDriver::Chrome::Launcher 
   
   
 </h1>
@@ -108,7 +107,7 @@
 
 
   
-  <h2>Instance Attribute Summary <small>(<a href="#" class="summary_toggle">collapse</a>)</small></h2>
+  <h2>Instance Attribute Summary</h2>
   <ul class="summary">
     
       <li class="public ">
@@ -127,7 +126,6 @@
   
   
   
-  
 
   
     <span class="summary_desc"><div class='inline'><p>
@@ -142,10 +140,7 @@ Returns the value of attribute pid.
 
 
   
-    <h2>
-      Class Method Summary
-      <small>(<a href="#" class="summary_toggle">collapse</a>)</small>
-    </h2>
+    <h2>Class Method Summary</h2>
 
     <ul class="summary">
       
@@ -157,7 +152,6 @@ Returns the value of attribute pid.
 
     
   </span>
-  
   
   
   
@@ -183,7 +177,6 @@ Returns the value of attribute pid.
   
   
   
-  
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -193,33 +186,9 @@ Returns the value of attribute pid.
       
     </ul>
   
-    <h2>
-      Instance Method Summary
-      <small>(<a href="#" class="summary_toggle">collapse</a>)</small>
-    </h2>
+    <h2>Instance Method Summary</h2>
 
     <ul class="summary">
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#kill-instance_method" title="#kill (instance method)">- (Object) <strong>kill</strong> </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
       
         <li class="public ">
   <span class="summary_signature">
@@ -230,6 +199,25 @@ Returns the value of attribute pid.
     
   </span>
   
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#quit-instance_method" title="#quit (instance method)">- (Object) <strong>quit</strong> </a>
+    
+
+    
+  </span>
   
   
   
@@ -393,36 +381,7 @@ Returns the value of attribute pid
     
     
       <div class="method_details first">
-  <p class="signature first" id="kill-instance_method">
-  
-    - (<tt>Object</tt>) <strong>kill</strong> 
-  
-
-  
-</p><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-41
-42
-43</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/launcher.rb', line 41</span>
-
-<span class='def def kw'>def</span> <span class='kill identifier id'>kill</span>
-  <span class='@process ivar id'>@process</span><span class='dot token'>.</span><span class='kill identifier id'>kill</span>
-<span class='end end kw'>end</span>
-</pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <p class="signature " id="launch-instance_method">
+  <p class="signature first" id="launch-instance_method">
   
     - (<tt>Object</tt>) <strong>launch</strong>(server_url) 
   
@@ -458,14 +417,43 @@ Returns the value of attribute pid
 </table>
 </div>
     
+      <div class="method_details ">
+  <p class="signature " id="quit-instance_method">
+  
+    - (<tt>Object</tt>) <strong>quit</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+41
+42
+43</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/launcher.rb', line 41</span>
+
+<span class='def def kw'>def</span> <span class='quit identifier id'>quit</span>
+  <span class='@process ivar id'>@process</span><span class='dot token'>.</span><span class='ensure_death identifier id'>ensure_death</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
   </div>
 
 </div>
     
     <div id="footer">
-  Generated on Mon May 31 17:07:41 2010 by 
+  Generated on Fri Jun 11 14:24:26 2010 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool">yard</a>
-  0.5.5 (ruby-1.8.7).
+  0.5.4 (ruby-1.8.7).
 </div>
 
   </body>

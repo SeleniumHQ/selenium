@@ -4,6 +4,20 @@ module Selenium
   module WebDriver
     module Remote
       module Http
+        
+        #
+        # An alternative to the default Net::HTTP client. 
+        # 
+        # This can be used for the Firefox and Remote drivers if you have Curb
+        # installed.
+        # 
+        # @example Using Curb
+        # 
+        #   include Selenium
+        # 
+        #   driver = WebDriver.for :firefox, :http_client => WebDriver::Remote::Http::Curb
+        # 
+        
         class Curb < Common
 
           private

@@ -43,8 +43,7 @@
     
     <iframe id="search_frame"></iframe>
     
-    <div id="content"><h1>Class: Selenium::WebDriver::Firefox::Binary
-  
+    <div id="content"><h1>Class: Selenium::WebDriver::Firefox::Binary 
   
   
 </h1>
@@ -91,10 +90,7 @@
 
 
   
-    <h2>
-      Class Method Summary
-      <small>(<a href="#" class="summary_toggle">collapse</a>)</small>
-    </h2>
+    <h2>Class Method Summary</h2>
 
     <ul class="summary">
       
@@ -111,7 +107,6 @@
   
   
   
-  
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -121,10 +116,7 @@
       
     </ul>
   
-    <h2>
-      Instance Method Summary
-      <small>(<a href="#" class="summary_toggle">collapse</a>)</small>
-    </h2>
+    <h2>Instance Method Summary</h2>
 
     <ul class="summary">
       
@@ -136,7 +128,6 @@
 
     
   </span>
-  
   
   
   
@@ -162,7 +153,6 @@
   
   
   
-  
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -178,7 +168,6 @@
 
     
   </span>
-  
   
   
   
@@ -201,7 +190,6 @@
   </span>
   
     <span class="note title constructor">constructor</span>
-  
   
   
   
@@ -230,7 +218,6 @@ A new instance of Binary.
   
   
   
-  
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -247,6 +234,25 @@ A new instance of Binary.
     
   </span>
   
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#quit-instance_method" title="#quit (instance method)">- (Object) <strong>quit</strong> </a>
+    
+
+    
+  </span>
   
   
   
@@ -272,7 +278,6 @@ A new instance of Binary.
   
   
   
-  
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -288,7 +293,6 @@ A new instance of Binary.
 
     
   </span>
-  
   
   
   
@@ -367,10 +371,6 @@ A new instance of Binary
       <pre class="lines">
 
 
-67
-68
-69
-70
 71
 72
 73
@@ -384,10 +384,14 @@ A new instance of Binary
 81
 82
 83
-84</pre>
+84
+85
+86
+87
+88</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/binary.rb', line 67</span>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/binary.rb', line 71</span>
 
 <span class='def def kw'>def</span> <span class='path identifier id'>path</span>
   <span class='@path ivar id'>@path</span> <span class='opasgn op'>||=</span> <span class='case case kw'>case</span> <span class='Platform constant id'>Platform</span><span class='dot token'>.</span><span class='os identifier id'>os</span>
@@ -563,12 +567,12 @@ A new instance of Binary
       <pre class="lines">
 
 
-52
-53
-54</pre>
+56
+57
+58</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/binary.rb', line 52</span>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/binary.rb', line 56</span>
 
 <span class='def def kw'>def</span> <span class='kill identifier id'>kill</span>
   <span class='@process ivar id'>@process</span><span class='dot token'>.</span><span class='kill identifier id'>kill</span> <span class='if if_mod kw'>if</span> <span class='@process ivar id'>@process</span>
@@ -592,15 +596,44 @@ A new instance of Binary
       <pre class="lines">
 
 
-60
-61
-62</pre>
+64
+65
+66</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/binary.rb', line 60</span>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/binary.rb', line 64</span>
 
 <span class='def def kw'>def</span> <span class='pid identifier id'>pid</span>
   <span class='@process ivar id'>@process</span><span class='dot token'>.</span><span class='pid identifier id'>pid</span> <span class='if if_mod kw'>if</span> <span class='@process ivar id'>@process</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="quit-instance_method">
+  
+    - (<tt>Object</tt>) <strong>quit</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+52
+53
+54</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/binary.rb', line 52</span>
+
+<span class='def def kw'>def</span> <span class='quit identifier id'>quit</span>
+  <span class='@process ivar id'>@process</span><span class='dot token'>.</span><span class='ensure_death identifier id'>ensure_death</span> <span class='if if_mod kw'>if</span> <span class='@process ivar id'>@process</span>
 <span class='end end kw'>end</span>
 </pre>
     </td>
@@ -654,12 +687,12 @@ A new instance of Binary
       <pre class="lines">
 
 
-56
-57
-58</pre>
+60
+61
+62</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/binary.rb', line 56</span>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/binary.rb', line 60</span>
 
 <span class='def def kw'>def</span> <span class='wait identifier id'>wait</span>
   <span class='@process ivar id'>@process</span><span class='dot token'>.</span><span class='wait identifier id'>wait</span> <span class='if if_mod kw'>if</span> <span class='@process ivar id'>@process</span>
@@ -675,9 +708,9 @@ A new instance of Binary
 </div>
     
     <div id="footer">
-  Generated on Mon May 31 17:07:42 2010 by 
+  Generated on Fri Jun 11 14:24:26 2010 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool">yard</a>
-  0.5.5 (ruby-1.8.7).
+  0.5.4 (ruby-1.8.7).
 </div>
 
   </body>

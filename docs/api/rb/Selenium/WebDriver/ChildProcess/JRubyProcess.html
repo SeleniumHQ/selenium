@@ -43,8 +43,7 @@
     
     <iframe id="search_frame"></iframe>
     
-    <div id="content"><h1>Module: Selenium::WebDriver::ChildProcess::JRubyProcess
-  
+    <div id="content"><h1>Module: Selenium::WebDriver::ChildProcess::JRubyProcess 
   
   
 </h1>
@@ -68,10 +67,7 @@
 
 
   
-    <h2>
-      Instance Method Summary
-      <small>(<a href="#" class="summary_toggle">collapse</a>)</small>
-    </h2>
+    <h2>Instance Method Summary</h2>
 
     <ul class="summary">
       
@@ -83,7 +79,6 @@
 
     
   </span>
-  
   
   
   
@@ -104,7 +99,6 @@
 
     
   </span>
-  
   
   
   
@@ -132,7 +126,6 @@
   
   
   
-  
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -153,7 +146,6 @@
   
   
   
-  
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -169,7 +161,6 @@
 
     
   </span>
-  
   
   
   
@@ -225,12 +216,12 @@
       <pre class="lines">
 
 
-134
-135
-136</pre>
+191
+192
+193</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/child_process.rb', line 134</span>
+      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/child_process.rb', line 191</span>
 
 <span class='def def kw'>def</span> <span class='assert_started identifier id'>assert_started</span>
   <span class='raise identifier id'>raise</span> <span class='Error constant id'>Error</span><span class='colon2 op'>::</span><span class='WebDriverError constant id'>WebDriverError</span><span class='comma token'>,</span> <span class='string val'>&quot;process not started&quot;</span> <span class='unless unless_mod kw'>unless</span> <span class='@process ivar id'>@process</span>
@@ -254,15 +245,15 @@
       <pre class="lines">
 
 
-127
-128
-129
-130
-131
-132</pre>
+184
+185
+186
+187
+188
+189</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/child_process.rb', line 127</span>
+      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/child_process.rb', line 184</span>
 
 <span class='def def kw'>def</span> <span class='exit_value identifier id'>exit_value</span>
   <span class='assert_started identifier id'>assert_started</span>
@@ -293,13 +284,13 @@
       <pre class="lines">
 
 
-115
-116
-117
-118</pre>
+172
+173
+174
+175</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/child_process.rb', line 115</span>
+      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/child_process.rb', line 172</span>
 
 <span class='def def kw'>def</span> <span class='kill identifier id'>kill</span>
   <span class='assert_started identifier id'>assert_started</span>
@@ -324,39 +315,41 @@
       <pre class="lines">
 
 
-86
-87
-88
-89
-90
-91
-92
-93
-94
-95
-96
-97
-98
-99
-100
-101
-102
-103
-104
-105
-106
-107
-108
-109
-110
-111
-112
-113</pre>
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/child_process.rb', line 86</span>
+      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/child_process.rb', line 142</span>
 
 <span class='def def kw'>def</span> <span class='start identifier id'>start</span>
+  <span class='require identifier id'>require</span> <span class='string val'>'java'</span>
   <span class='pb identifier id'>pb</span> <span class='assign token'>=</span> <span class='java identifier id'>java</span><span class='dot token'>.</span><span class='lang identifier id'>lang</span><span class='dot token'>.</span><span class='ProcessBuilder constant id'>ProcessBuilder</span><span class='dot token'>.</span><span class='new identifier id'>new</span><span class='lparen token'>(</span><span class='@args ivar id'>@args</span><span class='rparen token'>)</span>
 
   <span class='env identifier id'>env</span> <span class='assign token'>=</span> <span class='pb identifier id'>pb</span><span class='dot token'>.</span><span class='environment identifier id'>environment</span>
@@ -403,14 +396,14 @@
       <pre class="lines">
 
 
-121
-122
-123
-124
-125</pre>
+178
+179
+180
+181
+182</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/child_process.rb', line 121</span>
+      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/child_process.rb', line 178</span>
 
 <span class='def def kw'>def</span> <span class='wait identifier id'>wait</span>
   <span class='assert_started identifier id'>assert_started</span>
@@ -428,9 +421,9 @@
 </div>
     
     <div id="footer">
-  Generated on Mon May 31 17:07:41 2010 by 
+  Generated on Fri Jun 11 14:24:26 2010 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool">yard</a>
-  0.5.5 (ruby-1.8.7).
+  0.5.4 (ruby-1.8.7).
 </div>
 
   </body>

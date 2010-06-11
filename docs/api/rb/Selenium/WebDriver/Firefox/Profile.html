@@ -43,8 +43,7 @@
     
     <iframe id="search_frame"></iframe>
     
-    <div id="content"><h1>Class: Selenium::WebDriver::Firefox::Profile
-  
+    <div id="content"><h1>Class: Selenium::WebDriver::Firefox::Profile 
   
   
 </h1>
@@ -105,7 +104,7 @@
         <dt id="NO_FOCUS_LIBRARY_NAME-constant" class="">NO_FOCUS_LIBRARY_NAME =
           
         </dt>
-        <dd><pre class="code"><span class='string val'>&quot;x_ignore_nofocus.so&quot;</span>
+        <dd><pre class="code"><span class='string val'>&quot;libnoblur.so&quot;</span>
 </pre></dd>
       
         <dt id="DEFAULT_EXTENSION_SOURCE-constant" class="">DEFAULT_EXTENSION_SOURCE =
@@ -127,7 +126,10 @@
         <dt id="NATIVE_WINDOWS-constant" class="">NATIVE_WINDOWS =
           
         </dt>
-        <dd><pre class="code"><span class='lbrack token'>[</span><span class='dstring node'>&quot;#{WebDriver.root}/firefox/prebuilt/Win32/Release/webdriver-firefox.dll&quot;</span><span class='comma token'>,</span> <span class='string val'>&quot;platform/WINNT_x86-msvc/components/webdriver-firefox.dll&quot;</span><span class='rbrack token'>]</span>
+        <dd><pre class="code"><span class='lbrack token'>[</span>
+  <span class='dstring node'>&quot;#{WebDriver.root}/firefox/prebuilt/Win32/Release/webdriver-firefox.dll&quot;</span><span class='comma token'>,</span>
+  <span class='string val'>&quot;platform/WINNT_x86-msvc/components/webdriver-firefox.dll&quot;</span>
+<span class='rbrack token'>]</span>
 </pre></dd>
       
         <dt id="NATIVE_LINUX-constant" class="">NATIVE_LINUX =
@@ -143,8 +145,8 @@
           
         </dt>
         <dd><pre class="code"><span class='lbrack token'>[</span>
-  <span class='lbrack token'>[</span><span class='dstring node'>&quot;#{WebDriver.root}/firefox/prebuilt/linux64/Release/x_ignore_nofocus.so&quot;</span><span class='comma token'>,</span> <span class='string val'>&quot;amd64/x_ignore_nofocus.so&quot;</span><span class='rbrack token'>]</span><span class='comma token'>,</span>
-  <span class='lbrack token'>[</span><span class='dstring node'>&quot;#{WebDriver.root}/firefox/prebuilt/linux/Release/x_ignore_nofocus.so&quot;</span><span class='comma token'>,</span> <span class='string val'>&quot;x86/x_ignore_nofocus.so&quot;</span><span class='rbrack token'>]</span><span class='comma token'>,</span>
+  <span class='lbrack token'>[</span><span class='dstring node'>&quot;#{WebDriver.root}/firefox/prebuilt/amd64/libnoblur64.so&quot;</span><span class='comma token'>,</span> <span class='dstring node'>&quot;amd64/#{NO_FOCUS_LIBRARY_NAME}&quot;</span><span class='rbrack token'>]</span><span class='comma token'>,</span>
+  <span class='lbrack token'>[</span><span class='dstring node'>&quot;#{WebDriver.root}/firefox/prebuilt/i386/libnoblur.so&quot;</span><span class='comma token'>,</span> <span class='dstring node'>&quot;x86/#{NO_FOCUS_LIBRARY_NAME}&quot;</span><span class='rbrack token'>]</span><span class='comma token'>,</span>
 <span class='rbrack token'>]</span>
 </pre></dd>
       
@@ -205,7 +207,7 @@
   
 
 
-  <h2>Instance Attribute Summary <small>(<a href="#" class="summary_toggle">collapse</a>)</small></h2>
+  <h2>Instance Attribute Summary</h2>
   <ul class="summary">
     
       <li class="public ">
@@ -220,7 +222,6 @@
   
     <span class="note title readonly">readonly</span>
     
-  
   
   
   
@@ -251,7 +252,6 @@ Returns the value of attribute directory.
   
   
   
-  
 
   
     <span class="summary_desc"><div class='inline'><p>
@@ -274,7 +274,6 @@ Sets the attribute load_no_focus_lib.
   
     <span class="note title readonly">readonly</span>
     
-  
   
   
   
@@ -305,7 +304,6 @@ Returns the value of attribute name.
   
   
   
-  
 
   
     <span class="summary_desc"><div class='inline'><p>
@@ -328,7 +326,6 @@ Sets the attribute native_events.
   
     
     
-  
   
   
   
@@ -359,7 +356,6 @@ Returns the value of attribute port.
   
   
   
-  
 
   
     <span class="summary_desc"><div class='inline'><p>
@@ -374,10 +370,7 @@ Sets the attribute secure_ssl.
 
 
   
-    <h2>
-      Class Method Summary
-      <small>(<a href="#" class="summary_toggle">collapse</a>)</small>
-    </h2>
+    <h2>Class Method Summary</h2>
 
     <ul class="summary">
       
@@ -389,7 +382,6 @@ Sets the attribute secure_ssl.
 
     
   </span>
-  
   
   
   
@@ -415,7 +407,6 @@ Sets the attribute secure_ssl.
   
   
   
-  
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -425,10 +416,7 @@ Sets the attribute secure_ssl.
       
     </ul>
   
-    <h2>
-      Instance Method Summary
-      <small>(<a href="#" class="summary_toggle">collapse</a>)</small>
-    </h2>
+    <h2>Instance Method Summary</h2>
 
     <ul class="summary">
       
@@ -440,7 +428,6 @@ Sets the attribute secure_ssl.
 
     
   </span>
-  
   
   
   
@@ -469,7 +456,6 @@ Set a preference for this particular profile.
   
   
   
-  
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -485,7 +471,6 @@ Set a preference for this particular profile.
 
     
   </span>
-  
   
   
   
@@ -511,7 +496,6 @@ Set a preference for this particular profile.
   
   
   
-  
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -527,7 +511,6 @@ Set a preference for this particular profile.
 
     
   </span>
-  
   
   
   
@@ -553,7 +536,6 @@ Set a preference for this particular profile.
   
   
   
-  
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -569,7 +551,6 @@ Set a preference for this particular profile.
 
     
   </span>
-  
   
   
   
@@ -600,7 +581,6 @@ TODO: add_extension.
   
   
   
-  
 
   
     <span class="summary_desc"><div class='inline'><p>
@@ -619,7 +599,6 @@ Create a new Profile instance.
 
     
   </span>
-  
   
   
   
@@ -645,7 +624,6 @@ Create a new Profile instance.
   
   
   
-  
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -661,7 +639,6 @@ Create a new Profile instance.
 
     
   </span>
-  
   
   
   
@@ -687,7 +664,6 @@ Create a new Profile instance.
   
   
   
-  
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -708,7 +684,6 @@ Create a new Profile instance.
   
   
   
-  
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -724,7 +699,6 @@ Create a new Profile instance.
 
     
   </span>
-  
   
   
   
@@ -784,10 +758,6 @@ User configured profile
       <pre class="lines">
 
 
-60
-61
-62
-63
 64
 65
 66
@@ -802,10 +772,14 @@ User configured profile
 75
 76
 77
-78</pre>
+78
+79
+80
+81
+82</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/profile.rb', line 60</span>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/profile.rb', line 64</span>
 
 <span class='def def kw'>def</span> <span class='initialize identifier id'>initialize</span><span class='lparen token'>(</span><span class='directory identifier id'>directory</span> <span class='assign token'>=</span> <span class='nil nil kw'>nil</span><span class='rparen token'>)</span>
   <span class='@directory ivar id'>@directory</span> <span class='assign token'>=</span> <span class='directory identifier id'>directory</span> <span class='integer val'>? </span><span class='create_tmp_copy identifier id'>create_tmp_copy</span><span class='lparen token'>(</span><span class='directory identifier id'>directory</span><span class='rparen token'>)</span> <span class='colon op'>:</span> <span class='Dir constant id'>Dir</span><span class='dot token'>.</span><span class='mktmpdir identifier id'>mktmpdir</span><span class='lparen token'>(</span><span class='string val'>&quot;webdriver-profile&quot;</span><span class='rparen token'>)</span>
@@ -864,12 +838,12 @@ Returns the value of attribute directory
       <pre class="lines">
 
 
-34
-35
-36</pre>
+38
+39
+40</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/profile.rb', line 34</span>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/profile.rb', line 38</span>
 
 <span class='def def kw'>def</span> <span class='directory identifier id'>directory</span>
   <span class='@directory ivar id'>@directory</span>
@@ -928,12 +902,12 @@ the value to set the attribute load_no_focus_lib to.
       <pre class="lines">
 
 
-35
-36
-37</pre>
+39
+40
+41</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/profile.rb', line 35</span>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/profile.rb', line 39</span>
 
 <span class='def def kw'>def</span> <span class='load_no_focus_lib= identifier id'>load_no_focus_lib=</span><span class='lparen token'>(</span><span class='value identifier id'>value</span><span class='rparen token'>)</span>
   <span class='@load_no_focus_lib ivar id'>@load_no_focus_lib</span> <span class='assign token'>=</span> <span class='value identifier id'>value</span>
@@ -971,12 +945,12 @@ Returns the value of attribute name
       <pre class="lines">
 
 
-34
-35
-36</pre>
+38
+39
+40</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/profile.rb', line 34</span>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/profile.rb', line 38</span>
 
 <span class='def def kw'>def</span> <span class='name identifier id'>name</span>
   <span class='@name ivar id'>@name</span>
@@ -1035,12 +1009,12 @@ the value to set the attribute native_events to.
       <pre class="lines">
 
 
-35
-36
-37</pre>
+39
+40
+41</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/profile.rb', line 35</span>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/profile.rb', line 39</span>
 
 <span class='def def kw'>def</span> <span class='native_events= identifier id'>native_events=</span><span class='lparen token'>(</span><span class='value identifier id'>value</span><span class='rparen token'>)</span>
   <span class='@native_events ivar id'>@native_events</span> <span class='assign token'>=</span> <span class='value identifier id'>value</span>
@@ -1078,12 +1052,12 @@ Returns the value of attribute port
       <pre class="lines">
 
 
-36
-37
-38</pre>
+40
+41
+42</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/profile.rb', line 36</span>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/profile.rb', line 40</span>
 
 <span class='def def kw'>def</span> <span class='port identifier id'>port</span>
   <span class='@port ivar id'>@port</span>
@@ -1142,12 +1116,12 @@ the value to set the attribute secure_ssl to.
       <pre class="lines">
 
 
-35
-36
-37</pre>
+39
+40
+41</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/profile.rb', line 35</span>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/profile.rb', line 39</span>
 
 <span class='def def kw'>def</span> <span class='secure_ssl= identifier id'>secure_ssl=</span><span class='lparen token'>(</span><span class='value identifier id'>value</span><span class='rparen token'>)</span>
   <span class='@secure_ssl ivar id'>@secure_ssl</span> <span class='assign token'>=</span> <span class='value identifier id'>value</span>
@@ -1178,12 +1152,12 @@ the value to set the attribute secure_ssl to.
       <pre class="lines">
 
 
-43
-44
-45</pre>
+47
+48
+49</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/profile.rb', line 43</span>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/profile.rb', line 47</span>
 
 <span class='def def kw'>def</span> <span class='from_name identifier id'>from_name</span><span class='lparen token'>(</span><span class='name identifier id'>name</span><span class='rparen token'>)</span>
   <span class='ini identifier id'>ini</span><span class='lbrack token'>[</span><span class='name identifier id'>name</span><span class='rbrack token'>]</span>
@@ -1207,12 +1181,12 @@ the value to set the attribute secure_ssl to.
       <pre class="lines">
 
 
-39
-40
-41</pre>
+43
+44
+45</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/profile.rb', line 39</span>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/profile.rb', line 43</span>
 
 <span class='def def kw'>def</span> <span class='ini identifier id'>ini</span>
   <span class='@ini ivar id'>@ini</span> <span class='opasgn op'>||=</span> <span class='ProfilesIni constant id'>ProfilesIni</span><span class='dot token'>.</span><span class='new identifier id'>new</span>
@@ -1250,7 +1224,7 @@ Set a preference for this particular profile.
   <h3>See Also:</h3>
   <ul class="see">
     
-      <li><a href="http://preferential.mozdev.org/preferences.html" target="_parent" title="http://preferential.mozdev.org/preferences.html">http://preferential.mozdev.org/preferences.html</a></li>
+      <li><a href="http://preferential.mozdev.org/preferences.html" title="http://preferential.mozdev.org/preferences.html">http://preferential.mozdev.org/preferences.html</a></li>
     
   </ul>
 
@@ -1260,10 +1234,6 @@ Set a preference for this particular profile.
       <pre class="lines">
 
 
-85
-86
-87
-88
 89
 90
 91
@@ -1275,10 +1245,14 @@ Set a preference for this particular profile.
 97
 98
 99
-100</pre>
+100
+101
+102
+103
+104</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/profile.rb', line 85</span>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/profile.rb', line 89</span>
 
 <span class='def def kw'>def</span> <span class='aset op'>[]=</span><span class='lparen token'>(</span><span class='key identifier id'>key</span><span class='comma token'>,</span> <span class='value identifier id'>value</span><span class='rparen token'>)</span>
   <span class='case case kw'>case</span> <span class='value identifier id'>value</span>
@@ -1315,16 +1289,16 @@ Set a preference for this particular profile.
       <pre class="lines">
 
 
-102
-103
-104
-105
 106
 107
-108</pre>
+108
+109
+110
+111
+112</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/profile.rb', line 102</span>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/profile.rb', line 106</span>
 
 <span class='def def kw'>def</span> <span class='absolute_path identifier id'>absolute_path</span>
   <span class='if if kw'>if</span> <span class='Platform constant id'>Platform</span><span class='dot token'>.</span><span class='win? fid id'>win?</span>
@@ -1352,10 +1326,6 @@ Set a preference for this particular profile.
       <pre class="lines">
 
 
-128
-129
-130
-131
 132
 133
 134
@@ -1390,10 +1360,14 @@ Set a preference for this particular profile.
 163
 164
 165
-166</pre>
+166
+167
+168
+169
+170</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/profile.rb', line 128</span>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/profile.rb', line 132</span>
 
 <span class='def def kw'>def</span> <span class='add_webdriver_extension identifier id'>add_webdriver_extension</span><span class='lparen token'>(</span><span class='force_creation identifier id'>force_creation</span> <span class='assign token'>=</span> <span class='false false kw'>false</span><span class='rparen token'>)</span>
   <span class='ext_path identifier id'>ext_path</span> <span class='assign token'>=</span> <span class='File constant id'>File</span><span class='dot token'>.</span><span class='join identifier id'>join</span><span class='lparen token'>(</span><span class='extensions_dir identifier id'>extensions_dir</span><span class='comma token'>,</span> <span class='EXTENSION_NAME constant id'>EXTENSION_NAME</span><span class='rparen token'>)</span>
@@ -1453,12 +1427,12 @@ Set a preference for this particular profile.
       <pre class="lines">
 
 
-210
-211
-212</pre>
+214
+215
+216</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/profile.rb', line 210</span>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/profile.rb', line 214</span>
 
 <span class='def def kw'>def</span> <span class='assume_untrusted_certificate_issuer= identifier id'>assume_untrusted_certificate_issuer=</span><span class='lparen token'>(</span><span class='bool identifier id'>bool</span><span class='rparen token'>)</span>
   <span class='@untrusted_issuer ivar id'>@untrusted_issuer</span> <span class='assign token'>=</span> <span class='bool identifier id'>bool</span>
@@ -1503,12 +1477,12 @@ Set a preference for this particular profile.
       <pre class="lines">
 
 
-206
-207
-208</pre>
+210
+211
+212</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/profile.rb', line 206</span>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/profile.rb', line 210</span>
 
 <span class='def def kw'>def</span> <span class='assume_untrusted_certificate_issuer? fid id'>assume_untrusted_certificate_issuer?</span>
   <span class='@untrusted_issuer ivar id'>@untrusted_issuer</span> <span class='eq op'>==</span> <span class='true true kw'>true</span>
@@ -1532,13 +1506,13 @@ Set a preference for this particular profile.
       <pre class="lines">
 
 
-178
-179
-180
-181</pre>
+182
+183
+184
+185</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/profile.rb', line 178</span>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/profile.rb', line 182</span>
 
 <span class='def def kw'>def</span> <span class='delete_extensions_cache identifier id'>delete_extensions_cache</span>
   <span class='cache identifier id'>cache</span> <span class='assign token'>=</span> <span class='File constant id'>File</span><span class='dot token'>.</span><span class='join identifier id'>join</span><span class='lparen token'>(</span><span class='directory identifier id'>directory</span><span class='comma token'>,</span> <span class='string val'>&quot;extensions.cache&quot;</span><span class='rparen token'>)</span>
@@ -1574,12 +1548,12 @@ TODO: add_extension
       <pre class="lines">
 
 
-170
-171
-172</pre>
+174
+175
+176</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/profile.rb', line 170</span>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/profile.rb', line 174</span>
 
 <span class='def def kw'>def</span> <span class='extensions_dir identifier id'>extensions_dir</span>
   <span class='@extensions_dir ivar id'>@extensions_dir</span> <span class='opasgn op'>||=</span> <span class='File constant id'>File</span><span class='dot token'>.</span><span class='join identifier id'>join</span><span class='lparen token'>(</span><span class='directory identifier id'>directory</span><span class='comma token'>,</span> <span class='string val'>&quot;extensions&quot;</span><span class='rparen token'>)</span>
@@ -1624,12 +1598,12 @@ TODO: add_extension
       <pre class="lines">
 
 
-198
-199
-200</pre>
+202
+203
+204</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/profile.rb', line 198</span>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/profile.rb', line 202</span>
 
 <span class='def def kw'>def</span> <span class='load_no_focus_lib? fid id'>load_no_focus_lib?</span>
   <span class='@load_no_focus_lib ivar id'>@load_no_focus_lib</span> <span class='eq op'>==</span> <span class='true true kw'>true</span>
@@ -1653,19 +1627,19 @@ TODO: add_extension
       <pre class="lines">
 
 
-183
-184
-185
-186
 187
 188
 189
 190
 191
-192</pre>
+192
+193
+194
+195
+196</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/profile.rb', line 183</span>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/profile.rb', line 187</span>
 
 <span class='def def kw'>def</span> <span class='modify_link_library_path identifier id'>modify_link_library_path</span><span class='lparen token'>(</span><span class='paths identifier id'>paths</span><span class='rparen token'>)</span>
   <span class='old_path identifier id'>old_path</span> <span class='assign token'>=</span> <span class='ENV constant id'>ENV</span><span class='lbrack token'>[</span><span class='string val'>'LD_LIBRARY_PATH'</span><span class='rbrack token'>]</span>
@@ -1717,12 +1691,12 @@ TODO: add_extension
       <pre class="lines">
 
 
-194
-195
-196</pre>
+198
+199
+200</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/profile.rb', line 194</span>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/profile.rb', line 198</span>
 
 <span class='def def kw'>def</span> <span class='native_events? fid id'>native_events?</span>
   <span class='@native_events ivar id'>@native_events</span> <span class='eq op'>==</span> <span class='true true kw'>true</span>
@@ -1767,12 +1741,12 @@ TODO: add_extension
       <pre class="lines">
 
 
-202
-203
-204</pre>
+206
+207
+208</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/profile.rb', line 202</span>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/profile.rb', line 206</span>
 
 <span class='def def kw'>def</span> <span class='secure_ssl? fid id'>secure_ssl?</span>
   <span class='@secure_ssl ivar id'>@secure_ssl</span> <span class='eq op'>==</span> <span class='true true kw'>true</span>
@@ -1796,10 +1770,6 @@ TODO: add_extension
       <pre class="lines">
 
 
-110
-111
-112
-113
 114
 115
 116
@@ -1812,10 +1782,14 @@ TODO: add_extension
 123
 124
 125
-126</pre>
+126
+127
+128
+129
+130</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/profile.rb', line 110</span>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/profile.rb', line 114</span>
 
 <span class='def def kw'>def</span> <span class='update_user_prefs identifier id'>update_user_prefs</span>
   <span class='prefs identifier id'>prefs</span> <span class='assign token'>=</span> <span class='current_user_prefs identifier id'>current_user_prefs</span>
@@ -1853,12 +1827,12 @@ TODO: add_extension
       <pre class="lines">
 
 
-174
-175
-176</pre>
+178
+179
+180</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/profile.rb', line 174</span>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/profile.rb', line 178</span>
 
 <span class='def def kw'>def</span> <span class='user_prefs_path identifier id'>user_prefs_path</span>
   <span class='@user_prefs_path ivar id'>@user_prefs_path</span> <span class='opasgn op'>||=</span> <span class='File constant id'>File</span><span class='dot token'>.</span><span class='join identifier id'>join</span><span class='lparen token'>(</span><span class='directory identifier id'>directory</span><span class='comma token'>,</span> <span class='string val'>&quot;user.js&quot;</span><span class='rparen token'>)</span>
@@ -1874,9 +1848,9 @@ TODO: add_extension
 </div>
     
     <div id="footer">
-  Generated on Mon May 31 17:07:42 2010 by 
+  Generated on Fri Jun 11 14:24:27 2010 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool">yard</a>
-  0.5.5 (ruby-1.8.7).
+  0.5.4 (ruby-1.8.7).
 </div>
 
   </body>
