@@ -116,11 +116,23 @@ public class ResultConfig {
     return on(success, renderer, "");
   }
 
+  /*
+  Configure this ResultConfig to handle results of type ResultType with a
+  specific renderer. The mimeType is used to distinguish between JSON
+  calls and "ordinary" browser pointed at the remote WD Server, which is
+  not implemented at all yet.
+   */
   public ResultConfig on(ResultType success, Renderer renderer, String mimeType) {
     Set<Result> results = resultToRender.get(success);
     if (results == null) {
       results = new LinkedHashSet<Result>();
       resultToRender.put(success, results);
+    }
+
+    // There should not be more than one renderer for each result and
+    // mime type.
+    for (Result existingResult : results) {
+      assert(existingResult.isExactMimeTypeMatch(mimeType) == false);
     }
     results.add(new Result(mimeType, renderer));
     return this;
@@ -145,12 +157,9 @@ public class ResultConfig {
       logger.log("Done: " + pathInfo);
     } catch (Exception e) {
       result = ResultType.EXCEPTION;
-      Throwable toUse = e;
-      if (e instanceof UndeclaredThrowableException) {
-        // An exception was thrown within an invocation handler. Not smart.
-        // Extract the original exception
-        toUse = e.getCause().getCause();
-      }
+      logger.log("Caught: " + e);
+      
+      Throwable toUse = getRootExceptionCause(e);
 
       logger.log("Exception: " + toUse.getMessage());
       request.setAttribute("exception", toUse);
@@ -216,5 +225,34 @@ public class ResultConfig {
       Object result = readMethod.invoke(handler);
       request.setAttribute(property.getName(), result);
     }
+  }
+
+  public Throwable getRootExceptionCause(Throwable originalException) {
+    Throwable toReturn = originalException;
+    if (originalException instanceof UndeclaredThrowableException) {
+      // An exception was thrown within an invocation handler. Not smart.
+      // Extract the original exception
+      toReturn = originalException.getCause().getCause();
+    }
+
+    // When catching an exception here, it is most likely wrapped by
+    // several other exceptions. Peel the layers and use the original
+    // exception as the one to return to the client. That is the most
+    // likely to contain informative data about the error.
+    Throwable currentThrowable = toReturn;
+    // This is a safety measure to make sure this loop is never endless
+    int causeTraversalCounter = 0;
+    while ((currentThrowable != null) && (causeTraversalCounter < 10)) {
+      causeTraversalCounter++;
+      logger.log("Peeling exception: " + currentThrowable +
+                 " (" + currentThrowable.getClass() + ")");
+      // Remember the last exception - this one will be used if
+      // there was no exception that caused it.
+      toReturn = currentThrowable;
+      // Peeling the layers is done here
+      currentThrowable = currentThrowable.getCause();
+    }
+
+    return toReturn;
   }
 }

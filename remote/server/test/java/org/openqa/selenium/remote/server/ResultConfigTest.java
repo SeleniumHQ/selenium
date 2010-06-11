@@ -19,10 +19,15 @@ package org.openqa.selenium.remote.server;
 
 import junit.framework.TestCase;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.concurrent.ExecutionException;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
+
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.server.rest.Handler;
 import org.openqa.selenium.remote.server.rest.ResultConfig;
 import org.openqa.selenium.remote.server.rest.ResultType;
@@ -67,6 +72,20 @@ public class ResultConfigTest extends TestCase {
     NamedParameterHandler handler = (NamedParameterHandler) config.getHandler("/foo/fishy");
 
     assertThat(handler.getBar(), is("fishy"));
+  }
+
+  public void testCanPeelNestedExceptions() {
+    RuntimeException runtime = new RuntimeException("root of all evils");
+    InvocationTargetException invocation = new InvocationTargetException(runtime,
+        "Got Runtime Exception");
+    WebDriverException webdriverException = new WebDriverException("Invocation problems",
+        invocation);
+    ExecutionException execution = new ExecutionException("General WebDriver error",
+        webdriverException);
+
+    ResultConfig config = new ResultConfig("/foo/:bar", StubHandler.class, null, logger);
+    Throwable toClient = config.getRootExceptionCause(execution);
+    assertEquals(toClient, runtime);
   }
 
   private void exceptionWasExpected() {
