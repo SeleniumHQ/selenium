@@ -33,7 +33,7 @@ def find_longdesc():
 setup(
     cmdclass={'install': install},
     name='selenium',
-    version="2.0-dev",
+    version="2.0-dev-$Revision$",
     description='Python bindings for Selenium',
     long_description=find_longdesc(),
     url='http://code.google.com/p/selenium/',
