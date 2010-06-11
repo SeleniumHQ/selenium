@@ -279,45 +279,44 @@ public interface WebDriver extends SearchContext {
      * selected, all subsequent calls on the WebDriver interface are made to
      * that frame.
      *
-     * @param frameIndex
-     * @return A driver focused on the given frame
+     * @param index (zero-based) index
+     * @return This driver focused on the given frame
      * @throws NoSuchFrameException If the frame cannot be found
      */
-    WebDriver frame(int frameIndex);
+    WebDriver frame(int index);
 
     /**
-     * Select a frame by its name or ID. To select sub-frames, simply separate the frame names/IDs
-     * by dots. As an example "main.child" will select the frame with the name "main" and then it's
-     * child "child". If a frame name is a number, then it will be treated as selecting a frame as
-     * if using.
+     * Select a frame by its name, id or (zero-based) index. To select sub-frames, simply separate the frame
+     * names/IDs/indexes by dots. As an example "main.child" will select the frame with the name "main" and
+     * then it's child "child". If the given string represents an integer number, then it will be used to
+     * select a frame by its (zero-based) index.
      *
-     * @param frameName
-     * @return A driver focused on the given frame
+     * @param nameOrIdOrIndex the name of the frame window, the id of the &lt;frame&gt; or &lt;iframe&gt; element, or the (zero-based) index
+     * @return This driver focused on the given frame
      * @throws NoSuchFrameException If the frame cannot be found
      */
-    WebDriver frame(String frameName);
+    WebDriver frame(String nameOrIdOrIndex);
 
     /**
-     * Switch the focus of future commands for this driver to the window with the given name
+     * Switch the focus of future commands for this driver to the window with the given name/handle.
      *
-     * @param windowName
-     * @return A driver focused on the given window
+     * @param nameOrHandle The name of the window or the handle as returned by {@link WebDriver#getWindowHandle()}
+     * @return This driver focused on the given window
      * @throws NoSuchWindowException If the window cannot be found
      */
-    WebDriver window(String windowName);
+    WebDriver window(String nameOrHandle);
 
     /**
-     * Selects either the first frame on the page, or the main document when a page contains
-     * iframes.
+     * Selects either the first frame on the page, or the main document when a page contains iframes.
+     *
+	 * @return This driver focused on the top window/first frame.
      */
     WebDriver defaultContent();
 
     /**
-     * Switches to the element that currently has focus, or the body element if this cannot be
-     * detected.
+     * Switches to the element that currently has focus, or the body element if this cannot be detected.
      *
-     * @return The WebElement with focus, or the body element if no element with focus can be
-     *     detected.
+     * @return The WebElement with focus, or the body element if no element with focus can be detected.
      */
     WebElement activeElement();
 
