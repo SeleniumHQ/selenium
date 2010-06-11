@@ -17,6 +17,12 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.rest;
 
+/**
+ * A container for the MIME type and renderer of a given result type.
+ * Several Result objects can exist for each ResultType. The created Result
+ * instances are stored  in ResultConfig and are mapped to a specific
+ * ResultType.
+ */
 public class Result {
 
   private final String mimeType;
