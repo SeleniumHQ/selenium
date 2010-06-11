@@ -28,6 +28,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.Proxy;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.browserlaunchers.CapabilityType;
 import org.openqa.selenium.browserlaunchers.DoNotUseProxyPac;
 
@@ -207,6 +208,47 @@ public class BeanToJsonConverterTest extends TestCase {
     String json = new BeanToJsonConverter().convert(new JsonAware("converted"));
     
     assertEquals("converted", json);
+  }
+
+
+  private void verifyStackTraceInJson(String json, StackTraceElement[] stackTrace) {
+    int posOfLastStackTraceElement = 0;
+    for (StackTraceElement e : stackTrace) {
+      assertTrue("Filename not found", json.contains("\"fileName\":\"" + e.getFileName() + "\""));
+      assertTrue("Line number not found",
+          json.contains("\"lineNumber\":" + e.getLineNumber() + ""));
+      assertTrue("class not found.",
+          json.contains("\"class\":\"" + e.getClass().getName() + "\""));
+      assertTrue("class name not found",
+          json.contains("\"className\":\"" + e.getClassName() + "\""));
+      assertTrue("method name not found.",
+          json.contains("\"methodName\":\"" + e.getMethodName() + "\""));
+
+      int posOfCurrStackTraceElement = json.indexOf(e.getFileName());
+      assertTrue("Mismatch in order of stack trace elements.",
+          posOfCurrStackTraceElement > posOfLastStackTraceElement);
+    }
+  }
+  public void testShouldBeAbleToConvertARuntimeException() {
+    RuntimeException clientError = new RuntimeException("foo bar baz!");
+    StackTraceElement[] stackTrace = clientError.getStackTrace();
+    String json = new BeanToJsonConverter().convert(clientError);
+    assertTrue(json.contains("\"message\":\"foo bar baz!\""));
+    assertTrue(json.contains("\"class\":\"java.lang.RuntimeException\""));
+    assertTrue(json.contains("\"stackTrace\""));
+    verifyStackTraceInJson(json, stackTrace);
+  }
+  public void testShouldBeAbleToConvertAWebDriverException() {
+    RuntimeException clientError = new WebDriverException("foo bar baz!");
+    StackTraceElement[] stackTrace = clientError.getStackTrace();
+    String json = new BeanToJsonConverter().convert(clientError);
+
+    assertTrue(json.contains("\"message\":\"foo bar baz!\\nSystem info:"));
+    assertTrue(json.contains("systemInformation"));
+    assertTrue(json.contains("driverInformation"));
+    assertTrue(json.contains("\"class\":\"org.openqa.selenium.WebDriverException\""));
+    assertTrue(json.contains("\"stackTrace\""));
+    verifyStackTraceInJson(json, stackTrace);
   }
   
   private static class SimpleBean {
