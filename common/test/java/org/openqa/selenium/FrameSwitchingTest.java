@@ -161,6 +161,14 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
     assertThat(driver.findElement(By.id("pageNumber")).getText(), equalTo("11"));
   }
 
+  @Ignore({CHROME, FIREFOX, IE, SELENESE})
+  public void testShouldSelectChildFramesByChainedCalls() {
+    driver.get(pages.framesetPage);
+
+    driver.switchTo().frame("fourth").switchTo().frame("child2");
+    assertThat(driver.findElement(By.id("pageNumber")).getText(), equalTo("11"));
+  }
+
   @Ignore(SELENESE)
   public void testShouldSwitchToChildFramesTreatingNumbersAsIndex() {
     driver.get(pages.framesetPage);
