@@ -21,16 +21,16 @@
 function FormatCollection(options) {
     this.options = options;
     
-    this.presetFormats = [new InternalFormat(options, "default", "HTML", "html.js"),
-                          new InternalFormat(options, "java-rc", "Java (JUnit) - Selenium RC", "java-rc.js"),
-                          new InternalFormat(options, "java-rc-testng", "Java (TestNG) - Selenium RC", "java-rc-testng.js"),
-                          new InternalFormat(options, "groovy-rc", "Groovy (JUnit) - Selenium RC", "groovy-rc.js"),
-                          new InternalFormat(options, "cs-rc", "C# - Selenium RC", "cs-rc.js"),
-                          new InternalFormat(options, "perl-rc", "Perl - Selenium RC", "perl-rc.js"),
-                          new InternalFormat(options, "php-rc", "PHP - Selenium RC", "php-rc.js"),
-                          new InternalFormat(options, "python-rc", "Python - Selenium RC", "python-rc.js"),
-                          new InternalFormat(options, "ruby-rc", "Ruby (Test/Unit) - Selenium RC", "ruby-rc.js"),
-                          new InternalFormat(options, "ruby-rc-rspec", "Ruby (RSpec) - Selenium RC", "ruby-rc-rspec.js")
+    this.presetFormats = [new InternalFormat(options, "default", "HTML", "html.js", true),
+                          new InternalFormat(options, "java-rc", "Java (JUnit) - Selenium RC", "java-rc.js", false),
+                          new InternalFormat(options, "java-rc-testng", "Java (TestNG) - Selenium RC", "java-rc-testng.js", false),
+                          new InternalFormat(options, "groovy-rc", "Groovy (JUnit) - Selenium RC", "groovy-rc.js", false),
+                          new InternalFormat(options, "cs-rc", "C# - Selenium RC", "cs-rc.js", false),
+                          new InternalFormat(options, "perl-rc", "Perl - Selenium RC", "perl-rc.js", false),
+                          new InternalFormat(options, "php-rc", "PHP - Selenium RC", "php-rc.js", false),
+                          new InternalFormat(options, "python-rc", "Python - Selenium RC", "python-rc.js", false),
+                          new InternalFormat(options, "ruby-rc", "Ruby (Test/Unit) - Selenium RC", "ruby-rc.js", false),
+                          new InternalFormat(options, "ruby-rc-rspec", "Ruby (RSpec) - Selenium RC", "ruby-rc-rspec.js", false)
                           ];
     this.reloadFormats();
 }
@@ -211,7 +211,8 @@ FormatCollection.loadPluginFormats = function(options) {
         var split_pluginProvided = pluginProvided.split(",");
         for (var ppf = 0; ppf < split_pluginProvided.length; ppf++) {
             var split_ppf = split_pluginProvided[ppf].split(";");
-            formats.push(new PluginFormat(options, split_ppf[0], split_ppf[1], split_ppf[2]));
+            var reversible = split_ppf.length > 3 ? split_ppf[3] : false;
+            formats.push(new PluginFormat(options, split_ppf[0], split_ppf[1], split_ppf[2], reversible));
         }
     }
     return formats;
@@ -264,7 +265,7 @@ Format.prototype.saveAs = function(testCase, filename, exportTest) {
             file = showFilePicker(window, "Save as...",
                                   Components.interfaces.nsIFilePicker.modeSave,
                                   exportTest ? Format.TEST_CASE_EXPORT_DIRECTORY_PREF : Format.TEST_CASE_DIRECTORY_PREF,
-                                  function(fp) { return fp.file; });
+                                  function(fp) {return fp.file;});
         } else {
             file = FileUtils.getFile(filename);
         }
@@ -315,7 +316,7 @@ Format.prototype.saveSuiteAsNew = function(testSuite, exportTest) {
         file = showFilePicker(window, "Export TestSuite as...",
             Components.interfaces.nsIFilePicker.modeSave,
             TestSuite.TEST_SUITE_DIRECTORY_PREF,
-            function(fp) { return fp.file; });
+            function(fp) {return fp.file;});
         
         if (file != null) {
             var filepath = [];
@@ -367,7 +368,7 @@ Format.prototype.load = function() {
     return showFilePicker(window, "Select a File", 
                           Components.interfaces.nsIFilePicker.modeOpen,
                           Format.TEST_CASE_DIRECTORY_PREF,
-                          function(fp) { return self.loadFile(fp.file); });
+                          function(fp) {return self.loadFile(fp.file);});
 }
 
 Format.prototype.loadFile = function(file, isURL) {
@@ -397,11 +398,14 @@ Format.prototype.loadFile = function(file, isURL) {
 /**
  * Format for preset formats
  */
-function InternalFormat(options, id, name, file) {
+function InternalFormat(options, id, name, file, reversible) {
     this.options = options;
     this.id = id;
     this.name = name;
     this.url = 'chrome://selenium-ide/content/formats/' + file;
+    //use to determine if this format implements the parse method
+    //and can switch to another format
+    this.reversible = reversible;
 }
 
 InternalFormat.prototype = new Format;
@@ -416,6 +420,14 @@ InternalFormat.prototype.getSource = function() {
 
 InternalFormat.prototype.getFormatURI = function() {
     return this.url;
+}
+
+/**
+ * called to know if the format implements the parse method
+ * @return true if it implements the parse method, false if nots
+ */
+InternalFormat.prototype.isReversible = function(){
+    return this.reversible;
 }
 
 /**
@@ -485,6 +497,19 @@ UserFormat.prototype.getSource = function() {
 }
 
 /**
+ * called to know if the user format implements the parse method
+ * @return true if it implements the parse method, false if not
+ */
+UserFormat.prototype.isReversible = function(){
+    if (this.id) {
+        var parseRegExp = new RegExp("function parse\\(", 'g');
+        return parseRegExp.test(FileUtils.readFile(this.getFormatFile()));
+    } else {
+        return false;
+    }
+}
+
+/**
  * Format for plugin provided formats
  */
 function PluginFormat(options, id, name, url) {
@@ -506,4 +531,14 @@ PluginFormat.prototype.getSource = function() {
 
 PluginFormat.prototype.getFormatURI = function() {
     return this.url;
+}
+
+/**
+ * called to know if the plugin format implements the parse method
+ * @return true if it implements the parse method, false if not
+ */
+PluginFormat.prototype.isReversible = function(){
+    var parseRegExp = new RegExp("function parse\\(", 'g');
+
+    return parseRegExp.test(this.getSource());
 }

@@ -58,9 +58,33 @@ function Editor(window) {
                 testCase.removeObserver(this._testCaseObserver);
             },
 
+            /**
+             * called when the format is changing. It synchronizes
+             * the testcase before changing the view with a converted testcase
+             * in the new format
+             */
+            currentFormatChanging: function() {
+                //sync the testcase with the view
+                self.sourceView.syncModel();
+                if (self.view){
+                    self.view.testCase = self.app.getTestCase();
+                    self.view.refresh();
+                }
+            },
+
             currentFormatChanged: function(format) {
                 self.updateViewTabs();
                 self.updateState();
+            },
+
+            /**
+             * called when the format can't be changed. It advises the user
+             * of the undoable action
+             */
+            currentFormatUnChanged: function() {
+                //@TODO jeremy: show a "div-popup" instead of alert: alert are bad
+                //@TODO jeremy: Localization
+               alert("This format doesn't support this action after a manual editing of the testcase");
             },
 
             clipboardFormatChanged: function(format) {
@@ -213,14 +237,14 @@ Editor.controller = {
 	doCommand : function(cmd) {
 		Editor.log.debug("doCommand: " + cmd);
 		switch (cmd) {
-		case "cmd_close": if (editor.confirmClose()) { window.close(); } break;
-		case "cmd_save": editor.saveTestCase(); break;
-		case "cmd_add": editor.app.addTestCase(); break;
-		case "cmd_open": editor.app.loadTestCaseWithNewSuite(); break;
-		case "cmd_new_suite": editor.app.newTestSuite(); break;
-		case "cmd_open_suite": editor.app.loadTestSuite(); break;
-		case "cmd_save_suite": editor.app.saveTestSuite(); break;
-		case "cmd_save_suite_as": editor.app.saveNewTestSuite(); break;
+		case "cmd_close":if (editor.confirmClose()) {window.close();}break;
+		case "cmd_save":editor.saveTestCase();break;
+		case "cmd_add":editor.app.addTestCase();break;
+		case "cmd_open":editor.app.loadTestCaseWithNewSuite();break;
+		case "cmd_new_suite":editor.app.newTestSuite();break;
+		case "cmd_open_suite":editor.app.loadTestSuite();break;
+		case "cmd_save_suite":editor.app.saveTestSuite();break;
+		case "cmd_save_suite_as":editor.app.saveNewTestSuite();break;
 		case "cmd_selenium_play":
             editor.testSuiteProgress.reset();
             editor.playCurrentTestCase(null, 0, 1);
@@ -228,7 +252,7 @@ Editor.controller = {
 		case "cmd_selenium_play_suite":
 			editor.playTestSuite();
 			break;
-		case "cmd_selenium_pause": 
+		case "cmd_selenium_pause":
 			if (editor.selDebugger.state == Debugger.PAUSED) {
 				editor.selDebugger.doContinue();
 			} else {
@@ -243,7 +267,7 @@ Editor.controller = {
                 try {
                     Editor.rollupManager.applyRollupRules();
                 }
-                catch (e) { alert('Whoa! ' + e.message) }
+                catch (e) {alert('Whoa! ' + e.message)}
             }
             else {
                 alert('No rollup rules have been defined.');
@@ -832,7 +856,7 @@ Editor.prototype.showRollupReference = function(command) {
             }
         }
     }
-    catch (e) { alert('Hoo! ' + e.message); }
+    catch (e) {alert('Hoo! ' + e.message);}
 }
 
 Editor.prototype.getAutoCompleteSearchParam = function(id) {
@@ -1138,7 +1162,7 @@ Editor.LogView = function(panel, editor) {
     //this.log = editor.selDebugger.runner.LOG;
     //this.log.observers.push(this.infoPanel.logView);
     var self = this;
-	this.view.addEventListener("load", function() { self.reload() }, true);
+	this.view.addEventListener("load", function() {self.reload()}, true);
 }
 
 Editor.LogView.prototype = new Editor.InfoView;
@@ -1204,12 +1228,12 @@ Editor.LogView.prototype.reload = function() {
 	if (!this.isHidden() && this.log) {
 		var self = this;
 		this.onClear();
-		this.log.entries.forEach(function(entry) { self.onAppendEntry(entry); });
+		this.log.entries.forEach(function(entry) {self.onAppendEntry(entry);});
 	}
 }
 
 Editor.LogView.prototype.onAppendEntry = function(entry) {
-    var levels = { debug: 0, info: 1, warn: 2, error: 3 };
+    var levels = {debug: 0, info: 1, warn: 2, error: 3};
     var entryValue = levels[entry.level];
     var filterValue = parseInt(this.filterValue);
     if (filterValue <= entryValue) {

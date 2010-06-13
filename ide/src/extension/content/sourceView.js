@@ -72,10 +72,9 @@ SourceView.prototype = {
 	// synchronize model from view
 	syncModel: function(force) {
 		if ((force || this.editor.view == this) && this.lastValue != this.textbox.value) {
-			this.log.debug("syncModel");
 			this.editor.app.getCurrentFormat().setSource(this.testCase, this.textbox.value);
 		} else {
-			this.log.debug("skip syncModel");
+                        this.editor.app.getTestCase().edited = false;
 		}
 	},
 	onHide: function() {
@@ -102,5 +101,8 @@ SourceView.prototype.updateView = function() {
 	//this.textbox.value = this.testCase.getSource(this.editor.options, "New Test");
 	this.textbox.value = this.lastValue = this.editor.app.getCurrentFormat().getSourceForTestCase(this.testCase);
 	this.textbox.inputField.scrollTop = scrollTop;
-	//log.debug("source=" + getSource());
+	
+        //reinitialize the "edited" attribute of the testcase for
+        //a good synchronization
+        this.editor.app.getTestCase().edited = false;
 }
