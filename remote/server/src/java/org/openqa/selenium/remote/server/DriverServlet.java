@@ -300,6 +300,18 @@ public class DriverServlet extends HttpServlet {
         .on(ResultType.SUCCESS, new JsonResult(":response"));
   }
 
+  protected ResultConfig addNewGetMapping(String path, Class<? extends Handler> implementationClass) {
+    return getMapper.bind(path, implementationClass);
+  }
+
+  protected ResultConfig addNewPostMapping(String path, Class<? extends Handler> implementationClass) {
+    return postMapper.bind(path, implementationClass);
+  }
+
+  protected ResultConfig addNewDeleteMapping(String path, Class<? extends Handler> implementationClass) {
+    return deleteMapper.bind(path, implementationClass);
+  }
+
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
