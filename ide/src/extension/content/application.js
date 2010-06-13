@@ -43,7 +43,10 @@ Application.prototype = {
     },
 
     getBaseURL: function() {
-        return this.baseURL;
+        //if there is a testCase with a base URL return it
+        //if not, return the value of the baseURL value
+        return this.testCase && this.testCase.baseURL ?
+            this.testCase.baseURL : this.baseURL;
     },
 
     setBaseURL: function(baseURL) {

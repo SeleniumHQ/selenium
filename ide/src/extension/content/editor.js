@@ -28,7 +28,7 @@ function Editor(window) {
             baseURLChanged: function() {
                 Editor.GENERIC_AUTOCOMPLETE.setCandidates(XulUtils.toXPCOMString(self.getAutoCompleteSearchParam("baseURL")),
                                                           XulUtils.toXPCOMArray(self.app.getBaseURLHistory()));
-                document.getElementById("baseURL").value = self.app.getBaseURL();
+                $("baseURL").value = self.app.getBaseURL();
             },
 
             testSuiteChanged: function(testSuite) {
@@ -92,8 +92,8 @@ function Editor(window) {
             
             //use when the developer tools have to be enabled or not
             showDevToolsChanged: function(){
-    			document.getElementById("reload-button").hidden = !self.app.getShowDeveloperTools();
-    			document.getElementById("reload-button").disabled = document.getElementById("reload-button").hidden;
+    			$("reload-button").hidden = !self.app.getShowDeveloperTools();
+    			$("reload-button").disabled = $("reload-button").hidden;
     		},
 
             _testCaseObserver: {
@@ -726,6 +726,8 @@ Editor.prototype.toggleView = function(view) {
 	if (previous) previous.syncModel(true);
 	this.view.testCase = this.getTestCase();
 	this.view.refresh();
+        //notify app to change the base URL
+        this.app.notify("baseURLChanged");
 }
 
 Editor.prototype.showAlert = function(message) {
