@@ -211,8 +211,7 @@ FormatCollection.loadPluginFormats = function(options) {
         var split_pluginProvided = pluginProvided.split(",");
         for (var ppf = 0; ppf < split_pluginProvided.length; ppf++) {
             var split_ppf = split_pluginProvided[ppf].split(";");
-            var reversible = split_ppf.length > 3 ? split_ppf[3] : false;
-            formats.push(new PluginFormat(options, split_ppf[0], split_ppf[1], split_ppf[2], reversible));
+            formats.push(new PluginFormat(options, split_ppf[0], split_ppf[1], split_ppf[2]));
         }
     }
     return formats;
