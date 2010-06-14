@@ -68,6 +68,16 @@ public enum Platform {
       return compareWith == UNIX || compareWith == LINUX;
     }
   },
+  ANDROID("android", "dalvik") {
+    public String getLineEnding() {
+      return "\n";
+    }
+
+    @Override
+    public boolean is(Platform compareWith) {
+      return compareWith == LINUX || compareWith == ANDROID;
+    }
+  },
   /**
    * Never returned, but can be used to request a browser running on
    * any operating system
@@ -111,6 +121,10 @@ public enum Platform {
 
   public static Platform extractFromSysProperty(String osName) {
     osName = osName.toLowerCase();
+    // os.name for android is linux
+    if ("dalvik".equalsIgnoreCase(System.getProperty("java.vm.name"))){
+      return Platform.ANDROID;
+    }
     Platform mostLikely = UNIX;
     String previousMatch = null;
     for (Platform os : Platform.values()) {

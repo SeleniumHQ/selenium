@@ -151,6 +151,10 @@ public class DesiredCapabilities implements Capabilities, Serializable {
     return new DesiredCapabilities("chrome", "", Platform.ANY);
   }
 
+  public static DesiredCapabilities android() {
+    return new DesiredCapabilities("android", "", Platform.ANDROID);
+  }
+
   @Override
   public String toString() {
     return String.format("Capabilities [%s]", capabilities);

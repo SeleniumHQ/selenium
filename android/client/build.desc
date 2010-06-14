@@ -1,0 +1,13 @@
+java_library(name = "client",
+  srcs = [ "src/java/**/*.java" ],
+  deps = [
+    "//common",
+    "//remote/client"
+  ])
+
+java_test(name = "test",
+  srcs = [ "test/java/**/*.java" ],
+  deps = [
+    ":client",
+    "//remote/client:test"
+  ])

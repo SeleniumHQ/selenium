@@ -50,8 +50,14 @@ public class Jetty6AppServer implements AppServer {
   private File thirdPartyJsRoot;
   private final Server server;
   private WebAppContext context;
-
+  private final String hostName;
+  
   public Jetty6AppServer() {
+    this("localhost");
+  }
+  
+  public Jetty6AppServer(String hostName) {
+    this.hostName = hostName;
     // Be quiet. Unless we want things to be chatty
     if (!Boolean.getBoolean("webdriver.debug")) {
       new NullLogger().disableLogging();
@@ -139,7 +145,7 @@ public class Jetty6AppServer implements AppServer {
   }
 
   public String getHostName() {
-    return "localhost";
+    return hostName;
   }
 
   public String getAlternateHostName() {
@@ -249,7 +255,7 @@ public class Jetty6AppServer implements AppServer {
   }
 
   public static void main(String[] args) {
-    Jetty6AppServer server = new Jetty6AppServer();
+    Jetty6AppServer server = new Jetty6AppServer("localhost");
     server.port = 2310;
     server.start();
   }
