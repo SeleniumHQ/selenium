@@ -11,7 +11,16 @@ module Selenium
 
           def http
             # ignoring SSL for now
-            @http ||= Net::HTTP.new @server_url.host, @server_url.port
+            @http ||= (
+              http = Net::HTTP.new @server_url.host, @server_url.port
+
+              if self.class.timeout
+                http.connect_timeout = self.class.timeout
+                http.read_timeout    = self.class.timeout
+              end
+
+              http
+            )
           end
 
           def request(verb, url, headers, payload, redirects = 0)

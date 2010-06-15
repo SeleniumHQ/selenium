@@ -7,6 +7,10 @@ module Selenium
           CONTENT_TYPE    = "application/json"
           DEFAULT_HEADERS = { "Accept" => CONTENT_TYPE, "Content-Length" => "0" }
 
+          class << self
+            attr_accessor :timeout
+          end
+
           def initialize(url)
             @server_url = url
           end

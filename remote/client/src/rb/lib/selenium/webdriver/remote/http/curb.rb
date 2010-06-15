@@ -53,8 +53,10 @@ module Selenium
           def client
             @client ||= (
               c = Curl::Easy.new
-              c.max_redirects = MAX_REDIRECTS
+
+              c.max_redirects   = MAX_REDIRECTS
               c.follow_location = true
+              c.timeout         = self.class.timeout if self.class.timeout
 
               c
             )
