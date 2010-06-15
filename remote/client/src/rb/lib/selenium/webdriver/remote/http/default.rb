@@ -24,7 +24,7 @@ module Selenium
           end
 
           def request(verb, url, headers, payload, redirects = 0)
-            request = Net::HTTP.const_get(verb.to_s.capitalize).new(url.path, headers)
+            request = new_request_for(verb, url, headers)
 
             retried = false
             begin
@@ -32,7 +32,10 @@ module Selenium
             rescue Errno::ECONNABORTED, Errno::ECONNRESET
               # this happens sometimes on windows?!
               raise if retried
-              retried  = true
+
+              request = new_request_for(verb, url, headers)
+              retried = true
+
               retry
             end
 
@@ -42,6 +45,10 @@ module Selenium
             else
               create_response response.code, response.body, response.content_type
             end
+          end
+
+          def new_request_for(verb, url, headers)
+            Net::HTTP.const_get(verb.to_s.capitalize).new(url.path, headers)
           end
 
         end # Default
