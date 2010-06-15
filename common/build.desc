@@ -48,7 +48,7 @@ rubydocs(
 )
 
 rubygem(
-  version = "0.0.22",
+  version = "0.0.23",
   require_paths = [
     "common/src/rb/lib",
     "firefox/src/rb/lib",
