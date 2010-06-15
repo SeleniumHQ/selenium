@@ -1,18 +1,25 @@
-2010-06-11
-==========
+0.0.22 (2010-06-11)
+===================
+
+* Bugfix: Workaround for http://github.com/taf2/curb/issues/issue/33 - curb would sometimes use DELETE for GET requests.
+* Minor doc fix
+* Add ability to set timeout for HTTP clients
+
+0.0.21 (2010-06-11)
+===================
 
 * User can specify :http_client for the Firefox driver.
 * Refactor HTTP client code
 * Add Remote::Http::Curb as an alternative to the default (net/http) client.
 
 
-2010-06-03
-==========
+0.0.20 (2010-06-03)
+===================
 
 * Fix bug where Firefox would hang on quit().
 
-2010-05-31
-==========
+0.0.19 (2010-05-31)
+===================
 
 * Add a max redirect check to the remote driver
 * Add Firefox::Profile#assume_untrusted_certificate_issuer=
