@@ -141,8 +141,11 @@ module Selenium
           execute :switchToFrame, {}, :id => nil
         end
 
+        QUIT_ERRORS = [IOError]
+
         def quit
           execute :quit
+        rescue *QUIT_ERRORS
         end
 
         def close

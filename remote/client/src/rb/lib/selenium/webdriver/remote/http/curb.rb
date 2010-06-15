@@ -3,6 +3,10 @@ require 'curb'
 module Selenium
   module WebDriver
     module Remote
+
+      # added for rescue
+      Bridge::QUIT_ERRORS << Curl::Err::RecvError
+
       module Http
 
         #
