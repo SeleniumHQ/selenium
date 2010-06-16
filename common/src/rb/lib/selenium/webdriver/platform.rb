@@ -23,8 +23,6 @@ module Selenium
         )
       end
 
-      alias_method :platform, :engine
-
       def os
         @os ||= (
           host_os = RbConfig::CONFIG['host_os']
@@ -58,11 +56,11 @@ module Selenium
       end
 
       def jruby?
-        platform == :jruby
+        engine == :jruby
       end
 
       def ironruby?
-        platform == :ironruby
+        engine == :ironruby
       end
 
       def ruby187?
@@ -108,7 +106,7 @@ module Selenium
 end # Selenium
 
 if __FILE__ == $0
-  p :platform => Selenium::WebDriver::Platform.platform,
+  p :engine   => Selenium::WebDriver::Platform.engine,
     :os       => Selenium::WebDriver::Platform.os,
     :ruby187? => Selenium::WebDriver::Platform.ruby187?,
     :ruby19?  => Selenium::WebDriver::Platform.ruby19?,
