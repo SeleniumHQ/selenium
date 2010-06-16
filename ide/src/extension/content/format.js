@@ -22,7 +22,8 @@ function FormatCollection(options) {
     this.options = options;
     
     this.presetFormats = [new InternalFormat(options, "default", "HTML", "html.js", true),
-                          new InternalFormat(options, "java-rc", "Java (JUnit) - Selenium RC", "java-rc.js", false),
+                          new InternalFormat(options, "java-rc", "Java (JUnit 3) - Selenium RC", "java-rc.js", false),
+                          new InternalFormat(options, "java-rc-junit4", "Java (JUnit 4) - Selenium RC", "java-rc-junit4.js", false),
                           new InternalFormat(options, "java-rc-testng", "Java (TestNG) - Selenium RC", "java-rc-testng.js", false),
                           new InternalFormat(options, "groovy-rc", "Groovy (JUnit) - Selenium RC", "groovy-rc.js", false),
                           new InternalFormat(options, "cs-rc", "C# - Selenium RC", "cs-rc.js", false),
