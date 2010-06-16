@@ -13,8 +13,8 @@ module Selenium
         @home ||= jruby? ? ENV_JAVA['user.home'] : ENV['HOME']
       end
 
-      def platform
-        @platform ||= (
+      def engine
+        @engine ||= (
           if defined? RUBY_ENGINE
             RUBY_ENGINE.to_sym
           else
@@ -22,6 +22,8 @@ module Selenium
           end
         )
       end
+
+      alias_method :platform, :engine
 
       def os
         @os ||= (

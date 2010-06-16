@@ -126,6 +126,12 @@ module Selenium
             # TODO: x64
             @linked_lib_path ||= "#{WebDriver.root}/chrome/prebuilt/Win32/Release/npchromedriver.dll"
           end
+
+          def quit
+            # looks like we need a kill right away on Windows + MRI
+            @process.kill if Platform.engine == :ruby
+            super
+          end
         end
 
         class UnixLauncher < Launcher
