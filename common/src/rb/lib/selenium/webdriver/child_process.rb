@@ -125,9 +125,14 @@ module Selenium
 
           self
         end
-        
+
         def wait_nonblock(timeout)
-          return super if defined?(Process::WNOHANG) 
+          return super if defined?(Process::WNOHANG)
+          # win32-process doesn't support passing a second argument to waitpid2
+          # See the README @ http://rubyforge.org/docman/view.php/85/707/README.html
+          if defined?(Process::WNOHANG) && Process.method(:waitpid2).arity != 1
+            return super
+          end
           Timeout.timeout(timeout, Error::TimeOutError) { wait }
         rescue Process::Error
           # no handle, great
