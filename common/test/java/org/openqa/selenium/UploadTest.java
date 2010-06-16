@@ -1,6 +1,6 @@
 package org.openqa.selenium;
 
-import static org.junit.Assert.assertEquals;
+import static org.openqa.selenium.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
@@ -16,7 +16,7 @@ import java.io.PrintWriter;
  * 
  * @author jmleyba@gmail.com (Jason Leyba)
  */
-@Ignore(value = IPHONE, reason = "File uploads not allowed on the iPhone")
+@Ignore(value = {IPHONE, ANDROID}, reason = "File uploads not allowed on the iPhone")
 public class UploadTest extends AbstractDriverTestCase {
 
   private static final String LOREM_IPSUM_TEXT = "lorem ipsum dolor sit amet";

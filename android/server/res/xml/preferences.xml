@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+  xmlns:android="http://schemas.android.com/apk/res/android">
+  <PreferenceCategory android:title="Working Mode">
+    <CheckBoxPreference
+      android:summary="Fast and easy mode. No multi-session support"
+      android:title="Single Session Mode"
+      android:defaultValue="true"
+      android:key="simple_working_mode">
+    </CheckBoxPreference>
+  </PreferenceCategory>
+</PreferenceScreen>

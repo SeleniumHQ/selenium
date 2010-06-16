@@ -20,6 +20,7 @@ package org.openqa.selenium.remote.server.rest;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.JsonToBeanConverter;
 import org.openqa.selenium.remote.PropertyMunger;
+import org.openqa.selenium.remote.SimplePropertyDescriptor;
 import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.LogTo;
@@ -27,9 +28,6 @@ import org.openqa.selenium.remote.server.handler.WebDriverHandler;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.beans.BeanInfo;
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
 import java.io.BufferedReader;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
@@ -48,9 +46,11 @@ public class ResultConfig {
   private final DriverSessions sessions;
   private final Map<ResultType, Set<Result>> resultToRender =
       new HashMap<ResultType, Set<Result>>();
+  private final String url;
   private final LogTo logger;
 
   public ResultConfig(String url, Class<? extends Handler> handlerClazz, DriverSessions sessions, LogTo logger) {
+    this.url = url;
     this.logger = logger;
     if (url == null || handlerClazz == null) {
       throw new IllegalArgumentException("You must specify the handler and the url");
@@ -214,9 +214,9 @@ public class ResultConfig {
 
   protected void addHandlerAttributesToRequest(HttpServletRequest request, Handler handler)
       throws Exception {
-    BeanInfo info = Introspector.getBeanInfo(handler.getClass());
-    PropertyDescriptor[] properties = info.getPropertyDescriptors();
-    for (PropertyDescriptor property : properties) {
+    SimplePropertyDescriptor[] properties =
+        SimplePropertyDescriptor.getPropertyDescriptors(handler.getClass());
+    for (SimplePropertyDescriptor property : properties) {
       Method readMethod = property.getReadMethod();
       if (readMethod == null) {
         continue;
@@ -254,5 +254,28 @@ public class ResultConfig {
     }
 
     return toReturn;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (!(o instanceof ResultConfig)) {
+      return false;
+    }
+
+    ResultConfig that = (ResultConfig) o;
+
+    if (!url.equals(that.url)) {
+      return false;
+    }
+
+    return true;
+  }
+
+  @Override
+  public int hashCode() {
+    return url.hashCode();
   }
 }

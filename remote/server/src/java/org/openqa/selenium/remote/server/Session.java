@@ -19,6 +19,7 @@ package org.openqa.selenium.remote.server;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.browserlaunchers.CapabilityType;
@@ -61,7 +62,9 @@ public class Session {
           describe(rawDriver, capabilities);
         }
         EventFiringWebDriver driver = new EventFiringWebDriver(rawDriver);
-        driver.register(new SnapshotScreenListener(Session.this));
+        if (!capabilities.getPlatform().is(Platform.ANDROID)) {
+          driver.register(new SnapshotScreenListener(Session.this));
+        }
         return driver;
       }
     });

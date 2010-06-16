@@ -17,18 +17,14 @@ limitations under the License.
 
 package org.openqa.selenium.remote;
 
-import java.beans.BeanInfo;
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
 
 public class PropertyMunger {
 
   public static Object get(String name, Object on) throws Exception {
-    BeanInfo info = Introspector.getBeanInfo(on.getClass());
-
-    PropertyDescriptor[] properties = info.getPropertyDescriptors();
-    for (PropertyDescriptor property : properties) {
+    SimplePropertyDescriptor[] properties =
+        SimplePropertyDescriptor.getPropertyDescriptors(on.getClass());
+    for (SimplePropertyDescriptor property : properties) {
       if (property.getName().equals(name)) {
         Object result = property.getReadMethod().invoke(on);
         return String.valueOf(result);
@@ -39,9 +35,9 @@ public class PropertyMunger {
   }
 
   public static void set(String name, Object on, Object value) throws Exception {
-    BeanInfo info = Introspector.getBeanInfo(on.getClass());
-    PropertyDescriptor[] properties = info.getPropertyDescriptors();
-    for (PropertyDescriptor property : properties) {
+    SimplePropertyDescriptor[] properties =
+        SimplePropertyDescriptor.getPropertyDescriptors(on.getClass());
+    for (SimplePropertyDescriptor property : properties) {
       if (property.getName().equals(name)) {
         Method writeMethod = property.getWriteMethod();
         if (writeMethod == null) {

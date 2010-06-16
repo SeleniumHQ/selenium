@@ -60,9 +60,10 @@ public interface OutputType<T> {
   		try {
   			byte[] data = BYTES.convertFromBase64Png(base64Png);
   			File tmpFile = File.createTempFile("screenshot", ".png");
-        tmpFile.deleteOnExit();
+  			tmpFile.deleteOnExit();
   			fos = new FileOutputStream(tmpFile);
   			fos.write(data);
+  			fos.close();
   			return tmpFile;
   		} catch (IOException e) {
   			throw new WebDriverException(e);

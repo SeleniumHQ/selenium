@@ -113,3 +113,15 @@ def iPhoneSDKVersion?
     sdk.gsub(/iphonesimulator(.*)/, '\1')
   end
 end
+
+def AndroidSDK?
+  if $androidSDK.nil?
+    prop = YAML.load_file( './properties.yml' )
+    properties=prop["default"]["android"]
+    if (prop[ENV["USER"]])
+      properties=prop[ENV["USER"]]["android"];
+    end
+    $androidSDK = File.exists?(properties["androidsdkpath"])
+  end
+  $androidSDK
+end

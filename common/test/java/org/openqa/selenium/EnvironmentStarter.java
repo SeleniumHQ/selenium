@@ -35,9 +35,10 @@ public class EnvironmentStarter extends TestSetup {
   @Override
   protected void setUp() throws Exception {
     super.setUp();
-
-    environment = new InProcessTestEnvironment();
-    GlobalTestEnvironment.set(environment);
+    if (GlobalTestEnvironment.get() == null) {
+      environment = new InProcessTestEnvironment();
+      GlobalTestEnvironment.set(environment);
+    }
   }
 
   @Override

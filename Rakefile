@@ -1,6 +1,8 @@
 require 'rake'
 require 'rake/testtask'
 require 'rake/rdoctask'
+require 'yaml'
+require 'net/telnet.rb'
 
 verbose false
 
@@ -24,6 +26,7 @@ require 'rake-tasks/iphone'
 require 'rake-tasks/selenium'
 require 'rake-tasks/se-ide'
 require 'rake-tasks/ie_code_generator'
+require 'rake-tasks/android'
 
 version = "2.0a4"
 ide_version = "1.0.8-SNAPSHOT"
@@ -104,7 +107,7 @@ task :test_selenium => [ "//selenium:selenium_test:run", "//selenium:test-selene
 task :test_support => [ "//support:test:run" ]
 task :test_iphone_client => [:'webdriver-iphone-client-test']
 task :test_iphone => [:test_iphone_server, :test_iphone_client]
-task :test_singlesuite => [ "//selenium:single:run" ]
+task :android => [:android_client, :android_server]
 task :android_client => ['//android/client']
 
 if (windows?)
@@ -127,6 +130,10 @@ task :test => [
 task :clean do
   rm_rf 'build/'
   rm_rf 'iphone/build/'
+  rm_rf 'android/server/bin/', :verbose => false
+  rm_rf 'android/server/gen/', :verbose => false
+  rm_rf 'android/server/build/', :verbose => false
+  rm_rf 'android/client/build/', :verbose => false
 end
 
 dll(:name => "ie_win32_dll",
@@ -379,6 +386,53 @@ task :test_iphone_server do
     sh "cd iphone && xcodebuild -sdk #{sdk} ARCHS=i386 -target Tests"
   else
     puts "XCode and/or iPhoneSDK not found. Not testing iphone_server."
+  end
+end
+
+### Android ###
+file 'build/android/server/server.jar' => FileList["android/server/src/java/**/*.java"] + [:remote, :support] do
+  if AndroidSDK?
+    android_build(:name => "android-server",
+                  :srcs  => [ "android/server/src/java/**/*.java" ],
+                  :deps => [ :common,
+                             :remote,
+                             :support,
+                             :remote_common,
+                           ],
+                  :zip  => true
+                 )
+  else
+    puts "Android SDK could not be found. Set the SDK location in properties.yml"
+ end
+end
+task :android_server => 'build/android/server/server.jar'
+
+java_test(:name => "webdriver-android-client-test",
+          :srcs => ["android/client/test/java/**/*.java"],
+          :deps => [
+                     :test_common,
+                     :remote_client,
+                     :android_client
+                   ])
+
+task :test_android_init => [:android_server, :remote_server] do
+  if AndroidSDK?
+    #puts "Starting"
+    android_init()
+    run_emulator()
+    install_application()
+    start_application()
+    add_port_redir()
+  else
+    puts "Android SDK could not be found. Set the SDK location in properties.yml"
+  end
+end
+
+# This runs the tests on Android emulator
+task :test_android => [:test_android_init, :'webdriver-android-client-test'] do
+  if AndroidSDK?
+  else
+    puts "Android SDK could not be found. Set the SDK location in properties.yml"
   end
 end
 

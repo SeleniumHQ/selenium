@@ -629,6 +629,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/android/client/android-client.iml" filepath="$PROJECT_DIR$/android/client/android-client.iml" />
+      <module fileurl="file://$PROJECT_DIR$/android/server/android-server.iml" filepath="$PROJECT_DIR$/android/server/android-server.iml" />
       <module fileurl="file://$PROJECT_DIR$/chrome/chrome.iml" filepath="$PROJECT_DIR$/chrome/chrome.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/common.iml" filepath="$PROJECT_DIR$/common/common.iml" />
       <module fileurl="file://$PROJECT_DIR$/firefox/firefox.iml" filepath="$PROJECT_DIR$/firefox/firefox.iml" />

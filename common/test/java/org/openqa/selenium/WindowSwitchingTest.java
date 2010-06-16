@@ -19,10 +19,7 @@ package org.openqa.selenium;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
+import static org.openqa.selenium.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.Ignore.Driver.CHROME_NON_WINDOWS;
 import static org.openqa.selenium.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.Ignore.Driver.IE;
@@ -33,7 +30,7 @@ import static org.openqa.selenium.Ignore.Driver.SELENESE;
 import java.util.HashSet;
 import java.util.Set;
 
-@Ignore(value = IPHONE, reason = "The iPhone only supports one window")
+@Ignore(value = {IPHONE, ANDROID}, reason = "The iPhone only supports one window")
 public class WindowSwitchingTest extends AbstractDriverTestCase {
 
   @Ignore(SELENESE)

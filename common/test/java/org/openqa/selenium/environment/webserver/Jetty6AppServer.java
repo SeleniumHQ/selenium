@@ -77,6 +77,7 @@ public class Jetty6AppServer implements AppServer {
 
     addServlet("Redirecter", "/redirect", RedirectServlet.class);
     addServlet("InfinitePagerServer", "/page/*", PageServlet.class);
+    addServlet("Manifest", "/manifest/*", ManifestServlet.class);
     addServlet("Uploader", "/upload", UploadServlet.class);
     addServlet("Unusual encoding", "/encoding", EncodingServlet.class);
     addServlet("Sleeper", "/sleep", SleepingServlet.class);

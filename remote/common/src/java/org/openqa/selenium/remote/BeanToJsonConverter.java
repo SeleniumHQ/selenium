@@ -26,9 +26,6 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.browserlaunchers.DoNotUseProxyPac;
 
-import java.beans.BeanInfo;
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -214,8 +211,8 @@ public class BeanToJsonConverter {
 
     // Raw object via reflection? Nope, not needed
     JSONObject mapped = new JSONObject();
-    BeanInfo beanInfo = Introspector.getBeanInfo(toConvert.getClass());
-    for (PropertyDescriptor pd : beanInfo.getPropertyDescriptors()) {
+    for (SimplePropertyDescriptor pd :
+        SimplePropertyDescriptor.getPropertyDescriptors(toConvert.getClass())) {
       if ("class".equals(pd.getName())) {
         mapped.put("class", toConvert.getClass().getName());
         continue;

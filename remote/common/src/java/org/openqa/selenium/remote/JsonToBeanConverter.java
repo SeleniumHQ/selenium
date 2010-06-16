@@ -23,8 +23,6 @@ import org.json.JSONObject;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.browserlaunchers.DoNotUseProxyPac;
 
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
 import java.net.URI;
 import java.util.ArrayList;
@@ -231,8 +229,9 @@ public class JsonToBeanConverter {
 
   public <T> T convertBean(Class<T> clazz, JSONObject toConvert) throws Exception {
     T t = clazz.newInstance();
-    PropertyDescriptor[] allProperties = Introspector.getBeanInfo(clazz).getPropertyDescriptors();
-    for (PropertyDescriptor property : allProperties) {
+    SimplePropertyDescriptor[] allProperties =
+        SimplePropertyDescriptor.getPropertyDescriptors(clazz);
+    for (SimplePropertyDescriptor property : allProperties) {
       if (!toConvert.has(property.getName()))
         continue;
 

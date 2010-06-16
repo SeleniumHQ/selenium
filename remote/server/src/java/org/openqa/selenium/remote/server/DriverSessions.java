@@ -50,6 +50,10 @@ public class DriverSessions {
   }
 
   private void registerDefaults(Platform current) {
+    if (current.equals(Platform.ANDROID)){
+      registerDriver(DesiredCapabilities.android(), "org.openqa.selenium.android.AndroidDriver");
+      return;
+    }
     for (Map.Entry<Capabilities, String> entry : defaultDrivers.entrySet()) {
       Capabilities caps = entry.getKey();
       if (caps.getPlatform() != null && caps.getPlatform().is(current)) {

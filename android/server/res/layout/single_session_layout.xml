@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="vertical"
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent">
+
+
+
+<TextView android:layout_height="wrap_content"
+        android:id="@+id/status"
+        android:text="@string/default_session_status"
+        android:layout_width="fill_parent"
+        android:minLines="4"
+        android:textColor="#FFFFFF" android:background="#333333" android:maxLines="5" android:textSize="11dip">
+</TextView>
+
+<WebView android:id="@+id/webview"
+        android:background="#77CC0000"
+        android:layout_width="fill_parent"
+        android:focusable="false" android:layout_height="fill_parent"/><WebView android:id="@+id/rssWebView"
+        android:background="#77CC0000"
+        android:layout_height="50dip"
+        android:layout_width="fill_parent"
+        android:focusable="false">
+</WebView>
+
+</LinearLayout>

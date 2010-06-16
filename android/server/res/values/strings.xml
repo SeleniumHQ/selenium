@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <string name="main_title">Android WebDriver Client</string>
+
+  <string name="ctx_menu_navigate">Navigate to URL ...</string>
+
+  <string name="default_session_status">Ready.</string>
+
+  <string name="jetty_started">Jetty started</string>
+  <string name="jetty_not_started">Jetty not started</string>
+  <string name="jetty_already_started">Jetty already running</string>
+  <string name="jetty_stopped">Jetty stopped</string>
+  <string name="jetty_not_stopped">Jetty not stopped</string>
+  <string name="jetty_not_running">Jetty not running</string>
+
+
+</resources>
