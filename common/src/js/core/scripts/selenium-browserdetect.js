@@ -74,7 +74,7 @@ var BrowserVersion = function() {
         }
         
         
-    }
+    };
     
     
 
@@ -102,6 +102,16 @@ var BrowserVersion = function() {
             	this.appearsToBeBrokenInitialIE6 = true;
             }
         }
+        return;
+    }
+
+    // google chrome has both 'safari' and 'gecko' in the user agent so
+    // it has to go before them - see http://www.google.com/chrome/intl/en/webmasters-faq.html#useragent
+    if (navigator.userAgent.indexOf('Chrome/') != -1) {
+        this.browser = BrowserVersion.GOOGLECHROME;
+        this.isGoogleChrome = true;
+        this.isGecko = true;
+        this.khtml = true;
         return;
     }
 
@@ -140,7 +150,7 @@ var BrowserVersion = function() {
     }
 
     this.browser = BrowserVersion.UNKNOWN;
-}
+};
 
 BrowserVersion.OPERA = "Opera";
 BrowserVersion.IE = "IE";
@@ -148,6 +158,7 @@ BrowserVersion.KONQUEROR = "Konqueror";
 BrowserVersion.SAFARI = "Safari";
 BrowserVersion.FIREFOX = "Firefox";
 BrowserVersion.MOZILLA = "Mozilla";
+BrowserVersion.GOOGLECHROME = "Google Chrome";
 BrowserVersion.UNKNOWN = "Unknown";
 
 var browserVersion = new BrowserVersion();
