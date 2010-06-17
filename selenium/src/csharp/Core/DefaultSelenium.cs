@@ -146,6 +146,15 @@ namespace Selenium
 			commandProcessor.Start();
 		}
 		
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="optionsString"></param>
+        public void Start(string optionsString)
+        {
+            commandProcessor.Start(optionsString);
+        }
+
 		/// <summary>
 		/// Ends the current Selenium testing session (normally killing the browser)
 		/// </summary>
@@ -1774,7 +1783,16 @@ namespace Selenium
 		{
 			return commandProcessor.GetString("captureScreenshotToString", new String[] {});
 		}
-
+        
+        /// <summary>
+        /// Captures the Network Traffic that is passing through Selenium Server
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public string CaptureNetworkTraffic(string type)
+        {
+            return commandProcessor.GetString("captureNetworkTraffic", new string[] {type});
+        }
 
 		/// <summary>Downloads a screenshot of the browser current window canvas to a 
 		/// based 64 encoded PNG file. The <em>entire</em> windows canvas is captured,

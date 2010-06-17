@@ -39,6 +39,10 @@ namespace Selenium
 		/// Starts a new Selenium testing session
 		/// </summary>
 		void Start();
+
+	    void Start(string optionsString);
+
+	    void Start(Object optionsObject);
 		/// <summary>
 		/// Ends the current Selenium testing session (normally killing the browser)
 		/// </summary>

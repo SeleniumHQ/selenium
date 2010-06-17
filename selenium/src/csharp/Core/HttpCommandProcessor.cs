@@ -163,6 +163,26 @@ namespace Selenium
 			sessionId = result;
 		}
 
+        /// <summary>
+        /// Take any extra options that may be needed when creating a browser session
+        /// </summary>
+        /// <param name="optionString">Browser Options</param>
+        public void Start(string optionString)
+        {
+            string result = GetString("getNewBrowserSession", new String[] { browserStartCommand, browserURL, extensionJs, optionString });
+            sessionId = result;
+        }
+
+        /// <summary>
+        /// Wraps the version of start() that takes a string parameter, sending it the result
+        /// of calling ToString() on optionsObject, which will likey be a BrowserConfigurationOptions instan
+        /// </summary>
+        /// <param name="optionsObject">Contains BrowserConfigurationOptions </param>
+        public void Start(Object optionsObject)
+        {
+            Start(optionsObject.ToString());
+        }
+
 		/// <summary>
 		/// Stops the previous browser session, killing the browser
 		/// </summary>

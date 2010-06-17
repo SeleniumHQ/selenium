@@ -93,6 +93,18 @@ namespace Selenium
         {
             PopulateSeleneseMethods();
         }
+
+        public void Start(string optionsString)
+        {
+            //Not porting this till other process is decided
+            throw new NotImplementedException("This is not been ported to WebDriverBackedSelenium");
+        }
+
+        public void Start(Object optionsObject)
+        {
+            //Not porting this till other process is decided
+            throw new NotImplementedException("This is not been ported to WebDriverBackedSelenium");
+        }
         
         public void Stop()
         {
