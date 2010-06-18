@@ -183,6 +183,8 @@ public class GoogleChromeLauncher extends AbstractBrowserLauncher {
                 "--activate-on-launch",
                 // Don't ask to be the default browser
                 "--no-default-browser-check",
+                // Disable same origin policy so the remote runner can control the application window
+                "--disable-web-security",
                 // Set the user data (i.e. profile) directory.
                 "--user-data-dir=\"" + customProfileDir.getAbsolutePath() + "\"",
                 getSecurityMode(),
