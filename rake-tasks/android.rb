@@ -100,6 +100,7 @@ def android_java(args)
     src_file = "src.txt"
     File.open(src_file, "w") do |file|
       file << FileList[args[:srcs]].join(" ")
+      file << " #{$java_r}/R.java"
     end
 
     begin
@@ -224,7 +225,7 @@ def android_init()
   $lib_support = File.expand_path(File.join("build", "support", "support.jar"))
   $src_folder = File.expand_path(File.join("android", "server", "src"))
   $manifest = File.expand_path(File.join("android", "server", "AndroidManifest.xml"))
-  $java_r = File.expand_path(File.join("android", "server", "src", "java", "org", "openqa", "selenium", "android", "app"))
+  $java_r = File.expand_path(File.join("android", "server", "gen", "com", "android", "webdriver", "app"))
   $dexfile = File.expand_path(File.join("android", "server", "build", "classes.dex"))
   $androidjar = File.expand_path(File.join($androidsdkpath, "platforms", $androidplatform, "android.jar"))
   $classes = File.expand_path(File.join("android", "server", "build", "classes"))
