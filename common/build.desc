@@ -28,15 +28,15 @@ rake_file(
 
 rake_file(
   name = "js_jsunit",
-  src = "src/js/jsunit")  
-  
+  src = "src/js/jsunit")
+
 rake_file(
   name = "test_runner_html",
   src = "src/js/core/TestRunner.html")
-  
+
 rake_file(
   name = "remote_runner_html",
-  src = "src/js/core/RemoteRunner.html")  
+  src = "src/js/core/RemoteRunner.html")
 
 rubydocs(
   files = [
@@ -48,7 +48,7 @@ rubydocs(
 )
 
 rubygem(
-  version = "0.0.23",
+  version = "0.0.24",
   require_paths = [
     "common/src/rb/lib",
     "firefox/src/rb/lib",

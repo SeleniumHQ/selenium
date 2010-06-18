@@ -1,3 +1,9 @@
+0.0.24 (2010-06-17)
+==================
+
+* Fix issues with quitting Firefox/Chrome on Windows + MRI.
+
+
 0.0.23 (2010-06-15)
 ===================
 
