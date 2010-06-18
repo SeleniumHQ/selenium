@@ -38,14 +38,14 @@ namespace :se_ide do
       # and lastly the scriptrunner
       f = Dir.glob(base_ide_dir + "/common/src/js/core/scripts/selenium-testrunner.js")
       f.each do |c|
-        files << base_ide_dir + "ide/src/extension/content-files/selenium-testrunner.js"
+        files << base_ide_dir + "/ide/src/extension/content-files/selenium-testrunner.js"
         cp c, "ide/src/extension/content-files"
       end
 
       # no, really, this is lastly; user-extensions.js
       f = Dir.glob(base_ide_dir + "/common/src/js/core/scripts/user-extensions.js")
       f.each do |c|
-        files << base_ide_dir + "ide/src/extension/content-files/user-extensions.js"
+        files << base_ide_dir + "/ide/src/extension/content-files/user-extensions.js"
         cp c, "ide/src/extension/content-files"
       end
     end
