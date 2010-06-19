@@ -14,9 +14,8 @@ namespace OpenQA.Selenium.Firefox.Internal
     internal class Executable
     {
         #region Private members
-        private static readonly string PlatformBinary = LocateFirefoxBinaryFromPlatform();
-
-        private string binary;
+        private readonly string binaryInDefaultLocationForPlatform = LocateFirefoxBinaryFromPlatform();
+        private string binaryLocation;
         #endregion
 
         #region Constructor
@@ -26,12 +25,12 @@ namespace OpenQA.Selenium.Firefox.Internal
         /// <param name="userSpecifiedBinaryPath">The path and file name to the Firefox executable.</param>
         public Executable(string userSpecifiedBinaryPath)
         {
-            if (userSpecifiedBinaryPath != null)
+            if (!string.IsNullOrEmpty(userSpecifiedBinaryPath))
             {
                 // It should exist and be a file.
                 if (File.Exists(userSpecifiedBinaryPath))
                 {
-                    binary = userSpecifiedBinaryPath;
+                    binaryLocation = userSpecifiedBinaryPath;
                     return;
                 }
 
@@ -40,9 +39,9 @@ namespace OpenQA.Selenium.Firefox.Internal
                     userSpecifiedBinaryPath);
             }
 
-            if (PlatformBinary != null && File.Exists(PlatformBinary))
+            if (binaryInDefaultLocationForPlatform != null && File.Exists(binaryInDefaultLocationForPlatform))
             {
-                binary = PlatformBinary;
+                binaryLocation = binaryInDefaultLocationForPlatform;
                 return;
             }
 
@@ -57,7 +56,7 @@ namespace OpenQA.Selenium.Firefox.Internal
         /// </summary>
         public string ExecutablePath
         {
-            get { return binary; }
+            get { return binaryLocation; }
         } 
         #endregion
 
@@ -87,7 +86,7 @@ namespace OpenQA.Selenium.Firefox.Internal
             // Last, add the contents of the specified system property, defaulting to the binary's path.
 
             // On Snow Leopard, beware of problems the sqlite library    
-            string firefoxLibraryPath = Path.GetFullPath(binary);
+            string firefoxLibraryPath = Path.GetFullPath(binaryLocation);
             if (Platform.CurrentPlatform.IsPlatformType(PlatformType.MacOSX) && Platform.CurrentPlatform.MinorVersion > 5)
             {
                 libraryPath.Append(libraryPath).Append(Path.PathSeparator);
@@ -140,10 +139,6 @@ namespace OpenQA.Selenium.Firefox.Internal
                         if (File.Exists(tempPath))
                         {
                             binary = tempPath;
-                        }
-                        else
-                        {
-                            throw new WebDriverException("Unable to determine the current version of FireFox tried looking in the registry and the common locations on disk, please make sure you have installed FireFox correctly");
                         }
                     }
                 }
