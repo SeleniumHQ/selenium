@@ -63,22 +63,22 @@ namespace OpenQA.Selenium.Remote
         }
 
         /// <summary>
+        /// Returns a new <see cref="Response"/> from a JSON-encoded string.
+        /// </summary>
+        /// <param name="value">The JSON string to deserialize into a <see cref="Response"/>.</param>
+        /// <returns>A <see cref="Response"/> object described by the JSON string.</returns>
+        public static Response FromJson(string value)
+        {
+            return JsonConvert.DeserializeObject<Response>(value);
+        }
+
+        /// <summary>
         /// Returns this object as a JSON-encoded string.
         /// </summary>
         /// <returns>A JSON-encoded string representing this <see cref="Response"/> object.</returns>
         public string ToJson()
         {
             return JsonConvert.SerializeObject(this, new CookieJsonConverter());
-        }
-
-        /// <summary>
-        /// Returns a new <see cref="Response"/> from a JSON-encoded string.
-        /// </summary>
-        /// <param name="jsonString">The JSON string to deserialize into a <see cref="Response"/>.</param>
-        /// <returns>A <see cref="Response"/> object described by the JSON string.</returns>
-        public static Response FromJson(string jsonString)
-        {
-            return JsonConvert.DeserializeObject<Response>(jsonString);
         }
 
         /// <summary>

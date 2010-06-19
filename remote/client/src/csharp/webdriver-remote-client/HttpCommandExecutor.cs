@@ -27,12 +27,21 @@ namespace OpenQA.Selenium.Remote
                 throw new ArgumentNullException("addressOfRemoteServer", "You must specify a remote address to connect to");
             }
 
-            if (!addressOfRemoteServer.AbsoluteUri.EndsWith("/"))
+            if (!addressOfRemoteServer.AbsoluteUri.EndsWith("/", StringComparison.OrdinalIgnoreCase))
             {
                 addressOfRemoteServer = new Uri(addressOfRemoteServer.ToString() + "/");
             }
 
             remoteServerUri = addressOfRemoteServer;
+
+            // In the .NET Framework, HttpWebRequest responses with an error code are limited
+            // to 64k by default. Since the remote server error responses include a screenshot,
+            // they can frequently exceed this size. This only applies to the .NET Framework;
+            // Mono does not implement the property.
+            if (Type.GetType("Mono.Runtime", false, true) == null)
+            {
+                HttpWebRequest.DefaultMaximumErrorResponseLength = -1;
+            }
         }
 
         #region ICommandExecutor Members
@@ -44,7 +53,6 @@ namespace OpenQA.Selenium.Remote
         public Response Execute(Command commandToExecute)
         {
             CommandInfo info = CommandInfoRepository.Instance.GetCommandInfo(commandToExecute.Name);
-            HttpWebRequest.DefaultMaximumErrorResponseLength = -1;
             HttpWebRequest request = info.CreateWebRequest(remoteServerUri, commandToExecute);
             request.Timeout = 15000;
             request.Accept = RequestAcceptHeader;
