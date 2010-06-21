@@ -274,6 +274,7 @@ module Selenium
           "dom.disable_open_during_load"              => 'false',
           "extensions.update.enabled"                 => 'false',
           "extensions.update.notifyUser"              => 'false',
+          "network.manage-offline-status"             => 'false',
           "security.warn_entering_secure"             => 'false',
           "security.warn_submit_insecure"             => 'false',
           "security.warn_entering_secure.show_once"   => 'false',
