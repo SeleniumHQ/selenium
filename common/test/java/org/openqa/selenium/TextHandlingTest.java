@@ -187,6 +187,14 @@ public class TextHandlingTest extends AbstractDriverTestCase {
     String text = driver.findElement(By.id("self-closed")).getText();
     assertThat(text, equalTo(""));
   }
+  
+  @Ignore({HTMLUNIT, IE, CHROME, SELENESE})
+  public void testShouldNotTrimSpacesWhenLineWraps() {
+    driver.get(pages.simpleTestPage);
+
+    String text = driver.findElement(By.xpath("//table/tbody/tr[1]/td[1]")).getText();
+    assertThat(text, equalTo("beforeSpace afterSpace"));
+  }
 
   public void testShouldHandleSiblingBlockLevelElements() {
     driver.get(pages.simpleTestPage);

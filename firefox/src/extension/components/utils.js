@@ -185,6 +185,11 @@ function getTextFromNode(node, toReturn, textSoFar) {
 
     // Or is this just plain text?
     if (child.nodeName == "#text") {
+      if (collapseWhitespace(child.nodeValue) == " ") {
+        textSoFar += " ";
+        continue;
+      }
+      
       if (Utils.isDisplayed(child, false)) {
         var textToAdd = child.nodeValue;
         textToAdd =
