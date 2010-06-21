@@ -244,6 +244,7 @@ namespace OpenQA.Selenium.Firefox
             AddDefaultPreference(prefs, "dom.disable_open_during_load", "false");
             AddDefaultPreference(prefs, "extensions.update.enabled", "false");
             AddDefaultPreference(prefs, "extensions.update.notifyUser", "false");
+            AddDefaultPreference(prefs, "network.manage-offline-status", "false");
             AddDefaultPreference(prefs, "security.fileuri.origin_policy", "3");
             AddDefaultPreference(prefs, "security.fileuri.strict_origin_policy", "false");
             AddDefaultPreference(prefs, "security.warn_entering_secure", "false");
