@@ -44,9 +44,9 @@ function assignToVariable(type, variable, expression) {
 
 function waitFor(expression) {
 	if (expression.negative) {
-		return "assert !60.times{ break unless (" + expression.invert().toString() + " rescue true); sleep 1 }"
+		return "!60.times{ break unless (" + expression.invert().toString() + " rescue true); sleep 1 }"
 	} else {
-		return "assert !60.times{ break if (" + expression.toString() + " rescue false); sleep 1 }"
+		return "!60.times{ break if (" + expression.toString() + " rescue false); sleep 1 }"
 	}
 }
 
