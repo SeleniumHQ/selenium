@@ -3,17 +3,17 @@ require 'rake-tasks/crazy_fun/mappings/common'
 
 class JavascriptMappings
   def add_all(fun)
-    fun.add_mapping("js_library", Javascript::CheckPreconditions.new)
-    fun.add_mapping("js_library", Javascript::CreateTask.new)
-    fun.add_mapping("js_library", Javascript::CreateTaskShortName.new)
-    fun.add_mapping("js_library", Javascript::AddDependencies.new)
-    fun.add_mapping("js_library", Javascript::Concatenate.new)
+    fun.add_mapping("js_deps", Javascript::CheckPreconditions.new)
+    fun.add_mapping("js_deps", Javascript::CreateTask.new)
+    fun.add_mapping("js_deps", Javascript::CreateTaskShortName.new)
+    fun.add_mapping("js_deps", Javascript::AddDependencies.new)
+    fun.add_mapping("js_deps", Javascript::TouchOutput.new)
     
-    fun.add_mapping("closure_binary", Javascript::CheckPreconditions.new)
-    fun.add_mapping("closure_binary", Javascript::CreateTask.new)
-    fun.add_mapping("closure_binary", Javascript::CreateTaskShortName.new)
-    fun.add_mapping("closure_binary", Javascript::AddDependencies.new)
-    fun.add_mapping("closure_binary", Javascript::Compile.new)
+    fun.add_mapping("js_binary", Javascript::CheckPreconditions.new)
+    fun.add_mapping("js_binary", Javascript::CreateTask.new)
+    fun.add_mapping("js_binary", Javascript::CreateTaskShortName.new)
+    fun.add_mapping("js_binary", Javascript::AddDependencies.new)
+    fun.add_mapping("js_binary", Javascript::Compile.new)
   end
 end
 
@@ -80,17 +80,23 @@ module Javascript
     
   class AddDependencies < BaseJs
     def handle(fun, dir, args)
-      if args[:deps].nil? && args[:srcs].nil?
-        return
-      end
-      
       task = Rake::Task[js_name(dir, args[:name])]
       add_dependencies(task, dir, args[:deps])
       add_dependencies(task, dir, args[:srcs])
     end
   end
-  
-  class Concatenate < BaseJs
+ 
+  class AddTestDependencies < BaseJs
+    def handle(fun, dir, args) 
+      task = Rake::Task[js_name(dir, args[:name])]
+      add_dependencies(task, dir, args[:deps])
+      add_dependencies(task, dir, args[:srcs])
+
+      task.enhance [ "//jsapi:test:uber" ]
+    end
+  end
+
+  class TouchOutput < BaseJs
     def handle(fun, dir, args)
       # Cat all the deps together
       output = js_name(dir, args[:name])
@@ -104,10 +110,6 @@ module Javascript
         
         mkdir_p File.dirname(output)
         f = File.new(output, 'w')
-        js_files.each do |js|
-          f << IO.read(js)
-        end
-        
         f.close
       end
     end
@@ -131,7 +133,7 @@ module Javascript
         dirs = dirs.keys
 
         cmd = "java -jar third_party/py/jython.jar "
-        cmd << "third_party/closure/bin/calcdeps.py -c third_party/closure/bin/compiler-2009-12-17.jar "
+        cmd << "third_party/closure/bin/calcdeps.py -c third_party/closure/bin/compiler-20100201.jar "
         cmd << "-o compiled "
         cmd << '-f "--third_party=true" '
 #        cmd << '-f "--compilation_level=WHITESPACE_ONLY" '

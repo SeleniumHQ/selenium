@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<!--
+Copyright 2010 WebDriver committers
+Copyright 2010 Google Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<html>
+<head>
+  <title>locator_test.html</title>
+  <script src="../webdriver-bootstrap.js"></script>
+  <script>
+    goog.require('goog.testing.jsunit');
+    goog.require('goog.events.EventType');
+    goog.require('bot');
+    goog.require('bot.locators');
+  </script>
+
+  <script>
+    function testCanFindById() {
+      var e = bot.locators.findElement({id: 'x'});
+
+      assertEquals('para', e.getAttribute('name'));
+    }
+
+    function testCanFindByIdWhenElementIsAfterOneWithSameName() {
+      var e = bot.locators.findElement({id: 'after'});
+
+      assertEquals('right', e.getAttribute('name'));
+    }
+
+    function testCanFindByNameOutsideOfAForm() {
+      var e = bot.locators.findElement({name: 'para'});
+
+      assertEquals('x', e.getAttribute('id'));
+    }
+
+    function testWillNotFindAnElementByNameWhereNoMatchShouldBeFound() {
+      assertNull(bot.locators.findElement({name: 'foobar'}));
+    }
+
+    function testCanFindByClassName() {
+      var dogs = bot.locators.findElement({className: 'dogs'});
+      assertNotNull(dogs);
+      assertEquals('after', dogs.id);
+    }
+
+    function testCannotSearchWithCompoundClassNames() {
+      assertThrows(goog.bind(bot.locators.findElement, null,
+          {className: 'feline cats'}));
+    }
+
+    function testFindByClassNameReturnsFirstMatchingElement() {
+      var cats = bot.locators.findElement({className: 'cats'});
+      assertNotNull(cats);
+      assertEquals('wrong', cats.id);
+    }
+
+    function testCanFindByAnyOfAnElementsClassNames() {
+      var felines = bot.locators.findElement({className: 'feline'});
+      var cats = bot.locators.findElement({className: 'cats'});
+
+      assertEquals(felines, cats);
+      assertEquals('wrong', cats.id);
+    }
+
+    function testFindByClassNameReturnsNullIfNoMatchIsFound() {
+      assertNull(bot.locators.findElement({className: 'catsAndDogs'}));
+    }
+
+    function testCanFindElementByCssSelector() {
+      if (!document['querySelectorAll']) {
+        return;  // Skip this until we get selectors working on all browsers
+      }
+
+      var after = bot.locators.findElement({css: '#wrong'});
+
+      assertNotNull(after);
+      assertEquals('wrong', after.id);
+    }
+
+    function testShouldReturnNullIfNoCssMatchIsFound() {
+      if (!document['querySelectorAll']) {
+        return;  // Skip this until we get selectors working on all browsers
+      }
+
+      assertNull(bot.locators.findElement({css: '#uglyfish'}))
+    }
+
+    function testWillRejectShouldRejectMultipleSelectors() {
+      assertThrows(goog.bind(bot.locators.findElement, null,
+          {css: '.one, #two'}));
+    }
+
+    function testCanLocateElementsUsingXPath() {
+      if (!document['evaluate']) {
+        return;  // Skip this until we get xpath working on all browsers
+      }
+
+      var doggies = bot.locators.findElement({xpath: "//*[@id = 'after']"});
+
+      assertNotNull(doggies);
+      assertEquals('after', doggies.id);
+    }
+
+    function testWillReturnNullIfNoMatchUsingXPathIsFound() {
+      if (!document['evaluate']) {
+        return;  // Skip this until we get xpath working on all browsers
+      }
+
+      assertNull(bot.locators.findElement({xpath: "//fish"}));
+    }
+
+    function testCanFindMoreThanOneElementByName() {
+      var allFoos = bot.locators.findElements({name: 'foo'});
+
+      assertEquals(2, allFoos.length);
+    }
+
+    function testCanFindManyElementsUsingCss() {
+      if (!document['querySelectorAll']) {
+        return;  // Skip this until we get selectors working on all browsers
+      }
+
+      var cats = bot.locators.findElements({css: '.cats'});
+
+      assertEquals(3, cats.length);
+    }
+
+    function testCanFindManyElementsUsingClassName() {
+      var cats = bot.locators.findElements({className: 'cats'});
+
+      assertEquals(3, cats.length);
+    }
+
+    function testCanFindManyElementsUsingAnId() {
+      var bad = bot.locators.findElements({id: 'illegal'});
+
+      assertEquals(4, bad.length);
+    }
+
+    function testCanFindManyElementsViaXPath() {
+      if (!document['evaluate']) {
+        return;  // Skip this until we get xpath working on all browsers
+      }
+
+      var bad = bot.locators.findElements({xpath: '//*[@name = "after"]'});
+
+      assertEquals(2, bad.length);
+    }
+  </script>
+</head>
+<body>
+  <p id="x" name="para">Para</p>
+
+  <div name="after" id="wrong" class="feline cats">nope</div>
+  <div name="right" id="after" class="dogs">yup</div>
+  <div name="lion" class="cats">simba</div>
+  <div name="tiger" class="cats">shere khan</div>
+
+  <form action="#">
+    <input name="after" /><br />
+    <input name="foo" />
+  </form>
+
+  <span name="foo">Furrfu</span>
+
+  <ul>
+    <li id="illegal">item
+    <li id="illegal">item
+    <li id="illegal">item
+    <li id="illegal">item
+  </ul>
+</body>
+</html>

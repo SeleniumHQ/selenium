@@ -387,7 +387,7 @@ public class TestSuiteBuilder {
   /**
    * Filter used to identify JS API test case files in a directory.
    */
-  private static class TestFilenameFilter implements FilenameFilter {
+  public static class TestFilenameFilter implements FilenameFilter {
     /** @inheritDoc */
     public boolean accept(File dir, String name) {
       return name.endsWith("_test.html");

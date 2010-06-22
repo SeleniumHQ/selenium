@@ -12,7 +12,7 @@
       </class-settings>
       <class-settings class="com.google.devtools.intellig.configcheck.ProjectJdkChecker">
         <setting name="getModuleJdks" value="rO0ABXNyABFqYXZhLnV0aWwuSGFzaFNldLpEhZWWuLc0AwAAeHB3DAAAABA/QAAAAAAAAHg=" />
-        <setting name="getProjectJdk" value="/usr/local/buildtools/java/jdk1.5.0_06" />
+        <setting name="getProjectJdk" value="$PROJECT_DIR$/../../../../../buildtools/java/jdk1.5.0_06" />
       </class-settings>
       <class-settings class="com.google.devtools.intellig.configcheck.ProjectPathChecker" />
       <class-settings class="com.google.devtools.intellig.configcheck.PythonSdkChecker" />
@@ -319,7 +319,9 @@
           <option name="m_ignoreInvisibleFields" value="true" />
         </inspection_tool>
         <inspection_tool class="FinalMethodInFinalClass" enabled="true" level="WARNING" enabled_by_default="true" />
-        <inspection_tool class="Finalize" enabled="true" level="WARNING" enabled_by_default="true" />
+        <inspection_tool class="Finalize" enabled="true" level="WARNING" enabled_by_default="true">
+          <option name="ignoreTrivialFinalizers" value="true" />
+        </inspection_tool>
         <inspection_tool class="FinalizeNotProtected" enabled="true" level="WARNING" enabled_by_default="true" />
         <inspection_tool class="FloatingPointEquality" enabled="true" level="ERROR" enabled_by_default="true" />
         <inspection_tool class="ForCanBeForeach" enabled="false" level="WARNING" enabled_by_default="false">

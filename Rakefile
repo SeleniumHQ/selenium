@@ -436,6 +436,27 @@ task :test_android => [:test_android_init, :'webdriver-android-client-test'] do
   end
 end
 
+file "common/test/js/deps.js" => FileList["third_party/closure/goog/**/*.js", "common/src/js/**/*.js"] do
+  our_cmd = "java -jar third_party/py/jython.jar third_party/closure/bin/calcdeps.py "
+  our_cmd << "--output_mode=deps --path=common/src/js --path=common/test/js "
+  our_cmd << "--dep=third_party/closure/goog"
+
+  # Generate the deps. The file paths will be as they appear on the filesystem,
+  # but for our tests, the WebDriverJS source files are served from /js/src and
+  # the Closure Library source is under /third_party/closure/goog, so we need
+  # to modify the generated paths to match that scheme.
+  output = ""
+  io = IO.popen(our_cmd)
+    io.each do |line|
+      line = line.gsub("\\\\", "/")
+      output << line.gsub(/common\/(.*)\/js/, 'js/\1')
+    end
+  File.open("common/test/js/deps.js", "w") do |f| f.write(output); end    
+end
+
+desc "Calculate dependencies required for testing the automation atoms"
+task :calcdeps => "common/test/js/deps.js"
+
 def version
   `svn info | grep Revision | awk -F: '{print $2}' | tr -d '[:space:]' | tr -d '\n'`
 end

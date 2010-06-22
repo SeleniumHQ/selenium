@@ -3,10 +3,16 @@
 # the supported browsers. This should be included in the :test task; for that we
 # defer to the suites for the individual drivers.
 java_test(name = "test",
-  srcs = [ "test/java/**/*.java" ],
+  srcs = [ "test/java/org/openqa/selenium/JsApiTestSuite.java" ],
   deps = [ 
     "//firefox", 
     "//chrome",
+    "//common:test"])
+
+java_test(name = "atoms",
+  srcs = [ "test/java/org/openqa/selenium/AtomsTestSuite.java" ],
+  deps = [
+    "//firefox",
     "//common:test"])
 
 # Simply starts the Jetty6AppServer for manually testing the JS API tests.

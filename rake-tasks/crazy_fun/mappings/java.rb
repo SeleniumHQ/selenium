@@ -28,6 +28,8 @@ class JavaMappings
     fun.add_mapping("java_test", CrazyFunJava::TidyTempDir.new)
     fun.add_mapping("java_test", CrazyFunJava::RunTests.new)
     fun.add_mapping("java_test", CrazyFunJava::CreateSourceJar.new)
+    fun.add_mapping("java_test", CrazyFunJava::CreateUberJar.new)
+    fun.add_mapping("java_test", CrazyFunJava::CreateProjectJar.new)
   end
 end
 
