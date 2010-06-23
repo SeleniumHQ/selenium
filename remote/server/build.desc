@@ -20,7 +20,8 @@ java_library(name = "server",
     "//common:js_jsunit",
     {
       "//common:test_runner_html" : "core/TestRunner.hta",
-      "//common:remote_runner_html" : "core/RemoteRunner.hta"
+      "//common:remote_runner_html" : "core/RemoteRunner.hta",
+      "//common:atoms" : "core/scripts"
     }
   ],
   deps = [

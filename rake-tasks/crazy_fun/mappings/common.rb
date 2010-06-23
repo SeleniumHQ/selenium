@@ -172,10 +172,12 @@ class Tasks
     end
     
     if dep.is_a? Hash
+      all_deps = []
       dep.each do |k, v|
         # We only care about the keys
-        return dep_type(dir, k)
+        all_deps += dep_type(dir, k)
       end
+      return all_deps
     end
     
     throw "Unmatched dependency type: #{dep.class}"

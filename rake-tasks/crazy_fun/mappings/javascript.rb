@@ -70,7 +70,7 @@ module Javascript
       task_name = task_name(dir, args[:name])
 
       file name
-      
+
       desc "Compile and optimize #{name}"
       task task_name => name
       
@@ -98,7 +98,6 @@ module Javascript
 
   class TouchOutput < BaseJs
     def handle(fun, dir, args)
-      # Cat all the deps together
       output = js_name(dir, args[:name])
       
       file output do

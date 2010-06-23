@@ -1562,18 +1562,13 @@ BrowserBot.prototype.findAttribute = function(locator) {
 
     // Find the element.
     var element = this.findElement(elementLocator);
-
-    // Handle missing "class" attribute in IE.
-    if (browserVersion.isIE && attributeName == "class") {
-        attributeName = "className";
-    }
-
-    // Get the attribute value.
-    var attributeValue = element.getAttribute(attributeName);
+    var attributeValue = null;
     
     // IE returns an object for the "style" attribute
     if (attributeName == 'style' && typeof(attributeValue) != 'string') {
         attributeValue = attributeValue.cssText;
+    } else {
+        attributeValue = bot.dom.getAttribute(element, attributeName);
     }
 
     return attributeValue ? attributeValue.toString() : null;
