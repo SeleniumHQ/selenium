@@ -6,5 +6,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/selenium-common"/>
 	<classpathentry kind="lib" path="/third-party/java/commons-codec/commons-codec-1.4.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/json/json-20080701.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/google-collect/google-collect-1.0.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

@@ -3,9 +3,6 @@
 	<classpathentry kind="src" output="build/classes" path="src/java"/>
 	<classpathentry kind="src" output="build/test-classes" path="test/java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="lib/runtime/hamcrest-all-1.1.jar"/>
-	<classpathentry kind="lib" path="lib/runtime/jmock-2.4.0.jar"/>
-	<classpathentry kind="lib" path="lib/runtime/jmock-junit3-2.4.0.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/selenium-common"/>
 	<classpathentry kind="lib" path="/third-party/java/google-collect/google-collect-1.0.jar"/>
 	<classpathentry kind="output" path="bin"/>

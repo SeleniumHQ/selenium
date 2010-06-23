@@ -2,9 +2,7 @@
 <classpath>
 	<classpathentry kind="src" output="build/classes" path="src/java"/>
 	<classpathentry kind="src" output="build/test-classes" path="test/java"/>
-	<classpathentry kind="lib" path="lib/runtime/servlet-api-2.5-6.1.9.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="lib/runtime/ant-1.6.5.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/selenium-common"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/selenium-firefox"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/selenium-remote-client"/>
@@ -20,5 +18,7 @@
 	<classpathentry kind="lib" path="/third-party/java/easymock/easymock-2.4.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/easymock/easymockclassextension-2.4.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/mx4j/mx4j-tools-3.0.1.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/ant/ant.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/servlet-api/servlet-api-2.5-6.1.9.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
