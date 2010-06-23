@@ -165,9 +165,19 @@ TestSuite.TestCase.prototype = {
             file instanceof Components.interfaces.nsILocalFileWin) {
             filename = filename.replace(/\//g, '\\');
         }
-        file.appendRelativePath(filename);
-        return file;
-    },
+        
+        try {
+		file.appendRelativePath(filename);
+		return file;
+	}catch (e) {
+            
+		if (e.name && e.name == "NS_ERROR_FILE_UNRECOGNIZED_PATH") {
+			//Samit: Fix: workaround security exception due to ".." in path using our own version
+			return FileUtils.appendRelativePath(file, filename);
+		}
+	}
+        return null;
+     },
 
     getRelativeFilePath: function() {
         if (this.content) {
