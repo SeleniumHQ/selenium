@@ -12,10 +12,10 @@
     <orderEntry type="module" module-name="remote-client" exported="" />
     <orderEntry type="module" module-name="remote-common" exported="" />
     <orderEntry type="module" module-name="support" exported="" />
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/runtime/ant-1.6.5.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../third_party/java/ant/ant.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
