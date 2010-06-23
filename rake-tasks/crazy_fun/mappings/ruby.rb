@@ -220,7 +220,7 @@ class RubyRunner
     cmd << "-S" << opts[:command] if opts.has_key? :command
     cmd += Array(opts[:files]) if opts.has_key? :files
 
-    puts cmd.join ' '
+    puts cmd.join(' ')
 
     sh(*cmd)
   end
