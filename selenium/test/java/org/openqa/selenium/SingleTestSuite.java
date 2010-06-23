@@ -55,7 +55,7 @@ public class SingleTestSuite extends TestCase {
         .usingDriver(driver)
         .keepDriverInstance()
         .includeJavascriptTests()
-        .onlyRun("TypingTest")
+        .onlyRun("ElementAttributeTest")
         //.method("testShouldBeAbleToFindAnElementByCssSelector")
         .exclude(ALL)
         .exclude(Ignore.Driver.FIREFOX)
