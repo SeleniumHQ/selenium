@@ -52,10 +52,18 @@ mozilla_extension(name = "webdriver",
   resources = [
     { ":firefox_dll" : "platform/WINNT_x86-msvc/components/webdriver-firefox.dll" },
     { ":libwebdriver_firefox_so" : "platform/Linux_x86-gcc3/components/libwebdriver-firefox.so" },
-    { ":libwebdriver_firefox_so64" : "platform/Linux_x86_64-gcc3/components/libwebdriver-firefox.so" }
+    { ":libwebdriver_firefox_so64" : "platform/Linux_x86_64-gcc3/components/libwebdriver-firefox.so" },
+    { ":atoms" : "resource/modules/atoms.js" }
   ],
   chrome = "src/extension/chrome.manifest",
   install = "src/extension/install.rdf")
+
+# Needed because the closure library doesn't have the EXPORTED_SYMBOLS variable
+# required by the loader in firefox
+js_binary(name = "atoms",
+  srcs = [ "src/js/exported_symbols.js" ],
+  deps = [ "//common:bot" ])
+  
 
 gcc_library(name = "noblur",
   srcs = [ "src/cpp/linux-specific/*.c" ],

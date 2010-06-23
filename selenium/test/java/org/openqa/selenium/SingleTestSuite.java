@@ -55,12 +55,12 @@ public class SingleTestSuite extends TestCase {
         .usingDriver(driver)
         .keepDriverInstance()
         .includeJavascriptTests()
-        .onlyRun("ElementAttributeTest")
-        //.method("testShouldBeAbleToFindAnElementByCssSelector")
+        .onlyRun("CorrectEventFiringTest")
+        .method("testShouldEmitClickEventWhenClickingOnATextInputElement")
         .exclude(ALL)
         .exclude(Ignore.Driver.FIREFOX)
         .outputTestNames()
-        //.leaveRunning()
+        .leaveRunning()
         ;  // Yeah, this look strange :)
 
     if (REMOTE.equals(driver) || REMOTE_IE.equals(driver)) {

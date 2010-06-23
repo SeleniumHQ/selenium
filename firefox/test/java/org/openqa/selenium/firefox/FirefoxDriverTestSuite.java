@@ -130,6 +130,16 @@ public class FirefoxDriverTestSuite extends TestCase {
         throw new RuntimeException(e);
       }
 
+      // Grab the atoms
+      File atoms = FileHandler.locateInProject("build/firefox/atoms.js");
+      File targetAtoms = new File(extension, "resource/modules/atoms.js");
+      try {
+        targetAtoms.getParentFile().mkdirs(); // Ignore the return code, cos we're about to throw an exception
+        FileHandler.copy(atoms, targetAtoms);
+      } catch (IOException e) {
+        throw new RuntimeException(e);
+      }
+
       // We know the location of the "from" in relation to the extension source
       for (Map.Entry<String, String> entry : fromTo.entrySet()) {
         File source = new File(buildDir, entry.getKey());

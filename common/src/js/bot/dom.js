@@ -68,7 +68,7 @@ bot.dom.hasAttribute = function(element, attributeName) {
  * @const
  * @private
  */
-bot.dom.BOOLEAN_ATTRIBUTES_ = [
+bot.dom.BOOLEAN_PROPERTIES_ = [
   'checked',
   'disabled',
   'readOnly',
@@ -89,6 +89,18 @@ bot.dom.BOOLEAN_ATTRIBUTES_ = [
  */
 bot.dom.getAttribute = function(element, attributeName) {
   var lattr = attributeName.toLowerCase();
+  var value = null;
+
+  // Handle common boolean values
+  if (goog.array.contains(bot.dom.BOOLEAN_PROPERTIES_, attributeName)) {
+
+    if (!bot.dom.hasAttribute(element, attributeName)) {
+      return false;
+    }
+
+    value = element[attributeName];
+    return !!(value && value != 'false');
+  }
 
   // TODO(user): What's the right thing to do here?
   if ('style' == lattr) {
@@ -108,13 +120,28 @@ bot.dom.getAttribute = function(element, attributeName) {
     return null;
   }
 
-  var value = element[attributeName] === undefined ?
+  //  value = goog.isDef(element.getAttribute(attributeName)) ?
+//       element.getAttribute(attributeName) : element[attributeName];
+
+  value = goog.isDefAndNotNull(element.getAttribute(attributeName)) ?
       element.getAttribute(attributeName) : element[attributeName];
 
-  // Handle common boolean values
-  if (goog.array.contains(bot.dom.BOOLEAN_ATTRIBUTES_, attributeName)) {
-    value = !!value && value != 'false';
+  return value;
+};
+
+/**
+ * Determines whether an element is what a user would call "selected". This boils
+ * down to checking to see if either the "checked" or "selected" attribute is true
+ *
+ * @param {!Element} element The element to use
+ */
+bot.dom.isSelected = function(element) {
+  if (bot.dom.hasAttribute(element, 'checked')) {
+    return bot.dom.getAttribute(element, 'checked');
+  }
+  if (bot.dom.hasAttribute(element, 'selected')) {
+    return bot.dom.getAttribute(element, 'selected');
   }
 
-  return value;
+  throw Error('Element has neither checked nor selected attributes');
 };

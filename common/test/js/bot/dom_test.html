@@ -87,6 +87,20 @@ limitations under the License.
 
       assertEquals('', bot.dom.getAttribute(e, 'empty'));
     }
+
+    function testShouldReportThatFormInputElementsHaveADisabledProperty() {
+      var e = bot.locators.findElement({name: 'fish_supper'});
+
+      assertTrue(bot.dom.hasAttribute(e, 'disabled'));
+      assertFalse(bot.dom.getAttribute(e, 'disabled'));
+    }
+
+    function testShouldReportTheCorrectValueOfTheDisabledProperty() {
+      var e = bot.locators.findElement({name: 'out_of_action'});
+
+      assertTrue(bot.dom.hasAttribute(e, 'disabled'));
+      assertTrue(bot.dom.getAttribute(e, 'disabled'));
+    }
   </script>
 </head>
 <body>
@@ -107,6 +121,8 @@ limitations under the License.
     <input name="radio" id="checked" type="radio" value="myself"
            checked="checked">Myself
     <input name="radio" type="radio" value="i">And I
+
+    <input name="out_of_action" disabled></input>
   </form>
 </body>
 </html>
