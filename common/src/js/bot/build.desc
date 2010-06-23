@@ -1,9 +1,0 @@
-js_deps(name = "bot",
-  srcs = [ "**/*.js" ])
-
-js_binary(name = "atoms",
-  type = "script",
-  closure = "true",
-  deps = [
-    ":bot"
-  ])
