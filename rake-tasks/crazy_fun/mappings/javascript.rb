@@ -1,5 +1,6 @@
 
 require 'rake-tasks/crazy_fun/mappings/common'
+require 'rake-tasks/crazy_fun/mappings/java'
 
 class JavascriptMappings
   def add_all(fun)
@@ -14,10 +15,20 @@ class JavascriptMappings
     fun.add_mapping("js_binary", Javascript::CreateTaskShortName.new)
     fun.add_mapping("js_binary", Javascript::AddDependencies.new)
     fun.add_mapping("js_binary", Javascript::Compile.new)
+
+    fun.add_mapping("js_fragment", Javascript::CheckPreconditions.new)
+    fun.add_mapping("js_fragment", Javascript::CreateTask.new)
+    fun.add_mapping("js_fragment", Javascript::CreateTaskShortName.new)
+    fun.add_mapping("js_fragment", Javascript::AddDependencies.new)
+    fun.add_mapping("js_fragment", Javascript::CompileFragment.new)
   end
 end
 
 module Javascript
+  CrazyFunJava.ant.taskdef(:name => "jscomp",
+    :classname => "com.google.javascript.jscomp.ant.CompileTask",
+    :classpath => "third_party/closure/bin/compiler-20100616.jar")
+
   class BaseJs < Tasks
     def js_name(dir, name)
       name = task_name(dir, name)
@@ -132,7 +143,7 @@ module Javascript
         dirs = dirs.keys
 
         cmd = "java -jar third_party/py/jython.jar "
-        cmd << "third_party/closure/bin/calcdeps.py -c third_party/closure/bin/compiler-20100201.jar "
+        cmd << "third_party/closure/bin/calcdeps.py -c third_party/closure/bin/compiler-20100616.jar "
         cmd << "-o compiled "
         cmd << '-f "--third_party=true" '
 #        cmd << '-f "--compilation_level=WHITESPACE_ONLY" '
@@ -147,5 +158,47 @@ module Javascript
         sh cmd
       end
     end    
+  end
+
+  class CompileFragment < BaseJs
+    def handle(fun, dir, args)
+      output = js_name(dir, args[:name])
+
+      file output do
+        puts "Compiling: #{task_name(dir, args[:name])} as #{output}"
+
+        temp = "#{output}.tmp.js"
+
+        mkdir_p File.dirname(output)
+        js_files = build_deps(output, Rake::Task[output], []).uniq
+
+        rm_f "#{output}.tmp"
+
+        File.open(temp, "w") do |file|
+          file << "goog.require('#{args[:module]}'); goog.exportSymbol('#{args[:name]}', #{args[:function]});"
+        end
+
+        # TODO(simon): Don't hard code things. That's Not Smart
+        cmd = ""
+        cmd << "java -jar third_party/py/jython.jar third_party/closure/bin/calcdeps.py "
+        cmd << "-c third_party/closure/bin/compiler-20100201.jar "
+        cmd << "-o compiled "
+        cmd << "-f \"--third_party=true\" "
+        cmd << "-f \"--js_output_file=#{output}\" "
+        cmd << "-f \"--compilation_level=ADVANCED_OPTIMIZATIONS\" "
+        cmd << "-p third_party/closure/goog/ "
+        cmd << "-p common/src/js "
+        cmd << "-i #{temp}"
+
+        sh cmd
+
+        rm_f temp
+
+        # Strip out the license comments.
+        result = IO.read(output)
+        result = result.gsub(/\/\*.*?\*\//m, '')
+        File.open(output, 'w') do |f| f.write(result); end
+      end
+    end
   end
 end

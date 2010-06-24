@@ -84,3 +84,10 @@ rubygem(
   ],
   output_dir = "build/gem"
 )
+
+js_fragment(name = "get_attribute",
+  module = "bot.dom",
+  function = "bot.dom.getAttribute",
+  deps = [
+    ":bot"
+  ])
