@@ -46,6 +46,8 @@ public class SeleniumServerStarter extends TestSetup {
     command = new CommandLine("java", "-jar", seleniumJar.getAbsolutePath(), "-port", port);
     command.executeAsync();
 
+    PortProber.pollPort(Integer.parseInt(port));
+
     return port;
   }
 
