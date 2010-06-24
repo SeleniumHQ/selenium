@@ -76,6 +76,20 @@ bot.dom.BOOLEAN_PROPERTIES_ = [
 ];
 
 /**
+ * Define which elements may have which boolean property.
+ *
+ *  @const
+ *  @private
+ */
+bot.dom.PROPERTY_TO_TAGNAME_ = {
+  'checked': [ 'INPUT' ],
+  'disabled': [ 'INPUT' ],
+  'readOnly': [ 'INPUT' ],
+  'selected': [ 'INPUT', 'OPTION' ]
+};
+
+
+/**
  * Get the value of the given attribute or property of the
  * element. This method will endeavour to return consistent values
  * between browsers. For example, boolean values for attributes such
@@ -92,7 +106,9 @@ bot.dom.getAttribute = function(element, attributeName) {
   var value = null;
 
   // Handle common boolean values
-  if (goog.array.contains(bot.dom.BOOLEAN_PROPERTIES_, attributeName)) {
+  var tags = bot.dom.PROPERTY_TO_TAGNAME_[attributeName];
+  if (goog.array.contains(bot.dom.BOOLEAN_PROPERTIES_, attributeName) &&
+      goog.array.contains(tags, element.tagName)) {
 
     if (!bot.dom.hasAttribute(element, attributeName)) {
       return false;
@@ -128,6 +144,7 @@ bot.dom.getAttribute = function(element, attributeName) {
 
   return value;
 };
+
 
 /**
  * Determines whether an element is what a user would call "selected". This boils

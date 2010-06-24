@@ -54,7 +54,7 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
     assertThat(inputElement.getAttribute("disabled"), equalTo("false"));
     assertThat(inputElement.isEnabled(), equalTo(true));
     
-    WebElement pElement = driver.findElement(By.id("cheeseLiker"));
+    WebElement pElement = driver.findElement(By.id("peas"));
     assertThat(pElement.getAttribute("disabled"), equalTo("false"));
     assertThat(pElement.isEnabled(), equalTo(true));
   }
