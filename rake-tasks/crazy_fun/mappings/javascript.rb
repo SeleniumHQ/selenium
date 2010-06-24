@@ -1,4 +1,5 @@
 
+require 'open3'
 require 'rake-tasks/crazy_fun/mappings/common'
 require 'rake-tasks/crazy_fun/mappings/java'
 
@@ -30,6 +31,13 @@ module Javascript
     :classpath => "third_party/closure/bin/compiler-20100616.jar")
 
   class BaseJs < Tasks
+    attr_reader :calcdeps
+
+    def initialize()
+      @calcdeps = "java -jar third_party/py/jython.jar third_party/closure/bin/calcdeps.py " +
+                  "-c third_party/closure/bin/compiler-20100616.jar "
+    end
+
     def js_name(dir, name)
       name = task_name(dir, name)
       js = "build/" + (name.slice(2 ... name.length))
@@ -51,6 +59,21 @@ module Javascript
       end
       
       deps
+    end
+
+    def execute(cmd)
+      stdin, out, err = Open3.popen3(cmd)
+      stdin.close
+
+      # discard stdout --- the commands we use log to stderr
+      # this also causes the command to actually execute
+      out.read
+
+      output = err.read
+      if output =~ /ERROR/m
+        STDERR.puts output
+        exit(2)
+      end
     end
   end
 
@@ -112,8 +135,6 @@ module Javascript
       output = js_name(dir, args[:name])
       
       file output do
-        puts "Concatenating: #{task_name(dir, args[:name])} as #{output}"
-        
         t = Rake::Task[task_name(dir, args[:name])]
         
         js_files = build_deps(output, Rake::Task[output], []).uniq
@@ -142,20 +163,19 @@ module Javascript
         end
         dirs = dirs.keys
 
-        cmd = "java -jar third_party/py/jython.jar "
-        cmd << "third_party/closure/bin/calcdeps.py -c third_party/closure/bin/compiler-20100616.jar "
-        cmd << "-o compiled "
-        cmd << '-f "--third_party=true" '
-#        cmd << '-f "--compilation_level=WHITESPACE_ONLY" '
-        cmd << '-f "--formatting=PRETTY_PRINT" '
-        cmd << "-f \"--js_output_file=#{output}\" "
-        cmd << "-i "
-        cmd << js_files.join(" -i ")
-        cmd << " -p third_party/closure/goog -p "
-        cmd << dirs.join(" -p ")
+        cmd = calcdeps <<
+           " -o compiled " <<
+           '-f "--third_party=true" ' <<
+           '-f "--formatting=PRETTY_PRINT" ' <<
+           "-f \"--js_output_file=#{output}\" " <<
+           "-i " <<
+           js_files.join(" -i ") <<
+           " -p third_party/closure/goog -p " <<
+           dirs.join(" -p ")
 
         mkdir_p File.dirname(output)
-        sh cmd
+
+        execute cmd
       end
     end    
   end
@@ -179,18 +199,18 @@ module Javascript
         end
 
         # TODO(simon): Don't hard code things. That's Not Smart
-        cmd = ""
-        cmd << "java -jar third_party/py/jython.jar third_party/closure/bin/calcdeps.py "
-        cmd << "-c third_party/closure/bin/compiler-20100201.jar "
-        cmd << "-o compiled "
-        cmd << "-f \"--third_party=true\" "
-        cmd << "-f \"--js_output_file=#{output}\" "
-        cmd << "-f \"--compilation_level=ADVANCED_OPTIMIZATIONS\" "
-        cmd << "-p third_party/closure/goog/ "
-        cmd << "-p common/src/js "
-        cmd << "-i #{temp}"
+        cmd =  calcdeps <<
+            "-o compiled " <<
+            "-f \"--third_party=true\" " <<
+            "-f \"--js_output_file=#{output}\" " <<
+            "-f \"--compilation_level=ADVANCED_OPTIMIZATIONS\" " <<
+            "-p third_party/closure/goog/ " <<
+            "-p common/src/js " <<
+            "-i #{temp}"
 
-        sh cmd
+        mkdir_p File.dirname(output)
+        
+        execute cmd
 
         rm_f temp
 
