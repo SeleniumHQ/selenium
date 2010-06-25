@@ -40,7 +40,7 @@ ruby_test(name = "remote",
     "common/test/rb/spec/**/*_spec.rb",
     "remote/client/test/rb/spec/**/*_spec.rb"
   ],
-  include = [":ruby:lib"],
+  include = ["build/ruby/lib"],
   deps = [
     "//remote/server:server",
     "//remote/server:test",

@@ -22,8 +22,8 @@ java_test(name = "test",
 ruby_library(name = "ie",
   srcs = [ "src/rb/lib/**/*.rb" ],
   resources = [
-    {":ie_win32_dll" : "lib/selenium/webdriver/jobbie/native/x86/InternetExplorerDriver.dll"},
-    {":ie_x64_dll" : "lib/selenium/webdriver/jobbie/native/amd64/InternetExplorerDriver.dll"}
+    {":ie_win32_dll" : "lib/selenium/webdriver/ie/native/win32/InternetExplorerDriver.dll"},
+    {":ie_x64_dll" : "lib/selenium/webdriver/ie/native/x64/InternetExplorerDriver.dll"}
   ],
   deps = [ "//common:ruby:lib" ]
 )

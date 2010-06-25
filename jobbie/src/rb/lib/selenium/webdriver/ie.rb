@@ -4,8 +4,8 @@ module Selenium
     # @private
     module IE
       DLLS = {
-        :win32 => "#{WebDriver.root}/jobbie/prebuilt/Win32/Release/InternetExplorerDriver.dll",
-        :x64   => "#{WebDriver.root}/jobbie/prebuilt/x64/Release/InternetExplorerDriver.dll"
+        :win32 => "#{WebDriver.root}/selenium/webdriver/ie/native/win32/InternetExplorerDriver.dll",
+        :x64   => "#{WebDriver.root}/selenium/webdriver/ie/native/x64/InternetExplorerDriver.dll"
       }
     end
   end

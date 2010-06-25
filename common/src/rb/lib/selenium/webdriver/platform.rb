@@ -46,7 +46,7 @@ module Selenium
           if defined?(FFI::BITSIZE)
             FFI::BITSIZE
           elsif defined?(FFI)
-            FFI.type_size :pointer
+            FFI.type_size(:pointer) == 4 ? 32 : 64
           elsif jruby?
             Integer(ENV_JAVA['sun.arch.data.model'])
           else
