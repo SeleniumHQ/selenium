@@ -19,6 +19,34 @@ from setuptools.command.install import install
 
 from os.path import dirname, join
 import re
+import sys
+
+def setup_python3():
+    # Taken from "distribute" setup.py
+    from distutils.filelist import FileList
+    from distutils import dir_util, file_util, util, log
+
+    tmp_src = join("build", "src")
+    log.set_verbosity(1)
+    fl = FileList()
+    for line in open("MANIFEST.in"):
+        if not line.strip():
+            continue
+        fl.process_template_line(line)
+    dir_util.create_tree(tmp_src, fl.files)
+    outfiles_2to3 = []
+    for f in fl.files:
+        outf, copied = file_util.copy_file(f, join(tmp_src, f), update=1)
+        if copied and outf.endswith(".py"):
+            outfiles_2to3.append(outf)
+
+    util.run_2to3(outfiles_2to3)
+
+    # arrange setup to use the copy
+    sys.path.insert(0, tmp_src)
+
+    return tmp_src
+
 
 def find_longdesc():
     for path in ("docs/api/py/index.rst", "docs/index.rst"):
@@ -28,13 +56,18 @@ def find_longdesc():
         except IOError:
             pass
 
-    print "WARNING: Can't find index.rst"
+    print("WARNING: Can't find index.rst")
     return ""
 
 def revision():
     svn_rev = "$Revision$"
     match = re.search("\d+", svn_rev)
     return match.group() or "unknown"
+
+if sys.version_info >= (3,):
+    src_root = setup_python3()
+else:
+    src_root = "."
 
 setup(
     cmdclass={'install': install},
@@ -43,6 +76,7 @@ setup(
     description='Python bindings for Selenium',
     long_description=find_longdesc(),
     url='http://code.google.com/p/selenium/',
+    src_root=src_root,
     package_dir={
         'selenium':'.',
         'selenium.ie': 'jobbie/src/py',
