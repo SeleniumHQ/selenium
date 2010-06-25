@@ -24,27 +24,6 @@
 		<url>http://selenium.googlecode.com/svn</url>
 	</scm>
 	<developers>
-		<developer>
-			<id>simon.m.stewart</id>
-			<name>Simon Stewart</name>
-			<roles>
-				<role>Owner</role>
-			</roles>
-		</developer>
-		<developer>
-			<id>plightbo</id>
-			<name>Patrick Lightbody</name>
-			<roles>
-				<role>Owner</role>
-			</roles>
-		</developer>
-		<developer>
-			<id>michael.tamm2</id>
-			<name>Michael Tamm</name>
-			<roles>
-				<role>Committer</role>
-			</roles>
-		</developer>
 		<!-- A complete list can be found here: http://code.google.com/p/selenium/people/list -->
 	</developers>
 
