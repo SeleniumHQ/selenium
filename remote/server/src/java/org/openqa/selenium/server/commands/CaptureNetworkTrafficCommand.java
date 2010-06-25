@@ -57,29 +57,29 @@ public class CaptureNetworkTrafficCommand extends Command {
                 Entry entry = iterator.next();
                 sb.append("{\n");
 
-                sb.append("    statusCode: ").append(entry.statusCode).append(",\n");
-                sb.append("    method: ").append(json(entry.method)).append(",\n");
-                sb.append("    url: ").append(json(entry.url)).append(",\n");
-                sb.append("    bytes: ").append(entry.bytes).append(",\n");
-                sb.append("    start: '").append(sdf.format(entry.start)).append("',\n");
-                sb.append("    end: '").append(sdf.format(entry.end)).append("',\n");
-                sb.append("    timeInMillis: ").append((entry.end.getTime() - entry.start.getTime())).append(",\n");
+                sb.append(jsonKey("statusCode")).append(entry.statusCode).append(",\n");
+                sb.append(jsonKey("method")).append(json(entry.method)).append(",\n");
+                sb.append(jsonKey("url")).append(json(entry.url)).append(",\n");
+                sb.append(jsonKey("bytes")).append(entry.bytes).append(",\n");
+                sb.append(jsonKey("start")).append(json(sdf.format(entry.start))).append(",\n");
+                sb.append(jsonKey("end")).append(json(sdf.format(entry.end))).append(",\n");
+                sb.append(jsonKey("timeInMillis")).append((entry.end.getTime() - entry.start.getTime())).append(",\n");
 
-                sb.append("    requestHeaders:[");
+                sb.append(jsonKey("requestHeaders")).append("[");
                 jsonHeaders(sb, entry.requestHeaders);
                 sb.append("],\n");
 
-                sb.append("    responseHeaders:[");
+                sb.append(jsonKey("responseHeaders")).append("[");
                 jsonHeaders(sb, entry.responseHeaders);
                 sb.append("]\n");
 
                 sb.append("}");
 
                 if (iterator.hasNext()) {
-                    sb.append(",");
+                    sb.append(",\n");
                 }
             }
-            sb.append("]\n");
+            sb.append("]");
         } else if ("xml".equalsIgnoreCase(type)) {
             /*
             <traffic>
@@ -166,11 +166,13 @@ public class CaptureNetworkTrafficCommand extends Command {
             Header header = headItr.next();
 
             sb.append("{\n");
-            sb.append("        name: ").append(json(header.name)).append(",\n");
-            sb.append("        value: ").append(json(header.value)).append("\n");
-            sb.append("    }");
+            sb.append("    ").append(jsonKey("name")).append(json(header.name)).append(",\n");
+            sb.append("    ").append(jsonKey("value")).append(json(header.value)).append("\n");
             if (headItr.hasNext()) {
-                sb.append(",");
+                sb.append("    },");
+            }
+            else {
+                sb.append("  }");
             }
 
         }
@@ -184,11 +186,23 @@ public class CaptureNetworkTrafficCommand extends Command {
         return s;
     }
 
+    private String jsonKey(String key) {
+        final StringBuilder ret = new StringBuilder();
+      
+        ret.append("  \"").append(key).append("\"").append(":");
+
+        return ret.toString();
+    }
+
     private Object json(String s) {
         s = s.replaceAll("\\'", "\\\\'");
+        s = s.replaceAll("\\\"", "\\\\\"");
         s = s.replaceAll("\n", "\\\\n");
 
-        return "'" + s + "'";
+        final StringBuilder ret = new StringBuilder();
+        ret.append("\"").append(s).append("\"");
+      
+        return ret.toString();
     }
 
     public static class Entry {
