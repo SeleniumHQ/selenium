@@ -35,16 +35,16 @@ ruby_library(name = "client",
   ]
 )
 
-ruby_test(
+ruby_test(name = "remote",
   srcs = [
     "common/test/rb/spec/**/*_spec.rb",
     "remote/client/test/rb/spec/**/*_spec.rb"
   ],
-  include = ["remote/client/src/rb/lib"],
+  include = [":ruby:lib"],
   deps = [
-    "//remote/server:server",
-    "//remote/server:test"
-  ],
-  driver_name = "remote"
+    ":server:server",
+    ":server:test",
+    ":ruby:lib"
+  ]
 )
 

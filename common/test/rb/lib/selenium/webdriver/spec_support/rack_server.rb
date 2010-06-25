@@ -54,10 +54,17 @@ module Selenium
         private
 
         def handler
-          require 'mongrel'
-          Rack::Handler::Mongrel
+          handler = %w[thin mongrel webrick].find { |h| load_handler h }
+
+          constant = handler == 'webrick' ? "WEBrick" : handler.capitalize
+          Rack::Handler.const_get constant
+        end
+
+        def load_handler(handler)
+          require handler
+          true
         rescue LoadError
-          Rack::Handler::WEBrick
+          false
         end
 
         def start_forked

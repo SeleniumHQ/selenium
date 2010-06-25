@@ -20,16 +20,13 @@ ruby_library(name = "chrome",
   ]
 )
 
-ruby_test(
+ruby_test(name = "chrome",
   srcs = [
     "common/test/rb/spec/**/*_spec.rb",
     "chrome/test/rb/spec/**/*_spec.rb"
   ],
-  include = [
-    "chrome/src/rb/lib",
-    "remote/client/src/rb/lib"
-  ],
-  driver_name = "chrome"
+  include = [ "build/ruby/lib" ],
+  deps = [ ":ruby:lib"  ]
 )
 
 mozilla_extension(name = "chrome_extension",
@@ -39,7 +36,7 @@ mozilla_extension(name = "chrome_extension",
     { "src/extension/**" : "" }
   ],
   out = "chrome-extension.zip")
-  
+
 rake_task(name = "chrome_dll",
   task_name = "chrome_dll",
   out = "build/Win32/Release/npchromedriver.dll")

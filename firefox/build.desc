@@ -26,11 +26,12 @@ ruby_library(name = "firefox",
   deps = [ "//remote/client:ruby:lib" ]
 )
 
-ruby_test(driver_name = "firefox",
+ruby_test(name = "firefox",
   srcs = [
     "common/test/rb/spec/**/*_spec.rb",
     "firefox/test/rb/spec/**/*_spec.rb"
   ],
+  deps = [":ruby:lib"],
   include = [ "build/ruby/lib" ]
 )
 

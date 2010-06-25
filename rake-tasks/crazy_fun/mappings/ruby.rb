@@ -17,7 +17,10 @@ class RubyMappings
 
     def handle(fun, dir, args)
       desc 'Build in build/ruby'
-      t = task(task_name(dir, "ruby:lib")) do
+      task_name = task_name(dir, "ruby:lib")
+
+      t = task task_name do
+        puts "Preparing: #{task_name} in #{build_dir}"
         copy_sources dir, args[:srcs]
         copy_resources dir, args[:resources], build_dir if args[:resources]
         remove_svn_dirs
@@ -53,13 +56,13 @@ class RubyMappings
   class CheckTestArgs
     def handle(fun, dir, args)
       raise "no :srcs specified for #{dir}" unless args.has_key? :srcs
-      raise "no :driver_name specified for #{dir}" unless args.has_key? :driver_name
+      raise "no :name specified for #{dir}" unless args.has_key? :name
     end
   end
 
   class AddTestDefaults
     def handle(fun, dir, args)
-      args[:include] = [".", "common/src/rb/lib", "common/test/rb/lib"] + Array(args[:include])
+      args[:include] = Array(args[:include]) << "common/test/rb/lib"
       args[:command] = args[:command] || "spec"
       args[:require] = Array(args[:require])
 
@@ -93,7 +96,7 @@ class RubyMappings
       desc "Run ruby tests for #{dir} (jruby)"
       t = task task_name(dir, "ruby:test:jruby") do
         puts "Running: #{args[:driver_name]} ruby tests (jruby)"
-        ENV['WD_SPEC_DRIVER'] = args[:driver_name] # TODO: get rid of ENV
+        ENV['WD_SPEC_DRIVER'] = args[:name] # TODO: get rid of ENV
 
         jruby :include     => args[:include],
               :require     => req,
@@ -110,7 +113,7 @@ class RubyMappings
       desc "Run ruby tests for #{dir} (mri)"
       task task_name(dir, "ruby:test:mri") do
         puts "Running: #{args[:driver_name]} ruby tests (mri)"
-        ENV['WD_SPEC_DRIVER'] = args[:driver_name] # TODO: get rid of ENV
+        ENV['WD_SPEC_DRIVER'] = args[:name] # TODO: get rid of ENV
 
         ruby :include => args[:include],
              :require => args[:require],
@@ -183,6 +186,7 @@ class RubyMappings
         namespace(:gem) {
           deps = args[:deps] || []
 
+          desc "Build gem #{args[:name]}-#{args[:version]}"
           task :build => deps do
             require "rubygems/builder"
             gemfile = Dir.chdir(args[:dir]) { Gem::Builder.new(spec(args)).build }

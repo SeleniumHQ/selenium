@@ -18,23 +18,23 @@ java_test(name = "test",
     ":jobbie",
     "//common:test"
 ])
-  
-ruby_library(name = "jobbie",
+
+ruby_library(name = "ie",
   srcs = [ "src/rb/lib/**/*.rb" ],
   resources = [
     {":ie_win32_dll" : "lib/selenium/webdriver/jobbie/native/x86/InternetExplorerDriver.dll"},
     {":ie_x64_dll" : "lib/selenium/webdriver/jobbie/native/amd64/InternetExplorerDriver.dll"}
   ],
   deps = [ "//common:ruby:lib" ]
-)  
+)
 
-ruby_test(
+ruby_test(name = "ie",
   srcs = [
     "common/test/rb/spec/**/*_spec.rb",
     "jobbie/test/rb/spec/**/*_spec.rb"
   ],
-  include = ["jobbie/src/rb/lib"],
-  driver_name = "ie"
+  include = ["build/ruby/lib"],
+  deps = [ ":ruby:lib" ]
 )
 
 
