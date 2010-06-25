@@ -1,5 +1,6 @@
 require "timeout"
 require "socket"
+require "rexml/document"
 
 require "selenium/webdriver/firefox/util"
 require "selenium/webdriver/firefox/binary"

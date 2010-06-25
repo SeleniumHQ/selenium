@@ -39,6 +39,7 @@ require "selenium/webdriver/error"
 require "selenium/webdriver/platform"
 require "selenium/webdriver/child_process"
 require "selenium/webdriver/file_reaper"
+require "selenium/webdriver/zip_helper"
 require "selenium/webdriver/target_locator"
 require "selenium/webdriver/navigation"
 require "selenium/webdriver/timeouts"
@@ -61,7 +62,7 @@ module Selenium
     autoload :Firefox, 'selenium/webdriver/firefox'
 
     def self.root
-      @root ||= File.expand_path(File.join(File.dirname(__FILE__), "..", "..", "..", "..", ".."))
+      @root ||= File.expand_path(File.join(File.dirname(__FILE__), ".."))
     end
 
     #

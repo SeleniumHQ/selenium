@@ -213,6 +213,7 @@ class RubyMappings
         s.homepage      = "http://selenium.googlecode.com"
 
         s.add_dependency "json_pure"
+        s.add_dependency "rubyzip"
         s.add_dependency "ffi", ">= 0.6.1"
 
         if s.respond_to? :add_development_dependency
