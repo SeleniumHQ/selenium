@@ -51,7 +51,6 @@ module Selenium
           cp_r ext_path, tmp_extension_dir
 
           if Platform.win?
-            cp linked_lib_path, tmp_extension_dir
             mv "#{tmp_extension_dir}/manifest-win.json", "#{tmp_extension_dir}/manifest.json"
           else
             mv "#{tmp_extension_dir}/manifest-nonwin.json", "#{tmp_extension_dir}/manifest.json"
@@ -76,7 +75,7 @@ module Selenium
         end
 
         def ext_path
-          @ext_path ||= "#{WebDriver.root}/chrome/src/extension"
+          @ext_path ||= ZipHelper.unzip("#{WebDriver.root}/selenium/webdriver/chrome/extension.zip")
         end
 
         def tmp_extension_dir
@@ -120,11 +119,6 @@ module Selenium
             nil
           rescue Win32::Registry::Error
             nil
-          end
-
-          def linked_lib_path
-            # TODO: x64
-            @linked_lib_path ||= "#{WebDriver.root}/chrome/prebuilt/Win32/Release/npchromedriver.dll"
           end
 
           def quit
