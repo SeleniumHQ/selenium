@@ -5,10 +5,10 @@ module Selenium
       # @private
       class Binary
 
-        NO_FOCUS_LIBRARY_NAME = "libnoblur.so"
+        NO_FOCUS_LIBRARY_NAME = "x_ignore_nofocus.so"
         NO_FOCUS_LIBRARIES = [
-          ["#{WebDriver.root}/selenium/webdriver/firefox/native/linux/amd64/libnoblur64.so", "amd64/#{NO_FOCUS_LIBRARY_NAME}"],
-          ["#{WebDriver.root}/selenium/webdriver/firefox/native/linux/i386/libnoblur.so", "x86/#{NO_FOCUS_LIBRARY_NAME}"],
+          ["#{WebDriver.root}/selenium/webdriver/firefox/native/linux/amd64/#{NO_FOCUS_LIBRARY_NAME}", "amd64/#{NO_FOCUS_LIBRARY_NAME}"],
+          ["#{WebDriver.root}/selenium/webdriver/firefox/native/linux/x86/#{NO_FOCUS_LIBRARY_NAME}", "x86/#{NO_FOCUS_LIBRARY_NAME}"],
         ]
 
         def create_base_profile(name)
@@ -77,23 +77,19 @@ module Selenium
 
         def modify_link_library_path(profile)
           paths = []
-          ext_path = profile.extensions_dir
+          profile_path = profile.absolute_path
 
           NO_FOCUS_LIBRARIES.each do |from, to|
-            dest = File.join(ext_path, to)
+            dest = File.join(profile_path, to)
             FileUtils.mkdir_p File.dirname(dest)
             FileUtils.cp from, dest
 
-            paths << File.expand_path(dest)
+            paths << File.expand_path(File.dirname(dest))
           end
 
-          old_path = ENV['LD_LIBRARY_PATH']
+          paths += ENV['LD_LIBRARY_PATH'].to_s.split(File::PATH_SEPARATOR)
 
-          unless [nil, ''].include?(old_path)
-            paths << old_path
-          end
-
-          ENV['LD_LIBRARY_PATH'] = paths.join(File::PATH_SEPARATOR)
+          ENV['LD_LIBRARY_PATH'] = paths.uniq.join(File::PATH_SEPARATOR)
           ENV['LD_PRELOAD']      = NO_FOCUS_LIBRARY_NAME
         end
 
