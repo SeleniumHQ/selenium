@@ -13,6 +13,13 @@ java_test(name = "test",
     ":chrome"
 ])
 
+ruby_library(name = "chrome",
+  srcs = ["src/rb/lib/**/*.rb"],
+  resources = [
+    {":chrome_extension" :  "lib/selenium/webdriver/chrome/extension.zip"}
+  ]
+)
+
 ruby_test(
   srcs = [
     "common/test/rb/spec/**/*_spec.rb",

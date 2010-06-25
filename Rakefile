@@ -451,7 +451,7 @@ file "common/test/js/deps.js" => FileList["third_party/closure/goog/**/*.js", "c
       line = line.gsub("\\\\", "/")
       output << line.gsub(/common\/(.*)\/js/, 'js/\1')
     end
-  File.open("common/test/js/deps.js", "w") do |f| f.write(output); end    
+  File.open("common/test/js/deps.js", "w") do |f| f.write(output); end
 end
 
 desc "Calculate dependencies required for testing the automation atoms"

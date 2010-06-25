@@ -175,63 +175,6 @@ class Build < BaseXpi
     end
   end
 
-  def copy_resources(dir, to_copy, out_dir)
-    to_copy.each do |res|
-      if (res.is_a? Symbol)
-        out = Rake::Task[task_name(dir, res)].out
-      elsif (Rake::Task.task_defined?(res))
-        out = Rake::Task[res].out
-      elsif (res.is_a? Hash)
-        # Copy the key to "out_dir + value"
-        res.each do |from, to|
-          possible_task = task_name(dir, from)
-          if Rake::Task.task_defined?(possible_task) and Rake::Task[possible_task].out
-            target = Rake::Task[possible_task].out
-
-            if File.directory? target
-              dest = File.join(out_dir, to)
-              mkdir_p dest
-              cp_r target, dest
-            else
-              dest = File.join(out_dir, to)
-              mkdir_p File.dirname(dest)
-              cp_r target, dest
-            end
-          else
-            tdir = to.gsub(/\/.*?$/, "")
-            mkdir_p "#{out_dir}/#{tdir}"
-            src = find_file(File.join(dir, from))
-
-            begin
-              if File.directory? src
-                mkdir_p "#{out_dir}/#{to}"
-              else
-                mkdir_p File.join(out_dir, File.dirname(to))
-              end
-              cp_r src, "#{out_dir}/#{to}"
-            rescue
-              Dir["#{out_dir}/**/.svn"].each { |file| rm_rf file }
-              cp_r src, "#{out_dir}/#{to}"
-            end
-          end
-        end
-
-        next
-      else
-        if File.exists? res
-          out = res
-        else
-          out = File.join(dir, res)
-          if (!File.exists?(out))
-           copy_all(dir, to_copy, out_dir)
-           return
-          end
-        end
-      end
-
-      cp_r out, out_dir
-    end
-  end
 end
 end # end of Xpi mofule
 end

@@ -17,7 +17,16 @@ java_test(name = "test",
   deps = [
     ":jobbie",
     "//common:test"
-  ])
+])
+  
+ruby_library(name = "jobbie",
+  srcs = [ "src/rb/lib/**/*.rb" ],
+  resources = [
+    {":ie_win32_dll" : "lib/selenium/webdriver/jobbie/native/x86/InternetExplorerDriver.dll"},
+    {":ie_x64_dll" : "lib/selenium/webdriver/jobbie/native/amd64/InternetExplorerDriver.dll"}
+  ],
+  deps = [ "//common:ruby:lib" ]
+)  
 
 ruby_test(
   srcs = [

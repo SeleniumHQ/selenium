@@ -47,6 +47,11 @@ rake_file(
 rake_file(
   name = "remote_runner_html",
   src = "src/js/core/RemoteRunner.html")
+  
+ruby_library(name = "common",
+  srcs = [ "src/rb/lib/**/*.rb", "src/rb/CHANGES", "src/rb/README" ]
+)
+  
 
 rubydocs(
   files = [
@@ -59,30 +64,15 @@ rubydocs(
 
 rubygem(
   version = "0.0.24",
-  require_paths = [
-    "common/src/rb/lib",
-    "firefox/src/rb/lib",
-    "chrome/src/rb/lib",
-    "jobbie/src/rb/lib",
-    "remote/client/src/rb/lib"
-  ],
-  srcs = [
-    "COPYING",
-    "common/src/rb/CHANGES",
-    "common/src/rb/README",
-    "common/src/rb/**/*",
-    "common/src/js/**/*",
-    "firefox/src/rb/**/*",
-    "firefox/src/extension/**/*",
-    "firefox/prebuilt/**/*",
-    "chrome/src/rb/**/*",
-    "chrome/src/extension/**/*",
-    "chrome/prebuilt/**/*.dll",
-    "jobbie/src/rb/**/*",
-    "jobbie/prebuilt/**/InternetExplorerDriver.dll",
-    "remote/client/src/rb/**/*"
-  ],
-  output_dir = "build/gem"
+  name = "selenium-webdriver",
+  dir = "build/ruby",
+  deps = [
+    "//chrome:ruby:lib",
+    "//common:ruby:lib",
+    "//firefox:ruby:lib",
+    "//jobbie:ruby:lib",
+    "//remote/client:ruby:lib"
+  ]
 )
 
 js_fragment(name = "get_attribute",

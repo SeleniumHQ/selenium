@@ -16,16 +16,22 @@ java_test(name = "test",
     "//remote/client:test"
   ])
 
-ruby_test(
+ruby_library(name = "firefox",
+  srcs = [ "src/rb/lib/**/*.rb" ],
+  resources = [
+    { ":webdriver" : "lib/selenium/webdriver/firefox/extension/webdriver.xpt"},
+    { ":noblur"    : "lib/selenium/webdriver/firefox/native/linux/x86/x_ignore_nofocus.so" },
+    { ":noblur64"  : "lib/selenium/webdriver/firefox/native/linux/amd64/x_ignore_nofocus.so" }
+  ],
+  deps = [ "//remote/client:ruby:lib" ]
+)
+
+ruby_test(driver_name = "firefox",
   srcs = [
     "common/test/rb/spec/**/*_spec.rb",
     "firefox/test/rb/spec/**/*_spec.rb"
   ],
-  include = [
-    "firefox/src/rb/lib",
-    "remote/client/src/rb/lib"
-  ],
-  driver_name = "firefox"
+  include = [ "build/ruby/lib" ]
 )
 
 mozilla_xpt(name = "native_events_xpt",
@@ -63,7 +69,7 @@ mozilla_extension(name = "webdriver",
 js_binary(name = "atoms",
   srcs = [ "src/js/exported_symbols.js" ],
   deps = [ "//common:bot" ])
-  
+
 
 gcc_library(name = "noblur",
   srcs = [ "src/cpp/linux-specific/*.c" ],

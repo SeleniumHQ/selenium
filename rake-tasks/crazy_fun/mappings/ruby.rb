@@ -1,30 +1,63 @@
 class RubyMappings
 
   def add_all(fun)
-    fun.add_mapping "ruby_test", CheckArgs.new
-    fun.add_mapping "ruby_test", AddDefaults.new
+    fun.add_mapping "ruby_library", RubyLibrary.new
+
+    fun.add_mapping "ruby_test", CheckTestArgs.new
+    fun.add_mapping "ruby_test", AddTestDefaults.new
     fun.add_mapping "ruby_test", JRubyTest.new
     fun.add_mapping "ruby_test", MRITest.new
-    fun.add_mapping "ruby_test", AddDependencies.new
+    fun.add_mapping "ruby_test", AddTestDependencies.new
 
     fun.add_mapping "rubydocs", RubyDocs.new
     fun.add_mapping "rubygem", RubyGem.new
   end
 
-  class RubyTasks < Tasks
-    def task_name(dir, name)
-      super dir, "ruby:#{name}"
+  class RubyLibrary < Tasks
+
+    def handle(fun, dir, args)
+      desc 'Build in build/ruby'
+      t = task(task_name(dir, "ruby:lib")) do
+        copy_sources dir, args[:srcs]
+        copy_resources dir, args[:resources], build_dir if args[:resources]
+        remove_svn_dirs
+      end
+
+      add_dependencies t, dir, args[:deps]
+      add_dependencies t, dir, args[:resources]
+    end
+
+    def copy_sources(dir, globs)
+      globs.each do |glob|
+        Dir[File.join(dir, glob)].each do |file|
+          destination = destination_for(file)
+          mkdir_p File.dirname(destination)
+          cp file, destination
+        end
+      end
+    end
+
+    def remove_svn_dirs
+      Dir["#{build_dir}/**/.svn"].each { |file| rm_rf file }
+    end
+
+    def build_dir
+      "build/ruby"
+    end
+
+    def destination_for(file)
+      File.join build_dir, file.sub(%r[.*/rb/], '')
     end
   end
 
-  class CheckArgs
+  class CheckTestArgs
     def handle(fun, dir, args)
       raise "no :srcs specified for #{dir}" unless args.has_key? :srcs
       raise "no :driver_name specified for #{dir}" unless args.has_key? :driver_name
     end
   end
 
-  class AddDefaults
+  class AddTestDefaults
     def handle(fun, dir, args)
       args[:include] = [".", "common/src/rb/lib", "common/test/rb/lib"] + Array(args[:include])
       args[:command] = args[:command] || "spec"
@@ -35,10 +68,10 @@ class RubyMappings
     end
   end
 
-  class AddDependencies < RubyTasks
+  class AddTestDependencies < Tasks
     def handle(fun, dir, args)
-      jruby_task = Rake::Task[task_name(dir, "test:jruby")]
-      mri_task   = Rake::Task[task_name(dir, "test:mri")]
+      jruby_task = Rake::Task[task_name(dir, "ruby:test:jruby")]
+      mri_task   = Rake::Task[task_name(dir, "ruby:test:mri")]
 
       # TODO:
       # Specifying a dependency here isn't ideal, but it's the easiest way to
@@ -53,12 +86,12 @@ class RubyMappings
     end
   end
 
-  class JRubyTest < RubyTasks
+  class JRubyTest < Tasks
     def handle(fun, dir, args)
       req = ["third_party/jruby/json-jruby.jar"] + args[:require]
 
       desc "Run ruby tests for #{dir} (jruby)"
-      t = task task_name(dir, "test:jruby") do
+      t = task task_name(dir, "ruby:test:jruby") do
         puts "Running: #{args[:driver_name]} ruby tests (jruby)"
         ENV['WD_SPEC_DRIVER'] = args[:driver_name] # TODO: get rid of ENV
 
@@ -72,10 +105,10 @@ class RubyMappings
     end
   end
 
-  class MRITest < RubyTasks
+  class MRITest < Tasks
     def handle(fun, dir, args)
       desc "Run ruby tests for #{dir} (mri)"
-      task task_name(dir, "test:mri") do
+      task task_name(dir, "ruby:test:mri") do
         puts "Running: #{args[:driver_name]} ruby tests (mri)"
         ENV['WD_SPEC_DRIVER'] = args[:driver_name] # TODO: get rid of ENV
 
@@ -126,7 +159,7 @@ class RubyMappings
 
   class RubyGem
     def handle(fun, dir, args)
-      raise "no :srcs for rubygem" unless args[:srcs]
+      raise "no :dir for rubygem" unless args[:dir]
       raise "no :version for rubygem" unless args[:version]
 
       if has_gem_task?
@@ -148,19 +181,22 @@ class RubyMappings
     def define_gem_tasks(args)
       namespace(:ruby) {
         namespace(:gem) {
-          gemspec = spec(args)
+          deps = args[:deps] || []
 
-          Rake::GemPackageTask.new(gemspec) do |pkg|
-            pkg.package_dir = args[:output_dir]
+          task :build => deps do
+            require "rubygems/builder"
+            gemfile = Dir.chdir(args[:dir]) { Gem::Builder.new(spec(args)).build }
+            mv File.join(args[:dir], gemfile), "build/#{gemfile}"
           end
 
           task :clean do
-            rm_rf args[:output_dir]
+            rm_rf args[:dir]
+            rm_rf "build/*.gem"
           end
 
           desc 'Build and release the ruby gem to Gemcutter'
-          task :release => [:clean, :gem] do
-            sh "gem push #{args[:output_dir]}/#{gemspec.name}-#{gemspec.version}.gem"
+          task :release => [:clean, :build] do
+            sh "gem push build/#{args[:name]}-#{args[:version]}.gem"
           end
         }
       }
@@ -168,7 +204,7 @@ class RubyMappings
 
     def spec(args)
       Gem::Specification.new do |s|
-        s.name          = 'selenium-webdriver'
+        s.name          = args[:name]
         s.version       = args[:version]
         s.summary       = "The next generation developer focused tool for automated testing of webapps"
         s.description   = "WebDriver is a tool for writing automated tests of websites. It aims to mimic the behaviour of a real user, and as such interacts with the HTML of the application."
@@ -184,8 +220,7 @@ class RubyMappings
           s.add_development_dependency "rack"
         end
 
-        s.require_paths = args[:require_paths] if args.has_key?(:require_paths)
-        s.files         = args[:srcs].map { |e| Dir[e] }.flatten
+        s.files = Dir['lib/**/*', 'CHANGES', 'README']
       end
     end
   end # RubyGem
