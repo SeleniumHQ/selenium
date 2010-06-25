@@ -17,7 +17,8 @@ ruby_library(name = "chrome",
   srcs = ["src/rb/lib/**/*.rb"],
   resources = [
     {":chrome_extension" :  "lib/selenium/webdriver/chrome/extension.zip"}
-  ]
+  ],
+  deps = [ "//common:ruby:lib" ]
 )
 
 ruby_test(name = "chrome",

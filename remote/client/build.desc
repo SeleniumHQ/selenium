@@ -42,8 +42,8 @@ ruby_test(name = "remote",
   ],
   include = [":ruby:lib"],
   deps = [
-    ":server:server",
-    ":server:test",
+    "//remote:server:server",
+    "//remote:server:test",
     ":ruby:lib"
   ]
 )

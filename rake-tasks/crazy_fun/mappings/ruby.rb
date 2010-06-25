@@ -95,7 +95,7 @@ class RubyMappings
 
       desc "Run ruby tests for #{dir} (jruby)"
       t = task task_name(dir, "ruby:test:jruby") do
-        puts "Running: #{args[:driver_name]} ruby tests (jruby)"
+        puts "Running: #{args[:name]} ruby tests (jruby)"
         ENV['WD_SPEC_DRIVER'] = args[:name] # TODO: get rid of ENV
 
         jruby :include     => args[:include],
@@ -112,7 +112,7 @@ class RubyMappings
     def handle(fun, dir, args)
       desc "Run ruby tests for #{dir} (mri)"
       task task_name(dir, "ruby:test:mri") do
-        puts "Running: #{args[:driver_name]} ruby tests (mri)"
+        puts "Running: #{args[:name]} ruby tests (mri)"
         ENV['WD_SPEC_DRIVER'] = args[:name] # TODO: get rid of ENV
 
         ruby :include => args[:include],
