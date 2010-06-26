@@ -1,16 +1,17 @@
 require "rack"
+require "socket"
 
 module Selenium
   module WebDriver
     module SpecSupport
       class RackServer
 
-        HOST = 'localhost'
-        PORT = 8182
-
-        def initialize(path)
+        def initialize(path, port = nil)
           @path = path
           @app  = Rack::File.new(path)
+
+          @host = "127.0.0.1"
+          @port = Integer(port || find_free_port_above(8180))
         end
 
         def start
@@ -26,11 +27,11 @@ module Selenium
         end
 
         def run
-          handler.run(@app, :Host => HOST, :Port => PORT)
+          handler.run(@app, :Host => @host, :Port => @port)
         end
 
         def where_is(file)
-          "http://#{HOST}:#{PORT}/#{file}"
+          "http://#{@host}:#{@port}/#{file}"
         end
 
         def stop
@@ -45,7 +46,7 @@ module Selenium
         end
 
         def listening?
-          TCPSocket.new(HOST, PORT).close
+          TCPSocket.new(@host, @port).close
           true
         rescue
           false
@@ -67,6 +68,19 @@ module Selenium
           false
         end
 
+        def find_free_port_above(port)
+          try_port = port
+          begin
+            TCPServer.new(@host, try_port).close
+          rescue
+            raise if try_port > port + 100
+            try_port += 1
+            retry
+          end
+
+          try_port
+        end
+
         def start_forked
           @pid = fork { run }
         end
@@ -81,7 +95,7 @@ module Selenium
             # For IE, the combination of Windows + FFI + MRI seems to cause a
             # deadlock with the get() call and the server thread.
             # Workaround by running this file in a subprocess.
-            @process = ChildProcess.new("ruby", "-r", "rubygems", __FILE__, @path).start
+            @process = ChildProcess.new("ruby", "-r", "rubygems", __FILE__, @path, @port).start
           else
             start_threaded
           end
@@ -93,5 +107,5 @@ module Selenium
 end # Selenium
 
 if __FILE__ == $0
-  Selenium::WebDriver::SpecSupport::RackServer.new(ARGV.first).run
+  Selenium::WebDriver::SpecSupport::RackServer.new(ARGV[0], ARGV[1]).run
 end
