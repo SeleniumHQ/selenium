@@ -6,7 +6,7 @@ module Selenium
         ANONYMOUS_PROFILE_NAME   = "WEBDRIVER_ANONYMOUS_PROFILE"
         EXTENSION_NAME           = "fxdriver@googlecode.com"
         EM_NAMESPACE_URI         = "http://www.mozilla.org/2004/em-rdf#"
-        WEBDRIVER_EXTENSION_PATH = File.expand_path("#{WebDriver.root}/selenium/webdriver/firefox/extension/webdriver.xpt")
+        WEBDRIVER_EXTENSION_PATH = File.expand_path("#{WebDriver.root}/selenium/webdriver/firefox/extension/webdriver.xpi")
 
         attr_reader :name, :directory
         attr_writer :secure_ssl, :native_events, :load_no_focus_lib
@@ -124,8 +124,8 @@ module Selenium
           if File.directory? path
             root = path
           else
-            unless %w[.zip .xpt].include? File.extname(path)
-              raise Error::WebDriverError, "expected .zip or .xpt extension, got #{path.inspect}"
+            unless %w[.zip .xpi].include? File.extname(path)
+              raise Error::WebDriverError, "expected .zip or .xpi extension, got #{path.inspect}"
             end
 
             root = ZipHelper.unzip(path)

@@ -19,7 +19,7 @@ java_test(name = "test",
 ruby_library(name = "firefox",
   srcs = [ "src/rb/lib/**/*.rb" ],
   resources = [
-    { ":webdriver" : "lib/selenium/webdriver/firefox/extension/webdriver.xpt"},
+    { ":webdriver" : "lib/selenium/webdriver/firefox/extension/webdriver.xpi"},
     { ":noblur"    : "lib/selenium/webdriver/firefox/native/linux/x86/x_ignore_nofocus.so" },
     { ":noblur64"  : "lib/selenium/webdriver/firefox/native/linux/amd64/x_ignore_nofocus.so" }
   ],
