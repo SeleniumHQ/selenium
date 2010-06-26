@@ -262,7 +262,7 @@ Format.prototype.saveAs = function(testCase, filename, exportTest) {
     try {
         var file = null;
         if (filename == null) {
-            file = showFilePicker(window, "Save as...",
+            file = showFilePicker(window, "Save test case as...",
                                   Components.interfaces.nsIFilePicker.modeSave,
                                   exportTest ? Format.TEST_CASE_EXPORT_DIRECTORY_PREF : Format.TEST_CASE_DIRECTORY_PREF,
                                   function(fp) {return fp.file;});

@@ -269,10 +269,11 @@ Application.prototype = {
         }
     },
     
-    saveTestSuite: function() {
+    saveTestSuite: function(suppressTestCasePrompt) {
+    	//Samit: Enh: Added suppressTestCasePrompt to allow saving test suite and test cases without a yes/no prompt for each test case
         this._saveTestSuiteAs(function(testSuite) {
                 return testSuite.save(false);
-            });
+            }, suppressTestCasePrompt);
     },
 
     saveNewTestSuite: function() {
@@ -281,13 +282,14 @@ Application.prototype = {
             });
     },
 
-    _saveTestSuiteAs: function(handler) {
+    _saveTestSuiteAs: function(handler, suppressTestCasePrompt) {
         this.log.debug("saveTestSuite");
         var cancelled = false;
         this.getTestSuite().tests.forEach(function(test) {
                 if (cancelled) return;
                 if (test.content && test.content.modified) {
-                    if (confirm("The test case is modified. Do you want to save this test case?")) {
+                	//Samit: Enh: Added suppressTestCasePrompt to allow saving test suite and test cases without a yes/no prompt for each test case
+                    if (suppressTestCasePrompt || confirm("The test case " + test.getTitle() + " is modified. Do you want to save this test case?")) {
                         if (!this.getCurrentFormat().save(test.content)) {
                             cancelled = true;
                         }

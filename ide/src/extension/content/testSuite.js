@@ -16,6 +16,7 @@
 
 function TestSuite() {
     this.tests = [];
+    this.modified = false;	//Samit: Enh: Support for change detection
 }
 
 TestSuite.TEST_SUITE_DIRECTORY_PREF = "testSuiteDirectory";
@@ -77,17 +78,44 @@ TestSuite.prototype = {
         var testCase = new TestSuite.TestCase(this);
         testCase.content = content;
         this.tests.push(testCase);
+        this.modified = true;	//Samit: Enh: Mark as changed (Issue 586)
         this.notify("testCaseAdded", testCase);
     },
 
     remove: function(testCase) {
         if (this.tests.length > 1) {
             if (this.tests.delete(testCase)) {
+            	this.modified = true;	//Samit: Enh: Mark as changed (Issue 586)
                 this.notify("testCaseRemoved", testCase);
             }
         } else {
             alert(Message("error.testCaseRemovalFailed"));
         }
+    },
+
+    move: function(fromIndex, toIndex) {
+    	//Samit: Ref: Move is a fundamental part of the testSuite like add and remove and should be supported with corresponding event
+        if (this.tests.length > 1) {
+            var removedRow = this.tests.splice(fromIndex, 1)[0];
+            this.tests.splice(toIndex, 0, removedRow);
+            this.modified = true;
+            this.notify("testCaseMoved", removedRow, fromIndex, toIndex);
+        }
+    },
+
+    //Samit: Enh: A temp suite is a suite that is not saved and has a single test case 
+    isTempSuite: function() {
+    	if (this.file || this.tests.length > 1) {
+			//Persisted suites and suites with more than one test cases are not temp suites
+    		return false;
+    	}
+    	//Non-persisted suites with a single test case is a temp suite
+    	return true;
+    },
+    
+    //Samit: Enh: Provide suite modified status, contained test case modified status is not considered  
+    isModified: function() {
+		return this.modified;
     },
 
     save: function(newFile) {
@@ -111,6 +139,7 @@ TestSuite.prototype = {
             output.write(fin, fin.length);
         }
         output.close();
+        this.modified = false;	//Samit: Enh: Mark as saved (Issue 586)
         return true;
     },
 

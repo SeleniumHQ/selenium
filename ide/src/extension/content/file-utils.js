@@ -127,10 +127,8 @@ var FileUtils = {
                 cleanPath.push(f);
             }
         }
-        while (up-- > 0) {
-            if (!file.parent) {
-                break;
-            }
+        while (up-- > 0 && !file.parent) {
+
             file = file.parent;
         }
         var mergedFile = this.getFile(file.path);

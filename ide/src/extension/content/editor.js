@@ -295,27 +295,48 @@ Editor.prototype.showLoadErrors = function() {
 }
 
 Editor.prototype.confirmClose = function() {
-	if (this.getTestCase() && this.getTestCase().modified) {
-		var promptService = Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
-		    .getService(Components.interfaces.nsIPromptService);
-		
-		var flags = 
-			promptService.BUTTON_TITLE_SAVE * promptService.BUTTON_POS_0 +
-			promptService.BUTTON_TITLE_CANCEL * promptService.BUTTON_POS_1 +
-			promptService.BUTTON_TITLE_DONT_SAVE * promptService.BUTTON_POS_2;
-		
-		var result = promptService.confirmEx(window, "Save test?",
-											 "Would you like to save the test?",
-											 flags, null, null, null, null, {});
-		
-		switch (result) {
-		case 0:
-			return this.saveTestCase();
-		case 1:
-			return false;
-		case 2:
-			return true;
+	//Samit: Enh: Prompt if test suite and/or any of the test cases have changed and save them
+	var curSuite = this.app.getTestSuite();
+	if (curSuite) {
+		var saveSuite = !curSuite.isTempSuite() && curSuite.isModified(); 
+		var changedTestCases = 0; 
+		for (var i = 0; i < curSuite.tests.length; i++ ) {
+			if (curSuite.tests[i].content && curSuite.tests[i].content.modified) {
+				changedTestCases++;
+			}
+		}		
+
+		if (saveSuite || changedTestCases > 0) {
+			var promptType = (saveSuite ? 1 : 0) + (changedTestCases > 0 ? 2 : 0) - 1;
+			var prompt = ["Would you like to save the test suite?", 
+			              "Would you like to save the " + changedTestCases + " changed test case/s?", 
+			              "Would you like to save the test suite and the " + changedTestCases + " changed test case/s?"][promptType];	
+			var promptService = Components.classes["@mozilla.org/embedcomp/prompt-service;1"].getService(Components.interfaces.nsIPromptService);
+       		
+       		var flags = 
+       			promptService.BUTTON_TITLE_SAVE * promptService.BUTTON_POS_0 +
+       			promptService.BUTTON_TITLE_CANCEL * promptService.BUTTON_POS_1 +
+       			promptService.BUTTON_TITLE_DONT_SAVE * promptService.BUTTON_POS_2;
+       		
+       		var result = promptService.confirmEx(window, "Save?",
+       				prompt, flags, null, null, null, null, {});
+       		
+       		switch (result) {
+       		case 0:
+       			if (curSuite.isTempSuite()) {
+       				//For temp suites, just save the test case (as there is only one test case)
+       				return this.saveTestCase();
+       			}
+       			//For all others, save the suite (perhaps unnecessary) and all test cases that have changed 
+       			return this.app.saveTestSuite(true);
+       		case 1:
+       			return false;
+       		case 2:
+       			return true;
+       		}
 		}
+	}else {
+		//TODO: Why is there no current suite???
 	}
 	return true;
 }

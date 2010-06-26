@@ -237,8 +237,8 @@ objectExtend(SuiteTreeView.prototype, {
                            dropIndex++;
                    }
 
-                   var removedRow = this.getTestSuite().tests.splice(sourceIndex, 1)[0];
-                   this.getTestSuite().tests.splice(dropIndex, 0, removedRow);
+                   //Samit: Ref: Move is now part of the testSuite
+                   this.getTestSuite().move(sourceIndex, dropIndex);
 
                    this.treebox.invalidate();
                    this.selection.clearSelection();
