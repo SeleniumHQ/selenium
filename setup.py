@@ -62,7 +62,7 @@ def find_longdesc():
 def revision():
     svn_rev = "$Revision$"
     match = re.search("\d+", svn_rev)
-    return match.group() or "unknown"
+    return match and match.group() or "unknown"
 
 if sys.version_info >= (3,):
     src_root = setup_python3()
