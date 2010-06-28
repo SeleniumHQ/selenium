@@ -52,7 +52,7 @@ public class ChromeDriverTestSuite extends TestCase {
   }
   
   public static class TestChromeDriver extends ChromeDriver {
-    public TestChromeDriver() throws Exception {
+    public TestChromeDriver() {
       super(new ChromeProfile(), createExtension());
     }
 
