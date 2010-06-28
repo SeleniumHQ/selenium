@@ -49,7 +49,7 @@ limitations under the License.
     <tab label="Plugins"/>
   </tabs>
   <tabpanels id="general" flex="1">
-    <tabpanel orient="vertical">
+    <tabpanel id="generalTab" orient="vertical">
       <description>&options.encoding.description;</description>
       <hbox align="center">
   <textbox id="encoding" multiline="false" oninput="validate()"/>
