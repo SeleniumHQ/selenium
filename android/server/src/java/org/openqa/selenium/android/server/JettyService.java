@@ -56,8 +56,7 @@ public class JettyService extends Service {
    * 
    * @see android.app.Service#onCreate()
    */
-  public void onCreate() {
-  }
+  public void onCreate() {}
 
   /**
    * Android Service Start

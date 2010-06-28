@@ -19,7 +19,7 @@ package org.openqa.selenium.android.events;
 
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.android.RunnableWithArgs;
-import org.openqa.selenium.android.intents.DoNativeActionIntent;
+//import org.openqa.selenium.android.intents.DoNativeActionIntent;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -33,8 +33,8 @@ public class SendKeys implements RunnableWithArgs {
   private static final String LOG_TAG = SendKeys.class.getName();
 
   public void init(Bundle bundle) {
-    text = bundle.getString(DoNativeActionIntent.SEND_KEYS_TEXT_PARAM);
-    last = bundle.getBoolean(DoNativeActionIntent.LAST_KEY_PARAM);
+    text = bundle.getString("arg_0");
+    last = bundle.getBoolean("arg_1");
   }
 
   public void run(WebView webView) {

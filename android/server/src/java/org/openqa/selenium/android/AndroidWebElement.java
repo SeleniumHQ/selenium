@@ -17,8 +17,6 @@ limitations under the License.
 
 package org.openqa.selenium.android;
 
-import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.openqa.selenium.android.AndroidDriver.INTENT_TIMEOUT;
 import static org.openqa.selenium.android.JavascriptDomAccessor.STALE;
 import static org.openqa.selenium.android.JavascriptDomAccessor.UNSELECTABLE;
 import android.graphics.Point;
@@ -31,14 +29,13 @@ import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.android.intents.DoNativeActionIntent;
+import org.openqa.selenium.android.intents.Action;
 import org.openqa.selenium.internal.FindsById;
 import org.openqa.selenium.internal.FindsByLinkText;
 import org.openqa.selenium.internal.FindsByTagName;
 import org.openqa.selenium.internal.FindsByXPath;
 
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -72,40 +69,21 @@ public class AndroidWebElement implements WebElement, FindsById, FindsByLinkText
     // Native touch event
     Point p = getLocation();
     Log.d(LOG_TAG, "click on " + p.toString());
-    try {
-	  // TODO(berrada): Aim for the centre of the element (so get size as well)
-	  // Comment on why we don't need an ACTION_UP
-      MotionEvent event1 =
-          MotionEvent.obtain(System.currentTimeMillis(), System.currentTimeMillis(),
-              MotionEvent.ACTION_DOWN, new Float(p.x + 1), new Float(p.y + 1), 1.0f, 0,
-              0, 0f, 0, 0, 0);
-      final CountDownLatch latch = new CountDownLatch(1);
-      DoNativeActionIntent.getInstance().broadcastMotionEvent(event1, AndroidDriver.getContext(),
-          new Callback() {
-            @Override
-            public void stringCallback(String arg0) {
-              latch.countDown();
-            }
-          }
-      );
-      latch.await(INTENT_TIMEOUT, SECONDS);
-    } catch (InterruptedException e) {
-      Log.e(LOG_TAG, "click error", e);
-    }
+    // TODO(berrada): Aim for the centre of the element (so get size as well)
+    // Comment on why we don't need an ACTION_UP
+    MotionEvent motionEvent =
+        MotionEvent.obtain(System.currentTimeMillis(), System.currentTimeMillis(),
+            MotionEvent.ACTION_DOWN, new Float(p.x + 1), new Float(p.y + 1), 1.0f, 0,
+            0, 0f, 0, 0, 0);
+    
+    driver.resetPageHasStartedLoading();
+    driver.resetPageHasLoaded();
+    driver.sendIntent(Action.SEND_MOTION_EVENT, motionEvent);
 
-    // If the page started loading and  the element is clickable
-    if (hasPageStartedLoading() && p.x != 0 && p.y != 0) {
-      // This is blocking if this action causes a page to load, in which case
-      // we wait until the page is completely loaded.
-      // Then {@link SingleSessionActivity} will unlock. Otherwise, if no page is
-      // loading, SingleSessionActivity will unlock this immediately.
-      try {
-	      // TODO(berrada): There's a race condition here. The page may have loaded before getting here
-        driver.resetPageHasLoadedLock();
-        driver.awaitPageHasLoaded();
-      } catch (InterruptedException e) {
-        Log.e(LOG_TAG, "Interrupted", e);
-      }
+    // If the page started loading and the element is clickable, we should wait
+    // until the page is done loading.
+    if (driver.pageHasStartedLoading() && p.x != 0 && p.y != 0) {
+      driver.waitUntilPageFinishedLoading();
     }
   }
 
@@ -113,18 +91,15 @@ public class AndroidWebElement implements WebElement, FindsById, FindsByLinkText
     // TODO(berrada): For the else condition, it would be better to walk up the
     // form, then down to the first valid submit element and click that.
     String tagName = getTagName();
-
+    driver.resetPageHasLoaded();
+    driver.resetPageHasStartedLoading();
     if ("button".equalsIgnoreCase(tagName) || "input".equalsIgnoreCase(tagName)
         || getAttribute("type").equalsIgnoreCase("submit")
         || "img".equalsIgnoreCase(tagName)) {      
       this.click();
       domAccessor.submit(elementId);
-      if (hasPageStartedLoading()) {
-        try {
-          driver.awaitPageHasLoaded();
-        } catch (InterruptedException e) {
-          Log.e(LOG_TAG, "Interrupted", e);
-        }
+      if (driver.pageHasStartedLoading()) {
+        driver.waitUntilPageFinishedLoading();
       }
     }
   }
@@ -134,25 +109,11 @@ public class AndroidWebElement implements WebElement, FindsById, FindsByLinkText
   }
 
   public void clear() {
-    Log.d(LOG_TAG, "clear ");
+    Log.d(LOG_TAG, "clear");
     // focus
     this.click();
-
-    try {
-      final CountDownLatch latch = new CountDownLatch(1);
-
-      DoNativeActionIntent.getInstance().broadcastSendClear(AndroidDriver.getContext(),
-          new Callback() {
-            @Override
-            public void stringCallback(String arg0) {
-              latch.countDown();
-            }
-       });
-      latch.await(INTENT_TIMEOUT, SECONDS);
-      domAccessor.blur(elementId);
-    } catch (Exception e) {
-      Log.e(LOG_TAG, "click error", e);
-    }
+    driver.sendIntent(Action.CLEAR_TEXT);
+    domAccessor.blur(elementId);
   }
 
   public void sendKeys(CharSequence... value) {
@@ -162,22 +123,9 @@ public class AndroidWebElement implements WebElement, FindsById, FindsByLinkText
     }
     // focus
     this.click();
-
-    try {
-      final CountDownLatch latch = new CountDownLatch(value.length);
-      for (int i = 0; i < value.length; i++) {
-        boolean last = (i == value.length - 1);
-        DoNativeActionIntent.getInstance().broadcastSendKeys(value[i].toString(), last,
-            AndroidDriver.getContext(), new Callback() {
-              @Override
-              public void stringCallback(String arg0) {
-                latch.countDown();
-              }
-        });
-      }
-      latch.await(INTENT_TIMEOUT, SECONDS);
-    } catch (InterruptedException e) {
-      Log.e(LOG_TAG, "click error", e);
+    for (int i = 0; i < value.length; i++) {
+    boolean last = (i == value.length - 1);
+      driver.sendIntent(Action.SEND_KEYS, value[i].toString(), last);
     }
   }
 
@@ -332,7 +280,7 @@ public class AndroidWebElement implements WebElement, FindsById, FindsByLinkText
 
   public Point getSize() {
     try {
-			// TODO(berrada): I don't think this will work ("em", for example)
+            // TODO(berrada): I don't think this will work ("em", for example)
       int width = Integer.parseInt(getAttribute("offsetWidth").replace("px", ""));
       int height = Integer.parseInt(getAttribute("offsetHeight").replace("px", ""));
       System.out.println("WIDTH : " + width + ", HEIGHT: " + height);
@@ -401,15 +349,5 @@ public class AndroidWebElement implements WebElement, FindsById, FindsByLinkText
     if (!isEnabled()) {
       throw new UnsupportedOperationException("Element: " + elementId);
     }
-  }
-
-  protected boolean hasPageStartedLoading() {
-    driver.resetPageHasStartedLoadingLock();
-    try {
-      return driver.awaitPageHasStartedLoading();
-    } catch (InterruptedException e) {
-      Log.d(LOG_TAG, "hasPageStartedLoading : " + e);
-    }
-    return false;
   }
 }

@@ -17,10 +17,13 @@ limitations under the License.
 
 package org.openqa.selenium.android.util;
 
+import android.util.Log;
+
 /**
  * Simple timer class used to time actions executed.
  */
 public class SimpleTimer {
+  private static final String LOG_TAG = SimpleTimer.class.getName();
   private long start;
   private long end;
   private boolean isRunning;
@@ -36,12 +39,13 @@ public class SimpleTimer {
     isRunning = true;
   }
   
-  public void stop() {
+  public void stop(String description) {
     end = System.currentTimeMillis();
     isRunning = false;
+    Log.d(LOG_TAG, String.format("%s: %d milliseconds.", description, getElapsedTimeInMillis()));
   }
   
-  public long getInMillis() {
+  public long getElapsedTimeInMillis() {
     return (end - start);
   }
   

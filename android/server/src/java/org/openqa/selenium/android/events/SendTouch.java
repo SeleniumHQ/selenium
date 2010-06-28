@@ -27,7 +27,7 @@ import android.view.MotionEvent;
 import android.webkit.WebView;
 
 import static android.view.MotionEvent.ACTION_UP;
-import static org.openqa.selenium.android.intents.DoNativeActionIntent.MOTION_EVENT_PARAM;
+//import static org.openqa.selenium.android.intents.DoNativeActionIntent.MOTION_EVENT_PARAM;
 
 public class SendTouch implements RunnableWithArgs {
   private MotionEvent event;
@@ -35,7 +35,7 @@ public class SendTouch implements RunnableWithArgs {
   private static final String LOG_TAG = SendTouch.class.getName();
 
   public void init(Bundle bundle) {
-    event = (MotionEvent) bundle.getParcelable(MOTION_EVENT_PARAM);
+    event = (MotionEvent) bundle.getParcelable("arg_0");
   }
 
   public void run(WebView webView) {

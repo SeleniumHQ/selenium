@@ -17,19 +17,21 @@ limitations under the License.
 
 package org.openqa.selenium.android.intents;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.IntentFilter;
 
+import com.google.common.collect.Sets;
+
+import java.util.Set;
+
 public class IntentReceiverRegistrar {
   private final Context context;
-  private List<BroadcastReceiver> receivers = new ArrayList<BroadcastReceiver>();
+  private Set<BroadcastReceiver> receivers;
 
   public IntentReceiverRegistrar(Context context) {
     this.context = context;
+    receivers = Sets.newHashSet();
   }
 
   public void registerReceiver(BroadcastReceiver receiver, String action) {
@@ -37,11 +39,13 @@ public class IntentReceiverRegistrar {
     receivers.add(receiver);
   }
 
-  public List<BroadcastReceiver> getReceivers() {
-    return receivers;
+  public void unregisterReceiver(BroadcastReceiver receiver) {
+    context.unregisterReceiver(receiver);
   }
-
-  public void clearReceivers() {
-    receivers.clear();
+  
+  public void unregisterAllReceivers() {
+    for (BroadcastReceiver r : receivers) {
+      context.unregisterReceiver(r);
+    }
   }
 }

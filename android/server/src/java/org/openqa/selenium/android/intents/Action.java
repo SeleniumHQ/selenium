@@ -21,18 +21,26 @@ public interface Action {
   String NAVIGATE = "navigate";
   String GET_TITLE = "getTitle";
   String DO_ACTION = "doAction";
-  String SET_PROXY = "setProxy";
   String GET_URL = "getUrl";
-  String GET_COOKIES = "getCookies";
   String PAGE_LOADED = "pageLoaded";
   String COMMAND_EXECUTED = "commandExecuted";
   String PAGE_STARTED_LOADING = "pageStartedLoading";
   String TAKE_SCREENSHOT = "takeScreenshot";
   String DO_NATIVE_ACTION = "doNativeAction";
   String DO_NATIVE_ACTION_EXECUTED = "doNativeActionExecuted";
-  String GET_PAGESOURCE = "getPageSource";
   String NAVIGATE_BACK = "navigateBack";
   String NAVIGATE_FORWARD = "navigateForward";
   String REFRESH = "refresh";
   String EXECUTE_JAVASCRIPT = "executeJavascript";
+  String ADD_COOKIE = "addCookie";
+  String REMOVE_COOKIE = "removeCookie";
+  String REMOVE_ALL_COOKIES = "removeAllCookies";
+  String GET_COOKIE = "getCookie";
+  String GET_ALL_COOKIES = "getAllCookies";
+  
+  String JAVASCRIPT_RESULT_AVAILABLE = "javascriptResultAvailable";
+  
+  String SEND_KEYS = "sendKeys";
+  String CLEAR_TEXT = "clearText";
+  String SEND_MOTION_EVENT = "sendMotionEvent";
 }
