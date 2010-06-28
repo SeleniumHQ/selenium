@@ -148,7 +148,7 @@
      <FirefoxResources Include="$(TrunkRoot)\firefox\prebuilt\i386\libnoblur.so">
       <LogicalName>WebDriver.FirefoxNoFocus.x86.dll</LogicalName>
     </FirefoxResources>
-    <FirefoxResources Include="$(TrunkRoot)\firefox\prebuilt\amd64\libnoblur.so">
+    <FirefoxResources Include="$(TrunkRoot)\firefox\prebuilt\amd64\libnoblur64.so">
       <LogicalName>WebDriver.FirefoxNoFocus.amd64.dll</LogicalName> 
     </FirefoxResources>
     <FirefoxResources Include="$(TrunkRoot)\build\firefox\webdriver.xpi">
