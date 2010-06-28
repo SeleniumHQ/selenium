@@ -127,7 +127,7 @@ var FileUtils = {
                 cleanPath.push(f);
             }
         }
-        while (up-- > 0 && !file.parent) {
+        while (up-- > 0 && file.parent) {
 
             file = file.parent;
         }
