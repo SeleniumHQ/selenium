@@ -817,10 +817,49 @@ int wdeGetTagName(WebElement* element, StringWrapper** result)
 
 int wdeIsSelected(WebElement* element, int* result)
 {
-    int res = verifyFresh(element);	if (res != SUCCESS) { return res; }
+	*result = 0;
+	int res = verifyFresh(element);	if (res != SUCCESS) { return res; }
 
 	try {
-		*result = element->element->isSelected() ? 1 : 0;
+		std::wstring script(L"(function() { return function(){ ");
+
+		for (int i = 0; IS_SELECTED[i]; i++) {
+			script += IS_SELECTED[i];
+			script += L"\n";
+		}
+
+		script += L"return isSelected(arguments[0]); ";
+		script += L"};})();";
+
+		ScriptArgs* args;
+		res = wdNewScriptArgs(&args, 1);
+		if (res != SUCCESS) {
+			return res;
+		}
+		wdAddElementScriptArg(args, element);
+
+		WebDriver* driver = new WebDriver();
+		driver->ie = element->element->getParent();
+		ScriptResult* scriptResult = NULL;
+		res = wdExecuteScript(driver, script.c_str(), args, &scriptResult);
+		wdFreeScriptArgs(args);
+		driver->ie = NULL;
+		delete driver;
+
+		if (res != SUCCESS) 
+		{
+			wdFreeScriptResult(scriptResult);
+			return res;
+		}
+
+		int type;
+		wdGetScriptResultType(driver, scriptResult, &type);
+
+		if (scriptResult->result.vt == VT_BOOL) {
+			*result = scriptResult->result.boolVal == VARIANT_TRUE ? 1 : 0;
+		}
+
+		wdFreeScriptResult(scriptResult);
 
 		return SUCCESS;
 	} END_TRY;
