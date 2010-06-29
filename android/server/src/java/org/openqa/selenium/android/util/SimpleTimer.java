@@ -49,6 +49,10 @@ public class SimpleTimer {
     return (end - start);
   }
   
+  public long getTimeElapsedInMillisSinceStart() {
+    return start == 0 ? 0 : System.currentTimeMillis() - start;
+  }
+  
   public boolean isRunning() {
     return isRunning;
   }

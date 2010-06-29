@@ -29,6 +29,7 @@ import org.openqa.jetty.util.IO;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.Speed;
@@ -75,7 +76,6 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
   public static final String TYPE = "_TYPE";  // Prefixes JS result to be converted
   public static final String WEBELEMENT_TYPE = TYPE + "1:"; // Convert to WebElement
   private static final String WINDOW_HANDLE = "windowOne";
-  
   // Timeouts in milliseconds
   public static final long INTENT_TIMEOUT = 10000L;
   public static final long LOADING_TIMEOUT = 60000L;
@@ -83,18 +83,15 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
   public static final long WAIT_FOR_RESPONSE_TIMEOUT = 15000L;
 
   private static Context context;
-
   private final ExecutorService executor;
   private final SimpleTimer timer;
   private final IntentReceiverRegistrar intentRegistrar;
   private final AndroidWebElement element;
-
   private boolean pageHasLoaded = false;
   private boolean pageHasStartedLoading = false;
-
   private String jsResult;
   private String jsonLibrary;
-  
+  private long implicitWait = 0;  
   
   public AndroidDriver() {
     Log.e(LOG_TAG, "AndroidDriver constructor: " + getContext().getPackageName());
@@ -162,12 +159,39 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
 
   public WebElement findElement(By by) {
     Log.d(LOG_TAG, "findElement by: " + by.toString());
-    return by.findElement(this);
+    timer.start();
+    while (true) {
+      try {
+        return by.findElement(this);
+      } catch (NoSuchElementException e) {
+        if (timer.getTimeElapsedInMillisSinceStart() > implicitWait) {
+          throw e;
+        }
+        sleepQuietly(100);
+      }
+    }
   }
 
   public List<WebElement> findElements(By by) {
     Log.d(LOG_TAG, "findElements by: " + by.toString());
-    return by.findElements(this);
+    timer.start();
+    List<WebElement> found;
+    do {
+      found = by.findElements(this);
+      if (found.isEmpty()) {
+        sleepQuietly(100);
+      } else {
+        break;
+      }
+    } while (timer.getTimeElapsedInMillisSinceStart() <= implicitWait);
+    return found;
+  }
+
+  private static void sleepQuietly(long ms) {
+    try {
+      Thread.sleep(ms);
+    } catch (InterruptedException ignored) {
+    }
   }
 
   public WebElement findElementByLinkText(String using) {
@@ -458,11 +482,18 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
     }
 
     public Timeouts timeouts() {
-      // TODO(berrada): Implement me! (apparently already done.)
-      throw new UnsupportedOperationException("Not Implemented");
+      return new AndroidTimeouts();
     }
   }
 
+  class AndroidTimeouts implements Timeouts {
+    public Timeouts implicitlyWait(long time, TimeUnit unit) {
+      implicitWait = TimeUnit.MILLISECONDS.convert(Math.max(0, time), unit);
+      return this;
+    }
+    
+  }
+  
   public void doNavigation(String intentName) {
     doNavigation(intentName, null);
   }
