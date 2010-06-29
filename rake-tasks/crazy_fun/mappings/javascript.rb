@@ -65,9 +65,8 @@ module Javascript
       stdin, out, err = Open3.popen3(cmd)
       stdin.close
 
-      # discard stdout --- the commands we use log to stderr
+      # ignore stdout --- the commands we use log to stderr
       # this also causes the command to actually execute
-      out.read
 
       output = err.read
       if output =~ /ERROR/m
@@ -154,7 +153,8 @@ module Javascript
         puts "Compiling: #{task_name(dir, args[:name])} as #{output}"
         
         t = Rake::Task[task_name(dir, args[:name])]
-        
+
+        puts "Building deps"
         js_files = build_deps(output, Rake::Task[output], []).uniq
         
         dirs = {} 
