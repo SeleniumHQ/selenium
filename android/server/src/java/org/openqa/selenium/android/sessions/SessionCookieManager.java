@@ -18,84 +18,52 @@ limitations under the License.
 package org.openqa.selenium.android.sessions;
 
 import org.openqa.selenium.Cookie;
+import org.openqa.selenium.WebDriverException;
 
 import android.content.Context;
 import android.util.Log;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 /**
- * A singleton class that manages all cookies defined in Android browser.
- * Maintains collection of {@link Cookie} objects.
+ * Class that manages cookies the webview.
  */
 public class SessionCookieManager {
-  private CookieManager cookieManager;
-  private static Context context;
-  private volatile static SessionCookieManager instance;
   private static final String LOG_TAG = SessionCookieManager.class.getName();
   private static final String COOKIE_DATE_FORMAT = "EEE, dd MMM yyyy hh:mm:ss z";
-  
-  public static final String COOKIES_SEPARATOR=";";
-  
-  /** Actions that are supported by Cookie Manager */
-  public enum CookieActions {
-    ADD, REMOVE, REMOVE_ALL, GET, GET_ALL
-  }
 
-  private SessionCookieManager(Context context) {
+  public static final String COOKIE_SEPARATOR = ";";
+
+  private CookieManager cookieManager;
+
+  public SessionCookieManager(Context context) {
+    // Needs to be called before CookieMAnager::getInstance()
     CookieSyncManager.createInstance(context);
     cookieManager = CookieManager.getInstance();
   }
 
   /**
-   * Returns a Singleton instance of SessionCookieManager class
-   */
-  public static SessionCookieManager getInstance() {
-    if (context == null) {
-      throw new RuntimeException("Class SessionCookieManager must be"
-          + " initialized with createInstance() before calling getInstance()");
-    }
-    if (instance == null) {
-      createInstance(context);
-    }
-    return instance;
-  }
-
-  /**
-   * Create a singleton SessionCookieManager within a context
-   * 
-   * @param context Android context to use to access Cookies
-   */
-  public static void createInstance(Context context) {
-    if (instance == null) {
-      synchronized (SessionCookieManager.class) {
-        if (instance == null) {
-          SessionCookieManager.context = context;
-          instance = new SessionCookieManager(context);
-        }
-      }
-    }
-  }
-
-  /**
-   * Get all cookies for given domain name
+   * Gets all cookies for a given domain name
    * 
    * @param domain Domain name to fetch cookies for
    * @return Set of cookie objects for given domain
    */
   public List<Cookie> getCookies(String domain) {
+    Log.d(LOG_TAG, String.format("Get all cookies for url: %s", domain));
     cookieManager.removeExpiredCookie();
-    List<Cookie> result = new LinkedList<Cookie>();
     String cookies = cookieManager.getCookie(domain);
+    List<Cookie> result = new LinkedList<Cookie>();
     if (cookies == null) {
       return result;
     }
-    for (String cookie : cookies.split(COOKIES_SEPARATOR)) {
+    for (String cookie : cookies.split(COOKIE_SEPARATOR)) {
       String[] cookieValues = cookie.split("=");
       if (cookieValues.length >= 2) {
         result.add(new Cookie(cookieValues[0].trim(), cookieValues[1], domain, null, null));
@@ -103,87 +71,151 @@ public class SessionCookieManager {
     }
     return result;
   }
-
+  
   /**
-   * Returns list of cookies for given domain as a semicolon-separated string
+   * Gets all cookies associated to a URL.
    * 
-   * @param domain Domain name to fetch cookies for
-   * @return Cookie string in form: name=value[;name=value...]
+   * @param url
+   * @return A string containing comma separated cookies
    */
-  public String getCookiesAsString(String domain) {
-    return cookieManager.getCookie(domain);
+  public String getAllCookiesAsString(String url) {
+    StringBuilder cookiesBuilder = new StringBuilder();
+    boolean first = true;
+    List<String> domains;
+    try {
+      domains = getDomainsFromUrl(new URL(url));
+    } catch (MalformedURLException e) {
+      throw new WebDriverException("Error while adding cookie. " + e);
+    }
+    for (String domain : domains) {
+      String cookies = cookieManager.getCookie(domain);
+      Log.d(LOG_TAG, "Cookie for domain " + domain + " " + cookies);
+      if (cookies != null && cookies.length() > 0) {
+        if (!first) {
+          cookiesBuilder.append(COOKIE_SEPARATOR);
+        } else {
+          first = false;
+        }
+        cookiesBuilder.append(cookies);
+      }
+    }
+    return cookiesBuilder.toString();
   }
 
   /**
-   * Get cookie with specific name
+   * Gets the list of domains associated to a URL.
    * 
-   * @param domain Domain name to fetch cookie for
+   * @param url
+   * @return List of domains as strings
+   */
+  private List<String> getDomainsFromUrl(URL url) {
+    String host = url.getHost();
+    String[] paths = new String[] {};
+    if (url.getPath() != null) {
+      paths = url.getPath().split("/");
+    }
+    List<String> domains = new ArrayList<String>(paths.length + 1);
+    StringBuilder relative = new StringBuilder().append("http://").append(host).append("/");
+    domains.add(relative.toString());
+    for (String path : paths) {
+      if (path.length() > 0) {
+        relative.append(path).append("/");
+        domains.add(relative.toString());
+      }
+    }
+    Log.d(LOG_TAG, "Cookie for domains " + domains);
+    return domains;
+  }
+
+  /**
+   * Gets a cookie with specific name for a URL.
+   * 
+   * @param url
    * @param name Cookie name to search
    * @return Cookie object (if found) or null
    */
-  public Cookie getCookie(String domain, String name) {
-    List<Cookie> cookies = getCookies(domain);
+  public Cookie getCookie(String url, String name) {
+    Log.d(LOG_TAG, String.format("Get cookie with name: %s, for url: %s", name, url));
+    List<Cookie> cookies;
+    try {
+      cookies = getCookies(getDomainsFromUrl(new URL(url)).get(0));
+    } catch (MalformedURLException e) {
+      throw new WebDriverException("Error while adding cookie. " + e);
+    }
     // No cookies for given domain
     if (cookies == null || cookies.size() == 0) {
       return null;
     }
-
     for (Cookie cookie : cookies)
-      if (cookie.getName().equals(name)) return cookie;
-
+      if (cookie.getName().equals(name)) {
+        return cookie;
+      }
     return null; // No cookie with given name
   }
 
   /**
-   * Removes all cookies of a given domain
+   * Removes all cookies for a given URL.
    * 
-   * @param domain Domain name to remove all cookies for
+   * @param url to remove all the cookies for
    */
-  public void removeAllCookies(String domain) {
+  public void removeAllCookies(String url) {
+    // TODO(berrada): this removes all cookies, we should remove only cookies for
+    // the current URL. Given that this is single session it is ok for now.
+    Log.d(LOG_TAG, String.format("Removing all cookies for url: %s", url));
     cookieManager.removeAllCookie();
   }
 
   /**
-   * Remove domain cookie by name
+   * Removes cookie by name for a URL.
    * 
-   * @param domain Domain name to remove cookie for
-   * @param name Name of the cookie to remove
+   * @param url to remove cookie for
+   * @param name of the cookie to remove
    */
-  public void remove(String domain, String name) {
+  public void remove(String url, String name) {
+    Log.d(LOG_TAG, String.format("Removing cookie with name: %s for url: %s", name, url));
+    List<String> domains;
+    try {
+      domains = getDomainsFromUrl(new URL(url));
+    } catch (MalformedURLException e) {
+      throw new WebDriverException("Error while adding cookie. " + e);
+    }
+    for (String domain : domains) {
     List<Cookie> cookies = getCookies(domain);
-    for (Cookie c : cookies)
+    for (Cookie c : cookies) {
       if (c.getName().equals(name)) {
         cookies.remove(c);
-        // TODO(berrada): If we're removing a cookie, why not set the time to somewhere in the past?
-        cookieManager.setCookie(domain, name
-            + "=; expires="
-            + new SimpleDateFormat(COOKIE_DATE_FORMAT)
-                .format(System.currentTimeMillis() + 500));
+        // To remove a cookie we set the date somewhere in the past.
+        cookieManager.setCookie(domain, String.format("%s=; expires=%s", name,
+            new SimpleDateFormat(COOKIE_DATE_FORMAT).format(System.currentTimeMillis() - 500)));
         break;
       }
+    }
+    }
     cookieManager.removeExpiredCookie();
   }
 
   /**
-   * Add domain cookie
+   * Adds a cookie to a URL domain.
    * 
-   * @param domain Domain name to add cookie to
-   * @param c Cookie to be added
+   * @param url to add the cookie to
+   * @param cookie Cookie to be added
    */
-  public void addCookie(String domain, Cookie c) {
-    Log.d(LOG_TAG, "Adding cookie to domain " + domain + " ; " + cookieToString(c));
-    cookieManager.setCookie(domain, cookieToString(c));
-  }
-
-  public static List<String> cookiesToString(List<Cookie> cookies) {
-    List<String> setCookieList = new ArrayList<String>(cookies.size());
-    for (Cookie c : cookies) {
-      setCookieList.add(cookieToString(c));
+  public void addCookie(String url, Cookie cookie) {
+    Log.d(LOG_TAG, String.format("Adding cookie: %s to url: %s", cookie.toString(), url));
+    URL urlObj;
+    try {
+      urlObj = new URL(url);
+    } catch (MalformedURLException e) {
+      throw new WebDriverException("Error while adding cookie. ", e);
     }
-    return setCookieList;
+    String domain = "http://" + urlObj.getHost() + cookie.getPath();
+    if (!domain.endsWith("/")) {
+      domain = domain + "/";
+    }
+    cookieManager.setCookie(domain, stringifyCookie(cookie));
   }
-
-  public static String cookieToString(Cookie c) {
-    return c.getName() + "=" + c.getValue();
+  
+  private String stringifyCookie(Cookie cookie) {
+    return String.format("%s=%s", cookie.getName(), cookie.getValue());
   }
 }

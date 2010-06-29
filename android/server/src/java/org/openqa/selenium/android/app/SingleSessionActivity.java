@@ -31,10 +31,10 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.TextView;
 
+import org.openqa.selenium.Cookie;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.android.RunnableWithArgs;
 import org.openqa.selenium.android.intents.Action;
-import org.openqa.selenium.android.intents.CookieIntentReceiver;
 import org.openqa.selenium.android.intents.IntentReceiver;
 import org.openqa.selenium.android.intents.IntentReceiverRegistrar;
 import org.openqa.selenium.android.intents.IntentSender;
@@ -65,6 +65,8 @@ public class SingleSessionActivity extends Activity implements IntentReceiverLis
 
   private WebView webView;
   
+  private SessionCookieManager sessionCookieManager;
+
   private final IntentReceiverRegistrar intentReg;
   private final SimpleWebViewJSExecutor jsExecutor;
   private final SimpleWebChromeClient  chromeClient;
@@ -80,6 +82,8 @@ public class SingleSessionActivity extends Activity implements IntentReceiverLis
     super.onCreate(savedInstanceState);
     initAppLayout();
     initWebViewSettings();
+    // This needs to be initialized after the webview
+    sessionCookieManager = new SessionCookieManager(this);
     initIntentReceivers();
     Log.d(LOG_TAG, "WebView Initialized.");
   }
@@ -124,15 +128,11 @@ public class SingleSessionActivity extends Activity implements IntentReceiverLis
     intentReg.registerReceiver(intentWithResult, Action.SEND_KEYS);
     intentReg.registerReceiver(intentWithResult, Action.SEND_MOTION_EVENT);
     intentReg.registerReceiver(intentWithResult, Action.CLEAR_TEXT);
-
-    SessionCookieManager.createInstance(this);
-    CookieIntentReceiver cookieReceiver = new CookieIntentReceiver();
-    cookieReceiver.setListener(this);
-    intentReg.registerReceiver(cookieReceiver, Action.ADD_COOKIE);
-    intentReg.registerReceiver(cookieReceiver, Action.GET_ALL_COOKIES);
-    intentReg.registerReceiver(cookieReceiver, Action.GET_COOKIE);
-    intentReg.registerReceiver(cookieReceiver, Action.REMOVE_ALL_COOKIES);
-    intentReg.registerReceiver(cookieReceiver, Action.REMOVE_COOKIE);
+    intentReg.registerReceiver(intentWithResult, Action.ADD_COOKIE);
+    intentReg.registerReceiver(intentWithResult, Action.GET_ALL_COOKIES);
+    intentReg.registerReceiver(intentWithResult, Action.GET_COOKIE);
+    intentReg.registerReceiver(intentWithResult, Action.REMOVE_ALL_COOKIES);
+    intentReg.registerReceiver(intentWithResult, Action.REMOVE_COOKIE);
   }
 
   @Override
@@ -198,6 +198,17 @@ public class SingleSessionActivity extends Activity implements IntentReceiverLis
         throw new IllegalArgumentException("Error while trying to execute Javascript." +
         "SingleSessionActivity.executeJS takes one argument");
       }
+    } else if (action.equals(Action.ADD_COOKIE)) {
+      Cookie cookie = new Cookie((String) args[0], (String) args[1], (String) args[2]);
+      sessionCookieManager.addCookie(webView.getUrl(), cookie);
+    } else if (action.equals(Action.GET_ALL_COOKIES)) {
+      return sessionCookieManager.getAllCookiesAsString(webView.getUrl());
+    } else if (action.equals(Action.GET_COOKIE)) {
+      return sessionCookieManager.getCookie(webView.getUrl(), (String) args[0]);
+    } else if (action.equals(Action.REMOVE_ALL_COOKIES)) {
+      sessionCookieManager.removeAllCookies(webView.getUrl());
+    } else if (action.equals(Action.REMOVE_COOKIE)) {
+      sessionCookieManager.remove(webView.getUrl(), (String) args[0]);
     }
     return null;
   }
@@ -235,7 +246,7 @@ public class SingleSessionActivity extends Activity implements IntentReceiverLis
   }
   
   private void sendIntent(String action, Object... args) {
-    IntentSender.getInstance().broadcast(SingleSessionActivity.this, action, args);
+    IntentSender.getInstance().broadcast(this, action, args);
   }
 
   /**

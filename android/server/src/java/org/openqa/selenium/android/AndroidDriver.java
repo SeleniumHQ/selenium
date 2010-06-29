@@ -430,7 +430,7 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
       String cookieString = (String) sendIntent(Action.GET_ALL_COOKIES, "", "", "");
 
       if (cookieString != null) {
-        for (String cookie : cookieString.split(SessionCookieManager.COOKIES_SEPARATOR)) {
+        for (String cookie : cookieString.split(SessionCookieManager.COOKIE_SEPARATOR)) {
           String[] cookieValues = cookie.split("=");
           if (cookieValues.length >= 2) {
             cookies.add(new Cookie(cookieValues[0].trim(), cookieValues[1], null, null, null));
@@ -518,7 +518,6 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
     return toReturn;
   }
 
-  @Override
   public Object onReceiveBroadcast(String action, Object... args) {
     Log.e(LOG_TAG, "onBroadcastWithResult handling: " + action);
     if (action.equals(Action.JAVASCRIPT_RESULT_AVAILABLE)) {
