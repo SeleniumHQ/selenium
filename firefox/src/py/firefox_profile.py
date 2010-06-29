@@ -66,7 +66,7 @@ class FirefoxProfile(object):
         if (extension_path is None):
             self.extension_path = os.path.join(os.path.dirname(__file__), 'webdriver.xpi')
         else:
-	    self.extension_path = extension_path
+            self.extension_path = extension_path
 
         if name == ANONYMOUS_PROFILE_NAME:
             self._create_anonymous_profile(template_profile)
