@@ -51,7 +51,6 @@ rake_file(
 ruby_library(name = "common",
   srcs = [ "src/rb/lib/**/*.rb", "src/rb/CHANGES", "src/rb/README" ]
 )
-  
 
 rubydocs(
   files = [
@@ -78,6 +77,13 @@ rubygem(
 js_fragment(name = "get_attribute",
   module = "bot.dom",
   function = "bot.dom.getAttribute",
+  deps = [
+    ":bot"
+  ])
+
+js_fragment(name = "is_selected",
+  module = "bot.dom",
+  function = "bot.dom.isSelected",
   deps = [
     ":bot"
   ])

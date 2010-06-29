@@ -6,6 +6,7 @@ java_library(name = "jobbie",
     {":ie_x64_dll" : "amd64/InternetExplorerDriver.dll"}
   ],
   deps = [
+    ":atoms",
     ":ie_result_type_cpp",
     ":ie_result_type_java",
     "//common",
@@ -37,6 +38,9 @@ ruby_test(name = "ie",
   deps = [ ":ruby:lib" ]
 )
 
+rake_task(name = "atoms",
+  task_name = "atomic_header",
+  out = "jobbie/src/cpp/InternetExplorerDriver/atoms.h")
 
 rake_task(name = "ie_result_type_java",
   task_name = "ie_result_type_java",

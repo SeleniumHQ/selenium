@@ -399,11 +399,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\ScreenshotCapture.cpp"
+				RelativePath=".\ScopeTracer.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\ScopeTracer.cpp"
+				RelativePath=".\ScreenshotCapture.cpp"
 				>
 			</File>
 			<File
@@ -424,6 +424,10 @@
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
+			<File
+				RelativePath=".\atoms.h"
+				>
+			</File>
 			<File
 				RelativePath=".\cookies.h"
 				>
@@ -469,11 +473,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\ScreenshotCapture.h"
+				RelativePath=".\ScopeTracer.h"
 				>
 			</File>
 			<File
-				RelativePath=".\ScopeTracer.h"
+				RelativePath=".\ScreenshotCapture.h"
 				>
 			</File>
 			<File

@@ -33,7 +33,7 @@ import java.util.Set;
 @Ignore(value = {IPHONE, ANDROID}, reason = "The iPhone only supports one window")
 public class WindowSwitchingTest extends AbstractDriverTestCase {
 
-  @Ignore(SELENESE)
+  @Ignore({IE, SELENESE})
   public void testShouldSwitchFocusToANewWindowWhenItIsOpenedAndNotStopFutureOperations() {
     driver.get(pages.xhtmlTestPage);
     String current = driver.getWindowHandle();

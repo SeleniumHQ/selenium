@@ -436,6 +436,21 @@ task :test_android => [:test_android_init, :'webdriver-android-client-test'] do
   end
 end
 
+file "jobbie/src/cpp/InternetExplorerDriver/atoms.h" => [
+  "//common:get_attribute:header",
+  "//common:is_selected:header"
+] do |task|
+  puts "Writing: #{task}"
+  File.open('jobbie/src/cpp/InternetExplorerDriver/atoms.h', 'w') do |f|
+    task.prerequisites.each do |req|
+      puts "Reading: " + req if verbose
+      source = Rake::Task[req].out
+      f << IO.read(source) + "\n"
+    end
+  end
+end
+task :atomic_header => [ "jobbie/src/cpp/InternetExplorerDriver/atoms.h" ]
+
 file "common/test/js/deps.js" => FileList["third_party/closure/goog/**/*.js", "common/src/js/**/*.js"] do
   our_cmd = "java -jar third_party/py/jython.jar third_party/closure/bin/calcdeps.py "
   our_cmd << "--output_mode=deps --path=common/src/js --path=common/test/js "

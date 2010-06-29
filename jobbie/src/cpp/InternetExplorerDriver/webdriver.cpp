@@ -24,6 +24,7 @@ limitations under the License.
 #include "jsxpath.h"
 #include "cookies.h"
 #include "utils.h"
+#include "atoms.h"
 #include "IEReturnTypes.h"
 #include "windowHandling.h"
 #include <stdio.h>
@@ -696,16 +697,18 @@ int wdeGetAttribute(WebDriver* driver, WebElement* element, const wchar_t* name,
 
 	try {
 		std::wstring script(L"(function() { return function(){ ");
-		script += L"var e = arguments[0]; var attr = arguments[1]; var lattr = attr.toLowerCase(); ";
-		script += L"if ('class' == lattr) { attr = 'className' }; ";
-		script += L"if ('readonly' == lattr) { attr = 'readOnly' }; ";
-		script += L"if ('style' == lattr) { return ''; } ";
-		script += L"if ('disabled' == lattr) { return e.disabled ? 'true' : 'false'; } ";
-		script += L"if (e.tagName.toLowerCase() == 'input') { ";
-        script += L"  var type = e.type.toLowerCase(); ";
-		script += L"  if (type == 'radio' && lattr == 'selected') { return e.checked == '' || e.checked == undefined ? 'false' : 'true' ; } ";
-		script += L"} ";
-		script += L"return e[attr] === undefined ? undefined : e[attr].toString(); ";
+
+		// Are we checking to see if the element is checked or selected? 
+		bool isSelect = (wstring(L"checked") == name || wstring(L"selected") == name);
+		const wchar_t** toUse = isSelect ? IS_SELECTED : GET_ATTRIBUTE;
+		wstring methodName = isSelect ? L"isSelected" : L"getAttribute";
+
+		for (int i = 0; toUse[i]; i++) {
+			script += toUse[i];
+			script += L"\n";
+		}
+
+		script += L"return " + methodName + L"(arguments[0], arguments[1]); ";
 		script += L"};})();";
 
 		ScriptArgs* args;
@@ -732,8 +735,8 @@ int wdeGetAttribute(WebDriver* driver, WebElement* element, const wchar_t* name,
 
 		int type;
 		wdGetScriptResultType(driver, scriptResult, &type);
-		if (type != TYPE_EMPTY) {
-			const std::wstring originalString(bstr2cw(scriptResult->result.bstrVal));
+		if (type != TYPE_EMPTY && scriptResult->result.vt != VT_NULL) {
+			const std::wstring originalString(comvariant2cw(scriptResult->result));
 			size_t length = originalString.length() + 1;
 			wchar_t* toReturn = new wchar_t[length];
 

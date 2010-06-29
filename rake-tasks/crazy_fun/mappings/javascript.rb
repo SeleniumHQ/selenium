@@ -22,6 +22,7 @@ class JavascriptMappings
     fun.add_mapping("js_fragment", Javascript::CreateTaskShortName.new)
     fun.add_mapping("js_fragment", Javascript::AddDependencies.new)
     fun.add_mapping("js_fragment", Javascript::CompileFragment.new)
+    fun.add_mapping("js_fragment", Javascript::CreateHeader.new)
   end
 end
 
@@ -163,7 +164,7 @@ module Javascript
         end
         dirs = dirs.keys
 
-        cmd = calcdeps <<
+        cmd = calcdeps +
            " -o compiled " <<
            '-f "--third_party=true" ' <<
            '-f "--formatting=PRETTY_PRINT" ' <<
@@ -195,18 +196,23 @@ module Javascript
         rm_f "#{output}.tmp"
 
         File.open(temp, "w") do |file|
-          file << "goog.require('#{args[:module]}'); goog.exportSymbol('#{args[:name]}', #{args[:function]});"
+          file << "goog.require('#{args[:module]}'); goog.exportSymbol('_', #{args[:function]});"
         end
 
+        # Naming convention is CamelCase, not snake_case
+        name = args[:name].gsub(/_(.)/) {|match| $1.upcase}
+        wrapper = "var #{name}=function(){%output%; return _.apply(null,arguments);};"
+
         # TODO(simon): Don't hard code things. That's Not Smart
-        cmd =  calcdeps <<
+        cmd = calcdeps +
             "-o compiled " <<
             "-f \"--third_party=true\" " <<
             "-f \"--js_output_file=#{output}\" " <<
+            "-f \"--output_wrapper='#{wrapper}'\" " <<
             "-f \"--compilation_level=ADVANCED_OPTIMIZATIONS\" " <<
             "-p third_party/closure/goog/ " <<
             "-p common/src/js " <<
-            "-i #{temp}"
+            "-i #{temp} "
 
         mkdir_p File.dirname(output)
         
@@ -219,6 +225,45 @@ module Javascript
         result = result.gsub(/\/\*.*?\*\//m, '')
         File.open(output, 'w') do |f| f.write(result); end
       end
+    end
+  end
+
+  class CreateHeader < BaseJs
+    def handle(fun, dir, args)
+       js = js_name(dir, args[:name])
+       out = js.sub(/\.js$/, '.h')
+       task_name = task_name(dir, args[:name]) + ":header"
+
+       file out => [js] do
+         puts "Preparing: #{task_name} as #{out}"
+
+         upper = args[:name].upcase
+         mkdir_p File.dirname(out)
+
+         File.open(js, "r") do |from|
+           File.open(out, "w") do |to|
+             to << "/* AUTO GENERATED - Do not edit by hand. */\n"
+             to << "/* See rake-tasts/crazy_fun/mappings/javascript.rb for generator. */\n\n"
+             to << "#ifndef #{upper}_H\n"
+             to << "#define #{upper}_H\n\n"
+             to << "const wchar_t* #{upper}[] = {\n"
+
+             while line = from.gets
+               converted = line.chomp.gsub(/\\/, "\\\\\\").gsub(/"/, "\\\"")
+               to << "L\"#{converted}\",\n"
+             end
+
+             to << "NULL\n"
+             to << "};\n\n"
+             to << "#endif\n"
+           end
+         end
+       end
+
+       task task_name => [out]
+
+       Rake::Task[out].out = out
+       Rake::Task[task_name].out = out
     end
   end
 end
