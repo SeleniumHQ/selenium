@@ -155,19 +155,23 @@ namespace OpenQA.Selenium.Firefox
             {
                 return;
             }
+         
+            AddExtension(ExtensionFileName);
+        }
 
-            Assembly executingAssembly = Assembly.GetExecutingAssembly();
-            string currentDirectory = executingAssembly.Location;
-
-            // If we're shadow copying,. fiddle with 
-            // the codebase instead 
-            if (AppDomain.CurrentDomain.ShadowCopyFiles)
+        /// <summary>
+        /// Adds a Firefox Extension to this profile
+        /// </summary>
+        /// <param name="extensionToInstall">The path to the new extension</param>
+        public void AddExtension(string extensionToInstall)
+        {
+            if (!File.Exists(extensionToInstall))
             {
-                Uri uri = new Uri(executingAssembly.CodeBase);
-                currentDirectory = uri.LocalPath;
+                throw new WebDriverException("The Extension that you wish to install is not available");
             }
-
-            InstallExtension();
+            
+            FileInfo extension = new FileInfo(extensionToInstall);
+            InstallExtension(extension);
         }
 
         /// <summary>
@@ -426,16 +430,24 @@ namespace OpenQA.Selenium.Firefox
             return id;
         }
 
-        private void InstallExtension()
+        private void InstallExtension(FileInfo extension)
         {
-            string tempFileName = Path.Combine(Path.GetTempPath(), "webdriver");
+            string fileName = extension.Name;
+            Console.WriteLine(fileName.ToString());
+            string tempFileName = Path.Combine(Path.GetTempPath(), fileName );
             if (Directory.Exists(tempFileName))
             {
                 Directory.Delete(tempFileName, true);
             }
-
             Directory.CreateDirectory(tempFileName);
-            Stream zipFileStream = ResourceUtilities.GetResourceStream(ExtensionFileName, ExtensionResourceId);
+            
+            string resourceID = string.Empty;
+            if (fileName == ExtensionFileName)
+            {
+                resourceID = ExtensionResourceId;
+            }
+
+            Stream zipFileStream = ResourceUtilities.GetResourceStream(fileName, resourceID);
             using (ZipFile extensionZipFile = ZipFile.Read(zipFileStream))
             {
                 extensionZipFile.ExtractExistingFile = ExtractExistingFileAction.OverwriteSilently;
