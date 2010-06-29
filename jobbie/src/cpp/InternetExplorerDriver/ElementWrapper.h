@@ -36,7 +36,6 @@ public:
     LPCWSTR getTagName();
 	int sendKeys(LPCWSTR newValue);
 	void clear();
-	bool isSelected();
 	int setSelected();
 	bool isEnabled();
 	bool isDisplayed();

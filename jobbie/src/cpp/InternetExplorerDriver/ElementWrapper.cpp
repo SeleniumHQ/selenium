@@ -68,13 +68,6 @@ void ElementWrapper::clear()
 	SEND_MESSAGE_WITH_MARSHALLED_DATA(_WD_ELEM_CLEAR,)
 }
 
-bool ElementWrapper::isSelected()
-{
-	SCOPETRACER
-	SEND_MESSAGE_WITH_MARSHALLED_DATA(_WD_ELEM_ISSELECTED,)
-	return data.output_bool_;
-}
-
 int ElementWrapper::setSelected()
 {
 	SCOPETRACER

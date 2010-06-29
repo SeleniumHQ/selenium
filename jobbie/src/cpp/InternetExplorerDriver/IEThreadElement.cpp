@@ -591,14 +591,6 @@ void IeThread::OnElementClear(WPARAM w, LPARAM lp)
 	SendMessageTimeoutW(hWnd, WM_SETTEXT, 0, (LPARAM) L"", SMTO_ABORTIFHUNG, 3000, (PDWORD_PTR)&lr);
 }
 
-void IeThread::OnElementIsSelected(WPARAM w, LPARAM lp)
-{
-	SCOPETRACER
-	ON_THREAD_ELEMENT(data, pElement)
-
-	data.output_bool_ = isSelected(pElement);
-}
-
 void IeThread::OnElementSetSelected(WPARAM w, LPARAM lp)
 {
 	SCOPETRACER

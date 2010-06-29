@@ -31,7 +31,6 @@ limitations under the License.
 #define _WD_ELEM_GETTAGNAME 			WM_USER+16
 #define _WD_ELEM_SENDKEYS				WM_USER+17
 #define _WD_ELEM_CLEAR					WM_USER+18
-#define _WD_ELEM_ISSELECTED				WM_USER+19
 #define _WD_ELEM_SETSELECTED			WM_USER+20
 #define _WD_ELEM_TOGGLE					WM_USER+21
 #define _WD_ELEM_GETVALUEOFCSSPROP		WM_USER+22
