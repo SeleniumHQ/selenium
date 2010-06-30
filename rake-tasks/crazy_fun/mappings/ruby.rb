@@ -91,7 +91,7 @@ class RubyMappings
 
   class JRubyTest < Tasks
     def handle(fun, dir, args)
-      req = ["third_party/jruby/json-jruby.jar"] + args[:require]
+      req = %w[third_party/jruby/json-jruby.jar third_party/jruby/rubyzip.jar] + args[:require]
 
       desc "Run ruby tests for #{dir} (jruby)"
       t = task task_name(dir, "ruby:test:jruby") do
