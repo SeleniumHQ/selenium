@@ -15,7 +15,6 @@
 
 import logging
 import string
-import urllib
 import urllib2
 
 from command import Command

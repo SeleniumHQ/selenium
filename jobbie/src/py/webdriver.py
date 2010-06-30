@@ -265,7 +265,6 @@ class WebDriver(DllWrapper):
         self._call("wdWaitForLoadToComplete")
 
     def get_window_handles(self):
-        dll = _DLL
         handles = ctypes.c_void_p()
         self._call("wdGetAllWindowHandles", ctypes.byref(handles))
 
@@ -331,7 +330,6 @@ class WebDriver(DllWrapper):
         return elements
 
     def _parse_script_args(self, args):
-        dll = _DLL
         ptr = ctypes.c_void_p()
         max_length = ctypes.c_int(len(args)) # FIXME: Is this the right length?
         _call("wdNewScriptArgs", ctypes.byref(ptr), max_length)
@@ -359,8 +357,6 @@ class WebDriver(DllWrapper):
         return ptr
 
     def _parse_script_result(self, ptr):
-        dll = _DLL
-
         restype = ctypes.c_int()
         _call("wdGetScriptResultType", ptr, ctypes.byref(restype))
         restype = restype.value
@@ -394,8 +390,6 @@ class WebDriver(DllWrapper):
             raise ValueError("Unknown result type - %d" % restype)
 
     def execute_script(self, script, *args):
-        dll = _DLL
-
         result = ctypes.c_void_p()
 
         script = "(function() { return function(){" + script + "};})();";

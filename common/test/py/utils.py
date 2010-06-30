@@ -14,10 +14,6 @@
 # limitations under the License.
 
 import logging
-try:
-    import json
-except ImportError: # Python < 2.6
-    import simplejson as json
 import socket
 import sys
 import unittest

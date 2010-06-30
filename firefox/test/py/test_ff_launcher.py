@@ -15,7 +15,6 @@
 
 import unittest
 import logging
-from selenium.firefox.webdriver import FirefoxLauncher
 from selenium.firefox.webdriver import WebDriver
 
 

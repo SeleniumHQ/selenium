@@ -18,14 +18,6 @@
 import logging
 import socket
 import time
-try:
-    import json
-except ImportError: # Python < 2.6
-    import simplejson as json
-
-# Some old JSON libraries don't have "dumps", make sure we have a good one
-if not hasattr(json, 'dumps'):
-  import simplejson as json
 
 from selenium.remote.command import Command
 from selenium.remote.remote_connection import RemoteConnection

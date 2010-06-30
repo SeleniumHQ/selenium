@@ -16,14 +16,9 @@
 """The WebDriver implementation."""
 
 from command import Command
-from selenium.common.exceptions import ErrorInResponseException
-from selenium.common.exceptions import InvalidSwitchToTargetException
-from selenium.common.exceptions import NoSuchElementException
-from errorhandler import ErrorHandler
-import logging
-import utils
 from webelement import WebElement
 from remote_connection import RemoteConnection
+from errorhandler import ErrorHandler
 
 class WebDriver(object):
     """Controls a browser by sending commands to a remote server.

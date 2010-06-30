@@ -16,9 +16,8 @@ from __future__ import with_statement
 
 from __future__ import with_statement
 
-__all__ = [ "WebDriver", "WebDriverError", "NoSuchElementException" ]
+__all__ = [ "WebDriver" ]
 
-from selenium.common.exceptions import ErrorInResponseException
 from selenium.remote.command import Command
 from selenium.remote.webdriver import WebDriver as RemoteWebDriver
 from driver import ChromeDriver

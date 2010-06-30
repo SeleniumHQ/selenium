@@ -14,11 +14,7 @@
 # limitations under the License.
 
 """WebElement implementation."""
-import urllib
-import utils
 from command import Command
-from selenium.common.exceptions import ErrorInResponseException
-from selenium.common.exceptions import NoSuchElementException
 
 class WebElement(object):
     """Represents an HTML element.

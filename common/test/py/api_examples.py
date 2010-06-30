@@ -23,7 +23,6 @@ import time
 import shutil
 import unittest
 from selenium.common.exceptions import NoSuchElementException
-from selenium.common.exceptions import ErrorInResponseException
 import selenium.remote.webdriver
 
 

@@ -15,7 +15,6 @@
 # limitations under the License.
 
 
-import logging
 import os
 import socket
 import subprocess
@@ -41,7 +40,6 @@ def wait_for_server(url, timeout):
 
 def setup_module(module):
     _socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    server_proc = None
     url = "http://%s:%d/wd/hub" % (SERVER_ADDR, DEFAULT_PORT)
     try:
         _socket.connect((SERVER_ADDR, DEFAULT_PORT))

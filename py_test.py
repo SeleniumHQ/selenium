@@ -20,7 +20,6 @@ binding."""
 
 import optparse
 import os
-import shutil
 import subprocess
 import sys
 

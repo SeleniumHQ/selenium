@@ -16,7 +16,6 @@
 # limitations under the License.
 
 
-import logging
 from selenium.common_tests import api_examples
 from selenium.chrome.webdriver import WebDriver
 from selenium.common.webserver import SimpleWebServer

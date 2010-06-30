@@ -19,7 +19,6 @@ It serves the testing html pages that are needed by the webdriver unit tests."""
 import logging
 import os
 import socket
-import sys
 import threading
 import urllib
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer

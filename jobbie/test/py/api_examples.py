@@ -16,7 +16,6 @@
 # limitations under the License.
 
 
-import logging
 from webdriver.common_tests import api_examples
 from webdriver.ie.webdriver import WebDriver
 
