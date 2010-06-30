@@ -120,7 +120,6 @@ public class ChromeBinary {
   @VisibleForTesting List<String> getCommandline(String serverUrl) throws IOException {
     List<String> commandline = Lists.newArrayList(Lists.newArrayList(
         getChromeBinaryLocation(),
-        "--user-data-dir=" + profile.getDirectory().getAbsolutePath(),
         "--load-extension=" + extension.getDirectory().getAbsolutePath(),
         "--activate-on-launch",
         "--homepage=about:blank",
@@ -130,6 +129,9 @@ public class ChromeBinary {
         "--disable-prompt-on-repost",
         "--no-default-browser-check"
     ));
+    if (!profile.equals(ChromeProfile.DEFAULT_PROFILE)) {
+      commandline.add("--user-data-dir=" + profile.getDirectory().getAbsolutePath());
+    }
     appendProxyArguments(commandline)
         .add(serverUrl);
     return commandline;

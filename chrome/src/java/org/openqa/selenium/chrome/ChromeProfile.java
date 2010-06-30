@@ -29,6 +29,10 @@ import java.io.File;
  */
 public class ChromeProfile {
 
+  /// Note: Using the default profile if it currently has windows open will fail, as the extension will not be installed
+  // TODO(danielwh): This should really create a new profile identical to the default profile
+  public static final ChromeProfile DEFAULT_PROFILE = new ChromeProfile(new File("WEBDRIVER_DEFAULT_PROFILE"));
+  
   private static final String REAP_PROFILE_PROPERTY = "webdriver.reap_profile";
 
   private final File directory;
@@ -73,5 +77,22 @@ public class ChromeProfile {
 
   public void setProxy(Proxy proxy) {
     this.proxy = proxy;
+  }
+  
+  @Override
+  public boolean equals(Object obj) {
+    if (!(obj instanceof ChromeProfile)) {
+      return false;
+    }
+    ChromeProfile other = (ChromeProfile)obj;
+    if ((this.directory == null && other.directory != null) || 
+        (this.directory != null && !(this.directory.equals(other.directory)))) {
+      return false;
+    }
+    if ((this.proxy == null && other.proxy != null) || 
+        (this.proxy != null && !(this.proxy.equals(other.proxy)))) {
+      return false;
+    }
+    return true;
   }
 }
