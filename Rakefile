@@ -115,17 +115,41 @@ if (windows?)
 end
 task :test_core => [:'test_core_firefox']
 
+task :test_java => [
+  "//support:test:run",
+  "//htmlunit:test:run",
+  "//jsapi:atoms:run",
+  "//firefox:test:run",
+  "//jobbie:test:run",
+  "//remote/server:test:run",
+  :test_selenium,
+  :test_android,
+# Chrome isn't stable enough to include here.
+#  "//chrome:test:run"
+]
+
+task :test_rb => [
+  "//firefox"
+]
+
+task :test_py => [
+  "//firefox"
+]
+
+task :test_dotnet => [
+  "//firefox"
+]
+
+task :test => [ :test_java, :test_rb ]
+if (msbuild?)
+  task :test => [ :test_dotnet ]
+end
+if (python?)
+  task :test => [ :test_py ]
+end
+
+
 task :build => [:all, :iphone, :remote, :selenium]
-task :test => [
-                :test_htmlunit,
-                :test_firefox,
-                :test_ie,
-                :test_support,
-                :test_chrome,
-                :test_remote,
-                :test_selenium,
-                :test_core
-              ]
 
 task :clean do
   rm_rf 'build/'
