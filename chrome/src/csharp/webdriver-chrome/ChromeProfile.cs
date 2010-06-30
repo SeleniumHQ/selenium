@@ -9,12 +9,14 @@ namespace OpenQA.Selenium.Chrome
     /// </summary>
     public class ChromeProfile
     {
-        private const string ReapProfileProperty = "webdriver.reap_profile";
+        private const string WebDriverDefaultProfileName = "WEBDRIVER_DEFAULT_PROFILE";
         private const string FirstRunFileName = "First Run Dev";
 
         private static Random tempFileGenerator = new Random();
+        private static ChromeProfile defaultChromeProfile = new ChromeProfile(WebDriverDefaultProfileName);
 
         private string directory = string.Empty;
+        private bool deleteProfileOnExit = true;
 
         /// <summary>
         /// Initializes a new instance of the ChromeProfile class using the given directory. Assumes that the directory
@@ -36,11 +38,38 @@ namespace OpenQA.Selenium.Chrome
         }
 
         /// <summary>
+        /// Gets an instance of the defualt profile to be used by WebDriver
+        /// </summary>
+        /// <remarks>
+        /// Using the default profile if it currently has windows open will fail, as the extension 
+        /// will not be installed.
+        /// TODO: This should really create a new profile identical to the default profile.
+        /// </remarks>
+        public static ChromeProfile DefaultProfile
+        {
+            get
+            {
+                // We don't want to delete the user's default profile on exit.
+                defaultChromeProfile.DeleteProfileOnExit = false;
+                return defaultChromeProfile; 
+            }
+        }
+
+        /// <summary>
         /// Gets the value of the Profile Directory
         /// </summary>
         public string ProfileDirectory
         {
             get { return directory; }
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to delete this profile when exiting the browser.
+        /// </summary>
+        public bool DeleteProfileOnExit
+        {
+            get { return deleteProfileOnExit; }
+            set { deleteProfileOnExit = value; }
         }
 
         private static string CreateProfileDir()
@@ -59,7 +88,6 @@ namespace OpenQA.Selenium.Chrome
                 firstRunFileStream.Close();
 
                 // TODO(danielwd): Maybe add Local State file with window_placement
-                // System.setProperty(REAP_PROFILE_PROPERTY, "false");
                 return profileDir;
             }
             catch (IOException e)

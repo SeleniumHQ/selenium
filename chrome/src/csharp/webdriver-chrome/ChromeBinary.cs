@@ -4,6 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
+using System.Text;
 using System.Threading;
 using Microsoft.Win32;
 
@@ -21,6 +22,7 @@ namespace OpenQA.Selenium.Chrome
             string.Concat("/Users/", Environment.UserName, "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome")
         };
 
+        private const string LocalCommandExecutorServerUrl = "http://localhost:{0}/chromeCommandExecutor";
         private const int ShutdownWaitInterval = 2000;
         private const int StartWaitInterval = 2500;
         private static int linearStartWaitCoefficient = 1;
@@ -82,7 +84,23 @@ namespace OpenQA.Selenium.Chrome
         {
             get
             {
-                return string.Concat(" --user-data-dir=\"", profile.ProfileDirectory, "\"", " --load-extension=\"", extension.ExtensionDirectory, "\"", " --activate-on-launch", " --homepage=about:blank", " --no-first-run", " --disable-hang-monitor", " --disable-popup-blocking", " --disable-prompt-on-repost", " --no-default-browser-check ");
+                StringBuilder argumentString = new StringBuilder();
+                argumentString.Append(" --load-extension=\"").Append(extension.ExtensionDirectory).Append("\"");
+                argumentString.Append(" --activate-on-launch");
+                argumentString.Append(" --homepage=about:blank");
+                argumentString.Append(" --no-first-run");
+                argumentString.Append(" --disable-hang-monitor");
+                argumentString.Append(" --disable-popup-blocking");
+                argumentString.Append(" --disable-prompt-on-repost");
+                argumentString.Append(" --no-default-browser-check ");
+                if (this.profile != ChromeProfile.DefaultProfile)
+                {
+                    argumentString.Append(" --user-data-dir=\"").Append(profile.ProfileDirectory).Append("\"");
+                }
+
+                argumentString.Append(" ").Append(string.Format(CultureInfo.InvariantCulture, LocalCommandExecutorServerUrl, listeningPort));
+
+                return argumentString.ToString();
             }
         }
 
@@ -103,7 +121,11 @@ namespace OpenQA.Selenium.Chrome
         {
             try
             {
-                chromeProcess = Process.Start(new ProcessStartInfo(GetChromeFile(), string.Concat(Arguments, string.Format(CultureInfo.InvariantCulture, "http://localhost:{0}/chromeCommandExecutor", listeningPort))) { UseShellExecute = false });
+                string chromeFileLocation = GetChromeFile();
+                string commandLineArguments = this.Arguments;
+                ProcessStartInfo startInfo = new ProcessStartInfo(chromeFileLocation, commandLineArguments);
+                startInfo.UseShellExecute = false;
+                chromeProcess = Process.Start(startInfo);
             }
             catch (IOException e)
             { // TODO(AndreNogueira): Check exception type thrown when process.start fails
@@ -131,7 +153,10 @@ namespace OpenQA.Selenium.Chrome
                 }
 
                 chromeProcess = null;
-                DeleteProfileDirectory(profile.ProfileDirectory);
+                if (profile.DeleteProfileOnExit)
+                {
+                    DeleteProfileDirectory(profile.ProfileDirectory);
+                }
             }
         }
 
