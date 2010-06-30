@@ -42,6 +42,11 @@ class NoSuchElementException(Exception):
     def __init__(self, msg=None):
         Exception.__init__(self, msg)
 
+class NoSuchAttributeException(Exception):
+    """find_element_by_* can't find the element."""
+    def __init__(self, msg=None):
+        Exception.__init__(self, msg)
+
 class StaleElementReferenceException(Exception):
     def __init__(self, msg=None):
         Exception.__init__(self, msg)
