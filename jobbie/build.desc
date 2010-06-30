@@ -26,7 +26,7 @@ ruby_library(name = "ie",
     {":ie_win32_dll" : "lib/selenium/webdriver/ie/native/win32/InternetExplorerDriver.dll"},
     {":ie_x64_dll" : "lib/selenium/webdriver/ie/native/x64/InternetExplorerDriver.dll"}
   ],
-  deps = [ "//common:ruby:lib" ]
+  deps = [ "//common:ruby" ]
 )
 
 ruby_test(name = "ie",
@@ -35,7 +35,7 @@ ruby_test(name = "ie",
     "jobbie/test/rb/spec/**/*_spec.rb"
   ],
   include = ["build/ruby/lib"],
-  deps = [ ":ruby:lib" ]
+  deps = [ ":ruby" ]
 )
 
 rake_task(name = "atoms",

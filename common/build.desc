@@ -66,11 +66,11 @@ rubygem(
   name = "selenium-webdriver",
   dir = "build/ruby",
   deps = [
-    "//chrome:ruby:lib",
-    "//common:ruby:lib",
-    "//firefox:ruby:lib",
-    "//jobbie:ruby:lib",
-    "//remote/client:ruby:lib"
+    "//chrome:ruby",
+    "//common:ruby",
+    "//firefox:ruby",
+    "//jobbie:ruby",
+    "//remote/client:ruby"
   ]
 )
 

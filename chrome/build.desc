@@ -19,8 +19,8 @@ ruby_library(name = "chrome",
     {":chrome_extension" :  "lib/selenium/webdriver/chrome/extension.zip"}
   ],
   deps = [
-    "//common:ruby:lib",
-    "//remote/client:ruby:lib"
+    "//common:ruby",
+    "//remote/client:ruby"
   ]
 )
 
@@ -30,7 +30,7 @@ ruby_test(name = "chrome",
     "chrome/test/rb/spec/**/*_spec.rb"
   ],
   include = [ "build/ruby/lib" ],
-  deps = [ ":ruby:lib"  ]
+  deps = [ ":ruby"  ]
 )
 
 mozilla_extension(name = "chrome_extension",

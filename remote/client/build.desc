@@ -31,7 +31,7 @@ java_library(name = "combined",
 ruby_library(name = "client",
   srcs = [ "src/rb/lib/**/*.rb" ],
   deps = [
-    "//common:ruby:lib"
+    "//common:ruby"
   ]
 )
 
@@ -44,7 +44,7 @@ ruby_test(name = "remote",
   deps = [
     "//remote/server:server",
     "//remote/server:test",
-    ":ruby:lib"
+    ":ruby"
   ]
 )
 

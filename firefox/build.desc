@@ -23,7 +23,7 @@ ruby_library(name = "firefox",
     { ":noblur"    : "lib/selenium/webdriver/firefox/native/linux/x86/x_ignore_nofocus.so" },
     { ":noblur64"  : "lib/selenium/webdriver/firefox/native/linux/amd64/x_ignore_nofocus.so" }
   ],
-  deps = [ "//remote/client:ruby:lib" ]
+  deps = [ "//remote/client:ruby" ]
 )
 
 ruby_test(name = "firefox",
@@ -31,7 +31,7 @@ ruby_test(name = "firefox",
     "common/test/rb/spec/**/*_spec.rb",
     "firefox/test/rb/spec/**/*_spec.rb"
   ],
-  deps = [":ruby:lib"],
+  deps = [":ruby"],
   include = [ "build/ruby/lib" ]
 )
 

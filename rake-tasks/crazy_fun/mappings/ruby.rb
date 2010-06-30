@@ -17,7 +17,7 @@ class RubyMappings
 
     def handle(fun, dir, args)
       desc 'Build in build/ruby'
-      task_name = task_name(dir, "ruby:lib")
+      task_name = task_name(dir, "ruby")
 
       t = task task_name do
         puts "Preparing: #{task_name} in #{build_dir}"
@@ -73,8 +73,8 @@ class RubyMappings
 
   class AddTestDependencies < Tasks
     def handle(fun, dir, args)
-      jruby_task = Rake::Task[task_name(dir, "ruby:test:jruby")]
-      mri_task   = Rake::Task[task_name(dir, "ruby:test:mri")]
+      jruby_task = Rake::Task[task_name(dir, "ruby-test:jruby")]
+      mri_task   = Rake::Task[task_name(dir, "ruby-test:mri")]
 
       # TODO:
       # Specifying a dependency here isn't ideal, but it's the easiest way to
@@ -94,7 +94,7 @@ class RubyMappings
       req = %w[third_party/jruby/json-jruby.jar third_party/jruby/rubyzip.jar] + args[:require]
 
       desc "Run ruby tests for #{dir} (jruby)"
-      t = task task_name(dir, "ruby:test:jruby") do
+      t = task task_name(dir, "ruby-test:jruby") do
         puts "Running: #{args[:name]} ruby tests (jruby)"
         ENV['WD_SPEC_DRIVER'] = args[:name] # TODO: get rid of ENV
 
@@ -111,7 +111,7 @@ class RubyMappings
   class MRITest < Tasks
     def handle(fun, dir, args)
       desc "Run ruby tests for #{dir} (mri)"
-      task task_name(dir, "ruby:test:mri") do
+      task task_name(dir, "ruby-test:mri") do
         puts "Running: #{args[:name]} ruby tests (mri)"
         ENV['WD_SPEC_DRIVER'] = args[:name] # TODO: get rid of ENV
 
@@ -138,7 +138,7 @@ class RubyMappings
 
       files  = Array(files).map { |glob| Dir[glob] }.flatten
 
-      YARD::Rake::YardocTask.new("ruby:docs") do |t|
+      YARD::Rake::YardocTask.new("ruby-docs") do |t|
         t.files = args[:files]
         t.options << "--verbose"
         t.options << "--readme" << args[:readme] if args.has_key?(:readme)
@@ -182,27 +182,25 @@ class RubyMappings
     end
 
     def define_gem_tasks(args)
-      namespace(:ruby) {
-        namespace(:gem) {
-          deps = args[:deps] || []
+      namespace(:rubygem) {
+        deps = args[:deps] || []
 
-          desc "Build gem #{args[:name]}-#{args[:version]}"
-          task :build => deps do
-            require "rubygems/builder"
-            gemfile = Dir.chdir(args[:dir]) { Gem::Builder.new(spec(args)).build }
-            mv File.join(args[:dir], gemfile), "build/#{gemfile}"
-          end
+        desc "Build gem #{args[:name]}-#{args[:version]}"
+        task :build => deps do
+          require "rubygems/builder"
+          gemfile = Dir.chdir(args[:dir]) { Gem::Builder.new(spec(args)).build }
+          mv File.join(args[:dir], gemfile), "build/#{gemfile}"
+        end
 
-          task :clean do
-            rm_rf args[:dir]
-            rm_rf "build/*.gem"
-          end
+        task :clean do
+          rm_rf args[:dir]
+          rm_rf "build/*.gem"
+        end
 
-          desc 'Build and release the ruby gem to Gemcutter'
-          task :release => [:clean, :build] do
-            sh "gem push build/#{args[:name]}-#{args[:version]}.gem"
-          end
-        }
+        desc 'Build and release the ruby gem to Gemcutter'
+        task :release => [:clean, :build] do
+          sh "gem push build/#{args[:name]}-#{args[:version]}.gem"
+        end
       }
     end
 
