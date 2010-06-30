@@ -72,67 +72,67 @@ limitations under the License.
   </toolbox>
 
   <vbox flex="1">
-    <hbox width="100">
-      <vbox id="suitePane" />
-      <splitter id="suiteTreeSplitter" collapse="before" state="collapsed">
-	<grippy/>
+    <hbox width="100" persist="height width">
+      <vbox id="suitePane" persist="height width"/>
+      <splitter id="suiteTreeSplitter" collapse="before" persist="state">
+		<grippy/>
       </splitter>
-      <tabbox flex="3" height="300">
-      <tabs orient="horizontal" onselect="if (window.editor) { window.editor.tabSelected(selectedItem.id) }" id="viewTabs">
-	<tab id="editorTab" label="&tableTab.label;" />
-	<tab id="sourceTab" label="&sourceTab.label;" />
-      </tabs>
-      <tabpanels flex="1">
-	<stack>
-	  <vbox flex="1">
-	    <tree id="commands" flex="1" enableColumnDrag="false" hidecolumnpicker="true"
-		  context="treeContextMenu" onselect="window.editor.treeView.selectCommand()"
-		  ondblclick="goDoCommand('cmd_selenium_exec_command')" disableKeyNavigation="true">
-	      <treecols>
-		<treecol id="command" label="&command.label;" width="80"/>
-		<splitter class="tree-splitter" />
-		<treecol id="target" label="&target.label;" flex="3" width="80"/>
-		<splitter class="tree-splitter" />
-		<treecol id="value" label="&value.label;" flex="3" width="80"/>
-	      </treecols>
-	      <treechildren ondraggesture="nsDragAndDrop.startDrag(event, commandsDragObserver);"/>
-	    </tree>
-	    <separator class="thin"/>
-	    <!-- command editing -->
-	    <vbox id="commandDetail" persist="height">
-	      <grid>
-		<columns>
-		  <column flex="1"/>
-		</columns>
-		<rows>
-		  <row align="center">
-		    <!-- do drop down that depends upon the element type -->
-		    <textbox disabled="true" id="commandAction" oninput="window.editor.treeView.updateCurrentCommand('command', this.value)" type="autocomplete" autocompletesearch="selenium-ide-generic" enablehistory="true" forcecomplete="true" tabscrolling="true"/>
-		  </row>
-		  <row align="center">
-		    <!-- show different options collected by the client. Allow user to override -->
-		    <hbox flex="1">
-		      <textbox flex="1" disabled="true" id="commandTarget" oninput="window.editor.treeView.updateCurrentCommand('target', window.editor.treeView.decodeText(this.value))" autocompletesearch="selenium-ide-generic" enablehistory="true" forcecomplete="true" tabscrolling="true" type="autocomplete" showcommentcolumn="true" />
-		      <button label="&findTarget.label;" oncommand="window.editor.selDebugger.showElement(document.getElementById('commandTarget').value)"/>
-		    </hbox>
-		  </row>
-		  <row align="center">
-		    <textbox disabled="true" id="commandValue" oninput="window.editor.treeView.updateCurrentCommand('value', window.editor.treeView.decodeText(this.value))"/>
-		  </row>
-		</rows>
-	      </grid>
-	    </vbox>
-	  </vbox>
-	  <vbox id="tableViewUnavailable" />
-	</stack>
-	<tabpanel orient="vertical">
-	  <textbox id="source" multiline="true" flex="1" onchange="window.editor.sourceView.syncModel()" oninput="window.editor.app.testCase.edited = true;" wrap="off"/>
-	</tabpanel>
-      </tabpanels>
-    </tabbox>
+      <tabbox id="tabbox" flex="3" height="300" persist="height width">
+        <tabs orient="horizontal" onselect="if (window.editor) { window.editor.tabSelected(selectedItem.id) }" id="viewTabs">
+	      <tab id="editorTab" label="&tableTab.label;" />
+	      <tab id="sourceTab" label="&sourceTab.label;" />
+        </tabs>
+        <tabpanels flex="1">
+	      <stack>
+	        <vbox flex="1">
+	          <tree id="commands" flex="1" enableColumnDrag="false" hidecolumnpicker="true"
+		        context="treeContextMenu" onselect="window.editor.treeView.selectCommand()"
+		        ondblclick="goDoCommand('cmd_selenium_exec_command')" disableKeyNavigation="true">
+	            <treecols>
+		          <treecol id="command" label="&command.label;" width="80"/>
+		          <splitter class="tree-splitter" />
+		          <treecol id="target" label="&target.label;" flex="3" width="80"/>
+		          <splitter class="tree-splitter" />
+		          <treecol id="value" label="&value.label;" flex="3" width="80"/>
+	            </treecols>
+	            <treechildren ondraggesture="nsDragAndDrop.startDrag(event, commandsDragObserver);"/>
+	          </tree>
+	          <separator class="thin"/>
+	          <!-- command editing -->
+	          <vbox id="commandDetail" persist="height">
+	            <grid>
+		          <columns>
+		            <column flex="1"/>
+		          </columns>
+		          <rows>
+		            <row align="center">
+		              <!-- do drop down that depends upon the element type -->
+		              <textbox disabled="true" id="commandAction" oninput="window.editor.treeView.updateCurrentCommand('command', this.value)" type="autocomplete" autocompletesearch="selenium-ide-generic" enablehistory="true" forcecomplete="true" tabscrolling="true"/>
+		            </row>
+		            <row align="center">
+		              <!-- show different options collected by the client. Allow user to override -->
+		              <hbox flex="1">
+		                <textbox flex="1" disabled="true" id="commandTarget" oninput="window.editor.treeView.updateCurrentCommand('target', window.editor.treeView.decodeText(this.value))" autocompletesearch="selenium-ide-generic" enablehistory="true" forcecomplete="true" tabscrolling="true" type="autocomplete" showcommentcolumn="true" />
+		                <button label="&findTarget.label;" oncommand="window.editor.selDebugger.showElement(document.getElementById('commandTarget').value)"/>
+		              </hbox>
+		            </row>
+		            <row align="center">
+		              <textbox disabled="true" id="commandValue" oninput="window.editor.treeView.updateCurrentCommand('value', window.editor.treeView.decodeText(this.value))"/>
+		            </row>
+		          </rows>
+	            </grid>
+	          </vbox>
+	        </vbox>
+	        <vbox id="tableViewUnavailable" />
+	      </stack>
+	      <tabpanel orient="vertical">
+	        <textbox id="source" multiline="true" flex="1" onchange="window.editor.sourceView.syncModel()" wrap="off"/>
+	      </tabpanel>
+        </tabpanels>
+      </tabbox>
     </hbox>
-    <splitter collapse="after">
-      <grippy/>
+    <splitter id="logSplitter" collapse="after" persist="state">
+		<grippy/>
     </splitter>
 
     <vbox id="logBox" flex="1" height="100" />
