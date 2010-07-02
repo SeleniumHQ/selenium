@@ -12,7 +12,7 @@
       </class-settings>
       <class-settings class="com.google.devtools.intellig.configcheck.ProjectJdkChecker">
         <setting name="getModuleJdks" value="rO0ABXNyABFqYXZhLnV0aWwuSGFzaFNldLpEhZWWuLc0AwAAeHB3DAAAABA/QAAAAAAAAHg=" />
-        <setting name="getProjectJdk" value="$PROJECT_DIR$/../../../../../buildtools/java/jdk1.5.0_06" />
+        <setting name="getProjectJdk" value="C:/buildtools/java/jdk1.5.0_06" />
       </class-settings>
       <class-settings class="com.google.devtools.intellig.configcheck.ProjectPathChecker" />
       <class-settings class="com.google.devtools.intellig.configcheck.PythonSdkChecker" />

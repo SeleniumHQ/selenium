@@ -17,6 +17,9 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import java.io.File;
+import java.io.IOException;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThan;
@@ -29,9 +32,6 @@ import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
-
-import java.io.File;
-import java.io.IOException;
 
 public class FormHandlingTest extends AbstractDriverTestCase {
 

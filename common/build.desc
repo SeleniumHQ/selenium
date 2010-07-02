@@ -81,9 +81,23 @@ js_fragment(name = "get_attribute",
     ":bot"
   ])
 
-js_fragment(name = "is_selected",
+js_fragment(name = "get_property",
   module = "bot.dom",
-  function = "bot.dom.isSelected",
+  function = "bot.dom.getProperty",
+  deps = [
+    ":bot"
+  ])
+
+js_fragment(name = "has_attribute",
+  module = "bot.dom",
+  function = "bot.dom.hasAttribute",
+  deps = [
+    ":bot"
+  ])
+
+js_fragment(name = "has_property",
+  module = "bot.dom",
+  function = "bot.dom.hasProperty",
   deps = [
     ":bot"
   ])

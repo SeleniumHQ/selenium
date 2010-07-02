@@ -698,17 +698,39 @@ int wdeGetAttribute(WebDriver* driver, WebElement* element, const wchar_t* name,
 	try {
 		std::wstring script(L"(function() { return function(){ ");
 
-		// Are we checking to see if the element is checked or selected? 
-		bool isSelect = (wstring(L"checked") == name || wstring(L"selected") == name);
-		const wchar_t** toUse = isSelect ? IS_SELECTED : GET_ATTRIBUTE;
-		wstring methodName = isSelect ? L"isSelected" : L"getAttribute";
+		const wchar_t** scripts[] = {
+		  GET_ATTRIBUTE,
+		  GET_PROPERTY,
+		  HAS_ATTRIBUTE,
+		  NULL
+		};
 
-		for (int i = 0; toUse[i]; i++) {
-			script += toUse[i];
-			script += L"\n";
+		// Read in all the scripts
+		for (int i = 0; scripts[i]; i++) {
+			for (int j = 0; scripts[i][j]; j++) {
+				script += scripts[i][j];
+				script += L"\n";
+			}
 		}
 
-		script += L"return " + methodName + L"(arguments[0], arguments[1]); ";
+		// Now for the magic
+		script += L"var element = arguments[0];\n";
+		script += L"var attributeName = arguments[1];\n";
+		script += L"var lattr = arguments[1].toLowerCase();\n";
+		script += L"var value = null;\n";
+		script += L"if ('checked' == lattr || 'selected' == lattr) {\n";
+		script += L"	value = getProperty(element, 'selected') || getProperty(element, 'checked');\n";
+		script += L"	if (!value) {\n";
+		script += L"		value = null;\n";
+		script += L"	}\n";
+		script += L"} else if (hasAttribute(element, attributeName)) {\n";
+		script += L"	value = getAttribute(element, attributeName);\n";
+		script += L"} else {\n";
+		script += L"	value = getProperty(element, attributeName);\n";
+		script += L"}\n";
+		script += L"return value;\n";
+
+		// Close things
 		script += L"};})();";
 
 		ScriptArgs* args;
@@ -818,48 +840,21 @@ int wdeGetTagName(WebElement* element, StringWrapper** result)
 int wdeIsSelected(WebElement* element, int* result)
 {
 	*result = 0;
-	int res = verifyFresh(element);	if (res != SUCCESS) { return res; }
 
 	try {
-		std::wstring script(L"(function() { return function(){ ");
-
-		for (int i = 0; IS_SELECTED[i]; i++) {
-			script += IS_SELECTED[i];
-			script += L"\n";
-		}
-
-		script += L"return isSelected(arguments[0]); ";
-		script += L"};})();";
-
-		ScriptArgs* args;
-		res = wdNewScriptArgs(&args, 1);
-		if (res != SUCCESS) {
-			return res;
-		}
-		wdAddElementScriptArg(args, element);
-
+		StringWrapper* wrapper;
 		WebDriver* driver = new WebDriver();
 		driver->ie = element->element->getParent();
-		ScriptResult* scriptResult = NULL;
-		res = wdExecuteScript(driver, script.c_str(), args, &scriptResult);
-		wdFreeScriptArgs(args);
+		int res = wdeGetAttribute(driver, element, L"selected", &wrapper);
 		driver->ie = NULL;
 		delete driver;
-
 		if (res != SUCCESS) 
 		{
-			wdFreeScriptResult(scriptResult);
 			return res;
 		}
 
-		int type;
-		wdGetScriptResultType(driver, scriptResult, &type);
-
-		if (scriptResult->result.vt == VT_BOOL) {
-			*result = scriptResult->result.boolVal == VARIANT_TRUE ? 1 : 0;
-		}
-
-		wdFreeScriptResult(scriptResult);
+		*result = wrapper ? 1 : 0;
+		wdFreeString(wrapper);
 
 		return SUCCESS;
 	} END_TRY;
