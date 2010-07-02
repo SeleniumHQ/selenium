@@ -1,4 +1,4 @@
-require "net/http"
+require "net/https"
 
 module Selenium
   module WebDriver
@@ -13,6 +13,10 @@ module Selenium
             # ignoring SSL for now
             @http ||= (
               http = Net::HTTP.new @server_url.host, @server_url.port
+              if @server_url.scheme == "https"
+                http.use_ssl = true
+                http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+              end
 
               if self.class.timeout
                 http.connect_timeout = self.class.timeout
