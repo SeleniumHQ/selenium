@@ -240,9 +240,9 @@ Editor.controller = {
 		case "cmd_close":if (editor.confirmClose()) {window.close();}break;
 		case "cmd_save":editor.saveTestCase();break;
 		case "cmd_add":editor.app.addTestCase();break;
-		case "cmd_open":editor.app.loadTestCaseWithNewSuite();break;
-		case "cmd_new_suite":editor.app.newTestSuite();break;
-		case "cmd_open_suite":editor.app.loadTestSuite();break;
+		case "cmd_open":editor.loadRecentTestCase();break;	
+		case "cmd_new_suite":if (editor.confirmClose()) {editor.app.newTestSuite();}break;	//Samit: Enh: Prompt to save first
+		case "cmd_open_suite":editor.loadRecentSuite();break;	
 		case "cmd_save_suite":editor.app.saveTestSuite();break;
 		case "cmd_save_suite_as":editor.app.saveNewTestSuite();break;
 		case "cmd_selenium_play":
@@ -291,6 +291,20 @@ Editor.prototype.showLoadErrors = function() {
 	if (this.errorMessage) {
 		window.alert(this.errorMessage);
 		delete this.errorMessage;
+	}
+}
+
+//Samit: Enh: Prompt to save first
+Editor.prototype.loadRecentTestCase = function(path) {
+	if (this.confirmClose()) {
+		this.app.loadTestCaseWithNewSuite(path);
+	}
+}
+
+//Samit: Enh: Prompt to save first
+Editor.prototype.loadRecentSuite = function(path) {
+	if (this.confirmClose()) {
+		this.app.loadTestSuite(path);
 	}
 }
 

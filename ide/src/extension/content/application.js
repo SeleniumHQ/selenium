@@ -271,13 +271,13 @@ Application.prototype = {
     
     saveTestSuite: function(suppressTestCasePrompt) {
     	//Samit: Enh: Added suppressTestCasePrompt to allow saving test suite and test cases without a yes/no prompt for each test case
-        this._saveTestSuiteAs(function(testSuite) {
+        return this._saveTestSuiteAs(function(testSuite) {
                 return testSuite.save(false);
             }, suppressTestCasePrompt);
     },
 
     saveNewTestSuite: function() {
-        this._saveTestSuiteAs(function(testSuite) {
+    	return this._saveTestSuiteAs(function(testSuite) {
                 return testSuite.save(true);
             });
     },
@@ -301,8 +301,10 @@ Application.prototype = {
         if (!cancelled) {
             if (handler(this.getTestSuite())) {
                 this.addRecentTestSuite(this.getTestSuite());
+                return true;
             }
         }
+        return false;
     },
 
     saveTestCase: function() {

@@ -139,7 +139,7 @@ limitations under the License.
         </menupopup>
       </menu>
       <menu label="&recentTestCmd.label;">
-        <menupopup id="popup_recent_tests" onpopupshowing="window.editor.app.recentTestCases.populateMenu(this)" oncommand="window.editor.app.loadTestCaseWithNewSuite(event.target.getAttribute('value'))" />
+        <menupopup id="popup_recent_tests" onpopupshowing="window.editor.app.recentTestCases.populateMenu(this)" oncommand="window.editor.loadRecentTestCase(event.target.getAttribute('value'))" /><!-- Samit: Enh: Prompt to save first -->
       </menu>
       <menuseparator/>
       <menuitem label="&addTestCmd.label;" command="cmd_add" key="add-key" accesskey="D"/>
@@ -152,7 +152,7 @@ limitations under the License.
         <menupopup id="popup_export_formats" onpopupshowing="window.editor.populateFormatsPopup(this)" oncommand="window.editor.exportTestSuiteWithFormat(window.editor.app.getFormats().selectFormat(event.target.getAttribute('value')))" />
       </menu>
       <menu label="&recentSuiteCmd.label;">
-        <menupopup id="popup_recent_suites" onpopupshowing="window.editor.app.recentTestSuites.populateMenu(this)" oncommand="window.editor.app.loadTestSuite(event.target.getAttribute('value'))" />
+        <menupopup id="popup_recent_suites" onpopupshowing="window.editor.app.recentTestSuites.populateMenu(this)" oncommand="window.editor.loadRecentSuite(event.target.getAttribute('value'))" /><!-- Samit: Enh: Prompt to save first -->
       </menu>
       <menuseparator id="closeMenuSeparator"/>
       <menuitem label="&closeCmd.label;" command="cmd_close" key="close-key" accesskey="X" id="closeMenuItem"/>
