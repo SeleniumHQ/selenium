@@ -155,7 +155,6 @@ module Javascript
         
         t = Rake::Task[task_name(dir, args[:name])]
 
-        puts "Building deps"
         js_files = build_deps(output, Rake::Task[output], []).uniq
         
         dirs = {} 
