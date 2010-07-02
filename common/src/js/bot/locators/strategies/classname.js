@@ -19,6 +19,7 @@ goog.provide('bot.locators.strategies.className');
 
 goog.require('goog.array');
 goog.require('goog.dom');
+goog.require('goog.dom.DomHelper');
 goog.require('goog.string');
 
 /**

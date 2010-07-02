@@ -23,7 +23,16 @@ goog.require('bot.locators.strategies.css');
 goog.require('bot.locators.strategies.id');
 goog.require('bot.locators.strategies.name');
 goog.require('bot.locators.strategies.xpath');
+goog.require('goog.array');  // for the goog.array.ArrayLike typedef
 goog.require('goog.object');
+
+
+
+/**
+ * @typedef {{single:function(!Window,*):Element,
+ *            many:function(!Window,*):!goog.array.ArrayLike}}
+ */
+bot.locators.strategies.strategy;
 
 
 /**
@@ -33,8 +42,7 @@ goog.require('goog.object');
  *
  * @private
  * @const
- * @enum {{single:function(Window,*):Element,
- *         many:function(Window,*):!goog.ArrayLike}}
+ * @type {Object.<string,bot.locators.strategies.strategy>}
  */
 bot.locators.strategies.KNOWN_ = {
   'className': bot.locators.strategies.className,
@@ -46,10 +54,10 @@ bot.locators.strategies.KNOWN_ = {
 
 /**
  * Lookup a particular element finding strategy based on the sole property of
- * the "target". The value of this key is used to locate the element.  
+ * the "target". The value of this key is used to locate the element.
  *
- * @param {*} target A JS object with a single key.
- * @return {function(!Window, string): Element} The finder function.
+ * @param {Object} target A JS object with a single key.
+ * @return {function(): Element} The finder function.
  */
 bot.locators.strategies.lookupSingle = function(target) {
   var key = goog.object.getAnyKey(target);
@@ -67,8 +75,8 @@ bot.locators.strategies.lookupSingle = function(target) {
  * Lookup all elements finding strategy based on the sole property of
  * the "target". The value of this key is used to locate the elements.
  *
- * @param {*} target A JS object with a single key.
- * @return {function(!Window, string): !goog.ArrayLike<Element>} The finder
+ * @param {Object} target A JS object with a single key.
+ * @return {function(): !goog.array.ArrayLike.<Element>} The finder
  *     function.
  */
 bot.locators.strategies.lookupMany = function(target) {

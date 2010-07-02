@@ -26,6 +26,7 @@ goog.provide('bot.locators');
 
 goog.require('bot');
 goog.require('bot.locators.strategies');
+goog.require('goog.array');   // for the goog.array.ArrayLike typedef
 
 
 
@@ -53,7 +54,8 @@ bot.locators.findElement = function(target) {
  * 'name' attribute equal to 'foo' should be returned.
  *
  * @param {!Object} target The selector to search for.
- * @return {!goog.ArrayLike.<Element>} All matching elements found in the DOM.
+ * @return {!goog.array.ArrayLike.<Element>} All matching elements found in the
+ *     DOM.
  */
 bot.locators.findElements = function(target) {
   var finder_func = bot.locators.strategies.lookupMany(target);

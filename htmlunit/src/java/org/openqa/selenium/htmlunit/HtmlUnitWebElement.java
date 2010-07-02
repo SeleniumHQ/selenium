@@ -318,16 +318,16 @@ public class HtmlUnitWebElement implements RenderedWebElement,
 
     if (element instanceof HtmlInput &&
         ("selected".equals(lowerName) || "checked".equals(lowerName))) {
-      return ((HtmlInput)element).isChecked() ? "true" : "false";
+      return ((HtmlInput)element).isChecked() ? "true" : null;
     }
     if ("disabled".equals(lowerName)) {
-      return isEnabled() ? "false" : "true";
+      return isEnabled() ? "false" : null;
     }
     if ("selected".equals(lowerName)) {
-      return (value.equalsIgnoreCase("selected") ? "true" : "false");
+      return (value.equalsIgnoreCase("selected") ? "true" : null);
     }
     if ("checked".equals(lowerName)) {
-      return (value.equalsIgnoreCase("checked") ? "true" : "false");
+      return (value.equalsIgnoreCase("checked") ? "true" : null);
     }
     if ("index".equals(lowerName) && element instanceof HtmlOption) {
       HtmlSelect select = ((HtmlOption) element).getEnclosingSelect();

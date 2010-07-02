@@ -395,7 +395,10 @@ webdriver.WebElement.prototype.isCheckedOrSelected_ = function() {
     this.createCommand_(webdriver.CommandName.GET_ELEMENT_TAG_NAME);
     return this.driver_.callFunction(function(prevResult) {
       var attribute = prevResult == 'input' ? 'checked' : 'selected';
-      return this.getAttribute(attribute);
+      this.getAttribute(attribute);
+      return this.driver_.callFunction(function(value) {
+        return !!value;
+      });
     }, this);
   }, this);
 };

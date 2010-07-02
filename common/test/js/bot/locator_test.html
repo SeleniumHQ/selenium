@@ -19,6 +19,7 @@ limitations under the License.
 <head>
   <title>locator_test.html</title>
   <script src="../webdriver-bootstrap.js"></script>
+  <script src="deps.js"></script>
   <script>
     goog.require('goog.testing.jsunit');
     goog.require('goog.events.EventType');
@@ -37,6 +38,21 @@ limitations under the License.
       var e = bot.locators.findElement({id: 'after'});
 
       assertEquals('right', e.getAttribute('name'));
+    }
+
+    function testFindingByNameIgnoresComments() {
+      // This element is outside a form, forcing IE to fall back to using
+      // doc.getElementsByTagName. There are comments on this page that are
+      // returned in this collection. We access the "attributes" array of
+      // each element, which is clearly missing from comments. A roundabout way
+      // of doing this, but it works
+
+      try {
+        var element = bot.locators.findElement({name: 'para'});
+        assertNotNull(element); // this is expected
+      } catch (e) {
+        fail(e);  // this is not.
+      }
     }
 
     function testCanFindByNameOutsideOfAForm() {
@@ -172,6 +188,8 @@ limitations under the License.
     <input name="after" /><br />
     <input name="foo" />
   </form>
+
+  <!-- This comment should be ignored -->
 
   <span name="foo">Furrfu</span>
 

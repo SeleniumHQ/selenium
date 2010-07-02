@@ -283,12 +283,17 @@ FirefoxDriver.prototype.getElementAttribute = function(respond, parameters) {
 
   var lattr = attributeName.toLowerCase();
   if ('checked' == lattr || 'selected' == lattr) {
-    value = bot.dom.isSelected(element);
-  } else {
+    value = bot.dom.getProperty(element, 'selected') || bot.dom.getProperty(element, 'checked');
+    if (!value) {
+      value = null;
+    }
+  } else if (bot.dom.hasAttribute(element, attributeName)) {
     value = bot.dom.getAttribute(element, attributeName);
+  } else {
+    value = bot.dom.getProperty(element, attributeName);
   }
   
-  respond.value = (value === undefined) ? undefined : value;
+  respond.value = (value === undefined) ? null : value;
   respond.send();
 };
 

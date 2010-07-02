@@ -31,36 +31,46 @@ goog.require('goog.style');
 
 
 /**
- * Determines whether or not the element has an attribute or property of the
- * given name, regardless of the value of the attribute.
- *
- * @param {!Element} element The element to use
- * @param {string} attributeName The name of the attribute
- * @return {boolean} Whether the attribute is present.
+ * @param {!Element} element The element to use.
+ * @return {boolean} Whether the property is present.
  */
-bot.dom.hasAttribute = function(element, attributeName) {
-  if (goog.isFunction(element['hasAttribute'])) {
-
-    // But it might be an element property....
-    if (element.hasAttribute(attributeName)) {
-      return true;
-    }
-  }
-
-  // hasAttributes method is missing. IE 8 and above have an
-  // attributes array so use that if present.
-  if (goog.isArrayLike(element['attributes'])) {
-    // We want to indicate that the attribute is present, regardless
-    // of value.
-    if (element.attributes[attributeName] ||
-        element.attributes[attributeName] == false) {
-      return true;
-    }
-  }
-
-  // No attributes array, or may be a property. Query the object
-  return attributeName in element;
+bot.dom.hasProperty = function(element, propertyName) {
+  return !goog.isNull(bot.dom.getProperty(element, propertyName));
 };
+
+/**
+ * Common aliases for properties. This maps names that users use to the correct
+ * property name.
+ *
+ * @const
+ * @private
+ */
+bot.dom.PROPERTY_ALIASES_ = {
+  'class': 'className',
+  'readonly': 'readOnly'
+}
+
+
+/**
+ * Looks up the given property (not to be confused with an attribute) on the 
+ * given element. The following properties are aliased so that they return the
+ * values expected by users:
+ *
+ * <ul>
+ * <li>class - as "className"
+ * <li>readonly - as "readOnly"
+ * </ul>
+ *
+ * @param {!Element} element The element to use.
+ * @return {string|boolean} The value of the property or "null" if entirely
+ *     missing.
+ */
+bot.dom.getProperty = function(element, propertyName) {
+  var key = bot.dom.PROPERTY_ALIASES_[propertyName] || propertyName;
+
+  return element[key];
+};
+
 
 /**
  * Used to determine whether we should return a boolean value from getAttribute.
@@ -68,55 +78,46 @@ bot.dom.hasAttribute = function(element, attributeName) {
  * @const
  * @private
  */
-bot.dom.BOOLEAN_PROPERTIES_ = [
+bot.dom.BOOLEAN_ATTRIBUTES_ = [
   'checked',
   'disabled',
   'readOnly',
   'selected'
 ];
 
+
 /**
- * Define which elements may have which boolean property.
+ * Determines whether or not the element has an attribute of the given name,
+ * regardless of the value of the attribute.
  *
- *  @const
- *  @private
+ * @param {!Element} element The element to use
+ * @param {string} attributeName The name of the attribute
+ * @return {boolean} Whether the attribute is present.
  */
-bot.dom.PROPERTY_TO_TAGNAME_ = {
-  'checked': [ 'INPUT' ],
-  'disabled': [ 'INPUT' ],
-  'readOnly': [ 'INPUT' ],
-  'selected': [ 'INPUT', 'OPTION' ]
+bot.dom.hasAttribute = function(element, attributeName) {
+  return !goog.isNull(bot.dom.getAttribute(element, attributeName));
 };
 
 
 /**
- * Get the value of the given attribute or property of the
- * element. This method will endeavour to return consistent values
- * between browsers. For example, boolean values for attributes such
- * as "selected" or "checked" will always be returned as "true" or
- * "false".
+ * Get the value of the given attribute of the element. This method will
+ * endeavour to return consistent values between browsers. For example, boolean
+ * values for attributes such as "selected" or "checked" will always be returned
+ * as the boolean values "true" or "false".
  *
  * @param {!Element} element The element to use.
  * @param {string} attributeName The name of the attribute to return.
- * @return {string|boolean} The value of the attribute or "null" if entirely
+ * @return {(string|boolean)?} The value of the attribute or "null" if entirely
  *     missing.
  */
 bot.dom.getAttribute = function(element, attributeName) {
-  var lattr = attributeName.toLowerCase();
-  var value = null;
-
-  // Handle common boolean values
-  var tags = bot.dom.PROPERTY_TO_TAGNAME_[attributeName];
-  if (goog.array.contains(bot.dom.BOOLEAN_PROPERTIES_, attributeName) &&
-      goog.array.contains(tags, element.tagName)) {
-
-    if (!bot.dom.hasAttribute(element, attributeName)) {
-      return false;
-    }
-
-    value = element[attributeName];
-    return !!(value && value != 'false');
+  // Protect ourselves from the case where documentElementsByTagName also
+  // returns comments in IE.
+  if (goog.dom.NodeType.COMMENT == element.nodeType) {
+    return null;
   }
+
+  var lattr = attributeName.toLowerCase();
 
   // TODO(user): What's the right thing to do here?
   if ('style' == lattr) {
@@ -124,41 +125,29 @@ bot.dom.getAttribute = function(element, attributeName) {
   }
 
   // Commonly looked up attributes that are aliases
-  if ('class' == lattr) {
-    attributeName = 'className';
-  }
-
   if ('readonly' == lattr) {
     attributeName = 'readOnly';
   }
 
-  if (!bot.dom.hasAttribute(element, attributeName)) {
+  // IE lacks a hasAttribute method, so we use the attributes array.
+  var value = null;
+  if (goog.isFunction(element['hasAttribute'])) {
+    value = element.getAttribute(attributeName);
+  } else {
+    value = element.attributes[attributeName];
+    if (goog.isDef(value)) {
+      value = value.value;
+    }
+  }
+
+  if (!goog.isDefAndNotNull(value)) {
     return null;
   }
 
-  //  value = goog.isDef(element.getAttribute(attributeName)) ?
-//       element.getAttribute(attributeName) : element[attributeName];
-
-  value = goog.isDefAndNotNull(element.getAttribute(attributeName)) ?
-      element.getAttribute(attributeName) : element[attributeName];
+  // Handle common boolean values
+  if (goog.array.contains(bot.dom.BOOLEAN_ATTRIBUTES_, attributeName)) {
+    value = !!value && value != 'false';
+  }
 
   return value;
-};
-
-
-/**
- * Determines whether an element is what a user would call "selected". This boils
- * down to checking to see if either the "checked" or "selected" attribute is true
- *
- * @param {!Element} element The element to use
- */
-bot.dom.isSelected = function(element) {
-  if (bot.dom.hasAttribute(element, 'checked')) {
-    return bot.dom.getAttribute(element, 'checked');
-  }
-  if (bot.dom.hasAttribute(element, 'selected')) {
-    return bot.dom.getAttribute(element, 'selected');
-  }
-
-  throw Error('Element has neither checked nor selected attributes');
 };

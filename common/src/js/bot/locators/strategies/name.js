@@ -48,10 +48,10 @@ bot.locators.strategies.name.single = function(win, target) {
   // the DOM, but not in a form. Hunt for it.
 
   var allElements = doc.getElementsByTagName('*');
-
-  return goog.array.find(allElements, function(element) {
+  var element = goog.array.find(allElements, function(element) {
     return bot.dom.getAttribute(element, 'name') == target;
-  })
+  });
+  return (/**@type{Element}*/element);
 };
 
 /**

@@ -19,6 +19,8 @@ package org.openqa.selenium;
 
 import java.util.List;
 
+import org.hamcrest.Matchers;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
@@ -130,26 +132,26 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
   public void testShouldReturnTheValueOfCheckedForACheckboxEvenIfItLacksThatAttribute() {
     driver.get(pages.formPage);
     WebElement checkbox = driver.findElement(By.xpath("//input[@id='checky']"));
-    assertThat(checkbox.getAttribute("checked"), equalTo("false"));
+    assertThat(checkbox.getAttribute("checked"), equalTo(null));
     checkbox.setSelected();
     assertThat(checkbox.getAttribute("checked"), equalTo("true"));
   }
 
   @Ignore(SELENESE)
-  public void testShouldReturnTheValueOfSelectedForRadioButtonsEvenIfTheyLackThatAttribute() {
+  public void testShouldOnlyReturnTheValueOfSelectedForRadioButtonsIfItIsSet() {
     driver.get(pages.formPage);
     WebElement neverSelected = driver.findElement(By.id("cheese"));
     WebElement initiallyNotSelected = driver.findElement(By.id("peas"));
     WebElement initiallySelected = driver.findElement(By.id("cheese_and_peas"));
 
-    assertThat(neverSelected.getAttribute("selected"), equalTo("false"));
-    assertThat(initiallyNotSelected.getAttribute("selected"), equalTo("false"));
+    assertThat(neverSelected.getAttribute("selected"), equalTo(null));
+    assertThat(initiallyNotSelected.getAttribute("selected"), equalTo(null));
     assertThat(initiallySelected.getAttribute("selected"), equalTo("true"));
 
     initiallyNotSelected.setSelected();
-    assertThat(neverSelected.getAttribute("selected"), equalTo("false"));
+    assertThat(neverSelected.getAttribute("selected"), equalTo(null));
     assertThat(initiallyNotSelected.getAttribute("selected"), equalTo("true"));
-    assertThat(initiallySelected.getAttribute("selected"), equalTo("false"));
+    assertThat(initiallySelected.getAttribute("selected"), equalTo(null));
   }
 
   @Ignore(SELENESE)
@@ -162,7 +164,7 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
     assertThat(one.isSelected(), is(true));
     assertThat(two.isSelected(), is(false));
     assertThat(one.getAttribute("selected"), equalTo("true"));
-    assertThat(two.getAttribute("selected"), equalTo("false"));
+    assertThat(two.getAttribute("selected"), equalTo(null));
   }
 
   public void testShouldReturnValueOfClassAttributeOfAnElement() {

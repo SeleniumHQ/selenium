@@ -46,7 +46,7 @@ bot.locators.strategies.xpath.single = function(win, target) {
     throw Error('Returned node is not an element: ' + target);
   }
 
-  return node;
+  return (/**@type{Element}*/node);  // Type verified above.
 };
 
 /**
@@ -67,6 +67,7 @@ bot.locators.strategies.xpath.many = function(win, target) {
     }
   });
 
-  return nodes;
+  // Type-cast to account for an inconsistency in closure type annotations.
+  return (/**@type{!goog.array.ArrayLike}*/nodes);
 };
 

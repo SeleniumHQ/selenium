@@ -18,7 +18,9 @@ limitations under the License.
 <html>
 <head>
   <title>dom_test.html</title>
-  <script src="../webdriver-bootstrap.js"></script>
+  <script src="../webdriver-bootstrap.js">
+  </script>
+  <script src="deps.js"></script>
   <script>
     goog.require('goog.testing.jsunit');
     goog.require('goog.events.EventType');
@@ -26,13 +28,31 @@ limitations under the License.
     goog.require('bot.locators');
   </script>
 
-  <script>
+  <script type="text/javascript">
+    function testShouldIndicateWhetherAPropertyIsAvailableOnAnElement() {
+      var chips = bot.locators.findElement({id: 'chips'});
+
+      // Chips has the property, but doesn't have the attribute set explicitly
+      // it therefore should have the property, but not the attribute
+      assertTrue(bot.dom.hasProperty(chips, 'selected'));
+
+      // Prior to IE8, IE would have an attribute too
+      var attributeExpected = goog.userAgent.IE && !goog.userAgent.isVersion(8);
+      assertEquals(attributeExpected, bot.dom.hasAttribute(chips, 'selected'));
+    }
+
+    function testShouldIndictaWhetherAnAttributeIsAvailableOnAnElement() {
+      var peas = bot.locators.findElement({id: 'peas'});
+
+      assertTrue(bot.dom.hasAttribute(peas, 'selected'));
+    }
+
     function testHasAttributeShouldWorkWithWellKnownDefaultProperties() {
       var chips = bot.locators.findElement({id: 'chips'});
       var peas = bot.locators.findElement({id: 'peas'});
 
-      assertTrue(bot.dom.hasAttribute(chips, 'selected'));
-      assertTrue(bot.dom.hasAttribute(peas, 'selected'));
+      assertTrue(bot.dom.hasProperty(chips, 'selected'));
+      assertTrue(bot.dom.hasProperty(peas, 'selected'));
     }
 
     function testCanFindNamedAttributes() {
@@ -50,7 +70,7 @@ limitations under the License.
     function testSelectedShouldBeFalseIfNotSet() {
       var chips = bot.locators.findElement({id: 'chips'});
 
-      var result = bot.dom.getAttribute(chips, 'selected');
+      var result = bot.dom.getProperty(chips, 'selected');
       assertTrue(goog.isBoolean(result));
       assertFalse(result);
     }
@@ -58,7 +78,7 @@ limitations under the License.
     function testSelectedShouldBeReturnedAsABooleanWhenValueNotOnAttribute() {
       var e = bot.locators.findElement({id: 'peas'});
 
-      var result = bot.dom.getAttribute(e, 'selected');
+      var result = bot.dom.getProperty(e, 'selected');
       assertTrue(goog.isBoolean(result));
       assertTrue(result);
     }
@@ -72,8 +92,9 @@ limitations under the License.
     function testShouldAliasClassNameAttribute() {
       var e = bot.locators.findElement({id: 'brie'});
 
+      assertEquals('tasty', bot.dom.getProperty(e, 'class'));
+      assertEquals('tasty', bot.dom.getProperty(e, 'className'));
       assertEquals('tasty', bot.dom.getAttribute(e, 'class'));
-      assertEquals('tasty', bot.dom.getAttribute(e, 'className'));
     }
 
     function testShouldReturnNullForMissingAttributes() {
@@ -88,19 +109,13 @@ limitations under the License.
       assertEquals('', bot.dom.getAttribute(e, 'empty'));
     }
 
-    function testShouldReportThatFormInputElementsHaveADisabledProperty() {
-      var e = bot.locators.findElement({name: 'fish_supper'});
+    function testAttributeMatchesAreCaseInsensitive() {
+      var e = bot.locators.findElement({name: 'checky'});
 
-      assertTrue(bot.dom.hasAttribute(e, 'disabled'));
-      assertFalse(bot.dom.getAttribute(e, 'disabled'));
+      assertTrue(bot.dom.getAttribute(e, 'readonly'));
+      assertTrue(bot.dom.getAttribute(e, 'readOnly'));
     }
 
-    function testShouldReportTheCorrectValueOfTheDisabledProperty() {
-      var e = bot.locators.findElement({name: 'out_of_action'});
-
-      assertTrue(bot.dom.hasAttribute(e, 'disabled'));
-      assertTrue(bot.dom.getAttribute(e, 'disabled'));
-    }
   </script>
 </head>
 <body>
@@ -116,13 +131,11 @@ limitations under the License.
       <option value="gravy">Gravy</option>
     </select>
 
-    <input name="checky" type="checkbox" checked="cheese" />
+    <input name="checky" type="checkbox" checked="cheese" readonly="readonly"/>
     <input name="radio" id="unchecked" type="radio" value="me">Me
     <input name="radio" id="checked" type="radio" value="myself"
            checked="checked">Myself
     <input name="radio" type="radio" value="i">And I
-
-    <input name="out_of_action" disabled></input>
   </form>
 </body>
 </html>

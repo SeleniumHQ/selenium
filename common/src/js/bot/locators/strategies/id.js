@@ -42,10 +42,10 @@ bot.locators.strategies.id.single = function(win, target) {
   }
 
   var elements = dom.getElementsByTagNameAndClass('*');
-
-  return goog.array.find(elements, function(element) {
+  var element = goog.array.find(elements, function(element) {
     return bot.dom.getAttribute(element, 'id') == target;
   });
+  return (/**@type{Element}*/element);
 };
 
 /**

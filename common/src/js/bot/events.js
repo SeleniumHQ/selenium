@@ -60,11 +60,11 @@ bot.events.RELATED_TARGET_EVENTS_ = [
 ];
 
 /**
- * @typedef {{x: number=, y: number, button=: bot.events.Button=,
- *            bubble: boolean=, alt: boolean=, control: boolean=,
- *            shift: boolean=, meta: boolean=, related: Element=}}
+ * @typedef {{x: number, y: number, button: bot.events.Button,
+ *            bubble: boolean, alt: boolean, control: boolean,
+ *            shift: boolean, meta: boolean, related: Element}}
  */
-bot.events.MouseArgs = goog.typedef;
+bot.events.MouseArgs;
 
 /**
  * Initialize a new mouse event. The opt_args can be used to pass in extra
@@ -95,7 +95,7 @@ bot.events.MouseArgs = goog.typedef;
  *
  * @param {!Element} element The element on which the event will be fired.
  * @param {!goog.events.EventType} type One of the goog.events.EventType values.
- * @param {!bot.events.mouseArgs=} opt_args See above.
+ * @param {!bot.events.MouseArgs} opt_args See above.
  * @return {!Object} An initialized mouse event, with fields populated from
  *   opt_args.
  * @private
@@ -125,6 +125,7 @@ bot.events.newMouseEvent_ = function(element, type, opt_args) {
   var shift = !!opt_args['shift'];
   var meta = !!opt_args['meta'];
 
+  var event;
   // IE path first
   if (element['fireEvent'] && doc && doc['createEventObject']) {
     event = doc.createEventObject();
@@ -144,7 +145,7 @@ bot.events.newMouseEvent_ = function(element, type, opt_args) {
     event.button = button;
     event.relatedTarget = relatedTarget;
   } else {
-    var event = doc.createEvent('MouseEvents');
+    event = doc.createEvent('MouseEvents');
 
     if (event['initMouseEvent']) {
       // see http://developer.mozilla.org/en/docs/DOM:event.button and
@@ -174,10 +175,10 @@ bot.events.newMouseEvent_ = function(element, type, opt_args) {
  * Data structure representing arguments that may be passed to the fire
  * function.
  *
- * @typedef {{bubble: boolean=, alt: boolean=, control: boolean=,
- *             shift: boolean=, meta: boolean= }}
+ * @typedef {{bubble: boolean, alt: boolean, control: boolean,
+ *             shift: boolean, meta: boolean}}
  */
-bot.events.HtmlArgs = goog.typedef;
+bot.events.HtmlArgs;
 
 
 /**
@@ -286,7 +287,7 @@ bot.events.dispatchEvent_ = function(target, type, event) {
     }
     target.fireEvent('on' + type, event);
   } else {
-    target.dispatchEvent(event);
+    target.dispatchEvent((/**@type {Event} */event));
   }
 };
 
@@ -295,7 +296,7 @@ bot.events.dispatchEvent_ = function(target, type, event) {
  *
  * @param {!Element} target The element on which to fire the event.
  * @param {!goog.events.EventType} type The type of event.
- * @param {!bot.events.MouseArgs=|!bot.events.HtmlArgs=} opt_args Arguments,
+ * @param {!(bot.events.MouseArgs|bot.events.HtmlArgs)=} opt_args Arguments,
  *     used to initialize the event.
  */
 bot.events.fire = function(target, type, opt_args) {
