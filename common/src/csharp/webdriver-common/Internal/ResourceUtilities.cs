@@ -47,6 +47,10 @@ namespace OpenQA.Selenium.Internal
             }
             else
             {
+                if (String.IsNullOrEmpty(resourceId))
+                {
+                    throw new WebDriverException("Unfortunately the File you are looking for does not exist");
+                }
                 resourceStream = executingAssembly.GetManifestResourceStream(resourceId);
             }
 
