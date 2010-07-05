@@ -585,8 +585,13 @@ module Selenium
         end
 
         def check_error_code(code, message)
-          e = WebDriver::Error.for_code(code)
-          raise e, "#{message} (#{code})" if e
+          return unless ex = WebDriver::Error.for_code(code)
+
+          if ex == Error::TimeOutError
+            raise ex, "#{message} (#{code}): The driver reported that the command timed out. There may be several reasons for this. Check that the destination site is in IE's 'Trusted Sites' (accessed from Tools->Internet Options in the 'Security' tab). If it is a trusted site, then the request may have taken more than a minute to finish."
+          else
+            raise ex, "#{message} (#{code})"
+          end
         end
 
       end # Bridge
