@@ -189,6 +189,24 @@ public class FormHandlingTest extends AbstractDriverTestCase {
     assertThat(radioButton.isSelected(), is(true));
   }
 
+  @Ignore(IE)
+  public void testRadioShouldNotBeSelectedAfterSelectingSibling() {
+    driver.get(pages.formPage);
+
+    WebElement cheese = driver.findElement(By.id("cheese"));
+    WebElement peas = driver.findElement(By.id("peas"));
+
+    cheese.setSelected();
+
+    assertThat(cheese.isSelected(), is(true));
+    assertThat(peas.isSelected(), is(false));
+
+    peas.setSelected();
+
+    assertThat(peas.isSelected(), is(true));
+    assertThat(cheese.isSelected(), is(false));
+  }
+
   public void testShouldBeAbleToSelectARadioButtonByClickingOnIt() {
     driver.get(pages.formPage);
     WebElement radioButton = driver.findElement(By.id("peas"));
