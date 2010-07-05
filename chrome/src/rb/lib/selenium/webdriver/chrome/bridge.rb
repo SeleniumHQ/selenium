@@ -5,10 +5,10 @@ module Selenium
       # @private
       class Bridge < Remote::Bridge
 
-        def initialize
+        def initialize(opts = {})
           @executor = CommandExecutor.new
 
-          @launcher = Launcher.launcher
+          @launcher = Launcher.launcher(:default_profile => opts[:default_profile])
           @launcher.launch(@executor.uri)
         end
 

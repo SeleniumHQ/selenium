@@ -8,19 +8,24 @@ module Selenium
 
         attr_reader :pid
 
-        def self.launcher
+        def self.launcher(*args)
           launcher =  case Platform.os
                       when :windows
-                        WindowsLauncher.new
+                        WindowsLauncher.new(*args)
                       when :macosx
-                        MacOSXLauncher.new
+                        MacOSXLauncher.new(*args)
                       when :unix, :linux
-                        UnixLauncher.new
+                        UnixLauncher.new(*args)
                       else
                         raise "unknown OS: #{Platform.os}"
                       end
 
           launcher
+        end
+
+        def initialize(opts = {})
+          super()
+          @default_profile = opts[:default_profile]
         end
 
         def self.binary_path
@@ -63,15 +68,22 @@ module Selenium
         end
 
         def launch_chrome(server_url)
-          @process = ChildProcess.new Platform.wrap_in_quotes_if_necessary(self.class.binary_path),
-                                      "--load-extension=#{Platform.wrap_in_quotes_if_necessary tmp_extension_dir}",
-                                      "--user-data-dir=#{Platform.wrap_in_quotes_if_necessary tmp_profile_dir}",
-                                      "--activate-on-launch",
-                                      "--disable-hang-monitor",
-                                      "--disable-popup-blocking",
-                                      "--disable-prompt-on-repost",
-                                      server_url
-          @process.start
+          args = [
+            Platform.wrap_in_quotes_if_necessary(self.class.binary_path),
+            "--load-extension=#{Platform.wrap_in_quotes_if_necessary tmp_extension_dir}",
+            "--activate-on-launch",
+            "--disable-hang-monitor",
+            "--disable-popup-blocking",
+            "--disable-prompt-on-repost"
+          ]
+
+          unless @default_profile
+            args << "--user-data-dir=#{Platform.wrap_in_quotes_if_necessary tmp_profile_dir}"
+          end
+
+          args << server_url
+
+          @process = ChildProcess.new(*args).start
         end
 
         def ext_path
