@@ -8,7 +8,8 @@ module Selenium
         end
 
         def reap?
-          @reap.nil? || @reap
+          @reap = true unless defined?(@reap)
+          !!@reap
         end
 
         def tmp_files
