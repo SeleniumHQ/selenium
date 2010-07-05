@@ -123,7 +123,8 @@ task :test_java => [
   "//jobbie:test:run",
   "//remote/server:test:run",
   :test_selenium,
-  :test_android,
+# Can't be sure that android is installed.
+#  :test_android,
 # Chrome isn't stable enough to include here.
 #  "//chrome:test:run"
 ]
