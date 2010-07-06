@@ -16,6 +16,7 @@
  limitations under the License.
  */
 
+var EXPORTED_SYMBOLS = [ 'createSwitchFile', 'Utils', 'WebDriverError' ];
 
 /**
  * A WebDriver error.
