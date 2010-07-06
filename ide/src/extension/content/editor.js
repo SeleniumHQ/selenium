@@ -29,6 +29,15 @@ function Editor(window) {
                 Editor.GENERIC_AUTOCOMPLETE.setCandidates(XulUtils.toXPCOMString(self.getAutoCompleteSearchParam("baseURL")),
                                                           XulUtils.toXPCOMArray(self.app.getBaseURLHistory()));
                 $("baseURL").value = self.app.getBaseURL();
+                if (self.view){
+                    self.view.refresh();
+                }
+            },
+			
+			optionsChanged: function() {
+                if (self.view){
+                    self.view.refresh();
+                }
             },
 
             testSuiteChanged: function(testSuite) {
