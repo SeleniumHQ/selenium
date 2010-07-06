@@ -23,7 +23,6 @@ function parse(testCase, source) {
 	testCase.commands = commands;
 	testCase.formatLocal(this.name).header = "";
 	testCase.formatLocal(this.name).footer = "";
-	testCase.formatLocal(this.name).frozenHeaderAndFooter = true;
 }
 
 /**
@@ -32,31 +31,24 @@ function parse(testCase, source) {
  * @param testCase TestCase to format
  * @param name The name of the test case, if any. It may be used to embed title into the source.
  */
-function format(testCase, name, saveHeaderAndFooter) {
+function format(testCase, name) {
 	this.log.info("formatting testCase: " + name);
 	var result = '';
 	var header = "";
 	var footer = "";
 	this.commandCharIndex = 0;
-	var frozen = testCase.formatLocal(this.name).frozenHeaderAndFooter;
-	if (frozen) {
-		header = testCase.formatLocal(this.name).header;
-		footer = testCase.formatLocal(this.name).footer;
-	} else if (this.formatHeader) {
+	if (this.formatHeader) {
 		header = formatHeader(testCase);
 	}
 	result += header;
 	this.commandCharIndex = header.length;
 	testCase.formatLocal(this.name).header = header;
 	result += formatCommands(testCase.commands);
-	if (!frozen && this.formatFooter) {
+	if (this.formatFooter) {
 		footer = formatFooter(testCase);
 	}
 	result += footer;
 	testCase.formatLocal(this.name).footer = footer;
-	if (saveHeaderAndFooter) {
-		testCase.formatLocal(this.name).frozenHeaderAndFooter = true;
-	}
 	return result;
 }
 

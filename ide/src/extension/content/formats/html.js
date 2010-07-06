@@ -195,10 +195,8 @@ function formatCommands(commands) {
  *
  * @param testCase TestCase to format
  * @param name The name of the test case, if any. It may be used to embed title into the source.
- * @param saveHeaderAndFooter true if the header and footer should be saved into the TestCase.
- * @param useDefaultHeaderAndFooter Parameter used for only default format.
  */
-function format(testCase, name, saveHeaderAndFooter, useDefaultHeaderAndFooter) {
+function format(testCase, name) {
 	var text;
 	var commandsText = "";
 	var testText;
@@ -210,22 +208,18 @@ function format(testCase, name, saveHeaderAndFooter, useDefaultHeaderAndFooter) 
 	}
 	
 	var testText;
-	if (testCase.header == null || testCase.footer == null || useDefaultHeaderAndFooter) {
+	if (testCase.header == null || testCase.footer == null) {
 		testText = options.testTemplate;
 		testText = testText.replace(/\$\{name\}/g, name);
 		var encoding = options["global.encoding"];
 		if (!encoding) encoding = "UTF-8";
 		testText = testText.replace(/\$\{encoding\}/g, encoding);
-		testText = testText.replace(/\$\{baseURL\}/g, encodeURI(testCase.baseURL));
+		testText = testText.replace(/\$\{baseURL\}/g, encodeURI(testCase.getBaseURL()));
 		var commandsIndex = testText.indexOf("${commands}");
 		if (commandsIndex >= 0) {
 			var header = testText.substr(0, commandsIndex);
 			var footer = testText.substr(commandsIndex + "${commands}".length);
 			testText = header + commandsText + footer;
-			if (saveHeaderAndFooter) {
-				testCase.header = header;
-				testCase.footer = footer;
-			}
 		}
 	} else {
 		testText = testCase.header + commandsText + testCase.footer;

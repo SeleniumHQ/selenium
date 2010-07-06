@@ -275,7 +275,7 @@ Format.prototype.saveAs = function(testCase, filename, exportTest) {
             var outputStream = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance( Components.interfaces.nsIFileOutputStream);
             outputStream.init(file, 0x02 | 0x08 | 0x20, 0644, 0);
             var converter = this.getUnicodeConverter();
-            var text = converter.ConvertFromUnicode(this.getFormatter().format(testCase, testCase.getTitle(), '', true));
+            var text = converter.ConvertFromUnicode(this.getFormatter().format(testCase, testCase.getTitle()));
             outputStream.write(text, text.length);
             var fin = converter.Finish();
             if (fin.length > 0) {
@@ -347,7 +347,7 @@ Format.prototype.saveSuiteAsNew = function(testSuite, exportTest) {
 };
 
 Format.prototype.getSourceForTestCase = function(testCase) {
-    return this.getFormatter().format(testCase, "New Test", true);
+    return this.getFormatter().format(testCase, "New Test");
 }
 
 Format.prototype.getSourceForCommands = function(commands) {

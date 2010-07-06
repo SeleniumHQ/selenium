@@ -451,4 +451,12 @@ TestCase.prototype.setBaseURL = function(baseURL) {
     this.baseURL = baseURL;
 }
 
+TestCase.prototype.getBaseURL = function() {
+    if (!this.baseURL || this.baseURL == "") {
+		return "http://change-this-to-the-site-you-are-testing/";
+    } else {
+		return this.baseURL;
+	}
+}
+
 observable(TestCase);

@@ -9,17 +9,14 @@ function formatHeader(testCase) {
 	if (!className) {
 		className = "NewTest";
 	}
-    var baseURL = testCase.baseURL;
-    if (!baseURL) {
-        baseURL = "http://change-this-to-the-site-you-are-testing/";
-    }
+
 	var formatLocal = testCase.formatLocal(this.name);
 	methodName = testMethodName(className.replace(/Test$/, "").replace(/^Test/, "").
 								replace(/^[A-Z]/, function(str) { return str.toLowerCase() }));
 	var header = (options.getHeader ? options.getHeader() : options.header).
 		replace(/\$\{className\}/g, className).
 		replace(/\$\{methodName\}/g, methodName).
-		replace(/\$\{baseURL\}/g, baseURL).
+		replace(/\$\{baseURL\}/g, testCase.getBaseURL()).
 		replace(/\$\{([a-zA-Z0-9_]+)\}/g, function(str, name) { return options[name] });
 	this.lastIndent = indents(parseInt(options.initialIndents));
 	formatLocal.header = header;
