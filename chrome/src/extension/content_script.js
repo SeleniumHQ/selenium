@@ -579,7 +579,7 @@ function addElementToInternalArray(element) {
 
 function addElementsToInternalArray(elements) {
   var toReturn = [];
-  for (var element in elements) {
+  for (var element = 0; element < elements.length; ++element) {
     toReturn.push(addElementToInternalArray(elements[element]));
   }
   return toReturn;
