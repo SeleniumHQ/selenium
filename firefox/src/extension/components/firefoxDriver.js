@@ -34,7 +34,6 @@ function FirefoxDriver(server, enableNativeEvents, win) {
 
   for (var i = 0; i < resources.length; i++) {
     var name = 'resource://fxdriver/modules/' + resources[i];
-    dump('loading ' + name);
     try {
       Components.utils.import(name);
     } catch (e) {

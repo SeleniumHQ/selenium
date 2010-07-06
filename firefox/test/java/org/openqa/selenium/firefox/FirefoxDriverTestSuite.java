@@ -178,8 +178,6 @@ public class FirefoxDriverTestSuite extends TestCase {
       for (Map.Entry<String, File> items : files.entrySet()) {
         File source = findFile(roots, items.getKey());
         createDestinationDirectory(items, source);
-        System.out.println("source = " + source);
-        System.out.println("dest = " + items.getValue());
         FileHandler.copy(source, items.getValue());
       }
     }
