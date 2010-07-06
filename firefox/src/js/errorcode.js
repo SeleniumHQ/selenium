@@ -16,6 +16,7 @@
  limitations under the License.
  */
 
+var EXPORTED_SYMBOLS = [ 'ErrorCode' ];
 
 /**
  * Error codes used by the remote wire protocol.

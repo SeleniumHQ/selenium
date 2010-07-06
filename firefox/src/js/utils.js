@@ -18,6 +18,8 @@
 
 var EXPORTED_SYMBOLS = [ 'createSwitchFile', 'Utils', 'WebDriverError' ];
 
+Components.utils.import('resource://fxdriver/modules/errorcode.js');
+
 /**
  * A WebDriver error.
  * @param {!number} code The error code.

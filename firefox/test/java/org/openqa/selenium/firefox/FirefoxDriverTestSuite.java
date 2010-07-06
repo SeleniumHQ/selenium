@@ -138,7 +138,8 @@ public class FirefoxDriverTestSuite extends TestCase {
       // Resources that are in the tree and just need copying
       Map<String, File> toCopy = ImmutableMap.of(
           "common/src/js/extension/dommessenger.js", new File(extension, "content/dommessenger.js"),
-          "firefox/src/extension", extension
+          "firefox/src/extension", extension,
+          "firefox/src/js", new File(extension, "resource/modules")
       );
 
       // TODO(simon): Handle the case of the "noblur" libraries
@@ -177,6 +178,8 @@ public class FirefoxDriverTestSuite extends TestCase {
       for (Map.Entry<String, File> items : files.entrySet()) {
         File source = findFile(roots, items.getKey());
         createDestinationDirectory(items, source);
+        System.out.println("source = " + source);
+        System.out.println("dest = " + items.getValue());
         FileHandler.copy(source, items.getValue());
       }
     }

@@ -28,10 +28,7 @@
  * When this component is loaded, load the necessary subscripts.
  */
 (function() {
-  var scripts = [
-    'errorcode.js',
-    'utils.js'
-  ];
+  var scripts = [];
 
   // Firefox 3.5+ has native JSON support; prefer that over our script from
   // www.json.org, which may be slower.
@@ -285,6 +282,9 @@ DelayedCommand.prototype.executeInternal_ = function() {
  * @constructor
  */
 var nsCommandProcessor = function() {
+  Components.utils.import('resource://fxdriver/modules/errorcode.js');
+  Components.utils.import('resource://fxdriver/modules/utils.js');
+
   this.wrappedJSObject = this;
   this.wm = Components.classes['@mozilla.org/appshell/window-mediator;1'].
       getService(Components.interfaces.nsIWindowMediator);

@@ -26,13 +26,11 @@ const CONTRACT_ID = "@googlecode.com/webdriver/fxdriver;1";
 // Its copyrights belong to its original author.
 
 var ExternalScripts = [
-  "errorcode.js",
   "dispatcher.js",
   "firefoxDriver.js",
   "socketListener.js",
   "request.js",
   "response.js",
-  "utils.js",
   "webdriverserver.js",
   "webLoadingListener.js",
   "wrappedElement.js",

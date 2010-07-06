@@ -28,7 +28,8 @@ function FirefoxDriver(server, enableNativeEvents, win) {
   // We do this here to work around an issue in the import function:
   // https://groups.google.com/group/mozilla.dev.apps.firefox/browse_thread/thread/e178d41afa2ccc87?hl=en&pli=1#
   var resources = [
-    "atoms.js"
+    "atoms.js",
+    "utils.js"
   ];
 
   for (var i = 0; i < resources.length; i++) {
