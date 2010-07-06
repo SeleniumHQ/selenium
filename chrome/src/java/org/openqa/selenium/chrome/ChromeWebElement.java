@@ -17,6 +17,10 @@ import org.openqa.selenium.remote.Response;
 public class ChromeWebElement extends RenderedRemoteWebElement
     implements Locatable, FindsByCssSelector {
 
+  public ChromeWebElement(ChromeDriver parent) {
+    setParent(parent);
+  }
+  
   @Override
   public void dragAndDropBy(int moveRightBy, int moveDownBy) {
     throw new UnsupportedOperationException("Not yet supported in Chrome");

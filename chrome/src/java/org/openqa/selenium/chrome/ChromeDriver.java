@@ -13,6 +13,7 @@ import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.RemoteWebElement;
 import org.openqa.selenium.remote.Response;
+import org.openqa.selenium.remote.internal.JsonToWebElementConverter;
 
 import static org.openqa.selenium.remote.DriverCommand.SCREENSHOT;
 import com.google.common.collect.ImmutableMap;
@@ -29,6 +30,13 @@ public class ChromeDriver extends RemoteWebDriver implements  TakesScreenshot, F
   public ChromeDriver(ChromeProfile profile, ChromeExtension extension) {
     super(new ChromeCommandExecutor(new ChromeBinary(profile, extension)),
         DesiredCapabilities.chrome());
+    
+    setElementConverter(new JsonToWebElementConverter(this) {
+      @Override
+      protected RemoteWebElement newRemoteWebElement() {
+        return new ChromeWebElement(ChromeDriver.this);
+      }
+    });
   }
 
   /**
@@ -102,8 +110,7 @@ public class ChromeDriver extends RemoteWebDriver implements  TakesScreenshot, F
 
   @Override
   protected RemoteWebElement newRemoteWebElement() {
-    RemoteWebElement element = new ChromeWebElement();
-    element.setParent(this);
+    RemoteWebElement element = new ChromeWebElement(this);
     return element;
   }
 
