@@ -70,7 +70,7 @@ limitations under the License.
 	<textbox id="baseURL" flex="1" tooltiptext="&baseURLTextbox.tooltip;" 
 		 onchange="window.editor.app.setBaseURL(this.value)"
 		 ontextentered="window.editor.app.setBaseURL(this.value)"
-                 type="autocomplete" autocompletesearch="selenium-ide-generic" enablehistory="true" focecomplete="true" tabscrolling="true"/>
+         type="autocomplete" autocompletesearch="selenium-ide-generic" enablehistory="true" tabscrolling="true"/>
       </hbox>
     </toolbar>
     <toolbar id="toolbar2">
