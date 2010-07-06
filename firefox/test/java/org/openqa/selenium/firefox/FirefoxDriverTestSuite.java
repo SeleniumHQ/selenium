@@ -19,8 +19,12 @@ package org.openqa.selenium.firefox;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
-import static org.openqa.selenium.Ignore.Driver.FIREFOX;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.Map;
+
+import com.google.common.collect.ImmutableMap;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.TestSuiteBuilder;
@@ -28,10 +32,8 @@ import org.openqa.selenium.internal.FileHandler;
 import org.openqa.selenium.internal.TemporaryFilesystem;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import static org.openqa.selenium.Ignore.Driver.FIREFOX;
+import static org.openqa.selenium.Platform.WINDOWS;
 
 public class FirefoxDriverTestSuite extends TestCase {
   public static Test suite() throws Exception {
@@ -55,15 +57,15 @@ public class FirefoxDriverTestSuite extends TestCase {
       super(createTemporaryProfile());
     }
 
-    public TestFirefoxDriver(FirefoxProfile profile) {
+    public TestFirefoxDriver(FirefoxProfile profile) throws Exception {
       super(copyExtensionTo(profile));
     }
 
-    public TestFirefoxDriver(Capabilities capabilities) {
+    public TestFirefoxDriver(Capabilities capabilities) throws Exception {
       super(tweakCapabilities(capabilities));
     }
 
-    private static Capabilities tweakCapabilities(Capabilities caps) {
+    private static Capabilities tweakCapabilities(Capabilities caps) throws Exception {
       DesiredCapabilities tweaked = new DesiredCapabilities(caps.asMap());
       if (tweaked.getCapability(PROFILE) == null) {
         tweaked.setCapability(PROFILE, createTemporaryProfile());
@@ -82,10 +84,16 @@ public class FirefoxDriverTestSuite extends TestCase {
 
     private static FirefoxProfile createTemporaryProfile() {
       File dir = TemporaryFilesystem.createTempDir("firefoxdriver", "");
-      return copyExtensionTo(new FirefoxProfile(dir));
+      try {
+        return copyExtensionTo(new FirefoxProfile(dir));
+      } catch (Exception e) {
+        e.printStackTrace();
+        fail(e.getMessage());
+      }
+      return null;
     }
 
-    private static FirefoxProfile copyExtensionTo(FirefoxProfile p) {
+    private static FirefoxProfile copyExtensionTo(FirefoxProfile p) throws Exception {
       File extensionSource = FileHandler.locateInProject("firefox/src/extension");
 
       File dir = p.getProfileDir();
@@ -100,72 +108,44 @@ public class FirefoxDriverTestSuite extends TestCase {
         throw new RuntimeException("Cannot copy extension directory");
       }
 
-      File buildDir = FileHandler.locateInProject("build/Win32");
+      // /me rolls up sleeves. Here we go.
+      //' Where are resources able to hide?
+      File root = FileHandler.locateInProject("Rakefile").getParentFile();
+      File[] roots = new File[] {
+          root,
+          new File(root, "build/firefox"),
+          new File(root, "firefox/prebuilt"),
+          new File(root, "build/common"),
+          new File(root, "common/prebuilt"),
+          new File(".")  // Just in case
+      };
 
-      // Copy in the native events library/libraries
-      Map<String, String> fromTo = new HashMap<String, String>();
-      if (Platform.getCurrent().is(Platform.WINDOWS)) {
-        fromTo.put("Release/webdriver-firefox.dll",
-        "platform/WINNT_x86-msvc/components/webdriver-firefox.dll");
-      } else if (Platform.getCurrent().is(Platform.UNIX)) {
-        // point buildDir to the general build dir, since Firefox components
-        // for linux are in two separate dirs.
-        buildDir = FileHandler.locateInProject("build");
-        fromTo.put("linux64/Release/libwebdriver-firefox.so",
-        "platform/Linux/components/libwebdriver-firefox.so");
+      // Resources that are generated and which aren't prebuilt and destinations
+      Map<String, File> generated = ImmutableMap.of(
+        "atoms.js", new File(extension, "resource/modules/atoms.js")
+      );
       
-        fromTo.put("firefox/i386/libnoblur.so",
-        "amd64/x_ignore_nofocus.so");
-        
-        fromTo.put("firefox/amd64/libnoblur64.so",
-        "x86/x_ignore_nofocus.so");
-      }
+      // Resources that are generated and which are prebuilt
+      Map<String, File> prebuilts = new ImmutableMap.Builder<String, File>()
+          .put("Win32/Release/webdriver-firefox.dll", new File(extension, "platform/WINNT_x86-msvc/components/webdriver-firefox.dll"))
+          .put("i386/libnoblur.so", new File(extension, "platform/Linux_x86-gcc3/components/libwebdriver-firefox.so"))
+          .put("amd64/libnoblur64.so", new File(extension, "platform/Linux_x86_64-gcc3/components/libwebdriver-firefox.so"))
+          .put("nsINativeEvents.xpt", new File(extension, "components/nsINativeEvents.xpt"))
+          .put("nsICommandProcessor.xpt", new File(extension, "components/nsICommandProcessor.xpt"))
+          .put("nsIResponseHandler.xpt", new File(extension, "components/nsIResponseHandler.xpt"))
+          .build();
 
-      // Grab the dommessenger
-      File domMessenger = FileHandler.locateInProject("common/src/js/extension/dommessenger.js");
-      File targetDomMessenger = new File(extension, "content/dommessenger.js");
-      try {
-        FileHandler.copy(domMessenger, targetDomMessenger);
-      } catch (IOException e) {
-        throw new RuntimeException(e);
-      }
+      // Resources that are in the tree and just need copying
+      Map<String, File> toCopy = ImmutableMap.of(
+          "common/src/js/extension/dommessenger.js", new File(extension, "content/dommessenger.js"),
+          "firefox/src/extension", extension
+      );
 
-      // Grab the atoms
-      File atoms = FileHandler.locateInProject("build/firefox/atoms.js");
-      File targetAtoms = new File(extension, "resource/modules/atoms.js");
-      try {
-        targetAtoms.getParentFile().mkdirs(); // Ignore the return code, cos we're about to throw an exception
-        FileHandler.copy(atoms, targetAtoms);
-      } catch (IOException e) {
-        throw new RuntimeException(e);
-      }
+      // TODO(simon): Handle the case of the "noblur" libraries
 
-      // We know the location of the "from" in relation to the extension source
-      for (Map.Entry<String, String> entry : fromTo.entrySet()) {
-        File source = new File(buildDir, entry.getKey());
-        if (!source.exists()) {
-          System.out.println("File does not exist. Falling back: " + source);
-          source = FileHandler.locateInProject("firefox/prebuilt");
-          source = new File(source, entry.getKey());
-          if (!source.exists()) {
-            throw new RuntimeException("Unable to locate: " + source);
-          }
-        }
-        File toDir = extension;
-        if (entry.getValue().contains("x_ignore_nofocus.so")) {
-          toDir = dir;
-        }
-        
-        File dest = new File(toDir, entry.getValue());
-        dest.getParentFile().mkdirs(); // Ignore the return code, cos we're about to throw an exception
-        try {
-          FileHandler.copy(source, dest);
-        } catch (IOException e) {
-          throw new RuntimeException(e);
-        }
-      }
-
-      copyXpts(extension);
+      copyGeneratedResources(roots, generated);
+      copyResources(roots, prebuilts);
+      copyResources(roots, toCopy);
 
       // Now delete all the .svn directories
       deleteSvnDirectories(extension);
@@ -182,24 +162,54 @@ public class FirefoxDriverTestSuite extends TestCase {
       return profile;
     }
 
-    private static void copyXpts(File extension) {
-      Map<String, String> components = new HashMap<String, String>() {{
-        put("build/firefox/nsINativeEvents.xpt", "components/nsINativeEvents.xpt");
-        put("build/firefox/nsICommandProcessor.xpt", "components/nsICommandProcessor.xpt");
-        put("build/firefox/nsIResponseHandler.xpt", "components/nsIResponseHandler.xpt");
-      }};
+    private static void copyGeneratedResources(File[] roots, Map<String, File> generated)
+        throws Exception {
+      // Snappy
+      File found = findFile(roots, generated.entrySet().iterator().next().getKey());
+      if (found == null) {
+        runFirefoxBuild();
+      }
 
-      for (Map.Entry<String, String> component : components.entrySet()) {
-        File xpt = FileHandler.locateInProject(component.getKey());
-        File outXpt = new File(extension, component.getValue());
+      copyResources(roots, generated);
+    }
 
-        try {
-          if (xpt.exists()) {
-            FileHandler.copy(xpt, outXpt);
-          }
-        } catch (IOException e) {
-          throw new RuntimeException(e);
+    private static void copyResources(File[] roots, Map<String, File> files) throws IOException {
+      for (Map.Entry<String, File> items : files.entrySet()) {
+        File source = findFile(roots, items.getKey());
+        createDestinationDirectory(items, source);
+        FileHandler.copy(source, items.getValue());
+      }
+    }
+
+    private static void createDestinationDirectory(Map.Entry<String, File> items, File source) {
+      File dest = items.getValue();
+      File parent = source.isFile() ? dest.getParentFile() : dest;
+      assertTrue("Cannot make parent directory", parent.exists() || parent.mkdirs());
+    }
+
+    private static File findFile(File[] roots, String filename) {
+      for (File root : roots) {
+        File file = new File(root, filename);
+        if (file.exists()) {
+          return file;
         }
+      }
+
+      return null;
+    }
+
+    private static void runFirefoxBuild() throws Exception {
+      System.out.println("Running //firefox:webdriver to generate required resources");
+
+      String command = Platform.getCurrent().is(WINDOWS) ? "go.bat" : "./go";
+
+      ProcessBuilder builder = new ProcessBuilder(command, "//firefox:webdriver");
+      builder.directory(FileHandler.locateInProject("Rakefile").getParentFile());
+      Process process = builder.start();
+
+      int exitValue = process.waitFor();
+      if (exitValue != 0) {
+        fail("Unable to build artifacts");
       }
     }
 
