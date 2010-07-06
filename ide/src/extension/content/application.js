@@ -74,7 +74,7 @@ Application.prototype = {
     },
 
     initOptions: function() {
-        if (this.options.rememberBaseURL == 'true' && this.options.baseURL != null){
+        if (this.options.rememberBaseURL == 'true' && this.options.baseURL != null) {
             this.setBaseURL(this.options.baseURL);
         }
         //initializing the reload button
@@ -171,7 +171,7 @@ Application.prototype = {
         if (testCase.baseURL) {
             this.setBaseURL(testCase.baseURL);
         } else {
-            //testCase.setBaseURL(this.baseURL);
+            testCase.setBaseURL(this.baseURL);
         }
         this.notify("testCaseChanged", this.testCase);
     },
