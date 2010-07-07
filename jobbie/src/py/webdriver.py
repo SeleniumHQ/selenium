@@ -60,6 +60,16 @@ _ERRORS = (
     "ENOSUCHWINDOW",
 )
 
+_ERROR_EXPLENATION = {
+    "ETIMEOUT" : '''
+    The driver reported that the command timed out. There may
+    be several reasons for this. Check that the destination
+    site is in IE's 'Trusted Sites' (accessed from Tools->
+    Internet Options in the 'Security' tab) If it is a "
+    trusted site, then the request may have taken more than
+    a minute to finish.''',
+}
+
 def _load_library():
     # We assume the DLL is next to the driver, the build (setup.py) should take
     # care of it (it currently doesn't)
@@ -70,7 +80,7 @@ def _load_library():
     finally:
         environ["PATH"] = old_path
 
-_DLL = _load_library()
+#_DLL = _load_library()
 
 class _StringWrapper(ctypes.Structure):
     _fields_ = [
@@ -87,10 +97,18 @@ class WebDriverError(ErrorInResponseException):
         else:
             self.error = _ERRORS[error]
 
-    def __repr__(self):
-        return "<WebDriverError> `%s(%s)` -> %s" % \
+    def __str__(self):
+        return "<WebDriverError> `%s%s` -> %s" % \
                 (self.funcname, self.args, self.error)
-    __str__ = __repr__
+
+    def __repr__(self):
+        msg = str(self)
+
+        longdesc = _ERROR_EXPLENATION.get(self.error)
+        if longdesc:
+            msg = "%s\n%s" % (msg, longdesc)
+
+        return msg
 
 
 def _call(funcname, *args):
