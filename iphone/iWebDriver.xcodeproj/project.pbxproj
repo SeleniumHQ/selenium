@@ -768,8 +768,12 @@
 					"\"$(SRCROOT)/iphoneos.sdk/usr/local/lib\"",
 					"\"$(SRCROOT)/../CocoaHTTPServer/build/Debug\"",
 				);
-				OTHER_LDFLAGS = "-ObjC";
+				OTHER_LDFLAGS = (
+					"-all_load",
+					"-ObjC",
+				);
 				PRODUCT_NAME = iWebDriver;
+				SDKROOT = iphonesimulator4.0;
 				SKIP_INSTALL = YES;
 			};
 			name = Debug;
@@ -788,8 +792,12 @@
 					"\"$(SRCROOT)/iphoneos.sdk/usr/local/lib\"",
 					"\"$(SRCROOT)/../CocoaHTTPServer/build/Debug\"",
 				);
-				OTHER_LDFLAGS = "-ObjC";
+				OTHER_LDFLAGS = (
+					"-all_load",
+					"-ObjC",
+				);
 				PRODUCT_NAME = iWebDriver;
+				SDKROOT = iphonesimulator4.0;
 				SKIP_INSTALL = YES;
 			};
 			name = Release;
