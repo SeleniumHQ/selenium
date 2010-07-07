@@ -675,10 +675,14 @@ function getElementAttribute(element, attribute) {
     value = (element.disabled ? element.disabled : "false");
     break;
   case "selected":
-    value = findWhetherElementIsSelected(element);
+    if (findWhetherElementIsSelected(element)) {
+      value = "true";
+    }
     break;
   case "checked":
-    value = (element.checked ? element.checked : "false");
+    if (element.checked) {
+      value = "true";
+    }
     break;
   case "index":
     value = element.index;

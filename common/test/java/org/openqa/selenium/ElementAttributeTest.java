@@ -128,8 +128,7 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
     assertFalse(disabled.isEnabled());
   }
 
-  //TODO(danielwh): Fix in Chrome
-  @Ignore({SELENESE, CHROME})
+  @Ignore(SELENESE)
   public void testShouldReturnTheValueOfCheckedForACheckboxOnlyIfItIsChecked() {
     driver.get(pages.formPage);
     WebElement checkbox = driver.findElement(By.xpath("//input[@id='checky']"));
@@ -138,8 +137,7 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
     assertThat(checkbox.getAttribute("checked"), equalTo("true"));
   }
 
-  //TODO(danielwh): Fix in Chrome
-  @Ignore({SELENESE, CHROME})
+  @Ignore(SELENESE)
   public void testShouldOnlyReturnTheValueOfSelectedForRadioButtonsIfItIsSet() {
     driver.get(pages.formPage);
     WebElement neverSelected = driver.findElement(By.id("cheese"));
@@ -156,8 +154,7 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
     assertThat(initiallySelected.getAttribute("selected"), equalTo(null));
   }
 
-  //TODO(danielwh): Fix in Chrome
-  @Ignore({SELENESE, CHROME})
+  @Ignore(SELENESE)
   public void testShouldReturnTheValueOfSelectedForOptionsOnlyIfTheyAreSelected() {
     driver.get(pages.formPage);
     WebElement selectBox = driver.findElement(By.xpath("//select[@name='selectomatic']"));
