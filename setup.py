@@ -17,7 +17,8 @@
 from setuptools import setup
 from setuptools.command.install import install
 
-from os.path import dirname, join
+from os.path import dirname, join, isfile
+from shutil import copy
 import re
 import sys
 
@@ -64,10 +65,24 @@ def revision():
     match = re.search("\d+", svn_rev)
     return match and match.group() or "unknown"
 
+def copy_ff_xpi():
+    ff_xpi = join("build", "firefox", "webdriver.xpi")
+    if not isfile(ff_xpi):
+        return 0
+    ff_dir = join("firefox", "src", "py")
+    copy(ff_xpi, ff_dir)
+
+    return 1
+
+
 if sys.version_info >= (3,):
     src_root = setup_python3()
 else:
     src_root = "."
+
+# FIXME: We silently fail since on sdist this will work and on install will
+# fail, find a better way
+copy_ff_xpi()
 
 setup(
     cmdclass={'install': install},
@@ -107,7 +122,9 @@ setup(
               'selenium.chrome_tests',
               'selenium.remote_tests',
               'selenium.selenium'],
-
+    package_data = {
+        'selenium.firefox':['*.xpi']
+    },
     include_package_data=True,
     install_requires=['distribute'],
     zip_safe=False,
