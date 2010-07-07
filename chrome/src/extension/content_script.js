@@ -23,7 +23,7 @@ if (ChromeDriverContentScript.currentDocument.location != "about:blank") {
   var isFrameset = (ChromeDriverContentScript.currentDocument.getElementsByTagName("frameset").length > 0);
   ChromeDriverContentScript.port.postMessage({response: {response: "newTabInformation",
       value: {statusCode: "no-op", isFrameset: isFrameset, frameCount: window.frames.length,
-      portName: ChromeDriverContentScript.port.name}}, sequenceNumber: -1});
+      portName: ChromeDriverContentScript.port.name, isDefaultContent: (window == window.top)}}, sequenceNumber: -1});
 }
 
 /**

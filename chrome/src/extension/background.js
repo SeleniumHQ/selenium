@@ -216,14 +216,12 @@ chrome.extension.onConnect.addListener(function(port) {
     return;
   }
 
-  console.log("Connected to " + port.name);
-  // Note: The frameset port *always* connects before any frame port.  After
-  // that, the order is in page loading time
+  console.log("Connected to " + port.name + " (" + port.tab.id + ")");
   ChromeDriver.hasNoConnectionToPage = false;
   var foundTab = false;
   for (var tab in ChromeDriver.tabs) {
     if (ChromeDriver.tabs[tab].tabId == port.tab.id) {
-      //We must be a new [i]frame in the page, because when a page closes, it is
+      //We must be a new page or [i]frame in the page, because when a page closes, it is
       // removed from ChromeDriver.tabs
       //TODO(danielwh): Work out WHICH page it's a sub-frame of (I don't look
       // forward to this)
@@ -247,8 +245,7 @@ chrome.extension.onConnect.addListener(function(port) {
     ChromeDriver.tabs.push({
       tabId: port.tab.id,
       windowName: ChromeDriver.windowHandlePrefix + "_" + port.tab.id,
-      mainPort: port,
-      frames: []
+      frames: [{frameName: port.name, framePort: port, frames: []}]
     });
   }
   
@@ -273,7 +270,7 @@ chrome.extension.onConnect.addListener(function(port) {
     //This was the result of a getUrl.  Need to issue a response
     sendEmptyResponseWhenTabIsLoaded(port.tab);  
   }
-  port.onMessage.addListener(parsePortMessage);
+  port.onMessage.addListener(function(message) {parsePortMessage(message, port)});
   port.onDisconnect.addListener(function disconnectPort(port) {
     console.log("Disconnected from " + port.name);
     var remainingTabs = [];
@@ -602,7 +599,7 @@ function sendMessageOnActivePortAndAlsoKeepTrackOfIt(message) {
  *                 value: {statusCode: STATUS_CODE
  *                 [, optional params]}}
  */
-function parsePortMessage(message) {
+function parsePortMessage(message, port) {
   console.log(
       "Received response from content script: " + JSON.stringify(message));
   if (!message || !message.response || !message.response.value ||
@@ -699,19 +696,27 @@ function parsePortMessage(message) {
     case "newTabInformation":
       var response = message.response.value;
       for (var tab in ChromeDriver.tabs) {
-        //RACE CONDITION!!!
-        //This call should happen before another content script
-        //connects and returns this value,
-        //but if it doesn't, we may get mismatched information
-        if (ChromeDriver.tabs[tab].isFrameset === undefined) {
-          ChromeDriver.tabs[tab].isFrameset = response.isFrameset;
-          return;
-        } else {
-          for (var frame in ChromeDriver.tabs[tab].frames) {
-            var theFrame = ChromeDriver.tabs[tab].frames[frame];
-            if (theFrame.isFrameset === undefined) {
-              theFrame.isFrameset = response.isFrameset;
-              return;
+        console.log("tabId: " + ChromeDriver.tabs[tab].tabId + ", port.tab.id: " + port.tab.id + ", defaultContent: " + response.isDefaultContent);
+        if (ChromeDriver.tabs[tab].tabId == port.tab.id) {
+          if (response.isDefaultContent) {
+            ChromeDriver.tabs[tab].mainPort = port;
+          }
+         
+          //TODO(danielwh): Rewrite this to actually use names
+          //RACE CONDITION!!!
+          //This call should happen before another content script
+          //connects and returns this value,
+          //but if it doesn't, we may get mismatched information
+          if (ChromeDriver.tabs[tab].isFrameset === undefined) {
+            ChromeDriver.tabs[tab].isFrameset = response.isFrameset;
+            return;
+          } else {
+            for (var frame in ChromeDriver.tabs[tab].frames) {
+              var theFrame = ChromeDriver.tabs[tab].frames[frame];
+              if (theFrame.isFrameset === undefined) {
+                theFrame.isFrameset = response.isFrameset;
+                return;
+              }
             }
           }
         }
@@ -1000,7 +1005,7 @@ function setExtensionBusyIndicator(busy) {
 function setActivePortByWindowName(handle) {
   for (var tab in ChromeDriver.tabs) {
     if (ChromeDriver.tabs[tab].windowName == handle || 
-        ChromeDriver.tabs[tab].mainPort.name == handle ||
+        (ChromeDriver.tabs[tab].mainPort !== undefined && ChromeDriver.tabs[tab].mainPort.name == handle) ||
         ChromeDriver.tabs[tab].tabId.toString() == handle) {
       ChromeDriver.activePort = ChromeDriver.tabs[tab].mainPort;
       chrome.tabs.get(ChromeDriver.tabs[tab].tabId, setActiveTabDetails);
