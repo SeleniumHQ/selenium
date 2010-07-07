@@ -18,6 +18,7 @@ limitations under the License.
 package org.openqa.selenium.chrome;
 
 import org.openqa.selenium.AbstractDriverTestCase;
+import org.openqa.selenium.Ignore;
 import org.openqa.selenium.NoDriverAfterTest;
 
 import static org.junit.Assert.fail;
@@ -28,6 +29,7 @@ import static org.junit.Assert.fail;
 public class ChromeCommandExecutorTest extends AbstractDriverTestCase {
 
   @NoDriverAfterTest
+  @Ignore //TODO(danielwh): Fix this test
   public void testShouldBeAbleToDetectThatChromeDiedWithoutUsKillingIt() {
     ChromeDriver chrome = (ChromeDriver) driver;
 
