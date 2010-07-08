@@ -21,12 +21,14 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
+import static org.openqa.selenium.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 
+import org.openqa.selenium.Ignore.Driver;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.environment.webserver.AppServer;
 
@@ -59,7 +61,7 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
     assertThat(driver.findElement(By.xpath("//p")).getText(), equalTo("Success!"));
   }
 
-  @Ignore(SELENESE)
+  @Ignore({SELENESE, ANDROID})
   public void testShouldAutomaticallyUseTheFirstFrameOnAPage() {
     driver.get(pages.framesetPage);
 
@@ -139,7 +141,7 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
     assertThat(driver.findElement(By.id("greeting")).getText(), equalTo("Success!"));
   }
 
-  @Ignore(SELENESE)
+  @Ignore({SELENESE, ANDROID})
   public void testShouldBeAbleToSelectAFrameByName() {
     driver.get(pages.framesetPage);
 
@@ -294,6 +296,7 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
     driver.get(pages.iframePage);
     assertThat(driver.getCurrentUrl(), equalTo(url));
 
+    
     url = appServer.whereIs("formPage.html");
     driver.switchTo().frame("iframe1");
     assertThat(driver.getCurrentUrl(), equalTo(url));

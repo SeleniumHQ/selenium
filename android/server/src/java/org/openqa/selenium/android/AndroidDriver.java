@@ -30,6 +30,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.NoSuchFrameException;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.Speed;
@@ -91,10 +92,13 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
   private boolean pageHasStartedLoading = false;
   private String jsResult;
   private String jsonLibrary;
+  private String currentFrame;
   private long implicitWait = 0;  
   
   public AndroidDriver() {
     Log.e(LOG_TAG, "AndroidDriver constructor: " + getContext().getPackageName());
+    // By default currentFrame is the root, i.e. window
+    currentFrame = "window";
     initJsonLibrary();
     intentRegistrar = new IntentReceiverRegistrar(getContext());
     timer = new SimpleTimer();
@@ -125,13 +129,23 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
     }
   }
 
+  public String getCurrentFrame() {
+    return currentFrame;
+  }
+  
   public String getCurrentUrl() {
     Log.d(LOG_TAG, "getCurrentUrl");
+    if ("window".equals(currentFrame)) {
+      return (String) executeScript("return " + currentFrame + ".location.href");
+    }
     return (String) sendIntent(Action.GET_URL);
   }
 
   public String getTitle() {
     Log.d(LOG_TAG, "getTitle");
+    if ("window".equals(currentFrame)) {
+      return (String) executeScript("return " + currentFrame + ".document.title");
+    }
     return (String) sendIntent(Action.GET_TITLE);
   }
 
@@ -141,7 +155,7 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
 
   public String getPageSource() {
     Log.d(LOG_TAG, "getPageSource");
-    executeJavascriptInWebView("window.webdriver.resultMethod(document.documentElement.outerHTML);");
+    executeScript("return " + currentFrame + ".documentElement.outerHTML");
     return jsResult;
   }
 
@@ -267,8 +281,80 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
   }
 
   public TargetLocator switchTo() {
-    // TODO(berrada): This should have an implementation
-    return null;
+    return new AndroidTargetLocator();
+  }
+  
+  private class AndroidTargetLocator implements TargetLocator {
+    public WebElement activeElement() {
+      Object element = executeScript(
+        "try {" +
+          "return " + currentFrame + ".document.activeElement;" +
+        "} catch (err) {" +
+        "  return 'failed_' + err;" +
+        "}");
+      if (element == null) {
+        return findElementByXPath("//body");
+      } else if (element instanceof WebElement) {
+        return (WebElement) element;
+      }
+      return null;
+    }
+
+    public WebDriver defaultContent() {
+      setCurrentFrame(null);
+      return AndroidDriver.this;
+    }
+
+    public WebDriver frame(int index) {
+      Log.d(LOG_TAG, "Switch to frame: " + index);
+      if (isFrameIndexValid(index)) {
+        currentFrame += ".frames[" + index + "]"; 
+      } else {
+        throw new NoSuchFrameException("Frame not found: " + index);
+      }
+      return AndroidDriver.this;
+    }
+
+    public WebDriver frame(String frameNameOrId) {
+      Log.d(LOG_TAG, "Switch to frame: " + frameNameOrId);
+      setCurrentFrame(frameNameOrId);
+      return AndroidDriver.this;
+    }
+
+    public WebDriver window(String nameOrHandle) {
+      throw new UnsupportedOperationException("Only one window can be opened at a time.");
+    }
+    
+    private void setCurrentFrame(String frameNameOrId) {
+      if (frameNameOrId == null) {
+        currentFrame = "window";
+      } else if (isFrameNameOrIdValid(frameNameOrId)) {
+        currentFrame += "." + frameNameOrId;
+      } else {
+        throw new NoSuchFrameException("Frame not found: " + frameNameOrId);
+      }
+      Log.d(LOG_TAG, "New frame context is: " + currentFrame);
+    }
+    
+    private boolean isFrameNameOrIdValid(String name) {
+      return (Boolean) executeScript(
+        "try {" +
+           currentFrame + "." + name + ".document;" +
+        "  return true;" +
+        "} catch(err) {" +
+        "  return false;" +
+        "}");
+    }
+    
+    private boolean isFrameIndexValid(int index) {
+      return (Boolean) executeScript(
+        "try {" +
+           currentFrame + ".frames[arguments[0]].document;" +
+        "  return true;" +
+        "} catch(err) {" +
+        "  return false;" +
+        "}", index);
+    }
   }
 
   public Navigation navigate() {
@@ -280,7 +366,7 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
   }
 
   public Object executeScript(String script, Object... args) {
-    String jsFunction = prepareJavascriptToExecute(script, args);
+    String jsFunction = embedScriptInJsFunction(script, args);
     executeJavascriptInWebView(jsFunction);
     
     // jsResult is updated by the intent receiver when the JS result is ready. 
@@ -289,7 +375,7 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
     return res;
   }
 
-  private String prepareJavascriptToExecute(String script, Object... args) {
+  private String embedScriptInJsFunction(String script, Object... args) {
     String funcName = "func_" + System.currentTimeMillis();
     String objName = "obj_" + System.currentTimeMillis();
     StringBuilder jsFunction = new StringBuilder();
@@ -314,7 +400,7 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
         .append(objName)
         .append(" instanceof HTMLElement) {")
          // TODO(kuzmin): try to move it to JavascriptDocAccessor
-        .append(JavascriptDomAccessor.INIT_CACHE)
+        .append(JavascriptDomAccessor.initCacheJs(currentFrame))
         .append(" var result = []; result.push(" + objName + ");")
         .append(JavascriptDomAccessor.ADD_TO_CACHE)
         .append(objName).append("='")
@@ -503,6 +589,7 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
     pageHasLoaded = false;
     sendIntent(intentName, url);
     waitUntilPageFinishedLoading();
+    currentFrame = "window";
     timer.stop(intentName);
   }
   

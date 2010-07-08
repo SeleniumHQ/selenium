@@ -177,37 +177,37 @@ public class SingleSessionActivity extends Activity implements IntentReceiverLis
   }
   
   public Object onReceiveBroadcast(String action, Object... args) {
-    if (action.equals(Action.GET_URL)) {
+    if (Action.GET_URL.equals(action)) {
       return webView.getUrl();
-    } else if (action.equals(Action.GET_TITLE)) {
+    } else if (Action.GET_TITLE.equals(action)) {
       return webView.getTitle();
-    } else if (action.equals(Action.TAKE_SCREENSHOT)) {
+    } else if (Action.TAKE_SCREENSHOT.equals(action)) {
       return takeScreenshot();
-    } else if (action.equals(Action.NAVIGATE)) {
+    } else if (Action.NAVIGATE.equals(action)) {
       navigateTo((String) args[0]);
-    } else if (action.equals(Action.NAVIGATE_BACK)) {
+    } else if (Action.NAVIGATE_BACK.equals(action)) {
       webView.goBackOrForward(-1);
-    } else if (action.equals(Action.NAVIGATE_FORWARD)) {
+    } else if (Action.NAVIGATE_FORWARD.equals(action)) {
       webView.goBackOrForward(1);
-    } else if (action.equals(Action.REFRESH)) {
+    } else if (Action.REFRESH.equals(action)) {
       webView.reload();
-    } else if (action.equals(Action.EXECUTE_JAVASCRIPT)) {
+    } else if (Action.EXECUTE_JAVASCRIPT.equals(action)) {
       if (args.length == 1) {
         jsExecutor.executeJS((String) args[0]); 
       } else {
         throw new IllegalArgumentException("Error while trying to execute Javascript." +
         "SingleSessionActivity.executeJS takes one argument");
       }
-    } else if (action.equals(Action.ADD_COOKIE)) {
+    } else if (Action.ADD_COOKIE.equals(action)) {
       Cookie cookie = new Cookie((String) args[0], (String) args[1], (String) args[2]);
       sessionCookieManager.addCookie(webView.getUrl(), cookie);
-    } else if (action.equals(Action.GET_ALL_COOKIES)) {
+    } else if (Action.GET_ALL_COOKIES.equals(action)) {
       return sessionCookieManager.getAllCookiesAsString(webView.getUrl());
-    } else if (action.equals(Action.GET_COOKIE)) {
+    } else if (Action.GET_COOKIE.equals(action)) {
       return sessionCookieManager.getCookie(webView.getUrl(), (String) args[0]);
-    } else if (action.equals(Action.REMOVE_ALL_COOKIES)) {
+    } else if (Action.REMOVE_ALL_COOKIES.equals(action)) {
       sessionCookieManager.removeAllCookies(webView.getUrl());
-    } else if (action.equals(Action.REMOVE_COOKIE)) {
+    } else if (Action.REMOVE_COOKIE.equals(action)) {
       sessionCookieManager.remove(webView.getUrl(), (String) args[0]);
     }
     return null;
