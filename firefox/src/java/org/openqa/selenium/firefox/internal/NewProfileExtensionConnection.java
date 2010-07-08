@@ -96,6 +96,7 @@ public class NewProfileExtensionConnection implements CommandExecutor, Extension
         }
       }
     } catch (IOException e) {
+      e.printStackTrace();
       throw new WebDriverException(
           String.format("Failed to connect to binary %s on port %d; process output follows: \n%s",
               process.toString(), profile.getPort(), process.getConsoleOutput()), e);

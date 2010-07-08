@@ -130,8 +130,9 @@ public class FirefoxDriverTestSuite extends TestCase {
           .put("Win32/Release/webdriver-firefox.dll", new File(extension, "platform/WINNT_x86-msvc/components/webdriver-firefox.dll"))
           .put("i386/libnoblur.so", new File(extension, "platform/Linux_x86-gcc3/components/libwebdriver-firefox.so"))
           .put("amd64/libnoblur64.so", new File(extension, "platform/Linux_x86_64-gcc3/components/libwebdriver-firefox.so"))
-          .put("nsINativeEvents.xpt", new File(extension, "components/nsINativeEvents.xpt"))
           .put("nsICommandProcessor.xpt", new File(extension, "components/nsICommandProcessor.xpt"))
+          .put("nsIHttpServer.xpt", new File(extension, "components/nsIHttpServer.xpt"))
+          .put("nsINativeEvents.xpt", new File(extension, "components/nsINativeEvents.xpt"))
           .put("nsIResponseHandler.xpt", new File(extension, "components/nsIResponseHandler.xpt"))
           .build();
 

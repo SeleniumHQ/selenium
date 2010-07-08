@@ -22,28 +22,14 @@
  * @param {nsIOutputStream} outputStream The stream to write responses to.
  * @constructor
  */
-function Response(request, outputStream) {
+function Response(response, outputStream) {
 
   /**
    * The request this is a response to.
    * @type {?Request}
    * @private
    */
-  this.request_ = request;
-
-  /**
-   * The stream to write responses to.
-   * @type {nsIOutputStream}
-   * @private
-   */
-  this.outputStream_ = outputStream;
-
-  /**
-   * The headers for this response.
-   * @type {Object}
-   * @private
-   */
-  this.headers_ = {};
+  this.response_ = response;
 
   /**
    * This response's message body.
@@ -51,6 +37,8 @@ function Response(request, outputStream) {
    * @private
    */
   this.body_ = '';
+
+  this.committed_ = false;
 }
 
 
@@ -99,15 +87,6 @@ Response.CRLF = '\r\n';
 
 
 /**
- * Whether this response has been committed. Each response may only be
- * committed once.
- * @type {boolean}
- * @private
- */
-Response.prototype.committed_ = false;
-
-
-/**
  * This response's HTTP stauts code.
  * @type {number}
  * @private
@@ -115,17 +94,12 @@ Response.prototype.committed_ = false;
 Response.prototype.status_ = Response.OK;
 
 
-/** @return {number} The current HTTP response status code. */
-Response.prototype.getStatus = function() {
-  return this.status_;
-};
-
-
 /**
  * Set this response's HTTP status code.
  */
 Response.prototype.setStatus = function(status) {
   this.status_ = status;
+  this.response_.setStatusLine(null, status, Response.StatusMessage_[status]);
 };
 
 
@@ -135,11 +109,7 @@ Response.prototype.setStatus = function(status) {
  * @param {?string} value The header value, or null to delete the field.
  */
 Response.prototype.setHeader = function(name, value) {
-  if (value == null) {
-    delete this.headers_[name];
-  } else {
-    this.headers_[name] = value;
-  }
+  this.response_.setHeader(name, value, false);
 };
 
 
@@ -158,7 +128,7 @@ Response.prototype.setContentType = function(type) {
  * @return {string} The value of the named header if it has been specified.
  */
 Response.prototype.getHeader = function(name) {
-  return this.headers_[name];
+  return this.response_.getHeader(name);
 };
 
 
@@ -198,8 +168,7 @@ Response.prototype.sendRedirect = function(location) {
  * @param {string} opt_contentType An optional content type to send with the
  *     error response.
  */
-Response.prototype.sendError = function(code, opt_message, opt_contentType) {
-  this.setStatus(code);
+Response.prototype.sendError = function(code, opt_message, opt_contentType) {  this.setStatus(code);
   this.setBody(opt_message || '');
   if (opt_contentType) {
     this.setContentType(opt_contentType);
@@ -207,6 +176,9 @@ Response.prototype.sendError = function(code, opt_message, opt_contentType) {
   this.commit();
 };
 
+Response.prototype.send = function() {
+  this.commit();
+};
 
 /**
  * Commits this response. This function is a no-op if the response has already
@@ -215,18 +187,15 @@ Response.prototype.sendError = function(code, opt_message, opt_contentType) {
 Response.prototype.commit = function() {
   if (this.committed_) {
     var info = ['Response already committed'];
-    if (this.request_) {
-      info.push('request: ' + this.request_.getMethod() + ' ' +
-                this.request_.getRequestUrl().path);
-      info.push('         ' + this.request_.getBody())
-    }
     info.push('response: ' + this.status_ + ' ' +
               Response.StatusMessage_[this.status_]);
     info.push('          ' + this.body_);
     Components.utils.reportError(info.join('\n  '));
     return;
   }
-  
+
+  this.committed_ = true;
+
   var statusCanHaveBody = (this.status_ < 100 || this.status_ > 199) &&
                           this.status_ != 204 && this.status_ != 304;
 
@@ -237,10 +206,6 @@ Response.prototype.commit = function() {
 
   var bytes = converter.convertToByteArray(this.body_, {});
 
-  var statusLine = 'HTTP/1.1 ' + this.status_ + ' ' +
-      Response.StatusMessage_[this.status_] + Response.CRLF;
-
-  this.setHeader('Date', new Date().toUTCString());
   if (this.status_ < 100 || this.status_ > 199) {
     this.setHeader('Connection', 'close');
   }
@@ -248,29 +213,12 @@ Response.prototype.commit = function() {
     this.setHeader('Content-Length', bytes.length);
   }
 
-  var headers = '';
-  for (var name in this.headers_) {
-    headers += name + ': ' + this.headers_[name] + Response.CRLF;
-  }
-
-  // Send the status line and headers.
-  var toSend = statusLine + headers + Response.CRLF;
-  this.outputStream_.write(toSend, toSend.length);
-
   // If necessary, send the body.
-  if (statusCanHaveBody &&
-      ((this.status_ > 399 && this.status_ < 600) ||
-       (this.request_.getMethod() != Request.Method.HEAD))) {
+  if (statusCanHaveBody) {
     var byteStream = converter.convertToInputStream(this.body_);
-    this.outputStream_.writeFrom(byteStream, bytes.length);
+    this.response_.bodyOutputStream.writeFrom(byteStream, bytes.length);
+    this.response_.bodyOutputStream.flush();      
   }
 
-  // Finish things up: flush and close the stream; don't close the stream if
-  // this is a 1xx response as there should be a final response sent (in another
-  // instance using the same stream).
-  this.outputStream_.flush();
-  if (this.status_ < 100 || this.status_ > 199) {
-    this.outputStream_.close();
-  }
-  this.committed_ = true;
+  this.response_.finish();
 };

@@ -544,6 +544,7 @@ nsCommandProcessor.prototype.getSessionCapabilities = function(response) {
     'cssSelectorsEnabled': true,
     'takesScreenshot': true
   };
+
   response.send();
 };
 

@@ -44,6 +44,9 @@ mozilla_xpt(name = "command_processor_xpt",
 mozilla_xpt(name = "response_handler_xpt",
   srcs = [ "src/extension/idl/nsIResponseHandler.idl" ])
 
+mozilla_xpt(name = "httpd_xpt",
+  srcs = [ "src/extension/idl/nsIHttpServer.idl" ])
+
 mozilla_extension(name = "webdriver",
   content = [
     "src/extension/content/**/*.js",
@@ -52,8 +55,9 @@ mozilla_extension(name = "webdriver",
   ],
   components = [
     "src/extension/components/*.js",
-    ":native_events_xpt",
     ":command_processor_xpt",
+    ":httpd_xpt",
+    ":native_events_xpt",
     ":response_handler_xpt"
   ],
   resources = [

@@ -21,6 +21,7 @@ function WebDriverServer() {
   // We do this here to work around an issue in the import function:
   // https://groups.google.com/group/mozilla.dev.apps.firefox/browse_thread/thread/e178d41afa2ccc87?hl=en&pli=1#
   Components.utils.import('resource://fxdriver/modules/errorcode.js');
+//  var httpd = {}; Components.utils.import('resource://fxdriver/modules/httpd.js', httpd);
   Components.utils.import('resource://fxdriver/modules/utils.js');
 
   this.wrappedJSObject = this;
@@ -35,12 +36,18 @@ function WebDriverServer() {
   var overrideService = Components.classes["@mozilla.org/security/certoverride;1"]
       .getService(Components.interfaces.nsICertOverrideService);
 
-  /**
-   * This server's request dispatcher.
-   * @type {Dispatcher}
-   * @private
-   */
-  this.dispatcher_ = new Dispatcher();
+  var dispatcher_ = new Dispatcher();
+
+  try {
+  this.server_ = Utils.newInstance("@mozilla.org/server/jshttp;1", "nsIHttpServer");
+  } catch (e) {
+      Utils.dumpn(e);
+  }
+
+  this.server_.registerGlobHandler(".*/hub/.*", { handle: function(request, response) {
+    response.processAsync();
+    dispatcher_.dispatch(new Request(request), new Response(response));
+  }});
 }
 
 
@@ -54,7 +61,6 @@ WebDriverServer.prototype.newDriver = function(window) {
     this.enableNativeEvents =
     prefs.prefHasUserValue("webdriver_enable_native_events") ?
     prefs.getBoolPref("webdriver_enable_native_events") : false;
-    Utils.dumpn('Enable native events: ' + this.enableNativeEvents);
   }
   window.fxdriver = new FirefoxDriver(this, this.enableNativeEvents, window);
   return window.fxdriver;
@@ -63,15 +69,6 @@ WebDriverServer.prototype.newDriver = function(window) {
 
 WebDriverServer.prototype.getNextId = function() {
   return this.generator.generateUUID().toString();
-};
-
-
-WebDriverServer.prototype.onSocketAccepted = function(socket, transport) {
-  try {
-    var socketListener = new SocketListener(this.dispatcher_, transport);
-  } catch(e) {
-    dump(e);
-  }
 };
 
 
@@ -85,20 +82,9 @@ WebDriverServer.prototype.startListening = function(port) {
   }
 
   if (!this.isListening) {
-    this.serverSocket.init(port, true, -1);
-    this.serverSocket.asyncListen(this);
+    this.server_.start(port);
     this.isListening = true;
   }
-};
-
-
-WebDriverServer.prototype.onStopListening = function(socket, status)
-{
-};
-
-
-WebDriverServer.prototype.close = function()
-{
 };
 
 

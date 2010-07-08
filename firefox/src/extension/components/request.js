@@ -24,53 +24,9 @@
  *     not permit a message body.
  * @constructor
  */
-function Request(method, requestUrl, headers, body) {
+function Request(request) {
 
-  /**
-   * A wrapped self-reference for XPConnect.
-   * @type {Request}
-   */
-  this.wrappedJSObject = this;
-
-  /**
-   * The HTTP method used to make the request.
-   * @type {Request.Method}
-   * @private
-   */
-  this.method_ = method;
-
-
-  /**
-   * URL for the requested resource.
-   * @type {?nsIURL}
-   * @private
-   */
-  this.requestUrl_ = requestUrl;
-
-  /**
-   * The request path, minus the segments mapped to the servlet.
-   * @type {?string}
-   * @private
-   */
-  this.pathInfo_ = this.requestUrl_.path;
-
-  /**
-   * Map of request headers. All header names are specified as lowercase
-   * strings.
-   * @type {Object}
-   * @private
-   */
-  this.headers_ = {};
-  for (var name in headers) {
-    this.headers_[name] = headers[name]
-  }
-
-  /**
-   * The request body, if there was one.
-   * @type {?string}
-   * @private
-   */
-  this.body_ = body;
+  this.request_ = request;
 
   /**
    * Map of custom request attributes.
@@ -101,18 +57,23 @@ Request.Method = {
  * @type {string}
  * @private
  */
-Request.prototype.servletPath_ = '/';
+Request.prototype.prefix_ = '';
 
 
 /** @return {Request.Method} The HTTP method used to make the request. */
 Request.prototype.getMethod = function() {
-  return this.method_;
+  return this.request_.method;
 };
 
 
 /** @return {?nsIURL} The full request URL. */
 Request.prototype.getRequestUrl = function() {
-  return this.requestUrl_;
+  return {
+    scheme: this.request_.scheme,
+    host: this.request_.host,
+    hostPort: this.request_.port,
+    path: this.request_.path
+  };
 };
 
 
@@ -122,7 +83,7 @@ Request.prototype.getRequestUrl = function() {
  * @return {string} The header value, if it was included in this request.
  */
 Request.prototype.getHeader = function(name) {
-  return this.headers_[name.toLowerCase()];
+  return this.request_.getHeader(name.toLowerCase());
 };
 
 
@@ -133,42 +94,40 @@ Request.prototype.getHeader = function(name) {
  * @param {string} servletPath The receiving servlet's path.
  */
 Request.prototype.setServletPath = function(servletPath) {
-  if (servletPath[0] != '/') {
-    servletPath = '/' + servletPath;
-  }
-  var length = servletPath.length;
-  if (length > 1 && servletPath[length - 1] == '/') {
-    servletPath = servletPath.substring(0, length - 1);
-  }
-
-  this.servletPath_ = servletPath;
-  this.pathInfo_ = this.requestUrl_.path;
-  if (this.servletPath_ != '/') {
-    this.pathInfo_ = this.pathInfo_.substring(this.servletPath_.length);
-  }
-
-  if (this.pathInfo_.length > 1 &&
-      this.pathInfo_.charAt(this.pathInfo_.length - 1) == '/') {
-    this.pathInfo_ = this.pathInfo_.substring(0, this.pathInfo_.length - 1);
-  }
+  this.prefix_ = servletPath;
 };
 
 
 /** @return {string} The servlet path for this request. */
 Request.prototype.getServletPath = function() {
-  return this.servletPath_;
+  return this.prefix_;
 };
 
 
 /** @return {string} The path info for this request. */
 Request.prototype.getPathInfo = function() {
-  return this.pathInfo_;
+  return this.request_.path.substring(this.prefix_.length);
 };
 
 
 /** @return {?string} The request body if there was one. */
 Request.prototype.getBody = function() {
-  return this.body_;
+  var converter = Utils.newInstance("@mozilla.org/intl/scriptableunicodeconverter",
+                      'nsIScriptableUnicodeConverter');
+  converter.charset = 'UTF-8';
+  var scriptableStream = Components.classes["@mozilla.org/scriptableinputstream;1"]
+                                 .createInstance(Components.interfaces.nsIScriptableInputStream);
+  scriptableStream.init(this.request_.bodyInputStream);
+
+
+  var body = '';
+
+  // This doesn't feel right to me.
+  for (var chunk = scriptableStream.read(4096); chunk; chunk = scriptableStream.read(4096)) {
+    body += converter.ConvertToUnicode(chunk);
+  }
+
+  return body;
 };
 
 
@@ -207,13 +166,13 @@ Request.prototype.setAttribute = function(name, value) {
  * @return {string} This request as a string for debugging.
  */
 Request.prototype.toDebugString = function() {
-  var message = this.method_ + ' ' + this.requestUrl_.path + ' HTTP/1.1\r\n';
-  for (var name in this.headers_) {
-    message += name + ':' + this.headers_[name] + '\r\n';
-  }
-  message += '\r\n';
-  if (this.body_) {
-    message += this.body_;
-  }
-  return message;
+//  var message = this.method_ + ' ' + this.requestUrl_.path + ' HTTP/1.1\r\n';
+//  for (var name in this.headers_) {
+//    message += name + ':' + this.headers_[name] + '\r\n';
+//  }
+//  message += '\r\n';
+//  if (this.body_) {
+//    message += this.body_;
+//  }
+  return 'request debug string';
 };

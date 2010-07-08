@@ -104,6 +104,7 @@ FirefoxDriver.prototype.get = function(respond, parameters) {
   respond.session.getBrowser().loadURI(url);
 
   if (!loadEventExpected) {
+    Utils.dumpn("No load event expected");
     respond.send();
   }
 };
