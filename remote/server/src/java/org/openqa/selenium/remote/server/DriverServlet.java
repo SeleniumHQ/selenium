@@ -273,29 +273,29 @@ public class DriverServlet extends HttpServlet {
     getMapper.bind("/session/:sessionId/browser_connection", IsBrowserOnline.class)
         .on(ResultType.SUCCESS, new JsonResult(":response"));
     
-    getMapper.bind("/session/:sessionId/local_storage/item/:key", GetLocalStorageItem.class)
+    getMapper.bind("/session/:sessionId/local_storage/:key", GetLocalStorageItem.class)
         .on(ResultType.SUCCESS, new JsonResult(":response"));
-    getMapper.bind("/session/:sessionId/local_storage/keys", GetLocalStorageKeys.class)
+    deleteMapper.bind("/session/:sessionId/local_storage/:key", RemoveLocalStorageItem.class)
+    .on(ResultType.SUCCESS, new JsonResult(":response"));
+    getMapper.bind("/session/:sessionId/local_storage", GetLocalStorageKeys.class)
         .on(ResultType.SUCCESS, new JsonResult(":response"));
-    postMapper.bind("/session/:sessionId/local_storage/item", SetLocalStorageItem.class)
+    postMapper.bind("/session/:sessionId/local_storage", SetLocalStorageItem.class)
         .on(ResultType.SUCCESS, new EmptyResult());
-    deleteMapper.bind("/session/:sessionId/local_storage/remove/:key", RemoveLocalStorageItem.class)
-        .on(ResultType.SUCCESS, new JsonResult(":response"));
-    deleteMapper.bind("/session/:sessionId/local_storage/clear", ClearLocalStorage.class)
-        .on(ResultType.SUCCESS, new JsonResult(":response"));
+    deleteMapper.bind("/session/:sessionId/local_storage", ClearLocalStorage.class)
+        .on(ResultType.SUCCESS, new EmptyResult());
     getMapper.bind("/session/:sessionId/local_storage/size", GetLocalStorageSize.class)
         .on(ResultType.SUCCESS, new JsonResult(":response"));
     
-    getMapper.bind("/session/:sessionId/session_storage/item/:key", GetSessionStorageItem.class)
+    getMapper.bind("/session/:sessionId/session_storage/:key", GetSessionStorageItem.class)
         .on(ResultType.SUCCESS, new JsonResult(":response"));
-    getMapper.bind("/session/:sessionId/session_storage/keys", GetSessionStorageKeys.class)
+    deleteMapper.bind("/session/:sessionId/session_storage/:key", RemoveSessionStorageItem.class)
         .on(ResultType.SUCCESS, new JsonResult(":response"));
-    postMapper.bind("/session/:sessionId/session_storage/keys", SetSessionStorageItem.class)
+    getMapper.bind("/session/:sessionId/session_storage", GetSessionStorageKeys.class)
+        .on(ResultType.SUCCESS, new JsonResult(":response"));
+    postMapper.bind("/session/:sessionId/session_storage", SetSessionStorageItem.class)
         .on(ResultType.SUCCESS, new EmptyResult());
-    deleteMapper.bind("/session/:sessionId/session_storage/remove/:key", RemoveSessionStorageItem.class)
-        .on(ResultType.SUCCESS, new JsonResult(":response"));
-    deleteMapper.bind("/session/:sessionId/session_storage/clear", ClearSessionStorage.class)
-        .on(ResultType.SUCCESS, new JsonResult(":response"));
+    deleteMapper.bind("/session/:sessionId/session_storage", ClearSessionStorage.class)
+        .on(ResultType.SUCCESS, new EmptyResult());
     getMapper.bind("/session/:sessionId/session_storage/size", GetSessionStorageSize.class)
         .on(ResultType.SUCCESS, new JsonResult(":response"));
   }
