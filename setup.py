@@ -65,15 +65,13 @@ def revision():
     match = re.search("\d+", svn_rev)
     return match and match.group() or "unknown"
 
-def copy_ff_xpi():
-    ff_xpi = join("build", "firefox", "webdriver.xpi")
-    if not isfile(ff_xpi):
+def _copy_ext_file(driver, name):
+    filename = join("build", driver, name)
+    if not isfile(filename):
         return 0
-    ff_dir = join("firefox", "src", "py")
-    copy(ff_xpi, ff_dir)
-
+    dest = join(driver, "src", "py")
+    copy(filename, dest)
     return 1
-
 
 if sys.version_info >= (3,):
     src_root = setup_python3()
@@ -82,7 +80,8 @@ else:
 
 # FIXME: We silently fail since on sdist this will work and on install will
 # fail, find a better way
-copy_ff_xpi()
+_copy_ext_file("firefox", "webdriver.xpi")
+_copy_ext_file("chrome", "chrome-extension.zip")
 
 setup(
     cmdclass={'install': install},
