@@ -79,7 +79,7 @@ def _num_bits():
 
 def _load_library():
     # We assume the DLL is next to the driver, the build (setup.py) should take
-    # care of it (it currently doesn't)
+    # care of it
     old_path = environ["PATH"]
     environ["PATH"] = pathsep.join([environ["PATH"], abspath(dirname(__file__))])
     try:
