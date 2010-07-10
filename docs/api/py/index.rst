@@ -6,8 +6,9 @@ Introduction
 Selenium Python Client Driver is a Python language binding for Selenium Remote
 Control (version 1.0 and 2.0).
 
-Currently only the remote protocol for Selenium 2.0 is supported, as are the
-Selenium 1.0 bindings. As work will progresses we'll add more "native" drivers.
+Currently only the remote protocol, Firefox and Chrome for Selenium 2.0 are
+supported, as well as the Selenium 1.0 bindings. As work will progresses we'll
+add more "native" drivers.
 
 See here_ for more information.
 
