@@ -61,6 +61,7 @@ def find_longdesc():
     return ""
 
 def revision():
+    # svn_rev is updated by subversion using svn:keywords
     svn_rev = "$Revision$"
     match = re.search("\d+", svn_rev)
     return match and match.group() or "unknown"
