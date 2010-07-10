@@ -19,7 +19,8 @@ import ctypes
 import re
 from os import environ, pathsep
 from os.path import dirname, abspath
-from sys import maxint, platform
+from sys import platform
+from platform import machine
 
 try:
     from selenium.common.exceptions import NoSuchElementException
@@ -71,6 +72,11 @@ _ERROR_EXPLENATION = {
     a minute to finish.''',
 }
 
+def _num_bits():
+    if machine().endswith("86"):
+        return 32
+    return 64
+
 def _load_library():
     # We assume the DLL is next to the driver, the build (setup.py) should take
     # care of it (it currently doesn't)
@@ -96,11 +102,6 @@ class _StringWrapper(ctypes.Structure):
     _fields_ = [
         ("text", ctypes.c_wchar_p),
     ]
-
-def _num_bits():
-    if maxint > (1 << 32):
-        return 64
-    return 32
 
 class WebDriverError(ErrorInResponseException):
     def __init__(self, funcname, args, error):
