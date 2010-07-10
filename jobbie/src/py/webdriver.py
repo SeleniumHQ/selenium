@@ -19,6 +19,7 @@ import ctypes
 import re
 from os import environ, pathsep
 from os.path import dirname, abspath
+from sys import maxint, platform
 
 try:
     from selenium.common.exceptions import NoSuchElementException
@@ -76,16 +77,30 @@ def _load_library():
     old_path = environ["PATH"]
     environ["PATH"] = pathsep.join([environ["PATH"], abspath(dirname(__file__))])
     try:
-        return ctypes.cdll.LoadLibrary("InternetExplorerDriver.dll")
+        # We first try the platform specific dll and then the general one
+        for suffix in (_num_bits(), ""):
+            dll = "InternetExplorerDriver%s.dll" % suffix
+            try:
+                return ctypes.cdll.LoadLibrary(dll)
+            except WindowsError:
+                pass
     finally:
         environ["PATH"] = old_path
 
-#_DLL = _load_library()
+if platform == "win32":
+    _DLL = _load_library()
+else:
+    _DLL = None
 
 class _StringWrapper(ctypes.Structure):
     _fields_ = [
         ("text", ctypes.c_wchar_p),
     ]
+
+def _num_bits():
+    if maxint > (1 << 32):
+        return 64
+    return 32
 
 class WebDriverError(ErrorInResponseException):
     def __init__(self, funcname, args, error):
