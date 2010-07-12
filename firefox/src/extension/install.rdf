@@ -4,7 +4,7 @@
     <Description about="urn:mozilla:install-manifest">
         <em:id>fxdriver@googlecode.com</em:id>
         <em:name>Firefox WebDriver</em:name>
-        <em:version>2.0a4</em:version>
+        <em:version>2.0a5</em:version>
         <em:description>WebDriver implementation for Firefox</em:description>
         <em:creator>Simon Stewart</em:creator>
 
@@ -12,8 +12,8 @@
         <em:targetApplication>
             <Description>
                 <em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
-                <em:minVersion>2.0</em:minVersion>
-                <em:maxVersion>3.*</em:maxVersion>
+                <em:minVersion>3.0</em:minVersion>
+                <em:maxVersion>4.*</em:maxVersion>
             </Description>
         </em:targetApplication>
 
