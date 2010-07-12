@@ -157,7 +157,7 @@
   </ItemGroup>
 
   <Target Name="BuildFirefox" DependsOnTargets="BuildRemote">
-    <Error Text="Could not find webdriver-extension.zip. Expected to find it in $(TrunkRoot)\build."
+    <Error Text="Could not find webdriver.xpi. Expected to find it in $(TrunkRoot)\build."
            Condition="!Exists('$(TrunkRoot)\build\firefox\webdriver.xpi')"/>
     <Message Text="Building WebDriver.Firefox.dll"/>
     <Csc Sources="@(FirefoxSourceFiles)"

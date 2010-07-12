@@ -165,13 +165,7 @@ namespace OpenQA.Selenium.Firefox
         /// <param name="extensionToInstall">The path to the new extension</param>
         public void AddExtension(string extensionToInstall)
         {
-            if (!File.Exists(extensionToInstall))
-            {
-                throw new WebDriverException("The Extension that you wish to install is not available");
-            }
-            
-            FileInfo extension = new FileInfo(extensionToInstall);
-            InstallExtension(extension);
+            InstallExtension(extensionToInstall);
         }
 
         /// <summary>
@@ -430,24 +424,22 @@ namespace OpenQA.Selenium.Firefox
             return id;
         }
 
-        private void InstallExtension(FileInfo extension)
+        private void InstallExtension(string extensionFileName)
         {
-            string fileName = extension.Name;
-            Console.WriteLine(fileName.ToString());
-            string tempFileName = Path.Combine(Path.GetTempPath(), fileName );
+            string tempFileName = Path.Combine(Path.GetTempPath(), extensionFileName);
             if (Directory.Exists(tempFileName))
             {
                 Directory.Delete(tempFileName, true);
             }
+
             Directory.CreateDirectory(tempFileName);
-            
             string resourceID = string.Empty;
-            if (fileName == ExtensionFileName)
+            if (extensionFileName == ExtensionFileName)
             {
                 resourceID = ExtensionResourceId;
             }
 
-            Stream zipFileStream = ResourceUtilities.GetResourceStream(fileName, resourceID);
+            Stream zipFileStream = ResourceUtilities.GetResourceStream(extensionFileName, resourceID);
             using (ZipFile extensionZipFile = ZipFile.Read(zipFileStream))
             {
                 extensionZipFile.ExtractExistingFile = ExtractExistingFileAction.OverwriteSilently;
