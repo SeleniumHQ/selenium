@@ -187,10 +187,14 @@ class WebDriver(object):
     def find_element_by_link_text(self, link_text):
         """Finds an element by its link text."""
         return self._find_element_by("link text", link_text)
-        
+
     def find_element_by_partial_link_text(self, link_text):
         """Finds an element by a partial match of its link text."""
         return self._find_element_by("partial link text", link_text)
+
+    def find_elements_by_link_text(self, link_text):
+        """Finds elements by their link text."""
+        return self._find_elements_by("link text", link_text)
 
     def find_elements_by_partial_link_text(self, link_text):
         """Finds elements by a partial match of their link text."""
@@ -203,14 +207,22 @@ class WebDriver(object):
     def find_elements_by_name(self, name):
         """Finds elements by their name."""
         return self._find_elements_by("name", name)
-        
+
     def find_element_by_tag_name(self, name):
         """Finds an element by its tag name."""
         return self._find_element_by("tag name", name)
-        
+
     def find_elements_by_tag_name(self, name):
         """Finds elements by their tag name."""
         return self._find_elements_by("tag name", name)
+
+    def find_element_by_class_name(self, name):
+        """Finds an element by their class name."""
+        return self._find_element_by("class name", name)
+
+    def find_elements_by_class_name(self, name):
+        """Finds elements by their class name."""
+        return self._find_elements_by("class name", name)
 
     def execute_script(self, script, *args):
         if len(args) == 1:

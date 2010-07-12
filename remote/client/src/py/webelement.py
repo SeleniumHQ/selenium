@@ -87,26 +87,26 @@ class WebElement(object):
     def find_element_by_name(self, name):
         """Find element by name."""
         return self._get_elem_by("name", name)
-        
+
     def find_elements_by_name(self, name):
         return self._get_elems_by("name", name)
 
     def find_element_by_link_text(self, link_text):
         """Finds element by link text."""
         return self._get_elem_by("link text", link_text)
-        
+
     def find_elements_by_link_text(self, link_text):
         return self._get_elems_by("link text", link_text)
-        
+
     def find_element_by_partial_link_text(self, link_text):
         return self._get_elem_by("partial link text", link_text)
-        
+
     def find_elements_by_partial_link_text(self, link_text):
         return self._get_elems_by("partial link text", link_text)
-        
+
     def find_element_by_tag_name(self, name):
         return self._get_elem_by("tag name", name)
-        
+
     def find_elements_by_tag_name(self, name):
         return self._get_elems_by("tag name", name)
 
@@ -117,6 +117,14 @@ class WebElement(object):
     def find_elements_by_xpath(self, xpath):
         """Finds elements within the elements by xpath."""
         return self._get_elems_by("xpath", xpath)
+
+    def find_element_by_class_name(self, name):
+        """Finds an element by their class name."""
+        return self._get_elem_by("class name", name)
+
+    def find_elements_by_class_name(self, name):
+        """Finds elements by their class name."""
+        return self._get_elems_by("class name", name)
 
     def send_keys(self, *value):
         """Simulates typing into the element."""
