@@ -639,6 +639,7 @@ class Zip < BaseJava
     end
     
     task task_name + ":zip" => [zip]
+    Rake::Task[task_name + ":zip"].out = zip
   end
 end
 

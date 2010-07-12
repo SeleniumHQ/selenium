@@ -503,50 +503,41 @@ def version
   `svn info | grep Revision | awk -F: '{print $2}' | tr -d '[:space:]' | tr -d '\n'`
 end
 
-task :remote_release => [:remote] do
-  mkdir_p "build/dist/remote_client"
+task :release => ['//remote/server:server:zip', '//remote/client:combined:zip'] do |t|
+  # Unzip each of the deps and rename the pieces that need renaming
+  renames = {
+    "combined-nodeps-srcs.jar" => "selenium-java-#{version}-srcs.jar",
+    "combined-nodeps.jar" => "selenium-java-#{version}.jar",
+    "server-nodeps-srcs.jar" => "selenium-server-#{version}-srcs.jar",
+    "server-standalone.jar" => "selenium-server-standalone-#{version}.jar",
+  }
+ 
+  t.prerequisites.each do |pre|
+    zip = Rake::Task[pre].out
+    temp =  zip + "rename"
+    rm_rf temp
+    deep = File.join(temp, "/selenium-#{version}")
+    mkdir_p deep 
+  
+    sh "cd #{deep} && jar xf ../../#{zip.split('/')[-1]}"
+    renames.each do |from, to|
+      src = File.join(deep, from)
+            next unless File.exists?(src)
 
-  cp 'remote/build/webdriver-remote-client.jar', 'build/dist/remote_client'
-  cp 'remote/build/webdriver-remote-common.jar', 'build/dist/remote_client'
-  cp 'common/build/webdriver-common.jar', 'build/dist/remote_client'
+      mv src, File.join(deep, to)
+    end
+    rm_f File.join(deep, "server-nodeps.jar")
+    rm_f File.join(deep, "combined-standalone.jar")
+    rm zip
+    sh "cd #{temp} && jar cMf ../#{zip.split('/')[-1]} *"    
 
-  cp Dir.glob('remote/common/lib/runtime/*.jar'), 'build/dist/remote_client'
-  cp Dir.glob('remote/client/lib/runtime/*.jar'), 'build/dist/remote_client'
-  cp 'third_party/java/google-collect/google-collect-1.0.jar', 'build/dist/remote_client'
+    rm_rf temp
+  end
 
-  sh "cd build/dist && zip -r webdriver-remote-client-#{version}.zip remote_client/*"
-  rm_rf "build/dist/remote_client"
-
-  mkdir_p "build/dist/remote_server"
-
-  cp 'remote/build/webdriver-remote-server.jar', 'build/dist/remote_server'
-  cp 'remote/build/webdriver-remote-common.jar', 'build/dist/remote_server'
-  cp 'common/build/webdriver-common.jar', 'build/dist/remote_server'
-
-  cp Dir.glob('remote/common/lib/runtime/*.jar'), 'build/dist/remote_server'
-  cp Dir.glob('remote/server/lib/runtime/*.jar'), 'build/dist/remote_server'
-  cp 'third_party/java/google-collect/google-collect-1.0.jar', 'build/dist/remote_server'
-
-  rm Dir.glob('build/dist/remote_server/servlet*.jar')
-
-  sh "cd build/dist && zip -r webdriver-remote-server-#{version}.zip remote_server/*"
-  rm_rf "build/dist/remote_server"
-end
-
-task :release => [:'all_zip', :'selenium-server-standalone', :'selenium-server_zip'] do
-  cp "build/selenium-server-standalone.jar", "build/selenium-server-standalone-#{version}.jar"
-  cp "build/selenium-java.zip", "build/selenium-java-#{version}.zip"
-  cp "build/selenium-server.zip", "build/selenium-server-#{version}.zip"
-end
-
-task :'selenium-java_zip' do
-  temp = "build/selenium-java_zip"
-  mkdir_p temp
-  sh "cd #{temp} && jar xf ../selenium-java.zip"
-  rm_f "build/selenium-java.zip"
-  Dir["#{temp}/webdriver-*.jar"].each { |file| rm_rf file }
-  mv "#{temp}/selenium-java.jar", "#{temp}/selenium-java-#{version}.jar"
-  sh "cd #{temp} && jar cMf ../selenium-java.zip *"
+  mkdir_p "build/dist"
+  cp "build/remote/server/server-standalone.jar", "build/dist/selenium-server-standalone-#{version}.jar"
+  cp "build/remote/client/combined.zip", "build/dist/selenium-java-#{version}.zip"
+  cp "build/remote/server/server.zip", "build/dist/selenium-server-#{version}.zip" 
 end
 
 desc 'Build the selenium client jars'
