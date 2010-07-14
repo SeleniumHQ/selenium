@@ -25,6 +25,7 @@ import android.graphics.Bitmap.CompressFormat;
 import android.graphics.Bitmap.Config;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.Window;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
@@ -34,6 +35,7 @@ import android.widget.TextView;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.android.RunnableWithArgs;
+import org.openqa.selenium.android.events.TouchScreen;
 import org.openqa.selenium.android.intents.Action;
 import org.openqa.selenium.android.intents.IntentReceiver;
 import org.openqa.selenium.android.intents.IntentReceiverRegistrar;
@@ -196,7 +198,8 @@ public class SingleSessionActivity extends Activity implements IntentReceiverLis
         jsExecutor.executeJS((String) args[0]); 
       } else {
         throw new IllegalArgumentException("Error while trying to execute Javascript." +
-        "SingleSessionActivity.executeJS takes one argument");
+        "SingleSessionActivity.executeJS takes one argument, but received: "
+            + (args == null ? 0 : args.length));
       }
     } else if (Action.ADD_COOKIE.equals(action)) {
       Cookie cookie = new Cookie((String) args[0], (String) args[1], (String) args[2]);
@@ -209,6 +212,12 @@ public class SingleSessionActivity extends Activity implements IntentReceiverLis
       sessionCookieManager.removeAllCookies(webView.getUrl());
     } else if (Action.REMOVE_COOKIE.equals(action)) {
       sessionCookieManager.remove(webView.getUrl(), (String) args[0]);
+    } else if (Action.SEND_MOTION_EVENT.equals(action)) {
+      TouchScreen.sendMotion(webView, (MotionEvent) args[0], (MotionEvent) args[1]);
+    } else if (Action.SEND_KEYS.equals(action)) {
+      // TODO (berrada): Implement me!
+    } else if (Action.CLEAR_TEXT.equals(action)) {
+      // TODO (berrada): Implement me!
     }
     return null;
   }
@@ -233,7 +242,6 @@ public class SingleSessionActivity extends Activity implements IntentReceiverLis
     if (!bitmap.compress(CompressFormat.PNG, 100, stream)) {
       Log.e(LOG_TAG, "Error while compressing screenshot image.");
     }
-    
     try {
       stream.flush();
       stream.close();

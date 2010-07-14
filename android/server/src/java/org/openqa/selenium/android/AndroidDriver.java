@@ -88,6 +88,7 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
   private final SimpleTimer timer;
   private final IntentReceiverRegistrar intentRegistrar;
   private final AndroidWebElement element;
+  private final JavascriptDomAccessor domAccessor;
   private boolean pageHasLoaded = false;
   private boolean pageHasStartedLoading = false;
   private String jsResult;
@@ -102,6 +103,10 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
     initJsonLibrary();
     intentRegistrar = new IntentReceiverRegistrar(getContext());
     timer = new SimpleTimer();
+    
+    // TODO(berrada): This object is stateless, think about isolating the JS and
+    // provide helper functions.
+    domAccessor = new JavascriptDomAccessor(this);
     element = new AndroidWebElement(this);
     executor = Executors.newSingleThreadExecutor();
     initIntentReceivers();
@@ -129,6 +134,10 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
     }
   }
 
+  public JavascriptDomAccessor getDomAccessor() {
+    return domAccessor;
+  }
+  
   public String getCurrentFrame() {
     return currentFrame;
   }

@@ -20,6 +20,7 @@ package org.openqa.selenium.android;
 import static org.openqa.selenium.android.JavascriptDomAccessor.STALE;
 import static org.openqa.selenium.android.JavascriptDomAccessor.UNSELECTABLE;
 import android.graphics.Point;
+import android.os.SystemClock;
 import android.util.Log;
 import android.view.MotionEvent;
 
@@ -47,13 +48,11 @@ public class AndroidWebElement implements WebElement, FindsById, FindsByLinkText
 
   private static final String LOG_TAG = AndroidWebElement.class.getName();
   private final AndroidDriver driver;
-  private final JavascriptDomAccessor domAccessor;
   private final String elementId;
 
   public AndroidWebElement(AndroidDriver driver, String elementId) {
     this.driver = driver;
     this.elementId = elementId;
-    domAccessor = new JavascriptDomAccessor(driver);
   }
 
   public AndroidWebElement(AndroidDriver driver) {
@@ -65,28 +64,44 @@ public class AndroidWebElement implements WebElement, FindsById, FindsByLinkText
   }
 
   public void click() {
-    assertElementIsDisplayed();
-    // Native touch event
-    Point p = getLocation();
-    Log.d(LOG_TAG, "click on " + p.toString());
-    // TODO(berrada): Aim for the centre of the element (so get size as well)
-    // Comment on why we don't need an ACTION_UP
-    MotionEvent motionEvent =
-        MotionEvent.obtain(System.currentTimeMillis(), System.currentTimeMillis(),
-            MotionEvent.ACTION_DOWN, new Float(p.x + 1), new Float(p.y + 1), 1.0f, 0,
-            0, 0f, 0, 0, 0);
+    assertElementIsDisplayed();    
+    Point center = getCenterElementLocation();
+    Log.d(LOG_TAG, "Clicking on " + center.toString());
+    
+    MotionEvent downEvent = MotionEvent.obtain(SystemClock.uptimeMillis(),
+        SystemClock.uptimeMillis(), MotionEvent.ACTION_DOWN, center.x, center.y, 0,
+        0, 0, 0, 0, 0, 0);
+    MotionEvent upEvent = MotionEvent.obtain(downEvent.getDownTime(),
+        SystemClock.uptimeMillis() + 1, MotionEvent.ACTION_UP, center.x, center.y, 1,
+        0, 0, 0, 0, 0, 0);
     
     driver.resetPageHasStartedLoading();
     driver.resetPageHasLoaded();
-    driver.sendIntent(Action.SEND_MOTION_EVENT, motionEvent);
+    driver.sendIntent(Action.SEND_MOTION_EVENT, downEvent, upEvent);
 
-    // If the page started loading and the element is clickable, we should wait
+    // If the page started loading we should wait
     // until the page is done loading.
-    if (driver.pageHasStartedLoading() && p.x != 0 && p.y != 0) {
+    if (driver.pageHasStartedLoading()) {
       driver.waitUntilPageFinishedLoading();
     }
   }
 
+  private Point getCenterElementLocation() {
+    Point topLeft = getLocation();
+    Point size = getSize();
+    int centerX = topLeft.x + (size.x > 0 ? size.x/2 : 0);
+    int centerY = topLeft.y + (size.y > 0 ? size.y/2 : 0);
+    // In case of links starting on end of a line and continuing on the following
+    // line, the center coordinate will be somewhere outside the screen, we need
+    // to re-adjust.
+    Point center = getDomAccessor().adjustCoordinateIfNeeded(centerX, centerY, elementId);
+    return center;    
+  }
+  
+  public JavascriptDomAccessor getDomAccessor() {
+    return driver.getDomAccessor();
+  }
+  
   public void submit() {
     // TODO(berrada): For the else condition, it would be better to walk up the
     // form, then down to the first valid submit element and click that.
@@ -94,18 +109,20 @@ public class AndroidWebElement implements WebElement, FindsById, FindsByLinkText
     driver.resetPageHasLoaded();
     driver.resetPageHasStartedLoading();
     if ("button".equalsIgnoreCase(tagName) || "input".equalsIgnoreCase(tagName)
-        || getAttribute("type").equalsIgnoreCase("submit")
-        || "img".equalsIgnoreCase(tagName)) {      
+        || "submit".equalsIgnoreCase(getAttribute("type"))
+        || "img".equalsIgnoreCase(tagName)) {   
       this.click();
-      domAccessor.submit(elementId);
-      if (driver.pageHasStartedLoading()) {
-        driver.waitUntilPageFinishedLoading();
-      }
+    } else {
+      // TODO (berrada): Get rid of the JS implementation, and send keyboard events instead.
+      getDomAccessor().submit(elementId);
+    }
+    if (driver.pageHasStartedLoading()) {
+      driver.waitUntilPageFinishedLoading();
     }
   }
 
   public String getValue() {
-    return domAccessor.getAttributeValue("value", elementId);
+    return getDomAccessor().getAttributeValue("value", elementId);
   }
 
   public void clear() {
@@ -113,7 +130,7 @@ public class AndroidWebElement implements WebElement, FindsById, FindsByLinkText
     // focus
     this.click();
     driver.sendIntent(Action.CLEAR_TEXT);
-    domAccessor.blur(elementId);
+    getDomAccessor().blur(elementId);
   }
 
   public void sendKeys(CharSequence... value) {
@@ -130,13 +147,13 @@ public class AndroidWebElement implements WebElement, FindsById, FindsByLinkText
   }
 
   public String getTagName() {
-    return domAccessor.getTagName(elementId).toLowerCase();
+    return getDomAccessor().getTagName(elementId).toLowerCase();
   }
 
   public String getAttribute(String name) {
-    String value = domAccessor.getAttributeValue(name, elementId);
+    String value = getDomAccessor().getAttributeValue(name, elementId);
     Log.d(LOG_TAG,
-        "GetAttribute " + name + "  " + value + " " + (value != null ? value.length() : ""));
+        "GetAttribute " + name + ": value: " + value);
     if ("selected".equalsIgnoreCase(name) || "checked".equalsIgnoreCase(name)) {
       return Boolean.toString(isSelected());
     } else if ("disabled".equalsIgnoreCase(name)) {
@@ -149,17 +166,17 @@ public class AndroidWebElement implements WebElement, FindsById, FindsByLinkText
     if (!isDisplayed()) {
       throw new ElementNotVisibleException("Element: " + elementId);
     }
-    return domAccessor.toggle(elementId);
+    return getDomAccessor().toggle(elementId);
   }
 
   public boolean isSelected() {
-    return domAccessor.isSelected(elementId);
+    return getDomAccessor().isSelected(elementId);
   }
 
   public void setSelected() {
     assertElementIsDisplayed();
     assertElementIsEnabled();
-    String result = domAccessor.setSelected(elementId);
+    String result = getDomAccessor().setSelected(elementId);
     if (result == UNSELECTABLE) {
       throw new WebDriverException("Element is not selectable.");
     } else if (result == STALE) {
@@ -172,7 +189,7 @@ public class AndroidWebElement implements WebElement, FindsById, FindsByLinkText
   }
 
   public String getText() {
-    return normalize(domAccessor.getText(elementId));
+    return normalize(getDomAccessor().getText(elementId));
   }
 
   public WebElement findElement(By by) {
@@ -184,51 +201,51 @@ public class AndroidWebElement implements WebElement, FindsById, FindsByLinkText
   }
 
   public WebElement findElementById(String using) {
-    return domAccessor.getElementById(using, elementId);
+    return getDomAccessor().getElementById(using, elementId);
   }
 
   public List<WebElement> findElementsById(String using) {
-    return domAccessor.getElementsById(using, elementId);
+    return getDomAccessor().getElementsById(using, elementId);
   }
 
   public WebElement findElementByXPath(String using) {
-    return domAccessor.getElementByXPath(using, elementId);
+    return getDomAccessor().getElementByXPath(using, elementId);
   }
 
   public List<WebElement> findElementsByXPath(String using) {
-    return domAccessor.getElementsByXpath(using, elementId);
+    return getDomAccessor().getElementsByXpath(using, elementId);
   }
 
   public WebElement findElementByLinkText(String using) {
-    return domAccessor.getElementByLinkText(using, elementId);
+    return getDomAccessor().getElementByLinkText(using, elementId);
   }
 
   public List<WebElement> findElementsByLinkText(String using) {
-    return domAccessor.getElementsByLinkText(using, elementId);
+    return getDomAccessor().getElementsByLinkText(using, elementId);
   }
 
   public WebElement findElementByPartialLinkText(String using) {
-    return domAccessor.getElementByPartialLinkText(using, elementId);
+    return getDomAccessor().getElementByPartialLinkText(using, elementId);
   }
 
   public List<WebElement> findElementsByPartialLinkText(String using) {
-    return domAccessor.getElementsByPartialLinkText(using, elementId);
+    return getDomAccessor().getElementsByPartialLinkText(using, elementId);
   }
 
   public WebElement findElementByTagName(String using) {
-    return domAccessor.getElementByTagName(using, elementId);
+    return getDomAccessor().getElementByTagName(using, elementId);
   }
 
   public List<WebElement> findElementsByTagName(String using) {
-    return domAccessor.getElementsByTagName(using, elementId);
+    return getDomAccessor().getElementsByTagName(using, elementId);
   }
 
   public WebElement findElementByName(String using) {
-    return domAccessor.getElementByName(using, elementId);
+    return getDomAccessor().getElementByName(using, elementId);
   }
 
   public List<WebElement> findElementsByName(String using) {
-    return domAccessor.getElementsByName(using, elementId);
+    return getDomAccessor().getElementsByName(using, elementId);
   }
 
   /**
@@ -264,34 +281,24 @@ public class AndroidWebElement implements WebElement, FindsById, FindsByLinkText
    *         element
    */
   public Point getLocation() {
-    String result = domAccessor.getXYCordinate(elementId);
+    Point result = getDomAccessor().getCoordinate(elementId);
     if (result == null) {
       throw new WebDriverException("Element location is null.");
     }
-
-    Log.d(LOG_TAG, "getLocation result: " + result);
-    String[] coordinate = result.split(",");
-    if (coordinate.length == 2) {
-      return new Point(Integer.parseInt(coordinate[0]), Integer.parseInt(coordinate[1]));
-    }
-    Log.e(LOG_TAG, "Cannot parse result of getXYCoordinate " + result + " " + result.length());
-    throw new WebDriverException("Cannot parse result of getXYCoordinate " + result);
+    return result;
   }
 
+  /**
+   * @return a {@link Point} where x is the width, and y is the height.
+   */
   public Point getSize() {
-    try {
-            // TODO(berrada): I don't think this will work ("em", for example)
-      int width = Integer.parseInt(getAttribute("offsetWidth").replace("px", ""));
-      int height = Integer.parseInt(getAttribute("offsetHeight").replace("px", ""));
-      System.out.println("WIDTH : " + width + ", HEIGHT: " + height);
-      return new Point(width, height);
-    } catch (NumberFormatException e) {
-      throw new WebDriverException("Cannot determine size of element", e);
-    }
+    // TODO(berrada): I don't think this will work ("em", for example). There is an
+    // atom for that.
+    return getDomAccessor().getSize(elementId);
   }
 
   public String getValueOfCssProperty(String property) {
-    String value = domAccessor.getValueOfCssProperty(property, true, elementId);
+    String value = getDomAccessor().getValueOfCssProperty(property, true, elementId);
     Log.d(LOG_TAG, "ValueOfCssProperty: " + property + " = " + value);
     if (value == null) {
       return "";
@@ -307,7 +314,7 @@ public class AndroidWebElement implements WebElement, FindsById, FindsByLinkText
   }
 
   public boolean isDisplayed() {
-    boolean visibility = domAccessor.isDisplayed(elementId);
+    boolean visibility = getDomAccessor().isDisplayed(elementId);
     if ("input".equalsIgnoreCase(getTagName())) {
       return !"hidden".equalsIgnoreCase(getAttribute("type")) && visibility;
     }

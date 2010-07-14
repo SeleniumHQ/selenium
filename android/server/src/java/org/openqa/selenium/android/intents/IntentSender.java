@@ -24,6 +24,7 @@ import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Parcelable;
 import android.util.Log;
 
 public class IntentSender extends BroadcastReceiver implements Callable {
@@ -33,17 +34,25 @@ public class IntentSender extends BroadcastReceiver implements Callable {
   private Object toReturn;
   private String action;
   
+  public final static String IS_PARCELABLE = "isParcelable";
+  
   public void broadcast(Context sender, String action, Object... args) {
     Log.d(LOG_TAG, String.format("Context: %s, Sending Intent: %s, Args: %s",
         sender.toString(), action, args.length));
     received = false;
     this.action = action;
     Intent intent = new Intent(action);
-    
+    boolean isParcelable = false;
     if (args != null) {
       for (int i = 0; i < args.length; i++) {
-        intent.putExtra("arg_" + i, (Serializable) args[i]);
+        if (args[i] instanceof Parcelable) {
+          intent.putExtra("arg_" + i, (Parcelable) args[i]);
+          isParcelable = true;
+        } else {
+          intent.putExtra("arg_" + i, (Serializable) args[i]);
+        }
       }
+      intent.putExtra(IS_PARCELABLE, isParcelable);
     }
     sender.sendOrderedBroadcast(intent, null, this, null, Activity.RESULT_OK, null, null);
   }

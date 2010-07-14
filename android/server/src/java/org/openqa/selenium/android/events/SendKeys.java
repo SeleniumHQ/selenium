@@ -19,6 +19,7 @@ package org.openqa.selenium.android.events;
 
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.android.RunnableWithArgs;
+import org.openqa.selenium.android.intents.WebViewAction;
 //import org.openqa.selenium.android.intents.DoNativeActionIntent;
 
 import android.os.Bundle;
@@ -79,7 +80,7 @@ public class SendKeys implements RunnableWithArgs {
 
     // TODO(berrada): This is slightly out of kilter with the main webdriver APIs. Might be okay, though
     if (last) {
-      NativeUtil.clearFocus(webView);
+      WebViewAction.clearTextEntry(webView);
     }
   }
 

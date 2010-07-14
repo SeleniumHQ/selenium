@@ -20,14 +20,10 @@ package org.openqa.selenium.android.intents;
 public interface Action {
   String NAVIGATE = "navigate";
   String GET_TITLE = "getTitle";
-  String DO_ACTION = "doAction";
   String GET_URL = "getUrl";
   String PAGE_LOADED = "pageLoaded";
-  String COMMAND_EXECUTED = "commandExecuted";
   String PAGE_STARTED_LOADING = "pageStartedLoading";
   String TAKE_SCREENSHOT = "takeScreenshot";
-  String DO_NATIVE_ACTION = "doNativeAction";
-  String DO_NATIVE_ACTION_EXECUTED = "doNativeActionExecuted";
   String NAVIGATE_BACK = "navigateBack";
   String NAVIGATE_FORWARD = "navigateForward";
   String REFRESH = "refresh";

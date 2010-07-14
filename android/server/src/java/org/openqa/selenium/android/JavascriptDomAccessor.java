@@ -17,10 +17,10 @@ limitations under the License.
 
 package org.openqa.selenium.android;
 
+import android.graphics.Point;
 import android.util.Log;
 
 import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.NoSuchFrameException;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
@@ -120,7 +120,7 @@ public class JavascriptDomAccessor {
   /**
    * Return the Javascript to determine weather an element is stale.
    */
-  private String isStaleJs() {
+  private String isElementStaleJs() {
     return
     "var isStale;" +
     "var doc = " + driver.getCurrentFrame() + ".document.documentElement;" +
@@ -355,25 +355,28 @@ public class JavascriptDomAccessor {
   
   public String getText(String elementId) {
     String result = (String)driver.executeScript(
-        isStaleJs() +
+        initCacheJs(driver.getCurrentFrame()) +
+        isElementStaleJs() +
         "if (isStale == false) {" +
         "  return element.innerText;" +
         "}" +
         "return 'stale';",
         elementId);
-    return isElementStale(elementId, result);
+    throwExceptionIfElementIsStale(elementId, result);
+    return result;
   }
 
   public String getTagName(String elementId) {
     String result = (String) driver.executeScript(
         initCacheJs(driver.getCurrentFrame()) +
-        isStaleJs() +
+        isElementStaleJs() +
         "if (isStale == false) {" +
         "  return element.tagName;" +
         "}" +
         "return 'stale';",
         elementId);
-    return isElementStale(elementId, result);
+    throwExceptionIfElementIsStale(elementId, result);
+    return result;
   }
 
   /**
@@ -382,15 +385,13 @@ public class JavascriptDomAccessor {
    * 
    * @param elementId the element to return coordinates for
    * @return String containing the comma separated coordinate of the element
-   * @throws {@link StaleElementReferenceException} if the element is not in the
-   *     cache
    */
   // TODO(berrada): Be aware that getBoundingClientRect only returns the visible area,
   // you may well need to add the offsets.
-  public String getXYCordinate(String elementId) {
+  public Point getCoordinate(String elementId) {
     String result = (String)driver.executeScript(
         initCacheJs(driver.getCurrentFrame()) +
-        isStaleJs() +
+        isElementStaleJs() +
         "if (isStale == false) {" +
         "  var curleft = 0;" +
         "  var curtop = 0; "+
@@ -401,45 +402,80 @@ public class JavascriptDomAccessor {
         "  } else if (element.offsetParent) { " + 
         "    do {" +
         "      curleft += element.offsetLeft; "+
-        "      curtop += element.offsetTop; " + 
+        "      curtop += element.offsetTop; " +
         "    } while (element = element.offsetParent); " + 
         "  }" + 
         "  return curleft + ',' + curtop;"+ 
         "}" +
         "return '" + STALE + "';",
         elementId);
-    return isElementStale(elementId, result);
+    throwExceptionIfElementIsStale(elementId, result);
+    return parseCoordinate(result);
   }
   
   public void blur(String elementId) {
     String result = (String) driver.executeScript(
         initCacheJs(driver.getCurrentFrame()) +
-        isStaleJs() +
+        isElementStaleJs() +
         "if (isStale == false) {" +
         "  element.blur();" +
         "  return true;" + 
         "}" +
         "return '" + STALE + "';",
         elementId);
-    isElementStale(elementId, result);
+    throwExceptionIfElementIsStale(elementId, result);
   }
   
   public String getAttributeValue(String attribute, String elementId) {
-    Object result = driver.executeScript(
+    // TODO (berrada): This is equivalent to combining the "bot.dom.getProperty"
+    // and "bot.dom.getAttribute" atoms.
+    String result = (String) driver.executeScript(
         initCacheJs(driver.getCurrentFrame()) +
-        isStaleJs() +
+        isElementStaleJs() +
         "if (isStale == false) {" +
-        "  return " + ("value".equals(attribute) ?
-            "element.value" : "element.getAttribute(arguments[1]);") +
+        "  return " + ("value".equals(attribute) || attribute.startsWith("offset")
+            || "index".equals(attribute) ?
+                "element." + attribute + ";"
+                : "element.getAttribute(arguments[1]);") +
         "}" +
         "return '" + STALE + "';",
         elementId, attribute);
     if (result == null) {
       return null;
     }
-    return isElementStale(elementId, String.valueOf(result));
+    throwExceptionIfElementIsStale(elementId, result);
+    return result;
   }
 
+  public Point getSize(String elementId) {
+    String result = (String) driver.executeScript(
+      initCacheJs(driver.getCurrentFrame()) +
+      isElementStaleJs() +
+      "if (isStale == false) {" +
+      "  if(element.getBoundingClientRect) {" +
+      "    var clientRect = element.getBoundingClientRect();" +
+      "    return clientRect.width + ',' + clientRect.height;" +
+      "  }" +
+      "  return element.offsetWidth + ',' + element.offsetHeight;" +
+      "}" +
+      "return '" + STALE + "';",
+      elementId);
+    if (result == null) {
+      return null;
+    }
+    throwExceptionIfElementIsStale(elementId, result);
+    
+    return parseCoordinate(result);
+  }
+
+  private Point parseCoordinate(String result) {
+    String[] coordinates = result.split(",");
+    if (coordinates.length == 2) {
+      return new Point(Integer.parseInt(coordinates[0]), Integer.parseInt(coordinates[1]));
+    }
+    else throw new WebDriverException("Cannot parse coordinates: " + result);
+  }
+  
   public void click(String elementId) {
     driver.executeScript(
         "function triggerMouseEvent(element, eventType) {" +
@@ -471,7 +507,7 @@ public class JavascriptDomAccessor {
   public void submit(String elementId) {
     driver.executeScript(
         initCacheJs(driver.getCurrentFrame()) +
-        isStaleJs() +
+        isElementStaleJs() +
         "if (isStale == false) {" +
         "  var doc = " + driver.getCurrentFrame() + ".document.documentElement;" +
         "  if (arguments[0] in doc.androiddriver_elements) {" +
@@ -495,7 +531,7 @@ public class JavascriptDomAccessor {
   public String setSelected(String elementId) {
     return (String)driver.executeScript(
         initCacheJs(driver.getCurrentFrame()) +
-        isStaleJs() +
+        isElementStaleJs() +
         "if (isStale == false) {" +
         "  var element = doc.androiddriver_elements[arguments[0]];" +
         "  var changed = false;" +
@@ -525,7 +561,7 @@ public class JavascriptDomAccessor {
   public boolean isSelected(String elementId) {
     Object result = driver.executeScript(
         initCacheJs(driver.getCurrentFrame()) +
-        isStaleJs() +
+        isElementStaleJs() +
         "if (isStale == false) {" +
         "  var element = doc.androiddriver_elements[arguments[0]];" +
         "  if (element.tagName.toLowerCase() == 'option') {" +
@@ -538,7 +574,7 @@ public class JavascriptDomAccessor {
         "}" +
         "return '" + STALE + "'",
         elementId);
-    isElementStale(elementId, String.valueOf(result));
+    throwExceptionIfElementIsStale(elementId, String.valueOf(result));
 
     if (result instanceof Boolean) {
       return (Boolean) result;
@@ -549,7 +585,7 @@ public class JavascriptDomAccessor {
   public boolean toggle(String elementId) {
     Object result = driver.executeScript(
         initCacheJs(driver.getCurrentFrame()) +
-        isStaleJs() +
+        isElementStaleJs() +
         "if (isStale == false) {" +
         "  var element = doc.androiddriver_elements[arguments[0]];" +
         "  element.focus();" +
@@ -561,7 +597,7 @@ public class JavascriptDomAccessor {
         "}" +
         "return '" + STALE + "'",
         elementId);
-    isElementStale(elementId, String.valueOf(result));
+    throwExceptionIfElementIsStale(elementId, String.valueOf(result));
 
     if (result instanceof Boolean) {
       return (Boolean) result;
@@ -569,17 +605,14 @@ public class JavascriptDomAccessor {
     throw new WebDriverException("Unknown result type " + result);
   }
 
-  private String isElementStale(String elementId, String result) {
+  private void throwExceptionIfElementIsStale(final String elementId, final String result) {
     if (result.equals(STALE)) {
-      throw new StaleElementReferenceException("Element with id: " + 
-          elementId + " is stale");
+      throw new StaleElementReferenceException("Element with id: " + elementId + " is stale");
     }
-    return result;
   }
 
   private List<WebElement> createWebElementsWithIds(List<Integer> ids, String elementId) {
     List<WebElement> elements = new ArrayList<WebElement>();
-
     // Return empty list when there are no children of a node
     if (!elementId.equals("0") && ids.size() == 0) {
       return elements;
@@ -624,7 +657,7 @@ public class JavascriptDomAccessor {
   public boolean isDisplayed(String elementId) {
     Object result = driver.executeScript(
         initCacheJs(driver.getCurrentFrame()) +
-        isStaleJs() +
+        isElementStaleJs() +
         "if (isStale == false) {" +
         "  var body = " + driver.getCurrentFrame() + ".document.body; " +
         "  var parent = element;  " +
@@ -638,7 +671,7 @@ public class JavascriptDomAccessor {
         "}" +
         "return '" + STALE + "';",
         elementId);
-    isElementStale(elementId, String.valueOf(result));
+    throwExceptionIfElementIsStale(elementId, String.valueOf(result));
 
     if (result instanceof Boolean) {
       return (Boolean) result;
@@ -647,9 +680,9 @@ public class JavascriptDomAccessor {
   }
 
   public String getValueOfCssProperty(String using, boolean computedStyle, String elementId) {
-    Object result = driver.executeScript(
+    String result = (String) driver.executeScript(
         initCacheJs(driver.getCurrentFrame()) +
-        isStaleJs() +
+        isElementStaleJs() +
         "if (isStale == false) {" +
         (computedStyle ?
         ("  if (element.currentStyle) " +
@@ -663,6 +696,41 @@ public class JavascriptDomAccessor {
          "}" +
          "return '" + STALE + "';",
         elementId, using);
-    return isElementStale(elementId, String.valueOf(result));
+    throwExceptionIfElementIsStale(elementId, result);
+    return result;
+  }
+  
+  /**
+   * Adjusts the given coordinate if they are outside the screen to be on the actual element.
+   * 
+   * @param x the horizontal position in px
+   * @param y the vertical position in px
+   * @param elementId the corresponding element id
+   * @return a Point representing the adjusted coordinate or the initial given coordinate if no
+   *     adjustments were needed.
+   * @throws WebDriverException if the adjusted coordinate do not correspond to the given element
+   */
+  public Point adjustCoordinateIfNeeded(int x, int y, String elementId) {
+    String result = (String) driver.executeScript(
+      initCacheJs(driver.getCurrentFrame()) + 
+      isElementStaleJs() +
+      "if (element == element.ownerDocument.elementFromPoint(arguments[1], arguments[2])) {" +
+      " return arguments[1] + ',' + arguments[2];" +
+      "} else {" +
+      "  var xOffset = 20;" +
+      "  var yOffset = 20;" + // 20/2 = 10 for smallest clickable line height on touch screen device
+      "  if (element.getClientRects) {" +
+      "    xOffset = element.getClientRects().width/2;" +
+      "    yOffset = element.getClientRects().height/2;" +
+      "  }" +
+      "  var adjustedX = arguments[1] + xOffset/2;" +
+      "  var adjustedY = arguments[2] + yOffset/2;" +
+      "  if (element == element.ownerDocument.elementFromPoint(adjustedX, adjustedY)) {" +
+      "    return adjustedX + ',' + adjustedY;" +
+      "  }" +
+      "  return arguments[1] + ',' + arguments[2];" +
+      "}"
+      , elementId, x, y);
+    return parseCoordinate(result);
   }
 }
