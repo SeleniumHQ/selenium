@@ -13,9 +13,10 @@ module Selenium
 
         Zip::ZipFile.open(path) do |zip|
           zip.each do |entry|
-            to = File.join(destination, entry.name)
-            FileUtils.mkdir_p File.dirname(to)
+            to      = File.join(destination, entry.name)
+            dirname = File.dirname(to)
 
+            FileUtils.mkdir_p dirname unless File.exist? dirname
             zip.extract(entry, to)
           end
         end
