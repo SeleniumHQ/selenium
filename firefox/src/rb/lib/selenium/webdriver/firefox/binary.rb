@@ -94,6 +94,8 @@ module Selenium
         end
 
         class << self
+          attr_writer :path
+
           def path
             @path ||= case Platform.os
                       when :macosx
@@ -107,7 +109,7 @@ module Selenium
                       end
 
             unless File.file?(@path)
-              raise Error::WebDriverError, "Could not find Firefox binary. Make sure Firefox is installed (OS: #{Platform.os})"
+              raise Error::WebDriverError, "Could not find Firefox binary (os=#{Platform.os}). Make sure Firefox is installed or set the path manually with #{self}.path="
             end
 
             @path
@@ -131,9 +133,7 @@ module Selenium
             end
           rescue LoadError
             # older JRuby or IronRuby does not have win32/registry
-            nil
           rescue Win32::Registry::Error
-            raise Error::WebDriverError, "Firefox not found in the Windows registry. Make sure Firefox is installed"
           end
         end # class << self
 
