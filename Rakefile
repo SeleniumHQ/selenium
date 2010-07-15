@@ -509,6 +509,7 @@ task :release => ['//remote/server:server:zip', '//remote/client:combined:zip'] 
     "combined-nodeps-srcs.jar" => "selenium-java-#{version}-srcs.jar",
     "combined-nodeps.jar" => "selenium-java-#{version}.jar",
     "server-nodeps-srcs.jar" => "selenium-server-#{version}-srcs.jar",
+    "server-nodeps.jar" => "selenium-server-#{version}.jar",
     "server-standalone.jar" => "selenium-server-standalone-#{version}.jar",
   }
  
@@ -526,7 +527,6 @@ task :release => ['//remote/server:server:zip', '//remote/client:combined:zip'] 
 
       mv src, File.join(deep, to)
     end
-    rm_f File.join(deep, "server-nodeps.jar")
     rm_f File.join(deep, "combined-standalone.jar")
     rm zip
     sh "cd #{temp} && jar cMf ../#{zip.split('/')[-1]} *"    
