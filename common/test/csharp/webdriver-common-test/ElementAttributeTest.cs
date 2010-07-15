@@ -35,7 +35,7 @@ namespace OpenQA.Selenium
             Assert.IsTrue(inputElement.Enabled);
 
             IWebElement pElement = driver.FindElement(By.Id("cheeseLiker"));
-            Assert.AreEqual("false", pElement.GetAttribute("disabled"));
+            Assert.AreEqual(null, pElement.GetAttribute("disabled"));
             Assert.IsTrue(pElement.Enabled);
         }
 
@@ -86,7 +86,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = formsPage;
             IWebElement checkbox = driver.FindElement(By.XPath("//input[@id='checky']"));
-            Assert.AreEqual("false", checkbox.GetAttribute("checked"));
+            Assert.AreEqual(null, checkbox.GetAttribute("checked"));
             checkbox.Select();
             Assert.AreEqual("true", checkbox.GetAttribute("checked"));
         }
@@ -99,14 +99,14 @@ namespace OpenQA.Selenium
             IWebElement initiallyNotSelected = driver.FindElement(By.Id("peas"));
             IWebElement initiallySelected = driver.FindElement(By.Id("cheese_and_peas"));
 
-            Assert.AreEqual("false", neverSelected.GetAttribute("selected"), "false");
-            Assert.AreEqual("false", initiallyNotSelected.GetAttribute("selected"), "false");
+            Assert.AreEqual(null, neverSelected.GetAttribute("selected"), "false");
+            Assert.AreEqual(null, initiallyNotSelected.GetAttribute("selected"), "false");
             Assert.AreEqual("true", initiallySelected.GetAttribute("selected"), "true");
 
             initiallyNotSelected.Select();
-            Assert.AreEqual("false", neverSelected.GetAttribute("selected"));
+            Assert.AreEqual(null, neverSelected.GetAttribute("selected"));
             Assert.AreEqual("true", initiallyNotSelected.GetAttribute("selected"));
-            Assert.AreEqual("false", initiallySelected.GetAttribute("selected"));
+            Assert.AreEqual(null, initiallySelected.GetAttribute("selected"));
         }
 
         [Test]
@@ -120,7 +120,7 @@ namespace OpenQA.Selenium
             Assert.IsTrue(one.Selected);
             Assert.IsFalse(two.Selected);
             Assert.AreEqual("true", one.GetAttribute("selected"));
-            Assert.AreEqual("false", two.GetAttribute("selected"));
+            Assert.AreEqual(null, two.GetAttribute("selected"));
         }
 
         [Test]
