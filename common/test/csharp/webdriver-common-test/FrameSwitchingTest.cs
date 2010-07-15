@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using NUnit.Framework;
 using OpenQA.Selenium.Environment;
 
@@ -38,9 +36,9 @@ namespace OpenQA.Selenium
             driver.Url = framesetPage;
 
             driver.FindElement(By.LinkText("top")).Click();
-            //TODO (jimevan): this is an ugly sleep. Remove when implicit waiting is implemented.
-            System.Threading.Thread.Sleep(1000);
-
+            
+            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromMilliseconds(1000));
+            
             Assert.AreEqual("XHTML Test Page", driver.Title);
             Assert.AreEqual("XHTML Test Page", driver.FindElement(By.XPath("/html/head/title")).Text);
         }
@@ -49,6 +47,7 @@ namespace OpenQA.Selenium
         public void ShouldNotAutomaticallySwitchFocusToAnIFrameWhenAPageContainingThemIsLoaded()
         {
             driver.Url = iframePage;
+            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromMilliseconds(500));
             driver.FindElement(By.Id("iframe_page_heading"));
         }
 
@@ -70,8 +69,9 @@ namespace OpenQA.Selenium
             driver.SwitchTo().Frame(0);
 
             driver.FindElement(By.Id("submitButton")).Click();
-            //TODO (jimevan): this is an ugly sleep. Remove when implicit waiting is implemented.
-            System.Threading.Thread.Sleep(500);
+            
+            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromMilliseconds(500));
+            
             String hello = driver.FindElement(By.Id("greeting")).Text;
             Assert.AreEqual(hello, "Success!");
         }
@@ -83,8 +83,9 @@ namespace OpenQA.Selenium
             driver.SwitchTo().Frame("third");
 
             driver.FindElement(By.Id("submitButton")).Click();
-            //TODO (jimevan): this is an ugly sleep. Remove when implicit waiting is implemented.
-            System.Threading.Thread.Sleep(500);
+            
+            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromMilliseconds(500));
+            
             String hello = driver.FindElement(By.Id("greeting")).Text;
             Assert.AreEqual(hello, "Success!");
             driver.SwitchTo().DefaultContent();
@@ -100,9 +101,8 @@ namespace OpenQA.Selenium
 
             // This should replaxe frame "iframe1" inside frame "sixth" ...
             driver.FindElement(By.Id("submitButton")).Click();
-            //TODO (jimevan): this is an ugly sleep. Remove when implicit waiting is implemented.
-            System.Threading.Thread.Sleep(500);
-
+            
+            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromMilliseconds(500));
             // driver should still be focused on frame "iframe1" inside frame "sixth" ...
             String hello = driver.FindElement(By.Id("greeting")).Text;
             Assert.AreEqual(hello, "Success!");
