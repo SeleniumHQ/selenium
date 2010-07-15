@@ -52,20 +52,23 @@ describe "Element" do
     driver.find_element(:id, "withText").clear
   end
 
-  it "should get and set selected" do
-    driver.navigate.to url_for("formPage.html")
-    cheese = driver.find_element(:id, "cheese")
-    peas   = driver.find_element(:id, "peas")
+  not_compliant_on :browser => :ie do
+    it "should get and set selected" do
+      driver.navigate.to url_for("formPage.html")
 
-    cheese.select
+      cheese = driver.find_element(:id, "cheese")
+      peas   = driver.find_element(:id, "peas")
 
-    cheese.should be_selected
-    peas.should_not be_selected
+      cheese.select
 
-    peas.select
+      cheese.should be_selected
+      peas.should_not be_selected
 
-    peas.should be_selected
-    cheese.should_not be_selected
+      peas.select
+
+      peas.should be_selected
+      cheese.should_not be_selected
+    end
   end
 
   it "should get enabled" do

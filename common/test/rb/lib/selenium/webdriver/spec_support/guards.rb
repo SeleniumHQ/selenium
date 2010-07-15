@@ -15,7 +15,7 @@ module Selenium
           end
 
           def report
-            gs   = guards["#{GlobalTestEnv.browser}/#{GlobalTestEnv.driver}/#{Platform.os}"]
+            gs = guards["#{GlobalTestEnv.browser}/#{GlobalTestEnv.driver}/#{Platform.os}"]
 
             print "\n\nSpec guards for this implementation: "
 
@@ -58,7 +58,6 @@ module Selenium
           Guards.record(:compliant_on, opts, :file => caller.first)
           yield if Guards.env_matches?(opts)
         end
-
 
       end # Guards
     end # SpecSupport

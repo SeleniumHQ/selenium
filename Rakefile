@@ -130,7 +130,10 @@ task :test_java => [
 ]
 
 task :test_rb => [
-  "//firefox"
+  "//firefox:ruby-test:jruby",
+  "//remote/client:ruby-test:jruby",
+ ("//jobbie:ruby-test:jruby" if windows?),
+  "//chrome:ruby-test:jruby"
 ]
 
 task :test_py => [
@@ -512,14 +515,14 @@ task :release => ['//remote/server:server:zip', '//remote/client:combined:zip'] 
     "server-nodeps.jar" => "selenium-server-#{version}.jar",
     "server-standalone.jar" => "selenium-server-standalone-#{version}.jar",
   }
- 
+
   t.prerequisites.each do |pre|
     zip = Rake::Task[pre].out
     temp =  zip + "rename"
     rm_rf temp
     deep = File.join(temp, "/selenium-#{version}")
-    mkdir_p deep 
-  
+    mkdir_p deep
+
     sh "cd #{deep} && jar xf ../../#{zip.split('/')[-1]}"
     renames.each do |from, to|
       src = File.join(deep, from)
@@ -529,7 +532,7 @@ task :release => ['//remote/server:server:zip', '//remote/client:combined:zip'] 
     end
     rm_f File.join(deep, "combined-standalone.jar")
     rm zip
-    sh "cd #{temp} && jar cMf ../#{zip.split('/')[-1]} *"    
+    sh "cd #{temp} && jar cMf ../#{zip.split('/')[-1]} *"
 
     rm_rf temp
   end
@@ -537,7 +540,7 @@ task :release => ['//remote/server:server:zip', '//remote/client:combined:zip'] 
   mkdir_p "build/dist"
   cp "build/remote/server/server-standalone.jar", "build/dist/selenium-server-standalone-#{version}.jar"
   cp "build/remote/client/combined.zip", "build/dist/selenium-java-#{version}.zip"
-  cp "build/remote/server/server.zip", "build/dist/selenium-server-#{version}.zip" 
+  cp "build/remote/server/server.zip", "build/dist/selenium-server-#{version}.zip"
 end
 
 desc 'Build the selenium client jars'
