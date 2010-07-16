@@ -238,10 +238,12 @@ class selenium:
         return tokens
 
     def get_number(self, verb, args):
-        return float(self.get_string(verb, args))
+        # FIXME: Talk to the group about this, it should return a number
+        return self.get_string(verb, args)
 
     def get_number_array(self, verb, args):
-        return [float(n) for n in self.get_string_array(verb, args)]
+        # FIXME: Talk to the group about this, it should return a number
+        return self.get_string_array(verb, args)
 
     def get_boolean(self, verb, args):
         boolstr = self.get_string(verb, args)
