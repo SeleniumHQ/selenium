@@ -238,12 +238,10 @@ class selenium:
         return tokens
 
     def get_number(self, verb, args):
-        # Is there something I need to do here?
-        return self.get_string(verb, args)
-    
+        return float(self.get_string(verb, args))
+
     def get_number_array(self, verb, args):
-        # Is there something I need to do here?
-        return self.get_string_array(verb, args)
+        return [float(n) for n in self.get_string_array(verb, args)]
 
     def get_boolean(self, verb, args):
         boolstr = self.get_string(verb, args)
@@ -252,7 +250,7 @@ class selenium:
         if ("false" == boolstr):
             return False
         raise ValueError, "result is neither 'true' nor 'false': " + boolstr
-    
+
     def get_boolean_array(self, verb, args):
         boolarr = self.get_string_array(verb, args)
         for i, boolstr in enumerate(boolarr):
