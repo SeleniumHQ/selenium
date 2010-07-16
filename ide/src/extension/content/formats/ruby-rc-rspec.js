@@ -59,7 +59,7 @@ Equals.prototype.toString = function() {
 }
 
 Equals.prototype.assert = function() {
-    return "(" + this.e1.toString() + ").should == " + this.2.toString();
+    return "(" + this.e1.toString() + ").should == " + this.e2.toString();
 }
 
 Equals.prototype.verify = function() {
@@ -71,7 +71,7 @@ NotEquals.prototype.toString = function() {
 }
 
 NotEquals.prototype.assert = function() {
-    return "(" + this.e1.toString() + ").should != " + this.2.toString();
+    return "(" + this.e1.toString() + ").should != " + this.e2.toString();
 }
 
 NotEquals.prototype.verify = function() {
@@ -183,7 +183,7 @@ this.options = {
 		'gem "selenium-client"\n' +
 		'require "selenium/client"\n' +
 		'require "selenium/rspec/spec_helper"\n' +
-		'require "spec/test/unit"\n +
+		'require "spec/test/unit"\n' +
 		'\n' +
 		'describe "${className}" do\n' +
 		'  attr_reader :selenium_driver\n' +

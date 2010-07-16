@@ -98,19 +98,20 @@ Application.prototype = {
     setCurrentFormat: function(format) {
         //if the testcase is manually changed
         var edited = this.testCase.edited;
-        //sync the testcase with the data view
-        this.notify("currentFormatChanging");
         //if the format is reversible (implements the "parse" method)
         //or if the testcase isn't changed manually by user: all be fine
         //if not, the format isn't changed
         if ((this.currentFormat.isReversible && this.currentFormat.isReversible()) || !edited){
+             //sync the testcase with the data view
+            this.notify("currentFormatChanging");
+
             this.currentFormat = format;
             this.options.selectedFormat = format.id;
             Preferences.save(this.options, 'selectedFormat');
             this.notify("currentFormatChanged", format);
         }else{
             //advise the user of the impossibility of changing the format
-            this.notify("currentFormatUnChanged");
+            this.notify("currentFormatUnChanged",format);
         }
     },
 

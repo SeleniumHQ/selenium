@@ -90,10 +90,28 @@ function Editor(window) {
              * called when the format can't be changed. It advises the user
              * of the undoable action
              */
-            currentFormatUnChanged: function() {
-                //@TODO jeremy: show a "div-popup" instead of alert: alert are bad
-                //@TODO jeremy: Localization
-               alert("This format doesn't support this action after a manual editing of the testcase");
+            currentFormatUnChanged: function(format) {
+               //@TODO jeremy: Localization
+               var res = confirm("You'll lost all your changes. Do you want to continue?");
+               if (res){
+                    if (self.sourceView){
+                        self.alreadySaved = false;
+                        self.oldtc.edited = false;
+                        self.view.testCase = self.oldtc.createCopy();
+                        self.app.testCase.edited = false;
+                        self.app.currentFormat = format;
+                        self.app.testCase = self.oldtc;
+                        self.sourceView.testCase = self.oldtc.createCopy();
+                        self.sourceView.testCase.edited = false;
+                        self.sourceView.updateView();
+                        self.updateViewTabs();
+                        self.updateState();
+                        self.alreadySaved = false;
+                        self.app.currentFormat = format;
+                        self.app.options.selectedFormat = format.id;
+                        Preferences.save(self.app.options, 'selectedFormat');
+                    }
+               }
             },
 
             clipboardFormatChanged: function(format) {
@@ -119,20 +137,20 @@ function Editor(window) {
         });
 
 	this.document = document;
-    this.initMenus();
+        this.initMenus();
 	this.app.initOptions();
 	this.loadExtensions();
 	this.loadSeleniumAPI();
 	this.selectDefaultReference();
 	this.treeView = new TreeView(this, document, document.getElementById("commands"));
 	this.sourceView = new SourceView(this, document.getElementById("source"));
-    this.suiteTreeView = new SuiteTreeView(this, document.getElementById("suiteTree"));
-    this.testSuiteProgress = new TestSuiteProgress("suiteProgress");
+        this.suiteTreeView = new SuiteTreeView(this, document.getElementById("suiteTree"));
+        this.testSuiteProgress = new TestSuiteProgress("suiteProgress");
 	//this.toggleView(this.treeView);
 	
 	// "debugger" cannot be used since it is a reserved word in JS
 	this.selDebugger = new Debugger(this);
-    this.selDebugger.addObserver({
+        this.selDebugger.addObserver({
             stateUpdated: function(state) {
                 if (state == Debugger.PAUSED) {
                     document.getElementById("pause-button").setAttribute("class", "icon resume");
@@ -170,6 +188,19 @@ function Editor(window) {
 	setTimeout("editor.showLoadErrors()", 500);
 	
     this.registerRecorder();
+
+    this.oldtc = null;
+    this.alreadySaved = false;
+}
+
+Editor.prototype.saveTC = function(){
+
+    if (!this.alreadySaved && !this.app.getCurrentFormat().isReversible()){
+        this.oldtc = this.app.getTestCase().createCopy();
+        this.oldtc.edited = false;
+        this.app.testCase.edited =  true;
+        this.alreadySaved = true;
+    }
 }
 
 Editor.checkTimestamp = function() {
