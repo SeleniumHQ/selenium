@@ -8,7 +8,7 @@ recursive-include chrome/src/py *.zip
 recursive-include chrome/test/py *.py
 recursive-include firefox/src/py *.py *.xpi
 recursive-include firefox/test/py *.py
-recursive-include jobbie/src/py *.py
+recursive-include jobbie/src/py *.py *.dll
 recursive-include jobbie/test/py *.py
 recursive-include remote/client/src/py *.py
 recursive-include remote/client/test/py *.py

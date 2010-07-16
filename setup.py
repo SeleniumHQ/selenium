@@ -139,19 +139,11 @@ setup(
               'selenium.remote_tests',
               'selenium.selenium'],
     package_data = {
-        'selenium.firefox':['*.xpi']
+        'selenium.firefox':['*.xpi'],
+        'selenium.ie': ['*.dll'],
     },
     include_package_data=True,
     install_requires=['distribute'],
     zip_safe=False,
 
 )
-
-# FIXME: Do manually
-# == IE ==
-# cp jobbie/prebuilt/Win32/Release/InternetExplorerDriver.dll \
-#        build/lib.<platform>/webdriver/ie
-# == Chrome ==
-# cp chrome/src/extension build/lib.<platform>/webdriver/chrome
-# On win32
-# cp chrome/prebuilt/Win32/Release/npchromedriver.dll build/lib/webdriver/chrome
