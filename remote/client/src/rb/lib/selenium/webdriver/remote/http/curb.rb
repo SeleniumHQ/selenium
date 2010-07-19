@@ -61,6 +61,7 @@ module Selenium
               c.max_redirects   = MAX_REDIRECTS
               c.follow_location = true
               c.timeout         = self.class.timeout if self.class.timeout
+              c.verbose         = !!$DEBUG
 
               c
             )
