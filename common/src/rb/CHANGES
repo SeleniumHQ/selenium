@@ -1,3 +1,8 @@
+0.0.26 (2010-07-19)
+===================
+
+* Work around Curb issue: http://github.com/taf2/curb/issues/issue/40
+
 0.0.25 (2010-07-19)
 ===================
 
