@@ -29,6 +29,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.FIREFOX;
+import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 
@@ -202,5 +203,15 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
     driver.get(pages.formPage);
     WebElement element = driver.findElement(By.id("withText"));
     assertThat(element.getAttribute("rows"), is("5"));
+  }
+
+  @Ignore({CHROME, FIREFOX, HTMLUNIT})
+  public void testCanReturnATextApproximationOfTheStyleAttribute() {
+    driver.get(pages.javascriptPage);
+
+    String style = driver.findElement(By.id("red-item")).getAttribute("style");
+
+    System.out.println("style = " + style);
+    assertTrue(style.toLowerCase().contains("background-color"));
   }
 }

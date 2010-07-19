@@ -728,6 +728,8 @@ int wdeGetAttribute(WebDriver* driver, WebElement* element, const wchar_t* name,
 		script += L"	if (!value) {\n";
 		script += L"		value = null;\n";
 		script += L"	}\n";
+		script += L"} else if ('style' == lattr) {\n";
+		script += L"    value = element.style ? element.style.cssText : null;\n";
 		script += L"} else if (hasAttribute(element, attributeName)) {\n";
 		script += L"	value = getAttribute(element, attributeName);\n";
 		script += L"} else {\n";
