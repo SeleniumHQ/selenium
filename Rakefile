@@ -134,7 +134,7 @@ task :test_rb => [
   "//remote/client:ruby-test:jruby",
  ("//jobbie:ruby-test:jruby" if windows?),
   "//chrome:ruby-test:jruby"
-]
+].compact
 
 task :test_py => [
   "//firefox"
