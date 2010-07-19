@@ -1,3 +1,16 @@
+0.0.25 (2010-07-19)
+===================
+
+* Prevent Firefox from launching in offline mode (issue #587).
+* Add ability to set Firefox' binary path through Selenium::WebDriver::Firefox::Binary.path=
+* Add ability to install Firefox XPIs through Profile#add_extension.
+* Better packaging/building of Firefox/Chrome extensions, which adds rubyzip as a dependency.
+* Remote client supports HTTPS (issue #613 - thanks kkaempf).
+* Fix error message for TimeOutError in the IE driver (issue #602)
+* Add ability to use Chrome's default profile.
+* Fix for frame behaviour in Chrome (issue #273).
+* Standard gem directory structure (issue #475).
+
 0.0.24 (2010-06-17)
 ==================
 
