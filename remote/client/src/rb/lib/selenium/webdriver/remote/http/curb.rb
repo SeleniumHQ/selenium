@@ -28,6 +28,11 @@ module Selenium
 
           def request(verb, url, headers, payload)
             client.url     = url.to_s
+
+            # workaround for http://github.com/taf2/curb/issues/issue/40
+            # curb will handle this for us anyway
+            headers.delete "Content-Length"
+
             client.headers = headers
 
             # http://github.com/taf2/curb/issues/issue/33
