@@ -189,7 +189,6 @@ public class FormHandlingTest extends AbstractDriverTestCase {
     assertThat(radioButton.isSelected(), is(true));
   }
 
-  @Ignore(IE)
   public void testRadioShouldNotBeSelectedAfterSelectingSibling() {
     driver.get(pages.formPage);
 

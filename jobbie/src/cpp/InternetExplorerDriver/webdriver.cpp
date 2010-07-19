@@ -719,7 +719,12 @@ int wdeGetAttribute(WebDriver* driver, WebElement* element, const wchar_t* name,
 		script += L"var lattr = arguments[1].toLowerCase();\n";
 		script += L"var value = null;\n";
 		script += L"if ('checked' == lattr || 'selected' == lattr) {\n";
-		script += L"	value = getProperty(element, 'selected') || getProperty(element, 'checked');\n";
+		script += L"    var value = null;";
+		script += L"    if (element.type && 'radio' == element.type.toLowerCase()) {";
+		script += L"        value = getProperty(element, 'checked');";
+		script += L"    } else {";
+		script += L"	    value = getProperty(element, 'selected') || getProperty(element, 'checked');\n";
+		script += L"    }";
 		script += L"	if (!value) {\n";
 		script += L"		value = null;\n";
 		script += L"	}\n";
@@ -853,7 +858,7 @@ int wdeIsSelected(WebElement* element, int* result)
 			return res;
 		}
 
-		*result = wrapper ? 1 : 0;
+		*result = wrapper && wrapper->text && wcscmp(L"true", wrapper->text) == 0 ? 1 : 0;
 		wdFreeString(wrapper);
 
 		return SUCCESS;
