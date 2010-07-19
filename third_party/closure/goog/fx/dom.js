@@ -1,20 +1,21 @@
+// Copyright 2005 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Copyright 2005 Google Inc. All Rights Reserved.
-
 /**
  * @fileoverview Predefined DHTML animations such as slide, resize and fade.
  *
+*
  * @see ../demos/effects.html
  */
 
@@ -50,7 +51,7 @@ goog.require('goog.style');
  * @param {Array.<number>} start Array for start coordinates.
  * @param {Array.<number>} end Array for end coordinates.
  * @param {number} time Length of animation in milliseconds.
- * @param {Function} opt_acc Acceleration function, returns 0-1 for inputs 0-1.
+ * @param {Function=} opt_acc Acceleration function, returns 0-1 for inputs 0-1.
  * @extends {goog.fx.Animation}
  * @constructor
  */
@@ -105,7 +106,7 @@ goog.fx.dom.PredefinedEffect.prototype.onBegin = function() {
  * @param {Array.<number>} start 2D array for start coordinates (X, Y).
  * @param {Array.<number>} end 2D array for end coordinates (X, Y).
  * @param {number} time Length of animation in milliseconds.
- * @param {Function} opt_acc Acceleration function, returns 0-1 for inputs 0-1.
+ * @param {Function=} opt_acc Acceleration function, returns 0-1 for inputs 0-1.
  * @extends {goog.fx.dom.PredefinedEffect}
  * @constructor
  */
@@ -127,12 +128,12 @@ goog.fx.dom.Slide.prototype.updateStyle = function() {
 
 
 /**
- * Slides an element from it's current position
+ * Slides an element from its current position.
  *
- * @param {Element} element Dom Node to be used in the animation.
+ * @param {Element} element DOM node to be used in the animation.
  * @param {Array.<number>} end 2D array for end coordinates (X, Y).
  * @param {number} time Length of animation in milliseconds.
- * @param {Function} opt_acc Acceleration function, returns 0-1 for inputs 0-1.
+ * @param {Function=} opt_acc Acceleration function, returns 0-1 for inputs 0-1.
  * @extends {goog.fx.dom.Slide}
  * @constructor
  */
@@ -152,14 +153,14 @@ goog.fx.dom.SlideFrom.prototype.onBegin = function() {
 
 
 /**
- * Creates an animation object that will slide an element into it's final size.
+ * Creates an animation object that will slide an element into its final size.
  * Requires that the element is absolutely positioned.
  *
  * @param {Element} element Dom Node to be used in the animation.
  * @param {Array.<number>} start 2D array for start size (W, H).
  * @param {Array.<number>} end 2D array for end size (W, H).
  * @param {number} time Length of animation in milliseconds.
- * @param {Function} opt_acc Acceleration function, returns 0-1 for inputs 0-1.
+ * @param {Function=} opt_acc Acceleration function, returns 0-1 for inputs 0-1.
  * @extends {goog.fx.dom.PredefinedEffect}
  * @constructor
  */
@@ -187,7 +188,7 @@ goog.inherits(goog.fx.dom.Swipe, goog.fx.dom.PredefinedEffect);
 
 
 /**
- * Animation event handler that will resize an element by setting it's width,
+ * Animation event handler that will resize an element by setting its width,
  * height and clipping.
  * @protected
  * @override
@@ -226,7 +227,7 @@ goog.fx.dom.Swipe.prototype.clip_ = function(x, y, w, h) {
  * @param {Array.<number>} start 2D array for start scroll left and top.
  * @param {Array.<number>} end 2D array for end scroll left and top.
  * @param {number} time Length of animation in milliseconds.
- * @param {Function} opt_acc Acceleration function, returns 0-1 for inputs 0-1.
+ * @param {Function=} opt_acc Acceleration function, returns 0-1 for inputs 0-1.
  * @extends {goog.fx.dom.PredefinedEffect}
  * @constructor
  */
@@ -261,7 +262,7 @@ goog.fx.dom.Scroll.prototype.updateStyle = function() {
  * @param {Array.<number>} start 2D array for start width and height.
  * @param {Array.<number>} end 2D array for end width and height.
  * @param {number} time Length of animation in milliseconds.
- * @param {Function} opt_acc Acceleration function, returns 0-1 for inputs 0-1.
+ * @param {Function=} opt_acc Acceleration function, returns 0-1 for inputs 0-1.
  * @extends {goog.fx.dom.PredefinedEffect}
  * @constructor
  */
@@ -275,7 +276,7 @@ goog.inherits(goog.fx.dom.Resize, goog.fx.dom.PredefinedEffect);
 
 
 /**
- * Animation event handler that will resize an element by setting it's width and
+ * Animation event handler that will resize an element by setting its width and
  * height.
  * @protected
  * @override
@@ -296,7 +297,7 @@ goog.fx.dom.Resize.prototype.updateStyle = function() {
  * @param {number} start Start width.
  * @param {number} end End width.
  * @param {number} time Length of animation in milliseconds.
- * @param {Function} opt_acc Acceleration function, returns 0-1 for inputs 0-1.
+ * @param {Function=} opt_acc Acceleration function, returns 0-1 for inputs 0-1.
  * @extends {goog.fx.dom.PredefinedEffect}
  * @constructor
  */
@@ -308,7 +309,7 @@ goog.inherits(goog.fx.dom.ResizeWidth, goog.fx.dom.PredefinedEffect);
 
 
 /**
- * Animation event handler that will resize an element by setting it's width.
+ * Animation event handler that will resize an element by setting its width.
  * @protected
  * @override
  */
@@ -327,7 +328,7 @@ goog.fx.dom.ResizeWidth.prototype.updateStyle = function() {
  * @param {number} start Start height.
  * @param {number} end End height.
  * @param {number} time Length of animation in milliseconds.
- * @param {Function} opt_acc Acceleration function, returns 0-1 for inputs 0-1.
+ * @param {Function=} opt_acc Acceleration function, returns 0-1 for inputs 0-1.
  * @extends {goog.fx.dom.PredefinedEffect}
  * @constructor
  */
@@ -339,7 +340,7 @@ goog.inherits(goog.fx.dom.ResizeHeight, goog.fx.dom.PredefinedEffect);
 
 
 /**
- * Animation event handler that will resize an element by setting it's height.
+ * Animation event handler that will resize an element by setting its height.
  * @protected
  * @override
  */
@@ -359,7 +360,7 @@ goog.fx.dom.ResizeHeight.prototype.updateStyle = function() {
  * @param {Array.<number>|number} start 1D Array or Number with start opacity.
  * @param {Array.<number>|number} end 1D Array or Number for end opacity.
  * @param {number} time Length of animation in milliseconds.
- * @param {Function} opt_acc Acceleration function, returns 0-1 for inputs 0-1.
+ * @param {Function=} opt_acc Acceleration function, returns 0-1 for inputs 0-1.
  * @extends {goog.fx.dom.PredefinedEffect}
  * @constructor
  */
@@ -408,7 +409,7 @@ goog.fx.dom.Fade.prototype.hide = function() {
  *
  * @param {Element} element Dom Node to be used in the animation.
  * @param {number} time Length of animation in milliseconds.
- * @param {Function} opt_acc Acceleration function, returns 0-1 for inputs 0-1.
+ * @param {Function=} opt_acc Acceleration function, returns 0-1 for inputs 0-1.
  * @extends {goog.fx.dom.Fade}
  * @constructor
  */
@@ -424,7 +425,7 @@ goog.inherits(goog.fx.dom.FadeOut, goog.fx.dom.Fade);
  *
  * @param {Element} element Dom Node to be used in the animation.
  * @param {number} time Length of animation in milliseconds.
- * @param {Function} opt_acc Acceleration function, returns 0-1 for inputs 0-1.
+ * @param {Function=} opt_acc Acceleration function, returns 0-1 for inputs 0-1.
  * @extends {goog.fx.dom.Fade}
  * @constructor
  */
@@ -440,7 +441,7 @@ goog.inherits(goog.fx.dom.FadeIn, goog.fx.dom.Fade);
  *
  * @param {Element} element Dom Node to be used in the animation.
  * @param {number} time Length of animation in milliseconds.
- * @param {Function} opt_acc Acceleration function, returns 0-1 for inputs 0-1.
+ * @param {Function=} opt_acc Acceleration function, returns 0-1 for inputs 0-1.
  * @extends {goog.fx.dom.Fade}
  * @constructor
  */
@@ -471,7 +472,7 @@ goog.fx.dom.FadeOutAndHide.prototype.onEnd = function() {
  *
  * @param {Element} element Dom Node to be used in the animation.
  * @param {number} time Length of animation in milliseconds.
- * @param {Function} opt_acc Acceleration function, returns 0-1 for inputs 0-1.
+ * @param {Function=} opt_acc Acceleration function, returns 0-1 for inputs 0-1.
  * @extends {goog.fx.dom.Fade}
  * @constructor
  */
@@ -498,7 +499,7 @@ goog.fx.dom.FadeInAndShow.prototype.onBegin = function() {
  * @param {Array.<number>} start 3D Array for RGB of start color.
  * @param {Array.<number>} end 3D Array for RGB of end color.
  * @param {number} time Length of animation in milliseconds.
- * @param {Function} opt_acc Acceleration function, returns 0-1 for inputs 0-1.
+ * @param {Function=} opt_acc Acceleration function, returns 0-1 for inputs 0-1.
  * @extends {goog.fx.dom.PredefinedEffect}
  * @constructor
  */
@@ -566,7 +567,7 @@ goog.fx.dom.bgColorFadeIn = function(element, start, time) {
  * @param {Array.<number>} start 3D Array representing R,G,B.
  * @param {Array.<number>} end 3D Array representing R,G,B.
  * @param {number} time Length of animation in milliseconds.
- * @param {Function} opt_acc Acceleration function, returns 0-1 for inputs 0-1.
+ * @param {Function=} opt_acc Acceleration function, returns 0-1 for inputs 0-1.
  * @constructor
  * @extends {goog.fx.dom.PredefinedEffect}
  */

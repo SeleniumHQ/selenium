@@ -1,19 +1,20 @@
+// Copyright 2006 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Copyright 2006 Google Inc. All Rights Reserved.
-
 /**
  * @fileoverview Wrapper class for handling XmlHttpRequests.
+*
  */
 
 
@@ -36,13 +37,13 @@ goog.net.XhrLite = goog.net.XhrIo;
  * request.
  * @see goog.net.XhrIo.cleanupAllPendingStaticSends
  * @param {string} url Uri to make request too.
- * @param {Function} opt_callback Callback function for when request is
+ * @param {Function=} opt_callback Callback function for when request is
  *     complete.
- * @param {string} opt_method Send method, default: GET.
- * @param {string} opt_content Post data.
- * @param {Object|goog.structs.Map} opt_headers Map of headers to add to the
+ * @param {string=} opt_method Send method, default: GET.
+ * @param {string=} opt_content Post data.
+ * @param {Object|goog.structs.Map=} opt_headers Map of headers to add to the
  *     request.
- * @param {number} opt_timeoutInterval Number of milliseconds after which an
+ * @param {number=} opt_timeoutInterval Number of milliseconds after which an
  *     incomplete request will be aborted; 0 means no timeout is set.
  */
 goog.net.XhrLite.send = goog.net.XhrIo.send;
@@ -58,8 +59,8 @@ goog.net.XhrLite.send = goog.net.XhrIo.send;
  * We could have {@link goog.net.XhrIo.send} return the goog.net.XhrIo
  * it creates and make the client of {@link goog.net.XhrIo.send} be
  * responsible for disposing it in this case.  However, this makes things
- * significanly more complicated for the client, and the whole point
- * of {@link goog.net.XhrIo.send} is that its simple and easy to use.
+ * significantly more complicated for the client, and the whole point
+ * of {@link goog.net.XhrIo.send} is that it's simple and easy to use.
  * Clients of {@link goog.net.XhrIo.send} should call
  * {@link goog.net.XhrIo.cleanupAllPendingStaticSends} when doing final
  * cleanup on window unload.
@@ -76,7 +77,7 @@ goog.net.XhrLite.cleanup = goog.net.XhrIo.cleanup;
  *
  * @param {goog.debug.ErrorHandler} errorHandler Error handler with which to
  *     protect the entry point(s).
- * @param {boolean} opt_tracers Whether to install tracers around the entry
+ * @param {boolean=} opt_tracers Whether to install tracers around the entry
  *     point.
  */
 goog.net.XhrLite.protectEntryPoints = goog.net.XhrIo.protectEntryPoints;

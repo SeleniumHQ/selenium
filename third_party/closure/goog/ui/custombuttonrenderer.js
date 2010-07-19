@@ -1,21 +1,22 @@
+// Copyright 2008 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-// Copyright 2008 Google Inc. All Rights Reserved.
 
 /**
  * @fileoverview A custom button renderer that uses CSS voodoo to render a
  * button-like object with fake rounded corners.
  *
+*
  */
 
 goog.provide('goog.ui.CustomButtonRenderer');
@@ -80,12 +81,12 @@ goog.ui.CustomButtonRenderer.prototype.createDom = function(button) {
  * Takes the button's root element and returns the parent element of the
  * button's contents.  Overrides the superclass implementation by taking
  * the nested DIV structure of custom buttons into account.
- * @param {Element?} element Root element of the button whose content
+ * @param {Element} element Root element of the button whose content
  *     element is to be returned.
- * @return {Element?} The button's content element (if any).
+ * @return {Element} The button's content element (if any).
  */
 goog.ui.CustomButtonRenderer.prototype.getContentElement = function(element) {
-  return element && /** @type {Element?} */ (element.firstChild.firstChild);
+  return element && /** @type {Element} */ (element.firstChild.firstChild);
 };
 
 

@@ -1,19 +1,20 @@
+// Copyright 2008 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Copyright 2008 Google Inc. All Rights Reserved.
-
 /**
  * @fileoverview Namespace with crypto related helper functions.
+*
  */
 
 goog.provide('goog.crypt');
@@ -58,7 +59,7 @@ goog.crypt.byteArrayToString = function(array) {
  * @return {Array.<number>} UTF-8 byte array.
  */
 goog.crypt.stringToUtf8ByteArray = function(str) {
-  // TODO: Use native implementations if/when available
+  // TODO(user): Use native implementations if/when available
   str = str.replace(/\r\n/g, '\n');
   var out = [], p = 0;
   for (var i = 0; i < str.length; i++) {
@@ -84,7 +85,7 @@ goog.crypt.stringToUtf8ByteArray = function(str) {
  * @return {string} 16-bit Unicode string.
  */
 goog.crypt.utf8ByteArrayToString = function(bytes) {
-  // TODO: Use native implementations if/when available
+  // TODO(user): Use native implementations if/when available
   var out = [], pos = 0, c = 0;
   while (pos < bytes.length) {
     var c1 = bytes[pos++];

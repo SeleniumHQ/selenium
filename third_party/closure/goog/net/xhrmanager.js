@@ -1,16 +1,16 @@
+// Copyright 2006 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-// Copyright 2006 Google Inc. All Rights Reserved.
 
 /**
  * @fileoverview Manages a pool of XhrIo's. This handles all the details of
@@ -21,16 +21,16 @@
  * handles this) and retrying of requests.
  *
  * The events fired by the XhrManager are an aggregation of the events of
- * each of it's XhrIo objects (with some filtering, i.e., ERROR only called
+ * each of its XhrIo objects (with some filtering, i.e., ERROR only called
  * when there are no more retries left). For this reason, all send requests have
  * to have an id, so that the user of this object can know which event is for
  * which request.
  *
+*
  */
 
 goog.provide('goog.net.XhrManager');
 goog.provide('goog.net.XhrManager.Event');
-goog.provide('goog.net.XhrManager.EventType');
 goog.provide('goog.net.XhrManager.Request');
 
 goog.require('goog.Disposable');
@@ -43,16 +43,16 @@ goog.require('goog.net.XhrIo');
 goog.require('goog.net.XhrIoPool');
 goog.require('goog.structs.Map');
 
-// TODO: Add some time in between retries.
+// TODO(user): Add some time in between retries.
 
 /**
  * A manager of an XhrIoPool.
- * @param {number} opt_maxRetries Max. number of retries (Default: 1).
- * @param {goog.structs.Map} opt_headers Map of default headers to add to every
+ * @param {number=} opt_maxRetries Max. number of retries (Default: 1).
+ * @param {goog.structs.Map=} opt_headers Map of default headers to add to every
  *     request.
- * @param {number} opt_minCount Min. number of objects (Default: 1).
- * @param {number} opt_maxCount Max. number of objects (Default: 10).
- * @param {number} opt_timeoutInterval Timeout (in ms) before aborting an
+ * @param {number=} opt_minCount Min. number of objects (Default: 1).
+ * @param {number=} opt_maxCount Max. number of objects (Default: 10).
+ * @param {number=} opt_timeoutInterval Timeout (in ms) before aborting an
  *     attempt (Default: 0ms).
  * @constructor
  * @extends {goog.events.EventTarget}
@@ -128,18 +128,6 @@ goog.net.XhrManager.XHR_EVENT_TYPES_ = [
 
 
 /**
- * Events specific to the XhrManager.
- * @enum {string}
- */
-goog.net.XhrManager.EventType = {
-  /**
-   * Fired by the component when a given request is retried.
-   */
-  RETRY: 'retry'
-};
-
-
-/**
  * Sets the number of milliseconds after which an incomplete request will be
  * aborted. Zero means no timeout is set.
  * @param {number} ms Timeout interval in milliseconds; 0 means none.
@@ -166,15 +154,16 @@ goog.net.XhrManager.prototype.getOutstandingCount = function() {
  * priority.
  * @param {string} id The id of the request.
  * @param {string} url Uri to make the request too.
- * @param {string} opt_method Send method, default: GET.
- * @param {string} opt_content Post data.
- * @param {Object|goog.structs.Map} opt_headers Map of headers to add to the
+ * @param {string=} opt_method Send method, default: GET.
+ * @param {string=} opt_content Post data.
+ * @param {Object|goog.structs.Map=} opt_headers Map of headers to add to the
  *     request.
- * @param {Object} opt_priority The priority of the request.
- * @param {Function} opt_callback Callback function for when request is complete
- *     The only param is the event object from the COMPLETE event.
- * @param {number} opt_maxRetries The maximum number of times the request should
- *     be retried.
+ * @param {*=} opt_priority The priority of the request.
+ * @param {Function=} opt_callback Callback function for when request is
+ *     complete. The only param is the event object from the COMPLETE event.
+ * @param {number=} opt_maxRetries The maximum number of times the request
+ *     should be retried.
+ * @return {goog.net.XhrManager.Request} The queued request object.
  */
 goog.net.XhrManager.prototype.send = function(
     id,
@@ -205,13 +194,15 @@ goog.net.XhrManager.prototype.send = function(
   // Setup the callback for the pool.
   var callback = goog.bind(this.handleAvailableXhr_, this, id);
   this.xhrPool_.getObject(callback, opt_priority);
+
+  return request;
 };
 
 
 /**
  * Aborts the request associated with id.
  * @param {string} id The id of the request to abort.
- * @param {boolean} opt_force If true, remove the id now so it can be reused.
+ * @param {boolean=} opt_force If true, remove the id now so it can be reused.
  *     No events are fired and the callback is not called when forced.
  */
 goog.net.XhrManager.prototype.abort = function(id, opt_force) {
@@ -282,7 +273,7 @@ goog.net.XhrManager.prototype.handleAvailableXhr_ = function(id, xhrIo) {
  * Handles all events fired by the XhrIo object for a given request.
  * @param {string} id The id of the request.
  * @param {goog.events.Event} e The event.
- * @return {Object?} The return value from the handler, if any.
+ * @return {Object} The return value from the handler, if any.
  * @private
  */
 goog.net.XhrManager.prototype.handleEvent_ = function(id, e) {
@@ -349,7 +340,7 @@ goog.net.XhrManager.prototype.retry_ = function(id, xhrIo) {
  * @param {string} id The id of the request.
  * @param {goog.net.XhrIo} xhrIo The XhrIo object.
  * @param {goog.events.Event} e The original event.
- * @return {Object?} The return value from the callback, if any.
+ * @return {Object} The return value from the callback, if any.
  * @private
  */
 goog.net.XhrManager.prototype.handleComplete_ = function(id, xhrIo, e) {
@@ -433,8 +424,8 @@ goog.net.XhrManager.prototype.handleError_ = function(id, xhrIo) {
  * Remove listeners for XHR events on an XhrIo object.
  * @param {goog.net.XhrIo} xhrIo The object to stop listenening to events on.
  * @param {Function} func The callback to remove from event handling.
- * @param {string|Array.<string>} opt_types Event types to remove listeners for.
- *     Defaults to XHR_EVENT_TYPES_.
+ * @param {string|Array.<string>=} opt_types Event types to remove listeners
+ *     for. Defaults to XHR_EVENT_TYPES_.
  * @private
  */
 goog.net.XhrManager.prototype.removeXhrListener_ = function(xhrIo,
@@ -449,7 +440,7 @@ goog.net.XhrManager.prototype.removeXhrListener_ = function(xhrIo,
  * Adds a listener for XHR events on an XhrIo object.
  * @param {goog.net.XhrIo} xhrIo The object listen to events on.
  * @param {Function} func The callback when the event occurs.
- * @param {string|Array.<string>} opt_types Event types to attach listeners to.
+ * @param {string|Array.<string>=} opt_types Event types to attach listeners to.
  *     Defaults to XHR_EVENT_TYPES_.
  * @private
  */
@@ -500,7 +491,7 @@ goog.net.XhrManager.Event = function(type, target, id, xhrIo) {
 
   /**
    * The id of the request this event is for.
-   * @type {Object}
+   * @type {string}
    */
   this.id = id;
 
@@ -539,14 +530,14 @@ goog.net.XhrManager.Event.prototype.disposeInternal = function() {
  * @param {string} url Uri to make the request too.
  * @param {Function} xhrEventCallback Callback attached to the events of the
  *     XhrIo object of the request.
- * @param {string} opt_method Send method, default: GET.
- * @param {string} opt_content Post data.
- * @param {Object|goog.structs.Map} opt_headers Map of headers to add to the
+ * @param {string=} opt_method Send method, default: GET.
+ * @param {string=} opt_content Post data.
+ * @param {Object|goog.structs.Map=} opt_headers Map of headers to add to the
  *     request.
- * @param {Function} opt_callback Callback function for when request is complete
- * NOTE: Only 1 callback supported across all events.
- * @param {number} opt_maxRetries The maximum number of times the request should
- *     be retried (Default: 1).
+ * @param {Function=} opt_callback Callback function for when request is
+ *     complete. NOTE: Only 1 callback supported across all events.
+ * @param {number=} opt_maxRetries The maximum number of times the request
+ *     should be retried (Default: 1).
  *
  * @constructor
  * @extends {goog.Disposable}

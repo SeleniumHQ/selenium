@@ -1,19 +1,20 @@
+// Copyright 2005 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Copyright 2005 Google Inc. All Rights Reserved.
-
 /**
  * @fileoverview Listener object.
+*
  * @see ../demos/events.html
  */
 
@@ -55,7 +56,7 @@ goog.events.Listener.prototype.listener;
 
 /**
  * Proxy for callback that passes through {@link goog.events#HandleEvent_}
- * @type {Function?}
+ * @type {Function}
  */
 goog.events.Listener.prototype.proxy;
 
@@ -117,7 +118,7 @@ goog.events.Listener.prototype.callOnce = false;
  * @param {Object} src Source object for the event.
  * @param {string} type Event type.
  * @param {boolean} capture Whether in capture or bubble phase.
- * @param {Object} opt_handler Object in whose context to execute the callback.
+ * @param {Object=} opt_handler Object in whose context to execute the callback.
  */
 goog.events.Listener.prototype.init = function(listener, proxy, src, type,
                                                capture, opt_handler) {

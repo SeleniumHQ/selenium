@@ -1,21 +1,23 @@
+// Copyright 2008 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-// Copyright 2008 Google Inc. All Rights Reserved.
 
 /**
  * @fileoverview A dimension picker control.  A dimension picker allows the
  * user to visually select a row and column count.
  *
+ * @author robbyw@google.com (Robby Walker)
+*
  * @see ../demos/dimensionpicker.html
  * @see ../demos/dimensionpicker_rtl.html
  */
@@ -37,10 +39,10 @@ goog.require('goog.ui.registry');
  * listeners may retrieve the selected item using the
  * {@link #getValue} method.
  *
- * @param {goog.ui.DimensionPickerRenderer} opt_renderer Renderer used to
+ * @param {goog.ui.DimensionPickerRenderer=} opt_renderer Renderer used to
  *     render or decorate the palette; defaults to
  *     {@link goog.ui.DimensionPickerRenderer}.
- * @param {goog.dom.DomHelper} opt_domHelper Optional DOM helper, used for
+ * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM helper, used for
  *     document interaction.
  * @constructor
  * @extends {goog.ui.Control}
@@ -197,7 +199,7 @@ goog.ui.DimensionPicker.prototype.handleWindowResize = function(e) {
 /**
  * Handle key events if supported, so the user can use the keyboard to
  * manipulate the highlighted rows and columns.
- * @param {goog.events.BrowserEvent} e The key event object.
+ * @param {goog.events.KeyEvent} e The key event object.
  * @return {boolean} Whether the key event was handled.
  */
 goog.ui.DimensionPicker.prototype.handleKeyEvent = function(e) {
@@ -252,7 +254,7 @@ goog.ui.DimensionPicker.prototype.getValue = function() {
  * Sets the currently highlighted dimensions.
  * @param {number} columns The number of columns to highlight, or a
  *     goog.math.Size object containing both.
- * @param {number} opt_rows The number of rows to highlight.  Can be
+ * @param {number=} opt_rows The number of rows to highlight.  Can be
  *     omitted when columns is a good.math.Size object.
  */
 goog.ui.DimensionPicker.prototype.setValue = function(columns,

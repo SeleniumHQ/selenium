@@ -1,27 +1,26 @@
+// Copyright 2008 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-// Copyright 2008 Google Inc. All Rights Reserved.
 
 /**
  * @fileoverview Protocol Buffer 2 Serializer which serializes messages
  *  into anonymous, simplified JSON objects.
  *
+*
  */
 
 goog.provide('goog.proto2.ObjectSerializer');
 
-goog.require('goog.proto2.Descriptor');
-goog.require('goog.proto2.FieldDescriptor');
 goog.require('goog.proto2.Serializer');
 goog.require('goog.proto2.Util');
 goog.require('goog.string');
@@ -32,7 +31,7 @@ goog.require('goog.string');
  * ObjectSerializer, a serializer which turns Messages into simplified
  * ECMAScript objects.
  *
- * @param {goog.proto2.ObjectSerializer.KeyOption} opt_keyOption If specified,
+ * @param {goog.proto2.ObjectSerializer.KeyOption=} opt_keyOption If specified,
  *     which key option to use when serializing/deserializing.
  *
  * @constructor

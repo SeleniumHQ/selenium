@@ -1,21 +1,23 @@
+// Copyright 2008 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-// Copyright 2008 Google Inc. All rights reserved.
 
 /**
  * @fileoverview Iframe shims, to protect controls on the underlying page
  * from bleeding through popups.
  *
+*
+ * @author nicksantos@google.com (Nick Santos) (Ported to Closure)
  */
 
 
@@ -35,9 +37,9 @@ goog.require('goog.style');
  * Controller for an iframe mask. The mask is only valid in the current
  * document, or else the document of the given DOM helper.
  *
- * @param {goog.dom.DomHelper} opt_domHelper The DOM helper for the relevant
+ * @param {goog.dom.DomHelper=} opt_domHelper The DOM helper for the relevant
  *     document.
- * @param {goog.structs.Pool} opt_iframePool An optional source of iframes.
+ * @param {goog.structs.Pool=} opt_iframePool An optional source of iframes.
  *     Iframes will be grabbed from the pool when they're needed and returned
  *     to the pool (but still attached to the DOM) when they're done.
  * @constructor
@@ -220,7 +222,7 @@ goog.ui.IframeMask.prototype.setSnapElement = function(snapElement) {
  * @param {goog.events.EventTarget} target The event target to listen on.
  * @param {string} showEvent When this event fires, the mask will be applied.
  * @param {string} hideEvent When this event fires, the mask will be hidden.
- * @param {Element} opt_snapElement When the mask is applied, it will
+ * @param {Element=} opt_snapElement When the mask is applied, it will
  *     automatically snap to this element. If no element is specified, it will
  *     use the default snap element.
  */

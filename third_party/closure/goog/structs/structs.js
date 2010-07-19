@@ -1,25 +1,25 @@
+// Copyright 2006 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Copyright 2006 Google Inc. All Rights Reserved.
-
 /**
  * @fileoverview Generics method for collection-like classes and objects.
  *
+*
  *
  * This file contains functions to work with collections. It supports using
  * Map, Set, Array and Object and other classes that implement collection-like
  * methods.
- *
  */
 
 
@@ -146,7 +146,7 @@ goog.structs.isEmpty = function(col) {
  * @param {Object} col The collection-like object.
  */
 goog.structs.clear = function(col) {
-  // NOTE: This should not contain strings because strings are immutable
+  // NOTE(user): This should not contain strings because strings are immutable
   if (typeof col.clear == 'function') {
     col.clear();
   } else if (goog.isArrayLike(col)) {
@@ -165,7 +165,7 @@ goog.structs.clear = function(col) {
  * @param {Function} f The function to call for every value. This function takes
  *     3 arguments (the value, the key or undefined if the collection has no
  *     notion of keys, and the collection) and the return value is irrelevant.
- * @param {Object} opt_obj The object to be used as the value of 'this'
+ * @param {Object=} opt_obj The object to be used as the value of 'this'
  *     within {@code f}.
  */
 goog.structs.forEach = function(col, f, opt_obj) {
@@ -194,7 +194,7 @@ goog.structs.forEach = function(col, f, opt_obj) {
  *     notion of keys, and the collection) and should return a Boolean. If the
  *     return value is true the value is added to the result collection. If it
  *     is false the value is not included.
- * @param {Object} opt_obj The object to be used as the value of 'this'
+ * @param {Object=} opt_obj The object to be used as the value of 'this'
  *     within {@code f}.
  * @return {!Object|!Array} A new collection where the passed values are
  *     present. If col is a key-less collection an array is returned.  If col
@@ -243,7 +243,7 @@ goog.structs.filter = function(col, f, opt_obj) {
  *     takes 3 arguments (the value, the key or undefined if the collection has
  *     no notion of keys, and the collection) and should return something. The
  *     result will be used as the value in the new collection.
- * @param {Object} opt_obj  The object to be used as the value of 'this'
+ * @param {Object=} opt_obj  The object to be used as the value of 'this'
  *     within {@code f}.
  * @return {!Object|!Array} A new collection with the new values.  If col is a
  *     key-less collection an array is returned.  If col has keys and values a
@@ -287,7 +287,7 @@ goog.structs.map = function(col, f, opt_obj) {
  * @param {Function} f The function to call for every value. This function takes
  *     3 arguments (the value, the key or undefined if the collection has no
  *     notion of keys, and the collection) and should return a Boolean.
- * @param {Object} opt_obj  The object to be used as the value of 'this'
+ * @param {Object=} opt_obj  The object to be used as the value of 'this'
  *     within {@code f}.
  * @return {boolean} True if any value passes the test.
  */
@@ -319,7 +319,7 @@ goog.structs.some = function(col, f, opt_obj) {
  * @param {Function} f The function to call for every value. This function takes
  *     3 arguments (the value, the key or undefined if the collection has no
  *     notion of keys, and the collection) and should return a Boolean.
- * @param {Object} opt_obj  The object to be used as the value of 'this'
+ * @param {Object=} opt_obj  The object to be used as the value of 'this'
  *     within {@code f}.
  * @return {boolean} True if all key-value pairs pass the test.
  */

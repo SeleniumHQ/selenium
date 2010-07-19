@@ -1,20 +1,22 @@
+// Copyright 2006 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Copyright 2006 Google Inc. All Rights Reserved.
-
 /**
  * @fileoverview Client positioning class.
  *
+*
+*
  */
 
 goog.provide('goog.positioning.ViewportPosition');
@@ -33,7 +35,7 @@ goog.require('goog.positioning.AbstractPosition');
  * other element.
  *
  * @param {number|goog.math.Coordinate} arg1 Left position or coordinate.
- * @param {number} opt_arg2 Top position.
+ * @param {number=} opt_arg2 Top position.
  * @constructor
  * @extends {goog.positioning.AbstractPosition}
  */
@@ -51,8 +53,8 @@ goog.inherits(goog.positioning.ViewportPosition,
  * @param {Element} element The DOM element of the popup.
  * @param {goog.positioning.Corner} popupCorner The corner of the popup
  *     element that that should be positioned adjacent to the anchorElement.
- * @param {goog.math.Box} opt_margin A margin specified in pixels.
- * @param {goog.math.Size} opt_preferredSize Preferred size of the element.
+ * @param {goog.math.Box=} opt_margin A margin specified in pixels.
+ * @param {goog.math.Size=} opt_preferredSize Preferred size of the element.
  */
 goog.positioning.ViewportPosition.prototype.reposition = function(
     element, popupCorner, opt_margin, opt_preferredSize) {

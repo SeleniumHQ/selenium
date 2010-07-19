@@ -1,19 +1,21 @@
+// Copyright 2007 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Copyright 2007 Google Inc. All Rights Reserved.
-
 /**
  * @fileoverview Class for representing matrices and static helper functions.
+*
+*
  */
 
 goog.provide('goog.math.Matrix');
@@ -45,8 +47,8 @@ goog.require('goog.math.Size');
  * @param {goog.math.Matrix|Array.<Array.<number>>|goog.math.Size|number} m
  *     A matrix to copy, a 2D-array to take as a template, a size object for
  *     dimensions, or the number of rows.
- * @param {number} opt_n Number of columns of the matrix (only applicable if the
- *     first argument is also numeric).
+ * @param {number=} opt_n Number of columns of the matrix (only applicable if
+ *     the first argument is also numeric).
  * @constructor
  */
 goog.math.Matrix = function(m, opt_n) {
@@ -96,7 +98,7 @@ goog.math.Matrix.createIdentityMatrix = function(n) {
  * @param {Function} fn The function to call for every element. This function
  *     takes 4 arguments (value, i, j, and the matrix)
  *     and the return value is irrelevant.
- * @param {Object} opt_obj The object to be used as the value of 'this'
+ * @param {Object=} opt_obj The object to be used as the value of 'this'
  *     within {@code fn}.
  */
 goog.math.Matrix.forEach = function(matrix, fn, opt_obj) {
@@ -141,7 +143,7 @@ goog.math.Matrix.isValidArray = function(arr) {
  *                     takes 4 arguments (value, i, j and the matrix)
  *                     and should return something. The result will be inserted
  *                     into a new matrix.
- * @param {Object} opt_obj The object to be used as the value of 'this'
+ * @param {Object=} opt_obj The object to be used as the value of 'this'
  *     within {@code fn}.
  * @return {goog.math.Matrix} A new matrix with the results from {@code fn}.
  */
@@ -251,7 +253,7 @@ goog.math.Matrix.prototype.appendRows = function(m) {
 /**
  * Returns whether the given matrix equals this matrix.
  * @param {goog.math.Matrix} m The matrix to compare to this one.
- * @param {number} opt_tolerance The tolerance when comparing array entries.
+ * @param {number=} opt_tolerance The tolerance when comparing array entries.
  * @return {boolean} Whether the given matrix equals this matrix.
  */
 goog.math.Matrix.prototype.equals = function(m, opt_tolerance) {
@@ -389,7 +391,7 @@ goog.math.Matrix.prototype.getTranspose = function() {
  * requested coordinates are out of range.
  * @param {number} i The i index of the coordinate.
  * @param {number} j The j index of the coordinate.
- * @return {number?} The value at the specified coordinate.
+ * @return {?number} The value at the specified coordinate.
  */
 goog.math.Matrix.prototype.getValueAt = function(i, j) {
   if (!this.isInBounds_(i, j)) {
@@ -569,8 +571,8 @@ goog.math.Matrix.prototype.getMinor_ = function(i, j) {
  * Returns a submatrix contained within this matrix.
  * @param {number} i1 The upper row index.
  * @param {number} j1 The left column index.
- * @param {number} opt_i2 The lower row index.
- * @param {number} opt_j2 The right column index.
+ * @param {number=} opt_i2 The lower row index.
+ * @param {number=} opt_j2 The right column index.
  * @return {goog.math.Matrix} The submatrix contained within the given bounds.
  * @private
  */

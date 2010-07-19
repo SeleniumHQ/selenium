@@ -1,16 +1,16 @@
+// Copyright 2008 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-// Copyright 2008 Google Inc. All Rights Reserved.
 
 /**
  * @fileoverview Data for time zone detection.
@@ -26,6 +26,7 @@
  * time zone order in each time zone group. The easiest way to do that is
  * to modify this code directly, and that's what we decide to do.
  *
+*
  */
 
 
@@ -46,7 +47,7 @@ goog.locale.TimeZoneFingerprint = {
   839516172: ['US-America/Denver', 'MX-America/Chihuahua', 'US-America/Boise',
       'CA-America/Cambridge_Bay', 'CA-America/Edmonton', 'CA-America/Inuvik',
       'MX-America/Mazatlan', 'US-America/Shiprock', 'CA-America/Yellowknife'],
-  983564302: ['UY-America/Montevideo'],
+  983564836: ['UY-America/Montevideo'],
   487587858: ['AU-Australia/Lord_Howe'],
   20: ['KI-Pacific/Kiritimati'],
   22: ['TO-Pacific/Tongatapu', 'KI-Pacific/Enderbury'],
@@ -74,7 +75,7 @@ goog.locale.TimeZoneFingerprint = {
       'KH-Asia/Phnom_Penh', 'ID-Asia/Pontianak', 'VN-Asia/Saigon',
       'LA-Asia/Vientiane', 'CX-Indian/Christmas'],
   35: ['MM-Asia/Rangoon', 'CC-Indian/Cocos'],
-  941621284: ['BR-America/Sao_Paulo'],
+  941621262: ['BR-America/Sao_Paulo'],
   37: ['IN-Asia/Calcutta'],
   38: ['PK-Asia/Karachi', 'KZ-Asia/Aqtobe', 'TM-Asia/Ashgabat',
       'TJ-Asia/Dushanbe', 'UZ-Asia/Samarkand', 'UZ-Asia/Tashkent',

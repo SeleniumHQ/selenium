@@ -1,20 +1,21 @@
+// Copyright 2009 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Copyright 2009 Google Inc. All Rights Reserved.
-
 /**
  * @fileoverview Locale independent date/time class.
  *
+*
  */
 
 goog.provide('goog.date.UtcDateTime');
@@ -31,15 +32,15 @@ goog.require('goog.date.Interval');
  * Defaults to current date and time if none is specified. The get... and the
  * getUTC... methods are equivalent.
  *
- * @param {number|Object} opt_year Four digit UTC year or a date-like object.
+ * @param {number|Object=} opt_year Four digit UTC year or a date-like object.
  *     If not set, the created object will contain the date determined by
  *     goog.now().
- * @param {number} opt_month UTC month, 0 = Jan, 11 = Dec.
- * @param {number} opt_date UTC date of month, 1 - 31.
- * @param {number} opt_hours UTC hours, 0 - 23.
- * @param {number} opt_minutes UTC minutes, 0 - 59.
- * @param {number} opt_seconds UTC seconds, 0 - 59.
- * @param {number} opt_milliseconds UTC milliseconds, 0 - 999.
+ * @param {number=} opt_month UTC month, 0 = Jan, 11 = Dec.
+ * @param {number=} opt_date UTC date of month, 1 - 31.
+ * @param {number=} opt_hours UTC hours, 0 - 23.
+ * @param {number=} opt_minutes UTC minutes, 0 - 59.
+ * @param {number=} opt_seconds UTC seconds, 0 - 59.
+ * @param {number=} opt_milliseconds UTC milliseconds, 0 - 999.
  * @constructor
  * @extends {goog.date.DateTime}
  */
@@ -77,8 +78,8 @@ goog.date.UtcDateTime.fromIsoString = function(formatted) {
  */
 goog.date.UtcDateTime.prototype.clone = function() {
   var date = new goog.date.UtcDateTime(this.date_);
-  date.firstDayOfWeek_ = this.firstDayOfWeek_;
-  date.firstWeekCutOffDay_ = this.firstWeekCutOffDay_;
+  date.setFirstDayOfWeek(this.getFirstDayOfWeek());
+  date.setFirstWeekCutOffDay(this.getFirstWeekCutOffDay());
   return date;
 };
 

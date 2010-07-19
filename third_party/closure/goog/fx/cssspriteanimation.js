@@ -1,21 +1,22 @@
+// Copyright 2008 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-// Copyright 2008 Google Inc. All Rights Reserved.
 
 /**
  * @fileoverview An animation class that animates CSS sprites by changing the
  * CSS background-position.
  *
+*
  * @see ../demos/cssspriteanimation.html
  */
 
@@ -40,7 +41,7 @@ goog.require('goog.fx.Animation');
  * @param {number} time The duration in milliseconds for one iteration of the
  *     animation.  For example, if the sprite contains 4 images and the duration
  *     is set to 400ms then each sprite will be displayed for 100ms.
- * @param {function(number) : number} opt_acc Acceleration function,
+ * @param {function(number) : number=} opt_acc Acceleration function,
  *    returns 0-1 for inputs 0-1.  This can be used to make certain frames be
  *    shown for a longer period of time.
  *
@@ -55,7 +56,7 @@ goog.fx.CssSpriteAnimation = function(element, size, box, time, opt_acc) {
 
   /**
    * HTML element that will be used in the animation.
-   * @type {Element?}
+   * @type {Element}
    * @private
    */
   this.element_ = element;

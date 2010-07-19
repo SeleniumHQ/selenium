@@ -1,24 +1,26 @@
+// Copyright 2008 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Copyright 2008 Google Inc. All Rights Reserved.
-
 /**
  * @fileoverview Functions to provide timezone information for use with
  * date/time format.
+*
  */
 
 goog.provide('goog.i18n.TimeZone');
 
+goog.require('goog.array');
 goog.require('goog.string');
 
 
@@ -48,7 +50,7 @@ goog.i18n.TimeZone = function() {
 
 
   /**
-   * The standard, non-daylight time zone offset.
+   * The standard, non-daylight time zone offset, in minutes WEST of UTC.
    * @type {number}
    * @private
    */
@@ -56,9 +58,10 @@ goog.i18n.TimeZone = function() {
 
 
   /**
-   * An array of string that can have 2 or 4 elements, long and short names for
-   * standard time zone, and long and short names for daylight time zone if it
-   * has daylight time transitions.
+   * An array of strings that can have 2 or 4 elements.  The first two elements
+   * are the long and short names for standard time in this time zone, and the
+   * last two elements (if present) are the long and short names for daylight
+   * time in this time zone.
    * @type {Array.<string>}
    * @private
    */
@@ -66,9 +69,12 @@ goog.i18n.TimeZone = function() {
 
 
   /**
-   * Daylight/standard time transition array. It lists transition points since
-   * 1970 until some year in future. It always in pair of (transition point) +
-   * (time zone offset adjustment)
+   * This array specifies the Daylight Saving Time transitions for this time
+   * zone.  This is a flat array of numbers which are interpreted in pairs:
+   * [time1, adjustment1, time2, adjustment2, ...] where each time is a DST
+   * transition point given as a number of hours since 00:00 UTC, January 1,
+   * 1970, and each adjustment is the adjustment to apply for times after the
+   * DST transition, given as minutes EAST of UTC.
    * @type {Array.<number>}
    * @private
    */
@@ -77,7 +83,7 @@ goog.i18n.TimeZone = function() {
 
 
 /**
- * Milliseconds per hour constant.
+ * The number of milliseconds in an hour.
  * @type {number}
  * @private
  */
@@ -85,8 +91,7 @@ goog.i18n.TimeZone.MILLISECONDS_PER_HOUR_ = 3600 * 1000;
 
 
 /**
- * Enum of time zone names. The value will be used as index of in time zone
- * name array.
+ * Indices into the array of time zone names.
  * @enum {number}
  */
 goog.i18n.TimeZone.NameType = {
@@ -98,13 +103,25 @@ goog.i18n.TimeZone.NameType = {
 
 
 /**
- * This factory method creates a time zone instance. It takes either a time zone
- * information array or a simple timezone offset. The latter form does not offer
- * the same set of functionalities as first form.
+ * This factory method creates a time zone instance.  It takes either an object
+ * containing complete time zone information, or a single number representing a
+ * constant time zone offset.  If the latter form is used, DST functionality is
+ * not available.
  *
- * @param {number|Object} timeZoneData this parameter could take 2 types,
- *     if it is a number, a simple TimeZone object will be created. Otherwise,
- *     it should be an Object that holds all time zone related information.
+ * @param {number|Object} timeZoneData If this parameter is a number, it should
+ *     indicate minutes WEST of UTC to be used as a constant time zone offset.
+ *     Otherwise, it should be an object with these four fields:
+ *     <ul>
+ *     <li>id: A string ID for the time zone.
+ *     <li>std_offset: The standard time zone offset in minutes EAST of UTC.
+ *     <li>names: An array of four names (standard short name, standard long
+ *           name, daylight short name, daylight long, name)
+ *     <li>transitions: An array of numbers which are interpreted in pairs:
+ *           [time1, adjustment1, time2, adjustment2, ...] where each time is
+ *           a DST transition point given as a number of hours since 00:00 UTC,
+ *           January 1, 1970, and each adjustment is the adjustment to apply
+ *           for times after the DST transition, given as minutes EAST of UTC.
+ *     </ul>
  * @return {goog.i18n.TimeZone} A goog.i18n.TimeZone object for the given
  *     time zone data.
  */
@@ -122,11 +139,11 @@ goog.i18n.TimeZone.createTimeZone = function(timeZoneData) {
 
 
 /**
- * This factory method provides a decent fallback to create a time zone object
- * just based on a given time zone offset.
- * @param {number} timeZoneOffsetInMinutes time zone offset in minutes.
- * @return {goog.i18n.TimeZone} A goog.i18n.TimeZone object generated by
- *     just using the time zone offset information.
+ * This factory method creates a time zone object with a constant offset.
+ * @param {number} timeZoneOffsetInMinutes Offset in minutes WEST of UTC.
+ * @return {goog.i18n.TimeZone} A time zone object with the given constant
+ *     offset.  Note that the time zone ID of this object will use the POSIX
+ *     convention, which has a reversed sign ("Etc/GMT+8" means UTC-8 or PST).
  * @private
  */
 goog.i18n.TimeZone.createSimpleTimeZone_ = function(timeZoneOffsetInMinutes) {
@@ -142,9 +159,10 @@ goog.i18n.TimeZone.createSimpleTimeZone_ = function(timeZoneOffsetInMinutes) {
 
 
 /**
- * Generate GMT string given a time zone offset.
- * @param {number} offset time zone offset in minutes.
- * @return {string} GMT string for this offset.
+ * Generate a GMT-relative string for a constant time zone offset.
+ * @param {number} offset The time zone offset in minutes WEST of UTC.
+ * @return {string} The GMT string for this offset, which will indicate
+ *     hours EAST of UTC.
  * @private
  */
 goog.i18n.TimeZone.composeGMTString_ = function(offset) {
@@ -158,9 +176,10 @@ goog.i18n.TimeZone.composeGMTString_ = function(offset) {
 
 
 /**
- * POSIX time zone ID as fallback.
- * @param {number} offset time zone offset in minutes.
- * @return {string} posix time zone id for given offset.
+ * Generate a POSIX time zone ID for a constant time zone offset.
+ * @param {number} offset The time zone offset in minutes WEST of UTC.
+ * @return {string} The POSIX time zone ID for this offset, which will indicate
+ *     hours WEST of UTC.
  * @private
  */
 goog.i18n.TimeZone.composePosixTimeZoneID_ = function(offset) {
@@ -179,9 +198,10 @@ goog.i18n.TimeZone.composePosixTimeZoneID_ = function(offset) {
 
 
 /**
- * Generate UTC string.
- * @param {number} offset time zone offset in minutes.
- * @return {string} UTC string for given offset.
+ * Generate a UTC-relative string for a constant time zone offset.
+ * @param {number} offset The time zone offset in minutes WEST of UTC.
+ * @return {string} The UTC string for this offset, which will indicate
+ *     hours EAST of UTC.
  * @private
  */
 goog.i18n.TimeZone.composeUTCString_ = function(offset) {
@@ -200,10 +220,27 @@ goog.i18n.TimeZone.composeUTCString_ = function(offset) {
 
 
 /**
- * Return the adjustment amount of time zone offset. When daylight time
- * is in effect, this number will be positive. Otherwise, it is zero.
- * @param {Date} date the time to check.
- * @return {number} offset amount.
+ * Convert the contents of time zone object to a timeZoneData object, suitable
+ * for passing to goog.i18n.TimeZone.createTimeZone.
+ * @return {Object} A timeZoneData object (see the documentation for
+ *     goog.i18n.TimeZone.createTimeZone).
+ */
+goog.i18n.TimeZone.prototype.getTimeZoneData = function() {
+  return {
+    'id': this.timeZoneId_,
+    'std_offset': -this.standardOffset_,  // note createTimeZone flips the sign
+    'names': goog.array.clone(this.tzNames_),  // avoid aliasing the array
+    'transitions': goog.array.clone(this.transitions_)  // avoid aliasing
+  };
+};
+
+
+/**
+ * Return the DST adjustment to the time zone offset for a given time.
+ * While Daylight Saving Time is in effect, this number is positive.
+ * Otherwise, it is zero.
+ * @param {Date} date The time to check.
+ * @return {number} The DST adjustment in minutes EAST of UTC.
  */
 goog.i18n.TimeZone.prototype.getDaylightAdjustment = function(date) {
   var timeInMs = Date.UTC(date.getUTCFullYear(), date.getUTCMonth(),
@@ -230,10 +267,9 @@ goog.i18n.TimeZone.prototype.getGMTString = function(date) {
 
 
 /**
- * To get long time zone name for given date.
- * @param {Date} date The Date object for which time to retrieve long time
- *     zone name.
- * @return {string} long time zone name.
+ * Get the long time zone name for a given date/time.
+ * @param {Date} date The time for which to retrieve the long time zone name.
+ * @return {string} The long time zone name.
  */
 goog.i18n.TimeZone.prototype.getLongName = function(date) {
   return this.tzNames_[this.isDaylightTime(date) ?
@@ -243,12 +279,9 @@ goog.i18n.TimeZone.prototype.getLongName = function(date) {
 
 
 /**
- * To get time zone offset (in minutes) relative to UTC for given date.
- * To be consistent with JDK/Javascript API, west of Greenwich will be
- * positive.
- *
- * @param {Date} date The date for which time to retrieve time zone offset.
- * @return {number} time zone offset in minutes.
+ * Get the time zone offset in minutes WEST of UTC for a given date/time.
+ * @param {Date} date The time for which to retrieve the time zone offset.
+ * @return {number} The time zone offset in minutes WEST of UTC.
  */
 goog.i18n.TimeZone.prototype.getOffset = function(date) {
   return this.standardOffset_ - this.getDaylightAdjustment(date);
@@ -256,10 +289,9 @@ goog.i18n.TimeZone.prototype.getOffset = function(date) {
 
 
 /**
- * To get RFC representation of certain time zone name for given date.
- * @param {Date} date The Date object for which time to retrieve RFC time
- *     zone string.
- * @return {string} RFC time zone string.
+ * Get the RFC representation of the time zone for a given date/time.
+ * @param {Date} date The time for which to retrieve the RFC time zone string.
+ * @return {string} The RFC time zone string.
  */
 goog.i18n.TimeZone.prototype.getRFCTimeZoneString = function(date) {
   var offset = -this.getOffset(date);
@@ -272,9 +304,9 @@ goog.i18n.TimeZone.prototype.getRFCTimeZoneString = function(date) {
 
 
 /**
- * To get short time zone name for given date.
- * @param {Date} date The date for which time to retrieve short time zone.
- * @return {string} short time zone name.
+ * Get the short time zone name for given date/time.
+ * @param {Date} date The time for which to retrieve the short time zone name.
+ * @return {string} The short time zone name.
  */
 goog.i18n.TimeZone.prototype.getShortName = function(date) {
   return this.tzNames_[this.isDaylightTime(date) ?
@@ -284,8 +316,8 @@ goog.i18n.TimeZone.prototype.getShortName = function(date) {
 
 
 /**
- * Return time zone id for this time zone.
- * @return {string} time zone id.
+ * Return the time zone ID for this time zone.
+ * @return {string} The time zone ID.
  */
 goog.i18n.TimeZone.prototype.getTimeZoneId = function() {
   return this.timeZoneId_;
@@ -293,9 +325,9 @@ goog.i18n.TimeZone.prototype.getTimeZoneId = function() {
 
 
 /**
- * Check if the given time fall within daylight saving period.
- * @param {Date} date time for which to check.
- * @return {boolean} true if daylight time in effect.
+ * Check if Daylight Saving Time is in effect at a given time in this time zone.
+ * @param {Date} date The time to check.
+ * @return {boolean} True if Daylight Saving Time is in effect.
  */
 goog.i18n.TimeZone.prototype.isDaylightTime = function(date) {
   return this.getDaylightAdjustment(date) > 0;

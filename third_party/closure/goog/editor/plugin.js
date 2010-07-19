@@ -1,28 +1,29 @@
+// Copyright 2008 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-// Copyright 2008 Google Inc.
 // All Rights Reserved.
 
 /**
  * @fileoverview Abstract API for TrogEdit plugins.
  *
+*
  * @see ../demos/editor/editor.html
  */
 
 goog.provide('goog.editor.Plugin');
 
 goog.require('goog.debug.Logger');
-// TODO: Remove the dependency on goog.editor.Command asap. Currently only
+// TODO(user): Remove the dependency on goog.editor.Command asap. Currently only
 // needed for execCommand issues with links.
 goog.require('goog.editor.Command');
 goog.require('goog.events.EventTarget');
@@ -222,17 +223,17 @@ goog.editor.Plugin.Op = {
  */
 goog.editor.Plugin.OPCODE = goog.object.transpose(
     goog.reflect.object(goog.editor.Plugin, {
-       handleKeyDown: goog.editor.Plugin.Op.KEYDOWN,
-       handleKeyPress: goog.editor.Plugin.Op.KEYPRESS,
-       handleKeyUp: goog.editor.Plugin.Op.KEYUP,
-       handleSelectionChange: goog.editor.Plugin.Op.SELECTION,
-       handleKeyboardShortcut: goog.editor.Plugin.Op.SHORTCUT,
-       execCommand: goog.editor.Plugin.Op.EXEC_COMMAND,
-       queryCommandValue: goog.editor.Plugin.Op.QUERY_COMMAND,
-       prepareContentsHtml: goog.editor.Plugin.Op.PREPARE_CONTENTS_HTML,
-       cleanContentsHtml: goog.editor.Plugin.Op.CLEAN_CONTENTS_HTML,
-       cleanContentsDom: goog.editor.Plugin.Op.CLEAN_CONTENTS_DOM
-}));
+      handleKeyDown: goog.editor.Plugin.Op.KEYDOWN,
+      handleKeyPress: goog.editor.Plugin.Op.KEYPRESS,
+      handleKeyUp: goog.editor.Plugin.Op.KEYUP,
+      handleSelectionChange: goog.editor.Plugin.Op.SELECTION,
+      handleKeyboardShortcut: goog.editor.Plugin.Op.SHORTCUT,
+      execCommand: goog.editor.Plugin.Op.EXEC_COMMAND,
+      queryCommandValue: goog.editor.Plugin.Op.QUERY_COMMAND,
+      prepareContentsHtml: goog.editor.Plugin.Op.PREPARE_CONTENTS_HTML,
+      cleanContentsHtml: goog.editor.Plugin.Op.CLEAN_CONTENTS_HTML,
+      cleanContentsDom: goog.editor.Plugin.Op.CLEAN_CONTENTS_DOM
+    }));
 
 
 /**
@@ -274,7 +275,7 @@ goog.editor.Plugin.prototype.handleKeyUp;
 
 /**
  * Handles selection change.
- * @param {!goog.events.BrowserEvent} opt_e The browser event.
+ * @param {!goog.events.BrowserEvent=} opt_e The browser event.
  * @return {boolean} Whether the event was handled and thus should *not* be
  *     propagated to other plugins.
  */
@@ -316,12 +317,12 @@ goog.editor.Plugin.prototype.handleKeyboardShortcut;
  * Multi-field plugins must override execCommand.
  *
  * @param {string} command The command to execute.
- * @param {Object} var_args Any additional parameters needed to
+ * @param {...*} var_args Any additional parameters needed to
  *     execute the command.
- * @return {Object|undefined} The result of the execCommand, if any.
+ * @return {*} The result of the execCommand, if any.
  */
 goog.editor.Plugin.prototype.execCommand = function(command, var_args) {
-  // TODO: Replace all uses of isSilentCommand with plugins that just
+  // TODO(user): Replace all uses of isSilentCommand with plugins that just
   // override this base execCommand method.
   var silent = this.isSilentCommand(command);
   if (!silent) {
@@ -350,7 +351,7 @@ goog.editor.Plugin.prototype.execCommand = function(command, var_args) {
       // dispatchChange includes a call to startChangeEvents, which unwinds the
       // call to stopChangeEvents made before the try block.
       this.fieldObject.dispatchChange();
-      // TODO: Remove this conditional.  We should always dispatch a
+      // TODO(user): Remove this conditional.  We should always dispatch a
       // a selection change event here, but link creation is wierd.  See
       // TR_Editor.prototype.execute for more details
       if (command != goog.editor.Command.LINK) {
@@ -371,9 +372,9 @@ goog.editor.Plugin.prototype.execCommand = function(command, var_args) {
  * instead.
  *
  * @param {string} command The command to execute.
- * @param {Object} var_args Any additional parameters needed to
+ * @param {...*} var_args Any additional parameters needed to
  *     execute the command.
- * @return {Object|undefined} The result of the execCommand, if any.
+ * @return {*} The result of the execCommand, if any.
  * @protected
  */
 goog.editor.Plugin.prototype.execCommandInternal;
@@ -382,7 +383,7 @@ goog.editor.Plugin.prototype.execCommandInternal;
 /**
  * Gets the state of this command if this plugin serves that command.
  * @param {string} command The command to check.
- * @return {string|boolean|null} The value of the command.
+ * @return {*} The value of the command.
  */
 goog.editor.Plugin.prototype.queryCommandValue;
 

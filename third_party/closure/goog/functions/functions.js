@@ -1,21 +1,22 @@
+// Copyright 2008 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Copyright 2008 Google Inc. All Rights Reserved.
-
 /**
  * @fileoverview Utilities for creating functions. Loosely inspired by the
- * java classes: http://go/functions.java and http://go/predicate.java
+ * java classes: http://go/functions.java and http://go/predicate.java.
  *
+ * @author nicksantos@google.com (Nick Santos)
  */
 
 
@@ -49,10 +50,17 @@ goog.functions.TRUE = goog.functions.constant(true);
 
 
 /**
+ * Always returns NULL.
+ * @type {function(...): null}
+ */
+goog.functions.NULL = goog.functions.constant(null);
+
+
+/**
  * A simple function that returns the first argument of whatever is passed
  * into it.
- * @param {*} opt_returnValue The single value that will be returned.
- * @param {*} var_args Optional trailing arguments. These are ignored.
+ * @param {*=} opt_returnValue The single value that will be returned.
+ * @param {...*} var_args Optional trailing arguments. These are ignored.
  * @return {*} The first argument passed in, or undefined if nothing was passed.
  */
 goog.functions.identity = function(opt_returnValue, var_args) {
@@ -88,7 +96,7 @@ goog.functions.lock = function(f) {
 /**
  * Creates the composition of the functions passed in.
  * For example, (goog.functions.compose(f, g))(a) is equivalent to f(g(a)).
- * @param {Function} var_args A list of functions.
+ * @param {...Function} var_args A list of functions.
  * @return {!Function} The composition of all inputs.
  */
 goog.functions.compose = function(var_args) {
@@ -112,7 +120,7 @@ goog.functions.compose = function(var_args) {
  * Creates a function that calls the functions passed in in sequence, and
  * returns the value of the last function. For example,
  * (goog.functions.sequence(f, g))(x) is equivalent to f(x),g(x).
- * @param {Function} var_args A list of functions.
+ * @param {...Function} var_args A list of functions.
  * @return {!Function} A function that calls all inputs in sequence.
  */
 goog.functions.sequence = function(var_args) {
@@ -133,7 +141,7 @@ goog.functions.sequence = function(var_args) {
  * to true. The components are evaluated in order, and the evaluation will be
  * short-circuited as soon as a function returns false.
  * For example, (goog.functions.and(f, g))(x) is equivalent to f(x) && g(x).
- * @param {Function} var_args A list of functions.
+ * @param {...Function} var_args A list of functions.
  * @return {!Function} A function that ANDs its component functions.
  */
 goog.functions.and = function(var_args) {
@@ -155,7 +163,7 @@ goog.functions.and = function(var_args) {
  * to true. The components are evaluated in order, and the evaluation will be
  * short-circuited as soon as a function returns true.
  * For example, (goog.functions.and(f, g))(x) is equivalent to f(x) || g(x).
- * @param {Function} var_args A list of functions.
+ * @param {...Function} var_args A list of functions.
  * @return {!Function} A function that ORs its component functions.
  */
 goog.functions.or = function(var_args) {
@@ -169,4 +177,31 @@ goog.functions.or = function(var_args) {
     }
     return false;
   };
+};
+
+
+/**
+ * Generic factory function to construct an object given the constructor
+ * and the arguments. Intended to be bound to create object factories.
+ *
+ * Callers should cast the result to the appropriate type for proper type
+ * checking by the compiler.
+ * @param {!Function} constructor The constructor for the Object.
+ * @param {...*} var_args The arguments to be passed to the contructor.
+ * @return {!Object} A new instance of the class given in {@code constructor}.
+ */
+goog.functions.create = function(constructor, var_args) {
+  /** @constructor */
+  var temp = function() {};
+  temp.prototype = constructor.prototype;
+
+  // obj will have constructor's prototype in its chain and
+  // 'obj instanceof constructor' will be true.
+  var obj = new temp();
+
+  // obj is intialized by constructor.
+  // arguments is only array-like so lacks shift(), but can be used with
+  // the Array prototype function.
+  constructor.apply(obj, Array.prototype.slice.call(arguments, 1));
+  return obj;
 };

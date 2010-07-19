@@ -1,21 +1,23 @@
+// Copyright 2008 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-// Copyright 2008 Google Inc. All Rights Reserved.
 
 /**
  * @fileoverview Generic factory functions for creating the building blocks for
  * an editor toolbar.
  *
+*
+*
  */
 
 goog.provide('goog.ui.editor.ToolbarFactory');
@@ -147,15 +149,29 @@ goog.ui.editor.ToolbarFactory.getPxFromLegacySize = function(fontSize) {
   return goog.ui.editor.ToolbarFactory.LEGACY_SIZE_TO_PX_MAP_[fontSize] || 10;
 };
 
+/**
+ * Converts a pixel font size specification into an equivalent legacy size.
+ * For example, {@code font-size: 32px;} is {@code &lt;font size="6"&gt;}, etc.
+ * If the given pixel size doesn't exactly match one of the legacy sizes, -1 is
+ * returned.
+ * @param {number} px Pixel font size.
+ * @return {number} Equivalent legacy size spec in the 0-7 range, or -1 if none
+ *     exists.
+ */
+goog.ui.editor.ToolbarFactory.getLegacySizeFromPx = function(px) {
+  // Use lastIndexOf to get the largest legacy size matching the pixel size
+  // (most notably returning 1 instead of 0 for 10px).
+  return goog.array.lastIndexOf(
+      goog.ui.editor.ToolbarFactory.LEGACY_SIZE_TO_PX_MAP_, px);
+};
 
 /**
  * Map of legacy font sizes (0-7) to equivalent pixel sizes.
  * @type {Array.<number>}
  * @private
  */
-goog.ui.editor.ToolbarFactory.LEGACY_SIZE_TO_PX_MAP_ = goog.userAgent.MAC ?
-    [10, 10, 12, 14, 17, 21, 28, 42] :
-    [10, 10, 14, 16, 18, 24, 32, 48];
+goog.ui.editor.ToolbarFactory.LEGACY_SIZE_TO_PX_MAP_ =
+    [10, 10, 13, 16, 18, 24, 32, 48];
 
 
 /**
@@ -187,7 +203,7 @@ goog.ui.editor.ToolbarFactory.addFormatOptions = function(button, formats) {
  */
 goog.ui.editor.ToolbarFactory.addFormatOption = function(button, caption, tag) {
   // Construct the option, and add it to the button.
-  // TODO: Create boring but functional menu item for now...
+  // TODO(user): Create boring but functional menu item for now...
   var option = new goog.ui.Option(button.dom_.createDom(goog.dom.TagName.DIV,
       null, caption), tag, button.dom_);
   option.setId(tag);
@@ -202,7 +218,7 @@ goog.ui.editor.ToolbarFactory.addFormatOption = function(button, caption, tag) {
  * @param {!Array.<goog.ui.Control>} items Toolbar items; each must
  *     be a {@link goog.ui.Control}.
  * @param {!Element} elem Toolbar parent element.
- * @param {boolean} opt_isRightToLeft Whether the editor chrome is
+ * @param {boolean=} opt_isRightToLeft Whether the editor chrome is
  *     right-to-left; defaults to the directionality of the toolbar parent
  *     element.
  * @return {!goog.ui.Toolbar} Editor toolbar, rendered into the given parent
@@ -249,11 +265,11 @@ goog.ui.editor.ToolbarFactory.makeToolbar = function(items, elem,
  *     built-in buttons, anything else for custom buttons.
  * @param {string} tooltip Tooltip to be shown on hover.
  * @param {goog.ui.ControlContent} caption Button caption.
- * @param {string} opt_classNames CSS class name(s) to apply to the caption
+ * @param {string=} opt_classNames CSS class name(s) to apply to the caption
  *     element.
- * @param {goog.ui.ButtonRenderer} opt_renderer Button renderer; defaults to
+ * @param {goog.ui.ButtonRenderer=} opt_renderer Button renderer; defaults to
  *     {@link goog.ui.ToolbarButtonRenderer} if unspecified.
- * @param {goog.dom.DomHelper} opt_domHelper DOM helper, used for DOM
+ * @param {goog.dom.DomHelper=} opt_domHelper DOM helper, used for DOM
  *     creation; defaults to the current document if unspecified.
  * @return {!goog.ui.Button} A toolbar button.
  */
@@ -278,11 +294,11 @@ goog.ui.editor.ToolbarFactory.makeButton = function(id, tooltip, caption,
  *     built-in buttons, anything else for custom buttons.
  * @param {string} tooltip Tooltip to be shown on hover.
  * @param {goog.ui.ControlContent} caption Button caption.
- * @param {string} opt_classNames CSS class name(s) to apply to the caption
+ * @param {string=} opt_classNames CSS class name(s) to apply to the caption
  *     element.
- * @param {goog.ui.ButtonRenderer} opt_renderer Button renderer; defaults to
+ * @param {goog.ui.ButtonRenderer=} opt_renderer Button renderer; defaults to
  *     {@link goog.ui.ToolbarButtonRenderer} if unspecified.
- * @param {goog.dom.DomHelper} opt_domHelper DOM helper, used for DOM
+ * @param {goog.dom.DomHelper=} opt_domHelper DOM helper, used for DOM
  *     creation; defaults to the current document if unspecified.
  * @return {!goog.ui.Button} A toggle button.
  */
@@ -305,11 +321,11 @@ goog.ui.editor.ToolbarFactory.makeToggleButton = function(id, tooltip, caption,
  *     built-in buttons, anything else for custom buttons.
  * @param {string} tooltip Tooltip to be shown on hover.
  * @param {goog.ui.ControlContent} caption Button caption.
- * @param {string} opt_classNames CSS class name(s) to apply to the caption
+ * @param {string=} opt_classNames CSS class name(s) to apply to the caption
  *     element.
- * @param {goog.ui.ButtonRenderer} opt_renderer Button renderer; defaults to
+ * @param {goog.ui.ButtonRenderer=} opt_renderer Button renderer; defaults to
  *     {@link goog.ui.ToolbarMenuButtonRenderer} if unspecified.
- * @param {goog.dom.DomHelper} opt_domHelper DOM helper, used for DOM
+ * @param {goog.dom.DomHelper=} opt_domHelper DOM helper, used for DOM
  *     creation; defaults to the current document if unspecified.
  * @return {!goog.ui.MenuButton} A menu button.
  */
@@ -338,11 +354,11 @@ goog.ui.editor.ToolbarFactory.makeMenuButton = function(id, tooltip, caption,
  * @param {string} tooltip Tooltip to be shown on hover.
  * @param {goog.ui.ControlContent} caption Button caption; used as the
  *     default caption when nothing is selected.
- * @param {string} opt_classNames CSS class name(s) to apply to the button's
+ * @param {string=} opt_classNames CSS class name(s) to apply to the button's
  *     root element.
- * @param {goog.ui.MenuButtonRenderer} opt_renderer Button renderer;
+ * @param {goog.ui.MenuButtonRenderer=} opt_renderer Button renderer;
  *     defaults to {@link goog.ui.ToolbarMenuButtonRenderer} if unspecified.
- * @param {goog.dom.DomHelper} opt_domHelper DOM helper, used for DOM
+ * @param {goog.dom.DomHelper=} opt_domHelper DOM helper, used for DOM
  *     creation; defaults to the current document if unspecified.
  * @return {!goog.ui.Select} A select button.
  */
@@ -375,12 +391,12 @@ goog.ui.editor.ToolbarFactory.makeSelectButton = function(id, tooltip, caption,
  *     built-in toolbar buttons, but can be anything else for custom buttons.
  * @param {string} tooltip Tooltip to be shown on hover.
  * @param {goog.ui.ControlContent} caption Button caption.
- * @param {string} opt_classNames CSS class name(s) to apply to the caption
+ * @param {string=} opt_classNames CSS class name(s) to apply to the caption
  *     element.
- * @param {goog.ui.ColorMenuButtonRenderer} opt_renderer Button renderer;
+ * @param {goog.ui.ColorMenuButtonRenderer=} opt_renderer Button renderer;
  *     defaults to {@link goog.ui.ToolbarColorMenuButtonRenderer}
  *     if unspecified.
- * @param {goog.dom.DomHelper} opt_domHelper DOM helper, used for DOM
+ * @param {goog.dom.DomHelper=} opt_domHelper DOM helper, used for DOM
  *     creation; defaults to the current document if unspecified.
  * @return {!goog.ui.ColorMenuButton} A color menu button.
  */
@@ -402,9 +418,9 @@ goog.ui.editor.ToolbarFactory.makeColorMenuButton = function(id, tooltip,
  * Creates a new DIV that wraps a button caption, optionally applying CSS
  * class names to it.  Used as a helper function in button factory methods.
  * @param {goog.ui.ControlContent} caption Button caption.
- * @param {string} opt_classNames CSS class name(s) to apply to the DIV that
+ * @param {string=} opt_classNames CSS class name(s) to apply to the DIV that
  *     wraps the caption (if any).
- * @param {goog.dom.DomHelper} opt_domHelper DOM helper, used for DOM
+ * @param {goog.dom.DomHelper=} opt_domHelper DOM helper, used for DOM
  *     creation; defaults to the current document if unspecified.
  * @return {!Element} DIV that wraps the caption.
  * @private

@@ -1,20 +1,21 @@
+// Copyright 2009 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Copyright 2009 Google Inc. All Rights Reserved.
-
 /**
  * @fileoverview Tools for parsing and pretty printing error stack traces.
  *
+*
  */
 
 goog.provide('goog.testing.stacktrace');
@@ -216,20 +217,32 @@ goog.testing.stacktrace.followCallChain_ = function() {
   var depth = 0;
 
   while (fn && depth < goog.testing.stacktrace.MAX_DEPTH_) {
-    var m = String(fn).match(goog.testing.stacktrace.FUNCTION_SOURCE_REGEXP_);
-    var functionName = m ? m[1] : '';
+    var fnString = Function.prototype.toString.call(fn);
+    var match = fnString.match(goog.testing.stacktrace.FUNCTION_SOURCE_REGEXP_);
+    var functionName = match ? match[1] : '';
 
     var argsBuilder = ['('];
-    for (var i = 0; i < fn.arguments.length; i++) {
-      var arg = fn.arguments[i];
-      if (i > 0) {
-        argsBuilder.push(', ');
+    if (fn.arguments) {
+      for (var i = 0; i < fn.arguments.length; i++) {
+        var arg = fn.arguments[i];
+        if (i > 0) {
+          argsBuilder.push(', ');
+        }
+        if (goog.isString(arg)) {
+          argsBuilder.push('"', arg, '"');
+        } else {
+          // Some args are mocks, and we don't want to fail from them not having
+          // expected a call to toString, so instead insert a static string.
+          if (arg && arg['$replay']) {
+            argsBuilder.push('goog.testing.Mock');
+          } else {
+            argsBuilder.push(String(arg));
+          }
+        }
       }
-      if (goog.isString(arg)) {
-        argsBuilder.push('"', arg, '"');
-      } else {
-        argsBuilder.push(String(arg));
-      }
+    } else {
+      // Opera 10 doesn't know the arguments of native functions.
+      argsBuilder.push('unknown');
     }
     argsBuilder.push(')');
     var args = argsBuilder.join('');

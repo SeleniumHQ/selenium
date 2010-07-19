@@ -1,16 +1,16 @@
+// Copyright 2006 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-// Copyright 2006 Google Inc. All Rights Reserved.
 
 /**
  *
@@ -19,6 +19,8 @@
  *
  *   <http://go/js_modules_design>
  *
+*
+*
  */
 
 goog.provide('goog.module');
@@ -49,10 +51,10 @@ goog.module.require = function(module, symbol, callback) {
  *
  * @param {string} module The name of the module. Cf. parameter module
  *     of method require().
- * @param {number} opt_symbol The symbol being defined, or nothing when all
+ * @param {number=} opt_symbol The symbol being defined, or nothing when all
  *     symbols of the module are defined. Cf. parameter symbol of method
  *     require().
- * @param {Object} opt_object The object bound to the symbol, or nothing when
+ * @param {Object=} opt_object The object bound to the symbol, or nothing when
  *     all symbols of the module are defined.
  */
 goog.module.provide = function(module, opt_symbol, opt_object) {
@@ -67,7 +69,7 @@ goog.module.provide = function(module, opt_symbol, opt_object) {
  * explanation of param.
  *
  * @param {string} urlBase The URL of the base library.
- * @param {Function} opt_urlFunction Function that creates the URL for the
+ * @param {Function=} opt_urlFunction Function that creates the URL for the
  *     module file. It will be passed the base URL for module files and the
  *     module name and should return the fully-formed URL to the module file to
  *     load.
@@ -154,7 +156,7 @@ goog.module.requireMultipleSymbolsHelper_ = function(symbolRequests, i,
 /**
  * Checks if the given element is null.
  *
- * @param {Object?} el The element to check if null.
+ * @param {Object} el The element to check if null.
  * @param {number} i The index of the element.
  * @param {Array.<Object>} arr The array that contains the element.
  * @return {boolean} TRUE iff the element is null.

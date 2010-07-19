@@ -1,16 +1,16 @@
+// Copyright 2006 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-// Copyright 2006 Google Inc. All Rights Reserved.
 
 /**
  * @fileoverview Definition of the RoundedCorners class. This depends on the
@@ -19,6 +19,7 @@
  * the rounded corners. See com.google.javascript.closure.RoundedCornerServlet
  * for sample usage.
  *
+*
  */
 
 goog.provide('goog.ui.RoundedCorners');
@@ -66,9 +67,9 @@ goog.ui.RoundedCorners = function(servletUri) {
  * @param {Element} element The element to provide with rounded corners.
  * @param {string} servletUri The uri to the RoundedCornerServlet for
  * fetching the rounded corner images.
- * @param {goog.math.Size} opt_borderThickness The rounded corners border
+ * @param {goog.math.Size=} opt_borderThickness The rounded corners border
  * see setBorderThickness().  If no value is supplied, (5, 5) will be used.
- * @param {number} opt_corners The corners to round.  A bitwise integer.  If no
+ * @param {number=} opt_corners The corners to round.  A bitwise integer.  If no
  * corners are specified, goog.ui.RoundedCorners.Corners.ALL will be used.
  */
 goog.ui.RoundedCorners.roundElement = function(
@@ -150,7 +151,7 @@ goog.ui.RoundedCorners.prototype.padding_ = '';
 
 /**
  * An explicit height for the HTML. If null, no height is specified
- * @type {string?}
+ * @type {?string}
  * @private
  */
 goog.ui.RoundedCorners.prototype.height_ = null;
@@ -318,7 +319,7 @@ goog.ui.RoundedCorners.prototype.setBorderThickness = function(size) {
  * set in certain cases in IE because of an off-by-1 bug in IE's bottom
  * positioning code.
  *
- * @return {string?} The height as a style string (e.g. '2px' or '3em').
+ * @return {?string} The height as a style string (e.g. '2px' or '3em').
  */
 goog.ui.RoundedCorners.prototype.getExplicitHeight = function() {
   return this.height_;
@@ -343,7 +344,6 @@ goog.ui.RoundedCorners.prototype.setExplicitHeight = function(height) {
  * Returns the padding of the rounded corner border.
  *
  * @return {string} The padding as a style string (e.g. '2px 4px').
- *
  */
 goog.ui.RoundedCorners.prototype.getPadding = function() {
   return this.padding_;
@@ -354,7 +354,6 @@ goog.ui.RoundedCorners.prototype.getPadding = function() {
  * Sets the padding of the rounded corner border.
  *
  * @param {string} padding The padding as a style string (e.g. '2px 4px').
- *
  */
 goog.ui.RoundedCorners.prototype.setPadding = function(padding) {
   this.padding_ = padding;
@@ -366,7 +365,6 @@ goog.ui.RoundedCorners.prototype.setPadding = function(padding) {
  * of corners
  *
  * @return {number} The width.
- *
  */
 goog.ui.RoundedCorners.prototype.getLineWidth = function() {
   return this.lineWidth_;
@@ -378,7 +376,6 @@ goog.ui.RoundedCorners.prototype.getLineWidth = function() {
  * of corners
  *
  * @param {number} lineWidth The width.
- *
  */
 goog.ui.RoundedCorners.prototype.setLineWidth = function(lineWidth) {
   this.lineWidth_ = lineWidth;
@@ -389,7 +386,6 @@ goog.ui.RoundedCorners.prototype.setLineWidth = function(lineWidth) {
  * Returns which corners to show
  *
  * @return {number} The corners to show.
- *
  */
 goog.ui.RoundedCorners.prototype.getCornersToShow = function() {
   return this.cornersToShow_;
@@ -410,7 +406,6 @@ goog.ui.RoundedCorners.prototype.setCornersToShow = function(cornersToShow) {
  * Returns the image format. Currently, only png  and gif are supported.
  *
  * @return {string} The image format.
- *
  */
 goog.ui.RoundedCorners.prototype.getImageFormat = function() {
   return this.imageFormat_;
@@ -421,7 +416,6 @@ goog.ui.RoundedCorners.prototype.getImageFormat = function() {
  * Sets the image format. Currently, only png and gif are supported.
  *
  * @param {string} imageFormat The image format.
- *
  */
 goog.ui.RoundedCorners.prototype.setImageFormat = function(imageFormat) {
   if (imageFormat != 'png' && imageFormat != 'gif') {
@@ -459,7 +453,7 @@ goog.ui.RoundedCorners.prototype.setContent = function(html) {
  * @return {string} The html of the table.
  */
 goog.ui.RoundedCorners.prototype.getBorderHtml = function() {
-  // TODO: convert to client-side template mechanism when one exists
+  // TODO(user): convert to client-side template mechanism when one exists
   // the html is built like a template so that this can later be
   // converted easily to a templating mechanism like JST.
   var sb = [];
@@ -528,7 +522,7 @@ goog.ui.RoundedCorners.prototype.getBorderHtml = function() {
  * @return {string} The html of the table.
  */
 goog.ui.RoundedCorners.prototype.getBackgroundHtml = function() {
-  // TODO: convert to client-side template mechanism when one exists
+  // TODO(user): convert to client-side template mechanism when one exists
   // the html is built like a template so that this can later be converted
   // easily to a templating mechanism like JST.
   var sb = [];

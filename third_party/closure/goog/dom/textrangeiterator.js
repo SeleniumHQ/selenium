@@ -1,20 +1,21 @@
+// Copyright 2007 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Copyright 2007 Google Inc. All Rights Reserved.
-
 /**
  * @fileoverview Iterator between two DOM text range positions.
  *
+ * @author robbyw@google.com (Robby Walker)
  */
 
 goog.provide('goog.dom.TextRangeIterator');
@@ -38,7 +39,7 @@ goog.require('goog.iter.StopIteration');
  * @param {number} endOffset The offset in to endNode.  If endNode is
  *     an element, indicates an offset in to childNodes.  If endNode is a
  *     text node, indicates an offset in to nodeValue.
- * @param {boolean} opt_reverse Whether to traverse nodes in reverse.
+ * @param {boolean=} opt_reverse Whether to traverse nodes in reverse.
  * @constructor
  * @extends {goog.dom.RangeIterator}
  */
@@ -99,7 +100,7 @@ goog.inherits(goog.dom.TextRangeIterator, goog.dom.RangeIterator);
 
 /**
  * The first node in the selection.
- * @type {Node?}
+ * @type {Node}
  * @private
  */
 goog.dom.TextRangeIterator.prototype.startNode_ = null;
@@ -107,7 +108,7 @@ goog.dom.TextRangeIterator.prototype.startNode_ = null;
 
 /**
  * The last node in the selection.
- * @type {Node?}
+ * @type {Node}
  * @private
  */
 goog.dom.TextRangeIterator.prototype.endNode_ = null;

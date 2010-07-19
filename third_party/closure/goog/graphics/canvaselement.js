@@ -1,20 +1,22 @@
+// Copyright 2007 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Copyright 2007 Google Inc. All Rights Reserved.
-
 
 /**
  * @fileoverview Objects representing shapes drawn on a canvas.
+ * @author robbyw@google.com (Robby Walker)
+*
  */
 
 goog.provide('goog.graphics.CanvasEllipseElement');
@@ -423,7 +425,7 @@ goog.graphics.CanvasPathElement.prototype.draw = function(ctx) {
  * @param {number} y1 Y coordinate of start of line.
  * @param {number} x2 X coordinate of end of line.
  * @param {number} y2 Y coordinate of end of line.
- * @param {string?} align Horizontal alignment: left (default), center, right.
+ * @param {?string} align Horizontal alignment: left (default), center, right.
  * @param {!goog.graphics.Font} font Font describing the font properties.
  * @param {goog.graphics.Stroke} stroke The stroke to use for this element.
  * @param {goog.graphics.Fill} fill The fill to use for this element.
@@ -725,7 +727,7 @@ goog.graphics.CanvasImageElement.prototype.setSize = function(width, height) {
 goog.graphics.CanvasImageElement.prototype.setSource = function(src) {
   this.src_ = src;
   if (this.drawn_) {
-    // TODO: Probably need to reload the image here.
+    // TODO(robbyw): Probably need to reload the image here.
     this.getGraphics().redraw();
   }
 };
@@ -747,7 +749,7 @@ goog.graphics.CanvasImageElement.prototype.draw = function(ctx) {
     // Otherwise, load it.
     var img = new Image();
     img.onload = goog.bind(this.handleImageLoad_, this, img);
-    // TODO: Handle image load errors.
+    // TODO(robbyw): Handle image load errors.
     img.src = this.src_;
   }
 };
@@ -761,6 +763,6 @@ goog.graphics.CanvasImageElement.prototype.draw = function(ctx) {
 goog.graphics.CanvasImageElement.prototype.handleImageLoad_ = function(img) {
   this.img_ = img;
 
-  // TODO: Add a small delay to catch batched images
+  // TODO(robbyw): Add a small delay to catch batched images
   this.getGraphics().redraw();
 };

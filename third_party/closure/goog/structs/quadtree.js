@@ -1,16 +1,16 @@
+// Copyright 2008 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-// Copyright 2008 Google Inc. All Rights Reserved.
 
 /**
  * @fileoverview Datastructure: A point Quad Tree for representing 2D data. Each
@@ -19,6 +19,7 @@
  * The implementation currently requires pre-determined bounds for data as it
  * can not rebalance itself to that degree.
  *
+*
  * @see ../demos/quadtree.html
  */
 
@@ -90,7 +91,7 @@ goog.structs.QuadTree.prototype.set = function(x, y, value) {
  * Gets the value of the point at (x, y) or null if the point is empty.
  * @param {number} x The x-coordinate.
  * @param {number} y The y-coordinate.
- * @param {*} opt_default The default value to return if the node doesn't
+ * @param {*=} opt_default The default value to return if the node doesn't
  *     exist.
  * @return {*} The value of the node, the default value if the node
  *     doesn't exist, or undefined if the node doesn't exist and no default
@@ -106,7 +107,7 @@ goog.structs.QuadTree.prototype.get = function(x, y, opt_default) {
  * Removes a point from (x, y) if it exists.
  * @param {number} x The x-coordinate.
  * @param {number} y The y-coordinate.
- * @return {Object?} The value of the node that was removed, or null if the
+ * @return {*} The value of the node that was removed, or null if the
  *     node doesn't exist.
  */
 goog.structs.QuadTree.prototype.remove = function(x, y) {
@@ -215,7 +216,7 @@ goog.structs.QuadTree.prototype.clone = function() {
  *     The function to call for every value. This function takes 3 arguments
  *     (the value, the coordinate, and the tree itself) and the return value is
  *     irrelevant.
- * @param {Object} opt_obj The object to be used as the value of 'this'
+ * @param {Object=} opt_obj The object to be used as the value of 'this'
  *     within {@ code fn}.
  */
 goog.structs.QuadTree.prototype.forEach = function(fn, opt_obj) {
@@ -341,7 +342,7 @@ goog.structs.QuadTree.prototype.split_ = function(node) {
 
 
 /**
- * Attempts to balance a node.  A node will need balancing if all it's children
+ * Attempts to balance a node. A node will need balancing if all its children
  * are empty or it contains just one leaf.
  * @param {goog.structs.QuadTree.Node} node The node to balance.
  * @private
@@ -462,7 +463,7 @@ goog.structs.QuadTree.NodeType = {
  * @param {number} y Y-coordinate of node.
  * @param {number} w Width of node.
  * @param {number} h Height of node.
- * @param {goog.structs.QuadTree.Node} opt_parent Optional parent node.
+ * @param {goog.structs.QuadTree.Node=} opt_parent Optional parent node.
  * @constructor
  */
 goog.structs.QuadTree.Node = function(x, y, w, h, opt_parent) {
@@ -545,7 +546,7 @@ goog.structs.QuadTree.Node.prototype.point = null;
  * Creates a new point object.
  * @param {number} x The x-coordinate of the point.
  * @param {number} y The y-coordinate of the point.
- * @param {*} opt_value Optional value associated with the point.
+ * @param {*=} opt_value Optional value associated with the point.
  * @constructor
  */
 goog.structs.QuadTree.Point = function(x, y, opt_value) {
@@ -563,7 +564,7 @@ goog.structs.QuadTree.Point = function(x, y, opt_value) {
 
   /**
    * Optional value associated with the point.
-   * @type {Object?}
+   * @type {*}
    */
   this.value = goog.isDef(opt_value) ? opt_value : null;
 };

@@ -1,26 +1,28 @@
+// Copyright 2006 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Copyright 2006 Google Inc. All Rights Reserved.
-
 /**
  * @fileoverview Functions for setting, getting and deleting cookies.
  *
+*
  */
 
 
 goog.provide('goog.net.cookies');
 
 goog.require('goog.userAgent');
+
 
 /**
  * Static constant for the size of cookies. Per the spec, there's a 4K limit
@@ -77,14 +79,21 @@ goog.net.cookies.isEnabled = function() {
  * Sets a cookie.  The max_age can be -1 to set a session cookie. To remove and
  * expire cookies, use remove() instead.
  *
+ * Neither the {@code name} nor the {@code value} are encoded in any way. It is
+ * up to the callers of {@code get} and {@code set} (as well as all the other
+ * methods) to handle any possible encoding and decoding.
+ *
+ * @throws {!Error} If the {@code name} contains either ";" or "=".
+ * @throws {!Error} If the {@code value} contains ";"".
+ *
  * @param {string} name  The cookie name.
  * @param {string} value  The cookie value.
- * @param {number} opt_maxAge  The max age in seconds (from now). Use -1 to set
+ * @param {number=} opt_maxAge  The max age in seconds (from now). Use -1 to set
  *     a session cookie. If not provided, the default is -1 (i.e. set a session
  *     cookie).
- * @param {string} opt_path  The path of the cookie. If not present then this
+ * @param {string=} opt_path  The path of the cookie. If not present then this
  *     uses the full request path.
- * @param {string} opt_domain  The domain of the cookie, or null to not specify
+ * @param {string=} opt_domain  The domain of the cookie, or null to not specify
  *     a domain attribute (browser will use the full request host name). If not
  *     provided, the default is null (i.e. let browser use full request host
  *     name).
@@ -124,24 +133,25 @@ goog.net.cookies.set = function(name, value, opt_maxAge, opt_path, opt_domain) {
 
   // Case 3: Set a persistent cookie.
   } else {
-    var futureDate = new Date((new Date).getTime() + opt_maxAge * 1000);
+    var futureDate = new Date(goog.now() + opt_maxAge * 1000);
     expiresStr = ';expires=' + futureDate.toUTCString();
   }
 
-  document.cookie = name + '=' + value + domainStr + pathStr + expiresStr;
+  goog.net.cookies.setCookie_(name + '=' + value + domainStr + pathStr +
+                              expiresStr);
 };
 
 
 /**
  * Returns the value for the first cookie with the given name.
  * @param {string} name  The name of the cookie to get.
- * @param {string} opt_default  If not found this is returned instead.
+ * @param {string=} opt_default  If not found this is returned instead.
  * @return {string|undefined}  The value of the cookie. If no cookie is set this
  *     returns opt_default or undefined if opt_default is not provided.
  */
 goog.net.cookies.get = function(name, opt_default) {
   var nameEq = name + '=';
-  var parts = String(document.cookie).split(goog.net.cookies.SPLIT_RE_);
+  var parts = goog.net.cookies.getParts_();
   for (var i = 0, part; part = parts[i]; i++) {
     if (part.indexOf(nameEq) == 0) {
       return part.substr(nameEq.length);
@@ -154,10 +164,10 @@ goog.net.cookies.get = function(name, opt_default) {
 /**
  * Removes and expires a cookie.
  * @param {string} name  The cookie name.
- * @param {string} opt_path  The path of the cookie, or null to expire a cookie
+ * @param {string=} opt_path  The path of the cookie, or null to expire a cookie
  *     set at the full request path. If not provided, the default is '/'
  *     (i.e. path=/).
- * @param {string} opt_domain  The domain of the cookie, or null to expire a
+ * @param {string=} opt_domain  The domain of the cookie, or null to expire a
  *     cookie set at the full request host name. If not provided, the default is
  *     null (i.e. cookie at full request host name).
  * @return {boolean} Whether the cookie existed before it was removed.
@@ -166,39 +176,6 @@ goog.net.cookies.remove = function(name, opt_path, opt_domain) {
   var rv = goog.net.cookies.containsKey(name);
   goog.net.cookies.set(name, '', 0, opt_path, opt_domain);
   return rv;
-};
-
-
-/**
- * Returns navigator.cookieEnabled.  Overridden in unit tests.
- * @return {boolean} The value of navigator.cookieEnabled.
- * @private
- */
-goog.net.cookies.isNavigatorCookieEnabled_ = function() {
-  return navigator.cookieEnabled;
-};
-
-
-/**
- * Gets the names and values for all the cookies.
- * @return {Object} An object with keys and values.
- * @private
- */
-goog.net.cookies.getKeyValues_ = function() {
-  var parts = String(document.cookie).split(goog.net.cookies.SPLIT_RE_);
-  var keys = [], values = [], index, part;
-  for (var i = 0; part = parts[i]; i++) {
-    index = part.indexOf('=');
-
-    if (index == -1) { // empty name
-      keys.push('');
-      values.push(part);
-    } else {
-      keys.push(part.substring(0, index));
-      values.push(part.substring(index + 1));
-    }
-  }
-  return {keys: keys, values: values};
 };
 
 
@@ -224,7 +201,7 @@ goog.net.cookies.getValues = function() {
  * @return {boolean} Whether there are any cookies for this document.
  */
 goog.net.cookies.isEmpty = function() {
-  return document.cookie == '';
+  return !goog.net.cookies.getCookie_();
 };
 
 
@@ -232,11 +209,11 @@ goog.net.cookies.isEmpty = function() {
  * @return {number} The number of cookies for this document.
  */
 goog.net.cookies.getCount = function() {
-  var cookie = String(document.cookie);
-  if (cookie == '') {
+  var cookie = goog.net.cookies.getCookie_();
+  if (!cookie) {
     return 0;
   }
-  return cookie.split(goog.net.cookies.SPLIT_RE_).length;
+  return goog.net.cookies.getParts_().length;
 };
 
 
@@ -280,4 +257,68 @@ goog.net.cookies.clear = function() {
   for (var i = keys.length - 1; i >= 0; i--) {
     goog.net.cookies.remove(keys[i]);
   }
+};
+
+/**
+ * Private helper function to allow testing cookies without depending on the
+ * browser.
+ * @param {string} s The cookie string to set.
+ * @private
+ */
+goog.net.cookies.setCookie_ = function(s) {
+  document.cookie = s;
+};
+
+
+/**
+ * Private helper function to allow testing cookies without depending on the
+ * browser. IE6 can return null here.
+ * @return {?string} Returns the {@code document.cookie}.
+ * @private
+ */
+goog.net.cookies.getCookie_ = function() {
+  return document.cookie;
+};
+
+
+/**
+ * @return {!Array.<string>} The cookie split on semi colons.
+ * @private
+ */
+goog.net.cookies.getParts_ = function() {
+  return (goog.net.cookies.getCookie_() || '').
+      split(goog.net.cookies.SPLIT_RE_);
+};
+
+
+/**
+ * Returns navigator.cookieEnabled.  Overridden in unit tests.
+ * @return {boolean} The value of navigator.cookieEnabled.
+ * @private
+ */
+goog.net.cookies.isNavigatorCookieEnabled_ = function() {
+  return navigator.cookieEnabled;
+};
+
+
+/**
+ * Gets the names and values for all the cookies.
+ * @return {Object} An object with keys and values.
+ * @private
+ */
+goog.net.cookies.getKeyValues_ = function() {
+  var parts = goog.net.cookies.getParts_();
+  var keys = [], values = [], index, part;
+  for (var i = 0; part = parts[i]; i++) {
+    index = part.indexOf('=');
+
+    if (index == -1) { // empty name
+      keys.push('');
+      values.push(part);
+    } else {
+      keys.push(part.substring(0, index));
+      values.push(part.substring(index + 1));
+    }
+  }
+  return {keys: keys, values: values};
 };

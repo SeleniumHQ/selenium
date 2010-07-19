@@ -1,21 +1,22 @@
+// Copyright 2008 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-// Copyright 2008 Google, Inc. All Rights Reserved.
 
 /**
  * @fileoverview Code for managing series of undo-redo actions in the form of
  * {@link goog.editor.plugins.UndoRedoState}s.
  *
+*
  */
 
 
@@ -39,7 +40,7 @@ goog.editor.plugins.UndoRedoManager = function() {
   /**
    * The maximum number of states on the undo stack at any time. Used to limit
    * the memory footprint of the undo-redo stack.
-   * TODO have a separate memory size based limit.
+   * TODO(user) have a separate memory size based limit.
    * @type {number}
    * @private
    */
@@ -48,12 +49,14 @@ goog.editor.plugins.UndoRedoManager = function() {
   /**
    * The undo stack.
    * @type {Array.<goog.editor.plugins.UndoRedoState>}
+   * @private
    */
   this.undoStack_ = [];
 
   /**
    * The redo stack.
    * @type {Array.<goog.editor.plugins.UndoRedoState>}
+   * @private
    */
   this.redoStack_ = [];
 
@@ -110,7 +113,7 @@ goog.editor.plugins.UndoRedoManager.EventType = {
 /**
  * The key for the listener for the completion of the asynchronous state whose
  * undo or redo action is in progress. Null if no action is in progress.
- * @type {number?}
+ * @type {?number}
  * @private
  */
 goog.editor.plugins.UndoRedoManager.prototype.inProgressActionKey_ = null;
@@ -227,8 +230,8 @@ goog.editor.plugins.UndoRedoManager.prototype.shiftState_ = function(
 
     this.addAction_({
       type: fromStack == this.undoStack_ ?
-            goog.editor.plugins.UndoRedoManager.EventType.BEFORE_UNDO :
-            goog.editor.plugins.UndoRedoManager.EventType.BEFORE_REDO,
+          goog.editor.plugins.UndoRedoManager.EventType.BEFORE_UNDO :
+          goog.editor.plugins.UndoRedoManager.EventType.BEFORE_REDO,
       func: fromStack == this.undoStack_ ? state.undo : state.redo,
       state: state
     });

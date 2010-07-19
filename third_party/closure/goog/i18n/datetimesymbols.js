@@ -1,16 +1,16 @@
+// Copyright 2009 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-// Copyright 2009 Google Inc.
 
 /**
  * @fileoverview Date/time formatting symbols for all locales.
@@ -31,6 +31,7 @@
  */
 
 goog.provide('goog.i18n.DateTimeSymbols');
+goog.provide('goog.i18n.DateTimeSymbols_am');
 goog.provide('goog.i18n.DateTimeSymbols_ar');
 goog.provide('goog.i18n.DateTimeSymbols_bg');
 goog.provide('goog.i18n.DateTimeSymbols_bn');
@@ -95,6 +96,7 @@ goog.provide('goog.i18n.DateTimeSymbols_sl');
 goog.provide('goog.i18n.DateTimeSymbols_sq');
 goog.provide('goog.i18n.DateTimeSymbols_sr');
 goog.provide('goog.i18n.DateTimeSymbols_sv');
+goog.provide('goog.i18n.DateTimeSymbols_sw');
 goog.provide('goog.i18n.DateTimeSymbols_ta');
 goog.provide('goog.i18n.DateTimeSymbols_te');
 goog.provide('goog.i18n.DateTimeSymbols_th');
@@ -143,6 +145,52 @@ goog.i18n.DateTimeSymbols_en_ISO = {
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
+};
+
+
+/**
+ * Date/time formatting symbols for locale am.
+ */
+goog.i18n.DateTimeSymbols_am = {
+  ERAS: ['ዓ/ዓ', 'ዓ/ም'],
+  ERANAMES: ['ዓ/ዓ', 'ዓ/ም'],
+  NARROWMONTHS: ['ጃ', 'ፌ', 'ማ', 'ኤ', 'ሜ', 'ጁ', 'ጁ', 'ኦ', 'ሴ',
+      'ኦ', 'ኖ', 'ዲ'],
+  STANDALONENARROWMONTHS: ['ጃ', 'ፌ', 'ማ', 'ኤ', 'ሜ', 'ጁ', 'ጁ',
+      'ኦ', 'ሴ', 'ኦ', 'ኖ', 'ዲ'],
+  MONTHS: ['ጃንዩወሪ', 'ፌብሩወሪ', 'ማርች', 'ኤፕረል',
+      'ሜይ', 'ጁን', 'ጁላይ', 'ኦገስት', 'ሴፕቴምበር',
+      'ኦክተውበር', 'ኖቬምበር', 'ዲሴምበር'],
+  STANDALONEMONTHS: ['ጃንዩወሪ', 'ፌብሩወሪ', 'ማርች',
+      'ኤፕረል', 'ሜይ', 'ጁን', 'ጁላይ', 'ኦገስት',
+      'ሴፕቴምበር', 'ኦክተውበር', 'ኖቬምበር',
+      'ዲሴምበር'],
+  SHORTMONTHS: ['ጃንዩ', 'ፌብሩ', 'ማርች', 'ኤፕረ', 'ሜይ',
+      'ጁን', 'ጁላይ', 'ኦገስ', 'ሴፕቴ', 'ኦክተ', 'ኖቬም',
+      'ዲሴም'],
+  STANDALONESHORTMONTHS: ['ጃንዩ', 'ፌብሩ', 'ማርች', 'ኤፕረ',
+      'ሜይ', 'ጁን', 'ጁላይ', 'ኦገስ', 'ሴፕቴ', 'ኦክተ',
+      'ኖቬም', 'ዲሴም'],
+  WEEKDAYS: ['እሑድ', 'ሰኞ', 'ማክሰኞ', 'ረቡዕ', 'ሐሙስ',
+      'ዓርብ', 'ቅዳሜ'],
+  STANDALONEWEEKDAYS: ['እሑድ', 'ሰኞ', 'ማክሰኞ', 'ረቡዕ',
+      'ሐሙስ', 'ዓርብ', 'ቅዳሜ'],
+  SHORTWEEKDAYS: ['እሑድ', 'ሰኞ', 'ማክሰ', 'ረቡዕ', 'ሐሙስ',
+      'ዓርብ', 'ቅዳሜ'],
+  STANDALONESHORTWEEKDAYS: ['እሑድ', 'ሰኞ', 'ማክሰ', 'ረቡዕ',
+      'ሐሙስ', 'ዓርብ', 'ቅዳሜ'],
+  NARROWWEEKDAYS: ['እ', 'ሰ', 'ማ', 'ረ', 'ሐ', 'ዓ', 'ቅ'],
+  STANDALONENARROWWEEKDAYS: ['እ', 'ሰ', 'ማ', 'ረ', 'ሐ', 'ዓ', 'ቅ'],
+  SHORTQUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
+  QUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
+  AMPMS: ['ጡዋት', 'ከሳዓት'],
+  DATEFORMATS: ['EEEE፣ dd MMMM ቀን y G', 'dd MMMM y', 'MMM d y',
+      'dd/MM/yy'],
+  TIMEFORMATS: ['hh:mm:ss a zzzz', 'hh:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
+  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
+  FIRSTDAYOFWEEK: 5,
+  WEEKENDRANGE: [5, 6],
+  FIRSTWEEKCUTOFFDAY: 1
 };
 
 
@@ -2633,6 +2681,43 @@ goog.i18n.DateTimeSymbols_sv = {
 
 
 /**
+ * Date/time formatting symbols for locale sw.
+ */
+goog.i18n.DateTimeSymbols_sw = {
+  ERAS: ['KK', 'BK'],
+  ERANAMES: ['Kabla ya Kristo', 'Baada ya Kristo'],
+  NARROWMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
+  STANDALONENARROWMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10',
+      '11', '12'],
+  MONTHS: ['Januari', 'Februari', 'Machi', 'Aprili', 'Mei', 'Juni', 'Julai',
+      'Agosti', 'Septemba', 'Oktoba', 'Novemba', 'Desemba'],
+  STANDALONEMONTHS: ['Januari', 'Februari', 'Machi', 'Aprili', 'Mei', 'Juni',
+      'Julai', 'Agosti', 'Septemba', 'Oktoba', 'Novemba', 'Desemba'],
+  SHORTMONTHS: ['Jan', 'Feb', 'Mac', 'Apr', 'Mei', 'Jun', 'Jul', 'Ago', 'Sep',
+      'Okt', 'Nov', 'Des'],
+  STANDALONESHORTMONTHS: ['Jan', 'Feb', 'Mac', 'Apr', 'Mei', 'Jun', 'Jul',
+      'Ago', 'Sep', 'Okt', 'Nov', 'Des'],
+  WEEKDAYS: ['Jumapili', 'Jumatatu', 'Jumanne', 'Jumatano', 'Alhamisi',
+      'Ijumaa', 'Jumamosi'],
+  STANDALONEWEEKDAYS: ['Jumapili', 'Jumatatu', 'Jumanne', 'Jumatano',
+      'Alhamisi', 'Ijumaa', 'Jumamosi'],
+  SHORTWEEKDAYS: ['Jpi', 'Jtt', 'Jnn', 'Jtn', 'Alh', 'Iju', 'Jmo'],
+  STANDALONESHORTWEEKDAYS: ['Jpi', 'Jtt', 'Jnn', 'Jtn', 'Alh', 'Iju', 'Jmo'],
+  NARROWWEEKDAYS: ['1', '2', '3', '4', '5', '6', '7'],
+  STANDALONENARROWWEEKDAYS: ['1', '2', '3', '4', '5', '6', '7'],
+  SHORTQUARTERS: ['R1', 'R2', 'R3', 'R4'],
+  QUARTERS: ['robo ya kwanza', 'robo ya pili', 'robo ya tatu', 'robo ya nne'],
+  AMPMS: ['AM', 'PM'],
+  DATEFORMATS: ['EEEE, y MMMM dd', 'y MMMM d', 'y MMM d', 'yy/MM/dd'],
+  TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
+  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
+  FIRSTDAYOFWEEK: 0,
+  WEEKENDRANGE: [5, 6],
+  FIRSTWEEKCUTOFFDAY: 3
+};
+
+
+/**
  * Date/time formatting symbols for locale ta.
  */
 goog.i18n.DateTimeSymbols_ta = {
@@ -3064,7 +3149,7 @@ goog.i18n.DateTimeSymbols_zh_CN = goog.i18n.DateTimeSymbols_zh;
  * Date/time formatting symbols for locale zh_HK.
  */
 goog.i18n.DateTimeSymbols_zh_HK = {
-  ERAS: ['公元前', '公元'],
+  ERAS: ['西元前', '西元'],
   ERANAMES: ['西元前', '西元'],
   NARROWMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
   STANDALONENARROWMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10',
@@ -3075,8 +3160,9 @@ goog.i18n.DateTimeSymbols_zh_HK = {
       '七月', '八月', '九月', '十月', '十一月', '十二月'],
   SHORTMONTHS: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月',
       '9月', '10月', '11月', '12月'],
-  STANDALONESHORTMONTHS: ['1月', '2月', '3月', '4月', '5月', '6月',
-      '7月', '8月', '9月', '10月', '11月', '12月'],
+  STANDALONESHORTMONTHS: ['一月', '二月', '三月', '四月', '五月',
+      '六月', '七月', '八月', '九月', '十月', '十一月',
+      '十二月'],
   WEEKDAYS: ['星期日', '星期一', '星期二', '星期三', '星期四',
       '星期五', '星期六'],
   STANDALONEWEEKDAYS: ['星期日', '星期一', '星期二', '星期三',
@@ -3105,7 +3191,7 @@ goog.i18n.DateTimeSymbols_zh_HK = {
  * Date/time formatting symbols for locale zh_TW.
  */
 goog.i18n.DateTimeSymbols_zh_TW = {
-  ERAS: ['公元前', '公元'],
+  ERAS: ['西元前', '西元'],
   ERANAMES: ['西元前', '西元'],
   NARROWMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
   STANDALONENARROWMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10',
@@ -3116,8 +3202,9 @@ goog.i18n.DateTimeSymbols_zh_TW = {
       '七月', '八月', '九月', '十月', '十一月', '十二月'],
   SHORTMONTHS: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月',
       '9月', '10月', '11月', '12月'],
-  STANDALONESHORTMONTHS: ['1月', '2月', '3月', '4月', '5月', '6月',
-      '7月', '8月', '9月', '10月', '11月', '12月'],
+  STANDALONESHORTMONTHS: ['一月', '二月', '三月', '四月', '五月',
+      '六月', '七月', '八月', '九月', '十月', '十一月',
+      '十二月'],
   WEEKDAYS: ['星期日', '星期一', '星期二', '星期三', '星期四',
       '星期五', '星期六'],
   STANDALONEWEEKDAYS: ['星期日', '星期一', '星期二', '星期三',
@@ -3144,7 +3231,9 @@ goog.i18n.DateTimeSymbols_zh_TW = {
  * Selected date/time formatting symbols by locale.
  * "switch" statement won't work here. JsCompiler cannot handle it yet.
  */
-if (goog.LOCALE == 'ar') {
+if (goog.LOCALE == 'am') {
+  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_am;
+} else if (goog.LOCALE == 'ar') {
   goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_ar;
 } else if (goog.LOCALE == 'bg') {
   goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_bg;
@@ -3270,6 +3359,8 @@ if (goog.LOCALE == 'ar') {
   goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_sr;
 } else if (goog.LOCALE == 'sv') {
   goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_sv;
+} else if (goog.LOCALE == 'sw') {
+  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_sw;
 } else if (goog.LOCALE == 'ta') {
   goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_ta;
 } else if (goog.LOCALE == 'te') {

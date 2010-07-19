@@ -1,26 +1,26 @@
+// Copyright 2007 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Copyright 2007 Google Inc. All Rights Reserved.
-
 /**
  * @fileoverview Advanced tooltip widget implementation.
  *
+*
  * @see ../demos/advancedtooltip.html
  */
 
 goog.provide('goog.ui.AdvancedTooltip');
 
-goog.require('goog.debug.Logger');
 goog.require('goog.math.Coordinate');
 goog.require('goog.ui.Tooltip');
 goog.require('goog.userAgent');
@@ -31,10 +31,10 @@ goog.require('goog.userAgent');
  * tooltip but can track the cursor position and direction to determine if the
  * tooltip should be dismissed or remain open.
  *
- * @param {Element|string} opt_el Element to display tooltip for, either element
- *                                reference or string id.
- * @param {?string} opt_str Text message to display in tooltip.
- * @param {goog.dom.DomHelper} opt_domHelper Optional DOM helper.
+ * @param {Element|string=} opt_el Element to display tooltip for, either
+ *     element reference or string id.
+ * @param {?string=} opt_str Text message to display in tooltip.
+ * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM helper.
  * @constructor
  * @extends {goog.ui.Tooltip}
  */
@@ -116,7 +116,7 @@ goog.ui.AdvancedTooltip.prototype.tracking_ = false;
  * Sets margin around the tooltip where the cursor is allowed without dismissing
  * the tooltip.
  *
- * @param {goog.math.Box} opt_box The margin around the tooltip.
+ * @param {goog.math.Box=} opt_box The margin around the tooltip.
  */
 goog.ui.AdvancedTooltip.prototype.setHotSpotPadding = function(opt_box) {
   this.hotSpotPadding_ = opt_box || null;
@@ -295,16 +295,18 @@ goog.ui.AdvancedTooltip.prototype.maybeHide = function(el) {
  * @protected
  */
 goog.ui.AdvancedTooltip.prototype.handleMouseMove = function(event) {
-  var startTimer = true;
+  var startTimer = this.isVisible();
   if (this.boundingBox_) {
-    var c = new goog.math.Coordinate(event.clientX, event.clientY);
+    var scroll = this.getDomHelper().getDocumentScroll();
+    var c = new goog.math.Coordinate(event.clientX + scroll.x,
+        event.clientY + scroll.y);
     if (this.isCoordinateActive_(c)) {
       startTimer = false;
     } else if (this.tracking_) {
-        var prevDist = goog.math.Box.distance(this.boundingBox_,
-                                              this.cursorPosition);
-        var currDist = goog.math.Box.distance(this.boundingBox_, c);
-        startTimer = currDist >= prevDist;
+      var prevDist = goog.math.Box.distance(this.boundingBox_,
+          this.cursorPosition);
+      var currDist = goog.math.Box.distance(this.boundingBox_, c);
+      startTimer = currDist >= prevDist;
     }
   }
 

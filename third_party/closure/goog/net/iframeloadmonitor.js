@@ -1,19 +1,21 @@
+// Copyright 2008 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Copyright 2008 Google Inc. All Rights Reserved.
-
 /**
  * @fileoverview Class that can be used to determine when an iframe is loaded.
+*
+*
  */
 
 goog.provide('goog.net.IframeLoadMonitor');
@@ -34,7 +36,7 @@ goog.require('goog.userAgent');
  * </ol>
  *
  * @param {HTMLIFrameElement} iframe An iframe.
- * @param {boolean} opt_hasContent Does the loaded iframe have content.
+ * @param {boolean=} opt_hasContent Does the loaded iframe have content.
  * @extends {goog.events.EventTarget}
  * @constructor
  */
@@ -102,7 +104,7 @@ goog.net.IframeLoadMonitor.POLL_INTERVAL_MS_ = 100;
 /**
  * Key for iframe load listener, or null if not currently listening on the
  * iframe for a load event.
- * @type {number?}
+ * @type {?number}
  * @private
  */
 goog.net.IframeLoadMonitor.prototype.onloadListenerKey_ = null;

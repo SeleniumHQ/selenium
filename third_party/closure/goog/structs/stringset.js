@@ -1,20 +1,21 @@
+// Copyright 2009 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Copyright 2009 Google Inc. All Rights Reserved.
-
 /**
  * @fileoverview Data structure for set of strings.
  *
+*
  *
  * This class implements a set data structure for strings. Adding and removing
  * is O(1). It doesn't contain any bloat from {@link goog.structs.Set}, i.e.
@@ -31,8 +32,8 @@ goog.require('goog.iter');
 
 /**
  * Creates a set of strings.
- * @param {!Array} opt_elements Elements to add to the set. The non-string items
- *     will be converted to strings, so 15 and '15' will mean the same.
+ * @param {!Array=} opt_elements Elements to add to the set. The non-string
+ *     items will be converted to strings, so 15 and '15' will mean the same.
  * @constructor
  */
 goog.structs.StringSet = function(opt_elements) {
@@ -197,7 +198,7 @@ goog.structs.StringSet.prototype.equals = function(stringSet) {
  * @param {function(string, undefined, !goog.structs.StringSet)} f The function
  *     to call for every element. It takes the element, undefined (because sets
  *     have no notion of keys), and the set.
- * @param {Object} opt_obj The object to be used as the value of 'this'
+ * @param {Object=} opt_obj The object to be used as the value of 'this'
  *     within {@code f}.
  */
 goog.structs.StringSet.prototype.forEach = function(f, opt_obj) {
@@ -396,7 +397,7 @@ goog.structs.StringSet.prototype.removeSet = function(stringSet) {
  * Returns an iterator that iterates over the elements in the set.
  * NOTE: creating the iterator copies the whole set so use {@link #forEach} when
  * possible.
- * @param {boolean} opt_keys Ignored for sets.
+ * @param {boolean=} opt_keys Ignored for sets.
  * @return {!goog.iter.Iterator} An iterator over the elements in the set.
  */
 goog.structs.StringSet.prototype.__iterator__ = function(opt_keys) {

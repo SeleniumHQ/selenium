@@ -1,36 +1,36 @@
+// Copyright 2007 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Copyright 2007 Google Inc. All Rights Reserved.
-
 
 /**
  * @fileoverview A thicker wrapper around graphics groups.
+ * @author robbyw@google.com (Robby Walker)
  */
 
 
 goog.provide('goog.graphics.ext.Group');
 
 goog.require('goog.graphics.ext.Element');
-goog.require('goog.structs.Map')
 
 
 /**
  * Wrapper for a graphics group.
- * @param {goog.graphics.ext.Group} group Parent for this element.  Can be null
- *     if this is a Graphics instance.
- * @param {goog.graphics.Element} opt_wrapper The thin wrapper to wrap.  If
- *     omitted, a new group will be created.  Must be included when group is
- *     null.
+ * @param {goog.graphics.ext.Group} group Parent for this element. Can
+ *     be null if this is a Graphics instance.
+ * @param {goog.graphics.GroupElement=} opt_wrapper The thin wrapper
+ *     to wrap. If omitted, a new group will be created. Must be included
+ *     when group is null.
  * @constructor
  * @extends {goog.graphics.ext.Element}
  */
@@ -55,7 +55,7 @@ goog.graphics.ext.Group.prototype.children_;
  * Add an element to the group.  This should be treated as package local, as
  * it is called by the draw* methods.
  * @param {!goog.graphics.ext.Element} element The element to add.
- * @param {boolean} opt_chain Whether this addition is part of a longer set
+ * @param {boolean=} opt_chain Whether this addition is part of a longer set
  *     of element additions.
  */
 goog.graphics.ext.Group.prototype.addChild = function(element, opt_chain) {
@@ -86,7 +86,7 @@ goog.graphics.ext.Group.prototype.addChild = function(element, opt_chain) {
 goog.graphics.ext.Group.prototype.removeChild = function(element) {
   goog.array.remove(this.children_, element);
 
-  // TODO: shape.fireEvent('delete')
+  // TODO(robbyw): shape.fireEvent('delete')
 
   this.getGraphicsImplementation().removeElement(element.getWrapper());
 };
@@ -99,13 +99,20 @@ goog.graphics.ext.Group.prototype.removeChild = function(element) {
  * component and its 0-based index.  The return value is ignored.
  * @param {Function} f The function to call for every child component; should
  *    take 2 arguments (the child and its index).
- * @param {Object} opt_obj Used as the 'this' object in f when called.
+ * @param {Object=} opt_obj Used as the 'this' object in f when called.
  */
 goog.graphics.ext.Group.prototype.forEachChild = function(f, opt_obj) {
   if (this.children_) {
     goog.array.forEach(this.children_, f, opt_obj);
   }
 };
+
+
+/**
+ * @return {goog.graphics.GroupElement} The underlying thin wrapper.
+ * @protected
+ */
+goog.graphics.ext.Group.prototype.getWrapper;
 
 
 /**

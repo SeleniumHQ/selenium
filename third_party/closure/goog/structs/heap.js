@@ -1,20 +1,21 @@
+// Copyright 2006 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Copyright 2006 Google Inc. All Rights Reserved.
-
 /**
  * @fileoverview Datastructure: Heap.
  *
+*
  *
  * This file provides the implementation of a Heap datastructure. Smaller keys
  * rise to the top.
@@ -29,7 +30,7 @@
  * - contains       O(n)
  * </pre>
  */
-// TODO: Should this rely on natural ordering via some Comparable
+// TODO(user): Should this rely on natural ordering via some Comparable
 //     interface?
 
 
@@ -42,7 +43,7 @@ goog.require('goog.structs.Node');
 /**
  * Class for a Heap datastructure.
  *
- * @param {goog.structs.Heap|Object} opt_heap Optional goog.structs.Heap or
+ * @param {goog.structs.Heap|Object=} opt_heap Optional goog.structs.Heap or
  *     Object to initialize heap with.
  * @constructor
  */
@@ -105,9 +106,9 @@ goog.structs.Heap.prototype.insertAll = function(heap) {
 
 
 /**
- * Remove the value with the largest key from the heap. Returns undefined if the
- * heap is empty.
- * @return {*} The value of the node with the largest key.
+ * Retrieves and removes the root value of this heap.
+ * @return {*} The value removed from the root of the heap.  Returns
+ *     undefined if the heap is empty.
  */
 goog.structs.Heap.prototype.remove = function() {
   var nodes = this.nodes_;

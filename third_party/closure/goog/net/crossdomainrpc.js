@@ -1,16 +1,16 @@
+// Copyright 2006 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-// Copyright 2006 Google Inc. All Rights Reserved.
 
 /**
  * @fileoverview Cross domain RPC library using the <a
@@ -62,6 +62,7 @@
  * <h5>System Requirements</h5>
  * Tested on IE6, IE7, Firefox 2.0 and Safari nightly r23841.
  *
+*
  */
 
 goog.provide('goog.net.CrossDomainRpc');
@@ -159,17 +160,17 @@ goog.net.CrossDomainRpc.setUseFallBackDummyResource = function(useFallBack) {
 /**
  * Sends a request across domain.
  * @param {string} uri Uri to make request to.
- * @param {Function} opt_continuation Continuation function to be called
+ * @param {Function=} opt_continuation Continuation function to be called
  *     when request is completed.  Takes one argument of an event object
  *     whose target has the following properties: "status" is the HTTP
  *     response status code, "responseText" is the response text,
  *     and "headers" is an object with all response headers.  The event
  *     target's getResponseJson() method returns a JavaScript object evaluated
  *     from the JSON response or undefined if response is not JSON.
- * @param {string} opt_method Method of request. Default is POST.
- * @param {Object} opt_params Parameters. Each property is turned into a
+ * @param {string=} opt_method Method of request. Default is POST.
+ * @param {Object=} opt_params Parameters. Each property is turned into a
  *     request parameter.
- * @param {Object} opt_headers Map of headers of the request.
+ * @param {Object=} opt_headers Map of headers of the request.
  */
 goog.net.CrossDomainRpc.send =
     function(uri, opt_continuation, opt_method, opt_params, opt_headers) {
@@ -205,7 +206,7 @@ goog.net.CrossDomainRpc.logger_ =
 /**
  * Creates the HTML of an input element
  * @param {string} name Name of input element.
- * @param {Object} value Value of input element.
+ * @param {*} value Value of input element.
  * @return {string} HTML of input element with that name and value.
  * @private
  */
@@ -218,8 +219,8 @@ goog.net.CrossDomainRpc.createInputHtml_ = function(name, value) {
 /**
  * Escapes ampersand so that XML/HTML entities are submitted as is because
  * browser unescapes them when they are put into a text area.
- * @param {Object} value Value to escape.
- * @return {Object} Value with ampersand escaped, if value is a string;
+ * @param {*} value Value to escape.
+ * @return {*} Value with ampersand escaped, if value is a string;
  *     otherwise the value itself is returned.
  * @private
  */
@@ -362,10 +363,10 @@ goog.net.CrossDomainRpc.REQUEST_MARKER_ = 'xdrq';
 /**
  * Sends a request across domain.
  * @param {string} uri Uri to make request to.
- * @param {string} opt_method Method of request. Default is POST.
- * @param {Object} opt_params Parameters. Each property is turned into a
+ * @param {string=} opt_method Method of request. Default is POST.
+ * @param {Object=} opt_params Parameters. Each property is turned into a
  *     request parameter.
- * @param {Object} opt_headers Map of headers of the request.
+ * @param {Object=} opt_headers Map of headers of the request.
  */
 goog.net.CrossDomainRpc.prototype.sendRequest =
     function(uri, opt_method, opt_params, opt_headers) {
@@ -701,7 +702,7 @@ goog.net.CrossDomainRpc.sendResponse =
   }
 
   // usable chunk size is max less dummy URI less chunk prefix length
-  // TODO: Figure out why we need to do "- 1" below
+  // TODO(user): Figure out why we need to do "- 1" below
   var chunkSize = goog.net.CrossDomainRpc.MAX_CHUNK_SIZE_ - dummyUri.length -
       1 - // payload delimiter ('#' or '?')
       goog.net.CrossDomainRpc.CHUNK_PREFIX_.length - 1;
@@ -724,7 +725,7 @@ goog.net.CrossDomainRpc.sendResponse =
    *   automatically decode when you access it via location.hash or
    *   location.href.  So we encode it here and decode it in detectResponse_().
    *
-   * NOTE: IE actually does encode only space to %20 and decodes that
+   * Note(*): IE actually does encode only space to %20 and decodes that
    *   automatically when you do location.href or location.hash.
    */
   if (!goog.userAgent.IE) {

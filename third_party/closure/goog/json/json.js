@@ -1,19 +1,20 @@
+// Copyright 2006 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Copyright 2006 Google Inc. All Rights Reserved.
-
 /**
  * @fileoverview JSON utility functions.
+*
  */
 
 
@@ -108,7 +109,7 @@ goog.json.unsafeParse = function(s) {
 /**
  * Serializes an object or a value to a JSON string.
  *
- * @param {Object} object The object to serialize.
+ * @param {*} object The object to serialize.
  * @throws Error if there are loops in the object graph.
  * @return {string} A JSON string representation of the input.
  */
@@ -129,7 +130,7 @@ goog.json.Serializer = function() {
 /**
  * Serializes an object or a value to a JSON string.
  *
- * @param {Object?} object The object to serialize.
+ * @param {*} object The object to serialize.
  * @throws Error if there are loops in the object graph.
  * @return {string} A JSON string representation of the input.
  */
@@ -143,8 +144,7 @@ goog.json.Serializer.prototype.serialize = function(object) {
 /**
  * Serializes a generic value to a JSON string
  * @private
- * @param {string|number|boolean|undefined|Object|Array} object The object to
- *     serialize.
+ * @param {*} object The object to serialize.
  * @param {Array} sb Array used as a string builder.
  * @throws Error if there are loops in the object graph.
  */
@@ -168,17 +168,17 @@ goog.json.Serializer.prototype.serialize_ = function(object, sb) {
         break;
       }
       if (goog.isArray(object)) {
-        this.serializeArray_(object, sb);
+        this.serializeArray_((/** @type {!Array} */ object), sb);
         break;
       }
       // should we allow new String, new Number and new Boolean to be treated
       // as string, number and boolean? Most implementations do not and the
       // need is not very big
-      this.serializeObject_(object, sb);
+      this.serializeObject_((/** @type {Object} */ object), sb);
       break;
     case 'function':
       // Skip functions.
-      // TODO Should we return something here?
+      // TODO(user) Should we return something here?
       break;
     default:
       throw Error('Unknown type: ' + typeof object);
@@ -289,7 +289,7 @@ goog.json.Serializer.prototype.serializeObject_ = function(obj, sb) {
     if (obj.hasOwnProperty(key)) {
       var value = obj[key];
       // Skip functions.
-      // TODO Should we return something for function properties?
+      // TODO(ptucker) Should we return something for function properties?
       if (typeof value != 'function') {
         sb.push(sep);
         this.serializeString_(key, sb);

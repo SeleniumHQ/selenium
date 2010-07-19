@@ -1,20 +1,21 @@
+// Copyright 2007 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Copyright 2007 Google Inc. All Rights Reserved.
-
 /**
  * @fileoverview DOM pattern to match a tag and all of its children.
  *
+ * @author robbyw@google.com (Robby Walker)
  */
 
 goog.provide('goog.dom.pattern.Repeat');
@@ -27,9 +28,9 @@ goog.require('goog.dom.pattern.MatchType');
  * Pattern object that matches a repetition of another pattern.
  * @param {goog.dom.pattern.AbstractPattern} pattern The pattern to
  *     repetitively match.
- * @param {number} opt_minimum The minimum number of times to match.  Defaults
+ * @param {number=} opt_minimum The minimum number of times to match.  Defaults
  *     to 0.
- * @param {number} opt_maximum The maximum number of times to match.  Defaults
+ * @param {number=} opt_maximum The maximum number of times to match.  Defaults
  *     to unlimited.
  * @constructor
  * @extends {goog.dom.pattern.AbstractPattern}
@@ -66,7 +67,7 @@ goog.dom.pattern.Repeat.prototype.minimum_ = 0;
  * Optional maximum number of times to match the pattern.  A {@code null} value
  * will be treated as infinity.
  *
- * @type {number?}
+ * @type {?number}
  * @private
  */
 goog.dom.pattern.Repeat.prototype.maximum_ = 0;
@@ -148,7 +149,7 @@ goog.dom.pattern.Repeat.prototype.matchToken = function(token, type) {
 
     case goog.dom.pattern.MatchType.BACKTRACK_MATCH:
       // This happens if our child pattern is repetitive too.
-      // TODO: Backtrack further if necessary.
+      // TODO(robbyw): Backtrack further if necessary.
       this.count++;
 
       if (this.currentPosition_ == this.patterns_.length) {

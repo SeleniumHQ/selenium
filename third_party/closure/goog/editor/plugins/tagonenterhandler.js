@@ -1,21 +1,24 @@
+// Copyright 2008 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-// Copyright 2008 Google, Inc. All Rights Reserved.
 
 /**
  * @fileoverview TrogEdit plugin to handle enter keys by inserting the
  * specified block level tag.
  *
+*
+*
+ * @author robbyw@google.com (Robby Walker)
  */
 
 goog.provide('goog.editor.plugins.TagOnEnterHandler');
@@ -112,11 +115,11 @@ goog.editor.plugins.TagOnEnterHandler.prototype.handleBackspaceInternal =
 /** @inheritDoc */
 goog.editor.plugins.TagOnEnterHandler.prototype.processParagraphTagsInternal =
     function(e, split) {
-      if ((goog.userAgent.OPERA || goog.userAgent.IE) &&
-          this.tag_ != goog.dom.TagName.P) {
-        this.ensureBlockIeOpera(this.tag_);
-      }
-    };
+  if ((goog.userAgent.OPERA || goog.userAgent.IE) &&
+      this.tag_ != goog.dom.TagName.P) {
+    this.ensureBlockIeOpera(this.tag_);
+  }
+};
 
 
 /** @inheritDoc */
@@ -129,7 +132,7 @@ goog.editor.plugins.TagOnEnterHandler.prototype.handleDeleteGecko = function(
       goog.editor.plugins.EnterHandler.isBrElem(container)) {
     // Don't delete if it's the last node in the field and just has a BR.
     e.preventDefault();
-    // TODO: I think we probably don't need to stopPropagation here
+    // TODO(user): I think we probably don't need to stopPropagation here
     e.stopPropagation();
   } else {
     // Go ahead with deletion.
@@ -248,16 +251,18 @@ goog.editor.plugins.TagOnEnterHandler.prototype.
   //    create two elements. FF just inserts a BR.
   //   -Hitting enter inside an empty list-item doesn't create a block
   //    tag. It just splits the list and puts your cursor in the middle.
+  var li = null;
   if (wasCollapsed) {
     // Only break out of lists for collapsed selections.
-    var li = goog.dom.getAncestorByTagNameAndClass(
+    li = goog.dom.getAncestorByTagNameAndClass(
         range && range.getContainerElement(), goog.dom.TagName.LI);
   }
-  var elementAfterCursor = (li &&
+  var isEmptyLi = (li &&
       li.innerHTML.match(
-          goog.editor.plugins.TagOnEnterHandler.emptyLiRegExp_)) ?
-              this.breakOutOfEmptyListItemGecko_(li) :
-              this.handleRegularEnterGecko_();
+          goog.editor.plugins.TagOnEnterHandler.emptyLiRegExp_));
+  var elementAfterCursor = isEmptyLi ?
+      this.breakOutOfEmptyListItemGecko_(li) :
+      this.handleRegularEnterGecko_();
 
   // Move the cursor in front of "nodeAfterCursor", and make sure it
   // is visible
@@ -280,7 +285,7 @@ goog.editor.plugins.TagOnEnterHandler.prototype.
   goog.editor.range.selectNodeStart(elementAfterCursor);
 
   e.preventDefault();
-  // TODO: I think we probably don't need to stopPropagation here
+  // TODO(user): I think we probably don't need to stopPropagation here
   e.stopPropagation();
 };
 
@@ -311,9 +316,9 @@ goog.editor.plugins.TagOnEnterHandler.prototype.breakOutOfEmptyListItemGecko_ =
   var inSubList = grandparent.tagName == goog.dom.TagName.OL ||
       grandparent.tagName == goog.dom.TagName.UL;
 
-  // TODO: Should we apply the list or list item styles to the new node?
+  // TODO(robbyw): Should we apply the list or list item styles to the new node?
   var newNode = goog.dom.getDomHelper(li).createElement(
-      inSubList ? goog.dom.TagName.LI : this.tag_)
+      inSubList ? goog.dom.TagName.LI : this.tag_);
 
   if (!li.previousSibling) {
     goog.dom.insertSiblingBefore(newNode, listNode);
@@ -519,7 +524,7 @@ goog.editor.plugins.TagOnEnterHandler.prototype.handleRegularEnterGecko_ =
       // Otherwise, we take the second half of the splitted text and break
       // it out of the anchor.
       var anchorToRemove = goog.editor.node.isEmpty(leftAnchor, false) ?
-                           leftAnchor : rightAnchor;
+          leftAnchor : rightAnchor;
       goog.dom.flattenElement(/** @type {Element} */ (anchorToRemove));
     }
   }
@@ -578,7 +583,7 @@ goog.editor.plugins.TagOnEnterHandler.prototype.scrollCursorIntoViewGecko_ =
  *     or greater will be moved to the second half.  If positionNode is an
  *     empty element, the dom will be split at that element, with positionNode
  *     ending up in the second half.  positionOffset must be 0 in this case.
- * @param {Node} opt_root Node at which to stop splitting the dom (the root
+ * @param {Node=} opt_root Node at which to stop splitting the dom (the root
  *     is also split).
  * @return {Node} The node containing the second half of the tree.
  * @private
@@ -721,7 +726,7 @@ goog.editor.plugins.TagOnEnterHandler.replaceWhiteSpaceWithNbsp_ = function(
  * Finds the first A element in a traversal from the input node.  The input
  * node itself is not included in the search.
  * @param {Node} node The node to start searching from.
- * @param {boolean} opt_useFirstChild Whether to traverse along the first child
+ * @param {boolean=} opt_useFirstChild Whether to traverse along the first child
  *     (true) or last child (false).
  * @return {Node} The first anchor node found in the search, or null if none
  *     was found.

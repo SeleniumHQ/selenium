@@ -1,21 +1,23 @@
+// Copyright 2007 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-// Copyright 2007 Google Inc. All Rights Reserved.
 
 /**
  * @fileoverview A class for representing items in menus.
  * @see goog.ui.Menu
  *
+*
+*
  */
 
 goog.provide('goog.ui.MenuItem');
@@ -33,10 +35,10 @@ goog.require('goog.ui.registry');
  * @param {goog.ui.ControlContent} content Text caption or DOM structure to
  *     display as the content of the item (use to add icons or styling to
  *     menus).
- * @param {*} opt_model Data/model associated with the menu item.
- * @param {goog.dom.DomHelper} opt_domHelper Optional DOM helper used for
+ * @param {*=} opt_model Data/model associated with the menu item.
+ * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM helper used for
  *     document interactions.
- * @param {goog.ui.MenuItemRenderer} opt_renderer Optional renderer.
+ * @param {goog.ui.MenuItemRenderer=} opt_renderer Optional renderer.
  * @constructor
  * @extends {goog.ui.Control}
  */
@@ -102,6 +104,19 @@ goog.ui.MenuItem.prototype.setCheckable = function(checkable) {
   if (element) {
     this.renderer_.setCheckable(this, element, checkable);
   }
+};
+
+
+/**
+ * Returns the text caption of the component while ignoring accelerators.
+ * @return {?string} Text caption of the component (null if none).
+ */
+goog.ui.MenuItem.prototype.getCaption = function() {
+  return this.getCaptionInternal(function(element) {
+    return goog.dom.classes.has(element,
+        goog.getCssName('goog-menuitem-accel')) ? '' :
+        goog.dom.getTextContent(element);
+ });
 };
 
 

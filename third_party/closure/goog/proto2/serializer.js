@@ -1,19 +1,20 @@
+// Copyright 2008 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Copyright 2008 Google Inc. All Rights Reserved.
-
 /**
  * @fileoverview Base class for all Protocol Buffer 2 serializers.
+*
  */
 
 goog.provide('goog.proto2.Serializer');
@@ -52,15 +53,15 @@ goog.proto2.Serializer.prototype.serialize = goog.abstractMethod;
  * @param {goog.proto2.FieldDescriptor} field The field from which this
  *     value came.
  *
- * @param {Object} value The value of the field.
+ * @param {*} value The value of the field.
  *
- * @return {Object} The value.
+ * @return {*} The value.
  * @protected
  */
 goog.proto2.Serializer.prototype.getSerializedValue = function(field, value) {
   if (field.getFieldType() == goog.proto2.Message.FieldType.MESSAGE ||
       field.getFieldType() == goog.proto2.Message.FieldType.GROUP) {
-      return this.serialize(value);
+    return this.serialize(/** @type {goog.proto2.Message} */ (value));
   } else {
     return value;
   }
@@ -72,7 +73,7 @@ goog.proto2.Serializer.prototype.getSerializedValue = function(field, value) {
  *
  * @param {goog.proto2.Descriptor} descriptor The descriptor of the message
  *     to be created.
- * @param {Object} data The data of the message.
+ * @param {*} data The data of the message.
  *
  * @return {goog.proto2.Message} The message created.
  */
@@ -90,7 +91,7 @@ goog.proto2.Serializer.prototype.deserialize = function(descriptor, data) {
  *
  * @param {goog.proto2.Message} message The message in which to
  *     place the information.
- * @param {Object} data The data of the message.
+ * @param {*} data The data of the message.
  */
 goog.proto2.Serializer.prototype.deserializeTo = goog.abstractMethod;
 
@@ -103,16 +104,16 @@ goog.proto2.Serializer.prototype.deserializeTo = goog.abstractMethod;
  * @param {goog.proto2.FieldDescriptor} field The field from which this
  *     value came.
  *
- * @param {Object} value The value of the field.
+ * @param {*} value The value of the field.
  *
- * @return {Object} The value.
+ * @return {*} The value.
  * @protected
  */
 goog.proto2.Serializer.prototype.getDeserializedValue =
   function(field, value) {
   if (field.getFieldType() == goog.proto2.Message.FieldType.MESSAGE ||
       field.getFieldType() == goog.proto2.Message.FieldType.GROUP) {
-      return this.deserialize(field.getFieldMessageType(), value);
+    return this.deserialize(field.getFieldMessageType(), value);
   } else {
     return value;
   }

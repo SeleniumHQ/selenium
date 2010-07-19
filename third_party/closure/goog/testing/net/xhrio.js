@@ -1,19 +1,21 @@
+// Copyright 2007 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Copyright 2007 Google Inc. All Rights Reserved.
-
 /**
  * @fileoverview Mock of XhrIo for unit testing.
+*
+*
  */
 
 goog.provide('goog.testing.net.XhrIo');
@@ -26,19 +28,27 @@ goog.require('goog.json');
 goog.require('goog.net.ErrorCode');
 goog.require('goog.net.EventType');
 goog.require('goog.net.XmlHttp');
+goog.require('goog.structs.Map');
 
 
 
 /**
  * Mock implementation of goog.net.XhrIo. This doesn't provide a mock
  * implementation for all cases, but it's not too hard to add them as needed.
- * @param {goog.testing.TestQueue} opt_testQueue Test queue for inserting test
+ * @param {goog.testing.TestQueue=} opt_testQueue Test queue for inserting test
  *     events.
  * @constructor
  * @extends {goog.events.EventTarget}
  */
 goog.testing.net.XhrIo = function(opt_testQueue) {
   goog.events.EventTarget.call(this);
+
+  /**
+   * Map of default headers to add to every request, use:
+   * XhrIo.headers.set(name, value)
+   * @type {goog.structs.Map}
+   */
+  this.headers = new goog.structs.Map();
 
   /**
    * Queue of events write to.
@@ -73,13 +83,13 @@ goog.testing.net.XhrIo.getSendInstances = function() {
 /**
  * Simulates the static XhrIo send method.
  * @param {string} url Uri to make request to.
- * @param {Function} opt_callback Callback function for when request is
+ * @param {Function=} opt_callback Callback function for when request is
  *     complete.
- * @param {string} opt_method Send method, default: GET.
- * @param {string} opt_content Post data.
- * @param {Object|goog.structs.Map} opt_headers Map of headers to add to the
+ * @param {string=} opt_method Send method, default: GET.
+ * @param {string=} opt_content Post data.
+ * @param {Object|goog.structs.Map=} opt_headers Map of headers to add to the
  *     request.
- * @param {number} opt_timeoutInterval Number of milliseconds after which an
+ * @param {number=} opt_timeoutInterval Number of milliseconds after which an
  *     incomplete request will be aborted; 0 means no timeout is set.
  */
 goog.testing.net.XhrIo.send = function(url, opt_callback, opt_method,
@@ -178,7 +188,7 @@ goog.testing.net.XhrIo.prototype.timeoutInterval_ = 0;
 /**
  * Window timeout ID used to cancel the timeout event handler if the request
  * completes successfully.
- * @type {Object?}
+ * @type {Object}
  * @private
  */
 goog.testing.net.XhrIo.prototype.timeoutId_ = null;
@@ -217,7 +227,7 @@ goog.testing.net.XhrIo.prototype.simulateTimeout = function() {
 
 /**
  * Abort the current XMLHttpRequest
- * @param {goog.net.ErrorCode} opt_failureCode Optional error code to use -
+ * @param {goog.net.ErrorCode=} opt_failureCode Optional error code to use -
  *     defaults to ABORT.
  */
 goog.testing.net.XhrIo.prototype.abort = function(opt_failureCode) {
@@ -233,9 +243,9 @@ goog.testing.net.XhrIo.prototype.abort = function(opt_failureCode) {
 /**
  * Simulates the XhrIo send.
  * @param {string} url Uri to make request too.
- * @param {string} opt_method Send method, default: GET.
- * @param {string} opt_content Post data.
- * @param {Object|goog.structs.Map} opt_headers Map of headers to add to the
+ * @param {string=} opt_method Send method, default: GET.
+ * @param {string=} opt_content Post data.
+ * @param {Object|goog.structs.Map=} opt_headers Map of headers to add to the
  *     request.
  */
 goog.testing.net.XhrIo.prototype.send = function(url, opt_method, opt_content,
@@ -252,6 +262,16 @@ goog.testing.net.XhrIo.prototype.send = function(url, opt_method, opt_content,
   this.readyState_ = goog.net.XmlHttp.ReadyState.UNINITIALIZED;
   this.simulateReadyStateChange(goog.net.XmlHttp.ReadyState.LOADING);
   this.active_ = true;
+};
+
+
+/**
+ * Creates a new XHR object.
+ * @return {XMLHttpRequest|GearsHttpRequest} The newly created XHR object.
+ * @protected
+ */
+goog.testing.net.XhrIo.prototype.createXhr = function() {
+  return new goog.net.XmlHttp();
 };
 
 
@@ -281,7 +301,7 @@ goog.testing.net.XhrIo.prototype.simulateReadyStateChange =
  * Simulates receiving a response.
  * @param {number} statusCode Simulated status code.
  * @param {string|Document} response Simulated response.
- * @param {Object} opt_headers Simulated response headers.
+ * @param {Object=} opt_headers Simulated response headers.
  */
 goog.testing.net.XhrIo.prototype.simulateResponse = function(statusCode,
     response, opt_headers) {
@@ -413,20 +433,28 @@ goog.testing.net.XhrIo.prototype.getResponseText = function() {
 /**
  * Gets the response and evaluates it as JSON from the Xhr object.  Will only
  * return correct result when called from the context of a callback.
+ * @param {string=} opt_xssiPrefix Optional XSSI prefix string to use for
+ *     stripping of the response before parsing. This needs to be set only if
+ *     your backend server prepends the same prefix string to the JSON response.
  * @return {Object} JavaScript object.
  */
-goog.testing.net.XhrIo.prototype.getResponseJson = function() {
-  return goog.json.parse(this.getResponseText());
+goog.testing.net.XhrIo.prototype.getResponseJson = function(opt_xssiPrefix) {
+  var responseText = this.getResponseText();
+  if (opt_xssiPrefix && responseText.indexOf(opt_xssiPrefix) == 0) {
+    responseText = responseText.substring(opt_xssiPrefix.length);
+  }
+
+  return goog.json.parse(responseText);
 };
 
 
 /**
  * Gets the response XML from the Xhr object.  Will only return correct result
  * when called from the context of a callback.
- * @return {Document?} Result from the server if it was XML.
+ * @return {Document} Result from the server if it was XML.
  */
 goog.testing.net.XhrIo.prototype.getResponseXml = function() {
-  // NOTE: I haven't found out how to check in Internet Explorer
+  // NOTE(user): I haven't found out how to check in Internet Explorer
   // whether the response is XML document, so I do it the other way around.
   return goog.isString(this.response_) ? null : this.response_;
 };

@@ -1,16 +1,16 @@
+// Copyright 2009 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-// Copyright 2009 Google Inc. All Rights Reserved.
 
 
 /**
@@ -51,10 +51,11 @@
  *   video.setSelected(true);
  * </pre>
  *
+*
  *
  * @supported IE6, FF2+, Safari. Requires flash to actually work.
  *
- * TODO: Support non flash users. Maybe show a link to the Flick set,
+ * TODO(user): Support non flash users. Maybe show a link to the Flick set,
  * or fetch the data and rendering it using javascript (instead of a broken
  * 'You need to install flash' message).
  */
@@ -126,11 +127,11 @@ goog.ui.media.FlickrSet.flashUrl_ =
  * except if you need more fine control over the configuration.
  *
  * @param {goog.ui.media.FlickrSetModel} dataModel The Flickr Set data model.
- * @param {goog.dom.DomHelper} opt_domHelper Optional DOM helper, used for
+ * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM helper, used for
  *     document interaction.
  * @return {goog.ui.media.Media} A Control binded to the FlickrSet renderer.
  * @throws exception in case {@code flickrSetUrl} is an invalid flickr set URL.
- * TODO: use {@link goog.ui.media.MediaModel} once it is checked in.
+ * TODO(user): use {@link goog.ui.media.MediaModel} once it is checked in.
  */
 goog.ui.media.FlickrSet.newControl = function(dataModel, opt_domHelper) {
   var control = new goog.ui.media.Media(
@@ -164,7 +165,7 @@ goog.ui.media.FlickrSet.prototype.createDom = function(control) {
   var model =
     /** @type {goog.ui.media.FlickrSetModel} */ (control.getDataModel());
 
-  // TODO: find out what is the policy about hosting this SWF. figure out
+  // TODO(user): find out what is the policy about hosting this SWF. figure out
   // if it works over https.
   var flash = new goog.ui.media.FlashObject(
       model.getPlayer().getUrl() || '',
@@ -196,8 +197,8 @@ goog.ui.media.FlickrSet.prototype.getCssClass = function() {
  *
  * @param {string} userId The flickr userId associated with this set.
  * @param {string} setId The flickr setId associated with this set.
- * @param {string} opt_caption An optional caption of the flickr set.
- * @param {string} opt_description An optional description of the flickr set.
+ * @param {string=} opt_caption An optional caption of the flickr set.
+ * @param {string=} opt_description An optional description of the flickr set.
  * @constructor
  * @extends {goog.ui.media.MediaModel}
  */
@@ -259,8 +260,8 @@ goog.ui.media.FlickrSetModel.matcher_ =
  * Takes a {@code flickrSetUrl} and extracts the flickr username and set id.
  *
  * @param {string} flickrSetUrl A Flickr set URL.
- * @param {string} opt_caption An optional caption of the flickr set.
- * @param {string} opt_description An optional description of the flickr set.
+ * @param {string=} opt_caption An optional caption of the flickr set.
+ * @param {string=} opt_description An optional description of the flickr set.
  * @return {goog.ui.media.FlickrSetModel} The data model that represents the
  *     Flickr set.
  * @throws exception in case the parsing fails

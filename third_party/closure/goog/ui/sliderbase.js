@@ -1,16 +1,16 @@
+// Copyright 2007 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-// Copyright 2007 Google Inc. All Rights Reserved.
 
 /**
  * @fileoverview Implementation of a basic slider control.
@@ -36,6 +36,8 @@
  * - decorateInternal
  * - getCssClass
  *
+*
+*
  */
 
 goog.provide('goog.ui.SliderBase');
@@ -47,6 +49,7 @@ goog.require('goog.dom.a11y');
 goog.require('goog.dom.a11y.Role');
 goog.require('goog.dom.a11y.State');
 goog.require('goog.dom.classes');
+goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('goog.events.KeyCodes');
 goog.require('goog.events.KeyHandler');
@@ -67,15 +70,16 @@ goog.require('goog.ui.RangeModel');
 
 /**
  * This creates a SliderBase object.
- * @param {goog.dom.DomHelper} opt_domHelper Optional DOM helper.
+ * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM helper.
  * @constructor
  * @extends {goog.ui.Component}
  */
 goog.ui.SliderBase = function(opt_domHelper) {
   goog.ui.Component.call(this, opt_domHelper);
   this.rangeModel = new goog.ui.RangeModel;
-  this.getHandler().listen(this.rangeModel, goog.ui.Component.EventType.CHANGE,
-      this.handleRangeModelChange);
+  // Don't use getHandler because it gets cleared in exitDocument.
+  goog.events.listen(this.rangeModel, goog.ui.Component.EventType.CHANGE,
+      this.handleRangeModelChange, false, this);
 };
 goog.inherits(goog.ui.SliderBase, goog.ui.Component);
 
@@ -127,7 +131,7 @@ goog.ui.SliderBase.prototype.rangeModel;
 
 
 /**
- * The minThumb dom-element, pointing to the start of the selected range
+ * The minThumb dom-element, pointing to the start of the selected range.
  * @type {HTMLDivElement}
  * @protected
  */
@@ -135,7 +139,7 @@ goog.ui.SliderBase.prototype.valueThumb;
 
 
 /**
- * The maxThumb dom-element, pointing to the end of the selected range
+ * The maxThumb dom-element, pointing to the end of the selected range.
  * @type {HTMLDivElement}
  * @protected
  */
@@ -143,7 +147,7 @@ goog.ui.SliderBase.prototype.extentThumb;
 
 
 /**
- * The thumb that we should be moving (only relevant when timed move is active)
+ * The thumb that we should be moving (only relevant when timed move is active).
  * @type {HTMLDivElement}
  * @private
  */
@@ -167,7 +171,7 @@ goog.ui.SliderBase.prototype.mouseWheelHandler_;
 
 
 /**
- * The Dragger for dragging the valueThumb
+ * The Dragger for dragging the valueThumb.
  * @type {goog.fx.Dragger}
  * @private
  */
@@ -183,7 +187,7 @@ goog.ui.SliderBase.prototype.extentDragger_;
 
 
 /**
- * If we are currently animating the thumb
+ * If we are currently animating the thumb.
  * @private
  * @type {boolean}
  */
@@ -191,7 +195,7 @@ goog.ui.SliderBase.prototype.isAnimating_ = false;
 
 
 /**
- * Whether clicking on the backgtround should move directly to that point
+ * Whether clicking on the backgtround should move directly to that point.
  * @private
  * @type {boolean}
  */
@@ -263,6 +267,9 @@ goog.ui.SliderBase.prototype.enterDocument = function() {
   // Attach the events
   this.valueDragger_ = new goog.fx.Dragger(this.valueThumb);
   this.extentDragger_ = new goog.fx.Dragger(this.extentThumb);
+  // The slider is handling the positioning so make the defaultActions empty.
+  this.valueDragger_.defaultAction = this.extentDragger_.defaultAction =
+      goog.nullFunction;
   this.keyHandler_ = new goog.events.KeyHandler(this.getElement());
   this.mouseWheelHandler_ = new goog.events.MouseWheelHandler(
       this.getElement());
@@ -285,8 +292,8 @@ goog.ui.SliderBase.prototype.enterDocument = function() {
 
 
 /**
- * Handler for the before drag event. We prevent the default action and use the
- * event properties to determine the new value
+ * Handler for the before drag event. We use the event properties to determine
+ * the new value.
  * @param {goog.fx.DragEvent} e  The drag event used to drag the thumb.
  * @private
  */
@@ -314,13 +321,12 @@ goog.ui.SliderBase.prototype.handleBeforeDrag_ = function(e) {
     value = Math.min(Math.max(value, this.getValue()), this.getMaximum());
   }
   this.setThumbPosition_(thumbToDrag, value);
-  e.preventDefault();
 };
 
 
 /**
  * Event handler for the key down event. This is used to update the value
- * based on the key pressed
+ * based on the key pressed.
  * @param {goog.events.KeyEvent} e  The keyboard event object.
  * @private
  */
@@ -514,7 +520,7 @@ goog.ui.SliderBase.prototype.getRelativeMousePos_ = function(e) {
 
 
 /**
- * Stores the current mouse position so that it can be used in the timer
+ * Stores the current mouse position so that it can be used in the timer.
  * @param {goog.events.Event} e  The mouse event object.
  * @private
  */
@@ -679,7 +685,7 @@ goog.ui.SliderBase.prototype.getMinimum = function() {
 
 
 /**
- * Sets the minimum number
+ * Sets the minimum number.
  * @param {number} min The minimum value.
  */
 goog.ui.SliderBase.prototype.setMinimum = function(min) {
@@ -696,7 +702,7 @@ goog.ui.SliderBase.prototype.getMaximum = function() {
 
 
 /**
- * Sets the maximum number
+ * Sets the maximum number.
  * @param {number} max The maximum value.
  */
 goog.ui.SliderBase.prototype.setMaximum = function(max) {
@@ -737,7 +743,7 @@ goog.ui.SliderBase.prototype.getClosestThumb_ = function(position) {
 
 /**
  * Call back when the internal range model changes. Sub-classes may override
- * and re-enter this method to update a11y state. Consider protected
+ * and re-enter this method to update a11y state. Consider protected.
  * @param {goog.events.Event} e The event object.
  * @protected
  */
@@ -803,7 +809,7 @@ goog.ui.SliderBase.prototype.getThumbCoordinateForValue_ = function(val) {
 
 
 /**
- * Sets the value and starts animating the handle towards that position
+ * Sets the value and starts animating the handle towards that position.
  * @param {number} v Value to set and animate to.
  * @private
  */
@@ -836,7 +842,7 @@ goog.ui.SliderBase.prototype.animatedSetValue_ = function(v) {
 
 
 /**
- * Sets the isAnimating_ field to false once the animation is done
+ * Sets the isAnimating_ field to false once the animation is done.
  * @param {goog.fx.AnimationEvent} e Event object passed by the animation
  *     object.
  * @private
@@ -847,7 +853,7 @@ goog.ui.SliderBase.prototype.endAnimation_ = function(e) {
 
 
 /**
- * changes the orientation
+ * Changes the orientation.
  * @param {goog.ui.SliderBase.Orientation} orient The orientation.
  */
 goog.ui.SliderBase.prototype.setOrientation = function(orient) {
@@ -960,7 +966,7 @@ goog.ui.SliderBase.prototype.setUnitIncrement = function(value) {
 
 
 /**
- * @return {number?} The step value used to determine how to round the value.
+ * @return {?number} The step value used to determine how to round the value.
  */
 goog.ui.SliderBase.prototype.getStep = function() {
   return this.rangeModel.getStep();
@@ -970,7 +976,7 @@ goog.ui.SliderBase.prototype.getStep = function() {
 /**
  * Sets the step value. The step value is used to determine how to round the
  * value.
- * @param {number?} step  The step size.
+ * @param {?number} step  The step size.
  */
 goog.ui.SliderBase.prototype.setStep = function(step) {
   this.rangeModel.setStep(step);

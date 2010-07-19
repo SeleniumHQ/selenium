@@ -1,19 +1,20 @@
+// Copyright 2008 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Copyright 2008 Google Inc. All rights reserved.
-
 /**
  * @fileoverview Scroll behavior that can be added onto a container.
+*
  */
 
 goog.provide('goog.ui.ContainerScroller');
@@ -23,7 +24,7 @@ goog.require('goog.events.EventHandler');
 goog.require('goog.style');
 goog.require('goog.ui.Component');
 goog.require('goog.ui.Component.EventType');
-goog.require('goog.ui.Container');
+goog.require('goog.ui.Container.EventType');
 
 
 /**
@@ -69,7 +70,7 @@ goog.ui.ContainerScroller = function(container) {
   this.eventHandler_.listen(container, goog.ui.Component.EventType.HIDE,
       this.onHide_);
 
-  // TODO: Allow a ContainerScroller to be attached with a Container
+  // TODO(user): Allow a ContainerScroller to be attached with a Container
   // before the container is rendered.
 
   this.doScrolling_(true);
@@ -169,14 +170,16 @@ goog.ui.ContainerScroller.prototype.onAfterShow_ = function(e) {
  * @private
  */
 goog.ui.ContainerScroller.prototype.onHide_ = function(e) {
-  this.lastEnterTarget_ = null;
-  this.scrollTopBeforeHide_ = this.container_.getElement().scrollTop;
+  if (e.target == this.container_) {
+    this.lastEnterTarget_ = null;
+    this.scrollTopBeforeHide_ = this.container_.getElement().scrollTop;
+  }
 };
 
 
 /**
  * Centers the currently highlighted item, if this is scrollable.
- * @param {boolean} opt_center Whether to center the highlighted element
+ * @param {boolean=} opt_center Whether to center the highlighted element
  *     rather than simply ensure it is in view.  Useful for the first
  *     render.
  * @private

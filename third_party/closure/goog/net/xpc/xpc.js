@@ -1,16 +1,16 @@
+// Copyright 2007 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-// Copyright 2007 Google Inc. All Rights Reserved.
 
 /**
  * @fileoverview Provides the namesspace for client-side communication
@@ -28,10 +28,11 @@
  * CrossPageChannel abstracts the underlying transport mechanism to
  * provide a common interface in all browsers.
  *
+*
  */
 
 /*
-TODO
+TODO(user)
 - resolve fastback issues in Safari (IframeRelayTransport)
  */
 
@@ -72,7 +73,7 @@ goog.net.xpc.TransportNames = {
 };
 
 
-// TODO: Add auth token support to other methods.
+// TODO(user): Add auth token support to other methods.
 
 /**
  * Field names used on configuration object.
@@ -188,7 +189,7 @@ goog.net.xpc.channels_ = {};
 /**
  * Returns a random string.
  * @param {number} length How many characters the string shall contain.
- * @param {string} opt_characters The characters used.
+ * @param {string=} opt_characters The characters used.
  * @return {string} The random string.
  */
 goog.net.xpc.getRandomString = function(length, opt_characters) {

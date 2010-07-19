@@ -1,19 +1,20 @@
+// Copyright 2006 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Copyright 2006 Google Inc. All Rights Reserved.
-
 /**
  * @fileoverview A utility class for representing a numeric box.
+*
  */
 
 
@@ -62,8 +63,8 @@ goog.math.Box = function(top, right, bottom, left) {
 
 /**
  * Creates a Box by bounding a collection of goog.math.Coordinate objects
- * @param {goog.math.Coordinate} var_args Coordinates to be included inside the
- *     box.
+ * @param {...goog.math.Coordinate} var_args Coordinates to be included inside
+ *     the box.
  * @return {goog.math.Box} A Box containing all the specified Coordinates.
  */
 goog.math.Box.boundingBox = function(var_args) {
@@ -116,9 +117,9 @@ goog.math.Box.prototype.contains = function(other) {
  * Expands box with the given margins.
  *
  * @param {number|goog.math.Box} top Top margin or box with all margins.
- * @param {number} opt_right Right margin.
- * @param {number} opt_bottom Bottom margin.
- * @param {number} opt_left Left margin.
+ * @param {number=} opt_right Right margin.
+ * @param {number=} opt_bottom Bottom margin.
+ * @param {number=} opt_left Left margin.
  * @return {goog.math.Box} A reference to this Box.
  */
 goog.math.Box.prototype.expand = function(top, opt_right, opt_bottom,
@@ -136,6 +137,21 @@ goog.math.Box.prototype.expand = function(top, opt_right, opt_bottom,
   }
 
   return this;
+};
+
+
+/**
+ * Expand this box to include another box.
+ * NOTE(user): This is used in code that needs to be very fast, please don't
+ * add functionality to this function at the expense of speed (variable
+ * arguments, accepting multiple argument types, etc).
+ * @param {goog.math.Box} box The box to include in this one.
+ */
+goog.math.Box.prototype.expandToInclude = function(box) {
+  this.left = Math.min(this.left, box.left);
+  this.top = Math.min(this.top, box.top);
+  this.right = Math.max(this.right, box.right);
+  this.bottom = Math.max(this.bottom, box.bottom);
 };
 
 
@@ -158,7 +174,7 @@ goog.math.Box.equals = function(a, b) {
 
 
 /**
- * Returns whether a box contains a coordinate.
+ * Returns whether a box contains a coordinate or another box.
  *
  * @param {goog.math.Box} box A Box.
  * @param {goog.math.Coordinate|goog.math.Box} other A Coordinate or a Box.
@@ -205,4 +221,17 @@ goog.math.Box.distance = function(box, coord) {
   return goog.math.Coordinate.distance(coord,
       new goog.math.Coordinate(coord.x < box.left ? box.left : box.right,
                                coord.y < box.top ? box.top : box.bottom));
+};
+
+
+/**
+ * Returns whether two boxes intersect.
+ *
+ * @param {goog.math.Box} a A Box.
+ * @param {goog.math.Box} b A second Box.
+ * @return {boolean} Whether the boxes intersect.
+ */
+goog.math.Box.intersects = function(a, b) {
+  return (a.left <= b.right && b.left <= a.right &&
+          a.top <= b.bottom && b.top <= a.bottom);
 };

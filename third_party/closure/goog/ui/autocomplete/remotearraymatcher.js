@@ -1,20 +1,21 @@
+// Copyright 2007 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Copyright 2007 Google Inc. All Rights Reserved.
-
 /**
  * @fileoverview Class that retrieves autocomplete matches via an ajax call.
  *
+*
  */
 
 goog.provide('goog.ui.AutoComplete.RemoteArrayMatcher');
@@ -32,7 +33,7 @@ goog.require('goog.ui.AutoComplete');
  * An array matcher that requests matches via ajax.
  * @param {string} url The Uri which generates the auto complete matches.  The
  *     search term is passed to the server as the 'token' query param.
- * @param {boolean} opt_noSimilar If true, request that the server does not do
+ * @param {boolean=} opt_noSimilar If true, request that the server does not do
  *     similarity matches for the input token against the dictionary.
  *     The value is sent to the server as the 'use_similar' query param which is
  *     either "1" (opt_noSimilar==false) or "0" (opt_noSimilar==true).
@@ -93,7 +94,7 @@ goog.ui.AutoComplete.RemoteArrayMatcher.prototype.headers_ = null;
 
 /**
  * Key to the listener on XHR. Used to clear previous listeners.
- * @type {number?}
+ * @type {?number}
  * @private
  */
 goog.ui.AutoComplete.RemoteArrayMatcher.prototype.lastListenerKey_ = null;
@@ -149,7 +150,7 @@ goog.ui.AutoComplete.RemoteArrayMatcher.prototype.setTimeoutInterval =
  * @param {string} token Current token in autocomplete.
  * @param {number} maxMatches Maximum number of matches required.
  * @param {boolean} useSimilar A hint to the server.
- * @param {string} opt_fullString Complete text in the input element.
+ * @param {string=} opt_fullString Complete text in the input element.
  * @return {?string} The complete url. Return null if no request should be sent.
  * @protected
  */
@@ -170,7 +171,7 @@ goog.ui.AutoComplete.RemoteArrayMatcher.prototype.buildUrl = function(uri,
  * @param {string} token Current token in autocomplete.
  * @param {number} maxMatches Maximum number of matches required.
  * @param {boolean} useSimilar A hint to the server.
- * @param {string} opt_fullString Complete text in the input element.
+ * @param {string=} opt_fullString Complete text in the input element.
  * @return {boolean} Whether new matches be requested.
  * @protected
  */
@@ -225,7 +226,7 @@ goog.ui.AutoComplete.RemoteArrayMatcher.prototype.xhrCallback = function(token,
  *     responsible for limiting the number of matches that are returned.
  * @param {Function} matchHandler Callback to execute on the result after
  *     matching.
- * @param {string} opt_fullString The full string from the input box.
+ * @param {string=} opt_fullString The full string from the input box.
  */
 goog.ui.AutoComplete.RemoteArrayMatcher.prototype.requestMatchingRows =
     function(token, maxMatches, matchHandler, opt_fullString) {
@@ -260,4 +261,12 @@ goog.ui.AutoComplete.RemoteArrayMatcher.prototype.requestMatchingRows =
   this.lastListenerKey_ = goog.events.listenOnce(this.xhr_,
       goog.net.EventType.SUCCESS, callback);
   this.xhr_.send(url, this.method_, this.content_, this.headers_);
+};
+
+
+/** @inheritDoc */
+goog.ui.AutoComplete.RemoteArrayMatcher.prototype.disposeInternal = function() {
+  this.xhr_.dispose();
+  goog.ui.AutoComplete.RemoteArrayMatcher.superClass_.disposeInternal.call(
+      this);
 };

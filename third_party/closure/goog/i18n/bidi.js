@@ -1,19 +1,21 @@
+// Copyright 2007 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Copyright 2007 Google Inc. All Rights Reserved.
-
 /**
  * @fileoverview Utility functions for supporting Bidi issues.
+*
+*
  */
 
 
@@ -130,7 +132,7 @@ goog.i18n.bidi.htmlSkipReg_ = /<[^>]*>|&[^;]+;/g;
  * correct, but rather a good-enough implementation for directionality
  * estimation purposes.
  * @param {string} str The given string.
- * @param {boolean} opt_isStripNeeded Whether to perform the stripping.
+ * @param {boolean=} opt_isStripNeeded Whether to perform the stripping.
  *     Default: false (to retain consistency with calling functions).
  * @return {string} The given string cleaned of HTML tags / escapes.
  * @private
@@ -160,7 +162,7 @@ goog.i18n.bidi.ltrCharReg_ = new RegExp('[' + goog.i18n.bidi.ltrChars_ + ']');
 /**
  * Test whether the given string has any RTL characters in it.
  * @param {string} str The given string that need to be tested.
- * @param {boolean} opt_isHtml Whether str is HTML / HTML-escaped.
+ * @param {boolean=} opt_isHtml Whether str is HTML / HTML-escaped.
  *     Default: false.
  * @return {boolean} Whether the string contains RTL characters.
  */
@@ -182,7 +184,7 @@ goog.i18n.bidi.hasRtlChar = goog.i18n.bidi.hasAnyRtl;
 /**
  * Test whether the given string has any LTR characters in it.
  * @param {string} str The given string that need to be tested.
- * @param {boolean} opt_isHtml Whether str is HTML / HTML-escaped.
+ * @param {boolean=} opt_isHtml Whether str is HTML / HTML-escaped.
  *     Default: false.
  * @return {boolean} Whether the string contains LTR characters.
  */
@@ -263,7 +265,7 @@ goog.i18n.bidi.rtlDirCheckRe_ = new RegExp(
 /**
  * Check whether the first strongly directional character (if any) is RTL.
  * @param {string} str String being checked.
- * @param {boolean} opt_isHtml Whether str is HTML / HTML-escaped.
+ * @param {boolean=} opt_isHtml Whether str is HTML / HTML-escaped.
  *     Default: false.
  * @return {boolean} Whether RTL directionality is detected using the first
  *     strongly-directional character method.
@@ -277,7 +279,7 @@ goog.i18n.bidi.startsWithRtl = function(str, opt_isHtml) {
 /**
  * Check whether the first strongly directional character (if any) is RTL.
  * @param {string} str String being checked.
- * @param {boolean} opt_isHtml Whether str is HTML / HTML-escaped.
+ * @param {boolean=} opt_isHtml Whether str is HTML / HTML-escaped.
  *     Default: false.
  * @return {boolean} Whether RTL directionality is detected using the first
  *     strongly-directional character method.
@@ -289,7 +291,7 @@ goog.i18n.bidi.isRtlText = goog.i18n.bidi.startsWithRtl;
 /**
  * Check whether the first strongly directional character (if any) is LTR.
  * @param {string} str String being checked.
- * @param {boolean} opt_isHtml Whether str is HTML / HTML-escaped.
+ * @param {boolean=} opt_isHtml Whether str is HTML / HTML-escaped.
  *     Default: false.
  * @return {boolean} Whether LTR directionality is detected using the first
  *     strongly-directional character method.
@@ -303,7 +305,7 @@ goog.i18n.bidi.startsWithLtr = function(str, opt_isHtml) {
 /**
  * Check whether the first strongly directional character (if any) is LTR.
  * @param {string} str String being checked.
- * @param {boolean} opt_isHtml Whether str is HTML / HTML-escaped.
+ * @param {boolean=} opt_isHtml Whether str is HTML / HTML-escaped.
  *     Default: false.
  * @return {boolean} Whether LTR directionality is detected using the first
  *     strongly-directional character method.
@@ -327,7 +329,7 @@ goog.i18n.bidi.isRequiredLtrRe_ = /^http:\/\/.*/;
  * Check whether the input string either contains no strongly directional
  * characters or looks like a url.
  * @param {string} str String being checked.
- * @param {boolean} opt_isHtml Whether str is HTML / HTML-escaped.
+ * @param {boolean=} opt_isHtml Whether str is HTML / HTML-escaped.
  *     Default: false.
  * @return {boolean} Whether neutral directionality is detected.
  */
@@ -362,7 +364,7 @@ goog.i18n.bidi.rtlExitDirCheckRe_ = new RegExp(
  * Check if the exit directionality a piece of text is LTR, i.e. if the last
  * strongly-directional character in the string is LTR.
  * @param {string} str String being checked.
- * @param {boolean} opt_isHtml Whether str is HTML / HTML-escaped.
+ * @param {boolean=} opt_isHtml Whether str is HTML / HTML-escaped.
  *     Default: false.
  * @return {boolean} Whether LTR exit directionality was detected.
  */
@@ -376,7 +378,7 @@ goog.i18n.bidi.endsWithLtr = function(str, opt_isHtml) {
  * Check if the exit directionality a piece of text is LTR, i.e. if the last
  * strongly-directional character in the string is LTR.
  * @param {string} str String being checked.
- * @param {boolean} opt_isHtml Whether str is HTML / HTML-escaped.
+ * @param {boolean=} opt_isHtml Whether str is HTML / HTML-escaped.
  *     Default: false.
  * @return {boolean} Whether LTR exit directionality was detected.
  * @deprecated Use endsWithLtr.
@@ -388,7 +390,7 @@ goog.i18n.bidi.isLtrExitText = goog.i18n.bidi.endsWithLtr;
  * Check if the exit directionality a piece of text is RTL, i.e. if the last
  * strongly-directional character in the string is RTL.
  * @param {string} str String being checked.
- * @param {boolean} opt_isHtml Whether str is HTML / HTML-escaped.
+ * @param {boolean=} opt_isHtml Whether str is HTML / HTML-escaped.
  *     Default: false.
  * @return {boolean} Whether RTL exit directionality was detected.
  */
@@ -402,7 +404,7 @@ goog.i18n.bidi.endsWithRtl = function(str, opt_isHtml) {
  * Check if the exit directionality a piece of text is RTL, i.e. if the last
  * strongly-directional character in the string is RTL.
  * @param {string} str String being checked.
- * @param {boolean} opt_isHtml Whether str is HTML / HTML-escaped.
+ * @param {boolean=} opt_isHtml Whether str is HTML / HTML-escaped.
  *     Default: false.
  * @return {boolean} Whether RTL exit directionality was detected.
  * @deprecated Use endsWithRtl.
@@ -454,7 +456,7 @@ goog.i18n.bidi.isRtlLanguage = function(lang) {
  * @private
  */
 goog.i18n.bidi.bracketGuardHtmlRe_ =
-    /(\([^\)]*\))|(\[[^\]]*\])|({[^}]*})|(&lt;[^&]*&gt;)/g;
+    /(\(.*?\)+)|(\[.*?\]+)|(\{.*?\}+)|(&lt;.*?(&gt;)+)/g;
 
 
 /**
@@ -463,17 +465,21 @@ goog.i18n.bidi.bracketGuardHtmlRe_ =
  * @private
  */
 goog.i18n.bidi.bracketGuardTextRe_ =
-    /(\([^\)]*\))|(\[[^\]]*\])|({[^}]*})|(<[^>]*>)/g;
+    /(\(.*?\)+)|(\[.*?\]+)|(\{.*?\}+)|(<.*?>+)/g;
 
 
 /**
  * Apply bracket guard using html span tag. This is to address the problem of
  * messy bracket display frequently happens in RTL layout.
  * @param {string} s The string that need to be processed.
+ * @param {boolean=} opt_isRtlContext specifies default direction (usually
+ *     direction of the UI).
  * @return {string} The processed string, with all bracket guarded.
  */
-goog.i18n.bidi.guardBracketInHtml = function(s) {
-  if (goog.i18n.bidi.hasAnyRtl(s)) {
+goog.i18n.bidi.guardBracketInHtml = function(s, opt_isRtlContext) {
+  var useRtl = opt_isRtlContext === undefined ?
+      goog.i18n.bidi.hasAnyRtl(s) : opt_isRtlContext;
+  if (useRtl) {
     return s.replace(goog.i18n.bidi.bracketGuardHtmlRe_,
         '<span dir=rtl>$&</span>');
   }
@@ -488,13 +494,17 @@ goog.i18n.bidi.guardBracketInHtml = function(s) {
  * This version works for both plain text and html. But it does not work as
  * good as guardBracketInHtml in some cases.
  * @param {string} s The string that need to be processed.
+ * @param {boolean=} opt_isRtlContext specifies default direction (usually
+ *     direction of the UI).
  * @return {string} The processed string, with all bracket guarded.
  */
-goog.i18n.bidi.guardBracketInText = function(s) {
-  var mark = goog.i18n.bidi.hasAnyRtl(s) ? goog.i18n.bidi.Format.RLM :
-      goog.i18n.bidi.Format.LRM;
+goog.i18n.bidi.guardBracketInText = function(s, opt_isRtlContext) {
+  var useRtl = opt_isRtlContext === undefined ?
+      goog.i18n.bidi.hasAnyRtl(s) : opt_isRtlContext;
+  var mark = useRtl ? goog.i18n.bidi.Format.RLM : goog.i18n.bidi.Format.LRM;
   return s.replace(goog.i18n.bidi.bracketGuardTextRe_, mark + '$&' + mark);
 };
+
 
 /**
  * Enforce the html snippet in RTL directionality regardless overall context.
@@ -514,6 +524,7 @@ goog.i18n.bidi.enforceRtlInHtml = function(html) {
   return '\n<span dir=rtl>' + html + '</span>';
 };
 
+
 /**
  * Enforce RTL on both end of the given text piece using unicode BiDi formatting
  * characters RLE and PDF.
@@ -523,6 +534,7 @@ goog.i18n.bidi.enforceRtlInHtml = function(html) {
 goog.i18n.bidi.enforceRtlInText = function(text) {
   return goog.i18n.bidi.Format.RLE + text + goog.i18n.bidi.Format.PDF;
 };
+
 
 /**
  * Enforce the html snippet in RTL directionality regardless overall context.
@@ -542,6 +554,7 @@ goog.i18n.bidi.enforceLtrInHtml = function(html) {
   return '\n<span dir=ltr>' + html + '</span>';
 };
 
+
 /**
  * Enforce LTR on both end of the given text piece using unicode BiDi formatting
  * characters LRE and PDF.
@@ -551,6 +564,7 @@ goog.i18n.bidi.enforceLtrInHtml = function(html) {
 goog.i18n.bidi.enforceLtrInText = function(text) {
   return goog.i18n.bidi.Format.LRE + text + goog.i18n.bidi.Format.PDF;
 };
+
 
 /**
  * Regular expression to find dimensions such as "padding: .3 0.4ex 5px 6;"
@@ -669,7 +683,7 @@ goog.i18n.bidi.rtlDetectionThreshold_ = 0.40;
  * Otherwise, returns UNKNOWN, which is used to mean "neutral".
  * Numbers are counted as weakly LTR.
  * @param {string} str The string to be checked.
- * @param {boolean} opt_isHtml Whether str is HTML / HTML-escaped.
+ * @param {boolean=} opt_isHtml Whether str is HTML / HTML-escaped.
  *     Default: false.
  * @return {goog.i18n.bidi.Dir} Estimated overall directionality of {@code str}.
  */
@@ -704,7 +718,7 @@ goog.i18n.bidi.estimateDirection = function(str, opt_isHtml) {
  * Check the directionality of a piece of text, return true if the piece of
  * text should be laid out in RTL direction.
  * @param {string} str The piece of text that need to be detected.
- * @param {boolean} opt_isHtml Whether str is HTML / HTML-escaped.
+ * @param {boolean=} opt_isHtml Whether str is HTML / HTML-escaped.
  *     Default: false.
  * @return {boolean} Whether this piece of text should be laid out in RTL.
  */

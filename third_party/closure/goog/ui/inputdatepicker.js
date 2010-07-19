@@ -1,22 +1,23 @@
+// Copyright 2007 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-// Copyright 2007 Google Inc. All Rights Reserved.
 
 /**
  * @fileoverview Input Date Picker implementation.  Pairs a
  * goog.ui.PopupDatePicker with an input element and handles the input from
  * either.
  *
+*
  * @see ../demos/inputdatepicker.html
  */
 
@@ -37,9 +38,9 @@ goog.require('goog.ui.PopupDatePicker');
  *     used to format the date picker's date for display in the input element.
  * @param {goog.i18n.DateTimeParse} dateTimeParser A parser instance used to
  *     parse the input element's string as a date to set the picker.
- * @param {goog.ui.DatePicker} opt_datePicker Optional DatePicker.  This
+ * @param {goog.ui.DatePicker=} opt_datePicker Optional DatePicker.  This
  *     enables the use of a custom date-picker instance.
- * @param {goog.dom.DomHelper} opt_domHelper Optional DOM helper.
+ * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM helper.
  * @extends {goog.ui.Component}
  * @constructor
  */
@@ -85,7 +86,7 @@ goog.ui.InputDatePicker.prototype.popupDatePicker_ = null;
 /**
  * The element that the PopupDatePicker should be parented to. Defaults to the
  * body element of the page.
- * @type {Element?}
+ * @type {Element}
  * @private
  */
 goog.ui.InputDatePicker.prototype.popupParentElement_ = null;
@@ -203,7 +204,7 @@ goog.ui.InputDatePicker.prototype.createDom = function() {
 /**
  * Sets the element that the PopupDatePicker should be parented to. If not set,
  * defaults to the body element of the page.
- * @param {Element?} el The element that the PopupDatePicker should be parented
+ * @param {Element} el The element that the PopupDatePicker should be parented
  *     to.
  */
 goog.ui.InputDatePicker.prototype.setPopupParentElement = function(el) {

@@ -1,16 +1,16 @@
+// Copyright 2005 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-// Copyright 2005 Google Inc. All Rights Reserved.
 
 /**
  * @fileoverview Trogedit constants for browser features and quirks that should
@@ -21,6 +21,8 @@ goog.provide('goog.editor.BrowserFeature');
 
 goog.require('goog.editor.defines');
 goog.require('goog.userAgent');
+goog.require('goog.userAgent.product');
+goog.require('goog.userAgent.product.isVersion');
 
 
 /**
@@ -38,7 +40,7 @@ goog.editor.BrowserFeature = {
 
   // Has the contentEditable attribute, which makes nodes editable.
   //
-  // NOTE: FF3 has contentEditable, but there are 3 major reasons
+  // NOTE(nicksantos): FF3 has contentEditable, but there are 3 major reasons
   // why we don't use it:
   // 1) In FF3, we listen for key events on the document, and we'd have to
   //    filter them properly. See TR_Browser.USE_DOCUMENT_FOR_KEY_EVENTS.
@@ -60,7 +62,7 @@ goog.editor.BrowserFeature = {
   USE_MUTATION_EVENTS: goog.userAgent.GECKO,
 
   // Whether the browser has a functional DOMSubtreeModified event.
-  // TODO: Enable for all FF3 once we're confident this event fires
+  // TODO(user): Enable for all FF3 once we're confident this event fires
   // reliably. Currently it's only enabled if using contentEditable in FF as
   // we have no other choice in that case but to use this event.
   HAS_DOM_SUBTREE_MODIFIED_EVENT: goog.userAgent.WEBKIT ||
@@ -104,7 +106,7 @@ goog.editor.BrowserFeature = {
 
   // Has a standards mode quirk where width=100% doesn't do the right thing,
   // but width=99% does.
-  // TODO: This should be fixable by less hacky means
+  // TODO(user|user): This should be fixable by less hacky means
   NEEDS_99_WIDTH_IN_STANDARDS_MODE: goog.userAgent.IE,
 
   // Whether keyboard events only reliably fire on the document.
@@ -112,7 +114,7 @@ goog.editor.BrowserFeature = {
   // document element. With contentEditable, the field itself is focusable,
   // which means that it will fire key events.
   USE_DOCUMENT_FOR_KEY_EVENTS: goog.userAgent.GECKO &&
-       !goog.editor.defines.USE_CONTENTEDITABLE_IN_FIREFOX_3,
+      !goog.editor.defines.USE_CONTENTEDITABLE_IN_FIREFOX_3,
 
   // Whether this browser shows non-standard attributes in innerHTML.
   SHOWS_CUSTOM_ATTRS_IN_INNER_HTML: goog.userAgent.IE,
@@ -121,7 +123,7 @@ goog.editor.BrowserFeature = {
   // (If so, we need to insert some space characters into nodes that
   //  shouldn't be collapsed)
   COLLAPSES_EMPTY_NODES:
-    goog.userAgent.GECKO || goog.userAgent.WEBKIT || goog.userAgent.OPERA,
+      goog.userAgent.GECKO || goog.userAgent.WEBKIT || goog.userAgent.OPERA,
 
   // Whether we must convert <strong> and <em> tags to <b>, <i>.
   CONVERT_TO_B_AND_I_TAGS: goog.userAgent.GECKO || goog.userAgent.OPERA,
@@ -144,8 +146,9 @@ goog.editor.BrowserFeature = {
   FOLLOWS_EDITABLE_LINKS: goog.userAgent.WEBKIT,
 
   // Whether this browser has document.activeElement available.
-  HAS_ACTIVE_ELEMENT: goog.userAgent.IE || goog.userAgent.OPERA ||
-                      goog.userAgent.GECKO && goog.userAgent.isVersion('1.9'),
+  HAS_ACTIVE_ELEMENT:
+      goog.userAgent.IE || goog.userAgent.OPERA ||
+      goog.userAgent.GECKO && goog.userAgent.isVersion('1.9'),
 
   // Whether this browser supports the setCapture method on DOM elements.
   HAS_SET_CAPTURE: goog.userAgent.IE,
@@ -158,7 +161,7 @@ goog.editor.BrowserFeature = {
 
   // Whether this browser supports the "focusin" or "DOMFocusIn" event
   // consistently.
-  // NOTE: FF supports DOMFocusIn, but doesn't seem to do so
+  // NOTE(nicksantos): FF supports DOMFocusIn, but doesn't seem to do so
   // consistently.
   SUPPORTS_FOCUSIN: goog.userAgent.IE || goog.userAgent.OPERA,
 
@@ -195,14 +198,14 @@ goog.editor.BrowserFeature = {
   // Whether this browser converts spaces to non-breaking spaces when calling
   // execCommand's RemoveFormat.
   // See: https://bugs.webkit.org/show_bug.cgi?id=14062
-  ADDS_NBSPS_IN_REMOVE_FORMAT: goog.userAgent.WEBKIT &&
-                               !goog.userAgent.isVersion('531'),
+  ADDS_NBSPS_IN_REMOVE_FORMAT:
+      goog.userAgent.WEBKIT && !goog.userAgent.isVersion('531'),
 
   // Whether the browser will get stuck inside a link.  That is, if your cursor
   // is after a link and you type, does your text go inside the link tag.
   // Bug: http://bugs.webkit.org/show_bug.cgi?id=17697
-  GETS_STUCK_IN_LINKS: goog.userAgent.WEBKIT &&
-                       !goog.userAgent.isVersion('528'),
+  GETS_STUCK_IN_LINKS:
+      goog.userAgent.WEBKIT && !goog.userAgent.isVersion('528'),
 
   // Whether the browser corrupts empty text nodes in Node#normalize,
   // removing them from the Document instead of merging them.
@@ -231,10 +234,6 @@ goog.editor.BrowserFeature = {
 
   CAN_LISTIFY_BR: !goog.userAgent.IE && !goog.userAgent.OPERA,
 
-  // Opera has a bad habit of making empty text nodes cause a newline
-  // (kind of like a <br>), but only in an editable element.
-  EMPTY_TEXT_NODES_ACT_LIKE_BR: goog.userAgent.OPERA,
-
   // See bug 1286408. When somewhere inside your selection there is an element
   // with a style attribute that sets the font size, if you change the font
   // size, the browser creates a font tag, but the font size in the style attr
@@ -242,7 +241,10 @@ goog.editor.BrowserFeature = {
   // attr.
   DOESNT_OVERRIDE_FONT_SIZE_IN_STYLE_ATTR: !goog.userAgent.WEBKIT,
 
-  // Changing the href of a link in IE automatically updates the anchor
-  // text too.  See http://b/issue?id=2182147.
-  SETTING_HREF_RESETS_ANCHOR_TEXT: goog.userAgent.IE
+  // Implements this spec about dragging files from the filesystem to the
+  // browser: http://www.whatwg/org/specs/web-apps/current-work/#dnd
+  SUPPORTS_HTML5_FILE_DRAGGING: (goog.userAgent.product.CHROME &&
+                                 goog.userAgent.product.isVersion('4')) ||
+      (goog.userAgent.product.SAFARI && goog.userAgent.product.isVersion('533'))
+
 };

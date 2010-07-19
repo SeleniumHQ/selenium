@@ -1,20 +1,21 @@
+// Copyright 2007 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Copyright 2007 Google Inc. All Rights Reserved.
-
 /**
  * @fileoverview A menu item class that supports three state checkbox semantics.
  *
+*
  */
 
 goog.provide('goog.ui.TriStateMenuItem');
@@ -35,14 +36,14 @@ goog.require('goog.ui.registry');
  * @param {goog.ui.ControlContent} content Text caption or DOM structure
  *     to display as the content of the item (use to add icons or styling to
  *     menus).
- * @param {Object} opt_model Data/model associated with the menu item.
- * @param {goog.dom.DomHelper} opt_domHelper Optional DOM helper used for
+ * @param {Object=} opt_model Data/model associated with the menu item.
+ * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM helper used for
  *     document interactions.
- * @param {goog.ui.MenuItemRenderer} opt_renderer Optional renderer.
+ * @param {goog.ui.MenuItemRenderer=} opt_renderer Optional renderer.
  * @constructor
  * @extends {goog.ui.MenuItem}
  *
- * TODO: Figure out how to better integrate this into the
+ * TODO(user): Figure out how to better integrate this into the
  * goog.ui.Control state management framework.
  */
 goog.ui.TriStateMenuItem = function(content, opt_model, opt_domHelper,
@@ -87,7 +88,7 @@ goog.ui.TriStateMenuItem.prototype.checkState_ =
 
 /**
  * Whether the partial state can be toggled.
- * @type {Boolean}
+ * @type {boolean}
  * @private
  */
 goog.ui.TriStateMenuItem.prototype.allowPartial_ = false;

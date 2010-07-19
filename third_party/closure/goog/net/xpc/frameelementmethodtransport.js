@@ -1,16 +1,16 @@
+// Copyright 2007 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-// Copyright 2007 Google Inc. All Rights Reserved.
 
 /**
  * @fileoverview Contains the frame element method transport for cross-domain
@@ -18,6 +18,7 @@
  * iframe call a method on the iframe-element it is contained in, even if the
  * containing page is from a different domain.
  *
+*
  */
 
 
@@ -32,7 +33,7 @@ goog.require('goog.net.xpc.Transport');
  *
  * Firefox allows a document within an iframe to call methods on the
  * iframe-element added by the containing document.
- * NOTE: Tested in all FF versions starting from 1.0
+ * NOTE(user): Tested in all FF versions starting from 1.0
  *
  * @param {goog.net.xpc.CrossPageChannel} channel The channel this transport
  *     belongs to.
@@ -96,7 +97,7 @@ goog.net.xpc.FrameElementMethodTransport.prototype.timer_ = 0;
 /**
  * Holds the function to send messages to the peer
  * (once it becomes available).
- * @type {Function?}
+ * @type {Function}
  * @private
  */
 goog.net.xpc.FrameElementMethodTransport.outgoing_ = null;
@@ -139,7 +140,7 @@ goog.net.xpc.FrameElementMethodTransport.prototype.attemptSetup_ = function() {
     }
     // check if iframe-element and the gateway-function to the
     // outer-frame are present
-    // TODO Make sure the following code doesn't throw any exceptions
+    // TODO(user) Make sure the following code doesn't throw any exceptions
     if (this.iframeElm_ && this.iframeElm_['XPC_toOuter']) {
       // get a reference to the gateway function
       this.outgoing_ = this.iframeElm_['XPC_toOuter'];

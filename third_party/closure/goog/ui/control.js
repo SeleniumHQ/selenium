@@ -1,23 +1,24 @@
+// Copyright 2007 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-// Copyright 2007 Google Inc. All Rights Reserved.
 
 /**
  * @fileoverview Base class for UI controls such as buttons, menus, menu items,
  * toolbar buttons, etc.  The implementation is based on a generalized version
  * of {@link goog.ui.MenuItem}.
- * TODO:  If the renderer framework works well, pull it into Component.
+ * TODO(user):  If the renderer framework works well, pull it into Component.
  *
+*
  * @see ../demos/control.html
  */
 
@@ -66,9 +67,9 @@ goog.require('goog.userAgent');
  * for example usage.
  * @param {goog.ui.ControlContent} content Text caption or DOM structure
  *     to display as the content of the component (if any).
- * @param {goog.ui.ControlRenderer} opt_renderer Renderer used to render or
+ * @param {goog.ui.ControlRenderer=} opt_renderer Renderer used to render or
  *     decorate the component; defaults to {@link goog.ui.ControlRenderer}.
- * @param {goog.dom.DomHelper} opt_domHelper Optional DOM helper, used for
+ * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM helper, used for
  *     document interaction.
  * @constructor
  * @extends {goog.ui.Component}
@@ -83,7 +84,7 @@ goog.inherits(goog.ui.Control, goog.ui.Component);
 
 
 // Renderer registry.
-// TODO: Refactor existing usages inside Google in a follow-up CL.
+// TODO(user): Refactor existing usages inside Google in a follow-up CL.
 
 
 /**
@@ -270,7 +271,7 @@ goog.ui.Control.prototype.setHandleMouseEvents = function(enable) {
 /**
  * Returns the DOM element on which the control is listening for keyboard
  * events (null if none).
- * @return {Element?} Element on which the control is listening for key
+ * @return {Element} Element on which the control is listening for key
  *     events.
  */
 goog.ui.Control.prototype.getKeyEventTarget = function() {
@@ -426,7 +427,7 @@ goog.ui.Control.prototype.createDom = function() {
  * Returns the DOM element into which child components are to be rendered,
  * or null if the control itself hasn't been rendered yet.  Overrides
  * {@link goog.ui.Component#getContentElement} by delegating to the renderer.
- * @return {Element?} Element to contain child elements (null if none).
+ * @return {Element} Element to contain child elements (null if none).
  */
 goog.ui.Control.prototype.getContentElement = function() {
   // Delegate to renderer.
@@ -627,18 +628,30 @@ goog.ui.Control.prototype.setContentInternal = function(content) {
 
 /**
  * Returns the text caption of the component.
- * @return {string?} Text caption of the component (null if none).
+ * @param {function(Node): string} getChildElementContent Function that takes an
+ *     element and returns a string.
+ * @return {?string} Text caption of the component (null if none).
  */
-goog.ui.Control.prototype.getCaption = function() {
+goog.ui.Control.prototype.getCaptionInternal =
+    function(getChildElementContent) {
   var content = this.getContent();
   if (!content || goog.isString(content)) {
     return content;
   }
 
   var caption = goog.isArray(content) ?
-      goog.array.map(content, goog.dom.getTextContent).join('') :
+      goog.array.map(content, getChildElementContent).join('') :
       goog.dom.getTextContent(/** @type {!Node} */ (content));
   return caption && goog.string.trim(caption);
+};
+
+
+/**
+ * Returns the text caption of the component.
+ * @return {?string} Text caption of the component (null if none).
+ */
+goog.ui.Control.prototype.getCaption = function() {
+  return this.getCaptionInternal(goog.dom.getTextContent);
 };
 
 
@@ -714,7 +727,7 @@ goog.ui.Control.prototype.isVisible = function() {
  * its key target has a tab index.  When hiding a component that is enabled
  * and focusable, blurs its key target and removes its tab index.
  * @param {boolean} visible Whether to show or hide the component.
- * @param {boolean} opt_force If true, doesn't check whether the component
+ * @param {boolean=} opt_force If true, doesn't check whether the component
  *     already has the requested visibility, and doesn't dispatch any events.
  * @return {boolean} Whether the visibility was changed.
  */
@@ -1048,7 +1061,7 @@ goog.ui.Control.prototype.isDispatchTransitionEvents = function(state) {
 /**
  * Enables or disables transition events for the given state(s).  Controls
  * handle state transitions internally by default, and only dispatch state
- * transition events if explicitly requested to do so by calling this mentod.
+ * transition events if explicitly requested to do so by calling this method.
  * @param {number} states Bit mask of {@link goog.ui.Component.State}s for
  *     which transition events should be enabled or disabled.
  * @param {boolean} enable Whether transition events should be enabled.
@@ -1102,8 +1115,7 @@ goog.ui.Control.prototype.isTransitionAllowed = function(state, enable) {
  */
 goog.ui.Control.prototype.handleMouseOver = function(e) {
   // Ignore mouse moves between descendants.
-  if (e.relatedTarget &&
-      !goog.dom.contains(this.getElement(), e.relatedTarget) &&
+  if (!goog.ui.Control.isMouseEventWithinElement_(e, this.getElement()) &&
       this.dispatchEvent(goog.ui.Component.EventType.ENTER) &&
       this.isEnabled() &&
       this.isAutoState(goog.ui.Component.State.HOVER)) {
@@ -1120,9 +1132,7 @@ goog.ui.Control.prototype.handleMouseOver = function(e) {
  * @param {goog.events.BrowserEvent} e Mouse event to handle.
  */
 goog.ui.Control.prototype.handleMouseOut = function(e) {
-  // Ignore mouse moves between descendants.
-  if (e.relatedTarget &&
-      !goog.dom.contains(this.getElement(), e.relatedTarget) &&
+  if (!goog.ui.Control.isMouseEventWithinElement_(e, this.getElement()) &&
       this.dispatchEvent(goog.ui.Component.EventType.LEAVE)) {
     if (this.isAutoState(goog.ui.Component.State.ACTIVE)) {
       // Deactivate on mouseout; otherwise we lose track of the mouse button.
@@ -1132,6 +1142,23 @@ goog.ui.Control.prototype.handleMouseOut = function(e) {
       this.setHighlighted(false);
     }
   }
+};
+
+
+/**
+ * Checks if a mouse event (mouseover or mouseout) occured below an element.
+ * @param {goog.events.BrowserEvent} e Mouse event (should be mouseover or
+ *     mouseout).
+ * @param {Element} elem The ancestor element.
+ * @return {boolean} Whether the event has a relatedTarget (the element the
+ *     mouse is coming from) and it's a descendent of elem.
+ * @private
+ */
+goog.ui.Control.isMouseEventWithinElement_ = function(e, elem) {
+  // If relatedTarget is null, it means there was no previous element (e.g.
+  // the mouse moved out of the window).  Assume this means that the mouse
+  // event was not within the element.
+  return !!e.relatedTarget && goog.dom.contains(elem, e.relatedTarget);
 };
 
 
@@ -1233,7 +1260,8 @@ goog.ui.Control.prototype.performActionInternal = function(e) {
   var actionEvent = new goog.events.Event(goog.ui.Component.EventType.ACTION,
       this);
   if (e) {
-    var properties = ['altKey', 'ctrlKey', 'metaKey', 'shiftKey'];
+    var properties = ['altKey', 'ctrlKey', 'metaKey', 'shiftKey',
+        'platformModifierKey'];
     for (var property, i = 0; property = properties[i]; i++) {
       actionEvent[property] = e[property];
     }

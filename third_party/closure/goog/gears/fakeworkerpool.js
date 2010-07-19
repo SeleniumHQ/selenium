@@ -1,21 +1,22 @@
+// Copyright 2007 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-// Copyright 2007 Google Inc. All Rights Reserved.
 
 /**
  * @fileoverview This implementation of goog.gears.WorkerPool uses
  * a fake worker pool (FakeWorkerPool_) that is implemented as an iframe in the
  * current document.
+*
  */
 
 goog.provide('goog.gears.FakeWorkerPool');
@@ -65,7 +66,7 @@ goog.gears.FakeWorkerPool_.mainWorkerId_ = 0;
  * @return {number} The ID of the worker that was created.
  */
 goog.gears.FakeWorkerPool_.prototype.createWorkerFromUrl = function(url) {
-  // TODO make this async
+  // TODO(user) make this async
   var xhr = new goog.net.XmlHttp();
   xhr.open('GET', url, false);
   xhr.send(null);
@@ -80,7 +81,7 @@ goog.gears.FakeWorkerPool_.prototype.createWorkerFromUrl = function(url) {
  */
 goog.gears.FakeWorkerPool_.prototype.createWorker =
     function(code) {
-  // HACK: Since this code is included in a worker thread we cannot
+  // HACK(user): Since this code is included in a worker thread we cannot
   // directly reference window
   var win = goog.getObjectByName('window');
   // This will be dead code on a worker thread so we don't get here. It is
@@ -158,7 +159,7 @@ goog.gears.FakeWorkerPool_.prototype.sendMessage =
  * messages
  * @param {string} message  The message sent to this worker.
  * @param {number} sender  The id of the worker that sent this message.
- * @param {Object} opt_messageObject An object containing all information about
+ * @param {Object=} opt_messageObject An object containing all information about
  *     the message.
  */
 goog.gears.FakeWorkerPool_.prototype.onmessage = function(message,
@@ -219,7 +220,7 @@ goog.gears.FakeWorkerPool_.prototype.createMessageObject_ = function(
 goog.gears.FakeWorkerPool_.prototype.getWindow_ = function(workerId) {
   var frameName = this.frameNames_[workerId];
   if (frameName) {
-    // HACK: Since this code is included in a worker thread we cannot
+    // HACK(user): Since this code is included in a worker thread we cannot
     // directly reference window
     var w = goog.getObjectByName('window.frames')[frameName];
     if (w) return w;

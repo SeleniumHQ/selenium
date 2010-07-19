@@ -1,20 +1,21 @@
+// Copyright 2008 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Copyright 2008 Google Inc. All Rights Reserved.
-
 /**
  * @fileoverview Default renderer for {@link goog.ui.Button}s.
  *
+*
  */
 
 goog.provide('goog.ui.ButtonRenderer');
@@ -146,7 +147,7 @@ goog.ui.ButtonRenderer.prototype.getValue = goog.nullFunction;
 /**
  * Takes a button's root element and a value, and updates the element to reflect
  * the new value.  No-op in the base class.
- * @param {Element?} element The button's root element.
+ * @param {Element} element The button's root element.
  * @param {string} value New value.
  * @protected
  */
@@ -166,7 +167,7 @@ goog.ui.ButtonRenderer.prototype.getTooltip = function(element) {
 /**
  * Takes a button's root element and a tooltip string, and updates the element
  * with the new tooltip.
- * @param {Element?} element The button's root element.
+ * @param {Element} element The button's root element.
  * @param {string} tooltip New tooltip text.
  * @protected
  */

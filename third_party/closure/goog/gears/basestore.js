@@ -1,16 +1,16 @@
+// Copyright 2006 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-// Copyright 2006 Google Inc. All Rights Reserved.
 
 /**
  * @fileoverview Definition of goog.gears.BaseStore which
@@ -18,6 +18,8 @@
  * the basic structure for creating, updating and removing the store, as well
  * as versioning. It also provides ways to interconnect stores.
  *
+*
+*
  */
 
 goog.provide('goog.gears.BaseStore');
@@ -103,7 +105,7 @@ goog.gears.BaseStore.prototype.schema = [];
  * database.
  */
 goog.gears.BaseStore.prototype.updateStore = function(persistedVersion) {
-  // TODO: Need to figure out how to handle updates
+  // TODO(user): Need to figure out how to handle updates
   // where to store the version number and is it globale or per unit.
 };
 
@@ -240,7 +242,7 @@ goog.gears.BaseStore.prototype.getStoreVersion = function() {
  * @private
  */
 goog.gears.BaseStore.prototype.setStoreVersion_ = function(version) {
-  // TODO: Need to determine if we should enforce the fact
+  // TODO(user): Need to determine if we should enforce the fact
   // that store versions are monotonically increasing.
   this.database_.execute(
       'INSERT OR REPLACE INTO StoreVersionInfo ' +
@@ -285,7 +287,7 @@ goog.gears.BaseStore.prototype.getCreateTriggerStatement_ =
 /**
  * Generates an SQLITE CREATE statement from a definition object.
  * @param {Object} def  a schema statement definition.
- * @param {boolean} opt_ifNotExists true if the table or index should be
+ * @param {boolean=} opt_ifNotExists true if the table or index should be
  *     created only if it does not exist. Otherwise trying to create a table
  *     or index that already exists will result in an exception being thrown.
  * @return {string} the statement.
@@ -372,7 +374,7 @@ goog.gears.BaseStore.prototype.getDropStatement_ = function(def) {
  *       the when clause for the trigger. The trigger object also contains
  *       an 'actions' field which is an array of strings containing
  *       the actions for this trigger.
- * @param {boolean} opt_ifNotExists true if the table or index should be
+ * @param {boolean=} opt_ifNotExists true if the table or index should be
  *     created only if it does not exist. Otherwise trying to create a table
  *     or index that already exists will result in an exception being thrown.
  */
@@ -496,7 +498,7 @@ goog.gears.BaseStore.prototype.disposeInternal = function() {
 
 
 /**
- * HACK: The JSCompiler check for undefined properties sees that these
+ * HACK(user): The JSCompiler check for undefined properties sees that these
  * fields are never set and raises warnings.
  * @type {Array.<Object>}
  * @private

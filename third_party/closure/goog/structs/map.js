@@ -1,20 +1,22 @@
+// Copyright 2006 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Copyright 2006 Google Inc. All Rights Reserved.
-
 /**
  * @fileoverview Datastructure: Hash Map.
  *
+*
+*
  *
  * This file contains an implementation of a Map structure. It implements a lot
  * of the methods used in goog.structs so those functions work on hashes.  For
@@ -33,9 +35,9 @@ goog.require('goog.structs');
 
 /**
  * Class for Hash Map datastructure.
- * @param {Object} opt_map Map or Object to initialize the map with.
- * @param {Object} var_args If 2 or more arguments are present then they will be
- *     used as key-value pairs.
+ * @param {*=} opt_map Map or Object to initialize the map with.
+ * @param {...*} var_args If 2 or more arguments are present then they
+ *     will be used as key-value pairs.
  * @constructor
  */
 goog.structs.Map = function(opt_map, var_args) {
@@ -73,7 +75,7 @@ goog.structs.Map = function(opt_map, var_args) {
       this.set(arguments[i], arguments[i + 1]);
     }
   } else if (opt_map) {
-    this.addAll(opt_map);
+    this.addAll(/** @type {Object} */ (opt_map));
   }
 };
 
@@ -156,7 +158,7 @@ goog.structs.Map.prototype.containsValue = function(val) {
 /**
  * Whether this map is equal to the argument map.
  * @param {goog.structs.Map} otherMap The map against which to test equality.
- * @param {function(*, *) : boolean} opt_equalityFn Optional equality function
+ * @param {function(*, *) : boolean=} opt_equalityFn Optional equality function
  *     to test equality of values. If not specified, this will test whether
  *     the values contained in each map are identical objects.
  * @return {boolean} Whether the maps are equal.
@@ -282,8 +284,8 @@ goog.structs.Map.prototype.cleanupKeysArray_ = function() {
  * Returns the value for the given key.  If the key is not found and the default
  * value is not given this will return {@code undefined}.
  * @param {*} key The key to get the value for.
- * @param {*} opt_val The value to return if no item is found for the given key,
- *     defaults to undefined.
+ * @param {*=} opt_val The value to return if no item is found for the given
+ *     key, defaults to undefined.
  * @return {*} The value for the given key.
  */
 goog.structs.Map.prototype.get = function(key, opt_val) {
@@ -362,6 +364,20 @@ goog.structs.Map.prototype.transpose = function() {
 
 
 /**
+ * @return {!Object} Object representation of the map.
+ */
+goog.structs.Map.prototype.toObject = function() {
+  this.cleanupKeysArray_();
+  var obj = {};
+  for (var i = 0; i < this.keys_.length; i++) {
+    var key = this.keys_[i];
+    obj[key] = this.map_[key];
+  }
+  return obj;
+};
+
+
+/**
  * Returns an iterator that iterates over the keys in the map.  Removal of keys
  * while iterating might have undesired side effects.
  * @return {!goog.iter.Iterator} An iterator over the keys in the map.
@@ -385,7 +401,7 @@ goog.structs.Map.prototype.getValueIterator = function() {
  * Returns an iterator that iterates over the values or the keys in the map.
  * This throws an exception if the map was mutated since the iterator was
  * created.
- * @param {boolean} opt_keys True to iterate over the keys. False to iterate
+ * @param {boolean=} opt_keys True to iterate over the keys. False to iterate
  *     over the values.  The default value is false.
  * @return {!goog.iter.Iterator} An iterator over the values or keys in the map.
  */
@@ -426,210 +442,4 @@ goog.structs.Map.prototype.__iterator__ = function(opt_keys) {
  */
 goog.structs.Map.hasKey_ = function(obj, key) {
   return Object.prototype.hasOwnProperty.call(obj, key);
-};
-
-
-/**
- * Returns the number of key-value pairs in a map.
- * @param {Object} map The map-like object.
- * @return {number} The number of values in the map.
- *
- * @deprecated Use the instance {@code getCount} method on your object instead.
- *     If your object is a plain JavaScript Object used as a map you can also
- *     use {@code goog.object.getCount}.
- */
-goog.structs.Map.getCount = function(map) {
-  return goog.structs.getCount(map);
-};
-
-
-/**
- * Returns the values of the map.
- * @param {Object} map The map-like object.
- * @return {!Array} The values in the map.
- *
- * @deprecated Use the instance {@code getValues} method on your object instead.
- *     If your object is a plain JavaScript Object used as a map you can also
- *     use {@code goog.object.getValues}.
- */
-goog.structs.Map.getValues = function(map) {
-  return goog.structs.getValues(map);
-};
-
-
-/**
- * Returns the keys of the map.
- * @param {Object} map The map-like object.
- * @return {!Array.<string>} Array of string values.
- *
- * @deprecated Use the instance {@code getKeys} method on your object instead.
- *     If your object is a plain JavaScript Object used as a map you can also
- *     use {@code goog.object.getKeys}.
- */
-goog.structs.Map.getKeys = function(map) {
-  if (typeof map.getKeys == 'function') {
-    return map.getKeys();
-  }
-  var rv = [];
-  if (goog.isArrayLike(map)) {
-    for (var i = 0; i < map.length; i++) {
-      rv.push(i);
-    }
-  } else { // Object
-    return goog.object.getKeys(map);
-  }
-  return rv;
-};
-
-
-/**
- * Whether the map contains the given key.
- * @param {Object} map The map-like object.
- * @param {*} key The key to check for.
- * @return {boolean} Whether the map contains the key.
- *
- * @deprecated Use the instance {@code containsKey} method on your object
- *     instead.  If your object is a plain JavaScript object you can use the
- *     {@code in} operator.
- */
-goog.structs.Map.containsKey = function(map, key) {
-  if (typeof map.containsKey == 'function') {
-    return map.containsKey(key);
-  }
-  if (goog.isArrayLike(map)) {
-    return Number(key) < map.length;
-  }
-  // Object
-  return goog.object.containsKey(map, key);
-};
-
-
-/**
- * Whether the map contains the given value.  This is O(n) and uses equals (==)
- * to test.
- * @param {Object} map The map-like object.
- * @param {*} val The value to check for.
- * @return {boolean} Whether the map contains the value.
- *
- * @deprecated Use the instance {@code containsValue} method on your object
- *     instead. If your object is a plain JavaScript Object used as a map you
- *     can also use {@code goog.object.containsValue}.
- */
-goog.structs.Map.containsValue = function(map, val) {
-  return goog.structs.contains(map, val);
-};
-
-
-/**
- * Whether the map is empty.
- * @param {Object} map The map-like object.
- * @return {boolean} Whether the map is empty.
- *
- * @deprecated Use the instance {@code isEmpty} method on your object instead.
- *     If your object is a plain JavaScript Object used as a map you can also
- *     use {@code goog.object.isEmpty}.
- */
-goog.structs.Map.isEmpty = function(map) {
-  return goog.structs.isEmpty(map);
-};
-
-
-/**
- * Removes all key-value pairs from the map.
- * @param {Object} map The map-like object.
- *
- * @deprecated Use the instance {@code clear} method on your object instead.
- *     If your object is a plain JavaScript Object used as a map you can also
- *     use {@code goog.object.clear}.
- */
-goog.structs.Map.clear = function(map) {
-  goog.structs.clear(map);
-};
-
-
-/**
- * Removes a key-value pair based on the key.
- * @param {Object} map The map-like object.
- * @param {*} key The key to remove.
- * @return {boolean} Whether the map contained the key.
- *
- * @deprecated Use the instance {@code remove} method on your object instead.
- *     If your object is a plain JavaScript Object used as a map you can use
- *     the {@code delete} operator.
- */
-goog.structs.Map.remove = function(map, key) {
-  if (typeof map.remove == 'function') {
-    return map.remove(key);
-  }
-  if (goog.isArrayLike(map)) {
-    return goog.array.removeAt(
-        (/** @type {goog.array.ArrayLike} */ map), Number(key));
-  }
-  // Object
-  return goog.object.remove(map, key);
-};
-
-
-/**
- * Adds a key-value pair to the map. This throws an exception if the key is
- * already in use. Use set if you want to change an existing pair.
- * @param {Object} map The map-like object.
- * @param {*} key The key to add.
- * @param {*} val The value to add.
- *
- * @deprecated Use the instance {@code add} method on your object instead. If
- *     your object is a plain JavaScript Object used as a map you can use
- *     {@code map[key] = val}.
- */
-goog.structs.Map.add = function(map, key, val) {
-  if (typeof map.add == 'function') {
-    map.add(key, val);
-  } else if (goog.structs.Map.containsKey(map, key)) {
-    throw Error('The collection already contains the key "' + key + '"');
-  } else {
-    goog.structs.Map.set(map, key, val);
-  }
-};
-
-
-/**
- * Returns the value for the given key.
- * @param {Object} map The map-like object.
- * @param {*} key The key to get the value for.
- * @param {*} opt_val The value to return if no item is found for the
- *     given key. Defaults to undefined.
- * @return {*} The value for the given key.
- *
- * @deprecated Use the instance {@code get} method on your object instead. If
- *     your object is a plain JavaScript Object used as a map you can use
- *     {@code map[key]} or {@code key in map ? map[key] : opt_val}.
- *
- */
-goog.structs.Map.get = function(map, key, opt_val) {
-  if (typeof map.get == 'function') {
-    return map.get(key, opt_val);
-  }
-  if (goog.structs.Map.containsKey(map, key)) {
-    return map[key];
-  }
-  return opt_val;
-};
-
-
-/**
- * Sets the value for the given key.
- * @param {Object} map The map-like object.
- * @param {*} key The key to set the value for.
- * @param {*} val The value to add.
- *
- * @deprecated Use the instance {@code set} method on your object instead. If
- *     your object is a plain JavaScript Object used as a map you can use
- *     {@code map[key] = val}.
- */
-goog.structs.Map.set = function(map, key, val) {
-  if (typeof map.set == 'function') {
-    map.set(key, val);
-  } else {
-    map[key] = val;
-  }
 };

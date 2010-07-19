@@ -1,27 +1,33 @@
+// Copyright 2008 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Copyright 2008 Google Inc. All Rights Reserved.
-
 /**
  * @fileoverview Defines the goog.module.ModuleInfo class.
  *
+*
+*
+*
+*
  */
 
 goog.provide('goog.module.ModuleInfo');
-goog.provide('goog.module.ModuleInfo.Callback');
 
 goog.require('goog.Disposable');
+goog.require('goog.Timer');
+goog.require('goog.functions');
 goog.require('goog.module.BaseModule');
+goog.require('goog.module.ModuleLoadCallback');
 
 
 /**
@@ -31,10 +37,11 @@ goog.require('goog.module.BaseModule');
  * @param {Array.<string>} deps Ids of the modules that must be loaded before
  *     this one. The ids must be in dependency order (i.e. if the ith module
  *     depends on the jth module, then i > j).
+ * @param {string} id The module's ID.
  * @constructor
  * @extends {goog.Disposable}
  */
-goog.module.ModuleInfo = function(deps) {
+goog.module.ModuleInfo = function(deps, id) {
   goog.Disposable.call(this);
 
   /**
@@ -45,15 +52,22 @@ goog.module.ModuleInfo = function(deps) {
   this.deps_ = deps;
 
   /**
+   * The module's ID.
+   * @type {string}
+   * @private
+   */
+  this.id_ = id;
+
+  /**
    * Callbacks to execute once this module is loaded.
-   * @type {Array.<goog.module.ModuleInfo.Callback>}
+   * @type {Array.<goog.module.ModuleLoadCallback>}
    * @private
    */
   this.onloadCallbacks_ = [];
 
   /**
    * Callbacks to execute if the module load errors.
-   * @type {Array.<goog.module.ModuleInfo.Callback>}
+   * @type {Array.<goog.module.ModuleLoadCallback>}
    * @private
    */
   this.onErrorCallbacks_ = [];
@@ -61,7 +75,7 @@ goog.module.ModuleInfo = function(deps) {
   /**
    * Early callbacks to execute once this module is loaded. Called after
    * module initialization but before regular onload callbacks.
-   * @type {Array.<goog.module.ModuleInfo.Callback>}
+   * @type {Array.<goog.module.ModuleLoadCallback>}
    * @private
    */
   this.earlyOnloadCallbacks_ = [];
@@ -105,6 +119,15 @@ goog.module.ModuleInfo.prototype.getDependencies = function() {
 
 
 /**
+ * Gets the ID of this module.
+ * @return {string} The ID.
+ */
+goog.module.ModuleInfo.prototype.getId = function() {
+  return this.id_;
+};
+
+
+/**
  * Sets the uris of this module.
  * @param {Array.<string>} uris Uris for this module's code.
  */
@@ -130,7 +153,11 @@ goog.module.ModuleInfo.prototype.getUris = function() {
  */
 goog.module.ModuleInfo.prototype.setModuleConstructor = function(
     constructor) {
-  this.moduleConstructor_ = constructor;
+  if (this.moduleConstructor_ === goog.module.BaseModule) {
+    this.moduleConstructor_ = constructor;
+  } else {
+    throw Error('Cannot set module constructor more than once.');
+  }
 };
 
 
@@ -140,9 +167,9 @@ goog.module.ModuleInfo.prototype.setModuleConstructor = function(
  * before the other callbacks are called.
  * @param {Function} fn A callback function that takes a single argument which
  *    is the module context.
- * @param {Object} opt_handler Optional handler under whose scope to execute
+ * @param {Object=} opt_handler Optional handler under whose scope to execute
  *     the callback.
- * @return {goog.module.ModuleInfo.Callback} Reference to the callback
+ * @return {goog.module.ModuleLoadCallback} Reference to the callback
  *     object.
  */
 goog.module.ModuleInfo.prototype.registerEarlyCallback = function(
@@ -155,9 +182,9 @@ goog.module.ModuleInfo.prototype.registerEarlyCallback = function(
  * Registers a function that should be called after the module is loaded.
  * @param {Function} fn A callback function that takes a single argument which
  *    is the module context.
- * @param {Object} opt_handler Optional handler under whose scope to execute
+ * @param {Object=} opt_handler Optional handler under whose scope to execute
  *     the callback.
- * @return {goog.module.ModuleInfo.Callback} Reference to the callback
+ * @return {goog.module.ModuleLoadCallback} Reference to the callback
  *     object.
  */
 goog.module.ModuleInfo.prototype.registerCallback = function(
@@ -169,10 +196,10 @@ goog.module.ModuleInfo.prototype.registerCallback = function(
 /**
  * Registers a function that should be called if the module load fails.
  * @param {Function} fn A callback function that takes a single argument which
- *    is the module context.
- * @param {Object} opt_handler Optional handler under whose scope to execute
+ *    is the failure type.
+ * @param {Object=} opt_handler Optional handler under whose scope to execute
  *     the callback.
- * @return {goog.module.ModuleInfo.Callback} Reference to the callback
+ * @return {goog.module.ModuleLoadCallback} Reference to the callback
  *     object.
  */
 goog.module.ModuleInfo.prototype.registerErrback = function(
@@ -183,19 +210,19 @@ goog.module.ModuleInfo.prototype.registerErrback = function(
 
 /**
  * Registers a function that should be called after the module is loaded.
- * @param {Array.<goog.module.ModuleInfo.Callback>} callbacks The array to
+ * @param {Array.<goog.module.ModuleLoadCallback>} callbacks The array to
  *     add the callback to.
  * @param {Function} fn A callback function that takes a single argument which
  *     is the module context.
- * @param {Object} opt_handler Optional handler under whose scope to execute
+ * @param {Object=} opt_handler Optional handler under whose scope to execute
  *     the callback.
- * @return {goog.module.ModuleInfo.Callback} Reference to the callback
+ * @return {goog.module.ModuleLoadCallback} Reference to the callback
  *     object.
  * @private
  */
 goog.module.ModuleInfo.prototype.registerCallback_ = function(
     callbacks, fn, opt_handler) {
-  var callback = new goog.module.ModuleInfo.Callback(fn, opt_handler);
+  var callback = new goog.module.ModuleLoadCallback(fn, opt_handler);
   callbacks.push(callback);
   return callback;
 };
@@ -234,13 +261,19 @@ goog.module.ModuleInfo.prototype.onLoad = function(contextProvider) {
   this.module_ = module;
 
   // Fire any early callbacks that were waiting for the module to be loaded.
-  this.callCallbacks_(this.earlyOnloadCallbacks_, contextProvider());
+  var errors =
+      this.callCallbacks_(this.earlyOnloadCallbacks_, contextProvider());
 
   // Fire any callbacks that were waiting for the module to be loaded.
-  this.callCallbacks_(this.onloadCallbacks_, contextProvider());
+  errors = !!errors |
+      !!this.callCallbacks_(this.onloadCallbacks_, contextProvider());
 
-  // Clear the errbacks.
-  this.onErrorCallbacks_.length = 0;
+  if (errors) {
+    this.onError(goog.module.ModuleManager.FailureType.INIT_ERROR);
+  } else {
+    // Clear the errbacks.
+    this.onErrorCallbacks_.length = 0;
+  }
 };
 
 
@@ -249,80 +282,56 @@ goog.module.ModuleInfo.prototype.onLoad = function(contextProvider) {
  * @param {goog.module.ModuleManager.FailureType} cause What caused the error.
  */
 goog.module.ModuleInfo.prototype.onError = function(cause) {
-  this.callCallbacks_(this.onErrorCallbacks_, cause);
+  var result = this.callCallbacks_(this.onErrorCallbacks_, cause);
+  if (result) {
+    // Throw an exception asynchronously. Do not let the exception leak
+    // up to the caller, or it will blow up the module loading framework.
+    goog.Timer.callOnce(
+        goog.functions.error('Module errback failures: ' + result));
+  }
   this.earlyOnloadCallbacks_.length = 0;
   this.onloadCallbacks_.length = 0;
 };
 
+
 /**
  * Helper to call the callbacks after module load.
- * @param {Array.<goog.module.ModuleInfo.Callback>} callbacks The callbacks
+ * @param {Array.<goog.module.ModuleLoadCallback>} callbacks The callbacks
  *     to call and then clear.
- * @param {Object} context The module context.
+ * @param {*} context The module context.
+ * @return {Array.<*>} Any errors encountered while calling the callbacks,
+ *     or null if there were no errors.
  * @private
  */
 goog.module.ModuleInfo.prototype.callCallbacks_ = function(callbacks, context) {
+  // NOTE(nicksantos):
+  // In practice, there are two error-handling scenarios:
+  // 1) The callback does some mandatory initialization of the module.
+  // 2) The callback is for completion of some optional UI event.
+  // There's no good way to handle both scenarios.
+  //
+  // Our strategy here is to protect module manager from exceptions, so that
+  // the failure of one module doesn't affect the loading of other modules.
+  // Then, we try to report the exception as best we can.
+
   // Call each callback in the order they were registered
+  var errors = [];
   for (var i = 0; i < callbacks.length; i++) {
-    callbacks[i].execute(context);
+    try {
+      callbacks[i].execute(context);
+    } catch (e) {
+      errors.push(e);
+    }
   }
 
   // Clear the list of callbacks.
   callbacks.length = 0;
+  return errors.length ? errors : null;
 };
 
 
 /** @inheritDoc */
 goog.module.ModuleInfo.prototype.disposeInternal = function() {
   goog.module.ModuleInfo.superClass_.disposeInternal.call(this);
-
-  if (this.module_) {
-    this.module_.dispose();
-  }
-};
-
-
-/**
- * Class used to encapsulate the callbacks to be called when a module loads.
- * @param {Function} fn Callback function.
- * @param {Object} opt_handler Optional handler under whose scope to execute
- *     the callback.
- * @constructor
- */
-goog.module.ModuleInfo.Callback = function(fn, opt_handler) {
-  /**
-   * Callback function.
-   * @type {Function}
-   * @private
-   */
-  this.fn_ = fn;
-
-  /**
-   * Optional handler under whose scope to execute the callback.
-   * @type {Object|undefined}
-   * @private
-   */
-  this.handler_ = opt_handler;
-};
-
-
-/**
- * Completes the operation and calls the callback function if appropriate.
- * @param {Object} context The module context.
- */
-goog.module.ModuleInfo.Callback.prototype.execute = function(context) {
-  if (this.fn_) {
-    this.fn_.call(this.handler_ || null, context);
-    this.handler_ = null;
-    this.fn_ = null;
-  }
-};
-
-
-/**
- * Abort the callback, but not the actual module load.
- */
-goog.module.ModuleInfo.Callback.prototype.abort = function() {
-  this.fn_ = null;
-  this.handler_ = null;
+  goog.dispose(this.module_);
 };

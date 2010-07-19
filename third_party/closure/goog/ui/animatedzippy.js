@@ -1,20 +1,21 @@
+// Copyright 2006 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Copyright 2006 Google Inc. All Rights Reserved.
-
 /**
  * @fileoverview Animated zippy widget implementation.
  *
+*
  * @see ../demos/zippy.html
  */
 
@@ -22,8 +23,8 @@ goog.provide('goog.ui.AnimatedZippy');
 
 goog.require('goog.dom');
 goog.require('goog.events');
-goog.require('goog.events.EventTarget');
 goog.require('goog.fx.Animation');
+goog.require('goog.fx.easing');
 goog.require('goog.ui.Zippy');
 goog.require('goog.ui.ZippyEvent');
 
@@ -36,7 +37,7 @@ goog.require('goog.ui.ZippyEvent');
  *     reference, string id or null if no header exists.
  * @param {Element|string} content Content element, either element reference or
  *     string id.
- * @param {boolean} opt_expanded Initial expanded/visibility state. Defaults to
+ * @param {boolean=} opt_expanded Initial expanded/visibility state. Defaults to
  *     false.
  * @constructor
  * @extends {goog.ui.Zippy}

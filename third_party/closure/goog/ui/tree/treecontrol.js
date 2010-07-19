@@ -1,26 +1,30 @@
+// Copyright 2007 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-// Copyright 2007 Google Inc. All Rights Reserved.
 
 /**
  * @fileoverview Definition of the goog.ui.tree.TreeControl class, which
  * provides a way to view a hierarchical set of data.
  *
+*
+*
+*
+*
  *
  * This is a based on the webfx tree control. It since been updated to add
  * typeahead support, as well as accessibility support using ARIA framework.
  *
- * @see ../demos/tree/demo.html
+ * @see ../../demos/tree/demo.html
  */
 
 goog.provide('goog.ui.tree.TreeControl');
@@ -41,12 +45,12 @@ goog.require('goog.userAgent');
 
 /**
  * This creates a TreeControl object. A tree control provides a way to
- * view a hierachical set of data.
- * @param {string} html The html content of the node label.
- * @param {Object} opt_config The configuration for the tree. See
+ * view a hierarchical set of data.
+ * @param {string} html The HTML content of the node label.
+ * @param {Object=} opt_config The configuration for the tree. See
  *    goog.ui.tree.TreeControl.DefaultConfig. If not specified, a default config
  *    will be used.
- * @param {goog.dom.DomHelper} opt_domHelper Optional DOM helper.
+ * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM helper.
  * @constructor
  * @extends {goog.ui.tree.BaseNode}
  */
@@ -55,9 +59,14 @@ goog.ui.tree.TreeControl = function(html, opt_config, opt_domHelper) {
 
   this.selectedItem_ = this;
 
+  /**
+   * Used for typeahead support.
+   * @type {!goog.ui.tree.TypeAhead}
+   * @private
+   */
   this.typeAhead_ = new goog.ui.tree.TypeAhead();
 
-  if (goog.userAgent.IE && goog.userAgent.isVersion('6')) {
+  if (goog.userAgent.IE) {
     /** @preserveTry */
     try {
       // works since IE6SP1
@@ -96,15 +105,6 @@ goog.ui.tree.TreeControl.prototype.logger_ =
 
 
 /**
- * Allows an alternative element to be set to receive key targets, otherwise it
- * will be the tree's element itself.
- * @type {Element}
- * @private
- */
-goog.ui.tree.TreeControl.prototype.keyEventTarget_ = null;
-
-
-/**
  * Whether the tree node is open. The root is opened by default.
  * @type {boolean}
  * @private
@@ -134,14 +134,6 @@ goog.ui.tree.TreeControl.prototype.focused_ = false;
  * @private
  */
 goog.ui.tree.TreeControl.prototype.focusedNode_ = null;
-
-
-/**
- * Whether redrawing is suspended.
- * @type {boolean}
- * @private
- */
-goog.ui.tree.TreeControl.prototype.suspendRedraw_ = false;
 
 
 /**
@@ -176,27 +168,13 @@ goog.ui.tree.TreeControl.prototype.showRootNode_ = true;
 goog.ui.tree.TreeControl.prototype.showRootLines_ = true;
 
 
-/**
- * Used for typeahead support.
- * @type {goog.ui.tree.TypeAhead}
- * @private
- */
-goog.ui.tree.TreeControl.prototype.typeAhead_ = null;
-
-
-/**
- * Returns the tree.
- * @return {goog.ui.tree.TreeControl} The tree.
- */
+/** @inheritDoc */
 goog.ui.tree.TreeControl.prototype.getTree = function() {
   return this;
 };
 
 
-/**
- * Returns the depth of the node in the tree.
- * @return {number} The depth of the node in the tree.
- */
+/** @inheritDoc */
 goog.ui.tree.TreeControl.prototype.getDepth = function() {
   return 0;
 };
@@ -214,7 +192,7 @@ goog.ui.tree.TreeControl.prototype.reveal = function() {
 
 /**
  * Handles focus on the tree.
- * @param {goog.events.BrowserEvent} e The browser event.
+ * @param {!goog.events.BrowserEvent} e The browser event.
  * @private
  */
 goog.ui.tree.TreeControl.prototype.handleFocus_ = function(e) {
@@ -229,7 +207,7 @@ goog.ui.tree.TreeControl.prototype.handleFocus_ = function(e) {
 
 /**
  * Handles blur on the tree.
- * @param {goog.events.BrowserEvent} e The browser event.
+ * @param {!goog.events.BrowserEvent} e The browser event.
  * @private
  */
 goog.ui.tree.TreeControl.prototype.handleBlur_ = function(e) {
@@ -246,72 +224,54 @@ goog.ui.tree.TreeControl.prototype.hasFocus = function() {
 };
 
 
-/**
- * Returns whether the node is expanded.
- * @return {boolean} Whether the node is expanded, false if it's collapsed.
- */
+/** @inheritDoc */
 goog.ui.tree.TreeControl.prototype.getExpanded = function() {
   return !this.showRootNode_ ||
-         goog.ui.tree.TreeControl.superClass_.getExpanded.call(this);
+      goog.ui.tree.TreeControl.superClass_.getExpanded.call(this);
 };
 
 
-/**
- * Sets the node to be expanded.
- * @param {boolean} b Whether to expand or close the node.
- */
-goog.ui.tree.TreeControl.prototype.setExpanded = function(b) {
+/** @inheritDoc */
+goog.ui.tree.TreeControl.prototype.setExpanded = function(expanded) {
   if (!this.showRootNode_) {
-    this.expanded_ = b;
+    this.expanded_ = expanded;
   } else {
-    goog.ui.tree.TreeControl.superClass_.setExpanded.call(this, b);
+    goog.ui.tree.TreeControl.superClass_.setExpanded.call(this, expanded);
   }
 };
 
 
-/**
- * Returns the source for the icon.
- * @return {string} Src for the icon.
- */
+/** @inheritDoc */
 goog.ui.tree.TreeControl.prototype.getExpandIconHtml = function() {
   // no expand icon for root element
   return '';
 };
 
 
-/**
- * @return {Element} The icon element.
- */
+/** @inheritDoc */
 goog.ui.tree.TreeControl.prototype.getIconElement = function() {
   var el = this.getRowElement();
   return el ? /** @type {Element} */ (el.firstChild) : null;
 };
 
 
-/**
- * @return {Element} The expanded icon element.
- */
+/** @inheritDoc */
 goog.ui.tree.TreeControl.prototype.getExpandIconElement = function() {
   // no expand icon for root element
   return null;
 };
 
 
-/**
- * Updates the expand icon of the node.
- */
+/** @inheritDoc */
 goog.ui.tree.TreeControl.prototype.updateExpandIcon = function() {
   // no expand icon
 };
 
 
-/**
- * Returns the class name to use for the row.
- * @return {string} The class name for the row.
- */
+/** @inheritDoc */
 goog.ui.tree.TreeControl.prototype.getRowClassName = function() {
   return goog.ui.tree.TreeControl.superClass_.getRowClassName.call(this) +
-    (this.showRootNode_ ? '' : ' ' + this.getConfig().cssHideRoot);
+      (this.showRootNode_ ? '' : ' ' + this.getConfig().cssHideRoot);
 };
 
 
@@ -320,13 +280,7 @@ goog.ui.tree.TreeControl.prototype.getRowClassName = function() {
  * @return {string} Src for the icon.
  */
 goog.ui.tree.TreeControl.prototype.getCalculatedIconClass = function() {
-  // if classic then the openIcon is used for expanded, otherwise openIcon is
-  // used for selected
-  var config = this.getConfig();
-  var behavior = this.getTree() ? this.getTree().getBehavior() :
-                 config.defaultBehavior;
-  var expanded = behavior == 'classic' && this.getExpanded() ||
-                 behavior != 'classic' && this.isSelected();
+  var expanded = this.getExpanded();
   if (expanded && this.expandedIconClass_) {
     return this.expandedIconClass_;
   }
@@ -335,6 +289,7 @@ goog.ui.tree.TreeControl.prototype.getCalculatedIconClass = function() {
   }
 
   // fall back on default icons
+  var config = this.getConfig();
   if (expanded && config.cssExpandedRootIcon) {
     return config.cssTreeIcon + ' ' + config.cssExpandedRootIcon;
   } else if (!expanded && config.cssCollapsedRootIcon) {
@@ -346,25 +301,25 @@ goog.ui.tree.TreeControl.prototype.getCalculatedIconClass = function() {
 
 /**
  * Sets the selected item.
- * @param {goog.ui.tree.BaseNode} o The item to select.
+ * @param {goog.ui.tree.BaseNode} node The item to select.
  */
-goog.ui.tree.TreeControl.prototype.setSelectedItem = function(o) {
-  if (this.selectedItem_ == o) {
+goog.ui.tree.TreeControl.prototype.setSelectedItem = function(node) {
+  if (this.selectedItem_ == node) {
     return;
   }
 
   var hadFocus = false;
   if (this.selectedItem_) {
     hadFocus = this.selectedItem_ == this.focusedNode_;
-    this.selectedItem_.setSelectedInternal_(false);
+    this.selectedItem_.setSelectedInternal(false);
   }
 
-  this.selectedItem_ = o;
+  this.selectedItem_ = node;
 
-  if (this.selectedItem_) {
-    this.selectedItem_.setSelectedInternal_(true);
+  if (node) {
+    node.setSelectedInternal(true);
     if (hadFocus) {
-      this.selectedItem_.select();
+      node.select();
     }
   }
 
@@ -374,21 +329,10 @@ goog.ui.tree.TreeControl.prototype.setSelectedItem = function(o) {
 
 /**
  * Returns the selected item.
- * @return {goog.ui.tree.BaseNode} o The currently selected item.
+ * @return {goog.ui.tree.BaseNode} The currently selected item.
  */
 goog.ui.tree.TreeControl.prototype.getSelectedItem = function() {
   return this.selectedItem_;
-};
-
-
-/**
- * Returns the behavior of the tree.
- * @return {string} Describes when to show the open icon.
- */
-goog.ui.tree.TreeControl.prototype.getBehavior = function() {
-  // TODO (arv) - should this be an enum? if so, what are the values? Classic
-  // and something else?
-  return this.getConfig().defaultBehavior;
 };
 
 
@@ -529,17 +473,6 @@ goog.ui.tree.TreeControl.prototype.initAccessibility = function() {
 };
 
 
-/**
- * Creates the element.
- * @return {Element} The root element.
- */
-goog.ui.tree.TreeControl.prototype.createDom = function() {
-  var elt = goog.ui.tree.TreeControl.superClass_.createDom.call(this);
-  this.keyEventTarget_ = this.keyEventTarget_ || elt;
-  return elt;
-};
-
-
 /** @inheritDoc */
 goog.ui.tree.TreeControl.prototype.enterDocument = function() {
   goog.ui.tree.TreeControl.superClass_.enterDocument.call(this);
@@ -593,7 +526,7 @@ goog.ui.tree.TreeControl.prototype.detachEvents_ = function() {
 
 /**
  * Handles mouse events.
- * @param {goog.events.BrowserEvent} e The browser event.
+ * @param {!goog.events.BrowserEvent} e The browser event.
  * @private
  */
 goog.ui.tree.TreeControl.prototype.handleMouseEvent_ = function(e) {
@@ -617,7 +550,7 @@ goog.ui.tree.TreeControl.prototype.handleMouseEvent_ = function(e) {
 
 /**
  * Handles key down on the tree.
- * @param {goog.events.BrowserEvent} e The browser event.
+ * @param {!goog.events.BrowserEvent} e The browser event.
  * @return {boolean} The handled value.
  */
 goog.ui.tree.TreeControl.prototype.handleKeyEvent = function(e) {
@@ -625,7 +558,7 @@ goog.ui.tree.TreeControl.prototype.handleKeyEvent = function(e) {
 
   // Handle typeahead and navigation keystrokes.
   handled = this.typeAhead_.handleNavigation(e) ||
-            (this.selectedItem_ && this.selectedItem_.onKeyDown_(e)) ||
+            (this.selectedItem_ && this.selectedItem_.onKeyDown(e)) ||
             this.typeAhead_.handleTypeAheadChar(e);
 
   if (handled) {
@@ -638,7 +571,7 @@ goog.ui.tree.TreeControl.prototype.handleKeyEvent = function(e) {
 
 /**
  * Finds the containing node given an event.
- * @param {goog.events.BrowserEvent} e The browser event.
+ * @param {!goog.events.BrowserEvent} e The browser event.
  * @return {goog.ui.tree.BaseNode} The containing node or null if no node is
  *     found.
  * @private
@@ -649,7 +582,7 @@ goog.ui.tree.TreeControl.prototype.getNodeFromEvent_ = function(e) {
   var target = e.target;
   while (target != null) {
     var id = target.id;
-    node = goog.ui.tree.BaseNode.allNodes_[id];
+    node = goog.ui.tree.BaseNode.allNodes[id];
     if (node) {
       return node;
     }
@@ -663,32 +596,16 @@ goog.ui.tree.TreeControl.prototype.getNodeFromEvent_ = function(e) {
 
 
 /**
- * Sets whether to suspend redraw. This is a performance optimization to allow
- * insertion of many nodes without incremental redrawing.
- * @param {boolean} b Whether to suspend redraw.
- */
-goog.ui.tree.TreeControl.prototype.setSuspendRedraw = function(b) {
-  this.suspendRedraw = b;
-};
-
-
-/**
- * Gets whether to suspend redraw. This is a performance optimization to allow
- * insertion of many nodes without incremental redrawing.
- * @return {boolean} Whether redraw is suspended.
- */
-goog.ui.tree.TreeControl.prototype.getSuspendRedraw = function() {
-  return this.suspendRedraw;
-};
-
-
-/**
  * Creates a new tree node using the same config as the root.
  * @param {string} html The html content of the node label.
  * @return {goog.ui.tree.TreeNode} The new item.
  */
 goog.ui.tree.TreeControl.prototype.createNode = function(html) {
-  return new goog.ui.tree.TreeNode(html, this.getConfig(), this.getDomHelper());
+  // Some projects call createNode without arguments which causes failure.
+  // See http://goto/misuse-createnode
+  // TODO(user): Fix them and remove the html || '' workaround.
+  return new goog.ui.tree.TreeNode(html || '', this.getConfig(),
+      this.getDomHelper());
 };
 
 
@@ -699,9 +616,7 @@ goog.ui.tree.TreeControl.prototype.createNode = function(html) {
  *    that just had been updated.
  */
 goog.ui.tree.TreeControl.prototype.setNode = function(node) {
-  if (this.typeAhead_) {
-    this.typeAhead_.setNodeInMap(node);
-  }
+  this.typeAhead_.setNodeInMap(node);
 };
 
 
@@ -711,9 +626,7 @@ goog.ui.tree.TreeControl.prototype.setNode = function(node) {
  * @param {goog.ui.tree.BaseNode} node Node being removed.
  */
 goog.ui.tree.TreeControl.prototype.removeNode = function(node) {
-  if (this.typeAhead_) {
-    this.typeAhead_.removeNodeFromMap(node);
-  }
+  this.typeAhead_.removeNodeFromMap(node);
 };
 
 
@@ -721,9 +634,7 @@ goog.ui.tree.TreeControl.prototype.removeNode = function(node) {
  * Clear the typeahead buffer.
  */
 goog.ui.tree.TreeControl.prototype.clearTypeAhead = function() {
-  if (this.typeAhead_) {
-    this.typeAhead_.clear();
-  }
+  this.typeAhead_.clear();
 };
 
 
@@ -732,8 +643,6 @@ goog.ui.tree.TreeControl.prototype.clearTypeAhead = function() {
  */
 goog.ui.tree.TreeControl.defaultConfig = {
   cleardotPath: 'images/cleardot.gif',
-  defaultHtml: 'Tree Item',
-  defaultBehavior: 'classic',
   indentWidth: 19,
   cssRoot: goog.getCssName('goog-tree-root') + ' ' +
       goog.getCssName('goog-tree-item'),

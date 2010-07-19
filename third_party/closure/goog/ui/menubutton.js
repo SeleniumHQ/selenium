@@ -1,20 +1,21 @@
+// Copyright 2007 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Copyright 2007 Google Inc. All Rights Reserved.
-
 /**
  * @fileoverview A menu button control.
  *
+*
  * @see ../demos/menubutton.html
  */
 
@@ -47,10 +48,10 @@ goog.require('goog.ui.registry');
  *
  * @param {goog.ui.ControlContent} content Text caption or existing DOM
  *     structure to display as the button's caption (if any).
- * @param {goog.ui.Menu} opt_menu Menu to render under the button when clicked.
- * @param {goog.ui.ButtonRenderer} opt_renderer Renderer used to render or
+ * @param {goog.ui.Menu=} opt_menu Menu to render under the button when clicked.
+ * @param {goog.ui.ButtonRenderer=} opt_renderer Renderer used to render or
  *     decorate the menu button; defaults to {@link goog.ui.MenuButtonRenderer}.
- * @param {goog.dom.DomHelper} opt_domHelper Optional DOM hepler, used for
+ * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM hepler, used for
  *     document interaction.
  * @constructor
  * @extends {goog.ui.Button}
@@ -241,7 +242,7 @@ goog.ui.MenuButton.prototype.performActionInternal = function(e) {
 /**
  * Handles mousedown events over the document.  If the mousedown happens over
  * an element unrelated to the component, hides the menu.
- * TODO: Reconcile this with goog.ui.Popup (and handle frames/windows).
+ * TODO(user): Reconcile this with goog.ui.Popup (and handle frames/windows).
  * @param {goog.events.BrowserEvent} e Mouse event to handle.
  * @protected
  */
@@ -259,7 +260,7 @@ goog.ui.MenuButton.prototype.handleDocumentMouseDown = function(e) {
 /**
  * Returns true if the given element is to be considered part of the component,
  * even if it isn't a DOM descendant of the component's root element.
- * @param {Element?} element Element to test (if any).
+ * @param {Element} element Element to test (if any).
  * @return {boolean} Whether the element is considered part of the component.
  * @protected
  */
@@ -272,9 +273,13 @@ goog.ui.MenuButton.prototype.containsElement = function(element) {
 /** @inheritDoc */
 goog.ui.MenuButton.prototype.handleKeyEventInternal = function(e) {
   // Handle SPACE on keyup and all other keys on keypress.
-  var eventType = e.keyCode == goog.events.KeyCodes.SPACE ?
-      goog.events.EventType.KEYUP : goog.events.KeyHandler.EventType.KEY;
-  if (e.type != eventType) {
+  if (e.keyCode == goog.events.KeyCodes.SPACE) {
+    // Prevent page scrolling in Chrome.
+    e.preventDefault();
+    if (e.type != goog.events.EventType.KEYUP) {
+      return false;
+    }
+  } else if (e.type != goog.events.KeyHandler.EventType.KEY) {
     return false;
   }
 
@@ -459,7 +464,7 @@ goog.ui.MenuButton.prototype.getItemCount = function() {
  * Shows/hides the menu button based on the value of the argument.  Also hides
  * the popup menu if the button is being hidden.
  * @param {boolean} visible Whether to show or hide the button.
- * @param {boolean} opt_force If true, doesn't check whether the component
+ * @param {boolean=} opt_force If true, doesn't check whether the component
  *     already has the requested visibility, and doesn't dispatch any events.
  * @return {boolean} Whether the visibility was changed.
  * @override
@@ -548,7 +553,7 @@ goog.ui.MenuButton.prototype.isFocusablePopupMenu = function() {
  * @param {boolean} focusable Whether the attached menu is focusable.
  */
 goog.ui.MenuButton.prototype.setFocusablePopupMenu = function(focusable) {
-  // TODO:  The menu itself should advertise whether it is focusable.
+  // TODO(user):  The menu itself should advertise whether it is focusable.
   this.isFocusablePopupMenu_ = focusable;
 };
 
@@ -609,10 +614,14 @@ goog.ui.MenuButton.prototype.setOpen = function(open) {
 
 
 /**
- * Positions the menu under the button.
- * @protected
+ * Positions the menu under the button.  May be called directly in cases when
+ * the menu size is known to change.
  */
 goog.ui.MenuButton.prototype.positionMenu = function() {
+  if (!this.menu_.isInDocument()) {
+    return;
+  }
+
   var anchorCorner = this.isAlignMenuToStart() ?
       goog.positioning.Corner.BOTTOM_START : goog.positioning.Corner.BOTTOM_END;
   var position = new goog.positioning.MenuAnchoredPosition(this.getElement(),

@@ -1,16 +1,16 @@
+// Copyright 2006 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-// Copyright 2006 Google Inc. All Rights Reserved.
 
 // The original file lives here: http://go/cross_domain_channel.js
 
@@ -29,6 +29,9 @@
  * the Google Maps API, which is IE 6.0+, Firefox 0.8+, Safari 1.2.4+,
  * Netscape 7.1+, Mozilla 1.4+, Opera 8.02+.
  *
+*
+*
+*
  */
 
 goog.provide('goog.net.Jsonp');
@@ -57,7 +60,7 @@ goog.require('goog.dom');
  *     data posted through this channel (e.g.,
  *     "http://maps.google.com/maps/geo").
  *
- * @param {string} opt_callbackParamName The parameter name that is used to
+ * @param {string=} opt_callbackParamName The parameter name that is used to
  *     specify the callback. Defaults to "callback".
  *
  * @constructor
@@ -143,13 +146,13 @@ goog.net.Jsonp.prototype.getRequestTimeout = function() {
  *
  * @param {Object} payload Name-value pairs.
  *
- * @param {Function} opt_replyCallback A function expecting one
+ * @param {Function=} opt_replyCallback A function expecting one
  *     argument, called when the reply arrives, with the response data.
  *
- * @param {Function} opt_errorCallback A function expecting one
+ * @param {Function=} opt_errorCallback A function expecting one
  *     argument, called on timeout, with the payload.
  *
- * @param {string} opt_callbackParamValue Value to be used as the
+ * @param {string=} opt_callbackParamValue Value to be used as the
  *     parameter value for the callback parameter (callbackParamName).
  *     To be used when the value needs to be fixed by the client for a
  *     particular request, to make use of the cached responses for the request.
@@ -157,7 +160,7 @@ goog.net.Jsonp.prototype.getRequestTimeout = function() {
  *     opt_callbackParamValue, only the last call will work whenever the
  *     response comes back.
  *
- * @return {Object?} A request descriptor that may be used to cancel this
+ * @return {Object} A request descriptor that may be used to cancel this
  *     transmission, or null, if the message may not be cancelled.
  */
 goog.net.Jsonp.prototype.send = function(payload,
@@ -208,7 +211,7 @@ goog.net.Jsonp.prototype.send = function(payload,
     'type': 'text/javascript',
     'id': id,
     'charset': 'UTF-8',
-    // NOTE: Safari never loads the script if we don't set
+    // NOTE(user): Safari never loads the script if we don't set
     // the src attribute before appending.
     'src': uri.toString()
   });
@@ -245,7 +248,7 @@ goog.net.Jsonp.prototype.cancel = function(request) {
  * @param {string} id The id of the script node.
  * @param {Element} scriptNode Script element.
  * @param {Object} payload The payload that was sent to the server.
- * @param {Function} opt_errorCallback The function called on timeout.
+ * @param {Function=} opt_errorCallback The function called on timeout.
  * @return {Function} A zero argument function that handles callback duties.
  * @private
  */
@@ -274,7 +277,7 @@ goog.net.Jsonp.newErrorHandler_ = function(id,
  * @param {string} id The id of the script node.
  * @param {Element} scriptNode Script element.
  * @param {Function} replyCallback The function called on reply.
- * @param {Object} timeout A timeout call that needs to be cleared.
+ * @param {?number} timeout A timeout call that needs to be cleared.
  * @return {Function} A reply callback function.
  * @private
  */
@@ -287,13 +290,13 @@ goog.net.Jsonp.newReplyHandler_ = function(id,
    * clears the error timeout handler, calls the user's handler, then
    * removes the script node and itself.
    *
-   * @param {Object} var_args The response data sent from the server.
+   * @param {...Object} var_args The response data sent from the server.
    */
   return function(var_args) {
     goog.global.clearTimeout(timeout);
     goog.net.Jsonp.cleanup_(id, scriptNode, true);
     replyCallback.apply(undefined, arguments);
-  }
+  };
 };
 
 
@@ -346,7 +349,7 @@ goog.net.Jsonp.cleanup_ = function(id, scriptNode, deleteReplyHandler) {
  */
 goog.net.Jsonp.addPayloadToUri_ = function(payload, uri) {
   for (var name in payload) {
-    // NOTE: Safari/1.3 doesn't have hasOwnProperty(). In that
+    // NOTE(user): Safari/1.3 doesn't have hasOwnProperty(). In that
     // case, we iterate over all properties as a very lame workaround.
     if (!payload.hasOwnProperty || payload.hasOwnProperty(name)) {
       uri.setParameterValues(name, payload[name]);

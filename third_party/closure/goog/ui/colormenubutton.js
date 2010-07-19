@@ -1,21 +1,23 @@
+// Copyright 2008 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-// Copyright 2008 Google Inc. All Rights Reserved.
 
 /**
  * @fileoverview A color menu button.  Extends {@link goog.ui.MenuButton} by
  * showing the currently selected color in the button caption.
  *
+ * @author robbyw@google.com (Robby Walker)
+*
  */
 
 goog.provide('goog.ui.ColorMenuButton');
@@ -38,11 +40,11 @@ goog.require('goog.ui.registry');
  *
  * @param {goog.ui.ControlContent} content Text caption or existing DOM
  *     structure to display as the button's caption.
- * @param {goog.ui.Menu} opt_menu Menu to render under the button when clicked;
+ * @param {goog.ui.Menu=} opt_menu Menu to render under the button when clicked;
  *     should contain at least one {@link goog.ui.ColorPalette} if present.
- * @param {goog.ui.MenuButtonRenderer} opt_renderer Button renderer;
+ * @param {goog.ui.MenuButtonRenderer=} opt_renderer Button renderer;
  *     defaults to {@link goog.ui.ColorMenuButtonRenderer}.
- * @param {goog.dom.DomHelper} opt_domHelper Optional DOM hepler, used for
+ * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM hepler, used for
  *     document interaction.
  * @constructor
  * @extends {goog.ui.MenuButton}
@@ -101,9 +103,9 @@ goog.ui.ColorMenuButton.NO_COLOR = 'none';
 /**
  * Factory method that creates and returns a new {@link goog.ui.Menu} instance
  * containing default color palettes.
- * @param {Array.<goog.ui.Control>} opt_extraItems Optional extra menu items to
+ * @param {Array.<goog.ui.Control>=} opt_extraItems Optional extra menu items to
  *     add before the color palettes.
- * @param {goog.dom.DomHelper} opt_domHelper Optional DOM hepler, used for
+ * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM hepler, used for
  *     document interaction.
  * @return {goog.ui.Menu} Color menu.
  */
@@ -128,7 +130,7 @@ goog.ui.ColorMenuButton.newColorMenu = function(opt_extraItems, opt_domHelper) {
 
 /**
  * Returns the currently selected color (null if none).
- * @return {string?} The selected color.
+ * @return {?string} The selected color.
  */
 goog.ui.ColorMenuButton.prototype.getSelectedColor = function() {
   return /** @type {string} */ (this.getValue());
@@ -138,7 +140,7 @@ goog.ui.ColorMenuButton.prototype.getSelectedColor = function() {
 /**
  * Sets the selected color, or clears the selected color if the argument is
  * null or not any of the available color choices.
- * @param {string?} color New color.
+ * @param {?string} color New color.
  */
 goog.ui.ColorMenuButton.prototype.setSelectedColor = function(color) {
   this.setValue(color);
@@ -149,7 +151,7 @@ goog.ui.ColorMenuButton.prototype.setSelectedColor = function(color) {
  * Sets the value associated with the color menu button.  Overrides
  * {@link goog.ui.Button#setValue} by interpreting the value as a color
  * spec string.
- * @param {string?} color New button value; should be a color spec string.
+ * @param {?string} color New button value; should be a color spec string.
  */
 goog.ui.ColorMenuButton.prototype.setValue = function(color) {
   for (var i = 0, item; item = this.getItemAt(i); i++) {
@@ -193,7 +195,7 @@ goog.ui.ColorMenuButton.prototype.setOpen = function(open) {
   if (open && this.getItemCount() == 0) {
     this.setMenu(
         goog.ui.ColorMenuButton.newColorMenu(null, this.getDomHelper()));
-    this.setValue(/** @type {string?} */ (this.getValue()));
+    this.setValue(/** @type {?string} */ (this.getValue()));
   }
   goog.ui.ColorMenuButton.superClass_.setOpen.call(this, open);
 };

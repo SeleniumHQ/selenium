@@ -1,21 +1,26 @@
+// Copyright 2008 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-// Copyright 2008 Google, Inc. All Rights Reserved
 
 /**
  * @fileoverview Wrapper around {@link goog.ui.Dialog}, to provide
  * dialogs that are smarter about interacting with a rich text editor.
  *
+*
+*
+*
+ * @author nicksantos@google.com (Nick Santos)
+*
  */
 
 goog.provide('goog.ui.editor.AbstractDialog');
@@ -148,16 +153,16 @@ goog.ui.editor.AbstractDialog.Builder.prototype.setTitle = function(title) {
 /**
  * Adds an OK button to the dialog. Clicking this button will cause {@link
  * handleOk} to run, subsequently dispatching an OK event.
- * @param {string} opt_label The caption for the button, if not "OK".
+ * @param {string=} opt_label The caption for the button, if not "OK".
  * @return {goog.ui.editor.AbstractDialog.Builder} This.
  */
 goog.ui.editor.AbstractDialog.Builder.prototype.addOkButton =
     function(opt_label) {
   var key = goog.ui.Dialog.DefaultButtonKeys.OK;
   /** @desc Label for an OK button in an editor dialog. */
-  var MSG_EDITOR_DIALOG_OK = goog.getMsg('OK');
+  var MSG_TR_DIALOG_OK = goog.getMsg('OK');
   // True means this is the default/OK button.
-  this.buttonSet_.set(key, opt_label || MSG_EDITOR_DIALOG_OK, true);
+  this.buttonSet_.set(key, opt_label || MSG_TR_DIALOG_OK, true);
   this.buttonHandlers_[key] = goog.bind(this.editorDialog_.handleOk,
                                         this.editorDialog_);
   return this;
@@ -166,16 +171,16 @@ goog.ui.editor.AbstractDialog.Builder.prototype.addOkButton =
 /**
  * Adds a Cancel button to the dialog. Clicking this button will cause {@link
  * handleCancel} to run, subsequently dispatching a CANCEL event.
- * @param {string} opt_label The caption for the button, if not "Cancel".
+ * @param {string=} opt_label The caption for the button, if not "Cancel".
  * @return {goog.ui.editor.AbstractDialog.Builder} This.
  */
 goog.ui.editor.AbstractDialog.Builder.prototype.addCancelButton =
     function(opt_label) {
   var key = goog.ui.Dialog.DefaultButtonKeys.CANCEL;
   /** @desc Label for a cancel button in an editor dialog. */
-  var MSG_EDITOR_DIALOG_CANCEL = goog.getMsg('Cancel');
+  var MSG_TR_DIALOG_CANCEL = goog.getMsg('Cancel');
   // False means it's not the OK button, true means it's the Cancel button.
-  this.buttonSet_.set(key, opt_label || MSG_EDITOR_DIALOG_CANCEL, false, true);
+  this.buttonSet_.set(key, opt_label || MSG_TR_DIALOG_CANCEL, false, true);
   this.buttonHandlers_[key] = goog.bind(this.editorDialog_.handleCancel,
                                         this.editorDialog_);
   return this;
@@ -188,7 +193,7 @@ goog.ui.editor.AbstractDialog.Builder.prototype.addCancelButton =
  *     the button is clicked. It is recommended that this function be a method
  *     in the concrete subclass of AbstractDialog using this Builder, and that
  *     it dispatch an event (see {@link handleOk}).
- * @param {string} opt_buttonId Identifier to be used to access the button when
+ * @param {string=} opt_buttonId Identifier to be used to access the button when
  *     calling AbstractDialog.getButtonElement().
  * @return {goog.ui.editor.AbstractDialog.Builder} This.
  */

@@ -1,16 +1,16 @@
+// Copyright 2008 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-// Copyright 2008 Google Inc. All Rights Reserved.
 
 /**
  * @fileoverview Matchers to be used with the mock utilities.  They allow for
@@ -19,6 +19,7 @@
  *
  * For examples, please see the unit test.
  *
+*
  */
 
 
@@ -40,9 +41,9 @@ goog.require('goog.testing.asserts');
  * A simple interface for executing argument matching.  A match in this case is
  * testing to see if a supplied object fits a given criteria.  True is returned
  * if the given criteria is met.
- * @param {Function} opt_matchFn A function that evaluates a given argument
+ * @param {Function=} opt_matchFn A function that evaluates a given argument
  *     and returns true if it meets a given criteria.
- * @param {string?} opt_matchName The name expressing intent as part of
+ * @param {?string=} opt_matchName The name expressing intent as part of
  *      an error message for when a match fails.
  * @constructor
  */
@@ -51,14 +52,14 @@ goog.testing.mockmatchers.ArgumentMatcher =
   /**
    * A function that evaluates a given argument and returns true if it meets a
    * given criteria.
-   * @type {Function?}
+   * @type {Function}
    * @private
    */
   this.matchFn_ = opt_matchFn || null;
 
   /**
    * A string indicating the match intent (e.g. isBoolean or isString).
-   * @type {string?}
+   * @type {?string}
    * @private
    */
   this.matchName_ = opt_matchName || null;
@@ -70,7 +71,7 @@ goog.testing.mockmatchers.ArgumentMatcher =
  * which (if provided) will get error information and returns whether or
  * not it matches.
  * @param {*} toVerify The argument that should be verified.
- * @param {goog.testing.MockExpectation?} opt_expectation The expectation
+ * @param {goog.testing.MockExpectation?=} opt_expectation The expectation
  *     for this match.
  * @return {boolean} Whether or not a given argument passes verification.
  */
@@ -206,10 +207,10 @@ goog.testing.mockmatchers.ObjectEquals.prototype.matches =
  * can perform extra tests with this argument later.  For example, if the
  * argument is a callback method, the unit test can then later call this
  * callback to test the asynchronous portion of the call.
- * @param {goog.testing.mockmatchers.ArgumentMatcher|Function} opt_matcher
+ * @param {goog.testing.mockmatchers.ArgumentMatcher|Function=} opt_matcher
  *     Argument matcher or matching function that will be used to validate the
  *     argument.  By default, argument will always be valid.
- * @param {string?} opt_matchName The name expressing intent as part of
+ * @param {?string=} opt_matchName The name expressing intent as part of
  *      an error message for when a match fails.
  * @constructor
  * @extends {goog.testing.mockmatchers.ArgumentMatcher}
@@ -350,7 +351,7 @@ goog.testing.mockmatchers.isNodeLike =
  * @param {Array} expectedArr An array of expectations which can be either
  *     values to check for equality or ArgumentMatchers.
  * @param {Array} arr The array to match.
- * @param {goog.testing.MockExpectation?} opt_expectation The expectation
+ * @param {goog.testing.MockExpectation?=} opt_expectation The expectation
  *     for this match.
  * @return {boolean} Whether or not the given array matches the expectations.
  */
@@ -380,7 +381,7 @@ goog.testing.mockmatchers.flexibleArrayMatcher =
         // Use the _displayStringForValue() from assert.js
         // for consistency...
         //
-        // TODO: Would be nice to expand this if
+        // TODO(user): Would be nice to expand this if
         // we have an object or array miscompare so that
         // the object properties (array values) were shown.
         // This is done in assert.js, but would need to refactor

@@ -1,20 +1,21 @@
+// Copyright 2007 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Copyright 2007 Google Inc. All Rights Reserved.
-
 /**
  * @fileoverview Support class for spell checker components.
  *
+*
  */
 
 goog.provide('goog.spell.SpellCheck');
@@ -29,12 +30,12 @@ goog.require('goog.structs.Set');
  * Support class for spell checker components. Provides basic functionality
  * such as word lookup and caching.
  *
- * @param {Function} opt_lookupFunction Function to use for word lookup. Must
+ * @param {Function=} opt_lookupFunction Function to use for word lookup. Must
  *     accept an array of words, an object reference and a callback function as
  *     parameters. It must also call the callback function (as a method on the
  *     object), once ready, with an array containing the original words, their
  *     spelling status and optionally an array of suggestions.
- * @param {string} opt_language Content language.
+ * @param {string=} opt_language Content language.
  * @constructor
  * @extends {goog.events.EventTarget}
  */
@@ -198,7 +199,7 @@ goog.spell.SpellCheck.prototype.setLookupFunction = function(f) {
 /**
  * Sets language.
  *
- * @param {string} opt_language Content language.
+ * @param {string=} opt_language Content language.
  */
 goog.spell.SpellCheck.prototype.setLanguage = function(opt_language) {
   this.language_ = opt_language || '';
@@ -380,7 +381,7 @@ goog.spell.SpellCheck.prototype.lookupCallback_ = function(data) {
  *
  * @param {string} word Word to set status for.
  * @param {goog.spell.SpellCheck.WordStatus} status Status of word.
- * @param {Array.<string>} opt_suggestions Suggestions.
+ * @param {Array.<string>=} opt_suggestions Suggestions.
  *
  * Example:
  * obj.setWordStatus('word', VALID);
@@ -397,7 +398,7 @@ goog.spell.SpellCheck.prototype.setWordStatus =
  *
  * @param {string} word Word to set status for.
  * @param {goog.spell.SpellCheck.WordStatus} status Status of word.
- * @param {Array.<string>} opt_suggestions Suggestions.
+ * @param {Array.<string>=} opt_suggestions Suggestions.
  * @private
  */
 goog.spell.SpellCheck.prototype.setWordStatus_ =

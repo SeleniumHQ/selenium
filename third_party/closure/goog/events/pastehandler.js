@@ -1,16 +1,16 @@
+// Copyright 2009 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-// Copyright 2009 Google Inc. All Rights Reserved.
 
 /**
  * @fileoverview Provides a 'paste' event detector that works consistently
@@ -23,12 +23,13 @@
  * Known issue: will not detect paste events in FF2 if you pasted exactly the
  * same existing text.
  * Known issue: Opera + Mac doesn't work properly because of the meta key. We
- * can probably fix that. TODO: {@link KeyboardShortcutHandler} does not
+ * can probably fix that. TODO(user): {@link KeyboardShortcutHandler} does not
  * work either very well with opera + mac. fix that.
  *
  * @supported IE5, IE6, IE7, Safari3.0, Chrome, FF2.0 (linux) and FF3.0 and
  * Opera (mac and windows).
  *
+*
  * @see ../demos/pastehandler.html
  */
 
@@ -37,6 +38,7 @@ goog.provide('goog.events.PasteHandler.EventType');
 goog.provide('goog.events.PasteHandler.State');
 
 goog.require('goog.debug.Logger');
+goog.require('goog.events.BrowserEvent');
 goog.require('goog.events.EventHandler');
 goog.require('goog.events.EventTarget');
 goog.require('goog.events.KeyCodes');
@@ -235,7 +237,7 @@ goog.events.PasteHandler.prototype.dispatch_ = function(e) {
  * it fires e.keyCode = 17, which is the CTRL key code.
  * {@link http://www.quirksmode.org/js/keys.html}
  *
- * NOTE: There is an interesting thing about (5): on Linux, (5)
+ * NOTE(user, pbarry): There is an interesting thing about (5): on Linux, (5)
  * pastes the last thing that you highlighted, not the last thing that you
  * ctrl+c'ed. This code will still generate a {@code PASTE} event though.
  *

@@ -1,16 +1,16 @@
+// Copyright 2006 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-// Copyright 2006 Google Inc. All Rights Reserved.
 
 /**
  * @fileoverview A base ratings widget that allows the user to select a rating,
@@ -26,6 +26,7 @@
  * 0 = Clear (if supported)
  * 1 - 9 = nth star
  *
+*
  * @see ../demos/ratings.html
  */
 
@@ -40,8 +41,8 @@ goog.require('goog.ui.Component');
 
 /**
  * A UI Control used for rating things, i.e. videos on Google Video.
- * @param {Array.<string>} opt_ratings Ratings. Default: [1,2,3,4,5].
- * @param {goog.dom.DomHelper} opt_domHelper Optional DOM helper.
+ * @param {Array.<string>=} opt_ratings Ratings. Default: [1,2,3,4,5].
+ * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM helper.
  * @constructor
  * @extends {goog.ui.Component}
  */
@@ -241,7 +242,7 @@ goog.ui.Ratings.prototype.getSelectedIndex = function() {
 
 /**
  * Returns the rating value of the currently selected rating
- * @return {string?} The value of the currently selected rating (or null).
+ * @return {?string} The value of the currently selected rating (or null).
  */
 goog.ui.Ratings.prototype.getValue = function() {
   return this.selectedIndex_ == -1 ? null : this.ratings_[this.selectedIndex_];
@@ -261,7 +262,7 @@ goog.ui.Ratings.prototype.getHighlightedIndex = function() {
 /**
  * Returns the value of the currently highlighted rating, null if the mouse
  * isn't currently over the widget
- * @return {string?} The value of the currently highlighted rating, or null.
+ * @return {?string} The value of the currently highlighted rating, or null.
  */
 goog.ui.Ratings.prototype.getHighlightedValue = function() {
   return this.highlightedIndex_ == -1 ? null :
@@ -275,7 +276,7 @@ goog.ui.Ratings.prototype.getHighlightedValue = function() {
  */
 goog.ui.Ratings.prototype.setRatings = function(ratings) {
   this.ratings_ = ratings;
-  // TODO: If rendered update stars
+  // TODO(user): If rendered update stars
 };
 
 

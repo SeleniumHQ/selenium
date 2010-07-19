@@ -1,20 +1,22 @@
+// Copyright 2006 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Copyright 2006 Google Inc. All Rights Reserved.
-
 /**
  * @fileoverview Basic class for matching words in an array.
  *
+*
+*
  */
 
 
@@ -30,7 +32,7 @@ goog.require('goog.ui.AutoComplete');
  * @constructor
  * @param {Array} rows Dictionary of items to match.  Can be objects if they
  *     have a toString method that returns the value to match against.
- * @param {boolean} opt_noSimilar if true, do not do similarity matches for the
+ * @param {boolean=} opt_noSimilar if true, do not do similarity matches for the
  *     input token against the dictionary.
  */
 goog.ui.AutoComplete.ArrayMatcher = function(rows, opt_noSimilar) {
@@ -44,7 +46,7 @@ goog.ui.AutoComplete.ArrayMatcher = function(rows, opt_noSimilar) {
  * @param {string} token Token to match.
  * @param {number} maxMatches Max number of matches to return.
  * @param {Function} matchHandler callback to execute after matching.
- * @param {string} opt_fullString The full string from the input box.
+ * @param {string=} opt_fullString The full string from the input box.
  */
 goog.ui.AutoComplete.ArrayMatcher.prototype.requestMatchingRows =
     function(token, maxMatches, matchHandler, opt_fullString) {

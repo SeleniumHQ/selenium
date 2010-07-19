@@ -1,16 +1,16 @@
+// Copyright 2007 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-// Copyright 2007 Google Inc. All Rights Reserved.
 
 /**
  * @fileoverview Class that retrieves rich autocomplete matches, represented as
@@ -18,6 +18,7 @@
  * sublist is the name of a client-side javascript function that converts the
  * remaining sublist elements into rich rows.
  *
+*
  */
 
 goog.provide('goog.ui.AutoComplete.RichRemoteArrayMatcher');
@@ -30,7 +31,7 @@ goog.require('goog.ui.AutoComplete.RemoteArrayMatcher');
  * rich rows.
  * @param {string} url The Uri which generates the auto complete matches.  The
  *     search term is passed to the server as the 'token' query param.
- * @param {boolean} opt_noSimilar If true, request that the server does not do
+ * @param {boolean=} opt_noSimilar If true, request that the server does not do
  *     similarity matches for the input token against the dictionary.
  *     The value is sent to the server as the 'use_similar' query param which is
  *     either "1" (opt_noSimilar==false) or "0" (opt_noSimilar==true).
@@ -44,7 +45,7 @@ goog.ui.AutoComplete.RichRemoteArrayMatcher = function(url, opt_noSimilar) {
    * A function(rows) that is called before the array matches are returned.
    * It runs client-side and filters the results given by the server before
    * being rendered by the client.
-   * @type {Function?}
+   * @type {Function}
    * @private
    */
   this.rowFilter_ = null;
@@ -87,7 +88,8 @@ goog.ui.AutoComplete.RichRemoteArrayMatcher.prototype.requestMatchingRows =
     try {
       var rows = [];
       for (var i = 0; i < matches.length; i++) {
-        var func = goog.json.unsafeParse(matches[i][0]);
+        var func =  /** @type {!Function} */
+            (goog.json.unsafeParse(matches[i][0]));
         for (var j = 1; j < matches[i].length; j++) {
           var richRow = func(matches[i][j]);
           rows.push(richRow);
@@ -112,7 +114,7 @@ goog.ui.AutoComplete.RichRemoteArrayMatcher.prototype.requestMatchingRows =
       }
       matchHandler(token, rows);
     } catch (exception) {
-      // TODO: Is this what we want?
+      // TODO(user): Is this what we want?
       matchHandler(token, []);
     }
   }, this);

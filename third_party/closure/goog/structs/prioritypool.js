@@ -1,20 +1,21 @@
+// Copyright 2006 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Copyright 2006 Google Inc. All Rights Reserved.
-
 /**
  * @fileoverview Datastructure: Priority Pool.
  *
+*
  *
  * An extending of Pool that handles queueing and prioritization.
  */
@@ -28,8 +29,8 @@ goog.require('goog.structs.PriorityQueue');
 
 /**
  * A generic pool class. If max is greater than min, an error is thrown.
- * @param {number} opt_minCount Min. number of objects (Default: 1).
- * @param {number} opt_maxCount Max. number of objects (Default: 10).
+ * @param {number=} opt_minCount Min. number of objects (Default: 1).
+ * @param {number=} opt_maxCount Max. number of objects (Default: 10).
  * @constructor
  * @extends {goog.structs.Pool}
  */
@@ -61,10 +62,10 @@ goog.structs.PriorityPool.DEFAULT_PRIORITY_ = 100;
 /**
  * Get a new object from the the pool, if there is one available, otherwise
  * return undefined.
- * @param {Function} opt_callback The function to callback when an object is
+ * @param {Function=} opt_callback The function to callback when an object is
  *     available. This could be immediately. If this is not present, then an
  *     object is immediately returned if available, or undefined if not.
- * @param {Object} opt_priority The priority of the request.
+ * @param {*=} opt_priority The priority of the request.
  * @return {Object|undefined} The new object from the pool if there is one
  *     available and a callback is not given. Otherwise, undefined.
  */

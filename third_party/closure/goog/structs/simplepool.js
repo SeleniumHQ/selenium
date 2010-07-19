@@ -1,20 +1,22 @@
+// Copyright 2007 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Copyright 2007 Google Inc. All Rights Reserved.
-
 /**
  * @fileoverview Datastructure: Pool.
  *
+*
+*
  *
  * A generic class for handling pools of objects that is more efficient than
  * goog.structs.Pool because it doesn't maintain a list of objects that are in
@@ -46,7 +48,6 @@ goog.require('goog.Disposable');
  * @param {number} maxCount Maximum number of objects to keep in the free pool.
  * @constructor
  * @extends {goog.Disposable}
- *
  */
 goog.structs.SimplePool = function(initialCount, maxCount) {
   goog.Disposable.call(this);
@@ -74,7 +75,7 @@ goog.inherits(goog.structs.SimplePool, goog.Disposable);
 /**
  * Function for overriding createObject. The avoids a common case requiring
  * subclassing this class.
- * @type {Function?}
+ * @type {Function}
  * @private
  */
 goog.structs.SimplePool.prototype.createObjectFn_ = null;
@@ -83,7 +84,7 @@ goog.structs.SimplePool.prototype.createObjectFn_ = null;
 /**
  * Function for overriding disposeObject. The avoids a common case requiring
  * subclassing this class.
- * @type {Function?}
+ * @type {Function}
  * @private
  */
 goog.structs.SimplePool.prototype.disposeObjectFn_ = null;
@@ -115,7 +116,7 @@ goog.structs.SimplePool.prototype.setDisposeObjectFn = function(
 /**
  * Gets a new object from the the pool, if there is one available, otherwise
  * returns null.
- * @return {Object} An object from the pool or a new one if necessary.
+ * @return {*} An object from the pool or a new one if necessary.
  */
 goog.structs.SimplePool.prototype.getObject = function() {
   if (this.freeQueue_.length) {
@@ -128,7 +129,7 @@ goog.structs.SimplePool.prototype.getObject = function() {
 /**
  * Releases the space in the pool held by a given object -- i.e., remove it from
  * the pool and frees up its space.
- * @param {Object} obj The object to release.
+ * @param {*} obj The object to release.
  */
 goog.structs.SimplePool.prototype.releaseObject = function(obj) {
   if (this.freeQueue_.length < this.maxCount_) {
@@ -157,7 +158,7 @@ goog.structs.SimplePool.prototype.createInitial_ = function(initialCount) {
 /**
  * Should be overriden by sub-classes to return an instance of the object type
  * that is expected in the pool.
- * @return {Object} The created object.
+ * @return {*} The created object.
  */
 goog.structs.SimplePool.prototype.createObject = function() {
   if (this.createObjectFn_) {
@@ -172,12 +173,12 @@ goog.structs.SimplePool.prototype.createObject = function() {
  * Should be overriden to dispose of an object. Default implementation is to
  * remove all of the object's members, which should render it useless. Calls the
  *  object's dispose method, if available.
- * @param {Object} obj The object to dispose.
+ * @param {*} obj The object to dispose.
  */
 goog.structs.SimplePool.prototype.disposeObject = function(obj) {
   if (this.disposeObjectFn_) {
     this.disposeObjectFn_(obj);
-  } else {
+  } else if (goog.isObject(obj)) {
     if (goog.isFunction(obj.dispose)) {
       obj.dispose();
     } else {

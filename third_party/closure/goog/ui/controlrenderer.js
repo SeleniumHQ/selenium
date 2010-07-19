@@ -1,21 +1,22 @@
+// Copyright 2008 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Copyright 2008 Google Inc. All Rights Reserved.
-
 /**
  * @fileoverview Base class for control renderers.
- * TODO:  If the renderer framework works well, pull it into Component.
+ * TODO(user):  If the renderer framework works well, pull it into Component.
  *
+*
  */
 
 goog.provide('goog.ui.ControlRenderer');
@@ -183,9 +184,9 @@ goog.ui.ControlRenderer.prototype.createDom = function(control) {
  * control's contents.  Since by default controls are rendered as a single
  * DIV, the default implementation returns the element itself.  Subclasses
  * with more complex DOM structures must override this method as needed.
- * @param {Element?} element Root element of the control whose content element
+ * @param {Element} element Root element of the control whose content element
  *     is to be returned.
- * @return {Element?} The control's content element.
+ * @return {Element} The control's content element.
  */
 goog.ui.ControlRenderer.prototype.getContentElement = function(element) {
   return element;
@@ -436,7 +437,7 @@ goog.ui.ControlRenderer.prototype.setFocusable = function(control, focusable) {
       try {
         keyTarget.blur();
       } catch (e) {
-        // TODO:  Find out why this fails on IE.
+        // TODO(user|user):  Find out why this fails on IE.
       }
       // The blur event dispatched by the key event target element when blur()
       // was called on it should have been handled by the control's handleBlur()
@@ -533,7 +534,7 @@ goog.ui.ControlRenderer.prototype.setContent = function(element, content) {
       if (goog.isString(content)) {
         goog.dom.setTextContent(contentElem, content);
       } else {
-        function childHandler(child) {
+        var childHandler = function(child) {
           if (child) {
             var doc = goog.dom.getOwnerDocument(contentElem);
             contentElem.appendChild(goog.isString(child) ?
@@ -654,9 +655,7 @@ goog.ui.ControlRenderer.prototype.getClassNames = function(control) {
 
   // Add state-specific class names, if any.
   var classNamesForState = this.getClassNamesForState(control.getState());
-  if (classNamesForState) {
-    classNames.push.apply(classNames, classNamesForState);
-  }
+  classNames.push.apply(classNames, classNamesForState);
 
   // Add extra class names, if any.
   var extraClassNames = control.getExtraClassNames();
@@ -686,8 +685,8 @@ goog.ui.ControlRenderer.prototype.getClassNames = function(control) {
  * opt_includedClass is added to classes as well.
  * @param {Array.<string>} classes Array of classes to return matching combined
  *     classes for.
- * @param {string?} opt_includedClass If provided, get only the combined classes
- *     that include this one.
+ * @param {?string=} opt_includedClass If provided, get only the combined
+ *     classes that include this one.
  * @return {Array.<string>} Array of combined class names that should be
  *     applied.
  * @private
@@ -716,25 +715,21 @@ goog.ui.ControlRenderer.prototype.getAppliedCombinedClassNames_ = function(
  * implementation uses the renderer's {@link getClassForState} method to
  * generate each state-specific class.
  * @param {number} state Bit mask of component states.
- * @return {Array.<string>?} Array of CSS class names representing the given
- *     state (null if none).
+ * @return {!Array.<string>} Array of CSS class names representing the given
+ *     state.
  * @protected
  */
 goog.ui.ControlRenderer.prototype.getClassNamesForState = function(state) {
-  if (state) {
-    var classNames = [];
+  var classNames = [];
+  while (state) {
     // For each enabled state, push the corresponding CSS class name onto
     // the classNames array.
-    for (var mask = 0x01; state; mask <<= 1) {
-      if (state & mask) {
-        classNames.push(this.getClassForState(
-                            /** @type {goog.ui.Component.State} */ (mask)));
-        state &= ~mask;
-      }
-    }
-    return classNames;
+    var mask = state & -state;  // Least significant bit
+    classNames.push(this.getClassForState(
+        /** @type {goog.ui.Component.State} */ (mask)));
+    state &= ~mask;
   }
-  return null;
+  return classNames;
 };
 
 

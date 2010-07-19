@@ -1,20 +1,21 @@
+// Copyright 2008 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Copyright 2008 Google Inc. All Rights Reserved.
-
 /**
  * @fileoverview A table sorting decorator.
  *
+ * @author robbyw@google.com (Robby Walker)
  * @see ../demos/tablesorter.html
  */
 
@@ -38,7 +39,7 @@ goog.require('goog.ui.Component');
  * The TABLE should use a THEAD containing TH elements for the table column
  * headers.
  *
- * @param {goog.dom.DomHelper} opt_domHelper Optional DOM helper, used for
+ * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM helper, used for
  *     document interaction.
  * @constructor
  * @extends {goog.ui.Component}
@@ -105,6 +106,22 @@ goog.ui.TableSorter.prototype.enterDocument = function() {
 
 
 /**
+ * @return {number} The current sort column of the table, or -1 if none.
+ */
+goog.ui.TableSorter.prototype.getSortColumn = function() {
+  return this.column_;
+};
+
+
+/**
+ * @return {boolean} Whether the last sort was in reverse.
+ */
+goog.ui.TableSorter.prototype.isSortReversed = function() {
+  return this.reversed_;
+};
+
+
+/**
  * @return {function(*, *) : number} The default sort function to be used by
  *     all columns.
  */
@@ -152,7 +169,7 @@ goog.ui.TableSorter.prototype.setSortFunction = function(column, sortFunction) {
  */
 goog.ui.TableSorter.prototype.sort_ = function(e) {
   // Determine what column was clicked.
-  // TODO: If this table cell contains another table, this could break.
+  // TODO(robbyw): If this table cell contains another table, this could break.
   var th = goog.dom.getAncestorByTagNameAndClass(e.target,
       goog.dom.TagName.TH);
   var col = th.cellIndex;
@@ -172,7 +189,7 @@ goog.ui.TableSorter.prototype.sort_ = function(e) {
 /**
  * Sort the table contents by the values in the given column.
  * @param {number} column The column to sort by.
- * @param {boolean} opt_reverse Whether to sort in reverse.
+ * @param {boolean=} opt_reverse Whether to sort in reverse.
  */
 goog.ui.TableSorter.prototype.sort = function(column, opt_reverse) {
   // Get some useful DOM nodes.
@@ -185,7 +202,8 @@ goog.ui.TableSorter.prototype.sort = function(column, opt_reverse) {
   if (this.column_ >= 0) {
     var oldHeader = headers[this.column_];
     goog.dom.classes.remove(oldHeader, this.reversed_ ?
-        'goog-tablesorter-sorted-reverse' : 'goog-tablesorter-sorted');
+        goog.getCssName('goog-tablesorter-sorted-reverse') :
+        goog.getCssName('goog-tablesorter-sorted'));
   }
 
   // If the user clicks on the same column, sort it in reverse of what it is
@@ -228,7 +246,8 @@ goog.ui.TableSorter.prototype.sort = function(column, opt_reverse) {
 
   // Update the header class.
   goog.dom.classes.add(header, this.reversed_ ?
-      'goog-tablesorter-sorted-reverse' : 'goog-tablesorter-sorted');
+      goog.getCssName('goog-tablesorter-sorted-reverse') :
+      goog.getCssName('goog-tablesorter-sorted'));
 };
 
 

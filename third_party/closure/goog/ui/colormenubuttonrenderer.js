@@ -1,20 +1,22 @@
+// Copyright 2008 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Copyright 2008 Google Inc. All Rights Reserved.
-
 /**
  * @fileoverview Renderer for {@link goog.ui.ColorMenuButton}s.
  *
+ * @author robbyw@google.com (Robby Walker)
+*
  */
 
 goog.provide('goog.ui.ColorMenuButtonRenderer');
@@ -42,7 +44,8 @@ goog.addSingletonGetter(goog.ui.ColorMenuButtonRenderer);
  * by this renderer.
  * @type {string}
  */
-goog.ui.ColorMenuButtonRenderer.CSS_CLASS = 'goog-color-menu-button';
+goog.ui.ColorMenuButtonRenderer.CSS_CLASS =
+    goog.getCssName('goog-color-menu-button');
 
 
 /**
@@ -75,7 +78,8 @@ goog.ui.ColorMenuButtonRenderer.prototype.createCaption = function(content,
  */
 goog.ui.ColorMenuButtonRenderer.wrapCaption = function(content, dom) {
   return dom.createDom('div',
-      goog.ui.ColorMenuButtonRenderer.CSS_CLASS + '-indicator', content);
+      goog.getCssName(goog.ui.ColorMenuButtonRenderer.CSS_CLASS, 'indicator'),
+      content);
 };
 
 
@@ -115,7 +119,7 @@ goog.ui.ColorMenuButtonRenderer.setCaptionValue = function(caption, value) {
     }
 
     // Stupid IE6/7 doesn't do transparent borders.
-    // TODO: Add user-agent version check when IE8 comes out...
+    // TODO(user): Add user-agent version check when IE8 comes out...
     caption.firstChild.style.borderBottomColor = hexColor ||
         (goog.userAgent.IE ? '' : 'transparent');
   }

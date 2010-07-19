@@ -1,22 +1,24 @@
+// Copyright 2006 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Copyright 2006 Google Inc. All Rights Reserved.
-
 /**
  * @fileoverview This file contains functions for using Gears.
+*
+*
  */
 
-// TODO: The Gears team is planning to inject the Gears factory as
+// TODO(user): The Gears team is planning to inject the Gears factory as
 // google.gears.factory in the main thread as well. Currently it is only
 // injected in the worker threads.
 
@@ -28,7 +30,7 @@ goog.require('goog.string');
 
 /**
  * Returns a new Gears factory object.
- * @return {Object?} the Gears factory object if available or null otherwise.
+ * @return {Object} the Gears factory object if available or null otherwise.
  */
 goog.gears.getFactory = function() {
   if (goog.gears.factory_ != undefined) {
@@ -76,7 +78,7 @@ goog.gears.getFactory = function() {
  * @private
  */
 goog.gears.tryGearsObject_ = function() {
-  // HACK: Use square bracket notation so this can compile in an
+  // HACK(user): Use square bracket notation so this can compile in an
   // environment without a DOM.
   var win = goog.getObjectByName('window');
   // Safari
@@ -143,13 +145,13 @@ goog.gears.hasFactory = function() {
     }
   }
 
-  // NOTE: For safari we have to actually create an object element
+  // NOTE(user): For safari we have to actually create an object element
   // in the DOM. We have to do it in hasFactory so we can reliably know whether
   // there actually is a factory, else we can get into a situation, e.g. in
   // FF 3.5.3 where the Gears add-on is disabled because it's incompatible
   // with FF but application/x-googlegears is still in the mimeTypes object.
   //
-  // HACK: Use object by name so this can compile in an environment without
+  // HACK(user): Use object by name so this can compile in an environment without
   // a DOM.
   var mimeTypes = goog.getObjectByName('navigator.mimeTypes');
   if (mimeTypes && mimeTypes['application/x-googlegears']) {
@@ -209,7 +211,7 @@ goog.gears.makeSafeFileName = function(originalFileName) {
   // data type.
   originalFileName = String(originalFileName);
 
-  // TODO: This should be removed when the Gears code
+  // TODO(user): This should be removed when the Gears code
   // gets fixed to allow for any id to be passed in. Right now
   // it fails to create a user specific database if the characters
   // sent in are non alphanumeric.

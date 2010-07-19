@@ -1,19 +1,20 @@
+// Copyright 2008 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Copyright 2008 Google Inc. All Rights Reserved.
-
 /**
  * @fileoverview This file defines a loose mock implementation.
+*
  */
 
 goog.provide('goog.testing.LooseExpectationCollection');
@@ -67,11 +68,11 @@ goog.testing.LooseExpectationCollection.prototype.getExpectations = function() {
  * exception is that if a method is called that has no expectations, then an
  * exception will be thrown.
  * @param {Object} objectToMock The object to mock.
- * @param {boolean} opt_ignoreUnexpectedCalls Whether to ignore unexpected
+ * @param {boolean=} opt_ignoreUnexpectedCalls Whether to ignore unexpected
  *     calls.
- * @param {boolean} opt_mockStaticMethods An optional argument denoting that
+ * @param {boolean=} opt_mockStaticMethods An optional argument denoting that
  *     a mock should be constructed from the static functions of a class.
- * @param {boolean} opt_createProxy An optional argument denoting that
+ * @param {boolean=} opt_createProxy An optional argument denoting that
  *     a proxy for the target mock should be created.
  * @constructor
  * @extends {goog.testing.Mock}

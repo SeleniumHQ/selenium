@@ -1,20 +1,22 @@
+// Copyright 2008 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Copyright 2008 Google Inc. All Rights Reserved.
-
 /**
  * @fileoverview Utilities for working with IE control ranges.
  *
+ * @author robbyw@google.com (Robby Walker)
+*
  */
 
 
@@ -61,7 +63,7 @@ goog.dom.ControlRange.createFromBrowserRange = function(controlRange) {
 /**
  * Create a new range wrapper that selects the given element.  Do not use
  * this method directly - please use goog.dom.Range.createFrom* instead.
- * @param {Element} var_args The element(s) to select.
+ * @param {...Element} var_args The element(s) to select.
  * @return {goog.dom.ControlRange} A range wrapper object.
  */
 goog.dom.ControlRange.createFromElements = function(var_args) {
@@ -75,7 +77,7 @@ goog.dom.ControlRange.createFromElements = function(var_args) {
 
 /**
  * The IE control range obejct.
- * @type {Object?}
+ * @type {Object}
  * @private
  */
 goog.dom.ControlRange.prototype.range_ = null;
@@ -187,7 +189,7 @@ goog.dom.ControlRange.prototype.getEndOffset = function() {
 };
 
 
-// TODO: Figure out how to unify getElements with TextRange API.
+// TODO(robbyw): Figure out how to unify getElements with TextRange API.
 /**
  * @return {Array.<Element>} Array of elements in the control range.
  */
@@ -250,7 +252,7 @@ goog.dom.ControlRange.prototype.isCollapsed = function() {
 
 /** @inheritDoc */
 goog.dom.ControlRange.prototype.getText = function() {
-  // TODO: What about for table selections?  Should those have text?
+  // TODO(robbyw): What about for table selections?  Should those have text?
   return '';
 };
 
@@ -292,7 +294,7 @@ goog.dom.ControlRange.prototype.select = function() {
 
 /** @inheritDoc */
 goog.dom.ControlRange.prototype.removeContents = function() {
-  // TODO: Test implementing with execCommand('Delete')
+  // TODO(robbyw): Test implementing with execCommand('Delete')
   if (this.range_) {
     var nodes = [];
     for (var i = 0, len = this.range_.length; i < len; i++) {
@@ -334,7 +336,7 @@ goog.dom.ControlRange.prototype.saveUsingDom = function() {
 
 /** @inheritDoc */
 goog.dom.ControlRange.prototype.collapse = function(toAnchor) {
-  // TODO: Should this return a text range?  If so, API needs to change.
+  // TODO(robbyw): Should this return a text range?  If so, API needs to change.
   this.range_ = null;
   this.clearCachedValues_();
 };
@@ -407,7 +409,7 @@ goog.inherits(goog.dom.ControlRangeIterator, goog.dom.RangeIterator);
 
 /**
  * The first node in the selection.
- * @type {Node?}
+ * @type {Node}
  * @private
  */
 goog.dom.ControlRangeIterator.prototype.startNode_ = null;
@@ -415,7 +417,7 @@ goog.dom.ControlRangeIterator.prototype.startNode_ = null;
 
 /**
  * The last node in the selection.
- * @type {Node?}
+ * @type {Node}
  * @private
  */
 goog.dom.ControlRangeIterator.prototype.endNode_ = null;

@@ -1,21 +1,22 @@
+// Copyright 2007 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-// Copyright 2007 Google Inc. All Rights Reserved.
 
 /**
  * @fileoverview A combo box control that allows user input with
  * auto-suggestion from a limited set of options.
  *
+*
  * @see ../demos/combobox.html
  */
 
@@ -23,10 +24,8 @@ goog.provide('goog.ui.ComboBox');
 goog.provide('goog.ui.ComboBoxItem');
 
 goog.require('goog.Timer');
-goog.require('goog.array');
 goog.require('goog.debug.Logger');
 goog.require('goog.dom.classes');
-goog.require('goog.dom.selection');
 goog.require('goog.events');
 goog.require('goog.events.InputHandler');
 goog.require('goog.events.KeyCodes');
@@ -38,22 +37,26 @@ goog.require('goog.ui.ItemEvent');
 goog.require('goog.ui.LabelInput');
 goog.require('goog.ui.Menu');
 goog.require('goog.ui.MenuItem');
+goog.require('goog.ui.registry');
 goog.require('goog.userAgent');
 
 
 /**
  * A ComboBox control.
- * @param {goog.dom.DomHelper} opt_domHelper Optional DOM helper.
+ * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM helper.
+ * @param {goog.ui.Menu=} opt_menu Optional menu.
  * @extends {goog.ui.Component}
  * @constructor
  */
-goog.ui.ComboBox = function(opt_domHelper) {
+goog.ui.ComboBox = function(opt_domHelper, opt_menu) {
   goog.ui.Component.call(this, opt_domHelper);
 
   this.labelInput_ = new goog.ui.LabelInput();
+  this.enabled_ = true;
 
-  // TODO: Allow lazy creation of menus/menu items
-  this.menu_ = this.createMenu_();
+  // TODO(user): Allow lazy creation of menus/menu items
+  this.menu_ = opt_menu || new goog.ui.Menu(this.getDomHelper());
+  this.setupMenu_();
 };
 goog.inherits(goog.ui.ComboBox, goog.ui.Component);
 
@@ -75,6 +78,14 @@ goog.ui.ComboBox.prototype.logger_ =
 
 
 /**
+ * Whether the combo box is enabled.
+ * @type {boolean}
+ * @private
+ */
+goog.ui.ComboBox.prototype.enabled_;
+
+
+/**
  * Keyboard event handler to manage key events dispatched by the input element.
  * @type {goog.events.KeyHandler}
  * @private
@@ -93,7 +104,7 @@ goog.ui.ComboBox.prototype.inputHandler_ = null;
 
 /**
  * The last input token.
- * @type {string?}
+ * @type {?string}
  * @private
  */
 goog.ui.ComboBox.prototype.lastToken_ = null;
@@ -125,7 +136,7 @@ goog.ui.ComboBox.prototype.visibleCount_ = -1;
 
 /**
  * The input element.
- * @type {Element?}
+ * @type {Element}
  * @private
  */
 goog.ui.ComboBox.prototype.input_ = null;
@@ -142,7 +153,7 @@ goog.ui.ComboBox.prototype.matchFunction_ = goog.string.startsWith;
 
 /**
  * Element used as the combo boxes button.
- * @type {Element?}
+ * @type {Element}
  * @private
  */
 goog.ui.ComboBox.prototype.button_ = null;
@@ -166,7 +177,7 @@ goog.ui.ComboBox.prototype.fieldName_ = '';
 
 /**
  * Timer identifier for delaying the dismissal of the combo menu.
- * @type {number?}
+ * @type {?number}
  * @private
  */
 goog.ui.ComboBox.prototype.dismissTimer_ = null;
@@ -188,9 +199,10 @@ goog.ui.ComboBox.prototype.useDropdownArrow_ = false;
 goog.ui.ComboBox.prototype.createDom = function() {
   this.input_ = this.getDomHelper().createDom(
       'input', {'name': this.fieldName_, 'autocomplete': 'off'});
-  this.button_ = this.getDomHelper().createDom('span', 'goog-combobox-button');
-  this.setElementInternal(this.getDomHelper().createDom('span', 'goog-combobox',
-      this.input_, this.button_));
+  this.button_ = this.getDomHelper().createDom('span',
+      goog.getCssName('goog-combobox-button'));
+  this.setElementInternal(this.getDomHelper().createDom('span',
+      goog.getCssName('goog-combobox'), this.input_, this.button_));
   if (this.useDropdownArrow_) {
     this.button_.innerHTML = '&nbsp;&#x25BC;';
     goog.style.setUnselectable(this.button_, true /* unselectable */);
@@ -198,7 +210,22 @@ goog.ui.ComboBox.prototype.createDom = function() {
   this.input_.setAttribute('label', this.defaultText_);
   this.labelInput_.decorate(this.input_);
   this.menu_.setFocusable(false);
-  this.addChild(this.menu_, true);
+  if (!this.menu_.isInDocument()) {
+    this.addChild(this.menu_, true);
+  }
+};
+
+
+/**
+ * Enables/Disables the combo box.
+ * @param {boolean} enabled Whether to enable (true) or disable (false) the
+ *     combo box.
+ */
+goog.ui.ComboBox.prototype.setEnabled = function(enabled) {
+  this.enabled_ = enabled;
+  this.labelInput_.setEnabled(enabled);
+  goog.dom.classes.enable(this.getElement(),
+      goog.getCssName('goog-combobox-disabled'), !enabled);
 };
 
 
@@ -279,6 +306,7 @@ goog.ui.ComboBox.prototype.dismiss = function() {
  */
 goog.ui.ComboBox.prototype.addItem = function(item) {
   this.menu_.addChild(item, true);
+  this.visibleCount_ = -1;
 };
 
 
@@ -289,6 +317,7 @@ goog.ui.ComboBox.prototype.addItem = function(item) {
  */
 goog.ui.ComboBox.prototype.addItemAt = function(item, n) {
   this.menu_.addChildAt(item, n, true);
+  this.visibleCount_ = -1;
 };
 
 
@@ -300,6 +329,7 @@ goog.ui.ComboBox.prototype.removeItem = function(item) {
   var child = this.menu_.removeChild(item, true);
   if (child) {
     child.dispose();
+    this.visibleCount_ = -1;
   }
 };
 
@@ -322,6 +352,7 @@ goog.ui.ComboBox.prototype.removeItemAt = function(n) {
   var child = this.menu_.removeChildAt(n, true);
   if (child) {
     child.dispose();
+    this.visibleCount_ = -1;
   }
 };
 
@@ -464,7 +495,7 @@ goog.ui.ComboBox.prototype.getValue = function() {
  *     when multi-input is disabled it will be the full input value.
  */
 goog.ui.ComboBox.prototype.getToken = function() {
-  // TODO: Implement multi-input such that getToken returns a substring
+  // TODO(user): Implement multi-input such that getToken returns a substring
   // of the whole input delimited by commas.
   return goog.string.htmlEscape(
       goog.string.trim(this.labelInput_.getValue().toLowerCase()));
@@ -472,15 +503,13 @@ goog.ui.ComboBox.prototype.getToken = function() {
 
 
 /**
- * @return {goog.ui.Menu} A created and set up menu.
  * @private
  */
-goog.ui.ComboBox.prototype.createMenu_ = function() {
-  var sm = new goog.ui.Menu(this.getDomHelper());
+goog.ui.ComboBox.prototype.setupMenu_ = function() {
+  var sm = this.menu_;
   sm.setVisible(false);
   sm.setAllowAutoFocus(false);
   sm.setAllowHighlightDisabled(true);
-  return sm;
 };
 
 
@@ -525,7 +554,8 @@ goog.ui.ComboBox.prototype.maybeShowMenu_ = function(showAll) {
  */
 goog.ui.ComboBox.prototype.showMenu_ = function() {
   this.menu_.setVisible(true);
-  goog.dom.classes.add(this.getElement(), 'goog-combobox-active');
+  goog.dom.classes.add(this.getElement(),
+      goog.getCssName('goog-combobox-active'));
 };
 
 
@@ -535,7 +565,8 @@ goog.ui.ComboBox.prototype.showMenu_ = function() {
  */
 goog.ui.ComboBox.prototype.hideMenu_ = function() {
   this.menu_.setVisible(false);
-  goog.dom.classes.remove(this.getElement(), 'goog-combobox-active');
+  goog.dom.classes.remove(this.getElement(),
+      goog.getCssName('goog-combobox-active'));
 };
 
 
@@ -558,8 +589,9 @@ goog.ui.ComboBox.prototype.clearDismissTimer_ = function() {
  */
 goog.ui.ComboBox.prototype.onComboMouseDown_ = function(e) {
   // We only want this event on the element itself or the input or the button.
-  if (e.target == this.getElement() || e.target == this.input_ ||
-      goog.dom.contains(this.button_, e.target)) {
+  if (this.enabled_ &&
+      (e.target == this.getElement() || e.target == this.input_ ||
+       goog.dom.contains(this.button_, e.target))) {
     if (this.menu_.isVisible()) {
       this.logger_.fine('Menu is visible, dismissing');
       this.dismiss();
@@ -587,8 +619,10 @@ goog.ui.ComboBox.prototype.onComboMouseDown_ = function(e) {
  * @private
  */
 goog.ui.ComboBox.prototype.onDocClicked_ = function(e) {
-  this.logger_.info('onDocClicked_() - dismissing immediately');
-  this.dismiss();
+  if (!goog.dom.contains(this.menu_.getElement(), e.target)) {
+    this.logger_.info('onDocClicked_() - dismissing immediately');
+    this.dismiss();
+  }
 };
 
 
@@ -791,17 +825,27 @@ goog.ui.ComboBox.prototype.isItemSticky_ = function(item) {
 
 /**
  * Class for combo box items.
- * @param {string} caption Text caption for the menu item.
- * @param {Object} opt_data Identifying data for the menu item.
- * @param {goog.dom.DomHelper} opt_domHelper Optional dom helper used for dom
+ * @param {goog.ui.ControlContent} content Text caption or DOM structure to
+ *     display as the content of the item (use to add icons or styling to
+ *     menus).
+ * @param {Object=} opt_data Identifying data for the menu item.
+ * @param {goog.dom.DomHelper=} opt_domHelper Optional dom helper used for dom
  *     interactions.
  * @constructor
  * @extends {goog.ui.MenuItem}
  */
-goog.ui.ComboBoxItem = function(caption, opt_data, opt_domHelper) {
-  goog.ui.MenuItem.call(this, caption, opt_data, opt_domHelper);
+goog.ui.ComboBoxItem = function(content, opt_data, opt_domHelper) {
+  goog.ui.MenuItem.call(this, content, opt_data, opt_domHelper);
 };
 goog.inherits(goog.ui.ComboBoxItem, goog.ui.MenuItem);
+
+
+// Register a decorator factory function for goog.ui.ComboBoxItems.
+goog.ui.registry.setDecoratorByClassName(
+    goog.getCssName('goog-combobox-item'), function() {
+  // ComboBoxItem defaults to using MenuItemRenderer.
+  return new goog.ui.ComboBoxItem(null);
+});
 
 
 /**
@@ -843,6 +887,7 @@ goog.ui.ComboBoxItem.prototype.setFormatFromToken = function(token) {
           caption.replace(new RegExp(escapedToken, 'i'), function(m) {
             return '<b>' + m + '</b>';
           });
+      this.setContentInternal(caption);
     }
   }
 };

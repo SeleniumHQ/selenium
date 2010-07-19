@@ -1,16 +1,16 @@
+// Copyright 2008 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-// Copyright 2008 Google Inc. All Rights Reserved.
 
 /**
  * @fileoverview This file defines base classes used for creating mocks in
@@ -33,6 +33,7 @@
  *   Have the exceptions for LooseMock show the number of expected/actual calls
  *   loose and strict mocks share a lot of code - move it to the base class
  *
+*
  */
 
 goog.provide('goog.testing.Mock');
@@ -151,9 +152,9 @@ goog.testing.MockExpectation.prototype.getErrorMessageCount = function() {
  * The base class for a mock object.
  * @param {Object|Function} objectToMock The object that should be mocked, or
  *    the constructor of an object to mock.
- * @param {boolean} opt_mockStaticMethods An optional argument denoting that
+ * @param {boolean=} opt_mockStaticMethods An optional argument denoting that
  *     a mock should be constructed from the static functions of a class.
- * @param {boolean} opt_createProxy An optional argument denoting that
+ * @param {boolean=} opt_createProxy An optional argument denoting that
  *     a proxy for the target mock should be created.
  * @constructor
  */
@@ -187,7 +188,7 @@ goog.testing.Mock = function(objectToMock, opt_mockStaticMethods,
 /**
  * A proxy for the mock.  This can be used for dependency injection in lieu of
  * the mock if the test requires a strict instanceof check.
- * @type {Object?}
+ * @type {Object}
  */
 goog.testing.Mock.prototype.$proxy = null;
 
@@ -437,7 +438,7 @@ goog.testing.Mock.prototype.$reset = function() {
 /**
  * Throws an exception and records that an exception was thrown.
  * @param {string} comment A short comment about the exception.
- * @param {string?} opt_message A longer message about the exception.
+ * @param {?string=} opt_message A longer message about the exception.
  * @throws {Object} JsUnitException object.
  * @protected
  */
@@ -486,7 +487,7 @@ goog.testing.Mock.prototype.$verify = function() {
 /**
  * Verifies that a method call matches an expectation.
  * @param {goog.testing.MockExpectation} expectation The expectation to check.
- * @param {String} name The name of the called method.
+ * @param {string} name The name of the called method.
  * @param {Array.<*>?} args The arguments passed to the mock.
  * @return {boolean} Whether the call matches the expectation.
  */
@@ -523,7 +524,7 @@ goog.testing.Mock.prototype.$argumentsAsString = function(args) {
  * Throw an exception based on an incorrect method call.
  * @param {string} name Name of method called.
  * @param {Array.<*>?} args Arguments passed to the mock.
- * @param {goog.testing.MockExpectation} opt_expectation Expected next call,
+ * @param {goog.testing.MockExpectation=} opt_expectation Expected next call,
  *     if any.
  */
 goog.testing.Mock.prototype.$throwCallException = function(name, args,

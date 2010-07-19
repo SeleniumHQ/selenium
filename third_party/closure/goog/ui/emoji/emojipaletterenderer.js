@@ -1,20 +1,21 @@
+// Copyright 2008 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Copyright 2008 Google Inc. All Rights Reserved.
-
 /**
  * @fileoverview Emoji Palette renderer implementation.
  *
+*
  */
 
 goog.provide('goog.ui.emoji.EmojiPaletteRenderer');
@@ -22,13 +23,14 @@ goog.provide('goog.ui.emoji.EmojiPaletteRenderer');
 goog.require('goog.dom');
 goog.require('goog.dom.a11y');
 goog.require('goog.ui.PaletteRenderer');
+goog.require('goog.ui.emoji.Emoji');
 goog.require('goog.ui.emoji.SpriteInfo');
 
 
 /**
  * Renders an emoji palette.
  *
- * @param {string?} defaultImgUrl Url of the img that should be used to fill up
+ * @param {?string} defaultImgUrl Url of the img that should be used to fill up
  *     the cells in the emoji table, to prevent jittering. Will be stretched
  *     to the emoji cell size. A good image is a transparent dot.
  * @constructor
@@ -56,7 +58,7 @@ goog.ui.emoji.EmojiPaletteRenderer.cellId_ = 0;
  * not filled with emoji, i.e., after all the emoji have already been placed
  * on a page.
  *
- * @type {string?}
+ * @type {?string}
  * @private
  */
 goog.ui.emoji.EmojiPaletteRenderer.prototype.defaultImgUrl_ = null;
@@ -95,7 +97,7 @@ goog.ui.emoji.EmojiPaletteRenderer.prototype.createPaletteItem =
 
   var outerdiv =
       dom.createDom('div', goog.getCssName('goog-palette-cell-wrapper'), el);
-  outerdiv.setAttribute('goomoji', id);
+  outerdiv.setAttribute(goog.ui.emoji.Emoji.ATTRIBUTE, id);
   return /** @type {HTMLDivElement} */ (outerdiv);
 };
 
@@ -189,7 +191,7 @@ goog.ui.emoji.EmojiPaletteRenderer.prototype.createCell = function(node, dom) {
  * neither a palette cell nor part of a palette item.
  * @param {goog.ui.Palette} palette Palette in which to look for the item.
  * @param {Node} node Node to look for.
- * @return {Node?} The corresponding palette item (null if not found).
+ * @return {Node} The corresponding palette item (null if not found).
  */
 goog.ui.emoji.EmojiPaletteRenderer.prototype.getContainingItem =
     function(palette, node) {

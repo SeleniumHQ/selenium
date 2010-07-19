@@ -1,23 +1,24 @@
+// Copyright 2007 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Copyright 2007 Google Inc. All Rights Reserved.
-
 /**
  * @fileoverview Single-selection model implemenation.
  *
- * TODO: Add keyboard & mouse event hooks?
- * TODO: Add multiple selection?
+ * TODO(user): Add keyboard & mouse event hooks?
+ * TODO(user): Add multiple selection?
  *
+*
  */
 
 
@@ -31,7 +32,7 @@ goog.require('goog.events.EventType');
 /**
  * Single-selection model.  Dispatches a {@link goog.events.EventType.SELECT}
  * event when a selection is made.
- * @param {Array.<Object>} opt_items Array of items; defaults to empty.
+ * @param {Array.<Object>=} opt_items Array of items; defaults to empty.
  * @extends {goog.events.EventTarget}
  * @constructor
  */
@@ -53,7 +54,7 @@ goog.inherits(goog.ui.SelectionModel, goog.events.EventTarget);
 
 /**
  * The currently selected item (null if none).
- * @type {Object?}
+ * @type {Object}
  * @private
  */
 goog.ui.SelectionModel.prototype.selectedItem_ = null;
@@ -63,7 +64,7 @@ goog.ui.SelectionModel.prototype.selectedItem_ = null;
  * Selection handler function.  Called with two arguments (the item to be
  * selected or deselected, and a Boolean indicating whether the item is to
  * be selected or deselected).
- * @type {Function?}
+ * @type {Function}
  * @private
  */
 goog.ui.SelectionModel.prototype.selectionHandler_ = null;
@@ -72,7 +73,7 @@ goog.ui.SelectionModel.prototype.selectionHandler_ = null;
 /**
  * Returns the selection handler function used by the selection model to change
  * the internal selection state of items under its control.
- * @return {Function?} Selection handler function (null if none).
+ * @return {Function} Selection handler function (null if none).
  */
 goog.ui.SelectionModel.prototype.getSelectionHandler = function() {
   return this.selectionHandler_;
@@ -134,7 +135,7 @@ goog.ui.SelectionModel.prototype.getLast = function() {
 /**
  * Returns the item at the given 0-based index.
  * @param {number} index Index of the item to return.
- * @return {Object?} Item at the given index (null if none).
+ * @return {Object} Item at the given index (null if none).
  */
 goog.ui.SelectionModel.prototype.getItemAt = function(index) {
   return this.items_[index] || null;
@@ -183,7 +184,7 @@ goog.ui.SelectionModel.prototype.addItemAt = function(item, index) {
 /**
  * Removes the given item (if it exists).  Dispatches a {@code SELECT} event if
  * the removed item was the currently selected item.
- * @param {Object?} item Item to remove.
+ * @param {Object} item Item to remove.
  */
 goog.ui.SelectionModel.prototype.removeItem = function(item) {
   if (item && goog.array.remove(this.items_, item)) {
@@ -215,7 +216,7 @@ goog.ui.SelectionModel.prototype.getSelectedItem = function() {
 /**
  * Selects the given item, deselecting any previously selected item, and
  * dispatches a {@code SELECT} event.
- * @param {Object?} item Item to select (null to clear the selection).
+ * @param {Object} item Item to select (null to clear the selection).
  */
 goog.ui.SelectionModel.prototype.setSelectedItem = function(item) {
   if (item != this.selectedItem_) {

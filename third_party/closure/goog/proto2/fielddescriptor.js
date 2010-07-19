@@ -1,19 +1,20 @@
+// Copyright 2008 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Copyright 2008 Google Inc. All Rights Reserved.
-
 /**
  * @fileoverview Protocol Buffer Field Descriptor class.
+*
  */
 
 goog.provide('goog.proto2.FieldDescriptor');
@@ -59,6 +60,9 @@ goog.proto2.FieldDescriptor = function(messageType, tag, metadata) {
    */
   this.name_ = metadata.name;
 
+  /** @type {*} */
+  metadata.required;
+
   /**
    * If true, this field is a repeating field.
    * @type {boolean}
@@ -84,7 +88,7 @@ goog.proto2.FieldDescriptor = function(messageType, tag, metadata) {
    * If this field is a primitive: The native (ECMAScript) type of this field.
    * If an enumeration: The enumeration object.
    * If a message or group field: The Message function.
-   * @type {Object}
+   * @type {Function}
    * @private
    */
   this.nativeType_ = metadata.type;
@@ -92,7 +96,7 @@ goog.proto2.FieldDescriptor = function(messageType, tag, metadata) {
   /**
    * The default value of this field, if different from the default, default
    * value.
-   * @type {Object|undefined}
+   * @type {*}
    * @private
    */
   this.defaultValue_ = metadata.defaultValue;
@@ -120,7 +124,7 @@ goog.proto2.FieldDescriptor.prototype.getContainingType = function() {
 
 /**
  * Returns the name of the field that this descriptor represents.
- * @return {String} The name.
+ * @return {string} The name.
  */
 goog.proto2.FieldDescriptor.prototype.getName = function() {
   return this.name_;
@@ -129,17 +133,26 @@ goog.proto2.FieldDescriptor.prototype.getName = function() {
 
 /**
  * Returns the default value of this field.
- * @return {Object} The default value.
+ * @return {*} The default value.
  */
 goog.proto2.FieldDescriptor.prototype.getDefaultValue = function() {
   if (this.defaultValue_ === undefined) {
     // Set the default value based on a new instance of the native type.
     // This will be (0, false, "") for (number, boolean, string) and will
     // be a new instance of a group/message if the field is a message type.
-    this.defaultValue_ = new this.nativeType_;
+    var nativeType = this.nativeType_;
+    if (nativeType == Boolean) {
+      this.defaultValue_ = false;
+    } else if (nativeType == Number) {
+      this.defaultValue_ = 0;
+    } else if (nativeType == String) {
+      this.defaultValue_ = '';
+    } else {
+      this.defaultValue_ = new nativeType;
+    }
   }
 
-  return /** @type {Object} */ (this.defaultValue_);
+  return this.defaultValue_;
 };
 
 
@@ -181,7 +194,7 @@ goog.proto2.FieldDescriptor.prototype.getFieldMessageType = function() {
 
 /**
  * Returns whether the field described by this descriptor is repeating.
- * @return {Boolean} Whether the field is repeated.
+ * @return {boolean} Whether the field is repeated.
  */
 goog.proto2.FieldDescriptor.prototype.isRepeated = function() {
   return this.isRepeated_;
@@ -190,7 +203,7 @@ goog.proto2.FieldDescriptor.prototype.isRepeated = function() {
 
 /**
  * Returns whether the field described by this descriptor is required.
- * @return {Boolean} Whether the field is required.
+ * @return {boolean} Whether the field is required.
  */
 goog.proto2.FieldDescriptor.prototype.isRequired = function() {
   return this.isRequired_;
@@ -199,7 +212,7 @@ goog.proto2.FieldDescriptor.prototype.isRequired = function() {
 
 /**
  * Returns whether the field described by this descriptor is optional.
- * @return {Boolean} Whether the field is optional.
+ * @return {boolean} Whether the field is optional.
  */
 goog.proto2.FieldDescriptor.prototype.isOptional = function() {
   return !this.isRepeated_ && !this.isRequired_;

@@ -1,19 +1,20 @@
+// Copyright 2006 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Copyright 2006 Google Inc. All Rights Reserved.
-
 /**
  * @fileoverview Date/Time parsing library with locale support.
+*
  */
 
 /**
@@ -115,7 +116,6 @@ goog.require('goog.i18n.DateTimeSymbols');
  * that point, the parse of the run fails.
  *
  * <p> Now timezone parsing only support GMT:hhmm, GMT:+hhmm, GMT:-hhmm
- *
  */
 
 
@@ -249,7 +249,7 @@ goog.i18n.DateTimeParse.prototype.applyStandardPattern_ = function(formatType)
  * not validate the input.
  * @param {string} text The string being parsed.
  * @param {Date} date The Date object to hold the parsed date.
- * @param {number} opt_start The position from where parse should begin.
+ * @param {number=} opt_start The position from where parse should begin.
  * @return {number} How many characters parser advanced.
  */
 goog.i18n.DateTimeParse.prototype.parse = function(text, date, opt_start) {
@@ -263,7 +263,7 @@ goog.i18n.DateTimeParse.prototype.parse = function(text, date, opt_start) {
  * validate the input and make sure it is a validate date/time.
  * @param {string} text The string being parsed.
  * @param {Date} date The Date object to hold the parsed date.
- * @param {number} opt_start The position from where parse should begin.
+ * @param {number=} opt_start The position from where parse should begin.
  * @return {number} How many characters parser advanced.
  */
 goog.i18n.DateTimeParse.prototype.strictParse =
@@ -744,7 +744,7 @@ goog.i18n.DateTimeParse.prototype.subparseTimeZoneInGMT_ =
     return this.parseTimeZoneOffset_(text, pos, cal);
   }
 
-  // TODO: check for named time zones by looking through the locale
+  // TODO(user): check for named time zones by looking through the locale
   // data from the DateFormatZoneData strings. should parse both short and long
   // forms.
   // subParseZoneString(text, start, cal);
@@ -884,67 +884,67 @@ goog.i18n.DateTimeParse.MyDate_ = function(){};
 
 /**
  * The date's era.
- * @type {number?}
+ * @type {?number}
  */
 goog.i18n.DateTimeParse.MyDate_.prototype.era;
 
 /**
  * The date's year.
- * @type {number?}
+ * @type {?number}
  */
 goog.i18n.DateTimeParse.MyDate_.prototype.year;
 
 /**
  * The date's month.
- * @type {number?}
+ * @type {?number}
  */
 goog.i18n.DateTimeParse.MyDate_.prototype.month;
 
 /**
  * The date's day of month.
- * @type {number?}
+ * @type {?number}
  */
 goog.i18n.DateTimeParse.MyDate_.prototype.day;
 
 /**
  * The date's hour.
- * @type {number?}
+ * @type {?number}
  */
 goog.i18n.DateTimeParse.MyDate_.prototype.hours;
 
 /**
  * The date's before/afternoon denominator.
- * @type {number?}
+ * @type {?number}
  */
 goog.i18n.DateTimeParse.MyDate_.prototype.ampm;
 
 /**
  * The date's minutes.
- * @type {number?}
+ * @type {?number}
  */
 goog.i18n.DateTimeParse.MyDate_.prototype.minutes;
 
 /**
  * The date's seconds.
- * @type {number?}
+ * @type {?number}
  */
 goog.i18n.DateTimeParse.MyDate_.prototype.seconds;
 
 /**
  * The date's milliseconds.
- * @type {number?}
+ * @type {?number}
  */
 goog.i18n.DateTimeParse.MyDate_.prototype.milliseconds;
 
 /**
  * The date's timezone offset.
- * @type {number?}
+ * @type {?number}
  */
 goog.i18n.DateTimeParse.MyDate_.prototype.tzOffset;
 
 /**
  * The date's day of week. Sunday is 0, Saturday is 6.
- * @type {number?}
+ * @type {?number}
  */
 goog.i18n.DateTimeParse.MyDate_.prototype.dayOfWeek;
 

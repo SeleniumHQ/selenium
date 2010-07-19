@@ -1,20 +1,21 @@
+// Copyright 2006 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Copyright 2006 Google Inc. All Rights Reserved.
-
 /**
  * @fileoverview Utilities related to alpha/transparent colors and alpha color
  * conversion.
+*
  */
 
 goog.provide('goog.color.alpha');
@@ -135,7 +136,7 @@ goog.color.alpha.normalizeAlphaHex_ = function(hexColor) {
  * @return {Array} array containing [r, g, b] as ints in [0, 255].
  */
 goog.color.alpha.hexToRgba = function(hexColor) {
-  // TODO: Enhance code sharing with goog.color, for example by
+  // TODO(user): Enhance code sharing with goog.color, for example by
   //     adding a goog.color.genericHexToRgb method.
   hexColor = goog.color.alpha.normalizeAlphaHex_(hexColor);
   var r = parseInt(hexColor.substr(1, 2), 16);
@@ -158,7 +159,7 @@ goog.color.alpha.hexToRgba = function(hexColor) {
 goog.color.alpha.rgbaToHex = function(r, g, b, a) {
   var intAlpha = Math.floor(a * 255);
   if (isNaN(intAlpha) || intAlpha < 0 || intAlpha > 255) {
-    // TODO: The CSS spec says the value should be clamped.
+    // TODO(user): The CSS spec says the value should be clamped.
     throw Error('"(' + r + ',' + g + ',' + b + ',' + a +
         '") is not a valid RGBA color');
   }
@@ -178,7 +179,7 @@ goog.color.alpha.rgbaToHex = function(r, g, b, a) {
 goog.color.alpha.hslaToHex = function(h, s, l, a) {
   var intAlpha = Math.floor(a * 255);
   if (isNaN(intAlpha) || intAlpha < 0 || intAlpha > 255) {
-    // TODO: The CSS spec says the value should be clamped.
+    // TODO(user): The CSS spec says the value should be clamped.
     throw Error('"(' + h + ',' + s + ',' + l + ',' + a +
         '") is not a valid HSLA color');
   }
@@ -290,7 +291,7 @@ goog.color.alpha.validAlphaHexColorRe_ = /^#(?:[0-9a-f]{4}){1,2}$/i;
  * @return {boolean} Whether the string is a valid alpha hex color.
  * @private
  */
-// TODO: Support percentages when goog.color also supports them.
+// TODO(user): Support percentages when goog.color also supports them.
 goog.color.alpha.isValidAlphaHexColor_ = function(str) {
   return goog.color.alpha.validAlphaHexColorRe_.test(str);
 };

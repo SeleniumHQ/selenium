@@ -1,19 +1,22 @@
+// Copyright 2006 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Copyright 2006 Google Inc. All Rights Reserved.
-
 /**
  * @fileoverview Utilities for manipulating objects/maps/hashes.
+*
+*
+*
  */
 
 goog.provide('goog.object');
@@ -26,7 +29,7 @@ goog.provide('goog.object');
  * @param {Function} f The function to call for every element. This function
  *     takes 3 arguments (the element, the index and the object)
  *     and the return value is irrelevant.
- * @param {Object} opt_obj This is used as the 'this' object within f.
+ * @param {Object=} opt_obj This is used as the 'this' object within f.
  */
 goog.object.forEach = function(obj, f, opt_obj) {
   for (var key in obj) {
@@ -45,7 +48,7 @@ goog.object.forEach = function(obj, f, opt_obj) {
  *     and should return a boolean. If the return value is true the
  *     element is added to the result object. If it is false the
  *     element is not included.
- * @param {Object} opt_obj This is used as the 'this' object within f.
+ * @param {Object=} opt_obj This is used as the 'this' object within f.
  * @return {!Object} a new object in which only elements that passed the test
  *     are present.
  */
@@ -69,7 +72,7 @@ goog.object.filter = function(obj, f, opt_obj) {
  *     takes 3 arguments (the element, the index and the object)
  *     and should return something. The result will be inserted
  *     into a new object.
- * @param {Object} opt_obj This is used as the 'this' object within f.
+ * @param {Object=} opt_obj This is used as the 'this' object within f.
  * @return {!Object} a new object with the results from f.
  */
 goog.object.map = function(obj, f, opt_obj) {
@@ -90,7 +93,7 @@ goog.object.map = function(obj, f, opt_obj) {
  * @param {Function} f The function to call for every element. This function
  *     takes 3 arguments (the element, the index and the object) and should
  *     return a boolean.
- * @param {Object} opt_obj This is used as the 'this' object within f.
+ * @param {Object=} opt_obj This is used as the 'this' object within f.
  * @return {boolean} true if any element passes the test.
  */
 goog.object.some = function(obj, f, opt_obj) {
@@ -112,7 +115,7 @@ goog.object.some = function(obj, f, opt_obj) {
  * @param {Function} f The function to call for every element. This function
  *     takes 3 arguments (the element, the index and the object) and should
  *     return a boolean.
- * @param {Object} opt_obj This is used as the 'this' object within f.
+ * @param {Object=} opt_obj This is used as the 'this' object within f.
  * @return {boolean} false if any element fails the test.
  */
 goog.object.every = function(obj, f, opt_obj) {
@@ -255,7 +258,7 @@ goog.object.containsValue = function(obj, val) {
  * @param {function(*, string, Object): boolean} f The function to call for
  *     every element. Takes 3 arguments (the value, the key and the object) and
  *     should return a boolean.
- * @param {Object} opt_this An optional "this" context for the function.
+ * @param {Object=} opt_this An optional "this" context for the function.
  * @return {string|undefined} The key of an element for which the function
  *     returns true or undefined if no such element is found.
  */
@@ -276,7 +279,7 @@ goog.object.findKey = function(obj, f, opt_this) {
  * @param {function(*, string, Object): boolean} f The function to call for
  *     every element. Takes 3 arguments (the value, the key and the object) and
  *     should return a boolean.
- * @param {Object} opt_this An optional "this" context for the function.
+ * @param {Object=} opt_this An optional "this" context for the function.
  * @return {*} The value of an element for which the function returns true or
  *     undefined if no such element is found.
  */
@@ -351,7 +354,7 @@ goog.object.add = function(obj, key, val) {
  *
  * @param {Object} obj The object from which to get the value.
  * @param {string} key The key for which to get the value.
- * @param {*} opt_val The value to return if no item is found for the given
+ * @param {*=} opt_val The value to return if no item is found for the given
  *     key (default is undefined).
  * @return {*} The value for the given key.
  */
@@ -452,7 +455,7 @@ goog.object.PROTOTYPE_FIELDS_ = [
  * o; // {a: 0, b: 1, c: 2}
  *
  * @param {Object} target  The object to modify.
- * @param {Object} var_args The objects from which values will be copied.
+ * @param {...Object} var_args The objects from which values will be copied.
  */
 goog.object.extend = function(target, var_args) {
   var key, source;
@@ -480,9 +483,9 @@ goog.object.extend = function(target, var_args) {
 
 /**
  * Creates a new object built from the key-value pairs provided as arguments.
- * @param {*} var_args If only one argument is provided and it is an array then
- *     this is used as the arguments,  otherwise even arguments are used as the
- *     property names and odd arguments are used as the property values.
+ * @param {...*} var_args If only one argument is provided and it is an array
+ *     then this is used as the arguments,  otherwise even arguments are used as
+ *     the property names and odd arguments are used as the property values.
  * @return {!Object} The new object.
  * @throws {Error} If there are uneven number of arguments or there is only one
  *     non array argument.
@@ -508,9 +511,9 @@ goog.object.create = function(var_args) {
 /**
  * Creates a new object where the property names come from the arguments but
  * the value is always set to true
- * @param {*} var_args If only one argument is provided and it is an array then
- *     this is used as the arguments,  otherwise the arguments are used as the
- *     property names.
+ * @param {...*} var_args If only one argument is provided and it is an array
+ *     then this is used as the arguments,  otherwise the arguments are used
+ *     as the property names.
  * @return {!Object} The new object.
  */
 goog.object.createSet = function(var_args) {

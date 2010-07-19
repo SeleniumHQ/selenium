@@ -1,22 +1,23 @@
+// Copyright 2007 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-// Copyright 2007 Google Inc. All Rights Reserved.
 
 /**
  * @fileoverview A card that displays the offline status of an app. It contains
  * detailed information such as a progress bar the indicates the status of
  * syncing and allows you to perform actions (such as manually go offline).
  *
+*
  * @see ../demos/offline.html
  */
 
@@ -35,7 +36,7 @@ goog.require('goog.ui.ProgressBar');
 
 /**
  * A offline status card.
- * @param {goog.dom.DomHelper} opt_domHelper Optional DOM helper.
+ * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM helper.
  * @constructor
  * @extends {goog.ui.Component}
  */
@@ -51,7 +52,7 @@ goog.ui.OfflineStatusCard = function(opt_domHelper) {
   this.addChild(this.progressBar_);
 
   /**
-   * A map of action element hashcode/action event type pairs.
+   * A map of action element uid/action event type pairs.
    * @type {goog.structs.Map}
    * @private
    */
@@ -89,7 +90,7 @@ goog.ui.OfflineStatusCard.prototype.status_ =
 
 /**
  * The element that holds the status message.
- * @type {Element?}
+ * @type {Element}
  * @private
  */
 goog.ui.OfflineStatusCard.prototype.statusEl_ = null;
@@ -98,7 +99,7 @@ goog.ui.OfflineStatusCard.prototype.statusEl_ = null;
 /**
  * The element that, when clicked, performs the appropriate action (such as
  * pausing synchronization).
- * @type {Element?}
+ * @type {Element}
  * @private
  */
 goog.ui.OfflineStatusCard.prototype.actionEl_ = null;
@@ -106,7 +107,7 @@ goog.ui.OfflineStatusCard.prototype.actionEl_ = null;
 
 /**
  * The element that displays additional messaging.
- * @type {Element?}
+ * @type {Element}
  * @private
  */
 goog.ui.OfflineStatusCard.prototype.messageEl_ = null;
@@ -114,7 +115,7 @@ goog.ui.OfflineStatusCard.prototype.messageEl_ = null;
 
 /**
  * The element that holds the progress bar and progress status.
- * @type {Element?}
+ * @type {Element}
  * @private
  */
 goog.ui.OfflineStatusCard.prototype.progressEl_ = null;
@@ -122,7 +123,7 @@ goog.ui.OfflineStatusCard.prototype.progressEl_ = null;
 
 /**
  * The element that holds the progress status.
- * @type {Element?}
+ * @type {Element}
  * @private
  */
 goog.ui.OfflineStatusCard.prototype.progressStatusEl_ = null;
@@ -130,7 +131,7 @@ goog.ui.OfflineStatusCard.prototype.progressStatusEl_ = null;
 
 /**
  * The element that holds the close button.
- * @type {Element?}
+ * @type {Element}
  * @private
  */
 goog.ui.OfflineStatusCard.prototype.closeEl_ = null;
@@ -403,7 +404,7 @@ goog.ui.OfflineStatusCard.prototype.createLinkNode_ = function(
   dom.appendChild(actionEl, a);
   // A text node is needed here in order for links to wrap.
   dom.appendChild(actionEl, dom.createTextNode(' '));
-  this.actionMap_.set(goog.getHashCode(a), action.eventType);
+  this.actionMap_.set(goog.getUid(a), action.eventType);
   goog.style.showElement(a, true);
   dom.setTextContent(a, action.message);
 };
@@ -452,7 +453,7 @@ goog.ui.OfflineStatusCard.prototype.handleProgressChange_ = function(e) {
  */
 goog.ui.OfflineStatusCard.prototype.handleActionClick_ = function(e) {
   var actionEventType = /** @type {string} */ (this.actionMap_.get(
-      goog.getHashCode(e.target)));
+      goog.getUid(e.target)));
   if (actionEventType) {
     this.dispatchEvent(actionEventType);
   }

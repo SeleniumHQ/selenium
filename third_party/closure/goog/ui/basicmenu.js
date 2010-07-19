@@ -1,16 +1,16 @@
+// Copyright 2006 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-// Copyright 2006 Google Inc. All Rights Reserved.
 
 /**
  * @fileoverview A basic menu that accepts a set of items.  The ITEM_EVENT
@@ -20,13 +20,14 @@
  * goog.ui.PopupMenu, and if you need submenus goog.ui.SubMenu.
  *
  *
+*
+*
  */
 
 goog.provide('goog.ui.BasicMenu');
 goog.provide('goog.ui.BasicMenu.Item');
 goog.provide('goog.ui.BasicMenu.Separator');
 
-goog.require('goog.Timer');
 goog.require('goog.array');
 goog.require('goog.dom');
 goog.require('goog.dom.a11y');
@@ -42,8 +43,8 @@ goog.require('goog.ui.ItemEvent');
  * code.The ITEM_EVENT instead of returning the DOM node returns a reference the
  * menu item.
  *
- * @param {string} opt_class Optional class for menu element, Default: 'menu'.
- * @param {Element} opt_parent Optional parent element, otherwise it will be
+ * @param {string=} opt_class Optional class for menu element, Default: 'menu'.
+ * @param {Element=} opt_parent Optional parent element, otherwise it will be
  *     added to the end of the document body.
  * @constructor
  * @extends {goog.ui.AttachableMenu}
@@ -91,7 +92,7 @@ goog.inherits(goog.ui.BasicMenu, goog.ui.AttachableMenu);
 
 /**
  * Key for the event used to trigger the menu
- * @type {string?}
+ * @type {?number}
  * @private
  */
 goog.ui.BasicMenu.prototype.evtKey_ = null;
@@ -99,7 +100,7 @@ goog.ui.BasicMenu.prototype.evtKey_ = null;
 
 /**
  * Key for the window resize event listener
- * @type {string?}
+ * @type {?number}
  * @private
  */
 goog.ui.BasicMenu.prototype.resizeEvtKey_ = null;
@@ -230,8 +231,8 @@ goog.ui.BasicMenu.prototype.getParentMenu = function() {
 /**
  * Anchor the menu position to an element, and attach a click event.
  * @param {Element} el Element to anchor menu to.
- * @param {goog.positioning.Corner} opt_pos Corner: Default Bottom-left.
- * @param {goog.events.EventType} opt_eventType Event that triggers menu.
+ * @param {goog.positioning.Corner=} opt_pos Corner: Default Bottom-left.
+ * @param {goog.events.EventType=} opt_eventType Event that triggers menu.
  *     Default click.
  */
 goog.ui.BasicMenu.prototype.setAnchorElement = function(el, opt_pos,
@@ -274,7 +275,7 @@ goog.ui.BasicMenu.prototype.disposeInternal = function() {
 /**
  * Sets whether the popup should be visible.
  * @param {boolean} visible Show menu?.
-*  @param {boolean} opt_bubble Bubble to parent menu?.
+*  @param {boolean=} opt_bubble Bubble to parent menu?.
  */
 goog.ui.BasicMenu.prototype.setVisible = function(visible, opt_bubble) {
   // Ignore setVisible(true) if already visible
@@ -331,7 +332,7 @@ goog.ui.BasicMenu.prototype.setSelectedIndex = function(index) {
  * Select menu item by element reference and active it (open/close submenus)
  * with a slight delay.
  * @param {Element} el Element for item to select.
- * @param {boolean} opt_keyEvent Was item selected using keyboard? In that case
+ * @param {boolean=} opt_keyEvent Was item selected using keyboard? In that case
  *     open submenus are closed immediately and new submenus are not opened
  *     automatically.
  * @private
@@ -404,7 +405,7 @@ goog.ui.BasicMenu.prototype.setSelectedItem = function(arg) {
   }
 
   if (el) {
-  // TODO: var item declared earlier
+  // TODO(user): var item declared earlier
     item = this.getItemForElement_(el);
     if (item.hasSubmenu()) {
       item.openSubmenu();
@@ -519,7 +520,7 @@ goog.ui.BasicMenu.prototype.containsElement_ = function(el) {
 
 /**
  * Mouse down handler for the document on capture phase. Hides the menu.
- * @param {goog.events.Event} e The event object.
+ * @param {goog.events.BrowserEvent} e The event object.
  * @private
  */
 goog.ui.BasicMenu.prototype.onDocumentMouseDown_ = function(e) {
@@ -667,11 +668,7 @@ goog.ui.BasicMenu.prototype.onShow_ = function() {
   this.setSelectedItem(null);
 
   var rtl = goog.style.isRightToLeft(this.element_);
-  if (rtl) {
-    goog.dom.classes.add(this.element_, 'goog-rtl');
-  } else {
-    goog.dom.classes.remove(this.element_, 'goog-rtl');
-  }
+  goog.dom.classes.enable(this.element_, goog.getCssName('goog-rtl'), rtl);
 
   if (!this.parentMenu_) {
     this.element_.focus();
@@ -700,8 +697,8 @@ goog.ui.BasicMenu.prototype.getItemForElement_ = function(el) {
  * A menu item
  *
  * @param {?string} caption Html caption that gets shown in the menu.
- * @param {Object} opt_value The value that gets returned in the ItemEvent.
- * @param {goog.ui.BasicMenu} opt_submenu Optional menu that this item is the
+ * @param {Object=} opt_value The value that gets returned in the ItemEvent.
+ * @param {goog.ui.BasicMenu=} opt_submenu Optional menu that this item is the
  *    anchor for.
  * @constructor
  * @extends {goog.Disposable}
@@ -718,7 +715,7 @@ goog.ui.BasicMenu.Item = function(caption, opt_value, opt_submenu) {
 
   /**
    * Value associated with the menu option.
-   * @type {Object}
+   * @type {*}
    * @private
    */
   this.value_ = opt_value || caption;
@@ -756,7 +753,7 @@ goog.ui.BasicMenu.Item.prototype.getCaption = function() {
 
 
 /**
- * @return {Object} The value associated with menu item.
+ * @return {*} The value associated with menu item.
  */
 goog.ui.BasicMenu.Item.prototype.getValue = function() {
   return this.value_;
@@ -827,8 +824,10 @@ goog.ui.BasicMenu.Item.prototype.create = function() {
   }
   var leftArrow, rightArrow;
   if (this.submenu_) {
-    rightArrow = goog.dom.createDom('span', 'goog-menu-arrow-right', '\u25b6');
-    leftArrow = goog.dom.createDom('span', 'goog-menu-arrow-left', '\u25c0');
+    rightArrow = goog.dom.createDom('span',
+        goog.getCssName('goog-menu-arrow-right'), '\u25b6');
+    leftArrow = goog.dom.createDom('span',
+        goog.getCssName('goog-menu-arrow-left'), '\u25c0');
   }
 
   this.element_ = goog.dom.createDom('div', this.menu_.getItemClassName(),

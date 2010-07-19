@@ -1,17 +1,16 @@
-// Copyright 2009 Google Inc.
+// Copyright 2010 The Closure Library Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
 // All Rights Reserved.
 
 /**
@@ -97,6 +96,7 @@
  *     IE7. The consequence of this is that exceptions that would have been
  *     caught by window.onerror show up as timeouts.
  *
+ * @author agrieve@google.com (Andrew Grieve)
  */
 
 goog.provide('goog.testing.AsyncTestCase');
@@ -109,7 +109,7 @@ goog.require('goog.testing.asserts');
 
 /**
  * A test case that is capable of running tests the contain asynchronous logic.
- * @param {string} opt_name A descriptive name for the test case.
+ * @param {string=} opt_name A descriptive name for the test case.
  * @extends {goog.testing.TestCase}
  * @constructor
  */
@@ -293,7 +293,7 @@ goog.testing.AsyncTestCase.prototype.numControlExceptionsExpected_ = 0;
 /**
  * Preferred way of creating an AsyncTestCase. Creates one and initializes it
  * with the G_testRunner.
- * @param {string} opt_name A descriptive name for the test case.
+ * @param {string=} opt_name A descriptive name for the test case.
  * @return {goog.testing.AsyncTestCase} The created AsyncTestCase.
  */
 goog.testing.AsyncTestCase.createAndInstall = function(opt_name) {
@@ -313,7 +313,7 @@ goog.testing.AsyncTestCase.createAndInstall = function(opt_name) {
 /**
  * Informs the testcase not to continue to the next step in the test cycle
  * until continueTesting is called.
- * @param {string} opt_name A description of what we are waiting for.
+ * @param {string=} opt_name A description of what we are waiting for.
  */
 goog.testing.AsyncTestCase.prototype.waitForAsync = function(opt_name) {
   this.isReady_ = false;
@@ -342,7 +342,7 @@ goog.testing.AsyncTestCase.prototype.continueTesting = function() {
 
 /**
  * Handles an exception thrown by a test.
- * @param {string|Error} opt_e The exception object associated with the
+ * @param {string|Error=} opt_e The exception object associated with the
  *     failure or a string.
  * @throws Always throws a ControlBreakingException.
  */
@@ -450,7 +450,7 @@ goog.testing.AsyncTestCase.prototype.dbgLog_ = function(message) {
 /**
  * Wraps doAsyncError() for when we are sure that the test runner has no user
  * code above it in the stack.
- * @param {string|Error} opt_e The exception object associated with the
+ * @param {string|Error=} opt_e The exception object associated with the
  *     failure or a string.
  * @private
  */
@@ -667,7 +667,7 @@ goog.testing.AsyncTestCase.prototype.callTopOfStackFunc_ = function(func) {
 
 /**
  * Calls the next callback when the isReady_ flag is true.
- * @param {Function} opt_doFirst A function to call before pumping.
+ * @param {Function=} opt_doFirst A function to call before pumping.
  * @private
  * @throws Throws a ControlBreakingException if there were any failing steps.
  */

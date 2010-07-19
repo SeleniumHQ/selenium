@@ -1,22 +1,23 @@
+// Copyright 2007 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-// Copyright 2007 Google Inc. All Rights Reserved.
 
 /**
  * @fileoverview This class lives on a worker thread and it intercepts the
  * goog.debug.Logger objects and sends a LOGGER command to the main thread
  * instead.
  *
+*
  */
 
 goog.provide('goog.gears.LoggerClient');
@@ -32,7 +33,7 @@ goog.require('goog.debug.Logger');
  * @param {goog.gears.Worker} mainThread  The main thread that has the
  *     logger server running.
  * @param {number} logCommandId  The command id used for logging.
- * @param {string} opt_workerName  This, if present, is added to the error
+ * @param {string=} opt_workerName  This, if present, is added to the error
  *     object when serializing it.
  * @constructor
  * @extends {goog.Disposable}
@@ -67,13 +68,11 @@ goog.gears.LoggerClient = function(mainThread, logCommandId, opt_workerName) {
 
   var loggerClient = this;
   // Override the log method
-  goog.debug.Logger.prototype.logRecord = function(logRecord) {
-    if (this.isLoggable(logRecord.getLevel())) {
-      var name = this.getName();
-      loggerClient.sendLog_(
-          name, logRecord.getLevel(), logRecord.getMessage(),
-          logRecord.getException());
-    }
+  goog.debug.Logger.prototype.doLogRecord_ = function(logRecord) {
+    var name = this.getName();
+    loggerClient.sendLog_(
+        name, logRecord.getLevel(), logRecord.getMessage(),
+        logRecord.getException());
   };
 
   goog.gears.LoggerClient.instance_ = this;
@@ -94,7 +93,7 @@ goog.gears.LoggerClient.instance_ = null;
  * @param {string} name The name of the logger.
  * @param {goog.debug.Logger.Level} level One of the level identifiers.
  * @param {string} msg The string message.
- * @param {Object} opt_exception An exception associated with the message.
+ * @param {Object=} opt_exception An exception associated with the message.
  * @private
  */
 goog.gears.LoggerClient.prototype.sendLog_ = function(name,

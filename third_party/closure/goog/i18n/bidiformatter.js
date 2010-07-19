@@ -1,21 +1,22 @@
+// Copyright 2009 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-// Copyright 2009 Google Inc. All Rights Reserved.
 
 /**
  * @fileoverview Utility for formatting text for display in a potentially
  * opposite-directionality context without garbling.
  * Mostly a port of http://go/formatter.cc
+*
  */
 
 
@@ -70,10 +71,10 @@ goog.require('goog.string');
  *     directionality. May be supplied either as a goog.i18n.bidi.Dir constant,
  *     as a number (positive = LRT, negative = RTL, 0 = unknown) or as a boolean
  *     (true = RTL, false = LTR).
- * @param {boolean} opt_alwaysSpan Whether {@link #spanWrap} should always use a
- *     'span' tag, even when the input directionality is neutral or matches the
- *     context, so that the DOM structure of the output does not depend on the
- *     combination of directionalities. Default: false.
+ * @param {boolean=} opt_alwaysSpan Whether {@link #spanWrap} should always
+ *     use a 'span' tag, even when the input directionality is neutral or
+ *     matches the context, so that the DOM structure of the output does not
+ *     depend on the combination of directionalities. Default: false.
  * @constructor
  */
 goog.i18n.BidiFormatter = function(contextDir, opt_alwaysSpan) {
@@ -139,7 +140,7 @@ goog.i18n.BidiFormatter.prototype.setAlwaysSpan = function(alwaysSpan) {
  * Identical to {@link goog.i18n.bidi.estimateDirection}.
  *
  * @param {string} str The input text.
- * @param {boolean} opt_isHtml Whether {@code str} is HTML / HTML-escaped.
+ * @param {boolean=} opt_isHtml Whether {@code str} is HTML / HTML-escaped.
  *     Default: false.
  * @return {goog.i18n.bidi.Dir} Estimated overall directionality of {@code str}.
  */
@@ -170,9 +171,9 @@ goog.i18n.BidiFormatter.prototype.areDirectionalitiesOpposite_ = function(dir1,
  *
  * @param {string} str The input text.
  * @param {goog.i18n.bidi.Dir} dir {@code str}'s overall directionality.
- * @param {boolean} opt_isHtml Whether {@code str} is HTML / HTML-escaped.
+ * @param {boolean=} opt_isHtml Whether {@code str} is HTML / HTML-escaped.
  *     Default: false.
- * @param {boolean} opt_dirReset Whether to perform the reset. Default: false.
+ * @param {boolean=} opt_dirReset Whether to perform the reset. Default: false.
  * @return {string} A unicode BiDi mark or the empty string.
  * @private
  */
@@ -202,7 +203,7 @@ goog.i18n.BidiFormatter.prototype.dirResetIfNeeded_ = function(str, dir,
  * <td expr:dir='bidiFormatter.dirAttrValue(foo)'><gxp:eval expr='foo'></td>
  *
  * @param {string} str Text whose directionality is to be estimated.
- * @param {boolean} opt_isHtml Whether {@code str} is HTML / HTML-escaped.
+ * @param {boolean=} opt_isHtml Whether {@code str} is HTML / HTML-escaped.
  *     Default: false.
  * @return {string} "rtl" or "ltr", according to the logic described above.
  */
@@ -234,7 +235,7 @@ goog.i18n.BidiFormatter.prototype.knownDirAttrValue = function(dir) {
  * Otherwise, returns the empty string.
  *
  * @param {string} str Text whose directionality is to be estimated.
- * @param {boolean} opt_isHtml Whether {@code str} is HTML / HTML-escaped.
+ * @param {boolean=} opt_isHtml Whether {@code str} is HTML / HTML-escaped.
  *     Default: false.
  * @return {string} "dir=rtl" for RTL text in non-RTL context; "dir=ltr" for LTR
  *     text in non-LTR context; else, the empty string.
@@ -280,9 +281,9 @@ goog.i18n.BidiFormatter.prototype.knownDirAttr = function(dir) {
  * If !{@code opt_isHtml}, HTML-escapes {@code str} regardless of wrapping.
  *
  * @param {string} str The input text.
- * @param {boolean} opt_isHtml Whether {@code str} is HTML / HTML-escaped.
+ * @param {boolean=} opt_isHtml Whether {@code str} is HTML / HTML-escaped.
  *     Default: false.
- * @param {boolean} opt_dirReset Whether to append a trailing unicode bidi mark
+ * @param {boolean=} opt_dirReset Whether to append a trailing unicode bidi mark
  *     matching the context directionality, when needed, to prevent the possible
  *     garbling of whatever may follow {@code str}. Default: true.
  * @return {string} Input text after applying the above processing.
@@ -311,9 +312,9 @@ goog.i18n.BidiFormatter.prototype.spanWrap = function(str, opt_isHtml,
  *
  * @param {goog.i18n.bidi.Dir} dir {@code str}'s overall directionality.
  * @param {string} str The input text.
- * @param {boolean} opt_isHtml Whether {@code str} is HTML / HTML-escaped.
+ * @param {boolean=} opt_isHtml Whether {@code str} is HTML / HTML-escaped.
  *     Default: false.
- * @param {boolean} opt_dirReset Whether to append a trailing unicode bidi mark
+ * @param {boolean=} opt_dirReset Whether to append a trailing unicode bidi mark
  *     matching the context directionality, when needed, to prevent the possible
  *     garbling of whatever may follow {@code str}. Default: true.
  * @return {string} Input text after applying the above processing.
@@ -365,9 +366,9 @@ goog.i18n.BidiFormatter.prototype.spanWrapWithKnownDir = function(dir, str,
  * The return value can be HTML-escaped as necessary.
  *
  * @param {string} str The input text.
- * @param {boolean} opt_isHtml Whether {@code str} is HTML / HTML-escaped.
+ * @param {boolean=} opt_isHtml Whether {@code str} is HTML / HTML-escaped.
  *     Default: false.
- * @param {boolean} opt_dirReset Whether to append a trailing unicode bidi mark
+ * @param {boolean=} opt_dirReset Whether to append a trailing unicode bidi mark
  *     matching the context directionality, when needed, to prevent the possible
  *     garbling of whatever may follow {@code str}. Default: true.
  * @return {string} Input text after applying the above processing.
@@ -400,9 +401,9 @@ goog.i18n.BidiFormatter.prototype.unicodeWrap = function(str, opt_isHtml,
  *
  * @param {goog.i18n.bidi.Dir} dir {@code str}'s overall directionality.
  * @param {string} str The input text.
- * @param {boolean} opt_isHtml Whether {@code str} is HTML / HTML-escaped.
+ * @param {boolean=} opt_isHtml Whether {@code str} is HTML / HTML-escaped.
  *     Default: false.
- * @param {boolean} opt_dirReset Whether to append a trailing unicode bidi mark
+ * @param {boolean=} opt_dirReset Whether to append a trailing unicode bidi mark
  *     matching the context directionality, when needed, to prevent the possible
  *     garbling of whatever may follow {@code str}. Default: true.
  * @return {string} Input text after applying the above processing.
@@ -431,7 +432,7 @@ goog.i18n.BidiFormatter.prototype.unicodeWrapWithKnownDir = function(dir, str,
  * to the context directionality. Otherwise returns the empty string.
  *
  * @param {string} str The input text.
- * @param {boolean} opt_isHtml Whether {@code str} is HTML / HTML-escaped.
+ * @param {boolean=} opt_isHtml Whether {@code str} is HTML / HTML-escaped.
  *     Default: false.
  * @return {string} A Unicode bidi mark matching the global directionality or
  *     the empty string.

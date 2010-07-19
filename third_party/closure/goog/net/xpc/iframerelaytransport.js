@@ -1,19 +1,20 @@
+// Copyright 2007 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Copyright 2007 Google Inc. All Rights Reserved.
-
 /**
  * @fileoverview Contains the iframe relay tranport.
+*
  */
 
 
@@ -116,7 +117,7 @@ if (goog.userAgent.WEBKIT) {
 
   /**
    * Remove all relay-iframes which are older than the maximal age.
-   * @param {number} opt_maxAge The maximal age in milliseconds.
+   * @param {number=} opt_maxAge The maximal age in milliseconds.
    * @private
    */
   goog.net.xpc.IframeRelayTransport.cleanup_ = function(opt_maxAge) {
@@ -172,7 +173,7 @@ goog.net.xpc.IframeRelayTransport.prototype.connect = function() {
 goog.net.xpc.IframeRelayTransport.prototype.transportServiceHandler =
     function(payload) {
   if (payload == goog.net.xpc.SETUP) {
-    // TODO Safari swallows the SETUP_ACK from the iframe to the
+    // TODO(user) Safari swallows the SETUP_ACK from the iframe to the
     // container after hitting reload.
     this.send(goog.net.xpc.TRANSPORT_SERVICE_, goog.net.xpc.SETUP_ACK_);
     this.channel_.notifyConnected_();
@@ -219,7 +220,7 @@ goog.net.xpc.IframeRelayTransport.prototype.send = function(service, payload) {
   style.width = ifr.style.height = '0px';
   style.position = 'absolute';
 
-  // TODO Split payload in multiple parts (frames) in case we are
+  // TODO(user) Split payload in multiple parts (frames) in case we are
   // in IE and the constructed URL exceeds IE's 4K-limit.
 
   var url = this.peerRelayUri_;

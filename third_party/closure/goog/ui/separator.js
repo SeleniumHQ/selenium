@@ -1,21 +1,22 @@
+// Copyright 2007 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-// Copyright 2007 Google Inc. All Rights Reserved.
 
 /**
  * @fileoverview A class for representing a separator, with renderers for both
  * horizontal (menu) and vertical (toolbar) separators.
  *
+*
  */
 
 goog.provide('goog.ui.Separator');
@@ -31,9 +32,9 @@ goog.require('goog.ui.registry');
  * Class representing a separator.  Although it extends {@link goog.ui.Control},
  * the Separator class doesn't allocate any event handlers, nor does it change
  * its appearance on mouseover, etc.
- * @param {goog.ui.MenuSeparatorRenderer} opt_renderer Renderer to render or
+ * @param {goog.ui.MenuSeparatorRenderer=} opt_renderer Renderer to render or
  *    decorate the separator; defaults to {@link goog.ui.MenuSeparatorRenderer}.
- * @param {goog.dom.DomHelper} opt_domHelper Optional DOM helper, used for
+ * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM helper, used for
  *    document interaction.
  * @constructor
  * @extends {goog.ui.Control}

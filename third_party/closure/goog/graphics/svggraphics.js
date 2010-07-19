@@ -1,20 +1,22 @@
+// Copyright 2007 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Copyright 2007 Google Inc. All Rights Reserved.
-
 
 /**
  * @fileoverview SvgGraphics sub class that uses SVG to draw the graphics.
+*
+*
  */
 
 goog.provide('goog.graphics.SvgGraphics');
@@ -43,11 +45,11 @@ goog.require('goog.userAgent');
  *     expressing percentages of parent with (e.g. '80%') are also accepted.
  * @param {string|number} height The height in pixels.  Strings
  *     expressing percentages of parent with (e.g. '80%') are also accepted.
- * @param {number?} opt_coordWidth The coordinate width - if
+ * @param {?number=} opt_coordWidth The coordinate width - if
  *     omitted or null, defaults to same as width.
- * @param {number?} opt_coordHeight The coordinate height - if
+ * @param {?number=} opt_coordHeight The coordinate height - if
  *     omitted or null, defaults to same as height.
- * @param {goog.dom.DomHelper} opt_domHelper The DOM helper object for the
+ * @param {goog.dom.DomHelper=} opt_domHelper The DOM helper object for the
  *     document we want to render in.
  * @constructor
  * @extends {goog.graphics.AbstractGraphics}
@@ -126,7 +128,7 @@ goog.graphics.SvgGraphics.prototype.defsElement_;
 /**
  * Creates an SVG element. Used internally and by different SVG classes.
  * @param {string} tagName The type of element to create.
- * @param {Object} opt_attributes Map of name-value pairs for attributes.
+ * @param {Object=} opt_attributes Map of name-value pairs for attributes.
  * @return {Element} The created element.
  * @private
  */
@@ -161,7 +163,7 @@ goog.graphics.SvgGraphics.prototype.setElementAttributes = function(element,
  * Appends an element.
  *
  * @param {goog.graphics.Element} element The element wrapper.
- * @param {goog.graphics.SvgGroupElement} opt_group The group wrapper element
+ * @param {goog.graphics.SvgGroupElement=} opt_group The group wrapper element
  *     to append to. If not specified, appends to the main canvas.
  * @private
  */
@@ -384,7 +386,7 @@ goog.graphics.SvgGraphics.prototype.updateManualViewBox_ = function() {
  */
 goog.graphics.SvgGraphics.prototype.setSize = function(pixelWidth,
     pixelHeight) {
-  // TODO implement
+  // TODO(user) implement
 };
 
 
@@ -446,7 +448,7 @@ goog.graphics.SvgGraphics.prototype.clear = function() {
  * @param {goog.graphics.Stroke?} stroke Stroke object describing the
  *    stroke.
  * @param {goog.graphics.Fill?} fill Fill object describing the fill.
- * @param {goog.graphics.SvgGroupElement} opt_group The group wrapper element
+ * @param {goog.graphics.SvgGroupElement=} opt_group The group wrapper element
  *     to append to. If not specified, appends to the main canvas.
  *
  * @return {goog.graphics.EllipseElement} The newly created element.
@@ -472,7 +474,7 @@ goog.graphics.SvgGraphics.prototype.drawEllipse = function(
  * @param {goog.graphics.Stroke?} stroke Stroke object describing the
  *    stroke.
  * @param {goog.graphics.Fill?} fill Fill object describing the fill.
- * @param {goog.graphics.SvgGroupElement} opt_group The group wrapper element
+ * @param {goog.graphics.SvgGroupElement=} opt_group The group wrapper element
  *     to append to. If not specified, appends to the main canvas.
  *
  * @return {goog.graphics.RectElement} The newly created element.
@@ -495,7 +497,7 @@ goog.graphics.SvgGraphics.prototype.drawRect = function(x, y, width, height,
  * @param {number} width Width of the image.
  * @param {number} height Height of the image.
  * @param {string} src The source fo the image.
- * @param {goog.graphics.SvgGroupElement} opt_group The group wrapper element
+ * @param {goog.graphics.SvgGroupElement=} opt_group The group wrapper element
  *     to append to. If not specified, appends to the main canvas.
  *
  * @return {goog.graphics.ImageElement} The newly created image wrapped in a
@@ -526,7 +528,7 @@ goog.graphics.SvgGraphics.prototype.drawImage = function(x, y, width, height,
  * @param {goog.graphics.Stroke?} stroke Stroke object describing the
  *    stroke.
  * @param {goog.graphics.Fill?} fill Fill object describing the fill.
- * @param {goog.graphics.SvgGroupElement} opt_group The group wrapper element
+ * @param {goog.graphics.SvgGroupElement=} opt_group The group wrapper element
  *     to append to. If not specified, appends to the main canvas.
  *
  * @return {goog.graphics.TextElement} The newly created element.
@@ -591,7 +593,7 @@ goog.graphics.SvgGraphics.prototype.drawTextOnLine = function(
  * @param {goog.graphics.Stroke?} stroke Stroke object describing the
  *    stroke.
  * @param {goog.graphics.Fill?} fill Fill object describing the fill.
- * @param {goog.graphics.SvgGroupElement} opt_group The group wrapper element
+ * @param {goog.graphics.SvgGroupElement=} opt_group The group wrapper element
  *     to append to. If not specified, appends to the main canvas.
  *
  * @return {goog.graphics.PathElement} The newly created element.
@@ -649,7 +651,7 @@ goog.graphics.SvgGraphics.getSvgPath = function(path) {
 /**
  * Create an empty group of drawing elements.
  *
- * @param {goog.graphics.SvgGroupElement} opt_group The group wrapper element
+ * @param {goog.graphics.SvgGroupElement=} opt_group The group wrapper element
  *     to append to. If not specified, appends to the main canvas.
  *
  * @return {goog.graphics.GroupElement} The newly created group.
@@ -671,10 +673,9 @@ goog.graphics.SvgGraphics.prototype.createGroup = function(opt_group) {
  *
  * @param {string} text The text string to measure.
  * @param {goog.graphics.Font} font The font object describing the font style.
- *
  */
 goog.graphics.SvgGraphics.prototype.getTextWidth = function(text, font) {
-  // TODO Implement
+  // TODO(user) Implement
 };
 
 

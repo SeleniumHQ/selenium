@@ -1,16 +1,16 @@
+// Copyright 2009 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-// Copyright 2009 Google Inc. All Rights Reserved.
 
 /**
  * @fileoverview Provides the base media model consistent with the Yahoo Media
@@ -36,16 +36,16 @@ goog.provide('goog.ui.media.MediaModel.Thumbnail');
  * values are allowed. {@code goog.ui.media.MediaRenderer} checks whether the
  * values are available before creating DOMs for them.
  *
- * TODO: support asynchronous data models by subclassing
+ * TODO(user): support asynchronous data models by subclassing
  * {@link goog.events.EventTarget} or {@link goog.ds.DataNode}. Understand why
- * {@link fava.data.Node} is under fava, and not available in closure. Add
- * setters to MediaModel once this is supported.
+ * {@link http://goto/datanode} is not available in closure. Add setters to
+ * MediaModel once this is supported.
  *
- * @param {string} opt_url An optional URL of the media.
- * @param {string} opt_caption An optional caption of the media.
- * @param {string} opt_description An optional description of the media.
- * @param {goog.ui.media.MediaModel.MimeType} opt_type The type of the media.
- * @param {goog.ui.media.MediaModel.Medium} opt_medium The medium of the media.
+ * @param {string=} opt_url An optional URL of the media.
+ * @param {string=} opt_caption An optional caption of the media.
+ * @param {string=} opt_description An optional description of the media.
+ * @param {goog.ui.media.MediaModel.MimeType=} opt_type The type of the media.
+ * @param {goog.ui.media.MediaModel.Medium=} opt_medium The medium of the media.
  * @constructor
  */
 goog.ui.media.MediaModel = function(opt_url,
@@ -308,9 +308,9 @@ goog.ui.media.MediaModel.prototype.setCategories = function(categories) {
 
 /**
  * Constructs a thumbnail containing details of the thumbnail's image URL and
- * optionally it's size.
+ * optionally its size.
  * @param {string} url The URL of the thumbnail's image.
- * @param {goog.math.Size} opt_size The size of the thumbnail's image if known.
+ * @param {goog.math.Size=} opt_size The size of the thumbnail's image if known.
  * @constructor
  */
 goog.ui.media.MediaModel.Thumbnail = function(url, opt_size) {
@@ -374,10 +374,10 @@ goog.ui.media.MediaModel.Thumbnail.prototype.setSize = function(size) {
 
 /**
  * Constructs a player containing details of the player's URL and
- * optionally it's size.
+ * optionally its size.
  * @param {string} url The URL of the player.
- * @param {Object} opt_vars Optional map of arguments to the player.
- * @param {goog.math.Size} opt_size The size of the player if known.
+ * @param {Object=} opt_vars Optional map of arguments to the player.
+ * @param {goog.math.Size=} opt_size The size of the player if known.
  * @constructor
  */
 goog.ui.media.MediaModel.Player = function(url, opt_vars, opt_size) {
@@ -472,7 +472,7 @@ goog.ui.media.MediaModel.Player.prototype.setSize = function(size) {
  * and its particular contents.
  * @param {string} scheme The URI that identifies the categorization scheme.
  * @param {string} value The value of the category.
- * @param {string} opt_label The human readable label that can be displayed in
+ * @param {string=} opt_label The human readable label that can be displayed in
  *     end user applications.
  * @constructor
  */

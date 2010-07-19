@@ -1,21 +1,22 @@
+// Copyright 2006 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-// Copyright 2006 Google Inc. All Rights Reserved.
 
 /**
  * @fileoverview Methods for annotating occurrences of query terms in text or
  *   in a DOM tree. Adapted from Gmail code.
  *
+*
  */
 
 goog.provide('goog.dom.annotate');
@@ -39,11 +40,11 @@ goog.require('goog.string');
  *   (1) the number of the term that is "hit",
  *   (2) the HTML string (search term) to be annotated,
  *   and returns the annotated term as an HTML string.
- * @param {*} opt_ignoreCase  Whether to ignore the case of the query
+ * @param {*=} opt_ignoreCase  Whether to ignore the case of the query
  *   terms when looking for matches.
- * @param {Array.<string>} opt_classesToSkip  Nodes with one of these CSS class
+ * @param {Array.<string>=} opt_classesToSkip  Nodes with one of these CSS class
  *   names (and its descendants) will be skipped.
- * @param {number} opt_maxMs  Number of milliseconds after which this function,
+ * @param {number=} opt_maxMs  Number of milliseconds after which this function,
  *   if still annotating, should stop and return.
  *
  * @return {boolean} Whether any terms were annotated.
@@ -135,10 +136,10 @@ goog.dom.annotate.annotateTermsInNode_ =
   } else if (node.hasChildNodes() &&
              !goog.array.contains(goog.dom.annotate.NODES_TO_SKIP_,
                  node.tagName)) {
-    var classes = node.className.split(' ');
+    var classes = node.className.split(/\s+/);
     var skip = goog.array.some(classes, function(className) {
-        return goog.array.contains(classesToSkip, className);
-      });
+      return goog.array.contains(classesToSkip, className);
+    });
 
     if (!skip) {
       ++recursionLevel;
@@ -183,7 +184,7 @@ goog.dom.annotate.NONWORD_RE_ = /\W/;
  *
  * @param {string} text  The plain text to be searched.
  * @param {Array} terms  An array of
- *   [{String} searchTerm, {Boolean} matchWholeWordOnly] tuples.
+ *   [{string} searchTerm, {boolean} matchWholeWordOnly] tuples.
  *   The matchWholeWordOnly value is a per-term attribute because some terms
  *   may be CJK, while others are not. (For correctness, matchWholeWordOnly
  *   should always be false for CJK terms.).
@@ -192,9 +193,9 @@ goog.dom.annotate.NONWORD_RE_ = /\W/;
  *   (1) the number of the term that is "hit",
  *   (2) the HTML string (search term) to be annotated,
  *   and returns the annotated term as an HTML string.
- * @param {*} opt_ignoreCase  Whether to ignore the case of the query
+ * @param {*=} opt_ignoreCase  Whether to ignore the case of the query
  *   terms when looking for matches.
- * @return {string?} The HTML equivalent of {@code text} with terms
+ * @return {?string} The HTML equivalent of {@code text} with terms
  *   annotated, or null if the text did not contain any of the terms.
  */
 goog.dom.annotate.annotateText = function(text, terms, annotateFn,
@@ -215,7 +216,7 @@ goog.dom.annotate.annotateText = function(text, terms, annotateFn,
  *
  * @param {string} text  The plain text to be searched.
  * @param {Array} terms  An array of
- *   [{String} searchTerm, {Boolean} matchWholeWordOnly] tuples.
+ *   [{string} searchTerm, {boolean} matchWholeWordOnly] tuples.
  *   If {@code ignoreCase} is true, each search term must already be lowercase.
  *   The matchWholeWordOnly value is a per-term attribute because some terms
  *   may be CJK, while others are not. (For correctness, matchWholeWordOnly
@@ -227,7 +228,7 @@ goog.dom.annotate.annotateText = function(text, terms, annotateFn,
  *   and returns the annotated term as an HTML string.
  * @param {*} ignoreCase  Whether to ignore the case of the query terms
  *   when looking for matches.
- * @return {string?} The HTML equivalent of {@code text} with terms
+ * @return {?string} The HTML equivalent of {@code text} with terms
  *   annotated, or null if the text did not contain any of the terms.
  * @private
  */
@@ -337,9 +338,9 @@ goog.dom.annotate.helpAnnotateText_ = function(text, terms, annotateFn,
  * Converts terms to lowercase.
  *
  * @param {Array} terms  An array of
- *   [{String} searchTerm, {Boolean} matchWholeWordOnly] tuples.
+ *   [{string} searchTerm, {boolean} matchWholeWordOnly] tuples.
  * @return {Array}  An array of
- *   [{String} searchTerm, {Boolean} matchWholeWordOnly] tuples.
+ *   [{string} searchTerm, {boolean} matchWholeWordOnly] tuples.
  * @private
  */
 goog.dom.annotate.lowercaseTerms_ = function(terms) {

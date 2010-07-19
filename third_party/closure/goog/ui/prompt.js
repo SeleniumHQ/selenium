@@ -1,20 +1,21 @@
+// Copyright 2006 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Copyright 2006 Google Inc. All Rights Reserved.
-
 /**
  * @fileoverview DHTML prompt to replace javascript's prompt().
  *
+*
  * @see ../demos/prompt.html
  */
 
@@ -43,12 +44,12 @@ goog.require('goog.userAgent');
  *     Cancel. The function should expect a single argument which represents
  *     what the user entered into the prompt. If the user presses cancel, the
  *     value of the argument will be null.
- * @param {string} opt_defaultValue Optional default value that should be in
+ * @param {string=} opt_defaultValue Optional default value that should be in
  *     the text box when the prompt appears.
- * @param {string} opt_class Optional prefix for the classes.
- * @param {boolean} opt_useIframeForIE For IE, workaround windowed controls
+ * @param {string=} opt_class Optional prefix for the classes.
+ * @param {boolean=} opt_useIframeForIE For IE, workaround windowed controls
  *     z-index issue by using a an iframe instead of a div for bg element.
- * @param {goog.dom.DomHelper} opt_domHelper Optional DOM helper; see {@link
+ * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM helper; see {@link
  *    goog.ui.Component} for semantics.
  * @constructor
  * @extends {goog.ui.Dialog}
@@ -96,7 +97,7 @@ goog.ui.Prompt.prototype.defaultValue_ = '';
 
 /**
  * Element in which user enters response (HTML <input> text box)
- * @type {HTMLInputElement?}
+ * @type {HTMLInputElement}
  * @private
  */
 goog.ui.Prompt.prototype.userInputEl_ = null;
@@ -197,7 +198,7 @@ goog.ui.Prompt.prototype.createDom = function() {
 
   // add input box to the content
   var attrs = {
-      'className': cls + '-userInput',
+      'className': goog.getCssName(cls, 'userInput'),
       'value': this.defaultValue_};
   if (this.rows_ == 1) {
     // If rows == 1 then use an input element.

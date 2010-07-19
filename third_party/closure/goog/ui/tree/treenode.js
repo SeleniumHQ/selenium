@@ -1,20 +1,23 @@
+// Copyright 2007 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Copyright 2007 Google Inc. All Rights Reserved.
-
 /**
  * @fileoverview Definition of the goog.ui.tree.TreeNode class.
  *
+*
+*
+*
  *
  * This is a based on the webfx tree control. See file comment in
  * treecontrol.js.
@@ -28,10 +31,10 @@ goog.require('goog.ui.tree.BaseNode');
 /**
  * An single node in the tree.
  * @param {string} html The html content of the node label.
- * @param {Object} opt_config The configuration for the tree. See
+ * @param {Object=} opt_config The configuration for the tree. See
  *    goog.ui.tree.TreeControl.DefaultConfig. If not specified, a default config
  *    will be used.
- * @param {goog.dom.DomHelper} opt_domHelper Optional DOM helper.
+ * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM helper.
  * @constructor
  * @extends {goog.ui.tree.BaseNode}
  */
@@ -74,13 +77,7 @@ goog.ui.tree.TreeNode.prototype.getTree = function() {
  * @return {string} Src for the icon.
  */
 goog.ui.tree.TreeNode.prototype.getCalculatedIconClass = function() {
-  // if classic then the openIcon is used for expanded, otherwise openIcon is
-  // used for selected
-  var config = this.getConfig();
-  var behavior = this.getTree() ? this.getTree().getBehavior() :
-                 config.defaultBehavior;
-  var expanded = behavior == 'classic' && this.getExpanded() ||
-                 behavior != 'classic' && this.isSelected();
+  var expanded = this.getExpanded();
   if (expanded && this.expandedIconClass_) {
     return this.expandedIconClass_;
   }
@@ -89,6 +86,7 @@ goog.ui.tree.TreeNode.prototype.getCalculatedIconClass = function() {
   }
 
   // fall back on default icons
+  var config = this.getConfig();
   if (this.hasChildren()) {
     if (expanded && config.cssExpandedFolderIcon) {
       return config.cssTreeIcon + ' ' +

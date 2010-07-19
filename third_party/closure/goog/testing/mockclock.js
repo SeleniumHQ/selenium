@@ -1,34 +1,36 @@
+// Copyright 2007 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-// Copyright 2007 Google Inc. All Rights Reserved.
 
 /**
  * @fileoverview Mock Clock implementation for working with setTimeout,
  * setInterval, clearTimeout and clearInterval within unit tests.
  *
- * Derrived from jsUnitMockTimeout.js, contributed to JsUnit by
+ * Derived from jsUnitMockTimeout.js, contributed to JsUnit by
  * Pivotal Computer Systems, www.pivotalsf.com
  *
+*
  */
 
 goog.provide('goog.testing.MockClock');
 
 goog.require('goog.Disposable');
+goog.require('goog.testing.PropertyReplacer');
 
 
 /**
  * Class for unit testing code that uses setTimeout and clearTimeout.
- * @param {boolean} opt_autoInstall Install the MockClock at constuction time.
+ * @param {boolean=} opt_autoInstall Install the MockClock at construction time.
  * @constructor
  * @extends {goog.Disposable}
  */
@@ -76,17 +78,18 @@ goog.testing.MockClock.prototype.timeoutsMade_ = 0;
 
 
 /**
- * Whether mock clock is installed.
- * @type {boolean}
+ * PropertyReplacer instance which overwrites and resets setTimeout,
+ * setInterval, etc. or null if the MockClock is not installed.
+ * @type {goog.testing.PropertyReplacer}
  * @private
  */
-goog.testing.MockClock.prototype.installed_ = false;
+goog.testing.MockClock.prototype.replacer_ = null;
 
 
 /**
  * Map of deleted keys.  These keys represents keys that were deleted in a
  * clearInterval, timeoutid -> object.
- * @type {Object?}
+ * @type {Object}
  * @private
  */
 goog.testing.MockClock.prototype.deletedKeys_ = null;
@@ -112,50 +115,18 @@ goog.testing.MockClock.prototype.timeoutDelay_ = 0;
 
 
 /**
- * Reference to the original implementation of setTimeout.
- * @type {function(this:Window, (Function|string), number, *=): number}
- * @private
- */
-goog.testing.MockClock.prototype.oldSetTimeout_ = window.setTimeout;
-
-
-/**
- * Reference to the original implementation of setInterval.
- * @type {function(this:Window, (Function|string), number, *=): number}
- * @private
- */
-goog.testing.MockClock.prototype.oldSetInterval_ = window.setInterval;
-
-
-/**
- * Reference to the original implementation of clearTimeout.
- * @type {function(this:Window, number?=)}
- * @private
- */
-goog.testing.MockClock.prototype.oldClearTimeout_ = window.clearTimeout;
-
-
-/**
- * Reference to the original implementation of clearInterval.
- * @type {function(this:Window, number?=)}
- * @private
- */
-goog.testing.MockClock.prototype.oldClearInterval_ = window.clearInterval;
-
-
-/**
  * Installs the MockClock by overriding the window object's implementation of
  * setTimeout, setInterval, clearTimeout and clearInterval.
  */
 goog.testing.MockClock.prototype.install = function() {
-  if (!this.installed_) {
-    this.installed_ = true;
-    window.setTimeout = goog.bind(this.setTimeout_, this);
-    window.setInterval = goog.bind(this.setInterval_, this);
-    window.clearTimeout = goog.bind(this.clearTimeout_, this);
-    window.clearInterval = goog.bind(this.clearInterval_, this);
+  if (!this.replacer_) {
+    var r = this.replacer_ = new goog.testing.PropertyReplacer();
+    r.set(window, 'setTimeout', goog.bind(this.setTimeout_, this));
+    r.set(window, 'setInterval', goog.bind(this.setInterval_, this));
+    r.set(window, 'clearTimeout', goog.bind(this.clearTimeout_, this));
+    r.set(window, 'clearInterval', goog.bind(this.clearInterval_, this));
 
-    // Mock out goog.now
+    // PropertyReplacer#set can't be called with renameable functions.
     this.oldGoogNow_ = goog.now;
     goog.now = goog.bind(this.getCurrentTime, this);
   }
@@ -163,17 +134,13 @@ goog.testing.MockClock.prototype.install = function() {
 
 
 /**
- * Removes the MockClock's hocks into the window functions and revert to their
+ * Removes the MockClock's hooks into the window functions and revert to their
  * original values.
  */
 goog.testing.MockClock.prototype.uninstall = function() {
-  if (this.installed_) {
-    this.installed_ = false;
-    window.setTimeout = this.oldSetTimeout_;
-    window.setInterval = this.oldSetInterval_;
-    window.clearTimeout = this.oldClearTimeout_;
-    window.clearInterval = this.oldClearInterval_;
-
+  if (this.replacer_) {
+    this.replacer_.reset();
+    this.replacer_ = null;
     goog.now = this.oldGoogNow_;
   }
 };
@@ -184,10 +151,6 @@ goog.testing.MockClock.prototype.uninstall = function() {
  */
 goog.testing.MockClock.prototype.disposeInternal = function() {
   this.uninstall();
-  delete this.oldSetTimeout_;
-  delete this.oldSetInterval_;
-  delete this.oldClearTimeout_;
-  delete this.oldClearInterval_;
   this.queue_ = null;
   this.deletedKeys_ = null;
   goog.testing.MockClock.superClass_.disposeInternal.call(this);
@@ -210,7 +173,7 @@ goog.testing.MockClock.prototype.reset = function() {
 /**
  * Sets the amount of time between when a timeout is scheduled to fire and when
  * it actually fires.
- * @param {number} delay The delay in millseconds.  May be negative.
+ * @param {number} delay The delay in milliseconds.  May be negative.
  */
 goog.testing.MockClock.prototype.setTimeoutDelay = function(delay) {
   this.timeoutDelay_ = delay;
@@ -219,7 +182,7 @@ goog.testing.MockClock.prototype.setTimeoutDelay = function(delay) {
 
 /**
  * @return {number} delay The amount of time between when a timeout is
- *     scheduled to fire and when it actually fires, in millseconds.  May
+ *     scheduled to fire and when it actually fires, in milliseconds.  May
  *     be negative.
  */
 goog.testing.MockClock.prototype.getTimeoutDelay = function() {
@@ -230,9 +193,9 @@ goog.testing.MockClock.prototype.getTimeoutDelay = function() {
 /**
  * Increments the MockClock's time by a given number of milliseconds, running
  * any functions that are now overdue.
- * @param {number} opt_millis Number of milliseconds to increment the counter.
+ * @param {number=} opt_millis Number of milliseconds to increment the counter.
  *     If not specified, clock ticks 1 millisecond.
- * @return {number} Current mock time in millis.
+ * @return {number} Current mock time in milliseconds.
  */
 goog.testing.MockClock.prototype.tick = function(opt_millis) {
   if (typeof opt_millis != 'number') {
@@ -375,7 +338,7 @@ goog.testing.MockClock.MAX_INT_ = 2147483647;
 
 
 /**
- * Schedules a function to be called after 'millis' milliseconds.
+ * Schedules a function to be called after {@code millis} milliseconds.
  * Mock implementation for window.setTimeout
  * @param {Function} funcToCall The function to call.
  * @param {number} millis The number of milliseconds to call it after.
@@ -396,7 +359,7 @@ goog.testing.MockClock.prototype.setTimeout_ = function(funcToCall, millis) {
 
 
 /**
- * Schedules a function to be called every 'millis' milliseconds.
+ * Schedules a function to be called every {@code millis} milliseconds.
  * Mock implementation for window.setInterval
  * @param {Function} funcToCall The function to call.
  * @param {number} millis The number of milliseconds between calls.

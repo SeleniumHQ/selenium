@@ -1,25 +1,30 @@
+// Copyright 2008 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-// Copyright 2008 Google Inc. All Rights Reserved.
 
 
 /**
  * @fileoverview Provides an object representation of an AffineTransform and
  * methods for working with it.
+*
  */
 
 
 goog.provide('goog.graphics.AffineTransform');
+
+goog.require('goog.math');
+
+
 
 /**
  * Creates a 2D affine transform. An affine transform performs a linear
@@ -41,12 +46,12 @@ goog.provide('goog.graphics.AffineTransform');
  * knowledge of the underlying matrix (as opposed to say simply performing
  * matrix multiplication).
  *
- * @param {number} opt_m00 The m00 coordinate of the transform.
- * @param {number} opt_m10 The m10 coordinate of the transform.
- * @param {number} opt_m01 The m01 coordinate of the transform.
- * @param {number} opt_m11 The m11 coordinate of the transform.
- * @param {number} opt_m02 The m02 coordinate of the transform.
- * @param {number} opt_m12 The m12 coordinate of the transform.
+ * @param {number=} opt_m00 The m00 coordinate of the transform.
+ * @param {number=} opt_m10 The m10 coordinate of the transform.
+ * @param {number=} opt_m01 The m01 coordinate of the transform.
+ * @param {number=} opt_m11 The m11 coordinate of the transform.
+ * @param {number=} opt_m02 The m02 coordinate of the transform.
+ * @param {number=} opt_m12 The m12 coordinate of the transform.
  * @constructor
  */
 goog.graphics.AffineTransform = function(opt_m00, opt_m10, opt_m01,
@@ -466,4 +471,26 @@ goog.graphics.AffineTransform.prototype.setToRotation = function(theta, x, y) {
   var sin = Math.sin(theta);
   return this.setTransform(cos, sin, -sin, cos,
       x - x * cos + y * sin, y - x * sin - y * cos);
+};
+
+
+/**
+ * Compares two affine transforms for equality.
+ *
+ * @param {goog.graphics.AffineTransform} tx The other affine transform.
+ * @return {boolean} whether the two transforms are equal.
+ */
+goog.graphics.AffineTransform.prototype.equals = function(tx) {
+  if (this == tx) {
+    return true;
+  }
+  if (!tx) {
+    return false;
+  }
+  return this.m00_ == tx.m00_ &&
+      this.m01_ == tx.m01_ &&
+      this.m02_ == tx.m02_ &&
+      this.m10_ == tx.m10_ &&
+      this.m11_ == tx.m11_ &&
+      this.m12_ == tx.m12_;
 };

@@ -1,16 +1,16 @@
+// Copyright 2007 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-// Copyright 2007 Google, Inc.
 // All Rights Reserved.
 
 /**
@@ -19,6 +19,9 @@
  * strings and document.write instead of DOM manipulation, because
  * iframe-loading is a performance bottleneck.
  *
+*
+*
+ * @author nicksantos@google.com (Nick Santos)
  */
 
 goog.provide('goog.editor.icontent');
@@ -26,7 +29,6 @@ goog.provide('goog.editor.icontent.FieldFormatInfo');
 goog.provide('goog.editor.icontent.FieldStyleInfo');
 
 goog.require('goog.editor.BrowserFeature');
-goog.require('goog.string');
 goog.require('goog.style');
 goog.require('goog.userAgent');
 
@@ -39,7 +41,7 @@ goog.require('goog.userAgent');
  *     standards mode.
  * @param {boolean} blended Whether the field is in blended mode.
  * @param {boolean} fixedHeight Whether the field is in fixedHeight mode.
- * @param {Object} opt_extraStyles Other style attributes for the field,
+ * @param {Object=} opt_extraStyles Other style attributes for the field,
  *     represented as a map of strings.
  * @constructor
  */
@@ -121,7 +123,7 @@ goog.editor.icontent.getInitialIframeContent_ =
   // to the HTML element's height.
   // For fixed-height it should be 100% since we want the body to fill the
   // whole height. For growing fields it should be auto since we want the
-  // body to size to it's content.
+  // body to size to its content.
   if (info.blended_) {
     html.push('height:', info.fixedHeight_ ? '100%' : 'auto');
   }
@@ -143,7 +145,7 @@ goog.editor.icontent.getInitialIframeContent_ =
     // can never be removed from the field.  This style forces the images
     // to render as a broken image icon, sized based on the width and height
     // of the image.
-    // TODO: Make sure we move this into a contentEditable code
+    // TODO(user): Make sure we move this into a contentEditable code
     // path if there ever is one for FF.
     html.push(' img {-moz-force-broken-image-icon: 1;}');
   }

@@ -1,20 +1,22 @@
+// Copyright 2006 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Copyright 2006 Google Inc. All Rights Reserved.
-
 /**
  * @fileoverview Definition of the PopupBase class.
  *
+*
+*
  */
 
 goog.provide('goog.ui.PopupBase');
@@ -38,8 +40,8 @@ goog.require('goog.userAgent');
  *
  * @constructor
  * @extends {goog.events.EventTarget}
- * @param {Element} opt_element A DOM element for the popup.
- * @param {goog.ui.PopupBase.Type} opt_type Type of popup.
+ * @param {Element=} opt_element A DOM element for the popup.
+ * @param {goog.ui.PopupBase.Type=} opt_type Type of popup.
  */
 goog.ui.PopupBase = function(opt_element, opt_type) {
   /**
@@ -67,7 +69,7 @@ goog.ui.PopupBase.Type = {
 
 /**
  * The popup dom element that this Popup wraps.
- * @type {Element?}
+ * @type {Element}
  * @private
  */
 goog.ui.PopupBase.prototype.element_ = null;
@@ -85,7 +87,7 @@ goog.ui.PopupBase.prototype.autoHide_ = true;
  * hide if autoHide_ is true. If this is null, then the entire document is used.
  * For example, you can use a body-size div so that clicks on the browser
  * scrollbar do not dismiss the popup.
- * @type {Element?}
+ * @type {Element}
  * @private
  */
 goog.ui.PopupBase.prototype.autoHideRegion_ = null;
@@ -102,7 +104,7 @@ goog.ui.PopupBase.prototype.isVisible_ = false;
  * there are cases where hiding the element in mouse down handler in IE can
  * cause textinputs to get into a bad state if the element that had focus is
  * hidden.
- * @type {Boolean}
+ * @type {boolean}
  * @private
  */
 goog.ui.PopupBase.prototype.shouldHideAsync_ = false;
@@ -193,7 +195,7 @@ goog.ui.PopupBase.prototype.setType = function(type) {
 /**
  * Returns whether the popup should hide itself asynchronously using a timeout
  * instead of synchronously.
- * @return {Boolean} Whether to hide async.
+ * @return {boolean} Whether to hide async.
  */
 goog.ui.PopupBase.prototype.shouldHideAsync = function() {
   return this.shouldHideAsync_;
@@ -203,7 +205,7 @@ goog.ui.PopupBase.prototype.shouldHideAsync = function() {
 /**
  * Sets whether the popup should hide itself asynchronously using a timeout
  * instead of synchronously.
- * @param {Boolean} b Whether to hide async.
+ * @param {boolean} b Whether to hide async.
  */
 goog.ui.PopupBase.prototype.setShouldHideAsync = function(b) {
   this.shouldHideAsync_ = b;
@@ -213,7 +215,7 @@ goog.ui.PopupBase.prototype.setShouldHideAsync = function(b) {
 /**
  * Returns the dom element that should be used for the popup.
  *
- * @return {Element?} The popup element.
+ * @return {Element} The popup element.
  */
 goog.ui.PopupBase.prototype.getElement = function() {
   return this.element_;
@@ -223,7 +225,7 @@ goog.ui.PopupBase.prototype.getElement = function() {
 /**
  * Specifies the dom element that should be used for the popup.
  *
- * @param {Element?} elt A DOM element for the popup.
+ * @param {Element} elt A DOM element for the popup.
  */
 goog.ui.PopupBase.prototype.setElement = function(elt) {
   this.ensureNotVisible_();
@@ -290,7 +292,7 @@ goog.ui.PopupBase.prototype.setEnableCrossIframeDismissal = function(enable) {
 /**
  * Returns the region inside which the Popup dismisses itself when the user
  * clicks, or null if it's the entire document.
- * @return {Element?} The DOM element for autohide, or null if it hasn't been
+ * @return {Element} The DOM element for autohide, or null if it hasn't been
  *     set.
  */
 goog.ui.PopupBase.prototype.getAutoHideRegion = function() {
@@ -454,7 +456,7 @@ goog.ui.PopupBase.prototype.show_ = function() {
         try {
           var tempDoc = goog.dom.getFrameContentDocument(activeElement);
         } catch (e) {
-          // The frame is on a different domain that it's parent document
+          // The frame is on a different domain that its parent document
           // This way, we grab the lowest-level document object we can get
           // a handle on given cross-domain security.
           break;
@@ -495,7 +497,7 @@ goog.ui.PopupBase.prototype.show_ = function() {
 /**
  * Hides the popup. This call is idempotent.
  *
- * @param {Object} opt_target Target of the event causing the hide.
+ * @param {Object=} opt_target Target of the event causing the hide.
  * @return {boolean} Whether the popup was hidden and not cancelled.
  * @private
  */
@@ -590,7 +592,7 @@ goog.ui.PopupBase.prototype.onShow_ = function() {
  * Called before the popup is hidden. Derived classes can override to hook this
  * event but should make sure to call the parent class method.
  *
- * @param {Object} opt_target Target of the event causing the hide.
+ * @param {Object=} opt_target Target of the event causing the hide.
  * @return {boolean} If anyone called preventDefault on the event object (or
  *     if any of the handlers returns false this will also return false.
  * @private
@@ -604,7 +606,7 @@ goog.ui.PopupBase.prototype.onBeforeHide_ = function(opt_target) {
 /**
  * Called after the popup is hidden. Derived classes can override to hook this
  * event but should make sure to call the parent class method.
- * @param {Object} opt_target Target of the event causing the hide.
+ * @param {Object=} opt_target Target of the event causing the hide.
  * @private
  */
 goog.ui.PopupBase.prototype.onHide_ = function(opt_target) {

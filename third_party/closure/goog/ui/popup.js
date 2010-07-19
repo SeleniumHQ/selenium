@@ -1,20 +1,22 @@
+// Copyright 2006 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Copyright 2006 Google Inc. All Rights Reserved.
-
 /**
  * @fileoverview Definition of the Popup class.
  *
+*
+*
  * @see ../demos/popup.html
  */
 
@@ -54,8 +56,8 @@ goog.require('goog.ui.PopupBase');
  * This works cross browser and thus does not use IE's createPopup feature
  * which supports extending outside the edge of the brower window.
  *
- * @param {Element} opt_element A DOM element for the popup.
- * @param {goog.positioning.AbstractPosition} opt_position A positioning helper
+ * @param {Element=} opt_element A DOM element for the popup.
+ * @param {goog.positioning.AbstractPosition=} opt_position A positioning helper
  *     object.
  * @constructor
  * @extends {goog.ui.PopupBase}
@@ -174,9 +176,9 @@ goog.ui.Popup.prototype.getMargin = function() {
  * Sets the margin to place around the popup.
  *
  * @param {goog.math.Box|number|null} arg1 Top value or Box.
- * @param {number} opt_arg2 Right value.
- * @param {number} opt_arg3 Bottom value.
- * @param {number} opt_arg4 Left value.
+ * @param {number=} opt_arg2 Right value.
+ * @param {number=} opt_arg3 Bottom value.
+ * @param {number=} opt_arg4 Left value.
  */
 goog.ui.Popup.prototype.setMargin = function(arg1, opt_arg2, opt_arg3,
                                              opt_arg4) {
@@ -213,7 +215,7 @@ goog.ui.Popup.prototype.reposition = function() {
   this.position_.reposition(el, this.popupCorner_, this.margin_);
 
   if (hideForPositioning) {
-    // NOTE: The visibility property is reset to 'visible' by the show_
+    // NOTE(user): The visibility property is reset to 'visible' by the show_
     // method in PopupBase. Resetting it here causes flickering in some
     // situations, even if set to visible after the display property has been
     // set to none by the call below.
@@ -235,17 +237,17 @@ goog.ui.Popup.prototype.reposition = function() {
  * @param {goog.positioning.Corner} movableElementCorner The corner of the
  *     movableElement that that should be positioned adjacent to the
  *     anchorElement.
- * @param {goog.math.Coordinate?} opt_offset An offset specified in pixels.
+ * @param {goog.math.Coordinate?=} opt_offset An offset specified in pixels.
  *    After the normal positioning algorithm is applied, the offset is then
  *    applied. Positive coordinates move the popup closer to the center of the
  *    anchor element. Negative coordinates move the popup away from the center
  *    of the anchor element.
- * @param {goog.math.Box?} opt_margin A margin specified in pixels.
+ * @param {goog.math.Box?=} opt_margin A margin specified in pixels.
  *    After the normal positioning algorithm is applied and any offset, the
  *    margin is then applied. Positive coordinates move the popup away from the
  *    spot it was positioned towards its center. Negative coordiates move it
  *    towards the spot it was positioned away from its center.
- * @param {number} opt_overflow Overflow handling mode. Defaults
+ * @param {number=} opt_overflow Overflow handling mode. Defaults
  *    to goog.ui.Popup.Overflow.IGNORE if not specified. Bitmap.
  * @return {boolean} Returns true if the element was positioned or false if
  *     opt_overflow was set to FAIL and the element wouldn't fit inside the
@@ -273,7 +275,7 @@ goog.ui.Popup.positionPopup = function(anchorElement, anchorElementCorner,
  * @param {Element} movableElement The element to be positioned.
  * @param {goog.positioning.Corner} movableElementCorner The corner of the
  *     movableElement that that should be positioned.
- * @param {goog.math.Box} opt_margin A margin specified in pixels.
+ * @param {goog.math.Box=} opt_margin A margin specified in pixels.
  * @return {boolean} Always returns true.
  *
  * @deprecated Use {@link goog.positioning.positionAtCoordinate} instead, this
@@ -312,7 +314,7 @@ goog.ui.Popup.AnchoredPosition = goog.positioning.AnchoredPosition;
 /**
  * Encapsulates a popup position where the popup is anchored at a corner of
  * an element. The corners are swapped if dictated by the viewport. For instance
- * if a popup is anchored with it's top left corner to the bottom left corner of
+ * if a popup is anchored with its top left corner to the bottom left corner of
  * the anchor the popup is either displayed below the anchor (as specified) or
  * above it if there's not enough room to display it below.
  *
@@ -323,7 +325,7 @@ goog.ui.Popup.AnchoredPosition = goog.positioning.AnchoredPosition;
  * @param {Element} element The element to anchor the popup at.
  * @param {goog.positioning.Corner} corner The corner of the element to anchor
  *    the popup at.
- * @param {boolean} opt_adjust Whether the positioning should be adjusted until
+ * @param {boolean=} opt_adjust Whether the positioning should be adjusted until
  *    the element fits inside the viewport even if that means that the anchored
  *    corners are ignored.
  * @constructor
@@ -344,7 +346,7 @@ goog.ui.Popup.AnchoredViewPortPosition =
  * is scoped by an element with relative position.
  *
  * @param {number|!goog.math.Coordinate} arg1 Left position or coordinate.
- * @param {number} opt_arg2 Top position.
+ * @param {number=} opt_arg2 Top position.
  * @constructor
  * @extends {goog.positioning.AbstractPosition}
  *
@@ -361,7 +363,7 @@ goog.ui.Popup.AbsolutePosition = goog.positioning.AbsolutePosition;
  * other element.
  *
  * @param {number|!goog.math.Coordinate} arg1 Left position or coordinate.
- * @param {number} opt_arg2 Top position.
+ * @param {number=} opt_arg2 Top position.
  * @constructor
  * @extends {goog.ui.Popup.AbsolutePosition}
  *
@@ -380,7 +382,7 @@ goog.ui.Popup.ViewPortPosition = goog.positioning.ViewportPosition;
  * parameters.
  *
  * @param {number|!goog.math.Coordinate} arg1 Left position or coordinate.
- * @param {number} opt_arg2 Top position.
+ * @param {number=} opt_arg2 Top position.
  * @constructor
  * @extends {goog.ui.Popup.AbsolutePosition}
  *
@@ -395,7 +397,7 @@ goog.ui.Popup.ClientPosition = goog.positioning.ClientPosition;
  * window (client) coordinates, and made to stay within the viewport.
  *
  * @param {number|!goog.math.Coordinate} arg1 Left position or coordinate.
- * @param {number} opt_arg2 Top position if arg1 is a number representing the
+ * @param {number=} opt_arg2 Top position if arg1 is a number representing the
  *     left position, ignored otherwise.
  * @constructor
  * @extends {goog.ui.Popup.ClientPosition}

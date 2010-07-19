@@ -1,16 +1,16 @@
+// Copyright 2006 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-// Copyright 2006 Google Inc. All Rights Reserved.
 
 /**
  * @fileoverview
@@ -24,6 +24,7 @@
  * Implements DataNode to provide the top element in a data registry
  * Prepends '$' to top level data names in path to denote they are root object
  *
+*
  */
 goog.provide('goog.ds.DataManager');
 
@@ -82,9 +83,9 @@ goog.ds.DataManager.clearInstance = function() {
 /**
  * Add a data source
  * @param {goog.ds.DataNode} ds The data source.
- * @param {boolean} opt_autoload Whether to automatically load the data,
+ * @param {boolean=} opt_autoload Whether to automatically load the data,
  *   defaults to false.
- * @param {string} opt_name Optional name, can also get name
+ * @param {string=} opt_name Optional name, can also get name
  *   from the datasource.
  */
 goog.ds.DataManager.prototype.addDataSource = function(ds, opt_autoload,
@@ -184,7 +185,7 @@ goog.ds.DataManager.prototype.set = function(value) {
 
 /**
  * Gets all of the child nodes of the current node.
- * @param {string} opt_selector String selector to choose child nodes
+ * @param {string=} opt_selector String selector to choose child nodes
  * Should return an empty DataNode list if no child nodes.
  *
  * @return {goog.ds.DataNodeList} The child nodes.
@@ -285,11 +286,11 @@ goog.ds.DataManager.prototype.getEventCount = function() {
  * Adds a listener
  * Listeners should fire when any data with path that has dataPath as substring
  * is changed.
- * TODO Look into better listener handling
+ * TODO(user) Look into better listener handling
  *
  * @param {Function} fn Callback function, signature function(dataPath, id).
  * @param {string} dataPath Fully qualified data path.
- * @param {string} opt_id A value passed back to the listener when the dataPath
+ * @param {string=} opt_id A value passed back to the listener when the dataPath
  *   is matched.
  */
 goog.ds.DataManager.prototype.addListener = function(fn, dataPath, opt_id) {
@@ -308,15 +309,15 @@ goog.ds.DataManager.prototype.addListener = function(fn, dataPath, opt_id) {
   }
 
   opt_id = opt_id || '';
-  var key = dataPath + ':' + opt_id + ':' + goog.getHashCode(fn);
+  var key = dataPath + ':' + opt_id + ':' + goog.getUid(fn);
   var listener = {dataPath: dataPath, id: opt_id, fn: fn};
   var expr = goog.ds.Expr.create(dataPath);
 
-  var fnHash = goog.getHashCode(fn);
-  if (!this.listenersByFunction_[fnHash]) {
-    this.listenersByFunction_[fnHash] = {};
+  var fnUid = goog.getUid(fn);
+  if (!this.listenersByFunction_[fnUid]) {
+    this.listenersByFunction_[fnUid] = {};
   }
-  this.listenersByFunction_[fnHash][key] = {listener: listener, items: []};
+  this.listenersByFunction_[fnUid][key] = {listener: listener, items: []};
 
   while (expr) {
     var listenerSpec = {listener: listener, maxAncestors: maxAncestors};
@@ -328,7 +329,7 @@ goog.ds.DataManager.prototype.addListener = function(fn, dataPath, opt_id) {
     matchingListeners[key] = listenerSpec;
     maxAncestors = 0;
     expr = expr.getParent();
-    this.listenersByFunction_[fnHash][key].items.push({key: key,
+    this.listenersByFunction_[fnUid][key].items.push({key: key,
         obj: matchingListeners});
   }
 };
@@ -347,7 +348,7 @@ goog.ds.DataManager.prototype.addListener = function(fn, dataPath, opt_id) {
  *
  * @param {Function} fn Callback function, signature (dataPath, id, indexes).
  * @param {string} dataPath Fully qualified data path.
- * @param {string} opt_id A value passed back to the listener when the dataPath
+ * @param {string=} opt_id A value passed back to the listener when the dataPath
  *   is matched.
  */
 goog.ds.DataManager.prototype.addIndexedListener = function(fn, dataPath,
@@ -383,12 +384,12 @@ goog.ds.DataManager.prototype.addIndexedListener = function(fn, dataPath,
   this.addListener(matcher, listenPath, opt_id);
 
   // Add the indexed listener to the map so that we can remove it later.
-  var fnHash = goog.getHashCode(fn);
-  if (!this.indexedListenersByFunction_[fnHash]) {
-    this.indexedListenersByFunction_[fnHash] = {};
+  var fnUid = goog.getUid(fn);
+  if (!this.indexedListenersByFunction_[fnUid]) {
+    this.indexedListenersByFunction_[fnUid] = {};
   }
   var key = dataPath + ':' + opt_id;
-  this.indexedListenersByFunction_[fnHash][key] = {listener:
+  this.indexedListenersByFunction_[fnUid][key] = {listener:
       {dataPath: listenPath, fn: matcher, id: opt_id}};
 };
 
@@ -398,8 +399,8 @@ goog.ds.DataManager.prototype.addIndexedListener = function(fn, dataPath,
  * matching datapath and matching id.
  *
  * @param {Function} fn Callback function, signature function(dataPath, id).
- * @param {string} opt_dataPath Fully qualified data path.
- * @param {string} opt_id A value passed back to the listener when the dataPath
+ * @param {string=} opt_dataPath Fully qualified data path.
+ * @param {string=} opt_id A value passed back to the listener when the dataPath
  *   is matched.
  */
 goog.ds.DataManager.prototype.removeIndexedListeners = function(
@@ -414,8 +415,8 @@ goog.ds.DataManager.prototype.removeIndexedListeners = function(
  * matching dataPath and matching id
  *
  * @param {Function} fn Callback function, signature function(dataPath, id).
- * @param {string} opt_dataPath Fully qualified data path.
- * @param {string} opt_id A value passed back to the listener when the dataPath
+ * @param {string=} opt_dataPath Fully qualified data path.
+ * @param {string=} opt_id A value passed back to the listener when the dataPath
  *   is matched.
  */
 goog.ds.DataManager.prototype.removeListeners = function(fn, opt_dataPath,
@@ -442,15 +443,15 @@ goog.ds.DataManager.prototype.removeListeners = function(fn, opt_dataPath,
  * @param {boolean} indexed Indicates whether the listenersByFunction are
  *     indexed or not.
  * @param {Function} fn Callback function, signature function(dataPath, id).
- * @param {string} opt_dataPath Fully qualified data path.
- * @param {string} opt_id A value passed back to the listener when the dataPath
+ * @param {string=} opt_dataPath Fully qualified data path.
+ * @param {string=} opt_id A value passed back to the listener when the dataPath
  *   is matched.
  * @private
  */
 goog.ds.DataManager.prototype.removeListenersByFunction_ = function(
     listenersByFunction, indexed, fn, opt_dataPath, opt_id) {
-  var fnHash = goog.getHashCode(fn);
-  var functionMatches = listenersByFunction[fnHash];
+  var fnUid = goog.getUid(fn);
+  var functionMatches = listenersByFunction[fnUid];
   if (functionMatches != null) {
     for (var key in functionMatches) {
       var functionMatch = functionMatches[key];

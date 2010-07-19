@@ -1,16 +1,16 @@
+// Copyright 2008 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-// Copyright 2008 Google Inc. All Rights Reserved.
 
 /**
  * @fileoverview The default renderer for a goog.dom.DimensionPicker.  A
@@ -18,6 +18,8 @@
  * It looks like a palette but in order to minimize DOM load it is rendered.
  * using CSS background tiling instead of as a grid of nodes.
  *
+ * @author robbyw@google.com (Robby Walker)
+*
  */
 
 goog.provide('goog.ui.DimensionPickerRenderer');
@@ -50,7 +52,8 @@ goog.addSingletonGetter(goog.ui.DimensionPickerRenderer);
  * by this renderer.
  * @type {string}
  */
-goog.ui.DimensionPickerRenderer.CSS_CLASS = 'goog-dimension-picker';
+goog.ui.DimensionPickerRenderer.CSS_CLASS =
+    goog.getCssName('goog-dimension-picker');
 
 
 /**
@@ -167,14 +170,14 @@ goog.ui.DimensionPickerRenderer.prototype.addElementContents_ = function(
   // background image to represent deselected tiles.  The top div uses a
   // different css tiled background image to represent selected tiles.
   var mouseCatcherDiv = palette.getDomHelper().createDom(goog.dom.TagName.DIV,
-      this.getCssClass() + '-mousecatcher');
+      goog.getCssName(this.getCssClass(), 'mousecatcher'));
   var unhighlightedDiv = palette.getDomHelper().createDom(goog.dom.TagName.DIV,
     {
-      'class': this.getCssClass() + '-unhighlighted',
+      'class': goog.getCssName(this.getCssClass(), 'unhighlighted'),
       'style': 'width:100%;height:100%'
     });
   var highlightedDiv = palette.getDomHelper().createDom(goog.dom.TagName.DIV,
-      this.getCssClass() + '-highlighted');
+      goog.getCssName(this.getCssClass(), 'highlighted'));
   element.appendChild(
       palette.getDomHelper().createDom(goog.dom.TagName.DIV,
           {'style': 'width:100%;height:100%'},
@@ -182,7 +185,7 @@ goog.ui.DimensionPickerRenderer.prototype.addElementContents_ = function(
 
   // Lastly we add a div to store the text version of the current state.
   element.appendChild(palette.getDomHelper().createDom(goog.dom.TagName.DIV,
-      this.getCssClass() + '-status',
+      goog.getCssName(this.getCssClass(), 'status'),
       goog.i18n.bidi.enforceLtrInText('0 x 0')));
 };
 
@@ -235,7 +238,7 @@ goog.ui.DimensionPickerRenderer.prototype.getMouseMoveElement = function(
  */
 goog.ui.DimensionPickerRenderer.prototype.getGridOffsetX = function(
     palette, x) {
-  // TODO: Don't rely on magic 18 - measure each palette's em size.
+  // TODO(robbyw): Don't rely on magic 18 - measure each palette's em size.
   return Math.min(palette.maxColumns, Math.ceil(x / 18));
 };
 

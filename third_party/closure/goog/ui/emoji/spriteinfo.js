@@ -1,16 +1,16 @@
+// Copyright 2008 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-// Copyright 2008 Google Inc. All Rights Reserved.
 
 /**
  * @fileoverview SpriteInfo implementation. This is a simple wrapper class to
@@ -19,6 +19,7 @@
  * @see ../demos/popupemojipicker.html or emojipicker_test.html for examples
  * of how to use this class.
  *
+*
  */
 goog.provide('goog.ui.emoji.SpriteInfo');
 
@@ -28,15 +29,15 @@ goog.provide('goog.ui.emoji.SpriteInfo');
  * sprited via CSS, then only the first parameter needs a value. If the image
  * is sprited via metadata, then the first parameter should be left null.
  *
- * @param {string?} cssClass CSS class to properly display the sprited image.
- * @param {string} opt_url Url of the sprite image.
- * @param {number} opt_width Width of the image being sprited.
- * @param {number} opt_height Height of the image being sprited.
- * @param {number} opt_xOffset Positive x offset of the image being sprited
+ * @param {?string} cssClass CSS class to properly display the sprited image.
+ * @param {string=} opt_url Url of the sprite image.
+ * @param {number=} opt_width Width of the image being sprited.
+ * @param {number=} opt_height Height of the image being sprited.
+ * @param {number=} opt_xOffset Positive x offset of the image being sprited
  *     within the sprite.
- * @param {number} opt_yOffset Positive y offset of the image being sprited
+ * @param {number=} opt_yOffset Positive y offset of the image being sprited
  *     within the sprite.
- * @param {boolean} opt_animated Whether the sprite is animated.
+ * @param {boolean=} opt_animated Whether the sprite is animated.
  * @constructor
  */
 goog.ui.emoji.SpriteInfo = function(cssClass, opt_url, opt_width, opt_height,
@@ -119,7 +120,7 @@ goog.ui.emoji.SpriteInfo.prototype.animated_;
 
 /**
  * Returns the css class of the sprited image.
- * @return {string?} Name of the CSS class to properly display the sprited
+ * @return {?string} Name of the CSS class to properly display the sprited
  *     image.
  */
 goog.ui.emoji.SpriteInfo.prototype.getCssClass = function() {
@@ -129,7 +130,7 @@ goog.ui.emoji.SpriteInfo.prototype.getCssClass = function() {
 
 /**
  * Returns the url of the sprite image.
- * @return {string?} Url of the sprite image.
+ * @return {?string} Url of the sprite image.
  */
 goog.ui.emoji.SpriteInfo.prototype.getUrl = function() {
   return this.url_ || null;

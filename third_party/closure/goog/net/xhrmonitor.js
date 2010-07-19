@@ -1,16 +1,16 @@
+// Copyright 2007 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-// Copyright 2007 Google Inc. All Rights Reserved.
 
 /**
  * @fileoverview Class used by XHR wrappers to publish their state to IframeIo
@@ -29,6 +29,7 @@
  *
  * This class's methods are no-ops for non-Gecko browsers.
  *
+*
  */
 
 goog.provide('goog.net.xhrMonitor');
@@ -49,8 +50,8 @@ goog.net.XhrMonitor_ = function() {
   if (!goog.userAgent.GECKO) return;
 
   /**
-   * A map of context identifiers to an array of XHR hashcodes that were created
-   * in the context.
+   * A map of context identifiers to an array of XHR unique IDs that were
+   * created in the context.
    * String -> Array.<String>
    * @type {Object}
    * @private
@@ -58,7 +59,7 @@ goog.net.XhrMonitor_ = function() {
   this.contextsToXhr_ = {};
 
   /**
-   * Inverse lookup from an XHR hashcode to any context that was open when it
+   * Inverse lookup from an XHR unique ID to any context that was open when it
    * was created.  There should rarely be multiple open contexts, but support
    * has been added for completeness.
    * String -> Array.<String>
@@ -79,13 +80,13 @@ goog.net.XhrMonitor_ = function() {
 
 /**
  * Returns a string key for the argument -- Either the string itself, the
- * hashcode of the object, or an empty string otherwise.
+ * unique ID of the object, or an empty string otherwise.
  * @param {Object|string} obj The object to make a key for.
  * @return {string|number} A string key for the argument.
  */
 goog.net.XhrMonitor_.getKey = function(obj) {
   return goog.isString(obj) ? obj :
-         goog.isObject(obj) ? goog.getHashCode(obj) :
+         goog.isObject(obj) ? goog.getUid(obj) :
          '';
 };
 
@@ -168,14 +169,14 @@ goog.net.XhrMonitor_.prototype.isContextSafe = function(context) {
 goog.net.XhrMonitor_.prototype.markXhrOpen = function(xhr) {
   if (!this.enabled_) return;
 
-  var hc = goog.getHashCode(xhr);
-  this.logger_.fine('Opening XHR : ' + hc);
+  var uid = goog.getUid(xhr);
+  this.logger_.fine('Opening XHR : ' + uid);
 
   // Update all contexts that are currently on the stack.
   for (var i = 0; i < this.stack_.length; i++) {
     var context = this.stack_[i];
-    this.addToMap_(this.contextsToXhr_, context, hc);
-    this.addToMap_(this.xhrToContexts_, hc, context);
+    this.addToMap_(this.contextsToXhr_, context, uid);
+    this.addToMap_(this.xhrToContexts_, uid, context);
   }
 };
 
@@ -187,13 +188,13 @@ goog.net.XhrMonitor_.prototype.markXhrOpen = function(xhr) {
 goog.net.XhrMonitor_.prototype.markXhrClosed = function(xhr) {
   if (!this.enabled_) return;
 
-  var hc = goog.getHashCode(xhr);
-  this.logger_.fine('Closing XHR : ' + hc);
+  var uid = goog.getUid(xhr);
+  this.logger_.fine('Closing XHR : ' + uid);
 
   // Delete the XHR look up and remove the XHR from any contexts.
-  delete this.xhrToContexts_[hc];
+  delete this.xhrToContexts_[uid];
   for (var context in this.contextsToXhr_) {
-    goog.array.remove(this.contextsToXhr_[context], hc);
+    goog.array.remove(this.contextsToXhr_[context], uid);
     if (this.contextsToXhr_[context].length == 0) {
       delete this.contextsToXhr_[context];
     }
@@ -205,17 +206,17 @@ goog.net.XhrMonitor_.prototype.markXhrClosed = function(xhr) {
  * Updates any contexts that were dependent on the given XHR request with any
  * XHRs that were opened by the same XHR.  This is used to track Iframes that
  * open XHRs which then in turn open an XHR.
- * @param {string} xhrHc The hashcode for the XHR to update.
+ * @param {string} xhrUid The unique ID for the XHR to update.
  * @private
  */
-goog.net.XhrMonitor_.prototype.updateDependentContexts_ = function(xhrHc) {
+goog.net.XhrMonitor_.prototype.updateDependentContexts_ = function(xhrUid) {
   // Update any contexts that are dependent on this XHR with any requests
   // registered with the XHR as a base context.  This is used for the situation
   // when an XHR event triggers another XHR.  The original XHR is closed, but
   // the source context needs to be informed about any XHRs that were opened as
   // a result of the first.
-  var contexts = this.xhrToContexts_[xhrHc];
-  var xhrs = this.contextsToXhr_[xhrHc];
+  var contexts = this.xhrToContexts_[xhrUid];
+  var xhrs = this.contextsToXhr_[xhrUid];
   if (contexts && xhrs) {
     this.logger_.finest('Updating dependent contexts');
     goog.array.forEach(contexts, function(context) {

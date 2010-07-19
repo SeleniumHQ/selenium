@@ -1,20 +1,21 @@
+// Copyright 2007 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Copyright 2007 Google Inc. All Rights Reserved.
-
 
 /**
  * @fileoverview Graphics utility functions and factory methods.
+*
  */
 
 
@@ -32,11 +33,11 @@ goog.require('goog.ui.Component');
  * of this class. Instead us goog.graphics.createGraphics
  * @param {number|string} width The width in pixels or percent.
  * @param {number|string} height The height in pixels or percent.
- * @param {number?} opt_coordWidth Optional coordinate system width - if
+ * @param {?number=} opt_coordWidth Optional coordinate system width - if
  *     omitted or null, defaults to same as width.
- * @param {number?} opt_coordHeight Optional coordinate system height - if
+ * @param {?number=} opt_coordHeight Optional coordinate system height - if
  *     omitted or null, defaults to same as height.
- * @param {goog.dom.DomHelper} opt_domHelper The DOM helper object for the
+ * @param {goog.dom.DomHelper=} opt_domHelper The DOM helper object for the
  *     document we want to render in.
  * @constructor
  * @extends {goog.ui.Component}
@@ -62,14 +63,14 @@ goog.graphics.AbstractGraphics = function(width, height,
 
   /**
    * Width of coordinate system in units.
-   * @type {number?}
+   * @type {?number}
    * @protected
    */
   this.coordWidth = opt_coordWidth || null;
 
   /**
    * Height of coordinate system in units.
-   * @type {number?}
+   * @type {?number}
    * @protected
    */
   this.coordHeight = opt_coordHeight || null;
@@ -256,7 +257,7 @@ goog.graphics.AbstractGraphics.prototype.setElementTransform =
  * @param {goog.graphics.Stroke?} stroke Stroke object describing the
  *    stroke.
  * @param {goog.graphics.Fill?} fill Fill object describing the fill.
- * @param {goog.graphics.GroupElement} opt_group The group wrapper element to
+ * @param {goog.graphics.GroupElement=} opt_group The group wrapper element to
  *     append to. If not specified, appends to the main canvas.
  *
  * @return {goog.graphics.EllipseElement} The newly created element.
@@ -277,7 +278,7 @@ goog.graphics.AbstractGraphics.prototype.drawCircle = function(
  * @param {goog.graphics.Stroke?} stroke Stroke object describing the
  *    stroke.
  * @param {goog.graphics.Fill?} fill Fill object describing the fill.
- * @param {goog.graphics.GroupElement} opt_group The group wrapper element to
+ * @param {goog.graphics.GroupElement=} opt_group The group wrapper element to
  *     append to. If not specified, appends to the main canvas.
  *
  * @return {goog.graphics.EllipseElement} The newly created element.
@@ -295,7 +296,7 @@ goog.graphics.AbstractGraphics.prototype.drawEllipse = goog.abstractMethod;
  * @param {goog.graphics.Stroke?} stroke Stroke object describing the
  *    stroke.
  * @param {goog.graphics.Fill?} fill Fill object describing the fill.
- * @param {goog.graphics.GroupElement} opt_group The group wrapper element to
+ * @param {goog.graphics.GroupElement=} opt_group The group wrapper element to
  *     append to. If not specified, appends to the main canvas.
  *
  * @return {goog.graphics.RectElement} The newly created element.
@@ -317,7 +318,7 @@ goog.graphics.AbstractGraphics.prototype.drawRect = goog.abstractMethod;
  * @param {goog.graphics.Stroke?} stroke Stroke object describing the
  *    stroke.
  * @param {goog.graphics.Fill?} fill  Fill object describing the fill.
- * @param {goog.graphics.GroupElement} opt_group The group wrapper element to
+ * @param {goog.graphics.GroupElement=} opt_group The group wrapper element to
  *     append to. If not specified, appends to the main canvas.
  *
  * @return {goog.graphics.TextElement} The newly created element.
@@ -352,7 +353,7 @@ goog.graphics.AbstractGraphics.prototype.drawText = function(
  * @param {goog.graphics.Stroke?} stroke Stroke object describing the
  *    stroke.
  * @param {goog.graphics.Fill?} fill Fill object describing the fill.
- * @param {goog.graphics.GroupElement} opt_group The group wrapper element to
+ * @param {goog.graphics.GroupElement=} opt_group The group wrapper element to
  *     append to. If not specified, appends to the main canvas.
  *
  * @return {goog.graphics.TextElement} The newly created element.
@@ -367,7 +368,7 @@ goog.graphics.AbstractGraphics.prototype.drawTextOnLine = goog.abstractMethod;
  * @param {goog.graphics.Stroke?} stroke Stroke object describing the
  *    stroke.
  * @param {goog.graphics.Fill?} fill Fill object describing the fill.
- * @param {goog.graphics.GroupElement} opt_group The group wrapper element to
+ * @param {goog.graphics.GroupElement=} opt_group The group wrapper element to
  *     append to. If not specified, appends to the main canvas.
  *
  * @return {goog.graphics.PathElement} The newly created element.
@@ -378,7 +379,7 @@ goog.graphics.AbstractGraphics.prototype.drawPath = goog.abstractMethod;
 /**
  * Create an empty group of drawing elements.
  *
- * @param {goog.graphics.GroupElement} opt_group The group wrapper element to
+ * @param {goog.graphics.GroupElement=} opt_group The group wrapper element to
  *     append to. If not specified, appends to the main canvas.
  *
  * @return {goog.graphics.GroupElement} The newly created group.

@@ -1,27 +1,36 @@
+// Copyright 2008 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Copyright 2008 Google Inc. All Rights Reserved.
-
 /**
  * @fileoverview Protocol Buffer (Message) Descriptor class.
+*
  */
 
 goog.provide('goog.proto2.Descriptor');
+goog.provide('goog.proto2.Metadata');
 
 goog.require('goog.array');
 goog.require('goog.object');
 goog.require('goog.proto2.Util');
 
+
+/**
+ * @type {{name: (string|undefined),
+ *         fullName: (string|undefined),
+ *         containingType: (goog.proto2.Message|undefined)}}
+ */
+goog.proto2.Metadata = goog.typedef;
 
 
 /**
@@ -29,17 +38,37 @@ goog.require('goog.proto2.Util');
  *
  * @param {Function} messageType Constructor for the message class that
  *      this descriptor describes.
- * @param {!Object} metadata The metadata about the message that will be used
- *      to construct this descriptor.
+ * @param {!goog.proto2.Metadata} metadata The metadata about the message that
+ *      will be used to construct this descriptor.
  * @param {Array.<goog.proto2.FieldDescriptor>} fields The fields of the
  *      message described by this descriptor.
  *
  * @constructor
  */
 goog.proto2.Descriptor = function(messageType, metadata, fields) {
+
+  /**
+   * @type {Function}
+   * @private
+   */
   this.messageType_ = messageType;
-  this.name_ = metadata.name;
-  this.fullName_ = metadata.fullName;
+
+  /**
+   * @type {?string}
+   * @private
+   */
+  this.name_ = metadata.name || null;
+
+  /**
+   * @type {?string}
+   * @private
+   */
+  this.fullName_ = metadata.fullName || null;
+
+  /**
+   * @type {goog.proto2.Message|undefined}
+   * @private
+   */
   this.containingType_ = metadata.containingType;
 
   /**
@@ -57,9 +86,9 @@ goog.proto2.Descriptor = function(messageType, metadata, fields) {
 
 
 /**
- * Returns the name of the message.
+ * Returns the name of the message, if any.
  *
- * @return {string} The name.
+ * @return {?string} The name.
  */
 goog.proto2.Descriptor.prototype.getName = function() {
   return this.name_;
@@ -67,9 +96,9 @@ goog.proto2.Descriptor.prototype.getName = function() {
 
 
 /**
- * Returns the full name of the message.
+ * Returns the full name of the message, if any.
  *
- * @return {string} The na,e.
+ * @return {?string} The name.
  */
 goog.proto2.Descriptor.prototype.getFullName = function() {
   return this.fullName_;
@@ -133,7 +162,7 @@ goog.proto2.Descriptor.prototype.findFieldByName = function(name) {
       return field.getName() == name;
     });
 
-  return valueFound || null;
+  return /** @type {goog.proto2.FieldDescriptor} */ (valueFound) || null;
 };
 
 

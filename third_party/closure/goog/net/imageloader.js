@@ -1,21 +1,23 @@
+// Copyright 2008 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-// Copyright 2008 Google Inc. All Rights Reserved.
 
 /**
  * @fileoverview Image loader utility class.  Useful when an application needs
  * to preload multiple images, for example so they can be sized.
  *
+*
+*
  */
 
 goog.provide('goog.net.ImageLoader');
@@ -33,7 +35,7 @@ goog.require('goog.userAgent');
  * event for each image loaded, with an {@link Image} object as the target of
  * the event, normalized to have {@code naturalHeight} and {@code naturalWidth}
  * attributes.
- * @param {Element} opt_parent An optional parent element whose document object
+ * @param {Element=} opt_parent An optional parent element whose document object
  *     should be used to load images.
  * @constructor
  * @extends {goog.events.EventTarget}
@@ -48,9 +50,9 @@ goog.inherits(goog.net.ImageLoader, goog.events.EventTarget);
 
 
 /**
- * Map of image IDs to images, used to keep track of the images to load.
+ * Map of image IDs to images src, used to keep track of the images to load.
  * @private
- * @type {Object}
+ * @type {Object.<string, string>}
  */
 goog.net.ImageLoader.prototype.images_;
 
@@ -127,10 +129,6 @@ goog.net.ImageLoader.prototype.loadImage_ = function(src, id) {
   } else {
     image = new Image();
   }
-
-  // Semi-hack:  We used to map the ID string to the source URL string, but now
-  // we use the same object to map the ID string to the Image object itself.
-  this.images_[id] = image;
 
   // Internet Explorer doesn't reliably raise LOAD events on images, so we must
   // use READY_STATE_CHANGE (thanks, Jeff!).

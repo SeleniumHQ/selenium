@@ -1,19 +1,23 @@
+// Copyright 2008 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Copyright 2008 Google Inc. All Rights Reserved.
-
 /**
  * @fileoverview Performance timer.
+ *
+ * {@see goog.testing.benchmark} for an easy way to use this functionality.
+ *
+*
  */
 
 goog.provide('goog.testing.PerformanceTimer');
@@ -27,9 +31,9 @@ goog.require('goog.math');
  * Creates a performance timer that runs test functions a number of times to
  * generate timing samples, and provides performance statistics (minimum,
  * maximum, average, and standard deviation).
- * @param {number} opt_numSamples Number of times to run the test function;
+ * @param {number=} opt_numSamples Number of times to run the test function;
  *     defaults to 10.
- * @param {number} opt_timeoutInterval Number of milliseconds after which the
+ * @param {number=} opt_timeoutInterval Number of milliseconds after which the
  *     test is to be aborted; defaults to 5 seconds (5,000ms).
  * @constructor
  */

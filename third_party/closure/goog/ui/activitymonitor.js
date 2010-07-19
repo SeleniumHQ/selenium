@@ -1,16 +1,16 @@
+// Copyright 2006 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-// Copyright 2006 Google Inc. All Rights Reserved.
 
 /**
  * @fileoverview Activity Monitor.
@@ -21,6 +21,7 @@
  * If you would prefer to get BECOME_ACTIVE and BECOME_IDLE events when the
  * user changes states, then you should use the IdleTimer class instead.
  *
+*
  */
 
 goog.provide('goog.ui.ActivityMonitor');
@@ -33,9 +34,9 @@ goog.require('goog.events.EventTarget');
 /**
  * Once initialized with a document, the activity monitor can be queried for
  * the current idle time.
- * TODO: Expand this class to allow it to monitor multiple DOMs.
+ * TODO(user): Expand this class to allow it to monitor multiple DOMs.
  *
- * @param {goog.dom.DomHelper|Array.<goog.dom.DomHelper>} opt_domHelper
+ * @param {goog.dom.DomHelper|Array.<goog.dom.DomHelper>=} opt_domHelper
  *     DomHelper which contains the document(s) to listen to.  If null, the
  *     default document is usedinstead.
  *
@@ -232,7 +233,7 @@ goog.ui.ActivityMonitor.prototype.updateIdleTime_ = function(eventTime,
 
 /**
  * Returns the amount of time the user has been idle.
- * @param {number} opt_now The current time can optionally be passed in for the
+ * @param {number=} opt_now The current time can optionally be passed in for the
  *     computation to avoid an extra Date allocation.
  * @return {number} The amount of time in ms that the user has been idle.
  */

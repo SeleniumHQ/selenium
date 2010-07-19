@@ -1,20 +1,22 @@
+// Copyright 2006 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Copyright 2006 Google Inc. All Rights Reserved.
-
 /**
  * @fileoverview Utilities for adding, removing and setting classes.
  *
+*
+*
  */
 
 
@@ -44,14 +46,14 @@ goog.dom.classes.get = function(element) {
   // Furthermore, in Firefox, className is not a string when the element is
   // an SVG element.
   return className && typeof className.split == 'function' ?
-      className.split(' ') : [];
+      className.split(/\s+/) : [];
 };
 
 
 /**
  * Adds a class or classes to an element. Does not add multiples of class names.
  * @param {Node} element DOM node to add class to.
- * @param {string} var_args Class names to add.
+ * @param {...string} var_args Class names to add.
  * @return {boolean} Whether class was added (or all classes were added).
  */
 goog.dom.classes.add = function(element, var_args) {
@@ -68,7 +70,7 @@ goog.dom.classes.add = function(element, var_args) {
 /**
  * Removes a class or classes from an element.
  * @param {Node} element DOM node to remove class from.
- * @param {string} var_args Class name(s) to remove.
+ * @param {...string} var_args Class name(s) to remove.
  * @return {boolean} Whether all classes in {@code var_args} were found and
  *     removed.
  */
@@ -160,6 +162,11 @@ goog.dom.classes.swap = function(element, fromClass, toClass) {
  * single operation. Unlike calling {@link goog.dom.classes.add} and
  * {@link goog.dom.classes.remove} separately this is more efficient as it only
  * parses the class property once.
+ *
+ * If a class is in both the remove and add lists, it will be added. Thus,
+ * you can use this instead of {@link goog.dom.classes.swap} when you have
+ * more than two class names that you want to swap.
+ *
  * @param {Node} element DOM node to swap classes on.
  * @param {string|Array.<string>|null} classesToRemove Class or classes to
  *     remove, if null no classes are removed.

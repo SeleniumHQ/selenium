@@ -1,19 +1,20 @@
+// Copyright 2007 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Copyright 2007 Google Inc. All Rights Reserved.
-
 /**
  * @fileoverview Python style iteration utilities.
+*
  */
 
 
@@ -25,9 +26,9 @@ goog.require('goog.array');
 
 
 /**
- * @type {goog.iter.Iterator|{length:number}|{__iterator__}}
+ * @typedef {goog.iter.Iterator|{length:number}|{__iterator__}}
  */
-goog.iter.Iterable = goog.typedef;
+goog.iter.Iterable;
 
 
 // For script engines that already support iterators.
@@ -72,7 +73,7 @@ goog.iter.Iterator.prototype.next = function() {
 /**
  * Returns the {@code Iterator} object itself.  This is used to implement
  * the iterator protocol in JavaScript 1.7
- * @param {boolean} opt_keys  Whether to return the keys or values. Default is
+ * @param {boolean=} opt_keys  Whether to return the keys or values. Default is
  *     to only return the values.  This is being used by the for-in loop (true)
  *     and the for-each-in loop (false).  Even though the param gives a hint
  *     about what the iterator will return there is no guarantee that it will
@@ -121,7 +122,7 @@ goog.iter.toIterator = function(iterable) {
   }
 
 
-  // TODO: Should we fall back on goog.structs.getValues()?
+  // TODO(user): Should we fall back on goog.structs.getValues()?
   throw Error('Not implemented');
 };
 
@@ -138,7 +139,7 @@ goog.iter.toIterator = function(iterable) {
  *     return value is irrelevant.  The reason for passing undefined as the
  *     second argument is so that the same function can be used in
  *     {@see goog.array#forEach} as well as others.
- * @param {Object} opt_obj  The object to be used as the value of 'this' within
+ * @param {Object=} opt_obj  The object to be used as the value of 'this' within
  *     {@code f}.
  */
 goog.iter.forEach = function(iterable, f, opt_obj) {
@@ -178,7 +179,7 @@ goog.iter.forEach = function(iterable, f, opt_obj) {
  *     return a boolean.  If the return value is true the element will be
  *     included  in the returned iteror.  If it is false the element is not
  *     included.
- * @param {Object} opt_obj The object to be used as the value of 'this' within
+ * @param {Object=} opt_obj The object to be used as the value of 'this' within
  *     {@code f}.
  * @return {!goog.iter.Iterator} A new iterator in which only elements that
  *     passed the test are present.
@@ -209,9 +210,9 @@ goog.iter.filter = function(iterable, f, opt_obj) {
  * @param {number} startOrStop  The stop value if only one argument is provided.
  *     The start value if 2 or more arguments are provided.  If only one
  *     argument is used the start value is 0.
- * @param {number} opt_stop  The stop value.  If left out then the first
+ * @param {number=} opt_stop  The stop value.  If left out then the first
  *     argument is used as the stop value.
- * @param {number} opt_step  The number to increment with between each call to
+ * @param {number=} opt_step  The number to increment with between each call to
  *     next.  This can be negative.
  * @return {!goog.iter.Iterator} A new iterator that returns the values in the
  *     range.
@@ -260,7 +261,7 @@ goog.iter.join = function(iterable, deliminator) {
  * @param {Function} f The function to call for every element.  This function
  *     takes 3 arguments (the element, undefined, and the iterator) and should
  *     return a new value.
- * @param {Object} opt_obj The object to be used as the value of 'this' within
+ * @param {Object=} opt_obj The object to be used as the value of 'this' within
  *     {@code f}.
  * @return {!goog.iter.Iterator} A new iterator that returns the results of
  *     applying the function to each element in the original iterator.
@@ -288,7 +289,7 @@ goog.iter.map = function(iterable, f, opt_obj) {
  *     and the value of the current element).
  *     function(previousValue, currentElement) : newValue.
  * @param {*} val The initial value to pass into the function on the first call.
- * @param {Object} opt_obj  The object to be used as the value of 'this'
+ * @param {Object=} opt_obj  The object to be used as the value of 'this'
  *     within f.
  * @return {*} Result of evaluating f repeatedly across the values of
  *     the iterator.
@@ -311,7 +312,7 @@ goog.iter.reduce = function(iterable, f, val, opt_obj) {
  * @param {Function} f  The function to call for every value. This function
  *     takes 3 arguments (the value, undefined, and the iterator) and should
  *     return a boolean.
- * @param {Object} opt_obj The object to be used as the value of 'this' within
+ * @param {Object=} opt_obj The object to be used as the value of 'this' within
  *     {@code f}.
  * @return {boolean} true if any value passes the test.
  */
@@ -342,7 +343,7 @@ goog.iter.some = function(iterable, f, opt_obj) {
  * @param {Function} f  The function to call for every value. This function
  *     takes 3 arguments (the value, undefined, and the iterator) and should
  *     return a boolean.
- * @param {Object} opt_obj The object to be used as the value of 'this' within
+ * @param {Object=} opt_obj The object to be used as the value of 'this' within
  *     {@code f}.
  * @return {boolean} true if every value passes the test.
  */
@@ -367,7 +368,7 @@ goog.iter.every = function(iterable, f, opt_obj) {
 /**
  * Takes zero or more iterators and returns one iterator that will iterate over
  * them in the order chained.
- * @param {goog.iter.Iterator} var_args  Any number of iterator objects.
+ * @param {...goog.iter.Iterator} var_args  Any number of iterator objects.
  * @return {!goog.iter.Iterator} Returns a new iterator that will iterate over
  *     all the given iterators' contents.
  */
@@ -376,6 +377,11 @@ goog.iter.chain = function(var_args) {
   var length = args.length;
   var i = 0;
   var newIter = new goog.iter.Iterator;
+
+  /**
+   * @return {*} The next item in the iteration.
+   * @this {goog.iter.Iterator}
+   */
   newIter.next = function() {
     /** @preserveTry */
     try {
@@ -394,6 +400,7 @@ goog.iter.chain = function(var_args) {
       }
     }
   };
+
   return newIter;
 };
 
@@ -405,7 +412,7 @@ goog.iter.chain = function(var_args) {
  * @param {Function} f  The function to call for every value. This function
  *     takes 3 arguments (the value, undefined, and the iterator) and should
  *     return a boolean.
- * @param {Object} opt_obj The object to be used as the value of 'this' within
+ * @param {Object=} opt_obj The object to be used as the value of 'this' within
  *     {@code f}.
  * @return {!goog.iter.Iterator} A new iterator that drops elements from the
  *     original iterator as long as {@code f} is true.
@@ -436,7 +443,7 @@ goog.iter.dropWhile = function(iterable, f, opt_obj) {
  * @param {Function} f  The function to call for every value. This function
  *     takes 3 arguments (the value, undefined, and the iterator) and should
  *     return a boolean.
- * @param {Object} opt_obj This is used as the 'this' object in f when called.
+ * @param {Object=} opt_obj This is used as the 'this' object in f when called.
  * @return {!goog.iter.Iterator} A new iterator that keeps elements in the
  *     original iterator as long as the function is true.
  */

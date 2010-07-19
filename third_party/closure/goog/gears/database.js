@@ -1,19 +1,20 @@
+// Copyright 2006 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Copyright 2006 Google Inc. All Rights Reserved.
-
 /**
  * @fileoverview This file contains functions for using the Gears database.
+*
  */
 
 goog.provide('goog.gears.Database');
@@ -267,7 +268,7 @@ goog.gears.Database.resultSetToValue = function(rs) {
  * the object.
  *
  * @param {GearsResultSet} rs the result set returned by execute.
- * @return {Object?} a hash map with the key-value-pairs from the first row.
+ * @return {Object} a hash map with the key-value-pairs from the first row.
  *     Returns null is there are no matching rows.
  */
 goog.gears.Database.resultSetToObject = function(rs) {
@@ -308,14 +309,14 @@ goog.gears.Database.resultSetToArray = function(rs) {
  * Execute a sql statement with a set of arguments
  *
  * @param {string} sql The sql statement to execute.
- * @param {*} var_args The arguments to execute, either as a single
+ * @param {...*} var_args The arguments to execute, either as a single
  * array argument or as var_args.
  * @return {GearsResultSet} The results.
  */
 goog.gears.Database.prototype.execute = function(sql, var_args) {
   this.logger_.finer('Executing SQL: ' + sql);
 
-  // TODO: Remove when Gears adds more rubust type handling.
+  // TODO(user): Remove when Gears adds more rubust type handling.
   // Safety measure since Gears behaves very badly if it gets an unexpected
   // data type.
   sql = String(sql);
@@ -333,7 +334,7 @@ goog.gears.Database.prototype.execute = function(sql, var_args) {
     }
     this.logger_.finest('SQL arguments: ' + args);
 
-    // TODO: Type safety checking for args?
+    // TODO(user): Type safety checking for args?
     return this.database_.execute(sql, args);
   } catch (e) {
     if (args) {
@@ -385,7 +386,6 @@ goog.gears.Database.prototype.executeVarArgs_ = function(sql, params,
  *     params.
  * @return {(Object,number,string,boolean,undefined,null)} whatever 'f'
  *     returns, which could be any type.
- *
  */
 goog.gears.Database.prototype.queryObject_ = function(sql,
     f, params, startIndex) {
@@ -405,7 +405,7 @@ goog.gears.Database.prototype.queryObject_ = function(sql,
  * containing the result.
  *
  * @param {string} sql The SQL statement.
- * @param {Object} var_args Query params. An array or multiple arguments.
+ * @param {...Object} var_args Query params. An array or multiple arguments.
  * @return {Array} An array of arrays containing the results of the query.
  */
 goog.gears.Database.prototype.queryArrays = function(sql, var_args) {
@@ -420,7 +420,7 @@ goog.gears.Database.prototype.queryArrays = function(sql, var_args) {
  * This calls query on the database and builds an array containing hashes
  *
  * @param {string} sql Ths SQL statement.
- * @param {Object} var_args query params. An array or multiple arguments.
+ * @param {...*} var_args query params. An array or multiple arguments.
  * @return {Array} An array of hashes containing the results of the query.
  */
 goog.gears.Database.prototype.queryObjectArray = function(sql, var_args) {
@@ -437,7 +437,7 @@ goog.gears.Database.prototype.queryObjectArray = function(sql, var_args) {
  * column.
  *
  * @param {string} sql SQL statement.
- * @param {Object} var_args query params. An array or multiple arguments.
+ * @param {...Object} var_args query params. An array or multiple arguments.
  * @return {Array} The values in the first column.
  */
 goog.gears.Database.prototype.queryValueArray = function(sql, var_args) {
@@ -453,7 +453,7 @@ goog.gears.Database.prototype.queryValueArray = function(sql, var_args) {
  * row.
  *
  * @param {string} sql SQL statement.
- * @param {Object} var_args query params. An array or multiple arguments.
+ * @param {...*} var_args query params. An array or multiple arguments.
  * @return {(number,string,null)} The first value in
  *     the first row.
  */
@@ -470,7 +470,7 @@ goog.gears.Database.prototype.queryValue = function(sql, var_args) {
  * where the keys are the column names.
  *
  * @param {string} sql SQL statement.
- * @param {*} var_args query params. An array or multiple arguments.
+ * @param {...*} var_args query params. An array or multiple arguments.
  * @return {Object} The first row as a hash map.
  */
 goog.gears.Database.prototype.queryObject = function(sql, var_args) {
@@ -485,7 +485,7 @@ goog.gears.Database.prototype.queryObject = function(sql, var_args) {
  * This calls query on the database and returns the first row as an array
  *
  * @param {string} sql SQL statement.
- * @param {Object} var_args query params. An array or multiple arguments.
+ * @param {...Object} var_args query params. An array or multiple arguments.
  * @return {Array} The first row as an array.
  */
 goog.gears.Database.prototype.queryArray = function(sql, var_args) {
@@ -503,9 +503,9 @@ goog.gears.Database.prototype.queryArray = function(sql, var_args) {
  *
  * @param {string} sql The SQL statement to execute.
  * @param {Function} f Function to call for each value.
- * @param {Object} opt_this If present f will be called using this object as
+ * @param {Object=} opt_this If present f will be called using this object as
  *                          'this'.
- * @param {Object} var_args query params. An array or multiple arguments.
+ * @param {...Object} var_args query params. An array or multiple arguments.
  */
 goog.gears.Database.prototype.forEachValue = function(sql,
     f, opt_this, var_args) {
@@ -540,9 +540,9 @@ goog.gears.Database.prototype.forEachValue = function(sql,
  *
  * @param {string} sql The SQL statement to execute.
  * @param {Function} f Function to call for each row.
- * @param {Object} opt_this If present f will be called using this
+ * @param {Object=} opt_this If present f will be called using this
  *                          object as 'this'.
- * @param {*} var_args query params. An array or multiple arguments.
+ * @param {...*} var_args query params. An array or multiple arguments.
  */
 goog.gears.Database.prototype.forEachRow = function(sql,
     f, opt_this, var_args) {
@@ -785,7 +785,7 @@ goog.gears.Database.prototype.commit = function() {
  * if this the last outstanding transaction, otherwise the real ROLLBACK will
  * be deferred until the last outstanding transaction is closed.
  *
- * @param {Error} opt_e the exception that caused this rollback. If it
+ * @param {Error=} opt_e the exception that caused this rollback. If it
  *                          is provided then that exception is rethown if
  *                          the rollback does not take place.
  * @return {boolean} true if the ROLLBACK has been executed or if we are not
@@ -829,7 +829,7 @@ goog.gears.Database.prototype.isInTransaction = function() {
  * Ensures there is no open transaction upon return. An existing open
  * transaction is rolled back.
  *
- * @param {string} opt_logMsgPrefix a prefix to the message that is logged when
+ * @param {string=} opt_logMsgPrefix a prefix to the message that is logged when
  *     an unexpected open transaction is found.
  */
 goog.gears.Database.prototype.ensureNoTransaction = function(opt_logMsgPrefix) {
@@ -910,13 +910,14 @@ goog.gears.Database.prototype.disposeInternal = function() {
 
 /**
  * Determines if the exception is a locking error.
- * @param {Error} ex The exception object.
+ * @param {Error|string} ex The exception object or error string.
  * @return {boolean} Whether this is a database locked exception.
  */
 goog.gears.Database.isLockedException = function(ex) {
-  // TODO: change the test when gears provides a reasonable
+  // TODO(user): change the test when gears provides a reasonable
   // error code to check.
-  return !!ex.message && ex.message.indexOf('database is locked') >= 0;
+  var message = goog.isString(ex) ? ex : ex.message;
+  return !!message && message.indexOf('database is locked') >= 0;
 };
 
 

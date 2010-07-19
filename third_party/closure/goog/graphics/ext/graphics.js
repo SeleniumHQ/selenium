@@ -1,20 +1,21 @@
+// Copyright 2007 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Copyright 2007 Google Inc. All Rights Reserved.
-
 
 /**
  * @fileoverview Graphics surface type.
+ * @author robbyw@google.com (Robby Walker)
  */
 
 
@@ -29,13 +30,13 @@ goog.require('goog.graphics.ext.Group');
  *     expressing percentages of parent with (e.g. '80%') are also accepted.
  * @param {string|number} height The height in pixels.  Strings
  *     expressing percentages of parent with (e.g. '80%') are also accepted.
- * @param {number?} opt_coordWidth The coordinate width - if
+ * @param {?number=} opt_coordWidth The coordinate width - if
  *     omitted or null, defaults to same as width.
- * @param {number?} opt_coordHeight The coordinate height. - if
+ * @param {?number=} opt_coordHeight The coordinate height. - if
  *     omitted or null, defaults to same as height.
- * @param {goog.dom.DomHelper} opt_domHelper The DOM helper object for the
+ * @param {goog.dom.DomHelper=} opt_domHelper The DOM helper object for the
  *     document we want to render in.
- * @param {boolean} opt_isSimple Flag used to indicate the graphics object will
+ * @param {boolean=} opt_isSimple Flag used to indicate the graphics object will
  *     be drawn to in a single pass, and the fastest implementation for this
  *     scenario should be favored.  NOTE: Setting to true may result in
  *     degradation of text support.

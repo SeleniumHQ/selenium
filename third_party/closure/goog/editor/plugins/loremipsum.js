@@ -1,22 +1,24 @@
+// Copyright 2008 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-// Copyright 2008 Google Inc. All Rights Reserved.
 
 /**
  * @fileoverview A plugin that fills the field with lorem ipsum text when it's
  * empty and does not have the focus. Applies to both editable and uneditable
  * fields.
  *
+*
+ * @author nicksantos@google.com (Nick Santos)
  */
 
 goog.provide('goog.editor.plugins.LoremIpsum');
@@ -25,6 +27,7 @@ goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.editor.Command');
 goog.require('goog.editor.Plugin');
+goog.require('goog.editor.node');
 goog.require('goog.functions');
 
 
@@ -53,9 +56,6 @@ goog.editor.plugins.LoremIpsum.prototype.getTrogClassId =
 /** @inheritDoc */
 goog.editor.plugins.LoremIpsum.prototype.activeOnUneditableFields =
     goog.functions.TRUE;
-
-/** @inheritDoc */
-goog.editor.plugins.LoremIpsum.prototype.isSilentCommand = goog.functions.TRUE;
 
 /**
  * Whether the field is currently filled with lorem ipsum text.
@@ -139,8 +139,8 @@ goog.editor.plugins.LoremIpsum.prototype.updateLorem_ = function() {
  * If using click-to-edit mode (where Trogedit manages whether the field
  * is editable), this works for both editable and uneditable fields.
  *
- * TODO: Is this really necessary? See TODO below.
- * @param {boolean} opt_placeCursor Whether to place the cursor in the field
+ * TODO(user): Is this really necessary? See TODO below.
+ * @param {boolean=} opt_placeCursor Whether to place the cursor in the field
  *     after clearing lorem.
  * @private
  */
@@ -163,7 +163,7 @@ goog.editor.plugins.LoremIpsum.prototype.clearLorem_ = function(
     field.style.fontStyle = this.oldFontStyle_;
     fieldObj.setHtml(true, null, true);
 
-    // TODO: I'm pretty sure that this is a hack, but talk to
+    // TODO(nicksantos): I'm pretty sure that this is a hack, but talk to
     // Julie about why this is necessary and what to do with it. Really,
     // we need to figure out where it's necessary and remove it where it's
     // not. Safari never places the cursor on its own willpower.

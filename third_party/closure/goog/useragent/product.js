@@ -1,20 +1,21 @@
+// Copyright 2008 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Copyright 2008 Google Inc. All Rights Reserved.
-
 /**
  * @fileoverview Detects the specific browser and not just the rendering engine.
  *
+*
  */
 
 goog.provide('goog.userAgent.product');
@@ -39,6 +40,12 @@ goog.userAgent.product.ASSUME_CAMINO = false;
  *     iPhone.
  */
 goog.userAgent.product.ASSUME_IPHONE = false;
+
+/**
+ * @define {boolean} Whether we know at compile-time that the product is an
+ *     iPad.
+ */
+goog.userAgent.product.ASSUME_IPAD = false;
 
 
 /**
@@ -71,6 +78,7 @@ goog.userAgent.product.PRODUCT_KNOWN_ =
     goog.userAgent.product.ASSUME_FIREFOX ||
     goog.userAgent.product.ASSUME_CAMINO ||
     goog.userAgent.product.ASSUME_IPHONE ||
+    goog.userAgent.product.ASSUME_IPAD ||
     goog.userAgent.product.ASSUME_ANDROID ||
     goog.userAgent.product.ASSUME_CHROME ||
     goog.userAgent.product.ASSUME_SAFARI;
@@ -106,6 +114,13 @@ goog.userAgent.product.init_ = function() {
    * @private
    */
   goog.userAgent.product.detectedIphone_ = false;
+
+  /**
+   * Whether the code is running on an iPad
+   * @type {boolean}
+   * @private
+   */
+  goog.userAgent.product.detectedIpad_ = false;
 
   /**
    * Whether the code is running on the default browser on an Android phone.
@@ -145,6 +160,8 @@ goog.userAgent.product.init_ = function() {
     goog.userAgent.product.detectedCamino_ = true;
   } else if (ua.indexOf('iPhone') != -1 || ua.indexOf('iPod') != -1) {
     goog.userAgent.product.detectedIphone_ = true;
+  } else if (ua.indexOf('iPad') != -1) {
+    goog.userAgent.product.detectedIpad_ = true;
   } else if (ua.indexOf('Android') != -1) {
     goog.userAgent.product.detectedAndroid_ = true;
   } else if (ua.indexOf('Chrome') != -1) {
@@ -198,6 +215,14 @@ goog.userAgent.product.CAMINO = goog.userAgent.product.PRODUCT_KNOWN_ ?
 goog.userAgent.product.IPHONE = goog.userAgent.product.PRODUCT_KNOWN_ ?
     goog.userAgent.product.ASSUME_IPHONE :
     goog.userAgent.product.detectedIphone_;
+
+/**
+ * Whether the code is running on an iPad.
+ * @type {boolean}
+ */
+goog.userAgent.product.IPAD = goog.userAgent.product.PRODUCT_KNOWN_ ?
+    goog.userAgent.product.ASSUME_IPAD :
+    goog.userAgent.product.detectedIpad_;
 
 
 /**

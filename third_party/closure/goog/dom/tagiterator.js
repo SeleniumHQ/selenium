@@ -1,20 +1,21 @@
+// Copyright 2008 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Copyright 2008 Google Inc. All Rights Reserved.
-
 /**
  * @fileoverview Iterator subclass for DOM tree traversal.
  *
+ * @author robbyw@google.com (Robby Walker)
  */
 
 goog.provide('goog.dom.TagIterator');
@@ -81,15 +82,15 @@ goog.dom.TagWalkType = {
  * that it will continue iterating until the end of the document instead of
  * until exiting the start node.
  *
- * @param {Node?} opt_node The start node.  If unspecified or null, defaults to
+ * @param {Node=} opt_node The start node.  If unspecified or null, defaults to
  *     an empty iterator.
- * @param {boolean} opt_reversed Whether to traverse the tree in reverse.
- * @param {boolean} opt_unconstrained Whether the iterator is not constrained to
- *     the starting node and its children.
- * @param {goog.dom.TagWalkType?} opt_tagType The type of the position.
+ * @param {boolean=} opt_reversed Whether to traverse the tree in reverse.
+ * @param {boolean=} opt_unconstrained Whether the iterator is not constrained
+ *     to the starting node and its children.
+ * @param {goog.dom.TagWalkType?=} opt_tagType The type of the position.
  *     Defaults to the start of the given node for forward iterators, and
  *     the end of the node for reverse iterators.
- * @param {number} opt_depth The starting tree depth.
+ * @param {number=} opt_depth The starting tree depth.
  * @constructor
  * @extends {goog.iter.Iterator}
  */
@@ -110,7 +111,7 @@ goog.inherits(goog.dom.TagIterator, goog.iter.Iterator);
 
 /**
  * The node this position is located on.
- * @type {Node?}
+ * @type {Node}
  */
 goog.dom.TagIterator.prototype.node = null;
 
@@ -128,7 +129,7 @@ goog.dom.TagIterator.prototype.tagType = null;
  * iterator is at position <pre>
  *     <div>|</div>
  * </pre>
- * (i.e. the node is the div and the type is START_TAG) it's depth will be 1.
+ * (i.e. the node is the div and the type is START_TAG) its depth will be 1.
  * @type {number}
  */
 goog.dom.TagIterator.prototype.depth;
@@ -161,9 +162,9 @@ goog.dom.TagIterator.prototype.started_ = false;
  * type which can be one of the {@link goog.dom.TagWalkType} token types.
  * Only overwrites the tree depth when the parameter is specified.
  * @param {Node} node The node to set the position to.
- * @param {goog.dom.TagWalkType?} opt_tagType The type of the position
+ * @param {goog.dom.TagWalkType?=} opt_tagType The type of the position
  *     Defaults to the start of the given node.
- * @param {number} opt_depth The tree depth.
+ * @param {number=} opt_depth The tree depth.
  */
 goog.dom.TagIterator.prototype.setPosition = function(node,
     opt_tagType, opt_depth) {
@@ -339,8 +340,8 @@ goog.dom.TagIterator.prototype.equals = function(other) {
 /**
  * Replace the current node with the list of nodes. Reset the iterator so that
  * it visits the first of the nodes next.
- * @param {Object} var_args A list of nodes to replace the current node with. If
- *     the first argument is array-like, it will be used, otherwise all the
+ * @param {...Object} var_args A list of nodes to replace the current node with.
+ *     If the first argument is array-like, it will be used, otherwise all the
  *     arguments are assumed to be nodes.
  */
 goog.dom.TagIterator.prototype.splice = function(var_args) {

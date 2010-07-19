@@ -1,20 +1,23 @@
+// Copyright 2007 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Copyright 2007 Google Inc. All Rights Reserved.
-
 /**
  * @fileoverview Utilities for working with ranges in HTML documents.
  *
+ * @author robbyw@google.com (Robby Walker)
+*
+*
  */
 
 goog.provide('goog.dom.Range');
@@ -32,7 +35,7 @@ goog.require('goog.userAgent');
  * Create a new selection from the given browser window's current selection.
  * Note that this object does not auto-update if the user changes their
  * selection and should be used as a snapshot.
- * @param {Window} opt_win The window to get the selection of.  Defaults to the
+ * @param {Window=} opt_win The window to get the selection of.  Defaults to the
  *     window this class was defined in.
  * @return {goog.dom.AbstractRange?} A range wrapper object, or null if there
  *     was an error.
@@ -84,7 +87,7 @@ goog.dom.Range.createFromBrowserSelection = function(selection) {
 /**
  * Create a new range wrapper from the given browser range object.
  * @param {Range|TextRange} range The browser range object.
- * @param {boolean} opt_isReversed Whether the focus node is before the anchor
+ * @param {boolean=} opt_isReversed Whether the focus node is before the anchor
  *     node.
  * @return {goog.dom.AbstractRange} A range wrapper object.
  */
@@ -99,12 +102,11 @@ goog.dom.Range.createFromBrowserRange = function(range, opt_isReversed) {
 /**
  * Create a new range wrapper that selects the given node's text.
  * @param {Node} node The node to select.
- * @param {boolean} opt_isReversed Whether the focus node is before the anchor
+ * @param {boolean=} opt_isReversed Whether the focus node is before the anchor
  *     node.
  * @return {goog.dom.AbstractRange} A range wrapper object.
  */
 goog.dom.Range.createFromNodeContents = function(node, opt_isReversed) {
-  // TODO: Use control ranges for IMGs and TDs?
   return goog.dom.TextRange.createFromNodeContents(node, opt_isReversed);
 };
 
@@ -140,7 +142,7 @@ goog.dom.Range.createFromNodes = function(startNode, startOffset, endNode,
 
 /**
  * Clears the window's selection.
- * @param {Window} opt_win The window to get the selection of.  Defaults to the
+ * @param {Window=} opt_win The window to get the selection of.  Defaults to the
  *     window this class was defined in.
  */
 goog.dom.Range.clearSelection = function(opt_win) {
@@ -165,7 +167,7 @@ goog.dom.Range.clearSelection = function(opt_win) {
 
 /**
  * Tests if the window has a selection.
- * @param {Window} opt_win The window to check the selection of.  Defaults to
+ * @param {Window=} opt_win The window to check the selection of.  Defaults to
  *     the window this class was defined in.
  * @return {boolean} Whether the window has a selection.
  */

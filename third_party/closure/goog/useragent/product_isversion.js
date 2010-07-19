@@ -1,22 +1,23 @@
+// Copyright 2009 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-// Copyright 2009 Google Inc. All rights reserved.
 
 /**
  * @fileoverview Functions for understanding the version of the browser.
  * This is pulled out of product.js to ensure that only builds that need
  * this functionality actually get it, without having to rely on the compiler
  * to strip out unneeded pieces.
+*
  */
 goog.provide('goog.userAgent.product.isVersion');
 goog.require('goog.userAgent.product');
@@ -46,7 +47,7 @@ goog.userAgent.product.determineVersion_ = function() {
   } else if (goog.userAgent.product.SAFARI) {
     // Safari/530.19.1
     re = /Safari\/([0-9.]+)/;
-  } else if (goog.userAgent.product.IPHONE) {
+  } else if (goog.userAgent.product.IPHONE || goog.userAgent.product.IPAD) {
     // Mozilla/5.0 (iPod; U; CPU like Mac OS X; en) AppleWebKit/420.1
     // (KHTML, like Gecko) Version/3.0 Mobile/3A100a Safari/419.3
     // Version is the browser version, Mobile is the build number. We combine

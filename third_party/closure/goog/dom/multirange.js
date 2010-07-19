@@ -1,20 +1,21 @@
+// Copyright 2008 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Copyright 2008 Google Inc. All Rights Reserved.
-
 /**
  * @fileoverview Utilities for working with W3C multi-part ranges.
  *
+ * @author robbyw@google.com (Robby Walker)
  */
 
 
@@ -62,7 +63,7 @@ goog.dom.MultiRange = function() {
 
   /**
    * Lazily computed container node.
-   * @type {Node?}
+   * @type {Node}
    * @private
    */
   this.container_ = null;
@@ -154,7 +155,7 @@ goog.dom.MultiRange.prototype.getType = function() {
 
 /** @inheritDoc */
 goog.dom.MultiRange.prototype.getBrowserRangeObject = function() {
-  // NOTE: This method does not make sense for multi-ranges.
+  // NOTE(robbyw): This method does not make sense for multi-ranges.
   if (this.browserRanges_.length > 1) {
     this.logger_.warning(
         'getBrowserRangeObject called on MultiRange with more than 1 range');
@@ -165,7 +166,7 @@ goog.dom.MultiRange.prototype.getBrowserRangeObject = function() {
 
 /** @inheritDoc */
 goog.dom.MultiRange.prototype.setBrowserRangeObject = function(nativeRange) {
-  // TODO: Look in to adding setBrowserSelectionObject.
+  // TODO(robbyw): Look in to adding setBrowserSelectionObject.
   return false;
 };
 
@@ -238,14 +239,14 @@ goog.dom.MultiRange.prototype.getStartOffset = function() {
 
 /** @inheritDoc */
 goog.dom.MultiRange.prototype.getEndNode = function() {
-  // NOTE: This may return the wrong node if any subranges overlap.
+  // NOTE(robbyw): This may return the wrong node if any subranges overlap.
   return goog.array.peek(this.getSortedRanges()).getEndNode();
 };
 
 
 /** @inheritDoc */
 goog.dom.MultiRange.prototype.getEndOffset = function() {
-  // NOTE: This may return the wrong value if any subranges overlap.
+  // NOTE(robbyw): This may return the wrong value if any subranges overlap.
   return goog.array.peek(this.getSortedRanges()).getEndOffset();
 };
 
@@ -281,7 +282,7 @@ goog.dom.MultiRange.prototype.getHtmlFragment = function() {
 
 /** @inheritDoc */
 goog.dom.MultiRange.prototype.getValidHtml = function() {
-  // NOTE: This does not behave well if the sub-ranges overlap.
+  // NOTE(robbyw): This does not behave well if the sub-ranges overlap.
   return goog.array.map(this.getTextRanges(), function(range) {
     return range.getValidHtml();
   }).join('');
@@ -290,7 +291,7 @@ goog.dom.MultiRange.prototype.getValidHtml = function() {
 
 /** @inheritDoc */
 goog.dom.MultiRange.prototype.getPastableHtml = function() {
-  // TODO: This should probably do something smart like group TR and TD
+  // TODO(robbyw): This should probably do something smart like group TR and TD
   // selections in to the same table.
   return this.getValidHtml();
 };

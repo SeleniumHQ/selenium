@@ -1,21 +1,22 @@
+// Copyright 2008 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-// Copyright 2008 Google Inc. All Rights Reserved.
 
 /**
  * @fileoverview Functions for detecting user's time zone.
  * This work is based on Charlie Luo and Hong Yan's time zone detection work
  * for CBG.
+*
  */
 goog.provide('goog.locale.timeZoneDetection');
 
@@ -55,14 +56,14 @@ goog.locale.timeZoneDetection.getFingerprint = function(date) {
     }
     hash = (hash << 2) ^ offset;
   }
-  return isComplex ? hash : stdOffset;
+  return isComplex ? hash : /** @type {number} */ (stdOffset);
 };
 
 /**
  * Detects browser's time zone setting. If user's country is known, a better
  * time zone choice could be guessed.
- * @param {string} opt_country Two-letter ISO 3166 country code.
- * @param {Date} opt_date Date for calculating the fingerprint. Defaults to the
+ * @param {string=} opt_country Two-letter ISO 3166 country code.
+ * @param {Date=} opt_date Date for calculating the fingerprint. Defaults to the
  *     current date.
  * @return {string} Time zone ID of best guess.
  */
@@ -90,9 +91,9 @@ goog.locale.timeZoneDetection.detectTimeZone = function(opt_country, opt_date) {
  * Returns an array of time zones that are consistent with user's platform
  * setting. If user's country is given, only the time zone for that country is
  * returned.
- * @param {string} opt_country 2 letter ISO 3166 country code. Helps in making
+ * @param {string=} opt_country 2 letter ISO 3166 country code. Helps in making
  *     a better guess for user's time zone.
- * @param {Date} opt_date Date for retrieving timezone list. Defaults to the
+ * @param {Date=} opt_date Date for retrieving timezone list. Defaults to the
  *     current date.
  * @return {Array.<string>} Array of time zone IDs.
  */

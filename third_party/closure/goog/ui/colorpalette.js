@@ -1,21 +1,22 @@
+// Copyright 2007 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-// Copyright 2007 Google Inc. All Rights Reserved.
 
 /**
  * @fileoverview A control for representing a palette of colors, that the user
  * can highlight or select via the keyboard or the mouse.
  *
+*
  */
 
 goog.provide('goog.ui.ColorPalette');
@@ -35,11 +36,11 @@ goog.require('goog.ui.PaletteRenderer');
  * component fires an ACTION event.  Event listeners may retrieve the selected
  * color using the {@link #getSelectedColor} method.
  *
- * @param {Array.<string>} opt_colors Array of colors in any valid CSS color
+ * @param {Array.<string>=} opt_colors Array of colors in any valid CSS color
  *     format.
- * @param {goog.ui.PaletteRenderer} opt_renderer Renderer used to render or
+ * @param {goog.ui.PaletteRenderer=} opt_renderer Renderer used to render or
  *     decorate the palette; defaults to {@link goog.ui.PaletteRenderer}.
- * @param {goog.dom.DomHelper} opt_domHelper Optional DOM helper, used for
+ * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM helper, used for
  *     document interaction.
  * @constructor
  * @extends {goog.ui.Palette}
@@ -91,7 +92,7 @@ goog.ui.ColorPalette.prototype.setColors = function(colors) {
 
 
 /**
- * @return {string?} The current selected color in hex, or null.
+ * @return {?string} The current selected color in hex, or null.
  */
 goog.ui.ColorPalette.prototype.getSelectedColor = function() {
   var selectedItem = /** @type {Element} */ (this.getSelectedItem());
@@ -107,7 +108,7 @@ goog.ui.ColorPalette.prototype.getSelectedColor = function() {
 /**
  * Sets the selected color.  Clears the selection if the argument is null or
  * can't be parsed as a color.
- * @param {string?} color The color to set as selected; null clears the
+ * @param {?string} color The color to set as selected; null clears the
  *     selection.
  */
 goog.ui.ColorPalette.prototype.setSelectedColor = function(color) {
@@ -143,8 +144,8 @@ goog.ui.ColorPalette.prototype.createColorNodes_ = function() {
 /**
  * Takes a string, attempts to parse it as a color spec, and returns a
  * normalized hex color spec if successful (null otherwise).
- * @param {string?} color String possibly containing a color spec; may be null.
- * @return {string?} Normalized hex color spec, or null if the argument can't
+ * @param {?string} color String possibly containing a color spec; may be null.
+ * @return {?string} Normalized hex color spec, or null if the argument can't
  *     be parsed as a color.
  * @private
  */

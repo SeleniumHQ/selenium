@@ -1,20 +1,21 @@
+// Copyright 2007 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Copyright 2007 Google Inc. All Rights Reserved.
-
 /**
  * @fileoverview Utility class that monitors viewport size changes.
  *
+*
  * @see ../demos/viewportsizemonitor.html
  */
 
@@ -52,7 +53,7 @@ goog.require('goog.userAgent');
  * Manually verified on IE6, IE7, FF2, Opera 9, and WebKit.  {@code getSize}
  * doesn't always return the correct viewport height on Safari 2.0.4.
  *
- * @param {Window} opt_window The window to monitor; defaults to the window in
+ * @param {Window=} opt_window The window to monitor; defaults to the window in
  *    which this code is executing.
  * @constructor
  * @extends {goog.events.EventTarget}
@@ -80,6 +81,33 @@ goog.inherits(goog.dom.ViewportSizeMonitor, goog.events.EventTarget);
 
 
 /**
+ * Returns a viewport size monitor for the given window.  A new one is created
+ * if it doesn't exist already.  This prevents the unnecessary creation of
+ * multiple spooling monitors for a window.
+ * @param {Window=} opt_window The window to monitor; defaults to the window in
+ *     which this code is executing.
+ * @return {goog.dom.ViewportSizeMonitor} Monitor for the given window.
+ */
+goog.dom.ViewportSizeMonitor.getInstanceForWindow = function(opt_window) {
+  var currentWindow = opt_window || window;
+  var uid = goog.getUid(currentWindow);
+
+  return goog.dom.ViewportSizeMonitor.windowInstanceMap_[uid] =
+      goog.dom.ViewportSizeMonitor.windowInstanceMap_[uid] ||
+      new goog.dom.ViewportSizeMonitor(currentWindow);
+};
+
+
+/**
+ * Map of window hash code to viewport size monitor for that window, if
+ * created.
+ * @type {Object.<number,goog.dom.ViewportSizeMonitor>}
+ * @private
+ */
+goog.dom.ViewportSizeMonitor.windowInstanceMap_ = {};
+
+
+/**
  * Rate in milliseconds at which to poll the window size on browsers that
  * need polling.
  * @type {number}
@@ -98,7 +126,7 @@ goog.dom.ViewportSizeMonitor.prototype.listenerKey_ = null;
 
 /**
  * The window to monitor.  Defaults to the window in which the code is running.
- * @type {Window?}
+ * @type {Window}
  * @private
  */
 goog.dom.ViewportSizeMonitor.prototype.window_ = null;
@@ -115,7 +143,7 @@ goog.dom.ViewportSizeMonitor.prototype.size_ = null;
 /**
  * Identifier for the interval used for polling the window size on Windows
  * Safari.
- * @type {number?}
+ * @type {?number}
  * @private
  */
 goog.dom.ViewportSizeMonitor.prototype.windowSizePollInterval_ = null;

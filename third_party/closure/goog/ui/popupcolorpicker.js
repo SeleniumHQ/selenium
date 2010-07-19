@@ -1,22 +1,23 @@
+// Copyright 2007 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-// Copyright 2007 Google Inc. All Rights Reserved.
 
 /**
  * @fileoverview Popup Color Picker implementation.  This is intended to be
  * less general than goog.ui.ColorPicker and presents a default set of colors
  * that CCC apps currently use in their color pickers.
  *
+*
  * @see ../demos/popupcolorpicker.html
  */
 
@@ -35,8 +36,8 @@ goog.require('goog.ui.Popup');
 /**
  * Popup color picker widget.
  *
- * @param {goog.dom.DomHelper} opt_domHelper Optional DOM helper.
- * @param {goog.ui.ColorPicker} opt_colorPicker Optional color picker to use
+ * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM helper.
+ * @param {goog.ui.ColorPicker=} opt_colorPicker Optional color picker to use
  *     for this popup.
  * @extends {goog.ui.Component}
  * @constructor
@@ -49,6 +50,14 @@ goog.ui.PopupColorPicker = function(opt_domHelper, opt_colorPicker) {
   }
 };
 goog.inherits(goog.ui.PopupColorPicker, goog.ui.Component);
+
+
+/**
+ * Whether the color picker is initialized.
+ * @type {boolean}
+ * @private
+ */
+goog.ui.PopupColorPicker.prototype.initialized_ = false;
 
 
 /**
@@ -87,14 +96,14 @@ goog.ui.PopupColorPicker.prototype.popupCorner_ =
 
 /**
  * Reference to the element that triggered the last popup.
- * @type {Element?}
+ * @type {Element}
  * @private
  */
 goog.ui.PopupColorPicker.prototype.lastTarget_ = null;
 
 
 /**
- * Whether the color picker can move the focus to it's key event target when it
+ * Whether the color picker can move the focus to its key event target when it
  * is shown.  The default is true.  Setting to false can break keyboard
  * navigation, but this is needed for certain scenarios, for example the
  * toolbar menu in trogedit which can't have the selection changed.
@@ -137,6 +146,7 @@ goog.ui.PopupColorPicker.prototype.disposeInternal = function() {
   goog.ui.PopupColorPicker.superClass_.disposeInternal.call(this);
   this.colorPicker_ = null;
   this.lastTarget_ = null;
+  this.initialized_ = false;
   if (this.popup_) {
     this.popup_.dispose();
     this.popup_ = null;
@@ -191,7 +201,7 @@ goog.ui.PopupColorPicker.prototype.setAutoHide = function(autoHide) {
  * Returns the region inside which the Popup dismisses itself when the user
  * clicks, or null if it was not set. Null indicates the entire document is
  * the autohide region.
- * @return {Element?} The DOM element for autohide, or null if it hasn't been
+ * @return {Element} The DOM element for autohide, or null if it hasn't been
  *     set.
  */
 goog.ui.PopupColorPicker.prototype.getAutoHideRegion = function() {
@@ -228,7 +238,7 @@ goog.ui.PopupColorPicker.prototype.getPopup = function() {
 
 
 /**
- * @return {Element?} The last element that triggered the popup.
+ * @return {Element} The last element that triggered the popup.
  */
 goog.ui.PopupColorPicker.prototype.getLastTarget = function() {
   return this.lastTarget_;
@@ -257,7 +267,7 @@ goog.ui.PopupColorPicker.prototype.detach = function(element) {
 
 /**
  * Gets the color that is currently selected in this color picker.
- * @return {string?} The hex string of the color selected, or null if no
+ * @return {?string} The hex string of the color selected, or null if no
  *     color is selected.
  */
 goog.ui.PopupColorPicker.prototype.getSelectedColor = function() {
@@ -272,7 +282,7 @@ goog.ui.PopupColorPicker.prototype.getSelectedColor = function() {
 goog.ui.PopupColorPicker.prototype.setFocusable = function(focusable) {
   this.focusable_ = focusable;
   if (this.colorPicker_) {
-    // TODO: In next revision sort the behavior of passing state to
+    // TODO(user): In next revision sort the behavior of passing state to
     // children correctly
     this.colorPicker_.setFocusable(focusable);
   }
@@ -280,7 +290,7 @@ goog.ui.PopupColorPicker.prototype.setFocusable = function(focusable) {
 
 
 /**
- * Sets whether the color picker can automatically move focus to it's key event
+ * Sets whether the color picker can automatically move focus to its key event
  * target when it is set to visible.
  * @param {boolean} allow Whether to allow auto focus.
  */
@@ -291,7 +301,7 @@ goog.ui.PopupColorPicker.prototype.setAllowAutoFocus = function(allow) {
 
 /**
  * @return {boolean} Whether the color picker can automatically move focus to
- *     it's key event target when it is set to visible.
+ *     its key event target when it is set to visible.
  */
 goog.ui.PopupColorPicker.prototype.getAllowAutoFocus = function() {
   return this.allowAutoFocus_;
@@ -382,14 +392,14 @@ goog.ui.PopupColorPicker.prototype.setPopupCorner = function(corner) {
  * @private
  */
 goog.ui.PopupColorPicker.prototype.show_ = function(e) {
-  if (!this.colorPicker_) {
-    this.colorPicker_ =
+  if (!this.initialized_) {
+    this.colorPicker_ = this.colorPicker_ ||
         goog.ui.ColorPicker.createSimpleColorGrid(this.getDomHelper());
     this.colorPicker_.setFocusable(this.focusable_);
-    this.addChild(this.colorPicker_);
-    this.colorPicker_.render(this.getElement());
+    this.addChild(this.colorPicker_, true);
     this.getHandler().listen(this.colorPicker_,
         goog.ui.ColorPicker.EventType.CHANGE, this.onColorPicked_);
+    this.initialized_ = true;
   }
 
   if (this.popup_.isOrWasRecentlyVisible() && this.toggleMode_ &&
@@ -419,7 +429,7 @@ goog.ui.PopupColorPicker.prototype.show_ = function(e) {
 goog.ui.PopupColorPicker.prototype.onColorPicked_ = function(e) {
   // When we show the color picker we reset the color, which triggers an event.
   // Here we block that event so that it doesn't dismiss the popup
-  // TODO: Update the colorpicker to allow selection to be cleared
+  // TODO(user): Update the colorpicker to allow selection to be cleared
   if (this.colorPicker_.getSelectedIndex() == -1) {
     e.stopPropagation();
     return;

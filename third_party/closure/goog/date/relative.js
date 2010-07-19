@@ -1,21 +1,22 @@
+// Copyright 2009 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-// Copyright 2009 Google Inc. All Rights Reserved.
 
 /**
  * @fileoverview Functions for formatting relative dates.  Such as "3 days ago"
  * "3 hours ago", "14 minutes ago", "12 days ago", "Today", "Yesterday".
  *
+*
  */
 
 goog.provide('goog.date.relative');
@@ -240,9 +241,9 @@ goog.date.relative.formatDay = function(dateMs) {
  *   Tuesday, March 20, 2005    // Too long ago for a relative date.
  *
  * @param {Date} date A date object.
- * @param {string} opt_shortTimeMsg An optional short time message can be
+ * @param {string=} opt_shortTimeMsg An optional short time message can be
  *     provided if available, so that it's not recalculated in this function.
- * @param {string} opt_fullDateMsg An optional date message can be
+ * @param {string=} opt_fullDateMsg An optional date message can be
  *     provided if available, so that it's not recalculated in this function.
  * @return {string} The date string in the above form.
  */
@@ -263,9 +264,9 @@ goog.date.relative.getDateString = function(
  * future dates.
  *
  * @param {Date} date A timestamp or date object.
- * @param {string} opt_shortTimeMsg An optional short time message can be
+ * @param {string=} opt_shortTimeMsg An optional short time message can be
  *     provided if available, so that it's not recalculated in this function.
- * @param {string} opt_fullDateMsg An optional date message can be
+ * @param {string=} opt_fullDateMsg An optional date message can be
  *     provided if available, so that it's not recalculated in this function.
  * @return {string} The date string in the above form.
  */
@@ -287,9 +288,9 @@ goog.date.relative.getPastDateString = function(
  * @param {Date} date A timestamp or date object.
  * @param {function(number) : string} relativeFormatter Function to use when
  *     formatting the relative date.
- * @param {string} opt_shortTimeMsg An optional short time message can be
+ * @param {string=} opt_shortTimeMsg An optional short time message can be
  *     provided if available, so that it's not recalculated in this function.
- * @param {string} opt_fullDateMsg An optional date message can be
+ * @param {string=} opt_fullDateMsg An optional date message can be
  *     provided if available, so that it's not recalculated in this function.
  * @return {string} The date string in the above form.
  * @private

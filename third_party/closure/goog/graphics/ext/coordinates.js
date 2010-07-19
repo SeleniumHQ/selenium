@@ -1,16 +1,16 @@
+// Copyright 2007 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-// Copyright 2007 Google Inc. All Rights Reserved.
 
 
 /**
@@ -29,6 +29,7 @@
  * Additional pieces of advanced coordinate functionality can (soon) be found in
  * element.js and groupelement.js.
  *
+ * @author robbyw@google.com (Robby Walker)
  */
 
 goog.provide('goog.graphics.ext.coordinates');
@@ -122,7 +123,7 @@ goog.graphics.ext.coordinates.computeValue = function(coord, size, scale) {
  *     this element.  Should be set to the minimum width of this element if
  *     forMaximum is true.
  * @param {number} scale The ratio of pixels to units.
- * @param {Object} opt_cache Optional (but highly recommend) object to store
+ * @param {Object=} opt_cache Optional (but highly recommend) object to store
  *     cached computations in.  The calling class should manage clearing out
  *     the cache when the scale or containerSize changes.
  * @return {number} The correct number of coordinate space units.

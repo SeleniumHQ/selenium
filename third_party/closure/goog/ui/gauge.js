@@ -1,20 +1,21 @@
+// Copyright 2007 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Copyright 2007 Google Inc. All Rights Reserved.
-
 
 /**
  * @fileoverview Gauge UI component, using browser vector graphics.
+*
  * @see ../demos/gauge.html
  */
 
@@ -26,6 +27,7 @@ goog.provide('goog.ui.GaugeColoredRange');
 goog.require('goog.dom');
 goog.require('goog.dom.a11y');
 goog.require('goog.fx.Animation');
+goog.require('goog.fx.easing');
 goog.require('goog.graphics');
 goog.require('goog.graphics.Font');
 goog.require('goog.graphics.SolidFill');
@@ -74,7 +76,7 @@ goog.ui.GaugeColoredRange = function(fromValue, toValue, backgroundColor) {
  * the current value.
  * @param {number} width The width in pixels.
  * @param {number} height The height in pixels.
- * @param {goog.dom.DomHelper} opt_domHelper The DOM helper object for the
+ * @param {goog.dom.DomHelper=} opt_domHelper The DOM helper object for the
  *     document we want to render in.
  * @constructor
  * @extends {goog.ui.Component}
@@ -104,7 +106,7 @@ goog.ui.Gauge = function(width, height, opt_domHelper) {
    * @private
    */
   this.graphics_ = goog.graphics.createGraphics(width, height,
-      opt_domHelper);
+      null, null, opt_domHelper);
 
 
   /**
@@ -319,7 +321,7 @@ goog.ui.Gauge.prototype.value_ = 0;
 /**
  * The current value formatted into a String.
  * @private
- * @type {string?}
+ * @type {?string}
  */
 goog.ui.Gauge.prototype.formattedValue_ = null;
 
@@ -335,7 +337,7 @@ goog.ui.Gauge.prototype.theme_ = null;
 /**
  * Title to display above the gauge center.
  * @private
- * @type {string?}
+ * @type {?string}
  */
 goog.ui.Gauge.prototype.titleTop_ = null;
 
@@ -343,7 +345,7 @@ goog.ui.Gauge.prototype.titleTop_ = null;
 /**
  * Title to display below the gauge center.
  * @private
- * @type {string?}
+ * @type {?string}
  */
 goog.ui.Gauge.prototype.titleBottom_ = null;
 
@@ -408,7 +410,7 @@ goog.ui.Gauge.prototype.needleGroup_ = null;
 /**
  * The current position (0-1) of the visible needle.
  * Initially set to null to prevent animation on first opening of the gauge.
- * @type {number?}
+ * @type {?number}
  * @private
  */
 goog.ui.Gauge.prototype.needleValuePosition_ = null;
@@ -476,7 +478,7 @@ goog.ui.Gauge.prototype.setMaximum = function(max) {
  * Sets the current value range displayed by the gauge.
  * @param {number} value The current value for the gauge. This value
  *     determines the position of the needle of the gauge.
- * @param {string} opt_formattedValue The string value to show in the gauge.
+ * @param {string=} opt_formattedValue The string value to show in the gauge.
  *     If not specified, no string value will be displayed.
  */
 goog.ui.Gauge.prototype.setValue = function(value, opt_formattedValue) {
@@ -610,7 +612,7 @@ goog.ui.Gauge.prototype.addBackgroundColor = function(fromValue, toValue,
  */
 goog.ui.Gauge.prototype.createDom = function() {
   this.setElementInternal(this.getDomHelper().createDom(
-      'div', 'goog-gauge', this.graphics_.getElement()));
+      'div', goog.getCssName('goog-gauge'), this.graphics_.getElement()));
 };
 
 

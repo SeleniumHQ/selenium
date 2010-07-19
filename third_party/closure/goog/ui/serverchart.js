@@ -1,21 +1,22 @@
+// Copyright 2007 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-// Copyright 2007 Google Inc. All Rights Reserved.
 
 
 /**
  * @fileoverview Component for generating chart PNGs using Google Chart Server.
  *
+*
  * @see ../demos/serverchart.html
  */
 
@@ -47,10 +48,10 @@ goog.require('goog.ui.Component');
  * Will construct a chart using Google's chartserver.
  *
  * @param {goog.ui.ServerChart.ChartType} type The chart type.
- * @param {number} opt_width The width of the chart.
- * @param {number} opt_height The height of the chart.
- * @param {goog.dom.DomHelper} opt_domHelper Optional DOM Helper.
- * @param {string} opt_uri Optional uri used to connect to the chart server, if
+ * @param {number=} opt_width The width of the chart.
+ * @param {number=} opt_height The height of the chart.
+ * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM Helper.
+ * @param {string=} opt_uri Optional uri used to connect to the chart server, if
  *     different than goog.ui.ServerChart.CHART_SERVER_URI.
  * @constructor
  * @extends {goog.ui.Component}
@@ -233,7 +234,7 @@ goog.ui.ServerChart.prototype.maxValue_ = -Infinity;
 
 /**
  * Chart title.
- * @type {string?}
+ * @type {?string}
  * @private
  */
 goog.ui.ServerChart.prototype.title_ = null;
@@ -268,7 +269,7 @@ goog.ui.ServerChart.prototype.legend_ = null;
  * invisible data set. Such data sets must be provided at the end of the
  * chd parameter, and if invisible data sets are being used, the chd
  * parameter must indicate the number of visible data sets.
- * @type {number?}
+ * @type {?number}
  * @private
  */
 goog.ui.ServerChart.prototype.numVisibleDataSets_ = null;
@@ -583,7 +584,7 @@ goog.ui.ServerChart.UriParam = {
  *     {string} area The area to fill, either 'bg' for background or 'c' for
  *         chart area.  The default is 'bg'.
  *     {string} color (required) The color of the background fill.
- *     // TODO: Add support for gradient/stripes, which requires
+ *     // TODO(user): Add support for gradient/stripes, which requires
  *     // a different object structure.
  */
 goog.ui.ServerChart.prototype.setBackgroundFill = function(fill) {
@@ -671,8 +672,8 @@ goog.ui.ServerChart.prototype.getType = function() {
 /**
  * Sets the chart size.
  *
- * @param {number} opt_width Optional chart width, defaults to 300.
- * @param {number} opt_height Optional chart height, defaults to 150.
+ * @param {number=} opt_width Optional chart width, defaults to 300.
+ * @param {number=} opt_height Optional chart height, defaults to 150.
  */
 goog.ui.ServerChart.prototype.setSize = function(opt_width, opt_height) {
   var sizeString = [opt_width || 300, opt_height || 150].join('x');
@@ -990,7 +991,7 @@ goog.ui.ServerChart.prototype.getLegendPosition = function() {
  * the visible data set are not drawn as part of the chart. Instead, they
  * are available for positioning markers.
 
- * @param {number?} n The number of visible data sets, or null if all data
+ * @param {?number} n The number of visible data sets, or null if all data
  * sets are to be visible.
  */
 goog.ui.ServerChart.prototype.setNumVisibleDataSets = function(n) {
@@ -1003,7 +1004,7 @@ goog.ui.ServerChart.prototype.setNumVisibleDataSets = function(n) {
  * the visible data set are not drawn as part of the chart. Instead, they
  * are available for positioning markers.
  *
- * @return {number?} The number of visible data sets, or null if all data
+ * @return {?number} The number of visible data sets, or null if all data
  * sets are visible.
  */
 goog.ui.ServerChart.prototype.getNumVisibleDataSets = function() {
@@ -1027,8 +1028,8 @@ goog.ui.ServerChart.prototype.getNumVisibleDataSets = function() {
  *     weights[2] is relative area of overlap of circles A and B.
  *
  * @param {Array.<number>} weights The relative weights of the circles.
- * @param {Array.<string>} opt_legendText The legend labels for the circles.
- * @param {Array.<string>} opt_colors The colors for the circles.
+ * @param {Array.<string>=} opt_legendText The legend labels for the circles.
+ * @param {Array.<string>=} opt_colors The colors for the circles.
  */
 goog.ui.ServerChart.prototype.setVennSeries = function(
     weights, opt_legendText, opt_colors) {
@@ -1159,9 +1160,9 @@ goog.ui.ServerChart.prototype.setDataScaling = function(minimum, maximum) {
  *     as the space between bars because this is the behavior exposed
  *     in the external developers guide.
  * @param {number} barWidth The width of a bar in pixels.
- * @param {number} opt_spaceBars The width of the space between
+ * @param {number=} opt_spaceBars The width of the space between
  *     bars in a group in pixels.
- * @param {number} opt_spaceGroups The width of the space between
+ * @param {number=} opt_spaceGroups The width of the space between
  *     groups.
  */
 goog.ui.ServerChart.prototype.setBarSpaceWidths = function(barWidth,
@@ -1187,9 +1188,9 @@ goog.ui.ServerChart.prototype.setBarSpaceWidths = function(barWidth,
  *     bars is left undefined, the space between groups will be interpreted
  *     as the space between bars because this is the behavior exposed
  *     in the external developers guide.
- * @param {number} opt_spaceBars The width of the space between
+ * @param {number=} opt_spaceBars The width of the space between
  *     bars in a group in pixels.
- * @param {number} opt_spaceGroups The width of the space between
+ * @param {number=} opt_spaceGroups The width of the space between
  *     groups.
  */
 goog.ui.ServerChart.prototype.setAutomaticBarWidth = function(opt_spaceBars,
@@ -1226,7 +1227,7 @@ goog.ui.ServerChart.prototype.addMultiAxis = function(axisType) {
  * Returns the axis type for the given axis, or all of them in an array if the
  * axis number is not given.
  *
- * @param {number} opt_axisNumber The axis index, as returned by addMultiAxis.
+ * @param {number=} opt_axisNumber The axis index, as returned by addMultiAxis.
  * @return {goog.ui.ServerChart.MultiAxisType|
  *     Array.<goog.ui.ServerChart.MultiAxisType>}
  *     The axis type for the given axis, or all of them in an array if the
@@ -1265,7 +1266,7 @@ goog.ui.ServerChart.prototype.setMultiAxisLabelText = function(axisNumber,
  * Returns the label text, or all of them in a two-dimensional array if the
  * axis number is not given.
  *
- * @param {number} opt_axisNumber The axis index, as returned by addMultiAxis.
+ * @param {number=} opt_axisNumber The axis index, as returned by addMultiAxis.
  * @return {Object|Array.<string>} The label text, or all of them in a
  *     two-dimensional array if the axis number is not given.
  */
@@ -1304,7 +1305,7 @@ goog.ui.ServerChart.prototype.setMultiAxisLabelPosition = function(
  * Returns the label positions for a given axis number, or all of them in a
  * two-dimensional array if the axis number is not given.
  *
- * @param {number} opt_axisNumber The axis index, as returned by addMultiAxis.
+ * @param {number=} opt_axisNumber The axis index, as returned by addMultiAxis.
  * @return {Object|Array.<number>} The label positions for a given axis number,
  *     or all of them in a two-dimensional array if the axis number is not
  *     given.
@@ -1327,7 +1328,7 @@ goog.ui.ServerChart.prototype.getMultiAxisLabelPosition =
  * @param {number} axisNumber The axis index, as returned by addMultiAxis.
  * @param {number} rangeStart The new start of the range.
  * @param {number} rangeEnd The new end of the range.
- * @param {number} opt_interval The interval between axis labels.
+ * @param {number=} opt_interval The interval between axis labels.
  */
 goog.ui.ServerChart.prototype.setMultiAxisRange = function(axisNumber,
                                                            rangeStart,
@@ -1353,7 +1354,7 @@ goog.ui.ServerChart.prototype.setMultiAxisRange = function(axisNumber,
  * (range start, range end), or all of them in a two-dimensional array if the
  * axis number is not given.
  *
- * @param {number} opt_axisNumber The axis index, as returned by addMultiAxis.
+ * @param {number=} opt_axisNumber The axis index, as returned by addMultiAxis.
  * @return {Object|Array.<number>} The label range for a given axis number as a
  *     two-element array of (range start, range end), or all of them in a
  *     two-dimensional array if the axis number is not given.
@@ -1376,10 +1377,10 @@ goog.ui.ServerChart.prototype.getMultiAxisRange = function(opt_axisNumber) {
  *
  * @param {number} axisNumber The axis index, as returned by addMultiAxis.
  * @param {string} color The hex value for this label's color.
- * @param {number} opt_fontSize The label font size, in pixels.
- * @param {goog.ui.ServerChart.MultiAxisAlignment} opt_alignment The label
+ * @param {number=} opt_fontSize The label font size, in pixels.
+ * @param {goog.ui.ServerChart.MultiAxisAlignment=} opt_alignment The label
  *     alignment.
- * @param {goog.ui.ServerChart.AxisDisplayType} opt_axisDisplay The axis
+ * @param {goog.ui.ServerChart.AxisDisplayType=} opt_axisDisplay The axis
  *     line and ticks.
  */
 goog.ui.ServerChart.prototype.setMultiAxisLabelStyle = function(axisNumber,
@@ -1413,7 +1414,7 @@ goog.ui.ServerChart.prototype.setMultiAxisLabelStyle = function(axisNumber,
  * array, or all of them in a two-dimensional array if the axis number is not
  * given.
  *
- * @param {number} opt_axisNumber The axis index, as returned by addMultiAxis.
+ * @param {number=} opt_axisNumber The axis index, as returned by addMultiAxis.
  * @return {Object|Array.<number>} The label style for a given axis number as a
  *     one- to three-element array, or all of them in a two-dimensional array if
  *     the axis number is not given.
@@ -1434,7 +1435,7 @@ goog.ui.ServerChart.prototype.getMultiAxisLabelStyle =
  * @param {Array.<number|null>} data An array of numbers (values can be
  *     NaN or null).
  * @param {string} color The hex value for this data set's color.
- * @param {string} opt_legendText The legend text, if any, for this data
+ * @param {string=} opt_legendText The legend text, if any, for this data
  *     series. NOTE: If specified, all previously added data sets must also
  *     have a legend text.
  */
@@ -1487,7 +1488,7 @@ goog.ui.ServerChart.prototype.clearDataSets = function() {
  * Returns the given data set or all of them in a two-dimensional array if
  * the set number is not given.
  *
- * @param {number} opt_setNumber Optional data set number to get.
+ * @param {number=} opt_setNumber Optional data set number to get.
  * @return {Array} The given data set or all of them in a two-dimensional array
  *     if the set number is not given.
  */
@@ -1614,26 +1615,30 @@ goog.ui.ServerChart.EXTENDED_UPPER_BOUND =
 
 
 /**
- * Converts a number --> letter[s] suitable for graphing in ChartServer.
+ * Converts a single number to an encoded data value suitable for ChartServer.
+ * The TEXT encoding is the number in decimal; the SIMPLE encoding is a single
+ * character, and the EXTENDED encoding is two characters.  See
+ * http://code.google.com/apis/chart/docs/data_formats.html for the detailed
+ * specification of these encoding formats.
  *
  * @private
- * @param {number} value The value to convert.
+ * @param {?number} value The value to convert (null for a missing data point).
  * @param {number} minValue The minimum value (used for normalization).
  * @param {number} maxValue The maximum value (used for normalization).
  * @param {goog.ui.ServerChart.EncodingType} encoding The data encoding to use;
  *     must not be AUTOMATIC.
- * @return {string} The converted number.
+ * @return {string} The encoded data value.
  */
 goog.ui.ServerChart.prototype.getConvertedValue_ = function(value,
                                                             minValue,
                                                             maxValue,
                                                             encoding) {
-  if (minValue > maxValue) {
-    throw Error('minValue is greater than maxValue');
-  }
-  var isExtended = encoding == goog.ui.ServerChart.EncodingType.EXTENDED;
+  goog.asserts.assert(minValue <= maxValue,
+      'minValue should be less than or equal to maxValue');
+  var isExtended = (encoding == goog.ui.ServerChart.EncodingType.EXTENDED);
 
-  if (!goog.isDefAndNotNull(value) || isNaN(value)) {
+  if (goog.isNull(value) || !goog.isDef(value) || isNaN(value) ||
+      value < minValue || value > maxValue) {
     return isExtended ? '__' : '_';
   }
 
@@ -1644,6 +1649,7 @@ goog.ui.ServerChart.prototype.getConvertedValue_ = function(value,
   var frac = goog.ui.ServerChart.DEFAULT_NORMALIZATION;
   if (maxValue > minValue) {
     frac = (value - minValue) / (maxValue - minValue);
+    // Previous checks of value ensure that 0 <= frac <= 1 at this point.
   }
 
   if (isExtended) {

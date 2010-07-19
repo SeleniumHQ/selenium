@@ -1,21 +1,22 @@
+// Copyright 2007 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-// Copyright 2007 Google Inc. All Rights Reserved.
 
 /**
  * @fileoverview Provides the class CrossDomainChannel, the main class in
  * goog.net.xpc.
  *
+*
  * @see ../../demos/xpc/index.html
  */
 
@@ -107,7 +108,7 @@ goog.net.xpc.CrossPageChannel.prototype.isConnected = function() {
 
 /**
  * Reference to the window-object of the peer page.
- * @type {Object?}
+ * @type {Object}
  * @private
  */
 goog.net.xpc.CrossPageChannel.prototype.peerWindowObject_ = null;
@@ -115,7 +116,7 @@ goog.net.xpc.CrossPageChannel.prototype.peerWindowObject_ = null;
 
 /**
  * Reference to the iframe-element.
- * @type {Object?}
+ * @type {Object}
  * @private
  */
 goog.net.xpc.CrossPageChannel.prototype.iframeElement_ = null;
@@ -255,11 +256,11 @@ goog.net.xpc.CrossPageChannel.prototype.getPeerConfiguration = function() {
  * separately.
  *
  * @param {!Element} parentElm The container element the iframe is appended to.
- * @param {Function} opt_configureIframeCb If present, this function gets
+ * @param {Function=} opt_configureIframeCb If present, this function gets
  *     called with the iframe element as parameter to allow setting properties
  *     on it before it gets added to the DOM. If absent, the iframe's width and
  *     height are set to '100%'.
- * @param {boolean} opt_addCfgParam Whether to add the peer configuration as
+ * @param {boolean=} opt_addCfgParam Whether to add the peer configuration as
  *     URL parameter (default: true).
  * @return {!HTMLIFrameElement} The iframe element.
  */
@@ -274,7 +275,7 @@ goog.net.xpc.CrossPageChannel.prototype.createPeerIframe = function(
         'xpcpeer' + goog.net.xpc.getRandomString(4);
   }
 
-  // TODO Opera creates a history-entry when creating an iframe
+  // TODO(user) Opera creates a history-entry when creating an iframe
   // programmatically as follows. Find a way which avoids this.
 
   var iframeElm = goog.dom.createElement('IFRAME');
@@ -343,7 +344,7 @@ goog.net.xpc.CrossPageChannel.prototype.connectDeferred_ = false;
  * Initiates connecting the channel. When this method is called, all the
  * information needed to connect the channel has to be available.
  *
- * @param {Function} opt_connectCb The function to be called when the
+ * @param {Function=} opt_connectCb The function to be called when the
  * channel has been connected and is ready to be used.
  */
 goog.net.xpc.CrossPageChannel.prototype.connect = function(opt_connectCb) {
@@ -429,7 +430,7 @@ goog.net.xpc.CrossPageChannel.prototype.notifyTransportError_ = function() {
  * @param {string} serviceName The name of the service.
  * @param {Function} callback The callback responsible to process incoming
  *     messages.
- * @param {boolean} opt_jsonEncoded If true, incoming messages for this
+ * @param {boolean=} opt_jsonEncoded If true, incoming messages for this
  *     service are expected to contain a JSON-encoded object and will be
  *     deserialized automatically.
  */
@@ -457,9 +458,9 @@ goog.net.xpc.CrossPageChannel.prototype.send = function(serviceName, payload) {
     return;
   }
   // Check if the peer is still around.
-  // NOTE: This check is not reliable in IE, where a document in an
+  // NOTE(user): This check is not reliable in IE, where a document in an
   // iframe does not get unloaded when removing the iframe element from the DOM.
-  // TODO: Find something that works in IE as well.
+  // TODO(user): Find something that works in IE as well.
   if (this.peerWindowObject_.closed) {
     goog.net.xpc.logger.severe('Peer has disappeared.');
     this.close();

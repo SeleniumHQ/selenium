@@ -1,16 +1,16 @@
+// Copyright 2006 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-// Copyright 2006 Google Inc. All Rights Reserved.
 
 /**
  * @fileoverview Class for managing requests via iFrames.  Supports a number of
@@ -130,6 +130,7 @@
  * io.sendFromForm(...);
  * </pre>
  *
+*
  */
 
 goog.provide('goog.net.IframeIo');
@@ -236,12 +237,12 @@ goog.net.IframeIo.form_;
  * request.
  * @param {goog.Uri|string} uri Uri of the request, it is up the caller to
  *     manage query string params.
- * @param {Function} opt_callback Event handler for when request is completed.
- * @param {string} opt_method Default is GET, POST uses a form to submit the
+ * @param {Function=} opt_callback Event handler for when request is completed.
+ * @param {string=} opt_method Default is GET, POST uses a form to submit the
  *     request.
- * @param {boolean} opt_noCache Append a timestamp to the request to avoid
+ * @param {boolean=} opt_noCache Append a timestamp to the request to avoid
  *     caching.
- * @param {Object|goog.structs.Map} opt_data Map of key-value pairs that
+ * @param {Object|goog.structs.Map=} opt_data Map of key-value pairs that
  *     will be posted to the server via the iframe's form.
  */
 goog.net.IframeIo.send = function(
@@ -361,7 +362,7 @@ goog.net.IframeIo.prototype.logger_ =
 
 /**
  * Reference to form element that gets reused for requests to the iframe.
- * @type {HTMLFormElement?}
+ * @type {HTMLFormElement}
  * @private
  */
 goog.net.IframeIo.prototype.form_ = null;
@@ -370,7 +371,7 @@ goog.net.IframeIo.prototype.form_ = null;
 /**
  * Reference to the iframe being used for the current request, or null if no
  * request is currently active.
- * @type {HTMLIFrameElement?}
+ * @type {HTMLIFrameElement}
  * @private
  */
 goog.net.IframeIo.prototype.iframe_ = null;
@@ -379,7 +380,7 @@ goog.net.IframeIo.prototype.iframe_ = null;
 /**
  * Name of the iframe being used for the current request, or null if no
  * request is currently active.
- * @type {string?}
+ * @type {?string}
  * @private
  */
 goog.net.IframeIo.prototype.iframeName_ = null;
@@ -387,7 +388,7 @@ goog.net.IframeIo.prototype.iframeName_ = null;
 
 /**
  * Next id so that iframe names are unique.
- * @type {Number}
+ * @type {number}
  * @private
  */
 goog.net.IframeIo.prototype.nextIframeId_ = 0;
@@ -427,7 +428,7 @@ goog.net.IframeIo.prototype.lastUri_ = null;
 
 /**
  * The text content of the last request.
- * @type {string?}
+ * @type {?string}
  * @private
  */
 goog.net.IframeIo.prototype.lastContent_ = null;
@@ -453,7 +454,7 @@ goog.net.IframeIo.prototype.timeoutInterval_ = 0;
 /**
  * Window timeout ID used to cancel the timeout event handler if the request
  * completes successfully.
- * @type {number?}
+ * @type {?number}
  * @private
  */
 goog.net.IframeIo.prototype.timeoutId_ = null;
@@ -461,7 +462,7 @@ goog.net.IframeIo.prototype.timeoutId_ = null;
 
 /**
  * Window timeout ID used to detect when firefox silently fails.
- * @type {number?}
+ * @type {?number}
  * @private
  */
 goog.net.IframeIo.prototype.firefoxSilentErrorTimeout_ = null;
@@ -469,7 +470,7 @@ goog.net.IframeIo.prototype.firefoxSilentErrorTimeout_ = null;
 
 /**
  * Window timeout ID used by the timer that disposes the iframes.
- * @type {number?}
+ * @type {?number}
  * @private
  */
 goog.net.IframeIo.prototype.iframeDisposalTimer_ = null;
@@ -497,11 +498,11 @@ goog.net.IframeIo.prototype.errorHandled_;
  * stop a history entry being added for POST requests.
  *
  * @param {goog.Uri|string} uri Uri of the request.
- * @param {string} opt_method Default is GET, POST uses a form to submit the
+ * @param {string=} opt_method Default is GET, POST uses a form to submit the
  *     request.
- * @param {boolean} opt_noCache Append a timestamp to the request to avoid
+ * @param {boolean=} opt_noCache Append a timestamp to the request to avoid
  *     caching.
- * @param {Object|goog.structs.Map} opt_data Map of key-value pairs.
+ * @param {Object|goog.structs.Map=} opt_data Map of key-value pairs.
  */
 goog.net.IframeIo.prototype.send = function(
     uri, opt_method, opt_noCache, opt_data) {
@@ -560,9 +561,9 @@ goog.net.IframeIo.prototype.send = function(
  *
  * @param {HTMLFormElement} form Form element used to send the request to the
  *     server.
- * @param {string} opt_uri Uri to set for the destination of the request, by
+ * @param {string=} opt_uri Uri to set for the destination of the request, by
  *     default the uri will come from the form.
- * @param {boolean} opt_noCache Append a timestamp to the request to avoid
+ * @param {boolean=} opt_noCache Append a timestamp to the request to avoid
  *     caching.
  */
 goog.net.IframeIo.prototype.sendFromForm = function(form, opt_uri,
@@ -587,7 +588,7 @@ goog.net.IframeIo.prototype.sendFromForm = function(form, opt_uri,
 
 /**
  * Abort the current Iframe request
- * @param {goog.net.ErrorCode} opt_failureCode Optional error code to use -
+ * @param {goog.net.ErrorCode=} opt_failureCode Optional error code to use -
  *     defaults to ABORT.
  */
 goog.net.IframeIo.prototype.abort = function(opt_failureCode) {
@@ -668,7 +669,7 @@ goog.net.IframeIo.prototype.isActive = function() {
 /**
  * Returns the last response text (i.e. the text content of the iframe).
  * Assumes plain text!
- * @return {string?} Result from the server.
+ * @return {?string} Result from the server.
  */
 goog.net.IframeIo.prototype.getResponseText = function() {
   return this.lastContent_;
@@ -677,7 +678,7 @@ goog.net.IframeIo.prototype.getResponseText = function() {
 
 /**
  * Returns the last response html (i.e. the innerHtml of the iframe).
- * @return {string?} Result from the server.
+ * @return {?string} Result from the server.
  */
 goog.net.IframeIo.prototype.getResponseHtml = function() {
  return this.lastContentHtml_;
@@ -699,7 +700,7 @@ goog.net.IframeIo.prototype.getResponseJson = function() {
 /**
  * Returns the document object from the last request.  Not truely XML, but
  * used to mirror the XhrIo interface.
- * @return {HTMLDocument?} The document object from the last request.
+ * @return {HTMLDocument} The document object from the last request.
  */
 goog.net.IframeIo.prototype.getResponseXml = function() {
   if (!this.iframe_) return null;
@@ -791,18 +792,19 @@ goog.net.IframeIo.prototype.setTimeoutInterval = function(ms) {
 /**
  * Override of dispatchEvent, we ensure that the xhrMonitor is listening for
  * XmlHttpRequests that may be initiated as a result of the event.
- * @param {goog.events.Event|string} e Event to dispatch.
+ * @override
  */
 goog.net.IframeIo.prototype.dispatchEvent = function(e) {
   if (this.iframe_) {
     goog.net.xhrMonitor.pushContext(this.iframe_);
   }
   try {
-    goog.net.IframeIo.superClass_.dispatchEvent.call(this, e);
+    return goog.net.IframeIo.superClass_.dispatchEvent.call(this, e);
   } finally {
     if (this.iframe_) {
       goog.net.xhrMonitor.popContext();
     }
+    return true;
   }
 };
 
@@ -1055,8 +1057,8 @@ goog.net.IframeIo.prototype.handleLoad_ = function(contentDocument) {
 /**
  * Handles errors.
  * @param {goog.net.ErrorCode} errorCode Error code.
- * @param {Object} opt_customError If error is CUSTOM_ERROR, this is the client-
- *     provided custom error.
+ * @param {Object=} opt_customError If error is CUSTOM_ERROR, this is the
+ *     client-provided custom error.
  * @private
  */
 goog.net.IframeIo.prototype.handleError_ = function(errorCode,
@@ -1166,7 +1168,7 @@ goog.net.IframeIo.prototype.scheduleIframeDisposal_ = function() {
   // There shouldn't be a case where the iframe is null and we get to this
   // stage, but the error reports in http://b/909448 indicate it is possible.
   if (iframe) {
-    // NOTE: Stops Internet Explorer leaking the iframe object. This
+    // NOTE(user): Stops Internet Explorer leaking the iframe object. This
     // shouldn't be needed, since the events have all been removed, which
     // should in theory clean up references.  Oh well...
     iframe.onreadystatechange = null;
@@ -1247,7 +1249,7 @@ goog.net.IframeIo.prototype.disposeForm_ = function() {
 
 
 /**
- * @return {HTMLDocument?} The appropriate content document.
+ * @return {HTMLDocument} The appropriate content document.
  * @private
  */
 goog.net.IframeIo.prototype.getContentDocument_ = function() {
@@ -1260,7 +1262,7 @@ goog.net.IframeIo.prototype.getContentDocument_ = function() {
 
 
 /**
- * @return {HTMLIFrameElement?} The appropriate iframe to use for requests
+ * @return {HTMLIFrameElement} The appropriate iframe to use for requests
  *     (created in sendForm_).
  * @private
  */

@@ -1,22 +1,30 @@
+// Copyright 2006 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-// Copyright 2006 Google Inc. All Rights Reserved.
 
 /**
  * @fileoverview This event wrapper will dispatch an event when the user uses
  * the mouse wheel to scroll an element. You can get the direction by checking
  * the deltaX and deltaY properties of the event.
  *
+ * This class aims to smooth out inconsistencies between browser platforms with
+ * regards to mousewheel events, but we do not cover every possible
+ * software/hardware combination out there, some of which occasionally produce
+ * very large deltas in mousewheel events. If your application wants to guard
+ * against extremely large deltas, use the setMaxDeltaX and setMaxDeltaY APIs
+ * to set maximum values that make sense for your application.
+ *
+*
  * @see ../demos/mousewheelhandler.html
  */
 
@@ -27,6 +35,7 @@ goog.provide('goog.events.MouseWheelHandler.EventType');
 goog.require('goog.events');
 goog.require('goog.events.BrowserEvent');
 goog.require('goog.events.EventTarget');
+goog.require('goog.math');
 goog.require('goog.userAgent');
 
 
@@ -52,7 +61,7 @@ goog.events.MouseWheelHandler = function(element) {
 
   /**
    * The key returned from the goog.events.listen.
-   * @type {number?}
+   * @type {?number}
    * @private
    */
   this.listenKey_ = goog.events.listen(this.element_, type, this);
@@ -66,6 +75,40 @@ goog.inherits(goog.events.MouseWheelHandler, goog.events.EventTarget);
  */
 goog.events.MouseWheelHandler.EventType = {
   MOUSEWHEEL: 'mousewheel'
+};
+
+
+/**
+ * Optional maximum magnitude for x delta on each mousewheel event.
+ * @type {number|undefined}
+ * @private
+ */
+goog.events.MouseWheelHandler.prototype.maxDeltaX_;
+
+
+/**
+ * Optional maximum magnitude for y delta on each mousewheel event.
+ * @type {number|undefined}
+ * @private
+ */
+goog.events.MouseWheelHandler.prototype.maxDeltaY_;
+
+
+/**
+ * @param {number} maxDeltaX Maximum magnitude for x delta on each mousewheel
+ *     event. Should be non-negative.
+ */
+goog.events.MouseWheelHandler.prototype.setMaxDeltaX = function(maxDeltaX) {
+  this.maxDeltaX_ = maxDeltaX;
+};
+
+
+/**
+ * @param {number} maxDeltaY Maximum magnitude for y delta on each mousewheel
+ *     event. Should be non-negative.
+ */
+goog.events.MouseWheelHandler.prototype.setMaxDeltaY = function(maxDeltaY) {
+  this.maxDeltaY_ = maxDeltaY;
 };
 
 
@@ -122,6 +165,15 @@ goog.events.MouseWheelHandler.prototype.handleEvent = function(e) {
       deltaY = detail;
     }
   }
+
+  if (goog.isNumber(this.maxDeltaX_)) {
+    deltaX = goog.math.clamp(deltaX, -this.maxDeltaX_, this.maxDeltaX_);
+  }
+  if (goog.isNumber(this.maxDeltaY_)) {
+    deltaY = goog.math.clamp(deltaY, -this.maxDeltaY_, this.maxDeltaY_);
+  }
+  // Don't clamp 'detail', since it could be ambiguous which axis it refers to
+  // and because it's informally deprecated anyways.
 
   var newEvent = new goog.events.MouseWheelEvent(detail, be, deltaX, deltaY);
   try {

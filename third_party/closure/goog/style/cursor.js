@@ -1,21 +1,23 @@
+// Copyright 2005 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-// Copyright 2005 Google Inc. All Rights Reserved.
 
 /**
  * @fileoverview Functions to create special cursor styles, like "draggable"
  * (open hand) or "dragging" (closed hand).
  *
+*
+*
  */
 
 goog.provide('goog.style.cursor');
@@ -42,7 +44,7 @@ goog.style.cursor.CLOSEDHAND_FILE = 'closedhand.cur';
  *
  * @param {string} absoluteDotCurFilePath The absolute base path of
  *     'openhand.cur' file to be used if the browser supports it.
- * @param {boolean} opt_important Whether to use the '!important' CSS
+ * @param {boolean=} opt_important Whether to use the '!important' CSS
  *     modifier.
  * @return {string} The "draggable" mouse cursor style value.
  */
@@ -62,7 +64,7 @@ goog.style.cursor.getDraggableCursorStyle = function(
  *
  * @param {string} absoluteDotCurFilePath The absolute base path of
  *     'closedhand.cur' file to be used if the browser supports it.
- * @param {boolean} opt_important Whether to use the '!important' CSS
+ * @param {boolean=} opt_important Whether to use the '!important' CSS
  *     modifier.
  * @return {string} The "dragging" mouse cursor style value.
  */
@@ -84,7 +86,7 @@ goog.style.cursor.getDraggingCursorStyle = function(
  * @param {string} absoluteDotCurFilePath The .cur file absolute file to be
  *     used if the browser supports it.
  * @param {string} defaultStyle The default fallback cursor style.
- * @param {boolean} opt_important Whether to use the '!important' CSS
+ * @param {boolean=} opt_important Whether to use the '!important' CSS
  *     modifier (not included for FF).
  * @return {string} The computed mouse cursor style value.
  * @private

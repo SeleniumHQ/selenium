@@ -1,21 +1,23 @@
+// Copyright 2008 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-// Copyright 2008 Google Inc.
 // All Rights Reserved.
 
 /**
  * @fileoverview Plugin to handle Remove Formatting.
  *
+*
+*
  */
 
 goog.provide('goog.editor.plugins.RemoveFormatting');
@@ -105,7 +107,7 @@ goog.editor.plugins.RemoveFormatting.prototype.getTrogClassId = function() {
 goog.editor.plugins.RemoveFormatting.prototype.isSupportedCommand = function(
     command) {
   return command ==
-       goog.editor.plugins.RemoveFormatting.REMOVE_FORMATTING_COMMAND;
+      goog.editor.plugins.RemoveFormatting.REMOVE_FORMATTING_COMMAND;
 };
 
 
@@ -117,6 +119,25 @@ goog.editor.plugins.RemoveFormatting.prototype.execCommandInternal =
     this.removeFormatting_();
   }
 };
+
+
+/**
+ * @inheritDoc
+ */
+goog.editor.plugins.RemoveFormatting.prototype.handleKeyboardShortcut =
+    function(e, key, isModifierPressed) {
+  if (!isModifierPressed) {
+    return false;
+  }
+
+  if (key == ' ') {
+    this.fieldObject.execCommand(
+        goog.editor.plugins.RemoveFormatting.REMOVE_FORMATTING_COMMAND);
+    return true;
+  }
+
+  return false;
+}
 
 
 /**
@@ -177,7 +198,7 @@ goog.editor.plugins.RemoveFormatting.getTableAncestor_ = function(nodeToCheck) {
  * Replaces the contents of the selection with html. Does its best to maintain
  * the original selection. Also does its best to result in a valid DOM.
  *
- * TODO: See if there's any way to make this work on Ranges, and then
+ * TODO(user): See if there's any way to make this work on Ranges, and then
  * move it into goog.editor.range. The Firefox implementation uses execCommand
  * on the document, so must work on the actual selection.
  *
@@ -238,7 +259,7 @@ goog.editor.plugins.RemoveFormatting.prototype.pasteHtml_ = function(html) {
     var parent = this.fieldObject.getRange().getContainerElement();
     if (parent.nodeType == goog.dom.NodeType.TEXT) {
       // Opera sometimes returns a text node here.
-      // TODO: perhaps we should modify getParentContainer?
+      // TODO(user): perhaps we should modify getParentContainer?
       parent = parent.parentNode;
     }
 
@@ -299,7 +320,7 @@ goog.editor.plugins.RemoveFormatting.prototype.pasteHtml_ = function(html) {
 /**
  * Gets the html inside the selection to send off for further processing.
  *
- * TODO: Make this general so that it can be moved into
+ * TODO(user): Make this general so that it can be moved into
  * goog.editor.range.  The main reason it can't be moved is becuase we need to
  * get the range before we do the execCommand and continue to operate on that
  * same range (reasons are documented above).
@@ -448,7 +469,7 @@ goog.editor.plugins.RemoveFormatting.prototype.convertSelectedHtmlText_ =
 
   // For multiple ranges, it is really hard to do our custom remove formatting
   // without invalidating other ranges. So instead of always losing the
-  // content, this solution at least lets the browser do it's own remove
+  // content, this solution at least lets the browser do its own remove
   // formatting which works correctly most of the time.
   if (range.getTextRangeCount() > 1) {
     return;
@@ -475,12 +496,12 @@ goog.editor.plugins.RemoveFormatting.prototype.convertSelectedHtmlText_ =
     // in the selection, but have the same visible selection. Stop expanding
     // if we reach the top level field.
     var expandedRange = goog.editor.range.expand(range,
-          this.fieldObject.getElement());
+        this.fieldObject.getElement());
 
     var startInTable = goog.editor.plugins.RemoveFormatting.getTableAncestor_(
-          expandedRange.getStartNode());
+        expandedRange.getStartNode());
     var endInTable = goog.editor.plugins.RemoveFormatting.getTableAncestor_(
-          expandedRange.getEndNode());
+        expandedRange.getEndNode());
 
     if (startInTable || endInTable) {
       if (startInTable == endInTable) {
@@ -605,17 +626,19 @@ goog.editor.plugins.RemoveFormatting.prototype.removeFormattingWorker_ =
       var nodeName = node.nodeName;
 
       var formatted = this.getValueForNode(node);
-      if (formatted) {
+      if (goog.isDefAndNotNull(formatted)) {
         sb.push(formatted);
         continue;
       }
 
+      // TODO(user): Handle case 'EMBED' and case 'OBJECT'.
       switch (nodeName) {
         case '#text':
           // Note that IE does not preserve whitespace in the dom
           // values, even in a pre tag, so this is useless for IE.
-          var nodeValue = preTagLevel > 0 ? node.nodeValue :
-                          goog.string.stripNewlines(node.nodeValue);
+          var nodeValue = preTagLevel > 0 ?
+              node.nodeValue :
+              goog.string.stripNewlines(node.nodeValue);
           nodeValue = goog.string.htmlEscape(nodeValue);
           sb.push(nodeValue);
           continue;
@@ -663,8 +686,6 @@ goog.editor.plugins.RemoveFormatting.prototype.removeFormattingWorker_ =
           sb.push(node.src);
           sb.push("'>");
           continue;
-
-        // TODO: case 'EMBED': case 'OBJECT'
 
         case goog.dom.TagName.TD:
           // Don't add a space for the first TD, we only want spaces to
@@ -721,10 +742,10 @@ goog.editor.plugins.RemoveFormatting.prototype.removeFormattingWorker_ =
  * Handle per node special processing if neccessary. If this function returns
  * null then standard cleanup is applied. Otherwise this node and all children
  * are assumed to be cleaned.
- * NOTE: If an alternate RemoveFormatting processor is provided
+ * NOTE(user): If an alternate RemoveFormatting processor is provided
  * (setRemoveFormattingFunc()), this will no longer work.
  * @param {Element} node The node to clean.
- * @return {string?} The HTML strig representation of the cleaned data.
+ * @return {?string} The HTML strig representation of the cleaned data.
  */
 goog.editor.plugins.RemoveFormatting.prototype.getValueForNode = function(
     node) {

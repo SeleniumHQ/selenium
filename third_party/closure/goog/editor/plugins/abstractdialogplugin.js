@@ -1,21 +1,23 @@
+// Copyright 2008 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-// Copyright 2008 Google, Inc. All Rights Reserved.
 
 /**
  * @fileoverview An abstract superclass for TrogEdit dialog plugins. Each
  * Trogedit dialog has its own plugin.
  *
+ * @author nicksantos@google.com (Nick Santos)
+*
  */
 
 goog.provide('goog.editor.plugins.AbstractDialogPlugin');
@@ -25,6 +27,7 @@ goog.require('goog.dom');
 goog.require('goog.dom.Range');
 goog.require('goog.editor.Field.EventType');
 goog.require('goog.editor.Plugin');
+goog.require('goog.editor.range');
 goog.require('goog.events');
 goog.require('goog.ui.editor.AbstractDialog.EventType');
 
@@ -61,9 +64,9 @@ goog.editor.plugins.AbstractDialogPlugin.prototype.isSupportedCommand =
  * supported). Hence this method does not dispatch the change events that the
  * superclass method does.
  * @param {string} command The command to execute.
- * @param {Object} var_args Any additional parameters needed to
+ * @param {...*} var_args Any additional parameters needed to
  *     execute the command.
- * @return {Object|undefined} The result of the execCommand, if any.
+ * @return {*} The result of the execCommand, if any.
  * @override
  */
 goog.editor.plugins.AbstractDialogPlugin.prototype.execCommand = function(
@@ -91,9 +94,9 @@ goog.editor.plugins.AbstractDialogPlugin.EventType = {
 /**
  * Creates a new instance of this plugin's dialog. Must be overridden by
  * subclasses.
- * @param {goog.dom.DomHelper} dialogDomHelper The dom helper to be used to
+ * @param {!goog.dom.DomHelper} dialogDomHelper The dom helper to be used to
  *     create the dialog.
- * @param {*} opt_arg The dialog specific argument. Concrete subclasses should
+ * @param {*=} opt_arg The dialog specific argument. Concrete subclasses should
  *     declare a specific type.
  * @return {goog.ui.editor.AbstractDialog} The newly created dialog.
  * @protected
@@ -129,9 +132,9 @@ goog.editor.plugins.AbstractDialogPlugin.prototype.setReuseDialog =
  * {@link goog.editor.plugins.AbstractDialogPlugin.EventType.OPENED} after the
  * dialog is shown.
  * @param {string} command The command to execute.
- * @param {*} opt_arg The dialog specific argument. Should be the same as
+ * @param {*=} opt_arg The dialog specific argument. Should be the same as
  *     {@link createDialog}.
- * @return {Object|undefined} The result of the execCommand, if any.
+ * @return {*} Always returns true, indicating the dialog was shown.
  * @protected
  * @override
  */
@@ -146,7 +149,7 @@ goog.editor.plugins.AbstractDialogPlugin.prototype.execCommandInternal =
   // one.
   if (!this.dialog_) {
     this.dialog_ = this.createDialog(
-        // TODO: Add Field.getAppDomHelper. (Note dom helper will
+        // TODO(user): Add Field.getAppDomHelper. (Note dom helper will
         // need to be updated if setAppWindow is called by clients.)
         goog.dom.getDomHelper(this.fieldObject.getAppWindow()),
         opt_arg);
@@ -159,8 +162,10 @@ goog.editor.plugins.AbstractDialogPlugin.prototype.execCommandInternal =
   // save it so we can restore it when the dialog closes.
   // getRange may return null if there is no selection in the field.
   var tempRange = this.fieldObject.getRange();
-  // saveUsingDom() did not work as well as saveUsingCarets(), not sure why.
-  this.savedRange_ = tempRange && tempRange.saveUsingCarets();
+  // saveUsingDom() did not work as well as saveUsingNormalizedCarets(),
+  // not sure why.
+  this.savedRange_ = tempRange && goog.editor.range.saveUsingNormalizedCarets(
+      tempRange);
   goog.dom.Range.clearSelection(
       this.fieldObject.getEditableDomHelper().getWindow());
 
@@ -174,6 +179,12 @@ goog.editor.plugins.AbstractDialogPlugin.prototype.execCommandInternal =
   this.fieldObject.setModalMode(true);
   this.dialog_.show();
   this.dispatchEvent(goog.editor.plugins.AbstractDialogPlugin.EventType.OPENED);
+
+  // Since the selection has left the document, dispatch a selection
+  // change event.
+  this.fieldObject.dispatchSelectionChangeEvent();
+
+  return true;
 };
 
 
@@ -191,6 +202,17 @@ goog.editor.plugins.AbstractDialogPlugin.prototype.execCommandInternal =
 goog.editor.plugins.AbstractDialogPlugin.prototype.handleAfterHide = function(
     e) {
   this.fieldObject.setModalMode(false);
+  this.restoreOriginalSelection();
+
+  if (!this.reuseDialog_) {
+    this.disposeDialog_();
+  }
+
+  this.dispatchEvent(goog.editor.plugins.AbstractDialogPlugin.EventType.CLOSED);
+
+  // Since the selection has returned to the document, dispatch a selection
+  // change event.
+  this.fieldObject.dispatchSelectionChangeEvent();
 
   // When the dialog closes due to pressing enter or escape, that happens on the
   // keydown event. But the browser will still fire a keyup event after that,
@@ -200,13 +222,6 @@ goog.editor.plugins.AbstractDialogPlugin.prototype.handleAfterHide = function(
   // that caused it immediately after this dialog was hidden ("immediately"
   // means a small number of milliseconds defined by the editable field).
   this.fieldObject.debounceEvent(goog.editor.Field.EventType.SELECTIONCHANGE);
-
-  if (!this.reuseDialog_) {
-    this.disposeDialog_();
-  }
-
-  this.restoreOriginalSelection();
-  this.dispatchEvent(goog.editor.plugins.AbstractDialogPlugin.EventType.CLOSED);
 };
 
 
@@ -244,8 +259,7 @@ goog.editor.plugins.AbstractDialogPlugin.prototype.disposeOriginalSelection =
 goog.editor.plugins.AbstractDialogPlugin.prototype.disposeInternal =
     function() {
   this.disposeDialog_();
-  goog.editor.plugins.AbstractDialogPlugin.superClass_.disposeInternal.call(
-      this);
+  goog.base(this, 'disposeInternal');
 };
 
 

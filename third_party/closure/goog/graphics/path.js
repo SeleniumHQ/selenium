@@ -1,20 +1,22 @@
+// Copyright 2007 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Copyright 2007 Google Inc. All Rights Reserved.
-
 
 /**
  * @fileoverview Represents a path used with a Graphics implementation.
+*
+*
  */
 
 goog.provide('goog.graphics.Path');
@@ -182,7 +184,7 @@ goog.graphics.Path.prototype.moveTo = function(x, y) {
 /**
  * Adds points to the path by drawing a straight line to each point.
  *
- * @param {number} var_args The coordinates of each destination point as x, y
+ * @param {...number} var_args The coordinates of each destination point as x, y
  *     value pairs.
  * @return {!goog.graphics.Path} The path itself.
  */
@@ -211,7 +213,7 @@ goog.graphics.Path.prototype.lineTo = function(var_args) {
  * specified using 3 points (6 coordinates) - two control points and the end
  * point of the curve.
  *
- * @param {number} var_args The coordinates specifiying each curve in sets of
+ * @param {...number} var_args The coordinates specifiying each curve in sets of
  *     6 points: {@code [x1, y1]} the first control point, {@code [x2, y2]} the
  *     second control point and {@code [x, y]} the end point.
  * @return {!goog.graphics.Path} The path itself.
@@ -461,7 +463,7 @@ goog.graphics.Path.createSimplifiedPath = function(src) {
 };
 
 
-// TODO: Delete this method
+// TODO(user): Delete this method
 /**
  * Creates a transformed copy of this path. The path is simplified
  * {@see #createSimplifiedPath} prior to transformation.

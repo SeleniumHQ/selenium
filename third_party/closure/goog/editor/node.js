@@ -1,21 +1,24 @@
+// Copyright 2005 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-// Copyright 2005 Google Inc. All Rights Reserved.
 
 /**
  * @fileoverview Utilties for working with DOM nodes related to rich text
  * editing.  Many of these are not general enough to go into goog.dom.
  *
+*
+*
+ * @author nicksantos@google.com (Nick Santos)
  */
 
 goog.provide('goog.editor.node');
@@ -46,7 +49,7 @@ goog.editor.node.BLOCK_TAG_NAMES_ = goog.object.createSet(
 
 /**
  * Names of tags that have intrinsic content.
- * TODO: What about object, br, input, textarea, button, isindex,
+ * TODO(robbyw): What about object, br, input, textarea, button, isindex,
  * hr, keygen, select, table, tr, td?
  * @type {Object}
  * @private
@@ -67,8 +70,8 @@ goog.editor.node.isStandardsMode = function(node) {
 
 /**
  * Get the right-most non-ignorable leaf node of the given node.
- * @param {Node?} parent The parent ndoe.
- * @return {Node?} The right-most non-ignorable leaf node.
+ * @param {Node} parent The parent ndoe.
+ * @return {Node} The right-most non-ignorable leaf node.
  */
 goog.editor.node.getRightMostLeaf = function(parent) {
   var temp;
@@ -81,8 +84,8 @@ goog.editor.node.getRightMostLeaf = function(parent) {
 
 /**
  * Get the left-most non-ignorable leaf node of the given node.
- * @param {Node?} parent The parent ndoe.
- * @return {Node?} The left-most non-ignorable leaf node.
+ * @param {Node} parent The parent ndoe.
+ * @return {Node} The left-most non-ignorable leaf node.
  */
 goog.editor.node.getLeftMostLeaf = function(parent) {
   var temp;
@@ -96,8 +99,8 @@ goog.editor.node.getLeftMostLeaf = function(parent) {
 /**
  * Version of firstChild that skips nodes that are entirely
  * whitespace and comments.
- * @param {Node?} parent The reference node.
- * @return {Node?} The first child of sibling that is important according to
+ * @param {Node} parent The reference node.
+ * @return {Node} The first child of sibling that is important according to
  *     goog.editor.node.isImportant, or null if no such node exists.
  */
 goog.editor.node.getFirstChild = function(parent) {
@@ -109,8 +112,8 @@ goog.editor.node.getFirstChild = function(parent) {
  * Version of lastChild that skips nodes that are entirely whitespace or
  * comments.  (Normally lastChild is a property of all DOM nodes that gives the
  * last of the nodes contained directly in the reference node.)
- * @param {Node?} parent The reference node.
- * @return {Node?} The last child of sibling that is important according to
+ * @param {Node} parent The reference node.
+ * @return {Node} The last child of sibling that is important according to
  *     goog.editor.node.isImportant, or null if no such node exists.
  */
 goog.editor.node.getLastChild = function(parent) {
@@ -125,12 +128,12 @@ goog.editor.node.getLastChild = function(parent) {
  * a child of the same parent, that occurs immediately before the
  * reference node.)
  * @param {Node} sibling The reference node.
- * @return {Node?} The closest previous sibling to sibling that is
+ * @return {Node} The closest previous sibling to sibling that is
  *     important according to goog.editor.node.isImportant, or null if no such
  *     node exists.
  */
 goog.editor.node.getPreviousSibling = function(sibling) {
-  return /** @type {Node?} */ (goog.editor.node.getFirstValue_(
+  return /** @type {Node} */ (goog.editor.node.getFirstValue_(
       goog.iter.filter(new goog.dom.iter.SiblingIterator(sibling, false, true),
       goog.editor.node.isImportant)));
 };
@@ -140,12 +143,12 @@ goog.editor.node.getPreviousSibling = function(sibling) {
  * Version of nextSibling that skips nodes that are entirely whitespace or
  * comments.
  * @param {Node} sibling The reference node.
- * @return {Node?} The closest next sibling to sibling that is important
+ * @return {Node} The closest next sibling to sibling that is important
  *     according to goog.editor.node.isImportant, or null if no
  *     such node exists.
  */
 goog.editor.node.getNextSibling = function(sibling) {
-  return /** @type {Node?} */ (goog.editor.node.getFirstValue_(
+  return /** @type {Node} */ (goog.editor.node.getFirstValue_(
       goog.iter.filter(new goog.dom.iter.SiblingIterator(sibling),
       goog.editor.node.isImportant)));
 };
@@ -154,16 +157,16 @@ goog.editor.node.getNextSibling = function(sibling) {
 /**
  * Internal helper for lastChild/firstChild that skips nodes that are entirely
  * whitespace or comments.
- * @param {Node?} parent The reference node.
+ * @param {Node} parent The reference node.
  * @param {boolean} isReversed Whether children should be traversed forward
  *     or backward.
- * @return {Node?} The first/last child of sibling that is important according
+ * @return {Node} The first/last child of sibling that is important according
  *     to goog.editor.node.isImportant, or null if no such node exists.
  * @private
  */
 goog.editor.node.getChildHelper_ = function(parent, isReversed) {
   return (!parent || parent.nodeType != goog.dom.NodeType.ELEMENT) ? null :
-      /** @type {Node?} */ (goog.editor.node.getFirstValue_(goog.iter.filter(
+      /** @type {Node} */ (goog.editor.node.getFirstValue_(goog.iter.filter(
           new goog.dom.iter.ChildIterator(
               /** @type {Element} */ (parent), isReversed),
           goog.editor.node.isImportant)));
@@ -216,7 +219,7 @@ goog.editor.node.isAllNonNbspWhiteSpace = function(textNode) {
  * Returns true if the node contains only whitespace and is not and does not
  * contain any images, iframes or embed tags.
  * @param {Node} node The node to check.
- * @param {boolean} opt_prohibitSingleNbsp By default, this function treats a
+ * @param {boolean=} opt_prohibitSingleNbsp By default, this function treats a
  *     single nbsp as empty.  Set this to true to treat this case as non-empty.
  * @return {boolean} Whether the node contains only whitespace.
  */
@@ -238,13 +241,13 @@ goog.editor.node.isEmpty = function(node, opt_prohibitSingleNbsp) {
 /**
  * Determines the active element in the given document.  IE only.
  * @param {Document} doc The document to look in.
- * @return {Element?} The active element in IE.
+ * @return {Element} The active element in IE.
  */
 goog.editor.node.getActiveElementIE = function(doc) {
   try {
     return doc.activeElement;
   } catch (e) {
-    // NOTE: Sometimes, evaluating document.activeElement in IE
+    // NOTE(nicksantos): Sometimes, evaluating document.activeElement in IE
     // throws an exception. I'm not 100% sure why, but I suspect it chokes
     // on document.activeElement if the activeElement has been recently
     // removed from the DOM by a JS operation.
@@ -275,7 +278,7 @@ goog.editor.node.getLength = function(node) {
  * @param {Node} parent The parent node to search.
  * @param {function(Node):boolean} hasProperty A function that takes a child
  *    node as a parameter and returns true if it meets the criteria.
- * @return {number?} The index of the node found, or null if no node is found.
+ * @return {?number} The index of the node found, or null if no node is found.
  */
 goog.editor.node.findInChildren = function(parent, hasProperty) {
   for (var i = 0, len = parent.childNodes.length; i < len; i++) {
@@ -361,7 +364,7 @@ goog.editor.node.isEditable = function(node) {
  * @param {function(Node) : boolean} criteria A function that takes a DOM node
  *     as a parameter and returns a boolean to indicate whether the node meets
  *     the criteria or not.
- * @return {Node?} The DOM node if found, or null.
+ * @return {Node} The DOM node if found, or null.
  */
 goog.editor.node.findTopMostEditableAncestor = function(node, criteria) {
   var targetNode = null;
@@ -378,10 +381,10 @@ goog.editor.node.findTopMostEditableAncestor = function(node, criteria) {
 /**
  * Splits off a subtree.
  * @param {!Node} currentNode The starting splitting point.
- * @param {Node} opt_secondHalf The initial leftmost leaf the new subtree.
+ * @param {Node=} opt_secondHalf The initial leftmost leaf the new subtree.
  *     If null, siblings after currentNode will be placed in the subtree, but
  *     no additional node will be.
- * @param {Node} opt_root The top of the tree where splitting stops at.
+ * @param {Node=} opt_root The top of the tree where splitting stops at.
  * @return {!Node} The new subtree.
  */
 goog.editor.node.splitDomTreeAt = function(currentNode,
@@ -423,12 +426,10 @@ goog.editor.node.getSecondHalfOfNode_ = function(node, startNode, firstChild) {
 /**
  * Appends all of oldNode's children to newNode. This removes all children from
  * oldNode and appends them to newNode. oldNode is left with no children.
- * @param {Node} newNode Node to transfer children to.
+ * @param {!Node} newNode Node to transfer children to.
  * @param {Node} oldNode Node to transfer children from.
+ * @deprecated Use goog.dom.append directly instead.
  */
 goog.editor.node.transferChildren = function(newNode, oldNode) {
-  var child;
-  while (child = oldNode.firstChild) {
-    newNode.appendChild(child);
-  }
+  goog.dom.append(newNode, oldNode.childNodes);
 };

@@ -1,16 +1,16 @@
+// Copyright 2007 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-// Copyright 2007 Google Inc. All Rights Reserved.
 
 /**
  * @fileoverview Emoji Palette implementation. This provides a UI widget for
@@ -22,30 +22,27 @@
  *
  * Based on goog.ui.ColorPicker (colorpicker.js).
  *
+*
  */
 
 goog.provide('goog.ui.emoji.EmojiPalette');
 
-goog.require('goog.debug.Logger');
 goog.require('goog.events.Event');
 goog.require('goog.events.EventType');
-goog.require('goog.events.KeyCodes');
-goog.require('goog.math.Size');
 goog.require('goog.net.ImageLoader');
 goog.require('goog.ui.Palette');
 goog.require('goog.ui.emoji.Emoji');
 goog.require('goog.ui.emoji.EmojiPaletteRenderer');
-goog.require('goog.ui.emoji.SpriteInfo');
 
 
 /**
  * A page of emoji to be displayed in an EmojiPicker.
  *
  * @param {Array.<Array>} emoji List of emoji for this page.
-  * @param {?string} opt_urlPrefix Prefix that should be prepended to all URL.
- * @param {goog.ui.PaletteRenderer} opt_renderer Renderer used to render or
+  * @param {?string=} opt_urlPrefix Prefix that should be prepended to all URL.
+ * @param {goog.ui.PaletteRenderer=} opt_renderer Renderer used to render or
  *     decorate the palette; defaults to {@link goog.ui.PaletteRenderer}.
- * @param {goog.dom.DomHelper} opt_domHelper Optional DOM helper.
+ * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM helper.
  * @extends {goog.ui.Palette}
  * @constructor
  */
@@ -258,7 +255,7 @@ goog.ui.emoji.EmojiPalette.prototype.disposeInternal = function() {
  * exists for that element.
  *
  * @param {Element} el The element to get the Goomoji id from.
- * @return {string?} A goomoji id from an img or the containing td, or null if
+ * @return {?string} A goomoji id from an img or the containing td, or null if
  *     none exists for that element.
  * @private
  */
@@ -268,7 +265,7 @@ goog.ui.emoji.EmojiPalette.prototype.getGoomojiIdFromElement_ = function(el) {
   }
 
   var item = this.getRenderer().getContainingItem(this, el);
-  return item ? item.getAttribute('goomoji') : null;
+  return item ? item.getAttribute(goog.ui.emoji.Emoji.ATTRIBUTE) : null;
 };
 
 

@@ -1,21 +1,22 @@
+// Copyright 2007 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-// Copyright 2007 Google Inc. All Rights Reserved.
 
 /**
  * @fileoverview Interface definitions for working with ranges
  * in HTML documents.
  *
+ * @author robbyw@google.com (Robby Walker)
  */
 
 
@@ -53,21 +54,30 @@ goog.dom.AbstractRange = function() {
 /**
  * Gets the browser native selection object from the given window.
  * @param {Window} win The window to get the selection object from.
- * @return {Object?} The browser native selection object, or null if it could
+ * @return {Object} The browser native selection object, or null if it could
  *     not be retrieved.
  */
 goog.dom.AbstractRange.getBrowserSelectionForWindow = function(win) {
   if (win.getSelection) {
-    return win.getSelection(); // Gecko + Safari
+    // W3C
+    return win.getSelection();
   } else {
+    // IE
     var doc = win.document;
     var sel = doc.selection;
     if (sel) {
-      // IE
+      // IE has a bug where it sometimes returns a selection from the wrong
+      // document. Catching these cases now helps us avoid problems later.
       try {
-        if (sel.createRange().parentElement().document != doc) {
-          // IE has a bug where it sometimes returns a selection
-          // from the wrong document.
+        var range = sel.createRange();
+        // Only TextRanges have a parentElement method.
+        if (range.parentElement) {
+          if (range.parentElement().document != doc) {
+            return null;
+          }
+        } else if (!range.length || range.item(0).document != doc) {
+          // For ControlRanges, check that the range has items, and that
+          // the first item in the range is in the correct document.
           return null;
         }
       } catch (e) {
@@ -75,7 +85,7 @@ goog.dom.AbstractRange.getBrowserSelectionForWindow = function(win) {
         // in a different domain, IE will throw an exception.
         return null;
       }
-      // TODO Sometimes IE 6 returns a selection instance
+      // TODO(user|robbyw) Sometimes IE 6 returns a selection instance
       // when there is no selection.  This object has a 'type' property equals
       // to 'None' and a typeDetail property bound to undefined. Ideally this
       // function should not return this instance.
@@ -274,7 +284,7 @@ goog.dom.AbstractRange.prototype.getWindow = function() {
 /**
  * Tests if this range contains the given range.
  * @param {goog.dom.AbstractRange} range The range to test.
- * @param {boolean} opt_allowPartial If true, the range can be partially
+ * @param {boolean=} opt_allowPartial If true, the range can be partially
  *     contained in the selection, otherwise the range must be entirely
  *     contained.
  * @return {boolean} Whether this range contains the given range.
@@ -285,7 +295,7 @@ goog.dom.AbstractRange.prototype.containsRange = goog.abstractMethod;
 /**
  * Tests if this range contains the given node.
  * @param {Node} node The node to test for.
- * @param {boolean} opt_allowPartial If not set or false, the node must be
+ * @param {boolean=} opt_allowPartial If not set or false, the node must be
  *     entirely contained in the selection for this function to return true.
  * @return {boolean} Whether this range contains the given node.
  */
@@ -360,7 +370,7 @@ goog.dom.AbstractRange.prototype.getPastableHtml = goog.abstractMethod;
 /**
  * Returns a RangeIterator over the contents of the range.  Regardless of the
  * direction of the range, the iterator will move in document order.
- * @param {boolean} opt_keys Unused for this iterator.
+ * @param {boolean=} opt_keys Unused for this iterator.
  * @return {goog.dom.RangeIterator} An iterator over tags in the range.
  */
 goog.dom.AbstractRange.prototype.__iterator__ = goog.abstractMethod;
@@ -458,9 +468,9 @@ goog.dom.AbstractRange.prototype.collapse = goog.abstractMethod;
 /**
  * Subclass of goog.dom.TagIterator that iterates over a DOM range.  It
  * adds functions to determine the portion of each text node that is selected.
- * @param {Node?} node The node to start traversal at.  When null, creates an
+ * @param {Node} node The node to start traversal at.  When null, creates an
  *     empty iterator.
- * @param {boolean} opt_reverse Whether to traverse nodes in reverse.
+ * @param {boolean=} opt_reverse Whether to traverse nodes in reverse.
  * @constructor
  * @extends {goog.dom.TagIterator}
  */

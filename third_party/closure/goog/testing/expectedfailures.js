@@ -1,20 +1,21 @@
+// Copyright 2008 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Copyright 2008 Google Inc. All Rights Reserved.
-
 /**
  * @fileoverview Helper class to allow for expected unit test failures.
  *
+ * @author robbyw@google.com (Robby Walker)
  */
 
 goog.provide('goog.testing.ExpectedFailures');
@@ -139,7 +140,7 @@ goog.testing.ExpectedFailures.setUpConsole_ = function() {
  * Register to expect failure for the given condition.  Multiple calls to this
  * function act as a boolean OR.  The first applicable message will be used.
  * @param {boolean} condition Whether to expect failure.
- * @param {string} opt_message Descriptive message of this expected failure.
+ * @param {string=} opt_message Descriptive message of this expected failure.
  */
 goog.testing.ExpectedFailures.prototype.expectFailureFor = function(
     condition, opt_message) {
@@ -163,7 +164,7 @@ goog.testing.ExpectedFailures.prototype.isExceptionExpected = function(ex) {
 /**
  * Handle an exception, suppressing it if it is a unit test failure that we
  * expected.
- * @param {Object} ex The exception to handle.
+ * @param {Error} ex The exception to handle.
  */
 goog.testing.ExpectedFailures.prototype.handleException = function(ex) {
   if (this.isExceptionExpected(ex)) {
@@ -184,7 +185,7 @@ goog.testing.ExpectedFailures.prototype.handleException = function(ex) {
 /**
  * Run the given function, catching any expected failures.
  * @param {Function} func The function to run.
- * @param {boolean} opt_lenient Whether to ignore if the expected failures
+ * @param {boolean=} opt_lenient Whether to ignore if the expected failures
  *     didn't occur.  In this case a warning will be logged in handleTearDown.
  */
 goog.testing.ExpectedFailures.prototype.run = function(func, opt_lenient) {

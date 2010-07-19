@@ -1,20 +1,22 @@
+// Copyright 2006 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Copyright 2006 Google Inc. All Rights Reserved.
-
 /**
  * @fileoverview Functions and objects for date representation and manipulation.
  *
+*
+*
  */
 
 goog.provide('goog.date');
@@ -24,6 +26,7 @@ goog.provide('goog.date.Interval');
 goog.provide('goog.date.month');
 goog.provide('goog.date.weekDay');
 
+goog.require('goog.asserts');
 goog.require('goog.string');
 
 
@@ -179,7 +182,7 @@ goog.date.getNumberOfDaysInMonth = function(year, month) {
 /**
  * Returns true if the 2 dates are in the same day.
  * @param {Date} date The time to check.
- * @param {Date} opt_now The current time.
+ * @param {Date=} opt_now The current time.
  * @return {boolean} Whether the dates are on the same day.
  */
 goog.date.isSameDay = function(date, opt_now) {
@@ -192,7 +195,7 @@ goog.date.isSameDay = function(date, opt_now) {
 /**
  * Returns true if the 2 dates are in the same month.
  * @param {Date} date The time to check.
- * @param {Date} opt_now The current time.
+ * @param {Date=} opt_now The current time.
  * @return {boolean} Whether the dates are in the same calendar month.
  */
 goog.date.isSameMonth = function(date, opt_now) {
@@ -205,7 +208,7 @@ goog.date.isSameMonth = function(date, opt_now) {
 /**
  * Returns true if the 2 dates are in the same year.
  * @param {Date} date The time to check.
- * @param {Date} opt_now The current time.
+ * @param {Date=} opt_now The current time.
  * @return {boolean} Whether the dates are in the same calendar year.
  */
 goog.date.isSameYear = function(date, opt_now) {
@@ -220,8 +223,9 @@ goog.date.isSameYear = function(date, opt_now) {
  * @param {number} year Year part of date.
  * @param {number} month Month part of date (0-11).
  * @param {number} date Day part of date (1-31).
- * @param {number} opt_weekDay Cut off weekday, defaults to Thursday.
- * @param {number} opt_firstDayOfWeek First day of the week, defaults to Monday.
+ * @param {number=} opt_weekDay Cut off weekday, defaults to Thursday.
+ * @param {number=} opt_firstDayOfWeek First day of the week, defaults to
+ *     Monday.
  *     Monday=0, Sunday=6.
  * @return {number} The week number (1-53).
  */
@@ -435,13 +439,13 @@ goog.date.setIso8601TimeOnly_ = function(d, formatted) {
  * new goog.date.Interval(goog.date.Interval.DAYS, 1) // One day
  * </pre>
  *
- * @param {number|string} opt_years Years or string representing date part.
- * @param {number} opt_months Months or number of whatever date part specified
+ * @param {number|string=} opt_years Years or string representing date part.
+ * @param {number=} opt_months Months or number of whatever date part specified
  *     by first parameter.
- * @param {number} opt_days Days.
- * @param {number} opt_hours Hours.
- * @param {number} opt_minutes Minutes.
- * @param {number} opt_seconds Seconds.
+ * @param {number=} opt_days Days.
+ * @param {number=} opt_hours Hours.
+ * @param {number=} opt_minutes Minutes.
+ * @param {number=} opt_seconds Seconds.
  * @constructor
  */
 goog.date.Interval = function(opt_years, opt_months, opt_days, opt_hours,
@@ -505,7 +509,7 @@ goog.date.Interval.fromIsoString = function(duration) {
  * Serializes goog.date.Interval into XML Schema duration (ISO 8601 extended).
  * @see http://www.w3.org/TR/xmlschema-2/#duration
  *
- * @param {boolean} opt_verbose Include zero fields in the duration string.
+ * @param {boolean=} opt_verbose Include zero fields in the duration string.
  * @return {?string} An XML schema duration in ISO 8601 extended format,
  *     or null if the interval contains both positive and negative fields.
  */
@@ -624,7 +628,7 @@ goog.date.Interval.MINUTES = 'n';
 
 
 /**
- *
+ * Seconds constant for the date parts.
  * @type {string}
  */
 goog.date.Interval.SECONDS = 's';
@@ -634,8 +638,34 @@ goog.date.Interval.SECONDS = 's';
  * @return {!goog.date.Interval} Negative of this interval.
  */
 goog.date.Interval.prototype.getInverse = function() {
-  return new goog.date.Interval(-this.years, -this.months, -this.days,
-      -this.hours, -this.minutes, -this.seconds);
+  return this.times(-1);
+};
+
+
+/**
+ * Calculates n * (this interval) by memberwise multiplication.
+ * @param {number} n An integer.
+ * @return {!goog.date.Interval} n * this.
+ */
+goog.date.Interval.prototype.times = function(n) {
+  return new goog.date.Interval(this.years * n,
+                                this.months * n,
+                                this.days * n,
+                                this.hours * n,
+                                this.minutes * n,
+                                this.seconds * n);
+};
+
+
+/**
+ * Gets the total number of seconds in the time interval. Assumes that months
+ * and years are empty.
+ * @return {number} Total number of seconds in the interval.
+ */
+goog.date.Interval.prototype.getTotalSeconds = function() {
+  goog.asserts.assert(this.years == 0 && this.months == 0);
+  return ((this.days * 24 + this.hours) * 60 + this.minutes) * 60 +
+      this.seconds;
 };
 
 
@@ -666,10 +696,11 @@ goog.date.Interval.prototype.add = function(interval) {
  * expecting Date objects this class is marked as extending the built in Date
  * object even though that's not strictly true.
  *
- * @param {number|Object} opt_year Four digit year or a date-like object. If not
- *     set, the created object will contain the date determined by goog.now().
- * @param {number} opt_month Month, 0 = Jan, 11 = Dec.
- * @param {number} opt_date Date of month, 1 - 31.
+ * @param {number|Object=} opt_year Four digit year or a date-like object. If
+ *     not set, the created object will contain the date determined by
+ *     goog.now().
+ * @param {number=} opt_month Month, 0 = Jan, 11 = Dec.
+ * @param {number=} opt_date Date of month, 1 - 31.
  * @constructor
  * @extends {Date}
  * @see goog.date.DateTime
@@ -693,7 +724,7 @@ goog.date.Date = function(opt_year, opt_month, opt_date) {
 };
 
 
-// TODO: It should use DateTimeSymbols
+// TODO(anatol): It should use DateTimeSymbols
 /**
  * First day of week. 0 = Mon, 6 = Sun.
  * @type {number}
@@ -1107,9 +1138,9 @@ goog.date.Date.prototype.add = function(interval) {
 /**
  * Returns ISO 8601 string representation of date.
  *
- * @param {boolean} opt_verbose Whether the verbose format should be used
+ * @param {boolean=} opt_verbose Whether the verbose format should be used
  *     instead of the default compact one.
- * @param {boolean} opt_tz Whether the timezone offset should be included
+ * @param {boolean=} opt_tz Whether the timezone offset should be included
  *     in the string.
  * @return {string} ISO 8601 string representation of date.
  */
@@ -1128,9 +1159,9 @@ goog.date.Date.prototype.toIsoString = function(opt_verbose, opt_tz) {
 /**
  * Returns ISO 8601 string representation of date according to universal time.
  *
- * @param {boolean} opt_verbose Whether the verbose format should be used
+ * @param {boolean=} opt_verbose Whether the verbose format should be used
  *     instead of the default compact one.
- * @param {boolean} opt_tz Whether the timezone offset should be included in
+ * @param {boolean=} opt_tz Whether the timezone offset should be included in
  *     the string.
  * @return {string} ISO 8601 string representation of date according to
  *     universal time.
@@ -1200,14 +1231,15 @@ goog.date.Date.prototype.valueOf = function() {
  * Implements most methods of the native js Date object and can be used
  * interchangeably with it just as if goog.date.DateTime was a subclass of Date.
  *
- * @param {number|Object} opt_year Four digit year or a date-like object. If not
- *     set, the created object will contain the date determined by goog.now().
- * @param {number} opt_month Month, 0 = Jan, 11 = Dec.
- * @param {number} opt_date Date of month, 1 - 31.
- * @param {number} opt_hours Hours, 0 - 24.
- * @param {number} opt_minutes Minutes, 0 - 59.
- * @param {number} opt_seconds Seconds, 0 - 61.
- * @param {number} opt_milliseconds Milliseconds, 0 - 999.
+ * @param {number|Object=} opt_year Four digit year or a date-like object. If
+ *     not set, the created object will contain the date determined by
+ *     goog.now().
+ * @param {number=} opt_month Month, 0 = Jan, 11 = Dec.
+ * @param {number=} opt_date Date of month, 1 - 31.
+ * @param {number=} opt_hours Hours, 0 - 24.
+ * @param {number=} opt_minutes Minutes, 0 - 59.
+ * @param {number=} opt_seconds Seconds, 0 - 61.
+ * @param {number=} opt_milliseconds Milliseconds, 0 - 999.
  * @constructor
  * @extends {goog.date.Date}
  */
@@ -1417,9 +1449,9 @@ goog.date.DateTime.prototype.add = function(interval) {
 /**
  * Returns ISO 8601 string representation of date/time.
  *
- * @param {boolean} opt_verbose Whether the verbose format should be used
+ * @param {boolean=} opt_verbose Whether the verbose format should be used
  *     instead of the default compact one.
- * @param {boolean} opt_tz Whether the timezone offset should be included
+ * @param {boolean=} opt_tz Whether the timezone offset should be included
  *     in the string.
  * @return {string} ISO 8601 string representation of date/time.
  */
@@ -1446,7 +1478,7 @@ goog.date.DateTime.prototype.toIsoString = function(opt_verbose, opt_tz) {
  * Returns XML Schema 2 string representation of date/time.
  * The return value is also ISO 8601 compliant.
  *
- * @param {boolean} opt_timezone Should the timezone offset be included in the
+ * @param {boolean=} opt_timezone Should the timezone offset be included in the
  *     string?.
  * @return {string} XML Schema 2 string representation of date/time.
  */
@@ -1463,9 +1495,9 @@ goog.date.DateTime.prototype.toXmlDateTime = function(opt_timezone) {
  * Returns ISO 8601 string representation of date/time according to universal
  * time.
  *
- * @param {boolean} opt_verbose Whether the opt_verbose format should be
+ * @param {boolean=} opt_verbose Whether the opt_verbose format should be
  *     returned instead of the default compact one.
- * @param {boolean} opt_tz Whether the the timezone offset should be included
+ * @param {boolean=} opt_tz Whether the the timezone offset should be included
  *     in the string.
  * @return {string} ISO 8601 string representation of date/time according to
  *     universal time.
@@ -1513,11 +1545,11 @@ goog.date.DateTime.prototype.toString = function() {
  * Generates time label for the datetime, e.g., '5:30am'.
  * By default this does not pad hours (e.g., to '05:30') and it does add
  * an am/pm suffix.
- * TODO: i18n -- hardcoding time format like this is bad.  E.g., in CJK
+ * TODO(user): i18n -- hardcoding time format like this is bad.  E.g., in CJK
  *               locales, need Chinese characters for hour and minute units.
- * @param {boolean} opt_padHours Whether to pad hours, e.g., '05:30' vs '5:30'.
- * @param {boolean} opt_showAmPm Whether to show the 'am' and 'pm' suffix.
- * @param {boolean} opt_omitZeroMinutes E.g., '5:00pm' becomes '5pm',
+ * @param {boolean=} opt_padHours Whether to pad hours, e.g., '05:30' vs '5:30'.
+ * @param {boolean=} opt_showAmPm Whether to show the 'am' and 'pm' suffix.
+ * @param {boolean=} opt_omitZeroMinutes E.g., '5:00pm' becomes '5pm',
  *                                      but '5:01pm' remains '5:01pm'.
  * @return {string} The time label.
  */
@@ -1572,7 +1604,7 @@ goog.date.DateTime.prototype.toUsTimeString = function(opt_padHours,
 /**
  * Generates time label for the datetime in standard ISO 24-hour time format.
  * E.g., '06:00:00' or '23:30:15'.
- * @param {boolean} opt_showSeconds Whether to shows seconds. Defaults to TRUE.
+ * @param {boolean=} opt_showSeconds Whether to shows seconds. Defaults to TRUE.
  * @return {string} The time label.
  */
 goog.date.DateTime.prototype.toIsoTimeString = function(opt_showSeconds) {
@@ -1592,7 +1624,7 @@ goog.date.DateTime.prototype.toIsoTimeString = function(opt_showSeconds) {
  */
 goog.date.DateTime.prototype.clone = function() {
   var date = new goog.date.DateTime(this.date_);
-  date.firstDayOfWeek_ = this.firstDayOfWeek_;
-  date.firstWeekCutOffDay_ = this.firstWeekCutOffDay_;
+  date.setFirstDayOfWeek(this.getFirstDayOfWeek());
+  date.setFirstWeekCutOffDay(this.getFirstWeekCutOffDay());
   return date;
 };

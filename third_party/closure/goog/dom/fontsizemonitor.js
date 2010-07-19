@@ -1,19 +1,21 @@
+// Copyright 2005 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Copyright 2005 Google Inc. All Rights Reserved.
-
 /**
  * @fileoverview A class that can be used to listen to font size changes.
+*
+*
  */
 
 goog.provide('goog.dom.FontSizeMonitor');
@@ -26,7 +28,7 @@ goog.require('goog.events.EventType');
 goog.require('goog.userAgent');
 
 
-// TODO: Move this to goog.events instead.
+// TODO(user): Move this to goog.events instead.
 
 
 
@@ -41,7 +43,7 @@ goog.require('goog.userAgent');
  *       alert('Font size was changed');
  *     });
  * </pre>
- * @param {goog.dom.DomHelper} opt_domHelper DOM helper object that is used to
+ * @param {goog.dom.DomHelper=} opt_domHelper DOM helper object that is used to
  *     determine where to insert the DOM nodes used to determine when the font
  *     size changes.
  * @constructor
@@ -108,7 +110,7 @@ goog.inherits(goog.dom.FontSizeMonitor, goog.events.EventTarget);
  * @enum {string}
  */
 goog.dom.FontSizeMonitor.EventType = {
-  // TODO: Change value to 'change' after updating the callers.
+  // TODO(user): Change value to 'change' after updating the callers.
   CHANGE: 'fontsizechange'
 };
 

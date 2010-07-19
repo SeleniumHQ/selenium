@@ -1,20 +1,21 @@
+// Copyright 2007 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Copyright 2007 Google Inc. All Rights Reserved.
-
 /**
  * @fileoverview DOM pattern to match a sequence of other patterns.
  *
+ * @author robbyw@google.com (Robby Walker)
  */
 
 goog.provide('goog.dom.pattern.Sequence');
@@ -29,7 +30,7 @@ goog.require('goog.dom.pattern.MatchType');
  *
  * @param {Array.<goog.dom.pattern.AbstractPattern>} patterns Ordered array of
  *     patterns to match.
- * @param {boolean} opt_ignoreWhitespace Optional flag to ignore text nodes
+ * @param {boolean=} opt_ignoreWhitespace Optional flag to ignore text nodes
  *     consisting entirely of whitespace.  The default is to not ignore them.
  * @constructor
  * @extends {goog.dom.pattern.AbstractPattern}
@@ -108,7 +109,7 @@ goog.dom.pattern.Sequence.prototype.matchToken = function(token, type) {
 
     case goog.dom.pattern.MatchType.BACKTRACK_MATCH:
       // This means a repetitive match succeeded 1 token ago.
-      // TODO: Backtrack further if necessary.
+      // TODO(robbyw): Backtrack further if necessary.
       this.currentPosition_++;
 
       if (this.currentPosition_ == this.patterns.length) {

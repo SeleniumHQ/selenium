@@ -1,20 +1,21 @@
+// Copyright 2006 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Copyright 2006 Google Inc. All Rights Reserved.
-
 /**
  * @fileoverview Constant declarations for common key codes.
  *
+*
  * @see ../demos/keyhandler.html
  */
 
@@ -202,10 +203,10 @@ goog.events.KeyCodes.isTextModifyingKeyEvent = function(e) {
  * fire keydown in these cases, though, but not keypress.
  *
  * @param {number} keyCode A key code.
- * @param {number} opt_heldKeyCode Key code of a currently-held key.
- * @param {boolean} opt_shiftKey Whether the shift key is held down.
- * @param {boolean} opt_ctrlKey Whether the control key is held down.
- * @param {boolean} opt_altKey Whether the alt key is held down.
+ * @param {number=} opt_heldKeyCode Key code of a currently-held key.
+ * @param {boolean=} opt_shiftKey Whether the shift key is held down.
+ * @param {boolean=} opt_ctrlKey Whether the control key is held down.
+ * @param {boolean=} opt_altKey Whether the alt key is held down.
  * @return {boolean} Whether it's a key that fires a keypress event.
  */
 goog.events.KeyCodes.firesKeyPressEvent = function(keyCode, opt_heldKeyCode,
@@ -224,9 +225,10 @@ goog.events.KeyCodes.firesKeyPressEvent = function(keyCode, opt_heldKeyCode,
     return false;
   }
 
-  // Saves Ctrl or Alt + key for IE7, which won't fire keypress.
-  if (goog.userAgent.IE &&
-      !opt_shiftKey &&
+  // Saves Ctrl or Alt + key for IE and WebKit 525+, which won't fire keypress.
+  // Non-IE browsers and WebKit prior to 525 won't get this far so no need to
+  // check the user agent.
+  if (!opt_shiftKey &&
       (opt_heldKeyCode == goog.events.KeyCodes.CTRL ||
        opt_heldKeyCode == goog.events.KeyCodes.ALT)) {
     return false;
@@ -268,6 +270,11 @@ goog.events.KeyCodes.isCharacterKey = function(keyCode) {
 
   if (keyCode >= goog.events.KeyCodes.A &&
       keyCode <= goog.events.KeyCodes.Z) {
+    return true;
+  }
+
+  // Safari sends zero key code for non-latin characters.
+  if (goog.userAgent.WEBKIT && keyCode == 0) {
     return true;
   }
 

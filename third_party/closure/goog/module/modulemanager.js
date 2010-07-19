@@ -1,31 +1,36 @@
+// Copyright 2008 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Copyright 2008 Google Inc. All Rights Reserved.
-
 /**
  * @fileoverview A singleton object for managing Javascript code modules.
  *
+*
+*
+*
  */
 
 goog.provide('goog.module.ModuleManager');
+goog.provide('goog.module.ModuleManager.FailureType');
 
 goog.require('goog.Disposable');
 goog.require('goog.array');
 goog.require('goog.async.Deferred');
 goog.require('goog.debug.Logger');
 goog.require('goog.debug.Trace');
+goog.require('goog.module.AbstractModuleLoader');
 goog.require('goog.module.ModuleInfo');
-goog.require('goog.module.ModuleInfo.Callback');
+goog.require('goog.module.ModuleLoadCallback');
 
 
 /**
@@ -75,6 +80,26 @@ goog.module.ModuleManager = function() {
    * @private
    */
   this.callbackMap_ = {};
+
+  /**
+   * Module info for the base module (the one that contains the module
+   * manager code), which we set as the loading module so one can
+   * register initialization callbacks in the base module.
+   *
+   * The base module is considered loaded when #setAllModuleInfo is called or
+   * #setModuleContext is called, whichever comes first.
+   *
+   * @type {goog.module.ModuleInfo}
+   * @private
+   */
+  this.baseModuleInfo_ = new goog.module.ModuleInfo([], '');
+
+  /**
+   * The module that is currently loading, or null if not loading anything.
+   * @type {goog.module.ModuleInfo}
+   * @private
+   */
+  this.currentlyLoadingModule_ = this.baseModuleInfo_;
 };
 goog.inherits(goog.module.ModuleManager, goog.Disposable);
 goog.addSingletonGetter(goog.module.ModuleManager);
@@ -114,6 +139,18 @@ goog.module.ModuleManager.CallbackType = {
 
 
 /**
+ * A non-HTTP status code indicating a corruption in loaded module.
+ * This should be used by a ModuleLoader as a replacement for the HTTP code
+ * given to the error handler function to indicated that the module was
+ * corrupted.
+ * This will set the forceReload flag on the loadModules method when retrying
+ * module loading.
+ * @type {number}
+ */
+goog.module.ModuleManager.CORRUPT_RESPONSE_STATUS_CODE = 8001;
+
+
+/**
  * A logger.
  * @type {goog.debug.Logger}
  * @private
@@ -133,17 +170,17 @@ goog.module.ModuleManager.prototype.batchModeEnabled_ = false;
 
 /**
  * A loader for the modules that implements loadModules(ids, moduleInfoMap,
- * opt_successFn, opt_errorFn, opt_timeoutFn) method.
+ * opt_successFn, opt_errorFn, opt_timeoutFn, opt_forceReload) method.
  * @type {goog.module.AbstractModuleLoader}
  * @private
  */
 goog.module.ModuleManager.prototype.loader_ = null;
 
 
-// TODO: Remove tracer.
+// TODO(user): Remove tracer.
 /**
  * Tracer that measures how long it takes to load a module.
- * @type {number?}
+ * @type {?number}
  * @private
  */
 goog.module.ModuleManager.prototype.loadTracer_ = null;
@@ -179,7 +216,7 @@ goog.module.ModuleManager.prototype.userLastActive_ = false;
 
 /**
  * The module context needed for module initialization.
- * @type {Object?}
+ * @type {Object}
  * @private
  */
 goog.module.ModuleManager.prototype.moduleContext_ = null;
@@ -203,8 +240,9 @@ goog.module.ModuleManager.prototype.setBatchModeEnabled = function(
  */
 goog.module.ModuleManager.prototype.setAllModuleInfo = function(infoMap) {
   for (var id in infoMap) {
-    this.moduleInfoMap_[id] = new goog.module.ModuleInfo(infoMap[id]);
+    this.moduleInfoMap_[id] = new goog.module.ModuleInfo(infoMap[id], id);
   }
+  this.maybeFinishBaseLoad_();
 };
 
 
@@ -234,7 +272,7 @@ goog.module.ModuleManager.prototype.setModuleUris = function(moduleUriMap) {
  * Gets the application-specific module loader.
  * @return {goog.module.AbstractModuleLoader} An object that has a
  *     loadModules(ids, moduleInfoMap, opt_successFn, opt_errFn,
- *         opt_timeoutFn) method.
+ *         opt_timeoutFn, opt_forceReload) method.
  */
 goog.module.ModuleManager.prototype.getLoader = function() {
   return this.loader_;
@@ -245,7 +283,7 @@ goog.module.ModuleManager.prototype.getLoader = function() {
  * Sets the application-specific module loader.
  * @param {goog.module.AbstractModuleLoader} loader An object that has a
  *     loadModules(ids, moduleInfoMap, opt_successFn, opt_errFn,
- *         opt_timeoutFn) method.
+ *         opt_timeoutFn, opt_forceReload) method.
  */
 goog.module.ModuleManager.prototype.setLoader = function(loader) {
   this.loader_ = loader;
@@ -267,6 +305,7 @@ goog.module.ModuleManager.prototype.getModuleContext = function() {
  */
 goog.module.ModuleManager.prototype.setModuleContext = function(context) {
   this.moduleContext_ = context;
+  this.maybeFinishBaseLoad_();
 };
 
 
@@ -324,9 +363,9 @@ goog.module.ModuleManager.prototype.dispatchActiveIdleChangeIfNeeded_ =
  * Preloads a module after a short delay.
  *
  * @param {string} id The id of the module to preload.
- * @param {number} opt_timeout The number of ms to wait before adding the module
- *     id to the loading queue (defaults to 0 ms). Note that the module will be
- *     loaded asynchronously regardless of the value of this parameter.
+ * @param {number=} opt_timeout The number of ms to wait before adding the
+ *     module id to the loading queue (defaults to 0 ms). Note that the module
+ *     will be loaded asynchronously regardless of the value of this parameter.
  * @return {goog.async.Deferred} A deferred object.
  */
 goog.module.ModuleManager.prototype.preloadModule = function(
@@ -351,7 +390,7 @@ goog.module.ModuleManager.prototype.preloadModule = function(
 goog.module.ModuleManager.prototype.
     loadModuleOrEnqueueIfNotLoadedOrLoading_ = function(id, d) {
   var moduleInfo = this.getModuleInfo(id);
-  // TODO: Push deferred pattern further into module manager.
+  // TODO(user): Push deferred pattern further into module manager.
   if (moduleInfo.isLoaded()) {
     d.callback(this.moduleContext_);
   } else {
@@ -393,12 +432,14 @@ goog.module.ModuleManager.prototype.loadModuleOrEnqueue_ = function(id) {
  * and that no modules are currently loading before calling this method.
  *
  * @param {string} id The id of the module to load.
- * @param {boolean} opt_isRetry If the load is a retry of a previous load
+ * @param {boolean=} opt_isRetry If the load is a retry of a previous load
  *     attempt.
+ * @param {boolean=} opt_forceReload Whether to bypass cache while loading the
+ *     module.
  * @private
  */
 goog.module.ModuleManager.prototype.loadModule_ = function(
-    id, opt_isRetry) {
+    id, opt_isRetry, opt_forceReload) {
   var moduleInfo = this.moduleInfoMap_[id];
   if (moduleInfo.isLoaded()) {
     throw Error('Module already loaded: ' + id);
@@ -431,7 +472,8 @@ goog.module.ModuleManager.prototype.loadModule_ = function(
   this.loader_.loadModules(
       goog.array.clone(ids), this.moduleInfoMap_, null,
       goog.bind(this.handleLoadError_, this),
-      goog.bind(this.handleLoadTimeout_, this));
+      goog.bind(this.handleLoadTimeout_, this),
+      !!opt_forceReload);
 };
 
 
@@ -446,7 +488,7 @@ goog.module.ModuleManager.prototype.loadModule_ = function(
  */
 goog.module.ModuleManager.prototype.getNotYetLoadedTransitiveDepIds_ =
     function(id) {
-  // NOTE: We want the earliest occurrance of a module, not the first
+  // NOTE(user): We want the earliest occurrance of a module, not the first
   // dependency we find. Therefore we strip duplicates at the end rather than
   // during.  See the tests for concrete examples.
   var ids = [id];
@@ -466,6 +508,18 @@ goog.module.ModuleManager.prototype.getNotYetLoadedTransitiveDepIds_ =
 
 
 /**
+ * If we are still loading the base module, consider the load complete.
+ * @private
+ */
+goog.module.ModuleManager.prototype.maybeFinishBaseLoad_ = function() {
+  if (this.currentlyLoadingModule_ == this.baseModuleInfo_) {
+    this.currentlyLoadingModule_ = null;
+    this.baseModuleInfo_.onLoad(goog.bind(this.getModuleContext, this));
+  }
+};
+
+
+/**
  * Records that a module was loaded. Also initiates loading the next module if
  * any module requests are queued. This method is called by code that is
  * generated and appended to each dynamic module's code at compilation time.
@@ -475,13 +529,13 @@ goog.module.ModuleManager.prototype.getNotYetLoadedTransitiveDepIds_ =
 goog.module.ModuleManager.prototype.setLoaded = function(id) {
   this.logger_.info('Module loaded: ' + id);
 
+  this.moduleInfoMap_[id].onLoad(goog.bind(this.getModuleContext, this));
+
   // Remove the module id from the user initiated set if it existed there.
   goog.array.remove(this.userInitiatedLoadingModuleIds_, id);
 
   // Remove the module id from the loading modules if it exists there.
   goog.array.remove(this.loadingModuleIds_, id);
-
-  this.moduleInfoMap_[id].onLoad(goog.bind(this.getModuleContext, this));
 
   if (goog.array.isEmpty(this.loadingModuleIds_)) {
     // No more modules are currently being loaded (e.g. arriving later in the
@@ -515,14 +569,14 @@ goog.module.ModuleManager.prototype.isModuleLoading = function(id) {
  *
  * @param {string} moduleId A module id.
  * @param {Function} fn Function to execute when the module has loaded.
- * @param {Object} opt_handler Optional handler under whose scope to execute
+ * @param {Object=} opt_handler Optional handler under whose scope to execute
  *     the callback.
- * @param {boolean} opt_noLoad TRUE iff not to initiate loading of the module.
- * @param {boolean} opt_userInitiated TRUE iff the loading of the module was
+ * @param {boolean=} opt_noLoad TRUE iff not to initiate loading of the module.
+ * @param {boolean=} opt_userInitiated TRUE iff the loading of the module was
  *     user initiated.
- * @param {boolean} opt_preferSynchronous TRUE iff the function should be
+ * @param {boolean=} opt_preferSynchronous TRUE iff the function should be
  *     executed synchronously if the module has already been loaded.
- * @return {goog.module.ModuleInfo.Callback} A callback wrapper that exposes
+ * @return {goog.module.ModuleLoadCallback} A callback wrapper that exposes
  *     an abort and execute method.
  */
 goog.module.ModuleManager.prototype.execOnLoad = function(
@@ -535,7 +589,7 @@ goog.module.ModuleManager.prototype.execOnLoad = function(
     this.logger_.info(moduleId + ' module already loaded');
     // Call async so that code paths don't change between loaded and unloaded
     // cases.
-    callbackWrapper = new goog.module.ModuleInfo.Callback(fn, opt_handler);
+    callbackWrapper = new goog.module.ModuleLoadCallback(fn, opt_handler);
     if (opt_preferSynchronous) {
       callbackWrapper.execute(this.moduleContext_);
     } else {
@@ -571,13 +625,15 @@ goog.module.ModuleManager.prototype.execOnLoad = function(
  * result.
  *
  * @param {string} moduleId A module id.
+ * @param {boolean=} opt_userInitiated If the load is a result of a user action.
  * @return {goog.async.Deferred} A deferred object.
  */
-goog.module.ModuleManager.prototype.load = function(moduleId) {
+goog.module.ModuleManager.prototype.load = function(
+    moduleId, opt_userInitiated) {
   var moduleInfo = this.moduleInfoMap_[moduleId];
   var d = new goog.async.Deferred();
 
-  // TODO: Push deferred pattern further into module manager.
+  // TODO(user): Push deferred pattern further into module manager.
   if (moduleInfo.isLoaded()) {
     d.callback(this.moduleContext_);
 
@@ -585,12 +641,22 @@ goog.module.ModuleManager.prototype.load = function(moduleId) {
     this.logger_.info(moduleId + ' module already loading');
     moduleInfo.registerCallback(d.callback, d);
     moduleInfo.registerErrback(d.errback, d);
+    if (opt_userInitiated) {
+      this.logger_.info('User initiated module already loading: ' + moduleId);
+      this.userInitiatedLoadingModuleIds_.push(moduleId);
+      this.dispatchActiveIdleChangeIfNeeded_();
+    }
 
   } else {
     this.logger_.info('Registering callback for module: ' + moduleId);
     moduleInfo.registerCallback(d.callback, d);
     moduleInfo.registerErrback(d.errback, d);
-    this.logger_.info('Initiating module load: ' + moduleId);
+    if (opt_userInitiated) {
+      this.logger_.info('User initiated module load: ' + moduleId);
+      this.userInitiatedLoadingModuleIds_.push(moduleId);
+    } else {
+      this.logger_.info('Initiating module load: ' + moduleId);
+    }
     this.loadModuleOrEnqueue_(moduleId);
   }
 
@@ -607,10 +673,11 @@ goog.module.ModuleManager.prototype.beforeLoadModuleCode = function(id) {
       'Module Load');
   if (this.currentlyLoadingModule_) {
     this.logger_.severe('beforeLoadModuleCode called with module "' + id +
-                        '" while module "' + this.currentlyLoadingModule_ +
+                        '" while module "' +
+                        this.currentlyLoadingModule_.getId() +
                         '" is loading');
   }
-  this.currentlyLoadingModule_ = id;
+  this.currentlyLoadingModule_ = this.getModuleInfo(id);
 };
 
 
@@ -619,10 +686,12 @@ goog.module.ModuleManager.prototype.beforeLoadModuleCode = function(id) {
  * @param {string} id Identifier of the module.
  */
 goog.module.ModuleManager.prototype.afterLoadModuleCode = function(id) {
-  if (id != this.currentlyLoadingModule_) {
+  if (!this.currentlyLoadingModule_ ||
+      id != this.currentlyLoadingModule_.getId()) {
     this.logger_.severe('afterLoadModuleCode called with module "' + id +
                         '" while loading module "' +
-                        this.currentlyLoadingModule_ + '"');
+                        (this.currentlyLoadingModule_ &&
+                         this.currentlyLoadingModule_.getId()) + '"');
 
   }
   this.currentlyLoadingModule_ = null;
@@ -637,19 +706,38 @@ goog.module.ModuleManager.prototype.afterLoadModuleCode = function(id) {
  * inline, but ensures that all the code from the currently loading module
  * has been loaded. This makes it cleaner and more robust than calling the
  * function inline.
+ *
+ * If this function is called from the base module (the one that contains
+ * the module manager code), the callback is held until #setAllModuleInfo
+ * is called, or until #setModuleContext is called, whichever happens first.
+ *
  * @param {Function} fn A callback function that takes a single argument
  *    which is the module context.
- * @param {Object} opt_handler Optional handler under whose scope to execute
+ * @param {Object=} opt_handler Optional handler under whose scope to execute
  *     the callback.
  */
 goog.module.ModuleManager.prototype.registerInitializationCallback = function(
     fn, opt_handler) {
   if (!this.currentlyLoadingModule_) {
     this.logger_.severe('No module is currently loading');
+  } else {
+    this.currentlyLoadingModule_.registerEarlyCallback(fn, opt_handler);
+  }
+};
+
+
+/**
+ * Sets the constructor to use for the module object for the currently
+ * loading module. The constructor should derive from {@see
+ * goog.module.BaseModule}.
+ * @param {Function} fn The constructor function.
+ */
+goog.module.ModuleManager.prototype.setModuleConstructor = function(fn) {
+  if (!this.currentlyLoadingModule_) {
+    this.logger_.severe('No module is currently loading');
     return;
   }
-  this.getModuleInfo(this.currentlyLoadingModule_).registerEarlyCallback(
-      fn, opt_handler);
+  this.currentlyLoadingModule_.setModuleConstructor(fn);
 };
 
 
@@ -668,7 +756,10 @@ goog.module.ModuleManager.FailureType = {
   TIMEOUT: 2,
 
   /** 410 status, old code gone. */
-  OLD_CODE_GONE: 3
+  OLD_CODE_GONE: 3,
+
+  /** The onLoad callbacks failed. */
+  INIT_ERROR: 4
 };
 
 
@@ -707,7 +798,9 @@ goog.module.ModuleManager.prototype.handleLoadError_ = function(status) {
     // batchModeEnabled_ may have changed.
     var id = this.loadingModuleIds_.pop();
     this.loadingModuleIds_.length = 0;
-    this.loadModule_(id, true);
+    var forceReload =
+        status == goog.module.ModuleManager.CORRUPT_RESPONSE_STATUS_CODE;
+    this.loadModule_(id, true, forceReload);
   }
 };
 

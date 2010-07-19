@@ -1,117 +1,50 @@
+// Copyright 2006 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Copyright 2006 Google Inc. All Rights Reserved.
-
 /**
  * @fileoverview Low level handling of XMLHttpRequest.
+*
+*
  */
 
-
+goog.provide('goog.net.DefaultXmlHttpFactory');
 goog.provide('goog.net.XmlHttp');
+goog.provide('goog.net.XmlHttp.OptionType');
+goog.provide('goog.net.XmlHttp.ReadyState');
+
+goog.require('goog.net.WrapperXmlHttpFactory');
+goog.require('goog.net.XmlHttpFactory');
+
 
 
 /**
- * Factory class for creating XMLHttpRequest objects.
- * @return {XMLHttpRequest|GearsHttpRequest} A new XMLHttpRequest object.
+ * Static class for creating XMLHttpRequest objects.
+ * @return {goog.net.XmlHttp} A new XMLHttpRequest object.
  */
 goog.net.XmlHttp = function() {
-  return goog.net.XmlHttp.factory_();
+  return goog.net.XmlHttp.factory_.createInstance();
 };
 
 
 /**
- * Gets the options to use with the XMLHttpRequest object from the factory.
+ * Gets the options to use with the XMLHttpRequest objects obtained using
+ * the static methods.
  * @return {Object} The options.
  */
 goog.net.XmlHttp.getOptions = function() {
-  return goog.net.XmlHttp.cachedOptions_ ||
-         (goog.net.XmlHttp.cachedOptions_ = goog.net.XmlHttp.optionsFactory_());
+  return goog.net.XmlHttp.factory_.getOptions();
 };
-
-
-/**
- * The factory for creating XMLHttpRequest objets.
- * @type {Function?}
- * @private
- */
-goog.net.XmlHttp.factory_ = null;
-
-
-/**
- * The factory for creating the Options for the XMLHttpRequest objets given
- * from the factory.
- * @type {Function?}
- * @private
- */
-goog.net.XmlHttp.optionsFactory_ = null;
-
-
-/**
- * The cached options object used to minimize object allocations.
- * @type {Object?}
- * @private
- */
-goog.net.XmlHttp.cachedOptions_ = null;
-
-
-/**
- * Sets the factories for creating XMLHttpRequest objects and their options.
- * @param {Function} factory The factory for XMLHttpRequest objects.
- * @param {Function} optionsFactory The factory for options.
- */
-goog.net.XmlHttp.setFactory = function(factory, optionsFactory) {
-  goog.net.XmlHttp.factory_ = factory;
-  goog.net.XmlHttp.optionsFactory_ = optionsFactory;
-
-  // Clear the cached options.
-  goog.net.XmlHttp.cachedOptions_ = null;
-};
-
-
-/**
- * Default factory class for creating XMLHttpRequest objects.
- * @return {XMLHttpRequest} A new XMLHttpRequest object.
- * @private
- */
-goog.net.XmlHttp.defaultFactory_ = function() {
-  var progId = goog.net.XmlHttp.getProgId_();
-  if (progId) {
-    return new ActiveXObject(progId);
-  } else {
-    return new XMLHttpRequest();
-  }
-};
-
-
-/**
- * Default factory class for creating the options.
- * @return {Object} The options.
- * @private
- */
-goog.net.XmlHttp.defaultOptionsFactory_ = function() {
-  var progId = goog.net.XmlHttp.getProgId_();
-  var options = {};
-  if (progId) {
-    options[goog.net.XmlHttp.OptionType.USE_NULL_FUNCTION] = true;
-    options[goog.net.XmlHttp.OptionType.LOCAL_REQUEST_ERROR] = true;
-  }
-  return options;
-};
-
-
-// Set the default factories.
-goog.net.XmlHttp.setFactory(
-    goog.net.XmlHttp.defaultFactory_, goog.net.XmlHttp.defaultOptionsFactory_);
 
 
 /**
@@ -126,7 +59,7 @@ goog.net.XmlHttp.OptionType = {
   USE_NULL_FUNCTION: 0,
 
   /**
-   * NOTE: In IE if send() errors on a *local* request the readystate
+   * NOTE(user): In IE if send() errors on a *local* request the readystate
    * is still changed to COMPLETE.  We need to ignore it and allow the
    * try/catch around send() to pick up the error.
    */
@@ -169,11 +102,76 @@ goog.net.XmlHttp.ReadyState = {
 
 
 /**
- * The ActiveX PROG ID string to use to create xhr's in IE. Lazily initialized.
- * @type {string?}
+ * The global factory instance for creating XMLHttpRequest objects.
+ * @type {goog.net.XmlHttpFactory}
  * @private
  */
-goog.net.XmlHttp.ieProgId_ = null;
+goog.net.XmlHttp.factory_;
+
+
+/**
+ * Sets the factories for creating XMLHttpRequest objects and their options.
+ * @param {Function} factory The factory for XMLHttpRequest objects.
+ * @param {Function} optionsFactory The factory for options.
+ * @deprecated Use setGlobalFactory instead.
+ */
+goog.net.XmlHttp.setFactory = function(factory, optionsFactory) {
+  goog.net.XmlHttp.setGlobalFactory(new goog.net.WrapperXmlHttpFactory(
+      (/** @type {function() : !goog.net.XmlHttp} */ factory),
+      (/** @type {function() : !Object}*/ optionsFactory)));
+};
+
+
+/**
+ * Sets the global factory object.
+ * @param {!goog.net.XmlHttpFactory} factory New global factory object.
+ */
+goog.net.XmlHttp.setGlobalFactory = function(factory) {
+  goog.net.XmlHttp.factory_ = factory;
+};
+
+
+/**
+ * Default factory to use when creating xhr objects.  You probably shouldn't be
+ * instantiating this directly, but rather using it via goog.net.XmlHttp.
+ * @extends {goog.net.XmlHttpFactory}
+ * @constructor
+ */
+goog.net.DefaultXmlHttpFactory = function() {
+  goog.net.XmlHttpFactory.call(this);
+};
+goog.inherits(goog.net.DefaultXmlHttpFactory, goog.net.XmlHttpFactory);
+
+
+/** @inheritDoc */
+goog.net.DefaultXmlHttpFactory.prototype.createInstance = function() {
+  var progId = this.getProgId_();
+  if (progId) {
+    return new ActiveXObject(progId);
+  } else {
+    return new XMLHttpRequest();
+  }
+};
+
+
+/** @inheritDoc */
+goog.net.DefaultXmlHttpFactory.prototype.internalGetOptions = function() {
+  var progId = this.getProgId_();
+  var options = {};
+  if (progId) {
+    options[goog.net.XmlHttp.OptionType.USE_NULL_FUNCTION] = true;
+    options[goog.net.XmlHttp.OptionType.LOCAL_REQUEST_ERROR] = true;
+  }
+  return options;
+};
+
+
+/**
+ * The ActiveX PROG ID string to use to create xhr's in IE. Lazily initialized.
+ * @type {?string}
+ * @private
+ */
+goog.net.DefaultXmlHttpFactory.prototype.ieProgId_ = null;
 
 
 /**
@@ -181,13 +179,13 @@ goog.net.XmlHttp.ieProgId_ = null;
  * @return {string} The ActiveX PROG ID string to use to create xhr's in IE.
  * @private
  */
-goog.net.XmlHttp.getProgId_ = function() {
+goog.net.DefaultXmlHttpFactory.prototype.getProgId_ = function() {
   // The following blog post describes what PROG IDs to use to create the
   // XMLHTTP object in Internet Explorer:
   // http://blogs.msdn.com/xmlteam/archive/2006/10/23/using-the-right-version-of-msxml-in-internet-explorer.aspx
   // However we do not (yet) fully trust that this will be OK for old versions
   // of IE on Win9x so we therefore keep the last 2.
-  if (!goog.net.XmlHttp.ieProgId_ && typeof XMLHttpRequest == 'undefined' &&
+  if (!this.ieProgId_ && typeof XMLHttpRequest == 'undefined' &&
       typeof ActiveXObject != 'undefined') {
     // Candidate Active X types.
     var ACTIVE_X_IDENTS = ['MSXML2.XMLHTTP.6.0', 'MSXML2.XMLHTTP.3.0',
@@ -197,9 +195,9 @@ goog.net.XmlHttp.getProgId_ = function() {
       /** @preserveTry */
       try {
         new ActiveXObject(candidate);
-        // NOTE: cannot assign progid and return candidate in one line
+        // NOTE(user): cannot assign progid and return candidate in one line
         // because JSCompiler complaings: BUG 658126
-        goog.net.XmlHttp.ieProgId_ = candidate;
+        this.ieProgId_ = candidate;
         return candidate;
       } catch (e) {
         // do nothing; try next choice
@@ -211,5 +209,9 @@ goog.net.XmlHttp.getProgId_ = function() {
                 ' or MSXML might not be installed');
   }
 
-  return /** @type {string} */ (goog.net.XmlHttp.ieProgId_);
+  return /** @type {string} */ (this.ieProgId_);
 };
+
+
+//Set the global factory to an instance of the default factory.
+goog.net.XmlHttp.setGlobalFactory(new goog.net.DefaultXmlHttpFactory());

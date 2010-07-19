@@ -1,16 +1,16 @@
+// Copyright 2009 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-// Copyright 2009 Google Inc. All Rights Reserved.
 
 /**
  * @fileoverview provides a reusable mp3 UI component given a mp3 URL.
@@ -48,10 +48,11 @@
  *   mp3.setSelected(true);
  * </pre>
  *
+*
  *
  * @supported IE6, FF2+, Safari. Requires flash to actually work.
  *
- * TODO: test on other browsers
+ * TODO(user): test on other browsers
  */
 
 goog.provide('goog.ui.media.Mp3');
@@ -106,7 +107,7 @@ goog.ui.media.Mp3.PLAYER_ARGUMENTS_ = 'audioUrl=%s';
  *
  * @type {string}
  */
-goog.ui.media.Mp3.CSS_CLASS = 'goog-ui-media-mp3';
+goog.ui.media.Mp3.CSS_CLASS = goog.getCssName('goog-ui-media-mp3');
 
 
 /**
@@ -125,7 +126,7 @@ goog.ui.media.Mp3.flashUrl_ =
  * Copied from http://go/markdownlite.js.
 
  *
- * NOTE: although it would be easier to use goog.string.endsWith('.mp3'),
+ * NOTE(user): although it would be easier to use goog.string.endsWith('.mp3'),
  * in the future, we want to provide media inlining, which is basically getting
  * a text and replacing all mp3 references with an mp3 player, so it makes sense
  * to share the same regular expression to match everything.
@@ -146,7 +147,7 @@ goog.ui.media.Mp3.MATCHER =
  *
  * @param {goog.ui.media.MediaModel} dataModel A media model that must contain
  *     an mp3 url on {@code dataModel.getUrl}.
- * @param {goog.dom.DomHelper} opt_domHelper Optional DOM helper, used for
+ * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM helper, used for
  *     document interaction.
  * @return {goog.ui.media.Media} A goog.ui.Control subclass with the mp3
  *     renderer.

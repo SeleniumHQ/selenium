@@ -1,19 +1,20 @@
+// Copyright 2008 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Copyright 2008 Google Inc. All Rights Reserved.
-
 /**
  * @fileoverview Global renderer and decorator registry.
+*
  */
 
 goog.provide('goog.ui.registry');
@@ -33,12 +34,12 @@ goog.require('goog.dom.classes');
  *     no default renderer was found.
  */
 goog.ui.registry.getDefaultRenderer = function(componentCtor) {
-  // Locate the default renderer based on the constructor's hash code.  If no
+  // Locate the default renderer based on the constructor's unique ID.  If no
   // renderer is registered for this class, walk up the superClass_ chain.
   var key;
   var /** @constructor */ rendererCtor;
   while (componentCtor) {
-    key = goog.getHashCode(componentCtor);
+    key = goog.getUid(componentCtor);
     if ((rendererCtor = goog.ui.registry.defaultRenderers_[key])) {
       break;
     }
@@ -76,8 +77,8 @@ goog.ui.registry.setDefaultRenderer = function(componentCtor, rendererCtor) {
     throw Error('Invalid renderer class ' + rendererCtor);
   }
 
-  // Map the component constructor's hash code to the renderer constructor.
-  var key = goog.getHashCode(componentCtor);
+  // Map the component constructor's unique ID to the renderer constructor.
+  var key = goog.getUid(componentCtor);
   goog.ui.registry.defaultRenderers_[key] = rendererCtor;
 };
 
@@ -147,7 +148,7 @@ goog.ui.registry.reset = function() {
 
 
 /**
- * Map of {@link goog.ui.Component} constructor hash codes to the constructors
+ * Map of {@link goog.ui.Component} constructor unique IDs to the constructors
  * of their default {@link goog.ui.Renderer}s.
  * @type {Object}
  * @private

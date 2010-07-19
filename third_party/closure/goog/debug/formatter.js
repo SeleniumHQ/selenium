@@ -1,22 +1,23 @@
+// Copyright 2006 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-// Copyright 2006 Google Inc. All Rights Reserved.
 
 /**
  * @fileoverview Definition of various formatters for logging. Please minimize
  * dependencies this file has on other closure classes as any dependency it
  * takes won't be able to use the logging infrastructure.
  *
+*
  */
 
 goog.provide('goog.debug.Formatter');
@@ -30,7 +31,7 @@ goog.require('goog.string');
  * Base class for Formatters. A Formatter is used to format a LogRecord into
  * something that can be displayed to the user.
  *
- * @param {string} opt_prefix The prefix to place before text records.
+ * @param {string=} opt_prefix The prefix to place before text records.
  * @constructor
  */
 goog.debug.Formatter = function(opt_prefix) {
@@ -68,6 +69,12 @@ goog.debug.Formatter.prototype.showLoggerName = true;
  * @type {boolean}
  */
 goog.debug.Formatter.prototype.showExceptionText = false;
+
+/**
+ * Whether to show the severity level
+ * @type {boolean}
+ */
+goog.debug.Formatter.prototype.showSeverityLevel = false;
 
 
 /**
@@ -174,7 +181,7 @@ goog.debug.Formatter.getRelativeTime_ = function(logRecord,
  * Formatter that returns formatted html. See formatRecord for the classes
  * it uses for various types of formatted output.
  *
- * @param {string} opt_prefix The prefix to place before text records.
+ * @param {string=} opt_prefix The prefix to place before text records.
  * @constructor
  * @extends {goog.debug.Formatter}
  */
@@ -253,7 +260,7 @@ goog.debug.HtmlFormatter.prototype.formatRecord = function(logRecord) {
 /**
  * Formatter that returns formatted plain text
  *
- * @param {string} opt_prefix The prefix to place before text records.
+ * @param {string=} opt_prefix The prefix to place before text records.
  * @constructor
  * @extends {goog.debug.Formatter}
  */
@@ -282,6 +289,9 @@ goog.debug.TextFormatter.prototype.formatRecord = function(logRecord) {
 
   if (this.showLoggerName) {
     sb.push('[', logRecord.getLoggerName(), '] ');
+  }
+  if (this.showSeverityLevel) {
+    sb.push('[', logRecord.getLevel().name, '] ');
   }
   sb.push(logRecord.getMessage(), '\n');
   if (this.showExceptionText && logRecord.getException()) {

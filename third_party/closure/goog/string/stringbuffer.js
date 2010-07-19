@@ -1,19 +1,20 @@
+// Copyright 2006 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Copyright 2006 Google Inc. All Rights Reserved.
-
 /**
  * @fileoverview Utility for fast string concatenation.
+*
  */
 
 goog.provide('goog.string.StringBuffer');
@@ -25,9 +26,9 @@ goog.require('goog.userAgent.jscript');
  * using Array.join() rather than the '+' operator.  For other browsers
  * we simply use the '+' operator.
  *
- * @param {Object|number|string|boolean} opt_a1 Optional first initial item
+ * @param {Object|number|string|boolean=} opt_a1 Optional first initial item
  *     to append.
- * @param {Object|number|string|boolean} var_args Other initial items to
+ * @param {...Object|number|string|boolean} var_args Other initial items to
  *     append, e.g., new goog.string.StringBuffer('foo', 'bar').
  * @constructor
  */
@@ -72,16 +73,13 @@ if (goog.userAgent.jscript.HAS_JSCRIPT) {
    * Calling this with null, undefined, or empty arguments is an error.
    *
    * @param {Object|number|string|boolean} a1 Required first string.
-   * @param {Object|number|string|boolean} opt_a2 Optional second string.
-   * @param {Object|number|string|boolean} var_args Other items to append,
+   * @param {Object|number|string|boolean=} opt_a2 Optional second string.
+   * @param {...Object|number|string|boolean} var_args Other items to append,
    *     e.g., sb.append('foo', 'bar', 'baz').
    * @return {goog.string.StringBuffer} This same StringBuffer object.
    */
   goog.string.StringBuffer.prototype.append = function(a1, opt_a2, var_args) {
     // IE version.
-    if (!COMPILED && !goog.isDef(a1)) {
-      throw Error('Cannot call StringBuffer.append with zero arguments.');
-    }
 
     if (opt_a2 == null) { // second argument is undefined (null == undefined)
       // Array assignment is 2x faster than Array push.  Also, use a1
@@ -101,17 +99,14 @@ if (goog.userAgent.jscript.HAS_JSCRIPT) {
    * Calling this with null, undefined, or empty arguments is an error.
    *
    * @param {Object|number|string|boolean} a1 Required first string.
-   * @param {Object|number|string|boolean} opt_a2 Optional second string.
-   * @param {Object|number|string|boolean} var_args Other items to append,
+   * @param {Object|number|string|boolean=} opt_a2 Optional second string.
+   * @param {...Object|number|string|boolean} var_args Other items to append,
    *     e.g., sb.append('foo', 'bar', 'baz').
    * @return {goog.string.StringBuffer} This same StringBuffer object.
    * @suppress {duplicate}
    */
   goog.string.StringBuffer.prototype.append = function(a1, opt_a2, var_args) {
     // W3 version.
-    if (!COMPILED && !goog.isDef(a1)) {
-      throw Error('Cannot call StringBuffer.append with zero arguments.');
-    }
 
     // Use a1 directly to avoid arguments instantiation for single-arg case.
     this.buffer_ += a1;

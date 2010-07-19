@@ -1,21 +1,22 @@
+// Copyright 2007 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-// Copyright 2007 Google Inc. All Rights Reserved.
 
 /**
  * @fileoverview This file implements a wrapper around the Gears WorkerPool
  * with some extra features.
  *
+*
  */
 
 goog.provide('goog.gears.WorkerPool');
@@ -72,7 +73,7 @@ goog.gears.WorkerPool.EventType = {
 
 /**
  * The Gears WorkerPool object.
- * @type {GearsWorkerPool?}
+ * @type {GearsWorkerPool}
  * @private
  */
 goog.gears.WorkerPool.prototype.workerPool_ = null;
@@ -95,7 +96,7 @@ goog.gears.WorkerPool.prototype.getGearsWorkerPool = function() {
  * @param {function(!GearsErrorObject):boolean} fn An error handler function
  *     that gets passed an error object with message and line number attributes.
  *     Returns whether the error was handled. If true stops propagation.
- * @param {Object} opt_handler This object for the function.
+ * @param {Object=} opt_handler This object for the function.
  */
 goog.gears.WorkerPool.prototype.setErrorHandler = function(fn, opt_handler) {
   this.workerPool_.onerror = goog.bind(fn, opt_handler);

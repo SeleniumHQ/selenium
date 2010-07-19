@@ -1,20 +1,22 @@
+// Copyright 2007 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Copyright 2007 Google Inc. All Rights Reserved.
-
 
 /**
  * @fileoverview CanvasGraphics sub class that uses the canvas tag for drawing.
+ * @author robbyw@google.com (Robby Walker)
+*
  */
 
 
@@ -42,11 +44,11 @@ goog.require('goog.math.Size');
  *     expressing percentages of parent with (e.g. '80%') are also accepted.
  * @param {string|number} height The (non-zero) height in pixels.  Strings
  *     expressing percentages of parent with (e.g. '80%') are also accepted.
- * @param {number?} opt_coordWidth The coordinate width - if
+ * @param {?number=} opt_coordWidth The coordinate width - if
  *     omitted or null, defaults to same as width.
- * @param {number?} opt_coordHeight The coordinate height - if
+ * @param {?number=} opt_coordHeight The coordinate height - if
  *     omitted or null, defaults to same as height.
- * @param {goog.dom.DomHelper} opt_domHelper The DOM helper object for the
+ * @param {goog.dom.DomHelper=} opt_domHelper The DOM helper object for the
  *     document we want to render in.
  * @constructor
  * @extends {goog.graphics.AbstractGraphics}
@@ -111,7 +113,7 @@ goog.graphics.CanvasGraphics.prototype.pushElementTransform = function(
 
   var transform = element.getTransform();
 
-  // TODO: Test for unsupported transforms i.e. skews.
+  // TODO(robbyw): Test for unsupported transforms i.e. skews.
   var tx = transform.getTranslateX();
   var ty = transform.getTranslateY();
   if (tx || ty) {
@@ -417,8 +419,8 @@ goog.graphics.CanvasGraphics.prototype.append_ = function(element, group) {
  * @param {goog.graphics.Stroke} stroke Stroke object describing the
  *    stroke.
  * @param {goog.graphics.Fill} fill Fill object describing the fill.
- * @param {goog.graphics.CanvasGroupElement} opt_group The group wrapper element
- *     to append to. If not specified, appends to the main canvas.
+ * @param {goog.graphics.CanvasGroupElement=} opt_group The group wrapper
+ *     element to append to. If not specified, appends to the main canvas.
  *
  * @return {goog.graphics.EllipseElement} The newly created element.
  */
@@ -441,8 +443,8 @@ goog.graphics.CanvasGraphics.prototype.drawEllipse = function(cx, cy, rx, ry,
  * @param {goog.graphics.Stroke} stroke Stroke object describing the
  *    stroke.
  * @param {goog.graphics.Fill} fill Fill object describing the fill.
- * @param {goog.graphics.CanvasGroupElement} opt_group The group wrapper element
- *     to append to. If not specified, appends to the main canvas.
+ * @param {goog.graphics.CanvasGroupElement=} opt_group The group wrapper
+ *     element to append to. If not specified, appends to the main canvas.
  *
  * @return {goog.graphics.RectElement} The newly created element.
  */
@@ -463,8 +465,8 @@ goog.graphics.CanvasGraphics.prototype.drawRect = function(x, y, width, height,
  * @param {number} width Width of image.
  * @param {number} height Height of image.
  * @param {string} src Source of the image.
- * @param {goog.graphics.CanvasGroupElement} opt_group The group wrapper element
- *     to append to. If not specified, appends to the main canvas.
+ * @param {goog.graphics.CanvasGroupElement=} opt_group The group wrapper
+ *     element to append to. If not specified, appends to the main canvas.
  *
  * @return {goog.graphics.ImageElement} The newly created element.
  */
@@ -485,12 +487,12 @@ goog.graphics.CanvasGraphics.prototype.drawImage = function(x, y, width, height,
  * @param {number} y1 Y coordinate of start of line.
  * @param {number} x2 X coordinate of end of line.
  * @param {number} y2 Y coordinate of end of line.
- * @param {string?} align Horizontal alignment: left (default), center, right.
+ * @param {?string} align Horizontal alignment: left (default), center, right.
  * @param {!goog.graphics.Font} font Font describing the font properties.
  * @param {goog.graphics.Stroke} stroke Stroke object describing the stroke.
  * @param {goog.graphics.Fill} fill Fill object describing the fill.
- * @param {goog.graphics.CanvasGroupElement} opt_group The group wrapper element
- *     to append to. If not specified, appends to the main canvas.
+ * @param {goog.graphics.CanvasGroupElement=} opt_group The group wrapper
+ *     element to append to. If not specified, appends to the main canvas.
  *
  * @return {goog.graphics.TextElement} The newly created element.
  */
@@ -508,8 +510,8 @@ goog.graphics.CanvasGraphics.prototype.drawTextOnLine = function(
  * @param {!goog.graphics.Path} path The path object to draw.
  * @param {goog.graphics.Stroke} stroke Stroke object describing the stroke.
  * @param {goog.graphics.Fill} fill Fill object describing the fill.
- * @param {goog.graphics.CanvasGroupElement} opt_group The group wrapper element
- *     to append to. If not specified, appends to the main canvas.
+ * @param {goog.graphics.CanvasGroupElement=} opt_group The group wrapper
+ *     element to append to. If not specified, appends to the main canvas.
  *
  * @return {goog.graphics.PathElement} The newly created element.
  */
@@ -539,7 +541,7 @@ goog.graphics.CanvasGraphics.prototype.isDrawable = function(group) {
  * @return {boolean} Whether drawing to this group should force a redraw.
  */
 goog.graphics.CanvasGraphics.prototype.isRedrawRequired = function(group) {
-  // TODO: Moving up to any parent of lastGroup should not force redraw.
+  // TODO(robbyw): Moving up to any parent of lastGroup should not force redraw.
   return group != this.canvasElement && group != this.lastGroup_;
 };
 
@@ -547,8 +549,8 @@ goog.graphics.CanvasGraphics.prototype.isRedrawRequired = function(group) {
 /**
  * Create an empty group of drawing elements.
  *
- * @param {goog.graphics.CanvasGroupElement} opt_group The group wrapper element
- *     to append to. If not specified, appends to the main canvas.
+ * @param {goog.graphics.CanvasGroupElement=} opt_group The group wrapper
+ *     element to append to. If not specified, appends to the main canvas.
  *
  * @return {goog.graphics.CanvasGroupElement} The newly created group.
  */
@@ -557,7 +559,7 @@ goog.graphics.CanvasGraphics.prototype.createGroup = function(opt_group) {
 
   opt_group = opt_group || this.canvasElement;
 
-  // TODO: Moving up to any parent group should not force redraw.
+  // TODO(robbyw): Moving up to any parent group should not force redraw.
   if (opt_group == this.canvasElement || opt_group == this.lastGroup_) {
     this.lastGroup_ = group;
   }

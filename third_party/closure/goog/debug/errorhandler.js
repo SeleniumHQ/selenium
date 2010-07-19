@@ -1,20 +1,21 @@
+// Copyright 2007 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Copyright 2007 Google Inc. All Rights Reserved.
-
 /**
  * @fileoverview Error handling utilities.
  *
+*
  */
 
 goog.provide('goog.debug.ErrorHandler');
@@ -62,7 +63,7 @@ goog.debug.ErrorHandler.prototype.getStackTraceHolder_ = function(stackTrace) {
  * is thrown from a protected function, a handler will be invoked to handle it.
  *
  * @param {Function} fn An entry point function to be protected.
- * @param {boolean} opt_tracers Whether to install tracers around the fn.
+ * @param {boolean=} opt_tracers Whether to install tracers around the fn.
  * @return {!Function} A protected wrapper function that calls the entry point
  *     function.
  */
@@ -70,7 +71,7 @@ goog.debug.ErrorHandler.prototype.protectEntryPoint = function(fn,
                                                                opt_tracers) {
   var tracers = !!opt_tracers;
   var protectedFnName =
-      '__protected_' + goog.getHashCode(this) + '_' + tracers + '__';
+      '__protected_' + goog.getUid(this) + '_' + tracers + '__';
   if (!fn[protectedFnName]) {
     fn[protectedFnName] = this.getProtectedFunction(fn, tracers);
   }
@@ -115,7 +116,7 @@ goog.debug.ErrorHandler.prototype.getProtectedFunction = function(fn, tracers) {
 
 /**
  * Installs exception protection for window.setTimeout to handle exceptions.
- * @param {boolean} opt_tracers Whether to install tracers around the fn.
+ * @param {boolean=} opt_tracers Whether to install tracers around the fn.
  */
 goog.debug.ErrorHandler.prototype.protectWindowSetTimeout =
     function(opt_tracers) {
@@ -137,7 +138,7 @@ goog.debug.ErrorHandler.prototype.protectWindowSetTimeout =
 
 /**
  * Install exception protection for window.setInterval to handle exceptions.
- * @param {boolean} opt_tracers Whether to install tracers around the fn.
+ * @param {boolean=} opt_tracers Whether to install tracers around the fn.
  */
 goog.debug.ErrorHandler.prototype.protectWindowSetInterval =
     function(opt_tracers) {

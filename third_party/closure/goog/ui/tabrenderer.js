@@ -1,21 +1,22 @@
+// Copyright 2008 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-// Copyright 2008 Google Inc. All Rights Reserved.
 
 /**
  * @fileoverview Default renderer for {@link goog.ui.Tab}s.  Based on the
  * original {@code TabPane} code.
  *
+*
  */
 
 goog.provide('goog.ui.TabRenderer');
@@ -142,7 +143,7 @@ goog.ui.TabRenderer.prototype.getTooltip = function(element) {
  * Takes a tab's root element and a tooltip string, and updates the element
  * with the new tooltip.  If the new tooltip is null or undefined, sets the
  * element's title to the empty string.
- * @param {Element?} element The tab's root element.
+ * @param {Element} element The tab's root element.
  * @param {string|null|undefined} tooltip New tooltip text (if any).
  */
 goog.ui.TabRenderer.prototype.setTooltip = function(element, tooltip) {

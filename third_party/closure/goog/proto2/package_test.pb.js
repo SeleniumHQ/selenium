@@ -1,21 +1,21 @@
+// Copyright 2008 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-// Protocol Buffer 2 Copyright 2008 Google Inc
 // All other code copyright its respective owners(s).
 
 /**
  * @fileoverview Generated Protocol Buffer code for file
- * proto2/package_test.proto.
+ * closure/goog/proto2/package_test.proto.
  */
 
 goog.provide('someprotopackage.TestPackageTypes');
@@ -33,12 +33,22 @@ someprotopackage.TestPackageTypes = function() {
 };
 goog.inherits(someprotopackage.TestPackageTypes, goog.proto2.Message);
 
+
 /**
  * Gets the value of the optional_int32 field.
- * @return {number} The value.
+ * @return {?number} The value.
  */
 someprotopackage.TestPackageTypes.prototype.getOptionalInt32 = function() {
-  return /** @type {number} */ (this.get$Value(1));
+  return /** @type {?number} */ (this.get$Value(1));
+};
+
+
+/**
+ * Gets the value of the optional_int32 field or the default value if not set.
+ * @return {number} The value.
+ */
+someprotopackage.TestPackageTypes.prototype.getOptionalInt32OrDefault = function() {
+  return /** @type {number} */ (this.get$ValueOrDefault(1));
 };
 
 
@@ -79,10 +89,19 @@ someprotopackage.TestPackageTypes.prototype.clearOptionalInt32 = function() {
 
 /**
  * Gets the value of the other_all field.
- * @return {proto2.TestAllTypes} The value.
+ * @return {?proto2.TestAllTypes} The value.
  */
 someprotopackage.TestPackageTypes.prototype.getOtherAll = function() {
-  return /** @type {proto2.TestAllTypes} */ (this.get$Value(2));
+  return /** @type {?proto2.TestAllTypes} */ (this.get$Value(2));
+};
+
+
+/**
+ * Gets the value of the other_all field or the default value if not set.
+ * @return {proto2.TestAllTypes} The value.
+ */
+someprotopackage.TestPackageTypes.prototype.getOtherAllOrDefault = function() {
+  return /** @type {proto2.TestAllTypes} */ (this.get$ValueOrDefault(2));
 };
 
 
@@ -138,4 +157,3 @@ goog.proto2.Message.set$Metadata(someprotopackage.TestPackageTypes, {
     fieldType: goog.proto2.Message.FieldType.MESSAGE,
     type: proto2.TestAllTypes
   }});
-

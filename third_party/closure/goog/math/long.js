@@ -1,22 +1,23 @@
+// Copyright 2009 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-// Copyright 2009 Google Inc. All Rights Reserved
 
 /**
  * @fileoverview Defines a Long class for representing a 64-bit two's-complement
  * integer value, which faithfully simulates the behavior of a Java "long". This
  * implementation is derived from LongLib in GWT.
  *
+*
  */
 
 goog.provide('goog.math.Long')
@@ -132,7 +133,7 @@ goog.math.Long.fromBits = function(lowBits, highBits) {
  * Returns a Long representation of the given string, written using the given
  * radix.
  * @param {string} str The textual representation of the Long.
- * @param {number} opt_radix The radix in which the text is written.
+ * @param {number=} opt_radix The radix in which the text is written.
  * @return {goog.math.Long} The corresponding Long value.
  */
 goog.math.Long.fromString = function(str, opt_radix) {
@@ -263,7 +264,7 @@ goog.math.Long.prototype.toNumber = function() {
 
 
 /**
- * @param {number} opt_radix The radix in which the text should be written.
+ * @param {number=} opt_radix The radix in which the text should be written.
  * @return {string} The textual representation of this value.
  */
 goog.math.Long.prototype.toString = function(opt_radix) {

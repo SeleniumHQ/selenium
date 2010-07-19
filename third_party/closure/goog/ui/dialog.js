@@ -1,24 +1,25 @@
+// Copyright 2006 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Copyright 2006 Google Inc. All Rights Reserved.
-
 /**
  * @fileoverview Class for showing simple modal dialog boxes.
  *
- * TODO:
+ * TODO(user):
  *   * Standardize CSS class names with other components
  *   * Add functionality to "host" other components in content area
  *   * Abstract out ButtonSet and make it more general
+*
  * @see ../demos/dialog.html
  */
 
@@ -40,7 +41,6 @@ goog.require('goog.events.FocusHandler');
 goog.require('goog.events.KeyCodes');
 goog.require('goog.fx.Dragger');
 goog.require('goog.math.Rect');
-goog.require('goog.string');
 goog.require('goog.structs');
 goog.require('goog.structs.Map');
 goog.require('goog.style');
@@ -70,11 +70,11 @@ goog.require('goog.userAgent');
  *        - ...
  * </pre>
  * @constructor
- * @param {string} opt_class CSS class name for the dialog element, also used
+ * @param {string=} opt_class CSS class name for the dialog element, also used
  *    as a class name prefix for related elements; defaults to modal-dialog.
- * @param {boolean} opt_useIframeMask Work around windowed controls z-index
+ * @param {boolean=} opt_useIframeMask Work around windowed controls z-index
  *     issue by using an iframe instead of a div for bg element.
- * @param {goog.dom.DomHelper} opt_domHelper Optional DOM helper; see {@link
+ * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM helper; see {@link
  *    goog.ui.Component} for semantics.
  * @extends {goog.ui.Component}
  */
@@ -93,12 +93,31 @@ goog.ui.Dialog = function(opt_class, opt_useIframeMask, opt_domHelper) {
 
   // Set the default button set to show ok and cancel
   this.buttons_ = goog.ui.Dialog.ButtonSet.OK_CANCEL;
-
-  this.focusHandler_ = new goog.events.FocusHandler(
-      this.getDomHelper().getDocument());
 };
 goog.inherits(goog.ui.Dialog, goog.ui.Component);
 
+
+/**
+ * Focus handler. It will be initialized in enterDocument.
+ * @type {goog.events.FocusHandler}
+ * @private
+ */
+goog.ui.Dialog.prototype.focusHandler_ = null;
+
+/**
+ * Whether the escape key closes this dialog.
+ * @type {boolean}
+ * @private
+ */
+goog.ui.Dialog.prototype.escapeToCancel_ = true;
+
+
+/**
+ * Whether this dialog should include a title close button.
+ * @type {boolean}
+ * @private
+ */
+goog.ui.Dialog.prototype.hasTitleCloseButton_ = true;
 
 /**
  * Whether the dialog should use an iframe as the background element to work
@@ -126,11 +145,11 @@ goog.ui.Dialog.prototype.draggable_ = true;
 
 
 /**
- * Opacity for background mask.  Defaults to 30%.
+ * Opacity for background mask.  Defaults to 50%.
  * @type {number}
  * @private
  */
-goog.ui.Dialog.prototype.backgroundElementOpacity_ = 0.30;
+goog.ui.Dialog.prototype.backgroundElementOpacity_ = 0.50;
 
 
 /**
@@ -183,7 +202,7 @@ goog.ui.Dialog.prototype.disposeOnHide_ = false;
 
 /**
  * Element for the background which obscures the UI and blocks events.
- * @type {Element?}
+ * @type {Element}
  * @private
  */
 goog.ui.Dialog.prototype.bgEl_ = null;
@@ -192,7 +211,7 @@ goog.ui.Dialog.prototype.bgEl_ = null;
 /**
  * Iframe element that is only used for IE as a workaround to keep select-type
  * elements from burning through background.
- * @type {Element?}
+ * @type {Element}
  * @private
  */
 goog.ui.Dialog.prototype.bgIframeEl_ = null;
@@ -200,7 +219,7 @@ goog.ui.Dialog.prototype.bgIframeEl_ = null;
 
 /**
  * Element for the title bar.
- * @type {Element?}
+ * @type {Element}
  * @private
  */
 goog.ui.Dialog.prototype.titleEl_ = null;
@@ -208,7 +227,7 @@ goog.ui.Dialog.prototype.titleEl_ = null;
 
 /**
  * Element for the text area of the title bar.
- * @type {Element?}
+ * @type {Element}
  * @private
  */
 goog.ui.Dialog.prototype.titleTextEl_ = null;
@@ -217,7 +236,7 @@ goog.ui.Dialog.prototype.titleTextEl_ = null;
 
 /**
  * Id of element for the text area of the title bar.
- * @type {string?}
+ * @type {?string}
  * @private
  */
 goog.ui.Dialog.prototype.titleId_ = null;
@@ -225,7 +244,7 @@ goog.ui.Dialog.prototype.titleId_ = null;
 
 /**
  * Element for the close box area of the title bar.
- * @type {Element?}
+ * @type {Element}
  * @private
  */
 goog.ui.Dialog.prototype.titleCloseEl_ = null;
@@ -233,7 +252,7 @@ goog.ui.Dialog.prototype.titleCloseEl_ = null;
 
 /**
  * Element for the content area.
- * @type {Element?}
+ * @type {Element}
  * @private
  */
 goog.ui.Dialog.prototype.contentEl_ = null;
@@ -241,7 +260,7 @@ goog.ui.Dialog.prototype.contentEl_ = null;
 
 /**
  * Element for the button bar.
- * @type {Element?}
+ * @type {Element}
  * @private
  */
 goog.ui.Dialog.prototype.buttonEl_ = null;
@@ -290,93 +309,94 @@ goog.ui.Dialog.prototype.getContent = function() {
 
 
 /**
+ * Renders if the DOM is not created.
+ * @private
+ */
+goog.ui.Dialog.prototype.renderIfNoDom_ = function() {
+  if (!this.getElement()) {
+    // TODO(user): Ideally we'd only create the DOM, but many applications
+    // are requiring this behavior.  Eventually, it would be best if the
+    // element getters could return null if the elements have not been
+    // created.
+    this.render();
+  }
+};
+
+
+/**
  * Returns the content element so that more complicated things can be done with
- * the content area.  Lazily renders the component if needed.  Overrides
+ * the content area.  Renders if the DOM is not yet created.  Overrides
  * {@link goog.ui.Component#getContentElement}.
  * @return {Element} The content element.
  */
 goog.ui.Dialog.prototype.getContentElement = function() {
-  if (!this.contentEl_) {
-    this.render();
-  }
+  this.renderIfNoDom_();
   return this.contentEl_;
 };
 
 
 /**
  * Returns the title element so that more complicated things can be done with
- * the title.  Lazily renders the component if needed.
+ * the title.  Renders if the DOM is not yet created.
  * @return {Element} The title element.
  */
 goog.ui.Dialog.prototype.getTitleElement = function() {
-  if (!this.isInDocument()) {
-    this.render();
-  }
+  this.renderIfNoDom_();
   return this.titleEl_;
 };
 
 
 /**
  * Returns the title text element so that more complicated things can be done
- * with the text of the title.  Lazily renders the component if needed.
+ * with the text of the title.  Renders if the DOM is not yet created.
  * @return {Element} The title text element.
  */
 goog.ui.Dialog.prototype.getTitleTextElement = function() {
-  if (!this.isInDocument()) {
-    this.render();
-  }
+  this.renderIfNoDom_();
   return this.titleTextEl_;
 };
 
 
 /**
  * Returns the title close element so that more complicated things can be done
- * with the close area of the title.
+ * with the close area of the title.  Renders if the DOM is not yet created.
  * @return {Element} The close box.
  */
 goog.ui.Dialog.prototype.getTitleCloseElement = function() {
-  if (!this.isInDocument()) {
-    this.render();
-  }
+  this.renderIfNoDom_();
   return this.titleCloseEl_;
 };
 
 
 /**
  * Returns the button element so that more complicated things can be done with
- * the button area.  Lazily renders the component if needed.
+ * the button area.  Renders if the DOM is not yet created.
  * @return {Element} The button container element.
  */
 goog.ui.Dialog.prototype.getButtonElement = function() {
-  if (!this.isInDocument()) {
-    this.render();
-  }
+  this.renderIfNoDom_();
   return this.buttonEl_;
 };
 
 
 /**
  * Returns the dialog element so that more complicated things can be done with
- * the dialog box.  Lazily renders the component if needed.
+ * the dialog box.  Renders if the DOM is not yet created.
  * @return {Element} The dialog element.
  */
 goog.ui.Dialog.prototype.getDialogElement = function() {
-  if (!this.isInDocument()) {
-    this.render();
-  }
+  this.renderIfNoDom_();
   return this.getElement();
 };
 
 
 /**
  * Returns the background mask element so that more complicated things can be
- * done with the background region.  Lazily renders the component if needed.
+ * done with the background region.  Renders if the DOM is not yet created.
  * @return {Element} The background mask element.
  */
 goog.ui.Dialog.prototype.getBackgroundElement = function() {
-  if (!this.isInDocument()) {
-    this.render();
-  }
+  this.renderIfNoDom_();
   return this.bgEl_;
 };
 
@@ -404,7 +424,9 @@ goog.ui.Dialog.prototype.setBackgroundElementOpacity = function(opacity) {
 
 
 /**
- * Sets the modal property of the dialog.
+ * Sets the modal property of the dialog. In case the dialog is already
+ * inDocument, renders the modal background elements according to the specified
+ * modal parameter.
  *
  * Note that non-modal dialogs cannot use an iframe mask.
  *
@@ -413,6 +435,18 @@ goog.ui.Dialog.prototype.setBackgroundElementOpacity = function(opacity) {
 goog.ui.Dialog.prototype.setModal = function(modal) {
   this.modal_ = modal;
   this.manageBackgroundDom_();
+  var dom = this.getDomHelper();
+  if (this.isInDocument() && modal && this.isVisible()) {
+    // Insert the bg elements before the dialog so that they don't block
+    // the dialog itself.
+    if (this.bgIframeEl_) {
+      dom.insertSiblingBefore(this.bgIframeEl_, this.getElement());
+    }
+    if (this.bgEl_) {
+      dom.insertSiblingBefore(this.bgEl_, this.getElement());
+    }
+    this.resizeBackground_();
+  }
 };
 
 
@@ -510,6 +544,7 @@ goog.ui.Dialog.prototype.createDom = function() {
   if (this.content_) {
     this.contentEl_.innerHTML = this.content_;
   }
+  goog.style.showElement(this.titleCloseEl_, this.hasTitleCloseButton_);
   goog.style.showElement(this.getElement(), false);
 
   // Render the buttons.
@@ -563,7 +598,7 @@ goog.ui.Dialog.prototype.manageBackgroundDom_ = function() {
  * have unexpected results.  The parent element defaults to the current document
  * body if unspecified, which is almost always what you want.
  *
- * @param {Element} opt_parent Element into which the component is to be
+ * @param {Element=} opt_parent Element into which the component is to be
  *    rendered; defaults to the current document's body element if unspecified.
  * @throws {goog.ui.Component.Error.ALREADY_RENDERED} If the component is
  *    already rendered.
@@ -610,7 +645,7 @@ goog.ui.Dialog.prototype.renderBackground_ = function(parent) {
 /**
  * Overrides {@link goog.ui.Component#renderBefore} to throw a NOT_SUPPORTED
  * error, since dialogs don't support being rendered before another DOM element.
- * TODO: Figure out how to do this cleanly between Component and this.
+ * TODO(user): Figure out how to do this cleanly between Component and this.
  *
  * @param {Element} sibling Element before which the component is to be
  *    rendered (ignored).
@@ -646,7 +681,8 @@ goog.ui.Dialog.prototype.decorateInternal = function(element) {
 
   // Decorate or create the content element.
   var contentClass = goog.getCssName(this.class_, 'content');
-  this.contentEl_ = goog.dom.$$(null, contentClass, this.getElement())[0];
+  this.contentEl_ = goog.dom.getElementsByTagNameAndClass(
+      null, contentClass, this.getElement())[0];
   if (this.contentEl_) {
     this.content_ = this.contentEl_.innerHTML;
   } else {
@@ -661,13 +697,16 @@ goog.ui.Dialog.prototype.decorateInternal = function(element) {
   var titleClass = goog.getCssName(this.class_, 'title');
   var titleTextClass = goog.getCssName(this.class_, 'title-text');
   var titleCloseClass = goog.getCssName(this.class_, 'title-close');
-  this.titleEl_ = goog.dom.$$(null, titleClass, this.getElement())[0];
+  this.titleEl_ = goog.dom.getElementsByTagNameAndClass(
+      null, titleClass, this.getElement())[0];
   if (this.titleEl_) {
     // Only look for title text & title close elements if a title bar element
     // was found.  Otherwise assume that the entire title bar has to be
     // created from scratch.
-    this.titleTextEl_ = goog.dom.$$(null, titleTextClass, this.titleEl_)[0];
-    this.titleCloseEl_ = goog.dom.$$(null, titleCloseClass, this.titleEl_)[0];
+    this.titleTextEl_ = goog.dom.getElementsByTagNameAndClass(
+        null, titleTextClass, this.titleEl_)[0];
+    this.titleCloseEl_ = goog.dom.getElementsByTagNameAndClass(
+        null, titleCloseClass, this.titleEl_)[0];
   } else {
     // Create the title bar element and insert it before the content area.
     // This is useful if the element to decorate only includes a content area.
@@ -689,10 +728,12 @@ goog.ui.Dialog.prototype.decorateInternal = function(element) {
     this.titleCloseEl_ = this.getDomHelper().createDom('span', titleCloseClass);
     this.titleEl_.appendChild(this.titleCloseEl_);
   }
+  goog.style.showElement(this.titleCloseEl_, this.hasTitleCloseButton_);
 
   // Decorate or create the button container element.
   var buttonsClass = goog.getCssName(this.class_, 'buttons');
-  this.buttonEl_ = goog.dom.$$(null, buttonsClass, this.getElement())[0];
+  this.buttonEl_ = goog.dom.getElementsByTagNameAndClass(
+      null, buttonsClass, this.getElement())[0];
   if (this.buttonEl_) {
     // Button container element found.  Create empty button set and use it to
     // decorate the button container.
@@ -724,6 +765,9 @@ goog.ui.Dialog.prototype.decorateInternal = function(element) {
  */
 goog.ui.Dialog.prototype.enterDocument = function() {
   goog.ui.Dialog.superClass_.enterDocument.call(this);
+
+  this.focusHandler_ = new goog.events.FocusHandler(
+      this.getDomHelper().getDocument());
 
   // Add drag support.
   if (this.draggable_ && !this.dragger_) {
@@ -757,6 +801,9 @@ goog.ui.Dialog.prototype.exitDocument = function() {
     this.setVisible(false);
   }
 
+  this.focusHandler_.dispose();
+  this.focusHandler_ = null;
+
   // Remove drag support.
   if (this.dragger_) {
     this.dragger_.dispose();
@@ -777,7 +824,7 @@ goog.ui.Dialog.prototype.setVisible = function(visible) {
     return;
   }
 
-  // TODO:  Add utility methods to Component to get window & document?
+  // TODO(user):  Add utility methods to Component to get window & document?
   var doc = this.getDomHelper().getDocument();
 
   // Older versions of Safari did not know how to get a window for a given
@@ -795,14 +842,18 @@ goog.ui.Dialog.prototype.setVisible = function(visible) {
     // Listen for keyboard and resize events while the dialog is visible.
     this.getHandler().
         listen(this.getElement(), goog.events.EventType.KEYDOWN,
-            this.onKeyDown_, true).
+            this.onKey_, true).
+        listen(this.getElement(), goog.events.EventType.KEYPRESS,
+            this.onKey_, true).
         listen(win, goog.events.EventType.RESIZE,
             this.onResize_, true);
   } else {
     // Stop listening for keyboard and resize events while the dialog is hidden.
     this.getHandler().
         unlisten(this.getElement(), goog.events.EventType.KEYDOWN,
-            this.onKeyDown_, true).
+            this.onKey_, true).
+        unlisten(this.getElement(), goog.events.EventType.KEYPRESS,
+            this.onKey_, true).
         unlisten(win, goog.events.EventType.RESIZE,
             this.onResize_, true);
   }
@@ -817,40 +868,7 @@ goog.ui.Dialog.prototype.setVisible = function(visible) {
   goog.style.showElement(this.getElement(), visible);
 
   if (visible) {
-    if (goog.userAgent.GECKO) {
-      // In FF, start with the focus on the dialog itself.  Otherwise if we
-      // focus on a sub-element first, then hitting tab moves the focus outside
-      // of the dialog, which we don't want.
-      this.getElement().focus();
-    }
-    // Move focus to the default button (if any).
-    if (this.getButtonSet()) {
-      var defaultButton = this.getButtonSet().getDefault();
-      if (defaultButton) {
-        var buttons = this.buttonEl_.getElementsByTagName('button');
-        for (var i = 0, button; button = buttons[i]; i++) {
-          if (button.name == defaultButton) {
-            try {
-              // Reopening a dialog can cause focusing the button to fail in
-              // WebKit and Opera. Shift the focus to a temporary <input>
-              // element to make refocusing the button possible.
-              if (goog.userAgent.WEBKIT || goog.userAgent.OPERA) {
-                var temp = doc.createElement('input');
-                temp.style.cssText = 'position:fixed;width:0;height:0';
-                this.getElement().appendChild(temp);
-                temp.focus();
-                this.getElement().removeChild(temp);
-              }
-              button.focus();
-            } catch (e) {
-              // Swallow this. Could be the button is disabled
-              // and IE6 wishes to throw an error.
-            }
-            break;
-          }
-        }
-      }
-    }
+    this.focus();
   }
 
   this.visible_ = visible;
@@ -886,9 +904,55 @@ goog.ui.Dialog.prototype.isVisible = function() {
 
 
 /**
+ * Focuses the dialog contents and the default dialog button if there is one.
+ */
+goog.ui.Dialog.prototype.focus = function() {
+  // Start with the focus on the dialog itself.  In FF, if we focus on a
+  // sub-element first, then hitting tab moves the focus outside of the
+  // dialog, which we don't want.  In addition, there may not be a default
+  // button, but we certainly want focus to remain within the dialog.
+  try {
+    this.getElement().focus();
+  } catch (e) {
+    // Swallow this. IE can throw an error if the element can not be focused.
+  }
+  // Move focus to the default button (if any).
+  if (this.getButtonSet()) {
+    var defaultButton = this.getButtonSet().getDefault();
+    if (defaultButton) {
+      var doc = this.getDomHelper().getDocument();
+      var buttons = this.buttonEl_.getElementsByTagName('button');
+      for (var i = 0, button; button = buttons[i]; i++) {
+        if (button.name == defaultButton) {
+          try {
+            // Reopening a dialog can cause focusing the button to fail in
+            // WebKit and Opera. Shift the focus to a temporary <input>
+            // element to make refocusing the button possible.
+            if (goog.userAgent.WEBKIT || goog.userAgent.OPERA) {
+              var temp = doc.createElement('input');
+              temp.style.cssText =
+                  'position:fixed;width:0;height:0;left:0;top:0;';
+              this.getElement().appendChild(temp);
+              temp.focus();
+              this.getElement().removeChild(temp);
+            }
+            button.focus();
+          } catch (e) {
+            // Swallow this. Could be the button is disabled
+            // and IE6 wishes to throw an error.
+          }
+          break;
+        }
+      }
+    }
+  }
+};
+
+
+/**
  * Make the background element the size of the document.
  *
- * NOTE: We must hide the background element before measuring the
+ * NOTE(user): We must hide the background element before measuring the
  * document, otherwise the size of the background will stop the document from
  * shrinking to fit a smaller window.  This does cause a slight flicker in Linux
  * browsers, but should not be a common scenario.
@@ -961,6 +1025,10 @@ goog.ui.Dialog.prototype.reposition = function() {
  * @private
  */
 goog.ui.Dialog.prototype.onTitleCloseClick_ = function(e) {
+  if (!this.hasTitleCloseButton_) {
+    return;
+  }
+
   var bs = this.getButtonSet();
   var key = bs && bs.getCancel();
   // Only if there is a valid cancel button is an event dispatched.
@@ -972,6 +1040,44 @@ goog.ui.Dialog.prototype.onTitleCloseClick_ = function(e) {
   } else {
     this.setVisible(false);
   }
+};
+
+
+/**
+ * @return {boolean} Whether this dialog has a title close button.
+ */
+goog.ui.Dialog.prototype.getHasTitleCloseButton = function() {
+  return this.hasTitleCloseButton_;
+};
+
+
+/**
+ * Sets whether the dialog should have a close button in the title bar. There
+ * will always be an element for the title close button, but setting this
+ * parameter to false will cause it to be hidden and have no active listener.
+ * @param {boolean} b Whether this dialog should have a title close button.
+ */
+goog.ui.Dialog.prototype.setHasTitleCloseButton = function(b) {
+  this.hasTitleCloseButton_ = b;
+  if (this.titleCloseEl_) {
+    goog.style.showElement(this.titleCloseEl_, this.hasTitleCloseButton_);
+  }
+};
+
+
+/**
+ * @return {boolean} Whether the escape key should close this dialog.
+ */
+goog.ui.Dialog.prototype.isEscapeToCancel = function() {
+  return this.escapeToCancel_;
+};
+
+
+/**
+ * @param {boolean} b Whether the escape key should close this dialog.
+ */
+goog.ui.Dialog.prototype.setEscapeToCancel = function(b) {
+  this.escapeToCancel_ = b;
 };
 
 
@@ -999,11 +1105,6 @@ goog.ui.Dialog.prototype.disposeInternal = function() {
   // The superclass method calls exitDocument, which in turn calls
   // setVisible(false).  Between them they clean up all event handlers.
   goog.ui.Dialog.superClass_.disposeInternal.call(this);
-
-  if (this.focusHandler_) {
-    this.focusHandler_.dispose();
-    this.focusHandler_ = null;
-  }
 
   // The superclass method disposes of the element and its children,
   // unless the dialog was decorated.  We only have to worry about
@@ -1070,7 +1171,7 @@ goog.ui.Dialog.prototype.onButtonClick_ = function(e) {
  * Finds the parent button of an element (or null if there was no button
  * parent).
  * @param {Element} element The element that was clicked on.
- * @return {Element?} Returns the parent button or null if not found.
+ * @return {Element} Returns the parent button or null if not found.
  * @private
  */
 goog.ui.Dialog.prototype.findParentButton_ = function(element) {
@@ -1086,35 +1187,48 @@ goog.ui.Dialog.prototype.findParentButton_ = function(element) {
 
 
 /**
- * Handles keydown events, and dismisses the popup if cancel is pressed.  If
- * there is a cancel action in the ButtonSet, than that will be fired.
+ * Handles keydown and keypress events, and dismisses the popup if cancel is
+ * pressed.  If there is a cancel action in the ButtonSet, than that will be
+ * fired.  Also prevents tabbing out of the dialog.
  * @param {goog.events.BrowserEvent} e Browser's event object.
  * @private
  */
-goog.ui.Dialog.prototype.onKeyDown_ = function(e) {
+goog.ui.Dialog.prototype.onKey_ = function(e) {
   var close = false;
   var hasHandler = false;
   var buttonSet = this.getButtonSet();
   var target = e.target;
-  if (e.keyCode == goog.events.KeyCodes.ESC) {
-    // Only if there is a valid cancel button is an event dispatched.
-    var cancel = buttonSet && buttonSet.getCancel();
 
-    // Users may expect to hit escape on a SELECT element.
-    var isSpecialFormElement =
-        target.tagName == 'SELECT' && !target.disabled;
+  if (e.type == goog.events.EventType.KEYDOWN) {
+    // Escape and tab can only properly be handled in keydown handlers.
+    if (this.escapeToCancel_ && e.keyCode == goog.events.KeyCodes.ESC) {
+      // Only if there is a valid cancel button is an event dispatched.
+      var cancel = buttonSet && buttonSet.getCancel();
 
-    if (cancel && !isSpecialFormElement) {
+      // Users may expect to hit escape on a SELECT element.
+      var isSpecialFormElement =
+          target.tagName == 'SELECT' && !target.disabled;
+
+      if (cancel && !isSpecialFormElement) {
+        hasHandler = true;
+
+        var caption = buttonSet.get(cancel);
+        close = this.dispatchEvent(
+            new goog.ui.Dialog.Event(cancel,
+                /** @type {Element|null|string} */(caption)));
+      } else if (!isSpecialFormElement) {
+        close = true;
+      }
+    } else if (e.keyCode == goog.events.KeyCodes.TAB && e.shiftKey &&
+        target == this.getElement()) {
+      // Prevent the user from shift-tabbing backwards out of the dialog box.
+      // TODO(user): Instead, we should move the focus to the last tabbable
+      // element inside the dialog.
       hasHandler = true;
-
-      var caption = buttonSet.get(cancel);
-      close = this.dispatchEvent(
-          new goog.ui.Dialog.Event(cancel,
-              /** @type {Element|null|string} */(caption)));
-    } else if (!isSpecialFormElement) {
-      close = true;
     }
   } else if (e.keyCode == goog.events.KeyCodes.ENTER) {
+    // Only handle ENTER in keypress events, in case the action opens a
+    // popup window.
     var key;
     if (target.tagName == 'BUTTON') {
       // If focus was on a button, it must have been enabled, so we can fire
@@ -1140,12 +1254,6 @@ goog.ui.Dialog.prototype.onKeyDown_ = function(e) {
       close = this.dispatchEvent(
           new goog.ui.Dialog.Event(key, String(buttonSet.get(key))));
     }
-  } else if (e.keyCode == goog.events.KeyCodes.TAB && e.shiftKey &&
-      target == this.getElement()) {
-    // Prevent the user from shift-tabbing backwards out of the dialog box.
-    // TODO: Instead, we should move the focus to the last tabbable
-    // element inside the dialog.
-    hasHandler = true;
   }
 
   if (close || hasHandler) {
@@ -1213,7 +1321,7 @@ goog.inherits(goog.ui.Dialog.Event, goog.events.Event);
 
 /**
  * Event type constant for dialog events.
- * TODO: Change this to goog.ui.Dialog.EventType.SELECT.
+ * TODO(user): Change this to goog.ui.Dialog.EventType.SELECT.
  * @type {string}
  * @deprecated Use goog.ui.Dialog.EventType.SELECT.
  */
@@ -1242,13 +1350,13 @@ goog.ui.Dialog.EventType = {
 /**
  * A button set defines the behaviour of a set of buttons that the dialog can
  * show.  Uses the {@link goog.structs.Map} interface.
- * @param {goog.dom.DomHelper} opt_domHelper Optional DOM helper; see {@link
+ * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM helper; see {@link
  *    goog.ui.Component} for semantics.
  * @constructor
  * @extends {goog.structs.Map}
  */
 goog.ui.Dialog.ButtonSet = function(opt_domHelper) {
-  // TODO:  Refactor ButtonSet to extend goog.ui.Component?
+  // TODO(user):  Refactor ButtonSet to extend goog.ui.Component?
   this.dom_ = opt_domHelper || goog.dom.getDomHelper();
   goog.structs.Map.call(this);
 };
@@ -1265,7 +1373,7 @@ goog.ui.Dialog.ButtonSet.prototype.class_ = goog.getCssName('goog-buttonset');
 
 /**
  * The button that has default focus (references key in buttons_ map).
- * @type {string?}
+ * @type {?string}
  * @private
  */
 goog.ui.Dialog.ButtonSet.prototype.defaultButton_ = null;
@@ -1273,7 +1381,7 @@ goog.ui.Dialog.ButtonSet.prototype.defaultButton_ = null;
 
 /**
  * Optional container the button set should be rendered into.
- * @type {Element?}
+ * @type {Element}
  * @private
  */
 goog.ui.Dialog.ButtonSet.prototype.element_ = null;
@@ -1282,7 +1390,7 @@ goog.ui.Dialog.ButtonSet.prototype.element_ = null;
 /**
  * The button whose action is associated with the escape key and the X button
  * on the dialog.
- * @type {string?}
+ * @type {?string}
  * @private
  */
 goog.ui.Dialog.ButtonSet.prototype.cancelButton_ = null;
@@ -1295,9 +1403,9 @@ goog.ui.Dialog.ButtonSet.prototype.cancelButton_ = null;
  * @param {string} key Key used to identify the button in events.
  * @param {string|Element} caption A string caption or a DOM node that can be
  *     appended to a button element.
- * @param {boolean} opt_isDefault Whether this button is the default button,
+ * @param {boolean=} opt_isDefault Whether this button is the default button,
  *     Dialog will dispatch for this button if enter is pressed.
- * @param {boolean} opt_isCancel Whether this button has the same behaviour as
+ * @param {boolean=} opt_isCancel Whether this button has the same behaviour as
  *    cancel.  If escape is pressed this button will fire.
  * @return {goog.ui.Dialog.ButtonSet} The button set, to make it easy to chain
  *    "set" calls and build new ButtonSets.
@@ -1351,7 +1459,7 @@ goog.ui.Dialog.ButtonSet.prototype.render = function() {
  * to be the default and will receive focus when the button set is rendered.
  * If a button with a name of {@link goog.ui.Dialog.DefaultButtonKeys.CANCEL}
  * is found, it is assumed to have "Cancel" semantics.
- * TODO:  ButtonSet should be a goog.ui.Component.  Really.
+ * TODO(user):  ButtonSet should be a goog.ui.Component.  Really.
  * @param {Element} element The element to decorate; should contain buttons.
  */
 goog.ui.Dialog.ButtonSet.prototype.decorate = function(element) {
@@ -1381,7 +1489,7 @@ goog.ui.Dialog.ButtonSet.prototype.decorate = function(element) {
 
 /**
  * Sets the default button.
- * @param {string?} key The default button.
+ * @param {?string} key The default button.
  */
 goog.ui.Dialog.ButtonSet.prototype.setDefault = function(key) {
   this.defaultButton_ = key;
@@ -1390,7 +1498,7 @@ goog.ui.Dialog.ButtonSet.prototype.setDefault = function(key) {
 
 /**
  * Returns the default button.
- * @return {string?} The default button.
+ * @return {?string} The default button.
  */
 goog.ui.Dialog.ButtonSet.prototype.getDefault = function() {
   return this.defaultButton_;
@@ -1399,7 +1507,7 @@ goog.ui.Dialog.ButtonSet.prototype.getDefault = function() {
 
 /**
  * Sets the cancel button.
- * @param {string?} key The cancel button.
+ * @param {?string} key The cancel button.
  */
 goog.ui.Dialog.ButtonSet.prototype.setCancel = function(key) {
   this.cancelButton_ = key;
@@ -1408,7 +1516,7 @@ goog.ui.Dialog.ButtonSet.prototype.setCancel = function(key) {
 
 /**
  * Returns the cancel button.
- * @return {string?} The cancel button.
+ * @return {?string} The cancel button.
  */
 goog.ui.Dialog.ButtonSet.prototype.getCancel = function() {
   return this.cancelButton_;
@@ -1418,7 +1526,7 @@ goog.ui.Dialog.ButtonSet.prototype.getCancel = function() {
 /**
  * Returns the HTML Button element.
  * @param {string} key The button to return.
- * @return {Element?} The button, if found else null.
+ * @return {Element} The button, if found else null.
  */
 goog.ui.Dialog.ButtonSet.prototype.getButton = function(key) {
   var buttons = this.getAllButtons();
@@ -1457,7 +1565,7 @@ goog.ui.Dialog.DefaultButtonKeys = {
 // Construct some default sets
 (function() {
 
-  // TODO: Sharing the button set between instances does not work. We
+  // TODO(user): Sharing the button set between instances does not work. We
   // should create factory methods for these instead.
 
   /** @desc label for a dialog button. */
@@ -1479,7 +1587,7 @@ goog.ui.Dialog.DefaultButtonKeys = {
   var MSG_DIALOG_CONTINUE = goog.getMsg('Continue');
 
   goog.ui.Dialog.ButtonSet.OK = new goog.ui.Dialog.ButtonSet()
-      .set(goog.ui.Dialog.DefaultButtonKeys.OK, MSG_DIALOG_OK, true);
+      .set(goog.ui.Dialog.DefaultButtonKeys.OK, MSG_DIALOG_OK, true, true);
 
   goog.ui.Dialog.ButtonSet.OK_CANCEL = new goog.ui.Dialog.ButtonSet()
       .set(goog.ui.Dialog.DefaultButtonKeys.OK, MSG_DIALOG_OK, true)

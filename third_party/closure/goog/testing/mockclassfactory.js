@@ -1,16 +1,16 @@
+// Copyright 2008 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-// Copyright 2008 Google Inc. All Rights Reserved.
 
 /**
  * @fileoverview This file defines a factory that can be used to mock and
@@ -33,6 +33,7 @@
  *
  * For examples, please see the unit test.
  *
+*
  */
 
 
@@ -43,6 +44,7 @@ goog.require('goog.array');
 goog.require('goog.object');
 goog.require('goog.testing.LooseMock');
 goog.require('goog.testing.StrictMock');
+goog.require('goog.testing.TestCase');
 goog.require('goog.testing.mockmatchers');
 
 
@@ -259,8 +261,8 @@ goog.testing.MockClassFactory.PROTOTYPE_FIELDS_ = [
  */
 goog.testing.MockClassFactory.prototype.getClassName_ = function(namespace,
     classToMock) {
-  if (namespace === goog.global && goog.global['RuntimeObject']) {
-    namespace = goog.global['RuntimeObject']('*');
+  if (namespace === goog.global) {
+    namespace = goog.testing.TestCase.getGlobals();
   }
   for (var prop in namespace) {
     if (namespace[prop] === classToMock) {
@@ -429,7 +431,7 @@ goog.testing.MockClassFactory.prototype.getMockClass_ =
  * Gets a strict mock for a given class.
  * @param {Object} namespace A javascript namespace (e.g. goog.testing).
  * @param {Function} classToMock The class that will be mocked.
- * @param {*} var_args The arguments associated with this instance's
+ * @param {...*} var_args The arguments associated with this instance's
  *     constructor.
  * @return {goog.testing.StrictMock} The mock created for the provided class.
  */
@@ -445,7 +447,7 @@ goog.testing.MockClassFactory.prototype.getStrictMockClass =
  * Gets a loose mock for a given class.
  * @param {Object} namespace A javascript namespace (e.g. goog.testing).
  * @param {Function} classToMock The class that will be mocked.
- * @param {*} var_args The arguments associated with this instance's
+ * @param {...*} var_args The arguments associated with this instance's
  *     constructor.
  * @return {goog.testing.LooseMock} The mock created for the provided class.
  */

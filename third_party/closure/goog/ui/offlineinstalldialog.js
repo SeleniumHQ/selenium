@@ -1,22 +1,23 @@
+// Copyright 2007 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-// Copyright 2007 Google Inc. All Rights Reserved.
 
 /**
  * @fileoverview A dialog for presenting the offline (Gears) install flow. It
  * show information on how to install Gears if Gears is not already installed,
  * or will offer the option to enable the application for Gears support.
  *
+*
  * @see ../demos/offline.html
  */
 
@@ -42,11 +43,11 @@ goog.require('goog.window');
 
 /**
  * An offline install dialog.
- * @param {string} opt_class CSS class name for the dialog element, also used
+ * @param {string=} opt_class CSS class name for the dialog element, also used
  *    as a class name prefix for related elements; defaults to modal-dialog.
- * @param {boolean} opt_useIframeMask Work around windowed controls z-index
+ * @param {boolean=} opt_useIframeMask Work around windowed controls z-index
  *     issue by using an iframe instead of a div for bg element.
- * @param {goog.dom.DomHelper} opt_domHelper Optional DOM helper.
+ * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM helper.
  * @constructor
  * @extends {goog.ui.Dialog}
  */
@@ -649,7 +650,7 @@ goog.ui.OfflineInstallDialog.EnableScreen.prototype.getButtonSet = function() {
  * not enabled the current application for offline access.
  * @param {goog.ui.OfflineInstallDialog} dialog  The dialog this is a screen
  *     for.
- * @param {string} opt_type An optional type, for specifying a more specific
+ * @param {string=} opt_type An optional type, for specifying a more specific
  *     type of dialog. Only for use by subclasses.
  * @constructor
  * @extends {goog.ui.OfflineInstallDialogScreen}
@@ -847,7 +848,7 @@ goog.ui.OfflineInstallDialog.InstallScreen.prototype.getContent = function() {
 
 /**
  * Creats the html for a step.
- * @param {Number} stepNumber The number of the step.
+ * @param {number} stepNumber The number of the step.
  * @param {string} description The description of the step.
  * @private
  * @return {string} The step HTML in string form.

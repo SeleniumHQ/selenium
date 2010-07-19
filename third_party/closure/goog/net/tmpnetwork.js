@@ -1,16 +1,16 @@
+// Copyright 2006 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-// Copyright 2006 Google Inc. All Rights Reserved.
 
 /**
  * @fileoverview tmpnetwork.js contains some temporary networking functions
@@ -24,7 +24,6 @@ goog.provide('goog.net.tmpnetwork');
 
 goog.require('goog.Uri');
 goog.require('goog.net.ChannelDebug');
-goog.require('goog.userAgent');
 
 
 /**
@@ -49,27 +48,14 @@ goog.net.HTTP_STATUS_CACHED_ = 304;
 goog.net.GOOGLECOM_TIMEOUT = 10000;
 
 
-/**
- * Pings the network to check if an error is a server error or user's network
- * error.
- *
- * @param {Function} callback The function to call back with results.
- * @param {goog.Uri?} opt_imageUri The URI of an image to use for the
- *     network test.  You *must* provide an image URI; the default behavior is
- *     provided for compatibility with existing code, but the GWS team does not
- *     want people using images served off of google.com for this purpose. The
- *     default will go away when all usages have been changed.
- */
+
 goog.net.testGoogleCom = function(callback, opt_imageUri) {
   // We need to add a 'rand' to make sure the response is not fulfilled
   // by browser cache.
-  // The 'cleardot.gif' url can't have additional parameters, so we use
-  // the url redirector.
   var uri = opt_imageUri;
   if (!uri) {
-    uri = new goog.Uri('http://www.google.com/url');
+    uri = new goog.Uri('//www.google.com/images/cleardot.gif');
     uri.makeUnique();
-    uri.setParameterValues('q', 'http://www.google.com/images/cleardot.gif');
   }
   goog.net.testLoadImage(uri.toString(), goog.net.GOOGLECOM_TIMEOUT, callback);
 };
@@ -81,7 +67,7 @@ goog.net.testGoogleCom = function(callback, opt_imageUri) {
  * @param {number} timeout Milliseconds before giving up.
  * @param {Function} callback Function to call with results.
  * @param {number} retries The number of times to retry.
- * @param {number} opt_pauseBetweenRetriesMS Optional number of milliseconds
+ * @param {number=} opt_pauseBetweenRetriesMS Optional number of milliseconds
  *     between retries - defaults to 0.
  */
 goog.net.testLoadImageWithRetries = function(url, timeout, callback, retries,
@@ -93,10 +79,8 @@ goog.net.testLoadImageWithRetries = function(url, timeout, callback, retries,
     callback(false);
     return;
   }
-  if (!opt_pauseBetweenRetriesMS) {
-    opt_pauseBetweenRetriesMS = 0;
-  }
 
+  var pauseBetweenRetries = opt_pauseBetweenRetriesMS || 0;
   retries--;
   goog.net.testLoadImage(url, timeout, function(succeeded) {
     if (succeeded) {
@@ -105,8 +89,8 @@ goog.net.testLoadImageWithRetries = function(url, timeout, callback, retries,
       // try again
       goog.global.setTimeout(function() {
         goog.net.testLoadImageWithRetries(url, timeout, callback, retries,
-            opt_pauseBetweenRetriesMS);
-        }, opt_pauseBetweenRetriesMS);
+            pauseBetweenRetries);
+        }, pauseBetweenRetries);
     }
   });
 };
@@ -174,7 +158,7 @@ goog.net.testLoadImage = function(url, timeout, callback) {
  * @private
  */
 goog.net.clearImageCallbacks_ = function(img) {
-  // NOTE: Nullified individually to avoid compiler warnings
+  // NOTE(user): Nullified individually to avoid compiler warnings
   // (BUG 658126)
   img.onload = null;
   img.onerror = null;

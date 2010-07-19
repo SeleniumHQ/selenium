@@ -1,20 +1,21 @@
+// Copyright 2005 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Copyright 2005 Google Inc. All Rights Reserved.
-
 /**
  * @fileoverview A base class for event objects.
  *
+*
  */
 
 
@@ -28,8 +29,9 @@ goog.require('goog.Disposable');
  * stopPropagation.
  *
  * @param {string} type Event Type.
- * @param {Object} opt_target Reference to the object that is the target of this
- *     event.
+ * @param {Object=} opt_target Reference to the object that is the target of
+ *     this event. It has to implement the {@code EventTarget} interface
+ *     declared at {@link http://developer.mozilla.org/en/DOM/EventTarget}.
  * @constructor
  * @extends {goog.Disposable}
  */
@@ -94,4 +96,26 @@ goog.events.Event.prototype.stopPropagation = function() {
  */
 goog.events.Event.prototype.preventDefault = function() {
   this.returnValue_ = false;
+};
+
+
+/**
+ * Stops the propagation of the event. It is equivalent to
+ * {@code e.stopPropagation()}, but can be used as the callback argument of
+ * {@link goog.events.listen} without declaring another function.
+ * @param {!goog.events.Event} e An event.
+ */
+goog.events.Event.stopPropagation = function(e) {
+  e.stopPropagation();
+};
+
+
+/**
+ * Prevents the default action. It is equivalent to
+ * {@code e.preventDefault()}, but can be used as the callback argument of
+ * {@link goog.events.listen} without declaring another function.
+ * @param {!goog.events.Event} e An event.
+ */
+goog.events.Event.preventDefault = function(e) {
+  e.preventDefault();
 };

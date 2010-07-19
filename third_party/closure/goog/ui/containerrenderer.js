@@ -1,20 +1,21 @@
+// Copyright 2008 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Copyright 2008 Google Inc. All Rights Reserved.
-
 /**
  * @fileoverview Base class for container renderers.
  *
+*
  */
 
 goog.provide('goog.ui.ContainerRenderer');
@@ -112,7 +113,7 @@ goog.ui.ContainerRenderer.prototype.getAriaRole = function() {
 /**
  * Returns true if the element has a valid tab index (defined as >= 0), false
  * otherwise.  Only elements with a valid tab index can receive focus.
- * @param {Element?} element Element to check.
+ * @param {Element} element Element to check.
  * @return {boolean} Whether the element has a tab index.
  */
 goog.ui.ContainerRenderer.prototype.hasTabIndex = function(element) {
@@ -162,9 +163,9 @@ goog.ui.ContainerRenderer.prototype.createDom = function(container) {
 /**
  * Returns the DOM element into which child components are to be rendered,
  * or null if the container hasn't been rendered yet.
- * @param {Element?} element Root element of the container whose content element
+ * @param {Element} element Root element of the container whose content element
  *     is to be returned.
- * @return {Element?} Element to contain child elements (null if none).
+ * @return {Element} Element to contain child elements (null if none).
  */
 goog.ui.ContainerRenderer.prototype.getContentElement = function(element) {
   return element;
@@ -255,11 +256,12 @@ goog.ui.ContainerRenderer.prototype.setStateFromClassName = function(container,
  * @param {goog.ui.Container} container Container whose children are to be
  *     discovered.
  * @param {Element} element Element whose children are to be decorated.
+ * @param {Element=} opt_firstChild the first child to be decorated.
  */
 goog.ui.ContainerRenderer.prototype.decorateChildren = function(container,
-    element) {
+    element, opt_firstChild) {
   if (element) {
-    var node = element.firstChild, next;
+    var node = opt_firstChild || element.firstChild, next;
     // Tag soup HTML may result in a DOM where siblings have different parents.
     while (node && node.parentNode == element) {
       // Get the next sibling here, since the node may be replaced or removed.

@@ -1,23 +1,24 @@
+// Copyright 2007 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Copyright 2007 Google Inc. All Rights Reserved.
-
 /**
  * @fileoverview Menu item observing the filter text in a
  * {@link goog.ui.FilteredMenu}. The observer method is called when the filter
- * text changes and allows the menu item to update it's content and state based
+ * text changes and allows the menu item to update its content and state based
  * on the filter.
  *
+*
  */
 
 goog.provide('goog.ui.FilterObservingMenuItem');
@@ -34,10 +35,10 @@ goog.require('goog.ui.registry');
  * @param {goog.ui.ControlContent} content Text caption or DOM structure to
  *     display as the content of the item (use to add icons or styling to
  *     menus).
- * @param {Object} opt_model Data/model associated with the menu item.
- * @param {goog.dom.DomHelper} opt_domHelper Optional DOM helper used for
+ * @param {*=} opt_model Data/model associated with the menu item.
+ * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM helper used for
  *     document interactions.
- * @param {goog.ui.MenuItemRenderer} opt_renderer Optional renderer.
+ * @param {goog.ui.MenuItemRenderer=} opt_renderer Optional renderer.
  * @constructor
  * @extends {goog.ui.MenuItem}
  */
@@ -51,7 +52,7 @@ goog.inherits(goog.ui.FilterObservingMenuItem, goog.ui.MenuItem);
 
 /**
  * Function called when the filter text changes.
- * @type {Function?} function(goog.ui.FilterObservingMenuItem, string)
+ * @type {Function} function(goog.ui.FilterObservingMenuItem, string)
  * @private
  */
 goog.ui.FilterObservingMenuItem.prototype.observer_ = null;
@@ -66,7 +67,7 @@ goog.ui.FilterObservingMenuItem.prototype.enterDocument = function() {
 
 /**
  * Sets the observer functions.
- * @param {Function?} f function(goog.ui.FilterObservingMenuItem, string).
+ * @param {Function} f function(goog.ui.FilterObservingMenuItem, string).
  */
 goog.ui.FilterObservingMenuItem.prototype.setObserver = function(f) {
   this.observer_ = f;
@@ -76,7 +77,7 @@ goog.ui.FilterObservingMenuItem.prototype.setObserver = function(f) {
 
 /**
  * Calls the observer function if one has been specified.
- * @param {?string} opt_str Filter string.
+ * @param {?string=} opt_str Filter string.
  */
 goog.ui.FilterObservingMenuItem.prototype.callObserver = function(opt_str) {
   if (this.observer_) {

@@ -1,36 +1,38 @@
+// Copyright 2007 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Copyright 2007 Google Inc. All Rights Reserved.
-
 /**
  * @fileoverview Abstract base class for spell checker implementations.
  *
- * The spell checker supports two modes - synchrnous and asynchronous.
+ * The spell checker supports two modes - synchronous and asynchronous.
  *
- * In synchrnonus mode subclass calls processText_ which processes all the text
+ * In synchronous mode subclass calls processText_ which processes all the text
  * given to it before it returns. If the text string is very long, it could
  * cause warnings from the browser that considers the script to be
  * busy-looping.
  *
- * Asyncronous mode allows breaking processing large text segments without
+ * Asynchronous mode allows breaking processing large text segments without
  * encountering stop script warnings by rescheduling remaining parts of the
  * text processing to another stack.
  *
  * In asynchronous mode abstract spell checker keeps track of a number of text
  * chunks that have been processed after the very beginning, and returns every
  * so often so that the calling function could reschedule its execution on a
- * different stach (for example by calling setInterval(0)).
+ * different stack (for example by calling setInterval(0)).
  *
+*
+*
  */
 
 goog.provide('goog.ui.AbstractSpellChecker');
@@ -47,7 +49,6 @@ goog.require('goog.style');
 goog.require('goog.ui.MenuItem');
 goog.require('goog.ui.MenuSeparator');
 goog.require('goog.ui.PopupMenu');
-goog.require('goog.userAgent');
 
 
 /**
@@ -57,7 +58,7 @@ goog.require('goog.userAgent');
  * @param {goog.spell.SpellCheck} handler Instance of the SpellCheckHandler
  *     support object to use. A single instance can be shared by multiple editor
  *     components.
- * @param {goog.dom.DomHelper} opt_domHelper Optional DOM helper.
+ * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM helper.
  * @constructor
  * @extends {goog.ui.Component}
  */
@@ -223,7 +224,7 @@ goog.ui.AbstractSpellChecker.prototype.asyncMode_ = false;
 goog.ui.AbstractSpellChecker.prototype.asyncWordsPerBatch_ = 1000;
 
 /**
- * Current text to process when running in the asyncronous mode.
+ * Current text to process when running in the asynchronous mode.
  *
  * @type {string|undefined}
  * @private
@@ -440,7 +441,7 @@ goog.ui.AbstractSpellChecker.prototype.replaceWord = function(el, old, word) {
 /**
  * Retrieves the array of suggested spelling choices.
  *
- * @return {Array.<String>} Suggested spelling choices.
+ * @return {Array.<string>} Suggested spelling choices.
  * @private
  */
 goog.ui.AbstractSpellChecker.prototype.getSuggestions_ = function() {
@@ -462,7 +463,7 @@ goog.ui.AbstractSpellChecker.prototype.getSuggestions_ = function() {
  * Displays suggestions menu.
  *
  * @param {Element} el Element to display menu for.
- * @param {goog.events.BrowserEvent|goog.math.Coordinate} opt_pos Position to
+ * @param {goog.events.BrowserEvent|goog.math.Coordinate=} opt_pos Position to
  *     display menu at relative to the viewport (in client coordinates), or a
  *     mouse event.
  */
@@ -642,7 +643,7 @@ goog.ui.AbstractSpellChecker.prototype.updateElement =
 
 /**
  * Generates unique Ids for spell checker elements.
- * @param {number} opt_id Id to suffix with.
+ * @param {number=} opt_id Id to suffix with.
  * @return {string} Unique element id.
  * @protected
  */
@@ -718,12 +719,11 @@ goog.ui.AbstractSpellChecker.prototype.registerWordElement_ = function(word,
  * Should be overridden by implementation.
  *
  * @param {goog.spell.SpellCheck.WordStatus} status Status of word.
+ * @return {Object} Properties to apply to the element.
  * @protected
  */
 goog.ui.AbstractSpellChecker.prototype.getElementProperties =
-    function(status) {
-  throw Error('Need to override getElementProperties_ in derivative class');
-};
+    goog.abstractMethod;
 
 
 /**
@@ -870,40 +870,27 @@ goog.ui.AbstractSpellChecker.prototype.finishAsyncProcessing = function() {
 
 
 /**
- * Captures and drops goog.spell.SpellCheck.EventType.READY events. This is
- * used in dictionary recharge and async mode so that completion is not
- * signalled prematurely.
- *
- * @param {goog.events.Event} e goog.spell.SpellCheck.EventType.READY event.
- * @private
- */
-goog.ui.AbstractSpellChecker.prototype.captureReadyEvents_ = function(e) {
-  e.stopPropagation();
-};
-
-
-/**
  * Blocks processing of spell checker READY events. This is used in dictionary
- * recharge and async mode so that completion is not signalled prematurely.
+ * recharge and async mode so that completion is not signaled prematurely.
  *
  * @protected
  */
 goog.ui.AbstractSpellChecker.prototype.blockReadyEvents = function() {
   goog.events.listen(this.handler_, goog.spell.SpellCheck.EventType.READY,
-                     this.captureReadyEvents_, true, this);
+      goog.events.Event.stopPropagation, true);
 };
 
 
 /**
  * Unblocks processing of spell checker READY events. This is used in
- * dictionary recharge and async mode so that completion is not signalled
+ * dictionary recharge and async mode so that completion is not signaled
  * prematurely.
  *
  * @protected
  */
 goog.ui.AbstractSpellChecker.prototype.unblockReadyEvents = function() {
   goog.events.unlisten(this.handler_, goog.spell.SpellCheck.EventType.READY,
-                     this.captureReadyEvents_, true, this);
+      goog.events.Event.stopPropagation, true);
 };
 
 
@@ -1043,7 +1030,7 @@ goog.ui.AbstractSpellChecker.Direction = {
 
 
 /**
- * Constants for the result of asynchrnonus processing.
+ * Constants for the result of asynchronous processing.
  * @enum {number}
  */
 goog.ui.AbstractSpellChecker.AsyncResult = {

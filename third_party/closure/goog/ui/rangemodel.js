@@ -1,16 +1,16 @@
+// Copyright 2006 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-// Copyright 2006 Google Inc. All Rights Reserved.
 
 /**
  * @fileoverview Implementation of a range model. This is an implementation of
@@ -23,6 +23,7 @@
  *
  * Based on http://webfx.eae.net/dhtml/slider/js/range.js
  *
+*
  */
 
 goog.provide('goog.ui.RangeModel');
@@ -71,7 +72,7 @@ goog.ui.RangeModel.prototype.extent_ = 0;
 
 
 /**
- * @type {number?}
+ * @type {?number}
  * @private
  */
 goog.ui.RangeModel.prototype.step_ = 1;
@@ -246,7 +247,7 @@ goog.ui.RangeModel.prototype.getMaximum = function() {
 /**
  * Returns the step value. The step value is used to determine how to round the
  * value.
- * @return {number?} The maximimum value for the range model.
+ * @return {?number} The maximimum value for the range model.
  */
 goog.ui.RangeModel.prototype.getStep = function() {
   return this.step_;
@@ -255,7 +256,7 @@ goog.ui.RangeModel.prototype.getStep = function() {
 
 /**
  * Sets the step. The step value is used to determine how to round the value.
- * @param {number?} step  The step size.
+ * @param {?number} step  The step size.
  */
 goog.ui.RangeModel.prototype.setStep = function(step) {
   if (this.step_ != step) {

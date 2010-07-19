@@ -1,16 +1,16 @@
+// Copyright 2008 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-// Copyright 2008 Google Inc.
 
 /**
  * @fileoverview Contains the NIX (Native IE XDC) method transport for
@@ -26,6 +26,7 @@
  * (except for the interface they expose). This therefore provides a safe
  * method of transport.
  *
+*
  *
  * Initially based on FrameElementTransport which shares some similarities
  * to this method.
@@ -41,7 +42,7 @@ goog.require('goog.net.xpc.Transport');
 /**
  * NIX method transport.
  *
- * NOTE: NIX method tested in all IE versions starting from 6.0.
+ * NOTE(user): NIX method tested in all IE versions starting from 6.0.
  *
  * @param {goog.net.xpc.CrossPageChannel} channel The channel this transport
  *     belongs to.
@@ -58,7 +59,7 @@ goog.net.xpc.NixTransport = function(channel) {
 
   /**
    * The authorization token, if any, used by this transport.
-   * @type {string?}
+   * @type {?string}
    * @private
    */
   this.authToken_ = channel[goog.net.xpc.CfgFields.AUTH_TOKEN] || '';
@@ -66,7 +67,7 @@ goog.net.xpc.NixTransport = function(channel) {
   /**
    * The authorization token, if any, that must be sent by the other party
    * for setup to occur.
-   * @type {string?}
+   * @type {?string}
    * @private
    */
   this.remoteAuthToken_ =

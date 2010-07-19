@@ -1,21 +1,22 @@
+// Copyright 2007 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-// Copyright 2007 Google Inc. All Rights Reserved.
 
 /**
  * @fileoverview A thicker wrapper around the DOM element returned from
  * the different draw methods of the graphics implementation, and
  * all interfaces that the various element types support.
+ * @author robbyw@google.com (Robby Walker)
  */
 
 goog.provide('goog.graphics.ext.Element');
@@ -165,7 +166,7 @@ goog.graphics.ext.Element.prototype.getParent = function() {
  * @param {number|string} value The value of the coordinate.
  * @param {goog.graphics.ext.Element.PositionType_} type The type of the
  *     coordinate.
- * @param {boolean} opt_chain Optional flag to specify this function is part
+ * @param {boolean=} opt_chain Optional flag to specify this function is part
  *     of a chain of calls and therefore transformations should be set as
  *     pending but not yet performed.
  * @private
@@ -187,7 +188,7 @@ goog.graphics.ext.Element.prototype.setPosition_ = function(position, value,
  * @param {goog.graphics.ext.Element.Position_} position The position object to
  *     set the value on.
  * @param {string|number} size The new width/height value.
- * @param {boolean} opt_chain Optional flag to specify this function is part
+ * @param {boolean=} opt_chain Optional flag to specify this function is part
  *     of a chain of calls and therefore transformations should be set as
  *     pending but not yet performed.
  * @private
@@ -238,7 +239,7 @@ goog.graphics.ext.Element.prototype.getLeft = function() {
  * Sets the left coordinate of the element.  Overwrites any previous value of
  * left, center, or right for this element.
  * @param {string|number} left The left coordinate.
- * @param {boolean} opt_chain Optional flag to specify this function is part
+ * @param {boolean=} opt_chain Optional flag to specify this function is part
  *     of a chain of calls and therefore transformations should be set as
  *     pending but not yet performed.
  */
@@ -263,7 +264,7 @@ goog.graphics.ext.Element.prototype.getRight = function() {
  * Sets the right coordinate of the element.  Overwrites any previous value of
  * left, center, or right for this element.
  * @param {string|number} right The right coordinate.
- * @param {boolean} opt_chain Optional flag to specify this function is part
+ * @param {boolean=} opt_chain Optional flag to specify this function is part
  *     of a chain of calls and therefore transformations should be set as
  *     pending but not yet performed.
  */
@@ -288,7 +289,7 @@ goog.graphics.ext.Element.prototype.getCenter = function() {
  * Sets the center coordinate of the element.  Overwrites any previous value of
  * left, center, or right for this element.
  * @param {string|number} center The center coordinate.
- * @param {boolean} opt_chain Optional flag to specify this function is part
+ * @param {boolean=} opt_chain Optional flag to specify this function is part
  *     of a chain of calls and therefore transformations should be set as
  *     pending but not yet performed.
  */
@@ -316,7 +317,7 @@ goog.graphics.ext.Element.prototype.getTop = function() {
  * Sets the top coordinate of the element.  Overwrites any previous value of
  * top, middle, or bottom for this element.
  * @param {string|number} top The top coordinate.
- * @param {boolean} opt_chain Optional flag to specify this function is part
+ * @param {boolean=} opt_chain Optional flag to specify this function is part
  *     of a chain of calls and therefore transformations should be set as
  *     pending but not yet performed.
  */
@@ -341,7 +342,7 @@ goog.graphics.ext.Element.prototype.getBottom = function() {
  * Sets the bottom coordinate of the element.  Overwrites any previous value of
  * top, middle, or bottom for this element.
  * @param {string|number} bottom The bottom coordinate.
- * @param {boolean} opt_chain Optional flag to specify this function is part
+ * @param {boolean=} opt_chain Optional flag to specify this function is part
  *     of a chain of calls and therefore transformations should be set as
  *     pending but not yet performed.
  */
@@ -366,7 +367,7 @@ goog.graphics.ext.Element.prototype.getMiddle = function() {
  * Sets the middle coordinate of the element.  Overwrites any previous value of
  * top, middle, or bottom for this element
  * @param {string|number} middle The middle coordinate.
- * @param {boolean} opt_chain Optional flag to specify this function is part
+ * @param {boolean=} opt_chain Optional flag to specify this function is part
  *     of a chain of calls and therefore transformations should be set as
  *     pending but not yet performed.
  */
@@ -393,7 +394,7 @@ goog.graphics.ext.Element.prototype.getWidth = function() {
 /**
  * Sets the width of the element.
  * @param {string|number} width The new width value.
- * @param {boolean} opt_chain Optional flag to specify this function is part
+ * @param {boolean=} opt_chain Optional flag to specify this function is part
  *     of a chain of calls and therefore transformations should be set as
  *     pending but not yet performed.
  */
@@ -432,7 +433,7 @@ goog.graphics.ext.Element.prototype.getHeight = function() {
 /**
  * Sets the height of the element.
  * @param {string|number} height The new height value.
- * @param {boolean} opt_chain Optional flag to specify this function is part
+ * @param {boolean=} opt_chain Optional flag to specify this function is part
  *     of a chain of calls and therefore transformations should be set as
  *     pending but not yet performed.
  */
@@ -466,7 +467,7 @@ goog.graphics.ext.Element.prototype.setMinHeight = function(minHeight) {
  * Shortcut for setting the left and top position.
  * @param {string|number} left The left coordinate.
  * @param {string|number} top The top coordinate.
- * @param {boolean} opt_chain Optional flag to specify this function is part
+ * @param {boolean=} opt_chain Optional flag to specify this function is part
  *     of a chain of calls and therefore transformations should be set as
  *     pending but not yet performed.
  */
@@ -481,7 +482,7 @@ goog.graphics.ext.Element.prototype.setPosition = function(left, top,
  * Shortcut for setting the width and height.
  * @param {string|number} width The new width value.
  * @param {string|number} height The new height value.
- * @param {boolean} opt_chain Optional flag to specify this function is part
+ * @param {boolean=} opt_chain Optional flag to specify this function is part
  *     of a chain of calls and therefore transformations should be set as
  *     pending but not yet performed.
  */
@@ -498,7 +499,7 @@ goog.graphics.ext.Element.prototype.setSize = function(width, height,
  * @param {string|number} top The top coordinate.
  * @param {string|number} width The new width value.
  * @param {string|number} height The new height value.
- * @param {boolean} opt_chain Optional flag to specify this function is part
+ * @param {boolean=} opt_chain Optional flag to specify this function is part
  *     of a chain of calls and therefore transformations should be set as
  *     pending but not yet performed.
  */
@@ -657,7 +658,7 @@ goog.graphics.ext.Element.prototype.transform = function() {
         (this.getWidth() || 1) / 2,
         (this.getHeight() || 1) / 2);
 
-    // TODO: this._fireEvent('transform', [ this ]);
+    // TODO(robbyw): this._fireEvent('transform', [ this ]);
   }
 };
 
@@ -787,8 +788,8 @@ goog.graphics.ext.Element.Position_.prototype.setSize = function(size) {
 
 /**
  * Converts the given x coordinate to a number value in units.
- * @param {string|number|null} v The coordinate to retrieve the value for.
- * @param {boolean} opt_forMaximum Whether we are computing the largest value
+ * @param {string|number} v The coordinate to retrieve the value for.
+ * @param {boolean=} opt_forMaximum Whether we are computing the largest value
  *     this coordinate would be in a parent of no size.
  * @return {number} The correct number of coordinate space units.
  * @private
@@ -884,8 +885,8 @@ goog.graphics.ext.Element.Position_.prototype.setPosition = function(value,
  *     have in a parent of no width/height.
  */
 goog.graphics.ext.Element.Position_.prototype.getMaxPosition = function() {
-  // TODO: Handle transformed or rotated coordinates
-  // TODO: Handle pixel based sizes?
+  // TODO(robbyw): Handle transformed or rotated coordinates
+  // TODO(robbyw): Handle pixel based sizes?
 
   return this.getValue_(this.distance_ || 0) + (
       goog.graphics.ext.coordinates.isSpecial(this.size_) ? 0 : this.getSize());
@@ -918,7 +919,7 @@ goog.graphics.ext.Element.Position_.prototype.isParentDependent = function() {
  * top/left edge expressed in the parent's coordinate system.  We cache this
  * because it is most freqeuently requested by the element and it is easy to
  * compute middle and end values from it.
- * @type {number?}
+ * @type {?number}
  * @private
  */
 goog.graphics.ext.Element.Position_.prototype.cachedValue_ = null;
@@ -926,7 +927,7 @@ goog.graphics.ext.Element.Position_.prototype.cachedValue_ = null;
 
 /**
  * A cache of computed x coordinates.
- * @type {Object?}
+ * @type {Object}
  * @private
  */
 goog.graphics.ext.Element.Position_.prototype.coordinateCache_ = null;

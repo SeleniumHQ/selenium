@@ -1,20 +1,21 @@
+// Copyright 2009 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Copyright 2009 Google Inc. All Rights Reserved.
-
 /**
  * @fileoverview Collection of unitility functions for Unicode character.
  *
+*
  */
 
 goog.provide('goog.i18n.uChar');
@@ -162,7 +163,8 @@ goog.i18n.uChar.createCharData = function() {
    *   as consise as possible. More details:
    *   docs/fileview?id=0B8NbxddKsFtwYjExMGJjNzgtYjkzOS00NjdiLTlmOGQtOGVhZDkyZDU5YjM4.
    */
-  var MSG_CP_EN_QUAD = goog.getMsg('En Quad');
+  var MSG_CP_CANADIAN_SYLLABICS_HYPHEN =
+      goog.getMsg('Canadian Syllabics Hyphen');
 
 
   /**
@@ -462,7 +464,7 @@ goog.i18n.uChar.createCharData = function() {
    *   as consise as possible. More details:
    *   docs/fileview?id=0B8NbxddKsFtwYjExMGJjNzgtYjkzOS00NjdiLTlmOGQtOGVhZDkyZDU5YjM4.
    */
-  var MSG_CP_IDEOGRAPHIC_SPACE = goog.getMsg('Ideographic Space');
+  var MSG_CP_EN_QUAD = goog.getMsg('En Quad');
 
 
   /**
@@ -619,6 +621,17 @@ goog.i18n.uChar.createCharData = function() {
    *   as consise as possible. More details:
    *   docs/fileview?id=0B8NbxddKsFtwYjExMGJjNzgtYjkzOS00NjdiLTlmOGQtOGVhZDkyZDU5YjM4.
    */
+  var MSG_CP_KAITHI_NUMBER_SIGN = goog.getMsg('Kaithi Number Sign');
+
+
+  /**
+   * @desc Name for a symbol, character or a letter. Used in a pop-up balloon,
+   *   shown to a document editing user trying to insert a special character.
+   *   The balloon help would appear while the user hovers over the character
+   *   displayed. Newlines are not allowed; translation should be a noun and
+   *   as consise as possible. More details:
+   *   docs/fileview?id=0B8NbxddKsFtwYjExMGJjNzgtYjkzOS00NjdiLTlmOGQtOGVhZDkyZDU5YjM4.
+   */
   var MSG_CP_LEFT_TO_RIGHT_EMBEDDING = goog.getMsg('Left-to-right Embedding');
 
 
@@ -631,6 +644,17 @@ goog.i18n.uChar.createCharData = function() {
    *   docs/fileview?id=0B8NbxddKsFtwYjExMGJjNzgtYjkzOS00NjdiLTlmOGQtOGVhZDkyZDU5YjM4.
    */
   var MSG_CP_HEBREW_PUNCTUATION_MAQAF = goog.getMsg('Hebrew Punctuation Maqaf');
+
+
+  /**
+   * @desc Name for a symbol, character or a letter. Used in a pop-up balloon,
+   *   shown to a document editing user trying to insert a special character.
+   *   The balloon help would appear while the user hovers over the character
+   *   displayed. Newlines are not allowed; translation should be a noun and
+   *   as consise as possible. More details:
+   *   docs/fileview?id=0B8NbxddKsFtwYjExMGJjNzgtYjkzOS00NjdiLTlmOGQtOGVhZDkyZDU5YjM4.
+   */
+  var MSG_CP_IDEOGRAPHIC_SPACE = goog.getMsg('Ideographic Space');
 
 
   /**
@@ -1050,7 +1074,7 @@ goog.i18n.uChar.createCharData = function() {
 
   goog.i18n.uChar.charData_ = {
     '\u0601': MSG_CP_ARABIC_SIGN_SANAH,
-    '\u2000': MSG_CP_EN_QUAD,
+    '\u1400': MSG_CP_CANADIAN_SYLLABICS_HYPHEN,
     '\u0603': MSG_CP_ARABIC_SIGN_SAFHA,
     '\u0602': MSG_CP_ARABIC_FOOTNOTE_MARKER,
     '\u2005': MSG_CP_FOUR_PER_EM_SPACE,
@@ -1077,7 +1101,7 @@ goog.i18n.uChar.createCharData = function() {
     '\u301C': MSG_CP_WAVE_DASH,
     ' ': MSG_CP_SPACE,
     '\u2E1A': MSG_CP_HYPHEN_WITH_DIAERESIS,
-    '\u3000': MSG_CP_IDEOGRAPHIC_SPACE,
+    '\u2000': MSG_CP_EN_QUAD,
     '\u202B': MSG_CP_RIGHT_TO_LEFT_EMBEDDING,
     '\u2006': MSG_CP_SIX_PER_EM_SPACE,
     '-': MSG_CP_HYPHEN_MINUS,
@@ -1091,8 +1115,10 @@ goog.i18n.uChar.createCharData = function() {
     '\u17B4': MSG_CP_KHMER_VOWEL_INHERENT_AQ,
     '\u2008': MSG_CP_PUNCTUATION_SPACE,
     '\uFFA0': MSG_CP_HALFWIDTH_HANGUL_FILLER,
+    '\u110BD': MSG_CP_KAITHI_NUMBER_SIGN,
     '\u202A': MSG_CP_LEFT_TO_RIGHT_EMBEDDING,
     '\u05BE': MSG_CP_HEBREW_PUNCTUATION_MAQAF,
+    '\u3000': MSG_CP_IDEOGRAPHIC_SPACE,
     '\u200A': MSG_CP_HAIR_SPACE,
     '\u00A0': MSG_CP_NO_BREAK_SPACE,
     '\uFF0D': MSG_CP_FULLWIDTH_HYPHEN_MINUS,

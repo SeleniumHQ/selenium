@@ -1,16 +1,16 @@
+// Copyright 2008 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-// Copyright 2008 Google Inc. All Rights Reserved.
 
 /**
  * @fileoverview  Class for making an element detach and float to remain
@@ -28,6 +28,7 @@
  * would be fully visible again, the element snaps back into place, replacing
  * the placeholder.
  *
+*
  * @see ../demos/scrollfloater.html
  *
  * Adapted from http://go/elementfloater.js
@@ -48,12 +49,12 @@ goog.require('goog.userAgent');
 /**
  * Creates a ScrollFloater; see file overview for details.
  *
- * @param {Element} opt_parentElement Where to attach the element when it's
+ * @param {Element=} opt_parentElement Where to attach the element when it's
  *     floating.  Default is the document body.  If the floating element
  *     contains form inputs, it will be necessary to attach it to the
  *     corresponding form element, or to an element in the DOM subtree under
  *     the form element.
- * @param {goog.dom.DomHelper} opt_domHelper Optional DOM helper.
+ * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM helper.
  * @constructor
  * @extends {goog.ui.Component}
  */
@@ -143,7 +144,7 @@ goog.ui.ScrollFloater.PLACEHOLDER_STYLE_PROPS_ = [
  * @type {string}
  * @private
  */
-goog.ui.ScrollFloater.CSS_CLASS_ = 'goog-scrollfloater';
+goog.ui.ScrollFloater.CSS_CLASS_ = goog.getCssName('goog-scrollfloater');
 
 
 /**
@@ -229,7 +230,7 @@ goog.ui.ScrollFloater.prototype.isFloating = function() {
 /**
  * When a scroll event occurs, compares the element's position to the current
  * document scroll position, and stops or starts floating behavior if needed.
- * @param {goog.events.Event} opt_e The event, which is ignored.
+ * @param {goog.events.Event=} opt_e The event, which is ignored.
  * @private
  */
 goog.ui.ScrollFloater.prototype.update_ = function(opt_e) {

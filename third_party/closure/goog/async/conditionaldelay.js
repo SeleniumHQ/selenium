@@ -1,16 +1,16 @@
+// Copyright 2008 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-// Copyright 2008 Google Inc. All Rights Reserved.
 
 /**
  * @fileoverview Defines a class useful for handling functions that must be
@@ -40,6 +40,7 @@
  *  // Stop the deferred function call (does nothing if it's not active).
  *  deferredCall.stop();
  *
+*
  */
 
 
@@ -52,7 +53,7 @@ goog.require('goog.async.Delay');
 
 /**
  * A ConditionalDelay object invokes the associated function after a specified
- * interval delay and checks it's return value. If the function returns
+ * interval delay and checks its return value. If the function returns
  * {@code true} the conditional delay is cancelled and {@see #onSuccess}
  * is called. Otherwise this object keeps to invoke the deferred function until
  * either it returns {@code true} or the timeout is exceeded. In the latter case
@@ -64,7 +65,7 @@ goog.require('goog.async.Delay');
  * @param {function():boolean} listener Function to call when the delay
  *     completes. Should return a value that type-converts to {@code true} if
  *     the call succeeded and this delay should be stopped.
- * @param {Object} opt_handler The object scope to invoke the function in.
+ * @param {Object=} opt_handler The object scope to invoke the function in.
  * @constructor
  * @extends {goog.Disposable}
  */
@@ -140,9 +141,9 @@ goog.async.ConditionalDelay.prototype.disposeInternal = function() {
  * repeatedly after the specified interval until the function returns
  * {@code true} or the timeout is exceeded. Calling start on an active timer
  * will stop the timer first.
- * @param {number} opt_interval The time interval between the function
+ * @param {number=} opt_interval The time interval between the function
  *     invocations (in milliseconds). Default is 0.
- * @param {number} opt_timeout The timeout interval (in milliseconds). Takes
+ * @param {number=} opt_timeout The timeout interval (in milliseconds). Takes
  *     precedence over the {@code opt_interval}, i.e. if the timeout is less
  *     than the invocation interval, the function will be called when the
  *     timeout is exceeded. A negative value means no timeout. Default is 0.

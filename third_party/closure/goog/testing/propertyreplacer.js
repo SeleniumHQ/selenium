@@ -1,20 +1,21 @@
+// Copyright 2008 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Copyright 2008 Google Inc. All Rights Reserved.
-
 /**
  * @fileoverview Helper class for creating stubs for testing.
  *
+*
  */
 
 goog.provide('goog.testing.PropertyReplacer');
@@ -54,8 +55,7 @@ goog.require('goog.userAgent');
  * <ul>
  *   <li>DOM subclasses aren't supported.
  *   <li>The value of the objects' constructor property must either be equal to
- *       the real constructor or kept untouched. In the latter case the objects'
- *       toString() method musn't be overridden.
+ *       the real constructor or kept untouched.
  * </ul>
  *
  * @constructor
@@ -102,7 +102,8 @@ goog.testing.PropertyReplacer.hasKey_ = function(obj, key) {
   // obj is an instance of a native class. In Opera we have to fall back on
   // examining obj.toString().
   if (obj.constructor == Object &&
-      (!goog.userAgent.OPERA || obj.toString() == '[object Object]')) {
+      (!goog.userAgent.OPERA ||
+          Object.prototype.toString.call(obj) == '[object Object]')) {
     return false;
   }
   try {
@@ -150,7 +151,7 @@ goog.testing.PropertyReplacer.deleteKey_ = function(obj, key) {
 
 
 /**
- * Changes a value in an object while saving its original state.
+ * Adds or changes a value in an object while saving its original state.
  * @param {Object|Function} obj The JavaScript or native object or function to
  *     alter. See the constraints in the class description.
  * @param {string} key The key to change the value for.
@@ -161,6 +162,31 @@ goog.testing.PropertyReplacer.prototype.set = function(obj, key, value) {
                   goog.testing.PropertyReplacer.NO_SUCH_KEY_;
   this.original_.push({object: obj, key: key, value: origValue});
   obj[key] = value;
+};
+
+
+/**
+ * Changes an existing value in an object to another one of the same type while
+ * saving its original state. The advantage of {@code replace} over {@link #set}
+ * is that {@code replace} protects against typos and erroneously passing tests
+ * after some members have been renamed during a refactoring.
+ * @param {Object|Function} obj The JavaScript or native object or function to
+ *     alter. See the constraints in the class description.
+ * @param {string} key The key to change the value for. It has to be present
+ *     either in {@code obj} or in its prototype chain.
+ * @param {*} value The new value to set. It has to have the same type as the
+ *     original value. The types are compared with {@link goog.typeOf}.
+ * @throws {Error} In case of missing key or type mismatch.
+ */
+goog.testing.PropertyReplacer.prototype.replace = function(obj, key, value) {
+  if (!(key in obj)) {
+    throw Error('Cannot replace missing property "' + key + '" in ' + obj);
+  }
+  if (goog.typeOf(obj[key]) != goog.typeOf(value)) {
+    throw Error('Cannot replace property "' + key + '" in ' + obj +
+        ' with a value of different type');
+  }
+  this.set(obj, key, value);
 };
 
 

@@ -1,21 +1,27 @@
+// Copyright 2007 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Copyright 2007 Google Inc. All Rights Reserved.
-
 /**
  * @fileoverview Class definitions for imageless rounded corners.
  *
+ * NOTE: This technique uses one Canvas or VML element per corner, and is quite
+ * slow. The border-radius CSS property is preferable, but not available in all
+ * browsers. ImagelessRoundedCorner should be avoided where performance is
+ * critical.
+ *
  * @supported IE 6.0+, Safari 2.0+, Firefox 1.5+, Opera 9.2+.
+*
  * @see ../demos/imagelessroundedcorner.html
  */
 
@@ -39,7 +45,7 @@ goog.require('goog.userAgent');
  * radius of the rounded corner is less than the width and/or height of the
  * containing element. This is a factory method for image-less rounded corner
  * classes.
- * @param {Element} element The container element for the rounded corner.
+ * @param {!Element} element The container element for the rounded corner.
  * @param {number} width The width of the element excluding the border, in
  *     pixels.
  * @param {number} height The height of the element excluding the border, in
@@ -48,13 +54,12 @@ goog.require('goog.userAgent');
  * @param {number} radius The radius of the rounded corner, in pixels. The
  *     radius must be less than or equal to the width or height (whichever
  *     is greater).
- * @param {number} location Location of the rounded corner. This should be a
- *     value from goog.ui.ImagelessRoundedCorner.Corner: TOP_LEFT, TOP_RIGHT,
- *     BOTTOM_LEFT, or BOTTOM_RIGHT.
+ * @param {goog.ui.ImagelessRoundedCorner.Corner} location Location of the
+ *     rounded corner.
  * @param {string} borderColor The color of the rounded corner.
- * @param {string} opt_backgroundColor The background color of the rounded
+ * @param {string=} opt_backgroundColor The background color of the rounded
  *     corner.
- * @param {goog.dom.DomHelper} opt_domHelper The DOM helper object for the
+ * @param {goog.dom.DomHelper=} opt_domHelper The DOM helper object for the
  *     document we want to render in.
  * @return {goog.ui.AbstractImagelessRoundedCorner|undefined} Imageless rounded
  *     corner instance.
@@ -120,54 +125,28 @@ goog.ui.ImagelessRoundedCorner.Corner = {
 /**
  * Specifies the top-left and bottom-left corners.
  * @type {number}
+ * @private
  */
-goog.ui.ImagelessRoundedCorner.Corner.LEFT =
+goog.ui.ImagelessRoundedCorner.LEFT_ =
     goog.ui.ImagelessRoundedCorner.Corner.TOP_LEFT |
     goog.ui.ImagelessRoundedCorner.Corner.BOTTOM_LEFT;
 
 
 /**
- * Specifies the top-right and bottom-right corners.
- * @type {number}
- */
-goog.ui.ImagelessRoundedCorner.Corner.RIGHT =
-    goog.ui.ImagelessRoundedCorner.Corner.TOP_RIGHT |
-    goog.ui.ImagelessRoundedCorner.Corner.BOTTOM_RIGHT;
-
-
-/**
  * Specifies the top-left and top-right corners.
  * @type {number}
+ * @private
  */
-goog.ui.ImagelessRoundedCorner.Corner.TOP =
+goog.ui.ImagelessRoundedCorner.TOP_ =
     goog.ui.ImagelessRoundedCorner.Corner.TOP_LEFT |
     goog.ui.ImagelessRoundedCorner.Corner.TOP_RIGHT;
-
-
-/**
- * Specifies the bottom-left and bottom-right corners.
- * @type {number}
- */
-goog.ui.ImagelessRoundedCorner.Corner.BOTTOM =
-    goog.ui.ImagelessRoundedCorner.Corner.BOTTOM_LEFT |
-    goog.ui.ImagelessRoundedCorner.Corner.BOTTOM_RIGHT;
-
-
-/**
- * Specifies all corners.
- * @type {number}
- */
-goog.ui.ImagelessRoundedCorner.Corner.ALL =
-    goog.ui.ImagelessRoundedCorner.Corner.TOP |
-    goog.ui.ImagelessRoundedCorner.Corner.BOTTOM;
-
 
 
 /**
  * Base class for various image-less rounded corner classes. Do not create
  * instances of this class. Instead, utilize
  * goog.ui.ImagelessRoundedCorner.create().
- * @param {Element} element The container element for the rounded corner.
+ * @param {!Element} element The container element for the rounded corner.
  * @param {number} width The width of the element excluding the border, in
  *     pixels.
  * @param {number} height The height of the element excluding the border, in
@@ -176,13 +155,12 @@ goog.ui.ImagelessRoundedCorner.Corner.ALL =
  * @param {number} radius The radius of the rounded corner, in pixels. The
  *     radius must be less than or equal to the width or height (whichever
  *     is greater).
- * @param {number} location Location of the rounded corner. This should be a
- *     value from goog.ui.ImagelessRoundedCorner.Corner: TOP_LEFT, TOP_RIGHT,
- *     BOTTOM_LEFT, or BOTTOM_RIGHT.
- * @param {string} borderColor The color of the rounded corner.
- * @param {string} opt_backgroundColor The background color of the
+ * @param {goog.ui.ImagelessRoundedCorner.Corner} location Location of the
  *     rounded corner.
- * @param {goog.dom.DomHelper} opt_domHelper The DOM helper object for the
+ * @param {string} borderColor The color of the rounded corner.
+ * @param {string=} opt_backgroundColor The background color of the
+ *     rounded corner.
+ * @param {goog.dom.DomHelper=} opt_domHelper The DOM helper object for the
  *     document we want to render in.
  * @constructor
  */
@@ -197,7 +175,7 @@ goog.ui.AbstractImagelessRoundedCorner = function(element,
                                                   opt_domHelper) {
   /**
    * The container element for the rounded corner.
-   * @type {Element}
+   * @type {!Element}
    * @private
    */
   this.element_ = element;
@@ -249,18 +227,18 @@ goog.ui.AbstractImagelessRoundedCorner = function(element,
    * @type {boolean}
    * @private
    */
-  this.isLeft_ = !!(location & goog.ui.ImagelessRoundedCorner.Corner.LEFT);
+  this.isLeft_ = !!(location & goog.ui.ImagelessRoundedCorner.LEFT_);
 
   /**
    * Indicates if this is a top rounded corner (ex. top left or top right).
    * @type {boolean}
    * @private
    */
-  this.isTop_ = !!(location & goog.ui.ImagelessRoundedCorner.Corner.TOP);
+  this.isTop_ = !!(location & goog.ui.ImagelessRoundedCorner.TOP_);
 
   /**
    * The DOM helper object for the document we want to render in.
-   * @type {goog.dom.DomHelper}
+   * @type {!goog.dom.DomHelper}
    * @private
    */
   this.domHelper_ = opt_domHelper || goog.dom.getDomHelper(this.element_);
@@ -281,14 +259,14 @@ goog.ui.AbstractImagelessRoundedCorner = function(element,
 
   /**
    * The x and y coordinates indicating where to begin drawing.
-   * @type {Array.<number>}
+   * @type {!Array.<number>}
    * @private
    */
   this.start_ = [];
 
   /**
    * The x and y coordinates indicating where to stop drawing.
-   * @type {Array.<number>}
+   * @type {!Array.<number>}
    * @private
    */
   this.end_ = [];
@@ -378,7 +356,7 @@ goog.ui.AbstractImagelessRoundedCorner.prototype.getBorderWidthOffset =
 
 /**
  * Returns the underlying DOM element containing the rounded corner.
- * @return {Element} The underlying DOM element.
+ * @return {!Element} The underlying DOM element.
  * @protected
  */
 goog.ui.AbstractImagelessRoundedCorner.prototype.getElement =
@@ -513,7 +491,7 @@ goog.ui.AbstractImagelessRoundedCorner.prototype.setBackgroundColor =
  * filler, then the arc, then finishing with the vertical filler.
  * Do not instantiate this class directly. Instead, use
  * goog.ui.ImagelessRoundedCorner.create().
- * @param {Element} element The element to be turned into a rounded corner.
+ * @param {!Element} element The element to be turned into a rounded corner.
  * @param {number} width The width of the element excluding the border, in
  *     pixels.
  * @param {number} height The height of the element excluding the border, in
@@ -522,13 +500,12 @@ goog.ui.AbstractImagelessRoundedCorner.prototype.setBackgroundColor =
  * @param {number} radius The radius of the rounded corner, in pixels. The
  *     radius must be less than or equal to the width or height (whichever
  *     is greater).
- * @param {number} location Location of the rounded corner. This should be a
- *     value from goog.ui.ImagelessRoundedCorner.Corner: TOP_LEFT, TOP_RIGHT,
- *     BOTTOM_LEFT, or BOTTOM_RIGHT.
+ * @param {goog.ui.ImagelessRoundedCorner.Corner} location Location of the
+ *     rounded corner.
  * @param {string} borderColor The color of the rounded corner.
- * @param {string} opt_backgroundColor The background color of the rounded
+ * @param {string=} opt_backgroundColor The background color of the rounded
  *     corner.
- * @param {goog.dom.DomHelper} opt_domHelper The DOM helper object for the
+ * @param {goog.dom.DomHelper=} opt_domHelper The DOM helper object for the
  *     document we want to render in.
  * @constructor
  * @extends {goog.ui.AbstractImagelessRoundedCorner}
@@ -555,7 +532,7 @@ goog.ui.CanvasRoundedCorner = function(element,
 
   /**
    * The canvas containing the rounded corner.
-   * @type {Element}
+   * @type {!Element}
    * @private
    */
   this.canvas_ = this.domHelper_.createDom('canvas', {
@@ -602,7 +579,7 @@ goog.inherits(goog.ui.CanvasRoundedCorner,
  * The x and y coordinates of the corner opposite the rounded corner arc,
  * with the stroke thickness offset added. This is defined if
  * backgroundColor_ is defined.
- * @type {Array.<number>?}
+ * @type {Array.<number>}
  * @private
  */
 goog.ui.CanvasRoundedCorner.prototype.oppositeCorner_;
@@ -649,11 +626,7 @@ goog.ui.CanvasRoundedCorner.RADIANS_THREE_HALVES_ = 1.5 * Math.PI;
 goog.ui.CanvasRoundedCorner.RADIANS_TWO_ = 2 * Math.PI;
 
 
-/**
- * Returns the end angle of the arc for the rounded corner.
- * @return {number} The end angle, in radians.
- * @protected
- */
+/** @inheritDoc */
 goog.ui.CanvasRoundedCorner.prototype.getEndAngle = function() {
   return this.isLeft_ ?
       goog.ui.CanvasRoundedCorner.RADIANS_ONE_ :
@@ -661,11 +634,7 @@ goog.ui.CanvasRoundedCorner.prototype.getEndAngle = function() {
 };
 
 
-/**
- * Returns the start angle of the arc for the rounded corner.
- * @return {number} The start angle, in radians.
- * @protected
- */
+/** @inheritDoc */
 goog.ui.CanvasRoundedCorner.prototype.getStartAngle = function() {
   return this.isTop_ ?
       goog.ui.CanvasRoundedCorner.RADIANS_THREE_HALVES_ :
@@ -673,19 +642,13 @@ goog.ui.CanvasRoundedCorner.prototype.getStartAngle = function() {
 };
 
 
-/**
- * Returns the underlying DOM element containing the rounded corner.
- * @return {Element} The underlying DOM element.
- * @protected
- */
+/** @inheritDoc */
 goog.ui.CanvasRoundedCorner.prototype.getElement = function() {
   return this.canvas_;
 };
 
 
-/**
- * Renders the rounded corner.
- */
+/** @inheritDoc */
 goog.ui.CanvasRoundedCorner.prototype.draw = function() {
   // Determine which direction to draw, and obtain the context.
   var counterClockwise = this.isLeft_ && this.isTop_ ||
@@ -794,7 +757,7 @@ goog.ui.CanvasRoundedCorner.prototype.drawSafari2WithBackground_ =
  * a single, continuous line, starting with the horizontal filler, then the arc,
  * then finishing with the vertical filler. Do not instantiate this class
  * directly. Instead, use goog.ui.ImagelessRoundedCorner.create().
- * @param {Element} element The element to be turned into a rounded corner.
+ * @param {!Element} element The element to be turned into a rounded corner.
  * @param {number} width The width of the element excluding the border, in
  *     pixels.
  * @param {number} height The height of the element excluding the border, in
@@ -803,13 +766,12 @@ goog.ui.CanvasRoundedCorner.prototype.drawSafari2WithBackground_ =
  * @param {number} radius The radius of the rounded corner, in pixels. The
  *     radius must be less than or equal to the width or height (whichever
  *     is greater).
- * @param {number} location Location of the rounded corner. This should be a
- *     value from goog.ui.ImagelessRoundedCorner.Corner: TOP_LEFT, TOP_RIGHT,
- *     BOTTOM_LEFT, or BOTTOM_RIGHT.
+ * @param {goog.ui.ImagelessRoundedCorner.Corner} location Location of the
+ *     rounded corner.
  * @param {string} borderColor The color of the rounded corner.
- * @param {string} opt_backgroundColor The background color of the rounded
+ * @param {string=} opt_backgroundColor The background color of the rounded
  *     corner.
- * @param {goog.dom.DomHelper} opt_domHelper The DOM helper object for the
+ * @param {goog.dom.DomHelper=} opt_domHelper The DOM helper object for the
  *     document we want to render in.
  * @constructor
  * @extends {goog.ui.AbstractImagelessRoundedCorner}
@@ -845,7 +807,7 @@ goog.ui.VmlRoundedCorner = function(element,
 
   /**
    * VML wrapper API object.
-   * @type {goog.graphics.VmlGraphics}
+   * @type {!goog.graphics.VmlGraphics}
    * @private
    */
   this.graphics_ = new goog.graphics.VmlGraphics(this.width_,
@@ -855,7 +817,7 @@ goog.ui.VmlRoundedCorner = function(element,
                                                  this.domHelper_);
   /**
    * Container element that will contain the actual rounded corner.
-   * @type {Element}
+   * @type {!Element}
    * @private
    */
   this.container_ = this.domHelper_.createDom('div', {
@@ -867,39 +829,25 @@ goog.ui.VmlRoundedCorner = function(element,
 goog.inherits(goog.ui.VmlRoundedCorner, goog.ui.AbstractImagelessRoundedCorner);
 
 
-/**
- * Returns the end angle of the arc for the rounded corner.
- * @return {number} The end angle, in degrees.
- * @protected
- */
+/** @inheritDoc */
 goog.ui.VmlRoundedCorner.prototype.getEndAngle = function() {
   return this.isLeft_ ? 180 : 360;
 };
 
 
-/**
- * Returns the start angle of the arc for the rounded corner.
- * @return {number} The start angle, in degrees.
- * @protected
- */
+/** @inheritDoc */
 goog.ui.VmlRoundedCorner.prototype.getStartAngle = function() {
   return this.isTop_ ? 270 : 90;
 };
 
 
-/**
- * Returns the underlying DOM element containing the rounded corner.
- * @return {Element} The underlying DOM element.
- * @protected
- */
+/** @inheritDoc */
 goog.ui.VmlRoundedCorner.prototype.getElement = function() {
   return this.container_;
 };
 
 
-/**
- * Renders the rounded corner.
- */
+/** @inheritDoc */
 goog.ui.VmlRoundedCorner.prototype.draw = function() {
   // Determine which direction to draw, and enable VML.
   var clockwise = this.isLeft_ && !this.isTop_ ||
@@ -1011,7 +959,7 @@ goog.ui.VmlRoundedCorner.prototype.extractShapeNode_ = function() {
 
 /**
  * Indicates if the specified node is a 'shape' node.
- * @param {Object} node The DOM node to inspect.
+ * @param {Node} node The DOM node to inspect.
  * @return {boolean} true if the node is an element node with the name 'shape',
  *     and false otherwise.
  * @private

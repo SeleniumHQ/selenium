@@ -1,22 +1,23 @@
+// Copyright 2006 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-// Copyright 2006 Google Inc. All Rights Reserved.
 
 /**
  * @fileoverview Definition of the ChannelDebug class. ChannelDebug provides
  * a utility for tracing and debugging the BrowserChannel requests.
  *
- * TODO - allow client to specify a custom redaction policy
+ * TODO(user) - allow client to specify a custom redaction policy
+*
  */
 
 /**
@@ -25,7 +26,6 @@
 goog.provide('goog.net.ChannelDebug');
 goog.require('goog.debug.Logger');
 goog.require('goog.json');
-goog.require('goog.string');
 
 
 /**
@@ -58,7 +58,7 @@ goog.net.ChannelDebug.prototype.getLogger = function() {
  * @param {goog.Uri} uri The request destination.
  * @param {string|number|undefined} id The request id.
  * @param {number} attempt Which attempt # the request was.
- * @param {string?} postData The data posted in the request.
+ * @param {?string} postData The data posted in the request.
  */
 goog.net.ChannelDebug.prototype.xmlHttpChannelRequest =
     function(verb, uri, id, attempt, postData) {
@@ -89,8 +89,8 @@ goog.net.ChannelDebug.prototype.xmlHttpChannelResponseMetaData =
 /**
  * Logs the response data received from an XmlHttp request.
  * @param {string|number|undefined} id The request id.
- * @param {string?} responseText The response text.
- * @param {string?} opt_desc Optional request description.
+ * @param {?string} responseText The response text.
+ * @param {?string=} opt_desc Optional request description.
  */
 goog.net.ChannelDebug.prototype.xmlHttpChannelResponseText =
     function(id, responseText, opt_desc) {
@@ -162,7 +162,7 @@ goog.net.ChannelDebug.prototype.debug = function(text) {
 /**
  * Logs an exception
  * @param {Error} e The error or error event.
- * @param {string} opt_msg The optional message, defaults to 'Exception'.
+ * @param {string=} opt_msg The optional message, defaults to 'Exception'.
  */
 goog.net.ChannelDebug.prototype.dumpException = function(e, opt_msg) {
   this.severe((opt_msg || 'Exception') + e);
@@ -199,8 +199,8 @@ goog.net.ChannelDebug.prototype.severe = function(text) {
 /**
  * Removes potentially private data from a response so that we don't
  * accidentally save private and personal data to the server logs.
- * @param {string?} responseText A JSON response to clean.
- * @return {string?} The cleaned response.
+ * @param {?string} responseText A JSON response to clean.
+ * @return {?string} The cleaned response.
  * @private
  */
 goog.net.ChannelDebug.prototype.redactResponse_ = function(responseText) {
@@ -258,8 +258,8 @@ goog.net.ChannelDebug.prototype.maybeRedactArray_ = function(array) {
 /**
  * Removes potentially private data from a request POST body so that we don't
  * accidentally save private and personal data to the server logs.
- * @param {string?} data The data string to clean.
- * @return {string?} The data string with sensitive data replaced by 'redacted'.
+ * @param {?string} data The data string to clean.
+ * @return {?string} The data string with sensitive data replaced by 'redacted'.
  * @private
  */
 goog.net.ChannelDebug.prototype.maybeRedactPostData_ = function(data) {

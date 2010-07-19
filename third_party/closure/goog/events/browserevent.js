@@ -1,44 +1,46 @@
+// Copyright 2005 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-// Copyright 2005 Google Inc. All Rights Reserved.
 
 /**
  * @fileoverview A patched, standardized event object for browser events.
  *
  * <pre>
  * The patched event object contains the following members:
- * - type           {String}    Event type, e.g. 'click'
+ * - type           {string}    Event type, e.g. 'click'
  * - timestamp      {Date}      A date object for when the event was fired
  * - target         {Object}    The element that actually triggered the event
  * - currentTarget  {Object}    The element the listener is attached to
  * - relatedTarget  {Object}    For mouseover and mouseout, the previous object
- * - offsetX        {Number}    X-coordinate relative to target
- * - offsetY        {Number}    Y-coordinate relative to target
- * - clientX        {Number}    X-coordinate relative to viewport
- * - clientY        {Number}    Y-coordinate relative to viewport
- * - screenX        {Number}    X-coordinate relative to the edge of the screen
- * - screenY        {Number}    Y-coordinate relative to the edge of the screen
- * - button         {Number}    Mouse button. Use isButton() to test.
- * - keyCode        {Number}    Key-code
- * - ctrlKey        {Boolean}   Was ctrl key depressed
- * - altKey         {Boolean}   Was alt key depressed
- * - shiftKey       {Boolean}   Was shift key depressed
- * - metaKey        {Boolean}   Was meta key depressed
+ * - offsetX        {number}    X-coordinate relative to target
+ * - offsetY        {number}    Y-coordinate relative to target
+ * - clientX        {number}    X-coordinate relative to viewport
+ * - clientY        {number}    Y-coordinate relative to viewport
+ * - screenX        {number}    X-coordinate relative to the edge of the screen
+ * - screenY        {number}    Y-coordinate relative to the edge of the screen
+ * - button         {number}    Mouse button. Use isButton() to test.
+ * - keyCode        {number}    Key-code
+ * - ctrlKey        {boolean}   Was ctrl key depressed
+ * - altKey         {boolean}   Was alt key depressed
+ * - shiftKey       {boolean}   Was shift key depressed
+ * - metaKey        {boolean}   Was meta key depressed
  *
  * NOTE: The keyCode member contains the raw browser keyCode. For normalized
  * key and character code use {@link goog.events.KeyHandler}.
  * </pre>
  *
+*
+*
  */
 
 goog.provide('goog.events.BrowserEvent');
@@ -54,8 +56,8 @@ goog.require('goog.userAgent');
  * object.
  * The content of this object will not be initialized if no event object is
  * provided. If this is the case, init() needs to be invoked separately.
- * @param {Event} opt_e Browser event object.
- * @param {Node} opt_currentTarget Current target for event.
+ * @param {Event=} opt_e Browser event object.
+ * @param {Node=} opt_currentTarget Current target for event.
  * @constructor
  * @extends {goog.events.Event}
  */
@@ -205,6 +207,14 @@ goog.events.BrowserEvent.prototype.metaKey = false;
 
 
 /**
+ * Whether the deafault platform modifier key was pressed at time of event.
+ * (This is control for all platformes except Mac, where it's Meta.
+ * @type {boolean}
+ */
+goog.events.BrowserEvent.prototype.platformModifierKey = false;
+
+
+/**
  * The browser event object.
  * @type {Event}
  * @private
@@ -216,7 +226,7 @@ goog.events.BrowserEvent.prototype.event_ = null;
  * Accepts a browser event object and creates a patched, cross browser event
  * object.
  * @param {Event} e Browser event object.
- * @param {Node} opt_currentTarget Current target for event.
+ * @param {Node=} opt_currentTarget Current target for event.
  */
 goog.events.BrowserEvent.prototype.init = function(e, opt_currentTarget) {
   var type = this.type = e.type;
@@ -233,9 +243,11 @@ goog.events.BrowserEvent.prototype.init = function(e, opt_currentTarget) {
       /** @preserveTry */
       try {
         relatedTarget = relatedTarget.nodeName && relatedTarget;
-      } catch (err) {}
+      } catch (err) {
+        relatedTarget = null;
+      }
     }
-    // TODO: Use goog.events.EventType when it has been refactored into its
+    // TODO(user): Use goog.events.EventType when it has been refactored into its
     // own file.
   } else if (type == 'mouseover') {
     relatedTarget = e.fromElement;
@@ -260,6 +272,7 @@ goog.events.BrowserEvent.prototype.init = function(e, opt_currentTarget) {
   this.altKey = e.altKey;
   this.shiftKey = e.shiftKey;
   this.metaKey = e.metaKey;
+  this.platformModifierKey = goog.userAgent.MAC ? e.metaKey : e.ctrlKey;
   this.event_ = e;
   delete this.returnValue_;
   delete this.propagationStopped_;

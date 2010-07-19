@@ -1,20 +1,21 @@
+// Copyright 2007 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Copyright 2007 Google Inc. All Rights Reserved.
-
 /**
  * @fileoverview Definition of the Bubble class.
  *
+*
  *
  * @see ../demos/bubble.html
  *
@@ -27,7 +28,6 @@ goog.require('goog.Timer');
 goog.require('goog.dom');
 goog.require('goog.events');
 goog.require('goog.events.Event');
-goog.require('goog.events.EventTarget');
 goog.require('goog.math.Box');
 goog.require('goog.positioning');
 goog.require('goog.positioning.AbsolutePosition');
@@ -37,7 +37,7 @@ goog.require('goog.positioning.Corner');
 goog.require('goog.style');
 goog.require('goog.ui.Component');
 goog.require('goog.ui.Popup');
-
+goog.require('goog.ui.Popup.AnchoredPosition');
 
 
 /**
@@ -46,10 +46,10 @@ goog.require('goog.ui.Popup');
  *
  * @param {string|Element} message HTML string or an element to display inside
  *     the bubble.
- * @param {Object} opt_config The configuration
+ * @param {Object=} opt_config The configuration
  *     for the bubble. If not specified, the default configuration will be
  *     used. {@see goog.ui.Bubble.defaultConfig}.
- * @param {goog.dom.DomHelper} opt_domHelper Optional DOM helper.
+ * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM helper.
  * @constructor
  * @extends {goog.ui.Component}
  */
@@ -102,7 +102,7 @@ goog.inherits(goog.ui.Bubble, goog.ui.Component);
 /**
  * In milliseconds, timeout after which the button auto-hides. Null means
  * infinite.
- * @type {number?}
+ * @type {?number}
  * @private
  */
 goog.ui.Bubble.prototype.timeout_ = null;
@@ -123,7 +123,7 @@ goog.ui.Bubble.prototype.listener_ = null;
 
 /**
  * Key returned by the listen function for the close button.
- * @type {Element?}
+ * @type {Element}
  * @private
  */
 goog.ui.Bubble.prototype.anchor_ = null;

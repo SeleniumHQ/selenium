@@ -1,25 +1,25 @@
+// Copyright 2007 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Copyright 2007 Google Inc. All Rights Reserved.
-
 /**
  * @fileoverview Datastructure: Trie.
  *
+*
  *
  * This file provides the implementation of a trie data structure.  A trie is a
  * data structure that stores key/value pairs in a prefix tree.  See:
  *     http://en.wikipedia.org/wiki/Trie
- *
  */
 
 
@@ -34,7 +34,7 @@ goog.require('goog.structs');
  * Class for a Trie datastructure.  Trie data structures are made out of trees
  * of Trie classes.
  *
- * @param {Object} opt_trie Optional goog.structs.Trie or Object to initialize
+ * @param {Object=} opt_trie Optional goog.structs.Trie or Object to initialize
  *    trie with.
  * @constructor
  */
@@ -90,7 +90,7 @@ goog.structs.Trie.prototype.add = function(key, value) {
  * the trie.  O(L), where L is the length of the key.
  * @param {string} key The key.
  * @param {*} value The value.
- * @param {boolean} opt_add Throw exception if key is already in the trie.
+ * @param {boolean=} opt_add Throw exception if key is already in the trie.
  * @private
  */
 goog.structs.Trie.prototype.setOrAdd_ = function(key, value, opt_add) {
@@ -153,7 +153,7 @@ goog.structs.Trie.prototype.get = function(key) {
  *
  * @param {string} key The key to use for lookup. The given key as well as all
  *     prefixes of the key are retrieved.
- * @param {number?} opt_keyStartIndex Optional position in key to start lookup
+ * @param {?number=} opt_keyStartIndex Optional position in key to start lookup
  *     from. Defaults to 0 if not specified.
  * @return {Object} Map of end index of matching prefixes and corresponding
  *     values. Empty if no match found.
@@ -214,7 +214,7 @@ goog.structs.Trie.prototype.getValuesInternal_ = function(allValues) {
 /**
  * Gets the keys of the trie.  Not returned in any reliable order.  O(N) where
  * N is the number of nodes in the trie (or prefix subtree).
- * @param {string} opt_prefix Find only keys with this optional prefix.
+ * @param {string=} opt_prefix Find only keys with this optional prefix.
  * @return {Array} The keys in the trie.
  */
 goog.structs.Trie.prototype.getKeys = function(opt_prefix) {

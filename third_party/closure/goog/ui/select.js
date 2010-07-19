@@ -1,22 +1,23 @@
+// Copyright 2007 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-// Copyright 2007 Google Inc. All Rights Reserved.
 
 /**
  * @fileoverview A class that supports single selection from a dropdown menu,
  * with semantics similar to the native HTML <code>&lt;select&gt;</code>
  * element.
  *
+*
  * @see ../demos/select.html
  */
 
@@ -37,10 +38,10 @@ goog.require('goog.ui.registry');
  *
  * @param {goog.ui.ControlContent} caption Default caption or existing DOM
  *     structure to display as the button's caption when nothing is selected.
- * @param {goog.ui.Menu} opt_menu Menu containing selection options.
- * @param {goog.ui.ButtonRenderer} opt_renderer Renderer used to render or
+ * @param {goog.ui.Menu=} opt_menu Menu containing selection options.
+ * @param {goog.ui.ButtonRenderer=} opt_renderer Renderer used to render or
  *     decorate the control; defaults to {@link goog.ui.MenuButtonRenderer}.
- * @param {goog.dom.DomHelper} opt_domHelper Optional DOM hepler, used for
+ * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM hepler, used for
  *     document interaction.
  * @constructor
  * @extends {goog.ui.MenuButton}
@@ -281,7 +282,7 @@ goog.ui.Select.prototype.setSelectedIndex = function(index) {
  * argument, or clears the selection if no such option is found.  A null
  * argument also clears the selection.  Overrides {@link
  * goog.ui.Button#setValue}.
- * @param {Object} value Value of the option to be selected (null to clear
+ * @param {*} value Value of the option to be selected (null to clear
  *     the selection).
  */
 goog.ui.Select.prototype.setValue = function(value) {
@@ -331,7 +332,7 @@ goog.ui.Select.prototype.getSelectionModel = function() {
 /**
  * Creates a new selection model and sets up an event listener to handle
  * {@link goog.events.EventType.SELECT} events dispatched by it.
- * @param {goog.ui.Component} opt_component If provided, will add the
+ * @param {goog.ui.Component=} opt_component If provided, will add the
  *     component's children as items to the selection model.
  * @private
  */

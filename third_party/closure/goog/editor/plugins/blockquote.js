@@ -1,20 +1,23 @@
+// Copyright 2008 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Copyright 2008 Google, Inc. All Rights Reserved.
-
 /**
  * @fileoverview goog.editor plugin to handle splitting block quotes.
  *
+*
+*
+ * @author robbyw@google.com (Robby Walker)
  */
 
 goog.provide('goog.editor.plugins.Blockquote');
@@ -35,15 +38,15 @@ goog.require('goog.functions');
  * Plugin to handle splitting block quotes.  This plugin does nothing on its
  * own and should be used in conjunction with EnterHandler or one of its
  * subclasses.
- * @param {boolean} requiresClassnameToSplit Whether to split only blockquotes
+ * @param {boolean} requiresClassNameToSplit Whether to split only blockquotes
  *     that have the given classname.
- * @param {string} opt_classname The classname to apply to generated
+ * @param {string=} opt_className The classname to apply to generated
  *     blockquotes.  Defaults to 'tr_bq'.
  * @constructor
  * @extends {goog.editor.Plugin}
  */
-goog.editor.plugins.Blockquote = function(requiresClassnameToSplit,
-    opt_classname) {
+goog.editor.plugins.Blockquote = function(requiresClassNameToSplit,
+    opt_className) {
   goog.editor.Plugin.call(this);
 
   /**
@@ -52,7 +55,7 @@ goog.editor.plugins.Blockquote = function(requiresClassnameToSplit,
    * @type {boolean}
    * @private
    */
-  this.requiresClassnameToSplit_ = requiresClassnameToSplit;
+  this.requiresClassNameToSplit_ = requiresClassNameToSplit;
 
   /**
    * Classname to put on blockquotes that are generated via the toolbar for
@@ -62,7 +65,7 @@ goog.editor.plugins.Blockquote = function(requiresClassnameToSplit,
    * @type {string}
    * @private
    */
-  this.classname_ = opt_classname || goog.getCssName('tr_bq');
+  this.className_ = opt_className || goog.getCssName('tr_bq');
 };
 goog.inherits(goog.editor.plugins.Blockquote, goog.editor.Plugin);
 
@@ -111,23 +114,23 @@ goog.editor.plugins.Blockquote.prototype.isSilentCommand = goog.functions.TRUE;
  *                  set in order for it to count as a blockquote, false to
  *                  enforce that the classname must not be set in order for
  *                  it to count as a blockquote.
- * @param {boolean} requiresClassnameToSplit Whether only blockquotes with the
+ * @param {boolean} requiresClassNameToSplit Whether only blockquotes with the
  *     class name should be split.
- * @param {string} classname The official blockquote class name.
+ * @param {string} className The official blockquote class name.
  * @return {boolean} Whether node is a blockquote and if isAlreadySetup is
  *    true, then whether this is a setup blockquote.
  */
 goog.editor.plugins.Blockquote.isBlockquote = function(node, isAlreadySetup,
-    requiresClassnameToSplit, classname) {
+    requiresClassNameToSplit, className) {
   if (node.tagName != goog.dom.TagName.BLOCKQUOTE) {
-     return false;
+    return false;
   }
-  if (!requiresClassnameToSplit) {
+  if (!requiresClassNameToSplit) {
     return isAlreadySetup;
   }
-  var hasClassname = goog.dom.classes.has(/** @type {Element} */ (node),
-      classname);
-  return isAlreadySetup ? hasClassname : !hasClassname;
+  var hasClassName = goog.dom.classes.has(/** @type {Element} */ (node),
+      className);
+  return isAlreadySetup ? hasClassName : !hasClassName;
 };
 
 
@@ -175,7 +178,7 @@ goog.editor.plugins.Blockquote.removeAllWhiteSpaceNodes_ = function(nodes) {
  */
 goog.editor.plugins.Blockquote.prototype.isSetupBlockquote = function(node) {
   return goog.editor.plugins.Blockquote.isBlockquote(node, true,
-      this.requiresClassnameToSplit_, this.classname_);
+      this.requiresClassNameToSplit_, this.className_);
 };
 
 
@@ -191,11 +194,11 @@ goog.editor.plugins.Blockquote.prototype.isSupportedCommand = function(
  * function returns true, the event that caused it to be called should be
  * canceled.
  * @param {string} command The command to execute.
- * @param {Node|Object} var_args Single additional argument representing the
+ * @param {...*} var_args Single additional argument representing the
  *     current cursor position.  In IE, it is a single node.  In any other
  *     browser, it is an object with a {@code node} key and an {@code offset}
  *     key.
- * @return {Object|undefined} Boolean true when the quoted region has been
+ * @return {boolean|undefined} Boolean true when the quoted region has been
  *     split, false or undefined otherwise.
  * @override
  */
@@ -203,7 +206,7 @@ goog.editor.plugins.Blockquote.prototype.execCommandInternal = function(
     command, var_args) {
   var pos = arguments[1];
   if (command == goog.editor.plugins.Blockquote.SPLIT_COMMAND && pos &&
-      (this.classname_ || !this.requiresClassnameToSplit_)) {
+      (this.className_ || !this.requiresClassNameToSplit_)) {
     return goog.editor.BrowserFeature.HAS_W3C_RANGES ?
         this.splitQuotedBlockW3C_(pos) :
         this.splitQuotedBlockIE_(/** @type {Node} */ (pos));

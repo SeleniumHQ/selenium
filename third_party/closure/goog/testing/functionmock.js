@@ -1,16 +1,16 @@
+// Copyright 2008 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-// Copyright 2008 Google Inc. All Rights Reserved.
 
 /**
  * @fileoverview Enable mocking of functions not attached to objects
@@ -18,6 +18,7 @@
  *
  * See the unit tests for usage.
  *
+*
  */
 
 goog.provide('goog.testing');
@@ -34,7 +35,7 @@ goog.require('goog.testing.StrictMock');
 /**
  * Class used to mock a function. Useful for mocking closures and anonymous
  * callbacks etc. Creates a function object that extends goog.testing.StrictMock
- * @param {string} opt_functionName the optional name of the function to mock
+ * @param {string=} opt_functionName the optional name of the function to mock
  *     set to '[anonymous mocked function]' if not passed in.
  * @extends {goog.testing.StrictMock}
  * @constructor
@@ -76,7 +77,7 @@ goog.testing.MethodMock = function(scope, functionName) {
 
 
 /**
- * Reset the global function that we mocked back to it's original state
+ * Resets the global function that we mocked back to its original state.
  */
 goog.testing.MethodMock.prototype.$tearDown = function() {
   this.$propertyReplacer_.reset();
@@ -98,7 +99,7 @@ goog.testing.GlobalFunctionMock = function(functionName) {
 
 /**
  * Mocks a function. Convenience method for new goog.testing.FunctionMock
- * @param {string} opt_functionName the optional name of the function to mock
+ * @param {string=} opt_functionName the optional name of the function to mock
  *     set to '[anonymous mocked function]' if not passed in.
  * @return {goog.testing.FunctionMock} the mocked function.
  */
@@ -119,7 +120,8 @@ goog.testing.createMethodMock = function(scope, functionName) {
 
 
 /**
- * Convenience method for creating a mock for a constructor.
+ * Convenience method for creating a mock for a constructor. Copies class
+ * members to the mock.
  *
  * <p>When mocking a constructor to return a mocked instance, remember to create
  * the instance mock before mocking the constructor. If you mock the constructor
@@ -131,11 +133,21 @@ goog.testing.createMethodMock = function(scope, functionName) {
  * @return {goog.testing.MethodMock} the mocked constructor.
  */
 goog.testing.createConstructorMock = function(scope, constructorName) {
-  // The return value is a MethodMock and there is no difference in
-  // implementation between this method and createMethodMock. This alias is
-  // provided just to make code clearer and to make it easier to introduce a
-  // more specialized implementation if that is ever necessary.
-  return new goog.testing.MethodMock(scope, constructorName);
+  var realConstructor = scope[constructorName];
+  var constructorMock = new goog.testing.MethodMock(scope, constructorName);
+
+  // Copy class members from the real constructor to the mock. Do not copy
+  // the closure superClass_ property (see goog.inherits), the built-in
+  // prototype property, or properties added to Function.prototype
+  // (see goog.MODIFY_FUNCTION_PROTOTYPES in closure/base.js).
+  for (var property in realConstructor) {
+    if (property != 'superClass_' &&
+        property != 'prototype' &&
+        realConstructor.hasOwnProperty(property)) {
+      constructorMock[property] = realConstructor[property];
+    }
+  }
+  return constructorMock;
 };
 
 

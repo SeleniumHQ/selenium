@@ -1,22 +1,23 @@
+// Copyright 2006 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-// Copyright 2006 Google Inc. All Rights Reserved.
 
 /**
  * @fileoverview This class is now deprecated.  Use {@link goog.ui.Button} and
  * {@link goog.ui.CustomButtonRenderer} to create CCC-style buttons.  See
  * closure/demos/button.html for an example.
  *
+*
  */
 
 goog.provide('goog.ui.CccButton');
@@ -25,7 +26,6 @@ goog.require('goog.dom');
 goog.require('goog.dom.classes');
 goog.require('goog.events');
 goog.require('goog.events.Event');
-goog.require('goog.events.EventTarget');
 goog.require('goog.ui.DeprecatedButton');
 goog.require('goog.userAgent');
 
@@ -43,9 +43,9 @@ goog.require('goog.userAgent');
  *                 - text
  * </pre>
  *
- * @param {string} opt_class Optional class for component.
+ * @param {string=} opt_class Optional class for component.
  *     Default: 'goog-cccbutton'.
- * @param {boolean} opt_noPoundSignInHref An optional argument that, when true,
+ * @param {boolean=} opt_noPoundSignInHref An optional argument that, when true,
  *     instructs the button to not use the href="#" to create the link. The
  *     side effect of this option being true is that clicking the button
  *     triggers the window's onunload or onbeforeunload handler in IE. The
@@ -57,7 +57,7 @@ goog.require('goog.userAgent');
  * @deprecated Use {@link goog.ui.Button} instead.
  */
 goog.ui.CccButton = function(opt_class, opt_noPoundSignInHref) {
-  var className = opt_class ? opt_class : 'goog-cccbutton';
+  var className = opt_class ? opt_class : goog.getCssName('goog-cccbutton');
   goog.ui.DeprecatedButton.call(this, className);
 
   /**
@@ -114,7 +114,7 @@ goog.ui.CccButton.prototype.getNextUniqueId_ = function() {
 
 /**
  * Element that directly contains the caption for the component.
- * @type {Element?}
+ * @type {Element}
  * @private
  */
 goog.ui.DeprecatedButton.prototype.captionEl_ = null;
@@ -191,7 +191,7 @@ goog.ui.CccButton.prototype.setEnabled = function(enable) {
 
 /**
  * Renders the component. Throws an Error if the component is already rendered.
- * @param {Element} opt_element Element to render the compponent into.
+ * @param {Element=} opt_element Element to render the compponent into.
  *                              If omitted, then the componenet is appended to
  *                              the document.
  */

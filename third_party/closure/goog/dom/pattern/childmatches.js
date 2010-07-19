@@ -1,21 +1,22 @@
+// Copyright 2007 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-// Copyright 2007 Google Inc. All Rights Reserved.
 
 /**
  * @fileoverview DOM pattern to match any children of a tag, and
  * specifically collect those that match a child pattern.
  *
+ * @author robbyw@google.com (Robby Walker)
  */
 
 goog.provide('goog.dom.pattern.ChildMatches');
@@ -29,7 +30,7 @@ goog.require('goog.dom.pattern.MatchType');
  *
  * @param {goog.dom.pattern.AbstractPattern} childPattern Pattern to collect
  *     child matches of.
- * @param {number} opt_minimumMatches Enforce a minimum nuber of matches.
+ * @param {number=} opt_minimumMatches Enforce a minimum nuber of matches.
  *     Defaults to 0.
  * @constructor
  * @extends {goog.dom.pattern.AllChildren}
@@ -124,7 +125,7 @@ goog.dom.pattern.ChildMatches.prototype.matchToken = function(token, type) {
       return goog.dom.pattern.MatchType.MATCHING;
 
     case goog.dom.pattern.MatchType.BACKTRACK_MATCH:
-      // TODO: this should return something like BACKTRACK_NO_MATCH
+      // TODO(robbyw): this should return something like BACKTRACK_NO_MATCH
       // when we don't meet our minimum.
       this.needsReset_ = true;
       return (this.matches.length >= this.minimumMatches_) ?

@@ -1,21 +1,22 @@
+// Copyright 2007 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-// Copyright 2007 Google Inc. All Rights Reserved.
 
 /**
  * @fileoverview Interface for capturing URLs to a ResourceStore on the
  * LocalServer.
  *
+*
  */
 
 
@@ -35,9 +36,9 @@ goog.require('goog.gears');
  * @constructor
  * @extends {goog.events.EventTarget}
  * @param {string} name The name of the ResourceStore to capture the URLs to.
- * @param {string?} requiredCookie  A cookie that must be present for the
+ * @param {?string} requiredCookie  A cookie that must be present for the
  *     managed store to be active. Should have the form "foo=bar".
- * @param {GearsResourceStore?} opt_localServer The LocalServer for gears.
+ * @param {GearsResourceStore=} opt_localServer The LocalServer for gears.
  */
 goog.gears.UrlCapture = function(name, requiredCookie, opt_localServer) {
   goog.events.EventTarget.call(this);
@@ -57,7 +58,7 @@ goog.gears.UrlCapture = function(name, requiredCookie, opt_localServer) {
    * A cookie that must be present for the store to be active.
    * Should have the form "foo=bar". String cast is a safety measure since
    * Gears behaves very badly when it gets an unexpected data type.
-   * @type {string?}
+   * @type {?string}
    * @private
    */
   this.requiredCookie_ = requiredCookie ? String(requiredCookie) : null;
@@ -105,7 +106,7 @@ goog.gears.UrlCapture.prototype.logger_ =
 
 /**
  * The ResourceStore for gears, used to capture URLs.
- * @type {GearsResourceStore?}
+ * @type {GearsResourceStore}
  * @private
  */
 goog.gears.UrlCapture.prototype.resourceStore_ = null;
@@ -210,7 +211,7 @@ goog.gears.UrlCapture.prototype.capture = function(uris) {
 goog.gears.UrlCapture.prototype.abort = function(captureId) {
   this.logger_.fine('abort: ' + captureId);
 
-  // TODO Remove when Gears adds more rubust type handling.
+  // TODO(user) Remove when Gears adds more rubust type handling.
   // Safety measure since Gears behaves very badly if it gets an unexpected
   // data type.
   if (typeof captureId != 'number') {
@@ -327,8 +328,8 @@ goog.gears.UrlCapture.prototype.usesGoogUri_ = function(captureId) {
  * @extends {goog.events.Event}
  * @param {goog.gears.UrlCapture.EventType} type Type of event to dispatch.
  * @param {number} captureId The id of the capture that fired this event.
- * @param {string|goog.Uri} opt_uri The URI for the event.
- * @param {Array.<string|goog.Uri>} opt_errorUris The URIs that failed to load
+ * @param {string|goog.Uri=} opt_uri The URI for the event.
+ * @param {Array.<string|goog.Uri>=} opt_errorUris The URIs that failed to load
  * correctly.
  */
 goog.gears.UrlCapture.Event = function(type, captureId, opt_uri,

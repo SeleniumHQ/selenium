@@ -1,22 +1,23 @@
+// Copyright 2008 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-// Copyright 2008 Google Inc. All Rights Reserved.
 
 /**
  * @fileoverview Implementation of 32-bit hashing functions.
  *
  * This is a direct port from the Google Java Hash class
  *
+*
  */
 
 goog.provide('goog.crypt.hash32');
@@ -68,7 +69,7 @@ goog.crypt.hash32.encodeStringUtf8 = function(str) {
  * @return {number} 32-bit hash.
  */
 goog.crypt.hash32.encodeInteger = function(value) {
-  // TODO: Does this make sense in JavaScript with doubles?  Should we
+  // TODO(user): Does this make sense in JavaScript with doubles?  Should we
   // force the value to be in the correct range?
   return goog.crypt.hash32.mix32_({
     a: value,
@@ -81,9 +82,10 @@ goog.crypt.hash32.encodeInteger = function(value) {
 /**
  * Hashes a "byte" array to a 32-bit value using the supplied seed.
  * @param {Array.<number>} bytes Array of bytes.
- * @param {number} opt_offset The starting position to use for hash computation.
- * @param {number} opt_length Number of bytes that are used for hashing.
- * @param {number} opt_seed The seed.
+ * @param {number=} opt_offset The starting position to use for hash
+ * computation.
+ * @param {number=} opt_length Number of bytes that are used for hashing.
+ * @param {number=} opt_seed The seed.
  * @return {number} 32-bit hash.
  */
 goog.crypt.hash32.encodeByteArray = function(

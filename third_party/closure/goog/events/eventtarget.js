@@ -1,20 +1,22 @@
+// Copyright 2005 The Closure Library Authors. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an "AS-IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Copyright 2005 Google Inc. All Rights Reserved.
-
 /**
  * @fileoverview Implementation of EventTarget as defined by W3C DOM 2/3.
  *
+*
+*
  * @see ../demos/eventtarget.html
  */
 
@@ -128,10 +130,10 @@ goog.events.EventTarget.prototype.setParentEventTarget = function(parent) {
  * @param {Function|Object} handler The function to handle the event. The
  *     handler can also be an object that implements the handleEvent method
  *     which takes the event object as argument.
- * @param {boolean} opt_capture In DOM-compliant browsers, this determines
+ * @param {boolean=} opt_capture In DOM-compliant browsers, this determines
  *     whether the listener is fired during the capture or bubble phase
  *     of the event.
- * @param {Object} opt_handlerScope Object in whose scope to call the listener.
+ * @param {Object=} opt_handlerScope Object in whose scope to call the listener.
  */
 goog.events.EventTarget.prototype.addEventListener = function(
     type, handler, opt_capture, opt_handlerScope) {
@@ -147,10 +149,10 @@ goog.events.EventTarget.prototype.addEventListener = function(
  * @param {Function|Object} handler The function to handle the event. The
  *     handler can also be an object that implements the handleEvent method
  *     which takes the event object as argument.
- * @param {boolean} opt_capture In DOM-compliant browsers, this determines
+ * @param {boolean=} opt_capture In DOM-compliant browsers, this determines
  *     whether the listener is fired during the capture or bubble phase
  *     of the event.
- * @param {Object} opt_handlerScope Object in whose scope to call the listener.
+ * @param {Object=} opt_handlerScope Object in whose scope to call the listener.
  */
 goog.events.EventTarget.prototype.removeEventListener = function(
     type, handler, opt_capture, opt_handlerScope) {
