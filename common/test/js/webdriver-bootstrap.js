@@ -62,7 +62,7 @@ limitations under the License.
   // loaded, NOT alphabetical order.
   var webdriverFiles = [
     '../../third_party/closure/goog/base.js',
-    'deps.js',
+    'deps.js'
   ];
 
   for (var j = 0; j < webdriverFiles.length; j++) {

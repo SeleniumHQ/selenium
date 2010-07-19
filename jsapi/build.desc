@@ -15,6 +15,12 @@ java_test(name = "atoms",
     "//firefox",
     "//common:test"])
 
+java_test(name = "webdriver_fragments",
+  srcs = [ "test/java/org/openqa/selenium/WebDriverFragmentsTestSuite.java" ],
+  deps = [
+    "//firefox",
+    "//common:test"])
+
 # Simply starts the Jetty6AppServer for manually testing the JS API tests.
 # After starting, open a browser to http://localhost:$PORT/js/test, where $PORT
 # is the port the server was started on.

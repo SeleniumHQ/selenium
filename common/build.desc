@@ -25,6 +25,10 @@ rake_task(
 js_deps(name = "bot",
   srcs = [ "src/js/bot/**/*.js" ])
 
+js_deps(name = "atomic_driver",
+  srcs = [ "src/js/webdriver/**/*.js" ],
+  deps = [ ":bot" ])
+
 js_binary(name = "atoms",
   type = "script",
   closure = "true",
@@ -100,4 +104,11 @@ js_fragment(name = "has_property",
   function = "bot.dom.hasProperty",
   deps = [
     ":bot"
+  ])
+
+js_fragment(name = "wd_get_attribute",
+  module = "webdriver.element",
+  function = "webdriver.element.getAttribute",
+  deps = [
+    ":atomic_driver"
   ])

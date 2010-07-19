@@ -19,6 +19,7 @@ goog.addDependency("../../../js/src/js/jsunit/appUnitTestManager.js", [], []);
 goog.addDependency("../../../js/src/js/jsunit/appUnitCore.js", [], []);
 goog.addDependency("../../../js/src/jsunit/app/xbDebug.js", [], []);
 goog.addDependency("../../../js/src/js/jsunit/appUnitVersionCheck.js", [], []);
+goog.addDependency("../../../js/src/webdriver/web_element.js", ['webdriver.element'], ['bot.dom', 'goog.dom.TagName']);
 goog.addDependency("../../../js/src/extension/dommessenger.js", [], []);
 goog.addDependency("../../../js/src/bot/error.js", ['bot.Error', 'bot.ErrorCode'], ['goog.debug.Error', 'goog.object']);
 goog.addDependency("../../../js/src/bot/style.js", ['bot.style'], ['bot', 'goog.style']);

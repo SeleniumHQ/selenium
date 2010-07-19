@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<!--
+Copyright 2010 WebDriver committers
+Copyright 2010 Google Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<html>
+<head>
+  <title>web_element_test.html</title>
+  <script type="text/javascript" src="../webdriver-bootstrap.js">
+  </script>
+  <script type="text/javascript">
+    goog.require('bot.locators');
+    goog.require('goog.testing.jsunit');
+    goog.require('webdriver.element');
+  </script>
+
+  <script type="text/javascript">
+    function testShouldReturnTheValueOfAnAttribute() {
+      var element = bot.locators.findElement({id: 'has_id'});
+
+      assertEquals('cheese', webdriver.element.getAttribute(element, 'title'));
+    }
+
+    function testShouldReturnTheValueOfAProperty() {
+      var element = bot.locators.findElement({id: 'has_property'});
+
+      assertEquals("This is an example", webdriver.element.getAttribute(element, 'value'));
+    }
+
+    function testShouldReturnValuesAsStrings() {
+      var element = bot.locators.findElement({id: 'has_property'});
+
+      assertEquals('2', webdriver.element.getAttribute(element, 'rows'));
+    }
+
+    function testShouldReturnBooleanPropertiesThatAreTrueAsStrings() {
+      var element = bot.locators.findElement({id: 'ro'});
+
+      assertEquals("true", webdriver.element.getAttribute(element, 'readonly'));
+    }
+
+    function testShouldReturnBooleanPropertiesThatAreFalseAsNull() {
+      var element = bot.locators.findElement({id: 'normal'});
+
+      assertNull(webdriver.element.getAttribute(element, 'readonly'));
+    }
+
+    function testSettingAnyValueForABooleanAttributeSetsItToTrue() {
+      var element = bot.locators.findElement({id: 'bad-ro'});
+
+      assertEquals("true", webdriver.element.getAttribute(element, 'readonly'));
+    }
+
+    function testShouldAttemptToStringifyTheStyleProperty() {
+      var element = bot.locators.findElement({id: 'green'});
+
+      var style = webdriver.element.getAttribute(element, 'style').toLowerCase();
+      assertTrue(style.indexOf('background-color') != -1);
+    }
+
+    function testShouldCorrectlyReportTheValueOfCheckedForRadioButtons() {
+      var selected = bot.locators.findElement({id: 'selected-radio'});
+      var unselected = bot.locators.findElement({id: 'unselected-radio'});
+
+      assertEquals("true", webdriver.element.getAttribute(selected, 'checked'));
+      assertNull(webdriver.element.getAttribute(unselected, 'checked'));
+    }
+
+    function testShouldIndicateWhetherAnElementIsSelected() {
+      var input = bot.locators.findElement({id: 'normal'});
+      var unselectedRadio = bot.locators.findElement({id: 'unselected-radio'});
+      var selectedRadio = bot.locators.findElement({id: 'selected-radio'});
+      var unselectedOption = bot.locators.findElement({id: 'unselected-option'});
+      var selectedOption = bot.locators.findElement({id: 'selected-option'});
+
+      assertTrue(webdriver.element.isSelected(selectedRadio));
+      assertTrue(webdriver.element.isSelected(selectedOption));
+      assertFalse(webdriver.element.isSelected(unselectedRadio));
+      assertFalse(webdriver.element.isSelected(unselectedOption));
+      assertFalse(webdriver.element.isSelected(input));
+    }
+
+    function testShouldCorrectlyReportTheValueOfSelectedForRadioButtons() {
+      var selected = bot.locators.findElement({id: 'selected-radio'});
+      var unselected = bot.locators.findElement({id: 'unselected-radio'});
+
+      assertEquals("true", webdriver.element.getAttribute(selected, 'selected'));
+      assertNull(webdriver.element.getAttribute(unselected, 'selected'));
+    }
+
+    function testMultiplePropertyOfSelectsIsABoolean() {
+      var element = bot.locators.findElement({name: 'multi'});
+
+      assertEquals('true', webdriver.element.getAttribute(element, 'multiple'));
+    }
+  </script>
+</head>
+<body>
+
+<p id="has_id" title="cheese">This has an ID</p>
+
+<textarea id="has_property" rows="2">This is an example</textarea>
+
+<form action="#" name="fishy">
+  <input type="text" id="normal">
+  <input type="text" id="ro" readonly>
+  <input type="text" id="bad-ro" readonly="false">
+
+  <input type="radio" id="unselected-radio" name="fishy">Fishy
+  <input type="radio" id="selected-radio" name="fishy" checked="true">Dishy
+  <input type="radio" name="fishy">Cheesy too
+
+  <select multiple='multiple' name="multi">
+    <option id="selected-option" selected=true>Selected</option>
+    <option id="unselected-option">Unselected</option>
+  </select>
+
+</form>
+
+<div style="background-color: green" id="green">This is a green div</div>
+
+</body>
+</html>
