@@ -18,14 +18,14 @@ limitations under the License.
 <html>
 <head>
   <title>dom_test.html</title>
-  <script src="../webdriver-bootstrap.js">
+  <script type="text/javascript" src="../webdriver-bootstrap.js">
   </script>
-  <script src="deps.js"></script>
-  <script>
-    goog.require('goog.testing.jsunit');
-    goog.require('goog.events.EventType');
+  <script type="text/javascript" src="deps.js"></script>
+  <script type="text/javascript">
     goog.require('bot.dom');
     goog.require('bot.locators');
+    goog.require('goog.events.EventType');
+    goog.require('goog.testing.jsunit');
   </script>
 
   <script type="text/javascript">
@@ -35,10 +35,7 @@ limitations under the License.
       // Chips has the property, but doesn't have the attribute set explicitly
       // it therefore should have the property, but not the attribute
       assertTrue(bot.dom.hasProperty(chips, 'selected'));
-
-      // Prior to IE8, IE would have an attribute too
-      var attributeExpected = goog.userAgent.IE && !goog.userAgent.isVersion(8);
-      assertEquals(attributeExpected, bot.dom.hasAttribute(chips, 'selected'));
+      assertFalse(bot.dom.hasAttribute(chips, 'selected'));
     }
 
     function testShouldIndictaWhetherAnAttributeIsAvailableOnAnElement() {
@@ -47,7 +44,7 @@ limitations under the License.
       assertTrue(bot.dom.hasAttribute(peas, 'selected'));
     }
 
-    function testHasAttributeShouldWorkWithWellKnownDefaultProperties() {
+    function testHasPropertyShouldWorkWithWellKnownDefaultProperties() {
       var chips = bot.locators.findElement({id: 'chips'});
       var peas = bot.locators.findElement({id: 'peas'});
 
@@ -98,22 +95,36 @@ limitations under the License.
     }
 
     function testShouldReturnNullForMissingAttributes() {
-      var e = bot.locators.findElement({id: 'brie'});
+      var e = bot.locators.findElement({id: 'gouda'});
 
       assertNull(bot.dom.getAttribute(e, 'never_there'));
+      assertNull(bot.dom.getAttribute(e, 'class'));
     }
 
-    function testShouldReturnAnEmptyStringWhenAnAttributesValueIsAnEmptyString() {
+    function testShouldReturnAnEmptyStringWhenAttributesValueIsAnEmptyString() {
       var e = bot.locators.findElement({id: 'gouda'});
 
       assertEquals('', bot.dom.getAttribute(e, 'empty'));
     }
 
+    function testReturnsTrueWhenBooleanAttributesPresent() {
+      var e1 = bot.locators.findElement({id: 'peas'});
+      var e2 = bot.locators.findElement({name: 'checky'});
+      var e3 = bot.locators.findElement({id: 'checked'});
+
+      assertTrue(bot.dom.getAttribute(e1, 'selected'));
+      assertTrue(bot.dom.getAttribute(e2, 'checked'));
+      assertTrue(bot.dom.getAttribute(e2, 'readonly'));
+      assertTrue(bot.dom.getAttribute(e3, 'checked'));
+    }
+
     function testAttributeMatchesAreCaseInsensitive() {
       var e = bot.locators.findElement({name: 'checky'});
 
-      assertTrue(bot.dom.getAttribute(e, 'readonly'));
-      assertTrue(bot.dom.getAttribute(e, 'readOnly'));
+      assertEquals(bot.dom.getAttribute(e, 'readonly'),
+                   bot.dom.getAttribute(e, 'readOnly'));
+      assertEquals(bot.dom.getAttribute(e, 'name'),
+                   bot.dom.getAttribute(e, 'NaMe'));
     }
 
   </script>
@@ -131,7 +142,8 @@ limitations under the License.
       <option value="gravy">Gravy</option>
     </select>
 
-    <input name="checky" type="checkbox" checked="cheese" readonly="readonly"/>
+    <!-- Setting checked="false" but getAttribute should return true. -->
+    <input name="checky" type="checkbox" checked="false" readonly="readonly"/>
     <input name="radio" id="unchecked" type="radio" value="me">Me
     <input name="radio" id="checked" type="radio" value="myself"
            checked="checked">Myself

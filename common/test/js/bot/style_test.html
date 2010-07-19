@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>style_test.html</title>
+    <script src="../webdriver-bootstrap.js"></script>
+    <script src="deps.js"></script>
+    <script type="text/javascript">
+      goog.require('bot.locators');
+      goog.require('bot.style');
+      goog.require('goog.testing.jsunit');
+    </script>
+
+    <script type="text/javascript">
+      function testWillReturnInlineStyles() {
+        var chips = bot.locators.findElement({id: 'inline-style'});
+        assertEquals("underline", bot.style.getEffectiveStyle(chips,
+            'text-decoration'));
+      }
+
+      function testWillReturnComputedOrCascadedStyle() {
+        var chips = bot.locators.findElement({id: 'from-css'});
+        assertEquals("20px", bot.style.getEffectiveStyle(chips, 'height'));
+      }
+    </script>
+
+    <style type="text/css">
+      #from-css {
+        height: 20px
+      }
+      </style>
+  </head>
+  <body>
+
+    <div id="inline-style" style="text-decoration: underline;">Div 1</div>
+
+    <div id="from-css">This is another div</div>
+
+  </body>
+</html>

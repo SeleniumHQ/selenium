@@ -1,0 +1,183 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <title>visibility_test.html</title>
+  <script src="../webdriver-bootstrap.js"></script>
+  <script src="deps.js"></script>
+  <script type="text/javascript">
+    goog.require('bot.dom');
+    goog.require('bot.locators');
+    goog.require('goog.testing.ExpectedFailures');
+    goog.require('goog.testing.jsunit');
+    goog.require('goog.userAgent');
+    goog.require('goog.userAgent.platform');
+    goog.require('goog.userAgent.product.isVersion');
+  </script>
+
+  <script type="text/javascript">
+    var isShown = bot.dom.isShown;
+    var findElement = bot.locators.findElement;
+    var expectedFailures;
+
+    function setUp() {
+      expectedFailures = new goog.testing.ExpectedFailures();
+    }
+
+
+    function tearDown() {
+      expectedFailures.handleTearDown();
+    }
+
+    function testMustBeGivenAnElement() {
+      assertThrows(function() {
+        isShown(undefined);
+      });
+    }
+
+    function testCanDetermineIfAnElementIsShownOrNot() {
+      assertTrue(isShown(findElement({id: 'displayed'})));
+      assertFalse(isShown(findElement({id: 'none'})));
+      assertFalse(isShown(findElement({id: 'suppressedParagraph'})));
+      assertFalse(isShown(findElement({id: 'hidden'})));
+    }
+
+    function testIsShownTakesIntoAccountParentDisplay() {
+      var parent = findElement({id: 'hiddenparent'});
+      assertFalse('parent is explicitly set to display:none',
+          isShown(parent));
+
+      var childDiv = findElement({id: 'hiddenchild'});
+      var hiddenLink = findElement({id: 'hiddenlink'});
+
+      assertFalse(isShown(childDiv));
+      assertFalse(isShown(hiddenLink));
+    }
+
+
+    function testIsShownTakesIntoAccountParentVisibility() {
+      var parent = findElement({id: 'hiddenFormFields'});
+      var child = findElement({id: 'untogglable'});
+
+      expectedFailures.expectFailureFor(
+          goog.userAgent.IE && goog.userAgent.platform.VISTA,
+          'Vista fails this test, have not figured it out yet...');
+      // TODO(jleyba): Figure it out
+      expectedFailures.run(function() {
+        assertFalse(isShown(parent));
+        assertFalse(isShown(child));
+      });
+    }
+
+
+    function testCountElementsAsVisibleIfStylePropertyHasBeenSet() {
+      var shown = findElement({id: 'visibleSubElement'});
+      assertTrue(isShown(shown));
+    }
+
+    function testHiddenInputElementsAreNeverVisible() {
+      var hidden = findElement({name: 'hidden'});
+      assertFalse(isShown(hidden));
+    }
+
+
+    function testElementWithZeroHeightIsNotConsideredDisplayed() {
+      // IE6 doesn't render the element correctly for the test to work.
+      if (goog.userAgent.IE && !goog.userAgent.product.isVersion(6)) {
+        var zeroHeight = findElement({id: 'zeroheight'});
+        assertFalse(isShown(zeroHeight));
+      }
+    }
+
+
+    function testElementWithZeroWidthIsNotConsideredDisplayed() {
+      // IE6 doesn't render the element correctly for the test to work.
+      if (goog.userAgent.IE && !goog.userAgent.product.isVersion(6)) {
+        var zeroWidth = findElement({id: 'zerowidth'});
+        assertFalse(isShown(zeroWidth));
+      }
+    }
+
+
+    function testCorrectlyDeterminesVisibilityViaDisplayStyle() {
+      var span = findElement({id: 'visibleSpan'});
+      assertFalse(isShown(span));
+    }
+
+
+    function testThrowsErrorIfPassedATextNode() {
+      var textNode = findElement({id: 'displayed'}).firstChild;
+      var error = assertThrows("Argument to isShown must be of type Element",
+          function() {
+            isShown(textNode);
+          });
+      assertEquals("Argument to isShown must be of type Element", error.message);
+    }
+  </script>
+
+  <style type="text/css">
+        #nav {
+            padding: 0; margin: 0; list-style: none;
+        }
+        #nav li {
+            float: left; position: relative; width: 10em;
+        }
+        #nav li ul {
+            display: none; position: absolute; top: 1em; left: 0;
+        }
+        #nav li > ul { top: auto; left: auto; }
+        #nav li:hover ul, #nav li.over ul{ display: block; background: white; }
+        #zeroheight, #zerowidth {
+          border: 0;
+          padding: 0;
+          margin: 0;
+        }
+        #zerowidth {
+          width: 0;
+          height: 70px;
+        }
+        #zeroheight {
+          width: 70px;
+          height: 0;
+        }
+    </style>
+</head>
+<body>
+<div>
+    <p id="displayed">Displayed</p>
+
+    <form action="#"><input type="hidden" name="hidden"/></form>
+
+    <p id="none" style="display: none;">Display set to none</p>
+
+    <p id="hidden" style="visibility: hidden;">Hidden</p>
+
+    <div id="hiddenparent" style="height: 2em; display: none;">
+        <div id="hiddenchild">
+            <a href="#" id="hiddenlink">ok</a>
+        </div>
+    </div>
+
+    <div id="hiddenFormFields" style="visibility: hidden;">
+      <span>
+        <input id="unclickable"/>
+        <input type="checkbox" id="untogglable" checked="checked"/>Check box you can't see
+      </span>
+    </div>
+
+    <div style="display:none">
+        <span id="visibleSpan" style="display:block">cheese puffs</span>
+    </div>
+
+    <p id="outer" style="visibility: hidden">A
+      <b id="visibleSubElement" style="visibility: visible">sub-element that is
+        explicitly visible</b> using CSS visibility=visible</p>
+</div>
+
+<p id="zeroheight">This is a foo</p>
+
+<p id="zerowidth">This is a bar</p>
+
+<p id="suppressedParagraph" style="display: none">A paragraph suppressed using CSS display=none</p>
+
+</body>
+</html>
