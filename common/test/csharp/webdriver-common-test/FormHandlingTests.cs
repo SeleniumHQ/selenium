@@ -13,8 +13,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = formsPage;
             driver.FindElement(By.Id("submitButton")).Click();
-            //TODO (jimevan): this is an ugly sleep. Remove when implicit waiting is implemented.
-            System.Threading.Thread.Sleep(500);
+            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromMilliseconds(500));
             Assert.AreEqual(driver.Title, "We Arrive Here");
         }
 
@@ -30,8 +29,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = formsPage;
             driver.FindElement(By.Id("imageButton")).Click();
-            //TODO (jimevan): this is an ugly sleep. Remove when implicit waiting is implemented.
-            System.Threading.Thread.Sleep(500);
+            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromMilliseconds(500));
             Assert.AreEqual(driver.Title, "We Arrive Here");
         }
 
@@ -40,8 +38,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = formsPage;
             driver.FindElement(By.Name("login")).Submit();
-            //TODO (jimevan): this is an ugly sleep. Remove when implicit waiting is implemented.
-            System.Threading.Thread.Sleep(500);
+            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromMilliseconds(500));
             Assert.AreEqual(driver.Title, "We Arrive Here");
         }
 
@@ -50,8 +47,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = formsPage;
             driver.FindElement(By.Id("checky")).Submit();
-            //TODO (jimevan): this is an ugly sleep. Remove when implicit waiting is implemented.
-            System.Threading.Thread.Sleep(500);
+            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromMilliseconds(500));
             Assert.AreEqual(driver.Title, "We Arrive Here");
         }
 
@@ -60,8 +56,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = formsPage;
             driver.FindElement(By.XPath("//form/p")).Submit();
-            //TODO (jimevan): this is an ugly sleep. Remove when implicit waiting is implemented.
-            System.Threading.Thread.Sleep(500);
+            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromMilliseconds(500));
             Assert.AreEqual(driver.Title, "We Arrive Here");
         }
 
@@ -91,8 +86,7 @@ namespace OpenQA.Selenium
             IWebElement nestedForm = driver.FindElement(By.Id("nested_form"));
             IWebElement input = nestedForm.FindElement(By.Name("x"));
             input.SendKeys("\n");
-            //TODO (jimevan): this is an ugly sleep. Remove when implicit waiting is implemented.
-            System.Threading.Thread.Sleep(500);
+            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromMilliseconds(500));
             Assert.AreEqual("We Arrive Here", driver.Title);
             Assert.IsTrue(driver.Url.EndsWith("?x=name"));
         }
@@ -105,8 +99,7 @@ namespace OpenQA.Selenium
             IWebElement nestedForm = driver.FindElement(By.Id("nested_form"));
             IWebElement input = nestedForm.FindElement(By.Name("x"));
             input.SendKeys(Keys.Enter);
-            //TODO (jimevan): this is an ugly sleep. Remove when implicit waiting is implemented.
-            System.Threading.Thread.Sleep(500);
+            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromMilliseconds(500));
             Assert.AreEqual("We Arrive Here", driver.Title);
             Assert.IsTrue(driver.Url.EndsWith("?x=name"));
         }
