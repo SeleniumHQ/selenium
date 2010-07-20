@@ -68,8 +68,7 @@ namespace OpenQA.Selenium
         public void ShouldBeAbleToLoadAPageWithFramesetsAndWaitUntilAllFramesAreLoaded()
         {
             driver.Url = framesetPage;
-            //TODO (jimevan): this is an ugly sleep. Remove when implicit waiting is implemented.
-            System.Threading.Thread.Sleep(500);
+            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromMilliseconds(500));
 
             driver.SwitchTo().Frame(0);
             IWebElement pageNumber = driver.FindElement(By.XPath("//span[@id='pageNumber']"));
@@ -99,13 +98,11 @@ namespace OpenQA.Selenium
             driver.Url = formsPage;
 
             driver.FindElement(By.Id("imageButton")).Submit();
-            //TODO (jimevan): this is an ugly sleep. Remove when implicit waiting is implemented.
-            System.Threading.Thread.Sleep(500);
+            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromMilliseconds(500));
             Assert.AreEqual(driver.Title, "We Arrive Here");
 
             driver.Navigate().Back();
-            //TODO (jimevan): this is an ugly sleep. Remove when implicit waiting is implemented.
-            System.Threading.Thread.Sleep(500);
+            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromMilliseconds(500));
             Assert.AreEqual(driver.Title, "We Leave From Here");
         }
 
@@ -115,13 +112,11 @@ namespace OpenQA.Selenium
             driver.Url = xhtmlTestPage;
 
             driver.FindElement(By.Name("sameWindow")).Click();
-            //TODO (jimevan): this is an ugly sleep. Remove when implicit waiting is implemented.
-            System.Threading.Thread.Sleep(500);
+            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromMilliseconds(500));
             Assert.AreEqual(driver.Title, "This page has iframes");
 
             driver.Navigate().Back();
-            //TODO (jimevan): this is an ugly sleep. Remove when implicit waiting is implemented.
-            System.Threading.Thread.Sleep(500);
+            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromMilliseconds(500));
             Assert.AreEqual(driver.Title, "XHTML Test Page");
         }
 
@@ -131,18 +126,15 @@ namespace OpenQA.Selenium
             driver.Url = formsPage;
 
             driver.FindElement(By.Id("imageButton")).Submit();
-            //TODO (jimevan): this is an ugly sleep. Remove when implicit waiting is implemented.
-            System.Threading.Thread.Sleep(500);
+            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromMilliseconds(500));
             Assert.AreEqual(driver.Title, "We Arrive Here");
 
             driver.Navigate().Back();
-            //TODO (jimevan): this is an ugly sleep. Remove when implicit waiting is implemented.
-            System.Threading.Thread.Sleep(500);
+            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromMilliseconds(500));
             Assert.AreEqual(driver.Title, "We Leave From Here");
 
             driver.Navigate().Forward();
-            //TODO (jimevan): this is an ugly sleep. Remove when implicit waiting is implemented.
-            System.Threading.Thread.Sleep(500);
+            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromMilliseconds(500));
             Assert.AreEqual(driver.Title, "We Arrive Here");
         }
 
@@ -166,8 +158,7 @@ namespace OpenQA.Selenium
             driver.Url = xhtmlTestPage;
 
             driver.Navigate().Refresh();
-            //TODO (jimevan): this is an ugly sleep. Remove when implicit waiting is implemented.
-            System.Threading.Thread.Sleep(500);
+            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromMilliseconds(3000));
 
             Assert.AreEqual(driver.Title, "XHTML Test Page");
         }

@@ -34,8 +34,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = xhtmlTestPage;
             driver.FindElement(By.LinkText("click me")).Click();
-            //TODO (jimevan): this is an ugly sleep. Remove when implicit waiting is implemented.
-            System.Threading.Thread.Sleep(500);
+            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromMilliseconds(500));
             Assert.AreEqual(driver.Title, "We Arrive Here");
         }
 
@@ -45,8 +44,7 @@ namespace OpenQA.Selenium
             driver.Url = formsPage;
             driver.Url = xhtmlTestPage;
             driver.FindElement(By.LinkText("click me")).Click();
-            //TODO (jimevan): this is an ugly sleep. Remove when implicit waiting is implemented.
-            System.Threading.Thread.Sleep(500);
+            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromMilliseconds(500));
             Assert.AreEqual(driver.Title, "We Arrive Here");
         }
 
@@ -55,8 +53,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = xhtmlTestPage;
             driver.FindElement(By.Id("linkId")).Click();
-            //TODO (jimevan): this is an ugly sleep. Remove when implicit waiting is implemented.
-            System.Threading.Thread.Sleep(500);
+            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromMilliseconds(500));
             Assert.AreEqual(driver.Title, "We Arrive Here");
         }
 
@@ -380,8 +377,7 @@ namespace OpenQA.Selenium
             Assert.IsTrue(toBeDeleted.Displayed);
 
             driver.FindElement(By.Id("delete")).Click();
-            //TODO (jimevan): this is an ugly sleep. Remove when implicit waiting is implemented.
-            System.Threading.Thread.Sleep(500);
+            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromMilliseconds(500));
             bool displayedAfterDelete = toBeDeleted.Displayed;
         }
 

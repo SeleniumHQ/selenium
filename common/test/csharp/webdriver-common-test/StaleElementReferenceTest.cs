@@ -16,8 +16,7 @@ namespace OpenQA.Selenium
             driver.Url = simpleTestPage;
             IWebElement elem = driver.FindElement(By.Id("links"));
             driver.Url = xhtmlTestPage;
-            //TODO (jimevan): this is an ugly sleep. Remove when implicit waiting is implemented.
-            System.Threading.Thread.Sleep(500);
+            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromMilliseconds(500));
             elem.Click();
         }
 
@@ -29,8 +28,7 @@ namespace OpenQA.Selenium
             driver.Url = simpleTestPage;
             IRenderedWebElement elem = (IRenderedWebElement)driver.FindElement(By.Id("links"));
             driver.Url = xhtmlTestPage;
-            //TODO (jimevan): this is an ugly sleep. Remove when implicit waiting is implemented.
-            System.Threading.Thread.Sleep(500);
+            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromMilliseconds(500));
             Size elementSize = elem.Size;
         }
     }
