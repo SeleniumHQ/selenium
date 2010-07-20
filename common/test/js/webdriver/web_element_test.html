@@ -105,9 +105,21 @@ limitations under the License.
 
       assertEquals('true', webdriver.element.getAttribute(element, 'multiple'));
     }
+
+    function testShouldReturnAnEmptyStringIfAnAttributeIsSetButEmpty() {
+      var element = bot.locators.findElement({id: 'body'});
+
+      assertEquals('', webdriver.element.getAttribute(element, 'style'));
+    }
+
+    function testShouldFallBackToUsingAttributeIfPropertyAvailableButNotSet() {
+      var element = bot.locators.findElement({id: 'body'});
+
+      assertEquals('body', webdriver.element.getAttribute(element, 'name'));
+    }
   </script>
 </head>
-<body>
+<body id="body" style="" name="body">
 
 <p id="has_id" title="cheese">This has an ID</p>
 

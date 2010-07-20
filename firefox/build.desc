@@ -75,7 +75,7 @@ mozilla_extension(name = "webdriver",
 # required by the loader in firefox
 js_binary(name = "atoms",
   srcs = [ "src/js/exported_symbols.js" ],
-  deps = [ "//common:bot" ])
+  deps = [ "//common:atomic_driver" ])
 
 
 gcc_library(name = "noblur",

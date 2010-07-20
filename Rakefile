@@ -465,10 +465,8 @@ task :test_android => [:test_android_init, :'webdriver-android-client-test'] do
 end
 
 file "jobbie/src/cpp/InternetExplorerDriver/atoms.h" => [
-  "//common:get_attribute:header",
-  "//common:get_property:header",
-  "//common:has_attribute:header",
-  "//common:has_property:header",
+  "//common:wd_get_attribute:header",
+  "//common:wd_is_selected:header",
 ] do |task|
   puts "Writing: #{task}"
   File.open('jobbie/src/cpp/InternetExplorerDriver/atoms.h', 'w') do |f|

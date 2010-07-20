@@ -112,3 +112,10 @@ js_fragment(name = "wd_get_attribute",
   deps = [
     ":atomic_driver"
   ])
+
+js_fragment(name = "wd_is_selected",
+  module = "webdriver.element",
+  function = "webdriver.element.isSelected",
+  deps = [
+    ":atomic_driver"
+  ])

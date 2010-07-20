@@ -41,7 +41,7 @@ public class SingleTestSuite extends TestCase {
   private static final String SELENIUM = "org.openqa.selenium.SeleneseBackedWebDriver";
 
   public static Test suite() throws Exception {
-    String driver = FIREFOX_TEST;
+    String driver = CHROME_TEST;
 
     System.setProperty("webdriver.development", "true");
     System.setProperty("jna.library.path", "..\\build;build");
@@ -56,9 +56,9 @@ public class SingleTestSuite extends TestCase {
         .keepDriverInstance()
         .includeJavascriptTests()
         .onlyRun("ElementAttributeTest")
-        .method("testCanReturnATextApproximationOfTheStyleAttribute")
+        .method("testShouldReturnTheValueOfTheDisabledAttrbuteAsNullIfNotSet")
         .exclude(ALL)
-        .exclude(Ignore.Driver.IE)
+        .exclude(Ignore.Driver.CHROME)
         .outputTestNames()
         .leaveRunning()
         ;  // Yeah, this look strange :)

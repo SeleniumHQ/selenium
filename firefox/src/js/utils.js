@@ -145,7 +145,6 @@ Utils.getServer = function() {
 
 
 Utils.getActiveElement = function(doc) {
-
   var element;
   if (doc["activeElement"]) {
     element = doc.activeElement;

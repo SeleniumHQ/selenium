@@ -1,2 +1,2 @@
-var EXPORTED_SYMBOLS = [ 'bot', 'goog' ];
+var EXPORTED_SYMBOLS = [ 'webdriver', 'goog' ];
 

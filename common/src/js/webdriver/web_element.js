@@ -104,13 +104,22 @@ webdriver.element.getAttribute = function(element, attribute) {
     if (value && !goog.isString(value)) {
       value = value.cssText;
     }
-  } else if ('selected' == name || 'checked' == name && webdriver.element.isSelectable_(element)) {
-    value = webdriver.element.isSelected(element) ? "true" : null;
-  } else if (bot.dom.hasProperty(element, attribute)) {
+
+    return value;
+  }
+
+  if ('selected' == name || 'checked' == name && webdriver.element.isSelectable_(element)) {
+    return webdriver.element.isSelected(element) ? "true" : null;
+  }
+
+  if (bot.dom.hasProperty(element, attribute)) {
     value = bot.dom.getProperty(element, attribute);
-  } else if (bot.dom.hasAttribute(element, attribute)) {
+  }
+
+  if (!goog.isDef(value) && bot.dom.hasAttribute(element, attribute)) {
     value = bot.dom.getAttribute(element, attribute);
   }
 
-  return value ? value.toString() : null;
+  // The empty string is a valid return value.
+  return value || value === '' ? value.toString() : null;
 };

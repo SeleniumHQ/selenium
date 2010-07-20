@@ -278,22 +278,8 @@ FirefoxDriver.prototype.getElementAttribute = function(respond, parameters) {
   var element = Utils.getElementAt(parameters.id,
                                   respond.session.getDocument());
   var attributeName = parameters.name;
-
-  var value = null;
-
-  var lattr = attributeName.toLowerCase();
-  if ('checked' == lattr || 'selected' == lattr) {
-    value = bot.dom.getProperty(element, 'selected') || bot.dom.getProperty(element, 'checked');
-    if (!value) {
-      value = null;
-    }
-  } else if (bot.dom.hasAttribute(element, attributeName)) {
-    value = bot.dom.getAttribute(element, attributeName);
-  } else {
-    value = bot.dom.getProperty(element, attributeName);
-  }
   
-  respond.value = (value === undefined) ? null : value;
+  respond.value = webdriver.element.getAttribute(element, attributeName);
   respond.send();
 };
 
