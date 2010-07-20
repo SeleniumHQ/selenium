@@ -466,7 +466,6 @@ end
 
 file "jobbie/src/cpp/InternetExplorerDriver/atoms.h" => [
   "//common:wd_get_attribute:header",
-  "//common:wd_is_selected:header",
 ] do |task|
   puts "Writing: #{task}"
   File.open('jobbie/src/cpp/InternetExplorerDriver/atoms.h', 'w') do |f|
