@@ -113,6 +113,21 @@
   
   // Page loading errors are ignored because that's what WebDriver expects.
   NSLog(@"*** WebView failed to load URL with error %@", error);
+	if ([error code] == 101) {
+		NSString *failingURLString = [[error userInfo] objectForKey:
+																	@"NSErrorFailingURLStringKey"];
+		// This is an issue only with simulator as it cannot open tel: url.
+		if ([[failingURLString substringToIndex:4] isEqualToString:@"tel:"]) {
+			UIAlertView *alert = [[UIAlertView alloc] 
+														initWithTitle:@"Cannot Open Page" 
+																	message:@"tel: is not supported in simulator" 
+																 delegate:self 
+												cancelButtonTitle:@"OK"
+												otherButtonTitles:nil];	
+			[alert show];	
+			[alert release];
+		}
+	}	
   [loadLock_ signal];
 }
 
