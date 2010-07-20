@@ -23,6 +23,7 @@ java_library(name = "combined",
     "//chrome",
     "//firefox",
     "//htmlunit",
+    "//iphone",
     "//jobbie",
     "//selenium",
     "//support"
