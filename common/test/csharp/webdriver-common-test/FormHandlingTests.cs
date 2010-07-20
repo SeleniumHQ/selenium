@@ -341,5 +341,24 @@ namespace OpenQA.Selenium
 
             Assert.AreEqual(value.Length, 0);
         }
+
+        [Test]
+        public void RadioShouldNotBeSelectedAfterSelectingSibling()
+        {
+            driver.Navigate().GoToUrl(formsPage);
+
+            IWebElement cheese = driver.FindElement(By.Id("cheese"));
+            IWebElement peas = driver.FindElement(By.Id("peas"));
+
+            cheese.Select();
+
+            Assert.AreEqual(true,cheese.Selected);
+            Assert.AreEqual(false, peas.Selected);
+
+            peas.Select();
+
+            Assert.AreEqual(false, cheese.Selected);
+            Assert.AreEqual(true, peas.Selected);
+        }
     }
 }
