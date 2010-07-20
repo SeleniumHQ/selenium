@@ -62,7 +62,10 @@ class RubyMappings
 
   class AddTestDefaults
     def handle(fun, dir, args)
-      args[:include] = Array(args[:include]) << "common/test/rb/lib"
+      args[:include] = Array(args[:include])
+      args[:include] << "common/test/rb/lib"
+      args[:include] << "common/test/rb/spec"
+
       args[:command] = args[:command] || "spec"
       args[:require] = Array(args[:require])
 

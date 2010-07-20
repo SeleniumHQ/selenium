@@ -1,4 +1,4 @@
-require "#{File.dirname(__FILE__)}/spec_helper"
+require "spec_helper"
 
 describe "WebDriver::TargetLocator" do
   it "should switch to a frame" do

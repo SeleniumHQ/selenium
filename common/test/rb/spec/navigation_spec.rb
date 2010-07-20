@@ -1,4 +1,4 @@
-require "#{File.dirname(__FILE__)}/spec_helper"
+require "spec_helper"
 
 describe "Navigation" do
   it "should navigate back and forward" do
