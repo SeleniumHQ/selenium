@@ -27,6 +27,14 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        public void ShouldReturnAStyleAttribute()
+        {
+            driver.Url = dragAndDropPage;
+            IWebElement divWithStyle = driver.FindElement(By.XPath("//div"));
+            Assert.AreEqual("position: absolute; left: 210px; top: 80px; height: 400px; width: 100px; padding: 10em;",divWithStyle.GetAttribute("style"));
+        }
+
+        [Test]
         public void ShouldReturnTheValueOfTheDisabledAttrbuteEvenIfItIsMissing()
         {
             driver.Url = formsPage;
