@@ -13,7 +13,7 @@ namespace OpenQA.Selenium.Chrome
     /// <summary>
     /// Provides a mechanism to find the Chrome Binary
     /// </summary>
-    internal class ChromeBinary
+    public class ChromeBinary
     {
         private static readonly string[] chromePaths = new string[]
         {
@@ -31,6 +31,8 @@ namespace OpenQA.Selenium.Chrome
         private ChromeExtension extension;
         private Process chromeProcess;
         private int listeningPort;
+        private StringBuilder customArgs = new StringBuilder();
+
 
         /// <summary>
         /// Initializes a new instance of the ChromeBinary class using the given <see cref="ChromeProfile"/> and <see cref="ChromeExtension"/>.
@@ -70,6 +72,11 @@ namespace OpenQA.Selenium.Chrome
             get { return listeningPort; }
         }
 
+        public void AddCustomArgs(string customArgs)
+        {
+            this.customArgs.Append(" ").Append(customArgs);
+        }
+
         private static string ChromePathFromRegistry
         {
             get
@@ -93,6 +100,8 @@ namespace OpenQA.Selenium.Chrome
                 argumentString.Append(" --disable-popup-blocking");
                 argumentString.Append(" --disable-prompt-on-repost");
                 argumentString.Append(" --no-default-browser-check ");
+                argumentString.Append(customArgs);
+
                 if (this.profile != ChromeProfile.DefaultProfile)
                 {
                     argumentString.Append(" --user-data-dir=\"").Append(profile.ProfileDirectory).Append("\"");

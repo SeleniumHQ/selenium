@@ -54,6 +54,14 @@ namespace OpenQA.Selenium.Chrome
         }
 
         /// <summary>
+        /// Initializes a new instance of the ChromeDriver class with the required Chrome Binary
+        /// </summary>
+        public ChromeDriver(ChromeBinary chromeBinary)
+            : base(new ChromeCommandExecutor(chromeBinary), DesiredCapabilities.Chrome())
+        {
+        }
+
+        /// <summary>
         /// Initializes a new instance of the ChromeDriver class using the specified profile and extension.
         /// </summary>
         /// <param name="profile">The profile to use.</param>
