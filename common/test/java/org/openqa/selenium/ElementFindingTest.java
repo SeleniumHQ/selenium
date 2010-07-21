@@ -31,6 +31,13 @@ import java.util.List;
 
 public class ElementFindingTest extends AbstractDriverTestCase {
 
+  public void testXP() {
+    driver.get("http://illicitonion.com/dump/accesskey.html");
+    WebElement element = driver.findElement(By.tagName("body"));
+    List<WebElement> elts = element.findElements(By.xpath("//*[@accesskey]"));
+    System.out.println(elts.size());
+  }
+  
   public void testShouldReturnTitleOfPageIfSet() {
     driver.get(pages.xhtmlTestPage);
     assertThat(driver.getTitle(), equalTo(("XHTML Test Page")));

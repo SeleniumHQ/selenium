@@ -19,6 +19,17 @@ import com.google.common.collect.ImmutableMap;
 
 public class ChromeDriver extends RemoteWebDriver implements  TakesScreenshot, FindsByCssSelector {
 
+  public ChromeDriver(ChromeBinary binary) {
+    super(new ChromeCommandExecutor(binary), DesiredCapabilities.chrome());
+    
+    setElementConverter(new JsonToWebElementConverter(this) {
+      @Override
+      protected RemoteWebElement newRemoteWebElement() {
+        return new ChromeWebElement(ChromeDriver.this);
+      }
+    });
+  }
+  
   /**
    * Starts up a new instance of Chrome using the specified profile and
    * extension.
@@ -27,15 +38,7 @@ public class ChromeDriver extends RemoteWebDriver implements  TakesScreenshot, F
    * @param extension The extension to use.
    */
   public ChromeDriver(ChromeProfile profile, ChromeExtension extension) {
-    super(new ChromeCommandExecutor(new ChromeBinary(profile, extension)),
-        DesiredCapabilities.chrome());
-    
-    setElementConverter(new JsonToWebElementConverter(this) {
-      @Override
-      protected RemoteWebElement newRemoteWebElement() {
-        return new ChromeWebElement(ChromeDriver.this);
-      }
-    });
+    this(new ChromeBinary(profile, extension));
   }
 
   /**

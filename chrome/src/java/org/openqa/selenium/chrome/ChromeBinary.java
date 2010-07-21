@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.google.common.annotations.VisibleForTesting;
@@ -28,6 +29,8 @@ public class ChromeBinary {
   private final ChromeExtension extension;
   private final int port;
   private final SubProcess chromeProcess;
+  
+  private List<String> customFlags = new ArrayList<String>();
 
   protected String chromeBinaryLocation = null;
 
@@ -93,6 +96,10 @@ public class ChromeBinary {
     }
   }
 
+  public void addCustomBinaryFlag(String flag) {
+    this.customFlags.add(flag);
+  }
+  
   public ChromeProfile getProfile() {
     return profile;
   }
@@ -118,7 +125,7 @@ public class ChromeBinary {
   }
 
   @VisibleForTesting List<String> getCommandline(String serverUrl) throws IOException {
-    List<String> commandline = Lists.newArrayList(Lists.newArrayList(
+    List<String> commandline = Lists.newArrayList(
         getChromeBinaryLocation(),
         "--load-extension=" + extension.getDirectory().getAbsolutePath(),
         "--activate-on-launch",
@@ -128,7 +135,8 @@ public class ChromeBinary {
         "--disable-popup-blocking",
         "--disable-prompt-on-repost",
         "--no-default-browser-check"
-    ));
+    );
+    commandline.addAll(this.customFlags);
     if (!profile.equals(ChromeProfile.DEFAULT_PROFILE)) {
       commandline.add("--user-data-dir=" + profile.getDirectory().getAbsolutePath());
     }
