@@ -32,8 +32,6 @@ public class TakesScreenshotTest extends AbstractDriverTestCase {
     File tempFile = getScreenshot().getScreenshotAs(OutputType.FILE);
     assertTrue(tempFile.exists());
     assertTrue(tempFile.length() > 0);
-    System.out.println(tempFile.getCanonicalPath());
-    Thread.sleep(100000);
     tempFile.delete();
   }
 
