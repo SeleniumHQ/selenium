@@ -31,7 +31,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = formsPage;
             IWebElement inputElement = driver.FindElement(By.XPath("//input[@id='working']"));
-            Assert.AreEqual("false", inputElement.GetAttribute("disabled"));
+            Assert.AreEqual(null, inputElement.GetAttribute("disabled"));
             Assert.IsTrue(inputElement.Enabled);
 
             IWebElement pElement = driver.FindElement(By.Id("cheeseLiker"));
