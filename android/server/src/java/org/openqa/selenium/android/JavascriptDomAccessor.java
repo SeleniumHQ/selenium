@@ -440,9 +440,6 @@ public class JavascriptDomAccessor {
         "}" +
         "return '" + STALE + "';",
         elementId, attribute);
-    if (result == null) {
-      return null;
-    }
     throwExceptionIfElementIsStale(elementId, result);
     return result;
   }
@@ -606,7 +603,7 @@ public class JavascriptDomAccessor {
   }
 
   private void throwExceptionIfElementIsStale(final String elementId, final String result) {
-    if (result.equals(STALE)) {
+    if (STALE.equals(result)) {
       throw new StaleElementReferenceException("Element with id: " + elementId + " is stale");
     }
   }

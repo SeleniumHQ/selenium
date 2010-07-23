@@ -26,7 +26,6 @@ import android.widget.EditText;
 
 import org.openqa.selenium.android.Platform;
 import org.openqa.selenium.android.RunnableWithArgs;
-import org.openqa.selenium.android.intents.WebViewAction;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -75,7 +74,7 @@ public class SendDeleteSelection implements RunnableWithArgs {
         deleteSelection.invoke(webView, new Object[] {0, end});
         Log.d(LOG_TAG, "Clear() :: DeleteSelection - Done");
       }
-      WebViewAction.clearTextEntry(webView);
+      WebViewAction.clearFocusFromCurrentElement(webView);
     } catch (Exception e) {
       Log.e(LOG_TAG, "Clear() :: Cannot clear", e);
       throw new IllegalStateException(e);

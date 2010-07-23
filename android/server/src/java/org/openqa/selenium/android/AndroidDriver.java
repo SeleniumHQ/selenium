@@ -621,6 +621,8 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
   }
   
   public Object sendIntent(String action, Object... args) {
+    resetPageHasLoaded();
+    resetPageHasStartedLoading();
     IntentSender broadcaster = IntentSender.getInstance();
     broadcaster.broadcast(getContext(), action, args);
     return executeFuture(broadcaster, INTENT_TIMEOUT);

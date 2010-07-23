@@ -36,6 +36,7 @@ import org.openqa.selenium.Cookie;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.android.RunnableWithArgs;
 import org.openqa.selenium.android.events.TouchScreen;
+import org.openqa.selenium.android.events.WebViewAction;
 import org.openqa.selenium.android.intents.Action;
 import org.openqa.selenium.android.intents.IntentReceiver;
 import org.openqa.selenium.android.intents.IntentReceiverRegistrar;
@@ -215,7 +216,11 @@ public class SingleSessionActivity extends Activity implements IntentReceiverLis
     } else if (Action.SEND_MOTION_EVENT.equals(action)) {
       TouchScreen.sendMotion(webView, (MotionEvent) args[0], (MotionEvent) args[1]);
     } else if (Action.SEND_KEYS.equals(action)) {
-      // TODO (berrada): Implement me!
+      String[] inputKeys = new String[args.length];
+      for (int i = 0; i < inputKeys.length; i++) {
+        inputKeys[inputKeys.length -1 - i] = args[i].toString(); // Parameter order matters for key events
+      }
+      WebViewAction.sendKeys(webView, inputKeys);
     } else if (Action.CLEAR_TEXT.equals(action)) {
       // TODO (berrada): Implement me!
     }
@@ -312,7 +317,7 @@ public class SingleSessionActivity extends Activity implements IntentReceiverLis
    */
   final class SimpleWebViewClient extends WebViewClient {
     private final String logTag = SimpleWebViewClient.class.getName();
-
+    
     @Override
     public void onPageStarted(WebView view, String url, Bitmap favicon) {
       super.onPageStarted(view, url, favicon);

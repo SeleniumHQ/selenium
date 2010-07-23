@@ -42,6 +42,9 @@ import java.util.regex.Pattern;
 
 /**
  * Represents an Android HTML element.
+ * 
+ * TODO (berrada): Rewrite all function that interact with the page using native events and get rid
+ * of JS. Only use JS for reading properties.
  */
 public class AndroidWebElement implements WebElement, FindsById, FindsByLinkText, FindsByXPath,
     FindsByTagName, SearchContext, AndroidRenderedWebElement {
@@ -75,8 +78,6 @@ public class AndroidWebElement implements WebElement, FindsById, FindsByLinkText
         SystemClock.uptimeMillis() + 1, MotionEvent.ACTION_UP, center.x, center.y, 1,
         0, 0, 0, 0, 0, 0);
     
-    driver.resetPageHasStartedLoading();
-    driver.resetPageHasLoaded();
     driver.sendIntent(Action.SEND_MOTION_EVENT, downEvent, upEvent);
 
     // If the page started loading we should wait
@@ -134,18 +135,24 @@ public class AndroidWebElement implements WebElement, FindsById, FindsByLinkText
   }
 
   public void sendKeys(CharSequence... value) {
-    // assertElementIsDisplayed() is not required - it will be check in click
     if (value == null || value.length == 0) {
       return;
     }
-    // focus
+    // focus on the element
     this.click();
+    
+    String[] serializableArgs = new String[value.length +1];
+    serializableArgs[0] = getValue();
     for (int i = 0; i < value.length; i++) {
-    boolean last = (i == value.length - 1);
-      driver.sendIntent(Action.SEND_KEYS, value[i].toString(), last);
+      serializableArgs[i + 1] = value[i].toString();
     }
+    driver.sendIntent(Action.SEND_KEYS, serializableArgs);
+    
+    if (driver.pageHasStartedLoading()) {
+      driver.waitUntilPageFinishedLoading();
+    }
+    
   }
-
   public String getTagName() {
     return getDomAccessor().getTagName(elementId).toLowerCase();
   }

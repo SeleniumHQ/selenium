@@ -18,7 +18,6 @@ limitations under the License.
 package org.openqa.selenium.android.events;
 
 import org.openqa.selenium.android.Platform;
-import org.openqa.selenium.android.intents.WebViewAction;
 
 import android.graphics.Point;
 import android.os.SystemClock;
@@ -34,7 +33,7 @@ public class TouchScreen {
   
   public static void sendMotion(WebView webview, MotionEvent... events) {
     Log.d(LOG_TAG, "Sending touch event.");
-    WebViewAction.clearTextEntry(webview);
+    WebViewAction.clearFocusFromCurrentElement(webview);
     
     if (Platform.sdk() <= Platform.DONUT) {
       webview.pauseTimers();
@@ -51,6 +50,7 @@ public class TouchScreen {
           event.getPressure(), event.getSize(), event.getMetaState(), event.getXPrecision(),
           event.getYPrecision(), event.getDeviceId(), event.getEdgeFlags());
         webview.onTouchEvent(e);
+        e.recycle();
       }
       webview.requestFocus();
     } finally {
