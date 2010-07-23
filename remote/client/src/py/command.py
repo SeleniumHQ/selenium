@@ -14,8 +14,14 @@
 # limitations under the License.
 
 class Command(object):
-    """Defines constants for the standard commands in the wire protocol."""
-    
+    """Defines constants for the standard WebDriver commands.
+
+    While these constants have no meaning in and of themselves, they are
+    used to marshal commands through a service that implements WebDriver's
+    remote wire protocol:
+        http://code.google.com/p/selenium/wiki/JsonWireProtocol
+    """
+
     # Keep in sync with org.openqa.selenium.remote.DriverCommand
 
     NEW_SESSION = "newSession"
@@ -45,9 +51,6 @@ class Command(object):
     GET_WINDOW_HANDLES = "getWindowHandles"
     SWITCH_TO_WINDOW = "switchToWindow"
     SWITCH_TO_FRAME = "switchToFrame"
-    SWITCH_TO_FRAME_BY_INDEX = "switchToFrameByIndex"
-    SWITCH_TO_FRAME_BY_NAME = "switchToFrameByName"
-    SWITCH_TO_DEFAULT_CONTENT = "switchToDefaultContent"
     GET_ACTIVE_ELEMENT = "getActiveElement"
     GET_CURRENT_URL = "getCurrentUrl"
     GET_PAGE_SOURCE = "getPageSource"
