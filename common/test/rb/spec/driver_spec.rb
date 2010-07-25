@@ -115,9 +115,16 @@ describe "Driver" do
       lambda { driver.find_element("nonexistant") }.should raise_error
     end
 
-    it "should find via alternate syntax" do
+    it "should find elements with a hash selector" do
       driver.navigate.to url_for("xhtmlTest.html")
       driver.find_element(:class => "header").text.should == "XHTML Might Be The Future"
+    end
+
+    it "should find elements with the shortcut syntax" do
+      driver.navigate.to url_for("xhtmlTest.html")
+
+      driver[:id1].should be_kind_of(WebDriver::Element)
+      driver[:xpath => "//h1"].should be_kind_of(WebDriver::Element)
     end
   end
 

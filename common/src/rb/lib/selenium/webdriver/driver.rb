@@ -229,16 +229,22 @@ module Selenium
 
       alias_method :script, :execute_script
 
-      # Get the first element matching the given id.
+      # Get the first element matching the given selector. If given a string,
+      # it will be used as the id of the element.
       #
-      # @param [String] id
+      # @param [String,Hash] id or selector
       # @return [WebDriver::Element]
       #
-      #   driver['someElementId'] #=> #<WebDriver::Element:0x1011c3b88>
+      #   driver['someElementId']    #=> #<WebDriver::Element:0x1011c3b88>
+      #   driver[:tag_name => 'div'] #=> #<WebDriver::Element:0x1011c3b88>
       #
 
-      def [](id)
-        find_element :id, id
+      def [](sel)
+        if sel.kind_of?(String) || sel.kind_of?(Symbol)
+          sel = { :id => sel }
+        end
+
+        find_element sel
       end
 
 
