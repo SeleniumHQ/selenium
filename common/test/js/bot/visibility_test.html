@@ -5,8 +5,8 @@
   <script src="../webdriver-bootstrap.js"></script>
   <script src="deps.js"></script>
   <script type="text/javascript">
-    goog.require('bot.dom');
     goog.require('bot.locators');
+    goog.require('bot.style');
     goog.require('goog.testing.ExpectedFailures');
     goog.require('goog.testing.jsunit');
     goog.require('goog.userAgent');
@@ -15,7 +15,7 @@
   </script>
 
   <script type="text/javascript">
-    var isShown = bot.dom.isShown;
+    var isShown = bot.style.isShown;
     var findElement = bot.locators.findElement;
     var expectedFailures;
 
@@ -61,7 +61,7 @@
       expectedFailures.expectFailureFor(
           goog.userAgent.IE && goog.userAgent.platform.VISTA,
           'Vista fails this test, have not figured it out yet...');
-      // TODO(jleyba): Figure it out
+      // TODO(user): Figure it out
       expectedFailures.run(function() {
         assertFalse(isShown(parent));
         assertFalse(isShown(child));

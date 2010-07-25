@@ -1,24 +1,23 @@
-/** @license
-Copyright 2010 WebDriver committers
-Copyright 2010 Google Inc.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+// Copyright 2010 WebDriver committers
+// Copyright 2010 Google Inc.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 goog.provide('bot.locators.strategies.css');
 
 goog.require('goog.array');
 goog.require('goog.dom');
+goog.require('goog.dom.NodeType');
 goog.require('goog.object');
 goog.require('goog.string');
 
@@ -27,15 +26,14 @@ goog.require('goog.string');
 /**
  * Find an element by using a CSS selector
  *
- * @param {!Window} win The DOM window to search in.
  * @param {string} target The selector to search for.
+ * @param {!(Document|Element)} root The document or element to perform the
+ *     search under.
  * @return {Element} The first matching element found in the DOM, or null if no
  *     such element could be found.
  */
-bot.locators.strategies.css.single = function(win, target) {
-  var doc = win.document;
-
-  if (!goog.isFunction(doc['querySelector'])) {
+bot.locators.strategies.css.single = function(target, root) {
+  if (!goog.isFunction(root['querySelector'])) {
     throw Error('CSS selection is not supported');
   }
 
@@ -49,22 +47,22 @@ bot.locators.strategies.css.single = function(win, target) {
 
   target = goog.string.trim(target);
 
-  var element = doc.querySelector(target);
+  var element = root.querySelector(target);
 
-  return element ? element : null;
+  return element && element.nodeType == goog.dom.NodeType.ELEMENT ?
+      (/**@type {Element}*/element) : null;
 };
 
 /**
  * Find all elements matching a CSS selector.
  *
- * @param {!Window} win The DOM window to search in.
  * @param {string} target The selector to search for.
+ * @param {!(Document|Element)} root The document or element to perform the
+ *     search under.
  * @return {!goog.array.ArrayLike} All matching elements, or an empty list.
  */
-bot.locators.strategies.css.many = function(win, target) {
-  var doc = win.document;
-
-  if (!goog.isFunction(doc['querySelectorAll'])) {
+bot.locators.strategies.css.many = function(target, root) {
+  if (!goog.isFunction(root['querySelectorAll'])) {
     throw Error('CSS selection is not supported');
   }
 
@@ -78,5 +76,5 @@ bot.locators.strategies.css.many = function(win, target) {
 
   target = goog.string.trim(target);
 
-  return doc.querySelectorAll(target);
+  return root.querySelectorAll(target);
 };

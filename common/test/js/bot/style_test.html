@@ -11,29 +11,63 @@
     </script>
 
     <script type="text/javascript">
-      function testWillReturnInlineStyles() {
-        var chips = bot.locators.findElement({id: 'inline-style'});
-        assertEquals("underline", bot.style.getEffectiveStyle(chips,
-            'text-decoration'));
+      function testStyleAttributeReturnsCssText() {
+        var e = bot.locators.findElement({id: 'child'});
+        assertEquals('visibility: inherit;', bot.dom.getAttribute(e, 'style'));
       }
 
-      function testWillReturnComputedOrCascadedStyle() {
-        var chips = bot.locators.findElement({id: 'from-css'});
-        assertEquals("20px", bot.style.getEffectiveStyle(chips, 'height'));
+      function testStyleAttributeReturnsWithTrailingSemicolon() {
+        var e = bot.locators.findElement({id: 'parent'});
+        assertEquals('visibility: visible;', bot.dom.getAttribute(e, 'style'));
+      }
+
+      function testInlineStyleReturnsNullForNonexistentProperty() {
+        var e = bot.locators.findElement({id: 'child'});
+        assertNull(bot.style.getInlineStyle(e, 'gibberish'));
+      }
+
+      function testInlineStyleReturnsEmptyStringForUnspecifiedProperty() {
+        var e = bot.locators.findElement({id: 'child'});
+        assertEquals('', bot.style.getInlineStyle(e, 'display'));
+      }
+
+      function testInlineStyleReturnsEmptyStringForCssSpecifiedProperty() {
+        var e = bot.locators.findElement({id: 'child'});
+        assertEquals('', bot.style.getInlineStyle(e, 'height'));
+      }
+
+      function testInlineStyleReturnsInlineProperty() {
+        var e = bot.locators.findElement({id: 'child'});
+        assertEquals('inherit', bot.style.getInlineStyle(e, 'visibility'));
+      }
+
+      function testEffectiveStyleReturnsInlineProperty() {
+        var e = bot.locators.findElement({id: 'parent'});
+        assertEquals('visible', bot.style.getEffectiveStyle(e, 'visibility'));
+      }
+
+      function testEffectiveStyleReturnsCssSpecifiedProperty() {
+        var e = bot.locators.findElement({id: 'child'});
+        assertEquals('20px', bot.style.getEffectiveStyle(e, 'height'));
+      }
+
+      function testEffectiveStyleReturnsInheritedProperty() {
+        var e = bot.locators.findElement({id: 'child'});
+        assertEquals('visible', bot.style.getEffectiveStyle(e, 'visibility'));
       }
     </script>
 
     <style type="text/css">
-      #from-css {
+      #child {
         height: 20px
       }
       </style>
   </head>
   <body>
 
-    <div id="inline-style" style="text-decoration: underline;">Div 1</div>
-
-    <div id="from-css">This is another div</div>
+    <div id="parent" style="visibility: visible">A parent div
+      <div id="child" style="visibility: inherit;display:;">A child div</div>
+    </div>
 
   </body>
 </html>

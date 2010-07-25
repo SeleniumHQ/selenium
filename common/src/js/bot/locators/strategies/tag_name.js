@@ -13,53 +13,45 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-goog.provide('bot.locators.strategies.name');
+goog.provide('bot.locators.strategies.tagName');
 
-goog.require('bot.dom');
 goog.require('goog.array');
 goog.require('goog.dom');
+goog.require('goog.dom.DomHelper');
 
 
 
 /**
- * Find an element by the value of the name attribute
- *
- * @param {string} target The name to search for.
+ * Find an element by its tag name.
+ * @param {string} target The tag name to search for.
  * @param {!(Document|Element)} root The document or element to perform the
  *     search under.
  * @return {Element} The first matching element found in the DOM, or null if no
  *     such element could be found.
  */
-bot.locators.strategies.name.single = function(target, root) {
-  var dom = goog.dom.getDomHelper(root);
+bot.locators.strategies.tagName.single = function(target, root) {
   // TODO(user): Remove next statement once Closure has been fixed to allow
   // a root argument of type Document to getElementsByTagNameAndClass.
   root = /**@type{Element}*/ (root.documentElement ?
-    root.documentElement : root);
-  var allElements = dom.getElementsByTagNameAndClass('*', null, root);
-  var element = goog.array.find(allElements, function(element) {
-    return bot.dom.getAttribute(element, 'name') == target;
-  });
-  return (/**@type{Element}*/element);
+      root.documentElement : root);
+  var elements = goog.dom.getDomHelper(root).getElementsByTagNameAndClass(
+      target, null, root);
+  return elements[0] || null;
 };
 
 
 /**
- * Find all elements by the value of the name attribute
- *
- * @param {string} target The name to search for.
+ * Find all elements with a given tag name.
+ * @param {string} target The tag name to search for.
  * @param {!(Document|Element)} root The document or element to perform the
  *     search under.
- * @return {!goog.array.ArrayLike} All matching elements, or an empty list.
+ * @return {goog.array.ArrayLike} All matching elements, or an empty list.
  */
-bot.locators.strategies.name.many = function(target, root) {
-  var dom = goog.dom.getDomHelper(root);
+bot.locators.strategies.tagName.many = function(target, root) {
   // TODO(user): Remove next statement once Closure has been fixed to allow
   // a root argument of type Document to getElementsByTagNameAndClass.
   root = /**@type{Element}*/ (root.documentElement ?
-    root.documentElement : root);
-  var allElements = dom.getElementsByTagNameAndClass('*', null, root);
-  return goog.array.filter(allElements, function(element) {
-    return bot.dom.getAttribute(element, 'name') == target;
-  });
+      root.documentElement : root);
+  return goog.dom.getDomHelper(root).getElementsByTagNameAndClass(
+      target, null, root);
 };

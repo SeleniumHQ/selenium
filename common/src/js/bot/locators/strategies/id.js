@@ -1,19 +1,17 @@
-/** @license
-Copyright 2010 WebDriver committers
-Copyright 2010 Google Inc.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+// Copyright 2010 WebDriver committers
+// Copyright 2010 Google Inc.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 goog.provide('bot.locators.strategies.id');
 
@@ -23,13 +21,14 @@ goog.require('goog.dom');
 
 /**
  * Find an element by using the value of the ID attribute.
- * @param {!Window} win The DOM window to search in.
  * @param {string} target The id to search for.
+ * @param {!(Document|Element)} root The document or element to perform the
+ *     search under.
  * @return {Element} The first matching element found in the DOM, or null if no
  *     such element could be found.
  */
-bot.locators.strategies.id.single = function(win, target) {
-  var dom = goog.dom.getDomHelper(win);
+bot.locators.strategies.id.single = function(target, root) {
+  var dom = goog.dom.getDomHelper(root);
 
   var e = dom.getElement(target);
   if (!e) {
@@ -37,28 +36,32 @@ bot.locators.strategies.id.single = function(win, target) {
   }
 
   // On IE getting by ID returns the first match by id _or_ name.
-  if (bot.dom.getAttribute(e, 'id') == target) {
+  if (bot.dom.getAttribute(e, 'id') == target && goog.dom.contains(root, e)) {
     return e;
   }
 
   var elements = dom.getElementsByTagNameAndClass('*');
   var element = goog.array.find(elements, function(element) {
-    return bot.dom.getAttribute(element, 'id') == target;
+    return bot.dom.getAttribute(element, 'id') == target &&
+            goog.dom.contains(root, element);
   });
   return (/**@type{Element}*/element);
 };
 
 /**
  * Find many elements by using the value of the ID attribute.
- * @param {!Window} win The DOM window to search in.
  * @param {string} target The id to search for.
+ * @param {!(Document|Element)} root The document or element to perform the
+ *     search under.
  * @return {!goog.array.ArrayLike} All matching elements, or an empty list.
  */
-bot.locators.strategies.id.many = function(win, target) {
-  var dom = goog.dom.getDomHelper(win);
-
-  var elements = dom.getElementsByTagNameAndClass('*');
-
+bot.locators.strategies.id.many = function(target, root) {
+  var dom = goog.dom.getDomHelper(root);
+  // TODO(user): Remove next statement once Closure has been fixed to allow
+  // a root argument of type Document to getElementsByTagNameAndClass.
+  root = /**@type{Element}*/ (root.documentElement ?
+    root.documentElement : root);
+  var elements = dom.getElementsByTagNameAndClass('*', null, root);
   return goog.array.filter(elements, function(e) {
     return bot.dom.getAttribute(e, 'id') == target;
   });

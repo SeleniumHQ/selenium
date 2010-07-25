@@ -174,7 +174,63 @@ limitations under the License.
 
       assertEquals(2, bad.length);
     }
-  </script>
+
+    function testCanFindElementByLinkText() {
+      var link = bot.locators.findElement({linkText: 'this is a link'});
+
+      assertEquals('link', bot.dom.getAttribute(link, 'id'));
+    }
+
+    function testCanFindElementsByLinkText() {
+      var links = bot.locators.findElements({linkText: 'this is a link'});
+
+      assertEquals(5, links.length);
+    }
+
+    function testShouldBeAbleToFindLinksWithNoText() {
+      var link = bot.locators.findElement({linkText: ''});
+      assertNotNull(link);
+      assertEquals('empty-link', link.id);
+
+      var links = bot.locators.findElements({linkText: ''});
+      assertEquals(1, links.length);
+      assertEquals('empty-link', links[0].id);
+    }
+
+    function testCanFindElementByPartialLinkText() {
+      var link = bot.locators.findElement({partialLinkText: 'is a'});
+
+      assertEquals('link', bot.dom.getAttribute(link, 'id'));
+    }
+
+    function testCanFindElementsByPartialLinkText() {
+      var links = bot.locators.findElements({partialLinkText: 'a lin'});
+
+      assertEquals(5, links.length);
+    }
+
+    function testShouldMatchFirstLinkWhenLinkTextIsTheEmptyString() {
+      var link = bot.locators.findElement({partialLinkText: ''});
+      assertNotNull(link);
+      assertEquals('link', link.id);
+    }
+
+    function testShouldFindEveryLinkWhenLinkTextIsTheEmptyString() {
+      var links = bot.locators.findElements({partialLinkText: ''});
+      assertEquals(7, links.length);
+    }
+
+    function testShouldBeAbleToFindElementByTagName() {
+      var link = bot.locators.findElement({tagName: 'A'});
+      assertNotNull(link);
+      assertEquals('link', link.id);
+    }
+
+    function testShouldBeAbleToFindElementsByTagName() {
+      var links = bot.locators.findElements({tagName: 'A'});
+      assertEquals(7, links.length);
+    }
+</script>
 </head>
 <body>
   <p id="x" name="para">Para</p>
@@ -199,5 +255,14 @@ limitations under the License.
     <li id="illegal">item
     <li id="illegal">item
   </ul>
-</body>
+
+  <a id="link" href="#">this is a link</a>
+  <a name="fishsticks">this is a link</a>
+  <a href="#">this is a link</a>
+  <a href="#">this is a link</a>
+  <a href="#">this is a link</a>
+
+  <a href="#">unrelated</a>
+  <a href="#" id="empty-link"></a>
+  </body>
 </html>

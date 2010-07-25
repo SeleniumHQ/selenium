@@ -1,19 +1,17 @@
-/** @license
-Copyright 2010 WebDriver committers
-Copyright 2010 Google Inc.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+// Copyright 2010 WebDriver committers
+// Copyright 2010 Google Inc.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 /**
  * @fileoverview Element locator functions.
@@ -38,12 +36,13 @@ goog.require('goog.array');   // for the goog.array.ArrayLike typedef
  * element on the DOM with the ID 'foo' should be returned.
  *
  * @param {!Object} target The selector to search for.
+ * @param {(Document|Element)=} opt_root The node from which to start the
+ *     search. If not specified, will use {@code document} as the root.
  * @return {Element} The first matching element found in the DOM, or null if no
  *     such element could be found.
  */
-bot.locators.findElement = function(target) {
-  var finder_func = bot.locators.strategies.lookupSingle(target);
-  return finder_func();
+bot.locators.findElement = function(target, opt_root) {
+  return bot.locators.strategies.lookupSingle(target, opt_root)();
 };
 
 /**
@@ -54,10 +53,11 @@ bot.locators.findElement = function(target) {
  * 'name' attribute equal to 'foo' should be returned.
  *
  * @param {!Object} target The selector to search for.
+ * @param {(Document|Element)=} opt_root The node from which to start the
+ *     search. If not specified, will use {@code document} as the root.
  * @return {!goog.array.ArrayLike.<Element>} All matching elements found in the
  *     DOM.
  */
-bot.locators.findElements = function(target) {
-  var finder_func = bot.locators.strategies.lookupMany(target);
-  return finder_func();
+bot.locators.findElements = function(target, opt_root) {
+  return bot.locators.strategies.lookupMany(target, opt_root)();
 };

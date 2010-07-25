@@ -22,8 +22,8 @@ limitations under the License.
   </script>
   <script type="text/javascript" src="deps.js"></script>
   <script type="text/javascript">
-    goog.require('bot.dom');
     goog.require('bot.locators');
+    goog.require('bot.style');
     goog.require('goog.testing.jsunit');
   </script>
 
@@ -71,7 +71,7 @@ limitations under the License.
 
     function getVisibleTextByElementId(id) {
       var e = bot.locators.findElement({id: id});
-      return bot.dom.getVisibleText(e);
+      return bot.style.getVisibleText(e);
     }
 
     function testGetVisibleTextShouldCollapseNonBreakingSpaces() {
