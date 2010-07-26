@@ -29,7 +29,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.mortbay.jetty</groupId>
-			<artifactId>jetty</artifactId>
+			<artifactId>servlet-api-2.5</artifactId>
 			<version>6.1.9</version>
 		</dependency>
 		<dependency>
@@ -50,6 +50,11 @@
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
 			<artifactId>selenium-ie-driver</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.seleniumhq.selenium</groupId>
+			<artifactId>selenium-iphone-driver</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
@@ -75,35 +80,43 @@
 
 	<build>
 		<sourceDirectory>src/java</sourceDirectory>
-		<resources>
-			<resource>
-				<directory>src/java</directory>
-				<excludes>
-					<exclude>**/*.java</exclude>
-				</excludes>
-			</resource>
-			<resource>
-				<directory>../../common/src/js/core</directory>
-				<targetPath>core</targetPath>
-			</resource>
-			<resource>
-				<directory>../../common/src/js/jsunit</directory>
-				<targetPath>jsunit</targetPath>
-			</resource>
-		</resources>
 		<testSourceDirectory>test/java</testSourceDirectory>
 		<plugins>
+			<!-- See http://maven.apache.org/plugins/maven-compiler-plugin -->
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<includes>
+						<include>org/openqa/selenium/**/*.java</include>
+						<include>cybervillains/**/*.java</include>
+						<include>org/openqa/jetty/**/*.java</include>
+					</includes>
+				</configuration>
+			</plugin>
 			<!-- See http://maven.apache.org/plugins/maven-antrun-plugin -->
 			<plugin>
 				<artifactId>maven-antrun-plugin</artifactId>
 				<executions>
 					<execution>
-						<id>create RemoteRunner.hta and TestRunner.hta</id>
-						<phase>compile</phase>
+						<id>create_server_resources</id>
+						<phase>generate-resources</phase>
 						<configuration>
 							<tasks>
-								<copy file="target/classes/core/RemoteRunner.html" tofile="target/classes/core/RemoteRunner.hta" />
-								<copy file="target/classes/core/TestRunner.html" tofile="target/classes/core/TestRunner.hta" />
+								<!-- 1. Execute rake to build ../../build/remote/server/server.jar ... -->
+								<condition property="goExecutable" value="go.bat" else="go">
+									<os family="windows" />
+								</condition>
+								<exec dir="../.." executable="${goExecutable}">
+									<arg value="//remote/server:server" />
+								</exec>
+								<!-- 2. Extract everything but the class files and MANIFEST.MF to target/classes ... -->
+								<mkdir dir="target/classes" />
+								<unjar src="../../build/remote/server/server.jar" dest="target/classes">
+									<patternset>
+										<exclude name="**/*.class" />
+										<exclude name="META-INF/MANIFEST.MF" />
+									</patternset>
+								</unjar>
 							</tasks>
 						</configuration>
 						<goals>
