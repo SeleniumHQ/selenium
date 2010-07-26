@@ -150,7 +150,7 @@ class Tasks
   def zip(src, dest)
     out = File.expand_path(dest)
     
-    sh "cd #{src} && jar cMf #{out} *"
+    sh "cd \"#{src}\" && jar cMf \"#{out}\" *"
   end
 
   def to_filelist(dir, src)
