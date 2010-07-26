@@ -10,11 +10,11 @@ java_library(name = "client",
            "//third_party/java/commons-io"
          ])
 
-java_library(name = "test",
-  srcs = [ "src/java/**/*.java" ],
+java_test(name = "test",
+  srcs = [ "test/java/**/*.java" ],
   deps = [
     ":client",
-    "//remote/common:test"
+    "//common:test"
   ])
 
 java_library(name = "combined",
