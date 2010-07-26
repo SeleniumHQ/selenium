@@ -29,7 +29,6 @@ java_library(name = "server",
     "//remote/server/src/java/org/openqa:jetty",
     "//third_party/java/ant",
     "//third_party/java/bcprov",
-    "//third_party/java/easymock",
     "//third_party/java/servlet-api"
   ])
 
@@ -46,7 +45,9 @@ java_test(name = "test",
     "//remote/client",
     "//common:test",
     "//remote/common:test",
-    "//firefox:test"])
+    "//firefox:test",
+    "//third_party/java/easymock"
+  ])
 
 java_library(name = "jsapi",
   srcs = [ "test/java/**/JsApi*.java" ],
