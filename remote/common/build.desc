@@ -7,7 +7,7 @@ java_library(name = "common",
       "//third_party/java/json"
     ])
 
-java_library(name = "test",
+java_test(name = "test",
   srcs = [ "test/java/**/*.java" ],
   deps = [
     ":common",
