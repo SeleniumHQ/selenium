@@ -41,16 +41,25 @@
 				<artifactId>maven-antrun-plugin</artifactId>
 				<executions>
 					<execution>
-						<id>create chrome-extension.zip</id>
+						<id>create_chrome_extension</id>
 						<phase>generate-resources</phase>
 						<configuration>
 							<tasks>
-								<copy todir="target/chrome-extension">
-									<fileset dir="src/extension" excludes="**/.svn/**" />
-								</copy>
-								<copy file="prebuilt/Win32/Release/npchromedriver.dll" todir="target/chrome-extension" />
+								<!-- 1. Execute rake to build ../build/chrome/chrome.jar ... -->
+								<condition property="goExecutable" value="go.bat" else="go">
+									<os family="windows" />
+								</condition>
+								<exec dir=".." executable="${goExecutable}">
+									<arg value="//chrome:chrome" />
+								</exec>
+								<!-- 2. Extract everything but the class files and MANIFEST.MF to target/classes ... -->
 								<mkdir dir="target/classes" />
-								<zip destfile="target/classes/chrome-extension.zip" basedir="target/chrome-extension" />
+								<unjar src="../build/chrome/chrome.jar" dest="target/classes">
+									<patternset>
+										<exclude name="**/*.class" />
+										<exclude name="META-INF/MANIFEST.MF" />
+									</patternset>
+								</unjar>
 							</tasks>
 						</configuration>
 						<goals>
