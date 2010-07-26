@@ -9,8 +9,8 @@ java_library(name = "chrome",
 java_test(name = "test",
   srcs = [ "test/java/**/*.java" ],
   deps = [
-    "//remote/common:test",
-    ":chrome"
+    ":chrome",
+    "//common:test"
 ])
 
 ruby_library(name = "chrome",
