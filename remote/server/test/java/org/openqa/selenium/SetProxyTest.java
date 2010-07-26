@@ -5,7 +5,7 @@ import junit.framework.TestCase;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.environment.InProcessTestEnvironment;
 import org.openqa.selenium.environment.TestEnvironment;
-import org.openqa.selenium.firefox.FirefoxDriverTestSuite;
+import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.internal.CommandLine;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.HttpRequest;
@@ -54,9 +54,9 @@ public class SetProxyTest extends TestCase {
     caps.setCapability(PROXY, proxy);
     caps.setCapability(ENSURING_CLEAN_SESSION, true);
 
-    WebDriver driver = new FirefoxDriverTestSuite.TestFirefoxDriver(caps);
+//    WebDriver driver = new FirefoxDriverTestSuite.TestFirefoxDriver(caps);
 //    WebDriver driver = new RemoteWebDriver(seleniumServer.getWebDriverUrl(), caps);
-//    WebDriver driver = new InternetExplorerDriver(caps);
+    WebDriver driver = new InternetExplorerDriver(caps);
 
     driver.get(new Pages(env.getAppServer()).xhtmlTestPage);
     driver.quit();
