@@ -34,6 +34,7 @@
 
 	<build>
 		<sourceDirectory>src/java</sourceDirectory>
+		<testSourceDirectory>test/java</testSourceDirectory>
 		<plugins>
 			<!-- See http://maven.apache.org/plugins/maven-antrun-plugin -->
 			<plugin>
