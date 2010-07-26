@@ -13,7 +13,7 @@ java_test(name = "test",
   srcs  = [ "test/java/**/*.java" ],
   deps = [
     ":firefox",
-    "//remote/client:test"
+    "//common:test"
   ])
 
 ruby_library(name = "firefox",
