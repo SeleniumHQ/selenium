@@ -34,24 +34,39 @@
 
 	<build>
 		<sourceDirectory>src/java</sourceDirectory>
-		<resources>
-			<resource>
-				<directory>prebuilt/Win32/Release</directory>
-				<includes>
-					<include>InternetExplorerDriver.dll</include>
-				</includes>
-				<targetPath>x86</targetPath>
-			</resource>
-			<resource>
-				<directory>prebuilt/x64/Release</directory>
-				<includes>
-					<include>InternetExplorerDriver.dll</include>
-				</includes>
-				<targetPath>amd64</targetPath>
-			</resource>
-		</resources>
-		<testSourceDirectory>test/java</testSourceDirectory>
 		<plugins>
+			<!-- See http://maven.apache.org/plugins/maven-antrun-plugin -->
+			<plugin>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>create_dll_files</id>
+						<phase>generate-resources</phase>
+						<configuration>
+							<tasks>
+								<!-- 1. Execute rake to build ../build/jobbie/jobbie.jar ... -->
+								<condition property="goExecutable" value="go.bat" else="go">
+									<os family="windows" />
+								</condition>
+								<exec dir=".." executable="${goExecutable}">
+									<arg value="//jobbie:jobbie" />
+								</exec>
+								<!-- 2. Extract everything but the class files and MANIFEST.MF to target/classes ... -->
+								<mkdir dir="target/classes" />
+								<unjar src="../build/jobbie/jobbie.jar" dest="target/classes">
+									<patternset>
+										<exclude name="**/*.class" />
+										<exclude name="META-INF/MANIFEST.MF" />
+									</patternset>
+								</unjar>
+							</tasks>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 			<!-- See http://maven.apache.org/plugins/maven-surefire-plugin -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
