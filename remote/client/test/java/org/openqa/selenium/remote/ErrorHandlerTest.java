@@ -31,6 +31,9 @@ import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.XPathLookupException;
 
+import static org.junit.Assert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+
 /**
  * Unit tests for {@link ErrorHandler}.
  *
@@ -86,7 +89,7 @@ public class ErrorHandlerTest extends TestCase {
       fail("Should have thrown!");
     } catch (WebDriverException expected) {
       assertNull("Should not have a cause", expected.getCause());
-      assertEquals(new WebDriverException().getMessage(), expected.getMessage());
+      assertThat(expected.getMessage(), containsString(new WebDriverException().getMessage()));
     }
   }
 
@@ -97,8 +100,8 @@ public class ErrorHandlerTest extends TestCase {
       fail("Should have thrown!");
     } catch (WebDriverException expected) {
       assertNull("Should not have a cause", expected.getCause());
-      assertEquals(new WebDriverException("boom").getMessage(),
-          expected.getMessage());
+      assertThat(expected.getMessage(), containsString("boom"));
+      assertThat(expected.getMessage(), containsString(new WebDriverException().getMessage()));
     }
   }
 
@@ -109,9 +112,9 @@ public class ErrorHandlerTest extends TestCase {
           ImmutableMap.of("message", "boom")));
       fail("Should have thrown!");
     } catch (WebDriverException expected) {
-      assertEquals(new WebDriverException("boom").getMessage(),
-          expected.getMessage());
       assertNull("Should not have a cause", expected.getCause());
+      assertThat(expected.getMessage(), containsString("boom"));
+      assertThat(expected.getMessage(), containsString(new WebDriverException().getMessage()));
     }
   }
 
@@ -266,9 +269,9 @@ public class ErrorHandlerTest extends TestCase {
           ErrorCodes.UNHANDLED_ERROR, toMap(serverError)));
       fail("Should have thrown!");
     } catch (WebDriverException expected) {
-      assertEquals(new WebDriverException(serverError.getMessage()).getMessage(),
-          expected.getMessage());
-      assertNull(expected.getCause());
+      assertNull("Should not have a cause", expected.getCause());
+      assertThat(expected.getMessage(), containsString(serverError.getMessage()));
+      assertThat(expected.getMessage(), containsString(new WebDriverException().getMessage()));
     }
   }
 
