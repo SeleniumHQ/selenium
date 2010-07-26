@@ -9,6 +9,5 @@ java_test(name = "test",
   srcs = [ "test/java/**/*.java" ],
   deps = [
     ":htmlunit",
-    "//common:test",
-    "//third_party/java/junit"
+    "//common:test"
   ])
