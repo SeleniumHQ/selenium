@@ -17,15 +17,10 @@
 			<artifactId>selenium-common</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-        <dependency>
-            <groupId>org.seleniumhq.selenium</groupId>
-            <artifactId>selenium-remote-client</artifactId>
-            <version>${project.version}</version>
-        </dependency>
 		<dependency>
-			<groupId>org.json</groupId>
-			<artifactId>json</artifactId>
-			<version>20080701</version>
+			<groupId>org.seleniumhq.selenium</groupId>
+			<artifactId>selenium-remote-client</artifactId>
+			<version>${project.version}</version>
 		</dependency>
 		<!-- Test dependencies ... -->
 		<dependency>
@@ -39,22 +34,6 @@
 
 	<build>
 		<sourceDirectory>src/java</sourceDirectory>
-		<resources>
-			<resource>
-				<directory>prebuilt/linux/release</directory>
-				<includes>
-					<include>x_ignore_nofocus.so</include>
-				</includes>
-				<targetPath>x86</targetPath>
-			</resource>
-			<resource>
-				<directory>prebuilt/linux64/release</directory>
-				<includes>
-					<include>x_ignore_nofocus.so</include>
-				</includes>
-				<targetPath>amd64</targetPath>
-			</resource>
-		</resources>
 		<testSourceDirectory>test/java</testSourceDirectory>
 		<plugins>
 			<!-- See http://maven.apache.org/plugins/maven-antrun-plugin -->
@@ -62,27 +41,25 @@
 				<artifactId>maven-antrun-plugin</artifactId>
 				<executions>
 					<execution>
-						<id>create webdriver-extension.zip</id>
+						<id>create_webdriver_extension</id>
 						<phase>generate-resources</phase>
 						<configuration>
 							<tasks>
-								<copy todir="target/webdriver-extension">
-									<fileset dir="src/extension" excludes="**/.svn/**" />
-								</copy>
-								<copy todir="target/webdriver-extension/content" >
-									<fileset dir="../common/src/js/extension" includes="*.js" />
-								</copy>
-								<copy todir="target/webdriver-extension/components">
-									<fileset dir="prebuilt" includes="*.xpt" />
-								</copy>
-								<copy todir="target/webdriver-extension/components">
-									<fileset dir="prebuilt" includes="*.xpt" />
-								</copy>
-								<copy file="prebuilt/Win32/Release/webdriver-firefox.dll" todir="target/webdriver-extension/platform/WINNT_x86-msvc/components" />
-								<copy file="prebuilt/linux/Release/libwebdriver-firefox.so" todir="target/webdriver-extension/platform/Linux_x86-gcc3/components" />
-								<copy file="prebuilt/linux64/Release/libwebdriver-firefox.so" todir="target/webdriver-extension/platform/Linux_x86_64-gcc3/components" />
+								<!-- 1. Execute rake to build ../build/firefox/firefox.jar ... -->
+								<condition property="goExecutable" value="go.bat" else="go">
+									<os family="windows" />
+								</condition>
+								<exec dir=".." executable="${goExecutable}">
+									<arg value="//firefox:firefox" />
+								</exec>
+								<!-- 2. Extract everything but the class files and MANIFEST.MF to target/classes ... -->
 								<mkdir dir="target/classes" />
-								<zip destfile="target/classes/webdriver-extension.zip" basedir="target/webdriver-extension" />
+								<unjar src="../build/firefox/firefox.jar" dest="target/classes">
+									<patternset>
+										<exclude name="**/*.class" />
+										<exclude name="META-INF/MANIFEST.MF" />
+									</patternset>
+								</unjar>
 							</tasks>
 						</configuration>
 						<goals>
@@ -91,16 +68,16 @@
 					</execution>
 				</executions>
 			</plugin>
-            <!-- See http://maven.apache.org/plugins/maven-surefire-plugin -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <configuration>
-                    <includes>
-                        <include>**/*TestSuite.java</include>
-                    </includes>
-                </configuration>
-            </plugin>
+			<!-- See http://maven.apache.org/plugins/maven-surefire-plugin -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<includes>
+						<include>**/*TestSuite.java</include>
+					</includes>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 
