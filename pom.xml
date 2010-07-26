@@ -32,6 +32,7 @@
 		<module>common</module>
 		<module>firefox</module>
 		<module>htmlunit</module>
+		<module>iphone</module>
 		<module>jobbie</module>
 		<module>remote/common</module>
 		<module>remote/client</module>
