@@ -49,24 +49,25 @@ public class SimplePropertyDescriptor {
     HashMap<String, SimplePropertyDescriptor> properties =
         new HashMap<String, SimplePropertyDescriptor>();
     for (Method m : clazz.getMethods()) {
-      if (m.getName().startsWith("is")) {
-        String propertyName = uncapitalize(m.getName().substring(2));
-          if (properties.containsKey(propertyName))
-            properties.get(propertyName).readMethod = m;
-          else
-            properties.put(propertyName, new SimplePropertyDescriptor(propertyName, m, null));
-      }
-      if (m.getName().length() <= 3) {
-        continue;
-      }
-      String propertyName = uncapitalize(m.getName().substring(3));
-      if (m.getName().startsWith("get") || m.getName().startsWith("has")) {
+      String methodName = m.getName();
+      if (methodName.length() > 2 && methodName.startsWith("is")) {
+        String propertyName = uncapitalize(methodName.substring(2));
         if (properties.containsKey(propertyName))
           properties.get(propertyName).readMethod = m;
         else
           properties.put(propertyName, new SimplePropertyDescriptor(propertyName, m, null));
       }
-      if (m.getName().startsWith("set")) {
+      if (methodName.length() <= 3) {
+        continue;
+      }
+      String propertyName = uncapitalize(methodName.substring(3));
+      if (methodName.startsWith("get") || methodName.startsWith("has")) {
+        if (properties.containsKey(propertyName))
+          properties.get(propertyName).readMethod = m;
+        else
+          properties.put(propertyName, new SimplePropertyDescriptor(propertyName, m, null));
+      }
+      if (methodName.startsWith("set")) {
         if (properties.containsKey(propertyName))
           properties.get(propertyName).writeMethod = m;
         else
