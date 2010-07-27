@@ -82,9 +82,15 @@ webdriver.debug.Console.prototype.addLogRecord = function(logRecord) {
   var record = this.formatter_.formatRecord(logRecord);
 
   if (this.console_.logStringMessage) {
-    var stack = Components.stack.caller.caller.caller;
-    var filename = stack.filename.replace(/.*\//, '');
-    this.console_.logStringMessage(filename + ":" + stack.lineNumber  + " - " +
+    // The call depth from the calling site 6
+    var stack = Components.stack;
+    for (var i = 0; i < 6 && stack; i++) {
+      stack = stack.caller;
+    }
+
+    var filename = stack ? stack.filename.replace(/.*\//, '') : 'unknown';
+    var line = stack ? stack.lineNumber : 'xx';
+    this.console_.logStringMessage(filename + ":" + line  + " - " +
                        record);
   }
 };
