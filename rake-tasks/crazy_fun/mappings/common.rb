@@ -130,6 +130,7 @@ class Tasks
     src = fun.find_prebuilt(out)
     
     mkdir_p File.dirname(out)
+    puts "Falling back to #{src}"
     cp src, out
   end
   
