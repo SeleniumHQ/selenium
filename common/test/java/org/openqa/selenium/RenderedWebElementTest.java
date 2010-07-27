@@ -16,16 +16,14 @@ limitations under the License.
 */
 package org.openqa.selenium;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import java.awt.Dimension;
+import java.awt.Point;
+
 import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
-
-import java.awt.Dimension;
-import java.awt.Point;
 
 public class RenderedWebElementTest extends AbstractDriverTestCase {
 

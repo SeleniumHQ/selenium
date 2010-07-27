@@ -5,7 +5,6 @@ import junit.framework.Test;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 
 import org.openqa.selenium.internal.CommandLine;
 import org.openqa.selenium.internal.PortProber;

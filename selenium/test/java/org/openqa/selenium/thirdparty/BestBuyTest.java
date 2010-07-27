@@ -1,10 +1,7 @@
 package org.openqa.selenium.thirdparty;
 
-import static org.testng.Assert.assertTrue;
-
-import org.testng.annotations.Test;
-
 import com.thoughtworks.selenium.SeleneseTestNgHelper;
+import org.testng.annotations.Test;
 
 public class BestBuyTest extends SeleneseTestNgHelper {
 

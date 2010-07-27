@@ -17,12 +17,11 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import java.util.List;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.fail;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
-
-import java.util.List;
 
 public class XPathElementFindingTest extends AbstractDriverTestCase {
 

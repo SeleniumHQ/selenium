@@ -19,13 +19,13 @@ package org.openqa.selenium;
 
 import java.lang.reflect.Method;
 
-import static org.junit.Assert.assertEquals;
+import org.openqa.selenium.environment.GlobalTestEnvironment;
+import org.openqa.selenium.environment.TestEnvironment;
+
+import static org.openqa.selenium.Ignore.Driver.CHROME_NON_WINDOWS;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
-import static org.openqa.selenium.Ignore.Driver.CHROME_NON_WINDOWS;
-import org.openqa.selenium.environment.GlobalTestEnvironment;
-import org.openqa.selenium.environment.TestEnvironment;
 
 public class AlertsTest extends AbstractDriverTestCase {
 

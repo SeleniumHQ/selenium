@@ -1,14 +1,12 @@
 package org.openqa.selenium;
 
+import java.util.List;
+
 import org.junit.Test;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
-
-import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author jmleyba@gmail.com (Jason Leyba)

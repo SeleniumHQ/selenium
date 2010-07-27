@@ -2,6 +2,7 @@ package org.openqa.selenium.server;
 
 
 import junit.framework.TestCase;
+
 import org.openqa.selenium.server.browserlaunchers.BrowserLauncherFactory;
 
 public class BrowserSessionFactoryFunctionalTest extends TestCase {

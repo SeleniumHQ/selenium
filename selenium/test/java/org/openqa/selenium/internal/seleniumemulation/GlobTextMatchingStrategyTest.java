@@ -20,8 +20,6 @@ package org.openqa.selenium.internal.seleniumemulation;
 
 import junit.framework.TestCase;
 
-import org.openqa.selenium.internal.seleniumemulation.GlobTextMatchingStrategy;
-
 
 public class GlobTextMatchingStrategyTest extends TestCase {
 	public void testShouldMatchAgainstASimplePattern() {

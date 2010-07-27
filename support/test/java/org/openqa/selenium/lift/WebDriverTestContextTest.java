@@ -17,9 +17,11 @@ limitations under the License.
 
 package org.openqa.selenium.lift;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+
 import org.hamcrest.Description;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
 import org.jmock.Expectations;
 import org.jmock.integration.junit3.MockObjectTestCase;
 import org.openqa.selenium.RenderedWebElement;
@@ -28,11 +30,9 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.lift.find.Finder;
 import org.openqa.selenium.support.ui.Clock;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.openqa.selenium.lift.match.NumericalMatchers.atLeast;
-
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
 
 /**
  * Unit test for {@link WebDriverTestContext}.

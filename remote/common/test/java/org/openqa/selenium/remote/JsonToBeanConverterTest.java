@@ -17,15 +17,6 @@ limitations under the License.
 
 package org.openqa.selenium.remote;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import org.json.JSONArray;
-import org.json.JSONObject;
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.Cookie;
-import org.openqa.selenium.Platform;
-import org.openqa.selenium.browserlaunchers.DoNotUseProxyPac;
-
 import junit.framework.TestCase;
 
 import java.io.StringWriter;
@@ -35,6 +26,16 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.Cookie;
+import org.openqa.selenium.Platform;
+import org.openqa.selenium.browserlaunchers.DoNotUseProxyPac;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 
 public class JsonToBeanConverterTest extends TestCase {
 

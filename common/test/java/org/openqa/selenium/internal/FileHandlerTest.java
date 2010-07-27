@@ -19,8 +19,6 @@ package org.openqa.selenium.internal;
 
 import junit.framework.TestCase;
 
-import org.junit.Test;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -31,6 +29,8 @@ import java.io.Writer;
 import java.util.Random;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+
+import org.junit.Test;
 
 public class FileHandlerTest extends TestCase {
 

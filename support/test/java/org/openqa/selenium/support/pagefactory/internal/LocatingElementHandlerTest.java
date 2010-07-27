@@ -17,6 +17,8 @@ limitations under the License.
 
 package org.openqa.selenium.support.pagefactory.internal;
 
+import java.lang.reflect.Proxy;
+
 import org.jmock.Expectations;
 import org.jmock.integration.junit3.MockObjectTestCase;
 import org.openqa.selenium.By;
@@ -28,8 +30,6 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.How;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.pagefactory.ElementLocator;
-
-import java.lang.reflect.Proxy;
 
 public class LocatingElementHandlerTest extends MockObjectTestCase {
     public void testShouldAlwaysLocateTheElementPerCall() throws NoSuchFieldException {

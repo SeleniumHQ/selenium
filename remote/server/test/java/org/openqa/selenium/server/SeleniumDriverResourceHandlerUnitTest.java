@@ -1,5 +1,17 @@
 package org.openqa.selenium.server;
 
+import java.io.File;
+import java.io.OutputStream;
+import java.net.URL;
+import java.util.Vector;
+
+import org.junit.Test;
+import org.openqa.jetty.http.HttpResponse;
+import org.openqa.selenium.server.commands.CaptureEntirePageScreenshotToStringCommand;
+import org.openqa.selenium.server.commands.CaptureScreenshotToStringCommand;
+import org.openqa.selenium.server.commands.RetrieveLastRemoteControlLogsCommand;
+import org.openqa.selenium.server.commands.SeleniumCoreCommand;
+
 import static org.easymock.classextension.EasyMock.anyObject;
 import static org.easymock.classextension.EasyMock.createMock;
 import static org.easymock.classextension.EasyMock.createNiceMock;
@@ -10,17 +22,6 @@ import static org.easymock.classextension.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
-import org.junit.Test;
-import org.openqa.jetty.http.HttpResponse;
-import org.openqa.selenium.server.commands.CaptureScreenshotToStringCommand;
-import org.openqa.selenium.server.commands.CaptureEntirePageScreenshotToStringCommand;
-import org.openqa.selenium.server.commands.SeleniumCoreCommand;
-import org.openqa.selenium.server.commands.RetrieveLastRemoteControlLogsCommand;
-
-import java.io.File;
-import java.io.OutputStream;
-import java.net.URL;
-import java.util.Vector;
 
 
 public class SeleniumDriverResourceHandlerUnitTest {

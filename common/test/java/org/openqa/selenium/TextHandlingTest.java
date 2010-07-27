@@ -17,8 +17,13 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import java.util.regex.Pattern;
+
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
+import org.hamcrest.TypeSafeMatcher;
+import org.openqa.selenium.environment.GlobalTestEnvironment;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.endsWith;
@@ -26,18 +31,12 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.startsWith;
-import org.hamcrest.TypeSafeMatcher;
-
-import static org.junit.Assert.assertEquals;
 import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
-import org.openqa.selenium.environment.GlobalTestEnvironment;
-
-import java.util.regex.Pattern;
 
 public class TextHandlingTest extends AbstractDriverTestCase {
 

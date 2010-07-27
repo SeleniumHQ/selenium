@@ -3,9 +3,9 @@ package org.openqa.selenium.server.log;
 import junit.framework.TestCase;
 
 import java.io.IOException;
-import java.util.logging.LogRecord;
-import java.util.logging.Level;
 import java.util.logging.Formatter;
+import java.util.logging.Level;
+import java.util.logging.LogRecord;
 
 /**
  * {@link org.openqa.selenium.server.log.PerSessionLogHandler} unit test class.

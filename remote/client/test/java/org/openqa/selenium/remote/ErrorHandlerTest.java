@@ -31,8 +31,8 @@ import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.XPathLookupException;
 
-import static org.junit.Assert.assertThat;
 import static org.hamcrest.Matchers.containsString;
+import static org.junit.Assert.assertThat;
 
 /**
  * Unit tests for {@link ErrorHandler}.

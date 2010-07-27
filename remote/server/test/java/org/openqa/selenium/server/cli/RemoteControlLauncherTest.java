@@ -1,6 +1,7 @@
 package org.openqa.selenium.server.cli;
 
 import junit.framework.TestCase;
+
 import org.openqa.selenium.server.RemoteControlConfiguration;
 
 /**

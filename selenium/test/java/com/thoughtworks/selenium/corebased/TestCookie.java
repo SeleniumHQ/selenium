@@ -1,9 +1,9 @@
 package com.thoughtworks.selenium.corebased;
 
-import com.thoughtworks.selenium.*;
-import org.testng.annotations.*;
-import static org.testng.Assert.*;
 import java.util.regex.Pattern;
+
+import com.thoughtworks.selenium.SeleneseTestNgHelper;
+import org.testng.annotations.Test;
 
 public class TestCookie extends SeleneseTestNgHelper {
 	@Test public void testCookie() throws Exception {

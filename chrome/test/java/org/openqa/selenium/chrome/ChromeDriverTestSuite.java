@@ -17,14 +17,6 @@ limitations under the License.
 
 package org.openqa.selenium.chrome;
 
-import static org.openqa.selenium.Ignore.Driver.CHROME;
-import static org.openqa.selenium.Ignore.Driver.CHROME_NON_WINDOWS;
-import org.openqa.selenium.Platform;
-import org.openqa.selenium.TestSuiteBuilder;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.internal.FileHandler;
-import org.openqa.selenium.internal.TemporaryFilesystem;
-
 import junit.framework.Assert;
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -32,6 +24,15 @@ import junit.framework.TestCase;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+
+import org.openqa.selenium.Platform;
+import org.openqa.selenium.TestSuiteBuilder;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.internal.FileHandler;
+import org.openqa.selenium.internal.TemporaryFilesystem;
+
+import static org.openqa.selenium.Ignore.Driver.CHROME;
+import static org.openqa.selenium.Ignore.Driver.CHROME_NON_WINDOWS;
 
 public class ChromeDriverTestSuite extends TestCase {
   public static Test suite() throws Exception {

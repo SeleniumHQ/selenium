@@ -17,11 +17,10 @@
 
 package org.openqa.selenium;
 
-import org.testng.annotations.Test;
-
 import com.thoughtworks.selenium.SeleneseTestNgHelper;
 import com.thoughtworks.selenium.SeleniumException;
 import com.thoughtworks.selenium.SeleniumLogLevels;
+import org.testng.annotations.Test;
 
 /**
  * @author Paul Hammant

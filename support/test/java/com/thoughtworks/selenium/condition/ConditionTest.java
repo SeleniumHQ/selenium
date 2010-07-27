@@ -19,6 +19,7 @@ package com.thoughtworks.selenium.condition;
 
 import junit.framework.AssertionFailedError;
 import junit.framework.TestCase;
+
 import com.thoughtworks.selenium.Selenium;
 import com.thoughtworks.selenium.SeleniumException;
 

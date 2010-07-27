@@ -17,6 +17,11 @@ limitations under the License.
 
 package org.openqa.selenium.environment.webserver;
 
+import junit.framework.Assert;
+
+import javax.servlet.Servlet;
+import java.io.File;
+
 import org.mortbay.jetty.Connector;
 import org.mortbay.jetty.Handler;
 import org.mortbay.jetty.Server;
@@ -25,14 +30,8 @@ import org.mortbay.jetty.security.SslSocketConnector;
 import org.mortbay.jetty.webapp.WebAppContext;
 import org.mortbay.servlet.MultiPartFilter;
 import org.openqa.selenium.NetworkUtils;
-import org.openqa.selenium.internal.PortProber;
 
-import junit.framework.Assert;
-
-import javax.servlet.Servlet;
-import java.io.File;
-
-import static org.openqa.selenium.internal.PortProber.*;
+import static org.openqa.selenium.internal.PortProber.findFreePort;
 
 public class Jetty6AppServer implements AppServer {
 

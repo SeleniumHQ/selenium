@@ -17,13 +17,14 @@ limitations under the License.
 
 package org.openqa.selenium.firefox;
 
+import java.io.File;
+import java.io.IOException;
+
+import org.openqa.selenium.AbstractDriverTestCase;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
-import org.openqa.selenium.AbstractDriverTestCase;
-
-import java.io.File;
-import java.io.IOException;
 
 public class SaveScreenshotTest extends AbstractDriverTestCase {
 

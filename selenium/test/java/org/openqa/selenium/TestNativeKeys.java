@@ -2,10 +2,9 @@ package org.openqa.selenium;
 
 import java.awt.event.KeyEvent;
 
+import com.thoughtworks.selenium.SeleneseTestNgHelper;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-
-import com.thoughtworks.selenium.SeleneseTestNgHelper;
 
 public class TestNativeKeys extends SeleneseTestNgHelper {
     @Test public void testKeyPressNative() {

@@ -1,8 +1,7 @@
 package org.openqa.selenium.thirdparty;
 
-import org.testng.annotations.Test;
-
 import com.thoughtworks.selenium.SeleneseTestNgHelper;
+import org.testng.annotations.Test;
 
 public class CrossDomainTest extends SeleneseTestNgHelper {
     @Test

@@ -1,9 +1,8 @@
 package org.openqa.selenium;
 
+import com.thoughtworks.selenium.SeleneseTestNgHelper;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-
-import com.thoughtworks.selenium.SeleneseTestNgHelper;
 
 public class TestLargeHtml extends SeleneseTestNgHelper {
     @Test public void testLargeHtml() {

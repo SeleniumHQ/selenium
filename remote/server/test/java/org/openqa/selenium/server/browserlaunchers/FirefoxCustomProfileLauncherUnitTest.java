@@ -2,12 +2,12 @@ package org.openqa.selenium.server.browserlaunchers;
 
 import junit.framework.TestCase;
 
-import org.openqa.selenium.server.BrowserConfigurationOptions;
-import org.openqa.selenium.server.RemoteControlConfiguration;
-
 import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
+
+import org.openqa.selenium.server.BrowserConfigurationOptions;
+import org.openqa.selenium.server.RemoteControlConfiguration;
 
 public class FirefoxCustomProfileLauncherUnitTest extends TestCase {
     

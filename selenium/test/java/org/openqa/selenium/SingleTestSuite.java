@@ -20,10 +20,8 @@ package org.openqa.selenium;
 import junit.framework.Test;
 import junit.framework.TestCase;
 
-import static org.openqa.selenium.Ignore.Driver.*;
+import static org.openqa.selenium.Ignore.Driver.ALL;
 import static org.openqa.selenium.internal.PortProber.findFreePort;
-
-import org.openqa.selenium.internal.PortProber;
 
 @SuppressWarnings("unused")
 public class SingleTestSuite extends TestCase {

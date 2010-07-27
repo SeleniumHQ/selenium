@@ -17,8 +17,7 @@ limitations under the License.
 
 package org.openqa.selenium.firefox;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
+import junit.framework.TestCase;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -27,10 +26,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.TestCase;
-
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.internal.FileHandler;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
 
 public class FirefoxProfileTest extends TestCase {
 

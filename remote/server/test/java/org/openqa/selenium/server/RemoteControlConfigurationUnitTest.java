@@ -1,10 +1,14 @@
 package org.openqa.selenium.server;
 
+import java.io.File;
+
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
-import java.io.File;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * #{@link org.openqa.selenium.server.RemoteControlConfiguration} unit test class.

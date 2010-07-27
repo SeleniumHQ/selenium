@@ -1,9 +1,9 @@
 package org.openqa.selenium.remote;
 
-import org.openqa.selenium.TestSuiteBuilder;
-
-import junit.framework.TestCase;
 import junit.framework.Test;
+import junit.framework.TestCase;
+
+import org.openqa.selenium.TestSuiteBuilder;
 
 public class RemoteClientTestSuite extends TestCase {
 

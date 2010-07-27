@@ -18,16 +18,7 @@ limitations under the License.
 
 package org.openqa.selenium.firefox;
 
-import static java.lang.Thread.sleep;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.fail;
-import static org.openqa.selenium.DevMode.isInDevMode;
-import static org.openqa.selenium.Ignore.Driver.FIREFOX;
+import java.util.Set;
 
 import org.junit.Assert;
 import org.openqa.selenium.AbstractDriverTestCase;
@@ -41,7 +32,12 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.firefox.internal.ProfilesIni;
 
-import java.util.Set;
+import static java.lang.Thread.sleep;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.openqa.selenium.DevMode.isInDevMode;
+import static org.openqa.selenium.Ignore.Driver.FIREFOX;
 
 
 public class FirefoxDriverTest extends AbstractDriverTestCase {

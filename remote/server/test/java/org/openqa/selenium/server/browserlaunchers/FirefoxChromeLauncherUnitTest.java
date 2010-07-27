@@ -5,12 +5,17 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import org.junit.Test;
-import static org.junit.Assert.*;
-
-import static org.easymock.classextension.EasyMock.*;
-
 import org.openqa.selenium.server.BrowserConfigurationOptions;
 import org.openqa.selenium.server.RemoteControlConfiguration;
+
+import static org.easymock.classextension.EasyMock.createMock;
+import static org.easymock.classextension.EasyMock.expect;
+import static org.easymock.classextension.EasyMock.replay;
+import static org.easymock.classextension.EasyMock.verify;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class FirefoxChromeLauncherUnitTest {
 	

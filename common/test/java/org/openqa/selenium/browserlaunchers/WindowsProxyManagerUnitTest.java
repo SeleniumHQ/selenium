@@ -5,7 +5,6 @@ import junit.framework.TestCase;
 import java.io.File;
 import java.io.IOException;
 
-import org.openqa.selenium.browserlaunchers.WindowsProxyManager;
 import org.openqa.selenium.internal.FileHandler;
 import org.openqa.selenium.internal.TemporaryFilesystem;
 

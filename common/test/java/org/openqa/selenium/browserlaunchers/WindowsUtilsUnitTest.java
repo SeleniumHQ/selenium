@@ -22,8 +22,6 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.openqa.selenium.browserlaunchers.WindowsUtils;
-
 public class WindowsUtilsUnitTest extends TestCase {
 
     private int majorVersion;

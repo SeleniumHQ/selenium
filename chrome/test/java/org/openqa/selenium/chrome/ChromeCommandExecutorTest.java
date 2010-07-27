@@ -21,8 +21,6 @@ import org.openqa.selenium.AbstractDriverTestCase;
 import org.openqa.selenium.Ignore;
 import org.openqa.selenium.NoDriverAfterTest;
 
-import static org.junit.Assert.fail;
-
 /**
  * @author jmleyba@gmail.com (Jason Leyba)
  */

@@ -1,11 +1,11 @@
 package org.openqa.selenium.server.browserlaunchers;
 
+import junit.framework.TestCase;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-
-import junit.framework.TestCase;
 
 import org.openqa.selenium.browserlaunchers.Proxies;
 import org.openqa.selenium.server.BrowserConfigurationOptions;

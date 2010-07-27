@@ -1,11 +1,11 @@
 package org.openqa.selenium.server.mock;
 
-import static junit.framework.Assert.fail;
-
 import org.apache.commons.logging.Log;
 import org.openqa.jetty.log.LogFactory;
 import org.openqa.selenium.server.RemoteCommand;
 import org.openqa.selenium.server.WindowClosedException;
+
+import static junit.framework.Assert.fail;
 
 /**
  * Impersonates a single frame running in PI mode.  This is basically a helper object

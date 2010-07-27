@@ -17,10 +17,9 @@ limitations under the License.
 
 package org.openqa.selenium;
 
-import static org.junit.Assert.assertTrue;
-import static org.openqa.selenium.Ignore.Driver.SELENESE;
-
 import org.openqa.selenium.internal.WrapsDriver;
+
+import static org.openqa.selenium.Ignore.Driver.SELENESE;
 
 /**
  * Tests for generic WebElement.

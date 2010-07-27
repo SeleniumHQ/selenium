@@ -1,10 +1,9 @@
 package org.openqa.selenium;
 
-import static org.testng.Assert.assertNotNull;
-
+import com.thoughtworks.selenium.SeleneseTestNgHelper;
 import org.testng.annotations.Test;
 
-import com.thoughtworks.selenium.SeleneseTestNgHelper;
+import static org.testng.Assert.assertNotNull;
 
 public class CacheBlockTest extends SeleneseTestNgHelper {
 

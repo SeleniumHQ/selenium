@@ -1,8 +1,8 @@
 package com.thoughtworks.selenium;
 
-import com.thoughtworks.selenium.Wait.WaitTimedOutException;
-
 import junit.framework.TestCase;
+
+import com.thoughtworks.selenium.Wait.WaitTimedOutException;
 
 public class WaitTest extends TestCase {
 

@@ -17,12 +17,12 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
-
-import java.net.MalformedURLException;
-import java.net.URL;
 
 public class SeleneseBackedWebDriver extends RemoteWebDriver {
   public SeleneseBackedWebDriver() throws Exception {

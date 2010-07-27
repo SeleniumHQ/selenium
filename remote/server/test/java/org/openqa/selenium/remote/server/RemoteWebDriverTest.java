@@ -17,21 +17,19 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server;
 
+import org.openqa.selenium.AbstractDriverTestCase;
+import org.openqa.selenium.By;
 import org.openqa.selenium.Ignore;
+import org.openqa.selenium.JavascriptEnabled;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.browserlaunchers.CapabilityType;
 import org.openqa.selenium.remote.Augmenter;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.ScreenshotException;
-import org.openqa.selenium.AbstractDriverTestCase;
-import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.JavascriptEnabled;
-import org.openqa.selenium.JavascriptExecutor;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import static org.openqa.selenium.OutputType.BASE64;
 
 public class RemoteWebDriverTest extends AbstractDriverTestCase {

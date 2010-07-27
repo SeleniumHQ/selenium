@@ -18,10 +18,7 @@ limitations under the License.
 package org.openqa.selenium.internal;
 
 import java.io.IOException;
-import java.lang.Math;
 import java.net.ConnectException;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Random;

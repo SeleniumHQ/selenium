@@ -3,6 +3,11 @@ package org.openqa.selenium.server.mock;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+
+import java.io.File;
+import java.util.logging.Handler;
+import java.util.logging.Logger;
+
 import org.apache.commons.logging.Log;
 import org.openqa.jetty.log.LogFactory;
 import org.openqa.selenium.server.DefaultRemoteCommand;
@@ -15,10 +20,6 @@ import org.openqa.selenium.server.browserlaunchers.BrowserLauncherFactory;
 import org.openqa.selenium.server.log.LoggingManager;
 import org.openqa.selenium.server.log.StdOutHandler;
 import org.openqa.selenium.server.log.TerseFormatter;
-
-import java.io.File;
-import java.util.logging.Handler;
-import java.util.logging.Logger;
 
 public class MockPIFrameUnitTest extends TestCase {
 

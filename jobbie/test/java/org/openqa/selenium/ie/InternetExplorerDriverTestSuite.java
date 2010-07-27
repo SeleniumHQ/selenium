@@ -21,12 +21,12 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-import static org.openqa.selenium.Ignore.Driver.IE;
-import static org.openqa.selenium.Platform.WINDOWS;
-
 import org.openqa.selenium.EmptyTest;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.TestSuiteBuilder;
+
+import static org.openqa.selenium.Ignore.Driver.IE;
+import static org.openqa.selenium.Platform.WINDOWS;
 
 public class InternetExplorerDriverTestSuite extends TestCase {
   public static Test suite() throws Exception {

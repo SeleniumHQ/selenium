@@ -19,7 +19,6 @@ package org.openqa.selenium;
 
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 
-import static org.junit.Assert.assertEquals;
 import static org.openqa.selenium.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.IE;

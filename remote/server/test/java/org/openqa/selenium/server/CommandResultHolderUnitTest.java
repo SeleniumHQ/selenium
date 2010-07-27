@@ -1,6 +1,10 @@
 package org.openqa.selenium.server;
 
 import junit.framework.TestCase;
+
+import java.util.logging.Handler;
+import java.util.logging.Logger;
+
 import org.apache.commons.logging.Log;
 import org.openqa.jetty.log.LogFactory;
 import org.openqa.selenium.server.log.LoggingManager;
@@ -8,9 +12,6 @@ import org.openqa.selenium.server.log.StdOutHandler;
 import org.openqa.selenium.server.log.TerseFormatter;
 import org.openqa.selenium.testworker.TrackableRunnable;
 import org.openqa.selenium.testworker.TrackableThread;
-
-import java.util.logging.Handler;
-import java.util.logging.Logger;
 
 public class CommandResultHolderUnitTest extends TestCase {
 

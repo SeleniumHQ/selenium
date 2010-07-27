@@ -18,18 +18,19 @@ limitations under the License.
 package org.openqa.selenium.remote.server;
 
 import junit.framework.Test;
-import junit.framework.TestSuite;
 import junit.framework.TestCase;
-import static org.openqa.selenium.Ignore.Driver.IE;
-import static org.openqa.selenium.Ignore.Driver.REMOTE;
+import junit.framework.TestSuite;
+
+import java.net.URL;
 
 import org.openqa.selenium.EmptyTest;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.TestSuiteBuilder;
-import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.RemoteWebDriver;
 
-import java.net.URL;
+import static org.openqa.selenium.Ignore.Driver.IE;
+import static org.openqa.selenium.Ignore.Driver.REMOTE;
 
 public class RemoteWebDriverIeTestSuite extends TestCase {
   public static Test suite() throws Exception {

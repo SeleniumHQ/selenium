@@ -16,23 +16,18 @@ limitations under the License.
 */
 package org.openqa.selenium;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.openqa.selenium.Ignore.Driver.SELENESE;
-
-import org.openqa.selenium.environment.GlobalTestEnvironment;
-import org.openqa.selenium.environment.webserver.AppServer;
-import static org.openqa.selenium.Ignore.Driver.IE;
-import static org.openqa.selenium.Ignore.Driver.REMOTE;
-
 import java.net.URI;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Random;
 import java.util.Set;
+
+import org.openqa.selenium.environment.GlobalTestEnvironment;
+import org.openqa.selenium.environment.webserver.AppServer;
+
+import static org.openqa.selenium.Ignore.Driver.IE;
+import static org.openqa.selenium.Ignore.Driver.REMOTE;
+import static org.openqa.selenium.Ignore.Driver.SELENESE;
 
 public class CookieImplementationTest extends AbstractDriverTestCase {
 

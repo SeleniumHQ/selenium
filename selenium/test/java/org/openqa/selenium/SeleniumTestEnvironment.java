@@ -19,13 +19,13 @@ package org.openqa.selenium;
 
 import junit.framework.Assert;
 
+import java.io.File;
+
 import org.mortbay.jetty.Server;
 import org.mortbay.jetty.nio.SelectChannelConnector;
 import org.mortbay.jetty.webapp.WebAppContext;
 import org.openqa.selenium.environment.TestEnvironment;
 import org.openqa.selenium.environment.webserver.AppServer;
-
-import java.io.File;
 
 public class SeleniumTestEnvironment implements TestEnvironment {
   private final Server server = new Server();

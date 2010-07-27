@@ -1,18 +1,18 @@
 package org.openqa.selenium.server;
 
-import org.openqa.selenium.server.BrowserSessionFactory.BrowserSessionInfo;
-import org.openqa.selenium.server.browserlaunchers.BrowserLauncherFactory;
-import org.openqa.selenium.server.browserlaunchers.DummyLauncher;
-import org.openqa.selenium.server.log.LoggingManager;
-import org.openqa.selenium.server.log.StdOutHandler;
-import org.openqa.selenium.server.log.TerseFormatter;
-
 import junit.framework.TestCase;
 
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Handler;
 import java.util.logging.Logger;
+
+import org.openqa.selenium.server.BrowserSessionFactory.BrowserSessionInfo;
+import org.openqa.selenium.server.browserlaunchers.BrowserLauncherFactory;
+import org.openqa.selenium.server.browserlaunchers.DummyLauncher;
+import org.openqa.selenium.server.log.LoggingManager;
+import org.openqa.selenium.server.log.StdOutHandler;
+import org.openqa.selenium.server.log.TerseFormatter;
 
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.expectLastCall;

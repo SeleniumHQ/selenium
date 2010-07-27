@@ -1,10 +1,9 @@
 package com.thoughtworks.selenium.thirdparty;
 
+import com.thoughtworks.selenium.SeleneseTestNgHelper;
 import org.testng.SkipException;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-
-import com.thoughtworks.selenium.SeleneseTestNgHelper;
 
 public class DomainTourTest extends SeleneseTestNgHelper
 {

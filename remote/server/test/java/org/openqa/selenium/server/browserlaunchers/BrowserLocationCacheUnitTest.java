@@ -1,6 +1,7 @@
 package org.openqa.selenium.server.browserlaunchers;
 
 import junit.framework.TestCase;
+
 import org.openqa.selenium.server.browserlaunchers.locators.BrowserLocator;
 
 /**

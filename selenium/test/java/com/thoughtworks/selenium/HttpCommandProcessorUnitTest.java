@@ -1,7 +1,6 @@
 package com.thoughtworks.selenium;
 
 import junit.framework.TestCase;
-import org.easymock.classextension.ConstructorArgs;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -11,6 +10,8 @@ import java.io.Writer;
 import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
 import java.net.URL;
+
+import org.easymock.classextension.ConstructorArgs;
 
 /**
  * {@link com.thoughtworks.selenium.HttpCommandProcessor} unit test class.

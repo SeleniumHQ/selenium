@@ -18,9 +18,6 @@ package org.openqa.selenium;
 
 import java.io.File;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 public class OutputTypeTest extends AbstractDriverTestCase {
 	public static final String TEST_BASE64 = "ABADABAD";
 	public static final byte[] TEST_BYTES = new byte[]{ 0, 16, 3, 0, 16, 3 };

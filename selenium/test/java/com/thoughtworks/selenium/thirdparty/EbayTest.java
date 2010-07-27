@@ -1,8 +1,7 @@
 package com.thoughtworks.selenium.thirdparty;
 
-import org.testng.annotations.Test;
-
 import com.thoughtworks.selenium.SeleneseTestNgHelper;
+import org.testng.annotations.Test;
 
 public class EbayTest extends SeleneseTestNgHelper {
     

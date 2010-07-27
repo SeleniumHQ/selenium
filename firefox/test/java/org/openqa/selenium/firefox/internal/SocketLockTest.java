@@ -19,11 +19,11 @@ package org.openqa.selenium.firefox.internal;
 
 import junit.framework.TestCase;
 
+import java.util.concurrent.TimeUnit;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.openqa.selenium.WebDriverException;
-
-import java.util.concurrent.TimeUnit;
 
 /**
  * Tests for the {@link SocketLock} to make sure I'm not batshit crazy.

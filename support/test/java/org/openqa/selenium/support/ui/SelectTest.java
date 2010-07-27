@@ -17,15 +17,15 @@ limitations under the License.
 
 package org.openqa.selenium.support.ui;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 import org.jmock.Expectations;
 import org.jmock.integration.junit3.MockObjectTestCase;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 
 public class SelectTest extends MockObjectTestCase {
   public void testShouldThrowAnExceptionIfTheElementIsNotASelectElement() {

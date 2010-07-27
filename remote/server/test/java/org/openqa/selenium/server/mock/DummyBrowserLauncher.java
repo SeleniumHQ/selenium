@@ -1,8 +1,8 @@
 package org.openqa.selenium.server.mock;
 
-import org.openqa.selenium.server.browserlaunchers.BrowserLauncher;
 import org.openqa.selenium.server.BrowserConfigurationOptions;
 import org.openqa.selenium.server.RemoteControlConfiguration;
+import org.openqa.selenium.server.browserlaunchers.BrowserLauncher;
 
 /** Unlike the MockBrowserLauncher which acts like a real canned browser,
  * the DummyBrowserLauncher does nothing at all.  Someone else should issue

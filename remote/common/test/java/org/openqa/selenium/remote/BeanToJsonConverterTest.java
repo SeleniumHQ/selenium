@@ -19,8 +19,12 @@ package org.openqa.selenium.remote;
 
 import junit.framework.TestCase;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import java.awt.Point;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import com.google.common.collect.ImmutableMap;
 import org.json.JSONArray;
@@ -32,12 +36,8 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.browserlaunchers.CapabilityType;
 import org.openqa.selenium.browserlaunchers.DoNotUseProxyPac;
 
-import java.awt.*;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 
 
 public class BeanToJsonConverterTest extends TestCase {

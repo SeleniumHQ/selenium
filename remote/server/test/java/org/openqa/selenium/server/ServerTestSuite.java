@@ -17,10 +17,10 @@ limitations under the License.
 
 package org.openqa.selenium.server;
 
-import org.openqa.selenium.TestSuiteBuilder;
-
 import junit.framework.Test;
 import junit.framework.TestCase;
+
+import org.openqa.selenium.TestSuiteBuilder;
 
 public class ServerTestSuite  extends TestCase {
   public static Test suite() throws Exception {

@@ -1,9 +1,8 @@
 package org.openqa.selenium.thirdparty;
 
-import org.testng.annotations.Test;
-
 import com.thoughtworks.selenium.SeleneseTestNgHelper;
 import com.thoughtworks.selenium.Wait;
+import org.testng.annotations.Test;
 
 public class FidelityTest extends SeleneseTestNgHelper {
     

@@ -1,15 +1,15 @@
 package org.openqa.selenium.chrome;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
-
 import junit.framework.TestCase;
+
+import java.io.IOException;
+import java.util.ArrayList;
 
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.Proxy.ProxyType;
 
-import java.io.IOException;
-import java.util.ArrayList;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
 
 public class ChromeProfileTest extends TestCase {
   public void testProxyDirect() throws IOException {

@@ -17,6 +17,8 @@ limitations under the License.
 
 package org.openqa.selenium.support.pagefactory;
 
+import java.lang.reflect.Field;
+
 import org.jmock.Expectations;
 import org.jmock.integration.junit3.MockObjectTestCase;
 import org.openqa.selenium.By;
@@ -26,8 +28,6 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ByIdOrName;
 import org.openqa.selenium.support.ui.Clock;
 import org.openqa.selenium.support.ui.FakeClock;
-
-import java.lang.reflect.Field;
 
 public class AjaxElementLocatorTest extends MockObjectTestCase {
   private FakeClock clock = new FakeClock();

@@ -1,8 +1,9 @@
 package org.openqa.selenium.server.browserlaunchers;
 
+import junit.framework.TestCase;
+
 import org.openqa.selenium.server.BrowserConfigurationOptions;
 import org.openqa.selenium.server.RemoteControlConfiguration;
-import junit.framework.TestCase;
 
 /**
  * {@link org.openqa.selenium.server.browserlaunchers.InternetExplorerCustomProxyLauncher} functional test class.

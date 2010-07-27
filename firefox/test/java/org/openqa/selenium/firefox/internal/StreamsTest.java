@@ -19,9 +19,9 @@ package org.openqa.selenium.firefox.internal;
 
 import junit.framework.TestCase;
 
-import org.junit.Test;
-
 import java.io.IOException;
+
+import org.junit.Test;
 
 public class StreamsTest extends TestCase {
 

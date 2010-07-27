@@ -2,9 +2,9 @@ package org.openqa.selenium.firefox.internal;
 
 import junit.framework.TestCase;
 
-import org.junit.Test;
-
 import java.io.File;
+
+import org.junit.Test;
 
 public class ExecutableTest extends TestCase {
 

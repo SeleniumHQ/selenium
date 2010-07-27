@@ -1,6 +1,7 @@
 package org.openqa.selenium.server.browserlaunchers;
 
 import junit.framework.TestCase;
+
 import org.apache.commons.logging.Log;
 import org.openqa.jetty.log.LogFactory;
 
