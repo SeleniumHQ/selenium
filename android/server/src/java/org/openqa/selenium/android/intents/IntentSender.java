@@ -69,7 +69,6 @@ public class IntentSender extends BroadcastReceiver implements Callable {
     return INSTANCE;
   }
 
-  @Override
   public Object call() throws Exception {
     while(!received) {
       continue;
