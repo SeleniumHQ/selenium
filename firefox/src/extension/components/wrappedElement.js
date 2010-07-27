@@ -494,7 +494,7 @@ FirefoxDriver.prototype.toggleElement = function(respond, parameters) {
 FirefoxDriver.prototype.isElementDisplayed = function(respond, parameters) {
   var element = Utils.getElementAt(parameters.id,
                                    respond.session.getDocument());
-  respond.value = Utils.isDisplayed(element, false);
+  respond.value = bot.style.isShown(element);
   respond.send();
 };
 
