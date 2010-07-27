@@ -120,6 +120,10 @@ bot.style.isShown = function(elem) {
 
   // Any element without positive size dimensions is not shown.
   var size = goog.style.getSize(elem);
+  if (!(size.height > 0 && size.width > 0) && elem['getBBox']) {
+    size = elem.getBBox();
+  }
+
   if (!(size.height > 0 && size.width > 0)) {
     return false;
   }
@@ -137,6 +141,7 @@ bot.style.isShown = function(elem) {
  */
 bot.style.getVisibleText = function(node) {
   var returnValue = '';
+
   var elements = bot.style.flattenDescendants_(node);
 
   goog.array.forEach(elements, function(node, i) {
@@ -155,8 +160,7 @@ bot.style.getVisibleText = function(node) {
   });
   // Remove any double spacing that could have been added by
   // concatenating spaces in different tags.
-  returnValue = goog.string.trim(returnValue.replace(/ +/g, ' '));
-  return returnValue;
+  return goog.string.trim(returnValue.replace(/ +/g, ' '));
 };
 
 

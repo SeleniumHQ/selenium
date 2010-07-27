@@ -19,15 +19,19 @@ limitations under the License.
  * @fileoverview Atoms-based implementation of the webelement interface
  */
 
+goog.provide('webdriver.element');
+
 
 goog.require('bot.dom');
+goog.require('goog.debug.Logger');
 goog.require('goog.dom.TagName');
 goog.require('goog.math');
 goog.require('goog.style');
+goog.require('webdriver.debug.Console');
 
 
-goog.provide('webdriver.element');
 
+webdriver.element.LOG_ = goog.debug.Logger.getLogger('web_element');
 
 /**
  * List of input types that support the "selected" or "checked" property.
@@ -144,4 +148,38 @@ webdriver.element.getLocation = function(element) {
     return null;
   }
   return goog.style.getBounds(element);
+};
+
+
+/**
+ * @param {Element} element The element to use.
+ * @return {boolean} Whether the element is in the HEAD tag.
+ */
+webdriver.element.isInHead_ = function(element) {
+  while (element) {
+    if (element.tagName && element.tagName.toLowerCase() == 'head') {
+      return true;
+    }
+    try {
+      element = element.parentNode;
+    } catch (e) {
+      // Fine. the DOM has dispeared from underneath us
+      return false;
+    }
+  }
+
+  return false;
+};
+
+
+/**
+ * @param {Element} element The element to get the text from.
+ * @return {string} The visible text or an empty string.
+ */
+webdriver.element.getText = function(element) {
+  if (webdriver.element.isInHead_(element)) {
+    return '';
+  }
+
+  return bot.style.getVisibleText(element);
 };

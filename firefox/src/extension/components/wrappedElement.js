@@ -176,7 +176,7 @@ FirefoxDriver.prototype.getElementText = function(respond, parameters) {
   if (element.tagName == "TITLE") {
     respond.value = respond.session.getBrowser().contentTitle;
   } else {
-    respond.value = Utils.getText(element, true);
+    respond.value = webdriver.element.getText(element);
   }
 
   respond.send();

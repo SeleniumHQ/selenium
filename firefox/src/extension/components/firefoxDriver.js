@@ -358,7 +358,7 @@ FirefoxDriver.prototype.findElementInternal_ = function(respond, method,
     case FirefoxDriver.ElementLocator.PARTIAL_LINK_TEXT:
       var allLinks = rootNode.getElementsByTagName('A');
       for (var i = 0; i < allLinks.length && !element; i++) {
-        var text = Utils.getText(allLinks[i], true);
+        var text = webdriver.element.getText(allLinks[i]);
         if (FirefoxDriver.ElementLocator.PARTIAL_LINK_TEXT == method) {
           if (text.indexOf(selector) != -1) {
             element = allLinks[i];
@@ -499,7 +499,7 @@ FirefoxDriver.prototype.findElementsInternal_ = function(respond, method,
     case FirefoxDriver.ElementLocator.PARTIAL_LINK_TEXT:
       elements =  rootNode.getElementsByTagName('A');
       elements = Array.filter(elements, function(element) {
-        var text = Utils.getText(element, true);
+        var text = webdriver.element.getText(element);
         if (FirefoxDriver.ElementLocator.PARTIAL_LINK_TEXT == method) {
           return text.indexOf(selector) != -1;
         } else {
