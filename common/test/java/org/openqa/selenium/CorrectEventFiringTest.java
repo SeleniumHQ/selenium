@@ -26,6 +26,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.openqa.selenium.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.FIREFOX;
+import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
@@ -315,6 +316,20 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
     driver.findElement(By.tagName("body")).click();
 
     assertThat(result.getText(), equalTo("changed"));
+  }
+
+  @Ignore({CHROME, HTMLUNIT, SELENESE})
+  public void testShouldReportTheXAndYCoordinatesWhenClicking() {
+    driver.get(pages.javascriptPage);
+
+    WebElement element = driver.findElement(By.id("eventish"));
+    element.click();
+
+    String clientX = driver.findElement(By.id("clientX")).getText();
+    String clientY = driver.findElement(By.id("clientY")).getText();
+
+    assertFalse("0".equals(clientX));
+    assertFalse("0".equals(clientY));
   }
 
   private void clickOnElementWhichRecordsEvents() {

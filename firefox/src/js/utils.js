@@ -927,14 +927,17 @@ Utils.findForm = function(element) {
 };
 
 
-Utils.fireMouseEventOn = function(element, eventName) {
-  Utils.triggerMouseEvent(element, eventName, 0, 0);
+Utils.fireMouseEventOn = function(element, eventName, clientX, clientY) {
+  Utils.triggerMouseEvent(element, eventName, clientX, clientY);
 };
 
 
 Utils.triggerMouseEvent = function(element, eventType, clientX, clientY) {
   var event = element.ownerDocument.createEvent("MouseEvents");
   var view = element.ownerDocument.defaultView;
+
+  clientX = clientX || 0;
+  clientY = clientY || 0;
 
   event.initMouseEvent(eventType, true, true, view, 1, 0, 0, clientX, clientY,
       false, false, false, false, 0, element);

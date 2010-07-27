@@ -100,12 +100,21 @@ FirefoxDriver.prototype.clickElement = function(respond, parameters) {
   }
 
   Utils.dumpn("Falling back to synthesized click");
-  var doc = respond.session.getDocument()
+  var doc = respond.session.getDocument();
   var currentlyActive = Utils.getActiveElement(doc);
 
+  if (element['scrollIntoView']) {
+    element.scrollIntoView();
+  }
+
+  // An SVG element won't report its location properly.
+  var dimension = webdriver.element.getLocation(element);
+  var midX = !dimension ? 0 : dimension.left + (dimension.width / 2);
+  var midY = !dimension ? 0 : dimension.top + (dimension.height / 2);
+
   Utils.fireMouseEventOn(element, "mouseover");
-  Utils.fireMouseEventOn(element, "mousemove");
-  Utils.fireMouseEventOn(element, "mousedown");
+  Utils.fireMouseEventOn(element, "mousemove", midX, midY);
+  Utils.fireMouseEventOn(element, "mousedown", midX, midY);
   if (element != currentlyActive) {
     // Some elements may not have blur, focus functions - for example,
     // elements under an SVG element. Call those only if they exist.
@@ -117,8 +126,8 @@ FirefoxDriver.prototype.clickElement = function(respond, parameters) {
     }
   }
 
-  Utils.fireMouseEventOn(element, "mouseup");
-  Utils.fireMouseEventOn(element, "click");
+  Utils.fireMouseEventOn(element, "mouseup", midX, midY);
+  Utils.fireMouseEventOn(element, "click", midX, midY);
 
   var browser = respond.session.getBrowser();
   var alreadyReplied = false;
