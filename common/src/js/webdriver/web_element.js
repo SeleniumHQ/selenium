@@ -22,6 +22,8 @@ limitations under the License.
 
 goog.require('bot.dom');
 goog.require('goog.dom.TagName');
+goog.require('goog.math');
+goog.require('goog.style');
 
 
 goog.provide('webdriver.element');
@@ -112,7 +114,13 @@ webdriver.element.getAttribute = function(element, attribute) {
     return webdriver.element.isSelected(element) ? "true" : null;
   }
 
-  if (bot.dom.hasProperty(element, attribute)) {
+  // Our tests suggest that returning the attribute is desirable for links,
+  // but we normally attempt to get the property value before the attribute.
+  var isLink =  element.tagName && goog.dom.TagName.A == element.tagName.toUpperCase()
+
+  if (name == 'href' && isLink) {
+    value = bot.dom.getAttribute(element, attribute);
+  } else if (bot.dom.hasProperty(element, attribute)) {
     value = bot.dom.getProperty(element, attribute);
   }
 
@@ -122,4 +130,18 @@ webdriver.element.getAttribute = function(element, attribute) {
 
   // The empty string is a valid return value.
   return value || value === '' ? value.toString() : null;
+};
+
+
+/**
+ * Get the location of the element, if it's displayed.
+ *
+ * @param {!Element} element The element to get the location for.
+ * @return {goog.math.Rect} The bounding rectangle of the element.
+ */
+webdriver.element.getLocation = function(element) {
+  if (!bot.style.isShown(element)) {
+    return null;
+  }
+  return goog.style.getBounds(element);
 };

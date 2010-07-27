@@ -46,7 +46,7 @@ function testReturnsTheValueOfTheDisabledAttributeEventIfItIsMissing(driver) {
   assertThat(
       driver.findElement({xpath: "//input[@id='working']"}).
           getAttribute('disabled'),
-      equals(false));
+      equals(null));
 }
 
 
@@ -56,7 +56,7 @@ function testReturnsTheValueOfTheIndexAttributeEvenIfItIsMissing(driver) {
       findElements({tagName: 'option'});
   driver.callFunction(function(response) {
     var index = response[1].getAttribute('index');
-    assertThat(index, equals(1));
+    assertThat(index, equals('1'));
   });
 }
 
@@ -96,7 +96,7 @@ function testReturnsTheValueOfCheckedForACheckboxOnlyIfItIsChecked(
   var checkbox = driver.findElement({xpath: "//input[@id='checky']"});
   assertThat(checkbox.getAttribute('checked'), is(null));
   checkbox.setSelected();
-  assertThat(checkbox.getAttribute('checked'), is(true));
+  assertThat(checkbox.getAttribute('checked'), is('true'));
 }
 
 
@@ -108,18 +108,18 @@ function testReturnsTheValueOfCheckedForRadioButtonsOnlyIfItIsSelected(
   var cheeseAndPeas = driver.findElement({id: 'cheese_and_peas'});
   assertThat(cheese.getAttribute('checked'), is(null));
   assertThat(peas.getAttribute('checked'), is(null));
-  assertThat(cheeseAndPeas.getAttribute('checked'), is(true));
+  assertThat(cheeseAndPeas.getAttribute('checked'), is('true'));
   cheese.click();
-  assertThat(cheese.getAttribute('checked'), is(true));
+  assertThat(cheese.getAttribute('checked'), is('true'));
   assertThat(peas.getAttribute('checked'), is(null));
   assertThat(cheeseAndPeas.getAttribute('checked'), is(null));
   peas.click();
   assertThat(cheese.getAttribute('checked'), is(null));
-  assertThat(peas.getAttribute('checked'), is(true));
+  assertThat(peas.getAttribute('checked'), is('true'));
   assertThat(cheeseAndPeas.getAttribute('checked'), is(null));
   peas.click();
   assertThat(cheese.getAttribute('checked'), is(null));
-  assertThat(peas.getAttribute('checked'), is(true));
+  assertThat(peas.getAttribute('checked'), is('true'));
   assertThat(cheeseAndPeas.getAttribute('checked'), is(null));
 }
 
