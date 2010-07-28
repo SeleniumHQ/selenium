@@ -38,6 +38,7 @@ limitations under the License.
   <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium/scripts/selenium-browserdetect.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium/lib/prototype.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium/lib/cssQuery/cssQuery-p.js"/> 
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium/scripts/atoms.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium/scripts/htmlutils.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium/scripts/xmlextras.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium/scripts/ui-element.js"/>
