@@ -13,7 +13,8 @@ mozilla_extension(name = "selenium-ide",
     { "src/extension/content" : "chrome"},
     { "src/extension/skin" : "chrome" },
     { "src/extension/locale" : "chrome" },
-    { ":rename_core" : "chrome/content"}
+    { ":rename_core" : "chrome/content"},
+    { "//common:atoms" : "chrome/content/selenium/scripts/atoms.js"}
   ],
   chrome = "src/extension/chrome.manifest.production",
   install = "src/extension/install.rdf")
