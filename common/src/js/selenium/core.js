@@ -1,4 +1,4 @@
-/** @license
+/**
 Copyright 2010 WebDriver committers
 Copyright 2010 Google Inc.
 
@@ -33,5 +33,5 @@ goog.provide('core.Error');
  */
 core.Error = function(opt_message) {
   goog.base(this, opt_message);
-}
+};
 goog.inherits(core.Error, goog.debug.Error);

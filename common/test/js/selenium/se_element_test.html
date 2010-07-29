@@ -1,0 +1,19 @@
+<html>
+  <head>
+    <title>se_element_test</title>
+    <script type="text/javascript" src="../webdriver-bootstrap.js"></script>
+    <script type="text/javascript">
+      goog.require('goog.testing.jsunit');
+      goog.require('core.element');
+    </script>
+
+    <script type="text/javascript">
+      function testShouldReturnTheValueOfAnAttribute() {
+        assertEquals('here', core.element.getAttribute('id=here@id'));
+      }
+    </script>
+  </head>
+  <body>
+    <p id="here">This is some content that exists</p>
+  </body>
+</html>

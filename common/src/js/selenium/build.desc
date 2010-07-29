@@ -1,0 +1,30 @@
+js_deps(name = "atomic_core",
+  srcs = [ "**/*.js" ],
+  deps = [ "//common:bot" ])
+
+js_binary(name = "core",
+  type = "script",
+  closure = "true",
+  deps = [
+    ":atomic_core"
+  ])
+
+js_fragment(name = "findElement",
+  module = "core.locators",
+  function = "core.locators.findElement",
+  srcs = [":atomic_core"])
+
+js_fragment(name = "isElementPresent",
+  module = "core.locators",
+  function = "core.locators.isElementPresent",
+  srcs = [":atomic_core"])
+
+js_fragment(name = "isTextPresent",
+  module = "core.browserbot",
+  function = "core.browserbot.isTextPresent",
+  srcs = [":atomic_core"])
+  
+js_fragment(name = "isVisible",
+  module = "core.browserbot",
+  function = "core.browserbot.isVisible",
+  srcs = [":atomic_core"])

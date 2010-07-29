@@ -15,6 +15,13 @@ java_test(name = "atoms",
     "//firefox",
     "//common:test"])
 
+java_test(name = "core",
+  srcs = [ "test/java/org/openqa/selenium/CoreTestSuite.java" ],
+  deps = [
+    "//firefox",
+    "//common/src/js/selenium:core",
+    "//common:test"])
+
 java_test(name = "webdriver_fragments",
   srcs = [ "test/java/org/openqa/selenium/WebDriverFragmentsTestSuite.java" ],
   deps = [

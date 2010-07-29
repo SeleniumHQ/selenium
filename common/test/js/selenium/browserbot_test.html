@@ -1,0 +1,38 @@
+<html>
+  <head>
+    <title>browserbot_test</title>
+    <script type="text/javascript" src="../webdriver-bootstrap.js"></script>
+    <script type="text/javascript">
+      goog.require('goog.testing.jsunit');
+      goog.require('bot.dom');
+      goog.require('core.locators');
+      goog.require('core.browserbot');
+    </script>
+
+    <script type="text/javascript">
+      function testShouldDetectWhenTextIsPresent() {
+        assertTrue(core.browserbot.isTextPresent('content'));
+      }
+      
+      function testShouldDetectWhenTextIsNotPresent() {
+        assertFalse(core.browserbot.isTextPresent('dance the funky chicken'));
+      }
+      
+      function testShouldBeAbleToDetectIfAnElementIsPresent() {
+        if (!document['evaluate']) { return; } // XPath not available
+      
+        assertTrue(core.locators.isElementPresent('//*[@id="here"]'));
+      }
+      
+      function testShouldBeAbleToDetectAnElementIsNotPresent() {
+        assertFalse(core.locators.isElementPresent('furrfu'));
+        
+        if (!document['evaluate']) { return; } // XPath not available
+        assertFalse(core.locators.isElementPresent('//*[@id="create-new-drop-down"]/div/div/div[1]'));
+      }
+    </script>
+  </head>
+  <body>
+    <p id="here">This is some content that exists</p>
+  </body>
+</html>
