@@ -17,43 +17,22 @@ limitations under the License.
 
 package org.openqa.selenium.internal.seleniumemulation;
 
-import java.util.regex.Pattern;
-
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 
 public class GetEval extends SeleneseCommand<String> {
-  /**
-   * Regular expression for scripts that reference the current window.
-   */
-  private static final Pattern SELENIUM_WINDOW_REF_REGEX = Pattern.compile(
-        "selenium\\.(browserbot|page\\(\\))\\.getCurrentWindow\\(\\)");
+  private final ScriptMutator mutator;
 
-  /**
-   * Regular expression for scripts that reference the current window's document.
-   */
-  private static final Pattern SELENIUM_DOCUMENT_REF_REGEX = Pattern.compile(
-        "selenium\\.(browserbot|page\\(\\))\\.getDocument\\(\\)");
-
-  private final Pattern seleniumBaseUrl;
-  private String baseUrl;
-
-  public GetEval(String baseUrl) {
-    this.baseUrl = '"' + baseUrl + '"';
-
-    seleniumBaseUrl = Pattern.compile("selenium\\.browserbot\\.baseUrl");
+  public GetEval(ScriptMutator mutator) {
+    this.mutator = mutator;
   }
 
   @Override
   protected String handleSeleneseCommand(WebDriver driver, String locator, String value) {
-    String script = locator.replaceAll("\n", "\\\\n");
-    script = SELENIUM_WINDOW_REF_REGEX.matcher(script).replaceAll("window");
-    script = SELENIUM_DOCUMENT_REF_REGEX.matcher(script).replaceAll("window.document");
-    script = seleniumBaseUrl.matcher(script).replaceAll(baseUrl);
-    script = script.replaceAll("\"", "\\\"");
-    script = script.replaceAll("'", "\\\\'");
-    script = String.format("return eval('%s');", script);
+    StringBuilder builder = new StringBuilder();
 
-    return String.valueOf(((JavascriptExecutor) driver).executeScript(script));
+    mutator.mutate(locator, builder);
+
+    return String.valueOf(((JavascriptExecutor) driver).executeScript(builder.toString()));
   }
 }
