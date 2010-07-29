@@ -350,14 +350,17 @@ module Selenium
         end
 
         def getElementValue(element_pointer)
-          getElementAttribute(element_pointer, 'value').gsub("\r\n", "\n")
+          val = getElementAttribute(element_pointer, 'value')
+          val.gsub("\r\n", "\n") if val
         end
 
         def getElementText(element_pointer)
-          create_string do |string_pointer|
+          val = create_string do |string_pointer|
             check_error_code Lib.wdeGetText(element_pointer, string_pointer),
                              "unable to get text"
-          end.gsub("\r\n", "\n")
+          end
+
+          val.gsub("\r\n", "\n") if val
         end
 
         def sendKeysToElement(element_pointer, string)
