@@ -28,7 +28,15 @@ public class SetTimeout extends SeleneseCommand<Void> {
 
   @Override
   protected Void handleSeleneseCommand(WebDriver driver, String timeout, String ignored) {
-    timer.setTimeout(Long.parseLong(timeout));
+    // generally, the timeout is only set to 0 when opening a page. WebDriver
+    // will wait indefinitely anyway, so setting the timeout to "0" will
+    // actually cause the command to return with an error too soon. Avoid this
+    // sorry and shocking state of affairs.
+    if ("0".equals(timeout)) {
+      timer.setTimeout(Long.MAX_VALUE);
+    } else {
+      timer.setTimeout(Long.parseLong(timeout));
+    }
     return null;
   }
 }
