@@ -20,6 +20,7 @@ java_library(name = "test",
     ":selenium",
     "//common:test",
     "//remote/server",
+    "//third_party/java/easymock",
     "//third_party/java/testng"
   ])
 
@@ -53,9 +54,10 @@ java_test(name = "single",
   deps = [
     ":test",
     "//chrome:test",
-    "//htmlunit:test",    
+    "//htmlunit:test",
     "//firefox:test",
-    "//jobbie:test"
+    "//jobbie:test",
+    "//third_party/java/testng"
   ],
   test_suite = "org.openqa.selenium.SingleTestSuite")
   

@@ -3,7 +3,7 @@
   <component name="AntConfiguration">
     <defaultAnt bundledAnt="true" />
   </component>
-  <component name="BlazePluginSettings" buildBeforeRefresh="true" />
+  <component name="BlazePluginSettings" buildBeforeRefresh="true" blazeTestProducers="true" updater="default" />
   <component name="Build editor project-level loader">
     <settings>
       <class-settings class="com.google.devtools.intellig.configcheck.ClearOutputChecker" />
@@ -648,7 +648,7 @@
       <module fileurl="file://$PROJECT_DIR$/third_party/third_party.iml" filepath="$PROJECT_DIR$/third_party/third_party.iml" />
     </modules>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_5" assert-keyword="true" jdk-15="true" project-jdk-name="1.5" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_5" assert-keyword="true" jdk-15="true" project-jdk-name="JDK 6-google-v2" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/eclipse" />
   </component>
   <component name="ResourceManagerContainer">
