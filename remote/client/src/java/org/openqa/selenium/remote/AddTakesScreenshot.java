@@ -21,6 +21,7 @@ import java.lang.reflect.Method;
 
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.internal.Base64Encoder;
 
 // Deliberately package level visibility
 class AddTakesScreenshot implements AugmenterProvider {
@@ -33,7 +34,8 @@ class AddTakesScreenshot implements AugmenterProvider {
     // The only method on TakesScreenshot is the one to take a screenshot
     return new InterfaceImplementation() {
       public Object invoke(ExecuteMethod executeMethod, Method method, Object... args) {
-        String base64 = (String) executeMethod.execute(DriverCommand.SCREENSHOT, null);
+    	byte[] rawPng = (byte[]) executeMethod.execute(DriverCommand.SCREENSHOT, null);
+        String base64 = new Base64Encoder().encode(rawPng);
         return ((OutputType<?>) args[0]).convertFromBase64Png(base64);
       }
     };
