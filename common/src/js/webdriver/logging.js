@@ -33,8 +33,16 @@ goog.require('goog.debug.TextFormatter');
  * @constructor
  */
 webdriver.debug.Console = function() {
-  var Cc = Components.classes;
-  var Ci = Components.interfaces;
+  var Cc = Components['classes'];
+  var Ci = Components['interfaces'];
+
+  if (!Cc || !Ci) {
+    // nothing sane to do
+    return;
+  }
+
+  alert("pushing on");
+
   this.console_ = Cc['@mozilla.org/consoleservice;1']
           .getService(Ci['nsIConsoleService']);
 
@@ -95,7 +103,9 @@ webdriver.debug.Console.prototype.addLogRecord = function(logRecord) {
   }
 };
 
-if (!webdriver.debug.Console.instance) {
+if (Components && Components.classes && !webdriver.debug.Console.instance) {
   webdriver.debug.Console.instance = new webdriver.debug.Console();
 }
-webdriver.debug.Console.instance.setCapturing(true);
+if (webdriver.debug.Console.instance) {
+  webdriver.debug.Console.instance.setCapturing(true);
+}

@@ -23,15 +23,11 @@ goog.provide('webdriver.element');
 
 
 goog.require('bot.dom');
-goog.require('goog.debug.Logger');
 goog.require('goog.dom.TagName');
 goog.require('goog.math');
 goog.require('goog.style');
-goog.require('webdriver.debug.Console');
 
 
-
-webdriver.element.LOG_ = goog.debug.Logger.getLogger('web_element');
 
 /**
  * List of input types that support the "selected" or "checked" property.
