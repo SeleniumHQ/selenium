@@ -151,6 +151,9 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
 
   public HtmlUnitDriver(Capabilities capabilities) {
     this(determineBrowserVersion(capabilities));
+
+    setJavascriptEnabled(capabilities.isJavascriptEnabled());
+
     if (capabilities.getCapability(CapabilityType.PROXY) != null) {
       Proxy proxy = Proxies.extractProxy(capabilities);
       String fullProxy = proxy.getHttpProxy();
