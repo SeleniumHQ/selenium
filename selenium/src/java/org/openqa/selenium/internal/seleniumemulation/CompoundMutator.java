@@ -18,23 +18,31 @@ limitations under the License.
 
 package org.openqa.selenium.internal.seleniumemulation;
 
+import java.util.List;
 import java.util.Set;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 public class CompoundMutator implements ScriptMutator {
-  private Set<ScriptMutator> mutators = Sets.newLinkedHashSet();
+  private List<ScriptMutator> mutators = Lists.newArrayList();
 
   public CompoundMutator(String baseUrl) {
-    mutators.add(new VariableDeclaration("selenium", "var selenium = {};"));
-    mutators.add(new VariableDeclaration("selenium.browserbot", "selenium.browserbot = {};"));
-    mutators.add(new VariableDeclaration("selenium.browserbot.baseUrl", "selenium.browserbot.baseUrl = '" + baseUrl + "';"));
-    mutators.add(new MethodDeclaration("selenium.page",
+    addMutator(new VariableDeclaration("selenium", "var selenium = {};"));
+    addMutator(new VariableDeclaration("selenium.browserbot", "selenium.browserbot = {};"));
+    addMutator(new VariableDeclaration("selenium.browserbot.baseUrl",
+        "selenium.browserbot.baseUrl = '" + baseUrl + "';"));
+
+    addMutator(new MethodDeclaration("selenium.page",
         "if (!selenium.browserbot) { selenium.browserbot = {} }; return selenium.browserbot;"));
-    mutators.add(new MethodDeclaration("selenium.browserbot.getCurrentWindow", "return window;"));
-    mutators.add(new MethodDeclaration("selenium.page().getCurrentWindow", "return window;"));
-    mutators.add(new MethodDeclaration("selenium.browserbot.getDocument", "return document;"));
-    mutators.add(new MethodDeclaration("selenium.page().getDocument", "return document;"));
+    addMutator(new MethodDeclaration("selenium.browserbot.getCurrentWindow", "return window;"));
+    addMutator(new MethodDeclaration("selenium.page().getCurrentWindow", "return window;"));
+    addMutator(new MethodDeclaration("selenium.browserbot.getDocument", "return document;"));
+    addMutator(new MethodDeclaration("selenium.page().getDocument", "return document;"));
+  }
+
+  public void addMutator(ScriptMutator mutator) {
+    mutators.add(mutator);
   }
 
   public void mutate(String script, StringBuilder outputTo) {

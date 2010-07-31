@@ -130,6 +130,7 @@ public class WebDriverCommandProcessor implements CommandProcessor {
   private final Map<String, SeleneseCommand> seleneseMethods = Maps.newHashMap();
   private final String baseUrl;
   private final Timer timer;
+  private final CompoundMutator scriptMutator;
   private Supplier<WebDriver> maker;
   private WebDriver driver;
 
@@ -185,6 +186,7 @@ public class WebDriverCommandProcessor implements CommandProcessor {
     }
 
     this.timer = new Timer(30000);
+    this.scriptMutator = new CompoundMutator(baseUrl);
   }
 
   /**
@@ -274,6 +276,10 @@ public class WebDriverCommandProcessor implements CommandProcessor {
     });
   }
 
+  public void addMutator(ScriptMutator mutator) {
+    scriptMutator.addMutator(mutator);
+  }
+
   public boolean isMethodAvailable(String methodName) {
     return seleneseMethods.containsKey(methodName);
   }
@@ -289,7 +295,6 @@ public class WebDriverCommandProcessor implements CommandProcessor {
   private void setUpMethodMap() {
     ElementFinder elementFinder = new ElementFinder();
     JavascriptLibrary javascriptLibrary = new JavascriptLibrary();
-    ScriptMutator scriptMutator = new CompoundMutator(baseUrl);
     KeyState keyState = new KeyState();
 
     SeleniumSelect select = new SeleniumSelect(elementFinder);
