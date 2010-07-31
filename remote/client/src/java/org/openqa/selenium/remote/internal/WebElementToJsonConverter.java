@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.Map;
 
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.internal.WrapsElement;
 import org.openqa.selenium.remote.RemoteWebElement;
 
 import com.google.common.base.Function;
@@ -37,6 +38,10 @@ public class WebElementToJsonConverter implements Function<Object, Object> {
     if (arg == null || arg instanceof String || arg instanceof Boolean ||
         arg instanceof Number) {
       return arg;
+    }
+
+    if (arg instanceof WrapsElement) {
+      arg = ((WrapsElement) arg).getWrappedElement();
     }
 
     if (arg instanceof RemoteWebElement) {
