@@ -37,6 +37,7 @@ public class ChromeProfile {
 
   private final File directory;
   private Proxy proxy;
+  private boolean acceptUntrustedCerts;
 
   /**
    * Create a new profile using the given directory. Assumes that the directory
@@ -46,6 +47,7 @@ public class ChromeProfile {
    */
   public ChromeProfile(File directory) {
     this.directory = directory;
+    acceptUntrustedCerts = ChromeDriver.ACCEPT_UNTRUSTED_CERTIFICATES;
   }
 
   /**
@@ -53,6 +55,23 @@ public class ChromeProfile {
    */
   public ChromeProfile() {
     this(createProfileDir());
+  }
+  
+  /**
+   * Sets whether Chrome should accept SSL certificates which have expired,
+   * signed by an unknown authority or are generally untrusted.
+   * This is set to true by default
+   * 
+   * @param acceptUntrustedSsl Whether untrusted SSL certificates should be
+   * accepted.
+   */
+  
+  public void setAcceptUntrustedCertificates(boolean acceptUntrustedSsl) {
+    this.acceptUntrustedCerts = acceptUntrustedSsl;
+  }
+  
+  public String getUntrustedCertificatesFlag() {
+    return acceptUntrustedCerts ? "--ignore-certificate-errors" : "";
   }
 
   public File getDirectory() {

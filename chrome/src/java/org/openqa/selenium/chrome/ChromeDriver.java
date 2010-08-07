@@ -18,6 +18,10 @@ import static org.openqa.selenium.remote.DriverCommand.SCREENSHOT;
 import com.google.common.collect.ImmutableMap;
 
 public class ChromeDriver extends RemoteWebDriver implements  TakesScreenshot, FindsByCssSelector {
+  
+  //Accept untrusted SSL certificates.
+  //TODO: This should probably be a capability, or at least drawn out to be shared with FirefoxDriver
+  public static final boolean ACCEPT_UNTRUSTED_CERTIFICATES = true;
 
   public ChromeDriver(ChromeBinary binary) {
     super(new ChromeCommandExecutor(binary), DesiredCapabilities.chrome());

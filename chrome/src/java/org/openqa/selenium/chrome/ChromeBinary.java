@@ -134,7 +134,8 @@ public class ChromeBinary {
         "--disable-hang-monitor",
         "--disable-popup-blocking",
         "--disable-prompt-on-repost",
-        "--no-default-browser-check"
+        "--no-default-browser-check",
+        profile.getUntrustedCertificatesFlag()
     );
     commandline.addAll(this.customFlags);
     if (!profile.equals(ChromeProfile.DEFAULT_PROFILE)) {
