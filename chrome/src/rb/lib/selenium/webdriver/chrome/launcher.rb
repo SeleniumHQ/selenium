@@ -26,6 +26,7 @@ module Selenium
         def initialize(opts = {})
           super()
           @default_profile = opts[:default_profile]
+          @secure_ssl = !!opts[:secure_ssl]
         end
 
         def self.binary_path
@@ -79,6 +80,10 @@ module Selenium
 
           unless @default_profile
             args << "--user-data-dir=#{Platform.wrap_in_quotes_if_necessary tmp_profile_dir}"
+          end
+
+          unless @secure_ssl
+            args << "--ignore-certificate-errors"
           end
 
           args << server_url
