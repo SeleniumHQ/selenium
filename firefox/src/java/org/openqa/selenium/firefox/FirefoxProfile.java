@@ -542,7 +542,7 @@ public class FirefoxProfile {
     /**
      * Sets whether Firefox should accept SSL certificates which have expired,
      * signed by an unknown authority or are generally untrusted.
-     * This is set to true by defaul.t
+     * This is set to true by default.
      * 
      * @param acceptUntrustedSsl Whether untrusted SSL certificates should be
      * accepted.

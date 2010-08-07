@@ -60,7 +60,7 @@ public class ChromeProfile {
   /**
    * Sets whether Chrome should accept SSL certificates which have expired,
    * signed by an unknown authority or are generally untrusted.
-   * This is set to true by default
+   * This is set to true by default.
    * 
    * @param acceptUntrustedSsl Whether untrusted SSL certificates should be
    * accepted.
