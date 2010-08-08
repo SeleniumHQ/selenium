@@ -18,6 +18,8 @@ namespace OpenQA.Selenium.Chrome
         private string directory = string.Empty;
         private bool deleteProfileOnExit = true;
 
+        private bool acceptUntrustedCerts;
+
         /// <summary>
         /// Initializes a new instance of the ChromeProfile class using the given directory. Assumes that the directory
         /// exists and has the required files.
@@ -26,6 +28,7 @@ namespace OpenQA.Selenium.Chrome
         public ChromeProfile(string directory)
         {
             this.directory = directory;
+            acceptUntrustedCerts = ChromeDriver.AcceptUntrustedCertficates;
         }
 
         /// <summary>
@@ -70,6 +73,28 @@ namespace OpenQA.Selenium.Chrome
         {
             get { return deleteProfileOnExit; }
             set { deleteProfileOnExit = value; }
+        }
+
+        /// <summary>
+        /// Gets a value of the UntrustedCertificatesFlag that is used when starting the browser
+        /// </summary>
+        public string UntrustedCertificatesFlag
+        {
+            get
+            {
+                return acceptUntrustedCerts ? " --ignore-certificate-errors " : string.Empty;
+            }
+        }
+
+        /// <summary>
+        /// Sets a value indicating where to accept untrusted certificates or not
+        /// </summary>
+        public bool AcceptUntrustedCertificates
+        {
+            set
+            {
+                acceptUntrustedCerts = value;
+            }
         }
 
         private static string CreateProfileDir()

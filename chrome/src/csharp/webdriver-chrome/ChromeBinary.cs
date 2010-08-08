@@ -100,6 +100,7 @@ namespace OpenQA.Selenium.Chrome
                 argumentString.Append(" --disable-popup-blocking");
                 argumentString.Append(" --disable-prompt-on-repost");
                 argumentString.Append(" --no-default-browser-check ");
+                argumentString.Append(profile.UntrustedCertificatesFlag);
                 argumentString.Append(customArgs);
 
                 if (this.profile != ChromeProfile.DefaultProfile)

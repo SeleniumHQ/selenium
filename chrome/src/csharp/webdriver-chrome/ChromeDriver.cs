@@ -44,6 +44,11 @@ namespace OpenQA.Selenium.Chrome
     /// </example>
     public class ChromeDriver : RemoteWebDriver, IFindsByCssSelector, ITakesScreenshot
     {
+        /// <summary>
+        /// Accept untrusted SSL Certificates
+        /// </summary>
+        public static readonly bool AcceptUntrustedCertficates = true;
+
         #region Constructors
         /// <summary>
         /// Initializes a new instance of the ChromeDriver class with the required extension loaded, and has it connect to a new ChromeCommandExecutor on its port
