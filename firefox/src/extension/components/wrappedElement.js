@@ -100,6 +100,37 @@ FirefoxDriver.prototype.clickElement = function(respond, parameters) {
   }
 
   Utils.dumpn("Falling back to synthesized click");
+
+  var browser = respond.session.getBrowser();
+  var alreadyReplied = false;
+
+  // Register a listener for the window closing.
+  var observer = {
+    observe: function(subject, topic, opt_data) {
+      if ('domwindowclosed' != topic) {
+        return;
+      }
+
+      var target = browser.contentWindow;
+      var source = subject.content;
+
+
+      if (target == source) {
+        respond.send();
+      }
+    }
+  };
+
+  var mediator = Utils.getService('@mozilla.org/embedcomp/window-watcher;1', 'nsIWindowWatcher');
+  mediator.registerNotification(observer);
+  // Override the "respond.send" function to remove the observer, otherwise
+  // it'll just get awkward
+  var originalSend = goog.bind(respond.send, respond);
+  respond.send = function() {
+    mediator.unregisterNotification(observer);
+    originalSend();
+  };
+
   var doc = respond.session.getDocument();
   var currentlyActive = Utils.getActiveElement(doc);
 
@@ -128,9 +159,6 @@ FirefoxDriver.prototype.clickElement = function(respond, parameters) {
 
   Utils.fireMouseEventOn(element, "mouseup", midX, midY);
   Utils.fireMouseEventOn(element, "click", midX, midY);
-
-  var browser = respond.session.getBrowser();
-  var alreadyReplied = false;
 
   var clickListener = new WebLoadingListener(browser, function(event) {
     if (!alreadyReplied) {

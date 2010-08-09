@@ -270,4 +270,21 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
     assertTrue(point.getX() > 1);
     assertTrue(point.getY() > 1);
   }
+
+  @Ignore({IE, CHROME, SELENESE})
+  @JavascriptEnabled
+  public void testShouldBeAbleToClickALinkThatClosesAWindow() throws Exception {
+    driver.get(pages.javascriptPage);
+    
+    String handle = driver.getWindowHandle();
+    driver.findElement(By.id("new_window")).click();
+    
+    driver.switchTo().window("close_me");
+    
+    driver.findElement(By.id("close")).click();
+    
+    driver.switchTo().window(handle);
+    
+    // If we haven't seen an exception or hung the test has passed
+  }
 }
