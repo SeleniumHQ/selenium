@@ -272,5 +272,23 @@ namespace OpenQA.Selenium
             Assert.Greater(point.X, 1);
             Assert.Greater(point.Y, 1);
         }
+
+        [Test]
+        [Category("Javascript")]
+        [IgnoreBrowser(Browser.Chrome)]
+        [IgnoreBrowser(Browser.IE)]
+        public void ShouldBeAbleToClickALinkThatClosesAWindow()
+        {
+            driver.Url = javascriptPage;
+
+            String handle = driver.GetWindowHandle();
+            driver.FindElement(By.Id("new_window")).Click();
+
+            driver.SwitchTo().Window("close_me");
+
+            driver.FindElement(By.Id("close")).Click();
+
+	        driver.SwitchTo().Window(handle);
+        }
     }
 }
