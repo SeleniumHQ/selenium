@@ -41,8 +41,6 @@ webdriver.debug.Console = function() {
     return;
   }
 
-  alert("pushing on");
-
   this.console_ = Cc['@mozilla.org/consoleservice;1']
           .getService(Ci['nsIConsoleService']);
 
