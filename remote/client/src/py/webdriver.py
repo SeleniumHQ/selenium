@@ -15,6 +15,7 @@
 
 """The WebDriver implementation."""
 
+import base64
 from command import Command
 from webelement import WebElement
 from remote_connection import RemoteConnection
@@ -309,6 +310,25 @@ class WebDriver(object):
     def _find_elements_by(self, by, value):
         return self._execute(Command.FIND_ELEMENTS,
                              {'using': by, 'value': value})['value']
+
+    def get_screenshot_as_file(self, filename):
+        """Gets the screenshot of the current window. Returns False if there is 
+        any IOError, else returns True."""
+        png = self._execute(Command.SCREENSHOT)['value']
+        f = None
+        try:
+            f = open(filename, 'w')
+            f.write(base64.decode(png))
+            f.close()
+        except IOError:
+            return False
+
+        return True
+
+    def get_screenshot_as_base64(self):
+        """Gets the screenshot of the current window as a base64 encoded string which 
+        is useful in embedded images in HTML."""
+        return self._execute(Command.SCREENSHOT)['value']
 
 
 def connect(name, version="", server="http://localhost:4444", platform=None,
