@@ -18,12 +18,12 @@ limitations under the License.
 package org.openqa.selenium.remote.server.rest;
 
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.internal.Trace;
 import org.openqa.selenium.remote.JsonToBeanConverter;
 import org.openqa.selenium.remote.PropertyMunger;
 import org.openqa.selenium.remote.SimplePropertyDescriptor;
 import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.JsonParametersAware;
-import org.openqa.selenium.remote.server.LogTo;
 import org.openqa.selenium.remote.server.handler.WebDriverHandler;
 
 import javax.servlet.http.HttpServletRequest;
@@ -47,9 +47,9 @@ public class ResultConfig {
   private final Map<ResultType, Set<Result>> resultToRender =
       new HashMap<ResultType, Set<Result>>();
   private final String url;
-  private final LogTo logger;
+  private final Trace logger;
 
-  public ResultConfig(String url, Class<? extends Handler> handlerClazz, DriverSessions sessions, LogTo logger) {
+  public ResultConfig(String url, Class<? extends Handler> handlerClazz, DriverSessions sessions, Trace logger) {
     this.url = url;
     this.logger = logger;
     if (url == null || handlerClazz == null) {
@@ -151,23 +151,23 @@ public class ResultConfig {
     ResultType result;
 
     try {
-      logger.log(String.format("Executing: %s at URL: %s)", handler.toString(), pathInfo));
+      logger.info(String.format("Executing: %s at URL: %s)", handler.toString(), pathInfo));
       result = handler.handle();
       addHandlerAttributesToRequest(request, handler);
-      logger.log("Done: " + pathInfo);
+      logger.info("Done: " + pathInfo);
     } catch (Exception e) {
       result = ResultType.EXCEPTION;
-      logger.log("Caught: " + e);
+      logger.warn(e);
       
       Throwable toUse = getRootExceptionCause(e);
 
-      logger.log("Exception: " + toUse.getMessage());
+      logger.warn("Exception: " + toUse.getMessage());
       request.setAttribute("exception", toUse);
       if (handler instanceof WebDriverHandler) {
         request.setAttribute("screen", ((WebDriverHandler) handler).getScreenshot());
       }
     } catch (Error e) {
-      logger.log("Error: " + e.getMessage());
+      logger.info("Error: " + e.getMessage());
       result = ResultType.EXCEPTION;
       request.setAttribute("exception", e);
     }
@@ -244,7 +244,7 @@ public class ResultConfig {
     int causeTraversalCounter = 0;
     while ((currentThrowable != null) && (causeTraversalCounter < 10)) {
       causeTraversalCounter++;
-      logger.log("Peeling exception: " + currentThrowable +
+      logger.info("Peeling exception: " + currentThrowable +
                  " (" + currentThrowable.getClass() + ")");
       // Remember the last exception - this one will be used if
       // there was no exception that caused it.

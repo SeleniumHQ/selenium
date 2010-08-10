@@ -23,6 +23,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.concurrent.ExecutionException;
 
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.internal.Trace;
 import org.openqa.selenium.remote.server.rest.Handler;
 import org.openqa.selenium.remote.server.rest.ResultConfig;
 import org.openqa.selenium.remote.server.rest.ResultType;
@@ -33,7 +34,7 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 
 public class ResultConfigTest extends TestCase {
-  private LogTo logger = new NullLogTo();
+  private Trace logger = new NullLogTo();
 
   public void testShouldMatchBasicUrls() throws Exception {
     ResultConfig config = new ResultConfig("/fish", StubHandler.class, null, logger);

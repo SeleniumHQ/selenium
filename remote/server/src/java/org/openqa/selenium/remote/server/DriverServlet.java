@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.openqa.selenium.internal.Trace;
 import org.openqa.selenium.remote.server.handler.AddConfig;
 import org.openqa.selenium.remote.server.handler.AddCookie;
 import org.openqa.selenium.remote.server.handler.CaptureScreenshot;
@@ -104,6 +105,8 @@ import org.openqa.selenium.remote.server.rest.ResultType;
 import org.openqa.selenium.remote.server.rest.UrlMapper;
 
 public class DriverServlet extends HttpServlet {
+  public static final String SESSIONS_KEY = DriverServlet.class.getName() + ".sessions";
+
   private UrlMapper getMapper;
   private UrlMapper postMapper;
   private UrlMapper deleteMapper;
@@ -112,11 +115,20 @@ public class DriverServlet extends HttpServlet {
   public void init() throws ServletException {
     super.init();
 
-    DriverSessions driverSessions = new DriverSessions();
+    Object attribute = getServletContext().getAttribute(SESSIONS_KEY);
+    if (attribute == null) {
+      attribute = new DefaultDriverSessions();
+    }
+    
+    DriverSessions driverSessions = (DriverSessions) attribute;
 
-    ServletLogTo logger = new ServletLogTo();
+    ServletLogTo logger = getLogger();
 
     setupMappings(driverSessions, logger);
+  }
+
+  protected ServletLogTo getLogger() {
+    return new ServletLogTo();
   }
 
   private void setupMappings(DriverSessions driverSessions, ServletLogTo logger) {
@@ -347,9 +359,37 @@ public class DriverServlet extends HttpServlet {
     }
   }
 
-  private class ServletLogTo implements LogTo {
+  private class ServletLogTo implements Trace {
     public void log(String message) {
       DriverServlet.this.log(message);
+    }
+
+    public void info(String message) {
+      log("INFO: " + message);
+    }
+
+    public void warn(Throwable e) {
+      DriverServlet.this.log("WARN: ", e);
+    }
+
+    public void warn(String message) {
+      log("WARN: " + message);
+    }
+
+    public void warn(String message, Throwable throwable) {
+      DriverServlet.this.log("WARN: " + message, throwable);
+    }
+
+    public void error(String message) {
+      log("ERROR: " + message);
+    }
+
+    public void debug(String message) {
+      log("DEBUG: " + message);
+    }
+
+    public void debug(String message, Throwable throwable) {
+      DriverServlet.this.log("DEBUG: " + message, throwable);
     }
   }
 }

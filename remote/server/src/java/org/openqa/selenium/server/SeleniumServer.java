@@ -40,6 +40,7 @@ import org.openqa.jetty.util.MultiException;
 import org.openqa.selenium.NetworkUtils;
 import org.openqa.selenium.browserlaunchers.WindowsProxyManager;
 import org.openqa.selenium.browserlaunchers.WindowsUtils;
+import org.openqa.selenium.remote.server.DefaultDriverSessions;
 import org.openqa.selenium.remote.server.DriverServlet;
 import org.openqa.selenium.server.BrowserSessionFactory.BrowserSessionInfo;
 import org.openqa.selenium.server.browserlaunchers.AsyncExecute;
@@ -311,6 +312,7 @@ public class SeleniumServer {
 
     private HttpContext createWebDriverRemoteContext() {
         HttpContext webdriverContext = new HttpContext();
+        webdriverContext.setAttribute(DriverServlet.SESSIONS_KEY, new DefaultDriverSessions());
         webdriverContext.setContextPath("/wd");
         ServletHandler handler = new ServletHandler();
         handler.addServlet("WebDriver remote server", "/hub/*", DriverServlet.class.getName());

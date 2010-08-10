@@ -17,8 +17,8 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.rest;
 
+import org.openqa.selenium.internal.Trace;
 import org.openqa.selenium.remote.server.DriverSessions;
-import org.openqa.selenium.remote.server.LogTo;
 
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -30,9 +30,9 @@ public class UrlMapper {
   private Map<ResultType, Renderer> globals = new LinkedHashMap<ResultType, Renderer>();
   private Set<ResultConfig> configs = new LinkedHashSet<ResultConfig>();
   private final DriverSessions sessions;
-  private LogTo logger;
+  private Trace logger;
 
-  public UrlMapper(DriverSessions sessions, LogTo logger) {
+  public UrlMapper(DriverSessions sessions, Trace logger) {
     this.sessions = sessions;
     this.logger = logger;
   }
