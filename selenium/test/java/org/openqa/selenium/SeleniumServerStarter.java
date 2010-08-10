@@ -26,7 +26,10 @@ public class SeleniumServerStarter extends TestSetup {
     File seleniumJar = findSeleniumJar();
 
     if (!seleniumJar.exists()) {
-      throw new IllegalStateException("Cannot locate selenium jar");
+      new Build().of("//remote/server:server:uber").go();
+      if (!seleniumJar.exists()) {
+        throw new IllegalStateException("Cannot locate selenium jar");
+      }
     }
 
     String port = startSeleniumServer(seleniumJar);

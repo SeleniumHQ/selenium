@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.util.Map;
 
 import com.google.common.collect.ImmutableMap;
+import org.openqa.selenium.Build;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.TestSuiteBuilder;
@@ -201,18 +202,7 @@ public class FirefoxDriverTestSuite extends TestCase {
     }
 
     private static void runFirefoxBuild() throws Exception {
-      System.out.println("Running //firefox:webdriver to generate required resources");
-
-      String command = Platform.getCurrent().is(WINDOWS) ? "go.bat" : "./go";
-
-      ProcessBuilder builder = new ProcessBuilder(command, "//firefox:webdriver");
-      builder.directory(FileHandler.locateInProject("Rakefile").getParentFile());
-      Process process = builder.start();
-
-      int exitValue = process.waitFor();
-      if (exitValue != 0) {
-        fail("Unable to build artifacts");
-      }
+      new Build().of("//firefox:webdriver").go();
     }
 
     private static void deleteSvnDirectories(File file) {
