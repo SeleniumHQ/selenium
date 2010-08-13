@@ -88,32 +88,14 @@ namespace OpenQA.Selenium.Internal
         /// </summary>
         protected void Validate()
         {
-            string currentDomain = Domain;
-
-            if (!string.IsNullOrEmpty(currentDomain))
+            string name = Name;
+            if (string.IsNullOrEmpty(name) || Value == null || Path == null)
             {
-                try
-                {
-                    string domainToUse = currentDomain.StartsWith("http", StringComparison.OrdinalIgnoreCase) ? currentDomain : "http://" + currentDomain;
-                    Uri url = new Uri(domainToUse);
-                    System.Net.Dns.GetHostEntry(url.Host);
-                }
-                catch (UriFormatException)
-                {
-                    throw new ArgumentException(string.Format(CultureInfo.InvariantCulture, "URL not valid: {0}", currentDomain));
-                }
-                catch (SocketException)
-                {
-                    // Domains must not be resolvable - it is perfectly valid for a domain not to
-                    // have an IP address - hence, just throwing is incorrect. As a safety measure,
-                    // check to see if the domain is a part of the fqdn of the local host - this will
-                    // make sure some tests in CookieImplementationTest will pass.
-                    if (currentHost == null || !currentHost.Contains(currentDomain))
-                    {
-                        throw new ArgumentException(String.Format(CultureInfo.InvariantCulture, "Domain unknown: {0}", currentDomain));
-                    }
-                    //// no IP - unreasonable in any modern os has localhost address.
-                }
+                throw new ArgumentException("Required attributes are not set or any non-null attribute set to null");
+            }
+            if (name.IndexOf(";") != -1)
+            {
+                throw new ArgumentException(string.Format(CultureInfo.InvariantCulture, "Cookie names cannot contain a ';': {0}", name));
             }
         }
     }
