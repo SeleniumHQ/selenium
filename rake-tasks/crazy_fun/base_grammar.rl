@@ -12,7 +12,7 @@
 
   array_value = (string | map);
   array_values = space* array_value space* (',' space* array_value space*)*;
-  array = '[' > start_array array_values ']' %leaving;
+  array = '[' > start_array array_values space* ','? space* ']' %leaving;
 
   type_name = [a-z] >start_type_name $track [a-z0-9_]* $track %leaving;
 
