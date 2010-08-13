@@ -18,7 +18,6 @@ from setuptools import setup
 from setuptools.command.install import install
 
 from os.path import dirname, join, isfile
-from subprocess import Popen, PIPE
 from shutil import copy
 import re
 import sys
@@ -60,12 +59,6 @@ def find_longdesc():
     print("WARNING: Can't find index.rst")
     return ""
 
-def revision():
-    pipe = Popen(["svn info"], stdout=PIPE, shell=True)
-    stdout, stderr = pipe.communicate()
-    match = re.search("^Revision: (\d+)", stdout, re.M)
-    return match.group(1) if match else "unknown"
-
 def _copy_ext_file(driver, name):
     filename = join("build", driver, name)
     if not isfile(filename):
@@ -104,7 +97,7 @@ _copy_ie_dlls()
 setup(
     cmdclass={'install': install},
     name='selenium',
-    version="2.0-dev-%s" % revision(),
+    version="2.0a5",
     description='Python bindings for Selenium',
     long_description=find_longdesc(),
     url='http://code.google.com/p/selenium/',
