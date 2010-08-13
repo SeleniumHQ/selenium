@@ -18,6 +18,7 @@ from setuptools import setup
 from setuptools.command.install import install
 
 from os.path import dirname, join, isfile
+from subprocess import Popen, PIPE
 from shutil import copy
 import re
 import sys
@@ -60,10 +61,10 @@ def find_longdesc():
     return ""
 
 def revision():
-    # svn_rev is updated by subversion using svn:keywords
-    svn_rev = "$Revision$"
-    match = re.search("\d+", svn_rev)
-    return match and match.group() or "unknown"
+    pipe = Popen(["svn", "info"], stdout=PIPE, shell=True)
+    stdout, stderr = pipe.communicate()
+    match = re.search("^Revision: (\d+)", stdout, re.M)
+    return match and match.group(1) or "unknown"
 
 def _copy_ext_file(driver, name):
     filename = join("build", driver, name)
