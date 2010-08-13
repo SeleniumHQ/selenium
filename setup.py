@@ -61,10 +61,10 @@ def find_longdesc():
     return ""
 
 def revision():
-    pipe = Popen(["svn", "info"], stdout=PIPE, shell=True)
+    pipe = Popen(["svn info"], stdout=PIPE, shell=True)
     stdout, stderr = pipe.communicate()
     match = re.search("^Revision: (\d+)", stdout, re.M)
-    return match and match.group(1) or "unknown"
+    return match.group(1) if match else "unknown"
 
 def _copy_ext_file(driver, name):
     filename = join("build", driver, name)
