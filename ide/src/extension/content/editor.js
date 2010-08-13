@@ -126,6 +126,8 @@ function Editor(window) {
             _testCaseObserver: {
                 modifiedStateUpdated: function() {
                     self.updateTitle();
+                    self.view.testCase = self.getTestCase();
+                    self.view.updateView();
                 }
             },
 
