@@ -67,7 +67,6 @@ namespace OpenQA.Selenium.Firefox
     ///     public void TearDown()
     ///     {
     ///         driver.Quit();
-    ///         driver.Dispose();
     ///     } 
     /// }
     /// </code>
@@ -90,9 +89,9 @@ namespace OpenQA.Selenium.Firefox
         /// </summary>
         public static readonly bool AcceptUntrustedCertificates = true;
 
-        protected FirefoxBinary binary;
+        private FirefoxBinary binary;
 
-        protected FirefoxProfile profile;
+        private FirefoxProfile profile;
         #endregion
 
         #region Constructors
@@ -122,11 +121,29 @@ namespace OpenQA.Selenium.Firefox
         /// <param name="profile">A <see cref="FirefoxProfile"/> object representing the profile settings
         /// to be used in starting Firefox.</param>
         public FirefoxDriver(FirefoxBinary binary, FirefoxProfile profile)
-            :base(CreateExtensionConnection(binary, profile), DesiredCapabilities.Firefox())
+            : base(CreateExtensionConnection(binary, profile), DesiredCapabilities.Firefox())
         {
             this.binary = binary;
             this.profile = profile;
         } 
+        #endregion
+
+        #region Properties
+        /// <summary>
+        /// Gets the FirefoxBinary and its details for subclasses
+        /// </summary>
+        protected FirefoxBinary Binary
+        {
+            get { return binary; }
+        }
+
+        /// <summary>
+        /// Gets the FirefoxProfile that is currently in use by subclasses
+        /// </summary>
+        protected FirefoxProfile Profile
+        {
+            get { return profile; }
+        }
         #endregion
 
         #region IFindsByCssSelector Members
