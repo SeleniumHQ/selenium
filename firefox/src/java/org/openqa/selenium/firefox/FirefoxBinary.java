@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -102,8 +103,8 @@ public class FirefoxBinary {
     return executable;
   }
 
-  protected Map<String, String> getExtraEnv() {
-    return extraEnv;
+  public Map<String, String> getExtraEnv() {
+    return Collections.unmodifiableMap(extraEnv);
   }
 
   protected void modifyLinkLibraryPath(FirefoxProfile profile) {

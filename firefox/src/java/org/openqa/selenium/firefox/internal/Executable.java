@@ -58,7 +58,7 @@ public class Executable {
     return binary.getAbsolutePath();
   }
   
-  public void setLibraryPath(ProcessBuilder builder, Map<String, String> extraEnv) {
+  public void setLibraryPath(ProcessBuilder builder, final Map<String, String> extraEnv) {
     final String propertyName = getLibraryPathPropertyName();
     StringBuilder libraryPath = new StringBuilder();
     
