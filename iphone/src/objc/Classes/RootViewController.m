@@ -41,10 +41,18 @@ BOOL isAutoCreateSession_ = YES;
 - (void)viewDidLoad {
 
   [super viewDidLoad];
+  MainViewController *viewController;
 	
-  MainViewController *viewController = [[MainViewController alloc]
-                                        initWithNibName:@"MainView"
-                                        bundle:nil];
+  if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+    viewController = [[MainViewController alloc]
+                                          initWithNibName:@"MainView-iPad"
+                                          bundle:nil];
+  } else {
+    viewController = [[MainViewController alloc]
+                                          initWithNibName:@"MainView"
+                                          bundle:nil];
+  }
+
   self.mainViewController = viewController;
   [viewController release];
   
@@ -62,16 +70,26 @@ BOOL isAutoCreateSession_ = YES;
 }
 
 - (void)loadFlipsideViewController {
+  FlipsideViewController *viewController;
+  
+  if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+    viewController = [[FlipsideViewController alloc]
+                                              initWithNibName:@"FlipsideView-iPad"
+                                              bundle:nil];
+  } else {
+    viewController = [[FlipsideViewController alloc]
+                                              initWithNibName:@"FlipsideView"
+                                              bundle:nil];
+  }
+
     
-  FlipsideViewController *viewController = [[FlipsideViewController alloc]
-                                            initWithNibName:@"FlipsideView"
-                                            bundle:nil];
+  
   self.flipsideViewController = viewController;
   [viewController release];
   
   // Set up the navigation bar
   UINavigationBar *aNavigationBar = 
-    [[UINavigationBar alloc] initWithFrame:CGRectMake(0.0, 0.0, 320.0, 44.0)];
+    [[UINavigationBar alloc] initWithFrame:CGRectMake(0.0, 0.0, self.view.frame.size.width, 44.0)];
   aNavigationBar.barStyle = UIBarStyleBlackOpaque;
   self.flipsideNavigationBar = aNavigationBar;
   [aNavigationBar release];
@@ -82,7 +100,7 @@ BOOL isAutoCreateSession_ = YES;
                                                   action:@selector(toggleView)];
 	
   UISwitch *switchAutoSession = [[UISwitch alloc]
-								   initWithFrame:CGRectMake(206.0, 65.0, 94.0, 27.0)];
+								   initWithFrame:CGRectMake(206.0, 65.0, self.view.frame.size.width, self.view.frame.size.height)];
 	[switchAutoSession addTarget:self action:@selector(toggleAutoCreateSession)
 							forControlEvents:UIControlEventValueChanged];
 	[switchAutoSession setOn:YES];

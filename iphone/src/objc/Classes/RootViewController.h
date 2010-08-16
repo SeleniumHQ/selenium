@@ -33,6 +33,14 @@
   UILabel *lblAutoSession;
 }
 
+#ifndef UI_USER_INTERFACE_IDIOM
+#define IPAD NO
+#define OS32PLUS NO
+#else
+#define IPAD (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+#define OS32PLUS YES
+#endif
+
 @property (nonatomic, retain) IBOutlet UIButton *infoButton;
 @property (nonatomic, retain) MainViewController *mainViewController;
 @property (nonatomic, retain) UINavigationBar *flipsideNavigationBar;

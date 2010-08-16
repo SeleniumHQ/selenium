@@ -25,6 +25,8 @@
 @synthesize rootViewController = rootViewController_;
 
 - (void)applicationDidFinishLaunching:(UIApplication *)application {
+  CGRect rect = [[UIScreen mainScreen] bounds];
+  [window_ setFrame:rect];
   [window_ addSubview:[rootViewController_ view]];
   [window_ makeKeyAndVisible];
 }

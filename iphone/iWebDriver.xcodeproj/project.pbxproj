@@ -38,6 +38,9 @@
 		64D8AA501120B995001649CC /* NSURLRequest+IgnoreSSL.m in Sources */ = {isa = PBXBuildFile; fileRef = 64D8AA4E1120B995001649CC /* NSURLRequest+IgnoreSSL.m */; };
 		64D8AA691120B9EC001649CC /* HTTPVirtualDirectory+Remove.m in Sources */ = {isa = PBXBuildFile; fileRef = 64D8AA611120B9EC001649CC /* HTTPVirtualDirectory+Remove.m */; };
 		64D8AA711120B9EC001649CC /* HTTPVirtualDirectory+Remove.m in Sources */ = {isa = PBXBuildFile; fileRef = 64D8AA611120B9EC001649CC /* HTTPVirtualDirectory+Remove.m */; };
+		73140F831208D9A500A1F920 /* FlipsideView-iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 73140F801208D9A500A1F920 /* FlipsideView-iPad.xib */; };
+		73140F841208D9A500A1F920 /* MainView-iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 73140F811208D9A500A1F920 /* MainView-iPad.xib */; };
+		73140F851208D9A500A1F920 /* MainWindow-iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 73140F821208D9A500A1F920 /* MainWindow-iPad.xib */; };
 		8301250C0EFF044900BA9BE6 /* Session.m in Sources */ = {isa = PBXBuildFile; fileRef = 839988650EE515C90074D106 /* Session.m */; };
 		8311AB7A0F44EF0500921B78 /* selenium-icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 8311AB790F44EF0500921B78 /* selenium-icon.png */; };
 		8316A2120EECE0F700FE869C /* HTTPResponse+Utility.m in Sources */ = {isa = PBXBuildFile; fileRef = 8316A2110EECE0F700FE869C /* HTTPResponse+Utility.m */; };
@@ -161,6 +164,9 @@
 		64D8AA601120B9EC001649CC /* HTTPVirtualDirectory+Remove.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "HTTPVirtualDirectory+Remove.h"; sourceTree = "<group>"; };
 		64D8AA611120B9EC001649CC /* HTTPVirtualDirectory+Remove.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "HTTPVirtualDirectory+Remove.m"; sourceTree = "<group>"; };
 		64D8AA9F1120BAF9001649CC /* errorcodes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = errorcodes.h; path = "../common/src/cpp/webdriver-interactions/errorcodes.h"; sourceTree = SOURCE_ROOT; };
+		73140F801208D9A500A1F920 /* FlipsideView-iPad.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = "FlipsideView-iPad.xib"; path = "src/objc/FlipsideView-iPad.xib"; sourceTree = "<group>"; };
+		73140F811208D9A500A1F920 /* MainView-iPad.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = "MainView-iPad.xib"; path = "src/objc/MainView-iPad.xib"; sourceTree = "<group>"; };
+		73140F821208D9A500A1F920 /* MainWindow-iPad.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = "MainWindow-iPad.xib"; path = "src/objc/MainWindow-iPad.xib"; sourceTree = "<group>"; };
 		8311AB790F44EF0500921B78 /* selenium-icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "selenium-icon.png"; sourceTree = "<group>"; };
 		8316A2100EECE0F700FE869C /* HTTPResponse+Utility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "HTTPResponse+Utility.h"; sourceTree = "<group>"; };
 		8316A2110EECE0F700FE869C /* HTTPResponse+Utility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "HTTPResponse+Utility.m"; sourceTree = "<group>"; };
@@ -335,6 +341,7 @@
 				080E96DDFE201D6D7F000001 /* Application Controllers */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
+				738AB21112023E07003833A2 /* Resources-iPad */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
 				833103FC0F1D7F57000A38DB /* Info.plist */,
@@ -378,6 +385,16 @@
 				288765580DF743DE002DB57D /* CoreGraphics.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		738AB21112023E07003833A2 /* Resources-iPad */ = {
+			isa = PBXGroup;
+			children = (
+				73140F801208D9A500A1F920 /* FlipsideView-iPad.xib */,
+				73140F811208D9A500A1F920 /* MainView-iPad.xib */,
+				73140F821208D9A500A1F920 /* MainWindow-iPad.xib */,
+			);
+			name = "Resources-iPad";
 			sourceTree = "<group>";
 		};
 		83169E840EE8DE0100FE869C /* HTTP Server configuration */ = {
@@ -615,6 +632,9 @@
 				8399863C0EE3A2E70074D106 /* MainView.xib in Resources */,
 				8311AB7A0F44EF0500921B78 /* selenium-icon.png in Resources */,
 				644F14ED10AB4EF400858ECA /* Settings.bundle in Resources */,
+				73140F831208D9A500A1F920 /* FlipsideView-iPad.xib in Resources */,
+				73140F841208D9A500A1F920 /* MainView-iPad.xib in Resources */,
+				73140F851208D9A500A1F920 /* MainWindow-iPad.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -755,6 +775,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CODE_SIGN_ENTITLEMENTS = "";
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -763,18 +784,22 @@
 				GCC_PREFIX_HEADER = src/objc/iWebDriver_Prefix.pch;
 				HEADER_SEARCH_PATHS = "$(COCOAHTTPSERVER_HEADERS)/**";
 				INFOPLIST_FILE = Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 3.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/iphoneos.sdk/usr/local/lib\"",
 					"\"$(SRCROOT)/../CocoaHTTPServer/build/Debug\"",
 				);
+				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = (
 					"-all_load",
 					"-ObjC",
 				);
 				PRODUCT_NAME = iWebDriver;
-				SDKROOT = iphonesimulator4.0;
+				SDKROOT = iphoneos3.2;
 				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALID_ARCHS = "armv6 armv7";
 			};
 			name = Debug;
 		};
@@ -782,23 +807,28 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				COPY_PHASE_STRIP = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = src/objc/iWebDriver_Prefix.pch;
 				HEADER_SEARCH_PATHS = "$(COCOAHTTPSERVER_HEADERS)/**";
 				INFOPLIST_FILE = Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 3.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/iphoneos.sdk/usr/local/lib\"",
 					"\"$(SRCROOT)/../CocoaHTTPServer/build/Debug\"",
 				);
+				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = (
 					"-all_load",
 					"-ObjC",
 				);
 				PRODUCT_NAME = iWebDriver;
-				SDKROOT = iphonesimulator4.0;
+				SDKROOT = iphoneos3.2;
 				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALID_ARCHS = "armv6 armv7";
 			};
 			name = Release;
 		};
@@ -864,34 +894,40 @@
 		C01FCF4F08A954540054247B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				ARCHS = "$(ARCHS_UNIVERSAL_IPHONE_OS)";
 				COCOAHTTPSERVER_HEADERS = "$(PROJECT_DIR)/lib/buildtime-src/cocoahttpserver/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/usr/local/include";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Don't Code Sign";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 3.0;
 				OBJROOT = "$(SYMROOT)";
-				ONLY_ACTIVE_ARCH = YES;
+				ONLY_ACTIVE_ARCH = NO;
 				PREBINDING = NO;
-				SDKROOT = iphoneos2.2.1;
+				SDKROOT = iphonesimulator3.2;
 				SKIP_INSTALL = NO;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALID_ARCHS = "";
 			};
 			name = Debug;
 		};
 		C01FCF5008A954540054247B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				ARCHS = "$(ARCHS_UNIVERSAL_IPHONE_OS)";
 				COCOAHTTPSERVER_HEADERS = "$(PROJECT_DIR)/lib/buildtime-src/cocoahttpserver/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/usr/local/include";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Don't Code Sign";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 3.0;
 				OBJROOT = "$(SYMROOT)";
-				ONLY_ACTIVE_ARCH = YES;
+				ONLY_ACTIVE_ARCH = NO;
 				PREBINDING = NO;
-				SDKROOT = iphoneos3.1.2;
+				SDKROOT = iphonesimulator3.2;
 				SKIP_INSTALL = NO;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALID_ARCHS = "";
 			};
 			name = Release;
 		};
