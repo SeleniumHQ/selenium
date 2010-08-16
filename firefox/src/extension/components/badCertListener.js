@@ -257,7 +257,7 @@ WDBadCertListenerModule.prototype.registerSelf = function(
   aCompMgr = aCompMgr.QueryInterface(
       Components.interfaces.nsIComponentRegistrar);
   aCompMgr.registerFactoryLocation(
-      DUMMY_CERTOVERRIDE_SERVICE_CLASS_ID, "WebDriver Override Cert Service",
+      DUMMY_CERTOVERRIDE_SERVICE_CLASS_ID, "badCertListener",
       CERTOVERRIDE_CONTRACT_ID, aFileSpec, aLocation, aType);
 };
 
@@ -292,4 +292,10 @@ function NSGetModule(comMgr, fileSpec) {
   if (versionChecker.compare(appInfo.version, '3.0') >= 0) {
     return new WDBadCertListenerModule();
   }
+}
+
+WdCertOverrideService.prototype.classID = DUMMY_CERTOVERRIDE_SERVICE_CLASS_ID;
+Components.utils.import("resource://gre/modules/XPCOMUtils.jsm");
+if (XPCOMUtils.generateNSGetFactory) {
+  const NSGetFactory = XPCOMUtils.generateNSGetFactory([WdCertOverrideService]);
 }

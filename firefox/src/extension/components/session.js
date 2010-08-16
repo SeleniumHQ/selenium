@@ -312,3 +312,9 @@ function NSGetModule() {
   return new wdSessionModule();
 }
 
+wdSession.prototype.classID = wdSession.CLASS_ID
+Components.utils.import("resource://gre/modules/XPCOMUtils.jsm");
+if (XPCOMUtils.generateNSGetFactory) {
+  const NSGetFactory = XPCOMUtils.generateNSGetFactory([wdSession]);
+}
+

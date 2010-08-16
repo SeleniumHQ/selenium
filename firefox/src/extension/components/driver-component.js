@@ -19,7 +19,7 @@
 // constants
 const nsISupports = Components.interfaces.nsISupports;
 const CLASS_ID = Components.ID("{1C0E8D86-B661-40d0-AE3D-CA012FADF170}");
-const CLASS_NAME = "Firefox WebDriver";
+const CLASS_NAME = "firefoxWebDriver";
 const CONTRACT_ID = "@googlecode.com/webdriver/fxdriver;1";
 
 // The following code is derived from https://addons.mozilla.org/en-US/firefox/files/browse/3682/
@@ -85,6 +85,7 @@ var ServerFactory = {
 };
 
 
+
 //module definition (xpcom registration)
 var ServerModule = {
   firstTime_: true,
@@ -121,8 +122,13 @@ var ServerModule = {
   }
 };
 
-
 //module initialization
 function NSGetModule(aCompMgr, aFileSpec) {
   return ServerModule;
+}
+
+WebDriverServer.prototype.classID = CLASS_ID;
+Components.utils.import("resource://gre/modules/XPCOMUtils.jsm");
+if (XPCOMUtils.generateNSGetFactory) {
+  const NSGetFactory = XPCOMUtils.generateNSGetFactory([WebDriverServer]);
 }

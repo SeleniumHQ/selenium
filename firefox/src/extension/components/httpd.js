@@ -5245,6 +5245,13 @@ function NSGetModule(compMgr, fileSpec)
   return module;
 }
 
+nsHttpServer.prototype.classID = Components.ID("{54ef6f81-30af-4b1d-ac55-8ba811293e41}");
+Components.utils.import("resource://gre/modules/XPCOMUtils.jsm");
+if (XPCOMUtils.generateNSGetFactory) {
+  const NSGetFactory = XPCOMUtils.generateNSGetFactory([nsHttpServer]);
+}
+
+
 
 /**
  * Creates a new HTTP server listening for loopback traffic on the given port,

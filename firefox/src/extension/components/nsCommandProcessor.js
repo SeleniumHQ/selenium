@@ -683,3 +683,9 @@ nsCommandProcessor.Module = {
 function NSGetModule() {
   return nsCommandProcessor.Module;
 }
+
+nsCommandProcessor.prototype.classID = nsCommandProcessor.CLASS_ID;
+Components.utils.import("resource://gre/modules/XPCOMUtils.jsm");
+if (XPCOMUtils.generateNSGetFactory) {
+  const NSGetFactory = XPCOMUtils.generateNSGetFactory([nsCommandProcessor]);
+}

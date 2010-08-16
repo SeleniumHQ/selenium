@@ -20,10 +20,11 @@ function DrivenPromptService() {
   var ORIGINAL_PARENT_SERVICE_ID = "{A2112D6A-0E28-421f-B46A-25C0B308CBD0}";
 
   // Keep a reference to the original service
-  var originalService = Components.classesByID[ORIGINAL_PARENT_SERVICE_ID].getService();
-
-  this.originalPromptService_ =
-  originalService.QueryInterface(Components.interfaces.nsIPromptService);
+  if (Components.classesByID[ORIGINAL_PARENT_SERVICE_ID]) {
+    var originalService = Components.classesByID[ORIGINAL_PARENT_SERVICE_ID].getService();
+    this.originalPromptService_ =
+        originalService.QueryInterface(Components.interfaces.nsIPromptService);
+  }
 
   dumpn("Spoofing prompt service");
 }
@@ -205,4 +206,10 @@ PromptServiceSpoofModule.prototype.canUnload = function(aCompMgr) {
 
 function NSGetModule(comMgr, fileSpec) {
   return new PromptServiceSpoofModule();
+}
+
+DrivenPromptService.prototype.classID = DRIVEN_PROMPT_SERVICE_CLASS_ID;
+Components.utils.import("resource://gre/modules/XPCOMUtils.jsm");
+if (XPCOMUtils.generateNSGetFactory) {
+  const NSGetFactory = XPCOMUtils.generateNSGetFactory([DrivenPromptService]);
 }
