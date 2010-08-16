@@ -58,8 +58,6 @@ namespace OpenQA.Selenium.Internal
             {
                 throw new ArgumentNullException("currentUrl", "Current URL of ReturnedCookie cannot be null");
             }
-
-            Validate();
         }
 
         /// <summary>
@@ -81,22 +79,6 @@ namespace OpenQA.Selenium.Internal
                     + (string.IsNullOrEmpty(Path) ? string.Empty : "; path=" + Path)
                     + (string.IsNullOrEmpty(Domain) ? string.Empty : "; domain=" + Domain)
                     + (isSecure ? ";secure;" : string.Empty);
-        }
-
-        /// <summary>
-        /// Validates the cookie is correctly formed.
-        /// </summary>
-        protected void Validate()
-        {
-            string name = Name;
-            if (string.IsNullOrEmpty(name) || Value == null || Path == null)
-            {
-                throw new ArgumentException("Required attributes are not set or any non-null attribute set to null");
-            }
-            if (name.IndexOf(";") != -1)
-            {
-                throw new ArgumentException(string.Format(CultureInfo.InvariantCulture, "Cookie names cannot contain a ';': {0}", name));
-            }
         }
     }
 }

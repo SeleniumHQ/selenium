@@ -17,13 +17,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [ExpectedException(typeof(ArgumentException))]
-        public void ShouldThrowAnExceptionWhenTheDomainIsBad()
-        {
-            new ReturnedCookie("Fish", "cod", "127.0.0.-1", null, DateTime.Now, false, new Uri("http://localhost"));
-        }
-
-        [Test]
-        [ExpectedException(typeof(ArgumentException))]
         public void ShouldThrowAnExceptionWhenSemiColonExistsInTheCookieAttribute()
         {
             new ReturnedCookie("hi;hi", "value", null, null, DateTime.Now, false, new Uri("http://localhost"));
