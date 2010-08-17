@@ -24,7 +24,6 @@ module Selenium
         end
 
         def initialize(opts = {})
-          super()
           @default_profile = opts[:default_profile]
           @secure_ssl = !!opts[:secure_ssl]
         end
@@ -96,23 +95,23 @@ module Selenium
         end
 
         def tmp_extension_dir
-          @tmp_extension_dir ||= begin
+          @tmp_extension_dir ||= (
             dir = Dir.mktmpdir("webdriver-chrome-extension")
             Platform.make_writable(dir)
             FileReaper << dir
 
             dir
-          end
+          )
         end
 
         def tmp_profile_dir
-          @tmp_profile_dir ||= begin
+          @tmp_profile_dir ||= (
             dir = Dir.mktmpdir("webdriver-chrome-profile")
             Platform.make_writable(dir)
             FileReaper << dir
 
             dir
-          end
+          )
         end
 
         class WindowsLauncher < Launcher
@@ -154,7 +153,10 @@ module Selenium
 
         class MacOSXLauncher < UnixLauncher
           def self.possible_paths
-            ["/Applications/Google Chrome.app/Contents/MacOS/Google Chrome", "#{Platform.home}/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"]
+            [
+             "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+             "#{Platform.home}/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+            ]
           end
         end
 

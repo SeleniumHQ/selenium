@@ -229,10 +229,10 @@ module Selenium
 
       alias_method :script, :execute_script
 
-      # Get the first element matching the given selector. If given a string,
-      # it will be used as the id of the element.
+      # Get the first element matching the given selector. If given a
+      # String or Symbol, it will be used as the id of the element.
       #
-      # @param [String,Hash] id or selector
+      # @param  [String,Hash] id or selector
       # @return [WebDriver::Element]
       #
       #   driver['someElementId']    #=> #<WebDriver::Element:0x1011c3b88>

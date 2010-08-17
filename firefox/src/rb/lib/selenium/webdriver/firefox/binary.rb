@@ -105,7 +105,7 @@ module Selenium
                       when :linux, :unix
                         Platform.find_binary("firefox3", "firefox2", "firefox") || "/usr/bin/firefox"
                       else
-                        raise "Unknown platform: #{Platform.os}"
+                        raise Error::WebDriverError, "unknown platform: #{Platform.os}"
                       end
 
             unless File.file?(@path)

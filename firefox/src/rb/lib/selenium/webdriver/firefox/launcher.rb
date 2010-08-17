@@ -11,14 +11,14 @@ module Selenium
         STABLE_CONNECTION_TIMEOUT = 60
 
         def initialize(binary, port = DEFAULT_PORT, profile = DEFAULT_PROFILE_NAME)
-          @binary       = binary
-          @port         = port.to_i
+          @binary = binary
+          @port   = port.to_i
 
           if profile.kind_of? Profile
             @profile = profile
           else
             @profile_name = profile
-            @profile      = nil
+            @profile = nil
           end
 
           # need to be really specific about what host to use
@@ -137,14 +137,14 @@ module Selenium
             @binary.create_base_profile @profile_name
             Profile.ini.refresh
             existing = Profile.from_name @profile_name
-            raise "unable to find or create new profile" unless existing
+            raise Error::WebDriverError, "unable to find or create new profile" unless existing
           end
 
           @profile = existing
         end
 
         def assert_profile
-          raise "must create_profile first" if @profile.nil?
+          raise Error::WebDriverError, "must create_profile first" unless @profile
         end
 
       end # Launcher

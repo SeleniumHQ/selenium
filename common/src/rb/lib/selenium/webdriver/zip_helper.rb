@@ -2,12 +2,9 @@ require 'zip/zip'
 
 module Selenium
   module WebDriver
-
     module ZipHelper
 
-      module_function
-
-      def unzip(path)
+      def self.unzip(path)
         destination = Dir.mktmpdir("unzip")
         FileReaper << destination
 

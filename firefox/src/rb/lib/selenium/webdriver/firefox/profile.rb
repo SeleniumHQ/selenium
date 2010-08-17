@@ -8,8 +8,8 @@ module Selenium
         EM_NAMESPACE_URI         = "http://www.mozilla.org/2004/em-rdf#"
         WEBDRIVER_EXTENSION_PATH = File.expand_path("#{WebDriver.root}/selenium/webdriver/firefox/extension/webdriver.xpi")
 
-        attr_reader :name, :directory
-        attr_writer :secure_ssl, :native_events, :load_no_focus_lib
+        attr_reader   :name, :directory
+        attr_writer   :secure_ssl, :native_events, :load_no_focus_lib
         attr_accessor :port
 
         class << self
@@ -131,8 +131,7 @@ module Selenium
             root = ZipHelper.unzip(path)
           end
 
-          id       = read_id_from_install_rdf(root)
-          ext_path = File.join(extensions_dir, id)
+          ext_path = File.join extensions_dir, read_id_from_install_rdf(root)
 
           FileUtils.rm_rf ext_path
           FileUtils.mkdir_p File.dirname(ext_path), :mode => 0700
@@ -208,12 +207,12 @@ module Selenium
         end
 
         def write_prefs(prefs)
-          File.open(user_prefs_path, "w") do |file|
+          File.open(user_prefs_path, "w") { |file|
             prefs.each do |key, value|
               p key => value if $DEBUG
               file.puts %{user_pref("#{key}", #{value});}
             end
-          end
+          }
         end
 
         OVERRIDABLE_PREFERENCES = {
