@@ -152,9 +152,6 @@ FirefoxDriver.prototype.executeScript = function(respond, parameters) {
     var sandbox = new Components.utils.Sandbox(window);
     sandbox.window = window;
     sandbox.__webdriverParams = args;
-    sandbox.document = window.document;
-    sandbox.unsafeWindow = window;
-    sandbox.__proto__ = window;
 
     return Components.utils.evalInSandbox(scriptSrc, sandbox);
   };
@@ -163,8 +160,8 @@ FirefoxDriver.prototype.executeScript = function(respond, parameters) {
       parameters.args, respond.session.getDocument());
 
   try {
-    var scriptSrc = "var __webdriverFunc = function(){" + parameters.script
-        + "};  __webdriverFunc.apply(window, __webdriverParams);";
+    var scriptSrc = "with(window) { var __webdriverFunc = function(){" + parameters.script +
+        "};  __webdriverFunc.apply(null, __webdriverParams); }";
     var result = runScript(scriptSrc, converted);
   } catch (e) {
     Utils.dumpn(JSON.stringify(e));
