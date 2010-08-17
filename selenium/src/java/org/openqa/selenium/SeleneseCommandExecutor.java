@@ -82,6 +82,10 @@ public class SeleneseCommandExecutor implements CommandExecutor {
     prepareCommands();
   }
 
+  public Selenium getWrappedSelenium() {
+    return instance;
+  }
+
   public Response execute(Command command) throws Exception {
     SeleneseFunction function = functions.get(command.getName());
     if (function == null) {
