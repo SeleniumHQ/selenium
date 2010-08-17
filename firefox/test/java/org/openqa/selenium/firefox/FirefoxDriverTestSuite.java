@@ -49,7 +49,6 @@ public class FirefoxDriverTestSuite extends TestCase {
         .exclude(FIREFOX)
         .keepDriverInstance()
         .includeJavascriptTests()
-        .includeJsApiTests()
         .create();
   }
 
