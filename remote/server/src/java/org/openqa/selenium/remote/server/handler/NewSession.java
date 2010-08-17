@@ -17,7 +17,9 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.handler;
 
+import com.google.common.collect.Maps;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.server.DriverSessions;
@@ -54,6 +56,20 @@ public class NewSession implements Handler, JsonParametersAware {
 
   @Override
   public String toString() {
-    return String.format("[new session: %s]", desiredCapabilities);
+    Map<String, Object> capabilities = Maps.newHashMap();
+
+    if (desiredCapabilities != null) {
+      for (Map.Entry<String, ?> entry : capabilities.entrySet()) {
+        String value = String.valueOf(entry.getValue());
+
+        if (value.length() > 32) {
+          value = value.substring(0, 29) + "...";
+        }
+
+        capabilities.put(entry.getKey(), entry.getValue());
+      }
+
+    }
+    return String.format("[new session: %s]", capabilities);
   }
 }
