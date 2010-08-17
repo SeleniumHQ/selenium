@@ -1,6 +1,6 @@
 /*
-Copyright 2007-2009 WebDriver committers
-Copyright 2007-2009 Google Inc.
+Copyright 2007-2010 WebDriver committers
+Copyright 2007-2010 Google Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -17,22 +17,14 @@ limitations under the License.
 
 package org.openqa.selenium.iphone;
 
-import org.openqa.selenium.OutputType;
-import static org.openqa.selenium.OutputType.FILE;
-import org.openqa.selenium.TakesScreenshot;
+import java.net.URL;
+
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.internal.Base64Encoder;
-import org.openqa.selenium.internal.FileHandler;
+import org.openqa.selenium.browserlaunchers.CapabilityType;
 import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.RemoteWebDriver;
-
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
 
 /**
  * IPhoneDriver is a driver for running tests on Mobile Safari on the iPhone
@@ -41,14 +33,15 @@ import java.net.URL;
  * The driver uses WebDriver's remote REST interface to communicate with the
  * iphone. The iphone (or iphone simulator) must be running the iWebDriver app.
  */
-public class IPhoneDriver extends RemoteWebDriver implements TakesScreenshot {
+public class IPhoneDriver extends RemoteWebDriver {
 
   /**
    * This is the default port and URL for iWebDriver. Eventually it would
    * be nice to use DNS-SD to detect iWebDriver instances running non
    * locally or on non-default ports.
    */
-  protected static final String DEFAULT_IWEBDRIVER_URL = "http://localhost:3001/hub";
+  protected static final String DEFAULT_IWEBDRIVER_URL = 
+	  "http://localhost:3001/hub";
 
   /**
    * Create an IPhoneDriver that will use the given {@code executor} to
@@ -57,7 +50,7 @@ public class IPhoneDriver extends RemoteWebDriver implements TakesScreenshot {
    * @param executor The executor to use for communicating with the iPhone.
    */
   public IPhoneDriver(CommandExecutor executor) {
-    super(executor, DesiredCapabilities.iphone());
+    super(executor, getiPhoneCapabilities());
   }
 
   /**
@@ -68,7 +61,7 @@ public class IPhoneDriver extends RemoteWebDriver implements TakesScreenshot {
    * @see #IPhoneDriver(String)
    */
   public IPhoneDriver(URL remoteAddress) throws Exception {
-    super(remoteAddress, DesiredCapabilities.iphone());
+    super(remoteAddress, getiPhoneCapabilities());
   }
 
   /**
@@ -88,43 +81,18 @@ public class IPhoneDriver extends RemoteWebDriver implements TakesScreenshot {
    * @throws Exception
    */
   public IPhoneDriver() throws Exception {
-    this("http://localhost:3001/hub");
+    this(DEFAULT_IWEBDRIVER_URL);
   }
-
-  public byte[] getScreenshot() {
-    return (byte[]) execute(DriverCommand.SCREENSHOT).getValue();
-  }
-
-  public <X> X getScreenshotAs(OutputType<X> target) {
-    byte[] rawPng = getScreenshot();
-    String base64Png = new Base64Encoder().encode(rawPng);
-    // ... and convert it.
-    return target.convertFromBase64Png(base64Png);
-  }
-
-  /**
-   * Saves a screenshot of the current page into the given file.
-   *
-   * @deprecated Use getScreenshotAs(file), which returns a temporary file.
-   */
-  @Deprecated
-  public void saveScreenshot(File pngFile) {
-    if (pngFile == null) {
-      throw new IllegalArgumentException("Method parameter pngFile must not be null");
-    }
-
-    File tmpfile = getScreenshotAs(FILE);
-
-    File dir = pngFile.getParentFile();
-    if (dir != null && !dir.exists() && !dir.mkdirs()) {
-      throw new WebDriverException("Could not create directory " + dir.getAbsolutePath());
-    }
-
-    try {
-      FileHandler.copy(tmpfile, pngFile);
-    } catch (IOException e) {
-      throw new WebDriverException(e);
-    }
+  
+  private static DesiredCapabilities getiPhoneCapabilities() {
+	DesiredCapabilities caps = DesiredCapabilities.iphone();
+	caps.setCapability(CapabilityType.TAKES_SCREENSHOT, true);
+	caps.setCapability(CapabilityType.SUPPORTS_APPLICATION_CACHE, true);
+	caps.setCapability(CapabilityType.SUPPORTS_WEB_STORAGE, true);
+	caps.setCapability(CapabilityType.SUPPORTS_LOCATION_CONTEXT, true);
+	caps.setCapability(CapabilityType.SUPPORTS_SQL_DATABASE, true);
+	caps.setCapability(CapabilityType.SUPPORTS_BROWSER_CONNECTION, true);
+	return caps;
   }
 
   @Override
