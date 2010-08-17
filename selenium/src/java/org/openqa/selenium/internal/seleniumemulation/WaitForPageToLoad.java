@@ -41,6 +41,8 @@ public class WaitForPageToLoad extends SeleneseCommand<Void> {
       return null;
     }
 
+    long timeoutInMillis = Long.parseLong(timeout);
+
     new Wait() {
       private long started = System.currentTimeMillis();
 
@@ -61,7 +63,7 @@ public class WaitForPageToLoad extends SeleneseCommand<Void> {
         }
         return false;
       }
-    }.wait(timeout);
+    }.wait(String.format("Failed to load page within %s ms", timeout), timeoutInMillis);
 
     return null;
   }
