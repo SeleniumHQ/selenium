@@ -83,9 +83,9 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Wrap
       );
     }
 
-  private Class<?>[] extractInterfaces(WebDriver driver) {
+  private Class<?>[] extractInterfaces(Object object) {
     Set<Class<?>> allInterfaces = new HashSet<Class<?>>();
-    extractInterfaces(allInterfaces, driver.getClass());
+    extractInterfaces(allInterfaces, object.getClass());
 
     return allInterfaces.toArray(new Class<?>[allInterfaces.size()]);
   }
@@ -229,7 +229,7 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Wrap
       private EventFiringWebElement(final WebElement element) {
         this.element = (WebElement) Proxy.newProxyInstance(
             WebDriverEventListener.class.getClassLoader(),
-            element.getClass().getInterfaces(),
+            extractInterfaces(element),
             new InvocationHandler() {
               public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
                 try {
