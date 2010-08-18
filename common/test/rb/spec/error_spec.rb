@@ -10,5 +10,7 @@ describe "Error" do
     )
   end
 
-  it "should show stack trace information"
+  it "should show stack trace information" do
+    pending
+  end
 end

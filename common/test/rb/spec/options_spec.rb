@@ -29,7 +29,9 @@ describe "Options" do
         driver.manage.all_cookies.should be_empty
       end
 
-      it "should use DateTime for expires"
+      it "should use DateTime for expires" do
+        pending
+      end
     end
   end
 
