@@ -198,7 +198,7 @@ def android_init()
   $androidplatform =  properties["androidplatform"]
 
   # Targets
-  $apkfile = File.expand_path(File.join("android", "server", "build", "android-server-debug.apk"))
+  $apkfile = File.expand_path(File.join("build", "android-server-debug.apk"))
   $resname = File.expand_path(File.join("android", "server", "build", "WebDriver.ap_"))
   $avdname = "debug_rake_#{$androidtarget}"
 

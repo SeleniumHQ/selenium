@@ -71,7 +71,7 @@ def copy_prebuilt(prebuilt, out)
     from = prebuilt + "/" + out
     from = from.sub(/\/build\//, "/")
     if (File.exists?(from))
-      puts "Falling back to copy of: #{out}"
+      puts "Falling back to copy of: #{from}"
       mkdir_p dir
       cp_r from, out
     else

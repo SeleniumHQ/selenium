@@ -1,6 +1,7 @@
 require 'rake'
 require 'rake/testtask'
 require 'rake/rdoctask'
+require 'rake-tasks/files.rb'
 require 'yaml'
 require 'net/telnet.rb'
 
@@ -159,9 +160,7 @@ task :clean do
   rm_rf 'build/'
   rm_rf 'iphone/build/'
   rm_rf 'android/server/bin/', :verbose => false
-  rm_rf 'android/server/gen/', :verbose => false
   rm_rf 'android/server/build/', :verbose => false
-  rm_rf 'android/client/build/', :verbose => false
 end
 
 dll(:name => "ie_win32_dll",
@@ -429,8 +428,10 @@ file 'build/android/server/server.jar' => FileList["android/server/src/java/**/*
                            ],
                   :zip  => true
                  )
+    copy_to_prebuilt("build/android-server-debug.apk", "android/server/prebuilt")
   else
-    puts "Android SDK could not be found. Set the SDK location in properties.yml"
+    puts "Did not build Android APK because the Android SDK could not be found. Set the SDK location in properties.yml"
+    copy_prebuilt("android/server/prebuilt/", "build/android-server-debug.apk")
  end
 end
 task :android_server => 'build/android/server/server.jar'
