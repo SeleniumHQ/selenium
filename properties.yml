@@ -1,9 +1,9 @@
 default: 
   android:
     # Path to the android sdk
-    androidsdkpath : "../../android-sdk-windows/"
+    androidsdkpath : "../android-sdk/"
     # Target id. To get a list of all targets do "./android list targets".
-    # We want whatever matches android 1.5
-    androidtarget : 3
+    # We want whatever matches android 2.1 (API level 7)
+    androidtarget : 1
     # Android platform. You can find supported platforms under androidsdkpath/platforms/
-    androidplatform : "android-3"
+    androidplatform : "android-7"
