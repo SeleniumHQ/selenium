@@ -17,7 +17,7 @@ goog.provide('bot.locators.strategies.linkText');
 goog.provide('bot.locators.strategies.partialLinkText');
 
 goog.require('bot');
-goog.require('bot.style');
+goog.require('bot.dom');
 goog.require('goog.array');
 goog.require('goog.dom');
 goog.require('goog.dom.DomHelper');
@@ -37,16 +37,12 @@ goog.require('goog.dom.DomHelper');
  */
 bot.locators.strategies.linkText.single_ = function(target, root,
                                                      opt_isPartial) {
-  // TODO(user): Remove next statement once Closure has been fixed to allow
-  // a root argument of type Document to getElementsByTagNameAndClass.
-  root = /**@type{Element}*/ (root.documentElement ?
-      root.documentElement : root);
   // TODO(user): Fix this to work for XHTML (which is case sensitive)
   var elements = goog.dom.getDomHelper(root).getElementsByTagNameAndClass(
       goog.dom.TagName.A, /*className=*/null, root);
 
   var element = goog.array.find(elements, function(element) {
-    var text = bot.style.getVisibleText(element);
+    var text = bot.dom.getVisibleText(element);
     return (opt_isPartial && text.indexOf(target) != -1) || text == target;
   });
   return (/**@type{Element}*/element);
@@ -65,15 +61,11 @@ bot.locators.strategies.linkText.single_ = function(target, root,
  */
 bot.locators.strategies.linkText.many_ = function(target, root,
                                                    opt_isPartial) {
-  // TODO(user): Remove next statement once Closure has been fixed to allow
-  // a root argument of type Document to getElementsByTagNameAndClass.
-  root = /**@type{Element}*/ (root.documentElement ?
-      root.documentElement : root);
   // TODO(user): Fix this to work for XHTML (which is case sensitive)
   var elements = goog.dom.getDomHelper(root).getElementsByTagNameAndClass(
       goog.dom.TagName.A, /*className=*/null, root);
   return goog.array.filter(elements, function(element) {
-    var text = bot.style.getVisibleText(element);
+    var text = bot.dom.getVisibleText(element);
     return (opt_isPartial && text.indexOf(target) != -1) || text == target;
   });
 };

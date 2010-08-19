@@ -5,8 +5,8 @@
   <script src="../webdriver-bootstrap.js"></script>
   <script src="deps.js"></script>
   <script type="text/javascript">
+    goog.require('bot.dom');
     goog.require('bot.locators');
-    goog.require('bot.style');
     goog.require('goog.testing.ExpectedFailures');
     goog.require('goog.testing.jsunit');
     goog.require('goog.userAgent');
@@ -15,7 +15,7 @@
   </script>
 
   <script type="text/javascript">
-    var isShown = bot.style.isShown;
+    var isShown = bot.dom.isShown;
     var findElement = bot.locators.findElement;
     var expectedFailures;
 
@@ -61,7 +61,7 @@
       expectedFailures.expectFailureFor(
           goog.userAgent.IE && goog.userAgent.platform.VISTA,
           'Vista fails this test, have not figured it out yet...');
-      // TODO(user): Figure it out
+      // TODO(jleyba): Figure it out
       expectedFailures.run(function() {
         assertFalse(isShown(parent));
         assertFalse(isShown(child));
@@ -111,6 +111,22 @@
             isShown(textNode);
           });
       assertEquals("Argument to isShown must be of type Element", error.message);
+    }
+
+    function testOptionShownWhenEnclosingSelectShown() {
+      var option = findElement({id: 'showme'});
+      assertTrue(isShown(option));
+    }
+
+    function testOptionNotShownWhenEnclosingSelectNotShown() {
+      var option = findElement({id: 'hideme'});
+      assertFalse(isShown(option));
+    }
+
+    function testOrphanOptionIsNotShown() {
+      var option = findElement({id: 'orphan'});
+      // In some browsers, an orphan option is not rendered at all.
+      assertFalse(!!option && isShown(option));
     }
   </script>
 
@@ -178,6 +194,14 @@
 <p id="zerowidth">This is a bar</p>
 
 <p id="suppressedParagraph" style="display: none">A paragraph suppressed using CSS display=none</p>
+
+<select>
+  <option id="showme" style="display:none;visibility:hidden;">
+</select>
+<select style="display:none;">
+  <option id="hideme">
+</select>
+<option id="orphan">
 
 </body>
 </html>

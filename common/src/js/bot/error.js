@@ -16,7 +16,7 @@
 /**
  * @fileoverview Utilities for working with errors as defined by WebDriver's
  * wire protocol: http://code.google.com/p/selenium/wiki/JsonWireProtocol.
-*
+ *
  */
 
 goog.provide('bot.Error');

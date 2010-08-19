@@ -17,7 +17,7 @@ limitations under the License.
 -->
 <html>
 <head>
-  <title>dom_test.html</title>
+  <title>attribute_test.html</title>
   <script type="text/javascript" src="../webdriver-bootstrap.js">
   </script>
   <script type="text/javascript" src="deps.js"></script>
@@ -29,29 +29,6 @@ limitations under the License.
   </script>
 
   <script type="text/javascript">
-    function testShouldIndicateWhetherAPropertyIsAvailableOnAnElement() {
-      var chips = bot.locators.findElement({id: 'chips'});
-
-      // Chips has the property, but doesn't have the attribute set explicitly
-      // it therefore should have the property, but not the attribute
-      assertTrue(bot.dom.hasProperty(chips, 'selected'));
-      assertFalse(bot.dom.hasAttribute(chips, 'selected'));
-    }
-
-    function testShouldIndictaWhetherAnAttributeIsAvailableOnAnElement() {
-      var peas = bot.locators.findElement({id: 'peas'});
-
-      assertTrue(bot.dom.hasAttribute(peas, 'selected'));
-    }
-
-    function testHasPropertyShouldWorkWithWellKnownDefaultProperties() {
-      var chips = bot.locators.findElement({id: 'chips'});
-      var peas = bot.locators.findElement({id: 'peas'});
-
-      assertTrue(bot.dom.hasProperty(chips, 'selected'));
-      assertTrue(bot.dom.hasProperty(peas, 'selected'));
-    }
-
     function testCanFindNamedAttributes() {
       var e = bot.locators.findElement({id: 'cheddar'});
 
@@ -64,33 +41,15 @@ limitations under the License.
       assertEquals('lovely', bot.dom.getAttribute(e, 'unknown'));
     }
 
-    function testSelectedShouldBeFalseIfNotSet() {
-      var chips = bot.locators.findElement({id: 'chips'});
-
-      var result = bot.dom.getProperty(chips, 'selected');
-      assertTrue(goog.isBoolean(result));
-      assertFalse(result);
-    }
-
-    function testSelectedShouldBeReturnedAsABooleanWhenValueNotOnAttribute() {
-      var e = bot.locators.findElement({id: 'peas'});
-
-      var result = bot.dom.getProperty(e, 'selected');
-      assertTrue(goog.isBoolean(result));
-      assertTrue(result);
-    }
-
     function testReturnsNullWhenSelectedAttributeCannotBeSet() {
       var e = bot.locators.findElement({id: 'cheddar'});
 
       assertEquals(null, bot.dom.getAttribute(e, 'selected'));
     }
 
-    function testShouldAliasClassNameAttribute() {
+    function testShouldReturnClassAttribute() {
       var e = bot.locators.findElement({id: 'brie'});
 
-      assertEquals('tasty', bot.dom.getProperty(e, 'class'));
-      assertEquals('tasty', bot.dom.getProperty(e, 'className'));
       assertEquals('tasty', bot.dom.getAttribute(e, 'class'));
     }
 
@@ -112,10 +71,10 @@ limitations under the License.
       var e2 = bot.locators.findElement({name: 'checky'});
       var e3 = bot.locators.findElement({id: 'checked'});
 
-      assertTrue(bot.dom.getAttribute(e1, 'selected'));
-      assertTrue(bot.dom.getAttribute(e2, 'checked'));
-      assertTrue(bot.dom.getAttribute(e2, 'readonly'));
-      assertTrue(bot.dom.getAttribute(e3, 'checked'));
+      assertEquals('true', bot.dom.getAttribute(e1, 'selected'));
+      assertEquals('true', bot.dom.getAttribute(e2, 'checked'));
+      assertEquals('true', bot.dom.getAttribute(e2, 'readonly'));
+      assertEquals('true', bot.dom.getAttribute(e3, 'checked'));
     }
 
     function testAttributeMatchesAreCaseInsensitive() {

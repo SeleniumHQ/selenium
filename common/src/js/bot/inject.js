@@ -21,7 +21,7 @@
  *
  * TODO(user): Add an example
  *
-*
+ *
  */
 
 goog.provide('bot.inject');

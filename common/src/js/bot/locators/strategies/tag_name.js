@@ -30,10 +30,6 @@ goog.require('goog.dom.DomHelper');
  *     such element could be found.
  */
 bot.locators.strategies.tagName.single = function(target, root) {
-  // TODO(user): Remove next statement once Closure has been fixed to allow
-  // a root argument of type Document to getElementsByTagNameAndClass.
-  root = /**@type{Element}*/ (root.documentElement ?
-      root.documentElement : root);
   var elements = goog.dom.getDomHelper(root).getElementsByTagNameAndClass(
       target, null, root);
   return elements[0] || null;
@@ -48,10 +44,6 @@ bot.locators.strategies.tagName.single = function(target, root) {
  * @return {goog.array.ArrayLike} All matching elements, or an empty list.
  */
 bot.locators.strategies.tagName.many = function(target, root) {
-  // TODO(user): Remove next statement once Closure has been fixed to allow
-  // a root argument of type Document to getElementsByTagNameAndClass.
-  root = /**@type{Element}*/ (root.documentElement ?
-      root.documentElement : root);
   return goog.dom.getDomHelper(root).getElementsByTagNameAndClass(
       target, null, root);
 };

@@ -40,10 +40,6 @@ bot.locators.strategies.className.single = function(target, root) {
     throw Error('Compound class names not permitted');
   }
 
-  // TODO(user): Remove next statement once Closure has been fixed to allow
-  // a root argument of type Document to getElementsByTagNameAndClass.
-  root = /**@type{Element}*/ (root.documentElement ?
-    root.documentElement : root);
   var elements = goog.dom.getDomHelper(root).getElementsByTagNameAndClass(
       /*tagName=*/'*', /*className=*/target, root);
   return elements.length ? elements[0] : null;
@@ -66,10 +62,6 @@ bot.locators.strategies.className.many = function(target, root) {
     throw Error('Compound class names not permitted');
   }
 
-  // TODO(user): Remove next statement once Closure has been fixed to allow
-  // a root argument of type Document to getElementsByTagNameAndClass.
-  root = /**@type{Element}*/ (root.documentElement ?
-    root.documentElement : root);
   return goog.dom.getDomHelper(root).getElementsByTagNameAndClass(
       /*tagName=*/'*', /*className=*/target, root);
 };

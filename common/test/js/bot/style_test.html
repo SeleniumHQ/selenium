@@ -5,8 +5,8 @@
     <script src="../webdriver-bootstrap.js"></script>
     <script src="deps.js"></script>
     <script type="text/javascript">
+      goog.require('bot.dom');
       goog.require('bot.locators');
-      goog.require('bot.style');
       goog.require('goog.testing.jsunit');
     </script>
 
@@ -23,48 +23,38 @@
 
       function testInlineStyleReturnsNullForNonexistentProperty() {
         var e = bot.locators.findElement({id: 'child'});
-        assertNull(bot.style.getInlineStyle(e, 'gibberish'));
+        assertNull(bot.dom.getInlineStyle(e, 'gibberish'));
       }
 
       function testInlineStyleReturnsEmptyStringForUnspecifiedProperty() {
         var e = bot.locators.findElement({id: 'child'});
-        assertEquals('', bot.style.getInlineStyle(e, 'display'));
+        assertEquals('', bot.dom.getInlineStyle(e, 'display'));
       }
 
       function testInlineStyleReturnsEmptyStringForCssSpecifiedProperty() {
         var e = bot.locators.findElement({id: 'child'});
-        assertEquals('', bot.style.getInlineStyle(e, 'height'));
+        assertEquals('', bot.dom.getInlineStyle(e, 'height'));
       }
 
       function testInlineStyleReturnsInlineProperty() {
         var e = bot.locators.findElement({id: 'child'});
-        assertEquals('inherit', bot.style.getInlineStyle(e, 'visibility'));
+        assertEquals('inherit', bot.dom.getInlineStyle(e, 'visibility'));
       }
 
       function testEffectiveStyleReturnsInlineProperty() {
         var e = bot.locators.findElement({id: 'parent'});
-        assertEquals('visible', bot.style.getEffectiveStyle(e, 'visibility'));
+        assertEquals('visible', bot.dom.getEffectiveStyle(e, 'visibility'));
       }
 
       function testEffectiveStyleReturnsCssSpecifiedProperty() {
         var e = bot.locators.findElement({id: 'child'});
-        assertEquals('20px', bot.style.getEffectiveStyle(e, 'height'));
+        assertEquals('20px', bot.dom.getEffectiveStyle(e, 'height'));
       }
 
       function testEffectiveStyleReturnsInheritedProperty() {
         var e = bot.locators.findElement({id: 'child'});
-        assertEquals('visible', bot.style.getEffectiveStyle(e, 'visibility'));
+        assertEquals('visible', bot.dom.getEffectiveStyle(e, 'visibility'));
       }
-
-      function testShouldReturnNullIfElementDoesNotHaveAStyleAttribute() {
-        assertNull(bot.dom.getAttribute(document.body, 'style'));
-      }
-
-      function testShouldReturnEmptyStringIfElementHasAnEmptyStyleAttribute() {
-        var e = bot.locators.findElement({id: 'empty-style'});
-        assertEquals('', bot.dom.getAttribute(e, 'style'));
-      }
-
     </script>
 
     <style type="text/css">
@@ -73,9 +63,7 @@
       }
       </style>
   </head>
-  <body> <!-- DO NOT PUT A STYLE ATTRIBUTE ON BODY! -->
-
-    <div id="empty-style" style="">i have no style!</div>
+  <body>
 
     <div id="parent" style="visibility: visible">A parent div
       <div id="child" style="visibility: inherit;display:;">A child div</div>

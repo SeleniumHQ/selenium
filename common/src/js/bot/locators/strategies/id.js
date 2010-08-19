@@ -57,10 +57,6 @@ bot.locators.strategies.id.single = function(target, root) {
  */
 bot.locators.strategies.id.many = function(target, root) {
   var dom = goog.dom.getDomHelper(root);
-  // TODO(user): Remove next statement once Closure has been fixed to allow
-  // a root argument of type Document to getElementsByTagNameAndClass.
-  root = /**@type{Element}*/ (root.documentElement ?
-    root.documentElement : root);
   var elements = dom.getElementsByTagNameAndClass('*', null, root);
   return goog.array.filter(elements, function(e) {
     return bot.dom.getAttribute(e, 'id') == target;

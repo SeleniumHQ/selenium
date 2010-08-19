@@ -23,7 +23,6 @@ goog.provide('core.browserbot');
 
 
 goog.require('bot.locators');
-goog.require('bot.style');
 goog.require('core.locators');
 goog.require('core.patternMatcher');
 
@@ -45,7 +44,7 @@ core.browserbot.isTextPresent = function(pattern) {
   if (!body) {
     return false;
   }
-  var allText = bot.style.getVisibleText((/**@type{Node}*/ body));
+  var allText = bot.dom.getVisibleText((/**@type{Node}*/ body));
 
   var matchMaker = core.patternMatcher.against(pattern);
   return matchMaker(allText);
@@ -58,5 +57,5 @@ core.browserbot.isTextPresent = function(pattern) {
  */
 core.browserbot.isVisible = function(locator) {
   var element = core.locators.findElement(locator);
-  return bot.style.isShown(element);
+  return bot.dom.isShown(element);
 };

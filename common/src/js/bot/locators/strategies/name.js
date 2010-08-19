@@ -32,10 +32,6 @@ goog.require('goog.dom');
  */
 bot.locators.strategies.name.single = function(target, root) {
   var dom = goog.dom.getDomHelper(root);
-  // TODO(user): Remove next statement once Closure has been fixed to allow
-  // a root argument of type Document to getElementsByTagNameAndClass.
-  root = /**@type{Element}*/ (root.documentElement ?
-    root.documentElement : root);
   var allElements = dom.getElementsByTagNameAndClass('*', null, root);
   var element = goog.array.find(allElements, function(element) {
     return bot.dom.getAttribute(element, 'name') == target;
@@ -54,10 +50,6 @@ bot.locators.strategies.name.single = function(target, root) {
  */
 bot.locators.strategies.name.many = function(target, root) {
   var dom = goog.dom.getDomHelper(root);
-  // TODO(user): Remove next statement once Closure has been fixed to allow
-  // a root argument of type Document to getElementsByTagNameAndClass.
-  root = /**@type{Element}*/ (root.documentElement ?
-    root.documentElement : root);
   var allElements = dom.getElementsByTagNameAndClass('*', null, root);
   return goog.array.filter(allElements, function(element) {
     return bot.dom.getAttribute(element, 'name') == target;

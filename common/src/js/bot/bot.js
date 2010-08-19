@@ -16,7 +16,7 @@
 /**
  * @fileoverview Overall configuration of the browser automation atoms.
  *
-*
+ *
  */
 
 
