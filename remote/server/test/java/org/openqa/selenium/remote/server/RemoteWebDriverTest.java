@@ -19,7 +19,6 @@ package org.openqa.selenium.remote.server;
 
 import org.openqa.selenium.AbstractDriverTestCase;
 import org.openqa.selenium.By;
-import org.openqa.selenium.Ignore;
 import org.openqa.selenium.JavascriptEnabled;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
