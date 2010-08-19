@@ -51,7 +51,7 @@ def unpack_dependencies(args)
   FileList[File.join("third_party", "java", "jetty", "jetty-6.1.9.jar"),
            File.join("third_party", "java", "jetty", "jetty-util-6.1.9.jar"),
            File.join("third_party", "java", "servlet-api", "servlet-api-2.5-6.1.9.jar"),
-           File.join("third_party", "java", "google-collect", "google-collect-1.0.jar"),
+           File.join("third_party", "java", "guava-libraries", "guava-r06.jar"),
            File.join("build", "remote", "*", "*.jar"),
            File.join("build", "remote", "server", "src", "java", "org", "openqa", "jetty.jar"),
            File.join("build", "common", "common.jar"),
@@ -85,7 +85,7 @@ def android_java(args)
   FileList[File.join("third_party", "java", "jetty", "jetty-6.1.9.jar"),
            File.join("third_party", "java", "jetty", "jetty-util-6.1.9.jar"),
            File.join("third_party", "java", "servlet-api", "servlet-api-2.5-6.1.9.jar"),
-           File.join("third_party", "java", "google-collect", "google-collect-1.0.jar"),
+           File.join("third_party", "java", "guava-libraries", "guava-r06.jar"),
            File.join("build", "remote", "*", "*.jar"),
            File.join("build", "remote", "server", "src", "java", "org", "openqa", "jetty.jar"),
            File.join("build", "common", "common.jar"),
@@ -216,7 +216,7 @@ def android_init()
   $lib_jetty = File.expand_path(File.join("third_party", "java", "jetty", "jetty-6.1.9.jar"))
   $lib_jetty_util = File.expand_path(File.join("third_party", "java", "jetty", "jetty-util-6.1.9.jar"))
   $lib_servlet_api = File.expand_path(File.join("third_party", "java", "servlet-api", "servlet-api-2.5-6.1.9.jar"))
-  $lib_google_collect = File.expand_path(File.join("third_party", "java", "google-collect", "google-collect-1.0.jar"))
+  $lib_google_collect = File.expand_path(File.join("third_party", "java", "guava-libraries", "guava-r06.jar"))
   $lib_remote_server_jetty = File.expand_path(File.join("build", "remote", "server", "src", "java", "org", "openqa", "jetty.jar"))
   $lib_remote_server = File.expand_path(File.join("build", "remote", "server", "server.jar"))
   $lib_remote_common = File.expand_path(File.join("build", "remote", "common", "common.jar"))
