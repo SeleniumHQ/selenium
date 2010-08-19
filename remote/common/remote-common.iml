@@ -37,10 +37,10 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../third_party/java/google-collect/google-collect-1.0.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../third_party/java/guava-libraries/guava-r06.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

@@ -3,7 +3,7 @@ java_library(name = "common",
   deps = [
       "//common",
       "//third_party/java/commons-codec",
-      "//third_party/java/google-collect",
+      "//third_party/java/guava-libraries",
       "//third_party/java/json"
     ])
 
