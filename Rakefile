@@ -101,7 +101,9 @@ task :test_chrome => [ "//chrome:test:run" ]
 task :test_htmlunit => [ "//htmlunit:test:run" ]
 task :test_ie => [ "//jobbie:test:run" ]
 task :test_jobbie => [ "//jobbie:test:run" ]
-task :test_jsapi => ["//jsapi:atoms:run", "//jsapi:core:run", "//jsapi:test:run"]
+task :test_jsapi => [ "//jsapi:atoms:run",
+                      "//jsapi:selenium_core:run",
+                      "//jsapi:selenium_core_emulation:run" ]
 task :test_firefox => [ "//firefox:test:run" ]
 task :test_remote => [ "//remote/server:test:run" ]
 task :test_selenium => [ "//selenium:selenium_test:run", "//selenium:test-selenese:run", :'test_core']

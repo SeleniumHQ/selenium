@@ -1562,15 +1562,7 @@ BrowserBot.prototype.findAttribute = function(locator) {
 
     // Find the element.
     var element = this.findElement(elementLocator);
-    var attributeValue = null;
-    
-    // IE returns an object for the "style" attribute
-    if (attributeName == 'style' && typeof(attributeValue) != 'string') {
-        attributeValue = attributeValue.cssText;
-    } else {
-        attributeValue = bot.dom.getAttribute(element, attributeName);
-    }
-
+    var attributeValue = bot.dom.getAttribute(element, attributeName);
     return attributeValue ? attributeValue.toString() : null;
 };
 

@@ -15,12 +15,22 @@ java_test(name = "atoms",
     "//firefox",
     "//common:test"])
 
-java_test(name = "core",
+# This target is for testing the emulation of selenium core in WebDrivedBackedSelenium.
+java_test(name = "selenium_core_emulation",
   srcs = [ "test/java/org/openqa/selenium/CoreTestSuite.java" ],
   deps = [
     "//firefox",
     "//common/src/js/selenium:core",
     "//common:test"])
+
+# This is used for testing selenium core itself. This test suite is currently
+# woefully small, but should grow as more legacy code is replaced with the
+# new browser atoms (which are themselves tested with :atoms above).
+java_test(name = "selenium_core",
+          srcs = [ "test/java/org/openqa/selenium/SeleniumCoreTestSuite.java" ],
+          deps = [
+            "//firefox",
+            "//common:test"])
 
 java_test(name = "webdriver_fragments",
   srcs = [ "test/java/org/openqa/selenium/WebDriverFragmentsTestSuite.java" ],
