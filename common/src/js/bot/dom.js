@@ -131,7 +131,16 @@ bot.dom.getAttribute = function(element, attributeName) {
   // includes a trailing semi-colon and we standardize to that.
   if (attributeName == 'style') {
     var css = goog.string.trim(element.style.cssText).toLowerCase();
-    return css.charAt(css.length - 1) == ';' ? css : css + ';';
+    if (css) {
+      return css.charAt(css.length - 1) == ';' ? css : css + ';';
+    } else {
+      // If there is no CSS text, check if the element has a style attribute.
+      // If it does, then the css text is legitimately an empty string. If
+      // it does not, then we should be returning null. This accounts for
+      // the following use case:
+      //     <div style="">hi</div>
+      return element.getAttribute('style') == null ? null : '';
+    }
   }
 
   var attr = element.getAttributeNode(attributeName);

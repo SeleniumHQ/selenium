@@ -55,6 +55,16 @@
         var e = bot.locators.findElement({id: 'child'});
         assertEquals('visible', bot.style.getEffectiveStyle(e, 'visibility'));
       }
+
+      function testShouldReturnNullIfElementDoesNotHaveAStyleAttribute() {
+        assertNull(bot.dom.getAttribute(document.body, 'style'));
+      }
+
+      function testShouldReturnEmptyStringIfElementHasAnEmptyStyleAttribute() {
+        var e = bot.locators.findElement({id: 'empty-style'});
+        assertEquals('', bot.dom.getAttribute(e, 'style'));
+      }
+
     </script>
 
     <style type="text/css">
@@ -63,7 +73,9 @@
       }
       </style>
   </head>
-  <body>
+  <body> <!-- DO NOT PUT A STYLE ATTRIBUTE ON BODY! -->
+
+    <div id="empty-style" style="">i have no style!</div>
 
     <div id="parent" style="visibility: visible">A parent div
       <div id="child" style="visibility: inherit;display:;">A child div</div>
