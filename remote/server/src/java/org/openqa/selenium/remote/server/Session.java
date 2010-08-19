@@ -56,13 +56,18 @@ public class Session {
     FutureTask<WebDriver> createBrowser = new FutureTask<WebDriver>(new Callable<WebDriver>() {
       public WebDriver call() throws Exception {
         WebDriver rawDriver = factory.newInstance(capabilities);
+        Capabilities actualCapabilities = capabilities;
+        boolean isAndroid = false;
         if (rawDriver instanceof RemoteWebDriver) {
-          describe(rawDriver, ((RemoteWebDriver) rawDriver).getCapabilities()); 
-        } else {
-          describe(rawDriver, capabilities);
+          actualCapabilities = ((RemoteWebDriver) rawDriver).getCapabilities();
+
+          // We check for android here since the requested capabilities may be
+          // Platform.ANY, which doesn't tell us anything.
+          isAndroid = actualCapabilities.getPlatform().is(Platform.ANDROID);
         }
+        describe(rawDriver, actualCapabilities);
         EventFiringWebDriver driver = new EventFiringWebDriver(rawDriver);
-        if (!capabilities.getPlatform().is(Platform.ANDROID)) {
+        if (!isAndroid) {
           driver.register(new SnapshotScreenListener(Session.this));
         }
         return driver;

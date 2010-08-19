@@ -33,7 +33,7 @@ import org.openqa.selenium.remote.ScreenshotException;
 import static org.openqa.selenium.OutputType.BASE64;
 
 public class RemoteWebDriverTest extends AbstractDriverTestCase {
-  @Ignore(reason = "Looks like our unwrapping of exceptions is broken")
+
   public void testShouldBeAbleToGrabASnapshotOnException() {
     driver.get(pages.simpleTestPage);
 
