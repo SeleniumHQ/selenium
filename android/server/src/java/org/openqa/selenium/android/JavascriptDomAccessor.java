@@ -116,7 +116,10 @@ public class JavascriptDomAccessor {
         CONTEXT_NODE + 
         "var result = [];" +
         "if (" + driver.getCurrentFrame() + ".document.getElementById) {" +
-        "  result.push(" + driver.getCurrentFrame() +".document.getElementById(arguments[0]));" +
+        "  var element = " + driver.getCurrentFrame() +".document.getElementById(arguments[0]);" +
+        "  if (element != null) {" +
+        "    result.push(element);" +
+        "  }" +
         "} else {" +
         installXPathJs() +
         "  var it = " + driver.getCurrentFrame() +
