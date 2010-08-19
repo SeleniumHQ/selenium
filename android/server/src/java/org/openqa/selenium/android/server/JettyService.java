@@ -34,6 +34,7 @@ import org.mortbay.jetty.nio.SelectChannelConnector;
 import org.mortbay.jetty.servlet.ServletHolder;
 import org.openqa.jetty.util.IO;
 import org.openqa.selenium.android.AndroidDriver;
+import org.openqa.selenium.android.Platform;
 import org.openqa.selenium.android.app.R;
 
 import java.io.IOException;
@@ -49,7 +50,7 @@ public class JettyService extends Service {
   private Server server;
   private int port = 8080;
 
-  PowerManager.WakeLock wakeLock;
+  private PowerManager.WakeLock wakeLock;
 
   /**
    * Android Service create
@@ -141,13 +142,13 @@ public class JettyService extends Service {
     return server;
   }
 
-  protected Server newServer() {
-    // TODO(berrada): This method seems a little redundant.
-    return new Server();
-  }
-
   protected void configureConnectors() {
     if (server != null) {
+      // Workaround a Froyo bug
+      // http://code.google.com/p/android/issues/detail?id=9431
+      if (Platform.FROYO == Platform.sdk()) {
+        System.setProperty("java.net.preferIPv6Addresses", "false");
+      }
       SelectChannelConnector nioConnector = new SelectChannelConnector();
       nioConnector.setUseDirectBuffers(false);
       nioConnector.setPort(port);
@@ -194,22 +195,12 @@ public class JettyService extends Service {
     }
   }
 
-  protected void configureDeployers() throws Exception {}
-
-  public void configureRealm() throws IOException {}
-
   protected void startJetty() throws Exception {
-    // Bridge Jetty logging to Android logging
-    //AndroidLog.__isDebugEnabled = false;
     System.setProperty("org.mortbay.log.class", "org.mortbay.log.AndroidLog");
-    //org.mortbay.log.Log.setLog(new AndroidLog());
+    server = new Server();
 
-    server = newServer();
-    
     configureConnectors();
     configureHandlers();
-    configureDeployers();
-    configureRealm();
 
     server.start();
 

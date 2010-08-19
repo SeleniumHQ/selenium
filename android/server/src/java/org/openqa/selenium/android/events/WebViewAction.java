@@ -44,7 +44,11 @@ public class WebViewAction {
    * @param webview
    */
   public static void clearFocusFromCurrentElement(WebView webview) {
-    Method clearTextEntry;
+    // Froyo fixed the focus issue, so no action is needed.
+    if (Platform.FROYO <= Platform.sdk()) {
+      return;
+    }
+	Method clearTextEntry;
     try {
       // This allows to clear the focus from the current element, despite the confusing
       // method name.
