@@ -18,7 +18,6 @@ limitations under the License.
 package org.openqa.selenium.android.events;
 
 import android.os.SystemClock;
-import android.util.Log;
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
 import android.webkit.WebView;
@@ -76,44 +75,39 @@ public class WebViewAction {
    */
   public static void sendKeys(WebView webview, CharSequence... text) {
     HitTestResult hitTestResult = webview.getHitTestResult();
-    // Ensure this is an edit text area
-    if (HitTestResult.EDIT_TEXT_TYPE == hitTestResult.getType()) {
-      LinkedList<KeyEvent> eventsQueue = Lists.newLinkedList();
-      KeyCharacterMap characterMap = KeyCharacterMap.load(KeyCharacterMap.BUILT_IN_KEYBOARD);
-      queueEventsToMoveCursorToRightmostPos(eventsQueue, text[0].toString());
-      CharSequence[] inputText = getInputText(text);
-      for (CharSequence sequence : inputText) {
-        for (int i = 0; i < sequence.length(); i++) {
-          char c = sequence.charAt(i);
-          int code = AndroidKeys.getKeyEventFromUnicodeKey(c);
-          if (code != -1) { 
-            long downTime = SystemClock.uptimeMillis();
-            eventsQueue.addLast(new KeyEvent(downTime, SystemClock.uptimeMillis(),
-                KeyEvent.ACTION_DOWN, code, 0, 0, 0, 0, KeyEvent.FLAG_FROM_SYSTEM));
-            eventsQueue.addLast(new KeyEvent(downTime, SystemClock.uptimeMillis(),
-                KeyEvent.ACTION_UP, code, 0, 0, 0, 0, KeyEvent.FLAG_FROM_SYSTEM));
-          } else {
-            eventsQueue.addAll(Arrays.asList(
-                characterMap.getEvents(new char[]{c})));
-          }
+    LinkedList<KeyEvent> keyEvents = Lists.newLinkedList();
+    KeyCharacterMap characterMap = KeyCharacterMap.load(KeyCharacterMap.BUILT_IN_KEYBOARD);
+    moveCursorToRightMostPosition(text[0].toString(), webview);
+    CharSequence[] inputText = getInputText(text);
+    for (CharSequence sequence : inputText) {
+      for (int i = 0; i < sequence.length(); i++) {
+        char c = sequence.charAt(i);
+        int code = AndroidKeys.getKeyEventFromUnicodeKey(c);
+        if (code != -1) { 
+          long downTime = SystemClock.uptimeMillis();
+          keyEvents.addLast(new KeyEvent(KeyEvent.ACTION_DOWN, code));
+          keyEvents.addLast(new KeyEvent(KeyEvent.ACTION_UP, code));
+        } else {
+          keyEvents.addAll(Arrays.asList(
+              characterMap.getEvents(new char[]{c})));
         }
       }
-      dispatchEvents(webview, eventsQueue);
     }
+    dispatchEvents(webview, keyEvents);
   }
-
+  
   /**
    * Dispatches the events from the queue to the webview.
    * 
    * @param webview
    * @param eventsQueue
    */
-  private static void dispatchEvents(WebView webview, LinkedList<KeyEvent> eventsQueue) {
+  private static void dispatchEvents(WebView webview, LinkedList<KeyEvent> keyEvents) {
     if (Platform.sdk() <= Platform.DONUT) {
       webview.pauseTimers();
     }
     try {
-      for (KeyEvent event : eventsQueue) {
+      for (KeyEvent event : keyEvents) {
         webview.dispatchKeyEvent(event);
       }
     } finally {
@@ -128,27 +122,26 @@ public class WebViewAction {
    * @return the text to enter in the editable text area.
    */
   private static CharSequence[] getInputText(CharSequence... text) {
-    CharSequence[] inputText = new String[text.length -1];
+    CharSequence[] inputText = new CharSequence[text.length -1];
     for (int i = 0; i < text.length -1; i++) {
       inputText[i] = text[i + 1];
     }
+    
     return inputText;
   }
 
   /**
    * Add KeyEvents to the queue to move the cursor to the rightmost position in the text area.
    * 
-   * @param eventsQueue the queue
    * @param textAreaValue the already present in the editable area
+   * @param webview the current webview
    */
-  private static void queueEventsToMoveCursorToRightmostPos(LinkedList<KeyEvent> eventsQueue,
-      String textAreaValue) {
-    if (textAreaValue != null && textAreaValue.length() > 0) {
-      long downTime = SystemClock.uptimeMillis();
-      eventsQueue.addLast(new KeyEvent(downTime, SystemClock.uptimeMillis(),
-        KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DPAD_RIGHT, 0, 0, 0, 0, KeyEvent.FLAG_FROM_SYSTEM));
-      eventsQueue.addLast(new KeyEvent(downTime, SystemClock.uptimeMillis(),
-        KeyEvent.ACTION_UP, KeyEvent.KEYCODE_DPAD_RIGHT, 0, 0, 0, 0, KeyEvent.FLAG_FROM_SYSTEM));
+  private static void moveCursorToRightMostPosition(String textAreaValue, WebView webview) {
+    long downTime = SystemClock.uptimeMillis();
+    // TODO (berrada): add a test or check to ensure we end up at index 0 in the text box.
+    for (int i = 0; i < textAreaValue.length(); i++) {
+      webview.dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DPAD_RIGHT));
+      webview.dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_DPAD_RIGHT));
     }
   }
 }

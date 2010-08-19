@@ -17,17 +17,14 @@ limitations under the License.
 
 package org.openqa.selenium.android;
 
-import static org.openqa.selenium.android.JavascriptDomAccessor.STALE;
-import static org.openqa.selenium.android.JavascriptDomAccessor.UNSELECTABLE;
 import android.graphics.Point;
 import android.os.SystemClock;
 import android.util.Log;
 import android.view.MotionEvent;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.ElementNotVisibleException;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.SearchContext;
-import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.android.intents.Action;
@@ -67,36 +64,22 @@ public class AndroidWebElement implements WebElement, FindsById, FindsByLinkText
   }
 
   public void click() {
-    assertElementIsDisplayed();    
-    Point center = getCenterElementLocation();
+    // Scroll if the element is not visible so it is in the viewport.
+    getDomAccessor().scrollIfNeeded(elementId);
+    Point center = getDomAccessor().getCenterCoordinate(elementId);
     Log.d(LOG_TAG, "Clicking on " + center.toString());
     
     MotionEvent downEvent = MotionEvent.obtain(SystemClock.uptimeMillis(),
-        SystemClock.uptimeMillis(), MotionEvent.ACTION_DOWN, center.x, center.y, 0,
-        0, 0, 0, 0, 0, 0);
+        SystemClock.uptimeMillis(), MotionEvent.ACTION_DOWN, center.x, center.y, 0);
     MotionEvent upEvent = MotionEvent.obtain(downEvent.getDownTime(),
-        SystemClock.uptimeMillis() + 1, MotionEvent.ACTION_UP, center.x, center.y, 1,
-        0, 0, 0, 0, 0, 0);
+        SystemClock.uptimeMillis(), MotionEvent.ACTION_UP, center.x, center.y, 0);
     
     driver.sendIntent(Action.SEND_MOTION_EVENT, downEvent, upEvent);
-
     // If the page started loading we should wait
     // until the page is done loading.
     if (driver.pageHasStartedLoading()) {
       driver.waitUntilPageFinishedLoading();
     }
-  }
-
-  private Point getCenterElementLocation() {
-    Point topLeft = getLocation();
-    Point size = getSize();
-    int centerX = topLeft.x + (size.x > 0 ? size.x/2 : 0);
-    int centerY = topLeft.y + (size.y > 0 ? size.y/2 : 0);
-    // In case of links starting on end of a line and continuing on the following
-    // line, the center coordinate will be somewhere outside the screen, we need
-    // to re-adjust.
-    Point center = getDomAccessor().adjustCoordinateIfNeeded(centerX, centerY, elementId);
-    return center;    
   }
   
   public JavascriptDomAccessor getDomAccessor() {
@@ -104,21 +87,18 @@ public class AndroidWebElement implements WebElement, FindsById, FindsByLinkText
   }
   
   public void submit() {
-    // TODO(berrada): For the else condition, it would be better to walk up the
-    // form, then down to the first valid submit element and click that.
     String tagName = getTagName();
-    driver.resetPageHasLoaded();
-    driver.resetPageHasStartedLoading();
-    if ("button".equalsIgnoreCase(tagName) || "input".equalsIgnoreCase(tagName)
+    if ("button".equalsIgnoreCase(tagName)
         || "submit".equalsIgnoreCase(getAttribute("type"))
         || "img".equalsIgnoreCase(tagName)) {   
       this.click();
     } else {
-      // TODO (berrada): Get rid of the JS implementation, and send keyboard events instead.
+      driver.resetPageHasLoaded();
+      driver.resetPageHasStartedLoading();
       getDomAccessor().submit(elementId);
-    }
-    if (driver.pageHasStartedLoading()) {
-      driver.waitUntilPageFinishedLoading();
+      if (driver.pageHasStartedLoading()) {
+        driver.waitUntilPageFinishedLoading();
+      }
     }
   }
 
@@ -128,51 +108,46 @@ public class AndroidWebElement implements WebElement, FindsById, FindsByLinkText
 
   public void clear() {
     Log.d(LOG_TAG, "clear");
-    // focus
+    String value = getValue();
+    if (value == null || value.length() == 0) {
+      return;
+    }
+    CharSequence[] serilizableArgs = new CharSequence[value.length() + 1];
+    serilizableArgs[0] = value;
+    for (int i = 1; i < serilizableArgs.length; i++) {
+      serilizableArgs[i] = Keys.BACK_SPACE;
+    }
+    // focus on the element
     this.click();
-    driver.sendIntent(Action.CLEAR_TEXT);
-    getDomAccessor().blur(elementId);
+    driver.sendIntent(Action.SEND_KEYS, serilizableArgs);
   }
 
   public void sendKeys(CharSequence... value) {
     if (value == null || value.length == 0) {
       return;
     }
-    // focus on the element
-    this.click();
-    
-    String[] serializableArgs = new String[value.length +1];
+    CharSequence[] serializableArgs = new CharSequence[value.length + 1];
     serializableArgs[0] = getValue();
     for (int i = 0; i < value.length; i++) {
       serializableArgs[i + 1] = value[i].toString();
     }
+    // focus on the element
+    this.click();
     driver.sendIntent(Action.SEND_KEYS, serializableArgs);
-    
     if (driver.pageHasStartedLoading()) {
       driver.waitUntilPageFinishedLoading();
     }
-    
   }
+  
   public String getTagName() {
     return getDomAccessor().getTagName(elementId).toLowerCase();
   }
 
   public String getAttribute(String name) {
-    String value = getDomAccessor().getAttributeValue(name, elementId);
-    Log.d(LOG_TAG,
-        "GetAttribute " + name + ": value: " + value);
-    if ("selected".equalsIgnoreCase(name) || "checked".equalsIgnoreCase(name)) {
-      return Boolean.toString(isSelected());
-    } else if ("disabled".equalsIgnoreCase(name)) {
-      return Boolean.toString(value != null && value.length() > 0);
-    }
-    return value;
+    return getDomAccessor().getAttributeValue(name, elementId);
   }
 
   public boolean toggle() {
-    if (!isDisplayed()) {
-      throw new ElementNotVisibleException("Element: " + elementId);
-    }
     return getDomAccessor().toggle(elementId);
   }
 
@@ -181,18 +156,11 @@ public class AndroidWebElement implements WebElement, FindsById, FindsByLinkText
   }
 
   public void setSelected() {
-    assertElementIsDisplayed();
-    assertElementIsEnabled();
-    String result = getDomAccessor().setSelected(elementId);
-    if (result == UNSELECTABLE) {
-      throw new WebDriverException("Element is not selectable.");
-    } else if (result == STALE) {
-      throw new StaleElementReferenceException("Element is stale.");
-    }
+    getDomAccessor().setSelected(elementId);
   }
 
   public boolean isEnabled() {
-    return !Boolean.parseBoolean(getAttribute("disabled"));
+    return !Boolean.valueOf(getAttribute("disabled"));
   }
 
   public String getText() {
@@ -321,11 +289,7 @@ public class AndroidWebElement implements WebElement, FindsById, FindsByLinkText
   }
 
   public boolean isDisplayed() {
-    boolean visibility = getDomAccessor().isDisplayed(elementId);
-    if ("input".equalsIgnoreCase(getTagName())) {
-      return !"hidden".equalsIgnoreCase(getAttribute("type")) && visibility;
-    }
-    return visibility;
+    return getDomAccessor().isDisplayed(elementId);
   }
 
   /**
@@ -351,17 +315,5 @@ public class AndroidWebElement implements WebElement, FindsById, FindsByLinkText
       return hex;
     }
     return value;
-  }
-
-  protected void assertElementIsDisplayed() {
-    if (!isDisplayed()) {
-      throw new ElementNotVisibleException("Element: " + elementId);
-    }
-  }
-
-  protected void assertElementIsEnabled() {
-    if (!isEnabled()) {
-      throw new UnsupportedOperationException("Element: " + elementId);
-    }
   }
 }

@@ -17,16 +17,18 @@ limitations under the License.
 
 package org.openqa.selenium.android.intents;
 
-import org.openqa.selenium.WebDriverException;
-
-import java.io.Serializable;
-import java.util.Set;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+
+import com.google.common.collect.Sets;
+
+import org.openqa.selenium.WebDriverException;
+
+import java.io.Serializable;
+import java.util.Set;
 
 public class IntentReceiver extends BroadcastReceiver {
   private static final String LOG_TAG = IntentReceiver.class.getName();
@@ -82,7 +84,7 @@ public class IntentReceiver extends BroadcastReceiver {
       if (extras.getSerializable(key) != null) {
         toReturn[index] = extras.getSerializable(key);
       }
-      index ++;
+      index++;
     }
     return toReturn;
   }
@@ -90,14 +92,14 @@ public class IntentReceiver extends BroadcastReceiver {
   private Object[] extractParcelable(Bundle extras) {
     Set<String> keys = getActiveKeys(extras);
     Object[] toReturn = new Object[keys.size()];
-    int index = keys.size() - 1;
+    int index = 0;
     for (String key : keys) {
       if (extras.getParcelable(key) != null) {
         // Extract the arguments starting from the last argument added (FILO)
         // because order matters for motion event.
         toReturn[index] = extras.getParcelable(key);
       }
-     index --; 
+     index++; 
     }
     return toReturn;
   }
@@ -106,6 +108,6 @@ public class IntentReceiver extends BroadcastReceiver {
     Set<String> keys = extras.keySet();
     // Remove this from the key set as it is only used to detect parcels
     keys.remove(IntentSender.IS_PARCELABLE);
-    return keys;
+    return Sets.newTreeSet(keys);  // keeps the keys sorted.
   }
 }

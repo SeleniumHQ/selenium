@@ -73,11 +73,14 @@ public class SingleSessionActivity extends Activity implements IntentReceiverLis
   private final IntentReceiverRegistrar intentReg;
   private final SimpleWebViewJSExecutor jsExecutor;
   private final SimpleWebChromeClient  chromeClient;
+  private final IntentSender sender;
+
 
   public SingleSessionActivity() {
     intentReg = new IntentReceiverRegistrar(this);
     jsExecutor = new SimpleWebViewJSExecutor();
     chromeClient = new SimpleWebChromeClient();
+    sender = new IntentSender();
   }
   
   @Override
@@ -130,7 +133,6 @@ public class SingleSessionActivity extends Activity implements IntentReceiverLis
     intentReg.registerReceiver(intentWithResult, Action.EXECUTE_JAVASCRIPT);
     intentReg.registerReceiver(intentWithResult, Action.SEND_KEYS);
     intentReg.registerReceiver(intentWithResult, Action.SEND_MOTION_EVENT);
-    intentReg.registerReceiver(intentWithResult, Action.CLEAR_TEXT);
     intentReg.registerReceiver(intentWithResult, Action.ADD_COOKIE);
     intentReg.registerReceiver(intentWithResult, Action.GET_ALL_COOKIES);
     intentReg.registerReceiver(intentWithResult, Action.GET_COOKIE);
@@ -215,14 +217,13 @@ public class SingleSessionActivity extends Activity implements IntentReceiverLis
       sessionCookieManager.remove(webView.getUrl(), (String) args[0]);
     } else if (Action.SEND_MOTION_EVENT.equals(action)) {
       TouchScreen.sendMotion(webView, (MotionEvent) args[0], (MotionEvent) args[1]);
+      return true;
     } else if (Action.SEND_KEYS.equals(action)) {
-      String[] inputKeys = new String[args.length];
+      CharSequence[] inputKeys = new CharSequence[args.length];
       for (int i = 0; i < inputKeys.length; i++) {
-        inputKeys[inputKeys.length -1 - i] = args[i].toString(); // Parameter order matters for key events
+        inputKeys[i] = args[i].toString();
       }
       WebViewAction.sendKeys(webView, inputKeys);
-    } else if (Action.CLEAR_TEXT.equals(action)) {
-      // TODO (berrada): Implement me!
     }
     return null;
   }
@@ -258,8 +259,8 @@ public class SingleSessionActivity extends Activity implements IntentReceiverLis
     return rawPng;
   }
   
-  private void sendIntent(String action, Object... args) {
-    IntentSender.getInstance().broadcast(this, action, args);
+  private void sendIntent(final String action, final Object... args) {
+    sender.broadcast(this, action, args);
   }
 
   /**

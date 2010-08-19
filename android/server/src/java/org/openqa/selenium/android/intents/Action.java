@@ -37,6 +37,5 @@ public interface Action {
   String JAVASCRIPT_RESULT_AVAILABLE = "javascriptResultAvailable";
   
   String SEND_KEYS = "sendKeys";
-  String CLEAR_TEXT = "clearText";
   String SEND_MOTION_EVENT = "sendMotionEvent";
 }

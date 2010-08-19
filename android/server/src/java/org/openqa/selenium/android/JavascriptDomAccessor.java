@@ -20,6 +20,7 @@ package org.openqa.selenium.android;
 import android.graphics.Point;
 import android.util.Log;
 
+import org.openqa.selenium.ElementNotVisibleException;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriverException;
@@ -32,11 +33,13 @@ import java.util.List;
  * Allows to access the DOM through Javascript DOM API.
  */
 public class JavascriptDomAccessor {
-  public static final String STALE = "stale";
-  public static final String UNSELECTABLE = "unselectable";
-  public static final String FAILED = "failed";
-  
+  private static final String STALE = "_android_stale_element_";
+  private static final String UNSELECTABLE = "_android_unselectable_element_";
+  private static final String DISABLED = "_android_disabled_element_";
+  private static final String FAILED = "_android_failed";
+  private static final String UNSUPPORTED = "_android_unsupported";
   private static final String LOG_TAG = JavascriptDomAccessor.class.getName();
+  private static final String NOT_VISIBLE = "notVisible";
   private static final int MAX_XPATH_ATTEMPTS = 5;
   private static final int XPATH_RETRY_TIMEOUT = 500; // milliseconds
 
@@ -48,19 +51,18 @@ public class JavascriptDomAccessor {
   // By default element id 0 represents the document.
   private static final String CONTEXT_NODE = 
       "var contextNode = contextNode = doc.androiddriver_elements[arguments[1]];";
+
+  private static final String ELEMENT_SIZE = 
+      "var elementWidth = 0;" +
+      "var elementHeight = 0;" +
+      "if(element.getClientRects) {" +
+      "  elementWidth = element.getClientRects()[0].width;" +
+      "  elementHeight = element.getClientRects()[0].height;" +
+      "} else {" +
+      "  elementWidth = element.offsetWidth;" +
+      "  elementHeight = element.offsetHeight;" +
+      "}";
   
-  /**
-   * Javascript code to be injected in the webview to initialise the cache.
-   */
-  public static String initCacheJs(String currentFrame) {
-    return
-        "var doc = " + currentFrame + ".document.documentElement;" +
-        "if (!doc.androiddriver_elements) {" +
-        "  doc.androiddriver_elements = {};" +
-        "  doc.androiddriver_next_id = 0;" +
-        "  doc.androiddriver_elements[0] = " + currentFrame + ".document;" +
-        "}";
-  }
   // Adds an element to the cache if it does not already exists.
   public static final String ADD_TO_CACHE =
       "var indices = [];" +
@@ -79,76 +81,59 @@ public class JavascriptDomAccessor {
       "  }" +
       "}";
 
-  /**
-   * Returns  the Javascript to install XPath in the webview.
-   */
-  private String installXPathJs() {
-    // The XPath library is installed in the main context. For frames, the
-    // main context installs the XPath library in the frame context.
-    // First it sets the default for the xpath library and expose the installer,
-    // then it includes the actual xpath library. It calls
-    // window.install() to install it.
-    return
-        "if (!" + driver.getCurrentFrame() + ".document.evaluate) {" +
-        "  try {" +
-        "    var body = document.getElementsByTagName('body')[0];" +
-        "    if (body == undefined) {" +
-        "      body = document.createElement('body');" +
-        "      document.getElementsByTagName('html')[0].appendChild(body);" +
-        "    }" +
-        "    var install_tag = document.createElement('script'); " +
-        "    install_tag.type = 'text/javascript'; " +
-        "    install_tag.innerHTML= 'window.jsxpath = { exportInstaller : true };'; " +
-        "    body.appendChild(install_tag);" +
-        "    var load_tag = document.createElement('script'); " +
-        "    load_tag.type = 'text/javascript'; " +
-        "    load_tag.src = 'http://localhost:8080/resources/js'; " +
-        "    body.appendChild(load_tag);" +
-        "    if (!window.install) {" +
-        "      return '" + FAILED + "_window.install undefined!'" +
-        "    }" +
-        "    window.install(" + driver.getCurrentFrame() + ");" +
-        "    if (!" + driver.getCurrentFrame() + ".document.evaluate) {" +
-        "      return '" + FAILED + "_" + driver.getCurrentFrame() +
-                   "' + '.document.evaluate undefined!'};" +
-        "  } catch (error) {" +
-        "    return '" + FAILED + "_' + error;" +
-        "  }" +
-        "}";
-  }
-
-  /**
-   * Return the Javascript to determine weather an element is stale.
-   */
-  private String isElementStaleJs() {
-    return
-    "var isStale;" +
-    "var doc = " + driver.getCurrentFrame() + ".document.documentElement;" +
-    "if (arguments[0] in doc.androiddriver_elements) {" +
-    "  var element = doc.androiddriver_elements[arguments[0]];" +
-    "  var parent = element;" +
-    "  while (parent && parent != doc) {" +
-    "    parent = parent.parentNode;" +
-    "  }" +
-    "  if (parent !== doc) {" +
-    "    delete doc.androiddriver_elements[arguments[0]];" +
-    "    isStale = true;" +
-    "  }" +
-    "  isStale = false;" +
-    "} else {" +
-    "  isStale = true;" +
-    "}";
-  }
+  private static final String IS_SELECTED =
+      "var isSelected = false;" +
+      "var element = doc.androiddriver_elements[arguments[0]];" +
+      "if (element.tagName.toLowerCase() == 'option') {" +
+        "isSelected = element.selected;" +
+      "} else if (element.tagName.toLowerCase() == 'input') {" +
+        "isSelected = element.checked;" +
+      "}";
   
   public JavascriptDomAccessor(AndroidDriver driver) {
     Log.d(LOG_TAG, "Javascript Dom Accessor constructor.");
     this.driver = driver;
   }
   
+  /**
+   * Gets an element using the id.
+   * 
+   * @param using the element id
+   * @param elementId the element id in the Javascript cache
+   * @return the element if found
+   * @throws NoSuchElementException if the element is not found
+   */
   public WebElement getElementById(String using, String elementId) {
+    // If the current elementId is 0 the element reffers to the dom. Otherwise
+    // the element reffers to a nested element in the dom.s
+    if (!"0".equals(elementId)) {
+      return getElementByXPath(".//*[@id='" + using + "']", elementId);
+    }
     // TODO(berrada): by default do document.getElementById. Check "contains", and only 
 	// fall back to xpath if that fails. Closure has the ordering code (goog.dom, I think)
-    return getElementByXPath(".//*[@id = '" + using + "']", elementId);
+    String toExecute =
+        initCacheJs(driver.getCurrentFrame()) + 
+        CONTEXT_NODE + 
+        "var result = [];" +
+        "if (" + driver.getCurrentFrame() + ".document.getElementById) {" +
+        "  result.push(" + driver.getCurrentFrame() +".document.getElementById(arguments[0]));" +
+        "} else {" +
+        installXPathJs() +
+        "  var it = " + driver.getCurrentFrame() +
+        // We use 5 for ResultType.ORDERED_NODE_ITERATOR_TYPE. This constant
+        // is not defined in the JS API exposed for versions earlier than 2.0.
+        ".document.evaluate('.//*[@id=\\'' + arguments[0] + '\\']', contextNode, null, 5, null);" + 
+        "  var element = it.iterateNext();" +
+        "  if (element == null) {" +
+        "    return null;" +
+        "  }" +
+        "  result.push(element);" +
+        "}" +
+        ADD_TO_CACHE +
+        "return indices;";
+    List result = executeAndRetry(using, elementId, toExecute);
+    List<WebElement> elements = createWebElementsWithIds(result, elementId);
+    return getFirstElement(elements);
   }
   
   public List<WebElement> getElementsById(String using, String elementId) {
@@ -156,31 +141,29 @@ public class JavascriptDomAccessor {
   }
   
   public WebElement getElementByName(String using, String elementId) {
-    if (elementId.equals("0")) {
-      List<Integer> result = (List<Integer>) driver.executeScript(
-          "var element = " + driver.getCurrentFrame() +
-              ".document.getElementsByName(arguments[0])[0];" +
-          "var result = [];" +
-          "if (element != null && element.length != 0) {" +
-          "  result.push(element);" +
-          "}" +
-          initCacheJs(driver.getCurrentFrame()) +
-          ADD_TO_CACHE +
-          "return indices;",
-          using);
-      List<WebElement> elements = createWebElementsWithIds(result, elementId);
-      if (elements.size() > 0) {
-        return elements.get(0);
-      }
-      throw new NoSuchElementException("Element not found with id: " + elementId);
-    } else {
-      return getElementByXPath(".//*[@name = '" + using + "']", elementId);
+    if (!"0".equals(elementId)) { // nested elements
+      return getElementByXPath(".//*[@name='" + using + "']", elementId);
     }
+    List<Integer> result = (List<Integer>) driver.executeScript(
+        "var element = " + driver.getCurrentFrame() +
+            ".document.getElementsByName(arguments[0])[0];" +
+        "var result = [];" +
+        "if (element != null && element.length != 0) {" +
+        "  result.push(element);" +
+        "}" +
+        initCacheJs(driver.getCurrentFrame()) +
+        ADD_TO_CACHE +
+        "return indices;",
+        using);
+    List<WebElement> elements = createWebElementsWithIds(result, elementId);
+    return getFirstElement(elements);
   }
  
   public List<WebElement> getElementsByName(String using, String elementId) {
-    if (elementId.equals("0")) {
-      List<Integer> result = (List<Integer>) driver.executeScript(
+    if (!"0".equals(elementId)) { // nested elements
+      return getElementsByXpath(".//*[@name='" + using + "']", elementId);
+    }
+    List<Integer> result = (List<Integer>) driver.executeScript(
         "var elements = " + driver.getCurrentFrame() +
             ".document.getElementsByName(arguments[0]);" +
         "var result = [];" +
@@ -191,10 +174,7 @@ public class JavascriptDomAccessor {
         ADD_TO_CACHE +
         "return indices;",
         using);
-      return createWebElementsWithIds(result, elementId);
-    } else {
-      return getElementsByXpath(".//*[@name = '" + using + "']", elementId);
-    }
+    return createWebElementsWithIds(result, elementId);
   }
 
   public WebElement getElementByTagName(String using, String elementId) {
@@ -211,10 +191,7 @@ public class JavascriptDomAccessor {
         "return indices;",
         using, elementId);
     List<WebElement> elements = createWebElementsWithIds(result, elementId);
-    if (elements.size() > 0) {
-      return elements.get(0);
-    }
-    throw new NoSuchElementException("Element not found with id: " + elementId);
+    return getFirstElement(elements);
   }
  
   public List<WebElement> getElementsByTagName(String using, String elementId) {
@@ -232,15 +209,15 @@ public class JavascriptDomAccessor {
         using, elementId);
     return createWebElementsWithIds(result, elementId);
   }
-
+  
   public WebElement getElementByXPath(String using, String elementId) {
     String toExecute =
         initCacheJs(driver.getCurrentFrame()) + 
         CONTEXT_NODE + 
         installXPathJs() +
-        "var it = " + driver.getCurrentFrame() 
-            + ".document.evaluate(arguments[0], contextNode, null, 5, null);" + 
         "var result = [];" +
+        "var it = " + driver.getCurrentFrame() + 
+        ".document.evaluate(arguments[0], contextNode, null, 5, null);" + 
         "var element = it.iterateNext();" +
         "if (element == null) {" +
         "  return null;" +
@@ -250,10 +227,7 @@ public class JavascriptDomAccessor {
         "return indices;";
     List result = executeAndRetry(using, elementId, toExecute);
     List<WebElement> elements = createWebElementsWithIds(result, elementId);
-    if (elements.size() > 0) {
-      return elements.get(0);
-    }
-    throw new NoSuchElementException("Element not found with id: " + elementId);
+    return getFirstElement(elements);
   }
  
   public List<WebElement> getElementsByXpath(String using, String elementId) {
@@ -291,10 +265,7 @@ public class JavascriptDomAccessor {
         "return indices;",
         using, elementId);
     List<WebElement> elements = createWebElementsWithIds(result, elementId);
-    if (elements.size() > 0) {
-      return elements.get(0);
-    }
-    throw new NoSuchElementException("Element not found with id: " + elementId);
+    return getFirstElement(elements);
   }
  
   public List<WebElement> getElementsByLinkText(String using, String elementId) {
@@ -330,10 +301,7 @@ public class JavascriptDomAccessor {
         "return indices;",
         using, elementId);
     List<WebElement> elements = createWebElementsWithIds(result, elementId);
-    if (elements.size() > 0) {
-      return elements.get(0);
-    }
-    throw new NoSuchElementException("Element not found with id: " + elementId);
+    return getFirstElement(elements);
   }
   
   public List<WebElement> getElementsByPartialLinkText(String using, String elementId) {
@@ -362,7 +330,7 @@ public class JavascriptDomAccessor {
         "}" +
         "return 'stale';",
         elementId);
-    throwExceptionIfElementIsStale(elementId, result);
+    throwExceptionIfFailed(result);
     return result;
   }
 
@@ -375,7 +343,7 @@ public class JavascriptDomAccessor {
         "}" +
         "return 'stale';",
         elementId);
-    throwExceptionIfElementIsStale(elementId, result);
+    throwExceptionIfFailed(result);
     return result;
   }
 
@@ -393,23 +361,12 @@ public class JavascriptDomAccessor {
         initCacheJs(driver.getCurrentFrame()) +
         isElementStaleJs() +
         "if (isStale == false) {" +
-        "  var curleft = 0;" +
-        "  var curtop = 0; "+
-        "  if (element.getBoundingClientRect) {" +
-        "    var boundingRect = element.getBoundingClientRect();" +
-        "    curleft = boundingRect.left;" +
-        "    curtop = boundingRect.top;" +
-        "  } else if (element.offsetParent) { " + 
-        "    do {" +
-        "      curleft += element.offsetLeft; "+
-        "      curtop += element.offsetTop; " +
-        "    } while (element = element.offsetParent); " + 
-        "  }" + 
-        "  return curleft + ',' + curtop;"+ 
+          getTopLeftCoordinatesJS() +
+        "  return topLeftX + ',' + topLeftY;" +
         "}" +
         "return '" + STALE + "';",
         elementId);
-    throwExceptionIfElementIsStale(elementId, result);
+    throwExceptionIfFailed(result);
     return parseCoordinate(result);
   }
   
@@ -423,16 +380,23 @@ public class JavascriptDomAccessor {
         "}" +
         "return '" + STALE + "';",
         elementId);
-    throwExceptionIfElementIsStale(elementId, result);
+    throwExceptionIfFailed(result);
   }
   
   public String getAttributeValue(String attribute, String elementId) {
     // TODO (berrada): This is equivalent to combining the "bot.dom.getProperty"
     // and "bot.dom.getAttribute" atoms.
-    String result = (String) driver.executeScript(
+    Object result = driver.executeScript(
         initCacheJs(driver.getCurrentFrame()) +
         isElementStaleJs() +
         "if (isStale == false) {" +
+        "  if (arguments[1] == 'selected' || arguments[1] == 'checked') {" +
+           IS_SELECTED +
+        "    return isSelected;" +
+        "  }" +
+        "  if (arguments[1] == 'disabled') {" +
+        "    return element.disabled;" +
+        "  }" +
         "  return " + ("value".equals(attribute) || attribute.startsWith("offset")
             || "index".equals(attribute) ?
                 "element." + attribute + ";"
@@ -440,8 +404,8 @@ public class JavascriptDomAccessor {
         "}" +
         "return '" + STALE + "';",
         elementId, attribute);
-    throwExceptionIfElementIsStale(elementId, result);
-    return result;
+    throwExceptionIfFailed(String.valueOf(result));
+    return String.valueOf(result);
   }
 
   public Point getSize(String elementId) {
@@ -449,28 +413,67 @@ public class JavascriptDomAccessor {
       initCacheJs(driver.getCurrentFrame()) +
       isElementStaleJs() +
       "if (isStale == false) {" +
-      "  if(element.getBoundingClientRect) {" +
-      "    var clientRect = element.getBoundingClientRect();" +
-      "    return clientRect.width + ',' + clientRect.height;" +
-      "  }" +
-      "  return element.offsetWidth + ',' + element.offsetHeight;" +
+        ELEMENT_SIZE +
+        "return elementWidth + ',' + elementHeight;" +
       "}" +
       "return '" + STALE + "';",
       elementId);
     if (result == null) {
       return null;
     }
-    throwExceptionIfElementIsStale(elementId, result);
-    
+    throwExceptionIfFailed(result);    
     return parseCoordinate(result);
   }
 
-  private Point parseCoordinate(String result) {
-    String[] coordinates = result.split(",");
-    if (coordinates.length == 2) {
-      return new Point(Integer.parseInt(coordinates[0]), Integer.parseInt(coordinates[1]));
-    }
-    else throw new WebDriverException("Cannot parse coordinates: " + result);
+  public void scrollIfNeeded(String elementId) {
+    String result = (String) driver.executeScript(
+        initCacheJs(driver.getCurrentFrame()) +
+        isElementStaleJs() +
+        "if (isStale == true) {" +
+        "  return '" + STALE + "';" +
+        "}" +
+        isDisplayedJs(driver.getCurrentFrame()) +
+        "if (isDisplayed == false) {" +
+          "return '" + NOT_VISIBLE + "';" +
+        "}" +
+        getTopLeftCoordinatesJS() +
+        "var xScroll = 0;" +
+        "var yScroll = 0;" +
+        "if (topLeftX < 0 || topLeftX > " + driver.getCurrentFrame() + ".innerWidth) {" +
+        "  xScroll = topLeftX - 20;" + // scroll horizontally
+        "}" +
+        "if (topLeftY < 0 || topLeftY > " + driver.getCurrentFrame() + ".innerHeight) {" +
+        "  yScroll = topLeftY - 20;" + // scroll vertically
+        "}" +
+        "if (xScroll != 0 || yScroll != 0) {" +
+          driver.getCurrentFrame() + ".scroll(xScroll, yScroll);" +
+        "}", elementId);
+  }
+  
+  /**
+   * Computes the center coordinates of the element.
+   * 
+   * @param elementId
+   * @return Point containing the screen coordinates of the element
+   */
+  public Point getCenterCoordinate(String elementId) {
+    String result = (String) driver.executeScript(
+      initCacheJs(driver.getCurrentFrame()) +
+      isElementStaleJs() +
+      "if (isStale == true) {" +
+      "  return '" + STALE + "';" +
+      "}" +
+      isDisplayedJs(driver.getCurrentFrame()) +
+      "if (isDisplayed == false) {" +
+        "return '" + NOT_VISIBLE + "';" +
+      "}" +
+      ELEMENT_SIZE +
+      getTopLeftCoordinatesJS() + // Recalculates top left coordinates
+      "var centerX = parseInt(topLeftX + elementWidth/2);" +
+      "var centerY = parseInt(topLeftY + elementHeight/2);" +
+      "return centerX + ',' + centerY;", elementId);
+    throwExceptionIfFailed(result);
+    return parseCoordinate(result);
   }
   
   public void click(String elementId) {
@@ -525,34 +528,40 @@ public class JavascriptDomAccessor {
         elementId);
   }
   
-  public String setSelected(String elementId) {
-    return (String)driver.executeScript(
+  public void setSelected(String elementId) {
+    String result = (String)driver.executeScript(
         initCacheJs(driver.getCurrentFrame()) +
         isElementStaleJs() +
-        "if (isStale == false) {" +
-        "  var element = doc.androiddriver_elements[arguments[0]];" +
-        "  var changed = false;" +
-        "  if (element.tagName.toLowerCase() == 'option') {" +
-        "    if (!element.selected) {" +
-        "      element.selected = changed = true;" +
-        "    }" +
-        "  }" +
-        "  if (element.tagName.toLowerCase() == 'input') {" +
-        "    if (!element.checked) {" +
-        "      element.checked = changed = true;" +
-        "    }" +
-        "  }" +
-        "  if (changed) {" +
-        "    var event = element.ownerDocument.createEvent('HTMLEvents');" +
-        "    event.initEvent('change', true, true);" +
-        "    element.dispatchEvent(event);" +
-        "    return 'true';" +
-        "  } else {" +
-        "    return '" + UNSELECTABLE + "';" +
-        "  }" +
+        "if (isStale == true) {" +
+        "  return '" + STALE + "';" +
         "}" +
-        "return '" + STALE + "'",
+        isDisplayedJs(driver.getCurrentFrame()) +
+        "if (isDisplayed == false) {" +
+        "  return '" + NOT_VISIBLE + "';" +
+        "} else if (element.disabled == true) {" +
+        "return '" + DISABLED + "';" +
+        "}" +
+        "var changed = false;" +
+        "if (element.tagName.toLowerCase() == 'option') {" +
+        "  if (!element.selected) {" +
+        "    element.selected = changed = true;" +
+        "  }" +
+        "} else if (element.tagName.toLowerCase() == 'input') {" +
+        "  if (!element.checked) {" +
+        "    element.checked = changed = true;" +
+        "  }" +
+        "} else {" +
+        "  return '" + UNSELECTABLE + "'" +
+        "}" +
+        "if (changed) {" +
+        "  var event = element.ownerDocument.createEvent('HTMLEvents');" +
+        "  event.initEvent('change', true, true);" +
+        "  element.dispatchEvent(event);" +
+        "}" +
+        "return 'true';" +
+        "} else {return '" + STALE + "';}",
         elementId);
+    throwExceptionIfFailed(result);
   }
   
   public boolean isSelected(String elementId) {
@@ -560,23 +569,14 @@ public class JavascriptDomAccessor {
         initCacheJs(driver.getCurrentFrame()) +
         isElementStaleJs() +
         "if (isStale == false) {" +
-        "  var element = doc.androiddriver_elements[arguments[0]];" +
-        "  if (element.tagName.toLowerCase() == 'option') {" +
-        "    return element.selected;" +
-        "  }" +
-        "  if (element.tagName.toLowerCase() == 'input') {" +
-        "    return element.checked;" +
-        "  }" +
-        "  return false;" +
+          IS_SELECTED +
+          "return isSelected;" +
         "}" +
         "return '" + STALE + "'",
         elementId);
-    throwExceptionIfElementIsStale(elementId, String.valueOf(result));
+    throwExceptionIfFailed(String.valueOf(result));
 
-    if (result instanceof Boolean) {
-      return (Boolean) result;
-    }
-    throw new WebDriverException("Unknown result type " + result);
+    return getBoolean(result);
   }
 
   public boolean toggle(String elementId) {
@@ -584,8 +584,15 @@ public class JavascriptDomAccessor {
         initCacheJs(driver.getCurrentFrame()) +
         isElementStaleJs() +
         "if (isStale == false) {" +
-        "  var element = doc.androiddriver_elements[arguments[0]];" +
+          isDisplayedJs(driver.getCurrentFrame()) +
+        "  if (isDisplayed == false) {" +
+        "    return '" + NOT_VISIBLE + "';" +
+        "  }" +
         "  element.focus();" +
+        "  if ((element.type && element.type.toLowerCase() == 'radio')" +
+            " || element.tagName.toLowerCase() == 'option') {" +
+        "    return '" + UNSUPPORTED + "';" +
+        "  }" +
         "  if (element instanceof HTMLOptionElement){" +
         "    return element.selected = !element.selected;" +
         "  }else {" +
@@ -594,24 +601,162 @@ public class JavascriptDomAccessor {
         "}" +
         "return '" + STALE + "'",
         elementId);
-    throwExceptionIfElementIsStale(elementId, String.valueOf(result));
-
-    if (result instanceof Boolean) {
-      return (Boolean) result;
-    }
-    throw new WebDriverException("Unknown result type " + result);
+    throwExceptionIfFailed(String.valueOf(result));
+    return (Boolean) result;
+  }
+  
+  public boolean isDisplayed(String elementId) {
+    Object result = driver.executeScript(
+        initCacheJs(driver.getCurrentFrame()) +
+        isElementStaleJs() +
+        "if (isStale == false) {" +
+          isDisplayedJs(driver.getCurrentFrame()) +
+          "return isDiaplayed;" +
+        "}" +
+        "return '" + STALE + "';",
+        elementId);
+    throwExceptionIfFailed(String.valueOf(result));
+    return getBoolean(result);
   }
 
-  private void throwExceptionIfElementIsStale(final String elementId, final String result) {
-    if (STALE.equals(result)) {
-      throw new StaleElementReferenceException("Element with id: " + elementId + " is stale");
+  public String getValueOfCssProperty(String using, boolean computedStyle, String elementId) {
+    String result = (String) driver.executeScript(
+        initCacheJs(driver.getCurrentFrame()) +
+        isElementStaleJs() +
+        "if (isStale == false) {" +
+        (computedStyle ?
+        ("  if (element.currentStyle) " +
+         "    return element.currentStyle[arguments[1]]; " +
+         "  else if (" + driver.getCurrentFrame() + ".getComputedStyle) " +
+         "    return " + driver.getCurrentFrame() +
+                  ".document.defaultView.getComputedStyle(element, null)" +
+                  ".getPropertyValue(arguments[1]); ")
+         :
+         "  return element.style." + using + ";") +
+         "}" +
+         "return '" + STALE + "';",
+        elementId, using);
+    throwExceptionIfFailed(result);
+    return result;
+  }
+  
+  /**
+   * Javascript code to be injected in the webview to initialise the cache.
+   */
+  public static String initCacheJs(String currentFrame) {
+    return
+        "var doc = " + currentFrame + ".document.documentElement;" +
+        "if (!doc.androiddriver_elements) {" +
+        "  doc.androiddriver_elements = {};" +
+        "  doc.androiddriver_next_id = 0;" +
+        "  doc.androiddriver_elements[0] = " + currentFrame + ".document;" +
+        "}";
+  }
+
+  /**
+   * Returns  the Javascript to install XPath in the webview.
+   */
+  private String installXPathJs() {
+    // The XPath library is installed in the main context. For frames, the
+    // main context installs the XPath library in the frame context.
+    // First it sets the default for the xpath library and expose the installer,
+    // then it includes the actual xpath library. It calls
+    // window.install() to install it.
+    return
+        "if (!" + driver.getCurrentFrame() + ".document.evaluate) {" +
+        "  try {" +
+        "    var body = document.getElementsByTagName('body')[0];" +
+        "    if (body == undefined) {" +
+        "      body = document.createElement('body');" +
+        "      document.getElementsByTagName('html')[0].appendChild(body);" +
+        "    }" +
+        "    var install_tag = document.createElement('script'); " +
+        "    install_tag.type = 'text/javascript'; " +
+        "    install_tag.innerHTML= 'window.jsxpath = { exportInstaller : true };'; " +
+        "    body.appendChild(install_tag);" +
+        "    var load_tag = document.createElement('script'); " +
+        "    load_tag.type = 'text/javascript'; " +
+        "    load_tag.src = 'http://localhost:8080/resources/js'; " +
+        "    body.appendChild(load_tag);" +
+        "    if (!window.install) {" +
+        "      return '" + FAILED + "_window.install undefined!'" +
+        "    }" +
+        "    window.install(" + driver.getCurrentFrame() + ");" +
+        "    if (!" + driver.getCurrentFrame() + ".document.evaluate) {" +
+        "      return '" + FAILED + "_" + driver.getCurrentFrame() +
+                   "' + '.document.evaluate undefined!'};" +
+        "  } catch (error) {" +
+        "    return '" + FAILED + "_' + error;" +
+        "  }" +
+        "}";
+  }
+
+  /**
+   * Return the Javascript to determine weather an element is stale.
+   */
+  private String isElementStaleJs() {
+    return
+        "var isStale;" +
+        "var doc = " + driver.getCurrentFrame() + ".document.documentElement;" +
+        "if (arguments[0] in doc.androiddriver_elements) {" +
+        "  var element = doc.androiddriver_elements[arguments[0]];" +
+        "  var parent = element;" +
+        "  while (parent && parent != doc) {" +
+        "    parent = parent.parentNode;" +
+        "  }" +
+        "  if (parent !== doc) {" +
+        "    delete doc.androiddriver_elements[arguments[0]];" +
+        "    isStale = true;" +
+        "  } else {" +
+        "    isStale = false;" +
+        "  }" +
+        "} else {" +
+        "  isStale = true;" +
+        "}";
+  }
+
+  private String getTopLeftCoordinatesJS() {
+    return "var topLeftX = 0;" +
+        "var topLeftY = 0; "+
+        "if (element.getBoundingClientRect) {" +
+        "  topLeftX = element.getBoundingClientRect().left;" +
+        "  topLeftY = element.getBoundingClientRect().top;" +
+        "}";
+  }
+  
+  private static String isDisplayedJs(String currentFrame) {
+    return 
+        "var isDisplayed = true;" +
+        "var body = " + currentFrame + ".document.body; " +
+        "var parent = element;" +
+        "while(parent && parent!= body) {" +
+        "  if((parent.style && (parent.style.display == 'none'" +
+            "|| parent.style.visibility == 'hidden'))" +
+            "|| (element.type && (element.type == 'hidden'))) {" +
+        "    isDisplayed = false;  " +
+        "  }" +
+        "  parent = parent.parentNode; " +
+        "}";
+  }
+
+  private Point parseCoordinate(String result) {
+    String[] coordinates = result.split(",");
+    try {
+      if (coordinates.length == 2) {
+        return new Point(Integer.parseInt(coordinates[0]), Integer.parseInt(coordinates[1]));
+      }
+      else {
+        throw new WebDriverException("Cannot parse coordinates: " + result);
+      }
+    } catch (Exception e) {
+      throw new WebDriverException("Failed to parse: " + result, e);
     }
   }
 
   private List<WebElement> createWebElementsWithIds(List<Integer> ids, String elementId) {
     List<WebElement> elements = new ArrayList<WebElement>();
     // Return empty list when there are no children of a node
-    if (!elementId.equals("0") && ids.size() == 0) {
+    if (ids.size() == 0) {
       return elements;
     }
     try {
@@ -650,84 +795,32 @@ public class JavascriptDomAccessor {
     }
     return result;
   }
-
-  public boolean isDisplayed(String elementId) {
-    Object result = driver.executeScript(
-        initCacheJs(driver.getCurrentFrame()) +
-        isElementStaleJs() +
-        "if (isStale == false) {" +
-        "  var body = " + driver.getCurrentFrame() + ".document.body; " +
-        "  var parent = element;  " +
-        "  while(parent!= body) {" +
-        "     if(parent.style.display == 'none' || parent.style.visibility == 'hidden') {" +
-        "        return false;  " +
-        "     }" +
-        "     parent = parent.parentNode; " +
-        " } " +
-        " return true; " +
-        "}" +
-        "return '" + STALE + "';",
-        elementId);
-    throwExceptionIfElementIsStale(elementId, String.valueOf(result));
-
+  
+  private void throwExceptionIfFailed(String result) {
+    if (UNSELECTABLE.equals(result)) {
+      throw new UnsupportedOperationException("Element is not selectable.");
+    } else if (STALE.equals(result)) {
+      throw new StaleElementReferenceException("Element is stale.");
+    } else if (NOT_VISIBLE.equals(result)) {
+      throw new ElementNotVisibleException("Element not visible.");
+    } else if (DISABLED.equals(result)) {
+      throw new UnsupportedOperationException("Cannot select disabled element.");
+    } else if (UNSUPPORTED.equals(result)) {
+      throw new UnsupportedOperationException("Cannot toogle a radio button.");
+    }
+  }
+  
+  private WebElement getFirstElement(List<WebElement> elements) {
+    if (elements.size() > 0) {
+      return elements.get(0);
+    }
+    throw new NoSuchElementException("Element not found with.");
+  }
+  
+  private Boolean getBoolean(Object result) {
     if (result instanceof Boolean) {
       return (Boolean) result;
     }
     throw new WebDriverException("Unknown result type " + result);
-  }
-
-  public String getValueOfCssProperty(String using, boolean computedStyle, String elementId) {
-    String result = (String) driver.executeScript(
-        initCacheJs(driver.getCurrentFrame()) +
-        isElementStaleJs() +
-        "if (isStale == false) {" +
-        (computedStyle ?
-        ("  if (element.currentStyle) " +
-         "    return element.currentStyle[arguments[1]]; " +
-         "  else if (" + driver.getCurrentFrame() + ".getComputedStyle) " +
-         "    return " + driver.getCurrentFrame() +
-                  ".document.defaultView.getComputedStyle(element, null)" +
-                  ".getPropertyValue(arguments[1]); ")
-         :
-         "  return element.style." + using + ";") +
-         "}" +
-         "return '" + STALE + "';",
-        elementId, using);
-    throwExceptionIfElementIsStale(elementId, result);
-    return result;
-  }
-  
-  /**
-   * Adjusts the given coordinate if they are outside the screen to be on the actual element.
-   * 
-   * @param x the horizontal position in px
-   * @param y the vertical position in px
-   * @param elementId the corresponding element id
-   * @return a Point representing the adjusted coordinate or the initial given coordinate if no
-   *     adjustments were needed.
-   * @throws WebDriverException if the adjusted coordinate do not correspond to the given element
-   */
-  public Point adjustCoordinateIfNeeded(int x, int y, String elementId) {
-    String result = (String) driver.executeScript(
-      initCacheJs(driver.getCurrentFrame()) + 
-      isElementStaleJs() +
-      "if (element == element.ownerDocument.elementFromPoint(arguments[1], arguments[2])) {" +
-      " return arguments[1] + ',' + arguments[2];" +
-      "} else {" +
-      "  var xOffset = 20;" +
-      "  var yOffset = 20;" + // 20/2 = 10 for smallest clickable line height on touch screen device
-      "  if (element.getClientRects) {" +
-      "    xOffset = element.getClientRects().width/2;" +
-      "    yOffset = element.getClientRects().height/2;" +
-      "  }" +
-      "  var adjustedX = arguments[1] + xOffset/2;" +
-      "  var adjustedY = arguments[2] + yOffset/2;" +
-      "  if (element == element.ownerDocument.elementFromPoint(adjustedX, adjustedY)) {" +
-      "    return adjustedX + ',' + adjustedY;" +
-      "  }" +
-      "  return arguments[1] + ',' + arguments[2];" +
-      "}"
-      , elementId, x, y);
-    return parseCoordinate(result);
   }
 }

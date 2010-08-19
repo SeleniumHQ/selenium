@@ -17,9 +17,6 @@ limitations under the License.
 
 package org.openqa.selenium.android.intents;
 
-import java.io.Serializable;
-import java.util.concurrent.Callable;
-
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -27,16 +24,22 @@ import android.content.Intent;
 import android.os.Parcelable;
 import android.util.Log;
 
+import java.io.Serializable;
+import java.util.concurrent.Callable;
+
 public class IntentSender extends BroadcastReceiver implements Callable {
   private static final String LOG_TAG = IntentSender.class.getName();
-  private static final IntentSender INSTANCE = new IntentSender();
   private boolean received = false;
+  
   private Object toReturn;
   private String action;
   
-  public final static String IS_PARCELABLE = "isParcelable";
+  public static final String IS_PARCELABLE = "isParcelable";
   
-  public void broadcast(Context sender, String action, Object... args) {
+  public IntentSender() {
+  }
+  
+  public synchronized void broadcast(Context sender, String action, Object... args) {
     Log.d(LOG_TAG, String.format("Context: %s, Sending Intent: %s, Args: %s",
         sender.toString(), action, args.length));
     received = false;
@@ -54,6 +57,8 @@ public class IntentSender extends BroadcastReceiver implements Callable {
       }
       intent.putExtra(IS_PARCELABLE, isParcelable);
     }
+    // We supply this as the final receiver at the end of the broadcast. The onReceive
+    // method will be the last one to handle the intent.
     sender.sendOrderedBroadcast(intent, null, this, null, Activity.RESULT_OK, null, null);
   }
 
@@ -63,10 +68,6 @@ public class IntentSender extends BroadcastReceiver implements Callable {
     toReturn = getResultExtras(true).get(action);
     Log.d(LOG_TAG, String.format("Received intent: %s, from context: %s, with data: %s. ",
         intent.getAction(), context, (toReturn == null ? "null" : toReturn.toString())));
-  }
-
-  public static IntentSender getInstance() {
-    return INSTANCE;
   }
 
   public Object call() throws Exception {
