@@ -3,7 +3,7 @@
 	<classpathentry kind="src" output="build/classes" path="src/java"/>
 	<classpathentry kind="src" output="build/test-classes" path="test/java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/selenium-common"/>
-	<classpathentry kind="lib" path="/third-party/java/google-collect/google-collect-1.0.jar"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/selenium-common"/>
+	<classpathentry kind="lib" path="/third-party/java/guava-libraries/guava-r06.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
