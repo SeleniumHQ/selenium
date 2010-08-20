@@ -19,6 +19,7 @@ package org.openqa.selenium.firefox;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -308,7 +309,7 @@ public class FirefoxBinary {
   }
 
   private static class OutputWatcher implements Runnable {
-    private Process process;
+    private final Process process;
     private OutputStream stream;
 
     public OutputWatcher(Process process, OutputStream stream) {
@@ -317,13 +318,35 @@ public class FirefoxBinary {
     }
 
     public void run() {
-      int in = 0;
-      while (in != -1) {
-        try {
-          in = process.getInputStream().read();
-          stream.write(in);
-        } catch (IOException e) {
-          System.err.println(e);
+      InputStream stdoutOfWatchedProcess = null;
+      try {
+        stdoutOfWatchedProcess = process.getInputStream();
+        byte[] buffer = new byte[4096];
+        int n;
+        do {
+          n = stdoutOfWatchedProcess.read(buffer);
+          if (n > 0 && stream != null) {
+            try {
+              stream.write(buffer, 0, n);
+            } catch (IOException e) {
+              System.err.print("ERROR: Could not write to " + stream + ": ");
+              e.printStackTrace(System.err);
+              // We must continue to read from stdoutOfWatchedProcess
+              // (otherwise the process might block), therefore we can
+              // not break out of the loop here, instead we set stream
+              // to null, so that no further write attempts are made ...
+              stream = null;
+            }
+          }
+        } while (n != -1);
+      } catch (IOException e) {
+        System.err.print("ERROR: Could not read from stdout of " + process + ": ");
+        e.printStackTrace(System.err);
+      } finally {
+        if (stdoutOfWatchedProcess != null) {
+          try {
+            stdoutOfWatchedProcess.close();
+          } catch (IOException ignored) {}
         }
       }
     }
