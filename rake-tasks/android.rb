@@ -113,7 +113,9 @@ def android_java(args)
     end
   end
 end
-  
+
+# Generated Android bytecode from .class files. Converts the targets to Dalvik
+# executable format (.dex) so they can run on Android platform.
 def run_dx(args)
   puts "Running DX utility"
     outfile = File.expand_path(File.join("android", "server", "build", "classes.dex"))
@@ -132,7 +134,7 @@ def pack_resources(args)
 
 end
 
-def apk(args)
+def build_apk(args)
   puts "Build debug self signed for device"
   cmd = "#{$apkbuilder} #{$apkfile} -f #{$dexfile} -rj #{$lib_jetty} -rj #{$lib_jetty_util} -rj #{$lib_servlet_api} -rj #{$lib_google_collect} -rj #{$lib_remote_server_jetty} -rj #{$lib_remote_server} -rj #{$lib_remote_common} -rj #{$lib_remote_client} -rj #{$lib_common} -rj #{$lib_support} -z #{$resname}"
   sh cmd, :verbose => true
@@ -185,7 +187,7 @@ def clean_android_env()
   sh "#{$android} delete avd -n #{$avdname}"
 end
 
-def android_init() 
+def android_sdk_init() 
   prop = YAML.load_file( './properties.yml' )
   properties = prop["default"]["android"]
   if (prop[ENV["USER"]])
@@ -198,7 +200,7 @@ def android_init()
   $androidplatform =  properties["androidplatform"]
 
   # Targets
-  $apkfile = File.expand_path(File.join("build", "android-server-debug.apk"))
+  $apkfile = File.expand_path(File.join("build", "android-server.apk"))
   $resname = File.expand_path(File.join("android", "server", "build", "WebDriver.ap_"))
   $avdname = "debug_rake_#{$androidtarget}"
 
@@ -241,13 +243,13 @@ def android_init()
 end
 
 def android_build(args)
-  android_init()
+  android_sdk_init()
   android_rjava()
   unpack_dependencies(args)
   android_java(args)
   run_dx(args)
   pack_resources(args)
-  apk(args)
+  build_apk(args)
 end
 
 

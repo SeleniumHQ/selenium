@@ -430,10 +430,10 @@ file 'build/android/server/server.jar' => FileList["android/server/src/java/**/*
                            ],
                   :zip  => true
                  )
-    copy_to_prebuilt("build/android-server-debug.apk", "android/server/prebuilt")
+    copy_to_prebuilt("build/android-server.apk", "android/server/prebuilt")
   else
     puts "Did not build Android APK because the Android SDK could not be found. Set the SDK location in properties.yml"
-    copy_prebuilt("android/server/prebuilt/", "build/android-server-debug.apk")
+    copy_prebuilt("android/server/prebuilt/", "build/android-server.apk")
  end
 end
 task :android_server => 'build/android/server/server.jar'
