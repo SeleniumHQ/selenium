@@ -119,7 +119,7 @@ end
 def run_dx(args)
   puts "Running DX utility"
     outfile = File.expand_path(File.join("android", "server", "build", "classes.dex"))
-    cmd = "#{$dx} --dex --output=#{outfile} --core-library --positions=lines "
+    cmd = "#{$dx} -JXmx512M --dex --output=#{outfile} --core-library --positions=lines "
     cmd += File.expand_path(File.join("android", "server", "build", "classes"))+" " 
     cmd += File.expand_path(File.join("android", "server", "build", "generated-classes"))
     sh cmd, :verbose => true
@@ -236,7 +236,7 @@ def android_sdk_init()
   if windows?
     $apkbuilder=$apkbuilder.gsub(/\//,"\\")
     #Set Xmx 
-    $dx="java -Xmx256M -Djava.ext.dirs=#{File.join($androidsdkpath, "platforms", $androidplatform, "tools", "lib")} -jar #{File.join($androidsdkpath, "platforms", $androidplatform, "tools", "lib","dx.jar")} "
+    $dx="java -Djava.ext.dirs=#{File.join($androidsdkpath, "platforms", $androidplatform, "tools", "lib")} -jar #{File.join($androidsdkpath, "platforms", $androidplatform, "tools", "lib","dx.jar")} "
     $android=$android.gsub(/\//,"\\")
     $adb=$adb.gsub(/\//,"\\")
   end
