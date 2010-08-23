@@ -70,7 +70,7 @@ module Selenium
         end
 
         def elementEquals(element, other)
-          element == other
+          element.ref == other.ref
         end
 
         private

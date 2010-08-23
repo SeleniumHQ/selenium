@@ -437,6 +437,10 @@ module Selenium
           raise NotImplementedError
         end
 
+        def elementEquals(element, other)
+          executeScript "return arguments[0] === arguments[1]", element, other
+        end
+
         def dragElement(element_pointer, right_by, down_by)
           # TODO: check return values?
           hwnd                = FFI::MemoryPointer.new :pointer

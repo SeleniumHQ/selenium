@@ -157,7 +157,7 @@ describe "Element" do
     p1.should_not eql(p2)
   end
 
-  not_compliant_on :driver => :remote do
+  not_compliant_on :driver => [:remote, :ie] do
     it "should return the same #hash for equal elements when found by Driver#find_element" do
       driver.navigate.to url_for("simpleTestPage.html")
 

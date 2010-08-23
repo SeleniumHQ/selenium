@@ -340,7 +340,7 @@ module Selenium
         end
 
         def elementEquals(element, other)
-          execute :elementEquals, :id => element, :other => other
+          execute :elementEquals, :id => element.ref, :other => other.ref
         end
 
         private
