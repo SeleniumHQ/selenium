@@ -1,3 +1,12 @@
+0.0.28 (2010-08-23)
+===================
+
+* Fix behaviour of Element#==, Element#eql? and Element#hash (#hash still has issues on IE / remote).
+* Include remote server backtrace in raised errors (if available).
+* Chrome: Untrusted certificate support.
+* IE: Fix NoMethodError when getElementAttribute returns nil.
+* Driver#[] shorthand can take a locator hash, not just an id string.
+
 0.0.27 (2010-07-22)
 ===================
 
