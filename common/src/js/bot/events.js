@@ -36,8 +36,8 @@ goog.require('goog.userAgent');
  * @enum {number}
  */
 bot.events.Button = {
-  LEFT: (goog.userAgent.IE ? 0 : 1),
-  MIDDLE: (goog.userAgent.IE ? 1 : 4),
+  LEFT: (goog.userAgent.IE ? 1 : 0),
+  MIDDLE: (goog.userAgent.IE ? 4 : 1),
   RIGHT: (goog.userAgent.IE ? 2 : 2)
 };
 
