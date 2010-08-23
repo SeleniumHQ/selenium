@@ -69,6 +69,10 @@ module Selenium
           execute :implicitlyWait, :ms => milliseconds
         end
 
+        def elementEquals(element, other)
+          element == other
+        end
+
         private
 
         def execute(command_name, opts = {}, args = nil)
