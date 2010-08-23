@@ -11,6 +11,16 @@ describe "Error" do
   end
 
   it "should show stack trace information" do
-    pending
+    driver.navigate.to url_for("xhtmlTest.html")
+    rescued = false
+    ex = nil
+
+    begin
+      driver.find_element(:id, "nonexistant")
+    rescue => ex
+      rescued = true
+    end
+
+    ex.backtrace.first.should include("[remote server]")
   end
 end
