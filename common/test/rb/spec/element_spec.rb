@@ -136,7 +136,7 @@ describe "Element" do
   end
 
   it "should know when two elements are equal" do
-    driver.navigate.to url_for("simpleTestPage.html")
+    driver.navigate.to url_for("simpleTest.html")
 
     body  = driver.find_element(:tag_name, 'body')
     xbody = driver.find_element(:xpath, "//body")
@@ -146,10 +146,9 @@ describe "Element" do
   end
 
   it "should know when two elements are not equal" do
-    driver.navigate.to url_for("simpleTestPage.html")
+    driver.navigate.to url_for("simpleTest.html")
 
     elements = driver.find_elements(:tag_name, 'p')
-
     p1 = elements.fetch(0)
     p2 = elements.fetch(1)
 
@@ -159,7 +158,7 @@ describe "Element" do
 
   not_compliant_on :driver => [:remote, :ie] do
     it "should return the same #hash for equal elements when found by Driver#find_element" do
-      driver.navigate.to url_for("simpleTestPage.html")
+      driver.navigate.to url_for("simpleTest.html")
 
       body  = driver.find_element(:tag_name, 'body')
       xbody = driver.find_element(:xpath, "//body")
@@ -168,7 +167,7 @@ describe "Element" do
     end
 
     it "should return the same #hash for equal elements when found by Driver#find_elements" do
-      driver.navigate.to url_for("simpleTestPage.html")
+      driver.navigate.to url_for("simpleTest.html")
 
       body  = driver.find_elements(:tag_name, 'body').fetch(0)
       xbody = driver.find_elements(:xpath, "//body").fetch(0)
