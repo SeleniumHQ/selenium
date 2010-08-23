@@ -10,17 +10,19 @@ describe "Error" do
     )
   end
 
-  it "should show stack trace information" do
-    driver.navigate.to url_for("xhtmlTest.html")
-    rescued = false
-    ex = nil
+  compliant_on :driver => [:remote, :firefox] do
+    it "should show stack trace information" do
+      driver.navigate.to url_for("xhtmlTest.html")
+      rescued = false
+      ex = nil
 
-    begin
-      driver.find_element(:id, "nonexistant")
-    rescue => ex
-      rescued = true
+      begin
+        driver.find_element(:id, "nonexistant")
+      rescue => ex
+        rescued = true
+      end
+
+      ex.backtrace.first.should include("[remote server]")
     end
-
-    ex.backtrace.first.should include("[remote server]")
   end
 end
