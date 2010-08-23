@@ -134,4 +134,44 @@ describe "Element" do
     driver.navigate.to url_for("javascriptPage.html")
     driver.find_element(:id, "green-parent").style("background-color").should == "#008000"
   end
+
+  it "should know when two elements are equal" do
+    driver.navigate.to url_for("simpleTestPage.html")
+
+    body  = driver.find_element(:tag_name, 'body')
+    xbody = driver.find_element(:xpath, "//body")
+
+    body.should == xbody
+    body.should eql(xbody)
+  end
+
+  it "should know when two elements are not equal" do
+    driver.navigate.to url_for("simpleTestPage.html")
+
+    elements = driver.find_elements(:tag_name, 'p')
+
+    p1 = elements.fetch(0)
+    p2 = elements.fetch(1)
+
+    p1.should_not == p2
+    p1.should_not eql(p2)
+  end
+
+  it "should return the same #hash for equal elements when found by Driver#find_element" do
+    driver.navigate.to url_for("simpleTestPage.html")
+
+    body  = driver.find_element(:tag_name, 'body')
+    xbody = driver.find_element(:xpath, "//body")
+
+    body.hash.should == xbody.hash
+  end
+
+  it "should return the same #hash for equal elements when found by Driver#find_elements" do
+    driver.navigate.to url_for("simpleTestPage.html")
+
+    body  = driver.find_elements(:tag_name, 'body').fetch(0)
+    xbody = driver.find_elements(:xpath, "//body").fetch(0)
+
+    body.hash.should == xbody.hash
+  end
 end
