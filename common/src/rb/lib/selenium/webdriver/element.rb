@@ -20,7 +20,7 @@ module Selenium
       end
 
       def ==(other)
-        other.kind_of?(self.class) && ref == other.ref
+        other.kind_of?(self.class) && bridge.elementEquals(@id, other.ref)
       end
       alias_method :eql?, :==
 

@@ -339,6 +339,10 @@ module Selenium
           execute :dragElement, {:id => element}, :x => rigth_by, :y => down_by
         end
 
+        def elementEquals(element, other)
+          execute :elementEquals, :id => element, :other => other
+        end
+
         private
 
         def find_element_by(how, what, parent = nil)
