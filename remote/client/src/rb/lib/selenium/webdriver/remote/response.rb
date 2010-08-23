@@ -16,11 +16,22 @@ module Selenium
         end
 
         def error
-          Error.for_code @payload['status']
+          klass = Error.for_code(@payload['status']) || return
+
+          ex = klass.new(error_message)
+          ex.set_backtrace(caller)
+          add_backtrace ex
+
+          ex
         end
 
         def error_message
-          @payload['value']['message']
+          val = @payload['value']
+          msg = val['message'] or return ""
+
+          msg << " (#{ val['class'] })" if val['class']
+
+          msg
         end
 
         def [](key)
@@ -32,11 +43,24 @@ module Selenium
         def assert_ok
           if @code.nil? || @code >= 400
             if e = error()
-              raise(e, error_message)
+              raise e
             else
               raise Error::ServerError, self
             end
           end
+        end
+
+        def add_backtrace(ex)
+          return unless server_trace = @payload['value']['stackTrace']
+
+          backtrace = server_trace.map do |frame|
+            file = "#{frame['className']}(#{frame['fileName']}:#{frame['lineNumber']})"
+            meth = frame['methodName']
+
+            "[remote server] #{file}:in `#{meth}'"
+          end
+
+          ex.set_backtrace(backtrace + ex.backtrace)
         end
 
       end # Response
