@@ -18,7 +18,7 @@ module Selenium
               Dir["third_party/java/commons-logging/*.jar"],
               Dir["third_party/java/commons-httpclient/*.jar"],
               Dir["third_party/java/commons-codec/*.jar"],
-              Dir["third_party/java/google-collect/*.jar"],
+              Dir["third_party/java/guava-libraries/*.jar"],
             ].flatten.each { |jar| require jar }
 
             context = org.mortbay.jetty.servlet.Context.new
