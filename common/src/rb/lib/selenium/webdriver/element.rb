@@ -19,6 +19,15 @@ module Selenium
         '#<%s:0x%x id=%s tag_name=%s>' % [self.class, hash*2, @id.inspect, tag_name.inspect]
       end
 
+      def ==(other)
+        other.kind_of?(self.class) && ref == other.ref
+      end
+      alias_method :eql?, :==
+
+      def hash
+        ref.hash
+      end
+
       #
       # Click the element
       #
