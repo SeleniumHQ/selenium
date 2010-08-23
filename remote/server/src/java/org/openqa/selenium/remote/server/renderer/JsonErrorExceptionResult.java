@@ -38,13 +38,13 @@ public class JsonErrorExceptionResult extends ErrorJsonResult {
 
   public void render(HttpServletRequest request, HttpServletResponse response, Handler handler)
       throws Exception {
-    Exception e = (Exception) request.getAttribute(exceptionName);
+    Throwable thrown = (Throwable) request.getAttribute(exceptionName);
 
     Response res = new Response();
-    res.setStatus(errorCodes.toStatusCode(e));
+    res.setStatus(errorCodes.toStatusCode(thrown));
 
-    if (e != null) {
-      String raw = new BeanToJsonConverter().convert(e);
+    if (thrown != null) {
+      String raw = new BeanToJsonConverter().convert(thrown);
       JSONObject error = new JSONObject(raw);
       error.put("screen", request.getAttribute("screen"));
       res.setValue(error);
