@@ -29,6 +29,7 @@
 #import "RootViewController.h"
 #import "Session+ExecuteScript.h"
 #import "SessionRoot.h"
+#import "Timeouts.h"
 #import "WebDriverResource.h"
 #import "WebDriverResponse.h"
 #import "WebDriverUtilities.h"
@@ -38,6 +39,7 @@
   
 @synthesize elementStore = elementStore_;
 @synthesize sessionId = sessionId_;
+@synthesize implicitWait = implicitWait_;
 
 // The WebViewController has most of the actual functionality this vdir exposes.
 // We'll just forward most messages there.
@@ -132,7 +134,7 @@
   // /element will be an ElementStore virtual directory. We also forward 
   // /elements to the element store - getting from there returns multiple
   // element results.
-  elementStore_ = [[ElementStore alloc] init];
+  elementStore_ = [[ElementStore alloc] initWithSession:self];
   [self setResource:elementStore_ withName:@"element"];
   [self setResource:[WebDriverResource
                      resourceWithTarget:elementStore_
@@ -142,6 +144,9 @@
   
   [self setResource:[Cookie cookieWithSessionId:sessionId_]
            withName:@"cookie"];
+           
+  [self setResource:[Timeouts timeoutsForSession:self]
+           withName:@"timeouts"];
   
   [self cleanSessionStatus];
 

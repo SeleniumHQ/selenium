@@ -23,6 +23,8 @@
 		642C489F112260150064EB9C /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 642C489E112260150064EB9C /* QuartzCore.framework */; };
 		642C48A4112260480064EB9C /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 642C48A3112260480064EB9C /* QuartzCore.framework */; };
 		644F14ED10AB4EF400858ECA /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 644F14EC10AB4EF400858ECA /* Settings.bundle */; };
+		649AB342121D114A007FE128 /* Timeouts.m in Sources */ = {isa = PBXBuildFile; fileRef = 649AB341121D114A007FE128 /* Timeouts.m */; };
+		649AB343121D114A007FE128 /* Timeouts.m in Sources */ = {isa = PBXBuildFile; fileRef = 649AB341121D114A007FE128 /* Timeouts.m */; };
 		649EDC0210C5981B00E66D06 /* WebDriverUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = FD61E6980FE150E5006E1274 /* WebDriverUtilities.m */; };
 		649EDC0310C5983700E66D06 /* FlipsideViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 289233AD0DB2D0DB0083E9F9 /* FlipsideViewController.m */; };
 		649EDC0410C5984B00E66D06 /* RootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 289233AB0DB2D0DB0083E9F9 /* RootViewController.m */; };
@@ -155,6 +157,8 @@
 		642C489E112260150064EB9C /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		642C48A3112260480064EB9C /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		644F14EC10AB4EF400858ECA /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
+		649AB340121D114A007FE128 /* Timeouts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Timeouts.h; sourceTree = "<group>"; };
+		649AB341121D114A007FE128 /* Timeouts.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Timeouts.m; sourceTree = "<group>"; };
 		64CF265110D190820029D641 /* Cookie.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Cookie.h; sourceTree = "<group>"; };
 		64CF265210D190820029D641 /* Cookie.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Cookie.m; sourceTree = "<group>"; };
 		64D8AA411120B94D001649CC /* SessionRoot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SessionRoot.h; sourceTree = "<group>"; };
@@ -425,6 +429,8 @@
 				839988650EE515C90074D106 /* Session.m */,
 				838B334A0F14254C00F72BC4 /* Session+ExecuteScript.h */,
 				838B334B0F14254C00F72BC4 /* Session+ExecuteScript.m */,
+				649AB340121D114A007FE128 /* Timeouts.h */,
+				649AB341121D114A007FE128 /* Timeouts.m */,
 				64CF265110D190820029D641 /* Cookie.h */,
 				64CF265210D190820029D641 /* Cookie.m */,
 				83615D900EEE47940028DAE5 /* ElementStore.h */,
@@ -710,6 +716,7 @@
 				64D8AA431120B94D001649CC /* SessionRoot.m in Sources */,
 				64D8AA4F1120B995001649CC /* NSURLRequest+IgnoreSSL.m in Sources */,
 				64D8AA691120B9EC001649CC /* HTTPVirtualDirectory+Remove.m in Sources */,
+				649AB342121D114A007FE128 /* Timeouts.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -752,6 +759,7 @@
 				64D8AA441120B94D001649CC /* SessionRoot.m in Sources */,
 				64D8AA501120B995001649CC /* NSURLRequest+IgnoreSSL.m in Sources */,
 				64D8AA711120B9EC001649CC /* HTTPVirtualDirectory+Remove.m in Sources */,
+				649AB343121D114A007FE128 /* Timeouts.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

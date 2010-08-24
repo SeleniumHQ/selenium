@@ -25,6 +25,7 @@
 #import "ElementStore+FindElement.h"
 #import "Element.h"
 #import "NSException+WebDriver.h"
+#import "Session.h"
 #import "errorcodes.h"
 
 static const NSString *JSARRAY = @"_WEBDRIVER_ELEM_CACHE";
@@ -32,6 +33,7 @@ static const NSString *JSARRAY = @"_WEBDRIVER_ELEM_CACHE";
 @implementation ElementStore
 
 @synthesize document = document_;
+@synthesize session = session_;
 
 - (void)configureJSStore {
   [[self viewController] jsEval:[NSString stringWithFormat:
@@ -51,6 +53,22 @@ static const NSString *JSARRAY = @"_WEBDRIVER_ELEM_CACHE";
                                             POSTAction:@selector(findElement:)]];
   
   document_ = [self elementFromJSObject:@"document"];
+  
+  return self;
+}
+
+- (id)initWithSession:(Session*) session {
+  if (![super init])
+    return nil;
+  
+  [self configureJSStore];
+  
+  [self setIndex:[WebDriverResource resourceWithTarget:self
+                                             GETAction:NULL
+                                            POSTAction:@selector(findElement:)]];
+  
+  document_ = [self elementFromJSObject:@"document"];
+  session_ = session;
   
   return self;
 }

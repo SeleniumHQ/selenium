@@ -19,6 +19,7 @@
 #import <Foundation/Foundation.h>
 #import "HTTPVirtualDirectory.h"
 
+@class Session;
 @class Element;
 
 // This represents the /:session/element 'directory'.
@@ -29,14 +30,19 @@
 @interface ElementStore : HTTPVirtualDirectory {
  @private
   int nextElementId_;
- 
+
  @protected
+  Session* session_;
+
   // This is not actually an HTMLElement, but for the purposes of searching
   // for elements across the whole web page, I'm going to treat it as one.
   Element *document_;
 }
 
 @property (nonatomic, readonly) Element *document;
+@property (nonatomic, readonly, retain) Session *session;
+
+- (id) initWithSession:(Session*)session;
 
 // Make an element store.
 + (ElementStore *)elementStore;

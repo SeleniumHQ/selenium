@@ -22,6 +22,7 @@
 #import "WebDriverResource.h"
 #import "NSException+WebDriver.h"
 #import "WebViewController.h"
+#import "Session.h"
 #import "errorcodes.h"
 
 @implementation Element (FindElement)
@@ -237,7 +238,24 @@
   // This maps the /element/id/element/method to findElementsByMethod.
   NSString *query = [dict objectForKey:@"value"];
   NSString *method = [dict objectForKey:@"using"];
-  return [self findElementsByMethod:method query:query];
+
+  NSDate* startTime = [NSDate dateWithTimeIntervalSinceNow:0];
+  NSTimeInterval implicitWait = [[elementStore_ session] implicitWait];
+  
+  NSArray *ret;
+  BOOL done = NO;
+  while (!done) {
+    ret = [self findElementsByMethod:method query:query];
+    NSDate* now = [NSDate dateWithTimeIntervalSinceNow:0];
+    NSTimeInterval ellapsedTime = [now timeIntervalSinceDate:startTime];
+
+    if ([ret count] > 0 || ellapsedTime > implicitWait) {
+      done = YES;
+    } else {
+      [NSThread sleepForTimeInterval:0.25];
+    }
+  }
+  return ret;
 }
 
 - (NSDictionary *)findElementUsing:(NSDictionary *)dict {
