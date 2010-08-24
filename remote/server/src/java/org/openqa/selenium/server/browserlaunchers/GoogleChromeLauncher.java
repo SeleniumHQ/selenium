@@ -17,19 +17,20 @@
 
 package org.openqa.selenium.server.browserlaunchers;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.openqa.jetty.log.LogFactory;
+import org.openqa.selenium.internal.CommandLine;
 import org.openqa.selenium.server.ApplicationRegistry;
 import org.openqa.selenium.server.BrowserConfigurationOptions;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 import org.openqa.selenium.server.browserlaunchers.locators.GoogleChromeLocator;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.PrintStream;
-import java.io.IOException;
-import java.util.Map;
-import java.util.HashMap;
 
 /**
  * Browser launcher for Google Chrome.
@@ -68,15 +69,10 @@ public class GoogleChromeLauncher extends AbstractBrowserLauncher {
     protected void launch(String url) {
         LOGGER.info("Launching Google Chrome...");
 
-        try {
-            createProfile(sessionId, url);
-            final String[] cmdArray = createCommandArray(url);
-            final AsyncExecute exe = new AsyncExecute();
-            exe.setCommandline(cmdArray);
-            process = exe.asyncSpawn();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        createProfile(sessionId, url);
+        final String[] cmdArray = createCommandArray(url);
+        CommandLine exe = new CommandLine(cmdArray);
+        process = exe.executeAsync();
     }
 
     public void close() {

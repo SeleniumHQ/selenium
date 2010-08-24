@@ -12,15 +12,6 @@
     <orderEntry type="module" module-name="remote-client" exported="" />
     <orderEntry type="module" module-name="remote-common" exported="" />
     <orderEntry type="module" module-name="support" exported="" />
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../third_party/java/ant/ant.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
     <orderEntry type="module" module-name="chrome" exported="" />
     <orderEntry type="module" module-name="firefox" exported="" />
     <orderEntry type="module" module-name="htmlunit" exported="" />

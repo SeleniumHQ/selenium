@@ -18,9 +18,9 @@
 package org.openqa.selenium.server;
 
 
+import com.google.common.base.Throwables;
+import com.google.common.io.Resources;
 import org.apache.commons.logging.Log;
-import org.apache.tools.ant.Project;
-import org.apache.tools.ant.taskdefs.Get;
 import org.openqa.jetty.http.HttpConnection;
 import org.openqa.jetty.http.HttpException;
 import org.openqa.jetty.http.HttpFields;
@@ -36,13 +36,13 @@ import org.openqa.selenium.server.browserlaunchers.BrowserLauncherFactory;
 import org.openqa.selenium.server.browserlaunchers.InvalidBrowserExecutableException;
 import org.openqa.selenium.server.commands.*;
 import org.openqa.selenium.server.htmlrunner.HTMLLauncher;
-import org.openqa.selenium.server.log.AntJettyLoggerBuildListener;
 import org.openqa.selenium.server.log.LoggingManager;
-import org.openqa.selenium.server.log.PerSessionLogHandler;
 
 import java.awt.*;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -640,15 +640,26 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
     return values;
   }
 
-  protected void downloadWithAnt(final URL url, final File outputFile) {
+  protected void download(final URL url, final File outputFile) {
+    if (outputFile.exists()) {
+      throw new RuntimeException("Output already exists: " + outputFile);
+    }
 
-    Project p = new Project();
-    p.addBuildListener(new AntJettyLoggerBuildListener(LOGGER));
-    Get g = new Get();
-    g.setProject(p);
-    g.setSrc(url);
-    g.setDest(outputFile);
-    g.execute();
+    File directory = outputFile.getParentFile();
+    if (!directory.exists() && !directory.mkdirs()) {
+      throw new RuntimeException(
+          "Cannot directory for holding the downloaded file: " + outputFile);
+    }
+
+    try {
+      FileOutputStream outputTo = new FileOutputStream(outputFile);
+
+      Resources.copy(url, outputTo);
+    } catch (FileNotFoundException e) {
+      throw Throwables.propagate(e);
+    } catch (IOException e) {
+      throw Throwables.propagate(e);
+    }
   }
 
   private void createParentDirsAndSetDeleteOnExit(String parent, File tmpFile) {
@@ -681,7 +692,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
 
     File outputFile = createTempFile(fileName);
 
-    downloadWithAnt(url, outputFile);
+    download(url, outputFile);
 
     return outputFile;
   }

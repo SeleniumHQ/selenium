@@ -16,18 +16,19 @@
  */
 package org.openqa.selenium.server.browserlaunchers;
 
-import org.apache.commons.logging.Log;
-import org.openqa.jetty.log.LogFactory;
-import org.openqa.selenium.browserlaunchers.Proxies;
-import org.openqa.selenium.browserlaunchers.WindowsUtils;
-import org.openqa.selenium.server.BrowserConfigurationOptions;
-import org.openqa.selenium.server.RemoteControlConfiguration;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.regex.Pattern;
+
+import org.apache.commons.logging.Log;
+import org.openqa.jetty.log.LogFactory;
+import org.openqa.selenium.browserlaunchers.Proxies;
+import org.openqa.selenium.browserlaunchers.WindowsUtils;
+import org.openqa.selenium.internal.CommandLine;
+import org.openqa.selenium.server.BrowserConfigurationOptions;
+import org.openqa.selenium.server.RemoteControlConfiguration;
 
 public class OperaCustomProfileLauncher extends AbstractBrowserLauncher {
 
@@ -43,8 +44,6 @@ public class OperaCustomProfileLauncher extends AbstractBrowserLauncher {
     private String commandPath;
     private Process process;
 
-    private static AsyncExecute exe = new AsyncExecute();
-
     // Opera has been a real pain for me (Lightbody), and so I'm adding a simple hook in the browser launcher that lets
     // me define, in an amazingly ghetto way, define additional browser settings to write out to the ini file. For
     // example, I will use this to pre-determine the window size and location simply because it appears Opera 9.2
@@ -52,33 +51,32 @@ public class OperaCustomProfileLauncher extends AbstractBrowserLauncher {
     private static String additionalSettings = "";
 
     protected File locateBinaryInPath(String commandPath) {
-    	return AsyncExecute.whichExec(commandPath);
+    	return new File(CommandLine.findExecutable(commandPath));
     }
     
     public OperaCustomProfileLauncher(BrowserConfigurationOptions browserOptions, RemoteControlConfiguration configuration, String sessionId, String browserLaunchLocation) {
         super(sessionId, configuration, browserOptions);
         commandPath = browserLaunchLocation == null ? findBrowserLaunchLocation() : browserLaunchLocation;
         this.sessionId = sessionId;
-        if (!WindowsUtils.thisIsWindows()) {
-            // On unix, add command's directory to LD_LIBRARY_PATH
-            File operaBin = locateBinaryInPath(commandPath);
-            if (operaBin == null) {
-                File execDirect = new File(commandPath);
-                if (execDirect.isAbsolute() && execDirect.exists()) operaBin = execDirect;
-            }
-            if (operaBin != null) {
-                String libPathKey = SystemUtils.libraryPathEnvironmentVariable();
-                String libPath = WindowsUtils.loadEnvironment().getProperty(libPathKey);
-                exe.setEnvironment(new String[]{
-                        "MOZ_NO_REMOTE=1",
-                        libPathKey + "=" + libPath + ":" + operaBin.getParent(),
-                });
-            }
-        }
     }
 
+  private void getOperaBinary(CommandLine command) {
+    if (!WindowsUtils.thisIsWindows()) {
+        // On unix, add command's directory to LD_LIBRARY_PATH
+        File operaBin = locateBinaryInPath(commandPath);
+        if (operaBin == null) {
+            File execDirect = new File(commandPath);
+            if (execDirect.isAbsolute() && execDirect.exists()) operaBin = execDirect;
+        }
 
-    public static void setAdditionalSettings(String additionalSettings) {
+        String libPathKey = SystemUtils.libraryPathEnvironmentVariable();
+        String libPath = WindowsUtils.loadEnvironment().getProperty(libPathKey);
+        command.setEnvironmentVariable(libPathKey, libPath + ":" + operaBin.getParent());
+    }
+  }
+
+
+  public static void setAdditionalSettings(String additionalSettings) {
         OperaCustomProfileLauncher.additionalSettings = additionalSettings;
     }
 
@@ -96,17 +94,17 @@ public class OperaCustomProfileLauncher extends AbstractBrowserLauncher {
             return defaultLocation.getAbsolutePath();
         }
         if (WindowsUtils.thisIsWindows()) {
-            File operaEXE = AsyncExecute.whichExec("opera.exe");
-            if (operaEXE != null) return operaEXE.getAbsolutePath();
+            String operaEXE = CommandLine.findExecutable("opera.exe");
+            if (operaEXE != null) return operaEXE;
             throw new RuntimeException("Opera could not be found in the path!\n" +
                     "Please add the directory containing opera.exe to your PATH environment\n" +
                     "variable, or explicitly specify a path to Opera like this:\n" +
                     "*opera c:\\blah\\opera.exe");
         }
         // On unix, prefer operaBin if it's on the path
-        File operaBin = AsyncExecute.whichExec("opera");
+        String operaBin = CommandLine.findExecutable("opera");
         if (operaBin != null) {
-            return operaBin.getAbsolutePath();
+            return operaBin;
         }
         throw new RuntimeException("Opera could not be found in the path!\n" +
                 "Please add the directory containing 'opera' to your PATH environment\n" +
@@ -128,9 +126,12 @@ public class OperaCustomProfileLauncher extends AbstractBrowserLauncher {
                 cmdarray = new String[]{commandPath, "-nosession", "-personaldir", opera6ini.getParentFile().getAbsolutePath(), url};
             }
 
-            exe.setCommandline(cmdarray);
 
-            process = exe.asyncSpawn();
+            CommandLine command = new CommandLine(cmdarray);
+            command.setEnvironmentVariable("MOZ_NO_REMOTE", "1");
+            getOperaBinary(command);
+
+            process = command.executeAsync();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

@@ -21,6 +21,7 @@ import java.io.IOException;
 
 import org.apache.commons.logging.Log;
 import org.openqa.jetty.log.LogFactory;
+import org.openqa.selenium.internal.CommandLine;
 import org.openqa.selenium.server.ApplicationRegistry;
 import org.openqa.selenium.server.BrowserConfigurationOptions;
 import org.openqa.selenium.server.RemoteControlConfiguration;
@@ -36,8 +37,6 @@ public class FirefoxCustomProfileLauncher extends AbstractBrowserLauncher {
     
     private static boolean alwaysChangeMaxConnections = false;
     protected boolean changeMaxConnections = alwaysChangeMaxConnections;
-
-    private AsyncExecute shell = new AsyncExecute();
 
     public FirefoxCustomProfileLauncher(BrowserConfigurationOptions browserOptions, RemoteControlConfiguration configuration, String sessionId, String browserLaunchLocation) throws InvalidBrowserExecutableException {
         this(browserOptions, configuration,
@@ -55,10 +54,6 @@ public class FirefoxCustomProfileLauncher extends AbstractBrowserLauncher {
         browserOptions.setOnlyProxySeleniumTraffic(true);
         init();
         this.browserInstallation = browserInstallation;
-        shell.setLibraryPath(browserInstallation.libraryPath());
-        // Set MOZ_NO_REMOTE in order to ensure we always get a new Firefox process
-        // http://blog.dojotoolkit.org/2005/12/01/running-multiple-versions-of-firefox-side-by-side
-        shell.setEnvironmentVariable("MOZ_NO_REMOTE", "1");
     }
 
     protected void init() {
@@ -72,30 +67,36 @@ public class FirefoxCustomProfileLauncher extends AbstractBrowserLauncher {
 
             String chromeURL = "chrome://killff/content/kill.html";
 
-            String[] cmdarray = new String[]{browserInstallation.launcherFilePath(), "-profile", customProfileDir().getAbsolutePath(), "-chrome", chromeURL};
+            CommandLine command = prepareCommand(browserInstallation.launcherFilePath(),
+              "-profile", customProfileDir().getAbsolutePath(),
+              "-chrome", chromeURL);
 
             /* The first time we launch Firefox with an empty profile directory,
-     * Firefox will launch itself, populate the profile directory, then
-     * kill/relaunch itself, so our process handle goes out of date.
-     * So, the first time we launch Firefox, we'll start it up at an URL
-     * that will immediately shut itself down. */
+             * Firefox will launch itself, populate the profile directory, then
+             * kill/relaunch itself, so our process handle goes out of date.
+             * So, the first time we launch Firefox, we'll start it up at an URL
+             * that will immediately shut itself down. */
             LOGGER.info("Preparing Firefox profile...");
-
-            shell.setCommandline(cmdarray);
-            shell.execute();
-
-
+            command.execute();
             waitForFullProfileToBeCreated(20 * 1000);
 
             LOGGER.info("Launching Firefox...");
-            cmdarray = new String[]{browserInstallation.launcherFilePath(), "-profile", customProfileDir().getAbsolutePath(), url};
-
-            shell.setCommandline(cmdarray);
-
-            process = shell.asyncSpawn();
+            command = prepareCommand(browserInstallation.launcherFilePath(),
+                "-profile", customProfileDir().getAbsolutePath(), url);
+            process = command.executeAsync();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private CommandLine prepareCommand(String... commands) {
+      CommandLine command = new CommandLine(commands);
+      command.setDynamicLibraryPath(browserInstallation.libraryPath());
+      // Set MOZ_NO_REMOTE in order to ensure we always get a new Firefox process
+      // http://blog.dojotoolkit.org/2005/12/01/running-multiple-versions-of-firefox-side-by-side
+      command.setEnvironmentVariable("MOZ_NO_REMOTE", "1");
+
+      return command;
     }
 
     private void makeCustomProfile(File customProfileDirectory) throws IOException {

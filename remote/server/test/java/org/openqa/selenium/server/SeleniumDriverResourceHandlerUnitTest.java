@@ -94,7 +94,7 @@ public class SeleniumDriverResourceHandlerUnitTest {
 		}
 		
 		@Override
-		protected void downloadWithAnt(URL url, File outputFile) {
+		protected void download(URL url, File outputFile) {
 		}
 		
 	  };

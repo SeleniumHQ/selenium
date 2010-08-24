@@ -255,21 +255,18 @@ java_jar(:name => "selenium-core",
            "common/src/js/core"
          ])
 
-selenium_test(:name => "test_core_firefox",
-              :srcs => [ "common/test/js/core/*.js" ],
-              :deps => [
-                "//remote/server",
-                :"selenium-core"
-              ],
-              :browser => "*chrome" )
-
-selenium_test(:name => "test_core_ie",
-              :srcs => [ "common/test/js/core/*.js" ],
-              :deps => [
-                "//remote/server",
-                :"selenium-core"
-              ],
-              :browser => "*iexploreproxy")
+{"firefox" => "*chrome",
+ "ie" => "*iexploreproxy",
+ "opera" => "*opera",
+ "safari" => "*safari"}.each_pair do |k,v|
+  selenium_test(:name => "test_core_#{k}",
+                :srcs => [ "common/test/js/core/*.js" ],
+                :deps => [
+                  "//remote/server",
+                  :"selenium-core"
+                ],
+                :browser => v )
+end
 
 # Copy things around to make life easier when packaging IDE
 file "build/ide/selenium" => "//common:js_core" do

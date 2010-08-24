@@ -16,10 +16,12 @@
  */
 package org.openqa.selenium.server.browserlaunchers;
 
+import com.google.common.base.Throwables;
 import org.apache.commons.logging.Log;
 import org.openqa.jetty.log.LogFactory;
 import org.openqa.selenium.browserlaunchers.WindowsProxyManager;
 import org.openqa.selenium.browserlaunchers.WindowsUtils;
+import org.openqa.selenium.internal.CommandLine;
 import org.openqa.selenium.server.ApplicationRegistry;
 import org.openqa.selenium.server.BrowserConfigurationOptions;
 import org.openqa.selenium.server.RemoteControlConfiguration;
@@ -61,16 +63,13 @@ public class InternetExplorerCustomProxyLauncher extends AbstractBrowserLauncher
 
   @Override
   public void launch(String url) {
-    final AsyncExecute exe;
-
     try {
       setupSystem(url);
       LOGGER.info("Launching Internet Explorer...");
-      exe = new AsyncExecute();
-      exe.setCommandline(cmdarray);
-      process = exe.asyncSpawn();
+      CommandLine exe = new CommandLine(cmdarray);
+      process = exe.executeAsync();
     } catch (IOException e) {
-      throw new RuntimeException(e);
+      throw Throwables.propagate(e);
     }
   }
 

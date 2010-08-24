@@ -7,10 +7,9 @@ package org.openqa.selenium.server.browserlaunchers;
 import java.lang.reflect.Field;
 
 import org.apache.commons.logging.Log;
-import org.apache.tools.ant.Project;
-import org.apache.tools.ant.taskdefs.ExecTask;
 import org.openqa.jetty.log.LogFactory;
 import org.openqa.selenium.browserlaunchers.WindowsUtils;
+import org.openqa.selenium.internal.CommandLine;
 
 /** Handy utilities for managing Unix/Linux processes */
 public class UnixUtils {
@@ -35,21 +34,13 @@ public class UnixUtils {
     /** runs "kill -9" on the specified pid */
     public static void kill9(Integer pid) {
         log.debug("kill -9 " + pid);
-        Project p = new Project();
-        ExecTask exec = new ExecTask();
-        exec.setProject(p);
-        exec.setExecutable("kill");
-        exec.setTaskType("kill");
-        exec.setFailonerror(false);
-        exec.createArg().setValue("-9");
-        exec.createArg().setValue(pid.toString());
-        exec.setResultProperty("result");
-        exec.setOutputproperty("output");
-        exec.execute();
-        String result = p.getProperty("result");
-        String output = p.getProperty("output");
+
+        CommandLine command = new CommandLine("kill", "-9", pid.toString());
+        command.execute();
+        String result = command.getStdOut();
+        int output = command.getExitCode();
         log.debug(output);
-        if (!"0".equals(result)) {
+        if (!command.isSuccessful()) {
             throw new RuntimeException("exec return code " + result + ": " + output);
         }
     }

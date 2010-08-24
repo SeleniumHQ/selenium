@@ -17,14 +17,11 @@ import java.net.URLEncoder;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.google.common.base.Throwables;
 import org.apache.commons.logging.Log;
-import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.Project;
-import org.apache.tools.ant.taskdefs.Copy;
-import org.apache.tools.ant.taskdefs.Delete;
-import org.apache.tools.ant.types.FileSet;
 import org.openqa.jetty.log.LogFactory;
 import org.openqa.selenium.browserlaunchers.Proxies;
+import org.openqa.selenium.internal.FileHandler;
 import org.openqa.selenium.server.BrowserConfigurationOptions;
 import org.openqa.selenium.server.ClassPathResource;
 
@@ -72,14 +69,7 @@ public class LauncherUtils {
    * Delete a directory and all subdirectories
    */
   public static void recursivelyDeleteDir(File customProfileDir) {
-    if (customProfileDir == null || !customProfileDir.exists()) {
-      return;
-    }
-    Delete delete = new Delete();
-    delete.setProject(new Project());
-    delete.setDir(customProfileDir);
-    delete.setFailOnError(true);
-    delete.execute();
+    FileHandler.delete(customProfileDir);
   }
 
   /**
@@ -88,7 +78,7 @@ public class LauncherUtils {
   public static void deleteTryTryAgain(File dir, int tries) {
     try {
       recursivelyDeleteDir(dir);
-    } catch (BuildException e) {
+    } catch (RuntimeException e) {
       if (tries > 0) {
         AsyncExecute.sleepTight(2000);
         deleteTryTryAgain(dir, tries - 1);
@@ -235,27 +225,33 @@ public class LauncherUtils {
   }
 
   protected static void copySingleFileWithOverwrite(File sourceFile, File destFile, boolean overwrite) {
-    Project p = new Project();
-    Copy c = new Copy();
-    c.setProject(p);
-    c.setTofile(destFile);
-    FileSet fs = new FileSet();
-    fs.setProject(p);
-    fs.setFile(sourceFile);
-    c.addFileset(fs);
-    c.setOverwrite(overwrite);
-    c.execute();
+    // Ensure that the source is actually a file
+    if (!sourceFile.exists()) {
+      throw new RuntimeException("Source file does not exist: " + sourceFile);
+    }
+
+    if (!sourceFile.isFile()) {
+      throw new RuntimeException("Source is not a single file: " + sourceFile);
+    }
+
+    if (!overwrite && destFile.exists()) {
+      throw new RuntimeException("Destination file already exists: " + destFile);
+    }
+
+
+    try {
+      FileHandler.copy(sourceFile, destFile);
+    } catch (IOException e) {
+      throw Throwables.propagate(e);
+    }
   }
 
   protected static void copyDirectory(File source, File dest) {
-    Project p = new Project();
-    Copy c = new Copy();
-    c.setProject(p);
-    c.setTodir(dest);
-    FileSet fs = new FileSet();
-    fs.setDir(source);
-    c.addFileset(fs);
-    c.execute();
+    try {
+      FileHandler.copy(source, dest);
+    } catch (IOException e) {
+      throw Throwables.propagate(e);
+    }
   }
 
   /**
@@ -269,31 +265,12 @@ public class LauncherUtils {
    * @param dest   the destination directory
    */
   protected static boolean copyDirectory(File source, String suffix, File dest) {
-    boolean result = false;
     try {
-      Project p = new Project();
-      Copy c = new Copy();
-      c.setProject(p);
-      c.setTodir(dest);
-      FileSet fs = new FileSet();
-      fs.setDir(source);
-      if (null != suffix) {
-        fs.setIncludes("*" + suffix); // add the wildcard.
-      }
-      c.addFileset(fs);
-      c.execute();
-
-      // handle case where no files match; must create empty directory.
-      if (!dest.exists()) {
-        result = dest.mkdirs();
-      } else {
-        result = true;
-      }
-    } catch (SecurityException se) {
-      log.warn("Could not copy the specified directory files", se);
-      result = false;
+      FileHandler.copy(source, dest, suffix);
+      return true;
+    } catch (IOException e) {
+      return false;
     }
-    return result;
   }
 
   protected static void generatePacAndPrefJs(File customProfileDir, int port, String homePage,

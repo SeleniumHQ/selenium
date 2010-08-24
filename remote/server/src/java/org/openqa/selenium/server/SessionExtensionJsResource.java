@@ -1,14 +1,15 @@
 package org.openqa.selenium.server;
 
-import java.io.InputStream;
+import java.io.ByteArrayInputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.apache.tools.ant.filters.StringInputStream;
-
-import org.openqa.jetty.http.ResourceCache;
+import com.google.common.io.ByteStreams;
+import com.google.common.io.Resources;
 import org.openqa.jetty.util.IO;
 import org.openqa.jetty.util.URLResource;
 
@@ -60,7 +61,11 @@ class SessionExtensionJsResource extends URLResource {
     public void writeTo(OutputStream out, long start, long count)
         throws IOException
     {
-        InputStream in = new StringInputStream(extensionJs);
+        // TODO(flight): I think this is equivalent.
+        // The original code used a StringInputStream from Ant
+
+        InputStream in = new FileInputStream(extensionJs);
+
         try {
             in.skip(start);
             if (count<0)

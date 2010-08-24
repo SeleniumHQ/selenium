@@ -18,6 +18,7 @@ limitations under the License.
 package org.openqa.selenium.internal;
 
 import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -34,10 +35,12 @@ import static org.openqa.selenium.Platform.WINDOWS;
 public class CommandLine {
   private static final Method JDK6_CAN_EXECUTE = findJdk6CanExecuteMethod();
   private final String[] commandAndArgs;
+  private File workingDirectory = new File(".");
   private StreamDrainer drainer;
   private int exitCode;
   private boolean executed;
   private Process proc;
+  private String allInput;
 
   public CommandLine(String executable, String... args) {
     commandAndArgs = new String[args.length + 1];
@@ -46,6 +49,18 @@ public class CommandLine {
     for (String arg : args) {
       commandAndArgs[index++] = arg;
     }
+  }
+
+  public CommandLine(String[] cmdarray) {
+    this.commandAndArgs = cmdarray;
+  }
+
+  public void setEnvironmentVariable(String name, String value) {
+
+  }
+
+  public void setDynamicLibraryPath(String... values) {
+
   }
 
   public static String findExecutable(String named) {
@@ -95,6 +110,14 @@ public class CommandLine {
       Thread thread = new Thread(drainer, "Command line drainer: " + commandAndArgs[0]);
       thread.start();
 
+      if (allInput != null) {
+        byte[] bytes = allInput.getBytes();
+//        for (byte b : bytes) {
+          proc.getOutputStream().write(bytes  );
+//        }
+        proc.getOutputStream().close();
+      }
+
       proc.waitFor();
       thread.join();
 
@@ -106,7 +129,7 @@ public class CommandLine {
     }
   }
 
-  public void executeAsync() {
+  public Process executeAsync() {
     new Thread() {
       @Override
       public void run() {
@@ -126,6 +149,8 @@ public class CommandLine {
         }
       }
     });
+
+    return proc;
   }
 
   public boolean isSuccessful() {
@@ -176,6 +201,10 @@ public class CommandLine {
     } catch (NoSuchMethodException e) {
       return null;
     }
+  }
+
+  public void setInput(String allInput) {
+    this.allInput = allInput;
   }
 
 

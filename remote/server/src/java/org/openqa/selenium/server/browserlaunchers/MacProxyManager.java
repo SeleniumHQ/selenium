@@ -26,11 +26,9 @@ import java.util.prefs.Preferences;
 import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
-import org.apache.tools.ant.Project;
-import org.apache.tools.ant.taskdefs.ExecTask;
 import org.openqa.jetty.log.LogFactory;
+import org.openqa.selenium.internal.CommandLine;
 import org.openqa.selenium.internal.Maps;
-import org.openqa.selenium.server.log.AntJettyLoggerBuildListener;
 
 /**
  * Class to manage the proxy server on OS X.  It uses the 'networksetup' tool to do
@@ -100,9 +98,9 @@ public class MacProxyManager {
         if (defaultLocation.exists()) {
             return defaultLocation.getAbsolutePath();
         }
-        File networkSetupBin = AsyncExecute.whichExec("networksetup");
+        String networkSetupBin = CommandLine.findExecutable("networksetup");
         if (networkSetupBin != null) {
-            return networkSetupBin.getAbsolutePath();
+            return networkSetupBin;
         }
         if (defaultLocation.getParentFile().exists()) {
             String[] files = defaultLocation.getParentFile().list();
@@ -200,9 +198,9 @@ public class MacProxyManager {
         if (defaultLocation.exists()) {
             return defaultLocation.getAbsolutePath();
         }
-        File scutilBin = AsyncExecute.whichExec("scutil");
+        String scutilBin = CommandLine.findExecutable("scutil");
         if (scutilBin != null) {
-            return scutilBin.getAbsolutePath();
+            return scutilBin;
         }
         throw new MacNetworkSetupException("scutil couldn't be found in the path!\n" +
                 "Please add the directory containing 'scutil' to your PATH environment\n" +
@@ -293,44 +291,23 @@ public class MacProxyManager {
     
     /** Execute scutil and quit, returning the output */
     protected String runScutil(String arg) {
-        Project p = new Project();
-        p.addBuildListener(new AntJettyLoggerBuildListener(log));
-        ExecTask exec = new ExecTask();
-        exec.setProject(p);
-        exec.setTaskType("scutil");
-        exec.setExecutable(findScutilBin());
-        exec.setFailonerror(false);
-        exec.setResultProperty("result");
-        exec.setOutputproperty("output");
-        exec.setInputString(arg + "\nquit\n");
-        exec.execute();
-        String output = p.getProperty("output");
-        String result = p.getProperty("result");
-        if (!"0".equals(result)) {
-            throw new RuntimeException("exec return code " + result + ": " + output);
+        CommandLine command = new CommandLine(findScutilBin());
+        command.setInput(arg + "\nquit\n");
+        command.execute();
+        String output = command.getStdOut();
+        if (!command.isSuccessful()) {
+            throw new RuntimeException("exec return code " + command.getExitCode() + ": " + output);
         }
         return output;
     }
     
     /** Execute networksetup, returning the output */
     protected String runNetworkSetup(String... args) {
-        Project p = new Project();
-        p.addBuildListener(new AntJettyLoggerBuildListener(log));
-        ExecTask exec = new ExecTask();
-        exec.setProject(p);
-        exec.setTaskType("networksetup");
-        exec.setExecutable(findNetworkSetupBin());
-        exec.setFailonerror(false);
-        exec.setResultProperty("result");
-        exec.setOutputproperty("output");
-        for (Object arg : args) {
-            exec.createArg().setValue(String.valueOf(arg));
-        }
-        exec.execute();
-        String output = p.getProperty("output");
-        String result = p.getProperty("result");
-        if (!"0".equals(result)) {
-            throw new RuntimeException("exec return code " + result + ": " + output);
+        CommandLine command = new CommandLine(findNetworkSetupBin(), args);
+        command.execute();
+        String output = command.getStdOut();
+        if (!command.isSuccessful()) {
+            throw new RuntimeException("exec return code " + command.getStdOut() + ": " + output);
         }
         return output;
     }

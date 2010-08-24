@@ -10,9 +10,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import org.apache.commons.logging.Log;
-import org.apache.tools.ant.util.FileUtils;
 import org.openqa.jetty.log.LogFactory;
 import org.openqa.selenium.browserlaunchers.WindowsUtils;
+import org.openqa.selenium.internal.CommandLine;
+import org.openqa.selenium.internal.FileHandler;
 import org.openqa.selenium.server.BrowserConfigurationOptions;
 import org.openqa.selenium.server.FrameGroupCommandQueueSet;
 import org.openqa.selenium.server.RemoteControlConfiguration;
@@ -50,8 +51,8 @@ public class HTABrowserLauncher implements BrowserLauncher {
         if (defaultLocation.exists()) {
             return defaultLocation.getAbsolutePath();
         }
-        File mshtaEXE = AsyncExecute.whichExec("mshta.exe");
-        if (mshtaEXE != null) return mshtaEXE.getAbsolutePath();
+        String mshtaEXE = CommandLine.findExecutable("mshta.exe");
+        if (mshtaEXE != null) return mshtaEXE;
         throw new RuntimeException("MSHTA.exe couldn't be found in the path!\n" +
                 "Please add the directory containing mshta.exe to your PATH environment\n" +
                 "variable, or explicitly specify a path to mshta.exe like this:\n" +
@@ -64,21 +65,14 @@ public class HTABrowserLauncher implements BrowserLauncher {
         createHTAFiles();
         String hta = (new File(dir, "core/" + htaName)).getAbsolutePath();
         log.info("Launching Embedded Internet Explorer...");
-        AsyncExecute exe = new AsyncExecute();
-        exe.setCommandline(new String[] {new InternetExplorerLocator().findBrowserLocationOrFail().launcherFilePath(), "-Embedding"});
-        try {
-            iexploreProcess = exe.asyncSpawn();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        CommandLine command = new CommandLine(
+            new InternetExplorerLocator().findBrowserLocationOrFail().launcherFilePath(),
+           "-Embedding");
+        iexploreProcess = command.executeAsync();
         log.info("Launching Internet Explorer HTA...");
-        AsyncExecute htaExe = new AsyncExecute();
-        htaExe.setCommandline(new String[] {htaCommandPath, hta, query});
-        try {
-            htaProcess = htaExe.asyncSpawn();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+
+        command = new CommandLine(htaCommandPath, hta, query);
+        htaProcess = command.executeAsync();
     }
     
     private void createHTAFiles() {
@@ -87,7 +81,6 @@ public class HTABrowserLauncher implements BrowserLauncher {
         try {
             coreDir.mkdirs();
             ResourceExtractor.extractResourcePath(HTABrowserLauncher.class, "/core", coreDir);
-            FileUtils f = FileUtils.getFileUtils();
             File selRunnerSrc = new File(coreDir, "RemoteRunner.html");
             File selRunnerDest = new File(coreDir, "RemoteRunner.hta");
             File testRunnerSrc = new File(coreDir, "TestRunner.html");
@@ -96,10 +89,10 @@ public class HTABrowserLauncher implements BrowserLauncher {
             File userExt = this.configuration.getUserExtensions();
             if (userExt != null) {
                 File selUserExt = new File(coreDir, "scripts/user-extensions.js");
-                f.copyFile(userExt, selUserExt, null, true);
+                FileHandler.copy(userExt, selUserExt);
             }
-            f.copyFile(selRunnerSrc, selRunnerDest);
-            f.copyFile(testRunnerSrc, testRunnerDest);
+            FileHandler.copy(selRunnerSrc, selRunnerDest);
+            FileHandler.copy(testRunnerSrc, testRunnerDest);
             writeSessionExtensionJs(coreDir);
         } catch (IOException e) {
             throw new RuntimeException(e);

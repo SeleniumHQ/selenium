@@ -1,7 +1,9 @@
 package org.openqa.selenium.server.browserlaunchers;
 
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.browserlaunchers.WindowsUtils;
-import org.apache.tools.ant.taskdefs.condition.Os;
+
+import static org.openqa.selenium.Platform.MAC;
 
 /**
  * Helper methods related to runtime operating system 
@@ -13,7 +15,7 @@ public class SystemUtils {
         if (WindowsUtils.thisIsWindows()) {
             return WindowsUtils.getExactPathEnvKey();
         }
-        if (Os.isFamily("mac")) {
+        if (Platform.getCurrent().is(MAC)) {
             return "DYLD_LIBRARY_PATH";
         }
         // TODO other linux?

@@ -17,16 +17,19 @@
 package org.openqa.selenium.server.browserlaunchers;
 
 import org.apache.commons.logging.Log;
-import org.apache.tools.ant.taskdefs.condition.Os;
 import org.openqa.jetty.log.LogFactory;
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.browserlaunchers.WindowsProxyManager;
 import org.openqa.selenium.browserlaunchers.WindowsUtils;
+import org.openqa.selenium.internal.CommandLine;
 import org.openqa.selenium.server.ApplicationRegistry;
 import org.openqa.selenium.server.BrowserConfigurationOptions;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 import org.openqa.selenium.server.browserlaunchers.locators.SafariLocator;
 
 import java.io.*;
+
+import static org.openqa.selenium.Platform.MAC;
 
 
 public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
@@ -45,8 +48,6 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
   private File backedUpCookieFile;
   private File originalCookieFile;
   private String originalCookieFilePath;
-
-  protected static AsyncExecute exe = new AsyncExecute();
 
   protected BrowserInstallation locateSafari(String browserLaunchLocation) {
     return ApplicationRegistry.instance().browserInstallationCache().locateBrowserInstallation(
@@ -67,9 +68,8 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
     if (configuration.shouldOverrideSystemProxy()) {
       createSystemProxyManager(sessionId);
     }
-    exe.setLibraryPath(browserInstallation.libraryPath());
-    customProfileDir = LauncherUtils.createCustomProfileDir(sessionId);
 
+    customProfileDir = LauncherUtils.createCustomProfileDir(sessionId);
   }
 
   protected void launch(String url) {
@@ -90,7 +90,7 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
 
   protected void launchSafari(String url) throws IOException {
     cmdarray = new String[]{browserInstallation.launcherFilePath()};
-    if (Os.isFamily("mac")) {
+    if (Platform.getCurrent().is(MAC)) {
       final String redirectHtmlFileName;
 
       redirectHtmlFileName = makeRedirectionHtml(customProfileDir, url);
@@ -108,8 +108,9 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
       };
     }
 
-    exe.setCommandline(cmdarray);
-    process = exe.asyncSpawn();
+    CommandLine command = new CommandLine(cmdarray);
+    command.setDynamicLibraryPath(browserInstallation.libraryPath());
+    process = command.executeAsync();
   }
 
   public void close() {
@@ -148,7 +149,7 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
 
   protected void ensureCleanSession() {
     // see: http://www.macosxhints.com/article.php?story=20051107093733174&lsrc=osxh
-    if (Os.isFamily("mac")) {
+    if (Platform.getCurrent().is(MAC)) {
       String user = System.getenv("USER");
       File cacheDir = new File("/Users/" + user + "/Library/Caches/Safari");
       originalCookieFilePath = "/Users/" + user + "/Library/Cookies" + "/Cookies.plist";
