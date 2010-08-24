@@ -14,6 +14,7 @@
     goog.require('bot.dom');
     goog.require('bot.locators');
     goog.require('goog.testing.jsunit');
+    goog.require('bot.action');    
   </script>
 
   <script type="text/javascript">
@@ -25,6 +26,19 @@
       var doc = window.frames['chart'].document.documentElement;
       var element = bot.locators.findElement({id: 'title'}, doc);
       assertTrue(bot.dom.isShown(element));
+    }
+
+    function testFocusingOnSvgElementDoesNotThrow() {
+      if (goog.userAgent.IE) {
+        // Skip this test on IE until it supports SVG natively
+        return;
+      }
+      var doc = window.frames['chart'].document.documentElement;
+      var element = bot.locators.findElement({id: 'title'}, doc);
+      var otherElement = bot.locators.findElement({id: 'someText'});
+
+      bot.action.focusOnElement_(otherElement);
+      bot.action.focusOnElement_(element);
     }
   </script>
 </head>

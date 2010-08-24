@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>action_test.html</title>
+  <script src="../webdriver-bootstrap.js"></script>
+  <script type="text/javascript">
+    goog.require('bot.action');
+    goog.require('goog.dom');
+    goog.require('goog.events');
+    goog.require('goog.events.EventType');
+    goog.require('goog.testing.jsunit');
+  </script>
+  <script type="text/javascript">
+
+
+    var clicker;
+    var clickLocation;
+
+    function setUpPage() {
+      clicker = goog.dom.$('clicker');
+      clickLocation = goog.style.getBounds(clicker);
+    }
+
+
+    function tearDown() {
+      goog.events.removeAll(clicker);
+    }
+
+
+    function testShouldNotBeAbleToClickOnAnElementThatIsNotShown() {
+      var noHeightElement = goog.dom.$('noHeight');
+      var threw = false;
+      try {
+        bot.action.click(noHeightElement);
+      } catch (ex) {
+        assertEquals(bot.ErrorCode.ELEMENT_NOT_VISIBLE, ex.code);
+        threw = true;
+      }
+      assertTrue(threw);
+    }
+
+
+    function testShouldClickInTheMiddleOfAnElement() {
+      goog.events.listen(clicker, goog.events.EventType.MOUSEUP, function(e) {
+        assertEquals(e.clientX, clickLocation.left + (clickLocation.width / 2));
+        assertEquals(e.clientY, clickLocation.top + (clickLocation.height / 2));
+      });
+
+      bot.action.click(clicker);
+    }
+
+
+function testShouldFocusOnAnElementBeforeFinishingClickSequence() {
+      // This test will fail if the browser is Firefox and it does not have 
+      // focus (when launching the tests on Mac, this is the case by default).
+      var focused = false;
+      clicker.blur();
+      goog.dom.$('noHeight').focus();
+
+      goog.events.listen(clicker, goog.events.EventType.FOCUS, function() {
+        focused = true;
+      });
+
+      bot.action.click(clicker);
+      assertTrue(focused);
+    }
+
+
+    function testShouldGenerateTheCorrectClickSequence() {
+      var expectedEvents = [
+        goog.events.EventType.MOUSEOVER,
+        goog.events.EventType.MOUSEMOVE,
+        goog.events.EventType.MOUSEDOWN,
+        goog.events.EventType.MOUSEUP,
+        goog.events.EventType.CLICK];
+      var events = [];
+      goog.events.listen(clicker, expectedEvents, function(e) {
+        events.push(e.type);
+      });
+      bot.action.click(clicker);
+      assertArrayEquals(expectedEvents, events);
+    }
+  </script>
+</head>
+<body>
+  <form action="javascript:void(0)">
+    <label for="clicker">Click me:</label><input id="clicker" type="checkbox"/><br/>
+  </form>
+  <div id="noHeight" style="height:0;">&nbsp;</div>
+</body>
+</html>

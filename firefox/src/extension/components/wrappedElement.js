@@ -131,34 +131,7 @@ FirefoxDriver.prototype.clickElement = function(respond, parameters) {
     originalSend();
   };
 
-  var doc = respond.session.getDocument();
-  var currentlyActive = Utils.getActiveElement(doc);
-
-  if (element['scrollIntoView']) {
-    element.scrollIntoView();
-  }
-
-  // An SVG element won't report its location properly.
-  var dimension = webdriver.element.getLocation(element);
-  var midX = !dimension ? 0 : dimension.left + (dimension.width / 2);
-  var midY = !dimension ? 0 : dimension.top + (dimension.height / 2);
-
-  Utils.fireMouseEventOn(element, "mouseover");
-  Utils.fireMouseEventOn(element, "mousemove", midX, midY);
-  Utils.fireMouseEventOn(element, "mousedown", midX, midY);
-  if (element != currentlyActive) {
-    // Some elements may not have blur, focus functions - for example,
-    // elements under an SVG element. Call those only if they exist.
-    if (typeof currentlyActive.blur == 'function') {
-      currentlyActive.blur();
-    }
-    if (typeof element.focus == 'function') {
-      element.focus();
-    }
-  }
-
-  Utils.fireMouseEventOn(element, "mouseup", midX, midY);
-  Utils.fireMouseEventOn(element, "click", midX, midY);
+  bot.action.click(element);
 
   var clickListener = new WebLoadingListener(browser, function(event) {
     if (!alreadyReplied) {

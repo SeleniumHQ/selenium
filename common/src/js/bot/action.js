@@ -32,6 +32,7 @@ goog.require('goog.dom');
 goog.require('goog.dom.NodeType');
 goog.require('goog.dom.TagName');
 goog.require('goog.events.EventType');
+goog.require('goog.style');
 
 
 
@@ -250,10 +251,17 @@ bot.action.focusOnElement_ = function(element) {
   var doc = goog.dom.getOwnerDocument(element);
   var activeElement = doc.activeElement;
   if (element != activeElement) {
+
     if (activeElement) {
-      activeElement.blur();
+      // Some elements may not have blur, focus functions - for example,
+      // elements under an SVG element. Call those only if they exist.
+      if (goog.isFunction(activeElement.blur)) {
+        activeElement.blur();
+      }
     }
-    element.focus();
+    if (goog.isFunction(element.focus)) {
+      element.focus();
+    }
   }
 };
 
@@ -320,4 +328,51 @@ bot.action.submit = function(element) {
       goog.events.EventType.SUBMIT)) {
     form.submit();
   }
+};
+
+
+/**
+ * Simulates a click sequence on the given {@code element}. A click sequence
+ * is defined as the following events:
+ * <ol>
+ * <li>mouseover</li>
+ * <li>mousemove</li>
+ * <li>mousedown</li>
+ * <li>blur[1]</li>
+ * <li>focus[1]</li>
+ * <li>mouseup</li>
+ * <li>click</li>
+ * </ol>
+ * 
+ * <p/>[1] The "blur" and "focus" events are only generated if the
+ * {@code elemnet} does not already have focus. The blur event will be
+ * fired on the currently focused element, and the focus event on the
+ * click target.
+ * 
+ * @param {!Element} element The element to generate the click event on.
+ *   The element must be shown on the page.
+ */
+bot.action.click = function(element) {
+  bot.action.checkShown_(element);
+
+  if (goog.isFunction(element.scrollIntoView)) {
+    element.scrollIntoView();
+  }
+
+  // Guaranteed to not return null since we've verified element is shown.
+  var dimensions = goog.style.getBounds(element);
+
+  // Use string properties for indices so that the compiler does not
+  // obfuscate them.
+  var coords = {
+    'x': dimensions.left + (dimensions.width / 2),
+    'y': dimensions.top + (dimensions.height / 2)
+  };
+
+  bot.events.fire(element, goog.events.EventType.MOUSEOVER);
+  bot.events.fire(element, goog.events.EventType.MOUSEMOVE, coords);
+  bot.events.fire(element, goog.events.EventType.MOUSEDOWN, coords);
+  bot.action.focusOnElement_(element);
+  bot.events.fire(element, goog.events.EventType.MOUSEUP, coords);
+  bot.events.fire(element, goog.events.EventType.CLICK, coords);
 };

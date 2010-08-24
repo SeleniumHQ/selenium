@@ -72,9 +72,9 @@ bot.events.MouseArgs;
  *
  * <dl>
  * <dt>x</dt>
- * <dd>The x value relative to the element.</dd>
+ * <dd>The x value relative to the client viewport.</dd>
  * <dt>y</dt>
- * <dd>The y value relative to the element.</dd>
+ * <dd>The y value relative to the client viewport.</dd>
  * <dt>button</dt>
  * <dd>The mouse button (from {@code bot.events.button}). Defaults to LEFT</dd>
  * <dt>bubble</dt>
@@ -254,6 +254,8 @@ bot.events.INIT_FUNCTIONS_[goog.events.EventType.MOUSEOUT] =
 bot.events.INIT_FUNCTIONS_[goog.events.EventType.MOUSEOVER] =
     bot.events.newMouseEvent_;
 bot.events.INIT_FUNCTIONS_[goog.events.EventType.MOUSEUP] =
+    bot.events.newMouseEvent_;
+bot.events.INIT_FUNCTIONS_[goog.events.EventType.CLICK] =
     bot.events.newMouseEvent_;
 
 /**
