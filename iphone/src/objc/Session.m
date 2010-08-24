@@ -166,6 +166,8 @@
   [caps setValue:[NSNumber numberWithBool:YES]
           forKey:@"javascriptEnabled"];
   [caps setObject:@"1.0" forKey:@"version"];
+  [caps setValue:[NSNumber numberWithBool:YES]
+          forKey:@"takesScreenshot"];
   return caps;
 }
 
