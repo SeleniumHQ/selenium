@@ -72,4 +72,33 @@
       "name":"foo",
       "value":"bar"
   }]
+},
+{
+  "statusCode":200,
+  "method":"GET",
+  "url":"http://example.com/index2.html?foo=\'bar\'&blah=\'yo\'",
+  "bytes":1234,
+  "start":"2009-04-15T12:22:41.000-0400",
+  "end":"2009-04-15T12:22:41.102-0400",
+  "timeInMillis":102,
+  "requestHeaders":[{
+      "name":"\'\"special\nchar\"\'",
+      "value":"today\'s\ntest \"is\"\n<great>!"
+    },{
+      "name":"baz",
+      "value":"blah"
+    },{
+      "name":"foo",
+      "value":"bar"
+  }],
+  "responseHeaders":[{
+      "name":"\'\"special\nchar\"\'",
+      "value":"today\'s\ntest \"is\"\n<great>!"
+    },{
+      "name":"baz",
+      "value":"blah"
+    },{
+      "name":"foo",
+      "value":"bar"
+  }]
 }]

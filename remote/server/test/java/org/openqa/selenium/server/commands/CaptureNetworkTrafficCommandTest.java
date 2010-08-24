@@ -107,5 +107,14 @@ public class CaptureNetworkTrafficCommandTest extends TestCase {
         entry.addRequestHeaders(req);
         entry.addResponseHeader(res);
         CaptureNetworkTrafficCommand.capture(entry);
+
+        // entry 4
+        entry = new CaptureNetworkTrafficCommand.Entry("GET", "http://example.com/index2.html?foo='bar'&blah='yo'");
+        entry.setStart(start);
+        entry.finish(200, 1234);
+        entry.setEnd(end);
+        entry.addRequestHeaders(req);
+        entry.addResponseHeader(res);
+        CaptureNetworkTrafficCommand.capture(entry);
     }
 }

@@ -188,6 +188,7 @@ public class CaptureNetworkTrafficCommand extends Command {
     }
 
     private String xml(String s) {
+        s = s.replaceAll("&", "&amp;");
         s = s.replaceAll("\"", "&quot;");
         s = s.replaceAll("\\<", "&lt;");
         s = s.replaceAll("\\>", "&gt;");
