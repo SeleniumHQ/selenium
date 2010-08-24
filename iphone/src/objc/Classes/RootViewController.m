@@ -38,12 +38,20 @@
 static RootViewController *singleton_;
 BOOL isAutoCreateSession_ = YES;
 
+- (BOOL)isIPad {
+  BOOL IPAD = NO;
+#ifdef UI_USER_INTERFACE_IDIOM
+  IPAD = (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad);
+#endif
+  return IPAD;
+}
+
 - (void)viewDidLoad {
 
   [super viewDidLoad];
   MainViewController *viewController;
 	
-  if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+  if (self.isIPad) {
     viewController = [[MainViewController alloc]
                                           initWithNibName:@"MainView-iPad"
                                           bundle:nil];
@@ -72,7 +80,7 @@ BOOL isAutoCreateSession_ = YES;
 - (void)loadFlipsideViewController {
   FlipsideViewController *viewController;
   
-  if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+  if (self.isIPad) {
     viewController = [[FlipsideViewController alloc]
                                               initWithNibName:@"FlipsideView-iPad"
                                               bundle:nil];
