@@ -402,7 +402,7 @@ task :iphone_server do
   sdk = iPhoneSDK?
   if sdk != nil then
     puts "Building iWebDriver iphone app"
-    sh "cd iphone && xcodebuild -sdk #{sdk} ARCHS=i386 -target iWebDriver >/dev/null"
+    sh "cd iphone && xcodebuild -sdk #{sdk} ARCHS=i386 -target iWebDriver", :verbose => true
   else
     puts "XCode not found. Not building the iphone driver."
   end
