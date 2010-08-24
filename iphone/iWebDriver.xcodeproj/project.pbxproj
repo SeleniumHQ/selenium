@@ -790,7 +790,7 @@
 					"\"$(SRCROOT)/iphoneos.sdk/usr/local/lib\"",
 					"\"$(SRCROOT)/../CocoaHTTPServer/build/Debug\"",
 				);
-				ONLY_ACTIVE_ARCH = NO;
+				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
 					"-all_load",
 					"-ObjC",
@@ -799,7 +799,7 @@
 				SDKROOT = iphoneos3.2;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				VALID_ARCHS = "armv6 armv7";
+				VALID_ARCHS = i386;
 			};
 			name = Debug;
 		};
@@ -819,7 +819,7 @@
 					"\"$(SRCROOT)/iphoneos.sdk/usr/local/lib\"",
 					"\"$(SRCROOT)/../CocoaHTTPServer/build/Debug\"",
 				);
-				ONLY_ACTIVE_ARCH = NO;
+				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
 					"-all_load",
 					"-ObjC",
@@ -828,7 +828,7 @@
 				SDKROOT = iphoneos3.2;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				VALID_ARCHS = "armv6 armv7";
+				VALID_ARCHS = i386;
 			};
 			name = Release;
 		};
