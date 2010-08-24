@@ -7,7 +7,7 @@ import java.util.*;
 import java.text.SimpleDateFormat;
 
 public class CaptureNetworkTrafficCommand extends Command {
-    private static List<Entry> entries = new ArrayList<Entry>();
+    private static final List<Entry> entries = Collections.synchronizedList(new ArrayList<Entry>());
 
     public static void clear() {
         entries.clear();
@@ -52,33 +52,38 @@ public class CaptureNetworkTrafficCommand extends Command {
 
 
              */
+
             sb.append("[");
-            for (Iterator<Entry> iterator = entries.iterator(); iterator.hasNext();) {
-                Entry entry = iterator.next();
-                sb.append("{\n");
 
-                sb.append(jsonKey("statusCode")).append(entry.statusCode).append(",\n");
-                sb.append(jsonKey("method")).append(json(entry.method)).append(",\n");
-                sb.append(jsonKey("url")).append(json(entry.url)).append(",\n");
-                sb.append(jsonKey("bytes")).append(entry.bytes).append(",\n");
-                sb.append(jsonKey("start")).append(json(sdf.format(entry.start))).append(",\n");
-                sb.append(jsonKey("end")).append(json(sdf.format(entry.end))).append(",\n");
-                sb.append(jsonKey("timeInMillis")).append((entry.end.getTime() - entry.start.getTime())).append(",\n");
+            synchronized(entries) {
+                for (final Iterator<Entry> iterator = entries.iterator(); iterator.hasNext();) {
+                    final Entry entry = iterator.next();
+                    sb.append("{\n");
 
-                sb.append(jsonKey("requestHeaders")).append("[");
-                jsonHeaders(sb, entry.requestHeaders);
-                sb.append("],\n");
+                    sb.append(jsonKey("statusCode")).append(entry.statusCode).append(",\n");
+                    sb.append(jsonKey("method")).append(json(entry.method)).append(",\n");
+                    sb.append(jsonKey("url")).append(json(entry.url)).append(",\n");
+                    sb.append(jsonKey("bytes")).append(entry.bytes).append(",\n");
+                    sb.append(jsonKey("start")).append(json(sdf.format(entry.start))).append(",\n");
+                    sb.append(jsonKey("end")).append(json(sdf.format(entry.end))).append(",\n");
+                    sb.append(jsonKey("timeInMillis")).append((entry.end.getTime() - entry.start.getTime())).append(",\n");
 
-                sb.append(jsonKey("responseHeaders")).append("[");
-                jsonHeaders(sb, entry.responseHeaders);
-                sb.append("]\n");
+                    sb.append(jsonKey("requestHeaders")).append("[");
+                    jsonHeaders(sb, entry.requestHeaders);
+                    sb.append("],\n");
 
-                sb.append("}");
+                    sb.append(jsonKey("responseHeaders")).append("[");
+                    jsonHeaders(sb, entry.responseHeaders);
+                    sb.append("]\n");
 
-                if (iterator.hasNext()) {
-                    sb.append(",\n");
+                    sb.append("}");
+
+                    if (iterator.hasNext()) {
+                        sb.append(",\n");
+                    }
                 }
             }
+
             sb.append("]");
         } else if ("xml".equalsIgnoreCase(type)) {
             /*
@@ -94,27 +99,30 @@ public class CaptureNetworkTrafficCommand extends Command {
             </traffic>
              */
             sb.append("<traffic>\n");
-            for (Entry entry : entries) {
-                sb.append("<entry ");
 
-                sb.append("statusCode=\"").append(entry.statusCode).append("\" ");
-                sb.append("method=\"").append(json(entry.method)).append("\" ");
-                sb.append("url=\"").append(xml(entry.url)).append("\" ");
-                sb.append("bytes=\"").append(entry.bytes).append("\" ");
-                sb.append("start=\"").append(sdf.format(entry.start)).append("\" ");
-                sb.append("end=\"").append(sdf.format(entry.end)).append("\" ");
-                sb.append("timeInMillis=\"").append((entry.end.getTime() - entry.start.getTime())).append("\">\n");
+            synchronized(entries) {
+                for (final Entry entry : entries) {
+                    sb.append("<entry ");
 
-                sb.append("    <requestHeaders>\n");
-                xmlHeaders(sb, entry.requestHeaders);
-                sb.append("    </requestHeaders>\n");
+                    sb.append("statusCode=\"").append(entry.statusCode).append("\" ");
+                    sb.append("method=\"").append(json(entry.method)).append("\" ");
+                    sb.append("url=\"").append(xml(entry.url)).append("\" ");
+                    sb.append("bytes=\"").append(entry.bytes).append("\" ");
+                    sb.append("start=\"").append(sdf.format(entry.start)).append("\" ");
+                    sb.append("end=\"").append(sdf.format(entry.end)).append("\" ");
+                    sb.append("timeInMillis=\"").append((entry.end.getTime() - entry.start.getTime())).append("\">\n");
 
-                sb.append("    <responseHeaders>\n");
-                xmlHeaders(sb, entry.responseHeaders);
-                sb.append("    </responseHeaders>\n");
+                    sb.append("    <requestHeaders>\n");
+                    xmlHeaders(sb, entry.requestHeaders);
+                    sb.append("    </requestHeaders>\n");
+
+                    sb.append("    <responseHeaders>\n");
+                    xmlHeaders(sb, entry.responseHeaders);
+                    sb.append("    </responseHeaders>\n");
 
 
-                sb.append("</entry>\n");
+                    sb.append("</entry>\n");
+                }
             }
             sb.append("</traffic>\n");
         } else {
@@ -131,22 +139,23 @@ public class CaptureNetworkTrafficCommand extends Command {
 
              */
 
-
-            for (Entry entry : entries) {
-                sb.append(entry.statusCode).append(" ").append(entry.method).append(" ").append(entry.url).append("\n");
-                sb.append(entry.bytes).append(" bytes\n");
-                sb.append(entry.end.getTime() - entry.start.getTime()).append("ms (").append(sdf.format(entry.start)).append(" - ").append(sdf.format(entry.end)).append("\n");
-                sb.append("\n");
-                sb.append("Request Headers\n");
-                for (Header header : entry.requestHeaders) {
-                    sb.append(" - ").append(header.name).append(" => ").append(header.value).append("\n");
+            synchronized(entries) {
+                for (final Entry entry : entries) {
+                    sb.append(entry.statusCode).append(" ").append(entry.method).append(" ").append(entry.url).append("\n");
+                    sb.append(entry.bytes).append(" bytes\n");
+                    sb.append(entry.end.getTime() - entry.start.getTime()).append("ms (").append(sdf.format(entry.start)).append(" - ").append(sdf.format(entry.end)).append("\n");
+                    sb.append("\n");
+                    sb.append("Request Headers\n");
+                    for (Header header : entry.requestHeaders) {
+                        sb.append(" - ").append(header.name).append(" => ").append(header.value).append("\n");
+                    }
+                    sb.append("Response Headers\n");
+                    for (Header header : entry.responseHeaders) {
+                        sb.append(" - ").append(header.name).append(" => ").append(header.value).append("\n");
+                    }
+                    sb.append("================================================================\n");
+                    sb.append("\n");
                 }
-                sb.append("Response Headers\n");
-                for (Header header : entry.responseHeaders) {
-                    sb.append(" - ").append(header.name).append(" => ").append(header.value).append("\n");
-                }
-                sb.append("================================================================\n");
-                sb.append("\n");
             }
         }
 
@@ -155,15 +164,15 @@ public class CaptureNetworkTrafficCommand extends Command {
         return "OK," + sb.toString();
     }
 
-    private void xmlHeaders(StringBuilder sb, List<Header> headers) {
-        for (Header header : headers) {
+    private void xmlHeaders(final StringBuilder sb, final List<Header> headers) {
+        for (final Header header : headers) {
             sb.append("        <header name=\"").append(xml(header.name)).append("\">").append(xml(header.value)).append("</header>\n");
         }
     }
 
-    private void jsonHeaders(StringBuilder sb, List<Header> headers) {
-        for (Iterator<Header> headItr = headers.iterator(); headItr.hasNext();) {
-            Header header = headItr.next();
+    private void jsonHeaders(final StringBuilder sb, final List<Header> headers) {
+        for (final Iterator<Header> headItr = headers.iterator(); headItr.hasNext();) {
+            final Header header = headItr.next();
 
             sb.append("{\n");
             sb.append("    ").append(jsonKey("name")).append(json(header.name)).append(",\n");
@@ -186,7 +195,7 @@ public class CaptureNetworkTrafficCommand extends Command {
         return s;
     }
 
-    private String jsonKey(String key) {
+    private String jsonKey(final String key) {
         final StringBuilder ret = new StringBuilder();
       
         ret.append("  \"").append(key).append("\"").append(":");
