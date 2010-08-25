@@ -18,6 +18,9 @@ limitations under the License.
 
 package org.openqa.selenium.firefox;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 import java.util.Set;
 
 import org.junit.Assert;
@@ -27,6 +30,8 @@ import org.openqa.selenium.Ignore;
 import org.openqa.selenium.NeedsFreshDriver;
 import org.openqa.selenium.NoDriverAfterTest;
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.ParallelTestRunner;
+import org.openqa.selenium.ParallelTestRunner.Worker;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
@@ -336,5 +341,53 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
       runnable2.quit();
     }
 
+  }
+
+  private static char[] CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890!\"§$%&/()+*~#',.-_:;\\".toCharArray();
+  private static Random RANDOM = new Random();
+
+  private static String randomString() {
+    int n = 20 + RANDOM.nextInt(80);
+    StringBuilder sb = new StringBuilder(n);
+    for (int i = 0; i < n; ++i) {
+      sb.append(CHARS[RANDOM.nextInt(CHARS.length)]);
+    }
+    return sb.toString();
+  }
+
+  public void testMultipleFirefoxDriversRunningConcurrently() throws Exception {
+    int numThreads = 10;
+    final int numRoundsPerThread = 50;
+    WebDriver[] drivers = new WebDriver[numThreads];
+    List<Worker> workers = new ArrayList<Worker>(numThreads);
+    try {
+      for (int i = 0; i < numThreads; ++i) {
+        final WebDriver driver = (i == 0 ? super.driver : new FirefoxDriverTestSuite.TestFirefoxDriver());
+        drivers[i] = driver;
+        workers.add(new Worker() {
+          public void run() throws Exception {
+            driver.get(pages.formPage);
+            WebElement inputField = driver.findElement(By.id("working"));
+            for (int i = 0; i < numRoundsPerThread; ++i) {
+              String s = randomString();
+              inputField.clear();
+              inputField.sendKeys(s);
+              String value = inputField.getValue();
+              assertThat(value, is(s));
+            }
+          }
+        });
+      }
+      ParallelTestRunner parallelTestRunner = new ParallelTestRunner(workers);
+      parallelTestRunner.run();
+    } finally {
+      for (int i = 1; i < numThreads; ++i) {
+        if (drivers[i] != null) {
+          try {
+            drivers[i].quit();
+          } catch (RuntimeException ignored) {}
+        }
+      }
+    }
   }
 }
