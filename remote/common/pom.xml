@@ -27,18 +27,17 @@
 			<artifactId>commons-codec</artifactId>
 			<version>1.4</version>
 		</dependency>
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>r06</version>
+		</dependency>
 		<!-- Test dependencies ... -->
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
 			<artifactId>selenium-common</artifactId>
 			<version>${project.version}</version>
 			<classifier>tests</classifier>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.google.collections</groupId>
-			<artifactId>google-collections</artifactId>
-			<version>1.0</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
