@@ -162,7 +162,6 @@ wdSession.prototype.getWindow = function() {
 /** @return {nsIDOMDocument} This session's current document. */
 wdSession.prototype.getDocument = function() {
   return this.getWindow().document;
-  return this.window_.document;
 };
 
 
