@@ -183,7 +183,9 @@ public class NewProfileExtensionConnection implements CommandExecutor, Extension
         Enumeration<InetAddress> allAddresses = iface.getInetAddresses();
         while (allAddresses.hasMoreElements()) {
           InetAddress addr = allAddresses.nextElement();
-          if (addr.isLoopbackAddress()) {
+          String ip = addr.getHostAddress();
+          // filter out Inet6 Addr Entries
+          if (addr.isLoopbackAddress() && (ip.indexOf(":") == -1)) {
             InetSocketAddress socketAddress = new InetSocketAddress(addr, port);
             localhosts.add(socketAddress);
           }
