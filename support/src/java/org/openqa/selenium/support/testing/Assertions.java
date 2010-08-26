@@ -29,17 +29,17 @@ public class Assertions {
    * Like JUnit's Assert.assertEquals, but handles "regexp:" strings like HTML
    * Selenese
    */
-  public static void assertEquals(String s1, String s2) {
-    assertTrue("Expected \"" + s1 + "\" but saw \"" + s2 + "\" instead",
-        seleniumEquals(s1, s2));
+  public static void assertEquals(String expected, String actual) {
+    assertTrue("Expected \"" + expected + "\" but saw \"" + actual + "\" instead",
+        seleniumEquals(expected, actual));
   }
 
   /**
    * Like JUnit's Assert.assertEquals, but joins the string array with commas,
    * and handles "regexp:" strings like HTML Selenese
    */
-  public static void assertEquals(String s1, String[] s2) {
-    assertEquals(s1, join(s2, ','));
+  public static void assertEquals(String expected, String[] actual) {
+    assertEquals(expected, join(actual, ','));
   }
 
   private static String join(String[] sa, char c) {
@@ -143,21 +143,21 @@ public class Assertions {
   }
 
 
-  protected static String verifyEqualsAndReturnComparisonDumpIfNot(String[] s1,
-                                                                   String[] s2) {
+  protected static String verifyEqualsAndReturnComparisonDumpIfNot(String[] expected,
+                                                                   String[] actual) {
     boolean misMatch = false;
-    if (s1.length != s2.length) {
+    if (expected.length != actual.length) {
       misMatch = true;
     }
-    for (int j = 0; j < s1.length; j++) {
-      if (!seleniumEquals(s1[j], s2[j])) {
+    for (int j = 0; j < expected.length; j++) {
+      if (!seleniumEquals(expected[j], actual[j])) {
         misMatch = true;
         break;
       }
     }
     if (misMatch) {
-      return "Expected " + stringArrayToString(s1) + " but saw "
-             + stringArrayToString(s2);
+      return "Expected " + stringArrayToString(expected) + " but saw "
+             + stringArrayToString(actual);
     }
     return null;
   }
@@ -174,9 +174,9 @@ public class Assertions {
   /**
    * Asserts that two objects are not the same (compares using .equals())
    */
-  public static void assertNotEquals(Object obj1, Object obj2) {
-    if (obj1.equals(obj2)) {
-      fail("did not expect values to be equal (" + obj1.toString() + ")");
+  public static void assertNotEquals(Object expected, Object actual) {
+    if (expected.equals(actual)) {
+      fail("did not expect values to be equal (" + expected.toString() + ")");
     }
   }
 }

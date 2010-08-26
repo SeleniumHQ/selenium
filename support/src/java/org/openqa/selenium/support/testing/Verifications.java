@@ -48,36 +48,27 @@ public class Verifications extends Verifier {
   }
 
   /** Like assertEquals, but fails at the end of the test (during tearDown) */
-  public void verifyEquals(Object s1, Object s2) {
+  public void verifyEquals(Object expected, Object actual) {
     try {
-      assertEquals(s1, s2);
-    } catch (Error e) {
-      verificationErrors.append(throwableToString(e));
-    }
-  }
-
-  /** Like assertEquals, but fails at the end of the test (during tearDown) */
-  public void verifyEquals(boolean s1, boolean s2) {
-    try {
-      assertEquals(new Boolean(s1), new Boolean(s2));
+      assertEquals(expected, actual);
     } catch (Error e) {
       verificationErrors.append(throwableToString(e));
     }
   }
 
   /** Like assertTrue, but fails at the end of the test (during tearDown) */
-  public void verifyTrue(boolean b) {
+  public void verifyTrue(boolean value) {
     try {
-      assertTrue(b);
+      assertTrue(value);
     } catch (Error e) {
       verificationErrors.append(throwableToString(e));
     }
   }
 
   /** Like assertFalse, but fails at the end of the test (during tearDown) */
-  public void verifyFalse(boolean b) {
+  public void verifyFalse(boolean value) {
     try {
-      assertFalse(b);
+      assertFalse(value);
     } catch (Error e) {
       verificationErrors.append(throwableToString(e));
     }
@@ -87,27 +78,27 @@ public class Verifications extends Verifier {
    * Asserts that two string arrays have identical string contents (fails at the
    * end of the test, during tearDown)
    */
-  public void verifyEquals(String[] s1, String[] s2) {
+  public void verifyEquals(String[] expected, String[] actual) {
     String comparisonDumpIfNotEqual = verifyEqualsAndReturnComparisonDumpIfNot(
-        s1, s2);
+        expected, actual);
     if (comparisonDumpIfNotEqual != null) {
       verificationErrors.append(comparisonDumpIfNotEqual);
     }
   }
 
   /** Like assertNotEquals, but fails at the end of the test (during tearDown) */
-  public void verifyNotEquals(Object s1, Object s2) {
+  public void verifyNotEquals(Object expected, Object actual) {
     try {
-      assertNotEquals(s1, s2);
+      assertNotEquals(expected, actual);
     } catch (AssertionError e) {
       verificationErrors.append(throwableToString(e));
     }
   }
 
   /** Like assertNotEquals, but fails at the end of the test (during tearDown) */
-  public void verifyNotEquals(boolean s1, boolean s2) {
+  public void verifyNotEquals(boolean expected, boolean actual) {
     try {
-      assertNotEquals(new Boolean(s1), new Boolean(s2));
+      assertNotEquals(new Boolean(expected), new Boolean(actual));
     } catch (AssertionError e) {
       verificationErrors.append(throwableToString(e));
     }
