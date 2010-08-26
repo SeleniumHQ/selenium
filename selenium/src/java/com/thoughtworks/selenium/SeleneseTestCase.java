@@ -11,7 +11,9 @@ import junit.framework.TestCase;
  * thrown at once during tearDown.</p>
  * 
  * @author Nelson Sproul (nsproul@bea.com) Mar 13-06
+ * @deprecated Please consider updating to junit 4 or above
  */
+@Deprecated
 public class SeleneseTestCase extends TestCase {
 
     private SeleneseTestBase stb = new SeleneseTestBase();
