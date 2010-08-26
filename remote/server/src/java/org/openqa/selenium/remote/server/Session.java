@@ -34,7 +34,6 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.events.EventFiringWebDriver;
 
 import java.util.concurrent.Callable;
-import java.util.concurrent.Executor;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -44,7 +43,7 @@ public class Session {
   private final WebDriver driver;
   private KnownElements knownElements = new KnownElements();
   private Capabilities capabilities;
-  private Executor executor;
+  private final ThreadPoolExecutor executor;
   private volatile String base64EncodedImage;
 
   public Session(final DriverFactory factory, final Capabilities capabilities) throws Exception {
@@ -76,6 +75,10 @@ public class Session {
     execute(createBrowser);
     this.driver = createBrowser.get();
   }
+
+    public void close(){
+        executor.shutdown();
+    }
 
   public <X> X execute(FutureTask<X> future) throws Exception {
     executor.execute(future);

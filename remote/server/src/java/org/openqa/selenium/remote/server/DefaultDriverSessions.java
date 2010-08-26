@@ -88,7 +88,10 @@ public class DefaultDriverSessions implements DriverSessions {
   }
 
   public void deleteSession(SessionId sessionId) {
-    sessionIdToDriver.remove(sessionId);
+      final Session removedSession = sessionIdToDriver.remove(sessionId);
+      if (removedSession != null){
+          removedSession.close();
+      }
   }
 
   public void registerDriver(Capabilities capabilities, Class<? extends WebDriver> implementation) {
