@@ -89,7 +89,6 @@ public class SeleneseCommandExecutor implements CommandExecutor {
   public Response execute(Command command) throws Exception {
     SeleneseFunction function = functions.get(command.getName());
     if (function == null) {
-      System.out.println("command.getMethodName() = " + command.getName());
       throw new UnsupportedOperationException("cannot execute: " + command.getName());
     }
 
