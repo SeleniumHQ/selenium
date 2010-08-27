@@ -221,6 +221,12 @@ dll(:name => "libwebdriver_firefox_so",
 # There is no official 64 bit gecko SDK. Fall back to trying to use the one on
 # system, but be ready for this to fail. I have a Ubuntu machine, so that's
 # what I'm basing this on. I understand that's a Bad Idea
+begin
+  pkg_config_gecko = sh "pkg-config --exists libxul"
+rescue
+  pkg_config_gecko = false
+end
+
 if pkg_config_gecko:
   libs_cmd = open("| pkg-config --libs libxul")
   local_gecko_libs = libs_cmd.readline.gsub "\n", ""
