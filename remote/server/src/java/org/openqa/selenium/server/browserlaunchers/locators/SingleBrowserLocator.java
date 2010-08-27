@@ -165,7 +165,7 @@ public abstract class SingleBrowserLocator implements BrowserLocator {
         if (WindowsUtils.thisIsWindows()) {
             return null;
         }
-        libraryPathEnvironmentVariable = SystemUtils.libraryPathEnvironmentVariable();
+        libraryPathEnvironmentVariable = CommandLine.getLibraryPathPropertyName();
         currentLibraryPath = WindowsUtils.loadEnvironment().getProperty(libraryPathEnvironmentVariable);
 
         return currentLibraryPath + File.pathSeparator + launcherPath.getParent();

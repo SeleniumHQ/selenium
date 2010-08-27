@@ -1,6 +1,8 @@
 package org.openqa.selenium.server.browserlaunchers.locators;
 
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.browserlaunchers.WindowsUtils;
+import org.openqa.selenium.internal.CommandLine;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -87,7 +89,26 @@ public class Firefox3Locator extends FirefoxLocator {
     }
 
     protected boolean runningOnWindows() {
-        return WindowsUtils.thisIsWindows();
+        return Platform.getCurrent().is(Platform.WINDOWS);
     }
-    
+
+  @Override
+  public String computeLibraryPath(File launcherPath) {
+      if (runningOnWindows()) {
+        return "";
+      }
+
+      StringBuilder libraryPath = new StringBuilder();
+      String libraryPropertyName = CommandLine.getLibraryPathPropertyName();
+
+      String existingLibraryPath = System.getenv(libraryPropertyName);
+
+      if (Platform.getCurrent().is(Platform.MAC) && Platform.getCurrent().getMinorVersion() > 5) {
+          libraryPath.append(existingLibraryPath);
+      } else {
+          libraryPath.append(launcherPath.getParent()).append(File.pathSeparator).append(libraryPath);
+      }
+
+      return libraryPath.toString();
+  }
 }

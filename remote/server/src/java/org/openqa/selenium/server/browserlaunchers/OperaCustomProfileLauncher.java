@@ -69,7 +69,7 @@ public class OperaCustomProfileLauncher extends AbstractBrowserLauncher {
             if (execDirect.isAbsolute() && execDirect.exists()) operaBin = execDirect;
         }
 
-        String libPathKey = SystemUtils.libraryPathEnvironmentVariable();
+        String libPathKey = CommandLine.getLibraryPathPropertyName();
         String libPath = WindowsUtils.loadEnvironment().getProperty(libPathKey);
         command.setEnvironmentVariable(libPathKey, libPath + ":" + operaBin.getParent());
     }

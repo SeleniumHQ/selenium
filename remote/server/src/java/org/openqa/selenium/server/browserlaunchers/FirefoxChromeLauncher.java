@@ -64,11 +64,6 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
           "The specified path to the browser executable is invalid.");
     }
     this.browserInstallation = browserInstallation;
-
-
-    // Set MOZ_NO_REMOTE in order to ensure we always get a new Firefox process
-    // http://blog.dojotoolkit.org/2005/12/01/running-multiple-versions-of-firefox-side-by-side
-
   }
 
 

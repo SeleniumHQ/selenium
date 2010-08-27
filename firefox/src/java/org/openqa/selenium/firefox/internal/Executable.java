@@ -2,6 +2,7 @@ package org.openqa.selenium.firefox.internal;
 
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.internal.CommandLine;
 import org.openqa.selenium.remote.internal.CircularOutputStream;
 
 import java.io.File;
@@ -59,7 +60,7 @@ public class Executable {
   }
   
   public void setLibraryPath(ProcessBuilder builder, final Map<String, String> extraEnv) {
-    final String propertyName = getLibraryPathPropertyName();
+    final String propertyName = CommandLine.getLibraryPathPropertyName();
     StringBuilder libraryPath = new StringBuilder();
     
     // If we have an env var set for the path, use it.
@@ -171,24 +172,6 @@ public class Executable {
       return value;
     }
     return defaultValue;
-  }
-  
-  /**
-   * Retrieves the platform specific env property name which contains the library path.
-   */
-  private static String getLibraryPathPropertyName() {
-    switch (Platform.getCurrent()) {
-      case MAC:
-          return "DYLD_LIBRARY_PATH";
-
-      case WINDOWS:
-      case VISTA:
-      case XP:
-          return "PATH";
-
-      default:
-          return "LD_LIBRARY_PATH";
-    }
   }
 
   /**

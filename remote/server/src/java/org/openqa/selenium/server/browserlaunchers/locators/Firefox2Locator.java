@@ -1,6 +1,10 @@
 package org.openqa.selenium.server.browserlaunchers.locators;
 
+import java.io.File;
+
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.browserlaunchers.WindowsUtils;
+import org.openqa.selenium.internal.CommandLine;
 
 /**
  * Discovers a valid Firefox 2.x installation on local system.
@@ -39,5 +43,29 @@ public class Firefox2Locator extends FirefoxLocator {
     protected String[] usualLauncherLocations() {
         return WindowsUtils.thisIsWindows() ? USUAL_WINDOWS_LAUNCHER_LOCATIONS : USUAL_UNIX_LAUNCHER_LOCATIONS;
     }
+
+    protected boolean runningOnWindows() {
+        return Platform.getCurrent().is(Platform.WINDOWS);
+    }
+
+    @Override
+    public String computeLibraryPath(File launcherPath) {
+      if (runningOnWindows()) {
+        return "";
+      }
+
+      StringBuilder libraryPath = new StringBuilder();
+      String libraryPropertyName = CommandLine.getLibraryPathPropertyName();
+
+      String existingLibraryPath = System.getenv(libraryPropertyName);
+
+      if (Platform.getCurrent().is(Platform.MAC) && Platform.getCurrent().getMinorVersion() > 5) {
+          libraryPath.append(existingLibraryPath);
+      } else {
+          libraryPath.append(launcherPath.getParent()).append(File.pathSeparator).append(libraryPath);
+      }
+
+      return libraryPath.toString();
+  }
 
 }

@@ -18,13 +18,13 @@ limitations under the License.
 package org.openqa.selenium.internal;
 
 import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.openqa.selenium.Platform;
@@ -35,12 +35,12 @@ import static org.openqa.selenium.Platform.WINDOWS;
 public class CommandLine {
   private static final Method JDK6_CAN_EXECUTE = findJdk6CanExecuteMethod();
   private final String[] commandAndArgs;
-  private File workingDirectory = new File(".");
   private StreamDrainer drainer;
   private int exitCode;
   private boolean executed;
   private Process proc;
   private String allInput;
+  private Map<String, String> env = new HashMap<String, String>();
 
   public CommandLine(String executable, String... args) {
     commandAndArgs = new String[args.length + 1];
@@ -55,12 +55,34 @@ public class CommandLine {
     this.commandAndArgs = cmdarray;
   }
 
-  public void setEnvironmentVariable(String name, String value) {
-
+  public void setEnvironmentVariables(Map<String, String> environment) {
+    env.putAll(environment);
   }
 
-  public void setDynamicLibraryPath(String... values) {
+  public void setEnvironmentVariable(String name, String value) {
+    env.put(name, value);
+  }
 
+  public void setDynamicLibraryPath(String newLibraryPath) {
+    setEnvironmentVariable(getLibraryPathPropertyName(), newLibraryPath);
+  }
+
+  /**
+   * @return The platform specific env property name which contains the library path.
+   */
+  public static String getLibraryPathPropertyName() {
+    switch (Platform.getCurrent()) {
+      case MAC:
+          return "DYLD_LIBRARY_PATH";
+
+      case WINDOWS:
+      case VISTA:
+      case XP:
+          return "PATH";
+
+      default:
+          return "LD_LIBRARY_PATH";
+    }
   }
 
   public static String findExecutable(String named) {
@@ -104,6 +126,10 @@ public class CommandLine {
 
       ProcessBuilder builder = new ProcessBuilder(commandAndArgs);
       builder.redirectErrorStream(true);
+//      if (!env.isEmpty()) {
+//        builder.environment().clear();
+        builder.environment().putAll(env);
+//      }
       proc = builder.start();
 
       drainer = new StreamDrainer(proc);
@@ -112,9 +138,7 @@ public class CommandLine {
 
       if (allInput != null) {
         byte[] bytes = allInput.getBytes();
-//        for (byte b : bytes) {
-          proc.getOutputStream().write(bytes  );
-//        }
+        proc.getOutputStream().write(bytes  );
         proc.getOutputStream().close();
       }
 
@@ -151,6 +175,14 @@ public class CommandLine {
     });
 
     return proc;
+  }
+
+  public void waitFor() {
+    try {
+      proc.waitFor();
+    } catch (InterruptedException e) {
+      throw new WebDriverException(e);
+    }
   }
 
   public boolean isSuccessful() {
@@ -228,7 +260,8 @@ public class CommandLine {
           inputOut.flush();
         }
       } catch (IOException e) {
-        throw new RuntimeException(e);
+        // it's possible that the stream has been closed. That's okay.
+        // Swallow the exception        
       } finally {
         try {
           inputOut.close();
