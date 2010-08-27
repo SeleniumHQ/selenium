@@ -33,6 +33,7 @@ import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.openqa.selenium.NetworkUtils;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.ExtensionConnection;
@@ -156,7 +157,7 @@ public class NewProfileExtensionConnection implements CommandExecutor, Extension
    */
   private static URL buildUrl(String host, int port) {
     if ("localhost".equals(host)) {
-      for (InetSocketAddress address : obtainLoopbackAddresses(port)) {
+      for (InetSocketAddress address : NetworkUtils.obtainLoopbackAddresses(port)) {
         try {
           return new URL("http", address.getHostName(), address.getPort(), "/hub");
         } catch (MalformedURLException ignored) {
@@ -171,68 +172,6 @@ public class NewProfileExtensionConnection implements CommandExecutor, Extension
         throw new WebDriverException(e);
       }
     }
-  }
-
-  private static Set<InetSocketAddress> obtainLoopbackAddresses(int port) {
-    Set<InetSocketAddress> localhosts = new HashSet<InetSocketAddress>();
-
-    try {
-      Enumeration<NetworkInterface> allInterfaces = NetworkInterface.getNetworkInterfaces();
-      while (allInterfaces.hasMoreElements()) {
-        NetworkInterface iface = allInterfaces.nextElement();
-        Enumeration<InetAddress> allAddresses = iface.getInetAddresses();
-        while (allAddresses.hasMoreElements()) {
-          InetAddress addr = allAddresses.nextElement();
-          String ip = addr.getHostAddress();
-          // filter out Inet6 Addr Entries
-          if (addr.isLoopbackAddress() && (ip.indexOf(":") == -1)) {
-            InetSocketAddress socketAddress = new InetSocketAddress(addr, port);
-            localhosts.add(socketAddress);
-          }
-        }
-      }
-
-      // On linux, loopback addresses are named "lo". See if we can find that. We do this
-      // craziness because sometimes the loopback device is given an IP range that falls outside
-      // of 127/24
-      if (Platform.getCurrent()
-          .is(Platform.UNIX)) {
-        NetworkInterface linuxLoopback = NetworkInterface.getByName("lo");
-        if (linuxLoopback != null) {
-          Enumeration<InetAddress> possibleLoopbacks = linuxLoopback.getInetAddresses();
-          while (possibleLoopbacks.hasMoreElements()) {
-            InetAddress inetAddress = possibleLoopbacks.nextElement();
-            InetSocketAddress socketAddress = new InetSocketAddress(inetAddress, port);
-            localhosts.add(socketAddress);
-          }
-        }
-      }
-    } catch (SocketException e) {
-      throw new WebDriverException(e);
-    }
-
-    if (!localhosts.isEmpty()) {
-      return localhosts;
-    }
-
-    // Nothing found. Grab the first address we can find
-    NetworkInterface firstInterface;
-    try {
-      firstInterface = NetworkInterface.getNetworkInterfaces().nextElement();
-    } catch (SocketException e) {
-      throw new WebDriverException(e);
-    }
-    InetAddress firstAddress = null;
-    if (firstInterface != null) {
-      firstAddress = firstInterface.getInetAddresses().nextElement();
-    }
-
-    if (firstAddress != null) {
-      InetSocketAddress socketAddress = new InetSocketAddress(firstAddress, port);
-      return Collections.singleton(socketAddress);
-    }
-
-    throw new WebDriverException("Unable to find loopback address for localhost");
   }
 
   public boolean isConnected() {
