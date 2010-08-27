@@ -221,15 +221,22 @@ dll(:name => "libwebdriver_firefox_so",
 # There is no official 64 bit gecko SDK. Fall back to trying to use the one on
 # system, but be ready for this to fail. I have a Ubuntu machine, so that's
 # what I'm basing this on. I understand that's a Bad Idea
-
-gecko_devels = FileList.new("/usr/lib/xulrunner-devel-1.9.*/sdk")
-local_gecko = gecko_devels.empty? ? "" : gecko_devels.to_a[0] + "/"
+if pkg_config_gecko:
+  libs_cmd = open("| pkg-config --libs libxul")
+  local_gecko_libs = libs_cmd.readline.gsub "\n", ""
+  cflags_cmd = open("| pkg-config --cflags libxul")
+  local_gecko_include = cflags_cmd.readline.gsub "\n", ""
+else
+  print 'No Gecko sdk detected. Install xulrunner-dev to compile 64-bit Firefox extension.'
+  local_gecko_include = ""
+  local_gecko_libs = ""
+end
 
 dll(:name => "libwebdriver_firefox_so64",
     :src  => FileList.new('common/src/cpp/webdriver-interactions/*_linux.cpp') + FileList.new('firefox/src/cpp/webdriver-firefox/native_events.cpp'),
     :arch => "amd64",
-    :args => " -DXPCOM_GLUE  -DXPCOM_GLUE_USE_NSPR -fPIC -fshort-wchar -I common/src/cpp/webdriver-interactions -I #{local_gecko}include -I /usr/include/nspr `pkg-config gtk+-2.0 --cflags` ",
-    :link_args => "-Wall -Os -L#{local_gecko}lib -L#{local_gecko}bin -Wl,-rpath-link,#{local_gecko}bin -lxpcomglue_s -lxpcom -lnspr4 -lrt `pkg-config gtk+-2.0 --libs` -fno-rtti -fno-exceptions -shared  -fPIC",
+    :args => " -DXPCOM_GLUE  -DXPCOM_GLUE_USE_NSPR -fPIC -fshort-wchar -I common/src/cpp/webdriver-interactions #{local_gecko_include} `pkg-config gtk+-2.0 --cflags` ",
+    :link_args => "-Wall -Os #{local_gecko_libs} -lrt `pkg-config gtk+-2.0 --libs` -fno-rtti -fno-exceptions -shared  -fPIC",
     :prebuilt => "firefox/prebuilt",
     :out  => "linux64/Release/libwebdriver-firefox.so")
 
