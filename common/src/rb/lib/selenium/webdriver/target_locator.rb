@@ -34,7 +34,7 @@ module Selenium
           @bridge.switchToWindow id
 
           begin
-            yield
+            returned = yield
           ensure
             current_handles = @bridge.getWindowHandles
 
@@ -43,6 +43,7 @@ module Selenium
             end
 
             @bridge.switchToWindow original
+            returned
           end
         else
           @bridge.switchToWindow id
