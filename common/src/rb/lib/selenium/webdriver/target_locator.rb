@@ -33,15 +33,17 @@ module Selenium
           original = @bridge.getCurrentWindowHandle
           @bridge.switchToWindow id
 
-          yield
+          begin
+            yield
+          ensure
+            current_handles = @bridge.getWindowHandles
 
-          current_handles = @bridge.getWindowHandles
+            if current_handles.size == 1
+              original = current_handles.shift
+            end
 
-          if current_handles.size == 1
-            original = current_handles.shift
+            @bridge.switchToWindow original
           end
-
-          @bridge.switchToWindow original
         else
           @bridge.switchToWindow id
         end

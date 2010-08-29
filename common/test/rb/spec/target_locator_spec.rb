@@ -33,6 +33,21 @@ describe "WebDriver::TargetLocator" do
     reset_driver!
   end
 
+  it "should handle exceptions inside the block" do
+    driver.navigate.to url_for("xhtmlTest.html")
+
+    driver.find_element(:link, "Open new window").click
+    driver.title.should == "XHTML Test Page"
+
+    lambda {
+      driver.switch_to.window("result") { raise "foo" }
+    }.should raise_error(RuntimeError, "foo")
+
+    driver.title.should == "XHTML Test Page"
+
+    reset_driver!
+  end
+
   not_compliant_on :browser => :chrome do
     it "should use the original window if the block closes the popup" do
       driver.navigate.to url_for("xhtmlTest.html")
