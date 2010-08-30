@@ -146,7 +146,7 @@ module Selenium
 
         class UnixLauncher < Launcher
           def self.possible_paths
-            [Platform.find_binary("google-chrome"), "/usr/bin/google-chrome"].compact
+            [Platform.find_binary("google-chrome"), Platform.find_binary("chromium"), "/usr/bin/google-chrome"].compact
           end
 
         end
