@@ -19,8 +19,8 @@ module Selenium
               end
 
               if self.class.timeout
-                http.connect_timeout = self.class.timeout
-                http.read_timeout    = self.class.timeout
+                http.open_timeout = self.class.timeout
+                http.read_timeout = self.class.timeout
               end
 
               http
