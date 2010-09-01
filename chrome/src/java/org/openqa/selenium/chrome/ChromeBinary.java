@@ -195,28 +195,27 @@ public class ChromeBinary {
     if (!isChromeBinaryLocationKnown()) {
       chromeBinaryLocation = System.getProperty("webdriver.chrome.bin");
       if (chromeBinaryLocation == null) {
+        List<String> paths = new ArrayList<String>();
         if (Platform.getCurrent().is(Platform.WINDOWS)) {
-          chromeBinaryLocation = getWindowsBinaryLocationFromRegistry();
-          if (chromeBinaryLocation == null) {
-            chromeBinaryLocation = getDefaultWindowsBinaryLocation();
-          }
+          paths.add(getWindowsBinaryLocationFromRegistry());
+          paths.add(getDefaultWindowsBinaryLocation());
         } else if (Platform.getCurrent().is(Platform.UNIX)) {
-          chromeBinaryLocation = "/usr/bin/google-chrome";
+          paths.add("/usr/bin/google-chrome");
+          paths.add("/usr/bin/chromium");
+          //TODO: Add `which google-chrome` and `which chromium`
         } else if (Platform.getCurrent().is(Platform.MAC)) {
-          String[] paths = new String[] {
-            "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
-            "/Users/" + System.getProperty("user.name") +
-                "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"};
-          for (String path : paths) {
-            File binary = new File(path);
-            if (binary.exists()) {
-              chromeBinaryLocation = binary.getCanonicalFile().getAbsoluteFile().toString();
-              break;
-            }
-          }
+          paths.add("/Applications/Google Chrome.app/Contents/MacOS/Google Chrome");
+          paths.add("/Users/" + System.getProperty("user.name") + "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome");
         } else {
           throw new WebDriverException("Unsupported operating system.  " +
               "Could not locate Chrome.  Set webdriver.chrome.bin");
+        }
+        for (String path : paths) {
+          File binary = new File(path);
+          if (binary.exists()) {
+            chromeBinaryLocation = binary.getCanonicalFile().getAbsoluteFile().toString();
+            break;
+          }
         }
       }
       if (!isChromeBinaryLocationKnown()) {
