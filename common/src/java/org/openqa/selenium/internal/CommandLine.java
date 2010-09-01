@@ -239,6 +239,13 @@ public class CommandLine {
     this.allInput = allInput;
   }
 
+  public String toString() {
+    StringBuilder buf = new StringBuilder();
+    for (String s : commandAndArgs) {
+      buf.append(s).append(' ');
+    }
+    return buf.toString();
+  }
 
   private static class StreamDrainer implements Runnable {
     private final Process toWatch;
