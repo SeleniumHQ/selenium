@@ -51,6 +51,13 @@ public class DesiredCapabilities implements Capabilities, Serializable {
     }
   }
 
+  public DesiredCapabilities(org.openqa.selenium.Capabilities other) {
+    super();
+    if (other != null) {
+      capabilities.putAll(other.asMap());
+    }
+  }
+
   public String getBrowserName() {
     return (String) capabilities.get(BROWSER_NAME);
   }
@@ -109,6 +116,20 @@ public class DesiredCapabilities implements Capabilities, Serializable {
       return false;
     }
     return cap instanceof Boolean ? (Boolean) cap : Boolean.parseBoolean(String.valueOf(cap));
+  }
+
+  /**
+   * Merges the extra capabilities provided into this DesiredCapabilities
+   * instance. If capabilities with the same name exist in this instance,
+   * they will be overridden by the values from the extraCapabilities
+   * object.
+   *
+   * @param extraCapabilities  Additional capabilities to be added.
+   */
+
+  public void merge(
+      org.openqa.selenium.Capabilities extraCapabilities) {
+    capabilities.putAll(extraCapabilities.asMap());
   }
 
   public void setCapability(String capabilityName, boolean value) {
