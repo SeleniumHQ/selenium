@@ -94,7 +94,17 @@ module Selenium
         end
 
         class << self
-          attr_writer :path
+
+          #
+          # @private
+          #
+          # @see Firefox.path=
+          #
+
+          def path=(path)
+            Platform.assert_executable(path)
+            @path = path
+          end
 
           def path
             @path ||= case Platform.os

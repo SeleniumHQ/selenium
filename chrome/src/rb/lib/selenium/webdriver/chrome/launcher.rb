@@ -35,6 +35,17 @@ module Selenium
           )
         end
 
+        #
+        # @private
+        #
+        # @see Chrome.path=
+        #
+
+        def self.binary_path=(path)
+          Platform.assert_executable(path)
+          @binary_path = path
+        end
+
         def launch(server_url)
           create_extension
           create_profile

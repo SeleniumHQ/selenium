@@ -9,8 +9,10 @@ require "socket"
 module Selenium
   module WebDriver
 
-    # @private
     module Chrome
+      def self.path=(path)
+        Launcher.binary_path = path
+      end
     end
 
   end

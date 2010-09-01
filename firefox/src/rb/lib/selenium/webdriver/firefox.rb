@@ -11,8 +11,6 @@ require "selenium/webdriver/firefox/bridge"
 
 module Selenium
   module WebDriver
-
-    # @private
     module Firefox
 
       DEFAULT_PROFILE_NAME            = "WebDriver".freeze
@@ -21,6 +19,10 @@ module Selenium
       DEFAULT_SECURE_SSL              = false
       DEFAULT_ASSUME_UNTRUSTED_ISSUER = true
       DEFAULT_LOAD_NO_FOCUS_LIB       = false
+
+      def self.path=(path)
+        Binary.path = path
+      end
 
     end
   end

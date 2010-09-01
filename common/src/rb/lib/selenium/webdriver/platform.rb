@@ -91,6 +91,16 @@ module Selenium
         File.chmod 0766, file
       end
 
+      def assert_executable(path)
+        unless File.file? path
+          raise Error::WebDriverError, "not a file: #{path.inspect}"
+        end
+
+        unless File.executable? path
+          raise Error::WebDriverError, "not executable: #{path.inspect}"
+        end
+      end
+
       def find_binary(*binary_names)
         paths = ENV['PATH'].split(File::PATH_SEPARATOR)
         binary_names.map! { |n| "#{n}.exe" } if win?
