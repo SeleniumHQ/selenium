@@ -107,6 +107,13 @@ public class GoogleChromeLauncher extends AbstractBrowserLauncher {
         else 
             return "";
     }
+    
+    private String getUntrustedCertificatesFlag() {
+        if (browserConfigurationOptions.is("trustAllSSLCertificates"))
+            return "--ignore-certificate-errors";
+        else
+            return "";
+    }
 
     private void createProfile(String sessionId, String url) {
         try {
@@ -183,6 +190,7 @@ public class GoogleChromeLauncher extends AbstractBrowserLauncher {
                 "--disable-web-security",
                 // Set the user data (i.e. profile) directory.
                 "--user-data-dir=\"" + customProfileDir.getAbsolutePath() + "\"",
+                getUntrustedCertificatesFlag(),
                 getSecurityMode(),
                 getCommandLineFlags(),
                 url
