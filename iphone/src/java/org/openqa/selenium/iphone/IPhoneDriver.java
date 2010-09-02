@@ -21,14 +21,13 @@ import java.net.URL;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.browserlaunchers.CapabilityType;
 import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
 /**
- * IPhoneDriver is a driver for running tests on Mobile Safari on the iPhone
- *  and iPod Touch.
+ * IPhoneDriver is a driver for running tests on Mobile Safari on the iPhone, 
+ * iPad and iPod Touch.
  * 
  * The driver uses WebDriver's remote REST interface to communicate with the
  * iphone. The iphone (or iphone simulator) must be running the iWebDriver app.
@@ -50,7 +49,7 @@ public class IPhoneDriver extends RemoteWebDriver {
    * @param executor The executor to use for communicating with the iPhone.
    */
   public IPhoneDriver(CommandExecutor executor) {
-    super(executor, getiPhoneCapabilities());
+    super(executor, DesiredCapabilities.iphone());
   }
 
   /**
@@ -61,7 +60,7 @@ public class IPhoneDriver extends RemoteWebDriver {
    * @see #IPhoneDriver(String)
    */
   public IPhoneDriver(URL remoteAddress) throws Exception {
-    super(remoteAddress, getiPhoneCapabilities());
+    super(remoteAddress, DesiredCapabilities.iphone());
   }
 
   /**
@@ -83,17 +82,6 @@ public class IPhoneDriver extends RemoteWebDriver {
   public IPhoneDriver() throws Exception {
     this(DEFAULT_IWEBDRIVER_URL);
   }
-  
-  private static DesiredCapabilities getiPhoneCapabilities() {
-	DesiredCapabilities caps = DesiredCapabilities.iphone();
-	caps.setCapability(CapabilityType.TAKES_SCREENSHOT, true);
-	caps.setCapability(CapabilityType.SUPPORTS_APPLICATION_CACHE, true);
-	caps.setCapability(CapabilityType.SUPPORTS_WEB_STORAGE, true);
-	caps.setCapability(CapabilityType.SUPPORTS_LOCATION_CONTEXT, true);
-	caps.setCapability(CapabilityType.SUPPORTS_SQL_DATABASE, true);
-	caps.setCapability(CapabilityType.SUPPORTS_BROWSER_CONNECTION, true);
-	return caps;
-  }
 
   @Override
   public void close() {
@@ -109,25 +97,30 @@ public class IPhoneDriver extends RemoteWebDriver {
 
     public WebDriver frame(int frameIndex) {
       // is this even possible to do on the iphone?
-      throw new UnsupportedOperationException("Frame switching is not supported on the iPhone");
+      throw new UnsupportedOperationException(
+    		  "Frame switching is not supported on the iPhone");
     }
 
     public WebDriver frame(String frameName) {
       // is this even possible to do on the iphone?
-      throw new UnsupportedOperationException("Frame switching is not supported on the iPhone");
+      throw new UnsupportedOperationException(
+    		  "Frame switching is not supported on the iPhone");
     }
 
     public WebDriver window(String windowName) {
-      throw new UnsupportedOperationException("Window switching is unsupported on the iPhone");
+      throw new UnsupportedOperationException(
+    		  "Window switching is unsupported on the iPhone");
     }
 
     public WebDriver defaultContent() {
       // is this even possible to do on the iphone?
-      throw new UnsupportedOperationException("Frame switching is not supported on the iPhone");
+      throw new UnsupportedOperationException(
+    		  "Frame switching is not supported on the iPhone");
     }
 
     public WebElement activeElement() {
-      return (WebElement) executeScript("return document.activeElement || document.body;");
+      return (WebElement) executeScript(
+    		  "return document.activeElement || document.body;");
     }
   }
 }
