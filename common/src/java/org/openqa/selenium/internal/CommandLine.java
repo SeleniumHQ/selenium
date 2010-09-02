@@ -126,10 +126,8 @@ public class CommandLine {
 
       ProcessBuilder builder = new ProcessBuilder(commandAndArgs);
       builder.redirectErrorStream(true);
-//      if (!env.isEmpty()) {
-//        builder.environment().clear();
-        builder.environment().putAll(env);
-//      }
+      builder.environment().putAll(env);
+      
       proc = builder.start();
 
       drainer = new StreamDrainer(proc);
@@ -138,7 +136,7 @@ public class CommandLine {
 
       if (allInput != null) {
         byte[] bytes = allInput.getBytes();
-        proc.getOutputStream().write(bytes  );
+        proc.getOutputStream().write(bytes);
         proc.getOutputStream().close();
       }
 
