@@ -236,8 +236,10 @@ class RemoteConnection(object):
                     'Invalid server response body: %s' % body)
                 assert 'status' in data, (
                     'Invalid server response; no status: %s' % body)
-                assert 'value' in data, (
-                    'Invalid server response; no value: %s' % body)
+                # Some of the drivers incorrectly return a response
+                # with no 'value' field when they should return null.
+                if 'value' not in data:
+                    data['value'] = None
                 return data
         finally:
             response.close()
