@@ -33,13 +33,15 @@ public class HttpRequest {
 
       post.setRequestEntity(new StringRequestEntity(content, "application/json", "UTF-8"));
 
-      new HttpClient().executeMethod(post);
-
-      response = post.getResponseBodyAsString();
-      return;
+      try {
+        new HttpClient().executeMethod(post);
+        response = post.getResponseBodyAsString();
+      } finally {
+        post.releaseConnection();
+      }
+    } else {
+      throw new RuntimeException("Unsupported method");
     }
-
-    throw new RuntimeException("Unsupported method");
   }
 
   public String getResponse() {

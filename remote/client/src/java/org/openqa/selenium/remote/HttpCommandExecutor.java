@@ -87,6 +87,7 @@ import static org.openqa.selenium.remote.DriverCommand.SWITCH_TO_FRAME;
 import static org.openqa.selenium.remote.DriverCommand.SWITCH_TO_WINDOW;
 import static org.openqa.selenium.remote.DriverCommand.TOGGLE_ELEMENT;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -260,18 +261,24 @@ public class HttpCommandExecutor implements CommandExecutor {
           .setRequestEntity(new StringRequestEntity(payload, "application/json", "UTF-8"));
     }
 
-    client.executeMethod(httpMethod);
-
-    // TODO: SimonStewart: 2008-04-25: This is really shabby
-    if (isRedirect(httpMethod)) {
-      Header newLocation = httpMethod.getResponseHeader("location");
-      httpMethod = new GetMethod(newLocation.getValue());
-      httpMethod.setFollowRedirects(true);
-      httpMethod.addRequestHeader("Accept", "application/json, image/png");
+    try {
       client.executeMethod(httpMethod);
-    }
 
-    return createResponse(httpMethod);
+      // TODO: SimonStewart: 2008-04-25: This is really shabby
+      if (isRedirect(httpMethod)) {
+        httpMethod.releaseConnection();
+        Header newLocation = httpMethod.getResponseHeader("location");
+
+        httpMethod = new GetMethod(newLocation.getValue());
+        httpMethod.setFollowRedirects(true);
+        httpMethod.addRequestHeader("Accept", "application/json, image/png");
+        client.executeMethod(httpMethod);
+      }
+
+      return createResponse(httpMethod);
+    } finally {
+      httpMethod.releaseConnection();
+    }
   }
 
   private Response createResponse(HttpMethod httpMethod) throws Exception {
