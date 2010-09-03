@@ -240,50 +240,9 @@ public class FirefoxProfile {
     return root;
   }
 
-  protected void installDevelopmentExtension() throws IOException {
-      if (!FileHandler.createDir(extensionsDir))
-        throw new IOException("Cannot create extensions directory: " + extensionsDir.getAbsolutePath());
-
-      String home = findFirefoxExtensionRootInSourceCode();
-
-      File writeTo = new File(extensionsDir, EXTENSION_NAME);
-        if (writeTo.exists() && !FileHandler.delete(writeTo)) {
-            throw new IOException("Cannot delete existing extensions directory: " +
-                                  extensionsDir.getAbsolutePath());
-        }
-
-        FileWriter writer = null;
-        try {
-            writer = new FileWriter(writeTo);
-            writer.write(home);
-        } catch (IOException e) {
-            throw new WebDriverException(e);
-        } finally {
-            Cleanly.close(writer);
-        }
-    }
-
-  private String findFirefoxExtensionRootInSourceCode() {
-    String[] possiblePaths = {
-        "firefox/src/extension",
-        "../firefox/src/extension",
-        "../../firefox/src/extension",
-    };
-
-    File current;
-    for (String potential : possiblePaths) {
-      current = new File(potential);
-      if (current.exists()) {
-        return current.getAbsolutePath();
-      }
-    }
-
-    throw new WebDriverException("Unable to locate firefox driver extension in developer source");
-  }
-
   public File getProfileDir() {
         return profileDir;
-    }
+  }
 
     //Assumes that we only really care about the preferences, not the comments
     private Map<String, String> readExistingPrefs(File userPrefs) {
