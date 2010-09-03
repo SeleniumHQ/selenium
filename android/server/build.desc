@@ -1,10 +1,16 @@
 
+android_r(name = "r",
+  manifest = "AndroidManifest.xml",
+  resource = "res",
+  out = "gen/org/openqa/selenium/android/app")
+
 java_library(name = "server",
   srcs = [
     "gen/**/*.java",
     "src/java/**/*.java"
   ],
   deps = [
+    ":r",
     "//remote/server",
     "//third_party/java/android",
     "//third_party/java/jetty",

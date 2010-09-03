@@ -4,6 +4,9 @@ require 'rake-tasks/crazy_fun/mappings/java'
 
 class AndroidMappings
   def add_all(fun)
+    fun.add_mapping("android_r", Android::CheckResourcePreconditions.new)
+    fun.add_mapping("android_r", Android::CreateResourceTask.new)
+    
     fun.add_mapping("android_binary", Android::CheckPreconditions.new)
     fun.add_mapping("android_binary", Android::CreateTask.new)
     fun.add_mapping("android_binary", Android::CreateShortNameTask.new)
@@ -44,6 +47,15 @@ module Android
     end
   end  
 
+  class CheckResourcePreconditions
+    def handle(fun, dir, args)
+      raise StandardError, ":name must be set" if args[:name].nil?
+      raise StandardError, ":manifest must be set" if args[:manifest].nil?
+      raise StandardError, ":resource must be set" if args[:resource].nil?
+      raise StandardError, ":out must be set" if args[:out].nil?
+    end
+  end
+
   class CreateTask < Tasks
     def handle(fun, dir, args)
       artifact_name = output_name(dir, args[:name], "apk")
@@ -76,7 +88,7 @@ module Android
       end
     end
   end
-  
+    
   class AddDependencies < Tasks
     def handle(fun, dir, args)
       task = Rake::Task[output_name(dir, args[:name], "apk")]
@@ -277,4 +289,51 @@ module Android
       end
     end
   end  
+  
+  class CreateResourceTask < BaseAndroid
+    def handle(fun, dir, args)
+      task_name = task_name(dir, args[:name])
+      out = File.join(dir, args[:out], "R.java")
+      
+      file out => FileList[File.join(dir, args[:resource], "**", "*")] do
+        if (android_installed?)
+          properties = read_properties()
+
+          sdk_path = properties["androidsdkpath"]
+          platform =  properties["androidplatform"]
+
+          android_jar = File.expand_path(File.join(sdk_path, "platforms", platform, "android.jar"))
+          aapt = File.join(sdk_path, "platforms", platform, "tools", "aapt")
+          manifest = File.join(dir, args[:manifest])
+          resource = File.join(dir, args[:resource])
+          java_r = File.join(dir, args[:out])
+          cmd = "#{aapt} package -f -M #{manifest} -S #{resource} -I #{android_jar} -J #{java_r}"
+          puts "Building #{task_name} as #{out}"
+          sh cmd
+        end
+      end
+
+      task task_name => [out]
+      
+      Rake::Task[out].out = out
+      Rake::Task[task_name].out = out
+    end
+  end  
+  
+  class Clean < BaseAndroid
+    def intialize
+      properties = read_properties()
+
+      if (android_installed?)
+        sdk_path = properties["androidsdkpath"]
+        platform =  properties["androidplatform"]
+
+        android = File.expand_path(File.join(sdk_path, "tools", "android"))
+        android_target =  "android-" << properties["androidtarget"].to_s
+        avdname = "debug_rake_#{android_target}"
+            
+        sh "#{android} delete avd -n #{avdname}"
+      end
+    end
+  end
 end

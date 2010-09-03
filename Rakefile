@@ -165,6 +165,7 @@ task :clean do
   rm_rf 'iphone/build/'
   rm_rf 'android/server/bin/'
   rm_rf 'android/server/build/'
+  Android::Clean.new()
 end
 
 dll(:name => "ie_win32_dll",
