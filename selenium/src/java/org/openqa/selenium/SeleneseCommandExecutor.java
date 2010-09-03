@@ -27,6 +27,8 @@ import com.thoughtworks.selenium.DefaultSelenium;
 import com.thoughtworks.selenium.HttpCommandProcessor;
 import com.thoughtworks.selenium.Selenium;
 import com.thoughtworks.selenium.SeleniumException;
+
+import org.json.JSONException;
 import org.openqa.selenium.firefox.internal.Executable;
 import org.openqa.selenium.internal.selenesedriver.ClearElement;
 import org.openqa.selenium.internal.selenesedriver.ClickElement;
@@ -86,7 +88,7 @@ public class SeleneseCommandExecutor implements CommandExecutor {
     return instance;
   }
 
-  public Response execute(Command command) throws Exception {
+  public Response execute(Command command) throws JSONException {
     SeleneseFunction function = functions.get(command.getName());
     if (function == null) {
       throw new UnsupportedOperationException("cannot execute: " + command.getName());
@@ -101,7 +103,7 @@ public class SeleneseCommandExecutor implements CommandExecutor {
     }
   }
 
-  private Response prepareExceptionResponse(Exception e) throws Exception {
+  private Response prepareExceptionResponse(Exception e) throws JSONException {
     Response response = new Response();
 
     Exception toUse = e;

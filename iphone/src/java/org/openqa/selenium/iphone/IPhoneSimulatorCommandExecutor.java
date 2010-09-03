@@ -18,6 +18,8 @@
 package org.openqa.selenium.iphone;
 
 import com.google.common.annotations.VisibleForTesting;
+
+import org.json.JSONException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.CommandExecutor;
@@ -92,7 +94,7 @@ public class IPhoneSimulatorCommandExecutor implements CommandExecutor {
     binary.shutdown();
   }
 
-  public Response execute(Command command) throws Exception {
+  public Response execute(Command command) throws IOException, JSONException {
     if (!binary.isRunning()) {
       throw new IPhoneSimulatorNotRunningException();
     }

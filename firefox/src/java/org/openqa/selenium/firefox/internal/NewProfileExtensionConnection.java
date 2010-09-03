@@ -33,6 +33,7 @@ import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.json.JSONException;
 import org.openqa.selenium.NetworkUtils;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
@@ -112,7 +113,7 @@ public class NewProfileExtensionConnection implements CommandExecutor, Extension
     }
   }
 
-  public Response execute(Command command) throws Exception {
+  public Response execute(Command command) throws IOException, JSONException {
     return delegate.execute(command);
   }
 

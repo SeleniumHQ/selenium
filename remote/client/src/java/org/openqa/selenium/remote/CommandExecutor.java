@@ -17,7 +17,11 @@ limitations under the License.
 
 package org.openqa.selenium.remote;
 
+import java.io.IOException;
+
+import org.json.JSONException;
+
 public interface CommandExecutor {
 
-  Response execute(Command command) throws Exception;
+  Response execute(Command command) throws IOException, JSONException;
 }

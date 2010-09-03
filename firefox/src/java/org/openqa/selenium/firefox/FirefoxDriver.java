@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.json.JSONException;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.NoAlertPresentException;
@@ -336,7 +337,7 @@ public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot, F
       connection.quit();
     }
 
-    public Response execute(Command command) throws Exception {
+    public Response execute(Command command) throws IOException, JSONException {
       return connection.execute(command);
     }
   }

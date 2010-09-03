@@ -135,7 +135,7 @@ public class AugmenterTest {
       this.capabilities = capabilities;
     }
 
-    public Response execute(Command command) throws Exception {
+    public Response execute(Command command) {
       if (DriverCommand.NEW_SESSION == command.getName()) {
         Response response = new Response(new SessionId("foo"));
         response.setStatus(ErrorCodes.SUCCESS);
