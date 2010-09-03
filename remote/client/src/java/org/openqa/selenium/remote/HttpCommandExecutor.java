@@ -103,6 +103,7 @@ import org.apache.commons.httpclient.methods.DeleteMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
+import org.json.JSONException;
 import org.openqa.selenium.WebDriverException;
 
 import com.google.common.collect.ImmutableMap;
@@ -248,7 +249,7 @@ public class HttpCommandExecutor implements CommandExecutor {
     }
   }
 
-  public Response execute(Command command) throws Exception {
+  public Response execute(Command command) throws IOException, JSONException {
     CommandInfo info = nameToUrl.get(command.getName());
     HttpMethod httpMethod = info.getMethod(remotePath, command);
 
@@ -281,7 +282,7 @@ public class HttpCommandExecutor implements CommandExecutor {
     }
   }
 
-  private Response createResponse(HttpMethod httpMethod) throws Exception {
+  private Response createResponse(HttpMethod httpMethod) throws IOException, JSONException {
     Response response;
 
     Header header = httpMethod.getResponseHeader("Content-Type");
