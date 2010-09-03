@@ -438,7 +438,10 @@ class ClassPath
       end
       
       if Rake::Task.task_defined? dep
-        build_classpath(cp, Rake::Task[dep])
+        parent = Rake::Task[dep]
+        if !((parent.to_s =~ /\.apk/))
+          build_classpath(cp, parent)
+        end
       end
     end
     

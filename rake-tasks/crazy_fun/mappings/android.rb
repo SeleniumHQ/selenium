@@ -13,6 +13,7 @@ class AndroidMappings
     fun.add_mapping("android_binary", Android::BuildApk.new)
     
     fun.add_mapping("android_test", Android::CheckTestPreconditions.new)
+    fun.add_mapping("android_test", Android::CreateTask.new)
     fun.add_mapping("android_test", CrazyFunJava::CreateTask.new)
     fun.add_mapping("android_test", CrazyFunJava::CreateShortNameTask.new)
     fun.add_mapping("android_test", CrazyFunJava::AddDepedencies.new)
@@ -48,7 +49,11 @@ module Android
       artifact_name = output_name(dir, args[:name], "apk")
       t_name = task_name(dir, args[:name])
       
-      file artifact_name => [args[:binary]]
+      file artifact_name
+      
+      if (args[:binary])
+        task t_name => [args[:binary]]
+      end
       
       desc "Compile an adroid apk"
       task t_name => [artifact_name]
@@ -76,6 +81,7 @@ module Android
     def handle(fun, dir, args)
       task = Rake::Task[output_name(dir, args[:name], "apk")]
       add_dependencies(task, dir, args[:deps])
+      add_dependencies(task, dir, args[:manifest])
     end
   end
   
@@ -229,6 +235,8 @@ module Android
         apk = Rake::Task[args[:binary]].out
         
         puts "Starting adb server: #{adb}"
+        sh "#{adb} kill-server"
+        sleep 5
         sh "#{adb} start-server"
         sleep 5
 
