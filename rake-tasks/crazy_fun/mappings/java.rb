@@ -366,7 +366,7 @@ class RunTests < BaseJava
       else
         tests.each do |test|
           CrazyFunJava.ant.project.getBuildListeners().get(0).setMessageOutputLevel(2) if ENV['log']
-  	      CrazyFunJava.ant.junit(:fork => true, :forkmode => 'once', :showoutput => true,
+  	      CrazyFunJava.ant.junit(:fork => true, :forkmode =>  'once', :showoutput => true,
 	  	                          :printsummary => 'on', :haltonerror => true, :haltonfailure => true) do |ant|
   	        ant.classpath do |ant_cp|
 	            cp.all.each do |jar|
@@ -483,7 +483,8 @@ class CreateUberJar < BaseJava
       deps = jar_name(dir, args[:name])
     else
       deps = args[:deps].collect do |dep|
-        task_name(dir, dep)
+        real_file = File.join(dir, dep.to_s)
+        File.exists?(real_file) ? real_file : task_name(dir, dep)
       end
     end
     

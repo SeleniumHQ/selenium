@@ -23,10 +23,12 @@ import android.util.Log;
 
 import com.google.common.collect.Sets;
 
+import com.google.common.io.ByteStreams;
+import com.google.common.io.Closeables;
+import com.google.common.io.Resources;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.openqa.jetty.util.IO;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.JavascriptExecutor;
@@ -56,6 +58,7 @@ import org.openqa.selenium.internal.FindsByName;
 import org.openqa.selenium.internal.FindsByTagName;
 import org.openqa.selenium.internal.FindsByXPath;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -120,14 +123,14 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
   private void initJsonLibrary() {
     // Unfortunately JSON is not natively supported until Android 1.6
     // TODO(berrada): Only do this if we're on <1.6
-    InputStream in = null;
+    InputStream stream = null;
     try {
-      in = getContext().getResources().openRawResource(R.raw.json);
-      jsonLibrary = IO.toString(in);
-    } catch (Exception e) {
-      throw new WebDriverException("Could not read JSON library.", e);
+      stream = getContext().getResources().openRawResource(R.raw.json);
+      jsonLibrary = new String(ByteStreams.toByteArray(stream));
+    } catch (IOException e) {
+      throw new WebDriverException(e);
     } finally {
-      IO.close(in);
+      Closeables.closeQuietly(stream);
     }
   }
 

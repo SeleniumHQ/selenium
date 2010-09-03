@@ -1,0 +1,27 @@
+
+java_library(name = "server",
+  srcs = [
+    "gen/**/*.java",
+    "src/java/**/*.java"
+  ],
+  deps = [
+    "//remote/server",
+    "//third_party/java/android",
+    "//third_party/java/jetty",
+    "//third_party/java/guava-libraries",
+    "//third_party/java/servlet-api"
+  ])
+
+android_binary(name = "android-server",
+  manifest = "AndroidManifest.xml",
+  resource_dir = "res",
+  deps = [
+    ":server",
+    "//common",
+    "//remote/client",
+    "//remote/common",
+    "//remote/server",
+    "//support",
+    "//third_party/java/guava-libraries:guava-libraries:uber",
+    "//third_party/java/jetty:lite:uber",
+  ])

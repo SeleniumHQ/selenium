@@ -60,6 +60,12 @@ class Tasks
     "//#{use}:#{name}"    
   end  
   
+  def output_name(dir, name, suffix)
+    t = task_name(dir, name);
+    result = "build/" + (t.slice(2 ... t.length)) + "." + suffix
+    result.gsub(":", "/")
+  end
+  
   def add_dependencies(target, dir, all_deps)
     return if all_deps.nil?
     

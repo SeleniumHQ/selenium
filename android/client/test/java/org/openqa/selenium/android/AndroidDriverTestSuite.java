@@ -39,7 +39,7 @@ public class AndroidDriverTestSuite extends TestCase {
       env.stop();
     }
     GlobalTestEnvironment.set(new AndroidTestEnvironment());
-    
+
     return new TestSuiteBuilder()
         .addSourceDir("android/client")
         .addSourceDir("remote")

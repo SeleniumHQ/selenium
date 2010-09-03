@@ -9,6 +9,7 @@ verbose false
 
 # The CrazyFun build grammar. There's no magic here, just ruby
 require 'rake-tasks/crazy_fun'
+require 'rake-tasks/crazy_fun/mappings/android'
 require 'rake-tasks/crazy_fun/mappings/gcc'
 require 'rake-tasks/crazy_fun/mappings/java'
 require 'rake-tasks/crazy_fun/mappings/javascript'
@@ -27,7 +28,6 @@ require 'rake-tasks/iphone'
 require 'rake-tasks/selenium'
 require 'rake-tasks/se-ide'
 require 'rake-tasks/ie_code_generator'
-require 'rake-tasks/android'
 
 version = "2.0a5"
 ide_version = "1.0.8-SNAPSHOT"
@@ -49,6 +49,7 @@ crazy_fun = CrazyFun.new
 #
 # If crazy fun doesn't know how to handle a particular output type ("java_library"
 # in the example above) then it will throw an exception, stopping the build
+AndroidMappings.new.add_all(crazy_fun)
 GccMappings.new.add_all(crazy_fun)
 JavaMappings.new.add_all(crazy_fun)
 JavascriptMappings.new.add_all(crazy_fun)
@@ -60,7 +61,7 @@ RubyMappings.new.add_all(crazy_fun)
 # need to fall back to prebuilt binaries. The prebuilt binaries are stored in
 # a directory structure identical to that used in the "build" folder, but
 # rooted at one of the following locations:
-["chrome/prebuilt", "common/prebuilt", "firefox/prebuilt", "jobbie/prebuilt", "ide/prebuilt"].each do |pre|
+["android/server/prebuilt", "chrome/prebuilt", "common/prebuilt", "firefox/prebuilt", "jobbie/prebuilt", "ide/prebuilt"].each do |pre|
   crazy_fun.prebuilt_roots << pre
 end
 
@@ -112,6 +113,7 @@ task :test_iphone_client => [:'webdriver-iphone-client-test']
 task :test_iphone => [:test_iphone_server, :test_iphone_client]
 task :android => [:android_client, :android_server]
 task :android_client => ['//android/client']
+task :android_server => ['//android/server:android-server']
 
 if (windows?)
   task :test_core => [:'test_core_ie']
@@ -161,8 +163,8 @@ task :build => [:all, :iphone, :remote, :selenium]
 task :clean do
   rm_rf 'build/'
   rm_rf 'iphone/build/'
-  rm_rf 'android/server/bin/', :verbose => false
-  rm_rf 'android/server/build/', :verbose => false
+  rm_rf 'android/server/bin/'
+  rm_rf 'android/server/build/'
 end
 
 dll(:name => "ie_win32_dll",
@@ -425,55 +427,6 @@ task :test_iphone_server do
     sh "cd iphone && xcodebuild -sdk #{sdk} ARCHS=i386 -target Tests"
   else
     puts "XCode and/or iPhoneSDK not found. Not testing iphone_server."
-  end
-end
-
-### Android ###
-file 'build/android/server/server.jar' => FileList["android/server/src/java/**/*.java"] + [:remote, :support] do
-  if AndroidSDK?
-    android_build(:name => "android-server",
-                  :srcs  => [ "android/server/src/java/**/*.java" ],
-                  :deps => [ :common,
-                             :remote,
-                             :support,
-                             :remote_common,
-                           ],
-                  :zip  => true
-                 )
-    copy_to_prebuilt("build/android-server.apk", "android/server/prebuilt")
-  else
-    puts "Did not build Android APK because the Android SDK could not be found. Set the SDK location in properties.yml"
-    copy_prebuilt("android/server/prebuilt/", "build/android-server.apk")
- end
-end
-task :android_server => 'build/android/server/server.jar'
-
-java_test(:name => "webdriver-android-client-test",
-          :srcs => ["android/client/test/java/**/*.java"],
-          :deps => [
-                     :test_common,
-                     :remote_client,
-                     :android_client
-                   ])
-
-task :test_android_init => [:android_server, :remote_server] do
-  if AndroidSDK?
-    #puts "Starting"
-    android_init()
-    run_emulator()
-    install_application()
-    start_application()
-    add_port_redir()
-  else
-    puts "Android SDK could not be found. Set the SDK location in properties.yml"
-  end
-end
-
-# This runs the tests on Android emulator
-task :test_android => [:test_android_init, :'webdriver-android-client-test'] do
-  if AndroidSDK?
-  else
-    puts "Android SDK could not be found. Set the SDK location in properties.yml"
   end
 end
 
