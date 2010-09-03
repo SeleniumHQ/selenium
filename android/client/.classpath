@@ -4,9 +4,9 @@
 	<classpathentry kind="src" path="test/java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/common"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/selenium-remote-client"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/selenium-remote-common"/>
-	<classpathentry kind="lib" path="/third_party/java/junit/junit-dep-4.8.1.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/selenium-common"/>
+	<classpathentry kind="lib" path="/third-party/java/junit/junit-dep-4.8.1.jar" sourcepath="/third-party/java/junit/junit-4.8.1-src.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>

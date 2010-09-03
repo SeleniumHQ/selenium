@@ -4,14 +4,15 @@
 	<classpathentry kind="src" path="test/java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
-	<classpathentry kind="lib" path="/third_party/java/servlet-api/servlet-api-2.5-6.1.9.jar"/>
-	<classpathentry kind="lib" path="/third_party/java/jetty/jetty-6.1.9.jar"/>
-	<classpathentry kind="lib" path="/third_party/java/jetty/jetty-util-6.1.9.jar"/>
-	<classpathentry kind="lib" path="/third_party/java/google-collect/google-collect-1.0.jar"/>
 	<classpathentry kind="src" path="gen"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/common"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/selenium-remote-common"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/selenium-remote-server"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/support"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/selenium-chrome"/>
+	<classpathentry kind="lib" path="/third-party/java/servlet-api/servlet-api-2.5-6.1.9.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/jetty/jetty-6.1.9.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/jetty/jetty-util-6.1.9.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/guava-libraries/guava-r06.jar" sourcepath="/third-party/java/guava-libraries/guava-r06-src.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="/third-party/java/android/android.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>
