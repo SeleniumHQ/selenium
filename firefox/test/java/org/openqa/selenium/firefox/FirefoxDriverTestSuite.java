@@ -27,14 +27,13 @@ import java.util.Map;
 import com.google.common.collect.ImmutableMap;
 import org.openqa.selenium.Build;
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.Platform;
 import org.openqa.selenium.TestSuiteBuilder;
 import org.openqa.selenium.internal.FileHandler;
+import org.openqa.selenium.internal.InProject;
 import org.openqa.selenium.internal.TemporaryFilesystem;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import static org.openqa.selenium.Ignore.Driver.FIREFOX;
-import static org.openqa.selenium.Platform.WINDOWS;
 
 public class FirefoxDriverTestSuite extends TestCase {
   public static Test suite() throws Exception {
@@ -94,7 +93,7 @@ public class FirefoxDriverTestSuite extends TestCase {
     }
 
     private static FirefoxProfile copyExtensionTo(FirefoxProfile p) throws Exception {
-      File extensionSource = FileHandler.locateInProject("firefox/src/extension");
+      File extensionSource = InProject.locate("firefox/src/extension");
 
       File dir = p.getProfileDir();
       File extension = new File(dir, "extensions/fxdriver@googlecode.com");
@@ -110,7 +109,7 @@ public class FirefoxDriverTestSuite extends TestCase {
 
       // /me rolls up sleeves. Here we go.
       //' Where are resources able to hide?
-      File root = FileHandler.locateInProject("Rakefile").getParentFile();
+      File root = InProject.locate("Rakefile").getParentFile();
       File[] roots = new File[] {
           root,
           new File(root, "build/firefox"),
@@ -156,7 +155,7 @@ public class FirefoxDriverTestSuite extends TestCase {
       p.getAdditionalPreferences().addTo(profile);
       if (Boolean.getBoolean("webdriver.debug")) {
         try {
-          profile.addExtension(FileHandler.locateInProject("third_party/firebug/firebug-1.5.0-fx.xpi"));
+          profile.addExtension(InProject.locate("third_party/firebug/firebug-1.5.0-fx.xpi"));
         } catch (IOException e) {
           throw new RuntimeException(e);
         }

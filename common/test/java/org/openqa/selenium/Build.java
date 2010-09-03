@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.openqa.selenium.internal.FileHandler;
+import org.openqa.selenium.internal.InProject;
 
 import static org.junit.Assert.fail;
 import static org.openqa.selenium.Platform.WINDOWS;
@@ -29,7 +29,7 @@ public class Build {
     System.out.println("Running " + targets);
 
     ProcessBuilder builder = new ProcessBuilder(targets);
-    builder.directory(FileHandler.locateInProject("Rakefile").getParentFile());
+    builder.directory(InProject.locate("Rakefile").getParentFile());
     try {
       executeBuild(builder);
     } catch (Exception e) {

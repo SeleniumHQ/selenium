@@ -29,6 +29,7 @@ import org.openqa.selenium.Platform;
 import org.openqa.selenium.TestSuiteBuilder;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.internal.FileHandler;
+import org.openqa.selenium.internal.InProject;
 import org.openqa.selenium.internal.TemporaryFilesystem;
 
 import static org.openqa.selenium.Ignore.Driver.CHROME;
@@ -58,7 +59,7 @@ public class ChromeDriverTestSuite extends TestCase {
     }
 
     private static ChromeExtension createExtension() {
-      File extensionSrcDir = FileHandler.locateInProject("chrome/src/extension");
+      File extensionSrcDir = InProject.locate("chrome/src/extension");
       File extensionDstDir = TemporaryFilesystem.createTempDir("extension", "folder");
       String extensionDst;
       try {

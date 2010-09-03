@@ -23,7 +23,7 @@ import junit.framework.TestCase;
 import java.io.File;
 
 import org.openqa.selenium.TestSuiteBuilder;
-import org.openqa.selenium.internal.FileHandler;
+import org.openqa.selenium.internal.InProject;
 
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.REMOTE;
@@ -48,7 +48,7 @@ public class IPhoneDriverTestSuite extends TestCase {
     }
 
     private static IPhoneSimulatorBinary locateSimulatorBinary() throws Exception {
-      File iWebDriverApp = FileHandler.locateInProject(
+      File iWebDriverApp = InProject.locate(
           "iphone/build/Release-iphonesimulator/iWebDriver.app/iWebDriver");
       return new IPhoneSimulatorBinary(iWebDriverApp);
     }

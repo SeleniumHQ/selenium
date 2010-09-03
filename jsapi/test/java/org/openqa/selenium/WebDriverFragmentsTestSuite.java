@@ -7,13 +7,13 @@ import junit.framework.TestSuite;
 import java.io.File;
 
 import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.internal.FileHandler;
+import org.openqa.selenium.internal.InProject;
 
 public class WebDriverFragmentsTestSuite {
   public static Test suite() {
     TestSuite suite = new TestSuite();
 
-    File testDir = FileHandler.locateInProject("common/test/js/webdriver");
+    File testDir = InProject.locate("common/test/js/webdriver");
 
      for (File file : testDir.listFiles(new TestSuiteBuilder.TestFilenameFilter())) {
       String path = file.getAbsolutePath()

@@ -64,7 +64,7 @@ public class ZipTest extends TestCase {
   }
 
   public void testCanUnzipASingleEntry() throws IOException {
-    File source = FileHandler.locateInProject(
+    File source = InProject.locate(
         "common/test/java/org/openqa/selenium/internal/single-file.zip");
 
     zip.unzip(source, outputDir);
@@ -73,7 +73,7 @@ public class ZipTest extends TestCase {
   }
 
   public void testCanUnzipAComplexZip() throws IOException {
-    File source = FileHandler.locateInProject(
+    File source = InProject.locate(
         "common/test/java/org/openqa/selenium/internal/subfolders.zip");
 
     zip.unzip(source, outputDir);

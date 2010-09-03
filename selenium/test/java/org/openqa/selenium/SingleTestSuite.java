@@ -39,7 +39,7 @@ public class SingleTestSuite extends TestCase {
   private static final String SELENIUM = "org.openqa.selenium.SeleneseBackedWebDriver";
 
   public static Test suite() throws Exception {
-    String driver = REMOTE;
+    String driver = FIREFOX;
 
     System.setProperty("webdriver.development", "true");
     System.setProperty("jna.library.path", "..\\build;build");
@@ -49,12 +49,13 @@ public class SingleTestSuite extends TestCase {
                                                       
     TestSuiteBuilder builder = new TestSuiteBuilder()
         .addSourceDir("common")
+        .addSourceDir("firefox")
         .addSourceDir("support")
         .usingDriver(driver)
         .keepDriverInstance()
         .includeJavascriptTests()
-        .onlyRun("ExecutingJavascriptTest")
-//        .method("testShouldBeAbleToCallFunctionsDefinedOnThePage")
+        .onlyRun("FirefoxDriverTest")
+        .method("testShouldBeAbleToUseTheSameProfileMoreThanOnce")
 //        .method("testShouldBeAbleToSetAGlobalValue")
         .exclude(ALL)
         .exclude(Ignore.Driver.FIREFOX)

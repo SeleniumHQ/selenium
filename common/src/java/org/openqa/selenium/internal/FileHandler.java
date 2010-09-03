@@ -160,27 +160,6 @@ public class FileHandler {
     }
   }
 
-  /**
-   * Locates a file in the current project
-   * @param path path to file to locate from root of project
-   * @return file being sought, if it exists
-   * @throws WebDriverException wrapped FileNotFoundException if file could
-   * not be found
-   */
-  public static File locateInProject(String path) {
-    File dir = new File(".").getAbsoluteFile();
-    while (dir != null) {
-      File needle = new File(dir, path);
-      if (needle.exists()) {
-        return needle;
-      }
-      dir = dir.getParentFile();
-    }
-    
-    throw new WebDriverException(new FileNotFoundException(
-        "Could not find " + path + " in the project"));
-  }
-
   private static void copyDir(File from, File to, Filter onlyCopy) throws IOException {
     if (!onlyCopy.isRequired(from)) {
       return;
