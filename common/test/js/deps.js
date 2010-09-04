@@ -67,11 +67,7 @@ goog.addDependency("../../../js/src/core/xpath/javascript-xpath-0.1.11.js", [], 
 goog.addDependency("../../../js/src/core/xpath/xpath.js", [], []);
 goog.addDependency("../../../js/src/core/lib/prototype.js", [], []);
 goog.addDependency("../../../js/src/core/lib/snapsie.js", [], []);
-goog.addDependency("../../../js/src/core/lib/cssQuery/cssQuery-p.js", [], []);
-goog.addDependency("../../../js/src/core/lib/cssQuery/src/cssQuery-level2.js", [], []);
-goog.addDependency("../../../js/src/core/lib/cssQuery/src/cssQuery.js", [], []);
-goog.addDependency("../../../js/src/core/lib/cssQuery/src/cssQuery-level3.js", [], []);
-goog.addDependency("../../../js/src/core/lib/cssQuery/src/cssQuery-standard.js", [], []);
+goog.addDependency("../../../js/src/core/lib/sizzle.js", [], []);
 goog.addDependency("../../../js/src/core/lib/scriptaculous/unittest.js", [], []);
 goog.addDependency("../../../js/src/core/lib/scriptaculous/dragdrop.js", [], []);
 goog.addDependency("../../../js/src/core/lib/scriptaculous/effects.js", [], []);

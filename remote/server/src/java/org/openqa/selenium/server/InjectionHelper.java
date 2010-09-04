@@ -101,7 +101,7 @@ public class InjectionHelper {
         if (!INJECT_SCRIPT_TAGS) { // DGF experiment with using script tags
             try {
                 appendFileContent(sb, "/core/scripts/xmlextras.js");
-                appendFileContent(sb, "/core/lib/cssQuery/cssQuery-p.js");
+                appendFileContent(sb, "/core/lib/sizzle.js");
                 appendFileContent(sb, "/core/scripts/htmlutils.js");
                 appendFileContent(sb, "/core/scripts/ui-element.js");
                 appendFileContent(sb, "/core/scripts/selenium-browserdetect.js");

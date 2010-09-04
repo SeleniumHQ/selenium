@@ -2198,9 +2198,10 @@ function eval_xpath(xpath, inDocument, opts)
 /**
  * Returns the full resultset of a CSS selector evaluation.
  */
-function eval_css(locator, inDocument)
-{
-    return cssQuery(locator, inDocument);
+function eval_css(locator, inDocument) {
+    var results = [];
+    window.Sizzle(locator, inDocument, results);
+    return results;
 }
 
 /**
