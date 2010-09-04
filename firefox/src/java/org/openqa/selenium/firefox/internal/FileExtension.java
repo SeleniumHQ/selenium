@@ -31,6 +31,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Iterator;
 
+import com.google.common.io.Files;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.internal.FileHandler;
 import org.w3c.dom.Document;
@@ -63,9 +64,10 @@ public class FileExtension implements Extension {
       throw new IOException("Unable to delete existing extension directory: " + extensionDirectory);
     }
 
+
     FileHandler.createDir(extensionDirectory);
     FileHandler.makeWritable(extensionDirectory);
-    FileHandler.copy(root, extensionDirectory);
+    Files.move(root, extensionDirectory);
   }
 
   private File obtainRootDirectory(File extensionToInstall) throws IOException {

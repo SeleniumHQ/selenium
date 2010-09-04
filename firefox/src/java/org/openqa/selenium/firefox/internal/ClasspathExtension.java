@@ -18,10 +18,13 @@ limitations under the License.
 package org.openqa.selenium.firefox.internal;
 
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URL;
 
+import com.google.common.io.Closeables;
+import com.google.common.io.Resources;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.internal.FileHandler;
 
@@ -35,28 +38,26 @@ public class ClasspathExtension implements Extension {
   }
 
   public void writeTo(File extensionsDir) throws IOException {
-    // Try and load it from the classpath
-    InputStream resource = loadResourcesUsing.getResourceAsStream(loadFrom);
-    if (resource == null && !loadFrom.startsWith("/")) {
-      resource = loadResourcesUsing.getResourceAsStream("/" + loadFrom);
-    }
-    if (resource == null) {
-      resource = getClass().getResourceAsStream(loadFrom);
-    }
-    if (resource == null && !loadFrom.startsWith("/")) {
-      resource = getClass().getResourceAsStream("/" + loadFrom);
-    }
-    if (resource == null) {
-      throw new FileNotFoundException("Cannot locate resource with name: " + loadFrom);
-    }
-
-    File root;
-    if (FileHandler.isZipped(loadFrom)) {
-      root = FileHandler.unzip(resource);
-    } else {
+    if (!FileHandler.isZipped(loadFrom)) {
       throw new WebDriverException("Will only install zipped extensions for now");
     }
 
-    new FileExtension(root).writeTo(extensionsDir);
+
+    File holdingPen = new File(extensionsDir, "webdriver-staging");
+    FileHandler.createDir(holdingPen);
+    File extractedXpi = new File(holdingPen, loadFrom);
+
+    URL resourceUrl = Resources.getResource(loadResourcesUsing, loadFrom);
+    OutputStream stream = null;
+
+    try {
+      stream = new FileOutputStream(extractedXpi);
+      Resources.copy(resourceUrl, stream);
+    } finally {
+      Closeables.closeQuietly(stream);
+    }
+
+
+    new FileExtension(extractedXpi).writeTo(extensionsDir);
   }
 }

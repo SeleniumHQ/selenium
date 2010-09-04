@@ -19,11 +19,9 @@ package org.openqa.selenium.firefox;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.Writer;
 import java.text.MessageFormat;
 import java.util.HashMap;
@@ -35,7 +33,6 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.internal.ClasspathExtension;
 import org.openqa.selenium.firefox.internal.FileExtension;
 import org.openqa.selenium.internal.Cleanly;
-import org.openqa.selenium.internal.FileHandler;
 import org.openqa.selenium.internal.TemporaryFilesystem;
 import org.openqa.selenium.internal.Zip;
 
@@ -89,7 +86,7 @@ public class FirefoxProfile {
     }
 
     try {
-      addExtension(FirefoxProfile.class, "webdriver.xpi");
+      addExtension(FirefoxProfile.class, "/webdriver.xpi");
     } catch (IOException e) {
       if (!Boolean.getBoolean("webdriver.development")) {
         throw new WebDriverException("Failed to install webdriver extension", e);
