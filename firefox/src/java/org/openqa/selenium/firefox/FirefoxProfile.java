@@ -17,20 +17,8 @@ limitations under the License.
 
 package org.openqa.selenium.firefox;
 
-import org.openqa.selenium.Proxy;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.Proxy.ProxyType;
-import org.openqa.selenium.internal.Cleanly;
-import org.openqa.selenium.internal.FileHandler;
-import org.openqa.selenium.internal.TemporaryFilesystem;
-import org.openqa.selenium.internal.Zip;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -39,20 +27,20 @@ import java.io.InputStream;
 import java.io.Writer;
 import java.text.MessageFormat;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
-import javax.xml.XMLConstants;
-import javax.xml.namespace.NamespaceContext;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathFactory;
+import org.openqa.selenium.Proxy;
+import org.openqa.selenium.Proxy.ProxyType;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.firefox.internal.FileExtension;
+import org.openqa.selenium.internal.Cleanly;
+import org.openqa.selenium.internal.FileHandler;
+import org.openqa.selenium.internal.TemporaryFilesystem;
+import org.openqa.selenium.internal.Zip;
 
 public class FirefoxProfile {
   private static final String EXTENSION_NAME = "fxdriver@googlecode.com";
-  private static final String EM_NAMESPACE_URI = "http://www.mozilla.org/2004/em-rdf#";
+
   private File profileDir;
   private File extensionsDir;
   private File userPrefs;
@@ -151,93 +139,7 @@ public class FirefoxProfile {
    * @throws IOException
    */
   public void addExtension(File extensionToInstall) throws IOException {
-    if (!extensionToInstall.isDirectory() &&
-        !FileHandler.isZipped(extensionToInstall.getAbsolutePath())) {
-      throw new IOException("Can only install from a zip file, an XPI or a directory");
-    }
-
-    File root = obtainRootDirectory(extensionToInstall);
-
-    String id = readIdFromInstallRdf(root);
-
-    File extensionDirectory = new File(extensionsDir, id);
-
-    if (extensionDirectory.exists() && !FileHandler.delete(extensionDirectory)) {
-      throw new IOException("Unable to delete existing extension directory: " + extensionDirectory);
-    }
-
-    FileHandler.createDir(extensionDirectory);
-    FileHandler.makeWritable(extensionDirectory);
-    FileHandler.copy(root, extensionDirectory);
-  }
-
-  private String readIdFromInstallRdf(File root) {
-    try {
-      File installRdf = new File(root, "install.rdf");
-
-      DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-      factory.setNamespaceAware(true);
-      DocumentBuilder builder = factory.newDocumentBuilder();
-      Document doc = builder.parse(installRdf);
-
-      XPath xpath = XPathFactory.newInstance().newXPath();
-      xpath.setNamespaceContext(new NamespaceContext() {
-        public String getNamespaceURI(String prefix) {
-          if ("em".equals(prefix)) {
-            return EM_NAMESPACE_URI;
-          } else if ("RDF".equals(prefix)) {
-            return "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
-          }
-
-          return XMLConstants.NULL_NS_URI;
-        }
-
-        public String getPrefix(String uri) {
-          throw new UnsupportedOperationException("getPrefix");
-        }
-
-        public Iterator<?> getPrefixes(String uri) {
-          throw new UnsupportedOperationException("getPrefixes");
-        }
-      });
-
-      Node idNode = (Node) xpath.compile("//em:id").evaluate(doc, XPathConstants.NODE);
-
-      String id = null;
-      if (idNode == null) {
-        Node descriptionNode =
-            (Node) xpath.compile("//RDF:Description").evaluate(doc, XPathConstants.NODE);
-        Node idAttr = descriptionNode.getAttributes().getNamedItemNS(EM_NAMESPACE_URI, "id");
-        if (idAttr == null) {
-          throw new WebDriverException(
-              "Cannot locate node containing extension id: " + installRdf.getAbsolutePath());
-        }
-        id = idAttr.getNodeValue();
-      } else {
-        id = idNode.getTextContent();
-      }
-
-      if (id == null || "".equals(id.trim())) {
-        throw new FileNotFoundException("Cannot install extension with ID: " + id);
-      }
-      return id;
-    } catch (Exception e) {
-      throw new WebDriverException(e);
-    }
-  }
-
-  private File obtainRootDirectory(File extensionToInstall) throws IOException {
-    File root = extensionToInstall;
-    if (!extensionToInstall.isDirectory()) {
-      BufferedInputStream bis =
-          new BufferedInputStream(new FileInputStream(extensionToInstall));
-      try {
-        root = FileHandler.unzip(bis);
-      } finally {
-        bis.close();
-      }
-    }
-    return root;
+    new FileExtension(extensionToInstall).writeTo(extensionsDir);
   }
 
   public File getProfileDir() {
