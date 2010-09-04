@@ -288,7 +288,12 @@ public class HttpCommandExecutor implements CommandExecutor {
     Header header = httpMethod.getResponseHeader("Content-Type");
 
     if (header != null && header.getValue().startsWith("application/json")) {
-      response = new JsonToBeanConverter().convert(Response.class, httpMethod.getResponseBodyAsString());
+    String responseAsText = httpMethod.getResponseBodyAsString();
+    try {
+        response = new JsonToBeanConverter().convert(Response.class, responseAsText);
+      } catch (ClassCastException e) {
+        throw new WebDriverException("Cannot convert text to response: " + responseAsText, e);
+      }
     } else {
       response = new Response();
 
