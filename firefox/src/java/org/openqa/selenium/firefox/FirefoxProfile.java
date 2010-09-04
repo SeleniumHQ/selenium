@@ -130,7 +130,6 @@ public class FirefoxProfile {
 
     String name = pieces[pieces.length - 1];
     name = name.replaceAll("\\..*?$", "");
-    System.out.println("name = " + name);
     return name;
   }
 
