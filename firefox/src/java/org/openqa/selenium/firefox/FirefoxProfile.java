@@ -27,10 +27,12 @@ import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.common.collect.Maps;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.Proxy.ProxyType;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.internal.ClasspathExtension;
+import org.openqa.selenium.firefox.internal.Extension;
 import org.openqa.selenium.firefox.internal.FileExtension;
 import org.openqa.selenium.internal.Cleanly;
 import org.openqa.selenium.internal.TemporaryFilesystem;
@@ -43,6 +45,7 @@ public class FirefoxProfile {
   private File extensionsDir;
   private File userPrefs;
   private Preferences additionalPrefs = new Preferences();
+  private Map<String, Extension> extensions = Maps.newHashMap();
   private int port;
   private boolean enableNativeEvents;
   private boolean loadNoFocusLib;
@@ -104,7 +107,7 @@ public class FirefoxProfile {
       return;
     }
 
-    new ClasspathExtension(loadResourcesUsing, loadFrom).writeTo(extensionsDir);
+    addExtension(loadFrom, new ClasspathExtension(loadResourcesUsing, loadFrom));
   }
 
   /**
@@ -114,11 +117,25 @@ public class FirefoxProfile {
    * @throws IOException
    */
   public void addExtension(File extensionToInstall) throws IOException {
-    new FileExtension(extensionToInstall).writeTo(extensionsDir);
+    addExtension(extensionToInstall.getName(), new FileExtension(extensionToInstall));
+  }
+
+  protected void addExtension(String key, Extension extension) {
+    String name = deriveExtensionName(key);
+    extensions.put(name, extension);
+  }
+
+  private String deriveExtensionName(String originalName) {
+    String[] pieces = originalName.replace('\\', '/').split("/");
+
+    String name = pieces[pieces.length - 1];
+    name = name.replaceAll("\\..*?$", "");
+    System.out.println("name = " + name);
+    return name;
   }
 
   public File getProfileDir() {
-        return profileDir;
+    return profileDir;
   }
 
     //Assumes that we only really care about the preferences, not the comments
@@ -149,10 +166,6 @@ public class FirefoxProfile {
         }
 
         return prefs;
-    }
-
-    public File getExtensionsDir() {
-        return extensionsDir;
     }
 
     /**
@@ -422,9 +435,9 @@ public class FirefoxProfile {
     }
 
   public String toJson() throws IOException {
-    updateUserPrefs();
+    File generatedProfile = layoutOnDisk();
 
-    return new Zip().zip(profileDir);
+    return new Zip().zip(generatedProfile);
   }
 
   public static FirefoxProfile fromJson(String json) throws IOException {
@@ -433,5 +446,25 @@ public class FirefoxProfile {
     new Zip().unzip(json, dir);
 
     return new FirefoxProfile(dir);
+  }
+
+  public File layoutOnDisk() {
+    try {
+      installExtensions(profileDir);
+      deleteExtensionsCacheIfItExists();
+      updateUserPrefs();
+
+      return profileDir;
+    } catch (IOException e) {
+      throw new UnableToCreateProfileException(e);
+    }
+  }
+
+  protected void installExtensions(File parentDir) throws IOException {
+    File extensionsDir = new File(parentDir, "extensions");
+
+    for (Extension extension : extensions.values()) {
+      extension.writeTo(extensionsDir);
+    }
   }
 }

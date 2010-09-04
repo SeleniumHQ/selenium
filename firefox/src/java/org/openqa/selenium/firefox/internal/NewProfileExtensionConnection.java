@@ -75,7 +75,7 @@ public class NewProfileExtensionConnection implements CommandExecutor, Extension
       this.process.setOutputWatcher(new CircularOutputStream(logFile, bufferSize));
 
       profile.setPort(delegate.getAddressOfRemoteServer().getPort());
-      profile.updateUserPrefs();
+      profile.layoutOnDisk();      
 
       this.process.clean(profile);
       this.process.startProfile(profile);

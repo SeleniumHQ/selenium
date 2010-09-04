@@ -140,9 +140,9 @@ public class FirefoxProfileTest extends TestCase {
   }
 
   private List<String> readGeneratedProperties(FirefoxProfile profile) throws Exception {
-    profile.updateUserPrefs();
+    File generatedProfile = profile.layoutOnDisk();
 
-    File prefs = new File(profile.getProfileDir(), "user.js");
+    File prefs = new File(generatedProfile, "user.js");
     BufferedReader reader = new BufferedReader(new FileReader(prefs));
 
     List<String> prefLines = new ArrayList<String>();
