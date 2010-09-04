@@ -36,7 +36,7 @@ import org.openqa.selenium.internal.FileHandler;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
-public class FileExtension {
+public class FileExtension implements Extension {
   private static final String EM_NAMESPACE_URI = "http://www.mozilla.org/2004/em-rdf#";
 
   private final File toInstall;

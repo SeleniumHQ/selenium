@@ -32,6 +32,7 @@ import java.util.Map;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.Proxy.ProxyType;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.firefox.internal.ClasspathExtension;
 import org.openqa.selenium.firefox.internal.FileExtension;
 import org.openqa.selenium.internal.Cleanly;
 import org.openqa.selenium.internal.FileHandler;
@@ -98,39 +99,16 @@ public class FirefoxProfile {
     deleteExtensionsCacheIfItExists();
   }
 
-  public File addExtension(Class<?> loadResourcesUsing, String loadFrom) throws IOException {
-      // Is loadFrom a file?
-      File file = new File(loadFrom);
-      if (file.exists()) {
-        addExtension(file);
-        return file;
-      }
-
-      // Try and load it from the classpath
-      InputStream resource = loadResourcesUsing.getResourceAsStream(loadFrom);
-      if (resource == null && !loadFrom.startsWith("/")) {
-        resource = loadResourcesUsing.getResourceAsStream("/" + loadFrom);
-      }
-      if (resource == null) {
-        resource = FirefoxProfile.class.getResourceAsStream(loadFrom);
-      }
-      if (resource == null && !loadFrom.startsWith("/")) {
-        resource = FirefoxProfile.class.getResourceAsStream("/" + loadFrom);
-      }
-      if (resource == null) {
-        throw new FileNotFoundException("Cannot locate resource with name: " + loadFrom);
-      }
-
-      File root;
-      if (FileHandler.isZipped(loadFrom)) {
-        root = FileHandler.unzip(resource);
-      } else {
-        throw new WebDriverException("Will only install zipped extensions for now");
-      }
-
-      addExtension(root);
-      return root;
+  public void addExtension(Class<?> loadResourcesUsing, String loadFrom) throws IOException {
+    // Is loadFrom a file?
+    File file = new File(loadFrom);
+    if (file.exists()) {
+      addExtension(file);
+      return;
     }
+
+    new ClasspathExtension(loadResourcesUsing, loadFrom).writeTo(extensionsDir);
+  }
 
   /**
    * Attempt to add an extension to install into this instance.
