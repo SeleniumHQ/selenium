@@ -62,7 +62,7 @@ public class FirefoxBinary {
   }
 
   public void startProfile(FirefoxProfile profile, String... commandLineFlags) throws IOException {
-    File profileDir = profile.getProfileDir();
+    File profileDir = profile.layoutOnDisk();
     String profileAbsPath = profileDir.getAbsolutePath();
     setEnvironmentProperty("XRE_PROFILE_PATH", profileAbsPath);
     setEnvironmentProperty("MOZ_NO_REMOTE", "1");

@@ -28,6 +28,7 @@ import com.google.common.collect.ImmutableMap;
 import org.openqa.selenium.Build;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.TestSuiteBuilder;
+import org.openqa.selenium.firefox.internal.FileExtension;
 import org.openqa.selenium.internal.FileHandler;
 import org.openqa.selenium.internal.InProject;
 import org.openqa.selenium.internal.TemporaryFilesystem;
@@ -82,9 +83,8 @@ public class FirefoxDriverTestSuite extends TestCase {
     }
 
     private static FirefoxProfile createTemporaryProfile() {
-      File dir = TemporaryFilesystem.createTempDir("firefoxdriver", "");
       try {
-        return copyExtensionTo(new FirefoxProfile(dir));
+        return copyExtensionTo(new FirefoxProfile());
       } catch (Exception e) {
         e.printStackTrace();
         fail(e.getMessage());
@@ -92,10 +92,11 @@ public class FirefoxDriverTestSuite extends TestCase {
       return null;
     }
 
-    private static FirefoxProfile copyExtensionTo(FirefoxProfile p) throws Exception {
+    private static FirefoxProfile copyExtensionTo(FirefoxProfile profile) throws Exception {
+      File dir = TemporaryFilesystem.createTempDir("webdriver", "testing");
+
       File extensionSource = InProject.locate("firefox/src/extension");
 
-      File dir = p.getProfileDir();
       File extension = new File(dir, "extensions/fxdriver@googlecode.com");
 
       try {
@@ -151,8 +152,7 @@ public class FirefoxDriverTestSuite extends TestCase {
       // Now delete all the .svn directories
       deleteSvnDirectories(extension);
 
-      FirefoxProfile profile = new FirefoxProfile(dir);
-      p.getAdditionalPreferences().addTo(profile);
+      profile.addExtension("webdriver", new FileExtension(dir));
       if (Boolean.getBoolean("webdriver.debug")) {
         try {
           profile.addExtension(InProject.locate("third_party/firebug/firebug-1.5.0-fx.xpi"));
