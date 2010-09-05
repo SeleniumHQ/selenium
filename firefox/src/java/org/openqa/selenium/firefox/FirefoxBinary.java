@@ -62,13 +62,14 @@ public class FirefoxBinary {
   }
 
   public void startProfile(FirefoxProfile profile, String... commandLineFlags) throws IOException {
-    String profileAbsPath = profile.getProfileDir().getAbsolutePath();
+    File profileDir = profile.getProfileDir();
+    String profileAbsPath = profileDir.getAbsolutePath();
     setEnvironmentProperty("XRE_PROFILE_PATH", profileAbsPath);
     setEnvironmentProperty("MOZ_NO_REMOTE", "1");
 
     if (isOnLinux()
         && (profile.enableNativeEvents() || profile.alwaysLoadNoFocusLib())) {
-      modifyLinkLibraryPath(profile);
+      modifyLinkLibraryPath(profileDir);
     }
 
     List<String> commands = new ArrayList<String>();
@@ -108,14 +109,14 @@ public class FirefoxBinary {
     return Collections.unmodifiableMap(extraEnv);
   }
 
-  protected void modifyLinkLibraryPath(FirefoxProfile profile) {
+  protected void modifyLinkLibraryPath(File profileDir) {
     // Extract x_ignore_nofocus.so from x86, amd64 directories inside
     // the jar into a real place in the filesystem and change LD_LIBRARY_PATH
     // to reflect that.
 
     String existingLdLibPath = System.getenv("LD_LIBRARY_PATH");
     // The returned new ld lib path is terminated with ':'
-    String newLdLibPath = extractAndCheck(profile, NO_FOCUS_LIBRARY_NAME, "x86", "amd64");
+    String newLdLibPath = extractAndCheck(profileDir, NO_FOCUS_LIBRARY_NAME, "x86", "amd64");
     if (existingLdLibPath != null && !existingLdLibPath.equals("")) {
       newLdLibPath += existingLdLibPath;
     }
@@ -126,7 +127,7 @@ public class FirefoxBinary {
     setEnvironmentProperty("LD_PRELOAD", NO_FOCUS_LIBRARY_NAME);
   }
 
-  protected String extractAndCheck(FirefoxProfile profile, String noFocusSoName,
+  protected String extractAndCheck(File profileDir, String noFocusSoName,
                                    String jarPath32Bit, String jarPath64Bit) {
 
     // 1. Extract x86/x_ignore_nofocus.so to profile.getLibsDir32bit
@@ -143,9 +144,7 @@ public class FirefoxBinary {
     for (String path : pathsSet) {
       try {
 
-        FileHandler.copyResource(profile.getProfileDir(), getClass(), path +
-                                                                      File.separator
-                                                                      + noFocusSoName);
+        FileHandler.copyResource(profileDir, getClass(), path + File.separator + noFocusSoName);
 
       } catch (IOException e) {
         if (Boolean.getBoolean("webdriver.development")) {
@@ -156,7 +155,7 @@ public class FirefoxBinary {
         }
       } // End catch.
 
-      String outSoPath = profile.getProfileDir().getAbsolutePath() + File.separator + path;
+      String outSoPath = profileDir.getAbsolutePath() + File.separator + path;
 
       File file = new File(outSoPath, noFocusSoName);
       if (!file.exists()) {
