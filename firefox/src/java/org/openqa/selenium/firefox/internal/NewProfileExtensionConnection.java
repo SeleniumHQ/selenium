@@ -57,6 +57,7 @@ public class NewProfileExtensionConnection implements CommandExecutor, Extension
   private final FirefoxProfile profile;
   private final String host;
   private final Lock lock;
+  private File profileDir;
 
   private final int bufferSize = 4096;
   private HttpCommandExecutor delegate;
@@ -82,10 +83,10 @@ public class NewProfileExtensionConnection implements CommandExecutor, Extension
       this.process.setOutputWatcher(new CircularOutputStream(logFile, bufferSize));
 
       profile.setPreference(PORT_PREFERENCE, port);
-      profile.layoutOnDisk();      
+      profileDir = profile.layoutOnDisk();
 
-      this.process.clean(profile);
-      this.process.startProfile(profile);
+      this.process.clean(profile, profileDir);
+      this.process.startProfile(profile, profileDir);
 
       // There is currently no mechanism for the profile to notify us when it has started
       // successfully and is ready for requests.  Instead, we must loop until we're able to
@@ -151,7 +152,9 @@ public class NewProfileExtensionConnection implements CommandExecutor, Extension
     // This should only be called after the QUIT command has been sent,
     // so go ahead and clean up our process and profile.
     process.quit();
-    profile.clean();
+    if (profileDir != null) {
+      profile.clean(profileDir);
+    }
   }
 
   /**

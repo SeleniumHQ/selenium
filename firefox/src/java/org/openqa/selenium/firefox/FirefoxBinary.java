@@ -61,8 +61,7 @@ public class FirefoxBinary {
     return Platform.getCurrent().is(Platform.LINUX);
   }
 
-  public void startProfile(FirefoxProfile profile, String... commandLineFlags) throws IOException {
-    File profileDir = profile.layoutOnDisk();
+  public void startProfile(FirefoxProfile profile, File profileDir, String... commandLineFlags) throws IOException {
     String profileAbsPath = profileDir.getAbsolutePath();
     setEnvironmentProperty("XRE_PROFILE_PATH", profileAbsPath);
     setEnvironmentProperty("MOZ_NO_REMOTE", "1");
@@ -267,8 +266,8 @@ public class FirefoxBinary {
     }
   }
 
-  public void clean(FirefoxProfile profile) throws IOException {
-    startProfile(profile, "-silent");
+  public void clean(FirefoxProfile profile, File profileDir) throws IOException {
+    startProfile(profile, profileDir, "-silent");
     try {
       waitFor();
     } catch (InterruptedException e) {
@@ -276,13 +275,13 @@ public class FirefoxBinary {
     }
 
     if (Platform.getCurrent().is(Platform.WINDOWS)) {
-      while (profile.isRunning()) {
+      while (profile.isRunning(profileDir)) {
         sleep(500);
       }
 
       do {
         sleep(500);
-      } while (profile.isRunning());
+      } while (profile.isRunning(profileDir));
     }
   }
 

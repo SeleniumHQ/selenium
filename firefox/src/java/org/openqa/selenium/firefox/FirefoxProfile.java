@@ -23,11 +23,11 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
-import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
 
 import com.google.common.collect.Maps;
+import com.google.common.io.Files;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.Proxy.ProxyType;
 import org.openqa.selenium.WebDriverException;
@@ -39,63 +39,61 @@ import org.openqa.selenium.internal.TemporaryFilesystem;
 import org.openqa.selenium.internal.Zip;
 
 public class FirefoxProfile {
-  private static final String EXTENSION_NAME = "fxdriver@googlecode.com";
   public static final String PORT_PREFERENCE = "webdriver_firefox_port";
 
-  private File profileDir;
-  private File extensionsDir;
-  private File userPrefs;
   private Preferences additionalPrefs = new Preferences();
   private Map<String, Extension> extensions = Maps.newHashMap();
   private boolean enableNativeEvents;
   private boolean loadNoFocusLib;
   private boolean acceptUntrustedCerts;
   private boolean untrustedCertIssuer;
+  private File model;
+
+  public FirefoxProfile() {
+    this(null);
+  }
 
   /**
-   * Constructs a firefox profile from an existing, physical profile directory.
-   * Not a good idea, please don't.
+   * Constructs a firefox profile from an existing profile directory.
    * <p/>
-   * <p>Users who need this functionality should be using a named profile.
+   * <p>Users who need this functionality should consider using a named
+   * profile.
    *
-   * @param profileDir
+   * @param profileDir The profile directory to use as a model.
    */
   protected FirefoxProfile(File profileDir) {
-    this.profileDir = profileDir;
-    this.extensionsDir = new File(profileDir, "extensions");
-    this.userPrefs = new File(profileDir, "user.js");
+    model = profileDir;
+    verifyModel(model);
 
     enableNativeEvents = FirefoxDriver.DEFAULT_ENABLE_NATIVE_EVENTS;
     loadNoFocusLib = false;
     acceptUntrustedCerts = FirefoxDriver.ACCEPT_UNTRUSTED_CERTIFICATES;
     untrustedCertIssuer = FirefoxDriver.ASSUME_UNTRUSTED_ISSUER;
-
-    if (!profileDir.exists()) {
-      throw new WebDriverException(MessageFormat.format("Profile directory does not exist: {0}",
-          profileDir.getAbsolutePath()));
-    }
   }
 
-
-  public FirefoxProfile() {
-    this(TemporaryFilesystem.createTempDir("webdriver", "profile"));
-  }
-
-  protected void addWebDriverExtensionIfNeeded(boolean forceCreation) {
-    File extensionLocation = new File(extensionsDir, EXTENSION_NAME);
-    if (!forceCreation && extensionLocation.exists()) {
+  private void verifyModel(File model) {
+    if (model == null) {
       return;
     }
 
-    try {
-      addExtension(FirefoxProfile.class, "/webdriver.xpi");
-    } catch (IOException e) {
-      if (!Boolean.getBoolean("webdriver.development")) {
-        throw new WebDriverException("Failed to install webdriver extension", e);
-      }
+    if (!model.exists()) {
+      throw new UnableToCreateProfileException(
+          "Given model profile directory does not exist: " + model.getPath());
     }
 
-    deleteExtensionsCacheIfItExists();
+    if (!model.isDirectory()) {
+      throw new UnableToCreateProfileException(
+          "Given model profile directory is not a directory: " + model.getAbsolutePath());
+    }
+  }
+
+  protected void addWebDriverExtensionIfNeeded() {
+    if (extensions.containsKey("webdriver")) {
+      return;
+    }
+
+    ClasspathExtension extension = new ClasspathExtension(FirefoxProfile.class, "/webdriver.xpi");
+    addExtension("webdriver", extension);
   }
 
   public void addExtension(Class<?> loadResourcesUsing, String loadFrom) throws IOException {
@@ -242,7 +240,7 @@ public class FirefoxProfile {
     return additionalPrefs;
   }
 
-  public void updateUserPrefs() {
+  public void updateUserPrefs(File userPrefs) {
     Map<String, String> prefs = new HashMap<String, String>();
 
     // Allow users to override these settings
@@ -305,10 +303,12 @@ public class FirefoxProfile {
 
 
     // Settings to facilitate debugging the driver
-    prefs.put("javascript.options.showInConsole",
-        "true"); // Logs errors in chrome files to the Error Console.
-    prefs
-        .put("browser.dom.window.dump.enabled", "true");  // Enables the use of the dump() statement
+
+    // Logs errors in chrome files to the Error Console.
+    prefs.put("javascript.options.showInConsole", "true");
+
+    // Enables the use of the dump() statement
+    prefs.put("browser.dom.window.dump.enabled", "true");
 
     // If the user sets the home page, we should also start up there
     prefs.put("startup.homepage_welcome_url", prefs.get("browser.startup.homepage"));
@@ -317,17 +317,25 @@ public class FirefoxProfile {
       prefs.put("browser.startup.page", "1");
     }
 
-    writeNewPrefs(prefs);
+    writeNewPrefs(userPrefs, prefs);
   }
 
-  public void deleteExtensionsCacheIfItExists() {
-    File cacheFile = new File(extensionsDir, "../extensions.cache");
+  protected void deleteLockFiles(File profileDir) {
+    File macAndLinuxLockFile = new File(profileDir, ".parentlock");
+    File windowsLockFile = new File(profileDir, "parent.lock");
+
+    macAndLinuxLockFile.delete();
+    windowsLockFile.delete();
+  }
+
+  public void deleteExtensionsCacheIfItExists(File profileDir) {
+    File cacheFile = new File(profileDir, "extensions.cache");
     if (cacheFile.exists()) {
       cacheFile.delete();
     }
   }
 
-  protected void writeNewPrefs(Map<String, String> prefs) {
+  protected void writeNewPrefs(File userPrefs, Map<String, String> prefs) {
     Writer writer = null;
     try {
       writer = new FileWriter(userPrefs);
@@ -406,14 +414,14 @@ public class FirefoxProfile {
     this.untrustedCertIssuer = untrustedIssuer;
   }
 
-  public boolean isRunning() {
+  public boolean isRunning(File profileDir) {
     File macAndLinuxLockFile = new File(profileDir, ".parentlock");
     File windowsLockFile = new File(profileDir, "parent.lock");
 
     return macAndLinuxLockFile.exists() || windowsLockFile.exists();
   }
 
-  public void clean() {
+  public void clean(File profileDir) {
     TemporaryFilesystem.deleteTempDir(profileDir);
   }
 
@@ -433,14 +441,27 @@ public class FirefoxProfile {
 
   public File layoutOnDisk() {
     try {
+      File profileDir = TemporaryFilesystem.createTempDir("anonymous", "webdriver-profile");
+      File userPrefs = new File(profileDir, "user.js");
+
+      copyModel(model, profileDir);
       installExtensions(profileDir);
-      deleteExtensionsCacheIfItExists();
-      updateUserPrefs();
+      deleteLockFiles(profileDir);
+      deleteExtensionsCacheIfItExists(profileDir);
+      updateUserPrefs(userPrefs);
 
       return profileDir;
     } catch (IOException e) {
       throw new UnableToCreateProfileException(e);
     }
+  }
+
+  protected void copyModel(File source, File profileDir) throws IOException {
+    if (source == null || !source.exists()) {
+      return;
+    }
+
+    Files.copy(source, profileDir);
   }
 
   protected void installExtensions(File parentDir) throws IOException {
