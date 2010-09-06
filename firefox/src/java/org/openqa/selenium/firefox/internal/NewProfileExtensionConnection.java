@@ -39,6 +39,7 @@ import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.ExtensionConnection;
 import org.openqa.selenium.firefox.FirefoxBinary;
+import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.firefox.NotConnectedException;
 import org.openqa.selenium.remote.Command;
@@ -46,6 +47,9 @@ import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.HttpCommandExecutor;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.internal.CircularOutputStream;
+
+import static org.openqa.selenium.firefox.FirefoxDriver.DEFAULT_PORT;
+import static org.openqa.selenium.firefox.FirefoxProfile.PORT_PREFERENCE;
 
 public class NewProfileExtensionConnection implements CommandExecutor, ExtensionConnection {
   private final long connectTimeout;
@@ -67,14 +71,17 @@ public class NewProfileExtensionConnection implements CommandExecutor, Extension
   }
 
   public void start() throws IOException {
+    int port = 0;
+
     lock.lock(connectTimeout);
     try {
-      delegate = new HttpCommandExecutor(buildUrl(host, determineNextFreePort(profile.getPort())));
+      port = determineNextFreePort(DEFAULT_PORT);
+      delegate = new HttpCommandExecutor(buildUrl(host, port));
       String firefoxLogFile = System.getProperty("webdriver.firefox.logfile");
       File logFile = firefoxLogFile == null ? null : new File(firefoxLogFile);
       this.process.setOutputWatcher(new CircularOutputStream(logFile, bufferSize));
 
-      profile.setPort(delegate.getAddressOfRemoteServer().getPort());
+      profile.setPreference(PORT_PREFERENCE, port);
       profile.layoutOnDisk();      
 
       this.process.clean(profile);
@@ -101,11 +108,11 @@ public class NewProfileExtensionConnection implements CommandExecutor, Extension
       e.printStackTrace();
       throw new WebDriverException(
           String.format("Failed to connect to binary %s on port %d; process output follows: \n%s",
-              process.toString(), profile.getPort(), process.getConsoleOutput()), e);
+              process.toString(), port, process.getConsoleOutput()), e);
     } catch (WebDriverException e) {
       throw new WebDriverException(
           String.format("Failed to connect to binary %s on port %d; process output follows: \n%s",
-              process.toString(), profile.getPort(), process.getConsoleOutput()), e);
+              process.toString(), port, process.getConsoleOutput()), e);
     } catch (Exception e) {
       throw new WebDriverException(e);
     } finally {

@@ -133,9 +133,6 @@ public class ProfilesIni {
 
     FirefoxProfile profile = new ProfileFromDirectory(tempDir);
 
-    if (profile.getPort() == 0)
-      profile.setPort(FirefoxDriver.DEFAULT_PORT);
-    
     return profile;
   }
   

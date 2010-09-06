@@ -180,12 +180,10 @@ public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot, F
 
   protected ExtensionConnection connectTo(FirefoxBinary binary, FirefoxProfile profile,
                                           String host) {
-    int profilePort = profile.getPort() == 0 ? DEFAULT_PORT : profile.getPort();
-    Lock lock = new SocketLock(profilePort - 1);
+    Lock lock = new SocketLock(DEFAULT_PORT - 1);
     try {
       FirefoxBinary bin = binary == null ? new FirefoxBinary() : binary;
       
-
       return new NewProfileExtensionConnection(lock, bin, profile, host);
     } catch (Exception e) {
       throw new WebDriverException(e);

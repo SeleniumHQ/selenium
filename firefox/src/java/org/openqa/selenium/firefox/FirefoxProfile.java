@@ -40,13 +40,13 @@ import org.openqa.selenium.internal.Zip;
 
 public class FirefoxProfile {
   private static final String EXTENSION_NAME = "fxdriver@googlecode.com";
+  public static final String PORT_PREFERENCE = "webdriver_firefox_port";
 
   private File profileDir;
   private File extensionsDir;
   private File userPrefs;
   private Preferences additionalPrefs = new Preferences();
   private Map<String, Extension> extensions = Maps.newHashMap();
-  private int port;
   private boolean enableNativeEvents;
   private boolean loadNoFocusLib;
   private boolean acceptUntrustedCerts;
@@ -65,7 +65,6 @@ public class FirefoxProfile {
     this.extensionsDir = new File(profileDir, "extensions");
     this.userPrefs = new File(profileDir, "user.js");
 
-    port = FirefoxDriver.DEFAULT_PORT;
     enableNativeEvents = FirefoxDriver.DEFAULT_ENABLE_NATIVE_EVENTS;
     loadNoFocusLib = false;
     acceptUntrustedCerts = FirefoxDriver.ACCEPT_UNTRUSTED_CERTIFICATES;
@@ -244,10 +243,6 @@ public class FirefoxProfile {
   }
 
   public void updateUserPrefs() {
-    if (port == 0) {
-      throw new WebDriverException("You must set the port to listen on before updating user.js");
-    }
-
     Map<String, String> prefs = new HashMap<String, String>();
 
     // Allow users to override these settings
@@ -296,9 +291,6 @@ public class FirefoxProfile {
     prefs.put("security.warn_viewing_mixed", "false");
     prefs.put("security.warn_viewing_mixed.show_once", "false");
     prefs.put("signon.rememberSignons", "false");
-
-    // Which port should we listen on?
-    prefs.put("webdriver_firefox_port", Integer.toString(port));
 
     // Should we use native events?
     prefs.put("webdriver_enable_native_events",
@@ -349,14 +341,6 @@ public class FirefoxProfile {
     } finally {
       Cleanly.close(writer);
     }
-  }
-
-  public int getPort() {
-    return port;
-  }
-
-  public void setPort(int port) {
-    this.port = port;
   }
 
   public boolean enableNativeEvents() {
