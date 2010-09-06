@@ -61,7 +61,7 @@ public class FirefoxProfile {
    *
    * @param profileDir The profile directory to use as a model.
    */
-  protected FirefoxProfile(File profileDir) {
+  public FirefoxProfile(File profileDir) {
     model = profileDir;
     verifyModel(model);
 

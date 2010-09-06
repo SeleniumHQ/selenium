@@ -27,7 +27,6 @@ import java.util.Map;
 import com.google.common.collect.Maps;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.internal.FileHandler;
 import org.openqa.selenium.internal.TemporaryFilesystem;
@@ -104,12 +103,6 @@ public class ProfilesIni {
     return null;
   }
 
-  private static class ProfileFromDirectory extends FirefoxProfile {
-    public ProfileFromDirectory(File dir) {
-      super(dir);
-    }
-  }
-
   public FirefoxProfile getProfile(String profileName) {
     File profileDir = profiles.get(profileName);
     if (profileDir == null)
@@ -131,9 +124,7 @@ public class ProfilesIni {
       throw new WebDriverException(e);
     }
 
-    FirefoxProfile profile = new ProfileFromDirectory(tempDir);
-
-    return profile;
+    return new FirefoxProfile(tempDir);
   }
   
   protected File locateAppDataDirectory(Platform os) {
