@@ -390,4 +390,25 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
       }
     }
   }
+
+  public void testShouldBeAbleToUseTheSameProfileMoreThanOnce() {
+    FirefoxProfile profile = new FirefoxProfile();
+
+    profile.setPreference("browser.startup.homepage", pages.formPage);
+
+    FirefoxDriver one = null;
+    FirefoxDriver two = null;
+
+    try {
+      one = new FirefoxDriver(profile);
+      two = new FirefoxDriver(profile);
+
+      // If we get this far, then both firefoxes have started. If this test
+      // two browsers will start, but the second won't have a valid port and an
+      // exception will be thrown. Hurrah! Test passes.
+    } finally {
+      if (one != null) one.quit();
+      if (two != null) two.quit();
+    }
+  }
 }
