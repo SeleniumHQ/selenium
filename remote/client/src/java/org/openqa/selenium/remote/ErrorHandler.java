@@ -36,7 +36,7 @@ public class ErrorHandler {
   private boolean includeServerErrors;
 
   public ErrorHandler() {
-    this(false);
+    this(true);
   }
 
   /**
@@ -68,67 +68,79 @@ public class ErrorHandler {
     String message = null;
     Throwable cause = null;
 
-    if (!(value instanceof Map)) {
-      message = value == null ? null : String.valueOf(value);
-    } else {
-      Map<String, Object> rawErrorData;
+    if (value instanceof Map) {
+      Map<String, Object> rawErrorData = (Map<String, Object>) value;
       try {
-        rawErrorData =  (Map<String, Object>) response.getValue();
         message = (String) rawErrorData.get(MESSAGE);
-        if (includeServerErrors) {
-          cause = rebuildServerError(rawErrorData);
-        }
-        if (rawErrorData.containsKey(SCREEN_SHOT)) {
-          cause = new ScreenshotException((String) rawErrorData.get(SCREEN_SHOT), cause);
-        }
       } catch (ClassCastException e) {
-        // Ok, try to recover gracefully
-        message = String.valueOf(value);
+        // Ok, try to recover gracefully.
+        message = String.valueOf(e);
       }
+
+      @SuppressWarnings({"ThrowableResultOfMethodCallIgnored"})
+      Throwable serverError = rebuildServerError(rawErrorData);
+
+      // If serverError is null, then the server did not provide a className (only expected if
+      // the server is a Java process) or a stack trace.  The lack of a className is OK, but
+      // not having a stacktrace really hurts our ability to debug problems.
+      if (serverError == null) {
+        if (includeServerErrors) {
+          // TODO: this should probably link to a wiki article with more info.
+          message += " (WARNING: The server did not provide any stacktrace information)";
+        }
+      } else if (!includeServerErrors) {
+        // TODO: wiki article with more info.
+        message += " (WARNING: The client has suppressed server-side stacktraces)";
+      } else {
+        cause = serverError;
+      }
+
+      if (rawErrorData.get(SCREEN_SHOT) != null) {
+        cause = new ScreenshotException(String.valueOf(rawErrorData.get(SCREEN_SHOT)), cause);
+      }
+    } else if (value != null) {
+      message = String.valueOf(value);
     }
 
-    if (cause == null) {
-      // The stacktrace from the server was unavailable or could not be
-      // deserialized.
-      // In this case, the stacktrace will be pointless - it will point to the
-      // exception as generated from this class, which is technically correct
-      // but utterly useless. Let the user know that.
-      message = message + " (Note: The stack trace from the server side " +
-          "is missing. The following stack trace is locally generated.)";
-    }
-
-    Throwable toThrow = null;
-    try {
-      Constructor<? extends Throwable> constructor =
-          outerErrorType.getConstructor(String.class, Throwable.class);
-      toThrow = constructor.newInstance(message, cause);
-    } catch (Exception e) {
-      // Fine. fall through
-    } catch (OutOfMemoryError error) {
-      // It can happen...
-    }
+    Throwable toThrow = createThrowable(outerErrorType,
+        new Class<?>[] { String.class, Throwable.class },
+        new Object[] { message, cause });
 
     if (toThrow == null) {
-      try {
-        Constructor<? extends Throwable> constructor =
-            outerErrorType.getConstructor(String.class);
-        toThrow = constructor.newInstance(message);
-      } catch (Exception e) {
-        // Fine. fall through
-      } catch (OutOfMemoryError error) {
-        // It can happen...
-      }
+      toThrow = createThrowable(outerErrorType,
+          new Class<?>[] { String.class },
+          new Object[] { message });
     }
 
     if (toThrow == null) {
       throw new WebDriverException(message, cause);
     }
 
-    if (!(toThrow instanceof RuntimeException)) {
-      throw new RuntimeException(toThrow);
+    if (toThrow instanceof RuntimeException) {
+      throw (RuntimeException) toThrow;
+    } else {
+      throw new WebDriverException(toThrow);
     }
+  }
 
-    throw (RuntimeException) toThrow;
+  @SuppressWarnings({"ErrorNotRethrown"})
+  private <T extends Throwable> T createThrowable(
+      Class<T> clazz, Class<?>[] parameterTypes, Object[] parameters) {
+    try {
+      Constructor<T> constructor = clazz.getConstructor(parameterTypes);
+      return constructor.newInstance(parameters);
+    } catch (NoSuchMethodException e) {
+      // Do nothing - fall through.
+    } catch (InvocationTargetException e) {
+      // Do nothing - fall through.
+    } catch (InstantiationException e) {
+      // Do nothing - fall through.
+    } catch (IllegalAccessException e) {
+      // Do nothing - fall through.
+    } catch (OutOfMemoryError error) {
+      // It can happen...
+    }
+    return null;
   }
 
   private Throwable rebuildServerError(Map<String, Object> rawErrorData) {
@@ -148,19 +160,10 @@ public class ErrorHandler {
         if (Throwable.class.isAssignableFrom(clazz)) {
           @SuppressWarnings({"unchecked"})
           Class<? extends Throwable> throwableType = (Class<? extends Throwable>) clazz;
-          Constructor<? extends Throwable> constructor =
-              throwableType.getConstructor(String.class);
-          toReturn = constructor.newInstance(message);
+          toReturn = createThrowable(throwableType, new Class<?>[] { String.class },
+              new Object[] { message });
         }
       } catch (ClassNotFoundException ignored) {
-        // Ok, fall-through
-      } catch (InvocationTargetException e) {
-        // Ok, fall-through
-      } catch (NoSuchMethodException e) {
-        // Ok, fall-through
-      } catch (InstantiationException e) {
-        // Ok, fall-through
-      } catch (IllegalAccessException e) {
         // Ok, fall-through
       }
     }
@@ -169,6 +172,8 @@ public class ErrorHandler {
       toReturn = new UnknownServerException(message);
     }
 
+    // Note: if we have a class name above, we should always have a stack trace.
+    // The inverse is not always true.
     StackTraceElement[] stackTrace = new StackTraceElement[0];
     if (rawErrorData.containsKey(STACK_TRACE)) {
       @SuppressWarnings({"unchecked"})

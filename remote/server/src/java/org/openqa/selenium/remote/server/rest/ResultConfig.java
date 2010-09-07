@@ -19,12 +19,16 @@ package org.openqa.selenium.remote.server.rest;
 
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.internal.Trace;
+import org.openqa.selenium.remote.ErrorCodes;
 import org.openqa.selenium.remote.JsonToBeanConverter;
 import org.openqa.selenium.remote.PropertyMunger;
 import org.openqa.selenium.remote.SimplePropertyDescriptor;
 import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.handler.WebDriverHandler;
+
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -33,7 +37,9 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
@@ -239,21 +245,32 @@ public class ResultConfig {
     // several other exceptions. Peel the layers and use the original
     // exception as the one to return to the client. That is the most
     // likely to contain informative data about the error.
-    Throwable currentThrowable = toReturn;
     // This is a safety measure to make sure this loop is never endless
-    int causeTraversalCounter = 0;
-    while ((currentThrowable != null) && (causeTraversalCounter < 10)) {
-      causeTraversalCounter++;
-      logger.info("Peeling exception: " + currentThrowable +
-                 " (" + currentThrowable.getClass() + ")");
-      // Remember the last exception - this one will be used if
-      // there was no exception that caused it.
-      toReturn = currentThrowable;
-      // Peeling the layers is done here
-      currentThrowable = currentThrowable.getCause();
+    List<Throwable> chain = Lists.newArrayListWithExpectedSize(10);
+    for (Throwable current = toReturn; current != null && chain.size() < 10;
+         current = current.getCause()) {
+      chain.add(current);
     }
 
-    return toReturn;
+    if (chain.isEmpty()) {
+      return null;
+    }
+
+    // If the root cause came from another server implementing the wire protocol, there might
+    // not have been enough information to fully reconstitute its error, in which case we'll
+    // want to return the last 2 causes - with the outer error providing context to the
+    // true root cause. These case are identified by the root cause not being mappable to a
+    // standard WebDriver error code, but its wrapper is mappable.
+    //
+    // Of course, if we only have one item in our chain, go ahead and return.
+    ErrorCodes ec = new ErrorCodes();
+    Iterator<Throwable> reversedChain = Iterables.reverse(chain).iterator();
+    Throwable rootCause = reversedChain.next();
+    if (!reversedChain.hasNext() || ec.isMappableError(rootCause)) {
+      return rootCause;
+    }
+    Throwable nextCause = reversedChain.next();
+    return ec.isMappableError(nextCause) ? nextCause : rootCause;
   }
 
   @Override

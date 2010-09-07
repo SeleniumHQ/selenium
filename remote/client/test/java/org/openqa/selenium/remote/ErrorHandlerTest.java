@@ -32,6 +32,7 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.XPathLookupException;
 
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.startsWith;
 import static org.junit.Assert.assertThat;
 
 /**
@@ -82,13 +83,19 @@ public class ErrorHandlerTest extends TestCase {
     }
   }
 
+  private static void assertDoesNotHaveACause(Throwable t) {
+    if (t.getCause() != null) {
+      throw new RuntimeException("Should not have a cause", t);
+    }
+  }
+
   @SuppressWarnings({"ThrowableInstanceNeverThrown"})
   public void testShouldThrowAVanillaWebDriverExceptionIfServerDoesNotProvideAValue() {
     try {
       handler.throwIfResponseFailed(createResponse(ErrorCodes.UNHANDLED_ERROR));
       fail("Should have thrown!");
     } catch (WebDriverException expected) {
-      assertNull("Should not have a cause", expected.getCause());
+      assertDoesNotHaveACause(expected);
       assertThat(expected.getMessage(), containsString(new WebDriverException().getMessage()));
     }
   }
@@ -99,7 +106,8 @@ public class ErrorHandlerTest extends TestCase {
       handler.throwIfResponseFailed(createResponse(ErrorCodes.UNHANDLED_ERROR, "boom"));
       fail("Should have thrown!");
     } catch (WebDriverException expected) {
-      assertNull("Should not have a cause", expected.getCause());
+      assertEquals(WebDriverException.class, expected.getClass());
+      assertDoesNotHaveACause(expected);
       assertThat(expected.getMessage(), containsString("boom"));
       assertThat(expected.getMessage(), containsString(new WebDriverException().getMessage()));
     }
@@ -112,9 +120,19 @@ public class ErrorHandlerTest extends TestCase {
           ImmutableMap.of("message", "boom")));
       fail("Should have thrown!");
     } catch (WebDriverException expected) {
-      assertNull("Should not have a cause", expected.getCause());
+      assertDoesNotHaveACause(expected);
       assertThat(expected.getMessage(), containsString("boom"));
       assertThat(expected.getMessage(), containsString(new WebDriverException().getMessage()));
+    }
+  }
+
+  private static void assertCauseIsOfType(Class<? extends Throwable> expectedType, Throwable root) {
+    Throwable cause = root.getCause();
+    if (cause == null) {
+      // Doing it this way makes sure the test logs has the full trace to debug.
+      throw new RuntimeException("Missing an exception!", root);
+    } else if (!expectedType.isInstance(cause)) {
+      throw new RuntimeException("Expected cause to be of type: " + expectedType.getName(), cause);
     }
   }
 
@@ -258,7 +276,7 @@ public class ErrorHandlerTest extends TestCase {
   }
 
   @SuppressWarnings({"unchecked", "ThrowableInstanceNeverThrown"})
-  public void testShouldNotIncludeTheServerSideExceptionAsACauseIfServerSideErrorsAreDisabled()
+  public void testShouldIndicateWhenTheServerReturnedAnExceptionThatWasSuppressed()
       throws Exception {
     RuntimeException serverError = new RuntimeException("foo bar baz!");
 
@@ -269,7 +287,7 @@ public class ErrorHandlerTest extends TestCase {
           ErrorCodes.UNHANDLED_ERROR, toMap(serverError)));
       fail("Should have thrown!");
     } catch (WebDriverException expected) {
-      assertNull("Should not have a cause", expected.getCause());
+      assertDoesNotHaveACause(expected);
       assertThat(expected.getMessage(), containsString(serverError.getMessage()));
       assertThat(expected.getMessage(), containsString(new WebDriverException().getMessage()));
     }
@@ -289,15 +307,12 @@ public class ErrorHandlerTest extends TestCase {
           ErrorCodes.UNHANDLED_ERROR, data));
       fail("Should have thrown!");
     } catch (WebDriverException expected) {
-      assertEquals(new WebDriverException(serverError.getMessage()).getMessage(),
-          expected.getMessage());
+      assertThat(expected.getMessage(), startsWith("foo bar baz!"));
 
-      Throwable cause = expected.getCause();
-      assertNotNull(cause);
-      assertEquals(ScreenshotException.class, cause.getClass());
-      assertEquals("screenGrabText", ((ScreenshotException) cause).getBase64EncodedScreenshot());
-
-      assertNull(cause.getCause());
+      assertCauseIsOfType(ScreenshotException.class,  expected);
+      ScreenshotException screenshot = (ScreenshotException) expected.getCause();
+      assertEquals("screenGrabText", screenshot.getBase64EncodedScreenshot());
+      assertDoesNotHaveACause(screenshot);
     }
   }
 

@@ -20,8 +20,10 @@ package org.openqa.selenium.remote.server;
 import junit.framework.TestCase;
 
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.UndeclaredThrowableException;
 import java.util.concurrent.ExecutionException;
 
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.internal.Trace;
 import org.openqa.selenium.remote.server.rest.Handler;
@@ -75,6 +77,13 @@ public class ResultConfigTest extends TestCase {
     assertThat(handler.getBar(), is("fishy"));
   }
 
+  @SuppressWarnings({"ThrowableResultOfMethodCallIgnored"})
+  public void testShouldGracefullyHandleNullInputs() {
+    ResultConfig config = new ResultConfig("/foo/:bar", StubHandler.class, null, logger);
+    assertNull(config.getRootExceptionCause(null));
+  }
+
+  @SuppressWarnings({"ThrowableInstanceNeverThrown"})
   public void testCanPeelNestedExceptions() {
     RuntimeException runtime = new RuntimeException("root of all evils");
     InvocationTargetException invocation = new InvocationTargetException(runtime,
@@ -89,6 +98,18 @@ public class ResultConfigTest extends TestCase {
     assertEquals(toClient, runtime);
   }
 
+  @SuppressWarnings({"ThrowableInstanceNeverThrown"})
+  public void testDoesNotPeelTooManyLayersFromNestedExceptions() {
+    RuntimeException runtime = new RuntimeException("root of all evils");
+    NoSuchElementException noElement = new NoSuchElementException("no soup for you", runtime);
+    InvocationTargetException invocation = new InvocationTargetException(noElement);
+    UndeclaredThrowableException undeclared = new UndeclaredThrowableException(invocation);
+
+    ResultConfig config = new ResultConfig("/foo/:bar", StubHandler.class, null, logger);
+    Throwable toClient = config.getRootExceptionCause(undeclared);
+    assertEquals(noElement, toClient);
+  }
+
   private void exceptionWasExpected() {
   }
 
@@ -100,6 +121,7 @@ public class ResultConfigTest extends TestCase {
       return bar;
     }
 
+    @SuppressWarnings({"UnusedDeclaration"})
     public void setBar(String bar) {
       this.bar = bar;
     }

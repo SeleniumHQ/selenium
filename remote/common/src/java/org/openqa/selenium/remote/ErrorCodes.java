@@ -109,4 +109,16 @@ public class ErrorCodes {
       return UNHANDLED_ERROR;
     }
   }
+
+  /**
+   * Tests if the {@code thrown} error can be mapped to one of WebDriver's
+   * well defined error codes.
+   *
+   * @param thrown The error to test.
+   * @return Whether the error can be mapped to a status code.
+   */
+  public boolean isMappableError(Throwable thrown) {
+    int statusCode = toStatusCode(thrown);
+    return statusCode != SUCCESS && statusCode != UNHANDLED_ERROR;
+  }
 }
