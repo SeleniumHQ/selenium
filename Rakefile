@@ -230,7 +230,7 @@ rescue
   pkg_config_gecko = false
 end
 
-if pkg_config_gecko:
+if pkg_config_gecko
   libs_cmd = open("| pkg-config --libs libxul")
   local_gecko_libs = libs_cmd.readline.gsub "\n", ""
   cflags_cmd = open("| pkg-config --cflags libxul")
