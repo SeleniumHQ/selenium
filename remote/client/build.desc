@@ -20,6 +20,7 @@ java_test(name = "test",
 java_library(name = "combined",
   deps = [
     ":client",
+    "//android/client",
     "//chrome",
     "//firefox",
     "//htmlunit",
