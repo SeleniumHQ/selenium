@@ -85,7 +85,9 @@ public class NetworkUtils {
           Enumeration<InetAddress> possibleLoopbacks = linuxLoopback.getInetAddresses();
           while (possibleLoopbacks.hasMoreElements()) {
             InetAddress inetAddress = possibleLoopbacks.nextElement();
-            localAddresses.add(inetAddress);
+            if (!isIPv6Address(inetAddress)) {
+              localAddresses.add(inetAddress);
+            }
           }
         }
       }
