@@ -131,7 +131,15 @@ bot.dom.getAttribute = function(element, attributeName) {
   // includes a trailing semi-colon and we standardize to that.
   if (attributeName == 'style') {
     var css = goog.string.trim(element.style.cssText).toLowerCase();
-    return css.charAt(css.length - 1) == ';' ? css : css + ';';
+    var text = css.charAt(css.length - 1) == ';' ? css : css + ';';
+    if (';' == text) {
+      // Return null or empty string if there was no actual style
+      if (element.getAttributeNode('style') == null) {
+        return null;
+      }
+      return '';
+    }
+    return text;
   }
 
   var attr = element.getAttributeNode(attributeName);

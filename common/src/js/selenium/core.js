@@ -27,7 +27,7 @@ goog.provide('core.Error');
  * Error extension that indicates that the something has gone awry in Selenium
  * Core.
  *
- * @param {string} opt_message Optional error message.
+ * @param {string=} opt_message Optional error message.
  * @constructor
  * @extends {goog.debug.Error}
  */

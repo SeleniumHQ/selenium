@@ -39,15 +39,13 @@ core.locators.Locator;
  * Parses a Selenium locator, returning its type and the unprefixed locator
  * string as an object.
  *
- * @param {!string} locator The locator to parse.
+ * @param {string} locator The locator to parse.
  * @return {!core.locators.Locator} The parsed locator.
  * @private
  */
 core.locators.parseLocator_ = function(locator) {
   var result = locator.match(/^([A-Za-z]+)=(.+)/);
 
-  // The tyrant that is jsdoc demands homage.
-  var /**@type{core.locators.Locator}*/ toReturn = {'string': '', 'type': ''};
   if (result) {
     return {
       'type': result[1].toLowerCase(),
@@ -55,6 +53,8 @@ core.locators.parseLocator_ = function(locator) {
     };
   }
 
+  // The tyrant that is jsdoc demands homage.
+  var /**@type{core.locators.Locator}*/ toReturn = {'string': '', 'type': ''};
   toReturn['string'] = locator;
   if (goog.string.startsWith(locator, ('//'))) {
     toReturn['type'] = 'xpath';
@@ -71,20 +71,18 @@ core.locators.parseLocator_ = function(locator) {
 /**
  * Find a locator based on a prefix.
  *
- * @param {!string} locatorType The type of locator to use.
- * @param {!string} locator The value of the locator to use.
- * @param {Document} opt_doc The document to base the search from.
- * @param {Window} opt_win The window to base the search from.
+ * @param {string} locatorType The type of locator to use.
+ * @param {string} locator The value of the locator to use.
+ * @param {Document=} opt_doc The document to base the search from.
  * @return {Element} The located element or null.
  * @private
  */
-core.locators.findElementBy_ = function(locatorType, locator,
-        opt_doc, opt_win) {
+core.locators.findElementBy_ = function(locatorType, locator, opt_doc) {
   var locatorFunction = core.LocatorStrategies[locatorType];
   if (!locatorFunction) {
     throw new core.Error("Unrecognised locator type: '" + locatorType + "'");
   }
-  return locatorFunction.call(null, locator, opt_doc, opt_win);
+  return locatorFunction.call(null, locator, opt_doc);
 };
 
 
@@ -92,19 +90,24 @@ core.locators.findElementBy_ = function(locatorType, locator,
  * Finds an element recursively in frames and nested frames
  * in the specified document, using various lookup protocols.
  *
- * @param {!string} locatorType The type of locator to use.
- * @param {!string} locatorString The value of the locator to use.
- * @param {Document} opt_doc The document to base the search from.
- * @param {Window} opt_win The window to base the search from.
+ * @param {string} locatorType The type of locator to use.
+ * @param {string} locatorString The value of the locator to use.
+ * @param {Document=} opt_doc The document to base the search from.
+ * @param {Window=} opt_win The window to base the search from.
  * @return {Element} The located element or null.
  * @private
  */
 core.locators.findElementRecursive_ = function(locatorType, locatorString,
         opt_doc, opt_win) {
   var element = core.locators.findElementBy_(
-      locatorType, locatorString, opt_doc, opt_win);
+      locatorType, locatorString, opt_doc);
+
   if (element != null) {
     return element;
+  }
+
+  if (!opt_win) {
+    return null;
   }
 
   for (var i = 0; i < opt_win.frames.length; i++) {
@@ -115,7 +118,7 @@ core.locators.findElementRecursive_ = function(locatorType, locatorString,
     try {
       childDocument = opt_win.frames[i].document;
     } catch (e) {
-      // Tried to go across domains. That;s okay
+      // Tried to go across domains. That's okay
     }
 
     if (childDocument) {
@@ -127,13 +130,14 @@ core.locators.findElementRecursive_ = function(locatorType, locatorString,
       }
     }
   }
+  return null;
 };
 
 /**
  * Finds an element on the current page, using various lookup protocols.
  *
- * @param {!string} locator The locator to use.
- * @param {Window} opt_win The optional window to base the search from.
+ * @param {string} locator The locator to use.
+ * @param {Window=} opt_win The optional window to base the search from.
  * @return {Element} The located element, or null if nothing is found.
  */
 core.locators.findElementOrNull = function(locator, opt_win) {
@@ -158,9 +162,9 @@ core.locators.findElementOrNull = function(locator, opt_win) {
  * is given, a "best guess" is made. If the locator starts with "//" it is
  * assumed to be xpath, otherwise it is assumed to be either a name or an id.
  *
- * @param {!string} locator The selenium locator to use.
- * @param {Document} opt_doc The document to start the search from.
- * @param {Window} opt_win The optional window to start the search from.
+ * @param {string} locator The selenium locator to use.
+ * @param {Document=} opt_doc The document to start the search from.
+ * @param {Window=} opt_win The optional window to start the search from.
  * @return {!Element} The located element.
  * @throws {core.Error} If no element can be located.
  */
@@ -175,7 +179,7 @@ core.locators.findElement = function(locator, opt_doc, opt_win) {
 
 
 /**
- * @param {!string} locator The selenium locator to use.
+ * @param {string} locator The selenium locator to use.
  * @return {boolean} Whether the element can be found on the DOM.
  */
 core.locators.isElementPresent = function(locator) {
@@ -184,8 +188,8 @@ core.locators.isElementPresent = function(locator) {
 
 
 /**
- * @param {!Element} element The element to base the search from.
- * @param {!string} selector The selenium locator to use.
+ * @param {!Element|!Document} element The element to base the search from.
+ * @param {function(!Element):boolean} selector The selenium locator to use.
  * @return {Element} The first matching child element.
  */
 core.locators.elementFindFirstMatchingChild = function(element, selector) {

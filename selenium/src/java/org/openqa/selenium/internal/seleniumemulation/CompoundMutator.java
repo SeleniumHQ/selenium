@@ -18,27 +18,44 @@ limitations under the License.
 
 package org.openqa.selenium.internal.seleniumemulation;
 
-import java.util.List;
-import java.util.Set;
-
 import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 
+import java.util.List;
+
+/**
+ * A class that collects together a group of other mutators and applies
+ * them in the order they've been added to any script that needs modification.
+ * Any JS to be executed will be wrapped in an "eval" block so that a
+ * meaningful return value can be created.
+ */
 public class CompoundMutator implements ScriptMutator {
+  private static final String PREFIX =
+      "/scripts/selenium-emulation/";
+
+  // The ordering of mutators matters
   private List<ScriptMutator> mutators = Lists.newArrayList();
 
   public CompoundMutator(String baseUrl) {
     addMutator(new VariableDeclaration("selenium", "var selenium = {};"));
     addMutator(new VariableDeclaration("selenium.browserbot", "selenium.browserbot = {};"));
-    addMutator(new VariableDeclaration("selenium.browserbot.baseUrl",
-        "selenium.browserbot.baseUrl = '" + baseUrl + "';"));
+    addMutator(new VariableDeclaration(
+        "selenium.browserbot.baseUrl", "selenium.browserbot.baseUrl = '" + baseUrl + "';"));
 
-    addMutator(new MethodDeclaration("selenium.page",
+    addMutator(new FunctionDeclaration("selenium.page",
         "if (!selenium.browserbot) { selenium.browserbot = {} }; return selenium.browserbot;"));
-    addMutator(new MethodDeclaration("selenium.browserbot.getCurrentWindow", "return window;"));
-    addMutator(new MethodDeclaration("selenium.page().getCurrentWindow", "return window;"));
-    addMutator(new MethodDeclaration("selenium.browserbot.getDocument", "return document;"));
-    addMutator(new MethodDeclaration("selenium.page().getDocument", "return document;"));
+    addMutator(new FunctionDeclaration("selenium.browserbot.getCurrentWindow", "return window;"));
+    addMutator(new FunctionDeclaration("selenium.page().getCurrentWindow", "return window;"));
+    addMutator(new FunctionDeclaration("selenium.browserbot.getDocument", "return document;"));
+    addMutator(new FunctionDeclaration("selenium.page().getDocument", "return document;"));
+
+    addMutator(new SeleniumMutator("selenium.isElementPresent", "isElementPresent",
+        PREFIX + "isElementPresent.js"));
+    addMutator(new SeleniumMutator("selenium.isTextPresent", "isTextPresent",
+        PREFIX + "isTextPresent.js"));
+    addMutator(new SeleniumMutator("selenium.isVisible", "isVisible",
+        PREFIX + "isVisible.js"));
+    addMutator(new SeleniumMutator("selenium.browserbot.findElement", "findElement",
+        PREFIX + "findElement.js"));
   }
 
   public void addMutator(ScriptMutator mutator) {
@@ -51,10 +68,10 @@ public class CompoundMutator implements ScriptMutator {
     for (ScriptMutator mutator : mutators) {
       mutator.mutate(script, nested);
     }
+    nested.append("").append(script);
 
     outputTo.append("return eval('");
     outputTo.append(escape(nested.toString()));
-    outputTo.append(escape(script));
     outputTo.append("');");
   }
 

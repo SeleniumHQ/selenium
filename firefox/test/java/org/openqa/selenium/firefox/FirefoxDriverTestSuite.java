@@ -24,7 +24,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
+import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.io.Files;
 import org.openqa.selenium.Build;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.TestSuiteBuilder;
@@ -109,7 +111,7 @@ public class FirefoxDriverTestSuite extends TestCase {
       }
 
       // /me rolls up sleeves. Here we go.
-      //' Where are resources able to hide?
+      // Where are resources able to hide?
       File root = InProject.locate("Rakefile").getParentFile();
       File[] roots = new File[] {
           root,
@@ -124,7 +126,15 @@ public class FirefoxDriverTestSuite extends TestCase {
       Map<String, File> generated = ImmutableMap.of(
         "atoms.js", new File(extension, "resource/modules/atoms.js")
       );
-      
+
+      // Resources that are expected to be on the classpath
+      Map<String, String> classpathResources = ImmutableMap.of(
+        "common/src/js/selenium/findElement.js", "scripts/selenium-emulation/findElement.js",
+        "common/src/js/selenium/isElementPresent.js", "scripts/selenium-emulation/isElementPresent.js",
+        "common/src/js/selenium/isTextPresent.js", "scripts/selenium-emulation/isTextPresent.js",
+        "common/src/js/selenium/isVisible.js", "scripts/selenium-emulation/isVisible.js"
+      );
+
       // Resources that are generated and which are prebuilt
       Map<String, File> prebuilts = new ImmutableMap.Builder<String, File>()
           .put("Win32/Release/webdriver-firefox.dll", new File(extension, "platform/WINNT_x86-msvc/components/webdriver-firefox.dll"))
@@ -145,7 +155,7 @@ public class FirefoxDriverTestSuite extends TestCase {
       );
 
       // TODO(simon): Handle the case of the "noblur" libraries
-
+      copyClasspathResources(classpathResources);
       copyGeneratedResources(roots, generated);
       copyResources(roots, prebuilts);
       copyResources(roots, toCopy);
@@ -164,6 +174,33 @@ public class FirefoxDriverTestSuite extends TestCase {
         }
       }
       return profile;
+    }
+
+    private static void copyClasspathResources(Map<String, String> classpathResources) {
+      File firefoxBuildRoot = InProject.locate("firefox/build/classes");
+      File rakefile = InProject.locate("Rakefile");
+      File crazyFunRoot = new File(rakefile.getParentFile(), "build");
+
+      for (Map.Entry<String, String> entry : classpathResources.entrySet()) {
+        try {
+          File source = new File(crazyFunRoot, entry.getKey());
+          if (!source.exists()) {
+            new Build().of("build/" + entry.getKey());
+          }
+
+          File dest = new File(firefoxBuildRoot, entry.getValue());
+          if (!dest.getParentFile().exists()) {
+            assertTrue(dest.getParentFile().mkdirs());
+          }
+
+          if (dest.exists()) {
+            assertTrue(dest.delete());
+          }
+          Files.copy(source, dest);
+        } catch (IOException e) {
+          throw Throwables.propagate(e);
+        }
+      }
     }
 
     private static void copyGeneratedResources(File[] roots, Map<String, File> generated)

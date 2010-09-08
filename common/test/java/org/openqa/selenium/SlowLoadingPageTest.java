@@ -14,14 +14,15 @@ public class SlowLoadingPageTest extends AbstractDriverTestCase {
     long start = System.currentTimeMillis();
     driver.get(pages.sleepingPage + "?time=" + LOAD_TIME_IN_SECONDS);
     long now = System.currentTimeMillis();
-    assertEllapsed(LOAD_TIME_IN_SECONDS * 1000, now - start);
+    assertElapsed(LOAD_TIME_IN_SECONDS * 1000, now - start);
   }
 
+  @Ignore(SELENESE)
   public void testShouldBlockUntilIFramesAreLoaded() throws Exception {
     long start = System.currentTimeMillis();
     driver.get(pages.slowIframes);
     long now = System.currentTimeMillis();
-    assertEllapsed(LOAD_TIME_IN_SECONDS * 1000, now - start);
+    assertElapsed(LOAD_TIME_IN_SECONDS * 1000, now - start);
   }
 
   @Ignore(value = {IE, IPHONE, SELENESE, CHROME},
@@ -31,13 +32,13 @@ public class SlowLoadingPageTest extends AbstractDriverTestCase {
   public void testRefreshShouldBlockUntilPageLoads() {
     long start = System.currentTimeMillis();
     driver.get(pages.sleepingPage + "?time=" + LOAD_TIME_IN_SECONDS);
-    assertEllapsed(LOAD_TIME_IN_SECONDS * 1000, System.currentTimeMillis() - start);
+    assertElapsed(LOAD_TIME_IN_SECONDS * 1000, System.currentTimeMillis() - start);
     long refreshed = System.currentTimeMillis();
     driver.navigate().refresh();
-    assertEllapsed(LOAD_TIME_IN_SECONDS * 1000, System.currentTimeMillis() - refreshed);
+    assertElapsed(LOAD_TIME_IN_SECONDS * 1000, System.currentTimeMillis() - refreshed);
   }
 
-  private static void assertEllapsed(long expected, long actual) {
+  private static void assertElapsed(long expected, long actual) {
     assertTrue(expected + "ms should have ellapsed, but was: " + actual, expected <= actual);
   }
 }

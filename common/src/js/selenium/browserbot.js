@@ -23,6 +23,7 @@ goog.provide('core.browserbot');
 
 
 goog.require('bot.locators');
+goog.require('bot.dom');
 goog.require('core.locators');
 goog.require('core.patternMatcher');
 
@@ -36,15 +37,11 @@ goog.require('core.patternMatcher');
  * @return {boolean} Whether the pattern matches the text.
  */
 core.browserbot.isTextPresent = function(pattern) {
-  // The class name is a pain to keep typing.
-
-  var locator = {};
-  locator['tagName'] = 'body';
-  var body = bot.locators.findElement(locator);
+  var body = bot.locators.findElement({'tagName': 'body'});
   if (!body) {
     return false;
   }
-  var allText = bot.dom.getVisibleText((/**@type{Node}*/ body));
+  var allText = bot.dom.getVisibleText((body));
 
   var matchMaker = core.patternMatcher.against(pattern);
   return matchMaker(allText);
@@ -52,7 +49,7 @@ core.browserbot.isTextPresent = function(pattern) {
 
 
 /**
- * @param {!string} locator The locator to use.
+ * @param {!string} locator The selenium locator to use.
  * @return {boolean} Whether the given element is "user visible".
  */
 core.browserbot.isVisible = function(locator) {

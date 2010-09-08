@@ -18,29 +18,22 @@ limitations under the License.
 
 package org.openqa.selenium.internal.seleniumemulation;
 
-import java.util.regex.Pattern;
+import com.thoughtworks.selenium.Selenium;
+import org.openqa.selenium.AbstractDriverTestCase;
+import org.openqa.selenium.WebDriverBackedSelenium;
 
-/**
- * Prepend a variable declaration to a script.
- */
-public class VariableDeclaration implements ScriptMutator {
-  private final Pattern pattern;
-  private final String declaration;
 
-  public VariableDeclaration(String raw, String declaration) {
-    this.declaration = declaration;
-    raw = raw.replace(".", "\\s*\\.\\s*")
-        .replace("(", "\\(")
-        .replace(")", "\\)");
+public class ScriptMutatorTest extends AbstractDriverTestCase {
 
-    pattern = Pattern.compile(".*" + raw + ".*");
-  }
+  public void testShouldBeAbleToUseTheBrowserbot() {
+    String url = pages.tables;
+    Selenium selenium = new WebDriverBackedSelenium(driver, url);
+    selenium.open(pages.tables);
 
-  public void mutate(String script, StringBuilder outputTo) {
-    if (!pattern.matcher(script).matches()) {
-      return;
-    }
+    String rowCount = selenium.getEval(
+        "var table = selenium.browserbot.findElement('id=foo'); " +
+        "table.rows[0].cells.length;");
 
-    outputTo.append(declaration);
+    assertEquals("3", rowCount);
   }
 }

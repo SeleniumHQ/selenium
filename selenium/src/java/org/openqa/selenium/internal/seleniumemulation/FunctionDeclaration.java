@@ -21,19 +21,23 @@ package org.openqa.selenium.internal.seleniumemulation;
 import java.util.regex.Pattern;
 
 /**
- * Prepend a variable declaration to a script.
+ * Models a function declaration. That is, it provides an implementation of a
+ * particular Javascript function.
  */
-public class VariableDeclaration implements ScriptMutator {
+public class FunctionDeclaration implements ScriptMutator {
   private final Pattern pattern;
-  private final String declaration;
+  private final String function;
 
-  public VariableDeclaration(String raw, String declaration) {
-    this.declaration = declaration;
-    raw = raw.replace(".", "\\s*\\.\\s*")
-        .replace("(", "\\(")
-        .replace(")", "\\)");
+  /**
+   * @param raw The original function (eg: "selenium.isElementPresent")
+   * @param result The body of the function implementation.
+   */
+  public FunctionDeclaration(String raw, String result) {
+    String base = raw.replace(".", "\\s*\\.\\s*");
 
-    pattern = Pattern.compile(".*" + raw + ".*");
+    pattern = Pattern.compile(".*" + base + "\\s*\\(\\s*\\).*");
+
+    function = raw + " = function() { " + result + " }";
   }
 
   public void mutate(String script, StringBuilder outputTo) {
@@ -41,6 +45,7 @@ public class VariableDeclaration implements ScriptMutator {
       return;
     }
 
-    outputTo.append(declaration);
+    outputTo.append(function);
   }
+
 }

@@ -31,7 +31,7 @@
 
       function testShouldFindElementsByXPath() {
         if (!document['evaluate']) { return; } // XPath not available
-              
+
         var element = core.locators.findElement('//input');
         assertEquals('find_by_name', bot.dom.getAttribute(element, 'name'));
       }
@@ -48,7 +48,7 @@
 
       function testShouldFindElementsIterativelyByImplicitXPath() {
         if (!document['evaluate']) { return; } // XPath not available
-        
+
         var element = core.locators.findElement('//*[@id = "in_child_frame"]');
         assertEquals('in_child_frame', bot.dom.getAttribute(element, 'id'));
       }

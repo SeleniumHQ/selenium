@@ -22,9 +22,10 @@
 goog.provide('core.patternMatcher');
 
 
+
 /**
- * @param {!string} expected The expected value.
- * @param {!string} actual The actual value.
+ * @param {string} expected The expected value.
+ * @param {string} actual The actual value.
  * @return {boolean} Whether the actual value is the same as the expected one.
  * @private
  */
@@ -32,9 +33,10 @@ core.patternMatcher.exact_ = function(expected, actual) {
   return expected == actual;
 };
 
+
 /**
- * @param {!string} regexpString The expected value.
- * @param {!string} actual The actual value.
+ * @param {string} regexpString The expected value.
+ * @param {string} actual The actual value.
  * @return {boolean} Whether the actual value matches the expected one.
  * @private
  */
@@ -44,8 +46,8 @@ core.patternMatcher.regexp_ = function(regexpString, actual) {
 
 
 /**
- * @param {!string} regexpString The expected value.
- * @param {!string} actual The actual value.
+ * @param {string} regexpString The expected value.
+ * @param {string} actual The actual value.
  * @return {boolean} Whether the actual value case-insensitively matches the
  *   expected one.
  * @private
@@ -53,6 +55,7 @@ core.patternMatcher.regexp_ = function(regexpString, actual) {
 core.patternMatcher.regexpi_ = function(regexpString, actual) {
   return new RegExp(regexpString, 'i').text(actual);
 };
+
 
 /**
  * "globContains" (aka "wildmat") patterns, e.g. "glob:one,two,*",
@@ -65,8 +68,8 @@ core.patternMatcher.regexpi_ = function(regexpString, actual) {
  * the functional needs of the *TextPresent ops more efficiently
  * and so avoid running into this IE6 freeze.
  *
- * @param {!string} globString The expected value.
- * @param {!string} actual The actual value.
+ * @param {string} globString The expected value.
+ * @param {string} actual The actual value.
  * @return {boolean} Whether the actual value matches the expected one.
  * @private
  */
@@ -76,14 +79,14 @@ core.patternMatcher.globContains_ = function(globString, actual) {
   return regexp.test(actual);
 };
 
+
 /**
  * "glob" (aka "wildmat") patterns, e.g. "glob:one,two,*"
  *
- * @param {!string} globString The expected value.
- * @param {!string} actual The actual value.
+ * @param {string} globString The expected value.
+ * @param {string} actual The actual value.
  * @return {boolean} Whether the actual value matches the expected one.
  * @private
-
  */
 core.patternMatcher.glob_ = function(globString, actual) {
   var regexp = new RegExp(core.patternMatcher.regexpFromGlob(globString));
@@ -92,8 +95,8 @@ core.patternMatcher.glob_ = function(globString, actual) {
 
 
 /**
- * @param {!string} glob The string to convert to a glob.
- * @return {!string} The shell-style glob as an equivalent regexp string.
+ * @param {string} glob The string to convert to a glob.
+ * @return {string} The shell-style glob as an equivalent regexp string.
  * @private
  */
 core.patternMatcher.convertGlobMetaCharsToRegexpMetaChars_ = function(glob) {
@@ -106,8 +109,8 @@ core.patternMatcher.convertGlobMetaCharsToRegexpMetaChars_ = function(glob) {
 
 
 /**
- * @param {!string} globContains A shell-style glob.
- * @return {!string} A regex string which will match on a part of a string.
+ * @param {string} globContains A shell-style glob.
+ * @return {string} A regex string which will match on a part of a string.
  */
 core.patternMatcher.regexpFromGlobContains = function(globContains) {
   return core.patternMatcher.convertGlobMetaCharsToRegexpMetaChars_(
@@ -116,8 +119,8 @@ core.patternMatcher.regexpFromGlobContains = function(globContains) {
 
 
 /**
- * @param {!string} glob A shell-style glob.
- * @return {!string} A regex string which requires an exact match.
+ * @param {string} glob A shell-style glob.
+ * @return {string} A regex string which requires an exact match.
  */
 core.patternMatcher.regexpFromGlob = function(glob) {
   return '^' +
@@ -127,16 +130,17 @@ core.patternMatcher.regexpFromGlob = function(glob) {
 
 
 /**
- * @typedef {function(!string):!string}
+ * @typedef {function(string):string}
  */
-core.patternMatcher.strategy;
+core.patternMatcher.Strategy;
+
 
 /**
  * Known element location strategies.
  *
  * @private
  * @const
- * @type {Object.<string,core.patternMatcher.strategy>}
+ * @type {Object.<string,core.patternMatcher.Strategy>}
  */
 core.patternMatcher.KNOWN_STRATEGIES_ = {
   'exact': core.patternMatcher.exact_,
@@ -152,8 +156,8 @@ core.patternMatcher.KNOWN_STRATEGIES_ = {
 /**
  * Find a pattern matching strategy for the given pattern.
  *
- * @param {!string} pattern The pattern to match against.
- * @return {function(!string): boolean} The matching function.
+ * @param {string} pattern The pattern to match against.
+ * @return {function(string): boolean} The matching function.
  */
 core.patternMatcher.against = function(pattern) {
   // by default
@@ -193,8 +197,8 @@ core.patternMatcher.against = function(pattern) {
 /**
  * A "static" convenience method for easy matching.
  *
- * @param {!string} pattern The pattern to match against.
- * @param {!string} actual The value to be compared.
+ * @param {string} pattern The pattern to match against.
+ * @param {string} actual The value to be compared.
  * @return {boolean} Whether the actual value matches the pattern.
  */
 core.patternMatcher.matches = function(pattern, actual) {

@@ -1,6 +1,6 @@
 /*
-Copyright 2007-2009 WebDriver committers
-Copyright 2007-2009 Google Inc.
+Copyright 2010 WebDriver committers
+Copyright 2010 Google Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -15,20 +15,46 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+
 package org.openqa.selenium.internal.seleniumemulation;
 
 import com.thoughtworks.selenium.Wait;
+
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.internal.seleniumemulation.SeleneseCommand;
 
 public class WaitForCondition extends SeleneseCommand<Void> {
 
+  private final ScriptMutator mutator;
+
+  public WaitForCondition(ScriptMutator mutator) {
+    this.mutator = mutator;
+  }
+
   @Override
-  protected Void handleSeleneseCommand(final WebDriver driver, final String script, final String timeout) {
+  protected Void handleSeleneseCommand(final WebDriver driver, String script,
+      final String timeout) {
+    StringBuilder builder = new StringBuilder();
+    mutator.mutate(script, builder);
+    final String modified = builder.toString();
+
     new Wait() {
       @Override
       public boolean until() {
-        return (Boolean) ((JavascriptExecutor) driver).executeScript(script);
+        Object result = ((JavascriptExecutor) driver).executeScript(modified);
+
+        // Although the conditions should return a boolean, JS has a loose
+        // definition of "true" Try and meet that definition.
+        if (result == null) {
+          return false;
+        } else if (result instanceof String) {
+          return !"".equals(result);
+        } else if (result instanceof Boolean) {
+          return (Boolean) result;
+        } else {
+          return true;
+        }
       }
     }.wait("Failed to resolve " + script, Long.valueOf(timeout));
 

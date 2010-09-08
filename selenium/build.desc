@@ -8,7 +8,11 @@ java_library(name = "selenium",
   ],
   resources = [
     { "src/java/org/openqa/selenium/internal/seleniumemulation/injectableSelenium.js" : "org/openqa/selenium/internal/seleniumemulation/injectableSelenium.js" },
-    { "src/java/org/openqa/selenium/internal/seleniumemulation/htmlutils.js" : "org/openqa/selenium/internal/seleniumemulation/htmlutils.js" }
+    { "src/java/org/openqa/selenium/internal/seleniumemulation/htmlutils.js" : "org/openqa/selenium/internal/seleniumemulation/htmlutils.js" },
+    { "//common/src/js/selenium:findElement" : "scripts/selenium-emulation/findElement.js" },
+    { "//common/src/js/selenium:isElementPresent" : "scripts/selenium-emulation/isElementPresent.js" },
+    { "//common/src/js/selenium:isTextPresent" : "scripts/selenium-emulation/isTextPresent.js" },
+    { "//common/src/js/selenium:isVisible" : "scripts/selenium-emulation/isVisible.js" }
   ])
 
 java_library(name = "test",

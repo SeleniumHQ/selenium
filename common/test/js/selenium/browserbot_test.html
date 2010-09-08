@@ -2,9 +2,10 @@
   <head>
     <title>browserbot_test</title>
     <script type="text/javascript" src="../webdriver-bootstrap.js"></script>
+
     <script type="text/javascript">
-      goog.require('goog.testing.jsunit');
       goog.require('bot.dom');
+      goog.require('goog.testing.jsunit');
       goog.require('core.locators');
       goog.require('core.browserbot');
     </script>
@@ -13,17 +14,17 @@
       function testShouldDetectWhenTextIsPresent() {
         assertTrue(core.browserbot.isTextPresent('content'));
       }
-      
+
       function testShouldDetectWhenTextIsNotPresent() {
         assertFalse(core.browserbot.isTextPresent('dance the funky chicken'));
       }
-      
+
       function testShouldBeAbleToDetectIfAnElementIsPresent() {
         if (!document['evaluate']) { return; } // XPath not available
       
         assertTrue(core.locators.isElementPresent('//*[@id="here"]'));
       }
-      
+
       function testShouldBeAbleToDetectAnElementIsNotPresent() {
         assertFalse(core.locators.isElementPresent('furrfu'));
         

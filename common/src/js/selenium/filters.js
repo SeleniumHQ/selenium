@@ -17,67 +17,69 @@ limitations under the License.
 
 goog.provide('core.filters');
 
-
+goog.require('bot.dom');
 goog.require('core.Error');
 goog.require('goog.array');
 
 
+
 /**
- * @param {!string} name The expected name value to match against.
- * @param {!goog.array.ArrayLike.<Element>} elements The list to filter.
- * @return {!Array.<Element>} The filtered list of elements.
+ * @param {string} name The expected name value to match against.
+ * @param {!goog.array.ArrayLike.<!Element>} elements The list to filter.
+ * @return {!Array.<!Element>} The filtered list of elements.
  * @private
  */
 core.filters.name_ = function(name, elements) {
   return goog.array.filter(elements, function(element, index, array) {
-    return element.name === name;
+    return bot.dom.getProperty(element, 'name') == name;
   });
 };
 
 
 /**
- * @param {!string} value The expected value to match against.
- * @param {!goog.array.ArrayLike.<Element>} elements The list to filter.
- * @return {!Array.<Element>} The filtered list of elements.
+ * @param {string} value The expected value to match against.
+ * @param {!goog.array.ArrayLike.<!Element>} elements The list to filter.
+ * @return {!Array.<!Element>} The filtered list of elements.
  * @private
  */
 core.filters.value_ = function(value, elements) {
   return goog.array.filter(elements, function(element, index, array) {
-    return element.value === value;
+    return bot.dom.getProperty(element, 'value') === value;
   });
 };
 
 
 /**
- * @param {!string} index The index to select.
- * @param {!goog.array.ArrayLike.<Element>} elements The list to filter.
- * @return {!Array.<Element>} The filtered list of elements.
+ * @param {string} index The index to select.
+ * @param {!goog.array.ArrayLike.<!Element>} elements The list to filter.
+ * @return {!Array.<!Element>} The filtered list of elements.
  * @private
  */
 core.filters.index_ = function(index, elements) {
-    index = Number(index);
-    if (isNaN(index) || index < 0) {
-        throw new core.Error('Illegal Index: ' + index);
-    }
-    if (elements.length <= index) {
-        throw new core.Error('Index out of range: ' + index);
-    }
-    return [elements[index]];
+  index = Number(index);
+  if (isNaN(index) || index < 0) {
+    throw new core.Error('Illegal Index: ' + index);
+  }
+  if (elements.length <= index) {
+    throw new core.Error('Index out of range: ' + index);
+  }
+  return [elements[index]];
 };
 
 
 /**
- * @typedef {function(!string,
- *     !goog.array.ArrayLike.<Element>):!Array.<Element>}
+ * @typedef {function(string,
+ *     !goog.array.ArrayLike.<!Element>):!Array.<Element>}
  */
-core.filters.strategy;
+core.filters.Strategy;
+
 
 /**
  * Known element list filtering strategies.
  *
  * @private
  * @const
- * @type {Object.<string,core.filters.strategy>}
+ * @type {!Object.<string,core.filters.Strategy>}
  */
 core.filters.Filters_ = {
   'index': core.filters.index_,
@@ -89,11 +91,11 @@ core.filters.Filters_ = {
 /**
  * Refine a list of elements using a filter.
  *
- * @param {!string} filterType The type of filter to use.
- * @param {!string} filter The value to pass to the filter function.
- * @param {!goog.array.ArrayLike.<Element>} elements The list of elements to
+ * @param {string} filterType The type of filter to use.
+ * @param {string} filter The value to pass to the filter function.
+ * @param {!goog.array.ArrayLike.<!Element>} elements The list of elements to
  *     filter.
- * @return {!Array.<Element>} The filtered list of elements.
+ * @return {!Array.<!Element>} The filtered list of elements.
  * @private
  */
 core.filters.selectElementsBy_ = function(filterType, filter, elements) {
@@ -110,14 +112,14 @@ core.filters.selectElementsBy_ = function(filterType, filter, elements) {
 /**
  * Refine a list of elements using a filter.
  *
- * @param {!string} filterExpr The type of filter to use.
- * @param {!goog.array.ArrayLike.<Element>} elements The list of elements to
+ * @param {string} filterExpr The type of filter to use.
+ * @param {!goog.array.ArrayLike.<!Element>} elements The list of elements to
  *     filter.
- * @param {!string} defaultFilterType The default type of filter to use.
- * @return {!Array.<Element>} The filtered list of elements.
+ * @param {string} defaultFilterType The default type of filter to use.
+ * @return {!Array.<!Element>} The filtered list of elements.
  */
-core.filters.selectElements = function(filterExpr, elements, 
-		defaultFilterType) {
+core.filters.selectElements = function(filterExpr, elements,
+    defaultFilterType) {
   var filterType = defaultFilterType || 'value';
 
   // If there is a filter prefix, use the specified strategy

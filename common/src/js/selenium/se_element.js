@@ -28,8 +28,8 @@ goog.require('core.locators');
 
 
 /**
- * @param {!string} locator A selenium attribute locator to use.
- * @return {string} The value of the given attribute or null.
+ * @param {string} locator A selenium attribute locator to use.
+ * @return {?string} The value of the given attribute or null.
  * @private
  */
 core.element.findAttribute_ = function(locator) {
@@ -45,8 +45,8 @@ core.element.findAttribute_ = function(locator) {
 
 
 /**
- * @param {!string} locator The selenium attribute locator to use.
- * @return {!string} The value of the attribute.
+ * @param {string} locator The selenium attribute locator to use.
+ * @return {string} The value of the attribute.
  * @throws {core.Error} If the attribute cannot be found.
  */
 core.element.getAttribute = function(locator) {

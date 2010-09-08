@@ -1,6 +1,6 @@
 /*
-Copyright 2007-2009 WebDriver committers
-Copyright 2007-2009 Google Inc.
+Copyright 2010 WebDriver committers
+Copyright 2010 Google Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -15,20 +15,26 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+
 package org.openqa.selenium.internal.seleniumemulation;
 
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 
 public class RunScript extends SeleneseCommand<Void> {
-  private final JavascriptLibrary js;
+  private final ScriptMutator mutator;
 
-  public RunScript(JavascriptLibrary js) {
-    this.js = js;
+  public RunScript(ScriptMutator mutator) {
+    this.mutator = mutator;
   }
 
   @Override
-  protected Void handleSeleneseCommand(WebDriver driver, String script, String ignored) {
-    js.executeScript(driver, script);
+  protected Void handleSeleneseCommand(WebDriver driver, String locator,
+      String value) {
+    StringBuilder builder = new StringBuilder();
+    mutator.mutate(locator, builder);
+
+    ((JavascriptExecutor) driver).executeScript(builder.toString());
 
     return null;
   }

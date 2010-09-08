@@ -1,6 +1,6 @@
 /*
-Copyright 2007-2009 WebDriver committers
-Copyright 2007-2009 Google Inc.
+Copyright 2010 WebDriver committers
+Copyright 2010 Google Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -15,11 +15,16 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+
 package org.openqa.selenium.internal.seleniumemulation;
 
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.internal.seleniumemulation.SeleneseCommand;
 
+/**
+ * An implementation of the "getEval" method from Selenium.
+ */
 public class GetEval extends SeleneseCommand<String> {
   private final ScriptMutator mutator;
 
@@ -33,6 +38,7 @@ public class GetEval extends SeleneseCommand<String> {
 
     mutator.mutate(locator, builder);
 
-    return String.valueOf(((JavascriptExecutor) driver).executeScript(builder.toString()));
+    Object result = ((JavascriptExecutor) driver).executeScript(builder.toString());
+    return result == null ? "" : String.valueOf(result);
   }
 }

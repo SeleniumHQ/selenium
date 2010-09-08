@@ -383,7 +383,7 @@ public class WebDriverCommandProcessor implements CommandProcessor {
     seleneseMethods.put("refresh", new Refresh());
     seleneseMethods.put("removeAllSelections", new RemoveAllSelections(elementFinder));
     seleneseMethods.put("removeSelection", new RemoveSelection(elementFinder, select));
-    seleneseMethods.put("runScript", new RunScript(javascriptLibrary));
+    seleneseMethods.put("runScript", new RunScript(scriptMutator));
     seleneseMethods.put("select", new SelectOption(select));
     seleneseMethods.put("selectFrame", new SelectFrame(windows));
     seleneseMethods.put("selectWindow", new SelectWindow(windows));
@@ -398,7 +398,7 @@ public class WebDriverCommandProcessor implements CommandProcessor {
     seleneseMethods.put("typeKeys", new TypeKeys(elementFinder));
     seleneseMethods.put("uncheck", new Uncheck(elementFinder));
     seleneseMethods.put("useXpathLibrary", new NoOp(null));
-    seleneseMethods.put("waitForCondition", new WaitForCondition());
+    seleneseMethods.put("waitForCondition", new WaitForCondition(scriptMutator));
     seleneseMethods.put("waitForFrameToLoad", new NoOp(null));
     seleneseMethods.put("waitForPageToLoad", new WaitForPageToLoad());
     seleneseMethods.put("waitForPopUp", new WaitForPopup(windows));
