@@ -78,7 +78,7 @@ describe "Driver" do
 
     not_compliant_on :driver => [:ie, :remote] do
       it "should find by css selector" do
-        if driver.bridge.browser == :firefox && driver.bridge.capabilities.version < "3.5"
+        if driver.browser == :firefox && driver.capabilities.version < "3.5"
           pending "needs Firefox >= 3.5"
         end
 
@@ -136,7 +136,7 @@ describe "Driver" do
 
     not_compliant_on :driver => [:ie, :remote] do
       it "should find by css selector" do
-        if driver.bridge.browser == :firefox && driver.bridge.capabilities.version < "3.5"
+        if driver.browser == :firefox && driver.capabilities.version < "3.5"
           pending "needs Firefox >= 3.5"
         end
 

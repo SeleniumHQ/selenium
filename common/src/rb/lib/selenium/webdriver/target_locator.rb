@@ -6,8 +6,8 @@ module Selenium
       # @api private
       #
 
-      def initialize(driver)
-        @bridge = driver.bridge
+      def initialize(bridge)
+        @bridge = bridge
       end
 
       #

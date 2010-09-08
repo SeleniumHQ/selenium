@@ -13,8 +13,6 @@ module Selenium
     class Driver
       include Find
 
-      attr_reader :bridge
-
       class << self
 
         #
@@ -62,8 +60,8 @@ module Selenium
         @bridge = bridge
 
         # TODO: refactor this away
-        unless @bridge.driver_extensions.empty?
-          extend(*@bridge.driver_extensions)
+        unless bridge.driver_extensions.empty?
+          extend(*bridge.driver_extensions)
         end
       end
 
@@ -256,6 +254,20 @@ module Selenium
 
       def ref
         nil
+      end
+
+      def browser
+        bridge.browser
+      end
+
+      def capabilities
+        bridge.capabilities
+      end
+
+      private
+
+      def bridge
+        @bridge
       end
 
     end # Driver
