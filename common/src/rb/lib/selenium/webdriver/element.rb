@@ -272,7 +272,17 @@ module Selenium
       #
 
       def to_json(*args)
-        { :ELEMENT => @id }.to_json(*args)
+        as_json.to_json(*args)
+      end
+
+      #
+      # For Rails 3 - http://jonathanjulian.com/2010/04/rails-to_json-or-as_json/
+      #
+      # @private
+      #
+
+      def as_json(opts = nil)
+        { :ELEMENT => @id }
       end
 
     end # Element
