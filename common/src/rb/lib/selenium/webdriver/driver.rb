@@ -75,7 +75,7 @@ module Selenium
       #
 
       def navigate
-        @navigate ||= WebDriver::Navigation.new(self)
+        @navigate ||= WebDriver::Navigation.new(bridge)
       end
 
       #
@@ -84,7 +84,7 @@ module Selenium
       #
 
       def switch_to
-        @switch_to ||= WebDriver::TargetLocator.new(self)
+        @switch_to ||= WebDriver::TargetLocator.new(bridge)
       end
 
       #
@@ -93,7 +93,7 @@ module Selenium
       #
 
       def manage
-        @manage ||= WebDriver::Options.new(self)
+        @manage ||= WebDriver::Options.new(bridge)
       end
 
       #
