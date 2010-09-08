@@ -1172,16 +1172,20 @@ Utils.unwrapParameters = function(wrappedParameters, doc) {
 Utils.isArray_ = function(obj) {
   return (obj !== undefined &&
     obj.constructor.toString().indexOf("Array") != -1);
-}
+};
 
 
 Utils.isHtmlCollection_ = function(obj) {
   return (obj !== undefined && obj['length'] &&
     obj['item'] && obj['namedItem']); 
-}
+};
 
 
 Utils.wrapResult = function(result, doc) {
+  if (result && result.wrappedJSObject) {
+    result = result.wrappedJSObject;
+  }
+
   // Sophisticated.
   switch (typeof result) {
     case 'string':
@@ -1224,7 +1228,7 @@ Utils.wrapResult = function(result, doc) {
       return result;
   }
 };
-
+    
 /**
  * Gets canonical xpath of the passed element, e.g. /HTML[1]/BODY[1]/P[1]
  */
@@ -1235,7 +1239,7 @@ Utils.getXPathOfElement = function(element) {
     path = "/" + element.tagName + "[" + index + "]" + path;
   }
   return path;	
-}
+};
 
 /**
  * Returns n for the nth child of the parent of that element, of type element.tagName, starting at 1
@@ -1248,4 +1252,30 @@ Utils.getElementIndexForXPath_ = function (element) {
     }
   }
   return index;
-}
+};
+
+Utils.loadUrl = function(url) {
+  var ioService = Utils.getService("@mozilla.org/network/io-service;1", "nsIIOService");
+  var channel = ioService.newChannel(url, null, null);
+  var channelStream = channel.open();
+
+  var scriptableStream = Components.classes["@mozilla.org/scriptableinputstream;1"]
+                                 .createInstance(Components.interfaces.nsIScriptableInputStream);
+  scriptableStream.init(channelStream);
+
+  var converter = Utils.newInstance("@mozilla.org/intl/scriptableunicodeconverter",
+                      'nsIScriptableUnicodeConverter');
+  converter.charset = 'UTF-8';
+
+  var text = '';
+
+  // This doesn't feel right to me.
+  for (var chunk = scriptableStream.read(4096); chunk; chunk = scriptableStream.read(4096)) {
+    text += converter.ConvertToUnicode(chunk);
+  }
+
+  scriptableStream.close();
+  channelStream.close();
+
+  return text;
+};

@@ -140,7 +140,8 @@ public class FirefoxDriverTestSuite extends TestCase {
       Map<String, File> toCopy = ImmutableMap.of(
           "common/src/js/extension/dommessenger.js", new File(extension, "content/dommessenger.js"),
           "firefox/src/extension", extension,
-          "firefox/src/js", new File(extension, "resource/modules")
+          "firefox/src/js", new File(extension, "resource/modules"),
+          "firefox/src/js/evaluate.js", new File(extension, "resource/evaluate.js")
       );
 
       // TODO(simon): Handle the case of the "noblur" libraries
@@ -156,6 +157,8 @@ public class FirefoxDriverTestSuite extends TestCase {
       if (Boolean.getBoolean("webdriver.debug")) {
         try {
           profile.addExtension(InProject.locate("third_party/firebug/firebug-1.5.0-fx.xpi"));
+          profile.setPreference("extensions.firebug.script.enableSites", true);
+          profile.setPreference("extensions.firebug.allPagesActivation", "on");
         } catch (IOException e) {
           throw new RuntimeException(e);
         }

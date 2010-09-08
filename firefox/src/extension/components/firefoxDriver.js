@@ -142,34 +142,68 @@ FirefoxDriver.prototype.close = function(respond) {
 
 
 FirefoxDriver.prototype.executeScript = function(respond, parameters) {
-  var window = respond.session.getWindow();
-  var doc = window.document;
+  var doc = respond.session.getDocument();
 
-  var runScript;
+  var rawScript = parameters['script'];
+  var converted = Utils.unwrapParameters(parameters['args'], doc);
 
-  runScript = function(scriptSrc, args) {
+  if (doc.designMode) {
+    // See https://developer.mozilla.org/en/rich-text_editing_in_mozilla#Internet_Explorer_Differences
+    Utils.dumpn("Window in design mode, falling back to sandbox");
+    var window = respond.session.getWindow();
     window = window.wrappedJSObject;
     var sandbox = new Components.utils.Sandbox(window);
     sandbox.window = window;
-    sandbox.__webdriverParams = args;
+    sandbox.__webdriverParams = converted;
 
-    return Components.utils.evalInSandbox(scriptSrc, sandbox);
-  };
-
-  var converted = Utils.unwrapParameters(
-      parameters.args, respond.session.getDocument());
-
-  try {
-    var scriptSrc = "with(window) { var __webdriverFunc = function(){" + parameters.script +
-        "};  __webdriverFunc.apply(null, __webdriverParams); }";
-    var result = runScript(scriptSrc, converted);
-  } catch (e) {
-    Utils.dumpn(JSON.stringify(e));
-    throw new WebDriverError(ErrorCode.UNEXPECTED_JAVASCRIPT_ERROR, e);
+    try {
+      var scriptSrc = "with(window) { var __webdriverFunc = function(){" + parameters.script +
+          "};  __webdriverFunc.apply(null, __webdriverParams); }";
+      var res = Components.utils.evalInSandbox(scriptSrc, sandbox);
+      respond.value = Utils.wrapResult(res, doc);
+      respond.send();
+      return;
+    } catch (e) {
+      Utils.dumpn(JSON.stringify(e));
+      throw new WebDriverError(ErrorCode.UNEXPECTED_JAVASCRIPT_ERROR, e);
+    }
   }
 
-  respond.value = Utils.wrapResult(result, respond.session.getDocument());
-  respond.send();
+  // Attach the listener to the DOM
+  if (!doc.getUserData('webdriver-evaluate-attached')) {
+    var listenerScript = Utils.loadUrl("chrome://fxdriver/resource/evaluate.js");
+
+    var element = doc.createElement("script");
+    element.setAttribute("type", "text/javascript");
+    element.innerHTML = listenerScript;
+    doc.body.appendChild(element);
+    element.parentNode.removeChild(element);
+  }
+  
+  doc.setUserData('webdriver-evaluate-args', converted, null);
+
+  var script =
+      'var args = document.getUserData("webdriver-evaluate-args"); ' +
+      '(function() { ' + rawScript + '}).apply(null, args);';
+  doc.setUserData('webdriver-evaluate-script', script, null);
+
+  var handler = function(event) {
+    doc.removeEventListener('webdriver-evaluate-response', handler, true);
+
+    var result = doc.getUserData('webdriver-evaluate-result');
+    respond.value = Utils.wrapResult(result, doc);
+    respond.status = doc.getUserData('webdriver-evaluate-code');
+
+    doc.setUserData('webdriver-evaluate-result', null, null);
+    doc.setUserData('webdriver-evaluate-code', null, null);
+
+    respond.send();
+  };
+  doc.addEventListener('webdriver-evaluate-response', handler, true);
+
+  var event = doc.createEvent('Events');
+  event.initEvent('webdriver-evaluate', true, false);
+  doc.dispatchEvent(event);
 };
 
 
