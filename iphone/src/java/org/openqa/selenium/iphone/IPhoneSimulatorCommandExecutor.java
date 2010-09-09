@@ -94,7 +94,7 @@ public class IPhoneSimulatorCommandExecutor implements CommandExecutor {
     binary.shutdown();
   }
 
-  public Response execute(Command command) throws IOException, JSONException {
+  public Response execute(Command command) throws IOException {
     if (!binary.isRunning()) {
       throw new IPhoneSimulatorNotRunningException();
     }

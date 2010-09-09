@@ -37,7 +37,15 @@ import java.util.Map;
 public class JsonToBeanConverter {
 
   @SuppressWarnings("unchecked")
-  public <T> T convert(Class<T> clazz, Object text) throws JSONException {
+  public <T> T convert(Class<T> clazz, Object text) throws JsonException {
+    try {
+      return actualConvert(clazz, text);
+    } catch (JSONException e) {
+      throw new JsonException(e);
+    }
+  }
+
+  protected <T> T actualConvert(Class<T> clazz, Object text) throws JSONException {
     if (text == null) {
       return null;
     }

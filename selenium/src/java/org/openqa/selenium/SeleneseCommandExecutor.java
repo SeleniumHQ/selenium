@@ -88,7 +88,7 @@ public class SeleneseCommandExecutor implements CommandExecutor {
     return instance;
   }
 
-  public Response execute(Command command) throws JSONException {
+  public Response execute(Command command) {
     SeleneseFunction function = functions.get(command.getName());
     if (function == null) {
       throw new UnsupportedOperationException("cannot execute: " + command.getName());
@@ -103,7 +103,7 @@ public class SeleneseCommandExecutor implements CommandExecutor {
     }
   }
 
-  private Response prepareExceptionResponse(Exception e) throws JSONException {
+  private Response prepareExceptionResponse(Exception e) {
     Response response = new Response();
 
     Exception toUse = e;

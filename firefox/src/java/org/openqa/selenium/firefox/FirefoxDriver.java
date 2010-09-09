@@ -335,7 +335,7 @@ public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot, F
       connection.quit();
     }
 
-    public Response execute(Command command) throws IOException, JSONException {
+    public Response execute(Command command) throws IOException {
       return connection.execute(command);
     }
   }

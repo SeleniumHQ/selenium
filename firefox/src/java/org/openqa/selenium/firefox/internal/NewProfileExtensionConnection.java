@@ -121,7 +121,7 @@ public class NewProfileExtensionConnection implements CommandExecutor, Extension
     }
   }
 
-  public Response execute(Command command) throws IOException, JSONException {
+  public Response execute(Command command) throws IOException {
     return delegate.execute(command);
   }
 
