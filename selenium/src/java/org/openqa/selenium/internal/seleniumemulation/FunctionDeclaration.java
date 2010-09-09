@@ -37,7 +37,7 @@ public class FunctionDeclaration implements ScriptMutator {
 
     pattern = Pattern.compile(".*" + base + "\\s*\\(\\s*\\).*");
 
-    function = raw + " = function() { " + result + " }";
+    function = raw + " = function() { " + result + " }; ";
   }
 
   public void mutate(String script, StringBuilder outputTo) {
