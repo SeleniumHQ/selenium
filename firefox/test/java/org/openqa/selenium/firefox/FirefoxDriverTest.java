@@ -23,9 +23,11 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
+import com.google.common.base.Throwables;
 import org.junit.Assert;
 import org.openqa.selenium.AbstractDriverTestCase;
 import org.openqa.selenium.By;
+import org.openqa.selenium.DevMode;
 import org.openqa.selenium.Ignore;
 import org.openqa.selenium.NeedsFreshDriver;
 import org.openqa.selenium.NoDriverAfterTest;
@@ -78,7 +80,7 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
     }
 
   public void testShouldBeAbleToStartMoreThanOneInstanceOfTheFirefoxDriverSimultaneously() {
-    WebDriver secondDriver = new FirefoxDriver();
+    WebDriver secondDriver = newFirefoxDriver();
 
     driver.get(pages.xhtmlTestPage);
     secondDriver.get(pages.formPage);
@@ -94,7 +96,7 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
       FirefoxProfile profile = new FirefoxProfile();
 
       try {
-        WebDriver secondDriver = new FirefoxDriver(profile);
+        WebDriver secondDriver = newFirefoxDriver(profile);
         secondDriver.quit();
       } catch (Exception e) {
         e.printStackTrace();
@@ -107,7 +109,7 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
       profile.setPreference("browser.startup.homepage", pages.formPage);
 
       try {
-        WebDriver secondDriver = new FirefoxDriver(profile);
+        WebDriver secondDriver = newFirefoxDriver(profile);
         String title = secondDriver.getTitle();
         secondDriver.quit();
 
@@ -123,7 +125,7 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
     FirefoxProfile profile = new ProfilesIni().getProfile("default");
 
     if (profile != null) {
-      WebDriver firefox = new FirefoxDriver(profile);
+      WebDriver firefox = newFirefoxDriver(profile);
       firefox.quit();
     } else {
       System.out.println("Not running start with named profile test: no default profile found");
@@ -263,7 +265,7 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
 
     WebDriver secondDriver = null;
     try {
-      secondDriver = new FirefoxDriver(profile);
+      secondDriver = newFirefoxDriver(profile);
       secondDriver.get(url);
       String gotTitle = secondDriver.getTitle();
       assertFalse("Hello WebDriver".equals(gotTitle));
@@ -282,7 +284,7 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
     profile.setPreference("browser.startup.page", "1");
     profile.setPreference("browser.startup.homepage", pages.javascriptPage);
 
-    WebDriver driver2 = new FirefoxDriver(profile);
+    WebDriver driver2 = newFirefoxDriver(profile);
 
     try {
       assertEquals(pages.javascriptPage, driver2.getCurrentUrl());
@@ -302,12 +304,7 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
       }
 
       public void run() {
-        if (isInDevMode()) {
-          myDriver = new FirefoxDriverTestSuite.TestFirefoxDriver();
-        } else {
-          myDriver = new FirefoxDriver();
-        }
-
+        myDriver = newFirefoxDriver();
         myDriver.get(url);
       }
 
@@ -362,7 +359,7 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
     List<Worker> workers = new ArrayList<Worker>(numThreads);
     try {
       for (int i = 0; i < numThreads; ++i) {
-        final WebDriver driver = (i == 0 ? super.driver : new FirefoxDriverTestSuite.TestFirefoxDriver());
+        final WebDriver driver = (i == 0 ? super.driver : newFirefoxDriver());
         drivers[i] = driver;
         workers.add(new Worker() {
           public void run() throws Exception {
@@ -396,12 +393,12 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
 
     profile.setPreference("browser.startup.homepage", pages.formPage);
 
-    FirefoxDriver one = null;
-    FirefoxDriver two = null;
+    WebDriver one = null;
+    WebDriver two = null;
 
     try {
-      one = new FirefoxDriver(profile);
-      two = new FirefoxDriver(profile);
+      one = newFirefoxDriver(profile);
+      two = newFirefoxDriver(profile);
 
       // If we get this far, then both firefoxes have started. If this test
       // two browsers will start, but the second won't have a valid port and an
@@ -410,5 +407,20 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
       if (one != null) one.quit();
       if (two != null) two.quit();
     }
+  }
+
+  private WebDriver newFirefoxDriver() {
+    return newFirefoxDriver(null);
+  }
+
+  private WebDriver newFirefoxDriver(FirefoxProfile profile) {
+    if (DevMode.isInDevMode()) {
+      try {
+        return new FirefoxDriverTestSuite.TestFirefoxDriver(profile);
+      } catch (Exception e) {
+        throw Throwables.propagate(e);
+      }
+    }
+    return new FirefoxDriver(profile);
   }
 }
