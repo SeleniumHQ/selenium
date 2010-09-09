@@ -19,7 +19,9 @@ package org.openqa.selenium;
 
 import java.util.List;
 
-public class StubElement implements WebElement {
+import org.openqa.selenium.internal.WrapsDriver;
+
+public class StubElement implements WebElement, WrapsDriver {
   public void click() {
   }
 
@@ -68,6 +70,10 @@ public class StubElement implements WebElement {
   }
 
   public WebElement findElement(By by) {
+    return null;
+  }
+
+  public WebDriver getWrappedDriver() {
     return null;
   }
 }

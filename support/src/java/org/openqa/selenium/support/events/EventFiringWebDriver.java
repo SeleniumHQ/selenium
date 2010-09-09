@@ -222,7 +222,7 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Wrap
           new EventFiringRenderedWebElement(from) : new EventFiringWebElement(from);
     }
 
-    private class EventFiringWebElement implements WebElement, WrapsElement {
+    private class EventFiringWebElement implements WebElement, WrapsElement, WrapsDriver {
         private final WebElement element;
         private final WebElement underlyingElement;
 
@@ -340,6 +340,10 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Wrap
       @Override
       public int hashCode() {
         return underlyingElement.hashCode();
+      }
+
+      public WebDriver getWrappedDriver() {
+        return driver;
       }
     }
 

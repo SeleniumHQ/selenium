@@ -25,6 +25,7 @@ import android.view.MotionEvent;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.SearchContext;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.android.intents.Action;
@@ -32,6 +33,7 @@ import org.openqa.selenium.internal.FindsById;
 import org.openqa.selenium.internal.FindsByLinkText;
 import org.openqa.selenium.internal.FindsByTagName;
 import org.openqa.selenium.internal.FindsByXPath;
+import org.openqa.selenium.internal.WrapsDriver;
 
 import java.util.List;
 import java.util.regex.Matcher;
@@ -44,7 +46,7 @@ import java.util.regex.Pattern;
  * of JS. Only use JS for reading properties.
  */
 public class AndroidWebElement implements WebElement, FindsById, FindsByLinkText, FindsByXPath,
-    FindsByTagName, SearchContext, AndroidRenderedWebElement {
+    FindsByTagName, SearchContext, AndroidRenderedWebElement, WrapsDriver {
 
   private static final String LOG_TAG = AndroidWebElement.class.getName();
   private final AndroidDriver driver;
@@ -315,5 +317,9 @@ public class AndroidWebElement implements WebElement, FindsById, FindsByLinkText
       return hex;
     }
     return value;
+  }
+
+  public WebDriver getWrappedDriver() {
+    return driver;
   }
 }
