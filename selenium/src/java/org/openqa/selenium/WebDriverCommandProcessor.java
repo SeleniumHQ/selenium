@@ -24,7 +24,6 @@ import com.google.common.base.Supplier;
 import com.google.common.collect.Maps;
 import com.thoughtworks.selenium.CommandProcessor;
 import com.thoughtworks.selenium.SeleniumException;
-import org.openqa.selenium.internal.Holder;
 import org.openqa.selenium.internal.seleniumemulation.AddLocationStrategy;
 import org.openqa.selenium.internal.seleniumemulation.AddSelection;
 import org.openqa.selenium.internal.seleniumemulation.AlertOverride;

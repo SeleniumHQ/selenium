@@ -20,7 +20,6 @@ package org.openqa.selenium.internal.seleniumemulation;
 import com.thoughtworks.selenium.SeleniumException;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.internal.Holder;
 
 public class AlertOverride {
   public void replaceAlertMethod(WebDriver driver) {
