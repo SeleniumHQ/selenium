@@ -21,14 +21,18 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 public class Uncheck extends SeleneseCommand<Void> {
+  private final AlertOverride alertOverride;
   private final ElementFinder finder;
 
-  public Uncheck(ElementFinder finder) {
+  public Uncheck(AlertOverride alertOverride, ElementFinder finder) {
+    this.alertOverride = alertOverride;
     this.finder = finder;
   }
 
   @Override
   protected Void handleSeleneseCommand(WebDriver driver, String locator, String value) {
+    alertOverride.replaceAlertMethod(driver);
+
     WebElement element = finder.findElement(driver, locator);
     if (element.isSelected())
       element.toggle();

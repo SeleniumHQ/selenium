@@ -20,14 +20,18 @@ package org.openqa.selenium.internal.seleniumemulation;
 import org.openqa.selenium.WebDriver;
 
 public class Check extends SeleneseCommand<Void> {
+  private final AlertOverride alertOverride;
   private final ElementFinder finder;
 
-  public Check(ElementFinder finder) {
+  public Check(AlertOverride alertOverride, ElementFinder finder) {
+    this.alertOverride = alertOverride;
     this.finder = finder;
   }
 
   @Override
   protected Void handleSeleneseCommand(WebDriver driver, String locator, String value) {
+    alertOverride.replaceAlertMethod(driver);
+
     finder.findElement(driver, locator).setSelected();
     
     return null;

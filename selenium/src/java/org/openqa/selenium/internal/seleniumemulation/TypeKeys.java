@@ -21,14 +21,18 @@ import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 
 public class TypeKeys extends SeleneseCommand<Void> {
+  private final AlertOverride alertOverride;
   private final ElementFinder finder;
 
-  public TypeKeys(ElementFinder finder) {
+  public TypeKeys(AlertOverride alertOverride, ElementFinder finder) {
+    this.alertOverride = alertOverride;
     this.finder = finder;
   }
 
   @Override
   protected Void handleSeleneseCommand(WebDriver driver, String locator, String value) {
+    alertOverride.replaceAlertMethod(driver);
+
     value = value.replace("\\38", Keys.ARROW_UP);
     value = value.replace("\\40", Keys.ARROW_DOWN);
     value = value.replace("\\37", Keys.ARROW_LEFT);

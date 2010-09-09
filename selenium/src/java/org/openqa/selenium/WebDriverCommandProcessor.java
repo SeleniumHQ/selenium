@@ -26,6 +26,7 @@ import com.thoughtworks.selenium.CommandProcessor;
 import com.thoughtworks.selenium.SeleniumException;
 import org.openqa.selenium.internal.seleniumemulation.AddLocationStrategy;
 import org.openqa.selenium.internal.seleniumemulation.AddSelection;
+import org.openqa.selenium.internal.seleniumemulation.AlertOverride;
 import org.openqa.selenium.internal.seleniumemulation.AltKeyDown;
 import org.openqa.selenium.internal.seleniumemulation.AltKeyUp;
 import org.openqa.selenium.internal.seleniumemulation.AssignId;
@@ -48,6 +49,7 @@ import org.openqa.selenium.internal.seleniumemulation.FindFirstSelectedOptionPro
 import org.openqa.selenium.internal.seleniumemulation.FindSelectedOptionProperties;
 import org.openqa.selenium.internal.seleniumemulation.FireEvent;
 import org.openqa.selenium.internal.seleniumemulation.FireNamedEvent;
+import org.openqa.selenium.internal.seleniumemulation.GetAlert;
 import org.openqa.selenium.internal.seleniumemulation.GetAllButtons;
 import org.openqa.selenium.internal.seleniumemulation.GetAllFields;
 import org.openqa.selenium.internal.seleniumemulation.GetAllLinks;
@@ -63,6 +65,7 @@ import org.openqa.selenium.internal.seleniumemulation.GetElementPositionLeft;
 import org.openqa.selenium.internal.seleniumemulation.GetElementPositionTop;
 import org.openqa.selenium.internal.seleniumemulation.GetElementWidth;
 import org.openqa.selenium.internal.seleniumemulation.GetEval;
+import org.openqa.selenium.internal.seleniumemulation.GetExpression;
 import org.openqa.selenium.internal.seleniumemulation.GetHtmlSource;
 import org.openqa.selenium.internal.seleniumemulation.GetLocation;
 import org.openqa.selenium.internal.seleniumemulation.GetSelectOptions;
@@ -73,6 +76,7 @@ import org.openqa.selenium.internal.seleniumemulation.GetValue;
 import org.openqa.selenium.internal.seleniumemulation.GetXpathCount;
 import org.openqa.selenium.internal.seleniumemulation.GoBack;
 import org.openqa.selenium.internal.seleniumemulation.Highlight;
+import org.openqa.selenium.internal.seleniumemulation.IsAlertPresent;
 import org.openqa.selenium.internal.seleniumemulation.IsChecked;
 import org.openqa.selenium.internal.seleniumemulation.IsCookiePresent;
 import org.openqa.selenium.internal.seleniumemulation.IsEditable;
@@ -297,6 +301,7 @@ public class WebDriverCommandProcessor implements CommandProcessor {
     JavascriptLibrary javascriptLibrary = new JavascriptLibrary();
     KeyState keyState = new KeyState();
 
+    AlertOverride alertOverride = new AlertOverride();
     SeleniumSelect select = new SeleniumSelect(elementFinder);
     Windows windows = new Windows(driver);
 
@@ -308,8 +313,8 @@ public class WebDriverCommandProcessor implements CommandProcessor {
     seleneseMethods.put("assignId", new AssignId(javascriptLibrary, elementFinder));
     seleneseMethods.put("attachFile", new AttachFile(elementFinder));
     seleneseMethods.put("captureScreenshotToString", new CaptureScreenshotToString());
-    seleneseMethods.put("click", new Click(elementFinder));
-    seleneseMethods.put("check", new Check(elementFinder));
+    seleneseMethods.put("click", new Click(alertOverride, elementFinder));
+    seleneseMethods.put("check", new Check(alertOverride, elementFinder));
     seleneseMethods.put("close", new Close());
     seleneseMethods.put("createCookie", new CreateCookie());
     seleneseMethods.put("controlKeyDown", new ControlKeyDown(keyState));
@@ -322,6 +327,7 @@ public class WebDriverCommandProcessor implements CommandProcessor {
     seleneseMethods.put("dragAndDropToObject", new DragAndDropToObject(elementFinder));
     seleneseMethods.put("fireEvent", new FireEvent(elementFinder, javascriptLibrary));
     seleneseMethods.put("focus", new FireNamedEvent(elementFinder, javascriptLibrary, "focus"));
+    seleneseMethods.put("getAlert", new GetAlert(alertOverride));
     seleneseMethods.put("getAllButtons", new GetAllButtons());
     seleneseMethods.put("getAllFields", new GetAllFields());
     seleneseMethods.put("getAllLinks", new GetAllLinks());
@@ -338,6 +344,7 @@ public class WebDriverCommandProcessor implements CommandProcessor {
     seleneseMethods.put("getElementPositionTop", new GetElementPositionTop(elementFinder));
     seleneseMethods.put("getElementWidth", new GetElementWidth(elementFinder));
     seleneseMethods.put("getEval", new GetEval(scriptMutator));
+    seleneseMethods.put("getExpression", new GetExpression());
     seleneseMethods.put("getHtmlSource", new GetHtmlSource());
     seleneseMethods.put("getLocation", new GetLocation());
     seleneseMethods.put("getSelectedId", new FindFirstSelectedOptionProperty(select, ID));
@@ -357,6 +364,7 @@ public class WebDriverCommandProcessor implements CommandProcessor {
     seleneseMethods.put("getXpathCount", new GetXpathCount());
     seleneseMethods.put("goBack", new GoBack());
     seleneseMethods.put("highlight", new Highlight(elementFinder, javascriptLibrary));
+    seleneseMethods.put("isAlertPresent", new IsAlertPresent(alertOverride));
     seleneseMethods.put("isChecked", new IsChecked(elementFinder));
     seleneseMethods.put("isCookiePresent", new IsCookiePresent());
     seleneseMethods.put("isEditable", new IsEditable(elementFinder));
@@ -366,7 +374,7 @@ public class WebDriverCommandProcessor implements CommandProcessor {
     seleneseMethods.put("isTextPresent", new IsTextPresent(javascriptLibrary));
     seleneseMethods.put("isVisible", new IsVisible(elementFinder));
     seleneseMethods.put("keyDown", new KeyEvent(elementFinder, javascriptLibrary, keyState, "doKeyDown"));
-    seleneseMethods.put("keyPress", new TypeKeys(elementFinder));
+    seleneseMethods.put("keyPress", new TypeKeys(alertOverride, elementFinder));
     seleneseMethods.put("keyUp", new KeyEvent(elementFinder, javascriptLibrary, keyState, "doKeyUp"));
     seleneseMethods.put("metaKeyDown", new MetaKeyDown(keyState));
     seleneseMethods.put("metaKeyUp", new MetaKeyUp(keyState));
@@ -384,7 +392,7 @@ public class WebDriverCommandProcessor implements CommandProcessor {
     seleneseMethods.put("removeAllSelections", new RemoveAllSelections(elementFinder));
     seleneseMethods.put("removeSelection", new RemoveSelection(elementFinder, select));
     seleneseMethods.put("runScript", new RunScript(scriptMutator));
-    seleneseMethods.put("select", new SelectOption(select));
+    seleneseMethods.put("select", new SelectOption(alertOverride, select));
     seleneseMethods.put("selectFrame", new SelectFrame(windows));
     seleneseMethods.put("selectWindow", new SelectWindow(windows));
     seleneseMethods.put("setBrowserLogLevel", new NoOp(null));
@@ -394,9 +402,9 @@ public class WebDriverCommandProcessor implements CommandProcessor {
     seleneseMethods.put("shiftKeyDown", new ShiftKeyDown(keyState));
     seleneseMethods.put("shiftKeyUp", new ShiftKeyUp(keyState));
     seleneseMethods.put("submit", new Submit(elementFinder));
-    seleneseMethods.put("type", new Type(javascriptLibrary, elementFinder, keyState));
-    seleneseMethods.put("typeKeys", new TypeKeys(elementFinder));
-    seleneseMethods.put("uncheck", new Uncheck(elementFinder));
+    seleneseMethods.put("type", new Type(alertOverride, javascriptLibrary, elementFinder, keyState));
+    seleneseMethods.put("typeKeys", new TypeKeys(alertOverride, elementFinder));
+    seleneseMethods.put("uncheck", new Uncheck(alertOverride, elementFinder));
     seleneseMethods.put("useXpathLibrary", new NoOp(null));
     seleneseMethods.put("waitForCondition", new WaitForCondition(scriptMutator));
     seleneseMethods.put("waitForFrameToLoad", new NoOp(null));

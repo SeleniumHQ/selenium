@@ -21,14 +21,19 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 public class Click extends SeleneseCommand<Void> {
-  private ElementFinder finder;
+  private final AlertOverride alertOverride;
+  private final ElementFinder finder;
 
-  public Click(ElementFinder finder) {
-    this.finder = finder;
+  public Click(AlertOverride alertOverride, ElementFinder elementFinder) {
+    this.alertOverride = alertOverride;
+    finder = elementFinder;
+
   }
 
   @Override
   protected Void handleSeleneseCommand(WebDriver driver, String locator, String value) {
+    alertOverride.replaceAlertMethod(driver);
+
     WebElement element = finder.findElement(driver, locator);
     element.click();
     return null;

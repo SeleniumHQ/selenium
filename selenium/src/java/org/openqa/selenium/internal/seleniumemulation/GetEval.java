@@ -38,6 +38,8 @@ public class GetEval extends SeleneseCommand<String> {
 
     mutator.mutate(locator, builder);
 
+    System.out.println("script: " + builder.toString());
+
     Object result = ((JavascriptExecutor) driver).executeScript(builder.toString());
     return result == null ? "" : String.valueOf(result);
   }

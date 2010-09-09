@@ -3,6 +3,7 @@
   <test verbose="2" name="com.thoughtworks.selenium.corebased.TestCookie" annotations="JDK">
     <classes>
       <class name="com.thoughtworks.selenium.corebased.TestAddLocationStrategy"/>
+      <class name="com.thoughtworks.selenium.corebased.TestAlerts"/>
       <class name="com.thoughtworks.selenium.corebased.TestCheckUncheck"/>
       <class name="com.thoughtworks.selenium.corebased.TestCommandError"/>
       <class name="com.thoughtworks.selenium.corebased.TestComments"/>

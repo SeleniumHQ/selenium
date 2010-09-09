@@ -23,11 +23,13 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 public class Type extends SeleneseCommand<Void> {
-  private JavascriptLibrary js;
-  private ElementFinder finder;
+  private final AlertOverride alertOverride;
+  private final JavascriptLibrary js;
+  private final ElementFinder finder;
   private final KeyState state;
 
-  public Type(JavascriptLibrary js, ElementFinder finder, KeyState state) {
+  public Type(AlertOverride alertOverride, JavascriptLibrary js, ElementFinder finder, KeyState state) {
+    this.alertOverride = alertOverride;
     this.js = js;
     this.finder = finder;
     this.state = state;
@@ -35,6 +37,8 @@ public class Type extends SeleneseCommand<Void> {
 
   @Override
   protected Void handleSeleneseCommand(WebDriver driver, String locator, String value) {
+    alertOverride.replaceAlertMethod(driver);
+
     if (state.controlKeyDown || state.altKeyDown || state.metaKeyDown)
       throw new SeleniumException("type not supported immediately after call to controlKeyDown() or altKeyDown() or metaKeyDown()");
 

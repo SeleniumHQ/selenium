@@ -1,6 +1,6 @@
 /*
-Copyright 2007-2009 WebDriver committers
-Copyright 2007-2009 Google Inc.
+Copyright 2010 WebDriver committers
+Copyright 2010 Google Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -19,21 +19,9 @@ package org.openqa.selenium.internal.seleniumemulation;
 
 import org.openqa.selenium.WebDriver;
 
-public class SelectOption extends SeleneseCommand<Void> {
-  private final AlertOverride alertOverride;
-  private final SeleniumSelect select;
-
-  public SelectOption(AlertOverride alertOverride, SeleniumSelect select) {
-    this.alertOverride = alertOverride;
-    this.select = select;
-  }
-
+public class GetExpression extends SeleneseCommand {
   @Override
-  protected Void handleSeleneseCommand(WebDriver driver, String selectLocator, String optionLocator) {
-    alertOverride.replaceAlertMethod(driver);
-
-    select.select(driver, selectLocator, optionLocator, true, true);
-
-    return null;
+  protected Object handleSeleneseCommand(WebDriver driver, String locator, String value) {
+    return locator;
   }
 }
