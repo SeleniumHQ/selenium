@@ -411,6 +411,7 @@ nsCommandProcessor.prototype.switchToWindow = function(response, parameters,
   var lookFor = parameters.name;
   var matches = function(win, lookFor) {
     return !win.closed &&
+           (win.top && win.top.fxdriver) &&
            (win.content && win.content.name == lookFor) ||
            (win.top && win.top.fxdriver && win.top.fxdriver.id == lookFor);
   };
@@ -420,7 +421,7 @@ nsCommandProcessor.prototype.switchToWindow = function(response, parameters,
       // Create a switch indicator file so the native events library
       // will know a window switch is in progress and will indeed
       // switch focus.
-      createSwitchFile("switch:" + win.fxdriver.id);
+      createSwitchFile("switch: " + win.top.fxdriver.id);
 
       win.focus();
       if (win.top.fxdriver) {

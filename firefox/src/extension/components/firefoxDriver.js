@@ -40,6 +40,8 @@ function FirefoxDriver(server, enableNativeEvents, win) {
       dump(e);
     }
   }
+
+  FirefoxDriver.listenerScript = Utils.loadUrl("resource://fxdriver/evaluate.js");
 }
 
 
@@ -142,14 +144,14 @@ FirefoxDriver.prototype.close = function(respond) {
 
 
 FirefoxDriver.prototype.executeScript = function(respond, parameters) {
-  var doc = respond.session.getDocument();
+  var doc = respond.session.getWindow().document;
 
   var rawScript = parameters['script'];
   var converted = Utils.unwrapParameters(parameters['args'], doc);
 
-  if (doc.designMode) {
+  if (doc.designMode && "on" == doc.designMode.toLowerCase()) {
     // See https://developer.mozilla.org/en/rich-text_editing_in_mozilla#Internet_Explorer_Differences
-    Utils.dumpn("Window in design mode, falling back to sandbox");
+    Utils.dumpn("Window in design mode, falling back to sandbox: " + doc.designMode);
     var window = respond.session.getWindow();
     window = window.wrappedJSObject;
     var sandbox = new Components.utils.Sandbox(window);
@@ -171,11 +173,10 @@ FirefoxDriver.prototype.executeScript = function(respond, parameters) {
 
   // Attach the listener to the DOM
   if (!doc.getUserData('webdriver-evaluate-attached')) {
-    var listenerScript = Utils.loadUrl("chrome://fxdriver/resource/evaluate.js");
 
     var element = doc.createElement("script");
     element.setAttribute("type", "text/javascript");
-    element.innerHTML = listenerScript;
+    element.innerHTML = FirefoxDriver.listenerScript;
     doc.body.appendChild(element);
     element.parentNode.removeChild(element);
   }
@@ -190,7 +191,8 @@ FirefoxDriver.prototype.executeScript = function(respond, parameters) {
   var handler = function(event) {
     doc.removeEventListener('webdriver-evaluate-response', handler, true);
 
-    var result = doc.getUserData('webdriver-evaluate-result');
+    var unwrapped = doc.wrappedJSObject ? doc.wrappedJSObject : doc;
+    var result = unwrapped.getUserData('webdriver-evaluate-result');
     respond.value = Utils.wrapResult(result, doc);
     respond.status = doc.getUserData('webdriver-evaluate-code');
 
