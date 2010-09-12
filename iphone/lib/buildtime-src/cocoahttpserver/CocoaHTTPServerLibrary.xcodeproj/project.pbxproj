@@ -263,7 +263,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cp ${SRCROOT}/project/HTTPResponse.h ${SRCROOT}/project/HTTPConnection.m ${PATCHED_CODE}/\npatch -N -d ${PATCHED_CODE} -p1 <${PROJECT_DIR}/extensions/redirect_and_error.patch || true";
+			shellScript = "cp \"${SRCROOT}/project/HTTPResponse.h\" \"${SRCROOT}/project/HTTPConnection.m\" \"${PATCHED_CODE}/\npatch\" -N -d \"${PATCHED_CODE}\" -p1 <\"${PROJECT_DIR}/extensions/redirect_and_error.patch\" || true";
 		};
 /* End PBXShellScriptBuildPhase section */
 
