@@ -26,25 +26,55 @@ public class Cookie {
   private final String path;
   private final String domain;
   private final Date expiry;
+  private final boolean isSecure;
 
   /**
-   * Creates a cookie. If the path is left blank or set to null it will be
-   * set to "/"
+   * Creates an insecure cookie with no domain specified.
    *
-   * @param name   name cannot be null or empty string
-   * @param value  value can be an empty string but not be null
-   * @param path   The path to use. Will default to "/"
-   * @param expiry expiry can be null
+   * @param name The name of the cookie; may not be null or an empty string.
+   * @param value The cookie value; may not be null.
+   * @param path The path the cookie is visible to. If left blank or set to
+   *     null, will be set to "/".
+   * @param expiry The cookie's expiration date; may be null.
+   * @see #Cookie(String, String, String, String, Date)
    */
   public Cookie(String name, String value, String path, Date expiry) {
     this(name, value, null, path, expiry);
   }
 
+  /**
+   * Creates an insecure cookie.
+   *
+   * @param name The name of the cookie; may not be null or an empty string.
+   * @param value The cookie value; may not be null.
+   * @param domain The domain the cookie is visible to.
+   * @param path The path the cookie is visible to. If left blank or set to
+   *     null, will be set to "/".
+   * @param expiry The cookie's expiration date; may be null.
+   * @see #Cookie(String, String, String, String, Date, boolean)
+   */
   public Cookie(String name, String value, String domain, String path, Date expiry) {
+    this(name, value, domain, path, expiry, false);
+  }
+
+  /**
+   * Creates a cookie.
+   *
+   * @param name The name of the cookie; may not be null or an empty string.
+   * @param value The cookie value; may not be null.
+   * @param domain The domain the cookie is visible to.
+   * @param path The path the cookie is visible to. If left blank or set to
+   *     null, will be set to "/".
+   * @param expiry The cookie's expiration date; may be null.
+   * @param isSecure Whether this cookie requires a secure connection.
+   */
+  public Cookie(String name, String value, String domain, String path, Date expiry,
+                boolean isSecure) {
     this.name = name;
     this.value = value;
     this.path = path == null || "".equals(path) ? "/" : path;
     this.domain = domain;
+    this.isSecure = isSecure;
 
     if (expiry != null) {
       //igonre the milliseconds because firefox only keeps the seconds
@@ -95,7 +125,7 @@ public class Cookie {
   }
 
   public boolean isSecure() {
-    return false;
+    return isSecure;
   }
 
   public Date getExpiry() {
@@ -121,8 +151,8 @@ public class Cookie {
                              : "; expires=" + new SimpleDateFormat("EEE, dd-MM-yyyy hh:mm:ss z")
                                  .format(expiry))
            + ("".equals(path) ? "" : "; path=" + path)
-           + (domain == null ? "" : "; domain=" + domain);
-//                + (isSecure ? ";secure;" : "");
+           + (domain == null ? "" : "; domain=" + domain)
+           + (isSecure ? ";secure;" : "");
   }
 
   /**
@@ -157,6 +187,7 @@ public class Cookie {
     private String path;
     private String domain;
     private Date expiry;
+    private boolean secure;
 
     public Builder(String name, String value) {
       this.name = name;
@@ -178,8 +209,13 @@ public class Cookie {
       return this;
     }
 
+    public Builder isSecure(boolean secure) {
+      this.secure = secure;
+      return this;
+    }
+
     public Cookie build() {
-      return new Cookie(name, value, domain, path, expiry);
+      return new Cookie(name, value, domain, path, expiry, secure);
     }
   }
 }

@@ -17,44 +17,12 @@ limitations under the License.
 
 package org.openqa.selenium.internal;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.openqa.selenium.Cookie;
 
 public class ReturnedCookie extends Cookie {
-  private final boolean isSecure;
-  private boolean readyForValidation;
-
   public ReturnedCookie(String name, String value, String domain, String path, Date expiry, boolean isSecure, String currentUrl) {
-    super(name, value, domain, path, expiry);
-
-    readyForValidation = true;
-
-    this.isSecure = isSecure;
-
-    validate();
-  }
-
-  @Override
-  public boolean isSecure() {
-    return isSecure;
-  }
-
-  @Override
-  protected void validate() {
-    if (!readyForValidation) {
-      return;
-    }
-
-    super.validate();
-  }
-
-  @Override
-  public String toString() {
-    return getName() + "=" + getValue()
-        + ("".equals(getPath()) ? "" : ";path=" + getPath())
-        + (getExpiry() == null ? "" : ";expires=" + new SimpleDateFormat("EEE, d MMM yyyy hh:mm:ss z").format(getExpiry()))
-        + (isSecure ? ";secure;" : "");
+    super(name, value, domain, path, expiry, isSecure);
   }
 }
