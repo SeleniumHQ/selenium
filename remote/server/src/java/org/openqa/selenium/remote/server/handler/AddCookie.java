@@ -19,7 +19,7 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.handler;
 
-import org.openqa.selenium.internal.ReturnedCookie;
+import org.openqa.selenium.Cookie;
 import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.rest.ResultType;
 
@@ -30,7 +30,7 @@ public class AddCookie extends CookieHandler {
   }
 
   public ResultType call() throws Exception {
-    ReturnedCookie cookie = createCookie();
+    Cookie cookie = createCookie();
 
     getDriver().manage().addCookie(cookie);
 

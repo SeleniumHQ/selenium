@@ -21,17 +21,15 @@ import junit.framework.TestCase;
 
 import java.util.Date;
 
-import org.openqa.selenium.internal.ReturnedCookie;
-
 public class CookieTest extends TestCase {
 
   public void testCanCreateAWellFormedCookie() {
-    new ReturnedCookie("Fish", "cod", "", "", null, false, null);
+    new Cookie("Fish", "cod", "", "", null, false);
   }
 
   public void testShouldThrowAnExceptionWhenSemiColonExistsInTheCookieAttribute() {
     try {
-      new ReturnedCookie("hi;hi", "value", null, null, null, false, null);
+      new Cookie("hi;hi", "value", null, null, null, false);
       fail();
     } catch (IllegalArgumentException e) {
       //Expected
@@ -40,7 +38,7 @@ public class CookieTest extends TestCase {
 
   public void testShouldThrowAnExceptionTheNameIsNull() {
     try {
-      new ReturnedCookie(null, "value", null, null, null, false, null);
+      new Cookie(null, "value", null, null, null, false);
       fail();
     } catch (IllegalArgumentException e) {
       //expected
@@ -48,7 +46,7 @@ public class CookieTest extends TestCase {
   }
 
   public void testCookiesShouldAllowSecureToBeSet() {
-    Cookie cookie = new ReturnedCookie("name", "value", "", "/", new Date(), true, null);
+    Cookie cookie = new Cookie("name", "value", "", "/", new Date(), true);
     assertTrue(cookie.isSecure());
   }
 }

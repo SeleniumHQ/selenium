@@ -34,17 +34,13 @@ import org.openqa.selenium.Cookie;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchWindowException;
 import org.openqa.selenium.OutputType;
-import org.openqa.selenium.Proxy;
 import org.openqa.selenium.Speed;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.browserlaunchers.CapabilityType;
-import org.openqa.selenium.browserlaunchers.DoNotUseProxyPac;
 import org.openqa.selenium.browserlaunchers.WindowsProxyManager;
 import org.openqa.selenium.internal.FileHandler;
-import org.openqa.selenium.internal.ReturnedCookie;
 import org.openqa.selenium.internal.TemporaryFilesystem;
 
 import java.io.File;
@@ -482,7 +478,12 @@ public class InternetExplorerDriver implements WebDriver, JavascriptExecutor, Ta
           continue;
         }
 
-        toReturn.add(new ReturnedCookie(parts[0], parts[1], currentUrl, "", null, false, currentUrl));
+        toReturn.add(new Cookie.Builder(parts[0], parts[1])
+            .domain(currentUrl)
+            .path("")
+            .expiresOn(null)
+            .isSecure(false)
+            .build());
       }
 
       return toReturn;

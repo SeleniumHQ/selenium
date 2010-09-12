@@ -40,7 +40,6 @@ import org.openqa.selenium.internal.FindsByLinkText;
 import org.openqa.selenium.internal.FindsByName;
 import org.openqa.selenium.internal.FindsByTagName;
 import org.openqa.selenium.internal.FindsByXPath;
-import org.openqa.selenium.internal.ReturnedCookie;
 import org.openqa.selenium.remote.internal.JsonToWebElementConverter;
 import org.openqa.selenium.remote.internal.WebElementToJsonConverter;
 
@@ -376,8 +375,11 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
           String path = (String) rawCookie.get("path");
           String domain = (String) rawCookie.get("domain");
           Boolean secure = (Boolean) rawCookie.get("secure");
-          toReturn.add(
-              new ReturnedCookie(name, value, domain, path, null, secure, getCurrentUrl()));
+          toReturn.add(new Cookie.Builder(name, value)
+              .path(path)
+              .domain(domain)
+              .isSecure(secure)
+              .build());
         }
 
         return toReturn;

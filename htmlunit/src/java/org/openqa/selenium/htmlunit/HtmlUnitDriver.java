@@ -80,7 +80,6 @@ import org.openqa.selenium.internal.FindsByLinkText;
 import org.openqa.selenium.internal.FindsByName;
 import org.openqa.selenium.internal.FindsByTagName;
 import org.openqa.selenium.internal.FindsByXPath;
-import org.openqa.selenium.internal.ReturnedCookie;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -1014,8 +1013,12 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
       Set<Cookie> retCookies = new HashSet<Cookie>();
       for (com.gargoylesoftware.htmlunit.util.Cookie c : rawCookies) {
         if (c.getPath() != null && getPath().startsWith(c.getPath())) {
-          retCookies.add(new ReturnedCookie(c.getName(), c.getValue(), c.getDomain(), c.getPath(),
-                                            c.getExpires(), c.isSecure(), getCurrentUrl()));
+          retCookies.add(new Cookie.Builder(c.getName(), c.getValue())
+              .domain(c.getDomain())
+              .path(c.getPath())
+              .expiresOn(c.getExpires())
+              .isSecure(c.isSecure())
+              .build());
         }
       }
       return retCookies;

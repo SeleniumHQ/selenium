@@ -21,8 +21,12 @@ import java.util.Date;
 
 import org.openqa.selenium.Cookie;
 
+/**
+ * @deprecated Use {@link Cookie} instead.
+ */
+@Deprecated
 public class ReturnedCookie extends Cookie {
-  public ReturnedCookie(String name, String value, String domain, String path, Date expiry, boolean isSecure, String currentUrl) {
+  public ReturnedCookie(String name, String value, String domain, String path, Date expiry, boolean isSecure) {
     super(name, value, domain, path, expiry, isSecure);
   }
 }
