@@ -26,6 +26,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -203,9 +204,20 @@ public class JsonToBeanConverterTest extends TestCase {
 
     String rawJson = new BeanToJsonConverter().convert(Collections.singletonList(cookie));
     List list = new JsonToBeanConverter().convert(List.class, rawJson);
-    
+
     Object first = list.get(0);
     assertTrue(first instanceof Map);
+
+    Map map = (Map) first;
+    assertMapEntry(map, "name", "foo");
+    assertMapEntry(map, "value", "bar");
+    assertMapEntry(map, "path", "/rooted");
+    assertMapEntry(map, "expiry", TimeUnit.MILLISECONDS.toSeconds(date.getTime()));
+  }
+
+  private void assertMapEntry(Map map, String key, Object expected) {
+    assertTrue("Missing key: " + key, map.containsKey(key));
+    assertEquals("Wrong value for key: " + key + ": " + map.get(key).getClass().getName(), expected, map.get(key));
   }
 
   public void testShouldConvertAnArrayBackIntoAnArray() throws Exception {

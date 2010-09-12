@@ -25,6 +25,8 @@ import java.util.Set;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.environment.webserver.AppServer;
 
+import static org.openqa.selenium.Ignore.Driver.ANDROID;
+import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.REMOTE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
@@ -332,6 +334,42 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
     assertNotNull(retrievedCookie);
     //Cookie.equals only compares name, domain and path
     assertEquals(cookie1, retrievedCookie);
+  }
+
+  @Ignore(value = {ANDROID, CHROME, IE, SELENESE}, reason =
+      "Chrome and Selenium, which use JavaScript to retrieve cookies, cannot return expiry info; " +
+      "Other suppressed browsers have not been tested.")
+  public void testRetainsCookieExpiry() {
+    String url = GlobalTestEnvironment.get().getAppServer().whereElseIs("animals");
+
+    driver.get(url);
+    driver.manage().deleteAllCookies();
+
+    long time = System.currentTimeMillis() + (60 * 60 * 24);
+    Cookie cookie1 = new Cookie("fish", "cod", "/common/animals", new Date(time));
+    WebDriver.Options options = driver.manage();
+    options.addCookie(cookie1);
+
+    Cookie retrieved = options.getCookieNamed("fish");
+    assertNotNull(retrieved);
+    assertEquals(cookie1.getExpiry(), retrieved.getExpiry());
+  }
+
+  @Ignore(value = {ANDROID, IE, SELENESE}, reason = "Untested")
+  public void testSettingACookieThatExpiredInThePast() {
+    String url = GlobalTestEnvironment.get().getAppServer().whereElseIs("animals");
+
+    driver.get(url);
+    driver.manage().deleteAllCookies();
+
+    long expires = System.currentTimeMillis() - 1000;
+    Cookie cookie = new Cookie("expired", "yes", "/common/animals", new Date(expires));
+    WebDriver.Options options = driver.manage();
+    options.addCookie(cookie);
+
+    cookie = options.getCookieNamed("fish");
+    assertNull(
+        "Cookie expired before it was set, so nothing should be returned: " + cookie, cookie);
   }
 
   @Ignore(SELENESE)

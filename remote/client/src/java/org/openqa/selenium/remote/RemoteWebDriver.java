@@ -18,6 +18,7 @@ limitations under the License.
 package org.openqa.selenium.remote;
 
 import java.net.URL;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -375,10 +376,16 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
           String path = (String) rawCookie.get("path");
           String domain = (String) rawCookie.get("domain");
           Boolean secure = (Boolean) rawCookie.get("secure");
+
+          Number expiryNum = (Number) rawCookie.get("expiry");
+          Date expiry = expiryNum == null ? null : new Date(
+              TimeUnit.SECONDS.toMillis(expiryNum.longValue()));
+
           toReturn.add(new Cookie.Builder(name, value)
               .path(path)
               .domain(domain)
               .isSecure(secure)
+              .expiresOn(expiry)
               .build());
         }
 

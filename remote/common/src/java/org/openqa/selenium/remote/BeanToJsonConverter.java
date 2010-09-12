@@ -31,10 +31,12 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Utility class for converting between JSON and Java Objects.
@@ -57,7 +59,10 @@ public class BeanToJsonConverter {
 
     try {
       Object converted = convertObject(object, MAX_DEPTH);
-      if (converted instanceof JSONObject || converted instanceof JSONArray || converted instanceof String) {
+      if (converted instanceof JSONObject
+          || converted instanceof JSONArray
+          || converted instanceof String
+          || converted instanceof Number) {
         return converted.toString();
       }
 
@@ -172,7 +177,11 @@ public class BeanToJsonConverter {
     if (toConvert instanceof DoNotUseProxyPac) {
       return convertObject(((DoNotUseProxyPac) toConvert).asMap(), maxDepth -1);
     }
-    
+
+    if (toConvert instanceof Date) {
+      return TimeUnit.MILLISECONDS.toSeconds(((Date) toConvert).getTime());
+    }
+
     Method toJson = getToJsonMethod(toConvert);
     if (toJson != null) {
       try {

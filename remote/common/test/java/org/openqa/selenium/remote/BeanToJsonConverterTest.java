@@ -20,16 +20,19 @@ package org.openqa.selenium.remote;
 import junit.framework.TestCase;
 
 import java.awt.Point;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import com.google.common.collect.ImmutableMap;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.openqa.selenium.Cookie;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriverException;
@@ -64,6 +67,8 @@ public class BeanToJsonConverterTest extends TestCase {
 
     JSONObject converted = new JSONObject(json);
     assertThat((String) converted.get("foo"), is("bar"));
+    assertThat((Boolean) converted.get("simple"), is(true));
+    assertThat((Double) converted.get("number"), is(123.456));
   }
 
   public void testShouldConvertArrays() throws Exception {
@@ -250,11 +255,61 @@ public class BeanToJsonConverterTest extends TestCase {
     assertTrue(json.contains("\"stackTrace\""));
     verifyStackTraceInJson(json, stackTrace);
   }
-  
+
+  public void testShouldConvertDatesToMillisecondsInUtcTime() {
+    String jsonStr = new BeanToJsonConverter().convert(new Date(0));
+    assertEquals(0, Integer.valueOf(jsonStr).intValue());
+  }
+
+  public void testShouldConvertDateFieldsToSecondsSince1970InUtcTime() throws JSONException {
+    class Bean {
+      private final Date date;
+
+      Bean(Date date) {
+        this.date = date;
+      }
+
+      public Date getDate() {
+        return date;
+      }
+    }
+
+    Date date = new Date(123456789L);
+    Bean bean = new Bean(date);
+    String jsonStr = new BeanToJsonConverter().convert(bean);
+    JSONObject json = new JSONObject(jsonStr);
+
+    assertTrue(json.has("date"));
+    assertEquals(123456L, json.getLong("date"));
+  }
+
+  public void testShouldBeAbleToConvertACookie() throws JSONException {
+    Date expiry = new Date();
+    Cookie cookie = new Cookie("name", "value", "domain", "/path", expiry);
+
+    String jsonStr = new BeanToJsonConverter().convert(cookie);
+    JSONObject json = new JSONObject(jsonStr);
+
+    assertEquals("name", json.getString("name"));
+    assertEquals("value", json.getString("value"));
+    assertEquals("domain", json.getString("domain"));
+    assertEquals("/path", json.getString("path"));
+    assertFalse(json.getBoolean("secure"));
+    assertEquals(TimeUnit.MILLISECONDS.toSeconds(expiry.getTime()), json.getLong("expiry"));
+  }
+
   private static class SimpleBean {
 
     public String getFoo() {
       return "bar";
+    }
+
+    public boolean isSimple() {
+      return true;
+    }
+
+    public double getNumber() {
+      return 123.456;
     }
   }
 

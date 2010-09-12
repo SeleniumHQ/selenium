@@ -29,6 +29,7 @@ import java.lang.reflect.Method;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -174,6 +175,10 @@ public class JsonToBeanConverter {
       }
 
       return (T) pac;
+    }
+
+    if (Date.class.equals(clazz)) {
+      return (T) new Date(Long.valueOf(String.valueOf(text)));
     }
 
     if (text != null && text instanceof String && !((String) text).startsWith("{") && Object.class

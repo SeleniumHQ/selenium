@@ -80,7 +80,9 @@
     
     NSDate* expires = [cookie expiresDate];
     if (expires != nil) {
-      [cookieDict setObject:[expires description] forKey:@"expires"];
+      NSNumber* expiry =
+          [NSNumber numberWithLong:[expires timeIntervalSince1970]];
+      [cookieDict setObject:expiry forKey:@"expiry"];
     }
     [toReturn addObject:cookieDict];
   }
@@ -121,10 +123,12 @@
    domain, NSHTTPCookieDomain,
    path, NSHTTPCookiePath,
    nil];
-  
-  NSString* expires = [cookie objectForKey:@"expires"];
+
+  NSNumber* expires = [cookie objectForKey:@"expiry"];
   if (expires != nil) {
-    [cookieProperties setObject:expires forKey:NSHTTPCookieExpires];
+    NSDate* expiresDate =
+        [NSDate dateWithTimeIntervalSince1970:[expires doubleValue]];
+    [cookieProperties setObject:expiresDate forKey:NSHTTPCookieExpires];
   }
   
   NSNumber* secure = [cookie objectForKey:@"secure"];

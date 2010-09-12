@@ -402,8 +402,10 @@ function setCookie(cookie) {
             message: "You may only set cookies on html documents"}};
   } else {
     cookieDocument.cookie = cookie.name + '=' + escape(cookie.value) +
-        ((cookie.expiry == null || cookie.expiry === undefined) ?
-            '' : ';expires=' + (new Date(cookie.expiry.time)).toGMTString()) +
+        (cookie.expiry ? '' :
+            // Expiry is specified in seconds since January 1, 1970, UTC. We need it
+            // in milliseconds to create our Date object.
+            (';expires=' + (new Date(cookie.expiry * 1000)).toGMTString())) +
         ((cookie.path == null || cookie.path === undefined) ?
             '' : ';path=' + cookie.path);
     return {statusCode: 0};

@@ -77,7 +77,7 @@ public class Cookie {
     this.isSecure = isSecure;
 
     if (expiry != null) {
-      //igonre the milliseconds because firefox only keeps the seconds
+      // Expiration date is specified in seconds since (UTC) epoch time, so truncate the date.
       this.expiry = new Date(expiry.getTime() / 1000 * 1000);
     } else {
       this.expiry = null;

@@ -1,3 +1,4 @@
+import calendar
 import datetime
 import time
 import unittest
@@ -10,22 +11,26 @@ class CookieTest(unittest.TestCase):
     def setUp(self):
         self.driver.get("http://localhost:%d/simpleTest.html" %
             self.webserver.port)
-        timestamp = time.mktime(datetime.datetime.now().timetuple()) + 100
+        # Set the cookie to expire in 30 minutes
+        timestamp = calendar.timegm(time.gmtime()) + (30 * 60)
         self.COOKIE_A = {"name": "foo",
                          "value": "bar",
-                         "expires": str(int(timestamp)) + "000",
+                         "expiry": timestamp,
                          "domain": "localhost",
                          "path": "/",
                          "secure": False}
 
     def testAddCookie(self):
-        self.driver.add_cookie(utils.convert_cookie_to_json(self.COOKIE_A))
+        self.driver.add_cookie(self.COOKIE_A)
         cookie_returned = self.driver.get_cookies()[0]
+        self.assertEquals(self.COOKIE_A, cookie_returned)
 
-        # The FF driver does not return the "expires" (or "expiry") key
-        expected_cookie = self.COOKIE_A.copy()
-        expected_cookie.pop("expires", None)
-        self.assertEquals(expected_cookie, cookie_returned)
+    def testAddingACookieThatExpiredInThePast(self):
+        cookie = self.COOKIE_A.copy()
+        cookie["expiry"] = calendar.timegm(time.gmtime()) - 1
+        self.driver.add_cookie(cookie)
+        cookies = self.driver.get_cookies()
+        self.assertEquals(0, len(cookies))
 
     def testDeleteAllCookie(self):
         self.driver.add_cookie(utils.convert_cookie_to_json(self.COOKIE_A))

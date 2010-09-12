@@ -660,16 +660,11 @@ FirefoxDriver.prototype.refresh = function(respond) {
 FirefoxDriver.prototype.addCookie = function(respond, parameters) {
   var cookie = parameters.cookie;
 
-  if (cookie.expiry) {
-    cookie.expiry = cookie.expiry.time ? new Date(cookie.expiry.time) :
-                                         new Date(cookie.expiry);
-  } else {
+  if (!cookie.expiry) {
     var date = new Date();
     date.setYear(2030);
-    cookie.expiry = date;
+    cookie.expiry = date.getTime() / 1000;  // Stored in seconds.
   }
-
-  cookie.expiry = cookie.expiry.getTime() / 1000; // Stored in seconds
 
   if (!cookie.domain) {
     var location = respond.session.getBrowser().contentWindow.location;
@@ -747,12 +742,19 @@ FirefoxDriver.prototype.getCookies = function(respond) {
       contentWindow.location);
   for (var i = 0; i < cookies.length; i++) {
     var cookie = cookies[i];
+    var expires = cookie.expires;
+    if (expires == 0) {  // Session cookie, don't return an expiry.
+      expires = null;
+    } else if (expires == 1) { // Date before epoch time, cap to epoch.
+      expires = 0;
+    }
     toReturn.push({
       'name': cookie.name,
       'value': cookie.value,
       'path': cookie.path,
       'domain': cookie.host,
-      'secure': cookie.isSecure
+      'secure': cookie.isSecure,
+      'expiry': expires,
     });
   }
 
