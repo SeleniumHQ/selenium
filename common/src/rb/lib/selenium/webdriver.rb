@@ -1,5 +1,6 @@
 require "tmpdir"
 require "fileutils"
+require "date"
 
 have_yajl = lambda {
   begin

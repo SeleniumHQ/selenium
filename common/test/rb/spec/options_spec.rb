@@ -30,7 +30,14 @@ describe "Options" do
       end
 
       it "should use DateTime for expires" do
-        pending
+        driver.navigate.to url_for("xhtmlTest.html")
+
+        expected = DateTime.new(2039)
+        driver.manage.add_cookie :name => "foo", :value => "bar", :expires => expected
+
+        actual = driver.manage.cookie_named("foo")[:expires]
+        actual.should be_kind_of(DateTime)
+        actual.should == expected
       end
     end
   end
