@@ -34,6 +34,7 @@ import java.util.Iterator;
 import com.google.common.io.Files;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.internal.FileHandler;
+import org.openqa.selenium.internal.TemporaryFilesystem;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
@@ -67,7 +68,8 @@ public class FileExtension implements Extension {
 
     FileHandler.createDir(extensionDirectory);
     FileHandler.makeWritable(extensionDirectory);
-    Files.move(root, extensionDirectory);
+    FileHandler.copy(root, extensionDirectory );
+    TemporaryFilesystem.deleteTempDir(root);
   }
 
   private File obtainRootDirectory(File extensionToInstall) throws IOException {
