@@ -458,6 +458,43 @@ namespace OpenQA.Selenium
             Assert.AreEqual(cookie1, retrievedCookie);
         }
 
+        [Test]
+        [IgnoreBrowser(Browser.IE, "browsers have not been tested.")]
+        [IgnoreBrowser(Browser.Chrome, "Chrome and Selenium, which use JavaScript to retrieve cookies, cannot return expiry info;")]
+        public void ShouldReturnACookieWithTheExpiryTheSame()
+        {
+            string url = EnvironmentManager.Instance.UrlBuilder.WhereElseIs("animals");
+            driver.Url = url;
+
+            driver.Manage().DeleteAllCookies();
+
+            Cookie addCookie = new Cookie("fish", "cod", "/common/animals", DateTime.Now.AddDays(1));
+            IOptions options = driver.Manage();
+            options.AddCookie(addCookie);
+
+            Cookie retrieved = options.GetCookieNamed("fish");
+            Assert.IsNotNull(retrieved);
+            Assert.AreEqual(addCookie, retrieved, "Cookies are not equal");
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.IE, "browsers have not been tested.")]
+        [IgnoreBrowser(Browser.Chrome, "Chrome and Selenium, which use JavaScript to retrieve cookies, cannot return expiry info;")]
+        public void ShouldReturnNullBecauseCookieRetainsExpiry()
+        {
+            string url = EnvironmentManager.Instance.UrlBuilder.WhereElseIs("animals");
+            driver.Url = url;
+
+            driver.Manage().DeleteAllCookies();
+
+            Cookie addCookie = new Cookie("fish", "cod", "/common/animals", DateTime.Now.AddHours(-1));
+            IOptions options = driver.Manage();
+            options.AddCookie(addCookie);
+
+            Cookie retrieved = options.GetCookieNamed("fish");
+            Assert.IsNull(retrieved);
+        }
+
         private string GotoValidDomainAndClearCookies()
         {
             Regex hostNameRegex = new Regex("\\w+\\.\\w+.*");

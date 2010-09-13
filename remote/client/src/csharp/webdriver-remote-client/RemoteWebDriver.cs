@@ -1113,8 +1113,14 @@ namespace OpenQA.Selenium.Remote
                                     domain = cookie["domain"].ToString();
                                 }
 
+                                DateTime? expires = null;
+                                if(cookie.ContainsKey("expires"))
+                                {
+                                    expires = DateTime.Parse(cookie["expires"].ToString());
+                                }
+
                                 bool secure = bool.Parse(cookie["secure"].ToString());
-                                toReturn.Add(new ReturnedCookie(name, value, domain, path, null, secure, new Uri(driver.Url)));
+                                toReturn.Add(new ReturnedCookie(name, value, domain, path, expires, secure, new Uri(driver.Url)));
                             }
                         }
                     }
