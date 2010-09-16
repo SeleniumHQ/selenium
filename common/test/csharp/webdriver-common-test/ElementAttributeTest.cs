@@ -143,6 +143,17 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        public void ShouldReturnValueOfClassAttributeOfAnElementAfterSwitchingIFrame()
+        {
+            driver.Url = iframePage;
+            driver.SwitchTo().Frame("iframe1");
+
+            IWebElement wallace = driver.FindElement(By.XPath("//div[@id='wallace']"));
+            String className = wallace.GetAttribute("class");
+            Assert.AreEqual("gromit", className);
+        }
+
+        [Test]
         public void ShouldReturnTheContentsOfATextAreaAsItsValue()
         {
             driver.Url = formsPage;
