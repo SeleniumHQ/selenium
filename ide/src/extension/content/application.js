@@ -191,14 +191,31 @@ Application.prototype = {
      * Adds a testcase to the current suite
      */
     addTestCase: function(path) {
-        var file = null;
         if (path) {
-            file = FileUtils.getFile(path);
-        }
-        if (this._loadTestCase(file)) {
-            this.testSuite.addTestCaseFromContent(this.getTestCase());
-            this.setTestCase(this.getTestCase());
-        }
+		if (this._loadTestCase(FileUtils.getFile(path))) {
+			this.testSuite.addTestCaseFromContent(this.getTestCase());
+			this.setTestCase(this.getTestCase());
+		}
+        }else {
+		//Samit: Enh: Allow multiple test cases to be added in one operation
+		var nsIFilePicker = Components.interfaces.nsIFilePicker;
+		var fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(nsIFilePicker);
+		fp.init(window, "Select one or more test cases to add", nsIFilePicker.modeOpenMultiple);
+		fp.appendFilters(nsIFilePicker.filterAll);
+		if (fp.show() == nsIFilePicker.returnOK) {
+			var files = fp.files;
+			while (files.hasMoreElements()) {
+				try {
+					if (this._loadTestCase(files.getNext().QueryInterface(Components.interfaces.nsILocalFile))) {
+					    this.testSuite.addTestCaseFromContent(this.getTestCase());
+					    this.setTestCase(this.getTestCase());
+					}
+				}catch(error) {
+                                    this.log.error("AddTestCase: "+error);
+				}
+			}
+		}
+	}
     },
 
     loadTestCaseWithNewSuite: function(path) {
