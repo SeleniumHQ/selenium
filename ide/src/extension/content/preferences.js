@@ -136,6 +136,9 @@ SeleniumIDE.Preferences.DEFAULT_OPTIONS = {
     recordAbsoluteURL:
     "false",
 
+    pluginProvidedIDEExtensions:
+    "",
+        
     pluginProvidedUserExtensions:
     "",
     

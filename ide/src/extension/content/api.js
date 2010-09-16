@@ -1,5 +1,5 @@
 function API() {
-    this.verison = 0.3;	
+    this.verison = 0.4;	
     this.preferences = SeleniumIDE.Preferences;
 };
 
@@ -18,6 +18,24 @@ API.prototype.addPlugin = function(id) {
         }
     }
 };
+
+//add the provided chrome url to the list of IDE extensions provided through plugins
+//-- or not if it already exists
+API.prototype.addPluginProvidedIdeExtension = function(url) {
+    var options = {};
+    
+    var current = this.preferences.getString("pluginProvidedIDEExtensions");
+    if (!current || current.length == 0){
+		options["pluginProvidedIDEExtensions"] = url;
+		this.preferences.save(options, "pluginProvidedIDEExtensions");
+    } else {
+		if (current.search(url) == -1) {
+		    options["pluginProvidedIDEExtensions"] = current + ',' + url;
+		    this.preferences.save(options, "pluginProvidedIDEExtensions");
+		}
+    }
+};
+
 
 // add the provided chrome url to the list of user extensions provided through plugins
 // -- or not if it already exists
@@ -64,7 +82,7 @@ var seIDEAPIObserver = {
     observe : function(subject, topic, data) {
         if (topic == "quit-application-granted") {
             var branch = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefService).getBranch("extensions.selenium-ide.");
-branch.setCharPref("pluginProvidedUserExtensions", "");
+    		branch.setCharPref("pluginProvidedIDEExtensions", "");
             branch.setCharPref("pluginProvidedUserExtensions", "");
             branch.setCharPref("pluginProvidedFormatters", "");
             branch.setCharPref("plugins", "");

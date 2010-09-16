@@ -836,6 +836,14 @@ Editor.prototype.loadExtensions = function() {
 			this.showAlert("error loading Selenium IDE extensions: " + error);
 		}
 	}
+	//Samit: Enh: add support for plugin provided IDE extensions 
+	if (this.getOptions().pluginProvidedIDEExtensions) {
+		try {
+			ExtensionsLoader.loadSubScript(subScriptLoader, this.getOptions().pluginProvidedIDEExtensions, window);
+		} catch (error) {
+			this.showAlert("error loading Selenium IDE extensions: " + error);
+		}
+	}
 }
 
 Editor.prototype.loadSeleniumAPI = function() {
