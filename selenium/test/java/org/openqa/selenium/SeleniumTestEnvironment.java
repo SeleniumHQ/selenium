@@ -17,68 +17,66 @@ limitations under the License.
 
 package org.openqa.selenium;
 
-import junit.framework.Assert;
-
 import java.io.File;
+import java.io.IOException;
 
-import org.mortbay.jetty.Server;
-import org.mortbay.jetty.nio.SelectChannelConnector;
-import org.mortbay.jetty.webapp.WebAppContext;
+import com.google.common.io.Files;
 import org.openqa.selenium.environment.TestEnvironment;
 import org.openqa.selenium.environment.webserver.AppServer;
+import org.openqa.selenium.internal.CommandLine;
+import org.openqa.selenium.internal.FileHandler;
+import org.openqa.selenium.internal.InProject;
+import org.openqa.selenium.internal.PortProber;
 
 public class SeleniumTestEnvironment implements TestEnvironment {
-  private final Server server = new Server();
+  private int port = 4444;
+  private CommandLine command;
 
   public SeleniumTestEnvironment() {
-    SelectChannelConnector connector = new SelectChannelConnector();
-    connector.setPort(4444);
-    server.addConnector(connector);
-
-    File base = findSeleniumWebdir();
-
-    WebAppContext app = new WebAppContext();
-    app.setContextPath("/tests");
-    app.setWar(base.getAbsolutePath());
-    server.addHandler(app);
-
     try {
-      server.start();
+      if (DevMode.isInDevMode()) {
+        new Build().of("//selenium:server-with-tests:uber").go();
+        copyAtomsToSeleniumBuildDir();
+      }
+
+      File seleniumJar = InProject.locate("build/selenium/server-with-tests-standalone.jar");
+      command = new CommandLine("java", "-jar", seleniumJar.getAbsolutePath(), "-port", "" + port);
+      command.executeAsync();
+
+      PortProber.pollPort(port);
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
   }
 
-  private File findSeleniumWebdir() {
-    String[] places = new String[]{
-        "selenium/src/web/tests",
-        "src/web/tests",
+  private void copyAtomsToSeleniumBuildDir() throws IOException {
+    File classes = InProject.locate("selenium/build/classes");
+    File scriptsDir = new File(classes, "scripts/selenium-emulation");
+    FileHandler.createDir(scriptsDir);
+
+    File sourceDir = InProject.locate("build/common/src/js/selenium");
+    String[] sources = new String[] {
+        "findElement.js",
+        "isElementPresent.js",
+        "isTextPresent.js",
+        "isVisible.js",
     };
 
-    for (String place : places) {
-      File root = new File(place);
-      if (root.exists()) {
-        return root;
-      }
+    for (String source : sources) {
+      Files.copy(new File(sourceDir, source), new File(scriptsDir, source));
     }
-
-    Assert.fail("Cannot find root of selenium web app");
-    return null;
   }
 
+
   public AppServer getAppServer() {
-    return null;
+    throw new UnsupportedOperationException("getAppServer");
   }
 
   public void stop() {
-    try {
-      server.stop();
-    } catch (Exception e) {
-      throw new RuntimeException(e);
-    }
+    command.destroy();
   }
 
-  public static void main(String[] args) {
+  public static void main(String[] args) throws IOException {
     new SeleniumTestEnvironment();
   }
 }

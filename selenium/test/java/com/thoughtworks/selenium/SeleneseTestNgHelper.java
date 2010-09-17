@@ -65,7 +65,7 @@ public class SeleneseTestNgHelper extends SeleneseTestBase {
     }
 
     if (url == null) {
-      url = "http://localhost:4444/selenium-server";
+      url = "http://localhost:4444/selenium-server/tests";
     }
     selenium = new WebDriverBackedSelenium(driver, url);
 

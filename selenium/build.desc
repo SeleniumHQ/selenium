@@ -23,7 +23,7 @@ java_library(name = "test",
   deps = [ 
     ":selenium",
     "//common:test",
-    "//remote/server",
+    "//selenium:server-with-tests:uber",
     "//third_party/java/easymock",
     "//third_party/java/testng"
   ])
@@ -34,7 +34,7 @@ java_test(name = "test-selenese",
     "//common:test",
     "//firefox:test",
     "//htmlunit",
-    "//remote/server:server:uber",
+    "//selenium:server-with-tests:uber",
     "//third_party/java/easymock",
     "//third_party/java/testng"])
 
@@ -46,7 +46,7 @@ java_test(name = "selenium_test",
   deps = [
     "//common:test",
     "//htmlunit",
-    "//remote/server:server:uber",
+    "//selenium:server-with-tests:uber",
     "//third_party/java/easymock",
     "//third_party/java/testng"
   ],
@@ -65,3 +65,15 @@ java_test(name = "single",
   ],
   test_suite = "org.openqa.selenium.SingleTestSuite")
   
+java_library(name = "server-with-tests",
+  srcs = [
+    "test/java/org/openqa/selenium/SeleniumTestEnvironment.java"
+  ],
+  main = "org.openqa.selenium.server.SeleniumServer",
+  resources = [
+    { "src/web/tests" : "./" }
+  ],
+  deps = [
+    "//common:test",
+    "//remote/server"
+  ])
