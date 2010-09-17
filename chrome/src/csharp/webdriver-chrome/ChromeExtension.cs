@@ -1,7 +1,5 @@
-﻿using System;
-using System.Globalization;
+﻿using System.Globalization;
 using System.IO;
-using System.Reflection;
 using Ionic.Zip;
 using OpenQA.Selenium.Internal;
 
@@ -14,13 +12,11 @@ namespace OpenQA.Selenium.Chrome
     {
         // System property used to specify which extension directory to use.
         private const string ChromeExtensionDirectoryProperty = "webdriver.chrome.extensiondir";
-        private const string DefaultExtensionPath = "/chrome-extension.zip";
         private const string WindowsManifestFile = "manifest-win.json";
         private const string NonWindowsManifestFile = "manifest-nonwin.json";
         private const string ManifestFile = "manifest.json";
         private const string ExtensionFileName = "chrome-extension.zip";
 
-        // private const string ExtensionResourceId = "WebDriver.ChromeExt.zip";
         private const string ExtensionResourceId = "WebDriver.ChromeExt.zip";
         
         private static string defaultExtensionDir;
