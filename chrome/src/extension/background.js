@@ -509,6 +509,12 @@ function parseRequest(request) {
   case "deleteAllCookies":
     chrome.cookies.getAll({url: ChromeDriver.currentUrl}, deleteAllCookies);
     break;
+  case "getCookie":
+    chrome.cookies.get({url: ChromeDriver.currentUrl, name: request.name}, getCookieCallback);
+    break;
+  case "getCookies":
+    chrome.cookies.getAll({url: ChromeDriver.currentUrl}, getAllCookiesCallback);
+    break;
   //TODO: Use this code-path when http://crbug.com/56211 is fixed
   /*case "addCookie":
     if (hasNoPage()) {
@@ -1049,6 +1055,22 @@ function addCookie(passedCookie) {
   console.log(passedCookie);
   console.log(cookie);
   chrome.cookies.set(cookie);
+}
+
+function formatCookie(cookie) {
+  return {name: cookie.name, value: cookie.value, path: cookie.path, domain: cookie.domain, expiry: cookie.expirationDate, secure: cookie.secure};
+}
+
+function getAllCookiesCallback(cookies) {
+  var cookiesToReturn = [];
+  for (var c in cookies) {
+    cookiesToReturn.push(formatCookie(cookies[c]));
+  }
+  sendResponseToParsedRequest({status: 0, value: cookiesToReturn});
+}
+
+function getCookieCallback(cookie) {
+  sendResponseToParsedRequest({status: 0, value: formatCookie(cookie)});
 }
 
 function deleteAllCookies(cookies) {

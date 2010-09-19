@@ -97,14 +97,6 @@ function parsePortMessage(message) {
       execute(message.request.script, message.request.args);
       //Sends port message back to background page from its own callback
       break;
-    case "getCookies":
-      response.value = getCookies();
-      response.wait = false;
-      break;
-    case "getCookie":
-      response.value = getCookieNamed(message.request.name);
-      response.wait = false;
-      break;
     case "findChildElement":
     case "findChildElements":
     case "findElement":
@@ -240,64 +232,6 @@ function parsePortMessage(message) {
   if (message.request.followup) {
     setTimeout(parsePortMessage(message.request.followup), 100);
   }
-}
-
-/**
- * Get all cookies accessible from the current page as an array of
- * {name: some name, value: some value, secure: false} values
- */
-function getCookies() {
-  var cookies = [];
-  var cookieStrings = getAllCookiesAsStrings();
-  for (var i = 0; i < cookieStrings.length; ++i) {
-    var cookie = cookieStrings[i].split("=");
-    cookies.push({type: "COOKIE", name: cookie[0], value: cookie[1], secure: false});
-  }
-  return {statusCode: 0, value: cookies};
-}
-
-/**
- * Get the cookie accessible from the current page with the passed name
- * @param name name of the cookie
- */
-function getCookieNamed(name) {
-  var cookies = [];
-  var cookieStrings = getAllCookiesAsStrings();
-  for (var i = 0; i < cookieStrings.length; ++i) {
-    var cookie = cookieStrings[i].split("=");
-    if (cookie[0] == name) {
-      return {statusCode: 0, value: {type: "COOKIE", name: cookie[0], value: cookie[1], secure: false}};
-    }
-  }
-  return {statusCode: 0, value: null};
-}
-
-/**
- * Gets all cookies accessible from the current page as an array of
- * key=value strings
- */
-function getAllCookiesAsStrings() {
-  //It's possible we're trying to delete cookies within iframes.
-  //iframe stuff is unsupported in Chrome at the moment (track crbug.com/20773)
-  //But for the iframe to be loaded and have cookies, it must be of same origin,
-  //so we'll try deleting the cookie as if it was on this page anyway...
-  //(Yes, this is a hack)
-  //TODO(danielwh): Remove the cookieDocument stuff when Chrome fix frame support
-  var cookieDocument = ChromeDriverContentScript.currentDocument;
-  try {
-    var tempFullpath = ChromeDriverContentScript.currentDocument.location.pathname;
-  } catch (e) {
-    cookieDocument = document;
-  }
-  var cookieStrings = cookieDocument.cookie.split('; ');
-  var cookies = [];
-  for (var i = 0; i < cookieStrings.length; ++i) {
-    if (cookieStrings[i] == '') {
-      break;
-    }
-     cookies.push(cookieStrings[i]);
-  }
-   return cookies;
 }
 
 /**

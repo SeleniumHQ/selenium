@@ -26,7 +26,6 @@ import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.environment.webserver.AppServer;
 
 import static org.openqa.selenium.Ignore.Driver.ANDROID;
-import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.REMOTE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
@@ -336,7 +335,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
     assertEquals(cookie1, retrievedCookie);
   }
 
-  @Ignore(value = {ANDROID, CHROME, IE, SELENESE}, reason =
+  @Ignore(value = {ANDROID, IE, SELENESE}, reason =
       "Chrome and Selenium, which use JavaScript to retrieve cookies, cannot return expiry info; " +
       "Other suppressed browsers have not been tested.")
   public void testRetainsCookieExpiry() {
