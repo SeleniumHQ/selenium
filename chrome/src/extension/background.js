@@ -509,6 +509,15 @@ function parseRequest(request) {
   case "deleteAllCookies":
     chrome.cookies.getAll({url: ChromeDriver.currentUrl}, deleteAllCookies);
     break;
+  //TODO: Use this code-path when http://crbug.com/56211 is fixed
+  /*case "addCookie":
+    if (hasNoPage()) {
+      console.log("Not got a page, but asked to set cookie");
+      sendResponseToParsedRequest({status: 25, value: 'Cannot set a cookie when not on a page'});
+      break;
+    }
+    addCookie(request.cookie);
+    break;*/
   case "clickElement":
   case "hoverOverElement":
     // Falling through, as native events are handled the same
@@ -1013,6 +1022,33 @@ function setActivePortByWindowName(handle) {
     }
   }
   sendResponseToParsedRequest({status: 23, value: {message: 'Could not find window to switch to by handle: ' + handle}}, false);
+}
+
+function addCookie(passedCookie) {
+  ChromeDriver.isWaitingForCookieToBeSet = true;
+  var cookie = {};
+  cookie.url = ChromeDriver.currentUrl;
+  cookie.name = passedCookie.name;
+  if (passedCookie.value !== undefined) {
+    cookie.value = passedCookie.value;
+  }
+  if (passedCookie.domain !== undefined) {
+    cookie.domain = passedCookie.domain;
+  }
+  if (passedCookie.path !== undefined) {
+    cookie.path = passedCookie.path;
+  }
+  if (passedCookie.isSecure !== undefined) {
+    cookie.secure = passedCookie.isSecure;
+  }
+  //TODO: Set expires
+  /*if (passedCookie.expirationDate !== undefined) {
+    cookie.path = passedCookie.path;
+  }*/
+  
+  console.log(passedCookie);
+  console.log(cookie);
+  chrome.cookies.set(cookie);
 }
 
 function deleteAllCookies(cookies) {
