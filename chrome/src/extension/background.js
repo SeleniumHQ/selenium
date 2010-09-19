@@ -502,6 +502,12 @@ function parseRequest(request) {
     ChromeDriver.implicitWait_ = request.ms || 0;
     sendResponseToParsedRequest({status: 0});
     break;
+  case "deleteCookie":
+    chrome.cookies.remove({url: ChromeDriver.currentUrl, name: request.name});
+    sendResponseToParsedRequest({status: 0});
+    break;
+  case "deleteAllCookies":
+    chrome.cookies.getAll({url: ChromeDriver.currentUrl}, deleteAllCookies);
   case "clickElement":
   case "hoverOverElement":
     // Falling through, as native events are handled the same
@@ -535,15 +541,6 @@ function parseRequest(request) {
     if (hasNoPage()) {
       console.log("Not got a page, but asked for elements, so returning no elements");
       sendResponseToParsedRequest({status: 0, value: []});
-      break;
-    }
-    // Falling through, as if we do have a page, we want to treat this like a
-    // normal request
-  case "deleteAllCookies":
-  case "deleteCookie":
-    if (hasNoPage()) {
-      console.log("Not got a page, but asked to delete cookies, so returning ok");
-      sendResponseToParsedRequest({status: 0});
       break;
     }
     // Falling through, as if we do have a page, we want to treat this like a
@@ -1017,6 +1014,12 @@ function setActivePortByWindowName(handle) {
   sendResponseToParsedRequest({status: 23, value: {message: 'Could not find window to switch to by handle: ' + handle}}, false);
 }
 
+function deleteAllCookies(cookies) {
+  for (var cookie in cookies) {
+    chrome.cookies.remove({url: ChromeDriver.currentUrl, name: cookies[cookie].name});
+  }
+  sendResponseToParsedRequest({status: 0});
+}
 
 /**
  * @return {boolean} Whether there is currently no active page.

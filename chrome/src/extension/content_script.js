@@ -93,14 +93,6 @@ function parsePortMessage(message) {
       }
       response.value = {statusCode: 0};
       break;
-    case "deleteAllCookies":
-      response.value = deleteAllCookies();
-      response.wait = false;
-      break;
-    case "deleteCookie":
-      response.value = deleteCookie(message.request.name);
-      response.wait = false;
-      break;
     case "executeScript":
       execute(message.request.script, message.request.args);
       //Sends port message back to background page from its own callback
@@ -248,68 +240,6 @@ function parsePortMessage(message) {
   if (message.request.followup) {
     setTimeout(parsePortMessage(message.request.followup), 100);
   }
-}
-
-/**
- * Deletes all cookies accessible from the current page.
- */
-function deleteAllCookies() {
-  var cookies = getAllCookiesAsStrings();
-  for (var i = 0; i < cookies.length; ++i) {
-    var cookie = cookies[i].split("=");
-    deleteCookie(cookie[0]);
-  }
-  return {statusCode: 0};
-}
-
-/**
- * Deletes the cookie with the passed name, accessible from the current page (i.e. with path of the current directory or above)
- * @param cookieName name of the cookie to delete
- */
-function deleteCookie(cookieName) {
-  //It's possible we're trying to delete cookies within iframes.
-  //iframe stuff is unsupported in Chrome at the moment (track crbug.com/20773)
-  //But for the iframe to be loaded and have cookies, it must be of same origin,
-  //so we'll try deleting the cookie as if it was on this page anyway...
-  //(Yes, this is a hack)
-  //TODO(danielwh): Remove the cookieDocument stuff when Chrome fix frame support
-  try {
-    var fullpath = ChromeDriverContentScript.currentDocument.location.pathname;
-    var cookieDocument = ChromeDriverContentScript.currentDocument;
-  } catch (e) {
-    console.log("Falling back on non-iframe document to delete cookies");
-    var cookieDocument = document;
-    var fullpath = cookieDocument.location.pathname;
-  }
-  var hostParts = cookieDocument.location.hostname.split(".");
-
-  fullpath = fullpath.split('/');
-  fullpath.pop(); //Get rid of the file
-  //TODO(danielwh): Tidy up these loops and this repeated code
-  for (var segment in fullpath) {
-    var path = '';
-    for (var i = 0; i < segment; ++i) {
-      path += fullpath[i + 1] + '/';
-    }
-    //Delete cookie with trailing /
-    cookieDocument.cookie = cookieName + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/' + path;
-    //Delete cookie without trailing /
-    cookieDocument.cookie = cookieName + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/' + path.substring(0, path.length - 1);
-
-    var domain = "";
-    for (var i = hostParts.length - 1; i >= 0; --i) {
-      domain = "." + hostParts[i] + domain;
-      //Delete cookie with trailing /
-      cookieDocument.cookie = cookieName + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/' + path + ";domain=" + domain;
-
-      cookieDocument.cookie = cookieName + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/' + path + ";domain=" + domain;
-      //Delete cookie without trailing /
-      cookieDocument.cookie = cookieName + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/' + path.substring(0, path.length - 1) + ";domain=" + domain;
-
-      cookieDocument.cookie = cookieName + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/' + path.substring(0, path.length - 1) + ";domain=" + domain.substring(1);
-    }
-  }
-  return {statusCode: 0};
 }
 
 /**
