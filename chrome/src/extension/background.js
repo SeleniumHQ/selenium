@@ -508,6 +508,7 @@ function parseRequest(request) {
     break;
   case "deleteAllCookies":
     chrome.cookies.getAll({url: ChromeDriver.currentUrl}, deleteAllCookies);
+    break;
   case "clickElement":
   case "hoverOverElement":
     // Falling through, as native events are handled the same
