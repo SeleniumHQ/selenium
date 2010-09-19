@@ -73,7 +73,8 @@ public class Cookie {
     this.name = name;
     this.value = value;
     this.path = path == null || "".equals(path) ? "/" : path;
-    this.domain = domain;
+    
+    this.domain = stripPort(domain);
     this.isSecure = isSecure;
 
     if (expiry != null) {
@@ -131,6 +132,10 @@ public class Cookie {
   public Date getExpiry() {
     return expiry;
   }
+  
+  private static String stripPort(String domain) {
+	return (domain == null) ? null : domain.split(":")[0];
+  }
 
   protected void validate() {
     if (name == null || "".equals(name) || value == null || path == null) {
@@ -142,13 +147,17 @@ public class Cookie {
       throw new IllegalArgumentException(
           "Cookie names cannot contain a ';': " + name);
     }
+    
+    if (domain != null && domain.contains(":")) {
+    	throw new IllegalArgumentException("Domain should not contain a port: " + domain);
+    }
   }
 
   @Override
   public String toString() {
     return name + "=" + value
            + (expiry == null ? ""
-                             : "; expires=" + new SimpleDateFormat("EEE, dd-MM-yyyy hh:mm:ss z")
+                             : "; expires=" + new SimpleDateFormat("EEE, dd MMM yyyy hh:mm:ss z")
                                  .format(expiry))
            + ("".equals(path) ? "" : "; path=" + path)
            + (domain == null ? "" : "; domain=" + domain)
@@ -195,7 +204,7 @@ public class Cookie {
     }
 
     public Builder domain(String host) {
-      this.domain = host;
+      this.domain = stripPort(host);
       return this;
     }
 
