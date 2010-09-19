@@ -65,12 +65,6 @@ module Selenium
           rm_rf tmp_extension_dir
           mkdir_p File.dirname(tmp_extension_dir), :mode => 0700
           cp_r ext_path, tmp_extension_dir
-
-          if Platform.win?
-            mv "#{tmp_extension_dir}/manifest-win.json", "#{tmp_extension_dir}/manifest.json"
-          else
-            mv "#{tmp_extension_dir}/manifest-nonwin.json", "#{tmp_extension_dir}/manifest.json"
-          end
         end
 
         def create_profile

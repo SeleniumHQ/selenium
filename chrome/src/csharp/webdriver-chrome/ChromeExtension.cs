@@ -12,8 +12,6 @@ namespace OpenQA.Selenium.Chrome
     {
         // System property used to specify which extension directory to use.
         private const string ChromeExtensionDirectoryProperty = "webdriver.chrome.extensiondir";
-        private const string WindowsManifestFile = "manifest-win.json";
-        private const string NonWindowsManifestFile = "manifest-nonwin.json";
         private const string ManifestFile = "manifest.json";
         private const string ExtensionFileName = "chrome-extension.zip";
 
@@ -78,8 +76,7 @@ namespace OpenQA.Selenium.Chrome
         /// <summary>
         /// Verifies that the given {@code directory} is a valid Chrome extension
         /// directory. Will check if the directory has the required
-        /// {@code manifest.json} file.  If not, it will check for the correct
-        /// platform manifest and copy it over.     
+        /// {@code manifest.json} file.
         /// </summary>
         /// <param name="directory">The directory to check.</param>
         /// <returns>The verified directory.</returns>
@@ -94,15 +91,7 @@ namespace OpenQA.Selenium.Chrome
             string manifestFile = Path.Combine(directory, ManifestFile);
             if (!File.Exists(manifestFile))
             {
-                string platformManifest = Platform.CurrentPlatform.IsPlatformType(PlatformType.Windows) ? WindowsManifestFile : NonWindowsManifestFile;
-
-                string platformManifestFile = Path.Combine(directory, platformManifest);
-                if (!File.Exists(platformManifestFile))
-                {
-                    throw new FileNotFoundException(string.Format(CultureInfo.InvariantCulture, "The specified extension has neither a {0} file, nor the platform template, {1}: {2}", ManifestFile, platformManifestFile, directory));
-                }
-
-                File.Copy(platformManifestFile, manifestFile, true);
+                throw new FileNotFoundException(string.Format(CultureInfo.InvariantCulture, "The specified extension no {0} file: {2}", ManifestFile, directory));
             }
 
             return directory;

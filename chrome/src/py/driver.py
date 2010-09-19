@@ -144,13 +144,6 @@ def touch(filename):
 
 def _copy_zipped_extension(extension_zip):
     extension_dir = utils.unzip_to_temp_dir(extension_zip)
-    if extension_dir:
-        if platform == "win32":
-            manifest = "manifest-win.json"
-        else:
-            manifest = "manifest-nonwin.json"
-        copy(join(extension_dir, manifest),
-             join(extension_dir, "manifest.json"))
         return extension_dir
 
 def create_extension_dir():
@@ -174,19 +167,13 @@ def create_extension_dir():
     # copytree need to create the directory
     rmtree(path)
     copytree(extdir, path)
-    if platform == "win32":
-        # FIXME: Copied manually
-        dll = join(dirname(__file__), "npchromedriver.dll")
+    dll = join(dirname(__file__), "npchromedriver.dll")
 
-        if not isfile(dll): # In source
-            dll = r"..\..\prebuilt\Win32\Release\npchromedriver.dll"
-            assert isfile(dll), "can't find dll"
+    if not isfile(dll): # In source
+        dll = r"..\..\prebuilt\Win32\Release\npchromedriver.dll"
+        assert isfile(dll), "can't find dll"
 
-        copy(dll, path)
-        manifest = "manifest-win.json"
-    else:
-        manifest = "manifest-nonwin.json"
-    copy(join(path, manifest), join(path, "manifest.json"))
+    copy(dll, path)
     return path
 
 def create_profile_dir():

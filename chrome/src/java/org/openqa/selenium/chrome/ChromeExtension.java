@@ -17,7 +17,6 @@ limitations under the License.
 
 package org.openqa.selenium.chrome;
 
-import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.internal.FileHandler;
 
@@ -39,8 +38,6 @@ public class ChromeExtension {
   public static final String CHROME_EXTENSION_DIRECTORY_PROPERTY = "webdriver.chrome.extensiondir";
 
   private static final String DEFAULT_EXTENSION_PATH = "/chrome-extension.zip";
-  private static final String WINDOWS_MANIFEST_FILE = "manifest-win.json";
-  private static final String NON_WINDOWS_MANIFEST_FILE = "manifest-nonwin.json";
   private static final String MANIFEST_FILE = "manifest.json";
 
   private static volatile File defaultExtensionDir;
@@ -119,14 +116,11 @@ public class ChromeExtension {
 
     File manifestFile = new File(directory, MANIFEST_FILE);
     if (!manifestFile.exists()) {
-      String platformManifest = Platform.getCurrent().is(Platform.WINDOWS)
-          ? WINDOWS_MANIFEST_FILE : NON_WINDOWS_MANIFEST_FILE;
-
-      File platformManifestFile = new File(directory, platformManifest);
+      File platformManifestFile = new File(directory, MANIFEST_FILE);
       if (!platformManifestFile.exists()) {
         throw new FileNotFoundException(String.format(
-            "The specified extension has neither a %s file, nor the platform template, %s: %s",
-            MANIFEST_FILE, platformManifestFile.getAbsolutePath(), directory.getAbsolutePath()));
+            "The specified extension has no %s file: %s",
+            MANIFEST_FILE, directory.getAbsolutePath()));
       }
 
       FileHandler.copy(platformManifestFile, manifestFile);
