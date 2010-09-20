@@ -17,9 +17,7 @@ limitations under the License.
 */
 
 using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Text;
 
 namespace OpenQA.Selenium
 {
@@ -74,7 +72,8 @@ namespace OpenQA.Selenium
                 this.cookiePath = "/";
             }
 
-            this.cookieDomain = domain;
+            this.cookieDomain = StripPort(domain);
+
             if (expiry != null)
             {
                 this.cookieExpiry = expiry;
@@ -180,7 +179,7 @@ namespace OpenQA.Selenium
         public override string ToString()
         {
             return cookieName + "=" + cookieValue
-                + (cookieExpiry == null ? string.Empty : "; expires=" + cookieExpiry.Value.ToUniversalTime().ToString("ddd MM/dd/yyyy hh:mm:ss UTC", CultureInfo.InvariantCulture))
+                + (cookieExpiry == null ? string.Empty : "; expires=" + cookieExpiry.Value.ToUniversalTime().ToString("ddd MM dd yyyy hh:mm:ss UTC", CultureInfo.InvariantCulture))
                     + (string.IsNullOrEmpty(cookiePath) ? string.Empty : "; path=" + cookiePath)
                     + (string.IsNullOrEmpty(cookieDomain) ? string.Empty : "; domain=" + cookieDomain);
             ////                + (isSecure ? ";secure;" : "");
@@ -225,6 +224,11 @@ namespace OpenQA.Selenium
         public override int GetHashCode()
         {
             return cookieName.GetHashCode();
+        }
+
+        private string StripPort(string domain)
+        {
+            return (string.IsNullOrEmpty(domain)) ? null : domain.Split(':')[0];
         }
     }
 }
