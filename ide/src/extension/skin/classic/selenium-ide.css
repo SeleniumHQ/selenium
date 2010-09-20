@@ -84,23 +84,18 @@ treechildren::-moz-tree-cell-text(currentTestCase)
 }
 
 #logMenu {
+  height: 26px;
   border-bottom: 1px solid #aaa;
 }
 
 .console-tab {
-  height: 20px;
-  border-width: 0 1px 0 0;
-  border-style: solid;
-  border-color: #AAA;
   margin: 0;
+  -moz-appearance: tab !important;
 }
 
 .console-tab label { 
   font-size: 9pt;
-}
-
-.console-tab .toolbarbutton-text { 
-  color: #666666;
+  padding-right: 4px;
 }
 
 .console-tab[selected] { 
@@ -108,19 +103,21 @@ treechildren::-moz-tree-cell-text(currentTestCase)
 }
 
 .console-tab[selected] .toolbarbutton-text {
-  color: #000000;
+  font-weight: bold;
+}
+
+.console-button {
+  padding-right: 6px !important;
+  padding-left: 1px;
+}
+
+.console-button[checked="true"] {
+  padding-left: 1px !important;
 }
 
 .console-button label {
-  margin-left: 7px;
   font-size: 9pt;
 }
-
-/*
-#logLabel { 
-  font-weight: bold;
-}
-*/
 
 /*
  * Toolbar icons
