@@ -1,0 +1,3 @@
+
+js_deps(name = "sizzle",
+  srcs = [ "sizzle.js" ])
