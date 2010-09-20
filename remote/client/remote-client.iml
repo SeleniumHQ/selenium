@@ -22,15 +22,6 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../third_party/java/commons-httpclient/commons-httpclient-3.1.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
           <root url="jar://$MODULE_DIR$/../../third_party/java/commons-io/commons-io-1.4.jar!/" />
         </CLASSES>
         <JAVADOC />
@@ -55,6 +46,16 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../third_party/java/apache-mime4j/apache-mime4j-0.6.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="library" exported="" name="httpclient" level="project" />
   </component>
 </module>
 

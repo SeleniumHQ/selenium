@@ -753,12 +753,40 @@
         <root url="jar://$PROJECT_DIR$/third_party/java/junit/junit-4.8.1-src.jar!/" />
       </SOURCES>
     </library>
-    <library name="third_party-buildtime">
+    <library name="htmlunit-runtime">
       <CLASSES>
-        <root url="jar://$PROJECT_DIR$/third_party/java/google-collect/google-collect-1.0.jar!/" />
+        <root url="jar://$PROJECT_DIR$/third_party/java/htmlunit/htmlunit-core-js-2.8.jar!/" />
+        <root url="jar://$PROJECT_DIR$/third_party/java/htmlunit/htmlunit-2.8.jar!/" />
+        <root url="jar://$PROJECT_DIR$/third_party/java/apache-httpclient/httpcore-4.0.1.jar!/" />
+        <root url="jar://$PROJECT_DIR$/third_party/java/apache-httpclient/httpmime-4.0.1.jar!/" />
+        <root url="jar://$PROJECT_DIR$/third_party/java/apache-mime4j/apache-mime4j-0.6.jar!/" />
+        <root url="jar://$PROJECT_DIR$/third_party/java/apache-httpclient/httpclient-4.0.1.jar!/" />
+        <root url="jar://$PROJECT_DIR$/third_party/java/xml/xercesImpl-2.9.1.jar!/" />
+        <root url="jar://$PROJECT_DIR$/third_party/java/xml/xalan-2.7.1.jar!/" />
+        <root url="jar://$PROJECT_DIR$/third_party/java/xml/xml-apis-1.3.04.jar!/" />
+        <root url="jar://$PROJECT_DIR$/third_party/java/nekohtml/nekohtml-1.9.14.jar!/" />
+        <root url="jar://$PROJECT_DIR$/third_party/java/serializer/serializer-2.7.1.jar!/" />
+        <root url="jar://$PROJECT_DIR$/third_party/java/commons-codec/commons-codec-1.4.jar!/" />
+        <root url="jar://$PROJECT_DIR$/third_party/java/commons-logging/commons-logging-1.1.1.jar!/" />
+        <root url="jar://$PROJECT_DIR$/third_party/java/sac/sac-1.3.jar!/" />
+        <root url="jar://$PROJECT_DIR$/third_party/java/cssparser/cssparser-0.9.5.jar!/" />
       </CLASSES>
       <JAVADOC />
-      <SOURCES />
+      <SOURCES>
+        <root url="jar://$PROJECT_DIR$/third_party/java/htmlunit/htmlunit-2.8-src.jar!/" />
+        <root url="jar://$PROJECT_DIR$/third_party/java/apache-httpclient/httpcore-4.0.1-src.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="httpclient">
+      <CLASSES>
+        <root url="jar://$PROJECT_DIR$/third_party/java/apache-httpclient/httpcore-4.0.1.jar!/" />
+        <root url="jar://$PROJECT_DIR$/third_party/java/apache-httpclient/httpmime-4.0.1.jar!/" />
+        <root url="jar://$PROJECT_DIR$/third_party/java/apache-httpclient/httpclient-4.0.1.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="jar://$PROJECT_DIR$/third_party/java/apache-httpclient/httpcore-4.0.1-src.jar!/" />
+      </SOURCES>
     </library>
   </component>
 </project>

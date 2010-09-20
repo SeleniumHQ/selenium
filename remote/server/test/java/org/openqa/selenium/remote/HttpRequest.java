@@ -17,30 +17,39 @@ limitations under the License.
 
 package org.openqa.selenium.remote;
 
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.httpclient.methods.StringRequestEntity;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
+
 
 public class HttpRequest {
   private String response;
 
   public HttpRequest(Method method, String url, Object payload) throws Exception {
     if (method == Method.POST) {
-      PostMethod post = new PostMethod(url);
-      post.addRequestHeader("Accept", "application/json");
+      HttpPost post = new HttpPost(url);
+      post.addHeader("Accept", "application/json");
+      post.addHeader("Accept-Charset", "utf-8");
+      post.addHeader("Content-Type", "application/json; charset=utf8");
 
       String content = new BeanToJsonConverter().convert(payload);
 
-      post.setRequestEntity(new StringRequestEntity(content, "application/json", "UTF-8"));
+      post.setEntity(new StringEntity(content, "UTF-8"));
 
       try {
-        new HttpClient().executeMethod(post);
-        response = post.getResponseBodyAsString();
+        HttpResponse res = new DefaultHttpClient().execute(post);
+        HttpEntity httpEntity = res.getEntity();
+        if (httpEntity != null) {
+          this.response = EntityUtils.toString(httpEntity);
+        }
       } finally {
-        post.releaseConnection();
+        post.abort();
       }
     } else {
-      throw new RuntimeException("Unsupported method");
+      throw new UnsupportedOperationException("Unsupported method: " + method);
     }
   }
 

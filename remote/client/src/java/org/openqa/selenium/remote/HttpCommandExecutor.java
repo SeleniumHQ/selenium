@@ -20,79 +20,88 @@ package org.openqa.selenium.remote;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Map;
 
 import com.google.common.collect.ImmutableMap;
-import org.apache.commons.httpclient.Header;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpMethod;
-import org.apache.commons.httpclient.URI;
-import org.apache.commons.httpclient.URIException;
-import org.apache.commons.httpclient.methods.DeleteMethod;
-import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.httpclient.methods.StringRequestEntity;
-import org.json.JSONException;
+import org.apache.http.Header;
+import org.apache.http.HttpHost;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.client.params.HttpClientParams;
+import org.apache.http.conn.ManagedClientConnection;
+import org.apache.http.conn.routing.HttpRoute;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.RequestWrapper;
+import org.apache.http.impl.conn.SingleClientConnManager;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.CoreConnectionPNames;
+import org.apache.http.params.HttpParams;
+import org.apache.http.protocol.BasicHttpContext;
+import org.apache.http.protocol.ExecutionContext;
+import org.apache.http.protocol.HttpContext;
+import org.apache.http.util.EntityUtils;
 import org.openqa.selenium.WebDriverException;
 
+import static org.apache.http.protocol.ExecutionContext.HTTP_TARGET_HOST;
 import static org.openqa.selenium.remote.DriverCommand.*;
 
 public class HttpCommandExecutor implements CommandExecutor {
 
-  private final String remotePath;
+  private static final int MAX_REDIRECTS = 10;
+
+  private final HttpHost targetHost;
+  private final URL remoteServer;
+  private final Map<String, CommandInfo> nameToUrl;
+  private final HttpClient client;
 
   private enum HttpVerb {
-
     GET() {
-      public HttpMethod createMethod(String url) {
-        GetMethod getMethod = new GetMethod(url);
-        getMethod.setFollowRedirects(true);
-        return getMethod;
+      public HttpUriRequest createMethod(String url) {
+        return new HttpGet(url);
       }
     },
     POST() {
-      public HttpMethod createMethod(String url) {
-        return new PostMethod(url);
+      public HttpUriRequest createMethod(String url) {
+        return new HttpPost(url);
       }
     },
     DELETE() {
-      public HttpMethod createMethod(String url) {
-        return new DeleteMethod(url);
+      public HttpUriRequest createMethod(String url) {
+        return new HttpDelete(url);
       }
     };
 
-    public abstract HttpMethod createMethod(String url);
+    public abstract HttpUriRequest createMethod(String url);
   }
 
-  private Map<String, CommandInfo> nameToUrl;
-  private HttpClient client;
-
   public HttpCommandExecutor(URL addressOfRemoteServer) {
-    if (addressOfRemoteServer == null) {
-      String remoteServer = System.getProperty("webdriver.remote.server");
-      if (remoteServer != null) {
-        try {
-          addressOfRemoteServer = new URL(remoteServer);
-        } catch (MalformedURLException e) {
-          throw new WebDriverException(e);
-        }
-      }
-      if (addressOfRemoteServer == null)
-        throw new IllegalArgumentException("You must specify a remote address to connect to");
-    }
-
-    this.remotePath = addressOfRemoteServer.getPath();
-
-    URI uri;
     try {
-      uri = new URI(addressOfRemoteServer.toString(), false);
-    } catch (URIException e) {
+      remoteServer = addressOfRemoteServer == null ?
+                     new URL(System.getProperty("webdriver.remote.server")) :
+                     addressOfRemoteServer;
+    } catch (MalformedURLException e) {
       throw new WebDriverException(e);
     }
-    client = new HttpClient();
-    client.getHostConfiguration().setHost(uri);
+
+    HttpParams params = new BasicHttpParams();
+    // Use the JRE default for the socket linger timeout.
+    params.setParameter(CoreConnectionPNames.SO_LINGER, -1);
+    HttpClientParams.setRedirecting(params, false);
+
+    client = new DefaultHttpClient(params);
+
+    targetHost = new HttpHost(
+        remoteServer.getHost(), remoteServer.getPort(), remoteServer.getProtocol());
 
     nameToUrl = ImmutableMap.<String, CommandInfo>builder()
         .put(NEW_SESSION, post("/session"))
@@ -172,55 +181,97 @@ public class HttpCommandExecutor implements CommandExecutor {
   }
 
   public URL getAddressOfRemoteServer() {
-    try {
-      return new URL(client.getHostConfiguration().getHostURL());
-    } catch (MalformedURLException e) {
-      // This really should never happen.
-      throw new WebDriverException(e);
-    }
+    return remoteServer;
   }
 
   public Response execute(Command command) throws IOException {
     CommandInfo info = nameToUrl.get(command.getName());
-    HttpMethod httpMethod = info.getMethod(remotePath, command);
+    HttpUriRequest httpMethod = info.getMethod(remoteServer, command);
 
-    httpMethod.addRequestHeader("Accept", "application/json, image/png");
+    setAcceptHeader(httpMethod);
 
-    String payload = new BeanToJsonConverter().convert(command.getParameters());
-
-    if (httpMethod instanceof PostMethod) {
-      ((PostMethod) httpMethod)
-          .setRequestEntity(new StringRequestEntity(payload, "application/json", "UTF-8"));
+    if (httpMethod instanceof HttpPost) {
+      String payload = new BeanToJsonConverter().convert(command.getParameters());
+      ((HttpPost) httpMethod).setEntity(new StringEntity(payload, "utf-8"));
+      httpMethod.addHeader("Content-Type", "application/json; charset=utf-8");
     }
 
+    HttpResponse response = null;
+    HttpContext context = new BasicHttpContext();
+    long intermediate = 0;
     try {
-      client.executeMethod(httpMethod);
+      response = client.execute(targetHost, httpMethod, context);
 
-      // TODO: SimonStewart: 2008-04-25: This is really shabby
-      if (isRedirect(httpMethod)) {
-        httpMethod.releaseConnection();
-        Header newLocation = httpMethod.getResponseHeader("location");
+      response = followRedirects(client, context, response, /* redirect count */0);
+      intermediate = System.currentTimeMillis();
 
-        httpMethod = new GetMethod(newLocation.getValue());
-        httpMethod.setFollowRedirects(true);
-        httpMethod.addRequestHeader("Accept", "application/json, image/png");
-        client.executeMethod(httpMethod);
-      }
-
-      return createResponse(httpMethod);
+      return createResponse(response, context);
     } finally {
-      httpMethod.releaseConnection();
+      releaseConnection(context);
     }
   }
 
-  private Response createResponse(HttpMethod httpMethod) throws IOException {
-    Response response;
+  private void setAcceptHeader(HttpUriRequest httpMethod) {
+    httpMethod.addHeader("Accept", "application/json, image/png");
+  }
 
-    Header header = httpMethod.getResponseHeader("Content-Type");
+  private HttpResponse followRedirects(
+      HttpClient client, HttpContext context, HttpResponse response, int redirectCount) {
+    if (!isRedirect(response)) {
+      return response;
+    }
+
+    if (redirectCount > MAX_REDIRECTS) {
+      throw new WebDriverException("Maximum number of redirects exceeded. Aborting");
+    }
+
+    String location = response.getFirstHeader("location").getValue();
+    URI uri = null;
+    try {
+      uri = buildUri(context, location);
+
+      // Make sure that the previous connection is freed.
+      releaseConnection(context);
+
+      HttpGet get = new HttpGet(uri);
+      setAcceptHeader(get);
+      HttpResponse newResponse = client.execute(targetHost, get, context);
+      return followRedirects(client, context, newResponse, redirectCount + 1);
+    } catch (URISyntaxException e) {
+      throw new WebDriverException(e);
+    } catch (ClientProtocolException e) {
+      throw new WebDriverException(e);
+    } catch (IOException e) {
+      throw new WebDriverException(e);
+    }
+  }
+
+  private URI buildUri(HttpContext context, String location) throws URISyntaxException {
+    URI uri;
+    uri = new URI(location);
+    if (!uri.isAbsolute()) {
+      HttpHost host = (HttpHost) context.getAttribute(HTTP_TARGET_HOST);
+      uri = new URI(host.toURI() + location);
+    }
+    return uri;
+  }
+
+  private boolean isRedirect(HttpResponse response) {
+    int code = response.getStatusLine().getStatusCode();
+
+    return (code == 301 || code == 302 || code == 303 || code == 307)
+        && response.containsHeader("location");
+  }
+
+  private Response createResponse(HttpResponse httpResponse, HttpContext context) throws IOException {
+    Response response = null;
+
+    Header header = httpResponse.getFirstHeader("Content-Type");
 
     if (header != null && header.getValue().startsWith("application/json")) {
-    String responseAsText = httpMethod.getResponseBodyAsString();
-    try {
+      String responseAsText = EntityUtils.toString(httpResponse.getEntity(), "utf-8");
+
+      try {
         response = new JsonToBeanConverter().convert(Response.class, responseAsText);
       } catch (ClassCastException e) {
         throw new WebDriverException("Cannot convert text to response: " + responseAsText, e);
@@ -229,12 +280,15 @@ public class HttpCommandExecutor implements CommandExecutor {
       response = new Response();
 
       if (header != null && header.getValue().startsWith("image/png")) {
-        response.setValue(httpMethod.getResponseBody());
+        response.setValue(EntityUtils.toByteArray(httpResponse.getEntity()));
+      } else if (httpResponse.getEntity() != null) {
+        response.setValue(EntityUtils.toString(httpResponse.getEntity(), "utf-8"));
       } else {
-        response.setValue(httpMethod.getResponseBodyAsString());
+        releaseConnection(context);
       }
-      
-      String uri = httpMethod.getURI().toString();
+
+      HttpHost finalHost = (HttpHost) context.getAttribute(HTTP_TARGET_HOST);
+      String uri = finalHost.toURI();
       int sessionIndex = uri.indexOf("/session/");
       if (sessionIndex != -1) {
         sessionIndex += "/session/".length();
@@ -243,38 +297,41 @@ public class HttpCommandExecutor implements CommandExecutor {
           response.setSessionId(uri.substring(sessionIndex, nextSlash));
         }
       }
-    }
 
-    if (!(httpMethod.getStatusCode() > 199 && httpMethod.getStatusCode() < 300)) {
-      // 4xx represents an unknown command or a bad request.
-      if (httpMethod.getStatusCode() > 399 && httpMethod.getStatusCode() < 500) {
-        response.setStatus(ErrorCodes.UNKNOWN_COMMAND);
-      } else if (httpMethod.getStatusCode() > 499 && httpMethod.getStatusCode() < 600) {
-        // 5xx represents an internal server error. The response status should already be set, but
-        // if not, set it to a general error code.
-        if (response.getStatus() == ErrorCodes.SUCCESS) {
+      int statusCode = httpResponse.getStatusLine().getStatusCode();
+      if (!(statusCode > 199 && statusCode < 300)) {
+        // 4xx represents an unknown command or a bad request.
+        if (statusCode > 399 && statusCode < 500) {
+          response.setStatus(ErrorCodes.UNKNOWN_COMMAND);
+        } else if (statusCode > 499 && statusCode < 600) {
+          // 5xx represents an internal server error. The response status should already be set, but
+          // if not, set it to a general error code.
+          if (response.getStatus() == ErrorCodes.SUCCESS) {
+            response.setStatus(ErrorCodes.UNHANDLED_ERROR);
+          }
+        } else {
           response.setStatus(ErrorCodes.UNHANDLED_ERROR);
         }
-      } else {
-        response.setStatus(ErrorCodes.UNHANDLED_ERROR);
+      }
+
+
+      if (response.getValue() instanceof String) {
+        //We normalise to \n because Java will translate this to \r\n
+        //if this is suitable on our platform, and if we have \r\n, java will
+        //turn this into \r\r\n, which would be Bad!
+        response.setValue(((String) response.getValue()).replace("\r\n", "\n"));
       }
     }
-
-
-    if (response.getValue() instanceof String) {
-      //We normalise to \n because Java will translate this to \r\n
-      //if this is suitable on our platform, and if we have \r\n, java will
-      //turn this into \r\r\n, which would be Bad!
-      response.setValue(((String)response.getValue()).replace("\r\n", "\n"));
-    }
-    
     return response;
   }
 
-  private boolean isRedirect(HttpMethod httpMethod) {
-    int code = httpMethod.getStatusCode();
-    return (code == 301 || code == 302 || code == 303 || code == 307)
-           && httpMethod.getResponseHeader("location") != null;
+  // I can't help but feel that this is less helpful than it could be
+  private void releaseConnection(HttpContext context) throws IOException {
+    HttpUriRequest request = (HttpUriRequest) context.getAttribute(ExecutionContext.HTTP_REQUEST);
+    if (request instanceof RequestWrapper) {
+      request = (HttpUriRequest) ((RequestWrapper) request).getOriginal();
+    }
+    request.abort();
   }
 
   private static CommandInfo get(String url) {
@@ -294,13 +351,14 @@ public class HttpCommandExecutor implements CommandExecutor {
     private final String url;
     private final HttpVerb verb;
 
-    public CommandInfo(String url, HttpVerb verb) {
+    private CommandInfo(String url, HttpVerb verb) {
       this.url = url;
       this.verb = verb;
     }
 
-    public HttpMethod getMethod(String base, Command command) {
-      StringBuilder urlBuilder = new StringBuilder(base);
+    public HttpUriRequest getMethod(URL base, Command command) {
+      StringBuilder urlBuilder = new StringBuilder();
+      urlBuilder.append(base.toExternalForm());
       for (String part : url.split("/")) {
         if (part.length() == 0) {
           continue;

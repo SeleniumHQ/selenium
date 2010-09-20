@@ -48,8 +48,13 @@ public class DriverTestDecorator extends TestSetup {
     }
 
     if (getTest() instanceof NeedsDriver) {
-      driver = instantiateDriver();
-      ((NeedsDriver) getTest()).setDriver(driver);
+      try {
+        driver = instantiateDriver();
+        ((NeedsDriver) getTest()).setDriver(driver);
+      } catch (RuntimeException e) {
+        e.printStackTrace();
+        throw e;
+      }
     }
   }
 
