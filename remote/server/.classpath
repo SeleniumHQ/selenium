@@ -9,7 +9,6 @@
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/selenium-support"/>
 	<classpathentry exported="true" kind="lib" path="/third-party/java/commons-codec/commons-codec-1.4.jar"/>
 	<classpathentry exported="true" kind="lib" path="/third-party/java/commons-collections/commons-collections-3.2.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="/third-party/java/commons-httpclient/commons-httpclient-3.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="/third-party/java/commons-logging/commons-logging-1.1.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="/third-party/java/json/json-20080701.jar"/>
 	<classpathentry exported="true" kind="lib" path="/third-party/java/bcprov/bcprov-jdk15-135.jar"/>
