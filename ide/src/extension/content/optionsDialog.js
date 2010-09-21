@@ -28,7 +28,7 @@ function saveOptions() {
 	SeleniumIDE.Loader.getEditors().forEach(function(editor) {
 			editor.app.setOptions(options);
 		});
-	
+	updateFormatOptions();
 	Preferences.save(options);
 	return true;
 }
