@@ -2921,7 +2921,9 @@ Selenium.prototype.doCaptureEntirePageScreenshot = function(filename, kwargs) {
                 .createInstance(Components.interfaces.nsIFileOutputStream);
                 
             fileOutputStream.init(nsFile,
-                writeFlag | createFlag | truncateFlag, 0664, null);
+                                  writeFlag | createFlag | truncateFlag,
+                                  PR_IRUSR | PR_IWUSR | PR_IRGRP | PR_IROTH,
+                                  null);
             return fileOutputStream;
         },
         
