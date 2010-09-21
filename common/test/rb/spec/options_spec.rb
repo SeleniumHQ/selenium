@@ -29,17 +29,15 @@ describe "Options" do
         driver.manage.all_cookies.should be_empty
       end
 
-      not_compliant_on :browser => :chrome do
-        it "should use DateTime for expires" do
-          driver.navigate.to url_for("xhtmlTest.html")
+      it "should use DateTime for expires" do
+        driver.navigate.to url_for("xhtmlTest.html")
 
-          expected = DateTime.new(2039)
-          driver.manage.add_cookie :name => "foo", :value => "bar", :expires => expected
+        expected = DateTime.new(2039)
+        driver.manage.add_cookie :name => "foo", :value => "bar", :expires => expected
 
-          actual = driver.manage.cookie_named("foo")[:expires]
-          actual.should be_kind_of(DateTime)
-          actual.should == expected
-        end
+        actual = driver.manage.cookie_named("foo")[:expires]
+        actual.should be_kind_of(DateTime)
+        actual.should == expected
       end
     end
   end
