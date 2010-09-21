@@ -22,7 +22,10 @@ import java.util.List;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
+import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
+import static org.openqa.selenium.Ignore.Driver.REMOTE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 
 public class ElementFindingTest extends AbstractDriverTestCase {
@@ -391,28 +394,21 @@ public class ElementFindingTest extends AbstractDriverTestCase {
     try {
       driver.findElement(By.xpath("//a[contains(.,'hello world')]"));
     } catch (Exception e) {
-      e.printStackTrace();
       fail("Should not have thrown an exception");
     }
   }
 
   @JavascriptEnabled
+  @Ignore({HTMLUNIT, IE, REMOTE})
   public void testShouldBeAbleToFindAnElementByCssSelector() {
     driver.get(pages.xhtmlTestPage);
-    if (!supportsSelectorApi()) {
-      System.out.println("Skipping test: selector API not supported");
-      return;
-    }
     driver.findElement(By.cssSelector("div.content"));
   }
 
   @JavascriptEnabled
+  @Ignore({HTMLUNIT, IE, REMOTE})
   public void testShouldBeAbleToFindAnElementsByCssSelector() {
     driver.get(pages.xhtmlTestPage);
-    if (!supportsSelectorApi()) {
-      System.out.println("Skipping test: selector API not supported");
-      return;
-    }
     driver.findElements(By.cssSelector("p"));
   }
   

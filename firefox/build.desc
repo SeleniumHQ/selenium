@@ -67,7 +67,8 @@ mozilla_extension(name = "webdriver",
     { ":atoms" : "resource/modules/atoms.js" },
     { "src/js/errorcode.js" : "resource/modules/errorcode.js" },
     { "src/js/utils.js" :     "resource/modules/utils.js" },
-    { "src/js/evaluate.js" : "resource/evaluate.js" }
+    { "src/js/evaluate.js" : "resource/evaluate.js" },
+    { "//third_party/js/sizzle" : "resource/sizzle.js" }
   ],
   chrome = "src/extension/chrome.manifest",
   install = "src/extension/install.rdf")

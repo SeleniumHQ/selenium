@@ -173,7 +173,6 @@ FirefoxDriver.prototype.executeScript = function(respond, parameters) {
 
   // Attach the listener to the DOM
   if (!doc.getUserData('webdriver-evaluate-attached')) {
-
     var element = doc.createElement("script");
     element.setAttribute("type", "text/javascript");
     element.innerHTML = FirefoxDriver.listenerScript;
@@ -364,13 +363,18 @@ FirefoxDriver.prototype.findElementInternal_ = function(respond, method,
       break;
 
     case FirefoxDriver.ElementLocator.CSS_SELECTOR:
-      if (rootNode['querySelector']) {
-        element = rootNode.querySelector(selector);
-      } else {
-        throw new WebDriverError(ErrorCode.UNKNOWN_COMMAND,
-            "CSS Selectors not supported natively");
-      }
-      break;
+      var tempRespond = {
+        session: respond.session,
+        send: function() {
+          var found = tempRespond.value;
+          respond.value = found ? found : "Unable to find element using css: " + selector;
+          respond.status = found ? ErrorCode.SUCCESS : ErrorCode.NO_SUCH_ELEMENT;
+          respond.send();
+        }
+      };
+      var execute = goog.bind(FirefoxDriver.executeScript, FirefoxDriver);
+      Utils.findByCss(rootNode, theDocument, selector, true, tempRespond, execute);
+      return;
 
     case FirefoxDriver.ElementLocator.TAG_NAME:
       element = rootNode.getElementsByTagName(selector)[0];
@@ -501,13 +505,8 @@ FirefoxDriver.prototype.findElementsInternal_ = function(respond, method,
       break;
 
     case FirefoxDriver.ElementLocator.CSS_SELECTOR:
-      if (rootNode['querySelector']) {
-        elements = rootNode.querySelectorAll(selector);
-      } else {
-        throw new WebDriverError(ErrorCode.UNKNOWN_COMMAND,
-            "CSS Selectors not supported natively");
-      }
-      break;
+      Utils.findByCss(rootNode, theDocument, selector, false, respond, FirefoxDriver.executeScript);
+      return;
 
     case FirefoxDriver.ElementLocator.TAG_NAME:
       elements = rootNode.getElementsByTagName(selector);
@@ -734,7 +733,7 @@ function getVisibleCookies(location) {
   }
 
   return results;
-};
+}
 
 FirefoxDriver.prototype.getCookies = function(respond) {
   var toReturn = [];

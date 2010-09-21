@@ -102,6 +102,7 @@ function createSwitchFile(file_content) {
 }
 
 function Utils() {
+  Utils.SIZZLE_ = Utils.loadUrl("resource://fxdriver/sizzle.js");
 }
 
 
@@ -1278,4 +1279,37 @@ Utils.loadUrl = function(url) {
   channelStream.close();
 
   return text;
+};
+
+Utils.findByCss = function(rootNode, theDocument, selector, singular, respond, executeScript) {
+    var findUsing = singular ? 'querySelector' : 'querySelectorAll';
+
+    if (rootNode[findUsing]) {
+      var element = rootNode[findUsing](selector);
+      respond.value = Utils.wrapResult(element, theDocument);
+      respond.send();
+    } else {
+      if (rootNode == theDocument) {
+        rootNode = theDocument.documentElement;
+      }
+      var node = Utils.wrapResult(rootNode, theDocument);
+      var params = {};
+      params['args'] = [selector, node];
+      // Inject sizzle if necessary
+      if (!(theDocument.Sizzle)) {
+        params['script'] = Utils.SIZZLE_ +
+            "var results = []; Sizzle(arguments[0], arguments[1], results); delete Sizzle; ";
+      } else {
+        params['script'] =
+            "var results = []; Sizzle(arguments[0], arguments[1], results); ";
+      }
+
+      if (singular) {
+        params['script'] += "return results.length > 0 ? results[0] : null;";
+      } else {
+        params['script'] += "return results;";
+      }
+
+      executeScript(respond, params);
+    }
 };

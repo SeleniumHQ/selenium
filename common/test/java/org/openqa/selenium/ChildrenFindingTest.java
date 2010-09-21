@@ -40,7 +40,7 @@ public class ChildrenFindingTest extends AbstractDriverTestCase {
   //Reason for ignores: Multiple items of ID 1 exist in the page,
   //returns subelements of *all* of them, not the one we selected
   //See issue 278
-  public void testFindElementsByXPath() {
+  public void testFindElementsByXPathDueToIssue278() {
     driver.get(pages.nestedPage);
     WebElement select = driver.findElement(By.id("1"));
     List<WebElement> elements = select.findElements(By.xpath("//option"));
@@ -207,12 +207,9 @@ public class ChildrenFindingTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Ignore({HTMLUNIT, IE, REMOTE})
   public void testShouldBeAbleToFindAnElementByCssSelector() {
     driver.get(pages.nestedPage);
-    if (!supportsSelectorApi()) {
-      System.out.println("Skipping test: selector API not supported");
-      return;
-    }
     WebElement parent = driver.findElement(By.name("form2"));
 
     WebElement element = parent.findElement(By.cssSelector("*[name=\"selectomatic\"]"));
@@ -221,13 +218,9 @@ public class ChildrenFindingTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = CHROME, reason = "Chrome doesn't handle the many-pages situation well")
+  @Ignore(value = {CHROME, HTMLUNIT, IE, REMOTE}, reason = "Chrome doesn't handle the many-pages situation well")
   public void testShouldBeAbleToFindAnElementsByCssSelector() {
     driver.get(pages.nestedPage);
-    if (!supportsSelectorApi()) {
-      System.out.println("Skipping test: selector API not supported");
-      return;
-    }
     WebElement parent = driver.findElement(By.name("form2"));
 
     List<WebElement> elements = parent.findElements(By.cssSelector("*[name=\"selectomatic\"]"));

@@ -88,7 +88,14 @@ public class FirefoxDriverTestSuite extends TestCase {
 
     private static FirefoxProfile createTemporaryProfile() {
       try {
-        return copyExtensionTo(new FirefoxProfile());
+        FirefoxProfile profile = new FirefoxProfile();
+
+        if (Boolean.getBoolean("webdriver.debug")) {
+          File firebug = InProject.locate("third_party/firebug/firebug-1.5.0-fx.xpi");
+          profile.addExtension(firebug);
+        }
+
+        return copyExtensionTo(profile);
       } catch (Exception e) {
         e.printStackTrace();
         fail(e.getMessage());
