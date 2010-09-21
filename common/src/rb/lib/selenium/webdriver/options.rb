@@ -79,7 +79,7 @@ module Selenium
             :name    => cookie["name"],
             :value   => cookie["value"],
             :path    => cookie["path"],
-            :domain  => cookie["domain"],
+            :domain  => strip_port(cookie["domain"]),
             :expires => cookie["expiry"] && datetime_at(cookie['expiry']),
             :secure  => cookie["secure"]
           }
@@ -117,6 +117,10 @@ module Selenium
         else
           raise ArgumentError, "invalid value for expiration date: #{obj.inspect}"
         end
+      end
+
+      def strip_port(str)
+        str.split(":", 2).first
       end
 
     end # Options
