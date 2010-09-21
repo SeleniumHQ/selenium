@@ -9,7 +9,7 @@ module Selenium
       module TakesScreenshot
 
         def save_screenshot(png_path)
-          File.open(png_path, 'w') { |f| f << screenshot_as(:png) }
+          File.open(png_path, 'wb') { |f| f << screenshot_as(:png) }
         end
 
         def screenshot_as(format)
