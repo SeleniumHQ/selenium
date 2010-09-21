@@ -131,3 +131,7 @@ function NSGetModule(compMgr, fileSpec) {
     return SeleniumIDEGenericAutoCompleteModule;
 }
 
+function NSGetFactory(cid) {
+    if (cid.toString().toUpperCase() != COMPONENT_ID.toString().toUpperCase()) throw Components.results.NS_ERROR_FACTORY_NOT_REGISTERED;
+    return SeleniumIDEGenericAutoCompleteFactory;
+}

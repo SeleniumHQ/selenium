@@ -103,7 +103,7 @@ limitations under the License.
 
   <popupset id="seleniumIDEPopup">
     <!-- popup menu on the tree view -->
-    <popup id="treeContextMenu">
+    <menupopup id="treeContextMenu">
       <menuitem label="&contextMenu.cut.label;" command="cmd_cut" key="key_cut" accesskey="T"/>
       <menuitem label="&contextMenu.copy.label;" command="cmd_copy" key="key_copy" accesskey="C"/>
       <menuitem label="&contextMenu.paste.label;" command="cmd_paste" key="key_paste" accesskey="P"/>
@@ -117,16 +117,16 @@ limitations under the License.
       <menuitem label="&contextMenu.breakpoint.label;" command="cmd_selenium_breakpoint" key="breakpoint-key" accesskey="B"/>
       <menuitem label="&contextMenu.startpoint.label;" command="cmd_selenium_startpoint" key="startpoint-key" accesskey="S"/>
       <menuitem label="&contextMenu.execCommand.label;" command="cmd_selenium_exec_command" key="exec-key" accesskey="E"/>
-    </popup>
-    <popup id="suiteContextMenu">
+    </menupopup>
+    <menupopup id="suiteContextMenu">
       <menuitem label="&newTestCmd.label;" oncommand="window.editor.app.newTestCase();"/>
       <menuitem label="&addTestCmd.label;" command="cmd_add" key="add-key" />
       <menuitem label="&contextMenu.delete.label;" command="cmd_delete" />
       <menuitem label="&testCaseProperties.label;" oncommand="window.editor.suiteTreeView.editProperties()"/>
-    </popup>
-    <popup id="popupSeleniumCommands">
+    </menupopup>
+    <menupopup id="popupSeleniumCommands">
       <menuitem label="&contextMenu.clear.label;" oncommand="window.editor.clear()" accesskey="A"/>
-    </popup>
+    </menupopup>
   </popupset>
 
   <menu id="fileMenu" label="&fileMenu.label;" accesskey="F">
