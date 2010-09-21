@@ -10,6 +10,7 @@ class JavascriptMappings
     fun.add_mapping("js_deps", Javascript::CreateTaskShortName.new)
     fun.add_mapping("js_deps", Javascript::AddDependencies.new)
     fun.add_mapping("js_deps", Javascript::WriteOutput.new)
+    fun.add_mapping("js_deps", Javascript::CreateHeader.new)
     
     fun.add_mapping("js_binary", Javascript::CheckPreconditions.new)
     fun.add_mapping("js_binary", Javascript::CreateTask.new)

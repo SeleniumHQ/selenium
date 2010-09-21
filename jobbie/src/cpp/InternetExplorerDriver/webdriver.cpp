@@ -23,6 +23,7 @@ limitations under the License.
 #include "logging.h"
 #include "jsxpath.h"
 #include "cookies.h"
+#include "sizzle.h"
 #include "utils.h"
 #include "atoms.h"
 #include "IEReturnTypes.h"
@@ -1139,6 +1140,151 @@ int wdFindElementsByClassName(WebDriver* driver, WebElement* element, const wcha
 		} while (clock() < end);
 
 		return SUCCESS;
+	} END_TRY;
+}
+
+int wdFindElementByCss(WebDriver* driver, WebElement* element, const wchar_t* selector, WebElement** out)
+{
+	*out = NULL;
+	if (!driver || !driver->ie) { return ENOSUCHDRIVER; }
+
+	try {
+		clock_t end = endAt(driver);
+		int result = ENOSUCHELEMENT;
+
+		do {
+			std::wstring script(L"(function() { return function(){");
+			for (int i = 0; SIZZLE[i]; i++) {
+				script += SIZZLE[i];
+				script += L"\n";
+			}
+			script += L"var root = arguments[1] ? arguments[1] : document.documentElement;";
+			script += L"var results = []; Sizzle(arguments[0], root, results);";
+			script += L"return results.length > 0 ? results[0] : null;";
+			script += L"};})();";
+
+			// Call it
+			ScriptArgs* args;
+			result = wdNewScriptArgs(&args, 2);
+			if (result != SUCCESS) {
+				wdFreeScriptArgs(args);
+				continue;
+			}
+			result = wdAddStringScriptArg(args, selector);
+			if (result != SUCCESS) {
+				wdFreeScriptArgs(args);
+				continue;
+			}
+			if (element) {
+				result = wdAddElementScriptArg(args, element);
+			}
+			if (result != SUCCESS) {
+				wdFreeScriptArgs(args);
+				continue;
+			}
+
+			ScriptResult* queryResult;
+			result = wdExecuteScript(driver, script.c_str(), args, &queryResult);
+			wdFreeScriptArgs(args);
+
+			// And be done
+			if (result == SUCCESS) {
+				int type = 0;
+				result = wdGetScriptResultType(driver, queryResult, &type);
+				if (type != TYPE_EMPTY) {
+					result = wdGetElementScriptResult(queryResult, driver, out);
+				} else {
+					result = ENOSUCHELEMENT;
+					wdFreeScriptResult(queryResult);
+					continue;
+				}
+			}
+			wdFreeScriptResult(queryResult);
+
+			return result;
+		} while (clock() < end);
+
+		return result;
+	} END_TRY;
+}
+
+int wdFindElementsByCss(WebDriver* driver, WebElement* element, const wchar_t* selector, ElementCollection** out)
+{
+	*out = NULL;
+	if (!driver || !driver->ie) { return ENOSUCHDRIVER; }
+
+	try {
+		clock_t end = endAt(driver);
+		int result = EUNHANDLEDERROR;
+
+		do {
+			// Call it
+			std::wstring script(L"(function() { return function(){");
+			for (int i = 0; SIZZLE[i]; i++) {
+				script += SIZZLE[i];
+				script += L"\n";
+			}
+			script += L"var root = arguments[1] ? arguments[1] : document.documentElement;";
+			script += L"var results = []; Sizzle(arguments[0], root, results);";
+			script += L"return results;";
+			script += L"};})();";
+
+			// Call it
+			ScriptArgs* args;
+			result = wdNewScriptArgs(&args, 2);
+			if (result != SUCCESS) {
+				wdFreeScriptArgs(args);
+				continue;
+			}
+			result = wdAddStringScriptArg(args, selector);
+			if (result != SUCCESS) {
+				wdFreeScriptArgs(args);
+				continue;
+			}
+
+			result = wdAddElementScriptArg(args, element);
+			if (result != SUCCESS) {
+				wdFreeScriptArgs(args);
+				continue;
+			}
+
+			ScriptResult* queryResult;
+			result = wdExecuteScript(driver, script.c_str(), args, &queryResult);
+			wdFreeScriptArgs(args);
+
+			// And be done
+			if (result != SUCCESS) {
+				wdFreeScriptResult(queryResult);
+				return result;
+			}
+
+			ElementCollection* elements = new ElementCollection();
+			elements->elements = new std::vector<ElementWrapper*>();
+
+			int length;
+			result = wdGetArrayLengthScriptResult(driver, queryResult, &length);
+			if (result != SUCCESS) {
+				wdFreeScriptResult(queryResult);
+				return result;
+			}
+
+			for (long i = 0; i < length; i++) {
+				ScriptResult* getElemRes;
+				wdGetArrayItemFromScriptResult(driver, queryResult, i, &getElemRes);
+
+				WebElement* e;
+				wdGetElementScriptResult(getElemRes, driver, &e);
+				elements->elements->push_back(e->element);
+				e->element = NULL;
+				delete e;
+			}
+			wdFreeScriptResult(queryResult);
+
+			*out = elements;
+			return SUCCESS;
+		} while (clock() < end);
+
+		return result;
 	} END_TRY;
 }
 

@@ -111,6 +111,9 @@ EXPORT int wdFindElementsById(WebDriver* driver, WebElement* element, const wcha
 EXPORT int wdFindElementByClassName(WebDriver* driver, WebElement* element, const wchar_t* className, WebElement** result);
 EXPORT int wdFindElementsByClassName(WebDriver* driver, WebElement* element, const wchar_t* className, ElementCollection** result);
 
+EXPORT int wdFindElementByCss(WebDriver* driver, WebElement* element, const wchar_t* className, WebElement** result);
+EXPORT int wdFindElementsByCss(WebDriver* driver, WebElement* element, const wchar_t* className, ElementCollection** result);
+
 EXPORT int wdFindElementByLinkText(WebDriver* driver, WebElement* element, const wchar_t* linkText, WebElement** result);
 EXPORT int wdFindElementsByLinkText(WebDriver* driver, WebElement* element, const wchar_t* linkText, ElementCollection** result);
 EXPORT int wdFindElementByPartialLinkText(WebDriver* driver, WebElement* element, const wchar_t* linkText, WebElement** result);

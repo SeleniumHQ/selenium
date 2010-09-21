@@ -25,6 +25,7 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.internal.FindsByClassName;
+import org.openqa.selenium.internal.FindsByCssSelector;
 import org.openqa.selenium.internal.FindsById;
 import org.openqa.selenium.internal.FindsByLinkText;
 import org.openqa.selenium.internal.FindsByName;
@@ -38,7 +39,7 @@ import com.sun.jna.ptr.PointerByReference;
 // Kept package level deliberately.
 
 class Finder implements SearchContext, FindsByClassName, FindsById, FindsByLinkText, FindsByName,
-        FindsByTagName, FindsByXPath {
+        FindsByTagName, FindsByXPath, FindsByCssSelector {
 
   private final ExportedWebDriverFunctions lib;
   private final InternetExplorerDriver parent;
@@ -53,8 +54,9 @@ class Finder implements SearchContext, FindsByClassName, FindsById, FindsByLinkT
   }
 
   public WebElement findElementByClassName(String using) {
-    if (using == null)
-     throw new IllegalArgumentException("Cannot find elements when the class name expression is null.");
+    if (using == null) {
+      throw new IllegalArgumentException("Cannot find elements when the class name expression is null.");
+    }
 
     if (using.matches(".*\\s+.*")) {
       throw new IllegalLocatorException(
@@ -70,8 +72,9 @@ class Finder implements SearchContext, FindsByClassName, FindsById, FindsByLinkT
   }
 
   public List<WebElement> findElementsByClassName(String using) {
-    if (using == null)
-     throw new IllegalArgumentException("Cannot find elements when the class name expression is null.");
+    if (using == null) {
+      throw new IllegalArgumentException("Cannot find elements when the class name expression is null.");
+    }
 
     if (using.matches(".*\\s+.*")) {
       throw new IllegalLocatorException(
@@ -86,7 +89,37 @@ class Finder implements SearchContext, FindsByClassName, FindsById, FindsByLinkT
     return new ElementCollection(lib, parent, elements.getValue()).toList();
   }
 
+  public WebElement findElementByCssSelector(String using) {
+    if (using == null) {
+      throw new IllegalArgumentException("Cannot find elements when the css selector is null.");
+    }
+
+    PointerByReference rawElement = new PointerByReference();
+    int result = lib.wdFindElementByCss(driver, element, new WString(using), rawElement);
+
+    handleErrorCode("css", using, result);
+
+    return new InternetExplorerElement(lib, parent, rawElement.getValue());
+  }
+
+  public List<WebElement> findElementsByCssSelector(String using) {
+    if (using == null) {
+     throw new IllegalArgumentException("Cannot find elements when the css selector is null.");
+    }
+
+    PointerByReference elements = new PointerByReference();
+    int result = lib.wdFindElementsByCss(driver, element, new WString(using), elements);
+
+    handleErrorCode("class name", using, result);
+
+    return new ElementCollection(lib, parent, elements.getValue()).toList();
+  }
+
   public WebElement findElementById(String using) {
+    if (using == null) {
+     throw new IllegalArgumentException("Cannot find elements when the id is null.");
+    }
+
     PointerByReference rawElement = new PointerByReference();
     int result = lib.wdFindElementById(driver, element, new WString(using), rawElement);
 

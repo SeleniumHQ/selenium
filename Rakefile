@@ -168,12 +168,14 @@ task :clean do
   Android::Clean.new()
 end
 
+task "ie_win32_dll" => [ "atomic_header", "sizzle_header" ]
 dll(:name => "ie_win32_dll",
     :src  => [ "common/src/cpp/webdriver-interactions/**/*", "jobbie/src/cpp/InternetExplorerDriver/**/*" ],
     :solution => "WebDriver.sln",
     :out  => "Win32/Release/InternetExplorerDriver.dll",
     :prebuilt => "jobbie/prebuilt")
 
+task "ie_x64_dll" => [ "atomic_header", "sizzle_header" ]
 dll(:name => "ie_x64_dll",
     :src  => [ "common/src/cpp/webdriver-interactions/**/*", "jobbie/src/cpp/InternetExplorerDriver/**/*" ],
     :solution => "WebDriver.sln",
@@ -444,6 +446,11 @@ file "jobbie/src/cpp/InternetExplorerDriver/atoms.h" => [
   end
 end
 task :atomic_header => [ "jobbie/src/cpp/InternetExplorerDriver/atoms.h" ]
+
+file "jobbie/src/cpp/InternetExplorerDriver/sizzle.h" => [ "//third_party/js/sizzle:sizzle:header" ] do
+  cp "build/third_party/js/sizzle/sizzle.h", "jobbie/src/cpp/InternetExplorerDriver/sizzle.h"
+end
+task :sizzle_header => [ "jobbie/src/cpp/InternetExplorerDriver/sizzle.h" ]
 
 file "common/test/js/deps.js" => FileList["third_party/closure/goog/**/*.js", "common/src/js/**/*.js"] do
   our_cmd = "java -jar third_party/py/jython.jar third_party/closure/bin/calcdeps.py "

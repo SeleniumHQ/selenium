@@ -34,6 +34,8 @@ interface ExportedWebDriverFunctions extends StdCallLibrary {
   
   int wdFindElementByClassName(Pointer driver, Pointer element, WString string, PointerByReference rawElement);
   int wdFindElementsByClassName(Pointer driver, Pointer element, WString string, PointerByReference elements);
+  int wdFindElementByCss(Pointer driver, Pointer element, WString string, PointerByReference rawElement);
+  int wdFindElementsByCss(Pointer driver, Pointer element, WString string, PointerByReference elements);
   int wdFindElementById(Pointer driver, Pointer element, WString string, PointerByReference rawElement);
   int wdFindElementsById(Pointer driver, Pointer element, WString string, PointerByReference elements);
   int wdFindElementByLinkText(Pointer driver, Pointer element, WString string, PointerByReference rawElement);

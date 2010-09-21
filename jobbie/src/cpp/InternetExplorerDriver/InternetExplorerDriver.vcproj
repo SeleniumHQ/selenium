@@ -481,6 +481,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\sizzle.h"
+				>
+			</File>
+			<File
 				RelativePath=".\utils.h"
 				>
 			</File>
