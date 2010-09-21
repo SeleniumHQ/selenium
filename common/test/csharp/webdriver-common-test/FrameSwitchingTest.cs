@@ -241,5 +241,31 @@ namespace OpenQA.Selenium
             driver.SwitchTo().Frame("iframe1");
             Assert.AreEqual(driver.Url, url);
         }
+
+        [Test]
+        public void ShouldBeAbleToCarryOnWorkingIfTheFrameIsDeletedFromUnderUs()
+        {
+            driver.Url = deletingFrame;
+            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromMilliseconds(1000));
+            driver.SwitchTo().Frame("iframe1");
+            
+            IWebElement killIframe = driver.FindElement(By.Id("killIframe"));
+            killIframe.Click();
+
+            driver.SwitchTo().Frame(0);
+            IWebElement addIFrame = driver.FindElement(By.Id("addBackFrame"));
+            addIFrame.Click();
+
+            driver.SwitchTo().Frame("iframe1");
+            try
+            {
+                driver.FindElement(By.Id("checkbox"));
+            }
+            catch (WebDriverException web)
+            {
+                Assert.Fail("Could not find element after switching frame");
+            }
+
+        }
     }
 }

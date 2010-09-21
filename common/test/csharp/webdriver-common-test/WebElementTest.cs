@@ -91,6 +91,17 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        public void ShouldClearRenderedElement()
+        {
+            driver.Url = javascriptPage;
+
+            IRenderedWebElement textbox = (IRenderedWebElement)driver.FindElement(By.Id("keyUp"));
+            textbox.SendKeys("a@#$ç.ó");
+            textbox.Clear();
+            Assert.AreEqual("", textbox.Value);
+        }
+
+        [Test]
         public void ShouldSendKeysToElement() 
         {
             driver.Url = javascriptPage;

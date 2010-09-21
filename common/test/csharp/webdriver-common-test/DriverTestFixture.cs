@@ -47,6 +47,7 @@ namespace OpenQA.Selenium
         public string chinesePage = EnvironmentManager.Instance.UrlBuilder.WhereIs("cn-test.html");
         public string svgPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("svgPiechart.xhtml");
         public string dynamicPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("dynamic.html");
+        public string deletingFrame = EnvironmentManager.Instance.UrlBuilder.WhereIs("deletingFrame.htm");
 
         protected IWebDriver driver;
 

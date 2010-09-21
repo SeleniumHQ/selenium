@@ -298,4 +298,27 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
     driver.switchTo().frame("iframe1");
     assertThat(driver.getCurrentUrl(), equalTo(url));
   }
+  
+  @Ignore(SELENESE)
+  public void testShouldBeAbleToCarryOnWorkingIfTheFrameIsDeletedFromUnderUs()
+        {
+            driver.get(pages.deletingFrame);
+            
+            driver.switchTo().frame("iframe1");
+            
+            WebElement killIframe = driver.findElement(By.id("killIframe"));
+            killIframe.click();
+
+            driver.switchTo().frame(0);
+            WebElement addIFrame = driver.findElement(By.id("addBackFrame"));
+            addIFrame.click();
+
+            driver.switchTo().frame("iframe1");
+            try {
+                driver.findElement(By.id("checkbox"));
+            }
+            catch (WebDriverException web) {
+                fail("Could not find element after switching frame");
+            }
+        }
 }

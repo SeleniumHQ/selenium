@@ -44,6 +44,7 @@ public class Pages {
   public String dynamicPage;
   public String slowIframes;
   public String tables;
+  public String deletingFrame;
 
   public Pages(AppServer appServer) {
     simpleTestPage = appServer.whereIs("simpleTest.html");
@@ -70,5 +71,6 @@ public class Pages {
     dynamicPage = appServer.whereIs("dynamic.html");
     slowIframes = appServer.whereIs("slow_loading_iframes.html");
     tables = appServer.whereIs("tables.html");
+	deletingFrame = appServer.whereIs("deletingFrame.htm");
   }
 }
