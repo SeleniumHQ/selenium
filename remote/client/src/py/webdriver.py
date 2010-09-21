@@ -279,6 +279,10 @@ class WebDriver(object):
     def forward(self):
         """Goes forward in browser history."""
         self._execute(Command.GO_FORWARD)
+
+    def refresh(self):
+        """Refreshes the current page."""
+        self._execute(Command.REFRESH)
     # Options
     def get_cookies(self):
         """Gets all the cookies. Return a set of dicts."""
