@@ -205,6 +205,14 @@ module Selenium
           find_elements_by 'class name', class_name, parent
         end
 
+        def findElementByCssSelector(parent, selector)
+          find_element_by 'css selector', selector, parent
+        end
+
+        def findElementsByCssSelector(parent, selector)
+          find_elements_by 'css selector', selector, parent
+        end
+
         def findElementById(parent, id)
           find_element_by 'id', id, parent
         end

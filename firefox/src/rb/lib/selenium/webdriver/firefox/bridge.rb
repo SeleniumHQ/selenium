@@ -50,14 +50,6 @@ module Selenium
           execute :screenshot
         end
 
-        def findElementByCssSelector(parent, selector)
-          find_element_by 'css selector', selector, parent
-        end
-
-        def findElementsByCssSelector(parent, selector)
-          find_elements_by 'css selector', selector, parent
-        end
-
       end # Bridge
     end # Firefox
   end # WebDriver
