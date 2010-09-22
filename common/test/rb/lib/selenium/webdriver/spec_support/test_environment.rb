@@ -31,13 +31,9 @@ module Selenium
         def new_driver_instance
           if driver == :remote
             opts = {
-              :desired_capabilities => WebDriver::Remote::Capabilities.send(ENV['WD_REMOTE_BROWSER'] || 'firefox')
+              :desired_capabilities => WebDriver::Remote::Capabilities.send(ENV['WD_REMOTE_BROWSER'] || 'firefox'),
+              :url                  => remote_server.url
             }
-
-            if Platform.jruby?
-              # if we're running on JRuby, we're using in-process Jetty on this URL
-              opts.merge!(:url => "http://localhost:6000")
-            end
 
             WebDriver::Driver.for :remote, opts
           else
@@ -57,11 +53,16 @@ module Selenium
         end
 
         def remote_server
-          raise NotImplementedError, "no remote server implementation on MRI yet"
+          @remote_server ||= RemoteServer.new
         end
 
         def quit
           app_server.stop
+
+          if defined?(@remote_server)
+            @remote_server.stop
+          end
+
           @driver_instance = @app_server = @remote_server = nil
 
           Guards.report
@@ -73,24 +74,6 @@ module Selenium
 
         def url_for(filename)
           app_server.where_is filename
-        end
-
-        private
-
-        #
-        # wrap the driver instance in this for a quick and dirty debugging tool
-        #
-
-        def wrap_in_tracing_delegator(object)
-          delegator = Object.new
-
-          def delegator.method_missing(meth, *args, &blk)
-            p :meth => meth, :args => args
-            @delegate.send(meth, *args, &blk)
-          end
-
-          delegator.instance_variable_set("@delegate", object)
-          delegator
         end
 
       end # TestEnvironment

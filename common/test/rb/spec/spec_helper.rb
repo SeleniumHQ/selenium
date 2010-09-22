@@ -33,9 +33,6 @@ Spec::Runner.configure do |c|
 
   c.after(:suite) do
     GlobalTestEnv.driver_instance.quit
-    if GlobalTestEnv.driver == :remote
-      GlobalTestEnv.remote_server.stop
-    end
   end
 end
 

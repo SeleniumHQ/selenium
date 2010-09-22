@@ -111,8 +111,12 @@ module Selenium
         Process.kill('KILL', @pid)
       end
 
+      def started?
+        !!@pid
+      end
+
       def assert_started
-        raise Error::WebDriverError, "process not started" unless @pid
+        raise Error::WebDriverError, "process not started" unless started?
       end
 
       module WindowsProcess
@@ -192,8 +196,8 @@ module Selenium
           nil
         end
 
-        def assert_started
-          raise Error::WebDriverError, "process not started" unless @process
+        def started?
+          !!@process
         end
       end
 
@@ -233,8 +237,8 @@ module Selenium
           @process.ExitCode
         end
 
-        def assert_started
-          raise Error::WebDriverError, "process not started" unless @process
+        def started?
+          !!@process
         end
       end
 

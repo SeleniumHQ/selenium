@@ -1,3 +1,4 @@
+require "selenium/webdriver/spec_support/remote_server"
 require "selenium/webdriver/spec_support/test_environment"
 require "selenium/webdriver/spec_support/jruby_test_environment"
 require "selenium/webdriver/spec_support/guards"
