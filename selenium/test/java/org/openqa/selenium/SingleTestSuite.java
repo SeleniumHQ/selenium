@@ -39,7 +39,7 @@ public class SingleTestSuite extends TestCase {
   private static final String SELENIUM = "org.openqa.selenium.SeleneseBackedWebDriver";
 
   public static Test suite() throws Exception {
-    String driver = REMOTE;
+    String driver = SELENIUM;
 
     System.setProperty("webdriver.development", "true");
     System.setProperty("jna.library.path", "..\\build;build");
@@ -54,10 +54,10 @@ public class SingleTestSuite extends TestCase {
         .usingDriver(driver)
         .keepDriverInstance()
         .includeJavascriptTests()
-        .onlyRun("ElementFindingTest")
-//        .method("testShouldNotFindElementsByClassWhenTheNameQueriedIsShorterThanCandidateName")
+        .onlyRun("FrameSwitchingTest")
+//        .method("testShouldContinueToReferToTheSameFrameOnceItHasBeenSelected")
         .exclude(ALL)
-        .exclude(Ignore.Driver.FIREFOX)
+//        .exclude(Ignore.Driver.FIREFOX)
         .outputTestNames()
         .leaveRunning()
         ;  // Yeah, this look strange :)

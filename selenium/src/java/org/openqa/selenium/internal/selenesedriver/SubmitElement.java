@@ -25,9 +25,10 @@ import java.util.Map;
 public class SubmitElement extends ElementFunction<Void> {
 
   public Void apply(Selenium selenium, Map<String, ?> args) {
-    String locator = getLocator(args);
+    String locator = getLocator(args).replace("'", "\\'");
 
     String eval = submitJs.replace("LOCATOR", locator);
+
     String result = selenium.getEval(eval);
 
     if (!"true".equals(result)) {

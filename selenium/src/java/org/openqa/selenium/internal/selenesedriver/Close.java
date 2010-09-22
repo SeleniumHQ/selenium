@@ -15,20 +15,16 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package org.openqa.selenium.internal.seleniumemulation;
 
-import org.openqa.selenium.WebDriver;
+package org.openqa.selenium.internal.selenesedriver;
 
-public class SelectFrame extends SeleneseCommand<Void> {
-  private final Windows windows;
+import java.util.Map;
 
-  public SelectFrame(Windows windows) {
-    this.windows = windows;
-  }
+import com.thoughtworks.selenium.Selenium;
 
-  @Override
-  protected Void handleSeleneseCommand(WebDriver driver, String locator, String ignored) {
-    windows.selectFrame(driver, locator);
+public class Close implements SeleneseFunction<Void> {
+  public Void apply(Selenium selenium, Map<String, ?> args) {
+    selenium.close();
 
     return null;
   }
