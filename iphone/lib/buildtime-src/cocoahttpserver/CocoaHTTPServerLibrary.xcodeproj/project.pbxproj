@@ -263,7 +263,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cp \"${SRCROOT}/project/HTTPResponse.h\" \"${SRCROOT}/project/HTTPConnection.m\" \"${PATCHED_CODE}/\npatch\" -N -d \"${PATCHED_CODE}\" -p1 <\"${PROJECT_DIR}/extensions/redirect_and_error.patch\" || true";
+			shellScript = "cp \"${SRCROOT}/project/HTTPResponse.h\" \"${SRCROOT}/project/HTTPConnection.m\" \"${PATCHED_CODE}/\"\npatch -N -d \"${PATCHED_CODE}\" -p1 < \"${PROJECT_DIR}/extensions/redirect_and_error.patch\" || true";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -326,7 +326,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				PREBINDING = NO;
-				SDKROOT = iphoneos3.1.2;
+				SDKROOT = iphonesimulator3.2;
 				VALID_ARCHS = "x86_64 i386 armv6 armv7";
 			};
 			name = Debug;
