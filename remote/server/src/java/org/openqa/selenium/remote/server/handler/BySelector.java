@@ -27,6 +27,8 @@ public class BySelector {
   public By pickFrom(String method, String selector) {
     if ("class name".equals(method)) {
       return By.className(selector);
+    } else if ("css selector".equals(method)) {
+      return By.cssSelector(selector);
     } else if ("id".equals(method)) {
       return By.id(selector);
     } else if ("link text".equals(method)) {
