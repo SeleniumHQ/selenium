@@ -399,14 +399,14 @@ public class ElementFindingTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({HTMLUNIT, REMOTE})
+  @Ignore({HTMLUNIT, REMOTE, SELENESE})
   public void testShouldBeAbleToFindAnElementByCssSelector() {
     driver.get(pages.xhtmlTestPage);
     driver.findElement(By.cssSelector("div.content"));
   }
 
   @JavascriptEnabled
-  @Ignore({HTMLUNIT, REMOTE})
+  @Ignore({HTMLUNIT, REMOTE, SELENESE})
   public void testShouldBeAbleToFindAnElementsByCssSelector() {
     driver.get(pages.xhtmlTestPage);
     driver.findElements(By.cssSelector("p"));

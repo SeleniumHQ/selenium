@@ -207,7 +207,7 @@ public class ChildrenFindingTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({HTMLUNIT, REMOTE})
+  @Ignore({HTMLUNIT, REMOTE, SELENESE})
   public void testShouldBeAbleToFindAnElementByCssSelector() {
     driver.get(pages.nestedPage);
     WebElement parent = driver.findElement(By.name("form2"));
@@ -218,7 +218,7 @@ public class ChildrenFindingTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {CHROME, HTMLUNIT, REMOTE}, reason = "Chrome doesn't handle the many-pages situation well")
+  @Ignore(value = {CHROME, HTMLUNIT, REMOTE, SELENESE}, reason = "Chrome doesn't handle the many-pages situation well")
   public void testShouldBeAbleToFindAnElementsByCssSelector() {
     driver.get(pages.nestedPage);
     WebElement parent = driver.findElement(By.name("form2"));
