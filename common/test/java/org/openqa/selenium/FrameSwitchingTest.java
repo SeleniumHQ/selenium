@@ -28,12 +28,14 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.openqa.selenium.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.FIREFOX;
+import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 
 @Ignore(IPHONE)
 public class FrameSwitchingTest extends AbstractDriverTestCase {
+  private static final int TIMEOUT = 4000;
 
   @Override
   protected void tearDown() throws Exception {
@@ -299,7 +301,8 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
     assertThat(driver.getCurrentUrl(), equalTo(url));
   }
   
-  @Ignore({SELENESE, IE})
+  @Ignore(value = {SELENESE, IE, HTMLUNIT}, reason = "Appears to uncover an HtmlUnit bug")
+  @JavascriptEnabled
   public void testShouldBeAbleToCarryOnWorkingIfTheFrameIsDeletedFromUnderUs() {
     driver.get(pages.deletingFrame);
 
@@ -308,16 +311,33 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
     WebElement killIframe = driver.findElement(By.id("killIframe"));
     killIframe.click();
 
-    driver.switchTo().frame(0);
+    assertFrameNotPresent(driver, "iframe1");
+
+    driver.switchTo().defaultContent();
     WebElement addIFrame = driver.findElement(By.id("addBackFrame"));
     addIFrame.click();
 
     driver.switchTo().frame("iframe1");
+
     try {
       driver.findElement(By.id("checkbox"));
     }
     catch (WebDriverException web) {
       fail("Could not find element after switching frame");
     }
+  }
+
+  private void assertFrameNotPresent(WebDriver driver, String locator) {
+    long end = System.currentTimeMillis() + TIMEOUT;
+
+    while (System.currentTimeMillis() < end) {
+      try {
+        driver.switchTo().frame(locator);
+      } catch (NoSuchFrameException e) {
+        return;
+      }
+    }
+
+    fail("Frame did not disappear");
   }
 }
