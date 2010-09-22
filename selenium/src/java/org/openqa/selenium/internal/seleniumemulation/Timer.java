@@ -26,6 +26,7 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import com.google.common.base.Throwables;
 import com.thoughtworks.selenium.SeleniumException;
 
 public class Timer {
@@ -49,10 +50,9 @@ public class Timer {
       throw new SeleniumException("Timed out waiting for action to finish", e);
     } catch (ExecutionException e) {
       Throwable cause = e.getCause();
-      if (cause instanceof RuntimeException) {
-        throw (RuntimeException) cause;
-      }
-      throw new RuntimeException(cause);
+      Throwable toThrow = rebuildStackTrace(cause);
+
+      throw Throwables.propagate(toThrow);
     } catch (TimeoutException e) {
       throw new SeleniumException("Timed out waiting for action to finish", e);
     }
@@ -69,5 +69,14 @@ public class Timer {
     } catch (InterruptedException e) {
       // There is nothing sensible to do.
     }
+  }
+
+  private Throwable rebuildStackTrace(Throwable cause) {
+    Throwable originalCause = cause.getCause();
+    RuntimeException rte = new RuntimeException("Original stack trace of cause follows", originalCause);
+    rte.setStackTrace(cause.getStackTrace());
+    cause.initCause(rte);
+    cause.fillInStackTrace();
+    return cause;
   }
 }
