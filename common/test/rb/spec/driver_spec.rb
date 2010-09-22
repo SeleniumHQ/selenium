@@ -76,15 +76,9 @@ describe "Driver" do
       driver.find_element(:xpath, "//h1").text.should == "XHTML Might Be The Future"
     end
 
-    not_compliant_on :driver => [:ie, :remote] do
-      it "should find by css selector" do
-        if driver.browser == :firefox && driver.capabilities.version < "3.5"
-          pending "needs Firefox >= 3.5"
-        end
-
-        driver.navigate.to url_for("xhtmlTest.html")
-        driver.find_element(:css, "div.content")
-      end
+    it "should find by css selector" do
+      driver.navigate.to url_for("xhtmlTest.html")
+      driver.find_element(:css, "div.content")
     end
 
     it "should find by tag name" do
@@ -134,15 +128,9 @@ describe "Driver" do
       driver.find_elements(:class, "nameC").should have(2).things
     end
 
-    not_compliant_on :driver => [:ie, :remote] do
-      it "should find by css selector" do
-        if driver.browser == :firefox && driver.capabilities.version < "3.5"
-          pending "needs Firefox >= 3.5"
-        end
-
-        driver.navigate.to url_for("xhtmlTest.html")
-        driver.find_elements(:css, 'p')
-      end
+    it "should find by css selector" do
+      driver.navigate.to url_for("xhtmlTest.html")
+      driver.find_elements(:css, 'p')
     end
 
     it "should find children by field name" do
