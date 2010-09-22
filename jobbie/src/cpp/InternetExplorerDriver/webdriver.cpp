@@ -1159,6 +1159,7 @@ int wdFindElementByCss(WebDriver* driver, WebElement* element, const wchar_t* se
 				script += L"\n";
 			}
 			script += L"var root = arguments[1] ? arguments[1] : document.documentElement;";
+			script += L"if (root['querySelector']) { return root.querySelector(arguments[0]); } ";
 			script += L"var results = []; Sizzle(arguments[0], root, results);";
 			script += L"return results.length > 0 ? results[0] : null;";
 			script += L"};})();";
@@ -1225,6 +1226,7 @@ int wdFindElementsByCss(WebDriver* driver, WebElement* element, const wchar_t* s
 				script += L"\n";
 			}
 			script += L"var root = arguments[1] ? arguments[1] : document.documentElement;";
+			script += L"if (root['querySelectorAll']) { return root.querySelectorAll(arguments[0]); } ";
 			script += L"var results = []; Sizzle(arguments[0], root, results);";
 			script += L"return results;";
 			script += L"};})();";
