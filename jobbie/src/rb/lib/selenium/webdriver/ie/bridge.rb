@@ -223,8 +223,6 @@ module Selenium
         #
 
         def findElementByClassName(parent, class_name)
-          # TODO: argument checks
-
           create_element do |raw_element|
             check_error_code Lib.wdFindElementByClassName(@driver_pointer, parent, wstring_ptr(class_name), raw_element),
                              "unable to find element by class name using #{class_name.inspect}"
@@ -232,11 +230,23 @@ module Selenium
         end
 
         def findElementsByClassName(parent, class_name)
-          # TODO: argument checks
-
           create_element_collection do |raw_elements|
             check_error_code Lib.wdFindElementsByClassName(@driver_pointer, parent, wstring_ptr(class_name), raw_elements),
                              "unable to find elements by class name using #{class_name.inspect}"
+          end
+        end
+
+        def findElementByCssSelector(parent, selector)
+          create_element do |raw_element|
+            check_error_code Lib.wdFindElementByCss(@driver_pointer, parent, wstring_ptr(selector), raw_element),
+                             "unable to find element by css selector using #{selector.inspect}"
+          end
+        end
+
+        def findElementsByCssSelector(parent, selector)
+          create_element_collection do |raw_elements|
+            check_error_code Lib.wdFindElementsByCss(@driver_pointer, parent, wstring_ptr(selector), raw_elements),
+                             "unable to find elements by css selector using #{selector.inspect}"
           end
         end
 

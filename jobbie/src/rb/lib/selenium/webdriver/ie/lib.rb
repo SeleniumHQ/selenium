@@ -49,6 +49,7 @@ module Selenium
         attach_function :wdExecuteScript,                     [:pointer, :pointer, :pointer, :pointer                     ], :int
         attach_function :wdeFreeElement,                      [:pointer                                                   ], :int
         attach_function :wdFindElementByClassName,            [:pointer, :pointer, :pointer, :pointer                     ], :int
+        attach_function :wdFindElementByCss,                  [:pointer, :pointer, :pointer, :pointer                     ], :int
         attach_function :wdFindElementById,                   [:pointer, :pointer, :pointer, :pointer                     ], :int
         attach_function :wdFindElementByLinkText,             [:pointer, :pointer, :pointer, :pointer                     ], :int
         attach_function :wdFindElementByName,                 [:pointer, :pointer, :pointer, :pointer                     ], :int
@@ -56,6 +57,7 @@ module Selenium
         attach_function :wdFindElementByTagName,              [:pointer, :pointer, :pointer, :pointer                     ], :int
         attach_function :wdFindElementByXPath,                [:pointer, :pointer, :pointer, :pointer                     ], :int
         attach_function :wdFindElementsByClassName,           [:pointer, :pointer, :pointer, :pointer                     ], :int
+        attach_function :wdFindElementsByCss,                 [:pointer, :pointer, :pointer, :pointer                     ], :int
         attach_function :wdFindElementsById,                  [:pointer, :pointer, :pointer, :pointer                     ], :int
         attach_function :wdFindElementsByLinkText,            [:pointer, :pointer, :pointer, :pointer                     ], :int
         attach_function :wdFindElementsByName,                [:pointer, :pointer, :pointer, :pointer                     ], :int
