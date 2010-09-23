@@ -54,7 +54,7 @@ public class IsTextPresent extends SeleneseCommand<Boolean> {
     String strategyName = "implicit";
     String use = pattern;
     Matcher matcher = TEXT_MATCHING_STRATEGY_AND_VALUE_PATTERN.matcher(pattern);
-    if (matcher.matches()) {
+    if (matcher.matches() && textMatchingStrategies.containsKey(matcher.group(1))) {
       strategyName = matcher.group(1);
       use = matcher.group(2);
     }
