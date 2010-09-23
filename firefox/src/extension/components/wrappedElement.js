@@ -646,31 +646,16 @@ FirefoxDriver.prototype.getElementLocationOnceScrolledIntoView = function(
     // Element doesn't have an accessibility node. Fall through
   }
 
-  // If we have the box object (which is deprecated) we could try using it
-  var theDoc = respond.session.getDocument();
-  if (theDoc.getBoxObjectFor) {
-    // Fallback. Use the (deprecated) method to find out where the element is in
-    // the viewport. This should be fine to use because we only fall down this
-    // code path on older versions of Firefox (I think!)
-
-    var box = theDoc.getBoxObjectFor(element);
-
-    respond.value = {
-      x : box.screenX,
-      y : box.screenY
-    };
-    respond.send();
-  }
-
+  Utils.dumpn("Guessing location once scrolled into view");
   // Fine. Come up with a good guess. This should be the element location
   // added to the current window location. It'll probably be off
   var x = theDoc.defaultView.screenX;
   var y = theDoc.defaultView.screenY;
 
-  var rect = element.getBoundingClientRect()
+  var rect = element.getBoundingClientRect();
   respond.value = {
     x : x + rect.left,
     y : y + rect.top  
-  }
+  };
   respond.send();
 };
