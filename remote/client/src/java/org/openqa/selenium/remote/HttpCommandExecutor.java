@@ -185,27 +185,36 @@ public class HttpCommandExecutor implements CommandExecutor {
   }
 
   public Response execute(Command command) throws IOException {
-    CommandInfo info = nameToUrl.get(command.getName());
-    HttpUriRequest httpMethod = info.getMethod(remoteServer, command);
-
-    setAcceptHeader(httpMethod);
-
-    if (httpMethod instanceof HttpPost) {
-      String payload = new BeanToJsonConverter().convert(command.getParameters());
-      ((HttpPost) httpMethod).setEntity(new StringEntity(payload, "utf-8"));
-      httpMethod.addHeader("Content-Type", "application/json; charset=utf-8");
-    }
-
-    HttpResponse response = null;
     HttpContext context = new BasicHttpContext();
-    long intermediate = 0;
+
+    CommandInfo info = nameToUrl.get(command.getName());
     try {
+      HttpUriRequest httpMethod = info.getMethod(remoteServer, command);
+
+      setAcceptHeader(httpMethod);
+
+      if (httpMethod instanceof HttpPost) {
+        String payload = new BeanToJsonConverter().convert(command.getParameters());
+        ((HttpPost) httpMethod).setEntity(new StringEntity(payload, "utf-8"));
+        httpMethod.addHeader("Content-Type", "application/json; charset=utf-8");
+      }
+
+      long intermediate = 0;
+      HttpResponse response = null;
       response = client.execute(targetHost, httpMethod, context);
 
       response = followRedirects(client, context, response, /* redirect count */0);
       intermediate = System.currentTimeMillis();
 
       return createResponse(response, context);
+    } catch (NullPointerException e) {
+      // swallow an NPE on quit. It indicates that the sessionID is null
+      // which is what we expect to be the case.
+      if (QUIT.equals(command.getName())) {
+        return new Response();
+      } else {
+        throw e;
+      }
     } finally {
       releaseConnection(context);
     }
@@ -328,6 +337,11 @@ public class HttpCommandExecutor implements CommandExecutor {
   // I can't help but feel that this is less helpful than it could be
   private void releaseConnection(HttpContext context) throws IOException {
     HttpUriRequest request = (HttpUriRequest) context.getAttribute(ExecutionContext.HTTP_REQUEST);
+
+    if (request == null) {
+      return;
+    }
+
     if (request instanceof RequestWrapper) {
       request = (HttpUriRequest) ((RequestWrapper) request).getOriginal();
     }

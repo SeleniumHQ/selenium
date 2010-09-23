@@ -409,8 +409,15 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
     }
   }
 
+  public void testCanCallQuitTwiceWithoutThrowingAnException() {
+    WebDriver instance = newFirefoxDriver();
+
+    instance.quit();
+    instance.quit();
+  }
+
   private WebDriver newFirefoxDriver() {
-    return newFirefoxDriver(null);
+    return newFirefoxDriver(new FirefoxProfile());
   }
 
   private WebDriver newFirefoxDriver(FirefoxProfile profile) {
