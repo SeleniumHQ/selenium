@@ -276,11 +276,7 @@ public class WebDriverCommandProcessor implements CommandProcessor {
       throw new UnsupportedOperationException(commandName);
     }
 
-    return timer.run(new Callable<Object>() {
-      public Object call() throws Exception {
-        return command.apply(driver, args);
-      }
-    });
+    return timer.run(command, driver, args);
   }
 
   public void addMutator(ScriptMutator mutator) {

@@ -2,8 +2,8 @@ package org.openqa.selenium.internal.seleniumemulation;
 
 import junit.framework.TestCase;
 
-import java.util.concurrent.Callable;
-import java.util.concurrent.RejectedExecutionException;
+import com.thoughtworks.selenium.SeleniumException;
+import org.openqa.selenium.WebDriver;
 
 public class TimerTest extends TestCase {
 
@@ -11,16 +11,47 @@ public class TimerTest extends TestCase {
     Timer timer = new Timer(250);
     timer.stop();
     try {
-      timer.run(new Callable<Void>() {
-        public Void call() throws Exception {
-          return null;
-        }
-      });
+      timer.run(new SeleneseCallable(5), null, new String[0]);
       fail();
-    } catch (RuntimeException ex) {
-      Throwable cause = ex.getCause();
-      assertNotNull(cause);
-      assertTrue(cause instanceof RejectedExecutionException);
+    } catch (IllegalStateException ex) {
+      // expected
+    }
+  }
+
+  public void testShouldTimeOut() throws Exception {
+    Timer timer = new Timer(10);
+    try {
+      timer.run(new SeleneseCallable(60), null, new String[0]);
+    } catch (SeleniumException e) {
+      timer.stop();
+      return;
+    }
+    fail("Expecting timeout");
+  }
+
+
+  public void testShouldNotTimeOut() throws Exception {
+    Timer timer = new Timer(200);
+    timer.run(new SeleneseCallable(10), null, new String[0]);
+    timer.stop();
+  }
+
+
+  class SeleneseCallable extends SeleneseCommand<Object> {
+    final int waitFor;
+
+    SeleneseCallable(int waitFor) {
+      this.waitFor = waitFor;
+    }
+
+    @Override
+    protected Object handleSeleneseCommand(WebDriver driver, String locator, String value) {
+      try {
+        Thread.sleep(waitFor);
+      } catch (InterruptedException e) {
+        throw new RuntimeException(e);
+      }
+      return new Object();
     }
   }
 }
