@@ -22,6 +22,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -42,7 +43,16 @@ public class Timer {
   }
 
   public <T> T run(Callable<T> evaluate) {
-    Future<T> future = executor.submit(evaluate);
+    Future<T> future;
+    try {
+      future = executor.submit(evaluate);
+    } catch (RejectedExecutionException e) {
+      // This should only ever happen the user tries to do something with Selenium after calling
+      // stop. Since this RejectedExecutionException is really vague, rethrow it with a more
+      // explicit message.
+      throw new RuntimeException(
+          "Illegal attempt to execute a command after calling stop()", e);
+    }
 
     try {
       return future.get(timeout, TimeUnit.MILLISECONDS);
@@ -71,6 +81,7 @@ public class Timer {
     }
   }
 
+  @SuppressWarnings({"ThrowableInstanceNeverThrown"})
   private Throwable rebuildStackTrace(Throwable cause) {
     Throwable originalCause = cause.getCause();
     RuntimeException rte = new RuntimeException("Original stack trace of cause follows", originalCause);
