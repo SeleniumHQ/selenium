@@ -182,22 +182,22 @@ public class SeleneseTestBase {
             assertEquals((String)s1, (String[])s2);
         } else if (s1 instanceof String && s2 instanceof Number) {
             assertEquals((String)s1, ((Number)s2).toString());
-        }
-        else {
-            if (s1 instanceof String[] && s2 instanceof String[]) {
-                
-                String[] sa1 = (String[]) s1;
-                String[] sa2 = (String[]) s2;
-                if (sa1.length!=sa2.length) {
-                    throw new Error("Expected " + sa1 + " but saw " + sa2);
-                }
-                for (int j = 0; j < sa1.length; j++) {
-                    assertEquals(sa1[j], sa2[j]);
-                }
+        } else if (s1 instanceof String[] && s2 instanceof String[]) {
+            String[] sa1 = (String[]) s1;
+            String[] sa2 = (String[]) s2;
+            if (sa1.length!=sa2.length) {
+                throw new Error("Expected " + sa1 + " but saw " + sa2);
             }
+            for (int j = 0; j < sa1.length; j++) {
+                assertEquals(sa1[j], sa2[j]);
+            }
+        } else if (s1 == null) {
+            assertTrue(s2 == null);
+        } else {
+            assertTrue(s1.equals(s2));
         }
     }
-    
+
     /** Like JUnit's Assert.assertEquals, but handles "regexp:" strings like HTML Selenese */ 
     public static void assertEquals(String s1, String s2) {
         assertTrue("Expected \"" + s1 + "\" but saw \"" + s2 + "\" instead", seleniumEquals(s1, s2));
