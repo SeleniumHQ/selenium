@@ -31,7 +31,7 @@ FirefoxDriver.prototype.clickElement = function(respond, parameters) {
   var element = Utils.getElementAt(parameters.id,
                                    respond.session.getDocument());
 
-  if (!Utils.isDisplayed(element, true) && !Utils.isInHead(element)) {
+  if (!bot.dom.isShown(element) && !Utils.isInHead(element)) {
     throw new WebDriverError(ErrorCode.ELEMENT_NOT_VISIBLE,
         "Element is not currently visible and so may not be clicked");
   }
@@ -209,7 +209,7 @@ FirefoxDriver.prototype.sendKeysToElement = function(respond, parameters) {
   var element = Utils.getElementAt(parameters.id,
                                    respond.session.getDocument());
 
-  if (!Utils.isDisplayed(element, true) && !Utils.isInHead(element)) {
+  if (!bot.dom.isShown(element) && !Utils.isInHead(element)) {
     throw new WebDriverError(ErrorCode.ELEMENT_NOT_VISIBLE,
         "Element is not currently visible and so may not be used for typing");
   }
@@ -241,7 +241,7 @@ FirefoxDriver.prototype.clearElement = function(respond, parameters) {
   var element = Utils.getElementAt(parameters.id,
                                    respond.session.getDocument());
 
-  if (!Utils.isDisplayed(element, true) && !Utils.isInHead(element)) {
+  if (!bot.dom.isShown(element) && !Utils.isInHead(element)) {
     throw new WebDriverError(ErrorCode.ELEMENT_NOT_VISIBLE,
         "Element is not currently visible and so may not be cleared");
   }
@@ -388,7 +388,7 @@ FirefoxDriver.prototype.setElementSelected = function(respond, parameters) {
   var element = Utils.getElementAt(parameters.id,
                                    respond.session.getDocument());
 
-  if (!Utils.isDisplayed(element, true) && !Utils.isInHead(element)) {
+  if (!bot.dom.isShown(element) && !Utils.isInHead(element)) {
     throw new WebDriverError(ErrorCode.ELEMENT_NOT_VISIBLE,
         "Element is not currently visible and so may not be selected");
   }
@@ -457,7 +457,7 @@ FirefoxDriver.prototype.toggleElement = function(respond, parameters) {
   var element = Utils.getElementAt(parameters.id,
                                    respond.session.getDocument());
 
-  if (!Utils.isDisplayed(element) && !Utils.isInHead(element)) {
+  if (!bot.dom.isShown(element) && !Utils.isInHead(element)) {
     throw new WebDriverError(ErrorCode.ELEMENT_NOT_VISIBLE,
         "Element is not currently visible and so may not be toggled");
   }
@@ -542,7 +542,7 @@ FirefoxDriver.prototype.dragElement = function(respond, parameters) {
   var element = Utils.getElementAt(parameters.id,
                                    respond.session.getDocument());
 
-  if (!Utils.isDisplayed(element, true) && !Utils.isInHead(element)) {
+  if (!bot.dom.isShown(element) && !Utils.isInHead(element)) {
     throw new WebDriverError(ErrorCode.ELEMENT_NOT_VISIBLE,
         "Element is not currently visible and so may not be used for " +
         "drag and drop");
@@ -618,7 +618,7 @@ FirefoxDriver.prototype.getElementLocationOnceScrolledIntoView = function(
   var element = Utils.getElementAt(parameters.id,
                                    respond.session.getDocument());
 
-  if (!Utils.isDisplayed(element, true)) {
+  if (!bot.dom.isShown(element)) {
     respond.value = undefined;
     respond.send();
     return;

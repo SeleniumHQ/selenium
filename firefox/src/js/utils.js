@@ -187,49 +187,6 @@ Utils.isInHead = function(element) {
 
 
 /**
- * Checks that the element is not hidden by dimensions or CSS
- */
-Utils.isDisplayed = function(element, scrollIfNecessary) {
-  // Ensure that we're dealing with an element.
-  var el = element;
-  while (el.nodeType != 1 && !(el.nodeType >= 9 && el.nodeType <= 11)) {
-    el = el.parentNode;
-  }
-
-  if (!el) {
-    return false;
-  }
-
-  // Hidden input elements are, by definition, never displayed
-  if (el.tagName == "input" && el.type == "hidden") {
-    return false;
-  }
-
-  var box = scrollIfNecessary ? Utils.getLocationOnceScrolledIntoView(el) : Utils.getLocation(el);
-  // Elements with zero width or height are never displayed
-  if (box.width == 0 || box.height == 0) {
-    return false;
-  }
-
-  var visibility = Utils.getStyleProperty(el, "visibility");
-
-  var _isDisplayed = function(e) {
-    var display = e.ownerDocument.defaultView.getComputedStyle(e, null).
-        getPropertyValue("display");
-    if (display == "none") return display;
-    if (e && e.parentNode && e.parentNode.style) {
-      return _isDisplayed(e.parentNode);
-    }
-    return undefined;
-  };
-
-  var displayed = _isDisplayed(el);
-
-  return displayed != "none" && visibility != "hidden";
-};
-
-
-/**
  * Gets the computed style of a DOM {@code element}. If the computed style is
  * inherited from the element's parent, the parent will be queried for its
  * style value. If the style value is an RGB color string, it will be converted
