@@ -27,7 +27,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.google.common.collect.Maps;
-import com.google.common.io.Files;
+import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.Proxy.ProxyType;
 import org.openqa.selenium.WebDriverException;
@@ -456,12 +456,12 @@ public class FirefoxProfile {
     }
   }
 
-  protected void copyModel(File source, File profileDir) throws IOException {
-    if (source == null || !source.exists()) {
+  protected void copyModel(File sourceDir, File profileDir) throws IOException {
+    if (sourceDir == null || !sourceDir.exists()) {
       return;
     }
 
-    Files.copy(source, profileDir);
+    FileUtils.copyDirectory(sourceDir, profileDir);
   }
 
   protected void installExtensions(File parentDir) throws IOException {
