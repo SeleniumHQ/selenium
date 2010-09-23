@@ -264,4 +264,14 @@ public class TextHandlingTest extends AbstractDriverTestCase {
     assertEquals("", empty);
     assertEquals("sub-element that is explicitly visible", explicit);
   }
+
+  public void testShouldGetTextFromTableCells() {
+    driver.get(pages.tables);
+
+    WebElement tr = driver.findElement(By.id("hidden_text"));
+    String text = tr.getText();
+
+    assertTrue(text.contains("some text"));
+    assertFalse(text.contains("some more text"));
+  }
 }
