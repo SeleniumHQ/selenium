@@ -45,7 +45,7 @@ module Selenium
         end
         
         def path
-          @path ||= File.expand_path("#{File.dirname(__FILE__)}/../../../../../../../build/remote/server/server-standalone.jar")
+          @path ||= File.expand_path("../../../../../../build/remote/server/server-standalone.jar", __FILE__)
         end
       end
       

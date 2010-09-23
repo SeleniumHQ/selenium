@@ -52,31 +52,7 @@ rake_file(
   name = "remote_runner_html",
   src = "src/js/core/RemoteRunner.html")
   
-ruby_library(name = "common",
-  srcs = [ "src/rb/lib/**/*.rb", "src/rb/CHANGES", "src/rb/README" ]
-)
 
-rubydocs(
-  files = [
-    "{chrome,common,firefox,jobbie,remote/client}/src/rb/lib/**/*.rb",
-    "common/src/rb/CHANGES"
-  ],
-  readme = "common/src/rb/README",
-  output_dir = "build/rubydocs"
-)
-
-rubygem(
-  version = "0.0.28",
-  name = "selenium-webdriver",
-  dir = "build/ruby",
-  deps = [
-    "//chrome:ruby",
-    "//common:ruby",
-    "//firefox:ruby",
-    "//jobbie:ruby",
-    "//remote/client:ruby"
-  ]
-)
 
 # Only add fragments that we actually use.
 js_fragment(name = "wd_get_attribute",

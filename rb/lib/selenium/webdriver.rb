@@ -24,24 +24,8 @@ unless have_lib["yajl/json_gem"] || have_lib["json"]
   END
 end
 
+require "selenium/webdriver/common"
 
-require "selenium/webdriver/core_ext/dir"
-require "selenium/webdriver/core_ext/string"
-require "selenium/webdriver/error"
-require "selenium/webdriver/platform"
-require "selenium/webdriver/child_process"
-require "selenium/webdriver/file_reaper"
-require "selenium/webdriver/zip_helper"
-require "selenium/webdriver/target_locator"
-require "selenium/webdriver/navigation"
-require "selenium/webdriver/timeouts"
-require "selenium/webdriver/options"
-require "selenium/webdriver/find"
-require "selenium/webdriver/driver_extensions/takes_screenshot"
-require "selenium/webdriver/keys"
-require "selenium/webdriver/bridge_helper"
-require "selenium/webdriver/driver"
-require "selenium/webdriver/element"
 
 module Selenium
   module WebDriver

@@ -13,26 +13,6 @@ java_test(name = "test",
     "//common:test"
 ])
 
-ruby_library(name = "chrome",
-  srcs = ["src/rb/lib/**/*.rb"],
-  resources = [
-    {":chrome_extension" :  "lib/selenium/webdriver/chrome/extension.zip"}
-  ],
-  deps = [
-    "//common:ruby",
-    "//remote/client:ruby"
-  ]
-)
-
-ruby_test(name = "chrome",
-  srcs = [
-    "common/test/rb/spec/**/*_spec.rb",
-    "chrome/test/rb/spec/**/*_spec.rb"
-  ],
-  include = [ "build/ruby/lib" ],
-  deps = [ ":ruby"  ]
-)
-
 mozilla_extension(name = "chrome_extension",
   srcs  = [ "src/extension/**" ],
   resources = [

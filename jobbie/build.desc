@@ -21,24 +21,6 @@ java_test(name = "test",
     "//common:test"
 ])
 
-ruby_library(name = "ie",
-  srcs = [ "src/rb/lib/**/*.rb" ],
-  resources = [
-    {":ie_win32_dll" : "lib/selenium/webdriver/ie/native/win32/InternetExplorerDriver.dll"},
-    {":ie_x64_dll" : "lib/selenium/webdriver/ie/native/x64/InternetExplorerDriver.dll"}
-  ],
-  deps = [ "//common:ruby" ]
-)
-
-ruby_test(name = "ie",
-  srcs = [
-    "common/test/rb/spec/**/*_spec.rb",
-    "jobbie/test/rb/spec/**/*_spec.rb"
-  ],
-  include = ["build/ruby/lib"],
-  deps = [ ":ruby" ]
-)
-
 rake_task(name = "atoms",
   task_name = "atomic_header",
   out = "jobbie/src/cpp/InternetExplorerDriver/atoms.h")

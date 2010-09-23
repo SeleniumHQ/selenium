@@ -1,18 +1,29 @@
 require "spec"
 require "selenium-webdriver"
-require "selenium/webdriver/spec_support"
+require "selenium/webdriver/support/remote_server"
+require "selenium/webdriver/support/test_environment"
+require "selenium/webdriver/support/jruby_test_environment"
+require "selenium/webdriver/support/guards"
+require "selenium/webdriver/support/helpers"
+
+module Selenium
+  module WebDriver
+    module SpecSupport
+      autoload :RackServer, "selenium/webdriver/spec_support/rack_server"
+    end
+  end
+end
 
 include Selenium
 
 if WebDriver::Platform.jruby?
   require "java"
 
-  jars = [
+  [
     Dir["build/**/*.jar"],
     Dir["third_party/java/{jetty,servlet-api}/*.jar"]
-  ].flatten
+  ].flatten.each { |jar| require jar }
 
-  jars.each { |jar| require jar }
 
   GlobalTestEnv = WebDriver::SpecSupport::JRubyTestEnvironment.new
 else

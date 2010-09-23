@@ -1,0 +1,123 @@
+rubygem(
+  version = "0.0.28",
+  name = "selenium-webdriver",
+  dir = "build/rb",
+  deps = [
+    "//rb:chrome",
+    "//rb:common",
+    "//rb:firefox",
+    "//rb:ie",
+    "//rb:remote"
+  ]
+)
+
+rubydocs(
+  files = [
+    "rb/lib/**/*.rb",
+    "CHANGES"
+  ],
+  readme = "rb/README",
+  output_dir = "build/rubydocs"
+)
+
+ruby_library(name = "common",
+  srcs = [ 
+    "lib/selenium/webdriver/common/**/*.rb", 
+    "lib/selenium/webdriver/common.rb", 
+    "lib/selenium/webdriver.rb", 
+    "lib/selenium-webdriver.rb", 
+    "CHANGES", 
+    "README" 
+  ]
+)
+
+ruby_library(name = "chrome",
+  srcs = [
+    "lib/selenium/webdriver/chrome/**/*.rb",
+    "lib/selenium/webdriver/chrome.rb"
+  ],
+  resources = [
+    {"//chrome:chrome_extension" : "rb/lib/selenium/webdriver/chrome/extension.zip"}
+  ],
+  deps = [
+    ":common",
+    ":remote"
+  ]
+)
+
+ruby_test(name = "chrome",
+  srcs = [
+    "spec/selenium/webdriver/*_spec.rb",
+    "spec/selenium/webdriver/chrome/**/*_spec.rb"
+  ],
+  include = [ "build/rb/lib" ],
+  deps = [ ":chrome"  ]
+)
+
+ruby_library(name = "firefox",
+  srcs = [ 
+    "lib/selenium/webdriver/firefox/**/*.rb",
+    "lib/selenium/webdriver/firefox.rb" 
+  ],
+  resources = [
+    { "//firefox:webdriver" : "rb/lib/selenium/webdriver/firefox/extension/webdriver.xpi"},
+    { "//firefox:noblur"    : "rb/lib/selenium/webdriver/firefox/native/linux/x86/x_ignore_nofocus.so" },
+    { "//firefox:noblur64"  : "rb/lib/selenium/webdriver/firefox/native/linux/amd64/x_ignore_nofocus.so" }
+  ],
+  deps = [ ":remote" ]
+)
+
+ruby_test(name = "firefox",
+  srcs = [
+    "spec/selenium/webdriver/*_spec.rb",
+    "spec/selenium/webdriver/firefox/**/*_spec.rb"
+  ],
+  deps = [":firefox"],
+  include = [ "build/rb/lib" ]
+)
+
+
+ruby_library(name = "ie",
+  srcs = [ 
+    "lib/selenium/webdriver/ie/**/*.rb", 
+    "lib/selenium/webdriver/ie.rb" 
+  ],
+  resources = [
+    {"//jobbie:ie_win32_dll" : "rb/lib/selenium/webdriver/ie/native/win32/InternetExplorerDriver.dll"},
+    {"//jobbie:ie_x64_dll"   : "rb/lib/selenium/webdriver/ie/native/x64/InternetExplorerDriver.dll"}
+  ],
+  deps = [ ":common" ]
+)
+
+ruby_test(name = "ie",
+  srcs = [
+    "spec/selenium/webdriver/*_spec.rb",
+    "spec/selenium/webdriver/ie/**/*_spec.rb"
+  ],
+  include = ["build/rb/lib"],
+  deps = [ ":ie" ]
+)
+
+ruby_library(name = "remote",
+  srcs = [ 
+    "lib/selenium/webdriver/remote/**/*.rb",
+    "lib/selenium/webdriver/remote.rb" 
+  ],
+  deps = [
+    ":common"
+  ]
+)
+
+ruby_test(name = "remote",
+  srcs = [
+    "spec/selenium/webdriver/*_spec.rb",
+    "spec/selenium/webdriver/remote/**/*_spec.rb"
+  ],
+  include = ["build/rb/lib"],
+  deps = [
+    "//remote/server:server:uber",
+    "//remote/server:test",
+    ":remote"
+  ]
+)
+

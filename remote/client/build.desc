@@ -29,24 +29,3 @@ java_library(name = "combined",
     "//selenium",
     "//support"
   ])
-
-ruby_library(name = "client",
-  srcs = [ "src/rb/lib/**/*.rb" ],
-  deps = [
-    "//common:ruby"
-  ]
-)
-
-ruby_test(name = "remote",
-  srcs = [
-    "common/test/rb/spec/**/*_spec.rb",
-    "remote/client/test/rb/spec/**/*_spec.rb"
-  ],
-  include = ["build/ruby/lib"],
-  deps = [
-    "//remote/server:server:uber",
-    "//remote/server:test",
-    ":ruby"
-  ]
-)
-
