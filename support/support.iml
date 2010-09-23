@@ -20,6 +20,7 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="module" module-name="firefox" scope="TEST" />
   </component>
 </module>
 

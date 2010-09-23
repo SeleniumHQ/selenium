@@ -21,13 +21,18 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 
 import org.openqa.selenium.TestSuiteBuilder;
+import org.openqa.selenium.firefox.FirefoxDriver;
+
+import static org.openqa.selenium.Ignore.Driver.FIREFOX;
 
 public class SupportTestSuite extends TestCase {
-	public static Test suite() throws Exception {
-		return new TestSuiteBuilder()
-					.addSourceDir("support")
-					.usingNoDriver()
-					.withoutEnvironment()
-					.create();
-	}
+  public static Test suite() throws Exception {
+    return new TestSuiteBuilder()
+        .addSourceDir("support")
+        .usingDriver(FirefoxDriver.class)
+        .exclude(FIREFOX)
+        .keepDriverInstance()
+        .includeJavascriptTests()
+        .create();
+  }
 }
