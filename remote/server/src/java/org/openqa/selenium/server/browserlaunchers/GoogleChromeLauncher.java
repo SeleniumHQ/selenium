@@ -26,6 +26,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.openqa.jetty.log.LogFactory;
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.internal.CommandLine;
 import org.openqa.selenium.server.ApplicationRegistry;
 import org.openqa.selenium.server.BrowserConfigurationOptions;
@@ -156,6 +157,16 @@ public class GoogleChromeLauncher extends AbstractBrowserLauncher {
     }
 
     private String[] createCommandArray(String url) {
+        String userDir = customProfileDir.getAbsolutePath();
+
+        // Thanks to issue #517: http://code.google.com/p/selenium/issues/detail?id=517
+        if (Platform.getCurrent().is(Platform.WINDOWS) && userDir.indexOf(' ') != -1) {
+          userDir = "\"" + userDir + "\"";
+        } else {
+          userDir = userDir.replace("\"", "\\\"");
+          userDir = "\"" + userDir + "\"";
+        }
+
         return new String[] {
                 browserInstallation.launcherFilePath(),
                 // Disable hang monitor dialogs in renderer process.
@@ -181,7 +192,7 @@ public class GoogleChromeLauncher extends AbstractBrowserLauncher {
                 // Disable same origin policy so the remote runner can control the application window
                 "--disable-web-security",
                 // Set the user data (i.e. profile) directory.
-                "--user-data-dir=\"" + customProfileDir.getAbsolutePath() + "\"",
+                "--user-data-dir=" + userDir,
                 getUntrustedCertificatesFlag(),
                 getCommandLineFlags(),
                 url
