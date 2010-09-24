@@ -43,8 +43,7 @@ module Selenium
 
         def app_server
           @app_server ||= begin
-            # TODO: move this to build/ruby as well?
-            path = File.expand_path("#{File.dirname(__FILE__)}/../../../../../../../common/src/web")
+            path = File.expand_path("../../../../../../common/src/web", __FILE__)
             s = RackServer.new(path)
             s.start
 
