@@ -51,7 +51,7 @@ public class SeleniumTestEnvironment implements TestEnvironment {
 
   private void copyAtomsToSeleniumBuildDir() throws IOException {
     File classes = InProject.locate("selenium/build/classes");
-    File scriptsDir = new File(classes, "scripts/selenium-emulation");
+    File scriptsDir = new File(classes, "scripts/selenium");
     FileHandler.createDir(scriptsDir);
 
     File sourceDir = InProject.locate("build/common/src/js/selenium");

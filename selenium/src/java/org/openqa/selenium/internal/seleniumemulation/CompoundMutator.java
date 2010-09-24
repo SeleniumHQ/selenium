@@ -30,7 +30,7 @@ import java.util.List;
  */
 public class CompoundMutator implements ScriptMutator {
   private static final String PREFIX =
-      "/scripts/selenium-emulation/";
+      "/scripts/selenium/";
 
   // The ordering of mutators matters
   private List<ScriptMutator> mutators = Lists.newArrayList();
