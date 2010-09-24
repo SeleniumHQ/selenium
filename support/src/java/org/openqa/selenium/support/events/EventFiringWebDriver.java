@@ -50,6 +50,7 @@ import java.util.concurrent.TimeUnit;
 public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, WrapsDriver {
 
     private final WebDriver driver;
+
     private final List<WebDriverEventListener> eventListeners = new ArrayList<WebDriverEventListener>();
     private final WebDriverEventListener dispatcher = (WebDriverEventListener) Proxy.newProxyInstance(
         WebDriverEventListener.class.getClassLoader(),
@@ -72,6 +73,10 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Wrap
           allInterfaces,
           new InvocationHandler() {
             public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+              if ("getWrappedDriver".equals(method.getName())) {
+                return driver;
+              }
+
               try {
                 return method.invoke(driver, args);
               } catch (InvocationTargetException e) {
@@ -85,6 +90,7 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Wrap
 
   private Class<?>[] extractInterfaces(Object object) {
     Set<Class<?>> allInterfaces = new HashSet<Class<?>>();
+    allInterfaces.add(WrapsDriver.class);
     extractInterfaces(allInterfaces, object.getClass());
 
     return allInterfaces.toArray(new Class<?>[allInterfaces.size()]);

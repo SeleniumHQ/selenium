@@ -26,6 +26,7 @@ import org.openqa.selenium.StubDriver;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriver.Navigation;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.internal.WrapsDriver;
 
 /**
  * @author Michael Tamm
@@ -221,6 +222,44 @@ public class EventFiringWebDriverTest extends MockObjectTestCase {
       fail("Should have been able to wrap the child of a webdriver implementing interface");
     }
   }
+
+  public void testShouldBeAbleToAccessWrappedInstanceFromEventCalls() {
+    class MyStub extends StubDriver {
+      @Override
+      public void get(String url) {
+        // Do nothing
+      }
+
+      public void fishy() {}
+
+    }
+
+    final WebDriver stub = new MyStub();
+    EventFiringWebDriver driver = new EventFiringWebDriver(stub);
+    MyStub wrapped = (MyStub) unwrapDriver(driver);
+    assertEquals(stub, wrapped);
+
+    class MyListener extends AbstractWebDriverEventListener {
+      @Override
+      public void beforeNavigateTo(String url, WebDriver driver) {
+        MyStub unwrapped = (MyStub) unwrapDriver(driver);
+
+        assertEquals(stub, unwrapped);
+      }
+    }
+    
+    driver.register(new MyListener());
+
+    driver.get("http://example.org");
+  }
+
+  private WebDriver unwrapDriver(WebDriver driver) {
+    if (driver instanceof WrapsDriver) {
+      return unwrapDriver(((WrapsDriver) driver).getWrappedDriver());
+    }
+    return driver;
+  }
+
 
   private static interface ExececutingDriver extends WebDriver, JavascriptExecutor {}
 
