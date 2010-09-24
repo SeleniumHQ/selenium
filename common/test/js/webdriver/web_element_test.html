@@ -45,16 +45,12 @@ limitations under the License.
       assertEquals('2', webdriver.element.getAttribute(element, 'rows'));
     }
 
-    function testShouldReturnBooleanPropertiesThatAreTrueAsStrings() {
-      var element = bot.locators.findElement({id: 'ro'});
+    function testShouldReturnBooleanPropertiesAsStrings() {
+      var readOnlyElement = bot.locators.findElement({id: 'ro'}),
+            normalElement = bot.locators.findElement({id: 'normal'});
 
-      assertEquals("true", webdriver.element.getAttribute(element, 'readonly'));
-    }
-
-    function testShouldReturnBooleanPropertiesThatAreFalseAsNull() {
-      var element = bot.locators.findElement({id: 'normal'});
-
-      assertNull(webdriver.element.getAttribute(element, 'readonly'));
+      assertEquals("true", webdriver.element.getAttribute(readOnlyElement, 'readonly'));
+      assertEquals("false", webdriver.element.getAttribute(normalElement, 'readonly'));
     }
 
     function testSettingAnyValueForABooleanAttributeSetsItToTrue() {

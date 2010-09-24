@@ -129,7 +129,7 @@ webdriver.element.getAttribute = function(element, attribute) {
   }
 
   // The empty string is a valid return value.
-  return value || value === '' ? value.toString() : null;
+  return goog.isDef(value) ? value.toString() : null;
 };
 
 
