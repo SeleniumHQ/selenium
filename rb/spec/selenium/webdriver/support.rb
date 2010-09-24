@@ -1,4 +1,3 @@
-require "selenium/webdriver/support/build"
 require "selenium/webdriver/support/remote_server"
 require "selenium/webdriver/support/test_environment"
 require "selenium/webdriver/support/jruby_test_environment"

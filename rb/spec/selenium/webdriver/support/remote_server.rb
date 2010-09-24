@@ -3,35 +3,39 @@ require "socket"
 module Selenium
   module WebDriver
     module SpecSupport
-
+      
       #
-      # Launch the remote server (through ./go)
+      # Wrap the standalone jar
       #
-
+      
       class RemoteServer
-
+        
         def initialize
           @host = "127.0.0.1"
-          @port = 4444 # TODO: random port - env var maybe?
-
-          @build = Build.new("//remote/server:server:run")
+          @port = 44444 # TODO: random port
+          
+          raise Errno::ENOENT, path unless File.exist?(path)
+          @process = ChildProcess.new("java", "-jar", path, "-port", @port.to_s)
         end
-
+        
         def start
-          @build.go
+          @process.start
           sleep 1 until listening?
         end
-
+        
         def stop
-          @build.kill
+          if @process.started?
+            @process.kill
+            @process.ensure_death
+          end
         end
-
+        
         def url
           "http://#{@host}:#{@port}/wd/hub"
         end
-
+        
         private
-
+        
         def listening?
           $stderr.puts "waiting for #{url}"
           TCPSocket.new(@host, @port).close
@@ -39,8 +43,12 @@ module Selenium
         rescue Errno::ECONNREFUSED
           false
         end
+        
+        def path
+          @path ||= File.expand_path("../../../../../../build/remote/server/server-standalone.jar", __FILE__)
+        end
       end
-
+      
     end # SpecSupport
   end # WebDriver
 end # Selenium
