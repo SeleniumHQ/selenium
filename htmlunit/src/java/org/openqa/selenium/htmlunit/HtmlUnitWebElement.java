@@ -321,7 +321,7 @@ public class HtmlUnitWebElement implements RenderedWebElement,
       return ((HtmlInput)element).isChecked() ? "true" : null;
     }
     if ("disabled".equals(lowerName)) {
-      return isEnabled() ? null : "true";
+      return isEnabled() ? "false" : "true";
     }
     if ("selected".equals(lowerName)) {
       return (value.equalsIgnoreCase("selected") ? "true" : null);
