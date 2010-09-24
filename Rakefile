@@ -416,10 +416,12 @@ iphone_test(:name => "webdriver-iphone-client-test",
 task :iphone_server do
   sdk = iPhoneSDK?
   if sdk != nil then
-    puts "Building iWebDriver iphone app"
-    sh "cd iphone && xcodebuild -sdk #{sdk} ARCHS=i386 -target iWebDriver", :verbose => false
+    puts "Building iWebDriver iphone app."
+    sh "cd iphone && xcodebuild -sdk #{sdk} ARCHS=i386 -target iWebDriver CONFIGURATION_BUILD_DIR=../build/iphone", :verbose => false
+    copy_to_prebuilt("build/iphone/iWebDriver.app", "iphone/prebuilt")
   else
     puts "XCode not found. Not building the iphone driver."
+    copy_prebuilt("iphone/prebuilt/", "build/iphone/iWebDriver.app")
   end
 end
 
