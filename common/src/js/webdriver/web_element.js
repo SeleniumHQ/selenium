@@ -124,12 +124,12 @@ webdriver.element.getAttribute = function(element, attribute) {
     value = bot.dom.getProperty(element, attribute);
   }
 
-  if (!goog.isDef(value)) {
+  if (!goog.isDefAndNotNull(value)) {
     value = bot.dom.getAttribute(element, attribute);
   }
 
   // The empty string is a valid return value.
-  return goog.isDef(value) ? value.toString() : null;
+  return goog.isDefAndNotNull(value) ? value.toString() : null;
 };
 
 

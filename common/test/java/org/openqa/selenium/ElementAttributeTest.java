@@ -55,14 +55,14 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
   }
 
   @Ignore(SELENESE)
-  public void testShouldReturnTheValueOfTheDisabledAttributeAsNullIfNotSet() {
+  public void testShouldReturnTheValueOfTheDisabledAttributeAsFalseIfNotSet() {
     driver.get(pages.formPage);
     WebElement inputElement = driver.findElement(By.xpath("//input[@id='working']"));
-    assertThat(inputElement.getAttribute("disabled"), equalTo(null));
+    assertThat(inputElement.getAttribute("disabled"), equalTo("false"));
     assertThat(inputElement.isEnabled(), equalTo(true));
     
     WebElement pElement = driver.findElement(By.id("peas"));
-    assertThat(pElement.getAttribute("disabled"), equalTo(null));
+    assertThat(pElement.getAttribute("disabled"), equalTo("false"));
     assertThat(pElement.isEnabled(), equalTo(true));
   }
 

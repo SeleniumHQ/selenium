@@ -33,6 +33,12 @@ limitations under the License.
       assertEquals('cheese', webdriver.element.getAttribute(element, 'title'));
     }
 
+    function testShouldReturnNullIfAValueDoesNotExistAsAnAttributeOrAProperty() {
+      var element = bot.locators.findElement({id: 'has_id'});
+      
+      assertNull(webdriver.element.getAttribute(element, 'this_does_not_exist'));
+    }
+
     function testShouldReturnTheValueOfAProperty() {
       var element = bot.locators.findElement({id: 'has_property'});
 
@@ -113,6 +119,17 @@ limitations under the License.
 
       assertEquals('body', webdriver.element.getAttribute(element, 'name'));
     }
+
+    function testShouldReturnTheValueOfTheDisabledAttributeAsNullIfNotSet() {
+      var notInput = bot.locators.findElement({id: 'has_id'});
+      assertNull(webdriver.element.getAttribute(notInput, 'disabled'));
+
+      var enabled =  bot.locators.findElement({id: 'normal'});
+      assertEquals("false", webdriver.element.getAttribute(enabled, 'disabled'));
+
+      var broken =  bot.locators.findElement({id: 'disabled'});
+      assertEquals("true", webdriver.element.getAttribute(broken, 'disabled'));
+  }
   </script>
 </head>
 <body id="body" style="" name="body">
@@ -125,6 +142,7 @@ limitations under the License.
   <input type="text" id="normal">
   <input type="text" id="ro" readonly>
   <input type="text" id="bad-ro" readonly="false">
+  <input disabled id="disabled">
 
   <input type="radio" id="unselected-radio" name="fishy">Fishy
   <input type="radio" id="selected-radio" name="fishy" checked="true">Dishy
