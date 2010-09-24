@@ -24,7 +24,7 @@
       <div id="menu">
   
     <a href="../../../_index.html">Index (R)</a> &raquo; 
-    <span class='title'><a href="../../../Selenium.html" title="Selenium (module)">Selenium</a></span> &raquo; <span class='title'><a href="../../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span> &raquo; <span class='title'><a href="../Remote.html" title="Selenium::WebDriver::Remote (module)">Remote</a></span>
+    <span class='title'><span class='object_link'><a href="../../../Selenium.html" title="Selenium (module)">Selenium</a></span></span> &raquo; <span class='title'><span class='object_link'><a href="../../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span></span> &raquo; <span class='title'><span class='object_link'><a href="../Remote.html" title="Selenium::WebDriver::Remote (module)">Remote</a></span></span>
      &raquo; 
     <span class="title">Response</span>
   
@@ -43,7 +43,8 @@
     
     <iframe id="search_frame"></iframe>
     
-    <div id="content"><h1>Class: Selenium::WebDriver::Remote::Response 
+    <div id="content"><h1>Class: Selenium::WebDriver::Remote::Response
+  
   
   
 </h1>
@@ -73,22 +74,14 @@
   
   
     <dt class="r2 last">Defined in:</dt>
-    <dd class="r2 last">remote/client/src/rb/lib/selenium/webdriver/remote/response.rb</dd>
+    <dd class="r2 last">rb/lib/selenium/webdriver/remote/response.rb</dd>
   
 </dl>
 <div class="clear"></div>
 
-<h2>Overview</h2><div class="docstring">
-  <div class="discussion">
-    
 
-  </div>
-</div>
-<div class="tags">
-  
-</div>
 
-  <h2>Instance Attribute Summary</h2>
+  <h2>Instance Attribute Summary <small>(<a href="#" class="summary_toggle">collapse</a>)</small></h2>
   <ul class="summary">
     
       <li class="public ">
@@ -103,6 +96,7 @@
   
     <span class="note title readonly">readonly</span>
     
+  
   
   
   
@@ -133,6 +127,7 @@ Returns the value of attribute code.
   
   
   
+  
 
   
     <span class="summary_desc"><div class='inline'><p>
@@ -147,7 +142,10 @@ Returns the value of attribute payload.
 
 
   
-    <h2>Instance Method Summary</h2>
+    <h2>
+      Instance Method Summary
+      <small>(<a href="#" class="summary_toggle">collapse</a>)</small>
+    </h2>
 
     <ul class="summary">
       
@@ -159,6 +157,7 @@ Returns the value of attribute payload.
 
     
   </span>
+  
   
   
   
@@ -184,6 +183,7 @@ Returns the value of attribute payload.
   
   
   
+  
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -199,6 +199,7 @@ Returns the value of attribute payload.
 
     
   </span>
+  
   
   
   
@@ -226,6 +227,7 @@ Returns the value of attribute payload.
   
   
   
+  
 
   
     <span class="summary_desc"><div class='inline'><p>
@@ -245,7 +247,7 @@ A new instance of Response.
     <div class="method_details first">
   <p class="signature first" id="initialize-instance_method">
   
-    - (<tt><a href="" title="Selenium::WebDriver::Remote::Response (class)">Response</a></tt>) <strong>initialize</strong>(code, payload = nil) 
+    - (<tt><span class='object_link'><a href="" title="Selenium::WebDriver::Remote::Response (class)">Response</a></span></tt>) <strong>initialize</strong>(code, payload = nil) 
   
 
   
@@ -274,7 +276,7 @@ A new instance of Response
 16</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/response.rb', line 11</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/response.rb', line 11</span>
 
 <span class='def def kw'>def</span> <span class='initialize identifier id'>initialize</span><span class='lparen token'>(</span><span class='code identifier id'>code</span><span class='comma token'>,</span> <span class='payload identifier id'>payload</span> <span class='assign token'>=</span> <span class='nil nil kw'>nil</span><span class='rparen token'>)</span>
   <span class='@code ivar id'>@code</span>    <span class='assign token'>=</span> <span class='code identifier id'>code</span>
@@ -325,7 +327,7 @@ Returns the value of attribute code
 10</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/response.rb', line 8</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/response.rb', line 8</span>
 
 <span class='def def kw'>def</span> <span class='code identifier id'>code</span>
   <span class='@code ivar id'>@code</span>
@@ -368,7 +370,7 @@ Returns the value of attribute payload
 10</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/response.rb', line 8</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/response.rb', line 8</span>
 
 <span class='def def kw'>def</span> <span class='payload identifier id'>payload</span>
   <span class='@payload ivar id'>@payload</span>
@@ -399,12 +401,12 @@ Returns the value of attribute payload
       <pre class="lines">
 
 
-26
-27
-28</pre>
+37
+38
+39</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/response.rb', line 26</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/response.rb', line 37</span>
 
 <span class='def def kw'>def</span> <span class='aref op'>[]</span><span class='lparen token'>(</span><span class='key identifier id'>key</span><span class='rparen token'>)</span>
   <span class='@payload ivar id'>@payload</span><span class='lbrack token'>[</span><span class='key identifier id'>key</span><span class='rbrack token'>]</span>
@@ -430,13 +432,25 @@ Returns the value of attribute payload
 
 18
 19
-20</pre>
+20
+21
+22
+23
+24
+25
+26</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/response.rb', line 18</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/response.rb', line 18</span>
 
 <span class='def def kw'>def</span> <span class='error identifier id'>error</span>
-  <span class='Error constant id'>Error</span><span class='dot token'>.</span><span class='for_code identifier id'>for_code</span> <span class='@payload ivar id'>@payload</span><span class='lbrack token'>[</span><span class='string val'>'status'</span><span class='rbrack token'>]</span>
+  <span class='klass identifier id'>klass</span> <span class='assign token'>=</span> <span class='Error constant id'>Error</span><span class='dot token'>.</span><span class='for_code identifier id'>for_code</span><span class='lparen token'>(</span><span class='@payload ivar id'>@payload</span><span class='lbrack token'>[</span><span class='string val'>'status'</span><span class='rbrack token'>]</span><span class='rparen token'>)</span> <span class='orop op'>||</span> <span class='return return kw'>return</span>
+
+  <span class='ex identifier id'>ex</span> <span class='assign token'>=</span> <span class='klass identifier id'>klass</span><span class='dot token'>.</span><span class='new identifier id'>new</span><span class='lparen token'>(</span><span class='error_message identifier id'>error_message</span><span class='rparen token'>)</span>
+  <span class='ex identifier id'>ex</span><span class='dot token'>.</span><span class='set_backtrace identifier id'>set_backtrace</span><span class='lparen token'>(</span><span class='caller identifier id'>caller</span><span class='rparen token'>)</span>
+  <span class='add_backtrace identifier id'>add_backtrace</span> <span class='ex identifier id'>ex</span>
+
+  <span class='ex identifier id'>ex</span>
 <span class='end end kw'>end</span>
 </pre>
     </td>
@@ -457,15 +471,25 @@ Returns the value of attribute payload
       <pre class="lines">
 
 
-22
-23
-24</pre>
+28
+29
+30
+31
+32
+33
+34
+35</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/response.rb', line 22</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/response.rb', line 28</span>
 
 <span class='def def kw'>def</span> <span class='error_message identifier id'>error_message</span>
-  <span class='@payload ivar id'>@payload</span><span class='lbrack token'>[</span><span class='string val'>'value'</span><span class='rbrack token'>]</span><span class='lbrack token'>[</span><span class='string val'>'message'</span><span class='rbrack token'>]</span>
+  <span class='val identifier id'>val</span> <span class='assign token'>=</span> <span class='@payload ivar id'>@payload</span><span class='lbrack token'>[</span><span class='string val'>'value'</span><span class='rbrack token'>]</span>
+  <span class='msg identifier id'>msg</span> <span class='assign token'>=</span> <span class='val identifier id'>val</span><span class='lbrack token'>[</span><span class='string val'>'message'</span><span class='rbrack token'>]</span> <span class='or or kw'>or</span> <span class='return return kw'>return</span> <span class='string val'>&quot;&quot;</span>
+
+  <span class='msg identifier id'>msg</span> <span class='lshft op'>&lt;&lt;</span> <span class='dstring node'>&quot; (#{ val['class'] })&quot;</span> <span class='if if_mod kw'>if</span> <span class='val identifier id'>val</span><span class='lbrack token'>[</span><span class='string val'>'class'</span><span class='rbrack token'>]</span>
+
+  <span class='msg identifier id'>msg</span>
 <span class='end end kw'>end</span>
 </pre>
     </td>
@@ -478,9 +502,9 @@ Returns the value of attribute payload
 </div>
     
     <div id="footer">
-  Generated on Fri Jun 11 14:24:28 2010 by 
-  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool">yard</a>
-  0.5.4 (ruby-1.8.7).
+  Generated on Fri Sep 24 16:17:03 2010 by 
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.6.1 (ruby-1.8.7).
 </div>
 
   </body>

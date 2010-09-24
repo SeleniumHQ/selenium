@@ -24,7 +24,7 @@
       <div id="menu">
   
     <a href="../../_index.html">Index (C)</a> &raquo; 
-    <span class='title'><a href="../../Selenium.html" title="Selenium (module)">Selenium</a></span> &raquo; <span class='title'><a href="../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span>
+    <span class='title'><span class='object_link'><a href="../../Selenium.html" title="Selenium (module)">Selenium</a></span></span> &raquo; <span class='title'><span class='object_link'><a href="../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span></span>
      &raquo; 
     <span class="title">ChildProcess</span>
   
@@ -43,7 +43,8 @@
     
     <iframe id="search_frame"></iframe>
     
-    <div id="content"><h1>Class: Selenium::WebDriver::ChildProcess 
+    <div id="content"><h1>Class: Selenium::WebDriver::ChildProcess
+  
   
   
 </h1>
@@ -73,7 +74,7 @@
   
   
     <dt class="r2 last">Defined in:</dt>
-    <dd class="r2 last">common/src/rb/lib/selenium/webdriver/child_process.rb</dd>
+    <dd class="r2 last">rb/lib/selenium/webdriver/common/child_process.rb</dd>
   
 </dl>
 <div class="clear"></div>
@@ -93,7 +94,7 @@ Cross platform child process launcher
 <p class="children">
    
     
-      <strong class="modules">Modules:</strong> <a href="ChildProcess/IronRubyProcess.html" title="Selenium::WebDriver::ChildProcess::IronRubyProcess (module)">IronRubyProcess</a>, <a href="ChildProcess/JRubyProcess.html" title="Selenium::WebDriver::ChildProcess::JRubyProcess (module)">JRubyProcess</a>, <a href="ChildProcess/WindowsProcess.html" title="Selenium::WebDriver::ChildProcess::WindowsProcess (module)">WindowsProcess</a>
+      <strong class="modules">Modules:</strong> <span class='object_link'><a href="ChildProcess/IronRubyProcess.html" title="Selenium::WebDriver::ChildProcess::IronRubyProcess (module)">IronRubyProcess</a></span>, <span class='object_link'><a href="ChildProcess/JRubyProcess.html" title="Selenium::WebDriver::ChildProcess::JRubyProcess (module)">JRubyProcess</a></span>, <span class='object_link'><a href="ChildProcess/WindowsProcess.html" title="Selenium::WebDriver::ChildProcess::WindowsProcess (module)">WindowsProcess</a></span>
     
    
     
@@ -101,7 +102,7 @@ Cross platform child process launcher
 </p>
 
 
-  <h2>Instance Attribute Summary</h2>
+  <h2>Instance Attribute Summary <small>(<a href="#" class="summary_toggle">collapse</a>)</small></h2>
   <ul class="summary">
     
       <li class="public ">
@@ -120,6 +121,7 @@ Cross platform child process launcher
   
   
   
+  
 
   
     <span class="summary_desc"><div class='inline'><p>
@@ -134,7 +136,10 @@ Returns the value of attribute pid.
 
 
   
-    <h2>Instance Method Summary</h2>
+    <h2>
+      Instance Method Summary
+      <small>(<a href="#" class="summary_toggle">collapse</a>)</small>
+    </h2>
 
     <ul class="summary">
       
@@ -146,6 +151,7 @@ Returns the value of attribute pid.
 
     
   </span>
+  
   
   
   
@@ -171,6 +177,7 @@ Returns the value of attribute pid.
   
   
   
+  
 
   
     <span class="summary_desc"><div class='inline'><p>
@@ -190,6 +197,7 @@ reasonable time.
 
     
   </span>
+  
   
   
   
@@ -220,6 +228,7 @@ Returns the exit value of the process, or nil if it&#8217;s still alive.
   
   
   
+  
 
   
     <span class="summary_desc"><div class='inline'><p>
@@ -238,6 +247,7 @@ A new instance of ChildProcess.
 
     
   </span>
+  
   
   
   
@@ -263,6 +273,7 @@ A new instance of ChildProcess.
   
   
   
+  
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -278,6 +289,28 @@ A new instance of ChildProcess.
 
     
   </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#started%3F-instance_method" title="#started? (instance method)">- (Boolean) <strong>started?</strong> </a>
+    
+
+    
+  </span>
+  
   
   
   
@@ -303,6 +336,7 @@ A new instance of ChildProcess.
   
   
   
+  
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -318,6 +352,7 @@ A new instance of ChildProcess.
 
     
   </span>
+  
   
   
   
@@ -343,6 +378,7 @@ A new instance of ChildProcess.
   
   
   
+  
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -359,7 +395,7 @@ A new instance of ChildProcess.
     <div class="method_details first">
   <p class="signature first" id="initialize-instance_method">
   
-    - (<tt><a href="" title="Selenium::WebDriver::ChildProcess (class)">ChildProcess</a></tt>) <strong>initialize</strong>(*args) 
+    - (<tt><span class='object_link'><a href="" title="Selenium::WebDriver::ChildProcess (class)">ChildProcess</a></span></tt>) <strong>initialize</strong>(*args) 
   
 
   
@@ -393,7 +429,7 @@ A new instance of ChildProcess
 23</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/child_process.rb', line 13</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/child_process.rb', line 13</span>
 
 <span class='def def kw'>def</span> <span class='initialize identifier id'>initialize</span><span class='lparen token'>(</span><span class='mult op'>*</span><span class='args identifier id'>args</span><span class='rparen token'>)</span>
   <span class='@args ivar id'>@args</span> <span class='assign token'>=</span> <span class='args identifier id'>args</span>
@@ -449,7 +485,7 @@ Returns the value of attribute pid
 13</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/child_process.rb', line 11</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/child_process.rb', line 11</span>
 
 <span class='def def kw'>def</span> <span class='pid identifier id'>pid</span>
   <span class='@pid ivar id'>@pid</span>
@@ -486,7 +522,7 @@ Returns the value of attribute pid
   
     <li>
       
-        <span class='type'>(<tt><a href="Error/WebDriverError.html" title="Selenium::WebDriver::Error::WebDriverError (class)">Error::WebDriverError</a></tt>)</span>
+        <span class='type'>(<tt><span class='object_link'><a href="Error/WebDriverError.html" title="Selenium::WebDriver::Error::WebDriverError (class)">Error::WebDriverError</a></span></tt>)</span>
       
       
       
@@ -501,15 +537,15 @@ Returns the value of attribute pid
       <pre class="lines">
 
 
-114
-115
-116</pre>
+118
+119
+120</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/child_process.rb', line 114</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/child_process.rb', line 118</span>
 
 <span class='def def kw'>def</span> <span class='assert_started identifier id'>assert_started</span>
-  <span class='raise identifier id'>raise</span> <span class='Error constant id'>Error</span><span class='colon2 op'>::</span><span class='WebDriverError constant id'>WebDriverError</span><span class='comma token'>,</span> <span class='string val'>&quot;process not started&quot;</span> <span class='unless unless_mod kw'>unless</span> <span class='@pid ivar id'>@pid</span>
+  <span class='raise identifier id'>raise</span> <span class='Error constant id'>Error</span><span class='colon2 op'>::</span><span class='WebDriverError constant id'>WebDriverError</span><span class='comma token'>,</span> <span class='string val'>&quot;process not started&quot;</span> <span class='unless unless_mod kw'>unless</span> <span class='started? fid id'>started?</span>
 <span class='end end kw'>end</span>
 </pre>
     </td>
@@ -571,7 +607,7 @@ reasonable time
 82</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/child_process.rb', line 56</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/child_process.rb', line 56</span>
 
 <span class='def def kw'>def</span> <span class='ensure_death identifier id'>ensure_death</span>
   <span class='begin begin kw'>begin</span>
@@ -636,7 +672,7 @@ Returns the exit value of the process, or nil if it&#8217;s still alive.
 37</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/child_process.rb', line 34</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/child_process.rb', line 34</span>
 
 <span class='def def kw'>def</span> <span class='exit_value identifier id'>exit_value</span>
   <span class='pid identifier id'>pid</span><span class='comma token'>,</span> <span class='status identifier id'>status</span> <span class='assign token'>=</span> <span class='Process constant id'>Process</span><span class='dot token'>.</span><span class='waitpid2 identifier id'>waitpid2</span><span class='lparen token'>(</span><span class='@pid ivar id'>@pid</span><span class='comma token'>,</span> <span class='Process constant id'>Process</span><span class='colon2 op'>::</span><span class='WNOHANG constant id'>WNOHANG</span><span class='rparen token'>)</span>
@@ -667,7 +703,7 @@ Returns the exit value of the process, or nil if it&#8217;s still alive.
 107</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/child_process.rb', line 104</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/child_process.rb', line 104</span>
 
 <span class='def def kw'>def</span> <span class='kill identifier id'>kill</span>
   <span class='assert_started identifier id'>assert_started</span>
@@ -698,7 +734,7 @@ Returns the exit value of the process, or nil if it&#8217;s still alive.
 112</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/child_process.rb', line 109</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/child_process.rb', line 109</span>
 
 <span class='def def kw'>def</span> <span class='kill! fid id'>kill!</span>
   <span class='assert_started identifier id'>assert_started</span>
@@ -736,7 +772,7 @@ Returns the exit value of the process, or nil if it&#8217;s still alive.
 49</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/child_process.rb', line 39</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/child_process.rb', line 39</span>
 
 <span class='def def kw'>def</span> <span class='start identifier id'>start</span>
   <span class='@pid ivar id'>@pid</span> <span class='assign token'>=</span> <span class='fork identifier id'>fork</span> <span class='do do kw'>do</span>
@@ -748,6 +784,56 @@ Returns the exit value of the process, or nil if it&#8217;s still alive.
   <span class='end end kw'>end</span>
 
   <span class='self self kw'>self</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="started?-instance_method">
+  
+    - (<tt>Boolean</tt>) <strong>started?</strong> 
+  
+
+  
+</p><div class="docstring">
+  <div class="discussion">
+    
+
+  </div>
+</div>
+<div class="tags">
+  <h3>Returns:</h3>
+<ul class="return">
+  
+    <li>
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+114
+115
+116</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/child_process.rb', line 114</span>
+
+<span class='def def kw'>def</span> <span class='started? fid id'>started?</span>
+  <span class='notop op'>!</span><span class='notop op'>!</span><span class='@pid ivar id'>@pid</span>
 <span class='end end kw'>end</span>
 </pre>
     </td>
@@ -795,7 +881,7 @@ Returns the exit value of the process, or nil if it&#8217;s still alive.
 28</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/child_process.rb', line 25</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/child_process.rb', line 25</span>
 
 <span class='def def kw'>def</span> <span class='ugly_death? fid id'>ugly_death?</span>
   <span class='code identifier id'>code</span> <span class='assign token'>=</span> <span class='exit_value identifier id'>exit_value</span>
@@ -828,7 +914,7 @@ Returns the exit value of the process, or nil if it&#8217;s still alive.
 102</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/child_process.rb', line 97</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/child_process.rb', line 97</span>
 
 <span class='def def kw'>def</span> <span class='wait identifier id'>wait</span>
   <span class='assert_started identifier id'>assert_started</span>
@@ -869,7 +955,7 @@ Returns the exit value of the process, or nil if it&#8217;s still alive.
 95</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/child_process.rb', line 84</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/child_process.rb', line 84</span>
 
 <span class='def def kw'>def</span> <span class='wait_nonblock identifier id'>wait_nonblock</span><span class='lparen token'>(</span><span class='timeout identifier id'>timeout</span><span class='rparen token'>)</span>
   <span class='end_time identifier id'>end_time</span> <span class='assign token'>=</span> <span class='Time constant id'>Time</span><span class='dot token'>.</span><span class='now identifier id'>now</span> <span class='plus op'>+</span> <span class='timeout identifier id'>timeout</span>
@@ -894,9 +980,9 @@ Returns the exit value of the process, or nil if it&#8217;s still alive.
 </div>
     
     <div id="footer">
-  Generated on Fri Jun 11 14:24:26 2010 by 
-  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool">yard</a>
-  0.5.4 (ruby-1.8.7).
+  Generated on Fri Sep 24 16:17:04 2010 by 
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.6.1 (ruby-1.8.7).
 </div>
 
   </body>

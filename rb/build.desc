@@ -17,7 +17,7 @@ rubydocs(
     "CHANGES"
   ],
   readme = "rb/README",
-  output_dir = "build/rubydocs"
+  output_dir = "docs/api/rb"
 )
 
 ruby_library(name = "common",

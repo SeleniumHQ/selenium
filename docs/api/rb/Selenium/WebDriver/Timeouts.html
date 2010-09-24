@@ -24,7 +24,7 @@
       <div id="menu">
   
     <a href="../../_index.html">Index (T)</a> &raquo; 
-    <span class='title'><a href="../../Selenium.html" title="Selenium (module)">Selenium</a></span> &raquo; <span class='title'><a href="../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span>
+    <span class='title'><span class='object_link'><a href="../../Selenium.html" title="Selenium (module)">Selenium</a></span></span> &raquo; <span class='title'><span class='object_link'><a href="../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span></span>
      &raquo; 
     <span class="title">Timeouts</span>
   
@@ -43,7 +43,8 @@
     
     <iframe id="search_frame"></iframe>
     
-    <div id="content"><h1>Class: Selenium::WebDriver::Timeouts 
+    <div id="content"><h1>Class: Selenium::WebDriver::Timeouts
+  
   
   
 </h1>
@@ -73,7 +74,7 @@
   
   
     <dt class="r2 last">Defined in:</dt>
-    <dd class="r2 last">common/src/rb/lib/selenium/webdriver/timeouts.rb</dd>
+    <dd class="r2 last">rb/lib/selenium/webdriver/common/timeouts.rb</dd>
   
 </dl>
 <div class="clear"></div>
@@ -82,18 +83,22 @@
 
 
   
-    <h2>Instance Method Summary</h2>
+    <h2>
+      Instance Method Summary
+      <small>(<a href="#" class="summary_toggle">collapse</a>)</small>
+    </h2>
 
     <ul class="summary">
       
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#implicit_wait%3D-instance_method" title="#implicit_wait= (instance method)">- (Object) <strong>implicit_wait</strong>(seconds) </a>
+      <a href="#implicit_wait%3D-instance_method" title="#implicit_wait= (instance method)">- (Object) <strong>implicit_wait=</strong>(seconds) </a>
     
 
     
   </span>
+  
   
   
   
@@ -124,6 +129,7 @@ Set the amount of time the driver should wait when searching for elements.
   
   
   
+  
 
   
     <span class="summary_desc"><div class='inline'><p>
@@ -143,7 +149,7 @@ A new instance of Timeouts.
     <div class="method_details first">
   <p class="signature first" id="initialize-instance_method">
   
-    - (<tt><a href="" title="Selenium::WebDriver::Timeouts (class)">Timeouts</a></tt>) <strong>initialize</strong>(bridge) 
+    - (<tt><span class='object_link'><a href="" title="Selenium::WebDriver::Timeouts (class)">Timeouts</a></span></tt>) <strong>initialize</strong>(bridge) 
   
 
   
@@ -169,7 +175,7 @@ A new instance of Timeouts
 7</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/timeouts.rb', line 5</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/timeouts.rb', line 5</span>
 
 <span class='def def kw'>def</span> <span class='initialize identifier id'>initialize</span><span class='lparen token'>(</span><span class='bridge identifier id'>bridge</span><span class='rparen token'>)</span>
   <span class='@bridge ivar id'>@bridge</span> <span class='assign token'>=</span> <span class='bridge identifier id'>bridge</span>
@@ -216,7 +222,7 @@ Set the amount of time the driver should wait when searching for elements.
 15</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/timeouts.rb', line 13</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/timeouts.rb', line 13</span>
 
 <span class='def def kw'>def</span> <span class='implicit_wait= identifier id'>implicit_wait=</span><span class='lparen token'>(</span><span class='seconds identifier id'>seconds</span><span class='rparen token'>)</span>
   <span class='@bridge ivar id'>@bridge</span><span class='dot token'>.</span><span class='setImplicitWaitTimeout identifier id'>setImplicitWaitTimeout</span> <span class='seconds identifier id'>seconds</span> <span class='mult op'>*</span> <span class='integer val'>1000</span>
@@ -232,9 +238,9 @@ Set the amount of time the driver should wait when searching for elements.
 </div>
     
     <div id="footer">
-  Generated on Fri Jun 11 14:24:23 2010 by 
-  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool">yard</a>
-  0.5.4 (ruby-1.8.7).
+  Generated on Fri Sep 24 16:17:03 2010 by 
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.6.1 (ruby-1.8.7).
 </div>
 
   </body>

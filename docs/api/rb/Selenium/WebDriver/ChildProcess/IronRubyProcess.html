@@ -24,7 +24,7 @@
       <div id="menu">
   
     <a href="../../../_index.html">Index (I)</a> &raquo; 
-    <span class='title'><a href="../../../Selenium.html" title="Selenium (module)">Selenium</a></span> &raquo; <span class='title'><a href="../../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span> &raquo; <span class='title'><a href="../ChildProcess.html" title="Selenium::WebDriver::ChildProcess (class)">ChildProcess</a></span>
+    <span class='title'><span class='object_link'><a href="../../../Selenium.html" title="Selenium (module)">Selenium</a></span></span> &raquo; <span class='title'><span class='object_link'><a href="../../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span></span> &raquo; <span class='title'><span class='object_link'><a href="../ChildProcess.html" title="Selenium::WebDriver::ChildProcess (class)">ChildProcess</a></span></span>
      &raquo; 
     <span class="title">IronRubyProcess</span>
   
@@ -43,7 +43,8 @@
     
     <iframe id="search_frame"></iframe>
     
-    <div id="content"><h1>Module: Selenium::WebDriver::ChildProcess::IronRubyProcess 
+    <div id="content"><h1>Module: Selenium::WebDriver::ChildProcess::IronRubyProcess
+  
   
   
 </h1>
@@ -58,7 +59,7 @@
   
   
     <dt class="r1 last">Defined in:</dt>
-    <dd class="r1 last">common/src/rb/lib/selenium/webdriver/child_process.rb</dd>
+    <dd class="r1 last">rb/lib/selenium/webdriver/common/child_process.rb</dd>
   
 </dl>
 <div class="clear"></div>
@@ -67,29 +68,12 @@
 
 
   
-    <h2>Instance Method Summary</h2>
+    <h2>
+      Instance Method Summary
+      <small>(<a href="#" class="summary_toggle">collapse</a>)</small>
+    </h2>
 
     <ul class="summary">
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#assert_started-instance_method" title="#assert_started (instance method)">- (Object) <strong>assert_started</strong> </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
       
         <li class="public ">
   <span class="summary_signature">
@@ -99,6 +83,7 @@
 
     
   </span>
+  
   
   
   
@@ -124,6 +109,7 @@
   
   
   
+  
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -139,6 +125,7 @@
 
     
   </span>
+  
   
   
   
@@ -164,6 +151,28 @@
   
   
   
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#started%3F-instance_method" title="#started? (instance method)">- (Boolean) <strong>started?</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -179,6 +188,7 @@
 
     
   </span>
+  
   
   
   
@@ -201,57 +211,7 @@
     
     
       <div class="method_details first">
-  <p class="signature first" id="assert_started-instance_method">
-  
-    - (<tt>Object</tt>) <strong>assert_started</strong> 
-  
-
-  
-</p><div class="docstring">
-  <div class="discussion">
-    
-
-  </div>
-</div>
-<div class="tags">
-  <h3>Raises:</h3>
-<ul class="raise">
-  
-    <li>
-      
-        <span class='type'>(<tt><a href="../Error/WebDriverError.html" title="Selenium::WebDriver::Error::WebDriverError (class)">Error::WebDriverError</a></tt>)</span>
-      
-      
-      
-      
-    </li>
-  
-</ul>
-
-</div><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-232
-233
-234</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/child_process.rb', line 232</span>
-
-<span class='def def kw'>def</span> <span class='assert_started identifier id'>assert_started</span>
-  <span class='raise identifier id'>raise</span> <span class='Error constant id'>Error</span><span class='colon2 op'>::</span><span class='WebDriverError constant id'>WebDriverError</span><span class='comma token'>,</span> <span class='string val'>&quot;process not started&quot;</span> <span class='unless unless_mod kw'>unless</span> <span class='@process ivar id'>@process</span>
-<span class='end end kw'>end</span>
-</pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <p class="signature " id="exit_value-instance_method">
+  <p class="signature first" id="exit_value-instance_method">
   
     - (<tt>Object</tt>) <strong>exit_value</strong> 
   
@@ -263,15 +223,15 @@
       <pre class="lines">
 
 
-225
-226
-227
-228
-229
-230</pre>
+233
+234
+235
+236
+237
+238</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/child_process.rb', line 225</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/child_process.rb', line 233</span>
 
 <span class='def def kw'>def</span> <span class='exit_value identifier id'>exit_value</span>
   <span class='assert_started identifier id'>assert_started</span>
@@ -298,13 +258,13 @@
       <pre class="lines">
 
 
-209
-210
-211
-212</pre>
+217
+218
+219
+220</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/child_process.rb', line 209</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/child_process.rb', line 217</span>
 
 <span class='def def kw'>def</span> <span class='kill identifier id'>kill</span>
   <span class='assert_started identifier id'>assert_started</span>
@@ -329,13 +289,13 @@
       <pre class="lines">
 
 
-220
-221
-222
-223</pre>
+228
+229
+230
+231</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/child_process.rb', line 220</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/child_process.rb', line 228</span>
 
 <span class='def def kw'>def</span> <span class='pid identifier id'>pid</span>
   <span class='assert_started identifier id'>assert_started</span>
@@ -360,20 +320,20 @@
       <pre class="lines">
 
 
-197
-198
-199
-200
-201
-202
-203
-204
 205
 206
-207</pre>
+207
+208
+209
+210
+211
+212
+213
+214
+215</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/child_process.rb', line 197</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/child_process.rb', line 205</span>
 
 <span class='def def kw'>def</span> <span class='start identifier id'>start</span>
   <span class='args identifier id'>args</span> <span class='assign token'>=</span> <span class='@args ivar id'>@args</span><span class='dot token'>.</span><span class='dup identifier id'>dup</span>
@@ -385,6 +345,56 @@
   <span class='@process ivar id'>@process</span><span class='dot token'>.</span><span class='start identifier id'>start</span>
 
   <span class='self self kw'>self</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="started?-instance_method">
+  
+    - (<tt>Boolean</tt>) <strong>started?</strong> 
+  
+
+  
+</p><div class="docstring">
+  <div class="discussion">
+    
+
+  </div>
+</div>
+<div class="tags">
+  <h3>Returns:</h3>
+<ul class="return">
+  
+    <li>
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+240
+241
+242</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/child_process.rb', line 240</span>
+
+<span class='def def kw'>def</span> <span class='started? fid id'>started?</span>
+  <span class='notop op'>!</span><span class='notop op'>!</span><span class='@process ivar id'>@process</span>
 <span class='end end kw'>end</span>
 </pre>
     </td>
@@ -405,14 +415,14 @@
       <pre class="lines">
 
 
-214
-215
-216
-217
-218</pre>
+222
+223
+224
+225
+226</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/child_process.rb', line 214</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/child_process.rb', line 222</span>
 
 <span class='def def kw'>def</span> <span class='wait identifier id'>wait</span>
   <span class='assert_started identifier id'>assert_started</span>
@@ -430,9 +440,9 @@
 </div>
     
     <div id="footer">
-  Generated on Fri Jun 11 14:24:26 2010 by 
-  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool">yard</a>
-  0.5.4 (ruby-1.8.7).
+  Generated on Fri Sep 24 16:17:05 2010 by 
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.6.1 (ruby-1.8.7).
 </div>
 
   </body>

@@ -24,7 +24,7 @@
       <div id="menu">
   
     <a href="../../../_index.html">Index (B)</a> &raquo; 
-    <span class='title'><a href="../../../Selenium.html" title="Selenium (module)">Selenium</a></span> &raquo; <span class='title'><a href="../../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span> &raquo; <span class='title'><a href="../Chrome.html" title="Selenium::WebDriver::Chrome (module)">Chrome</a></span>
+    <span class='title'><span class='object_link'><a href="../../../Selenium.html" title="Selenium (module)">Selenium</a></span></span> &raquo; <span class='title'><span class='object_link'><a href="../../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span></span> &raquo; <span class='title'><span class='object_link'><a href="../Chrome.html" title="Selenium::WebDriver::Chrome (module)">Chrome</a></span></span>
      &raquo; 
     <span class="title">Bridge</span>
   
@@ -43,7 +43,8 @@
     
     <iframe id="search_frame"></iframe>
     
-    <div id="content"><h1>Class: Selenium::WebDriver::Chrome::Bridge 
+    <div id="content"><h1>Class: Selenium::WebDriver::Chrome::Bridge
+  
   
   
 </h1>
@@ -52,12 +53,12 @@
   
     <dt class="r1">Inherits:</dt>
     <dd class="r1">
-      <span class="inheritName"><a href="../Remote/Bridge.html" title="Selenium::WebDriver::Remote::Bridge (class)">Selenium::WebDriver::Remote::Bridge</a></span>
+      <span class="inheritName"><span class='object_link'><a href="../Remote/Bridge.html" title="Selenium::WebDriver::Remote::Bridge (class)">Remote::Bridge</a></span></span>
       
         <ul class="fullTree">
           <li>Object</li>
           
-            <li class="next"><a href="../Remote/Bridge.html" title="Selenium::WebDriver::Remote::Bridge (class)">Selenium::WebDriver::Remote::Bridge</a></li>
+            <li class="next"><span class='object_link'><a href="../Remote/Bridge.html" title="Selenium::WebDriver::Remote::Bridge (class)">Remote::Bridge</a></span></li>
           
             <li class="next">Selenium::WebDriver::Chrome::Bridge</li>
           
@@ -75,20 +76,12 @@
   
   
     <dt class="r2 last">Defined in:</dt>
-    <dd class="r2 last">chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb</dd>
+    <dd class="r2 last">rb/lib/selenium/webdriver/chrome/bridge.rb</dd>
   
 </dl>
 <div class="clear"></div>
 
-<h2>Overview</h2><div class="docstring">
-  <div class="discussion">
-    
 
-  </div>
-</div>
-<div class="tags">
-  
-</div>
   <h2>Constant Summary</h2>
   
 
@@ -97,20 +90,26 @@
   
   
   
-  
-  
-  
-  
-  <h3 class="inherited">Constants included from <a href="../Find.html" title="Selenium::WebDriver::Find (module)">Selenium::WebDriver::Find</a></h3>
-  <p class="inherited"><a href="../Find.html#FINDERS-constant" title="Selenium::WebDriver::Find::FINDERS (constant)">FINDERS</a></p>
+  <h3 class="inherited">Constants inherited from <span class='object_link'><a href="../Remote/Bridge.html" title="Selenium::WebDriver::Remote::Bridge (class)">Remote::Bridge</a></span></h3>
+  <p class="inherited"><span class='object_link'><a href="../Remote/Bridge.html#QUIT_ERRORS-constant" title="Selenium::WebDriver::Remote::Bridge::QUIT_ERRORS (constant)">QUIT_ERRORS</a></span></p>
 
   
   
   
   
+  
+  
+  
+  
+  <h3 class="inherited">Constants included from <span class='object_link'><a href="../Find.html" title="Selenium::WebDriver::Find (module)">Find</a></span></h3>
+  <p class="inherited"><span class='object_link'><a href="../Find.html#FINDERS-constant" title="Selenium::WebDriver::Find::FINDERS (constant)">FINDERS</a></span></p>
+
 
   
-    <h2>Instance Method Summary</h2>
+    <h2>
+      Instance Method Summary
+      <small>(<a href="#" class="summary_toggle">collapse</a>)</small>
+    </h2>
 
     <ul class="summary">
       
@@ -122,6 +121,7 @@
 
     
   </span>
+  
   
   
   
@@ -147,6 +147,7 @@
   
   
   
+  
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -162,6 +163,7 @@
 
     
   </span>
+  
   
   
   
@@ -187,6 +189,28 @@
   
   
   
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#elementEquals-instance_method" title="#elementEquals (instance method)">- (Object) <strong>elementEquals</strong>(element, other) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -202,6 +226,7 @@
 
     
   </span>
+  
   
   
   
@@ -227,6 +252,7 @@
   
   
   
+  
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -242,6 +268,7 @@
 
     
   </span>
+  
   
   
   
@@ -267,6 +294,7 @@
   
   
   
+  
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -287,6 +315,7 @@
   
   
   
+  
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -297,13 +326,14 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#initialize-instance_method" title="#initialize (instance method)">- (Bridge) <strong>initialize</strong> </a>
+      <a href="#initialize-instance_method" title="#initialize (instance method)">- (Bridge) <strong>initialize</strong>(opts = {}) </a>
     
 
     
   </span>
   
     <span class="note title constructor">constructor</span>
+  
   
   
   
@@ -332,6 +362,7 @@ A new instance of Bridge.
   
   
   
+  
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -347,6 +378,7 @@ A new instance of Bridge.
 
     
   </span>
+  
   
   
   
@@ -372,6 +404,7 @@ A new instance of Bridge.
   
   
   
+  
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -390,8 +423,8 @@ A new instance of Bridge.
   
   
   
-  <h3 class="inherited">Methods inherited from <a href="../Remote/Bridge.html" title="Selenium::WebDriver::Remote::Bridge (class)">Selenium::WebDriver::Remote::Bridge</a></h3>
-  <p class="inherited"><a href="../Remote/Bridge.html#addCookie-instance_method" title="Selenium::WebDriver::Remote::Bridge#addCookie (method)">#addCookie</a>, <a href="../Remote/Bridge.html#clearElement-instance_method" title="Selenium::WebDriver::Remote::Bridge#clearElement (method)">#clearElement</a>, <a href="../Remote/Bridge.html#clickElement-instance_method" title="Selenium::WebDriver::Remote::Bridge#clickElement (method)">#clickElement</a>, <a href="../Remote/Bridge.html#close-instance_method" title="Selenium::WebDriver::Remote::Bridge#close (method)">#close</a>, <a href="../Remote/Bridge.html#command-class_method" title="Selenium::WebDriver::Remote::Bridge.command (method)">command</a>, <a href="../Remote/Bridge.html#create_session-instance_method" title="Selenium::WebDriver::Remote::Bridge#create_session (method)">#create_session</a>, <a href="../Remote/Bridge.html#deleteAllCookies-instance_method" title="Selenium::WebDriver::Remote::Bridge#deleteAllCookies (method)">#deleteAllCookies</a>, <a href="../Remote/Bridge.html#dragElement-instance_method" title="Selenium::WebDriver::Remote::Bridge#dragElement (method)">#dragElement</a>, <a href="../Remote/Bridge.html#executeScript-instance_method" title="Selenium::WebDriver::Remote::Bridge#executeScript (method)">#executeScript</a>, <a href="../Remote/Bridge.html#findElementByClassName-instance_method" title="Selenium::WebDriver::Remote::Bridge#findElementByClassName (method)">#findElementByClassName</a>, <a href="../Remote/Bridge.html#findElementById-instance_method" title="Selenium::WebDriver::Remote::Bridge#findElementById (method)">#findElementById</a>, <a href="../Remote/Bridge.html#findElementByLinkText-instance_method" title="Selenium::WebDriver::Remote::Bridge#findElementByLinkText (method)">#findElementByLinkText</a>, <a href="../Remote/Bridge.html#findElementByName-instance_method" title="Selenium::WebDriver::Remote::Bridge#findElementByName (method)">#findElementByName</a>, <a href="../Remote/Bridge.html#findElementByPartialLinkText-instance_method" title="Selenium::WebDriver::Remote::Bridge#findElementByPartialLinkText (method)">#findElementByPartialLinkText</a>, <a href="../Remote/Bridge.html#findElementByTagName-instance_method" title="Selenium::WebDriver::Remote::Bridge#findElementByTagName (method)">#findElementByTagName</a>, <a href="../Remote/Bridge.html#findElementByXpath-instance_method" title="Selenium::WebDriver::Remote::Bridge#findElementByXpath (method)">#findElementByXpath</a>, <a href="../Remote/Bridge.html#findElementsByClassName-instance_method" title="Selenium::WebDriver::Remote::Bridge#findElementsByClassName (method)">#findElementsByClassName</a>, <a href="../Remote/Bridge.html#findElementsById-instance_method" title="Selenium::WebDriver::Remote::Bridge#findElementsById (method)">#findElementsById</a>, <a href="../Remote/Bridge.html#findElementsByLinkText-instance_method" title="Selenium::WebDriver::Remote::Bridge#findElementsByLinkText (method)">#findElementsByLinkText</a>, <a href="../Remote/Bridge.html#findElementsByName-instance_method" title="Selenium::WebDriver::Remote::Bridge#findElementsByName (method)">#findElementsByName</a>, <a href="../Remote/Bridge.html#findElementsByPartialLinkText-instance_method" title="Selenium::WebDriver::Remote::Bridge#findElementsByPartialLinkText (method)">#findElementsByPartialLinkText</a>, <a href="../Remote/Bridge.html#findElementsByTagName-instance_method" title="Selenium::WebDriver::Remote::Bridge#findElementsByTagName (method)">#findElementsByTagName</a>, <a href="../Remote/Bridge.html#findElementsByXpath-instance_method" title="Selenium::WebDriver::Remote::Bridge#findElementsByXpath (method)">#findElementsByXpath</a>, <a href="../Remote/Bridge.html#get-instance_method" title="Selenium::WebDriver::Remote::Bridge#get (method)">#get</a>, <a href="../Remote/Bridge.html#getActiveElement-instance_method" title="Selenium::WebDriver::Remote::Bridge#getActiveElement (method)">#getActiveElement</a>, <a href="../Remote/Bridge.html#getCapabilities-instance_method" title="Selenium::WebDriver::Remote::Bridge#getCapabilities (method)">#getCapabilities</a>, <a href="../Remote/Bridge.html#getCurrentUrl-instance_method" title="Selenium::WebDriver::Remote::Bridge#getCurrentUrl (method)">#getCurrentUrl</a>, <a href="../Remote/Bridge.html#getCurrentWindowHandle-instance_method" title="Selenium::WebDriver::Remote::Bridge#getCurrentWindowHandle (method)">#getCurrentWindowHandle</a>, <a href="../Remote/Bridge.html#getElementAttribute-instance_method" title="Selenium::WebDriver::Remote::Bridge#getElementAttribute (method)">#getElementAttribute</a>, <a href="../Remote/Bridge.html#getElementLocation-instance_method" title="Selenium::WebDriver::Remote::Bridge#getElementLocation (method)">#getElementLocation</a>, <a href="../Remote/Bridge.html#getElementSize-instance_method" title="Selenium::WebDriver::Remote::Bridge#getElementSize (method)">#getElementSize</a>, <a href="../Remote/Bridge.html#getElementTagName-instance_method" title="Selenium::WebDriver::Remote::Bridge#getElementTagName (method)">#getElementTagName</a>, <a href="../Remote/Bridge.html#getElementText-instance_method" title="Selenium::WebDriver::Remote::Bridge#getElementText (method)">#getElementText</a>, <a href="../Remote/Bridge.html#getElementValue-instance_method" title="Selenium::WebDriver::Remote::Bridge#getElementValue (method)">#getElementValue</a>, <a href="../Remote/Bridge.html#getElementValueOfCssProperty-instance_method" title="Selenium::WebDriver::Remote::Bridge#getElementValueOfCssProperty (method)">#getElementValueOfCssProperty</a>, <a href="../Remote/Bridge.html#getPageSource-instance_method" title="Selenium::WebDriver::Remote::Bridge#getPageSource (method)">#getPageSource</a>, <a href="../Remote/Bridge.html#getTitle-instance_method" title="Selenium::WebDriver::Remote::Bridge#getTitle (method)">#getTitle</a>, <a href="../Remote/Bridge.html#getVisible-instance_method" title="Selenium::WebDriver::Remote::Bridge#getVisible (method)">#getVisible</a>, <a href="../Remote/Bridge.html#getWindowHandles-instance_method" title="Selenium::WebDriver::Remote::Bridge#getWindowHandles (method)">#getWindowHandles</a>, <a href="../Remote/Bridge.html#goBack-instance_method" title="Selenium::WebDriver::Remote::Bridge#goBack (method)">#goBack</a>, <a href="../Remote/Bridge.html#goForward-instance_method" title="Selenium::WebDriver::Remote::Bridge#goForward (method)">#goForward</a>, <a href="../Remote/Bridge.html#hoverOverElement-instance_method" title="Selenium::WebDriver::Remote::Bridge#hoverOverElement (method)">#hoverOverElement</a>, <a href="../Remote/Bridge.html#isElementDisplayed-instance_method" title="Selenium::WebDriver::Remote::Bridge#isElementDisplayed (method)">#isElementDisplayed</a>, <a href="../Remote/Bridge.html#isElementEnabled-instance_method" title="Selenium::WebDriver::Remote::Bridge#isElementEnabled (method)">#isElementEnabled</a>, <a href="../Remote/Bridge.html#isElementSelected-instance_method" title="Selenium::WebDriver::Remote::Bridge#isElementSelected (method)">#isElementSelected</a>, <a href="../Remote/Bridge.html#refresh-instance_method" title="Selenium::WebDriver::Remote::Bridge#refresh (method)">#refresh</a>, <a href="../Remote/Bridge.html#sendKeysToElement-instance_method" title="Selenium::WebDriver::Remote::Bridge#sendKeysToElement (method)">#sendKeysToElement</a>, <a href="../Remote/Bridge.html#session_id-instance_method" title="Selenium::WebDriver::Remote::Bridge#session_id (method)">#session_id</a>, <a href="../Remote/Bridge.html#setElementSelected-instance_method" title="Selenium::WebDriver::Remote::Bridge#setElementSelected (method)">#setElementSelected</a>, <a href="../Remote/Bridge.html#setVisible-instance_method" title="Selenium::WebDriver::Remote::Bridge#setVisible (method)">#setVisible</a>, <a href="../Remote/Bridge.html#submitElement-instance_method" title="Selenium::WebDriver::Remote::Bridge#submitElement (method)">#submitElement</a>, <a href="../Remote/Bridge.html#switchToDefaultContent-instance_method" title="Selenium::WebDriver::Remote::Bridge#switchToDefaultContent (method)">#switchToDefaultContent</a>, <a href="../Remote/Bridge.html#switchToFrame-instance_method" title="Selenium::WebDriver::Remote::Bridge#switchToFrame (method)">#switchToFrame</a>, <a href="../Remote/Bridge.html#switchToWindow-instance_method" title="Selenium::WebDriver::Remote::Bridge#switchToWindow (method)">#switchToWindow</a>, <a href="../Remote/Bridge.html#toggleElement-instance_method" title="Selenium::WebDriver::Remote::Bridge#toggleElement (method)">#toggleElement</a></p>
+  <h3 class="inherited">Methods inherited from <span class='object_link'><a href="../Remote/Bridge.html" title="Selenium::WebDriver::Remote::Bridge (class)">Remote::Bridge</a></span></h3>
+  <p class="inherited"><span class='object_link'><a href="../Remote/Bridge.html#addCookie-instance_method" title="Selenium::WebDriver::Remote::Bridge#addCookie (method)">#addCookie</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#clearElement-instance_method" title="Selenium::WebDriver::Remote::Bridge#clearElement (method)">#clearElement</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#clickElement-instance_method" title="Selenium::WebDriver::Remote::Bridge#clickElement (method)">#clickElement</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#close-instance_method" title="Selenium::WebDriver::Remote::Bridge#close (method)">#close</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#command-class_method" title="Selenium::WebDriver::Remote::Bridge.command (method)">command</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#create_session-instance_method" title="Selenium::WebDriver::Remote::Bridge#create_session (method)">#create_session</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#deleteAllCookies-instance_method" title="Selenium::WebDriver::Remote::Bridge#deleteAllCookies (method)">#deleteAllCookies</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#dragElement-instance_method" title="Selenium::WebDriver::Remote::Bridge#dragElement (method)">#dragElement</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#executeScript-instance_method" title="Selenium::WebDriver::Remote::Bridge#executeScript (method)">#executeScript</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#findElementByClassName-instance_method" title="Selenium::WebDriver::Remote::Bridge#findElementByClassName (method)">#findElementByClassName</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#findElementById-instance_method" title="Selenium::WebDriver::Remote::Bridge#findElementById (method)">#findElementById</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#findElementByLinkText-instance_method" title="Selenium::WebDriver::Remote::Bridge#findElementByLinkText (method)">#findElementByLinkText</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#findElementByName-instance_method" title="Selenium::WebDriver::Remote::Bridge#findElementByName (method)">#findElementByName</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#findElementByPartialLinkText-instance_method" title="Selenium::WebDriver::Remote::Bridge#findElementByPartialLinkText (method)">#findElementByPartialLinkText</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#findElementByTagName-instance_method" title="Selenium::WebDriver::Remote::Bridge#findElementByTagName (method)">#findElementByTagName</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#findElementByXpath-instance_method" title="Selenium::WebDriver::Remote::Bridge#findElementByXpath (method)">#findElementByXpath</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#findElementsByClassName-instance_method" title="Selenium::WebDriver::Remote::Bridge#findElementsByClassName (method)">#findElementsByClassName</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#findElementsById-instance_method" title="Selenium::WebDriver::Remote::Bridge#findElementsById (method)">#findElementsById</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#findElementsByLinkText-instance_method" title="Selenium::WebDriver::Remote::Bridge#findElementsByLinkText (method)">#findElementsByLinkText</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#findElementsByName-instance_method" title="Selenium::WebDriver::Remote::Bridge#findElementsByName (method)">#findElementsByName</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#findElementsByPartialLinkText-instance_method" title="Selenium::WebDriver::Remote::Bridge#findElementsByPartialLinkText (method)">#findElementsByPartialLinkText</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#findElementsByTagName-instance_method" title="Selenium::WebDriver::Remote::Bridge#findElementsByTagName (method)">#findElementsByTagName</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#findElementsByXpath-instance_method" title="Selenium::WebDriver::Remote::Bridge#findElementsByXpath (method)">#findElementsByXpath</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#get-instance_method" title="Selenium::WebDriver::Remote::Bridge#get (method)">#get</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#getActiveElement-instance_method" title="Selenium::WebDriver::Remote::Bridge#getActiveElement (method)">#getActiveElement</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#getCapabilities-instance_method" title="Selenium::WebDriver::Remote::Bridge#getCapabilities (method)">#getCapabilities</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#getCurrentUrl-instance_method" title="Selenium::WebDriver::Remote::Bridge#getCurrentUrl (method)">#getCurrentUrl</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#getCurrentWindowHandle-instance_method" title="Selenium::WebDriver::Remote::Bridge#getCurrentWindowHandle (method)">#getCurrentWindowHandle</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#getElementAttribute-instance_method" title="Selenium::WebDriver::Remote::Bridge#getElementAttribute (method)">#getElementAttribute</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#getElementLocation-instance_method" title="Selenium::WebDriver::Remote::Bridge#getElementLocation (method)">#getElementLocation</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#getElementSize-instance_method" title="Selenium::WebDriver::Remote::Bridge#getElementSize (method)">#getElementSize</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#getElementTagName-instance_method" title="Selenium::WebDriver::Remote::Bridge#getElementTagName (method)">#getElementTagName</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#getElementText-instance_method" title="Selenium::WebDriver::Remote::Bridge#getElementText (method)">#getElementText</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#getElementValue-instance_method" title="Selenium::WebDriver::Remote::Bridge#getElementValue (method)">#getElementValue</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#getElementValueOfCssProperty-instance_method" title="Selenium::WebDriver::Remote::Bridge#getElementValueOfCssProperty (method)">#getElementValueOfCssProperty</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#getPageSource-instance_method" title="Selenium::WebDriver::Remote::Bridge#getPageSource (method)">#getPageSource</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#getTitle-instance_method" title="Selenium::WebDriver::Remote::Bridge#getTitle (method)">#getTitle</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#getVisible-instance_method" title="Selenium::WebDriver::Remote::Bridge#getVisible (method)">#getVisible</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#getWindowHandles-instance_method" title="Selenium::WebDriver::Remote::Bridge#getWindowHandles (method)">#getWindowHandles</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#goBack-instance_method" title="Selenium::WebDriver::Remote::Bridge#goBack (method)">#goBack</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#goForward-instance_method" title="Selenium::WebDriver::Remote::Bridge#goForward (method)">#goForward</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#hoverOverElement-instance_method" title="Selenium::WebDriver::Remote::Bridge#hoverOverElement (method)">#hoverOverElement</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#isElementDisplayed-instance_method" title="Selenium::WebDriver::Remote::Bridge#isElementDisplayed (method)">#isElementDisplayed</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#isElementEnabled-instance_method" title="Selenium::WebDriver::Remote::Bridge#isElementEnabled (method)">#isElementEnabled</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#isElementSelected-instance_method" title="Selenium::WebDriver::Remote::Bridge#isElementSelected (method)">#isElementSelected</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#refresh-instance_method" title="Selenium::WebDriver::Remote::Bridge#refresh (method)">#refresh</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#sendKeysToElement-instance_method" title="Selenium::WebDriver::Remote::Bridge#sendKeysToElement (method)">#sendKeysToElement</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#session_id-instance_method" title="Selenium::WebDriver::Remote::Bridge#session_id (method)">#session_id</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#setElementSelected-instance_method" title="Selenium::WebDriver::Remote::Bridge#setElementSelected (method)">#setElementSelected</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#setVisible-instance_method" title="Selenium::WebDriver::Remote::Bridge#setVisible (method)">#setVisible</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#submitElement-instance_method" title="Selenium::WebDriver::Remote::Bridge#submitElement (method)">#submitElement</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#switchToDefaultContent-instance_method" title="Selenium::WebDriver::Remote::Bridge#switchToDefaultContent (method)">#switchToDefaultContent</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#switchToFrame-instance_method" title="Selenium::WebDriver::Remote::Bridge#switchToFrame (method)">#switchToFrame</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#switchToWindow-instance_method" title="Selenium::WebDriver::Remote::Bridge#switchToWindow (method)">#switchToWindow</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#toggleElement-instance_method" title="Selenium::WebDriver::Remote::Bridge#toggleElement (method)">#toggleElement</a></span></p>
 
   
   
@@ -400,8 +433,8 @@ A new instance of Bridge.
   
   
   
-  <h3 class="inherited">Methods included from <a href="../Find.html" title="Selenium::WebDriver::Find (module)">Selenium::WebDriver::Find</a></h3>
-  <p class="inherited"><a href="../Find.html#find_element-instance_method" title="Selenium::WebDriver::Find#find_element (method)">#find_element</a>, <a href="../Find.html#find_elements-instance_method" title="Selenium::WebDriver::Find#find_elements (method)">#find_elements</a></p>
+  <h3 class="inherited">Methods included from <span class='object_link'><a href="../BridgeHelper.html" title="Selenium::WebDriver::BridgeHelper (module)">BridgeHelper</a></span></h3>
+  <p class="inherited"><span class='object_link'><a href="../BridgeHelper.html#element_id_from-instance_method" title="Selenium::WebDriver::BridgeHelper#element_id_from (method)">#element_id_from</a></span>, <span class='object_link'><a href="../BridgeHelper.html#parse_cookie_string-instance_method" title="Selenium::WebDriver::BridgeHelper#parse_cookie_string (method)">#parse_cookie_string</a></span>, <span class='object_link'><a href="../BridgeHelper.html#unwrap_script_result-instance_method" title="Selenium::WebDriver::BridgeHelper#unwrap_script_result (method)">#unwrap_script_result</a></span></p>
 
   
   
@@ -410,15 +443,15 @@ A new instance of Bridge.
   
   
   
-  <h3 class="inherited">Methods included from <a href="../BridgeHelper.html" title="Selenium::WebDriver::BridgeHelper (module)">Selenium::WebDriver::BridgeHelper</a></h3>
-  <p class="inherited"><a href="../BridgeHelper.html#element_id_from-instance_method" title="Selenium::WebDriver::BridgeHelper#element_id_from (method)">#element_id_from</a>, <a href="../BridgeHelper.html#parse_cookie_string-instance_method" title="Selenium::WebDriver::BridgeHelper#parse_cookie_string (method)">#parse_cookie_string</a>, <a href="../BridgeHelper.html#unwrap_script_result-instance_method" title="Selenium::WebDriver::BridgeHelper#unwrap_script_result (method)">#unwrap_script_result</a></p>
+  <h3 class="inherited">Methods included from <span class='object_link'><a href="../Find.html" title="Selenium::WebDriver::Find (module)">Find</a></span></h3>
+  <p class="inherited"><span class='object_link'><a href="../Find.html#find_element-instance_method" title="Selenium::WebDriver::Find#find_element (method)">#find_element</a></span>, <span class='object_link'><a href="../Find.html#find_elements-instance_method" title="Selenium::WebDriver::Find#find_elements (method)">#find_elements</a></span></p>
 <div id="constructor_details" class="method_details_list">
   <h2>Constructor Details</h2>
   
     <div class="method_details first">
   <p class="signature first" id="initialize-instance_method">
   
-    - (<tt><a href="" title="Selenium::WebDriver::Chrome::Bridge (class)">Bridge</a></tt>) <strong>initialize</strong> 
+    - (<tt><span class='object_link'><a href="" title="Selenium::WebDriver::Chrome::Bridge (class)">Bridge</a></span></tt>) <strong>initialize</strong>(opts = {}) 
   
 
   
@@ -444,15 +477,21 @@ A new instance of Bridge
 10
 11
 12
-13</pre>
+13
+14
+15
+16</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 8</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chrome/bridge.rb', line 8</span>
 
-<span class='def def kw'>def</span> <span class='initialize identifier id'>initialize</span>
+<span class='def def kw'>def</span> <span class='initialize identifier id'>initialize</span><span class='lparen token'>(</span><span class='opts identifier id'>opts</span> <span class='assign token'>=</span> <span class='lbrace token'>{</span><span class='rbrace token'>}</span><span class='rparen token'>)</span>
+  <span class='@launcher ivar id'>@launcher</span> <span class='assign token'>=</span> <span class='Launcher constant id'>Launcher</span><span class='dot token'>.</span><span class='launcher identifier id'>launcher</span><span class='lparen token'>(</span>
+    <span class='symbol val'>:default_profile</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='opts identifier id'>opts</span><span class='lbrack token'>[</span><span class='symbol val'>:default_profile</span><span class='rbrack token'>]</span><span class='comma token'>,</span>
+    <span class='symbol val'>:secure_ssl</span>      <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='opts identifier id'>opts</span><span class='lbrack token'>[</span><span class='symbol val'>:secure_ssl</span><span class='rbrack token'>]</span>
+  <span class='rparen token'>)</span>
+
   <span class='@executor ivar id'>@executor</span> <span class='assign token'>=</span> <span class='CommandExecutor constant id'>CommandExecutor</span><span class='dot token'>.</span><span class='new identifier id'>new</span>
-
-  <span class='@launcher ivar id'>@launcher</span> <span class='assign token'>=</span> <span class='Launcher constant id'>Launcher</span><span class='dot token'>.</span><span class='launcher identifier id'>launcher</span>
   <span class='@launcher ivar id'>@launcher</span><span class='dot token'>.</span><span class='launch identifier id'>launch</span><span class='lparen token'>(</span><span class='@executor ivar id'>@executor</span><span class='dot token'>.</span><span class='uri identifier id'>uri</span><span class='rparen token'>)</span>
 <span class='end end kw'>end</span>
 </pre>
@@ -481,12 +520,12 @@ A new instance of Bridge
       <pre class="lines">
 
 
-15
-16
-17</pre>
+18
+19
+20</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 15</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chrome/bridge.rb', line 18</span>
 
 <span class='def def kw'>def</span> <span class='browser identifier id'>browser</span>
   <span class='symbol val'>:chrome</span>
@@ -510,12 +549,12 @@ A new instance of Bridge
       <pre class="lines">
 
 
-23
-24
-25</pre>
+26
+27
+28</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 23</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chrome/bridge.rb', line 26</span>
 
 <span class='def def kw'>def</span> <span class='capabilities identifier id'>capabilities</span>
   <span class='@capabilities ivar id'>@capabilities</span> <span class='opasgn op'>||=</span> <span class='Remote constant id'>Remote</span><span class='colon2 op'>::</span><span class='Capabilities constant id'>Capabilities</span><span class='dot token'>.</span><span class='chrome identifier id'>chrome</span>
@@ -539,12 +578,12 @@ A new instance of Bridge
       <pre class="lines">
 
 
-61
-62
-63</pre>
+64
+65
+66</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 61</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chrome/bridge.rb', line 64</span>
 
 <span class='def def kw'>def</span> <span class='deleteCookie identifier id'>deleteCookie</span><span class='lparen token'>(</span><span class='name identifier id'>name</span><span class='rparen token'>)</span>
   <span class='execute identifier id'>execute</span> <span class='symbol val'>:deleteCookie</span><span class='comma token'>,</span> <span class='symbol val'>:name</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='name identifier id'>name</span>
@@ -568,15 +607,44 @@ A new instance of Bridge
       <pre class="lines">
 
 
-19
-20
-21</pre>
+22
+23
+24</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 19</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chrome/bridge.rb', line 22</span>
 
 <span class='def def kw'>def</span> <span class='driver_extensions identifier id'>driver_extensions</span>
   <span class='lbrack token'>[</span><span class='DriverExtensions constant id'>DriverExtensions</span><span class='colon2 op'>::</span><span class='TakesScreenshot constant id'>TakesScreenshot</span><span class='rbrack token'>]</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="elementEquals-instance_method">
+  
+    - (<tt>Object</tt>) <strong>elementEquals</strong>(element, other) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+72
+73
+74</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chrome/bridge.rb', line 72</span>
+
+<span class='def def kw'>def</span> <span class='elementEquals identifier id'>elementEquals</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='comma token'>,</span> <span class='other identifier id'>other</span><span class='rparen token'>)</span>
+  <span class='element identifier id'>element</span><span class='dot token'>.</span><span class='ref identifier id'>ref</span> <span class='eq op'>==</span> <span class='other identifier id'>other</span><span class='dot token'>.</span><span class='ref identifier id'>ref</span>
 <span class='end end kw'>end</span>
 </pre>
     </td>
@@ -597,12 +665,12 @@ A new instance of Bridge
       <pre class="lines">
 
 
-49
-50
-51</pre>
+52
+53
+54</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 49</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chrome/bridge.rb', line 52</span>
 
 <span class='def def kw'>def</span> <span class='findElementByCssSelector identifier id'>findElementByCssSelector</span><span class='lparen token'>(</span><span class='parent identifier id'>parent</span><span class='comma token'>,</span> <span class='selector identifier id'>selector</span><span class='rparen token'>)</span>
   <span class='find_element_by identifier id'>find_element_by</span> <span class='string val'>'css'</span><span class='comma token'>,</span> <span class='selector identifier id'>selector</span><span class='comma token'>,</span> <span class='parent identifier id'>parent</span>
@@ -626,12 +694,12 @@ A new instance of Bridge
       <pre class="lines">
 
 
-53
-54
-55</pre>
+56
+57
+58</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 53</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chrome/bridge.rb', line 56</span>
 
 <span class='def def kw'>def</span> <span class='findElementsByCssSelector identifier id'>findElementsByCssSelector</span><span class='lparen token'>(</span><span class='parent identifier id'>parent</span><span class='comma token'>,</span> <span class='selector identifier id'>selector</span><span class='rparen token'>)</span>
   <span class='find_elements_by identifier id'>find_elements_by</span> <span class='string val'>'css'</span><span class='comma token'>,</span> <span class='selector identifier id'>selector</span><span class='comma token'>,</span> <span class='parent identifier id'>parent</span>
@@ -655,12 +723,12 @@ A new instance of Bridge
       <pre class="lines">
 
 
-57
-58
-59</pre>
+60
+61
+62</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 57</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chrome/bridge.rb', line 60</span>
 
 <span class='def def kw'>def</span> <span class='getAllCookies identifier id'>getAllCookies</span>
   <span class='execute identifier id'>execute</span> <span class='symbol val'>:getCookies</span>
@@ -684,12 +752,12 @@ A new instance of Bridge
       <pre class="lines">
 
 
-37
-38
-39</pre>
+40
+41
+42</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 37</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chrome/bridge.rb', line 40</span>
 
 <span class='def def kw'>def</span> <span class='getScreenshot identifier id'>getScreenshot</span>
   <span class='execute identifier id'>execute</span> <span class='symbol val'>:screenshot</span>
@@ -713,12 +781,12 @@ A new instance of Bridge
       <pre class="lines">
 
 
-45
-46
-47</pre>
+48
+49
+50</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 45</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chrome/bridge.rb', line 48</span>
 
 <span class='def def kw'>def</span> <span class='getSpeed identifier id'>getSpeed</span>
   <span class='@speed ivar id'>@speed</span>
@@ -742,18 +810,18 @@ A new instance of Bridge
       <pre class="lines">
 
 
-27
-28
-29
 30
 31
 32
 33
 34
-35</pre>
+35
+36
+37
+38</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 27</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chrome/bridge.rb', line 30</span>
 
 <span class='def def kw'>def</span> <span class='quit identifier id'>quit</span>
   <span class='begin begin kw'>begin</span>
@@ -783,12 +851,12 @@ A new instance of Bridge
       <pre class="lines">
 
 
-65
-66
-67</pre>
+68
+69
+70</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 65</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chrome/bridge.rb', line 68</span>
 
 <span class='def def kw'>def</span> <span class='setImplicitWaitTimeout identifier id'>setImplicitWaitTimeout</span><span class='lparen token'>(</span><span class='milliseconds identifier id'>milliseconds</span><span class='rparen token'>)</span>
   <span class='execute identifier id'>execute</span> <span class='symbol val'>:implicitlyWait</span><span class='comma token'>,</span> <span class='symbol val'>:ms</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='milliseconds identifier id'>milliseconds</span>
@@ -812,12 +880,12 @@ A new instance of Bridge
       <pre class="lines">
 
 
-41
-42
-43</pre>
+44
+45
+46</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/bridge.rb', line 41</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chrome/bridge.rb', line 44</span>
 
 <span class='def def kw'>def</span> <span class='setSpeed identifier id'>setSpeed</span><span class='lparen token'>(</span><span class='value identifier id'>value</span><span class='rparen token'>)</span>
   <span class='@speed ivar id'>@speed</span> <span class='assign token'>=</span> <span class='value identifier id'>value</span>
@@ -833,9 +901,9 @@ A new instance of Bridge
 </div>
     
     <div id="footer">
-  Generated on Fri Jun 11 14:24:25 2010 by 
-  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool">yard</a>
-  0.5.4 (ruby-1.8.7).
+  Generated on Fri Sep 24 16:16:59 2010 by 
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.6.1 (ruby-1.8.7).
 </div>
 
   </body>

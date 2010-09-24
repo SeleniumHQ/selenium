@@ -131,19 +131,19 @@ class RubyMappings
   class RubyDocs
     def handle(fun, dir, args)
       if have_yard?
-        define_task(args)
+        define_task(dir, args)
       else
-        define_noop
+        define_noop(dir)
       end
     end
 
-    def define_task(args)
+    def define_task(dir, args)
       files      = args[:files] || raise("no :files specified for rubydocs")
       output_dir = args[:output_dir] || raise("no :output_dir specified for rubydocs")
 
       files  = Array(files).map { |glob| Dir[glob] }.flatten
 
-      YARD::Rake::YardocTask.new("ruby-docs") do |t|
+      YARD::Rake::YardocTask.new("//#{dir}:docs") do |t|
         t.files = args[:files]
         t.options << "--verbose"
         t.options << "--readme" << args[:readme] if args.has_key?(:readme)
@@ -158,8 +158,8 @@ class RubyMappings
       false
     end
 
-    def define_noop
-      task :rubydocs do
+    def define_noop(dir)
+      task "//#{dir}:docs" do
         abort "YARD is not available."
       end
     end

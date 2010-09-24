@@ -24,7 +24,7 @@
       <div id="menu">
   
     <a href="../../_index.html">Index (D)</a> &raquo; 
-    <span class='title'><a href="../../Selenium.html" title="Selenium (module)">Selenium</a></span> &raquo; <span class='title'><a href="../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span>
+    <span class='title'><span class='object_link'><a href="../../Selenium.html" title="Selenium (module)">Selenium</a></span></span> &raquo; <span class='title'><span class='object_link'><a href="../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span></span>
      &raquo; 
     <span class="title">Driver</span>
   
@@ -43,7 +43,8 @@
     
     <iframe id="search_frame"></iframe>
     
-    <div id="content"><h1>Class: Selenium::WebDriver::Driver 
+    <div id="content"><h1>Class: Selenium::WebDriver::Driver
+  
   
   
 </h1>
@@ -70,14 +71,14 @@
   
     
       <dt class="r2">Includes:</dt>
-      <dd class="r2"><a href="Find.html" title="Selenium::WebDriver::Find (module)">Find</a></dd>
+      <dd class="r2"><span class='object_link'><a href="Find.html" title="Selenium::WebDriver::Find (module)">Find</a></span></dd>
       
     
   
   
   
     <dt class="r1 last">Defined in:</dt>
-    <dd class="r1 last">common/src/rb/lib/selenium/webdriver/driver.rb</dd>
+    <dd class="r1 last">rb/lib/selenium/webdriver/common/driver.rb</dd>
   
 </dl>
 <div class="clear"></div>
@@ -96,13 +97,13 @@ The main class through which you control the browser.
   <h3>See Also:</h3>
   <ul class="see">
     
-      <li><a href="Find.html" title="Selenium::WebDriver::Find (module)">Find</a></li>
+      <li><span class='object_link'><a href="Find.html" title="Selenium::WebDriver::Find (module)">Find</a></span></li>
     
-      <li><a href="Navigation.html" title="Selenium::WebDriver::Navigation (class)">Navigation</a></li>
+      <li><span class='object_link'><a href="Navigation.html" title="Selenium::WebDriver::Navigation (class)">Navigation</a></span></li>
     
-      <li><a href="TargetLocator.html" title="Selenium::WebDriver::TargetLocator (class)">TargetLocator</a></li>
+      <li><span class='object_link'><a href="TargetLocator.html" title="Selenium::WebDriver::TargetLocator (class)">TargetLocator</a></span></li>
     
-      <li><a href="Options.html" title="Selenium::WebDriver::Options (class)">Options</a></li>
+      <li><span class='object_link'><a href="Options.html" title="Selenium::WebDriver::Options (class)">Options</a></span></li>
     
   </ul>
 
@@ -115,50 +116,22 @@ The main class through which you control the browser.
   
   
   
-  <h3 class="inherited">Constants included from <a href="Find.html" title="Selenium::WebDriver::Find (module)">Find</a></h3>
-  <p class="inherited"><a href="Find.html#FINDERS-constant" title="Selenium::WebDriver::Find::FINDERS (constant)">FINDERS</a></p>
-
-  <h2>Instance Attribute Summary</h2>
-  <ul class="summary">
-    
-      <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#bridge-instance_method" title="#bridge (instance method)">- (Object) <strong>bridge</strong> </a>
-    
-
-    
-  </span>
-  
-  
-    <span class="note title readonly">readonly</span>
-    
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'><p>
-Returns the value of attribute bridge.
-</p>
-</div></span>
-  
-</li>
-
-    
-  </ul>
+  <h3 class="inherited">Constants included from <span class='object_link'><a href="Find.html" title="Selenium::WebDriver::Find (module)">Find</a></span></h3>
+  <p class="inherited"><span class='object_link'><a href="Find.html#FINDERS-constant" title="Selenium::WebDriver::Find::FINDERS (constant)">FINDERS</a></span></p>
 
 
   
-    <h2>Class Method Summary</h2>
+    <h2>
+      Class Method Summary
+      <small>(<a href="#" class="summary_toggle">collapse</a>)</small>
+    </h2>
 
     <ul class="summary">
       
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#%5B%5D-class_method" title="[] (class method)">+ (WebDriver::Element) <strong>[]</strong>(id) </a>
+      <a href="#%5B%5D-class_method" title="[] (class method)">+ (WebDriver::Element) <strong>[]</strong>(sel) </a>
     
 
     
@@ -168,12 +141,55 @@ Returns the value of attribute bridge.
   
   
   
+  
 
   
     <span class="summary_desc"><div class='inline'><p>
-Get the first element matching the given id.
+Get the first element matching the given selector.
 </p>
 </div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#browser-class_method" title="browser (class method)">+ (Object) <strong>browser</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#capabilities-class_method" title="capabilities (class method)">+ (Object) <strong>capabilities</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
   
 </li>
 
@@ -186,6 +202,7 @@ Get the first element matching the given id.
 
     
   </span>
+  
   
   
   
@@ -209,6 +226,7 @@ Close the current window, or the browser if no windows are left.
 
     
   </span>
+  
   
   
   
@@ -239,6 +257,7 @@ Get the URL of the current page.
   
   
   
+  
 
   
     <span class="summary_desc"><div class='inline'><p>
@@ -257,6 +276,7 @@ Execute the given JavaScript.
 
     
   </span>
+  
   
   
   
@@ -285,6 +305,7 @@ Create a new Driver instance with the correct bridge for the given browser.
   
   
   
+  
 
   
     <span class="summary_desc"><div class='inline'><p>
@@ -308,6 +329,7 @@ Opens the specified URL in the browser.
   
   
   
+  <span class="private note title">Private</span>
 
   
     <span class="summary_desc"><div class='inline'><p>
@@ -326,6 +348,7 @@ A new Driver instance with the given bridge.
 
     
   </span>
+  
   
   
   
@@ -351,6 +374,7 @@ A new Driver instance with the given bridge.
   
   
   
+  
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -371,6 +395,7 @@ A new Driver instance with the given bridge.
   
   
   
+  
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -386,6 +411,7 @@ A new Driver instance with the given bridge.
 
     
   </span>
+  
   
   
   
@@ -414,6 +440,7 @@ Get the source of the current page.
   
   
   
+  
 
   
     <span class="summary_desc"><div class='inline'><p>
@@ -432,6 +459,7 @@ Quit the browser.
 
     
   </span>
+  
   
   
   
@@ -460,6 +488,7 @@ for Find.
   
   
   
+  
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -480,6 +509,7 @@ for Find.
   
   
   
+  
 
   
     <span class="summary_desc"><div class='inline'><p>
@@ -493,11 +523,12 @@ Get the title of the current page.
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#visible%3D-class_method" title="visible= (class method)">+ (Object) <strong>visible</strong>(bool) </a>
+      <a href="#visible%3D-class_method" title="visible= (class method)">+ (Object) <strong>visible=</strong>(bool) </a>
     
 
     
   </span>
+  
   
   
   
@@ -526,6 +557,7 @@ Set the visibility of the browser.
   
   
   
+  
 
   
     <span class="summary_desc"><div class='inline'><p>
@@ -544,6 +576,7 @@ Get the visibility of the browser.
 
     
   </span>
+  
   
   
   
@@ -572,6 +605,7 @@ Get the current window handle.
   
   
   
+  
 
   
     <span class="summary_desc"><div class='inline'><p>
@@ -593,8 +627,8 @@ Get the window handles of open browser windows.
   
   
   
-  <h3 class="inherited">Methods included from <a href="Find.html" title="Selenium::WebDriver::Find (module)">Find</a></h3>
-  <p class="inherited"><a href="Find.html#find_element-instance_method" title="Selenium::WebDriver::Find#find_element (method)">#find_element</a>, <a href="Find.html#find_elements-instance_method" title="Selenium::WebDriver::Find#find_elements (method)">#find_elements</a></p>
+  <h3 class="inherited">Methods included from <span class='object_link'><a href="Find.html" title="Selenium::WebDriver::Find (module)">Find</a></span></h3>
+  <p class="inherited"><span class='object_link'><a href="Find.html#find_element-instance_method" title="Selenium::WebDriver::Find#find_element (method)">#find_element</a></span>, <span class='object_link'><a href="Find.html#find_elements-instance_method" title="Selenium::WebDriver::Find#find_elements (method)">#find_elements</a></span></p>
 <div id="constructor_details" class="method_details_list">
   <h2>Constructor Details</h2>
   
@@ -607,7 +641,11 @@ Get the window handles of open browser windows.
   
 </p><div class="docstring">
   <div class="discussion">
-    <p>
+    <p class="note private">
+  <strong>This method is part of a private API.</strong> 
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+<p>
 A new Driver instance with the given bridge
 </p>
 
@@ -622,24 +660,24 @@ A new Driver instance with the given bridge
       <pre class="lines">
 
 
+59
+60
 61
 62
 63
 64
 65
-66
-67
-68</pre>
+66</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/driver.rb', line 61</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver.rb', line 59</span>
 
 <span class='def def kw'>def</span> <span class='initialize identifier id'>initialize</span><span class='lparen token'>(</span><span class='bridge identifier id'>bridge</span><span class='rparen token'>)</span>
   <span class='@bridge ivar id'>@bridge</span> <span class='assign token'>=</span> <span class='bridge identifier id'>bridge</span>
 
   <span class='comment val'># TODO: refactor this away</span>
-  <span class='unless unless kw'>unless</span> <span class='@bridge ivar id'>@bridge</span><span class='dot token'>.</span><span class='driver_extensions identifier id'>driver_extensions</span><span class='dot token'>.</span><span class='empty? fid id'>empty?</span>
-    <span class='extend identifier id'>extend</span><span class='lparen token'>(</span><span class='mult op'>*</span><span class='@bridge ivar id'>@bridge</span><span class='dot token'>.</span><span class='driver_extensions identifier id'>driver_extensions</span><span class='rparen token'>)</span>
+  <span class='unless unless kw'>unless</span> <span class='bridge identifier id'>bridge</span><span class='dot token'>.</span><span class='driver_extensions identifier id'>driver_extensions</span><span class='dot token'>.</span><span class='empty? fid id'>empty?</span>
+    <span class='extend identifier id'>extend</span><span class='lparen token'>(</span><span class='mult op'>*</span><span class='bridge identifier id'>bridge</span><span class='dot token'>.</span><span class='driver_extensions identifier id'>driver_extensions</span><span class='rparen token'>)</span>
   <span class='end end kw'>end</span>
 <span class='end end kw'>end</span>
 </pre>
@@ -650,54 +688,6 @@ A new Driver instance with the given bridge
   
 </div>
 
-  <div id="instance_attr_details" class="attr_details">
-    <h2>Instance Attribute Details</h2>
-    
-      
-      <span id=""></span>
-      <span id="bridge-instance_method"></span>
-      <div class="method_details first">
-  <p class="signature first" id="bridge-instance_method">
-  
-    - (<tt>Object</tt>) <strong>bridge</strong>  <span class="extras">(readonly)</span>
-  
-
-  
-</p><div class="docstring">
-  <div class="discussion">
-    <p>
-Returns the value of attribute bridge
-</p>
-
-
-  </div>
-</div>
-<div class="tags">
-  
-</div><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-16
-17
-18</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/driver.rb', line 16</span>
-
-<span class='def def kw'>def</span> <span class='bridge identifier id'>bridge</span>
-  <span class='@bridge ivar id'>@bridge</span>
-<span class='end end kw'>end</span>
-</pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-  </div>
-
 
   <div id="class_method_details" class="method_details_list">
     <h2>Class Method Details</h2>
@@ -706,14 +696,15 @@ Returns the value of attribute bridge
       <div class="method_details first">
   <p class="signature first" id="[]-class_method">
   
-    + (<tt><a href="Element.html" title="Selenium::WebDriver::Element (class)">WebDriver::Element</a></tt>) <strong>[]</strong>(id) 
+    + (<tt><span class='object_link'><a href="Element.html" title="Selenium::WebDriver::Element (class)">WebDriver::Element</a></span></tt>) <strong>[]</strong>(sel) 
   
 
   
 </p><div class="docstring">
   <div class="discussion">
     <p>
-Get the first element matching the given id.
+Get the first element matching the given selector. If given a String or
+Symbol, it will be used as the id of the element.
 </p>
 
 
@@ -725,12 +716,18 @@ Get the first element matching the given id.
   
     <li>
       
-        <span class='type'>(<tt><a href="../../String.html" title="String (class)">String</a></tt>)</span>
+        <span class='type'>(<tt><span class='object_link'><a href="../../String.html" title="String (class)">String</a></span></tt>, <tt>Hash</tt>)</span>
       
       
         <span class='name'>id</span>
       
       
+      
+        &mdash;
+        <div class='inline'><p>
+or selector
+</p>
+</div>
       
     </li>
   
@@ -740,15 +737,16 @@ Get the first element matching the given id.
   
     <li>
       
-        <span class='type'>(<tt><a href="Element.html" title="Selenium::WebDriver::Element (class)">WebDriver::Element</a></tt>)</span>
+        <span class='type'>(<tt><span class='object_link'><a href="Element.html" title="Selenium::WebDriver::Element (class)">WebDriver::Element</a></span></tt>)</span>
       
       
       
       
         &mdash;
         <div class='inline'><p>
-driver[&#8216;someElementId&#8217;] #=&gt;
-#&lt;WebDriver::Element:0x1011c3b88&gt;
+driver[&#8216;someElementId&#8217;] #=> #<WebDriver::Element:0x1011c3b88>
+driver[:tag_name => &#8216;div&#8217;] #=>
+#<WebDriver::Element:0x1011c3b88>
 </p>
 </div>
       
@@ -764,13 +762,79 @@ driver[&#8216;someElementId&#8217;] #=&gt;
 
 240
 241
-242</pre>
+242
+243
+244
+245
+246</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/driver.rb', line 240</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver.rb', line 240</span>
 
-<span class='def def kw'>def</span> <span class='aref op'>[]</span><span class='lparen token'>(</span><span class='id identifier id'>id</span><span class='rparen token'>)</span>
-  <span class='find_element identifier id'>find_element</span> <span class='symbol val'>:id</span><span class='comma token'>,</span> <span class='id identifier id'>id</span>
+<span class='def def kw'>def</span> <span class='aref op'>[]</span><span class='lparen token'>(</span><span class='sel identifier id'>sel</span><span class='rparen token'>)</span>
+  <span class='if if kw'>if</span> <span class='sel identifier id'>sel</span><span class='dot token'>.</span><span class='kind_of? fid id'>kind_of?</span><span class='lparen token'>(</span><span class='String constant id'>String</span><span class='rparen token'>)</span> <span class='orop op'>||</span> <span class='sel identifier id'>sel</span><span class='dot token'>.</span><span class='kind_of? fid id'>kind_of?</span><span class='lparen token'>(</span><span class='Symbol constant id'>Symbol</span><span class='rparen token'>)</span>
+    <span class='sel identifier id'>sel</span> <span class='assign token'>=</span> <span class='lbrace token'>{</span> <span class='symbol val'>:id</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='sel identifier id'>sel</span> <span class='rbrace token'>}</span>
+  <span class='end end kw'>end</span>
+
+  <span class='find_element identifier id'>find_element</span> <span class='sel identifier id'>sel</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="browser-class_method">
+  
+    + (<tt>Object</tt>) <strong>browser</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+259
+260
+261</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver.rb', line 259</span>
+
+<span class='def def kw'>def</span> <span class='browser identifier id'>browser</span>
+  <span class='bridge identifier id'>bridge</span><span class='dot token'>.</span><span class='browser identifier id'>browser</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="capabilities-class_method">
+  
+    + (<tt>Object</tt>) <strong>capabilities</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+263
+264
+265</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver.rb', line 263</span>
+
+<span class='def def kw'>def</span> <span class='capabilities identifier id'>capabilities</span>
+  <span class='bridge identifier id'>bridge</span><span class='dot token'>.</span><span class='capabilities identifier id'>capabilities</span>
 <span class='end end kw'>end</span>
 </pre>
     </td>
@@ -802,12 +866,12 @@ Close the current window, or the browser if no windows are left.
       <pre class="lines">
 
 
-171
-172
-173</pre>
+169
+170
+171</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/driver.rb', line 171</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver.rb', line 169</span>
 
 <span class='def def kw'>def</span> <span class='close identifier id'>close</span>
   <span class='bridge identifier id'>bridge</span><span class='dot token'>.</span><span class='close identifier id'>close</span>
@@ -821,7 +885,7 @@ Close the current window, or the browser if no windows are left.
       <div class="method_details ">
   <p class="signature " id="current_url-class_method">
   
-    + (<tt><a href="../../String.html" title="String (class)">String</a></tt>) <strong>current_url</strong> 
+    + (<tt><span class='object_link'><a href="../../String.html" title="String (class)">String</a></span></tt>) <strong>current_url</strong> 
   
 
   
@@ -840,7 +904,7 @@ Get the URL of the current page
   
     <li>
       
-        <span class='type'>(<tt><a href="../../String.html" title="String (class)">String</a></tt>)</span>
+        <span class='type'>(<tt><span class='object_link'><a href="../../String.html" title="String (class)">String</a></span></tt>)</span>
       
       
       
@@ -855,12 +919,12 @@ Get the URL of the current page
       <pre class="lines">
 
 
-115
-116
-117</pre>
+113
+114
+115</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/driver.rb', line 115</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver.rb', line 113</span>
 
 <span class='def def kw'>def</span> <span class='current_url identifier id'>current_url</span>
   <span class='bridge identifier id'>bridge</span><span class='dot token'>.</span><span class='getCurrentUrl identifier id'>getCurrentUrl</span>
@@ -874,7 +938,7 @@ Get the URL of the current page
       <div class="method_details ">
   <p class="signature " id="execute_script-class_method">
   
-    + (<tt><a href="Element.html" title="Selenium::WebDriver::Element (class)">WebDriver::Element</a></tt>, ...) <strong>execute_script</strong>(script, *args) 
+    + (<tt><span class='object_link'><a href="Element.html" title="Selenium::WebDriver::Element (class)">WebDriver::Element</a></span></tt>, ...) <strong>execute_script</strong>(script, *args) 
   
 
   
@@ -897,7 +961,7 @@ Execute the given JavaScript
   
     <li>
       
-        <span class='type'>(<tt><a href="../../String.html" title="String (class)">String</a></tt>)</span>
+        <span class='type'>(<tt><span class='object_link'><a href="../../String.html" title="String (class)">String</a></span></tt>)</span>
       
       
         <span class='name'>script</span>
@@ -914,7 +978,7 @@ JavaScript source to execute
   
     <li>
       
-        <span class='type'>(<tt><a href="Element.html" title="Selenium::WebDriver::Element (class)">WebDriver::Element</a></tt>, <tt>Integer</tt>, <tt>Float</tt>, <tt>Boolean</tt>, <tt>NilClass</tt>, <tt><a href="../../String.html" title="String (class)">String</a></tt>, <tt>Array</tt>)</span>
+        <span class='type'>(<tt><span class='object_link'><a href="Element.html" title="Selenium::WebDriver::Element (class)">WebDriver::Element</a></span></tt>, <tt>Integer</tt>, <tt>Float</tt>, <tt>Boolean</tt>, <tt>NilClass</tt>, <tt><span class='object_link'><a href="../../String.html" title="String (class)">String</a></span></tt>, <tt>Array</tt>)</span>
       
       
         <span class='name'>*args</span>
@@ -936,7 +1000,7 @@ Arguments will be available in the given script as the
   
     <li>
       
-        <span class='type'>(<tt><a href="Element.html" title="Selenium::WebDriver::Element (class)">WebDriver::Element</a></tt>, <tt>Integer</tt>, <tt>Float</tt>, <tt>Boolean</tt>, <tt>NilClass</tt>, <tt><a href="../../String.html" title="String (class)">String</a></tt>, <tt>Array</tt>)</span>
+        <span class='type'>(<tt><span class='object_link'><a href="Element.html" title="Selenium::WebDriver::Element (class)">WebDriver::Element</a></span></tt>, <tt>Integer</tt>, <tt>Float</tt>, <tt>Boolean</tt>, <tt>NilClass</tt>, <tt><span class='object_link'><a href="../../String.html" title="String (class)">String</a></span></tt>, <tt>Array</tt>)</span>
       
       
       
@@ -957,12 +1021,12 @@ The value returned from the script.
       <pre class="lines">
 
 
-208
-209
-210</pre>
+206
+207
+208</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/driver.rb', line 208</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver.rb', line 206</span>
 
 <span class='def def kw'>def</span> <span class='execute_script identifier id'>execute_script</span><span class='lparen token'>(</span><span class='script identifier id'>script</span><span class='comma token'>,</span> <span class='mult op'>*</span><span class='args identifier id'>args</span><span class='rparen token'>)</span>
   <span class='bridge identifier id'>bridge</span><span class='dot token'>.</span><span class='executeScript identifier id'>executeScript</span><span class='lparen token'>(</span><span class='script identifier id'>script</span><span class='comma token'>,</span> <span class='mult op'>*</span><span class='args identifier id'>args</span><span class='rparen token'>)</span>
@@ -976,7 +1040,7 @@ The value returned from the script.
       <div class="method_details ">
   <p class="signature " id="for-class_method">
   
-    + (<tt><a href="" title="Selenium::WebDriver::Driver (class)">Driver</a></tt>) <strong>for</strong>(browser, *args) 
+    + (<tt><span class='object_link'><a href="" title="Selenium::WebDriver::Driver (class)">Driver</a></span></tt>) <strong>for</strong>(browser, *args) 
   
 
   
@@ -1045,7 +1109,7 @@ arguments passed to Bridge.new
   
     <li>
       
-        <span class='type'>(<tt><a href="" title="Selenium::WebDriver::Driver (class)">Driver</a></tt>)</span>
+        <span class='type'>(<tt><span class='object_link'><a href="" title="Selenium::WebDriver::Driver (class)">Driver</a></span></tt>)</span>
       
       
       
@@ -1060,6 +1124,8 @@ arguments passed to Bridge.new
       <pre class="lines">
 
 
+35
+36
 37
 38
 39
@@ -1073,12 +1139,10 @@ arguments passed to Bridge.new
 47
 48
 49
-50
-51
-52</pre>
+50</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/driver.rb', line 37</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver.rb', line 35</span>
 
 <span class='def def kw'>def</span> <span class='for for kw'>for</span><span class='lparen token'>(</span><span class='browser identifier id'>browser</span><span class='comma token'>,</span> <span class='mult op'>*</span><span class='args identifier id'>args</span><span class='rparen token'>)</span>
   <span class='bridge identifier id'>bridge</span> <span class='assign token'>=</span> <span class='case case kw'>case</span> <span class='browser identifier id'>browser</span>
@@ -1126,12 +1190,12 @@ Opens the specified URL in the browser.
       <pre class="lines">
 
 
-105
-106
-107</pre>
+103
+104
+105</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/driver.rb', line 105</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver.rb', line 103</span>
 
 <span class='def def kw'>def</span> <span class='get identifier id'>get</span><span class='lparen token'>(</span><span class='url identifier id'>url</span><span class='rparen token'>)</span>
   <span class='navigate identifier id'>navigate</span><span class='dot token'>.</span><span class='to identifier id'>to</span><span class='lparen token'>(</span><span class='url identifier id'>url</span><span class='rparen token'>)</span>
@@ -1151,7 +1215,11 @@ Opens the specified URL in the browser.
   
 </p><div class="docstring">
   <div class="discussion">
-    <p>
+    <p class="note private">
+  <strong>This method is part of a private API.</strong> 
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+<p>
 A new Driver instance with the given bridge
 </p>
 
@@ -1166,24 +1234,24 @@ A new Driver instance with the given bridge
       <pre class="lines">
 
 
+59
+60
 61
 62
 63
 64
 65
-66
-67
-68</pre>
+66</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/driver.rb', line 61</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver.rb', line 59</span>
 
 <span class='def def kw'>def</span> <span class='initialize identifier id'>initialize</span><span class='lparen token'>(</span><span class='bridge identifier id'>bridge</span><span class='rparen token'>)</span>
   <span class='@bridge ivar id'>@bridge</span> <span class='assign token'>=</span> <span class='bridge identifier id'>bridge</span>
 
   <span class='comment val'># TODO: refactor this away</span>
-  <span class='unless unless kw'>unless</span> <span class='@bridge ivar id'>@bridge</span><span class='dot token'>.</span><span class='driver_extensions identifier id'>driver_extensions</span><span class='dot token'>.</span><span class='empty? fid id'>empty?</span>
-    <span class='extend identifier id'>extend</span><span class='lparen token'>(</span><span class='mult op'>*</span><span class='@bridge ivar id'>@bridge</span><span class='dot token'>.</span><span class='driver_extensions identifier id'>driver_extensions</span><span class='rparen token'>)</span>
+  <span class='unless unless kw'>unless</span> <span class='bridge identifier id'>bridge</span><span class='dot token'>.</span><span class='driver_extensions identifier id'>driver_extensions</span><span class='dot token'>.</span><span class='empty? fid id'>empty?</span>
+    <span class='extend identifier id'>extend</span><span class='lparen token'>(</span><span class='mult op'>*</span><span class='bridge identifier id'>bridge</span><span class='dot token'>.</span><span class='driver_extensions identifier id'>driver_extensions</span><span class='rparen token'>)</span>
   <span class='end end kw'>end</span>
 <span class='end end kw'>end</span>
 </pre>
@@ -1205,12 +1273,12 @@ A new Driver instance with the given bridge
       <pre class="lines">
 
 
-70
-71
-72</pre>
+68
+69
+70</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/driver.rb', line 70</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver.rb', line 68</span>
 
 <span class='def def kw'>def</span> <span class='inspect identifier id'>inspect</span>
   <span class='string val'>'#&lt;%s:0x%x browser=%s&gt;'</span> <span class='mod op'>%</span> <span class='lbrack token'>[</span><span class='self self kw'>self</span><span class='dot token'>.</span><span class='class identifier id'>class</span><span class='comma token'>,</span> <span class='hash identifier id'>hash</span><span class='mult op'>*</span><span class='integer val'>2</span><span class='comma token'>,</span> <span class='bridge identifier id'>bridge</span><span class='dot token'>.</span><span class='browser identifier id'>browser</span><span class='dot token'>.</span><span class='inspect identifier id'>inspect</span><span class='rbrack token'>]</span>
@@ -1224,7 +1292,7 @@ A new Driver instance with the given bridge
       <div class="method_details ">
   <p class="signature " id="manage-class_method">
   
-    + (<tt><a href="Options.html" title="Selenium::WebDriver::Options (class)">Options</a></tt>) <strong>manage</strong> 
+    + (<tt><span class='object_link'><a href="Options.html" title="Selenium::WebDriver::Options (class)">Options</a></span></tt>) <strong>manage</strong> 
   
 
   
@@ -1240,7 +1308,7 @@ A new Driver instance with the given bridge
   
     <li>
       
-        <span class='type'>(<tt><a href="Options.html" title="Selenium::WebDriver::Options (class)">Options</a></tt>)</span>
+        <span class='type'>(<tt><span class='object_link'><a href="Options.html" title="Selenium::WebDriver::Options (class)">Options</a></span></tt>)</span>
       
       
       
@@ -1252,7 +1320,7 @@ A new Driver instance with the given bridge
   <h3>See Also:</h3>
   <ul class="see">
     
-      <li><a href="Options.html" title="Selenium::WebDriver::Options (class)">Options</a></li>
+      <li><span class='object_link'><a href="Options.html" title="Selenium::WebDriver::Options (class)">Options</a></span></li>
     
   </ul>
 
@@ -1262,15 +1330,15 @@ A new Driver instance with the given bridge
       <pre class="lines">
 
 
-97
-98
-99</pre>
+95
+96
+97</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/driver.rb', line 97</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver.rb', line 95</span>
 
 <span class='def def kw'>def</span> <span class='manage identifier id'>manage</span>
-  <span class='@manage ivar id'>@manage</span> <span class='opasgn op'>||=</span> <span class='WebDriver constant id'>WebDriver</span><span class='colon2 op'>::</span><span class='Options constant id'>Options</span><span class='dot token'>.</span><span class='new identifier id'>new</span><span class='lparen token'>(</span><span class='self self kw'>self</span><span class='rparen token'>)</span>
+  <span class='@manage ivar id'>@manage</span> <span class='opasgn op'>||=</span> <span class='WebDriver constant id'>WebDriver</span><span class='colon2 op'>::</span><span class='Options constant id'>Options</span><span class='dot token'>.</span><span class='new identifier id'>new</span><span class='lparen token'>(</span><span class='bridge identifier id'>bridge</span><span class='rparen token'>)</span>
 <span class='end end kw'>end</span>
 </pre>
     </td>
@@ -1281,7 +1349,7 @@ A new Driver instance with the given bridge
       <div class="method_details ">
   <p class="signature " id="navigate-class_method">
   
-    + (<tt><a href="Navigation.html" title="Selenium::WebDriver::Navigation (class)">Navigation</a></tt>) <strong>navigate</strong> 
+    + (<tt><span class='object_link'><a href="Navigation.html" title="Selenium::WebDriver::Navigation (class)">Navigation</a></span></tt>) <strong>navigate</strong> 
   
 
   
@@ -1297,7 +1365,7 @@ A new Driver instance with the given bridge
   
     <li>
       
-        <span class='type'>(<tt><a href="Navigation.html" title="Selenium::WebDriver::Navigation (class)">Navigation</a></tt>)</span>
+        <span class='type'>(<tt><span class='object_link'><a href="Navigation.html" title="Selenium::WebDriver::Navigation (class)">Navigation</a></span></tt>)</span>
       
       
       
@@ -1309,7 +1377,7 @@ A new Driver instance with the given bridge
   <h3>See Also:</h3>
   <ul class="see">
     
-      <li><a href="Navigation.html" title="Selenium::WebDriver::Navigation (class)">Navigation</a></li>
+      <li><span class='object_link'><a href="Navigation.html" title="Selenium::WebDriver::Navigation (class)">Navigation</a></span></li>
     
   </ul>
 
@@ -1319,15 +1387,15 @@ A new Driver instance with the given bridge
       <pre class="lines">
 
 
-79
-80
-81</pre>
+77
+78
+79</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/driver.rb', line 79</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver.rb', line 77</span>
 
 <span class='def def kw'>def</span> <span class='navigate identifier id'>navigate</span>
-  <span class='@navigate ivar id'>@navigate</span> <span class='opasgn op'>||=</span> <span class='WebDriver constant id'>WebDriver</span><span class='colon2 op'>::</span><span class='Navigation constant id'>Navigation</span><span class='dot token'>.</span><span class='new identifier id'>new</span><span class='lparen token'>(</span><span class='self self kw'>self</span><span class='rparen token'>)</span>
+  <span class='@navigate ivar id'>@navigate</span> <span class='opasgn op'>||=</span> <span class='WebDriver constant id'>WebDriver</span><span class='colon2 op'>::</span><span class='Navigation constant id'>Navigation</span><span class='dot token'>.</span><span class='new identifier id'>new</span><span class='lparen token'>(</span><span class='bridge identifier id'>bridge</span><span class='rparen token'>)</span>
 <span class='end end kw'>end</span>
 </pre>
     </td>
@@ -1338,7 +1406,7 @@ A new Driver instance with the given bridge
       <div class="method_details ">
   <p class="signature " id="page_source-class_method">
   
-    + (<tt><a href="../../String.html" title="String (class)">String</a></tt>) <strong>page_source</strong> 
+    + (<tt><span class='object_link'><a href="../../String.html" title="String (class)">String</a></span></tt>) <strong>page_source</strong> 
   
 
   
@@ -1357,7 +1425,7 @@ Get the source of the current page
   
     <li>
       
-        <span class='type'>(<tt><a href="../../String.html" title="String (class)">String</a></tt>)</span>
+        <span class='type'>(<tt><span class='object_link'><a href="../../String.html" title="String (class)">String</a></span></tt>)</span>
       
       
       
@@ -1372,12 +1440,12 @@ Get the source of the current page
       <pre class="lines">
 
 
-135
-136
-137</pre>
+133
+134
+135</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/driver.rb', line 135</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver.rb', line 133</span>
 
 <span class='def def kw'>def</span> <span class='page_source identifier id'>page_source</span>
   <span class='bridge identifier id'>bridge</span><span class='dot token'>.</span><span class='getPageSource identifier id'>getPageSource</span>
@@ -1412,12 +1480,12 @@ Quit the browser
       <pre class="lines">
 
 
-163
-164
-165</pre>
+161
+162
+163</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/driver.rb', line 163</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver.rb', line 161</span>
 
 <span class='def def kw'>def</span> <span class='quit identifier id'>quit</span>
   <span class='bridge identifier id'>bridge</span><span class='dot token'>.</span><span class='quit identifier id'>quit</span>
@@ -1452,12 +1520,12 @@ for Find
       <pre class="lines">
 
 
-251
-252
-253</pre>
+255
+256
+257</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/driver.rb', line 251</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver.rb', line 255</span>
 
 <span class='def def kw'>def</span> <span class='ref identifier id'>ref</span>
   <span class='nil nil kw'>nil</span>
@@ -1471,7 +1539,7 @@ for Find
       <div class="method_details ">
   <p class="signature " id="switch_to-class_method">
   
-    + (<tt><a href="TargetLocator.html" title="Selenium::WebDriver::TargetLocator (class)">TargetLocator</a></tt>) <strong>switch_to</strong> 
+    + (<tt><span class='object_link'><a href="TargetLocator.html" title="Selenium::WebDriver::TargetLocator (class)">TargetLocator</a></span></tt>) <strong>switch_to</strong> 
   
 
   
@@ -1487,7 +1555,7 @@ for Find
   
     <li>
       
-        <span class='type'>(<tt><a href="TargetLocator.html" title="Selenium::WebDriver::TargetLocator (class)">TargetLocator</a></tt>)</span>
+        <span class='type'>(<tt><span class='object_link'><a href="TargetLocator.html" title="Selenium::WebDriver::TargetLocator (class)">TargetLocator</a></span></tt>)</span>
       
       
       
@@ -1499,7 +1567,7 @@ for Find
   <h3>See Also:</h3>
   <ul class="see">
     
-      <li><a href="TargetLocator.html" title="Selenium::WebDriver::TargetLocator (class)">TargetLocator</a></li>
+      <li><span class='object_link'><a href="TargetLocator.html" title="Selenium::WebDriver::TargetLocator (class)">TargetLocator</a></span></li>
     
   </ul>
 
@@ -1509,15 +1577,15 @@ for Find
       <pre class="lines">
 
 
-88
-89
-90</pre>
+86
+87
+88</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/driver.rb', line 88</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver.rb', line 86</span>
 
 <span class='def def kw'>def</span> <span class='switch_to identifier id'>switch_to</span>
-  <span class='@switch_to ivar id'>@switch_to</span> <span class='opasgn op'>||=</span> <span class='WebDriver constant id'>WebDriver</span><span class='colon2 op'>::</span><span class='TargetLocator constant id'>TargetLocator</span><span class='dot token'>.</span><span class='new identifier id'>new</span><span class='lparen token'>(</span><span class='self self kw'>self</span><span class='rparen token'>)</span>
+  <span class='@switch_to ivar id'>@switch_to</span> <span class='opasgn op'>||=</span> <span class='WebDriver constant id'>WebDriver</span><span class='colon2 op'>::</span><span class='TargetLocator constant id'>TargetLocator</span><span class='dot token'>.</span><span class='new identifier id'>new</span><span class='lparen token'>(</span><span class='bridge identifier id'>bridge</span><span class='rparen token'>)</span>
 <span class='end end kw'>end</span>
 </pre>
     </td>
@@ -1528,7 +1596,7 @@ for Find
       <div class="method_details ">
   <p class="signature " id="title-class_method">
   
-    + (<tt><a href="../../String.html" title="String (class)">String</a></tt>) <strong>title</strong> 
+    + (<tt><span class='object_link'><a href="../../String.html" title="String (class)">String</a></span></tt>) <strong>title</strong> 
   
 
   
@@ -1547,7 +1615,7 @@ Get the title of the current page
   
     <li>
       
-        <span class='type'>(<tt><a href="../../String.html" title="String (class)">String</a></tt>)</span>
+        <span class='type'>(<tt><span class='object_link'><a href="../../String.html" title="String (class)">String</a></span></tt>)</span>
       
       
       
@@ -1562,12 +1630,12 @@ Get the title of the current page
       <pre class="lines">
 
 
-125
-126
-127</pre>
+123
+124
+125</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/driver.rb', line 125</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver.rb', line 123</span>
 
 <span class='def def kw'>def</span> <span class='title identifier id'>title</span>
   <span class='bridge identifier id'>bridge</span><span class='dot token'>.</span><span class='getTitle identifier id'>getTitle</span>
@@ -1617,12 +1685,12 @@ Set the visibility of the browser. Not applicable for all browsers.
       <pre class="lines">
 
 
-155
-156
-157</pre>
+153
+154
+155</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/driver.rb', line 155</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver.rb', line 153</span>
 
 <span class='def def kw'>def</span> <span class='visible= identifier id'>visible=</span><span class='lparen token'>(</span><span class='bool identifier id'>bool</span><span class='rparen token'>)</span>
   <span class='bridge identifier id'>bridge</span><span class='dot token'>.</span><span class='setBrowserVisible identifier id'>setBrowserVisible</span> <span class='bool identifier id'>bool</span>
@@ -1670,12 +1738,12 @@ Get the visibility of the browser. Not applicable for all browsers.
       <pre class="lines">
 
 
-145
-146
-147</pre>
+143
+144
+145</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/driver.rb', line 145</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver.rb', line 143</span>
 
 <span class='def def kw'>def</span> <span class='visible? fid id'>visible?</span>
   <span class='bridge identifier id'>bridge</span><span class='dot token'>.</span><span class='getBrowserVisible identifier id'>getBrowserVisible</span>
@@ -1689,7 +1757,7 @@ Get the visibility of the browser. Not applicable for all browsers.
       <div class="method_details ">
   <p class="signature " id="window_handle-class_method">
   
-    + (<tt><a href="../../String.html" title="String (class)">String</a></tt>) <strong>window_handle</strong> 
+    + (<tt><span class='object_link'><a href="../../String.html" title="String (class)">String</a></span></tt>) <strong>window_handle</strong> 
   
 
   
@@ -1708,7 +1776,7 @@ Get the current window handle
   
     <li>
       
-        <span class='type'>(<tt><a href="../../String.html" title="String (class)">String</a></tt>)</span>
+        <span class='type'>(<tt><span class='object_link'><a href="../../String.html" title="String (class)">String</a></span></tt>)</span>
       
       
       
@@ -1723,12 +1791,12 @@ Get the current window handle
       <pre class="lines">
 
 
-192
-193
-194</pre>
+190
+191
+192</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/driver.rb', line 192</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver.rb', line 190</span>
 
 <span class='def def kw'>def</span> <span class='window_handle identifier id'>window_handle</span>
   <span class='bridge identifier id'>bridge</span><span class='dot token'>.</span><span class='getCurrentWindowHandle identifier id'>getCurrentWindowHandle</span>
@@ -1773,7 +1841,7 @@ Get the window handles of open browser windows.
   <h3>See Also:</h3>
   <ul class="see">
     
-      <li><a href="TargetLocator.html#window-instance_method" title="Selenium::WebDriver::TargetLocator#window (method)">TargetLocator#window</a></li>
+      <li><span class='object_link'><a href="TargetLocator.html#window-instance_method" title="Selenium::WebDriver::TargetLocator#window (method)">TargetLocator#window</a></span></li>
     
   </ul>
 
@@ -1783,12 +1851,12 @@ Get the window handles of open browser windows.
       <pre class="lines">
 
 
-182
-183
-184</pre>
+180
+181
+182</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/driver.rb', line 182</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver.rb', line 180</span>
 
 <span class='def def kw'>def</span> <span class='window_handles identifier id'>window_handles</span>
   <span class='bridge identifier id'>bridge</span><span class='dot token'>.</span><span class='getWindowHandles identifier id'>getWindowHandles</span>
@@ -1804,9 +1872,9 @@ Get the window handles of open browser windows.
 </div>
     
     <div id="footer">
-  Generated on Fri Jun 11 14:24:22 2010 by 
-  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool">yard</a>
-  0.5.4 (ruby-1.8.7).
+  Generated on Fri Sep 24 16:17:00 2010 by 
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.6.1 (ruby-1.8.7).
 </div>
 
   </body>

@@ -24,7 +24,7 @@
       <div id="menu">
   
     <a href="../../../../_index.html">Index (C)</a> &raquo; 
-    <span class='title'><a href="../../../../Selenium.html" title="Selenium (module)">Selenium</a></span> &raquo; <span class='title'><a href="../../../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span> &raquo; <span class='title'><a href="../../Remote.html" title="Selenium::WebDriver::Remote (module)">Remote</a></span> &raquo; <span class='title'><a href="../Http.html" title="Selenium::WebDriver::Remote::Http (module)">Http</a></span>
+    <span class='title'><span class='object_link'><a href="../../../../Selenium.html" title="Selenium (module)">Selenium</a></span></span> &raquo; <span class='title'><span class='object_link'><a href="../../../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span></span> &raquo; <span class='title'><span class='object_link'><a href="../../Remote.html" title="Selenium::WebDriver::Remote (module)">Remote</a></span></span> &raquo; <span class='title'><span class='object_link'><a href="../Http.html" title="Selenium::WebDriver::Remote::Http (module)">Http</a></span></span>
      &raquo; 
     <span class="title">Common</span>
   
@@ -43,7 +43,8 @@
     
     <iframe id="search_frame"></iframe>
     
-    <div id="content"><h1>Class: Selenium::WebDriver::Remote::Http::Common 
+    <div id="content"><h1>Class: Selenium::WebDriver::Remote::Http::Common
+  
   
   
 </h1>
@@ -73,14 +74,14 @@
   
   
     <dt class="r2 last">Defined in:</dt>
-    <dd class="r2 last">remote/client/src/rb/lib/selenium/webdriver/remote/http/common.rb</dd>
+    <dd class="r2 last">rb/lib/selenium/webdriver/remote/http/common.rb</dd>
   
 </dl>
 <div class="clear"></div>
 
 <div id="subclasses">
   <h2>Direct Known Subclasses</h2>
-  <p class="children"><a href="Curb.html" title="Selenium::WebDriver::Remote::Http::Curb (class)">Curb</a>, <a href="Default.html" title="Selenium::WebDriver::Remote::Http::Default (class)">Default</a></p>
+  <p class="children"><span class='object_link'><a href="Curb.html" title="Selenium::WebDriver::Remote::Http::Curb (class)">Curb</a></span>, <span class='object_link'><a href="Default.html" title="Selenium::WebDriver::Remote::Http::Default (class)">Default</a></span></p>
 </div>
 
   <h2>Constant Summary</h2>
@@ -120,9 +121,44 @@ same as chromium/gecko
   
 
 
+  <h2>Class Attribute Summary <small>(<a href="#" class="summary_toggle">collapse</a>)</small></h2>
+  <ul class="summary">
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#timeout-class_method" title="timeout (class method)">+ (Object) <strong>timeout</strong> </a>
+    
+
+    
+  </span>
+  
+  
+    
+    
+  
+  
+  
+  
+  
 
   
-    <h2>Instance Method Summary</h2>
+    <span class="summary_desc"><div class='inline'><p>
+Returns the value of attribute timeout.
+</p>
+</div></span>
+  
+</li>
+
+    
+  </ul>
+
+
+  
+    <h2>
+      Instance Method Summary
+      <small>(<a href="#" class="summary_toggle">collapse</a>)</small>
+    </h2>
 
     <ul class="summary">
       
@@ -134,6 +170,7 @@ same as chromium/gecko
 
     
   </span>
+  
   
   
   
@@ -161,6 +198,7 @@ same as chromium/gecko
   
   
   
+  
 
   
     <span class="summary_desc"><div class='inline'><p>
@@ -180,7 +218,7 @@ A new instance of Common.
     <div class="method_details first">
   <p class="signature first" id="initialize-instance_method">
   
-    - (<tt><a href="" title="Selenium::WebDriver::Remote::Http::Common (class)">Common</a></tt>) <strong>initialize</strong>(url) 
+    - (<tt><span class='object_link'><a href="" title="Selenium::WebDriver::Remote::Http::Common (class)">Common</a></span></tt>) <strong>initialize</strong>(url) 
   
 
   
@@ -201,12 +239,12 @@ A new instance of Common
       <pre class="lines">
 
 
-10
-11
-12</pre>
+14
+15
+16</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/http/common.rb', line 10</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/http/common.rb', line 14</span>
 
 <span class='def def kw'>def</span> <span class='initialize identifier id'>initialize</span><span class='lparen token'>(</span><span class='url identifier id'>url</span><span class='rparen token'>)</span>
   <span class='@server_url ivar id'>@server_url</span> <span class='assign token'>=</span> <span class='url identifier id'>url</span>
@@ -218,6 +256,54 @@ A new instance of Common
 </div>
   
 </div>
+
+  <div id="class_attr_details" class="attr_details">
+    <h2>Class Attribute Details</h2>
+    
+      
+      <span id="timeout=-class_method"></span>
+      <span id="timeout-class_method"></span>
+      <div class="method_details first">
+  <p class="signature first" id="timeout-class_method">
+  
+    + (<tt>Object</tt>) <strong>timeout</strong> 
+  
+
+  
+</p><div class="docstring">
+  <div class="discussion">
+    <p>
+Returns the value of attribute timeout
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+11
+12
+13</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/http/common.rb', line 11</span>
+
+<span class='def def kw'>def</span> <span class='timeout identifier id'>timeout</span>
+  <span class='@timeout ivar id'>@timeout</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
 
 
   <div id="instance_method_details" class="method_details_list">
@@ -237,10 +323,6 @@ A new instance of Common
       <pre class="lines">
 
 
-14
-15
-16
-17
 18
 19
 20
@@ -253,10 +335,14 @@ A new instance of Common
 27
 28
 29
-30</pre>
+30
+31
+32
+33
+34</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/http/common.rb', line 14</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/http/common.rb', line 18</span>
 
 <span class='def def kw'>def</span> <span class='call identifier id'>call</span><span class='lparen token'>(</span><span class='verb identifier id'>verb</span><span class='comma token'>,</span> <span class='url identifier id'>url</span><span class='comma token'>,</span> <span class='command_hash identifier id'>command_hash</span><span class='rparen token'>)</span>
   <span class='url identifier id'>url</span>      <span class='assign token'>=</span> <span class='@server_url ivar id'>@server_url</span><span class='dot token'>.</span><span class='merge identifier id'>merge</span><span class='lparen token'>(</span><span class='url identifier id'>url</span><span class='rparen token'>)</span> <span class='unless unless_mod kw'>unless</span> <span class='url identifier id'>url</span><span class='dot token'>.</span><span class='kind_of? fid id'>kind_of?</span><span class='lparen token'>(</span><span class='URI constant id'>URI</span><span class='rparen token'>)</span>
@@ -286,9 +372,9 @@ A new instance of Common
 </div>
     
     <div id="footer">
-  Generated on Fri Jun 11 14:24:29 2010 by 
-  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool">yard</a>
-  0.5.4 (ruby-1.8.7).
+  Generated on Fri Sep 24 16:17:04 2010 by 
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.6.1 (ruby-1.8.7).
 </div>
 
   </body>
