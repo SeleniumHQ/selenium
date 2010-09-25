@@ -305,7 +305,7 @@ Application.prototype = {
         var cancelled = false;
         this.getTestSuite().tests.forEach(function(test) {
                 if (cancelled) return;
-                if (test.content && test.content.modified) {
+                if (test.content && (test.content.modified || !test.filename)) {
                 	//Samit: Enh: Added suppressTestCasePrompt to allow saving test suite and test cases without a yes/no prompt for each test case
                     if (suppressTestCasePrompt || confirm("The test case " + test.getTitle() + " is modified. Do you want to save this test case?")) {
                         if (!this.getCurrentFormat().save(test.content)) {
