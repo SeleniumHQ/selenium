@@ -141,15 +141,90 @@ function parse(testCase, source) {
 		testCase.footer = doc.substring(lastIndex);
 		log.debug("header=" + testCase.header);
 		log.debug("footer=" + testCase.footer);
-        if (testCase.header &&
-            /<link\s+rel="selenium\.base"\s+href="(.*)"/.test(testCase.header)) {
-            testCase.baseURL = decodeURI(RegExp.$1);
-        }
+		if (testCase.header &&
+		    /<link\s+rel="selenium\.base"\s+href="(.*)"/.test(testCase.header)) {
+		    testCase.baseURL = decodeURI(RegExp.$1);
+		}
 		//log.debug("commands.length=" + commands.length);
 		testCase.commands = commands;
-	} else {
-		throw "no command found";
+	}else {
+		//Samit: Fix: Atleast try to allow empty test cases, before screaming murder
+		//Note: This implementation will work with empty test cases saved with this formatter only
+		var templateVars = matchTemplateAndExtractVars(source, options.testTemplate);
+		if (templateVars) {
+			//Since the matching has succeeded, update the test case with found variable values
+			if (templateVars["baseURL"]) {
+				testCase.baseURL = templateVars["baseURL"][0];
+			}
+			if (templateVars["commands"]) {
+				testCase.header = doc.substring(0, templateVars["commands"][1]);
+				testCase.footer = doc.substring(templateVars["commands"][1]);
+				log.debug("header=" + testCase.header);
+				log.debug("footer=" + testCase.footer);
+			}
+			testCase.commands = commands;
+		}else {
+			throw "no command found";
+		}
 	}
+}
+
+//Samit: Enh: Utility function to match the document against a template and extract the variables marked as ${} in the template
+function matchTemplateAndExtractVars(doc, template) {
+	var matchTextRa = template.split(/(\$\{\w+\})/g);
+	var templateVars = {};
+	var captureVar;
+	var matchIndex = 0;
+		
+	for (var i=0; i<matchTextRa.length; i++) {
+		var matchedVar = matchTextRa[i].match(/\$\{(\w+)\}/i);
+		if (matchedVar) {
+			//Found variable!
+			if (templateVars[matchedVar[1]]) {
+				//already captured, treat as static text and match later
+				matchTextRa[i] = templateVars[matchedVar[1]][0];
+			}else {
+				//variable capture required
+				if (captureVar) {
+					//Error: Capture failed as there is no way to delimit adjacent variables without static text between them
+					log.debug("Error: Capture failed as there is no way to delimit adjacent variables without static text between them");
+					return null;
+				}
+				captureVar = matchedVar[1];
+				continue;
+			}
+		}
+		//static text
+		if (captureVar) {
+			//search for static string
+			var index = doc.indexOf(matchTextRa[i], matchIndex);
+			if (index >= 0) {			
+				//matched
+				templateVars[captureVar] = [doc.substring(matchIndex, index), matchIndex];
+				matchIndex = matchTextRa[i].length + index;
+				captureVar = null;
+			}else {
+				//Error: Match failed
+				log.debug("Error: Match failed");
+				return null;
+			}
+		}else {
+			//match text
+			if (doc.substr(matchIndex, matchTextRa[i].length) == matchTextRa[i]) {
+				//matched!
+				matchIndex += matchTextRa[i].length;
+			}else {
+				//Error:  Match failed
+				log.debug("Error: Match failed");
+				return null;
+			}
+		}
+	}
+	if (captureVar) {
+		// capture the final variable if any
+		templateVars[captureVar] = [doc.substring(matchIndex), matchIndex];
+	}
+	return templateVars;
 }
 
 function getSourceForCommand(commandObj) {
