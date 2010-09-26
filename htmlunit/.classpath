@@ -17,5 +17,7 @@
 	<classpathentry exported="true" kind="lib" path="/third-party/java/xml/xercesImpl-2.9.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="/third-party/java/xml/xml-apis-1.3.04.jar"/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.USER_LIBRARY/htmlunit"/>
+	<classpathentry exported="true" kind="lib" path="/third-party/java/htmlunit/htmlunit-2.8.jar" sourcepath="/third-party/java/htmlunit/htmlunit-2.8-src.jar"/>
+	<classpathentry exported="true" kind="lib" path="/third-party/java/htmlunit/htmlunit-core-js-2.8.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>
