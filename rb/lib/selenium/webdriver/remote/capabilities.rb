@@ -57,6 +57,13 @@ module Selenium
             }.merge(opts))
           end
 
+          def android(opts = {})
+            new({
+              :browser_name => "android",
+              :platform     => :android
+            }.merge(opts))
+          end
+
           #
           # @api private
           #
