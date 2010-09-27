@@ -60,7 +60,8 @@ WebDriverServer.prototype.newDriver = function(window) {
     }
     this.enableNativeEvents =
     prefs.prefHasUserValue("webdriver_enable_native_events") ?
-    prefs.getBoolPref("webdriver_enable_native_events") : false;
+      prefs.getBoolPref("webdriver_enable_native_events") : false;
+    Utils.dumpn('Using native events: ' + this.enableNativeEvents);
   }
   window.fxdriver = new FirefoxDriver(this, this.enableNativeEvents, window);
   return window.fxdriver;
