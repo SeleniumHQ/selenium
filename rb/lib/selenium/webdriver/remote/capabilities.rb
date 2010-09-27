@@ -97,13 +97,17 @@ module Selenium
         # @api private
         #
 
-        def to_json(*args)
+        def as_json(*args)
           {
             "browserName"       => browser_name,
             "version"           => version,
             "platform"          => platform.to_s.upcase,
             "javascriptEnabled" => javascript?
-          }.to_json(*args)
+          }
+        end
+
+        def to_json(*args)
+          as_json.to_json(*args)
         end
 
       end # Capabilities
