@@ -97,7 +97,7 @@ module Selenium
         # @api private
         #
 
-        def as_json(*args)
+        def as_json(opts = nil)
           {
             "browserName"       => browser_name,
             "version"           => version,
