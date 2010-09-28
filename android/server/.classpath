@@ -14,5 +14,6 @@
 	<classpathentry kind="lib" path="/third-party/java/guava-libraries/guava-r06.jar" sourcepath="/third-party/java/guava-libraries/guava-r06-src.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="/third-party/java/android/android.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/android-client"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>
