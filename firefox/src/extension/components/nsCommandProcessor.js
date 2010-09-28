@@ -543,7 +543,8 @@ nsCommandProcessor.prototype.getSessionCapabilities = function(response) {
     'javascriptEnabled': true,
     'platform': xulRuntime.OS,          // same as Platform.valueOf("name");
     'cssSelectorsEnabled': true,
-    'takesScreenshot': true
+    'takesScreenshot': true,
+    'nativeEvents': Utils.useNativeEvents()
   };
 
   response.send();

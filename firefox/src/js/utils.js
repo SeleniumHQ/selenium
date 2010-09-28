@@ -306,6 +306,19 @@ Utils.getNodeForNativeEvents = function(element) {
   }
 };
 
+Utils.useNativeEvents = function() {
+  var prefs =
+    Utils.getService("@mozilla.org/preferences-service;1", "nsIPrefBranch");
+  var enableNativeEvents =
+    prefs.prefHasUserValue("webdriver_enable_native_events") ?
+    prefs.getBoolPref("webdriver_enable_native_events") : false;
+
+  if (enableNativeEvents && Utils.getNativeEvents()) {
+      return true;
+  }
+
+  return false;
+}
 
 Utils.type = function(doc, element, text, opt_useNativeEvents) {
 
