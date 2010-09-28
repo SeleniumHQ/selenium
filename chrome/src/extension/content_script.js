@@ -539,7 +539,7 @@ function getElementAttribute(element, attribute) {
   var value = null;
   switch (attribute.toLowerCase()) {
   case "disabled":
-    value = (element.disabled ? element.disabled : null);
+    value = (element.disabled ? element.disabled : "false");
     break;
   case "selected":
     if (findWhetherElementIsSelected(element)) {
