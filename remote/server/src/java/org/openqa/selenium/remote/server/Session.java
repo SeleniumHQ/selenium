@@ -40,45 +40,32 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 public class Session {
-  private final WebDriver driver;
-  private KnownElements knownElements = new KnownElements();
-  private Capabilities capabilities;
+  private final EventFiringWebDriver driver;
+  private final KnownElements knownElements;
   private final ThreadPoolExecutor executor;
+  private final Capabilities capabilities;
   private volatile String base64EncodedImage;
+  private final BrowserCreator browserCreator;
+
+
 
   public Session(final DriverFactory factory, final Capabilities capabilities) throws Exception {
+    this.knownElements = new KnownElements();
+    browserCreator = new BrowserCreator(factory, capabilities);
+    final FutureTask<EventFiringWebDriver> webDriverFutureTask =
+        new FutureTask<EventFiringWebDriver>(browserCreator);
     executor = new ThreadPoolExecutor(1, 1,
                                     600L, TimeUnit.SECONDS,
                                     new LinkedBlockingQueue<Runnable>());
 
     // Ensure that the browser is created on the single thread.
-    FutureTask<WebDriver> createBrowser = new FutureTask<WebDriver>(new Callable<WebDriver>() {
-      public WebDriver call() throws Exception {
-        WebDriver rawDriver = factory.newInstance(capabilities);
-        Capabilities actualCapabilities = capabilities;
-        boolean isAndroid = false;
-        if (rawDriver instanceof RemoteWebDriver) {
-          actualCapabilities = ((RemoteWebDriver) rawDriver).getCapabilities();
-
-          // We check for android here since the requested capabilities may be
-          // Platform.ANY, which doesn't tell us anything.
-          isAndroid = actualCapabilities.getPlatform().is(Platform.ANDROID);
-        }
-        describe(rawDriver, actualCapabilities);
-        EventFiringWebDriver driver = new EventFiringWebDriver(rawDriver);
-        if (!isAndroid) {
-          driver.register(new SnapshotScreenListener(Session.this));
-        }
-        return driver;
-      }
-    });
-    execute(createBrowser);
-    this.driver = createBrowser.get();
+    this.driver = execute(webDriverFutureTask);
+    this.capabilities = browserCreator.getCapabilityDescription();
   }
 
-    public void close(){
-        executor.shutdown();
-    }
+  public void close(){
+    executor.shutdown();
+  }
 
   public <X> X execute(FutureTask<X> future) throws Exception {
     executor.execute(future);
@@ -94,9 +81,6 @@ public class Session {
   }
 
   public Capabilities getCapabilities() {
-    if (driver instanceof RemoteWebDriver) {
-      return ((RemoteWebDriver) driver).getCapabilities();
-    }
     return capabilities;
   }
 
@@ -110,25 +94,61 @@ public class Session {
     return temp;
   }
 
-  private void describe(WebDriver instance, Capabilities capabilities) {
-    DesiredCapabilities caps = new DesiredCapabilities(capabilities.asMap());
-    caps.setJavascriptEnabled(instance instanceof JavascriptExecutor);
-    if (instance instanceof TakesScreenshot) {
-      caps.setCapability(CapabilityType.TAKES_SCREENSHOT, true);
-    } else if (instance instanceof DatabaseStorage) {
-      caps.setCapability(CapabilityType.SUPPORTS_SQL_DATABASE, true);
-    } else if (instance instanceof LocationContext) {
-      caps.setCapability(CapabilityType.SUPPORTS_LOCATION_CONTEXT, true);
-    } else if (instance instanceof ApplicationCache) {
-      caps.setCapability(CapabilityType.SUPPORTS_APPLICATION_CACHE, true);
-    } else if (instance instanceof BrowserConnection) {
-      caps.setCapability(CapabilityType.SUPPORTS_BROWSER_CONNECTION, true);
-    } else if (instance instanceof WebStorage) {
-      caps.setCapability(CapabilityType.SUPPORTS_WEB_STORAGE, true);
+  private class BrowserCreator implements Callable<EventFiringWebDriver> {
+    private final DriverFactory factory;
+    private final Capabilities capabilities;
+    private volatile Capabilities describedCapabilities;
+    private volatile boolean isAndroid = false;
+
+    BrowserCreator(DriverFactory factory, Capabilities capabilities) {
+      this.factory = factory;
+      this.capabilities = capabilities;
     }
-    if (instance instanceof FindsByCssSelector) {
-      caps.setCapability(CapabilityType.SUPPORTS_FINDING_BY_CSS, true);
+
+    public EventFiringWebDriver call() throws Exception {
+      WebDriver rawDriver = factory.newInstance(capabilities);
+      Capabilities actualCapabilities = capabilities;
+      if (rawDriver instanceof RemoteWebDriver) {
+        actualCapabilities = ((RemoteWebDriver) rawDriver).getCapabilities();
+        isAndroid = actualCapabilities.getPlatform().is(Platform.ANDROID);
+      }
+      describedCapabilities = getDescription( rawDriver, actualCapabilities);
+      EventFiringWebDriver wrappedDriver = new EventFiringWebDriver(rawDriver);
+      if (!isAndroid) {
+      	wrappedDriver.register(new SnapshotScreenListener(Session.this));
+      }
+      return wrappedDriver;
     }
-    this.capabilities = caps;
+
+    public Capabilities getCapabilityDescription() {
+      return describedCapabilities;
+    }
+
+    public boolean isAndroid() {
+      return isAndroid;
+    }
+
+    private DesiredCapabilities getDescription(WebDriver instance, Capabilities capabilities) {
+      DesiredCapabilities caps = new DesiredCapabilities(capabilities.asMap());
+      caps.setJavascriptEnabled(instance instanceof JavascriptExecutor);
+      if (instance instanceof TakesScreenshot) {
+        caps.setCapability(CapabilityType.TAKES_SCREENSHOT, true);
+      } else if (instance instanceof DatabaseStorage) {
+        caps.setCapability(CapabilityType.SUPPORTS_SQL_DATABASE, true);
+      } else if (instance instanceof LocationContext) {
+        caps.setCapability(CapabilityType.SUPPORTS_LOCATION_CONTEXT, true);
+      } else if (instance instanceof ApplicationCache) {
+        caps.setCapability(CapabilityType.SUPPORTS_APPLICATION_CACHE, true);
+      } else if (instance instanceof BrowserConnection) {
+        caps.setCapability(CapabilityType.SUPPORTS_BROWSER_CONNECTION, true);
+      } else if (instance instanceof WebStorage) {
+        caps.setCapability(CapabilityType.SUPPORTS_WEB_STORAGE, true);
+      }
+      if (instance instanceof FindsByCssSelector) {
+        caps.setCapability(CapabilityType.SUPPORTS_FINDING_BY_CSS, true);
+      }
+      return caps;
+    }
   }
+
 }
