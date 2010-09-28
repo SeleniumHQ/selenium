@@ -92,7 +92,6 @@ public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot, F
   private FirefoxAlert currentAlert;
 
   protected FirefoxBinary binary;
-  protected FirefoxProfile profile;
 
   public FirefoxDriver() {
     this(new FirefoxBinary(), null);
@@ -141,7 +140,6 @@ public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot, F
   public FirefoxDriver(FirefoxBinary binary, FirefoxProfile profile) {
     super(new LazyCommandExecutor(binary, profile), DesiredCapabilities.firefox());
     this.binary = binary;
-    this.profile = profile;
     setElementConverter(new JsonToWebElementConverter(this) {
       @Override
       protected RemoteWebElement newRemoteWebElement() {
