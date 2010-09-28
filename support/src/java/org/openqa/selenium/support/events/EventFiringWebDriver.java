@@ -20,9 +20,12 @@ package org.openqa.selenium.support.events;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.OutputType;
 import org.openqa.selenium.RenderedWebElement;
 import org.openqa.selenium.Speed;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.internal.WrapsDriver;
 import org.openqa.selenium.internal.WrapsElement;
@@ -48,7 +51,7 @@ import java.util.concurrent.TimeUnit;
  *
  * @author Michael Tamm
  */
-public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, WrapsDriver {
+public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, TakesScreenshot, WrapsDriver {
 
   private final WebDriver driver;
 
@@ -210,6 +213,14 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Wrap
       }
     }
     return usedArgs;
+  }
+  
+  public <X> X getScreenshotAs(OutputType<X> target) throws WebDriverException {
+    if (driver instanceof TakesScreenshot) {
+      return ((TakesScreenshot) driver).getScreenshotAs(target);
+    }
+    
+    throw new UnsupportedOperationException("Underlying driver instance does not support taking screenshots");
   }
 
   public TargetLocator switchTo() {
