@@ -23,7 +23,7 @@ import org.openqa.selenium.remote.server.rest.ResultType;
 
 public class GetPageSource extends WebDriverHandler {
 
-  private Response response;
+  private volatile Response response;
 
   public GetPageSource(DriverSessions sessions) {
     super(sessions);

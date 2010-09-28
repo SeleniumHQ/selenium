@@ -21,7 +21,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 public class DoubleClick extends SeleneseCommand<Void> {
-  private ElementFinder finder;
+  private final ElementFinder finder;
 
   public DoubleClick(ElementFinder finder) {
 

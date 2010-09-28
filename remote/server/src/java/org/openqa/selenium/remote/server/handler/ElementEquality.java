@@ -25,8 +25,8 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.internal.WrapsElement;
 
 public class ElementEquality extends WebElementHandler {
-  private String otherId;
-  private Response response;
+  private volatile String otherId;
+  private volatile Response response;
 
   public ElementEquality(DriverSessions sessions) {
     super(sessions);

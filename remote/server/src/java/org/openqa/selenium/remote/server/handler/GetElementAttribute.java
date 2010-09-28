@@ -23,8 +23,8 @@ import org.openqa.selenium.remote.server.rest.ResultType;
 
 public class GetElementAttribute extends WebElementHandler {
 
-  private String name;
-  private Response response;
+  private volatile String name;
+  private volatile Response response;
 
   public GetElementAttribute(DriverSessions sessions) {
     super(sessions);

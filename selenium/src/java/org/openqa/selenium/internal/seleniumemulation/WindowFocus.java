@@ -20,7 +20,7 @@ package org.openqa.selenium.internal.seleniumemulation;
 import org.openqa.selenium.WebDriver;
 
 public class WindowFocus extends SeleneseCommand<Void> {
-  private JavascriptLibrary js;
+  private final JavascriptLibrary js;
 
   public WindowFocus(JavascriptLibrary js) {
     this.js = js;

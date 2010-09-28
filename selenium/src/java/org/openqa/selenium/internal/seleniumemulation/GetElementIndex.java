@@ -21,8 +21,8 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 public class GetElementIndex extends SeleneseCommand<Number> {
-  private ElementFinder finder;
-  private JavascriptLibrary js;
+  private final ElementFinder finder;
+  private final JavascriptLibrary js;
 
   public GetElementIndex(ElementFinder finder, JavascriptLibrary js) {
     this.finder = finder;

@@ -25,7 +25,7 @@ import org.openqa.selenium.remote.server.rest.ResultType;
 import com.google.common.collect.ImmutableMap;
 
 public class FindActiveElement extends WebDriverHandler {
-    private Response response;
+    private volatile Response response;
 
     public FindActiveElement(DriverSessions sessions) {
       super(sessions);

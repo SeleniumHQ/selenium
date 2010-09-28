@@ -29,8 +29,8 @@ import com.google.common.collect.ImmutableMap;
 import java.util.Map;
 
 public class FindElement extends WebDriverHandler implements JsonParametersAware {
-  private By by;
-  private Response response;
+  private volatile By by;
+  private volatile Response response;
 
   public FindElement(DriverSessions sessions) {
     super(sessions);

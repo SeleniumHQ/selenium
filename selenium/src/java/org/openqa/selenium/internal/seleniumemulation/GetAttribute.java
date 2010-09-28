@@ -21,7 +21,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 public class GetAttribute extends SeleneseCommand<String> {
-  private ElementFinder finder;
+  private final ElementFinder finder;
 
   public GetAttribute(ElementFinder finder) {
     this.finder = finder;

@@ -28,7 +28,7 @@ import java.util.Set;
 
 public class GetAllCookies extends WebDriverHandler {
 
-  private Response response;
+  private volatile Response response;
 
   public GetAllCookies(DriverSessions sessions) {
     super(sessions);

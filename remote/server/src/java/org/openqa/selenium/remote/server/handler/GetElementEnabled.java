@@ -25,7 +25,7 @@ import org.openqa.selenium.remote.server.rest.ResultType;
 
 public class GetElementEnabled extends WebElementHandler {
 
-  private Response response;
+  private volatile Response response;
 
   public GetElementEnabled(DriverSessions sessions) {
     super(sessions);

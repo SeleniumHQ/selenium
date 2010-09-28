@@ -21,7 +21,7 @@ import org.openqa.selenium.RenderedWebElement;
 import org.openqa.selenium.WebDriver;
 
 public class DragAndDrop extends SeleneseCommand<Void> {
-  private ElementFinder finder;
+  private final ElementFinder finder;
 
   public DragAndDrop(ElementFinder finder) {
     this.finder = finder;

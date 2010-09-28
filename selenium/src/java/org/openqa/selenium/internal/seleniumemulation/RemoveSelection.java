@@ -22,8 +22,8 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 public class RemoveSelection extends SeleneseCommand<Void> {
-  private ElementFinder elementFinder;
-  private SeleniumSelect select;
+  private final ElementFinder elementFinder;
+  private final SeleniumSelect select;
 
   public RemoveSelection(ElementFinder elementFinder, SeleniumSelect select) {
     this.elementFinder = elementFinder;

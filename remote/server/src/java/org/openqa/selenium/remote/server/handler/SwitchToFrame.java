@@ -25,7 +25,7 @@ import java.util.Map;
 
 public class SwitchToFrame extends WebDriverHandler implements JsonParametersAware {
 
-  private Object id;
+  private volatile Object id;
 
   public SwitchToFrame(DriverSessions sessions) {
     super(sessions);

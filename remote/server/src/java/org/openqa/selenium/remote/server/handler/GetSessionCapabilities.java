@@ -26,7 +26,7 @@ import org.openqa.selenium.remote.server.rest.ResultType;
 
 public class GetSessionCapabilities extends WebDriverHandler {
 
-  private Response response;
+  private volatile Response response;
 
   public GetSessionCapabilities(DriverSessions sessions) {
     super(sessions);

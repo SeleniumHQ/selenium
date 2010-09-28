@@ -20,8 +20,8 @@ package org.openqa.selenium.internal.seleniumemulation;
 import org.openqa.selenium.WebDriver;
 
 public class Highlight extends SeleneseCommand<String> {
-  private JavascriptLibrary js;
-  private ElementFinder finder;
+  private final JavascriptLibrary js;
+  private final ElementFinder finder;
 
   public Highlight(ElementFinder finder, JavascriptLibrary js) {
     this.js = js;

@@ -30,9 +30,9 @@ import org.openqa.selenium.remote.server.rest.ResultType;
 import java.util.Map;
 
 public class NewSession implements Handler, JsonParametersAware {
-  private DriverSessions allSessions;
-  private Capabilities desiredCapabilities;
-  private SessionId sessionId;
+  private volatile DriverSessions allSessions;
+  private volatile Capabilities desiredCapabilities;
+  private volatile SessionId sessionId;
 
   public NewSession(DriverSessions allSession) {
     this.allSessions = allSession;

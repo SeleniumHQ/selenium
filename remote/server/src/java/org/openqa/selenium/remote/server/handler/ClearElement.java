@@ -22,7 +22,7 @@ import org.openqa.selenium.remote.server.rest.ResultType;
 
 public class ClearElement extends WebDriverHandler {
 
-  private String elementId;
+  private volatile String elementId;
 
   public ClearElement(DriverSessions sessions) {
     super(sessions);

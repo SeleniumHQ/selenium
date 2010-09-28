@@ -4,7 +4,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.server.DriverSessions;
 
 public abstract class WebElementHandler extends WebDriverHandler {
-  private String elementId;
+  private volatile String elementId;
   
   public WebElementHandler(DriverSessions sessions) {
     super(sessions);

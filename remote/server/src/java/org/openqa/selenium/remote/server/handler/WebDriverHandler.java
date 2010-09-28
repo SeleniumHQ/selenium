@@ -34,7 +34,7 @@ import java.util.concurrent.FutureTask;
 public abstract class WebDriverHandler implements Handler, Callable<ResultType> {
 
   protected final DriverSessions sessions;
-  protected SessionId sessionId;
+  protected volatile SessionId sessionId;
 
   public WebDriverHandler(DriverSessions sessions) {
     this.sessions = sessions;

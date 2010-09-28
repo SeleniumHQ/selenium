@@ -29,7 +29,7 @@ import java.util.concurrent.TimeUnit;
 
 public abstract class CookieHandler extends WebDriverHandler implements JsonParametersAware {
 
-  private Map<String, Object> rawCookie;
+  private volatile Map<String, Object> rawCookie;
 
   public CookieHandler(DriverSessions sessions) {
     super(sessions);

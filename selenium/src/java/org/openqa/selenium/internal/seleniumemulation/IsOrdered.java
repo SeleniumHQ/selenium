@@ -21,8 +21,8 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 public class IsOrdered extends SeleneseCommand<Boolean> {
-  private ElementFinder finder;
-  private JavascriptLibrary js;
+  private final ElementFinder finder;
+  private final JavascriptLibrary js;
 
   public IsOrdered(ElementFinder finder, JavascriptLibrary js) {
     this.finder = finder;

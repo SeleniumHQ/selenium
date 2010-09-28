@@ -22,7 +22,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 public class AddLocationStrategy extends SeleneseCommand<Void> {
-  private ElementFinder elementFinder;
+  private final ElementFinder elementFinder;
 
   public AddLocationStrategy(ElementFinder elementFinder) {
     this.elementFinder = elementFinder;

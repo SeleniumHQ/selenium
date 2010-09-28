@@ -24,7 +24,7 @@ import org.openqa.selenium.remote.server.rest.ResultType;
 
 public class GetElementLocation extends WebElementHandler {
 
-  private Response response;
+  private volatile Response response;
 
   public GetElementLocation(DriverSessions sessions) {
     super(sessions);

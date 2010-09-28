@@ -24,7 +24,7 @@ import org.openqa.selenium.WebDriver;
 import static org.openqa.selenium.internal.seleniumemulation.SeleniumSelect.Property.VALUE;
 
 public class IsSomethingSelected extends SeleneseCommand<Boolean> {
-  private SeleniumSelect select;
+  private final SeleniumSelect select;
 
   public IsSomethingSelected(SeleniumSelect select) {
     this.select = select;

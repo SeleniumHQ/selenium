@@ -26,8 +26,8 @@ import org.openqa.selenium.remote.server.rest.ResultType;
 import org.openqa.selenium.remote.server.handler.WebDriverHandler;
 
 public class SetSessionStorageItem extends WebDriverHandler implements JsonParametersAware {
-  private String key;
-  private String value;
+  private volatile String key;
+  private volatile String value;
 
   public SetSessionStorageItem(DriverSessions sessions) {
     super(sessions);

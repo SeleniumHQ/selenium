@@ -23,7 +23,7 @@ import org.openqa.selenium.remote.server.rest.ResultType;
 
 public class GetTitle extends WebDriverHandler {
 
-  private Response response;
+  private volatile Response response;
 
   public GetTitle(DriverSessions sessions) {
     super(sessions);

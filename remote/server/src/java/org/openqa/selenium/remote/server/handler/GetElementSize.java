@@ -24,7 +24,7 @@ import org.openqa.selenium.remote.server.rest.ResultType;
 
 public class GetElementSize extends WebElementHandler {
 
-  private Response response;
+  private volatile Response response;
 
   public GetElementSize(DriverSessions sessions) {
     super(sessions);

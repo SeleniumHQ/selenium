@@ -21,7 +21,7 @@ import com.thoughtworks.selenium.SeleniumException;
 import org.openqa.selenium.WebDriver;
 
 public class IsElementPresent extends SeleneseCommand<Boolean> {
-  private ElementFinder finder;
+  private final ElementFinder finder;
 
   public IsElementPresent(ElementFinder finder) {
     this.finder = finder;

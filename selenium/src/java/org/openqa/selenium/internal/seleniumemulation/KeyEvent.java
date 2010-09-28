@@ -23,7 +23,7 @@ public class KeyEvent extends SeleneseCommand<Void> {
   private final ElementFinder elementFinder;
   private final JavascriptLibrary js;
   private final KeyState state;
-  private String eventName;
+  private final String eventName;
 
   public KeyEvent(ElementFinder elementFinder, JavascriptLibrary js, KeyState state, String eventName) {
     this.elementFinder = elementFinder;

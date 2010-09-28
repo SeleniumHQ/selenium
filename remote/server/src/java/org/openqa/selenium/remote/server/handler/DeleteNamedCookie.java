@@ -24,7 +24,7 @@ import org.openqa.selenium.remote.server.rest.ResultType;
 
 public class DeleteNamedCookie extends WebDriverHandler {
 
-  private String name;
+  private volatile String name;
 
   public DeleteNamedCookie(DriverSessions sessions) {
     super(sessions);

@@ -23,7 +23,7 @@ import org.openqa.selenium.remote.server.rest.ResultType;
 
 public class GetElementSelected extends WebElementHandler {
 
-  private Response response;
+  private volatile Response response;
 
   public GetElementSelected(DriverSessions sessions) {
     super(sessions);

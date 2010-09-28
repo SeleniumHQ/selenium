@@ -23,7 +23,7 @@ import org.openqa.selenium.remote.server.rest.ResultType;
 
 public class GetMouseSpeed extends WebDriverHandler {
 
-  private Response response;
+  private volatile Response response;
 
   public GetMouseSpeed(DriverSessions sessions) {
     super(sessions);

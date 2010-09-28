@@ -23,7 +23,7 @@ import org.openqa.selenium.WebElement;
 public class MouseEvent extends SeleneseCommand<Void> {
   private final ElementFinder finder;
   private final JavascriptLibrary js;
-  private String type;
+  private final String type;
 
   public MouseEvent(ElementFinder finder, JavascriptLibrary js, String type) {
     this.finder = finder;

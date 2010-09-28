@@ -25,7 +25,7 @@ import java.util.Map;
 
 public class ChangeUrl extends WebDriverHandler implements JsonParametersAware {
 
-  private String url;
+  private volatile String url;
 
   public ChangeUrl(DriverSessions sessions) {
     super(sessions);

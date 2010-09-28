@@ -24,7 +24,7 @@ import org.openqa.selenium.WebDriver;
 import static org.openqa.selenium.internal.seleniumemulation.SeleniumSelect.Property.TEXT;
 
 public class GetSelectOptions extends SeleneseCommand<String[]> {
-  private SeleniumSelect select;
+  private final SeleniumSelect select;
 
   public GetSelectOptions(SeleniumSelect select) {
     this.select = select;

@@ -21,7 +21,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
 public class GetValue extends SeleneseCommand<String> {
-  private ElementFinder finder;
+  private final ElementFinder finder;
 
   public GetValue(ElementFinder finder) {
     this.finder = finder;

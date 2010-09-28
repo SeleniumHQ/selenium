@@ -27,10 +27,10 @@ import java.util.Set;
 
 public class UrlMapper {
 
-  private Map<ResultType, Renderer> globals = new LinkedHashMap<ResultType, Renderer>();
-  private Set<ResultConfig> configs = new LinkedHashSet<ResultConfig>();
+  private final Map<ResultType, Renderer> globals = new LinkedHashMap<ResultType, Renderer>();
+  private final Set<ResultConfig> configs = new LinkedHashSet<ResultConfig>();
   private final DriverSessions sessions;
-  private Trace logger;
+  private final Trace logger;
 
   public UrlMapper(DriverSessions sessions, Trace logger) {
     this.sessions = sessions;

@@ -20,7 +20,7 @@ package org.openqa.selenium.internal.seleniumemulation;
 import org.openqa.selenium.WebDriver;
 
 public class GetText extends SeleneseCommand<String> {
-  private ElementFinder finder;
+  private final ElementFinder finder;
 
   public GetText(ElementFinder finder) {
     this.finder = finder;

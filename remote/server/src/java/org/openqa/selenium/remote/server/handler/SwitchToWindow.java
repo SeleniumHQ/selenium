@@ -25,7 +25,7 @@ import java.util.Map;
 
 public class SwitchToWindow extends WebDriverHandler implements JsonParametersAware {
 
-  private String name;
+  private volatile String name;
 
   public SwitchToWindow(DriverSessions sessions) {
     super(sessions);

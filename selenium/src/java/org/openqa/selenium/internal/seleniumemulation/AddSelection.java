@@ -22,8 +22,8 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 public class AddSelection extends SeleneseCommand<Void> {
-  private ElementFinder finder;
-  private SeleniumSelect select;
+  private final ElementFinder finder;
+  private final SeleniumSelect select;
 
   public AddSelection(ElementFinder elementFinder, SeleniumSelect select) {
     this.finder = elementFinder;

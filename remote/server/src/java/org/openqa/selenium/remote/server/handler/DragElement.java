@@ -28,8 +28,8 @@ import java.util.Map;
 
 public class DragElement extends WebElementHandler implements JsonParametersAware {
 
-  private int x;
-  private int y;
+  private volatile int x;
+  private volatile int y;
 
   public DragElement(DriverSessions sessions) {
     super(sessions);

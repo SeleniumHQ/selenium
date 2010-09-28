@@ -23,7 +23,7 @@ import org.openqa.selenium.RenderedWebElement;
 import org.openqa.selenium.WebDriver;
 
 public class GetElementPositionTop extends SeleneseCommand<Number> {
-  private ElementFinder finder;
+  private final ElementFinder finder;
 
   public GetElementPositionTop(ElementFinder finder) {
     this.finder = finder;

@@ -26,7 +26,7 @@ import java.util.concurrent.TimeUnit;
 
 public class ImplicitlyWait extends WebDriverHandler implements JsonParametersAware {
 
-  private long millis;
+  private volatile long millis;
 
   public ImplicitlyWait(DriverSessions sessions) {
     super(sessions);

@@ -37,8 +37,8 @@ import java.util.Set;
 
 public class FindElements extends WebDriverHandler implements JsonParametersAware {
 
-  private By by;
-  private Response response;
+  private volatile By by;
+  private volatile Response response;
 
   public FindElements(DriverSessions sessions) {
     super(sessions);

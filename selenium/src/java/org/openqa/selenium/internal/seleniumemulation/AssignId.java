@@ -21,7 +21,7 @@ import org.openqa.selenium.WebDriver;
 
 public class AssignId extends SeleneseCommand<Void> {
   private final JavascriptLibrary js;
-  private ElementFinder finder;
+  private final ElementFinder finder;
 
   public AssignId(JavascriptLibrary js, ElementFinder finder) {
     this.js = js;

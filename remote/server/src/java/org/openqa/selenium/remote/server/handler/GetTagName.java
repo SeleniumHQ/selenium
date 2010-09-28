@@ -23,7 +23,7 @@ import org.openqa.selenium.remote.server.rest.ResultType;
 
 public class GetTagName extends WebElementHandler {
 
-  private Response response;
+  private volatile Response response;
 
   public GetTagName(DriverSessions sessions) {
     super(sessions);

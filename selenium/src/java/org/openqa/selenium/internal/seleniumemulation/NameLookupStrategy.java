@@ -32,7 +32,7 @@ import org.openqa.selenium.WebElement;
 
 public class NameLookupStrategy implements LookupStrategy {
     private static final Pattern NAME_AND_VALUE_PATTERN = Pattern.compile("^(\\p{Alpha}+)=(.+)");
-    Map<String, FilterFunction> filterFunctions = new HashMap<String, FilterFunction>();
+    private final Map<String, FilterFunction> filterFunctions = new HashMap<String, FilterFunction>();
 
     public NameLookupStrategy() {
         filterFunctions.put("value", new ValueFilterFunction());
@@ -86,6 +86,6 @@ public class NameLookupStrategy implements LookupStrategy {
             filterName = matcher.group(1);
         }
 
-        return (FilterFunction) filterFunctions.get(filterName);
+        return filterFunctions.get(filterName);
     }
 }

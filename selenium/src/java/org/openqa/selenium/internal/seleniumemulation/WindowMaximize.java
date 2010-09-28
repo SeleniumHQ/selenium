@@ -20,7 +20,7 @@ package org.openqa.selenium.internal.seleniumemulation;
 import org.openqa.selenium.WebDriver;
 
 public class WindowMaximize extends SeleneseCommand<Void> {
-  private JavascriptLibrary js;
+  private final JavascriptLibrary js;
 
   public WindowMaximize(JavascriptLibrary js) {
     this.js = js;

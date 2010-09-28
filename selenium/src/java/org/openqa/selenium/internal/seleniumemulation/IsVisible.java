@@ -21,7 +21,7 @@ import org.openqa.selenium.RenderedWebElement;
 import org.openqa.selenium.WebDriver;
 
 public class IsVisible extends SeleneseCommand<Boolean> {
-  private ElementFinder finder;
+  private final ElementFinder finder;
 
   public IsVisible(ElementFinder finder) {
     this.finder = finder;

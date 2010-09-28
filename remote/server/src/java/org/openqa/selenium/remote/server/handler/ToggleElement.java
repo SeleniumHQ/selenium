@@ -23,7 +23,7 @@ import org.openqa.selenium.remote.server.rest.ResultType;
 
 public class ToggleElement extends WebElementHandler {
 
-  private Response response;
+  private volatile Response response;
 
   public ToggleElement(DriverSessions sessions) {
     super(sessions);

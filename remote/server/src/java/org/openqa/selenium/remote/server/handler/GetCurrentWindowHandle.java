@@ -22,7 +22,7 @@ import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.rest.ResultType;
 
 public class GetCurrentWindowHandle extends WebDriverHandler {
-  private Response response;
+  private volatile Response response;
 
   public GetCurrentWindowHandle(DriverSessions sessions) {
     super(sessions);

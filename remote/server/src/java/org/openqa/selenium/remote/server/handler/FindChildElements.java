@@ -36,8 +36,8 @@ import java.util.Map;
 import java.util.Set;
 
 public class FindChildElements extends WebElementHandler implements JsonParametersAware {
-  private By by;
-  private Response response;
+  private volatile By by;
+  private volatile Response response;
 
   public FindChildElements(DriverSessions sessions) {
     super(sessions);

@@ -29,7 +29,7 @@ import java.util.Map;
 
 public class KnownElements {
 
-  private Map<String, WebElement> elements = new HashMap<String, WebElement>();
+  private final Map<String, WebElement> elements = new HashMap<String, WebElement>();
   private int nextId;
 
   public String add(WebElement element) {

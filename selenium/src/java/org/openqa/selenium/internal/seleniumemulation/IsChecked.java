@@ -20,7 +20,7 @@ package org.openqa.selenium.internal.seleniumemulation;
 import org.openqa.selenium.WebDriver;
 
 public class IsChecked extends SeleneseCommand<Boolean> {
-  private ElementFinder finder;
+  private final ElementFinder finder;
 
   public IsChecked(ElementFinder finder) {
     this.finder = finder;

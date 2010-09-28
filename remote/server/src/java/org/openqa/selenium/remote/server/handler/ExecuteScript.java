@@ -33,9 +33,9 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
 public class ExecuteScript extends WebDriverHandler implements JsonParametersAware {
-  private Response response;
-  private String script;
-  private List<Object> args = new ArrayList<Object>();
+  private volatile Response response;
+  private volatile String script;
+  private volatile List<Object> args = new ArrayList<Object>();
 
   public ExecuteScript(DriverSessions sessions) {
     super(sessions);

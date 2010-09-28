@@ -19,9 +19,9 @@ package org.openqa.selenium.remote;
 
 public class Response {
 
-  private Object value;
-  private String sessionId;
-  private int status;
+  private volatile Object value;
+  private volatile String sessionId;
+  private volatile int status;
 
   public Response() {
   }

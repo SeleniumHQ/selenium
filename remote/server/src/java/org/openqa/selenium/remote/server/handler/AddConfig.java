@@ -30,8 +30,8 @@ import java.util.Map;
 
 public class AddConfig implements Handler, JsonParametersAware {
   private final DriverSessions allSessions;
-  private Capabilities desiredCapabilities;
-  private String className;
+  private volatile Capabilities desiredCapabilities;
+  private volatile String className;
 
   public AddConfig(DriverSessions allSessions) {
     this.allSessions = allSessions;

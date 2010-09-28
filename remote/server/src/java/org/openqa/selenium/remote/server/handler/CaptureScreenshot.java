@@ -27,7 +27,7 @@ import static org.openqa.selenium.OutputType.BASE64;
 
 public class CaptureScreenshot extends WebDriverHandler {
 
-  private Response response;
+  private volatile Response response;
 
   public CaptureScreenshot(DriverSessions sessions) {
     super(sessions);

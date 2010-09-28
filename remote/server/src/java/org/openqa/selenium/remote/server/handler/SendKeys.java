@@ -27,7 +27,7 @@ import java.util.Map;
 
 public class SendKeys extends WebElementHandler implements JsonParametersAware {
 
-  private List<CharSequence> keys = new ArrayList<CharSequence>();
+  private final List<CharSequence> keys = new ArrayList<CharSequence>();
 
   public SendKeys(DriverSessions sessions) {
     super(sessions);

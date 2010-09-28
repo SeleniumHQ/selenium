@@ -33,7 +33,7 @@ public class CompoundMutator implements ScriptMutator {
       "/scripts/selenium/";
 
   // The ordering of mutators matters
-  private List<ScriptMutator> mutators = Lists.newArrayList();
+  private final List<ScriptMutator> mutators = Lists.newArrayList();
 
   public CompoundMutator(String baseUrl) {
     addMutator(new VariableDeclaration("selenium", "var selenium = {};"));

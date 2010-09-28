@@ -25,7 +25,7 @@ import org.openqa.selenium.remote.server.rest.ResultType;
 import java.util.Map;
 
 public class SetMouseSpeed extends WebDriverHandler implements JsonParametersAware {
-  private Speed speed;
+  private volatile Speed speed;
 
   public SetMouseSpeed(DriverSessions sessions) {
     super(sessions);

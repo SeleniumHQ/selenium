@@ -23,8 +23,8 @@ import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.rest.ResultType;
 
 public class GetCssProperty extends WebElementHandler {
-  private String propertyName;
-  private Response response;
+  private volatile String propertyName;
+  private volatile Response response;
 
   public GetCssProperty(DriverSessions sessions) {
     super(sessions);
