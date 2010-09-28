@@ -41,6 +41,26 @@ objectExtend(SuiteTreeView.prototype, {
                         },
                         testCaseRemoved: function() {
                             self.refresh();
+                        },
+                        //Samit: Fix: Update correctly when test cases are moved
+                        testCaseMoved: function(testCase, fromIndex, toIndex) {
+                            var start = fromIndex;
+                            var end = toIndex;
+                            if (start > end) {
+                                start = toIndex;
+                                end = fromIndex;
+                            }
+                            //Handle moves where position of the current test case is affected
+                            if (self.currentTestCaseIndex >= start && self.currentTestCaseIndex <= end) {
+                                var tests = self.getTestSuite().tests;
+                                for (var i = start; i <= end; i++) {
+                                    if (tests[i].content && tests[i].content == self.currentTestCase) {
+                                        self.currentTestCaseIndex = i;
+                                        break;
+                                    }
+                                }
+                            }
+                            self.rowsUpdated(start, end);
                         }
                     },
 
@@ -240,7 +260,6 @@ objectExtend(SuiteTreeView.prototype, {
                    //Samit: Ref: Move is now part of the testSuite
                    this.getTestSuite().move(sourceIndex, dropIndex);
 
-                   this.treebox.invalidate();
                    this.selection.clearSelection();
                    this.selection.select(dropIndex);
                }
