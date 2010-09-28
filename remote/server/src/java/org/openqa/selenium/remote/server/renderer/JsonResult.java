@@ -27,7 +27,7 @@ import org.openqa.selenium.remote.server.rest.Renderer;
 
 public class JsonResult implements Renderer {
 
-  protected String propertyName;
+  protected final String propertyName;
 
   public JsonResult(String propertyName) {
     if (propertyName.startsWith(":")) {
