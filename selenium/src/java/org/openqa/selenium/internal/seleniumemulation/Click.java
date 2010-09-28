@@ -27,7 +27,6 @@ public class Click extends SeleneseCommand<Void> {
   public Click(AlertOverride alertOverride, ElementFinder elementFinder) {
     this.alertOverride = alertOverride;
     finder = elementFinder;
-
   }
 
   @Override
