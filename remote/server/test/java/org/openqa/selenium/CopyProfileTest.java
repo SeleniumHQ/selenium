@@ -2,6 +2,8 @@ package org.openqa.selenium;
 
 import junit.framework.TestCase;
 
+import java.net.MalformedURLException;
+
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.environment.InProcessTestEnvironment;
 import org.openqa.selenium.environment.TestEnvironment;
@@ -18,7 +20,7 @@ import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 import static org.openqa.selenium.firefox.FirefoxDriver.PROFILE;
 
-@Ignore(value = {ALL, HTMLUNIT, IE, IPHONE, CHROME, CHROME_NON_WINDOWS, SELENESE},
+@Ignore(value = {HTMLUNIT, IE, IPHONE, CHROME, CHROME_NON_WINDOWS, SELENESE},
     reason = "Firefox specific test, but needs to be in remote")
 public class CopyProfileTest extends TestCase {
   private SeleniumServerInstance selenium;
@@ -36,7 +38,6 @@ public class CopyProfileTest extends TestCase {
   @Override
   protected void tearDown() throws Exception {
     selenium.stop();
-    env.stop();
     
     super.tearDown();
   }
@@ -57,5 +58,21 @@ public class CopyProfileTest extends TestCase {
     driver.quit();
 
     assertEquals(title, "XHTML Test Page", title);
+  }
+
+  public void testCanEnableNativeEventsOnRemoteFirefox() throws MalformedURLException {
+    FirefoxProfile profile = new FirefoxProfile();
+    profile.setEnableNativeEvents(true);
+
+    DesiredCapabilities caps = DesiredCapabilities.firefox();
+    caps.setCapability(PROFILE, profile);
+
+    RemoteWebDriver driver = new RemoteWebDriver(selenium.getWebDriverUrl(), caps);
+
+    Boolean nativeEventsEnabled = (Boolean) driver.getCapabilities().getCapability("nativeEvents");
+    driver.quit();
+
+    assertTrue("Native events were explicitly enabeld and should be on.",
+        nativeEventsEnabled);
   }
 }

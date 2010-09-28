@@ -38,7 +38,9 @@ java_test(name = "test",
     "//remote/client:test",
     "test/java/org/openqa/selenium/remote/**/*.java",
     "test/java/org/openqa/selenium/server/**/*.java",
-    "test/java/org/openqa/selenium/testworker/**/*.java"
+    "test/java/org/openqa/selenium/testworker/**/*.java",
+    "test/java/org/openqa/selenium/CopyProfileTest.java",
+    "test/java/org/openqa/selenium/SeleniumServerInstance.java"
   ],
   deps = [
     ":server",

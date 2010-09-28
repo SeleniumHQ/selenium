@@ -48,6 +48,9 @@ public class FirefoxProfile {
   private boolean acceptUntrustedCerts;
   private boolean untrustedCertIssuer;
   private File model;
+  private static final String ENABLE_NATIVE_EVENTS_PREF = "webdriver_enable_native_events";
+  private static final String ACCEPT_UNTRUSTED_CERTS_PREF = "webdriver_accept_untrusted_certs";
+  private static final String ASSUME_UNTRUSTED_ISSUER_PREF = "webdriver_assume_untrusted_issuer";
 
   public FirefoxProfile() {
     this(null);
@@ -65,10 +68,21 @@ public class FirefoxProfile {
     model = profileDir;
     verifyModel(model);
 
-    enableNativeEvents = FirefoxDriver.DEFAULT_ENABLE_NATIVE_EVENTS;
+    File prefsInModel = new File(model, "user.js");
+    if (prefsInModel.exists()) {
+      Map<String, String> existingPrefs = readExistingPrefs(prefsInModel);
+      enableNativeEvents = Boolean.valueOf(existingPrefs.get(ENABLE_NATIVE_EVENTS_PREF));
+      acceptUntrustedCerts = Boolean.valueOf(existingPrefs.get(ACCEPT_UNTRUSTED_CERTS_PREF));
+      untrustedCertIssuer = Boolean.valueOf(existingPrefs.get(ASSUME_UNTRUSTED_ISSUER_PREF));
+    } else {
+      enableNativeEvents = FirefoxDriver.DEFAULT_ENABLE_NATIVE_EVENTS;
+      acceptUntrustedCerts = FirefoxDriver.ACCEPT_UNTRUSTED_CERTIFICATES;
+      untrustedCertIssuer = FirefoxDriver.ASSUME_UNTRUSTED_ISSUER;
+    }
+
+    // This is not entirely correct but this is not stored in the profile
+    // so for now will always be set to false.
     loadNoFocusLib = false;
-    acceptUntrustedCerts = FirefoxDriver.ACCEPT_UNTRUSTED_CERTIFICATES;
-    untrustedCertIssuer = FirefoxDriver.ASSUME_UNTRUSTED_ISSUER;
   }
 
   private void verifyModel(File model) {
@@ -291,14 +305,14 @@ public class FirefoxProfile {
     prefs.put("signon.rememberSignons", "false");
 
     // Should we use native events?
-    prefs.put("webdriver_enable_native_events",
+    prefs.put(ENABLE_NATIVE_EVENTS_PREF,
         Boolean.toString(enableNativeEvents));
 
     // Should we accept untrusted certificates or not?
-    prefs.put("webdriver_accept_untrusted_certs",
+    prefs.put(ACCEPT_UNTRUSTED_CERTS_PREF,
         Boolean.toString(acceptUntrustedCerts));
 
-    prefs.put("webdriver_assume_untrusted_issuer",
+    prefs.put(ASSUME_UNTRUSTED_ISSUER_PREF,
         Boolean.toString(untrustedCertIssuer));
 
 
