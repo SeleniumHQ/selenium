@@ -281,6 +281,11 @@ Application.prototype = {
             if (testSuite) {
                 this.setTestSuite(testSuite);
                 this.addRecentTestSuite(testSuite);
+                //Samit: Fix: Switch to the first testcase in the newly loaded suite
+                if (testSuite.tests.length > 0) {
+                    var testCase = testSuite.tests[0];
+                    if (testCase) this.showTestCaseFromSuite(testCase);
+                }
             }
         } catch (error) {
             alert("error loading test suite: " + error);
