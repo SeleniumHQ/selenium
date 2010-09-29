@@ -47,9 +47,17 @@ public class Session {
   private volatile String base64EncodedImage;
   private final BrowserCreator browserCreator;
 
+  //This method is to avoid constructor escape of partially constructed session object
+  public static Session createSession(final DriverFactory factory,
+                                      final Capabilities capabilities) throws Exception {
+    Session session = new Session(factory, capabilities);
+    if (!session.browserCreator.isAndroid()){
+      session.driver.register(new SnapshotScreenListener(session));
+    }
+    return session;
+  }
 
-
-  public Session(final DriverFactory factory, final Capabilities capabilities) throws Exception {
+  private Session(final DriverFactory factory, final Capabilities capabilities) throws Exception {
     this.knownElements = new KnownElements();
     browserCreator = new BrowserCreator(factory, capabilities);
     final FutureTask<EventFiringWebDriver> webDriverFutureTask =
@@ -113,11 +121,7 @@ public class Session {
         isAndroid = actualCapabilities.getPlatform().is(Platform.ANDROID);
       }
       describedCapabilities = getDescription( rawDriver, actualCapabilities);
-      EventFiringWebDriver wrappedDriver = new EventFiringWebDriver(rawDriver);
-      if (!isAndroid) {
-      	wrappedDriver.register(new SnapshotScreenListener(Session.this));
-      }
-      return wrappedDriver;
+      return new EventFiringWebDriver(rawDriver);
     }
 
     public Capabilities getCapabilityDescription() {

@@ -76,7 +76,7 @@ public class DefaultDriverSessions implements DriverSessions {
   }
 
   public SessionId newSession(Capabilities desiredCapabilities) throws Exception {
-    Session session = new Session(factory, desiredCapabilities);
+    Session session = Session.createSession(factory, desiredCapabilities);
     
     SessionId sessionId = new SessionId(String.valueOf(System.currentTimeMillis()));
     sessionIdToDriver.put(sessionId, session);
