@@ -38,15 +38,12 @@ public class Executable {
     }
 
     if (SYSTEM_BINARY != null && SYSTEM_BINARY.exists()) {
-      System.out.println("SYSTEM");
       binary = SYSTEM_BINARY;
       return;
     }
 
     if (PLATFORM_BINARY != null && PLATFORM_BINARY.exists()) {
-      System.out.println("PLATFORM");
       binary = PLATFORM_BINARY;
-      System.out.println(PLATFORM_BINARY);
       return;
     }
     
@@ -147,10 +144,7 @@ public class Executable {
       case XP:
           binary = new File(getEnvVar("PROGRAMFILES", "\\Program Files") + "\\Mozilla Firefox\\firefox.exe");
           if (!binary.exists()) {
-            System.out.println("Doesn't exist");
             binary = new File("/Program Files (x86)/Mozilla Firefox/firefox.exe");
-          } else {
-            System.out.println("Does exist");
           }
           break;
 
@@ -162,11 +156,7 @@ public class Executable {
           // Do nothing
     }
 
-    if (binary == null || !binary.exists()) {
-      System.out.println("NULL/!exists");
-      binary = findBinary("firefox3", "firefox2", "firefox");
-    }
-    return binary;
+    return binary != null && binary.exists() ? binary : findBinary("firefox3", "firefox2", "firefox");
   }
   
   /**

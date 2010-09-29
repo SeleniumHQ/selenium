@@ -111,7 +111,7 @@ module Selenium
                       when :macosx
                         "/Applications/Firefox.app/Contents/MacOS/firefox-bin"
                       when :windows
-                        "C:\\Program Files (x86)\\Browsers\\Mozilla Firefox\\3.5.4\\firefox.exe"
+                        windows_path
                       when :linux, :unix
                         Platform.find_binary("firefox3", "firefox2", "firefox") || "/usr/bin/firefox"
                       else
