@@ -118,7 +118,7 @@ module Selenium
                         raise Error::WebDriverError, "unknown platform: #{Platform.os}"
                       end
 
-            unless File.file?(@path)
+            unless File.file?(@path.to_s)
               raise Error::WebDriverError, "Could not find Firefox binary (os=#{Platform.os}). Make sure Firefox is installed or set the path manually with #{self}.path="
             end
 
@@ -128,7 +128,7 @@ module Selenium
           private
 
           def windows_path
-            windows_registry_path || "#{ ENV['PROGRAMFILES'] || "\\Program Files" }\\Mozilla Firefox\\firefox.exe"
+            windows_registry_path || likely_windows_path || Platform.find_binary("firefox")
           end
 
           def windows_registry_path
@@ -144,6 +144,11 @@ module Selenium
           rescue LoadError
             # older JRuby or IronRuby does not have win32/registry
           rescue Win32::Registry::Error
+          end
+
+          def likely_windows_path
+            path = "#{ ENV['PROGRAMFILES'] || "\\Program Files" }\\Mozilla Firefox\\firefox.exe"
+            path if File.executable?(path)
           end
         end # class << self
 
