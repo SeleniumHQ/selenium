@@ -26,7 +26,7 @@ import org.openqa.selenium.remote.server.rest.ResultType;
 import java.util.Map;
 
 public class RemoveLocalStorageItem extends WebDriverHandler implements JsonParametersAware {
-  private String key;
+  private volatile String key;
   
   public RemoveLocalStorageItem(DriverSessions session) {
     super(session);

@@ -24,10 +24,11 @@ import org.openqa.selenium.remote.server.rest.ResultType;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class SendKeys extends WebElementHandler implements JsonParametersAware {
 
-  private final List<CharSequence> keys = new ArrayList<CharSequence>();
+  private final List<CharSequence> keys = new CopyOnWriteArrayList<CharSequence>();
 
   public SendKeys(DriverSessions sessions) {
     super(sessions);
@@ -36,9 +37,11 @@ public class SendKeys extends WebElementHandler implements JsonParametersAware {
   @SuppressWarnings({"unchecked"})
   public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
     List<String> rawKeys = (List<String>) allParameters.get("value");
+    List<String> temp = new ArrayList<String>();
     for (String key : rawKeys) {
-      keys.add(key);
+      temp.add(key);
     }
+    keys.addAll( temp);
   }
 
   public ResultType call() throws Exception {

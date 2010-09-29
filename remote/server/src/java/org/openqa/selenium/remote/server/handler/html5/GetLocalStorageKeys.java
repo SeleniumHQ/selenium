@@ -26,7 +26,7 @@ import org.openqa.selenium.remote.server.rest.ResultType;
 import java.util.Set;
 
 public class GetLocalStorageKeys extends WebDriverHandler {
-  private Response response;
+  private volatile Response response;
   
   public GetLocalStorageKeys(DriverSessions sessions) {
     super(sessions);

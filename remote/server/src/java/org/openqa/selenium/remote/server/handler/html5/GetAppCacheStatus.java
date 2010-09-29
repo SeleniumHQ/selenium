@@ -24,7 +24,7 @@ import org.openqa.selenium.remote.server.handler.WebDriverHandler;
 import org.openqa.selenium.remote.server.rest.ResultType;
 
 public class GetAppCacheStatus extends WebDriverHandler {
-  private Response response;
+  private volatile Response response;
   
   public GetAppCacheStatus(DriverSessions sessions) {
     super(sessions);

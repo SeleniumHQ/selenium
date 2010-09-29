@@ -23,7 +23,7 @@ import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.rest.ResultType;
 
 public class GetElementLocation extends AndroidWebElementHandler {
-  private Response response;
+  private volatile Response response;
 
   public GetElementLocation(DriverSessions sessions) {
     super(sessions);

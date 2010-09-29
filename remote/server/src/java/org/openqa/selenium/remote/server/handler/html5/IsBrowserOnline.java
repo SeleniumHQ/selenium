@@ -24,7 +24,7 @@ import org.openqa.selenium.remote.server.handler.WebDriverHandler;
 import org.openqa.selenium.remote.server.rest.ResultType;
 
 public class IsBrowserOnline extends WebDriverHandler {
-  private Response response;
+  private volatile Response response;
   
   public IsBrowserOnline(DriverSessions sessions) {
     super(sessions);

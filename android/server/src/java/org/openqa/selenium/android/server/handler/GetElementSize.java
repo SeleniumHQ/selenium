@@ -29,7 +29,7 @@ import org.openqa.selenium.remote.server.rest.ResultType;
 import java.util.Map;
 
 public class GetElementSize extends AndroidWebElementHandler {
-  private Response response;
+  private volatile Response response;
 
   public GetElementSize(DriverSessions sessions) {
     super(sessions);

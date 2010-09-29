@@ -23,7 +23,7 @@ import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.rest.ResultType;
 
 public class GetElementDisplayed extends AndroidWebElementHandler {
-  private Response response;
+  private volatile Response response;
 
   public GetElementDisplayed(DriverSessions sessions) {
     super(sessions);

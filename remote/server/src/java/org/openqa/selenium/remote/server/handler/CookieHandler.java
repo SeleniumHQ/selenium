@@ -25,6 +25,7 @@ import org.openqa.selenium.remote.server.JsonParametersAware;
 
 import java.util.Date;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 public abstract class CookieHandler extends WebDriverHandler implements JsonParametersAware {
@@ -40,8 +41,8 @@ public abstract class CookieHandler extends WebDriverHandler implements JsonPara
     if (allParameters == null) {
       return;
     }
-
-    rawCookie = (Map<String, Object>) allParameters.get("cookie");
+    rawCookie =
+        new ConcurrentHashMap<String, Object>((Map<String, Object>) allParameters.get("cookie"));
   }
 
   protected Cookie createCookie() {
