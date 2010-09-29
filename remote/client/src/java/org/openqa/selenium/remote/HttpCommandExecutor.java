@@ -100,8 +100,13 @@ public class HttpCommandExecutor implements CommandExecutor {
 
     client = new DefaultHttpClient(params);
 
+    // Some machines claim "localhost.localdomain" is the same as "localhost".
+    // This assumption is not always true.
+
+    String host = remoteServer.getHost().replace(".localdomain", "");
+
     targetHost = new HttpHost(
-        remoteServer.getHost(), remoteServer.getPort(), remoteServer.getProtocol());
+        host, remoteServer.getPort(), remoteServer.getProtocol());
 
     nameToUrl = ImmutableMap.<String, CommandInfo>builder()
         .put(NEW_SESSION, post("/session"))
