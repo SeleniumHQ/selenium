@@ -21,6 +21,7 @@ package org.openqa.selenium.remote.server.handler;
 
 import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.rest.ResultType;
+import org.openqa.selenium.server.log.LoggingManager;
 
 public class DeleteSession extends WebDriverHandler {
 
@@ -33,8 +34,8 @@ public class DeleteSession extends WebDriverHandler {
 
   public ResultType call() throws Exception {
     getDriver().quit();
+    LoggingManager.perSessionLogHandler().clearSessionLogRecords(getRealSessionId().toString());
     sessions.deleteSession(getRealSessionId());
-
     return ResultType.SUCCESS;
   }
   

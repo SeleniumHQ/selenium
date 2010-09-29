@@ -22,6 +22,7 @@ import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.server.log.LoggingManager;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -80,9 +81,12 @@ public class DefaultDriverSessions implements DriverSessions {
     
     SessionId sessionId = new SessionId(String.valueOf(System.currentTimeMillis()));
     sessionIdToDriver.put(sessionId, session);
+    LoggingManager.perSessionLogHandler()
+        .copyThreadTempLogsToSessionLogs(sessionId.toString(), Thread.currentThread().getId());
+
     return sessionId;
   }
-  
+
   public Session get(SessionId sessionId) {
     return sessionIdToDriver.get(sessionId);
   }

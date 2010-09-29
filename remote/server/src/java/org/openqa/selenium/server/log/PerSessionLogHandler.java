@@ -24,8 +24,6 @@ public class PerSessionLogHandler extends java.util.logging.Handler {
     // associated till the session gets created.
     private final Map<Long, List<LogRecord>> perThreadTempRecords;
     private final Formatter formatter;
-    private int minimumLevel;
-    private int currentIndex;
     private Map<Long, String> threadToSessionMap;
     private Map<String, Long> sessionToThreadMap;
     private SessionLogsToFileRepository logFileRepository;
@@ -40,14 +38,11 @@ public class PerSessionLogHandler extends java.util.logging.Handler {
      * @param formatter
      *            Formatter to use when retrieving log messages.
      */
-    public PerSessionLogHandler(int capacity, Level minimumLevel,
-            Formatter formatter) {
+    public PerSessionLogHandler(int capacity, Level minimumLevel, Formatter formatter) {
         this.capacity = capacity;
         this.formatter = formatter;
-        this.minimumLevel = minimumLevel.intValue();
         this.perSessionRecords = new HashMap<String, List<LogRecord>>();
         this.perThreadTempRecords = new HashMap<Long, List<LogRecord>>();
-        this.currentIndex = 0;
         this.threadToSessionMap = new HashMap<Long, String>();
         this.sessionToThreadMap = new HashMap<String, Long>();
         this.logFileRepository = new SessionLogsToFileRepository();
@@ -91,19 +86,19 @@ public class PerSessionLogHandler extends java.util.logging.Handler {
         /* NOOP */
     }
     
-    public void close() throws SecurityException {
+    public synchronized void close() throws SecurityException {
         perSessionRecords.clear();
         perThreadTempRecords.clear();
     }
 
-    public LogRecord[] records(String sessionId) throws IOException {
+    private LogRecord[] records(String sessionId) throws IOException {
         List<LogRecord> logFileRecords = logFileRepository.getLogRecords(sessionId);
         List<LogRecord> records = perSessionRecords.get(sessionId);
         logFileRecords.addAll(records);
         return logFileRecords.toArray(new LogRecord[0]);
     }
 
-    public String formattedRecords(String sessionId) throws IOException {
+    private String formattedRecords(String sessionId) throws IOException {
         final StringWriter writer;
 
         writer = new StringWriter();
@@ -113,7 +108,7 @@ public class PerSessionLogHandler extends java.util.logging.Handler {
         return writer.toString();
     }
 
-    public void setThreadToSessionMapping(long threadId, String sessionId) {
+    public synchronized void setThreadToSessionMapping(long threadId, String sessionId) {
         if (threadToSessionMap.get(threadId) == null
                 || threadToSessionMap.get(threadId).equals(sessionId)) {
             threadToSessionMap.put(threadId, sessionId);
@@ -121,7 +116,7 @@ public class PerSessionLogHandler extends java.util.logging.Handler {
         }
     }
 
-    public void clearThreadToSessionMapping(long threadId) {
+    public synchronized void clearThreadToSessionMapping(long threadId) {
         String sessionId = threadToSessionMap.get(threadId);
         if (sessionId != null) {
             threadToSessionMap.remove(threadId);
@@ -129,7 +124,7 @@ public class PerSessionLogHandler extends java.util.logging.Handler {
         }
     }
     
-    public void clearSessionLogRecords(String sessionId) throws IOException {
+    public synchronized void clearSessionLogRecords(String sessionId) throws IOException {
         Long threadId = sessionToThreadMap.get(sessionId);
         String sessionIdForThread = threadToSessionMap.get(threadId);
         if (threadId != null && sessionIdForThread != null && sessionIdForThread.equals(sessionId)) {
@@ -140,7 +135,7 @@ public class PerSessionLogHandler extends java.util.logging.Handler {
         logFileRepository.removeLogFile(sessionId);
     }
 
-    public void copyThreadTempLogsToSessionLogs(String sessionId, long threadId) {
+    public synchronized void copyThreadTempLogsToSessionLogs(String sessionId, long threadId) {
         List<LogRecord> records = perThreadTempRecords.get(threadId);
         List<LogRecord> sessionRecords = new ArrayList<LogRecord>();
 
@@ -157,7 +152,7 @@ public class PerSessionLogHandler extends java.util.logging.Handler {
      * @return String RC logs for the sessionId
      * @throws IOException 
      */
-    public String getLog(String sessionId) throws IOException {
+    public synchronized String getLog(String sessionId) throws IOException {
         // TODO(chandra): Provide option to clear logs after getLog()
         String logs = formattedRecords(sessionId);
         logs = "\n<RC_Logs RC_Session_ID=" + sessionId + ">\n" + logs
