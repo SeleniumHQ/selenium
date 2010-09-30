@@ -81,8 +81,12 @@ public class DefaultDriverSessions implements DriverSessions {
     
     SessionId sessionId = new SessionId(String.valueOf(System.currentTimeMillis()));
     sessionIdToDriver.put(sessionId, session);
-    LoggingManager.perSessionLogHandler()
-        .copyThreadTempLogsToSessionLogs(sessionId.toString(), Thread.currentThread().getId());
+
+    // I'm not sure that this logging manager should have crept in here.
+    if (LoggingManager.perSessionLogHandler() != null) {
+      LoggingManager.perSessionLogHandler()
+          .copyThreadTempLogsToSessionLogs(sessionId.toString(), Thread.currentThread().getId());
+    }
 
     return sessionId;
   }
