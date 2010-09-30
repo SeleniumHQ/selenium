@@ -20,7 +20,7 @@
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId> 
-			<version>r06</version>
+			<version>r07</version>
 		</dependency>
 		<dependency>
 			<groupId>org.hamcrest</groupId>
