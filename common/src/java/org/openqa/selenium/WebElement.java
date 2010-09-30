@@ -138,7 +138,9 @@ public interface WebElement extends SearchContext {
    * Find all elements within the current context using the given mechanism.
    *
    * @param by The locating mechanism to use
-   * @return A list of all {@link WebElement}s, or an empty list if nothing matches
+   * @return A list of all {@link WebElement}s, or an empty list if nothing matches.
+   * In the case of XPath, the context is that of the document - 
+   * use ./ to search only in the element's context.
    * @see org.openqa.selenium.By
    */
   List<WebElement> findElements(By by);
@@ -147,7 +149,9 @@ public interface WebElement extends SearchContext {
    * Find the first {@link WebElement} using the given method.
    *
    * @param by The locating mechanism
-   * @return The first matching element on the current context
+   * @return The first matching element on the current context.
+   * In the case of XPath, the context is that of the document - 
+   * use ./ to search only in the element's context.
    * @throws NoSuchElementException If no matching elements are found
    */
   WebElement findElement(By by);

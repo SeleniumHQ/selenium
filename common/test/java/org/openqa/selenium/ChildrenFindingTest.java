@@ -36,24 +36,20 @@ public class ChildrenFindingTest extends AbstractDriverTestCase {
     assertThat(child.getAttribute("id"), is("2"));
   }
   
-  @Ignore({SELENESE, HTMLUNIT, IE, REMOTE})
-  //Reason for ignores: Multiple items of ID 1 exist in the page,
-  //returns subelements of *all* of them, not the one we selected
-  //See issue 278
-  public void testFindElementsByXPathDueToIssue278() {
-    driver.get(pages.nestedPage);
-    WebElement select = driver.findElement(By.id("1"));
-    List<WebElement> elements = select.findElements(By.xpath("//option"));
-    assertEquals(4, elements.size());
-  }
-
-  @Ignore(value = {SELENESE, HTMLUNIT, IE, REMOTE}, reason = "Issue 278")
-  public void testFindsSubElementNotTopLevelElementWhenLookingUpSubElementByXPath() {
+  public void testFindingElementsOnElementByXPathShouldFindTopLevelElements() {
     driver.get(pages.simpleTestPage);
-    WebElement parent = driver.findElement(By.id("containsSomeDiv"));
-    WebElement child = parent.findElement(By.xpath("//div[@name='someDiv']"));
-    assertFalse("Child should not contain text Top level", child.getText().contains("Top level"));
-    assertTrue("Child should contain text Nested", child.getText().contains("Nested"));
+    WebElement parent = driver.findElement(By.id("multiline"));
+    List<WebElement> allPs = driver.findElements(By.xpath("//p"));
+    List<WebElement> children = parent.findElements(By.xpath("//p"));
+    assertEquals(allPs.size(), children.size());
+  }
+  
+  public void testFindingDotSlashElementsOnElementByXPathShouldFindNotTopLevelElements() {
+    driver.get(pages.simpleTestPage);
+    WebElement parent = driver.findElement(By.id("multiline"));
+    List<WebElement> children = parent.findElements(By.xpath("./p"));
+    assertEquals(1, children.size());
+    assertEquals("A div containing", children.get(0).getText());
   }
 
   @Ignore(SELENESE)

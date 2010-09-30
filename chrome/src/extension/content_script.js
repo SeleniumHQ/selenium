@@ -399,13 +399,9 @@ function getElement(lookupBy, lookupValue, id) {
     elements = parent.querySelectorAll(lookupValue);
     break;
   case "xpath":
-    if (root != "" && lookupValue[0] != "/") {
-      //Because xpath is relative to the parent, if there is a parent, and the lookup seems to be implied sub-lookup, we add a /
-      root = root + "/";
-    }
-    var xpath = root + lookupValue;
+    var xpath = lookupValue;
     try {
-      elements = getElementsByXPath(xpath);
+      elements = getElementsByXPath(xpath, parent);
     } catch (e) {
       return {statusCode: 19, value: {message: "Could not look up element by xpath " + xpath}};
     }
@@ -1097,9 +1093,10 @@ function guessPageType() {
 /**
  * Gets an array of elements which match the passed xpath string
  */
-function getElementsByXPath(xpath) {
+function getElementsByXPath(xpath, context) {
+  context = context || ChromeDriverContentScript.currentDocument;
   var elements = [];
-  var foundElements = ChromeDriverContentScript.currentDocument.evaluate(xpath, ChromeDriverContentScript.currentDocument, null, XPathResult.ORDERED_NODE_ITERATOR_TYPE, null);
+  var foundElements = ChromeDriverContentScript.currentDocument.evaluate(xpath, context, null, XPathResult.ORDERED_NODE_ITERATOR_TYPE, null);
   var this_element = foundElements.iterateNext();
   while (this_element) {
     elements.push(this_element);
