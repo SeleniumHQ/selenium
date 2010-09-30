@@ -18,11 +18,15 @@ module Selenium
       #
       # Find the first element matching the given arguments.
       #
+      # When calling Element#find_element with :xpath, you need to prefix your XPath with
+      # a "." if you want to limit results to the receiver's subtree.
+      #
       # @param [:class, :class_name, :id, :link_text, :link, :partial_link_text, :name, :tag_name, :xpath] how
       # @param [String] what
       # @return [WebDriver::Element]
       #
       # @raise [NoSuchElementError] if the element doesn't exist
+      #
       #
 
       def find_element(*args)
