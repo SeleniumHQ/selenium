@@ -144,7 +144,7 @@ FirefoxDriver.prototype.close = function(respond) {
 
 
 FirefoxDriver.prototype.executeScript = function(respond, parameters) {
-  var doc = respond.session.getWindow().document;
+  var doc = respond.session.getDocument();
 
   var rawScript = parameters['script'];
   var converted = Utils.unwrapParameters(parameters['args'], doc);
