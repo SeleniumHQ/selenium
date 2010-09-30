@@ -211,7 +211,8 @@ FirefoxDriver.prototype.executeScript = function(respond, parameters) {
     doc.dispatchEvent(event);
   };
 
-  // Wait until "doc.body" is present, or we've waited too long.
+  addListener();
+  runScript();
 };
 
 
