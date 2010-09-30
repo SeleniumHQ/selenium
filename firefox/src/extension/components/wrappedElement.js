@@ -82,6 +82,14 @@ FirefoxDriver.prototype.clickElement = function(respond, parameters) {
       nativeEvents.click(node, x, y);
       this.currentX = x;
       this.currentY = y;
+      //If the old window doesn't exist (i.e. we have moved page)
+      if (!respond.session.window_) {
+        //If a window exists (i.e. we haven't just closed the last window), and:
+        //If the current window.top is not the same as the old one (we have changed window, and the change wasn't just in an iFrame, so we need to bust out of any iFrame we're in and into the top-level window)
+        if (respond.session.getChromeWindow().getBrowser !== undefined && respond.session.window_.top != respond.session.getBrowser().contentWindow.top) {
+          respond.session.setWindow(respond.session.getBrowser().contentWindow);
+        }
+      }
       respond.send();
       return;
     } catch (e) {

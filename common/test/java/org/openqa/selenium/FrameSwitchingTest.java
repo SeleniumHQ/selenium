@@ -311,6 +311,12 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
       fail("Could not find element after switching frame");
     }
   }
+  
+  public void testShouldReturnFrameTitleNotWindowTitle() {
+    driver.get(pages.framesetPage);
+    driver.switchTo().frame("third");
+    assertEquals("We Leave From Here", driver.getTitle());
+  }
 
   private void assertFrameNotPresent(WebDriver driver, String locator) {
     long end = System.currentTimeMillis() + TIMEOUT;

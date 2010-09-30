@@ -227,7 +227,7 @@ FirefoxDriver.prototype.getCurrentUrl = function(respond) {
 
 
 FirefoxDriver.prototype.getTitle = function(respond) {
-  respond.value = respond.session.getBrowser().contentTitle;
+  respond.value = respond.session.getDocument().title;
   respond.send();
 };
 
