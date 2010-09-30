@@ -290,6 +290,7 @@ public class FirefoxProfile {
     prefs.put("extensions.update.enabled", "false");
     prefs.put("extensions.update.notifyUser", "false");
     prefs.put("network.manage-offline-status", "false");
+    prefs.put("network.http.max-connections-per-server", "10");
     prefs.put("security.fileuri.origin_policy", "3");
     prefs.put("security.fileuri.strict_origin_policy", "false");
     prefs.put("security.warn_entering_secure", "false");
