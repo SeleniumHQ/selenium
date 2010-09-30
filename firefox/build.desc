@@ -47,6 +47,7 @@ mozilla_extension(name = "webdriver",
     { ":libwebdriver_firefox_so64" : "platform/Linux_x86_64-gcc3/components/libwebdriver-firefox.so" },
     { ":atoms" : "resource/modules/atoms.js" },
     { "src/js/errorcode.js" : "resource/modules/errorcode.js" },
+    { "src/js/timer.js" : "resource/modules/timer.js" },
     { "src/js/utils.js" :     "resource/modules/utils.js" },
     { "src/js/evaluate.js" : "resource/evaluate.js" },
     { "//third_party/js/sizzle" : "resource/sizzle.js" }

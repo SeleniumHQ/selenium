@@ -29,6 +29,7 @@ function FirefoxDriver(server, enableNativeEvents, win) {
   // https://groups.google.com/group/mozilla.dev.apps.firefox/browse_thread/thread/e178d41afa2ccc87?hl=en&pli=1#
   var resources = [
     "atoms.js",
+    "timer.js",
     "utils.js"
   ];
 
@@ -172,39 +173,45 @@ FirefoxDriver.prototype.executeScript = function(respond, parameters) {
   }
 
   // Attach the listener to the DOM
-  if (!doc.getUserData('webdriver-evaluate-attached')) {
-    var element = doc.createElement("script");
-    element.setAttribute("type", "text/javascript");
-    element.innerHTML = FirefoxDriver.listenerScript;
-    doc.body.appendChild(element);
-    element.parentNode.removeChild(element);
-  }
-  
-  doc.setUserData('webdriver-evaluate-args', converted, null);
-
-  var script =
-      'var args = document.getUserData("webdriver-evaluate-args"); ' +
-      '(function() { ' + rawScript + '}).apply(null, args);';
-  doc.setUserData('webdriver-evaluate-script', script, null);
-
-  var handler = function(event) {
-    doc.removeEventListener('webdriver-evaluate-response', handler, true);
-
-    var unwrapped = doc.wrappedJSObject ? doc.wrappedJSObject : doc;
-    var result = unwrapped.getUserData('webdriver-evaluate-result');
-    respond.value = Utils.wrapResult(result, doc);
-    respond.status = doc.getUserData('webdriver-evaluate-code');
-
-    doc.setUserData('webdriver-evaluate-result', null, null);
-    doc.setUserData('webdriver-evaluate-code', null, null);
-
-    respond.send();
+  var addListener = function() {
+      if (!doc.getUserData('webdriver-evaluate-attached')) {
+        var element = doc.createElement("script");
+        element.setAttribute("type", "text/javascript");
+        element.innerHTML = FirefoxDriver.listenerScript;
+        doc.body.appendChild(element);
+        element.parentNode.removeChild(element);
+    }
   };
-  doc.addEventListener('webdriver-evaluate-response', handler, true);
 
-  var event = doc.createEvent('Events');
-  event.initEvent('webdriver-evaluate', true, false);
-  doc.dispatchEvent(event);
+  var runScript = function() {
+    doc.setUserData('webdriver-evaluate-args', converted, null);
+
+    var script =
+        'var args = document.getUserData("webdriver-evaluate-args"); ' +
+        '(function() { ' + rawScript + '}).apply(null, args);';
+    doc.setUserData('webdriver-evaluate-script', script, null);
+
+    var handler = function(event) {
+        doc.removeEventListener('webdriver-evaluate-response', handler, true);
+
+        var unwrapped = doc.wrappedJSObject ? doc.wrappedJSObject : doc;
+        var result = unwrapped.getUserData('webdriver-evaluate-result');
+        respond.value = Utils.wrapResult(result, doc);
+        respond.status = doc.getUserData('webdriver-evaluate-code');
+
+        doc.setUserData('webdriver-evaluate-result', null, null);
+        doc.setUserData('webdriver-evaluate-code', null, null);
+
+        respond.send();
+    };
+    doc.addEventListener('webdriver-evaluate-response', handler, true);
+
+    var event = doc.createEvent('Events');
+    event.initEvent('webdriver-evaluate', true, false);
+    doc.dispatchEvent(event);
+  };
+
+  // Wait until "doc.body" is present, or we've waited too long.
 };
 
 
@@ -418,15 +425,10 @@ FirefoxDriver.prototype.findElementInternal_ = function(respond, method,
               selector: selector
           })));
     } else {
-      var self = this;
-      var timer = Components.classes['@mozilla.org/timer;1'].
-          createInstance(Components.interfaces.nsITimer);
-      timer.initWithCallback({
-        notify: function() {
-          self.findElementInternal_(respond, method, selector,
+      var callback = goog.bind(this.findElementInternal_, this, respond, method, selector,
               opt_parentElementId, startTime);
-        }
-      }, 10, Components.interfaces.nsITimer.TYPE_ONE_SHOT);
+
+      new Timer().setTimeout(callback, 10);
     }
   }
 };
