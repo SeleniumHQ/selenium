@@ -21,6 +21,8 @@
  * @constructor
  */
 function Dispatcher() {
+  Components.utils.import('resource://fxdriver/modules/logging.js');
+
   this.resources_ = [];
   this.init_();
 }
@@ -299,7 +301,7 @@ Dispatcher.prototype.dispatch = function(request, response) {
       bestMatchResource.setRequestAttributes(request);
       bestMatchResource.handle(request, response);
     } catch (ex) {
-      Utils.dump(ex);
+      Logger.dump(ex);
       response.sendError(Response.INTERNAL_ERROR, JSON.stringify({
         status: ErrorCode.UNHANDLED_ERROR,
         value: ErrorCode.toJSON(ex)

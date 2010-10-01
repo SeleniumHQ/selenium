@@ -29,6 +29,7 @@ function FirefoxDriver(server, enableNativeEvents, win) {
   // https://groups.google.com/group/mozilla.dev.apps.firefox/browse_thread/thread/e178d41afa2ccc87?hl=en&pli=1#
   var resources = [
     "atoms.js",
+    "logging.js",
     "timer.js",
     "utils.js"
   ];
@@ -107,7 +108,7 @@ FirefoxDriver.prototype.get = function(respond, parameters) {
   respond.session.getBrowser().loadURI(url);
 
   if (!loadEventExpected) {
-    Utils.dumpn("No load event expected");
+    Logger.dumpn("No load event expected");
     respond.send();
   }
 };
@@ -152,7 +153,7 @@ FirefoxDriver.prototype.executeScript = function(respond, parameters) {
 
   if (doc.designMode && "on" == doc.designMode.toLowerCase()) {
     // See https://developer.mozilla.org/en/rich-text_editing_in_mozilla#Internet_Explorer_Differences
-    Utils.dumpn("Window in design mode, falling back to sandbox: " + doc.designMode);
+    Logger.dumpn("Window in design mode, falling back to sandbox: " + doc.designMode);
     var window = respond.session.getWindow();
     window = window.wrappedJSObject;
     var sandbox = new Components.utils.Sandbox(window);
@@ -167,7 +168,7 @@ FirefoxDriver.prototype.executeScript = function(respond, parameters) {
       respond.send();
       return;
     } catch (e) {
-      Utils.dumpn(JSON.stringify(e));
+      Logger.dumpn(JSON.stringify(e));
       throw new WebDriverError(ErrorCode.UNEXPECTED_JAVASCRIPT_ERROR, e);
     }
   }

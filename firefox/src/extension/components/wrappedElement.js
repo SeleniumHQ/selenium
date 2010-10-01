@@ -50,7 +50,7 @@ FirefoxDriver.prototype.clickElement = function(respond, parameters) {
       versionChecker.compare(appInfo.platformVersion, "1.9") >= 0;
 
   if (this.enableNativeEvents && nativeEvents && node && useNativeClick) {
-    Utils.dumpn("Using native events for click");
+    Logger.dumpn("Using native events for click");
     var loc = Utils.getLocationOnceScrolledIntoView(element);
     var x = loc.x + (loc.width ? loc.width / 2 : 0);
     var y = loc.y + (loc.height ? loc.height / 2 : 0);
@@ -82,14 +82,14 @@ FirefoxDriver.prototype.clickElement = function(respond, parameters) {
       nativeEvents.click(node, x, y);
       this.currentX = x;
       this.currentY = y;
-      //If the old window doesn't exist (i.e. we have moved page)
-      if (!respond.session.window_) {
-        //If a window exists (i.e. we haven't just closed the last window), and:
-        //If the current window.top is not the same as the old one (we have changed window, and the change wasn't just in an iFrame, so we need to bust out of any iFrame we're in and into the top-level window)
-        if (respond.session.getChromeWindow().getBrowser !== undefined && respond.session.window_.top != respond.session.getBrowser().contentWindow.top) {
-          respond.session.setWindow(respond.session.getBrowser().contentWindow);
-        }
-      }
+//      //If the old window doesn't exist (i.e. we have moved page)
+//      if (!respond.session.window_) {
+//        //If a window exists (i.e. we haven't just closed the last window), and:
+//        //If the current window.top is not the same as the old one (we have changed window, and the change wasn't just in an iFrame, so we need to bust out of any iFrame we're in and into the top-level window)
+//        if (respond.session.getChromeWindow().getBrowser !== undefined && respond.session.window_.top != respond.session.getBrowser().contentWindow.top) {
+//          respond.session.setWindow(respond.session.getBrowser().contentWindow);
+//        }
+//      }
       respond.send();
       return;
     } catch (e) {
@@ -97,7 +97,7 @@ FirefoxDriver.prototype.clickElement = function(respond, parameters) {
       // the error returned from the native call indicates it's not
       // implemented.
 
-      Utils.dumpn("Detected error when clicking: " + e.name);
+      Logger.dumpn("Detected error when clicking: " + e.name);
 
       if (e.name != "NS_ERROR_NOT_IMPLEMENTED") {
         throw new WebDriverError(ErrorCode.INVALID_ELEMENT_STATE, e);
@@ -107,7 +107,7 @@ FirefoxDriver.prototype.clickElement = function(respond, parameters) {
     }
   }
 
-  Utils.dumpn("Falling back to synthesized click");
+  Logger.dumpn("Falling back to synthesized click");
 
   var browser = respond.session.getBrowser();
   var alreadyReplied = false;
@@ -420,7 +420,7 @@ FirefoxDriver.prototype.setElementSelected = function(respond, parameters) {
         select, Components.interfaces.nsIDOMHTMLSelectElement);
     if (!select) {
       //If we're not within a select element, fire the event from the option, and hope that it bubbles up
-      Utils.dumpn("Falling back to event firing from option, not select element");
+      Logger.dumpn("Falling back to event firing from option, not select element");
       select = option;
     }
 
@@ -654,7 +654,7 @@ FirefoxDriver.prototype.getElementLocationOnceScrolledIntoView = function(
     // Element doesn't have an accessibility node. Fall through
   }
 
-  Utils.dumpn("Guessing location once scrolled into view");
+  Logger.dumpn("Guessing location once scrolled into view");
   // Fine. Come up with a good guess. This should be the element location
   // added to the current window location. It'll probably be off
   var x = theDoc.defaultView.screenX;

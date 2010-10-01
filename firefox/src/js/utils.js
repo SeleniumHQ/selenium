@@ -19,6 +19,7 @@
 var EXPORTED_SYMBOLS = [ 'createSwitchFile', 'Utils', 'WebDriverError' ];
 
 Components.utils.import('resource://fxdriver/modules/errorcode.js');
+Components.utils.import('resource://fxdriver/modules/logging.js');
 
 /**
  * A WebDriver error.
@@ -97,7 +98,7 @@ function createSwitchFile(file_content) {
     }
   } catch (e) {
     // Fine. Log it and continue
-    Utils.dumpn(e);
+    Logger.dumpn(e);
   }
 }
 
@@ -119,7 +120,7 @@ Utils.newInstance = function(className, interfaceName) {
   var clazz = Components.classes[className];
 
   if (!clazz) {
-    Utils.dumpn("Unable to find class: " + className);
+    Logger.dumpn("Unable to find class: " + className);
     return undefined;
   }
   var iface = Components.interfaces[interfaceName];
@@ -396,7 +397,7 @@ Utils.type = function(doc, element, text, opt_useNativeEvents) {
     } while ((hasEvents.value == true) && (!pageHasBeenUnloaded));
 
     if (pageHasBeenUnloaded) {
-        Utils.dumpn("Page has been reloaded while waiting for native events to "
+        Logger.dumpn("Page has been reloaded while waiting for native events to "
             + "be processed. Remaining events? " + hasEvents.value);
     } else {
         // Remove event listeners...
@@ -430,7 +431,7 @@ Utils.type = function(doc, element, text, opt_useNativeEvents) {
     return;
   }
 
-  Utils.dumpn("Doing sendKeys in a non-native way...")
+  Logger.dumpn("Doing sendKeys in a non-native way...")
   var controlKey = false;
   var shiftKey = false;
   var altKey = false;
@@ -862,98 +863,6 @@ Utils.findFrame = function(browser, frameId) {
 };
 
 
-Utils.dumpText = function(text) {
-  if (!Utils.dumpText.isLoggingInit_) {
-    var prefs =
-        Utils.getService("@mozilla.org/preferences-service;1", "nsIPrefBranch");
-    Utils.dumpText.isLoggingInit_ = true;
-    Utils.dumpText.logToConsole_ =
-        prefs.prefHasUserValue("webdriver_log_to_console") &&
-        prefs.getBoolPref("webdriver_log_to_console");
-  }
-  var consoleService = Utils.getService(
-      "@mozilla.org/consoleservice;1", "nsIConsoleService");
-  if (consoleService) {
-    consoleService.logStringMessage(text);
-    if (Utils.dumpText.logToConsole_) {
-      dump(text);
-    }
-  } else {
-    dump(text);
-  }
-};
-
-
-Utils.dumpn = function(text) {
-  var stack = Components.stack.caller;
-  var filename = stack.filename.replace(/.*\//, '');
-  Utils.dumpText(filename + ":" + stack.lineNumber  + " - " + text + "\n");
-};
-
-
-Utils.dump = function(element) {
-  var dump = "=============\n";
-
-  var rows = [];
-
-  dump += "Supported interfaces: ";
-  for (var i in Components.interfaces) {
-    try {
-      var view = element.QueryInterface(Components.interfaces[i]);
-      dump += i + ", ";
-    } catch (e) {
-      // Doesn't support the interface
-    }
-  }
-  dump += "\n------------\n";
-
-  try {
-    Utils.dumpProperties(element, rows);
-  } catch (e) {
-    Utils.dumpText("caught an exception: " + e);
-  }
-
-  rows.sort();
-  for (var i in rows) {
-    dump += rows[i] + "\n";
-  }
-
-  dump += "=============\n\n\n";
-  Utils.dumpText(dump);
-};
-
-
-Utils.dumpProperties = function(view, rows) {
-  for (var i in view) {
-    var value = "\t" + i + ": ";
-    try {
-      if (typeof(view[i]) == typeof(Function)) {
-        value += " function()";
-      } else {
-        value += String(view[i]);
-      }
-    } catch (e) {
-      value += " Cannot obtain value";
-    }
-
-    rows.push(value);
-  }
-};
-
-
-Utils.stackTrace = function() {
-  var stack = Components.stack;
-  var i = 5;
-  var dump = "";
-  while (i && stack.caller) {
-    stack = stack.caller;
-    dump += stack + "\n";
-  }
-
-  Utils.dumpText(dump);
-};
-
-
 Utils.getElementLocation = function(element) {
   var x = element.offsetLeft;
   var y = element.offsetTop;
@@ -1042,7 +951,7 @@ Utils.getLocation = function(element) {
     }
 
     // Firefox 3.0, but lacking client rect
-    Utils.dumpn("Falling back to firefox3 mechanism");
+    Logger.dumpn("Falling back to firefox3 mechanism");
     var accessible = retrieval.getAccessibleFor(element);
 
     var x = {}, y = {}, width = {}, height = {};
@@ -1055,7 +964,7 @@ Utils.getLocation = function(element) {
       height: height.value
     };
   } catch(e) {
-    Utils.dumpn(e);
+    Logger.dumpn(e);
     // Element doesn't have an accessibility node
     throw e;
   }

@@ -21,9 +21,9 @@
  * @param {string} message The message to log.
  */
 function log(message) {
-  Components.classes['@mozilla.org/consoleservice;1'].
-    getService(Components.interfaces.nsIConsoleService).
-    logStringMessage(message);
+  Components.utils.import('resource://fxdriver/modules/logging.js');
+
+  Logger.dumpn(message);
 }
 
 

@@ -32,6 +32,8 @@ function log(message) {
  * @constructor
  */
 function wdSession() {
+  // Load the Utils
+
   /**
    * A wrapped self-reference for XPConnect.
    * @type {wdSession}
@@ -150,6 +152,11 @@ wdSession.prototype.getChromeWindow = function() {
 
 /** @return {?nsIDOMWindow} This session's current window. */
 wdSession.prototype.getWindow = function() {
+  // Is the current window still valid?
+  if (this.window_.closed) {
+    Logger.dumpn("Window is closed");
+  }
+
   if (!this.window_.document) {
     // Uh-oh, we lost our DOM! Try to recover by changing focus to the
     // main content window.
