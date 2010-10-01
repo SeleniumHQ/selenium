@@ -97,6 +97,7 @@ task :iphone => [:iphone_server, :iphone_client]
 task :'selenium-server-standalone' => ["//remote/server:server:uber"]
 task :ide => [ "//ide:selenium-ide" ]
 
+task :test_android => ["//android/client:test:run"]
 task :test_common => [ "//common:test" ]
 task :test_chrome => [ "//chrome:test:run" ]
 task :test_htmlunit => [ "//htmlunit:test:run" ]
