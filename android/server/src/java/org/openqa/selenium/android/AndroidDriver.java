@@ -25,7 +25,6 @@ import com.google.common.collect.Sets;
 
 import com.google.common.io.ByteStreams;
 import com.google.common.io.Closeables;
-import com.google.common.io.Resources;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -73,15 +72,17 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
 
   public static final String LOG_TAG = AndroidDriver.class.getName();
   
-  public static final String ERROR = "_ERROR:";  // Prefixes JS result when returning an error
-  public static final String TYPE = "_TYPE";  // Prefixes JS result to be converted
-  public static final String WEBELEMENT_TYPE = TYPE + "1:"; // Convert to WebElement
-  private static final String WINDOW_HANDLE = "windowOne";
   // Timeouts in milliseconds
   public static final long INTENT_TIMEOUT = 10000L;
   public static final long LOADING_TIMEOUT = 30000L;
   public static final long START_LOADING_TIMEOUT = 800L;
   public static final long WAIT_FOR_RESPONSE_TIMEOUT = 20000L;
+  public static final long FOCUS_TIMEOUT = 1000L;
+  
+  public static final String ERROR = "_ERROR:";  // Prefixes JS result when returning an error
+  public static final String TYPE = "_TYPE";  // Prefixes JS result to be converted
+  public static final String WEBELEMENT_TYPE = TYPE + "1:"; // Convert to WebElement
+  private static final String WINDOW_HANDLE = "windowOne";
 
   private static final String NOT_DONE_INDICATOR = Long.toString(SystemClock.uptimeMillis());
   private static Context context;
@@ -90,12 +91,13 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
   private final AndroidWebElement element;
   private final JavascriptDomAccessor domAccessor;
   private final IntentSender sender;
-  private boolean pageHasLoaded = false;
-  private boolean pageHasStartedLoading = false;
+  private volatile boolean pageHasLoaded = false;
+  private volatile boolean pageHasStartedLoading = false;
+  private volatile boolean editableAreaIsFocused = false;
   private String jsResult;
   private String jsonLibrary;
   private String currentFrame;
-  private long implicitWait = 0;  
+  private long implicitWait = 0;
   
   public AndroidDriver() {
     Log.e(LOG_TAG, "AndroidDriver constructor: " + getContext().getPackageName());
@@ -118,6 +120,7 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
     intentRegistrar.registerReceiver(receiver, Action.JAVASCRIPT_RESULT_AVAILABLE);
     intentRegistrar.registerReceiver(receiver, Action.PAGE_LOADED);
     intentRegistrar.registerReceiver(receiver, Action.PAGE_STARTED_LOADING);
+    intentRegistrar.registerReceiver(receiver, Action.EDITABLE_AERA_FOCUSED);
   }
 
   private void initJsonLibrary() {
@@ -178,6 +181,7 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
   public void quit() {
     Log.d(LOG_TAG, "Quitting..");
     intentRegistrar.unregisterAllReceivers();
+    // TODO(berrada): Close webview and shutdown server.
   }
 
   public WebElement findElement(By by) {
@@ -213,7 +217,8 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
   private static void sleepQuietly(long ms) {
     try {
       Thread.sleep(ms);
-    } catch (InterruptedException ignored) {
+    } catch (InterruptedException cause) {
+      Log.e(LOG_TAG, "Sleep, interupted: " + cause.getMessage());
     }
   }
 
@@ -451,11 +456,7 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
     FutureExecutor.executeFuture(new Callable<Void>() {
       public Void call() {
         while (NOT_DONE_INDICATOR.equals(jsResult)) {
-          try {
-            Thread.sleep(50);
-          } catch (InterruptedException e) {
-            Log.e(LOG_TAG, "Sleep Interupted while waiting for result. " + e.toString());
-          }  // ms
+          sleepQuietly(50);
         }
         return null;
       }
@@ -589,7 +590,6 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
       implicitWait = TimeUnit.MILLISECONDS.convert(Math.max(0, time), unit);
       return this;
     }
-    
   }
   
   public void doNavigation(String intentName) {
@@ -608,12 +608,24 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
     FutureExecutor.executeFuture(new Callable<Void>() {
       public Void call() throws Exception {
         while (!pageHasLoaded) {
-          continue;
+          sleepQuietly(50);
         }
         return null;
       }
       
     }, LOADING_TIMEOUT);
+  }
+  
+  public void waitUntilEditableAreaFocused() {
+    FutureExecutor.executeFuture(new Callable<Void>() {
+      public Void call() throws Exception {
+        while (!editableAreaIsFocused) {
+          sleepQuietly(50);
+        }
+        return null;
+      }
+      
+    }, FOCUS_TIMEOUT);
   }
   
   public <X> X getScreenshotAs(OutputType<X> target) throws WebDriverException {
@@ -625,6 +637,7 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
   public Object sendIntent(String action, Object... args) {
     resetPageHasLoaded();
     resetPageHasStartedLoading();
+    editableAreaIsFocused = false;
     sender.broadcast(getContext(), action, args);
     return FutureExecutor.executeFuture(sender, INTENT_TIMEOUT);
   }
@@ -637,6 +650,8 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
       pageHasLoaded = true;
     } else if (Action.PAGE_STARTED_LOADING.equals(action)) {
       pageHasStartedLoading = true;
+    } else if (Action.EDITABLE_AERA_FOCUSED.equals(action)) {
+      editableAreaIsFocused = true;
     }
     return null;
   }

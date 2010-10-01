@@ -15,7 +15,7 @@
         android:textColor="#FFFFFF" android:background="#333333" android:maxLines="5" android:textSize="11dip">
 </TextView>
 
-<WebView android:id="@+id/webview"
+<org.openqa.selenium.android.app.CustomWebView android:id="@+id/webview"
         android:background="#77CC0000"
         android:layout_width="fill_parent"
         android:focusable="false" android:layout_height="fill_parent"/><WebView android:id="@+id/rssWebView"

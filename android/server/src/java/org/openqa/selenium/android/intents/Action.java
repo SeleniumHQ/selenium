@@ -38,4 +38,6 @@ public interface Action {
   
   String SEND_KEYS = "sendKeys";
   String SEND_MOTION_EVENT = "sendMotionEvent";
+  
+  String EDITABLE_AERA_FOCUSED = "editableAreaFocused";
 }

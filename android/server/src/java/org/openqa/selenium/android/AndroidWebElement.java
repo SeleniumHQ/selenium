@@ -135,6 +135,7 @@ public class AndroidWebElement implements WebElement, FindsById, FindsByLinkText
     }
     // focus on the element
     this.click();
+    driver.waitUntilEditableAreaFocused();
     driver.sendIntent(Action.SEND_KEYS, serializableArgs);
     if (driver.pageHasStartedLoading()) {
       driver.waitUntilPageFinishedLoading();
