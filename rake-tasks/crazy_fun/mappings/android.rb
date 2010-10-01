@@ -114,7 +114,7 @@ module Android
       platform =  properties["androidplatform"]
       
       dx = File.join(sdk_path, "platforms", platform, "tools", "dx")
-      
+      dx = File.expand_path(dx) 
       File.exists?(dx)
     end
     
@@ -220,8 +220,10 @@ module Android
         
         if (android_installed?)
           sh cmd
+	  copy_to_prebuilt(apk, fun)
         else
           puts apk
+	  puts "Android SDK not installed, copying from prebuilt."
           copy_prebuilt(fun, apk)
         end
       end

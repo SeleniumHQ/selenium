@@ -131,7 +131,13 @@ class Tasks
       cp_r out, out_dir
     end
   end
-  
+
+  def copy_to_prebuilt(out, fun)
+    prebuilt = fun.find_prebuilt(out)
+    puts "Copying #{out} to prebuilt #{prebuilt}"
+    cp out, prebuilt
+  end
+
   def copy_prebuilt(fun, out)
     src = fun.find_prebuilt(out)
     
