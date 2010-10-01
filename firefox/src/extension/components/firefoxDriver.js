@@ -234,11 +234,21 @@ FirefoxDriver.prototype.getTitle = function(respond) {
 
 
 FirefoxDriver.prototype.getPageSource = function(respond) {
-  var source = respond.session.getDocument().
-      getElementsByTagName("html")[0].innerHTML;
+  var win = respond.session.getWindow();
 
-  respond.value = "<html>" + source + "</html>";
+  // Don't pollute the response with annotations we place on the DOM.
+  var docElement = win.document.documentElement;
+  docElement.removeAttribute('webdriver');
+  docElement.removeAttribute('command');
+  docElement.removeAttribute('response');
+
+  var XMLSerializer = win.XMLSerializer;
+  respond.value = new XMLSerializer().serializeToString(win.document);
   respond.send();
+
+  // The command & response attributes we removed are on-shots, we only
+  // need to add back the webdriver attribute.
+  docElement.setAttribute('webdriver', 'true');
 };
 
 /**

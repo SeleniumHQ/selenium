@@ -20,6 +20,8 @@ package org.openqa.selenium;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.openqa.selenium.Ignore.Driver.ANDROID;
+import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 
 public class MiscTest extends AbstractDriverTestCase {
@@ -45,5 +47,13 @@ public class MiscTest extends AbstractDriverTestCase {
     assertThat(source.contains("<p id="), is(true));
     assertThat(source.contains("lotsofspaces"), is(true));
     assertThat(source.contains("with document.write and with document.write again"), is(true));
+  }
+
+  @JavascriptEnabled
+  @Ignore(value = {ANDROID, IE, SELENESE}, reason = "Untested")
+  public void testShouldBeAbleToGetTheSourceOfAnXmlDocument() {
+    driver.get(pages.simpleXmlDocument);
+    String source = driver.getPageSource().toLowerCase();
+    assertThat(source.replaceAll("\\s", ""), equalTo("<xml><foo><bar>baz</bar></foo></xml>"));
   }
 }

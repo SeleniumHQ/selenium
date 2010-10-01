@@ -561,11 +561,17 @@ function getElementAttribute(element, attribute) {
  * Gets the source of the current document
  */
 function getSource() {
-  if (guessPageType() == "html") {
-    return {statusCode: 0, value: ChromeDriverContentScript.currentDocument.getElementsByTagName("html")[0].outerHTML};
-  } else if (guessPageType() == "text") {
-    return {statusCode: 0, value: ChromeDriverContentScript.currentDocument.getElementsByTagName("pre")[0].innerHTML};
+  var pageType = guessPageType();
+  if ("text" == pageType) {
+    return {
+      statusCode: 0,
+      value: ChromeDriverContentScript.currentDocument.getElementsByTagName("pre")[0].innerHTML
+    };
   }
+  return {
+    statusCode: 0,
+    value: new XMLSerializer().serializeToString(ChromeDriverContentScript.currentDocument)
+  };
 }
 
 /**
@@ -1078,7 +1084,12 @@ function removeInjectedEmbed() {
  * Guesses whether we have an HTML document or a text file
  */
 function guessPageType() {
-  var source = ChromeDriverContentScript.currentDocument.getElementsByTagName("html")[0].outerHTML;
+  var htmlElement = ChromeDriverContentScript.currentDocument.getElementsByTagName("html")[0];
+  if (!htmlElement) {
+    return "xml";
+  }
+
+  var source = htmlElement.outerHTML;
   var textSourceBegins = '<html><body><pre style="word-wrap: break-word; white-space: pre-wrap;">';
   var textSourceEnds = '</pre></body></html>';
   

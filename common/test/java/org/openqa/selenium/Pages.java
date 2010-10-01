@@ -21,6 +21,7 @@ import org.openqa.selenium.environment.webserver.AppServer;
 
 public class Pages {
   public String simpleTestPage;
+  public String simpleXmlDocument;
   public String xhtmlTestPage;
   public String formPage;
   public String metaRedirectPage;
@@ -48,6 +49,7 @@ public class Pages {
 
   public Pages(AppServer appServer) {
     simpleTestPage = appServer.whereIs("simpleTest.html");
+    simpleXmlDocument = appServer.whereIs("simple.xml");
     xhtmlTestPage = appServer.whereIs("xhtmlTest.html");
     formPage = appServer.whereIs("formPage.html");
     metaRedirectPage = appServer.whereIs("meta-redirect.html");
