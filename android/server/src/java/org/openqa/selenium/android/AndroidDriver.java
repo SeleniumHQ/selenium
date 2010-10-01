@@ -94,7 +94,7 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
   private volatile boolean pageHasLoaded = false;
   private volatile boolean pageHasStartedLoading = false;
   private volatile boolean editableAreaIsFocused = false;
-  private String jsResult;
+  private volatile String jsResult;
   private String jsonLibrary;
   private String currentFrame;
   private long implicitWait = 0;
@@ -167,8 +167,9 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
 
   public String getPageSource() {
     Log.d(LOG_TAG, "getPageSource");
-    executeScript("return " + currentFrame + ".document.documentElement.outerHTML");
-    return jsResult;
+    return (String) executeScript(
+        "return (new XMLSerializer()).serializeToString("
+            + currentFrame + ".document.documentElement);");
   }
 
   public void close() {
@@ -383,7 +384,7 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
     
     // jsResult is updated by the intent receiver when the JS result is ready. 
     Object res = checkResultAndConvert(jsResult);
-    Log.d(LOG_TAG, String.format("executeScript Converted result from %s, to %s.", jsResult, res));
+    Log.d(LOG_TAG, String.format("executeScript Converted result from %s, to %s.", jsResult, res));    
     return res;
   }
 
