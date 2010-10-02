@@ -36,6 +36,7 @@ public class ChildrenFindingTest extends AbstractDriverTestCase {
     assertThat(child.getAttribute("id"), is("2"));
   }
   
+  @Ignore(SELENESE)
   public void testFindingElementsOnElementByXPathShouldFindTopLevelElements() {
     driver.get(pages.simpleTestPage);
     WebElement parent = driver.findElement(By.id("multiline"));
@@ -44,6 +45,7 @@ public class ChildrenFindingTest extends AbstractDriverTestCase {
     assertEquals(allPs.size(), children.size());
   }
   
+  @Ignore(SELENESE)
   public void testFindingDotSlashElementsOnElementByXPathShouldFindNotTopLevelElements() {
     driver.get(pages.simpleTestPage);
     WebElement parent = driver.findElement(By.id("multiline"));
