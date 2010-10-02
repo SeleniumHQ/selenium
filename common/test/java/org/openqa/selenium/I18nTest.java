@@ -19,6 +19,7 @@ package org.openqa.selenium;
 
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 
+import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.IE;
@@ -46,6 +47,7 @@ public class I18nTest extends AbstractDriverTestCase {
     driver.findElement(By.linkText(Messages.getString("I18nTest.link1"))).click();
   }
 
+  @Ignore(CHROME)
   public void testEnteringHebrewTextFromLeftToRight() {
     driver.get(pages.chinesePage);
     WebElement input = driver.findElement(By.name("i18n"));
@@ -55,6 +57,7 @@ public class I18nTest extends AbstractDriverTestCase {
     assertEquals(shalom, input.getValue());
   }
 
+  @Ignore(CHROME)
   public void testEnteringHebrewTextFromRightToLeft() {
     driver.get(pages.chinesePage);
     WebElement input = driver.findElement(By.name("i18n"));
@@ -64,7 +67,7 @@ public class I18nTest extends AbstractDriverTestCase {
     assertEquals(tmunot, input.getValue());
   }
 
-  @Ignore(value = {IE, SELENESE})
+  @Ignore(value = {IE, SELENESE, CHROME})
   public void testShouldBeAbleToReturnTheTextInAPage() {
     String url = GlobalTestEnvironment.get()
         .getAppServer()
