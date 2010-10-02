@@ -286,7 +286,7 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
     assertThat(driver.getCurrentUrl(), equalTo(url));
   }
   
-  @Ignore(value = {IE, HTMLUNIT}, reason = "Appears to uncover an HtmlUnit bug")
+  @Ignore(value = {IE, HTMLUNIT, CHROME}, reason = "Appears to uncover an HtmlUnit bug")
   @JavascriptEnabled
   public void testShouldBeAbleToCarryOnWorkingIfTheFrameIsDeletedFromUnderUs() {
     driver.get(pages.deletingFrame);
