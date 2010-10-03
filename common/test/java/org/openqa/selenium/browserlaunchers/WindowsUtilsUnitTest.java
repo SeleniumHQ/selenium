@@ -60,8 +60,8 @@ public class WindowsUtilsUnitTest extends TestCase {
     public void testRegistry() {
         if (!WindowsUtils.thisIsWindows()) return;
         //TODO(danielwh): Uncomment or remove assert 
-        //String keyCurrentVersion = "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\CurrentVersion";
-        String keyProxyEnable = "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\ProxyEnable";
+        String keyCurrentVersion = "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\CurrentVersion";
+        //String keyProxyEnable = "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\ProxyEnable";
         String keySeleniumFoo = "HKEY_CURRENT_USER\\Software\\Selenium\\RemoteControl\\foo";
         assertTrue("Standard Windows reg key CurrentVersion doesn't exist", WindowsUtils.doesRegistryValueExist(keyCurrentVersion));
         System.out.println("CurrentVersion: " + WindowsUtils.readStringRegistryValue(keyCurrentVersion));
