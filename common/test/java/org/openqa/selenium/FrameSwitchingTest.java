@@ -68,6 +68,7 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
     assertThat(pageNumber.getText().trim(), equalTo("1"));
   }
 
+  @Ignore(FIREFOX)
   public void testShouldFocusOnTheReplacementWhenAFrameFollowsALinkToA_TopTargettedPage() throws Exception {
     driver.get(pages.framesetPage);
 
