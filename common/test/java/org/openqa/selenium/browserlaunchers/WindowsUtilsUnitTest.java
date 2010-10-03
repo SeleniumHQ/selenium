@@ -63,10 +63,10 @@ public class WindowsUtilsUnitTest extends TestCase {
         //String keyCurrentVersion = "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\CurrentVersion";
         String keyProxyEnable = "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\ProxyEnable";
         String keySeleniumFoo = "HKEY_CURRENT_USER\\Software\\Selenium\\RemoteControl\\foo";
-        //assertTrue("Standard Windows reg key CurrentVersion doesn't exist", WindowsUtils.doesRegistryValueExist(keyCurrentVersion));
-        //System.out.println("CurrentVersion: " + WindowsUtils.readStringRegistryValue(keyCurrentVersion));
-        assertTrue("Standard Windows reg key ProxyEnable doesn't exist", WindowsUtils.doesRegistryValueExist(keyProxyEnable));
-        System.out.println("ProxyEnable: " + WindowsUtils.readIntRegistryValue(keyProxyEnable));
+        assertTrue("Standard Windows reg key CurrentVersion doesn't exist", WindowsUtils.doesRegistryValueExist(keyCurrentVersion));
+        System.out.println("CurrentVersion: " + WindowsUtils.readStringRegistryValue(keyCurrentVersion));
+        //assertTrue("Standard Windows reg key ProxyEnable doesn't exist", WindowsUtils.doesRegistryValueExist(keyProxyEnable));
+        //System.out.println("ProxyEnable: " + WindowsUtils.readIntRegistryValue(keyProxyEnable));
         WindowsUtils.writeStringRegistryValue(keySeleniumFoo, "bar");
         assertEquals("Didn't set Foo string key correctly", "bar", WindowsUtils.readStringRegistryValue(keySeleniumFoo));
         WindowsUtils.writeStringRegistryValue(keySeleniumFoo, "baz");
