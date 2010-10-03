@@ -642,7 +642,8 @@ function selectElement(element) {
  */
 function sendElementKeys(element, keys, elementId) {
   try {
-    checkElementIsDisplayed(element)
+    checkElementIsDisplayed(element);
+    checkElementNotDisabled(element);
   } catch (e) {
     return e;
   }

@@ -96,25 +96,26 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
     assertThat(disabledSubmitElement.isEnabled(), is(false));
   }
   
-  @Ignore(value = IE, reason = "Issue 514")
-  public void testShouldNotBeAbleToTypeToElementsIfTheyAreDisabledUsingRandomDisabledStrings() {
+  @Ignore(SELENESE)
+  public void testShouldThrowExceptionIfSendingKeysToElementDisabledUsingRandomDisabledStrings() {
     driver.get(pages.formPage);
     WebElement disabledTextElement1 = driver.findElement(By.id("disabledTextElement1"));
-    disabledTextElement1.sendKeys("foo");
+    try {
+      disabledTextElement1.sendKeys("foo");
+      fail("Should have thrown exception");
+    } catch (UnsupportedOperationException e) {
+      //Expected
+    }
     assertThat(disabledTextElement1.getText(), is(""));
 
     WebElement disabledTextElement2 = driver.findElement(By.id("disabledTextElement2"));
-    disabledTextElement2.sendKeys("bar");
+    try {
+      disabledTextElement2.sendKeys("bar");
+      fail("Should have thrown exception");
+    } catch (UnsupportedOperationException e) {
+      //Expected
+    }
     assertThat(disabledTextElement2.getText(), is(""));
-  }
-
-  @Ignore(value = {FIREFOX, CHROME, SELENESE}, reason = "Issue 514")
-  public void testShouldNotBeAbleToSubmitFormsWithDisabledSubmitButtons() {
-    driver.get(pages.formPage);
-    WebElement disabledSubmitElement = driver.findElement(By.id("disabledSubmitElement"));
-    assertThat(disabledSubmitElement.isEnabled(), is(false));
-    disabledSubmitElement.submit();
-    assertThat(driver.getTitle(), is("We Leave From Here"));
   }
 
   public void testShouldIndicateWhenATextAreaIsDisabled() {

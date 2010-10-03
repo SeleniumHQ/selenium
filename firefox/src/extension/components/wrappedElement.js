@@ -221,6 +221,11 @@ FirefoxDriver.prototype.sendKeysToElement = function(respond, parameters) {
     throw new WebDriverError(ErrorCode.ELEMENT_NOT_VISIBLE,
         "Element is not currently visible and so may not be used for typing");
   }
+  
+  if (!Utils.isEnabled(element)) {
+    throw new WebDriverError(ErrorCode.INVALID_ELEMENT_STATE,
+        "Element is disabled and so may not be used for typing");
+  }
 
   var currentlyActive = Utils.getActiveElement(respond.session.getDocument());
   if (currentlyActive != element) {
@@ -305,7 +310,7 @@ FirefoxDriver.prototype.getElementAttribute = function(respond, parameters) {
 FirefoxDriver.prototype.isElementEnabled = function(respond, parameters) {
   var element = Utils.getElementAt(parameters.id,
                                    respond.session.getDocument());
-  respond.value = !!!element.disabled;
+  respond.value = Utils.isEnabled(element);
   respond.send();
 };
 

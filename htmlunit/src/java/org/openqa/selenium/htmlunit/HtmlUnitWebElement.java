@@ -239,10 +239,12 @@ public class HtmlUnitWebElement implements RenderedWebElement,
   public void sendKeys(CharSequence... value) {
     assertElementNotStale();
 
-    String originalValue = getValue();
-
     if (!isDisplayed())
       throw new ElementNotVisibleException("You may only sendKeys to visible elements");
+    
+    if (!isEnabled()) {
+      throw new UnsupportedOperationException("You may only sendKeys to enabled elements");
+    }
 
     StringBuilder builder = new StringBuilder();
     for (CharSequence seq : value) {

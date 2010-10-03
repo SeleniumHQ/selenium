@@ -48,6 +48,9 @@ public interface WebElement extends SearchContext {
    * If this current element is a form, or an element within a form, then this will be submitted
    * to the remote server. If this causes the current page to change, then this method will block
    * until the new page is loaded.
+   * 
+   * This is a special method which can be used even if a form doesn't have a submit button, or 
+   * if the submit button is disabled.
    *
    * @throws NoSuchElementException If the given element is not within a form
    */

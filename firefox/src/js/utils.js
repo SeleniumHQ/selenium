@@ -187,6 +187,11 @@ Utils.isInHead = function(element) {
 };
 
 
+Utils.isEnabled = function(element) {
+  return !!!element.disabled;
+};
+
+
 /**
  * Gets the computed style of a DOM {@code element}. If the computed style is
  * inherited from the element's parent, the parent will be queried for its
