@@ -271,7 +271,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
     assertTrue(point.getY() > 1);
   }
 
-  @Ignore({IE, CHROME, SELENESE, IPHONE})
+  @Ignore({IE, CHROME, SELENESE, IPHONE, FIREFOX})
   @JavascriptEnabled
   public void testShouldBeAbleToClickALinkThatClosesAWindow() throws Exception {
     driver.get(pages.javascriptPage);
