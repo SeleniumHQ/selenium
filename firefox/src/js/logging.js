@@ -31,12 +31,69 @@ function Logger() {
       .getService(CI["nsIPrefBranch"]);
   var logToConsole = prefs.prefHasUserValue("webdriver_log_to_console") &&
       prefs.getBoolPref("webdriver_log_to_console");
+  var logToFile = prefs.prefHasUserValue("webdriver.log.file") &&
+      prefs.getCharPref("webdriver.log.file");
+
+  if (logToConsole) {
+    var consoleLogger = {
+      observe: function(message) {
+        dump(message.message);
+      },
+      QueryInterface: function(iid) {
+        if (!iid.equals(CI['nsIConsoleListener']) &&
+            !idd.equals(CI['nsISupports'])) {
+          throw Components.results.NS_ERROR_NO_INTERFACE;
+        }
+
+        return this;
+      }
+    };
+
+    consoleService.registerListener(consoleLogger);
+  }
+
+  if (!!logToFile) {
+    // Make sure that file exists
+    var file = CC['@mozilla.org/file/local;1']
+        .createInstance(CI['nsILocalFile']);
+    file.initWithPath(logToFile);
+    file.createUnique(CI.nsIFile.NORMAL_FILE_TYPE, 0666);
+    var fileName = file.path;
+    consoleService.logStringMessage("Also logging to file: " + fileName);
+
+    var fileLogger = {
+      observe: function(message) {
+        var file = CC['@mozilla.org/file/local;1']
+            .createInstance(CI['nsILocalFile']);
+        file.initWithPath(fileName);
+
+        var ostream = CC['@mozilla.org/network/file-output-stream;1']
+        .createInstance(CI['nsIFileOutputStream']);
+        // Append to file
+        ostream.init(file, 0x02 | 0x10, 0666, 0);
+
+        var converter = CC['@mozilla.org/intl/converter-output-stream;1']
+            .createInstance(CI['nsIConverterOutputStream']);
+        converter.init(ostream, 'UTF-8', 0, 0);
+
+        converter.writeString(message.message);
+
+        converter.close();
+      },
+      QueryInterface: function(iid) {
+        if (!iid.equals(CI['nsIConsoleListener']) &&
+            !idd.equals(CI['nsISupports'])) {
+          throw Components.results.NS_ERROR_NO_INTERFACE;
+        }
+
+        return this;
+      }
+    };
+
+    consoleService.registerListener(fileLogger)
+  }
 
   Logger.log_ = function(message) {
-    if (logToConsole) {
-      dump(message);
-    }
-
     consoleService.logStringMessage(message);
   };
 }
