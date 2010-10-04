@@ -178,7 +178,6 @@
         </ADDITIONAL_INDENT_OPTIONS>
       </value>
     </option>
-    <option name="USE_PER_PROJECT_SETTINGS" value="true" />
   </component>
   <component name="CompilerConfiguration">
     <option name="DEFAULT_COMPILER" value="Javac" />
@@ -208,6 +207,20 @@
   </component>
   <component name="CopyrightManager" default="">
     <module2copyright />
+    <LanguageOptions name="JavaScript">
+      <option name="fileTypeOverride" value="3" />
+      <option name="relativeBefore" value="true" />
+      <option name="addBlankAfter" value="true" />
+      <option name="fileLocation" value="1" />
+      <option name="block" value="true" />
+      <option name="separateBefore" value="false" />
+      <option name="separateAfter" value="false" />
+      <option name="prefixLines" value="true" />
+      <option name="lenBefore" value="80" />
+      <option name="lenAfter" value="80" />
+      <option name="box" value="false" />
+      <option name="filler" value=" " />
+    </LanguageOptions>
   </component>
   <component name="DependenciesAnalyzeManager">
     <option name="myForwardDirection" value="false" />
@@ -781,11 +794,12 @@
       <CLASSES>
         <root url="jar://$PROJECT_DIR$/third_party/java/apache-httpclient/httpcore-4.0.1.jar!/" />
         <root url="jar://$PROJECT_DIR$/third_party/java/apache-httpclient/httpmime-4.0.1.jar!/" />
-        <root url="jar://$PROJECT_DIR$/third_party/java/apache-httpclient/httpclient-4.0.1.jar!/" />
+        <root url="jar://$PROJECT_DIR$/third_party/java/apache-httpclient/httpclient-4.0.2.jar!/" />
       </CLASSES>
       <JAVADOC />
       <SOURCES>
         <root url="jar://$PROJECT_DIR$/third_party/java/apache-httpclient/httpcore-4.0.1-src.jar!/" />
+        <root url="jar://$PROJECT_DIR$/third_party/java/apache-httpclient/httpclient-4.0.2-src.jar!/" />
       </SOURCES>
     </library>
   </component>
