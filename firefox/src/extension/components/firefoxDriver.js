@@ -594,7 +594,9 @@ FirefoxDriver.prototype.switchToFrame = function(respond, parameters) {
   } else {
     var frameDoc = Utils.findDocumentInFrame(browser, parameters.id);
     if (frameDoc) {
-      respond.session.setWindow(frameDoc.defaultView);
+      // "something" keeps a string reference to the frame. Tag it so that we
+      // know later that everything is still fine.
+      respond.session.setWindow(frameDoc.defaultView, parameters.id);
     } else {
       throw new WebDriverError(ErrorCode.NO_SUCH_FRAME,
           "Cannot find frame with id: " + parameters.id);

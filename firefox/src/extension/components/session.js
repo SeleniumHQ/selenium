@@ -16,15 +16,6 @@
  limitations under the License.
  */
 
-/**
- * Logs a message to the console service.
- * @param {string} message The message to log.
- */
-function log(message) {
-  Components.classes['@mozilla.org/consoleservice;1'].
-    getService(Components.interfaces.nsIConsoleService).
-    logStringMessage(message);
-}
 
 
 /**
@@ -33,6 +24,8 @@ function log(message) {
  */
 function wdSession() {
   // Load the Utils
+  Components.utils.import('resource://fxdriver/modules/logging.js');
+  Components.utils.import('resource://fxdriver/modules/utils.js');
 
   /**
    * A wrapped self-reference for XPConnect.
@@ -160,17 +153,33 @@ wdSession.prototype.getChromeWindow = function() {
 
 /** @return {?nsIDOMWindow} This session's current window. */
 wdSession.prototype.getWindow = function() {
-  // Is the current window still valid?
-  if (this.window_.closed) {
-    Logger.dumpn("Window is closed");
+  var win = this.window_.get();
+
+  if (!win) {
+    Logger.dumpn("Unable to find window. This generally means that it has been closed.");
+    return null;
   }
 
-  if (!this.window_.document) {
+  if (!win.document) {
     // Uh-oh, we lost our DOM! Try to recover by changing focus to the
     // main content window.
-    this.setWindow(this.chromeWindow_.getBrowser().contentWindow);
+    win = this.chromeWindow_.getBrowser().contentWindow;
+    this.setWindow(win);
   }
-  return this.window_;
+
+  // If we have a frame locator, apply it to verify that the frame is there.
+  if (this.frameLocator_ != null) {
+    var frame = Utils.findFrame(this.chromeWindow_.getBrowser(), this.frameLocator_);
+    if (!frame) {
+      Logger.dumpn("Focused frame has gone, falling back to default content");
+      win = this.chromeWindow_.getBrowser().contentWindow;
+      this.setWindow(win);
+    }
+  } else {
+    Logger.dumpn("No locator");
+  }
+
+  return win;
 };
 
 
@@ -196,12 +205,17 @@ wdSession.prototype.setChromeWindow = function(win) {
  * the current window will be adjusted to focus on the first frame.
  * @param {nsIDOMWindow} win The new window.
  */
-wdSession.prototype.setWindow = function(win) {
-  this.window_ = win;
-  var frames = this.window_.frames;
+wdSession.prototype.setWindow = function(win, opt_frameLocator) {
+  this.frameLocator = opt_frameLocator || null;
+
+  this.window_ =  Components.utils.getWeakReference(win);
+  var frames = win.frames;
   if (frames && frames.length && 'FRAME' == frames[0].frameElement.tagName) {
-    this.window_ = frames[0];
+    this.window_ = Components.utils.getWeakReference(frames[0]);
+    this.frameLocator_ = 0;
   }
+
+  Logger.dumpn("Frame locator: " + opt_frameLocator);
 };
 
 

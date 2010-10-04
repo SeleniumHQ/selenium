@@ -65,6 +65,7 @@ public class FirefoxBinary {
     String profileAbsPath = profileDir.getAbsolutePath();
     setEnvironmentProperty("XRE_PROFILE_PATH", profileAbsPath);
     setEnvironmentProperty("MOZ_NO_REMOTE", "1");
+    setEnvironmentProperty("MOZ_CRASHREPORTER_DISABLE", "1"); // Disable Breakpad
 
     if (isOnLinux()
         && (profile.enableNativeEvents() || profile.alwaysLoadNoFocusLib())) {
