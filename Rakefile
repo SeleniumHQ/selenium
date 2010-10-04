@@ -139,7 +139,7 @@ task :test_rb => [
   "//rb:firefox-test:jruby",
   "//rb:remote-test:jruby",
  ("//rb:ie-test:jruby" if windows?),
-  "//rb:chrome-test:jruby"
+#  "//rb:chrome-test:jruby"  # Just not stable enough
 ].compact
 
 task :test_py => [
