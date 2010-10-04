@@ -173,15 +173,18 @@ FirefoxDriver.prototype.executeScript = function(respond, parameters) {
     }
   }
 
-  // Attach the listener to the DOM
-  var addListener = function() {
-      if (!doc.getUserData('webdriver-evaluate-attached')) {
-        var element = doc.createElement("script");
-        element.setAttribute("type", "text/javascript");
-        element.innerHTML = FirefoxDriver.listenerScript;
-        doc.body.appendChild(element);
-        element.parentNode.removeChild(element);
-    }
+  var docBodyLoadTimeOut = function() {
+    respond.sendError(new WebDriverError(ErrorCode.UNEXPECTED_JAVASCRIPT_ERROR,
+        "waiting for doc.body failed"));
+  };
+
+  var scriptLoadTimeOut = function() {
+    respond.sendError(new WebDriverError(ErrorCode.UNEXPECTED_JAVASCRIPT_ERROR,
+        "waiting for evaluate.js load failed"));
+  };
+
+  var checkScriptLoaded = function() {
+    return !!doc.getUserData('webdriver-evaluate-attached');
   };
 
   var runScript = function() {
@@ -189,7 +192,7 @@ FirefoxDriver.prototype.executeScript = function(respond, parameters) {
 
     var script =
         'var args = document.getUserData("webdriver-evaluate-args"); ' +
-        '(function() { ' + rawScript + '}).apply(null, args);';
+            '(function() { ' + rawScript + '}).apply(null, args);';
     doc.setUserData('webdriver-evaluate-script', script, null);
 
     var handler = function(event) {
@@ -212,8 +215,23 @@ FirefoxDriver.prototype.executeScript = function(respond, parameters) {
     doc.dispatchEvent(event);
   };
 
-  addListener();
-  runScript();
+  // Attach the listener to the DOM
+  var addListener = function() {
+    if (!doc.getUserData('webdriver-evaluate-attached')) {
+      var element = doc.createElement("script");
+      element.setAttribute("type", "text/javascript");
+      element.innerHTML = FirefoxDriver.listenerScript;
+      doc.body.appendChild(element);
+      element.parentNode.removeChild(element);
+    }
+    new Timer().runWhenTrue(checkScriptLoaded, runScript, 10000, scriptLoadTimeOut);
+  };
+
+  var checkDocBodyLoaded = function() {
+    return !!doc.body;
+  };
+
+  new Timer().runWhenTrue(checkDocBodyLoaded, addListener, 10000, docBodyLoadTimeOut);
 };
 
 

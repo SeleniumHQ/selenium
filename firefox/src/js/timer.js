@@ -51,4 +51,35 @@ Timer.prototype.setTimeout = function(callback, opt_timeout) {
   }, timeout, CI.nsITimer.TYPE_ONE_SHOT);
 };
 
+
+/**
+ * Wait until a condition is true before calling "callback". On error, call
+ * ontimeout.
+ *
+ * @param {function():boolean} condition The condition to check.
+ * @param {function():undefined} callback The callback to use when condition is
+ *    true.
+ * @param {number} timeout Time to wait in milliseconds.
+ * @param {function():undefined} ontimeout Called if condition doesn't become
+ *    true.
+ */
+Timer.prototype.runWhenTrue = function(condition, callback, timeout, ontimeout) {
+  var remaining = timeout;
+  var interval = 100;
+
+  var timed = function () {
+    if (remaining >= 0 && !condition()) {
+      remaining -= interval;
+      this.setTimeout(timed, interval);
+    } else if (remaining <= 0) {
+      ontimeout();
+    } else {
+      callback();
+    }
+  };
+  timed();
+};
+
+
+// Required for Mozilla component importing
 var EXPORTED_SYMBOLS = [ 'Timer' ];
