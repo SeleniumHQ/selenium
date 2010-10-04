@@ -26,9 +26,7 @@ import java.io.FilenameFilter;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.*;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -45,7 +43,7 @@ public class TestSuiteBuilder {
   private boolean includeJavascript;
   private boolean withDriver = true;
   private boolean withEnvironment = true;
-  private String onlyRun;
+  private List<String> onlyRun = new ArrayList<String>();
   private Set<String> patterns = new HashSet<String>();
   private Set<String> excludePatterns = new HashSet<String>();
   private Set<String> testMethodNames = new HashSet<String>();
@@ -171,7 +169,7 @@ public class TestSuiteBuilder {
       return;
     }
 
-    if (onlyRun != null && !clazz.getName().endsWith(onlyRun)) {
+    if (onlyRun.size() > 0 && !onlyRun.contains(rawClass.getSimpleName())) {
       return;
     }
 
@@ -325,7 +323,7 @@ public class TestSuiteBuilder {
   }
 
   public TestSuiteBuilder onlyRun(String testCaseName) {
-    onlyRun = "." + testCaseName;
+    onlyRun.add(testCaseName);
 
     return this;
   }
