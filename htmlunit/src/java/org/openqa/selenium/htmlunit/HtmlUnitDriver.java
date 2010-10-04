@@ -203,7 +203,6 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
     client.setHomePage(WebClient.URL_ABOUT_BLANK.toString());
     client.setThrowExceptionOnFailingStatusCode(false);
     client.setPrintContentOnFailingStatusCode(false);
-//    client.setJavaScriptEnabled(enableJavascript);
     client.setJavaScriptEnabled(false);
     client.setRedirectEnabled(true);
     client.setRefreshHandler(new WaitingRefreshHandler());
