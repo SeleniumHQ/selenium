@@ -18,6 +18,7 @@ import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
+import static org.openqa.selenium.Platform.MAC;
 import static org.openqa.selenium.firefox.FirefoxDriver.PROFILE;
 
 @Ignore(value = {HTMLUNIT, IE, IPHONE, CHROME, CHROME_NON_WINDOWS, SELENESE},
@@ -61,6 +62,11 @@ public class CopyProfileTest extends TestCase {
   }
 
   public void testCanEnableNativeEventsOnRemoteFirefox() throws MalformedURLException {
+    if (Platform.getCurrent().is(MAC)) {
+      System.out.println("Skipping test: no native events here");
+      return;
+    }
+
     FirefoxProfile profile = new FirefoxProfile();
     profile.setEnableNativeEvents(true);
 
@@ -72,7 +78,7 @@ public class CopyProfileTest extends TestCase {
     Boolean nativeEventsEnabled = (Boolean) driver.getCapabilities().getCapability("nativeEvents");
     driver.quit();
 
-    assertTrue("Native events were explicitly enabeld and should be on.",
+    assertTrue("Native events were explicitly enabled and should be on.",
         nativeEventsEnabled);
   }
 }
