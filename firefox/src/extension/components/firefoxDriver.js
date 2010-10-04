@@ -368,7 +368,7 @@ FirefoxDriver.prototype.findElementInternal_ = function(respond, method,
           respond.send();
         }
       };
-      var execute = goog.bind(FirefoxDriver.executeScript, FirefoxDriver);
+      var execute = goog.bind(this.executeScript, this);
       Utils.findByCss(rootNode, theDocument, selector, true, tempRespond, execute);
       return;
 
@@ -496,7 +496,8 @@ FirefoxDriver.prototype.findElementsInternal_ = function(respond, method,
       break;
 
     case FirefoxDriver.ElementLocator.CSS_SELECTOR:
-      Utils.findByCss(rootNode, theDocument, selector, false, respond, FirefoxDriver.executeScript);
+      var execute = goog.bind(this.executeScript, this);
+      Utils.findByCss(rootNode, theDocument, selector, false, respond, execute);
       return;
 
     case FirefoxDriver.ElementLocator.TAG_NAME:

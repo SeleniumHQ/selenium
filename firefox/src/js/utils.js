@@ -104,6 +104,7 @@ function createSwitchFile(file_content) {
 
 function Utils() {
   Utils.SIZZLE_ = Utils.loadUrl("resource://fxdriver/sizzle.js");
+  Logger.dumpn(Utils.SIZZLE_);
 }
 
 
@@ -1107,6 +1108,7 @@ Utils.getElementIndexForXPath_ = function (element) {
 };
 
 Utils.loadUrl = function(url) {
+  Logger.dumpn("Loading: " + url);
   var ioService = Utils.getService("@mozilla.org/network/io-service;1", "nsIIOService");
   var channel = ioService.newChannel(url, null, null);
   var channelStream = channel.open();
@@ -1129,6 +1131,7 @@ Utils.loadUrl = function(url) {
   scriptableStream.close();
   channelStream.close();
 
+  Logger.dumpn("Done reading: " + url);
   return text;
 };
 
@@ -1149,7 +1152,7 @@ Utils.findByCss = function(rootNode, theDocument, selector, singular, respond, e
       // Inject sizzle if necessary
       if (!(theDocument.Sizzle)) {
         params['script'] = Utils.SIZZLE_ +
-            "var results = []; Sizzle(arguments[0], arguments[1], results); delete Sizzle; ";
+            "; var results = []; Sizzle(arguments[0], arguments[1], results); delete Sizzle; ";
       } else {
         params['script'] =
             "var results = []; Sizzle(arguments[0], arguments[1], results); ";
@@ -1164,3 +1167,5 @@ Utils.findByCss = function(rootNode, theDocument, selector, singular, respond, e
       executeScript(respond, params);
     }
 };
+
+new Utils();

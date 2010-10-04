@@ -175,8 +175,6 @@ wdSession.prototype.getWindow = function() {
       win = this.chromeWindow_.getBrowser().contentWindow;
       this.setWindow(win);
     }
-  } else {
-    Logger.dumpn("No locator");
   }
 
   return win;
@@ -214,8 +212,6 @@ wdSession.prototype.setWindow = function(win, opt_frameLocator) {
     this.window_ = Components.utils.getWeakReference(frames[0]);
     this.frameLocator_ = 0;
   }
-
-  Logger.dumpn("Frame locator: " + opt_frameLocator);
 };
 
 
