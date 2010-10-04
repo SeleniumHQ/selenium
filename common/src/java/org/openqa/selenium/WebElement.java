@@ -138,23 +138,23 @@ public interface WebElement extends SearchContext {
   String getText();
 
   /**
-   * Find all elements within the current context using the given mechanism.
+   * Find all elements within the current context using the given mechanism. When using xpath be
+   * aware that webdriver follows standard conventions: a search prefixed with "//" will search
+   * the entire document, not just the children of this current node. Use ".//" to limit your
+   * search to the children of this WebElement.
    *
    * @param by The locating mechanism to use
    * @return A list of all {@link WebElement}s, or an empty list if nothing matches.
-   * In the case of XPath, the context is that of the document - 
-   * use ./ to search only in the element's context.
    * @see org.openqa.selenium.By
    */
   List<WebElement> findElements(By by);
 
   /**
-   * Find the first {@link WebElement} using the given method.
+   * Find the first {@link WebElement} using the given method. See the note in
+   * {@link #findElement(By)} about finding via XPath.
    *
    * @param by The locating mechanism
    * @return The first matching element on the current context.
-   * In the case of XPath, the context is that of the document - 
-   * use ./ to search only in the element's context.
    * @throws NoSuchElementException If no matching elements are found
    */
   WebElement findElement(By by);
