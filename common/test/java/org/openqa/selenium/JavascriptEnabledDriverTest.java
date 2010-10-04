@@ -271,8 +271,17 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
     assertTrue(point.getY() > 1);
   }
 
+
+  /*
+   * There's a weird issue with this test, which means that I've added the needs
+   * fresh driver annotation. To see it in action, try running the single test
+   * suite with only these tests running: "ImplicitWaitTest",
+   * "TemporaryFilesystemTest", "JavascriptEnabledDriverTest".
+   * SimonStewart 2010-10-04
+   */
   @Ignore({IE, CHROME, SELENESE, IPHONE})
   @JavascriptEnabled
+  @NeedsFreshDriver
   public void testShouldBeAbleToClickALinkThatClosesAWindow() throws Exception {
     driver.get(pages.javascriptPage);
     
