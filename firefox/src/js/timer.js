@@ -70,7 +70,7 @@ Timer.prototype.runWhenTrue = function(condition, callback, timeout, ontimeout) 
   var timed = function () {
     if (remaining >= 0 && !condition()) {
       remaining -= interval;
-      this.setTimeout(timed, interval);
+      new Timer().setTimeout(timed, interval);
     } else if (remaining <= 0) {
       ontimeout();
     } else {
