@@ -19,12 +19,14 @@ package org.openqa.selenium;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
 
+import org.openqa.selenium.internal.FindsByCssSelector;
 import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
-public class SeleneseBackedWebDriver extends RemoteWebDriver {
+public class SeleneseBackedWebDriver extends RemoteWebDriver implements FindsByCssSelector {
   public SeleneseBackedWebDriver() throws Exception {
     super(newCommandExecutor(getSeleniumServerUrl(), describeBrowser()),
         describeBrowser());
@@ -38,6 +40,14 @@ public class SeleneseBackedWebDriver extends RemoteWebDriver {
   private static URL getSeleniumServerUrl() throws MalformedURLException {
     String port = System.getProperty("webdriver.selenium.server.port", "5555");
     return new URL("http://localhost:" + port);
+  }
+
+  public WebElement findElementByCssSelector(String using) {
+    return findElement("css selector", using);
+  }
+
+  public List<WebElement> findElementsByCssSelector(String using) {
+    return findElements("css selector", using);
   }
 
   private static Capabilities describeBrowser() {

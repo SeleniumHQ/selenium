@@ -38,6 +38,8 @@ public class FindElement implements SeleneseFunction<Map<String, String>> {
     String locator = null;
     if ("class name".equals(how)) {
       locator = "css=." + using;
+    } else if ("css selector".equals(how)) {
+      locator = "css=" + using;
     } else if ("id".equals(how)) {
       locator = "id=" + using;
     } else if ("link text".equals(how)) {

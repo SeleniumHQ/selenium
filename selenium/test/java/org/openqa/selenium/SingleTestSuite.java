@@ -39,7 +39,7 @@ public class SingleTestSuite extends TestCase {
   private static final String SELENIUM = "org.openqa.selenium.SeleneseBackedWebDriver";
 
   public static Test suite() throws Exception {
-    String driver = FIREFOX_TEST;
+    String driver = SELENIUM;
 
     System.setProperty("webdriver.development", "true");
     System.setProperty("jna.library.path", "..\\build;build");
@@ -54,12 +54,12 @@ public class SingleTestSuite extends TestCase {
         .usingDriver(driver)
         .keepDriverInstance()
         .includeJavascriptTests()
-        .onlyRun("NativeEventsTest")
-//        .method("testShouldContinueToReferToTheSameFrameOnceItHasBeenSelected")
+        .onlyRun("ElementFindingTest")
+//        .method("testShouldBeAbleToFindAnElementByCssSelector")
         .exclude(ALL)
-//        .exclude(Ignore.Driver.FIREFOX)
+        .exclude(Ignore.Driver.SELENESE)
         .outputTestNames()
-        //.leaveRunning()
+        .leaveRunning()
         ;  // Yeah, this look strange :)
 
     if (REMOTE.equals(driver) || REMOTE_IE.equals(driver)) {
