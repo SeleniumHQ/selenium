@@ -219,4 +219,23 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
     System.out.println("style = " + style);
     assertTrue(style.toLowerCase().contains("background-color"));
   }
+
+  public void testShouldCorrectlyReportValueOfColspan() {
+    driver.get(pages.tables);
+
+    try {
+      Thread.sleep(1000);
+    } catch (InterruptedException e) {
+      e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+    }
+
+    WebElement th1 = driver.findElement(By.id("th1"));
+    WebElement td2 = driver.findElement(By.id("td2"));
+
+    assertEquals("th1 id", "th1", th1.getAttribute("id"));
+    assertEquals("th1 colspan should be 3", "3", th1.getAttribute("colspan"));
+
+    assertEquals("td2 id", "td2", td2.getAttribute("id"));
+    assertEquals("td2 colspan should be 2", "2", td2.getAttribute("colspan"));
+  }
 }
