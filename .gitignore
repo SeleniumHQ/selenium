@@ -2,3 +2,9 @@ build/
 projectFilesBackup/
 *.iws
 .DS_Store
+.svn
+mockpiframe.log
+mockpiframe.log.lck
+junitvmwatcher*.properties
+test-output/
+.*.swp
