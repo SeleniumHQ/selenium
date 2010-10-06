@@ -35,7 +35,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
 
   @Ignore(value = {CHROME, FIREFOX}, reason = "Webkit bug 22261. Firefox 3.6 wants focus")
   @JavascriptEnabled
-  public void testShouldFireFocusEventWhenClicking() {
+  public void testShouldFireFocusEventWhenClicking() throws InterruptedException {
     driver.get(pages.javascriptPage);
 
     clickOnElementWhichRecordsEvents();
@@ -44,7 +44,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  public void testShouldFireClickEventWhenClicking() {
+  public void testShouldFireClickEventWhenClicking() throws InterruptedException {
     driver.get(pages.javascriptPage);
 
     clickOnElementWhichRecordsEvents();
@@ -54,7 +54,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   @Ignore(SELENESE)
-  public void testShouldFireMouseDownEventWhenClicking() {
+  public void testShouldFireMouseDownEventWhenClicking() throws InterruptedException {
     driver.get(pages.javascriptPage);
 
     clickOnElementWhichRecordsEvents();
@@ -64,7 +64,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   @Ignore(SELENESE)
-  public void testShouldFireMouseUpEventWhenClicking() {
+  public void testShouldFireMouseUpEventWhenClicking() throws InterruptedException {
     driver.get(pages.javascriptPage);
 
     clickOnElementWhichRecordsEvents();
@@ -74,7 +74,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   @Ignore(value = {SELENESE, CHROME})
-  public void testShouldFireMouseOverEventWhenClicking() {
+  public void testShouldFireMouseOverEventWhenClicking() throws InterruptedException {
     driver.get(pages.javascriptPage);
 
     clickOnElementWhichRecordsEvents();
@@ -84,7 +84,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   @Ignore({SELENESE, CHROME, FIREFOX})
-  public void testShouldFireMouseMoveEventWhenClicking() {
+  public void testShouldFireMouseMoveEventWhenClicking() throws InterruptedException {
     driver.get(pages.javascriptPage);
 
     clickOnElementWhichRecordsEvents();
@@ -206,7 +206,8 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
       reason = "Chrome: Non-native event firing is broken in .\n"
                + "  Selenese: Fails when running in firefox.\n"
                + "  iPhone: sendKeys implementation is incorrect")
-  public void testSendingKeysToAnotherElementShouldCauseTheBlurEventToFire() {
+  public void testSendingKeysToAnotherElementShouldCauseTheBlurEventToFire()
+      throws InterruptedException {
     if (browserNeedsFocusOnThisOs(driver)) {
       System.out.println("Skipping this test because browser demands focus");
       return;
@@ -225,7 +226,8 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
       reason = ": Non-native event firing is broken in Chrome.\n"
                + "  Selenese: Fails when running in firefox.\n"
                + "  iPhone: sendKeys implementation is incorrect")
-  public void testSendingKeysToAnElementShouldCauseTheFocusEventToFire() {
+  public void testSendingKeysToAnElementShouldCauseTheFocusEventToFire()
+      throws InterruptedException {
     if (browserNeedsFocusOnThisOs(driver)) {
       System.out.println("Skipping this test because browser demands focus");
       return;
@@ -273,7 +275,8 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   @Ignore({IE, SELENESE})
-  public void testSubmittingFormFromFormElementShouldFireOnSubmitForThatForm() {
+  public void testSubmittingFormFromFormElementShouldFireOnSubmitForThatForm()
+      throws InterruptedException {
     driver.get(pages.javascriptPage);
     WebElement formElement = driver.findElement(By.id("submitListeningForm"));
     formElement.submit();
@@ -282,7 +285,8 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   @Ignore({IE, SELENESE})
-  public void testSubmittingFormFromFormInputSubmitElementShouldFireOnSubmitForThatForm() {
+  public void testSubmittingFormFromFormInputSubmitElementShouldFireOnSubmitForThatForm()
+      throws InterruptedException {
     driver.get(pages.javascriptPage);
     WebElement submit = driver.findElement(By.id("submitListeningForm-submit"));
     submit.submit();
@@ -291,7 +295,8 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled 
   @Ignore({IE, SELENESE})
-  public void testSubmittingFormFromFormInputTextElementShouldFireOnSubmitForThatFormAndNotClickOnThatInput() {
+  public void testSubmittingFormFromFormInputTextElementShouldFireOnSubmitForThatFormAndNotClickOnThatInput()
+      throws InterruptedException {
     driver.get(pages.javascriptPage);
     WebElement submit = driver.findElement(By.id("submitListeningForm-submit"));
     submit.submit();
@@ -318,15 +323,19 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
     assertThat(result.getText(), equalTo("changed"));
   }
 
+  private String getTextFromElementOnceAvailable(String elementId) throws InterruptedException {
+    return TestWaitingUtility.waitForElementToExist(driver,(elementId)).getText();
+  }
+
   @Ignore({CHROME, HTMLUNIT, SELENESE})
-  public void testShouldReportTheXAndYCoordinatesWhenClicking() {
+  public void testShouldReportTheXAndYCoordinatesWhenClicking() throws InterruptedException {
     driver.get(pages.javascriptPage);
 
     WebElement element = driver.findElement(By.id("eventish"));
     element.click();
 
-    String clientX = driver.findElement(By.id("clientX")).getText();
-    String clientY = driver.findElement(By.id("clientY")).getText();
+    String clientX = getTextFromElementOnceAvailable("clientX");
+    String clientY = getTextFromElementOnceAvailable("clientY");
 
     assertFalse("0".equals(clientX));
     assertFalse("0".equals(clientY));
@@ -336,10 +345,13 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
     driver.findElement(By.id("plainButton")).click();
   }
 
-  private void assertEventFired(String eventName) {
+  private void assertEventFired(String eventName) throws InterruptedException {
     WebElement result = driver.findElement(By.id("result"));
-    String text = result.getText();
-    assertTrue("No " + eventName + " fired: " + text, text.contains(eventName));
+
+    String text = TestWaitingUtility.waitUntilElementTextContains(result, eventName);
+    boolean conditionMet = text.contains(eventName);
+
+    assertTrue("No " + eventName + " fired: " + text, conditionMet);
   }
   
   private void assertEventNotFired(String eventName) {

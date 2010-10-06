@@ -99,26 +99,31 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
   }
 
   @Ignore(value = CHROME, reason = "Can't execute script in iframe, track crbug 20773")
-  public void testShouldAllowTheUserToSwitchToAnIFrameAndRemainFocusedOnIt() {
+  public void testShouldAllowTheUserToSwitchToAnIFrameAndRemainFocusedOnIt()
+      throws InterruptedException {
     driver.get(pages.iframePage);
     driver.switchTo().frame(0);
 
     driver.findElement(By.id("submitButton")).click();
-    String hello = driver.findElement(By.id("greeting")).getText();
-    assertThat(hello, equalTo("Success!"));
+
+    assertThat(getTextOfGreetingElement(), equalTo("Success!"));
   }
 
-  public void testShouldBeAbleToClickInAFrame() {
+  public String getTextOfGreetingElement() throws InterruptedException {
+    return TestWaitingUtility.waitForElementToExist(driver, "greeting").getText();
+  }
+
+  public void testShouldBeAbleToClickInAFrame() throws InterruptedException {
     driver.get(pages.framesetPage);
     driver.switchTo().frame("third");
 
     // This should replace frame "third" ...
     driver.findElement(By.id("submitButton")).click();
     // driver should still be focused on frame "third" ...
-    assertThat(driver.findElement(By.id("greeting")).getText(), equalTo("Success!"));
+    assertThat(getTextOfGreetingElement(), equalTo("Success!"));
     // Make sure it was really frame "third" which was replaced ...
     driver.switchTo().defaultContent().switchTo().frame("third");
-    assertThat(driver.findElement(By.id("greeting")).getText(), equalTo("Success!"));
+    assertThat(getTextOfGreetingElement(), equalTo("Success!"));
   }
 
   @Ignore({CHROME, IE})

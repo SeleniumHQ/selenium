@@ -27,6 +27,7 @@ import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.REMOTE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
+import static org.openqa.selenium.TestWaitingUtility.waitForPageTitle;
 
 public class ElementFindingTest extends AbstractDriverTestCase {
 
@@ -62,9 +63,12 @@ public class ElementFindingTest extends AbstractDriverTestCase {
     assertThat(driver.getTitle(), equalTo("We Arrive Here"));
   }
 
-  public void testshouldBeAbleToClickOnLinkIdentifiedById() {
+  public void testshouldBeAbleToClickOnLinkIdentifiedById() throws InterruptedException {
     driver.get(pages.xhtmlTestPage);
     driver.findElement(By.id("linkId")).click();
+
+    waitForPageTitle(driver, "We Arrive Here");
+
     assertThat(driver.getTitle(), equalTo("We Arrive Here"));
   }
 
@@ -335,13 +339,15 @@ public class ElementFindingTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  public void testShouldBeAbleToClickOnLinksWithNoHrefAttribute() {
+  public void testShouldBeAbleToClickOnLinksWithNoHrefAttribute() throws InterruptedException {
     driver.get(pages.javascriptPage);
 
     WebElement element = driver.findElement(By.linkText("No href"));
     element.click();
 
     // if any exception is thrown, we won't get this far. Sanity check
+    waitForPageTitle(driver, "Changed");
+
     assertEquals("Changed", driver.getTitle());
   }
 
@@ -372,7 +378,8 @@ public class ElementFindingTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  public void testRemovingAnElementDynamicallyFromTheDomShouldCauseAStaleRefException() {
+  public void testRemovingAnElementDynamicallyFromTheDomShouldCauseAStaleRefException()
+      throws InterruptedException {
     driver.get(pages.javascriptPage);
 
     RenderedWebElement toBeDeleted = (RenderedWebElement) driver.findElement(By.id("deleted"));
@@ -381,7 +388,12 @@ public class ElementFindingTest extends AbstractDriverTestCase {
     driver.findElement(By.id("delete")).click();
 
     try {
-      toBeDeleted.isDisplayed();
+      long start = System.currentTimeMillis();
+      while (start + 5000 > System.currentTimeMillis()) {
+        toBeDeleted.isDisplayed();
+        Thread.sleep(50);
+      }
+      
       fail("Element should be stale at this point");
     } catch (StaleElementReferenceException e) {
       // this is expected

@@ -161,33 +161,44 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  public void testShouldBeAbleToSubmitFormsByCausingTheOnClickEventToFire() {
+  public void testShouldBeAbleToSubmitFormsByCausingTheOnClickEventToFire()
+      throws InterruptedException {
     driver.get(pages.javascriptPage);
     WebElement element = driver.findElement(By.id("jsSubmitButton"));
     element.click();
 
+    waitForTitleChange();
+
     assertThat(driver.getTitle(), Matchers.is("We Arrive Here"));
+  }
+
+  private void waitForTitleChange() throws InterruptedException {
+    TestWaitingUtility.waitForPageTitle(driver, "We Arrive Here");
   }
 
   @JavascriptEnabled
   @Ignore(value = IE, reason = "Fails for IE in the continuous build")
-  public void testShouldBeAbleToClickOnSubmitButtons() {
+  public void testShouldBeAbleToClickOnSubmitButtons() throws InterruptedException {
     driver.get(pages.javascriptPage);
     WebElement element = driver.findElement(By.id("submittingButton"));
     element.click();
 
+    waitForTitleChange();
+    
     assertThat(driver.getTitle(), Matchers.is("We Arrive Here"));
   }
 
   @JavascriptEnabled
-  public void testIssue80ClickShouldGenerateClickEvent() {
+  public void testIssue80ClickShouldGenerateClickEvent() throws InterruptedException {
     driver.get(pages.javascriptPage);
     WebElement element = driver.findElement(By.id("clickField"));
     assertEquals("Hello", element.getValue());
 
     element.click();
 
-    assertEquals("Clicked", element.getValue());
+    String elementValue = TestWaitingUtility.waitUntilElementValueEquals(element, "Clicked");
+
+    assertEquals("Clicked", elementValue);
   }
 
   @JavascriptEnabled
