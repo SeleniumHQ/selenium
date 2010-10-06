@@ -282,8 +282,6 @@ DelayedCommand.prototype.executeInternal_ = function() {
  * @constructor
  */
 var nsCommandProcessor = function() {
-  Components.utils.import('resource://fxdriver/modules/errorcode.js');
-  Components.utils.import('resource://fxdriver/modules/logging.js');
   Components.utils.import('resource://fxdriver/modules/utils.js');
 
   this.wrappedJSObject = this;

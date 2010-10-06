@@ -24,7 +24,6 @@
  */
 function wdSession() {
   // Load the Utils
-  Components.utils.import('resource://fxdriver/modules/logging.js');
   Components.utils.import('resource://fxdriver/modules/utils.js');
 
   /**
@@ -32,14 +31,6 @@ function wdSession() {
    * @type {wdSession}
    */
   this.wrappedJSObject = this;
-  
-  //TODO: This shouldn't really be here
-  try {
-    Components.utils.import('resource://fxdriver/modules/logging.js');
-  } catch (e) {
-    //TODO: dump is probably undefined here
-    dump(e);
-  }
 }
 
 

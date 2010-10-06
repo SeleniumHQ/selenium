@@ -21,7 +21,7 @@
  * @constructor
  */
 function Dispatcher() {
-  Components.utils.import('resource://fxdriver/modules/logging.js');
+  Components.utils.import('resource://fxdriver/modules/utils.js');
 
   this.resources_ = [];
   this.init_();

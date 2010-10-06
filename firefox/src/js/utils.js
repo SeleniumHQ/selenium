@@ -16,10 +16,11 @@
  limitations under the License.
  */
 
-var EXPORTED_SYMBOLS = [ 'createSwitchFile', 'Utils', 'WebDriverError' ];
+goog.provide('Utils');
 
-Components.utils.import('resource://fxdriver/modules/errorcode.js');
-Components.utils.import('resource://fxdriver/modules/logging.js');
+goog.require('ErrorCode');
+goog.require('Logger');
+
 
 /**
  * A WebDriver error.
@@ -101,12 +102,6 @@ function createSwitchFile(file_content) {
     Logger.dumpn(e);
   }
 }
-
-function Utils() {
-  Utils.SIZZLE_ = Utils.loadUrl("resource://fxdriver/sizzle.js");
-  Logger.dumpn(Utils.SIZZLE_);
-}
-
 
 Utils.getUniqueId = function() {
   if (!Utils._generator) {
@@ -286,7 +281,7 @@ Utils.shiftCount = 0;
 
 Utils.getNativeEvents = function() {
   try {
-    const cid = "@openqa.org/nativeevents;1";
+    var cid = "@openqa.org/nativeevents;1";
     var obj = Components.classes[cid].createInstance();
     return obj.QueryInterface(Components.interfaces.nsINativeEvents);
   } catch(e) {
@@ -347,13 +342,13 @@ Utils.type = function(doc, element, text, opt_useNativeEvents) {
 
   var obj = Utils.getNativeEvents();
   var node = Utils.getNodeForNativeEvents(element);
-  const thmgr_cls = Components.classes["@mozilla.org/thread-manager;1"];
+  var thmgr_cls = Components.classes["@mozilla.org/thread-manager;1"];
 
   if (opt_useNativeEvents && obj && node && thmgr_cls) {
 
     // This indicates that a the page has been unloaded
     var pageHasBeenUnloaded = false;
-    
+
     // This is the standard indicator that a page has been unloaded, but
     // due to Firefox's caching policy, will occur only when Firefox works
     // *without* caching at all.
@@ -366,15 +361,16 @@ Utils.type = function(doc, element, text, opt_useNativeEvents) {
     // https://developer.mozilla.org/En/Using_Firefox_1.5_caching
     element.ownerDocument.defaultView.addEventListener("pagehide",
         unloadFunction, false);
-
+    
     // Now do the native thing.
     obj.sendKeys(node, text);
+
 
     var hasEvents = {};
     var threadmgr =
         thmgr_cls.getService(Components.interfaces.nsIThreadManager);
     var thread = threadmgr.currentThread;
-    
+
     do {
 
       // This sleep is needed so that Firefox on Linux will manage to process
@@ -389,7 +385,7 @@ Utils.type = function(doc, element, text, opt_useNativeEvents) {
         the_window.setTimeout(function() {
           doneNativeEventWait = true; }, 100);
       }
-      
+
       // Do it as long as the timeout function has not been called and the
       // page has not been unloaded. If the page has been unloaded, there is no
       // point in waiting for other native events to be processed in this page
@@ -421,13 +417,13 @@ Utils.type = function(doc, element, text, opt_useNativeEvents) {
     // The appropriate thing to do is process all the remaining JS events.
     // Only existing events in the queue should be processed - hence the call
     // to processNextEvent with false.
-    
+
     var numExtraEventsProcessed = 0;
     var hasMoreEvents = thread.processNextEvent(false);
     // A safety net to prevent the code from endlessly staying in this loop,
     // in case there is some source of events that's constantly generating them.
     var MAX_EXTRA_EVENTS_TO_PROCESS = 150;
-    
+
     while ((hasMoreEvents) &&
     		(numExtraEventsProcessed < MAX_EXTRA_EVENTS_TO_PROCESS)) {
     	hasMoreEvents = thread.processNextEvent(false);
@@ -1151,6 +1147,10 @@ Utils.findByCss = function(rootNode, theDocument, selector, singular, respond, e
       params['args'] = [selector, node];
       // Inject sizzle if necessary
       if (!(theDocument.Sizzle)) {
+        if (!Utils['SIZZLE_']) {
+          Utils.SIZZLE_ = Utils.loadUrl("resource://fxdriver/sizzle.js");
+          Logger.dumpn(Utils.SIZZLE_);
+        }
         params['script'] = Utils.SIZZLE_ +
             "; var results = []; Sizzle(arguments[0], arguments[1], results); delete Sizzle; ";
       } else {
@@ -1167,5 +1167,3 @@ Utils.findByCss = function(rootNode, theDocument, selector, singular, respond, e
       executeScript(respond, params);
     }
 };
-
-new Utils();

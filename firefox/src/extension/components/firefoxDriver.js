@@ -29,7 +29,6 @@ function FirefoxDriver(server, enableNativeEvents, win) {
   // https://groups.google.com/group/mozilla.dev.apps.firefox/browse_thread/thread/e178d41afa2ccc87?hl=en&pli=1#
   var resources = [
     "atoms.js",
-    "logging.js",
     "timer.js",
     "utils.js"
   ];

@@ -20,18 +20,10 @@
  * assocuated window.
  */
 
-
-var CC = Components.classes;
-var CI = Components.interfaces;
-
-
-
-
 /**
  * @constructor
  */
 function Timer() { /* Empty */ }
-
 
 /**
  * Set a callback to be executed after a specified time out. The default time
@@ -41,6 +33,9 @@ function Timer() { /* Empty */ }
  * @param {number=} opt_timeout An optional timeout to use.
  */
 Timer.prototype.setTimeout = function(callback, opt_timeout) {
+  var CC = Components.classes;
+  var CI = Components.interfaces;
+
   var timeout = opt_timeout || 10;
   var timer = CC['@mozilla.org/timer;1'].createInstance(CI['nsITimer']);
 

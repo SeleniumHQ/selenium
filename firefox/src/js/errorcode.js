@@ -16,7 +16,7 @@
  limitations under the License.
  */
 
-var EXPORTED_SYMBOLS = [ 'ErrorCode' ];
+goog.provide('ErrorCode');
 
 /**
  * Error codes used by the remote wire protocol.
@@ -51,7 +51,7 @@ ErrorCode.toJSON = function(ex) {
   var stackFrames = [];
   var json = {
     'message': ex.message ? ex.message : ex.toString(),
-    'stackTrace': stackFrames,
+    'stackTrace': stackFrames
   };
 
   if (ex.stack) {

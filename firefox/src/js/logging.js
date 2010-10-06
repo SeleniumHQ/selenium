@@ -15,15 +15,24 @@
  limitations under the License.
  */
 
-
-var CC = Components.classes;
-var CI = Components.interfaces;
-
+goog.provide('Logger');
 
 /**
  * Declare the namespace
  */
-function Logger() {
+var Logger = {
+  initialized: false
+};
+
+Logger._init = function() {
+  if (Logger.initialized == true) {
+    return;
+  }
+
+  Logger.initialized = true;
+  var CC = Components.classes;
+  var CI = Components.interfaces;
+
   var consoleService = CC["@mozilla.org/consoleservice;1"]
       .getService(CI["nsIConsoleService"]);
 
@@ -100,6 +109,7 @@ function Logger() {
 
 
 Logger.dumpn = function(text) {
+  Logger._init();
   var stack = Components.stack.caller;
   var filename = stack.filename.replace(/.*\//, '');
   Logger.log_(filename + ":" + stack.lineNumber  + " - " + text + "\n");
@@ -107,6 +117,7 @@ Logger.dumpn = function(text) {
 
 
 Logger.dump = function(element) {
+  Logger._init();
   var dump = "=============\n";
 
   var rows = [];
@@ -139,6 +150,7 @@ Logger.dump = function(element) {
 
 
 Logger.dumpProperties_ = function(view, rows) {
+  Logger._init();
   for (var i in view) {
     var value = "\t" + i + ": ";
     try {
@@ -157,6 +169,7 @@ Logger.dumpProperties_ = function(view, rows) {
 
 
 Logger.stackTrace = function() {
+  Logger._init();
   var stack = Components.stack;
   var i = 5;
   var dump = "";
@@ -167,12 +180,3 @@ Logger.stackTrace = function() {
 
   Logger.log_(dump);
 };
-
-
-// Initialize the logging system. Because of the way that Firefox imports work
-// this will only happen once.
-new Logger();
-
-
-// Declare the exported symbols
-var EXPORTED_SYMBOLS = [ 'Logger' ];
