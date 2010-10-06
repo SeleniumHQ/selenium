@@ -31,7 +31,7 @@ Spec::Runner.configure do |c|
   end
 
   c.after(:suite) do
-    GlobalTestEnv.driver_instance.quit
+    GlobalTestEnv.quit_driver
   end
 end
 
