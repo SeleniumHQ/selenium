@@ -121,7 +121,7 @@ public abstract class By {
         
         @Override
         public String toString() {
-          return "By.linkText: " + linkText;
+          return "By.partialLinkText: " + linkText;
         }
       };
     }

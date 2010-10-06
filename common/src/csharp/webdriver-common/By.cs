@@ -60,6 +60,7 @@ namespace OpenQA.Selenium
     {
         private FindElementDelegate findElementMethod;
         private FindElementsDelegate findElementsMethod;
+        private string description = "OpenQA.Selenium.By";
 
         private delegate IWebElement FindElementDelegate(ISearchContext context);
         
@@ -86,6 +87,8 @@ namespace OpenQA.Selenium
             {
                 return ((IFindsById)context).FindElementsById(idToFind);
             };
+
+            by.description = "By.Id: " + idToFind;
             return by;
         }
 
@@ -110,6 +113,8 @@ namespace OpenQA.Selenium
             {
                 return ((IFindsByLinkText)context).FindElementsByLinkText(linkTextToFind);
             };
+
+            by.description = "By.LinkText: " + linkTextToFind;
             return by;
         }
 
@@ -134,6 +139,8 @@ namespace OpenQA.Selenium
             {
                 return ((IFindsByName)context).FindElementsByName(nameToFind);
             };
+
+            by.description = "By.Name: " + nameToFind;
             return by;
         }
 
@@ -158,6 +165,8 @@ namespace OpenQA.Selenium
             {
                 return ((IFindsByXPath)context).FindElementsByXPath(xpathToFind);
             };
+
+            by.description = "By.XPath: " + xpathToFind;
             return by;
         }
 
@@ -190,6 +199,8 @@ namespace OpenQA.Selenium
             {
                 return ((IFindsByClassName)context).FindElementsByClassName(classNameToFind);
             };
+
+            by.description = "By.ClassName[Contains]: " + classNameToFind;
             return by;
         }
 
@@ -209,6 +220,8 @@ namespace OpenQA.Selenium
             {
                 return ((IFindsByPartialLinkText)context).FindElementsByPartialLinkText(partialLinkTextToFind);
             };
+
+            by.description = "By.PartialLinkText: " + partialLinkTextToFind;
             return by;
         }
 
@@ -233,6 +246,8 @@ namespace OpenQA.Selenium
             {
                 return ((IFindsByTagName)context).FindElementsByTagName(tagNameToFind);
             };
+
+            by.description = "By.TagName: " + tagNameToFind;
             return by;
         }
 
@@ -257,6 +272,8 @@ namespace OpenQA.Selenium
             {
                 return ((IFindsByCssSelector)context).FindElementsByCssSelector(cssSelectorToFind);
             };
+
+            by.description = "By.CssSelector: " + cssSelectorToFind;
             return by;
         }
 
@@ -279,6 +296,15 @@ namespace OpenQA.Selenium
         public ReadOnlyCollection<IWebElement> FindElements(ISearchContext context)
         {
             return findElementsMethod(context);
+        }
+
+        /// <summary>
+        /// Gets a string representation of the finder.
+        /// </summary>
+        /// <returns>The string displaying the finder content.</returns>
+        public override string ToString()
+        {
+            return description;
         }
     }
 }
