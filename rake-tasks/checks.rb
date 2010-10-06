@@ -85,7 +85,7 @@ end
 def iPhoneSDK?
   return nil unless iPhoneSDKPresent?
   if $iPhoneSDK == nil then
-    cmd = open("|xcodebuild -showsdks | grep iphonesimulator | awk '{print $7}'")
+    cmd = open("|xcodebuild -showsdks | grep iphonesimulator | awk '{print $NF}'")
     sdks = cmd.readlines.map {|x| x.gsub(/\b(.*)\b.*/m, '\1').chomp}
     cmd.close
 
