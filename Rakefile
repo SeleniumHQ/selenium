@@ -216,7 +216,7 @@ dll(:name => "firefox_dll",
 gecko_sdk = "third_party/gecko-1.9.0.11/linux/"
 
 dll(:name => "libwebdriver_firefox_so",
-    :src  => FileList.new('common/src/cpp/webdriver-interactions/*_linux.cpp') +
+    :src  => FileList.new('common/src/cpp/webdriver-interactions/*_linux*.cpp') +
              FileList.new('firefox/src/cpp/webdriver-firefox/*.cpp'),
     :arch => "i386",
     :args => " -DXPCOM_GLUE  -DXPCOM_GLUE_USE_NSPR -I common/src/cpp/webdriver-interactions -I #{gecko_sdk}include -I /usr/include/nspr " + "`pkg-config gtk+-2.0 --cflags`",
@@ -245,7 +245,7 @@ else
 end
 
 dll(:name => "libwebdriver_firefox_so64",
-    :src  => FileList.new('common/src/cpp/webdriver-interactions/*_linux.cpp') + FileList.new('firefox/src/cpp/webdriver-firefox/native_events.cpp'),
+    :src  => FileList.new('common/src/cpp/webdriver-interactions/*_linux*.cpp') + FileList.new('firefox/src/cpp/webdriver-firefox/native_events.cpp'),
     :arch => "amd64",
     :args => " -DXPCOM_GLUE  -DXPCOM_GLUE_USE_NSPR -fPIC -fshort-wchar -I common/src/cpp/webdriver-interactions #{local_gecko_include} `pkg-config gtk+-2.0 --cflags` ",
     :link_args => "-Wall -Os #{local_gecko_libs} -lrt `pkg-config gtk+-2.0 --libs` -fno-rtti -fno-exceptions -shared  -fPIC",
