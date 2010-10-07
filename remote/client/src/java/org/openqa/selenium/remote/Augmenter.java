@@ -52,6 +52,7 @@ public class Augmenter {
     addAugmentation(CapabilityType.SUPPORTS_APPLICATION_CACHE, new AddApplicationCache());
     addAugmentation(CapabilityType.SUPPORTS_BROWSER_CONNECTION, new AddBrowserConnection());
     addAugmentation(CapabilityType.SUPPORTS_WEB_STORAGE, new AddWebStorage());
+    addAugmentation(CapabilityType.ROTATABLE, new AddRotatable());
   }
 
   /**

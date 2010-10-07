@@ -20,6 +20,7 @@ package org.openqa.selenium.remote.server;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Platform;
+import org.openqa.selenium.Rotatable;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.browserlaunchers.CapabilityType;
@@ -137,19 +138,27 @@ public class Session {
       caps.setJavascriptEnabled(instance instanceof JavascriptExecutor);
       if (instance instanceof TakesScreenshot) {
         caps.setCapability(CapabilityType.TAKES_SCREENSHOT, true);
-      } else if (instance instanceof DatabaseStorage) {
+      } 
+      if (instance instanceof DatabaseStorage) {
         caps.setCapability(CapabilityType.SUPPORTS_SQL_DATABASE, true);
-      } else if (instance instanceof LocationContext) {
+      }
+      if (instance instanceof LocationContext) {
         caps.setCapability(CapabilityType.SUPPORTS_LOCATION_CONTEXT, true);
-      } else if (instance instanceof ApplicationCache) {
+      }
+      if (instance instanceof ApplicationCache) {
         caps.setCapability(CapabilityType.SUPPORTS_APPLICATION_CACHE, true);
-      } else if (instance instanceof BrowserConnection) {
+      }
+      if (instance instanceof BrowserConnection) {
         caps.setCapability(CapabilityType.SUPPORTS_BROWSER_CONNECTION, true);
-      } else if (instance instanceof WebStorage) {
+      }
+      if (instance instanceof WebStorage) {
         caps.setCapability(CapabilityType.SUPPORTS_WEB_STORAGE, true);
       }
       if (instance instanceof FindsByCssSelector) {
         caps.setCapability(CapabilityType.SUPPORTS_FINDING_BY_CSS, true);
+      }
+      if (instance instanceof Rotatable) {
+        caps.setCapability(CapabilityType.ROTATABLE, true);
       }
       return caps;
     }

@@ -17,23 +17,14 @@ limitations under the License.
 
 package org.openqa.selenium.android;
 
-import android.content.Context;
-import android.os.SystemClock;
-import android.util.Log;
-
-import com.google.common.collect.Sets;
-
-import com.google.common.io.ByteStreams;
-import com.google.common.io.Closeables;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.NoSuchFrameException;
 import org.openqa.selenium.OutputType;
+import org.openqa.selenium.Rotatable;
+import org.openqa.selenium.ScreenOrientation;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.Speed;
 import org.openqa.selenium.TakesScreenshot;
@@ -44,9 +35,9 @@ import org.openqa.selenium.android.app.R;
 import org.openqa.selenium.android.intents.Action;
 import org.openqa.selenium.android.intents.FutureExecutor;
 import org.openqa.selenium.android.intents.IntentReceiver;
+import org.openqa.selenium.android.intents.IntentReceiver.IntentReceiverListener;
 import org.openqa.selenium.android.intents.IntentReceiverRegistrar;
 import org.openqa.selenium.android.intents.IntentSender;
-import org.openqa.selenium.android.intents.IntentReceiver.IntentReceiverListener;
 import org.openqa.selenium.android.sessions.SessionCookieManager;
 import org.openqa.selenium.android.util.JsUtil;
 import org.openqa.selenium.android.util.SimpleTimer;
@@ -56,6 +47,18 @@ import org.openqa.selenium.internal.FindsByLinkText;
 import org.openqa.selenium.internal.FindsByName;
 import org.openqa.selenium.internal.FindsByTagName;
 import org.openqa.selenium.internal.FindsByXPath;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import android.content.Context;
+import android.os.SystemClock;
+import android.util.Log;
+
+import com.google.common.collect.Sets;
+import com.google.common.io.ByteStreams;
+import com.google.common.io.Closeables;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -68,7 +71,7 @@ import java.util.concurrent.TimeUnit;
 
 public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, JavascriptExecutor,
     FindsById, FindsByLinkText, FindsByName, FindsByXPath, TakesScreenshot,
-    IntentReceiverListener {
+    IntentReceiverListener, Rotatable {
 
   public static final String LOG_TAG = AndroidDriver.class.getName();
   
@@ -633,6 +636,14 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
     byte[] rawPng = (byte[]) sendIntent(Action.TAKE_SCREENSHOT);
     String base64Png = new Base64Encoder().encode(rawPng);
     return target.convertFromBase64Png(base64Png);
+  }
+
+  public ScreenOrientation getOrientation() {
+    return (ScreenOrientation) sendIntent(Action.GET_SCREEN_ORIENTATION);
+  }
+
+  public void rotate(ScreenOrientation orientation) {
+    sendIntent(Action.ROTATE_SCREEN, orientation);
   }
   
   public Object sendIntent(String action, Object... args) {

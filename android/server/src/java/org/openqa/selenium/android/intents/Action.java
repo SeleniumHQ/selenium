@@ -40,4 +40,7 @@ public interface Action {
   String SEND_MOTION_EVENT = "sendMotionEvent";
   
   String EDITABLE_AERA_FOCUSED = "editableAreaFocused";
+  
+  String ROTATE_SCREEN = "rotateScreen";
+  String GET_SCREEN_ORIENTATION = "getScreenOrientation";
 }

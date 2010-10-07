@@ -18,6 +18,8 @@ limitations under the License.
 package org.openqa.selenium.android;
 
 import org.openqa.selenium.OutputType;
+import org.openqa.selenium.Rotatable;
+import org.openqa.selenium.ScreenOrientation;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.browserlaunchers.CapabilityType;
@@ -25,24 +27,28 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
+import com.google.common.collect.ImmutableMap;
+
+import java.net.MalformedURLException;
 import java.net.URL;
 
 /**
  * A driver for running tests on an Android device or emulator.
  */
-public class AndroidDriver extends RemoteWebDriver implements TakesScreenshot {
+public class AndroidDriver extends RemoteWebDriver implements TakesScreenshot, Rotatable {
 
   protected static final String DEFAULT_ANDROID_DRIVER_URL = "http://localhost:8080/hub";
   
-  public AndroidDriver() throws Exception {
-    this(DEFAULT_ANDROID_DRIVER_URL);
+  public AndroidDriver() throws MalformedURLException {
+    this(new URL(DEFAULT_ANDROID_DRIVER_URL));
   }
   
-  public AndroidDriver(String remoteAddress) throws Exception {
+  
+  public AndroidDriver(String remoteAddress) throws MalformedURLException {
     this(new URL(remoteAddress));
   }
   
-  public AndroidDriver(URL remoteAddress) throws Exception {
+  public AndroidDriver(URL remoteAddress) {
     super(remoteAddress, getAndroidCapabilities());
   }
 
@@ -54,6 +60,16 @@ public class AndroidDriver extends RemoteWebDriver implements TakesScreenshot {
   private static DesiredCapabilities getAndroidCapabilities() {
     DesiredCapabilities caps = DesiredCapabilities.android();
     caps.setCapability(CapabilityType.TAKES_SCREENSHOT, true);
+    caps.setCapability(CapabilityType.ROTATABLE, true);
     return caps;
+  }
+
+  public void rotate(ScreenOrientation orientation) {
+    execute(DriverCommand.SET_SCREEN_ORIENTATION, ImmutableMap.of("orientation", orientation));
+  }
+
+  public ScreenOrientation getOrientation() {
+    return ScreenOrientation.valueOf(
+        (String) execute(DriverCommand.GET_SCREEN_ORIENTATION).getValue());
   }
 }

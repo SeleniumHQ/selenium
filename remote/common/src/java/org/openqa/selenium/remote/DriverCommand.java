@@ -114,4 +114,7 @@ public interface DriverCommand {
   String REMOVE_SESSION_STORAGE_ITEM = "removeSessionStorageItem";
   String CLEAR_SESSION_STORAGE = "clearSessionStorage";
   String GET_SESSION_STORAGE_SIZE = "getSessionStorageSize";
+  
+  String SET_SCREEN_ORIENTATION = "setScreenOrientation";
+  String GET_SCREEN_ORIENTATION = "getScreenOrientation";
 }

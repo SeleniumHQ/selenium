@@ -17,12 +17,25 @@ limitations under the License.
 
 package org.openqa.selenium.android.app;
 
+import org.openqa.selenium.Cookie;
+import org.openqa.selenium.ScreenOrientation;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.android.RunnableWithArgs;
+import org.openqa.selenium.android.events.TouchScreen;
+import org.openqa.selenium.android.events.WebViewAction;
+import org.openqa.selenium.android.intents.Action;
+import org.openqa.selenium.android.intents.IntentReceiver;
+import org.openqa.selenium.android.intents.IntentReceiver.IntentReceiverListener;
+import org.openqa.selenium.android.intents.IntentReceiverRegistrar;
+import org.openqa.selenium.android.intents.IntentSender;
+import org.openqa.selenium.android.sessions.SessionCookieManager;
+
 import android.app.Activity;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Picture;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.Bitmap.Config;
+import android.graphics.Canvas;
+import android.graphics.Picture;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -31,18 +44,6 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.TextView;
-
-import org.openqa.selenium.Cookie;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.android.RunnableWithArgs;
-import org.openqa.selenium.android.events.TouchScreen;
-import org.openqa.selenium.android.events.WebViewAction;
-import org.openqa.selenium.android.intents.Action;
-import org.openqa.selenium.android.intents.IntentReceiver;
-import org.openqa.selenium.android.intents.IntentReceiverRegistrar;
-import org.openqa.selenium.android.intents.IntentSender;
-import org.openqa.selenium.android.intents.IntentReceiver.IntentReceiverListener;
-import org.openqa.selenium.android.sessions.SessionCookieManager;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -58,7 +59,6 @@ import java.util.concurrent.TimeoutException;
  * Main view of a single-session application mode.
  */
 public class SingleSessionActivity extends Activity implements IntentReceiverListener {
-
   private static final String LOG_TAG = SingleSessionActivity.class.getName();
   private boolean pageHasStartedLoading = false;
 
@@ -138,6 +138,8 @@ public class SingleSessionActivity extends Activity implements IntentReceiverLis
     intentReg.registerReceiver(intentWithResult, Action.GET_COOKIE);
     intentReg.registerReceiver(intentWithResult, Action.REMOVE_ALL_COOKIES);
     intentReg.registerReceiver(intentWithResult, Action.REMOVE_COOKIE);
+    intentReg.registerReceiver(intentWithResult, Action.ROTATE_SCREEN);
+    intentReg.registerReceiver(intentWithResult, Action.GET_SCREEN_ORIENTATION);
   }
 
   @Override
@@ -224,8 +226,32 @@ public class SingleSessionActivity extends Activity implements IntentReceiverLis
         inputKeys[i] = args[i].toString();
       }
       WebViewAction.sendKeys(webView, inputKeys);
+    } else if (Action.ROTATE_SCREEN.equals(action)) {
+      this.setRequestedOrientation(getAndroidScreenOrientation((ScreenOrientation) args[0]));
+    } else if (Action.GET_SCREEN_ORIENTATION.equals(action)) {
+      return getScreenOrientation();
     }
     return null;
+  }
+  
+  private int getAndroidScreenOrientation(ScreenOrientation orientation) {
+    if (ScreenOrientation.LANDSCAPE.equals(orientation)) {
+      return 0;
+    }
+    return 1;
+  }
+  
+  /**
+   * @return the current layout orientation of webview.
+   */
+  private ScreenOrientation getScreenOrientation() {
+    int width = webView.getWidth();
+    int height = webView.getHeight();
+    if (width > height) {
+      return ScreenOrientation.LANDSCAPE;
+    } else {
+      return ScreenOrientation.PORTRAIT;
+    }
   }
   
   public void executeNativeAction(final RunnableWithArgs r) {

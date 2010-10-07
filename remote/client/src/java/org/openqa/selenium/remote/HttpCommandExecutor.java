@@ -182,6 +182,9 @@ public class HttpCommandExecutor implements CommandExecutor {
         .put(SET_SESSION_STORAGE_ITEM, post("/session/:sessionId/session_storage"))
         .put(CLEAR_SESSION_STORAGE, delete("/session/:sessionId/session_storage"))
         .put(GET_SESSION_STORAGE_SIZE, get("/session/:sessionId/session_storage/size"))
+        
+        .put(GET_SCREEN_ORIENTATION, get("/session/:sessionId/orientation"))
+        .put(SET_SCREEN_ORIENTATION, post("/session/:sessionId/orientation"))
         .build();
   }
 
