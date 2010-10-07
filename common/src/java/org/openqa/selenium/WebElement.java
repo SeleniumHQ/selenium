@@ -84,11 +84,36 @@ public interface WebElement extends SearchContext {
 
   /**
    * Get the value of a the given attribute of the element. Will return the current value, even if
-   * this has been modified after the page has been loaded. Note that the value of the attribute
-   * "checked" will return "checked" if the element is a input of type checkbox and there is no
-   * explicit "checked" attribute, and will also return "selected" for an option that is selected
-   * even if there is no explicit "selected" attribute. The expected value of "disabled" is also
-   * returned.
+   * this has been modified after the page has been loaded. More exactly, this method will return
+   * the value of the given attribute, unless that attribute is not present, in which case the
+   * value of the property with the same name is returned. If neither value is set, null is
+   * returned. The "style" attribute is converted as best can be to a text representation with a
+   * trailing semi-colon. The following are deemed to be "boolean" attributes, and will
+   * return either "true" or "false":
+   *
+   * <ul>
+   * <li>checked
+   * <li>compact
+   * <li>declare
+   * <li>defer
+   * <li>disabled
+   * <li>ismap
+   * <li>multiple
+   * <li>nohref
+   * <li>noresize
+   * <li>noshade
+   * <li>nowrap
+   * <li>readonly
+   * <li>selected
+   * </ul>
+   *
+   * Finally, the following commonly mis-capitalized attribute/property names are evaluated as
+   * expected:
+   *
+   * <ul>
+   * <li>"class"
+     <li>"readonly"
+   * </ul>
    *
    * @param name The name of the attribute.
    * @return The attribute's current value or null if the value is not set.
