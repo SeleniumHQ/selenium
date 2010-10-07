@@ -27,8 +27,8 @@ import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.REMOTE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 
+@Ignore(SELENESE)
 public class ChildrenFindingTest extends AbstractDriverTestCase {
-  @Ignore(SELENESE)
   public void testFindElementByXPath() {
     driver.get(pages.nestedPage);
     WebElement element = driver.findElement(By.name("form2"));
@@ -36,7 +36,6 @@ public class ChildrenFindingTest extends AbstractDriverTestCase {
     assertThat(child.getAttribute("id"), is("2"));
   }
   
-  @Ignore(SELENESE)
   public void testFindingElementsOnElementByXPathShouldFindTopLevelElements() {
     driver.get(pages.simpleTestPage);
     WebElement parent = driver.findElement(By.id("multiline"));
@@ -44,8 +43,7 @@ public class ChildrenFindingTest extends AbstractDriverTestCase {
     List<WebElement> children = parent.findElements(By.xpath("//p"));
     assertEquals(allPs.size(), children.size());
   }
-  
-  @Ignore(SELENESE)
+
   public void testFindingDotSlashElementsOnElementByXPathShouldFindNotTopLevelElements() {
     driver.get(pages.simpleTestPage);
     WebElement parent = driver.findElement(By.id("multiline"));
@@ -54,7 +52,6 @@ public class ChildrenFindingTest extends AbstractDriverTestCase {
     assertEquals("A div containing", children.get(0).getText());
   }
 
-  @Ignore(SELENESE)
   public void testFindElementByXPathWhenNoMatch() {
     driver.get(pages.nestedPage);
     WebElement element = driver.findElement(By.name("form2"));
@@ -66,7 +63,6 @@ public class ChildrenFindingTest extends AbstractDriverTestCase {
     fail();
   }
 
-  @Ignore(SELENESE)
   public void testfindElementsByXPath() {
     driver.get(pages.nestedPage);
     WebElement element = driver.findElement(By.name("form2"));
@@ -76,7 +72,6 @@ public class ChildrenFindingTest extends AbstractDriverTestCase {
     assertThat(children.get(1).getText(), is("Two"));
   }
 
-  @Ignore(SELENESE)
   public void testfindElementsByXPathWhenNoMatch() {
     driver.get(pages.nestedPage);
     WebElement element = driver.findElement(By.name("form2"));
@@ -84,7 +79,6 @@ public class ChildrenFindingTest extends AbstractDriverTestCase {
     assertEquals(0, children.size());
   }
 
-  @Ignore(SELENESE)
   public void testfindElementByName() {
     driver.get(pages.nestedPage);
     WebElement element = driver.findElement(By.name("form2"));
@@ -92,7 +86,6 @@ public class ChildrenFindingTest extends AbstractDriverTestCase {
     assertThat(child.getAttribute("id"), is("2"));
   }
 
-  @Ignore(SELENESE)
   public void testfindElementsByName() {
     driver.get(pages.nestedPage);
     WebElement element = driver.findElement(By.name("form2"));
@@ -100,7 +93,6 @@ public class ChildrenFindingTest extends AbstractDriverTestCase {
     assertThat(children.size(), is(2));
   }
 
-  @Ignore(SELENESE)
   public void testfindElementById() {
     driver.get(pages.nestedPage);
     WebElement element = driver.findElement(By.name("form2"));
@@ -108,7 +100,6 @@ public class ChildrenFindingTest extends AbstractDriverTestCase {
     assertThat(child.getAttribute("name"), is("selectomatic"));
   }
 
-  @Ignore(SELENESE)
   public void testfindElementByIdWhenMultipleMatchesExist() {
     driver.get(pages.nestedPage);
     WebElement element = driver.findElement(By.id("test_id_div"));
@@ -116,7 +107,6 @@ public class ChildrenFindingTest extends AbstractDriverTestCase {
     assertThat(child.getText(), is("inside"));
   }
 
-  @Ignore(SELENESE)
   public void testfindElementByIdWhenNoMatchInContext() {
     driver.get(pages.nestedPage);
     WebElement element = driver.findElement(By.id("test_id_div"));
@@ -128,7 +118,6 @@ public class ChildrenFindingTest extends AbstractDriverTestCase {
     }
   }
 
-  @Ignore(SELENESE)
   public void testfindElementsById() {
     driver.get(pages.nestedPage);
     WebElement element = driver.findElement(By.name("form2"));
@@ -136,7 +125,6 @@ public class ChildrenFindingTest extends AbstractDriverTestCase {
     assertThat(children.size(), is(2));
   }
 
-  @Ignore(SELENESE)
   public void testFindElementByLinkText() {
     driver.get(pages.nestedPage);
     WebElement element = driver.findElement(By.name("div1"));
@@ -144,7 +132,6 @@ public class ChildrenFindingTest extends AbstractDriverTestCase {
     assertThat(child.getAttribute("name"), is("link1"));
   }
 
-  @Ignore(SELENESE)
   public void testFindElementsByLinkTest() {
     driver.get(pages.nestedPage);
     WebElement element = driver.findElement(By.name("div1"));
@@ -155,7 +142,6 @@ public class ChildrenFindingTest extends AbstractDriverTestCase {
     assertThat(elements.get(1).getAttribute("name"), is("link2"));
   }
 
-  @Ignore(SELENESE)
   public void testfindElementsByLinkText() {
     driver.get(pages.nestedPage);
     WebElement element = driver.findElement(By.name("div1"));
@@ -164,7 +150,7 @@ public class ChildrenFindingTest extends AbstractDriverTestCase {
     assertThat(children.size(), is(2));
   }
 
-  @Ignore({IE, SELENESE})
+  @Ignore(IE)
   public void testShouldFindChildElementsByClassName() {
     driver.get(pages.nestedPage);
     WebElement parent = driver.findElement(By.name("classes"));
@@ -174,7 +160,7 @@ public class ChildrenFindingTest extends AbstractDriverTestCase {
     assertEquals("Find me", element.getText());
   }
 
-  @Ignore({IE, SELENESE})
+  @Ignore(IE)
   public void testShouldFindChildrenByClassName() {
     driver.get(pages.nestedPage);
     WebElement parent = driver.findElement(By.name("classes"));
@@ -184,7 +170,6 @@ public class ChildrenFindingTest extends AbstractDriverTestCase {
     assertEquals(2, elements.size());
   }
 
-  @Ignore(SELENESE)
   public void testShouldFindChildElementsByTagName() {
     driver.get(pages.nestedPage);
     WebElement parent = driver.findElement(By.name("div1"));
@@ -194,7 +179,6 @@ public class ChildrenFindingTest extends AbstractDriverTestCase {
     assertEquals("link1", element.getAttribute("name"));
   }
 
-  @Ignore(SELENESE)
   public void testShouldFindChildrenByTagName() {
     driver.get(pages.nestedPage);
     WebElement parent = driver.findElement(By.name("div1"));
@@ -205,7 +189,7 @@ public class ChildrenFindingTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({HTMLUNIT, REMOTE, SELENESE})
+  @Ignore({HTMLUNIT, REMOTE})
   public void testShouldBeAbleToFindAnElementByCssSelector() {
     driver.get(pages.nestedPage);
     WebElement parent = driver.findElement(By.name("form2"));
@@ -216,7 +200,7 @@ public class ChildrenFindingTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {CHROME, HTMLUNIT, REMOTE, SELENESE}, reason = "Chrome doesn't handle the many-pages situation well")
+  @Ignore(value = {CHROME, HTMLUNIT, REMOTE}, reason = "Chrome doesn't handle the many-pages situation well")
   public void testShouldBeAbleToFindAnElementsByCssSelector() {
     driver.get(pages.nestedPage);
     WebElement parent = driver.findElement(By.name("form2"));

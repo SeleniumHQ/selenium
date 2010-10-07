@@ -426,6 +426,7 @@ public class ElementFindingTest extends AbstractDriverTestCase {
     driver.findElements(By.cssSelector("p"));
   }
 
+  @Ignore(SELENESE)
   public void testFindingByXPathShouldNotIncludeParentElementIfSameTagType() {
     driver.get(pages.xhtmlTestPage);
     WebElement parent = driver.findElement(By.id("my_span"));
