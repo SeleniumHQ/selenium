@@ -18,6 +18,8 @@
 
 goog.provide('Utils');
 
+goog.require('bot.dom');
+goog.require('goog.style');
 goog.require('ErrorCode');
 goog.require('Logger');
 
@@ -922,9 +924,6 @@ Utils.findElementsByXPath = function (xpath, contextNode, doc) {
 
 
 Utils.getLocation = function(element) {
-  var retrieval = Utils.newInstance(
-      "@mozilla.org/accessibleRetrieval;1", "nsIAccessibleRetrieval");
-
   try {
     element = element.wrappedJSObject ? element.wrappedJSObject : element;
 
@@ -954,6 +953,8 @@ Utils.getLocation = function(element) {
 
     // Firefox 3.0, but lacking client rect
     Logger.dumpn("Falling back to firefox3 mechanism");
+    var retrieval = Utils.newInstance(
+      "@mozilla.org/accessibleRetrieval;1", "nsIAccessibleRetrieval");
     var accessible = retrieval.getAccessibleFor(element);
 
     var x = {}, y = {}, width = {}, height = {};
@@ -968,7 +969,18 @@ Utils.getLocation = function(element) {
   } catch(e) {
     Logger.dumpn(e);
     // Element doesn't have an accessibility node
-    throw e;
+    Logger.dumpn("Falling back to using closure to find the location of the element");
+
+    var position = goog.style.getClientPosition(element);
+    var size = goog.style.getBorderBoxSize(element);
+    var shown = bot.dom.isShown(element);
+
+    return {
+      x: position.x,
+      y: position.y,
+      width: shown ? size.width : 0,
+      height: shown ? size.height : 0
+    };
   }
 };
 

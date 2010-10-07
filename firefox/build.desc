@@ -66,6 +66,9 @@ js_binary(name = "utils",
     "src/js/logging.js",
     "src/js/utils.js",
     "src/js/utils_exports.js"
+  ],
+  deps = [
+    "//common:atomic_driver"
   ])
 
 gcc_library(name = "noblur",
