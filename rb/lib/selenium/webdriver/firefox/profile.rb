@@ -6,10 +6,15 @@ module Selenium
         ANONYMOUS_PROFILE_NAME   = "WEBDRIVER_ANONYMOUS_PROFILE"
         EXTENSION_NAME           = "fxdriver@googlecode.com"
         WEBDRIVER_EXTENSION_PATH = File.expand_path("#{WebDriver.root}/selenium/webdriver/firefox/extension/webdriver.xpi")
+        WEBDRIVER_PREFS          = {
+          :native_events    => 'webdriver_enable_native_events',
+          :untrusted_certs  => 'webdriver_accept_untrusted_certs',
+          :untrusted_issuer => 'webdriver_assume_untrusted_issuer',
+          :port             => 'webdriver_firefox_port'
+        }
 
-        attr_reader   :name, :directory
+        attr_reader   :name
         attr_writer   :secure_ssl, :native_events, :load_no_focus_lib
-        attr_accessor :port
 
         class << self
           def ini
@@ -33,32 +38,37 @@ module Selenium
         #   driver = Selenium::WebDriver.for :firefox, :profile => profile
         #
 
-        def initialize(directory = nil)
-          @directory = directory ? create_tmp_copy(directory) : Dir.mktmpdir("webdriver-profile")
+        def initialize(model = nil)
+          @model = verify_model(model)
 
-          unless File.directory? @directory
-            raise Error::WebDriverError, "Profile directory does not exist: #{@directory.inspect}"
+          model_prefs = read_model_prefs
+
+          if model_prefs.empty?
+            @native_events     = DEFAULT_ENABLE_NATIVE_EVENTS
+            @secure_ssl        = DEFAULT_SECURE_SSL
+            @untrusted_issuer  = DEFAULT_ASSUME_UNTRUSTED_ISSUER
+            @load_no_focus_lib = DEFAULT_LOAD_NO_FOCUS_LIB
+          else
+            @native_events     = model_prefs[WEBDRIVER_PREFS[:native_events]] == "true"
+            @secure_ssl        = model_prefs[WEBDRIVER_PREFS[:untrusted_certs]] != "true" # FIXME: 'untrusted_certs' vs 'secure_ssl'
+            @untrusted_issuer  = model_prefs[WEBDRIVER_PREFS[:untrusted_issuer]] == "true"
+            @load_no_focus_lib = model_prefs[WEBDRIVER_PREFS[:load_no_focus_lib]] == "true" # not stored in profile atm, so will always be false.
           end
-
-          FileReaper << @directory
-
-          # TODO: replace constants with options hash
-          @port              = DEFAULT_PORT
-          @native_events     = DEFAULT_ENABLE_NATIVE_EVENTS
-          @secure_ssl        = DEFAULT_SECURE_SSL
-          @untrusted_issuer  = DEFAULT_ASSUME_UNTRUSTED_ISSUER
-          @load_no_focus_lib = DEFAULT_LOAD_NO_FOCUS_LIB
 
           @additional_prefs  = {}
           @extensions        = {}
         end
 
         def layout_on_disk
-          install_extensions
-          delete_extensions_cache
-          update_user_prefs
+          profile_dir = @model ? create_tmp_copy(@model) : Dir.mktmpdir("webdriver-profile")
+          FileReaper << profile_dir
 
-          directory
+          install_extensions(profile_dir)
+          delete_lock_files(profile_dir)
+          delete_extensions_cache(profile_dir)
+          update_user_prefs_in(profile_dir)
+
+          profile_dir
         end
 
         #
@@ -83,12 +93,8 @@ module Selenium
           @additional_prefs[key.to_s] = value
         end
 
-        def absolute_path
-          if Platform.win?
-            directory.gsub("/", "\\")
-          else
-            directory
-          end
+        def port=(port)
+          self[WEBDRIVER_PREFS[:port]] = port
         end
 
         def add_webdriver_extension
@@ -127,7 +133,7 @@ module Selenium
 
         private
 
-        def install_extensions
+        def install_extensions(directory)
           destination = File.join(directory, "extensions")
 
           @extensions.each do |name, extension|
@@ -136,9 +142,29 @@ module Selenium
           end
         end
 
-        def delete_extensions_cache
-          cache = File.join(directory, "extensions.cache")
-          FileUtils.rm_f cache if File.exist?(cache)
+        def verify_model(model)
+          return unless model
+
+          raise Errno::ENOENT, model unless File.exist?(model)
+          raise Errno::ENOTDIR, model unless File.directory?(model)
+
+          model
+        end
+
+        def read_model_prefs
+          return {} unless @model
+
+          read_user_prefs(File.join(@model, 'user.js'))
+        end
+
+        def delete_extensions_cache(directory)
+          FileUtils.rm_f File.join(directory, "extensions.cache")
+        end
+
+        def delete_lock_files(directory)
+          %w[.parentlock parent.lock].each do |name|
+            FileUtils.rm_f File.join(directory, name)
+          end
         end
 
         def extension_name_for(path)
@@ -156,30 +182,30 @@ module Selenium
           tmp_directory
         end
 
-        def update_user_prefs
-          prefs = current_user_prefs
+        def update_user_prefs_in(directory)
+          path = File.join(directory, 'user.js')
+          prefs = read_user_prefs(path)
 
           prefs.merge! OVERRIDABLE_PREFERENCES
           prefs.merge! @additional_prefs
           prefs.merge! DEFAULT_PREFERENCES
 
-          prefs['webdriver_firefox_port']            = @port
-          prefs['webdriver_accept_untrusted_certs']  = !secure_ssl?
-          prefs['webdriver_enable_native_events']    = native_events?
-          prefs['webdriver_assume_untrusted_issuer'] = assume_untrusted_certificate_issuer?
+          prefs[WEBDRIVER_PREFS[:untrusted_certs]]  = !secure_ssl?
+          prefs[WEBDRIVER_PREFS[:native_events]]    = native_events?
+          prefs[WEBDRIVER_PREFS[:untrusted_issuer]] = assume_untrusted_certificate_issuer?
 
           # If the user sets the home page, we should also start up there
           prefs["startup.homepage_welcome_url"] = prefs["browser.startup.homepage"]
 
-          write_prefs prefs
+          write_prefs prefs, path
         end
 
-        def current_user_prefs
-          return {} unless File.exist?(user_prefs_path)
+        def read_user_prefs(path)
+          return {} unless File.exist?(path)
 
           prefs = {}
 
-          File.read(user_prefs_path).split("\n").each do |line|
+          File.read(path).split("\n").each do |line|
             if line =~ /user_pref\("([^"]+)"\s*,\s*(.+?)\);/
               prefs[$1.strip] = $2.strip
             end
@@ -188,17 +214,13 @@ module Selenium
           prefs
         end
 
-        def write_prefs(prefs)
-          File.open(user_prefs_path, "w") { |file|
+        def write_prefs(prefs, path)
+          File.open(path, "w") { |file|
             prefs.each do |key, value|
               p key => value if $DEBUG
               file.puts %{user_pref("#{key}", #{value});}
             end
           }
-        end
-
-        def user_prefs_path
-          @user_prefs_path ||= File.join(directory, "user.js")
         end
 
         OVERRIDABLE_PREFERENCES = {

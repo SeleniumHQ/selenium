@@ -25,11 +25,12 @@ module Selenium
         end
 
         def start_with(profile, *args)
-          ENV['XRE_PROFILE_PATH'] = profile.absolute_path
+          profile_path = profile.layout_on_disk
+          ENV['XRE_PROFILE_PATH'] = profile_path
           ENV['MOZ_NO_REMOTE'] = '1' # able to launch multiple instances
 
           if Platform.linux? && (profile.native_events? || profile.load_no_focus_lib?)
-            modify_link_library_path profile
+            modify_link_library_path profile_path
           end
 
           execute(*args)
@@ -75,9 +76,8 @@ module Selenium
 
         private
 
-        def modify_link_library_path(profile)
+        def modify_link_library_path(profile_path)
           paths = []
-          profile_path = profile.absolute_path
 
           NO_FOCUS_LIBRARIES.each do |from, to|
             dest = File.join(profile_path, to)
