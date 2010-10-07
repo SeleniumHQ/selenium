@@ -261,7 +261,7 @@ namespace OpenQA.Selenium
             {
                 driver.FindElement(By.Id("checkbox"));
             }
-            catch (WebDriverException web)
+            catch (WebDriverException)
             {
                 Assert.Fail("Could not find element after switching frame");
             }

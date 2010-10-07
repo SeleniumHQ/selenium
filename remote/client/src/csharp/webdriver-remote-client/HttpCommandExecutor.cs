@@ -15,12 +15,23 @@ namespace OpenQA.Selenium.Remote
         private const string JsonMimeType = "application/json";
         private const string RequestAcceptHeader = JsonMimeType + ", image/png";
         private Uri remoteServerUri;
+        private TimeSpan serverResponseTimeout;
 
         /// <summary>
         /// Initializes a new instance of the HttpCommandExecutor class
         /// </summary>
         /// <param name="addressOfRemoteServer">Address of the WebDriver Server</param>
         public HttpCommandExecutor(Uri addressOfRemoteServer)
+            : this(addressOfRemoteServer, TimeSpan.FromSeconds(60))
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the HttpCommandExecutor class
+        /// </summary>
+        /// <param name="addressOfRemoteServer">Address of the WebDriver Server</param>
+        /// <param name="timeout">The timeout within which the server must respond.</param>
+        public HttpCommandExecutor(Uri addressOfRemoteServer, TimeSpan timeout)
         {
             if (addressOfRemoteServer == null)
             {
@@ -33,6 +44,7 @@ namespace OpenQA.Selenium.Remote
             }
 
             remoteServerUri = addressOfRemoteServer;
+            serverResponseTimeout = timeout;
 
             // In the .NET Framework, HttpWebRequest responses with an error code are limited
             // to 64k by default. Since the remote server error responses include a screenshot,
@@ -54,7 +66,7 @@ namespace OpenQA.Selenium.Remote
         {
             CommandInfo info = CommandInfoRepository.Instance.GetCommandInfo(commandToExecute.Name);
             HttpWebRequest request = info.CreateWebRequest(remoteServerUri, commandToExecute);
-            request.Timeout = 15000;
+            request.Timeout = (int)serverResponseTimeout.TotalMilliseconds;
             request.Accept = RequestAcceptHeader;
             if (request.Method == CommandInfo.PostCommand)
             {

@@ -73,6 +73,10 @@ namespace OpenQA.Selenium.Chrome
             get { return listeningPort; }
         }
 
+        /// <summary>
+        /// Adds custom arguments to the command line.
+        /// </summary>
+        /// <param name="customArgs">The arguments to add.</param>
         public void AddCustomArgs(string customArgs)
         {
             this.customArgs.Append(" ").Append(customArgs);
