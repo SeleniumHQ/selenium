@@ -1,3 +1,25 @@
+0.0.29 (2010-10-??)
+===================
+
+* Added a simple Wait class, based on WebDriverWait in Java.
+* Element#find_element with :xpath follows the XPath spec (i.e. results are not limited to the receivers subtree).
+* Element#attribute("some-boolean-attribute") now returns "false" instead of nil.
+* Search PATH for Firefox executable on Windows also.
+* Added Capabilities.android
+* Fix saving of screenshots on Windows and Ruby 1.9 (using "wb" mode string)
+* CSS selector support in the remote driver
+* CSS selector support for IE (using querySelector when available, Sizzle elsewhere)
+* CSS selector support for older versions of Firefox (through Sizzle)
+* Cookie expiration dates are now handled correctly (#730)
+* Make Driver#bridge private, since this seems to be a common cause of confusion.
+* Add {Element,Remote::Capabilities}#as_json for Rails 3 (http://jonathanjulian.com/2010/04/rails-to_json-or-as_json/)
+* User can configure path to exectuables with {Firefox,Chrome}.path = "/some/path"
+* Added "chromium" as a possible name for the Chrome binary (#769)
+* Correctly set the HTTP client timeout (#768)
+* switch_to.window with block now handles exceptions and non-local returns.
+* switch_to.window with block returns the result of the block.
+
+
 0.0.28 (2010-08-23)
 ===================
 
