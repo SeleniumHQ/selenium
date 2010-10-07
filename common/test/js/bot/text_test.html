@@ -18,9 +18,8 @@ limitations under the License.
 <html>
 <head>
   <title>text_test.html</title>
-  <script type="text/javascript" src="../webdriver-bootstrap.js">
-  </script>
-  <script type="text/javascript" src="deps.js"></script>
+  <script src="../webdriver-bootstrap.js"></script>
+  <script src="deps.js"></script>
   <script type="text/javascript">
     goog.require('bot.dom');
     goog.require('bot.locators');
@@ -134,6 +133,19 @@ limitations under the License.
       assertEquals("line has text", text);
     }
 
+    function testGetVisibleTextShouldHandleLackOfSpacesBetweenInlineElements() {
+      var text = getVisibleTextByElementId("inlinenospaces");
+      assertEquals("oooOooo", text);
+      var text2 = getVisibleTextByElementId("inlinenospaces2");
+      assertEquals("A B", text2);
+    }
+
+    function testGetVisibleTextShouldNotAddExtraSpaces() {
+      var text = getVisibleTextByElementId("descartes");
+
+      assertEquals("Dubito, ergo cogito, ergo sum.", text);
+    }
+
     function testGetVisibleTestGetTextWithLineBreakForInlineElement() {
       var text = getVisibleTextByElementId("label1");
       assertContains("foo\nbar", text);
@@ -219,6 +231,9 @@ limitations under the License.
 
   <div id="collapsingtext"><span></span><div>Hello, world</div><span></span></div>
 
+  <div id="inlinenospaces">ooo<strong>O</strong>ooo</div>
+  <div id="inlinenospaces2"><span>A <span></span>B</span></div>
+
   <form action="resultPage.html">
       <p>
           <input type="checkbox" id="checkbox1">
@@ -238,6 +253,8 @@ limitations under the License.
           <tr><td id="wrappingtd" style="width: 10px;"><span>beforeSpace</span><span> </span><span>afterSpace</span></td></tr>
       </tbody>
   </table>
+
+  <span><strong id="descartes">Dubito, <em>ergo cogito</em>, ergo sum.</strong></span>
 
 </body>
 </html>

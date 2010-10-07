@@ -28,7 +28,6 @@ goog.addDependency("../../../js/src/bot/locators/strategies/strategies.js", ['bo
 goog.addDependency("../../../js/src/bot/locators/strategies/tag_name.js", ['bot.locators.strategies.tagName'], ['goog.array', 'goog.dom', 'goog.dom.DomHelper']);
 goog.addDependency("../../../js/src/bot/locators/strategies/xpath.js", ['bot.locators.strategies.xpath'], ['goog.array', 'goog.dom', 'goog.dom.xml']);
 goog.addDependency("../../../js/src/core/lib/prototype.js", [], []);
-goog.addDependency("../../../js/src/core/lib/sizzle.js", [], []);
 goog.addDependency("../../../js/src/core/lib/snapsie.js", [], []);
 goog.addDependency("../../../js/src/core/lib/cssQuery/cssQuery-p.js", [], []);
 goog.addDependency("../../../js/src/core/lib/cssQuery/src/cssQuery-level2.js", [], []);
