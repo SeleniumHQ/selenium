@@ -120,6 +120,13 @@ WdCertOverrideService.prototype.certificateIssuerUntrusted_ = function
       ((verification_result & theCert.CERT_NOT_TRUSTED) != 0) ||
       ((verification_result & theCert.INVALID_CA) != 0)) {
     localdump("Certificate issuer unknown.");
+    localdump("Unknown: " + (theCert.ISSUER_UNKNOWN & verification_result));
+    localdump("Issuer not trusted: " + (theCert.ISSUER_NOT_TRUSTED & verification_result));
+    localdump("Cert not trusted: " + (theCert.CERT_NOT_TRUSTED & verification_result));
+    localdump("Invalid CA: " + (theCert.INVALID_CA & verification_result));
+
+    //TODO(eran): In some cases this value should be ignored completely.
+    // However, this requires a change to FirefoxProfile API.
     return this.ERROR_UNTRUSTED;
   }
 
@@ -130,7 +137,7 @@ WdCertOverrideService.prototype.certificateIssuerUntrusted_ = function
 // and the hostname the certificate was issued for, 0 otherwise.
 WdCertOverrideService.prototype.certificateHostnameMismatch_ = function
   (theCert, aHost) {
-  commonNameRE = new RegExp(theCert.commonName.replace('*', '\\w+'), "i");
+  commonNameRE = new RegExp("^" + theCert.commonName.replace('*', '\\w+') + "$", "i");
   if (aHost.match(commonNameRE) === null) {
     localdump("Host name mismatch: cert: " + theCert.commonName + " get: " + aHost);
     return this.ERROR_MISMATCH;
