@@ -48,36 +48,32 @@ import static org.openqa.selenium.Ignore.Driver.FIREFOX;
 
 
 public class FirefoxDriverTest extends AbstractDriverTestCase {
-    public void testShouldContinueToWorkIfUnableToFindElementById() {
-        driver.get(pages.formPage);
-
-        try {
-            driver.findElement(By.id("notThere"));
-          fail("Should not be able to select element by id here");
-        } catch (NoSuchElementException e) {
-            // This is expected
-        }
-
-        // Is this works, then we're golden
-        driver.get(pages.xhtmlTestPage);
+  public void testShouldContinueToWorkIfUnableToFindElementById() {
+    driver.get(pages.formPage);
+    try {
+      driver.findElement(By.id("notThere"));
+      fail("Should not be able to select element by id here");
+    } catch (NoSuchElementException e) {
+      // This is expected
     }
+      // Is this works, then we're golden
+      driver.get(pages.xhtmlTestPage);
+  }
 
-    @NeedsFreshDriver
-    @Ignore(value = FIREFOX, reason = "Need to figure out how to open a new browser instance mid-test")
-    public void testShouldWaitUntilBrowserHasClosedProperly() throws Exception {
-      driver.get(pages.simpleTestPage);
-      driver.close();
+  @NeedsFreshDriver
+  @Ignore(value = FIREFOX, reason = "Need to figure out how to open a new browser instance mid-test")
+  public void testShouldWaitUntilBrowserHasClosedProperly() throws Exception {
+    driver.get(pages.simpleTestPage);
+    driver.close();
+    setUp();
 
-      setUp();
-
-      driver.get(pages.formPage);
-      WebElement textarea = driver.findElement(By.id("withText"));
-      String expectedText = "I like cheese\n\nIt's really nice";
-      textarea.sendKeys(expectedText);
-
-      String seenText = textarea.getValue();
-      assertThat(seenText, equalTo(expectedText));
-    }
+    driver.get(pages.formPage);
+    WebElement textarea = driver.findElement(By.id("withText"));
+    String expectedText = "I like cheese\n\nIt's really nice";
+    textarea.sendKeys(expectedText);
+    String seenText = textarea.getValue();
+    assertThat(seenText, equalTo(expectedText));
+  }
 
   public void testShouldBeAbleToStartMoreThanOneInstanceOfTheFirefoxDriverSimultaneously() {
     WebDriver secondDriver = newFirefoxDriver();
