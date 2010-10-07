@@ -1,9 +1,10 @@
 0.0.29 (2010-10-??)
 ===================
 
+* Firefox::Profile instances can now be reused for multiple drivers.
 * Added a simple Wait class, based on WebDriverWait in Java.
-* Element#find_element with :xpath follows the XPath spec (i.e. results are not limited to the receivers subtree).
-* Element#attribute("some-boolean-attribute") now returns "false" instead of nil.
+* Element#find_element with :xpath follows the XPath spec (i.e. results are not limited to the receiver's subtree).
+* Element#attribute(attribute) now returns "false" instead of nil.
 * Search PATH for Firefox executable on Windows also.
 * Added Capabilities.android
 * Fix saving of screenshots on Windows and Ruby 1.9 (using "wb" mode string)
