@@ -91,24 +91,6 @@ module Selenium
           end
         end
 
-        def update_user_prefs
-          prefs = current_user_prefs
-
-          prefs.merge! OVERRIDABLE_PREFERENCES
-          prefs.merge! @additional_prefs
-          prefs.merge! DEFAULT_PREFERENCES
-
-          prefs['webdriver_firefox_port']            = @port
-          prefs['webdriver_accept_untrusted_certs']  = !secure_ssl?
-          prefs['webdriver_enable_native_events']    = native_events?
-          prefs['webdriver_assume_untrusted_issuer'] = assume_untrusted_certificate_issuer?
-
-          # If the user sets the home page, we should also start up there
-          prefs["startup.homepage_welcome_url"] = prefs["browser.startup.homepage"]
-
-          write_prefs prefs
-        end
-
         def add_webdriver_extension
           unless @extensions.has_key?(:webdriver)
             add_extension(WEBDRIVER_EXTENSION_PATH, :webdriver)
@@ -172,6 +154,24 @@ module Selenium
           FileUtils.cp_r directory, tmp_directory
 
           tmp_directory
+        end
+
+        def update_user_prefs
+          prefs = current_user_prefs
+
+          prefs.merge! OVERRIDABLE_PREFERENCES
+          prefs.merge! @additional_prefs
+          prefs.merge! DEFAULT_PREFERENCES
+
+          prefs['webdriver_firefox_port']            = @port
+          prefs['webdriver_accept_untrusted_certs']  = !secure_ssl?
+          prefs['webdriver_enable_native_events']    = native_events?
+          prefs['webdriver_assume_untrusted_issuer'] = assume_untrusted_certificate_issuer?
+
+          # If the user sets the home page, we should also start up there
+          prefs["startup.homepage_welcome_url"] = prefs["browser.startup.homepage"]
+
+          write_prefs prefs
         end
 
         def current_user_prefs
