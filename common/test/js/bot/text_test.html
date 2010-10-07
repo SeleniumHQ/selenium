@@ -166,6 +166,12 @@ limitations under the License.
           "link with formatting tags", text);
     }
 
+    function testKeepsNonBreakingSpacesBeforeATag() {
+      var text = getVisibleTextByElementId("id2");
+
+      assertEquals("this is the second element", text);
+    }
+
     function assertContains(expectedText, text) {
       assertTrue("Text [" + text + "] does not contain [" + expectedText + "]",
         text.indexOf(expectedText) >= 0);
@@ -256,5 +262,6 @@ limitations under the License.
 
   <span><strong id="descartes">Dubito, <em>ergo cogito</em>, ergo sum.</strong></span>
 
+  <a id="id2" >this is the&nbsp;<b>second</b> <span>element</span></a>
 </body>
 </html>

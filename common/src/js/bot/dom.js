@@ -369,6 +369,8 @@ bot.dom.isShown = function(elem) {
 bot.dom.getVisibleText = function(node) {
   var returnValue = '';
   var elements = bot.dom.flattenDescendants_(node);
+  var endsWithNbsp = new RegExp(String.fromCharCode(160) + '$', 'gm');
+  var startsWithNbsp = new RegExp('^' + String.fromCharCode(160), 'gm');
 
   var prevTextNodeEndsWithSpace = false;
   goog.array.forEach(elements, function(node, i) {
@@ -379,13 +381,16 @@ bot.dom.getVisibleText = function(node) {
         if (bot.dom.isClosestAncestorBlockLevel_(elements, i)) {
           nodeText = '\n' + nodeText;
         } else if (i != 0) { // First element does not need preceding space.
-          var thisTextNodeStartsWithSpace = node.nodeValue.match(/^ /);
+          var thisTextNodeStartsWithSpace = node.nodeValue.match(/^ /) ||
+              node.nodeValue.match(startsWithNbsp);
           if(prevTextNodeEndsWithSpace || thisTextNodeStartsWithSpace ) {
             nodeText = ' ' + nodeText;
           }
         }
       }
-      prevTextNodeEndsWithSpace = node.nodeValue.match(/ $/);
+
+      prevTextNodeEndsWithSpace = node.nodeValue.match(/ $/) ||
+          node.nodeValue.match(endsWithNbsp);
       returnValue += nodeText;
     }
   });
