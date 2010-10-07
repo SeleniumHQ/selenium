@@ -68,8 +68,6 @@ module Selenium
           check_error_code Lib.wdGetVisible(@driver_pointer, int_ptr), "unable to determine if browser is visible"
 
           int_ptr.get_int(0) == 1
-        ensure
-          int_ptr.free
         end
 
         def setBrowserVisible(bool)
@@ -111,12 +109,11 @@ module Selenium
             rescue Error::NoSuchWindowError
             end
           end
-
-          # hack
-          ObjectSpace.each_object(WebDriver::Element) { |e| finalize e.ref if e.bridge == self }
         ensure
-          Lib.wdFreeDriver(@driver_pointer)
+          ptr = @driver_pointer
           @driver_pointer = nil
+
+          check_error_code Lib.wdFreeDriver(ptr), "unable to free driver #{self}"
         end
 
         def close
@@ -133,7 +130,6 @@ module Selenium
                            "unable to obtain all window handles"
 
           string_array_from(raw_handles).uniq
-          # TODO: who calls raw_handles.free if exception is raised?
         end
 
         def getCurrentWindowHandle
@@ -160,8 +156,6 @@ module Selenium
 
           extract_return_value script_result_ref
         ensure
-          script_args_ref.free
-          script_result_ref.free if script_result_ref
           Lib.wdFreeScriptArgs(args_pointer) if args_pointer
         end
 
@@ -389,8 +383,6 @@ module Selenium
                            "unable to get enabled state"
 
           int_ptr.get_int(0) == 1
-        ensure
-          int_ptr.free
         end
 
         def isElementSelected(element_pointer)
@@ -399,8 +391,6 @@ module Selenium
                            "unable to get selected state"
 
           int_ptr.get_int(0) == 1
-        ensure
-          int_ptr.free
         end
 
         def isElementDisplayed(element_pointer)
@@ -408,8 +398,6 @@ module Selenium
           check_error_code Lib.wdeIsDisplayed(element_pointer, int_ptr), "unable to check visibilty"
 
           int_ptr.get_int(0) == 1;
-        ensure
-          int_ptr.free
         end
 
         def submitElement(element_pointer)
@@ -428,8 +416,6 @@ module Selenium
           check_error_code result, "unable to toggle element"
 
           int_ptr.get_int(0) == 1
-        ensure
-          int_ptr.free
         end
 
         def setElementSelected(element_pointer)
@@ -467,8 +453,6 @@ module Selenium
 
           Lib.wdeMouseMoveTo(hwnd.get_pointer(0), duration, x.get_long(0), y.get_long(0), destination_x, destination_y)
           Lib.wdeMouseUpAt(hwnd.get_pointer(0), destination_x, destination_y)
-        ensure
-          [hwnd, x, y, width, height].each { |pointer| pointer.free }
         end
 
         def getElementLocation(element_pointer)
@@ -478,9 +462,6 @@ module Selenium
           check_error_code Lib.wdeGetLocation(element_pointer, x, y), "unable to get location of element"
 
           Point.new x.get_int(0), y.get_int(0)
-        ensure
-          x.free
-          y.free
         end
 
         def getElementSize(element_pointer)
@@ -490,9 +471,6 @@ module Selenium
           check_error_code Lib.wdeGetSize(element_pointer, width, height), "unable to get size of element"
 
           Dimension.new width.get_int(0), height.get_int(0)
-        ensure
-          width.free
-          height.free
         end
 
         def finalize(element_pointer)
@@ -528,10 +506,9 @@ module Selenium
 
         def extract_return_value(pointer_ref)
           result, returned = nil
-          pointers_to_free = []
           script_result    = pointer_ref.get_pointer(0)
 
-          pointers_to_free << type_pointer = FFI::MemoryPointer.new(:int)
+          type_pointer = FFI::MemoryPointer.new(:int)
           result       = Lib.wdGetScriptResultType(@driver_pointer, script_result, type_pointer)
 
           check_error_code result, "Cannot determine result type"
@@ -543,23 +520,24 @@ module Selenium
               check_error_code Lib.wdGetStringScriptResult(script_result, wrapper), "Cannot extract string result"
             end
           when 2 # Long
-            pointers_to_free << long_pointer = FFI::MemoryPointer.new(:long)
+            long_pointer = FFI::MemoryPointer.new(:long)
             check_error_code Lib.wdGetNumberScriptResult(script_result, long_pointer),
                              "Cannot extract number result"
 
             long_pointer.get_long(0)
           when 3 # Boolean
-            pointers_to_free << int_pointer = FFI::MemoryPointer.new(:int)
+            int_pointer = FFI::MemoryPointer.new(:int)
             check_error_code Lib.wdGetBooleanScriptResult(script_result, int_pointer),
                              "Cannot extract boolean result"
 
             int_pointer.get_int(0) == 1
           when 4 # WebElement
-            pointers_to_free << element_pointer = FFI::MemoryPointer.new(:pointer)
+            element_pointer = FFI::MemoryPointer.new(:pointer)
             check_error_code Lib.wdGetElementScriptResult(script_result, @driver_pointer, element_pointer),
                              "Cannot extract element result"
 
-            Element.new(self, element_pointer.get_pointer(0))
+            auto_ptr = FFI::AutoPointer.new(element_pointer.get_pointer(0), Lib.method(:finalize_element))
+            Element.new(self, auto_ptr)
           when 5 # Nothing
             nil
           when 6 # Exception
@@ -569,12 +547,12 @@ module Selenium
 
             raise Error::WebDriverError, message
           when 7 # Double
-            pointers_to_free << double_pointer = FFI::MemoryPointer.new(:double)
+            double_pointer = FFI::MemoryPointer.new(:double)
             check_error_code Lib.wdGetDoubleScriptResult(script_result, double_pointer), "Cannot extract double result"
 
             double_pointer.get_double(0)
           when 8 # Array
-            pointers_to_free << array_length_pointer = FFI::MemoryPointer.new(:int)
+            array_length_pointer = FFI::MemoryPointer.new(:int)
             check_error_code Lib.wdGetArrayLengthScriptResult(@driver_pointer, script_result, array_length_pointer),
                              "Cannot extract array length"
 
@@ -598,7 +576,6 @@ module Selenium
           end
         ensure
           Lib.wdFreeScriptResult(script_result) if script_result
-          pointers_to_free.each { |p| p.free }
         end
 
         def check_error_code(code, message)

@@ -98,7 +98,15 @@ module Selenium
         attach_function :wdSwitchToFrame,                     [:pointer, :pointer                                         ], :int
         attach_function :wdSwitchToWindow,                    [:pointer, :pointer                                         ], :int
         attach_function :wdWaitForLoadToComplete,             [:pointer                                                   ], :int
-      end
+
+        def self.finalize_element(ptr)
+          code = Lib.wdeFreeElement(ptr)
+          if err = WebDriver::Error.for_code(code)
+            raise err, "could not free element (#{ptr})"
+          end
+        end
+
+      end # Lib
 
       module Kernel32
         extend FFI::Library

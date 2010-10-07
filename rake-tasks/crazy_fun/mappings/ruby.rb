@@ -47,11 +47,11 @@ class RubyMappings
     def destination_for(file)
       File.join build_dir, file
     end
-    
+
     def build_dir
       "build"
     end
-    
+
   end
 
   class CheckTestArgs
@@ -70,8 +70,8 @@ class RubyMappings
       args[:require] = Array(args[:require])
 
       # move?
-      args[:srcs] = args[:srcs].map { |str| 
-        Dir[File.join(dir, str)] 
+      args[:srcs] = args[:srcs].map { |str|
+        Dir[File.join(dir, str)]
       }.flatten
     end
   end
@@ -107,8 +107,7 @@ class RubyMappings
               :require     => req,
               :command     => args[:command],
               :debug       => !!ENV['DEBUG'],
-              :files       => args[:srcs],
-              :objectspace => args[:name] == "jobbie" # hack
+              :files       => args[:srcs]
       end
 
     end
@@ -245,7 +244,6 @@ class RubyRunner
       cmd << "java"
       cmd << "-Djava.awt.headless=true" if opts[:headless]
       cmd << "-jar" << JRUBY_JAR
-      cmd << "-X+O" if opts[:objectspace]
     else
       cmd << impl.to_s
     end

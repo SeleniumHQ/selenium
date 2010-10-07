@@ -7,12 +7,6 @@ module Selenium
       #
 
       module Util
-        CP_ACP         = 0
-        CP_OEMCP       = 1
-        CP_MACCP       = 2
-        CP_THREAD_ACP  = 3
-        CP_SYMBOL      = 42
-        CP_UTF7        = 65000
         CP_UTF8        = 65001
 
         def string_array_from(raw_strings)
@@ -40,15 +34,14 @@ module Selenium
           arr
         ensure
           Lib.wdFreeStringCollection(strings_ptr)
-          raw_strings.free
         end
 
         def create_element(&blk)
           element_ptr_ref = FFI::MemoryPointer.new :pointer
           yield element_ptr_ref
-          Element.new(self, element_ptr_ref.get_pointer(0))
-        ensure
-          element_ptr_ref.free
+
+          auto_ptr = FFI::AutoPointer.new(element_ptr_ref.get_pointer(0), Lib.method(:finalize_element))
+          Element.new(self, auto_ptr)
         end
 
         def create_element_collection(&blk)
@@ -85,7 +78,6 @@ module Selenium
           wstring_to_bytestring raw_string
         ensure
           Lib.wdFreeString(string_ptr) unless string_ptr.null?
-          string_ptr_ref.free
         end
 
         def extract_elements_from(elements_ptr_ref)
@@ -111,11 +103,7 @@ module Selenium
           Lib.wdFreeElementCollection(elements_ptr, 0)
 
           arr
-        ensure
-          elements_ptr_ref.free
-          length_ptr.free
         end
-
 
         def wstring_ptr(str)
           str  = str.to_s
@@ -142,8 +130,6 @@ module Selenium
           Kernel32.WideCharToMultiByte(CP_UTF8, 0, wstring, -1, buf, size, nil, nil )
 
           buf.get_bytes(0, size - 1)
-        ensure
-          buf.free if buf
         end
 
       end # Util
