@@ -106,6 +106,7 @@ class RubyMappings
         jruby :include     => args[:include],
               :require     => req,
               :command     => args[:command],
+              :debug       => !!ENV['DEBUG'],
               :files       => args[:srcs],
               :objectspace => args[:name] == "jobbie" # hack
       end
@@ -123,6 +124,7 @@ class RubyMappings
         ruby :include => args[:include],
              :require => args[:require],
              :command => args[:command],
+             :debug   => !!ENV['DEBUG'],
              :files   => args[:srcs]
       end
     end
@@ -246,6 +248,10 @@ class RubyRunner
       cmd << "-X+O" if opts[:objectspace]
     else
       cmd << impl.to_s
+    end
+
+    if opts[:debug]
+      cmd << "--debug"
     end
 
     if opts.has_key? :include
