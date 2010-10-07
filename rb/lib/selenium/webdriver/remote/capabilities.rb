@@ -8,8 +8,18 @@ module Selenium
       #
       class Capabilities
 
-        attr_accessor :browser_name, :version, :platform, :javascript_enabled
-        alias_method :javascript?, :javascript_enabled
+        attr_accessor :css_selectors_enabled,
+                      :javascript_enabled,
+                      :native_events,
+                      :platform,
+                      :takes_screenshot,
+                      :version,
+                      :browser_name
+
+        alias_method :css_selectors_enabled?, :css_selectors_enabled
+        alias_method :javascript_enabled?,    :javascript_enabled
+        alias_method :native_events?,         :native_events
+        alias_method :takes_screenshot?,      :takes_screenshot
 
         #
         # Convenience methods for the common choices.
@@ -70,27 +80,36 @@ module Selenium
 
           def json_create(data)
             new(
-              :browser_name       => data["browserName"],
-              :version            => data["version"],
-              :platform           => data["platform"].downcase.to_sym,
-              :javascript_enabled => data["javascriptEnabled"]
+              :browser_name          => data["browserName"],
+              :version               => data["version"],
+              :platform              => data["platform"].downcase.to_sym,
+              :javascript_enabled    => data["javascriptEnabled"],
+              :css_selectors_enabled => data["cssSelectorsEnabled"],
+              :takes_screenshot      => data["takesScreenshot"],
+              :native_events         => data["nativeEvents"]
             )
           end
         end
 
-        # @option :browser_name        [String] required browser name
-        # @option :version             [String] required browser version number
-        # @option :platform            [Symbol] one of :any, :win, :mac, or :x
-        # @option :javascript_enabled  [Boolean] should the test run with javascript enabled?
+        # @option :browser_name           [String] required browser name
+        # @option :version                [String] required browser version number
+        # @option :platform               [Symbol] one of :any, :win, :mac, or :x
+        # @option :javascript_enabled     [Boolean] does the driver have javascript enabled?
+        # @option :css_selectors_enabled  [Boolean] does the driver support CSS selectors?
+        # @option :takes_screenshot       [Boolean] can this driver take screenshots?
+        # @option :native_events         [Boolean] does this driver use native events?
         #
         # @api public
         #
 
         def initialize(opts = {})
-          @browser_name       = opts[:browser_name]       || ""
-          @version            = opts[:version]            || ""
-          @platform           = opts[:platform]           || :any
-          @javascript_enabled = opts[:javascript_enabled] || false
+          @browser_name          = opts[:browser_name]          || ""
+          @version               = opts[:version]               || ""
+          @platform              = opts[:platform]              || :any
+          @javascript_enabled    = opts[:javascript_enabled]    || false
+          @css_selectors_enabled = opts[:css_selectors_enabled] || false
+          @takes_screenshot      = opts[:takes_screenshot]      || false
+          @native_events         = opts[:native_events]         || false
         end
 
         #
@@ -99,10 +118,13 @@ module Selenium
 
         def as_json(opts = nil)
           {
-            "browserName"       => browser_name,
-            "version"           => version,
-            "platform"          => platform.to_s.upcase,
-            "javascriptEnabled" => javascript?
+            "browserName"         => browser_name,
+            "version"             => version,
+            "platform"            => platform.to_s.upcase,
+            "javascriptEnabled"   => javascript_enabled?,
+            "cssCelectorsEnabled" => css_selectors_enabled?,
+            "takesScreenshot"     => takes_screenshot?,
+            "nativeEvents"        => native_events?
           }
         end
 

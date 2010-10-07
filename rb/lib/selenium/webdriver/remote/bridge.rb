@@ -173,7 +173,7 @@ module Selenium
         end
 
         def executeScript(script, *args)
-          unless capabilities.javascript?
+          unless capabilities.javascript_enabled?
             raise Error::UnsupportedOperationError, "underlying webdriver instance does not support javascript"
           end
 
