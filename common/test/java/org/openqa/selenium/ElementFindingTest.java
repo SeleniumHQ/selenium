@@ -413,9 +413,8 @@ public class ElementFindingTest extends AbstractDriverTestCase {
   @JavascriptEnabled
   @Ignore({HTMLUNIT, REMOTE})
   @NeedsFreshDriver
-  public void testShouldBeAbleToFindAnElementByCssSelector() throws InterruptedException {
+  public void testShouldBeAbleToFindAnElementByCssSelector() {
     driver.get(pages.xhtmlTestPage);
-    Thread.sleep(120000);
     driver.findElement(By.cssSelector("div.content"));
   }
 
