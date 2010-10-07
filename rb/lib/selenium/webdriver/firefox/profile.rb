@@ -5,7 +5,6 @@ module Selenium
 
         ANONYMOUS_PROFILE_NAME   = "WEBDRIVER_ANONYMOUS_PROFILE"
         EXTENSION_NAME           = "fxdriver@googlecode.com"
-        EM_NAMESPACE_URI         = "http://www.mozilla.org/2004/em-rdf#"
         WEBDRIVER_EXTENSION_PATH = File.expand_path("#{WebDriver.root}/selenium/webdriver/firefox/extension/webdriver.xpi")
 
         attr_reader   :name, :directory
@@ -51,6 +50,15 @@ module Selenium
           @load_no_focus_lib = DEFAULT_LOAD_NO_FOCUS_LIB
 
           @additional_prefs  = {}
+          @extensions        = {}
+        end
+
+        def layout_on_disk
+          install_extensions
+          delete_extensions_cache
+          update_user_prefs
+
+          directory
         end
 
         #
@@ -101,54 +109,18 @@ module Selenium
           write_prefs prefs
         end
 
-        def add_webdriver_extension(force_creation = false)
-          ext_path = File.join(extensions_dir, EXTENSION_NAME)
-
-          if File.exists? ext_path
-            return unless force_creation
+        def add_webdriver_extension
+          unless @extensions.has_key?(:webdriver)
+            add_extension(WEBDRIVER_EXTENSION_PATH, :webdriver)
           end
-
-          add_extension WEBDRIVER_EXTENSION_PATH
-          delete_extensions_cache
         end
 
         #
-        # Aadd the extension (directory, .zip or .xpi) at the given path to the profile.
+        # Add the extension (directory, .zip or .xpi) at the given path to the profile.
         #
 
-        def add_extension(path)
-          unless File.exist?(path)
-            raise Error::WebDriverError, "could not find extension at #{path.inspect}"
-          end
-
-          if File.directory? path
-            root = path
-          else
-            unless %w[.zip .xpi].include? File.extname(path)
-              raise Error::WebDriverError, "expected .zip or .xpi extension, got #{path.inspect}"
-            end
-
-            root = ZipHelper.unzip(path)
-          end
-
-          ext_path = File.join extensions_dir, read_id_from_install_rdf(root)
-
-          FileUtils.rm_rf ext_path
-          FileUtils.mkdir_p File.dirname(ext_path), :mode => 0700
-          FileUtils.cp_r root, ext_path
-        end
-
-        def extensions_dir
-          @extensions_dir ||= File.join(directory, "extensions")
-        end
-
-        def user_prefs_path
-          @user_prefs_path ||= File.join(directory, "user.js")
-        end
-
-        def delete_extensions_cache
-          cache = File.join(directory, "extensions.cache")
-          FileUtils.rm_f cache if File.exist?(cache)
+        def add_extension(path, name = extension_name_for(path))
+          @extensions[name] = Extension.new(path)
         end
 
         def native_events?
@@ -173,11 +145,22 @@ module Selenium
 
         private
 
-        def read_id_from_install_rdf(directory)
-          rdf_path = File.join(directory, "install.rdf")
-          doc = REXML::Document.new(File.read(rdf_path))
+        def install_extensions
+          destination = File.join(directory, "extensions")
 
-          REXML::XPath.first(doc, "//em:id").text
+          @extensions.each do |name, extension|
+            p :extension => name if $DEBUG
+            extension.write_to(destination)
+          end
+        end
+
+        def delete_extensions_cache
+          cache = File.join(directory, "extensions.cache")
+          FileUtils.rm_f cache if File.exist?(cache)
+        end
+
+        def extension_name_for(path)
+          File.basename(path, File.extname(path))
         end
 
         def create_tmp_copy(directory)
@@ -190,7 +173,6 @@ module Selenium
 
           tmp_directory
         end
-
 
         def current_user_prefs
           return {} unless File.exist?(user_prefs_path)
@@ -213,6 +195,10 @@ module Selenium
               file.puts %{user_pref("#{key}", #{value});}
             end
           }
+        end
+
+        def user_prefs_path
+          @user_prefs_path ||= File.join(directory, "user.js")
         end
 
         OVERRIDABLE_PREFERENCES = {

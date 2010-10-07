@@ -2,7 +2,9 @@ require 'zip/zip'
 
 module Selenium
   module WebDriver
-    module ZipHelper
+    module Zipper
+
+      EXTENSIONS = %w[.zip .xpi]
 
       def self.unzip(path)
         destination = Dir.mktmpdir("unzip")
@@ -22,6 +24,6 @@ module Selenium
       end
 
 
-    end # ZipHelper
+    end # Zipper
   end # WebDriver
 end # Selenium

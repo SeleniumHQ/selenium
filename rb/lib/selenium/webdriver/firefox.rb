@@ -3,6 +3,7 @@ require "socket"
 require "rexml/document"
 
 require "selenium/webdriver/firefox/util"
+require "selenium/webdriver/firefox/extension"
 require "selenium/webdriver/firefox/binary"
 require "selenium/webdriver/firefox/profiles_ini"
 require "selenium/webdriver/firefox/profile"

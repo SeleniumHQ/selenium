@@ -96,7 +96,7 @@ module Selenium
         end
 
         def ext_path
-          @ext_path ||= ZipHelper.unzip("#{WebDriver.root}/selenium/webdriver/chrome/extension.zip")
+          @ext_path ||= Zipper.unzip("#{WebDriver.root}/selenium/webdriver/chrome/extension.zip")
         end
 
         def tmp_extension_dir

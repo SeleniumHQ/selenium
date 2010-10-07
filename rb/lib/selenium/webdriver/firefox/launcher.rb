@@ -86,10 +86,9 @@ module Selenium
             end
           end
 
-          @profile.delete_extensions_cache
+          @profile.add_webdriver_extension
           @profile.port = @port
-          @profile.add_webdriver_extension(true)
-          @profile.update_user_prefs
+          @profile.layout_on_disk
         end
 
         def start
