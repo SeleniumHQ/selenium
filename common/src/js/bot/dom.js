@@ -87,20 +87,48 @@ bot.dom.getProperty = function(element, propertyName) {
  * @const
  * @private
  */
-bot.dom.BOOLEAN_ATTRIBUTES_ = [
+bot.dom.BOOLEAN_ATTRIBUTES_ =  [
+  'async',
+  'autofocus',
+  'autoplay',
   'checked',
   'compact',
+  'complete',
+  'controls',
   'declare',
+  'defaultchecked',
+  'defaultselected',
   'defer',
   'disabled',
+  'draggable',
+  'ended',
+  'formnovalidate',
+  'hidden',
+  'indeterminate',
+  'iscontenteditable',
   'ismap',
+  'itemscope',
+  'loop',
   'multiple',
+  'muted',
   'nohref',
   'noresize',
   'noshade',
+  'novalidate',
   'nowrap',
+  'open',
+  'paused',
+  'pubdate',
   'readonly',
-  'selected'
+  'required',
+  'reversed',
+  'scoped',
+  'seamless',
+  'seeking',
+  'selected',
+  'spellcheck',
+  'truespeed',
+  'willvalidate'
 ];
 
 

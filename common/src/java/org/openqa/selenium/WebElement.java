@@ -91,21 +91,11 @@ public interface WebElement extends SearchContext {
    * trailing semi-colon. The following are deemed to be "boolean" attributes, and will
    * return either "true" or "false":
    *
-   * <ul>
-   * <li>checked
-   * <li>compact
-   * <li>declare
-   * <li>defer
-   * <li>disabled
-   * <li>ismap
-   * <li>multiple
-   * <li>nohref
-   * <li>noresize
-   * <li>noshade
-   * <li>nowrap
-   * <li>readonly
-   * <li>selected
-   * </ul>
+   * async, autofocus, autoplay, checked, compact, complete, controls, declare, defaultchecked,
+   * defaultselected, defer, disabled, draggable, ended, formnovalidate, hidden, indeterminate,
+   * iscontenteditable, ismap, itemscope, loop, multiple, muted, nohref, noresize, noshade, novalidate,
+   * nowrap, open, paused, pubdate, readonly, required, reversed, scoped, seamless, seeking,
+   * selected, spellcheck, truespeed, willvalidate
    *
    * Finally, the following commonly mis-capitalized attribute/property names are evaluated as
    * expected:
