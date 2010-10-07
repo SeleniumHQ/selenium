@@ -1,4 +1,6 @@
 require 'zip/zip'
+require 'tempfile'
+require 'find'
 
 module Selenium
   module WebDriver
@@ -23,6 +25,29 @@ module Selenium
         destination
       end
 
+      def self.zip(path)
+        tmp_zip = Tempfile.new("webdriver-zip")
+
+        begin
+          zos = Zip::ZipOutputStream.new(tmp_zip.path)
+
+          ::Find.find(path) do |file|
+            next if File.directory?(file)
+            entry = file.sub("#{path}/", '')
+
+            zos.put_next_entry(entry)
+            zos << File.read(file)
+            p :added => file, :as => entry
+          end
+
+          zos.close
+          tmp_zip.rewind
+
+          [tmp_zip.read].pack("m")
+        ensure
+          tmp_zip.close
+        end
+      end
 
     end # Zipper
   end # WebDriver

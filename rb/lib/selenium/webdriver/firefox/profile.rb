@@ -71,6 +71,25 @@ module Selenium
           profile_dir
         end
 
+        def as_json(opts = nil)
+          {'zip' => Zipper.zip(layout_on_disk)}
+        end
+
+        def to_json(*args)
+          as_json.to_json(*args)
+        end
+
+        def self.from_json(json)
+          zip_file = Tempfile.new("webdriver-profile-duplicate-#{json.hash}")
+
+          zip_file << JSON.parse(json)['zip'].unpack("m")[0]
+          zip_file.close
+
+          new(Zipper.unzip(zip_file.path))
+        ensure
+          zip_file.delete if zip_file
+        end
+
         #
         # Set a preference for this particular profile.
         # @see http://preferential.mozdev.org/preferences.html
