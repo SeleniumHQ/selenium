@@ -131,15 +131,7 @@ bot.dom.getAttribute = function(element, attributeName) {
   // includes a trailing semi-colon and we standardize to that.
   if (attributeName == 'style') {
     var css = goog.string.trim(element.style.cssText).toLowerCase();
-    var text = css.charAt(css.length - 1) == ';' ? css : css + ';';
-    if (';' == text) {
-      // Return null or empty string if there was no actual style
-      if (element.getAttributeNode('style') == null) {
-        return null;
-      }
-      return '';
-    }
-    return text;
+    return css.charAt(css.length - 1) == ';' ? css : css + ';';
   }
 
   var attr = element.getAttributeNode(attributeName);
@@ -346,8 +338,20 @@ bot.dom.isShown = function(elem) {
   }
 
   // Any element without positive size dimensions is not shown.
-  var size = bot.dom.getElementSize_(elem);
-  if (!(size.height > 0 && size.width > 0)) {
+  function positiveSize(e) {
+    var size = bot.dom.getElementSize_(e);
+    if (size.height > 0 && size.width > 0) {
+      return true;
+    }
+    // A bug in WebKit causes it to report zero size for elements with nested
+    // block-level elements: https://bugs.webkit.org/show_bug.cgi?id=28810
+    // We compensate for that bug by assuming an element has a positive size if
+    // any of its children have positive size.
+    return goog.userAgent.WEBKIT && goog.array.some(e.childNodes, function(n) {
+      return bot.dom.isElement_(n) && positiveSize(n);
+    });
+  }
+  if (!positiveSize(elem)) {
     return false;
   }
 
@@ -366,17 +370,22 @@ bot.dom.getVisibleText = function(node) {
   var returnValue = '';
   var elements = bot.dom.flattenDescendants_(node);
 
+  var prevTextNodeEndsWithSpace = false;
   goog.array.forEach(elements, function(node, i) {
     if (node.nodeType == goog.dom.NodeType.TEXT) {
       var nodeText =
           goog.string.trim(bot.dom.getVisibleTextFromTextNode_(node));
       if (nodeText.length) {
         if (bot.dom.isClosestAncestorBlockLevel_(elements, i)) {
-          returnValue += '\n';
+          nodeText = '\n' + nodeText;
         } else if (i != 0) { // First element does not need preceding space.
-          returnValue += ' ';
+          var thisTextNodeStartsWithSpace = node.nodeValue.match(/^ /);
+          if(prevTextNodeEndsWithSpace || thisTextNodeStartsWithSpace ) {
+            nodeText = ' ' + nodeText;
+          }
         }
       }
+      prevTextNodeEndsWithSpace = node.nodeValue.match(/ $/);
       returnValue += nodeText;
     }
   });
