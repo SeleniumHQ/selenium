@@ -18,8 +18,10 @@ module Selenium
       #
       # Find the first element matching the given arguments.
       #
-      # When calling Element#find_element with :xpath, you need to prefix your XPath with
-      # a "." if you want to limit results to the receiver's subtree.
+      # When using Element#find_element with :xpath, be aware that webdriver
+      # follows standard conventions: a search prefixed with "//" will search
+      # the entire document, not just the children of this current node. Use 
+      # ".//" to limit your search to the children of the receiving Element.
       #
       # @param [:class, :class_name, :id, :link_text, :link, :partial_link_text, :name, :tag_name, :xpath] how
       # @param [String] what
@@ -44,6 +46,8 @@ module Selenium
 
       #
       # Find all elements matching the given arguments
+      #
+      # @see Find#find_element
       #
       # @param [:class, :class_name, :id, :link_text, :link, :partial_link_text, :name, :tag_name, :xpath] how
       # @param [String] what
