@@ -847,7 +847,7 @@ void IeThread::OnSelectElementsByTagName(WPARAM w, LPARAM lp)
 			continue;
 		}
 
-		if (isOrUnder(node, element)) {
+		if (isUnder(node, element)) {
 			IHTMLElement *pDom = NULL;
 			element.CopyTo(&pDom);
 			allElems.push_back(pDom);

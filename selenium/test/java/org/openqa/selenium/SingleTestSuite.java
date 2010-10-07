@@ -39,7 +39,7 @@ public class SingleTestSuite extends TestCase {
   private static final String SELENIUM = "org.openqa.selenium.SeleneseBackedWebDriver";
 
   public static Test suite() throws Exception {
-    String driver = SELENIUM;
+    String driver = IE;
 
     System.setProperty("webdriver.development", "true");
     System.setProperty("jna.library.path", "..\\build;build");
@@ -55,9 +55,9 @@ public class SingleTestSuite extends TestCase {
         .keepDriverInstance()
         .includeJavascriptTests()
         .onlyRun("ElementFindingTest")
-//        .method("testShouldBeAbleToFindAnElementByCssSelector")
+        .method("testFindingByXPathShouldNotIncludeParentElementIfSameTagType")
         .exclude(ALL)
-        .exclude(Ignore.Driver.SELENESE)
+        .exclude(Ignore.Driver.IE)
         .outputTestNames()
         .leaveRunning()
         ;  // Yeah, this look strange :)

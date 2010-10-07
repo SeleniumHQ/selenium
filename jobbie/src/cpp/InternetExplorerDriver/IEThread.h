@@ -78,6 +78,7 @@ public:
 private:
 
 	bool isOrUnder(const IHTMLDOMNode* root, IHTMLElement* child);
+	bool isUnder(const IHTMLDOMNode* root, IHTMLElement* child);
 	void getDocument3(const IHTMLDOMNode* extractFrom, IHTMLDocument3** pdoc);
 	void getDocument2(const IHTMLDOMNode* extractFrom, IHTMLDocument2** pdoc);
 

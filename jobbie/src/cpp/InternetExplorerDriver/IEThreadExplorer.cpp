@@ -420,6 +420,12 @@ bool IeThread::isOrUnder(const IHTMLDOMNode* root, IHTMLElement* child)
 	return toReturn == VARIANT_TRUE;
 }
 
+bool IeThread::isUnder(const IHTMLDOMNode* root, IHTMLElement* child)
+{
+	CComQIPtr<IHTMLDOMNode> childNode(child);
+	return isOrUnder(root, child) && root != childNode;
+}
+
 void IeThread::OnCloseWindow(WPARAM w, LPARAM lp)
 {
 	SCOPETRACER
