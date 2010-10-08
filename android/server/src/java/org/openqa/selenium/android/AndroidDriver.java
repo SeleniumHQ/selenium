@@ -85,8 +85,8 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
   public static final String ERROR = "_ERROR:";  // Prefixes JS result when returning an error
   public static final String TYPE = "_TYPE";  // Prefixes JS result to be converted
   public static final String WEBELEMENT_TYPE = TYPE + "1:"; // Convert to WebElement
+  
   private static final String WINDOW_HANDLE = "windowOne";
-
   private static final String NOT_DONE_INDICATOR = Long.toString(SystemClock.uptimeMillis());
   private static Context context;
   private final SimpleTimer timer;
@@ -94,9 +94,11 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
   private final AndroidWebElement element;
   private final JavascriptDomAccessor domAccessor;
   private final IntentSender sender;
+
   private volatile boolean pageHasLoaded = false;
   private volatile boolean pageHasStartedLoading = false;
   private volatile boolean editableAreaIsFocused = false;
+
   private volatile String jsResult;
   private String jsonLibrary;
   private String currentFrame;
@@ -185,7 +187,7 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
   public void quit() {
     Log.d(LOG_TAG, "Quitting..");
     intentRegistrar.unregisterAllReceivers();
-    // TODO(berrada): Close webview and shutdown server.
+    sendIntent(Action.ACTIVITY_QUIT);
   }
 
   public WebElement findElement(By by) {

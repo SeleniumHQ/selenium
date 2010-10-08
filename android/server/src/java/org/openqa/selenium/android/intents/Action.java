@@ -43,4 +43,6 @@ public interface Action {
   
   String ROTATE_SCREEN = "rotateScreen";
   String GET_SCREEN_ORIENTATION = "getScreenOrientation";
+
+  String ACTIVITY_QUIT = "activityQuit";
 }

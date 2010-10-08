@@ -17,28 +17,49 @@ limitations under the License.
 
 package org.openqa.selenium.android.app;
 
+import org.openqa.selenium.android.intents.Action;
+import org.openqa.selenium.android.intents.IntentReceiver;
+import org.openqa.selenium.android.intents.IntentReceiver.IntentReceiverListener;
+import org.openqa.selenium.android.intents.IntentReceiverRegistrar;
 import org.openqa.selenium.android.server.JettyService;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 
 /**
  * Main activity. Loads program configuration and starts the UI.
  */
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements IntentReceiverListener {
 
   public static final int DEFAULT_REQUEST_CODE = 1001;
-  private static final String LOG_TAG = "MainActivity";
-  
+  private final IntentReceiverRegistrar intentReg;
+  private Intent jettyService;
+
+  public MainActivity() {
+    intentReg = new IntentReceiverRegistrar(this);
+  }
+
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    Intent intent = new Intent(this, JettyService.class);
-    startService(intent);
-    Log.w(LOG_TAG, "Started");
+    jettyService = new Intent(this, JettyService.class);
+    startService(jettyService);
     startMainScreen();
+    initIntentReceivers();
+  }
+
+  @Override
+  protected void onDestroy() {
+    intentReg.unregisterAllReceivers();
+    this.stopService(jettyService);
+    super.onDestroy();
+  }
+
+  private void initIntentReceivers() {
+    IntentReceiver intentWithResult = new IntentReceiver();
+    intentWithResult.setListener(this);
+    intentReg.registerReceiver(intentWithResult, Action.ACTIVITY_QUIT);
   }
 
   /**
@@ -51,16 +72,21 @@ public class MainActivity extends Activity {
    *    this should be equal to {@link #DEFAULT_REQUEST_CODE}.
    */
   @Override
-  protected void onActivityResult(int requestCode,
-      int resultCode, Intent data) {
+  protected void onActivityResult(int requestCode, int resultCode, Intent data) {
     if (requestCode != DEFAULT_REQUEST_CODE)
       return;
-
     startMainScreen();
   }
   
   private void startMainScreen() {
-    Intent i = new Intent(this, SingleSessionActivity.class);
-    this.startActivityForResult(i, DEFAULT_REQUEST_CODE);
+    Intent startActivity = new Intent(this, SingleSessionActivity.class);
+    this.startActivityForResult(startActivity, DEFAULT_REQUEST_CODE);
+  }
+
+  public Object onReceiveBroadcast(String action, Object... args) {
+    if (Action.ACTIVITY_QUIT.equals(action)) {
+      this.finishActivity(DEFAULT_REQUEST_CODE);
+    }
+    return null;
   }
 }

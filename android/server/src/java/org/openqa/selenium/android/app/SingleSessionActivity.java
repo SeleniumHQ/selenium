@@ -145,6 +145,7 @@ public class SingleSessionActivity extends Activity implements IntentReceiverLis
   @Override
   protected void onDestroy() {
     intentReg.unregisterAllReceivers();
+    this.getWindow().closeAllPanels();
     super.onDestroy();
   }
   

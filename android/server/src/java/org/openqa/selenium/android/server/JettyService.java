@@ -51,19 +51,13 @@ public class JettyService extends Service {
   private PowerManager.WakeLock wakeLock;
 
   /**
-   * Android Service create
-   * 
-   * @see android.app.Service#onCreate()
-   */
-  public void onCreate() {}
-
-  /**
    * Android Service Start
    * 
    * @see android.app.Service#onStart(android.content.Intent, int)
    */
+  @Override
   public void onStart(Intent intent, int startId) {
-    if (server != null) {
+    if (server!= null && server.isRunning()) {
       Toast.makeText(JettyService.this, R.string.jetty_already_started, Toast.LENGTH_SHORT).show();
       return;
     }
@@ -96,6 +90,7 @@ public class JettyService extends Service {
    * 
    * @see android.app.Service#onDestroy()
    */
+  @Override
   public void onDestroy() {
     try {
       if (wakeLock != null) {
