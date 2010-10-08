@@ -49,6 +49,7 @@
 	</developers>
 
 	<modules>
+		<module>android/client</module>
 		<module>chrome</module>
 		<module>common</module>
 		<module>firefox</module>
