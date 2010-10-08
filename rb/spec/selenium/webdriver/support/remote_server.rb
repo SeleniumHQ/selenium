@@ -17,7 +17,7 @@ module Selenium
           @port = 44444 # TODO: random port
 
           raise Errno::ENOENT, path unless File.exist?(path)
-          @process = ChildProcess.new("java", "-jar", path, "-port", @port.to_s)
+          @process = ChildProcess.build("java", "-jar", path, "-port", @port.to_s)
         end
 
         def start
@@ -28,10 +28,7 @@ module Selenium
         end
 
         def stop
-          if @process.started?
-            @process.kill
-            @process.ensure_death
-          end
+          @process.stop if @process.alive?
         end
 
         def url

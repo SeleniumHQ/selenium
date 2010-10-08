@@ -55,7 +55,7 @@ module Selenium
         end
 
         def quit
-          @process.ensure_death
+          @process.stop
         end
 
         private
@@ -92,7 +92,7 @@ module Selenium
 
           args << server_url
 
-          @process = ChildProcess.new(*args).start
+          @process = ChildProcess.build(*args).start
         end
 
         def ext_path
@@ -140,12 +140,6 @@ module Selenium
             nil
           rescue Win32::Registry::Error
             nil
-          end
-
-          def quit
-            # looks like we need a kill right away on Windows + MRI
-            @process.kill if Platform.engine == :ruby
-            super
           end
         end
 

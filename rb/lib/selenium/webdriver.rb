@@ -1,6 +1,7 @@
 require "tmpdir"
 require "fileutils"
 require "date"
+require "childprocess"
 
 have_lib = lambda { |lib|
   begin

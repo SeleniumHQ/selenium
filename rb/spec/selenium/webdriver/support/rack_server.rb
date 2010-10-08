@@ -93,7 +93,7 @@ module Selenium
             # For IE, the combination of Windows + FFI + MRI seems to cause a
             # deadlock with the get() call and the server thread.
             # Workaround by running this file in a subprocess.
-            @process = ChildProcess.new("ruby", "-r", "rubygems", __FILE__, @path, @port).start
+            @process = ChildProcess.build("ruby", "-r", "rubygems", __FILE__, @path, @port).start
           else
             start_threaded
           end

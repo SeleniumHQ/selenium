@@ -12,14 +12,11 @@ module Selenium
         ]
 
         def create_base_profile(name)
-          execute("-CreateProfile", name)
+          proc = execute("-CreateProfile", name)
 
-          status = nil
-          Timeout.timeout(15, Error::TimeOutError) do
-            _, status = wait
-          end
+          proc.poll_for_exit 15
 
-          if status && status.to_i != 0
+          if proc.crashed?
             raise Error::WebDriverError, "could not create base profile: (exit status: #{status})"
           end
         end
@@ -40,39 +37,35 @@ module Selenium
 
         def execute(*extra_args)
           args = [self.class.path, "-no-remote", "--verbose"] + extra_args
-          @process = ChildProcess.new(*args).start
+          @process = ChildProcess.build(*args).start
         end
 
         def cope_with_mac_strangeness(args)
           sleep 0.3
 
-          if @process.ugly_death?
-            # process crashed, trying a restart. sleeping 5 seconds shorter than the java driver
-            sleep 5
+          if @process.crashed?
+            # ok, trying a restart
+            sleep 7
             execute(*args)
           end
 
           # ensure we're ok
           sleep 0.3
-          if @process.ugly_death?
+          if @process.crashed?
             raise Error::WebDriverError, "unable to start Firefox cleanly, args: #{args.inspect}"
           end
         end
 
         def quit
-          @process.ensure_death if @process
-        end
-
-        def kill
-          @process.kill if @process
+          return unless @process
+          @process.poll_for_exit 5
+        rescue ChildProcess::TimeoutError
+          # ok, force quit
+          @process.stop 5
         end
 
         def wait
-          @process.wait if @process
-        end
-
-        def pid
-          @process.pid if @process
+          @process.poll_for_exit(15) if @process
         end
 
         private

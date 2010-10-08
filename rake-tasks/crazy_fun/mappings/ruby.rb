@@ -96,7 +96,11 @@ class RubyMappings
 
   class JRubyTest < Tasks
     def handle(fun, dir, args)
-      req = %w[third_party/jruby/json-jruby.jar third_party/jruby/rubyzip.jar] + args[:require]
+      requires = args[:require] + %w[
+        json-jruby.jar
+        rubyzip.jar
+        childprocess.jar
+      ].map { |jar| File.join("third_party/jruby", jar) }
 
       desc "Run ruby tests for #{args[:name]} (jruby)"
       t = task task_name(dir, "#{args[:name]}-test:jruby") do
@@ -104,7 +108,7 @@ class RubyMappings
         ENV['WD_SPEC_DRIVER'] = args[:name] # TODO: get rid of ENV
 
         jruby :include     => args[:include],
-              :require     => req,
+              :require     => requires,
               :command     => args[:command],
               :debug       => !!ENV['DEBUG'],
               :files       => args[:srcs]
@@ -219,7 +223,8 @@ class RubyMappings
 
         s.add_dependency "json_pure"
         s.add_dependency "rubyzip"
-        s.add_dependency "ffi", ">= 0.6.1"
+        s.add_dependency "childprocess", ">= 0.0.5"
+        s.add_dependency "ffi", "~> 0.6.3"
 
         if s.respond_to? :add_development_dependency
           s.add_development_dependency "rspec"
@@ -249,7 +254,7 @@ class RubyRunner
     end
 
     if opts[:debug]
-      cmd << "--debug"
+      cmd << "-d"
     end
 
     if opts.has_key? :include
