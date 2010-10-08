@@ -6,6 +6,8 @@ module Selenium
     module SpecSupport
       class RackServer
 
+        START_TIMEOUT = 15
+
         def initialize(path, port = nil)
           @path = path
           @app  = Rack::File.new(path)
@@ -23,7 +25,9 @@ module Selenium
             start_forked
           end
 
-          sleep 0.1 until listening?
+          unless SocketPoller.new(@host, @port, START_TIMEOUT).success?
+            raise "rack server not launched in #{START_TIMEOUT} seconds"
+          end
         end
 
         def run
@@ -45,12 +49,6 @@ module Selenium
           end
         end
 
-        def listening?
-          TCPSocket.new(@host, @port).close
-          true
-        rescue
-          false
-        end
 
         private
 

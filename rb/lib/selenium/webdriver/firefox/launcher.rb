@@ -10,9 +10,9 @@ module Selenium
         SOCKET_LOCK_TIMEOUT       = 45
         STABLE_CONNECTION_TIMEOUT = 60
 
-        def initialize(binary, port = nil, profile = nil)
+        def initialize(binary, port, profile = nil)
           @binary = binary
-          @port   = Integer(port || DEFAULT_PORT)
+          @port   = Integer(port)
 
           raise Error::WebDriverError, "invalid port: #{@port}" if @port < 1
 
@@ -101,22 +101,10 @@ module Selenium
         end
 
         def connect_until_stable
-          max_time = Time.now + STABLE_CONNECTION_TIMEOUT
-
-          until Time.now >= max_time
-            return if can_connect?
-            sleep 0.25
+          poller = SocketPoller.new(@host, @port, STABLE_CONNECTION_TIMEOUT)
+          unless poller.success?
+            raise Error::WebDriverError, "unable to obtain stable firefox connection in #{STABLE_CONNECTION_TIMEOUT} seconds"
           end
-
-          raise Error::WebDriverError, "unable to obtain stable firefox connection in #{STABLE_CONNECTION_TIMEOUT} seconds"
-        end
-
-        def can_connect?
-          TCPSocket.new(@host, @port).close
-          true
-        rescue Errno::ECONNREFUSED, Errno::ENOTCONN, SocketError => e
-          $stderr.puts "#{e.message} for #{@host}:#{@port}" if $DEBUG
-          false
         end
 
         def free_port?(port)
