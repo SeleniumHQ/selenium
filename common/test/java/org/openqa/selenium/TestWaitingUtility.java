@@ -9,30 +9,34 @@ public class TestWaitingUtility {
   public static final long MAX_WAIT_TIME_MS = 5000;
   public static final long SLEEP_DURATION_MS = 50;
 
-  public static String waitUntilElementValueEquals(WebElement element, String toValue)
-      throws InterruptedException {
+  public static void sleep() {
+    try {
+      Thread.sleep(SLEEP_DURATION_MS);
+    } catch (InterruptedException e) {
+      throw new RuntimeException(e);
+    }
+  }
+  public static String waitUntilElementValueEquals(WebElement element, String toValue) {
     long waitStartMs = System.currentTimeMillis();
 
     while (waitStartMs + MAX_WAIT_TIME_MS > System.currentTimeMillis() &&
            !(element.getValue().equals(toValue))) {
-      Thread.sleep(SLEEP_DURATION_MS);
+      sleep();
     }
 
     return element.getValue();
   }
 
-  public static void waitUntilElementTextEquals(WebElement element, String toValue)
-      throws InterruptedException {
+  public static void waitUntilElementTextEquals(WebElement element, String toValue) {
     long waitStartMs = System.currentTimeMillis();
 
     while (waitStartMs + MAX_WAIT_TIME_MS > System.currentTimeMillis() &&
            !(element.getText().equals(toValue))) {
-      Thread.sleep(SLEEP_DURATION_MS);
+      sleep();
     }
   }
 
-  public static WebElement waitForElementToExist(WebDriver driver, String elementId)
-      throws InterruptedException {
+  public static WebElement waitForElementToExist(WebDriver driver, String elementId) {
 
     long waitStartMs = System.currentTimeMillis();
 
@@ -40,7 +44,7 @@ public class TestWaitingUtility {
       try {
         return driver.findElement(By.id(elementId));
       } catch (NoSuchElementException e) {
-        Thread.sleep(SLEEP_DURATION_MS);
+        sleep();
       }
     }
 
@@ -48,25 +52,23 @@ public class TestWaitingUtility {
     return driver.findElement(By.id(elementId));
   }
 
-  public static String waitUntilElementTextContains(WebElement element, String partialValue)
-      throws InterruptedException {
+  public static String waitUntilElementTextContains(WebElement element, String partialValue) {
     long waitStartMs = System.currentTimeMillis();
 
     while (waitStartMs + MAX_WAIT_TIME_MS > System.currentTimeMillis() &&
            !(element.getText().contains(partialValue))) {
-      Thread.sleep(SLEEP_DURATION_MS);
+      sleep();
     }
 
     return element.getText();
   }
 
-  public static String waitForPageTitle(WebDriver driver, String desiredTitle)
-      throws InterruptedException {
+  public static String waitForPageTitle(WebDriver driver, String desiredTitle) {
     long waitStartMs = System.currentTimeMillis();
 
     while (waitStartMs + MAX_WAIT_TIME_MS > System.currentTimeMillis() &&
            !(driver.getTitle().equals(desiredTitle))) {
-      Thread.sleep(SLEEP_DURATION_MS);
+      sleep();
     }
 
     return driver.getTitle();

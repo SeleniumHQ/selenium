@@ -119,8 +119,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
   @JavascriptEnabled
   @Ignore(value = {IE, SELENESE, CHROME_NON_WINDOWS, IPHONE},
       reason = "Chrome failing on OS X;\n  iPhone: does not detect that a new page loaded.")
-  public void testShouldBeAbleToFindElementAfterJavascriptCausesANewPageToLoad()
-      throws InterruptedException {
+  public void testShouldBeAbleToFindElementAfterJavascriptCausesANewPageToLoad() {
     driver.get(pages.formPage);
 
     driver.findElement(By.id("changeme")).setSelected();
@@ -164,8 +163,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  public void testShouldBeAbleToSubmitFormsByCausingTheOnClickEventToFire()
-      throws InterruptedException {
+  public void testShouldBeAbleToSubmitFormsByCausingTheOnClickEventToFire() {
     driver.get(pages.javascriptPage);
     WebElement element = driver.findElement(By.id("jsSubmitButton"));
     element.click();
@@ -175,13 +173,13 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
     assertThat(driver.getTitle(), Matchers.is("We Arrive Here"));
   }
 
-  private void waitForTitleChange(String newTitle) throws InterruptedException {
+  private void waitForTitleChange(String newTitle) {
     TestWaitingUtility.waitForPageTitle(driver, newTitle);
   }
 
   @JavascriptEnabled
   @Ignore(value = IE, reason = "Fails for IE in the continuous build")
-  public void testShouldBeAbleToClickOnSubmitButtons() throws InterruptedException {
+  public void testShouldBeAbleToClickOnSubmitButtons() {
     driver.get(pages.javascriptPage);
     WebElement element = driver.findElement(By.id("submittingButton"));
     element.click();
@@ -192,7 +190,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  public void testIssue80ClickShouldGenerateClickEvent() throws InterruptedException {
+  public void testIssue80ClickShouldGenerateClickEvent() {
     driver.get(pages.javascriptPage);
     WebElement element = driver.findElement(By.id("clickField"));
     assertEquals("Hello", element.getValue());

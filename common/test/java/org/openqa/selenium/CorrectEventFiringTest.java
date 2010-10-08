@@ -35,7 +35,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
 
   @Ignore(value = {CHROME, FIREFOX}, reason = "Webkit bug 22261. Firefox 3.6 wants focus")
   @JavascriptEnabled
-  public void testShouldFireFocusEventWhenClicking() throws InterruptedException {
+  public void testShouldFireFocusEventWhenClicking() {
     driver.get(pages.javascriptPage);
 
     clickOnElementWhichRecordsEvents();
@@ -44,7 +44,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  public void testShouldFireClickEventWhenClicking() throws InterruptedException {
+  public void testShouldFireClickEventWhenClicking() {
     driver.get(pages.javascriptPage);
 
     clickOnElementWhichRecordsEvents();
@@ -54,7 +54,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   @Ignore(SELENESE)
-  public void testShouldFireMouseDownEventWhenClicking() throws InterruptedException {
+  public void testShouldFireMouseDownEventWhenClicking() {
     driver.get(pages.javascriptPage);
 
     clickOnElementWhichRecordsEvents();
@@ -64,7 +64,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   @Ignore(SELENESE)
-  public void testShouldFireMouseUpEventWhenClicking() throws InterruptedException {
+  public void testShouldFireMouseUpEventWhenClicking() {
     driver.get(pages.javascriptPage);
 
     clickOnElementWhichRecordsEvents();
@@ -74,7 +74,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   @Ignore(value = {SELENESE, CHROME})
-  public void testShouldFireMouseOverEventWhenClicking() throws InterruptedException {
+  public void testShouldFireMouseOverEventWhenClicking() {
     driver.get(pages.javascriptPage);
 
     clickOnElementWhichRecordsEvents();
@@ -84,7 +84,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   @Ignore({SELENESE, CHROME, FIREFOX})
-  public void testShouldFireMouseMoveEventWhenClicking() throws InterruptedException {
+  public void testShouldFireMouseMoveEventWhenClicking() {
     driver.get(pages.javascriptPage);
 
     clickOnElementWhichRecordsEvents();
@@ -112,7 +112,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   @Ignore(SELENESE)
-  public void testsShouldIssueMouseDownEvents() throws InterruptedException {
+  public void testsShouldIssueMouseDownEvents() {
     driver.get(pages.javascriptPage);
     driver.findElement(By.id("mousedown")).click();
 
@@ -136,13 +136,14 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
     driver.get(pages.javascriptPage);
     driver.findElement(By.id("mouseup")).click();
 
-    String result = driver.findElement(By.id("result")).getText();
-    assertThat(result, equalTo("mouse up"));
+    WebElement result = driver.findElement(By.id("result"));
+    TestWaitingUtility.waitUntilElementTextEquals(result, "mouse up");
+    assertThat(result.getText(), equalTo("mouse up"));
   }
 
   @JavascriptEnabled
   @Ignore(value = {IPHONE, SELENESE})
-  public void testMouseEventsShouldBubbleUpToContainingElements() throws InterruptedException {
+  public void testMouseEventsShouldBubbleUpToContainingElements() {
     driver.get(pages.javascriptPage);
     driver.findElement(By.id("child")).click();
 
@@ -208,8 +209,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
       reason = "Chrome: Non-native event firing is broken in .\n"
                + "  Selenese: Fails when running in firefox.\n"
                + "  iPhone: sendKeys implementation is incorrect")
-  public void testSendingKeysToAnotherElementShouldCauseTheBlurEventToFire()
-      throws InterruptedException {
+  public void testSendingKeysToAnotherElementShouldCauseTheBlurEventToFire() {
     if (browserNeedsFocusOnThisOs(driver)) {
       System.out.println("Skipping this test because browser demands focus");
       return;
@@ -228,8 +228,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
       reason = ": Non-native event firing is broken in Chrome.\n"
                + "  Selenese: Fails when running in firefox.\n"
                + "  iPhone: sendKeys implementation is incorrect")
-  public void testSendingKeysToAnElementShouldCauseTheFocusEventToFire()
-      throws InterruptedException {
+  public void testSendingKeysToAnElementShouldCauseTheFocusEventToFire() {
     if (browserNeedsFocusOnThisOs(driver)) {
       System.out.println("Skipping this test because browser demands focus");
       return;
@@ -265,6 +264,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
       try {
         Thread.sleep(200);
       } catch (InterruptedException e) {
+        throw new RuntimeException(e);
       }
     }
     if (!focused) {
@@ -277,8 +277,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   @Ignore({IE, SELENESE})
-  public void testSubmittingFormFromFormElementShouldFireOnSubmitForThatForm()
-      throws InterruptedException {
+  public void testSubmittingFormFromFormElementShouldFireOnSubmitForThatForm() {
     driver.get(pages.javascriptPage);
     WebElement formElement = driver.findElement(By.id("submitListeningForm"));
     formElement.submit();
@@ -287,8 +286,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   @Ignore({IE, SELENESE})
-  public void testSubmittingFormFromFormInputSubmitElementShouldFireOnSubmitForThatForm()
-      throws InterruptedException {
+  public void testSubmittingFormFromFormInputSubmitElementShouldFireOnSubmitForThatForm() {
     driver.get(pages.javascriptPage);
     WebElement submit = driver.findElement(By.id("submitListeningForm-submit"));
     submit.submit();
@@ -297,8 +295,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled 
   @Ignore({IE, SELENESE})
-  public void testSubmittingFormFromFormInputTextElementShouldFireOnSubmitForThatFormAndNotClickOnThatInput()
-      throws InterruptedException {
+  public void testSubmittingFormFromFormInputTextElementShouldFireOnSubmitForThatFormAndNotClickOnThatInput() {
     driver.get(pages.javascriptPage);
     WebElement submit = driver.findElement(By.id("submitListeningForm-submit"));
     submit.submit();
@@ -325,12 +322,12 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
     assertThat(result.getText(), equalTo("changed"));
   }
 
-  private String getTextFromElementOnceAvailable(String elementId) throws InterruptedException {
+  private String getTextFromElementOnceAvailable(String elementId) {
     return TestWaitingUtility.waitForElementToExist(driver,(elementId)).getText();
   }
 
   @Ignore({CHROME, HTMLUNIT, SELENESE})
-  public void testShouldReportTheXAndYCoordinatesWhenClicking() throws InterruptedException {
+  public void testShouldReportTheXAndYCoordinatesWhenClicking() {
     driver.get(pages.javascriptPage);
 
     WebElement element = driver.findElement(By.id("eventish"));
@@ -347,7 +344,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
     driver.findElement(By.id("plainButton")).click();
   }
 
-  private void assertEventFired(String eventName) throws InterruptedException {
+  private void assertEventFired(String eventName) {
     WebElement result = driver.findElement(By.id("result"));
 
     String text = TestWaitingUtility.waitUntilElementTextContains(result, eventName);

@@ -99,8 +99,7 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
   }
 
   @Ignore(value = CHROME, reason = "Can't execute script in iframe, track crbug 20773")
-  public void testShouldAllowTheUserToSwitchToAnIFrameAndRemainFocusedOnIt()
-      throws InterruptedException {
+  public void testShouldAllowTheUserToSwitchToAnIFrameAndRemainFocusedOnIt() {
     driver.get(pages.iframePage);
     driver.switchTo().frame(0);
 
@@ -109,11 +108,11 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
     assertThat(getTextOfGreetingElement(), equalTo("Success!"));
   }
 
-  public String getTextOfGreetingElement() throws InterruptedException {
+  public String getTextOfGreetingElement() {
     return TestWaitingUtility.waitForElementToExist(driver, "greeting").getText();
   }
 
-  public void testShouldBeAbleToClickInAFrame() throws InterruptedException {
+  public void testShouldBeAbleToClickInAFrame() {
     driver.get(pages.framesetPage);
     driver.switchTo().frame("third");
 

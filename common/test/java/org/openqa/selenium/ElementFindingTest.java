@@ -50,7 +50,7 @@ public class ElementFindingTest extends AbstractDriverTestCase {
     }
   }
 
-  public void testShouldBeAbleToClickOnLinkIdentifiedByText() throws InterruptedException {
+  public void testShouldBeAbleToClickOnLinkIdentifiedByText() {
     driver.get(pages.xhtmlTestPage);
     driver.findElement(By.linkText("click me")).click();
 
@@ -59,8 +59,7 @@ public class ElementFindingTest extends AbstractDriverTestCase {
     assertThat(driver.getTitle(), equalTo("We Arrive Here"));
   }
 
-  public void testDriverShouldBeAbleToFindElementsAfterLoadingMoreThanOnePageAtATime()
-      throws InterruptedException {
+  public void testDriverShouldBeAbleToFindElementsAfterLoadingMoreThanOnePageAtATime() {
     driver.get(pages.formPage);
     driver.get(pages.xhtmlTestPage);
     driver.findElement(By.linkText("click me")).click();
@@ -70,7 +69,7 @@ public class ElementFindingTest extends AbstractDriverTestCase {
     assertThat(driver.getTitle(), equalTo("We Arrive Here"));
   }
 
-  public void testshouldBeAbleToClickOnLinkIdentifiedById() throws InterruptedException {
+  public void testshouldBeAbleToClickOnLinkIdentifiedById() {
     driver.get(pages.xhtmlTestPage);
     driver.findElement(By.id("linkId")).click();
 
@@ -346,7 +345,7 @@ public class ElementFindingTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  public void testShouldBeAbleToClickOnLinksWithNoHrefAttribute() throws InterruptedException {
+  public void testShouldBeAbleToClickOnLinksWithNoHrefAttribute() {
     driver.get(pages.javascriptPage);
 
     WebElement element = driver.findElement(By.linkText("No href"));
@@ -385,8 +384,7 @@ public class ElementFindingTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  public void testRemovingAnElementDynamicallyFromTheDomShouldCauseAStaleRefException()
-      throws InterruptedException {
+  public void testRemovingAnElementDynamicallyFromTheDomShouldCauseAStaleRefException() {
     driver.get(pages.javascriptPage);
 
     RenderedWebElement toBeDeleted = (RenderedWebElement) driver.findElement(By.id("deleted"));
@@ -396,9 +394,9 @@ public class ElementFindingTest extends AbstractDriverTestCase {
 
     try {
       long start = System.currentTimeMillis();
-      while (start + 5000 > System.currentTimeMillis()) {
+      while (start + TestWaitingUtility.MAX_WAIT_TIME_MS > System.currentTimeMillis()) {
         toBeDeleted.isDisplayed();
-        Thread.sleep(50);
+        TestWaitingUtility.sleep();
       }
       
       fail("Element should be stale at this point");

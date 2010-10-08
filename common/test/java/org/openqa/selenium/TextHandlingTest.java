@@ -144,7 +144,7 @@ public class TextHandlingTest extends AbstractDriverTestCase {
 //    }
 
   @Ignore(value = {SELENESE, IPHONE}, reason = "iPhone: sendKeys is broken")
-  public void testShouldBeAbleToSetMoreThanOneLineOfTextInATextArea() throws InterruptedException {
+  public void testShouldBeAbleToSetMoreThanOneLineOfTextInATextArea() {
     driver.get(pages.formPage);
     WebElement textarea = driver.findElement(By.id("withText"));
     textarea.clear();

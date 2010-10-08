@@ -94,8 +94,7 @@ public class WindowSwitchingTest extends AbstractDriverTestCase {
   }
 
   @Ignore({IE, SELENESE})
-  public void testClickingOnAButtonThatClosesAnOpenWindowDoesNotCauseTheBrowserToHang()
-      throws InterruptedException {
+  public void testClickingOnAButtonThatClosesAnOpenWindowDoesNotCauseTheBrowserToHang() {
     driver.get(pages.xhtmlTestPage);
 
     String currentHandle = driver.getWindowHandle();
@@ -116,7 +115,7 @@ public class WindowSwitchingTest extends AbstractDriverTestCase {
   
   @Ignore({IE, SELENESE})
   @JavascriptEnabled
-  public void testCanCallGetWindowHandlesAfterClosingAWindow() throws InterruptedException {
+  public void testCanCallGetWindowHandlesAfterClosingAWindow() {
     driver.get(pages.xhtmlTestPage);
 
     String currentHandle = driver.getWindowHandle();
@@ -132,7 +131,7 @@ public class WindowSwitchingTest extends AbstractDriverTestCase {
       long startTimeMs = System.currentTimeMillis();
       while ((startTimeMs + MAX_WAIT_TIME_MS > System.currentTimeMillis())
         && (allHandles.size() != 1)) {
-        Thread.sleep(SLEEP_DURATION_MS);
+        TestWaitingUtility.sleep();
         allHandles = driver.getWindowHandles();
       }
 

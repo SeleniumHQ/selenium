@@ -107,8 +107,7 @@ public class PageLoadingTest extends AbstractDriverTestCase {
   }
 
   @Ignore(SELENESE)
-  public void testShouldBeAbleToNavigateBackInTheBrowserHistoryInPresenceOfIframes()
-      throws InterruptedException {
+  public void testShouldBeAbleToNavigateBackInTheBrowserHistoryInPresenceOfIframes() {
     driver.get(pages.xhtmlTestPage);
 
     driver.findElement(By.name("sameWindow")).click();

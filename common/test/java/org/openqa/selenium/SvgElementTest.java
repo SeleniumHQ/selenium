@@ -29,7 +29,7 @@ import static org.openqa.selenium.TestWaitingUtility.waitUntilElementTextEquals;
 public class SvgElementTest extends AbstractDriverTestCase {
 
   @Ignore({HTMLUNIT, IE, CHROME, REMOTE, SELENESE})
-  public void testShouldClickOnGraphVisualElements() throws InterruptedException {
+  public void testShouldClickOnGraphVisualElements() {
     driver.get(pages.svgPage);
     WebElement svg = driver.findElement(By.tagName("svg:svg"));
 
@@ -60,7 +60,7 @@ public class SvgElementTest extends AbstractDriverTestCase {
   }
 
   @Ignore({HTMLUNIT, IE, CHROME, REMOTE, SELENESE})
-  public void testShouldClickOnGraphTextElements() throws InterruptedException {
+  public void testShouldClickOnGraphTextElements() {
     driver.get(pages.svgPage);
     WebElement svg = driver.findElement(By.tagName("svg:svg"));
     List<WebElement> textElements = svg.findElements(By.tagName("svg:text"));
