@@ -19,6 +19,17 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Firefox, "Issue 758")]
+        [IgnoreBrowser(Browser.IE, "Issue 758")]
+        public void ShouldReturnNullWhenGettingSrcAttributeOfInvalidImgTag() 
+        {
+            driver.Url = simpleTestPage;
+            IWebElement img = driver.FindElement(By.Id("invalidImgTag"));
+            string attribute = img.GetAttribute("src");
+            Assert.IsNull(attribute);
+        }
+
+        [Test]
         public void ShouldReturnEmptyAttributeValuesWhenPresentAndTheValueIsActuallyEmpty()
         {
             driver.Url = simpleTestPage;
@@ -27,24 +38,16 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        public void ShouldReturnAStyleAttribute()
-        {
-            driver.Url = dragAndDropPage;
-            IWebElement divWithStyle = driver.FindElement(By.XPath("//div"));
-            Assert.AreEqual("position: absolute; left: 210px; top: 80px; height: 400px; width: 100px; padding: 10em;",divWithStyle.GetAttribute("style"));
-        }
-
-        [Test]
-        public void ShouldReturnTheValueOfTheDisabledAttrbuteEvenIfItIsMissing()
+        public void ShouldReturnTheValueOfTheDisabledAttributeAsFalseIfNotSet()
         {
             driver.Url = formsPage;
             IWebElement inputElement = driver.FindElement(By.XPath("//input[@id='working']"));
-            Assert.AreEqual(null, inputElement.GetAttribute("disabled"));
+            Assert.AreEqual("false", inputElement.GetAttribute("disabled"));
             Assert.IsTrue(inputElement.Enabled);
 
-            IWebElement pElement = driver.FindElement(By.Id("cheeseLiker"));
-            Assert.AreEqual(null, pElement.GetAttribute("disabled"));
-            Assert.IsTrue(pElement.Enabled);
+            IWebElement pElement = driver.FindElement(By.Id("peas"));
+            Assert.AreEqual("false", inputElement.GetAttribute("disabled"));
+            Assert.IsTrue(inputElement.Enabled);
         }
 
         [Test]
@@ -70,11 +73,56 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        public void ElementsShouldBeDisabledIfTheyAreDisabledUsingRandomDisabledStrings()
+        {
+            driver.Url = formsPage;
+            IWebElement disabledTextElement1 = driver.FindElement(By.Id("disabledTextElement1"));
+            Assert.IsFalse(disabledTextElement1.Enabled);
+
+            IWebElement disabledTextElement2 = driver.FindElement(By.Id("disabledTextElement2"));
+            Assert.IsFalse(disabledTextElement2.Enabled);
+
+            IWebElement disabledSubmitElement = driver.FindElement(By.Id("disabledSubmitElement"));
+            Assert.IsFalse(disabledSubmitElement.Enabled);
+        }
+
+        [Test]
         public void ShouldIndicateWhenATextAreaIsDisabled()
         {
             driver.Url = formsPage;
             IWebElement textArea = driver.FindElement(By.XPath("//textarea[@id='notWorkingArea']"));
             Assert.IsFalse(textArea.Enabled);
+        }
+
+        [Test]
+        public void ShouldThrowExceptionIfSendingKeysToElementDisabledUsingRandomDisabledStrings()
+        {
+            driver.Url = formsPage;
+            IWebElement disabledTextElement1 = driver.FindElement(By.Id("disabledTextElement1"));
+            try
+            {
+                disabledTextElement1.SendKeys("foo");
+                Assert.Fail("Should have thrown exception");
+            }
+            catch (NotSupportedException)
+            {
+                //Expected
+            }
+
+            Assert.AreEqual(string.Empty, disabledTextElement1.Text);
+
+            IWebElement disabledTextElement2 = driver.FindElement(By.Id("disabledTextElement2"));
+            try
+            {
+                disabledTextElement2.SendKeys("bar");
+                Assert.Fail("Should have thrown exception");
+            }
+            catch (NotSupportedException)
+            {
+                //Expected
+            }
+
+            Assert.AreEqual(string.Empty, disabledTextElement2.Text);
         }
 
         [Test]
@@ -184,5 +232,30 @@ namespace OpenQA.Selenium
             IWebElement element = driver.FindElement(By.Id("withText"));
             Assert.AreEqual("5", element.GetAttribute("rows"));
         }
+
+        [Test]
+        public void CanReturnATextApproximationOfTheStyleAttribute()
+        {
+            driver.Url = javascriptPage;
+            string style = driver.FindElement(By.Id("red-item")).GetAttribute("style");
+
+            Assert.IsTrue(style.ToLower().Contains("background-color"));
+        }
+
+        public void ShouldCorrectlyReportValueOfColspan()
+        {
+            driver.Url = tables;
+            System.Threading.Thread.Sleep(1000);
+
+            IWebElement th1 = driver.FindElement(By.Id("th1"));
+            IWebElement td2 = driver.FindElement(By.Id("td2"));
+
+            Assert.AreEqual("th1", th1.GetAttribute("id"), "th1 id");
+            Assert.AreEqual("3", th1.GetAttribute("colspan"), "th1 colspan should be 3");
+
+            Assert.AreEqual("td2", td2.GetAttribute("id"), "td2 id");
+            Assert.AreEqual("2", td2.GetAttribute("colspan"), "td2 colspan should be 2");
+        }
+
     }
 }

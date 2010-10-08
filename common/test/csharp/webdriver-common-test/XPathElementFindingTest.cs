@@ -39,7 +39,7 @@ namespace OpenQA.Selenium
             driver.Url = xhtmlTestPage;
             ReadOnlyCollection<IWebElement> divs = driver.FindElements(By.XPath("//div"));
 
-            Assert.AreEqual(divs.Count, 8);
+            Assert.AreEqual(divs.Count, 10);
         }
 
         [Test]

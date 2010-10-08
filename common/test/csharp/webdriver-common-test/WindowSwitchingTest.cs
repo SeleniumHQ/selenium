@@ -37,55 +37,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        public void ShouldGetBrowserHandles()
-        {
-            driver.Url = xhtmlTestPage;
-            driver.FindElement(By.LinkText("Open new window")).Click();
-
-            string handle1, handle2;
-            handle1 = driver.GetWindowHandle();
-
-            driver.SwitchTo().Window("result");
-            handle2 = driver.GetWindowHandle();
-
-            ReadOnlyCollection<string> handles = driver.GetWindowHandles();
-
-            // At least the two handles we want should be there.
-            Assert.Contains(handle1, handles, "Should have contained current handle");
-            Assert.Contains(handle2, handles, "Should have contained result handle");
-
-            // Some (semi-)clean up..
-            driver.SwitchTo().Window(handle2);
-            driver.Close();
-            driver.SwitchTo().Window(handle1);
-            driver.Url = macbethPage;
-        }
-
-        [Test]
-        [NeedsFreshDriver(AfterTest = true)]
-        //[IgnoreBrowser(Browser.IE, "Can't close handle and use it afterwards in IE driver")]
-        public void CloseShouldCloseCurrentHandleOnly()
-        {
-            driver.Url = xhtmlTestPage;
-            driver.FindElement(By.LinkText("Open new window")).Click();
-
-            string handle1, handle2;
-            handle1 = driver.GetWindowHandle();
-
-            driver.SwitchTo().Window("result");
-            handle2 = driver.GetWindowHandle();
-           
-            driver.Close();
-
-            SleepBecauseWindowsTakeTimeToOpen();
-
-            ReadOnlyCollection<string> handles = driver.GetWindowHandles();
-
-            Assert.IsFalse(handles.Contains(handle2), "Invalid handle still in handle list");
-            Assert.IsTrue(handles.Contains(handle1), "Valid handle not in handle list");
-        }
-
-        [Test]
         public void ShouldThrowNoSuchWindowException() {
             driver.Url = xhtmlTestPage;
             String current = driver.GetWindowHandle();
@@ -100,7 +51,6 @@ namespace OpenQA.Selenium
 
             driver.SwitchTo().Window(current);
         }
-
 
         [Test]
         [NeedsFreshDriver(BeforeTest = true, AfterTest = true)]
@@ -226,7 +176,7 @@ namespace OpenQA.Selenium
             driver.Close();
 
             SleepBecauseWindowsTakeTimeToOpen();
-            
+
             allWindowHandles = driver.GetWindowHandles();
             Assert.AreEqual(1, allWindowHandles.Count);
         }
@@ -238,6 +188,56 @@ namespace OpenQA.Selenium
             driver.Url = xhtmlTestPage;
             driver.Close();
         }
+
+        [Test]
+        public void ShouldGetBrowserHandles()
+        {
+            driver.Url = xhtmlTestPage;
+            driver.FindElement(By.LinkText("Open new window")).Click();
+
+            string handle1, handle2;
+            handle1 = driver.GetWindowHandle();
+
+            driver.SwitchTo().Window("result");
+            handle2 = driver.GetWindowHandle();
+
+            ReadOnlyCollection<string> handles = driver.GetWindowHandles();
+
+            // At least the two handles we want should be there.
+            Assert.Contains(handle1, handles, "Should have contained current handle");
+            Assert.Contains(handle2, handles, "Should have contained result handle");
+
+            // Some (semi-)clean up..
+            driver.SwitchTo().Window(handle2);
+            driver.Close();
+            driver.SwitchTo().Window(handle1);
+            driver.Url = macbethPage;
+        }
+
+        [Test]
+        [Ignore]
+        [NeedsFreshDriver(AfterTest = true)]
+        public void CloseShouldCloseCurrentHandleOnly()
+        {
+            driver.Url = xhtmlTestPage;
+            driver.FindElement(By.LinkText("Open new window")).Click();
+
+            string handle1, handle2;
+            handle1 = driver.GetWindowHandle();
+
+            driver.SwitchTo().Window("result");
+            handle2 = driver.GetWindowHandle();
+           
+            driver.Close();
+
+            SleepBecauseWindowsTakeTimeToOpen();
+
+            ReadOnlyCollection<string> handles = driver.GetWindowHandles();
+
+            Assert.IsFalse(handles.Contains(handle2), "Invalid handle still in handle list");
+            Assert.IsTrue(handles.Contains(handle1), "Valid handle not in handle list");
+        }
+
 
         private void SleepBecauseWindowsTakeTimeToOpen()
         {
