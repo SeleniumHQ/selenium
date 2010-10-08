@@ -114,6 +114,9 @@ public class HttpCommandExecutor implements CommandExecutor {
         .put(GET_CURRENT_WINDOW_HANDLE, get("/session/:sessionId/window_handle"))
         .put(GET_WINDOW_HANDLES, get("/session/:sessionId/window_handles"))
         .put(GET, post("/session/:sessionId/url"))
+        // This is used for the FirefoxDriver only to dismiss an alert.
+        // The Alert API is still experimental and should not be used.
+        .put(DISMISS_ALERT, post("/session/:sessionId/dismiss_alert"))
         .put(GO_FORWARD, post("/session/:sessionId/forward"))
         .put(GO_BACK, post("/session/:sessionId/back"))
         .put(REFRESH, post("/session/:sessionId/refresh"))

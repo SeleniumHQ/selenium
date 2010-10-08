@@ -148,6 +148,9 @@ Dispatcher.prototype.init_ = function() {
       on(Request.Method.GET, Dispatcher.executeAs('getCurrentUrl')).
       on(Request.Method.POST, Dispatcher.executeAs('get'));
 
+  this.bind_('/session/:sessionId/dismiss_alert').
+    on(Request.Method.POST, Dispatcher.executeAs('dismissAlert'));
+
   this.bind_('/session/:sessionId/forward').
       on(Request.Method.POST, Dispatcher.executeAs('goForward'));
   this.bind_('/session/:sessionId/back').

@@ -20,6 +20,7 @@ package org.openqa.selenium;
 import org.openqa.selenium.environment.webserver.AppServer;
 
 public class Pages {
+  public String alertsPage;
   public String simpleTestPage;
   public String simpleXmlDocument;
   public String xhtmlTestPage;
@@ -48,6 +49,7 @@ public class Pages {
   public String deletingFrame;
 
   public Pages(AppServer appServer) {
+    alertsPage = appServer.whereIs("alerts.html");
     simpleTestPage = appServer.whereIs("simpleTest.html");
     simpleXmlDocument = appServer.whereIs("simple.xml");
     xhtmlTestPage = appServer.whereIs("xhtmlTest.html");
@@ -73,6 +75,6 @@ public class Pages {
     dynamicPage = appServer.whereIs("dynamic.html");
     slowIframes = appServer.whereIs("slow_loading_iframes.html");
     tables = appServer.whereIs("tables.html");
-	deletingFrame = appServer.whereIs("deletingFrame.htm");
+	  deletingFrame = appServer.whereIs("deletingFrame.htm");
   }
 }

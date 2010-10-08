@@ -34,6 +34,7 @@ import org.openqa.selenium.NoDriverAfterTest;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.ParallelTestRunner;
 import org.openqa.selenium.ParallelTestRunner.Worker;
+import org.openqa.selenium.UnhandledAlertException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
@@ -286,6 +287,22 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
       assertEquals(pages.javascriptPage, driver2.getCurrentUrl());
     } finally {
       driver2.quit();
+    }
+  }
+
+  public void testShouldThrowWhenAlertNotHandled() {
+    WebDriver firefox = newFirefoxDriver();
+    firefox.get(pages.alertsPage);
+
+    try {
+      WebElement alert = firefox.findElement(By.id("alert"));
+      alert.click();
+      String title = firefox.getTitle();
+      fail("Should have thrown an UnhandledAlertException");
+    } catch (UnhandledAlertException e) {
+      // this is expected
+    } finally {
+      firefox.quit();
     }
   }
 
