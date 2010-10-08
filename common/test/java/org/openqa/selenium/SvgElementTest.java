@@ -24,6 +24,7 @@ import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.REMOTE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
+import static org.openqa.selenium.TestWaitingUtility.waitUntilElementTextEquals;
 
 public class SvgElementTest extends AbstractDriverTestCase {
 
@@ -38,13 +39,13 @@ public class SvgElementTest extends AbstractDriverTestCase {
     groupElements.get(1).click();
     WebElement resultElement = driver.findElement(By.id("result"));
 
-    TestWaitingUtility.waitUntilElementTextEquals(resultElement, "slice_red");
+    waitUntilElementTextEquals(resultElement, "slice_red");
     assertEquals("slice_red", resultElement.getText());
 
     groupElements.get(2).click();
     resultElement = driver.findElement(By.id("result"));
 
-    TestWaitingUtility.waitUntilElementTextEquals(resultElement, "slice_green");
+    waitUntilElementTextEquals(resultElement, "slice_green");
     assertEquals("slice_green", resultElement.getText());
   }
 
@@ -59,7 +60,7 @@ public class SvgElementTest extends AbstractDriverTestCase {
   }
 
   @Ignore({HTMLUNIT, IE, CHROME, REMOTE, SELENESE})
-  public void testShouldClickOnGraphTextElements() {
+  public void testShouldClickOnGraphTextElements() throws InterruptedException {
     driver.get(pages.svgPage);
     WebElement svg = driver.findElement(By.tagName("svg:svg"));
     List<WebElement> textElements = svg.findElements(By.tagName("svg:text"));
@@ -69,6 +70,7 @@ public class SvgElementTest extends AbstractDriverTestCase {
 
     appleElement.click();
     WebElement resultElement = driver.findElement(By.id("result"));
+    waitUntilElementTextEquals(resultElement, "text_apple");
     assertEquals("text_apple", resultElement.getText());
   }
 }

@@ -29,6 +29,9 @@ import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.REMOTE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
+import static org.openqa.selenium.TestWaitingUtility.MAX_WAIT_TIME_MS;
+import static org.openqa.selenium.TestWaitingUtility.SLEEP_DURATION_MS;
+import static org.openqa.selenium.TestWaitingUtility.waitForElementToExist;
 
 @Ignore(value = {IPHONE, ANDROID}, reason = "The iPhone only supports one window")
 public class WindowSwitchingTest extends AbstractDriverTestCase {
@@ -91,7 +94,8 @@ public class WindowSwitchingTest extends AbstractDriverTestCase {
   }
 
   @Ignore({IE, SELENESE})
-  public void testClickingOnAButtonThatClosesAnOpenWindowDoesNotCauseTheBrowserToHang() {
+  public void testClickingOnAButtonThatClosesAnOpenWindowDoesNotCauseTheBrowserToHang()
+      throws InterruptedException {
     driver.get(pages.xhtmlTestPage);
 
     String currentHandle = driver.getWindowHandle();
@@ -101,6 +105,7 @@ public class WindowSwitchingTest extends AbstractDriverTestCase {
     driver.switchTo().window("result");
 
     try {
+      waitForElementToExist(driver, "close");
       driver.findElement(By.id("close")).click();
       // If we make it this far, we're all good.
     } finally {
@@ -111,7 +116,7 @@ public class WindowSwitchingTest extends AbstractDriverTestCase {
   
   @Ignore({IE, SELENESE})
   @JavascriptEnabled
-  public void testCanCallGetWindowHandlesAfterClosingAWindow() {
+  public void testCanCallGetWindowHandlesAfterClosingAWindow() throws InterruptedException {
     driver.get(pages.xhtmlTestPage);
 
     String currentHandle = driver.getWindowHandle();
@@ -123,6 +128,14 @@ public class WindowSwitchingTest extends AbstractDriverTestCase {
     try {
       driver.findElement(By.id("close")).click();
       Set<String> allHandles = driver.getWindowHandles();
+
+      long startTimeMs = System.currentTimeMillis();
+      while ((startTimeMs + MAX_WAIT_TIME_MS > System.currentTimeMillis())
+        && (allHandles.size() != 1)) {
+        Thread.sleep(SLEEP_DURATION_MS);
+        allHandles = driver.getWindowHandles();
+      }
+
       assertEquals(1, allHandles.size());
     } finally {
       driver.switchTo().window(currentHandle);

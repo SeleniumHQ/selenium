@@ -50,16 +50,23 @@ public class ElementFindingTest extends AbstractDriverTestCase {
     }
   }
 
-  public void testShouldBeAbleToClickOnLinkIdentifiedByText() {
+  public void testShouldBeAbleToClickOnLinkIdentifiedByText() throws InterruptedException {
     driver.get(pages.xhtmlTestPage);
     driver.findElement(By.linkText("click me")).click();
+
+    waitForPageTitle(driver, "We Arrive Here");
+    
     assertThat(driver.getTitle(), equalTo("We Arrive Here"));
   }
 
-  public void testDriverShouldBeAbleToFindElementsAfterLoadingMoreThanOnePageAtATime() {
+  public void testDriverShouldBeAbleToFindElementsAfterLoadingMoreThanOnePageAtATime()
+      throws InterruptedException {
     driver.get(pages.formPage);
     driver.get(pages.xhtmlTestPage);
     driver.findElement(By.linkText("click me")).click();
+
+    waitForPageTitle(driver, "We Arrive Here");
+    
     assertThat(driver.getTitle(), equalTo("We Arrive Here"));
   }
 

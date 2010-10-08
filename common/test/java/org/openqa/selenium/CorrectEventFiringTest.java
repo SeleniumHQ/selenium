@@ -112,11 +112,12 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   @Ignore(SELENESE)
-  public void testsShouldIssueMouseDownEvents() {
+  public void testsShouldIssueMouseDownEvents() throws InterruptedException {
     driver.get(pages.javascriptPage);
     driver.findElement(By.id("mousedown")).click();
 
     String result = driver.findElement(By.id("result")).getText();
+    assertEventFired("mouse down");
     assertThat(result, equalTo("mouse down"));
   }
 
@@ -141,12 +142,13 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   @Ignore(value = {IPHONE, SELENESE})
-  public void testMouseEventsShouldBubbleUpToContainingElements() {
+  public void testMouseEventsShouldBubbleUpToContainingElements() throws InterruptedException {
     driver.get(pages.javascriptPage);
     driver.findElement(By.id("child")).click();
 
-    String result = driver.findElement(By.id("result")).getText();
-    assertThat(result, equalTo("mouse down"));
+    WebElement result = driver.findElement(By.id("result"));
+    TestWaitingUtility.waitUntilElementTextEquals(result, "mouse down");
+    assertThat(result.getText(), equalTo("mouse down"));
   }
 
   @JavascriptEnabled

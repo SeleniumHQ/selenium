@@ -48,6 +48,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
 
     assertThat(driver.getTitle(), equalTo("Testing Javascript"));
     driver.findElement(By.linkText("Change the page title!")).click();
+    waitForTitleChange("Changed");
     assertThat(driver.getTitle(), equalTo("Changed"));
 
     String titleViaXPath = driver.findElement(By.xpath("/html/head/title")).getText();
@@ -63,8 +64,10 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
     WebElement webElement = driver.findElement(By.linkText("Update a div"));
     webElement.click();
 
-    String newText = driver.findElement(By.xpath("//div[@id='dynamo']")).getText();
-    assertThat(newText, equalTo("Fish and chips!"));
+    WebElement dynamo = driver.findElement(By.xpath("//div[@id='dynamo']"));
+
+    TestWaitingUtility.waitUntilElementTextEquals(dynamo, "Fish and chips!");
+    assertThat(dynamo.getText(), equalTo("Fish and chips!"));
   }
 
 //    public void testShouldAllowTheUserToOkayConfirmAlerts() {
@@ -167,13 +170,13 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
     WebElement element = driver.findElement(By.id("jsSubmitButton"));
     element.click();
 
-    waitForTitleChange();
+    waitForTitleChange("We Arrive Here");
 
     assertThat(driver.getTitle(), Matchers.is("We Arrive Here"));
   }
 
-  private void waitForTitleChange() throws InterruptedException {
-    TestWaitingUtility.waitForPageTitle(driver, "We Arrive Here");
+  private void waitForTitleChange(String newTitle) throws InterruptedException {
+    TestWaitingUtility.waitForPageTitle(driver, newTitle);
   }
 
   @JavascriptEnabled
@@ -183,7 +186,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
     WebElement element = driver.findElement(By.id("submittingButton"));
     element.click();
 
-    waitForTitleChange();
+    waitForTitleChange("We Arrive Here");
     
     assertThat(driver.getTitle(), Matchers.is("We Arrive Here"));
   }
