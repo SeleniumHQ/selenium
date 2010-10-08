@@ -1,5 +1,3 @@
-require "fcntl"
-
 module Selenium
   module WebDriver
     module Firefox
@@ -23,12 +21,6 @@ module Selenium
             @profile = nil
           end
 
-          # need to be really specific about what host to use
-          #
-          # on os x, "localhost" will resolve to 3 different addresses (see /etc/hosts)
-          # Ruby will loop over these and happily bind to the same port on each one,
-          # making it completely unusable for our purposes.
-          #
           @host = "127.0.0.1"
         end
 
@@ -37,7 +29,7 @@ module Selenium
         end
 
         def launch
-          with_lock do
+          socket_lock.locked do
             find_free_port
             create_profile
             start_silent_and_wait
@@ -46,29 +38,6 @@ module Selenium
           end
 
           self
-        end
-
-        def with_lock
-          max_time = Time.now + SOCKET_LOCK_TIMEOUT
-          locking_port = @port - 1
-
-          until Time.now > max_time
-            begin
-              socket_lock = TCPServer.new(@host, locking_port)
-              # make sure the fd is not inherited by the firefox process
-              if defined? Fcntl::FD_CLOEXEC
-                socket_lock.fcntl(Fcntl::F_SETFD, Fcntl::FD_CLOEXEC)
-              end
-
-              return yield
-            rescue SocketError, Errno::EADDRINUSE
-              sleep 0.1
-            end
-          end
-
-          raise Error::WebDriverError, "unable to bind to locking port #{locking_port} within #{SOCKET_LOCK_TIMEOUT} seconds"
-        ensure
-          socket_lock.close if socket_lock
         end
 
         def find_free_port
@@ -128,6 +97,10 @@ module Selenium
 
         def assert_profile
           raise Error::WebDriverError, "must create_profile first" unless @profile && @profile_dir
+        end
+
+        def socket_lock
+          @socket_lock ||= SocketLock.new(@port - 1, SOCKET_LOCK_TIMEOUT)
         end
 
       end # Launcher

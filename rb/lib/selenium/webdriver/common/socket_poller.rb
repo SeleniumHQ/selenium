@@ -29,16 +29,9 @@ module Selenium
       private
 
       def can_connect?
-        sock = Socket.new(Socket.const_get(socket_addr[0]), Socket::SOCK_STREAM, 0)
-
-        if defined?(Socket::SO_RCVTIMEO) && defined?(Socket::SO_SNDTIMEO)
-          sock.setsockopt Socket::SOL_SOCKET, Socket::SO_RCVTIMEO, socket_timeout
-          sock.setsockopt Socket::SOL_SOCKET, Socket::SO_SNDTIMEO, socket_timeout
-        end
-
-        sock.connect(Socket.pack_sockaddr_in(@port, socket_addr[3]))
-        sock.close
-
+        # There's a bug in 1.9.1 on Windows where this will succeed even if no
+        # one is listening. Users who hit that should upgrade their Ruby.
+        TCPSocket.new(@host, @port).close
         true
       rescue Errno::ECONNREFUSED, Errno::ENOTCONN, SocketError => e
         $stderr.puts [@host, @port].inspect if $DEBUG
@@ -48,23 +41,6 @@ module Selenium
       def wait
         sleep @interval
       end
-
-      def socket_timeout
-        @socket_timeout ||= (
-          secs = Integer(@timeout)
-          usecs = Integer((@timeout - secs) * 1_000_000)
-
-          [secs, usecs].pack("l_2")
-        )
-      end
-
-      def socket_addr
-        @socket_addr ||= (
-          addr = Socket.getaddrinfo(@host, nil).first
-          addr or raise Error::WebDriverError, "could not resolve #{@host.inspect}"
-        )
-      end
-
 
     end # SocketPoller
   end # WebDriver
