@@ -5,9 +5,9 @@ module Selenium
     class SocketPoller
 
       def initialize(host, port, timeout = 0, interval = 0.25)
-        @host    = host
-        @port    = Integer(port)
-        @timeout = Integer(timeout)
+        @host     = host
+        @port     = Integer(port)
+        @timeout  = Integer(timeout)
         @interval = interval
       end
 
@@ -69,8 +69,3 @@ module Selenium
     end # SocketPoller
   end # WebDriver
 end # Selenium
-
-if __FILE__ == $0
-  $DEBUG = true
-  p Selenium::WebDriver::SocketPoller.new("127.0.0.1", 80, 5).success?
-end
