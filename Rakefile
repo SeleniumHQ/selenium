@@ -166,6 +166,7 @@ task :clean do
   rm_rf 'iphone/build/'
   rm_rf 'android/server/bin/'
   rm_rf 'android/server/build/'
+  rm_rf 'android/client/bin/'
   Android::Clean.new()
 end
 
