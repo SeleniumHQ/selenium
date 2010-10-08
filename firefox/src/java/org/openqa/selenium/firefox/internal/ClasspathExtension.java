@@ -42,11 +42,14 @@ public class ClasspathExtension implements Extension {
       throw new WebDriverException("Will only install zipped extensions for now");
     }
 
-
     File holdingPen = new File(extensionsDir, "webdriver-staging");
     FileHandler.createDir(holdingPen);
-    File extractedXpi = new File(holdingPen, loadFrom);
 
+    File extractedXpi = new File(holdingPen, loadFrom);
+    File parentDir = extractedXpi.getParentFile();
+    if (!parentDir.exists()) {
+      parentDir.mkdirs();
+    }
     URL resourceUrl = Resources.getResource(loadResourcesUsing, loadFrom);
     OutputStream stream = null;
 
@@ -56,8 +59,6 @@ public class ClasspathExtension implements Extension {
     } finally {
       Closeables.closeQuietly(stream);
     }
-
-
     new FileExtension(extractedXpi).writeTo(extensionsDir);
   }
 }

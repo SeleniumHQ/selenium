@@ -21,13 +21,17 @@ import junit.framework.TestCase;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.openqa.selenium.Proxy;
+import org.openqa.selenium.firefox.internal.FileExtension;
 import org.openqa.selenium.internal.FileHandler;
+import org.openqa.selenium.internal.InProject;
 import org.openqa.selenium.internal.TemporaryFilesystem;
 import org.openqa.selenium.internal.Zip;
 
@@ -35,6 +39,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 
 public class FirefoxProfileTest extends TestCase {
+
+  private static final String FIREBUG_PATH = "third_party/firebug/firebug-1.5.0-fx.xpi";
 
   private FirefoxProfile profile;
   
@@ -123,6 +129,32 @@ public class FirefoxProfileTest extends TestCase {
     }
 
     assertTrue("Did not see integer value being set correctly", seenCheese);
+  }
+
+  public void testShouldInstallExtensionFromZip() throws IOException {
+    FirefoxProfile profile = new FirefoxProfile();
+    profile.addExtension(InProject.locate(FIREBUG_PATH));
+    File profileDir = profile.layoutOnDisk();
+    File extensionDir = new File(profileDir, "extensions/firebug@software.joehewitt.com");
+    assertTrue(extensionDir.exists());
+  }
+
+  public void testShouldInstallExtensionFromDirectory() throws IOException {
+    FirefoxProfile profile = new FirefoxProfile();
+    File extension = InProject.locate(FIREBUG_PATH);
+    File unzippedExtension = FileHandler.unzip(new FileInputStream(extension));
+    profile.addExtension(unzippedExtension);
+    File profileDir = profile.layoutOnDisk();
+    File extensionDir = new File(profileDir, "extensions/firebug@software.joehewitt.com");
+    assertTrue(extensionDir.exists());
+  }
+
+  public void testShouldInstallExtensionUsingClasspath() throws IOException {
+    FirefoxProfile profile = new FirefoxProfile();
+    profile.addExtension(FirefoxProfileTest.class, "/resource/firebug-1.5.0-fx.xpi");
+    File profileDir = profile.layoutOnDisk();
+    File extensionDir = new File(profileDir, "extensions/firebug@software.joehewitt.com");
+    assertTrue(extensionDir.exists());
   }
 
   public void testShouldConvertItselfIntoAMeaningfulRepresentation() throws IOException {

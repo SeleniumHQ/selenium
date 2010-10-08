@@ -1,0 +1,2 @@
+rake_file(name = "firebug",
+  src = "firebug-1.5.0-fx.xpi")
