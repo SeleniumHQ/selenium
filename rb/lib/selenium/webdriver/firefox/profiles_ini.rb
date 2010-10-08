@@ -13,7 +13,8 @@ module Selenium
         end
 
         def [](name)
-          Profile.new @profile_paths[name]
+          path = @profile_paths[name]
+          path && Profile.new(path)
         end
 
         def refresh

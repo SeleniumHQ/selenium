@@ -10,9 +10,11 @@ module Selenium
         SOCKET_LOCK_TIMEOUT       = 45
         STABLE_CONNECTION_TIMEOUT = 60
 
-        def initialize(binary, port = DEFAULT_PORT, profile = DEFAULT_PROFILE_NAME)
+        def initialize(binary, port = nil, profile = nil)
           @binary = binary
-          @port   = port.to_i
+          @port   = Integer(port || DEFAULT_PORT)
+
+          raise Error::WebDriverError, "invalid port: #{@port}" if @port < 1
 
           if profile.kind_of? Profile
             @profile = profile
@@ -53,11 +55,12 @@ module Selenium
           until Time.now > max_time
             begin
               socket_lock = TCPServer.new(@host, locking_port)
-              # make sure the fd is not inherited by firefox
-              socket_lock.fcntl(Fcntl::F_SETFD, Fcntl::FD_CLOEXEC) if defined? Fcntl::FD_CLOEXEC
+              # make sure the fd is not inherited by the firefox process
+              if defined? Fcntl::FD_CLOEXEC
+                socket_lock.fcntl(Fcntl::F_SETFD, Fcntl::FD_CLOEXEC)
+              end
 
-              yield
-              return
+              return yield
             rescue SocketError, Errno::EADDRINUSE
               sleep 0.1
             end
@@ -79,12 +82,7 @@ module Selenium
         end
 
         def create_profile
-          unless @profile
-            fetch_profile
-            if @profile.nil?
-              raise Error, WebDriverError, "could not find or create profile: #{profile.inspect}"
-            end
-          end
+          fetch_profile if @profile.nil?
 
           @profile.add_webdriver_extension
           @profile.port = @port
@@ -130,16 +128,14 @@ module Selenium
         end
 
         def fetch_profile
-          existing = Profile.from_name @profile_name
-
-          unless existing
-            @binary.create_base_profile @profile_name
-            Profile.ini.refresh
-            existing = Profile.from_name @profile_name
-            raise Error::WebDriverError, "unable to find or create new profile" unless existing
+          if @profile_name
+            @profile = Profile.from_name @profile_name
+            if @profile.nil?
+              raise Error::WebDriverError, "unable to find profile named: #{@profile_name.inspect}"
+            end
+          else
+            @profile = Profile.new
           end
-
-          @profile = existing
         end
 
         def assert_profile

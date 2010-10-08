@@ -9,8 +9,8 @@ module Selenium
           @binary     = Binary.new
           @launcher   = Launcher.new(
             @binary,
-            opts.delete(:port)    || DEFAULT_PORT,
-            opts.delete(:profile) || DEFAULT_PROFILE_NAME
+            opts.delete(:port),
+            opts.delete(:profile)
           )
 
           http_client = opts.delete(:http_client)

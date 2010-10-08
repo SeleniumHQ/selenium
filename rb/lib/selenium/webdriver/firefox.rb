@@ -14,7 +14,6 @@ module Selenium
   module WebDriver
     module Firefox
 
-      DEFAULT_PROFILE_NAME            = "WebDriver".freeze
       DEFAULT_PORT                    = 7055
       DEFAULT_ENABLE_NATIVE_EVENTS    = Platform.os == :windows
       DEFAULT_SECURE_SSL              = false
