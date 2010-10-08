@@ -24,9 +24,8 @@ module Selenium
           end
         end
 
-        def start_with(profile, *args)
-          profile_path = profile.layout_on_disk
-          ENV['XRE_PROFILE_PATH'] = profile_path
+        def start_with(profile, profile_path, *args)
+          ENV['XRE_PROFILE_PATH'] = Platform.win? ? profile_path.gsub("\\", "/") : profile_path
           ENV['MOZ_NO_REMOTE'] = '1' # able to launch multiple instances
 
           if Platform.linux? && (profile.native_events? || profile.load_no_focus_lib?)

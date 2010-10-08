@@ -88,17 +88,17 @@ module Selenium
 
           @profile.add_webdriver_extension
           @profile.port = @port
-          @profile.layout_on_disk
+          @profile_dir = @profile.layout_on_disk
         end
 
         def start
           assert_profile
-          @binary.start_with @profile
+          @binary.start_with @profile, @profile_dir
         end
 
         def start_silent_and_wait
           assert_profile
-          @binary.start_with @profile, "--silent"
+          @binary.start_with @profile, @profile_dir, "--silent"
           @binary.wait
         end
 
@@ -143,7 +143,7 @@ module Selenium
         end
 
         def assert_profile
-          raise Error::WebDriverError, "must create_profile first" unless @profile
+          raise Error::WebDriverError, "must create_profile first" unless @profile && @profile_dir
         end
 
       end # Launcher
