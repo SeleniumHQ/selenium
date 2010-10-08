@@ -207,12 +207,10 @@ public class HttpCommandExecutor implements CommandExecutor {
         httpMethod.addHeader("Content-Type", "application/json; charset=utf-8");
       }
 
-      long intermediate = 0;
       HttpResponse response = null;
       response = client.execute(targetHost, httpMethod, context);
 
       response = followRedirects(client, context, response, /* redirect count */0);
-      intermediate = System.currentTimeMillis();
 
       return createResponse(response, context);
     } catch (NullPointerException e) {
@@ -291,6 +289,13 @@ public class HttpCommandExecutor implements CommandExecutor {
       try {
         response = new JsonToBeanConverter().convert(Response.class, responseAsText);
       } catch (ClassCastException e) {
+        if (responseAsText != null && "".equals(responseAsText)) {
+          // The remote server has died, but has already set some headers.
+          // Normally this occurs when the final window of the firefox driver
+          // is closed on OS X. Return null, as the return value _should_ be
+          // being ignored. This is not an elegant solution.
+          return null;
+        }
         throw new WebDriverException("Cannot convert text to response: " + responseAsText, e);
       }
     } else {
@@ -341,7 +346,7 @@ public class HttpCommandExecutor implements CommandExecutor {
     }
     return response;
   }
-
+    
   // I can't help but feel that this is less helpful than it could be
   private void releaseConnection(HttpContext context) throws IOException {
     HttpUriRequest request = (HttpUriRequest) context.getAttribute(ExecutionContext.HTTP_REQUEST);

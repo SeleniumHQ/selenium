@@ -233,6 +233,10 @@ public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot, F
 
     Response response = super.execute(driverCommand, parameters);
 
+    if (response == null) {
+      return null;
+    }
+
     Object rawResponse = response.getValue();
     if (rawResponse instanceof Map) {
       Map map = (Map) rawResponse;

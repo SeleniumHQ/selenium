@@ -127,7 +127,7 @@ FirefoxDriver.prototype.close = function(respond) {
     createSwitchFile("close:" + browser.id);
     browser.contentWindow.close();
   } catch(e) {
-    dump(e);
+    Logger.dump(e);
   }
 
   // Send the response so the client doesn't get a connection refused socket

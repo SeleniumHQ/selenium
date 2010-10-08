@@ -327,6 +327,10 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     try {
       response = executor.execute(command);
 
+      if (response == null) {
+        return null;
+      }
+
       // Unwrap the response value by converting any JSON objects of the form
       // {"ELEMENT": id} to RemoteWebElements.
       Object value = converter.apply(response.getValue());
