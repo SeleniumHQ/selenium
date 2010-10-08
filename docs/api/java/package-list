@@ -21,4 +21,5 @@ org.openqa.selenium.support
 org.openqa.selenium.support.events
 org.openqa.selenium.support.pagefactory
 org.openqa.selenium.support.pagefactory.internal
+org.openqa.selenium.support.testing
 org.openqa.selenium.support.ui
