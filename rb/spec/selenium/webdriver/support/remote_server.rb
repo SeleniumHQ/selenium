@@ -10,7 +10,7 @@ module Selenium
 
       class RemoteServer
 
-        START_TIMEOUT = 15
+        START_TIMEOUT = 30
 
         def initialize
           @host = "127.0.0.1"
