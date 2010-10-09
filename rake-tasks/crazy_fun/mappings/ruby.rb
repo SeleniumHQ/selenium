@@ -195,7 +195,10 @@ class RubyMappings
       desc "Build gem #{args[:name]}-#{args[:version]}"
       task "//#{dir}:gem:build" => deps do
         require "rubygems/builder"
-        gemfile = Dir.chdir(args[:dir]) { Gem::Builder.new(spec(args)).build }
+        gemfile = Dir.chdir(args[:dir]) {
+          gemspec = spec(args)
+          Gem::Builder.new(gemspec).build
+        }
         mv File.join(args[:dir], gemfile), "build/#{gemfile}"
       end
 
@@ -213,27 +216,27 @@ class RubyMappings
 
     def spec(args)
       Gem::Specification.new do |s|
-        s.name          = args[:name]
-        s.version       = args[:version]
-        s.summary       = "The next generation developer focused tool for automated testing of webapps"
-        s.description   = "WebDriver is a tool for writing automated tests of websites. It aims to mimic the behaviour of a real user, and as such interacts with the HTML of the application."
-        s.authors       = ["Jari Bakken"]
-        s.email         = "jari.bakken@gmail.com"
-        s.homepage      = "http://selenium.googlecode.com"
+        s.name        = args[:name]
+        s.version     = args[:version]
+        s.summary     = "The next generation developer focused tool for automated testing of webapps"
+        s.description = "WebDriver is a tool for writing automated tests of websites. It aims to mimic the behaviour of a real user, and as such interacts with the HTML of the application."
+        s.authors     = ["Jari Bakken"]
+        s.email       = "jari.bakken@gmail.com"
+        s.homepage    = "http://selenium.googlecode.com"
+        s.files       = Dir['lib/**/*', 'CHANGES', 'README']
 
-        s.add_dependency "json_pure"
-        s.add_dependency "rubyzip"
-        s.add_dependency "childprocess", ">= 0.0.7"
-        s.add_dependency "ffi", "~> 0.6.3"
-
-        if s.respond_to? :add_development_dependency
-          s.add_development_dependency "rspec"
-          s.add_development_dependency "rack"
+        args[:gemdeps].each do |dep|
+          s.add_dependency(*dep.shift)
         end
 
-        s.files = Dir['lib/**/*', 'CHANGES', 'README']
+        if s.respond_to? :add_development_dependency
+          args[:devdeps].each do |dep|
+            s.add_development_dependency(*dep.shift)
+          end
+        end
       end
     end
+
   end # RubyGem
 end # RubyMappings
 

@@ -1,5 +1,5 @@
 rubygem(
-  version = "0.0.29.dev1",
+  version = "0.0.29",
   name = "selenium-webdriver",
   dir = "build/rb",
   deps = [
@@ -8,6 +8,16 @@ rubygem(
     "//rb:firefox",
     "//rb:ie",
     "//rb:remote"
+  ],
+  gemdeps = [
+    { "json_pure"    : ">= 0"     },
+    { "rubyzip"      : ">= 0"     },
+    { "childprocess" : ">= 0.0.7" },
+    { "ffi"          : "~> 0.6.3" }
+  ],
+  devdeps = [
+    { "rspec" : "1.3.0"  },
+    { "rack"  : "~> 1.0" }
   ]
 )
 
@@ -21,13 +31,13 @@ rubydocs(
 )
 
 ruby_library(name = "common",
-  srcs = [ 
-    "lib/selenium/webdriver/common/**/*.rb", 
-    "lib/selenium/webdriver/common.rb", 
-    "lib/selenium/webdriver.rb", 
-    "lib/selenium-webdriver.rb", 
-    "CHANGES", 
-    "README" 
+  srcs = [
+    "lib/selenium/webdriver/common/**/*.rb",
+    "lib/selenium/webdriver/common.rb",
+    "lib/selenium/webdriver.rb",
+    "lib/selenium-webdriver.rb",
+    "CHANGES",
+    "README"
   ]
 )
 
@@ -55,9 +65,9 @@ ruby_test(name = "chrome",
 )
 
 ruby_library(name = "firefox",
-  srcs = [ 
+  srcs = [
     "lib/selenium/webdriver/firefox/**/*.rb",
-    "lib/selenium/webdriver/firefox.rb" 
+    "lib/selenium/webdriver/firefox.rb"
   ],
   resources = [
     { "//firefox:webdriver" : "rb/lib/selenium/webdriver/firefox/extension/webdriver.xpi"},
@@ -78,9 +88,9 @@ ruby_test(name = "firefox",
 
 
 ruby_library(name = "ie",
-  srcs = [ 
-    "lib/selenium/webdriver/ie/**/*.rb", 
-    "lib/selenium/webdriver/ie.rb" 
+  srcs = [
+    "lib/selenium/webdriver/ie/**/*.rb",
+    "lib/selenium/webdriver/ie.rb"
   ],
   resources = [
     {"//jobbie:ie_win32_dll" : "rb/lib/selenium/webdriver/ie/native/win32/InternetExplorerDriver.dll"},
@@ -99,9 +109,9 @@ ruby_test(name = "ie",
 )
 
 ruby_library(name = "remote",
-  srcs = [ 
+  srcs = [
     "lib/selenium/webdriver/remote/**/*.rb",
-    "lib/selenium/webdriver/remote.rb" 
+    "lib/selenium/webdriver/remote.rb"
   ],
   deps = [
     ":common"

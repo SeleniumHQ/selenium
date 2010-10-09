@@ -1,10 +1,10 @@
-0.0.29 (2010-10-??)
+0.0.29 (2010-10-09)
 ===================
 
 * Element#find_element with :xpath follows the XPath spec (i.e. results are not limited to the receiver's subtree).
 * Element#attribute(attribute) now returns "false" instead of nil.
 * Firefox::Profile instances can now be reused for multiple drivers.
-* Redirect Firefox console logs to a file with Firefox::Profile.log_file= 
+* Redirect Firefox console logs to a file with Firefox::Profile.log_file=
 * Added a simple Wait class, based on WebDriverWait in Java.
 * Search PATH for Firefox executable on Windows also.
 * Added Capabilities.android
