@@ -53,8 +53,13 @@ module Selenium
         private
 
         def handler
-          handler = %w[thin mongrel webrick].find { |h| load_handler h }
-
+          if Platform.win?
+            handlers = %w[mongrel webrick]
+          else
+            handlers = %w[thin mongrel webrick]
+          end
+          
+          handler = handlers.find { |h| load_handler h }
           constant = handler == 'webrick' ? "WEBrick" : handler.capitalize
           Rack::Handler.const_get constant
         end
