@@ -232,13 +232,15 @@ A new instance of ProfilesIni
 
 15
 16
-17</pre>
+17
+18</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/profiles_ini.rb', line 15</span>
 
 <span class='def def kw'>def</span> <span class='aref op'>[]</span><span class='lparen token'>(</span><span class='name identifier id'>name</span><span class='rparen token'>)</span>
-  <span class='Profile constant id'>Profile</span><span class='dot token'>.</span><span class='new identifier id'>new</span> <span class='@profile_paths ivar id'>@profile_paths</span><span class='lbrack token'>[</span><span class='name identifier id'>name</span><span class='rbrack token'>]</span>
+  <span class='path identifier id'>path</span> <span class='assign token'>=</span> <span class='@profile_paths ivar id'>@profile_paths</span><span class='lbrack token'>[</span><span class='name identifier id'>name</span><span class='rbrack token'>]</span>
+  <span class='path identifier id'>path</span> <span class='andop op'>&amp;&amp;</span> <span class='Profile constant id'>Profile</span><span class='dot token'>.</span><span class='new identifier id'>new</span><span class='lparen token'>(</span><span class='path identifier id'>path</span><span class='rparen token'>)</span>
 <span class='end end kw'>end</span>
 </pre>
     </td>
@@ -259,13 +261,13 @@ A new instance of ProfilesIni
       <pre class="lines">
 
 
-19
 20
 21
-22</pre>
+22
+23</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/profiles_ini.rb', line 19</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/profiles_ini.rb', line 20</span>
 
 <span class='def def kw'>def</span> <span class='refresh identifier id'>refresh</span>
   <span class='@profile_paths ivar id'>@profile_paths</span><span class='dot token'>.</span><span class='clear identifier id'>clear</span>
@@ -282,7 +284,7 @@ A new instance of ProfilesIni
 </div>
     
     <div id="footer">
-  Generated on Fri Sep 24 16:17:05 2010 by 
+  Generated on Sat Oct 09 02:15:20 2010 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.6.1 (ruby-1.8.7).
 </div>

@@ -72,13 +72,86 @@
 
   
 
+  
+    <h2>
+      Class Method Summary
+      <small>(<a href="#" class="summary_toggle">collapse</a>)</small>
+    </h2>
+
+    <ul class="summary">
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#finalize_element-class_method" title="finalize_element (class method)">+ (Object) <strong>finalize_element</strong>(ptr) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
 
   
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+    </ul>
+  
+
+
+  
+
+  <div id="class_method_details" class="method_details_list">
+    <h2>Class Method Details</h2>
+    
+    
+      <div class="method_details first">
+  <p class="signature first" id="finalize_element-class_method">
+  
+    + (<tt>Object</tt>) <strong>finalize_element</strong>(ptr) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+102
+103
+104
+105
+106
+107</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/lib.rb', line 102</span>
+
+<span class='def def kw'>def</span> <span class='self self kw'>self</span><span class='dot token'>.</span><span class='finalize_element identifier id'>finalize_element</span><span class='lparen token'>(</span><span class='ptr identifier id'>ptr</span><span class='rparen token'>)</span>
+  <span class='code identifier id'>code</span> <span class='assign token'>=</span> <span class='Lib constant id'>Lib</span><span class='dot token'>.</span><span class='wdeFreeElement identifier id'>wdeFreeElement</span><span class='lparen token'>(</span><span class='ptr identifier id'>ptr</span><span class='rparen token'>)</span>
+  <span class='if if kw'>if</span> <span class='err identifier id'>err</span> <span class='assign token'>=</span> <span class='WebDriver constant id'>WebDriver</span><span class='colon2 op'>::</span><span class='Error constant id'>Error</span><span class='dot token'>.</span><span class='for_code identifier id'>for_code</span><span class='lparen token'>(</span><span class='code identifier id'>code</span><span class='rparen token'>)</span>
+    <span class='raise identifier id'>raise</span> <span class='err identifier id'>err</span><span class='comma token'>,</span> <span class='dstring node'>&quot;could not free element (#{ptr})&quot;</span>
+  <span class='end end kw'>end</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
 
 </div>
     
     <div id="footer">
-  Generated on Fri Sep 24 16:16:55 2010 by 
+  Generated on Sat Oct 09 02:14:59 2010 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.6.1 (ruby-1.8.7).
 </div>

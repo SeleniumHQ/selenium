@@ -60,7 +60,7 @@
   
     <dt class="r1 last">Defined in:</dt>
     <dd class="r1 last">rb/lib/selenium/webdriver/firefox.rb<span class="defines">,<br />
-  rb/lib/selenium/webdriver/firefox/util.rb,<br /> rb/lib/selenium/webdriver/firefox/binary.rb,<br /> rb/lib/selenium/webdriver/firefox/bridge.rb,<br /> rb/lib/selenium/webdriver/firefox/profile.rb,<br /> rb/lib/selenium/webdriver/firefox/launcher.rb,<br /> rb/lib/selenium/webdriver/firefox/profiles_ini.rb</span>
+  rb/lib/selenium/webdriver/firefox/util.rb,<br /> rb/lib/selenium/webdriver/firefox/binary.rb,<br /> rb/lib/selenium/webdriver/firefox/bridge.rb,<br /> rb/lib/selenium/webdriver/firefox/profile.rb,<br /> rb/lib/selenium/webdriver/firefox/launcher.rb,<br /> rb/lib/selenium/webdriver/firefox/extension.rb,<br /> rb/lib/selenium/webdriver/firefox/socket_lock.rb,<br /> rb/lib/selenium/webdriver/firefox/profiles_ini.rb</span>
 </dd>
   
 </dl>
@@ -74,7 +74,7 @@
     
    
     
-      <strong class="classes">Classes:</strong> <span class='object_link'><a href="Firefox/Binary.html" title="Selenium::WebDriver::Firefox::Binary (class)">Binary</a></span>, <span class='object_link'><a href="Firefox/Bridge.html" title="Selenium::WebDriver::Firefox::Bridge (class)">Bridge</a></span>, <span class='object_link'><a href="Firefox/Launcher.html" title="Selenium::WebDriver::Firefox::Launcher (class)">Launcher</a></span>, <span class='object_link'><a href="Firefox/Profile.html" title="Selenium::WebDriver::Firefox::Profile (class)">Profile</a></span>, <span class='object_link'><a href="Firefox/ProfilesIni.html" title="Selenium::WebDriver::Firefox::ProfilesIni (class)">ProfilesIni</a></span>
+      <strong class="classes">Classes:</strong> <span class='object_link'><a href="Firefox/Binary.html" title="Selenium::WebDriver::Firefox::Binary (class)">Binary</a></span>, <span class='object_link'><a href="Firefox/Bridge.html" title="Selenium::WebDriver::Firefox::Bridge (class)">Bridge</a></span>, <span class='object_link'><a href="Firefox/Extension.html" title="Selenium::WebDriver::Firefox::Extension (class)">Extension</a></span>, <span class='object_link'><a href="Firefox/Launcher.html" title="Selenium::WebDriver::Firefox::Launcher (class)">Launcher</a></span>, <span class='object_link'><a href="Firefox/Profile.html" title="Selenium::WebDriver::Firefox::Profile (class)">Profile</a></span>, <span class='object_link'><a href="Firefox/ProfilesIni.html" title="Selenium::WebDriver::Firefox::ProfilesIni (class)">ProfilesIni</a></span>, <span class='object_link'><a href="Firefox/SocketLock.html" title="Selenium::WebDriver::Firefox::SocketLock (class)">SocketLock</a></span>
     
   
 </p>
@@ -82,12 +82,6 @@
   <h2>Constant Summary</h2>
   
     <dl class="constants">
-      
-        <dt id="DEFAULT_PROFILE_NAME-constant" class="">DEFAULT_PROFILE_NAME =
-          
-        </dt>
-        <dd><pre class="code"><span class='string val'>&quot;WebDriver&quot;</span><span class='dot token'>.</span><span class='freeze identifier id'>freeze</span>
-</pre></dd>
       
         <dt id="DEFAULT_PORT-constant" class="">DEFAULT_PORT =
           
@@ -175,12 +169,12 @@
       <pre class="lines">
 
 
-23
 24
-25</pre>
+25
+26</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox.rb', line 23</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox.rb', line 24</span>
 
 <span class='def def kw'>def</span> <span class='self self kw'>self</span><span class='dot token'>.</span><span class='path identifier id'>path</span><span class='assign token'>=</span><span class='lparen token'>(</span><span class='path identifier id'>path</span><span class='rparen token'>)</span>
   <span class='Binary constant id'>Binary</span><span class='dot token'>.</span><span class='path identifier id'>path</span> <span class='assign token'>=</span> <span class='path identifier id'>path</span>
@@ -196,7 +190,7 @@
 </div>
     
     <div id="footer">
-  Generated on Fri Sep 24 16:16:55 2010 by 
+  Generated on Sat Oct 09 02:14:59 2010 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.6.1 (ruby-1.8.7).
 </div>

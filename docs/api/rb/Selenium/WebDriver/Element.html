@@ -176,8 +176,7 @@ Returns the value of attribute bridge.
 
   
     <span class="summary_desc"><div class='inline'><p>
-For Rails 3 - <a
-href="http://jonathanjulian.com/2010/04/rails-to_json-or-as_json">jonathanjulian.com/2010/04/rails-to_json-or-as_json</a>/.
+For Rails 3 - http://jonathanjulian.com/2010/04/rails-to_json-or-as_json/.
 </p>
 </div></span>
   
@@ -203,7 +202,7 @@ href="http://jonathanjulian.com/2010/04/rails-to_json-or-as_json">jonathanjulian
 
   
     <span class="summary_desc"><div class='inline'><p>
-Get the value of the given attribute.
+Get the value of a the given attribute of the element.
 </p>
 </div></span>
   
@@ -893,8 +892,7 @@ Returns the value of attribute bridge
 </p><div class="docstring">
   <div class="discussion">
     <p>
-For Rails 3 - <a
-href="http://jonathanjulian.com/2010/04/rails-to_json-or-as_json">jonathanjulian.com/2010/04/rails-to_json-or-as_json</a>/
+For Rails 3 - http://jonathanjulian.com/2010/04/rails-to_json-or-as_json/
 </p>
 
 
@@ -908,12 +906,12 @@ href="http://jonathanjulian.com/2010/04/rails-to_json-or-as_json">jonathanjulian
       <pre class="lines">
 
 
-284
-285
-286</pre>
+301
+302
+303</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 284</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 301</span>
 
 <span class='def def kw'>def</span> <span class='as_json identifier id'>as_json</span><span class='lparen token'>(</span><span class='opts identifier id'>opts</span> <span class='assign token'>=</span> <span class='nil nil kw'>nil</span><span class='rparen token'>)</span>
   <span class='lbrace token'>{</span> <span class='symbol val'>:ELEMENT</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='@id ivar id'>@id</span> <span class='rbrace token'>}</span>
@@ -938,7 +936,30 @@ href="http://jonathanjulian.com/2010/04/rails-to_json-or-as_json">jonathanjulian
 </p><div class="docstring">
   <div class="discussion">
     <p>
-Get the value of the given attribute
+Get the value of a the given attribute of the element. Will return the
+current value, even if this has been modified after the page has been
+loaded. More exactly, this method will return the value of the given
+attribute, unless that attribute is not present, in which case the value of
+the property with the same name is returned. If neither value is set, nil
+is returned. The &quot;style&quot; attribute is converted as best can be to
+a text representation with a trailing semi-colon. The following are deemed
+to be &quot;boolean&quot; attributes, and will return either
+&quot;true&quot; or &quot;false&quot;:
+</p>
+<p>
+async, autofocus, autoplay, checked, compact, complete, controls, declare,
+defaultchecked, defaultselected, defer, disabled, draggable, ended,
+formnovalidate, hidden, indeterminate, iscontenteditable, ismap, itemscope,
+loop, multiple, muted, nohref, noresize, noshade, novalidate, nowrap, open,
+paused, pubdate, readonly, required, reversed, scoped, seamless, seeking,
+selected, spellcheck, truespeed, willvalidate
+</p>
+<p>
+Finally, the following commonly mis-capitalized attribute/property names
+are evaluated as expected:
+</p>
+<p>
+class, readonly
 </p>
 
 
@@ -992,12 +1013,12 @@ attribute value
       <pre class="lines">
 
 
-68
-69
-70</pre>
+85
+86
+87</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 68</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 85</span>
 
 <span class='def def kw'>def</span> <span class='attribute identifier id'>attribute</span><span class='lparen token'>(</span><span class='name identifier id'>name</span><span class='rparen token'>)</span>
   <span class='bridge identifier id'>bridge</span><span class='dot token'>.</span><span class='getElementAttribute identifier id'>getElementAttribute</span> <span class='@id ivar id'>@id</span><span class='comma token'>,</span> <span class='name identifier id'>name</span>
@@ -1032,12 +1053,12 @@ Clear this element
       <pre class="lines">
 
 
-115
-116
-117</pre>
+132
+133
+134</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 115</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 132</span>
 
 <span class='def def kw'>def</span> <span class='clear identifier id'>clear</span>
   <span class='bridge identifier id'>bridge</span><span class='dot token'>.</span><span class='clearElement identifier id'>clearElement</span> <span class='@id ivar id'>@id</span>
@@ -1125,12 +1146,12 @@ Is the element displayed?
       <pre class="lines">
 
 
-145
-146
-147</pre>
+162
+163
+164</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 145</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 162</span>
 
 <span class='def def kw'>def</span> <span class='displayed? fid id'>displayed?</span>
   <span class='bridge identifier id'>bridge</span><span class='dot token'>.</span><span class='isElementDisplayed identifier id'>isElementDisplayed</span> <span class='@id ivar id'>@id</span>
@@ -1203,12 +1224,12 @@ number of pixels to drag down
       <pre class="lines">
 
 
-218
-219
-220</pre>
+235
+236
+237</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 218</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 235</span>
 
 <span class='def def kw'>def</span> <span class='drag_and_drop_by identifier id'>drag_and_drop_by</span><span class='lparen token'>(</span><span class='right_by identifier id'>right_by</span><span class='comma token'>,</span> <span class='down_by identifier id'>down_by</span><span class='rparen token'>)</span>
   <span class='bridge identifier id'>bridge</span><span class='dot token'>.</span><span class='dragElement identifier id'>dragElement</span> <span class='@id ivar id'>@id</span><span class='comma token'>,</span> <span class='right_by identifier id'>right_by</span><span class='comma token'>,</span> <span class='down_by identifier id'>down_by</span>
@@ -1258,18 +1279,18 @@ Drag and drop this element on the given element
       <pre class="lines">
 
 
-228
-229
-230
-231
-232
-233
-234
-235
-236</pre>
+245
+246
+247
+248
+249
+250
+251
+252
+253</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 228</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 245</span>
 
 <span class='def def kw'>def</span> <span class='drag_and_drop_on identifier id'>drag_and_drop_on</span><span class='lparen token'>(</span><span class='other identifier id'>other</span><span class='rparen token'>)</span>
   <span class='current_location identifier id'>current_location</span> <span class='assign token'>=</span> <span class='location identifier id'>location</span><span class='lparen token'>(</span><span class='rparen token'>)</span>
@@ -1323,12 +1344,12 @@ Is the element enabled?
       <pre class="lines">
 
 
-125
-126
-127</pre>
+142
+143
+144</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 125</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 142</span>
 
 <span class='def def kw'>def</span> <span class='enabled? fid id'>enabled?</span>
   <span class='bridge identifier id'>bridge</span><span class='dot token'>.</span><span class='isElementEnabled identifier id'>isElementEnabled</span> <span class='@id ivar id'>@id</span>
@@ -1363,12 +1384,12 @@ Hover over this element. Not applicable to all browsers.
       <pre class="lines">
 
 
-185
-186
-187</pre>
+202
+203
+204</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 185</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 202</span>
 
 <span class='def def kw'>def</span> <span class='hover identifier id'>hover</span>
   <span class='bridge identifier id'>bridge</span><span class='dot token'>.</span><span class='hoverOverElement identifier id'>hoverOverElement</span> <span class='@id ivar id'>@id</span>
@@ -1445,12 +1466,12 @@ Get the location of this element.
       <pre class="lines">
 
 
-195
-196
-197</pre>
+212
+213
+214</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 195</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 212</span>
 
 <span class='def def kw'>def</span> <span class='location identifier id'>location</span>
   <span class='bridge identifier id'>bridge</span><span class='dot token'>.</span><span class='getElementLocation identifier id'>getElementLocation</span> <span class='@id ivar id'>@id</span>
@@ -1485,12 +1506,12 @@ for Find and execute_script
       <pre class="lines">
 
 
-263
-264
-265</pre>
+280
+281
+282</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 263</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 280</span>
 
 <span class='def def kw'>def</span> <span class='ref identifier id'>ref</span>
   <span class='@id ivar id'>@id</span>
@@ -1525,12 +1546,12 @@ Select this element
       <pre class="lines">
 
 
-153
-154
-155</pre>
+170
+171
+172</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 153</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 170</span>
 
 <span class='def def kw'>def</span> <span class='select identifier id'>select</span>
   <span class='bridge identifier id'>bridge</span><span class='dot token'>.</span><span class='setElementSelected identifier id'>setElementSelected</span> <span class='@id ivar id'>@id</span>
@@ -1578,12 +1599,12 @@ Is the element selected?
       <pre class="lines">
 
 
-135
-136
-137</pre>
+152
+153
+154</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 135</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 152</span>
 
 <span class='def def kw'>def</span> <span class='selected? fid id'>selected?</span>
   <span class='bridge identifier id'>bridge</span><span class='dot token'>.</span><span class='isElementSelected identifier id'>isElementSelected</span> <span class='@id ivar id'>@id</span>
@@ -1652,22 +1673,22 @@ Examples:
       <pre class="lines">
 
 
-96
-97
-98
-99
-100
-101
-102
-103
-104
-105
-106
-107
-108</pre>
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 96</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 113</span>
 
 <span class='def def kw'>def</span> <span class='send_keys identifier id'>send_keys</span><span class='lparen token'>(</span><span class='mult op'>*</span><span class='args identifier id'>args</span><span class='rparen token'>)</span>
   <span class='args identifier id'>args</span><span class='dot token'>.</span><span class='each identifier id'>each</span> <span class='do do kw'>do</span> <span class='bitor op'>|</span><span class='arg identifier id'>arg</span><span class='bitor op'>|</span>
@@ -1725,12 +1746,12 @@ Get the size of this element
       <pre class="lines">
 
 
-205
-206
-207</pre>
+222
+223
+224</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 205</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 222</span>
 
 <span class='def def kw'>def</span> <span class='size identifier id'>size</span>
   <span class='bridge identifier id'>bridge</span><span class='dot token'>.</span><span class='getElementSize identifier id'>getElementSize</span> <span class='@id ivar id'>@id</span>
@@ -1765,12 +1786,12 @@ Get the value of the given CSS property
       <pre class="lines">
 
 
-177
-178
-179</pre>
+194
+195
+196</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 177</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 194</span>
 
 <span class='def def kw'>def</span> <span class='style identifier id'>style</span><span class='lparen token'>(</span><span class='prop identifier id'>prop</span><span class='rparen token'>)</span>
   <span class='bridge identifier id'>bridge</span><span class='dot token'>.</span><span class='getElementValueOfCssProperty identifier id'>getElementValueOfCssProperty</span> <span class='@id ivar id'>@id</span><span class='comma token'>,</span> <span class='prop identifier id'>prop</span>
@@ -1805,12 +1826,12 @@ Submit this element
       <pre class="lines">
 
 
-161
-162
-163</pre>
+178
+179
+180</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 161</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 178</span>
 
 <span class='def def kw'>def</span> <span class='submit identifier id'>submit</span>
   <span class='bridge identifier id'>bridge</span><span class='dot token'>.</span><span class='submitElement identifier id'>submitElement</span> <span class='@id ivar id'>@id</span>
@@ -1911,12 +1932,12 @@ Get the text content of this element
       <pre class="lines">
 
 
-78
-79
-80</pre>
+95
+96
+97</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 78</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 95</span>
 
 <span class='def def kw'>def</span> <span class='text identifier id'>text</span>
   <span class='bridge identifier id'>bridge</span><span class='dot token'>.</span><span class='getElementText identifier id'>getElementText</span> <span class='@id ivar id'>@id</span>
@@ -1958,12 +1979,12 @@ Convert to a WebElement JSON Object for transmission over the wire.
       <pre class="lines">
 
 
-274
-275
-276</pre>
+291
+292
+293</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 274</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 291</span>
 
 <span class='def def kw'>def</span> <span class='to_json identifier id'>to_json</span><span class='lparen token'>(</span><span class='mult op'>*</span><span class='args identifier id'>args</span><span class='rparen token'>)</span>
   <span class='as_json identifier id'>as_json</span><span class='dot token'>.</span><span class='to_json identifier id'>to_json</span><span class='lparen token'>(</span><span class='mult op'>*</span><span class='args identifier id'>args</span><span class='rparen token'>)</span>
@@ -1998,12 +2019,12 @@ Toggle this element
       <pre class="lines">
 
 
-169
-170
-171</pre>
+186
+187
+188</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 169</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 186</span>
 
 <span class='def def kw'>def</span> <span class='toggle identifier id'>toggle</span>
   <span class='bridge identifier id'>bridge</span><span class='dot token'>.</span><span class='toggleElement identifier id'>toggleElement</span> <span class='@id ivar id'>@id</span>
@@ -2072,7 +2093,7 @@ Get the value of this element
 </div>
     
     <div id="footer">
-  Generated on Fri Sep 24 16:17:01 2010 by 
+  Generated on Sat Oct 09 02:15:13 2010 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.6.1 (ruby-1.8.7).
 </div>

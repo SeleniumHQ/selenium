@@ -172,6 +172,13 @@ Find all elements matching the given arguments.
     <p>
 Find the first element matching the given arguments.
 </p>
+<p>
+When using Element#find_element with :xpath, be aware that webdriver
+follows standard conventions: a search prefixed with &quot;//&quot; will
+search the entire document, not just the children of this current node. Use
+&quot;.//&quot; to limit your search to the children of the receiving
+Element.
+</p>
 
 
   </div>
@@ -242,21 +249,21 @@ if the element doesn&#8217;t exist
       <pre class="lines">
 
 
-28
-29
-30
-31
-32
-33
 34
 35
 36
 37
 38
-39</pre>
+39
+40
+41
+42
+43
+44
+45</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/find.rb', line 28</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/find.rb', line 34</span>
 
 <span class='def def kw'>def</span> <span class='find_element identifier id'>find_element</span><span class='lparen token'>(</span><span class='mult op'>*</span><span class='args identifier id'>args</span><span class='rparen token'>)</span>
   <span class='how identifier id'>how</span><span class='comma token'>,</span> <span class='what identifier id'>what</span> <span class='assign token'>=</span> <span class='extract_args identifier id'>extract_args</span><span class='lparen token'>(</span><span class='args identifier id'>args</span><span class='rparen token'>)</span>
@@ -333,27 +340,34 @@ Find all elements matching the given arguments
   
 </ul>
 
+  <h3>See Also:</h3>
+  <ul class="see">
+    
+      <li><span class='object_link'><a href="#find_element-instance_method" title="Selenium::WebDriver::Find#find_element (method)">#find_element</a></span></li>
+    
+  </ul>
+
 </div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-49
-50
-51
-52
-53
-54
-55
-56
 57
 58
 59
-60</pre>
+60
+61
+62
+63
+64
+65
+66
+67
+68</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/find.rb', line 49</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/find.rb', line 57</span>
 
 <span class='def def kw'>def</span> <span class='find_elements identifier id'>find_elements</span><span class='lparen token'>(</span><span class='mult op'>*</span><span class='args identifier id'>args</span><span class='rparen token'>)</span>
   <span class='how identifier id'>how</span><span class='comma token'>,</span> <span class='what identifier id'>what</span> <span class='assign token'>=</span> <span class='extract_args identifier id'>extract_args</span><span class='lparen token'>(</span><span class='args identifier id'>args</span><span class='rparen token'>)</span>
@@ -378,7 +392,7 @@ Find all elements matching the given arguments
 </div>
     
     <div id="footer">
-  Generated on Fri Sep 24 16:16:57 2010 by 
+  Generated on Sat Oct 09 02:15:03 2010 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.6.1 (ruby-1.8.7).
 </div>

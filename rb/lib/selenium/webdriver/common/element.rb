@@ -74,10 +74,7 @@ module Selenium
       # Finally, the following commonly mis-capitalized attribute/property names are evaluated as
       # expected:
       #
-      # <ul>
-      # <li>"class"
-      # <li>"readonly"
-      # </ul>
+      # class, readonly
       #
       # @param [String]
       #   attribute name

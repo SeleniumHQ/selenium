@@ -2412,7 +2412,7 @@ Element functions
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 175</span>
 
 <span class='def def kw'>def</span> <span class='executeScript identifier id'>executeScript</span><span class='lparen token'>(</span><span class='script identifier id'>script</span><span class='comma token'>,</span> <span class='mult op'>*</span><span class='args identifier id'>args</span><span class='rparen token'>)</span>
-  <span class='unless unless kw'>unless</span> <span class='capabilities identifier id'>capabilities</span><span class='dot token'>.</span><span class='javascript? fid id'>javascript?</span>
+  <span class='unless unless kw'>unless</span> <span class='capabilities identifier id'>capabilities</span><span class='dot token'>.</span><span class='javascript_enabled? fid id'>javascript_enabled?</span>
     <span class='raise identifier id'>raise</span> <span class='Error constant id'>Error</span><span class='colon2 op'>::</span><span class='UnsupportedOperationError constant id'>UnsupportedOperationError</span><span class='comma token'>,</span> <span class='string val'>&quot;underlying webdriver instance does not support javascript&quot;</span>
   <span class='end end kw'>end</span>
 
@@ -3992,7 +3992,7 @@ Returns the current session ID.
 </div>
     
     <div id="footer">
-  Generated on Fri Sep 24 16:17:01 2010 by 
+  Generated on Sat Oct 09 02:15:12 2010 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.6.1 (ruby-1.8.7).
 </div>

@@ -126,11 +126,40 @@ Returns the value of attribute browser_name.
       <li class="public ">
   <span class="summary_signature">
     
+      <a href="#css_selectors_enabled-instance_method" title="#css_selectors_enabled (instance method)">- (Object) <strong>css_selectors_enabled</strong> </a>
+    
+
+    
+      (also: #css_selectors_enabled?)
+    
+  </span>
+  
+  
+    
+    
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>
+Returns the value of attribute css_selectors_enabled.
+</p>
+</div></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
       <a href="#javascript_enabled-instance_method" title="#javascript_enabled (instance method)">- (Object) <strong>javascript_enabled</strong> </a>
     
 
     
-      (also: #javascript?)
+      (also: #javascript_enabled?)
     
   </span>
   
@@ -146,6 +175,35 @@ Returns the value of attribute browser_name.
   
     <span class="summary_desc"><div class='inline'><p>
 Returns the value of attribute javascript_enabled.
+</p>
+</div></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#native_events-instance_method" title="#native_events (instance method)">- (Object) <strong>native_events</strong> </a>
+    
+
+    
+      (also: #native_events?)
+    
+  </span>
+  
+  
+    
+    
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>
+Returns the value of attribute native_events.
 </p>
 </div></span>
   
@@ -173,6 +231,35 @@ Returns the value of attribute javascript_enabled.
   
     <span class="summary_desc"><div class='inline'><p>
 Returns the value of attribute platform.
+</p>
+</div></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#takes_screenshot-instance_method" title="#takes_screenshot (instance method)">- (Object) <strong>takes_screenshot</strong> </a>
+    
+
+    
+      (also: #takes_screenshot?)
+    
+  </span>
+  
+  
+    
+    
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>
+Returns the value of attribute takes_screenshot.
 </p>
 </div></span>
   
@@ -216,6 +303,27 @@ Returns the value of attribute version.
     </h2>
 
     <ul class="summary">
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#android-class_method" title="android (class method)">+ (Object) <strong>android</strong>(opts = {}) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
       
         <li class="public ">
   <span class="summary_signature">
@@ -376,6 +484,27 @@ Returns the value of attribute version.
         <li class="public ">
   <span class="summary_signature">
     
+      <a href="#as_json-instance_method" title="#as_json (instance method)">- (Object) <strong>as_json</strong>(opts = nil) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  <span class="private note title">Private</span>
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
       <a href="#initialize-instance_method" title="#initialize (instance method)">- (Capabilities) <strong>initialize</strong>(opts = {}) </a>
     
 
@@ -412,7 +541,7 @@ A new instance of Capabilities.
   
   
   
-  <span class="private note title">Private</span>
+  
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -514,6 +643,57 @@ a customizable set of options
       
     </li>
   
+    <li>
+      
+        <span class='type'>(<tt>Hash</tt>)</span>
+      
+      
+        <span class='name'>:css_selectors_enabled</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>
+a customizable set of options
+</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='type'>(<tt>Hash</tt>)</span>
+      
+      
+        <span class='name'>:takes_screenshot</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>
+a customizable set of options
+</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='type'>(<tt>Hash</tt>)</span>
+      
+      
+        <span class='name'>:native_events</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>
+a customizable set of options
+</p>
+</div>
+      
+    </li>
+  
 </ul>
 
   
@@ -526,21 +706,27 @@ a customizable set of options
       <pre class="lines">
 
 
-82
-83
-84
-85
-86
-87</pre>
+105
+106
+107
+108
+109
+110
+111
+112
+113</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 82</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 105</span>
 
 <span class='def def kw'>def</span> <span class='initialize identifier id'>initialize</span><span class='lparen token'>(</span><span class='opts identifier id'>opts</span> <span class='assign token'>=</span> <span class='lbrace token'>{</span><span class='rbrace token'>}</span><span class='rparen token'>)</span>
-  <span class='@browser_name ivar id'>@browser_name</span>       <span class='assign token'>=</span> <span class='opts identifier id'>opts</span><span class='lbrack token'>[</span><span class='symbol val'>:browser_name</span><span class='rbrack token'>]</span>       <span class='orop op'>||</span> <span class='string val'>&quot;&quot;</span>
-  <span class='@version ivar id'>@version</span>            <span class='assign token'>=</span> <span class='opts identifier id'>opts</span><span class='lbrack token'>[</span><span class='symbol val'>:version</span><span class='rbrack token'>]</span>            <span class='orop op'>||</span> <span class='string val'>&quot;&quot;</span>
-  <span class='@platform ivar id'>@platform</span>           <span class='assign token'>=</span> <span class='opts identifier id'>opts</span><span class='lbrack token'>[</span><span class='symbol val'>:platform</span><span class='rbrack token'>]</span>           <span class='orop op'>||</span> <span class='symbol val'>:any</span>
-  <span class='@javascript_enabled ivar id'>@javascript_enabled</span> <span class='assign token'>=</span> <span class='opts identifier id'>opts</span><span class='lbrack token'>[</span><span class='symbol val'>:javascript_enabled</span><span class='rbrack token'>]</span> <span class='orop op'>||</span> <span class='false false kw'>false</span>
+  <span class='@browser_name ivar id'>@browser_name</span>          <span class='assign token'>=</span> <span class='opts identifier id'>opts</span><span class='lbrack token'>[</span><span class='symbol val'>:browser_name</span><span class='rbrack token'>]</span>          <span class='orop op'>||</span> <span class='string val'>&quot;&quot;</span>
+  <span class='@version ivar id'>@version</span>               <span class='assign token'>=</span> <span class='opts identifier id'>opts</span><span class='lbrack token'>[</span><span class='symbol val'>:version</span><span class='rbrack token'>]</span>               <span class='orop op'>||</span> <span class='string val'>&quot;&quot;</span>
+  <span class='@platform ivar id'>@platform</span>              <span class='assign token'>=</span> <span class='opts identifier id'>opts</span><span class='lbrack token'>[</span><span class='symbol val'>:platform</span><span class='rbrack token'>]</span>              <span class='orop op'>||</span> <span class='symbol val'>:any</span>
+  <span class='@javascript_enabled ivar id'>@javascript_enabled</span>    <span class='assign token'>=</span> <span class='opts identifier id'>opts</span><span class='lbrack token'>[</span><span class='symbol val'>:javascript_enabled</span><span class='rbrack token'>]</span>    <span class='orop op'>||</span> <span class='false false kw'>false</span>
+  <span class='@css_selectors_enabled ivar id'>@css_selectors_enabled</span> <span class='assign token'>=</span> <span class='opts identifier id'>opts</span><span class='lbrack token'>[</span><span class='symbol val'>:css_selectors_enabled</span><span class='rbrack token'>]</span> <span class='orop op'>||</span> <span class='false false kw'>false</span>
+  <span class='@takes_screenshot ivar id'>@takes_screenshot</span>      <span class='assign token'>=</span> <span class='opts identifier id'>opts</span><span class='lbrack token'>[</span><span class='symbol val'>:takes_screenshot</span><span class='rbrack token'>]</span>      <span class='orop op'>||</span> <span class='false false kw'>false</span>
+  <span class='@native_events ivar id'>@native_events</span>         <span class='assign token'>=</span> <span class='opts identifier id'>opts</span><span class='lbrack token'>[</span><span class='symbol val'>:native_events</span><span class='rbrack token'>]</span>         <span class='orop op'>||</span> <span class='false false kw'>false</span>
 <span class='end end kw'>end</span>
 </pre>
     </td>
@@ -597,6 +783,53 @@ Returns the value of attribute browser_name
 </div>
     
       
+      <span id="css_selectors_enabled=-instance_method"></span>
+      <span id="css_selectors_enabled-instance_method"></span>
+      <div class="method_details ">
+  <p class="signature " id="css_selectors_enabled-instance_method">
+  
+    - (<tt>Object</tt>) <strong>css_selectors_enabled</strong> 
+  
+
+  
+    <span class="aliases">Also known as:
+    <span class="names"><span id='css_selectors_enabled?-instance_method'>css_selectors_enabled?</span></span>
+    </span>
+  
+</p><div class="docstring">
+  <div class="discussion">
+    <p>
+Returns the value of attribute css_selectors_enabled
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+11
+12
+13</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 11</span>
+
+<span class='def def kw'>def</span> <span class='css_selectors_enabled identifier id'>css_selectors_enabled</span>
+  <span class='@css_selectors_enabled ivar id'>@css_selectors_enabled</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      
       <span id="javascript_enabled=-instance_method"></span>
       <span id="javascript_enabled-instance_method"></span>
       <div class="method_details ">
@@ -607,7 +840,7 @@ Returns the value of attribute browser_name
 
   
     <span class="aliases">Also known as:
-    <span class="names"><span id='javascript?-instance_method'>javascript?</span></span>
+    <span class="names"><span id='javascript_enabled?-instance_method'>javascript_enabled?</span></span>
     </span>
   
 </p><div class="docstring">
@@ -636,6 +869,53 @@ Returns the value of attribute javascript_enabled
 
 <span class='def def kw'>def</span> <span class='javascript_enabled identifier id'>javascript_enabled</span>
   <span class='@javascript_enabled ivar id'>@javascript_enabled</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      
+      <span id="native_events=-instance_method"></span>
+      <span id="native_events-instance_method"></span>
+      <div class="method_details ">
+  <p class="signature " id="native_events-instance_method">
+  
+    - (<tt>Object</tt>) <strong>native_events</strong> 
+  
+
+  
+    <span class="aliases">Also known as:
+    <span class="names"><span id='native_events?-instance_method'>native_events?</span></span>
+    </span>
+  
+</p><div class="docstring">
+  <div class="discussion">
+    <p>
+Returns the value of attribute native_events
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+11
+12
+13</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 11</span>
+
+<span class='def def kw'>def</span> <span class='native_events identifier id'>native_events</span>
+  <span class='@native_events ivar id'>@native_events</span>
 <span class='end end kw'>end</span>
 </pre>
     </td>
@@ -679,6 +959,53 @@ Returns the value of attribute platform
 
 <span class='def def kw'>def</span> <span class='platform identifier id'>platform</span>
   <span class='@platform ivar id'>@platform</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      
+      <span id="takes_screenshot=-instance_method"></span>
+      <span id="takes_screenshot-instance_method"></span>
+      <div class="method_details ">
+  <p class="signature " id="takes_screenshot-instance_method">
+  
+    - (<tt>Object</tt>) <strong>takes_screenshot</strong> 
+  
+
+  
+    <span class="aliases">Also known as:
+    <span class="names"><span id='takes_screenshot?-instance_method'>takes_screenshot?</span></span>
+    </span>
+  
+</p><div class="docstring">
+  <div class="discussion">
+    <p>
+Returns the value of attribute takes_screenshot
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+11
+12
+13</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 11</span>
+
+<span class='def def kw'>def</span> <span class='takes_screenshot identifier id'>takes_screenshot</span>
+  <span class='@takes_screenshot ivar id'>@takes_screenshot</span>
 <span class='end end kw'>end</span>
 </pre>
     </td>
@@ -737,7 +1064,42 @@ Returns the value of attribute version
     
     
       <div class="method_details first">
-  <p class="signature first" id="chrome-class_method">
+  <p class="signature first" id="android-class_method">
+  
+    + (<tt>Object</tt>) <strong>android</strong>(opts = {}) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+70
+71
+72
+73
+74
+75</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 70</span>
+
+<span class='def def kw'>def</span> <span class='android identifier id'>android</span><span class='lparen token'>(</span><span class='opts identifier id'>opts</span> <span class='assign token'>=</span> <span class='lbrace token'>{</span><span class='rbrace token'>}</span><span class='rparen token'>)</span>
+  <span class='new identifier id'>new</span><span class='lparen token'>(</span><span class='lbrace token'>{</span>
+    <span class='symbol val'>:browser_name</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;android&quot;</span><span class='comma token'>,</span>
+    <span class='symbol val'>:platform</span>     <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='symbol val'>:android</span>
+  <span class='rbrace token'>}</span><span class='dot token'>.</span><span class='merge identifier id'>merge</span><span class='lparen token'>(</span><span class='opts identifier id'>opts</span><span class='rparen token'>)</span><span class='rparen token'>)</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="chrome-class_method">
   
     + (<tt>Object</tt>) <strong>chrome</strong>(opts = {}) 
   
@@ -749,15 +1111,15 @@ Returns the value of attribute version
       <pre class="lines">
 
 
-53
-54
-55
-56
-57
-58</pre>
+63
+64
+65
+66
+67
+68</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 53</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 63</span>
 
 <span class='def def kw'>def</span> <span class='chrome identifier id'>chrome</span><span class='lparen token'>(</span><span class='opts identifier id'>opts</span> <span class='assign token'>=</span> <span class='lbrace token'>{</span><span class='rbrace token'>}</span><span class='rparen token'>)</span>
   <span class='new identifier id'>new</span><span class='lparen token'>(</span><span class='lbrace token'>{</span>
@@ -784,15 +1146,15 @@ Returns the value of attribute version
       <pre class="lines">
 
 
-19
-20
-21
-22
-23
-24</pre>
+29
+30
+31
+32
+33
+34</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 19</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 29</span>
 
 <span class='def def kw'>def</span> <span class='firefox identifier id'>firefox</span><span class='lparen token'>(</span><span class='opts identifier id'>opts</span> <span class='assign token'>=</span> <span class='lbrace token'>{</span><span class='rbrace token'>}</span><span class='rparen token'>)</span>
   <span class='new identifier id'>new</span><span class='lparen token'>(</span><span class='lbrace token'>{</span>
@@ -819,14 +1181,14 @@ Returns the value of attribute version
       <pre class="lines">
 
 
-33
-34
-35
-36
-37</pre>
+43
+44
+45
+46
+47</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 33</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 43</span>
 
 <span class='def def kw'>def</span> <span class='htmlunit identifier id'>htmlunit</span><span class='lparen token'>(</span><span class='opts identifier id'>opts</span> <span class='assign token'>=</span> <span class='lbrace token'>{</span><span class='rbrace token'>}</span><span class='rparen token'>)</span>
   <span class='new identifier id'>new</span><span class='lparen token'>(</span><span class='lbrace token'>{</span>
@@ -852,15 +1214,15 @@ Returns the value of attribute version
       <pre class="lines">
 
 
-26
-27
-28
-29
-30
-31</pre>
+36
+37
+38
+39
+40
+41</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 26</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 36</span>
 
 <span class='def def kw'>def</span> <span class='internet_explorer identifier id'>internet_explorer</span><span class='lparen token'>(</span><span class='opts identifier id'>opts</span> <span class='assign token'>=</span> <span class='lbrace token'>{</span><span class='rbrace token'>}</span><span class='rparen token'>)</span>
   <span class='new identifier id'>new</span><span class='lparen token'>(</span><span class='lbrace token'>{</span>
@@ -887,15 +1249,15 @@ Returns the value of attribute version
       <pre class="lines">
 
 
-46
-47
-48
-49
-50
-51</pre>
+56
+57
+58
+59
+60
+61</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 46</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 56</span>
 
 <span class='def def kw'>def</span> <span class='iphone identifier id'>iphone</span><span class='lparen token'>(</span><span class='opts identifier id'>opts</span> <span class='assign token'>=</span> <span class='lbrace token'>{</span><span class='rbrace token'>}</span><span class='rparen token'>)</span>
   <span class='new identifier id'>new</span><span class='lparen token'>(</span><span class='lbrace token'>{</span>
@@ -922,24 +1284,30 @@ Returns the value of attribute version
       <pre class="lines">
 
 
-64
-65
-66
-67
-68
-69
-70
-71</pre>
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 64</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 81</span>
 
 <span class='def def kw'>def</span> <span class='json_create identifier id'>json_create</span><span class='lparen token'>(</span><span class='data identifier id'>data</span><span class='rparen token'>)</span>
   <span class='new identifier id'>new</span><span class='lparen token'>(</span>
-    <span class='symbol val'>:browser_name</span>       <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='data identifier id'>data</span><span class='lbrack token'>[</span><span class='string val'>&quot;browserName&quot;</span><span class='rbrack token'>]</span><span class='comma token'>,</span>
-    <span class='symbol val'>:version</span>            <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='data identifier id'>data</span><span class='lbrack token'>[</span><span class='string val'>&quot;version&quot;</span><span class='rbrack token'>]</span><span class='comma token'>,</span>
-    <span class='symbol val'>:platform</span>           <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='data identifier id'>data</span><span class='lbrack token'>[</span><span class='string val'>&quot;platform&quot;</span><span class='rbrack token'>]</span><span class='dot token'>.</span><span class='downcase identifier id'>downcase</span><span class='dot token'>.</span><span class='to_sym identifier id'>to_sym</span><span class='comma token'>,</span>
-    <span class='symbol val'>:javascript_enabled</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='data identifier id'>data</span><span class='lbrack token'>[</span><span class='string val'>&quot;javascriptEnabled&quot;</span><span class='rbrack token'>]</span>
+    <span class='symbol val'>:browser_name</span>          <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='data identifier id'>data</span><span class='lbrack token'>[</span><span class='string val'>&quot;browserName&quot;</span><span class='rbrack token'>]</span><span class='comma token'>,</span>
+    <span class='symbol val'>:version</span>               <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='data identifier id'>data</span><span class='lbrack token'>[</span><span class='string val'>&quot;version&quot;</span><span class='rbrack token'>]</span><span class='comma token'>,</span>
+    <span class='symbol val'>:platform</span>              <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='data identifier id'>data</span><span class='lbrack token'>[</span><span class='string val'>&quot;platform&quot;</span><span class='rbrack token'>]</span><span class='dot token'>.</span><span class='downcase identifier id'>downcase</span><span class='dot token'>.</span><span class='to_sym identifier id'>to_sym</span><span class='comma token'>,</span>
+    <span class='symbol val'>:javascript_enabled</span>    <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='data identifier id'>data</span><span class='lbrack token'>[</span><span class='string val'>&quot;javascriptEnabled&quot;</span><span class='rbrack token'>]</span><span class='comma token'>,</span>
+    <span class='symbol val'>:css_selectors_enabled</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='data identifier id'>data</span><span class='lbrack token'>[</span><span class='string val'>&quot;cssSelectorsEnabled&quot;</span><span class='rbrack token'>]</span><span class='comma token'>,</span>
+    <span class='symbol val'>:takes_screenshot</span>      <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='data identifier id'>data</span><span class='lbrack token'>[</span><span class='string val'>&quot;takesScreenshot&quot;</span><span class='rbrack token'>]</span><span class='comma token'>,</span>
+    <span class='symbol val'>:native_events</span>         <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='data identifier id'>data</span><span class='lbrack token'>[</span><span class='string val'>&quot;nativeEvents&quot;</span><span class='rbrack token'>]</span>
   <span class='rparen token'>)</span>
 <span class='end end kw'>end</span>
 </pre>
@@ -961,15 +1329,15 @@ Returns the value of attribute version
       <pre class="lines">
 
 
-39
-40
-41
-42
-43
-44</pre>
+49
+50
+51
+52
+53
+54</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 39</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 49</span>
 
 <span class='def def kw'>def</span> <span class='safari identifier id'>safari</span><span class='lparen token'>(</span><span class='opts identifier id'>opts</span> <span class='assign token'>=</span> <span class='lbrace token'>{</span><span class='rbrace token'>}</span><span class='rparen token'>)</span>
   <span class='new identifier id'>new</span><span class='lparen token'>(</span><span class='lbrace token'>{</span>
@@ -990,7 +1358,52 @@ Returns the value of attribute version
     
     
       <div class="method_details first">
-  <p class="signature first" id="to_json-instance_method">
+  <p class="signature first" id="as_json-instance_method">
+  
+    - (<tt>Object</tt>) <strong>as_json</strong>(opts = nil) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 119</span>
+
+<span class='def def kw'>def</span> <span class='as_json identifier id'>as_json</span><span class='lparen token'>(</span><span class='opts identifier id'>opts</span> <span class='assign token'>=</span> <span class='nil nil kw'>nil</span><span class='rparen token'>)</span>
+  <span class='lbrace token'>{</span>
+    <span class='string val'>&quot;browserName&quot;</span>         <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='browser_name identifier id'>browser_name</span><span class='comma token'>,</span>
+    <span class='string val'>&quot;version&quot;</span>             <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='version identifier id'>version</span><span class='comma token'>,</span>
+    <span class='string val'>&quot;platform&quot;</span>            <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='platform identifier id'>platform</span><span class='dot token'>.</span><span class='to_s identifier id'>to_s</span><span class='dot token'>.</span><span class='upcase identifier id'>upcase</span><span class='comma token'>,</span>
+    <span class='string val'>&quot;javascriptEnabled&quot;</span>   <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='javascript_enabled? fid id'>javascript_enabled?</span><span class='comma token'>,</span>
+    <span class='string val'>&quot;cssCelectorsEnabled&quot;</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='css_selectors_enabled? fid id'>css_selectors_enabled?</span><span class='comma token'>,</span>
+    <span class='string val'>&quot;takesScreenshot&quot;</span>     <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='takes_screenshot? fid id'>takes_screenshot?</span><span class='comma token'>,</span>
+    <span class='string val'>&quot;nativeEvents&quot;</span>        <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='native_events? fid id'>native_events?</span>
+  <span class='rbrace token'>}</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="to_json-instance_method">
   
     - (<tt>Object</tt>) <strong>to_json</strong>(*args) 
   
@@ -1002,25 +1415,15 @@ Returns the value of attribute version
       <pre class="lines">
 
 
-93
-94
-95
-96
-97
-98
-99
-100</pre>
+131
+132
+133</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 93</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 131</span>
 
 <span class='def def kw'>def</span> <span class='to_json identifier id'>to_json</span><span class='lparen token'>(</span><span class='mult op'>*</span><span class='args identifier id'>args</span><span class='rparen token'>)</span>
-  <span class='lbrace token'>{</span>
-    <span class='string val'>&quot;browserName&quot;</span>       <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='browser_name identifier id'>browser_name</span><span class='comma token'>,</span>
-    <span class='string val'>&quot;version&quot;</span>           <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='version identifier id'>version</span><span class='comma token'>,</span>
-    <span class='string val'>&quot;platform&quot;</span>          <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='platform identifier id'>platform</span><span class='dot token'>.</span><span class='to_s identifier id'>to_s</span><span class='dot token'>.</span><span class='upcase identifier id'>upcase</span><span class='comma token'>,</span>
-    <span class='string val'>&quot;javascriptEnabled&quot;</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='javascript? fid id'>javascript?</span>
-  <span class='rbrace token'>}</span><span class='dot token'>.</span><span class='to_json identifier id'>to_json</span><span class='lparen token'>(</span><span class='mult op'>*</span><span class='args identifier id'>args</span><span class='rparen token'>)</span>
+  <span class='as_json identifier id'>as_json</span><span class='dot token'>.</span><span class='to_json identifier id'>to_json</span><span class='lparen token'>(</span><span class='mult op'>*</span><span class='args identifier id'>args</span><span class='rparen token'>)</span>
 <span class='end end kw'>end</span>
 </pre>
     </td>
@@ -1033,7 +1436,7 @@ Returns the value of attribute version
 </div>
     
     <div id="footer">
-  Generated on Fri Sep 24 16:17:04 2010 by 
+  Generated on Sat Oct 09 02:15:19 2010 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.6.1 (ruby-1.8.7).
 </div>

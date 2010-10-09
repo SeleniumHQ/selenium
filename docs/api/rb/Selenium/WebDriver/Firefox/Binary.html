@@ -84,6 +84,12 @@
   
     <dl class="constants">
       
+        <dt id="WAIT_TIMEOUT-constant" class="">WAIT_TIMEOUT =
+          
+        </dt>
+        <dd><pre class="code"><span class='integer val'>90</span>
+</pre></dd>
+      
         <dt id="NO_FOCUS_LIBRARY_NAME-constant" class="">NO_FOCUS_LIBRARY_NAME =
           
         </dt>
@@ -187,70 +193,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#create_base_profile-instance_method" title="#create_base_profile (instance method)">- (Object) <strong>create_base_profile</strong>(name) </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
       <a href="#execute-instance_method" title="#execute (instance method)">- (Object) <strong>execute</strong>(*extra_args) </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#kill-instance_method" title="#kill (instance method)">- (Object) <strong>kill</strong> </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#pid-instance_method" title="#pid (instance method)">- (Object) <strong>pid</strong> </a>
     
 
     
@@ -292,7 +235,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#start_with-instance_method" title="#start_with (instance method)">- (Object) <strong>start_with</strong>(profile, *args) </a>
+      <a href="#start_with-instance_method" title="#start_with (instance method)">- (Object) <strong>start_with</strong>(profile, profile_path, *args) </a>
     
 
     
@@ -353,27 +296,27 @@
       <pre class="lines">
 
 
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
 109
 110
-111
-112
-113
-114
-115
-116
-117
-118
-119
-120
-121
-122
-123
-124
-125
-126</pre>
+111</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/binary.rb', line 109</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/binary.rb', line 94</span>
 
 <span class='def def kw'>def</span> <span class='path identifier id'>path</span>
   <span class='@path ivar id'>@path</span> <span class='opasgn op'>||=</span> <span class='case case kw'>case</span> <span class='Platform constant id'>Platform</span><span class='dot token'>.</span><span class='os identifier id'>os</span>
@@ -387,7 +330,7 @@
               <span class='raise identifier id'>raise</span> <span class='Error constant id'>Error</span><span class='colon2 op'>::</span><span class='WebDriverError constant id'>WebDriverError</span><span class='comma token'>,</span> <span class='dstring node'>&quot;unknown platform: #{Platform.os}&quot;</span>
             <span class='end end kw'>end</span>
 
-  <span class='unless unless kw'>unless</span> <span class='File constant id'>File</span><span class='dot token'>.</span><span class='file? fid id'>file?</span><span class='lparen token'>(</span><span class='@path ivar id'>@path</span><span class='rparen token'>)</span>
+  <span class='unless unless kw'>unless</span> <span class='File constant id'>File</span><span class='dot token'>.</span><span class='file? fid id'>file?</span><span class='lparen token'>(</span><span class='@path ivar id'>@path</span><span class='dot token'>.</span><span class='to_s identifier id'>to_s</span><span class='rparen token'>)</span>
     <span class='raise identifier id'>raise</span> <span class='Error constant id'>Error</span><span class='colon2 op'>::</span><span class='WebDriverError constant id'>WebDriverError</span><span class='comma token'>,</span> <span class='dstring node'>&quot;Could not find Firefox binary (os=#{Platform.os}). Make sure Firefox is installed or set the path manually with #{self}.path=&quot;</span>
   <span class='end end kw'>end</span>
 
@@ -427,13 +370,13 @@
       <pre class="lines">
 
 
-104
-105
-106
-107</pre>
+89
+90
+91
+92</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/binary.rb', line 104</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/binary.rb', line 89</span>
 
 <span class='def def kw'>def</span> <span class='path= identifier id'>path=</span><span class='lparen token'>(</span><span class='path identifier id'>path</span><span class='rparen token'>)</span>
   <span class='Platform constant id'>Platform</span><span class='dot token'>.</span><span class='assert_executable identifier id'>assert_executable</span><span class='lparen token'>(</span><span class='path identifier id'>path</span><span class='rparen token'>)</span>
@@ -464,85 +407,38 @@
       <pre class="lines">
 
 
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
 44
 45
 46
 47
-48
-49
-50
-51
-52
-53
-54
-55
-56
-57
-58</pre>
+48</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/binary.rb', line 44</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/binary.rb', line 34</span>
 
 <span class='def def kw'>def</span> <span class='cope_with_mac_strangeness identifier id'>cope_with_mac_strangeness</span><span class='lparen token'>(</span><span class='args identifier id'>args</span><span class='rparen token'>)</span>
   <span class='sleep identifier id'>sleep</span> <span class='integer val'>0</span><span class='integer val'>.3</span>
 
-  <span class='if if kw'>if</span> <span class='@process ivar id'>@process</span><span class='dot token'>.</span><span class='ugly_death? fid id'>ugly_death?</span>
-    <span class='comment val'># process crashed, trying a restart. sleeping 5 seconds shorter than the java driver</span>
-    <span class='sleep identifier id'>sleep</span> <span class='integer val'>5</span>
+  <span class='if if kw'>if</span> <span class='@process ivar id'>@process</span><span class='dot token'>.</span><span class='crashed? fid id'>crashed?</span>
+    <span class='comment val'># ok, trying a restart</span>
+    <span class='sleep identifier id'>sleep</span> <span class='integer val'>7</span>
     <span class='execute identifier id'>execute</span><span class='lparen token'>(</span><span class='mult op'>*</span><span class='args identifier id'>args</span><span class='rparen token'>)</span>
   <span class='end end kw'>end</span>
 
   <span class='comment val'># ensure we're ok</span>
   <span class='sleep identifier id'>sleep</span> <span class='integer val'>0</span><span class='integer val'>.3</span>
-  <span class='if if kw'>if</span> <span class='@process ivar id'>@process</span><span class='dot token'>.</span><span class='ugly_death? fid id'>ugly_death?</span>
+  <span class='if if kw'>if</span> <span class='@process ivar id'>@process</span><span class='dot token'>.</span><span class='crashed? fid id'>crashed?</span>
     <span class='raise identifier id'>raise</span> <span class='Error constant id'>Error</span><span class='colon2 op'>::</span><span class='WebDriverError constant id'>WebDriverError</span><span class='comma token'>,</span> <span class='dstring node'>&quot;unable to start Firefox cleanly, args: #{args.inspect}&quot;</span>
-  <span class='end end kw'>end</span>
-<span class='end end kw'>end</span>
-</pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <p class="signature " id="create_base_profile-instance_method">
-  
-    - (<tt>Object</tt>) <strong>create_base_profile</strong>(name) 
-  
-
-  
-</p><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-14
-15
-16
-17
-18
-19
-20
-21
-22
-23
-24
-25</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/binary.rb', line 14</span>
-
-<span class='def def kw'>def</span> <span class='create_base_profile identifier id'>create_base_profile</span><span class='lparen token'>(</span><span class='name identifier id'>name</span><span class='rparen token'>)</span>
-  <span class='execute identifier id'>execute</span><span class='lparen token'>(</span><span class='string val'>&quot;-CreateProfile&quot;</span><span class='comma token'>,</span> <span class='name identifier id'>name</span><span class='rparen token'>)</span>
-
-  <span class='status identifier id'>status</span> <span class='assign token'>=</span> <span class='nil nil kw'>nil</span>
-  <span class='Timeout constant id'>Timeout</span><span class='dot token'>.</span><span class='timeout identifier id'>timeout</span><span class='lparen token'>(</span><span class='integer val'>15</span><span class='comma token'>,</span> <span class='Error constant id'>Error</span><span class='colon2 op'>::</span><span class='TimeOutError constant id'>TimeOutError</span><span class='rparen token'>)</span> <span class='do do kw'>do</span>
-    <span class='_ identifier id'>_</span><span class='comma token'>,</span> <span class='status identifier id'>status</span> <span class='assign token'>=</span> <span class='wait identifier id'>wait</span>
-  <span class='end end kw'>end</span>
-
-  <span class='if if kw'>if</span> <span class='status identifier id'>status</span> <span class='andop op'>&amp;&amp;</span> <span class='status identifier id'>status</span><span class='dot token'>.</span><span class='to_i identifier id'>to_i</span> <span class='neq op'>!=</span> <span class='integer val'>0</span>
-    <span class='raise identifier id'>raise</span> <span class='Error constant id'>Error</span><span class='colon2 op'>::</span><span class='WebDriverError constant id'>WebDriverError</span><span class='comma token'>,</span> <span class='dstring node'>&quot;could not create base profile: (exit status: #{status})&quot;</span>
   <span class='end end kw'>end</span>
 <span class='end end kw'>end</span>
 </pre>
@@ -564,75 +460,17 @@
       <pre class="lines">
 
 
-39
-40
-41
-42</pre>
+29
+30
+31
+32</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/binary.rb', line 39</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/binary.rb', line 29</span>
 
 <span class='def def kw'>def</span> <span class='execute identifier id'>execute</span><span class='lparen token'>(</span><span class='mult op'>*</span><span class='extra_args identifier id'>extra_args</span><span class='rparen token'>)</span>
   <span class='args identifier id'>args</span> <span class='assign token'>=</span> <span class='lbrack token'>[</span><span class='self self kw'>self</span><span class='dot token'>.</span><span class='class identifier id'>class</span><span class='dot token'>.</span><span class='path identifier id'>path</span><span class='comma token'>,</span> <span class='string val'>&quot;-no-remote&quot;</span><span class='comma token'>,</span> <span class='string val'>&quot;--verbose&quot;</span><span class='rbrack token'>]</span> <span class='plus op'>+</span> <span class='extra_args identifier id'>extra_args</span>
-  <span class='@process ivar id'>@process</span> <span class='assign token'>=</span> <span class='ChildProcess constant id'>ChildProcess</span><span class='dot token'>.</span><span class='new identifier id'>new</span><span class='lparen token'>(</span><span class='mult op'>*</span><span class='args identifier id'>args</span><span class='rparen token'>)</span><span class='dot token'>.</span><span class='start identifier id'>start</span>
-<span class='end end kw'>end</span>
-</pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <p class="signature " id="kill-instance_method">
-  
-    - (<tt>Object</tt>) <strong>kill</strong> 
-  
-
-  
-</p><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-64
-65
-66</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/binary.rb', line 64</span>
-
-<span class='def def kw'>def</span> <span class='kill identifier id'>kill</span>
-  <span class='@process ivar id'>@process</span><span class='dot token'>.</span><span class='kill identifier id'>kill</span> <span class='if if_mod kw'>if</span> <span class='@process ivar id'>@process</span>
-<span class='end end kw'>end</span>
-</pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <p class="signature " id="pid-instance_method">
-  
-    - (<tt>Object</tt>) <strong>pid</strong> 
-  
-
-  
-</p><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-72
-73
-74</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/binary.rb', line 72</span>
-
-<span class='def def kw'>def</span> <span class='pid identifier id'>pid</span>
-  <span class='@process ivar id'>@process</span><span class='dot token'>.</span><span class='pid identifier id'>pid</span> <span class='if if_mod kw'>if</span> <span class='@process ivar id'>@process</span>
+  <span class='@process ivar id'>@process</span> <span class='assign token'>=</span> <span class='ChildProcess constant id'>ChildProcess</span><span class='dot token'>.</span><span class='build identifier id'>build</span><span class='lparen token'>(</span><span class='mult op'>*</span><span class='args identifier id'>args</span><span class='rparen token'>)</span><span class='dot token'>.</span><span class='start identifier id'>start</span>
 <span class='end end kw'>end</span>
 </pre>
     </td>
@@ -653,15 +491,23 @@
       <pre class="lines">
 
 
-60
-61
-62</pre>
+50
+51
+52
+53
+54
+55
+56</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/binary.rb', line 60</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/binary.rb', line 50</span>
 
 <span class='def def kw'>def</span> <span class='quit identifier id'>quit</span>
-  <span class='@process ivar id'>@process</span><span class='dot token'>.</span><span class='ensure_death identifier id'>ensure_death</span> <span class='if if_mod kw'>if</span> <span class='@process ivar id'>@process</span>
+  <span class='return return kw'>return</span> <span class='unless unless_mod kw'>unless</span> <span class='@process ivar id'>@process</span>
+  <span class='@process ivar id'>@process</span><span class='dot token'>.</span><span class='poll_for_exit identifier id'>poll_for_exit</span> <span class='integer val'>5</span>
+<span class='rescue rescue kw'>rescue</span> <span class='ChildProcess constant id'>ChildProcess</span><span class='colon2 op'>::</span><span class='TimeoutError constant id'>TimeoutError</span>
+  <span class='comment val'># ok, force quit</span>
+  <span class='@process ivar id'>@process</span><span class='dot token'>.</span><span class='stop identifier id'>stop</span> <span class='integer val'>5</span>
 <span class='end end kw'>end</span>
 </pre>
     </td>
@@ -672,7 +518,7 @@
       <div class="method_details ">
   <p class="signature " id="start_with-instance_method">
   
-    - (<tt>Object</tt>) <strong>start_with</strong>(profile, *args) 
+    - (<tt>Object</tt>) <strong>start_with</strong>(profile, profile_path, *args) 
   
 
   
@@ -682,27 +528,31 @@
       <pre class="lines">
 
 
-27
-28
-29
-30
-31
-32
-33
-34
-35
-36
-37</pre>
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/binary.rb', line 27</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/binary.rb', line 15</span>
 
-<span class='def def kw'>def</span> <span class='start_with identifier id'>start_with</span><span class='lparen token'>(</span><span class='profile identifier id'>profile</span><span class='comma token'>,</span> <span class='mult op'>*</span><span class='args identifier id'>args</span><span class='rparen token'>)</span>
-  <span class='ENV constant id'>ENV</span><span class='lbrack token'>[</span><span class='string val'>'XRE_PROFILE_PATH'</span><span class='rbrack token'>]</span> <span class='assign token'>=</span> <span class='profile identifier id'>profile</span><span class='dot token'>.</span><span class='absolute_path identifier id'>absolute_path</span>
+<span class='def def kw'>def</span> <span class='start_with identifier id'>start_with</span><span class='lparen token'>(</span><span class='profile identifier id'>profile</span><span class='comma token'>,</span> <span class='profile_path identifier id'>profile_path</span><span class='comma token'>,</span> <span class='mult op'>*</span><span class='args identifier id'>args</span><span class='rparen token'>)</span>
+  <span class='profile_path identifier id'>profile_path</span> <span class='assign token'>=</span> <span class='profile_path identifier id'>profile_path</span><span class='dot token'>.</span><span class='gsub identifier id'>gsub</span><span class='lparen token'>(</span><span class='string val'>&quot;/&quot;</span><span class='comma token'>,</span> <span class='string val'>&quot;\\&quot;</span><span class='rparen token'>)</span> <span class='if if_mod kw'>if</span> <span class='Platform constant id'>Platform</span><span class='dot token'>.</span><span class='win? fid id'>win?</span>
+
+  <span class='ENV constant id'>ENV</span><span class='lbrack token'>[</span><span class='string val'>'XRE_PROFILE_PATH'</span><span class='rbrack token'>]</span> <span class='assign token'>=</span> <span class='profile_path identifier id'>profile_path</span>
   <span class='ENV constant id'>ENV</span><span class='lbrack token'>[</span><span class='string val'>'MOZ_NO_REMOTE'</span><span class='rbrack token'>]</span> <span class='assign token'>=</span> <span class='string val'>'1'</span> <span class='comment val'># able to launch multiple instances</span>
 
   <span class='if if kw'>if</span> <span class='Platform constant id'>Platform</span><span class='dot token'>.</span><span class='linux? fid id'>linux?</span> <span class='andop op'>&amp;&amp;</span> <span class='lparen token'>(</span><span class='profile identifier id'>profile</span><span class='dot token'>.</span><span class='native_events? fid id'>native_events?</span> <span class='orop op'>||</span> <span class='profile identifier id'>profile</span><span class='dot token'>.</span><span class='load_no_focus_lib? fid id'>load_no_focus_lib?</span><span class='rparen token'>)</span>
-    <span class='modify_link_library_path identifier id'>modify_link_library_path</span> <span class='profile identifier id'>profile</span>
+    <span class='modify_link_library_path identifier id'>modify_link_library_path</span> <span class='profile_path identifier id'>profile_path</span>
   <span class='end end kw'>end</span>
 
   <span class='execute identifier id'>execute</span><span class='lparen token'>(</span><span class='mult op'>*</span><span class='args identifier id'>args</span><span class='rparen token'>)</span>
@@ -727,15 +577,15 @@
       <pre class="lines">
 
 
-68
-69
-70</pre>
+58
+59
+60</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/binary.rb', line 68</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/binary.rb', line 58</span>
 
 <span class='def def kw'>def</span> <span class='wait identifier id'>wait</span>
-  <span class='@process ivar id'>@process</span><span class='dot token'>.</span><span class='wait identifier id'>wait</span> <span class='if if_mod kw'>if</span> <span class='@process ivar id'>@process</span>
+  <span class='@process ivar id'>@process</span><span class='dot token'>.</span><span class='poll_for_exit identifier id'>poll_for_exit</span><span class='lparen token'>(</span><span class='WAIT_TIMEOUT constant id'>WAIT_TIMEOUT</span><span class='rparen token'>)</span> <span class='if if_mod kw'>if</span> <span class='@process ivar id'>@process</span>
 <span class='end end kw'>end</span>
 </pre>
     </td>
@@ -748,7 +598,7 @@
 </div>
     
     <div id="footer">
-  Generated on Fri Sep 24 16:17:02 2010 by 
+  Generated on Sat Oct 09 02:15:14 2010 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.6.1 (ruby-1.8.7).
 </div>

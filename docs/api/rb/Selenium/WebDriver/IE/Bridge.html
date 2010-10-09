@@ -93,7 +93,7 @@
   
   
   <h3 class="inherited">Constants included from <span class='object_link'><a href="Util.html" title="Selenium::WebDriver::IE::Util (module)">Util</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="Util.html#CP_ACP-constant" title="Selenium::WebDriver::IE::Util::CP_ACP (constant)">CP_ACP</a></span>, <span class='object_link'><a href="Util.html#CP_MACCP-constant" title="Selenium::WebDriver::IE::Util::CP_MACCP (constant)">CP_MACCP</a></span>, <span class='object_link'><a href="Util.html#CP_OEMCP-constant" title="Selenium::WebDriver::IE::Util::CP_OEMCP (constant)">CP_OEMCP</a></span>, <span class='object_link'><a href="Util.html#CP_SYMBOL-constant" title="Selenium::WebDriver::IE::Util::CP_SYMBOL (constant)">CP_SYMBOL</a></span>, <span class='object_link'><a href="Util.html#CP_THREAD_ACP-constant" title="Selenium::WebDriver::IE::Util::CP_THREAD_ACP (constant)">CP_THREAD_ACP</a></span>, <span class='object_link'><a href="Util.html#CP_UTF7-constant" title="Selenium::WebDriver::IE::Util::CP_UTF7 (constant)">CP_UTF7</a></span>, <span class='object_link'><a href="Util.html#CP_UTF8-constant" title="Selenium::WebDriver::IE::Util::CP_UTF8 (constant)">CP_UTF8</a></span></p>
+  <p class="inherited"><span class='object_link'><a href="Util.html#CP_UTF8-constant" title="Selenium::WebDriver::IE::Util::CP_UTF8 (constant)">CP_UTF8</a></span></p>
 
 
   
@@ -1582,17 +1582,17 @@ Configuration
       <pre class="lines">
 
 
+170
+171
+172
+173
+174
+175
 176
-177
-178
-179
-180
-181
-182
-183</pre>
+177</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 176</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 170</span>
 
 <span class='def def kw'>def</span> <span class='addCookie identifier id'>addCookie</span><span class='lparen token'>(</span><span class='opts identifier id'>opts</span><span class='rparen token'>)</span>
   <span class='cookie_string identifier id'>cookie_string</span>  <span class='assign token'>=</span> <span class='dstring node'>&quot;#{opts[:name]}=#{opts[:value]}; &quot;</span>
@@ -1650,12 +1650,12 @@ Configuration
       <pre class="lines">
 
 
-382
-383
-384</pre>
+376
+377
+378</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 382</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 376</span>
 
 <span class='def def kw'>def</span> <span class='clearElement identifier id'>clearElement</span><span class='lparen token'>(</span><span class='element_pointer identifier id'>element_pointer</span><span class='rparen token'>)</span>
   <span class='check_error_code identifier id'>check_error_code</span> <span class='Lib constant id'>Lib</span><span class='dot token'>.</span><span class='wdeClear identifier id'>wdeClear</span><span class='lparen token'>(</span><span class='element_pointer identifier id'>element_pointer</span><span class='rparen token'>)</span><span class='comma token'>,</span> <span class='string val'>&quot;unable to clear element&quot;</span>
@@ -1690,12 +1690,12 @@ Element functions
       <pre class="lines">
 
 
-344
-345
-346</pre>
+338
+339
+340</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 344</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 338</span>
 
 <span class='def def kw'>def</span> <span class='clickElement identifier id'>clickElement</span><span class='lparen token'>(</span><span class='element_pointer identifier id'>element_pointer</span><span class='rparen token'>)</span>
   <span class='check_error_code identifier id'>check_error_code</span> <span class='Lib constant id'>Lib</span><span class='dot token'>.</span><span class='wdeClick identifier id'>wdeClick</span><span class='lparen token'>(</span><span class='element_pointer identifier id'>element_pointer</span><span class='rparen token'>)</span><span class='comma token'>,</span> <span class='string val'>&quot;unable to click element&quot;</span>
@@ -1719,12 +1719,12 @@ Element functions
       <pre class="lines">
 
 
-122
-123
-124</pre>
+119
+120
+121</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 122</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 119</span>
 
 <span class='def def kw'>def</span> <span class='close identifier id'>close</span>
   <span class='check_error_code identifier id'>check_error_code</span> <span class='Lib constant id'>Lib</span><span class='dot token'>.</span><span class='wdClose identifier id'>wdClose</span><span class='lparen token'>(</span><span class='@driver_pointer ivar id'>@driver_pointer</span><span class='rparen token'>)</span><span class='comma token'>,</span> <span class='string val'>&quot;unable to close driver&quot;</span>
@@ -1769,12 +1769,12 @@ Element functions
       <pre class="lines">
 
 
-209
-210
-211</pre>
+203
+204
+205</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 209</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 203</span>
 
 <span class='def def kw'>def</span> <span class='deleteAllCookies identifier id'>deleteAllCookies</span>
   <span class='raise identifier id'>raise</span> <span class='NotImplementedError constant id'>NotImplementedError</span><span class='comma token'>,</span> <span class='string val'>&quot;missing from IE driver&quot;</span>
@@ -1819,12 +1819,12 @@ Element functions
       <pre class="lines">
 
 
-205
-206
-207</pre>
+199
+200
+201</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 205</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 199</span>
 
 <span class='def def kw'>def</span> <span class='deleteCookie identifier id'>deleteCookie</span><span class='lparen token'>(</span><span class='name identifier id'>name</span><span class='rparen token'>)</span>
   <span class='raise identifier id'>raise</span> <span class='NotImplementedError constant id'>NotImplementedError</span><span class='comma token'>,</span> <span class='string val'>&quot;missing from IE driver&quot;</span>
@@ -1848,28 +1848,26 @@ Element functions
       <pre class="lines">
 
 
+440
+441
+442
+443
+444
+445
+446
+447
+448
+449
+450
+451
+452
+453
 454
 455
-456
-457
-458
-459
-460
-461
-462
-463
-464
-465
-466
-467
-468
-469
-470
-471
-472</pre>
+456</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 454</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 440</span>
 
 <span class='def def kw'>def</span> <span class='dragElement identifier id'>dragElement</span><span class='lparen token'>(</span><span class='element_pointer identifier id'>element_pointer</span><span class='comma token'>,</span> <span class='right_by identifier id'>right_by</span><span class='comma token'>,</span> <span class='down_by identifier id'>down_by</span><span class='rparen token'>)</span>
   <span class='comment val'># TODO: check return values?</span>
@@ -1887,8 +1885,6 @@ Element functions
 
   <span class='Lib constant id'>Lib</span><span class='dot token'>.</span><span class='wdeMouseMoveTo identifier id'>wdeMouseMoveTo</span><span class='lparen token'>(</span><span class='hwnd identifier id'>hwnd</span><span class='dot token'>.</span><span class='get_pointer identifier id'>get_pointer</span><span class='lparen token'>(</span><span class='integer val'>0</span><span class='rparen token'>)</span><span class='comma token'>,</span> <span class='duration identifier id'>duration</span><span class='comma token'>,</span> <span class='x identifier id'>x</span><span class='dot token'>.</span><span class='get_long identifier id'>get_long</span><span class='lparen token'>(</span><span class='integer val'>0</span><span class='rparen token'>)</span><span class='comma token'>,</span> <span class='y identifier id'>y</span><span class='dot token'>.</span><span class='get_long identifier id'>get_long</span><span class='lparen token'>(</span><span class='integer val'>0</span><span class='rparen token'>)</span><span class='comma token'>,</span> <span class='destination_x identifier id'>destination_x</span><span class='comma token'>,</span> <span class='destination_y identifier id'>destination_y</span><span class='rparen token'>)</span>
   <span class='Lib constant id'>Lib</span><span class='dot token'>.</span><span class='wdeMouseUpAt identifier id'>wdeMouseUpAt</span><span class='lparen token'>(</span><span class='hwnd identifier id'>hwnd</span><span class='dot token'>.</span><span class='get_pointer identifier id'>get_pointer</span><span class='lparen token'>(</span><span class='integer val'>0</span><span class='rparen token'>)</span><span class='comma token'>,</span> <span class='destination_x identifier id'>destination_x</span><span class='comma token'>,</span> <span class='destination_y identifier id'>destination_y</span><span class='rparen token'>)</span>
-<span class='ensure ensure kw'>ensure</span>
-  <span class='lbrack token'>[</span><span class='hwnd identifier id'>hwnd</span><span class='comma token'>,</span> <span class='x identifier id'>x</span><span class='comma token'>,</span> <span class='y identifier id'>y</span><span class='comma token'>,</span> <span class='width identifier id'>width</span><span class='comma token'>,</span> <span class='height identifier id'>height</span><span class='rbrack token'>]</span><span class='dot token'>.</span><span class='each identifier id'>each</span> <span class='lbrace token'>{</span> <span class='bitor op'>|</span><span class='pointer identifier id'>pointer</span><span class='bitor op'>|</span> <span class='pointer identifier id'>pointer</span><span class='dot token'>.</span><span class='free identifier id'>free</span> <span class='rbrace token'>}</span>
 <span class='end end kw'>end</span>
 </pre>
     </td>
@@ -1938,12 +1934,12 @@ Element functions
       <pre class="lines">
 
 
-450
-451
-452</pre>
+436
+437
+438</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 450</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 436</span>
 
 <span class='def def kw'>def</span> <span class='elementEquals identifier id'>elementEquals</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='comma token'>,</span> <span class='other identifier id'>other</span><span class='rparen token'>)</span>
   <span class='executeScript identifier id'>executeScript</span> <span class='string val'>&quot;return arguments[0] === arguments[1]&quot;</span><span class='comma token'>,</span> <span class='element identifier id'>element</span><span class='comma token'>,</span> <span class='other identifier id'>other</span>
@@ -1967,6 +1963,10 @@ Element functions
       <pre class="lines">
 
 
+142
+143
+144
+145
 146
 147
 148
@@ -1981,16 +1981,10 @@ Element functions
 157
 158
 159
-160
-161
-162
-163
-164
-165
-166</pre>
+160</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 146</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 142</span>
 
 <span class='def def kw'>def</span> <span class='executeScript identifier id'>executeScript</span><span class='lparen token'>(</span><span class='script identifier id'>script</span><span class='comma token'>,</span> <span class='mult op'>*</span><span class='args identifier id'>args</span><span class='rparen token'>)</span>
   <span class='script_args_ref identifier id'>script_args_ref</span> <span class='assign token'>=</span> <span class='FFI constant id'>FFI</span><span class='colon2 op'>::</span><span class='MemoryPointer constant id'>MemoryPointer</span><span class='dot token'>.</span><span class='new identifier id'>new</span> <span class='symbol val'>:pointer</span>
@@ -2009,8 +2003,6 @@ Element functions
 
   <span class='extract_return_value identifier id'>extract_return_value</span> <span class='script_result_ref identifier id'>script_result_ref</span>
 <span class='ensure ensure kw'>ensure</span>
-  <span class='script_args_ref identifier id'>script_args_ref</span><span class='dot token'>.</span><span class='free identifier id'>free</span>
-  <span class='script_result_ref identifier id'>script_result_ref</span><span class='dot token'>.</span><span class='free identifier id'>free</span> <span class='if if_mod kw'>if</span> <span class='script_result_ref identifier id'>script_result_ref</span>
   <span class='Lib constant id'>Lib</span><span class='dot token'>.</span><span class='wdFreeScriptArgs identifier id'>wdFreeScriptArgs</span><span class='lparen token'>(</span><span class='args_pointer identifier id'>args_pointer</span><span class='rparen token'>)</span> <span class='if if_mod kw'>if</span> <span class='args_pointer identifier id'>args_pointer</span>
 <span class='end end kw'>end</span>
 </pre>
@@ -2032,13 +2024,13 @@ Element functions
       <pre class="lines">
 
 
-498
-499
-500
-501</pre>
+476
+477
+478
+479</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 498</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 476</span>
 
 <span class='def def kw'>def</span> <span class='finalize identifier id'>finalize</span><span class='lparen token'>(</span><span class='element_pointer identifier id'>element_pointer</span><span class='rparen token'>)</span>
   <span class='check_error_code identifier id'>check_error_code</span> <span class='Lib constant id'>Lib</span><span class='dot token'>.</span><span class='wdeFreeElement identifier id'>wdeFreeElement</span><span class='lparen token'>(</span><span class='element_pointer identifier id'>element_pointer</span><span class='rparen token'>)</span><span class='comma token'>,</span>
@@ -2074,15 +2066,15 @@ Finders
       <pre class="lines">
 
 
-225
-226
-227
-228
-229
-230</pre>
+219
+220
+221
+222
+223
+224</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 225</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 219</span>
 
 <span class='def def kw'>def</span> <span class='findElementByClassName identifier id'>findElementByClassName</span><span class='lparen token'>(</span><span class='parent identifier id'>parent</span><span class='comma token'>,</span> <span class='class_name identifier id'>class_name</span><span class='rparen token'>)</span>
   <span class='create_element identifier id'>create_element</span> <span class='do do kw'>do</span> <span class='bitor op'>|</span><span class='raw_element identifier id'>raw_element</span><span class='bitor op'>|</span>
@@ -2109,15 +2101,15 @@ Finders
       <pre class="lines">
 
 
-239
-240
-241
-242
-243
-244</pre>
+233
+234
+235
+236
+237
+238</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 239</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 233</span>
 
 <span class='def def kw'>def</span> <span class='findElementByCssSelector identifier id'>findElementByCssSelector</span><span class='lparen token'>(</span><span class='parent identifier id'>parent</span><span class='comma token'>,</span> <span class='selector identifier id'>selector</span><span class='rparen token'>)</span>
   <span class='create_element identifier id'>create_element</span> <span class='do do kw'>do</span> <span class='bitor op'>|</span><span class='raw_element identifier id'>raw_element</span><span class='bitor op'>|</span>
@@ -2144,15 +2136,15 @@ Finders
       <pre class="lines">
 
 
-253
-254
-255
-256
-257
-258</pre>
+247
+248
+249
+250
+251
+252</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 253</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 247</span>
 
 <span class='def def kw'>def</span> <span class='findElementById identifier id'>findElementById</span><span class='lparen token'>(</span><span class='parent identifier id'>parent</span><span class='comma token'>,</span> <span class='id identifier id'>id</span><span class='rparen token'>)</span>
   <span class='create_element identifier id'>create_element</span> <span class='do do kw'>do</span> <span class='bitor op'>|</span><span class='raw_element identifier id'>raw_element</span><span class='bitor op'>|</span>
@@ -2179,15 +2171,15 @@ Finders
       <pre class="lines">
 
 
-267
-268
-269
-270
-271
-272</pre>
+261
+262
+263
+264
+265
+266</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 267</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 261</span>
 
 <span class='def def kw'>def</span> <span class='findElementByLinkText identifier id'>findElementByLinkText</span><span class='lparen token'>(</span><span class='parent identifier id'>parent</span><span class='comma token'>,</span> <span class='link_text identifier id'>link_text</span><span class='rparen token'>)</span>
   <span class='create_element identifier id'>create_element</span> <span class='do do kw'>do</span> <span class='bitor op'>|</span><span class='raw_element identifier id'>raw_element</span><span class='bitor op'>|</span>
@@ -2214,15 +2206,15 @@ Finders
       <pre class="lines">
 
 
-295
-296
-297
-298
-299
-300</pre>
+289
+290
+291
+292
+293
+294</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 295</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 289</span>
 
 <span class='def def kw'>def</span> <span class='findElementByName identifier id'>findElementByName</span><span class='lparen token'>(</span><span class='parent identifier id'>parent</span><span class='comma token'>,</span> <span class='name identifier id'>name</span><span class='rparen token'>)</span>
   <span class='create_element identifier id'>create_element</span> <span class='do do kw'>do</span> <span class='bitor op'>|</span><span class='raw_element identifier id'>raw_element</span><span class='bitor op'>|</span>
@@ -2249,15 +2241,15 @@ Finders
       <pre class="lines">
 
 
-281
-282
-283
-284
-285
-286</pre>
+275
+276
+277
+278
+279
+280</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 281</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 275</span>
 
 <span class='def def kw'>def</span> <span class='findElementByPartialLinkText identifier id'>findElementByPartialLinkText</span><span class='lparen token'>(</span><span class='parent identifier id'>parent</span><span class='comma token'>,</span> <span class='link_text identifier id'>link_text</span><span class='rparen token'>)</span>
   <span class='create_element identifier id'>create_element</span> <span class='do do kw'>do</span> <span class='bitor op'>|</span><span class='raw_element identifier id'>raw_element</span><span class='bitor op'>|</span>
@@ -2284,15 +2276,15 @@ Finders
       <pre class="lines">
 
 
-309
-310
-311
-312
-313
-314</pre>
+303
+304
+305
+306
+307
+308</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 309</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 303</span>
 
 <span class='def def kw'>def</span> <span class='findElementByTagName identifier id'>findElementByTagName</span><span class='lparen token'>(</span><span class='parent identifier id'>parent</span><span class='comma token'>,</span> <span class='tag_name identifier id'>tag_name</span><span class='rparen token'>)</span>
   <span class='create_element identifier id'>create_element</span> <span class='do do kw'>do</span> <span class='bitor op'>|</span><span class='raw_element identifier id'>raw_element</span><span class='bitor op'>|</span>
@@ -2319,16 +2311,16 @@ Finders
       <pre class="lines">
 
 
-323
-324
-325
-326
-327
-328
-329</pre>
+317
+318
+319
+320
+321
+322
+323</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 323</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 317</span>
 
 <span class='def def kw'>def</span> <span class='findElementByXpath identifier id'>findElementByXpath</span><span class='lparen token'>(</span><span class='parent identifier id'>parent</span><span class='comma token'>,</span> <span class='xpath identifier id'>xpath</span><span class='rparen token'>)</span>
   <span class='create_element identifier id'>create_element</span> <span class='do do kw'>do</span> <span class='bitor op'>|</span><span class='raw_element identifier id'>raw_element</span><span class='bitor op'>|</span>
@@ -2356,15 +2348,15 @@ Finders
       <pre class="lines">
 
 
-232
-233
-234
-235
-236
-237</pre>
+226
+227
+228
+229
+230
+231</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 232</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 226</span>
 
 <span class='def def kw'>def</span> <span class='findElementsByClassName identifier id'>findElementsByClassName</span><span class='lparen token'>(</span><span class='parent identifier id'>parent</span><span class='comma token'>,</span> <span class='class_name identifier id'>class_name</span><span class='rparen token'>)</span>
   <span class='create_element_collection identifier id'>create_element_collection</span> <span class='do do kw'>do</span> <span class='bitor op'>|</span><span class='raw_elements identifier id'>raw_elements</span><span class='bitor op'>|</span>
@@ -2391,15 +2383,15 @@ Finders
       <pre class="lines">
 
 
-246
-247
-248
-249
-250
-251</pre>
+240
+241
+242
+243
+244
+245</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 246</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 240</span>
 
 <span class='def def kw'>def</span> <span class='findElementsByCssSelector identifier id'>findElementsByCssSelector</span><span class='lparen token'>(</span><span class='parent identifier id'>parent</span><span class='comma token'>,</span> <span class='selector identifier id'>selector</span><span class='rparen token'>)</span>
   <span class='create_element_collection identifier id'>create_element_collection</span> <span class='do do kw'>do</span> <span class='bitor op'>|</span><span class='raw_elements identifier id'>raw_elements</span><span class='bitor op'>|</span>
@@ -2426,15 +2418,15 @@ Finders
       <pre class="lines">
 
 
-260
-261
-262
-263
-264
-265</pre>
+254
+255
+256
+257
+258
+259</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 260</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 254</span>
 
 <span class='def def kw'>def</span> <span class='findElementsById identifier id'>findElementsById</span><span class='lparen token'>(</span><span class='parent identifier id'>parent</span><span class='comma token'>,</span> <span class='id identifier id'>id</span><span class='rparen token'>)</span>
   <span class='create_element_collection identifier id'>create_element_collection</span> <span class='do do kw'>do</span> <span class='bitor op'>|</span><span class='raw_elements identifier id'>raw_elements</span><span class='bitor op'>|</span>
@@ -2461,15 +2453,15 @@ Finders
       <pre class="lines">
 
 
-274
-275
-276
-277
-278
-279</pre>
+268
+269
+270
+271
+272
+273</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 274</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 268</span>
 
 <span class='def def kw'>def</span> <span class='findElementsByLinkText identifier id'>findElementsByLinkText</span><span class='lparen token'>(</span><span class='parent identifier id'>parent</span><span class='comma token'>,</span> <span class='link_text identifier id'>link_text</span><span class='rparen token'>)</span>
   <span class='create_element_collection identifier id'>create_element_collection</span> <span class='do do kw'>do</span> <span class='bitor op'>|</span><span class='raw_elements identifier id'>raw_elements</span><span class='bitor op'>|</span>
@@ -2496,15 +2488,15 @@ Finders
       <pre class="lines">
 
 
-302
-303
-304
-305
-306
-307</pre>
+296
+297
+298
+299
+300
+301</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 302</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 296</span>
 
 <span class='def def kw'>def</span> <span class='findElementsByName identifier id'>findElementsByName</span><span class='lparen token'>(</span><span class='parent identifier id'>parent</span><span class='comma token'>,</span> <span class='name identifier id'>name</span><span class='rparen token'>)</span>
   <span class='create_element_collection identifier id'>create_element_collection</span> <span class='do do kw'>do</span> <span class='bitor op'>|</span><span class='raw_elements identifier id'>raw_elements</span><span class='bitor op'>|</span>
@@ -2531,15 +2523,15 @@ Finders
       <pre class="lines">
 
 
-288
-289
-290
-291
-292
-293</pre>
+282
+283
+284
+285
+286
+287</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 288</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 282</span>
 
 <span class='def def kw'>def</span> <span class='findElementsByPartialLinkText identifier id'>findElementsByPartialLinkText</span><span class='lparen token'>(</span><span class='parent identifier id'>parent</span><span class='comma token'>,</span> <span class='link_text identifier id'>link_text</span><span class='rparen token'>)</span>
   <span class='create_element_collection identifier id'>create_element_collection</span> <span class='do do kw'>do</span> <span class='bitor op'>|</span><span class='raw_elements identifier id'>raw_elements</span><span class='bitor op'>|</span>
@@ -2566,15 +2558,15 @@ Finders
       <pre class="lines">
 
 
-316
-317
-318
-319
-320
-321</pre>
+310
+311
+312
+313
+314
+315</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 316</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 310</span>
 
 <span class='def def kw'>def</span> <span class='findElementsByTagName identifier id'>findElementsByTagName</span><span class='lparen token'>(</span><span class='parent identifier id'>parent</span><span class='comma token'>,</span> <span class='tag_name identifier id'>tag_name</span><span class='rparen token'>)</span>
   <span class='create_element_collection identifier id'>create_element_collection</span> <span class='do do kw'>do</span> <span class='bitor op'>|</span><span class='raw_elements identifier id'>raw_elements</span><span class='bitor op'>|</span>
@@ -2601,16 +2593,16 @@ Finders
       <pre class="lines">
 
 
-331
-332
-333
-334
-335
-336
-337</pre>
+325
+326
+327
+328
+329
+330
+331</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 331</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 325</span>
 
 <span class='def def kw'>def</span> <span class='findElementsByXpath identifier id'>findElementsByXpath</span><span class='lparen token'>(</span><span class='parent identifier id'>parent</span><span class='comma token'>,</span> <span class='xpath identifier id'>xpath</span><span class='rparen token'>)</span>
   <span class='create_element_collection identifier id'>create_element_collection</span> <span class='do do kw'>do</span> <span class='bitor op'>|</span><span class='raw_elements identifier id'>raw_elements</span><span class='bitor op'>|</span>
@@ -2669,6 +2661,12 @@ Finders
       <pre class="lines">
 
 
+179
+180
+181
+182
+183
+184
 185
 186
 187
@@ -2681,16 +2679,10 @@ Finders
 194
 195
 196
-197
-198
-199
-200
-201
-202
-203</pre>
+197</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 185</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 179</span>
 
 <span class='def def kw'>def</span> <span class='getAllCookies identifier id'>getAllCookies</span>
   <span class='str identifier id'>str</span> <span class='assign token'>=</span> <span class='create_string identifier id'>create_string</span> <span class='do do kw'>do</span> <span class='bitor op'>|</span><span class='wrapper identifier id'>wrapper</span><span class='bitor op'>|</span>
@@ -2735,9 +2727,7 @@ Finders
 68
 69
 70
-71
-72
-73</pre>
+71</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 66</span>
@@ -2747,8 +2737,6 @@ Finders
   <span class='check_error_code identifier id'>check_error_code</span> <span class='Lib constant id'>Lib</span><span class='dot token'>.</span><span class='wdGetVisible identifier id'>wdGetVisible</span><span class='lparen token'>(</span><span class='@driver_pointer ivar id'>@driver_pointer</span><span class='comma token'>,</span> <span class='int_ptr identifier id'>int_ptr</span><span class='rparen token'>)</span><span class='comma token'>,</span> <span class='string val'>&quot;unable to determine if browser is visible&quot;</span>
 
   <span class='int_ptr identifier id'>int_ptr</span><span class='dot token'>.</span><span class='get_int identifier id'>get_int</span><span class='lparen token'>(</span><span class='integer val'>0</span><span class='rparen token'>)</span> <span class='eq op'>==</span> <span class='integer val'>1</span>
-<span class='ensure ensure kw'>ensure</span>
-  <span class='int_ptr identifier id'>int_ptr</span><span class='dot token'>.</span><span class='free identifier id'>free</span>
 <span class='end end kw'>end</span>
 </pre>
     </td>
@@ -2804,15 +2792,15 @@ Finders
       <pre class="lines">
 
 
+135
+136
+137
+138
 139
-140
-141
-142
-143
-144</pre>
+140</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 139</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 135</span>
 
 <span class='def def kw'>def</span> <span class='getCurrentWindowHandle identifier id'>getCurrentWindowHandle</span>
   <span class='create_string identifier id'>create_string</span> <span class='do do kw'>do</span> <span class='bitor op'>|</span><span class='string_pointer identifier id'>string_pointer</span><span class='bitor op'>|</span>
@@ -2839,15 +2827,15 @@ Finders
       <pre class="lines">
 
 
-355
-356
-357
-358
-359
-360</pre>
+349
+350
+351
+352
+353
+354</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 355</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 349</span>
 
 <span class='def def kw'>def</span> <span class='getElementAttribute identifier id'>getElementAttribute</span><span class='lparen token'>(</span><span class='element_pointer identifier id'>element_pointer</span><span class='comma token'>,</span> <span class='name identifier id'>name</span><span class='rparen token'>)</span>
   <span class='create_string identifier id'>create_string</span> <span class='do do kw'>do</span> <span class='bitor op'>|</span><span class='string_pointer identifier id'>string_pointer</span><span class='bitor op'>|</span>
@@ -2874,20 +2862,17 @@ Finders
       <pre class="lines">
 
 
-474
-475
-476
-477
-478
-479
-480
-481
-482
-483
-484</pre>
+458
+459
+460
+461
+462
+463
+464
+465</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 474</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 458</span>
 
 <span class='def def kw'>def</span> <span class='getElementLocation identifier id'>getElementLocation</span><span class='lparen token'>(</span><span class='element_pointer identifier id'>element_pointer</span><span class='rparen token'>)</span>
   <span class='x identifier id'>x</span> <span class='assign token'>=</span> <span class='FFI constant id'>FFI</span><span class='colon2 op'>::</span><span class='MemoryPointer constant id'>MemoryPointer</span><span class='dot token'>.</span><span class='new identifier id'>new</span> <span class='symbol val'>:long</span>
@@ -2896,9 +2881,6 @@ Finders
   <span class='check_error_code identifier id'>check_error_code</span> <span class='Lib constant id'>Lib</span><span class='dot token'>.</span><span class='wdeGetLocation identifier id'>wdeGetLocation</span><span class='lparen token'>(</span><span class='element_pointer identifier id'>element_pointer</span><span class='comma token'>,</span> <span class='x identifier id'>x</span><span class='comma token'>,</span> <span class='y identifier id'>y</span><span class='rparen token'>)</span><span class='comma token'>,</span> <span class='string val'>&quot;unable to get location of element&quot;</span>
 
   <span class='Point constant id'>Point</span><span class='dot token'>.</span><span class='new identifier id'>new</span> <span class='x identifier id'>x</span><span class='dot token'>.</span><span class='get_int identifier id'>get_int</span><span class='lparen token'>(</span><span class='integer val'>0</span><span class='rparen token'>)</span><span class='comma token'>,</span> <span class='y identifier id'>y</span><span class='dot token'>.</span><span class='get_int identifier id'>get_int</span><span class='lparen token'>(</span><span class='integer val'>0</span><span class='rparen token'>)</span>
-<span class='ensure ensure kw'>ensure</span>
-  <span class='x identifier id'>x</span><span class='dot token'>.</span><span class='free identifier id'>free</span>
-  <span class='y identifier id'>y</span><span class='dot token'>.</span><span class='free identifier id'>free</span>
 <span class='end end kw'>end</span>
 </pre>
     </td>
@@ -2919,20 +2901,17 @@ Finders
       <pre class="lines">
 
 
-486
-487
-488
-489
-490
-491
-492
-493
-494
-495
-496</pre>
+467
+468
+469
+470
+471
+472
+473
+474</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 486</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 467</span>
 
 <span class='def def kw'>def</span> <span class='getElementSize identifier id'>getElementSize</span><span class='lparen token'>(</span><span class='element_pointer identifier id'>element_pointer</span><span class='rparen token'>)</span>
   <span class='width identifier id'>width</span>  <span class='assign token'>=</span> <span class='FFI constant id'>FFI</span><span class='colon2 op'>::</span><span class='MemoryPointer constant id'>MemoryPointer</span><span class='dot token'>.</span><span class='new identifier id'>new</span> <span class='symbol val'>:long</span>
@@ -2941,9 +2920,6 @@ Finders
   <span class='check_error_code identifier id'>check_error_code</span> <span class='Lib constant id'>Lib</span><span class='dot token'>.</span><span class='wdeGetSize identifier id'>wdeGetSize</span><span class='lparen token'>(</span><span class='element_pointer identifier id'>element_pointer</span><span class='comma token'>,</span> <span class='width identifier id'>width</span><span class='comma token'>,</span> <span class='height identifier id'>height</span><span class='rparen token'>)</span><span class='comma token'>,</span> <span class='string val'>&quot;unable to get size of element&quot;</span>
 
   <span class='Dimension constant id'>Dimension</span><span class='dot token'>.</span><span class='new identifier id'>new</span> <span class='width identifier id'>width</span><span class='dot token'>.</span><span class='get_int identifier id'>get_int</span><span class='lparen token'>(</span><span class='integer val'>0</span><span class='rparen token'>)</span><span class='comma token'>,</span> <span class='height identifier id'>height</span><span class='dot token'>.</span><span class='get_int identifier id'>get_int</span><span class='lparen token'>(</span><span class='integer val'>0</span><span class='rparen token'>)</span>
-<span class='ensure ensure kw'>ensure</span>
-  <span class='width identifier id'>width</span><span class='dot token'>.</span><span class='free identifier id'>free</span>
-  <span class='height identifier id'>height</span><span class='dot token'>.</span><span class='free identifier id'>free</span>
 <span class='end end kw'>end</span>
 </pre>
     </td>
@@ -2964,15 +2940,15 @@ Finders
       <pre class="lines">
 
 
-348
-349
-350
-351
-352
-353</pre>
+342
+343
+344
+345
+346
+347</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 348</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 342</span>
 
 <span class='def def kw'>def</span> <span class='getElementTagName identifier id'>getElementTagName</span><span class='lparen token'>(</span><span class='element_pointer identifier id'>element_pointer</span><span class='rparen token'>)</span>
   <span class='create_string identifier id'>create_string</span> <span class='do do kw'>do</span> <span class='bitor op'>|</span><span class='string_pointer identifier id'>string_pointer</span><span class='bitor op'>|</span>
@@ -2999,17 +2975,17 @@ Finders
       <pre class="lines">
 
 
+361
+362
+363
+364
+365
+366
 367
-368
-369
-370
-371
-372
-373
-374</pre>
+368</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 367</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 361</span>
 
 <span class='def def kw'>def</span> <span class='getElementText identifier id'>getElementText</span><span class='lparen token'>(</span><span class='element_pointer identifier id'>element_pointer</span><span class='rparen token'>)</span>
   <span class='val identifier id'>val</span> <span class='assign token'>=</span> <span class='create_string identifier id'>create_string</span> <span class='do do kw'>do</span> <span class='bitor op'>|</span><span class='string_pointer identifier id'>string_pointer</span><span class='bitor op'>|</span>
@@ -3038,13 +3014,13 @@ Finders
       <pre class="lines">
 
 
-362
-363
-364
-365</pre>
+356
+357
+358
+359</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 362</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 356</span>
 
 <span class='def def kw'>def</span> <span class='getElementValue identifier id'>getElementValue</span><span class='lparen token'>(</span><span class='element_pointer identifier id'>element_pointer</span><span class='rparen token'>)</span>
   <span class='val identifier id'>val</span> <span class='assign token'>=</span> <span class='getElementAttribute identifier id'>getElementAttribute</span><span class='lparen token'>(</span><span class='element_pointer identifier id'>element_pointer</span><span class='comma token'>,</span> <span class='string val'>'value'</span><span class='rparen token'>)</span>
@@ -3069,15 +3045,15 @@ Finders
       <pre class="lines">
 
 
-439
-440
-441
-442
-443
-444</pre>
+425
+426
+427
+428
+429
+430</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 439</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 425</span>
 
 <span class='def def kw'>def</span> <span class='getElementValueOfCssProperty identifier id'>getElementValueOfCssProperty</span><span class='lparen token'>(</span><span class='element_pointer identifier id'>element_pointer</span><span class='comma token'>,</span> <span class='prop identifier id'>prop</span><span class='rparen token'>)</span>
   <span class='create_string identifier id'>create_string</span> <span class='do do kw'>do</span> <span class='bitor op'>|</span><span class='string_pointer identifier id'>string_pointer</span><span class='bitor op'>|</span>
@@ -3139,12 +3115,12 @@ Finders
       <pre class="lines">
 
 
-217
-218
-219</pre>
+211
+212
+213</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 217</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 211</span>
 
 <span class='def def kw'>def</span> <span class='getSpeed identifier id'>getSpeed</span>
   <span class='@speed ivar id'>@speed</span>
@@ -3203,17 +3179,16 @@ Finders
       <pre class="lines">
 
 
+127
+128
+129
 130
 131
 132
-133
-134
-135
-136
-137</pre>
+133</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 130</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 127</span>
 
 <span class='def def kw'>def</span> <span class='getWindowHandles identifier id'>getWindowHandles</span>
   <span class='raw_handles identifier id'>raw_handles</span> <span class='assign token'>=</span> <span class='FFI constant id'>FFI</span><span class='colon2 op'>::</span><span class='MemoryPointer constant id'>MemoryPointer</span><span class='dot token'>.</span><span class='new identifier id'>new</span> <span class='symbol val'>:pointer</span>
@@ -3221,7 +3196,6 @@ Finders
                    <span class='string val'>&quot;unable to obtain all window handles&quot;</span>
 
   <span class='string_array_from identifier id'>string_array_from</span><span class='lparen token'>(</span><span class='raw_handles identifier id'>raw_handles</span><span class='rparen token'>)</span><span class='dot token'>.</span><span class='uniq identifier id'>uniq</span>
-  <span class='comment val'># TODO: who calls raw_handles.free if exception is raised?</span>
 <span class='end end kw'>end</span>
 </pre>
     </td>
@@ -3325,12 +3299,12 @@ Finders
       <pre class="lines">
 
 
-446
-447
-448</pre>
+432
+433
+434</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 446</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 432</span>
 
 <span class='def def kw'>def</span> <span class='hoverOverElement identifier id'>hoverOverElement</span><span class='lparen token'>(</span><span class='element_pointer identifier id'>element_pointer</span><span class='rparen token'>)</span>
   <span class='raise identifier id'>raise</span> <span class='NotImplementedError constant id'>NotImplementedError</span>
@@ -3354,25 +3328,21 @@ Finders
       <pre class="lines">
 
 
-406
-407
-408
-409
-410
-411
-412
-413</pre>
+396
+397
+398
+399
+400
+401</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 406</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 396</span>
 
 <span class='def def kw'>def</span> <span class='isElementDisplayed identifier id'>isElementDisplayed</span><span class='lparen token'>(</span><span class='element_pointer identifier id'>element_pointer</span><span class='rparen token'>)</span>
   <span class='int_ptr identifier id'>int_ptr</span> <span class='assign token'>=</span> <span class='FFI constant id'>FFI</span><span class='colon2 op'>::</span><span class='MemoryPointer constant id'>MemoryPointer</span><span class='dot token'>.</span><span class='new identifier id'>new</span> <span class='symbol val'>:int</span>
   <span class='check_error_code identifier id'>check_error_code</span> <span class='Lib constant id'>Lib</span><span class='dot token'>.</span><span class='wdeIsDisplayed identifier id'>wdeIsDisplayed</span><span class='lparen token'>(</span><span class='element_pointer identifier id'>element_pointer</span><span class='comma token'>,</span> <span class='int_ptr identifier id'>int_ptr</span><span class='rparen token'>)</span><span class='comma token'>,</span> <span class='string val'>&quot;unable to check visibilty&quot;</span>
 
-  <span class='int_ptr identifier id'>int_ptr</span><span class='dot token'>.</span><span class='get_int identifier id'>get_int</span><span class='lparen token'>(</span><span class='integer val'>0</span><span class='rparen token'>)</span> <span class='eq op'>==</span> <span class='integer val'>1</span><span class='semicolon token'>;</span>
-<span class='ensure ensure kw'>ensure</span>
-  <span class='int_ptr identifier id'>int_ptr</span><span class='dot token'>.</span><span class='free identifier id'>free</span>
+  <span class='int_ptr identifier id'>int_ptr</span><span class='dot token'>.</span><span class='get_int identifier id'>get_int</span><span class='lparen token'>(</span><span class='integer val'>0</span><span class='rparen token'>)</span> <span class='eq op'>==</span> <span class='integer val'>1</span>
 <span class='end end kw'>end</span>
 </pre>
     </td>
@@ -3393,18 +3363,16 @@ Finders
       <pre class="lines">
 
 
-386
-387
-388
-389
-390
-391
-392
-393
-394</pre>
+380
+381
+382
+383
+384
+385
+386</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 386</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 380</span>
 
 <span class='def def kw'>def</span> <span class='isElementEnabled identifier id'>isElementEnabled</span><span class='lparen token'>(</span><span class='element_pointer identifier id'>element_pointer</span><span class='rparen token'>)</span>
   <span class='int_ptr identifier id'>int_ptr</span> <span class='assign token'>=</span> <span class='FFI constant id'>FFI</span><span class='colon2 op'>::</span><span class='MemoryPointer constant id'>MemoryPointer</span><span class='dot token'>.</span><span class='new identifier id'>new</span><span class='lparen token'>(</span><span class='symbol val'>:int</span><span class='rparen token'>)</span>
@@ -3412,8 +3380,6 @@ Finders
                    <span class='string val'>&quot;unable to get enabled state&quot;</span>
 
   <span class='int_ptr identifier id'>int_ptr</span><span class='dot token'>.</span><span class='get_int identifier id'>get_int</span><span class='lparen token'>(</span><span class='integer val'>0</span><span class='rparen token'>)</span> <span class='eq op'>==</span> <span class='integer val'>1</span>
-<span class='ensure ensure kw'>ensure</span>
-  <span class='int_ptr identifier id'>int_ptr</span><span class='dot token'>.</span><span class='free identifier id'>free</span>
 <span class='end end kw'>end</span>
 </pre>
     </td>
@@ -3434,18 +3400,16 @@ Finders
       <pre class="lines">
 
 
-396
-397
-398
-399
-400
-401
-402
-403
-404</pre>
+388
+389
+390
+391
+392
+393
+394</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 396</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 388</span>
 
 <span class='def def kw'>def</span> <span class='isElementSelected identifier id'>isElementSelected</span><span class='lparen token'>(</span><span class='element_pointer identifier id'>element_pointer</span><span class='rparen token'>)</span>
   <span class='int_ptr identifier id'>int_ptr</span> <span class='assign token'>=</span> <span class='FFI constant id'>FFI</span><span class='colon2 op'>::</span><span class='MemoryPointer constant id'>MemoryPointer</span><span class='dot token'>.</span><span class='new identifier id'>new</span><span class='lparen token'>(</span><span class='symbol val'>:int</span><span class='rparen token'>)</span>
@@ -3453,8 +3417,6 @@ Finders
                    <span class='string val'>&quot;unable to get selected state&quot;</span>
 
   <span class='int_ptr identifier id'>int_ptr</span><span class='dot token'>.</span><span class='get_int identifier id'>get_int</span><span class='lparen token'>(</span><span class='integer val'>0</span><span class='rparen token'>)</span> <span class='eq op'>==</span> <span class='integer val'>1</span>
-<span class='ensure ensure kw'>ensure</span>
-  <span class='int_ptr identifier id'>int_ptr</span><span class='dot token'>.</span><span class='free identifier id'>free</span>
 <span class='end end kw'>end</span>
 </pre>
     </td>
@@ -3475,6 +3437,8 @@ Finders
       <pre class="lines">
 
 
+104
+105
 106
 107
 108
@@ -3486,13 +3450,10 @@ Finders
 114
 115
 116
-117
-118
-119
-120</pre>
+117</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 106</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 104</span>
 
 <span class='def def kw'>def</span> <span class='quit identifier id'>quit</span>
   <span class='getWindowHandles identifier id'>getWindowHandles</span><span class='dot token'>.</span><span class='each identifier id'>each</span> <span class='do do kw'>do</span> <span class='bitor op'>|</span><span class='handle identifier id'>handle</span><span class='bitor op'>|</span>
@@ -3502,12 +3463,11 @@ Finders
     <span class='rescue rescue kw'>rescue</span> <span class='Error constant id'>Error</span><span class='colon2 op'>::</span><span class='NoSuchWindowError constant id'>NoSuchWindowError</span>
     <span class='end end kw'>end</span>
   <span class='end end kw'>end</span>
-
-  <span class='comment val'># hack</span>
-  <span class='ObjectSpace constant id'>ObjectSpace</span><span class='dot token'>.</span><span class='each_object identifier id'>each_object</span><span class='lparen token'>(</span><span class='WebDriver constant id'>WebDriver</span><span class='colon2 op'>::</span><span class='Element constant id'>Element</span><span class='rparen token'>)</span> <span class='lbrace token'>{</span> <span class='bitor op'>|</span><span class='e identifier id'>e</span><span class='bitor op'>|</span> <span class='finalize identifier id'>finalize</span> <span class='e identifier id'>e</span><span class='dot token'>.</span><span class='ref identifier id'>ref</span> <span class='if if_mod kw'>if</span> <span class='e identifier id'>e</span><span class='dot token'>.</span><span class='bridge identifier id'>bridge</span> <span class='eq op'>==</span> <span class='self self kw'>self</span> <span class='rbrace token'>}</span>
 <span class='ensure ensure kw'>ensure</span>
-  <span class='Lib constant id'>Lib</span><span class='dot token'>.</span><span class='wdFreeDriver identifier id'>wdFreeDriver</span><span class='lparen token'>(</span><span class='@driver_pointer ivar id'>@driver_pointer</span><span class='rparen token'>)</span>
+  <span class='ptr identifier id'>ptr</span> <span class='assign token'>=</span> <span class='@driver_pointer ivar id'>@driver_pointer</span>
   <span class='@driver_pointer ivar id'>@driver_pointer</span> <span class='assign token'>=</span> <span class='nil nil kw'>nil</span>
+
+  <span class='check_error_code identifier id'>check_error_code</span> <span class='Lib constant id'>Lib</span><span class='dot token'>.</span><span class='wdFreeDriver identifier id'>wdFreeDriver</span><span class='lparen token'>(</span><span class='ptr identifier id'>ptr</span><span class='rparen token'>)</span><span class='comma token'>,</span> <span class='dstring node'>&quot;unable to free driver #{self}&quot;</span>
 <span class='end end kw'>end</span>
 </pre>
     </td>
@@ -3528,12 +3488,12 @@ Finders
       <pre class="lines">
 
 
-126
-127
-128</pre>
+123
+124
+125</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 126</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 123</span>
 
 <span class='def def kw'>def</span> <span class='refresh identifier id'>refresh</span>
   <span class='check_error_code identifier id'>check_error_code</span> <span class='Lib constant id'>Lib</span><span class='dot token'>.</span><span class='wdRefresh identifier id'>wdRefresh</span><span class='lparen token'>(</span><span class='@driver_pointer ivar id'>@driver_pointer</span><span class='rparen token'>)</span><span class='comma token'>,</span> <span class='string val'>&quot;unable to refresh current page&quot;</span>
@@ -3557,14 +3517,14 @@ Finders
       <pre class="lines">
 
 
-376
-377
-378
-379
-380</pre>
+370
+371
+372
+373
+374</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 376</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 370</span>
 
 <span class='def def kw'>def</span> <span class='sendKeysToElement identifier id'>sendKeysToElement</span><span class='lparen token'>(</span><span class='element_pointer identifier id'>element_pointer</span><span class='comma token'>,</span> <span class='string identifier id'>string</span><span class='rparen token'>)</span>
   <span class='check_error_code identifier id'>check_error_code</span> <span class='Lib constant id'>Lib</span><span class='dot token'>.</span><span class='wdeSendKeys identifier id'>wdeSendKeys</span><span class='lparen token'>(</span><span class='element_pointer identifier id'>element_pointer</span><span class='comma token'>,</span> <span class='wstring_ptr identifier id'>wstring_ptr</span><span class='lparen token'>(</span><span class='string identifier id'>string</span><span class='rparen token'>)</span><span class='rparen token'>)</span><span class='comma token'>,</span>
@@ -3590,13 +3550,13 @@ Finders
       <pre class="lines">
 
 
+73
+74
 75
-76
-77
-78</pre>
+76</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 75</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 73</span>
 
 <span class='def def kw'>def</span> <span class='setBrowserVisible identifier id'>setBrowserVisible</span><span class='lparen token'>(</span><span class='bool identifier id'>bool</span><span class='rparen token'>)</span>
   <span class='check_error_code identifier id'>check_error_code</span> <span class='Lib constant id'>Lib</span><span class='dot token'>.</span><span class='wdSetVisible identifier id'>wdSetVisible</span><span class='lparen token'>(</span><span class='@driver_pointer ivar id'>@driver_pointer</span><span class='comma token'>,</span> <span class='bool identifier id'>bool</span> <span class='integer val'>? </span><span class='integer val'>1</span> <span class='colon op'>:</span> <span class='integer val'>0</span><span class='rparen token'>)</span><span class='comma token'>,</span>
@@ -3621,12 +3581,12 @@ Finders
       <pre class="lines">
 
 
-435
-436
-437</pre>
+421
+422
+423</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 435</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 421</span>
 
 <span class='def def kw'>def</span> <span class='setElementSelected identifier id'>setElementSelected</span><span class='lparen token'>(</span><span class='element_pointer identifier id'>element_pointer</span><span class='rparen token'>)</span>
   <span class='check_error_code identifier id'>check_error_code</span> <span class='Lib constant id'>Lib</span><span class='dot token'>.</span><span class='wdeSetSelected identifier id'>wdeSetSelected</span><span class='lparen token'>(</span><span class='element_pointer identifier id'>element_pointer</span><span class='rparen token'>)</span><span class='comma token'>,</span> <span class='string val'>&quot;unable to select element&quot;</span>
@@ -3650,13 +3610,13 @@ Finders
       <pre class="lines">
 
 
+78
+79
 80
-81
-82
-83</pre>
+81</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 80</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 78</span>
 
 <span class='def def kw'>def</span> <span class='setImplicitWaitTimeout identifier id'>setImplicitWaitTimeout</span><span class='lparen token'>(</span><span class='milliseconds identifier id'>milliseconds</span><span class='rparen token'>)</span>
   <span class='check_error_code identifier id'>check_error_code</span> <span class='Lib constant id'>Lib</span><span class='dot token'>.</span><span class='wdSetImplicitWaitTimeout identifier id'>wdSetImplicitWaitTimeout</span><span class='lparen token'>(</span><span class='@driver_pointer ivar id'>@driver_pointer</span><span class='comma token'>,</span> <span class='milliseconds identifier id'>milliseconds</span><span class='rparen token'>)</span><span class='comma token'>,</span>
@@ -3681,12 +3641,12 @@ Finders
       <pre class="lines">
 
 
-213
-214
-215</pre>
+207
+208
+209</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 213</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 207</span>
 
 <span class='def def kw'>def</span> <span class='setSpeed identifier id'>setSpeed</span><span class='lparen token'>(</span><span class='speed identifier id'>speed</span><span class='rparen token'>)</span>
   <span class='@speed ivar id'>@speed</span> <span class='assign token'>=</span> <span class='speed identifier id'>speed</span>
@@ -3710,12 +3670,12 @@ Finders
       <pre class="lines">
 
 
-415
-416
-417</pre>
+403
+404
+405</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 415</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 403</span>
 
 <span class='def def kw'>def</span> <span class='submitElement identifier id'>submitElement</span><span class='lparen token'>(</span><span class='element_pointer identifier id'>element_pointer</span><span class='rparen token'>)</span>
   <span class='check_error_code identifier id'>check_error_code</span> <span class='Lib constant id'>Lib</span><span class='dot token'>.</span><span class='wdeSubmit identifier id'>wdeSubmit</span><span class='lparen token'>(</span><span class='element_pointer identifier id'>element_pointer</span><span class='rparen token'>)</span><span class='comma token'>,</span> <span class='string val'>&quot;unable to submit element&quot;</span>
@@ -3739,15 +3699,15 @@ Finders
       <pre class="lines">
 
 
+93
+94
 95
 96
 97
-98
-99
-100</pre>
+98</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 95</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 93</span>
 
 <span class='def def kw'>def</span> <span class='switchToActiveElement identifier id'>switchToActiveElement</span>
   <span class='create_element identifier id'>create_element</span> <span class='do do kw'>do</span> <span class='bitor op'>|</span><span class='ptr identifier id'>ptr</span><span class='bitor op'>|</span>
@@ -3774,12 +3734,12 @@ Finders
       <pre class="lines">
 
 
-102
-103
-104</pre>
+100
+101
+102</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 102</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 100</span>
 
 <span class='def def kw'>def</span> <span class='switchToDefaultContent identifier id'>switchToDefaultContent</span>
   <span class='switchToFrame identifier id'>switchToFrame</span> <span class='string val'>&quot;&quot;</span>
@@ -3803,13 +3763,13 @@ Finders
       <pre class="lines">
 
 
+88
+89
 90
-91
-92
-93</pre>
+91</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 90</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 88</span>
 
 <span class='def def kw'>def</span> <span class='switchToFrame identifier id'>switchToFrame</span><span class='lparen token'>(</span><span class='id identifier id'>id</span><span class='rparen token'>)</span>
   <span class='check_error_code identifier id'>check_error_code</span> <span class='Lib constant id'>Lib</span><span class='dot token'>.</span><span class='wdSwitchToFrame identifier id'>wdSwitchToFrame</span><span class='lparen token'>(</span><span class='@driver_pointer ivar id'>@driver_pointer</span><span class='comma token'>,</span> <span class='wstring_ptr identifier id'>wstring_ptr</span><span class='lparen token'>(</span><span class='id identifier id'>id</span><span class='rparen token'>)</span><span class='rparen token'>)</span><span class='comma token'>,</span>
@@ -3834,13 +3794,13 @@ Finders
       <pre class="lines">
 
 
+83
+84
 85
-86
-87
-88</pre>
+86</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 85</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 83</span>
 
 <span class='def def kw'>def</span> <span class='switchToWindow identifier id'>switchToWindow</span><span class='lparen token'>(</span><span class='id identifier id'>id</span><span class='rparen token'>)</span>
   <span class='check_error_code identifier id'>check_error_code</span> <span class='Lib constant id'>Lib</span><span class='dot token'>.</span><span class='wdSwitchToWindow identifier id'>wdSwitchToWindow</span><span class='lparen token'>(</span><span class='@driver_pointer ivar id'>@driver_pointer</span><span class='comma token'>,</span> <span class='wstring_ptr identifier id'>wstring_ptr</span><span class='lparen token'>(</span><span class='id identifier id'>id</span><span class='rparen token'>)</span><span class='rparen token'>)</span><span class='comma token'>,</span>
@@ -3865,24 +3825,22 @@ Finders
       <pre class="lines">
 
 
-419
-420
-421
-422
-423
-424
-425
-426
-427
-428
-429
-430
-431
-432
-433</pre>
+407
+408
+409
+410
+411
+412
+413
+414
+415
+416
+417
+418
+419</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 419</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 407</span>
 
 <span class='def def kw'>def</span> <span class='toggleElement identifier id'>toggleElement</span><span class='lparen token'>(</span><span class='element_pointer identifier id'>element_pointer</span><span class='rparen token'>)</span>
   <span class='int_ptr identifier id'>int_ptr</span> <span class='assign token'>=</span> <span class='FFI constant id'>FFI</span><span class='colon2 op'>::</span><span class='MemoryPointer constant id'>MemoryPointer</span><span class='dot token'>.</span><span class='new identifier id'>new</span> <span class='symbol val'>:int</span>
@@ -3896,8 +3854,6 @@ Finders
   <span class='check_error_code identifier id'>check_error_code</span> <span class='result identifier id'>result</span><span class='comma token'>,</span> <span class='string val'>&quot;unable to toggle element&quot;</span>
 
   <span class='int_ptr identifier id'>int_ptr</span><span class='dot token'>.</span><span class='get_int identifier id'>get_int</span><span class='lparen token'>(</span><span class='integer val'>0</span><span class='rparen token'>)</span> <span class='eq op'>==</span> <span class='integer val'>1</span>
-<span class='ensure ensure kw'>ensure</span>
-  <span class='int_ptr identifier id'>int_ptr</span><span class='dot token'>.</span><span class='free identifier id'>free</span>
 <span class='end end kw'>end</span>
 </pre>
     </td>
@@ -3918,12 +3874,12 @@ Finders
       <pre class="lines">
 
 
-168
-169
-170</pre>
+162
+163
+164</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 168</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 162</span>
 
 <span class='def def kw'>def</span> <span class='waitForLoadToComplete identifier id'>waitForLoadToComplete</span>
   <span class='Lib constant id'>Lib</span><span class='dot token'>.</span><span class='wdWaitForLoadToComplete identifier id'>wdWaitForLoadToComplete</span><span class='lparen token'>(</span><span class='@driver_pointer ivar id'>@driver_pointer</span><span class='rparen token'>)</span>
@@ -3939,7 +3895,7 @@ Finders
 </div>
     
     <div id="footer">
-  Generated on Fri Sep 24 16:16:56 2010 by 
+  Generated on Sat Oct 09 02:15:02 2010 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.6.1 (ruby-1.8.7).
 </div>

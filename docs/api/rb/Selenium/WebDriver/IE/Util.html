@@ -73,42 +73,6 @@
   
     <dl class="constants">
       
-        <dt id="CP_ACP-constant" class="">CP_ACP =
-          
-        </dt>
-        <dd><pre class="code"><span class='integer val'>0</span>
-</pre></dd>
-      
-        <dt id="CP_OEMCP-constant" class="">CP_OEMCP =
-          
-        </dt>
-        <dd><pre class="code"><span class='integer val'>1</span>
-</pre></dd>
-      
-        <dt id="CP_MACCP-constant" class="">CP_MACCP =
-          
-        </dt>
-        <dd><pre class="code"><span class='integer val'>2</span>
-</pre></dd>
-      
-        <dt id="CP_THREAD_ACP-constant" class="">CP_THREAD_ACP =
-          
-        </dt>
-        <dd><pre class="code"><span class='integer val'>3</span>
-</pre></dd>
-      
-        <dt id="CP_SYMBOL-constant" class="">CP_SYMBOL =
-          
-        </dt>
-        <dd><pre class="code"><span class='integer val'>42</span>
-</pre></dd>
-      
-        <dt id="CP_UTF7-constant" class="">CP_UTF7 =
-          
-        </dt>
-        <dd><pre class="code"><span class='integer val'>65000</span>
-</pre></dd>
-      
         <dt id="CP_UTF8-constant" class="">CP_UTF8 =
           
         </dt>
@@ -339,23 +303,23 @@
       <pre class="lines">
 
 
-46
-47
-48
-49
-50
-51
-52</pre>
+39
+40
+41
+42
+43
+44
+45</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/util.rb', line 46</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/util.rb', line 39</span>
 
 <span class='def def kw'>def</span> <span class='create_element identifier id'>create_element</span><span class='lparen token'>(</span><span class='bitand op'>&amp;</span><span class='blk identifier id'>blk</span><span class='rparen token'>)</span>
   <span class='element_ptr_ref identifier id'>element_ptr_ref</span> <span class='assign token'>=</span> <span class='FFI constant id'>FFI</span><span class='colon2 op'>::</span><span class='MemoryPointer constant id'>MemoryPointer</span><span class='dot token'>.</span><span class='new identifier id'>new</span> <span class='symbol val'>:pointer</span>
   <span class='yield yield kw'>yield</span> <span class='element_ptr_ref identifier id'>element_ptr_ref</span>
-  <span class='Element constant id'>Element</span><span class='dot token'>.</span><span class='new identifier id'>new</span><span class='lparen token'>(</span><span class='self self kw'>self</span><span class='comma token'>,</span> <span class='element_ptr_ref identifier id'>element_ptr_ref</span><span class='dot token'>.</span><span class='get_pointer identifier id'>get_pointer</span><span class='lparen token'>(</span><span class='integer val'>0</span><span class='rparen token'>)</span><span class='rparen token'>)</span>
-<span class='ensure ensure kw'>ensure</span>
-  <span class='element_ptr_ref identifier id'>element_ptr_ref</span><span class='dot token'>.</span><span class='free identifier id'>free</span>
+
+  <span class='auto_ptr identifier id'>auto_ptr</span> <span class='assign token'>=</span> <span class='FFI constant id'>FFI</span><span class='colon2 op'>::</span><span class='AutoPointer constant id'>AutoPointer</span><span class='dot token'>.</span><span class='new identifier id'>new</span><span class='lparen token'>(</span><span class='element_ptr_ref identifier id'>element_ptr_ref</span><span class='dot token'>.</span><span class='get_pointer identifier id'>get_pointer</span><span class='lparen token'>(</span><span class='integer val'>0</span><span class='rparen token'>)</span><span class='comma token'>,</span> <span class='Lib constant id'>Lib</span><span class='dot token'>.</span><span class='method identifier id'>method</span><span class='lparen token'>(</span><span class='symbol val'>:finalize_element</span><span class='rparen token'>)</span><span class='rparen token'>)</span>
+  <span class='Element constant id'>Element</span><span class='dot token'>.</span><span class='new identifier id'>new</span><span class='lparen token'>(</span><span class='self self kw'>self</span><span class='comma token'>,</span> <span class='auto_ptr identifier id'>auto_ptr</span><span class='rparen token'>)</span>
 <span class='end end kw'>end</span>
 </pre>
     </td>
@@ -397,15 +361,15 @@
       <pre class="lines">
 
 
-54
-55
-56
-57
-58
-59</pre>
+47
+48
+49
+50
+51
+52</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/util.rb', line 54</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/util.rb', line 47</span>
 
 <span class='def def kw'>def</span> <span class='create_element_collection identifier id'>create_element_collection</span><span class='lparen token'>(</span><span class='bitand op'>&amp;</span><span class='blk identifier id'>blk</span><span class='rparen token'>)</span>
   <span class='elements_ptr_ref identifier id'>elements_ptr_ref</span> <span class='assign token'>=</span> <span class='FFI constant id'>FFI</span><span class='colon2 op'>::</span><span class='MemoryPointer constant id'>MemoryPointer</span><span class='dot token'>.</span><span class='new identifier id'>new</span> <span class='symbol val'>:pointer</span>
@@ -453,15 +417,15 @@
       <pre class="lines">
 
 
-61
-62
-63
-64
-65
-66</pre>
+54
+55
+56
+57
+58
+59</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/util.rb', line 61</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/util.rb', line 54</span>
 
 <span class='def def kw'>def</span> <span class='create_string identifier id'>create_string</span><span class='lparen token'>(</span><span class='bitand op'>&amp;</span><span class='blk identifier id'>blk</span><span class='rparen token'>)</span>
   <span class='wrapper identifier id'>wrapper</span> <span class='assign token'>=</span> <span class='FFI constant id'>FFI</span><span class='colon2 op'>::</span><span class='MemoryPointer constant id'>MemoryPointer</span><span class='dot token'>.</span><span class='new identifier id'>new</span> <span class='symbol val'>:pointer</span>
@@ -488,6 +452,14 @@
       <pre class="lines">
 
 
+83
+84
+85
+86
+87
+88
+89
+90
 91
 92
 93
@@ -503,21 +475,10 @@
 103
 104
 105
-106
-107
-108
-109
-110
-111
-112
-113
-114
-115
-116
-117</pre>
+106</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/util.rb', line 91</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/util.rb', line 83</span>
 
 <span class='def def kw'>def</span> <span class='extract_elements_from identifier id'>extract_elements_from</span><span class='lparen token'>(</span><span class='elements_ptr_ref identifier id'>elements_ptr_ref</span><span class='rparen token'>)</span>
   <span class='elements_ptr identifier id'>elements_ptr</span> <span class='assign token'>=</span> <span class='elements_ptr_ref identifier id'>elements_ptr_ref</span><span class='dot token'>.</span><span class='get_pointer identifier id'>get_pointer</span><span class='lparen token'>(</span><span class='integer val'>0</span><span class='rparen token'>)</span>
@@ -542,9 +503,6 @@
   <span class='Lib constant id'>Lib</span><span class='dot token'>.</span><span class='wdFreeElementCollection identifier id'>wdFreeElementCollection</span><span class='lparen token'>(</span><span class='elements_ptr identifier id'>elements_ptr</span><span class='comma token'>,</span> <span class='integer val'>0</span><span class='rparen token'>)</span>
 
   <span class='arr identifier id'>arr</span>
-<span class='ensure ensure kw'>ensure</span>
-  <span class='elements_ptr_ref identifier id'>elements_ptr_ref</span><span class='dot token'>.</span><span class='free identifier id'>free</span>
-  <span class='length_ptr identifier id'>length_ptr</span><span class='dot token'>.</span><span class='free identifier id'>free</span>
 <span class='end end kw'>end</span>
 </pre>
     </td>
@@ -565,6 +523,13 @@
       <pre class="lines">
 
 
+61
+62
+63
+64
+65
+66
+67
 68
 69
 70
@@ -578,18 +543,10 @@
 78
 79
 80
-81
-82
-83
-84
-85
-86
-87
-88
-89</pre>
+81</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/util.rb', line 68</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/util.rb', line 61</span>
 
 <span class='def def kw'>def</span> <span class='extract_string_from identifier id'>extract_string_from</span><span class='lparen token'>(</span><span class='string_ptr_ref identifier id'>string_ptr_ref</span><span class='rparen token'>)</span>
   <span class='string_ptr identifier id'>string_ptr</span> <span class='assign token'>=</span> <span class='string_ptr_ref identifier id'>string_ptr_ref</span><span class='dot token'>.</span><span class='get_pointer identifier id'>get_pointer</span><span class='lparen token'>(</span><span class='integer val'>0</span><span class='rparen token'>)</span>
@@ -611,7 +568,6 @@
   <span class='wstring_to_bytestring identifier id'>wstring_to_bytestring</span> <span class='raw_string identifier id'>raw_string</span>
 <span class='ensure ensure kw'>ensure</span>
   <span class='Lib constant id'>Lib</span><span class='dot token'>.</span><span class='wdFreeString identifier id'>wdFreeString</span><span class='lparen token'>(</span><span class='string_ptr identifier id'>string_ptr</span><span class='rparen token'>)</span> <span class='unless unless_mod kw'>unless</span> <span class='string_ptr identifier id'>string_ptr</span><span class='dot token'>.</span><span class='null? fid id'>null?</span>
-  <span class='string_ptr_ref identifier id'>string_ptr_ref</span><span class='dot token'>.</span><span class='free identifier id'>free</span>
 <span class='end end kw'>end</span>
 </pre>
     </td>
@@ -632,6 +588,12 @@
       <pre class="lines">
 
 
+12
+13
+14
+15
+16
+17
 18
 19
 20
@@ -651,17 +613,10 @@
 34
 35
 36
-37
-38
-39
-40
-41
-42
-43
-44</pre>
+37</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/util.rb', line 18</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/util.rb', line 12</span>
 
 <span class='def def kw'>def</span> <span class='string_array_from identifier id'>string_array_from</span><span class='lparen token'>(</span><span class='raw_strings identifier id'>raw_strings</span><span class='rparen token'>)</span>
   <span class='strings_ptr identifier id'>strings_ptr</span> <span class='assign token'>=</span> <span class='raw_strings identifier id'>raw_strings</span><span class='dot token'>.</span><span class='get_pointer identifier id'>get_pointer</span><span class='lparen token'>(</span><span class='integer val'>0</span><span class='rparen token'>)</span>
@@ -688,7 +643,6 @@
   <span class='arr identifier id'>arr</span>
 <span class='ensure ensure kw'>ensure</span>
   <span class='Lib constant id'>Lib</span><span class='dot token'>.</span><span class='wdFreeStringCollection identifier id'>wdFreeStringCollection</span><span class='lparen token'>(</span><span class='strings_ptr identifier id'>strings_ptr</span><span class='rparen token'>)</span>
-  <span class='raw_strings identifier id'>raw_strings</span><span class='dot token'>.</span><span class='free identifier id'>free</span>
 <span class='end end kw'>end</span>
 </pre>
     </td>
@@ -709,22 +663,22 @@
       <pre class="lines">
 
 
-120
-121
-122
-123
-124
-125
-126
-127
-128
-129
-130
-131
-132</pre>
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/util.rb', line 120</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/util.rb', line 108</span>
 
 <span class='def def kw'>def</span> <span class='wstring_ptr identifier id'>wstring_ptr</span><span class='lparen token'>(</span><span class='str identifier id'>str</span><span class='rparen token'>)</span>
   <span class='str identifier id'>str</span>  <span class='assign token'>=</span> <span class='str identifier id'>str</span><span class='dot token'>.</span><span class='to_s identifier id'>to_s</span>
@@ -758,23 +712,21 @@
       <pre class="lines">
 
 
-134
-135
-136
-137
-138
-139
-140
-141
-142
-143
-144
-145
-146
-147</pre>
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/util.rb', line 134</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/util.rb', line 122</span>
 
 <span class='def def kw'>def</span> <span class='wstring_to_bytestring identifier id'>wstring_to_bytestring</span><span class='lparen token'>(</span><span class='wstring identifier id'>wstring</span><span class='rparen token'>)</span>
   <span class='size identifier id'>size</span> <span class='assign token'>=</span> <span class='Kernel32 constant id'>Kernel32</span><span class='dot token'>.</span><span class='WideCharToMultiByte constant id'>WideCharToMultiByte</span><span class='lparen token'>(</span><span class='CP_UTF8 constant id'>CP_UTF8</span><span class='comma token'>,</span> <span class='integer val'>0</span><span class='comma token'>,</span> <span class='wstring identifier id'>wstring</span><span class='comma token'>,</span> <span class='integer val'>-1</span><span class='comma token'>,</span> <span class='nil nil kw'>nil</span><span class='comma token'>,</span> <span class='integer val'>0</span><span class='comma token'>,</span> <span class='nil nil kw'>nil</span><span class='comma token'>,</span> <span class='nil nil kw'>nil</span><span class='rparen token'>)</span>
@@ -787,8 +739,6 @@
   <span class='Kernel32 constant id'>Kernel32</span><span class='dot token'>.</span><span class='WideCharToMultiByte constant id'>WideCharToMultiByte</span><span class='lparen token'>(</span><span class='CP_UTF8 constant id'>CP_UTF8</span><span class='comma token'>,</span> <span class='integer val'>0</span><span class='comma token'>,</span> <span class='wstring identifier id'>wstring</span><span class='comma token'>,</span> <span class='integer val'>-1</span><span class='comma token'>,</span> <span class='buf identifier id'>buf</span><span class='comma token'>,</span> <span class='size identifier id'>size</span><span class='comma token'>,</span> <span class='nil nil kw'>nil</span><span class='comma token'>,</span> <span class='nil nil kw'>nil</span> <span class='rparen token'>)</span>
 
   <span class='buf identifier id'>buf</span><span class='dot token'>.</span><span class='get_bytes identifier id'>get_bytes</span><span class='lparen token'>(</span><span class='integer val'>0</span><span class='comma token'>,</span> <span class='size identifier id'>size</span> <span class='minus op'>-</span> <span class='integer val'>1</span><span class='rparen token'>)</span>
-<span class='ensure ensure kw'>ensure</span>
-  <span class='buf identifier id'>buf</span><span class='dot token'>.</span><span class='free identifier id'>free</span> <span class='if if_mod kw'>if</span> <span class='buf identifier id'>buf</span>
 <span class='end end kw'>end</span>
 </pre>
     </td>
@@ -801,7 +751,7 @@
 </div>
     
     <div id="footer">
-  Generated on Fri Sep 24 16:16:55 2010 by 
+  Generated on Sat Oct 09 02:14:59 2010 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.6.1 (ruby-1.8.7).
 </div>
