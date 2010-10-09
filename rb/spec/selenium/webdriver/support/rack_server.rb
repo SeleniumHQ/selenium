@@ -45,7 +45,7 @@ module Selenium
             Process.kill('KILL', @pid)
             Process.waitpid(@pid)
           elsif defined?(@process) && @process
-            @process.kill
+            @process.stop
           end
         end
 
@@ -53,7 +53,8 @@ module Selenium
         private
 
         def handler
-          if Platform.win?
+          # can't use Platform here since it's being run as a file on Windows.
+          if RUBY_PLATFORM =~ /mswin|msys|mingw32/
             handlers = %w[mongrel webrick]
           else
             handlers = %w[thin mongrel webrick]
