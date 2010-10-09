@@ -11,9 +11,10 @@ module Selenium
           :untrusted_certs  => 'webdriver_accept_untrusted_certs',
           :untrusted_issuer => 'webdriver_assume_untrusted_issuer',
           :port             => 'webdriver_firefox_port'
+          :log_file         => 'webdriver.log.file'
         }
 
-        attr_reader   :name
+        attr_reader   :name, :log_file
         attr_writer   :secure_ssl, :native_events, :load_no_focus_lib
 
         class << self
@@ -114,6 +115,11 @@ module Selenium
 
         def port=(port)
           self[WEBDRIVER_PREFS[:port]] = port
+        end
+
+        def log_file=(file)
+          @log_file = file
+          self[WEBDRIVER_PREFS[:log_file]] = file
         end
 
         def add_webdriver_extension

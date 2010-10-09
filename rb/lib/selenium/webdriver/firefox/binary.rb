@@ -22,6 +22,8 @@ module Selenium
             modify_link_library_path profile_path
           end
 
+          ENV['XRE_CONSOLE_LOG'] = profile.log_file if profile.log_file
+
           execute(*args)
           cope_with_mac_strangeness(args) if Platform.mac?
         end
