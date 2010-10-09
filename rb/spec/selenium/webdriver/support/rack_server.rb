@@ -6,7 +6,7 @@ module Selenium
     module SpecSupport
       class RackServer
 
-        START_TIMEOUT = 15
+        START_TIMEOUT = 30
 
         def initialize(path, port = nil)
           @path = path
