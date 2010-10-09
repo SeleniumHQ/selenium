@@ -5,12 +5,13 @@ module Selenium
       # @private
       class Binary
 
-        WAIT_TIMEOUT = 90
         NO_FOCUS_LIBRARY_NAME = "x_ignore_nofocus.so"
-        NO_FOCUS_LIBRARIES = [
+        NO_FOCUS_LIBRARIES    = [
           ["#{WebDriver.root}/selenium/webdriver/firefox/native/linux/amd64/#{NO_FOCUS_LIBRARY_NAME}", "amd64/#{NO_FOCUS_LIBRARY_NAME}"],
           ["#{WebDriver.root}/selenium/webdriver/firefox/native/linux/x86/#{NO_FOCUS_LIBRARY_NAME}", "x86/#{NO_FOCUS_LIBRARY_NAME}"],
         ]
+
+        WAIT_TIMEOUT          = 90
 
         def start_with(profile, profile_path, *args)
           profile_path = profile_path.gsub("/", "\\") if Platform.win?
@@ -27,6 +28,20 @@ module Selenium
           execute(*args)
           cope_with_mac_strangeness(args) if Platform.mac?
         end
+
+        def quit
+          return unless @process
+          @process.poll_for_exit 5
+        rescue ChildProcess::TimeoutError
+          # ok, force quit
+          @process.stop 5
+        end
+
+        def wait
+          @process.poll_for_exit(WAIT_TIMEOUT) if @process
+        end
+
+        private
 
         def execute(*extra_args)
           args = [self.class.path, "-no-remote", "--verbose"] + extra_args
@@ -48,20 +63,6 @@ module Selenium
             raise Error::WebDriverError, "unable to start Firefox cleanly, args: #{args.inspect}"
           end
         end
-
-        def quit
-          return unless @process
-          @process.poll_for_exit 5
-        rescue ChildProcess::TimeoutError
-          # ok, force quit
-          @process.stop 5
-        end
-
-        def wait
-          @process.poll_for_exit(WAIT_TIMEOUT) if @process
-        end
-
-        private
 
         def modify_link_library_path(profile_path)
           paths = []
