@@ -10,7 +10,7 @@ module Selenium
           :native_events    => 'webdriver_enable_native_events',
           :untrusted_certs  => 'webdriver_accept_untrusted_certs',
           :untrusted_issuer => 'webdriver_assume_untrusted_issuer',
-          :port             => 'webdriver_firefox_port'
+          :port             => 'webdriver_firefox_port',
           :log_file         => 'webdriver.log.file'
         }
 
