@@ -54,7 +54,7 @@ module Selenium
         end
 
         def can_lock?
-          @server = TCPServer.new(@host, @port)
+          @server = TCPServer.new(HOST, @port)
 
           # make sure the fd is not inherited by exec()'d processes
           if defined? Fcntl::FD_CLOEXEC
