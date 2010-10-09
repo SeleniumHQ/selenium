@@ -100,6 +100,7 @@ class RubyMappings
         json-jruby.jar
         rubyzip.jar
         childprocess.jar
+        ci_reporter.jar
       ].map { |jar| File.join("third_party/jruby", jar) }
 
       desc "Run ruby tests for #{args[:name]} (jruby)"
@@ -110,6 +111,7 @@ class RubyMappings
         jruby :include     => args[:include],
               :require     => requires,
               :command     => args[:command],
+              :args         => %w[--format CI::Reporter::RSpec],
               :debug       => !!ENV['DEBUG'],
               :files       => args[:srcs]
       end
@@ -127,6 +129,7 @@ class RubyMappings
         ruby :include => args[:include],
              :require => args[:require],
              :command => args[:command],
+             :args    => %w[--format CI::Reporter::RSpec],
              :debug   => !!ENV['DEBUG'],
              :files   => args[:srcs]
       end
@@ -270,6 +273,7 @@ class RubyRunner
     end
 
     cmd << "-S" << opts[:command] if opts.has_key? :command
+    cmd += Array(opts[:args]) if opts.has_key? :args
     cmd += Array(opts[:files]) if opts.has_key? :files
 
     puts cmd.join(' ')

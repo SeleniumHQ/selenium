@@ -1,4 +1,11 @@
 require "spec"
+
+begin
+  require "ci/reporter/rspec"
+  ENV['CI_REPORTS'] = "build/test_logs"
+rescue LoadError
+end
+
 require "selenium-webdriver"
 require "selenium/webdriver/support"
 
