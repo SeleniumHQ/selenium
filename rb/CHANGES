@@ -19,6 +19,7 @@
 * Correctly set the HTTP client timeout (#768)
 * switch_to.window with block now handles exceptions and non-local returns.
 * switch_to.window with block returns the result of the block.
+* Extracted handling of child processes to a separate gem: http://github.com/jarib/childprocess
 
 
 0.0.28 (2010-08-23)
