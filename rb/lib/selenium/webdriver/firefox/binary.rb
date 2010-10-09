@@ -5,6 +5,7 @@ module Selenium
       # @private
       class Binary
 
+        WAIT_TIMEOUT = 90
         NO_FOCUS_LIBRARY_NAME = "x_ignore_nofocus.so"
         NO_FOCUS_LIBRARIES = [
           ["#{WebDriver.root}/selenium/webdriver/firefox/native/linux/amd64/#{NO_FOCUS_LIBRARY_NAME}", "amd64/#{NO_FOCUS_LIBRARY_NAME}"],
@@ -55,7 +56,7 @@ module Selenium
         end
 
         def wait
-          @process.poll_for_exit(15) if @process
+          @process.poll_for_exit(WAIT_TIMEOUT) if @process
         end
 
         private
