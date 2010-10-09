@@ -5,6 +5,10 @@ module Selenium
 
         attr_accessor :unguarded
 
+        def initialize
+          puts "creating #{self.class} :: #{RUBY_DESCRIPTION}"
+        end
+
         def driver
           # TODO: get rid of ENV
           (ENV['WD_SPEC_DRIVER'] || raise("must set WD_SPEC_DRIVER")).to_sym
