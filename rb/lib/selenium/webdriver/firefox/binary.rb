@@ -11,16 +11,6 @@ module Selenium
           ["#{WebDriver.root}/selenium/webdriver/firefox/native/linux/x86/#{NO_FOCUS_LIBRARY_NAME}", "x86/#{NO_FOCUS_LIBRARY_NAME}"],
         ]
 
-        def create_base_profile(name)
-          proc = execute("-CreateProfile", name)
-
-          proc.poll_for_exit 15
-
-          if proc.crashed?
-            raise Error::WebDriverError, "could not create base profile: (exit status: #{status})"
-          end
-        end
-
         def start_with(profile, profile_path, *args)
           profile_path = profile_path.gsub("/", "\\") if Platform.win?
 
