@@ -223,7 +223,7 @@ class RubyMappings
 
         s.add_dependency "json_pure"
         s.add_dependency "rubyzip"
-        s.add_dependency "childprocess", ">= 0.0.6"
+        s.add_dependency "childprocess", ">= 0.0.7"
         s.add_dependency "ffi", "~> 0.6.3"
 
         if s.respond_to? :add_development_dependency
