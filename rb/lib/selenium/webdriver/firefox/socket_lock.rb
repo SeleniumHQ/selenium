@@ -45,7 +45,7 @@ module Selenium
           end
 
           unless did_lock?
-            raise Error::WebDriverError, "unable to bind to locking port #{@port} within #{SOCKET_LOCK_TIMEOUT} seconds"
+            raise Error::WebDriverError, "unable to bind to locking port #{@port} within #{@timeout} seconds"
           end
         end
 
