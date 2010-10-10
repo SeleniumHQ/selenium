@@ -20,10 +20,7 @@ module Selenium
         private
 
         def in_process_test_environment
-          @in_process_test_environment ||= begin
-            puts "creating InProcessTestEnvironment"
-            org.openqa.selenium.environment.InProcessTestEnvironment.new
-          end
+          @in_process_test_environment ||= org.openqa.selenium.environment.InProcessTestEnvironment.new
         end
 
       end # JRubyTestEnvironmnet

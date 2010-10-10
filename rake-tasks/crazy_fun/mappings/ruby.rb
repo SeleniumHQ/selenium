@@ -248,15 +248,13 @@ class RubyRunner
   JRUBY_JAR = "third_party/jruby/jruby-complete-1.5.0.RC2.jar"
 
   def self.run(impl, opts)
-    cmd = []
+    cmd = ["ruby"]
 
-    case impl.to_sym
-    when :jruby
-      cmd << "java"
-      cmd << "-Djava.awt.headless=true" if opts[:headless]
-      cmd << "-jar" << JRUBY_JAR
+    if impl.to_sym == :jruby
+      JRuby.runtime.instance_config.run_ruby_in_process = true
+      cmd << "-J-Djava.awt.headless=true" if opts[:headless]
     else
-      cmd << impl.to_s
+      JRuby.runtime.instance_config.run_ruby_in_process = false
     end
 
     if opts[:debug]
@@ -286,9 +284,6 @@ def jruby(opts)
   RubyRunner.run :jruby, opts
 end
 
-
 def ruby(opts)
-  # if we're running on jruby, -Djruby.launch.inproc=false needs to be set for this to work.
-  # otherwise sh("ruby", ...) will reuse the current JVM
   RubyRunner.run :ruby, opts
 end

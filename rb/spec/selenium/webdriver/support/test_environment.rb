@@ -6,7 +6,7 @@ module Selenium
         attr_accessor :unguarded
 
         def initialize
-          puts "creating #{self.class} :: #{RUBY_DESCRIPTION}"
+          puts "creating test env :: #{RUBY_DESCRIPTION}"
         end
 
         def driver
