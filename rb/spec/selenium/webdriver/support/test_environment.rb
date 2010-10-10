@@ -83,16 +83,17 @@ module Selenium
               :url                  => remote_server.url
             }
 
-            WebDriver::Driver.for :remote, opts
+            instance = WebDriver::Driver.for :remote, opts
           else
-            WebDriver::Driver.for driver
+            instance = WebDriver::Driver.for driver
           end
+
+          @create_driver_error_count -= 1 unless @create_driver_error_count == 0
+          instance
         rescue => ex
           @create_driver_error = ex
           @create_driver_error_count += 1
           raise ex
-        else
-          @create_driver_error_count -= 1
         end
 
         MAX_ERRORS = 4
