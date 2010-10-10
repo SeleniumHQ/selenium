@@ -70,19 +70,21 @@ module Selenium
           string.should include('user_pref("webdriver_assume_untrusted_issuer", false)')
         end
 
-        it "should be able to use the same profile more than once" do
-          profile['browser.startup.homepage'] = url_for("formPage.html")
+        not_compliant_on :platform => :macosx do
+          it "should be able to use the same profile more than once" do
+            profile['browser.startup.homepage'] = url_for("formPage.html")
 
-          begin
-            driver_one = WebDriver.for(:firefox, :profile => profile)
-            driver_two = WebDriver.for(:firefox, :profile => profile)
-          ensure
-            driver_one.quit if driver_one
-            driver_two.quit if driver_two
+            begin
+              driver_one = WebDriver.for(:firefox, :profile => profile)
+              driver_two = WebDriver.for(:firefox, :profile => profile)
+            ensure
+              driver_one.quit if driver_one
+              driver_two.quit if driver_two
+            end
           end
         end
-      end
 
+      end
     end # Firefox
   end # WebDriver
 end # Selenium
