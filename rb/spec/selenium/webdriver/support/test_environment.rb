@@ -7,6 +7,7 @@ module Selenium
 
         def initialize
           puts "creating test env :: #{RUBY_DESCRIPTION}"
+          @create_driver_error = nil
           @create_driver_error_count = 0
         end
 
