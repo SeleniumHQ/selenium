@@ -298,7 +298,7 @@ end # RubyMappings
 
 class RubyRunner
 
-  JRUBY_JAR = "third_party/jruby/jruby-complete-1.5.0.RC2.jar"
+  JRUBY_JAR = "third_party/jruby/jruby-complete.jar"
 
   def self.run(impl, opts)
     cmd = ["ruby"]
