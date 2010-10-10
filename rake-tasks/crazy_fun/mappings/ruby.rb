@@ -193,7 +193,6 @@ class RubyMappings
         define_release_task   dir, args
         define_bundler_tasks  dir, args
       end
-
     end
 
     def has_gem_task?
@@ -209,6 +208,8 @@ class RubyMappings
       gemspec = File.join(args[:dir], "#{args[:name]}.gemspec")
 
       file gemspec do
+
+        mkdir_p args[:dir]
         Dir.chdir(args[:dir]) {
           File.open("#{args[:name]}.gemspec", "w") { |file|
             file << GEMSPEC_HEADER
@@ -284,9 +285,12 @@ class RubyMappings
     end
 
     def bundle_install(ruby, file)
+      args = ["install", "--gemfile", file]
+      args += ["--path", ENV['BUNDLE_PATH']] if ENV['BUNDLE_PATH']
+
       RubyRunner.run ruby,
         :command => "bundle",
-        :args    => ["install", "--gemfile", file]
+        :args    => args
     end
 
   end # RubyGem
