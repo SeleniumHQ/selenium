@@ -7,6 +7,7 @@ module Selenium
 
         def initialize
           puts "creating test env :: #{RUBY_DESCRIPTION}"
+          @create_driver_error_count = 0
         end
 
         def driver
@@ -37,16 +38,8 @@ module Selenium
         end
 
         def new_driver_instance
-          if driver == :remote
-            opts = {
-              :desired_capabilities => WebDriver::Remote::Capabilities.send(ENV['WD_REMOTE_BROWSER'] || 'firefox'),
-              :url                  => remote_server.url
-            }
-
-            WebDriver::Driver.for :remote, opts
-          else
-            WebDriver::Driver.for driver
-          end
+          check_for_previous_error
+          create_driver
         end
 
         def app_server
@@ -81,6 +74,39 @@ module Selenium
 
         def url_for(filename)
           app_server.where_is filename
+        end
+
+        def create_driver
+          if driver == :remote
+            opts = {
+              :desired_capabilities => WebDriver::Remote::Capabilities.send(ENV['WD_REMOTE_BROWSER'] || 'firefox'),
+              :url                  => remote_server.url
+            }
+
+            WebDriver::Driver.for :remote, opts
+          else
+            WebDriver::Driver.for driver
+          end
+        rescue => ex
+          @create_driver_error = ex
+          @create_driver_error_count += 1
+          raise ex
+        else
+          @create_driver_error_count -= 1
+        end
+
+        MAX_ERRORS = 4
+
+        class DriverInstantiationError < StandardError
+        end
+
+        def check_for_previous_error
+          return unless @create_driver_error && @create_driver_error_count >= MAX_ERRORS
+
+          msg = "previous #{@create_driver_error_count} instantiations of driver #{driver.inspect} failed, not trying again"
+          msg << " (#{@create_driver_error.message}"
+
+          raise DriverInstantiationError, msg, @create_driver_error.backtrace
         end
 
       end # TestEnvironment
