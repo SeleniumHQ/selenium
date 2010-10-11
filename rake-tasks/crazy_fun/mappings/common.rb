@@ -166,11 +166,9 @@ class Tasks
 
   def zip(src, dest)
     out = Platform.path_for(File.expand_path(dest))
-
     Dir.chdir(src) {
       # TODO(jari): something very weird going on here on windows
-      # is jruby trying to be clever about "jar"?
-
+      # the 2>&1 is needed for some reason
       ok = system(%{jar cMf "#{out}" * 2>&1})
       ok or raise "could not zip #{src} => #{dest}"
     }
