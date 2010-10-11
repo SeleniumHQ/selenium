@@ -16,14 +16,14 @@ module Selenium
         def start_with(profile, profile_path, *args)
           profile_path = profile_path.gsub("/", "\\") if Platform.win?
 
-          ENV['XRE_PROFILE_PATH'] = profile_path
-          ENV['MOZ_NO_REMOTE'] = '1' # able to launch multiple instances
+          ENV['XRE_CONSOLE_LOG']           = profile.log_file if profile.log_file
+          ENV['XRE_PROFILE_PATH']          = profile_path
+          ENV['MOZ_NO_REMOTE']             = '1' # able to launch multiple instances
+          ENV['MOZ_CRASHREPORTER_DISABLE'] = '1'
 
           if Platform.linux? && (profile.native_events? || profile.load_no_focus_lib?)
             modify_link_library_path profile_path
           end
-
-          ENV['XRE_CONSOLE_LOG'] = profile.log_file if profile.log_file
 
           execute(*args)
           cope_with_mac_strangeness(args) if Platform.mac?
