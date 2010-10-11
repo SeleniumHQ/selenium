@@ -588,14 +588,14 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
 
   public WebElement findElementById(String id) {
     if (!(lastPage() instanceof HtmlPage)) {
-      throw new NoSuchElementException("Cannot find element by id for " + lastPage());
+      throw new NoSuchElementException("Unable to locate element by id for " + lastPage());
     }
 
     try {
       HtmlElement element = ((HtmlPage) lastPage()).getHtmlElementById(id);
       return newHtmlUnitWebElement(element);
     } catch (ElementNotFoundException e) {
-      throw new NoSuchElementException("Cannot find element with ID: " + id);
+      throw new NoSuchElementException("Unable to locate element with ID: " + id);
     }
   }
 
@@ -605,7 +605,7 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
 
   public WebElement findElementByName(String name) {
     if (!(lastPage() instanceof HtmlPage)) {
-      throw new IllegalStateException("Cannot find element by name for " + lastPage());
+      throw new IllegalStateException("Unable to locate element by name for " + lastPage());
     }
 
     List<HtmlElement> allElements = ((HtmlPage) lastPage()).getElementsByName(name);
@@ -613,7 +613,7 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
       return newHtmlUnitWebElement(allElements.get(0));
     }
 
-    throw new NoSuchElementException("Cannot find element with name: " + name);
+    throw new NoSuchElementException("Unable to locate element with name: " + name);
   }
 
   public List<WebElement> findElementsByName(String using) {
@@ -627,7 +627,7 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
 
   public WebElement findElementByTagName(String name) {
     if (!(lastPage() instanceof HtmlPage)) {
-      throw new IllegalStateException("Cannot find element by name for " + lastPage());
+      throw new IllegalStateException("Unable to locate element by name for " + lastPage());
     }
 
     NodeList allElements = ((HtmlPage) lastPage()).getElementsByTagName(name);
@@ -635,7 +635,7 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
       return newHtmlUnitWebElement((HtmlElement) allElements.item(0));
     }
 
-    throw new NoSuchElementException("Cannot find element with name: " + name);
+    throw new NoSuchElementException("Unable to locate element with name: " + name);
   }
 
   public List<WebElement> findElementsByTagName(String using) {
@@ -656,17 +656,17 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
 
   public WebElement findElementByXPath(String selector) {
     if (!(lastPage() instanceof HtmlPage)) {
-      throw new IllegalStateException("Cannot find element by xpath for " + lastPage());
+      throw new IllegalStateException("Unable to locate element by xpath for " + lastPage());
     }
 
     Object node = ((HtmlPage) lastPage()).getFirstByXPath(selector);
     if (node == null) {
-      throw new NoSuchElementException("Cannot locate a node using " + selector);
+      throw new NoSuchElementException("Unable to locate a node using " + selector);
     }
     if (node instanceof HtmlElement) {
       return newHtmlUnitWebElement((HtmlElement) node);
     }
-    throw new NoSuchElementException(String.format("Cannot find element with xpath %s", selector));
+    throw new NoSuchElementException(String.format("Unable to locate element with xpath %s", selector));
   }
 
   public List<WebElement> findElementsByXPath(String selector) {
