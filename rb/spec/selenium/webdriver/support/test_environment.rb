@@ -65,7 +65,7 @@ module Selenium
           end
 
           @driver_instance = @app_server = @remote_server = nil
-
+        ensure
           Guards.report
         end
 
@@ -79,12 +79,16 @@ module Selenium
 
         def create_driver
           if driver == :remote
-            opts = {
-              :desired_capabilities => WebDriver::Remote::Capabilities.send(ENV['WD_REMOTE_BROWSER'] || 'firefox'),
-              :url                  => remote_server.url
-            }
+            caps  = WebDriver::Remote::Capabilities.send(ENV['WD_REMOTE_BROWSER'] || 'firefox')
 
-            instance = WebDriver::Driver.for :remote, opts
+            caps.javascript_enabled    = true
+            caps.css_selectors_enabled = true
+
+            instance = WebDriver::Driver.for(
+              :remote,
+              :desired_capabilities => caps,
+              :url                  => remote_server.url
+            )
           else
             instance = WebDriver::Driver.for driver
           end
