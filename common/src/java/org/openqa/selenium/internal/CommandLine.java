@@ -27,6 +27,9 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.ImmutableMap;
+
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
 
@@ -55,16 +58,42 @@ public class CommandLine {
     this.commandAndArgs = cmdarray;
   }
 
-  public void setEnvironmentVariables(Map<String, String> environment) {
-    env.putAll(environment);
+  @VisibleForTesting
+  Map<String, String> getEnvironment() {
+    return ImmutableMap.copyOf(env);
   }
 
+  /**
+   * Adds the specified environment variables.
+   *
+   * @throws IllegalArgumentException if any value given is null (unsupported)
+   */
+  public void setEnvironmentVariables(Map<String, String> environment) {
+    for (Map.Entry<String, String> entry : environment.entrySet()) {
+      setEnvironmentVariable(entry.getKey(), entry.getValue());
+    }
+  }
+
+  /**
+   * Adds the specified environment variable.
+   *
+   * @throws IllegalArgumentException if the value given is null (unsupported)
+   */
   public void setEnvironmentVariable(String name, String value) {
+    if (name == null) {
+      throw new IllegalArgumentException("Cannot have a null environment variable name!");
+    }
+    if (value == null) {
+      throw new IllegalArgumentException("Cannot have a null value for environment variable " + name);
+    }
     env.put(name, value);
   }
 
   public void setDynamicLibraryPath(String newLibraryPath) {
-    setEnvironmentVariable(getLibraryPathPropertyName(), newLibraryPath);
+    // because on Windows, it is null according to SingleBrowserLocator.computeLibraryPath()
+    if (newLibraryPath != null) {
+      setEnvironmentVariable(getLibraryPathPropertyName(), newLibraryPath);
+    }
   }
 
   /**
