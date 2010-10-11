@@ -16,7 +16,7 @@ end
 
 module Platform
   def Platform.windows?
-    (/mswin|msys|mingw32/ =~ RbConfig::CONFIG['host_os']) != nil
+    @windows ||= !!(/mswin|msys|mingw32/ =~ RbConfig::CONFIG['host_os'])
   end
 
   def windows?
@@ -36,11 +36,15 @@ module Platform
   end
 
   def Platform.dir_separator
-    windows? ? "\\" : "/"
+    File::ALT_SEPARATOR || File::SEPARATOR
   end
 
   def Platform.env_separator
-    windows? ? ";" : ":"
+    File::PATH_SEPARATOR
+  end
+
+  def Platform.path_for(path)
+    windows? ? path.gsub("/", Platform.dir_separator) : path
   end
 end
 
@@ -57,28 +61,28 @@ class Tasks
     use = dir.gsub /\\/, '/'
     use = use.sub(/^\./, '').sub(/^\//, '')
 
-    "//#{use}:#{name}"    
-  end  
-  
+    "//#{use}:#{name}"
+  end
+
   def output_name(dir, name, suffix)
     t = task_name(dir, name);
     result = "build/" + (t.slice(2 ... t.length)) + "." + suffix
     result.gsub(":", "/")
   end
-  
+
   def add_dependencies(target, dir, all_deps)
     return if all_deps.nil?
-    
+
     all_deps.each do |dep|
       target.enhance dep_type(dir, dep)
     end
   end
-  
+
   def copy_resources(dir, to_copy, out_dir)
     to_copy.each do |res|
       if (res.is_a? Symbol)
         out = Rake::Task[task_name(dir, res)].out
-      elsif (Rake::Task.task_defined?(res)) 
+      elsif (Rake::Task.task_defined?(res))
         out = Rake::Task[res].out
       elsif (res.is_a? Hash)
         # Copy the key to "out_dir + value"
@@ -104,7 +108,7 @@ class Tasks
             begin
               if File.directory? src
                 mkdir_p "#{out_dir}/#{to}"
-              else 
+              else
                 mkdir_p File.join(out_dir, File.dirname(to))
               end
               cp_r src, "#{out_dir}/#{to}"
@@ -140,12 +144,12 @@ class Tasks
 
   def copy_prebuilt(fun, out)
     src = fun.find_prebuilt(out)
-    
+
     mkdir_p File.dirname(out)
     puts "Falling back to #{src}"
     cp src, out
   end
-  
+
   def copy_all(dir, srcs, dest)
     if srcs.is_a? Array
       copy_array(dir, srcs, dest)
@@ -159,17 +163,23 @@ class Tasks
       raise StandardError, "Undetermined type: #{srcs.class}"
     end
   end
-  
+
   def zip(src, dest)
-    out = File.expand_path(dest)
-    
-    sh "cd \"#{src}\" && jar cMf \"#{out}\" *"
+    out = Platform.path_for(File.expand_path(dest))
+
+    Dir.chdir(src) {
+      # TODO(jari): something very weird going on here on windows
+      # is jruby trying to be clever about "jar"?
+
+      ok = system(%{jar cMf "#{out}" * 2>&1})
+      ok or raise "could not zip #{src} => #{dest}"
+    }
   end
 
   def to_filelist(dir, src)
     str = dir + "/" + src
     FileList[str].collect do |file|
-      file.gsub("/", Platform.dir_separator)
+      Platform.path_for(file)
     end
   end
 
@@ -180,13 +190,13 @@ class Tasks
     else
       from = to_filelist(dir, src)
     end
-    
+
     cp_r from, to_dir(dest), :remove_destination => true
   end
-  
+
   def copy_symbol(dir, src, dest)
     from = Rake::Task[task_name(dir, src)].out
-    
+
     if File.directory? from
       cp_r from, to_dir(dest)
     else
@@ -205,30 +215,31 @@ class Tasks
         copy_string(dir, item, dest)
       elsif item.is_a? Symbol
         copy_symbol(dir, item, dest)
-      else 
+      else
         raise StandardError, "Undetermined type: #{item.class}"
       end
     end
   end
-  
+
   def copy_hash(dir, src, dest)
     src.each do |key, value|
       if key.is_a? Symbol
-        copy_symbol(dir, key, dest + Platform.dir_separator + value)
+        copy_symbol dir, key, Platform.path_for(File.join(dest, value))
       else
-        cp_r dir + Platform.dir_separator + key, dest + Platform.dir_separator + value
+        from, to = File.join(dir, key), File.join(dest, value)
+        cp_r from, to
       end
     end
-    
+
   end
-  
+
   def to_dir(name)
     if !File.exists? name
       mkdir_p name
     end
     name
   end
-  
+
   def dep_type(dir, dep)
     if dep.is_a? String
       if (dep.start_with? "//")
@@ -237,11 +248,11 @@ class Tasks
         return to_filelist(dir, dep)
       end
     end
-  
+
     if dep.is_a? Symbol
       return [ task_name(dir, dep) ]
     end
-    
+
     if dep.is_a? Hash
       all_deps = []
       dep.each do |k, v|
@@ -250,7 +261,7 @@ class Tasks
       end
       return all_deps
     end
-    
+
     throw "Unmatched dependency type: #{dep.class}"
   end
 end

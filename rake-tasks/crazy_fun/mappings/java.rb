@@ -98,7 +98,7 @@ class BaseJava < Tasks
     jar = jar.sub(":", "/")
     jar << ".jar"
 
-    jar.gsub("/", Platform.dir_separator)
+    Platform.path_for(jar)
   end
 
   def custom_name(dir, name, custom)
@@ -107,7 +107,7 @@ class BaseJava < Tasks
     jar = jar.sub(":", "/")
     jar << ".jar"
 
-    jar.gsub("/", Platform.dir_separator)
+    Platform.path_for(jar)
   end
 
   def temp_dir(dir, name)

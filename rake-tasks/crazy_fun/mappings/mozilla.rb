@@ -40,7 +40,7 @@ class BaseXpt < Tasks
     
     xpt << idl
 
-    xpt.gsub("/", Platform.dir_separator)
+    Platform.path_for(xpt)
   end
 end
   
@@ -66,22 +66,24 @@ class Compile < BaseXpt
     file xpt do
       puts "Building: #{task_name(dir, args[:name])} as #{xpt}"
      
-      gecko = "third_party#{Platform.dir_separator}gecko-1.9.0.11#{Platform.dir_separator}"
-      if (windows?)
-        gecko += "win32"
-      elsif (linux? or mac?)
-        gecko += (linux? ? "linux" : "mac")
+      gecko = %w[third_party gecko-1.9.0.11]
+      if windows?
+        gecko << "win32"
+      elsif linux?
+        gecko << "linux"
+      elsif mac?
+        gecko << "mac"
       else
         # TODO(simon): Should just copy the prebuilt xpt
       end
 
-      base_cmd = "#{gecko}#{Platform.dir_separator}bin#{Platform.dir_separator}xpidl"
-      if (windows?)
-        base_cmd += ".exe"
-      end
-      base_cmd += " -w -m typelib -I#{gecko}#{Platform.dir_separator}idl"
+      incl = [gecko, "idl"].join(Platform.dir_separator)
 
-      src = dir + "/" + args[:srcs][0].gsub("/", Platform.dir_separator)
+      base_cmd = [gecko, "bin", "xpidl"].join(Platform.dir_separator)
+      base_cmd << ".exe" if windows?
+      base_cmd << " -w -m typelib -I#{incl}"
+
+      src = dir + "/" + Platform.path_for(args[:srcs][0])
 
       out_dir = File.dirname(xpt)
       mkdir_p out_dir unless File.exists? out_dir
@@ -110,7 +112,7 @@ class BaseXpi < Tasks
     xpi = xpi.sub(":", "/")
     xpi << ".xpi"
 
-    xpi.gsub("/", Platform.dir_separator)
+    Platform.path_for(xpi)
     
     if args[:out]
       xpi = File.join(File.dirname(xpi), args[:out])

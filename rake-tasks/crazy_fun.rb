@@ -27,23 +27,27 @@ class CrazyFun
   end
 
   def find_prebuilt(of)
-    if of.start_with? "build/"
+    if of.start_with? "build#{Platform.dir_separator}"
       of = of[ 6 ... of.length ]
     end
 
     prebuilt_roots.each do |root|
-      if root.split("/")[0] == of.split("/")[0]
-        src = "#{root}/#{of.split('/')[1 .. -1].join('/')}".gsub("/", Platform.dir_separator)
+      root_parts = root.split("/")
+      of_parts   = of.split(Platform.dir_separator)
+
+      if root_parts.first == of_parts.first
+        of_parts[0] = root
+        src = of_parts.join("/")
       else
-        src = "#{root}/#{of}".gsub("/", Platform.dir_separator)
+        src = "#{root}/#{of}"
       end
-      
-      if (File.exists? src)
+
+      if File.exists? src
         return src
       end
     end
 
-    nil
+    raise "could not find prebuilt for #{of.inspect}"
   end
 
   def create_tasks(files)

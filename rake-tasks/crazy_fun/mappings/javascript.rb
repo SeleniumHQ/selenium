@@ -46,7 +46,7 @@ module Javascript
       js = js.sub(":", "/")
       js << ".js"
 
-      js.gsub("/", Platform.dir_separator)
+      Platform.path_for js
     end
     
     def build_deps(ignore, task, deps)
