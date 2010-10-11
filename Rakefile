@@ -5,6 +5,7 @@ require 'rake-tasks/files.rb'
 require 'yaml'
 require 'net/telnet.rb'
 
+Rake.application.instance_variable_set "@name", "go"
 verbose false
 
 # The CrazyFun build grammar. There's no magic here, just ruby

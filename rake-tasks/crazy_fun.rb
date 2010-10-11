@@ -1,13 +1,10 @@
 require 'rake-tasks/crazy_fun/main.rb'
-require 'rake-tasks/crazy_fun/main.rb'
 
 module Rake
   class Task
     attr_accessor :out
   end
 end
-
-Rake.application.instance_variable_set("@name", "go")
 
 class CrazyFun
   def initialize
@@ -27,13 +24,14 @@ class CrazyFun
   end
 
   def find_prebuilt(of)
-    if of.start_with? "build#{Platform.dir_separator}"
-      of = of[ 6 ... of.length ]
+    if of =~ %r"build([/\\])"
+      of_parts = of.split($1)[1..-1]
+    else
+      of_parts = of.split(Platform.dir_separator)
     end
 
     prebuilt_roots.each do |root|
       root_parts = root.split("/")
-      of_parts   = of.split(Platform.dir_separator)
 
       if root_parts.first == of_parts.first
         of_parts[0] = root
@@ -66,4 +64,30 @@ class CrazyFun
       end
     end
   end
+end
+
+if __FILE__ == $0
+  require "rubygems"
+  require "spec/autorun"
+
+  describe CrazyFun do
+    let(:fun) { CrazyFun.new }
+
+    it "finds prebuilts with normal paths" do
+      fun.prebuilt_roots << "firefox/prebuilt"
+      expected_result = "firefox/prebuilt/i386/libnoblur.so"
+      File.should_receive(:exists?).with(expected_result).and_return(true)
+
+      fun.find_prebuilt("build/firefox/i386/libnoblur.so").should == expected_result
+    end
+
+    it "finds prebuilts with windows paths" do
+      fun.prebuilt_roots << "firefox/prebuilt"
+      expected_result = "firefox/prebuilt/i386/libnoblur.so"
+      File.should_receive(:exists?).with(expected_result).and_return(true)
+
+      fun.find_prebuilt("build\\firefox\\i386\\libnoblur.so").should == expected_result
+    end
+  end
+
 end
