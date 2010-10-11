@@ -47,7 +47,7 @@ class CrazyFun
       end
     end
 
-    raise "could not find prebuilt for #{of.inspect}"
+    nil
   end
 
   def create_tasks(files)
