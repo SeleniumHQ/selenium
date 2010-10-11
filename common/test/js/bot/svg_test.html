@@ -37,8 +37,8 @@
       var element = bot.locators.findElement({id: 'title'}, doc);
       var otherElement = bot.locators.findElement({id: 'someText'});
 
-      bot.action.focusOnElement_(otherElement);
-      bot.action.focusOnElement_(element);
+      bot.action.focusOnElement_(bot.dom.getActiveElement(otherElement), otherElement);
+      bot.action.focusOnElement_(bot.dom.getActiveElement(element), element);
     }
   </script>
 </head>

@@ -244,12 +244,13 @@ bot.action.toggle = function(element) {
  * Focuses on the given element if it is not already the active element. If
  * a focus change is required, the active element will be blurred before
  * focusing on the given element.
+ * @param {Element} activeElement The currently active element, or {@code null}
+ *     if not known. If provided, and different from {@code element}, the
+ *     active element will be blurred before focusing on the element.
  * @param {!Element} element The element to focus on.
  * @private
  */
-bot.action.focusOnElement_ = function(element) {
-  var doc = goog.dom.getOwnerDocument(element);
-  var activeElement = doc.activeElement;
+bot.action.focusOnElement_ = function(activeElement, element) {
   if (element != activeElement) {
 
     if (activeElement) {
@@ -284,7 +285,7 @@ bot.action.clear = function(element) {
     if (element.value != '') {
       bot.action.checkShown_(element);
       bot.action.checkEnabled_(element);
-      bot.action.focusOnElement_(element);
+      bot.action.focusOnElement_(bot.dom.getActiveElement(element), element);
 
       element.value = '';
       bot.events.fire(element, goog.events.EventType.CHANGE);
@@ -354,6 +355,7 @@ bot.action.submit = function(element) {
  */
 bot.action.click = function(element) {
   bot.action.checkShown_(element);
+  var activeElement = bot.dom.getActiveElement(element);
 
   if (goog.isFunction(element.scrollIntoView)) {
     element.scrollIntoView();
@@ -372,7 +374,7 @@ bot.action.click = function(element) {
   bot.events.fire(element, goog.events.EventType.MOUSEOVER);
   bot.events.fire(element, goog.events.EventType.MOUSEMOVE, coords);
   bot.events.fire(element, goog.events.EventType.MOUSEDOWN, coords);
-  bot.action.focusOnElement_(element);
+  bot.action.focusOnElement_(activeElement, element);
   bot.events.fire(element, goog.events.EventType.MOUSEUP, coords);
   bot.events.fire(element, goog.events.EventType.CLICK, coords);
 };

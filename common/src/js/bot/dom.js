@@ -33,6 +33,17 @@ goog.require('goog.style');
 
 
 /**
+ * Retrieves the active element for a node's owner document.
+ * @param {!(Node|Window)} nodeOrWindow The node whose owner document to get
+ *     the active element for.
+ * @return {Element} The active element, if any.
+ */
+bot.dom.getActiveElement = function(nodeOrWindow) {
+  return goog.dom.getOwnerDocument(nodeOrWindow).activeElement;
+};
+
+
+/**
  * @param {Node} node The node to test.
  * @param {goog.dom.TagName=} opt_tagName Tag name to test the node for; if not
  *     provided, return value is true for any element regardless of tag name.
