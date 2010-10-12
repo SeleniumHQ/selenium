@@ -208,7 +208,6 @@ class RubyMappings
       gemspec = File.join(args[:dir], "#{args[:name]}.gemspec")
 
       file gemspec do
-
         mkdir_p args[:dir]
         Dir.chdir(args[:dir]) {
           File.open("#{args[:name]}.gemspec", "w") { |file|
@@ -217,16 +216,29 @@ class RubyMappings
           }
         }
       end
+
+      task("clean_#{gemspec}") { rm_rf gemspec }
     end
 
     def define_build_task(dir, args)
+      gemfile = File.join("build", "#{args[:name]}-#{args[:version]}.gem")
       gemspec = File.join(args[:dir], "#{args[:name]}.gemspec")
-      deps = (args[:deps] || []) << gemspec
 
-      desc "Build gem #{args[:name]}-#{args[:version]}"
-      task "//#{dir}:gem:build" => deps do
-        Dir.chdir(args[:dir]) { sh "gem build #{gemspec}" }
+      deps = (args[:deps] || [])
+      deps << "clean_#{gemspec}" << gemspec
+
+      file gemfile => deps do
+        require 'rubygems/builder'
+        spec = eval(File.read(gemspec))
+        file = Dir.chdir(args[:dir]) {
+          Gem::Builder.new(spec).build
+        }
+
+        mv File.join(args[:dir], file), gemfile
       end
+
+      desc "Build #{gemfile}"
+      task "//#{dir}:gem:build" => gemfile
     end
 
     def define_clean_task(dir, args)
