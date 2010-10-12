@@ -118,6 +118,7 @@ namespace OpenQA.Selenium.Firefox
             string profileAbsPath = profile.ProfileDirectory;
             SetEnvironmentProperty("XRE_PROFILE_PATH", profileAbsPath);
             SetEnvironmentProperty("MOZ_NO_REMOTE", "1");
+            SetEnvironmentProperty("MOZ_CRASHREPORTER_DISABLE", "1"); // Disable Breakpad
 
             if (IsOnLinux && (profile.EnableNativeEvents || profile.AlwaysLoadNoFocusLibrary))
             {
