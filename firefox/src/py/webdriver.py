@@ -70,15 +70,15 @@ class WebDriver(RemoteWebDriver):
         Set a preference in about:config via user.js. Format is name, value.
         For example, set_preference("app.update.auto", "false")
         """
-        FirefoxProfile = FirefoxProfile()
-        pref_dict = FirefoxProfile.prefs
+        FFProfile = FirefoxProfile()
+        pref_dict = FFProfile.prefs
         pref_dict[name] = value
-        FirefoxProfile._update_user_preference(pref_dict)
+        FFProfile._update_user_preference(pref_dict)
 
     def get_preferences(self):
         """View the current list of preferences set in about:config."""
-        FirefoxProfile = FirefoxProfile()
-        return FirefoxProfile.prefs
+        FFProfile = FirefoxProfile()
+        return FFProfile.prefs
 
     def create_web_element(self, element_id):
         """Override from RemoteWebDriver to use firefox.WebElement."""
