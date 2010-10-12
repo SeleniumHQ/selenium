@@ -65,6 +65,20 @@ class WebDriver(RemoteWebDriver):
             if command != Command.QUIT:
                 raise e
 
+    def set_preference(self, name, value):
+        """
+        Set a preference in about:config via user.js. Format is name, value.
+        For example, set_preference("app.update.auto", "false")
+        """
+        FirefoxProfile = FirefoxProfile()
+        pref_dict = FirefoxProfile.prefs
+        pref_dict[name] = value
+        FirefoxProfile._update_user_preference(pref_dict)
+
+    def get_preferences(self):
+        """View the current list of preferences set in about:config."""
+        FirefoxProfile = FirefoxProfile()
+        return FirefoxProfile.prefs
 
     def create_web_element(self, element_id):
         """Override from RemoteWebDriver to use firefox.WebElement."""
@@ -73,17 +87,25 @@ class WebDriver(RemoteWebDriver):
     def quit(self):
         """Quits the driver and close every associated window."""
         try:
-          RemoteWebDriver.quit(self)
+            RemoteWebDriver.quit(self)
         except httplib.BadStatusLine:
-          # Happens if Firefox shutsdown before we've read the response from
-          # the socket.
-          pass
+            # Happens if Firefox shutsdown before we've read the response from
+            # the socket.
+            pass
         self.browser.kill()
 
-    def save_screenshot(self, png_file):
-        """Saves a screenshot of the current page into the given
-        file."""
-        png_data = self._execute(Command.SCREENSHOT)['value']
-        fp = open(png_file, 'wb')
-        fp.write(base64.decodestring(png_data))
-        fp.close()
+    def save_screenshot(self, filename):
+        """
+        Gets the screenshot of the current window. Returns False if there is
+        any IOError, else returns True. Use full paths in your filename.
+        """
+        png = self._execute(Command.SCREENSHOT)['value']
+        try:
+            f = open(filename, 'w')
+            f.write(base64.decodestring(png))
+            f.close()
+        except IOError:
+            return False
+        finally:
+            del png
+        return True
