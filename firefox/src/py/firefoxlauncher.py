@@ -70,6 +70,7 @@ class FirefoxLauncher(object):
 
     def _start_from_profile_path(self, path):
         os.environ["XRE_PROFILE_PATH"] = path
+        os.environ["MOZ_CRASHREPORTER_DISABLE"] = "1"
         self.process = Popen([self._start_cmd, "-no-remote", "--verbose"])
 
     def _wait_until_connectable(self):
