@@ -11,31 +11,34 @@ module Selenium
             raise Error::WebDriverError, "could not find extension at #{path.inspect}"
           end
 
-          @path = path
+          @path             = path
+          @should_reap_root = false
         end
 
         def write_to(extensions_dir)
-          ext_path = File.join extensions_dir, read_id_from_install_rdf(root)
+          root_dir = create_root
+          ext_path = File.join extensions_dir, read_id_from_install_rdf(root_dir)
 
           FileUtils.rm_rf ext_path
           FileUtils.mkdir_p File.dirname(ext_path), :mode => 0700
-          FileUtils.cp_r root, ext_path
+          FileUtils.cp_r root_dir, ext_path
+
+          FileReaper.reap(root_dir) if @should_reap_root
         end
 
         private
 
-        def root
-          @root ||= (
-            if File.directory? @path
-              @path
-            else
-              unless Zipper::EXTENSIONS.include? File.extname(@path)
-                raise Error::WebDriverError, "expected #{Zipper::EXTENSIONS.join(" or ")}, got #{@path.inspect}"
-              end
-
-              Zipper.unzip(@path)
+        def create_root
+          if File.directory? @path
+            @path
+          else
+            unless Zipper::EXTENSIONS.include? File.extname(@path)
+              raise Error::WebDriverError, "expected #{Zipper::EXTENSIONS.join(" or ")}, got #{@path.inspect}"
             end
-          )
+
+            @should_reap_root = true
+            Zipper.unzip(@path)
+          end
         end
 
         def read_id_from_install_rdf(directory)

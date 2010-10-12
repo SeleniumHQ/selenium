@@ -6,9 +6,8 @@ module Selenium
       class Bridge < Remote::Bridge
 
         def initialize(opts = {})
-          @binary     = Binary.new
           @launcher   = Launcher.new(
-            @binary,
+            Binary.new,
             opts.delete(:port) || DEFAULT_PORT,
             opts.delete(:profile)
           )
@@ -41,7 +40,7 @@ module Selenium
 
         def quit
           super
-          @binary.quit
+          @launcher.quit
 
           nil
         end

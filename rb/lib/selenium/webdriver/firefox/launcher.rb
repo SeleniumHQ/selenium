@@ -40,6 +40,11 @@ module Selenium
           self
         end
 
+        def quit
+          @binary.quit
+          FileReaper.reap(@profile_dir) if @profile_dir
+        end
+
         def find_free_port
           port = @port
 
