@@ -325,6 +325,9 @@ public class FirefoxProfile {
     // Enables the use of the dump() statement
     prefs.put("browser.dom.window.dump.enabled", "true");
 
+    // Log exceptions from inner frames (i.e. setTimeout)
+    prefs.put("dom.report_all_js_exceptions", "true");
+
     // If the user sets the home page, we should also start up there
     prefs.put("startup.homepage_welcome_url", prefs.get("browser.startup.homepage"));
 

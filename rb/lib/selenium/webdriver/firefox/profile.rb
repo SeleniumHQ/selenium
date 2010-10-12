@@ -284,7 +284,8 @@ module Selenium
           "security.warn_viewing_mixed.show_once"     => 'false',
           "signon.rememberSignons"                    => 'false',
           "javascript.options.showInConsole"          => 'true',
-          "browser.dom.window.dump.enabled"           => 'true'
+          "browser.dom.window.dump.enabled"           => 'true',
+          "dom.report_all_js_exceptions"              => "true"
         }.freeze
 
       end # Profile
