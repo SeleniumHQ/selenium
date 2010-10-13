@@ -14,6 +14,8 @@ public class OutputWatcher implements Runnable {
 
   private final InputStream input;
   private final OutputStream output;
+  private static final int BUFSIZE = 2048;
+  final byte[] buffer = new byte[BUFSIZE];
 
   public OutputWatcher(InputStream input, OutputStream output) {
     this.input = input;
@@ -22,11 +24,13 @@ public class OutputWatcher implements Runnable {
 
   public void run() {
     int read = 0;
+      int avail = 0;
     while (read != -1) {
       try {
-        if (input.available() > 0) {
-          read = input.read();
-          output.write(read);
+        avail = Math.max(input.available(), 1);
+        read = input.read(buffer, 0, avail);
+        if (read > 0){
+          output.write(buffer, 0, read);
         }
       } catch (IOException ignored) {
         // This exception is thrown when the thread running this instance is interrupted.
