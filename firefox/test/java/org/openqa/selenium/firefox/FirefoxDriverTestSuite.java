@@ -51,6 +51,7 @@ public class FirefoxDriverTestSuite extends TestCase {
         .addSourceDir("common")
         .usingDriver(FirefoxDriver.class)
         .exclude(FIREFOX)
+        .outputTestNames()
         .keepDriverInstance()
         .includeJavascriptTests()
         .create();
