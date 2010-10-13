@@ -6,7 +6,7 @@ module Selenium
         attr_accessor :unguarded
 
         def initialize
-          puts "creating test env :: #{RUBY_DESCRIPTION}"
+          puts "creating test env :: #{ruby_description}"
           @create_driver_error = nil
           @create_driver_error_count = 0
         end
@@ -75,6 +75,12 @@ module Selenium
 
         def url_for(filename)
           app_server.where_is filename
+        end
+
+        private
+
+        def ruby_description
+          defined?(RUBY_DESCRIPTION) ? RUBY_DESCRIPTION : "ruby-#{RUBY_VERSION}"
         end
 
         def create_driver
