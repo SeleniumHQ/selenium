@@ -56,17 +56,15 @@ public class NewSession implements Handler, JsonParametersAware {
 
   @Override
   public String toString() {
-    Map<String, Object> capabilities = Maps.newHashMap();
+    Map<String, String> capabilities = Maps.newHashMap();
 
     if (desiredCapabilities != null) {
-      for (Map.Entry<String, ?> entry : capabilities.entrySet()) {
+      for (Map.Entry<String, ?> entry : desiredCapabilities.asMap().entrySet()) {
         String value = String.valueOf(entry.getValue());
-
         if (value.length() > 32) {
           value = value.substring(0, 29) + "...";
         }
-
-        capabilities.put(entry.getKey(), entry.getValue());
+        capabilities.put(entry.getKey(), value);
       }
 
     }
