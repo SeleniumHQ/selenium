@@ -29,8 +29,6 @@ import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.REMOTE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
-import static org.openqa.selenium.TestWaitingUtility.MAX_WAIT_TIME_MS;
-import static org.openqa.selenium.TestWaitingUtility.SLEEP_DURATION_MS;
 import static org.openqa.selenium.TestWaitingUtility.waitForElementToExist;
 
 @Ignore(value = {IPHONE, ANDROID}, reason = "The iPhone only supports one window")
@@ -128,9 +126,8 @@ public class WindowSwitchingTest extends AbstractDriverTestCase {
       driver.findElement(By.id("close")).click();
       Set<String> allHandles = driver.getWindowHandles();
 
-      long startTimeMs = System.currentTimeMillis();
-      while ((startTimeMs + MAX_WAIT_TIME_MS > System.currentTimeMillis())
-        && (allHandles.size() != 1)) {
+      TestWaitingUtility.startSleep();
+      while (TestWaitingUtility.shouldSleep() && (allHandles.size() != 1)) {
         TestWaitingUtility.sleep();
         allHandles = driver.getWindowHandles();
       }

@@ -393,8 +393,9 @@ public class ElementFindingTest extends AbstractDriverTestCase {
     driver.findElement(By.id("delete")).click();
 
     try {
-      long start = System.currentTimeMillis();
-      while (start + TestWaitingUtility.MAX_WAIT_TIME_MS > System.currentTimeMillis()) {
+      TestWaitingUtility.startSleep();
+
+      while (TestWaitingUtility.shouldSleep()) {
         toBeDeleted.isDisplayed();
         TestWaitingUtility.sleep();
       }

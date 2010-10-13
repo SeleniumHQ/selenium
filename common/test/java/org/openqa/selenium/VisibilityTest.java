@@ -69,6 +69,11 @@ public class VisibilityTest extends AbstractDriverTestCase {
     assertTrue(element.isDisplayed());
 
     element.click();
+    TestWaitingUtility.startSleep();
+
+    while (TestWaitingUtility.shouldSleep() && element.isDisplayed()) {
+      TestWaitingUtility.sleep();
+    }
 
     assertFalse(element.isDisplayed());
   }
