@@ -190,6 +190,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
     WebElement clicker = driver.findElement(By.id("clickField"));
     clicker.click();
 
+    TestWaitingUtility.waitUntilElementValueEquals(clicker, "Clicked");
     assertThat(clicker.getValue(), equalTo("Clicked"));
   }
 
