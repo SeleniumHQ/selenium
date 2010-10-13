@@ -9,9 +9,9 @@
 	<classpathentry exported="true" kind="lib" path="/third-party/java/commons-io/commons-io-1.4.jar"/>
 	<classpathentry exported="true" kind="lib" path="/third-party/java/commons-lang/commons-lang-2.4.jar"/>
 	<classpathentry exported="true" kind="lib" path="/third-party/java/commons-logging/commons-logging-1.1.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="/third-party/java/apache-httpclient/httpclient-4.0.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="/third-party/java/apache-httpclient/httpcore-4.0.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="/third-party/java/apache-httpclient/httpmime-4.0.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="/third-party/java/apache-mime4j/apache-mime4j-0.6.jar"/>
+	<classpathentry exported="true" kind="lib" path="/third-party/java/apache-httpclient/httpclient-4.0.2.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
