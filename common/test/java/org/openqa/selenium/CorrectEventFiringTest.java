@@ -126,8 +126,9 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
     driver.get(pages.javascriptPage);
     driver.findElement(By.id("mouseclick")).click();
 
-    String result = driver.findElement(By.id("result")).getText();
-    assertThat(result, equalTo("mouse click"));
+    WebElement result = driver.findElement(By.id("result"));
+    TestWaitingUtility.waitUntilElementTextEquals(result, "mouse down");
+    assertThat(result.getText(), equalTo("mouse click"));
   }
 
   @JavascriptEnabled

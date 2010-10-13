@@ -40,6 +40,8 @@ public class TestWaitingUtility {
   }
 
   public static WebElement waitForElementToExist(WebDriver driver, String elementId) {
+    startSleep();
+
     while (shouldSleep()) {
       try {
         return driver.findElement(By.id(elementId));
@@ -53,6 +55,8 @@ public class TestWaitingUtility {
   }
 
   public static String waitUntilElementTextContains(WebElement element, String partialValue) {
+    startSleep();
+    
     while (shouldSleep() &&
            !(element.getText().contains(partialValue))) {
       sleep();
@@ -62,6 +66,7 @@ public class TestWaitingUtility {
   }
 
   public static String waitForPageTitle(WebDriver driver, String desiredTitle) {
+    startSleep();
 
     while (shouldSleep() &&
            !(driver.getTitle().equals(desiredTitle))) {
