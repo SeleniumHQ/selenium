@@ -192,11 +192,10 @@ class FirefoxProfile(object):
         os.environ["XRE_PROFILE_PATH"] = self.anonymous_profile_dir
         subprocess.Popen([utils.get_firefox_start_cmd(), "-silent"]).wait()
 
-    def _update_user_preference(self):
+    def _update_user_preference(self, pref=None):
         """Updates the user.js with the configurations needed by webdriver."""
-        preference = {}
-        user_pref_file_name = os.path.join(
-            self.path, "user.js")
+        preference = self._get_webdriver_prefs()
+        user_pref_file_name = os.path.join(self.path, "user.js")
         try:
             user_pref_file = open(user_pref_file_name)
             for line in user_pref_file:
@@ -205,13 +204,14 @@ class FirefoxProfile(object):
                     preference[match.group(1)] = match.group(2)
         except IOError:
             logging.debug("user.js doesn't exist, creating one...")
-        preference.update(self._get_webdriver_prefs())
+        #preference.update(self._get_webdriver_prefs())
+        if pref:
+            preference.update(pref)
         preference["webdriver.firefox_port"] = self.port
         user_pref_file = open(user_pref_file_name, "w")
         for key, value in preference.items():
             user_pref_file.write('user_pref("%s", %s);\n' % (key, value))
         user_pref_file.close()
-
         logging.info('user_pref after update:')
         logging.info(preference)
 
