@@ -54,6 +54,3 @@ describe "Timeouts" do
   end
 
 end
-
-
-
