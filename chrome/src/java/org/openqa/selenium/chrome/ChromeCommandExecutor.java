@@ -177,17 +177,25 @@ public class ChromeCommandExecutor implements CommandExecutor {
     //Respond to request with the command
     String commandStringToSend = fillArgs(command);
     byte[] data = fillTwoHundredWithJson(commandStringToSend);
-
-    Socket socket = getOldestSocket();
+    Socket oldestSocket = getOldestSocket();
+    writeAndFlushToSocket(data, oldestSocket);
+  }
+  
+  private void writeAndFlushToSocket(byte[] data, Socket socket) throws IOException {
     try {
       socket.getOutputStream().write(data);
       socket.getOutputStream().flush();
     } finally {
+      try {
+        //This shouldn't be necessary with SO_LINGER set, but seems to make a difference
+        Thread.sleep(5);
+      } catch (InterruptedException e) {}
       socket.close();
+      //Removes the socket if it is present, no-op otherwise
       listeningThread.sockets.remove(socket);
     }
   }
-  
+
   String fillArgs(Command command) {
     String[] parameterNames = commands.get(command.getName());
     if (parameterNames.length != command.getParameters().size()) {
@@ -367,6 +375,7 @@ public class ChromeCommandExecutor implements CommandExecutor {
       try {
         while (listen && !serverSocket.isClosed()) {
           Socket acceptedSocket = serverSocket.accept();
+          acceptedSocket.setSoLinger(true, 10);
           int r = acceptedSocket.getInputStream().read();
           if (r != 'G') {
             //Not a GET.
@@ -379,6 +388,7 @@ public class ChromeCommandExecutor implements CommandExecutor {
             //The browser, rather than extension, is visiting the page
             //Because the extension always uses POST
             //Serve up a holding page and ignore the socket
+        	  //sockets.add(acceptedSocket);
             respondWithHoldingPage(acceptedSocket);
           }
         }
@@ -390,14 +400,12 @@ public class ChromeCommandExecutor implements CommandExecutor {
       }
     }
     
-    private void respondWithHoldingPage(Socket acceptedSocket) throws IOException {
+    private void respondWithHoldingPage(Socket socket) throws IOException {
       //We offer a reload to work around http://crbug.com/11547 on Mac
-      acceptedSocket.getOutputStream().write(
-          fillTwoHundred(
+      byte[] data = fillTwoHundred(
           "<html><head><script type='text/javascript'>if (window.location.search == '') { setTimeout(\"window.location = window.location.href + '?reloaded'\", 5000); }</script></head><body><p>ChromeDriver server started and connected.  Please leave this tab open.</p></body></html>",
-          "Content-Type: text/html"));
-      acceptedSocket.getOutputStream().flush();
-      acceptedSocket.close();
+      "Content-Type: text/html");
+      writeAndFlushToSocket(data, socket);
     }
 
     public void stopListening() {
