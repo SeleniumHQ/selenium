@@ -3,8 +3,10 @@ $:.unshift File.expand_path("../lib", __FILE__)
 require 'bundler/setup'
 require 'rake'
 require 'rake/testtask'
+require 'rake/clean'
 require "spec/rake/spectask"
 require "selenium/rake/tasks"
+
 
 SELENIUM_SERVER_JAR = File.expand_path("../../build/remote/server/server-standalone.jar", __FILE__)
 unless File.exist?(SELENIUM_SERVER_JAR)
@@ -12,15 +14,15 @@ unless File.exist?(SELENIUM_SERVER_JAR)
 end
 
 desc "Start a Selenium remote control, run all integration tests and stop the remote control"
-task :'ci:integration' => [ :clean, :'test:unit' ] do
-  Rake::Task[:"selenium:rc:stop"].execute [] rescue nil
+task "ci:integration" => [ :clean, :'test:unit' ] do
+  Rake::Task[:"selenium:server:stop"].execute [] rescue nil
   begin
     Rake::Task[:"sample_app:restart"].execute []
-    Rake::Task[:"selenium:rc:start"].execute []
+    Rake::Task[:"selenium:server:start"].execute []
     Rake::Task[:"test:integration"].execute []
     Rake::Task[:"examples"].execute []
   ensure
-    Rake::Task[:"selenium:rc:stop"].execute []
+    Rake::Task[:"selenium:server:stop"].execute []
     Rake::Task[:"sample_app:restart"].execute []
   end
 end
