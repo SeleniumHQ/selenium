@@ -43,6 +43,9 @@ function FirefoxDriver(server, enableNativeEvents, win) {
   }
 
   FirefoxDriver.listenerScript = Utils.loadUrl("resource://fxdriver/evaluate.js");
+
+  this.jsTimer = new Timer();
+
 }
 
 
@@ -149,6 +152,7 @@ FirefoxDriver.prototype.executeScript = function(respond, parameters) {
 
   var rawScript = parameters['script'];
   var converted = Utils.unwrapParameters(parameters['args'], doc);
+  var me = this;
 
   if (doc.designMode && "on" == doc.designMode.toLowerCase()) {
     // See https://developer.mozilla.org/en/rich-text_editing_in_mozilla#Internet_Explorer_Differences
@@ -223,14 +227,14 @@ FirefoxDriver.prototype.executeScript = function(respond, parameters) {
       doc.body.appendChild(element);
       element.parentNode.removeChild(element);
     }
-    new Timer().runWhenTrue(checkScriptLoaded, runScript, 10000, scriptLoadTimeOut);
+    me.jsTimer.runWhenTrue(checkScriptLoaded, runScript, 10000, scriptLoadTimeOut);
   };
 
   var checkDocBodyLoaded = function() {
     return !!doc.body;
   };
 
-  new Timer().runWhenTrue(checkDocBodyLoaded, addListener, 10000, docBodyLoadTimeOut);
+  me.jsTimer.runWhenTrue(checkDocBodyLoaded, addListener, 10000, docBodyLoadTimeOut);
 };
 
 
@@ -434,7 +438,7 @@ FirefoxDriver.prototype.findElementInternal_ = function(respond, method,
       var callback = goog.bind(this.findElementInternal_, this, respond, method, selector,
               opt_parentElementId, startTime);
 
-      new Timer().setTimeout(callback, 10);
+      this.jsTimer.setTimeout(callback, 10);
     }
   }
 };

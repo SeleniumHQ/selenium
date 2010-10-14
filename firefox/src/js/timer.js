@@ -23,11 +23,15 @@
 /**
  * @constructor
  */
-function Timer() { /* Empty */ }
+function Timer() {
+  this.timer = null;
+}
 
 /**
  * Set a callback to be executed after a specified time out. The default time
  * out is 10ms.
+ *
+ * Note that "this" within the callback is null
  *
  * @param {!function(*=): *} callback The callback to use.
  * @param {number=} opt_timeout An optional timeout to use.
@@ -37,9 +41,9 @@ Timer.prototype.setTimeout = function(callback, opt_timeout) {
   var CI = Components.interfaces;
 
   var timeout = opt_timeout || 10;
-  var timer = CC['@mozilla.org/timer;1'].createInstance(CI['nsITimer']);
+  this.timer = CC['@mozilla.org/timer;1'].createInstance(CI['nsITimer']);
 
-  timer.initWithCallback({
+  this.timer.initWithCallback({
     notify: function() {
       callback.apply(null);
     }
@@ -51,6 +55,8 @@ Timer.prototype.setTimeout = function(callback, opt_timeout) {
  * Wait until a condition is true before calling "callback". On error, call
  * ontimeout.
  *
+ * Note that "this" is null within the callbacks
+ *
  * @param {function():boolean} condition The condition to check.
  * @param {function():undefined} callback The callback to use when condition is
  *    true.
@@ -61,11 +67,12 @@ Timer.prototype.setTimeout = function(callback, opt_timeout) {
 Timer.prototype.runWhenTrue = function(condition, callback, timeout, ontimeout) {
   var remaining = timeout;
   var interval = 100;
+  var me = this;
 
   var timed = function () {
     if (remaining >= 0 && !condition()) {
       remaining -= interval;
-      new Timer().setTimeout(timed, interval);
+      me.setTimeout(timed, interval);
     } else if (remaining <= 0) {
       ontimeout();
     } else {
