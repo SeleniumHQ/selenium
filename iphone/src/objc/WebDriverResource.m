@@ -47,7 +47,7 @@
         DELETEAction:(SEL)deleteAction
 {
   NSMutableDictionary *actions = [NSMutableDictionary dictionary];
- 
+
   if (getAction != NULL)
     [actions setValue:[NSValue valueWithPointer:getAction] forKey:@"GET"];
   if (postAction != NULL)
@@ -125,29 +125,6 @@
   return (NSDictionary *)requestData;
 }
 
-// Create and return an invocator for the specified method. Returns nil on
-// error.
-- (NSInvocation *)createInvocationWithSelector:(SEL)selector
-                                     signature:(NSMethodSignature *)method
-                                     arguments:(NSDictionary *)arguments {
-  NSInvocation *invocation
-    = [NSInvocation invocationWithMethodSignature:method];
-  [invocation setSelector:selector];
-  [invocation setTarget:target_];
-  
-  if (arguments != nil) {
-    // The first two arguments in the method are the target and selector.
-    // NSInvocation will fill them in for us.  The 3rd argument should be
-    // a dictionary of additional command parameters, initialized from the
-    // request JSON data.
-    if ([method numberOfArguments] > 2) {
-      [invocation setArgument:&arguments atIndex:2];
-    }
-  }
-
-  return invocation;
-}
-
 // Validate the arguments are valid for this HTTP method + signature. Return
 // a |WebDriverResponse| containing the error if we encountered one.
 - (WebDriverResponse *)validateArgumentDictionary:(NSDictionary *)arguments
@@ -166,17 +143,29 @@
   return nil;
 }
 
-// Invoke the given invocation and create a WebDriver response from it.
-- (WebDriverResponse *)createResponseFromInvocation:(NSInvocation *)invocation {
+// Create a WebDriver response from a given selector.
+- (WebDriverResponse *)createResponseFromSelector:(SEL)selector
+                                          signature:(NSMethodSignature *)method
+                                          arguments:(NSDictionary *)arguments {
   WebDriverResponse *response;
+  id result;
   
   @try {
-    [invocation invoke];
-    if ([[invocation methodSignature] methodReturnLength] == 0) {
+    if (arguments != nil) {
+      // The first two arguments in the method are the target and selector.
+      // NSInvocation will fill them in for us.  The 3rd argument should be
+      // a dictionary of additional command parameters, initialized from the
+      // request JSON data.
+      if ([method numberOfArguments] > 2) {
+        result = objc_msgSend(target_, selector, arguments);
+      }
+    } else {
+      result = objc_msgSend(target_, selector);
+    }
+    
+    if ([method methodReturnLength] == 0) {
       response = [WebDriverResponse responseWithValue:nil];
     } else {
-      id result;
-      [invocation getReturnValue:&result];
       response = [WebDriverResponse responseWithValue:result];
     }
   }
@@ -225,15 +214,13 @@
     return response;
   }
   
-  NSInvocation *invocation = [self createInvocationWithSelector:selector
-                                                      signature:methodSignature
-                                                      arguments:arguments];
-
   [[MainViewController sharedInstance]
    describeLastAction:NSStringFromSelector(selector)];
   
-  // Finally call the invocation and create a response from it.
-  response = [self createResponseFromInvocation:invocation];
+  // Create response
+  response = [self createResponseFromSelector:selector
+                                      signature:methodSignature
+                                      arguments:arguments];
   [self configureWebDriverResponse:response];
   return response;
 }
