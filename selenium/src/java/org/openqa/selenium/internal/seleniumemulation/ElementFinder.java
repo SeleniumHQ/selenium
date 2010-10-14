@@ -80,6 +80,7 @@ public class ElementFinder {
   private void setUpElementFindingStrategies() {
     lookupStrategies.put("alt", new AltLookupStrategy());
     lookupStrategies.put("class", new ClassLookupStrategy());
+    lookupStrategies.put("css", new CssLookupStrategy());
     lookupStrategies.put("id", new IdLookupStrategy());
     lookupStrategies.put("identifier", new IdentifierLookupStrategy());
     lookupStrategies.put("implicit", new ImplicitLookupStrategy());
