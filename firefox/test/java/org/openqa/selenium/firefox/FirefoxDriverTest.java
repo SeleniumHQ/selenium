@@ -34,11 +34,14 @@ import org.openqa.selenium.NoDriverAfterTest;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.ParallelTestRunner;
 import org.openqa.selenium.ParallelTestRunner.Worker;
+import org.openqa.selenium.Platform;
+import org.openqa.selenium.TestWaitingUtility;
 import org.openqa.selenium.UnhandledAlertException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.firefox.internal.ProfilesIni;
+import org.openqa.selenium.remote.RemoteWebDriver;
 
 import static java.lang.Thread.sleep;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -297,7 +300,11 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
     try {
       WebElement alert = firefox.findElement(By.id("alert"));
       alert.click();
-      String title = firefox.getTitle();
+      TestWaitingUtility.startSleep();
+      while (TestWaitingUtility.shouldSleep()) {
+        String title = firefox.getTitle();
+        TestWaitingUtility.sleep();
+      }
       fail("Should have thrown an UnhandledAlertException");
     } catch (UnhandledAlertException e) {
       // this is expected
@@ -366,6 +373,15 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
   }
 
   public void testMultipleFirefoxDriversRunningConcurrently() throws Exception {
+    // Unfortunately native events on linux mean mucking around with the
+    // window's focus. this breaks multiple drivers.
+    boolean nativeEventsEnabled =
+        (Boolean) ((RemoteWebDriver) driver).getCapabilities().getCapability("nativeEvents");
+
+    if (nativeEventsEnabled && Platform.getCurrent().is(Platform.LINUX)) {
+      return;
+    }
+    
     int numThreads = 10;
     final int numRoundsPerThread = 50;
     WebDriver[] drivers = new WebDriver[numThreads];
