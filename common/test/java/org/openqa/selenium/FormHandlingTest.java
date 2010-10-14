@@ -39,6 +39,7 @@ public class FormHandlingTest extends AbstractDriverTestCase {
   public void testShouldClickOnSubmitInputElements() {
     driver.get(pages.formPage);
     driver.findElement(By.id("submitButton")).click();
+    TestWaitingUtility.waitForPageTitle(driver, "We Arrive Here");
     assertThat(driver.getTitle(), equalTo("We Arrive Here"));
   }
 
@@ -55,6 +56,7 @@ public class FormHandlingTest extends AbstractDriverTestCase {
   public void testShouldBeAbleToClickImageButtons() {
     driver.get(pages.formPage);
     driver.findElement(By.id("imageButton")).click();
+    TestWaitingUtility.waitForPageTitle(driver, "We Arrive Here");
     assertThat(driver.getTitle(), equalTo("We Arrive Here"));
   }
 
