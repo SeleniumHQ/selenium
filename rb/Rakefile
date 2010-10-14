@@ -6,6 +6,11 @@ require 'rake/testtask'
 require "spec/rake/spectask"
 require "selenium/rake/tasks"
 
+SELENIUM_SERVER_JAR = File.expand_path("../../build/remote/server/server-standalone.jar", __FILE__)
+unless File.exist?(SELENIUM_SERVER_JAR)
+  raise "could not find server jar: #{SELENIUM_SERVER_JAR.inspect}"
+end
+
 desc "Start a Selenium remote control, run all integration tests and stop the remote control"
 task :'ci:integration' => [ :clean, :'test:unit' ] do
   Rake::Task[:"selenium:rc:stop"].execute [] rescue nil
@@ -71,7 +76,7 @@ Selenium::Rake::SeleniumServerStartTask.new do |rc|
   rc.background = true
   rc.nohup = ENV['SELENIUM_RC_NOHUP'] == "true"
   rc.wait_until_up_and_running = true
-  rc.jar_file = File.expand_path("../../build/remote/server/server-standalone.jar", __FILE__)
+  rc.jar_file = SELENIUM_SERVER_JAR
   rc.additional_args << "-singleWindow"
 end
 

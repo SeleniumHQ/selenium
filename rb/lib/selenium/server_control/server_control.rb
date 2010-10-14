@@ -15,10 +15,6 @@ module Selenium
       end
 
       def start(options = {})
-        unless File.exists?(jar_file)
-          raise Errno::ENOENT, jar_file
-        end
-
         command = "java -jar \"#{jar_file}\""
         command << " -port #{@port}"
         command << " -timeout #{@timeout_in_seconds}"
