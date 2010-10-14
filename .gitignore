@@ -1,4 +1,3 @@
-build/
 projectFilesBackup/
 *.iws
 .DS_Store
@@ -8,3 +7,10 @@ mockpiframe.log.lck
 junitvmwatcher*.properties
 test-output/
 .*.swp
+common/build
+firefox/build
+htmlunit/build
+jobbie/build
+selenium/build
+support/build
+
