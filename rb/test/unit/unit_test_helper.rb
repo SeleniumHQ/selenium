@@ -3,7 +3,6 @@ require File.expand_path(File.dirname(__FILE__) + "/../test_helper")
 require 'mocha'
 require 'spartan'
 
-
 require File.expand_path(File.dirname(__FILE__) + "/../../lib/selenium")
 require File.expand_path(File.dirname(__FILE__) + "/../../lib/selenium/rspec/reporting/file_path_strategy")
 require File.expand_path(File.dirname(__FILE__) + "/../../lib/selenium/rspec/reporting/system_capture")
