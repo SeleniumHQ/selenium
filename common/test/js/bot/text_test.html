@@ -166,6 +166,11 @@ limitations under the License.
           "link with formatting tags", text);
     }
 
+    function testGetVisibleTextHandlesTrailingWhitespaces() {
+      var text = getVisibleTextByElementId("trailingSpaces");
+      assertEquals("1 2 3 4", text);
+    }
+
     function testKeepsNonBreakingSpacesBeforeATag() {
       var text = getVisibleTextByElementId("id2");
 
@@ -253,6 +258,11 @@ limitations under the License.
     </a>
     <a href=""><b>link with formatting tags</b></a>
   </div>
+<div id="trailingSpaces">
+1
+<a href="">2</a>
+3
+<a href="">4</a></div>
 
   <table>
       <tbody>

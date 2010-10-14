@@ -412,6 +412,7 @@ bot.dom.getVisibleText = function(node) {
   var startsWithNbsp = new RegExp('^' + String.fromCharCode(160), 'gm');
 
   var prevTextNodeEndsWithSpace = false;
+  var prevTextNodeStartsWithSpace = false;
   goog.array.forEach(elements, function(node, i) {
     if (node.nodeType == goog.dom.NodeType.TEXT) {
       var nodeText =
@@ -422,14 +423,18 @@ bot.dom.getVisibleText = function(node) {
         } else if (i != 0) { // First element does not need preceding space.
           var thisTextNodeStartsWithSpace = node.nodeValue.match(/^ /) ||
               node.nodeValue.match(startsWithNbsp);
+          if (prevTextNodeStartsWithSpace) {
+            nodeText = nodeText + ' ';
+          }
           if(prevTextNodeEndsWithSpace || thisTextNodeStartsWithSpace ) {
             nodeText = ' ' + nodeText;
           }
         }
       }
 
-      prevTextNodeEndsWithSpace = node.nodeValue.match(/ $/) ||
+      prevTextNodeEndsWithSpace = node.nodeValue.match(/\s$/) ||
           node.nodeValue.match(endsWithNbsp);
+      prevTextNodeStartsWithSpace = node.nodeValue.match(/^\s/)
       returnValue += nodeText;
     }
   });
