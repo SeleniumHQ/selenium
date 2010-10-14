@@ -7,7 +7,8 @@ module Selenium
 
         def initialize
           puts "creating test env :: #{ruby_description}"
-          @create_driver_error = nil
+
+          @create_driver_error       = nil
           @create_driver_error_count = 0
         end
 
@@ -45,7 +46,7 @@ module Selenium
 
         def app_server
           @app_server ||= begin
-            path = File.expand_path("../../../../../../common/src/web", __FILE__)
+            path = File.join(root_folder, "common/src/web")
             s = RackServer.new(path)
             s.start
 
@@ -54,7 +55,10 @@ module Selenium
         end
 
         def remote_server
-          @remote_server ||= RemoteServer.new
+          @remote_server ||= (
+            path = File.join(root_folder, "build/remote/server/server-standalone.jar")
+            RemoteServer.new(path, :port => 44444) # TODO: random port
+          )
         end
 
         def quit
@@ -83,16 +87,15 @@ module Selenium
           defined?(RUBY_DESCRIPTION) ? RUBY_DESCRIPTION : "ruby-#{RUBY_VERSION}"
         end
 
+        def root_folder
+          @root_folder ||= File.expand_path("../../../../../../", __FILE__)
+        end
+
         def create_driver
           if driver == :remote
-            caps  = WebDriver::Remote::Capabilities.send(ENV['WD_REMOTE_BROWSER'] || 'firefox')
-
-            caps.javascript_enabled    = true
-            caps.css_selectors_enabled = true
-
             instance = WebDriver::Driver.for(
               :remote,
-              :desired_capabilities => caps,
+              :desired_capabilities => remote_capabilities,
               :url                  => remote_server.url
             )
           else
@@ -105,6 +108,15 @@ module Selenium
           @create_driver_error = ex
           @create_driver_error_count += 1
           raise ex
+        end
+
+        def remote_capabilities
+          caps  = WebDriver::Remote::Capabilities.send(ENV['WD_REMOTE_BROWSER'] || 'firefox')
+
+          caps.javascript_enabled    = true
+          caps.css_selectors_enabled = true
+
+          caps
         end
 
         MAX_ERRORS = 4
