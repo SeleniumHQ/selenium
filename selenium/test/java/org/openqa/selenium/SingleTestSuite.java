@@ -39,14 +39,15 @@ public class SingleTestSuite extends TestCase {
   private static final String SELENIUM = "org.openqa.selenium.SeleneseBackedWebDriver";
 
   public static Test suite() throws Exception {
-    String driver = IE;
+    String driver = FIREFOX;
 
-    System.setProperty("webdriver.development", "true");
+    //System.setProperty("webdriver.development", "true");
     System.setProperty("jna.library.path", "..\\build;build");
     System.setProperty("webdriver.selenium.server.port", String.valueOf(findFreePort()));
 //    System.setProperty("webdriver.debug", "true");
 //    System.setProperty("webdriver.firefox.reap_profile", "false");
-                                                      
+//    System.setProperty("webdriver.firefox.logfile", "/tmp/ff_log");
+
     TestSuiteBuilder builder = new TestSuiteBuilder()
         .addSourceDir("common")
         .addSourceDir("firefox")
@@ -54,10 +55,10 @@ public class SingleTestSuite extends TestCase {
         .usingDriver(driver)
         .keepDriverInstance()
         .includeJavascriptTests()
-        .onlyRun("ElementFindingTest")
-        .method("testFindingByXPathShouldNotIncludeParentElementIfSameTagType")
+        .onlyRun("JavascriptEnabledDriverTest")
+        //.method("testWillSimulateAKeyDownWhenEnteringTextIntoTextAreas")
         .exclude(ALL)
-        .exclude(Ignore.Driver.IE)
+        .exclude(Ignore.Driver.FIREFOX)
         .outputTestNames()
         .leaveRunning()
         ;  // Yeah, this look strange :)

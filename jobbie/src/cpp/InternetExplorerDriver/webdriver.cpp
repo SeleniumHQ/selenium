@@ -1954,13 +1954,13 @@ int wdGetArrayItemFromScriptResult(WebDriver* driver, ScriptResult* result,
 
 int wdeMouseDownAt(HWND hwnd, long windowX, long windowY)
 {
-	mouseDownAt(hwnd, windowX, windowY);
+	mouseDownAt(hwnd, windowX, windowY, MOUSEBUTTON_LFET);
 	return SUCCESS;
 }
 
 int wdeMouseUpAt(HWND hwnd, long windowX, long windowY)
 {
-	mouseUpAt(hwnd, windowX, windowY);
+	mouseUpAt(hwnd, windowX, windowY, MOUSEBUTTON_LFET);
 	return SUCCESS;
 }
 

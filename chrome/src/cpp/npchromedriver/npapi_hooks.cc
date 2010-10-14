@@ -105,7 +105,7 @@ bool CallMethod(const char *name, const uint32_t argCount, const NPVariant *args
   } else if (isClickCommand(name) && argCount == 2 &&
       args[0].type == NPVariantType_Int32 &&
       args[1].type == NPVariantType_Int32) {
-    clickAt(window_handle_, args[0].value.intValue, args[1].value.intValue);
+    clickAt(window_handle_, args[0].value.intValue, args[1].value.intValue, MOUSEBUTTON_LFET);
     return true;
   } else if (isMouseMoveCommand(name) && argCount == 5 &&
       args[0].type == NPVariantType_Int32 &&

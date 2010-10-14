@@ -26,7 +26,6 @@ FirefoxDriver.prototype.elementEquals = function(respond, parameters) {
   respond.send();
 };
 
-
 FirefoxDriver.prototype.clickElement = function(respond, parameters) {
   var element = Utils.getElementAt(parameters.id,
                                    respond.session.getDocument());
@@ -48,8 +47,9 @@ FirefoxDriver.prototype.clickElement = function(respond, parameters) {
   // fall back for that
   var useNativeClick =
       versionChecker.compare(appInfo.platformVersion, "1.9") >= 0;
+  var thmgr_cls = Components.classes["@mozilla.org/thread-manager;1"];
 
-  if (this.enableNativeEvents && nativeEvents && node && useNativeClick) {
+  if (this.enableNativeEvents && nativeEvents && node && useNativeClick && thmgr_cls) {
     Logger.dumpn("Using native events for click");
     var loc = Utils.getLocationOnceScrolledIntoView(element);
     var x = loc.x + (loc.width ? loc.width / 2 : 0);
@@ -79,18 +79,17 @@ FirefoxDriver.prototype.clickElement = function(respond, parameters) {
 
     try {
       nativeEvents.mouseMove(node, this.currentX, this.currentY, x, y);
-      nativeEvents.click(node, x, y);
+
+      var pageUnloadedIndicator = Utils.getPageUnloadedIndicator(element);
+
+      nativeEvents.click(node, x, y, 1);
       this.currentX = x;
       this.currentY = y;
-//      //If the old window doesn't exist (i.e. we have moved page)
-//      if (!respond.session.window_) {
-//        //If a window exists (i.e. we haven't just closed the last window), and:
-//        //If the current window.top is not the same as the old one (we have changed window, and the change wasn't just in an iFrame, so we need to bust out of any iFrame we're in and into the top-level window)
-//        if (respond.session.getChromeWindow().getBrowser !== undefined && respond.session.window_.top != respond.session.getBrowser().contentWindow.top) {
-//          respond.session.setWindow(respond.session.getBrowser().contentWindow);
-//        }
-//      }
+
+      Utils.waitForNativeEventsProcessing(element, nativeEvents, pageUnloadedIndicator);
+
       respond.send();
+
       return;
     } catch (e) {
       // Make sure that we only fall through only if
@@ -110,71 +109,12 @@ FirefoxDriver.prototype.clickElement = function(respond, parameters) {
   Logger.dumpn("Falling back to synthesized click");
 
   var browser = respond.session.getBrowser();
-  var alreadyReplied = false;
 
-  // Register a listener for the window closing.
-  var observer = {
-    observe: function(subject, topic, opt_data) {
-      if ('domwindowclosed' != topic) {
-        return;
-      }
-
-      var target = browser.contentWindow;
-      var source = subject.content;
-
-
-      if (target == source) {
-        respond.send();
-      }
-    }
-  };
-
-  var mediator = Utils.getService('@mozilla.org/embedcomp/window-watcher;1', 'nsIWindowWatcher');
-  mediator.registerNotification(observer);
-  // Override the "respond.send" function to remove the observer, otherwise
-  // it'll just get awkward
-  var originalSend = goog.bind(respond.send, respond);
-  respond.send = function() {
-    mediator.unregisterNotification(observer);
-    originalSend();
-  };
+  Utils.installWindowCloseListener(respond);
 
   bot.action.click(element);
 
-  var clickListener = new WebLoadingListener(browser, function(event) {
-    if (!alreadyReplied) {
-      alreadyReplied = true;
-      respond.send();
-    }
-  });
-
-  var contentWindow = browser.contentWindow;
-
-  var checkForLoad = function() {
-    // Returning should be handled by the click listener, unless we're not
-    // actually loading something. Do a check and return if we are. There's a
-    // race condition here, in that the click event and load may have finished
-    // before we get here. For now, let's pretend that doesn't happen. The other
-    // race condition is that we make this check before the load has begun. With
-    // all the javascript out there, this might actually be a bit of a problem.
-    var docLoaderService = browser.webProgress;
-    if (!docLoaderService.isLoadingDocument) {
-      WebLoadingListener.removeListener(browser, clickListener);
-      if (!alreadyReplied) {
-        alreadyReplied = true;
-        respond.send();
-      }
-    }
-  };
-
-
-  if (contentWindow.closed) {
-    // Nulls out the session; client will have to switch to another
-    // window on their own.
-    respond.send();
-    return;
-  }
-  contentWindow.setTimeout(checkForLoad, 50);
+  Utils.installClickListener(respond, WebLoadingListener);
 };
 
 

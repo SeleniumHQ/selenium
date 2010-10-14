@@ -1119,7 +1119,7 @@ int IeThread::click(IHTMLElement *pElement, CScopeCaller *pSC)
 		return result;
 	}
 	
-	lresult = clickAt(ieWindow, clickX, clickY);
+	lresult = clickAt(ieWindow, clickX, clickY, MOUSEBUTTON_LFET);
     if (result != SUCCESS) {
 		return result;
 	}

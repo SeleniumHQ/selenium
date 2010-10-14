@@ -348,89 +348,12 @@ Utils.type = function(doc, element, text, opt_useNativeEvents) {
 
   if (opt_useNativeEvents && obj && node && thmgr_cls) {
 
-    // This indicates that a the page has been unloaded
-    var pageHasBeenUnloaded = false;
+    var pageUnloadedIndicator = Utils.getPageUnloadedIndicator(element);
 
-    // This is the standard indicator that a page has been unloaded, but
-    // due to Firefox's caching policy, will occur only when Firefox works
-    // *without* caching at all.
-    var unloadFunction = function() { pageHasBeenUnloaded = true; };
-
-    element.ownerDocument.body.addEventListener("unload",
-        unloadFunction, false);
-
-    // This is a Firefox specific event - See:
-    // https://developer.mozilla.org/En/Using_Firefox_1.5_caching
-    element.ownerDocument.defaultView.addEventListener("pagehide",
-        unloadFunction, false);
-    
     // Now do the native thing.
     obj.sendKeys(node, text);
 
-
-    var hasEvents = {};
-    var threadmgr =
-        thmgr_cls.getService(Components.interfaces.nsIThreadManager);
-    var thread = threadmgr.currentThread;
-
-    do {
-
-      // This sleep is needed so that Firefox on Linux will manage to process
-      // all of the keyboard events before returning control to the caller
-      // code (otherwise the caller may not find all of the keystrokes it
-      // has entered).
-      var the_window = element.ownerDocument.defaultView;
-
-      var doneNativeEventWait = false;
-
-      if (the_window) {
-        the_window.setTimeout(function() {
-          doneNativeEventWait = true; }, 100);
-      }
-
-      // Do it as long as the timeout function has not been called and the
-      // page has not been unloaded. If the page has been unloaded, there is no
-      // point in waiting for other native events to be processed in this page
-      // as they "belong" to the next page.
-      while ((!doneNativeEventWait) && (!pageHasBeenUnloaded)) {
-          thread.processNextEvent(true);
-      }
-
-      obj.hasUnhandledEvents(node, hasEvents);
-
-    } while ((hasEvents.value == true) && (!pageHasBeenUnloaded));
-
-    if (pageHasBeenUnloaded) {
-        Logger.dumpn("Page has been reloaded while waiting for native events to "
-            + "be processed. Remaining events? " + hasEvents.value);
-    } else {
-        // Remove event listeners...
-        element.ownerDocument.body.removeEventListener("unload",
-            unloadFunction, false);
-        element.ownerDocument.defaultView.removeEventListener("pagehide",
-        	unloadFunction, false);
-    }
-
-    // It is possible that, even though the native code reports all of the
-    // keyboard events are out of the GDK event queue, the process is not done.
-    // These keyboard events are converted into Javascript events - and not all
-    // of them may have been processed. In fact, this is the common case when
-    // the sleep timeout above is less than 500 msec.
-    // The appropriate thing to do is process all the remaining JS events.
-    // Only existing events in the queue should be processed - hence the call
-    // to processNextEvent with false.
-
-    var numExtraEventsProcessed = 0;
-    var hasMoreEvents = thread.processNextEvent(false);
-    // A safety net to prevent the code from endlessly staying in this loop,
-    // in case there is some source of events that's constantly generating them.
-    var MAX_EXTRA_EVENTS_TO_PROCESS = 150;
-
-    while ((hasMoreEvents) &&
-    		(numExtraEventsProcessed < MAX_EXTRA_EVENTS_TO_PROCESS)) {
-    	hasMoreEvents = thread.processNextEvent(false);
-    	numExtraEventsProcessed += 1;
-    }
+    Utils.waitForNativeEventsProcessing(element, obj, pageUnloadedIndicator);
 
     return;
   }
@@ -1141,6 +1064,192 @@ Utils.loadUrl = function(url) {
 
   Logger.dumpn("Done reading: " + url);
   return text;
+};
+
+Utils.installWindowCloseListener = function (respond) {
+  var browser = respond.session.getBrowser();
+
+  // Register a listener for the window closing.
+  var observer = {
+    observe: function(subject, topic, opt_data) {
+      if ('domwindowclosed' != topic) {
+        return;
+      }
+
+      var target = browser.contentWindow;
+      var source = subject.content;
+
+
+      if (target == source) {
+        Logger.dumpn("Window was closed.");
+        respond.send();
+      }
+    }
+  };
+
+  var mediator = Utils.getService('@mozilla.org/embedcomp/window-watcher;1', 'nsIWindowWatcher');
+  mediator.registerNotification(observer);
+  // Override the "respond.send" function to remove the observer, otherwise
+  // it'll just get awkward
+  var originalSend = goog.bind(respond.send, respond);
+  respond.send = function() {
+    mediator.unregisterNotification(observer);
+    originalSend();
+  };
+};
+
+Utils.installClickListener = function(respond, WebLoadingListener) {
+  var alreadyReplied = false;
+  var browser = respond.session.getBrowser();
+
+  var clickListener = new WebLoadingListener(browser, function(event) {
+    if (!alreadyReplied) {
+      alreadyReplied = true;
+      Logger.dumpn("New page loading.");
+      respond.send();
+    }
+  });
+
+  var contentWindow = browser.contentWindow;
+
+  var checkForLoad = function() {
+    // Returning should be handled by the click listener, unless we're not
+    // actually loading something. Do a check and return if we are. There's a
+    // race condition here, in that the click event and load may have finished
+    // before we get here. For now, let's pretend that doesn't happen. The other
+    // race condition is that we make this check before the load has begun. With
+    // all the javascript out there, this might actually be a bit of a problem.
+    var docLoaderService = browser.webProgress;
+    if (!docLoaderService.isLoadingDocument) {
+      WebLoadingListener.removeListener(browser, clickListener);
+      if (!alreadyReplied) {
+        alreadyReplied = true;
+        Logger.dumpn("Not loading document anymore.");
+        respond.send();
+      }
+    }
+  };
+
+
+  if (contentWindow.closed) {
+    // Nulls out the session; client will have to switch to another
+    // window on their own.
+    Logger.dumpn("Content window closed.");
+    respond.send();
+    return;
+  }
+  contentWindow.setTimeout(checkForLoad, 50);
+};
+
+Utils.waitForNativeEventsProcessing = function(element, nativeEvents, pageUnloadedData) {
+  var thmgr_cls = Components.classes["@mozilla.org/thread-manager;1"];
+  var node = Utils.getNodeForNativeEvents(element);
+
+  var hasEvents = {};
+  var threadmgr =
+      thmgr_cls.getService(Components.interfaces.nsIThreadManager);
+  var thread = threadmgr.currentThread;
+  Logger.dumpn("Starting wait for native events.");
+
+  do {
+
+    // This sleep is needed so that Firefox on Linux will manage to process
+    // all of the keyboard events before returning control to the caller
+    // code (otherwise the caller may not find all of the keystrokes it
+    // has entered).
+    var the_window = element.ownerDocument.defaultView;
+    Logger.dumpn("On window: " + the_window);
+
+    var doneNativeEventWait = false;
+
+    if (the_window) {
+      the_window.setTimeout(function() {
+        Logger.dumpn("Done native event wait.");
+        doneNativeEventWait = true; }, 100);
+    }
+
+    nativeEvents.hasUnhandledEvents(node, hasEvents);
+
+    Logger.dumpn("Pending native events: " + hasEvents.value);
+    var numEventsProcessed = 0;
+    // Do it as long as the timeout function has not been called and the
+    // page has not been unloaded. If the page has been unloaded, there is no
+    // point in waiting for other native events to be processed in this page
+    // as they "belong" to the next page.
+    while ((!doneNativeEventWait) && (hasEvents.value) &&
+           (!pageUnloadedData.wasUnloaded) && (numEventsProcessed < 350)) {
+      thread.processNextEvent(true);
+      numEventsProcessed += 1;
+    }
+    Logger.dumpn("Extra events processed: " + numEventsProcessed +
+                 " Page Unloaded: " + pageUnloadedData.wasUnloaded);
+
+  } while ((hasEvents.value == true) && (!pageUnloadedData.wasUnloaded));
+  Logger.dumpn("Done main loop.");
+
+  if (pageUnloadedData.wasUnloaded) {
+      Logger.dumpn("Page has been reloaded while waiting for native events to "
+          + "be processed. Remaining events? " + hasEvents.value);
+  } else {
+    Utils.removePageUnloadEventListener(element, pageUnloadedData);
+  }
+
+  // It is possible that, even though the native code reports all of the
+  // keyboard events are out of the GDK event queue, the process is not done.
+  // These keyboard events are converted into Javascript events - and not all
+  // of them may have been processed. In fact, this is the common case when
+  // the sleep timeout above is less than 500 msec.
+  // The appropriate thing to do is process all the remaining JS events.
+  // Only existing events in the queue should be processed - hence the call
+  // to processNextEvent with false.
+
+  var numExtraEventsProcessed = 0;
+  var hasMoreEvents = thread.processNextEvent(false);
+  // A safety net to prevent the code from endlessly staying in this loop,
+  // in case there is some source of events that's constantly generating them.
+  var MAX_EXTRA_EVENTS_TO_PROCESS = 200;
+
+  while ((hasMoreEvents) &&
+      (numExtraEventsProcessed < MAX_EXTRA_EVENTS_TO_PROCESS)) {
+    hasMoreEvents = thread.processNextEvent(false);
+    numExtraEventsProcessed += 1;
+  }
+
+  Logger.dumpn("Done extra event loop, " + numExtraEventsProcessed);
+};
+
+Utils.getPageUnloadedIndicator = function(element) {
+  var toReturn = {
+    // This indicates that a the page has been unloaded
+    'wasUnloaded': false
+  };
+
+
+  // This is the standard indicator that a page has been unloaded, but
+  // due to Firefox's caching policy, will occur only when Firefox works
+  // *without* caching at all.
+  var unloadFunction = function() { toReturn.wasUnloaded = true };
+  toReturn.callback = unloadFunction;
+
+  element.ownerDocument.body.addEventListener("unload",
+      unloadFunction, false);
+
+  // This is a Firefox specific event - See:
+  // https://developer.mozilla.org/En/Using_Firefox_1.5_caching
+  element.ownerDocument.defaultView.addEventListener("pagehide",
+      unloadFunction, false);
+
+  return toReturn;
+};
+
+Utils.removePageUnloadEventListener = function(element, pageUnloadData) {
+  if (pageUnloadData.callback) {
+    // Remove event listeners...
+    element.ownerDocument.body.removeEventListener("unload",
+        pageUnloadData.callback, false);
+    element.ownerDocument.defaultView.removeEventListener("pagehide",
+      pageUnloadData.callback, false);
+  }
 };
 
 Utils.findByCss = function(rootNode, theDocument, selector, singular, respond, executeScript) {

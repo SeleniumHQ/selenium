@@ -459,22 +459,22 @@ bool isSameThreadAs(HWND other)
 	return winThreadId == currThreadId;
 }
 
-LRESULT clickAt(WINDOW_HANDLE handle, long x, long y) 
+LRESULT clickAt(WINDOW_HANDLE handle, long x, long y, long button)
 {
 	if (!handle) { return ENULLPOINTER; }
 
 	HWND directInputTo = (HWND) handle;
 
-	LRESULT result = mouseDownAt(handle, x, y);
+	LRESULT result = mouseDownAt(handle, x, y, button);
     if (result != 0) {
 		LOG(WARN) << "Mouse down did not succeed whilst clicking";
 		return result;
 	}
 
-	return mouseUpAt(handle, x, y);
+	return mouseUpAt(handle, x, y, button);
 }
 
-LRESULT mouseDownAt(WINDOW_HANDLE directInputTo, long x, long y)
+LRESULT mouseDownAt(WINDOW_HANDLE directInputTo, long x, long y, long button)
 {
 	if (!directInputTo) { return ENULLPOINTER; }
 
@@ -489,7 +489,7 @@ LRESULT mouseDownAt(WINDOW_HANDLE directInputTo, long x, long y)
 	}
 }
 
-LRESULT mouseUpAt(WINDOW_HANDLE directInputTo, long x, long y) 
+LRESULT mouseUpAt(WINDOW_HANDLE directInputTo, long x, long y, long button)
 {
 	if (!directInputTo) { return ENULLPOINTER; }
 
@@ -532,7 +532,7 @@ LRESULT mouseMoveTo(WINDOW_HANDLE handle, long duration, long fromX, long fromY,
   return 0;
 }
 
-BOOL_TYPE pending_keyboard_events()
+BOOL_TYPE pending_input_events()
 {
   return false;
 }

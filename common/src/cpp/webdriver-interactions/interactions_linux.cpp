@@ -34,27 +34,9 @@ limitations under the License.
 #include <functional>
 
 #include "translate_keycode_linux.h"
+#include "interactions_linux.h"
 
 using namespace std;
-//#define INTERACTIONS_DEBUG
-
-#define INTERACTIONS_LOG_FILE "/tmp/native_ff_events_log"
-
-// This is the timestamp needed in the GDK events.
-guint32 TimeSinceBootMsec()
-{
-    struct timespec clk_tm;
-    const int msec_nsec_factor = 1000000;
-    const int sec_msec_factor = 1000;
-
-    int clk_ret = clock_gettime(CLOCK_MONOTONIC, &clk_tm);
-    if (clk_ret == 0)
-    {
-      return (clk_tm.tv_sec * sec_msec_factor +
-              (clk_tm.tv_nsec / msec_nsec_factor));
-    }
-    return 0;
-}
 
 // This class represents a single modifier key. A modifier key is Shift,
 // Ctrl or Alt. A key has, besides a GDK symbol related to it, a Mask
@@ -537,23 +519,6 @@ static void submit_and_free_event(GdkEvent* p_key_event, int sleep_time_ms)
   sleep_for_ms(sleep_time_ms);
 }
 
-static void print_key_event(GdkEvent* p_ev)
-{
-  if (!((p_ev->type == GDK_KEY_PRESS) || (p_ev->type == GDK_KEY_RELEASE))) {
-    LOG(DEBUG) << "Not a key event.";
-    return;
-  }
-  const gchar* gdk_name = gdk_keyval_name(p_ev->key.keyval);
-  const char* kNameUnknown = "UNKNOWN";
-  const char* print_name = (gdk_name != NULL ? gdk_name : kNameUnknown);
-
-  std::string ev_type = (p_ev->type == GDK_KEY_PRESS ? "press" : "release");
-  LOG(DEBUG) << "Type: " << ev_type <<  "Key code: " << p_ev->key.keyval <<
-             " (" << print_name << ") time: " <<
-             p_ev->key.time << " state: " << p_ev->key.state << " hw keycode: "
-             << (int) p_ev->key.hardware_keycode << " ";
-}
-
 static void submit_and_free_events_list(list<GdkEvent*>& events_list,
                                         int sleep_time_ms)
 {
@@ -565,32 +530,11 @@ static void submit_and_free_events_list(list<GdkEvent*>& events_list,
     events_list.clear();
 }
 
-static bool is_gdk_keyboard_event(GdkEvent* ev)
-{
-  return ((ev->type == GDK_KEY_PRESS) || (ev->type == GDK_KEY_RELEASE));
-}
-
-bool event_earlier_than(GdkEvent* ev, guint32 compare_time)
-{
-  assert(is_gdk_keyboard_event(ev));
-  return (ev->key.time < compare_time);
-}
-
 extern "C"
 {
-static guint32 gLatestEventTime = 0;
-
 void sendKeys(WINDOW_HANDLE windowHandle, const wchar_t* value, int timePerKey)
 {
-#ifdef INTERACTIONS_DEBUG
-  static bool log_initalized = false;
-  if (!log_initalized) {
-    LOG::Level("DEBUG");
-    LOG::File(INTERACTIONS_LOG_FILE, "a");
-    log_initalized = true;
-  }
-#endif
-
+  init_logging();
   const int minTimePerKey = 10 /* ms */;
   if (timePerKey < minTimePerKey) {
     timePerKey = 10;
@@ -633,31 +577,4 @@ void sendKeys(WINDOW_HANDLE windowHandle, const wchar_t* value, int timePerKey)
             << "  ----------";
 }
 
-
-bool pending_keyboard_events()
-{
-  LOG(DEBUG) << "Waiting for all events to be processed";
-  GdkEvent* lastEvent = gdk_event_peek();
-  LOG(DEBUG) << "Got event: " <<
-             (lastEvent != NULL ? lastEvent->type : 0);
-  if ((lastEvent != NULL) && is_gdk_keyboard_event(lastEvent)) {
-    print_key_event(lastEvent);
-  }
-
-  bool ret_val = false;
-  if (lastEvent != NULL && is_gdk_keyboard_event(lastEvent) &&
-         event_earlier_than(lastEvent, gLatestEventTime)) {
-    ret_val = true;
-  }
-
-  if (lastEvent != NULL) {
-    gdk_event_free(lastEvent);
-  }
-  LOG(DEBUG) << "Returning: " << ret_val;
-
-  return ret_val;
 }
-
-}
-
-#undef INTERACTIONS_LOG_FILE

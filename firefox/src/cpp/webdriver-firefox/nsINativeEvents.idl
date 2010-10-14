@@ -10,7 +10,13 @@ void sendKeys(in nsISupports aNode, in wstring value);
 void mouseMove(in nsISupports aNode, in long startX, in long startY, in long endX, in long endY);
 
 /* Click the mouse at this point */
-void click(in nsISupports aNode, in long x, in long y);
+void click(in nsISupports aNode, in long x, in long y, in long button);
+
+/* Press a mouse button down */
+void mousePress(in nsISupports aNode, in long x, in long y, in long button);
+
+/* Release a mouse button */
+void mouseRelease(in nsISupports anode, in long x, in long y, in long button);
 
 /* Check if there are unhandled keyboard events. */
 void hasUnhandledEvents(in nsISupports aNode, out boolean hasEvents);

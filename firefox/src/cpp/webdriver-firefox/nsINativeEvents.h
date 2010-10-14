@@ -33,8 +33,14 @@ class NS_NO_VTABLE NS_SCRIPTABLE nsINativeEvents : public nsISupports {
   /* void mouseMove (in nsISupports aNode, in long startX, in long startY, in long endX, in long endY); */
   NS_SCRIPTABLE NS_IMETHOD MouseMove(nsISupports *aNode, PRInt32 startX, PRInt32 startY, PRInt32 endX, PRInt32 endY) = 0;
 
-  /* void click (in nsISupports aNode, in long x, in long y); */
-  NS_SCRIPTABLE NS_IMETHOD Click(nsISupports *aNode, PRInt32 x, PRInt32 y) = 0;
+  /* void click (in nsISupports aNode, in long x, in long y, in long button); */
+  NS_SCRIPTABLE NS_IMETHOD Click(nsISupports *aNode, PRInt32 x, PRInt32 y, PRInt32 button) = 0;
+
+  /* void mousePress (in nsISupports aNode, in long x, in long y, in long button); */
+  NS_SCRIPTABLE NS_IMETHOD MousePress(nsISupports *aNode, PRInt32 x, PRInt32 y, PRInt32 button) = 0;
+
+  /* void mouseRelease (in nsISupports anode, in long x, in long y, in long button); */
+  NS_SCRIPTABLE NS_IMETHOD MouseRelease(nsISupports *anode, PRInt32 x, PRInt32 y, PRInt32 button) = 0;
 
   /* void hasUnhandledEvents (in nsISupports aNode, out boolean hasEvents); */
   NS_SCRIPTABLE NS_IMETHOD HasUnhandledEvents(nsISupports *aNode, PRBool *hasEvents) = 0;
@@ -47,21 +53,27 @@ class NS_NO_VTABLE NS_SCRIPTABLE nsINativeEvents : public nsISupports {
 #define NS_DECL_NSINATIVEEVENTS \
   NS_SCRIPTABLE NS_IMETHOD SendKeys(nsISupports *aNode, const PRUnichar *value); \
   NS_SCRIPTABLE NS_IMETHOD MouseMove(nsISupports *aNode, PRInt32 startX, PRInt32 startY, PRInt32 endX, PRInt32 endY); \
-  NS_SCRIPTABLE NS_IMETHOD Click(nsISupports *aNode, PRInt32 x, PRInt32 y); \
+  NS_SCRIPTABLE NS_IMETHOD Click(nsISupports *aNode, PRInt32 x, PRInt32 y, PRInt32 button); \
+  NS_SCRIPTABLE NS_IMETHOD MousePress(nsISupports *aNode, PRInt32 x, PRInt32 y, PRInt32 button); \
+  NS_SCRIPTABLE NS_IMETHOD MouseRelease(nsISupports *anode, PRInt32 x, PRInt32 y, PRInt32 button); \
   NS_SCRIPTABLE NS_IMETHOD HasUnhandledEvents(nsISupports *aNode, PRBool *hasEvents); 
 
 /* Use this macro to declare functions that forward the behavior of this interface to another object. */
 #define NS_FORWARD_NSINATIVEEVENTS(_to) \
   NS_SCRIPTABLE NS_IMETHOD SendKeys(nsISupports *aNode, const PRUnichar *value) { return _to SendKeys(aNode, value); } \
   NS_SCRIPTABLE NS_IMETHOD MouseMove(nsISupports *aNode, PRInt32 startX, PRInt32 startY, PRInt32 endX, PRInt32 endY) { return _to MouseMove(aNode, startX, startY, endX, endY); } \
-  NS_SCRIPTABLE NS_IMETHOD Click(nsISupports *aNode, PRInt32 x, PRInt32 y) { return _to Click(aNode, x, y); } \
+  NS_SCRIPTABLE NS_IMETHOD Click(nsISupports *aNode, PRInt32 x, PRInt32 y, PRInt32 button) { return _to Click(aNode, x, y, button); } \
+  NS_SCRIPTABLE NS_IMETHOD MousePress(nsISupports *aNode, PRInt32 x, PRInt32 y, PRInt32 button) { return _to MousePress(aNode, x, y, button); } \
+  NS_SCRIPTABLE NS_IMETHOD MouseRelease(nsISupports *anode, PRInt32 x, PRInt32 y, PRInt32 button) { return _to MouseRelease(anode, x, y, button); } \
   NS_SCRIPTABLE NS_IMETHOD HasUnhandledEvents(nsISupports *aNode, PRBool *hasEvents) { return _to HasUnhandledEvents(aNode, hasEvents); } 
 
 /* Use this macro to declare functions that forward the behavior of this interface to another object in a safe way. */
 #define NS_FORWARD_SAFE_NSINATIVEEVENTS(_to) \
   NS_SCRIPTABLE NS_IMETHOD SendKeys(nsISupports *aNode, const PRUnichar *value) { return !_to ? NS_ERROR_NULL_POINTER : _to->SendKeys(aNode, value); } \
   NS_SCRIPTABLE NS_IMETHOD MouseMove(nsISupports *aNode, PRInt32 startX, PRInt32 startY, PRInt32 endX, PRInt32 endY) { return !_to ? NS_ERROR_NULL_POINTER : _to->MouseMove(aNode, startX, startY, endX, endY); } \
-  NS_SCRIPTABLE NS_IMETHOD Click(nsISupports *aNode, PRInt32 x, PRInt32 y) { return !_to ? NS_ERROR_NULL_POINTER : _to->Click(aNode, x, y); } \
+  NS_SCRIPTABLE NS_IMETHOD Click(nsISupports *aNode, PRInt32 x, PRInt32 y, PRInt32 button) { return !_to ? NS_ERROR_NULL_POINTER : _to->Click(aNode, x, y, button); } \
+  NS_SCRIPTABLE NS_IMETHOD MousePress(nsISupports *aNode, PRInt32 x, PRInt32 y, PRInt32 button) { return !_to ? NS_ERROR_NULL_POINTER : _to->MousePress(aNode, x, y, button); } \
+  NS_SCRIPTABLE NS_IMETHOD MouseRelease(nsISupports *anode, PRInt32 x, PRInt32 y, PRInt32 button) { return !_to ? NS_ERROR_NULL_POINTER : _to->MouseRelease(anode, x, y, button); } \
   NS_SCRIPTABLE NS_IMETHOD HasUnhandledEvents(nsISupports *aNode, PRBool *hasEvents) { return !_to ? NS_ERROR_NULL_POINTER : _to->HasUnhandledEvents(aNode, hasEvents); } 
 
 #if 0
@@ -108,8 +120,20 @@ NS_IMETHODIMP nsNativeEvents::MouseMove(nsISupports *aNode, PRInt32 startX, PRIn
     return NS_ERROR_NOT_IMPLEMENTED;
 }
 
-/* void click (in nsISupports aNode, in long x, in long y); */
-NS_IMETHODIMP nsNativeEvents::Click(nsISupports *aNode, PRInt32 x, PRInt32 y)
+/* void click (in nsISupports aNode, in long x, in long y, in long button); */
+NS_IMETHODIMP nsNativeEvents::Click(nsISupports *aNode, PRInt32 x, PRInt32 y, PRInt32 button)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* void mousePress (in nsISupports aNode, in long x, in long y, in long button); */
+NS_IMETHODIMP nsNativeEvents::MousePress(nsISupports *aNode, PRInt32 x, PRInt32 y, PRInt32 button)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* void mouseRelease (in nsISupports anode, in long x, in long y, in long button); */
+NS_IMETHODIMP nsNativeEvents::MouseRelease(nsISupports *anode, PRInt32 x, PRInt32 y, PRInt32 button)
 {
     return NS_ERROR_NOT_IMPLEMENTED;
 }

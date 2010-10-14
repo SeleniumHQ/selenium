@@ -37,18 +37,26 @@ limitations under the License.
 
 #define WINDOW_HANDLE void*
 
+// definitions for mouse buttons
+// NOTE: These values correspond to GDK mouse button values.
+// If these values are changed, native events for linux *will* be broken
+// *unless* interactions_linux_mouse.cpp is updated.
+#define MOUSEBUTTON_LFET (1)
+#define MOUSEBUTTON_MIDDLE (2)
+#define MOUSEBUTTON_RIGHT (3)
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 // Keyboard interactions
 EXPORT void sendKeys(WINDOW_HANDLE windowHandle, const wchar_t* value, int timePerKey);
-EXPORT BOOL_TYPE pending_keyboard_events();
+EXPORT BOOL_TYPE pending_input_events();
 
 // Mouse interactions
-EXPORT WD_RESULT clickAt(WINDOW_HANDLE directInputTo, long x, long y);
-EXPORT WD_RESULT mouseDownAt(WINDOW_HANDLE directInputTo, long x, long y);
-EXPORT WD_RESULT mouseUpAt(WINDOW_HANDLE directInputTo, long x, long y);
+EXPORT WD_RESULT clickAt(WINDOW_HANDLE directInputTo, long x, long y, long button);
+EXPORT WD_RESULT mouseDownAt(WINDOW_HANDLE directInputTo, long x, long y, long button);
+EXPORT WD_RESULT mouseUpAt(WINDOW_HANDLE directInputTo, long x, long y, long button);
 EXPORT WD_RESULT mouseMoveTo(WINDOW_HANDLE directInputTo, long duration, long fromX, long fromY, long toX, long toY);
 
 #ifdef __cplusplus

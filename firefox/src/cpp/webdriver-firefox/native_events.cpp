@@ -1,4 +1,5 @@
-#ifdef __GNUC__
+#include "build_environment.h"
+#ifdef BUILD_ON_UNIX
 #include <xpcom-config.h>
 #endif
 #include "errorcodes.h"
@@ -9,15 +10,25 @@
 #include "nsIComponentManager.h"
 #include "nsComponentManagerUtils.h"
 #include <assert.h>
+//#include <nsIAccessNode.h>
 
 // For Debugging purpose
 #include <nsStringAPI.h>
+
+#ifdef BUILD_ON_WINDOWS
+#define EXPORT __declspec(dllexport)
+#define WD_RESULT LRESULT
+#define BOOL_TYPE boolean
+#else
+#define EXPORT
+#define WD_RESULT int
+#define BOOL_TYPE bool
+#endif
 
 NS_IMPL_ISUPPORTS1(nsNativeEvents, nsINativeEvents)
 
 nsNativeEvents::nsNativeEvents()
 {
-  LOG::Level("WARN");
   LOG(DEBUG) << "Starting up";
 }
 
@@ -54,7 +65,7 @@ NS_IMETHODIMP nsNativeEvents::SendKeys(nsISupports *aNode,
         // be compiled with -fshort-wchar, so it's actually 16 bit and,
         // incidentally, just like PRUnichar. This, of course, breaks any
         // library function that uses wchar_t.
-#ifdef __GNUC__
+#ifdef BUILD_ON_UNIX
         assert(sizeof(PRUnichar) == sizeof(wchar_t));
         const wchar_t* valuePtr = (const wchar_t*) value;
 #else
@@ -70,9 +81,6 @@ NS_IMETHODIMP nsNativeEvents::SendKeys(nsISupports *aNode,
 /* void mouseMove (in nsISupports aNode, in long startX, in long startY, in long endX, in long endY); */
 NS_IMETHODIMP nsNativeEvents::MouseMove(nsISupports *aNode, PRInt32 startX, PRInt32 startY, PRInt32 endX, PRInt32 endY)
 {
-#ifdef __GNUC__
-  return NS_ERROR_NOT_IMPLEMENTED;
-#else
   AccessibleDocumentWrapper doc(aNode);
 
   void* windowHandle = doc.getWindowHandle();
@@ -81,18 +89,14 @@ NS_IMETHODIMP nsNativeEvents::MouseMove(nsISupports *aNode, PRInt32 startX, PRIn
     return NS_ERROR_NULL_POINTER;
   }
 
-  LRESULT res = mouseMoveTo(windowHandle, 100, startX, startY, endX, endY);
+  WD_RESULT res = mouseMoveTo(windowHandle, 100, startX, startY, endX, endY);
 
   return res == SUCCESS ? NS_OK : NS_ERROR_FAILURE;
-#endif
 }
 
-/* void click (in nsISupports aNode, in long x, in long y); */
-NS_IMETHODIMP nsNativeEvents::Click(nsISupports *aNode, PRInt32 x, PRInt32 y)
+/* void click (in nsISupports aNode, in long x, in long y, in long button); */
+NS_IMETHODIMP nsNativeEvents::Click(nsISupports *aNode, PRInt32 x, PRInt32 y, PRInt32 button)
 {
-#ifdef __GNUC__
-  return NS_ERROR_NOT_IMPLEMENTED;
-#else
   AccessibleDocumentWrapper doc(aNode);
 
   void* windowHandle = doc.getWindowHandle();
@@ -104,18 +108,62 @@ NS_IMETHODIMP nsNativeEvents::Click(nsISupports *aNode, PRInt32 x, PRInt32 y)
   }
 
   LOG(DEBUG) << "Calling clickAt: " << x << ", " << y;
-  LRESULT res = clickAt(windowHandle, x, y);
+  WD_RESULT res = clickAt(windowHandle, x, y, button);
 
   LOG(DEBUG) << "Result was: " << (res == SUCCESS ? "ok" : "fail");
 
   return res == SUCCESS ? NS_OK : NS_ERROR_FAILURE;
-#endif
 }
+
+
+/* void mousePress(in nsISupports aNode, in long x, in long y, in long button); */
+NS_IMETHODIMP nsNativeEvents::MousePress(nsISupports *aNode, PRInt32 x, PRInt32 y, PRInt32 button)
+{
+  AccessibleDocumentWrapper doc(aNode);
+
+  void* windowHandle = doc.getWindowHandle();
+  LOG(DEBUG) << "Have mousePress window handle: " << windowHandle;
+
+  if (!windowHandle) {
+    LOG(WARN) << "No window handle!";
+    return NS_ERROR_NULL_POINTER;
+  }
+
+  LOG(DEBUG) << "Calling mouseDownAt at: " << x << ", " << y << " with button: " << button;
+  WD_RESULT res = mouseDownAt(windowHandle, x, y, button);
+
+  LOG(DEBUG) << "Result was: " << (res == SUCCESS ? "ok" : "fail");
+
+  return res == SUCCESS ? NS_OK : NS_ERROR_FAILURE;
+}
+
+
+/* void mouseRelease(in nsISupports anode, in long x, in long y, in long button); */
+NS_IMETHODIMP nsNativeEvents::MouseRelease(nsISupports *aNode, PRInt32 x, PRInt32 y, PRInt32 button)
+{
+  AccessibleDocumentWrapper doc(aNode);
+
+  void* windowHandle = doc.getWindowHandle();
+  LOG(DEBUG) << "Have mouseRelease window handle: " << windowHandle;
+
+  if (!windowHandle) {
+    LOG(WARN) << "No window handle!";
+    return NS_ERROR_NULL_POINTER;
+  }
+
+  LOG(DEBUG) << "Calling mouseUpAt: " << x << ", " << y << " with button: " << button;
+  WD_RESULT res = mouseUpAt(windowHandle, x, y, button);
+
+  LOG(DEBUG) << "Result was: " << (res == SUCCESS ? "ok" : "fail");
+
+  return res == SUCCESS ? NS_OK : NS_ERROR_FAILURE;
+}
+
 
 /* void hasUnhandledEvents (in nsISupports aNode, out boolean hasEvents); */
 NS_IMETHODIMP nsNativeEvents::HasUnhandledEvents(nsISupports *aNode, PRBool *hasEvents)
 {
-  *hasEvents = pending_keyboard_events();
+  *hasEvents = pending_input_events();
   return NS_OK;
 }
 
