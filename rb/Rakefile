@@ -6,14 +6,63 @@ require 'rake/testtask'
 require "spec/rake/spectask"
 require "selenium/rake/tasks"
 
-Rake::TestTask.new(:unit)do |t|
-  t.libs << "test" << "lib"
-  t.test_files = FileList["test/unit/**/*_tests.rb"]
+desc "Start a Selenium remote control, run all integration tests and stop the remote control"
+task :'ci:integration' => [ :clean, :'test:unit' ] do
+  Rake::Task[:"selenium:rc:stop"].execute [] rescue nil
+  begin
+    Rake::Task[:"sample_app:restart"].execute []
+    Rake::Task[:"selenium:rc:start"].execute []
+    Rake::Task[:"test:integration"].execute []
+    Rake::Task[:"examples"].execute []
+  ensure
+    Rake::Task[:"selenium:rc:stop"].execute []
+    Rake::Task[:"sample_app:restart"].execute []
+  end
 end
 
-Spec::Rake::SpecTask.new("spec:integration") do |t|
+Rake::TestTask.new("test:unit")do |t|
+  t.libs << "test" << "lib"
+  t.test_files = FileList["test/unit/**/*_tests.rb"]
+  t.warning = true
+end
+
+Spec::Rake::SpecTask.new("test:integration") do |t|
   t.libs << "test/integration"
-  t.spec_files = FileList["test/integration/**/*_spec.rb"]
+  t.spec_files = FileList["test/integration/**/*_spec.rb"] - FileList['test/integration/**/dummy_project/*_spec.rb']
+end
+
+desc "Run API integration tests"
+Spec::Rake::SpecTask.new("test:integration:api") do |t|
+    t.spec_files = FileList['test/integration/api/**/*_spec.rb']
+    t.spec_opts << '--color'
+    t.spec_opts << "--require 'lib/selenium/rspec/reporting/selenium_test_report_formatter'"
+    t.spec_opts << "--format=Selenium::RSpec::SeleniumTestReportFormatter:./target/api_integration_tests_report.html"
+    t.spec_opts << "--format=progress"
+end
+
+desc "Run smoke integration tests"
+Spec::Rake::SpecTask.new("test:integration:smoke") do |t|
+    t.spec_files = FileList['test/integration/smoke/**/*backward*.rb']
+    t.spec_opts << '--color'
+    t.spec_opts << "--require 'lib/selenium/rspec/reporting/selenium_test_report_formatter'"
+    t.spec_opts << "--format=Selenium::RSpec::SeleniumTestReportFormatter:./target/smoke_tests_report.html"
+    t.spec_opts << "--format=progress"
+end
+
+
+desc "Run Test::Unit example"
+Rake::TestTask.new("examples:testunit"  ) do |t|
+  t.test_files = FileList['examples/testunit/**/*_test.rb']
+  t.warning = true
+end
+
+desc "Run RSpec examples"
+Spec::Rake::SpecTask.new("examples:rspec") do |t|
+    t.spec_files = FileList['examples/rspec/**/*_spec.rb']
+    t.spec_opts << '--color'
+    t.spec_opts << "--require 'lib/selenium/rspec/reporting/selenium_test_report_formatter'"
+    t.spec_opts << "--format=Selenium::RSpec::SeleniumTestReportFormatter:./target/smoke_tests_report.html"
+    t.spec_opts << "--format=progress"
 end
 
 Selenium::Rake::SeleniumServerStartTask.new do |rc|
@@ -33,6 +82,104 @@ Selenium::Rake::SeleniumServerStopTask.new do |rc|
   rc.wait_until_stopped = true
 end
 
+desc "Restart Selenium Server"
+task :'selenium:server:restart' do
+  Rake::Task[:"selenium:server:stop"].execute [] rescue nil
+  Rake::Task[:"selenium:server:start"].execute []
+end
 
 
 task :defult => :unit
+
+# ____ original rakefile __
+
+# Rakefile for Selenium Ruby Client   -*- ruby -*-
+
+begin
+  require "deep_test/rake_tasks"
+  desc "Run all integration tests in parallel"
+  Spec::Rake::SpecTask.new("test:integration:parallel") do |t|
+      t.spec_files = FileList['test/integration/**/*.rb']
+      t.spec_opts << '--color'
+      t.spec_opts << "--require 'lib/selenium/rspec/reporting/selenium_test_report_formatter'"
+      t.spec_opts << "--format=Selenium::RSpec::SeleniumTestReportFormatter:./target/integration_tests_report.html"
+      t.spec_opts << "--format=progress"
+      t.deep_test :number_of_workers => 5,
+                  :timeout_in_seconds => 180
+  end
+rescue Exception
+  puts "Could not find DeepTest, disable parallel run"
+end
+
+desc "Run API integration tests"
+Spec::Rake::SpecTask.new("test:integration:api") do |t|
+    t.spec_files = FileList['test/integration/api/**/*_spec.rb']
+    t.spec_opts << '--color'
+    t.spec_opts << "--require 'lib/selenium/rspec/reporting/selenium_test_report_formatter'"
+    t.spec_opts << "--format=Selenium::RSpec::SeleniumTestReportFormatter:./target/api_integration_tests_report.html"
+    t.spec_opts << "--format=progress"
+end
+
+desc "Run Smoke integration tests"
+Spec::Rake::SpecTask.new("test:integration:smoke") do |t|
+    t.spec_files = FileList['test/integration/smoke/**/*backward*.rb']
+    t.spec_opts << '--color'
+    t.spec_opts << "--require 'lib/selenium/rspec/reporting/selenium_test_report_formatter'"
+    t.spec_opts << "--format=Selenium::RSpec::SeleniumTestReportFormatter:./target/smoke_tests_report.html"
+    t.spec_opts << "--format=progress"
+end
+
+desc "Run Test::Unit example"
+Rake::TestTask.new("examples:testunit"  ) do |t|
+  t.test_files = FileList['examples/testunit/**/*_test.rb']
+  t.warning = true
+end
+
+desc "Run RSpec examples"
+Spec::Rake::SpecTask.new("examples:rspec") do |t|
+    t.spec_files = FileList['examples/rspec/**/*_spec.rb']
+    t.spec_opts << '--color'
+    t.spec_opts << "--require 'lib/selenium/rspec/reporting/selenium_test_report_formatter'"
+    t.spec_opts << "--format=Selenium::RSpec::SeleniumTestReportFormatter:./target/smoke_tests_report.html"
+    t.spec_opts << "--format=progress"
+end
+
+desc "Run script example"
+task :'examples:script' do
+  sh "ruby examples/script/*.rb"
+end
+
+desc "Run all examples"
+task :'examples' => [:'examples:rspec', :'examples:testunit', :'examples:script']
+
+desc "Run tests in parallel"
+Spec::Rake::SpecTask.new("test:parallel") do |t|
+    t.spec_files = FileList['test/integration/*_spec.rb']
+    t.spec_opts << '--color'
+    t.spec_opts << "--require 'lib/selenium/rspec/reporting/selenium_test_report_formatter'"
+    t.spec_opts << "--format=Selenium::RSpec::SeleniumTestReportFormatter:./target/report.html"
+    t.spec_opts << "--format=progress"
+end
+
+desc "Launch Sample App"
+task :'sample_app:start' do
+  Nautilus::Shell.new.run \
+      "\"#{File.expand_path(File.dirname(__FILE__) + '/test/integration/sample-app/sample_app.rb')}\"",
+      :background => true
+  TCPSocket.wait_for_service :host => "localhost", :port => 4567
+end
+
+desc "Stop Sample App"
+task :'sample_app:stop' do
+  Net::HTTP.get("localhost", '/shutdown', 4567)
+end
+
+desc "Restart Sample App"
+task :'sample_app:restart' do
+  Rake::Task[:"sample_app:stop"].execute([]) rescue nil
+  Rake::Task[:"sample_app:start"].execute []
+end
+
+# TODO: docs in crazyfun
+# TODO: gem  in crazyfun
+
