@@ -36,7 +36,7 @@ public class NativeEventsTest extends AbstractDriverTestCase {
     }
   }
 
-  public void testSwitchingElementsUsingKeyboardWorks() throws InterruptedException {
+  public void testSwitchingElementsUsingKeyboardWorks() {
     if (driver2 == null) {
       return;
     }
