@@ -9,7 +9,7 @@ require "selenium/rake/tasks"
 
 CLEAN << "target"
 
-SELENIUM_SERVER_JAR = File.expand_path("../../build/remote/server/server-standalone.jar", __FILE__)
+SELENIUM_SERVER_JAR = File.expand_path("../../build/selenium/server-with-tests-standalone.jar", __FILE__)
 unless File.exist?(SELENIUM_SERVER_JAR)
   raise "could not find server jar: #{SELENIUM_SERVER_JAR.inspect}"
 end
