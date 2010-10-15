@@ -13,4 +13,7 @@ htmlunit/build
 jobbie/build
 selenium/build
 support/build
-
+iphone/lib/buildtime-src/cocoahttpserver/build/CocoaHTTPServerLibrary.build/Release-iphonesimulator/CocoaHTTPServer.build
+iphone/lib/buildtime-src/build/
+iphone/build/
+/build/
