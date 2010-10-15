@@ -1,8 +1,5 @@
 java_library(name = "common",
-  srcs = [ "src/java/**/*.java" ],
-  deps = [
-    "//third_party/java/guava-libraries"
-  ]
+  srcs = [ "src/java/**/*.java" ]
 )
 
 java_library(name = "test",

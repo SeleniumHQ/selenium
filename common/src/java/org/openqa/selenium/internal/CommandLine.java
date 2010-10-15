@@ -27,9 +27,6 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.ImmutableMap;
-
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
 
@@ -58,9 +55,8 @@ public class CommandLine {
     this.commandAndArgs = cmdarray;
   }
 
-  @VisibleForTesting
   Map<String, String> getEnvironment() {
-    return ImmutableMap.copyOf(env);
+    return new HashMap<String, String>(env);
   }
 
   /**
