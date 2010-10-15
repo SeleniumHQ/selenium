@@ -71,7 +71,7 @@ unit_tests do
     begin
       client.send(:parse_boolean_value, "unexpected")
       flunk "did not raise as expected"
-    rescue Selenium::ProtocolError => e
+    rescue Selenium::Client::ProtocolError => e
       assert_equal "Invalid Selenese boolean value that is neither 'true' nor 'false': got 'unexpected'", e.message
     end
   end

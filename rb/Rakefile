@@ -15,7 +15,7 @@ unless File.exist?(SELENIUM_SERVER_JAR)
 end
 
 desc "Start a Selenium remote control, run all integration tests and stop the remote control"
-task "ci:integration" => [ :clean, :'test:unit' ] do
+task "ci:integration" => %w[clean test:unit] do
   Rake::Task[:"selenium:server:stop"].execute [] rescue nil
   begin
     Rake::Task[:"sample_app:restart"].execute []
@@ -24,7 +24,7 @@ task "ci:integration" => [ :clean, :'test:unit' ] do
     Rake::Task[:"examples"].execute []
   ensure
     Rake::Task[:"selenium:server:stop"].execute []
-    Rake::Task[:"sample_app:restart"].execute []
+    Rake::Task[:"sample_app:stop"].execute []
   end
 end
 
@@ -100,24 +100,6 @@ end
 task :defult => :unit
 
 # ____ original rakefile __
-
-# Rakefile for Selenium Ruby Client   -*- ruby -*-
-
-begin
-  require "deep_test/rake_tasks"
-  desc "Run all integration tests in parallel"
-  Spec::Rake::SpecTask.new("test:integration:parallel") do |t|
-      t.spec_files = FileList['test/integration/**/*.rb']
-      t.spec_opts << '--color'
-      t.spec_opts << "--require 'lib/selenium/rspec/reporting/selenium_test_report_formatter'"
-      t.spec_opts << "--format=Selenium::RSpec::SeleniumTestReportFormatter:./target/integration_tests_report.html"
-      t.spec_opts << "--format=progress"
-      t.deep_test :number_of_workers => 5,
-                  :timeout_in_seconds => 180
-  end
-rescue LoadError
-  puts "Could not find DeepTest, disable parallel run"
-end
 
 desc "Run API integration tests"
 Spec::Rake::SpecTask.new("test:integration:api") do |t|

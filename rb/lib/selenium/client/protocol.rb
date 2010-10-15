@@ -2,23 +2,23 @@ module Selenium
   module Client
 
     HTTP_HEADERS = { 'Content-Type' => 'application/x-www-form-urlencoded; charset=utf-8' }
-    
+
     # Module in charge of handling Selenium over-the-wire HTTP protocol
     module Protocol
       attr_reader :session_id
-  
+
       def remote_control_command(verb, args=[])
         timeout(@default_timeout_in_seconds) do
           status, response = http_post(http_request_for(verb, args))
-          raise Selenium::CommandError, response unless status == "OK"          
+          raise CommandError, response unless status == "OK"
           response[3..-1] # strip "OK," from response
         end
       end
-      
+
       def string_command(verb, args=[])
         remote_control_command(verb, args)
       end
-    
+
       def string_array_command(verb, args=[])
         csv = string_command(verb, args)
         token = ""
@@ -47,7 +47,7 @@ module Selenium
       def number_command(verb, args)
         string_command verb, args
       end
-    
+
       def number_array_command(verb, args)
         string_array_command verb, args
       end
@@ -55,11 +55,11 @@ module Selenium
       def boolean_command(verb, args=[])
         parse_boolean_value string_command(verb, args)
       end
-    
+
       def boolean_array_command(verb, args)
         string_array_command(verb, args).collect {|value| parse_boolean_value(value)}
       end
-            
+
       protected
 
       def parse_boolean_value(value)
@@ -79,7 +79,7 @@ module Selenium
         data << "&sessionId=#{session_id}" unless session_id.nil?
         data
       end
-            
+
       def http_post(data)
         start = Time.now
         called_from = caller.detect{|line| line !~ /(selenium-client|vendor|usr\/lib\/ruby|\(eval\))/i}
@@ -97,7 +97,7 @@ module Selenium
         end
         [ response.body[0..1], response.body ]
       end
-     
+
     end
 
   end
