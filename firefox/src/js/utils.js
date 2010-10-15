@@ -144,12 +144,12 @@ Utils.getServer = function() {
 };
 
 
-Utils.getActiveElement = function(doc) {
+Utils.getActiveElement = function(doc, window) {
   var element;
   if (doc["activeElement"]) {
     element = doc.activeElement;
   } else {
-    var topWindow = doc.defaultView.top;
+    var topWindow = window.top;
     var commandDispatcher = topWindow.getBrowser().ownerDocument.
         commandDispatcher;
 

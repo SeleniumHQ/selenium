@@ -629,7 +629,7 @@ FirefoxDriver.prototype.switchToFrame = function(respond, parameters) {
 
 
 FirefoxDriver.prototype.getActiveElement = function(respond) {
-  var element = Utils.getActiveElement(respond.session.getDocument());
+  var element = Utils.getActiveElement(respond.session.getDocument(), respond.session.getWindow());
   var id = Utils.addToKnownElements(element, respond.session.getDocument());
 
   respond.value = {'ELEMENT':id};
