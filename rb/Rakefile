@@ -7,6 +7,7 @@ require 'rake/clean'
 require "spec/rake/spectask"
 require "selenium/rake/tasks"
 
+CLEAN << "target"
 
 SELENIUM_SERVER_JAR = File.expand_path("../../build/remote/server/server-standalone.jar", __FILE__)
 unless File.exist?(SELENIUM_SERVER_JAR)
@@ -114,7 +115,7 @@ begin
       t.deep_test :number_of_workers => 5,
                   :timeout_in_seconds => 180
   end
-rescue Exception
+rescue LoadError
   puts "Could not find DeepTest, disable parallel run"
 end
 
