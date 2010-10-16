@@ -6,6 +6,7 @@ require 'rake/testtask'
 require 'rake/clean'
 require "spec/rake/spectask"
 require "selenium/rake/tasks"
+require "rcov/rcovtask"
 
 CLEAN << "target"
 
@@ -28,9 +29,20 @@ task "ci:integration" => %w[clean test:unit] do
   end
 end
 
+UNIT_TESTS = FileList["test/unit/**/*_tests.rb"]
+
+Rcov::RcovTask.new("test:unit:coverage") do |t|
+  t.libs << "test" << "lib"
+  t.test_files = UNIT_TESTS
+  t.verbose = true
+  t.output_dir = "target/coverage"
+  t.rcov_opts = %w[--exclude spec,ruby-debug,/Library/Ruby,.gem --include lib]
+  
+end
+
 Rake::TestTask.new("test:unit")do |t|
   t.libs << "test" << "lib"
-  t.test_files = FileList["test/unit/**/*_tests.rb"]
+  t.test_files = UNIT_TESTS
   t.warning = true
 end
 

@@ -8,4 +8,5 @@ group :test do
   gem "rack", "1.0"
   gem "sinatra", "0.9.2"
   gem "thin"
+  gem "rcov", "0.9.9"
 end
