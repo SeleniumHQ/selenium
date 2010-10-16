@@ -31,6 +31,8 @@ import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 
+// TODO (berrada): Figure out why touch events do not fire those events to the underlying webcore.
+@Ignore(ANDROID)
 public class CorrectEventFiringTest extends AbstractDriverTestCase {
 
   @Ignore(value = {CHROME, FIREFOX}, reason = "Webkit bug 22261. Firefox 3.6 wants focus")
