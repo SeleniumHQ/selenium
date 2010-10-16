@@ -26,6 +26,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
@@ -35,12 +36,13 @@ import static org.openqa.selenium.Platform.WINDOWS;
 public class CommandLine {
   private static final Method JDK6_CAN_EXECUTE = findJdk6CanExecuteMethod();
   private final String[] commandAndArgs;
-  private StreamDrainer drainer;
-  private int exitCode;
-  private boolean executed;
-  private Process proc;
-  private String allInput;
-  private Map<String, String> env = new HashMap<String, String>();
+  private volatile StreamDrainer drainer;
+  private volatile Thread drainerThread;
+  private volatile int exitCode;
+  private volatile boolean executed;
+  private volatile Process proc;
+  private volatile String allInput;
+  private Map<String, String> env = new ConcurrentHashMap<String, String>();
 
   public CommandLine(String executable, String... args) {
     commandAndArgs = new String[args.length + 1];
@@ -146,44 +148,26 @@ public class CommandLine {
   }
 
   public void execute() {
-    try {
       executed = true;
-
-      ProcessBuilder builder = new ProcessBuilder(commandAndArgs);
-      builder.redirectErrorStream(true);
-      builder.environment().putAll(env);
-      
-      proc = builder.start();
-
-      drainer = new StreamDrainer(proc);
-      Thread thread = new Thread(drainer, "Command line drainer: " + commandAndArgs[0]);
-      thread.start();
-
-      if (allInput != null) {
-        byte[] bytes = allInput.getBytes();
-        proc.getOutputStream().write(bytes);
-        proc.getOutputStream().close();
-      }
-
-      proc.waitFor();
-      thread.join();
-
-      exitCode = proc.exitValue();
-    } catch (IOException e) {
-      throw new WebDriverException(e);
-    } catch (InterruptedException e) {
-      throw new WebDriverException(e);
-    }
+      createProcess();
+      setupDrainer();
+      waitFor();
   }
 
   public Process executeAsync() {
+    createProcess();
+
     new Thread() {
       @Override
       public void run() {
-        execute();
+        executed = true;
+        setupDrainer();
+        waitFor();
       }
     }.start();
 
+    // FIXME: we're leaking the Process instance here
+    // This hook should be removed altogether as it's just hiding bugs.
     Runtime.getRuntime().addShutdownHook(new Thread() {
       @Override
       public void run() {
@@ -200,10 +184,43 @@ public class CommandLine {
     return proc;
   }
 
-  public void waitFor() {
+  private void waitFor() {
     try {
       proc.waitFor();
+      if(drainerThread != null) {
+          drainerThread.join();
+      }
+
+      exitCode = proc.exitValue();
     } catch (InterruptedException e) {
+      throw new WebDriverException(e);
+    }
+  }
+
+  private void setupDrainer() {
+    try {
+      drainer = new StreamDrainer(proc);
+      drainerThread = new Thread(drainer, "Command line drainer: " + commandAndArgs[0]);
+      drainerThread.start();
+
+      if (allInput != null) {
+        byte[] bytes = allInput.getBytes();
+        proc.getOutputStream().write(bytes);
+        proc.getOutputStream().close();
+      }
+    } catch (IOException e) {
+      throw new WebDriverException(e);
+    }
+  }
+
+  private void createProcess() {
+    try {
+      ProcessBuilder builder = new ProcessBuilder(commandAndArgs);
+      builder.redirectErrorStream(true);
+      builder.environment().putAll(env);
+
+      proc = builder.start();
+    } catch (IOException e) {
       throw new WebDriverException(e);
     }
   }
