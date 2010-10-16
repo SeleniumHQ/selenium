@@ -28,6 +28,14 @@ module Selenium
       def stop
         Net::HTTP.get(@host, "/selenium-server/driver/?cmd=#{shutdown_command}", @port)
       end
+      
+      def wait_for_termination
+        TCPSocket.wait_for_service_termination :host => @host, :port => @port
+      end
+      
+      def wait_for_service
+        TCPSocket.wait_for_service :host => @host, :port => @port
+      end
 
     end
 

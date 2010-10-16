@@ -60,7 +60,7 @@ module Selenium
           server.start :background => @background, :nohup => @nohup
           if @background && @wait_until_up_and_running
             puts "Waiting for Selenium to be up and running..."
-            TCPSocket.wait_for_service :host => @host, :port => @port
+            server.wait_for_service
           end
           puts "Selenium Server at 0.0.0.0:#{@port} ready"
         end

@@ -33,7 +33,7 @@ module Selenium
               :shutdown_command => shutdown_command)
           remote_control.stop
           if @wait_until_stopped
-            TCPSocket.wait_for_service_termination :host => host, :port => port
+            remote_control.wait_for_termination
           end
           puts "Stopped Selenium server stopped"
         end
