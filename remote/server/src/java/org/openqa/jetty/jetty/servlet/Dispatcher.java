@@ -42,7 +42,6 @@ import org.apache.commons.logging.Log;
 import org.openqa.jetty.log.LogFactory;
 import org.openqa.jetty.http.HttpConnection;
 import org.openqa.jetty.http.PathMap;
-import org.openqa.jetty.util.LazyList;
 import org.openqa.jetty.util.LogSupport;
 import org.openqa.jetty.util.MultiMap;
 import org.openqa.jetty.util.StringMap;

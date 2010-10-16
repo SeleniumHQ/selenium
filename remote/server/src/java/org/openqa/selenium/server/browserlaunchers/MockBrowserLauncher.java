@@ -16,7 +16,6 @@ import org.openqa.jetty.log.LogFactory;
 import org.openqa.selenium.server.BrowserConfigurationOptions;
 import org.openqa.selenium.server.DefaultRemoteCommand;
 import org.openqa.selenium.server.RemoteCommand;
-import org.openqa.selenium.server.SeleniumServer;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 
 public class MockBrowserLauncher implements BrowserLauncher, Runnable {

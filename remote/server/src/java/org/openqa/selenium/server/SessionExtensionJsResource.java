@@ -1,6 +1,5 @@
 package org.openqa.selenium.server;
 
-import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -8,8 +7,6 @@ import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import com.google.common.io.ByteStreams;
-import com.google.common.io.Resources;
 import org.openqa.jetty.util.IO;
 import org.openqa.jetty.util.URLResource;
 

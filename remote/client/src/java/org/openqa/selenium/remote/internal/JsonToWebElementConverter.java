@@ -21,8 +21,6 @@ import java.util.Collection;
 import java.util.Map;
 
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.html5.ResultSet;
-import org.openqa.selenium.html5.ResultSetRows;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.RemoteWebElement;
 import org.openqa.selenium.remote.RenderedRemoteWebElement;

@@ -19,7 +19,6 @@ package org.openqa.selenium.internal.seleniumemulation;
 
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 
 public class DeleteCookie extends SeleneseCommand<Void> {
   @Override

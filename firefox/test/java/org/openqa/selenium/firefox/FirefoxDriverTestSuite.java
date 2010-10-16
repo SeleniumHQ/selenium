@@ -22,18 +22,10 @@ import junit.framework.TestCase;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Map;
-
-import com.google.common.base.Throwables;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.io.Files;
 import org.openqa.selenium.Build;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.TestSuiteBuilder;
-import org.openqa.selenium.firefox.internal.FileExtension;
-import org.openqa.selenium.internal.FileHandler;
 import org.openqa.selenium.internal.InProject;
-import org.openqa.selenium.internal.TemporaryFilesystem;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import static org.openqa.selenium.Ignore.Driver.FIREFOX;

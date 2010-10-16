@@ -1,9 +1,5 @@
 package org.openqa.selenium.internal;
 
-import java.io.IOException;
-
-import org.openqa.selenium.browserlaunchers.WindowsUtils;
-
 // I am not calling this "log".
 public interface Trace {
   void info(String message);

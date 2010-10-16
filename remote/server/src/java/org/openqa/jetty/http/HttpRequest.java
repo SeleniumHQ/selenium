@@ -27,7 +27,6 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 
-import javax.print.URIException;
 import javax.servlet.http.Cookie;
 
 import org.apache.commons.logging.Log;

@@ -15,32 +15,8 @@
 
 package org.openqa.jetty.http.handler;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.InetAddress;
 import java.net.MalformedURLException;
-import java.net.Socket;
 import java.net.URL;
-import java.net.URLConnection;
-import java.util.Enumeration;
-import java.util.HashSet;
-import java.util.Set;
-
-import org.apache.commons.logging.Log;
-import org.openqa.jetty.log.LogFactory;
-import org.openqa.jetty.http.HttpConnection;
-import org.openqa.jetty.http.HttpException;
-import org.openqa.jetty.http.HttpFields;
-import org.openqa.jetty.http.HttpMessage;
-import org.openqa.jetty.http.HttpRequest;
-import org.openqa.jetty.http.HttpResponse;
-import org.openqa.jetty.http.HttpTunnel;
-import org.openqa.jetty.util.IO;
-import org.openqa.jetty.util.InetAddrPort;
-import org.openqa.jetty.util.LineInput;
-import org.openqa.jetty.util.LogSupport;
-import org.openqa.jetty.util.StringMap;
 import org.openqa.jetty.util.URI;
 
 /* ------------------------------------------------------------ */

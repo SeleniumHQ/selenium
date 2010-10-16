@@ -31,7 +31,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Iterator;
 
-import com.google.common.io.Files;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.internal.FileHandler;
 import org.openqa.selenium.internal.TemporaryFilesystem;

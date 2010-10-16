@@ -20,9 +20,6 @@ package org.openqa.selenium;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
-import org.openqa.selenium.environment.GlobalTestEnvironment;
-import org.openqa.selenium.environment.webserver.AppServer;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.openqa.selenium.Ignore.Driver.ANDROID;

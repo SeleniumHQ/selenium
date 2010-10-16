@@ -19,7 +19,6 @@ package org.openqa.selenium.iphone;
 
 import com.google.common.annotations.VisibleForTesting;
 
-import org.json.JSONException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.CommandExecutor;

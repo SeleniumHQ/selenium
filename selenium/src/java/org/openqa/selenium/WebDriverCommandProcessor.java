@@ -18,8 +18,6 @@ limitations under the License.
 package org.openqa.selenium;
 
 import java.util.Map;
-import java.util.concurrent.Callable;
-
 import com.google.common.base.Supplier;
 import com.google.common.collect.Maps;
 import com.thoughtworks.selenium.CommandProcessor;

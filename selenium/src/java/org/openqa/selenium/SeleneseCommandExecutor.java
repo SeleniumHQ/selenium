@@ -28,7 +28,6 @@ import com.thoughtworks.selenium.HttpCommandProcessor;
 import com.thoughtworks.selenium.Selenium;
 import com.thoughtworks.selenium.SeleniumException;
 
-import org.json.JSONException;
 import org.openqa.selenium.firefox.internal.Executable;
 import org.openqa.selenium.internal.selenesedriver.ClearElement;
 import org.openqa.selenium.internal.selenesedriver.ClickElement;
@@ -58,7 +57,6 @@ import org.openqa.selenium.remote.BeanToJsonConverter;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.ErrorCodes;
 import org.openqa.selenium.remote.JsonToBeanConverter;
 import org.openqa.selenium.remote.Response;

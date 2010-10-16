@@ -22,14 +22,12 @@ import junit.framework.TestCase;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.openqa.selenium.Proxy;
-import org.openqa.selenium.firefox.internal.FileExtension;
 import org.openqa.selenium.internal.FileHandler;
 import org.openqa.selenium.internal.InProject;
 import org.openqa.selenium.internal.TemporaryFilesystem;

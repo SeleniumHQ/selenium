@@ -6,7 +6,6 @@ import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.DriverCommand;
-import org.openqa.selenium.remote.JsonException;
 import org.openqa.selenium.remote.JsonToBeanConverter;
 import org.openqa.selenium.remote.Response;
 

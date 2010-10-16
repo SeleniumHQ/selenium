@@ -17,20 +17,12 @@
 
 package org.openqa.selenium.server.browserlaunchers;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.Map;
 
 import com.google.common.collect.Maps;
 import org.apache.commons.logging.Log;
 import org.openqa.jetty.log.LogFactory;
-import org.openqa.selenium.Platform;
 import org.openqa.selenium.browserlaunchers.WindowsUtils;
-import org.openqa.selenium.internal.CommandLine;
-
-import static org.openqa.selenium.Platform.WINDOWS;
 
 /**
  * Spawn a process and return the process handle so you can close it yourself

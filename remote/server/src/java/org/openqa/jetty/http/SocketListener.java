@@ -16,8 +16,6 @@
 package org.openqa.jetty.http;
 import java.io.IOException;
 import java.net.Socket;
-import java.net.SocketException;
-
 import org.apache.commons.logging.Log;
 import org.openqa.jetty.log.LogFactory;
 import org.openqa.jetty.util.InetAddrPort;

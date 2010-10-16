@@ -1,7 +1,6 @@
 package org.openqa.selenium.internal.seleniumemulation;
 
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriverBackedSelenium;
 
 public class ShiftKeyDown extends SeleneseCommand<Void> {
   private final KeyState keyState;

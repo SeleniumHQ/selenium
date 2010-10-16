@@ -28,7 +28,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.json.JSONException;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.NoAlertPresentException;

@@ -47,7 +47,6 @@ import static java.lang.Thread.sleep;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.openqa.selenium.DevMode.isInDevMode;
 import static org.openqa.selenium.Ignore.Driver.FIREFOX;
 
 

@@ -17,7 +17,6 @@ limitations under the License.
 
 package org.openqa.selenium.internal.selenesedriver;
 
-import com.google.common.collect.Maps;
 import com.thoughtworks.selenium.Selenium;
 
 import java.util.List;

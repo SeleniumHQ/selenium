@@ -16,8 +16,6 @@
 package org.openqa.jetty.http;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.net.SocketException;
-
 import org.openqa.jetty.util.ByteArrayISO8859Writer;
 import org.openqa.jetty.util.ByteBufferOutputStream;
 import org.openqa.jetty.util.OutputObserver;

@@ -2,10 +2,7 @@
 package org.openqa.selenium.firefox;
 
 import org.openqa.selenium.AbstractDriverTestCase;
-import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
 import org.openqa.selenium.Platform;
-import org.openqa.selenium.WebElement;
 
 /**
  * If native events are enabled, make sure they work.

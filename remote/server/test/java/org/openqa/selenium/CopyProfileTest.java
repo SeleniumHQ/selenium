@@ -11,7 +11,6 @@ import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
-import static org.openqa.selenium.Ignore.Driver.ALL;
 import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.CHROME_NON_WINDOWS;
 import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;

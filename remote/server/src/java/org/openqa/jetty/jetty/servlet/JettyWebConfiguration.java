@@ -17,7 +17,6 @@ package org.openqa.jetty.jetty.servlet;
 
 import org.apache.commons.logging.Log;
 import org.openqa.jetty.log.LogFactory;
-import org.openqa.jetty.http.ContextLoader;
 import org.openqa.jetty.jetty.servlet.WebApplicationContext.Configuration;
 import org.openqa.jetty.util.Resource;
 import org.openqa.jetty.xml.XmlConfiguration;

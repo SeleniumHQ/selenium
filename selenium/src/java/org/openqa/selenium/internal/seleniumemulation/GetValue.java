@@ -17,7 +17,6 @@ limitations under the License.
 
 package org.openqa.selenium.internal.seleniumemulation;
 
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
 public class GetValue extends SeleneseCommand<String> {
