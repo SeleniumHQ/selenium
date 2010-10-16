@@ -237,8 +237,8 @@ public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot, F
     }
 
     Object rawResponse = response.getValue();
-    if (rawResponse instanceof Map) {
-      Map map = (Map) rawResponse;
+    if (rawResponse instanceof Map<?, ?>) {
+      Map<?, ?> map = (Map<?, ?>) rawResponse;
       if (map.containsKey("__webdriverType")) {
         // Looks like have an alert. construct it
         currentAlert = new FirefoxAlert((String) map.get("text"));

@@ -301,7 +301,7 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
       alert.click();
       TestWaitingUtility.startSleep();
       while (TestWaitingUtility.shouldSleep()) {
-        String title = firefox.getTitle();
+        firefox.getTitle();
         TestWaitingUtility.sleep();
       }
       fail("Should have thrown an UnhandledAlertException");

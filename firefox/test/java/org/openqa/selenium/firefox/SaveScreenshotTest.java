@@ -31,6 +31,7 @@ public class SaveScreenshotTest extends AbstractDriverTestCase {
     /**
      * Test the deprecated version of screenshot capturing.
      */
+    @SuppressWarnings("deprecation")
     public void testDeprecatedSaveScreenshot() throws IOException {
         File tempFile = File.createTempFile("formPage", ".png");
         assertThat(tempFile.length(), is(0L));
