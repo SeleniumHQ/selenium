@@ -45,7 +45,7 @@ Spec::Runner.configure do |config|
       raise "Should have timed out"
     rescue Timeout::Error => e
       # All good
-    rescue Selenium::CommandError => e
+    rescue Selenium::Client::CommandError => e
       raise unless e.message =~ /ed out after/
       # All good
     end
