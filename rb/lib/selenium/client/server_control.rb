@@ -1,6 +1,6 @@
 module Selenium
-  module ServerControl
-
+  module Client
+    
     class ServerControl
       attr_reader :host, :port, :timeout_in_seconds, :firefox_profile, :shutdown_command
       attr_accessor :additional_args, :jar_file, :log_to

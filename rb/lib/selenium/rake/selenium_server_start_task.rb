@@ -53,7 +53,7 @@ module Selenium
         task @name do
           puts "Starting Selenium Server at 0.0.0.0:#{@port}..."
           raise "Could not find jar file '#{@jar_file}'. Expected it under #{JAR_FILE_PATTERN}" unless @jar_file && File.exists?(@jar_file)
-          server = Selenium::ServerControl::ServerControl.new("0.0.0.0", @port, :timeout => @timeout_in_seconds)
+          server = Selenium::Client::ServerControl.new("0.0.0.0", @port, :timeout => @timeout_in_seconds)
           server.jar_file = @jar_file
           server.additional_args = @additional_args
           server.log_to = @log_to

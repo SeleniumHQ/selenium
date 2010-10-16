@@ -28,7 +28,7 @@ module Selenium
         desc "Stop Selenium server running"
         task @name do
           puts "Stopping Selenium server running at #{host}:#{port}..."
-          remote_control = Selenium::ServerControl::ServerControl.new(
+          remote_control = Selenium::Client::ServerControl.new(
               host, port, :timeout => timeout_in_seconds,
               :shutdown_command => shutdown_command)
           remote_control.stop
