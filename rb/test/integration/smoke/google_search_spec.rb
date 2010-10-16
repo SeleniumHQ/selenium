@@ -9,7 +9,7 @@ describe "Google Search" do
     page.value("q").should eql("Selenium SeleniumHQ")
     page.click "btnG", :wait_for => :page
     page.text?("seleniumhq.org").should be_true
-    page.title.should eql("Selenium SeleniumHQ - Google Search")
+    page.title.should eql("selenium seleniumhq - Google Search")
   end
 
   it "wait_for_text variant" do
@@ -21,7 +21,7 @@ describe "Google Search" do
     page.wait_for :wait_for => :value, :element => 'q', :value => "Selenium SeleniumHQ"
     page.wait_for :wait_for => :no_value, :element => 'q', :value => "Mercury"
     page.wait_for :wait_for => :no_text, :text => "Gre sacdas asdcasd"
-    page.title.should eql("Selenium SeleniumHQ - Google Search")
+    page.title.should eql("selenium seleniumhq - Google Search")
   end
 
   it "can search videos" do
