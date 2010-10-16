@@ -1,4 +1,4 @@
-require 'spec_helper'
+require File.expand_path("../spec_helper", __FILE__)
 
 describe "Wait" do
   it 'should wait until the returned value is true' do

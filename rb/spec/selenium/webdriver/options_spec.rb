@@ -1,4 +1,4 @@
-require "spec_helper"
+require File.expand_path("../spec_helper", __FILE__)
 
 describe "Options" do
   not_compliant_on :browser => :ie do
