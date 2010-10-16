@@ -58,7 +58,6 @@ import net.sourceforge.htmlunit.corejs.javascript.Function;
 import net.sourceforge.htmlunit.corejs.javascript.NativeArray;
 import net.sourceforge.htmlunit.corejs.javascript.ScriptableObject;
 import net.sourceforge.htmlunit.corejs.javascript.Undefined;
-import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Cookie;
@@ -199,7 +198,7 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
     client.setHomePage(WebClient.URL_ABOUT_BLANK.toString());
     client.setThrowExceptionOnFailingStatusCode(false);
     client.setPrintContentOnFailingStatusCode(false);
-    client.setJavaScriptEnabled(false);
+    client.setJavaScriptEnabled(enableJavascript);
     client.setRedirectEnabled(true);
     client.setRefreshHandler(new WaitingRefreshHandler());
 
@@ -871,10 +870,6 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
 
       throw new NoSuchElementException("Unable to locate element with focus or body tag");
     }
-
-    public Alert alert() {
-      return null;
-    }
   }
 
   protected WebDriver findActiveWindow() {
@@ -1043,10 +1038,6 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
         }
       }
       return retCookies;
-    }
-
-    private String getHostName() {
-      return lastPage().getWebResponse().getWebRequest().getUrl().getHost().toLowerCase();
     }
 
     private String getPath() {
