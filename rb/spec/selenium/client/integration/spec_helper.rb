@@ -3,6 +3,7 @@ gem 'rspec', ">=1.2.8"
 
 require "selenium/client"
 require "selenium/rspec/spec_helper"
+require File.expand_path("../sample-app/sample_app", __FILE__)
 
 # for bamboo
 require "ci/reporter/rspec"
@@ -10,6 +11,7 @@ ENV['CI_REPORTS'] = "build/test_logs"
 
 class SeleniumClientTestEnvironment
   def initialize
+    $stdout.sync = true
     @jar = File.expand_path("../../../../../../build/selenium/server-with-tests-standalone.jar", __FILE__)
     raise Errno::ENOENT, jar unless File.exist?(@jar)
   end
@@ -44,16 +46,12 @@ class SeleniumClientTestEnvironment
   end
 
   def start_example_app
-    Selenium::Client::Shell.new.run \
-        "\"#{File.expand_path(File.dirname(__FILE__) + '/sample-app/sample_app.rb')}\"",
-        :background => true
+    @example_app = Thread.new { SampleApp.start("127.0.0.1", 4567) }
     TCPSocket.wait_for_service :host => "localhost", :port => 4567
   end
 
   def stop_example_app
-    Net::HTTP.get("localhost", '/shutdown', 4567)
-  rescue EOFError
-    # great
+    @example_app.kill
   end
 end # SeleniumClientTestEnvironment
 
@@ -65,7 +63,7 @@ Spec::Runner.configure do |config|
   end
 
   config.after(:suite) do
-    @test_environment.stop
+    @test_environment.stop if @test_environment
   end
 
   config.prepend_before(:each) do

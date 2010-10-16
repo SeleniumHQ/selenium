@@ -1,17 +1,32 @@
-#!/usr/bin/env ruby
-
 require "rubygems"
-require 'sinatra'
+require 'rack'
+require "webrick"
 
-get "/" do
-  "Selenium Ruby Client Sample Application"
+# TODO: Use Selenium::WebDriver::SpecSupport::RackServer?
+class SampleApp
+
+  def self.start(host, port)
+    Rack::Handler::WEBrick.run(new, :Host => host, :Port => port)
+  end
+
+  def initialize
+    @public = Rack::File.new(File.expand_path("../public", __FILE__))
+  end
+
+  def call(env)
+    req = Rack::Request.new(env)
+
+    case req.path
+    when "/"
+      [200, {}, ["Selenium Ruby Client Sample Application"]]
+    when "/compute"
+      sleep 5
+      resp = eval(req.params['calculator-expression']).to_s
+      [200, {}, [resp]]
+    else
+      @public.call(env)
+    end
+  end
+
 end
 
-post "/compute" do
-  sleep 5 # Sleep  a little while to test wait_for_ajax semantics
-  eval(params[:'calculator-expression']).to_s
-end
-
-get "/shutdown" do
-  Process.kill('KILL', Process.pid)
-end

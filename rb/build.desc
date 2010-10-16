@@ -12,7 +12,7 @@ rubygem(
   gemdeps = [
     { "json_pure"    : ">= 0"     },
     { "rubyzip"      : ">= 0"     },
-    { "childprocess" : ">= 0.0.7" },
+    { "childprocess" : ">= 0.1.0" },
     { "ffi"          : "~> 0.6.3" }
   ],
   devdeps = [
@@ -171,6 +171,9 @@ ruby_test(name = "rc-client-integration",
   srcs = [
     "spec/selenium/client/integration/api/*_spec.rb",
     "spec/selenium/client/integration/smoke/*_spec.rb"
+  ],
+  include = [
+    "build/rb/lib"
   ],
   deps = [
     "//selenium:server-with-tests:uber",

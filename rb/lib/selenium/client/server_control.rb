@@ -1,6 +1,8 @@
+require "childprocess"
+
 module Selenium
   module Client
-    
+
     class ServerControl
       attr_reader :host, :port, :timeout_in_seconds, :firefox_profile, :shutdown_command
       attr_accessor :additional_args, :jar_file, :log_to
@@ -11,28 +13,36 @@ module Selenium
         @shutdown_command = options[:shutdown_command] || "shutDownSeleniumServer"
         @firefox_profile = options[:firefox_profile]
         @additional_args = options[:additional_args] || []
-        @shell = Selenium::Client::Shell.new
       end
 
       def start(options = {})
-        command = "java -jar \"#{jar_file}\""
-        command << " -port #{@port}"
-        command << " -timeout #{@timeout_in_seconds}"
-        command << " -firefoxProfileTemplate '#{@firefox_profile}'" if @firefox_profile
-        command << " #{additional_args.join(' ')}" unless additional_args.empty?
-        command << " > #{log_to}" if log_to
+        command = [
+          "java", "-jar", jar_file.to_s,
+          "-port", @port.to_s,
+          "-timeout", @timeout_in_seconds.to_s
+        ]
 
-        @shell.run command, {:background => options[:background], :nohup => options[:nohup]}
+        command += ["-firefoxProfileTemplate", @firefox_profile.to_S] if @firefox_profile
+        command += additional_args.map { |e| e.to_s } unless additional_args.empty?
+        # FIXME: command << " > #{log_to}" if log_to
+
+        @process = ChildProcess.build(*command)
+        @process.detach = !!options[:background]
+        @process.start
       end
 
       def stop
         Net::HTTP.get(@host, "/selenium-server/driver/?cmd=#{shutdown_command}", @port)
+        if @process
+          @process.wait_for_exit(5)
+          @process.stop
+        end
       end
-      
+
       def wait_for_termination
         TCPSocket.wait_for_service_termination :host => @host, :port => @port
       end
-      
+
       def wait_for_service
         TCPSocket.wait_for_service :host => @host, :port => @port
       end

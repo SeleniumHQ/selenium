@@ -1,11 +1,8 @@
 require File.expand_path("../spec_helper", __FILE__)
 
 describe Selenium::Client::ServerControl do
-  def mock_shell
-    shell = mock(Selenium::Client::Shell)
-    Selenium::Client::Shell.stub!(:new).and_return(shell)
-
-    shell
+  def mock_process
+    @mock_process ||= mock("ChildProcess").as_null_object
   end
 
   it "host returns the host provided in the contructor" do
@@ -57,7 +54,8 @@ describe Selenium::Client::ServerControl do
   end
 
   it "start launches the remote control process with the right port and timeout" do
-    mock_shell.should_receive(:run).with('java -jar "the_jar_file" -port the_port -timeout the_timeout', anything)
+    ChildProcess.should_receive(:build).with('java', '-jar', 'the_jar_file', '-port', 'the_port', '-timeout', 'the_timeout').
+                 and_return(mock_process)
 
     server = Selenium::Client::ServerControl.new(:a_host, :the_port, :timeout => :the_timeout)
     server.jar_file = :the_jar_file
@@ -67,7 +65,8 @@ describe Selenium::Client::ServerControl do
   end
 
   it "start launches the remote control with additional args when provided" do
-    mock_shell.should_receive(:run).with('java -jar "a_jar_file" -port a_port -timeout a_timeout an_arg another_arg', anything)
+    ChildProcess.should_receive(:build).with('java', '-jar', 'a_jar_file', '-port', 'a_port', '-timeout', 'a_timeout', 'an_arg', 'another_arg').
+                                        and_return(mock_process)
 
     server = Selenium::Client::ServerControl.new(:a_host, :a_port, :timeout => :a_timeout)
     server.jar_file = :a_jar_file
@@ -76,7 +75,8 @@ describe Selenium::Client::ServerControl do
   end
 
   it "start does not launch the remote control process in the background by default" do
-    mock_shell.should_receive(:run).with(anything, { :nohup => nil, :background => nil })
+    ChildProcess.should_receive(:build).and_return(mock_process)
+    mock_process.should_receive(:detach=).with(false)
 
     server = Selenium::Client::ServerControl.new(:a_host, :the_port)
     server.jar_file = :the_jar_file
@@ -84,22 +84,15 @@ describe Selenium::Client::ServerControl do
   end
 
   it "start launches the remote control process in the background when background option is true" do
-    mock_shell.should_receive(:run).with(anything, { :nohup => nil, :background => true })
+    ChildProcess.should_receive(:build).and_return(mock_process)
+    mock_process.should_receive(:detach=).with(true)
 
     server = Selenium::Client::ServerControl.new(:a_host, :the_port)
     server.jar_file = :the_jar_file
     server.start :background => true
   end
 
-  it "start launches the remote control process with nohup if the nohup option is set" do
-    mock_shell.should_receive(:run).with(anything, { :nohup => '1', :background => true })
-
-    server = Selenium::Client::ServerControl.new(:a_host, :the_port)
-    server.jar_file = :the_jar_file
-    server.start :background => true, :nohup => '1'
-  end
-
-  it "stop issues a shutDownSeleniumServer command on the right host and post" do
+  it "stop issues a shutDownSeleniumServer command on the right host and port" do
     server = Selenium::Client::ServerControl.new(:a_host, :a_port)
     Net::HTTP.should_receive(:get).with(:a_host, '/selenium-server/driver/?cmd=shutDownSeleniumServer', :a_port)
     server.stop
