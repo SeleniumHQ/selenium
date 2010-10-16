@@ -148,7 +148,6 @@ public class CommandLine {
   }
 
   public void execute() {
-      executed = true;
       createProcess();
       setupDrainer();
       waitFor();
@@ -160,7 +159,6 @@ public class CommandLine {
     new Thread() {
       @Override
       public void run() {
-        executed = true;
         setupDrainer();
         waitFor();
       }
@@ -220,6 +218,7 @@ public class CommandLine {
       builder.environment().putAll(env);
 
       proc = builder.start();
+      executed = true;
     } catch (IOException e) {
       throw new WebDriverException(e);
     }
