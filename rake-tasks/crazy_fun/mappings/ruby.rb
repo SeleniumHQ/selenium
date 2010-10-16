@@ -110,7 +110,9 @@ class RubyMappings
         ENV['WD_SPEC_DRIVER'] = args[:name]
 
         # TODO: fix gemfile vs include when jruby-complete.jar understands bundler
-        args[:include] << args[:gemfile].sub("Gemfile", "lib")
+        if args[:gemfile]
+          args[:include] << args[:gemfile].sub("Gemfile", "lib")
+        end
 
         jruby :include     => args[:include],
               :require     => requires,
@@ -125,8 +127,10 @@ class RubyMappings
 
   class MRITest < Tasks
     def handle(fun, dir, args)
+      deps = [args[:gemfile]].compact
+
       desc "Run ruby tests for #{args[:name]} (mri)"
-      task task_name(dir, "#{args[:name]}-test:mri") => args[:gemfile] do
+      task task_name(dir, "#{args[:name]}-test:mri") => deps do
         puts "Running: #{args[:name]} ruby tests (mri)"
 
         ENV['WD_SPEC_DRIVER'] = args[:name]

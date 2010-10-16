@@ -4,48 +4,52 @@ gem 'rspec', ">=1.2.8"
 require "selenium/client"
 require "selenium/rspec/spec_helper"
 
+# for bamboo
+require "ci/reporter/rspec"
+ENV['CI_REPORTS'] = "build/test_logs"
+
 class SeleniumClientTestEnvironment
   def initialize
     @jar = File.expand_path("../../../../../../build/selenium/server-with-tests-standalone.jar", __FILE__)
     raise Errno::ENOENT, jar unless File.exist?(@jar)
   end
-  
+
   def run
     start_server
     start_example_app
-    
+
     self
   end
-  
+
   def stop
     stop_example_app
     stop_server
   end
-  
+
   private
-  
+
   def start_server
     @server = Selenium::Client::ServerControl.new("0.0.0.0", 4444, :timeout_in_seconds => 3*60)
     @server.jar_file = @jar
     @server.additional_args = ["-singleWindow"]
-    
+
     @server.start :background => true
     @server.wait_for_service
   end
-  
+
   def stop_server
     return unless @server
     @server.stop
     @server.wait_for_termination
   end
-  
+
   def start_example_app
     Selenium::Client::Shell.new.run \
         "\"#{File.expand_path(File.dirname(__FILE__) + '/sample-app/sample_app.rb')}\"",
         :background => true
     TCPSocket.wait_for_service :host => "localhost", :port => 4567
   end
-  
+
   def stop_example_app
     Net::HTTP.get("localhost", '/shutdown', 4567)
   rescue EOFError
@@ -59,17 +63,17 @@ Spec::Runner.configure do |config|
   config.before(:suite) do
     @test_environment = SeleniumClientTestEnvironment.new.run
   end
-  
+
   config.after(:suite) do
     @test_environment.stop
   end
 
-  config.before(:each) do
+  config.prepend_before(:each) do
     create_selenium_driver
     start_new_browser_session
   end
 
-  config.after(:each) do
+  config.prepend_after(:each) do
     begin
       selenium_driver.stop
     rescue StandardError => e
@@ -88,7 +92,7 @@ Spec::Runner.configure do |config|
         :timeout_in_seconds => (ENV['SELENIUM_RC_TIMEOUT'] || 20),
         :url => "http://#{application_host}:#{application_port}"
   end
-  
+
   def start_new_browser_session
     selenium_driver.start_new_browser_session
     selenium_driver.set_context "Starting example '#{self.description}'"

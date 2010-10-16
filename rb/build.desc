@@ -142,3 +142,38 @@ ruby_test(name = "remote",
   ]
 )
 
+ruby_library(name = "rc-client",
+  srcs = [
+    "lib/selenium/client/**/*.rb",
+    "lib/selenium/client.rb",
+    "lib/selenium-client.rb",
+    "lib/selenium/rake/*.rb",
+    "lib/selenium/rspec/**/*.rb"
+  ],
+  deps = [
+    ":common"
+  ]
+)
+
+ruby_test(name = "rc-client-unit",
+  srcs = [
+    "spec/selenium/client/unit/**/*_spec.rb"
+  ],
+  include = [
+    "build/rb/lib"
+  ],
+  deps = [
+    ":rc-client"
+  ]
+)
+
+ruby_test(name = "rc-client-integration",
+  srcs = [
+    "spec/selenium/client/integration/api/*_spec.rb",
+    "spec/selenium/client/integration/smoke/*_spec.rb"
+  ],
+  deps = [
+    "//selenium:server-with-tests:uber",
+    ":rc-client"
+  ]
+)
