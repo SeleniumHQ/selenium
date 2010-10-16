@@ -2,13 +2,13 @@ require 'rubygems'
 require 'spec'
 require 'base64'
 require 'fileutils'
-require File.expand_path(File.dirname(__FILE__) + "/rspec_extensions")
+require File.expand_path(File.dirname(__FILE__) + "/extensions")
 require File.expand_path(File.dirname(__FILE__) + "/reporting/selenium_test_report_formatter")
 
 Spec::Runner.configure do |config|
 
   config.prepend_after(:each) do
-    begin 
+    begin
       if actual_failure?
         Selenium::RSpec::SeleniumTestReportFormatter.capture_system_state(selenium_driver, self)
       end
@@ -21,7 +21,7 @@ Spec::Runner.configure do |config|
   end
 
   config.append_before(:each) do
-    begin 
+    begin
       if selenium_driver && selenium_driver.session_started?
         selenium_driver.set_context "Starting example '#{self.description}'"
       end

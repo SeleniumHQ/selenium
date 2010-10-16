@@ -37,7 +37,7 @@ Rcov::RcovTask.new("test:unit:coverage") do |t|
   t.verbose = true
   t.output_dir = "target/coverage"
   t.rcov_opts = %w[--exclude spec,ruby-debug,/Library/Ruby,.gem --include lib]
-  
+
 end
 
 Rake::TestTask.new("test:unit")do |t|
@@ -165,7 +165,7 @@ end
 
 desc "Launch Sample App"
 task :'sample_app:start' do
-  Nautilus::Shell.new.run \
+  Selenium::Client::Shell.new.run \
       "\"#{File.expand_path(File.dirname(__FILE__) + '/test/integration/sample-app/sample_app.rb')}\"",
       :background => true
   TCPSocket.wait_for_service :host => "localhost", :port => 4567

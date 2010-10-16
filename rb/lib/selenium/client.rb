@@ -9,7 +9,7 @@ require "digest/md5"
 require 'fileutils'
 require 'tmpdir'
 require File.expand_path(File.dirname(__FILE__) + '/../tcp_socket_extension')
-require File.expand_path(File.dirname(__FILE__) + '/../nautilus/shell')
+require File.expand_path(File.dirname(__FILE__) + '/client/shell')
 require File.expand_path(File.dirname(__FILE__) + '/client/errors')
 require File.expand_path(File.dirname(__FILE__) + '/client/protocol')
 require File.expand_path(File.dirname(__FILE__) + '/client/legacy_driver')

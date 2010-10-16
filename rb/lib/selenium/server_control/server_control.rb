@@ -11,7 +11,7 @@ module Selenium
         @shutdown_command = options[:shutdown_command] || "shutDownSeleniumServer"
         @firefox_profile = options[:firefox_profile]
         @additional_args = options[:additional_args] || []
-        @shell = Nautilus::Shell.new
+        @shell = Selenium::Client::Shell.new
       end
 
       def start(options = {})
