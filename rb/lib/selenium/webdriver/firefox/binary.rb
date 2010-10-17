@@ -45,7 +45,9 @@ module Selenium
 
         def execute(*extra_args)
           args = [self.class.path, "-no-remote", "--verbose"] + extra_args
-          @process = ChildProcess.build(*args).start
+          @process = ChildProcess.build(*args)
+          @process.io.inherit! if $DEBUG
+          @process.start
         end
 
         def cope_with_mac_strangeness(args)

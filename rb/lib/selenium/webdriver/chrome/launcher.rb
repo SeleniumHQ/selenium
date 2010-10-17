@@ -74,8 +74,8 @@ module Selenium
 
         def launch_chrome(server_url)
           args = [
-            Platform.wrap_in_quotes_if_necessary(self.class.binary_path),
-            "--load-extension=#{Platform.wrap_in_quotes_if_necessary tmp_extension_dir}",
+            self.class.binary_path,
+            "--load-extension=#{tmp_extension_dir}",
             "--activate-on-launch",
             "--disable-hang-monitor",
             "--disable-popup-blocking",
@@ -83,7 +83,7 @@ module Selenium
           ]
 
           unless @default_profile
-            args << "--user-data-dir=#{Platform.wrap_in_quotes_if_necessary tmp_profile_dir}"
+            args << "--user-data-dir=#{tmp_profile_dir}"
           end
 
           unless @secure_ssl
@@ -92,7 +92,13 @@ module Selenium
 
           args << server_url
 
-          @process = ChildProcess.build(*args).start
+          @process = ChildProcess.build(*args)
+
+          if $DEBUG
+            @process.io.inherit!
+          end
+
+          @process.start
         end
 
         def ext_path
