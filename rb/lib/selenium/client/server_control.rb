@@ -34,7 +34,7 @@ module Selenium
       def stop
         Net::HTTP.get(@host, "/selenium-server/driver/?cmd=#{shutdown_command}", @port)
         if @process
-          @process.wait_for_exit(5)
+          @process.poll_for_exit(5)
           @process.stop
         end
       end
