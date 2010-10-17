@@ -30,7 +30,7 @@ module Selenium
         io = @process.io
         if log_to && !options[:background] # TODO: find a way to work around this?
           @log_file = File.open(log_to, "w")
-          io.stdout = io.stderr =
+          io.stdout = io.stderr = @log_file
         else
           io.inherit!
         end
