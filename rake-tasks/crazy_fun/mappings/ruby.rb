@@ -101,6 +101,7 @@ class RubyMappings
         rubyzip.jar
         childprocess.jar
         ci_reporter.jar
+        rack.jar
       ].map { |jar| File.join("third_party/jruby", jar) }
 
       desc "Run ruby tests for #{args[:name]} (jruby)"
