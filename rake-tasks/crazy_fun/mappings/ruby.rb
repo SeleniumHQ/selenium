@@ -288,6 +288,8 @@ class RubyMappings
         bundle_install :ruby, gemfile
       end
 
+      # jruby-complete.jar doesn't like bundler
+      #
       # desc 'Install dependencies for JRuby'
       # task "//#{dir}:bundle-jruby" do
       #   bundle_install :jruby, gemfile
@@ -302,7 +304,7 @@ class RubyMappings
     end
 
     def bundle_install(ruby, file)
-      args = ["install", "--gemfile", file]
+      args = ["install", "--gemfile", Platform.path_for(file)]
       args += ["--path", ENV['BUNDLE_PATH']] if ENV['BUNDLE_PATH']
 
       RubyRunner.run ruby,

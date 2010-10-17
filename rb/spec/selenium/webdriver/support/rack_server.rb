@@ -52,7 +52,7 @@ module Selenium
         private
 
         def handler
-          # can't use Platform here since it's being run as a file on Windows.
+          # can't use Platform here since it's being run as a file on Windows + IE.
           if RUBY_PLATFORM =~ /mswin|msys|mingw32/
             handlers = %w[mongrel webrick]
           else

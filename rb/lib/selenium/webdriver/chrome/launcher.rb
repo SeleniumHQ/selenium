@@ -93,10 +93,7 @@ module Selenium
           args << server_url
 
           @process = ChildProcess.build(*args)
-
-          if $DEBUG
-            @process.io.inherit!
-          end
+          @process.io.inherit! if $DEBUG
 
           @process.start
         end

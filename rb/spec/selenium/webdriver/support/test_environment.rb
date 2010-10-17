@@ -45,13 +45,13 @@ module Selenium
         end
 
         def app_server
-          @app_server ||= begin
+          @app_server ||= (
             path = File.join(root_folder, "common/src/web")
             s = RackServer.new(path)
             s.start
 
             s
-          end
+          )
         end
 
         def remote_server
