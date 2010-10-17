@@ -144,7 +144,7 @@ def touch(filename):
 
 def _copy_zipped_extension(extension_zip):
     extension_dir = utils.unzip_to_temp_dir(extension_zip)
-        return extension_dir
+    return extension_dir
 
 def create_extension_dir():
     extension_dir = _copy_zipped_extension("chrome-extension.zip")
