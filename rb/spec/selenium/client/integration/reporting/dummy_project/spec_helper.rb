@@ -1,8 +1,8 @@
 require 'rubygems'
 gem "rspec", ">=1.2.8"
 require 'spec'
-require File.expand_path(File.dirname(__FILE__) + "/../../../../lib/selenium/client")
-require File.expand_path(File.dirname(__FILE__) + "/../../../../lib/selenium/rspec/spec_helper")
+require File.expand_path("../../../../../../../lib/selenium/client", __FILE__)
+require File.expand_path("../../../../../../../lib/selenium/rspec/spec_helper", __FILE__)
 
 Spec::Runner.configure do |config|
 

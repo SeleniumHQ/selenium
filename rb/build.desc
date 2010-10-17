@@ -168,6 +168,7 @@ ruby_test(name = "rc-client-unit",
 ruby_test(name = "rc-client-integration",
   srcs = [
     "spec/selenium/client/integration/api/*_spec.rb",
+    "spec/selenium/client/integration/reporting/*_spec.rb",
     "spec/selenium/client/integration/smoke/*_spec.rb"
   ],
   include = [

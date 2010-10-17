@@ -1,4 +1,4 @@
-require File.expand_path(__FILE__ + '/../spec_helper')
+require File.expand_path('../spec_helper', __FILE__)
 
 describe "An Amazing Web Application" do
 
