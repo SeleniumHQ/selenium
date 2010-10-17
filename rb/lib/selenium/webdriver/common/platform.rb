@@ -83,6 +83,10 @@ module Selenium
         os == :linux
       end
 
+      def wrap_in_quotes_if_necessary(str)
+        win? ? %{"#{str}"} : str
+      end
+
       def make_writable(file)
         File.chmod 0766, file
       end
