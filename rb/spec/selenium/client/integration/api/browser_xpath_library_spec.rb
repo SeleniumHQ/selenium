@@ -13,5 +13,5 @@ describe "Browser XPath Library" do
   it "can be set to javascript-xpath" do
     page.browser_xpath_library = :'javascript-xpath'
   end
-  
+
 end
