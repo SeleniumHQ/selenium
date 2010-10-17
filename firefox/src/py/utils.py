@@ -108,14 +108,14 @@ def _default_windows_location():
 
 def get_firefox_start_cmd():
     """Return the command to start firefox."""
-
+    start_cmd = ""
     if platform.system() == "Darwin":
         start_cmd = ("/Applications/Firefox.app/Contents/MacOS/firefox-bin")
     elif platform.system() == "Windows":
         start_cmd = _find_exe_in_registry() or _default_windows_location()
     else:
         # Maybe iceweasel (Debian) is another candidate...
-        for ffname in ["firefox2", "firefox", "firefox-3.0"]:
+        for ffname in ["firefox2", "firefox", "firefox-3.0", "firefox-4.0"]:
             logging.debug("Searching for '%s'...", ffname)
             process = Popen(["which", ffname], stdout=PIPE)
             cmd = process.communicate()[0].strip()
