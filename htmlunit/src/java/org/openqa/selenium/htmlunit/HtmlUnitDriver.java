@@ -872,24 +872,6 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
     }
   }
 
-  protected WebDriver findActiveWindow() {
-    WebWindow window = webClient.getCurrentWindow();
-    HtmlPage page = (HtmlPage) window.getEnclosedPage();
-
-    if (page != null && page.getFrames().size() > 0) {
-      FrameWindow frame = page.getFrames().get(0);
-      if (!(frame.getFrameElement() instanceof HtmlInlineFrame)) {
-        return new HtmlUnitDriver(isJavascriptEnabled(), frame);
-      }
-    }
-
-    if (currentWindow != null && currentWindow.equals(window)) {
-      return this;
-    }
-    return new HtmlUnitDriver(isJavascriptEnabled(), window);
-  }
-
-
   protected WebClient getWebClient() {
     return webClient;
   }
