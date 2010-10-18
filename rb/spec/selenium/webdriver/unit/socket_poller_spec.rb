@@ -39,7 +39,7 @@ describe Selenium::WebDriver::SocketPoller do
       Time.should_receive(:now).and_return(start, wait, stop)
       TCPSocket.should_receive(:new).and_return mock("TCPSocket").as_null_object
 
-      poller.should_not be_connected
+      poller.should_not be_closed
     end
   end
 
