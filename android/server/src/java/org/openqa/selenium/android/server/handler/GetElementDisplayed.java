@@ -17,7 +17,7 @@ limitations under the License.
 
 package org.openqa.selenium.android.server.handler;
 
-import org.openqa.selenium.android.AndroidRenderedWebElement;
+import org.openqa.selenium.android.AndroidWebElement;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.rest.ResultType;
@@ -31,7 +31,7 @@ public class GetElementDisplayed extends AndroidWebElementHandler {
 
   public ResultType call() throws Exception {
     response = newResponse();
-    AndroidRenderedWebElement element = (AndroidRenderedWebElement) getElement();
+    AndroidWebElement element = (AndroidWebElement) getElement();
     response.setValue(element.isDisplayed());
 
     return ResultType.SUCCESS;

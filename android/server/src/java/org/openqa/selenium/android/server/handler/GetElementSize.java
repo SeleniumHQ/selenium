@@ -21,7 +21,7 @@ import com.google.common.collect.Maps;
 
 import android.graphics.Point;
 
-import org.openqa.selenium.android.AndroidRenderedWebElement;
+import org.openqa.selenium.android.AndroidWebElement;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.rest.ResultType;
@@ -37,7 +37,7 @@ public class GetElementSize extends AndroidWebElementHandler {
 
   public ResultType call() throws Exception {
     response = newResponse();
-    AndroidRenderedWebElement element = (AndroidRenderedWebElement) getElement();
+    AndroidWebElement element = (AndroidWebElement) getElement();
     Point p = element.getSize();
     Map<Object, Object> converted = Maps.newHashMap();
     converted.put("width", p.x);

@@ -46,7 +46,7 @@ import java.util.regex.Pattern;
  * of JS. Only use JS for reading properties.
  */
 public class AndroidWebElement implements WebElement, FindsById, FindsByLinkText, FindsByXPath,
-    FindsByTagName, SearchContext, AndroidRenderedWebElement, WrapsDriver {
+    FindsByTagName, SearchContext, WrapsDriver {
 
   private static final String LOG_TAG = AndroidWebElement.class.getName();
   private final AndroidDriver driver;
@@ -247,7 +247,7 @@ public class AndroidWebElement implements WebElement, FindsById, FindsByLinkText
     throw new UnsupportedOperationException("Action not supported.");
   }
 
-  public void dragAndDropOn(AndroidRenderedWebElement element) {
+  public void dragAndDropOn(AndroidWebElement element) {
     throw new UnsupportedOperationException("Action not supported.");
   }
 
