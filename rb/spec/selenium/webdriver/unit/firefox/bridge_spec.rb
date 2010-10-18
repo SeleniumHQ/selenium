@@ -1,6 +1,9 @@
+require File.expand_path("../../spec_helper", __FILE__)
+
+
 module Selenium
   module WebDriver
-    module Remote
+    module Firefox
 
       describe Bridge do
         it "raises ArgumentError if passed invalid options" do
@@ -8,7 +11,7 @@ module Selenium
         end
       end
 
-    end # Remote
+    end # Firefox
   end # WebDriver
 end # Selenium
 

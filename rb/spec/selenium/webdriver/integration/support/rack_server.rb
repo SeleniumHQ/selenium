@@ -25,7 +25,7 @@ module Selenium
             start_forked
           end
 
-          unless SocketPoller.new(@host, @port, START_TIMEOUT).success?
+          unless SocketPoller.new(@host, @port, START_TIMEOUT).connected?
             raise "rack server not launched in #{START_TIMEOUT} seconds"
           end
         end

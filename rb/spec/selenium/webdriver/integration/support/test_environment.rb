@@ -4,17 +4,16 @@ module Selenium
       class TestEnvironment
 
         attr_accessor :unguarded
+        attr_reader :driver
 
         def initialize
           puts "creating test env :: #{ruby_description}"
 
           @create_driver_error       = nil
           @create_driver_error_count = 0
-        end
-
-        def driver
+          
           # TODO: get rid of ENV
-          (ENV['WD_SPEC_DRIVER'] || raise("must set WD_SPEC_DRIVER")).to_sym
+          @driver = (ENV['WD_SPEC_DRIVER'] || raise("must set WD_SPEC_DRIVER")).to_sym
         end
 
         def browser

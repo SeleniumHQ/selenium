@@ -24,7 +24,7 @@ module Selenium
 
         def start(timeout = DEFAULT_TIMEOUT)
           @process.start
-          unless SocketPoller.new(@host, @port, timeout).success?
+          unless SocketPoller.new(@host, @port, timeout).connected?
             raise "remote server not launched in #{timeout} seconds"
           end
         end

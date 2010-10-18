@@ -12,29 +12,47 @@ module Selenium
       end
 
       #
-      # @return true if the socket can be connected to
+      # Returns true if the server is listening within the given timeout,
+      # false otherwise.
+      #
+      # @return [Boolean]
       #
 
-      def success?
-        max_time = Time.now + @timeout
+      def connected?
+        with_timeout { listening? }
+      end
 
-        (
-          return true if can_connect?
-          wait
-        ) until Time.now >= max_time
+      #
+      # Returns true if the server has stopped listening within the given timeout,
+      # false otherwise.
+      #
+      # @return [Boolean]
+      #
 
-        false
+      def closed?
+        with_timeout { not listening? }
       end
 
       private
 
-      def can_connect?
+      def listening?
         # There's a bug in 1.9.1 on Windows where this will succeed even if no
         # one is listening. Users who hit that should upgrade their Ruby.
         TCPSocket.new(@host, @port).close
         true
       rescue Errno::ECONNREFUSED, Errno::ENOTCONN, SocketError => e
         $stderr.puts [@host, @port].inspect if $DEBUG
+        false
+      end
+
+      def with_timeout(&blk)
+        max_time = Time.now + @timeout
+
+        (
+          return true if yield
+          wait
+        ) until Time.now > max_time
+
         false
       end
 

@@ -2,9 +2,7 @@ module Selenium
   module WebDriver
     module Remote
       module Http
-
         describe Default do
-
           after { Default.timeout = nil }
 
           it "uses the timeout set on the class" do
