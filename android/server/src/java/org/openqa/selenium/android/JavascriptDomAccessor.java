@@ -614,7 +614,7 @@ public class JavascriptDomAccessor {
         isElementStaleJs() +
         "if (isStale == false) {" +
           isDisplayedJs(driver.getCurrentFrame()) +
-          "return isDiaplayed;" +
+          "return isDisplayed;" +
         "}" +
         "return '" + STALE + "';",
         elementId);
