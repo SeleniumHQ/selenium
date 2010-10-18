@@ -43,8 +43,11 @@ module Selenium
         Net::HTTP.get(@host, "/selenium-server/driver/?cmd=#{shutdown_command}", @port)
 
         if @process
-          @process.poll_for_exit(5)
-          @process.stop
+          begin
+            @process.poll_for_exit(5)
+          rescue ChildProcess::TimeoutError
+            @process.stop
+          end
         end
 
         @log_file.close if @log_file
