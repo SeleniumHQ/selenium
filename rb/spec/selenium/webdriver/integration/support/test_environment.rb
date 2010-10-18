@@ -11,7 +11,7 @@ module Selenium
 
           @create_driver_error       = nil
           @create_driver_error_count = 0
-          
+
           # TODO: get rid of ENV
           @driver = (ENV['WD_SPEC_DRIVER'] || raise("must set WD_SPEC_DRIVER")).to_sym
         end
@@ -87,7 +87,7 @@ module Selenium
         end
 
         def root_folder
-          @root_folder ||= File.expand_path("../../../../../../", __FILE__)
+          @root_folder ||= File.expand_path("../../../../../../../", __FILE__)
         end
 
         def create_driver
