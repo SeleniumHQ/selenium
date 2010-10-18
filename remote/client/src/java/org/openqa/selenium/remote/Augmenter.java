@@ -17,22 +17,22 @@ limitations under the License.
 
 package org.openqa.selenium.remote;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
+import net.sf.cglib.proxy.Enhancer;
+import net.sf.cglib.proxy.MethodInterceptor;
+import net.sf.cglib.proxy.MethodProxy;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.browserlaunchers.CapabilityType;
 import org.openqa.selenium.remote.html5.AddApplicationCache;
 import org.openqa.selenium.remote.html5.AddBrowserConnection;
 import org.openqa.selenium.remote.html5.AddDatabaseStorage;
 import org.openqa.selenium.remote.html5.AddLocationContext;
 import org.openqa.selenium.remote.html5.AddWebStorage;
-import org.openqa.selenium.browserlaunchers.CapabilityType;
+
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Enhance the interfaces implemented by an instance of the
@@ -46,6 +46,7 @@ public class Augmenter {
       new HashMap<String, AugmenterProvider>();
 
   public Augmenter() {
+    addAugmentation(CapabilityType.SUPPORTS_FINDING_BY_CSS, new AddFindsByCss());
     addAugmentation(CapabilityType.TAKES_SCREENSHOT, new AddTakesScreenshot());
     addAugmentation(CapabilityType.SUPPORTS_SQL_DATABASE, new AddDatabaseStorage());
     addAugmentation(CapabilityType.SUPPORTS_LOCATION_CONTEXT, new AddLocationContext());
@@ -112,8 +113,15 @@ public class Augmenter {
       interfaces.addAll(handler.getInterfaces());
       interfaces.addAll(getInterfacesFrom(driver.getClass()));
 
-      return (WebDriver) Proxy.newProxyInstance(getClass().getClassLoader(),
-          interfaces.toArray(new Class<?>[interfaces.size()]), handler);
+      Enhancer enhancer = new Enhancer();
+      enhancer.setInterfaces(interfaces.toArray(new Class<?>[interfaces.size()]));
+      enhancer.setCallback(handler);
+      enhancer.setSuperclass(driver.getClass());
+
+      RemoteWebDriver remote = (RemoteWebDriver) enhancer.create();
+      remote.setCommandExecutor(((RemoteWebDriver) driver).getCommandExecutor());
+      remote.setElementConverter(((RemoteWebDriver) driver).getElementConverter());
+      return remote;
     }
 
     return driver;
@@ -136,7 +144,7 @@ public class Augmenter {
     return toReturn;
   }
 
-  private class CompoundHandler implements InvocationHandler {
+  private class CompoundHandler implements MethodInterceptor {
     private Map<Method, InterfaceImplementation> handlers =
         new HashMap<Method, InterfaceImplementation>();
     private Set<Class<?>> interfaces = new HashSet<Class<?>>();
@@ -152,33 +160,6 @@ public class Augmenter {
           handlers.put(method, handledBy);
       }
     }
-    
-    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-      InterfaceImplementation handler = handlers.get(method);
-
-      try {
-        if (handler == null) {
-          return method.invoke(driver, args);
-        } else {
-          return handler.invoke(new ExecuteMethod(driver), method, args);
-        }
-      } catch (InvocationTargetException e) {
-        throw unwrapException(e);
-      }
-    }
-
-    private Throwable unwrapException(Throwable e) {
-      Throwable cause = e.getCause();
-      if (cause == null) {
-        return e;
-      }
-
-      if (cause.getClass().getName().startsWith("java.lang.reflect")) {
-        return unwrapException(cause);
-      }
-
-      return cause;
-    }
 
     public Set<Class<?>> getInterfaces() {
       return interfaces;
@@ -186,6 +167,16 @@ public class Augmenter {
 
     public boolean isNeedingApplication() {
       return interfaces.size() > 0;
+    }
+
+    public Object intercept(Object self, Method method, Object[] args, MethodProxy methodProxy) throws Throwable {
+      InterfaceImplementation handler = handlers.get(method);
+
+      if (handler == null) {
+        return methodProxy.invokeSuper(self, args);
+      }
+
+      return handler.invoke(new ExecuteMethod(driver), method, args);
     }
   }
 }

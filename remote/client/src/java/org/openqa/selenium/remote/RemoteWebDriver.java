@@ -137,6 +137,10 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     return executor;
   }
 
+  protected void setCommandExecutor(CommandExecutor executor) {
+    this.executor = executor;
+  }
+
   public Capabilities getCapabilities() {
     return capabilities;
   }
@@ -317,6 +321,10 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
 
   protected void setElementConverter(JsonToWebElementConverter converter) {
     this.converter = converter;
+  }
+
+  protected JsonToWebElementConverter getElementConverter() {
+    return converter;
   }
 
   protected Response execute(String driverCommand, Map<String, ?> parameters) {

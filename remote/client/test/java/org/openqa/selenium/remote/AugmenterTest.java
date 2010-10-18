@@ -17,22 +17,20 @@ limitations under the License.
 
 package org.openqa.selenium.remote;
 
-import java.lang.reflect.Method;
-
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
 import org.junit.Test;
-import org.openqa.selenium.By;
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.StubDriver;
-import org.openqa.selenium.TakesScreenshot;
-import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.*;
 import org.openqa.selenium.browserlaunchers.CapabilityType;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import java.io.IOException;
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static org.junit.Assert.*;
+import static org.openqa.selenium.remote.DriverCommand.FIND_ELEMENT;
 
 public class AugmenterTest {
   @Test
@@ -110,7 +108,9 @@ public class AugmenterTest {
   public void shouldDelegateUnmatchedMethodCallsToDriverImplementation() {
     DesiredCapabilities caps = new DesiredCapabilities();
     caps.setCapability(CapabilityType.TAKES_SCREENSHOT, true);
-    WebDriver driver = new RemoteWebDriver(new StubExecutor(caps), caps);
+    StubExecutor stubExecutor = new StubExecutor(caps);
+    stubExecutor.expect(DriverCommand.GET_TITLE, new HashMap<String, Object>(), "Title");
+    WebDriver driver = new RemoteWebDriver(stubExecutor, caps);
 
     WebDriver returned = new Augmenter().augment(driver);
 
@@ -119,48 +119,95 @@ public class AugmenterTest {
 
   @Test(expected = NoSuchElementException.class)
   public void proxyShouldNotAppearInStackTraces() {
-    DesiredCapabilities caps = new DesiredCapabilities();
+    final DesiredCapabilities caps = new DesiredCapabilities();
+    // This will force the class to be enhanced
     caps.setCapability(CapabilityType.TAKES_SCREENSHOT, true);
-    WebDriver driver = new RemoteWebDriver(new StubExecutor(caps), caps);
+
+    DetonatingDriver driver = new DetonatingDriver();
+    driver.setCapabilities(caps);
 
     WebDriver returned = new Augmenter().augment(driver);
 
     returned.findElement(By.id("ignored"));
   }
 
+  @Test
+  public void shouldAllowReflexiveCalls() throws IOException {
+    DesiredCapabilities caps = new DesiredCapabilities();
+    caps.setCapability(CapabilityType.SUPPORTS_FINDING_BY_CSS, true);
+    StubExecutor executor = new StubExecutor(caps);
+    executor.expect(FIND_ELEMENT, ImmutableMap.of("using", "css selector", "value", "cheese"), new StubElement());
+
+    WebDriver driver = new RemoteWebDriver(executor, caps);
+    WebDriver returned = new Augmenter().augment(driver);
+
+    returned.findElement(By.cssSelector("cheese"));
+    // No exception is a Good Thing
+  }
+
   private static class StubExecutor implements CommandExecutor {
     private final Capabilities capabilities;
+    private final List<Data> expected = Lists.newArrayList();
 
     private StubExecutor(Capabilities capabilities) {
       this.capabilities = capabilities;
     }
 
     public Response execute(Command command) {
-      if (DriverCommand.NEW_SESSION == command.getName()) {
+      if (DriverCommand.NEW_SESSION.equals(command.getName())) {
         Response response = new Response(new SessionId("foo"));
-        response.setStatus(ErrorCodes.SUCCESS);
         response.setValue(capabilities.asMap());
         return response;
       }
 
-      if (DriverCommand.FIND_ELEMENT == command.getName()) {
-        Response response = new Response(new SessionId("foo"));
-        response.setStatus(ErrorCodes.NO_SUCH_ELEMENT);
-        return response;
+      for (Data possibleMatch : expected) {
+        if (possibleMatch.commandName.equals(command.getName()) &&
+            possibleMatch.args.equals(command.getParameters())) {
+          Response response = new Response(new SessionId("foo"));
+          response.setValue(possibleMatch.returnValue);
+          return response;
+        }
       }
 
-      if (DriverCommand.GET_TITLE == command.getName()) {
-        Response response = new Response(new SessionId("foo"));
-        response.setStatus(ErrorCodes.SUCCESS);
-        response.setValue("Title");
-        return response;
-      }
+      fail("Unexpected method invocation: " + command);
+      return null; // never reached
+    }
 
-      return null;
+    public void expect(String commandName, Map<String, ?> args, Object returnValue) {
+      expected.add(new Data(commandName, args, returnValue));
+    }
+
+    private static class Data {
+      public String commandName;
+      public Map<String, ?> args;
+      public Object returnValue;
+
+      public Data(String commandName, Map<String, ?> args, Object returnValue) {
+        this.commandName = commandName;
+        this.args = args;
+        this.returnValue = returnValue;
+      }
     }
   }
 
   public interface MyInterface {
     String getHelloWorld();
+  }
+
+  public static class DetonatingDriver extends RemoteWebDriver {
+    private Capabilities caps;
+
+    public void setCapabilities(Capabilities caps) {
+      this.caps = caps;
+    }
+
+    @Override
+    public Capabilities getCapabilities() {
+      return caps;
+    }
+
+    public WebElement findElementById(String id) {
+      throw new NoSuchElementException("Boom");
+    }
   }
 }
