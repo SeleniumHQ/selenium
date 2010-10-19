@@ -699,23 +699,27 @@ public class JavascriptDomAccessor {
    */
   private String isElementStaleJs() {
     return
-        "var isStale;" +
+        "var isStale = false;" +
         "var doc = " + driver.getCurrentFrame() + ".document.documentElement;" +
         "if (arguments[0] in doc.androiddriver_elements) {" +
         "  var element = doc.androiddriver_elements[arguments[0]];" +
-        "  var parent = element;" +
-        "  while (parent && parent != doc) {" +
-        "    parent = parent.parentNode;" +
-        "  }" +
-        "  if (parent !== doc) {" +
-        "    delete doc.androiddriver_elements[arguments[0]];" +
-        "    isStale = true;" +
+        "  if (!element) {" +
+        "    isStale = true;" + 
         "  } else {" +
-        "    isStale = false;" +
+        "    var parent = element;" +
+        "    while (parent && parent != doc) {" +
+        "      parent = parent.parentNode;" +
+        "    }" +
+        "    if (parent !== doc) {" +
+        "      delete doc.androiddriver_elements[arguments[0]];" +
+        "      isStale = true;" +
+        "    } else {" +
+        "      isStale = false;" +
+        "    }" +
         "  }" +
-        "} else {" +
-        "  isStale = true;" +
-        "}";
+        "} else { " +
+        "    isStale = true;" +
+        "};";
   }
 
   private String getTopLeftCoordinatesJS() {
