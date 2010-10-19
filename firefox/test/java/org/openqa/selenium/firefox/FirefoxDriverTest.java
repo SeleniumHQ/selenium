@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
+import java.util.concurrent.Callable;
 
 import com.google.common.base.Throwables;
 import org.junit.Assert;
@@ -299,17 +300,27 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
     try {
       WebElement alert = firefox.findElement(By.id("alert"));
       alert.click();
-      TestWaitingUtility.startSleep();
-      while (TestWaitingUtility.shouldSleep()) {
-        firefox.getTitle();
-        TestWaitingUtility.sleep();
-      }
-      fail("Should have thrown an UnhandledAlertException");
-    } catch (UnhandledAlertException e) {
-      // this is expected
+
+      Boolean exceptionThrown = waitFor(unhandledAlertExceptionToBeThrown(firefox));
+
+      assertTrue("Should have thrown an UnhandledAlertException", exceptionThrown);
     } finally {
       firefox.quit();
     }
+  }
+
+  private Callable<Boolean> unhandledAlertExceptionToBeThrown(final WebDriver driver) {
+    return new Callable<Boolean>() {
+
+      public Boolean call() throws Exception {
+        try {
+          driver.getTitle();
+          return false;
+        } catch (UnhandledAlertException e) {
+          return true;
+        }
+      }
+    };
   }
 
   public void testShouldAllowTwoInstancesOfFirefoxAtTheSameTimeInDifferentThreads()

@@ -29,6 +29,7 @@ import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
+import static org.openqa.selenium.TestWaitingUtility.elementToExist;
 
 @Ignore(IPHONE)
 public class FrameSwitchingTest extends AbstractDriverTestCase {
@@ -106,7 +107,7 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
   }
 
   public String getTextOfGreetingElement() {
-    return TestWaitingUtility.waitForElementToExist(driver, "greeting").getText();
+    return waitFor(elementToExist(driver, "greeting")).getText();
   }
 
   public void testShouldBeAbleToClickInAFrame() {

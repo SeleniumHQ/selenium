@@ -21,6 +21,8 @@ import junit.framework.TestCase;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.environment.TestEnvironment;
@@ -94,10 +96,12 @@ public class AbstractDriverTestCase extends TestCase implements NeedsDriver {
     return driver.getClass().getName();
   }
   
-  protected Boolean supportsSelectorApi() {
-    //Assumes a page is loaded on which javascript can be executed
-    return driver instanceof FindsByCssSelector &&
-        (Boolean) ((JavascriptExecutor) driver).executeScript(
-        "return document['querySelector'] !== undefined;");
+  protected <X> X waitFor(Callable<X> condition) {
+    return waitFor(condition, 5, TimeUnit.SECONDS);
+  }
+
+  protected <X> X waitFor(Callable<X> condition, int duration, TimeUnit in) {
+    TestWaitingUtility waiter = new TestWaitingUtility();
+    return waiter.waitFor(condition, duration, in);
   }
 }

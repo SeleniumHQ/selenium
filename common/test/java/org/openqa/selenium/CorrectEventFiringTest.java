@@ -30,6 +30,10 @@ import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
+import static org.openqa.selenium.TestWaitingUtility.elementTextToContain;
+import static org.openqa.selenium.TestWaitingUtility.elementTextToEqual;
+import static org.openqa.selenium.TestWaitingUtility.elementToExist;
+import static org.openqa.selenium.TestWaitingUtility.elementValueToEqual;
 
 // TODO (berrada): Figure out why touch events do not fire those events to the underlying webcore.
 @Ignore(ANDROID)
@@ -129,7 +133,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
     driver.findElement(By.id("mouseclick")).click();
 
     WebElement result = driver.findElement(By.id("result"));
-    TestWaitingUtility.waitUntilElementTextEquals(result, "mouse down");
+    waitFor(elementTextToEqual(result, "mouse click"));
     assertThat(result.getText(), equalTo("mouse click"));
   }
 
@@ -140,7 +144,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
     driver.findElement(By.id("mouseup")).click();
 
     WebElement result = driver.findElement(By.id("result"));
-    TestWaitingUtility.waitUntilElementTextEquals(result, "mouse up");
+    waitFor(elementTextToEqual(result, "mouse up"));
     assertThat(result.getText(), equalTo("mouse up"));
   }
 
@@ -151,7 +155,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
     driver.findElement(By.id("child")).click();
 
     WebElement result = driver.findElement(By.id("result"));
-    TestWaitingUtility.waitUntilElementTextEquals(result, "mouse down");
+    waitFor(elementTextToEqual(result, "mouse down"));
     assertThat(result.getText(), equalTo("mouse down"));
   }
 
@@ -193,7 +197,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
     WebElement clicker = driver.findElement(By.id("clickField"));
     clicker.click();
 
-    TestWaitingUtility.waitUntilElementValueEquals(clicker, "Clicked");
+    waitFor(elementValueToEqual(clicker, "Clicked"));
     assertThat(clicker.getValue(), equalTo("Clicked"));
   }
 
@@ -327,7 +331,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
   }
 
   private String getTextFromElementOnceAvailable(String elementId) {
-    return TestWaitingUtility.waitForElementToExist(driver,(elementId)).getText();
+    return waitFor(elementToExist(driver, elementId)).getText();
   }
 
   @Ignore({CHROME, HTMLUNIT, SELENESE})
@@ -351,7 +355,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
   private void assertEventFired(String eventName) {
     WebElement result = driver.findElement(By.id("result"));
 
-    String text = TestWaitingUtility.waitUntilElementTextContains(result, eventName);
+    String text = waitFor(elementTextToContain(result, eventName));
     boolean conditionMet = text.contains(eventName);
 
     assertTrue("No " + eventName + " fired: " + text, conditionMet);

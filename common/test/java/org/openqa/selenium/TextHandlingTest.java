@@ -149,7 +149,7 @@ public class TextHandlingTest extends AbstractDriverTestCase {
     WebElement textarea = driver.findElement(By.id("withText"));
     textarea.clear();
 
-    TestWaitingUtility.waitUntilElementValueEquals(textarea, "");
+    waitFor(TestWaitingUtility.elementValueToEqual(textarea, ""));
 
     String expectedText = "I like cheese" + newLine + newLine + "It's really nice";
 

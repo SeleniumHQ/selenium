@@ -29,6 +29,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
+import static org.openqa.selenium.TestWaitingUtility.pageTitleToBe;
 
 import java.io.File;
 import java.io.IOException;
@@ -39,7 +40,7 @@ public class FormHandlingTest extends AbstractDriverTestCase {
   public void testShouldClickOnSubmitInputElements() {
     driver.get(pages.formPage);
     driver.findElement(By.id("submitButton")).click();
-    TestWaitingUtility.waitForPageTitle(driver, "We Arrive Here");
+    waitFor(pageTitleToBe(driver, "We Arrive Here"));
     assertThat(driver.getTitle(), equalTo("We Arrive Here"));
   }
 
@@ -56,7 +57,7 @@ public class FormHandlingTest extends AbstractDriverTestCase {
   public void testShouldBeAbleToClickImageButtons() {
     driver.get(pages.formPage);
     driver.findElement(By.id("imageButton")).click();
-    TestWaitingUtility.waitForPageTitle(driver, "We Arrive Here");
+    waitFor(pageTitleToBe(driver, "We Arrive Here"));
     assertThat(driver.getTitle(), equalTo("We Arrive Here"));
   }
 

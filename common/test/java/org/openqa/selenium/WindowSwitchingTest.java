@@ -19,6 +19,7 @@ package org.openqa.selenium;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.Callable;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -30,7 +31,7 @@ import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.REMOTE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
-import static org.openqa.selenium.TestWaitingUtility.waitForElementToExist;
+import static org.openqa.selenium.TestWaitingUtility.elementToExist;
 
 @Ignore(value = {IPHONE, ANDROID}, reason = "The iPhone only supports one window")
 public class WindowSwitchingTest extends AbstractDriverTestCase {
@@ -103,7 +104,7 @@ public class WindowSwitchingTest extends AbstractDriverTestCase {
     driver.switchTo().window("result");
 
     try {
-      waitForElementToExist(driver, "close");
+      waitFor(elementToExist(driver, "close"));
       driver.findElement(By.id("close")).click();
       // If we make it this far, we're all good.
     } finally {
@@ -125,13 +126,7 @@ public class WindowSwitchingTest extends AbstractDriverTestCase {
 
     try {
       driver.findElement(By.id("close")).click();
-      Set<String> allHandles = driver.getWindowHandles();
-
-      TestWaitingUtility.startSleep();
-      while (TestWaitingUtility.shouldSleep() && (allHandles.size() != 1)) {
-        TestWaitingUtility.sleep();
-        allHandles = driver.getWindowHandles();
-      }
+      Set<String> allHandles = waitFor(windowHandleCountToBe(1));
 
       assertEquals(1, allHandles.size());
     } finally {
@@ -199,5 +194,18 @@ public class WindowSwitchingTest extends AbstractDriverTestCase {
   public void testClosingOnlyWindowShouldNotCauseTheBrowserToHang() {
     driver.get(pages.xhtmlTestPage);
     driver.close();
+  }
+
+  private Callable<Set<String>> windowHandleCountToBe(final int count) {
+    return new Callable<Set<String>>() {
+      public Set<String> call() throws Exception {
+        Set<String> handles = driver.getWindowHandles();
+
+        if (handles.size() == count) {
+          return handles;
+        }
+        return null;
+      }
+    };
   }
 }

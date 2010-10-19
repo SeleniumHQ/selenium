@@ -24,7 +24,7 @@ import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.REMOTE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
-import static org.openqa.selenium.TestWaitingUtility.waitUntilElementTextEquals;
+import static org.openqa.selenium.TestWaitingUtility.elementTextToEqual;
 
 public class SvgElementTest extends AbstractDriverTestCase {
 
@@ -39,13 +39,13 @@ public class SvgElementTest extends AbstractDriverTestCase {
     groupElements.get(1).click();
     WebElement resultElement = driver.findElement(By.id("result"));
 
-    waitUntilElementTextEquals(resultElement, "slice_red");
+    waitFor(elementTextToEqual(resultElement, "slice_red"));
     assertEquals("slice_red", resultElement.getText());
 
     groupElements.get(2).click();
     resultElement = driver.findElement(By.id("result"));
 
-    waitUntilElementTextEquals(resultElement, "slice_green");
+    waitFor(elementTextToEqual(resultElement, "slice_green"));
     assertEquals("slice_green", resultElement.getText());
   }
 
@@ -70,7 +70,7 @@ public class SvgElementTest extends AbstractDriverTestCase {
 
     appleElement.click();
     WebElement resultElement = driver.findElement(By.id("result"));
-    waitUntilElementTextEquals(resultElement, "text_apple");
+    waitFor(elementTextToEqual(resultElement, "text_apple"));
     assertEquals("text_apple", resultElement.getText());
   }
 }
