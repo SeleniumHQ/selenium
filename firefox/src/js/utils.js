@@ -144,7 +144,9 @@ Utils.getServer = function() {
 };
 
 
-Utils.getActiveElement = function(doc, window) {
+Utils.getActiveElement = function(doc) {
+  var window = goog.dom.getWindow(doc);
+
   var element;
   if (doc["activeElement"]) {
     element = doc.activeElement;

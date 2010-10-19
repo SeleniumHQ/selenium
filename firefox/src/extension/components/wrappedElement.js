@@ -167,7 +167,7 @@ FirefoxDriver.prototype.sendKeysToElement = function(respond, parameters) {
         "Element is disabled and so may not be used for typing");
   }
 
-  var currentlyActive = Utils.getActiveElement(respond.session.getDocument(), respond.session.getWindow());
+  var currentlyActive = Utils.getActiveElement(respond.session.getDocument());
   if (currentlyActive != element) {
     currentlyActive.blur();
     element.focus();
@@ -201,7 +201,7 @@ FirefoxDriver.prototype.clearElement = function(respond, parameters) {
 
   var isTextField = element["value"] !== undefined;
 
-  var currentlyActive = Utils.getActiveElement(respond.session.getDocument(), respond.session.getWindow());
+  var currentlyActive = Utils.getActiveElement(respond.session.getDocument());
   if (currentlyActive != element) {
     currentlyActive.blur();
     element.focus();
