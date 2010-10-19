@@ -35,8 +35,9 @@ import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.REMOTE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
-import static org.openqa.selenium.TestWaitingUtility.elementTextToEqual;
-import static org.openqa.selenium.TestWaitingUtility.elementValueToEqual;
+import static org.openqa.selenium.TestWaiter.waitFor;
+import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
+import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
 
 /**
  * Test case for browsers that support using Javascript
@@ -176,7 +177,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
   }
 
   private void waitForTitleChange(String newTitle) {
-    waitFor(TestWaitingUtility.pageTitleToBe(driver, newTitle));
+    waitFor(WaitingConditions.pageTitleToBe(driver, newTitle));
   }
 
   @JavascriptEnabled

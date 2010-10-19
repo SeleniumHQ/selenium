@@ -27,7 +27,8 @@ import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.REMOTE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
-import static org.openqa.selenium.TestWaitingUtility.pageTitleToBe;
+import static org.openqa.selenium.TestWaiter.waitFor;
+import static org.openqa.selenium.WaitingConditions.pageTitleToBe;
 
 public class ElementFindingTest extends AbstractDriverTestCase {
 
@@ -55,7 +56,7 @@ public class ElementFindingTest extends AbstractDriverTestCase {
     driver.findElement(By.linkText("click me")).click();
 
     waitFor(pageTitleToBe(driver, "We Arrive Here"));
-    
+
     assertThat(driver.getTitle(), equalTo("We Arrive Here"));
   }
 
@@ -65,7 +66,7 @@ public class ElementFindingTest extends AbstractDriverTestCase {
     driver.findElement(By.linkText("click me")).click();
 
     waitFor(pageTitleToBe(driver, "We Arrive Here"));
-    
+
     assertThat(driver.getTitle(), equalTo("We Arrive Here"));
   }
 

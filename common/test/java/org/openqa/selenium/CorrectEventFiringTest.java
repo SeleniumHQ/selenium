@@ -30,10 +30,11 @@ import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
-import static org.openqa.selenium.TestWaitingUtility.elementTextToContain;
-import static org.openqa.selenium.TestWaitingUtility.elementTextToEqual;
-import static org.openqa.selenium.TestWaitingUtility.elementToExist;
-import static org.openqa.selenium.TestWaitingUtility.elementValueToEqual;
+import static org.openqa.selenium.TestWaiter.waitFor;
+import static org.openqa.selenium.WaitingConditions.elementTextToContain;
+import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
+import static org.openqa.selenium.WaitingConditions.elementToExist;
+import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
 
 // TODO (berrada): Figure out why touch events do not fire those events to the underlying webcore.
 @Ignore(ANDROID)

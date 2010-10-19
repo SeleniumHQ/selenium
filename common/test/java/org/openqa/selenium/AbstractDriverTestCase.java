@@ -27,12 +27,12 @@ import java.util.concurrent.TimeUnit;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.environment.TestEnvironment;
 import org.openqa.selenium.environment.webserver.AppServer;
-import org.openqa.selenium.internal.FindsByCssSelector;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.core.IsNot.not;
+import static org.openqa.selenium.TestWaiter.waitFor;
 
 public class AbstractDriverTestCase extends TestCase implements NeedsDriver {
 
@@ -94,14 +94,5 @@ public class AbstractDriverTestCase extends TestCase implements NeedsDriver {
     }
 
     return driver.getClass().getName();
-  }
-  
-  protected <X> X waitFor(Callable<X> condition) {
-    return waitFor(condition, 5, TimeUnit.SECONDS);
-  }
-
-  protected <X> X waitFor(Callable<X> condition, int duration, TimeUnit in) {
-    TestWaitingUtility waiter = new TestWaitingUtility();
-    return waiter.waitFor(condition, duration, in);
   }
 }

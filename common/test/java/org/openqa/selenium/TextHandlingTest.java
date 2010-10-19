@@ -37,6 +37,7 @@ import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
+import static org.openqa.selenium.TestWaiter.waitFor;
 
 public class TextHandlingTest extends AbstractDriverTestCase {
 
@@ -149,7 +150,7 @@ public class TextHandlingTest extends AbstractDriverTestCase {
     WebElement textarea = driver.findElement(By.id("withText"));
     textarea.clear();
 
-    waitFor(TestWaitingUtility.elementValueToEqual(textarea, ""));
+    waitFor(WaitingConditions.elementValueToEqual(textarea, ""));
 
     String expectedText = "I like cheese" + newLine + newLine + "It's really nice";
 

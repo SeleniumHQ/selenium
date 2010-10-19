@@ -36,7 +36,6 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.ParallelTestRunner;
 import org.openqa.selenium.ParallelTestRunner.Worker;
 import org.openqa.selenium.Platform;
-import org.openqa.selenium.TestWaitingUtility;
 import org.openqa.selenium.UnhandledAlertException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -49,6 +48,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.openqa.selenium.Ignore.Driver.FIREFOX;
+import static org.openqa.selenium.TestWaiter.waitFor;
 
 
 public class FirefoxDriverTest extends AbstractDriverTestCase {
@@ -301,7 +301,8 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
       WebElement alert = firefox.findElement(By.id("alert"));
       alert.click();
 
-      Boolean exceptionThrown = waitFor(unhandledAlertExceptionToBeThrown(firefox));
+      Boolean exceptionThrown = waitFor(
+          unhandledAlertExceptionToBeThrown(firefox));
 
       assertTrue("Should have thrown an UnhandledAlertException", exceptionThrown);
     } finally {
