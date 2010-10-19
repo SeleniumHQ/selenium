@@ -286,6 +286,29 @@ public class FormHandlingTest extends AbstractDriverTestCase {
     assertThat(value.getCanonicalPath(), equalTo(file.getCanonicalPath()));
   }
 
+  @Ignore(value = {CHROME, SELENESE, IPHONE, ANDROID},
+      reason = "Does not yet support file uploads")
+  public void testShouldBeAbleToUploadTheSameFileTwice() throws IOException {
+    File file = File.createTempFile("test", "txt");
+    file.deleteOnExit();
+
+    driver.get(pages.formPage);
+    WebElement uploadElement = driver.findElement(By.id("upload"));
+    assertThat(uploadElement.getValue(), equalTo(""));
+
+    uploadElement.sendKeys(file.getAbsolutePath());
+    uploadElement.submit();
+
+    driver.get(pages.formPage);
+    uploadElement = driver.findElement(By.id("upload"));
+    assertThat(uploadElement.getValue(), equalTo(""));
+
+    uploadElement.sendKeys(file.getAbsolutePath());
+    uploadElement.submit();
+
+    // If we get this far, then we're all good.
+  }
+
   public void testShouldThrowAnExceptionWhenSelectingAnUnselectableElement() {
     driver.get(pages.formPage);
 

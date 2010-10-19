@@ -41,12 +41,10 @@ public class SingleTestSuite extends TestCase {
   public static Test suite() throws Exception {
     String driver = SELENIUM;
 
-    //System.setProperty("webdriver.development", "true");
     System.setProperty("jna.library.path", "..\\build;build");
     System.setProperty("webdriver.selenium.server.port", String.valueOf(findFreePort()));
 //    System.setProperty("webdriver.debug", "true");
 //    System.setProperty("webdriver.firefox.reap_profile", "false");
-//    System.setProperty("webdriver.firefox.logfile", "/tmp/ff_log");
 
     TestSuiteBuilder builder = new TestSuiteBuilder()
         .addSourceDir("common")
@@ -55,8 +53,8 @@ public class SingleTestSuite extends TestCase {
         .usingDriver(driver)
         .keepDriverInstance()
         .includeJavascriptTests()
-        //.onlyRun("JavascriptEnabledDriverTest")
-        .method("testShouldReturnTitleOfPageIfSet")
+        .onlyRun("I18nTest")
+        .method("testEnteringHebrewTextFromLeftToRight")
         .exclude(ALL)
         .exclude(Ignore.Driver.FIREFOX)
         .outputTestNames()

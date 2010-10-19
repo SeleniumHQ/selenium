@@ -46,6 +46,9 @@ public class SeleniumServerStarter extends TestSetup {
     String port = System.getProperty("webdriver.selenium.server.port", "5555");
 
     command = new CommandLine("java", "-jar", seleniumJar.getAbsolutePath(), "-port", port);
+    if (Boolean.getBoolean("webdriver.debug")) {
+      command.copyOutputTo(System.err);
+    }
     command.executeAsync();
 
     PortProber.pollPort(Integer.parseInt(port));

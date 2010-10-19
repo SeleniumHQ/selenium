@@ -22,6 +22,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -37,6 +39,7 @@ public class CommandLine {
   private static final Method JDK6_CAN_EXECUTE = findJdk6CanExecuteMethod();
   private final String[] commandAndArgs;
   private volatile StreamDrainer drainer;
+  private volatile OutputStream drainTo;
   private volatile Thread drainerThread;
   private volatile int exitCode;
   private volatile boolean executed;
@@ -197,7 +200,7 @@ public class CommandLine {
 
   private void setupDrainer() {
     try {
-      drainer = new StreamDrainer(proc);
+      drainer = new StreamDrainer(proc, drainTo);
       drainerThread = new Thread(drainer, "Command line drainer: " + commandAndArgs[0]);
       drainerThread.start();
 
@@ -286,12 +289,18 @@ public class CommandLine {
     return buf.toString();
   }
 
+  public void copyOutputTo(OutputStream out) {
+    drainTo = out;
+  }
+
   private static class StreamDrainer implements Runnable {
     private final Process toWatch;
     private ByteArrayOutputStream inputOut;
+    private OutputStream drainTo;
 
-    StreamDrainer(Process toWatch) {
+    StreamDrainer(Process toWatch, OutputStream drainTo) {
       this.toWatch = toWatch;
+      this.drainTo = drainTo;
     }
 
     public void run() {
@@ -304,6 +313,11 @@ public class CommandLine {
         while ((read = inputStream.read(buffer)) > 0) {
           inputOut.write(buffer, 0, read);
           inputOut.flush();
+
+          if (drainTo != null) {
+            drainTo.write(buffer, 0, read);
+            drainTo.flush();
+          }
         }
       } catch (IOException e) {
         // it's possible that the stream has been closed. That's okay.
