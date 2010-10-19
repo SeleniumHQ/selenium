@@ -683,6 +683,19 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
   }
   
   public boolean pageHasStartedLoading() {
+    // Wait 500 ms to detect is a page has started loading
+    long timeout = System.currentTimeMillis() + 500;
+    while (!pageHasStartedLoading) {
+      if (System.currentTimeMillis() > timeout) {
+        break;
+      }
+      try {
+        Thread.sleep(50);
+      } catch (InterruptedException e) {
+        // Restore the interrupted status
+        Thread.currentThread().interrupt();
+      }
+    }
     return pageHasStartedLoading;
   }
 }
