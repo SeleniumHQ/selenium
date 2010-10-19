@@ -33,7 +33,7 @@ if not hasattr(json, 'dumps'):
 
 from time import sleep, time
 from urllib import urlopen
-from os.path import expanduser, join, dirname, abspath, isdir, isfile
+from os.path import expanduser, join, dirname, abspath, isdir, isfile, exists
 from sys import platform
 from tempfile import mkdtemp
 from shutil import copytree, rmtree, copy
@@ -128,11 +128,29 @@ def _default_windows_location():
 def _windows_chrome():
     return _find_chrome_in_registry() or _default_windows_location()
 
+def _linux_chrome():
+    locations = ["/usr/bin/google-chrome","/usr/bin/chromium"]
+    return _start_cmd(locations)
+
+def _mac_chrome():
+    locations = ["/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"]
+    import getpass
+    locations.append(join("/Users/", getpass.getuser(), "Applications", "Google Chrome.app", "Contents", "MacOS", "Google Chrome"))
+    return _start_cmd(locations)
+
+def _start_cmd(locations):
+    cmd = ""
+    for cmd_path in locations:
+      if exists(cmd_path):
+        cmd = cmd_path
+    if cmd=="":
+      raise RuntimeError("Unable to find browser")
+    return cmd
 
 _BINARY = {
     "win32" : _windows_chrome,
-    "darwin" : lambda: "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
-    "linux2" : lambda: "/usr/bin/google-chrome"
+    "darwin" : _mac_chrome,
+    "linux2" : _linux_chrome 
 }
 
 def chrome_exe():
