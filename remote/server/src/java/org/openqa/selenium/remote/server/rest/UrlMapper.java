@@ -38,6 +38,11 @@ public class UrlMapper {
   }
 
   public ResultConfig bind(String url, Class<? extends Handler> handlerClazz) {
+    ResultConfig existingConfig = getConfig(url);
+    if (existingConfig != null) {
+      configs.remove(existingConfig);
+    }
+
     ResultConfig config = new ResultConfig(url, handlerClazz, sessions, logger);
     configs.add(config);
     for (Map.Entry<ResultType, Renderer> entry : globals.entrySet()) {
@@ -46,7 +51,7 @@ public class UrlMapper {
     return config;
   }
 
-  public ResultConfig getConfig(String url) throws Exception {
+  public ResultConfig getConfig(String url) {
     for (ResultConfig config : configs) {
       if (config.isFor(url)) {
         return config;
