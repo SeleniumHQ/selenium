@@ -40,6 +40,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.Window;
+import android.webkit.CookieManager;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -88,8 +89,12 @@ public class SingleSessionActivity extends Activity implements IntentReceiverLis
     super.onCreate(savedInstanceState);
     initAppLayout();
     initWebViewSettings();
+
     // This needs to be initialized after the webview
     sessionCookieManager = new SessionCookieManager(this);
+    CookieManager cookieManager = CookieManager.getInstance();
+    cookieManager.removeAllCookie();
+    
     initIntentReceivers();
     Log.d(LOG_TAG, "WebView Initialized.");
   }
@@ -97,7 +102,14 @@ public class SingleSessionActivity extends Activity implements IntentReceiverLis
   private void initWebViewSettings() {
     // Gets a handle on the webview
     webView = (WebView) findViewById(R.id.webview);
-    
+
+    // Clearing the view
+    webView.clearCache(true);
+    webView.clearFormData();
+    webView.clearHistory();
+    webView.clearSslPreferences();
+    webView.clearView();
+
     // Sets custom webview behavior
     webView.setWebViewClient(new SimpleWebViewClient());
     webView.setWebChromeClient(chromeClient);
