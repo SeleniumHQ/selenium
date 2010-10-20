@@ -32,7 +32,7 @@ goog.require('goog.dom');
 goog.require('goog.dom.NodeType');
 goog.require('goog.dom.TagName');
 goog.require('goog.events.EventType');
-goog.require('goog.style');
+goog.require('goog.userAgent');
 
 
 
@@ -244,22 +244,34 @@ bot.action.toggle = function(element) {
  * Focuses on the given element if it is not already the active element. If
  * a focus change is required, the active element will be blurred before
  * focusing on the given element.
- * @param {Element} activeElement The currently active element, or {@code null}
- *     if not known. If provided, and different from {@code element}, the
- *     active element will be blurred before focusing on the element.
  * @param {!Element} element The element to focus on.
- * @private
  */
-bot.action.focusOnElement_ = function(activeElement, element) {
+bot.action.focusOnElement = function(element) {
+  var doc = goog.dom.getOwnerDocument(element);
+  var activeElement = doc.activeElement;
   if (element != activeElement) {
-
+    // NOTE(user): This check is for browsers that do not support the
+    // document.activeElement property, like Safari 3. Interestingly,
+    // Safari 3 implicitly blurs the activeElement when we call focus()
+    // below, so the blur event still fires on the activeElement.
     if (activeElement) {
-      // Some elements may not have blur, focus functions - for example,
-      // elements under an SVG element. Call those only if they exist.
       if (goog.isFunction(activeElement.blur)) {
         activeElement.blur();
       }
+
+      // Apparently, in certain situations, IE6 and IE7 will not fire an onblur
+      // event after blur() is called, unless window.focus() is called
+      // immediately afterward.
+      // Note that IE8 will hit this branch unless the page is forced into
+      // IE8-strict mode. This shouldn't hurt anything, we just use the
+      // useragent sniff so we can compile this out for proper browsers.
+      if (goog.userAgent.IE && !goog.userAgent.isVersion(8)) {
+        goog.dom.getWindow(doc).focus();
+        }
     }
+    // In IE, the resulting onfocus event will not be dispatched until
+    // the next event loop (this is undocumented). Same applies to blur().
+    // TODO(user): Does this mean we've entered callback territory?
     if (goog.isFunction(element.focus)) {
       element.focus();
     }
@@ -285,7 +297,7 @@ bot.action.clear = function(element) {
     if (element.value != '') {
       bot.action.checkShown_(element);
       bot.action.checkEnabled_(element);
-      bot.action.focusOnElement_(bot.dom.getActiveElement(element), element);
+      bot.action.focusOnElement(element);
 
       element.value = '';
       bot.events.fire(element, goog.events.EventType.CHANGE);
@@ -331,7 +343,6 @@ bot.action.submit = function(element) {
   }
 };
 
-
 /**
  * Simulates a click sequence on the given {@code element}. A click sequence
  * is defined as the following events:
@@ -344,12 +355,12 @@ bot.action.submit = function(element) {
  * <li>mouseup</li>
  * <li>click</li>
  * </ol>
- * 
+ *
  * <p/>[1] The "blur" and "focus" events are only generated if the
  * {@code elemnet} does not already have focus. The blur event will be
  * fired on the currently focused element, and the focus event on the
  * click target.
- * 
+ *
  * @param {!Element} element The element to generate the click event on.
  *   The element must be shown on the page.
  */
@@ -374,7 +385,7 @@ bot.action.click = function(element) {
   bot.events.fire(element, goog.events.EventType.MOUSEOVER);
   bot.events.fire(element, goog.events.EventType.MOUSEMOVE, coords);
   bot.events.fire(element, goog.events.EventType.MOUSEDOWN, coords);
-  bot.action.focusOnElement_(activeElement, element);
+  bot.action.focusOnElement(element);
   bot.events.fire(element, goog.events.EventType.MOUSEUP, coords);
   bot.events.fire(element, goog.events.EventType.CLICK, coords);
 };

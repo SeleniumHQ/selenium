@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>focus_test.html</title>
+  <script type="text/javascript" src="../webdriver-bootstrap.js">
+  </script>
+  <script src="deps.js"></script>
+  <script type="text/javascript">
+    goog.require('bot.action');
+    goog.require('goog.dom');
+    goog.require('goog.events');
+    goog.require('goog.events.EventType');
+    goog.require('goog.testing.AsyncTestCase');
+    goog.require('goog.testing.jsunit');
+    goog.require('goog.userAgent');
+    goog.require('goog.userAgent.product');
+  </script>
+  <script>
+    var asyncTestCase = null;
+
+    var events = goog.events;
+    var eventType = goog.events.EventType;
+
+    var text1, text2, actualEvents, expectedEvents;
+
+    function setUp() {
+      actualEvents = [];
+      expectedEvents = [];
+
+      text1 = goog.dom.$('text1');
+      text2 = goog.dom.$('text2');
+
+      // Make sure neither text1 nor text2 have focus. Since this could
+      // cause events to dispatch, we need to wait for them to do so
+      // before continuing. In IE, this means continuing in a timeout.
+      bot.action.focusOnElement(goog.dom.$('dummyFocusHolder'));
+      continueAfterTimeout(goog.nullFunction);
+    }
+
+
+    function tearDown() {
+      events.removeAll(text1);
+      events.removeAll(text2);
+    }
+
+    function buildRecord(id, type) {
+      return id + ': ' + type;
+    }
+
+    function recordBlurAndFocus(el) {
+      events.listen(el, [eventType.FOCUS, eventType.BLUR], function(e) {
+        actualEvents.push(buildRecord(e.target.id, e.type));
+      });
+    }
+
+    function expect(eventType, onElement) {
+      expectedEvents.push(buildRecord(onElement.id, eventType));
+    }
+
+    function assertHasExpectedEventOrder() {
+      assertArrayEquals(expectedEvents, actualEvents);
+    }
+
+    function assertElementIsActiveElement(expected) {
+      var actual = document.activeElement;
+      if (actual) {
+        // NOTE(user): Using assertEquals(expected, document.activeElement)
+        // causes an error in IE when the assertion fails (from trying to
+        // convert the DOM elements into strings for the error message):
+        //     "'constructor' is null or not an object".
+        // The following assertions give us the same check without this error.
+        var msg = 'Expected "' + expected.id + '" to be the activeElement, ' +
+                  'but was "' + actual.id + '".';
+        assertTrue(msg, expected == actual);
+      }
+    }
+
+    /**
+     * Pauses the test momentarily so IE can dispatch the onfocus event, which
+     * is scheduled for the next event loop after element.focus() is called.
+     */
+    function continueAfterTimeout(fn) {
+      asyncTestCase.waitForAsync(
+          'IE requires a timeout for focus() triggered events to fire.');
+      window.setTimeout(function() {
+        asyncTestCase.continueTesting();
+        fn();
+      }, 0);
+    }
+
+    function testShouldBeAbleToFocusOnAnElement() {
+      recordBlurAndFocus(text1);
+      recordBlurAndFocus(text2);
+
+      expect(eventType.FOCUS, text1);
+      bot.action.focusOnElement(text1);
+      continueAfterTimeout(function() {
+        assertHasExpectedEventOrder();
+        assertElementIsActiveElement(text1);
+
+        expect(eventType.BLUR, text1);
+        expect(eventType.FOCUS, text2);
+        bot.action.focusOnElement(text2);
+        continueAfterTimeout(function() {
+          assertHasExpectedEventOrder();
+          assertElementIsActiveElement(text2);
+
+          expect(eventType.BLUR, text2);
+          expect(eventType.FOCUS, text1);
+          bot.action.focusOnElement(text1);
+          continueAfterTimeout(function() {
+            assertHasExpectedEventOrder();
+            assertElementIsActiveElement(text1);
+          });
+        });
+      });
+    }
+
+    function testShouldRetainFocusIfElementIsAlreadyActive() {
+      recordBlurAndFocus(text1);
+      recordBlurAndFocus(text2);
+
+      expect(eventType.FOCUS, text1);
+      bot.action.focusOnElement(text1);
+      continueAfterTimeout(function() {
+        assertHasExpectedEventOrder();
+        assertElementIsActiveElement(text1);
+
+        bot.action.focusOnElement(text1);
+        continueAfterTimeout(function() {
+          assertHasExpectedEventOrder();
+          assertElementIsActiveElement(text1);
+        });
+      });
+    }
+
+  </script>
+</head>
+<body>
+<form action="javascript:void(0)">
+  <input id="text1" type="text"/>
+  <input id="text2" type="text"/>
+  <input id="dummyFocusHolder" type="text"/>
+  <div>
+    <div>Input fields for manual testing. Each will report when they receive or
+      lose focus.</div>
+    Test 1: <input id="test1" type="text"/>
+    Test 2: <input id="test2" type="text"/>
+    <div>
+      <button id="focusDance">Click to simulate focus change</button>
+      <button id="clearTestLog">Click to clear log</button>
+      <button id="opennewwindow" onclick="window.open(window.location)">
+        Re-run test in a new window</button>
+    </div>
+    <div style="border:1px solid black; margin: 5px; padding: 5px; width:50%">
+      <div style="border-bottom: 1px solid black">Test Log</div>
+      <div id="testLog"></div>
+    </div>
+    <script>
+      function log(msg) {
+        goog.dom.$('testLog').appendChild(
+            goog.dom.createDom('div', null,
+              goog.dom.createTextNode(msg)));
+      }
+
+      function reportBlurFocus(e) {
+        var et = eventType;
+        goog.events.listen(e, [et.FOCUS, et.BLUR], function(e) {
+          log(e.type + ' on ' + e.target.id);
+        });
+      }
+      reportBlurFocus(goog.dom.$('test1'));
+      reportBlurFocus(goog.dom.$('test2'));
+
+      goog.events.listen(goog.dom.$('focusDance'), eventType.CLICK,
+        function(e) {
+          log('starting focus dance in .5s');
+          log('  will focus on 1, then 2, then 1 again');
+          window.setTimeout(function() {
+            bot.action.focusOnElement(goog.dom.$('test1'));
+            bot.action.focusOnElement(goog.dom.$('test2'));
+            bot.action.focusOnElement(goog.dom.$('test1'));
+            log('if you see this before event logs, then events are ' +
+                'fired in a separate event loop');
+          }, 500);
+        });
+      goog.events.listen(goog.dom.$('clearTestLog'), eventType.CLICK,
+        function(e) {
+          goog.dom.$('testLog').innerHTML = '';
+        });
+    </script>
+  </div>
+</form>
+<script>
+    // AsyncTestCase references the DOM on instantiation, so we have to do it
+    // here once the body has been written.
+    asyncTestCase = goog.testing.AsyncTestCase.createAndInstall();
+</script>
+</body>
+</html>

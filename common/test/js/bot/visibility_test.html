@@ -128,6 +128,11 @@
       // In some browsers, an orphan option is not rendered at all.
       assertFalse(!!option && isShown(option));
     }
+
+    function testElementWithNestedBlockLevelElementShown() {
+      var containsNestedBlock = findElement({id: 'containsNestedBlock'});
+      assertTrue(isShown(containsNestedBlock));
+    }
   </script>
 
   <style type="text/css">
@@ -202,6 +207,8 @@
   <option id="hideme">
 </select>
 <option id="orphan">
+
+<a id="containsNestedBlock" href="#"><div style="display:block;">text</div></a>
 
 </body>
 </html>
