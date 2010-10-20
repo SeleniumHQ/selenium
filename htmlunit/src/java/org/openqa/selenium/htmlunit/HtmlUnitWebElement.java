@@ -36,7 +36,6 @@ limitations under the License.
 package org.openqa.selenium.htmlunit;
 
 import com.gargoylesoftware.htmlunit.Page;
-
 import com.gargoylesoftware.htmlunit.ScriptException;
 import com.gargoylesoftware.htmlunit.ScriptResult;
 import com.gargoylesoftware.htmlunit.SgmlPage;
@@ -47,6 +46,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlCheckBoxInput;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlFileInput;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
+import com.gargoylesoftware.htmlunit.html.HtmlHiddenInput;
 import com.gargoylesoftware.htmlunit.html.HtmlHtml;
 import com.gargoylesoftware.htmlunit.html.HtmlImageInput;
 import com.gargoylesoftware.htmlunit.html.HtmlInput;
@@ -56,16 +56,18 @@ import com.gargoylesoftware.htmlunit.html.HtmlScript;
 import com.gargoylesoftware.htmlunit.html.HtmlSelect;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import com.gargoylesoftware.htmlunit.html.HtmlTextArea;
-import com.gargoylesoftware.htmlunit.html.HtmlHiddenInput;
+
+import net.sourceforge.htmlunit.corejs.javascript.Undefined;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.ElementNotVisibleException;
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.RenderedWebElement;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.RenderedWebElement;
-import org.openqa.selenium.ElementNotVisibleException;
+import org.openqa.selenium.internal.FindsByCssSelector;
 import org.openqa.selenium.internal.FindsById;
 import org.openqa.selenium.internal.FindsByLinkText;
 import org.openqa.selenium.internal.FindsByTagName;
@@ -75,20 +77,21 @@ import org.openqa.selenium.internal.WrapsElement;
 import org.w3c.dom.Attr;
 import org.w3c.dom.NamedNodeMap;
 
+import java.awt.Dimension;
+import java.awt.Point;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.regex.Pattern;
 import java.util.regex.Matcher;
-import java.awt.Point;
-import java.awt.Dimension;
+import java.util.regex.Pattern;
 
 import static org.openqa.selenium.Keys.ENTER;
 import static org.openqa.selenium.Keys.RETURN;
-import net.sourceforge.htmlunit.corejs.javascript.Undefined;
 
-public class HtmlUnitWebElement implements RenderedWebElement,
-    FindsById, FindsByLinkText, FindsByXPath, FindsByTagName, WrapsDriver {
+public class HtmlUnitWebElement implements RenderedWebElement, WrapsDriver,
+    FindsById, FindsByLinkText, FindsByXPath, FindsByTagName,
+    FindsByCssSelector {
 
   protected final HtmlUnitDriver parent;
   protected final HtmlElement element;
@@ -618,6 +621,36 @@ public class HtmlUnitWebElement implements RenderedWebElement,
     assertElementNotStale();
 
     return findElementsByXPath(".//*[@id = '" + id + "']");
+  }
+
+  public List<WebElement> findElementsByCssSelector(String using) {
+    List<WebElement> allElements = parent.findElementsByCssSelector(using);
+
+    return findChildNodes(allElements);
+  }
+
+  public WebElement findElementByCssSelector(String using) {
+    List<WebElement> allElements = parent.findElementsByCssSelector(using);
+
+    allElements = findChildNodes(allElements);
+
+    if (allElements.size() == 0) {
+      throw new NoSuchElementException("Cannot find child element using css: " + using);
+    }
+
+    return allElements.get(0);
+  }
+
+  private List<WebElement> findChildNodes(List<WebElement> allElements) {
+    List<WebElement> toReturn = new LinkedList<WebElement>();
+
+    for (WebElement current : allElements) {
+      if (element.isAncestorOf(((HtmlUnitWebElement) current).element)) {
+        toReturn.add(current);
+      }
+    }
+
+    return toReturn;
   }
 
   public WebElement findElementByXPath(String xpathExpr) {

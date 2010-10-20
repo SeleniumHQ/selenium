@@ -46,6 +46,8 @@ import com.gargoylesoftware.htmlunit.WebWindow;
 import com.gargoylesoftware.htmlunit.WebWindowEvent;
 import com.gargoylesoftware.htmlunit.WebWindowListener;
 import com.gargoylesoftware.htmlunit.WebWindowNotFoundException;
+import com.gargoylesoftware.htmlunit.html.DomNode;
+import com.gargoylesoftware.htmlunit.html.DomNodeList;
 import com.gargoylesoftware.htmlunit.html.FrameWindow;
 import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
@@ -75,6 +77,7 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.browserlaunchers.CapabilityType;
 import org.openqa.selenium.browserlaunchers.Proxies;
+import org.openqa.selenium.internal.FindsByCssSelector;
 import org.openqa.selenium.internal.FindsById;
 import org.openqa.selenium.internal.FindsByLinkText;
 import org.openqa.selenium.internal.FindsByName;
@@ -84,7 +87,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecutor,
-    FindsById, FindsByLinkText, FindsByXPath, FindsByName,
+    FindsById, FindsByLinkText, FindsByXPath, FindsByName, FindsByCssSelector,
     FindsByTagName {
 
   private WebClient webClient;
@@ -596,6 +599,40 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
 
   public List<WebElement> findElementsById(String id) {
     return findElementsByXPath("//*[@id='" + id + "']");
+  }
+
+  public WebElement findElementByCssSelector(String using) {
+    if (!(lastPage() instanceof HtmlPage)) {
+      throw new NoSuchElementException("Unable to locate element using css: " + lastPage());
+    }
+
+    DomNode node = ((HtmlPage) lastPage()).querySelector(using);
+
+    if (node instanceof HtmlElement) {
+      return newHtmlUnitWebElement((HtmlElement) node);
+    }
+
+    throw new NoSuchElementException("Returned node was not an HTML element");
+  }
+
+  public List<WebElement> findElementsByCssSelector(String using) {
+        if (!(lastPage() instanceof HtmlPage)) {
+      throw new NoSuchElementException("Unable to locate element using css: " + lastPage());
+    }
+
+    DomNodeList<DomNode> allNodes = ((HtmlPage) lastPage()).querySelectorAll(using);
+
+    List<WebElement> toReturn = new ArrayList<WebElement>();
+
+    for (DomNode node : allNodes) {
+      if (node instanceof HtmlElement) {
+        toReturn.add(newHtmlUnitWebElement((HtmlElement) node));
+      } else {
+        throw new NoSuchElementException("Returned node was not an HTML element");
+      }
+    }
+
+    return toReturn;
   }
 
   public WebElement findElementByName(String name) {

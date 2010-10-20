@@ -422,7 +422,7 @@ public class ElementFindingTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({HTMLUNIT, REMOTE})
+  @Ignore({REMOTE})
   @NeedsFreshDriver
   public void testShouldBeAbleToFindAnElementByCssSelector() {
     driver.get(pages.xhtmlTestPage);
@@ -430,7 +430,7 @@ public class ElementFindingTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({HTMLUNIT, REMOTE, SELENESE})
+  @Ignore({REMOTE, SELENESE})
   @NeedsFreshDriver
   public void testShouldBeAbleToFindAnElementsByCssSelector() {
     driver.get(pages.xhtmlTestPage);
@@ -445,5 +445,6 @@ public class ElementFindingTest extends AbstractDriverTestCase {
     assertEquals(2, parent.findElements(By.tagName("div")).size());
     assertEquals(2, parent.findElements(By.tagName("span")).size());
   }
+  
   //TODO(danielwh): Add extensive CSS selector tests
 }
