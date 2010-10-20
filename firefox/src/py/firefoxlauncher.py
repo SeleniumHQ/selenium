@@ -49,7 +49,7 @@ class FirefoxLauncher(object):
         while not self.extension_connection.is_connectable():
             attempts += 1
             if attempts >  MAX_START_ATTEMPTS:
-                raise RuntimeError("Unablet to start firefox")
+                raise RuntimeError("Unable to start firefox")
             self._start_from_profile_path(profile.path)
             time.sleep(1)
 
