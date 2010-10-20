@@ -241,9 +241,9 @@ def run_server(timeout=10):
     return server
 
 class ChromeDriver:
-    def __init__(self,untrusted_certificates=False, custom_args=""):
+    def __init__(self,custom_profile=None, untrusted_certificates=False, custom_args=""):
         self._server = None
-        self._profile_dir = None
+        self._profile_dir = custom_profile
         self._extension_dir = None
         self._chrome = None
         self._untrusted_certificates = " --ignore-certificate-errors " if untrusted_certificates else ""
@@ -251,7 +251,7 @@ class ChromeDriver:
 
     def start(self):
         self._extension_dir = create_extension_dir()
-        self._profile_dir = create_profile_dir()
+        self._profile_dir = create_profile_dir() if self._profile_dir else self._profile_dir
         self._server = run_server()
         self._chrome = run_chrome(self._extension_dir, self._profile_dir,
                                   self._server.server_port, self._untrusted_certificates,
