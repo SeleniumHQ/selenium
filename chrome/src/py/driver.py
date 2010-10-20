@@ -203,7 +203,7 @@ def create_profile_dir():
 # FIXME: Find a free one dinamically
 PORT = 33292
 
-def run_chrome(extension_dir, profile_dir, port):
+def run_chrome(extension_dir, profile_dir, port,untrusted_certificates, custom_args):
     command = [
         chrome_exe(),
         "--load-extension=%s" % extension_dir,
@@ -215,7 +215,9 @@ def run_chrome(extension_dir, profile_dir, port):
         "--disable-popup-blocking",
         "--disable-prompt-on-repost",
         "--no-default-browser-check",
-        "http://localhost:%s/chromeCommandExecutor" % port]
+        "http://localhost:%s/chromeCommandExecutor" % port,
+        untrusted_certificates,
+        custom_args]
     return Popen(command)
 
 def run_server(timeout=10):
@@ -239,18 +241,21 @@ def run_server(timeout=10):
     return server
 
 class ChromeDriver:
-    def __init__(self):
+    def __init__(self,untrusted_certificates=False, custom_args=""):
         self._server = None
         self._profile_dir = None
         self._extension_dir = None
         self._chrome = None
+        self._untrusted_certificates = " --ignore-certificate-errors " if untrusted_certificates else ""
+        self._custom_args = custom_args
 
     def start(self):
         self._extension_dir = create_extension_dir()
         self._profile_dir = create_profile_dir()
         self._server = run_server()
         self._chrome = run_chrome(self._extension_dir, self._profile_dir,
-                                  self._server.server_port)
+                                  self._server.server_port, self._untrusted_certificates,
+                                  self._custom_args)
 
     def stop(self):
         if self._chrome:
