@@ -22,12 +22,21 @@ import java.util.concurrent.Callable;
 
 public class WaitingConditions {
 
+  private WaitingConditions() {
+    // utility class
+  }
+
   public static Callable<WebElement> elementToExist(
       final WebDriver driver, final String elementId) {
     return new Callable<WebElement>() {
 
       public WebElement call() throws Exception {
         return driver.findElement(By.id(elementId));
+      }
+
+      @Override
+      public String toString() {
+        return String.format("element with ID %s to exist", elementId);
       }
     };
   }
@@ -64,6 +73,11 @@ public class WaitingConditions {
 
         return null;
       }
+
+      @Override
+      public String toString() {
+        return "element text to contain: " + value;
+      }
     };
   }
 
@@ -78,6 +92,11 @@ public class WaitingConditions {
         }
 
         return null;
+      }
+
+      @Override
+      public String toString() {
+        return "element value to equal: " + expectedValue;
       }
     };
   }
@@ -94,6 +113,11 @@ public class WaitingConditions {
         }
 
         return null;
+      }
+
+      @Override
+      public String toString() {
+        return "title to be: " + expectedTitle;
       }
     };
   }
