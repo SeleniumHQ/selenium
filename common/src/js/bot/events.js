@@ -58,9 +58,15 @@ bot.events.RELATED_TARGET_EVENTS_ = [
 ];
 
 /**
- * @typedef {{x: number, y: number, button: bot.events.Button,
- *            bubble: boolean, alt: boolean, control: boolean,
- *            shift: boolean, meta: boolean, related: Element}}
+ * @typedef {{x: (number|undefined),
+ *            y: (number|undefined),
+ *            button: (bot.events.Button|undefined),
+ *            bubble: (boolean|undefined),
+ *            alt: (boolean|undefined),
+ *            control: (boolean|undefined),
+ *            shift: (boolean|undefined),
+ *            meta: (boolean|undefined),
+ *            related: (Element|undefined)}}
  */
 bot.events.MouseArgs;
 

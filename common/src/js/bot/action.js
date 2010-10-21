@@ -245,10 +245,13 @@ bot.action.toggle = function(element) {
  * a focus change is required, the active element will be blurred before
  * focusing on the given element.
  * @param {!Element} element The element to focus on.
+ * @param {Element=} opt_activeElement The currently active element. If
+ *     provided, and different from {@code element}, the active element will
+ *     be blurred before focusing on the element.
  */
-bot.action.focusOnElement = function(element) {
-  var doc = goog.dom.getOwnerDocument(element);
-  var activeElement = doc.activeElement;
+bot.action.focusOnElement = function(element, opt_activeElement) {
+  var activeElement = opt_activeElement || bot.dom.getActiveElement(element);
+
   if (element != activeElement) {
     // NOTE(user): This check is for browsers that do not support the
     // document.activeElement property, like Safari 3. Interestingly,
@@ -266,8 +269,8 @@ bot.action.focusOnElement = function(element) {
       // IE8-strict mode. This shouldn't hurt anything, we just use the
       // useragent sniff so we can compile this out for proper browsers.
       if (goog.userAgent.IE && !goog.userAgent.isVersion(8)) {
-        goog.dom.getWindow(doc).focus();
-        }
+        goog.dom.getWindow(goog.dom.getOwnerDocument(element)).focus();
+      }
     }
     // In IE, the resulting onfocus event will not be dispatched until
     // the next event loop (this is undocumented). Same applies to blur().
@@ -379,13 +382,20 @@ bot.action.click = function(element) {
   // obfuscate them.
   var coords = {
     'x': dimensions.left + (dimensions.width / 2),
-    'y': dimensions.top + (dimensions.height / 2)
+    'y': dimensions.top + (dimensions.height / 2),
+    'button': undefined,
+    'bubble': undefined,
+    'alt': undefined,
+    'control': undefined,
+    'shift': undefined,
+    'meta': undefined,
+    'related': undefined
   };
 
   bot.events.fire(element, goog.events.EventType.MOUSEOVER);
   bot.events.fire(element, goog.events.EventType.MOUSEMOVE, coords);
   bot.events.fire(element, goog.events.EventType.MOUSEDOWN, coords);
-  bot.action.focusOnElement(element);
+  bot.action.focusOnElement(element, activeElement);
   bot.events.fire(element, goog.events.EventType.MOUSEUP, coords);
   bot.events.fire(element, goog.events.EventType.CLICK, coords);
 };
