@@ -282,6 +282,7 @@ DelayedCommand.prototype.executeInternal_ = function() {
  * @constructor
  */
 var nsCommandProcessor = function() {
+  Components.utils.import('resource://fxdriver/modules/timer.js');
   Components.utils.import('resource://fxdriver/modules/utils.js');
 
   this.wrappedJSObject = this;
@@ -576,21 +577,17 @@ nsCommandProcessor.prototype.quit = function(response) {
   response.send();
 
   // Use an nsITimer to give the response time to go out.
-  var event = {
-    notify: function(timer) {
+  var event = function(timer) {
       // Create a switch file so the native events library will
       // let all events through in case of a close.
       createSwitchFile("close:<ALL>");
       Components.classes['@mozilla.org/toolkit/app-startup;1'].
           getService(Components.interfaces.nsIAppStartup).
           quit(Components.interfaces.nsIAppStartup.eForceQuit);
-    }
   };
 
-  var timer = Components.classes['@mozilla.org/timer;1'].
-      createInstance(Components.interfaces.nsITimer);
-  timer.initWithCallback(event, 500,  // milliseconds
-      Components.interfaces.nsITimer.TYPE_ONE_SHOT);
+  this.nstimer = new Timer();
+  this.nstimer.setTimeout(event, 500);
 };
 
 
