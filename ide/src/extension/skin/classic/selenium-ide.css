@@ -91,7 +91,7 @@ treechildren::-moz-tree-cell-text(currentTestCase)
 /* these are the buttons along the bottom of the ide for log, reference, etc. */
 .console-tab {
   margin: 0;
-  -moz-appearance: button !important;
+  -moz-appearance: tab !important;
 }
 
 .console-tab label { 
@@ -105,15 +105,6 @@ treechildren::-moz-tree-cell-text(currentTestCase)
 
 .console-tab[selected] .toolbarbutton-text {
   font-weight: bold;
-}
-
-.console-button {
-  padding-right: 6px !important;
-  padding-left: 1px;
-}
-
-.console-button[checked="true"] {
-  padding-left: 1px !important;
 }
 
 .console-button label {
