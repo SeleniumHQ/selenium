@@ -88,9 +88,10 @@ treechildren::-moz-tree-cell-text(currentTestCase)
   border-bottom: 1px solid #aaa;
 }
 
+/* these are the buttons along the bottom of the ide for log, reference, etc. */
 .console-tab {
   margin: 0;
-  -moz-appearance: tab !important;
+  -moz-appearance: button !important;
 }
 
 .console-tab label { 
