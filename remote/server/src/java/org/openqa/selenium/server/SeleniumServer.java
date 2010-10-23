@@ -37,7 +37,7 @@ import org.openqa.jetty.http.handler.SecurityHandler;
 import org.openqa.jetty.jetty.Server;
 import org.openqa.jetty.jetty.servlet.ServletHandler;
 import org.openqa.jetty.util.MultiException;
-import org.openqa.selenium.NetworkUtils;
+import org.openqa.selenium.networkutils.NetworkUtils;
 import org.openqa.selenium.browserlaunchers.WindowsProxyManager;
 import org.openqa.selenium.browserlaunchers.WindowsUtils;
 import org.openqa.selenium.remote.server.DefaultDriverSessions;
@@ -161,6 +161,8 @@ public class SeleniumServer {
     private StaticContentHandler staticContentHandler;
     private final RemoteControlConfiguration configuration;
     private Thread shutDownHook;
+    private static final NetworkUtils networkUtils =  new NetworkUtils();
+
 
     private static ProxyHandler customProxyHandler;
     private ProxyHandler proxyHandler;
@@ -319,7 +321,7 @@ public class SeleniumServer {
         webdriverContext.addHandler(handler);
 
         LOGGER.info(format("RemoteWebDriver instances should connect to: http://%s:%d/wd/hub",
-            NetworkUtils.getPrivateLocalAddress(), getPort()));
+            networkUtils.getPrivateLocalAddress(), getPort())); // todo: This is still buggy because it should resolve to external port
 
       return webdriverContext;
     }

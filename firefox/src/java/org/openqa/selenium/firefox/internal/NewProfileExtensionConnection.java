@@ -25,7 +25,7 @@ import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
 import java.net.Socket;
 import java.net.URL;
-import org.openqa.selenium.NetworkUtils;
+import org.openqa.selenium.networkutils.NetworkUtils;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.ExtensionConnection;
 import org.openqa.selenium.firefox.FirefoxBinary;
@@ -47,6 +47,8 @@ public class NewProfileExtensionConnection implements CommandExecutor, Extension
   private final String host;
   private final Lock lock;
   private File profileDir;
+  private static final NetworkUtils networkUtils =  new NetworkUtils();
+
 
   private final int bufferSize = 4096;
   private HttpCommandExecutor delegate;
@@ -156,21 +158,11 @@ public class NewProfileExtensionConnection implements CommandExecutor, Extension
    * @return The URL of the Firefox extension.
    */
   private static URL buildUrl(String host, int port) {
-    if ("localhost".equals(host)) {
-      for (InetSocketAddress address : NetworkUtils.obtainLoopbackAddresses(port)) {
-        try {
-          return new URL("http", address.getHostName(), address.getPort(), "/hub");
-        } catch (MalformedURLException ignored) {
-          // Do nothing; loop and try next address.
-        }
-      }
-      throw new WebDriverException("Unable to find loopback address for localhost");
-    } else {
-      try {
-        return new URL("http", host, port, "/hub");
-      } catch (MalformedURLException e) {
-        throw new WebDriverException(e);
-      }
+    String hostToUse = "localhost".equals(host) ? networkUtils.obtainLoopbackIp4Address() : host;
+    try {
+      return new URL("http", hostToUse, port, "/hub");
+    } catch (MalformedURLException e) {
+      throw new WebDriverException(e);
     }
   }
 
