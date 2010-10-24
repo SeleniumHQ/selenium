@@ -115,6 +115,7 @@ public class DriverServlet extends HttpServlet {
   private UrlMapper getMapper;
   private UrlMapper postMapper;
   private UrlMapper deleteMapper;
+  private SessionCleaner sessionCleaner;
 
   @Override
   public void init() throws ServletException {
@@ -124,12 +125,25 @@ public class DriverServlet extends HttpServlet {
     if (attribute == null) {
       attribute = new DefaultDriverSessions();
     }
-    
+
     DriverSessions driverSessions = (DriverSessions) attribute;
 
     ServletLogTo logger = getLogger();
 
     setupMappings(driverSessions, logger);
+
+    int sessionTimeOut = Integer.parseInt(System.getProperty("webdriver.server.session.timeout", "1800"));
+    if (sessionTimeOut > 0) {
+      sessionCleaner = new SessionCleaner((DefaultDriverSessions) attribute, logger, 1000 * sessionTimeOut);
+      sessionCleaner.start();
+    }
+  }
+
+  @Override
+  public void destroy() {
+    if (sessionCleaner != null) {
+      sessionCleaner.stopCleaner();
+    }
   }
 
   protected ServletLogTo getLogger() {

@@ -26,7 +26,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 
 public class DriverSessionTest extends TestCase {
   public void testShouldRegisterCorrectDefaultsOnMac() {
-    DriverFactory factory = new DriverFactory();
+    DriverFactory factory = new DefaultDriverFactory();
     new DefaultDriverSessions(Platform.MAC, factory);
 
     assertTrue(factory.hasMappingFor(DesiredCapabilities.chrome()));
@@ -36,7 +36,7 @@ public class DriverSessionTest extends TestCase {
   }
 
   public void testShouldRegisterCorrectDefaultsOnLinux() {
-    DriverFactory factory = new DriverFactory();
+    DriverFactory factory = new DefaultDriverFactory();
     new DefaultDriverSessions(Platform.LINUX, factory);
 
     assertTrue(factory.hasMappingFor(DesiredCapabilities.chrome()));
@@ -46,7 +46,7 @@ public class DriverSessionTest extends TestCase {
   }
 
   public void testShouldRegisterCorrectDefaultsOnWindows() {
-    DriverFactory factory = new DriverFactory();
+    DriverFactory factory = new DefaultDriverFactory();
     new DefaultDriverSessions(Platform.VISTA, factory);
 
     assertTrue(factory.hasMappingFor(DesiredCapabilities.chrome()));
@@ -56,7 +56,7 @@ public class DriverSessionTest extends TestCase {
   }
 
   public void testShouldBeAbleToRegisterOwnDriver() {
-    DriverFactory factory = new DriverFactory();
+    DriverFactory factory = new DefaultDriverFactory();
     DriverSessions sessions = new DefaultDriverSessions(Platform.VISTA, factory);
 
     Capabilities capabilities = new DesiredCapabilities("foo", "1", Platform.ANY);

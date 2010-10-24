@@ -26,11 +26,11 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 public class DriverFactoryTest extends TestCase {
-  private DriverFactory factory;
+  private DefaultDriverFactory factory;
 
   @Override
   protected void setUp() throws Exception {
-    factory = new DriverFactory();
+    factory = new DefaultDriverFactory();
   }
 
   public void testShouldBeAbleToRegisterNewDrivers() {
