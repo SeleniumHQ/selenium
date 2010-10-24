@@ -23,7 +23,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.PrintStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -66,6 +65,7 @@ public class CommandLine {
 
   /**
    * Adds the specified environment variables.
+   * @param environment the variables to add
    *
    * @throws IllegalArgumentException if any value given is null (unsupported)
    */
@@ -78,6 +78,8 @@ public class CommandLine {
   /**
    * Adds the specified environment variable.
    *
+   * @param name the name of the environment variable
+   * @param value  the value of the environment variable
    * @throws IllegalArgumentException if the value given is null (unsupported)
    */
   public void setEnvironmentVariable(String name, String value) {
@@ -295,17 +297,17 @@ public class CommandLine {
 
   private static class StreamDrainer implements Runnable {
     private final Process toWatch;
-    private ByteArrayOutputStream inputOut;
-    private OutputStream drainTo;
+    private final ByteArrayOutputStream inputOut;
+    private final OutputStream drainTo;
 
     StreamDrainer(Process toWatch, OutputStream drainTo) {
       this.toWatch = toWatch;
       this.drainTo = drainTo;
+      this.inputOut = new ByteArrayOutputStream();
     }
 
     public void run() {
       InputStream inputStream = new BufferedInputStream(toWatch.getInputStream());
-      inputOut = new ByteArrayOutputStream();
       byte[] buffer = new byte[2048];
 
       try {

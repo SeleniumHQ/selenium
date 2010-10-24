@@ -167,7 +167,7 @@ public class SingleEntryAsyncQueueUnitTest extends TestCase {
      * Passes the specified command to command holder
      */
     private class AsyncCommandSender extends TrackableRunnable {
-        private String content;
+        private final String content;
 
         public AsyncCommandSender(String content) {
             this.content = content;

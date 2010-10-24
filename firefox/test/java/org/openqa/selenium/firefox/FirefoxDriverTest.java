@@ -327,8 +327,8 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
   public void testShouldAllowTwoInstancesOfFirefoxAtTheSameTimeInDifferentThreads()
       throws InterruptedException {
     class FirefoxRunner implements Runnable {
-      private WebDriver myDriver;
-      private String url;
+      private volatile WebDriver myDriver;
+      private final String url;
 
       public FirefoxRunner(String url) {
         this.url = url;

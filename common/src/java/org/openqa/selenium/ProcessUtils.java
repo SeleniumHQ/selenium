@@ -112,8 +112,8 @@ public class ProcessUtils {
 
   private static class ProcessWaiter implements Runnable {
 
-    private InterruptedException t;
-    private Process p;
+    private volatile InterruptedException t;
+    private final Process p;
 
     public InterruptedException getException() {
       return t;

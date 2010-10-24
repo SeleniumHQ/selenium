@@ -22,7 +22,7 @@ public class CommandQueueUnitTest extends TestCase {
     private static final int defaultTimeout = 7;
     private static final int retryTimeout = 5;
 
-    private static Log log = LogFactory.getLog(CommandQueueUnitTest.class);
+    private static final Log log = LogFactory.getLog(CommandQueueUnitTest.class);
 
     private CommandQueue cq;
     private RemoteControlConfiguration configuration;
@@ -282,9 +282,9 @@ public class CommandQueueUnitTest extends TestCase {
      * Passes the specified command to command queue
      */
     private class AsyncCommandRunner extends TrackableRunnable {
-        private String cmd, arg1, arg2;
+        private final String cmd, arg1, arg2;
 
-        public AsyncCommandRunner(String cmd, String arg1, String arg2) {
+        AsyncCommandRunner(String cmd, String arg1, String arg2) {
             this.cmd = cmd;
             this.arg1 = arg1;
             this.arg2 = arg2;
@@ -302,7 +302,7 @@ public class CommandQueueUnitTest extends TestCase {
      * Passes the specified browserResult to command queue
      */
     private class AsyncBrowserResultRunner extends TrackableRunnable {
-        private String browserResult;
+        private final String browserResult;
 
         public AsyncBrowserResultRunner(String browserResult) {
             this.browserResult = browserResult;

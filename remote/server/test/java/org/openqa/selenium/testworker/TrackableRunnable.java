@@ -3,9 +3,9 @@ package org.openqa.selenium.testworker;
 
 public abstract class TrackableRunnable implements Runnable {
 
-	private ThreadStartedAt threadStartedAt;
-	private Throwable throwable;
-	private Object result;
+	private volatile ThreadStartedAt threadStartedAt;
+	private volatile Throwable throwable;
+	private volatile Object result;
 	
 	public void run() {
 		try {
