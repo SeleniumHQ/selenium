@@ -185,13 +185,7 @@ def create_extension_dir():
     # copytree need to create the directory
     rmtree(path)
     copytree(extdir, path)
-    dll = join(dirname(__file__), "npchromedriver.dll")
 
-    if not isfile(dll): # In source
-        dll = r"..\..\prebuilt\Win32\Release\npchromedriver.dll"
-        assert isfile(dll), "can't find dll"
-
-    copy(dll, path)
     return path
 
 def create_profile_dir():
