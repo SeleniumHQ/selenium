@@ -21,13 +21,18 @@ import java.io.IOException;
 import java.net.ConnectException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 
+@SuppressWarnings({"UtilityClass"})
 public class PortProber {
-  private final static Random random = new Random();
+  private static final Random random = new Random();
+
+  private PortProber() {
+  }
 
   public static int findFreePort() {
     for (int i = 0; i < 5; i++) {
@@ -39,6 +44,17 @@ public class PortProber {
     }
     throw new RuntimeException("Unable to find a free port");
   }
+
+  public static void waitForLocalPortFree(int port, long timeout, TimeUnit unit) throws InterruptedException, IOException {
+    long end = System.currentTimeMillis() + unit.toMillis(timeout);
+    while (System.currentTimeMillis() < end) {
+      if (checkPortIsFree(port) != -1)
+        return;
+      Thread.sleep(100);
+    }
+    throw new IOException("Socket does not seem to become available within timeout " + timeout + "ms");
+  }
+
 
   private static int createAcceptablePort() {
     synchronized (random) {
@@ -77,7 +93,9 @@ public class PortProber {
         return true;
       } catch (ConnectException e) {
         // Ignore this
-      } catch (Exception e) {
+      } catch (UnknownHostException e) {
+        throw new RuntimeException(e);
+      } catch (IOException e) {
         throw new RuntimeException(e);
       }
     }

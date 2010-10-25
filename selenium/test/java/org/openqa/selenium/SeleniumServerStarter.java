@@ -5,14 +5,18 @@ import junit.framework.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.internal.CommandLine;
 import org.openqa.selenium.internal.PortProber;
+import org.openqa.selenium.networkutils.NetworkUtils;
 
 import static org.openqa.selenium.internal.PortProber.pollPort;
 
+@SuppressWarnings({"UnusedDeclaration"})
 public class SeleniumServerStarter extends TestSetup {
 
+  private static final NetworkUtils networkUtils = new NetworkUtils();
   private static final String SELENIUM_JAR = "build/remote/server/server-standalone.jar";
   private CommandLine command;
 
@@ -42,18 +46,27 @@ public class SeleniumServerStarter extends TestSetup {
     super.setUp();
   }
 
+  @SuppressWarnings({"UseOfSystemOutOrSystemErr"})
   private String startSeleniumServer(File seleniumJar) throws IOException {
-    String port = System.getProperty("webdriver.selenium.server.port", "5555");
 
+    final String port = getPortString();
     command = new CommandLine("java", "-jar", seleniumJar.getAbsolutePath(), "-port", port);
     if (Boolean.getBoolean("webdriver.debug")) {
       command.copyOutputTo(System.err);
     }
     command.executeAsync();
 
-    PortProber.pollPort(Integer.parseInt(port));
+    PortProber.pollPort(getPort(port));
 
     return port;
+  }
+
+  private int getPort(String portString) {
+    return Integer.parseInt(portString);
+  }
+
+  private String getPortString() {
+    return System.getProperty("webdriver.selenium.server.port", "5555");
   }
 
   private File findSeleniumJar() {
@@ -75,6 +88,7 @@ public class SeleniumServerStarter extends TestSetup {
       command.destroy();
     }
 
+    PortProber.waitForLocalPortFree(  getPort(getPortString()), 10, TimeUnit.SECONDS);
     super.tearDown();
   }
 }
