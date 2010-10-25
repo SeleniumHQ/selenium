@@ -29,9 +29,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class DefaultDriverSessions implements DriverSessions {
   private final DriverFactory factory;
+
+  private static final AtomicLong sessionKeyFactory = new AtomicLong(System.currentTimeMillis());
 
   private final Map<SessionId, Session> sessionIdToDriver =
       new ConcurrentHashMap<SessionId, Session>();
@@ -81,7 +84,7 @@ public class DefaultDriverSessions implements DriverSessions {
   public SessionId newSession(Capabilities desiredCapabilities) throws Exception {
     Session session = Session.createSession(factory, desiredCapabilities);
     
-    SessionId sessionId = new SessionId(String.valueOf(System.currentTimeMillis()));
+    SessionId sessionId = new SessionId(String.valueOf(sessionKeyFactory.getAndIncrement()));
     sessionIdToDriver.put(sessionId, session);
 
     // I'm not sure that this logging manager should have crept in here.
