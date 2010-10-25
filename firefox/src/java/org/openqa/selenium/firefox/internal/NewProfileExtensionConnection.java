@@ -62,8 +62,17 @@ public class NewProfileExtensionConnection implements CommandExecutor, Extension
     this.process = binary;
   }
 
+  @SuppressWarnings({"StringConcatenationInsideStringBufferAppend"})
   public void start() throws IOException {
     int port = 0;
+
+    profileDir = profile.layoutOnDisk();
+
+    profile.setPreference(PORT_PREFERENCE, port);
+    profile.lockedlayoutOnDisk( profileDir);
+
+    this.process.clean(profile, profileDir);
+
 
     lock.lock(connectTimeout);
     try {
@@ -74,10 +83,10 @@ public class NewProfileExtensionConnection implements CommandExecutor, Extension
       this.process.setOutputWatcher(new CircularOutputStream(logFile, bufferSize));
 
       profile.setPreference(PORT_PREFERENCE, port);
-      profileDir = profile.layoutOnDisk();
-
-      this.process.clean(profile, profileDir);
+      profile.lockedlayoutOnDisk( profileDir);
       this.process.startProfile(profile, profileDir);
+
+      // Just for the record; the critical section is all along while firefox is starting with the profile. 
 
       // There is currently no mechanism for the profile to notify us when it has started
       // successfully and is ready for requests.  Instead, we must loop until we're able to

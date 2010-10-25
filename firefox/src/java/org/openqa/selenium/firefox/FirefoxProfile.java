@@ -445,6 +445,7 @@ public class FirefoxProfile {
 
   public String toJson() throws IOException {
     File generatedProfile = layoutOnDisk();
+    lockedlayoutOnDisk(generatedProfile);
 
     return new Zip().zip(generatedProfile);
   }
@@ -458,20 +459,21 @@ public class FirefoxProfile {
   }
 
   public File layoutOnDisk() {
-    try {
-      File profileDir = TemporaryFilesystem.createTempDir("anonymous", "webdriver-profile");
-      File userPrefs = new File(profileDir, "user.js");
-
-      copyModel(model, profileDir);
-      installExtensions(profileDir);
-      deleteLockFiles(profileDir);
-      deleteExtensionsCacheIfItExists(profileDir);
-      updateUserPrefs(userPrefs);
-
-      return profileDir;
-    } catch (IOException e) {
-      throw new UnableToCreateProfileException(e);
+      try {
+        File profileDir = TemporaryFilesystem.createTempDir("anonymous", "webdriver-profile");
+        copyModel(model, profileDir);
+        installExtensions(profileDir);
+        deleteLockFiles(profileDir);
+        deleteExtensionsCacheIfItExists(profileDir);
+        return profileDir;
+      } catch (IOException e) {
+        throw new UnableToCreateProfileException(e);
+      }
     }
+
+  public void lockedlayoutOnDisk(File profileDir) {
+      File userPrefs = new File(profileDir, "user.js");
+      updateUserPrefs(userPrefs);
   }
 
   protected void copyModel(File sourceDir, File profileDir) throws IOException {

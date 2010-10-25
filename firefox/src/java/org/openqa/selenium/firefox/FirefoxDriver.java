@@ -23,6 +23,7 @@ import static org.openqa.selenium.browserlaunchers.CapabilityType.PROXY;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -73,6 +74,9 @@ public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot, F
   public static final String PROFILE = "firefox_profile";
 
   public static final int DEFAULT_PORT = 7055;
+
+  public static final InetSocketAddress localhost = new InetSocketAddress("localhost", DEFAULT_PORT - 1);
+  
   // For now, only enable native events on Windows
   public static final boolean DEFAULT_ENABLE_NATIVE_EVENTS =
       Platform.getCurrent()
@@ -177,7 +181,7 @@ public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot, F
 
   protected ExtensionConnection connectTo(FirefoxBinary binary, FirefoxProfile profile,
                                           String host) {
-    Lock lock = new SocketLock(DEFAULT_PORT - 1);
+    Lock lock = new SocketLock(localhost);
     try {
       FirefoxBinary bin = binary == null ? new FirefoxBinary() : binary;
       

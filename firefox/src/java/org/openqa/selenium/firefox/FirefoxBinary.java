@@ -310,6 +310,7 @@ public class FirefoxBinary {
   private static class OutputWatcher implements Runnable {
     private final Process process;
     private OutputStream stream;
+    private final int BUFSIZE = 4096;
 
     public OutputWatcher(Process process, OutputStream stream) {
       this.process = process;
@@ -320,10 +321,12 @@ public class FirefoxBinary {
       InputStream stdoutOfWatchedProcess = null;
       try {
         stdoutOfWatchedProcess = process.getInputStream();
-        byte[] buffer = new byte[4096];
+        byte[] buffer = new byte[BUFSIZE];
         int n;
         do {
-          n = stdoutOfWatchedProcess.read(buffer);
+          int avail = Math.min(BUFSIZE, stdoutOfWatchedProcess.available());
+          avail = Math.max(avail, 1); // Always ask for at least one byte
+          n = stdoutOfWatchedProcess.read(buffer, 0, avail);
           if (n > 0 && stream != null) {
             try {
               stream.write(buffer, 0, n);
