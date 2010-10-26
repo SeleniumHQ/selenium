@@ -33,7 +33,7 @@ class AddTakesScreenshot implements AugmenterProvider {
   public InterfaceImplementation getImplementation(Object ignored) {
     // The only method on TakesScreenshot is the one to take a screenshot
     return new InterfaceImplementation() {
-      public Object invoke(ExecuteMethod executeMethod, Method method, Object... args) {
+      public Object invoke(ExecuteMethod executeMethod, Object self, Method method, Object... args) {
         Object result = executeMethod.execute(DriverCommand.SCREENSHOT, null);
 
         if (result instanceof String) {

@@ -83,14 +83,14 @@ public class AugmenterTest {
     caps.setCapability("foo", true);
 
     Augmenter augmenter = new Augmenter();
-    augmenter.addAugmentation("foo", new AugmenterProvider() {
+    augmenter.addDriverAugmentation("foo", new AugmenterProvider() {
       public Class<?> getDescribedInterface() {
         return MyInterface.class;
       }
 
       public InterfaceImplementation getImplementation(Object value) {
         return new InterfaceImplementation() {
-          public Object invoke(ExecuteMethod executeMethod, Method method, Object... args) {
+          public Object invoke(ExecuteMethod executeMethod, Object self, Method method, Object... args) {
             return "Hello World";
           }
         };
@@ -143,6 +143,47 @@ public class AugmenterTest {
 
     returned.findElement(By.cssSelector("cheese"));
     // No exception is a Good Thing
+  }
+
+  @Test
+  public void shouldLeaveAnUnAugmentableElementAlone() {
+    RemoteWebElement element = new RemoteWebElement();
+    element.setId("1234");
+
+    WebElement returned = new Augmenter().augment(element);
+
+    assertSame(element, returned);
+  }
+
+  @Test
+  public void shouldAllowAnElementToBeAugmented() {
+    RemoteWebElement element = new RemoteWebElement();
+    element.setId("1234");
+
+    Augmenter augmenter = new Augmenter();
+    augmenter.addElementAugmentation("foo", new AugmenterProvider() {
+      public Class<?> getDescribedInterface() {
+        return MyInterface.class;
+      }
+
+      public InterfaceImplementation getImplementation(Object value) {
+        return null;
+      }
+    });
+
+    RemoteWebDriver parent = new RemoteWebDriver() {
+      @Override
+      public Capabilities getCapabilities() {
+        DesiredCapabilities caps = new DesiredCapabilities();
+        caps.setCapability("foo", true);
+        return caps;
+      }
+    };
+    element.setParent(parent);
+
+    WebElement returned = augmenter.augment(element);
+
+    assertTrue(returned instanceof MyInterface);
   }
 
   private static class StubExecutor implements CommandExecutor {

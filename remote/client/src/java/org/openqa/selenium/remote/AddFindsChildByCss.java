@@ -15,32 +15,35 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+
 package org.openqa.selenium.remote;
 
-import org.openqa.selenium.ScreenOrientation;
-
 import com.google.common.collect.ImmutableMap;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.internal.FindsByCssSelector;
 
 import java.lang.reflect.Method;
+import java.util.Map;
 
-public class AddRotatable implements AugmenterProvider {
-
+public class AddFindsChildByCss implements AugmenterProvider {
   public Class<?> getDescribedInterface() {
-    return AddRotatable.class;
+    return FindsByCssSelector.class;
   }
 
   public InterfaceImplementation getImplementation(Object value) {
     return new InterfaceImplementation() {
       public Object invoke(ExecuteMethod executeMethod, Object self, Method method, Object... args) {
-        if ("rotate".equals(method.getName())) {
-          return executeMethod.execute(DriverCommand.SET_SCREEN_ORIENTATION,
-              ImmutableMap.of("orientation", args[0]));
-        } else if ("getOrientation".equals(method.getName())) {
-          return ScreenOrientation.valueOf((String) executeMethod.execute(DriverCommand.GET_SCREEN_ORIENTATION, null));
+        Object id = ((RemoteWebElement) self).getId();
+        Map<String, ?> commandArgs = ImmutableMap.of("id", id, "using", "css selector", "value", args[0]);
+
+        if ("findElementByCssSelector".equals(method.getName())) {
+          return executeMethod.execute(DriverCommand.FIND_ELEMENT, commandArgs);
+        } else if ("findElementsByCssSelector".equals(method.getName())) {
+          return executeMethod.execute(DriverCommand.FIND_ELEMENTS, commandArgs);
         }
-        return null;
+
+        throw new WebDriverException("Unmapped method: " + method.getName());
       }
     };
   }
-
 }

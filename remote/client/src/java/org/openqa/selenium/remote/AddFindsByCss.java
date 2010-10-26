@@ -33,7 +33,7 @@ public class AddFindsByCss implements AugmenterProvider {
   public InterfaceImplementation getImplementation(Object value) {
     return new InterfaceImplementation() {
 
-      public Object invoke(ExecuteMethod executeMethod, Method method, Object... args) {
+      public Object invoke(ExecuteMethod executeMethod, Object self, Method method, Object... args) {
         Map<String, ?> commandArgs = ImmutableMap.of("using", "css selector", "value", args[0]);
 
         if ("findElementByCssSelector".equals(method.getName())) {

@@ -42,7 +42,7 @@ public class AddDatabaseStorage implements AugmenterProvider {
 
   public InterfaceImplementation getImplementation(Object value) {
     return new InterfaceImplementation() {
-      public Object invoke(ExecuteMethod executeMethod, Method method, Object... args) {
+      public Object invoke(ExecuteMethod executeMethod, Object self, Method method, Object... args) {
         String databaseName = (String) args[0];
         String query = (String) args[1];
         Object[] arguments = (Object[]) args[2];

@@ -41,7 +41,7 @@ public class AddApplicationCache implements AugmenterProvider {
   public InterfaceImplementation getImplementation(Object value) {
     return new InterfaceImplementation() {
       
-      public Object invoke(ExecuteMethod executeMethod, Method method, Object... args) {
+      public Object invoke(ExecuteMethod executeMethod, Object self, Method method, Object... args) {
         if ("getAppCache".equals(method.getName())) {
           List<Object> result = (List<Object>) executeMethod.execute(DriverCommand.GET_APP_CACHE,
               null);

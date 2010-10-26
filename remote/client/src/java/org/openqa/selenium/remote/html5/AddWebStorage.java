@@ -33,7 +33,7 @@ public class AddWebStorage implements AugmenterProvider {
   public InterfaceImplementation getImplementation(Object value) {
     return new InterfaceImplementation() {
       
-      public Object invoke(ExecuteMethod executeMethod, Method method, Object... args) {
+      public Object invoke(ExecuteMethod executeMethod, Object self, Method method, Object... args) {
         // This is only an abstraction
         return null;
       }

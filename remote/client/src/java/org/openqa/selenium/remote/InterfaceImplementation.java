@@ -29,9 +29,9 @@ public interface InterfaceImplementation {
    * implement a particular method.
    *
    * @param executeMethod Call this to actually call the remote instance
-   * @param method The method invoked by the user
-   * @param args The arguments to the method
-   * @return The return value, which will be passed to the user directly.
+   * @param self
+   *@param method The method invoked by the user
+   * @param args The arguments to the method   @return The return value, which will be passed to the user directly.
    */
-  Object invoke(ExecuteMethod executeMethod, Method method, Object... args);
+  Object invoke(ExecuteMethod executeMethod, Object self, Method method, Object... args);
 }

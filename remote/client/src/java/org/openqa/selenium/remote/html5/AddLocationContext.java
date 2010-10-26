@@ -38,7 +38,7 @@ public class AddLocationContext implements AugmenterProvider {
   public InterfaceImplementation getImplementation(Object value) {
     return new InterfaceImplementation() {
       
-      public Object invoke(ExecuteMethod executeMethod, Method method, Object... args) {
+      public Object invoke(ExecuteMethod executeMethod, Object self, Method method, Object... args) {
         if ("location".equals(method.getName())) {
           Map<Object, Object> map =
               (Map<Object, Object>) executeMethod.execute(DriverCommand.GET_LOCATION, null);
