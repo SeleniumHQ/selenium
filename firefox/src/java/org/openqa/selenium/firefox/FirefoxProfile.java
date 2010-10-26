@@ -286,7 +286,9 @@ public class FirefoxProfile {
     prefs.put("browser.shell.checkDefaultBrowser", "false");
     prefs.put("browser.tabs.warnOnClose", "false");
     prefs.put("browser.tabs.warnOnOpen", "false");
+    prefs.put("devtools.errorconsole.enabled", "true");
     prefs.put("dom.disable_open_during_load", "false");
+    prefs.put("extensions.logging.enabled", "true");
     prefs.put("extensions.update.enabled", "false");
     prefs.put("extensions.update.notifyUser", "false");
     prefs.put("network.manage-offline-status", "false");

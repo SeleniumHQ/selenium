@@ -66,6 +66,7 @@ public class FirefoxBinary {
     setEnvironmentProperty("XRE_PROFILE_PATH", profileAbsPath);
     setEnvironmentProperty("MOZ_NO_REMOTE", "1");
     setEnvironmentProperty("MOZ_CRASHREPORTER_DISABLE", "1"); // Disable Breakpad
+    setEnvironmentProperty("NO_EM_RESTART", "1"); // Prevent the binary from detaching from the console
 
     if (isOnLinux()
         && (profile.enableNativeEvents() || profile.alwaysLoadNoFocusLib())) {

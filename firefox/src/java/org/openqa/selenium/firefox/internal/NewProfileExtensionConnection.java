@@ -74,14 +74,14 @@ public class NewProfileExtensionConnection implements CommandExecutor, Extension
 
       profileDir = profile.layoutOnDisk();
 
-      this.process.clean(profile, profileDir);
+      process.clean(profile, profileDir);
 
       delegate = new HttpCommandExecutor(buildUrl(host, port));
       String firefoxLogFile = System.getProperty("webdriver.firefox.logfile");
       File logFile = firefoxLogFile == null ? null : new File(firefoxLogFile);
-      this.process.setOutputWatcher(new CircularOutputStream(logFile, BUFFER_SIZE));
+      process.setOutputWatcher(new CircularOutputStream(logFile, BUFFER_SIZE));
 
-      this.process.startProfile(profile, profileDir);
+      process.startProfile(profile, profileDir);
 
       // Just for the record; the critical section is all along while firefox is starting with the profile. 
 
