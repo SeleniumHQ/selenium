@@ -37,20 +37,21 @@ import org.openqa.selenium.remote.HttpCommandExecutor;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.internal.CircularOutputStream;
 
-import static org.openqa.selenium.firefox.FirefoxDriver.DEFAULT_PORT;
 import static org.openqa.selenium.firefox.FirefoxProfile.PORT_PREFERENCE;
+import static org.openqa.selenium.firefox.internal.SocketLock.DEFAULT_PORT;
 
 public class NewProfileExtensionConnection implements CommandExecutor, ExtensionConnection {
+  private final static int BUFFER_SIZE = 4096;
+
+  private static final NetworkUtils networkUtils =  new NetworkUtils();
   private final long connectTimeout;
   private final FirefoxBinary process;
   private final FirefoxProfile profile;
   private final String host;
   private final Lock lock;
   private File profileDir;
-  private static final NetworkUtils networkUtils =  new NetworkUtils();
 
 
-  private final int bufferSize = 4096;
   private HttpCommandExecutor delegate;
 
   public NewProfileExtensionConnection(Lock lock, FirefoxBinary binary, FirefoxProfile profile,
@@ -80,7 +81,7 @@ public class NewProfileExtensionConnection implements CommandExecutor, Extension
       delegate = new HttpCommandExecutor(buildUrl(host, port));
       String firefoxLogFile = System.getProperty("webdriver.firefox.logfile");
       File logFile = firefoxLogFile == null ? null : new File(firefoxLogFile);
-      this.process.setOutputWatcher(new CircularOutputStream(logFile, bufferSize));
+      this.process.setOutputWatcher(new CircularOutputStream(logFile, BUFFER_SIZE));
 
       profile.setPreference(PORT_PREFERENCE, port);
       profile.lockedlayoutOnDisk( profileDir);

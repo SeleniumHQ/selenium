@@ -132,7 +132,7 @@ public class FirefoxProfileTest extends TestCase {
   public void testShouldInstallExtensionFromZip() throws IOException {
     FirefoxProfile profile = new FirefoxProfile();
     profile.addExtension(InProject.locate(FIREBUG_PATH));
-    File profileDir =layoutOnDisk(profile);
+    File profileDir = layoutOnDisk(profile);
     File extensionDir = new File(profileDir, "extensions/firebug@software.joehewitt.com");
     assertTrue(extensionDir.exists());
   }
@@ -142,7 +142,7 @@ public class FirefoxProfileTest extends TestCase {
     File extension = InProject.locate(FIREBUG_PATH);
     File unzippedExtension = FileHandler.unzip(new FileInputStream(extension));
     profile.addExtension(unzippedExtension);
-    File profileDir =layoutOnDisk(profile);
+    File profileDir = layoutOnDisk(profile);
     File extensionDir = new File(profileDir, "extensions/firebug@software.joehewitt.com");
     assertTrue(extensionDir.exists());
   }
@@ -150,7 +150,7 @@ public class FirefoxProfileTest extends TestCase {
   public void testShouldInstallExtensionUsingClasspath() throws IOException {
     FirefoxProfile profile = new FirefoxProfile();
     profile.addExtension(FirefoxProfileTest.class, "/resource/firebug-1.5.0-fx.xpi");
-    File profileDir =layoutOnDisk(profile);
+    File profileDir = layoutOnDisk(profile);
     File extensionDir = new File(profileDir, "extensions/firebug@software.joehewitt.com");
     assertTrue(extensionDir.exists());
   }

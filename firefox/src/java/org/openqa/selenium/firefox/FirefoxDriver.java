@@ -73,10 +73,6 @@ public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot, F
   public static final String BINARY = "firefox_binary";
   public static final String PROFILE = "firefox_profile";
 
-  public static final int DEFAULT_PORT = 7055;
-
-  public static final InetSocketAddress localhost = new InetSocketAddress("localhost", DEFAULT_PORT - 1);
-  
   // For now, only enable native events on Windows
   public static final boolean DEFAULT_ENABLE_NATIVE_EVENTS =
       Platform.getCurrent()
@@ -181,7 +177,7 @@ public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot, F
 
   protected ExtensionConnection connectTo(FirefoxBinary binary, FirefoxProfile profile,
                                           String host) {
-    Lock lock = new SocketLock(localhost);
+    Lock lock = obtainLock();
     try {
       FirefoxBinary bin = binary == null ? new FirefoxBinary() : binary;
       
@@ -191,6 +187,10 @@ public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot, F
     } finally {
       lock.unlock();
     }
+  }
+
+  protected Lock obtainLock() {
+    return new SocketLock();
   }
 
   @Override
