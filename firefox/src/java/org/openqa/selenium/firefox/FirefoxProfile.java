@@ -445,7 +445,6 @@ public class FirefoxProfile {
 
   public String toJson() throws IOException {
     File generatedProfile = layoutOnDisk();
-    lockedlayoutOnDisk(generatedProfile);
 
     return new Zip().zip(generatedProfile);
   }
@@ -458,23 +457,32 @@ public class FirefoxProfile {
     return new FirefoxProfile(dir);
   }
 
+  /**
+   * Call this to cause the current profile to be written to disk. The profile
+   * directory is returned. Note that this profile directory is a temporary one
+   * and will be deleted when the JVM exists (at the latest)
+   *
+   * This method should be called immediately before starting to use the profile
+   * and should only be called once per instance of the
+   * {@link org.openqa.selenium.firefox.FirefoxDriver}.
+   *
+   * @return The directory containing the profile.
+   */
   public File layoutOnDisk() {
       try {
         File profileDir = TemporaryFilesystem.createTempDir("anonymous", "webdriver-profile");
+        File userPrefs = new File(profileDir, "user.js");
+
         copyModel(model, profileDir);
         installExtensions(profileDir);
         deleteLockFiles(profileDir);
         deleteExtensionsCacheIfItExists(profileDir);
+        updateUserPrefs(userPrefs);
         return profileDir;
       } catch (IOException e) {
         throw new UnableToCreateProfileException(e);
       }
     }
-
-  public void lockedlayoutOnDisk(File profileDir) {
-      File userPrefs = new File(profileDir, "user.js");
-      updateUserPrefs(userPrefs);
-  }
 
   protected void copyModel(File sourceDir, File profileDir) throws IOException {
     if (sourceDir == null || !sourceDir.exists()) {

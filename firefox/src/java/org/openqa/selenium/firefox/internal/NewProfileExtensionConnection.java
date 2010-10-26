@@ -67,24 +67,20 @@ public class NewProfileExtensionConnection implements CommandExecutor, Extension
   public void start() throws IOException {
     int port = 0;
 
-    profileDir = profile.layoutOnDisk();
-
-    profile.setPreference(PORT_PREFERENCE, port);
-    profile.lockedlayoutOnDisk( profileDir);
-
-    this.process.clean(profile, profileDir);
-
-
     lock.lock(connectTimeout);
     try {
       port = determineNextFreePort(DEFAULT_PORT);
+      profile.setPreference(PORT_PREFERENCE, port);
+
+      profileDir = profile.layoutOnDisk();
+
+      this.process.clean(profile, profileDir);
+
       delegate = new HttpCommandExecutor(buildUrl(host, port));
       String firefoxLogFile = System.getProperty("webdriver.firefox.logfile");
       File logFile = firefoxLogFile == null ? null : new File(firefoxLogFile);
       this.process.setOutputWatcher(new CircularOutputStream(logFile, BUFFER_SIZE));
 
-      profile.setPreference(PORT_PREFERENCE, port);
-      profile.lockedlayoutOnDisk( profileDir);
       this.process.startProfile(profile, profileDir);
 
       // Just for the record; the critical section is all along while firefox is starting with the profile. 
