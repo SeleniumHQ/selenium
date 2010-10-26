@@ -11,6 +11,9 @@ import org.openqa.selenium.internal.CommandLine;
 import org.openqa.selenium.internal.PortProber;
 import org.openqa.selenium.networkutils.NetworkUtils;
 
+import static java.util.concurrent.TimeUnit.*;
+import static org.openqa.selenium.TestWaiter.waitFor;
+import static org.openqa.selenium.internal.PortProber.freeLocalPort;
 import static org.openqa.selenium.internal.PortProber.pollPort;
 
 @SuppressWarnings({"UnusedDeclaration"})
@@ -88,7 +91,7 @@ public class SeleniumServerStarter extends TestSetup {
       command.destroy();
     }
 
-    PortProber.waitForLocalPortFree(  getPort(getPortString()), 10, TimeUnit.SECONDS);
+    waitFor(freeLocalPort(getPort(getPortString())), 10, SECONDS);
     super.tearDown();
   }
 }

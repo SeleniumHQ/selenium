@@ -23,6 +23,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Random;
+import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
@@ -45,16 +46,17 @@ public class PortProber {
     throw new RuntimeException("Unable to find a free port");
   }
 
-  public static void waitForLocalPortFree(int port, long timeout, TimeUnit unit) throws InterruptedException, IOException {
-    long end = System.currentTimeMillis() + unit.toMillis(timeout);
-    while (System.currentTimeMillis() < end) {
-      if (checkPortIsFree(port) != -1)
-        return;
-      Thread.sleep(100);
-    }
-    throw new IOException("Socket does not seem to become available within timeout " + timeout + "ms");
-  }
+  public static Callable<Integer> freeLocalPort(final int port) {
+    return new Callable<Integer>() {
 
+      public Integer call() throws Exception {
+        if (checkPortIsFree(port) != -1) {
+          return port;
+        }
+        return null;
+      }
+    };
+  }
 
   private static int createAcceptablePort() {
     synchronized (random) {

@@ -41,7 +41,7 @@ public class TestWaiter {
    * @return Whatever the condition returns.
    */
   public static <X> X waitFor(Callable<X> until) {
-    return new TestWaiter().waitFor(until, DEFAULT_TIME_OUT, DEFAULT_UNIT);
+    return waitFor(until, DEFAULT_TIME_OUT, DEFAULT_UNIT);
   }
 
   /**
@@ -53,7 +53,7 @@ public class TestWaiter {
    * @param in Unit in which duration is measured.
    * @return Whatever the condition returns.
    */
-  public <X> X waitFor(Callable<X> until, long duration, TimeUnit in) {
+  public static <X> X waitFor(Callable<X> until, long duration, TimeUnit in) {
     long end = System.currentTimeMillis() + in.toMillis(duration);
 
     X value = null;
@@ -86,7 +86,7 @@ public class TestWaiter {
     return null;
   }
 
-  private RuntimeException propagate(Exception lastException) {
+  private static RuntimeException propagate(Exception lastException) {
     if (lastException instanceof RuntimeException) {
       throw (RuntimeException) lastException;
     }
@@ -95,7 +95,7 @@ public class TestWaiter {
   }
 
 
-  private void sleep(long duration) {
+  private static void sleep(long duration) {
     try {
       Thread.sleep(duration);
     } catch (InterruptedException e) {
