@@ -17,6 +17,7 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import java.util.Iterator;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -238,4 +239,19 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
     assertEquals("td2 id", "td2", td2.getAttribute("id"));
     assertEquals("td2 colspan should be 2", "2", td2.getAttribute("colspan"));
   }
+
+  // This is a test-case re-creating issue 900.
+  @Ignore(value = {CHROME, FIREFOX, HTMLUNIT, IE, SELENESE}, reason = "Issue 900")
+  public void testShouldReturnValueOfOnClickAttribute() {
+    driver.get(pages.javascriptPage);
+
+    List<WebElement> divs = driver.findElements(By.tagName("div"));
+
+    for (Iterator<WebElement> i = divs.iterator(); i.hasNext();) {
+      WebElement element = i.next();
+      assertTrue((element.getAttribute("onclick") == null) ||
+          (element.getAttribute("onclick").length() >= 0));
+    }
+  }
+
 }
