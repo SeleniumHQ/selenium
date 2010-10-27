@@ -17,3 +17,5 @@ iphone/lib/buildtime-src/cocoahttpserver/build/CocoaHTTPServerLibrary.build/Rele
 iphone/lib/buildtime-src/build/
 iphone/build/
 /build/
+android/client/bin/
+android/server/bin/
