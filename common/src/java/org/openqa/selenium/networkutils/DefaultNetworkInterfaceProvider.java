@@ -26,18 +26,34 @@ import java.util.Enumeration;
 import java.util.List;
 
 public class DefaultNetworkInterfaceProvider implements NetworkInterfaceProvider {
+  // Cache the list of interfaces between instances. This is mostly used
+  // to get the loopback interface, so it's ok even though interfaces may go
+  // up and down during the test.
+  // Caching the result of getNetworkInterfaces saves 2 seconds, which is
+  // significant when running the tests.
+  private static List<NetworkInterface> cachedInterfaces = null;
+
   public Iterable<NetworkInterface> getNetworkInterfaces() {
+    if (cachedInterfaces == null) {
+      readInterfaces();
+    }
+
+    return cachedInterfaces;
+  }
+
+  private void readInterfaces() {
+
     Enumeration<java.net.NetworkInterface> interfaces = null;
     try {
       interfaces = java.net.NetworkInterface.getNetworkInterfaces();
     } catch (SocketException e) {
       throw new WebDriverException(e);
     }
-    List<NetworkInterface> result = new ArrayList<NetworkInterface>();
+
+    cachedInterfaces = new ArrayList<NetworkInterface>();
     while (interfaces.hasMoreElements()) {
-      result.add(createInterface(interfaces.nextElement()));
+      cachedInterfaces.add(createInterface(interfaces.nextElement()));
     }
-    return result;
   }
 
   private String getLocalInterfaceName() {
