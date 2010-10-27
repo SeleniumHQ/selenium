@@ -155,6 +155,9 @@ public class NetworkUtils {
   }
 
   private static void dumpToConsole(StringBuilder result, NetworkInterface inNetworkInterface) {
+    if (inNetworkInterface == null) {
+      return;
+    }
     result.append(inNetworkInterface.getName());
     result.append("\n");
     dumpAddresses(result, inNetworkInterface.getInetAddresses());
