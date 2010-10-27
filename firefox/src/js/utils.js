@@ -152,10 +152,7 @@ Utils.getActiveElement = function(doc) {
     element = doc.activeElement;
   } else {
     var topWindow = window.top;
-    var commandDispatcher = topWindow.getBrowser().ownerDocument.
-        commandDispatcher;
-
-    element = commandDispatcher.focusedElement;
+    element = topWindow.activeElement;
 
     if (element && doc != element.ownerDocument)
       element = null;
