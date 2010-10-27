@@ -123,4 +123,33 @@ public class StubNetworkInterfaceProvider {
       }
     };
   }
+
+  private static NetworkInterface newInterface(String ifName, String hostName, String hostIp, boolean isLoopback) {
+    return new NetworkInterface(ifName, new INetAddress(hostName, hostIp, isLoopback));
+  }
+
+  public static NetworkInterfaceProvider getOsXWiredAndWireless() {
+    return new NetworkInterfaceProvider() {
+      public Iterable<NetworkInterface> getNetworkInterfaces() {
+        return Arrays.asList(
+            newInterface("vmnet8", "192.168.4.1", "192.168.4.1", false),
+            newInterface("vmnet1", "192.168.166.1", "192.168.166.1", false),
+            new NetworkInterface("en1",
+                new INetAddress("somehost.subd.test.com", "172.12.8.7", false),
+                new INetAddress("2620:0:1042:13:3bb0:35fe:fe7c:629c", "2620:0:1042:13:3bb0:35fe:fe7c:629c", false),
+                new INetAddress("fe80:0:0:0:3bb0:35fe:fe7c:629c%6", "fe80:0:0:0:3bb0:35fe:fe7c:629c%6", false)),
+            new NetworkInterface("en0",
+                new INetAddress("someotherhost.subd.test.com", "172.12.8.9", false),
+                new INetAddress("fe80:0:0:0:6e6d:63ff:fe8c:bd10%4", "fe80:0:0:0:6e6d:63ff:fe8c:bd10%4", false)),
+            getLoInterface());
+      }
+
+      public NetworkInterface getLoInterface() {
+        return new NetworkInterface("lo0",
+            new INetAddress("localhost", "127.0.0.1", true),
+            new INetAddress("somemachine.local", "fe80:0:0:0:0:0:0:1%1", false),
+            new INetAddress("localhost", "0:0:0:0:0:0:0:1", true));
+      }
+    };
+  }
 }

@@ -48,4 +48,10 @@ public class NetworkUtilsTest extends TestCase {
     String s = networkUtils.obtainLoopbackIp4Address();
     assertEquals("127.0.0.1", s);
   }
+
+  public void testOsXSnowLeopard() throws Exception {
+    NetworkUtils networkUtils = new NetworkUtils(StubNetworkInterfaceProvider.getOsXWiredAndWireless());
+    String s = networkUtils.obtainLoopbackIp4Address();
+    assertEquals("127.0.0.1", s);
+  }
 }
