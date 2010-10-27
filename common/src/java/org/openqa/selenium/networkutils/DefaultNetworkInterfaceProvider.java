@@ -22,6 +22,7 @@ import org.openqa.selenium.WebDriverException;
 
 import java.net.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 
@@ -31,18 +32,14 @@ public class DefaultNetworkInterfaceProvider implements NetworkInterfaceProvider
   // up and down during the test.
   // Caching the result of getNetworkInterfaces saves 2 seconds, which is
   // significant when running the tests.
-  private static List<NetworkInterface> cachedInterfaces = null;
+  private final List<NetworkInterface> cachedInterfaces;
+
 
   public Iterable<NetworkInterface> getNetworkInterfaces() {
-    if (cachedInterfaces == null) {
-      readInterfaces();
-    }
-
     return cachedInterfaces;
   }
 
-  private void readInterfaces() {
-
+  public DefaultNetworkInterfaceProvider() {
     Enumeration<java.net.NetworkInterface> interfaces = null;
     try {
       interfaces = java.net.NetworkInterface.getNetworkInterfaces();
@@ -50,10 +47,11 @@ public class DefaultNetworkInterfaceProvider implements NetworkInterfaceProvider
       throw new WebDriverException(e);
     }
 
-    cachedInterfaces = new ArrayList<NetworkInterface>();
+    List<NetworkInterface> result = new ArrayList<NetworkInterface>();
     while (interfaces.hasMoreElements()) {
-      cachedInterfaces.add(createInterface(interfaces.nextElement()));
+      result.add(createInterface(interfaces.nextElement()));
     }
+    this.cachedInterfaces = Collections.unmodifiableList( result);
   }
 
   private String getLocalInterfaceName() {
