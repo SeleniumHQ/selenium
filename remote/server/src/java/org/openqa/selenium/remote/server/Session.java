@@ -71,10 +71,13 @@ public class Session {
     // Ensure that the browser is created on the single thread.
     this.driver = execute(webDriverFutureTask);
     this.capabilities = browserCreator.getCapabilityDescription();
-    touch();
+    updateLastAccessTime();
   }
 
-  void touch() {
+  /**
+   * Touches the session.
+   */
+  void updateLastAccessTime() {
     lastAccess = System.currentTimeMillis();
   }
 
@@ -92,7 +95,7 @@ public class Session {
   }
 
   public WebDriver getDriver() {
-    touch();
+    updateLastAccessTime();
     return driver;
   }
 

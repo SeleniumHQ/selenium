@@ -25,9 +25,6 @@ import org.openqa.selenium.internal.Trace;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.SessionId;
 
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.atomic.AtomicInteger;
-
 /**
  * @author Kristian Rosenvold
  */
@@ -83,7 +80,7 @@ public class SessionCleanerTest extends TestCase {
     defaultDriverSessions.newSession(DesiredCapabilities.firefox());
     SessionCleaner sessionCleaner = new SessionCleaner(defaultDriverSessions, new NullLogTo(), 10);
     waitForAllSessionsToExpire();
-    defaultDriverSessions.get(firstSession).touch();
+    defaultDriverSessions.get(firstSession).updateLastAccessTime();
     sessionCleaner.checkExpiry();
     assertEquals(1, defaultDriverSessions.getSessions().size());
     waitForAllSessionsToExpire();
