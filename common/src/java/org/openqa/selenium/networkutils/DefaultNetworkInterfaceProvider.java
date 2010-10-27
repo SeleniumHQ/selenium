@@ -17,6 +17,7 @@ limitations under the License.
 
 package org.openqa.selenium.networkutils;
 
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
 
 import java.net.*;
@@ -39,9 +40,18 @@ public class DefaultNetworkInterfaceProvider implements NetworkInterfaceProvider
     return result;
   }
 
+  private String getLocalInterfaceName() {
+    if (Platform.getCurrent().is(Platform.MAC)) {
+      return "lo0";
+    }
+
+    return "lo";
+  }
+
   public NetworkInterface getLoInterface() {
+    final String localIF = getLocalInterfaceName();
     try {
-      final java.net.NetworkInterface byName = java.net.NetworkInterface.getByName("lo");
+      final java.net.NetworkInterface byName = java.net.NetworkInterface.getByName(localIF);
       return (byName != null) ? createInterface(byName) : null;
     } catch (SocketException e) {
       throw new WebDriverException(e);
