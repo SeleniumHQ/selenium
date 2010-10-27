@@ -150,7 +150,10 @@ public class NetworkUtils {
 
     }
     NetworkInterface byName = defaultNetworkInterfaceProvider.getLoInterface();
-    dumpToConsole(result, byName);
+    if (byName != null){
+      result.append("Loopback interface LO:\n");      
+      dumpToConsole(result, byName);
+    }
     return result.toString();
   }
 

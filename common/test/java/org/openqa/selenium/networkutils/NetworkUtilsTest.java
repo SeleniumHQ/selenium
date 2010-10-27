@@ -54,4 +54,10 @@ public class NetworkUtilsTest extends TestCase {
     String s = networkUtils.obtainLoopbackIp4Address();
     assertEquals("127.0.0.1", s);
   }
+  public void testFreeBsd() throws Exception {
+    NetworkUtils networkUtils = new NetworkUtils(StubNetworkInterfaceProvider.getFreeBsd());
+    String s = networkUtils.obtainLoopbackIp4Address();
+    assertEquals("localhost.apache.org", s);
+  }
+
 }

@@ -23,6 +23,7 @@ public class StubNetworkInterfaceProvider {
   private StubNetworkInterfaceProvider() {
   }
 
+ // TODO: Remove the use of the getLoInterface method, all the way from the top
 
   public static NetworkInterfaceProvider getUbuntu1010SingleNICAndWlan() {
     return new NetworkInterfaceProvider() {
@@ -34,9 +35,10 @@ public class StubNetworkInterfaceProvider {
                 new NetworkInterface("eth0",
                         new INetAddress("fe80:0:0:0:21e:33ff:fe24:6295%2", "fe80:0:0:0:21e:33ff:fe24:6295%2", false),
                         new INetAddress("192.168.1.13", "192.168.1.13", false)),
-                getLoInterface());
+                new NetworkInterface("lo",
+                        new INetAddress("localhost", "0:0:0:0:0:0:0:1%1", true),
+                        new INetAddress("localhost", "127.0.0.3", true)));
       }
-
       public NetworkInterface getLoInterface() {
         return new NetworkInterface("lo",
                 new INetAddress("localhost", "0:0:0:0:0:0:0:1%1", true),
@@ -49,12 +51,12 @@ public class StubNetworkInterfaceProvider {
     return new NetworkInterfaceProvider() {
       public Iterable<NetworkInterface> getNetworkInterfaces() {
         return Arrays.asList(
-                getLoInterface(),
+                new NetworkInterface("lo",
+                        new INetAddress("localXhost", "127.0.0.4", true)),
                 new NetworkInterface("eth0",
                         new INetAddress("myip4.mydomain.com", "169.254.8.182", false))
         );
       }
-
       public NetworkInterface getLoInterface() {
         return new NetworkInterface("lo",
                 new INetAddress("localXhost", "127.0.0.4", true)); // Just for fun set to .3
@@ -73,7 +75,8 @@ public class StubNetworkInterfaceProvider {
                 ),
                 new NetworkInterface("eth0",
                         new INetAddress("woz-woz23-eth0", "10.10.8.101", false)),
-                getLoInterface());
+                new NetworkInterface("lo",
+                        new INetAddress("localhost.localdomain", "127.0.0.2", true)));
       }
 
       public NetworkInterface getLoInterface() {
@@ -94,7 +97,8 @@ public class StubNetworkInterfaceProvider {
                 ),
                 new NetworkInterface("bge1",
                         new INetAddress("157.120.190.198", "157.120.190.198", false)),
-                getLoInterface());
+                new NetworkInterface("lo",
+                        new INetAddress("localhost", "127.0.0.1", true)));
       }
 
       public NetworkInterface getLoInterface() {
@@ -113,7 +117,9 @@ public class StubNetworkInterfaceProvider {
                 new NetworkInterface("eth0",
                         new INetAddress("fe80:0:0:1:215:41ff:fe3a:1882%2", "e80:0:0:1:215:41ff:fe3a:1882%2", false),
                         new INetAddress("157.120.171.97", "157.120.171.97", false)),
-                getLoInterface());
+                new NetworkInterface("lo",
+                        new INetAddress("p6-localhost", "0:0:0:0:0:0:0:1%1", true),
+                        new INetAddress("playwoz", "127.0.0.1", true)));
       }
 
       public NetworkInterface getLoInterface() {
@@ -132,24 +138,46 @@ public class StubNetworkInterfaceProvider {
     return new NetworkInterfaceProvider() {
       public Iterable<NetworkInterface> getNetworkInterfaces() {
         return Arrays.asList(
-            newInterface("vmnet8", "192.168.4.1", "192.168.4.1", false),
-            newInterface("vmnet1", "192.168.166.1", "192.168.166.1", false),
-            new NetworkInterface("en1",
-                new INetAddress("somehost.subd.test.com", "172.12.8.7", false),
-                new INetAddress("2620:0:1042:13:3bb0:35fe:fe7c:629c", "2620:0:1042:13:3bb0:35fe:fe7c:629c", false),
-                new INetAddress("fe80:0:0:0:3bb0:35fe:fe7c:629c%6", "fe80:0:0:0:3bb0:35fe:fe7c:629c%6", false)),
-            new NetworkInterface("en0",
-                new INetAddress("someotherhost.subd.test.com", "172.12.8.9", false),
-                new INetAddress("fe80:0:0:0:6e6d:63ff:fe8c:bd10%4", "fe80:0:0:0:6e6d:63ff:fe8c:bd10%4", false)),
-            getLoInterface());
+                newInterface("vmnet8", "192.168.4.1", "192.168.4.1", false),
+                newInterface("vmnet1", "192.168.166.1", "192.168.166.1", false),
+                new NetworkInterface("en1",
+                        new INetAddress("somehost.subd.test.com", "172.12.8.7", false),
+                        new INetAddress("2620:0:1042:13:3bb0:35fe:fe7c:629c", "2620:0:1042:13:3bb0:35fe:fe7c:629c", false),
+                        new INetAddress("fe80:0:0:0:3bb0:35fe:fe7c:629c%6", "fe80:0:0:0:3bb0:35fe:fe7c:629c%6", false)),
+                new NetworkInterface("en0",
+                        new INetAddress("someotherhost.subd.test.com", "172.12.8.9", false),
+                        new INetAddress("fe80:0:0:0:6e6d:63ff:fe8c:bd10%4", "fe80:0:0:0:6e6d:63ff:fe8c:bd10%4", false)),
+                new NetworkInterface("lo0",
+                        new INetAddress("localhost", "127.0.0.1", true),
+                        new INetAddress("somemachine.local", "fe80:0:0:0:0:0:0:1%1", false),
+                        new INetAddress("localhost", "0:0:0:0:0:0:0:1", true)));
       }
 
       public NetworkInterface getLoInterface() {
-        return new NetworkInterface("lo0",
-            new INetAddress("localhost", "127.0.0.1", true),
-            new INetAddress("somemachine.local", "fe80:0:0:0:0:0:0:1%1", false),
-            new INetAddress("localhost", "0:0:0:0:0:0:0:1", true));
+        return null;
       }
     };
+  }
+
+  public static NetworkInterfaceProvider getFreeBsd(){
+    // FreeBSD minotaur.apache.org 8.0-STABLE FreeBSD 8.0-STABLE #0 r204183:204434: Sat Feb 27 22:11:44 UTC 2010
+    //  root@loki.apache.org:/usr/obj/usr/src/sys/MINOTAUR  amd64
+
+    return new NetworkInterfaceProvider() {
+      public Iterable<NetworkInterface> getNetworkInterfaces() {
+        return Arrays.asList(
+            newInterface("lo0", "localhost.apache.org", "127.0.0.1", true),
+            newInterface("bge1", "192.168.0.4", "192.168.0.4", false),
+            new NetworkInterface("nfe1",
+                new INetAddress("minotaur-2.apache.org", "140.211.11.10", false),
+                new INetAddress("minotaur.apache.org", "140.211.11.9", false)));
+      }
+
+      // This method should only return an interface if it's named exactly "lo"
+      public NetworkInterface getLoInterface() {
+        return null;
+      }
+    };
+
   }
 }
