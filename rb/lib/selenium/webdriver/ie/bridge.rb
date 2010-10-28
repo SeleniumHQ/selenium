@@ -9,14 +9,14 @@ module Selenium
       class Bridge
         include Util
 
-        def initialize
+        def initialize(opts = {})
           ptr_ref = FFI::MemoryPointer.new :pointer
 
           check_error_code Lib.wdNewDriverInstance(ptr_ref),
                            "could not create driver instance"
 
           @driver_pointer = ptr_ref.get_pointer(0)
-          @speed          = :fast
+          @speed          = opts[:speed] || :fast
         end
 
         def browser
