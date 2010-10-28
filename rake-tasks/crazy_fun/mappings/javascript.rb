@@ -246,7 +246,7 @@ module Javascript
          File.open(js, "r") do |from|
            File.open(out, "w") do |to|
              to << "/* AUTO GENERATED - Do not edit by hand. */\n"
-             to << "/* See rake-tasts/crazy_fun/mappings/javascript.rb for generator. */\n\n"
+             to << "/* See rake-tasks/crazy_fun/mappings/javascript.rb for generator. */\n\n"
              to << "#ifndef #{upper}_H\n"
              to << "#define #{upper}_H\n\n"
              to << "const wchar_t* #{upper}[] = {\n"

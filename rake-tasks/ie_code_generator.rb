@@ -6,7 +6,7 @@
 class JavaFormatter
   def generate_file_header
     out_str = "/* AUTO GENERATED - Do not edit by hand. */\n"
-    out_str += "/* See rake-tasts/ie_code_generator.rb instead. */\n"
+    out_str += "/* See rake-tasks/ie_code_generator.rb instead. */\n"
     out_str += "package org.openqa.selenium.ie;\n"
     out_str += "public class IeReturnTypes {\n"
     return out_str
@@ -22,7 +22,7 @@ end
 class CppFormatter
   def generate_file_header
     out_str = "/* AUTO GENERATED - Do not edit by hand. */\n"
-    out_str += "/* See rake-tasts/ie_code_generator.rb instead. */\n"
+    out_str += "/* See rake-tasks/ie_code_generator.rb instead. */\n"
     out_str += "#ifndef __IE_RETURN_TYPES_H_\n"
     out_str += "#define __IE_RETURN_TYPES_H_\n"
     return out_str
