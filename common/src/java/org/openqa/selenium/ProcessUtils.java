@@ -6,6 +6,10 @@ import java.lang.reflect.Field;
 public class ProcessUtils {
   /**
    * Waits the specified timeout for the process to die
+   *
+   * @param p The process to kill.
+   * @param timeout How long to wait in milliseconds.
+   * @return The exit code of the given process.
    */
   public static int waitForProcessDeath(Process p, long timeout) {
     ProcessWaiter pw = new ProcessWaiter(p);
@@ -34,6 +38,9 @@ public class ProcessUtils {
 
   /**
    * Forcibly kills a process, using OS tools like "kill" as a last resort
+   *
+   * @param process The process to kill.
+   * @return The exit value of the process.
    */
   public static int killProcess(Process process) {
     int exitValue;
@@ -72,7 +79,8 @@ public class ProcessUtils {
   }
 
   /**
-   * retrieves the pid
+   * @param p The process to gather the PID of.
+   * @return The process's PID
    */
   public static int getProcessId(Process p) {
     if (Platform.getCurrent().is(Platform.WINDOWS)) {
@@ -89,7 +97,11 @@ public class ProcessUtils {
   }
 
   /**
-   * runs "kill -9" on the specified pid
+   * Runs "kill -9" on the specified pid
+   *
+   * @param pid The PID of the process to kill.
+   * @throws IOException If unable to kill the process.
+   * @throws InterruptedException If unable to kill the process.
    */
   public static void kill9(Integer pid) throws IOException, InterruptedException {
     ProcessBuilder pb = new ProcessBuilder("kill", "-9", pid.toString());
@@ -104,7 +116,11 @@ public class ProcessUtils {
   }
 
   /**
-   * runs "kill -9" on the specified process
+   * Runs "kill -9" on the specified process
+   *
+   * @param p The process to kill.
+   * @throws IOException If unable to kill the process.
+   * @throws InterruptedException If unable to kill the process.
    */
   public static void kill9(Process p) throws IOException, InterruptedException {
     kill9(getProcessId(p));
@@ -134,21 +150,8 @@ public class ProcessUtils {
 
   public static class ProcessStillAliveException extends RuntimeException {
 
-    public ProcessStillAliveException() {
-      super();
-    }
-
     public ProcessStillAliveException(String message, Throwable cause) {
       super(message, cause);
     }
-
-    public ProcessStillAliveException(String message) {
-      super(message);
-    }
-
-    public ProcessStillAliveException(Throwable cause) {
-      super(cause);
-    }
-
   }
 }

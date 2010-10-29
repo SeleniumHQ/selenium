@@ -256,6 +256,7 @@ public class CommandLine {
     }
 
     proc.destroy();
+    proc = null;
   }
 
   private static boolean canExecute(File file) {
