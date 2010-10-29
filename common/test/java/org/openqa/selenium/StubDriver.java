@@ -20,7 +20,7 @@ package org.openqa.selenium;
 import java.util.List;
 import java.util.Set;
 
-public class StubDriver implements WebDriver {
+public class StubDriver implements WebDriver, JavascriptExecutor, HasInputDevices {
   public void get(String url) {
     throw new UnsupportedOperationException("get");
   }
@@ -71,5 +71,21 @@ public class StubDriver implements WebDriver {
 
   public Options manage() {
     throw new UnsupportedOperationException("manage");
+  }
+
+  public Object executeScript(String script, Object... args) {
+    throw new UnsupportedOperationException("executeScript");
+  }
+
+  public boolean isJavascriptEnabled() {
+    throw new UnsupportedOperationException("isJavascriptEnabled");
+  }
+
+  public Keyboard getKeyboard() {
+    throw new UnsupportedOperationException("getKeyboard");
+  }
+
+  public Mouse getMouse() {
+    throw new UnsupportedOperationException("getMouse");
   }
 }

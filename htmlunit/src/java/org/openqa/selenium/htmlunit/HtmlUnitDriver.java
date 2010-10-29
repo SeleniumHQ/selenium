@@ -63,8 +63,11 @@ import net.sourceforge.htmlunit.corejs.javascript.Undefined;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Cookie;
+import org.openqa.selenium.HasInputDevices;
 import org.openqa.selenium.InvalidCookieDomainException;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Keyboard;
+import org.openqa.selenium.Mouse;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.NoSuchFrameException;
 import org.openqa.selenium.NoSuchWindowException;
@@ -88,7 +91,7 @@ import org.w3c.dom.NodeList;
 
 public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecutor,
     FindsById, FindsByLinkText, FindsByXPath, FindsByName, FindsByCssSelector,
-    FindsByTagName {
+    FindsByTagName, HasInputDevices {
 
   private WebClient webClient;
   private WebWindow currentWindow;
@@ -98,6 +101,8 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
   private final BrowserVersion version;
   private Speed speed = Speed.FAST;
   private long implicitWait = 0;
+  private HtmlUnitKeyboard keyboard;
+  private HtmlUnitMouse mouse;
 
   public HtmlUnitDriver(BrowserVersion version) {
     this.version = version;
@@ -135,6 +140,8 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
 
     // Now put us on the home page, like a real browser
     get(webClient.getHomePage());
+    keyboard = new HtmlUnitKeyboard(this);
+    mouse = new HtmlUnitMouse(this, keyboard);
   }
 
   public HtmlUnitDriver() {
@@ -441,6 +448,14 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
     } else {
       return arg;
     }
+  }
+
+  public Keyboard getKeyboard() {
+    return keyboard;
+  }
+
+  public Mouse getMouse() {
+    return mouse;
   }
 
   protected interface JavaScriptResultsCollection {
@@ -1036,6 +1051,10 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
 
     public Set<Cookie> getCookies() {
       URL url = lastPage().getWebResponse().getWebRequest().getUrl();
+
+      // The about:blank URL (the default in case no navigation took place)
+      // does not have a valid 'hostname' part and cannot be used for creating
+      // cookies based on it - return an empty set.
 
       if (!url.toString().startsWith("http")) {
         return new HashSet<Cookie>();

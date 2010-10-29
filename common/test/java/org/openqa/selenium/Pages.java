@@ -47,6 +47,11 @@ public class Pages {
   public String slowIframes;
   public String tables;
   public String deletingFrame;
+  public String draggableLists;
+  public String droppableItems;
+  public String bodyTypingPage;
+  public String formSelectionPage;
+  public String selectableItemsPage;
 
   public Pages(AppServer appServer) {
     alertsPage = appServer.whereIs("alerts.html");
@@ -76,5 +81,10 @@ public class Pages {
     slowIframes = appServer.whereIs("slow_loading_iframes.html");
     tables = appServer.whereIs("tables.html");
 	  deletingFrame = appServer.whereIs("deletingFrame.htm");
+    draggableLists = appServer.whereIs("draggableLists.html");
+    droppableItems = appServer.whereIs("droppableItems.html");
+    bodyTypingPage = appServer.whereIs("bodyTypingTest.html");
+    formSelectionPage = appServer.whereIs("formSelectionPage.html");
+    selectableItemsPage = appServer.whereIs("selectableItems.html");
   }
 }
