@@ -118,10 +118,19 @@ webdriver.element.getAttribute = function(element, attribute) {
   // but we normally attempt to get the property value before the attribute.
   var isLink =  element.tagName && goog.dom.TagName.A == element.tagName.toUpperCase()
 
-  if (name == 'href' && isLink) {
+  if ((name == 'href' && isLink)) {
     value = bot.dom.getAttribute(element, attribute);
   } else {
-    value = bot.dom.getProperty(element, attribute);
+    try {
+      value = bot.dom.getProperty(element, attribute);
+    } catch (e) {
+      // Call getAttribute if getProperty fails. This happens for event
+      // handlers in Firefox. For example, calling getProperty
+      // for 'onclick' would fail while getAttribute for 'onclick'
+      // will succeed and return the JS code of the handler. 
+      value = bot.dom.getAttribute(element, attribute);
+    }
+
   }
 
   if (!goog.isDefAndNotNull(value)) {

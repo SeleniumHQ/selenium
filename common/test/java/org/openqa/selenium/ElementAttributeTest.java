@@ -241,17 +241,17 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
   }
 
   // This is a test-case re-creating issue 900.
-  @Ignore(value = {CHROME, FIREFOX, HTMLUNIT, IE, SELENESE}, reason = "Issue 900")
   public void testShouldReturnValueOfOnClickAttribute() {
     driver.get(pages.javascriptPage);
 
-    List<WebElement> divs = driver.findElements(By.tagName("div"));
+    WebElement mouseclickDiv = driver.findElement(By.id("mouseclick"));
 
-    for (Iterator<WebElement> i = divs.iterator(); i.hasNext();) {
-      WebElement element = i.next();
-      assertTrue((element.getAttribute("onclick") == null) ||
-          (element.getAttribute("onclick").length() >= 0));
-    }
+    String onClickValue = mouseclickDiv.getAttribute("onclick");
+    assertEquals("Javascript code expected",
+        "javascript:displayMessage('mouse click');", onClickValue);
+
+    WebElement mousedownDiv = driver.findElement(By.id("mousedown"));
+    assertEquals(null, mousedownDiv.getAttribute("onclick"));
   }
 
 }
