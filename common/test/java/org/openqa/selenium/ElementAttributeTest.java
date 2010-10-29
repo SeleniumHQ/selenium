@@ -241,6 +241,7 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
   }
 
   // This is a test-case re-creating issue 900.
+  @Ignore(SELENESE)
   public void testShouldReturnValueOfOnClickAttribute() {
     driver.get(pages.javascriptPage);
 
