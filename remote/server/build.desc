@@ -21,7 +21,7 @@ java_library(name = "server",
     {
       "//common:test_runner_html" : "core/TestRunner.hta",
       "//common:remote_runner_html" : "core/RemoteRunner.hta",
-      "//common:atoms" : "core/scripts",
+      "//common/src/js/selenium:core" : "core/scripts/atoms.js",
       "//third_party/js/sizzle" : "core/lib/sizzle.js"
     }
   ],
