@@ -13,5 +13,6 @@
 	<classpathentry exported="true" kind="lib" path="/third-party/java/apache-httpclient/httpmime-4.0.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="/third-party/java/apache-mime4j/apache-mime4j-0.6.jar"/>
 	<classpathentry exported="true" kind="lib" path="/third-party/java/apache-httpclient/httpclient-4.0.2.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/cglib/cglib-nodep-2.1_3.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
