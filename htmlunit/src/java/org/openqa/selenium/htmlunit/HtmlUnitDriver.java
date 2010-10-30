@@ -153,11 +153,6 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
     setJavascriptEnabled(enableJavascript);
   }
 
-  private HtmlUnitDriver(boolean enableJavascript, WebWindow currentWindow) {
-    this(enableJavascript);
-    this.currentWindow = currentWindow;
-  }
-
   public HtmlUnitDriver(Capabilities capabilities) {
     this(determineBrowserVersion(capabilities));
 
