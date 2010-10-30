@@ -119,6 +119,7 @@ namespace OpenQA.Selenium.Firefox
             SetEnvironmentProperty("XRE_PROFILE_PATH", profileAbsPath);
             SetEnvironmentProperty("MOZ_NO_REMOTE", "1");
             SetEnvironmentProperty("MOZ_CRASHREPORTER_DISABLE", "1"); // Disable Breakpad
+			SetEnvironmentProperty("NO_EM_RESTART", "1"); // Prevent the binary from detaching from the console
 
             if (IsOnLinux && (profile.EnableNativeEvents || profile.AlwaysLoadNoFocusLibrary))
             {
