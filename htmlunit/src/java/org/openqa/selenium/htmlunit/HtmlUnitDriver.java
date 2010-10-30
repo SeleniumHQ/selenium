@@ -1031,7 +1031,7 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
     public void deleteCookieNamed(String name) {
       CookieManager cookieManager = webClient.getCookieManager();
 
-      URL url = lastPage().getWebResponse().getWebRequest().getUrl();
+      URL url = lastPage().getUrl();
       Set<com.gargoylesoftware.htmlunit.util.Cookie> rawCookies =
           webClient.getCookieManager().getCookies(url);
       for (com.gargoylesoftware.htmlunit.util.Cookie cookie : rawCookies) {
@@ -1050,7 +1050,7 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
     }
 
     public Set<Cookie> getCookies() {
-      URL url = lastPage().getWebResponse().getWebRequest().getUrl();
+      URL url = lastPage().getUrl();
 
       // The about:blank URL (the default in case no navigation took place)
       // does not have a valid 'hostname' part and cannot be used for creating
@@ -1066,7 +1066,7 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
 
       Set<Cookie> retCookies = new HashSet<Cookie>();
       for (com.gargoylesoftware.htmlunit.util.Cookie c : rawCookies) {
-        if (c.getPath() != null && getPath().startsWith(c.getPath())) {
+        if (c.getPath() != null && getPath().toLowerCase().startsWith(c.getPath())) {
           retCookies.add(new Cookie.Builder(c.getName(), c.getValue())
               .domain(c.getDomain())
               .path(c.getPath())
@@ -1079,7 +1079,7 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
     }
 
     private String getPath() {
-      return lastPage().getWebResponse().getWebRequest().getUrl().getPath().toLowerCase();
+      return lastPage().getUrl().getPath();
     }
 
     public Speed getSpeed() {
@@ -1098,7 +1098,7 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
     }
 
     private String getDomainForCookie() {
-      URL current = lastPage().getWebResponse().getWebRequest().getUrl();
+      URL current = lastPage().getUrl();
       return current.getHost();
     }
 
