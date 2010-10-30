@@ -103,7 +103,7 @@ namespace OpenQA.Selenium.Remote
             {
                 string responseString = GetTextOfWebResponse(webResponse);
 
-                if (webResponse.ContentType.StartsWith(JsonMimeType, StringComparison.OrdinalIgnoreCase))
+                if (webResponse.ContentType != null && webResponse.ContentType.StartsWith(JsonMimeType, StringComparison.OrdinalIgnoreCase))
                 {
                     commandResponse = Response.FromJson(responseString);
                 }
