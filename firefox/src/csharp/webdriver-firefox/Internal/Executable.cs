@@ -143,7 +143,27 @@ namespace OpenQA.Selenium.Firefox.Internal
                     }
                 }
             }
-            else
+			else
+			{
+				// Mac Search Paths
+				string[] paths = new string[]
+				{
+					"/Applications/Firefox.app/Contents/MacOS/firefox-bin",
+            		string.Concat("/Users/", Environment.UserName, "/Applications/Firefox.app/Contents/MacOS/firefox-bin")	
+				};
+				
+                foreach (string path in paths)
+                {
+                 	FileInfo firefoxBinary = new FileInfo(path);
+                    if (firefoxBinary.Exists)
+                    {
+                    	binary = firefoxBinary.FullName;
+                        break;
+                    }
+				}
+			}
+            
+			if (string.IsNullOrEmpty(binary))
             {
                 // Use "which firefox" for non-Windows OS.
                 Process proc = new Process();
