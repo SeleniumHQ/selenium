@@ -39,7 +39,8 @@ public class NetworkInterface {
 
   public boolean isLoopBack() {
     // Let's hope there's no such thing as network interfaces with mixed addresses ;)
-    return inetAddresses.iterator().next().isLoopbackAddress();
+    Iterator<INetAddress> iterator = inetAddresses.iterator();
+    return iterator.hasNext() && iterator.next().isLoopbackAddress();
   }
 
 

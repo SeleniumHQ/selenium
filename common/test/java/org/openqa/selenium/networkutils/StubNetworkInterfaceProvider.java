@@ -180,4 +180,45 @@ public class StubNetworkInterfaceProvider {
     };
 
   }
+
+  public static NetworkInterfaceProvider getVistaBox() {
+    // The world is a wild and wonderful place
+    return new NetworkInterfaceProvider() {
+      public Iterable<NetworkInterface> getNetworkInterfaces() {
+        return Arrays.asList(
+                getLoInterface(),
+                new NetworkInterface("net0"),
+                new NetworkInterface("net1"),
+                new NetworkInterface("ppp0"),
+                new NetworkInterface("eth0"),
+                new NetworkInterface("eth1"),
+                new NetworkInterface("ppp1"),
+                new NetworkInterface("net2"),
+                new NetworkInterface("eth2"),
+                newInterface("net3", "fe80:0:0:0:0:100:7", "fe80:0:0:0:0:10", false),
+                new NetworkInterface("eth3",
+                new INetAddress(" woz134.wozms", "fe80:0:0:0:4d74", false),
+                new INetAddress("woz134", "10.0.0.108", false)),
+                newInterface("net3", "fe80:0:0:0:0:100:7", "fe80:0:0:0:0:10", false),
+                newInterface("net5", "fe80:0:0:0:0:5efe", "fe80:0:0:0:0:5e", false),
+                new NetworkInterface("eth4"),
+                new NetworkInterface("net6"),
+                new NetworkInterface("net7"),
+                new NetworkInterface("eth5"),
+                new NetworkInterface("eth6"),
+                new NetworkInterface("eth7"),
+                new NetworkInterface("eth8"),
+                new NetworkInterface("eth9")
+                );
+      }
+      public NetworkInterface getLoInterface() {
+        return new NetworkInterface("lo",
+                new INetAddress("0:0:0:0:0:0:0:1", "0:0:0:0:0:0:0:1", true),
+                new INetAddress("hn127.0.0.1", "127.0.0.1", true)); // Hostname was originally without "hn" prefix
+      }
+
+    };
+  }
+
+
 }

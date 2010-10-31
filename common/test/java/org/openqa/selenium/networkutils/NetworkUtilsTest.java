@@ -60,4 +60,9 @@ public class NetworkUtilsTest extends TestCase {
     assertEquals("localhost.apache.org", s);
   }
 
+  public void testVistaBox() throws Exception {
+    NetworkUtils networkUtils = new NetworkUtils(StubNetworkInterfaceProvider.getVistaBox());
+    String s = networkUtils.obtainLoopbackIp4Address();
+    assertEquals("127.0.0.1", s);
+}
 }
