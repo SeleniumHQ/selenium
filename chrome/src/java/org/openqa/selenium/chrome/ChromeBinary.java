@@ -135,6 +135,7 @@ public class ChromeBinary {
         "--disable-popup-blocking",
         "--disable-prompt-on-repost",
         "--no-default-browser-check",
+        "--disable-translate",
         profile.getUntrustedCertificatesFlag()
     );
     commandline.addAll(this.customFlags);
