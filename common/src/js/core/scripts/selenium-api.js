@@ -2920,9 +2920,10 @@ Selenium.prototype.doCaptureEntirePageScreenshot = function(filename, kwargs) {
             var fileOutputStream = Components.classes["@mozilla.org/network/file-output-stream;1"]
                 .createInstance(Components.interfaces.nsIFileOutputStream);
                 
+            // Apparently octal permissions are deprecated, but the suggested alternative is broken in Firefox (and not backwards-compatible from FF 4.0): https://bugzilla.mozilla.org/show_bug.cgi?id=433295
             fileOutputStream.init(nsFile,
                                   writeFlag | createFlag | truncateFlag,
-                                  PR_IRUSR | PR_IWUSR | PR_IRGRP | PR_IROTH,
+                                  0664,
                                   null);
             return fileOutputStream;
         },
