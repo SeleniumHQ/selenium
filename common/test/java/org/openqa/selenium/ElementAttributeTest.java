@@ -20,6 +20,7 @@ package org.openqa.selenium;
 import java.util.Iterator;
 import java.util.List;
 
+import static org.hamcrest.Matchers.anyOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
@@ -241,6 +242,7 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
   }
 
   // This is a test-case re-creating issue 900.
+  @SuppressWarnings("unchecked")
   @Ignore(SELENESE)
   public void testShouldReturnValueOfOnClickAttribute() {
     driver.get(pages.javascriptPage);
@@ -248,8 +250,10 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
     WebElement mouseclickDiv = driver.findElement(By.id("mouseclick"));
 
     String onClickValue = mouseclickDiv.getAttribute("onclick");
-    assertEquals("Javascript code expected",
-        "javascript:displayMessage('mouse click');", onClickValue);
+    String expectedOnClickValue = "displayMessage('mouse click');";
+    assertThat("Javascript code expected", onClickValue, anyOf(
+        equalTo("javascript:" + expectedOnClickValue), //Non-IE
+        equalTo("function anonymous() { " + expectedOnClickValue + " }"))); //IE
 
     WebElement mousedownDiv = driver.findElement(By.id("mousedown"));
     assertEquals(null, mousedownDiv.getAttribute("onclick"));
