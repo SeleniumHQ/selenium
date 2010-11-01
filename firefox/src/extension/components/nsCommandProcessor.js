@@ -197,42 +197,42 @@ DelayedCommand.prototype.execute = function(ms) {
  *     command for a pending request in the current window's nsILoadGroup.
  */
 DelayedCommand.prototype.shouldDelayExecutionForPendingRequest_ = function() {
-    if (this.loadGroup_.isPending()) {
-      var hasOnLoadBlocker = false;
-      var numPending = 0;
-      var requests = this.loadGroup_.requests;
-      while (requests.hasMoreElements()) {
-        var request = requests.getNext().QueryInterface(Components.interfaces.nsIRequest);
-        var isPending = false;
-        try {
-          isPending = request.isPending();
-        } catch(e) {
-            // Normal during page load, which means we should just return "true"
-          return true;
-        }
-        if (isPending) {
-          numPending += 1;
-          hasOnLoadBlocker = hasOnLoadBlocker ||
-                           (request.name == 'about:document-onload-blocker');
-
-          if (numPending > 1) {
-            // More than one pending request, need to wait.
-            return true;
-          }
-        }
-      }
-
-      if (numPending && !hasOnLoadBlocker) {
-        Logger.dumpn('Ignoring pending about:document-onload-blocker request');
-        // If we only have one pending request and it is not a
-        // document-onload-blocker, we need to wait.  We do not wait for
-        // document-onload-blocker requests since these are created when
-        // one of document.[open|write|writeln] is called. If document.close is
-        // never called, the document-onload-blocker request will not be
-        // completed.
+  if (this.loadGroup_.isPending()) {
+    var hasOnLoadBlocker = false;
+    var numPending = 0;
+    var requests = this.loadGroup_.requests;
+    while (requests.hasMoreElements()) {
+      var request = requests.getNext().QueryInterface(Components.interfaces.nsIRequest);
+      var isPending = false;
+      try {
+        isPending = request.isPending();
+      } catch(e) {
+          // Normal during page load, which means we should just return "true"
         return true;
       }
+      if (isPending) {
+        numPending += 1;
+        hasOnLoadBlocker = hasOnLoadBlocker ||
+                         (request.name == 'about:document-onload-blocker');
+
+        if (numPending > 1) {
+          // More than one pending request, need to wait.
+          return true;
+        }
+      }
     }
+
+    if (numPending && !hasOnLoadBlocker) {
+      Logger.dumpn('Ignoring pending about:document-onload-blocker request');
+      // If we only have one pending request and it is not a
+      // document-onload-blocker, we need to wait.  We do not wait for
+      // document-onload-blocker requests since these are created when
+      // one of document.[open|write|writeln] is called. If document.close is
+      // never called, the document-onload-blocker request will not be
+      // completed.
+      return true;
+    }
+  }
   return false;
 };
 
