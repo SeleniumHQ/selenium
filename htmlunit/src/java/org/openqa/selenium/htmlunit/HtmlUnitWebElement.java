@@ -84,6 +84,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -217,7 +218,13 @@ public class HtmlUnitWebElement implements RenderedWebElement, WrapsDriver,
   private void verifyCanInteractWithElement() {
     assertElementNotStale();
 
-    if (!isDisplayed()) {
+    Boolean displayed = parent.implicitlyWaitFor(new Callable<Boolean>() {
+      public Boolean call() throws Exception {
+        return isDisplayed();
+      }
+    });
+
+    if (displayed == null || !displayed.booleanValue()) {
       throw new ElementNotVisibleException("You may only sendKeys to visible elements");
     }
     

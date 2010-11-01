@@ -20,9 +20,20 @@
           document.body.appendChild(box);
         }, 1000);
       }
+
+      function reveal() {
+        var elem = document.getElementById('revealed');
+        window.setTimeout(function() {
+          elem.style.display = '';
+        }, 1000);
+      }
     </script>
   </head>
   <body>
     <input id="adder" type="button" value="Add a box!" onclick="addMore()"/>
+
+    <input id="reveal" type="button" value="Reveal a new input" onclick="reveal();" />
+
+    <input id="revealed" style="display:none;" />
   </body>
 </html>

@@ -29,6 +29,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
 import com.gargoylesoftware.htmlunit.BrowserVersion;
@@ -919,6 +920,39 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
     }
   }
 
+  protected <X> X implicitlyWaitFor(Callable<X> condition) {
+    long end = System.currentTimeMillis() + implicitWait;
+    Exception lastException = null;
+
+    do {
+      X toReturn = null;
+      try {
+        toReturn = condition.call();
+      } catch (Exception e) {
+        lastException = e;
+      }
+
+      if (toReturn instanceof Boolean && !(Boolean) toReturn) {
+        continue;
+      }
+
+      if (toReturn != null) {
+        return toReturn;
+      }
+
+      sleepQuietly(200);
+    } while (System.currentTimeMillis() < end);
+
+    if (lastException != null) {
+      if (lastException instanceof RuntimeException) {
+        throw (RuntimeException) lastException;
+      }
+      throw new WebDriverException(lastException);
+    }
+
+    return null;
+  }
+
   protected WebClient getWebClient() {
     return webClient;
   }
@@ -1138,31 +1172,25 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
     return elements;
   }
 
-  WebElement findElement(By locator, SearchContext context) {
-    long start = System.currentTimeMillis();
-    while (true) {
-      try {
-        return locator.findElement(context);
-      } catch (NoSuchElementException e) {
-        if (System.currentTimeMillis() - start > implicitWait) {
-          throw e;
-        }
-        sleepQuietly(100);
+  WebElement findElement(final By locator, final SearchContext context) {
+    return implicitlyWaitFor(new Callable<WebElement>() {
+
+      public WebElement call() throws Exception {
+          return locator.findElement(context);
       }
-    }
+    });
   }
 
-  List<WebElement> findElements(By by, SearchContext context) {
-    long start = System.currentTimeMillis();
+  List<WebElement> findElements(final By by, final SearchContext context) {
+    long end = System.currentTimeMillis() + implicitWait;
     List<WebElement> found;
     do {
       found = by.findElements(context);
-      if (found.isEmpty()) {
-        sleepQuietly(100);
-      } else {
-        break;
+      if (!found.isEmpty()) {
+        return found;
       }
-    } while (System.currentTimeMillis() - start <= implicitWait);
+    } while (System.currentTimeMillis() < end);
+
     return found;
   }
 

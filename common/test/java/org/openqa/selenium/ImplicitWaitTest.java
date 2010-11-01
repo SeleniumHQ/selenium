@@ -5,6 +5,11 @@ import java.util.List;
 import org.junit.Test;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static org.openqa.selenium.Ignore.Driver.ANDROID;
+import static org.openqa.selenium.Ignore.Driver.CHROME;
+import static org.openqa.selenium.Ignore.Driver.FIREFOX;
+import static org.openqa.selenium.Ignore.Driver.IE;
+import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 
 /**
@@ -101,5 +106,28 @@ public class ImplicitWaitTest extends AbstractDriverTestCase {
 
     List<WebElement> elements = driver.findElements(By.className("redbox"));
     assertTrue(elements.isEmpty());
+  }
+
+  @Test
+  @JavascriptEnabled
+  @Ignore({ANDROID, CHROME, FIREFOX, IE, IPHONE, SELENESE})
+  public void testShouldImplicitlyWaitForAnElementToBeVisibleBeforeInteracting() {
+    driver.get(pages.dynamicPage);
+
+    WebElement reveal = driver.findElement(By.id("reveal"));
+    RenderedWebElement revealed = (RenderedWebElement) driver.findElement(By.id("revealed"));
+
+    driver.manage().timeouts().implicitlyWait(2000, MILLISECONDS);
+
+    assertFalse("revealed should not be visible", revealed.isDisplayed());
+
+    reveal.click();
+
+    try {
+      revealed.sendKeys("hello world");
+      // This is what we want
+    } catch (ElementNotVisibleException e) {
+      fail("Element should have been visible");
+    }
   }
 }
