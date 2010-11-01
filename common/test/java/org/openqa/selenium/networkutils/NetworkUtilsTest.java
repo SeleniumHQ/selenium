@@ -54,6 +54,7 @@ public class NetworkUtilsTest extends TestCase {
     String s = networkUtils.obtainLoopbackIp4Address();
     assertEquals("127.0.0.1", s);
   }
+
   public void testFreeBsd() throws Exception {
     NetworkUtils networkUtils = new NetworkUtils(StubNetworkInterfaceProvider.getFreeBsd());
     String s = networkUtils.obtainLoopbackIp4Address();
@@ -64,5 +65,11 @@ public class NetworkUtilsTest extends TestCase {
     NetworkUtils networkUtils = new NetworkUtils(StubNetworkInterfaceProvider.getVistaBox());
     String s = networkUtils.obtainLoopbackIp4Address();
     assertEquals("127.0.0.1", s);
-}
+  }
+
+  public void testWindows7Box() throws Exception {
+    NetworkUtils networkUtils = new NetworkUtils(StubNetworkInterfaceProvider.getWindows7Box());
+    String s = networkUtils.obtainLoopbackIp4Address();
+    assertEquals("127.0.0.1", s);
+  }
 }
