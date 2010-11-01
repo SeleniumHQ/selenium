@@ -306,6 +306,8 @@ public class FirefoxProfile {
     prefs.put("security.warn_viewing_mixed", "false");
     prefs.put("security.warn_viewing_mixed.show_once", "false");
     prefs.put("signon.rememberSignons", "false");
+    prefs.put("dom.max_script_run_time", "30");
+
 
     // Should we use native events?
     prefs.put(ENABLE_NATIVE_EVENTS_PREF,
