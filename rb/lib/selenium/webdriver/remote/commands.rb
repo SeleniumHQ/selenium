@@ -53,11 +53,8 @@ class Selenium::WebDriver::Remote::Bridge
   command :hoverOverElement,                :post,    "session/:session_id/element/:id/hover"
   command :dragElement,                     :post,    "session/:session_id/element/:id/drag"
   command :getElementValueOfCssProperty,    :get,     "session/:session_id/element/:id/css/:property_name"
-
   command :close,                           :delete,  "session/:session_id/window"
   command :getElementText,                  :get,     "session/:session_id/element/:id/text"
   command :getVisible,                      :get,     "session/:session_id/visible"
   command :setVisible,                      :post,    "session/:session_id/visible"
-  # command :switchToFrameByIndex # TODO: switchToFrameByIndex
-  # command :switchToDefaultContent # TODO: switchToDefaultContent
 end
