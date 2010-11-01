@@ -42,7 +42,7 @@ public class SocketLockTest extends TestCase {
   @Test
   public void serialLockOnSamePort() {
     for (int i = 0; i < 20; i++) {
-      Lock lock = new SocketLock(34567);
+      Lock lock = new SocketLock(24567);
       lock.lock(TimeUnit.SECONDS.toMillis(1));
       lock.unlock();
     }
