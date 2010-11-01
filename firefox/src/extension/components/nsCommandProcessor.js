@@ -197,18 +197,23 @@ DelayedCommand.prototype.execute = function(ms) {
  *     command for a pending request in the current window's nsILoadGroup.
  */
 DelayedCommand.prototype.shouldDelayExecutionForPendingRequest_ = function() {
-  try {
     if (this.loadGroup_.isPending()) {
       var hasOnLoadBlocker = false;
       var numPending = 0;
       var requests = this.loadGroup_.requests;
       while (requests.hasMoreElements()) {
-        var request =
-            requests.getNext().QueryInterface(Components.interfaces.nsIRequest);
-        if (request.isPending()) {
+        var request = requests.getNext().QueryInterface(Components.interfaces.nsIRequest);
+        var isPending = false;
+        try {
+          isPending = request.isPending();
+        } catch(e) {
+            // Normal during page load, which means we should just return "true"
+          return true;
+        }
+        if (isPending) {
           numPending += 1;
           hasOnLoadBlocker = hasOnLoadBlocker ||
-                             (request.name == 'about:document-onload-blocker');
+                           (request.name == 'about:document-onload-blocker');
 
           if (numPending > 1) {
             // More than one pending request, need to wait.
@@ -228,11 +233,6 @@ DelayedCommand.prototype.shouldDelayExecutionForPendingRequest_ = function() {
         return true;
       }
     }
-  } catch(e) {
-    Logger.dumpn('Problem while checking if we should delay execution: ' + e);
-    return true;
-  }
-
   return false;
 };
 
