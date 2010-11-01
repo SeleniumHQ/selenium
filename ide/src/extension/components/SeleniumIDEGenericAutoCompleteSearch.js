@@ -39,7 +39,7 @@ SeleniumIDEGenericAutoCompleteSearch.prototype = {
         Components.returnCode = Components.results.NS_ERROR_NO_INTERFACE;
         return null;
     }
-}
+};
 
 function AutoCompleteResult(search, candidates) {
 	this.search = search;
@@ -77,9 +77,12 @@ AutoCompleteResult.prototype = {
 	getValueAt: function(index) {
 		return this.result[index][0];
 	},
-	getImageAt : function (index) {
+	getImageAt: function (index) {
 		return '';
 	},
+	getLabelAt: function getLabelAt(index) {
+		return this.getValueAt(index);
+  },
 	removeValueAt: function(rowIndex, removeFromDb) {
 	},
     QueryInterface: function (uuid) {
@@ -90,7 +93,7 @@ AutoCompleteResult.prototype = {
         Components.returnCode = Components.results.NS_ERROR_NO_INTERFACE;
         return null;
     }
-}
+};
 
 //const COMPONENT_ID = Components.ID("{4791AF5F-AFBA-45A1-8204-47A135DF9591}");
 const COMPONENT_ID = Components.ID("{E5226A0D-4698-4E15-9D6D-86771AE172C9}");
