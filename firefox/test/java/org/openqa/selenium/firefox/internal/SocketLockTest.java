@@ -53,7 +53,7 @@ public class SocketLockTest extends TestCase {
         testSocket.close();
       } catch (BindException e) {
         final int PORT_START = 1025;
-        final int PORT_RANGE = 65535 - PORT_START;
+        final int PORT_RANGE = 32000 - PORT_START;
         randomPort = Math.abs(portRandom.nextInt(PORT_RANGE)) + PORT_START;
       }
     }
