@@ -240,6 +240,7 @@ namespace OpenQA.Selenium.Firefox
             AddDefaultPreference(prefs, "browser.tabs.warnOnClose", "false");
             AddDefaultPreference(prefs, "browser.tabs.warnOnOpen", "false");
             AddDefaultPreference(prefs, "dom.disable_open_during_load", "false");
+			AddDefaultPreference(prefs, "dom.max_script_run_time", "30");
             AddDefaultPreference(prefs, "extensions.update.enabled", "false");
             AddDefaultPreference(prefs, "extensions.update.notifyUser", "false");
             AddDefaultPreference(prefs, "network.manage-offline-status", "false");
@@ -256,6 +257,7 @@ namespace OpenQA.Selenium.Firefox
             AddDefaultPreference(prefs, "security.warn_viewing_mixed.show_once", "false");
             AddDefaultPreference(prefs, "signon.rememberSignons", "false");
             AddDefaultPreference(prefs, "startup.homepage_welcome_url", "\"about:blank\"");
+			AddDefaultPreference(prefs, "toolkit.networkmanager.disable", "true");
 
             // Which port should we listen on?
             AddDefaultPreference(prefs, "webdriver_firefox_port", profilePort.ToString(CultureInfo.InvariantCulture));
