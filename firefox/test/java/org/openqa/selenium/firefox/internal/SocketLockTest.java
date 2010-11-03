@@ -33,14 +33,14 @@ import org.openqa.selenium.WebDriverException;
 public class SocketLockTest extends TestCase {
 
   @Test
-  public void wellKnownLockLocation() {
+  public void testWellKnownLockLocation() {
     Lock lock = new SocketLock(12345);
     lock.lock(TimeUnit.SECONDS.toMillis(1));
     lock.unlock();
   }
   
   @Test
-  public void serialLockOnSamePort() {
+  public void testSerialLockOnSamePort() {
     for (int i = 0; i < 20; i++) {
       Lock lock = new SocketLock(24567);
       lock.lock(TimeUnit.SECONDS.toMillis(1));
@@ -49,7 +49,7 @@ public class SocketLockTest extends TestCase {
   }
   
   @Test
-  public void attemptToReuseLocksFails() {
+  public void testAttemptToReuseLocksFails() {
     Lock lock = new SocketLock(23456);
     lock.lock(TimeUnit.SECONDS.toMillis(1));
     lock.unlock();
