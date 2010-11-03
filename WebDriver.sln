@@ -65,6 +65,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebDriver.Support", "suppor
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "webdriver-support-tests", "support\test\csharp\webdriver-support-tests\webdriver-support-tests.csproj", "{1B70379B-5325-4243-8629-5C32802E9826}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebDriver.Android", "android\client\src\csharp\WebDriver.Android.csproj", "{EA8B657E-0801-4BE4-837F-DBBB2B4D765E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|.NET = Debug|.NET
@@ -437,6 +439,22 @@ Global
 		{1B70379B-5325-4243-8629-5C32802E9826}.Release|Win32.ActiveCfg = Release|Any CPU
 		{1B70379B-5325-4243-8629-5C32802E9826}.Release|x64.ActiveCfg = Release|Any CPU
 		{1B70379B-5325-4243-8629-5C32802E9826}.Release|x86.ActiveCfg = Release|Any CPU
+		{EA8B657E-0801-4BE4-837F-DBBB2B4D765E}.Debug|.NET.ActiveCfg = Debug|Any CPU
+		{EA8B657E-0801-4BE4-837F-DBBB2B4D765E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EA8B657E-0801-4BE4-837F-DBBB2B4D765E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EA8B657E-0801-4BE4-837F-DBBB2B4D765E}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{EA8B657E-0801-4BE4-837F-DBBB2B4D765E}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{EA8B657E-0801-4BE4-837F-DBBB2B4D765E}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{EA8B657E-0801-4BE4-837F-DBBB2B4D765E}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{EA8B657E-0801-4BE4-837F-DBBB2B4D765E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{EA8B657E-0801-4BE4-837F-DBBB2B4D765E}.Release|.NET.ActiveCfg = Release|Any CPU
+		{EA8B657E-0801-4BE4-837F-DBBB2B4D765E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EA8B657E-0801-4BE4-837F-DBBB2B4D765E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EA8B657E-0801-4BE4-837F-DBBB2B4D765E}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{EA8B657E-0801-4BE4-837F-DBBB2B4D765E}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{EA8B657E-0801-4BE4-837F-DBBB2B4D765E}.Release|Win32.ActiveCfg = Release|Any CPU
+		{EA8B657E-0801-4BE4-837F-DBBB2B4D765E}.Release|x64.ActiveCfg = Release|Any CPU
+		{EA8B657E-0801-4BE4-837F-DBBB2B4D765E}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
