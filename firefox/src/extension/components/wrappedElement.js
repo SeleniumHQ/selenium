@@ -17,6 +17,11 @@
  */
 
 
+Components.utils.import('resource://fxdriver/modules/atoms.js');
+
+var FirefoxDriver = FirefoxDriver || function(){};
+
+
 FirefoxDriver.prototype.elementEquals = function(respond, parameters) {
   var elementA = Utils.getElementAt(parameters.id,
                                     respond.session.getDocument());
@@ -29,11 +34,6 @@ FirefoxDriver.prototype.elementEquals = function(respond, parameters) {
 FirefoxDriver.prototype.clickElement = function(respond, parameters) {
   var element = Utils.getElementAt(parameters.id,
                                    respond.session.getDocument());
-
-  if (!bot.dom.isShown(element) && !Utils.isInHead(element)) {
-    throw new WebDriverError(ErrorCode.ELEMENT_NOT_VISIBLE,
-        "Element is not currently visible and so may not be clicked");
-  }
 
   var nativeEvents = Utils.getNativeEvents();
   var node = Utils.getNodeForNativeEvents(element);
@@ -116,6 +116,8 @@ FirefoxDriver.prototype.clickElement = function(respond, parameters) {
 
   Utils.installClickListener(respond, WebLoadingListener);
 };
+FirefoxDriver.prototype.clickElement.preconditions =
+    [ webdriver.preconditions.visible ];
 
 
 FirefoxDriver.prototype.getElementText = function(respond, parameters) {
@@ -157,16 +159,6 @@ FirefoxDriver.prototype.sendKeysToElement = function(respond, parameters) {
   var element = Utils.getElementAt(parameters.id,
                                    respond.session.getDocument());
 
-  if (!bot.dom.isShown(element) && !Utils.isInHead(element)) {
-    throw new WebDriverError(ErrorCode.ELEMENT_NOT_VISIBLE,
-        "Element is not currently visible and so may not be used for typing");
-  }
-  
-  if (!Utils.isEnabled(element)) {
-    throw new WebDriverError(ErrorCode.INVALID_ELEMENT_STATE,
-        "Element is disabled and so may not be used for typing");
-  }
-
   var currentlyActive = Utils.getActiveElement(respond.session.getDocument());
   if (currentlyActive != element) {
     currentlyActive.blur();
@@ -188,16 +180,13 @@ FirefoxDriver.prototype.sendKeysToElement = function(respond, parameters) {
 
   respond.send();
 };
+FirefoxDriver.prototype.sendKeysToElement.preconditions =
+    [ webdriver.preconditions.visible, webdriver.preconditions.enabled ];
 
 
 FirefoxDriver.prototype.clearElement = function(respond, parameters) {
   var element = Utils.getElementAt(parameters.id,
                                    respond.session.getDocument());
-
-  if (!bot.dom.isShown(element) && !Utils.isInHead(element)) {
-    throw new WebDriverError(ErrorCode.ELEMENT_NOT_VISIBLE,
-        "Element is not currently visible and so may not be cleared");
-  }
 
   var isTextField = element["value"] !== undefined;
 
@@ -226,6 +215,8 @@ FirefoxDriver.prototype.clearElement = function(respond, parameters) {
 
   respond.send();
 };
+FirefoxDriver.prototype.clearElement.preconditions =
+    [ webdriver.preconditions.visible ];
 
 
 FirefoxDriver.prototype.getElementTagName = function(respond, parameters) {
@@ -279,6 +270,9 @@ FirefoxDriver.prototype.hoverOverElement = function(respond, parameters) {
 
   respond.send();
 };
+FirefoxDriver.prototype.hoverOverElement.preconditions =
+    [ webdriver.preconditions.visible ];
+
 
 FirefoxDriver.prototype.submitElement = function(respond, parameters) {
   var element = Utils.getElementAt(parameters.id,
@@ -341,11 +335,6 @@ FirefoxDriver.prototype.setElementSelected = function(respond, parameters) {
   var element = Utils.getElementAt(parameters.id,
                                    respond.session.getDocument());
 
-  if (!bot.dom.isShown(element) && !Utils.isInHead(element)) {
-    throw new WebDriverError(ErrorCode.ELEMENT_NOT_VISIBLE,
-        "Element is not currently visible and so may not be selected");
-  }
-
   function safeQueryInterface(element, queryFor) {
     try {
       return element.QueryInterface(queryFor);
@@ -404,16 +393,13 @@ FirefoxDriver.prototype.setElementSelected = function(respond, parameters) {
   throw new WebDriverError(ErrorCode.INVALID_ELEMENT_STATE,
       'You may not select an unselectable element');
 };
+FirefoxDriver.prototype.setElementSelected.preconditions =
+    [ webdriver.preconditions.visible ];
 
 
 FirefoxDriver.prototype.toggleElement = function(respond, parameters) {
   var element = Utils.getElementAt(parameters.id,
                                    respond.session.getDocument());
-
-  if (!bot.dom.isShown(element) && !Utils.isInHead(element)) {
-    throw new WebDriverError(ErrorCode.ELEMENT_NOT_VISIBLE,
-        "Element is not currently visible and so may not be toggled");
-  }
 
   try {
     var checkbox =
@@ -452,6 +438,8 @@ FirefoxDriver.prototype.toggleElement = function(respond, parameters) {
       "You may only toggle an element that is either a checkbox or an "  +
       "option in a select that allows multiple selections");
 };
+FirefoxDriver.prototype.toggleElement.preconditions =
+    [ webdriver.preconditions.visible ];
 
 
 FirefoxDriver.prototype.isElementDisplayed = function(respond, parameters) {
@@ -494,12 +482,6 @@ FirefoxDriver.prototype.getElementSize = function(respond, parameters) {
 FirefoxDriver.prototype.dragElement = function(respond, parameters) {
   var element = Utils.getElementAt(parameters.id,
                                    respond.session.getDocument());
-
-  if (!bot.dom.isShown(element) && !Utils.isInHead(element)) {
-    throw new WebDriverError(ErrorCode.ELEMENT_NOT_VISIBLE,
-        "Element is not currently visible and so may not be used for " +
-        "drag and drop");
-  }
 
   // Scroll the first element into view
   //  element.scrollIntoView(true);
@@ -555,6 +537,8 @@ FirefoxDriver.prototype.dragElement = function(respond, parameters) {
   respond.value = finalLoc.x + "," + finalLoc.y;
   respond.send();
 };
+FirefoxDriver.prototype.dragElement.preconditions = 
+    [ webdriver.preconditions.visible ];
 
 
 FirefoxDriver.prototype.getElementValueOfCssProperty = function(respond,

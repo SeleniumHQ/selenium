@@ -237,6 +237,24 @@ DelayedCommand.prototype.shouldDelayExecutionForPendingRequest_ = function() {
 };
 
 
+DelayedCommand.prototype.checkPreconditions_ = function(preconditions, respond, parameters) {
+  if (!preconditions) {
+    return;
+  }
+
+  var toThrow = null;
+  var length = preconditions.length;
+
+  Logger.dumpn('length: ' + length);
+
+  for (var i = 0; i < length; i++) {
+    toThrow = preconditions[i](respond.session.getDocument(), parameters);
+    if (toThrow) {
+      throw toThrow;
+    }
+  }
+};
+
 /**
  * Attempts to execute the command.  If the window is not ready for the command
  * to execute, will set a timeout to try again.
@@ -261,8 +279,41 @@ DelayedCommand.prototype.executeInternal_ = function() {
       // TODO(simon): This is never cleared, but _should_ be okay, because send wipes itself
       this.driver_.response_ = this.response_;
 
-      this.driver_[this.command_.name](
-          this.response_, this.command_.parameters);
+      var response = this.response_;
+      var timer = new Timer();
+      var startTime = new Date().getTime();
+      var endTime = startTime + this.response_.session.getImplicitWait();
+      var name = this.command_.name;
+      var driverFunction = this.driver_[name];
+      var parameters = this.command_.parameters;
+
+      Logger.dumpn('name: ' + name);
+      Logger.dumpn('driverFunction: ' + driverFunction);
+      Logger.dumpn('preconditions: ' + driverFunction.preconditions);
+
+      var func = goog.bind(driverFunction, this.driver_,
+          this.response_, parameters);
+      var guards = goog.bind(this.checkPreconditions_, this,
+          driverFunction.preconditions, this.response_, parameters);
+      
+      var toExecute = function() {
+        try {
+          guards();
+          func();
+        } catch (e) {
+          if (new Date().getTime() < endTime) {
+            timer.setTimeout(toExecute, 100);
+          } else {
+            if (!e.isWebDriverError) {
+              Logger.dumpn(
+                  'Exception caught by driver: ' + name +
+                      '(' + parameters + ')\n' + e);
+            }
+            response.sendError(e);
+          }
+        }
+      };
+      toExecute();
     } catch (e) {
       if (!e.isWebDriverError) {
         Logger.dumpn(
@@ -282,6 +333,7 @@ DelayedCommand.prototype.executeInternal_ = function() {
  * @constructor
  */
 var nsCommandProcessor = function() {
+  Components.utils.import('resource://fxdriver/modules/atoms.js');
   Components.utils.import('resource://fxdriver/modules/timer.js');
   Components.utils.import('resource://fxdriver/modules/utils.js');
 

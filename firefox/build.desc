@@ -60,7 +60,10 @@ mozilla_extension(name = "webdriver",
 # Needed because the closure library doesn't have the EXPORTED_SYMBOLS variable
 # required by the loader in firefox
 js_binary(name = "atoms",
-  srcs = [ "src/js/exported_symbols.js" ],
+  srcs = [
+    "src/js/preconditions.js",
+    "src/js/exported_symbols.js"
+  ],
   deps = [ "//common:atomic_driver" ])
 
 js_binary(name = "utils",

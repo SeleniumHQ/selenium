@@ -110,17 +110,15 @@ public class ImplicitWaitTest extends AbstractDriverTestCase {
 
   @Test
   @JavascriptEnabled
-  @Ignore({ANDROID, CHROME, FIREFOX, IE, IPHONE, SELENESE})
+  @Ignore({ANDROID, CHROME, IE, IPHONE, SELENESE})
   public void testShouldImplicitlyWaitForAnElementToBeVisibleBeforeInteracting() {
     driver.get(pages.dynamicPage);
 
     WebElement reveal = driver.findElement(By.id("reveal"));
     RenderedWebElement revealed = (RenderedWebElement) driver.findElement(By.id("revealed"));
-
-    driver.manage().timeouts().implicitlyWait(2000, MILLISECONDS);
+    driver.manage().timeouts().implicitlyWait(5000, MILLISECONDS);
 
     assertFalse("revealed should not be visible", revealed.isDisplayed());
-
     reveal.click();
 
     try {
