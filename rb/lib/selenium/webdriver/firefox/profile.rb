@@ -269,6 +269,7 @@ module Selenium
           "browser.tabs.warnOnOpen"                   => 'false',
           "devtools.errorconsole.enabled"             => 'true',
           "dom.disable_open_during_load"              => 'false',
+          "dom.max_script_run_time"                   => '30',
           "extensions.logging.enabled"                => 'true',
           "extensions.update.enabled"                 => 'false',
           "extensions.update.notifyUser"              => 'false',
@@ -285,6 +286,7 @@ module Selenium
           "security.warn_viewing_mixed"               => 'false',
           "security.warn_viewing_mixed.show_once"     => 'false',
           "signon.rememberSignons"                    => 'false',
+          "toolkit.networkmanager.disable"            => 'true',
           "javascript.options.showInConsole"          => 'true',
           "browser.dom.window.dump.enabled"           => 'true',
           "dom.report_all_js_exceptions"              => "true"
