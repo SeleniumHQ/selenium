@@ -16,7 +16,6 @@ module Selenium
           end
         end
 
-
         def browser
           :android
         end

@@ -22,7 +22,6 @@ module Selenium
           bridge.getScreenOrientation.to_sym.downcase
         end
 
-
       end # Rotatable
     end # DriverExtensions
   end # WebDriver
