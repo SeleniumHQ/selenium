@@ -279,4 +279,17 @@ public class TextHandlingTest extends AbstractDriverTestCase {
     assertTrue(text.contains("some text"));
     assertFalse(text.contains("some more text"));
   }
+  
+  public void testShouldGetTextWhichIsAValidJSONObject() {
+    driver.get(pages.simpleTestPage);
+    WebElement element = driver.findElement(By.id("simpleJsonText"));
+    assertEquals("{a=\"b\", c=1, d=true}", element.getText());
+    //assertEquals("{a=\"b\", \"c\"=d, e=true, f=\\123\\\\g\\\\\"\"\"\\\'}", element.getText());
+  }
+  
+  public void testShouldGetTextWhichIsAValidComplexJSONObject() {
+    driver.get(pages.simpleTestPage);
+    WebElement element = driver.findElement(By.id("complexJsonText"));
+    assertEquals("{a=\"\\\\b\\\\\\\"\'\\\'\"}", element.getText());
+  }
 }
