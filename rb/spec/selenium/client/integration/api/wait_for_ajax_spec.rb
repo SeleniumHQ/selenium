@@ -8,9 +8,7 @@ describe "Wait For Ajax" do
       page.type "calculator-expression", "2 + 2"
       page.click "calculator-button", :wait_for => :ajax
 
-      pending_for_browsers(/safari/) do
-        page.value("calculator-result").should eql("4")
-      end
+      page.value("calculator-result").should eql("4")
     end
   end
 

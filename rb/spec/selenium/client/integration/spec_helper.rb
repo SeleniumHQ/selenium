@@ -1,8 +1,5 @@
 require 'rubygems'
-gem 'rspec', ">=1.2.8"
-
 require "selenium/client"
-require "selenium/rspec/spec_helper"
 require File.expand_path("../sample-app/sample_app", __FILE__)
 
 # for bamboo
@@ -11,7 +8,9 @@ ENV['CI_REPORTS'] = "build/test_logs"
 
 class SeleniumClientTestEnvironment
   def initialize
-    $stdout.sync = true
+    Thread.abort_on_exception = true
+    $stdout.sync              = true
+
     @jar = File.expand_path("../../../../../../build/selenium/server-with-tests-standalone.jar", __FILE__)
     raise Errno::ENOENT, jar unless File.exist?(@jar)
   end

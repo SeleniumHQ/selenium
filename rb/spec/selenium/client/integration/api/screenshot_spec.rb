@@ -1,4 +1,5 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
+require "base64"
 
 describe "Screenshot" do
   it "can capture html for current page" do

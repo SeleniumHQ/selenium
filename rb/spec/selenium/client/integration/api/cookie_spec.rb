@@ -18,10 +18,7 @@ describe "Cookie Handling" do
     page.create_cookie "addedCookieForPath1=new value1"
     page.create_cookie "addedCookieForPath2=new value2", :path => "/selenium-server/tests/html/path2/", :max_age => 60
     page.open "http://localhost:4444/selenium-server/tests/html/path1/cookie1.html"
-
-    pending_for_browsers(/safari/) do
-      page.cookies.should =~ /addedCookieForPath1=new value1/
-    end
+    page.cookies.should =~ /addedCookieForPath1=new value1/
 
     page.cookie?("addedCookieForPath1").should be_true
     page.cookie("addedCookieForPath1").should eql("new value1")
