@@ -57,4 +57,6 @@ class Selenium::WebDriver::Remote::Bridge
   command :getElementText,                  :get,     "session/:session_id/element/:id/text"
   command :getVisible,                      :get,     "session/:session_id/visible"
   command :setVisible,                      :post,    "session/:session_id/visible"
+  command :getScreenOrientation,            :get,     "session/:session_id/orientation"
+  command :setScreenOrientation,            :post,    "session/:session_id/orientation"
 end

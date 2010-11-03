@@ -27,15 +27,16 @@ end
 
 require "selenium/webdriver/common"
 
-
 module Selenium
   module WebDriver
     Point     = Struct.new(:x, :y)
     Dimension = Struct.new(:width, :height)
 
-    autoload :IE,      'selenium/webdriver/ie'
-    autoload :Remote,  'selenium/webdriver/remote'
+    autoload :Android, 'selenium/webdriver/android'
     autoload :Chrome,  'selenium/webdriver/chrome'
+    autoload :IE,      'selenium/webdriver/ie'
+    autoload :IPhone,  'selenium/webdriver/iphone'
+    autoload :Remote,  'selenium/webdriver/remote'
     autoload :Firefox, 'selenium/webdriver/firefox'
 
     def self.root

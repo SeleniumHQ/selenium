@@ -261,7 +261,6 @@ module Selenium
           find_elements_by 'xpath', xpath, parent
         end
 
-
         #
         # Element functions
         #

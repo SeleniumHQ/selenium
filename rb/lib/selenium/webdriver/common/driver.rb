@@ -34,14 +34,18 @@ module Selenium
 
         def for(browser, *args)
           bridge = case browser
-                   when :ie, :internet_explorer
-                     IE::Bridge.new(*args)
-                   when :remote
-                     Remote::Bridge.new(*args)
-                   when :chrome
-                     Chrome::Bridge.new(*args)
                    when :firefox, :ff
                      Firefox::Bridge.new(*args)
+                   when :remote
+                     Remote::Bridge.new(*args)
+                   when :ie, :internet_explorer
+                     IE::Bridge.new(*args)
+                   when :chrome
+                     Chrome::Bridge.new(*args)
+                   when :android
+                     Android::Bridge.new(*args)
+                   when :iphone
+                     IPhone::Bridge.new(*args)
                    else
                      raise ArgumentError, "unknown driver: #{browser.inspect}"
                    end

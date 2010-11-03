@@ -5,7 +5,7 @@ module Selenium
         class Common
           MAX_REDIRECTS   = 20 # same as chromium/gecko
           CONTENT_TYPE    = "application/json"
-          DEFAULT_HEADERS = { "Accept" => CONTENT_TYPE, "Content-Length" => "0" }
+          DEFAULT_HEADERS = { "Accept" => CONTENT_TYPE }
 
           class << self
             attr_accessor :timeout
