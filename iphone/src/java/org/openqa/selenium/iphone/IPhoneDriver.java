@@ -19,10 +19,13 @@ package org.openqa.selenium.iphone;
 
 import java.net.URL;
 
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
 /**
@@ -32,7 +35,7 @@ import org.openqa.selenium.remote.RemoteWebDriver;
  * The driver uses WebDriver's remote REST interface to communicate with the
  * iphone. The iphone (or iphone simulator) must be running the iWebDriver app.
  */
-public class IPhoneDriver extends RemoteWebDriver {
+public class IPhoneDriver extends RemoteWebDriver implements TakesScreenshot {
 
   /**
    * This is the default port and URL for iWebDriver. Eventually it would
@@ -122,5 +125,13 @@ public class IPhoneDriver extends RemoteWebDriver {
       return (WebElement) executeScript(
     		  "return document.activeElement || document.body;");
     }
+  }
+
+  @Override
+  public <X> X getScreenshotAs(OutputType<X> target) {
+    byte[] base64Png = (byte[]) execute(DriverCommand.SCREENSHOT).getValue();
+    String png = new String(base64Png);
+	  // ... and convert it.
+    return target.convertFromBase64Png(png);
   }
 }

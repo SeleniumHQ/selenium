@@ -17,13 +17,16 @@
 //  limitations under the License.
 
 #import "HTTPPNGResponse.h"
+#import "NSData+Base64.h"
 
 @implementation HTTPPNGResponse
 
 - (id)initWithImage:(UIImage *)image {
   NSData *imageData = UIImagePNGRepresentation(image);
-  NSLog(@"Sending PNG image of size %d bytes", [imageData length]);
-  return [super initWithData:imageData];
+  NSString *encodedImageString = [imageData base64EncodedString];
+  NSData *encodedImageData = [encodedImageString dataUsingEncoding:NSUTF8StringEncoding];
+  NSLog(@"Sending PNG image of size %d bytes", [encodedImageData length]);
+  return [super initWithData:encodedImageData];
 }
 
 - (NSString *) contentType {
