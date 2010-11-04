@@ -36,14 +36,11 @@ import java.net.URL;
  * A driver for running tests on an Android device or emulator.
  */
 public class AndroidDriver extends RemoteWebDriver implements TakesScreenshot, Rotatable {
-
-  protected static final String DEFAULT_ANDROID_DRIVER_URL = "http://localhost:8080/hub";
   
-  public AndroidDriver() throws MalformedURLException {
-    this(new URL(DEFAULT_ANDROID_DRIVER_URL));
+  public AndroidDriver() {
+    this(getDefaultUrl());
   }
-  
-  
+
   public AndroidDriver(String remoteAddress) throws MalformedURLException {
     this(new URL(remoteAddress));
   }
@@ -71,5 +68,13 @@ public class AndroidDriver extends RemoteWebDriver implements TakesScreenshot, R
   public ScreenOrientation getOrientation() {
     return ScreenOrientation.valueOf(
         (String) execute(DriverCommand.GET_SCREEN_ORIENTATION).getValue());
+  }
+
+  private static URL getDefaultUrl() {
+    try {
+      return new URL("http://localhost:8080/hub");
+    } catch (MalformedURLException e) {
+      throw new WebDriverException("Malformed default remote URL: " + e.getMessage());
+    }
   }
 }
