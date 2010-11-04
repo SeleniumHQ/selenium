@@ -28,6 +28,7 @@ import java.util.concurrent.TimeUnit;
 import org.junit.Assert;
 import org.junit.Test;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.internal.PortProber;
 
 /**
  * Tests for the {@link SocketLock} to make sure I'm not batshit crazy.
@@ -40,25 +41,7 @@ public class SocketLockTest extends TestCase {
 
   @Override
   protected void setUp() throws Exception {
-    super.setUp();
-    int randomPort = 24567;
-
-    Socket testSocket = new Socket();
-    boolean portFree = false;
-    while (!portFree) {
-      try {
-        InetSocketAddress addr = new InetSocketAddress("localhost", randomPort);
-        testSocket.bind(addr);
-        portFree = true;
-        testSocket.close();
-      } catch (BindException e) {
-        final int PORT_START = 1025;
-        final int PORT_RANGE = 32000 - PORT_START;
-        randomPort = Math.abs(portRandom.nextInt(PORT_RANGE)) + PORT_START;
-      }
-    }
-
-    freePort = randomPort;
+    freePort = PortProber.findFreePort();
   }
 
   @Test
