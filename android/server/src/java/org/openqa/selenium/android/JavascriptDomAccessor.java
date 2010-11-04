@@ -48,7 +48,7 @@ public class JavascriptDomAccessor {
   // TODO(berrada): Look at atoms in shared_js and reuse when possible.
   
   // This determines the context in which the Javascript is executed.
-  // By default element id 0 represents the document.
+  // By default element id 0 respresents the document.
   private static final String CONTEXT_NODE = 
       "var contextNode = contextNode = doc.androiddriver_elements[arguments[1]];";
 
@@ -560,8 +560,7 @@ public class JavascriptDomAccessor {
         "  event.initEvent('change', true, true);" +
         "  element.dispatchEvent(event);" +
         "}" +
-        "return 'true';" +
-        "} else {return '" + STALE + "';}",
+        "return 'true';",
         elementId);
     throwExceptionIfFailed(result);
   }
