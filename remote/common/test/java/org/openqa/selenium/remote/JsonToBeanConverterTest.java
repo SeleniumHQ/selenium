@@ -28,11 +28,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import org.hamcrest.Matchers;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.JSONWriter;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.Ignore;
@@ -40,7 +38,10 @@ import org.openqa.selenium.Platform;
 import org.openqa.selenium.browserlaunchers.DoNotUseProxyPac;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasEntry;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.is;
 
 public class JsonToBeanConverterTest extends TestCase {
 
@@ -128,27 +129,27 @@ public class JsonToBeanConverterTest extends TestCase {
     assertEquals(capabilities, readCapabilities);
   }
 
-//  public void testShouldBeAbleToInstantiateBooleans() throws Exception {
-//    JSONArray array = new JSONArray();
-//    array.put(true);
-//    array.put(false);
-//
-//    boolean first = new JsonToBeanConverter().convert(Boolean.class, array.get(0));
-//    boolean second = new JsonToBeanConverter().convert(Boolean.class, array.get(1));
-//
-//    assertTrue(first);
-//    assertFalse(second);
-//  }
+  public void testShouldBeAbleToInstantiateBooleans() throws Exception {
+    JSONArray array = new JSONArray();
+    array.put(true);
+    array.put(false);
 
-//  @SuppressWarnings("unchecked")
-//  public void testShouldUseAMapToRepresentComplexObjects() throws Exception {
-//    JSONObject toModel = new JSONObject();
-//    toModel.put("thing", "hairy");
-//    toModel.put("hairy", "true");
-//
-//    Map modelled = (Map) new JsonToBeanConverter().convert(Object.class, toModel);
-//    assertEquals(2, modelled.size());
-//  }
+    boolean first = new JsonToBeanConverter().convert(Boolean.class, array.get(0));
+    boolean second = new JsonToBeanConverter().convert(Boolean.class, array.get(1));
+
+    assertTrue(first);
+    assertFalse(second);
+  }
+
+  @SuppressWarnings("unchecked")
+  public void testShouldUseAMapToRepresentComplexObjects() throws Exception {
+    JSONObject toModel = new JSONObject();
+    toModel.put("thing", "hairy");
+    toModel.put("hairy", "true");
+
+    Map modelled = (Map) new JsonToBeanConverter().convert(Object.class, toModel);
+    assertEquals(2, modelled.size());
+  }
 
   @SuppressWarnings("unchecked")
   public void testShouldConvertAResponseWithAnElementInIt() throws Exception {
