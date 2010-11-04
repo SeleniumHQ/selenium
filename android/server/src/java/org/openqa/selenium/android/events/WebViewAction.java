@@ -17,13 +17,12 @@ limitations under the License.
 
 package org.openqa.selenium.android.events;
 
+import com.google.common.collect.Lists;
+
 import android.os.SystemClock;
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
 import android.webkit.WebView;
-import android.webkit.WebView.HitTestResult;
-
-import com.google.common.collect.Lists;
 
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.android.Platform;
@@ -32,6 +31,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Helper class to perform action on the webview.
@@ -78,7 +78,6 @@ public class WebViewAction {
    * @param text
    */
   public static void sendKeys(WebView webview, CharSequence... text) {
-    HitTestResult hitTestResult = webview.getHitTestResult();
     LinkedList<KeyEvent> keyEvents = Lists.newLinkedList();
     KeyCharacterMap characterMap = KeyCharacterMap.load(KeyCharacterMap.BUILT_IN_KEYBOARD);
     moveCursorToRightMostPosition(text[0].toString(), webview);
@@ -88,7 +87,6 @@ public class WebViewAction {
         char c = sequence.charAt(i);
         int code = AndroidKeys.getKeyEventFromUnicodeKey(c);
         if (code != -1) { 
-          long downTime = SystemClock.uptimeMillis();
           keyEvents.addLast(new KeyEvent(KeyEvent.ACTION_DOWN, code));
           keyEvents.addLast(new KeyEvent(KeyEvent.ACTION_UP, code));
         } else {
@@ -104,9 +102,9 @@ public class WebViewAction {
    * Dispatches the events from the queue to the webview.
    * 
    * @param webview
-   * @param eventsQueue
+   * @param keyEvents the list of events to send to the webview
    */
-  private static void dispatchEvents(WebView webview, LinkedList<KeyEvent> keyEvents) {
+  private static void dispatchEvents(WebView webview, List<KeyEvent> keyEvents) {
     if (Platform.sdk() <= Platform.DONUT) {
       webview.pauseTimers();
     }
@@ -141,11 +139,12 @@ public class WebViewAction {
    * @param webview the current webview
    */
   private static void moveCursorToRightMostPosition(String textAreaValue, WebView webview) {
+    List<KeyEvent> events = Lists.newArrayListWithExpectedSize(2);
     long downTime = SystemClock.uptimeMillis();
-    // TODO (berrada): add a test or check to ensure we end up at index 0 in the text box.
-    for (int i = 0; i < textAreaValue.length(); i++) {
-      webview.dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DPAD_RIGHT));
-      webview.dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_DPAD_RIGHT));
-    }
+    events.add(new KeyEvent(downTime, SystemClock.uptimeMillis(), KeyEvent.ACTION_DOWN,
+        KeyEvent.KEYCODE_DPAD_RIGHT, 0));
+    events.add(new KeyEvent(downTime, SystemClock.uptimeMillis(), KeyEvent.ACTION_UP,
+        KeyEvent.KEYCODE_DPAD_RIGHT, textAreaValue.length()));
+    dispatchEvents(webview, events);
   }
 }
