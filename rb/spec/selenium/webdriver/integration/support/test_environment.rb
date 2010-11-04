@@ -56,7 +56,7 @@ module Selenium
         def remote_server
           @remote_server ||= (
             path = File.join(root_folder, "build/remote/server/server-standalone.jar")
-            RemoteServer.new(path, :port => 44444) # TODO: random port
+            Selenium::Server.new(path, :port => 44444, :log => false) # TODO: random port
           )
         end
 
@@ -95,7 +95,7 @@ module Selenium
             instance = WebDriver::Driver.for(
               :remote,
               :desired_capabilities => remote_capabilities,
-              :url                  => remote_server.url
+              :url                  => remote_server.webdriver_url
             )
           else
             instance = WebDriver::Driver.for driver
