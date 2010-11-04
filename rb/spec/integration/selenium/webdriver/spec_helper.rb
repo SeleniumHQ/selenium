@@ -10,7 +10,7 @@ require "ci/reporter/rspec"
 ENV['CI_REPORTS'] = "build/test_logs"
 
 require "selenium-webdriver"
-require "selenium/webdriver/integration/support"
+require "selenium/webdriver/support"
 
 include Selenium
 

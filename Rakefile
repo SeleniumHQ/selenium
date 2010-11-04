@@ -137,6 +137,8 @@ task :test_java => [
 ]
 
 task :test_rb => [
+  "//rb:unit-test:jruby",
+  "//rb:rc-client-unit-test:jruby",
   "//rb:firefox-test:jruby",
   "//rb:remote-test:jruby",
  ("//rb:ie-test:jruby" if windows?),
