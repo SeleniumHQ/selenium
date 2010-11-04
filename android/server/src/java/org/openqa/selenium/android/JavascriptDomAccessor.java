@@ -810,7 +810,7 @@ public class JavascriptDomAccessor {
     } else if (DISABLED.equals(result)) {
       throw new UnsupportedOperationException("Cannot select disabled element.");
     } else if (UNSUPPORTED.equals(result)) {
-      throw new UnsupportedOperationException("Cannot toogle a radio button.");
+      throw new UnsupportedOperationException("Cannot toggle a radio button.");
     }
   }
   
@@ -818,7 +818,7 @@ public class JavascriptDomAccessor {
     if (elements.size() > 0) {
       return elements.get(0);
     }
-    throw new NoSuchElementException("Element not found with.");
+    throw new NoSuchElementException("Element not found.");
   }
   
   private Boolean getBoolean(Object result) {
