@@ -197,8 +197,10 @@ ruby_library(name = "rc-client",
     "lib/selenium/client/**/*.rb",
     "lib/selenium/client.rb",
     "lib/selenium-client.rb",
-    "lib/selenium/rake/*.rb",
-    "lib/selenium/rspec/**/*.rb"
+    "lib/selenium/rspec/**/*.rb",
+  ],
+  deps = [
+    ":common"
   ]
 )
 
