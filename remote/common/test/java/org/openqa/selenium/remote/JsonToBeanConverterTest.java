@@ -28,15 +28,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import org.hamcrest.Matchers;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.JSONWriter;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Cookie;
+import org.openqa.selenium.Ignore;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.browserlaunchers.DoNotUseProxyPac;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 
 public class JsonToBeanConverterTest extends TestCase {
 
@@ -54,6 +58,8 @@ public class JsonToBeanConverterTest extends TestCase {
 
     Map<String, String> map = new JsonToBeanConverter().convert(Map.class, toConvert.toString());
     assertThat(map.size(), is(2));
+    assertThat(map, hasEntry("cheese", "brie"));
+    assertThat(map, hasEntry("foodstuff", "cheese"));
   }
 
   @SuppressWarnings("unchecked")
@@ -122,27 +128,27 @@ public class JsonToBeanConverterTest extends TestCase {
     assertEquals(capabilities, readCapabilities);
   }
 
-  public void testShouldBeAbleToInstantiateBooleans() throws Exception {
-    JSONArray array = new JSONArray();
-    array.put(true);
-    array.put(false);
+//  public void testShouldBeAbleToInstantiateBooleans() throws Exception {
+//    JSONArray array = new JSONArray();
+//    array.put(true);
+//    array.put(false);
+//
+//    boolean first = new JsonToBeanConverter().convert(Boolean.class, array.get(0));
+//    boolean second = new JsonToBeanConverter().convert(Boolean.class, array.get(1));
+//
+//    assertTrue(first);
+//    assertFalse(second);
+//  }
 
-    boolean first = new JsonToBeanConverter().convert(Boolean.class, array.get(0));
-    boolean second = new JsonToBeanConverter().convert(Boolean.class, array.get(1));
-
-    assertTrue(first);
-    assertFalse(second);
-  }
-
-  @SuppressWarnings("unchecked")
-  public void testShouldUseAMapToRepresentComplexObjects() throws Exception {
-    JSONObject toModel = new JSONObject();
-    toModel.put("thing", "hairy");
-    toModel.put("hairy", "true");
-
-    Map modelled = (Map) new JsonToBeanConverter().convert(Object.class, toModel);
-    assertEquals(2, modelled.size());
-  }
+//  @SuppressWarnings("unchecked")
+//  public void testShouldUseAMapToRepresentComplexObjects() throws Exception {
+//    JSONObject toModel = new JSONObject();
+//    toModel.put("thing", "hairy");
+//    toModel.put("hairy", "true");
+//
+//    Map modelled = (Map) new JsonToBeanConverter().convert(Object.class, toModel);
+//    assertEquals(2, modelled.size());
+//  }
 
   @SuppressWarnings("unchecked")
   public void testShouldConvertAResponseWithAnElementInIt() throws Exception {
@@ -279,6 +285,26 @@ public class JsonToBeanConverterTest extends TestCase {
     converted.outputTo(derived);
 
     assertEquals(source.toString(), derived.toString());
+  }
+
+  @Ignore(reason = "http://code.google.com/p/selenium/issues/detail?id=931")
+  public void testShouldNotParseQuotedJsonObjectsAsActualJsonObjects() throws JSONException {
+    JSONObject inner = new JSONObject()
+        .put("color", "green")
+        .put("number", 123);
+
+    JSONObject outer = new JSONObject()
+        .put("inner", inner.toString());
+
+    String jsonStr = outer.toString();
+
+    Object convertedOuter = new JsonToBeanConverter().convert(Map.class, jsonStr);
+    assertThat(convertedOuter, instanceOf(Map.class));
+
+    Object convertedInner = ((Map) convertedOuter).get("inner");
+    assertNotNull(convertedInner);
+    assertThat(convertedInner, instanceOf(String.class));
+    assertThat(convertedInner.toString(), equalTo(inner.toString()));
   }
 
   public static class SimpleBean {
