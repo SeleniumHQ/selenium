@@ -17,15 +17,12 @@ limitations under the License.
 
 package org.openqa.selenium.android;
 
-import android.util.Log;
-
 import org.openqa.selenium.WebDriver.Navigation;
 import org.openqa.selenium.android.intents.Action;
 
 import java.net.URL;
 
 public class AndroidNavigation implements Navigation {
-  private static final String LOG_TAG = AndroidNavigation.class.getName();
   private AndroidDriver driver;
   
   public AndroidNavigation(AndroidDriver driver) {
@@ -33,17 +30,14 @@ public class AndroidNavigation implements Navigation {
   }
   
   public void back() {
-    Log.d(LOG_TAG, "Navigating back.");
     driver.doNavigation(Action.NAVIGATE_BACK);
   }
 
   public void forward() {
-    Log.d(LOG_TAG, "Navigating forward.");
     driver.doNavigation(Action.NAVIGATE_FORWARD);
   }
 
   public void refresh() {
-    Log.d(LOG_TAG, "Navigating refresh.");
     driver.doNavigation(Action.REFRESH);
   }
 

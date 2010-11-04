@@ -26,6 +26,7 @@ import android.util.Log;
 import com.google.common.collect.Sets;
 
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.android.Logger;
 
 import java.io.Serializable;
 import java.util.Set;
@@ -71,8 +72,9 @@ public class IntentReceiver extends BroadcastReceiver {
     Bundle res = new Bundle();
     res.putSerializable(action, (Serializable) result);
 
-    Log.d(LOG_TAG, String.format("Received intent: %s, from context: %s. Returning: %s",
-        action, context, result));
+    Logger.log(Log.DEBUG, LOG_TAG,
+        String.format("Received intent: %s, from context: %s. Returning: %s",
+            action, context, result));
     this.setResultExtras(res);
   }
 

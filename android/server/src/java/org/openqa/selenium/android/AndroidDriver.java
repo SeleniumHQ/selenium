@@ -105,7 +105,6 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
   private long implicitWait = 0;
   
   public AndroidDriver() {
-    Log.e(LOG_TAG, "AndroidDriver constructor: " + getContext().getPackageName());
     // By default currentFrame is the root, i.e. window
     currentFrame = "window";
     initJsonLibrary();
@@ -151,7 +150,6 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
   }
   
   public String getCurrentUrl() {
-    Log.d(LOG_TAG, "getCurrentUrl");
     if ("window".equals(currentFrame)) {
       return (String) executeScript("return " + currentFrame + ".location.href");
     }
@@ -159,7 +157,6 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
   }
 
   public String getTitle() {
-    Log.d(LOG_TAG, "getTitle");
     if (!"window".equals(currentFrame)) {
       return (String) executeScript("return " + currentFrame + ".document.title");
     }
@@ -171,7 +168,6 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
   }
 
   public String getPageSource() {
-    Log.d(LOG_TAG, "getPageSource");
     return (String) executeScript(
         "return (new XMLSerializer()).serializeToString("
             + currentFrame + ".document.documentElement);");
@@ -180,18 +176,15 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
   public void close() {
     // Delete the current session. Android driver does not support multisessions
     // closing is equivalent to quit().
-    Log.d(LOG_TAG, "Close");
     quit();
   }
 
   public void quit() {
-    Log.d(LOG_TAG, "Quitting..");
     intentRegistrar.unregisterAllReceivers();
     sendIntent(Action.ACTIVITY_QUIT);
   }
 
   public WebElement findElement(By by) {
-    Log.d(LOG_TAG, "findElement by: " + by.toString());
     timer.start();
     while (true) {
       try {
@@ -206,7 +199,6 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
   }
 
   public List<WebElement> findElements(By by) {
-    Log.d(LOG_TAG, "findElements by: " + by.toString());
     timer.start();
     List<WebElement> found;
     do {
@@ -224,67 +216,56 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
     try {
       Thread.sleep(ms);
     } catch (InterruptedException cause) {
-      Log.e(LOG_TAG, "Sleep, interupted: " + cause.getMessage());
+      Logger.log(Log.ERROR, LOG_TAG,
+          "Sleep, interupted: " + cause.getMessage());
     }
   }
 
   public WebElement findElementByLinkText(String using) {
-    Log.d(LOG_TAG, "Searching for element by link text: " + using);
     return element.findElementByLinkText(using);
   }
 
   public List<WebElement> findElementsByLinkText(String using) {
-    Log.d(LOG_TAG, "Searching for elements by link text: " + using);
     return element.findElementsByLinkText(using);
   }
 
   public WebElement findElementById(String id) {
-    Log.d(LOG_TAG, "Searching for element by Id: " + id);
     return element.findElementById(id);
   }
 
   public List<WebElement> findElementsById(String id) {
-    Log.d(LOG_TAG, "Searching for elements by Id: " + id);
     return findElementsByXPath("//*[@id='" + id + "']");
   }
 
   public WebElement findElementByName(String using) {
-    Log.d(LOG_TAG, "Searching for element by name: " + using);
     return element.findElementByName(using);
   }
 
   public List<WebElement> findElementsByName(String using) {
-    Log.d(LOG_TAG, "Searching for elements by name: " + using);
     return element.findElementsByName(using);
   }
 
   public WebElement findElementByTagName(String using) {
-    Log.d(LOG_TAG, "Searching for element by tag name: " + using);
     return element.findElementByTagName(using);
   }
 
   public List<WebElement> findElementsByTagName(String using) {
-    Log.d(LOG_TAG, "Searching for elements by tag name: " + using);
     return element.findElementsByTagName(using);
   }
 
   public WebElement findElementByXPath(String using) {
-    Log.d(LOG_TAG, "Searching for element by XPath: " + using);
     return element.findElementByXPath(using);
   }
 
   public List<WebElement> findElementsByXPath(String using) {
-    Log.d(LOG_TAG, "Searching for elements by XPath: " + using);
     return element.findElementsByXPath(using);
   }
 
   public WebElement findElementByPartialLinkText(String using) {
-    Log.d(LOG_TAG, "Searching for element by partial link text: " + using);
     return element.findElementByPartialLinkText(using);
   }
 
   public List<WebElement> findElementsByPartialLinkText(String using) {
-    Log.d(LOG_TAG, "Searching for elements by partial link text: " + using);
     return element.findElementsByPartialLinkText(using);
   }
 
@@ -324,7 +305,6 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
     }
 
     public WebDriver frame(int index) {
-      Log.d(LOG_TAG, "Switch to frame: " + index);
       if (isFrameIndexValid(index)) {
         currentFrame += ".frames[" + index + "]"; 
       } else {
@@ -334,7 +314,6 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
     }
 
     public WebDriver frame(String frameNameOrId) {
-      Log.d(LOG_TAG, "Switch to frame: " + frameNameOrId);
       setCurrentFrame(frameNameOrId);
       return AndroidDriver.this;
     }
@@ -351,7 +330,6 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
       } else {
         throw new NoSuchFrameException("Frame not found: " + frameNameOrId);
       }
-      Log.d(LOG_TAG, "New frame context is: " + currentFrame);
     }
     
     private boolean isFrameNameOrIdValid(String name) {
@@ -386,10 +364,9 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
   public Object executeScript(String script, Object... args) {
     String jsFunction = embedScriptInJsFunction(script, args);
     executeJavascriptInWebView(jsFunction);
-    
+
     // jsResult is updated by the intent receiver when the JS result is ready. 
     Object res = checkResultAndConvert(jsResult);
-    Log.d(LOG_TAG, String.format("executeScript Converted result from %s, to %s.", jsResult, res));    
     return res;
   }
 
@@ -435,7 +412,7 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
     // Callback to get the result passed from JS to Java
     toExecute.append("window.webdriver.resultMethod(").append(objName).append(");");
 
-    Log.d(LOG_TAG, "executeScript executing: " + toExecute);
+    Logger.log(Log.DEBUG, LOG_TAG, "executeScript executing: " + toExecute);
     jsFunction.append(toExecute);
 
     // Delete JSON functions
@@ -491,7 +468,8 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
         JSONObject obj = new JSONObject(jsResult);
         return processJsonObject(obj.opt(TYPE));
       } catch (JSONException e) {
-        Log.e(LOG_TAG, "checkResultAndConvert JSONException", e);
+        Logger.log(Log.ERROR, LOG_TAG,
+            "checkResultAndConvert JSONException + " + e.getMessage());
       }
     }
     return jsResult;
@@ -515,7 +493,6 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
   }
 
   public void setProxy(String host, int port) {
-    Log.d(LOG_TAG, "setProxy, host: " + host + " port:" + port);
     if ((host != null) && (host.length() > 0)) {
       System.getProperties().put("proxySet", "true");
       System.getProperties().put("proxyHost", host);
@@ -657,7 +634,6 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
   }
 
   public Object onReceiveBroadcast(String action, Object... args) {
-    Log.e(LOG_TAG, "onBroadcastWithResult handling: " + action);
     if (Action.JAVASCRIPT_RESULT_AVAILABLE.equals(action)) {
       jsResult = (String) args[0];
     } else if (Action.PAGE_LOADED.equals(action)) {

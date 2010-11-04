@@ -21,7 +21,6 @@ import org.openqa.selenium.Cookie;
 import org.openqa.selenium.WebDriverException;
 
 import android.content.Context;
-import android.util.Log;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
 
@@ -36,7 +35,6 @@ import java.util.List;
  * Class that manages cookies the webview.
  */
 public class SessionCookieManager {
-  private static final String LOG_TAG = SessionCookieManager.class.getName();
   private static final String COOKIE_DATE_FORMAT = "EEE, dd MMM yyyy hh:mm:ss z";
 
   public static final String COOKIE_SEPARATOR = ";";
@@ -56,7 +54,6 @@ public class SessionCookieManager {
    * @return Set of cookie objects for given domain
    */
   public List<Cookie> getCookies(String domain) {
-    Log.d(LOG_TAG, String.format("Get all cookies for url: %s", domain));
     cookieManager.removeExpiredCookie();
     String cookies = cookieManager.getCookie(domain);
     List<Cookie> result = new LinkedList<Cookie>();
@@ -89,7 +86,6 @@ public class SessionCookieManager {
     }
     for (String domain : domains) {
       String cookies = cookieManager.getCookie(domain);
-      Log.d(LOG_TAG, "Cookie for domain " + domain + " " + cookies);
       if (cookies != null && cookies.length() > 0) {
         if (!first) {
           cookiesBuilder.append(COOKIE_SEPARATOR);
@@ -123,7 +119,6 @@ public class SessionCookieManager {
         domains.add(relative.toString());
       }
     }
-    Log.d(LOG_TAG, "Cookie for domains " + domains);
     return domains;
   }
 
@@ -135,7 +130,6 @@ public class SessionCookieManager {
    * @return Cookie object (if found) or null
    */
   public Cookie getCookie(String url, String name) {
-    Log.d(LOG_TAG, String.format("Get cookie with name: %s, for url: %s", name, url));
     List<Cookie> cookies;
     try {
       cookies = getCookies(getDomainsFromUrl(new URL(url)).get(0));
@@ -161,7 +155,6 @@ public class SessionCookieManager {
   public void removeAllCookies(String url) {
     // TODO(berrada): this removes all cookies, we should remove only cookies for
     // the current URL. Given that this is single session it is ok for now.
-    Log.d(LOG_TAG, String.format("Removing all cookies for url: %s", url));
     cookieManager.removeAllCookie();
   }
 
@@ -172,7 +165,6 @@ public class SessionCookieManager {
    * @param name of the cookie to remove
    */
   public void remove(String url, String name) {
-    Log.d(LOG_TAG, String.format("Removing cookie with name: %s for url: %s", name, url));
     List<String> domains;
     try {
       domains = getDomainsFromUrl(new URL(url));
@@ -201,7 +193,6 @@ public class SessionCookieManager {
    * @param cookie Cookie to be added
    */
   public void addCookie(String url, Cookie cookie) {
-    Log.d(LOG_TAG, String.format("Adding cookie: %s to url: %s", cookie.toString(), url));
     URL urlObj;
     try {
       urlObj = new URL(url);

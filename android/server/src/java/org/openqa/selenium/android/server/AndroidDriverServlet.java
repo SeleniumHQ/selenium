@@ -19,7 +19,6 @@ package org.openqa.selenium.android.server;
 
 import javax.servlet.ServletException;
 
-import android.util.Log;
 import org.openqa.selenium.android.server.handler.DragElement;
 import org.openqa.selenium.android.server.handler.GetCssProperty;
 import org.openqa.selenium.android.server.handler.GetElementDisplayed;
@@ -32,15 +31,9 @@ import org.openqa.selenium.remote.server.renderer.JsonResult;
 import org.openqa.selenium.remote.server.rest.ResultType;
 
 public class AndroidDriverServlet extends DriverServlet {
-
-  private static final String LOG_TAG = AndroidDriverServlet.class.getName();
-
   @Override
   public void init() throws ServletException {
     super.init();
-
-    Log.d(LOG_TAG, "Android custom initilization");
-
     try {
       addNewGetMapping("/session/:sessionId/element/:id/displayed", GetElementDisplayed.class).on(
           ResultType.SUCCESS, new JsonResult(":response"));

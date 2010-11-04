@@ -18,7 +18,6 @@ limitations under the License.
 package org.openqa.selenium.android.events;
 
 import android.os.SystemClock;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.webkit.WebView;
 
@@ -31,11 +30,8 @@ import java.util.List;
 /**
  * Class used to send touch events to the screen directed to the webview.
  */
-public class TouchScreen {
-  private static final String LOG_TAG = TouchScreen.class.getName();
-  
+public class TouchScreen {  
   public static void sendMotion(WebView webview, MotionEvent... events) {
-    Log.d(LOG_TAG, "Sending touch event.");
     WebViewAction.clearFocusFromCurrentElement(webview);
     
     if (Platform.sdk() <= Platform.DONUT) {
@@ -45,7 +41,6 @@ public class TouchScreen {
       List<MotionEvent> eventsQueue = Lists.newLinkedList();      
       long downTime = SystemClock.uptimeMillis();
       for (MotionEvent event : events) {
-        Log.d(LOG_TAG, "Processing Motion Event: " + event.toString());
         long eventTime = SystemClock.uptimeMillis();
         MotionEvent e = MotionEvent.obtain(downTime, eventTime, event.getAction(), event.getX(),
             event.getY(), event.getMetaState());

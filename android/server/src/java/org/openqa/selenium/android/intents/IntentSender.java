@@ -24,6 +24,8 @@ import android.content.Intent;
 import android.os.Parcelable;
 import android.util.Log;
 
+import org.openqa.selenium.android.Logger;
+
 import java.io.Serializable;
 import java.util.concurrent.Callable;
 
@@ -40,7 +42,7 @@ public class IntentSender extends BroadcastReceiver implements Callable {
   }
   
   public synchronized void broadcast(Context sender, String action, Object... args) {
-    Log.d(LOG_TAG, String.format("Context: %s, Sending Intent: %s, Args: %s",
+    Logger.log(Log.DEBUG, LOG_TAG, String.format("Context: %s, Sending Intent: %s, Args: %s",
         sender.toString(), action, args.length));
     received = false;
     this.action = action;
@@ -66,8 +68,9 @@ public class IntentSender extends BroadcastReceiver implements Callable {
   public void onReceive(Context context, Intent intent) {
     received = true;
     toReturn = getResultExtras(true).get(action);
-    Log.d(LOG_TAG, String.format("Received intent: %s, from context: %s, with data: %s. ",
-        intent.getAction(), context, (toReturn == null ? "null" : toReturn.toString())));
+    Logger.log(Log.DEBUG, LOG_TAG,
+        String.format("Received intent: %s, from context: %s, with data: %s. ",
+            intent.getAction(), context, (toReturn == null ? "null" : toReturn.toString())));
   }
 
   public Object call() throws Exception {

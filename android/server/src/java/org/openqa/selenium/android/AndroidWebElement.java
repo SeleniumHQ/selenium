@@ -19,7 +19,6 @@ package org.openqa.selenium.android;
 
 import android.graphics.Point;
 import android.os.SystemClock;
-import android.util.Log;
 import android.view.MotionEvent;
 
 import org.openqa.selenium.By;
@@ -48,7 +47,6 @@ import java.util.regex.Pattern;
 public class AndroidWebElement implements WebElement, FindsById, FindsByLinkText, FindsByXPath,
     FindsByTagName, SearchContext, WrapsDriver {
 
-  private static final String LOG_TAG = AndroidWebElement.class.getName();
   private final AndroidDriver driver;
   private final String elementId;
 
@@ -69,8 +67,7 @@ public class AndroidWebElement implements WebElement, FindsById, FindsByLinkText
     // Scroll if the element is not visible so it is in the viewport.
     getDomAccessor().scrollIfNeeded(elementId);
     Point center = getDomAccessor().getCenterCoordinate(elementId);
-    Log.d(LOG_TAG, "Clicking on " + center.toString());
-    
+
     MotionEvent downEvent = MotionEvent.obtain(SystemClock.uptimeMillis(),
         SystemClock.uptimeMillis(), MotionEvent.ACTION_DOWN, center.x, center.y, 0);
     MotionEvent upEvent = MotionEvent.obtain(downEvent.getDownTime(),
@@ -109,7 +106,6 @@ public class AndroidWebElement implements WebElement, FindsById, FindsByLinkText
   }
 
   public void clear() {
-    Log.d(LOG_TAG, "clear");
     String value = getValue();
     if (value == null || value.length() == 0) {
       return;
@@ -277,7 +273,6 @@ public class AndroidWebElement implements WebElement, FindsById, FindsByLinkText
 
   public String getValueOfCssProperty(String property) {
     String value = getDomAccessor().getValueOfCssProperty(property, true, elementId);
-    Log.d(LOG_TAG, "ValueOfCssProperty: " + property + " = " + value);
     if (value == null) {
       return "";
     }

@@ -20,6 +20,7 @@ package org.openqa.selenium.android.intents;
 import android.util.Log;
 
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.android.Logger;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -42,7 +43,7 @@ public class FutureExecutor {
     try {
       toReturn = future.get(timeout, TimeUnit.MILLISECONDS);
     } catch (InterruptedException e) {
-      Log.e(LOG_TAG, "InterruptedException Future interupted, restauring state. "
+      Logger.log(Log.ERROR, LOG_TAG, "InterruptedException Future interupted, restauring state. "
           + e);
       Thread.currentThread().interrupt();
     } catch (ExecutionException e) {
@@ -50,7 +51,7 @@ public class FutureExecutor {
       throw new WebDriverException("ExecutionException: Future task shutdown. ",
           e);
     } catch (TimeoutException e) {
-      Log.e(LOG_TAG, "TimeoutException Future: " + e);
+      Logger.log(Log.ERROR, LOG_TAG, "TimeoutException Future: " + e);
     }
     return toReturn;
   }

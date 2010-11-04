@@ -39,6 +39,7 @@ import org.mortbay.jetty.handler.HandlerList;
 import org.mortbay.jetty.nio.SelectChannelConnector;
 import org.mortbay.jetty.servlet.ServletHolder;
 import org.openqa.selenium.android.AndroidDriver;
+import org.openqa.selenium.android.Logger;
 import org.openqa.selenium.android.Platform;
 import org.openqa.selenium.android.app.R;
 
@@ -63,7 +64,6 @@ public class JettyService extends Service {
     }
 
     try {
-      Log.d(LOG_TAG, "pref port = " + port);
       // Get a wake lock to stop the cpu going to sleep
       PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
       wakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "IJetty");
@@ -76,10 +76,10 @@ public class JettyService extends Service {
       notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
       Toast.makeText(JettyService.this, R.string.jetty_started, Toast.LENGTH_SHORT).show();
 
-      Log.i(LOG_TAG, "Jetty started");
+      Logger.log(Log.INFO, LOG_TAG, "Jetty started");
       super.onStart(intent, startId);
     } catch (Exception e) {
-      Log.e(LOG_TAG, "Error starting jetty", e);
+      Logger.log(Log.ERROR, LOG_TAG, "Error starting jetty" + e);
       Toast.makeText(this, getText(R.string.jetty_not_started), Toast.LENGTH_SHORT).show();
     }
   }
@@ -104,20 +104,19 @@ public class JettyService extends Service {
         notificationManager.cancel(R.string.jetty_started);
         // Tell the user we stopped.
         Toast.makeText(this, getText(R.string.jetty_stopped), Toast.LENGTH_SHORT).show();
-        Log.i(LOG_TAG, "Jetty stopped");
+        Logger.log(Log.INFO, LOG_TAG, "Jetty stopped");
       } else {
-        Log.i(LOG_TAG, "Jetty not running");
         Toast.makeText(JettyService.this, R.string.jetty_not_running, Toast.LENGTH_SHORT).show();
       }
     } catch (Exception e) {
-      Log.e(LOG_TAG, "Error stopping jetty", e);
+      Logger.log(Log.INFO, LOG_TAG, "Error stopping jetty" + e.getMessage());
       Toast.makeText(this, getText(R.string.jetty_not_stopped), Toast.LENGTH_SHORT).show();
     }
   }
 
   @Override
   public void onLowMemory() {
-    Log.i(LOG_TAG, "Low on memory");
+    Logger.log(Log.INFO, LOG_TAG, "Low on memory");
     super.onLowMemory();
   }
 
@@ -171,13 +170,14 @@ public class JettyService extends Service {
             in = JettyService.this.getResources().openRawResource(R.raw.javascript_xpath);
             ByteStreams.copy(in, response.getOutputStream());
           } catch (Exception e) {
-            Log.e(LOG_TAG, "Could not open resources", e);
+            Logger.log(Log.ERROR, LOG_TAG, "Could not open resources" + e.getMessage());
           } finally {
             if (in != null) {
               in.close();
             }
           }
-          Log.d(LOG_TAG, "loading resource took "+(System.currentTimeMillis()-a)+" ms");
+          Logger.log(Log.DEBUG, LOG_TAG,
+              "loading resource took " + (System.currentTimeMillis()-a) + " ms");
         }
       }), "/*");
       
@@ -201,7 +201,7 @@ public class JettyService extends Service {
   }
 
   protected void stopJetty() throws Exception {
-    Log.d(LOG_TAG, "Jetty stopping");
+    Logger.log(Log.DEBUG, LOG_TAG, "Jetty stopping");
     server.stop();
     server.join();
     server = null;

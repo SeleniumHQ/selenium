@@ -19,6 +19,8 @@ package org.openqa.selenium.android.util;
 
 import android.util.Log;
 
+import org.openqa.selenium.android.Logger;
+
 /**
  * Simple timer class used to time actions executed.
  */
@@ -42,7 +44,8 @@ public class SimpleTimer {
   public void stop(String description) {
     end = System.currentTimeMillis();
     isRunning = false;
-    Log.d(LOG_TAG, String.format("%s: %d milliseconds.", description, getElapsedTimeInMillis()));
+    Logger.log(Log.DEBUG, LOG_TAG,
+        String.format("%s: %d milliseconds.", description, getElapsedTimeInMillis()));
   }
   
   public long getElapsedTimeInMillis() {

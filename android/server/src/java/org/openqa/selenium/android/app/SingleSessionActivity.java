@@ -20,7 +20,7 @@ package org.openqa.selenium.android.app;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.ScreenOrientation;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.android.RunnableWithArgs;
+import org.openqa.selenium.android.Logger;
 import org.openqa.selenium.android.events.TouchScreen;
 import org.openqa.selenium.android.events.WebViewAction;
 import org.openqa.selenium.android.intents.Action;
@@ -96,7 +96,6 @@ public class SingleSessionActivity extends Activity implements IntentReceiverLis
     cookieManager.removeAllCookie();
     
     initIntentReceivers();
-    Log.d(LOG_TAG, "WebView Initialized.");
   }
 
   private void initWebViewSettings() {
@@ -167,7 +166,6 @@ public class SingleSessionActivity extends Activity implements IntentReceiverLis
    * @param url URL to navigate to.
    */
   public void navigateTo(String url) {
-    Log.d(LOG_TAG, "navigateTo URL : " + url);
     if (url == null) {
       sendIntent(Action.PAGE_LOADED);
       return;
@@ -267,14 +265,6 @@ public class SingleSessionActivity extends Activity implements IntentReceiverLis
     }
   }
   
-  public void executeNativeAction(final RunnableWithArgs r) {
-    try {
-      r.run(webView);
-    } catch (InterruptedException e) {
-      Log.e(LOG_TAG, "executeNativeAction Exception", e);
-    }
-  }
-  
   public byte[] takeScreenshot() {
     Picture pic = webView.capturePicture();
     Bitmap bitmap = Bitmap.createBitmap(
@@ -285,16 +275,17 @@ public class SingleSessionActivity extends Activity implements IntentReceiverLis
     ByteArrayOutputStream stream = new ByteArrayOutputStream();
     
     if (!bitmap.compress(CompressFormat.PNG, 100, stream)) {
-      Log.e(LOG_TAG, "Error while compressing screenshot image.");
+      Logger.log(Log.ERROR, LOG_TAG,
+          "Error while compressing screenshot image.");
     }
     try {
       stream.flush();
       stream.close();
     } catch (IOException e) {
-      Log.e(LOG_TAG, "Error while capturing screenshot: " + e.getMessage());
+      Logger.log(Log.ERROR, LOG_TAG,
+          "Error while capturing screenshot: " + e.getMessage());
     }
     byte[] rawPng = stream.toByteArray();
-    Log.d(LOG_TAG, "Captured Screenshot. Image size: " + rawPng.length);
     return rawPng;
   }
   
@@ -345,7 +336,7 @@ public class SingleSessionActivity extends Activity implements IntentReceiverLis
      * @param result Results (if returned) or an empty string.
      */
     public void resultAvailable(String result) {
-      Log.d(logTag, "Script finished with result: " + result);
+      Logger.log(Log.DEBUG, logTag, "Script finished with result: " + result);
       sendIntent(Action.JAVASCRIPT_RESULT_AVAILABLE, result);
     }
   }
@@ -355,13 +346,10 @@ public class SingleSessionActivity extends Activity implements IntentReceiverLis
    * is always loaded by the WebView and updates progress bar according to the page loading
    * progress.
    */
-  final class SimpleWebViewClient extends WebViewClient {
-    private final String logTag = SimpleWebViewClient.class.getName();
-    
+  final class SimpleWebViewClient extends WebViewClient {    
     @Override
     public void onPageStarted(WebView view, String url, Bitmap favicon) {
       super.onPageStarted(view, url, favicon);
-      Log.d(logTag, "onPageStarted  Loading: " + url);
       setProgressBarVisibility(true); // Showing progress bar in title
       setProgress(0);
       currentUrl = url;
@@ -379,7 +367,6 @@ public class SingleSessionActivity extends Activity implements IntentReceiverLis
       // If it is a html fragment or the current url loaded, the page is
       // not reloaded and the onProgessChanged function is not called.
       if (url.contains("#") && currentUrl.equals(url.split("#")[0])) {
-        Log.d(logTag, "This is an html fragment for an already loaded page.");
         sendIntent(Action.PAGE_LOADED);
       }
     }
@@ -390,27 +377,19 @@ public class SingleSessionActivity extends Activity implements IntentReceiverLis
    * title.
    */
   final class SimpleWebChromeClient extends WebChromeClient {
-    private final String log_tag = SimpleWebChromeClient.class.getName();
     private ExecutorService executor = Executors.newSingleThreadExecutor();
 
     @Override
     public void onProgressChanged(WebView view, int newProgress) {
       setStatus(view.getUrl());
-      setProgress(newProgress * 100);
-
-      Log.d(log_tag, String.format("onProgressChanged url : %s, progress: %s, lastUrlLoaded: %s",
-          view.getUrl(), newProgress, lastUrlLoaded));
-      
+      setProgress(newProgress * 100);  
       if (newProgress == 100 && lastUrlLoaded != null && lastUrlLoaded.equals(view.getUrl())) {
-        Log.d(log_tag, "Probably finished loading url in webview: " + view.getUrl());
         pageHasStartedLoading = false;
         executor.submit(new PageLoaderManager());
       }
     }
     
-    class PageLoaderManager implements Runnable {
-      private final String logTag = PageLoaderManager.class.getName();
-      
+    class PageLoaderManager implements Runnable {      
       public void run() {
         ExecutorService thread = Executors.newSingleThreadExecutor();
         Future<Void> future = thread.submit(new Callable<Void>() {
@@ -431,7 +410,6 @@ public class SingleSessionActivity extends Activity implements IntentReceiverLis
           throw new WebDriverException("Future task interupted.", cause.getCause());
         } catch (TimeoutException e) {
           sendIntent(Action.PAGE_LOADED);
-          Log.d(logTag, "Future timed out because this is not a meta-redirect.");
         }
       }
     }

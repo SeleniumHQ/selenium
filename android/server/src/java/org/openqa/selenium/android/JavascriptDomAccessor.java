@@ -91,7 +91,6 @@ public class JavascriptDomAccessor {
       "}";
   
   public JavascriptDomAccessor(AndroidDriver driver) {
-    Log.d(LOG_TAG, "Javascript Dom Accessor constructor.");
     this.driver = driver;
   }
   
@@ -774,7 +773,6 @@ public class JavascriptDomAccessor {
       }
       return elements;
     } catch (NumberFormatException e) {
-      Log.e(LOG_TAG, "could not process id", e);
       throw new InternalError("Javascript injection failed. Got result: " + ids);
     }
   }
@@ -785,10 +783,10 @@ public class JavascriptDomAccessor {
       Object scriptResult = driver.executeScript(toExecute, using, elementId);
       if (scriptResult instanceof String && ((String) scriptResult).startsWith(FAILED)) {
         try {
-          Log.d(LOG_TAG, "executeAndRetry Script: " + toExecute);
+          Logger.log(Log.DEBUG, LOG_TAG, "executeAndRetry Script: " + toExecute);
           Thread.sleep(XPATH_RETRY_TIMEOUT);
         } catch (InterruptedException e) {
-          Log.d(LOG_TAG, "executeAndRetry InterruptedException: " + e.getMessage());
+          Logger.log(Log.ERROR, LOG_TAG, "executeAndRetry InterruptedException: " + e.getMessage());
           break;
         }
       } else {
@@ -796,7 +794,7 @@ public class JavascriptDomAccessor {
           result = (List) scriptResult;
           break;
         } else {
-          Log.e(LOG_TAG, "Not expected type " + scriptResult);
+          Logger.log(Log.DEBUG, LOG_TAG, "Not expected type " + scriptResult);
         }
       }
     }
