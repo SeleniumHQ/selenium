@@ -9,7 +9,6 @@ require "digest/md5"
 require 'fileutils'
 require 'tmpdir'
 
-require 'selenium/client/tcp_socket_extension'
 require 'selenium/client/errors'
 require 'selenium/client/protocol'
 require 'selenium/client/legacy_driver'
