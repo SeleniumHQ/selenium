@@ -18,7 +18,12 @@ limitations under the License.
 package org.openqa.selenium.networkutils;
 
 import java.net.InetAddress;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.List;
 
 public class NetworkInterface {
   private final String name;
@@ -47,6 +52,15 @@ public class NetworkInterface {
   public INetAddress getIp4LoopbackOnly() {
     for (INetAddress inetAddress : inetAddresses) {
       if (inetAddress.isLoopbackAddress() && inetAddress.isIPv4Address()) {
+        return inetAddress;
+      }
+    }
+    return null;
+  }
+
+  public INetAddress getIp4NonLoopBackOnly() {
+    for (INetAddress inetAddress : inetAddresses) {
+      if (!inetAddress.isLoopbackAddress() && inetAddress.isIPv4Address()) {
         return inetAddress;
       }
     }

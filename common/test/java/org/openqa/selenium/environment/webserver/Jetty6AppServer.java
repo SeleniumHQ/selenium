@@ -52,9 +52,9 @@ public class Jetty6AppServer implements AppServer {
   private final Server server;
   private WebAppContext context;
   private final String hostName;
-  
+
   public Jetty6AppServer() {
-    this("localhost");
+    this(networkUtils.getNonLoopbackAddressOfThisMachine());
   }
   
   public Jetty6AppServer(String hostName) {

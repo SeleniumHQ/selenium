@@ -16,13 +16,13 @@ limitations under the License.
 */
 package org.openqa.selenium.networkutils;
 
-import org.openqa.selenium.Platform;
-import org.openqa.selenium.WebDriverException;
-
 import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import org.openqa.selenium.Platform;
+import org.openqa.selenium.WebDriverException;
 
 public class NetworkUtils {
 
@@ -43,6 +43,23 @@ public class NetworkUtils {
     }
 
     return addresses.get(0).getHostAddress();
+  }
+
+  /**
+   * Used by the mobile emulators that refuse to access localhost or 127.0.0.1
+   * The ip4/ip6 requirements of this method are as-of-yet unspecified, but we return
+   * the string that is associated with the ip4 interface
+   *
+   * @return
+   */
+  public String getNonLoopbackAddressOfThisMachine() {
+    for (NetworkInterface iface : networkInterfaceProvider.getNetworkInterfaces()) {
+      final INetAddress ip4NonLoopback = iface.getIp4NonLoopBackOnly();
+      if (ip4NonLoopback != null) {
+        return ip4NonLoopback.getHostName();
+      }
+    }
+    throw new WebDriverException("Could not find a non-loopback ip4 address for this machine");
   }
 
   /**
@@ -72,12 +89,15 @@ public class NetworkUtils {
       }
     }
 
-    throw new WebDriverException("Unable to resolve local loopback address, please file an issue with the full message of this error:\n" + getNetWorkDiags() + "\n==== End of error message");
+    throw new WebDriverException(
+        "Unable to resolve local loopback address, please file an issue with the full message of this error:\n"
+        + getNetWorkDiags() + "\n==== End of error message");
   }
 
 
   private INetAddress grabFirstNetworkAddress() {
-    NetworkInterface firstInterface = networkInterfaceProvider.getNetworkInterfaces().iterator().next();
+    NetworkInterface firstInterface =
+        networkInterfaceProvider.getNetworkInterfaces().iterator().next();
     INetAddress firstAddress = null;
     if (firstInterface != null) {
       firstAddress = firstInterface.getInetAddresses().iterator().next();
@@ -144,14 +164,16 @@ public class NetworkUtils {
 
   public static String getNetWorkDiags() {
     StringBuilder result = new StringBuilder();
-    DefaultNetworkInterfaceProvider defaultNetworkInterfaceProvider = new DefaultNetworkInterfaceProvider();
-    for (NetworkInterface networkInterface : defaultNetworkInterfaceProvider.getNetworkInterfaces()) {
+    DefaultNetworkInterfaceProvider defaultNetworkInterfaceProvider =
+        new DefaultNetworkInterfaceProvider();
+    for (NetworkInterface networkInterface : defaultNetworkInterfaceProvider
+        .getNetworkInterfaces()) {
       dumpToConsole(result, networkInterface);
 
     }
     NetworkInterface byName = defaultNetworkInterfaceProvider.getLoInterface();
-    if (byName != null){
-      result.append("Loopback interface LO:\n");      
+    if (byName != null) {
+      result.append("Loopback interface LO:\n");
       dumpToConsole(result, byName);
     }
     return result.toString();
