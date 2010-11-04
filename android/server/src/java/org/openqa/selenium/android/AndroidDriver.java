@@ -439,7 +439,7 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
     FutureExecutor.executeFuture(new Callable<Void>() {
       public Void call() {
         while (NOT_DONE_INDICATOR.equals(jsResult)) {
-          sleepQuietly(50);
+          sleepQuietly(10);
         }
         return null;
       }
