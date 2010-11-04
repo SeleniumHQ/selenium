@@ -7,7 +7,7 @@ require "selenium/webdriver/support/helpers"
 module Selenium
   module WebDriver
     module SpecSupport
-      autoload :RackServer, "selenium/webdriver/integration/support/rack_server"
+      autoload :RackServer, "selenium/webdriver/support/rack_server"
     end
   end
 end
