@@ -21,8 +21,6 @@ import junit.framework.TestCase;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.concurrent.Callable;
-import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.environment.TestEnvironment;
@@ -32,7 +30,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.core.IsNot.not;
-import static org.openqa.selenium.TestWaiter.waitFor;
 
 public class AbstractDriverTestCase extends TestCase implements NeedsDriver {
 
