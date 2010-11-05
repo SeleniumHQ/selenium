@@ -37,16 +37,16 @@ import java.util.Map;
 
 public class JsonToBeanConverter {
 
-  @SuppressWarnings("unchecked")
   public <T> T convert(Class<T> clazz, Object text) throws JsonException {
     try {
-      return actualConvert(clazz, text);
+      return convert(clazz, text, 0);
     } catch (JSONException e) {
       throw new JsonException(e);
     }
   }
 
-  protected <T> T actualConvert(Class<T> clazz, Object text) throws JSONException {
+  @SuppressWarnings("unchecked")
+  private <T> T convert(Class<T> clazz, Object text, int depth) throws JSONException {
     if (text == null) {
       return null;
     }
@@ -83,13 +83,14 @@ public class JsonToBeanConverter {
       JSONObject rawCommand = new JSONObject((String) text);
 
       SessionId sessionId = null;
-      if (rawCommand.has("sessionId"))
-        sessionId = convert(SessionId.class, rawCommand.getString("sessionId"));
+      if (rawCommand.has("sessionId")) {
+        sessionId = convert(SessionId.class, rawCommand.getString("sessionId"), depth + 1);
+      }
 
       String name = rawCommand.getString("name");
       if (rawCommand.has("parameters")) {
-        Map<String, ?> args =
-            (Map<String, ?>) convert(HashMap.class, rawCommand.getJSONObject("parameters"));
+        Map<String, ?> args = (Map<String, ?>) convert(HashMap.class,
+            rawCommand.getJSONObject("parameters"), depth + 1);
         return (T) new Command(sessionId, name, args);
       }
 
@@ -187,40 +188,44 @@ public class JsonToBeanConverter {
     }
 
     if (text instanceof JSONArray) {
-      return (T) convertList((JSONArray) text);
+      return (T) convertList((JSONArray) text, depth);
     }
 
     if (text == JSONObject.NULL) {
       return null;
     }
 
-    JSONObject o;
-    try {
-      if (text instanceof JSONObject)
-        o = (JSONObject) text;
-      else if (text != null && text instanceof String) {
+    if (depth == 0) {
+      if (text != null && text instanceof String) {
         if (((String) text).startsWith("[")) {
-          return (T) convert(List.class, new JSONArray((String) text));
+          text = new JSONArray((String) text);
+        } else {
+          text = new JSONObject(String.valueOf(text));
         }
       }
-      o = new JSONObject(String.valueOf(text));
-    } catch (JSONException e) {
-      return (T) text;
     }
 
-    if (Map.class.isAssignableFrom(clazz)) {
-      return (T) convertMap(o);
-    }
+    if (text instanceof JSONObject) {
+      JSONObject o = (JSONObject) text;
 
-    if (isPrimitive(o.getClass())) {
-      return (T) o;
-    }
+      if (Map.class.isAssignableFrom(clazz)) {
+        return (T) convertMap(o, depth);
+      }
 
-    if (Object.class.equals(clazz)) {
-      return (T) convertMap(o);
-    }
+      if (isPrimitive(o.getClass())) {
+        return (T) o;
+      }
 
-    return convertBean(clazz, o);
+      if (Object.class.equals(clazz)) {
+        return (T) convertMap(o, depth);
+      }
+
+      return convertBean(clazz, o, depth);
+    } else if (text instanceof JSONArray) {
+      return (T) convertList((JSONArray) text, depth + 1);
+    } else {
+      return (T) text;  // Crap shoot here; probably a string.
+    }
   }
 
   @SuppressWarnings("unchecked")
@@ -243,11 +248,7 @@ public class JsonToBeanConverter {
     return clazz.isEnum() || text instanceof Enum<?>;
   }
 
-  private Object convert(Object toConvert) {
-    return toConvert;
-  }
-
-  public <T> T convertBean(Class<T> clazz, JSONObject toConvert) throws JSONException {
+  public <T> T convertBean(Class<T> clazz, JSONObject toConvert, int depth) throws JSONException {
     T t = newInstance(clazz);
     SimplePropertyDescriptor[] allProperties =
         SimplePropertyDescriptor.getPropertyDescriptors(clazz);
@@ -265,7 +266,7 @@ public class JsonToBeanConverter {
       Class<?> type = write.getParameterTypes()[0];
 
       try {
-        write.invoke(t, convert(type, value));
+        write.invoke(t, convert(type, value, depth + 1));
       } catch (IllegalAccessException e) {
         throw propertyWriteException(property, value, type, e);
       } catch (InvocationTargetException e) {
@@ -294,23 +295,23 @@ public class JsonToBeanConverter {
   }
 
   @SuppressWarnings("unchecked")
-  private Map convertMap(JSONObject toConvert) throws JSONException {
+  private Map convertMap(JSONObject toConvert, int depth) throws JSONException {
     Map map = new HashMap();
 
     Iterator allEntries = toConvert.keys();
     while (allEntries.hasNext()) {
       String key = (String) allEntries.next();
-      map.put(key, convert(Object.class, toConvert.get(key)));
+      map.put(key, convert(Object.class, toConvert.get(key), depth + 1));
     }
 
     return map;
   }
 
   @SuppressWarnings("unchecked")
-  private List convertList(JSONArray toConvert) throws JSONException {
+  private List convertList(JSONArray toConvert, int depth) throws JSONException {
     ArrayList list = new ArrayList(toConvert.length());
     for (int i = 0; i < toConvert.length(); i++) {
-      list.add(convert(Object.class, toConvert.get(i)));
+      list.add(convert(Object.class, toConvert.get(i), depth + 1));
     }
     return list;
   }

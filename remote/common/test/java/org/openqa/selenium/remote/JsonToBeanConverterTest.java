@@ -288,7 +288,6 @@ public class JsonToBeanConverterTest extends TestCase {
     assertEquals(source.toString(), derived.toString());
   }
 
-  @Ignore(reason = "http://code.google.com/p/selenium/issues/detail?id=931")
   public void testShouldNotParseQuotedJsonObjectsAsActualJsonObjects() throws JSONException {
     JSONObject inner = new JSONObject()
         .put("color", "green")
