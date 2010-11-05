@@ -253,7 +253,8 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
     String expectedOnClickValue = "displayMessage('mouse click');";
     assertThat("Javascript code expected", onClickValue, anyOf(
         equalTo("javascript:" + expectedOnClickValue), //Non-IE
-        equalTo("function anonymous()\n{\n" + expectedOnClickValue + "\n}"))); //IE
+        equalTo("function anonymous()\n{\n" + expectedOnClickValue + "\n}"), // IE
+        equalTo("function onclick()\n{\n" + expectedOnClickValue + "\n}"))); //IE
 
     WebElement mousedownDiv = driver.findElement(By.id("mousedown"));
     assertEquals(null, mousedownDiv.getAttribute("onclick"));
