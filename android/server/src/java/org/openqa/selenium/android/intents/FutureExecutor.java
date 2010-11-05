@@ -51,7 +51,7 @@ public class FutureExecutor {
       throw new WebDriverException("ExecutionException: Future task shutdown. ",
           e);
     } catch (TimeoutException e) {
-      Logger.log(Log.ERROR, LOG_TAG, "TimeoutException Future: " + e);
+      throw new WebDriverException("Future timeout!", e);
     }
     return toReturn;
   }
