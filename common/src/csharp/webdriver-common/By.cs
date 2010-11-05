@@ -17,9 +17,7 @@ limitations under the License.
 */
 
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Text;
 using System.Text.RegularExpressions;
 using OpenQA.Selenium.Internal;
 
@@ -31,30 +29,8 @@ namespace OpenQA.Selenium
     /// <remarks>It is possible to create your own locating mechanisms for finding documents.
     /// In order to do this,subclass this class and override the protected methods. However,
     /// it is expected that that all subclasses rely on the basic finding mechanisms provided 
-    /// through static methods of this class.
+    /// through static methods of this class. An example of this can be found in OpenQA.Support.ByIdOrName
     /// </remarks>
-    /// <example>This example shows a subclass for finding by name or by id.
-    /// <code>
-    /// public class FindByIdOrName
-    /// {
-    ///     private string selector;
-    /// <para></para>     
-    ///     public FindByIdOrName(string idOrNameSelector) 
-    ///     {
-    ///         selector = idOrNameSelector;
-    ///     }
-    /// <para></para>    
-    ///     public IWebElement FindElement(IWebDriver driver) 
-    ///     {
-    ///         IWebElement element = driver.FindElement(By.Id(selector)); 
-    ///         if (element == null)
-    ///         {
-    ///             element = driver.FindElement(By.Name(selector); 
-    ///         }
-    ///         return element;
-    ///     }
-    /// }
-    /// </code>
     /// </example>
     public class By
     {
@@ -79,14 +55,8 @@ namespace OpenQA.Selenium
             }
 
             By by = new By();
-            by.findElementMethod = delegate(ISearchContext context)
-            {
-                return ((IFindsById)context).FindElementById(idToFind);
-            };
-            by.findElementsMethod = delegate(ISearchContext context)
-            {
-                return ((IFindsById)context).FindElementsById(idToFind);
-            };
+            by.findElementMethod = (ISearchContext context) => ((IFindsById) context).FindElementById(idToFind);
+            by.findElementsMethod = (ISearchContext context) => ((IFindsById) context).FindElementsById(idToFind);
 
             by.description = "By.Id: " + idToFind;
             return by;
@@ -105,14 +75,10 @@ namespace OpenQA.Selenium
             }
 
             By by = new By();
-            by.findElementMethod = delegate(ISearchContext context)
-            {
-                return ((IFindsByLinkText)context).FindElementByLinkText(linkTextToFind);
-            };
-            by.findElementsMethod = delegate(ISearchContext context)
-            {
-                return ((IFindsByLinkText)context).FindElementsByLinkText(linkTextToFind);
-            };
+            by.findElementMethod =
+                (ISearchContext context) => ((IFindsByLinkText) context).FindElementByLinkText(linkTextToFind);
+            by.findElementsMethod =
+                (ISearchContext context) => ((IFindsByLinkText) context).FindElementsByLinkText(linkTextToFind);
 
             by.description = "By.LinkText: " + linkTextToFind;
             return by;
@@ -131,14 +97,8 @@ namespace OpenQA.Selenium
             }
 
             By by = new By();
-            by.findElementMethod = delegate(ISearchContext context)
-            {
-                return ((IFindsByName)context).FindElementByName(nameToFind);
-            };
-            by.findElementsMethod = delegate(ISearchContext context)
-            {
-                return ((IFindsByName)context).FindElementsByName(nameToFind);
-            };
+            by.findElementMethod = (ISearchContext context) => ((IFindsByName) context).FindElementByName(nameToFind);
+            by.findElementsMethod = (ISearchContext context) => ((IFindsByName) context).FindElementsByName(nameToFind);
 
             by.description = "By.Name: " + nameToFind;
             return by;
@@ -157,14 +117,9 @@ namespace OpenQA.Selenium
             }
 
             By by = new By();
-            by.findElementMethod = delegate(ISearchContext context)
-            {
-                return ((IFindsByXPath)context).FindElementByXPath(xpathToFind);
-            };
-            by.findElementsMethod = delegate(ISearchContext context)
-            {
-                return ((IFindsByXPath)context).FindElementsByXPath(xpathToFind);
-            };
+            by.findElementMethod = (ISearchContext context) => ((IFindsByXPath) context).FindElementByXPath(xpathToFind);
+            by.findElementsMethod =
+                (ISearchContext context) => ((IFindsByXPath) context).FindElementsByXPath(xpathToFind);
 
             by.description = "By.XPath: " + xpathToFind;
             return by;
@@ -191,14 +146,10 @@ namespace OpenQA.Selenium
             }
 
             By by = new By();
-            by.findElementMethod = delegate(ISearchContext context)
-            {
-                return ((IFindsByClassName)context).FindElementByClassName(classNameToFind);
-            };
-            by.findElementsMethod = delegate(ISearchContext context)
-            {
-                return ((IFindsByClassName)context).FindElementsByClassName(classNameToFind);
-            };
+            by.findElementMethod =
+                (ISearchContext context) => ((IFindsByClassName) context).FindElementByClassName(classNameToFind);
+            by.findElementsMethod =
+                (ISearchContext context) => ((IFindsByClassName) context).FindElementsByClassName(classNameToFind);
 
             by.description = "By.ClassName[Contains]: " + classNameToFind;
             return by;
@@ -212,14 +163,12 @@ namespace OpenQA.Selenium
         public static By PartialLinkText(string partialLinkTextToFind)
         {
             By by = new By();
-            by.findElementMethod = delegate(ISearchContext context)
-            {
-                return ((IFindsByPartialLinkText)context).FindElementByPartialLinkText(partialLinkTextToFind);
-            };
-            by.findElementsMethod = delegate(ISearchContext context)
-            {
-                return ((IFindsByPartialLinkText)context).FindElementsByPartialLinkText(partialLinkTextToFind);
-            };
+            by.findElementMethod =
+                (ISearchContext context) =>
+                ((IFindsByPartialLinkText) context).FindElementByPartialLinkText(partialLinkTextToFind);
+            by.findElementsMethod =
+                (ISearchContext context) =>
+                ((IFindsByPartialLinkText) context).FindElementsByPartialLinkText(partialLinkTextToFind);
 
             by.description = "By.PartialLinkText: " + partialLinkTextToFind;
             return by;
@@ -238,14 +187,10 @@ namespace OpenQA.Selenium
             }
 
             By by = new By();
-            by.findElementMethod = delegate(ISearchContext context)
-            {
-                return ((IFindsByTagName)context).FindElementByTagName(tagNameToFind);
-            };
-            by.findElementsMethod = delegate(ISearchContext context)
-            {
-                return ((IFindsByTagName)context).FindElementsByTagName(tagNameToFind);
-            };
+            by.findElementMethod =
+                (ISearchContext context) => ((IFindsByTagName) context).FindElementByTagName(tagNameToFind);
+            by.findElementsMethod =
+                (ISearchContext context) => ((IFindsByTagName) context).FindElementsByTagName(tagNameToFind);
 
             by.description = "By.TagName: " + tagNameToFind;
             return by;
@@ -264,14 +209,10 @@ namespace OpenQA.Selenium
             }
 
             By by = new By();
-            by.findElementMethod = delegate(ISearchContext context)
-            {
-                return ((IFindsByCssSelector)context).FindElementByCssSelector(cssSelectorToFind);
-            };
-            by.findElementsMethod = delegate(ISearchContext context)
-            {
-                return ((IFindsByCssSelector)context).FindElementsByCssSelector(cssSelectorToFind);
-            };
+            by.findElementMethod =
+                (ISearchContext context) => ((IFindsByCssSelector) context).FindElementByCssSelector(cssSelectorToFind);
+            by.findElementsMethod =
+                (ISearchContext context) => ((IFindsByCssSelector) context).FindElementsByCssSelector(cssSelectorToFind);
 
             by.description = "By.CssSelector: " + cssSelectorToFind;
             return by;
@@ -282,7 +223,7 @@ namespace OpenQA.Selenium
         /// </summary>
         /// <param name="context">An <see cref="ISearchContext"/> object to use to search for the elements.</param>
         /// <returns>The first matching <see cref="IWebElement"/> on the current context.</returns>
-        public IWebElement FindElement(ISearchContext context)
+        public virtual IWebElement FindElement(ISearchContext context)
         {
             return findElementMethod(context);
         }
@@ -293,7 +234,7 @@ namespace OpenQA.Selenium
         /// <param name="context">An <see cref="ISearchContext"/> object to use to search for the elements.</param>
         /// <returns>A <see cref="ReadOnlyCollection{T}"/> of all <see cref="IWebElement">WebElements</see>
         /// matching the current criteria, or an empty list if nothing matches.</returns>
-        public ReadOnlyCollection<IWebElement> FindElements(ISearchContext context)
+        public virtual ReadOnlyCollection<IWebElement> FindElements(ISearchContext context)
         {
             return findElementsMethod(context);
         }
