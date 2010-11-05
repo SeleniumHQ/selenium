@@ -158,6 +158,15 @@ namespace OpenQA.Selenium.Remote
         }
 
         /// <summary>
+        /// Method to return a new DesiredCapabilities using defaults
+        /// </summary>
+        /// <returns>New istance of DesiredCapabilities for use with Android</returns>
+        public static DesiredCapabilities Android()
+        {
+            return new DesiredCapabilities("android", string.Empty, new Platform(PlatformType.Linux));
+        }
+
+        /// <summary>
         /// Return HashCode for the DesiredCapabilties that has been created
         /// </summary>
         /// <returns>Integer of HashCode generated</returns>
