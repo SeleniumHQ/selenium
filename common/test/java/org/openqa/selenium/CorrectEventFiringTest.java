@@ -36,11 +36,9 @@ import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 import static org.openqa.selenium.WaitingConditions.elementToExist;
 import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
 
-// TODO (berrada): Figure out why touch events do not fire those events to the underlying webcore.
-@Ignore(ANDROID)
 public class CorrectEventFiringTest extends AbstractDriverTestCase {
 
-  @Ignore(value = {CHROME, FIREFOX}, reason = "Webkit bug 22261. Firefox 3.6 wants focus")
+  @Ignore(value = {CHROME, FIREFOX, ANDROID}, reason = "Webkit bug 22261. Firefox 3.6 wants focus")
   @JavascriptEnabled
   public void testShouldFireFocusEventWhenClicking() {
     driver.get(pages.javascriptPage);
@@ -50,6 +48,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
     assertEventFired("focus");
   }
 
+  @Ignore(ANDROID)
   @JavascriptEnabled
   public void testShouldFireClickEventWhenClicking() {
     driver.get(pages.javascriptPage);
@@ -60,7 +59,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(SELENESE)
+  @Ignore({SELENESE, ANDROID})
   public void testShouldFireMouseDownEventWhenClicking() {
     driver.get(pages.javascriptPage);
 
@@ -70,7 +69,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(SELENESE)
+  @Ignore({SELENESE, ANDROID})
   public void testShouldFireMouseUpEventWhenClicking() {
     driver.get(pages.javascriptPage);
 
@@ -99,7 +98,8 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
     assertEventFired("mousemove");
   }
 
-  @Ignore(value = {CHROME, SELENESE, FIREFOX}, reason = "Webkit bug 22261. Firefox 3.6 wants focus")
+  @Ignore(value = {CHROME, SELENESE, FIREFOX, ANDROID},
+      reason = "Webkit bug 22261. Firefox 3.6 wants focus")
   @JavascriptEnabled
   public void testShouldFireEventsInTheRightOrder() {
     driver.get(pages.javascriptPage);
@@ -118,7 +118,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(SELENESE)
+  @Ignore({SELENESE, ANDROID})
   public void testsShouldIssueMouseDownEvents() {
     driver.get(pages.javascriptPage);
     driver.findElement(By.id("mousedown")).click();
@@ -202,6 +202,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
     assertThat(clicker.getValue(), equalTo("Clicked"));
   }
 
+  @Ignore(ANDROID)
   @JavascriptEnabled
   public void testClearingAnElementShouldCauseTheOnChangeHandlerToFire() {
     driver.get(pages.javascriptPage);
@@ -233,7 +234,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
   }
   
   @JavascriptEnabled
-  @Ignore(value = {SELENESE, CHROME, IPHONE},
+  @Ignore(value = {SELENESE, CHROME, IPHONE, ANDROID},
       reason = ": Non-native event firing is broken in Chrome.\n"
                + "  Selenese: Fails when running in firefox.\n"
                + "  iPhone: sendKeys implementation is incorrect")
@@ -335,7 +336,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
     return waitFor(elementToExist(driver, elementId)).getText();
   }
 
-  @Ignore({CHROME, HTMLUNIT, SELENESE})
+  @Ignore({CHROME, HTMLUNIT, SELENESE, ANDROID})
   public void testShouldReportTheXAndYCoordinatesWhenClicking() {
     driver.get(pages.javascriptPage);
 
