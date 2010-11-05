@@ -1,5 +1,5 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>OpenQA.Selenium.Support</RootNamespace>
     <AssemblyName>OpenQA.Selenium.Support</AssemblyName>
-    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -31,6 +31,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
@@ -39,28 +40,7 @@
   </Target>
   -->
   <ItemGroup>
-    <Compile Include="ByIdOrName.cs" />
-    <Compile Include="CacheLookupAttribute.cs" />
-    <Compile Include="FindByAttribute.cs" />
-    <Compile Include="FindBysAttribute.cs" />
-    <Compile Include="How.cs" />
-    <Compile Include="PageFactory.cs" />
-    <Compile Include="PageFactory\AjaxElementLocator.cs" />
-    <Compile Include="PageFactory\AjaxElementLocatorFactory.cs" />
-    <Compile Include="PageFactory\Annotations.cs" />
-    <Compile Include="PageFactory\ByChained.cs" />
-    <Compile Include="PageFactory\DefaultElementLocator.cs" />
-    <Compile Include="PageFactory\DefaultElementLocatorFactory.cs" />
-    <Compile Include="PageFactory\IElementLocator.cs" />
-    <Compile Include="PageFactory\IElementLocatorFactory.cs" />
-    <Compile Include="UI\IClock.cs" />
-    <Compile Include="UI\IExpectedCondition.cs" />
-    <Compile Include="UI\ILoadableComponent.cs" />
-    <Compile Include="UI\LoadableComponent.cs" />
     <Compile Include="UI\Select.cs" />
-    <Compile Include="UI\SlowLoadableComponent.cs" />
-    <Compile Include="UI\SystemClock.cs" />
-    <Compile Include="UI\TimeoutException.cs" />
     <Compile Include="UI\UnexpectedTagNameException.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -78,9 +58,5 @@ copy /y $(TargetDir) $(SolutionDir)build\x64\$(ConfigurationName)</PostBuildEven
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="PageFactory\Internal\" />
-    <Folder Include="Properties\" />
   </ItemGroup>
 </Project>
