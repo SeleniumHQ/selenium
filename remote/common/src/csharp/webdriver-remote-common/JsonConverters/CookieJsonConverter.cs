@@ -26,7 +26,7 @@ namespace OpenQA.Selenium.Remote
         /// <param name="objectType">Object type being read</param>
         /// <param name="serializer">JSON Serializer instance</param>
         /// <returns>Platform from JSON reader</returns>
-        public override object ReadJson(JsonReader reader, Type objectType, JsonSerializer serializer)
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
             Platform platformValue = null;
             if (reader.TokenType == JsonToken.String)

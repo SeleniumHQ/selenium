@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -39,7 +39,28 @@
   </Target>
   -->
   <ItemGroup>
+    <Compile Include="ByIdOrName.cs" />
+    <Compile Include="CacheLookupAttribute.cs" />
+    <Compile Include="FindByAttribute.cs" />
+    <Compile Include="FindBysAttribute.cs" />
+    <Compile Include="How.cs" />
+    <Compile Include="PageFactory.cs" />
+    <Compile Include="PageFactory\AjaxElementLocator.cs" />
+    <Compile Include="PageFactory\AjaxElementLocatorFactory.cs" />
+    <Compile Include="PageFactory\Annotations.cs" />
+    <Compile Include="PageFactory\ByChained.cs" />
+    <Compile Include="PageFactory\DefaultElementLocator.cs" />
+    <Compile Include="PageFactory\DefaultElementLocatorFactory.cs" />
+    <Compile Include="PageFactory\IElementLocator.cs" />
+    <Compile Include="PageFactory\IElementLocatorFactory.cs" />
+    <Compile Include="UI\IClock.cs" />
+    <Compile Include="UI\IExpectedCondition.cs" />
+    <Compile Include="UI\ILoadableComponent.cs" />
+    <Compile Include="UI\LoadableComponent.cs" />
     <Compile Include="UI\Select.cs" />
+    <Compile Include="UI\SlowLoadableComponent.cs" />
+    <Compile Include="UI\SystemClock.cs" />
+    <Compile Include="UI\TimeoutException.cs" />
     <Compile Include="UI\UnexpectedTagNameException.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -54,6 +75,12 @@ $(SolutionDir)build\x64\$(ConfigurationName)
 copy /y $(TargetDir) $(SolutionDir)build\x64\$(ConfigurationName)</PostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="PageFactory\Internal\" />
     <Folder Include="Properties\" />
   </ItemGroup>
 </Project>

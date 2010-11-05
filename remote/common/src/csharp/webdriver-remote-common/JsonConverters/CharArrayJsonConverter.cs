@@ -19,18 +19,6 @@ namespace OpenQA.Selenium.Remote
         }
 
         /// <summary>
-        /// Method not implemented
-        /// </summary>
-        /// <param name="reader">JSON Reader instance</param>
-        /// <param name="objectType">Object type being read</param>
-        /// <param name="serializer">JSON Serializer instance</param>
-        /// <returns>Object from JSON</returns>
-        public override object ReadJson(JsonReader reader, Type objectType, JsonSerializer serializer)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
         /// Writes the Object to JSON
         /// </summary>
         /// <param name="writer">A JSON Writer object</param>
@@ -60,6 +48,18 @@ namespace OpenQA.Selenium.Remote
             }
 
             writer.WriteEndArray();
+        }
+        /// <summary>
+        /// Method not implemented
+        /// </summary>
+        /// <param name="reader">JSON Reader instance</param>
+        /// <param name="objectType">Object type being read</param>
+        /// <param name="existingValue">Existing Value to be read</param>
+        /// <param name="serializer">JSON Serializer instance</param>
+        /// <returns>Object from JSON</returns>
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        {
+            throw new NotImplementedException();
         }
     }
 }
