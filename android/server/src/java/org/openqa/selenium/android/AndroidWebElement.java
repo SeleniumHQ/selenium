@@ -128,6 +128,9 @@ public class AndroidWebElement implements WebElement, FindsById, FindsByLinkText
     if (value == null || value.length == 0) {
       return;
     }
+    if (!isEnabled()) {
+      throw new UnsupportedOperationException("Cannot send keys to disabled element.");
+    }
     CharSequence[] serializableArgs = new CharSequence[value.length + 1];
     serializableArgs[0] = getValue();
     for (int i = 0; i < value.length; i++) {
