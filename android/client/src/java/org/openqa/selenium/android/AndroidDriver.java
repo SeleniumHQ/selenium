@@ -37,6 +37,10 @@ import java.net.URL;
  */
 public class AndroidDriver extends RemoteWebDriver implements TakesScreenshot, Rotatable {
   
+  /**
+   * The default constructor assumes the remote server is listening at
+   * http://localhost:8080/hub
+   */
   public AndroidDriver() {
     this(getDefaultUrl());
   }
