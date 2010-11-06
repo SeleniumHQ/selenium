@@ -91,8 +91,7 @@ function Editor(window) {
              * of the undoable action
              */
             currentFormatUnChanged: function(format) {
-               //@TODO jeremy: Localization
-               var res = confirm("You'll lost all your changes. Do you want to continue?");
+               var res = confirm(Editor.getString('format.switch.loseChanges'));
                if (res){
                     if (self.sourceView){
                         self.alreadySaved = false;
@@ -205,7 +204,7 @@ Editor.prototype.saveTC = function(){
         this.app.testCase.edited =  true;
         this.alreadySaved = true;
     }
-}
+};
 
 Editor.checkTimestamp = function() {
 	editor.log.debug('checkTimestamp');
@@ -217,11 +216,11 @@ Editor.checkTimestamp = function() {
 			}
 		}
 	}
-}
+};
 
 Editor.getString = function(key) {
     return document.getElementById("strings").getString(key);
-}
+};
 
 Editor.controller = {
 	supportsCommand : function(cmd) {
@@ -311,7 +310,7 @@ Editor.controller = {
                 try {
                     Editor.rollupManager.applyRollupRules();
                 }
-                catch (e) {alert('Whoa! ' + e.message)}
+                catch (e) {alert('Whoa! ' + e.message);}
             }
             else {
                 alert('No rollup rules have been defined.');
@@ -336,21 +335,21 @@ Editor.prototype.showLoadErrors = function() {
 		window.alert(this.errorMessage);
 		delete this.errorMessage;
 	}
-}
+};
 
 //Samit: Enh: Prompt to save first
 Editor.prototype.loadRecentTestCase = function(path) {
 	if (this.confirmClose()) {
 		this.app.loadTestCaseWithNewSuite(path);
 	}
-}
+};
 
 //Samit: Enh: Prompt to save first
 Editor.prototype.loadRecentSuite = function(path) {
 	if (this.confirmClose()) {
 		this.app.loadTestSuite(path);
 	}
-}
+};
 
 Editor.prototype.confirmClose = function() {
 	//Samit: Enh: Prompt if test suite and/or any of the test cases have changed and save them
@@ -397,7 +396,7 @@ Editor.prototype.confirmClose = function() {
 		//TODO: Why is there no current suite???
 	}
 	return true;
-}
+};
 
 Editor.prototype.log = Editor.log = new Log("Editor");
 
@@ -410,11 +409,11 @@ Editor.prototype.unload = function() {
     this.cleanupAutoComplete();
     
 	delete window.editor;
-}
+};
 
 Editor.prototype.updateState = function() {
 	window.document.commandDispatcher.updateCommands("selenium-ide-state");
-}
+};
 
 Editor.prototype.updateSeleniumCommands = function() {
     this.log.debug("updateSeleniumCommands");
@@ -426,11 +425,11 @@ Editor.prototype.updateSeleniumCommands = function() {
     , "cmd_selenium_reload"].forEach(function(cmd) {
         goUpdateCommand(cmd);
     });
-}
+};
 
 Editor.prototype.getOptions = function(options) {
     return this.app.getOptions();
-}
+};
 
 Editor.prototype.updateTitle = function() {
 	var title;
@@ -444,7 +443,7 @@ Editor.prototype.updateTitle = function() {
 		title += " *";
 	}
 	document.title = title;
-}
+};
 
 Editor.prototype.tabSelected = function(id) {
 	if (this.getTestCase() != null) {
@@ -455,7 +454,7 @@ Editor.prototype.tabSelected = function(id) {
 			this.toggleView(this.treeView);
 		}
 	}
-}
+};
 
 Editor.prototype.saveTestCase = function() {
 	this.view.syncModel();
@@ -465,7 +464,7 @@ Editor.prototype.saveTestCase = function() {
 	} else {
 		return false;
 	}
-}
+};
 
 Editor.prototype.saveNewTestCase = function() {
 	this.view.syncModel();
@@ -473,12 +472,12 @@ Editor.prototype.saveNewTestCase = function() {
 		//document.getElementById("filename").value = this.testCase.filename;
 		this.updateTitle();
 	}
-}
+};
 
 Editor.prototype.exportTestCaseWithFormat = function(format) {
 	this.view.syncModel();
 	format.saveAsNew(this.getTestCase().createCopy(), true);
-}
+};
 
 Editor.prototype.exportTestSuiteWithFormat = function(format) {
     this.view.syncModel();
@@ -492,14 +491,14 @@ Editor.prototype.loadRecorderFor = function(contentWindow, isRootDocument) {
 		this.recordTitle(contentWindow);
 	}
 	Recorder.register(this, contentWindow);
-}
+};
 
 Editor.prototype.toggleRecordingEnabled = function(enabled) {
 	this.recordingEnabled = enabled;
     $("record-button").checked = enabled;
     var tooltip = Editor.getString("recordButton.tooltip." + (enabled ? "on" : "off"));
     document.getElementById("record-button").setAttribute("tooltiptext", tooltip);
-}
+};
 
 Editor.prototype.onUnloadDocument = function(doc) {
     this.log.debug("onUnloadDocument");
@@ -508,14 +507,14 @@ Editor.prototype.onUnloadDocument = function(doc) {
     setTimeout(function() {
             self.appendWaitForPageToLoad(window);
         }, 0);
-}
+};
 
 Editor.prototype.recordTitle = function(window) {
 	if (this.getOptions().recordAssertTitle == 'true' && this.getTestCase().commands.length > 0) {
 		//setTimeout("addCommand", 200, "assertTitle", window.document.title, null, window);
 		this.addCommand("assertTitle", exactMatchPattern(window.document.title), null, window);
 	}
-}
+};
 
 Editor.prototype.getPathAndUpdateBaseURL = function(window) {
 	if (!window || !window.location) return [null, null];

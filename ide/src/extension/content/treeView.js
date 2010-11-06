@@ -558,7 +558,7 @@ objectExtend(TreeView.prototype, {
             if (0 == col.index && command.breakpoint) {
                 props.AppendElement(this.atomService.getAtom("breakpoint"));
             }
-            if (0 == col.index && this.testCase.startPoint == command) {
+            if ((this.testCase.startPoint) && 0 == col.index && this.testCase.startPoint == command) {
                 props.AppendElement(this.atomService.getAtom("startpoint"));
             }
         },

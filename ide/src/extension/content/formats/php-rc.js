@@ -179,4 +179,16 @@ this.configForm =
     '<description>Variable for Selenium instance</description>' +
     '<textbox id="options_receiver" />' +
 	'<description>Environment</description>' +
-	'<textbox id="options_environment" />';
+	'<textbox id="options_environment" />' +
+	'<description>Indent</description>' +
+	'<menulist id="options_indent"><menupopup>' +
+	'<menuitem label="Tab" value="tab"/>' +
+	'<menuitem label="1 space" value="1"/>' +
+	'<menuitem label="2 spaces" value="2"/>' +
+	'<menuitem label="3 spaces" value="3"/>' +
+	'<menuitem label="4 spaces" value="4"/>' +
+	'<menuitem label="5 spaces" value="5"/>' +
+	'<menuitem label="6 spaces" value="6"/>' +
+	'<menuitem label="7 spaces" value="7"/>' +
+	'<menuitem label="8 spaces" value="8"/>' +
+	'</menupopup></menulist>';
