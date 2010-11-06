@@ -82,7 +82,7 @@ public class JavascriptDomAccessor {
       "}";
 
   private static final String IS_SELECTED =
-      "var isSelected = false;" +
+      "var isSelected = null;" +
       "var element = doc.androiddriver_elements[arguments[0]];" +
       "if (element.tagName.toLowerCase() == 'option') {" +
         "isSelected = element.selected;" +
@@ -407,7 +407,7 @@ public class JavascriptDomAccessor {
         "return '" + STALE + "';",
         elementId, attribute);
     throwExceptionIfFailed(String.valueOf(result));
-    return String.valueOf(result);
+    return (result == null) ? null : String.valueOf(result);
   }
 
   public Point getSize(String elementId) {
