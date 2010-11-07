@@ -27,24 +27,22 @@ module Selenium
       process.start
       poll_for_service
 
-      if !@background
-        sleep 1 while process.alive?
+      unless @background
+        begin
+          sleep 1 while process.alive?
+        rescue Errno::ECHILD
+          # no longer alive
+        end
       end
     end
 
     def stop
-      Net::HTTP.get(@host, "/selenium-server/driver/?cmd=shutDownSeleniumServer", @port)
-
-      if @process && @process.alive?
-        begin
-          @process.poll_for_exit(5)
-        rescue ChildProcess::TimeoutError
-          @process.stop
-        end
-
-        @process = nil
+      begin
+        Net::HTTP.get(@host, "/selenium-server/driver/?cmd=shutDownSeleniumServer", @port)
+      rescue Errno::ECONNREFUSED
       end
 
+      stop_process if @process
       poll_for_shutdown
 
       @log_file.close if @log_file
@@ -63,6 +61,20 @@ module Selenium
     end
 
     private
+
+    def stop_process
+      return unless @process.alive?
+
+      begin
+        @process.poll_for_exit(5)
+      rescue ChildProcess::TimeoutError
+        @process.stop
+      end
+    rescue Errno::ECHILD
+      # already dead
+    ensure
+      @process = nil
+    end
 
     def process
       @process ||= (
