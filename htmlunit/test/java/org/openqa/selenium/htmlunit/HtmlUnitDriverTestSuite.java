@@ -25,12 +25,12 @@ import org.openqa.selenium.TestSuiteBuilder;
 import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 
 public class HtmlUnitDriverTestSuite extends TestCase {
-	public static Test suite() throws Exception {
-		return new TestSuiteBuilder()
-                              .addSourceDir("common")
-                              .addSourceDir("htmlunit")
-                              .usingDriver(HtmlUnitDriver.class)
-                              .exclude(HTMLUNIT)
-                              .create();
-	}
+  public static Test suite() throws Exception {
+    return new TestSuiteBuilder()
+        .addSourceDir("common")
+        .addSourceDir("htmlunit")
+        .usingDriver(HtmlUnitDriver.class)
+        .exclude(HTMLUNIT)
+        .create();
+  }
 }
