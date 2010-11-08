@@ -33,6 +33,13 @@ module Selenium
         end
       end
 
+      def ==(other)
+        return false unless other.kind_of? self.class
+        as_json == other.as_json
+      end
+      alias_method :eql?, :==
+
+
       def ftp=(value)
         self.type = :manual
         @ftp = value
@@ -77,7 +84,7 @@ module Selenium
 
       def as_json(opts = nil)
         json_result = {
-          "proxyType" => TYPES.fetch(type)
+          "proxyType" => TYPES[type]
         }
 
         json_result["ftpProxy"]           = ftp if ftp
@@ -89,6 +96,23 @@ module Selenium
 
         json_result if json_result.length > 1
       end
+
+      class << self
+        def json_create(data)
+          proxy = new
+
+          proxy.type        = data['proxyType'].downcase.to_sym if data.has_key? 'proxyType'
+          proxy.ftp         = data['ftpProxy'] if data.has_key? 'ftpProxy'
+          proxy.http        = data['httpProxy'] if data.has_key? 'httpProxy'
+          proxy.no_proxy    = data['noProxy'] if data.has_key? 'noProxy'
+          proxy.pac         = data['proxyAutoconfigUrl'] if data.has_key? 'proxyAutoconfigUrl'
+          proxy.ssl         = data['sslProxy'] if data.has_key? 'sslProxy'
+          proxy.auto_detect = data['autodetect'] if data.has_key? 'autodetect'
+
+          proxy
+        end
+
+      end # class << self
 
     end # Proxy
   end # WebDriver

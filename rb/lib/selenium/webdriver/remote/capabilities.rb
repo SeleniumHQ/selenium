@@ -92,7 +92,8 @@ module Selenium
               :css_selectors_enabled => data["cssSelectorsEnabled"],
               :takes_screenshot      => data["takesScreenshot"],
               :native_events         => data["nativeEvents"],
-              :rotatable             => data["rotatable"]
+              :rotatable             => data["rotatable"],
+              :proxy                 => Proxy.json_create(data['proxy'])
             )
           end
         end
@@ -104,6 +105,7 @@ module Selenium
         # @option :css_selectors_enabled  [Boolean] does the driver support CSS selectors?
         # @option :takes_screenshot       [Boolean] can this driver take screenshots?
         # @option :native_events         [Boolean] does this driver use native events?
+        # @option :proxy                 [Selenium::WebDriver::Proxy, Hash] proxy configuration
         #
         # @api public
         #
@@ -117,14 +119,26 @@ module Selenium
           @takes_screenshot      = opts[:takes_screenshot]      || false
           @native_events         = opts[:native_events]         || false
           @rotatable             = opts[:rotatable]             || false
-          @proxy                 = Proxy.new(opts[:proxy]       || {})
+
+          self.proxy             = opts[:proxy] if opts.has_key? :proxy
+        end
+
+        def proxy=(proxy)
+          case proxy
+          when Hash
+            @proxy = Proxy.new(proxy)
+          when Proxy
+            @proxy = proxy
+          else
+            raise TypeError, "expected Hash or #{Proxy.name}, got #{proxy.inspect}:#{proxy.class}"
+          end
         end
 
         # @api private
         #
 
         def as_json(opts = nil)
-          json_result = {
+          hash = {
             "browserName"         => browser_name,
             "version"             => version,
             "platform"            => platform.to_s.upcase,
@@ -134,9 +148,10 @@ module Selenium
             "nativeEvents"        => native_events?,
             "rotatable"           => rotatable?
           }
-          json_proxy = proxy.as_json
-          json_result["proxy"] = json_proxy if not json_proxy.nil?
-          json_result
+
+          hash["proxy"] = proxy.as_json if @proxy
+
+          hash
         end
 
         def to_json(*args)
