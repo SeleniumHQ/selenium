@@ -51,7 +51,10 @@ public class FutureExecutor {
       throw new WebDriverException("ExecutionException: Future task shutdown. ",
           e);
     } catch (TimeoutException e) {
-      throw new WebDriverException("Future timeout!", e);
+      // TODO(berrada): What's the best way to handle timeouts? Usually this implies
+      // the server is still up, but incoming request are mishandled. Maybe add an id
+      // with the request.
+      Logger.log(Log.INFO, LOG_TAG, "Future Timeout!");
     }
     return toReturn;
   }
