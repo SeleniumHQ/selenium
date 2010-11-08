@@ -1,7 +1,6 @@
 module Selenium
   module WebDriver
     module Remote
-
       #
       # Specification of the desired and/or actual capabilities of the browser that the
       # server is being asked to create.
@@ -15,7 +14,8 @@ module Selenium
                       :takes_screenshot,
                       :rotatable,
                       :version,
-                      :browser_name
+                      :browser_name,
+                      :proxy
 
         alias_method :css_selectors_enabled?, :css_selectors_enabled
         alias_method :javascript_enabled?   , :javascript_enabled
@@ -117,14 +117,14 @@ module Selenium
           @takes_screenshot      = opts[:takes_screenshot]      || false
           @native_events         = opts[:native_events]         || false
           @rotatable             = opts[:rotatable]             || false
+          @proxy                 = Proxy.new(opts[:proxy]       || {})
         end
 
-        #
         # @api private
         #
 
         def as_json(opts = nil)
-          {
+          json_result = {
             "browserName"         => browser_name,
             "version"             => version,
             "platform"            => platform.to_s.upcase,
@@ -134,6 +134,9 @@ module Selenium
             "nativeEvents"        => native_events?,
             "rotatable"           => rotatable?
           }
+          json_proxy = proxy.as_json
+          json_result["proxy"] = json_proxy if not json_proxy.nil?
+          json_result
         end
 
         def to_json(*args)
