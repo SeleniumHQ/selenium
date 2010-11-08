@@ -9,47 +9,69 @@ module Selenium
         :system      => "SYSTEM"      # Use system settings (default on Linux).
       }
 
-      attr_accessor :type,
-                    :ftp,
-                    :http,
-                    :no_proxy,
-                    :pac,
-                    :ssl,
-                    :auto_detect
-
-      def default_options
-        {
-          :type         => :direct,
-          :ftp          => nil,
-          :http         => nil,
-          :no_proxy     => nil,
-          :pac          => nil,
-          :ssl          => nil,
-          :auto_detect  => nil
-        }
-      end
+      attr_reader :type,
+                  :ftp,
+                  :http,
+                  :no_proxy,
+                  :pac,
+                  :ssl,
+                  :auto_detect
 
       def initialize(opts = {})
-        opts          = default_options.merge(opts)
-        
-        self.type     = opts.delete :type
-        @ftp          = opts.delete :ftp
-        @http         = opts.delete :http
-        @no_proxy     = opts.delete :no_proxy
-        @pac          = opts.delete :pac
-        @ssl          = opts.delete :ssl
-        @auto_detect  = opts.delete :auto_detect
+        opts = opts.dup
+
+        self.type        = opts.delete(:type) if opts.has_key? :type
+        self.ftp         = opts.delete(:ftp) if opts.has_key? :ftp
+        self.http        = opts.delete(:http) if opts.has_key? :http
+        self.no_proxy    = opts.delete(:no_proxy) if opts.has_key? :no_proxy
+        self.ssl         = opts.delete(:ssl) if opts.has_key? :ssl
+        self.pac         = opts.delete(:pac) if opts.has_key? :pac
+        self.auto_detect = opts.delete(:auto_detect) if opts.has_key? :auto_detect
 
         unless opts.empty?
           raise ArgumentError, "unknown option#{'s' if opts.size != 1}: #{opts.inspect}"
         end
       end
-      
+
+      def ftp=(value)
+        self.type = :manual
+        @ftp = value
+      end
+
+      def http=(value)
+        self.type = :manual
+        @http = value
+      end
+
+      def no_proxy=(value)
+        self.type = :manual
+        @no_proxy = value
+      end
+
+      def ssl=(value)
+        self.type = :manual
+        @ssl = value
+      end
+
+      def pac=(url)
+        self.type = :pac
+        @pac = url
+      end
+
+      def auto_detect=(bool)
+        self.type = :auto_detect
+        @auto_detect = bool
+      end
+
       def type=(type)
         unless TYPES.has_key? type
           raise ArgumentError, "invalid proxy type: #{type.inspect}, expected one of #{TYPES.keys.inspect}"
         end
-        
+
+        if @type && type != @type
+          raise ArgumentError, "incompatible proxy type #{type.inspect} (already set to #{@type.inspect})"
+        end
+
         @type = type
       end
 
@@ -67,7 +89,7 @@ module Selenium
 
         json_result if json_result.length > 1
       end
-      
+
     end # Proxy
   end # WebDriver
 end # Selenium

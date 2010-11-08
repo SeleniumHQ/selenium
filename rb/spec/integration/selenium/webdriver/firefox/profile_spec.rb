@@ -70,6 +70,45 @@ module Selenium
           string.should include('user_pref("webdriver_assume_untrusted_issuer", false)')
         end
 
+        it "can configure a manual proxy" do
+          proxy = Proxy.new(
+            :http     => "foo:123",
+            :ftp      => "bar:234",
+            :ssl      => "baz:345",
+            :no_proxy => "localhost"
+          )
+
+          profile.proxy = proxy
+          string = read_generated_prefs
+
+          string.should include('user_pref("network.proxy.http", "foo")')
+          string.should include('user_pref("network.proxy.http_port", 123)')
+
+          string.should include('user_pref("network.proxy.ftp", "bar")')
+          string.should include('user_pref("network.proxy.ftp_port", 234)')
+
+          string.should include('user_pref("network.proxy.ssl", "baz")')
+          string.should include('user_pref("network.proxy.ssl_port", 345)')
+
+          string.should include('user_pref("network.proxy.no_proxies_on", "localhost")')
+          string.should include('user_pref("network.proxy.type", 1)')
+        end
+
+        it "can configure a PAC proxy" do
+          profile.proxy = Proxy.new(:pac => "http://foo/bar.pac")
+          string = read_generated_prefs
+
+          string.should include('user_pref("network.proxy.autoconfig_url", "http://foo/bar.pac")')
+          string.should include('user_pref("network.proxy.type", 2)')
+        end
+
+        it "can configure an auto-detected proxy" do
+          profile.proxy = Proxy.new(:auto_detect => true)
+          string = read_generated_prefs
+
+          string.should include('user_pref("network.proxy.type", 4)')
+        end
+
         not_compliant_on :platform => :macosx do
           it "should be able to use the same profile more than once" do
             profile['browser.startup.homepage'] = url_for("formPage.html")

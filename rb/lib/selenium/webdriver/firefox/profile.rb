@@ -156,7 +156,46 @@ module Selenium
           @untrusted_issuer = bool
         end
 
+        def proxy=(proxy)
+          unless proxy.kind_of? Proxy
+            raise TypeError, "expected #{Proxy.name}, got #{proxy.inspect}:#{proxy.class}"
+          end
+
+          case proxy.type
+          when :manual
+            self['network.proxy.type'] = 1
+
+            set_manual_proxy_preference "ftp", proxy.ftp
+            set_manual_proxy_preference "http", proxy.http
+            set_manual_proxy_preference "ssl", proxy.ssl
+
+            if proxy.no_proxy
+              self["network.proxy.no_proxies_on"] = proxy.no_proxy
+            else
+              self["network.proxy.no_proxies_on"] = ""
+            end
+          when :pac
+            self['network.proxy.type'] = 2
+            self['network.proxy.autoconfig_url'] = proxy.pac
+          when :auto_detect
+            self['network.proxy.type'] = 4
+          else
+            raise ArgumentError, "unsupported proxy type #{proxy.type}"
+          end
+
+          proxy
+        end
+
         private
+
+        def set_manual_proxy_preference(key, value)
+          return unless value
+
+          host, port = value.to_s.split(":", 2)
+
+          self["network.proxy.#{key}"] = host
+          self["network.proxy.#{key}_port"] = Integer(port) if port
+        end
 
         def install_extensions(directory)
           destination = File.join(directory, "extensions")
