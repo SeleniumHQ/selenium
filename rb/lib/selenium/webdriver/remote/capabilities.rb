@@ -7,6 +7,8 @@ module Selenium
       #
       class Capabilities
 
+        attr_reader :proxy
+
         attr_accessor :css_selectors_enabled,
                       :javascript_enabled,
                       :native_events,
@@ -14,8 +16,7 @@ module Selenium
                       :takes_screenshot,
                       :rotatable,
                       :version,
-                      :browser_name,
-                      :proxy
+                      :browser_name
 
         alias_method :css_selectors_enabled?, :css_selectors_enabled
         alias_method :javascript_enabled?   , :javascript_enabled
