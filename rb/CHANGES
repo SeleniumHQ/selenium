@@ -1,9 +1,10 @@
-0.0.30 (2010-11-??)
+0.1.0 (2010-11-??)
 ===================
 
+* selenium-client code (Se1/RC client) is now included in the gem (require "selenium/client").
+* Add Selenium::WebDriver::Proxy, used to configure proxies for Firefox::Profile and the remote driver.
 * Tweaked Firefox profile preferences, improve logging, disabled crash reporter.
 * Reap Firefox profiles on close, not just on exit.
-* selenium-client code is now included in the gem (require "selenium/client").
 * Add selenium/rake/server_task and selenium/server which wraps the Selenium server jar.
 * Various Firefox driver improvements (GC race conditions ++).
 * IE::Bridge#initialize now takes an options hash like the other bridges.
