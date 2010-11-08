@@ -55,11 +55,7 @@ module Selenium
 
         def can_lock?
           @server = TCPServer.new(HOST, @port)
-
-          # make sure the fd is not inherited by exec()'d processes
-          if defined? Fcntl::FD_CLOEXEC
-            @server.fcntl(Fcntl::F_SETFD, Fcntl::FD_CLOEXEC)
-          end
+          ChildProcess.close_on_exec @server
 
           true
         rescue SocketError, Errno::EADDRINUSE => ex

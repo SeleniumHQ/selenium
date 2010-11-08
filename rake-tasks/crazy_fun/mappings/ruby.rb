@@ -135,7 +135,7 @@ class RubyMappings
         puts "Running: #{args[:name]} ruby tests (mri)"
 
         ENV['WD_SPEC_DRIVER'] = args[:name]
-        ENV['BUNDLE_GEMFILE'] = args[:gemfile]
+        ENV['BUNDLE_GEMFILE'] = Platform.path_for(args[:gemfile])
 
         ruby :require => args[:require],
              :include => args[:include],
