@@ -2,7 +2,8 @@
  * Common classes / functions for Selenium RC format.
  */
 
-load('formatCommandOnlyAdapter.js');
+var subScriptLoader = Components.classes["@mozilla.org/moz/jssubscript-loader;1"].getService(Components.interfaces.mozIJSSubScriptLoader);
+subScriptLoader.loadSubScript('chrome://selenium-ide/content/formats/formatCommandOnlyAdapter.js');
 
 function formatHeader(testCase) {
     var className = testCase.getTitle();
