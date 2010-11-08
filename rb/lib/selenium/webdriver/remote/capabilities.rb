@@ -144,7 +144,7 @@ module Selenium
             "version"             => version,
             "platform"            => platform.to_s.upcase,
             "javascriptEnabled"   => javascript_enabled?,
-            "cssCelectorsEnabled" => css_selectors_enabled?,
+            "cssSelectorsEnabled" => css_selectors_enabled?,
             "takesScreenshot"     => takes_screenshot?,
             "nativeEvents"        => native_events?,
             "rotatable"           => rotatable?
