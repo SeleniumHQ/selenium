@@ -52,7 +52,13 @@ module Selenium
           end
 
           def new_request_for(verb, url, headers)
-            Net::HTTP.const_get(verb.to_s.capitalize).new(url.path, headers)
+            req = Net::HTTP.const_get(verb.to_s.capitalize).new(url.path, headers)
+
+            if @server_url.userinfo
+              req.basic_auth @server_url.user, @server_url.password
+            end
+
+            req
           end
 
         end # Default
