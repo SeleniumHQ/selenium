@@ -32,6 +32,11 @@ module Selenium
           capabilities_hash = Capabilities.new.as_json
           capabilities_hash.should_not have_key("proxy")
         end
+
+        it "can be serialized and deserialized to JSON" do
+          caps = Capabilities.new(:browser_name => "firefox")
+          caps.should == Capabilities.json_create(caps.as_json)
+        end
       end
     end
   end

@@ -93,7 +93,7 @@ module Selenium
               :takes_screenshot      => data["takesScreenshot"],
               :native_events         => data["nativeEvents"],
               :rotatable             => data["rotatable"],
-              :proxy                 => Proxy.json_create(data['proxy'])
+              :proxy                 => (Proxy.json_create(data['proxy']) if data['proxy'])
             )
           end
         end
@@ -120,7 +120,7 @@ module Selenium
           @native_events         = opts[:native_events]         || false
           @rotatable             = opts[:rotatable]             || false
 
-          self.proxy             = opts[:proxy] if opts.has_key? :proxy
+          self.proxy             = opts[:proxy] if opts[:proxy]
         end
 
         def proxy=(proxy)
@@ -157,6 +157,12 @@ module Selenium
         def to_json(*args)
           as_json.to_json(*args)
         end
+
+        def ==(other)
+          return false unless other.kind_of? self.class
+          as_json == other.as_json
+        end
+        alias_method :eql?, :==
 
       end # Capabilities
     end # Remote
