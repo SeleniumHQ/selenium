@@ -120,14 +120,14 @@ module Selenium
           @native_events         = opts[:native_events]         || false
           @rotatable             = opts[:rotatable]             || false
 
-          self.proxy             = opts[:proxy] if opts[:proxy]
+          self.proxy             = opts[:proxy]
         end
 
         def proxy=(proxy)
           case proxy
           when Hash
             @proxy = Proxy.new(proxy)
-          when Proxy
+          when Proxy, nil
             @proxy = proxy
           else
             raise TypeError, "expected Hash or #{Proxy.name}, got #{proxy.inspect}:#{proxy.class}"
@@ -149,7 +149,7 @@ module Selenium
             "rotatable"           => rotatable?
           }
 
-          hash["proxy"] = proxy.as_json if @proxy
+          hash["proxy"] = proxy.as_json if proxy
 
           hash
         end
