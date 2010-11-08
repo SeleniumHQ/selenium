@@ -123,7 +123,7 @@ class RubyMappings
 
   class MRITest < Tasks
     def handle(fun, dir, args)
-      deps = [args[:gemfile]].compact
+      deps = []
 
       desc "Run ruby tests for #{args[:name]} (mri)"
       task task_name(dir, "#{args[:name]}-test:mri") => deps do
@@ -262,7 +262,7 @@ class RubyMappings
         dependencies = Array(args[:gemdeps]) + Array(args[:devdeps])
         dependencies.each do |dep|
           name, version = dep.shift
-          ruby :command => "gem", :args => ["install", name, "--version", %Q{"#{version}"}, "--no-rdoc", "--no-ri"]
+          ruby :command => "gem", :args => ["install", name, "--version", version, "--no-rdoc", "--no-ri"]
         end
       end
     end
