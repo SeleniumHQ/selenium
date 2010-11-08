@@ -291,12 +291,13 @@ class RubyRunner
   JRUBY_JAR = "third_party/jruby/jruby-complete.jar"
 
   def self.run(impl, opts)
-    cmd = ["ruby"]
-
     if impl.to_sym == :jruby
       JRuby.runtime.instance_config.run_ruby_in_process = true
+
+      cmd = ["ruby"]
       cmd << "-J-Djava.awt.headless=true" if opts[:headless]
     else
+      cmd = [find_ruby]
       JRuby.runtime.instance_config.run_ruby_in_process = false
     end
 
@@ -320,6 +321,19 @@ class RubyRunner
     puts cmd.join(' ')
 
     sh(*cmd)
+  end
+
+  def self.find_ruby
+    return "ruby" unless windows?
+
+    # work around windows/jruby bug by searching the PATH ourselves
+    paths = ENV['PATH'].split(File::PATH_SEPARATOR)
+    paths.each do |path|
+      exe = File.join(path, "ruby.exe")
+      return exe if File.executable?(exe)
+    end
+
+    raise "could not find ruby.exe"
   end
 end
 
