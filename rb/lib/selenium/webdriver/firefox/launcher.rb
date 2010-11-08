@@ -70,7 +70,7 @@ module Selenium
 
         def start_silent_and_wait
           assert_profile
-          @binary.start_with @profile, @profile_dir, "--silent"
+          @binary.start_with @profile, @profile_dir, "-silent"
           @binary.wait
         end
 
