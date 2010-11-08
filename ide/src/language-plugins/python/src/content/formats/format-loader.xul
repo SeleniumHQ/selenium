@@ -5,7 +5,7 @@
          xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
          xmlns:html="http://www.w3.org/1999/xhtml">
     <script type="application/x-javascript" src="chrome://selenium-ide/content/api.js"/>
-    <script type="application/x-javascript" src="chrome://python-formatters/content/python2-rc.js"/>
+    <script type="application/x-javascript" src="chrome://python-formatters/content/formats/python2-rc.js"/>
     <html:script type="application/javascript">
         var ide_api = new API();
         ide_api.addPlugin("pythonformatters@seleniumhq.org");
