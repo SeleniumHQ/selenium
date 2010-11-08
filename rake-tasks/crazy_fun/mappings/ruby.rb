@@ -110,11 +110,6 @@ class RubyMappings
 
         ENV['WD_SPEC_DRIVER'] = args[:name]
 
-        # TODO: fix gemfile vs include when jruby-complete.jar understands bundler
-        if args[:gemfile]
-          args[:include] << args[:gemfile].sub("Gemfile", "lib")
-        end
-
         jruby :include     => args[:include],
               :require     => requires,
               :command     => args[:command],
@@ -135,7 +130,6 @@ class RubyMappings
         puts "Running: #{args[:name]} ruby tests (mri)"
 
         ENV['WD_SPEC_DRIVER'] = args[:name]
-        ENV['BUNDLE_GEMFILE'] = Platform.path_for(args[:gemfile])
 
         ruby :require => args[:require],
              :include => args[:include],
@@ -196,8 +190,9 @@ class RubyMappings
         define_clean_task     dir, args
         define_build_task     dir, args
         define_release_task   dir, args
-        define_bundler_tasks  dir, args
       end
+
+      define_gem_install_task dir, args
     end
 
     def has_gem_task?
@@ -261,6 +256,17 @@ class RubyMappings
       end
     end
 
+    def define_gem_install_task(dir, args)
+      desc 'Install gem dependencies for the current Ruby'
+      task "//#{dir}:install-gems" do
+        dependencies = Array(args[:gemdeps]) + Array(args[:devdeps])
+        dependencies.each do |dep|
+          name, version = dep.shift
+          ruby :command => "gem", :args => ["install", name, "--version", %Q{"#{version}"}, "--no-rdoc", "--no-ri"]
+        end
+      end
+    end
+
     def gemspec(args)
       Gem::Specification.new do |s|
         s.name        = args[:name]
@@ -275,41 +281,6 @@ class RubyMappings
         args[:gemdeps].each { |dep| s.add_dependency(*dep.shift) }
         args[:devdeps].each { |dep| s.add_development_dependency(*dep.shift) }
       end
-    end
-
-    def define_bundler_tasks(dir, args)
-      gemfile = File.join(args[:dir], "Gemfile")
-      gemspec = File.join(args[:dir], "#{args[:name]}.gemspec")
-
-      file(gemfile => gemspec) { create_gemfile(gemfile) }
-
-      desc 'Install dependencies for user/MRI'
-      task "//#{dir}:bundle-mri" => gemfile do
-        bundle_install :ruby, gemfile
-      end
-
-      # jruby-complete.jar doesn't like bundler
-      #
-      # desc 'Install dependencies for JRuby'
-      # task "//#{dir}:bundle-jruby" do
-      #   bundle_install :jruby, gemfile
-      # end
-    end
-
-    def create_gemfile(file)
-      mkdir_p File.dirname(file)
-      File.open(file, "w") { |file|
-        file << "source :rubygems\ngemspec\n"
-      }
-    end
-
-    def bundle_install(ruby, file)
-      args = ["install", "--gemfile", Platform.path_for(file)]
-      args += ["--path", ENV['BUNDLE_PATH']] if ENV['BUNDLE_PATH']
-
-      RubyRunner.run ruby,
-        :command => "bundle",
-        :args    => args
     end
 
   end # RubyGem
