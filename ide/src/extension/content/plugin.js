@@ -47,6 +47,7 @@ function Plugin(id) {
 function readRDFValue(RDFNode)
 {
   var obj;
+  var node;
   var value = '';
   
   try {
