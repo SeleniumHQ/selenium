@@ -2,7 +2,8 @@
  * Format for Selenium Remote Control Java client.
  */
 
-load('remoteControl.js');
+var subScriptLoader = Components.classes["@mozilla.org/moz/jssubscript-loader;1"].getService(Components.interfaces.mozIJSSubScriptLoader);
+subScriptLoader.loadSubScript('chrome://selenium-ide/content/formats/remoteControl.js');
 
 this.name = "java-rc-junit4";
 
@@ -66,27 +67,27 @@ Equals.prototype.toString = function() {
         // string
 	    return this.e1.toString() + ".equals(" + this.e2.toString() + ")";
     }
-}
+};
 
 Equals.prototype.assert = function() {
 	return "assertEquals(" + this.e1.toString() + ", " + this.e2.toString() + ");";
-}
+};
 
 Equals.prototype.verify = function() {
 	return "verifyEquals(" + this.e1.toString() + ", " + this.e2.toString() + ");";
-}
+};
 
 NotEquals.prototype.toString = function() {
 	return "!" + this.e1.toString() + ".equals(" + this.e2.toString() + ")";
-}
+};
 
 NotEquals.prototype.assert = function() {
 	return "assertNotEquals(" + this.e1.toString() + ", " + this.e2.toString() + ");";
-}
+};
 
 NotEquals.prototype.verify = function() {
 	return "verifyNotEquals(" + this.e1.toString() + ", " + this.e2.toString() + ");";
-}
+};
 
 RegexpMatch.prototype.toString = function() {
 	if (this.pattern.match(/^\^/) && this.pattern.match(/\$$/)) {
@@ -94,10 +95,10 @@ RegexpMatch.prototype.toString = function() {
 	} else {
 		return "Pattern.compile(" + string(this.pattern) + ").matcher(" + this.expression + ").find()";
 	}
-}
+};
 
 function pause(milliseconds) {
-	return "Thread.sleep(" + parseInt(milliseconds) + ");";
+	return "Thread.sleep(" + parseInt(milliseconds, 10) + ");";
 }
 
 function echo(message) {
@@ -140,7 +141,7 @@ CallSelenium.prototype.toString = function() {
 	}
 	result += ')';
 	return result;
-}
+};
 
 function formatComment(comment) {
 	return comment.comment.replace(/.+/mg, function(str) {

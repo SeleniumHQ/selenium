@@ -2,18 +2,19 @@
  * Format for Selenium Remote Control Java client (TestNG)
  */
 
-load('java-rc.js');
+var subScriptLoader = Components.classes["@mozilla.org/moz/jssubscript-loader;1"].getService(Components.interfaces.mozIJSSubScriptLoader);
+subScriptLoader.loadSubScript('chrome://java-formatters/content/formats/java-rc.js');
 
 this.name = "java-rc-testng";
 
 // TestNG reverses the order of assert functions
 Equals.prototype.assert = function() {
 	return "assertEquals(" + this.e2.toString() + ", " + this.e1.toString() + ");";
-}
+};
 
 Equals.prototype.verify = function() {
 	return "verifyEquals(" + this.e2.toString() + ", " + this.e1.toString() + ");";
-}
+};
 
 options.superClass = "SeleneseTestNgHelper";
 
