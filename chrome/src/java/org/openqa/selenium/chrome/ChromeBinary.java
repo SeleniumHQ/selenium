@@ -212,6 +212,9 @@ public class ChromeBinary {
               "Could not locate Chrome.  Set webdriver.chrome.bin");
         }
         for (String path : paths) {
+          if (path == null) {
+            continue;
+          }
           File binary = new File(path);
           if (binary.exists()) {
             chromeBinaryLocation = binary.getCanonicalFile().getAbsoluteFile().toString();
