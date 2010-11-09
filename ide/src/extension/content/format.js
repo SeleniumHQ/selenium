@@ -25,8 +25,6 @@ function FormatCollection(options) {
                           new InternalFormat(options, "groovy-rc", "Groovy (JUnit) - Selenium RC", "groovy-rc.js", false),
                           new InternalFormat(options, "perl-rc", "Perl - Selenium RC", "perl-rc.js", false),
                           new InternalFormat(options, "php-rc", "PHP - Selenium RC", "php-rc.js", false),
-                          new InternalFormat(options, "ruby-rc", "Ruby (Test/Unit) - Selenium RC", "ruby-rc.js", false),
-                          new InternalFormat(options, "ruby-rc-rspec", "Ruby (RSpec) - Selenium RC", "ruby-rc-rspec.js", false)
                           ];
     this.reloadFormats();
 }
