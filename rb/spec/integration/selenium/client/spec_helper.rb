@@ -30,23 +30,26 @@ class SeleniumClientTestEnvironment
   private
 
   def start_server
-    @server = Selenium::Client::ServerControl.new("0.0.0.0", 4444, :timeout_in_seconds => 3*60)
-    @server.jar_file = @jar
-    @server.additional_args = ["-singleWindow"]
+    @server = Selenium::Server.new(@jar, :background => true,
+                                         :timeout    => 3*60,
+                                         :port       => 4444,
+                                         :log        => true)
 
-    @server.start :background => true
-    @server.wait_for_service
+    @server << "-singleWindow"
+    @server.start
   end
 
   def stop_server
-    return unless @server
-    @server.stop
-    @server.wait_for_termination
+    @server && @server.stop
   end
 
   def start_example_app
     @example_app = Thread.new { SampleApp.start("127.0.0.1", 4567) }
-    TCPSocket.wait_for_service :host => "localhost", :port => 4567
+
+    poller = Selenium::WebDriver::SocketPoller.new("127.0.0.1", 4567, 60)
+    unless poller.connected?
+      raise "timed out waiting for SampleApp to launch"
+    end
   end
 
   def stop_example_app
