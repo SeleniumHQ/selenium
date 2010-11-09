@@ -22,7 +22,6 @@ function FormatCollection(options) {
     this.options = options;
     
     this.presetFormats = [new InternalFormat(options, "default", "HTML", "html.js", true),
-                          new InternalFormat(options, "perl-rc", "Perl - Selenium RC", "perl-rc.js", false),
                           new InternalFormat(options, "php-rc", "PHP - Selenium RC", "php-rc.js", false),
                           ];
     this.reloadFormats();
