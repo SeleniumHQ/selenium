@@ -12,6 +12,11 @@ class MozillaMappings
     fun.add_mapping("mozilla_extension", Mozilla::Xpi::CreateTask.new)
     fun.add_mapping("mozilla_extension", Mozilla::Xpi::AddDependencies.new)
     fun.add_mapping("mozilla_extension", Mozilla::Xpi::Build.new)
+    
+    fun.add_mapping("mozilla_multi_extension", Mozilla::MultiXpi::CheckPreconditions.new)
+    fun.add_mapping("mozilla_multi_extension", Mozilla::MultiXpi::CreateTask.new)
+    fun.add_mapping("mozilla_multi_extension", Mozilla::MultiXpi::AddDependencies.new)
+    fun.add_mapping("mozilla_multi_extension", Mozilla::MultiXpi::Build.new)
   end
 end
 
@@ -179,4 +184,80 @@ class Build < BaseXpi
 
 end
 end # end of Xpi mofule
+
+module MultiXpi
+
+class BaseMultiXpi < Tasks
+  include Platform
+
+  def multi_xpi_name(dir, args)
+    xpi = task_name(dir, args[:name])
+
+    xpi = "build/" + (xpi.slice(2 ... xpi.length))
+    xpi = xpi.sub(":", "/")
+    xpi << ".xpi"
+
+    Platform.path_for(xpi)
+
+    if args[:out]
+      xpi = File.join(File.dirname(xpi), args[:out])
+    end
+    xpi
+  end
 end
+
+class CheckPreconditions
+  def handle(fun, dir, args)
+    raise StandardError, ":name must be set" if args[:name].nil?
+    raise StandardError, ":install must be set" if args[:install].nil?
+    raise StandardError, ":xpis must be set" if args[:xpis].nil?
+  end
+end  
+
+class CreateTask < BaseMultiXpi
+  def handle(fun, dir, args)
+    task_name = task_name(dir, args[:name])
+    xpi = multi_xpi_name(dir, args) 
+    
+    file xpi
+    
+    desc "Build #{xpi}"
+    task task_name  => xpi
+    
+    Rake::Task[task_name].out = xpi
+  end
+end
+
+class AddDependencies < BaseMultiXpi
+  def handle(fun, dir, args)
+    all_deps = []
+    all_deps += args[:xpis]
+    all_deps.push args[:install] unless args[:install].nil?
+    
+    task = Rake::Task[multi_xpi_name(dir, args)]
+    add_dependencies(task, dir, all_deps)
+  end
+end
+
+class Build < BaseMultiXpi
+  def handle(fun, dir, args)
+    xpi = multi_xpi_name(dir, args)
+    
+    file xpi do 
+      puts "Preparing: #{task_name(dir, args[:name])} as #{xpi}"
+      temp = xpi + "_temp"
+      mkdir_p temp
+
+      copy_all(dir, { args[:install] => "install.rdf"}, temp) unless args[:install].nil?
+      copy_all(dir, args[:resources], temp)
+
+      Dir["#{temp}/**/.svn"].each { |file| rm_rf file }
+      zip(temp, xpi)
+      
+      rm_rf temp
+    end
+  end
+end
+end # end of MultiXpi module
+
+end # end of Mozilla module
