@@ -21,6 +21,7 @@
         <!-- Platforms where we're not compiling the native events -->
         <em:targetPlatform>Darwin</em:targetPlatform>
         <em:targetPlatform>Linux</em:targetPlatform>
+        <em:targetPlatform>FreeBSD</em:targetPlatform>
         <!-- Platforms where we are -->
         <em:targetPlatform>WINNT_x86-msvc</em:targetPlatform>
 
