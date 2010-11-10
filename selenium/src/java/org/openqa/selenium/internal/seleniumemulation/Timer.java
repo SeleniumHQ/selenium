@@ -31,17 +31,23 @@ public class Timer {
   }
 
   public <T> T run(SeleneseCommand<T> command, WebDriver driver, String[] args) {
-    final SeleneseTimerTask myTimerTask = new SeleneseTimerTask();
+    Thread thread = Thread.currentThread();
+    final SeleneseTimerTask myTimerTask = new SeleneseTimerTask(thread);
 
     try {
       timer.schedule(myTimerTask, timeout);
     } catch (IllegalArgumentException e) {
+      Thread.interrupted();
+
       // This should only ever happen the user tries to do something with Selenium after calling
       // stop. Since this RejectedExecutionException is really vague, rethrow it with a more
       // explicit message.
       throw new RuntimeException(
           "Illegal attempt to execute a command after calling stop()", e);
     }
+    // Because we call Thread to interrupt, we should ensure that the
+    // interrupted status is cleared. This will be a no-op if called twice.
+    Thread.interrupted();
 
     try {
       return command.apply(driver, args);
@@ -67,8 +73,8 @@ public class Timer {
   class SeleneseTimerTask extends TimerTask {
     private final Thread thread;
 
-    SeleneseTimerTask() {
-      thread = Thread.currentThread();
+    SeleneseTimerTask(Thread thread) {
+      this.thread = thread;
     }
 
     @Override
