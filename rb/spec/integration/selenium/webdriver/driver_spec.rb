@@ -78,7 +78,7 @@ describe "Driver" do
 
     it "should find by css selector" do
       driver.navigate.to url_for("xhtmlTest.html")
-      driver.find_element(:css, "div.content")
+      driver.find_element(:css, "div.content").attribute("class").should == "content"
     end
 
     it "should find by tag name" do
