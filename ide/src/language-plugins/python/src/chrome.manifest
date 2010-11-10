@@ -1,4 +1,0 @@
-# chrome.manifest for development
-content python-formatters  content/
-
-overlay chrome://selenium-ide/content/selenium-ide-overlay.xul chrome://python-formatters/content/formats/format-loader.xul
