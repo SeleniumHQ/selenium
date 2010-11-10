@@ -9,6 +9,7 @@
 * Various Firefox driver improvements (GC race conditions ++).
 * IE::Bridge#initialize now takes an options hash like the other bridges.
 * Added basic iPhone and Android driver classes.
+* Firefox driver now works on FreeBSD.
 
 
 0.0.29 (2010-10-09)
