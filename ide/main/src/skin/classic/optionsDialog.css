@@ -1,0 +1,17 @@
+#format-name,
+#plugin-name {
+  background-color: #666;
+  color: #fff;
+  padding: 0.2em;
+  margin: 2px 0 8px 0;
+  border: 1px solid black;
+  font-weight: bold;
+}
+
+.error { 
+  color: #EE0000;
+}
+
+.tip { 
+  color: #666;
+}

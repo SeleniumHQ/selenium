@@ -1,0 +1,43 @@
+window { 
+  -moz-binding: url(chrome://global/skin/globalBindings.xml#unifiedWindow);
+}
+
+#toolbar1 { 
+  border-top: none;
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+  border-bottom-color: rgba(0, 0, 0, 0.35);
+  background-image: url(chrome://global/skin/toolbar/toolbar-background.gif);
+  background-repeat: repeat-x;
+  background-position: 0 0;
+  padding: 0 4px;
+}
+
+window:not([active="true"]) > toolbox > #toolbar1 {
+  background-image: url(chrome://global/skin/toolbar/toolbar-background-inactive.png);
+}
+
+#toolbar2 { 
+  border-top-width: 1px;
+  border-top-style: solid;
+  border-top-color: rgba(255, 255, 255, 0.25);
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+  border-bottom-color: -moz-use-text-color;
+  -moz-border-bottom-colors: rgba(0, 0, 0, 0.35);
+/*  background-color: rgba(190, 190, 190, 1);*/
+  background-color: transparent;
+  background-image: url(chrome://browser/skin/bookmark_toolbar_background.gif);
+  background-position: center center;
+  background-repeat: repeat-x;
+  height: 28px;
+  padding: 0 4px;
+}
+
+.sidebarToolbar {
+  background-color: transparent;
+}
+
+window:not([active="true"]) > toolbox > #toolbar2 {
+  background-image: url(chrome://browser/skin/bookmark_toolbar_background-inactive.png);
+}
