@@ -4,7 +4,7 @@
     <BuildOutputDirectory>$(TrunkRoot)\build\dotnet</BuildOutputDirectory>
     <ThirdPartyToolsDirectory>$(TrunkRoot)\third_party\csharp</ThirdPartyToolsDirectory>
     <NUnitDirectory>$(ThirdPartyToolsDirectory)\nunit-2.4.8\bin</NUnitDirectory>
-    <JsonAssemblyPath>$(ThirdPartyToolsDirectory)\json-net-3.5r6\Newtonsoft.Json.Net20.dll</JsonAssemblyPath>
+    <JsonAssemblyPath>$(ThirdPartyToolsDirectory)\json-net-3.5r6\Newtonsoft.Json.dll</JsonAssemblyPath>
     <ZipAssemblyPath>$(ThirdPartyToolsDirectory)\dotnetzip-1.9\Ionic.Zip.Reduced.dll</ZipAssemblyPath>
   </PropertyGroup>
  

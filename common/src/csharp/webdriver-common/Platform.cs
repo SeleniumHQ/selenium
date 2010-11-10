@@ -72,6 +72,9 @@ namespace OpenQA.Selenium
         /// </summary>
         Linux,
 		
+        /// <summary>
+        /// Any version using the Darwin packaging system (OS X).
+        /// </summary>
 		Darwin
     }
 

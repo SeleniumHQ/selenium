@@ -31,7 +31,6 @@ namespace OpenQA.Selenium
     /// it is expected that that all subclasses rely on the basic finding mechanisms provided 
     /// through static methods of this class. An example of this can be found in OpenQA.Support.ByIdOrName
     /// </remarks>
-    /// </example>
     public class By
     {
         private FindElementDelegate findElementMethod;

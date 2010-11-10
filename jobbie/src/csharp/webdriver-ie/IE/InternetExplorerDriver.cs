@@ -967,7 +967,7 @@ namespace OpenQA.Selenium.IE
                 /// <remarks>
                 /// When searching for a single element, the driver should poll the page
                 /// until the element has been found, or this timeout expires before throwing
-                /// a <see cref="ElementNotFoundException"/>. When searching for multiple elements,
+                /// a <see cref="NoSuchElementException"/>. When searching for multiple elements,
                 /// the driver should poll the page until at least one element has been found
                 /// or this timeout has expired.
                 /// <para>

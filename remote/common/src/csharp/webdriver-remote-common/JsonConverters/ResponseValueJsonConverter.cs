@@ -24,6 +24,7 @@ namespace OpenQA.Selenium.Remote
         /// </summary>
         /// <param name="reader">A JSON reader</param>
         /// <param name="objectType">Type of the object</param>
+        /// <param name="existingValue">The existing value of the object</param>
         /// <param name="serializer">JSON Serializer</param>
         /// <returns>Object created from JSON</returns>
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)

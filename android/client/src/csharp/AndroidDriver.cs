@@ -26,23 +26,38 @@ namespace OpenQA.Selenium.Android
     /// </summary>
     public class AndroidDriver : RemoteWebDriver, ITakesScreenshot
     {
-        protected const string DefaultAndroidDriverUrl = "http://localhost:8080/hub";
+        private const string DefaultAndroidDriverUrl = "http://localhost:8080/hub";
 
+        /// <summary>
+        /// Initializes a new instance of the InternetExplorerDriver class.
+        /// </summary>
         public AndroidDriver()
             : this(new Uri(DefaultAndroidDriverUrl))
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the InternetExplorerDriver class given the specified remote address.
+        /// </summary>
+        /// <param name="remoteAddress">The remote address of the Android device or emulator.</param>
         public AndroidDriver(string remoteAddress)
             : this(new Uri(remoteAddress))
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the InternetExplorerDriver class given the specified remote address.
+        /// </summary>
+        /// <param name="remoteAddress">The remote address of the Android device or emulator.</param>
         public AndroidDriver(Uri remoteAddress)
             : base(remoteAddress, DesiredCapabilities.Android())
         {
         }
 
+        /// <summary>
+        /// Gets a screenshot of the Android device screen.
+        /// </summary>
+        /// <returns>A Screenshot object containing the image of the screen.</returns>
         public Screenshot GetScreenshot()
         {
             Response screenshotResponse = Execute(DriverCommand.Screenshot, null);
