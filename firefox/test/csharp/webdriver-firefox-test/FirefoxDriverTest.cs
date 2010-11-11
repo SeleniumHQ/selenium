@@ -32,7 +32,6 @@ namespace OpenQA.Selenium.Firefox.Test
         }
 
         [Test]
-        //[IgnoreBrowser(Browser.Firefox, "Need to figure out how to open a new browser instance mid-test")]
         public void ShouldWaitUntilBrowserHasClosedProperly()
         {
             driver.Url = simpleTestPage;

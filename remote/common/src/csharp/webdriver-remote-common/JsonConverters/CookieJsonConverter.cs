@@ -78,8 +78,11 @@ namespace OpenQA.Selenium.Remote
                 writer.WritePropertyName("expiry");
                 if (cookieValue.Expiry != null)
                 {
-                    string dateValue = cookieValue.Expiry.Value.ToUniversalTime().ToString("ddd MM/dd/yyyy hh:mm:ss UTC", CultureInfo.InvariantCulture);
-                    writer.WriteValue(dateValue);
+                    //string dateValue = cookieValue.Expiry.Value.ToUniversalTime().ToString("ddd MM/dd/yyyy hh:mm:ss UTC", CultureInfo.InvariantCulture);
+                    //writer.WriteValue(dateValue);
+                    DateTime zeroDate = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+                    TimeSpan span = cookieValue.Expiry.Value.ToUniversalTime().Subtract(zeroDate);
+                    writer.WriteValue(span.TotalSeconds);
                 }
                 else
                 {

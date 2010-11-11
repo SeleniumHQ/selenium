@@ -51,18 +51,39 @@ namespace OpenQA.Selenium.Environment
 
         public string WhereIs(string page)
         {
-            // TODO(andre.nogueira): Is it a problem if folder==""?
-            return protocol + "://" + hostName + ":" + port + "/" + path + "/" + page;
+            string location = string.Empty;
+            if (EnvironmentManager.Instance.WebServer.IsRunning)
+            {
+                location = EnvironmentManager.Instance.WebServer.NormalizedUrl(page);
+            }
+
+            return location;
         }
 
         public string WhereElseIs(string page)
         {
-            return protocol + "://" + alternateHostName + ":" + port + "/" + path + "/" + page;
+            string location = string.Empty;
+            if (EnvironmentManager.Instance.WebServer.IsRunning)
+            {
+                UriBuilder builder = new UriBuilder(EnvironmentManager.Instance.WebServer.NormalizedUrl(page));
+                builder.Host = alternateHostName;
+                location = builder.Uri.ToString();
+            }
+
+            return location;
         }
 
         public string WhereIsSecure(string page)
         {
-            return protocol + "s://" + alternateHostName + ":" + port + "/" + path + "/" + page;
+            string location = string.Empty;
+            if (EnvironmentManager.Instance.WebServer.IsRunning)
+            {
+                UriBuilder builder = new UriBuilder(EnvironmentManager.Instance.WebServer.NormalizedUrl(page));
+                builder.Scheme = "https";
+                location = builder.Uri.ToString();
+            }
+
+            return location;
         }
     }
 }

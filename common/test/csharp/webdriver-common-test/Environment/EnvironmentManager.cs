@@ -4,17 +4,18 @@ using System.Configuration;
 using System.Reflection;
 using System.Text;
 using OpenQA.Selenium;
+using System.IO;
 
 namespace OpenQA.Selenium.Environment
 {
     public class EnvironmentManager
     {
-        
-        Type driverType;
-        static readonly EnvironmentManager instance = new EnvironmentManager();
+        private static readonly EnvironmentManager instance = new EnvironmentManager();
+        private Type driverType;
         private Browser browser;
-        IWebDriver driver;
-        UrlBuilder urlBuilder;
+        private IWebDriver driver;
+        private UrlBuilder urlBuilder;
+        private TestWebServer webServer;
         private string remoteCapabilities;
 
         private EnvironmentManager()
@@ -28,10 +29,33 @@ namespace OpenQA.Selenium.Environment
             remoteCapabilities = GetSettingValue("RemoteCapabilities");
 
             urlBuilder = new UrlBuilder();
+
+            Assembly executingAssembly = Assembly.GetExecutingAssembly();
+            string assemblyLocation = executingAssembly.Location;
+
+            // If we're shadow copying,. fiddle with 
+            // the codebase instead 
+            if (AppDomain.CurrentDomain.ShadowCopyFiles)
+            {
+                Uri uri = new Uri(executingAssembly.CodeBase);
+                assemblyLocation = uri.LocalPath;
+            }
+
+            string currentDirectory = Path.GetDirectoryName(assemblyLocation);
+            DirectoryInfo info = new DirectoryInfo(currentDirectory);
+            while (info != info.Root && string.Compare(info.Name, "build", StringComparison.OrdinalIgnoreCase) != 0)
+            {
+                info = info.Parent;
+            }
+
+            info = info.Parent;
+            string websitePath = Path.Combine(info.FullName, @"common\src\web");
+            webServer = new TestWebServer(websitePath, "common");
         }
 
         ~EnvironmentManager()
         {
+            webServer.Stop();
             if (driver != null)
             {
                 driver.Quit();
@@ -46,6 +70,11 @@ namespace OpenQA.Selenium.Environment
         public Browser Browser 
         {
             get { return browser; }
+        }
+
+        public TestWebServer WebServer
+        {
+            get { return webServer; }
         }
 
         public string RemoteCapabilities
