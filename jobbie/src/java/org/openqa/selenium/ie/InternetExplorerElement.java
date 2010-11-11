@@ -92,7 +92,11 @@ public class InternetExplorerElement implements RenderedWebElement, Locatable,
   }
 
   public String getValue() {
-    return getAttribute("value").replace("\r\n", "\n");
+    String value = getAttribute("value");
+    if (value == null) {
+      return null;
+    }
+    return value.replace("\r\n", "\n");
   }
 
   public void sendKeys(CharSequence... value) {
