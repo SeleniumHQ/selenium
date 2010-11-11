@@ -1,5 +1,4 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
-require "base64"
 
 describe "Screenshot" do
   it "can capture html for current page" do
@@ -8,12 +7,13 @@ describe "Screenshot" do
   end
 
   it "captures PNG screenshot OS viewport as a file on Selenium RC local filesystem" do
-    FileUtils.rm_rf("/tmp/selenium_screenshot.png")
-    page.open "http://localhost:4444/selenium-server/tests/html/test_click_page1.html"
-    page.capture_screenshot "/tmp/selenium_screenshot.png"
+    tempfile = File.join(Dir.tmpdir, "selenium_screenshot.png")
 
-    File.exists?("/tmp/selenium_screenshot.png").should be_true
-    File.open("/tmp/selenium_screenshot.png", "r") do |io|
+    page.open "http://localhost:4444/selenium-server/tests/html/test_click_page1.html"
+    page.capture_screenshot tempfile
+
+    File.exists?(tempfile).should be_true
+    File.open(tempfile, "r") do |io|
       magic = io.read(4)
       magic.should == "\211PNG"
     end
