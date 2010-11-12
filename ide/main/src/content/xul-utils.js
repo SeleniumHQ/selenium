@@ -24,7 +24,7 @@ var XulUtils = {
 
     appendMenuItem: function(e, attributes) {
 		var menuitem = document.createElement("menuitem");
-        for (key in attributes) {
+        for (var key in attributes) {
             if (attributes[key] != null) {
                 menuitem.setAttribute(key, attributes[key]);
             }
@@ -48,7 +48,7 @@ var XulUtils = {
 
 	atomService: Components.classes["@mozilla.org/atom-service;1"].
 		getService(Components.interfaces.nsIAtomService)
-}
+};
 
 XulUtils.TreeViewHelper = classCreate();
 objectExtend(XulUtils.TreeViewHelper.prototype, {
