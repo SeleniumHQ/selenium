@@ -205,7 +205,7 @@ options.header =
     "public class ${className} extends ${superClass} {\n" + 
     "\t@Before\n" +
     "\tpublic void setUp() throws Exception {\n" +
-    '\t\tselenium = new DefaultSelenium("localhost", "4444", "${environment}", "${baseURL}");\n' + 
+    '\t\tselenium = new DefaultSelenium("localhost", 4444, "${environment}", "${baseURL}");\n' + 
 	"\t\tselenium.start();\n" +
     "\t}\n" +
 	"\n" +
