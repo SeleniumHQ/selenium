@@ -3,7 +3,7 @@
  */
 
 var subScriptLoader = Components.classes["@mozilla.org/moz/jssubscript-loader;1"].getService(Components.interfaces.mozIJSSubScriptLoader);
-subScriptLoader.loadSubScript('chrome://selenium-ide/content/formats/formatCommandOnlyAdapter.js');
+subScriptLoader.loadSubScript('chrome://selenium-ide/content/formats/formatCommandOnlyAdapter.js', this);
 
 function formatHeader(testCase) {
     var className = testCase.getTitle();
@@ -13,13 +13,13 @@ function formatHeader(testCase) {
 
 	var formatLocal = testCase.formatLocal(this.name);
 	methodName = testMethodName(className.replace(/Test$/, "").replace(/^Test/, "").
-								replace(/^[A-Z]/, function(str) { return str.toLowerCase() }));
+								replace(/^[A-Z]/, function(str) { return str.toLowerCase(); }));
 	var header = (options.getHeader ? options.getHeader() : options.header).
 		replace(/\$\{className\}/g, className).
 		replace(/\$\{methodName\}/g, methodName).
 		replace(/\$\{baseURL\}/g, testCase.getBaseURL()).
-		replace(/\$\{([a-zA-Z0-9_]+)\}/g, function(str, name) { return options[name] });
-	this.lastIndent = indents(parseInt(options.initialIndents));
+		replace(/\$\{([a-zA-Z0-9_]+)\}/g, function(str, name) { return options[name]; });
+	this.lastIndent = indents(parseInt(options.initialIndents, 10));
 	formatLocal.header = header;
 	return formatLocal.header;
 }
@@ -38,11 +38,12 @@ function indents(num) {
 		}
 		return str;
 	}
+
 	var indent = options.indent;
 	if ('tab' == indent) {
 		return repeat("\t", num);
 	} else {
-		return repeat(" ", num * parseInt(options.indent));
+		return repeat(" ", num * parseInt(options.indent, 10));
 	}
 }
 
@@ -75,7 +76,7 @@ function Equals(e1, e2) {
 
 Equals.prototype.invert = function() {
 	return new NotEquals(this.e1, this.e2);
-}
+};
 
 function NotEquals(e1, e2) {
 	this.e1 = e1;
@@ -85,7 +86,7 @@ function NotEquals(e1, e2) {
 
 NotEquals.prototype.invert = function() {
 	return new Equals(this.e1, this.e2);
-}
+};
 
 function RegexpMatch(pattern, expression) {
 	this.pattern = pattern;
@@ -94,15 +95,15 @@ function RegexpMatch(pattern, expression) {
 
 RegexpMatch.prototype.invert = function() {
 	return new RegexpNotMatch(this.pattern, this.expression);
-}
+};
 
 RegexpMatch.prototype.assert = function() {
 	return assertTrue(this.toString());
-}
+};
 
 RegexpMatch.prototype.verify = function() {
 	return verifyTrue(this.toString());
-}
+};
 
 function RegexpNotMatch(pattern, expression) {
 	this.pattern = pattern;
@@ -112,19 +113,19 @@ function RegexpNotMatch(pattern, expression) {
 
 RegexpNotMatch.prototype.invert = function() {
 	return new RegexpMatch(this.pattern, this.expression);
-}
+};
 
 RegexpNotMatch.prototype.toString = function() {
 	return notOperator() + RegexpMatch.prototype.toString.call(this);
-}
+};
 
 RegexpNotMatch.prototype.assert = function() {
 	return assertFalse(this.invert());
-}
+};
 
 RegexpNotMatch.prototype.verify = function() {
 	return verifyFalse(this.invert());
-}
+};
 
 function seleniumEquals(type, pattern, expression) {
 	if (type == 'String[]') {
@@ -149,11 +150,11 @@ function xlateArgument(value) {
 	value = value.replace(/^\s+/, '');
 	value = value.replace(/\s+$/, '');
 	var r;
+	var r2;
+	var parts = [];
 	if ((r = /^javascript\{([\d\D]*)\}$/.exec(value))) {
 		var js = r[1];
-		var parts = [];
 		var prefix = "";
-		var r2;
 		while ((r2 = /storedVars\['(.*?)'\]/.exec(js))) {
 			parts.push(string(prefix + js.substring(0, r2.index) + "'"));
 			parts.push(variableName(r2[1]));
@@ -163,10 +164,8 @@ function xlateArgument(value) {
 		parts.push(string(prefix + js));
 		return new CallSelenium("getEval", [concatString(parts)]);
 	} else if ((r = /\$\{/.exec(value))) {
-		var parts = [];
 		var regexp = /\$\{(.*?)\}/g;
 		var lastIndex = 0;
-		var r2;
 		while (r2 = regexp.exec(value)) {
 		    if (this.declaredVars && this.declaredVars[r2[1]]) {
     			if (r2.index - lastIndex > 0) {
@@ -244,7 +243,7 @@ CallSelenium.prototype.invert = function() {
 	call.args = this.args;
 	call.negative = !this.negative;
 	return call;
-}
+};
 
 function xlateArrayElement(value) {
 	return value.replace(/\\(.)/g, "$1");
@@ -282,7 +281,7 @@ function formatCommand(command) {
 			for (var i = 0; i < def.params.length; i++) {
 				call.args.push(xlateArgument(command.getParameterAt(i)));
 			}
-			var extraArg = command.getParameterAt(def.params.length)
+			var extraArg = command.getParameterAt(def.params.length);
 			if (def.name.match(/^is/)) { // isXXX
 				if (command.command.match(/^assert/) ||
 					(this.assertOrVerifyFailureOnNext && command.command.match(/^verify/))) {

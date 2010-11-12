@@ -3,7 +3,7 @@
  */
 
 var subScriptLoader = Components.classes["@mozilla.org/moz/jssubscript-loader;1"].getService(Components.interfaces.mozIJSSubScriptLoader);
-subScriptLoader.loadSubScript('chrome://selenium-ide/content/formats/remoteControl.js');
+subScriptLoader.loadSubScript('chrome://selenium-ide/content/formats/remoteControl.js', this);
 
 this.name = "cs-rc";
 
@@ -159,64 +159,61 @@ this.options = {
 	environment: "*chrome",
 	namespace: "SeleniumTests",
     indent:	'tab',
-    initialIndents:	'3'
+    initialIndents:	'3',
+    header:
+    	'using System;\n' +
+    	'using System.Text;\n' +
+    	'using System.Text.RegularExpressions;\n' +
+    	'using System.Threading;\n' +
+    	'using NUnit.Framework;\n' +
+    	'using Selenium;\n' +
+    	'\n' +
+    	'namespace ${namespace}\n' +
+    	'{\n' +
+    	indents(1) + '[TestFixture]\n' +
+    	indents(1) + 'public class ${className}\n' +
+    	indents(1) + '{\n' +
+    	indents(2) + 'private ISelenium selenium;\n' +
+    	indents(2) + 'private StringBuilder verificationErrors;\n' +
+    	indents(2) + '\n' +
+    	indents(2) + '[SetUp]\n' +
+    	indents(2) + 'public void SetupTest()\n' +
+    	indents(2) + '{\n' +
+    	indents(3) + '${receiver} = new DefaultSelenium("${rcHost}", ${rcPort}, "${environment}", "${baseURL}");\n' +
+    	indents(3) + '${receiver}.Start();\n' +
+    	indents(3) + 'verificationErrors = new StringBuilder();\n' +
+    	indents(2) + '}\n' +
+    	indents(2) + '\n' +
+    	indents(2) + '[TearDown]\n' +
+    	indents(2) + 'public void TeardownTest()\n' +
+    	indents(2) + '{\n' +
+    	indents(3) + 'try\n' +
+    	indents(3) + '{\n' +
+    	indents(4) + '${receiver}.Stop();\n' +
+    	indents(3) + '}\n' +
+    	indents(3) + 'catch (Exception)\n' +
+    	indents(3) + '{\n' +
+    	indents(4) + '// Ignore errors if unable to close the browser\n' +
+    	indents(3) + '}\n' +
+    	indents(3) + 'Assert.AreEqual("", verificationErrors.ToString());\n' +
+    	indents(2) + '}\n' +
+    	indents(2) + '\n' +
+    	indents(2) + '[Test]\n' +
+    	indents(2) + 'public void ${methodName}()\n' +
+    	indents(2) + '{\n',
+    footer:
+    	indents(2) + '}\n' +
+    	indents(1) + '}\n' +
+    	'}\n',
+    configForm:
+    	'<description>Variable for Selenium instance</description>' +
+    	'<textbox id="options_receiver" />' +
+    	'<description>Selenium RC host</description>' +
+    	'<textbox id="options_rcHost" />' +
+    	'<description>Selenium RC port</description>' +
+    	'<textbox id="options_rcPort" />' +
+    	'<description>Environment</description>' +
+    	'<textbox id="options_environment" />' +
+    	'<description>Namespace</description>' +
+    	'<textbox id="options_namespace" />'
 };
-
-options.header =
-	'using System;\n' +
-	'using System.Text;\n' +
-	'using System.Text.RegularExpressions;\n' +
-	'using System.Threading;\n' +
-	'using NUnit.Framework;\n' +
-	'using Selenium;\n' +
-	'\n' +
-	'namespace ${namespace}\n' +
-	'{\n' +
-	indents(1) + '[TestFixture]\n' +
-	indents(1) + 'public class ${className}\n' +
-	indents(1) + '{\n' +
-	indents(2) + 'private ISelenium selenium;\n' +
-	indents(2) + 'private StringBuilder verificationErrors;\n' +
-	indents(2) + '\n' +
-	indents(2) + '[SetUp]\n' +
-	indents(2) + 'public void SetupTest()\n' +
-	indents(2) + '{\n' +
-	indents(3) + '${receiver} = new DefaultSelenium("${rcHost}", ${rcPort}, "${environment}", "${baseURL}");\n' +
-	indents(3) + '${receiver}.Start();\n' +
-	indents(3) + 'verificationErrors = new StringBuilder();\n' +
-	indents(2) + '}\n' +
-	indents(2) + '\n' +
-	indents(2) + '[TearDown]\n' +
-	indents(2) + 'public void TeardownTest()\n' +
-	indents(2) + '{\n' +
-	indents(3) + 'try\n' +
-	indents(3) + '{\n' +
-	indents(4) + '${receiver}.Stop();\n' +
-	indents(3) + '}\n' +
-	indents(3) + 'catch (Exception)\n' +
-	indents(3) + '{\n' +
-	indents(4) + '// Ignore errors if unable to close the browser\n' +
-	indents(3) + '}\n' +
-	indents(3) + 'Assert.AreEqual("", verificationErrors.ToString());\n' +
-	indents(2) + '}\n' +
-	indents(2) + '\n' +
-	indents(2) + '[Test]\n' +
-	indents(2) + 'public void ${methodName}()\n' +
-	indents(2) + '{\n';
-
-options.footer =
-	indents(2) + '}\n' +
-	indents(1) + '}\n' +
-	'}\n';
-
-this.configForm = 
-	'<description>Variable for Selenium instance</description>' +
-	'<textbox id="options_receiver" />' +
-	'<description>Selenium RC host</description>' +
-	'<textbox id="options_rcHost" />' +
-	'<description>Selenium RC port</description>' +
-	'<textbox id="options_rcPort" />' +
-	'<description>Environment</description>' +
-	'<textbox id="options_environment" />' +
-	'<description>Namespace</description>' +
-	'<textbox id="options_namespace" />';

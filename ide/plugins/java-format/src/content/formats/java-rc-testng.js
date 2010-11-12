@@ -3,7 +3,7 @@
  */
 
 var subScriptLoader = Components.classes["@mozilla.org/moz/jssubscript-loader;1"].getService(Components.interfaces.mozIJSSubScriptLoader);
-subScriptLoader.loadSubScript('chrome://java-formatters/content/formats/java-rc.js');
+subScriptLoader.loadSubScript('chrome://java-formatters/content/formats/java-rc.js', this);
 
 this.name = "java-rc-testng";
 
