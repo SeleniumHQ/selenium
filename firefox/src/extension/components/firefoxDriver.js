@@ -161,6 +161,8 @@ FirefoxDriver.prototype.executeScript = function(respond, parameters) {
     window = window.wrappedJSObject;
     var sandbox = new Components.utils.Sandbox(window);
     sandbox.window = window;
+    sandbox.document = doc.wrappedJSObject ? doc.wrappedJSObject : doc;
+    sandbox.navigator = window.navigator;
     sandbox.__webdriverParams = converted;
 
     try {
