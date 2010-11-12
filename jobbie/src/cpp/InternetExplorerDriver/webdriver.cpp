@@ -700,15 +700,15 @@ int wdeGetAttribute(WebDriver* driver, WebElement* element, const wchar_t* name,
 		std::wstring script(L"(function() { return function(){ ");
 
 		// Read in all the scripts
-		for (int j = 0; WD_GET_ATTRIBUTE[j]; j++) {
-			script += WD_GET_ATTRIBUTE[j];
+		for (int j = 0; GET_ATTRIBUTE[j]; j++) {
+			script += GET_ATTRIBUTE[j];
 			script += L"\n";
 		}
 
 		// Now for the magic
 		script += L"var element = arguments[0];\n";
 		script += L"var attributeName = arguments[1];\n";
-		script += L"return wdGetAttribute(element, attributeName);\n";
+		script += L"return getAttribute(element, attributeName);\n";
 
 		// Close things
 		script += L"};})();";

@@ -1,0 +1,21 @@
+
+js_binary(name = "webdriver",
+  type = "script",
+  closure = "true",
+  deps = [
+    ":atoms"
+  ])
+
+js_deps(name = "atoms",
+  srcs = "**/*.js",
+  deps = "//common:bot")
+
+js_fragment(name = "get_attribute",
+  module = "webdriver.element",
+  function = "webdriver.element.getAttribute",
+  deps = [ ":atoms" ])
+
+js_fragment(name = "is_displayed",
+  module = "bot.dom",
+  function = "bot.dom.isShown",
+  deps = [ "//common:bot" ])

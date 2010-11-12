@@ -1,5 +1,5 @@
 /* AUTO GENERATED - Do not edit by hand. */
-/* See rake-tasts/crazy_fun/mappings/javascript.rb for generator. */
+/* See rake-tasks/crazy_fun/mappings/javascript.rb for generator. */
 
 #ifndef SIZZLE_H
 #define SIZZLE_H

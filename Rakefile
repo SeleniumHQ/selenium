@@ -439,7 +439,7 @@ task :test_iphone_server do
 end
 
 file "jobbie/src/cpp/InternetExplorerDriver/atoms.h" => [
-  "//common:wd_get_attribute:header",
+  "//common/src/js/webdriver:get_attribute:header",
 ] do |task|
   puts "Writing: #{task}"
   File.open('jobbie/src/cpp/InternetExplorerDriver/atoms.h', 'w') do |f|
