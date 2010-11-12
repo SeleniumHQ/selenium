@@ -101,7 +101,11 @@ Application.prototype = {
         //if the format is reversible (implements the "parse" method)
         //or if the testcase isn't changed manually by user: all be fine
         //if not, the format isn't changed
+        alert(this.currentFormat.isReversible);
+        alert(this.currentFormat.isReversible());
+        alert(!edited);
         if ((this.currentFormat.isReversible && this.currentFormat.isReversible()) || !edited){
+            alert('in');
              //sync the testcase with the data view
             this.notify("currentFormatChanging");
 
