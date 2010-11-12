@@ -44,12 +44,12 @@ function saveDialog() {
 			return false;
 		}
 	}
-	//only save an editable format
+	//only save an editable formatx
 	if (this.formatInfo.saveFormat){
 		this.formatInfo.saveFormat(document.getElementById('format-source').value);
 		this.formatInfo.saved = true;
-		window['selenium-ide-format-source'].close();
 		return true;
 	}
+	return false;
 	
 }
