@@ -17,17 +17,21 @@ limitations under the License.
 
 package org.openqa.selenium.internal.seleniumemulation;
 
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 
 public class GetText extends SeleneseCommand<String> {
-  private final ElementFinder finder;
+  private final JavascriptLibrary library;
 
-  public GetText(ElementFinder finder) {
-    this.finder = finder;
+  public GetText(JavascriptLibrary library) {
+    this.library = library;
   }
 
   @Override
   protected String handleSeleneseCommand(WebDriver driver, String locator, String ignored) {
-    return finder.findElement(driver, locator).getText().trim();
+    String getText = library.getSeleniumScript("getText.js");
+
+    return (String) ((JavascriptExecutor) driver).executeScript(
+        getText + "; return getText(arguments[0]);", locator);
   }
 }

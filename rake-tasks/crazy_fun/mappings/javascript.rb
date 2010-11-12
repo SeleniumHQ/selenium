@@ -209,6 +209,7 @@ module Javascript
         # TODO(simon): Don't hard code things. That's Not Smart
         cmd = calcdeps +
             "-o compiled " <<
+            "-f \"--create_name_map_files=true\" " <<
             "-f \"--third_party=true\" " <<
             "-f \"--js_output_file=#{output}\" " <<
             "-f \"--output_wrapper='#{wrapper}'\" " <<

@@ -18,13 +18,7 @@ limitations under the License.
 
 package org.openqa.selenium.internal.seleniumemulation;
 
-import java.io.IOException;
-import java.net.URL;
 import java.util.regex.Pattern;
-
-import com.google.common.base.Charsets;
-import com.google.common.base.Throwables;
-import com.google.common.io.Resources;
 
 /**
  * Add a function backed by the closure-based implementation of Selenium Core.
@@ -40,7 +34,7 @@ public class SeleniumMutator implements ScriptMutator {
     this.pattern = Pattern.compile(raw);
     this.method = method;
     this.atomicName = atomicName;
-    this.atom = readAtom(atom);
+    this.atom = atom;
   }
 
   public void mutate(String script, StringBuilder appendTo) {
@@ -56,20 +50,6 @@ public class SeleniumMutator implements ScriptMutator {
 
     // Set "this" to be the pre-declared selenium object
     appendTo.append(atomicName).append(".apply(null, arguments);};");
-  }
-
-  protected String readAtom(String path) {
-    URL url = getClass().getResource(path);
-
-    if (url == null) {
-      throw new RuntimeException("Cannot locate atom for " + path);
-    }
-
-    try {
-      return Resources.toString(url, Charsets.UTF_8);
-    } catch (IOException e) {
-      throw Throwables.propagate(e);
-    }
   }
 }
 

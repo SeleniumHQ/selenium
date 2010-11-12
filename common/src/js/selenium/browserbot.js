@@ -30,25 +30,6 @@ goog.require('core.patternMatcher');
 
 
 /**
- * Verifies that the specified text pattern appears somewhere on the rendered
- * page shown to the user.
- *
- * @param {!string} pattern a pattern to match with the text of the page.
- * @return {boolean} Whether the pattern matches the text.
- */
-core.browserbot.isTextPresent = function(pattern) {
-  var body = bot.locators.findElement({'tagName': 'body'});
-  if (!body) {
-    return false;
-  }
-  var allText = bot.dom.getVisibleText((body));
-
-  var matchMaker = core.patternMatcher.against(pattern);
-  return matchMaker(allText);
-};
-
-
-/**
  * @param {!string} locator The selenium locator to use.
  * @return {boolean} Whether the given element is "user visible".
  */

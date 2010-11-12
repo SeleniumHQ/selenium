@@ -30,7 +30,7 @@ goog.provide('core.patternMatcher');
  * @private
  */
 core.patternMatcher.exact_ = function(expected, actual) {
-  return expected == actual;
+  return actual.indexOf(expected) != -1;
 };
 
 
@@ -184,7 +184,7 @@ core.patternMatcher.against = function(pattern) {
     }
     matchStrategy = core.patternMatcher.KNOWN_STRATEGIES_['globContains'];
   } else {
-    if (strategyName == 'exact') {
+    if (strategyName == 'exact' && pattern.indexOf('exact:') == 0) {
       pattern = pattern.substring('exact:'.length); // strip off 'exact:'
     }
   }

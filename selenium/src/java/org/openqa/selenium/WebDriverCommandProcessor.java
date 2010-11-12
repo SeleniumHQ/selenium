@@ -358,7 +358,7 @@ public class WebDriverCommandProcessor implements CommandProcessor {
     seleneseMethods.put("getSelectOptions", new GetSelectOptions(select));
     seleneseMethods.put("getSpeed", new NoOp("0"));
     seleneseMethods.put("getTable", new GetTable(elementFinder, javascriptLibrary));
-    seleneseMethods.put("getText", new GetText(elementFinder));
+    seleneseMethods.put("getText", new GetText(javascriptLibrary));
     seleneseMethods.put("getTitle", new GetTitle());
     seleneseMethods.put("getValue", new GetValue(elementFinder));
     seleneseMethods.put("getXpathCount", new GetXpathCount());

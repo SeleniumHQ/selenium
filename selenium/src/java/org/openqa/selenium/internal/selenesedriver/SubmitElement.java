@@ -35,7 +35,19 @@ public class SubmitElement extends ElementFunction<Void> {
       throw new WebDriverException(result);
     }
 
+    // Turns out that on Firefox, the load may not have started. Rest for a very
+    // short time to let it being.
+    sleep(100);
+    
     return null;
+  }
+
+  private void sleep(long timeout) {
+    try {
+      Thread.sleep(timeout);
+    } catch (InterruptedException e) {
+      throw new WebDriverException(e);
+    }
   }
 
   private final String submitJs =

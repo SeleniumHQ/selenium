@@ -29,9 +29,6 @@ import java.util.List;
  * meaningful return value can be created.
  */
 public class CompoundMutator implements ScriptMutator {
-  private static final String PREFIX =
-      "/scripts/selenium/";
-
   // The ordering of mutators matters
   private final List<ScriptMutator> mutators = Lists.newArrayList();
 
@@ -48,14 +45,16 @@ public class CompoundMutator implements ScriptMutator {
     addMutator(new FunctionDeclaration("selenium.browserbot.getDocument", "return document;"));
     addMutator(new FunctionDeclaration("selenium.page().getDocument", "return document;"));
 
+    JavascriptLibrary library = new JavascriptLibrary();
+
     addMutator(new SeleniumMutator("selenium.isElementPresent", "isElementPresent",
-        PREFIX + "isElementPresent.js"));
+        library.getSeleniumScript("isElementPresent.js")));
     addMutator(new SeleniumMutator("selenium.isTextPresent", "isTextPresent",
-        PREFIX + "isTextPresent.js"));
+        library.getSeleniumScript("isTextPresent.js")));
     addMutator(new SeleniumMutator("selenium.isVisible", "isVisible",
-        PREFIX + "isVisible.js"));
+        library.getSeleniumScript("isVisible.js")));
     addMutator(new SeleniumMutator("selenium.browserbot.findElement", "findElement",
-        PREFIX + "findElement.js"));
+        library.getSeleniumScript("findElement.js")));
   }
 
   public void addMutator(ScriptMutator mutator) {

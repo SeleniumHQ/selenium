@@ -14,14 +14,19 @@ js_fragment(name = "findElement",
   function = "core.locators.findElement",
   srcs = [":atomic_core"])
 
+js_fragment(name = "getText",
+  module = "core.text",
+  function = "core.text.getText",
+  srcs = [":atomic_core"])
+
 js_fragment(name = "isElementPresent",
   module = "core.locators",
   function = "core.locators.isElementPresent",
   srcs = [":atomic_core"])
 
 js_fragment(name = "isTextPresent",
-  module = "core.browserbot",
-  function = "core.browserbot.isTextPresent",
+  module = "core.text",
+  function = "core.text.isTextPresent",
   srcs = [":atomic_core"])
   
 js_fragment(name = "isVisible",

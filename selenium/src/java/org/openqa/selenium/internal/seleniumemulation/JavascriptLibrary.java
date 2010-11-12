@@ -17,23 +17,31 @@ limitations under the License.
 
 package org.openqa.selenium.internal.seleniumemulation;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import com.google.common.base.Charsets;
+import com.google.common.base.Throwables;
+import com.google.common.io.Resources;
 
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
+import java.io.IOException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class JavascriptLibrary {
+  private static final String PREFIX = "/scripts/selenium/";
+
   private static final String injectableSelenium =
       "/org/openqa/selenium/internal/seleniumemulation/injectableSelenium.js";
   private static final String htmlUtils =
       "/org/openqa/selenium/internal/seleniumemulation/htmlutils.js";
+
+  public String getSeleniumScript(String name) {
+    return readScript(PREFIX + name);
+  }
 
   public void callEmbeddedSelenium(WebDriver driver, String functionName,
                                     WebElement element, Object... values) {
@@ -69,26 +77,16 @@ public class JavascriptLibrary {
   }
 
   private String readScript(String script) {
-    InputStream raw = getClass().getResourceAsStream(script);
-    if (raw == null) {
-      throw new RuntimeException("Cannot locate the embedded selenium instance");
+    URL url = getClass().getResource(script);
+
+    if (url == null) {
+      throw new RuntimeException("Cannot locate " + script);
     }
 
     try {
-      BufferedReader reader = new BufferedReader(new InputStreamReader(raw));
-      StringBuilder builder = new StringBuilder();
-      for (String line = reader.readLine(); line != null; line = reader.readLine()) {
-        builder.append(line).append("\n");
-      }
-      return builder.toString();
+      return Resources.toString(url, Charsets.UTF_8);
     } catch (IOException e) {
-      throw new RuntimeException(e);
-    } finally {
-      try {
-        raw.close();
-      } catch (IOException e) {
-        // Nothing sane to do
-      }
+      throw Throwables.propagate(e);
     }
   }
 }
