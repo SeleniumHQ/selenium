@@ -104,7 +104,7 @@ FormatCollection.loadFormatter = function(url) {
 		}
 	}
 
-    for (prop in StringUtils) {
+    for (var prop in StringUtils) {
         // copy functions from StringUtils
         format[prop] = StringUtils[prop];
     }
