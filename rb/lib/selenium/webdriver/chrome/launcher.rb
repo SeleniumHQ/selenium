@@ -74,7 +74,7 @@ module Selenium
 
         def launch_chrome(server_url)
           args = [
-            Platform.wrap_in_quotes_if_necessary(self.class.binary_path),
+            Platform.wrap_in_quotes_if_necessary(Launcher.binary_path),
             "--load-extension=#{Platform.wrap_in_quotes_if_necessary(tmp_extension_dir)}",
             "--activate-on-launch",
             "--disable-hang-monitor",
@@ -148,7 +148,12 @@ module Selenium
 
         class UnixLauncher < Launcher
           def self.possible_paths
-            [Platform.find_binary("google-chrome"), Platform.find_binary("chromium"), "/usr/bin/google-chrome"].compact
+            [
+              Platform.find_binary("google-chrome"),
+              Platform.find_binary("chromium"),
+              Platform.find_binary("chromium-browser"),
+              "/usr/bin/google-chrome"
+            ].compact
           end
 
         end
