@@ -41,6 +41,7 @@ import com.gargoylesoftware.htmlunit.ScriptResult;
 import com.gargoylesoftware.htmlunit.SgmlPage;
 import com.gargoylesoftware.htmlunit.html.DomNode;
 import com.gargoylesoftware.htmlunit.html.DomText;
+import com.gargoylesoftware.htmlunit.html.HtmlBody;
 import com.gargoylesoftware.htmlunit.html.HtmlButton;
 import com.gargoylesoftware.htmlunit.html.HtmlCheckBoxInput;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
@@ -271,7 +272,11 @@ public class HtmlUnitWebElement implements RenderedWebElement, WrapsDriver,
     switchFocusToThisIfNeeded();
 
     HtmlUnitKeyboard keyboard = (HtmlUnitKeyboard) parent.getKeyboard();
-    keyboard.sendKeys(element, getValue(), keysContainer);
+    if (element instanceof HtmlBody && value.length == 1 && value[0] == Keys.F5) {
+      parent.navigate().refresh();
+    } else {
+      keyboard.sendKeys(element, getValue(), keysContainer);
+    }
 
     if (isInputElement() && keysContainer.wasSubmitKeyFound()) {
       submit();
