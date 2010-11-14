@@ -129,7 +129,7 @@ def _windows_chrome():
     return _find_chrome_in_registry() or _default_windows_location()
 
 def _linux_chrome():
-    locations = ["/usr/bin/google-chrome","/usr/bin/chromium"]
+    locations = ["/usr/bin/google-chrome","/usr/bin/chromium","/usr/bin/chromium-browser"]
     return _start_cmd(locations)
 
 def _mac_chrome():
