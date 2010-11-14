@@ -24,7 +24,6 @@ Usage:
 """
 
 
-
 class Resource(object):
   def __init__(self, path):
     self.path = path
@@ -59,19 +58,32 @@ class Resource(object):
 
   def ToWikiTableString(self):
     return ''.join(m.ToWikiTableString() for m in self.methods)
-    
-    
+
+
 class SessionResource(Resource):
   def AddMethod(self, method):
     return (Resource.AddMethod(self, method).
             AddUrlParameter(':sessionId',
                             'ID of the session to route the command to.'))
-                            
+
+    
 class ElementResource(SessionResource):
   def AddMethod(self, method):
     return (SessionResource.AddMethod(self, method).
-            AddUrlParameter(
-                ':id', 'ID of the element to route the command to.'))
+            AddUrlParameter(':id',
+                            'ID of the element to route the command to.').
+            AddError('StaleElementReference',
+                     'If the element referenced by `:id` is no longer attached '
+                     'to the page\'s DOM.'))
+  
+  def RequiresVisibility(self):
+    return self.AddError('ElementNotVisible',
+                         'If the referenced element is not visible on the page '
+                         '(either is hidden by CSS, has 0-width, or has 0-height)')
+                         
+  def RequiresEnabledState(self):
+    return self.AddError('InvalidElementState',
+                         'If the referenced element is disabled.')
 
 
 class Method(object):
@@ -84,6 +96,7 @@ class Method(object):
     self.javadoc_link = None
     self.javadoc_comment = None
     self.return_type = None
+    self.errors = {}
 
   def AddUrlParameter(self, name, description):
     self.url_parameters.append({
@@ -96,6 +109,10 @@ class Method(object):
         'name': name,
         'type': type,
         'desc': description})
+    return self.parent
+  
+  def AddError(self, type, summary):
+    self.errors[type] = {'type': type, 'summary': summary}
     return self.parent
 
   def SetJavadoc(self, link, comment):
@@ -153,10 +170,23 @@ class Method(object):
 </dl>
 </dd>''' % (type, self.return_type['desc'])
 
-  def ToWikiString(self, path):
-    javadoc = ''
-    if self.javadoc_link:
-      javadoc = '''
+  def _GetErrorWikiString(self):
+    if not self.errors.values():
+      return ''
+    return '''
+<dd>
+<dl>
+<dt>*Potential Errors:*</dt>
+%s
+</dl>
+</dd>''' % '\n'.join('<dd>`%s` - %s</dd>' %
+                     (error['type'], error['summary'])
+                     for error in self.errors.values())
+
+  def _GetJavadocWikiString(self):
+    if not self.javadoc_link:
+      return ''
+    return '''
 <dd>
 <dl>
 <dt>*See Also:*</dt>
@@ -164,18 +194,22 @@ class Method(object):
 </dl>
 </dd>''' % (self.javadoc_link, self.javadoc_comment)
 
+  def ToWikiString(self, path):
     return '''
 <dl>
 <dd>*%s %s*</dd>
 <dd>
 <dl>
-<dd>%s</dd>%s%s%s%s
+<dd>%s</dd>%s%s%s%s%s
 </dl>
 </dd>
 </dl>
-''' % (self.method, path, self.summary, self._GetUrlParametersWikiString(),
+''' % (self.method, path, self.summary,
+       self._GetUrlParametersWikiString(),
        self._GetJsonParametersWikiString(),
-       self._GetReturnTypeWikiString(), javadoc)
+       self._GetReturnTypeWikiString(),
+       self._GetErrorWikiString(),
+       self._GetJavadocWikiString())
 
   def ToWikiTableString(self):
     javadoc = '_N/A_'
@@ -185,8 +219,7 @@ class Method(object):
         self.method, self.parent.path,
         self.summary[:self.summary.find('.') + 1].replace('\n', '').strip(),
         javadoc)
-
-
+        
 
 def main():
   resources = []
@@ -235,8 +268,8 @@ browser on. Should be one of `{WINDOWS|XP|VISTA|MAC|LINUX|UNIX|ANY}` ||
 
 ''').
       SetJavadoc(None, 'n/a').
-      SetReturnType(
-          '{object}', 'A JSON object with the session capabilities.').
+      SetReturnType('{object}',
+                    'A JSON object with the session capabilities.').
       Delete('Delete the session.').
       SetJavadoc('java/org/openqa/selenium/WebDriver.html#quit()',
                  'WebDriver#quit()'))
@@ -317,6 +350,9 @@ the client as
 !WebElement JSON objects.''').
       AddJsonParameter('script', '{string}', 'The script to execute.').
       AddJsonParameter('args', '{Array.<*>}', 'The script arguments.').
+      AddError('StaleElementReference',
+               'If one of the script arguments is a !WebElement that is no '
+               'attached to the page\'s DOM.').
       SetJavadoc('java/org/openqa/selenium/JavascriptExecutor.html#'
                  'executeScript(java.lang.String,%20java.lang.Object...)',
                  'JavascriptExecutor#executeScript(String, Object...)').
@@ -338,7 +374,8 @@ should switch to the page's default content.''').
       SetJavadoc('java/org/openqa/selenium/WebDriver.TargetLocator.html#frame(java.lang.String)',
                  'WebDriver.TargetLocator#frame(String)').
       AddJsonParameter('id', '{string|number|null}',
-                       'Identifier for the frame to change focus to.'))
+                       'Identifier for the frame to change focus to.').
+      AddError('NoSuchFrame', 'If the frame specified by `id` cannot be found.'))
 
   resources.append(
       SessionResource('/session/:sessionId/window').
@@ -350,7 +387,8 @@ server assigned window handle, or by the value of its `name` attribute.''').
       AddJsonParameter('name', '{string}', 'The window to change focus to.').
       Delete('''Close the current window.''').
       SetJavadoc('java/org/openqa/selenium/WebDriver.html#close()',
-                 'WebDriver#close()'))
+                 'WebDriver#close()').
+      AddError('NoSuchWindow', 'If the window specified by `name` cannot be found.'))
 
   resources.append(
       SessionResource('/session/:sessionId/speed').
@@ -413,7 +451,12 @@ expire when the browser is closed. ||
                  'WebDriver.Options#addCookie(Cookie)').
       Delete('''Delete all cookies visible to the current page.''').
       SetJavadoc('java/org/openqa/selenium/WebDriver.Options.html#deleteAllCookies()',
-                 'WebDriver.Options#deleteAllCookies()'))
+                 'WebDriver.Options#deleteAllCookies()').
+      AddError('InvalidCookieDomain',
+               'If the cookie\'s `domain` is not visible from the current page.').
+      AddError('UnableToSetCookie',
+               'If attempting to set a cookie on a page that does not support '
+               'cookies (e.g. pages with mime-type `text/plain`).'))
 
   resources.append(
       SessionResource('/session/:sessionId/cookie/:name').
@@ -447,8 +490,10 @@ such cookie visible to the current page.''').
       AddJsonParameter('value', '{string}', 'The The search target.').
       SetReturnType('{ELEMENT:string}',
                     'A WebElement JSON object for the located element.').
+      AddError('XPathLookupError', 'If using XPath and the input expression is invalid.').
       SetJavadoc('java/org/openqa/selenium/WebDriver.html#findElement(org.openqa.selenium.By)',
-                 'WebDriver.#findElement(By)'))
+                 'WebDriver.#findElement(By)').
+      AddError('NoSuchElement', 'If the element cannot be found.'))
 
   resources.append(
       SessionResource('/session/:sessionId/elements').
@@ -458,6 +503,7 @@ such cookie visible to the current page.''').
       AddJsonParameter('value', '{string}', 'The The search target.').
       SetReturnType('{Array.<{ELEMENT:string}>}',
                     'A list of WebElement JSON objects for the located elements.').
+      AddError('XPathLookupError', 'If using XPath and the input expression is invalid.').
       SetJavadoc('java/org/openqa/selenium/WebDriver.html#findElements(org.openqa.selenium.By)',
                  'WebDriver.#findElements(By)'))
   
@@ -470,71 +516,68 @@ such cookie visible to the current page.''').
                  'WebDriver.TargetLocator#activeElement()'))
 
   resources.append(
-      SessionResource('/session/:sessionId/element/:id').
+      ElementResource('/session/:sessionId/element/:id').
       Get('''Describe the identified element.
 
 *Note:* This command is reserved for future use; its return type is currently \
-undefined.''').
-      AddUrlParameter(':id', 'ID of the element to describe.'))
+undefined.'''))
 
   resources.append(
-      SessionResource('/session/:sessionId/element/:id/element').
+      ElementResource('/session/:sessionId/element/:id/element').
       Post('Search for an element on the page, starting from the identified '
            'element. The located '
            'element will be returned as a WebElement JSON object.').
-      AddUrlParameter(':id', 'ID of the element to search under.').
       AddJsonParameter('using', '{string}', 'The locator strategy to use.').
       AddJsonParameter('value', '{string}', 'The The search target.').
       SetReturnType('{ELEMENT:string}',
                     'A WebElement JSON object for the located element.').
       SetJavadoc('java/org/openqa/selenium/WebElement.html#findElement(org.openqa.selenium.By)',
-                 'WebElement#findElement(By)'))
+                 'WebElement#findElement(By)').
+      AddError('NoSuchElement', 'If the element cannot be found.').
+      AddError('XPathLookupError', 'If using XPath and the input expression is invalid.'))
 
   resources.append(
-      SessionResource('/session/:sessionId/element/:id/elements').
-      Post('''Search for multiple elements on the page, starting from the
- identified element. The located elements will be returned as a WebElement
+      ElementResource('/session/:sessionId/element/:id/elements').
+      Post('''Search for multiple elements on the page, starting from the \
+identified element. The located elements will be returned as a WebElement \
 JSON objects.''').
-      AddUrlParameter(':id', 'ID of the element to search under.').
       AddJsonParameter('using', '{string}', 'The locator strategy to use.').
       AddJsonParameter('value', '{string}', 'The The search target.').
       SetReturnType('{Array.<{ELEMENT:string}>}',
                     'A list of WebElement JSON objects for the located elements.').
+      AddError('XPathLookupError', 'If using XPath and the input expression is invalid.').
       SetJavadoc('java/org/openqa/selenium/WebElement.html#findElements(org.openqa.selenium.By)',
                  'WebElement#findElements(By)'))
 
   resources.append(
-      SessionResource('/session/:sessionId/element/:id/click').
+      ElementResource('/session/:sessionId/element/:id/click').
       Post('Click on an element.').
-      AddUrlParameter(':id', 'ID of the element to manipulate.').
+      RequiresVisibility().
       SetJavadoc('java/org/openqa/selenium/WebElement.html#click()',
                  'WebElement#click()'))
 
   resources.append(
-      SessionResource('/session/:sessionId/element/:id/submit').
+      ElementResource('/session/:sessionId/element/:id/submit').
       Post('Submit a `FORM` element. The submit command may also be applied to any element that is '
            'a descendant of a `FORM` element.').
-      AddUrlParameter(':id', 'ID of the element to manipulate.').
       SetJavadoc('java/org/openqa/selenium/WebElement.html#submit()',
                  'WebElement#submit()'))
 
   resources.append(
-      SessionResource('/session/:sessionId/element/:id/text').
-      Get('Get the `innerText` of the element.').
-      AddUrlParameter(':id', 'ID of the element to manipulate.').
+      ElementResource('/session/:sessionId/element/:id/text').
+      Get('Returns the visible text for the element.').
       SetJavadoc('java/org/openqa/selenium/WebElement.html#getText()',
                  'WebElement#getText()'))
 
   resources.append(
-      SessionResource('/session/:sessionId/element/:id/value').
+      ElementResource('/session/:sessionId/element/:id/value').
       Get('Query for the value of an element, as determined by its `value` attribute.').
-      AddUrlParameter(':id', 'ID of the element to query.').
       SetReturnType('{string|null}',
                     'The element\'s value, or `null` if it does not have a `value` attribute.').
       SetJavadoc('java/org/openqa/selenium/WebElement.html#getValue()',
                  'WebElement#getValue()').
       Post('Send a sequence of key strokes to an element.').
-      AddUrlParameter(':id', 'ID of the element to manipulate.').
+      RequiresVisibility().
       AddJsonParameter('value', '{Array.<string>}',
                        'The sequence of keys to type. An array must be provided. '
                        'The server should flatten the array items to a single '
@@ -543,126 +586,126 @@ JSON objects.''').
                  'WebElement#sendKeys(CharSequence...)'))
 
   resources.append(
-      SessionResource('/session/:sessionId/element/:id/name').
+      ElementResource('/session/:sessionId/element/:id/name').
       Get('Query for an element\'s tag name.').
-      AddUrlParameter(':id', 'ID of the element to query.').
       SetReturnType('{string}', 'The element\'s tag name, as a lowercase string.').
       SetJavadoc('java/org/openqa/selenium/WebElement.html#getTagName()',
                  'WebElement#getTagName()'))
 
   resources.append(
-      SessionResource('/session/:sessionId/element/:id/clear').
+      ElementResource('/session/:sessionId/element/:id/clear').
       Post('Clear a `TEXTAREA` or `text INPUT` element\'s value.').
-      AddUrlParameter(':id', 'ID of the element to manipulate.').
+      RequiresVisibility().
+      RequiresEnabledState().
       SetJavadoc('java/org/openqa/selenium/WebElement.html#clear()',
                  'WebElement#clear()'))
 
   resources.append(
-      SessionResource('/session/:sessionId/element/:id/selected').
+      ElementResource('/session/:sessionId/element/:id/selected').
       Get('Determine if an `OPTION` element, or an `INPUT` element of type `checkbox` or '
           '`radiobutton` is currently selected.').
-      AddUrlParameter(':id', 'ID of the element to query.').
       SetReturnType('{boolean}', 'Whether the element is selected.').
       SetJavadoc('java/org/openqa/selenium/WebElement.html#isSelected()',
                  'WebElement#isSelected()').
       Post('Select an `OPTION` element, or an `INPUT` element of type `checkbox` or `radiobutton`.').
-      AddUrlParameter(':id', 'ID of the element to manipulate.').
+      RequiresVisibility().
+      RequiresEnabledState().
+      AddError('ElementIsNotSelectable', 'If the referenced element cannot be selected.').
       SetJavadoc('java/org/openqa/selenium/WebElement.html#setSelected()',
                  'WebElement#setSelected()'))
 
   resources.append(
-      SessionResource('/session/:sessionId/element/:id/toggle').
+      ElementResource('/session/:sessionId/element/:id/toggle').
       Post('Toggle whether an `OPTION` element, or an `INPUT` element of type `checkbox` or '
            '`radiobutton` is currently selected.').
-      AddUrlParameter(':id', 'ID of the element to manipulate.').
+      RequiresVisibility().
+      RequiresEnabledState().
+      AddError('ElementIsNotSelectable', 'If the referenced element cannot be selected.').
       SetReturnType('{boolean}', 'Whether the element is selected after toggling its state.').
       SetJavadoc('java/org/openqa/selenium/WebElement.html#toggle()',
                  'WebElement#toggle()'))
 
   resources.append(
-      SessionResource('/session/:sessionId/element/:id/enabled').
+      ElementResource('/session/:sessionId/element/:id/enabled').
       Get('Determine if an element is currently enabled.').
-      AddUrlParameter(':id', 'ID of the element to query.').
       SetReturnType('{boolean}', 'Whether the element is enabled.').
       SetJavadoc('java/org/openqa/selenium/WebElement.html#isEnabled()',
                  'WebElement#isEnabled()'))
 
   resources.append(
-      SessionResource('/session/:sessionId/element/:id/attribute/:name').
+      ElementResource('/session/:sessionId/element/:id/attribute/:name').
       Get('Get the value of an element\'s attribute.').
-      AddUrlParameter(':id', 'ID of the element to query.').
       SetReturnType('{string|null}',
                     'The value of the attribute, or null if it is not set on the element.').
       SetJavadoc('java/org/openqa/selenium/WebElement.html#getAttribute(java.lang.String)',
                  'WebElement#getAttribute(String)'))
 
   resources.append(
-      SessionResource('/session/:sessionId/element/:id/equals/:other').
+      ElementResource('/session/:sessionId/element/:id/equals/:other').
       Get('Test if two element IDs refer to the same DOM element.').
-      AddUrlParameter(':id', 'First element ID to test in the pair').
-      AddUrlParameter(':other', 'Second element ID to test in the pair').
-      SetReturnType('{boolean}', 'Whether the two IDs refer to the same element.'))
+      AddUrlParameter(':other', 'ID of the element to compare against.').
+      SetReturnType('{boolean}', 'Whether the two IDs refer to the same element.').
+      AddError('StaleElementReference',
+               'If either the element refered to by `:id` or `:other` is no '
+               'longer attached to the page\'s DOM.'))
 
   resources.append(
-      SessionResource('/session/:sessionId/element/:id/displayed').
+      ElementResource('/session/:sessionId/element/:id/displayed').
       Get('Determine if an element is currently displayed.').
-      AddUrlParameter(':id', 'ID of the element to query.').
       SetReturnType('{boolean}', 'Whether the element is displayed.').
       SetJavadoc('java/org/openqa/selenium/RenderedWebElement.html#isDisplayed()',
                  'RenderedWebElement#isDisplayed()'))
 
   resources.append(
-      SessionResource('/session/:sessionId/element/:id/location').
+      ElementResource('/session/:sessionId/element/:id/location').
       Get('Determine an element\'s location on the page. The point `(0, 0)` refers to the '
           'upper-left corner of the page. The element\'s coordinates are returned as a JSON object '
           'with `x` and `y` properties.').
-      AddUrlParameter(':id', 'ID of the element to query.').
       SetReturnType('{x:number, y:number}', 'The X and Y coordinates for the element on the page.').
       SetJavadoc('java/org/openqa/selenium/RenderedWebElement.html#getLocation()',
                  'RenderedWebElement#getLocation()'))
 
   resources.append(
-      SessionResource('/session/:sessionId/element/:id/location_in_view').
+      ElementResource('/session/:sessionId/element/:id/location_in_view').
       Get('''Determine an element\'s location on the screen once it has been \
 scrolled into view.
 
 *Note:* This is considered an internal command and should *only* be used to \
 determine an element's
 location for correctly generating native events.''').
-      AddUrlParameter(':id', 'ID of the element to query.').
       SetReturnType('{x:number, y:number}', 'The X and Y coordinates for the element.'))
 
   resources.append(
-      SessionResource('/session/:sessionId/element/:id/size').
+      ElementResource('/session/:sessionId/element/:id/size').
       Get('Determine an element\'s size in pixels. The size will be returned as a JSON object '
           ' with `width` and `height` properties.').
-      AddUrlParameter(':id', 'ID of the element to query.').
       SetReturnType('{width:number, height:number}', 'The width and height of the element, in pixels.').
       SetJavadoc('java/org/openqa/selenium/RenderedWebElement.html#getSize()',
                  'RenderedWebElement#getSize()'))
 
   resources.append(
-      SessionResource('/session/:sessionId/element/:id/css/:propertyName').
+      ElementResource('/session/:sessionId/element/:id/css/:propertyName').
       Get('Query the value of an element\'s computed CSS property. The CSS property to query should'
           ' be specified using the CSS property name, *not* the !JavaScript property name (e.g. '
           '`background-color` instead of `backgroundColor`).').
-      AddUrlParameter(':id', 'ID of the element to query.').
       SetReturnType('{string}', 'The value of the specified CSS property.').
       SetJavadoc('java/org/openqa/selenium/RenderedWebElement.html#getValueOfCssProperty(java.lang.String)',
                  'RenderedWebElement#getValueOfCssProperty(String)'))
 
   resources.append(
-      SessionResource('/session/:sessionId/element/:id/hover').
+      ElementResource('/session/:sessionId/element/:id/hover').
       Post('Move the mouse over an element.').
-      AddUrlParameter(':id', 'ID of the element to manipulate.').
+      RequiresVisibility().
+      RequiresEnabledState().
       SetJavadoc('java/org/openqa/selenium/RenderedWebElement.html#hover()',
                  'RenderedWebElement#hover()'))
 
   resources.append(
-      SessionResource('/session/:sessionId/element/:id/drag').
+      ElementResource('/session/:sessionId/element/:id/drag').
       Post('Drag and drop an element. The distance to drag an element should be specified relative '
            'to the upper-left corner of the page.').
-      AddUrlParameter(':id', 'ID of the element to query.').
+      RequiresVisibility().
+      RequiresEnabledState().
       AddJsonParameter('x', '{number}',
                        'The number of pixels to drag the element in the horizontal direction. '
                        'A positive value indicates the element should be dragged to the right, '
@@ -837,32 +880,32 @@ The wire protocol will inherit its status codes from those used by the \
 InternetExplorerDriver:
 
 || *Code* || *Summary* || *Detail* ||
-|| 0 || Success || The command executed successfully. ||
-|| 7 || No such element || An element could not be located on the page using \
+|| 0 || `Success` || The command executed successfully. ||
+|| 7 || `NoSuchElement` || An element could not be located on the page using \
 the given search parameters. ||
-|| 8 || No such frame || A request to switch to a frame could not be \
+|| 8 || `NoSuchFrame` || A request to switch to a frame could not be \
 satisfied because the frame could not be found. ||
-|| 9 || Unknown command || The requested resource could not be found, or a \
+|| 9 || `UnknownCommand` || The requested resource could not be found, or a \
 request was received using an HTTP method that is not supported by the mapped \
 resource. ||
-|| 10 || Stale element reference || An element command failed because the \
+|| 10 || `StaleElementReference` || An element command failed because the \
 referenced element is no longer attached to the DOM. ||
-|| 11 || Element not visible || An element command could not be completed \
+|| 11 || `ElementNotVisible` || An element command could not be completed \
 because the element is not visible on the page. ||
-|| 12 || Invalid element state || An element command could not be completed \
+|| 12 || `InvalidElementState` || An element command could not be completed \
 because the element is in an invalid state (e.g. attempting to click a \
 disabled element). ||
-|| 13 || Unknown error || An unknown server-side error occurred while \
+|| 13 || `UnknownError` || An unknown server-side error occurred while \
 processing the command. ||
-|| 15 || Element is not selectable || An attempt was made to select an element \
+|| 15 || `ElementIsNotSelectable` || An attempt was made to select an element \
 that cannot be selected. ||
-|| 19 || XPath look up error || An error occurred while searching for an \
+|| 19 || `XPathLookupError` || An error occurred while searching for an \
 element by XPath. ||
-|| 23 || No such window || A request to switch to a different window could \
+|| 23 || `NoSuchWindow` || A request to switch to a different window could \
 not be satisfied because the window could not be found. ||
-|| 24 || Invalid cookie domain || An illegal attempt was made to set a cookie \
+|| 24 || `InvalidCookieDomain` || An illegal attempt was made to set a cookie \
 under a different domain than the current page. ||
-|| 25 || Unable to set cookie || A request to set a cookie's value could not \
+|| 25 || `UnableToSetCookie` || A request to set a cookie's value could not \
 be satisfied. ||
 
 The client should interpret a 404 Not Found response from the server as an \
