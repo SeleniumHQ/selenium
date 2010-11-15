@@ -17,6 +17,8 @@ limitations under the License.
 
 package org.openqa.selenium.internal.seleniumemulation;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.TimerTask;
 
 import com.thoughtworks.selenium.SeleniumException;
@@ -36,14 +38,20 @@ public class Timer {
 
     try {
       timer.schedule(myTimerTask, timeout);
-    } catch (IllegalArgumentException e) {
+    } catch (IllegalStateException e) {
       Thread.interrupted();
 
       // This should only ever happen the user tries to do something with Selenium after calling
       // stop. Since this RejectedExecutionException is really vague, rethrow it with a more
       // explicit message.
-      throw new RuntimeException(
-          "Illegal attempt to execute a command after calling stop()", e);
+      // The original Selenium RC would throw an NPE at this point, so we should
+      // too. Sadly, an NPE can't take a cause, so spool the stacktrace into a
+      // string.
+      StringWriter writer = new StringWriter();
+      e.printStackTrace(new PrintWriter(writer));
+      String stack = writer.toString();
+      throw new NullPointerException(
+          "Illegal attempt to execute a command after calling stop()\n" + stack);
     }
     // Because we call Thread to interrupt, we should ensure that the
     // interrupted status is cleared. This will be a no-op if called twice.

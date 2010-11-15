@@ -17,7 +17,9 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import com.thoughtworks.selenium.DefaultSelenium;
 import com.thoughtworks.selenium.Selenium;
+import com.thoughtworks.selenium.SeleniumException;
 import com.thoughtworks.selenium.Wait;
 
 import org.openqa.selenium.environment.GlobalTestEnvironment;
@@ -34,7 +36,7 @@ public class WebDriverBackedSeleniumLargeTest extends AbstractDriverTestCase {
     selenium = new WebDriverBackedSelenium(driver, base);
   }
 
-  public void testCanUseTheOriginalWaitClassWithAWebDriverBackedInstance() {
+  public void xtestCanUseTheOriginalWaitClassWithAWebDriverBackedInstance() {
     selenium.open(pages.dynamicPage);
 
     Wait waiter = new Wait() {
@@ -57,4 +59,24 @@ public class WebDriverBackedSeleniumLargeTest extends AbstractDriverTestCase {
     waiter.wait("Can't find the box", 2000, 200);
   }
 
+  @NoDriverAfterTest
+  public void testCallingStopThenSleepDoesNotCauseAnExceptionToBeThrown() {
+    // Stop selenium
+    selenium.stop();
+
+    try {
+      // Now schedule a command that caues "interrupt" to be thrown internally.
+      selenium.isElementPresent("name=q");
+      fail("This test should have failed");
+    } catch (NullPointerException expected) {
+      // This is the exception thrown by selenium 1. We should throw the same
+      // one
+    }
+
+    try {
+      Thread.sleep(10);
+    } catch (InterruptedException e) {
+      fail("This was not expected");
+    }
+  }
 }
