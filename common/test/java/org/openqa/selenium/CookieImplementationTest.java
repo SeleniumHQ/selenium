@@ -154,7 +154,8 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
     driver.get(appServer.whereIs("animals"));
 
     Set<Cookie> cookies = options.getCookies();
-    assertTrue(cookies.contains(cookie1));
+    assertTrue("Supposed to contain cookie1 (" + cookie1 +
+        ") but has: " + cookies.toString(), cookies.contains(cookie1));
     assertTrue(cookies.contains(cookie2));
 
     driver.get(appServer.whereIs(""));
