@@ -8,62 +8,62 @@ namespace :se_ide do
     if unix?
       # the files in core -- except for the scripts directory which already exists in the target
       ln_s Dir.glob(base_ide_dir + "/common/src/js/core/*").select { |fn| fn != base_ide_dir + "/common/src/js/core/scripts" },
-           "ide/src/extension/content/selenium"
+           "ide/main/src/content/selenium"
       # and now the script dir
       ln_s Dir.glob(base_ide_dir + "/common/src/js/core/scripts/*").select { |fn| not [base_ide_dir + "/common/src/js/core/scripts/selenium-testrunner.js", base_ide_dir + "/common/src/js/core/scripts/user-extensions.js"].include?(fn)},
-           "ide/src/extension/content/selenium/scripts"
-      mkdir "ide/src/extension/content-files"
-      ln_s Dir.glob(base_ide_dir + "/common/src/js/core/scripts/selenium-testrunner.js"), "ide/src/extension/content-files"
+           "ide/main/src/content/selenium/scripts"
+      mkdir "ide/main/src/content-files"
+      ln_s Dir.glob(base_ide_dir + "/common/src/js/core/scripts/selenium-testrunner.js"), "ide/main/src/content-files"
     elsif windows?
       # the files in core -- except for the scripts directory which already exists in the target
       f = Dir.glob(base_ide_dir + "/common/src/js/core/*").select { |fn| fn != base_ide_dir + "/common/src/js/core/scripts" }
       f.each do |c|
-        files << c.gsub(base_ide_dir + "/common/src/js/core/", "ide/src/extension/content/selenium/")
-        cp_r c, "ide/src/extension/content/selenium", :remove_destination => true
+        files << c.gsub(base_ide_dir + "/common/src/js/core/", "ide/main/src/content/selenium/")
+        cp_r c, "ide/main/src/content/selenium", :remove_destination => true
       end
 
       # and now the script dir
       f = Dir.glob(base_ide_dir + "/common/src/js/core/scripts/*").select { |fn| ![base_ide_dir + "/common/src/js/core/scripts/selenium-testrunner.js", base_ide_dir + "/common/src/js/core/scripts/user-extensions.js"].include?(fn)}
       f.each do |c|
-        files << c.gsub(base_ide_dir + "/common/src/js/core/scripts", "ide/src/extension/content/selenium/scripts")
-        cp c, "ide/src/extension/content/selenium/scripts"
+        files << c.gsub(base_ide_dir + "/common/src/js/core/scripts", "ide/main/src/content/selenium/scripts")
+        cp c, "ide/main/src/content/selenium/scripts"
       end
       
       # create the content-files directory
-      if File.directory? "ide/src/extension/content-files"
-      	rm_r "ide/src/extension/content-files"
+      if File.directory? "ide/main/src/content-files"
+      	rm_r "ide/main/src/content-files"
       end
-      mkdir "ide/src/extension/content-files"
+      mkdir "ide/main/src/content-files"
 
       # and lastly the scriptrunner
       f = Dir.glob(base_ide_dir + "/common/src/js/core/scripts/selenium-testrunner.js")
       f.each do |c|
-        files << base_ide_dir + "/ide/src/extension/content-files/selenium-testrunner.js"
-        cp c, "ide/src/extension/content-files"
+        files << base_ide_dir + "/ide/main/src/content-files/selenium-testrunner.js"
+        cp c, "ide/main/src/content-files"
       end
 
       # no, really, this is lastly; user-extensions.js
       f = Dir.glob(base_ide_dir + "/common/src/js/core/scripts/user-extensions.js")
       f.each do |c|
-        files << base_ide_dir + "/ide/src/extension/content-files/user-extensions.js"
-        cp c, "ide/src/extension/content-files"
+        files << base_ide_dir + "/ide/main/src/content-files/user-extensions.js"
+        cp c, "ide/main/src/content-files"
       end
     end
     
     # jsunit
     if unix?
-      ln_s Dir.glob(base_ide_dir + "/common/src/js/jsunit"), "ide/src/extension/content/", :force => true
+      ln_s Dir.glob(base_ide_dir + "/common/src/js/jsunit"), "ide/main/src/content/", :force => true
     elsif windows?
       f = Dir.glob(base_ide_dir + "/common/src/js/jsunit")
       f.each do |c|
-        files << c.gsub(base_ide_dir + "/common/src/js/", "ide/src/extension/content/")
-        cp_r c, "ide/src/extension/content/jsunit", :remove_destination => true
+        files << c.gsub(base_ide_dir + "/common/src/js/", "ide/main/src/content/")
+        cp_r c, "ide/main/src/content/jsunit", :remove_destination => true
       end
     end
     
     # autocomplete
     # note: xpt files cannot be symlinks
-    cp base_ide_dir + "/ide/prebuilt/SeleniumIDEGenericAutoCompleteSearch.xpt", "ide/src/extension/components" unless File.exists?("ide/src/extension/components/SeleniumIDEGenericAutoCompleteSearch.xpt")
+    cp base_ide_dir + "/ide/main/prebuilt/main/SeleniumIDEGenericAutoCompleteSearch.xpt", "ide/main/src/components" unless File.exists?("ide/main/src/components/SeleniumIDEGenericAutoCompleteSearch.xpt")
     
     if windows?
       listoffiles = File.new(base_ide_dir + "/proxy_files.txt", "w")
@@ -89,7 +89,7 @@ namespace :se_ide do
       listoffiles.close()
       rm base_ide_dir + "/proxy_files.txt"
     end
-    rmdir "ide/src/extension/content-files"
-    rm "ide/src/extension/components/SeleniumIDEGenericAutoCompleteSearch.xpt"
+    rmdir "ide/main/src/content-files"
+    rm "ide/main/src/components/SeleniumIDEGenericAutoCompleteSearch.xpt"
   end
 end
