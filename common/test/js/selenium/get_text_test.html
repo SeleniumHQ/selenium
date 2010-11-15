@@ -5,6 +5,7 @@
     <script type="text/javascript">
         goog.require('goog.testing.jsunit');
         goog.require('core.text');
+        goog.require('bot.locators');
     </script>
 
     <script type="text/javascript">
@@ -26,6 +27,12 @@
         function testCanSearchByXPath() {
           assertTrue(core.text.getText('//body').length > 0);
         }
+
+        function testCanObtainTextDirectlyFromAnElement() {
+          var element = bot.locators.findElement({id: 'text1'});
+
+          assertEquals('Text1', core.text.getText(element));
+        }
     </script>
 </head>
 <body>
@@ -33,7 +40,7 @@
     var Text8 = '';
 </script>
 <div>
-    <span>Text1</span><br/>
+    <span id="text1">Text1</span><br/>
     <span style="visibility:hidden">Text2</span><br/>
     <span style="display:none">Text3</span><br/>
 
