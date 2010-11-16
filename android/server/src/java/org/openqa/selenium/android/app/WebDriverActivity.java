@@ -59,8 +59,8 @@ import java.util.concurrent.TimeoutException;
 /**
  * Main view of a single-session application mode.
  */
-public class SingleSessionActivity extends Activity implements IntentReceiverListener {
-  private static final String LOG_TAG = SingleSessionActivity.class.getName();
+public class WebDriverActivity extends Activity implements IntentReceiverListener {
+  private static final String LOG_TAG = WebDriverActivity.class.getName();
   private boolean pageHasStartedLoading = false;
 
   // Use for control redirect, contains the last url loaded (updated after each redirect)
@@ -77,7 +77,7 @@ public class SingleSessionActivity extends Activity implements IntentReceiverLis
   private final IntentSender sender;
 
 
-  public SingleSessionActivity() {
+  public WebDriverActivity() {
     intentReg = new IntentReceiverRegistrar(this);
     jsExecutor = new SimpleWebViewJSExecutor();
     chromeClient = new SimpleWebChromeClient();
