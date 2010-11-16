@@ -12,6 +12,7 @@ namespace :se_ide do
       # and now the script dir
       ln_s Dir.glob(base_ide_dir + "/common/src/js/core/scripts/*").select { |fn| not [base_ide_dir + "/common/src/js/core/scripts/selenium-testrunner.js", base_ide_dir + "/common/src/js/core/scripts/user-extensions.js"].include?(fn)},
            "ide/main/src/content/selenium/scripts"
+      ln_s Dir.glob(base_ide_dir + "/build/common/atoms.js"), "ide/main/src/content/selenium/scripts"
       mkdir "ide/main/src/content-files"
       ln_s Dir.glob(base_ide_dir + "/common/src/js/core/scripts/selenium-testrunner.js"), "ide/main/src/content-files"
     elsif windows?
@@ -34,6 +35,13 @@ namespace :se_ide do
       	rm_r "ide/main/src/content-files"
       end
       mkdir "ide/main/src/content-files"
+
+      # atoms
+      f = Dir.glob(base_ide_dir + "/build/common/atoms.js")
+      f.each do |c|
+        files << base_ide_dir + "/build/common/atoms.js"
+        cp c, "ide/main/src/content/selenium/scripts"
+      end
 
       # and lastly the scriptrunner
       f = Dir.glob(base_ide_dir + "/common/src/js/core/scripts/selenium-testrunner.js")
