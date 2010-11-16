@@ -19,6 +19,7 @@ package org.openqa.selenium.support;
 
 public enum How {
   CLASS_NAME,
+  CSS,
   ID,
   ID_OR_NAME,
   LINK_TEXT,

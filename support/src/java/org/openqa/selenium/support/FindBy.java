@@ -48,6 +48,7 @@ public @interface FindBy {
   String id() default "";
   String name() default "";
   String className() default "";
+  String css() default "";
   String tagName() default "";
   String linkText() default "";
   String partialLinkText() default "";

@@ -102,6 +102,9 @@ public class Annotations {
       case CLASS_NAME:
         return By.className(using);
 
+      case CSS:
+        return By.cssSelector(using);
+
       case ID:
         return By.id(using);
 
@@ -133,6 +136,9 @@ public class Annotations {
   protected By buildByFromShortFindBy(FindBy findBy) {
     if (!"".equals(findBy.className()))
       return By.className(findBy.className());
+
+    if (!"".equals(findBy.css()))
+      return By.cssSelector(findBy.css());
 
     if (!"".equals(findBy.id()))
       return By.id(findBy.id());
@@ -181,6 +187,7 @@ public class Annotations {
     Set<String> finders = new HashSet<String>();
     if (!"".equals(findBy.using())) finders.add("how: " + findBy.using());
     if (!"".equals(findBy.className())) finders.add("class name:" + findBy.className());
+    if (!"".equals(findBy.css())) finders.add("css:" + findBy.css());
     if (!"".equals(findBy.id())) finders.add("id: " + findBy.id());
     if (!"".equals(findBy.linkText())) finders.add("link text: " + findBy.linkText());
     if (!"".equals(findBy.name())) finders.add("name: " + findBy.name());
