@@ -118,7 +118,11 @@ webdriver.element.getAttribute = function(element, attribute) {
   // but we normally attempt to get the property value before the attribute.
   var isLink =  element.tagName && goog.dom.TagName.A == element.tagName.toUpperCase()
 
-  if ((name == 'href' && isLink)) {
+  // When property returns an object we fall back to the actual attribute
+  // instead.
+  // See issue http://code.google.com/p/selenium/issues/detail?id=966
+  if ((name == 'href' && isLink)
+      || goog.isObject(bot.dom.getProperty(element, attribute))) {
     value = bot.dom.getAttribute(element, attribute);
   } else {
     try {
