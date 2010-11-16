@@ -1424,7 +1424,7 @@ Selenium.prototype.getValue = function(locator) {
    */
     var element = this.browserbot.findElement(locator)
     return getInputValue(element).trim();
-}
+};
 
 Selenium.prototype.getText = function(locator) {
     /**
@@ -1437,7 +1437,7 @@ Selenium.prototype.getText = function(locator) {
    * @return string the text of the element
    */
     var element = this.browserbot.findElement(locator);
-    return getText(element).trim();
+    return core.text.getText(element);
 };
 
 Selenium.prototype.doHighlight = function(locator) {
@@ -1532,7 +1532,7 @@ Selenium.prototype.getSelectedLabels = function(selectLocator) {
    * @return string[] an array of all selected option labels in the specified select drop-down
    */
     return this.findSelectedOptionProperties(selectLocator, "text");
-}
+};
 
 Selenium.prototype.getSelectedLabel = function(selectLocator) {
     /** Gets option label (visible text) for selected option in the specified select element.
@@ -1541,7 +1541,7 @@ Selenium.prototype.getSelectedLabel = function(selectLocator) {
    * @return string the selected option label in the specified select drop-down
    */
     return this.findSelectedOptionProperty(selectLocator, "text");
-}
+};
 
 Selenium.prototype.getSelectedValues = function(selectLocator) {
     /** Gets all option values (value attributes) for selected options in the specified select or multi-select element.
@@ -1550,7 +1550,7 @@ Selenium.prototype.getSelectedValues = function(selectLocator) {
    * @return string[] an array of all selected option values in the specified select drop-down
    */
     return this.findSelectedOptionProperties(selectLocator, "value");
-}
+};
 
 Selenium.prototype.getSelectedValue = function(selectLocator) {
     /** Gets option value (value attribute) for selected option in the specified select element.

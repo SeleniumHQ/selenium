@@ -171,7 +171,8 @@ core.text.getText = function(locator) {
  * @return {string} The entire text content of the page.
  */
 core.text.getBodyText = function() {
-  return core.text.getText('dom=document.body');
+  var doc = bot.window_.document;
+  return core.text.getText(doc.body);
 };
 
 

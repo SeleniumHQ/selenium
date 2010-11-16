@@ -1156,6 +1156,7 @@ BrowserBot.prototype.getCurrentWindow = function(doNotModify) {
         this.newPageLoaded = false;
     }
     testWindow = this._handleClosedSubFrame(testWindow, doNotModify);
+    bot.window_ = testWindow;
     return testWindow;
 };
 
