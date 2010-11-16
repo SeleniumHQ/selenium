@@ -79,7 +79,7 @@ public class MainActivity extends Activity implements IntentReceiverListener {
   }
   
   private void startMainScreen() {
-    Intent startActivity = new Intent(this, SingleSessionActivity.class);
+    Intent startActivity = new Intent(this, WebDriverActivity.class);
     this.startActivityForResult(startActivity, DEFAULT_REQUEST_CODE);
   }
 
