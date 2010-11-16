@@ -132,7 +132,9 @@ limitations under the License.
                       <label control="commandTarget" value="&target.label;"/>
                       <hbox flex="1">
                         <textbox flex="1" disabled="true" id="commandTarget" oninput="window.editor.treeView.updateCurrentCommand('target', window.editor.treeView.decodeText(this.value))" autocompletesearch="selenium-ide-generic" enablehistory="true" forcecomplete="true" tabscrolling="true" type="autocomplete" showcommentcolumn="true" />
-                        <button label="&findTarget.label;" oncommand="window.editor.selDebugger.showElement(document.getElementById('commandTarget').value)"/>
+                        <button label="&findTarget.label;"
+                                oncommand="window.editor.selDebugger.showElement(document.getElementById('commandTarget').value)"
+                                id="findElementButton" />
                       </hbox>
                     </row>
                     <row align="center">
