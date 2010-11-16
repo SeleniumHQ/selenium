@@ -161,57 +161,41 @@ WORD WINAPI setFileValue(keyboardData* data) {
 	return sendKeysToFileUploadAlert(dialogHwnd, data->text);
 }
 
-void IeThread::OnElementSendKeys(WPARAM w, LPARAM lp)
+bool IeThread::elementIsDisplayedAndEnabled(
+    IHTMLElement *element, int& error_code)
 {
-	SCOPETRACER
-	ON_THREAD_ELEMENT(data, pElement)
-
 	bool displayed;
-	int res = isDisplayed(pElement, &displayed);
+	int res = isDisplayed(element, &displayed);
 	if (res != SUCCESS || !displayed) {
-		data.error_code = EELEMENTNOTDISPLAYED;
-		return;
+	    error_code = EELEMENTNOTDISPLAYED;
+		return false;
 	}
 
-	if (!isEnabled(pElement)) {
-		data.error_code = EELEMENTNOTENABLED;
-		return;
+	if (!isEnabled(element)) {
+		error_code = EELEMENTNOTENABLED;
+		return false;
 	}
 
-	data.error_code = SUCCESS;
+    return true;
+}
 
-	LPCWSTR newValue = data.input_string_;
-	CComQIPtr<IHTMLElement> element(pElement);
-	checkValidDOM(element);
-
-	const HWND hWnd = getHwnd();
-	const HWND ieWindow = getIeServerWindow(hWnd);
-
-	keyboardData keyData;
+static void fillKeyboardData(const LPCWSTR& value, const HWND& hWnd,
+    keyboardData& keyData)
+{
+    const HWND ieWindow = getIeServerWindow(hWnd);
     keyData.main = hWnd;  // IE's main window
 	keyData.hwnd = ieWindow;
-	keyData.text = newValue;
+	keyData.text = value;    
+}
 
-	element->scrollIntoView(CComVariant(VARIANT_TRUE));
-
-	CComQIPtr<IHTMLInputFileElement> file(element);
-	if (file) {
-		DWORD threadId;
-		tryTransferEventReleaserToNotifyNavigCompleted(&SC);
-		keyData.hdl_EventToNotifyWhenNavigationCompleted = m_EventToNotifyWhenNavigationCompleted;
-		::CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE) setFileValue, (void *) &keyData, 0, &threadId);
-
-		element->click();
-		// We're now blocked until the dialog closes.
-		return;
-	}
-
-	CComQIPtr<IHTMLElement2> element2(element);
+bool IeThread::waitUntilElementFocused(IHTMLElement *pElement)
+{
+	CComQIPtr<IHTMLElement2> element2(pElement);
 	element2->focus();
 
 	// Check we have focused the element.
 	CComPtr<IDispatch> dispatch;
-	element->get_document(&dispatch);
+	pElement->get_document(&dispatch);
 	CComQIPtr<IHTMLDocument2> document(dispatch);
 
 	bool hasFocus = false;
@@ -232,9 +216,95 @@ void IeThread::OnElementSendKeys(WPARAM w, LPARAM lp)
 		cerr << "We don't have focus on element." << endl;
 	}
 
+    return hasFocus;
+}
+
+void IeThread::OnElementSendKeys(WPARAM w, LPARAM lp)
+{
+	SCOPETRACER
+	ON_THREAD_ELEMENT(data, pElement)
+
+    if (!elementIsDisplayedAndEnabled(pElement, data.error_code)) {
+        return;
+    }
+    
+	data.error_code = SUCCESS;
+
+	CComQIPtr<IHTMLElement> element(pElement);
+	checkValidDOM(element);
+
+	keyboardData keyData;
+
+	fillKeyboardData(data.input_string_, getHwnd(), keyData);
+	const HWND ieWindow = keyData.hwnd;
+
+	element->scrollIntoView(CComVariant(VARIANT_TRUE));
+
+	CComQIPtr<IHTMLInputFileElement> file(element);
+	if (file) {
+		DWORD threadId;
+		tryTransferEventReleaserToNotifyNavigCompleted(&SC);
+		keyData.hdl_EventToNotifyWhenNavigationCompleted = m_EventToNotifyWhenNavigationCompleted;
+		::CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE) setFileValue, (void *) &keyData, 0, &threadId);
+
+		element->click();
+		// We're now blocked until the dialog closes.
+		return;
+	}
+
+    waitUntilElementFocused(element);
+
 	sendKeys(ieWindow, keyData.text, pIED->getSpeed());
 }
 
+void IeThread::OnElementSendKeyPress(WPARAM w, LPARAM lp)
+{
+	SCOPETRACER
+	ON_THREAD_ELEMENT(data, pElement)
+
+    if (!elementIsDisplayedAndEnabled(pElement, data.error_code)) {
+        return;
+    }
+
+	data.error_code = SUCCESS;
+    CComQIPtr<IHTMLElement> element(pElement);
+    checkValidDOM(element);
+
+    keyboardData keyData;
+
+    fillKeyboardData(data.input_string_, getHwnd(), keyData);
+    const HWND ieWindow = keyData.hwnd;
+
+    element->scrollIntoView(CComVariant(VARIANT_TRUE));
+
+    waitUntilElementFocused(element);
+    sendKeyPress(ieWindow, keyData.text);
+}
+
+void IeThread::OnElementSendKeyRelease(WPARAM w, LPARAM lp)
+{
+	SCOPETRACER
+	ON_THREAD_ELEMENT(data, pElement)
+
+    if (!elementIsDisplayedAndEnabled(pElement, data.error_code)) {
+        return;
+    }
+
+	data.error_code = SUCCESS;
+
+    CComQIPtr<IHTMLElement> element(pElement);
+    checkValidDOM(element);
+
+    keyboardData keyData;
+
+    fillKeyboardData(data.input_string_, getHwnd(), keyData);
+    const HWND ieWindow = keyData.hwnd;
+
+    element->scrollIntoView(CComVariant(VARIANT_TRUE));
+    
+    waitUntilElementFocused(element);
+    sendKeyRelease(ieWindow, keyData.text);    
+}
 
 void IeThread::OnElementIsDisplayed(WPARAM w, LPARAM lp)
 {

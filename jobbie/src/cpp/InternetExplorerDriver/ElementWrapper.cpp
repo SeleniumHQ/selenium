@@ -62,6 +62,22 @@ int ElementWrapper::sendKeys(LPCWSTR newValue)
 	return data.error_code;
 }
 
+int ElementWrapper::sendKeyPress(LPCWSTR newValue)
+{
+	SCOPETRACER
+	SEND_MESSAGE_WITH_MARSHALLED_DATA(_WD_ELEM_SENDKEYPRESS, newValue)
+	return data.error_code;
+}
+
+int ElementWrapper::sendKeyRelease(LPCWSTR newValue)
+{
+	SCOPETRACER
+	SEND_MESSAGE_WITH_MARSHALLED_DATA(_WD_ELEM_SENDKEYRELEASE, newValue)
+	return data.error_code;
+}
+
+
+
 void ElementWrapper::clear()
 {
 	SCOPETRACER

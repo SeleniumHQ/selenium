@@ -59,6 +59,8 @@ interface ExportedWebDriverFunctions extends StdCallLibrary {
   int wdeSetSelected(Pointer element);
   int wdeToggle(Pointer element, IntByReference toReturn);
   int wdeSendKeys(Pointer element, WString string);
+  int wdeSendKeyPress(Pointer element, WString string);
+  int wdeSendKeyRelease(Pointer element, WString string);
   int wdeIsDisplayed(Pointer element, IntByReference displayed);
   int wdeGetText(Pointer element, PointerByReference wrapper);
   int wdeGetTagName(Pointer element, PointerByReference wrapper);

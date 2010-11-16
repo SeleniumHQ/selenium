@@ -895,6 +895,25 @@ int wdeSendKeys(WebElement* element, const wchar_t* text)
 	} END_TRY;
 }
 
+int wdeSendKeyPress(WebElement* element, const wchar_t* text)
+{
+	int res = verifyFresh(element);	if (res != SUCCESS) { return res; }
+
+	try {
+		return element->element->sendKeyPress(text);
+	} END_TRY;
+}
+
+int wdeSendKeyRelease(WebElement* element, const wchar_t* text)
+{
+	int res = verifyFresh(element);	if (res != SUCCESS) { return res; }
+
+	try {
+		return element->element->sendKeyRelease(text);
+	} END_TRY;
+}
+
+
 int wdeClear(WebElement* element) 
 {
     int res = verifyFresh(element);	if (res != SUCCESS) { return res; }

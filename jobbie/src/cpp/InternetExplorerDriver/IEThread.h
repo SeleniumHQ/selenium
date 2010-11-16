@@ -95,6 +95,7 @@ private:
 	static std::wstring collapseWhitespace(CComBSTR &text);
 	static bool isBlockLevel(IHTMLDOMNode *node);
 	static void getText(std::wstring& toReturn, IHTMLDOMNode* node, bool isPreformatted);
+	bool waitUntilElementFocused(IHTMLElement *pElement);
 
 protected:
 	void getTextAreaValue(IHTMLElement *pElement, std::wstring& res);
@@ -110,6 +111,7 @@ protected:
 	bool isSelected(IHTMLElement *pElement);
 	static int isNodeDisplayed(IHTMLDOMNode *element, bool* displayed);
 	static int isDisplayed(IHTMLElement *element, bool* displayed);
+	bool elementIsDisplayedAndEnabled(IHTMLElement *element, int& error_code);
 	bool isStillBusy();
 	bool isEnabled(IHTMLElement *pElement);
 	int getLocationWhenScrolledIntoView(IHTMLElement *pElement, HWND* hwnd, long *x, long *y, long *w, long *h);
@@ -149,6 +151,8 @@ protected:
 		  void OnIsElementFresh(WPARAM, LPARAM);
 		  void OnElementGetTagName(WPARAM, LPARAM);
 		  void OnElementSendKeys(WPARAM, LPARAM);
+		  void OnElementSendKeyPress(WPARAM, LPARAM);
+		  void OnElementSendKeyRelease(WPARAM, LPARAM);
 		  void OnElementClear(WPARAM, LPARAM);
 		  void OnElementIsSelected(WPARAM, LPARAM);
 		  void OnElementSetSelected(WPARAM, LPARAM);

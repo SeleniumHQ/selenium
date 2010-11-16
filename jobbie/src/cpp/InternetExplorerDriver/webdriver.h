@@ -97,6 +97,8 @@ EXPORT int wdeToggle(WebElement* element, int* result);
 EXPORT int wdeIsEnabled(WebElement* element, int* result);
 EXPORT int wdeIsDisplayed(WebElement* element, int* result);
 EXPORT int wdeSendKeys(WebElement* element, const wchar_t* text);
+EXPORT int wdeSendKeyPress(WebElement* element, const wchar_t* text);
+EXPORT int wdeSendKeyRelease(WebElement* element, const wchar_t* text);
 EXPORT int wdeClear(WebElement* element);
 EXPORT int wdeSubmit(WebElement* element);
 

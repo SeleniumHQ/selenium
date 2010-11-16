@@ -31,7 +31,10 @@ import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Cookie;
+import org.openqa.selenium.HasInputDevices;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Keyboard;
+import org.openqa.selenium.Mouse;
 import org.openqa.selenium.NoSuchWindowException;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Speed;
@@ -54,7 +57,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-public class InternetExplorerDriver implements WebDriver, JavascriptExecutor, TakesScreenshot {
+public class InternetExplorerDriver implements WebDriver, JavascriptExecutor, TakesScreenshot,
+    HasInputDevices {
 
   private static ExportedWebDriverFunctions lib;
   private Pointer driver;
@@ -62,6 +66,7 @@ public class InternetExplorerDriver implements WebDriver, JavascriptExecutor, Ta
   private ErrorHandler errors = new ErrorHandler();
   private Thread cleanupThread;
   private WindowsProxyManager proxyManager;
+  private InternetExplorerKeyboard keyboard;
 
   public InternetExplorerDriver() {
     this(null);
@@ -79,6 +84,7 @@ public class InternetExplorerDriver implements WebDriver, JavascriptExecutor, Ta
       throw new IllegalStateException("Cannot create new browser instance: " + result);
     }
     driver = ptr.getValue();
+    keyboard = new InternetExplorerKeyboard(this, lib);
   }
 
   private void prepareProxy(Capabilities caps) {
@@ -345,6 +351,14 @@ public class InternetExplorerDriver implements WebDriver, JavascriptExecutor, Ta
   // Deliberately package level visibility
   Pointer getUnderlyingPointer() {
     return driver;
+  }
+
+  public Keyboard getKeyboard() {
+    return keyboard;
+  }
+
+  public Mouse getMouse() {
+    throw new UnsupportedOperationException("Mouse interface is not implemented yet.");
   }
 
   private class InternetExplorerTargetLocator implements TargetLocator {

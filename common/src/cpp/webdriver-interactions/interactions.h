@@ -51,6 +51,8 @@ extern "C" {
 
 // Keyboard interactions
 EXPORT void sendKeys(WINDOW_HANDLE windowHandle, const wchar_t* value, int timePerKey);
+EXPORT void sendKeyPress(WINDOW_HANDLE windowHandle, const wchar_t* value);
+EXPORT void sendKeyRelease(WINDOW_HANDLE windowHandle, const wchar_t* value);
 EXPORT BOOL_TYPE pending_input_events();
 
 // Mouse interactions

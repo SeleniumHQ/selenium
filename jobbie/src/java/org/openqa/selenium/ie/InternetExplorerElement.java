@@ -26,6 +26,7 @@ import com.sun.jna.ptr.NativeLongByReference;
 import com.sun.jna.ptr.PointerByReference;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.RenderedWebElement;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -105,12 +106,20 @@ public class InternetExplorerElement implements RenderedWebElement, Locatable,
       builder.append(seq);
     }
 
-    int result = lib.wdeSendKeys(element, new WString(builder.toString()));
-
-    errors.verifyErrorCode(result, "send keys to");
-
-    parent.waitForLoadToComplete();
+    InternetExplorerKeyboard keyboard = (InternetExplorerKeyboard) parent.getKeyboard();
+    keyboard.sendKeys(element, builder.toString());    
   }
+
+  public void sendKeyDownEvent(Keys modifierKey) {
+    InternetExplorerKeyboard keyboard = (InternetExplorerKeyboard) parent.getKeyboard();
+    keyboard.pressKey(element, modifierKey);
+  }
+
+  public void sendKeyUpEvent(Keys modifierKey) {
+    InternetExplorerKeyboard keyboard = (InternetExplorerKeyboard) parent.getKeyboard();
+    keyboard.releaseKey(element, modifierKey);
+  }
+
 
   public void clear() {
     int result = lib.wdeClear(element);
