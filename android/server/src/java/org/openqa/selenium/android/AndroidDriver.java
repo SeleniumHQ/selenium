@@ -17,6 +17,15 @@ limitations under the License.
 
 package org.openqa.selenium.android;
 
+import com.google.common.collect.Sets;
+
+import android.content.Context;
+import android.os.SystemClock;
+import android.util.Log;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.JavascriptExecutor;
@@ -31,7 +40,6 @@ import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.android.app.R;
 import org.openqa.selenium.android.intents.Action;
 import org.openqa.selenium.android.intents.FutureExecutor;
 import org.openqa.selenium.android.intents.IntentReceiver;
@@ -48,20 +56,6 @@ import org.openqa.selenium.internal.FindsByName;
 import org.openqa.selenium.internal.FindsByTagName;
 import org.openqa.selenium.internal.FindsByXPath;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import android.content.Context;
-import android.os.SystemClock;
-import android.util.Log;
-
-import com.google.common.collect.Sets;
-import com.google.common.io.ByteStreams;
-import com.google.common.io.Closeables;
-
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -100,14 +94,12 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
   private volatile boolean editableAreaIsFocused = false;
 
   private volatile String jsResult;
-  private String jsonLibrary;
   private String currentFrame;
   private long implicitWait = 0;
   
   public AndroidDriver() {
     // By default currentFrame is the root, i.e. window
     currentFrame = "window";
-    initJsonLibrary();
     intentRegistrar = new IntentReceiverRegistrar(getContext());
     timer = new SimpleTimer();
     sender = new IntentSender();
@@ -125,20 +117,6 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
     intentRegistrar.registerReceiver(receiver, Action.PAGE_LOADED);
     intentRegistrar.registerReceiver(receiver, Action.PAGE_STARTED_LOADING);
     intentRegistrar.registerReceiver(receiver, Action.EDITABLE_AERA_FOCUSED);
-  }
-
-  private void initJsonLibrary() {
-    // Unfortunately JSON is not natively supported until Android 1.6
-    // TODO(berrada): Only do this if we're on <1.6
-    InputStream stream = null;
-    try {
-      stream = getContext().getResources().openRawResource(R.raw.json);
-      jsonLibrary = new String(ByteStreams.toByteArray(stream));
-    } catch (IOException e) {
-      throw new WebDriverException(e);
-    } finally {
-      Closeables.closeQuietly(stream);
-    }
   }
 
   public JavascriptDomAccessor getDomAccessor() {
@@ -375,9 +353,6 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
     String objName = "obj_" + System.currentTimeMillis();
     StringBuilder jsFunction = new StringBuilder();
     jsFunction.append(" try {");
-    // Android 1.6 does not support JSON
-    jsFunction.append(jsonLibrary);
-    // call
     StringBuilder toExecute = new StringBuilder();
     toExecute.append(" var ")
         .append(objName)
@@ -394,7 +369,6 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
     toExecute.append("if (")
         .append(objName)
         .append(" instanceof HTMLElement) {")
-         // TODO(kuzmin): try to move it to JavascriptDocAccessor
         .append(JavascriptDomAccessor.initCacheJs(currentFrame))
         .append(" var result = []; result.push(" + objName + ");")
         .append(JavascriptDomAccessor.ADD_TO_CACHE)
@@ -405,8 +379,8 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
 
     toExecute.append("else {")
         .append(objName)
-        .append("='{" + TYPE + ":'+androiddriver_str98234('', {'':")
-        .append(objName).append("})+'}'; ")
+        .append("='{" + TYPE + ":'+JSON.stringify(")
+        .append(objName).append(")+'}';")
         .append("}");
 
     // Callback to get the result passed from JS to Java
@@ -414,9 +388,6 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
 
     Logger.log(Log.DEBUG, LOG_TAG, "executeScript executing: " + toExecute);
     jsFunction.append(toExecute);
-
-    // Delete JSON functions
-    jsFunction.append(" delete androiddriver_quote98234; delete androiddriver_str98234;");
 
     // Catch errors
     jsFunction.append("}catch(err){window.webdriver.resultMethod('" + ERROR + "'+err);}");
