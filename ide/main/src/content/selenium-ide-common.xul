@@ -183,15 +183,15 @@ limitations under the License.
         <menupopup id="popup_clipboard_formats" onpopupshowing="window.editor.populateFormatsPopup(this, window.editor.app.clipboardFormat)" oncommand="window.editor.app.setClipboardFormat(window.editor.app.formats.selectFormat(event.target.getAttribute('value')))">
         </menupopup>
       </menu>
-      <menuitem id="internalTestsMenu" label="Test Selenium IDE" oncommand="window.editor.showInBrowser('chrome://selenium-ide/content/tests/index.html');" />
+      <menuitem id="internalTestsMenu" label="&internalTestsMenu.label;" oncommand="window.editor.showInBrowser('chrome://selenium-ide/content/tests/index.html');" />
     </menupopup>
   </menu>
   
   <stack id="speedSliderBox">
     <hbox>
-      <label value="Fast" />
+      <label value="&speedSliderFast.label;" />
       <hbox flex="1" />
-      <label value="Slow" />
+      <label value="&speedSliderSlow.label;" />
     </hbox>
     <vbox>
       <vbox class="spacer" />
@@ -221,18 +221,18 @@ limitations under the License.
       <box id="suiteProgressIndicator2" height="16" class="success" />
     </hbox>
     <hbox>
-      <label value="Runs:" flex="1"/>
+      <label value="&suiteProgressRuns.label;" flex="1"/>
       <label id="suiteProgressRuns" value="0" flex="1"/>
     </hbox>
     <hbox>
-      <label value="Failures:" flex="1"/>
+      <label value="&suiteProgressFailures.label;" flex="1"/>
       <label id="suiteProgressFailures" value="0" flex="1"/>
     </hbox>
   </vbox>
   
   <vbox id="tableViewUnavailable">
     <spacer flex="1" />
-    <label value="Table view is not available with this format."/>
+    <label value="&tableViewUnavailable.label;"/>
     <spacer flex="1" />
   </vbox>
 

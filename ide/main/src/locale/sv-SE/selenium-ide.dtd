@@ -23,6 +23,8 @@
 <!ENTITY playButton.tooltip "Spela upp aktuellt testfall">
 <!ENTITY pauseButton.tooltip "Paus / Återgå">
 <!ENTITY stepButton.tooltip "Stega">
+<!ENTITY speedSliderFast.label "Fast">
+<!ENTITY speedSliderSlow.label "Slow">
 <!ENTITY recordButton.tooltip "Spela in">
 <!ENTITY baseURL.label "Bas-URL">
 <!ENTITY baseURLTextbox.tooltip "Ange URL till webbplatsen du testar. Används för att spela upp kommandot &quot;open&quot;.">
@@ -70,3 +72,7 @@
 <!ENTITY testCaseProperties.label "Egenskaper...">
 
 <!ENTITY reloadExtButton.tooltip "Ladda om">
+<!ENTITY tableViewUnavailable.label "Table view is not available with this format.">
+<!ENTITY suiteProgressRuns.label "Runs:">
+<!ENTITY suiteProgressFailures.label "Failures:">
+<!ENTITY internalTestsMenu.label "Test Selenium IDE">

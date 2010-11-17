@@ -1,3 +1,4 @@
+<!ENTITY options.title "Selenium IDE Options">
 <!ENTITY options.encoding.description "Encoding of test files">
 <!ENTITY options.timeout.description "Default timeout value of recorded command">
 <!ENTITY options.userExtensionsPaths.description "Selenium Core extensions (user-extensions.js)">

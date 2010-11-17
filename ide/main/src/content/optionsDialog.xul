@@ -27,7 +27,7 @@ limitations under the License.
   ondialogaccept="saveOptions()"
   ondialogextra2="loadDefaultOptions()"
   onload="loadOptions()"
-  title="Selenium IDE Options"
+  title="&options.title;"
   width="520"
   height="600"
   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">

@@ -1,5 +1,6 @@
+<!ENTITY options.title "Options Selenium IDE">
 <!ENTITY options.encoding.description "Format de codage pour le chargement et la sauvegarde de fichiers">
-<!ENTITY options.timeout.description "Valeur par d&#233;fault du timeout pour les commandes enregistr&#233;es">
+<!ENTITY options.timeout.description "Valeur par défaut du timeout pour les commandes enregistrées">
 <!ENTITY options.userExtensionsPaths.description "Extensions de Selenium Core (user-extensions.js)">
 <!ENTITY options.ideExtensionsPaths.description "Extensions de Selenium IDE">
 <!ENTITY options.extensions.tip "Astuces pour les extensions: Fermez et r&#233;-ouvrez la fen&#234;tre de Selenium IDE pour que les changements prennent effet. Vous pouvez sp&#233;cifier plusieurs fichiers s&#233;par&#233;s par des virgules.">
@@ -24,4 +25,4 @@
 <!ENTITY options.user-ext.reload.tooltip "Recharger Selenium Core et ses extensions">
 <!ENTITY options.showDeveloperTools.description "Activer les outils d&#233;veloppeur">
 
-<!ENTITY options.recordOnOpen.description "Start recording immediately on open">
+<!ENTITY options.recordOnOpen.description "D&#233;marrer l'enregistrement automatiquement à l'ouverture">

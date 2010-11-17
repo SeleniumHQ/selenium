@@ -1,3 +1,4 @@
+<!ENTITY options.title "Selenium IDE Options">
 <!ENTITY options.encoding.description "Textkodning i testfiler">
 <!ENTITY options.timeout.description "Standard timeoutvärde i inspelade kommandon">
 <!ENTITY options.userExtensionsPaths.description "Selenium Core-tillägg (user-extensions.js)">

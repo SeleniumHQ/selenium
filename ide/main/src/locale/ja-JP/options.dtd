@@ -1,3 +1,4 @@
+<!ENTITY options.title "Selenium IDE Options">
 <!ENTITY options.encoding.description "テストファイルのエンコーディング">
 <!ENTITY options.timeout.description "記録時のデフォルトのタイムアウト">
 <!ENTITY options.userExtensionsPaths.description "Selenium Core 拡張スクリプト (user-extensions.js) のパス">

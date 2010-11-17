@@ -23,6 +23,8 @@
 <!ENTITY playButton.tooltip "Play current test case">
 <!ENTITY pauseButton.tooltip "Pause / Resume">
 <!ENTITY stepButton.tooltip "Step">
+<!ENTITY speedSliderFast.label "Fast">
+<!ENTITY speedSliderSlow.label "Slow">
 <!ENTITY recordButton.tooltip "Record">
 <!ENTITY baseURL.label "Base URL">
 <!ENTITY baseURLTextbox.tooltip "Enter the URL of the website you are testing. Used for playing &quot;open&quot; command.">
@@ -70,3 +72,7 @@
 <!ENTITY testCaseProperties.label "Properties...">
 
 <!ENTITY reloadExtButton.tooltip "Reload">
+<!ENTITY tableViewUnavailable.label "Table view is not available with this format.">
+<!ENTITY suiteProgressRuns.label "Runs:">
+<!ENTITY suiteProgressFailures.label "Failures:">
+<!ENTITY internalTestsMenu.label "Test Selenium IDE">

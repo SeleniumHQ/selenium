@@ -251,7 +251,7 @@ Format.prototype.saveAs = function(testCase, filename, exportTest) {
     try {
         var file = null;
         if (filename == null) {
-            file = showFilePicker(window, "Save test case as...",
+            file = showFilePicker(window, Editor.getString("saveTestCaseAs"),
                                   Components.interfaces.nsIFilePicker.modeSave,
                                   exportTest ? Format.TEST_CASE_EXPORT_DIRECTORY_PREF : Format.TEST_CASE_DIRECTORY_PREF,
                                   function(fp) {return fp.file;});
@@ -302,7 +302,7 @@ Format.prototype.saveSuiteAsNew = function(testSuite, exportTest) {
     
     try {
         var file = null;
-        file = showFilePicker(window, "Export TestSuite as...",
+        file = showFilePicker(window, Editor.getString("exportTestSuitAs"),
             Components.interfaces.nsIFilePicker.modeSave,
             TestSuite.TEST_SUITE_DIRECTORY_PREF,
             function(fp) {return fp.file;});
@@ -354,7 +354,7 @@ Format.prototype.setSource = function(testCase, source) {
 
 Format.prototype.load = function() {
     var self = this;
-    return showFilePicker(window, "Select a File", 
+    return showFilePicker(window, Editor.getString("selectAFile"),
                           Components.interfaces.nsIFilePicker.modeOpen,
                           Format.TEST_CASE_DIRECTORY_PREF,
                           function(fp) {return self.loadFile(fp.file);});

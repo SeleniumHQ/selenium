@@ -20,5 +20,13 @@
             <em:maxVersion>4.0b8pre</em:maxVersion>
           </Description>
         </em:targetApplication>
+
+        <em:localized>
+          <Description>
+            <em:locale>fr-FR</em:locale>
+            <em:name>Selenium IDE</em:name>
+            <em:description>Enregistrer, modifier et exécuter des tests Selenium</em:description>
+          </Description>
+        </em:localized>
     </Description>
 </RDF>

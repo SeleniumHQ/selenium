@@ -1,3 +1,4 @@
+<!ENTITY options.title "Selenium IDE Options">
 <!ENTITY options.encoding.description "Codificação dos arquivos">
 <!ENTITY options.timeout.description "Tempo de expiração padrão para comandos gravados">
 <!ENTITY options.userExtensionsPaths.description "Extensões do Selenium Core (user-extensions.js)">

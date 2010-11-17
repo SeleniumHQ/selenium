@@ -23,6 +23,8 @@
 <!ENTITY playButton.tooltip "現在のテストケースを実行">
 <!ENTITY pauseButton.tooltip "一時停止/再開">
 <!ENTITY stepButton.tooltip "1ステップ実行">
+<!ENTITY speedSliderFast.label "Fast">
+<!ENTITY speedSliderSlow.label "Slow">
 <!ENTITY recordButton.tooltip "テストの記録">
 <!ENTITY baseURL.label "Base URL">
 <!ENTITY baseURLTextbox.tooltip "テストを実施するWebサイトの URL を入力してください。&quot;open&quot; コマンドの実行に使われます。">
@@ -70,3 +72,7 @@
 <!ENTITY testCaseProperties.label "プロパティ...">
 
 <!ENTITY reloadExtButton.tooltip "リロード">
+<!ENTITY tableViewUnavailable.label "Table view is not available with this format.">
+<!ENTITY suiteProgressRuns.label "Runs:">
+<!ENTITY suiteProgressFailures.label "Failures:">
+<!ENTITY internalTestsMenu.label "Test Selenium IDE">
