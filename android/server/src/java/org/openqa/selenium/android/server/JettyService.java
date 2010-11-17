@@ -127,8 +127,6 @@ public class JettyService extends Service {
 
   /**
    * Get a reference to the Jetty Server instance
-   * 
-   * @return
    */
   public Server getServer() {
     return server;
