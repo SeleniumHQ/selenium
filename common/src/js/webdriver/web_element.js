@@ -118,26 +118,29 @@ webdriver.element.getAttribute = function(element, attribute) {
   // but we normally attempt to get the property value before the attribute.
   var isLink =  element.tagName && goog.dom.TagName.A == element.tagName.toUpperCase()
 
-  // When property returns an object we fall back to the actual attribute
-  // instead.
-  // See issue http://code.google.com/p/selenium/issues/detail?id=966
+  var property;
   try {
-    if ((name == 'href' && isLink)
-        || goog.isObject(bot.dom.getProperty(element, attribute))) {
-      value = bot.dom.getAttribute(element, attribute);
-    } else {
-      value = bot.dom.getProperty(element, attribute);
-    }
+    property = bot.dom.getProperty(element, attribute);
   } catch (e) {
-    // Call getAttribute if getProperty fails. This happens for event
-    // handlers in Firefox. For example, calling getProperty
-    // for 'onclick' would fail while getAttribute for 'onclick'
-    // will succeed and return the JS code of the handler.
-    value = bot.dom.getAttribute(element, attribute);
+    // Leaves property undefined or null
   }
 
-  if (!goog.isDefAndNotNull(value)) {
+  // 1- Prefer the attribute over the property for links
+  //
+  // 2- Call getAttribute if getProperty fails,
+  // i.e. property is null or undefined.
+  // This happens for event handlers in Firefox.
+  // For example, calling getProperty for 'onclick' would
+  // fail while getAttribute for 'onclick' will succeed and
+  // return the JS code of the handler.
+  //
+  // 3- When property is an object we fall back to the
+  // actual attribute instead.
+  // See issue http://code.google.com/p/selenium/issues/detail?id=966
+  if ((name == 'href' && isLink) || !goog.isDefAndNotNull(property) || goog.isObject(property)) {
     value = bot.dom.getAttribute(element, attribute);
+  } else {
+    value = property;
   }
 
   // The empty string is a valid return value.

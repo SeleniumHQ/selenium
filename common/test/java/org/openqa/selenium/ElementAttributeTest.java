@@ -17,11 +17,8 @@ limitations under the License.
 
 package org.openqa.selenium;
 
-import java.util.Iterator;
-import java.util.List;
-
-import static org.hamcrest.Matchers.anyOf;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.anyOf;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.core.IsNull.nullValue;
@@ -30,6 +27,8 @@ import static org.openqa.selenium.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
+
+import java.util.List;
 
 public class ElementAttributeTest extends AbstractDriverTestCase {
 
@@ -258,6 +257,12 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
 
     WebElement mousedownDiv = driver.findElement(By.id("mousedown"));
     assertEquals(null, mousedownDiv.getAttribute("onclick"));
+  }
+
+  public void testSvgProperties() {
+    driver.get(pages.svgPage);
+    WebElement svgElement = driver.findElement(By.id("rotate"));
+    assertEquals("rotate(30)", svgElement.getAttribute("transform"));
   }
 
 }
