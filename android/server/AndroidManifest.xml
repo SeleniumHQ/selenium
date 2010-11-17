@@ -26,7 +26,7 @@ limitations under the License.
         <category android:name="android.intent.category.LAUNCHER" />
       </intent-filter>
     </activity>
-    <activity android:name=".SingleSessionActivity" android:label="Single-Session Android WebDriver Client">
+    <activity android:name=".WebDriverActivity" android:label="Android WebDriver Client">
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
         <category android:name="android.intent.category.SAMPLE_CODE" />
