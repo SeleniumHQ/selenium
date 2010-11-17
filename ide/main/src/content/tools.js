@@ -160,6 +160,14 @@ String.prototype.startsWith = function(str) {
 	return (this.match("^" + str) == str)
 }
 
+if(typeof(String.prototype.trim) === "undefined")
+{
+    String.prototype.trim = function() 
+    {
+        return String(this).replace(/^\s+|\s+$/g, '');
+    };
+}
+
 function Message(key, arg) {
     var strings = window.document.getElementById("strings");
     if (strings) {
