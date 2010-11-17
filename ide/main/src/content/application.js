@@ -223,9 +223,29 @@ Application.prototype = {
         var file = null;
         if (path) {
             file = FileUtils.getFile(path);
+        } else {
+            //Samit: We are going to need the file to retry it as a test suite
+            file = showFilePicker(window, "Select a File",
+                    Components.interfaces.nsIFilePicker.modeOpen,
+                    Format.TEST_CASE_DIRECTORY_PREF,
+                                 function(fp) {
+                                     return fp.file;
+                                 });
         }
-        if (this._loadTestCase(file)) {
-            this.setTestCaseWithNewSuite(this.getTestCase());
+        if (file) {
+            try {
+                if (this._loadTestCase(file, null, true)) {
+                    this.setTestCaseWithNewSuite(this.getTestCase());
+                }
+            } catch(errorCase) {
+                //Samit: Enh: Try to handle the common error of trying to open a test suite
+                try {
+                    this.loadTestSuite(file.path, true);
+                } catch(e) {
+                    //Since this failed, show them the original testcase load error
+                    alert("error loading test case: " + errorCase);
+                }
+            }
         }
     },
 
@@ -248,7 +268,7 @@ Application.prototype = {
         }
     },
 
-    _loadTestCase: function(file, testCaseHandler) {
+    _loadTestCase: function(file, testCaseHandler, noErrorAlert) {
         this.log.debug("loadTestCase");
         try {
             var testCase = null;
@@ -265,12 +285,15 @@ Application.prototype = {
             }
             return false;
         } catch (error) {
+            if (noErrorAlert) {   //Samit: Enh: allow error messages to be supressed, so caller can make intelligent ux decisions
+                throw error;
+            }
             alert("error loading test case: " + error);
             return false;
         }
     },
 
-    loadTestSuite: function(path) {
+    loadTestSuite: function(path, noErrorAlert) {
         this.log.debug("loadTestSuite");
         try {
             var testSuite = null;
@@ -289,6 +312,9 @@ Application.prototype = {
                 }
             }
         } catch (error) {
+            if (noErrorAlert) {   //Samit: Enh: allow error messages to be supressed, so caller can make intelligent ux decisions
+                throw error;
+            }
             alert("error loading test suite: " + error);
         }
     },
@@ -345,7 +371,7 @@ Application.prototype = {
             this.recentTestCases.add(this.getTestCase().file.path);
         }
     }
-}
+};
 
 Application.prototype.log = Application.log = new Log("Application");
 observable(Application);
