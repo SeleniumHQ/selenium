@@ -259,7 +259,7 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
     assertEquals(null, mousedownDiv.getAttribute("onclick"));
   }
 
-  public void testSvgProperties() {
+  public void testGetAttributeDoesNotReturnAnObjectForSvgProperties() {
     driver.get(pages.svgPage);
     WebElement svgElement = driver.findElement(By.id("rotate"));
     assertEquals("rotate(30)", svgElement.getAttribute("transform"));
