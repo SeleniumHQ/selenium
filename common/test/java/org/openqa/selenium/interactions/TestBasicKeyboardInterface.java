@@ -40,7 +40,7 @@ import static org.openqa.selenium.Ignore.Driver.SELENESE;
  */
 public class TestBasicKeyboardInterface extends AbstractDriverTestCase {
   @JavascriptEnabled
-  @Ignore({ANDROID, FIREFOX, IPHONE, CHROME, SELENESE})
+  @Ignore({ANDROID, FIREFOX, REMOTE, IPHONE, CHROME, SELENESE})
   public void testBasicKeyboardInput() {
     driver.get(pages.javascriptPage);
 
@@ -55,7 +55,7 @@ public class TestBasicKeyboardInterface extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, FIREFOX, IPHONE, CHROME, SELENESE})
+  @Ignore({ANDROID, FIREFOX, REMOTE, IPHONE, CHROME, SELENESE})
   public void testSendingKeyDownOnly() {
     driver.get(pages.javascriptPage);
 
@@ -72,7 +72,7 @@ public class TestBasicKeyboardInterface extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, FIREFOX, IPHONE, CHROME, SELENESE})
+  @Ignore({ANDROID, FIREFOX, REMOTE, IPHONE, CHROME, SELENESE})
   public void testSendingKeyUp() {
     driver.get(pages.javascriptPage);
     WebElement keysEventInput = driver.findElement(By.id("theworks"));
@@ -96,7 +96,7 @@ public class TestBasicKeyboardInterface extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, FIREFOX, IPHONE, CHROME, SELENESE})
+  @Ignore({ANDROID, FIREFOX, REMOTE, IPHONE, CHROME, SELENESE})
   public void testSendingKeysWithShiftPressed() {
     driver.get(pages.javascriptPage);
 
@@ -122,7 +122,7 @@ public class TestBasicKeyboardInterface extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, FIREFOX, IPHONE, CHROME, SELENESE})
+  @Ignore({ANDROID, FIREFOX, REMOTE, IPHONE, CHROME, SELENESE})
   public void testSendingKeysToActiveElement() {
     driver.get(pages.bodyTypingPage);
 
@@ -136,7 +136,7 @@ public class TestBasicKeyboardInterface extends AbstractDriverTestCase {
     assertThat(formLoggingElement.getText(), is(""));
   }
 
-  @Ignore({ANDROID, FIREFOX, IPHONE, CHROME, SELENESE})
+  @Ignore({ANDROID, FIREFOX, REMOTE, IPHONE, CHROME, SELENESE})
   public void testBasicKeyboardInputOnActiveElement() {
     driver.get(pages.javascriptPage);
 
