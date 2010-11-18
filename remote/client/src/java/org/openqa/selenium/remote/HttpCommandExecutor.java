@@ -148,6 +148,7 @@ public class HttpCommandExecutor implements CommandExecutor {
         .put(SUBMIT_ELEMENT, post("/session/:sessionId/element/:id/submit"))
         .put(GET_ELEMENT_TEXT, get("/session/:sessionId/element/:id/text"))
         .put(SEND_KEYS_TO_ELEMENT, post("/session/:sessionId/element/:id/value"))
+        .put(SEND_MODIFIER_KEY_TO_ACTIVE_ELEMENT, post("/session/:sessionId/modifier"))
         .put(GET_ELEMENT_VALUE, get("/session/:sessionId/element/:id/value"))
         .put(GET_ELEMENT_TAG_NAME, get("/session/:sessionId/element/:id/name"))
         .put(IS_ELEMENT_SELECTED, get("/session/:sessionId/element/:id/selected"))

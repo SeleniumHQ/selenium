@@ -49,6 +49,7 @@ public interface DriverCommand {
   String CLICK_ELEMENT = "clickElement";
   String HOVER_OVER_ELEMENT = "hoverOverElement";
   String SEND_KEYS_TO_ELEMENT = "sendKeysToElement";
+  String SEND_MODIFIER_KEY_TO_ACTIVE_ELEMENT = "sendModifierKeyToActiveElement";
   String SUBMIT_ELEMENT = "submitElement";
   String TOGGLE_ELEMENT = "toggleElement";
 

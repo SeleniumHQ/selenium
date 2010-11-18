@@ -70,6 +70,7 @@ import org.openqa.selenium.remote.server.handler.ImplicitlyWait;
 import org.openqa.selenium.remote.server.handler.NewSession;
 import org.openqa.selenium.remote.server.handler.RefreshPage;
 import org.openqa.selenium.remote.server.handler.SendKeys;
+import org.openqa.selenium.remote.server.handler.SendModifierKey;
 import org.openqa.selenium.remote.server.handler.SetElementSelected;
 import org.openqa.selenium.remote.server.handler.SetMouseSpeed;
 import org.openqa.selenium.remote.server.handler.Rotate;
@@ -226,6 +227,8 @@ public class DriverServlet extends HttpServlet {
         .on(ResultType.SUCCESS, new EmptyResult());
 
     postMapper.bind("/session/:sessionId/element/:id/value", SendKeys.class)
+        .on(ResultType.SUCCESS, new EmptyResult());
+    postMapper.bind("/session/:sessionId/modifier", SendModifierKey.class)
         .on(ResultType.SUCCESS, new EmptyResult());
     getMapper.bind("/session/:sessionId/element/:id/value", GetElementValue.class)
         .on(ResultType.SUCCESS, new JsonResult(RESPONSE));

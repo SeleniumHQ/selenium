@@ -19,7 +19,10 @@ package org.openqa.selenium.support.events;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.Cookie;
+import org.openqa.selenium.HasInputDevices;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Keyboard;
+import org.openqa.selenium.Mouse;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.RenderedWebElement;
 import org.openqa.selenium.Speed;
@@ -51,7 +54,8 @@ import java.util.concurrent.TimeUnit;
  *
  * @author Michael Tamm
  */
-public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, TakesScreenshot, WrapsDriver {
+public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, TakesScreenshot,
+    WrapsDriver, HasInputDevices {
 
   private final WebDriver driver;
 
@@ -238,6 +242,14 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
   private WebElement createWebElement(WebElement from) {
     return from instanceof RenderedWebElement ?
       new EventFiringRenderedWebElement(from) : new EventFiringWebElement(from);
+  }
+
+  public Keyboard getKeyboard() {
+    return ((HasInputDevices) driver).getKeyboard();
+  }
+
+  public Mouse getMouse() {
+    return ((HasInputDevices) driver).getMouse();
   }
 
   private class EventFiringWebElement implements WebElement, WrapsElement, WrapsDriver {

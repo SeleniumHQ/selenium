@@ -586,6 +586,17 @@ JSON objects.''').
                  'WebElement#sendKeys(CharSequence...)'))
 
   resources.append(
+      SessionResource('/session/:sessionId/modifier').
+      Post('Send a modifier key down / up to the active element.').
+      AddJsonParameter('value', '{string}',
+                       'The modifier key event to be sent.'
+                       'The Keys enum specifies the values to send for shift / ctrl / alt.').
+      AddJsonParameter('isdown', '{boolean}',
+                       'Whether to generate a key down or key up.').
+      SetJavadoc('java/org/openqa/selenium/Keyboard.html#pressKey(org.openqa.selenium.Keys)',
+                 'pressKey(org.openqa.selenium.Keys)'))
+
+  resources.append(
       ElementResource('/session/:sessionId/element/:id/name').
       Get('Query for an element\'s tag name.').
       SetReturnType('{string}', 'The element\'s tag name, as a lowercase string.').

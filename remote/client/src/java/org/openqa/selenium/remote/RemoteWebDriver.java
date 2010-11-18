@@ -29,7 +29,11 @@ import java.util.concurrent.TimeUnit;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Cookie;
+import org.openqa.selenium.HasInputDevices;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Keyboard;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.Mouse;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.Speed;
 import org.openqa.selenium.WebDriver;
@@ -50,7 +54,8 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
-    FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, FindsByXPath {
+    FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, FindsByXPath,
+    HasInputDevices {
 
   private final ErrorHandler errorHandler = new ErrorHandler();
 
@@ -356,6 +361,15 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     return execute(command, ImmutableMap.<String, Object>of());
   }
 
+  public Keyboard getKeyboard() {
+    return new RemoteKeyboard();
+  }
+
+  public Mouse getMouse() {
+    throw new UnsupportedOperationException("Mouse is not implemented yet for the" +
+        " remote WebDriver.");
+  }
+
   private class RemoteWebDriverOptions implements Options {
 
     public void addCookie(Cookie cookie) {
@@ -492,6 +506,23 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     public WebElement activeElement() {
       Response response = execute(DriverCommand.GET_ACTIVE_ELEMENT);
       return (WebElement) response.getValue();
+    }
+  }
+
+  private class RemoteKeyboard implements Keyboard {
+    public void sendKeys(CharSequence... keysToSend) {
+      switchTo().activeElement().sendKeys(keysToSend);
+    }
+
+    public void pressKey(Keys keyToPress) {
+      execute(DriverCommand.SEND_MODIFIER_KEY_TO_ACTIVE_ELEMENT,
+          ImmutableMap.of("value", keyToPress, "isdown", true));
+      }
+
+    public void releaseKey(Keys keyToRelease) {
+      execute(DriverCommand.SEND_MODIFIER_KEY_TO_ACTIVE_ELEMENT,
+          ImmutableMap.of("value", keyToRelease, "isdown", false));
+
     }
   }
 }
