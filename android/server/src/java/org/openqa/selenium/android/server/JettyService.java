@@ -175,7 +175,7 @@ public class JettyService extends Service {
             }
           }
           Logger.log(Log.DEBUG, LOG_TAG,
-              "loading resource took " + (System.currentTimeMillis()-a) + " ms");
+              "Loading resource took " + (System.currentTimeMillis()-a) + " ms");
         }
       }), "/*");
       
