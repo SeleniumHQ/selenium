@@ -3,7 +3,7 @@
  xmlns:em="http://www.mozilla.org/2004/em-rdf#">
     <Description about="urn:mozilla:install-manifest">
         <em:id>rubyformatters@seleniumhq.org</em:id>
-        <em:name>Selenium IDE: ruby Formatters</em:name>
+        <em:name>Selenium IDE: Ruby Formatters</em:name>
         <em:version>1.0.0</em:version>
         <em:creator>Adam Goucher</em:creator>
         <em:description>Ruby code formatters for Selenium IDE</em:description>
