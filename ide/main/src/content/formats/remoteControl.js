@@ -39,12 +39,16 @@ function indents(num) {
 		return str;
 	}
 
-	var indent = options.indent;
-	if ('tab' == indent) {
-		return repeat("\t", num);
-	} else {
-		return repeat(" ", num * parseInt(options.indent, 10));
-	}
+    try {        
+    	var indent = options.indent;
+    	if ('tab' == indent) {
+    		return repeat("\t", num);
+    	} else {
+    		return repeat(" ", num * parseInt(options.indent, 10));
+    	}
+    } catch (error) {
+        return repeat(" ", 0);
+    }
 }
 
 function capitalize(string) {
