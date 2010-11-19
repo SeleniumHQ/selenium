@@ -40,7 +40,6 @@
  * Children normally render into the document lazily, at the first
  * moment when all ancestors are expanded.
  *
-*
  * @see ../demos/drilldownrow.html
  */
 
@@ -65,6 +64,7 @@ goog.require('goog.dom');
 goog.require('goog.dom.classes');
 goog.require('goog.events');
 goog.require('goog.ui.Component');
+
 
 
 /**
@@ -153,7 +153,7 @@ goog.ui.DrilldownRow.sampleProperties = {
     });
     handler.listen(row, 'mouseout', function() {
       goog.dom.classes.remove(row, goog.getCssName('goog-drilldown-hover'));
-    })
+    });
   }
 };
 
@@ -161,6 +161,7 @@ goog.ui.DrilldownRow.sampleProperties = {
 //
 // Implementations of Component methods.
 //
+
 
 /**
  * The base class method calls its superclass method and this
@@ -382,6 +383,7 @@ goog.ui.DrilldownRow.decorate = function(selfObj) {
 //
 // Private methods
 //
+
 
 /**
  * Turn display of a DrilldownRow on or off.  If the DrilldownRow has not

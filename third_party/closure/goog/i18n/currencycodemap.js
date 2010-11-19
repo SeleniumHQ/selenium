@@ -14,7 +14,6 @@
 
 /**
  * @fileoverview Currency code map.
-*
  */
 
 

@@ -15,10 +15,11 @@
 /**
  * @fileoverview Definition the goog.debug.RelativeTimeProvider class.
  *
-*
  */
 
 goog.provide('goog.debug.RelativeTimeProvider');
+
+
 
 /**
  * A simple object to keep track of a timestamp considered the start of
@@ -64,6 +65,7 @@ goog.debug.RelativeTimeProvider.prototype.set = function(timeStamp) {
 goog.debug.RelativeTimeProvider.prototype.reset = function() {
   this.set(goog.now());
 };
+
 
 /**
  * @return {number} The start time.

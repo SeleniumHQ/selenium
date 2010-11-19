@@ -16,7 +16,7 @@
  * @fileoverview Renderer for {@link goog.ui.ColorMenuButton}s.
  *
  * @author robbyw@google.com (Robby Walker)
-*
+ * @author attila@google.com (Attila Bodis)
  */
 
 goog.provide('goog.ui.ColorMenuButtonRenderer');
@@ -26,6 +26,8 @@ goog.require('goog.dom.classes');
 goog.require('goog.ui.ControlContent');
 goog.require('goog.ui.MenuButtonRenderer');
 goog.require('goog.userAgent');
+
+
 
 /**
  * Renderer for {@link goog.ui.ColorMenuButton}s.

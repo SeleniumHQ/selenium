@@ -25,6 +25,8 @@ goog.require('goog.dom.pattern');
 goog.require('goog.dom.pattern.AbstractPattern');
 goog.require('goog.dom.pattern.MatchType');
 
+
+
 /**
  * Pattern object that matches text by exact matching or regular expressions.
  *
@@ -45,6 +47,7 @@ goog.inherits(goog.dom.pattern.Text, goog.dom.pattern.AbstractPattern);
  * @private
  */
 goog.dom.pattern.Text.prototype.match_;
+
 
 /**
  * Test whether the given token is a text token which matches the string or

@@ -15,7 +15,6 @@
 /**
  * @fileoverview Constant declarations for common key codes.
  *
-*
  * @see ../demos/keyhandler.html
  */
 
@@ -36,7 +35,7 @@ goog.events.KeyCodes = {
   MAC_ENTER: 3,
   BACKSPACE: 8,
   TAB: 9,
-  NUM_CENTER: 12,
+  NUM_CENTER: 12,  // NUMLOCK on FF/Safari Mac
   ENTER: 13,
   SHIFT: 16,
   CTRL: 17,
@@ -136,7 +135,14 @@ goog.events.KeyCodes = {
   CLOSE_SQUARE_BRACKET: 221, // needs localization
   WIN_KEY: 224,
   MAC_FF_META: 224, // Firefox (Gecko) fires this for the meta key instead of 91
-  WIN_IME: 229
+  WIN_IME: 229,
+
+  // We've seen users whose machines fire this keycode at regular one
+  // second intervals. The common thread among these users is that
+  // they're all using Dell Inspiron laptops, so we suspect that this
+  // indicates a hardware/bios problem.
+  // http://en.community.dell.com/support-forums/laptop/f/3518/p/19285957/19523128.aspx
+  PHANTOM: 255
 };
 
 
@@ -158,23 +164,28 @@ goog.events.KeyCodes.isTextModifyingKeyEvent = function(e) {
   // CTRL, ALT or SHIFT.
   switch (e.keyCode) {
     case goog.events.KeyCodes.ALT:
-    case goog.events.KeyCodes.SHIFT:
-    case goog.events.KeyCodes.CTRL:
-    case goog.events.KeyCodes.PAUSE:
     case goog.events.KeyCodes.CAPS_LOCK:
-    case goog.events.KeyCodes.ESC:
-    case goog.events.KeyCodes.PAGE_UP:
-    case goog.events.KeyCodes.PAGE_DOWN:
-    case goog.events.KeyCodes.HOME:
-    case goog.events.KeyCodes.END:
-    case goog.events.KeyCodes.LEFT:
-    case goog.events.KeyCodes.RIGHT:
-    case goog.events.KeyCodes.UP:
-    case goog.events.KeyCodes.DOWN:
-    case goog.events.KeyCodes.INSERT:
-    case goog.events.KeyCodes.NUMLOCK:
     case goog.events.KeyCodes.CONTEXT_MENU:
+    case goog.events.KeyCodes.CTRL:
+    case goog.events.KeyCodes.DOWN:
+    case goog.events.KeyCodes.END:
+    case goog.events.KeyCodes.ESC:
+    case goog.events.KeyCodes.HOME:
+    case goog.events.KeyCodes.INSERT:
+    case goog.events.KeyCodes.LEFT:
+    case goog.events.KeyCodes.MAC_FF_META:
+    case goog.events.KeyCodes.META:
+    case goog.events.KeyCodes.NUMLOCK:
+    case goog.events.KeyCodes.NUM_CENTER:
+    case goog.events.KeyCodes.PAGE_DOWN:
+    case goog.events.KeyCodes.PAGE_UP:
+    case goog.events.KeyCodes.PAUSE:
+    case goog.events.KeyCodes.PHANTOM:
     case goog.events.KeyCodes.PRINT_SCREEN:
+    case goog.events.KeyCodes.RIGHT:
+    case goog.events.KeyCodes.SHIFT:
+    case goog.events.KeyCodes.UP:
+    case goog.events.KeyCodes.WIN_KEY:
       return false;
     default:
       return true;

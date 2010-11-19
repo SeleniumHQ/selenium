@@ -20,8 +20,6 @@
  * goog.ui.PopupMenu, and if you need submenus goog.ui.SubMenu.
  *
  *
-*
-*
  */
 
 goog.provide('goog.ui.BasicMenu');
@@ -31,11 +29,13 @@ goog.provide('goog.ui.BasicMenu.Separator');
 goog.require('goog.array');
 goog.require('goog.dom');
 goog.require('goog.dom.a11y');
+goog.require('goog.events.EventType');
 goog.require('goog.positioning');
 goog.require('goog.positioning.AnchoredPosition');
 goog.require('goog.positioning.Corner');
 goog.require('goog.ui.AttachableMenu');
 goog.require('goog.ui.ItemEvent');
+
 
 
 /**
@@ -131,6 +131,7 @@ goog.ui.BasicMenu.prototype.getZIndex = function() {
   return this.zIndex_;
 };
 
+
 /**
  * Sets the z-index. The change will take effect the next time
  * setVisible(true) is called.
@@ -141,6 +142,7 @@ goog.ui.BasicMenu.prototype.setZIndex = function(zIndex) {
   this.zIndex_ = zIndex;
 };
 
+
 /**
  * Add a menu item.
  *
@@ -149,10 +151,10 @@ goog.ui.BasicMenu.prototype.setZIndex = function(zIndex) {
 goog.ui.BasicMenu.prototype.add = function(item) {
   var el = this.getElement();
   if (!el) {
-    throw Error('setElement() called before create()')
+    throw Error('setElement() called before create()');
   }
   if (item.getMenu()) {
-    throw Error('Menu item already added to a menu')
+    throw Error('Menu item already added to a menu');
   }
 
   item.setMenu_(this);
@@ -169,10 +171,10 @@ goog.ui.BasicMenu.prototype.add = function(item) {
 goog.ui.BasicMenu.prototype.insertAt = function(item, index) {
   var el = this.getElement();
   if (!el) {
-    throw Error('setElement() called before create()')
+    throw Error('setElement() called before create()');
   }
   if (item.getMenu()) {
-    throw Error('Menu item already added to a menu')
+    throw Error('Menu item already added to a menu');
   }
 
   item.setMenu_(this);
@@ -602,7 +604,7 @@ goog.ui.BasicMenu.prototype.onMouseUp = function(e) {
  * @private
  */
 goog.ui.BasicMenu.prototype.onResize_ = function() {
-  if (!this.isDisposed() && this.isVisible()){
+  if (!this.isDisposed() && this.isVisible()) {
     this.reposition();
   }
 };
@@ -661,7 +663,9 @@ goog.ui.BasicMenu.prototype.onKeyDown = function(e) {
 
 /**
  * Called after the menu is shown.
- * @private
+ * @protected
+ * @suppress {underscore}
+ * @override
  */
 goog.ui.BasicMenu.prototype.onShow_ = function() {
   goog.ui.BasicMenu.superClass_.onShow_.call(this);
@@ -896,6 +900,7 @@ goog.ui.BasicMenu.Item.prototype.closeSubmenu = function() {
     this.submenu_.setVisible(false);
   }
 };
+
 
 
 /**

@@ -27,10 +27,6 @@
  * internal representation is now of un-encoded parts, this will change the
  * behavior slightly.
  *
-*
-*
-*
-*
  */
 
 goog.provide('goog.Uri');
@@ -42,6 +38,7 @@ goog.require('goog.structs');
 goog.require('goog.structs.Map');
 goog.require('goog.uri.utils');
 goog.require('goog.uri.utils.ComponentIndex');
+
 
 
 /**
@@ -1019,7 +1016,6 @@ goog.Uri.haveSameDomain = function(uri1String, uri2String) {
 
 
 
-
 /**
  * Class used to represent URI query parameters.  It is essentially a hash of
  * name-value pairs, though a name can be present more than once.
@@ -1102,7 +1098,7 @@ goog.Uri.QueryData.prototype.ensureKeyMapInitialized_ = function() {
  */
 goog.Uri.QueryData.createFromMap = function(map, opt_uri, opt_ignoreCase) {
   var keys = goog.structs.getKeys(map);
-  if (typeof keys == 'undefined'){
+  if (typeof keys == 'undefined') {
     throw Error('Keys are undefined');
   }
   return goog.Uri.QueryData.createFromKeysValues(

@@ -14,7 +14,6 @@
 
 /**
  * @fileoverview This file implements a store for goog.debug.Logger data.
-*
  */
 
 goog.provide('goog.gears.LogStore');
@@ -28,6 +27,7 @@ goog.require('goog.debug.Logger.Level');
 goog.require('goog.gears.BaseStore');
 goog.require('goog.gears.BaseStore.SchemaType');
 goog.require('goog.json');
+
 
 
 /**
@@ -45,7 +45,7 @@ goog.gears.LogStore = function(database, opt_tableName) {
    * @type {string}
    */
   var tableName = opt_tableName || goog.gears.LogStore.DEFAULT_TABLE_NAME_;
-  this.tableName_ = tableName
+  this.tableName_ = tableName;
 
   // Override BaseStore schema attribute.
   this.schema = [
@@ -53,21 +53,21 @@ goog.gears.LogStore = function(database, opt_tableName) {
       type: goog.gears.BaseStore.SchemaType.TABLE,
       name: tableName,
       columns: [
-         // Unique ID.
-         'id INTEGER PRIMARY KEY AUTOINCREMENT',
-         // Timestamp.
-         'millis BIGINT',
-         // #goog.debug.Logger.Level value.
-         'level INTEGER',
-         // Message.
-         'msg TEXT',
-         // Name of logger object.
-         'logger TEXT',
-         // Serialized error object.
-         'exception TEXT',
-         // Full exception text.
-         'exceptionText TEXT'
-       ]
+        // Unique ID.
+        'id INTEGER PRIMARY KEY AUTOINCREMENT',
+        // Timestamp.
+        'millis BIGINT',
+        // #goog.debug.Logger.Level value.
+        'level INTEGER',
+        // Message.
+        'msg TEXT',
+        // Name of logger object.
+        'logger TEXT',
+        // Serialized error object.
+        'exception TEXT',
+        // Full exception text.
+        'exceptionText TEXT'
+      ]
     },
     {
       type: goog.gears.BaseStore.SchemaType.INDEX,
@@ -183,7 +183,7 @@ goog.gears.LogStore.MAX_BUFFER_BYTES_ = 200000;
  * Flush buffered log records.
  */
 goog.gears.LogStore.prototype.flush = function() {
-  if (this.isFlushing_ || !this.database_) {
+  if (this.isFlushing_ || !this.getDatabaseInternal()) {
     return;
   }
   this.isFlushing_ = true;
@@ -200,7 +200,7 @@ goog.gears.LogStore.prototype.flush = function() {
     var statement = 'INSERT INTO ' + this.tableName_ +
         ' (millis, level, msg, logger, exception, exceptionText)' +
         ' VALUES (?, ?, ?, ?, ?, ?)';
-    this.database_.execute(statement,
+    this.getDatabaseInternal().execute(statement,
         record.getMillis(), record.getLevel().value, record.getMessage(),
         record.getLoggerName(), serializedException,
         record.getExceptionText() || '');
@@ -279,14 +279,14 @@ goog.gears.LogStore.prototype.autoPrune_ = function(opt_count) {
  *     Pass in 0 to delete all log records.
  */
 goog.gears.LogStore.prototype.pruneBeforeCount = function(opt_count) {
-  if (!this.database_) {
+  if (!this.getDatabaseInternal()) {
     return;
   }
   var count = typeof opt_count == 'number' ?
       opt_count : goog.gears.LogStore.DEFAULT_PRUNE_KEEPER_COUNT_;
   this.logger_.info('pruning before ' + count + ' records ago');
   this.flush();
-  this.database_.execute('DELETE FROM ' + this.tableName_ +
+  this.getDatabaseInternal().execute('DELETE FROM ' + this.tableName_ +
       ' WHERE id <= ((SELECT MAX(id) FROM ' + this.tableName_ + ') - ?)',
       count);
 };
@@ -298,12 +298,13 @@ goog.gears.LogStore.prototype.pruneBeforeCount = function(opt_count) {
  */
 goog.gears.LogStore.prototype.pruneBeforeSequenceNumber =
     function(sequenceNumber) {
-  if (!this.database_) {
+  if (!this.getDatabaseInternal()) {
     return;
   }
   this.logger_.info('pruning before sequence number ' + sequenceNumber);
   this.flush();
-  this.database_.execute('DELETE FROM ' + this.tableName_ + ' WHERE id <= ?',
+  this.getDatabaseInternal().execute(
+      'DELETE FROM ' + this.tableName_ + ' WHERE id <= ?',
       sequenceNumber);
 };
 
@@ -362,7 +363,7 @@ goog.gears.LogStore.prototype.addLogRecord = function(logRecord) {
  *     order of creation time.
  */
 goog.gears.LogStore.prototype.select = function(query) {
-  if (!this.database_) {
+  if (!this.getDatabaseInternal()) {
     // This should only occur if we've been disposed.
     return [];
   }
@@ -376,7 +377,7 @@ goog.gears.LogStore.prototype.select = function(query) {
       ' WHERE level >= ? AND millis >= ? AND millis <= ?' +
       ' AND msg like ? and logger like ?' +
       ' ORDER BY id DESC LIMIT ?';
-  var rows = this.database_.queryObjectArray(statement,
+  var rows = this.getDatabaseInternal().queryObjectArray(statement,
       query.level.value, query.minMillis, query.maxMillis,
       query.msgLike, query.loggerLike, query.limit);
 

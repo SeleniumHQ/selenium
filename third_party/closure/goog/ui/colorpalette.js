@@ -16,7 +16,6 @@
  * @fileoverview A control for representing a palette of colors, that the user
  * can highlight or select via the keyboard or the mouse.
  *
-*
  */
 
 goog.provide('goog.ui.ColorPalette');
@@ -27,6 +26,7 @@ goog.require('goog.dom');
 goog.require('goog.style');
 goog.require('goog.ui.Palette');
 goog.require('goog.ui.PaletteRenderer');
+
 
 
 /**

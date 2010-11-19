@@ -17,8 +17,8 @@
  * a utility for tracing and debugging the BrowserChannel requests.
  *
  * TODO(user) - allow client to specify a custom redaction policy
-*
  */
+
 
 /**
  * Namespace for BrowserChannel
@@ -26,6 +26,7 @@
 goog.provide('goog.net.ChannelDebug');
 goog.require('goog.debug.Logger');
 goog.require('goog.json');
+
 
 
 /**

@@ -15,7 +15,6 @@
 /**
  * @fileoverview Native browser button renderer for {@link goog.ui.Button}s.
  *
-*
  */
 
 goog.provide('goog.ui.NativeButtonRenderer');

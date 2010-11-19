@@ -15,8 +15,6 @@
 /**
  * @fileoverview Datastructure: Pool.
  *
-*
-*
  *
  * A generic class for handling pools of objects.
  * When an object is released, it is attempted to be reused.
@@ -28,6 +26,7 @@ goog.provide('goog.structs.Pool');
 goog.require('goog.Disposable');
 goog.require('goog.structs.Queue');
 goog.require('goog.structs.Set');
+
 
 
 /**
@@ -206,7 +205,7 @@ goog.structs.Pool.prototype.removeFreeObject_ = function() {
  * @param {Object} obj The object to add to collection of free objects.
  */
 goog.structs.Pool.prototype.addFreeObject = function(obj) {
-  this.inUseSet_.remove(obj)
+  this.inUseSet_.remove(obj);
   if (this.objectCanBeReused(obj) && this.getCount() < this.maxCount_) {
     this.freeQueue_.enqueue(obj);
   } else {

@@ -1,0 +1,57 @@
+/*
+ * Copyright 2007 The Closure Library Authors. All Rights Reserved.
+ *
+ * Use of this source code is governed by the Apache License, Version 2.0.
+ * See the COPYING file for details.
+ */
+
+/* Author: pupius@google.com (Daniel Pupius) */
+
+/* Styles for goog.ui.ComboBox and its derivatives.
+   Note: these styles need some work to get them working properly at various
+   font sized other than the default. */
+
+
+.goog-combobox {
+  border: 1px solid #b5b6b5;
+  background: #ddd url(../images/button-bg.gif) repeat-x scroll left top;
+  padding-right: 2.8ex;
+  font: normal small arial, sans-serif;
+  cursor: pointer;
+}
+
+.goog-combobox input {
+  vertical-align: bottom; /* override demo.css */
+  margin: 0;
+  border: 0;
+  border-right: 1px solid #b5b6b5;
+  padding: 0 0 0 .1ex;
+  color: #000;
+  background-color: #fff;
+  font: normal small arial, sans-serif;
+  width: 30ex;
+}
+
+.goog-combobox input.label-input-label {
+  background-color: #fff;
+  color: #aaa;
+}
+
+.goog-combobox .goog-menu {
+  width: 33.2ex;
+  margin-top: -1px;
+  z-index: 1000;
+}
+
+html>body .goog-combobox .goog-menu {
+  /* Non-IE hack */
+  width: 32.8ex;
+}
+
+.goog-combobox-button {
+  font-size: 10px;
+}
+
+.use-arrow .goog-combobox {
+  padding-right: 0.6ex;
+}

@@ -15,7 +15,6 @@
 /**
  * @fileoverview Zippy widget implementation.
  *
-*
  * @see ../demos/zippy.html
  */
 
@@ -30,6 +29,7 @@ goog.require('goog.events.EventTarget');
 goog.require('goog.events.EventType');
 goog.require('goog.events.KeyCodes');
 goog.require('goog.style');
+
 
 
 /**
@@ -48,25 +48,34 @@ goog.require('goog.style');
  *     false.
  * @param {Element|string=} opt_expandedHeader Element to use as the header when
  *     the zippy is expanded.
+ * @param {goog.dom.DomHelper=} opt_domHelper An optional DOM helper.
  * @constructor
  */
 goog.ui.Zippy = function(header, opt_content, opt_expanded,
-    opt_expandedHeader) {
+    opt_expandedHeader, opt_domHelper) {
   goog.events.EventTarget.call(this);
+
+  /**
+   * DomHelper used to interact with the document, allowing components to be
+   * created in a different window.
+   * @type {!goog.dom.DomHelper}
+   * @private
+   */
+  this.dom_ = opt_domHelper || goog.dom.getDomHelper();
 
   /**
    * Header element or null if no header exists.
    * @type {Element}
    * @private
    */
-  this.elHeader_ = goog.dom.getElement(header) || null;
+  this.elHeader_ = this.dom_.getElement(header) || null;
 
   /**
    * When present, the header to use when the zippy is expanded.
    * @type {Element}
    * @private
    */
-  this.elExpandedHeader_ = goog.dom.getElement(opt_expandedHeader || null);
+  this.elExpandedHeader_ = this.dom_.getElement(opt_expandedHeader || null);
 
   /**
    * Function that will create the content element, or false if there is no such
@@ -82,7 +91,7 @@ goog.ui.Zippy = function(header, opt_content, opt_expanded,
    * @private
    */
   this.elContent_ = this.lazyCreateFunc_ || !opt_content ? null :
-      goog.dom.getElement(/** @type {Element} */ (opt_content));
+      this.dom_.getElement(/** @type {Element} */ (opt_content));
 
   /**
    * Expanded state.
@@ -120,6 +129,7 @@ goog.ui.Zippy.Events = {
   TOGGLE: 'toggle'
 };
 
+
 /**
  * Destroys widget and removes all event listeners.
  */
@@ -132,6 +142,7 @@ goog.ui.Zippy.prototype.disposeInternal = function() {
   }
   goog.ui.Zippy.superClass_.disposeInternal.call(this);
 };
+
 
 /**
  * Expands content pane.
@@ -205,9 +216,9 @@ goog.ui.Zippy.prototype.isExpanded = function() {
 goog.ui.Zippy.prototype.updateHeaderClassName_ = function(expanded) {
   if (this.elHeader_) {
     goog.dom.classes.enable(this.elHeader_,
-        goog.getCssName('goog-zippy-expanded'), expanded)
+        goog.getCssName('goog-zippy-expanded'), expanded);
     goog.dom.classes.enable(this.elHeader_,
-        goog.getCssName('goog-zippy-collapsed'), !expanded)
+        goog.getCssName('goog-zippy-collapsed'), !expanded);
   }
 };
 

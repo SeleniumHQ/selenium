@@ -26,6 +26,7 @@ goog.require('goog.iter.Iterator');
 goog.require('goog.iter.StopIteration');
 
 
+
 /**
  * Iterator over a Node's siblings.
  * @param {Node} node The node to start with.
@@ -69,6 +70,7 @@ goog.dom.iter.SiblingIterator.prototype.next = function() {
 };
 
 
+
 /**
  * Iterator over an Element's children.
  * @param {Element} element The element to iterate over.
@@ -87,6 +89,7 @@ goog.dom.iter.ChildIterator = function(element, opt_reverse, opt_startIndex) {
       true, opt_reverse);
 };
 goog.inherits(goog.dom.iter.ChildIterator, goog.dom.iter.SiblingIterator);
+
 
 
 /**

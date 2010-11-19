@@ -22,8 +22,8 @@
  * Please contact i18n team or change the script and regenerate data.
  * Code location: http://go/cldr_scripts:generate_countries
  *
-*
  */
+
 
 /**
  * Namespace for current country codes.

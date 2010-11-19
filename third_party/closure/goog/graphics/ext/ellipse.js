@@ -24,6 +24,7 @@ goog.provide('goog.graphics.ext.Ellipse');
 goog.require('goog.graphics.ext.StrokeAndFillElement');
 
 
+
 /**
  * Wrapper for a graphics ellipse element.
  * @param {goog.graphics.ext.Group} group Parent for this element.

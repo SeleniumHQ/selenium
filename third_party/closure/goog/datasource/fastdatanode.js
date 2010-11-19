@@ -33,7 +33,6 @@
  * FastDataNodes can be constructed from JSON-like objects via the function
  * goog.ds.FastDataNode.fromJs.
 
-*
  */
 
 goog.provide('goog.ds.AbstractFastDataNode');
@@ -104,6 +103,7 @@ goog.ds.AbstractFastDataNode.prototype.getDataPath = function() {
   }
   return parentPath + this.getDataName();
 };
+
 
 
 /**
@@ -309,6 +309,7 @@ goog.ds.FastDataNode.prototype.clone = function() {
  * Implementation of goog.ds.DataNodeList for FastDataNode.
  */
 
+
 /**
  * Adds a child to this data node.
  * @param {goog.ds.DataNode} value Child node to add.
@@ -392,6 +393,7 @@ goog.ds.FastDataNode.prototype.removeNode = function(name) {
   delete this[name];
   return false;
 };
+
 
 
 /**
@@ -672,6 +674,7 @@ goog.ds.FastListNode.prototype.getJsObject = function() {
 /*
  * Implementation of goog.ds.DataNodeList for FastListNode.
  */
+
 
 /**
  * Adds a child to this data node

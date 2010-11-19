@@ -15,12 +15,12 @@
 /**
  * @fileoverview A toolbar menu button renderer.
  *
-*
  */
 
 goog.provide('goog.ui.ToolbarMenuButtonRenderer');
 
 goog.require('goog.ui.MenuButtonRenderer');
+
 
 
 /**

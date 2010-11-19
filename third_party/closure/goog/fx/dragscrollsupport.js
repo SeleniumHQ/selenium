@@ -15,8 +15,6 @@
 /**
  * @fileoverview Class to support scrollable containers for drag and drop.
  *
-*
-*
  */
 
 goog.provide('goog.fx.DragScrollSupport');
@@ -28,6 +26,7 @@ goog.require('goog.events.EventHandler');
 goog.require('goog.events.EventType');
 goog.require('goog.math.Coordinate');
 goog.require('goog.style');
+
 
 
 /**
@@ -168,7 +167,7 @@ goog.fx.DragScrollSupport.prototype.constrainBounds_ = function(bounds) {
   var verticalMargin = this.verticalMargin_;
   if (verticalMargin) {
     verticalMargin = verticalMargin > quarterHeight ?
-          quarterHeight : verticalMargin;
+        quarterHeight : verticalMargin;
     bounds.top += verticalMargin;
     bounds.height -= 2 * verticalMargin;
   }
@@ -185,7 +184,7 @@ goog.fx.DragScrollSupport.prototype.constrainBounds_ = function(bounds) {
 goog.fx.DragScrollSupport.prototype.setupListeners_ = function(
     externalMouseMoveTracking) {
   if (!externalMouseMoveTracking) {
-  // Track mouse pointer position to determine scroll direction.
+    // Track mouse pointer position to determine scroll direction.
     this.eventHandler_.listen(goog.dom.getOwnerDocument(this.containerNode_),
         goog.events.EventType.MOUSEMOVE, this.onMouseMove);
   }

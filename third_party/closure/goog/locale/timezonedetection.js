@@ -16,7 +16,6 @@
  * @fileoverview Functions for detecting user's time zone.
  * This work is based on Charlie Luo and Hong Yan's time zone detection work
  * for CBG.
-*
  */
 goog.provide('goog.locale.timeZoneDetection');
 
@@ -33,6 +32,7 @@ goog.locale.timeZoneDetection.TZ_POKE_POINTS_ = [
   1109635200, 1128902400, 1130657000, 1143333000, 1143806400, 1145000000,
   1146380000, 1152489600, 1159800000, 1159500000, 1162095000, 1162075000,
   1162105500];
+
 
 /**
  * Calculates time zone fingerprint by poking time zone offsets for 13
@@ -58,6 +58,7 @@ goog.locale.timeZoneDetection.getFingerprint = function(date) {
   }
   return isComplex ? hash : /** @type {number} */ (stdOffset);
 };
+
 
 /**
  * Detects browser's time zone setting. If user's country is known, a better
@@ -86,6 +87,7 @@ goog.locale.timeZoneDetection.detectTimeZone = function(opt_country, opt_date) {
   }
   return '';
 };
+
 
 /**
  * Returns an array of time zones that are consistent with user's platform

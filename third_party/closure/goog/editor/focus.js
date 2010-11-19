@@ -15,7 +15,6 @@
 /**
  * @fileoverview Utilties to handle focusing related to rich text editing.
  *
-*
  */
 
 goog.provide('goog.editor.focus');

@@ -15,7 +15,7 @@
 /**
  * @fileoverview Detects the Adobe Reader PDF browser plugin.
  *
-*
+ * @author chrisn@google.com (Chris Nokleberg)
  * @see ../demos/useragent.html
  */
 
@@ -43,7 +43,7 @@ goog.require('goog.userAgent');
     } else if (detectOnIe('PDF.PdfCtrl.6')) {
       version = '6';
     }
-    // TODO(user): Add detection for previous versions if anyone needs them.
+    // TODO(chrisn): Add detection for previous versions if anyone needs them.
   } else {
     if (navigator.mimeTypes && navigator.mimeTypes.length > 0) {
       var mimeType = navigator.mimeTypes['application/pdf'];

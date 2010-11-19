@@ -15,13 +15,13 @@
 
 /**
  * @fileoverview A thin wrapper around the DOM element for images.
-*
  */
 
 
 goog.provide('goog.graphics.ImageElement');
 
 goog.require('goog.graphics.Element');
+
 
 
 /**

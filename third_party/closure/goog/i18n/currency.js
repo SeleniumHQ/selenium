@@ -29,7 +29,6 @@
  * area (like CNY in HK, though native currency is HKD). There is no guarantee
  * of uniqueness.
  *
-*
  */
 
 
@@ -210,6 +209,7 @@ goog.i18n.currency.getCurrencyPattern_ = function(patternNum, sign) {
   }
   return strParts.join('');
 };
+
 
 /**
  * Tier 1 currency information.

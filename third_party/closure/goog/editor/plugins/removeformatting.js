@@ -16,8 +16,6 @@
 /**
  * @fileoverview Plugin to handle Remove Formatting.
  *
-*
-*
  */
 
 goog.provide('goog.editor.plugins.RemoveFormatting');
@@ -31,6 +29,7 @@ goog.require('goog.editor.Plugin');
 goog.require('goog.editor.node');
 goog.require('goog.editor.range');
 goog.require('goog.string');
+
 
 
 /**
@@ -121,9 +120,7 @@ goog.editor.plugins.RemoveFormatting.prototype.execCommandInternal =
 };
 
 
-/**
- * @inheritDoc
- */
+/** @inheritDoc */
 goog.editor.plugins.RemoveFormatting.prototype.handleKeyboardShortcut =
     function(e, key, isModifierPressed) {
   if (!isModifierPressed) {
@@ -137,7 +134,7 @@ goog.editor.plugins.RemoveFormatting.prototype.handleKeyboardShortcut =
   }
 
   return false;
-}
+};
 
 
 /**
@@ -567,10 +564,12 @@ goog.editor.plugins.RemoveFormatting.prototype.convertSelectedHtmlText_ =
 /**
  * Does a best-effort attempt at clobbering all formatting that the
  * browser's execCommand couldn't clobber without being totally inefficient.
- * Attempts to convert visual line breaks to BRs.
+ * Attempts to convert visual line breaks to BRs. Leaves anchors that contain an
+ * href and images.
  * Adapted from Gmail's MessageUtil's htmlToPlainText. http://go/messageutil.js
  * @param {string} html The original html of the message.
- * @return {string} The unformatted html, which is just text and br's.
+ * @return {string} The unformatted html, which is just text, br's, anchors and
+ *     images.
  * @private
  */
 goog.editor.plugins.RemoveFormatting.prototype.removeFormattingWorker_ =
@@ -684,7 +683,14 @@ goog.editor.plugins.RemoveFormatting.prototype.removeFormattingWorker_ =
         case goog.dom.TagName.IMG:
           sb.push("<img src='");
           sb.push(node.src);
-          sb.push("'>");
+          sb.push("'");
+          // border=0 is a common way to not show a blue border around an image
+          // that is wrapped by a link. If we remove that, the blue border will
+          // show up, which to the user looks like adding format, not removing.
+          if (node.border == '0') {
+            sb.push(" border='0'");
+          }
+          sb.push('>');
           continue;
 
         case goog.dom.TagName.TD:

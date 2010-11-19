@@ -38,8 +38,6 @@
  * subclasses goog.ui.media.FlashObject to provide all the goodness of
  * http://go/browserinterface.as
  *
-*
-*
  */
 
 goog.provide('goog.ui.media.FlashObject');
@@ -56,6 +54,7 @@ goog.require('goog.ui.Component');
 goog.require('goog.ui.Component.Error');
 goog.require('goog.userAgent');
 goog.require('goog.userAgent.flash');
+
 
 
 /**
@@ -140,6 +139,7 @@ goog.ui.media.FlashObject.Wmodes = {
   WINDOW: 'window'
 };
 
+
 /**
  * The different levels of allowScriptAccess.
  *
@@ -165,6 +165,7 @@ goog.ui.media.FlashObject.ScriptAccessLevel = {
    */
   NEVER: 'never'
 };
+
 
 /**
  * The component CSS namespace.

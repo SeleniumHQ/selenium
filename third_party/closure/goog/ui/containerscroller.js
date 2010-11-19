@@ -14,7 +14,6 @@
 
 /**
  * @fileoverview Scroll behavior that can be added onto a container.
-*
  */
 
 goog.provide('goog.ui.ContainerScroller');
@@ -25,6 +24,7 @@ goog.require('goog.style');
 goog.require('goog.ui.Component');
 goog.require('goog.ui.Component.EventType');
 goog.require('goog.ui.Container.EventType');
+
 
 
 /**

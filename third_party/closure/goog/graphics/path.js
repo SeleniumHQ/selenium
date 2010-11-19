@@ -15,15 +15,14 @@
 
 /**
  * @fileoverview Represents a path used with a Graphics implementation.
-*
-*
  */
 
 goog.provide('goog.graphics.Path');
 goog.provide('goog.graphics.Path.Segment');
 
-goog.require('goog.array')
+goog.require('goog.array');
 goog.require('goog.math');
+
 
 
 /**
@@ -191,7 +190,7 @@ goog.graphics.Path.prototype.moveTo = function(x, y) {
 goog.graphics.Path.prototype.lineTo = function(var_args) {
   var lastSegment = goog.array.peek(this.segments_);
   if (lastSegment == null) {
-    throw Error('Path cannot start with lineTo')
+    throw Error('Path cannot start with lineTo');
   }
   if (lastSegment != goog.graphics.Path.Segment.LINETO) {
     this.segments_.push(goog.graphics.Path.Segment.LINETO);
@@ -221,7 +220,7 @@ goog.graphics.Path.prototype.lineTo = function(var_args) {
 goog.graphics.Path.prototype.curveTo = function(var_args) {
   var lastSegment = goog.array.peek(this.segments_);
   if (lastSegment == null) {
-    throw Error('Path cannot start with curve')
+    throw Error('Path cannot start with curve');
   }
   if (lastSegment != goog.graphics.Path.Segment.CURVETO) {
     this.segments_.push(goog.graphics.Path.Segment.CURVETO);
@@ -248,7 +247,7 @@ goog.graphics.Path.prototype.curveTo = function(var_args) {
 goog.graphics.Path.prototype.close = function() {
   var lastSegment = goog.array.peek(this.segments_);
   if (lastSegment == null) {
-    throw Error('Path cannot start with close')
+    throw Error('Path cannot start with close');
   }
   if (lastSegment != goog.graphics.Path.Segment.CLOSE) {
     this.segments_.push(goog.graphics.Path.Segment.CLOSE);
@@ -343,19 +342,19 @@ goog.graphics.Path.prototype.arcToAsCurves = function(
   var inc = extentRad / arcSegs;
   var angle = goog.math.toRadians(fromAngle);
   for (var j = 0; j < arcSegs; j++) {
-      var relX = Math.cos(angle);
-      var relY = Math.sin(angle);
-      var z = 4 / 3 * Math.sin(inc / 2) / (1 + Math.cos(inc / 2));
-      var c0 = cx + (relX - z * relY) * rx;
-      var c1 = cy + (relY + z * relX) * ry;
-      angle += inc;
-      relX = Math.cos(angle);
-      relY = Math.sin(angle);
-      this.curveTo(c0, c1,
-          cx + (relX + z * relY) * rx,
-          cy + (relY - z * relX) * ry,
-          cx + relX * rx,
-          cy + relY * ry);
+    var relX = Math.cos(angle);
+    var relY = Math.sin(angle);
+    var z = 4 / 3 * Math.sin(inc / 2) / (1 + Math.cos(inc / 2));
+    var c0 = cx + (relX - z * relY) * rx;
+    var c1 = cy + (relY + z * relX) * ry;
+    angle += inc;
+    relX = Math.cos(angle);
+    relY = Math.sin(angle);
+    this.curveTo(c0, c1,
+        cx + (relX + z * relY) * rx,
+        cy + (relY - z * relX) * ry,
+        cx + relX * rx,
+        cy + relY * ry);
   }
   return this;
 };
@@ -463,7 +462,7 @@ goog.graphics.Path.createSimplifiedPath = function(src) {
 };
 
 
-// TODO(user): Delete this method
+// TODO(chrisn): Delete this method
 /**
  * Creates a transformed copy of this path. The path is simplified
  * {@see #createSimplifiedPath} prior to transformation.

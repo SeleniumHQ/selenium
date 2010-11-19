@@ -14,7 +14,6 @@
 
 /**
  * @fileoverview Names of standard colors with their associated hex values.
-*
  */
 
 goog.provide('goog.color.names');

@@ -17,7 +17,6 @@
  * less general than goog.ui.ColorPicker and presents a default set of colors
  * that CCC apps currently use in their color pickers.
  *
-*
  * @see ../demos/popupcolorpicker.html
  */
 
@@ -31,6 +30,7 @@ goog.require('goog.ui.ColorPicker');
 goog.require('goog.ui.ColorPicker.EventType');
 goog.require('goog.ui.Component');
 goog.require('goog.ui.Popup');
+
 
 
 /**

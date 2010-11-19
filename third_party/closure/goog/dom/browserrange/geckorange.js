@@ -27,6 +27,7 @@ goog.provide('goog.dom.browserrange.GeckoRange');
 goog.require('goog.dom.browserrange.W3cRange');
 
 
+
 /**
  * The constructor for Gecko specific browser ranges.
  * @param {Range} range The range object.

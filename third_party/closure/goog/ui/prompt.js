@@ -15,7 +15,6 @@
 /**
  * @fileoverview DHTML prompt to replace javascript's prompt().
  *
-*
  * @see ../demos/prompt.html
  */
 
@@ -31,6 +30,8 @@ goog.require('goog.ui.Dialog.ButtonSet');
 goog.require('goog.ui.Dialog.DefaultButtonKeys');
 goog.require('goog.ui.Dialog.EventType');
 goog.require('goog.userAgent');
+
+
 
 /**
  * Creates an object that represents a prompt (used in place of javascript's

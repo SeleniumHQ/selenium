@@ -16,7 +16,7 @@
  * @fileoverview Utilities for working with IE control ranges.
  *
  * @author robbyw@google.com (Robby Walker)
-*
+ * @author jparent@google.com (Julie Parent)
  */
 
 
@@ -34,6 +34,7 @@ goog.require('goog.dom.TagWalkType');
 goog.require('goog.dom.TextRange');
 goog.require('goog.iter.StopIteration');
 goog.require('goog.userAgent');
+
 
 
 /**
@@ -345,6 +346,7 @@ goog.dom.ControlRange.prototype.collapse = function(toAnchor) {
 // SAVED RANGE OBJECTS
 
 
+
 /**
  * A SavedRange implementation using DOM endpoints.
  * @param {goog.dom.ControlRange} range The range to save.
@@ -385,6 +387,7 @@ goog.dom.DomSavedControlRange_.prototype.disposeInternal = function() {
 
 
 // RANGE ITERATION
+
 
 
 /**

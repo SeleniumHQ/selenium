@@ -24,6 +24,8 @@ goog.require('goog.dom.NodeType');
 goog.require('goog.dom.pattern.AbstractPattern');
 goog.require('goog.dom.pattern.MatchType');
 
+
+
 /**
  * Pattern object that matches a repetition of another pattern.
  * @param {goog.dom.pattern.AbstractPattern} pattern The pattern to
@@ -36,8 +38,8 @@ goog.require('goog.dom.pattern.MatchType');
  * @extends {goog.dom.pattern.AbstractPattern}
  */
 goog.dom.pattern.Repeat = function(pattern,
-                                    opt_minimum,
-                                    opt_maximum) {
+                                   opt_minimum,
+                                   opt_maximum) {
   this.pattern_ = pattern;
   this.minimum_ = opt_minimum || 0;
   this.maximum_ = opt_maximum || null;
@@ -109,6 +111,7 @@ goog.dom.pattern.Repeat.prototype.matches;
  *     matches, <code>BACKTRACK_MATCH</code> if the pattern does not match
  *     but already had accumulated matches, <code>MATCHING</code> if the pattern
  *     starts a match, and <code>NO_MATCH</code> if the pattern does not match.
+ * @suppress {missingProperties} See the broken line below.
  */
 goog.dom.pattern.Repeat.prototype.matchToken = function(token, type) {
   // Reset if we're starting a new match
@@ -152,6 +155,9 @@ goog.dom.pattern.Repeat.prototype.matchToken = function(token, type) {
       // TODO(robbyw): Backtrack further if necessary.
       this.count++;
 
+      // NOTE(nicksantos): This line of code is broken. this.patterns_ doesn't
+      // exist, and this.currentPosition_ doesn't exit. When this is fixed,
+      // remove the missingProperties suppression above.
       if (this.currentPosition_ == this.patterns_.length) {
         this.needsReset_ = true;
         return goog.dom.pattern.MatchType.BACKTRACK_MATCH;

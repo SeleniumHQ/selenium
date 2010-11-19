@@ -16,13 +16,13 @@
  * @fileoverview MockUserAgent overrides goog.userAgent.getUserAgentString()
  *     depending on a specified configuration.
  *
-*
  */
 
 goog.provide('goog.testing.MockUserAgent');
 
 goog.require('goog.Disposable');
 goog.require('goog.userAgent');
+
 
 
 /**

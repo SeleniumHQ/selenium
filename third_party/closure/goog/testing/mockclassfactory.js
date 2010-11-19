@@ -33,7 +33,6 @@
  *
  * For examples, please see the unit test.
  *
-*
  */
 
 
@@ -46,6 +45,7 @@ goog.require('goog.testing.LooseMock');
 goog.require('goog.testing.StrictMock');
 goog.require('goog.testing.TestCase');
 goog.require('goog.testing.mockmatchers');
+
 
 
 /**
@@ -204,6 +204,7 @@ goog.testing.MockClassRecord.prototype.reset = function() {
 };
 
 
+
 /**
  * A factory used to create new mock class instances.  It is able to generate
  * both static and loose mocks.  The MockClassFactory is a singleton since it
@@ -283,7 +284,6 @@ goog.testing.MockClassFactory.prototype.getClassName_ = function(namespace,
 goog.testing.MockClassFactory.prototype.classHasMock_ = function(className) {
   return !!this.mockClassRecords_[className];
 };
-
 
 
 /**
@@ -518,7 +518,7 @@ goog.testing.MockClassFactory.prototype.getStaticMock_ = function(namespace,
           isStrict);
       return mock;
     } else {
-      var mock = this.mockClassRecords_[className].getStaticMock()
+      var mock = this.mockClassRecords_[className].getStaticMock();
       var mockIsStrict = mock instanceof goog.testing.StrictMock;
 
       if (mockIsStrict != isStrict) {

@@ -14,7 +14,6 @@
 
 /**
  * @fileoverview Flash detection.
-*
  * @see ../demos/useragent.html
  */
 

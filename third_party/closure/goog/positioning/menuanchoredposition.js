@@ -16,8 +16,6 @@
  * @fileoverview Anchored viewport positioning class with both adjust and
  *     resize options for the popup.
  *
-*
-*
  */
 
 goog.provide('goog.positioning.MenuAnchoredPosition');
@@ -28,6 +26,7 @@ goog.require('goog.positioning');
 goog.require('goog.positioning.AnchoredViewportPosition');
 goog.require('goog.positioning.Corner');
 goog.require('goog.positioning.Overflow');
+
 
 
 /**

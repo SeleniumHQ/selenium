@@ -16,7 +16,6 @@
  * @fileoverview An enum that contains the possible status type's of the Gears
  * feature of an application.
  *
-*
  */
 
 goog.provide('goog.gears.StatusType');

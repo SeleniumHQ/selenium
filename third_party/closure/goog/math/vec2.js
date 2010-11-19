@@ -15,9 +15,12 @@
 /**
  * @fileoverview Defines a 2-element vector class that can be used for
  * coordinate math, useful for animation systems and point manipulation.
-*
+ *
+ * Vec2 objects inherit from goog.math.Coordinate and may be used wherever a
+ * Coordinate is required. Where appropriate, Vec2 functions accept both Vec2
+ * and Coordinate objects as input.
+ *
  */
-
 
 goog.provide('goog.math.Vec2');
 
@@ -25,12 +28,10 @@ goog.require('goog.math');
 goog.require('goog.math.Coordinate');
 
 
+
 /**
  * Class for a two-dimensional vector object and assorted functions useful for
  * manipulating points.
- *
- * Inherits from goog.math.Coordinate so that a Vec2 may be passed in to any
- * function that requires a Coordinate.
  *
  * @param {number=} opt_x The x coordinate for the vector.
  * @param {number=} opt_y The y coordinate for the vector.
@@ -146,7 +147,7 @@ goog.math.Vec2.prototype.normalize = function() {
 /**
  * Adds another vector to this vector in-place. Uses goog.math.Vec2.sum(a, b) to
  * return a new vector.
- * @param {!goog.math.Vec2} b The vector to add.
+ * @param {!goog.math.Coordinate} b The vector to add.
  * @return {!goog.math.Vec2}  This vector with {@code b} added.
  */
 goog.math.Vec2.prototype.add = function(b) {
@@ -159,7 +160,7 @@ goog.math.Vec2.prototype.add = function(b) {
 /**
  * Subtracts another vector from this vector in-place. Uses
  * goog.math.Vec2.difference(a, b) to return a new vector.
- * @param {!goog.math.Vec2} b The vector to subtract.
+ * @param {!goog.math.Coordinate} b The vector to subtract.
  * @return {!goog.math.Vec2} This vector with {@code b} subtracted.
  */
 goog.math.Vec2.prototype.subtract = function(b) {
@@ -172,7 +173,7 @@ goog.math.Vec2.prototype.subtract = function(b) {
 /**
  * Compares this vector with another for equality.
  * @param {!goog.math.Vec2} b The other vector.
- * @return {boolean} True if this vector has the same x and y as the given
+ * @return {boolean} Whether this vector has the same x and y as the given
  *     vector.
  */
 goog.math.Vec2.prototype.equals = function(b) {
@@ -182,8 +183,8 @@ goog.math.Vec2.prototype.equals = function(b) {
 
 /**
  * Returns the distance between two vectors.
- * @param {!goog.math.Vec2} a The first vector.
- * @param {!goog.math.Vec2} b The second vector.
+ * @param {!goog.math.Coordinate} a The first vector.
+ * @param {!goog.math.Coordinate} b The second vector.
  * @return {number} The distance.
  */
 goog.math.Vec2.distance = goog.math.Coordinate.distance;
@@ -191,8 +192,8 @@ goog.math.Vec2.distance = goog.math.Coordinate.distance;
 
 /**
  * Returns the squared distance between two vectors.
- * @param {!goog.math.Vec2} a The first vector.
- * @param {!goog.math.Vec2} b The second vector.
+ * @param {!goog.math.Coordinate} a The first vector.
+ * @param {!goog.math.Coordinate} b The second vector.
  * @return {number} The squared distance.
  */
 goog.math.Vec2.squaredDistance = goog.math.Coordinate.squaredDistance;
@@ -200,17 +201,17 @@ goog.math.Vec2.squaredDistance = goog.math.Coordinate.squaredDistance;
 
 /**
  * Compares vectors for equality.
- * @param {!goog.math.Vec2} a The first vector.
- * @param {!goog.math.Vec2} b The second vector.
- * @return {boolean} True if the vectors have the same x and the same y.
+ * @param {!goog.math.Coordinate} a The first vector.
+ * @param {!goog.math.Coordinate} b The second vector.
+ * @return {boolean} Whether the vectors have the same x and y coordinates.
  */
 goog.math.Vec2.equals = goog.math.Coordinate.equals;
 
 
 /**
  * Returns the sum of two vectors as a new Vec2.
- * @param {!goog.math.Vec2} a The first vector.
- * @param {!goog.math.Vec2} b The second vector.
+ * @param {!goog.math.Coordinate} a The first vector.
+ * @param {!goog.math.Coordinate} b The second vector.
  * @return {!goog.math.Vec2} The sum vector.
  */
 goog.math.Vec2.sum = function(a, b) {
@@ -220,8 +221,8 @@ goog.math.Vec2.sum = function(a, b) {
 
 /**
  * Returns the difference between two vectors as a new Vec2.
- * @param {!goog.math.Vec2} a The first vector.
- * @param {!goog.math.Vec2} b The second vector.
+ * @param {!goog.math.Coordinate} a The first vector.
+ * @param {!goog.math.Coordinate} b The second vector.
  * @return {!goog.math.Vec2} The difference vector.
  */
 goog.math.Vec2.difference = function(a, b) {
@@ -231,8 +232,8 @@ goog.math.Vec2.difference = function(a, b) {
 
 /**
  * Returns the dot-product of two vectors.
- * @param {!goog.math.Vec2} a The first vector.
- * @param {!goog.math.Vec2} b The second vector.
+ * @param {!goog.math.Coordinate} a The first vector.
+ * @param {!goog.math.Coordinate} b The second vector.
  * @return {number} The dot-product of the two vectors.
  */
 goog.math.Vec2.dot = function(a, b) {
@@ -243,8 +244,8 @@ goog.math.Vec2.dot = function(a, b) {
 /**
  * Returns a new Vec2 that is the linear interpolant between vectors a and b at
  * scale-value x.
- * @param {!goog.math.Vec2} a Vector a.
- * @param {!goog.math.Vec2} b Vector b.
+ * @param {!goog.math.Coordinate} a Vector a.
+ * @param {!goog.math.Coordinate} b Vector b.
  * @param {number} x The proportion between a and b.
  * @return {!goog.math.Vec2} The interpolated vector.
  */

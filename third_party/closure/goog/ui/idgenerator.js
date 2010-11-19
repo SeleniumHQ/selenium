@@ -15,10 +15,10 @@
 /**
  * @fileoverview Generator for unique element IDs.
  *
-*
  */
 
 goog.provide('goog.ui.IdGenerator');
+
 
 
 /**
@@ -28,6 +28,7 @@ goog.provide('goog.ui.IdGenerator');
 goog.ui.IdGenerator = function() {
 };
 goog.addSingletonGetter(goog.ui.IdGenerator);
+
 
 /**
  * Next unique ID to use
@@ -44,6 +45,7 @@ goog.ui.IdGenerator.prototype.nextId_ = 0;
 goog.ui.IdGenerator.prototype.getNextUniqueId = function() {
   return ':' + (this.nextId_++).toString(36);
 };
+
 
 /**
  * Default instance for id generation. Done as an instance instead of statics

@@ -15,11 +15,11 @@
 /**
  * @fileoverview Class that can be used to determine when multiple iframes have
  * been loaded. Refactored from static APIs in IframeLoadMonitor.
-*
  */
 goog.provide('goog.net.MultiIframeLoadMonitor');
 
 goog.require('goog.net.IframeLoadMonitor');
+
 
 
 /**

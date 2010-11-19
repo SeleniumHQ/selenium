@@ -17,7 +17,6 @@
  * size of the resulting jsbinary for this sample file is tracked using
  * Greenspan (http://go/greenspan).
  *
-*
  */
 
 goog.require('goog.array');

@@ -15,13 +15,13 @@
 /**
  * @fileoverview A base class for event objects.
  *
-*
  */
 
 
 goog.provide('goog.events.Event');
 
 goog.require('goog.Disposable');
+
 
 
 /**
@@ -70,7 +70,8 @@ goog.events.Event.prototype.disposeInternal = function() {
 /**
  * Whether to cancel the event in internal capture/bubble processing for IE.
  * @type {boolean}
- * @private
+ * @suppress {underscore} Technically public, but referencing this outside
+ *     this package is strongly discouraged.
  */
 goog.events.Event.prototype.propagationStopped_ = false;
 
@@ -78,7 +79,8 @@ goog.events.Event.prototype.propagationStopped_ = false;
 /**
  * Return value for in internal capture/bubble processing for IE.
  * @type {boolean}
- * @private
+ * @suppress {underscore} Technically public, but referencing this outside
+ *     this package is strongly discouraged.
  */
 goog.events.Event.prototype.returnValue_ = true;
 

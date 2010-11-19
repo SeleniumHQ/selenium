@@ -17,14 +17,14 @@
  *
  * {@see goog.testing.benchmark} for an easy way to use this functionality.
  *
-*
- * @author nicksantos@google.com (Nick Santos)
  */
 
 goog.provide('goog.testing.PerformanceTable');
 
 goog.require('goog.dom');
 goog.require('goog.testing.PerformanceTimer');
+
+
 
 /**
  * A UI widget that runs performance tests and displays the results.

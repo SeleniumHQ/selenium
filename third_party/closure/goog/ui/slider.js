@@ -29,7 +29,6 @@
  * var slider = new goog.ui.Slider;
  * slider.decorate(document.getElementById('slider'));
  *
-*
  * @see ../demos/slider.html
  */
 
@@ -45,6 +44,7 @@ goog.require('goog.dom.a11y');
 goog.require('goog.dom.a11y.Role');
 goog.require('goog.ui.SliderBase');
 goog.require('goog.ui.SliderBase.Orientation');
+
 
 
 /**

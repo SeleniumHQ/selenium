@@ -17,7 +17,6 @@
  *
  * {@see goog.testing.benchmark} for an easy way to use this functionality.
  *
-*
  */
 
 goog.provide('goog.testing.PerformanceTimer');

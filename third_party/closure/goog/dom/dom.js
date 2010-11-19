@@ -20,8 +20,6 @@
  * to a different document object.  This is useful if you are working with
  * frames or multiple windows.
  *
-*
-*
  */
 
 
@@ -35,6 +33,7 @@ goog.provide('goog.dom.DomHelper');
 goog.provide('goog.dom.NodeType');
 
 goog.require('goog.array');
+goog.require('goog.dom.BrowserFeature');
 goog.require('goog.dom.TagName');
 goog.require('goog.dom.classes');
 goog.require('goog.math.Coordinate');
@@ -184,7 +183,7 @@ goog.dom.getElementsByClass = function(className, opt_el) {
 
 
 /**
- * Returns an array of all the elements with the provided className.
+ * Returns the first element with the provided className.
  * @see {goog.dom.query}
  * @param {!string} className the name of the class to look for.
  * @param {Element|Document=} opt_el Optional element to look in.
@@ -462,6 +461,7 @@ goog.dom.getDocumentHeight = function() {
   return goog.dom.getDocumentHeight_(window);
 };
 
+
 /**
  * Calculates the height of the document of the given window.
  *
@@ -627,9 +627,10 @@ goog.dom.getWindow_ = function(doc) {
  * would return a div with two child paragraphs
  *
  * @param {string} tagName Tag to create.
- * @param {Object|string=} opt_attributes If object, then a map of name-value
- *     pairs for attributes. If a string, then this is the className of the new
- *     element.
+ * @param {Object|Array.<string>|string=} opt_attributes If object, then a map
+ *     of name-value pairs for attributes. If a string, then this is the
+ *     className of the new element. If an array, the elements will be joined
+ *     together as the className of the new element.
  * @param {...Object|string|Array|NodeList} var_args Further DOM nodes or
  *     strings for text nodes. If one of the var_args is an array or NodeList,i
  *     its elements will be added as childNodes instead.
@@ -638,6 +639,7 @@ goog.dom.getWindow_ = function(doc) {
 goog.dom.createDom = function(tagName, opt_attributes, var_args) {
   return goog.dom.createDom_(document, arguments);
 };
+
 
 /**
  * Helper for {@code createDom}.
@@ -654,7 +656,8 @@ goog.dom.createDom_ = function(doc, args) {
   // Internet Explorer is dumb: http://msdn.microsoft.com/workshop/author/
   //                            dhtml/reference/properties/name_2.asp
   // Also does not allow setting of 'type' attribute on 'input' or 'button'.
-  if (goog.userAgent.IE && attributes && (attributes.name || attributes.type)) {
+  if (!goog.dom.BrowserFeature.CAN_ADD_NAME_OR_TYPE_ATTRIBUTES && attributes &&
+      (attributes.name || attributes.type)) {
     var tagNameArr = ['<', tagName];
     if (attributes.name) {
       tagNameArr.push(' name="', goog.string.htmlEscape(attributes.name),
@@ -679,6 +682,8 @@ goog.dom.createDom_ = function(doc, args) {
   if (attributes) {
     if (goog.isString(attributes)) {
       element.className = attributes;
+    } else if (goog.isArray(attributes)) {
+      goog.dom.classes.add.apply(null, [element].concat(attributes));
     } else {
       goog.dom.setProperties(element, attributes);
     }
@@ -821,7 +826,12 @@ goog.dom.htmlToDocumentFragment = function(htmlString) {
  */
 goog.dom.htmlToDocumentFragment_ = function(doc, htmlString) {
   var tempDiv = doc.createElement('div');
-  tempDiv.innerHTML = htmlString;
+  if (goog.dom.BrowserFeature.INNER_HTML_NEEDS_SCOPED_ELEMENT) {
+    tempDiv.innerHTML = '<br>' + htmlString;
+    tempDiv.removeChild(tempDiv.firstChild);
+  } else {
+    tempDiv.innerHTML = htmlString;
+  }
   if (tempDiv.childNodes.length == 1) {
     return /** @type {!Node} */ (tempDiv.removeChild(tempDiv.firstChild));
   } else {
@@ -871,17 +881,32 @@ goog.dom.isCss1CompatMode_ = function(doc) {
 
 
 /**
- * Determines if the given node can contain children.
+ * Determines if the given node can contain children, intended to be used for
+ * HTML generation.
+ *
+ * IE natively supports node.canHaveChildren but has inconsistent behavior.
+ * Prior to IE8 the base tag allows children and in IE9 all nodes return true
+ * for canHaveChildren.
+ *
+ * In practice all non-IE browsers allow you to add children to any node, but
+ * the behavior is inconsistent:
+ *
+ * <pre>
+ *   var a = document.createElement('br');
+ *   a.appendChild(document.createTextNode('foo'));
+ *   a.appendChild(document.createTextNode('bar'));
+ *   console.log(a.childNodes.length);  // 2
+ *   console.log(a.innerHTML);  // Chrome: "", IE9: "foobar", FF3.5: "foobar"
+ * </pre>
+ *
+ * TODO(user): Rename shouldAllowChildren() ?
+ *
  * @param {Node} node The node to check.
  * @return {boolean} Whether the node can contain children.
  */
 goog.dom.canHaveChildren = function(node) {
   if (node.nodeType != goog.dom.NodeType.ELEMENT) {
     return false;
-  }
-  if ('canHaveChildren' in node) {
-    // IE supports this natively.
-    return node.canHaveChildren;
   }
   switch (node.tagName) {
     case goog.dom.TagName.APPLET:
@@ -1507,11 +1532,11 @@ goog.dom.PREDEFINED_TAG_VALUES_ = {'IMG': ' ', 'BR': '\n'};
 /**
  * Returns true if the element has a tab index that allows it to receive
  * keyboard focus (tabIndex >= 0), false otherwise.  Note that form elements
- * natively support keyboard focus, even if they have no tab index.  See
- * http://go/tabindex for more info.
+ * natively support keyboard focus, even if they have no tab index.
  * @param {Element} element Element to check.
  * @return {boolean} Whether the element has a tab index that allows keyboard
  *     focus.
+ * @see http://fluidproject.org/blog/2008/01/09/getting-setting-and-removing-tabindex-values-with-javascript/
  */
 goog.dom.isFocusableTabIndex = function(element) {
   // IE returns 0 for an unset tabIndex, so we must use getAttributeNode(),
@@ -1557,9 +1582,9 @@ goog.dom.setFocusableTabIndex = function(element, enable) {
  */
 goog.dom.getTextContent = function(node) {
   var textContent;
-  // Note(user): Both Opera and Safara 3 supports innerText but they include
+  // Note(user): IE9, Opera, and Safara 3 support innerText but they include
   // text nodes in script tags. So we revert to use a user agent test here.
-  if (goog.userAgent.IE && ('innerText' in node)) {
+  if (goog.dom.BrowserFeature.CAN_USE_INNER_TEXT && ('innerText' in node)) {
     textContent = goog.string.canonicalizeNewlines(node.innerText);
     // Unfortunately .innerText() returns text with &shy; symbols
     // We need to filter it out and then remove duplicate whitespaces
@@ -1570,9 +1595,13 @@ goog.dom.getTextContent = function(node) {
   }
 
   // Strip &shy; entities. goog.format.insertWordBreaks inserts them in Opera.
-  textContent = textContent.replace(/\xAD/g, '');
+  textContent = textContent.replace(/ \xAD /g, ' ').replace(/\xAD/g, '');
 
-  textContent = textContent.replace(/ +/g, ' ');
+  // Skip this replacement on IE, which automatically turns &nbsp; into ' '
+  // and / +/ into ' ' when reading innerText.
+  if (!goog.userAgent.IE) {
+    textContent = textContent.replace(/ +/g, ' ');
+  }
   if (textContent != ' ') {
     textContent = textContent.replace(/^\s*/, '');
   }
@@ -1787,6 +1816,7 @@ goog.dom.getAncestor = function(
 };
 
 
+
 /**
  * Create an instance of a DOM helper with a new document object.
  * @param {Document=} opt_document Document object to associate with this
@@ -1863,7 +1893,7 @@ goog.dom.DomHelper.prototype.$ = goog.dom.DomHelper.prototype.getElement;
  *
  * @param {?string=} opt_tag Element tag name or * for all tags.
  * @param {?string=} opt_class Optional class name.
- * @param {Element=} opt_el Optional element to look in.
+ * @param {Document|Element=} opt_el Optional element to look in.
  * @return { {length: number} } Array-like list of elements (only a length
  *     property and numerical indices are guaranteed to exist).
  */

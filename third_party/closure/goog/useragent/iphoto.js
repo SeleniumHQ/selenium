@@ -16,7 +16,6 @@
  * @fileoverview Newer versions of iPhoto include a Safari plugin which allows
  * the browser to detect if iPhoto is installed. Adapted from detection code
  * built into the Mac.com Gallery RSS feeds.
-*
  * @see ../demos/useragent.html
  */
 

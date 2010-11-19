@@ -18,8 +18,8 @@
  * of {@link goog.ui.MenuItem}.
  * TODO(user):  If the renderer framework works well, pull it into Component.
  *
-*
  * @see ../demos/control.html
+ * @see http://code.google.com/p/closure-library/wiki/IntroToControls
  */
 
 goog.provide('goog.ui.Control');
@@ -42,6 +42,7 @@ goog.require('goog.ui.ControlRenderer');
 goog.require('goog.ui.decorate');
 goog.require('goog.ui.registry');
 goog.require('goog.userAgent');
+
 
 
 /**
@@ -1260,8 +1261,9 @@ goog.ui.Control.prototype.performActionInternal = function(e) {
   var actionEvent = new goog.events.Event(goog.ui.Component.EventType.ACTION,
       this);
   if (e) {
-    var properties = ['altKey', 'ctrlKey', 'metaKey', 'shiftKey',
-        'platformModifierKey'];
+    var properties = [
+      'altKey', 'ctrlKey', 'metaKey', 'shiftKey', 'platformModifierKey'
+    ];
     for (var property, i = 0; property = properties[i]; i++) {
       actionEvent[property] = e[property];
     }

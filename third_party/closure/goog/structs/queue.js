@@ -15,7 +15,6 @@
 /**
  * @fileoverview Datastructure: Queue.
  *
-*
  *
  * This file provides the implementation of a FIFO Queue structure.
  * API is similar to that of com.google.common.collect.IntQueue

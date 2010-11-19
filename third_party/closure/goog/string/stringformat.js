@@ -20,7 +20,6 @@
  * appropriate function to handle the specific conversion.
  * For specific functionality implemented, look at formatRe below, or look
  * at the tests.
-*
  */
 
 goog.provide('goog.string.format');

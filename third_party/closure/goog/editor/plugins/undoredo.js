@@ -16,7 +16,6 @@
 /**
  * @fileoverview Code for handling edit history (undo/redo).
  *
-*
  */
 
 
@@ -34,6 +33,7 @@ goog.require('goog.editor.plugins.UndoRedoManager');
 goog.require('goog.editor.plugins.UndoRedoState');
 goog.require('goog.events');
 goog.require('goog.events.EventHandler');
+
 
 
 /**
@@ -645,6 +645,7 @@ goog.editor.plugins.UndoRedo.prototype.updateCurrentState_ = function(
 };
 
 
+
 /**
  * This object encapsulates the state of an editable field.
  *
@@ -777,6 +778,7 @@ goog.editor.plugins.UndoRedo.UndoState_.prototype.equals = function(rhs) {
       this.undoContent_ == rhs.undoContent_ &&
       this.redoContent_ == rhs.redoContent_;
 };
+
 
 
 /**

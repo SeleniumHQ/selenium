@@ -18,12 +18,12 @@
  * text changes and allows the menu item to update its content and state based
  * on the filter.
  *
-*
  */
 
 goog.provide('goog.ui.FilterObservingMenuItemRenderer');
 
 goog.require('goog.ui.MenuItemRenderer');
+
 
 
 /**

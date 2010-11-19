@@ -28,12 +28,13 @@
  * Testing code should not have dependencies outside of goog.testing so as to
  * reduce the chance of masking missing dependencies.
  *
-*
  */
 
 goog.provide('goog.testing.TestRunner');
 
 goog.require('goog.testing.TestCase');
+
+
 
 /**
  * Construct a test runner.

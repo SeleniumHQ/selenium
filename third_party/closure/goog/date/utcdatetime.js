@@ -15,7 +15,6 @@
 /**
  * @fileoverview Locale independent date/time class.
  *
-*
  */
 
 goog.provide('goog.date.UtcDateTime');
@@ -90,8 +89,10 @@ goog.date.UtcDateTime.prototype.add = function(interval) {
     var yearsMonths = new goog.date.Interval(interval.years, interval.months);
     goog.date.Date.prototype.add.call(this, yearsMonths);
   }
-  var daysAndTimeMillis = 1000 * (interval.seconds + 60 * (interval.minutes +
-                          60 * (interval.hours + 24 * interval.days)));
+  var daysAndTimeMillis = 1000 * (
+      interval.seconds + 60 * (
+          interval.minutes + 60 * (
+              interval.hours + 24 * interval.days)));
   this.date_ = new Date(this.date_.getTime() + daysAndTimeMillis);
 };
 

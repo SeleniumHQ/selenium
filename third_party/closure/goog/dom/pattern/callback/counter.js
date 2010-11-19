@@ -21,6 +21,7 @@
 goog.provide('goog.dom.pattern.callback.Counter');
 
 
+
 /**
  * Callback class for counting matches.
  * @constructor

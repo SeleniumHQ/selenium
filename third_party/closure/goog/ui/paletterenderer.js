@@ -15,7 +15,6 @@
 /**
  * @fileoverview Renderer for {@link goog.ui.Palette}s.
  *
-*
  */
 
 goog.provide('goog.ui.PaletteRenderer');
@@ -28,6 +27,7 @@ goog.require('goog.dom.classes');
 goog.require('goog.style');
 goog.require('goog.ui.ControlRenderer');
 goog.require('goog.userAgent');
+
 
 
 /**

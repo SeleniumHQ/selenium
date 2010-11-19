@@ -18,10 +18,10 @@
  * Use this if you have an object literal whose keys need to have the same names
  * as the properties of some class even after they are renamed by the compiler.
  *
-*
  */
 
 goog.provide('goog.reflect');
+
 
 /**
  * Syntax for object literal casts.

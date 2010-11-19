@@ -16,7 +16,6 @@
  * @fileoverview Code for managing series of undo-redo actions in the form of
  * {@link goog.editor.plugins.UndoRedoState}s.
  *
-*
  */
 
 
@@ -25,6 +24,7 @@ goog.provide('goog.editor.plugins.UndoRedoManager.EventType');
 
 goog.require('goog.editor.plugins.UndoRedoState');
 goog.require('goog.events.EventTarget');
+
 
 
 /**
@@ -71,6 +71,7 @@ goog.editor.plugins.UndoRedoManager = function() {
   this.pendingActions_ = [];
 };
 goog.inherits(goog.editor.plugins.UndoRedoManager, goog.events.EventTarget);
+
 
 /**
  * Event types for the events dispatched by undo-redo manager.

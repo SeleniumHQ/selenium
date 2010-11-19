@@ -51,7 +51,6 @@
  *   video.setSelected(true);
  * </pre>
  *
-*
  *
  * @supported IE6, FF2+, Safari. Requires flash to actually work.
  *
@@ -67,6 +66,7 @@ goog.require('goog.ui.media.Media');
 goog.require('goog.ui.media.MediaModel');
 goog.require('goog.ui.media.MediaModel.Player');
 goog.require('goog.ui.media.MediaRenderer');
+
 
 
 /**
@@ -159,6 +159,7 @@ goog.ui.media.Vimeo.prototype.createDom = function(control) {
 goog.ui.media.Vimeo.prototype.getCssClass = function() {
   return goog.ui.media.Vimeo.CSS_CLASS;
 };
+
 
 
 /**

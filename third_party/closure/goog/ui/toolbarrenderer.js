@@ -15,7 +15,6 @@
 /**
  * @fileoverview Renderer for {@link goog.ui.Toolbar}s.
  *
-*
  */
 
 goog.provide('goog.ui.ToolbarRenderer');
@@ -25,6 +24,7 @@ goog.require('goog.ui.Container.Orientation');
 goog.require('goog.ui.ContainerRenderer');
 goog.require('goog.ui.Separator');
 goog.require('goog.ui.ToolbarSeparatorRenderer');
+
 
 
 /**

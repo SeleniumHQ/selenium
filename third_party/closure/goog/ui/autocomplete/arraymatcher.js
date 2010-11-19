@@ -15,8 +15,6 @@
 /**
  * @fileoverview Basic class for matching words in an array.
  *
-*
-*
  */
 
 
@@ -25,6 +23,7 @@ goog.provide('goog.ui.AutoComplete.ArrayMatcher');
 goog.require('goog.iter');
 goog.require('goog.string');
 goog.require('goog.ui.AutoComplete');
+
 
 
 /**

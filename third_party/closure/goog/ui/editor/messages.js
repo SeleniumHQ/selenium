@@ -24,27 +24,34 @@ goog.provide('goog.ui.editor.messages');
 /** @desc Link button / bubble caption. */
 goog.ui.editor.messages.MSG_LINK_CAPTION = goog.getMsg('Link');
 
+
 /** @desc Title for the dialog that edits a link. */
 goog.ui.editor.messages.MSG_EDIT_LINK = goog.getMsg('Edit Link');
+
 
 /** @desc Prompt the user for the text of the link they've written. */
 goog.ui.editor.messages.MSG_TEXT_TO_DISPLAY = goog.getMsg('Text to display:');
 
+
 /** @desc Prompt the user for the URL of the link they've created. */
 goog.ui.editor.messages.MSG_LINK_TO = goog.getMsg('Link to:');
+
 
 /** @desc Prompt the user to type a web address for their link. */
 goog.ui.editor.messages.MSG_ON_THE_WEB = goog.getMsg('Web address');
 
+
 /** @desc More details on what linking to a web address involves.. */
 goog.ui.editor.messages.MSG_ON_THE_WEB_TIP = goog.getMsg(
     'Link to a page or file somewhere else on the web');
+
 
 /**
  * @desc Text for a button that allows the user to test the link that
  *     they created.
  */
 goog.ui.editor.messages.MSG_TEST_THIS_LINK = goog.getMsg('Test this link');
+
 
 /**
  * @desc Explanation for how to create a link with the link-editing dialog.
@@ -61,9 +68,11 @@ goog.ui.editor.messages.MSG_TR_LINK_EXPLANATION = goog.getMsg(
      'searchEngineLink': "<a href='http://www.google.com/' target='_new'>",
      'endLink': '</a>'});
 
+
 /** @desc Prompt for the URL of a link that the user is creating. */
 goog.ui.editor.messages.MSG_WHAT_URL = goog.getMsg(
     'To what URL should this link go?');
+
 
 /**
  * @desc Prompt for an email address, so that the user can create a link
@@ -71,15 +80,18 @@ goog.ui.editor.messages.MSG_WHAT_URL = goog.getMsg(
  */
 goog.ui.editor.messages.MSG_EMAIL_ADDRESS = goog.getMsg('Email address');
 
+
 /**
  * @desc Explanation of the prompt for an email address in a link.
  */
 goog.ui.editor.messages.MSG_EMAIL_ADDRESS_TIP = goog.getMsg(
     'Link to an email address');
 
+
 /** @desc Error message when the user enters an invalid email address. */
 goog.ui.editor.messages.MSG_INVALID_EMAIL = goog.getMsg(
     'Invalid email address');
+
 
 /**
  * @desc When the user creates a mailto link, asks them what email
@@ -87,6 +99,7 @@ goog.ui.editor.messages.MSG_INVALID_EMAIL = goog.getMsg(
  */
 goog.ui.editor.messages.MSG_WHAT_EMAIL = goog.getMsg(
     'To what email address should this link?');
+
 
 /**
  * @desc Warning about the dangers of creating links with email
@@ -96,6 +109,7 @@ goog.ui.editor.messages.MSG_EMAIL_EXPLANATION = goog.getMsg(
     '{$preb}Be careful.{$postb} ' +
     'Remember that any time you include an email address on a web page, ' +
     'nasty spammers can find it too.', {'preb': '<b>', 'postb': '</b>'});
+
 
 /** @desc Image bubble caption. */
 goog.ui.editor.messages.MSG_IMAGE_CAPTION = goog.getMsg('Image');

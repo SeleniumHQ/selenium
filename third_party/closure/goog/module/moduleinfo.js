@@ -15,19 +15,18 @@
 /**
  * @fileoverview Defines the goog.module.ModuleInfo class.
  *
-*
-*
-*
-*
  */
 
 goog.provide('goog.module.ModuleInfo');
 
 goog.require('goog.Disposable');
-goog.require('goog.Timer');
 goog.require('goog.functions');
 goog.require('goog.module.BaseModule');
 goog.require('goog.module.ModuleLoadCallback');
+// TODO(user): Circular dependency between ModuleManager and ModuleInfo.  Move
+// FailureType to goog.module.FailureType.
+// goog.require('goog.module.ModuleManager.FailureType');
+
 
 
 /**
@@ -286,8 +285,8 @@ goog.module.ModuleInfo.prototype.onError = function(cause) {
   if (result) {
     // Throw an exception asynchronously. Do not let the exception leak
     // up to the caller, or it will blow up the module loading framework.
-    goog.Timer.callOnce(
-        goog.functions.error('Module errback failures: ' + result));
+    window.setTimeout(
+        goog.functions.error('Module errback failures: ' + result), 0);
   }
   this.earlyOnloadCallbacks_.length = 0;
   this.onloadCallbacks_.length = 0;

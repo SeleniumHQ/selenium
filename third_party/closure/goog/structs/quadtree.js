@@ -19,7 +19,6 @@
  * The implementation currently requires pre-determined bounds for data as it
  * can not rebalance itself to that degree.
  *
-*
  * @see ../demos/quadtree.html
  */
 
@@ -248,7 +247,7 @@ goog.structs.QuadTree.prototype.traverse_ = function(node, fn) {
       this.traverse_(node.se, fn);
       this.traverse_(node.sw, fn);
       this.traverse_(node.nw, fn);
-      break
+      break;
   }
 };
 
@@ -457,6 +456,7 @@ goog.structs.QuadTree.NodeType = {
 };
 
 
+
 /**
  * Constructs a new quad tree node.
  * @param {number} x X-coordiate of node.
@@ -540,6 +540,7 @@ goog.structs.QuadTree.Node.prototype.se = null;
  * @type {goog.structs.QuadTree.Point?}
  */
 goog.structs.QuadTree.Node.prototype.point = null;
+
 
 
 /**

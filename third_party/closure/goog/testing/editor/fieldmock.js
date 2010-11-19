@@ -25,6 +25,8 @@ goog.require('goog.dom.Range');
 goog.require('goog.editor.Field');
 goog.require('goog.testing.LooseMock');
 
+
+
 /**
  * Mock of goog.editor.Field.
  * @param {Window=} opt_window Window the field would edit.  Defaults to
@@ -37,6 +39,7 @@ goog.require('goog.testing.LooseMock');
  *     from the window every time getRange() is called.
  * @constructor
  * @extends {goog.testing.LooseMock}
+ * @suppress {missingProperties} Mocks do not fit in the type system well.
  */
 goog.testing.editor.FieldMock =
     function(opt_window, opt_appWindow, opt_range) {

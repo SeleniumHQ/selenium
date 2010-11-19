@@ -14,8 +14,6 @@
 
 /**
  * @fileoverview A class that can be used to listen to font size changes.
-*
-*
  */
 
 goog.provide('goog.dom.FontSizeMonitor');
@@ -65,7 +63,7 @@ goog.dom.FontSizeMonitor = function(opt_domHelper) {
       // The actual values are not relevant as long as we can ensure that the
       // iframe has a non zero size and is completely off screen.
       goog.userAgent.IE ? 'div' : 'iframe',
-      {'style': 'position:absolute;width:9em;height:9em;top:-99em'});
+      {'style': 'position:absolute;width:9em;height:9em;top:-99em;z-index:-9'});
   var p = dom.getDocument().body;
   p.insertBefore(this.sizeElement_, p.firstChild);
 

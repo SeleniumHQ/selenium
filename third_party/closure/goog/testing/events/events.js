@@ -45,6 +45,7 @@ goog.require('goog.object');
 goog.require('goog.userAgent');
 
 
+
 /**
  * goog.events.BrowserEvent expects an Event so we provide one for JSCompiler.
  *
@@ -225,6 +226,7 @@ goog.testing.events.isBrokenGeckoMacActionKey_ = function(e) {
        e.keyCode == goog.events.KeyCodes.X ||
        e.keyCode == goog.events.KeyCodes.V) && e.metaKey;
 };
+
 
 /**
  * Simulates a mouseover event on the given target.
@@ -433,6 +435,20 @@ goog.testing.events.fireContextMenuSequence = function(target, opt_coords) {
     }
   }
   return !!result;
+};
+
+
+/**
+ * Simulates a popstate event on the given target.
+ * @param {EventTarget} target The target for the event.
+ * @param {Object} state History state object.
+ * @return {boolean} The returnValue of the event: false if preventDefault() was
+ *     called on it, true otherwise.
+ */
+goog.testing.events.firePopStateEvent = function(target, state) {
+  var e = new goog.testing.events.Event(goog.events.EventType.POPSTATE, target);
+  e.state = state;
+  return goog.testing.events.fireBrowserEvent(e);
 };
 
 

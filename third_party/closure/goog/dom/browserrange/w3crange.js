@@ -18,8 +18,8 @@
  * DO NOT USE THIS FILE DIRECTLY.  Use goog.dom.Range instead.
  *
  * @author robbyw@google.com (Robby Walker)
-*
-*
+ * @author ojan@google.com (Ojan Vafai)
+ * @author jparent@google.com (Julie Parent)
  */
 
 
@@ -30,6 +30,7 @@ goog.require('goog.dom.NodeType');
 goog.require('goog.dom.RangeEndpoint');
 goog.require('goog.dom.browserrange.AbstractRange');
 goog.require('goog.string');
+
 
 
 /**
@@ -58,18 +59,27 @@ goog.dom.browserrange.W3cRange.getBrowserRangeForNode = function(node) {
     nodeRange.setStart(node, 0);
     nodeRange.setEnd(node, node.length);
   } else {
-    var tempNode, leaf = node;
-    while (tempNode = leaf.firstChild) {
-      leaf = tempNode;
-    }
-    nodeRange.setStart(leaf, 0);
+    if (!goog.dom.browserrange.canContainRangeEndpoint(node)) {
+      var rangeParent = node.parentNode;
+      var rangeStartOffset = goog.array.indexOf(rangeParent.childNodes, node);
+      nodeRange.setStart(rangeParent, rangeStartOffset);
+      nodeRange.setEnd(rangeParent, rangeStartOffset + 1);
+    } else {
+      var tempNode, leaf = node;
+      while ((tempNode = leaf.firstChild) &&
+          goog.dom.browserrange.canContainRangeEndpoint(tempNode)) {
+        leaf = tempNode;
+      }
+      nodeRange.setStart(leaf, 0);
 
-    leaf = node;
-    while (tempNode = leaf.lastChild) {
-      leaf = tempNode;
+      leaf = node;
+      while ((tempNode = leaf.lastChild) &&
+          goog.dom.browserrange.canContainRangeEndpoint(tempNode)) {
+        leaf = tempNode;
+      }
+      nodeRange.setEnd(leaf, leaf.nodeType == goog.dom.NodeType.ELEMENT ?
+          leaf.childNodes.length : leaf.length);
     }
-    nodeRange.setEnd(leaf, leaf.nodeType == goog.dom.NodeType.ELEMENT ?
-        leaf.childNodes.length : leaf.length);
   }
 
   return nodeRange;
@@ -200,9 +210,9 @@ goog.dom.browserrange.W3cRange.prototype.getValidHtml = function() {
   var result = div.innerHTML;
 
   if (goog.string.startsWith(result, '<') ||
-      !this.isCollapsed() && this.getStartNode() == this.getEndNode()) {
+      !this.isCollapsed() && !goog.string.contains(result, '<')) {
     // We attempt to mimic IE, which returns no containing element when a
-    // single text node is selected, does return the containing element when
+    // only text nodes are selected, does return the containing element when
     // the selection is empty, and does return the element when multiple nodes
     // are selected.
     return result;

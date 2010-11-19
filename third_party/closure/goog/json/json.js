@@ -14,13 +14,11 @@
 
 /**
  * @fileoverview JSON utility functions.
-*
  */
 
 
 goog.provide('goog.json');
 goog.provide('goog.json.Serializer');
-
 
 
 /**
@@ -105,6 +103,7 @@ goog.json.parse = function(s) {
 goog.json.unsafeParse = function(s) {
   return eval('(' + s + ')');
 };
+
 
 /**
  * Serializes an object or a value to a JSON string.
@@ -268,7 +267,7 @@ goog.json.Serializer.prototype.serializeArray_ = function(arr, sb) {
   sb.push('[');
   var sep = '';
   for (var i = 0; i < l; i++) {
-    sb.push(sep)
+    sb.push(sep);
     this.serialize_(arr[i], sb);
     sep = ',';
   }

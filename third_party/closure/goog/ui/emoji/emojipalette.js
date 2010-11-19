@@ -22,7 +22,6 @@
  *
  * Based on goog.ui.ColorPicker (colorpicker.js).
  *
-*
  */
 
 goog.provide('goog.ui.emoji.EmojiPalette');
@@ -33,6 +32,7 @@ goog.require('goog.net.ImageLoader');
 goog.require('goog.ui.Palette');
 goog.require('goog.ui.emoji.Emoji');
 goog.require('goog.ui.emoji.EmojiPaletteRenderer');
+
 
 
 /**

@@ -26,7 +26,6 @@
  * to have an id, so that the user of this object can know which event is for
  * which request.
  *
-*
  */
 
 goog.provide('goog.net.XhrManager');
@@ -44,6 +43,8 @@ goog.require('goog.net.XhrIoPool');
 goog.require('goog.structs.Map');
 
 // TODO(user): Add some time in between retries.
+
+
 
 /**
  * A manager of an XhrIoPool.
@@ -522,7 +523,6 @@ goog.net.XhrManager.Event.prototype.disposeInternal = function() {
 
 
 
-
 /**
  * An encapsulation of everything needed to make a Xhr request.
  * NOTE: This is used internal to the XhrManager.
@@ -674,6 +674,7 @@ goog.net.XhrManager.Request.prototype.getMaxRetries = function() {
   return this.maxRetries_;
 };
 
+
 /**
  * Gets the number of attempts so far.
  * @return {number} The number of attempts so far.
@@ -699,6 +700,7 @@ goog.net.XhrManager.Request.prototype.increaseAttemptCount = function() {
 goog.net.XhrManager.Request.prototype.hasReachedMaxRetries = function() {
   return this.attemptCount_ > this.maxRetries_;
 };
+
 
 /**
  * Sets the completed status.

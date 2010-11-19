@@ -16,15 +16,13 @@
  * @fileoverview A simple callback mechanism for notification about module
  * loads. Should be considered package-private to goog.module.
  *
-*
-*
-*
-*
  */
 
 goog.provide('goog.module.ModuleLoadCallback');
 
+goog.require('goog.debug.entryPointRegistry');
 goog.require('goog.debug.errorHandlerWeakDep');
+
 
 
 /**
@@ -52,30 +50,6 @@ goog.module.ModuleLoadCallback = function(fn, opt_handler) {
 
 
 /**
- * Installs exception protection for the module callback entry point using the
- * given error handler. The error handler will receive exceptions that happen
- * during the module load sequence.
- *
- * @param {goog.debug.ErrorHandler} errorHandler Error handler with which to
- *     protect the entry point.
- * @param {boolean=} opt_tracers Whether to install tracers around the browser
- *     event entry point.
- */
-goog.module.ModuleLoadCallback.protectModuleLoadSequence = function(
-    errorHandler, opt_tracers) {
-  // NOTE(nicksantos): I do like being able to protect different entry
-  // points with different error handlers (so, in this case, goog.module
-  // goog.events and goog.net all have different functions for registering
-  // a protector). But in practice, i'm not sure if people are actually
-  // using the functionality. It might be better to have a global registry
-  // for all entry points that need to be protected.
-  goog.module.ModuleLoadCallback.prototype.execute =
-      errorHandler.protectEntryPoint(
-          goog.module.ModuleLoadCallback.prototype.execute, opt_tracers);
-};
-
-
-/**
  * Completes the operation and calls the callback function if appropriate.
  * @param {*} context The module context.
  */
@@ -95,3 +69,16 @@ goog.module.ModuleLoadCallback.prototype.abort = function() {
   this.fn_ = null;
   this.handler_ = null;
 };
+
+
+// Register the browser event handler as an entry point, so that
+// it can be monitored for exception handling, etc.
+goog.debug.entryPointRegistry.register(
+    /**
+     * @param {function(!Function): !Function} transformer The transforming
+     *     function.
+     */
+    function(transformer) {
+      goog.module.ModuleLoadCallback.prototype.execute =
+          transformer(goog.module.ModuleLoadCallback.prototype.execute);
+    });

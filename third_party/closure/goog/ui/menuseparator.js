@@ -16,8 +16,6 @@
  * @fileoverview A class for representing menu separators.
  * @see goog.ui.Menu
  *
-*
-*
  */
 
 goog.provide('goog.ui.MenuSeparator');
@@ -25,6 +23,7 @@ goog.provide('goog.ui.MenuSeparator');
 goog.require('goog.ui.MenuSeparatorRenderer');
 goog.require('goog.ui.Separator');
 goog.require('goog.ui.registry');
+
 
 
 /**

@@ -14,8 +14,6 @@
 
 /**
  * @fileoverview This file contains functions for using Gears.
-*
-*
  */
 
 // TODO(user): The Gears team is planning to inject the Gears factory as
@@ -102,7 +100,7 @@ goog.gears.tryGearsObject_ = function() {
       // Even if Gears failed to get created we get an object element. Make
       // sure that it has a create method before assuming it is a Gears factory.
       if (typeof factory.create != 'undefined') {
-          return factory;
+        return factory;
       }
     } catch (ex) {
       // fall through

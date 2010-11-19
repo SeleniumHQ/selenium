@@ -14,12 +14,13 @@
 
 /**
  * @fileoverview Utility for fast string concatenation.
-*
  */
 
 goog.provide('goog.string.StringBuffer');
 
 goog.require('goog.userAgent.jscript');
+
+
 
 /**
  * Utility class to facilitate much faster string concatenation in IE,

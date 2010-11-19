@@ -26,7 +26,6 @@
  * event only once (when created or when it is changed) so if you move the DOM
  * node to another form it will not be cleared correctly before submitting.
  *
-*
  * @see ../demos/labelinput.html
  */
 
@@ -40,6 +39,7 @@ goog.require('goog.events');
 goog.require('goog.events.EventHandler');
 goog.require('goog.events.EventType');
 goog.require('goog.ui.Component');
+
 
 
 /**
@@ -132,6 +132,7 @@ goog.ui.LabelInput.prototype.exitDocument = function() {
 
   this.getElement().labelInput_ = null;
 };
+
 
 /**
  * Attaches the events we need to listen to.
@@ -265,7 +266,6 @@ goog.ui.LabelInput.prototype.handleEscapeKeys_ = function(e) {
     e.preventDefault();
   }
 };
-
 
 
 /**

@@ -34,7 +34,6 @@
  * large) will have many (empty) spots and thus, are inefficient.
  *
  *
-*
  */
 
 goog.provide('goog.proto2.PbLiteSerializer');
@@ -102,23 +101,25 @@ goog.proto2.PbLiteSerializer.prototype.serialize = function(message) {
 goog.proto2.PbLiteSerializer.prototype.deserializeField =
   function(message, field, value) {
 
-   if (value == null) {
-     return null;
-   }
+  if (value == null) {
+    // Since value double-equals null, it may be either null or undefined.
+    // Ensure we return the same one, since they have different meanings.
+    return value;
+  }
 
-   if (field.isRepeated()) {
-     var data = [];
+  if (field.isRepeated()) {
+    var data = [];
 
-     goog.proto2.Util.assert(goog.isArray(value));
+    goog.proto2.Util.assert(goog.isArray(value));
 
-     for (var i = 0; i < value.length; i++) {
-       data[i] = this.getDeserializedValue(field, value[i]);
-     }
+    for (var i = 0; i < value.length; i++) {
+      data[i] = this.getDeserializedValue(field, value[i]);
+    }
 
-     return data;
-   } else {
-     return this.getDeserializedValue(field, value);
-   }
+    return data;
+  } else {
+    return this.getDeserializedValue(field, value);
+  }
 };
 
 
@@ -133,6 +134,7 @@ goog.proto2.PbLiteSerializer.prototype.getSerializedValue =
   return goog.proto2.Serializer.prototype.getSerializedValue.apply(this,
                                                                    arguments);
 };
+
 
 /** @inheritDoc */
 goog.proto2.PbLiteSerializer.prototype.getDeserializedValue =

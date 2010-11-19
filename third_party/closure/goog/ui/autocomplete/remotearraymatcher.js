@@ -15,7 +15,6 @@
 /**
  * @fileoverview Class that retrieves autocomplete matches via an ajax call.
  *
-*
  */
 
 goog.provide('goog.ui.AutoComplete.RemoteArrayMatcher');

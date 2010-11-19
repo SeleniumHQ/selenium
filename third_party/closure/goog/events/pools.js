@@ -20,8 +20,6 @@
  * JScript 5.6 has some serious issues with GC so we use object pools to reduce
  * the number of object allocations.
  *
-*
-*
  */
 
 goog.provide('goog.events.pools');

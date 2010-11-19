@@ -15,8 +15,6 @@
 /**
  * @fileoverview A toolbar menu button control.
  *
-*
-*
  */
 
 goog.provide('goog.ui.ToolbarMenuButton');
@@ -25,6 +23,7 @@ goog.require('goog.ui.ControlContent');
 goog.require('goog.ui.MenuButton');
 goog.require('goog.ui.ToolbarMenuButtonRenderer');
 goog.require('goog.ui.registry');
+
 
 
 /**

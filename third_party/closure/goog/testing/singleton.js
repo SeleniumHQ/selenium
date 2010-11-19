@@ -31,7 +31,6 @@
  *   <li>Call {@link goog.testing.singleton.reset} in the {@code tearDown}.
  * </ol>
  *
-*
  */
 
 goog.provide('goog.testing.singleton');

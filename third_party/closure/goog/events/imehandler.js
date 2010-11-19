@@ -37,8 +37,6 @@
  * We currently do a bad job detecting when the IME closes on IE, and
  * make a "best effort" guess on when we know it's closed.
  *
-*
- * @author nicksantos@google.com (Nick Santos) (Ported to Closure)
  */
 
 goog.provide('goog.events.ImeHandler');
@@ -52,6 +50,7 @@ goog.require('goog.events.EventType');
 goog.require('goog.events.KeyCodes');
 goog.require('goog.userAgent');
 goog.require('goog.userAgent.product');
+
 
 
 /**
@@ -116,6 +115,7 @@ goog.events.ImeHandler.EventType = {
   // After the IME closes.
   END: 'endIme'
 };
+
 
 
 /**

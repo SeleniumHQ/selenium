@@ -16,7 +16,6 @@
  * @fileoverview Similiar functionality of {@link goog.ui.ButtonRenderer},
  * but uses a <div> element instead of a <button> or <input> element.
  *
-*
  */
 
 goog.provide('goog.ui.FlatButtonRenderer');
@@ -26,6 +25,7 @@ goog.require('goog.ui.Button');
 goog.require('goog.ui.ButtonRenderer');
 goog.require('goog.ui.INLINE_BLOCK_CLASSNAME');
 goog.require('goog.ui.registry');
+
 
 
 /**
@@ -66,6 +66,16 @@ goog.ui.FlatButtonRenderer.prototype.createDom = function(button) {
   };
   return button.getDomHelper().createDom(
       'div', attributes, button.getContent());
+};
+
+
+/**
+ * Returns the ARIA role to be applied to flat buttons.
+ * @return {goog.dom.a11y.Role|undefined} ARIA role.
+ * @override
+ */
+goog.ui.FlatButtonRenderer.prototype.getAriaRole = function() {
+  return goog.dom.a11y.Role.BUTTON;
 };
 
 

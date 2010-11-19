@@ -15,7 +15,6 @@
 /**
  * @fileoverview Implementation of a progress bar.
  *
-*
  * @see ../demos/progressbar.html
  */
 
@@ -32,6 +31,7 @@ goog.require('goog.ui.Component');
 goog.require('goog.ui.Component.EventType');
 goog.require('goog.ui.RangeModel');
 goog.require('goog.userAgent');
+
 
 
 /**
@@ -78,6 +78,7 @@ goog.ui.ProgressBar.ORIENTATION_TO_CSS_NAME_[
 goog.ui.ProgressBar.ORIENTATION_TO_CSS_NAME_[
     goog.ui.ProgressBar.Orientation.HORIZONTAL] =
         goog.getCssName('progress-bar-horizontal');
+
 
 /**
  * Creates the DOM nodes needed for the progress bar
@@ -369,7 +370,6 @@ goog.ui.ProgressBar.prototype.disposeInternal = function() {
   this.thumbElement_ = null;
   this.rangeModel_.dispose();
 };
-
 
 
 /**

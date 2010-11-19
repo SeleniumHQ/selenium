@@ -15,7 +15,6 @@
 /**
  * @fileoverview Plugin that enables table editing.
  *
-*
  */
 
 goog.provide('goog.editor.plugins.TableEditor');
@@ -28,6 +27,7 @@ goog.require('goog.editor.Table');
 goog.require('goog.editor.node');
 goog.require('goog.editor.range');
 goog.require('goog.object');
+
 
 
 /**
@@ -276,6 +276,7 @@ goog.editor.plugins.TableEditor.prototype.execCommandInternal = function(
   return result;
 };
 
+
 /**
  * Checks whether the element is a table editable by the user.
  * @param {Node} element The element in question.
@@ -295,6 +296,7 @@ goog.editor.plugins.TableEditor.prototype.isUserEditableTable_ =
   });
 };
 
+
 /**
  * Adds a function to filter out non-user-editable tables.
  * @param {function(Element):boolean} func A function to decide whether the
@@ -304,6 +306,7 @@ goog.editor.plugins.TableEditor.prototype.addIsTableEditableFunction =
     function(func) {
   goog.array.insert(this.isTableEditableFunctions_, func);
 };
+
 
 
 /**

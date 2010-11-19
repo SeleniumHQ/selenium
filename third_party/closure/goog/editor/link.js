@@ -30,6 +30,7 @@ goog.require('goog.string.Unicode');
 goog.require('goog.uri.utils');
 
 
+
 /**
  * Wrap an editable link.
  * @param {HTMLAnchorElement} anchor The anchor element.

@@ -17,10 +17,10 @@
  * properties compiler warning for weak dependencies on
  * {@link goog.debug.ErrorHandler#protectEntryPoint}.
  *
-*
  */
 
 goog.provide('goog.debug.errorHandlerWeakDep');
+
 
 /**
  * Dummy object to work around undefined properties compiler warning.

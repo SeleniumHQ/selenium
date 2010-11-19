@@ -39,6 +39,7 @@ goog.testing.graphics.SEGMENT_NAMES_ = function() {
   return arr;
 }();
 
+
 /**
  * Test if the given path matches the expected array of commands and parameters.
  * @param {Array.<string|number>} expected The expected array of commands and

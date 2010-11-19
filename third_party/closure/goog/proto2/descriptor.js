@@ -14,7 +14,6 @@
 
 /**
  * @fileoverview Protocol Buffer (Message) Descriptor class.
-*
  */
 
 goog.provide('goog.proto2.Descriptor');
@@ -31,6 +30,7 @@ goog.require('goog.proto2.Util');
  *         containingType: (goog.proto2.Message|undefined)}}
  */
 goog.proto2.Metadata = goog.typedef;
+
 
 
 /**

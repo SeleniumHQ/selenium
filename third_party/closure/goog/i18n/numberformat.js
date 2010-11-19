@@ -14,8 +14,8 @@
 
 /**
  * @fileoverview Number format/parse library with locale support.
-*
  */
+
 
 /**
  * Namespace for locale number format functions

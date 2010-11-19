@@ -16,7 +16,6 @@
  * @fileoverview Utility for making the browser submit a hidden form, which can
  * be used to effect a POST from JavaScript.
  *
-*
  */
 
 goog.provide('goog.ui.FormPost');
@@ -26,6 +25,8 @@ goog.require('goog.dom.TagName');
 goog.require('goog.string');
 goog.require('goog.string.StringBuffer');
 goog.require('goog.ui.Component');
+
+
 
 /**
  * Creates a formpost object.

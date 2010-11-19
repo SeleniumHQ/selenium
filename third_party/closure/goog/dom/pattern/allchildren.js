@@ -24,6 +24,7 @@ goog.require('goog.dom.pattern.AbstractPattern');
 goog.require('goog.dom.pattern.MatchType');
 
 
+
 /**
  * Pattern object that matches any nodes at or below the current tree depth.
  *

@@ -17,7 +17,6 @@
  * this file has on other closure classes as any dependency it takes won't be
  * able to use the logging infrastructure.
  *
-*
  * @see ../demos/debug.html
  */
 
@@ -30,6 +29,8 @@ goog.require('goog.asserts');
 goog.require('goog.debug');
 goog.require('goog.debug.LogBuffer');
 goog.require('goog.debug.LogRecord');
+
+
 
 /**
  * The Logger is an object used for logging debug messages. Loggers are
@@ -115,6 +116,7 @@ if (!goog.debug.Logger.ENABLE_HIERARCHY) {
 }
 
 
+
 /**
  * The Level class defines a set of standard logging levels that
  * can be used to control logging output.  The logging Level objects
@@ -173,6 +175,7 @@ goog.debug.Logger.Level.prototype.toString = function() {
 goog.debug.Logger.Level.OFF =
     new goog.debug.Logger.Level('OFF', Infinity);
 
+
 /**
  * SHOUT is a message level for extra debugging loudness.
  * This level is initialized to <CODE>1200</CODE>.
@@ -180,12 +183,14 @@ goog.debug.Logger.Level.OFF =
  */
 goog.debug.Logger.Level.SHOUT = new goog.debug.Logger.Level('SHOUT', 1200);
 
+
 /**
  * SEVERE is a message level indicating a serious failure.
  * This level is initialized to <CODE>1000</CODE>.
  * @type {!goog.debug.Logger.Level}
  */
 goog.debug.Logger.Level.SEVERE = new goog.debug.Logger.Level('SEVERE', 1000);
+
 
 /**
  * WARNING is a message level indicating a potential problem.
@@ -218,6 +223,7 @@ goog.debug.Logger.Level.CONFIG = new goog.debug.Logger.Level('CONFIG', 700);
  */
 goog.debug.Logger.Level.FINE = new goog.debug.Logger.Level('FINE', 500);
 
+
 /**
  * FINER indicates a fairly detailed tracing message.
  * This level is initialized to <CODE>400</CODE>.
@@ -232,6 +238,7 @@ goog.debug.Logger.Level.FINER = new goog.debug.Logger.Level('FINER', 400);
  */
 
 goog.debug.Logger.Level.FINEST = new goog.debug.Logger.Level('FINEST', 300);
+
 
 /**
  * ALL indicates that all messages should be logged.
@@ -619,11 +626,25 @@ goog.debug.Logger.prototype.logRecord = function(logRecord) {
 
 
 /**
+ * Logs the message to speed tracer, if it is available.
+ * {@see http://code.google.com/webtoolkit/speedtracer/logging-api.html}
+ * @param {string} msg The message to log.
+ * @private
+ */
+goog.debug.Logger.prototype.logToSpeedTracer_ = function(msg) {
+  if (goog.global['console'] && goog.global['console']['markTimeline']) {
+    goog.global['console']['markTimeline'](msg);
+  }
+};
+
+
+/**
  * Log a LogRecord.
  * @param {goog.debug.LogRecord} logRecord A log record to log.
  * @private
  */
 goog.debug.Logger.prototype.doLogRecord_ = function(logRecord) {
+  this.logToSpeedTracer_('log:' + logRecord.getMessage());
   if (goog.debug.Logger.ENABLE_HIERARCHY) {
     var target = this;
     while (target) {
@@ -680,6 +701,7 @@ goog.debug.Logger.prototype.addChild_ = function(name, logger) {
  */
 goog.debug.LogManager = {};
 
+
 /**
  * Map of logger names to logger objects
  *
@@ -688,12 +710,14 @@ goog.debug.LogManager = {};
  */
 goog.debug.LogManager.loggers_ = {};
 
+
 /**
  * The root logger which is the root of the logger tree.
  * @type {goog.debug.Logger}
  * @private
  */
 goog.debug.LogManager.rootLogger_ = null;
+
 
 /**
  * Initialize the LogManager if not already initialized
@@ -705,6 +729,7 @@ goog.debug.LogManager.initialize = function() {
     goog.debug.LogManager.rootLogger_.setLevel(goog.debug.Logger.Level.CONFIG);
   }
 };
+
 
 /**
  * Returns all the loggers

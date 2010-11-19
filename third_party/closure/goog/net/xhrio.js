@@ -21,9 +21,10 @@
  * ensure no leaks.
  *
  * XhrIo is event based, it dispatches events when a request finishes, fails or
- * succeeds or when the ready-state changes. The ready-state event fires first,
- * followed by a generic completed event, and lastly the error or success event
- * is fired as appropriate.
+ * succeeds or when the ready-state changes. The ready-state or timeout event
+ * fires first, followed by a generic completed event. Then the abort, error,
+ * or success event is fired as appropriate. Lastly, the ready event will fire
+ * to indicate that the object may be used to make another request.
  *
  * The error event may also be called before completed and
  * ready-state-change if the XmlHttpRequest.open() or .send() methods throw.
@@ -34,7 +35,6 @@
  *
  * TODO(user): Error cases aren't playing nicely in Safari.
  *
-*
  */
 
 
@@ -42,6 +42,7 @@ goog.provide('goog.net.XhrIo');
 
 goog.require('goog.Timer');
 goog.require('goog.debug.Logger');
+goog.require('goog.debug.entryPointRegistry');
 goog.require('goog.debug.errorHandlerWeakDep');
 goog.require('goog.events.EventTarget');
 goog.require('goog.json');
@@ -51,6 +52,8 @@ goog.require('goog.net.XmlHttp');
 goog.require('goog.net.xhrMonitor');
 goog.require('goog.structs');
 goog.require('goog.structs.Map');
+goog.require('goog.uri.utils');
+
 
 
 /**
@@ -79,6 +82,7 @@ goog.net.XhrIo = function(opt_xmlHttpFactory) {
 };
 goog.inherits(goog.net.XhrIo, goog.events.EventTarget);
 
+
 /**
  * A reference to the XhrIo logger
  * @type {goog.debug.Logger}
@@ -93,6 +97,13 @@ goog.net.XhrIo.prototype.logger_ =
  * @type {string}
  */
 goog.net.XhrIo.CONTENT_TYPE_HEADER = 'Content-Type';
+
+
+/**
+ * The pattern matching the 'http' and 'https' URI schemes
+ * @type {!RegExp}
+ */
+goog.net.XhrIo.HTTP_SCHEME_PATTERN = /^https?:?$/i;
 
 
 /**
@@ -164,7 +175,7 @@ goog.net.XhrIo.send = function(url, opt_callback, opt_method, opt_content,
 goog.net.XhrIo.cleanup = function() {
   var instances = goog.net.XhrIo.sendInstances_;
   while (instances.length) {
-     instances.pop().dispose();
+    instances.pop().dispose();
   }
 };
 
@@ -178,15 +189,11 @@ goog.net.XhrIo.cleanup = function() {
  *
  * @param {goog.debug.ErrorHandler} errorHandler Error handler with which to
  *     protect the entry point(s).
- * @param {boolean=} opt_tracers Whether to install tracers around the entry
- *     point.
  */
-goog.net.XhrIo.protectEntryPoints = function(
-    errorHandler, opt_tracers) {
+goog.net.XhrIo.protectEntryPoints = function(errorHandler) {
   goog.net.XhrIo.prototype.onReadyStateChangeEntryPoint_ =
       errorHandler.protectEntryPoint(
-          goog.net.XhrIo.prototype.onReadyStateChangeEntryPoint_,
-          opt_tracers);
+          goog.net.XhrIo.prototype.onReadyStateChangeEntryPoint_);
 };
 
 
@@ -340,7 +347,7 @@ goog.net.XhrIo.prototype.setTimeoutInterval = function(ms) {
 
 /**
  * Instance send that actually uses XMLHttpRequest to make a server call.
- * @param {string|goog.Uri} url Uri to make request too.
+ * @param {string|goog.Uri} url Uri to make request to.
  * @param {string=} opt_method Send method, default: GET.
  * @param {string|GearsBlob=} opt_content Post data. This can be a Gears blob
  *     if the underlying HTTP request object is a Gears HTTP request.
@@ -348,8 +355,8 @@ goog.net.XhrIo.prototype.setTimeoutInterval = function(ms) {
  *     request.
  */
 goog.net.XhrIo.prototype.send = function(url, opt_method, opt_content,
-                                           opt_headers) {
-  if (this.active_) {
+                                         opt_headers) {
+  if (this.xhr_) {
     throw Error('[goog.net.XhrIo] Object is active with another request');
   }
 
@@ -516,7 +523,7 @@ goog.net.XhrIo.prototype.error_ = function(errorCode, err) {
   this.lastError_ = err;
   this.lastErrorCode_ = errorCode;
   this.dispatchErrors_();
-  this.cleanUpXhr_()
+  this.cleanUpXhr_();
 };
 
 
@@ -540,7 +547,7 @@ goog.net.XhrIo.prototype.dispatchErrors_ = function() {
  *     defaults to ABORT.
  */
 goog.net.XhrIo.prototype.abort = function(opt_failureCode) {
-  if (this.xhr_) {
+  if (this.xhr_ && this.active_) {
     this.logger_.fine(this.formatMsg_('Aborting'));
     this.active_ = false;
     this.inAbort_ = true;
@@ -686,7 +693,7 @@ goog.net.XhrIo.prototype.cleanUpXhr_ = function(opt_fromDispose) {
     var xhr = this.xhr_;
     var clearedOnReadyStateChange =
         this.xhrOptions_[goog.net.XmlHttp.OptionType.USE_NULL_FUNCTION] ?
-              goog.nullFunction : null;
+            goog.nullFunction : null;
     this.xhr_ = null;
     this.xhrOptions_ = null;
 
@@ -726,7 +733,7 @@ goog.net.XhrIo.prototype.cleanUpXhr_ = function(opt_fromDispose) {
  * @return {boolean} Whether there is an active request.
  */
 goog.net.XhrIo.prototype.isActive = function() {
-  return this.active_;
+  return !!this.xhr_;
 };
 
 
@@ -744,6 +751,8 @@ goog.net.XhrIo.prototype.isComplete = function() {
 goog.net.XhrIo.prototype.isSuccess = function() {
   switch (this.getStatus()) {
     case 0:         // Used for local XHR requests
+      return !this.isLastUriEffectiveSchemeHttp_();
+
     case 200:       // Http Success
     case 204:       // Http Success - no content
     case 304:       // Http Cache
@@ -751,6 +760,31 @@ goog.net.XhrIo.prototype.isSuccess = function() {
 
     default:
       return false;
+  }
+};
+
+
+/**
+ * @return {boolean} whether the effective scheme of the last URI that was
+ *     fetched was 'http' or 'https'.
+ * @private
+ */
+goog.net.XhrIo.prototype.isLastUriEffectiveSchemeHttp_ = function() {
+  var lastUriScheme = goog.isString(this.lastUri_) ?
+      goog.uri.utils.getScheme(this.lastUri_) :
+      (/** @type {!goog.Uri} */ this.lastUri_).getScheme();
+  // if it's an absolute URI, we're done.
+  if (lastUriScheme) {
+    return goog.net.XhrIo.HTTP_SCHEME_PATTERN.test(lastUriScheme);
+  }
+
+  // if it's a relative URI, it inherits the scheme of the page.
+  if (self.location) {
+    return goog.net.XhrIo.HTTP_SCHEME_PATTERN.test(self.location.protocol);
+  } else {
+    // This case can occur from a web worker in Firefox 3.5 . All other browsers
+    // with web workers support self.location from the worker.
+    return true;
   }
 };
 
@@ -822,21 +856,39 @@ goog.net.XhrIo.prototype.getLastUri = function() {
 
 /**
  * Get the response text from the Xhr object
- * Will only return correct result when called from the context of a callback
- * @return {string} Result from the server.
+ * Will only return correct result when called from the context of a callback.
+ * @return {string} Result from the server, or '' if no result available.
  */
 goog.net.XhrIo.prototype.getResponseText = function() {
-  return this.xhr_ ? this.xhr_.responseText : '';
+  /** @preserveTry */
+  try {
+    return this.xhr_ ? this.xhr_.responseText : '';
+  } catch (e) {
+    // http://www.w3.org/TR/XMLHttpRequest/#the-responsetext-attribute
+    // states that responseText should return '' (and responseXML null)
+    // when the state is not LOADING or DONE. Instead, IE and Gears can
+    // throw unexpected exceptions, eg, when a request is aborted or no
+    // data is available yet.
+    this.logger_.fine('Can not get responseText: ' + e.message);
+    return '';
+  }
 };
 
 
 /**
  * Get the response XML from the Xhr object
- * Will only return correct result when called from the context of a callback
- * @return {Document} The DOM Document representing the XML file.
+ * Will only return correct result when called from the context of a callback.
+ * @return {Document} The DOM Document representing the XML file, or null
+ * if no result available.
  */
 goog.net.XhrIo.prototype.getResponseXml = function() {
-  return this.xhr_ ? this.xhr_.responseXML : null;
+  /** @preserveTry */
+  try {
+    return this.xhr_ ? this.xhr_.responseXML : null;
+  } catch (e) {
+    this.logger_.fine('Can not get responseXML: ' + e.message);
+    return null;
+  }
 };
 
 
@@ -876,6 +928,18 @@ goog.net.XhrIo.prototype.getResponseHeader = function(key) {
 
 
 /**
+ * Gets the text of all the headers in the response.
+ * Will only return correct result when called from the context of a callback
+ * and the request has completed.
+ * @return {string} The value of the response headers or empty string.
+ */
+goog.net.XhrIo.prototype.getAllResponseHeaders = function() {
+  return this.xhr_ && this.isComplete() ?
+      this.xhr_.getAllResponseHeaders() : '';
+};
+
+
+/**
  * Get the last error message
  * @return {goog.net.ErrorCode} Last error code.
  */
@@ -890,7 +954,7 @@ goog.net.XhrIo.prototype.getLastErrorCode = function() {
  */
 goog.net.XhrIo.prototype.getLastError = function() {
   return goog.isString(this.lastError_) ? this.lastError_ :
-    String(this.lastError_);
+      String(this.lastError_);
 };
 
 
@@ -905,3 +969,16 @@ goog.net.XhrIo.prototype.formatMsg_ = function(msg) {
   return msg + ' [' + this.lastMethod_ + ' ' + this.lastUri_ + ' ' +
       this.getStatus() + ']';
 };
+
+
+// Register the xhr handler as an entry point, so that
+// it can be monitored for exception handling, etc.
+goog.debug.entryPointRegistry.register(
+    /**
+     * @param {function(!Function): !Function} transformer The transforming
+     *     function.
+     */
+    function(transformer) {
+      goog.net.XhrIo.prototype.onReadyStateChangeEntryPoint_ =
+          transformer(goog.net.XhrIo.prototype.onReadyStateChangeEntryPoint_);
+    });

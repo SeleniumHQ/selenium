@@ -15,8 +15,6 @@
 /**
  * @fileoverview Common positioning code.
  *
-*
-*
  */
 
 goog.provide('goog.positioning');
@@ -31,7 +29,6 @@ goog.require('goog.math.Box');
 goog.require('goog.math.Coordinate');
 goog.require('goog.math.Size');
 goog.require('goog.style');
-
 
 
 /**

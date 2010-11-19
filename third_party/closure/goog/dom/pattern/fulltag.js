@@ -25,6 +25,7 @@ goog.require('goog.dom.pattern.StartTag');
 goog.require('goog.dom.pattern.Tag');
 
 
+
 /**
  * Pattern object that matches a full tag including all its children.
  *
@@ -59,6 +60,7 @@ goog.inherits(goog.dom.pattern.FullTag, goog.dom.pattern.StartTag);
  * @private
  */
 goog.dom.pattern.FullTag.prototype.depth_ = 0;
+
 
 /**
  * Test whether the given token is a start tag token which matches the tag name,

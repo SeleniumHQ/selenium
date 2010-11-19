@@ -15,7 +15,6 @@
 /**
  * @fileoverview A menu item class that supports three state checkbox semantics.
  *
-*
  */
 
 goog.provide('goog.ui.TriStateMenuItem');
@@ -28,6 +27,7 @@ goog.require('goog.ui.ControlContent');
 goog.require('goog.ui.MenuItem');
 goog.require('goog.ui.TriStateMenuItemRenderer');
 goog.require('goog.ui.registry');
+
 
 
 /**

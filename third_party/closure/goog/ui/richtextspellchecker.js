@@ -15,8 +15,6 @@
 /**
  * @fileoverview Rich text spell checker implementation.
  *
-*
-*
  * @see ../demos/richtextspellchecker.html
  */
 
@@ -30,6 +28,8 @@ goog.require('goog.events.EventType');
 goog.require('goog.string.StringBuffer');
 goog.require('goog.ui.AbstractSpellChecker');
 goog.require('goog.ui.AbstractSpellChecker.AsyncResult');
+
+
 
 /**
  * Rich text spell checker implementation.
@@ -68,6 +68,7 @@ goog.inherits(goog.ui.RichTextSpellChecker, goog.ui.AbstractSpellChecker);
  */
 goog.ui.RichTextSpellChecker.prototype.rootNode_;
 
+
 /**
  * Current node where spell checker has interrupted to go to the next stack
  * frame.
@@ -75,6 +76,7 @@ goog.ui.RichTextSpellChecker.prototype.rootNode_;
  * @private
  */
 goog.ui.RichTextSpellChecker.prototype.currentNode_;
+
 
 /**
  * Counter of inserted elements. Used in processing loop to attempt to preserve
@@ -84,6 +86,7 @@ goog.ui.RichTextSpellChecker.prototype.currentNode_;
  */
 goog.ui.RichTextSpellChecker.prototype.elementsInserted_ = 0;
 
+
 /**
  * Number of words to scan to precharge the dictionary.
  * @type {number}
@@ -91,12 +94,14 @@ goog.ui.RichTextSpellChecker.prototype.elementsInserted_ = 0;
  */
 goog.ui.RichTextSpellChecker.prototype.dictionaryPreScanSize_ = 1000;
 
+
 /**
  * Class name for word spans.
  * @type {string}
  */
 goog.ui.RichTextSpellChecker.prototype.wordClassName =
     goog.getCssName('goog-spellcheck-word');
+
 
 /**
  * DomHelper to be used for interacting with the editable document/element.
@@ -106,6 +111,7 @@ goog.ui.RichTextSpellChecker.prototype.wordClassName =
  */
 goog.ui.RichTextSpellChecker.prototype.editorDom_;
 
+
 /**
  * Tag name porition of the marker for the text that does not need to be checked
  * for spelling.
@@ -113,6 +119,7 @@ goog.ui.RichTextSpellChecker.prototype.editorDom_;
  * @type {string|undefined}
  */
 goog.ui.RichTextSpellChecker.prototype.excludeTag;
+
 
 /**
  * CSS Style text for invalid words. As it's set inside the rich edit iframe
@@ -122,6 +129,7 @@ goog.ui.RichTextSpellChecker.prototype.excludeTag;
  */
 goog.ui.RichTextSpellChecker.prototype.invalidWordCssText =
     'background: yellow;';
+
 
 /**
  * Creates the initial DOM representation for the component.

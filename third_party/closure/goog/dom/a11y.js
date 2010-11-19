@@ -16,13 +16,9 @@
  * @fileoverview Utilities for adding, removing and setting ARIA roles
  * as defined by W3C ARIA Working Draft:
  *     http://www.w3.org/TR/2008/WD-wai-aria-20080806/
- * At this time Firefox 3.0 is the only browser that has good support for ARIA;
- * IE8 (beta) has partial support, while Opera and WebKit implementations
- * are forthcoming. An application could call
- * <code>goog.dom.a11y.setNoBrowserCheck</code> with true to turn on ARIA
- * support for all browsers.
+ * All modern browsers have some form of ARIA support, so no browser checks are
+ * performed when adding ARIA to components.
  *
-*
  */
 goog.provide('goog.dom.a11y');
 goog.provide('goog.dom.a11y.Role');
@@ -120,23 +116,13 @@ goog.dom.a11y.Role = {
 
 
 /**
- * Flag for skipping browser check while adding ARIA roles and states.
- * @private
- * @type {boolean}
- */
-goog.dom.a11y.noBrowserCheck_;
-
-
-/**
  * Sets the role of an element.
  * @param {Element} element DOM node to set role of.
  * @param {string} roleName role name(s).
  */
 goog.dom.a11y.setRole = function(element, roleName) {
-  if (goog.userAgent.GECKO || goog.dom.a11y.noBrowserCheck_) {
-    element.setAttribute('role', roleName);
-    element.roleName = roleName;
-  }
+  element.setAttribute('role', roleName);
+  element.roleName = roleName;
 };
 
 
@@ -158,9 +144,7 @@ goog.dom.a11y.getRole = function(element) {
  * @param {string|boolean|number} value Value for the state attribute.
  */
 goog.dom.a11y.setState = function(element, state, value) {
-  if (goog.userAgent.GECKO || goog.dom.a11y.noBrowserCheck_) {
-    element.setAttribute('aria-' + state, value);
-  }
+  element.setAttribute('aria-' + state, value);
 };
 
 
@@ -172,24 +156,6 @@ goog.dom.a11y.setState = function(element, state, value) {
  */
 goog.dom.a11y.getState = function(element, stateName) {
   return element.getAttribute('aria-' + stateName) || '';
-};
-
-
-/**
- * Getter for noBrowserCheck_ flag.
- * @return {boolean} Value of the noBrowserCheck_ flag.
- */
-goog.dom.a11y.getNoBrowserCheck = function() {
-  return !!goog.dom.a11y.noBrowserCheck_;
-};
-
-
-/**
- * Sets a flag to skip browser check while adding ARIA roles and states.
- * @param {boolean} noBrowserCheck True if no browser check should be performed.
- */
-goog.dom.a11y.setNoBrowserCheck = function(noBrowserCheck) {
-  goog.dom.a11y.noBrowserCheck_ = noBrowserCheck;
 };
 
 

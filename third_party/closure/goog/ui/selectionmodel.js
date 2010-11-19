@@ -18,7 +18,6 @@
  * TODO(user): Add keyboard & mouse event hooks?
  * TODO(user): Add multiple selection?
  *
-*
  */
 
 
@@ -27,6 +26,7 @@ goog.provide('goog.ui.SelectionModel');
 goog.require('goog.array');
 goog.require('goog.events.EventTarget');
 goog.require('goog.events.EventType');
+
 
 
 /**

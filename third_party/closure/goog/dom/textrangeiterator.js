@@ -27,6 +27,7 @@ goog.require('goog.dom.TagName');
 goog.require('goog.iter.StopIteration');
 
 
+
 /**
  * Subclass of goog.dom.TagIterator that iterates over a DOM range.  It
  * adds functions to determine the portion of each text node that is selected.
@@ -87,7 +88,7 @@ goog.dom.TextRangeIterator = function(startNode, startOffset, endNode,
 
   if (goNext) {
     try {
-      this.next()
+      this.next();
     } catch (e) {
       if (e != goog.iter.StopIteration) {
         throw e;

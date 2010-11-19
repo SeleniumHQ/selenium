@@ -15,7 +15,6 @@
 /**
  * @fileoverview Provides utility functions for formatting strings, numbers etc.
  *
-*
  */
 
 goog.provide('goog.format');
@@ -69,7 +68,7 @@ goog.format.stringToNumericValue = function(stringValue) {
         stringValue, goog.format.NUMERIC_SCALES_BINARY_);
   }
   return goog.format.stringToNumericValue_(
-        stringValue, goog.format.NUMERIC_SCALES_SI_);
+      stringValue, goog.format.NUMERIC_SCALES_SI_);
 };
 
 
@@ -110,7 +109,7 @@ goog.format.numericValueToString = function(val, opt_decimals) {
 goog.format.numBytesToString = function(val, opt_decimals, opt_suffix) {
   var suffix = '';
   if (!goog.isDef(opt_suffix) || opt_suffix) {
-    suffix = 'B'
+    suffix = 'B';
   }
   return goog.format.numericValueToString_(
       val, goog.format.NUMERIC_SCALES_BINARY_, opt_decimals, suffix);
@@ -196,7 +195,7 @@ goog.format.SCALED_NUMERIC_RE_ = /^([-]?\d+\.?\d*)([K,M,G,T,P,k,m,u,n]?)[B]?$/;
  * @private
  */
 goog.format.NUMERIC_SCALE_PREFIXES_ = [
-    'P', 'T', 'G', 'M', 'K', '', 'm', 'u', 'n'
+  'P', 'T', 'G', 'M', 'K', '', 'm', 'u', 'n'
 ];
 
 

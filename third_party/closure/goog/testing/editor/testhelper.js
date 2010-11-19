@@ -26,6 +26,7 @@ goog.require('goog.editor.BrowserFeature');
 goog.require('goog.testing.dom');
 
 
+
 /**
  * Create a new test controller.
  * @param {Element} root The root editable element.
@@ -94,6 +95,15 @@ goog.testing.editor.TestHelper.prototype.tearDownEditableElement = function() {
   }
   this.root_.innerHTML = this.savedHtml_;
   this.root_.removeAttribute('g_editable');
+
+  if (goog.editor.plugins && goog.editor.plugins.AbstractBubblePlugin) {
+    // Remove old bubbles.
+    for (var key in goog.editor.plugins.AbstractBubblePlugin.bubbleMap_) {
+      goog.editor.plugins.AbstractBubblePlugin.bubbleMap_[key].dispose();
+    }
+    // Ensure we get a new bubble for each test.
+    goog.editor.plugins.AbstractBubblePlugin.bubbleMap_ = {};
+  }
 };
 
 

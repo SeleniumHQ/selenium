@@ -25,6 +25,7 @@ goog.require('goog.dom.pattern.AbstractPattern');
 goog.require('goog.dom.pattern.MatchType');
 
 
+
 /**
  * Pattern object that matches a sequence of other patterns.
  *

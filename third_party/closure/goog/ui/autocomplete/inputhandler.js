@@ -86,9 +86,6 @@
  * and behavior above so that we can avoid regressions. Contact mpd or yuzo
  * if you have questions or concerns.
  *
-*
-*
-*
  */
 
 
@@ -135,7 +132,7 @@ goog.ui.AutoComplete.InputHandler = function(opt_separators, opt_literals,
    * @type {string}
    * @private
    */
-   this.literals_ = opt_literals || '';
+  this.literals_ = opt_literals || '';
 
   /**
    * Whether this input accepts multiple values
@@ -416,8 +413,8 @@ goog.ui.AutoComplete.InputHandler.prototype.setCursorPosition = function(pos) {
 goog.ui.AutoComplete.InputHandler.prototype.attachInput = function(el) {
   goog.dom.a11y.setState(el, 'haspopup', true);
 
-  this.eh_.listen(el, goog.events.EventType.FOCUS, this.onFocus_);
-  this.eh_.listen(el, goog.events.EventType.BLUR, this.onBlur_);
+  this.eh_.listen(el, goog.events.EventType.FOCUS, this.handleFocus);
+  this.eh_.listen(el, goog.events.EventType.BLUR, this.handleBlur);
 
   if (!this.activeElement_) {
     this.activateHandler_.listen(
@@ -432,10 +429,10 @@ goog.ui.AutoComplete.InputHandler.prototype.attachInput = function(el) {
  */
 goog.ui.AutoComplete.InputHandler.prototype.detachInput = function(el) {
   if (el == this.activeElement_) {
-    this.onBlur_();
+    this.handleBlur();
   }
-  this.eh_.unlisten(el, goog.events.EventType.FOCUS, this.onFocus_);
-  this.eh_.unlisten(el, goog.events.EventType.BLUR, this.onBlur_);
+  this.eh_.unlisten(el, goog.events.EventType.FOCUS, this.handleFocus);
+  this.eh_.unlisten(el, goog.events.EventType.BLUR, this.handleBlur);
 
   if (!this.activeElement_) {
     this.activateHandler_.unlisten(
@@ -762,7 +759,7 @@ goog.ui.AutoComplete.InputHandler.prototype.handleKeyEvent = function(e) {
     // action is also prevented if the input is a multi input, to prevent the
     // user tabbing out of the field.
     case goog.events.KeyCodes.TAB:
-      if (this.ac_.isOpen()) {
+      if (this.ac_.isOpen() && !e.shiftKey) {
         // Ensure the menu is up to date before completing.
         this.update();
         if (this.ac_.selectHilited() && this.preventDefaultOnTab_) {
@@ -776,12 +773,16 @@ goog.ui.AutoComplete.InputHandler.prototype.handleKeyEvent = function(e) {
 
     // On enter, just select the highlighted row.
     case goog.events.KeyCodes.ENTER:
-      // Ensure the menu is up to date before completing.
-      this.update();
-      if (this.ac_.selectHilited()) {
-        e.preventDefault();
-        e.stopPropagation();
-        return true;
+      if (this.ac_.isOpen()) {
+        // Ensure the menu is up to date before completing.
+        this.update();
+        if (this.ac_.selectHilited()) {
+          e.preventDefault();
+          e.stopPropagation();
+          return true;
+        }
+      } else {
+        this.ac_.dismiss();
       }
       break;
 
@@ -789,6 +790,8 @@ goog.ui.AutoComplete.InputHandler.prototype.handleKeyEvent = function(e) {
     case goog.events.KeyCodes.ESC:
       if (this.ac_.isOpen()) {
         this.ac_.dismiss();
+        e.preventDefault();
+        e.stopPropagation();
         return true;
       }
       break;
@@ -872,7 +875,7 @@ goog.ui.AutoComplete.InputHandler.prototype.addKeyEvents_ = function() {
   // IE also needs a keypress to check if the user typed a separator
   if (goog.userAgent.IE) {
     this.eh_.listen(this.activeElement_,
-        goog.events.EventType.KEYPRESS, this.onIeKeyPress_)
+        goog.events.EventType.KEYPRESS, this.onIeKeyPress_);
   }
 };
 
@@ -890,7 +893,7 @@ goog.ui.AutoComplete.InputHandler.prototype.removeKeyEvents_ = function() {
 
   if (goog.userAgent.IE) {
     this.eh_.unlisten(this.activeElement_,
-        goog.events.EventType.KEYPRESS, this.onIeKeyPress_)
+        goog.events.EventType.KEYPRESS, this.onIeKeyPress_);
   }
 
   if (this.waitingForIme_) {
@@ -902,9 +905,9 @@ goog.ui.AutoComplete.InputHandler.prototype.removeKeyEvents_ = function() {
 /**
  * Handles an element getting focus.
  * @param {goog.events.Event} e Browser event object.
- * @private
+ * @protected
  */
-goog.ui.AutoComplete.InputHandler.prototype.onFocus_ = function(e) {
+goog.ui.AutoComplete.InputHandler.prototype.handleFocus = function(e) {
   this.activateHandler_.removeAll();
 
   if (this.ac_) {
@@ -928,9 +931,9 @@ goog.ui.AutoComplete.InputHandler.prototype.onFocus_ = function(e) {
 /**
  * Handles an element blurring.
  * @param {goog.events.Event=} opt_e Browser event object.
- * @private
+ * @protected
  */
-goog.ui.AutoComplete.InputHandler.prototype.onBlur_ = function(opt_e) {
+goog.ui.AutoComplete.InputHandler.prototype.handleBlur = function(opt_e) {
   // it's possible that a blur event could fire when there's no active element,
   // in the case where attachInput was called on an input that already had
   // the focus
@@ -970,7 +973,7 @@ goog.ui.AutoComplete.InputHandler.prototype.onTick_ = function(e) {
  */
 goog.ui.AutoComplete.InputHandler.prototype.onKeyDownOnInactiveElement_ =
     function(e) {
-  this.onFocus_(e);
+  this.handleFocus(e);
 };
 
 
@@ -1087,7 +1090,7 @@ goog.ui.AutoComplete.InputHandler.prototype.update = function(opt_force) {
  * @protected
  */
 goog.ui.AutoComplete.InputHandler.prototype.parseToken = function() {
-  return this.parseToken_()
+  return this.parseToken_();
 };
 
 

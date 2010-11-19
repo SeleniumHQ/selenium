@@ -16,7 +16,6 @@
  * @fileoverview A button control. This implementation extends {@link
  * goog.ui.Control}.
  *
-*
  * @see ../demos/button.html
  */
 
@@ -25,6 +24,7 @@ goog.provide('goog.ui.Button.Side');
 
 goog.require('goog.events.KeyCodes');
 goog.require('goog.ui.ButtonRenderer');
+goog.require('goog.ui.ButtonSide');
 goog.require('goog.ui.Control');
 goog.require('goog.ui.ControlContent');
 goog.require('goog.ui.NativeButtonRenderer');
@@ -52,19 +52,12 @@ goog.inherits(goog.ui.Button, goog.ui.Control);
 
 /**
  * Constants for button sides, see {@link goog.ui.Button.prototype.setCollapsed}
- * for details.
+ * for details. Aliased from goog.ui.ButtonSide to support legacy users without
+ * creating a circular dependency in {@link goog.ui.ButtonRenderer}.
  * @enum {number}
+ * @deprecated use {@link goog.ui.ButtonSide} instead.
  */
-goog.ui.Button.Side = {
-  /** Neither side. */
-  NONE: 0,
-  /** Left for LTR, right for RTL. */
-  START: 1,
-  /** Right for LTR, left for RTL. */
-  END: 2,
-  /** Both sides. */
-  BOTH: 3
-};
+goog.ui.Button.Side = goog.ui.ButtonSide;
 
 
 /**
@@ -152,7 +145,7 @@ goog.ui.Button.prototype.setTooltipInternal = function(tooltip) {
  * Collapses the border on one or both sides of the button, allowing it to be
  * combined with the adjancent button(s), forming a single UI componenet with
  * multiple targets.
- * @param {number} sides Bitmap of one or more {@link goog.ui.Button.Side}s for
+ * @param {number} sides Bitmap of one or more {@link goog.ui.ButtonSide}s for
  *     which borders should be collapsed.
  */
 goog.ui.Button.prototype.setCollapsed = function(sides) {

@@ -16,9 +16,6 @@
  * @fileoverview Utilties for working with DOM nodes related to rich text
  * editing.  Many of these are not general enough to go into goog.dom.
  *
-*
-*
- * @author nicksantos@google.com (Nick Santos)
  */
 
 goog.provide('goog.editor.node');
@@ -215,6 +212,7 @@ goog.editor.node.isAllNonNbspWhiteSpace = function(textNode) {
   return goog.string.isBreakingWhitespace(textNode.nodeValue);
 };
 
+
 /**
  * Returns true if the node contains only whitespace and is not and does not
  * contain any images, iframes or embed tags.
@@ -289,6 +287,7 @@ goog.editor.node.findInChildren = function(parent, hasProperty) {
   return null;
 };
 
+
 /**
  * Search ancestor nodes using a predicate function and returns the topmost
  * ancestor in the chain of consecutive ancestors that satisfies the condition.
@@ -308,6 +307,7 @@ goog.editor.node.findHighestMatchingAncestor = function(node, hasProperty) {
   }
   return ancestor;
 };
+
 
 /**
 * Checks if node is a block-level html element. The <tt>display</tt> css

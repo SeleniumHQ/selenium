@@ -16,7 +16,6 @@
  * @fileoverview Loads a list of URIs in bulk. All requests must be a success
  * in order for the load to be considered a success.
  *
-*
  */
 
 goog.provide('goog.net.BulkLoader');
@@ -28,6 +27,7 @@ goog.require('goog.events.EventTarget');
 goog.require('goog.net.BulkLoaderHelper');
 goog.require('goog.net.EventType');
 goog.require('goog.net.XhrIo');
+
 
 
 /**

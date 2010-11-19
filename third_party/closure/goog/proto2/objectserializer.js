@@ -16,7 +16,6 @@
  * @fileoverview Protocol Buffer 2 Serializer which serializes messages
  *  into anonymous, simplified JSON objects.
  *
-*
  */
 
 goog.provide('goog.proto2.ObjectSerializer');

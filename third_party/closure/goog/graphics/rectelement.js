@@ -15,14 +15,13 @@
 
 /**
  * @fileoverview A thin wrapper around the DOM element for rectangles.
-*
-*
  */
 
 
 goog.provide('goog.graphics.RectElement');
 
 goog.require('goog.graphics.StrokeAndFillElement');
+
 
 
 /**

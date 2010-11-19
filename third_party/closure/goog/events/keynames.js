@@ -15,7 +15,6 @@
 /**
  * @fileoverview Constant declarations for common key codes.
  *
-*
  */
 
 goog.provide('goog.events.KeyNames');
@@ -61,6 +60,7 @@ goog.events.KeyNames = {
   55: '7',
   56: '8',
   57: '9',
+  61: 'equals',
   65: 'a',
   66: 'b',
   67: 'c',
@@ -88,8 +88,21 @@ goog.events.KeyNames = {
   89: 'y',
   90: 'z',
   93: 'context',
+  96: 'num-0',
+  97: 'num-1',
+  98: 'num-2',
+  99: 'num-3',
+  100: 'num-4',
+  101: 'num-5',
+  102: 'num-6',
+  103: 'num-7',
+  104: 'num-8',
+  105: 'num-9',
+  106: 'num-multiply',
   107: 'num-plus',
   109: 'num-minus',
+  110: 'num-period',
+  111: 'num-division',
   112: 'f1',
   113: 'f2',
   114: 'f3',

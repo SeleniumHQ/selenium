@@ -32,6 +32,12 @@
  * almost all locales thus won't be included here.
  */
 
+/**
+ * Korean data is modified manually before CLDR made similar change. If
+ * this file got re-generated, please make sure we don't lose those change
+ * until CLDR fixes them.
+ */
+
 goog.provide('goog.i18n.DateTimePatterns');
 
 goog.provide('goog.i18n.DateTimePatterns_am');
@@ -613,14 +619,17 @@ goog.i18n.DateTimePatterns_kn = {
 
 /**
  * Extended set of localized date/time patterns for locale ko.
+ * Pattern for "YEAR_FULL" and "DAY_ABBR" were changed manually
+ * on generated code. We need to keep those change until CLDR
+ * fixes them.
  */
 goog.i18n.DateTimePatterns_ko = {
-  YEAR_FULL: 'yyyy',
+  YEAR_FULL: 'y년',
   YEAR_MONTH_ABBR: 'y년 MMM',
   YEAR_MONTH_FULL: 'yyyy년 MMMM',
   MONTH_DAY_ABBR: 'MMM d일',
   MONTH_DAY_FULL: 'MMMM dd일',
-  DAY_ABBR: 'd'
+  DAY_ABBR: 'd일'
 };
 
 

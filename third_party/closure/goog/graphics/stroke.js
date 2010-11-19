@@ -15,11 +15,11 @@
 
 /**
  * @fileoverview Represents a stroke object for goog.graphics.
-*
  */
 
 
 goog.provide('goog.graphics.Stroke');
+
 
 
 /**

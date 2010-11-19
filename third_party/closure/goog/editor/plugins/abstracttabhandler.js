@@ -17,7 +17,7 @@
  * abstract method which should be overriden to handle a tab key press.
  *
  * @author robbyw@google.com (Robby Walker)
-*
+ * @author ajp@google.com (Andy Perelson)
  */
 
 goog.provide('goog.editor.plugins.AbstractTabHandler');

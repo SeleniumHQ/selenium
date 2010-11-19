@@ -15,8 +15,6 @@
 /**
  * @fileoverview Client positioning class.
  *
-*
-*
  */
 
 goog.provide('goog.positioning.AnchoredPosition');
@@ -24,6 +22,7 @@ goog.provide('goog.positioning.AnchoredPosition');
 goog.require('goog.math.Box');
 goog.require('goog.positioning');
 goog.require('goog.positioning.AbstractPosition');
+
 
 
 /**
@@ -65,9 +64,11 @@ goog.inherits(goog.positioning.AnchoredPosition,
  * @param {goog.positioning.Corner} movableCorner Corner of the movable element
  *     that should be positioned adjacent to the anchored element.
  * @param {goog.math.Box=} opt_margin A margin specifin pixels.
+ * @param {goog.math.Size=} opt_preferredSize PreferredSize of the
+ *     movableElement (unused in this class).
  */
 goog.positioning.AnchoredPosition.prototype.reposition = function(
-    movableElement, movableCorner, opt_margin) {
+    movableElement, movableCorner, opt_margin, opt_preferredSize) {
   goog.positioning.positionAtAnchor(this.element,
                                     this.corner,
                                     movableElement,

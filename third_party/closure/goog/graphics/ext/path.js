@@ -27,6 +27,7 @@ goog.require('goog.math');
 goog.require('goog.math.Rect');
 
 
+
 /**
  * Creates a path object
  * @constructor

@@ -21,7 +21,6 @@
  * critical.
  *
  * @supported IE 6.0+, Safari 2.0+, Firefox 1.5+, Opera 9.2+.
-*
  * @see ../demos/imagelessroundedcorner.html
  */
 
@@ -140,6 +139,7 @@ goog.ui.ImagelessRoundedCorner.LEFT_ =
 goog.ui.ImagelessRoundedCorner.TOP_ =
     goog.ui.ImagelessRoundedCorner.Corner.TOP_LEFT |
     goog.ui.ImagelessRoundedCorner.Corner.TOP_RIGHT;
+
 
 
 /**
@@ -899,7 +899,8 @@ goog.ui.VmlRoundedCorner.prototype.drawBackground_ =
       goog.ui.AbstractImagelessRoundedCorner.BORDER_WIDTH_FACTOR :
       this.width_ - goog.ui.AbstractImagelessRoundedCorner.BORDER_WIDTH_FACTOR;
   arcEnd[1] = this.isTop_ ?
-      this.height_ - goog.ui.AbstractImagelessRoundedCorner.BORDER_WIDTH_FACTOR:
+      this.height_ -
+          goog.ui.AbstractImagelessRoundedCorner.BORDER_WIDTH_FACTOR :
       goog.ui.AbstractImagelessRoundedCorner.BORDER_WIDTH_FACTOR;
   var oppositeCorner = [];
   oppositeCorner[0] = this.isLeft_ ?

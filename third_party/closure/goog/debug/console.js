@@ -18,7 +18,6 @@
  * Has an autoInstall option which can be put into initialization code, which
  * will start logging if "Debug=true" is in document.location.href
  *
-*
  */
 
 goog.provide('goog.debug.Console');
@@ -26,6 +25,7 @@ goog.provide('goog.debug.Console');
 goog.require('goog.debug.LogManager');
 goog.require('goog.debug.Logger.Level');
 goog.require('goog.debug.TextFormatter');
+
 
 
 /**

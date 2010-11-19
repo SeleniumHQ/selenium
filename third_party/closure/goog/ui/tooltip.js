@@ -15,7 +15,6 @@
 /**
  * @fileoverview Tooltip widget implementation.
  *
-*
  * @see ../demos/tooltip.html
  */
 
@@ -228,6 +227,15 @@ goog.ui.Tooltip.prototype.parentTooltip_;
  */
 goog.ui.Tooltip.prototype.getDomHelper = function() {
   return this.dom_;
+};
+
+
+/**
+ * @return {goog.ui.Tooltip} Active tooltip in a child element, or null if none.
+ * @protected
+ */
+goog.ui.Tooltip.prototype.getChildTooltip = function() {
+  return this.childTooltip_;
 };
 
 
@@ -456,7 +464,7 @@ goog.ui.Tooltip.prototype.onBeforeShow = function() {
 
   var element = this.getElement();
   element.className = this.className;
-  this.clearHideTimer_();
+  this.clearHideTimer();
 
   // Register event handlers for tooltip. Used to prevent the tooltip from
   // closing if the cursor is over the tooltip rather then the element that
@@ -474,7 +482,9 @@ goog.ui.Tooltip.prototype.onBeforeShow = function() {
 /**
  * Called after the popup is hidden.
  *
- * @private
+ * @protected
+ * @suppress {underscore}
+ * @override
  */
 goog.ui.Tooltip.prototype.onHide_ = function() {
   goog.array.remove(goog.ui.Tooltip.activeInstances_, this);
@@ -518,7 +528,9 @@ goog.ui.Tooltip.prototype.onHide_ = function() {
  *     at.
  */
 goog.ui.Tooltip.prototype.maybeShow = function(el, opt_pos) {
-  if (this.anchor == el) {
+  // Assert that the mouse is still over the same element, and that we have not
+  // detached from the anchor in the meantime.
+  if (this.anchor == el && this.elements_.contains(this.anchor)) {
     if (this.seenInteraction_ || !this.requireInteraction_) {
       // If it is currently showing, then hide it, and abort if it doesn't hide.
       this.setVisible(false);
@@ -530,6 +542,32 @@ goog.ui.Tooltip.prototype.maybeShow = function(el, opt_pos) {
     }
   }
   this.showTimer = undefined;
+};
+
+
+/**
+ * @return {goog.structs.Set} Elements this widget is attached to.
+ * @protected
+ */
+goog.ui.Tooltip.prototype.getElements = function() {
+  return this.elements_;
+};
+
+
+/**
+ * @return {Element} Active element reference.
+ */
+goog.ui.Tooltip.prototype.getActiveElement = function() {
+  return this.activeEl_;
+};
+
+
+/**
+ * @param {Element} activeEl Active element reference.
+ * @protected
+ */
+goog.ui.Tooltip.prototype.setActiveElement = function(activeEl) {
+  this.activeEl_ = activeEl;
 };
 
 
@@ -620,7 +658,7 @@ goog.ui.Tooltip.prototype.saveCursorPosition_ = function(event) {
 goog.ui.Tooltip.prototype.handleMouseOver = function(event) {
   var el = this.getAnchorFromElement(/** @type {Element} */ (event.target));
   this.activeEl_ = /** @type {Element} */ (el);
-  this.clearHideTimer_();
+  this.clearHideTimer();
   if (el != this.anchor) {
     this.anchor = el;
     this.startShowTimer(/** @type {Element} */ (el));
@@ -683,7 +721,7 @@ goog.ui.Tooltip.prototype.handleFocus = function(event) {
   if (this.anchor != el) {
     this.anchor = el;
     var pos = new goog.ui.Tooltip.ElementTooltipPosition(this.activeEl_);
-    this.clearHideTimer_();
+    this.clearHideTimer();
     this.startShowTimer(/** @type {Element} */ (el), pos);
 
     this.checkForParentTooltip_();
@@ -749,7 +787,7 @@ goog.ui.Tooltip.prototype.handleMouseOutAndBlur = function(event) {
 goog.ui.Tooltip.prototype.handleTooltipMouseOver = function(event) {
   var element = this.getElement();
   if (this.activeEl_ != element) {
-    this.clearHideTimer_();
+    this.clearHideTimer();
     this.activeEl_ = element;
   }
 };
@@ -816,15 +854,15 @@ goog.ui.Tooltip.prototype.startHideTimer_ = function() {
 
 /**
  * Helper method called to clear the close timer.
- *
- * @private
+ * @protected
  */
-goog.ui.Tooltip.prototype.clearHideTimer_ = function() {
+goog.ui.Tooltip.prototype.clearHideTimer = function() {
   if (this.hideTimer) {
     goog.Timer.clear(this.hideTimer);
     this.hideTimer = undefined;
   }
 };
+
 
 /**
  * Destroys widget and removes all event listeners.

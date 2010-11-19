@@ -14,13 +14,13 @@
 
 /**
  * @fileoverview Mock matchers for event related arguments.
-*
  */
 
 goog.provide('goog.testing.events.EventMatcher');
 
 goog.require('goog.events.Event');
 goog.require('goog.testing.mockmatchers.ArgumentMatcher');
+
 
 
 /**

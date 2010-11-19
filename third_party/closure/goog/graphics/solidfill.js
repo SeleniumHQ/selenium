@@ -15,7 +15,6 @@
 
 /**
  * @fileoverview Represents a solid color fill goog.graphics.
-*
  */
 
 
@@ -23,6 +22,7 @@ goog.provide('goog.graphics.SolidFill');
 
 
 goog.require('goog.graphics.Fill');
+
 
 
 /**

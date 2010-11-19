@@ -15,7 +15,6 @@
 /**
  * @fileoverview Tab bar UI component.
  *
-*
  * @see ../demos/tabbar.html
  */
 
@@ -65,16 +64,7 @@ goog.ui.TabBar = function(opt_location, opt_renderer, opt_domHelper) {
       opt_renderer || goog.ui.TabBarRenderer.getInstance(),
       opt_domHelper);
 
-  // Listen for SELECT, UNSELECT, DISABLE, and HIDE events dispatched by tabs.
-  var handler = this.getHandler();
-  handler.listen(this, goog.ui.Component.EventType.SELECT,
-      this.handleTabSelect);
-  handler.listen(this, goog.ui.Component.EventType.UNSELECT,
-      this.handleTabUnselect);
-  handler.listen(this, goog.ui.Component.EventType.DISABLE,
-      this.handleTabDisable);
-  handler.listen(this, goog.ui.Component.EventType.HIDE,
-      this.handleTabHide);
+  this.listenToTabEvents_();
 };
 goog.inherits(goog.ui.TabBar, goog.ui.Container);
 
@@ -118,6 +108,16 @@ goog.ui.TabBar.prototype.autoSelectTabs_ = true;
  * @private
  */
 goog.ui.TabBar.prototype.selectedTab_ = null;
+
+
+/**
+ * @inheritDoc
+ */
+goog.ui.TabBar.prototype.enterDocument = function() {
+  goog.ui.TabBar.superClass_.enterDocument.call(this);
+
+  this.listenToTabEvents_();
+};
 
 
 /** @inheritDoc */
@@ -353,6 +353,22 @@ goog.ui.TabBar.prototype.handleFocus = function(e) {
     this.setHighlighted(this.getSelectedTab() ||
         /** @type {goog.ui.Tab} */ (this.getChildAt(0)));
   }
+};
+
+
+/**
+ * Subscribes to events dispatched by tabs.
+ * @private
+ */
+goog.ui.TabBar.prototype.listenToTabEvents_ = function() {
+  // Listen for SELECT, UNSELECT, DISABLE, and HIDE events dispatched by tabs.
+  this.getHandler().
+      listen(this, goog.ui.Component.EventType.SELECT, this.handleTabSelect).
+      listen(this,
+             goog.ui.Component.EventType.UNSELECT,
+             this.handleTabUnselect).
+      listen(this, goog.ui.Component.EventType.DISABLE, this.handleTabDisable).
+      listen(this, goog.ui.Component.EventType.HIDE, this.handleTabHide);
 };
 
 

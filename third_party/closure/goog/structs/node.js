@@ -15,11 +15,11 @@
 /**
  * @fileoverview Generic immutable node object to be used in collections.
  *
-*
  */
 
 
 goog.provide('goog.structs.Node');
+
 
 
 /**

@@ -26,7 +26,6 @@
  * time zone order in each time zone group. The easiest way to do that is
  * to modify this code directly, and that's what we decide to do.
  *
-*
  */
 
 

@@ -15,7 +15,6 @@
 /**
  * @fileoverview Renderer for {@link goog.ui.MenuItem}s.
  *
-*
  */
 
 goog.provide('goog.ui.MenuItemRenderer');
@@ -27,6 +26,7 @@ goog.require('goog.dom.classes');
 goog.require('goog.ui.Component.State');
 goog.require('goog.ui.ControlContent');
 goog.require('goog.ui.ControlRenderer');
+
 
 
 /**
@@ -156,6 +156,7 @@ goog.ui.MenuItemRenderer.prototype.decorate = function(item, element) {
   return goog.ui.MenuItemRenderer.superClass_.decorate.call(this, item,
       element);
 };
+
 
 /**
  * Takes a menu item's root element, and sets its content to the given text

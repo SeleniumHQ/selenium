@@ -16,14 +16,13 @@
  * @fileoverview A utility class for making layout assertions. This is a port
  * of http://go/layoutbot.java
  * See {@link http://go/layouttesting}.
-*
-*
  */
 
 goog.provide('goog.testing.style.layoutasserts');
 
 goog.require('goog.style');
 goog.require('goog.testing.asserts');
+
 
 /**
  * Asserts that an element has:

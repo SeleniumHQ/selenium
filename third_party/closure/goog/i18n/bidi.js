@@ -14,8 +14,6 @@
 
 /**
  * @fileoverview Utility functions for supporting Bidi issues.
-*
-*
  */
 
 
@@ -24,6 +22,33 @@
  */
 goog.provide('goog.i18n.bidi');
 
+
+/**
+ * @define {boolean} FORCE_RTL forces the {@link goog.i18n.bidi.IS_RTL} constant
+ * to say that the current locale is a RTL locale.  This should only be used
+ * if you want to override the default behavior for deciding whether the
+ * current locale is RTL or not.
+ *
+ * {@see goog.i18n.bidi.IS_RTL}
+ */
+goog.i18n.bidi.FORCE_RTL = false;
+
+
+/**
+ * Constant that defines whether or not the current locale is a RTL locale.
+ * If {@link goog.i18n.bidi.FORCE_RTL} is not true, this constant will default
+ * to check that {@link goog.LOCALE} is one of a few major RTL locales.
+ *
+ * <p>Since this constant refers to the directionality of the locale, it is up
+ * to the caller to determine if this constant should also be used for the
+ * direction of the UI.
+ *
+ * {@see goog.LOCALE}
+ *
+ * @type {boolean}
+ */
+goog.i18n.bidi.IS_RTL = goog.i18n.bidi.FORCE_RTL ||
+    (goog.LOCALE == 'ar' || goog.LOCALE == 'iw' || goog.LOCALE == 'fa');
 
 
 /**

@@ -15,8 +15,6 @@
 /**
  * @fileoverview Client viewport positioning class.
  *
-*
-*
  */
 
 goog.provide('goog.positioning.AbsolutePosition');

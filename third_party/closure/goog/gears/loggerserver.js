@@ -16,7 +16,6 @@
  * @fileoverview This class lives on the main thread and takes care of incoming
  * logger commands from a worker thread.
  *
-*
  */
 
 goog.provide('goog.gears.LoggerServer');
@@ -25,6 +24,7 @@ goog.require('goog.Disposable');
 goog.require('goog.debug.Logger');
 goog.require('goog.debug.Logger.Level');
 goog.require('goog.gears.Worker.EventType');
+
 
 
 /**

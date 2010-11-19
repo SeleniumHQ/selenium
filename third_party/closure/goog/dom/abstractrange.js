@@ -42,6 +42,7 @@ goog.dom.RangeType = {
 };
 
 
+
 /**
  * Creates a new selection with no properties.  Do not use this constructor -
  * use one of the goog.dom.Range.from* methods instead.
@@ -463,6 +464,7 @@ goog.dom.AbstractRange.prototype.saveUsingCarets = function() {
 goog.dom.AbstractRange.prototype.collapse = goog.abstractMethod;
 
 // RANGE ITERATION
+
 
 
 /**

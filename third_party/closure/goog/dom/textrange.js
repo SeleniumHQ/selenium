@@ -16,8 +16,8 @@
  * @fileoverview Utilities for working with text ranges in HTML documents.
  *
  * @author robbyw@google.com (Robby Walker)
-*
-*
+ * @author ojan@google.com (Ojan Vafai)
+ * @author jparent@google.com (Julie Parent)
  */
 
 
@@ -33,6 +33,7 @@ goog.require('goog.dom.TextRangeIterator');
 goog.require('goog.dom.browserrange');
 goog.require('goog.string');
 goog.require('goog.userAgent');
+
 
 
 /**
@@ -550,6 +551,7 @@ goog.dom.TextRange.prototype.collapse = function(toAnchor) {
 
 
 // SAVED RANGE OBJECTS
+
 
 
 /**

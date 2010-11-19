@@ -18,7 +18,6 @@
  * {@link goog.ui.CustomButtonRenderer}. This creates a simpler menu button
  * that will look more like a traditional <select> menu.
  *
-*
  */
 
 goog.provide('goog.ui.FlatMenuButtonRenderer');
@@ -31,6 +30,7 @@ goog.require('goog.ui.Menu');
 goog.require('goog.ui.MenuButton');
 goog.require('goog.ui.MenuRenderer');
 goog.require('goog.ui.registry');
+
 
 
 /**
@@ -176,7 +176,6 @@ goog.ui.FlatMenuButtonRenderer.prototype.createDropdown = function(dom) {
       goog.ui.INLINE_BLOCK_CLASSNAME + ' ' +
       goog.getCssName(this.getCssClass(), 'dropdown'), '\u00A0');
 };
-
 
 
 /**

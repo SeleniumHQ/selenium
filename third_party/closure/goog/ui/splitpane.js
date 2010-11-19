@@ -26,8 +26,6 @@
  * The content to be split goes in the first and second DIVs, the third one
  * is for managing (and styling) the splitter handle.
  *
-*
-*
  * @see ../demos/splitpane.html
  */
 

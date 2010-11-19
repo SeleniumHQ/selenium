@@ -16,7 +16,6 @@
  * @fileoverview This class provides a builder for building multipart form data
  * that is to be usef with Gears BlobBuilder and GearsHttpRequest.
  *
-*
  */
 
 goog.provide('goog.gears.MultipartFormData');
@@ -189,6 +188,7 @@ goog.gears.MultipartFormData.prototype.assertNotClosed_ = function() {
   goog.asserts.assert(!this.closed_, 'The multipart form builder has been ' +
                       'closed and no more data can be added to it');
 };
+
 
 /**
  * Asserts that the value does not contain the boundary.

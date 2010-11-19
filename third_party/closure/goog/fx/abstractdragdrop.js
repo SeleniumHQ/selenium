@@ -18,7 +18,6 @@
  * Provides functionality for implementing drag and drop classes. Also provides
  * support classes and events.
  *
-*
  */
 
 goog.provide('goog.fx.AbstractDragDrop');
@@ -36,6 +35,8 @@ goog.require('goog.fx.Dragger.EventType');
 goog.require('goog.math.Box');
 goog.require('goog.math.Coordinate');
 goog.require('goog.style');
+
+
 
 /**
  * Abstract class that provides reusable functionality for implementing drag
@@ -1140,6 +1141,7 @@ goog.fx.DragDropEvent.prototype.disposeInternal = function() {
 };
 
 
+
 /**
  * Class representing a source or target element for drag and drop operations.
  *
@@ -1278,6 +1280,7 @@ goog.fx.DragDropItem.prototype.maybeStartDrag_ = function(event, element) {
   event.preventDefault();
 };
 
+
 /**
  * Event handler for mouse move. Starts drag operation if moved more than the
  * threshold value.
@@ -1290,15 +1293,15 @@ goog.fx.DragDropItem.prototype.mouseMove_ = function(event) {
       Math.abs(event.clientY - this.startPosition_.y);
 
   if (distance > goog.fx.AbstractDragDrop.initDragDistanceThreshold) {
-      var currentDragElement = this.currentDragElement_;
-      goog.events.unlisten(currentDragElement, goog.events.EventType.MOUSEMOVE,
-                           this.mouseMove_, false, this);
-      goog.events.unlisten(currentDragElement, goog.events.EventType.MOUSEOUT,
-                           this.mouseMove_, false, this);
-      goog.events.unlisten(currentDragElement, goog.events.EventType.MOUSEUP,
-                           this.mouseUp_, false, this);
+    var currentDragElement = this.currentDragElement_;
+    goog.events.unlisten(currentDragElement, goog.events.EventType.MOUSEMOVE,
+                         this.mouseMove_, false, this);
+    goog.events.unlisten(currentDragElement, goog.events.EventType.MOUSEOUT,
+                         this.mouseMove_, false, this);
+    goog.events.unlisten(currentDragElement, goog.events.EventType.MOUSEUP,
+                         this.mouseUp_, false, this);
 
-      this.parent_.startDrag(event, this);
+    this.parent_.startDrag(event, this);
   }
 };
 

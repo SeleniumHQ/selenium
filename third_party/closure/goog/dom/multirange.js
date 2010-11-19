@@ -33,6 +33,7 @@ goog.require('goog.dom.TextRange');
 goog.require('goog.iter.StopIteration');
 
 
+
 /**
  * Creates a new multi part range with no properties.  Do not use this
  * constructor: use one of the goog.dom.Range.createFrom* methods instead.
@@ -360,6 +361,7 @@ goog.dom.MultiRange.prototype.collapse = function(toAnchor) {
 // SAVED RANGE OBJECTS
 
 
+
 /**
  * A SavedRange implementation using DOM endpoints.
  * @param {goog.dom.MultiRange} range The range to save.
@@ -403,6 +405,7 @@ goog.dom.DomSavedMultiRange_.prototype.disposeInternal = function() {
 
 
 // RANGE ITERATION
+
 
 
 /**

@@ -19,9 +19,8 @@
  * global <code>CLOSURE_NO_DEPS</code> is set to true.  This allows projects to
  * include their own deps file(s) from different locations.
  *
-*
-*
  */
+
 
 /**
  * @define {boolean} Overridden to true by the compiler when --closure_pass
@@ -34,8 +33,10 @@ var COMPILED = false;
  * Base namespace for the Closure library.  Checks to see goog is
  * already defined in the current scope before assigning to prevent
  * clobbering if base.js is loaded more than once.
+ *
+ * @const
  */
-var goog = goog || {}; // Check to see if already defined in current scope
+var goog = goog || {};
 
 
 /**
@@ -111,6 +112,21 @@ goog.provide = function(name) {
   }
 
   goog.exportPath_(name);
+};
+
+
+/**
+ * Marks that the current file should only be used for testing, and never for
+ * live code in production.
+ * @param {string=} opt_message Optional message to add to the error that's
+ *     raised when used in production code.
+ */
+goog.setTestOnly = function(opt_message) {
+  if (COMPILED && !goog.DEBUG) {
+    opt_message = opt_message || '';
+    throw Error('Importing test-only code into non-debug environment' +
+                opt_message ? ': ' + opt_message : '.');
+  }
 };
 
 
@@ -239,7 +255,6 @@ goog.addDependency = function(relPath, provides, requires) {
 };
 
 
-
 /**
  * Implements a system for the dynamic resolution of dependencies
  * that works in parallel with the BUILD system. Note that all calls
@@ -269,9 +284,7 @@ goog.require = function(rule) {
         goog.global.console['error'](errorMessage);
       }
 
-      
         throw Error(errorMessage);
-        
     }
   }
 };
@@ -301,7 +314,7 @@ goog.global.CLOSURE_NO_DEPS;
 
 /**
  * Null function used for default values of callbacks, etc.
- * @return {void}
+ * @return {void} Nothing.
  */
 goog.nullFunction = function() {};
 
@@ -372,8 +385,9 @@ if (!COMPILED) {
     pathToNames: {}, // 1 to many
     nameToPath: {}, // 1 to 1
     requires: {}, // 1 to many
-    visited: {}, // used when resolving dependencies to prevent us from
-                 // visiting the file twice
+    // used when resolving dependencies to prevent us from
+    // visiting the file twice
+    visited: {},
     written: {} // used to keep track of script files we have written
   };
 
@@ -608,12 +622,12 @@ goog.typeOf = function(value) {
       return 'null';
     }
 
-  // In Safari typeof nodeList returns 'function', and on Firefox
-  // typeof behaves similarly for HTML{Applet,Embed,Object}Elements
-  // and RegExps.  We would like to return object for those and we can
-  // detect an invalid function by making sure that the function
-  // object has a call method.
   } else if (s == 'function' && typeof value.call == 'undefined') {
+    // In Safari typeof nodeList returns 'function', and on Firefox
+    // typeof behaves similarly for HTML{Applet,Embed,Object}Elements
+    // and RegExps.  We would like to return object for those and we can
+    // detect an invalid function by making sure that the function
+    // object has a call method.
     return 'object';
   }
   return s;
@@ -791,7 +805,8 @@ goog.isObject = function(val) {
  * calls with the same object as a parameter returns the same value. The unique
  * ID is guaranteed to be unique across the current session amongst objects that
  * are passed into {@code getUid}. There is no guarantee that the ID is unique
- * or consistent across sessions.
+ * or consistent across sessions. It is unsafe to generate unique ID for
+ * function prototypes.
  *
  * @param {Object} obj The object to get the unique ID for.
  * @return {number} The unique ID for the object.
@@ -799,15 +814,11 @@ goog.isObject = function(val) {
 goog.getUid = function(obj) {
   // TODO(user): Make the type stricter, do not accept null.
 
-  // In IE, DOM nodes do not extend Object so they do not have this method.
-  // we need to check hasOwnProperty because the proto might have this set.
-  if (obj.hasOwnProperty && obj.hasOwnProperty(goog.UID_PROPERTY_)) {
-    return obj[goog.UID_PROPERTY_];
-  }
-  if (!obj[goog.UID_PROPERTY_]) {
-    obj[goog.UID_PROPERTY_] = ++goog.uidCounter_;
-  }
-  return obj[goog.UID_PROPERTY_];
+  // In Opera window.hasOwnProperty exists but always returns false so we avoid
+  // using it. As a consequence the unique ID generated for BaseClass.prototype
+  // and SubClass.prototype will be the same.
+  return obj[goog.UID_PROPERTY_] ||
+      (obj[goog.UID_PROPERTY_] = ++goog.uidCounter_);
 };
 
 
@@ -915,6 +926,58 @@ Object.prototype.clone;
 
 
 /**
+ * A native implementation of goog.bind.
+ * @param {Function} fn A function to partially apply.
+ * @param {Object|undefined} selfObj Specifies the object which |this| should
+ *     point to when the function is run. If the value is null or undefined, it
+ *     will default to the global object.
+ * @param {...*} var_args Additional arguments that are partially
+ *     applied to the function.
+ * @return {!Function} A partially-applied form of the function bind() was
+ *     invoked as a method of.
+ * @private
+ * @suppress {deprecated} The compiler thinks that Function.prototype.bind
+ *     is deprecated because some people have declared a pure-JS version.
+ *     Only the pure-JS version is truly deprecated.
+ */
+goog.bindNative_ = function(fn, selfObj, var_args) {
+  return /** @type {!Function} */ (fn.call.apply(fn.bind, arguments));
+};
+
+
+/**
+ * A pure-JS implementation of goog.bind.
+ * @param {Function} fn A function to partially apply.
+ * @param {Object|undefined} selfObj Specifies the object which |this| should
+ *     point to when the function is run. If the value is null or undefined, it
+ *     will default to the global object.
+ * @param {...*} var_args Additional arguments that are partially
+ *     applied to the function.
+ * @return {!Function} A partially-applied form of the function bind() was
+ *     invoked as a method of.
+ * @private
+ */
+goog.bindJs_ = function(fn, selfObj, var_args) {
+  var context = selfObj || goog.global;
+
+  if (arguments.length > 2) {
+    var boundArgs = Array.prototype.slice.call(arguments, 2);
+    return function() {
+      // Prepend the bound arguments to the current arguments.
+      var newArgs = Array.prototype.slice.call(arguments);
+      Array.prototype.unshift.apply(newArgs, boundArgs);
+      return fn.apply(context, newArgs);
+    };
+
+  } else {
+    return function() {
+      return fn.apply(context, arguments);
+    };
+  }
+};
+
+
+/**
  * Partially applies this function to a particular 'this object' and zero or
  * more arguments. The result is a new function with some arguments of the first
  * function pre-filled and the value of |this| 'pre-specified'.<br><br>
@@ -934,27 +997,26 @@ Object.prototype.clone;
  *     will default to the global object.
  * @param {...*} var_args Additional arguments that are partially
  *     applied to the function.
- *
  * @return {!Function} A partially-applied form of the function bind() was
  *     invoked as a method of.
+ * @suppress {deprecated} See above.
  */
 goog.bind = function(fn, selfObj, var_args) {
-  var context = selfObj || goog.global;
-
-  if (arguments.length > 2) {
-    var boundArgs = Array.prototype.slice.call(arguments, 2);
-    return function() {
-      // Prepend the bound arguments to the current arguments.
-      var newArgs = Array.prototype.slice.call(arguments);
-      Array.prototype.unshift.apply(newArgs, boundArgs);
-      return fn.apply(context, newArgs);
-    };
-
+  // TODO(nicksantos): narrow the type signature.
+  if (Function.prototype.bind &&
+      // NOTE(nicksantos): Somebody pulled base.js into the default
+      // Chrome extension environment. This means that for Chrome extensions,
+      // they get the implementation of Function.prototype.bind that
+      // calls goog.bind instead of the native one. Even worse, we don't want
+      // to introduce a circular dependency between goog.bind and
+      // Function.prototype.bind, so we have to hack this to make sure it
+      // works correctly.
+      Function.prototype.bind.toString().indexOf('native code') != -1) {
+    goog.bind = goog.bindNative_;
   } else {
-    return function() {
-      return fn.apply(context, arguments);
-    };
+    goog.bind = goog.bindJs_;
   }
+  return goog.bind.apply(null, arguments);
 };
 
 
@@ -1317,6 +1379,5 @@ goog.base = function(me, opt_methodName, var_args) {
 goog.scope = function(fn) {
   fn.call(goog.global);
 };
-
 
 

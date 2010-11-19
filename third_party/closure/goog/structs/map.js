@@ -15,8 +15,6 @@
 /**
  * @fileoverview Datastructure: Hash Map.
  *
-*
-*
  *
  * This file contains an implementation of a Map structure. It implements a lot
  * of the methods used in goog.structs so those functions work on hashes.  For
@@ -31,6 +29,7 @@ goog.require('goog.iter.Iterator');
 goog.require('goog.iter.StopIteration');
 goog.require('goog.object');
 goog.require('goog.structs');
+
 
 
 /**
@@ -94,6 +93,7 @@ goog.structs.Map.prototype.count_ = 0;
  * @type {number}
  */
 goog.structs.Map.prototype.version_ = 0;
+
 
 /**
  * @return {number} The number of key-value pairs in the map.
@@ -213,6 +213,7 @@ goog.structs.Map.prototype.clear = function() {
   this.count_ = 0;
   this.version_ = 0;
 };
+
 
 /**
  * Removes a key-value pair based on the key. This is O(logN) amortized due to

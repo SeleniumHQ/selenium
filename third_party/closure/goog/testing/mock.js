@@ -33,7 +33,6 @@
  *   Have the exceptions for LooseMock show the number of expected/actual calls
  *   loose and strict mocks share a lot of code - move it to the base class
  *
-*
  */
 
 goog.provide('goog.testing.Mock');
@@ -41,7 +40,10 @@ goog.provide('goog.testing.MockExpectation');
 
 goog.require('goog.array');
 goog.require('goog.testing.JsUnitException');
+goog.require('goog.testing.MockInterface');
 goog.require('goog.testing.mockmatchers');
+
+
 
 /**
  * This is a class that represents an expectation.
@@ -148,6 +150,7 @@ goog.testing.MockExpectation.prototype.getErrorMessageCount = function() {
 };
 
 
+
 /**
  * The base class for a mock object.
  * @param {Object|Function} objectToMock The object that should be mocked, or
@@ -157,6 +160,7 @@ goog.testing.MockExpectation.prototype.getErrorMessageCount = function() {
  * @param {boolean=} opt_createProxy An optional argument denoting that
  *     a proxy for the target mock should be created.
  * @constructor
+ * @implements {goog.testing.MockInterface}
  */
 goog.testing.Mock = function(objectToMock, opt_mockStaticMethods,
     opt_createProxy) {

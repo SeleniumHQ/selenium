@@ -50,13 +50,13 @@
  *   photo.setSelected(true);
  * </pre>
  *
-*
  */
 
 goog.provide('goog.ui.media.Photo');
 
 goog.require('goog.ui.media.Media');
 goog.require('goog.ui.media.MediaRenderer');
+
 
 
 /**

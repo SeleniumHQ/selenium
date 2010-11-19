@@ -17,14 +17,13 @@
  * code to be modularized, giving the benefits of lazy loading and loading on
  * demand.
  *
-*
-*
-*
  */
 
 goog.provide('goog.module.BaseModule');
 
 goog.require('goog.Disposable');
+
+
 
 /**
  * A basic module object that represents a module of Javascript code that can

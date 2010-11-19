@@ -34,19 +34,20 @@
  * - altKey         {boolean}   Was alt key depressed
  * - shiftKey       {boolean}   Was shift key depressed
  * - metaKey        {boolean}   Was meta key depressed
+ * - state          {Object}    History state object
  *
  * NOTE: The keyCode member contains the raw browser keyCode. For normalized
  * key and character code use {@link goog.events.KeyHandler}.
  * </pre>
  *
-*
-*
  */
 
 goog.provide('goog.events.BrowserEvent');
 goog.provide('goog.events.BrowserEvent.MouseButton');
 
+goog.require('goog.events.BrowserFeature');
 goog.require('goog.events.Event');
+goog.require('goog.events.EventType');
 goog.require('goog.userAgent');
 
 
@@ -62,9 +63,9 @@ goog.require('goog.userAgent');
  * @extends {goog.events.Event}
  */
 goog.events.BrowserEvent = function(opt_e, opt_currentTarget) {
- if (opt_e) {
-   this.init(opt_e, opt_currentTarget);
- }
+  if (opt_e) {
+    this.init(opt_e, opt_currentTarget);
+  }
 };
 goog.inherits(goog.events.BrowserEvent, goog.events.Event);
 
@@ -207,8 +208,16 @@ goog.events.BrowserEvent.prototype.metaKey = false;
 
 
 /**
- * Whether the deafault platform modifier key was pressed at time of event.
- * (This is control for all platformes except Mac, where it's Meta.
+ * History state object, only set for PopState events where it's a copy of the
+ * state object provided to pushState or replaceState.
+ * @type {Object}
+ */
+goog.events.BrowserEvent.prototype.state;
+
+
+/**
+ * Whether the default platform modifier key was pressed at time of event.
+ * (This is control for all platforms except Mac, where it's Meta.
  * @type {boolean}
  */
 goog.events.BrowserEvent.prototype.platformModifierKey = false;
@@ -249,9 +258,9 @@ goog.events.BrowserEvent.prototype.init = function(e, opt_currentTarget) {
     }
     // TODO(user): Use goog.events.EventType when it has been refactored into its
     // own file.
-  } else if (type == 'mouseover') {
+  } else if (type == goog.events.EventType.MOUSEOVER) {
     relatedTarget = e.fromElement;
-  } else if (type == 'mouseout') {
+  } else if (type == goog.events.EventType.MOUSEOUT) {
     relatedTarget = e.toElement;
   }
 
@@ -273,10 +282,12 @@ goog.events.BrowserEvent.prototype.init = function(e, opt_currentTarget) {
   this.shiftKey = e.shiftKey;
   this.metaKey = e.metaKey;
   this.platformModifierKey = goog.userAgent.MAC ? e.metaKey : e.ctrlKey;
+  this.state = e.state;
   this.event_ = e;
   delete this.returnValue_;
   delete this.propagationStopped_;
 };
+
 
 /**
  * Tests to see which button was pressed during the event. This is really only
@@ -295,7 +306,7 @@ goog.events.BrowserEvent.prototype.init = function(e, opt_currentTarget) {
  * @return {boolean} True if button was pressed.
  */
 goog.events.BrowserEvent.prototype.isButton = function(button) {
-  if (goog.userAgent.IE) {
+  if (!goog.events.BrowserFeature.HAS_W3C_BUTTON) {
     if (this.type == 'click') {
       return button == goog.events.BrowserEvent.MouseButton.LEFT;
     } else {
@@ -312,7 +323,7 @@ goog.events.BrowserEvent.prototype.isButton = function(button) {
  * @inheritDoc
  */
 goog.events.BrowserEvent.prototype.stopPropagation = function() {
-  this.propagationStopped_ = true;
+  goog.events.BrowserEvent.superClass_.stopPropagation.call(this);
   if (this.event_.stopPropagation) {
     this.event_.stopPropagation();
   } else {
@@ -322,30 +333,24 @@ goog.events.BrowserEvent.prototype.stopPropagation = function() {
 
 
 /**
- * To prevent default in IE7 for certain keydown events we need set the keyCode
- * to -1.
- * @type {boolean}
- * @private
- */
-goog.events.BrowserEvent.IE7_SET_KEY_CODE_TO_PREVENT_DEFAULT_ =
-    goog.userAgent.IE && !goog.userAgent.isVersion('8')
-
-
-/**
  * @inheritDoc
  */
 goog.events.BrowserEvent.prototype.preventDefault = function() {
-  this.returnValue_ = false;
+  goog.events.BrowserEvent.superClass_.preventDefault.call(this);
   var be = this.event_;
   if (!be.preventDefault) {
     be.returnValue = false;
-    if (goog.events.BrowserEvent.IE7_SET_KEY_CODE_TO_PREVENT_DEFAULT_) {
+    if (goog.events.BrowserFeature.SET_KEY_CODE_TO_PREVENT_DEFAULT) {
       /** @preserveTry */
       try {
-        // Most keys can be prevented using returnValue, just like in IE8 but
-        // some special keys require setting the keyCode to -1 as well:
+        // Most keys can be prevented using returnValue. Some special keys
+        // require setting the keyCode to -1 as well:
         //
+        // In IE7:
         // F3, F5, F10, F11, Ctrl+P, Crtl+O, Ctrl+F (these are taken from IE6)
+        //
+        // In IE8:
+        // Ctrl+P, Crtl+O, Ctrl+F (F1-F12 cannot be stopped through the event)
         //
         // We therefore do this for all function keys as well as when Ctrl key
         // is pressed.

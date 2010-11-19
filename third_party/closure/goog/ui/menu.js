@@ -37,7 +37,6 @@
  * TODO(user): Rename all references of "item" to child since menu is
  * essentially very generic and could, in theory, host a date or color picker.
  *
-*
  * @see ../demos/menu.html
  * @see ../demos/menus.html
  */
@@ -51,12 +50,15 @@ goog.require('goog.ui.Component.EventType');
 goog.require('goog.ui.Component.State');
 goog.require('goog.ui.Container');
 goog.require('goog.ui.Container.Orientation');
-// The following dependencies (MenuItem & MenuSeparator) are implicit.
-// There are no references in the code, but we need to load these
-// classes before goog.ui.Menu.
+goog.require('goog.ui.MenuHeader');
 goog.require('goog.ui.MenuItem');
 goog.require('goog.ui.MenuRenderer');
 goog.require('goog.ui.MenuSeparator');
+
+// The dependencies MenuHeader, MenuItem, and MenuSeparator are implicit.
+// There are no references in the code, but we need to load these
+// classes before goog.ui.Menu.
+
 
 
 // TODO(robbyw): Reverse constructor argument order for consistency.
@@ -169,8 +171,8 @@ goog.ui.Menu.prototype.containsElement = function(element) {
 
 /**
  * Adds a new menu item at the end of the menu.
- * @param {goog.ui.MenuItem|goog.ui.MenuSeparator} item Menu item to add to
- *     the menu.
+ * @param {goog.ui.MenuHeader|goog.ui.MenuItem|goog.ui.MenuSeparator} item Menu
+ *     item to add to the menu.
  * @deprecated Use {@link #addChild} instead.
  */
 goog.ui.Menu.prototype.addItem = function(item) {
@@ -180,8 +182,8 @@ goog.ui.Menu.prototype.addItem = function(item) {
 
 /**
  * Adds a new menu item at a specific index in the menu.
- * @param {goog.ui.MenuItem|goog.ui.MenuSeparator} item Menu item to add to the
- *     menu.
+ * @param {goog.ui.MenuHeader|goog.ui.MenuItem|goog.ui.MenuSeparator} item Menu
+ *     item to add to the menu.
  * @param {number} n Index at which to insert the menu item.
  * @deprecated Use {@link #addChildAt} instead.
  */
@@ -192,7 +194,8 @@ goog.ui.Menu.prototype.addItemAt = function(item, n) {
 
 /**
  * Removes an item from the menu and disposes of it.
- * @param {goog.ui.MenuItem|goog.ui.MenuSeparator} item The menu item to remove.
+ * @param {goog.ui.MenuHeader|goog.ui.MenuItem|goog.ui.MenuSeparator} item The
+ *     menu item to remove.
  * @deprecated Use {@link #removeChild} instead.
  */
 goog.ui.Menu.prototype.removeItem = function(item) {
@@ -219,8 +222,8 @@ goog.ui.Menu.prototype.removeItemAt = function(n) {
 /**
  * Returns a reference to the menu item at a given index.
  * @param {number} n Index of menu item.
- * @return {goog.ui.MenuItem|goog.ui.MenuSeparator|null} Reference to the menu
- *     item.
+ * @return {goog.ui.MenuHeader|goog.ui.MenuItem|goog.ui.MenuSeparator|null}
+ *     Reference to the menu item.
  * @deprecated Use {@link #getChildAt} instead.
  */
 goog.ui.Menu.prototype.getItemAt = function(n) {
@@ -405,4 +408,4 @@ goog.ui.Menu.prototype.decorateContent = function(element) {
   for (var el, i = 0; el = contentElements[i]; i++) {
     renderer.decorateChildren(this, el);
   }
-}
+};

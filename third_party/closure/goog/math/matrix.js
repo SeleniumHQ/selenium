@@ -14,8 +14,6 @@
 
 /**
  * @fileoverview Class for representing matrices and static helper functions.
-*
-*
  */
 
 goog.provide('goog.math.Matrix');
@@ -23,6 +21,7 @@ goog.provide('goog.math.Matrix');
 goog.require('goog.array');
 goog.require('goog.math');
 goog.require('goog.math.Size');
+
 
 
 /**
@@ -55,8 +54,8 @@ goog.math.Matrix = function(m, opt_n) {
   if (m instanceof goog.math.Matrix) {
     this.array_ = m.toArray();
   } else if (goog.isArrayLike(m) &&
-             goog.math.Matrix.isValidArray(/** @type {Array} */ (m))) {
-    this.array_ = goog.array.clone(/** @type {Array.<Array.<number>>} */ (m));
+             goog.math.Matrix.isValidArray(/** @type {!Array} */ (m))) {
+    this.array_ = goog.array.clone(/** @type {!Array.<!Array.<number>>} */ (m));
   } else if (m instanceof goog.math.Size) {
     this.array_ = goog.math.Matrix.createZeroPaddedArray_(m.height, m.width);
   } else if (goog.isNumber(m) && goog.isNumber(opt_n) && m > 0 && opt_n > 0) {
@@ -78,7 +77,7 @@ goog.math.Matrix = function(m, opt_n) {
  * [ 0 0 1 ]
  * </pre>
  * @param {number} n The size of the square identity matrix.
- * @return {goog.math.Matrix} Identity matrix of width and height {@code n}.
+ * @return {!goog.math.Matrix} Identity matrix of width and height {@code n}.
  */
 goog.math.Matrix.createIdentityMatrix = function(n) {
   var rv = [];
@@ -145,7 +144,7 @@ goog.math.Matrix.isValidArray = function(arr) {
  *                     into a new matrix.
  * @param {Object=} opt_obj The object to be used as the value of 'this'
  *     within {@code fn}.
- * @return {goog.math.Matrix} A new matrix with the results from {@code fn}.
+ * @return {!goog.math.Matrix} A new matrix with the results from {@code fn}.
  */
 goog.math.Matrix.map = function(matrix, fn, opt_obj) {
   var m = new goog.math.Matrix(matrix.getSize());
@@ -160,7 +159,7 @@ goog.math.Matrix.map = function(matrix, fn, opt_obj) {
  * Creates a new zero padded matix.
  * @param {number} m Height of matrix.
  * @param {number} n Width of matrix.
- * @return {Array.<Array.<number>>} The new zero padded matrix.
+ * @return {!Array.<!Array.<number>>} The new zero padded matrix.
  * @private
  */
 goog.math.Matrix.createZeroPaddedArray_ = function(m, n) {
@@ -177,24 +176,24 @@ goog.math.Matrix.createZeroPaddedArray_ = function(m, n) {
 
 /**
  * Internal array representing the matrix.
- * @type {Array.<Array.<number>>}
+ * @type {!Array.<!Array.<number>>}
  * @private
  */
-goog.math.Matrix.prototype.array_ = null;
+goog.math.Matrix.prototype.array_;
 
 
 /**
  * After construction the Matrix's size is constant and stored in this object.
- * @type {goog.math.Size}
+ * @type {!goog.math.Size}
  * @private
  */
-goog.math.Matrix.prototype.size_ = null;
+goog.math.Matrix.prototype.size_;
 
 
 /**
  * Returns a new matrix that is the sum of this and the provided matrix.
  * @param {goog.math.Matrix} m The matrix to add to this one.
- * @return {goog.math.Matrix} Resultant sum.
+ * @return {!goog.math.Matrix} Resultant sum.
  */
 goog.math.Matrix.prototype.add = function(m) {
   if (!goog.math.Size.equals(this.size_, m.getSize())) {
@@ -209,7 +208,8 @@ goog.math.Matrix.prototype.add = function(m) {
 /**
  * Appends the given matrix to the right side of this matrix.
  * @param {goog.math.Matrix} m The matrix to augment this matrix with.
- * @return {goog.math.Matrix} A new matrix with additional columns on the right.
+ * @return {!goog.math.Matrix} A new matrix with additional columns on the
+ *     right.
  */
 goog.math.Matrix.prototype.appendColumns = function(m) {
   if (this.size_.height != m.getSize().height) {
@@ -231,7 +231,7 @@ goog.math.Matrix.prototype.appendColumns = function(m) {
 /**
  * Appends the given matrix to the bottom of this matrix.
  * @param {goog.math.Matrix} m The matrix to augment this matrix with.
- * @return {goog.math.Matrix} A new matrix with added columns on the bottom.
+ * @return {!goog.math.Matrix} A new matrix with added columns on the bottom.
  */
 goog.math.Matrix.prototype.appendRows = function(m) {
   if (this.size_.width != m.getSize().width) {
@@ -295,7 +295,7 @@ goog.math.Matrix.prototype.getDeterminant = function() {
 /**
  * Returns the inverse of this matrix if it exists or null if the matrix is
  * not invertible.
- * @return {goog.math.Matrix?} A new matrix which is the inverse of this matrix.
+ * @return {goog.math.Matrix} A new matrix which is the inverse of this matrix.
  */
 goog.math.Matrix.prototype.getInverse = function() {
   if (!this.isSquare()) {
@@ -314,7 +314,7 @@ goog.math.Matrix.prototype.getInverse = function() {
 
 /**
  * Transforms this matrix into reduced row echelon form.
- * @return {goog.math.Matrix} A new matrix reduced row echelon form.
+ * @return {!goog.math.Matrix} A new matrix reduced row echelon form.
  */
 goog.math.Matrix.prototype.getReducedRowEchelonForm = function() {
   var result = new goog.math.Matrix(this);
@@ -328,7 +328,7 @@ goog.math.Matrix.prototype.getReducedRowEchelonForm = function() {
     // Scan each column starting from this row on down for a non-zero value
     var i = row;
     while (result.array_[i][col] == 0) {
-      i++
+      i++;
       if (i == result.size_.height) {
         i = row;
         col++;
@@ -364,7 +364,7 @@ goog.math.Matrix.prototype.getReducedRowEchelonForm = function() {
 
 
 /**
- * @return {goog.math.Size} The dimensions of the matrix.
+ * @return {!goog.math.Size} The dimensions of the matrix.
  */
 goog.math.Matrix.prototype.getSize = function() {
   return this.size_;
@@ -375,7 +375,7 @@ goog.math.Matrix.prototype.getSize = function() {
  * Return the transpose of this matrix.  For an m-by-n matrix, the transpose
  * is the n-by-m matrix which results from turning rows into columns and columns
  * into rows
- * @return {goog.math.Matrix} A new matrix A^T.
+ * @return {!goog.math.Matrix} A new matrix A^T.
  */
 goog.math.Matrix.prototype.getTranspose = function() {
   var m = new goog.math.Matrix(this.size_.width, this.size_.height);
@@ -440,7 +440,7 @@ goog.math.Matrix.prototype.setValueAt = function(i, j, value) {
  * each value multiplied by the given value.
  *
  * @param {goog.math.Matrix|number} m Matrix/number to multiply the matrix by.
- * @return {goog.math.Matrix} Resultant product.
+ * @return {!goog.math.Matrix} Resultant product.
  */
 goog.math.Matrix.prototype.multiply = function(m) {
   if (m instanceof goog.math.Matrix) {
@@ -448,7 +448,7 @@ goog.math.Matrix.prototype.multiply = function(m) {
       throw Error('Invalid matrices for multiplication. Second matrix ' +
           'should have the same number of rows as the first has columns.');
     }
-    return this.matrixMultiply_(/** @type {goog.math.Matrix} */ (m));
+    return this.matrixMultiply_(/** @type {!goog.math.Matrix} */ (m));
   } else if (goog.isNumber(m)) {
     return this.scalarMultiply_(/** @type {number} */ (m));
   } else {
@@ -461,7 +461,7 @@ goog.math.Matrix.prototype.multiply = function(m) {
 /**
  * Returns a new matrix that is the difference of this and the provided matrix.
  * @param {goog.math.Matrix} m The matrix to subtract from this one.
- * @return {goog.math.Matrix} Resultant difference.
+ * @return {!goog.math.Matrix} Resultant difference.
  */
 goog.math.Matrix.prototype.subtract = function(m) {
   if (!goog.math.Size.equals(this.size_, m.getSize())) {
@@ -475,7 +475,7 @@ goog.math.Matrix.prototype.subtract = function(m) {
 
 
 /**
- * @return {Array.<Array.<number>>} A 2D internal array representing this
+ * @return {!Array.<!Array.<number>>} A 2D internal array representing this
  *     matrix.  Not a clone.
  */
 goog.math.Matrix.prototype.toArray = function() {
@@ -573,7 +573,7 @@ goog.math.Matrix.prototype.getMinor_ = function(i, j) {
  * @param {number} j1 The left column index.
  * @param {number=} opt_i2 The lower row index.
  * @param {number=} opt_j2 The right column index.
- * @return {goog.math.Matrix} The submatrix contained within the given bounds.
+ * @return {!goog.math.Matrix} The submatrix contained within the given bounds.
  * @private
  */
 goog.math.Matrix.prototype.getSubmatrixByCoordinates_ =
@@ -592,7 +592,7 @@ goog.math.Matrix.prototype.getSubmatrixByCoordinates_ =
  * Returns a new matrix equal to this one, but with row i and column j deleted.
  * @param {number} i The row index of the coordinate.
  * @param {number} j The column index of the coordinate.
- * @return {goog.math.Matrix} The value at the specified coordinate.
+ * @return {!goog.math.Matrix} The value at the specified coordinate.
  * @private
  */
 goog.math.Matrix.prototype.getSubmatrixByDeletion_ = function(i, j) {
@@ -625,7 +625,7 @@ goog.math.Matrix.prototype.isInBounds_ = function(i, j) {
  * product AB is an m-by-p matrix
  *
  * @param {goog.math.Matrix} m Matrix to multiply the matrix by.
- * @return {goog.math.Matrix} Resultant product.
+ * @return {!goog.math.Matrix} Resultant product.
  * @private
  */
 goog.math.Matrix.prototype.matrixMultiply_ = function(m) {
@@ -646,7 +646,7 @@ goog.math.Matrix.prototype.matrixMultiply_ = function(m) {
  * each value multiplied by the given value.
  *
  * @param {number} m number to multiply the matrix by.
- * @return {goog.math.Matrix} Resultant product.
+ * @return {!goog.math.Matrix} Resultant product.
  * @private
  */
 goog.math.Matrix.prototype.scalarMultiply_ = function(m) {

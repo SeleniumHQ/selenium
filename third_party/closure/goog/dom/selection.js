@@ -16,8 +16,6 @@
  * @fileoverview Utilities for working with selections in input boxes and text
  * areas.
  *
-*
-*
  * @see ../demos/dom_selection.html
  */
 
@@ -354,6 +352,7 @@ goog.dom.selection.getText = function(textfield) {
   throw Error('Cannot get the selection text');
 };
 
+
 /**
  * Returns the selected text within a textarea in IE.
  * IE treats newline characters as \r\n characters, and we need to check for
@@ -402,6 +401,7 @@ goog.dom.selection.getSelectionRangeText_ = function(selRange) {
   }
   return untrimmedSelectionText;
 };
+
 
 /**
  * Helper function for returning the range for an object as well as the

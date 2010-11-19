@@ -14,8 +14,6 @@
 
 /**
  * @fileoverview Utilities related to color and color conversion.
-*
-*
  */
 
 goog.provide('goog.color');
@@ -214,6 +212,7 @@ goog.color.rgbArrayToHsl = function(rgb) {
   return goog.color.rgbToHsl(rgb[0], rgb[1], rgb[2]);
 };
 
+
 /**
  * Helper for hslToRgb.
  * @param {number} v1 Helper variable 1.
@@ -293,6 +292,7 @@ goog.color.hslArrayToRgb = function(hsl) {
  */
 goog.color.validHexColorRe_ = /^#(?:[0-9a-f]{3}){1,2}$/i;
 
+
 /**
  * Checks if a string is a valid hex color.  We expect strings of the format
  * #RRGGBB (ex: #1b3d5f) or #RGB (ex: #3CA == #33CCAA).
@@ -304,12 +304,14 @@ goog.color.isValidHexColor_ = function(str) {
   return goog.color.validHexColorRe_.test(str);
 };
 
+
 /**
  * Helper for isNormalizedHexColor_.
  * @type {RegExp}
  * @private
  */
 goog.color.normalizedHexColorRe_ = /^#[0-9a-f]{6}$/;
+
 
 /**
  * Checks if a string is a normalized hex color.
@@ -331,7 +333,8 @@ goog.color.isNormalizedHexColor_ = function(str) {
  * @private
  */
 goog.color.rgbColorRe_ =
-   /^(?:rgb)?\((0|[1-9]\d{0,2}),\s?(0|[1-9]\d{0,2}),\s?(0|[1-9]\d{0,2})\)$/i;
+    /^(?:rgb)?\((0|[1-9]\d{0,2}),\s?(0|[1-9]\d{0,2}),\s?(0|[1-9]\d{0,2})\)$/i;
+
 
 /**
  * Checks if a string is a valid rgb color.  We expect strings of the format
@@ -457,6 +460,7 @@ goog.color.hsvToRgb = function(h, s, brightness) {
   return [Math.floor(red), Math.floor(green), Math.floor(blue)];
 };
 
+
 /**
  * Converts from RGB values to an array of HSV values.
  * @param {number} red Red value.
@@ -497,6 +501,7 @@ goog.color.rgbToHsv = function(red, green, blue) {
   return [hue, saturation, value];
 };
 
+
 /**
  * Converts from r,g,b values to an array of HSV values
  * @param {Array.<number>} rgb RGB array.
@@ -506,6 +511,7 @@ goog.color.rgbArrayToHsv = function(rgb) {
   return goog.color.rgbToHsv(rgb[0], rgb[1], rgb[2]);
 };
 
+
 /**
  * Converts an HSV triplet to an RGB array
  * @param {Array.<number>} hsv Array of HSV values.
@@ -514,6 +520,7 @@ goog.color.rgbArrayToHsv = function(rgb) {
 goog.color.hsvArrayToRgb = function(hsv) {
   return goog.color.hsvToRgb(hsv[0], hsv[1], hsv[2]);
 };
+
 
 /**
  * Converts a hex representation of a color to HSL.
@@ -526,6 +533,7 @@ goog.color.hexToHsl = function(hex) {
   return goog.color.rgbToHsl(rgb[0], rgb[1], rgb[2]);
 };
 
+
 /**
  * Converts from h,s,l values to a hex string
  * @param {number} h Hue, in [0, 360].
@@ -537,6 +545,7 @@ goog.color.hslToHex = function(h, s, l) {
   return goog.color.rgbArrayToHex(goog.color.hslToRgb(h, s, l));
 };
 
+
 /**
  * Converts from an hsl array to a hex string
  * @param {Array.<number>} hsl Array of [h, s, l], in
@@ -547,6 +556,7 @@ goog.color.hslArrayToHex = function(hsl) {
   return goog.color.rgbArrayToHex(goog.color.hslToRgb(hsl[0], hsl[1], hsl[2]));
 };
 
+
 /**
  * Converts a hex representation of a color to HSV
  * @param {string} hex Color to convert.
@@ -555,6 +565,7 @@ goog.color.hslArrayToHex = function(hsl) {
 goog.color.hexToHsv = function(hex) {
   return goog.color.rgbArrayToHsv(goog.color.hexToRgb(hex));
 };
+
 
 /**
  * Converts from h,s,v values to a hex string
@@ -566,6 +577,7 @@ goog.color.hexToHsv = function(hex) {
 goog.color.hsvToHex = function(h, s, v) {
   return goog.color.rgbArrayToHex(goog.color.hsvToRgb(h, s, v));
 };
+
 
 /**
  * Converts from an HSV array to a hex string

@@ -14,7 +14,6 @@
 
 /**
  * @fileoverview This file defines a loose mock implementation.
-*
  */
 
 goog.provide('goog.testing.LooseExpectationCollection');
@@ -23,6 +22,7 @@ goog.provide('goog.testing.LooseMock');
 goog.require('goog.array');
 goog.require('goog.structs.Map');
 goog.require('goog.testing.Mock');
+
 
 
 /**

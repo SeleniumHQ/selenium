@@ -29,7 +29,6 @@
  *
  * This class's methods are no-ops for non-Gecko browsers.
  *
-*
  */
 
 goog.provide('goog.net.xhrMonitor');
@@ -37,6 +36,7 @@ goog.provide('goog.net.xhrMonitor');
 goog.require('goog.array');
 goog.require('goog.debug.Logger');
 goog.require('goog.userAgent');
+
 
 
 /**

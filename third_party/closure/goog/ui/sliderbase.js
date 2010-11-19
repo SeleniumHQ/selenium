@@ -36,8 +36,6 @@
  * - decorateInternal
  * - getCssClass
  *
-*
-*
  */
 
 goog.provide('goog.ui.SliderBase');
@@ -66,6 +64,7 @@ goog.require('goog.style');
 goog.require('goog.ui.Component');
 goog.require('goog.ui.Component.EventType');
 goog.require('goog.ui.RangeModel');
+
 
 
 /**
@@ -981,7 +980,6 @@ goog.ui.SliderBase.prototype.getStep = function() {
 goog.ui.SliderBase.prototype.setStep = function(step) {
   this.rangeModel.setStep(step);
 };
-
 
 
 /**

@@ -16,7 +16,6 @@
  * @fileoverview Popup Date Picker implementation.  Pairs a goog.ui.DatePicker
  * with a goog.ui.Popup allowing the DatePicker to be attached to elements.
  *
-*
  * @see ../demos/popupdatepicker.html
  */
 
@@ -31,6 +30,7 @@ goog.require('goog.ui.DatePicker');
 goog.require('goog.ui.DatePicker.Events');
 goog.require('goog.ui.Popup');
 goog.require('goog.ui.PopupBase.EventType');
+
 
 
 /**

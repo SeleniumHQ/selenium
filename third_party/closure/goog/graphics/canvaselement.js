@@ -16,7 +16,7 @@
 /**
  * @fileoverview Objects representing shapes drawn on a canvas.
  * @author robbyw@google.com (Robby Walker)
-*
+ * @author wcrosby@google.com (Wayne Crosby)
  */
 
 goog.provide('goog.graphics.CanvasEllipseElement');
@@ -36,6 +36,7 @@ goog.require('goog.graphics.Path');
 goog.require('goog.graphics.PathElement');
 goog.require('goog.graphics.RectElement');
 goog.require('goog.graphics.TextElement');
+
 
 
 /**
@@ -101,6 +102,7 @@ goog.graphics.CanvasGroupElement.prototype.draw = function(ctx) {
     this.getGraphics().drawElement(this.children_[i]);
   }
 };
+
 
 
 /**
@@ -181,7 +183,9 @@ goog.inherits(goog.graphics.CanvasEllipseElement, goog.graphics.EllipseElement);
  */
 goog.graphics.CanvasEllipseElement.prototype.setUpPath_ = function() {
   this.path_.clear();
-  this.path_.arc(this.cx_, this.cy_, this.rx_, this.ry_, 0, 360, false);
+  this.path_.moveTo(this.cx_ + goog.math.angleDx(0, this.rx_),
+                    this.cy_ + goog.math.angleDy(0, this.ry_));
+  this.path_.arcTo(this.rx_, this.ry_, 0, 360);
   this.path_.close();
 };
 
@@ -219,6 +223,7 @@ goog.graphics.CanvasEllipseElement.prototype.setRadius = function(rx, ry) {
 goog.graphics.CanvasEllipseElement.prototype.draw = function(ctx) {
   this.pathElement_.draw(ctx);
 };
+
 
 
 /**
@@ -327,6 +332,7 @@ goog.graphics.CanvasRectElement.prototype.draw = function(ctx) {
 };
 
 
+
 /**
  * Thin wrapper for canvas path elements.
  * This is an implementation of the goog.graphics.PathElement interface.
@@ -413,6 +419,7 @@ goog.graphics.CanvasPathElement.prototype.draw = function(ctx) {
 };
 
 
+
 /**
  * Thin wrapper for canvas text elements.
  * This is an implementation of the goog.graphics.TextElement interface.
@@ -490,8 +497,8 @@ goog.graphics.CanvasTextElement = function(graphics, text, x1, y1, x2, y2,
    * @type {Element}
    * @private
    */
-  this.element_ = goog.dom.createDom('DIV', {'style':
-    'display:table;position:absolute;padding:0;margin:0;border:0'
+  this.element_ = goog.dom.createDom('DIV', {
+    'style': 'display:table;position:absolute;padding:0;margin:0;border:0'
   });
 
   /**
@@ -499,8 +506,8 @@ goog.graphics.CanvasTextElement = function(graphics, text, x1, y1, x2, y2,
    * @type {Element}
    * @private
    */
-  this.innerElement_ = goog.dom.createDom('DIV', {'style':
-    'display:table-cell;padding: 0;margin: 0;border: 0'
+  this.innerElement_ = goog.dom.createDom('DIV', {
+    'style': 'display:table-cell;padding: 0;margin: 0;border: 0'
   });
 
   this.updateStyle_();
@@ -528,7 +535,7 @@ goog.graphics.CanvasTextElement.prototype.setText = function(text) {
  * @param {goog.graphics.Fill} fill The fill object.
  */
 goog.graphics.CanvasTextElement.prototype.setFill = function(fill) {
-  this.fill_ = fill;
+  this.fill = fill;
   if (this.element_) {
     this.element_.style.color = fill.getColor() || fill.getColor1();
   }
@@ -620,6 +627,7 @@ goog.graphics.CanvasTextElement.prototype.updateText_ = function() {
     this.innerElement_.innerHTML = goog.string.htmlEscape(this.text_);
   }
 };
+
 
 
 /**

@@ -12,7 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/**
+ * @fileoverview Logging and debugging utilities.
+ *
 
+ * @see ../demos/debug.html
+ */
 
 goog.provide('goog.debug');
 
@@ -36,10 +41,9 @@ goog.debug.catchErrors = function(logFunc, opt_cancel, opt_target) {
     if (oldErrorHandler) {
       oldErrorHandler(message, url, line);
     }
-    var file = String(url).split(/[\/\\]/).pop();
     logFunc({
       message: message,
-      fileName: file,
+      fileName: url,
       line: line
     });
     return Boolean(opt_cancel);
@@ -411,10 +415,10 @@ goog.debug.getFunctionName = function(fn) {
  */
 goog.debug.makeWhitespaceVisible = function(string) {
   return string.replace(/ /g, '[_]')
-               .replace(/\f/g, '[f]')
-               .replace(/\n/g, '[n]\n')
-               .replace(/\r/g, '[r]')
-               .replace(/\t/g, '[t]');
+      .replace(/\f/g, '[f]')
+      .replace(/\n/g, '[n]\n')
+      .replace(/\r/g, '[r]')
+      .replace(/\t/g, '[t]');
 };
 
 

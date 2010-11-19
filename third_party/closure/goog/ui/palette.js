@@ -11,11 +11,11 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 /**
  * @fileoverview A palette control.  A palette is a grid that the user can
  * highlight or select via the keyboard or the mouse.
  *
-*
  * @see ../demos/palette.html
  */
 
@@ -31,6 +31,7 @@ goog.require('goog.ui.Component.EventType');
 goog.require('goog.ui.Control');
 goog.require('goog.ui.PaletteRenderer');
 goog.require('goog.ui.SelectionModel');
+
 
 
 /**

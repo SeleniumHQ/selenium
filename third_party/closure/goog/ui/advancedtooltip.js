@@ -15,15 +15,16 @@
 /**
  * @fileoverview Advanced tooltip widget implementation.
  *
-*
  * @see ../demos/advancedtooltip.html
  */
 
 goog.provide('goog.ui.AdvancedTooltip');
 
+goog.require('goog.events.EventType');
 goog.require('goog.math.Coordinate');
 goog.require('goog.ui.Tooltip');
 goog.require('goog.userAgent');
+
 
 
 /**
@@ -177,8 +178,9 @@ goog.ui.AdvancedTooltip.prototype.getCursorTrackingHideDelayMs = function() {
 
 /**
  * Called after the popup is shown.
- *
- * @private
+ * @protected
+ * @suppress {underscore}
+ * @override
  */
 goog.ui.AdvancedTooltip.prototype.onShow_ = function() {
   goog.ui.AdvancedTooltip.superClass_.onShow_.call(this);
@@ -197,8 +199,9 @@ goog.ui.AdvancedTooltip.prototype.onShow_ = function() {
 
 /**
  * Called after the popup is hidden.
- *
- * @private
+ * @protected
+ * @suppress {underscore}
+ * @override
  */
 goog.ui.AdvancedTooltip.prototype.onHide_ = function() {
   goog.events.unlisten(this.getDomHelper().getDocument(),
@@ -258,8 +261,8 @@ goog.ui.AdvancedTooltip.prototype.isCoordinateActive_ = function(
   }
 
   // Check if mouse might be in active child element.
-  return !!this.childTooltip_ &&
-         this.childTooltip_.isCoordinateInTooltip(coord);
+  var childTooltip = this.getChildTooltip();
+  return !!childTooltip && childTooltip.isCoordinateInTooltip(coord);
 };
 
 
@@ -274,7 +277,8 @@ goog.ui.AdvancedTooltip.prototype.maybeHide = function(el) {
     // Check if cursor is inside the bounding box of the tooltip or the element
     // that triggered it, or if tooltip is active (possibly due to receiving
     // the focus), or if there is a nested tooltip being shown.
-    if (!this.isCoordinateActive_(this.cursorPosition) && !this.activeEl_ &&
+    if (!this.isCoordinateActive_(this.cursorPosition) &&
+        !this.getActiveElement() &&
         !this.hasActiveChild()) {
       // Under certain circumstances gecko fires ghost mouse events with the
       // coordinates 0, 0 regardless of the cursors position.
@@ -314,14 +318,15 @@ goog.ui.AdvancedTooltip.prototype.handleMouseMove = function(event) {
     this.startHideTimer_();
 
     // Even though the mouse coordinate is not on the tooltip (or nested child),
-    // they may have an activeEl_ because of a focus event.  Don't let
+    // they may have an active element because of a focus event.  Don't let
     // that prevent us from taking down the tooltip(s) on this mouse move.
-    this.activeEl_ = null;
-    if (this.childTooltip_) {
-      this.childTooltip_.activeEl_ = null;
+    this.setActiveElement(null);
+    var childTooltip = this.getChildTooltip();
+    if (childTooltip) {
+      childTooltip.setActiveElement(null);
     }
   } else if (this.getState() == goog.ui.Tooltip.State.WAITING_TO_HIDE) {
-    this.clearHideTimer_();
+    this.clearHideTimer();
   }
 
   goog.ui.AdvancedTooltip.superClass_.handleMouseMove.call(this, event);
@@ -335,9 +340,9 @@ goog.ui.AdvancedTooltip.prototype.handleMouseMove = function(event) {
  * @protected
  */
 goog.ui.AdvancedTooltip.prototype.handleTooltipMouseOver = function(event) {
-  if (this.activeEl_ != this.getElement()) {
+  if (this.getActiveElement() != this.getElement()) {
     this.tracking_ = false;
-    this.activeEl_ = this.getElement();
+    this.setActiveElement(this.getElement());
 
     if (!this.paddingBox_ && this.hotSpotPadding_) {
       this.paddingBox_ = this.boundingBox_.clone().expand(this.hotSpotPadding_);

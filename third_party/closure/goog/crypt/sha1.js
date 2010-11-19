@@ -22,11 +22,11 @@
  *   sha1.update(bytes);
  *   var hash = sha1.digest();
  *
-*
-*
  */
 
 goog.provide('goog.crypt.Sha1');
+
+
 
 /**
  * SHA-1 cryptographic hash constructor.

@@ -23,6 +23,7 @@ goog.provide('goog.dom.pattern.AbstractPattern');
 goog.require('goog.dom.pattern.MatchType');
 
 
+
 /**
  * Base pattern class for DOM matching.
  *

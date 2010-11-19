@@ -16,8 +16,6 @@
  * @fileoverview Image loader utility class.  Useful when an application needs
  * to preload multiple images, for example so they can be sized.
  *
-*
-*
  */
 
 goog.provide('goog.net.ImageLoader');
@@ -29,6 +27,8 @@ goog.require('goog.events.EventType');
 goog.require('goog.net.EventType');
 goog.require('goog.object');
 goog.require('goog.userAgent');
+
+
 
 /**
  * Image loader utility class.  Raises a {@link goog.events.EventType.LOAD}
@@ -190,7 +190,7 @@ goog.net.ImageLoader.prototype.onNetworkEvent_ = function(evt) {
   // Add natural width/height properties for non-Gecko browsers.
   if (typeof image.naturalWidth == 'undefined') {
     if (evt.type == goog.events.EventType.LOAD) {
-      image.naturalWidth = image.width
+      image.naturalWidth = image.width;
       image.naturalHeight = image.height;
     } else {
       // This implies that the image fails to be loaded.

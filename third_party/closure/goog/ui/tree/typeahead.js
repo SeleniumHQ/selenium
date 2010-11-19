@@ -15,7 +15,6 @@
 /**
  * @fileoverview Provides the typeahead functionality for the tree class.
  *
-*
  */
 
 goog.provide('goog.ui.tree.TypeAhead');
@@ -148,14 +147,17 @@ goog.ui.tree.TypeAhead.prototype.handleNavigation = function(e) {
 /**
  * Handles the character presses.
  * @param {goog.events.BrowserEvent} e The browser event.
+ *    Expected event type is goog.events.KeyHandler.EventType.KEY.
  * @return {boolean} The handled value.
  */
 goog.ui.tree.TypeAhead.prototype.handleTypeAheadChar = function(e) {
   var handled = false;
 
   if (!e.ctrlKey && !e.altKey) {
+    // Since goog.structs.Trie.getKeys compares characters during
+    // lookup, we should use charCode instead of keyCode where possible.
     // Convert to lowercase, typeahead is case insensitive.
-    var ch = String.fromCharCode(e.keyCode).toLowerCase();
+    var ch = String.fromCharCode(e.charCode || e.keyCode).toLowerCase();
     if (goog.string.isUnicodeChar(ch) && (ch != ' ' || this.buffer_)) {
       this.buffer_ += ch;
       handled = this.jumpToLabel_(this.buffer_);

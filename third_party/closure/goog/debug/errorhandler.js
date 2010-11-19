@@ -15,21 +15,32 @@
 /**
  * @fileoverview Error handling utilities.
  *
-*
  */
 
 goog.provide('goog.debug.ErrorHandler');
 
 goog.require('goog.debug');
+goog.require('goog.debug.EntryPointMonitor');
 goog.require('goog.debug.Trace');
+
+
 
 /**
  * The ErrorHandler can be used to to wrap functions with a try/catch
  * statement. If an exception is thrown, the given error handler function will
  * be called.
  *
- * @constructor
+ * When this object is disposed, it will stop handling exceptions and tracing.
+ * It will also try to restore window.setTimeout and window.setInterval
+ * if it wrapped them. Notice that in the general case, it is not technically
+ * possible to remove the wrapper, because functions have no knowledge of
+ * what they have been assigned to. So the app is responsible for other
+ * forms of unwrapping.
+ *
  * @param {Function} handler Handler for exceptions.
+ * @constructor
+ * @extends {goog.Disposable}
+ * @implements {goog.debug.EntryPointMonitor}
  */
 goog.debug.ErrorHandler = function(handler) {
   /**
@@ -38,6 +49,37 @@ goog.debug.ErrorHandler = function(handler) {
    * @private
    */
   this.errorHandlerFn_ = handler;
+};
+goog.inherits(goog.debug.ErrorHandler, goog.Disposable);
+
+
+/**
+ * Whether to add tracers when instrumenting entry points.
+ * @type {boolean}
+ * @private
+ */
+goog.debug.ErrorHandler.prototype.addTracersToProtectedFunctions_ = false;
+
+
+/**
+ * Enable tracers when instrumenting entry points.
+ * @param {boolean} newVal See above.
+ */
+goog.debug.ErrorHandler.prototype.setAddTracersToProtectedFunctions =
+    function(newVal) {
+  this.addTracersToProtectedFunctions_ = newVal;
+};
+
+
+/** @inheritDoc */
+goog.debug.ErrorHandler.prototype.wrap = function(fn) {
+  return this.protectEntryPoint(fn);
+};
+
+
+/** @inheritDoc */
+goog.debug.ErrorHandler.prototype.unwrap = function(fn) {
+  return fn[this.getFunctionIndex_(false)] || fn;
 };
 
 
@@ -59,21 +101,30 @@ goog.debug.ErrorHandler.prototype.getStackTraceHolder_ = function(stackTrace) {
 
 
 /**
+ * Get the index for a function. Used for internal indexing.
+ * @param {boolean} wrapper True for the wrapper; false for the wrapped.
+ * @return {string} The index where we should store the function in its
+ *     wrapper/wrapped function.
+ * @private
+ */
+goog.debug.ErrorHandler.prototype.getFunctionIndex_ = function(wrapper) {
+  return (wrapper ? '__wrapper_' : '__protected_') + goog.getUid(this) + '__';
+};
+
+
+/**
  * Installs exception protection for an entry point function. When an exception
  * is thrown from a protected function, a handler will be invoked to handle it.
  *
  * @param {Function} fn An entry point function to be protected.
- * @param {boolean=} opt_tracers Whether to install tracers around the fn.
  * @return {!Function} A protected wrapper function that calls the entry point
  *     function.
  */
-goog.debug.ErrorHandler.prototype.protectEntryPoint = function(fn,
-                                                               opt_tracers) {
-  var tracers = !!opt_tracers;
-  var protectedFnName =
-      '__protected_' + goog.getUid(this) + '_' + tracers + '__';
+goog.debug.ErrorHandler.prototype.protectEntryPoint = function(fn) {
+  var protectedFnName = this.getFunctionIndex_(true);
   if (!fn[protectedFnName]) {
-    fn[protectedFnName] = this.getProtectedFunction(fn, tracers);
+    var wrapper = fn[protectedFnName] = this.getProtectedFunction(fn);
+    wrapper[this.getFunctionIndex_(false)] = fn;
   }
   return fn[protectedFnName];
 };
@@ -85,20 +136,24 @@ goog.debug.ErrorHandler.prototype.protectEntryPoint = function(fn,
  * not already exist for the given function.  Can be overriden by subclasses
  * that may want to implement different error handling, or add additional
  * entry point hooks.
- * @param {Function} fn An entry point function to be protected.
- * @param {boolean} tracers Whether to install tracers around fn.
+ * @param {!Function} fn An entry point function to be protected.
  * @return {!Function} protected wrapper function.
  * @protected
  */
-goog.debug.ErrorHandler.prototype.getProtectedFunction = function(fn, tracers) {
+goog.debug.ErrorHandler.prototype.getProtectedFunction = function(fn) {
   var that = this;
+  var tracers = this.addTracersToProtectedFunctions_;
   if (tracers) {
     var stackTrace = goog.debug.getStacktraceSimple(15);
   }
-  return function() {
+  var result = function() {
+    if (that.isDisposed()) {
+      return fn.apply(this, arguments);
+    }
+
     if (tracers) {
       var tracer = goog.debug.Trace.startTracer('protectedEntryPoint: ' +
-        that.getStackTraceHolder_(stackTrace));
+          that.getStackTraceHolder_(stackTrace));
     }
     try {
       return fn.apply(this, arguments);
@@ -111,48 +166,67 @@ goog.debug.ErrorHandler.prototype.getProtectedFunction = function(fn, tracers) {
       }
     }
   };
+  result[this.getFunctionIndex_(false)] = fn;
+  return result;
 };
 
 
 /**
  * Installs exception protection for window.setTimeout to handle exceptions.
- * @param {boolean=} opt_tracers Whether to install tracers around the fn.
  */
 goog.debug.ErrorHandler.prototype.protectWindowSetTimeout =
-    function(opt_tracers) {
-  var win = goog.getObjectByName('window');
-  var originalSetTimeout = win.setTimeout;
-  var that = this;
-  win.setTimeout = function(fn, time) {
-    // IE doesn't support .call for setTimeout, but it also doesn't care
-    // what "this" is, so we can just call the original function directly
-    fn = that.protectEntryPoint(fn, opt_tracers);
-    if (originalSetTimeout.call) {
-      return originalSetTimeout.call(this, fn, time);
-    } else {
-      return originalSetTimeout(fn, time);
-    }
-  };
+    function() {
+  this.protectWindowFunctionsHelper_('setTimeout');
 };
 
 
 /**
  * Install exception protection for window.setInterval to handle exceptions.
- * @param {boolean=} opt_tracers Whether to install tracers around the fn.
  */
 goog.debug.ErrorHandler.prototype.protectWindowSetInterval =
-    function(opt_tracers) {
+    function() {
+  this.protectWindowFunctionsHelper_('setInterval');
+};
+
+
+/**
+ * Helper function for protecting setTimeout/setInterval.
+ * @param {string} fnName The name of the function we're protecting. Must
+ *     be setTimeout or setInterval.
+ * @private
+ */
+goog.debug.ErrorHandler.prototype.protectWindowFunctionsHelper_ =
+    function(fnName) {
   var win = goog.getObjectByName('window');
-  var originalSetInterval = win.setInterval;
+  var originalFn = win[fnName];
   var that = this;
-  win.setInterval = function(fn, time) {
-    // IE doesn't support .call for setInterval, but it also doesn't care
-    // what "this" is, so we can just call the original function directly
-    fn = that.protectEntryPoint(fn, opt_tracers);
-    if (originalSetInterval.call) {
-      return originalSetInterval.call(this, fn, time);
+  win[fnName] = function(fn, time) {
+    // Don't try to protect strings. In theory, we could try to globalEval
+    // the string, but this seems to lead to permission errors on IE6.
+    if (goog.isString(fn)) {
+      fn = goog.partial(goog.globalEval, fn);
+    }
+    fn = that.protectEntryPoint(fn);
+
+    // IE doesn't support .call for setInterval/setTimeout, but it
+    // also doesn't care what "this" is, so we can just call the
+    // original function directly
+    if (originalFn.call) {
+      return originalFn.call(this, fn, time);
     } else {
-      return originalSetInterval(fn, time);
+      return originalFn(fn, time);
     }
   };
+  win[fnName][this.getFunctionIndex_(false)] = originalFn;
+};
+
+
+/** @inheritDoc */
+goog.debug.ErrorHandler.prototype.disposeInternal = function() {
+  // Try to unwrap window.setTimeout and window.setInterval.
+  var win = goog.getObjectByName('window');
+  win.setTimeout = this.unwrap(win.setTimeout);
+  win.setInterval = this.unwrap(win.setInterval);
+
+  goog.base(this, 'disposeInternal');
 };

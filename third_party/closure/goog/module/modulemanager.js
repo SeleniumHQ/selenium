@@ -15,9 +15,6 @@
 /**
  * @fileoverview A singleton object for managing Javascript code modules.
  *
-*
-*
-*
  */
 
 goog.provide('goog.module.ModuleManager');
@@ -25,12 +22,14 @@ goog.provide('goog.module.ModuleManager.FailureType');
 
 goog.require('goog.Disposable');
 goog.require('goog.array');
+goog.require('goog.asserts');
 goog.require('goog.async.Deferred');
 goog.require('goog.debug.Logger');
 goog.require('goog.debug.Trace');
 goog.require('goog.module.AbstractModuleLoader');
 goog.require('goog.module.ModuleInfo');
 goog.require('goog.module.ModuleLoadCallback');
+
 
 
 /**
@@ -103,6 +102,7 @@ goog.module.ModuleManager = function() {
 };
 goog.inherits(goog.module.ModuleManager, goog.Disposable);
 goog.addSingletonGetter(goog.module.ModuleManager);
+
 
 /**
 * The type of callbacks that can be registered with the module manager,.
@@ -235,12 +235,55 @@ goog.module.ModuleManager.prototype.setBatchModeEnabled = function(
 /**
  * Sets the module info for all modules. Should only be called once.
  *
- * @param {Object} infoMap A mapping from module id (String) to list of
- *     required module ids (Array).
+ * @param {Object.<Array.<string>>} infoMap An object that contains a mapping
+ *    from module id (String) to list of required module ids (Array).
  */
 goog.module.ModuleManager.prototype.setAllModuleInfo = function(infoMap) {
   for (var id in infoMap) {
     this.moduleInfoMap_[id] = new goog.module.ModuleInfo(infoMap[id], id);
+  }
+  this.maybeFinishBaseLoad_();
+};
+
+
+/**
+ * Sets the module info for all modules. Should only be called once.
+ *
+ * @param {string=} opt_info A string representation of the module dependency
+ *      graph, in the form: module1:dep1,dep2/module2:dep1,dep2 etc.
+ *     Where depX is the base-36 encoded position of the dep in the module list.
+ */
+goog.module.ModuleManager.prototype.setAllModuleInfoString = function(
+    opt_info) {
+  if (!opt_info) {
+    // The call to this method is generated in two steps, the argument is added
+    // after some of the compilation passes.  This means that the initial code
+    // doesn't have any arguments and causes compiler errors.  We make it
+    // optional to satisfy this constraint.
+    return;
+  }
+
+  var modules = opt_info.split('/');
+  var moduleIds = [];
+
+  // Split the string into the infoMap of id->deps
+  for (var i = 0; i < modules.length; i++) {
+    var parts = modules[i].split(':');
+    var id = parts[0];
+    var deps;
+    if (parts[1]) {
+      deps = parts[1].split(',');
+      for (var j = 0; j < deps.length; j++) {
+        var index = parseInt(deps[j], 36);
+        goog.asserts.assert(
+            moduleIds[index], 'No module @ %s, dep of %s @ %s', index, id, i);
+        deps[j] = moduleIds[index];
+      }
+    } else {
+      deps = [];
+    }
+    moduleIds.push(id);
+    this.moduleInfoMap_[id] = new goog.module.ModuleInfo(deps, id);
   }
   this.maybeFinishBaseLoad_();
 };
@@ -556,7 +599,7 @@ goog.module.ModuleManager.prototype.setLoaded = function(id) {
  */
 goog.module.ModuleManager.prototype.isModuleLoading = function(id) {
   return goog.array.contains(this.loadingModuleIds_, id) ||
-       goog.array.contains(this.requestedModuleIdsQueue_, id);
+      goog.array.contains(this.requestedModuleIdsQueue_, id);
 };
 
 
@@ -782,7 +825,7 @@ goog.module.ModuleManager.prototype.handleLoadError_ = function(status) {
   } else if (status == 410) {
     // The requested module js is old and not available.
     this.dispatchModuleLoadFailed_(
-          goog.module.ModuleManager.FailureType.OLD_CODE_GONE);
+        goog.module.ModuleManager.FailureType.OLD_CODE_GONE);
     this.loadNextModule_();
   } else if (this.consecutiveFailures_ >= 3) {
     this.logger_.info('Aborting after failure to load: ' +

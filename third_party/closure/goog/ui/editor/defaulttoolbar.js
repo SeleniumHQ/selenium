@@ -15,8 +15,6 @@
 /**
  * @fileoverview Factory functions for creating a default editing toolbar.
  *
-*
-*
  * @see ../../demos/editor/editor.html
  */
 
@@ -34,12 +32,15 @@ goog.require('goog.ui.editor.messages');
 
 // Font menu creation.
 
+
 /** @desc Font menu item caption for the default sans-serif font. */
 goog.ui.editor.DefaultToolbar.MSG_FONT_NORMAL = goog.getMsg('Normal');
+
 
 /** @desc Font menu item caption for the default serif font. */
 goog.ui.editor.DefaultToolbar.MSG_FONT_NORMAL_SERIF =
     goog.getMsg('Normal / serif');
+
 
 /**
  * Common font descriptors for all locales.  Each descriptor has the following
@@ -162,14 +163,18 @@ goog.ui.editor.DefaultToolbar.addDefaultFonts = function(button) {
 
 // Font size menu creation.
 
+
 /** @desc Font size menu item caption for the 'Small' size. */
 goog.ui.editor.DefaultToolbar.MSG_FONT_SIZE_SMALL = goog.getMsg('Small');
+
 
 /** @desc Font size menu item caption for the 'Normal' size. */
 goog.ui.editor.DefaultToolbar.MSG_FONT_SIZE_NORMAL = goog.getMsg('Normal');
 
+
 /** @desc Font size menu item caption for the 'Large' size. */
 goog.ui.editor.DefaultToolbar.MSG_FONT_SIZE_LARGE = goog.getMsg('Large');
+
 
 /** @desc Font size menu item caption for the 'Huge' size. */
 goog.ui.editor.DefaultToolbar.MSG_FONT_SIZE_HUGE = goog.getMsg('Huge');
@@ -205,15 +210,19 @@ goog.ui.editor.DefaultToolbar.addDefaultFontSizes = function(button) {
 
 // Header format menu creation.
 
+
 /** @desc Caption for "Heading" block format option. */
 goog.ui.editor.DefaultToolbar.MSG_FORMAT_HEADING = goog.getMsg('Heading');
+
 
 /** @desc Caption for "Subheading" block format option. */
 goog.ui.editor.DefaultToolbar.MSG_FORMAT_SUBHEADING = goog.getMsg('Subheading');
 
+
 /** @desc Caption for "Minor heading" block format option. */
 goog.ui.editor.DefaultToolbar.MSG_FORMAT_MINOR_HEADING =
     goog.getMsg('Minor heading');
+
 
 /** @desc Caption for "Normal" block format option. */
 goog.ui.editor.DefaultToolbar.MSG_FORMAT_NORMAL = goog.getMsg('Normal');
@@ -539,7 +548,7 @@ goog.ui.editor.DefaultToolbar.fontSizeFactory_ = function(id, tooltip,
       goog.getCssName('goog-menu-noaccel'));
   // How to update this button's state.
   button.updateFromValue = function(value) {
-    // Webkit returns a string like '32px' instead of the equivalent
+    // Webkit pre-534.7 returns a string like '32px' instead of the equivalent
     // integer, so normalize that first.
     // NOTE(user): Gecko returns "6" so can't just normalize all
     // strings, only ones ending in "px".
@@ -689,102 +698,132 @@ goog.ui.editor.DefaultToolbar.formatBlockFactory_ = function(id, tooltip,
 
 // Messages used for tooltips and captions.
 
+
 /** @desc Format menu tooltip. */
 goog.ui.editor.DefaultToolbar.MSG_FORMAT_BLOCK_TITLE = goog.getMsg('Format');
+
 
 /** @desc Format menu caption. */
 goog.ui.editor.DefaultToolbar.MSG_FORMAT_BLOCK_CAPTION = goog.getMsg('Format');
 
+
 /** @desc Undo button tooltip. */
 goog.ui.editor.DefaultToolbar.MSG_UNDO_TITLE = goog.getMsg('Undo');
+
 
 /** @desc Redo button tooltip. */
 goog.ui.editor.DefaultToolbar.MSG_REDO_TITLE = goog.getMsg('Redo');
 
+
 /** @desc Font menu tooltip. */
 goog.ui.editor.DefaultToolbar.MSG_FONT_FACE_TITLE = goog.getMsg('Font');
+
 
 /** @desc Font size menu tooltip. */
 goog.ui.editor.DefaultToolbar.MSG_FONT_SIZE_TITLE = goog.getMsg('Font size');
 
+
 /** @desc Text foreground color menu tooltip. */
 goog.ui.editor.DefaultToolbar.MSG_FONT_COLOR_TITLE = goog.getMsg('Text color');
+
 
 /** @desc Bold button tooltip. */
 goog.ui.editor.DefaultToolbar.MSG_BOLD_TITLE = goog.getMsg('Bold');
 
+
 /** @desc Italic button tooltip. */
 goog.ui.editor.DefaultToolbar.MSG_ITALIC_TITLE = goog.getMsg('Italic');
 
+
 /** @desc Underline button tooltip. */
 goog.ui.editor.DefaultToolbar.MSG_UNDERLINE_TITLE = goog.getMsg('Underline');
+
 
 /** @desc Text background color menu tooltip. */
 goog.ui.editor.DefaultToolbar.MSG_BACKGROUND_COLOR_TITLE =
     goog.getMsg('Text background color');
 
+
 /** @desc Link button tooltip. */
 goog.ui.editor.DefaultToolbar.MSG_LINK_TITLE =
     goog.getMsg('Add or remove link');
+
 
 /** @desc Numbered list button tooltip. */
 goog.ui.editor.DefaultToolbar.MSG_ORDERED_LIST_TITLE =
     goog.getMsg('Numbered list');
 
+
 /** @desc Bullet list button tooltip. */
 goog.ui.editor.DefaultToolbar.MSG_UNORDERED_LIST_TITLE =
     goog.getMsg('Bullet list');
+
 
 /** @desc Outdent button tooltip. */
 goog.ui.editor.DefaultToolbar.MSG_OUTDENT_TITLE =
     goog.getMsg('Decrease indent');
 
+
 /** @desc Indent button tooltip. */
 goog.ui.editor.DefaultToolbar.MSG_INDENT_TITLE = goog.getMsg('Increase indent');
 
+
 /** @desc Align left button tooltip. */
 goog.ui.editor.DefaultToolbar.MSG_ALIGN_LEFT_TITLE = goog.getMsg('Align left');
+
 
 /** @desc Align center button tooltip. */
 goog.ui.editor.DefaultToolbar.MSG_ALIGN_CENTER_TITLE =
     goog.getMsg('Align center');
 
+
 /** @desc Align right button tooltip. */
 goog.ui.editor.DefaultToolbar.MSG_ALIGN_RIGHT_TITLE =
     goog.getMsg('Align right');
 
+
 /** @desc Justify button tooltip. */
 goog.ui.editor.DefaultToolbar.MSG_JUSTIFY_TITLE = goog.getMsg('Justify');
+
 
 /** @desc Remove formatting button tooltip. */
 goog.ui.editor.DefaultToolbar.MSG_REMOVE_FORMAT_TITLE =
     goog.getMsg('Remove formatting');
 
+
 /** @desc Insert image button tooltip. */
 goog.ui.editor.DefaultToolbar.MSG_IMAGE_TITLE = goog.getMsg('Insert image');
+
 
 /** @desc Strike through button tooltip. */
 goog.ui.editor.DefaultToolbar.MSG_STRIKE_THROUGH_TITLE =
     goog.getMsg('Strikethrough');
 
+
 /** @desc Left-to-right button tooltip. */
 goog.ui.editor.DefaultToolbar.MSG_DIR_LTR_TITLE = goog.getMsg('Left-to-right');
+
 
 /** @desc Right-to-left button tooltip. */
 goog.ui.editor.DefaultToolbar.MSG_DIR_RTL_TITLE = goog.getMsg('Right-to-left');
 
+
 /** @desc Blockquote button tooltip. */
 goog.ui.editor.DefaultToolbar.MSG_BLOCKQUOTE_TITLE = goog.getMsg('Quote');
+
 
 /** @desc Edit HTML button tooltip. */
 goog.ui.editor.DefaultToolbar.MSG_EDIT_HTML_TITLE =
     goog.getMsg('Edit HTML source');
 
+
 /** @desc Subscript button tooltip. */
 goog.ui.editor.DefaultToolbar.MSG_SUBSCRIPT = goog.getMsg('Subscript');
 
+
 /** @desc Superscript button tooltip. */
 goog.ui.editor.DefaultToolbar.MSG_SUPERSCRIPT = goog.getMsg('Superscript');
+
 
 /** @desc Edit HTML button caption. */
 goog.ui.editor.DefaultToolbar.MSG_EDIT_HTML_CAPTION = goog.getMsg('Edit HTML');

@@ -26,10 +26,6 @@
  * goog.style.getComputedStyle will throw an exception if you give it a
  * text node.
  *
-*
-*
-*
- * @author nicksantos@google.com (Nick Santos)
  */
 
 goog.provide('goog.editor.style');

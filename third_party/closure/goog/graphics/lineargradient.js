@@ -15,7 +15,6 @@
 
 /**
  * @fileoverview Represents a gradient to be used with a Graphics implementor.
-*
  */
 
 
@@ -23,6 +22,7 @@ goog.provide('goog.graphics.LinearGradient');
 
 
 goog.require('goog.graphics.Fill');
+
 
 
 /**

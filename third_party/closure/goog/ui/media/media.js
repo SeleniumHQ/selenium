@@ -89,7 +89,6 @@
  * TODO(user): implement, as needed, the Media specific state changes UI, such
  * as minimize/maximize buttons, expand/close buttons, etc.
  *
-*
  */
 
 goog.provide('goog.ui.media.Media');
@@ -99,6 +98,7 @@ goog.require('goog.style');
 goog.require('goog.ui.Component.State');
 goog.require('goog.ui.Control');
 goog.require('goog.ui.ControlRenderer');
+
 
 
 /**
@@ -154,6 +154,7 @@ goog.ui.media.Media.prototype.setDataModel = function(dataModel) {
 goog.ui.media.Media.prototype.getDataModel = function() {
   return this.dataModel_;
 };
+
 
 
 /**

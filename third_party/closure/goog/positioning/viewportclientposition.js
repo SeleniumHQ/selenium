@@ -16,7 +16,7 @@
  * @fileoverview Client viewport positioning class.
  *
  * @author robbyw@google.com (Robert Walker)
-*
+ * @author eae@google.com (Emil A Eklund)
  */
 
 goog.provide('goog.positioning.ViewportClientPosition');

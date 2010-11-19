@@ -15,10 +15,8 @@
 /**
  * @fileoverview Classes for doing animations and visual effects.
  *
-*
  * (Based loosly on my animation code for 13thparallel.org, with extra
  * inspiration from the DojoToolkit's modifications to my code)
-*
  */
 
 goog.provide('goog.fx.Animation');
@@ -197,9 +195,9 @@ goog.fx.Animation.cycleAnimations_ = function() {
 
   goog.fx.Animation.globalTimer_ =
       goog.object.isEmpty(goog.fx.Animation.activeAnimations_) ?
-        null :
-        goog.Timer.defaultTimerObject.setTimeout(
-            goog.fx.Animation.cycleAnimations_, goog.fx.Animation.TIMEOUT);
+          null :
+          goog.Timer.defaultTimerObject.setTimeout(
+              goog.fx.Animation.cycleAnimations_, goog.fx.Animation.TIMEOUT);
 };
 
 
@@ -286,6 +284,16 @@ goog.fx.Animation.prototype.endTime = null;
  * @protected
  */
 goog.fx.Animation.prototype.lastFrame = null;
+
+
+/**
+ * Gets the animation state.
+ * @return {goog.fx.Animation.State} The current state.
+ * @protected
+ */
+goog.fx.Animation.prototype.getStateInternal = function() {
+  return this.state_;
+};
 
 
 /**
@@ -445,7 +453,6 @@ goog.fx.Animation.prototype.onAnimate = function() {
 };
 
 
-
 /**
  * Dispatches the BEGIN event. Sub classes should override this instead
  * of listening to the event.
@@ -504,6 +511,7 @@ goog.fx.Animation.prototype.onPause = function() {
 goog.fx.Animation.prototype.onPlay = function() {
   this.dispatchAnimationEvent_(goog.fx.Animation.EventType.PLAY);
 };
+
 
 /**
  * Dispatches the RESUME event. Sub classes should override this instead

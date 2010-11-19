@@ -21,20 +21,22 @@
  * If you would prefer to get BECOME_ACTIVE and BECOME_IDLE events when the
  * user changes states, then you should use the IdleTimer class instead.
  *
-*
  */
 
 goog.provide('goog.ui.ActivityMonitor');
+
+goog.require('goog.array');
 goog.require('goog.dom');
 goog.require('goog.events');
 goog.require('goog.events.EventHandler');
 goog.require('goog.events.EventTarget');
+goog.require('goog.events.EventType');
+
 
 
 /**
  * Once initialized with a document, the activity monitor can be queried for
  * the current idle time.
- * TODO(user): Expand this class to allow it to monitor multiple DOMs.
  *
  * @param {goog.dom.DomHelper|Array.<goog.dom.DomHelper>=} opt_domHelper
  *     DomHelper which contains the document(s) to listen to.  If null, the
@@ -46,24 +48,29 @@ goog.require('goog.events.EventTarget');
 goog.ui.ActivityMonitor = function(opt_domHelper) {
   goog.events.EventTarget.call(this);
 
-  var documents;
-  if (!opt_domHelper) {
-    documents = [goog.dom.getDomHelper().getDocument()];
-  } else if (goog.isArray(opt_domHelper)) {
-    documents = [];
-    for (var i = 0; i < opt_domHelper.length; i++) {
-       documents.push(opt_domHelper[i].getDocument());
-    }
-  } else {
-    documents = [opt_domHelper.getDocument()];
-  }
-
   /**
-   * The document body which is being listened to.
-   * @type {Array.<HTMLDocument>}
+   * Array of documents that are being listened to.
+   * @type {Array.<Document>}
    * @private
    */
-  this.documents_ = documents;
+  this.documents_ = [];
+
+  /**
+   * The event handler.
+   * @type {goog.events.EventHandler}
+   * @private
+   */
+  this.eventHandler_ = new goog.events.EventHandler(this);
+
+  if (!opt_domHelper) {
+    this.addDocument(goog.dom.getDomHelper().getDocument());
+  } else if (goog.isArray(opt_domHelper)) {
+    for (var i = 0; i < opt_domHelper.length; i++) {
+       this.addDocument(opt_domHelper[i].getDocument());
+    }
+  } else {
+    this.addDocument(opt_domHelper.getDocument());
+  }
 
   /**
    * The time (in milliseconds) of the last user event.
@@ -72,23 +79,6 @@ goog.ui.ActivityMonitor = function(opt_domHelper) {
    */
   this.lastEventTime_ = goog.now();
 
-  var eventHandler = new goog.events.EventHandler(this);
-  /**
-   * The event handler.
-   * @type {goog.events.EventHandler}
-   * @private
-   */
-  this.eventHandler_ = eventHandler;
-
-  // Set up listeners on capture
-  for (var i = 0; i < this.documents_.length; i++) {
-    eventHandler.listen(
-        this.documents_[i], goog.ui.ActivityMonitor.userEventTypesDocuments_,
-        this.handleEvent_, true);
-    eventHandler.listen(
-        this.documents_[i].body, goog.ui.ActivityMonitor.userEventTypesBody_,
-        this.handleEvent_, true);
-  }
 };
 goog.inherits(goog.ui.ActivityMonitor, goog.events.EventTarget);
 
@@ -172,6 +162,41 @@ goog.ui.ActivityMonitor.prototype.disposeInternal = function() {
 
 
 /**
+ * Adds a document to those being monitored by this class.
+ *
+ * @param {Document} doc Document to monitor.
+ */
+goog.ui.ActivityMonitor.prototype.addDocument = function(doc) {
+  this.documents_.push(doc);
+  this.eventHandler_.listen(
+      doc, goog.ui.ActivityMonitor.userEventTypesDocuments_,
+      this.handleEvent_, true);
+  this.eventHandler_.listen(
+      doc, goog.ui.ActivityMonitor.userEventTypesBody_,
+      this.handleEvent_, true);
+};
+
+
+/**
+ * Removes a document from those being monitored by this class.
+ *
+ * @param {Document} doc Document to monitor.
+ */
+goog.ui.ActivityMonitor.prototype.removeDocument = function(doc) {
+  if (this.isDisposed()) {
+    return;
+  }
+  goog.array.remove(this.documents_, doc);
+  this.eventHandler_.unlisten(
+      doc, goog.ui.ActivityMonitor.userEventTypesDocuments_,
+      this.handleEvent_, true);
+  this.eventHandler_.unlisten(
+      doc, goog.ui.ActivityMonitor.userEventTypesBody_,
+      this.handleEvent_, true);
+};
+
+
+/**
  * Updates the last event time when a user action occurs.
  * @param {goog.events.BrowserEvent} e Event object.
  * @private
@@ -241,6 +266,7 @@ goog.ui.ActivityMonitor.prototype.getIdleTime = function(opt_now) {
   var now = opt_now || goog.now();
   return now - this.lastEventTime_;
 };
+
 
 /**
  * Returns the type of the last user event.

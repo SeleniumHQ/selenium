@@ -14,7 +14,6 @@
 
 /**
  * @fileoverview Contains the iframe polling transport.
-*
  */
 
 
@@ -29,6 +28,7 @@ goog.require('goog.net.xpc.Transport');
 goog.require('goog.userAgent');
 
 
+
 /**
  * Iframe polling transport. Uses hidden iframes to transfer data
  * in the fragment identifier of the URL. The peer polls the iframe's location
@@ -39,10 +39,13 @@ goog.require('goog.userAgent');
  *
  * @param {goog.net.xpc.CrossPageChannel} channel The channel this
  *     transport belongs to.
+ * @param {goog.dom.DomHelper=} opt_domHelper The dom helper to use for finding
+ *     the correct window.
  * @constructor
  * @extends {goog.net.xpc.Transport}
  */
-goog.net.xpc.IframePollingTransport = function(channel) {
+goog.net.xpc.IframePollingTransport = function(channel, opt_domHelper) {
+  goog.base(this, opt_domHelper);
 
   /**
    * The channel this transport belongs to.
@@ -161,11 +164,11 @@ goog.net.xpc.IframePollingTransport.prototype.constructSenderFrames_ =
     function() {
   var name = this.getMsgFrameName_();
   this.msgIframeElm_ = this.constructSenderFrame_(name);
-  this.msgWinObj_ = window.frames[name];
+  this.msgWinObj_ = this.getWindow().frames[name];
 
   name = this.getAckFrameName_();
   this.ackIframeElm_ = this.constructSenderFrame_(name);
-  this.ackWinObj_ = window.frames[name];
+  this.ackWinObj_ = this.getWindow().frames[name];
 };
 
 
@@ -184,7 +187,7 @@ goog.net.xpc.IframePollingTransport.prototype.constructSenderFrame_ =
   s.top = '-10px'; s.left = '10px'; s.width = '1px'; s.height = '1px';
   ifr.id = ifr.name = id;
   ifr.src = this.sendUri_ + '#INITIAL';
-  document.body.appendChild(ifr);
+  this.getWindow().document.body.appendChild(ifr);
   return ifr;
 };
 
@@ -300,7 +303,7 @@ goog.net.xpc.IframePollingTransport.prototype.checkForeignFramesReady_ =
     }
 
     // start a timer to check again
-    window.setTimeout(goog.bind(this.connect, this), 100);
+    this.getWindow().setTimeout(goog.bind(this.connect, this), 100);
   } else {
     goog.net.xpc.logger.fine('foreign frames present');
 
@@ -359,7 +362,7 @@ goog.net.xpc.IframePollingTransport.prototype.checkLocalFramesPresent_ =
       this.checkLocalFramesPresentCb_ = goog.bind(
           this.checkLocalFramesPresent_, this);
     }
-    window.setTimeout(this.checkLocalFramesPresentCb_, 100);
+    this.getWindow().setTimeout(this.checkLocalFramesPresentCb_, 100);
     goog.net.xpc.logger.fine('local frames not (yet) present');
   } else {
     // Create senders.
@@ -370,7 +373,7 @@ goog.net.xpc.IframePollingTransport.prototype.checkLocalFramesPresent_ =
 
     goog.net.xpc.logger.fine('local frames ready');
 
-    window.setTimeout(goog.bind(function() {
+    this.getWindow().setTimeout(goog.bind(function() {
       this.msgSender_.send(goog.net.xpc.SETUP);
       this.sentConnectionSetup_ = true;
       this.waitForAck_ = true;
@@ -770,7 +773,6 @@ goog.net.xpc.IframePollingTransport.Sender.prototype.send = function(payload) {
   // where we need to capture responses quickly.
   goog.net.xpc.IframePollingTransport.startRcvTimer_();
 };
-
 
 
 

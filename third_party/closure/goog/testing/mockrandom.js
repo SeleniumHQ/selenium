@@ -16,12 +16,13 @@
  * @fileoverview MockRandom provides a mechanism for specifying a stream of
  * numbers to expect from calls to Math.random().
  *
-*
  */
 
 goog.provide('goog.testing.MockRandom');
 
 goog.require('goog.Disposable');
+
+
 
 /**
  * Class for unit testing code that uses Math.random.
@@ -54,6 +55,7 @@ goog.testing.MockRandom = function(sequence, opt_install) {
   }
 };
 goog.inherits(goog.testing.MockRandom, goog.Disposable);
+
 
 /**
  * Whether this MockRandom has been installed.

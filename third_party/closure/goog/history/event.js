@@ -15,7 +15,6 @@
 /**
  * @fileoverview The event object dispatched when the history changes.
  *
-*
  */
 
 
@@ -27,12 +26,17 @@ goog.require('goog.history.EventType');
 
 
 /**
- * Event object dispatched after navigation events.
+ * Event object dispatched after the history state has changed.
  * @param {string} token The string identifying the new history state.
+ * @param {boolean} isNavigation True if the event was triggered by a browser
+ *     action, such as forward or back, clicking on a link, editing the URL, or
+ *     calling {@code window.history.(go|back|forward)}.
+ *     False if the token has been changed by a {@code setToken} or
+ *     {@code replaceToken} call.
  * @constructor
  * @extends {goog.events.Event}
  */
-goog.history.Event = function(token) {
+goog.history.Event = function(token, isNavigation) {
   goog.events.Event.call(this, goog.history.EventType.NAVIGATE);
 
   /**
@@ -40,5 +44,11 @@ goog.history.Event = function(token) {
    * @type {string}
    */
   this.token = token;
+
+  /**
+   * Whether the event was triggered by browser navigation.
+   * @type {boolean}
+   */
+  this.isNavigation = isNavigation;
 };
 goog.inherits(goog.history.Event, goog.events.Event);

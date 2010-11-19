@@ -1,0 +1,52 @@
+/*
+ * Copyright 2008 The Closure Library Authors. All Rights Reserved.
+ *
+ * Use of this source code is governed by the Apache License, Version 2.0.
+ * See the COPYING file for details.
+ */
+
+/* Author: attila@google.com (Attila Bodis) */
+/* Author: eae@google.com (Emil A. Eklund) */
+
+
+/*
+ * Styles used by goog.ui.TabBarRenderer.
+ */
+.goog-tab-bar {
+  border: 0;
+  cursor: default;
+  list-style: none;
+  margin: 0;
+  outline: none;
+  padding: 0;
+  position: relative;
+}
+
+.goog-tab-bar-clear {
+  clear: both;
+  height: 0;
+  overflow: hidden;
+}
+
+.goog-tab-bar-start {
+  float: left;
+}
+
+.goog-tab-bar-end {
+  float: right;
+}
+
+
+/*
+ * IE6-only hacks to fix the gap between the floated tabs and the content.
+ * IE7 and later will ignore these.
+ */
+/* @if user.agent ie6 */
+* html .goog-tab-bar-start {
+  margin-right: -3px;
+}
+
+* html .goog-tab-bar-end {
+  margin-left: -3px;
+}
+/* @endif */

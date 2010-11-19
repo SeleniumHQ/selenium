@@ -62,7 +62,6 @@
  * <h5>System Requirements</h5>
  * Tested on IE6, IE7, Firefox 2.0 and Safari nightly r23841.
  *
-*
  */
 
 goog.provide('goog.net.CrossDomainRpc');
@@ -72,9 +71,11 @@ goog.require('goog.debug.Logger');
 goog.require('goog.dom');
 goog.require('goog.events');
 goog.require('goog.events.EventTarget');
+goog.require('goog.events.EventType');
 goog.require('goog.json');
 goog.require('goog.net.EventType');
 goog.require('goog.userAgent');
+
 
 
 /**

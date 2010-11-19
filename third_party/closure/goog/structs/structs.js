@@ -15,7 +15,6 @@
 /**
  * @fileoverview Generics method for collection-like classes and objects.
  *
-*
  *
  * This file contains functions to work with collections. It supports using
  * Map, Set, Array and Object and other classes that implement collection-like

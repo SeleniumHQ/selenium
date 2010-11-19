@@ -15,7 +15,6 @@
 
 /**
  * @fileoverview Gauge UI component, using browser vector graphics.
-*
  * @see ../demos/gauge.html
  */
 
@@ -33,6 +32,7 @@ goog.require('goog.graphics.Font');
 goog.require('goog.graphics.SolidFill');
 goog.require('goog.ui.Component');
 goog.require('goog.ui.GaugeTheme');
+
 
 
 /**
@@ -65,6 +65,7 @@ goog.ui.GaugeColoredRange = function(fromValue, toValue, backgroundColor) {
    */
   this.backgroundColor = backgroundColor;
 };
+
 
 
 /**
@@ -726,7 +727,7 @@ goog.ui.Gauge.prototype.draw_ = function() {
   for (var i = 0; i <= ticks; i++) {
     var angle = this.valueToAngle_(i * tickValueSpan + this.minValue_);
     var isMajorTick = i % minorTicks == 0;
-    var rInternal = isMajorTick ? rMajorTickInternal: rMinorTickInternal;
+    var rInternal = isMajorTick ? rMajorTickInternal : rMinorTickInternal;
     var path = isMajorTick ? majorTicksPath : minorTicksPath;
     x = cx + goog.math.angleDx(angle, rInternal);
     y = cy + goog.math.angleDy(angle, rInternal);
@@ -912,7 +913,7 @@ goog.ui.Gauge.prototype.drawValue_ = function() {
       cx + frontDx, cy + frontDy);
 
   // Draw the needle hinge
-  var rh = Math.round(r * goog.ui.Gauge.FACTOR_NEEDLE_HINGE)
+  var rh = Math.round(r * goog.ui.Gauge.FACTOR_NEEDLE_HINGE);
 
   // Clean previous needle
   var needleGroup = this.needleGroup_;

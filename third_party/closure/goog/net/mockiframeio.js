@@ -14,7 +14,6 @@
 
 /**
  * @fileoverview Mock of IframeIo for unit testing.
-*
  */
 
 goog.provide('goog.net.MockIFrameIo');
@@ -22,6 +21,7 @@ goog.require('goog.events.EventTarget');
 goog.require('goog.net.ErrorCode');
 goog.require('goog.net.IframeIo');
 goog.require('goog.net.IframeIo.IncrementalDataEvent');
+
 
 
 /**
@@ -55,6 +55,14 @@ goog.net.MockIFrameIo.prototype.active_ = false;
 
 
 /**
+ * Last content.
+ * @type {string}
+ * @private
+ */
+goog.net.MockIFrameIo.prototype.lastContent_ = '';
+
+
+/**
  * Last error code.
  * @type {goog.net.ErrorCode}
  * @private
@@ -68,6 +76,23 @@ goog.net.MockIFrameIo.prototype.lastErrorCode_ = goog.net.ErrorCode.NO_ERROR;
  * @private
  */
 goog.net.MockIFrameIo.prototype.lastError_ = '';
+
+
+/**
+ * Last custom error.
+ * @type {Object}
+ * @private
+ */
+goog.net.MockIFrameIo.prototype.lastCustomError_ = null;
+
+
+/**
+ * Last URI.
+ * @type {goog.Uri}
+ * @private
+ */
+goog.net.MockIFrameIo.prototype.lastUri_ = null;
+
 
 /**
  * Simulates the iframe send.
@@ -110,6 +135,7 @@ goog.net.MockIFrameIo.prototype.sendFromForm = function(form, opt_uri,
   this.active_ = true;
 };
 
+
 /**
  * Simulates aborting the current Iframe request.
  * @param {goog.net.ErrorCode=} opt_failureCode Optional error code to use -
@@ -126,6 +152,7 @@ goog.net.MockIFrameIo.prototype.abort = function(opt_failureCode) {
     this.simulateReady();
   }
 };
+
 
 /**
  * Simulates receive of incremental data.
@@ -155,6 +182,7 @@ goog.net.MockIFrameIo.prototype.simulateDone = function(errorCode) {
   this.complete_ = true;
   this.dispatchEvent(goog.net.EventType.COMPLETE);
 };
+
 
 /**
  * Simulates the IFrame is ready for the next request.

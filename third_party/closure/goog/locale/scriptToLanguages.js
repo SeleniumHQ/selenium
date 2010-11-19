@@ -25,8 +25,8 @@
  * Please contact i18n team or change the script and regenerate data.
  * Code location: http://go/generate_genericfontnames.py
  *
-*
  */
+
 
 /**
  * Namespace for Script to Languages mapping

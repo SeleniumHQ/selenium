@@ -19,6 +19,7 @@ goog.require('goog.testing.stacktrace');
 // TODO(user): Copied from JsUnit with some small modifications, we should
 // reimplement the asserters.
 
+
 /**
  * @typedef {Array|NodeList|Arguments|{length: number}}
  */
@@ -28,9 +29,6 @@ var DOUBLE_EQUALITY_PREDICATE = function(var1, var2) {
   return var1 == var2;
 };
 var JSUNIT_UNDEFINED_VALUE;
-var TRIPLE_EQUALITY_PREDICATE = function(var1, var2) {
-  return var1 === var2;
-};
 var TO_STRING_EQUALITY_PREDICATE = function(var1, var2) {
   return var1.toString() === var2.toString();
 };
@@ -39,7 +37,9 @@ var PRIMITIVE_EQUALITY_PREDICATES = {
   'String': DOUBLE_EQUALITY_PREDICATE,
   'Number': DOUBLE_EQUALITY_PREDICATE,
   'Boolean': DOUBLE_EQUALITY_PREDICATE,
-  'Date': TRIPLE_EQUALITY_PREDICATE,
+  'Date': function(date1, date2) {
+    return date1.getTime() == date2.getTime();
+  },
   'RegExp': TO_STRING_EQUALITY_PREDICATE,
   'Function': TO_STRING_EQUALITY_PREDICATE
 };
@@ -56,6 +56,10 @@ function _trueTypeOf(something) {
       case 'number':
         break;
       case 'object':
+        if (something == null) {
+          result = 'null';
+          break;
+        }
       case 'function':
         switch (something.constructor) {
           case new String('').constructor:
@@ -140,6 +144,7 @@ function _assert(comment, booleanValue, failureMessage) {
   }
 }
 
+
 /**
  * @param {*} a
  * @param {*=} opt_b
@@ -153,6 +158,7 @@ function assert(a, opt_b) {
       'Bad argument to assert(boolean)');
   _assert(comment, booleanValue, 'Call to assert(boolean) with false');
 }
+
 
 /**
  * Asserts that the function throws an error.
@@ -186,6 +192,7 @@ function assertThrows(a, opt_b) {
       'No exception thrown from function passed to assertThrows');
 }
 
+
 /**
  * @param {*} a
  * @param {*=} opt_b
@@ -207,6 +214,37 @@ function assertNotThrows(a, opt_b) {
       'assertNotThrows');
 }
 
+
+/**
+ * Asserts that the given callback function results in a JsUnitException when
+ * called, and that the resulting failure message matches the given expected
+ * message.
+ * @param {function() : void} callback Function to be run expected to result
+ *     in a JsUnitException (usually contains a call to an assert).
+ * @param {string=} opt_expectedMessage Failure message expected to be given
+ *     with the exception.
+ */
+function assertThrowsJsUnitException(callback, opt_expectedMessage) {
+  var failed = false;
+  try {
+    goog.testing.asserts.callWithoutLogging(callback);
+  } catch (ex) {
+    if (!ex.isJsUnitException) {
+      fail('Expected a JsUnitException');
+    }
+    if (typeof opt_expectedMessage != 'undefined' &&
+        ex.message != opt_expectedMessage) {
+      fail('Expected message [' + opt_expectedMessage + '] but got [' +
+          ex.message + ']');
+    }
+    failed = true;
+  }
+  if (!failed) {
+    fail('Expected a failure: ' + opt_expectedMessage);
+  }
+}
+
+
 /**
  * @param {*} a
  * @param {*=} opt_b
@@ -220,6 +258,7 @@ function assertTrue(a, opt_b) {
       'Bad argument to assertTrue(boolean)');
   _assert(comment, booleanValue, 'Call to assertTrue(boolean) with false');
 }
+
 
 /**
  * @param {*} a
@@ -235,6 +274,7 @@ function assertFalse(a, opt_b) {
   _assert(comment, !booleanValue, 'Call to assertFalse(boolean) with true');
 }
 
+
 /**
  * @param {*} a
  * @param {*} b
@@ -249,6 +289,7 @@ function assertEquals(a, b, opt_c) {
           _displayStringForValue(var2));
 }
 
+
 /**
  * @param {*} a
  * @param {*} b
@@ -262,6 +303,7 @@ function assertNotEquals(a, b, opt_c) {
       'Expected not to be ' + _displayStringForValue(var2));
 }
 
+
 /**
  * @param {*} a
  * @param {*=} opt_b
@@ -274,6 +316,7 @@ function assertNull(a, opt_b) {
       _displayStringForValue(aVar));
 }
 
+
 /**
  * @param {*} a
  * @param {*=} opt_b
@@ -284,6 +327,7 @@ function assertNotNull(a, opt_b) {
   _assert(commentArg(1, arguments), aVar !== null,
       'Expected not to be ' + _displayStringForValue(null));
 }
+
 
 /**
  * @param {*} a
@@ -297,6 +341,7 @@ function assertUndefined(a, opt_b) {
       ' but was ' + _displayStringForValue(aVar));
 }
 
+
 /**
  * @param {*} a
  * @param {*=} opt_b
@@ -308,6 +353,7 @@ function assertNotUndefined(a, opt_b) {
       'Expected not to be ' + _displayStringForValue(JSUNIT_UNDEFINED_VALUE));
 }
 
+
 /**
  * @param {*} a
  * @param {*=} opt_b
@@ -317,6 +363,7 @@ function assertNotNullNorUndefined(a, opt_b) {
   assertNotNull.apply(null, arguments);
   assertNotUndefined.apply(null, arguments);
 }
+
 
 /**
  * @param {*} a
@@ -331,6 +378,7 @@ function assertNonEmptyString(a, opt_b) {
       'Expected non-empty string but was ' + _displayStringForValue(aVar));
 }
 
+
 /**
  * @param {*} a
  * @param {*=} opt_b
@@ -341,6 +389,7 @@ function assertNaN(a, opt_b) {
   _assert(commentArg(1, arguments), isNaN(aVar), 'Expected NaN');
 }
 
+
 /**
  * @param {*} a
  * @param {*=} opt_b
@@ -350,6 +399,180 @@ function assertNotNaN(a, opt_b) {
   var aVar = nonCommentArg(1, 1, arguments);
   _assert(commentArg(1, arguments), !isNaN(aVar), 'Expected not NaN');
 }
+
+
+/**
+ * Runs a function in an environment where test failures are not logged. This is
+ * useful for testing test code, where failures can be a normal part of a test.
+ * @param {function() : void} fn Function to run without logging failures.
+ */
+goog.testing.asserts.callWithoutLogging = function(fn) {
+  var testRunner = goog.global['G_testRunner'];
+  var oldLogTestFailure = testRunner['logTestFailure'];
+  try {
+    // Any failures in the callback shouldn't be recorded.
+    testRunner['logTestFailure'] = undefined;
+    fn();
+  } finally {
+    testRunner['logTestFailure'] = oldLogTestFailure;
+  }
+};
+
+
+/**
+ * Determines if two items of any type match, and formulates an error message
+ * if not.
+ * @param {*} expected Expected argument to match.
+ * @param {*} actual Argument as a result of performing the test.
+ * @return {?string} Null on success, error message on failure.
+ */
+goog.testing.asserts.findDifferences = function(expected, actual) {
+  var failures = [];
+  var seen1 = [];
+  var seen2 = [];
+
+  // To avoid infinite recursion when the two parameters are self-referential
+  // along the same path of properties, keep track of the object pairs already
+  // seen in this call subtree, and abort when a cycle is detected.
+  // TODO(user,user): The algorithm still does not terminate in cases
+  // with exponential recursion, e.g. a binary tree with leaf->root links.
+  // Investigate ways to solve this without significant performance loss
+  // for the common case.
+  function innerAssert(var1, var2, path) {
+    var depth = seen1.length;
+    if (depth % 2) {
+      // Compare with midpoint of seen ("Tortoise and hare" loop detection).
+      // http://en.wikipedia.org/wiki/Cycle_detection#Tortoise_and_hare
+      // TODO(user,user): For cases with complex cycles the algorithm
+      // can take a long time to terminate, look into ways to terminate sooner
+      // without adding more than constant-time work in non-cycle cases.
+      var mid = depth >> 1;
+      // Use === to avoid cases like ['x'] == 'x', which is true.
+      var match1 = seen1[mid] === var1;
+      var match2 = seen2[mid] === var2;
+      if (match1 || match2) {
+        if (!match1 || !match2) {
+          // Asymmetric cycles, so the objects have different structure.
+          failures.push('Asymmetric cycle detected at ' + path);
+        }
+        return;
+      }
+    }
+    seen1.push(var1);
+    seen2.push(var2);
+    innerAssert_(var1, var2, path);
+    seen1.pop();
+    seen2.pop();
+  }
+
+  function innerAssert_(var1, var2, path) {
+    if (var1 === var2) {
+      return;
+    }
+
+    var typeOfVar1 = _trueTypeOf(var1);
+    var typeOfVar2 = _trueTypeOf(var2);
+
+    if (typeOfVar1 == typeOfVar2) {
+      var isArray = typeOfVar1 == 'Array';
+      var equalityPredicate = PRIMITIVE_EQUALITY_PREDICATES[typeOfVar1];
+      if (equalityPredicate) {
+        if (!equalityPredicate(var1, var2)) {
+          failures.push(path + ' expected ' + _displayStringForValue(var1) +
+                        ' but was ' + _displayStringForValue(var2));
+        }
+      } else if (isArray && var1.length != var2.length) {
+        failures.push(path + ' expected ' + var1.length + '-element array ' +
+                      'but got a ' + var2.length + '-element array');
+      } else {
+        var childPath = path + (isArray ? '[%s]' : (path ? '.%s' : '%s'));
+
+        // if an object has an __iterator__ property, we have no way of
+        // actually inspecting its raw properties, and JS 1.7 doesn't
+        // overload [] to make it possible for someone to generically
+        // use what the iterator returns to compare the object-managed
+        // properties. This gets us into deep poo with things like
+        // goog.structs.Map, at least on systems that support iteration.
+        if (!var1['__iterator__']) {
+          for (var prop in var1) {
+            if (isArray && goog.testing.asserts.isArrayIndexProp_(prop)) {
+              // Skip array indices for now. We'll handle them later.
+              continue;
+            }
+
+            if (prop in var2) {
+              innerAssert(var1[prop], var2[prop],
+                          childPath.replace('%s', prop));
+            } else {
+              failures.push('property ' + prop +
+                            ' not present in actual ' + (path || typeOfVar2));
+            }
+          }
+          // make sure there aren't properties in var2 that are missing
+          // from var1. if there are, then by definition they don't
+          // match.
+          for (var prop in var2) {
+            if (isArray && goog.testing.asserts.isArrayIndexProp_(prop)) {
+              // Skip array indices for now. We'll handle them later.
+              continue;
+            }
+
+            if (!(prop in var1)) {
+              failures.push('property ' + prop +
+                            ' not present in expected ' +
+                            (path || typeOfVar1));
+            }
+          }
+
+          // Handle array indices by iterating from 0 to arr.length.
+          //
+          // Although all browsers allow holes in arrays, browsers
+          // are inconsistent in what they consider a hole. For example,
+          // "[0,undefined,2]" has a hole on IE but not on Firefox.
+          //
+          // Because our style guide bans for...in iteration over arrays,
+          // we assume that most users don't care about holes in arrays,
+          // and that it is ok to say that a hole is equivalent to a slot
+          // populated with 'undefined'.
+          if (isArray) {
+            for (prop = 0; prop < var1.length; prop++) {
+              innerAssert(var1[prop], var2[prop],
+                          childPath.replace('%s', String(prop)));
+            }
+          }
+        } else {
+          // special-case for closure objects that have iterators
+          if (goog.isFunction(var1.equals)) {
+            // use the object's own equals function, assuming it accepts an
+            // object and returns a boolean
+            if (!var1.equals(var2)) {
+              failures.push('equals() returned false for ' +
+                            (path || typeOfVar1));
+            }
+          } else if (var1.map_) {
+            // assume goog.structs.Map or goog.structs.Set, where comparing
+            // their private map_ field is sufficient
+            innerAssert(var1.map_, var2.map_, childPath.replace('%s', 'map_'));
+          } else {
+            // else die, so user knows we can't do anything
+            failures.push('unable to check ' + (path || typeOfVar1) +
+                          ' for equality: it has an iterator we do not ' +
+                          'know how to handle. please add an equals method');
+          }
+        }
+      }
+    } else {
+      failures.push(path + ' expected ' + _displayStringForValue(var1) +
+                    ' but was ' + _displayStringForValue(var2));
+    }
+  }
+
+  innerAssert(expected, actual, '');
+  return failures.length == 0 ? null :
+      'Expected ' + _displayStringForValue(expected) + ' but was ' +
+      _displayStringForValue(actual) + '\n   ' + failures.join('\n   ');
+};
+
 
 /**
  * Notes:
@@ -375,93 +598,11 @@ function assertObjectEquals(a, b, opt_c) {
   var v1 = nonCommentArg(1, 2, arguments);
   var v2 = nonCommentArg(2, 2, arguments);
   var failureMessage = commentArg(2, arguments) ? commentArg(2, arguments) : '';
-  // start with an empty string here so the join in the final assertion
-  // puts the first failure on a new line in the output
-  var failures = [''];
+  var differences = goog.testing.asserts.findDifferences(v1, v2);
 
-  function innerAssert(var1, var2, path) {
-    if (var1 === var2) {
-      return true;
-    }
-
-    var typeOfVar1 = _trueTypeOf(var1);
-    var typeOfVar2 = _trueTypeOf(var2);
-
-    if (typeOfVar1 == typeOfVar2) {
-      var isArray = typeOfVar1 == 'Array';
-      var equalityPredicate = PRIMITIVE_EQUALITY_PREDICATES[typeOfVar1];
-      if (equalityPredicate) {
-        if (!equalityPredicate(var1, var2)) {
-          failures.push(path + ' expected ' + _displayStringForValue(var1) +
-                        ' but was ' + _displayStringForValue(var2));
-        }
-      } else if (!isArray || var1.length === var2.length) {
-        var childPath = path + (isArray ? '[%s]' : (path ? '.%s' : '%s'));
-
-        // if an object has an __iterator__ property, we have no way of
-        // actually inspecting its raw properties, and JS 1.7 doesn't
-        // overload [] to make it possible for someone to generically
-        // use what the iterator returns to compare the object-managed
-        // properties. This gets us into deep poo with things like
-        // goog.structs.Map, at least on systems that support iteration.
-        if (!var1['__iterator__']) {
-          for (var prop in var1) {
-            if (isArray || prop in var2) {
-              innerAssert(var1[prop], var2[prop],
-                          childPath.replace('%s', prop));
-            } else {
-              failures.push('property ' + prop +
-                            ' not present in actual ' + (path || typeOfVar2));
-            }
-          }
-          if (!isArray) {
-            // make sure there aren't properties in var2 that are missing
-            // from var1. if there are, then by definition they don't
-            // match.
-            for (var prop in var2) {
-              if (!(prop in var1)) {
-                failures.push('property ' + prop +
-                              ' not present in expected ' +
-                              (path || typeOfVar1));
-              }
-            }
-          }
-        } else {
-          // special-case for closure objects that have iterators
-          if (goog.isFunction(var1.equals)) {
-            // use the object's own equals function, assuming it accepts an
-            // object and returns a boolean
-            if (!var1.equals(var2)) {
-              failures.push('equals() returned false for ' +
-                            (path || typeOfVar1));
-            }
-          } else if (var1.map_) {
-            // assume goog.structs.Map or goog.structs.Set, where comparing
-            // their private map_ field is sufficient
-            innerAssert(var1.map_, var2.map_, childPath.replace('%s', 'map_'));
-          } else {
-            // else die, so user knows we can't do anything
-            failures.push('unable to check ' + (path || typeOfVar1) +
-                          ' for equality: it has an iterator we do not ' +
-                          'know how to handle. please add an equals method');
-          }
-        }
-      } else {
-        failures.push(path + ' expected ' + var1.length + '-element array ' +
-                      'but got a ' + var2.length + '-element array');
-      }
-    } else {
-      failures.push(path + ' expected ' + _displayStringForValue(var1) +
-                    ' but was ' + _displayStringForValue(var2));
-    }
-  }
-
-  innerAssert(v1, v2, '');
-  _assert(failureMessage, failures.length == 1,
-          'Expected ' + _displayStringForValue(v1) + ' but was ' +
-          _displayStringForValue(v2) +
-          failures.join('\n   '));
+  _assert(failureMessage, !differences, differences);
 }
+
 
 /**
  * @param {*} a
@@ -486,6 +627,7 @@ function assertArrayEquals(a, b, opt_c) {
 
   assertObjectEquals.apply(null, arguments);
 }
+
 
 /**
  * Compares two array-like objects without taking their order into account.
@@ -523,6 +665,7 @@ function assertSameElements(a, b, opt_c) {
   }
 }
 
+
 /**
  * @param {*} a
  * @param {*=} opt_b
@@ -535,6 +678,7 @@ function assertEvaluatesToTrue(a, opt_b) {
   }
 }
 
+
 /**
  * @param {*} a
  * @param {*=} opt_b
@@ -546,6 +690,7 @@ function assertEvaluatesToFalse(a, opt_b) {
     _assert(commentArg(1, arguments), false, 'Expected to evaluate to false');
   }
 }
+
 
 /**
  * @param {*} a
@@ -563,6 +708,7 @@ function assertHTMLEquals(a, b, opt_c) {
           'Expected ' + _displayStringForValue(var1Standardized) + ' but was ' +
           _displayStringForValue(var2Standardized));
 }
+
 
 /**
  * Compares two CSS property values to make sure that they represent the same
@@ -593,6 +739,7 @@ function assertCSSValueEquals(a, b, c, opt_d) {
           ' but was ' + _displayStringForValue(actualValueStandardized));
 }
 
+
 /**
  * @param {*} a
  * @param {*} b
@@ -616,6 +763,7 @@ function assertHashEquals(a, b, opt_c) {
   }
 }
 
+
 /**
  * @param {*} a
  * @param {*} b
@@ -632,6 +780,7 @@ function assertRoughlyEquals(a, b, c, opt_d) {
       ' which was more than ' + tolerance + ' away');
 }
 
+
 /**
  * @param {*} a
  * @param {*} b
@@ -645,6 +794,7 @@ function assertContains(a, b, opt_c) {
       goog.testing.asserts.contains_(container, contained),
       'Expected \'' + container + '\' to contain \'' + contained + '\'');
 }
+
 
 /**
  * @param {*} a
@@ -660,6 +810,7 @@ function assertNotContains(a, b, opt_c) {
       'Expected \'' + container + '\' not to contain \'' + contained + '\'');
 }
 
+
 /**
  * Converts an array like object to array or clones it if it's already array.
  * @param {goog.testing.asserts.ArrayLike} arrayLike The collection.
@@ -673,6 +824,7 @@ goog.testing.asserts.toArray_ = function(arrayLike) {
   }
   return ret;
 };
+
 
 /**
  * Finds the position of the first occurrence of an element in a container.
@@ -695,6 +847,7 @@ goog.testing.asserts.indexOf_ = function(container, contained) {
     return -1;
   }
 };
+
 
 /**
  * Tells whether the array contains the given element.
@@ -719,6 +872,7 @@ function standardizeHTML(html) {
   // Trim whitespace from result (without relying on goog.string)
   return translator.innerHTML.replace(/^\s+|\s+$/g, '');
 }
+
 
 /**
  * Standardizes a CSS value for a given property by applying it to an element
@@ -751,6 +905,18 @@ goog.testing.asserts.raiseException_ = function(comment, opt_message) {
 
 
 /**
+ * Helper function for assertObjectEquals. Tells us if a given property
+ * name is an array index.
+ * @param {string} prop
+ * @return {boolean}
+ */
+goog.testing.asserts.isArrayIndexProp_ = function(prop) {
+  return (prop | 0) == prop;
+};
+
+
+
+/**
  * @param {string} comment A summary for the exception.
  * @param {?string=} opt_message A description of the exception.
  * @constructor
@@ -765,6 +931,7 @@ goog.testing.JsUnitException = function(comment, opt_message) {
   this.comment = comment || null;
   this.jsUnitMessage = opt_message || '';
 };
+
 
 /** @inheritDoc */
 goog.testing.JsUnitException.prototype.toString = function() {

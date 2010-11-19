@@ -17,7 +17,7 @@
  * outdent.
  *
  * @author robbyw@google.com (Robby Walker)
-*
+ * @author ajp@google.com (Andy Perelson)
  */
 
 goog.provide('goog.editor.plugins.ListTabHandler');
@@ -25,6 +25,7 @@ goog.provide('goog.editor.plugins.ListTabHandler');
 goog.require('goog.dom.TagName');
 goog.require('goog.editor.Command');
 goog.require('goog.editor.plugins.AbstractTabHandler');
+
 
 
 /**

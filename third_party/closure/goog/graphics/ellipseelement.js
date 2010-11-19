@@ -15,14 +15,13 @@
 
 /**
  * @fileoverview A thin wrapper around the DOM element for ellipses.
-*
-*
  */
 
 
 goog.provide('goog.graphics.EllipseElement');
 
 goog.require('goog.graphics.StrokeAndFillElement');
+
 
 
 /**

@@ -138,7 +138,7 @@ goog.graphics.ext.coordinates.getValue = function(coord, forMaximum,
       coord = opt_cache[cacheString];
     } else {
       if (goog.graphics.ext.coordinates.isSpecial(
-        /** @type {string} */ (coord))) {
+          /** @type {string} */ (coord))) {
         coord = goog.graphics.ext.coordinates.computeValue(coord,
             containerSize, scale);
       } else {

@@ -18,14 +18,13 @@
  * the basic structure for creating, updating and removing the store, as well
  * as versioning. It also provides ways to interconnect stores.
  *
-*
-*
  */
 
 goog.provide('goog.gears.BaseStore');
 goog.provide('goog.gears.BaseStore.SchemaType');
 
 goog.require('goog.Disposable');
+
 
 
 /**
@@ -94,6 +93,16 @@ goog.gears.BaseStore.prototype.version = 1;
  * @type {Array.<Object>}
  */
 goog.gears.BaseStore.prototype.schema = [];
+
+
+/**
+ * Gets the underlying database.
+ * @return {goog.gears.Database}
+ * @protected
+ */
+goog.gears.BaseStore.prototype.getDatabaseInternal = function() {
+  return this.database_;
+};
 
 
 /**
@@ -183,7 +192,7 @@ goog.gears.BaseStore.prototype.ensureStoreExists = function() {
     } catch (ex) {
       this.database_.rollback(ex);
       throw Error('Could not create the ' + this.name + ' schema' +
-            ': ' + (ex.message || 'unknown exception'));
+          ': ' + (ex.message || 'unknown exception'));
     }
   }
   this.getCachedData();
@@ -278,9 +287,9 @@ goog.gears.BaseStore.prototype.removeStoreVersion = function() {
 goog.gears.BaseStore.prototype.getCreateTriggerStatement_ =
     function(onStr, def, notExistsStr) {
   return 'CREATE TRIGGER ' + notExistsStr + def.name + ' ' +
-          onStr + ' ON ' + def.tableName +
-          (def.when ? (' WHEN ' + def.when) : '') +
-          ' BEGIN ' + def.actions.join('; ') + '; END';
+         onStr + ' ON ' + def.tableName +
+         (def.when ? (' WHEN ' + def.when) : '') +
+         ' BEGIN ' + def.actions.join('; ') + '; END';
 };
 
 
@@ -494,7 +503,6 @@ goog.gears.BaseStore.prototype.disposeInternal = function() {
   goog.gears.BaseStore.superClass_.disposeInternal.call(this);
   this.database_ = null;
 };
-
 
 
 /**

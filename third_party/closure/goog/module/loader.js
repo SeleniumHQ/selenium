@@ -19,8 +19,6 @@
  *
  *   <http://go/js_modules_design>
  *
-*
-*
  */
 
 goog.provide('goog.module.Loader');
@@ -29,6 +27,8 @@ goog.require('goog.Timer');
 goog.require('goog.array');
 goog.require('goog.dom');
 goog.require('goog.object');
+
+
 
 /**
  * The dynamic loading functionality is defined as a class. The class
@@ -208,7 +208,7 @@ goog.module.Loader.prototype.require = function(module, symbol, callback) {
  *     all symbols of the module are defined.
  */
 goog.module.Loader.prototype.provide = function(
-      module, opt_symbol, opt_object) {
+    module, opt_symbol, opt_object) {
   var modules = this.modules_;
   var pending = this.pending_;
   if (!modules[module]) {

@@ -14,7 +14,6 @@
 
 /**
  * @fileoverview Protocol buffer serializer.
-*
  */
 
 
@@ -26,6 +25,7 @@ goog.provide('goog.proto.Serializer');
 
 goog.require('goog.json.Serializer');
 goog.require('goog.string');
+
 
 
 /**

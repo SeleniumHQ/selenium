@@ -26,6 +26,7 @@ goog.require('goog.dom.pattern.MatchType');
 goog.require('goog.object');
 
 
+
 /**
  * Pattern object that matches an tag.
  *

@@ -18,7 +18,6 @@
  * easing.js.  Users of this stub should move off so we may remove it in the
  * future.
  *
-*
  */
 
 goog.provide('goog.fx');

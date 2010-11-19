@@ -14,8 +14,6 @@
 
 /**
  * @fileoverview Mock of XhrIo for unit testing.
-*
-*
  */
 
 goog.provide('goog.testing.net.XhrIo');
@@ -28,7 +26,9 @@ goog.require('goog.json');
 goog.require('goog.net.ErrorCode');
 goog.require('goog.net.EventType');
 goog.require('goog.net.XmlHttp');
+goog.require('goog.object');
 goog.require('goog.structs.Map');
+goog.require('goog.uri.utils');
 
 
 
@@ -110,7 +110,6 @@ goog.testing.net.XhrIo.send = function(url, opt_callback, opt_method,
 };
 
 
-
 /**
  * Disposes of the specified goog.testing.net.XhrIo created by
  * {@link goog.testing.net.XhrIo.send} and removes it from
@@ -168,6 +167,14 @@ goog.testing.net.XhrIo.prototype.lastError_ = '';
 
 
 /**
+ * The response object.
+ * @type {string|Document}
+ * @private
+ */
+goog.testing.net.XhrIo.prototype.response_ = '';
+
+
+/**
  * Mock ready state.
  * @type {number}
  * @private
@@ -192,6 +199,14 @@ goog.testing.net.XhrIo.prototype.timeoutInterval_ = 0;
  * @private
  */
 goog.testing.net.XhrIo.prototype.timeoutId_ = null;
+
+
+/**
+ * Whether there's currently an underlying XHR object.
+ * @type {boolean}
+ * @private
+ */
+goog.testing.net.XhrIo.prototype.xhr_ = false;
 
 
 /**
@@ -236,6 +251,7 @@ goog.testing.net.XhrIo.prototype.abort = function(opt_failureCode) {
     this.lastErrorCode_ = opt_failureCode || goog.net.ErrorCode.ABORT;
     this.dispatchEvent(goog.net.EventType.COMPLETE);
     this.dispatchEvent(goog.net.EventType.ABORT);
+    this.simulateReady();
   }
 };
 
@@ -250,7 +266,7 @@ goog.testing.net.XhrIo.prototype.abort = function(opt_failureCode) {
  */
 goog.testing.net.XhrIo.prototype.send = function(url, opt_method, opt_content,
                                                  opt_headers) {
-  if (this.active_) {
+  if (this.xhr_) {
     throw Error('[goog.net.XhrIo] Object is active with another request');
   }
 
@@ -259,9 +275,10 @@ goog.testing.net.XhrIo.prototype.send = function(url, opt_method, opt_content,
   if (this.testQueue_) {
     this.testQueue_.enqueue(['s', url, opt_method, opt_content, opt_headers]);
   }
+  this.xhr_ = true;
+  this.active_ = true;
   this.readyState_ = goog.net.XmlHttp.ReadyState.UNINITIALIZED;
   this.simulateReadyStateChange(goog.net.XmlHttp.ReadyState.LOADING);
-  this.active_ = true;
 };
 
 
@@ -300,23 +317,25 @@ goog.testing.net.XhrIo.prototype.simulateReadyStateChange =
 /**
  * Simulates receiving a response.
  * @param {number} statusCode Simulated status code.
- * @param {string|Document} response Simulated response.
+ * @param {string|Document|null} response Simulated response.
  * @param {Object=} opt_headers Simulated response headers.
  */
 goog.testing.net.XhrIo.prototype.simulateResponse = function(statusCode,
     response, opt_headers) {
   this.statusCode_ = statusCode;
-  this.response_ = response;
+  this.response_ = response || '';
   this.responseHeaders_ = opt_headers || {};
-  this.simulateReadyStateChange(goog.net.XmlHttp.ReadyState.COMPLETE);
 
   if (this.isSuccess()) {
+    this.simulateReadyStateChange(goog.net.XmlHttp.ReadyState.COMPLETE);
     this.dispatchEvent(goog.net.EventType.SUCCESS);
   } else {
     this.lastErrorCode_ = goog.net.ErrorCode.HTTP_ERROR;
     this.lastError_ = this.getStatusText() + ' [' + this.getStatus() + ']';
+    this.simulateReadyStateChange(goog.net.XmlHttp.ReadyState.COMPLETE);
     this.dispatchEvent(goog.net.EventType.ERROR);
   }
+  this.simulateReady();
 };
 
 
@@ -324,6 +343,8 @@ goog.testing.net.XhrIo.prototype.simulateResponse = function(statusCode,
  * Simulates the Xhr is ready for the next request.
  */
 goog.testing.net.XhrIo.prototype.simulateReady = function() {
+  this.active_ = false;
+  this.xhr_ = false;
   this.dispatchEvent(goog.net.EventType.READY);
 };
 
@@ -332,7 +353,7 @@ goog.testing.net.XhrIo.prototype.simulateReady = function() {
  * @return {boolean} Whether there is an active request.
  */
 goog.testing.net.XhrIo.prototype.isActive = function() {
-  return this.active_;
+  return !!this.xhr_;
 };
 
 
@@ -350,8 +371,7 @@ goog.testing.net.XhrIo.prototype.isComplete = function() {
  * @return {boolean} Whether the request compeleted successfully.
  */
 goog.testing.net.XhrIo.prototype.isSuccess = function() {
-  switch (this.statusCode_) {
-    case 0:         // Used for local XHR requests
+  switch (this.getStatus()) {
     case 200:       // HTTP Success
     case 204:       // HTTP Success - no content
     case 304:       // HTTP Cache
@@ -469,4 +489,24 @@ goog.testing.net.XhrIo.prototype.getResponseXml = function() {
  */
 goog.testing.net.XhrIo.prototype.getResponseHeader = function(key) {
   return this.isComplete() ? this.responseHeaders_[key] : undefined;
+};
+
+
+/**
+ * Gets the text of all the headers in the response.
+ * Will only return correct result when called from the context of a callback
+ * and the request has completed
+ * @return {string} The string containing all the response headers.
+ */
+goog.testing.net.XhrIo.prototype.getAllResponseHeaders = function() {
+  if (!this.isComplete()) {
+    return '';
+  }
+
+  var headers = [];
+  goog.object.forEach(this.responseHeaders_, function(value, name) {
+    headers.push(name + ': ' + value);
+  });
+
+  return headers.join('\n');
 };

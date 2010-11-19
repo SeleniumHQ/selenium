@@ -16,7 +16,6 @@
  * @fileoverview Interface for capturing URLs to a ResourceStore on the
  * LocalServer.
  *
-*
  */
 
 
@@ -29,6 +28,7 @@ goog.require('goog.debug.Logger');
 goog.require('goog.events.Event');
 goog.require('goog.events.EventTarget');
 goog.require('goog.gears');
+
 
 
 /**
@@ -170,6 +170,16 @@ goog.gears.UrlCapture.prototype.removeStore = function() {
  */
 goog.gears.UrlCapture.prototype.rename = function(srcUri, dstUri) {
   this.getResourceStore_()['rename'](srcUri.toString(), dstUri.toString());
+};
+
+
+/**
+ * Copies a Url that's been captured.
+ * @param {string|goog.Uri} srcUri The source Uri.
+ * @param {string|goog.Uri} dstUri The destination Uri.
+ */
+goog.gears.UrlCapture.prototype.copy = function(srcUri, dstUri) {
+  this.getResourceStore_()['copy'](srcUri.toString(), dstUri.toString());
 };
 
 
@@ -320,6 +330,7 @@ goog.gears.UrlCapture.prototype.usesGoogUri_ = function(captureId) {
   }
   return false;
 };
+
 
 
 /**

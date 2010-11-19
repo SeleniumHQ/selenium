@@ -15,7 +15,6 @@
 
 /**
  * @fileoverview The color theme used by a gauge (goog.ui.Guage).
-*
  */
 
 
@@ -25,6 +24,7 @@ goog.provide('goog.ui.GaugeTheme');
 goog.require('goog.graphics.LinearGradient');
 goog.require('goog.graphics.SolidFill');
 goog.require('goog.graphics.Stroke');
+
 
 
 /**

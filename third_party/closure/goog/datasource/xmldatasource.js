@@ -16,7 +16,6 @@
  * @fileoverview
  * Implementations of DataNode for wrapping XML data.
  *
-*
  */
 
 goog.provide('goog.ds.XmlDataSource');
@@ -29,7 +28,7 @@ goog.require('goog.ds.BasicNodeList');
 goog.require('goog.ds.DataManager');
 goog.require('goog.ds.LoadState');
 goog.require('goog.ds.logger');
-goog.require('goog.net.XmlHttp');
+goog.require('goog.net.XhrIo');
 goog.require('goog.string');
 
 
@@ -108,6 +107,7 @@ goog.ds.XmlDataSource.prototype.createChildNodes_ = function() {
   }
   this.childNodeList_ = childNodeList;
 };
+
 
 /**
  * Creates the DataNodeList with the attributes for the element
@@ -213,6 +213,7 @@ goog.ds.XmlDataSource.prototype.getDataName = function() {
   return this.dataName_;
 };
 
+
 /**
  * Setthe name of the node relative to the parent node
  * @param {string} name The name of the node.
@@ -281,6 +282,7 @@ goog.ds.XmlDataSource.createChildlessDocument_ = function() {
 };
 
 
+
 /**
  * Data source whose backing is an XMLHttpRequest,
  *
@@ -304,6 +306,7 @@ goog.ds.XmlHttpDataSource = function(uri, name) {
 };
 goog.inherits(goog.ds.XmlHttpDataSource, goog.ds.XmlDataSource);
 
+
 /**
  * Default load state is NOT_LOADED
  * @private
@@ -320,10 +323,8 @@ goog.ds.XmlHttpDataSource.prototype.load = function() {
     goog.ds.logger.info('Sending XML request for DataSource ' +
         this.getDataName() + ' to ' + this.uri_);
     this.loadState_ = goog.ds.LoadState.LOADING;
-    // TODO(user) move to shared xmlhttp when ready
-    this.loader_ = new goog.ds.XmlHttp_(this.uri_,
-                                        goog.bind(this.success_, this),
-                                        goog.bind(this.failure_, this));
+
+    goog.net.XhrIo.send(this.uri_, goog.bind(this.complete_, this));
   } else {
     this.node_ = goog.ds.XmlDataSource.createChildlessDocument_();
     this.loadState_ = goog.ds.LoadState.NOT_LOADED;
@@ -341,31 +342,43 @@ goog.ds.XmlHttpDataSource.prototype.getLoadState = function() {
 
 
 /**
- * Success result. Checks whether valid XML was returned
- * and sets the XML and loadstate.
- * Currently uses internal XMLHTTP implementation pending
- * completion of core Closure XMLHTTP.
- * TODO(user): Switch when closure version is completed
- *
+ * Handles the completion of an XhrIo request. Dispatches to success or load
+ * based on the result.
+ * @param {!goog.events.Event} e The XhrIo event object.
  * @private
  */
-goog.ds.XmlHttpDataSource.prototype.success_ = function() {
+goog.ds.XmlHttpDataSource.prototype.complete_ = function(e) {
+  var xhr = /** @type {goog.net.XhrIo} */ (e.target);
+  if (xhr && xhr.isSuccess()) {
+    this.success_(xhr);
+  } else {
+    this.failure_();
+  }
+};
+
+
+/**
+ * Success result. Checks whether valid XML was returned
+ * and sets the XML and loadstate.
+ *
+ * @param {!goog.net.XhrIo} xhr The successful XhrIo object.
+ * @private
+ */
+goog.ds.XmlHttpDataSource.prototype.success_ = function(xhr) {
   goog.ds.logger.info('Got data for DataSource ' + this.getDataName());
-  var req = this.loader_.getRequest();
-  var xml = req.responseXML;
+  var xml = xhr.getResponseXml();
 
   // Fix for case where IE returns valid XML as text but
   // doesn't parse by default
   if (xml && !xml.hasChildNodes() &&
-      goog.isObject(req.responseText)) {
-    xml = goog.dom.xml.loadXml(req.responseText);
+      goog.isObject(xhr.getResponseText())) {
+    xml = goog.dom.xml.loadXml(xhr.getResponseText());
   }
   // Failure result
   if (!xml || !xml.hasChildNodes()) {
     this.loadState_ = goog.ds.LoadState.FAILED;
     this.node_ = goog.ds.XmlDataSource.createChildlessDocument_();
-  }
-  else {
+  } else {
     this.loadState_ = goog.ds.LoadState.LOADED;
     this.node_ = xml.documentElement;
   }
@@ -391,110 +404,4 @@ goog.ds.XmlHttpDataSource.prototype.failure_ = function() {
   if (this.getDataName()) {
     goog.ds.DataManager.getInstance().fireDataChange(this.getDataName());
   }
-};
-
-
-/**
- *
- * XMLHttp utilities based of Prototype
- * Temporary until closure libraries are complete
- * TODO(user) move to common xmlhttp when libraries are complete
- *
- * Build an XmlHttp object
- * @param {(string,goog.Uri)} uri The URL to send to.
- * @param {Function} onload Function to call when xml document loads
- *     succesfully.
- * @param {Function=} opt_onerror Function to call when xml document load fails.
- *
- * @constructor
- * @private
- */
-goog.ds.XmlHttp_ = function(uri, onload, opt_onerror) {
-  this.req_ = null;
-  this.onLoadCallback_ = onload;
-  this.onErrorCallback_ = opt_onerror || this.handleDefaultError_;
-  this.uri_ = new goog.Uri(uri);
-  this.loadXmlDoc_();
-};
-
-
-/**
- * Load the xml document
- * @private
- */
-goog.ds.XmlHttp_.prototype.loadXmlDoc_ = function() {
-  this.req_ = new goog.net.XmlHttp();
-
-  if (this.req_) {
-    /** @preserveTry */
-    try {
-      this.req_.onreadystatechange = goog.bind(this.onReadyStateChange_, this);
-      this.req_.open('GET', String(this.uri_), true);
-      this.req_.send(null);
-    }
-    catch (err) {
-      this.onErrorCallback_.call(this);
-    }
-  }
-};
-
-
-/**
- * Callback when status changes occur in request
- * @private
- */
-goog.ds.XmlHttp_.prototype.onReadyStateChange_ = function() {
-  var req = this.req_;
-  var ready = req.readyState;
-  if (ready == goog.net.XmlHttp.ReadyState.COMPLETE) {
-    var httpStatus = req.status;
-    var fn;
-    if (httpStatus == 200 || httpStatus == 0) {
-      fn = goog.bind(this.onLoad_, this);
-    } else {
-      fn = goog.bind(this.onError_, this);
-    }
-    // Onload & onerror can cause threading issues if called directly,
-    // as this callback can multi-thread in a non multi-threaded environment
-    // setTimeout puts this back in the single threaded land
-    window.setTimeout(fn, 10);
-  }
-};
-
-
-/**
- * Onload and onerror set a timeout to call the real functions
- * to get around threading issues
- * @private
- */
-goog.ds.XmlHttp_.prototype.onLoad_ = function() {
-  this.onLoadCallback_(this);
-};
-
-
-/**
- * Onload and onerror set a timeout to call the real functions
- * to get around threading issues
- * @private
- */
-goog.ds.XmlHttp_.prototype.onError_ = function() {
-  this.onErrorCallback_(this);
-};
-
-
-/**
- * Default error function if none is passed in
- * @private
- */
-goog.ds.XmlHttp_.prototype.handleDefaultError_ = function() {
-  throw Error('Error fetching data from URL: ' + this.uri_);
-};
-
-
-/**
- * Default error function if none is passed in
- * @return {goog.net.XmlHttp} the XMLHttpRequest.
- */
-goog.ds.XmlHttp_.prototype.getRequest = function() {
-  return this.req_;
 };

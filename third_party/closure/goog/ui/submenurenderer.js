@@ -15,7 +15,6 @@
 /**
  * @fileoverview Renderer for {@link goog.ui.SubMenu}s.
  *
-*
  */
 
 goog.provide('goog.ui.SubMenuRenderer');
@@ -27,6 +26,7 @@ goog.require('goog.dom.classes');
 goog.require('goog.style');
 goog.require('goog.ui.Menu');
 goog.require('goog.ui.MenuItemRenderer');
+
 
 
 /**

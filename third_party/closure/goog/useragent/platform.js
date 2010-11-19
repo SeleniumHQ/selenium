@@ -14,12 +14,12 @@
 
 /**
  * @fileoverview Utilities for getting details about the user's platform.
-*
  */
 
 goog.provide('goog.userAgent.platform');
 
 goog.require('goog.userAgent');
+
 
 /**
  * Detects the version of Windows or Mac OS that is running.
@@ -38,7 +38,7 @@ goog.userAgent.platform.determineVersion_ = function() {
       return '0';
     }
   } else if (goog.userAgent.MAC) {
-    re = /10[_.][0-9_.]+/
+    re = /10[_.][0-9_.]+/;
     return re.exec(goog.userAgent.getUserAgentString())[0].replace(/_/g, '.');
   }
 

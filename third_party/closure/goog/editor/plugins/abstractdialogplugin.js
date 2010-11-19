@@ -17,7 +17,7 @@
  * Trogedit dialog has its own plugin.
  *
  * @author nicksantos@google.com (Nick Santos)
-*
+ * @author marcosalmeida@google.com (Marcos Almeida)
  */
 
 goog.provide('goog.editor.plugins.AbstractDialogPlugin');
@@ -33,6 +33,8 @@ goog.require('goog.ui.editor.AbstractDialog.EventType');
 
 
 // *** Public interface ***************************************************** //
+
+
 
 /**
  * An abstract superclass for a Trogedit plugin that creates exactly one
@@ -77,6 +79,7 @@ goog.editor.plugins.AbstractDialogPlugin.prototype.execCommand = function(
 
 // *** Events *************************************************************** //
 
+
 /**
  * Event type constants for events the dialog plugins fire.
  * @enum {string}
@@ -91,6 +94,7 @@ goog.editor.plugins.AbstractDialogPlugin.EventType = {
 
 // *** Protected interface ************************************************** //
 
+
 /**
  * Creates a new instance of this plugin's dialog. Must be overridden by
  * subclasses.
@@ -104,6 +108,7 @@ goog.editor.plugins.AbstractDialogPlugin.EventType = {
 goog.editor.plugins.AbstractDialogPlugin.prototype.createDialog =
     goog.abstractMethod;
 
+
 /**
  * Returns the current dialog that was created and opened by this plugin.
  * @return {goog.ui.editor.AbstractDialog} The current dialog that was created
@@ -113,6 +118,7 @@ goog.editor.plugins.AbstractDialogPlugin.prototype.createDialog =
 goog.editor.plugins.AbstractDialogPlugin.prototype.getDialog = function() {
   return this.dialog_;
 };
+
 
 /**
  * Sets whether this plugin should reuse the same instance of the dialog each
@@ -240,6 +246,7 @@ goog.editor.plugins.AbstractDialogPlugin.prototype.restoreOriginalSelection =
   }
 };
 
+
 /**
  * Cleans up the structure used to save the original selection before the dialog
  * was opened. Should be used by subclasses that don't restore the original
@@ -265,6 +272,7 @@ goog.editor.plugins.AbstractDialogPlugin.prototype.disposeInternal =
 
 // *** Private implementation *********************************************** //
 
+
 /**
  * The command that this plugin handles.
  * @type {string}
@@ -272,12 +280,14 @@ goog.editor.plugins.AbstractDialogPlugin.prototype.disposeInternal =
  */
 goog.editor.plugins.AbstractDialogPlugin.prototype.command_;
 
+
 /**
  * The current dialog that was created and opened by this plugin.
  * @type {goog.ui.editor.AbstractDialog}
  * @private
  */
 goog.editor.plugins.AbstractDialogPlugin.prototype.dialog_;
+
 
 /**
  * Whether this plugin should reuse the same instance of the dialog each time
@@ -287,12 +297,14 @@ goog.editor.plugins.AbstractDialogPlugin.prototype.dialog_;
  */
 goog.editor.plugins.AbstractDialogPlugin.prototype.reuseDialog_ = false;
 
+
 /**
  * Mutex to prevent recursive calls to disposeDialog_.
  * @type {boolean}
  * @private
  */
 goog.editor.plugins.AbstractDialogPlugin.prototype.isDisposingDialog_ = false;
+
 
 /**
  * SavedRange representing the selection before the dialog was opened.

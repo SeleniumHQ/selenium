@@ -18,13 +18,13 @@
  *
  * DO NOT USE THIS FILE DIRECTLY.  Use goog.dom.Range instead.
  *
-*
  */
 
 
 goog.provide('goog.dom.browserrange.OperaRange');
 
 goog.require('goog.dom.browserrange.W3cRange');
+
 
 
 /**

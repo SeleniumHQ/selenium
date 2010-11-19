@@ -14,13 +14,13 @@
 
 /**
  * @fileoverview This file defines a strict mock implementation.
-*
  */
 
 goog.provide('goog.testing.StrictMock');
 
 goog.require('goog.array');
 goog.require('goog.testing.Mock');
+
 
 
 /**

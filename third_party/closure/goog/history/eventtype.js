@@ -15,12 +15,10 @@
 /**
  * @fileoverview Event types for goog.history.
  *
-*
  */
 
 
 goog.provide('goog.history.EventType');
-
 
 
 /**

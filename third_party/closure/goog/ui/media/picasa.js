@@ -56,7 +56,6 @@
  *   picasa.setSelected(true);
  * </pre>
  *
-*
  *
  * @supported IE6, FF2+, Safari. Requires flash to actually work.
  *
@@ -72,6 +71,7 @@ goog.require('goog.ui.media.Media');
 goog.require('goog.ui.media.MediaModel');
 goog.require('goog.ui.media.MediaModel.Player');
 goog.require('goog.ui.media.MediaRenderer');
+
 
 
 /**
@@ -175,6 +175,7 @@ goog.ui.media.PicasaAlbum.prototype.getCssClass = function() {
 };
 
 
+
 /**
  * The {@code goog.ui.media.PicasaAlbum} media data model. It stores a required
  * {@code userId} and {@code albumId} fields, sets the picasa album URL, and
@@ -233,7 +234,7 @@ goog.ui.media.PicasaAlbumModel = function(userId,
   };
 
   var player = new goog.ui.media.MediaModel.Player(
-      'http://picasaweb.google.com/s/c/bin/slideshow.swf', flashVars)
+      'http://picasaweb.google.com/s/c/bin/slideshow.swf', flashVars);
 
   this.setPlayer(player);
 };

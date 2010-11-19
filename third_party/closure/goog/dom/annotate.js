@@ -16,7 +16,6 @@
  * @fileoverview Methods for annotating occurrences of query terms in text or
  *   in a DOM tree. Adapted from Gmail code.
  *
-*
  */
 
 goog.provide('goog.dom.annotate');

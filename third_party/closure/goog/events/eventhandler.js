@@ -53,7 +53,6 @@
  * }
  * </pre>
  *
-*
  */
 
 goog.provide('goog.events.EventHandler');
@@ -63,6 +62,7 @@ goog.require('goog.events');
 goog.require('goog.events.EventWrapper');
 goog.require('goog.object');
 goog.require('goog.structs.SimplePool');
+
 
 
 /**

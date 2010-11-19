@@ -23,6 +23,7 @@ goog.provide('goog.dom.NodeIterator');
 goog.require('goog.dom.TagIterator');
 
 
+
 /**
  * A DOM tree traversal iterator.
  *

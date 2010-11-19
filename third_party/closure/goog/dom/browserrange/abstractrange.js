@@ -18,8 +18,8 @@
  * DO NOT USE THIS FILE DIRECTLY.  Use goog.dom.Range instead.
  *
  * @author robbyw@google.com (Robby Walker)
-*
-*
+ * @author ojan@google.com (Ojan Vafai)
+ * @author jparent@google.com (Julie Parent)
  */
 
 
@@ -34,6 +34,7 @@ goog.require('goog.iter');
 goog.require('goog.string');
 goog.require('goog.string.StringBuffer');
 goog.require('goog.userAgent');
+
 
 
 /**
@@ -84,6 +85,7 @@ goog.dom.browserrange.AbstractRange.prototype.getStartNode =
  */
 goog.dom.browserrange.AbstractRange.prototype.getStartOffset =
     goog.abstractMethod;
+
 
 /**
  * Returns the node the range ends in.

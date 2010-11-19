@@ -14,10 +14,11 @@
 
 /**
  * @fileoverview Generic queue for writing unit tests.
-*
  */
 
 goog.provide('goog.testing.TestQueue');
+
+
 
 /**
  * Generic queue for writing unit tests
@@ -40,6 +41,7 @@ goog.testing.TestQueue = function() {
 goog.testing.TestQueue.prototype.enqueue = function(event) {
   this.events_.push(event);
 };
+
 
 /**
  * Returns whether the queue is empty.

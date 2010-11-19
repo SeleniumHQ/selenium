@@ -16,7 +16,7 @@
  * @fileoverview Editor plugin to handle tab keys not in lists to add 4 spaces.
  *
  * @author robbyw@google.com (Robby Walker)
-*
+ * @author ajp@google.com (Andy Perelson)
  */
 
 goog.provide('goog.editor.plugins.SpacesTabHandler');

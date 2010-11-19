@@ -15,12 +15,9 @@
 /**
  * @fileoverview Easing functions for animations.
  *
-*
-*
  */
 
 goog.provide('goog.fx.easing');
-
 
 
 /**
@@ -31,6 +28,7 @@ goog.provide('goog.fx.easing');
 goog.fx.easing.easeIn = function(t) {
   return t * t * t;
 };
+
 
 /**
  * Ease out - Start fastest and slows to a stop.

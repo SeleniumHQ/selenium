@@ -29,6 +29,7 @@ goog.require('goog.dom.browserrange.W3cRange');
 goog.require('goog.userAgent');
 
 
+
 /**
  * The constructor for WebKit specific browser ranges.
  * @param {Range} range The range object.
@@ -68,6 +69,7 @@ goog.dom.browserrange.WebKitRange.createFromNodes = function(startNode,
           startOffset, endNode, endOffset));
 };
 
+
 /** @inheritDoc */
 goog.dom.browserrange.WebKitRange.prototype.compareBrowserRangeEndpoints =
     function(range, thisEndpoint, otherEndpoint) {
@@ -90,6 +92,7 @@ goog.dom.browserrange.WebKitRange.prototype.compareBrowserRangeEndpoints =
               goog.global['Range'].END_TO_END),
       /** @type {Range} */ (range));
 };
+
 
 /** @inheritDoc */
 goog.dom.browserrange.WebKitRange.prototype.selectInternal = function(

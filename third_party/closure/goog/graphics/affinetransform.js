@@ -16,7 +16,6 @@
 /**
  * @fileoverview Provides an object representation of an AffineTransform and
  * methods for working with it.
-*
  */
 
 
@@ -203,8 +202,10 @@ goog.graphics.AffineTransform.prototype.shear = function(shx, shy) {
  *     "matrix(a,b,c,d,e,f)".
  */
 goog.graphics.AffineTransform.prototype.toString = function() {
-  return 'matrix(' + [this.m00_, this.m10_, this.m01_, this.m11_,
-      this.m02_, this.m12_].join(',') + ')';
+  return 'matrix(' +
+      [this.m00_, this.m10_, this.m01_, this.m11_, this.m02_, this.m12_].join(
+          ',') +
+      ')';
 };
 
 

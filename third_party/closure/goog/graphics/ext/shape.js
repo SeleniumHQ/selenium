@@ -26,6 +26,7 @@ goog.require('goog.graphics.ext.StrokeAndFillElement');
 goog.require('goog.math.Rect');
 
 
+
 /**
  * Wrapper for a graphics shape element.
  * @param {goog.graphics.ext.Group} group Parent for this element.

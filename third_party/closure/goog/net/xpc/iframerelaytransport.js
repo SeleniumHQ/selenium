@@ -14,7 +14,6 @@
 
 /**
  * @fileoverview Contains the iframe relay tranport.
-*
  */
 
 
@@ -27,6 +26,7 @@ goog.require('goog.net.xpc.Transport');
 goog.require('goog.userAgent');
 
 
+
 /**
  * Iframe relay transport. Creates hidden iframes containing a document
  * from the peer's origin. Data is transferred in the fragment identifier.
@@ -35,10 +35,14 @@ goog.require('goog.userAgent');
  *
  * @param {goog.net.xpc.CrossPageChannel} channel The channel this
  *     transport belongs to.
+ * @param {goog.dom.DomHelper=} opt_domHelper The dom helper to use for finding
+ *     the correct window.
  * @constructor
  * @extends {goog.net.xpc.Transport}
  */
-goog.net.xpc.IframeRelayTransport = function(channel) {
+goog.net.xpc.IframeRelayTransport = function(channel, opt_domHelper) {
+  goog.base(this, opt_domHelper);
+
   /**
    * The channel this transport belongs to.
    * @type {goog.net.xpc.CrossPageChannel}
@@ -162,7 +166,30 @@ goog.net.xpc.IframeRelayTransport.prototype.transportType =
  * Connects this transport.
  */
 goog.net.xpc.IframeRelayTransport.prototype.connect = function() {
+  if (!this.getWindow()['xpcRelay']) {
+    this.getWindow()['xpcRelay'] =
+        goog.net.xpc.IframeRelayTransport.receiveMessage_;
+  }
+
   this.send(goog.net.xpc.TRANSPORT_SERVICE_, goog.net.xpc.SETUP);
+};
+
+
+/**
+ * Processes an incoming message.
+ *
+ * @param {string} channelName The name of the channel.
+ * @param {string} frame The raw frame content.
+ * @private
+ */
+goog.net.xpc.IframeRelayTransport.receiveMessage_ =
+    function(channelName, frame) {
+  var pos = frame.indexOf(':');
+  var service = frame.substring(0, pos);
+  var payload = frame.substring(pos + 1);
+
+  goog.net.xpc.channels_[channelName].deliver_(service,
+                                               decodeURIComponent(payload));
 };
 
 
@@ -194,13 +221,13 @@ goog.net.xpc.IframeRelayTransport.prototype.send = function(service, payload) {
   // IE requires that we create the onload attribute inline, otherwise the
   // handler is not triggered
   if (goog.userAgent.IE) {
-    var div = document.createElement('div');
+    var div = this.getWindow().document.createElement('div');
     div.innerHTML = '<iframe onload="this.xpcOnload()"></iframe>';
     var ifr = div.childNodes[0];
     div = null;
     ifr.xpcOnload = goog.net.xpc.IframeRelayTransport.iframeLoadHandler_;
   } else {
-    var ifr = document.createElement('iframe');
+    var ifr = this.getWindow().document.createElement('iframe');
 
     if (goog.userAgent.WEBKIT) {
       // safari doesn't fire load-events on iframes.
@@ -232,7 +259,7 @@ goog.net.xpc.IframeRelayTransport.prototype.send = function(service, payload) {
 
   ifr.src = url;
 
-  document.body.appendChild(ifr);
+  this.getWindow().document.body.appendChild(ifr);
 
   goog.net.xpc.logger.finest('msg sent: ' + url);
 };
@@ -247,23 +274,6 @@ goog.net.xpc.IframeRelayTransport.iframeLoadHandler_ = function() {
   goog.net.xpc.logger.finest('iframe-load');
   goog.dom.removeNode(this);
   this.xpcOnload = null;
-};
-
-
-/**
- * Processes an incoming message.
- *
- * @param {string} channelName The name of the channel.
- * @param {string} frame The raw frame content.
- */
-window['xpcRelay'] =
-    function(channelName, frame) {
-  var pos = frame.indexOf(':');
-  var service = frame.substring(0, pos);
-  var payload = frame.substring(pos + 1);
-
-  goog.net.xpc.channels_[channelName].deliver_(service,
-                                               decodeURIComponent(payload));
 };
 
 

@@ -29,9 +29,6 @@
  * the Google Maps API, which is IE 6.0+, Firefox 0.8+, Safari 1.2.4+,
  * Netscape 7.1+, Mozilla 1.4+, Opera 8.02+.
  *
-*
-*
-*
  */
 
 goog.provide('goog.net.Jsonp');
@@ -50,6 +47,8 @@ goog.require('goog.dom');
 // /q=xx&btnl, /url, www.googlepages.com, etc.)
 //
 // WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING
+
+
 
 /**
  * Creates a new cross domain channel that sends data to the specified

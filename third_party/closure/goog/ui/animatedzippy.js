@@ -15,7 +15,6 @@
 /**
  * @fileoverview Animated zippy widget implementation.
  *
-*
  * @see ../demos/zippy.html
  */
 
@@ -27,6 +26,7 @@ goog.require('goog.fx.Animation');
 goog.require('goog.fx.easing');
 goog.require('goog.ui.Zippy');
 goog.require('goog.ui.ZippyEvent');
+
 
 
 /**

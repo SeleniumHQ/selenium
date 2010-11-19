@@ -18,9 +18,6 @@
  * iframe to contain the editable area, never inherits the style of the
  * surrounding page, and is always a fixed height.
  *
-*
- * @author nicksantos@google.com (Nick Santos)
-*
  * @see ../demos/editor/editor.html
  * @see ../demos/editor/field_basic.html
  */
@@ -53,6 +50,8 @@ goog.require('goog.string');
 goog.require('goog.string.Unicode');
 goog.require('goog.style');
 goog.require('goog.userAgent');
+
+
 
 /**
  * This class encapsulates an editable field.
@@ -328,6 +327,16 @@ goog.editor.Field.prototype.originalDomHelper;
 
 
 /**
+ * Target node to be used when dispatching SELECTIONCHANGE asynchronously on
+ * mouseup (to avoid IE quirk). Should be set just before starting the timer and
+ * nulled right after consuming.
+ * @type {Node}
+ * @private
+ */
+goog.editor.Field.prototype.selectionChangeTarget_;
+
+
+/**
  * Sets the active field id.
  * @param {?string} fieldId The active field id.
  */
@@ -588,6 +597,7 @@ if (!goog.userAgent.IE) {
   goog.editor.Field.KEYS_CAUSING_CHANGES_[9] = true; // TAB
 }
 
+
 /**
  * Map of keyCodes (not charCodes) that when used in conjunction with the
  * Ctrl key cause changes in the field contents. These are the keys that are
@@ -725,6 +735,7 @@ goog.editor.Field.prototype.tearDownFieldObject_ = function() {
   this.editableDomHelper = null;
 };
 
+
 /**
  * Initialize listeners on the field.
  * @private
@@ -803,9 +814,9 @@ goog.editor.Field.prototype.setupChangeListeners_ = function() {
   this.addListener(goog.events.EventType.KEYPRESS, this.handleKeyPress_);
   this.addListener(goog.events.EventType.KEYUP, this.handleKeyUp_);
 
-  var selectionChange = goog.bind(this.dispatchSelectionChangeEvent, this);
-  this.selectionChangeTimer_ = new goog.async.Delay(selectionChange,
-      goog.editor.Field.SELECTION_CHANGE_FREQUENCY_);
+  this.selectionChangeTimer_ =
+      new goog.async.Delay(this.handleSelectionChangeTimer_,
+                           goog.editor.Field.SELECTION_CHANGE_FREQUENCY_, this);
 
   if (goog.editor.BrowserFeature.FOLLOWS_EDITABLE_LINKS) {
     this.addListener(
@@ -923,7 +934,7 @@ goog.editor.Field.MUTATION_EVENTS_GECKO = [
 goog.editor.Field.prototype.setupMutationEventHandlersGecko = function() {
   if (goog.editor.BrowserFeature.HAS_DOM_SUBTREE_MODIFIED_EVENT) {
     this.eventRegister.listen(this.getElement(), 'DOMSubtreeModified',
-    this.handleMutationEventGecko_);
+        this.handleMutationEventGecko_);
   } else {
     var doc = this.getEditableDomHelper().getDocument();
     this.eventRegister.listen(doc, goog.editor.Field.MUTATION_EVENTS_GECKO,
@@ -1249,7 +1260,7 @@ goog.editor.Field.prototype.handleKeyboardShortcut_ = function(e) {
 
     var stringKey = String.fromCharCode(key).toLowerCase();
     if (this.invokeShortCircuitingOp_(goog.editor.Plugin.Op.SHORTCUT,
-            e, stringKey, isModifierPressed)) {
+                                      e, stringKey, isModifierPressed)) {
       e.preventDefault();
       // We don't call stopPropagation as some other handler outside of
       // trogedit might need it.
@@ -1447,11 +1458,13 @@ goog.editor.Field.prototype.getRange = function() {
 
 /**
  * Dispatch a selection change event, optionally caused by the given browser
- * event.
+ * event or selecting the given target.
  * @param {goog.events.BrowserEvent=} opt_e Optional browser event causing this
  *     event.
+ * @param {Node=} opt_target The node the selection changed to.
  */
-goog.editor.Field.prototype.dispatchSelectionChangeEvent = function(opt_e) {
+goog.editor.Field.prototype.dispatchSelectionChangeEvent = function(
+    opt_e, opt_target) {
   if (this.isEventStopped(goog.editor.Field.EventType.SELECTIONCHANGE)) {
     return;
   }
@@ -1469,7 +1482,20 @@ goog.editor.Field.prototype.dispatchSelectionChangeEvent = function(opt_e) {
     originalType: opt_e && opt_e.type
   });
 
-  this.invokeShortCircuitingOp_(goog.editor.Plugin.Op.SELECTION, opt_e);
+  this.invokeShortCircuitingOp_(goog.editor.Plugin.Op.SELECTION,
+                                opt_e, opt_target);
+};
+
+
+/**
+ * Dispatch a selection change event using a browser event that was
+ * asynchronously saved earlier.
+ * @private
+ */
+goog.editor.Field.prototype.handleSelectionChangeTimer_ = function() {
+  var t = this.selectionChangeTarget_;
+  this.selectionChangeTarget_ = null;
+  this.dispatchSelectionChangeEvent(undefined, t);
 };
 
 
@@ -1887,9 +1913,10 @@ goog.editor.Field.prototype.handleMouseUp_ = function(e) {
   if (goog.userAgent.IE) {
     /*
      * Fire a second selection change event for listeners that need an
-     * up-to-date selection range.  This event will not include a native
-     * event object.
+     * up-to-date selection range. Save the event's target to be sent with it
+     * (it's safer than saving a copy of the event itself).
      */
+    this.selectionChangeTarget_ = e.target;
     this.selectionChangeTimer_.start();
   }
 };

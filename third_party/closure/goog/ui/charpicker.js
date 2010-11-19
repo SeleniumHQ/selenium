@@ -15,7 +15,6 @@
 /**
  * @fileoverview Character Picker widget for picking any Unicode character.
  *
-*
  * @see ../demos/charpicker.html
  */
 
@@ -24,12 +23,16 @@ goog.provide('goog.ui.CharPicker');
 goog.require('goog.array');
 goog.require('goog.dom');
 goog.require('goog.events');
+goog.require('goog.events.EventHandler');
+goog.require('goog.events.EventType');
 goog.require('goog.events.InputHandler');
+goog.require('goog.events.KeyHandler');
 goog.require('goog.i18n.CharListDecompressor');
 goog.require('goog.i18n.uChar');
 goog.require('goog.structs.Set');
 goog.require('goog.style');
 goog.require('goog.ui.Button');
+goog.require('goog.ui.Component');
 goog.require('goog.ui.ContainerScroller');
 goog.require('goog.ui.FlatButtonRenderer');
 goog.require('goog.ui.HoverCard');
@@ -37,6 +40,8 @@ goog.require('goog.ui.LabelInput');
 goog.require('goog.ui.Menu');
 goog.require('goog.ui.MenuButton');
 goog.require('goog.ui.MenuItem');
+goog.require('goog.ui.Tooltip.ElementTooltipPosition');
+
 
 
 /**
@@ -302,7 +307,7 @@ goog.ui.CharPicker.prototype.decorateInternal = function(element) {
 
   var categories = this.data_.categories;
   for (var i = 0; i < this.data_.categories.length; i++) {
-      this.menu_.addChild(this.createMenuItem_(i, categories[i]), true);
+    this.menu_.addChild(this.createMenuItem_(i, categories[i]), true);
   }
 
   this.menubutton_ = new goog.ui.MenuButton('Category Menu', this.menu_);
@@ -441,23 +446,28 @@ goog.ui.CharPicker.prototype.enterDocument = function() {
   // If not stopped, the user widget will receive the event, which is
   // undesired. User widget should receive an event only on the character
   // click.
-  this.eventHandler_.listen(
-      this.menubutton_,
-      goog.ui.Component.EventType.ACTION,
-      goog.events.Event.stopPropagation).listen(
+  this.eventHandler_.
+      listen(
+          this.menubutton_,
+          goog.ui.Component.EventType.ACTION,
+          goog.events.Event.stopPropagation).
+      listen(
           this.submenubutton_,
           goog.ui.Component.EventType.ACTION,
-          goog.events.Event.stopPropagation).listen(
-              this,
-              goog.ui.Component.EventType.ACTION,
-              this.handleSelectedItem_,
-              true).listen(
-                  inputkh,
-                  goog.events.InputHandler.EventType.INPUT,
-                  this.handleInput_).listen(
-                      this.keyHandler_,
-                      goog.events.KeyHandler.EventType.KEY,
-                      this.handleEnter_);
+          goog.events.Event.stopPropagation).
+      listen(
+          this,
+          goog.ui.Component.EventType.ACTION,
+          this.handleSelectedItem_,
+          true).
+      listen(
+          inputkh,
+          goog.events.InputHandler.EventType.INPUT,
+          this.handleInput_).
+      listen(
+          this.keyHandler_,
+          goog.events.KeyHandler.EventType.KEY,
+          this.handleEnter_);
 
   goog.events.listen(this.okbutton_.getElement(),
       goog.events.EventType.MOUSEDOWN, this.handleOkClick_, true, this);
@@ -560,8 +570,9 @@ goog.ui.CharPicker.prototype.handleOkClick_ = function(opt_event) {
 goog.ui.CharPicker.prototype.handleEnter_ = function(e) {
   if (e.keyCode == goog.events.KeyCodes.ENTER) {
     return this.handleOkClick_() ?
-        this.dispatchEvent(goog.ui.Component.EventType.ACTION): false;
+        this.dispatchEvent(goog.ui.Component.EventType.ACTION) : false;
   }
+  return false;
 };
 
 
@@ -636,7 +647,7 @@ goog.ui.CharPicker.prototype.setSelectedSubcategory_ = function(subcategory) {
  * @private
  */
 goog.ui.CharPicker.prototype.setSelectedGrid_ = function(category,
-     subcategory) {
+    subcategory) {
   var charLists = this.data_.charList;
   var charListStr = charLists[category][subcategory];
   var content = this.decompressor_.toCharList(charListStr);
@@ -697,7 +708,7 @@ goog.ui.CharPicker.prototype.modifyGridWithItems_ = function(grid, items,
     this.modifyCharNode_(grid.getChildAt(buttonpos), items[itempos]);
   }
 
-  for (;buttonpos < grid.buttoncount; buttonpos++) {
+  for (; buttonpos < grid.buttoncount; buttonpos++) {
     grid.getChildAt(buttonpos).setVisible(false);
   }
   var first = grid.getChildAt(0);

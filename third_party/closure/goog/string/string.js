@@ -14,8 +14,6 @@
 
 /**
  * @fileoverview Utilities for string manipulation.
-*
-*
  */
 
 
@@ -398,6 +396,7 @@ goog.string.numerateCompare = function(str1, str2) {
  */
 goog.string.encodeUriRegExp_ = /^[a-zA-Z0-9\-_.!~*'()]*$/;
 
+
 /**
  * URL-encodes a string
  * @param {*} str The string to url-encode.
@@ -584,15 +583,24 @@ goog.string.unescapeEntities = function(str) {
  * @return {string} The unescaped {@code str} string.
  */
 goog.string.unescapeEntitiesUsingDom_ = function(str) {
-  var el = goog.global['document']['createElement']('a');
-  el['innerHTML'] = str;
+  // Use a DIV as FF3 generates bogus markup for A > PRE.
+  var el = goog.global['document']['createElement']('div');
+  // Wrap in PRE to preserve whitespace in IE.
+  // The PRE must be part of the innerHTML markup,
+  // just setting innerHTML on a PRE element does not work.
+  // Also include a leading character since conforming HTML5
+  // UAs will strip leading newlines inside a PRE element.
+  el['innerHTML'] = '<pre>x' + str + '</pre>';
   // Accesing the function directly triggers some virus scanners.
-  if (el[goog.string.NORMALIZE_FN_]) {
-    el[goog.string.NORMALIZE_FN_]();
+  if (el['firstChild'][goog.string.NORMALIZE_FN_]) {
+    el['firstChild'][goog.string.NORMALIZE_FN_]();
   }
-  str = el['firstChild']['nodeValue'];
+  // Remove the leading character we added.
+  str = el['firstChild']['firstChild']['nodeValue'].slice(1);
   el['innerHTML'] = '';
-  return str;
+  // IE will also return non-standard newlines for TextNode.nodeValue,
+  // switching \r and \n, so canonicalize them before returning.
+  return goog.string.canonicalizeNewlines(str);
 };
 
 
@@ -626,6 +634,7 @@ goog.string.unescapePureXmlEntities_ = function(str) {
   });
 };
 
+
 /**
  * String name for the node.normalize function. Anti-virus programs use this as
  * a signature for some viruses so we need a work around (temporary).
@@ -633,6 +642,7 @@ goog.string.unescapePureXmlEntities_ = function(str) {
  * @type {string}
  */
 goog.string.NORMALIZE_FN_ = 'normalize';
+
 
 /**
  * Do escaping of whitespace to preserve spatial formatting. We use character
@@ -784,7 +794,7 @@ goog.string.quote = function(s) {
 
 
 /**
- * Takes a string and returns the escaped string for that charater.
+ * Takes a string and returns the escaped string for that character.
  * @param {string} str The string to escape.
  * @return {string} An escaped string representing {@code str}.
  */
@@ -919,7 +929,7 @@ goog.string.removeAll = function(s, ss) {
  */
 goog.string.regExpEscape = function(s) {
   return String(s).replace(/([-()\[\]{}+?*.$\^|,:#<!\\])/g, '\\$1').
-                   replace(/\x08/g, '\\x08');
+      replace(/\x08/g, '\\x08');
 };
 
 
@@ -1053,7 +1063,7 @@ goog.string.compareVersions = function(version1, version2) {
           goog.string.compareElements_(v1Comp[2].length == 0,
               v2Comp[2].length == 0) ||
           goog.string.compareElements_(v1Comp[2], v2Comp[2]);
-    // Stop as soon as an inequality is discovered.
+      // Stop as soon as an inequality is discovered.
     } while (order == 0);
   }
 

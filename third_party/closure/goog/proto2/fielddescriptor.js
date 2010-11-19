@@ -14,13 +14,13 @@
 
 /**
  * @fileoverview Protocol Buffer Field Descriptor class.
-*
  */
 
 goog.provide('goog.proto2.FieldDescriptor');
 
 goog.require('goog.proto2.Util');
 goog.require('goog.string');
+
 
 
 /**

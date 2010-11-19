@@ -19,7 +19,6 @@
  * the rounded corners. See com.google.javascript.closure.RoundedCornerServlet
  * for sample usage.
  *
-*
  */
 
 goog.provide('goog.ui.RoundedCorners');
@@ -32,6 +31,8 @@ goog.require('goog.math.Size');
 goog.require('goog.string');
 goog.require('goog.style');
 goog.require('goog.userAgent');
+
+
 
 /**
  * Class for constructing the HTML for a rounded corner border based on the
@@ -58,6 +59,7 @@ goog.ui.RoundedCorners = function(servletUri) {
    */
   this.cornersToShow_ = goog.ui.RoundedCorners.Corners.ALL;
 };
+
 
 /**
  * A convenience method to round the corners of a given element.
@@ -114,12 +116,14 @@ goog.ui.RoundedCorners.roundElement = function(
   goog.dom.appendChild(roundedContainer, element);
 };
 
+
 /**
  * Foreground color of the rounded corners
  * @type {string}
  * @private
  */
 goog.ui.RoundedCorners.prototype.color_ = '#ff0000';
+
 
 /**
  * Background color of the rounded corners
@@ -128,12 +132,14 @@ goog.ui.RoundedCorners.prototype.color_ = '#ff0000';
  */
 goog.ui.RoundedCorners.prototype.bgColor_ = '';
 
+
 /**
  * Inner color of the rounded corners
  * @type {string}
  * @private
  */
 goog.ui.RoundedCorners.prototype.inColor_ = '';
+
 
 /**
  * HTML content that goes inside the template
@@ -142,12 +148,14 @@ goog.ui.RoundedCorners.prototype.inColor_ = '';
  */
 goog.ui.RoundedCorners.prototype.content_ = '';
 
+
 /**
  * Padding style for the internal content
  * @type {string}
  * @private
  */
 goog.ui.RoundedCorners.prototype.padding_ = '';
+
 
 /**
  * An explicit height for the HTML. If null, no height is specified
@@ -156,6 +164,7 @@ goog.ui.RoundedCorners.prototype.padding_ = '';
  */
 goog.ui.RoundedCorners.prototype.height_ = null;
 
+
 /**
  * The format of the image. Either PNG or GIF
  * @type {string}
@@ -163,12 +172,14 @@ goog.ui.RoundedCorners.prototype.height_ = null;
  */
 goog.ui.RoundedCorners.prototype.imageFormat_ = 'png';
 
+
 /**
  * The width of the border line. If 0, width == corner radius
  * @type {number}
  * @private
  */
 goog.ui.RoundedCorners.prototype.lineWidth_ = 0;
+
 
 /**
  * Enum for specifying which corners to include.
@@ -220,6 +231,7 @@ goog.ui.RoundedCorners.Corners = {
    */
   ALL: 15 // TOP |  BOTTOM
 };
+
 
 /**
  * Returns the foreground color
@@ -623,6 +635,7 @@ goog.ui.RoundedCorners.prototype.colorStyleFor_ = function(side) {
       this.lineWidth_ + 'px solid ' + this.color_ :
       'background-color:' + this.color_;
 };
+
 
 /**
  * Returns the background image style string that uses AlphaImageLoader for IE6

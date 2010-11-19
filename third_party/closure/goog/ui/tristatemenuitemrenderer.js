@@ -15,13 +15,13 @@
 /**
  * @fileoverview Renderer for {@link goog.ui.TriStateMenuItem}s.
  *
-*
  */
 
 goog.provide('goog.ui.TriStateMenuItemRenderer');
 
 goog.require('goog.dom.classes');
 goog.require('goog.ui.MenuItemRenderer');
+
 
 
 /**

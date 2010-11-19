@@ -1,4 +1,4 @@
-// Copyright 2010 Google Inc. All Rights Reserved
+// Copyright 2010 The Closure Library Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
 /**
  * @fileoverview Renderer for {@link goog.ui.ColorButton}s.
  *
-*
  */
 
 goog.provide('goog.ui.ColorButtonRenderer');
@@ -23,6 +22,7 @@ goog.provide('goog.ui.ColorButtonRenderer');
 goog.require('goog.dom.classes');
 goog.require('goog.functions');
 goog.require('goog.ui.ColorMenuButtonRenderer');
+
 
 
 /**

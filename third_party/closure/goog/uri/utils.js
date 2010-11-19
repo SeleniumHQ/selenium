@@ -41,8 +41,6 @@
  * Uses features of RFC 3986 for parsing/formatting URIs:
  *   http://gbiv.com/protocols/uri/rfc/rfc3986.html
  *
-*
-*
  */
 
 goog.provide('goog.uri.utils');

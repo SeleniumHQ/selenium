@@ -17,10 +17,10 @@
  * Generic name used for a font family would be locale dependant. For example,
  * for 'zh'(Chinese) users, the name for Serif family would be in Chinese.
  * Further documentation at: http://go/genericfontnames.
-*
  */
 
 goog.provide('goog.locale.genericFontNames');
+
 
 /**
  * This object maps (resourceName, localeName) to a resourceObj.
@@ -28,6 +28,7 @@ goog.provide('goog.locale.genericFontNames');
  * @private
  */
 goog.locale.genericFontNames.data_ = {};
+
 
 /**
  * Normalizes the given locale id to standard form. eg: zh_Hant_TW.
@@ -50,6 +51,7 @@ goog.locale.genericFontNames.normalize_ = function(locale) {
       });
   return locale;
 };
+
 
 /**
  * Gets the list of fonts and their generic names for the given locale.

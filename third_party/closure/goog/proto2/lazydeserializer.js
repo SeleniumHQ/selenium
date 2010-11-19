@@ -19,13 +19,13 @@
  *   of the data must be an object or array that can be indexed by the tag
  *   number.
  *
-*
  */
 
 goog.provide('goog.proto2.LazyDeserializer');
 
 goog.require('goog.proto2.Serializer');
 goog.require('goog.proto2.Util');
+
 
 
 /**

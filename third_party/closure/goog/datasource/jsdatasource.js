@@ -15,7 +15,6 @@
 /**
  * @fileoverview An implementation of DataNode for wrapping JS data.
  *
-*
  */
 
 
@@ -131,13 +130,13 @@ goog.ds.JsDataSource.prototype.getChildNodes = function(opt_selector) {
     this.createChildNodes_(false);
     return this.childNodeList_;
   } else if (opt_selector.indexOf(goog.ds.STR_WILDCARD) == -1) {
-    if (this.root_[opt_selector] != null){
-      return new goog.ds.BasicNodeList([this.getChildNode(opt_selector)])
+    if (this.root_[opt_selector] != null) {
+      return new goog.ds.BasicNodeList([this.getChildNode(opt_selector)]);
     } else {
       return new goog.ds.EmptyNodeList();
     }
   } else {
-      throw Error('Selector not supported yet (' + opt_selector + ')');
+    throw Error('Selector not supported yet (' + opt_selector + ')');
   }
 
 };

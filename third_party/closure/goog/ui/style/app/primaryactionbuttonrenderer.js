@@ -17,7 +17,6 @@
  * type of button is typically used for an application's "primary action," eg
  * in Gmail, it's "Compose," in Calendar, it's "Create Event".
  *
-*
  */
 
 goog.provide('goog.ui.style.app.PrimaryActionButtonRenderer');
@@ -25,6 +24,7 @@ goog.provide('goog.ui.style.app.PrimaryActionButtonRenderer');
 goog.require('goog.ui.Button');
 goog.require('goog.ui.registry');
 goog.require('goog.ui.style.app.ButtonRenderer');
+
 
 
 /**

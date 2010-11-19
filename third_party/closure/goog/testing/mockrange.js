@@ -15,7 +15,6 @@
 /**
  * @fileoverview LooseMock of goog.dom.AbstractRange.
  *
-*
  */
 
 goog.provide('goog.testing.MockRange');
@@ -40,6 +39,8 @@ goog.inherits(goog.testing.MockRange, goog.testing.LooseMock);
 
 
 // *** Private helper class ************************************************* //
+
+
 
 /**
  * Concrete subclass of goog.dom.AbstractRange that simply sets the abstract

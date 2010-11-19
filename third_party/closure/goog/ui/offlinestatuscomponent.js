@@ -16,7 +16,6 @@
  * @fileoverview A component that displays the offline status of an app.
  * Currently, it is used to show an icon with a tootip for the status.
  *
-*
  * @see ../demos/offline.html
  */
 
@@ -183,7 +182,6 @@ goog.ui.OfflineStatusComponent.prototype.MSG_OFFLINE_STATUS_ERROR_TITLE_ =
 goog.ui.OfflineStatusComponent.prototype.getStatus = function() {
   return this.status_;
 };
-
 
 
 /**
@@ -415,8 +413,8 @@ goog.ui.OfflineStatusComponent.prototype.getStatusClassName_ = function(
     case goog.gears.StatusType.ERROR:
       className = goog.ui.OfflineStatusComponent.StatusClassNames.ERROR;
       break;
-  default:
-    break;
+    default:
+      break;
   }
   return className;
 };
@@ -461,7 +459,7 @@ goog.ui.OfflineStatusComponent.prototype.performEnableAction = function() {
   if (dialog) {
     if (!dialog.isInDocument()) {
       this.addChild(dialog);
-      dialog.render(this.getDomHelper().getDocument().body)
+      dialog.render(this.getDomHelper().getDocument().body);
     }
     dialog.setVisible(true);
   }
@@ -470,8 +468,11 @@ goog.ui.OfflineStatusComponent.prototype.performEnableAction = function() {
 
 /**
  * Performs the action to show the offline status.
+ * @param {goog.events.Event=} opt_evt Event.
+ * @param {Element=} opt_element Optional element to anchor the card against.
  */
-goog.ui.OfflineStatusComponent.prototype.performStatusAction = function() {
+goog.ui.OfflineStatusComponent.prototype.performStatusAction = function(opt_evt,
+    opt_element) {
   // Shows the offline status card.
   var card = this.card_;
   if (card) {
@@ -482,8 +483,9 @@ goog.ui.OfflineStatusComponent.prototype.performStatusAction = function() {
       this.insertCardElement(card);
       this.addChild(card);
       var popup = this.getPopupInternal();
+      var anchorEl = opt_element || this.getElement();
       var pos = new goog.positioning.AnchoredPosition(
-          this.getElement(), goog.positioning.Corner.BOTTOM_START);
+          anchorEl, goog.positioning.Corner.BOTTOM_START);
 
       // Override to pass in overflow
       pos.reposition = function(element, popupCorner, opt_margin) {
@@ -515,8 +517,8 @@ goog.ui.OfflineStatusComponent.prototype.insertCardElement = function(card) {
  */
 goog.ui.OfflineStatusComponent.prototype.getPopupInternal = function() {
   if (!this.popup_) {
-     this.popup_ = new goog.ui.Popup();
-     this.popup_.setMargin(3, 0, 0, 0);
+    this.popup_ = new goog.ui.Popup();
+    this.popup_.setMargin(3, 0, 0, 0);
   }
   return this.popup_;
 };

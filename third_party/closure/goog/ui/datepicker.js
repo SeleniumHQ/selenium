@@ -15,7 +15,6 @@
 /**
  * @fileoverview Date picker implementation.
  *
-*
  * @see ../demos/datepicker.html
  */
 
@@ -31,6 +30,7 @@ goog.require('goog.dom.a11y');
 goog.require('goog.dom.classes');
 goog.require('goog.events');
 goog.require('goog.events.Event');
+goog.require('goog.events.EventType');
 goog.require('goog.events.KeyHandler');
 goog.require('goog.events.KeyHandler.EventType');
 goog.require('goog.i18n.DateTimeFormat');
@@ -48,11 +48,12 @@ goog.require('goog.ui.Component');
  *     with, defaults to the current date.
  * @param {Object=} opt_dateTimeSymbols Date and time symbols to use.
  *     Defaults to goog.i18n.DateTimeSymbols if not set.
+ * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM helper.
  * @constructor
  * @extends {goog.ui.Component}
  */
-goog.ui.DatePicker = function(opt_date, opt_dateTimeSymbols) {
-  goog.ui.Component.call(this);
+goog.ui.DatePicker = function(opt_date, opt_dateTimeSymbols, opt_domHelper) {
+  goog.ui.Component.call(this, opt_domHelper);
 
   /**
    * Date and time symbols to use.
@@ -97,6 +98,13 @@ goog.ui.DatePicker = function(opt_date, opt_dateTimeSymbols) {
    * @private
    */
   this.keyHandlers_ = {};
+
+  /**
+   * Dom helper.
+   * @type {goog.dom.DomHelper}
+   * @private
+   */
+  this.dom_ = opt_domHelper || goog.dom.getDomHelper();
 };
 goog.inherits(goog.ui.DatePicker, goog.ui.Component);
 
@@ -178,6 +186,22 @@ goog.ui.DatePicker.prototype.simpleNavigation_ = false;
  * @private
  */
 goog.ui.DatePicker.prototype.decoratorFunction_ = null;
+
+
+/**
+ * Element for navigation row on a datepicker.
+ * @type {Element}
+ * @private
+ */
+goog.ui.DatePicker.prototype.elNavRow_ = null;
+
+
+/**
+ * Element for footer row on a datepicker.
+ * @type {Element}
+ * @private
+ */
+goog.ui.DatePicker.prototype.elFootRow_ = null;
 
 
 /**
@@ -568,22 +592,21 @@ goog.ui.DatePicker.prototype.updateNavigationRow_ = function() {
     row.removeChild(row.firstChild);
   }
   // Populate the navigation row according to the configured navigation mode.
-  var dom = goog.dom.getDomHelper(row);
   var cell, monthCell, yearCell;
 
   if (this.simpleNavigation_) {
-    cell = dom.createElement('td');
+    cell = this.dom_.createElement('td');
     cell.colSpan = this.showWeekNum_ ? 1 : 2;
     this.createButton_(cell, '\u00AB', this.previousMonth);  // <<
     row.appendChild(cell);
 
-    cell = dom.createElement('td');
+    cell = this.dom_.createElement('td');
     cell.colSpan = this.showWeekNum_ ? 6 : 5;
     cell.className = goog.getCssName('goog-date-picker-monthyear');
     row.appendChild(cell);
     this.elMonthYear_ = cell;
 
-    cell = dom.createElement('td');
+    cell = this.dom_.createElement('td');
     this.createButton_(cell, '\u00BB', this.nextMonth);  // >>
     row.appendChild(cell);
 
@@ -591,7 +614,7 @@ goog.ui.DatePicker.prototype.updateNavigationRow_ = function() {
     var fullDateFormat = this.symbols_.DATEFORMATS[
         goog.i18n.DateTimeFormat.Format.FULL_DATE].toLowerCase();
 
-    monthCell = dom.createElement('td');
+    monthCell = this.dom_.createElement('td');
     monthCell.colSpan = 5;
     this.createButton_(monthCell, '\u00AB', this.previousMonth);  // <<
     this.elMonth_ = this.createButton_(
@@ -599,7 +622,7 @@ goog.ui.DatePicker.prototype.updateNavigationRow_ = function() {
         goog.getCssName('goog-date-picker-month'));
     this.createButton_(monthCell, '\u00BB', this.nextMonth);  // >>
 
-    yearCell = dom.createElement('td');
+    yearCell = this.dom_.createElement('td');
     yearCell.colSpan = 3;
     this.createButton_(yearCell, '\u00AB', this.previousYear);  // <<
     this.elYear_ = this.createButton_(yearCell, '', this.showYearMenu_,
@@ -621,18 +644,54 @@ goog.ui.DatePicker.prototype.updateNavigationRow_ = function() {
 };
 
 
+/**
+ * Updates the footer row (with select buttons) in the footRow_ element of a
+ * created picker.
+ * @private
+ */
+goog.ui.DatePicker.prototype.updateFooterRow_ = function() {
+  var row = this.elFootRow_;
+
+  // Clear the footer row.
+  goog.dom.removeChildren(row);
+
+  // Populate the footer row with buttons for Today and None.
+  var cell = this.dom_.createElement('td');
+  cell.colSpan = 2;
+  cell.className = goog.getCssName('goog-date-picker-today-cont');
+
+  /** @desc Label for button that selects the current date. */
+  var MSG_DATEPICKER_TODAY_BUTTON_LABEL = goog.getMsg('Today');
+  this.elToday_ = this.createButton_(cell, MSG_DATEPICKER_TODAY_BUTTON_LABEL,
+                                     this.selectToday);
+  row.appendChild(cell);
+
+  cell = this.dom_.createElement('td');
+  cell.colSpan = 4;
+  row.appendChild(cell);
+
+  cell = this.dom_.createElement('td');
+  cell.colSpan = 2;
+  cell.className = goog.getCssName('goog-date-picker-none-cont');
+
+  /** @desc Label for button that clears the selection. */
+  var MSG_DATEPICKER_NONE = goog.getMsg('None');
+  this.elNone_ = this.createButton_(cell, MSG_DATEPICKER_NONE, this.selectNone);
+  row.appendChild(cell);
+  this.updateTodayAndNone_();
+};
+
+
 /** @inheritDoc */
 goog.ui.DatePicker.prototype.decorateInternal = function(el) {
   goog.ui.DatePicker.superClass_.decorateInternal.call(this, el);
 
   el.className = goog.getCssName('goog-date-picker');
 
-  var dom = goog.dom.getDomHelper(el);
-
-  var table = dom.createElement('table');
-  var thead = dom.createElement('thead');
-  var tbody = dom.createElement('tbody');
-  var tfoot = dom.createElement('tfoot');
+  var table = this.dom_.createElement('table');
+  var thead = this.dom_.createElement('thead');
+  var tbody = this.dom_.createElement('tbody');
+  var tfoot = this.dom_.createElement('tfoot');
 
   goog.dom.a11y.setRole(tbody, 'grid');
   tbody.tabIndex = '0';
@@ -642,7 +701,8 @@ goog.ui.DatePicker.prototype.decorateInternal = function(el) {
   this.tableBody_ = tbody;
   this.tableFoot_ = tfoot;
 
-  var row = dom.createDom('tr', goog.getCssName('goog-date-picker-head'));
+  var row = this.dom_.createElement('tr');
+  row.className = goog.getCssName('goog-date-picker-head');
   this.elNavRow_ = row;
   this.updateNavigationRow_();
 
@@ -651,10 +711,10 @@ goog.ui.DatePicker.prototype.decorateInternal = function(el) {
   var cell;
   this.elTable_ = [];
   for (var i = 0; i < 7; i++) {
-    row = dom.createElement('tr');
+    row = this.dom_.createElement('tr');
     this.elTable_[i] = [];
     for (var j = 0; j < 8; j++) {
-      cell = dom.createElement(j == 0 || i == 0 ? 'th' : 'td');
+      cell = this.dom_.createElement(j == 0 || i == 0 ? 'th' : 'td');
       if ((j == 0 || i == 0) && j != i) {
         cell.className = (j == 0) ? goog.getCssName('goog-date-picker-week') :
             goog.getCssName('goog-date-picker-wday');
@@ -666,32 +726,12 @@ goog.ui.DatePicker.prototype.decorateInternal = function(el) {
     tbody.appendChild(row);
   }
 
-  row = dom.createDom('tr', goog.getCssName('goog-date-picker-foot'));
-  cell = dom.createDom('td',
-      {colSpan: 2, className: goog.getCssName('goog-date-picker-today-cont')});
-
-  /** @desc Label for button that selects the current date. */
-  var MSG_DATEPICKER_TODAY_BUTTON_LABEL = goog.getMsg('Today');
-  this.elToday_ = this.createButton_(cell, MSG_DATEPICKER_TODAY_BUTTON_LABEL,
-                                     this.selectToday);
-  row.appendChild(cell);
-
-  cell = dom.createDom('td', {colSpan: 4});
-  row.appendChild(cell);
-
-  cell = dom.createElement('td');
-  cell.colSpan = 2;
-  cell.className = goog.getCssName('goog-date-picker-none-cont');
-
-  /**
-   * @desc Label for button that clears the selection.
-   */
-  var MSG_DATEPICKER_NONE = goog.getMsg('None');
-  this.elNone_ = this.createButton_(cell, MSG_DATEPICKER_NONE, this.selectNone);
-  row.appendChild(cell);
-
+  row = this.dom_.createElement('tr');
+  row.className = goog.getCssName('goog-date-picker-foot');
+  this.elFootRow_ = row;
+  this.updateFooterRow_();
   tfoot.appendChild(row);
-  this.updateTodayAndNone_();
+
 
   table.cellSpacing = '0';
   table.cellPadding = '0';
@@ -752,6 +792,7 @@ goog.ui.DatePicker.prototype.disposeInternal = function() {
   this.tableBody_ = null;
   this.tableFoot_ = null;
   this.elNavRow_ = null;
+  this.elFootRow_ = null;
   this.elMonth_ = null;
   this.elMonthYear_ = null;
   this.elYear_ = null;
@@ -916,15 +957,15 @@ goog.ui.DatePicker.prototype.handleYearMenuClick_ = function(target) {
 goog.ui.DatePicker.prototype.createMenu_ = function(srcEl, items, method,
                                                     selected) {
   this.destroyMenu_();
-  var dom = goog.dom.getDomHelper(srcEl);
 
-  var el = dom.createDom('div', goog.getCssName('goog-date-picker-menu'));
+  var el = this.dom_.createElement('div');
+  el.className = goog.getCssName('goog-date-picker-menu');
 
   this.menuSelected_ = null;
 
-  var ul = dom.createElement('ul');
+  var ul = this.dom_.createElement('ul');
   for (var i = 0; i < items.length; i++) {
-    var li = dom.createDom('li', null, items[i]);
+    var li = this.dom_.createDom('li', null, items[i]);
     if (items[i] == selected) {
       this.menuSelected_ = li;
     }
@@ -948,7 +989,8 @@ goog.ui.DatePicker.prototype.createMenu_ = function(srcEl, items, method,
   eh.listen(this.menu_, goog.events.EventType.CLICK, this.handleMenuClick_);
   eh.listen(this.getKeyHandlerForElement_(this.menu_),
       goog.events.KeyHandler.EventType.KEY, this.handleMenuKeyPress_);
-  eh.listen(dom.getDocument(), goog.events.EventType.CLICK, this.destroyMenu_);
+  eh.listen(this.dom_.getDocument(), goog.events.EventType.CLICK,
+      this.destroyMenu_);
   el.tabIndex = 0;
   el.focus();
 };
@@ -1021,14 +1063,13 @@ goog.ui.DatePicker.prototype.handleMenuKeyPress_ = function(event) {
  */
 goog.ui.DatePicker.prototype.destroyMenu_ = function() {
   if (this.menu_) {
-    var dom = goog.dom.getDomHelper(this.menu_);
     var eh = this.getHandler();
     eh.unlisten(this.menu_, goog.events.EventType.CLICK, this.handleMenuClick_);
     eh.unlisten(this.getKeyHandlerForElement_(this.menu_),
         goog.events.KeyHandler.EventType.KEY, this.handleMenuKeyPress_);
-    eh.unlisten(dom.getDocument(), goog.events.EventType.CLICK,
+    eh.unlisten(this.dom_.getDocument(), goog.events.EventType.CLICK,
         this.destroyMenu_);
-    dom.removeNode(this.menu_);
+    goog.dom.removeNode(this.menu_);
     delete this.menu_;
   }
 };
@@ -1051,12 +1092,16 @@ goog.ui.DatePicker.prototype.createButton_ = function(parentNode, label,
   if (opt_className) {
     classes.push(opt_className);
   }
-  var dom = goog.dom.getDomHelper(parentNode);
-  var el = dom.createElement('button');
+  var el = this.dom_.createElement('button');
   el.className = classes.join(' ');
-  el.appendChild(dom.createTextNode(label));
+  el.appendChild(this.dom_.createTextNode(label));
   parentNode.appendChild(el);
-  this.getHandler().listen(el, goog.events.EventType.CLICK, method);
+  this.getHandler().listen(el, goog.events.EventType.CLICK, function(e) {
+    // Since this is a button, the default action is to submit a form if the
+    // node is added inside a form.  Prevent this.
+    e.preventDefault();
+    method.call(this, e);
+  });
 
   return el;
 };
@@ -1208,8 +1253,8 @@ goog.ui.DatePicker.prototype.redrawCalendarGrid_ = function() {
     // weeks are always shown as no month has less than 28 days).
     if (y >= 4) {
       goog.style.showElement(this.elTable_[y + 1][0].parentNode,
-                            this.grid_[y][0].getMonth() == month ||
-                                this.showFixedNumWeeks_);
+                             this.grid_[y][0].getMonth() == month ||
+                                 this.showFixedNumWeeks_);
     }
   }
 };

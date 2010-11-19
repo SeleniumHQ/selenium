@@ -20,8 +20,8 @@
  * has been blocked by a network administrator. This class is part of the
  * BrowserChannel implementation and is not for use by normal application code.
  *
-*
  */
+
 
 /**
  * Namespace for BrowserChannel
@@ -31,6 +31,8 @@ goog.provide('goog.net.BrowserTestChannel');
 goog.require('goog.net.ChannelDebug');
 goog.require('goog.net.ChannelRequest');
 goog.require('goog.userAgent');
+
+
 
 /**
  * Encapsulates the logic for a single BrowserTestChannel.
@@ -65,12 +67,14 @@ goog.net.BrowserTestChannel = function(channel, channelDebug) {
  */
 goog.net.BrowserTestChannel.prototype.extraHeaders_ = null;
 
+
 /**
  * The test request.
  * @type {goog.net.ChannelRequest}
  * @private
  */
 goog.net.BrowserTestChannel.prototype.request_ = null;
+
 
 /**
  * Whether we have received the first result as an intermediate result. This
@@ -80,6 +84,7 @@ goog.net.BrowserTestChannel.prototype.request_ = null;
  */
 goog.net.BrowserTestChannel.prototype.receivedIntermediateResult_ = false;
 
+
 /**
  * The time for of the first result part. We use timing in IE as a
  * heuristic for whether we're behind a buffering proxy.
@@ -87,6 +92,7 @@ goog.net.BrowserTestChannel.prototype.receivedIntermediateResult_ = false;
  * @private
  */
 goog.net.BrowserTestChannel.prototype.firstTime_ = null;
+
 
 /**
  * The time for of the last result part. We use timing in IE as a
@@ -96,12 +102,14 @@ goog.net.BrowserTestChannel.prototype.firstTime_ = null;
  */
 goog.net.BrowserTestChannel.prototype.lastTime_ = null;
 
+
 /**
  * The relative path for test requests.
  * @type {?string}
  * @private
  */
 goog.net.BrowserTestChannel.prototype.path_ = null;
+
 
 /**
  * The state of the state machine for this object.
@@ -111,12 +119,14 @@ goog.net.BrowserTestChannel.prototype.path_ = null;
  */
 goog.net.BrowserTestChannel.prototype.state_ = null;
 
+
 /**
  * The last status code received.
  * @type {number}
  * @private
  */
 goog.net.BrowserTestChannel.prototype.lastStatusCode_ = -1;
+
 
 /**
  * A subdomain prefix for using a subdomain in IE for the backchannel
@@ -125,6 +135,7 @@ goog.net.BrowserTestChannel.prototype.lastStatusCode_ = -1;
  * @private
  */
 goog.net.BrowserTestChannel.prototype.hostPrefix_ = null;
+
 
 /**
  * A subdomain prefix for testing whether the channel was disabled by
@@ -170,6 +181,7 @@ goog.net.BrowserTestChannel.State_ = {
  */
 goog.net.BrowserTestChannel.BLOCKED_TIMEOUT_ = 5000;
 
+
 /**
  * Number of attempts to try to see if the check to see if we're blocked
  * succeeds. Sometimes the request can fail because of flaky network conditions
@@ -178,6 +190,7 @@ goog.net.BrowserTestChannel.BLOCKED_TIMEOUT_ = 5000;
  * @private
  */
 goog.net.BrowserTestChannel.BLOCKED_RETRIES_ = 3;
+
 
 /**
  * Time in ms between retries of the blocked request
@@ -258,6 +271,7 @@ goog.net.BrowserTestChannel.prototype.checkBlockedCallback_ = function(
     this.channel_.testConnectionBlocked(this);
   }
 };
+
 
 /**
  * Begins the second stage of the test channel where we test to see if we're
@@ -450,6 +464,7 @@ goog.net.BrowserTestChannel.prototype.onRequestComplete =
     }
   }
 };
+
 
 /**
  * Returns the last status code received for a request.

@@ -15,7 +15,6 @@
 /**
  * @fileoverview Datastructure: Priority Queue.
  *
-*
  *
  * This file provides the implementation of a Priority Queue. Smaller priorities
  * move to the front of the queue. If two values have the same priority,
@@ -30,6 +29,7 @@ goog.provide('goog.structs.PriorityQueue');
 
 goog.require('goog.structs');
 goog.require('goog.structs.Heap');
+
 
 
 /**

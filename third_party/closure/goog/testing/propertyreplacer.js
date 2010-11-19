@@ -15,7 +15,6 @@
 /**
  * @fileoverview Helper class for creating stubs for testing.
  *
-*
  */
 
 goog.provide('goog.testing.PropertyReplacer');

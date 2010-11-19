@@ -15,9 +15,6 @@
 /**
  * @fileoverview goog.editor plugin to handle splitting block quotes.
  *
-*
-*
- * @author robbyw@google.com (Robby Walker)
  */
 
 goog.provide('goog.editor.plugins.Blockquote');
@@ -32,6 +29,7 @@ goog.require('goog.editor.Command');
 goog.require('goog.editor.Plugin');
 goog.require('goog.editor.node');
 goog.require('goog.functions');
+
 
 
 /**

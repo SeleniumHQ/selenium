@@ -17,8 +17,6 @@
  * @fileoverview A thin wrapper around the DOM element returned from
  * the different draw methods of the graphics implementation, and
  * all interfaces that the various element types support.
-*
-*
  */
 
 
@@ -120,7 +118,7 @@ goog.graphics.Element.prototype.setTransformation = function(x, y, rotate,
  */
 goog.graphics.Element.prototype.getTransform = function() {
   return this.transform_ ? this.transform_.clone() :
-    new goog.graphics.AffineTransform();
+      new goog.graphics.AffineTransform();
 };
 
 

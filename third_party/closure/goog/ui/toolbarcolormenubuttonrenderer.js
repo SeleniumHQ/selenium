@@ -15,7 +15,6 @@
 /**
  * @fileoverview A toolbar-style renderer for {@link goog.ui.ColorMenuButton}.
  *
-*
  */
 
 goog.provide('goog.ui.ToolbarColorMenuButtonRenderer');
@@ -25,6 +24,8 @@ goog.require('goog.ui.ColorMenuButtonRenderer');
 goog.require('goog.ui.ControlContent');
 goog.require('goog.ui.MenuButtonRenderer');
 goog.require('goog.ui.ToolbarMenuButtonRenderer');
+
+
 
 /**
  * Toolbar-style renderer for {@link goog.ui.ColorMenuButton}s.
@@ -37,6 +38,7 @@ goog.ui.ToolbarColorMenuButtonRenderer = function() {
 goog.inherits(goog.ui.ToolbarColorMenuButtonRenderer,
               goog.ui.ToolbarMenuButtonRenderer);
 goog.addSingletonGetter(goog.ui.ToolbarColorMenuButtonRenderer);
+
 
 /**
  * Overrides the superclass implementation by wrapping the caption text or DOM

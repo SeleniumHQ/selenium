@@ -15,14 +15,13 @@
 
 /**
  * @fileoverview A thin wrapper around the DOM element for graphics groups.
-*
-*
  */
 
 
 goog.provide('goog.graphics.GroupElement');
 
 goog.require('goog.graphics.Element');
+
 
 
 /**

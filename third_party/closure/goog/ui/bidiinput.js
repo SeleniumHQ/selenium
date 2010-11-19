@@ -17,7 +17,6 @@
  * detection. The input element directionality is automatically set according
  * to the contents (value) of the element.
  *
-*
  * @see ../demos/bidiinput.html
  */
 
@@ -29,6 +28,7 @@ goog.require('goog.events');
 goog.require('goog.events.InputHandler');
 goog.require('goog.i18n.bidi');
 goog.require('goog.ui.Component');
+
 
 
 /**

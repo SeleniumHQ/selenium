@@ -16,8 +16,6 @@
  * @fileoverview A class for representing items in menus.
  * @see goog.ui.Menu
  *
-*
-*
  */
 
 goog.provide('goog.ui.MenuItem');
@@ -27,6 +25,7 @@ goog.require('goog.ui.Control');
 goog.require('goog.ui.ControlContent');
 goog.require('goog.ui.MenuItemRenderer');
 goog.require('goog.ui.registry');
+
 
 
 /**
@@ -87,7 +86,7 @@ goog.ui.MenuItem.prototype.setSelectable = function(selectable) {
 
   var element = this.getElement();
   if (element) {
-    this.renderer_.setSelectable(this, element, selectable);
+    this.getRenderer().setSelectable(this, element, selectable);
   }
 };
 
@@ -102,7 +101,7 @@ goog.ui.MenuItem.prototype.setCheckable = function(checkable) {
 
   var element = this.getElement();
   if (element) {
-    this.renderer_.setCheckable(this, element, checkable);
+    this.getRenderer().setCheckable(this, element, checkable);
   }
 };
 

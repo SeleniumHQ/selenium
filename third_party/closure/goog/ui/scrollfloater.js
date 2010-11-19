@@ -28,7 +28,6 @@
  * would be fully visible again, the element snaps back into place, replacing
  * the placeholder.
  *
-*
  * @see ../demos/scrollfloater.html
  *
  * Adapted from http://go/elementfloater.js
@@ -44,6 +43,7 @@ goog.require('goog.object');
 goog.require('goog.style');
 goog.require('goog.ui.Component');
 goog.require('goog.userAgent');
+
 
 
 /**
@@ -120,6 +120,7 @@ goog.ui.ScrollFloater.prototype.floating_ = false;
  */
 goog.ui.ScrollFloater.prototype.originalOffset_;
 
+
 /**
  * The style properties which are stored when we float an element, so they
  * can be restored when it 'docks' again.
@@ -138,6 +139,7 @@ goog.ui.ScrollFloater.STORED_STYLE_PROPS_ = [
 goog.ui.ScrollFloater.PLACEHOLDER_STYLE_PROPS_ = [
   'position', 'top', 'left', 'display', 'cssFloat',
   'marginTop', 'marginLeft', 'marginRight', 'marginBottom'];
+
 
 /**
  * The class name applied to the floating element.

@@ -16,7 +16,6 @@
  * @fileoverview A toolbar class that hosts {@link goog.ui.Control}s such as
  * buttons and menus, along with toolbar-specific renderers of those controls.
  *
-*
  * @see ../demos/toolbar.html
  */
 
@@ -24,6 +23,7 @@ goog.provide('goog.ui.Toolbar');
 
 goog.require('goog.ui.Container');
 goog.require('goog.ui.ToolbarRenderer');
+
 
 
 /**

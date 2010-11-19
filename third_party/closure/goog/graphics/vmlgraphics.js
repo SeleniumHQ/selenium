@@ -15,8 +15,6 @@
 
 /**
  * @fileoverview VmlGraphics sub class that uses VML to draw the graphics.
-*
-*
  */
 
 
@@ -26,6 +24,7 @@ goog.provide('goog.graphics.VmlGraphics');
 goog.require('goog.array');
 goog.require('goog.dom');
 goog.require('goog.events.EventHandler');
+goog.require('goog.events.EventType');
 goog.require('goog.graphics.AbstractGraphics');
 goog.require('goog.graphics.Font');
 goog.require('goog.graphics.LinearGradient');
@@ -39,6 +38,7 @@ goog.require('goog.graphics.VmlRectElement');
 goog.require('goog.graphics.VmlTextElement');
 goog.require('goog.math.Size');
 goog.require('goog.string');
+
 
 
 /**
@@ -65,6 +65,7 @@ goog.graphics.VmlGraphics = function(width, height,
   this.handler_ = new goog.events.EventHandler(this);
 };
 goog.inherits(goog.graphics.VmlGraphics, goog.graphics.AbstractGraphics);
+
 
 /**
  * The prefix to use for VML elements
@@ -117,6 +118,7 @@ goog.graphics.VmlGraphics.toCssSize = function(size) {
   return goog.isString(size) && goog.string.endsWith(size, '%') ?
          size : parseFloat(size.toString()) + 'px';
 };
+
 
 /**
  * Multiplies positioning coordinates by COORD_MULTIPLIER to allow sub-pixel
@@ -468,8 +470,8 @@ goog.graphics.VmlGraphics.prototype.createDom = function() {
   var pixelHeight = this.height;
   var divElement = this.dom_.createDom('div', {
     'style': 'overflow:hidden;position:relative;width:' +
-             goog.graphics.VmlGraphics.toCssSize(pixelWidth) + ';height:' +
-             goog.graphics.VmlGraphics.toCssSize(pixelHeight)
+        goog.graphics.VmlGraphics.toCssSize(pixelWidth) + ';height:' +
+        goog.graphics.VmlGraphics.toCssSize(pixelHeight)
   });
 
   this.setElementInternal(divElement);

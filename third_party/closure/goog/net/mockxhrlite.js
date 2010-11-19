@@ -15,7 +15,6 @@
 /**
  * @fileoverview Mock of XhrLite for unit testing.
  *
-*
  */
 
 goog.provide('goog.net.MockXhrLite');

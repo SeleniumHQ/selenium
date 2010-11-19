@@ -17,10 +17,10 @@
  * integer value, which faithfully simulates the behavior of a Java "long". This
  * implementation is derived from LongLib in GWT.
  *
-*
  */
 
-goog.provide('goog.math.Long')
+goog.provide('goog.math.Long');
+
 
 
 /**
@@ -67,20 +67,20 @@ goog.math.Long = function(low, high) {
 
 /**
  * A cache of the Long representations of small integer values.
- * @type {Object}
+ * @type {!Object}
  * @private
  */
-goog.math.Long.INT_CACHE_ = {};
+goog.math.Long.IntCache_ = {};
 
 
 /**
  * Returns a Long representing the given (32-bit) integer value.
  * @param {number} value The 32-bit integer in question.
- * @return {goog.math.Long} The corresponding Long value.
+ * @return {!goog.math.Long} The corresponding Long value.
  */
 goog.math.Long.fromInt = function(value) {
   if (-128 <= value && value < 128) {
-    var cachedObj = goog.math.Long.INT_CACHE_[value];
+    var cachedObj = goog.math.Long.IntCache_[value];
     if (cachedObj) {
       return cachedObj;
     }
@@ -88,7 +88,7 @@ goog.math.Long.fromInt = function(value) {
 
   var obj = new goog.math.Long(value | 0, value < 0 ? -1 : 0);
   if (-128 <= value && value < 128) {
-    goog.math.Long.INT_CACHE_[value] = obj;
+    goog.math.Long.IntCache_[value] = obj;
   }
   return obj;
 };
@@ -98,7 +98,7 @@ goog.math.Long.fromInt = function(value) {
  * Returns a Long representing the given value, provided that it is a finite
  * number.  Otherwise, zero is returned.
  * @param {number} value The number in question.
- * @return {goog.math.Long} The corresponding Long value.
+ * @return {!goog.math.Long} The corresponding Long value.
  */
 goog.math.Long.fromNumber = function(value) {
   if (isNaN(value) || !isFinite(value)) {
@@ -111,8 +111,8 @@ goog.math.Long.fromNumber = function(value) {
     return goog.math.Long.fromNumber(-value).negate();
   } else {
     return new goog.math.Long(
-               (value % goog.math.Long.TWO_PWR_32_DBL_) | 0,
-               (value / goog.math.Long.TWO_PWR_32_DBL_) | 0);
+        (value % goog.math.Long.TWO_PWR_32_DBL_) | 0,
+        (value / goog.math.Long.TWO_PWR_32_DBL_) | 0);
   }
 };
 
@@ -122,7 +122,7 @@ goog.math.Long.fromNumber = function(value) {
  * the given high and low bits.  Each is assumed to use 32 bits.
  * @param {number} lowBits The low 32-bits.
  * @param {number} highBits The high 32-bits.
- * @return {goog.math.Long} The corresponding Long value.
+ * @return {!goog.math.Long} The corresponding Long value.
  */
 goog.math.Long.fromBits = function(lowBits, highBits) {
   return new goog.math.Long(lowBits, highBits);
@@ -134,7 +134,7 @@ goog.math.Long.fromBits = function(lowBits, highBits) {
  * radix.
  * @param {string} str The textual representation of the Long.
  * @param {number=} opt_radix The radix in which the text is written.
- * @return {goog.math.Long} The corresponding Long value.
+ * @return {!goog.math.Long} The corresponding Long value.
  */
 goog.math.Long.fromString = function(str, opt_radix) {
   if (str.length == 0) {
@@ -184,11 +184,13 @@ goog.math.Long.fromString = function(str, opt_radix) {
  */
 goog.math.Long.TWO_PWR_16_DBL_ = 1 << 16;
 
+
 /**
  * @type {number}
  * @private
  */
 goog.math.Long.TWO_PWR_24_DBL_ = 1 << 24;
+
 
 /**
  * @type {number}
@@ -197,12 +199,14 @@ goog.math.Long.TWO_PWR_24_DBL_ = 1 << 24;
 goog.math.Long.TWO_PWR_32_DBL_ =
     goog.math.Long.TWO_PWR_16_DBL_ * goog.math.Long.TWO_PWR_16_DBL_;
 
+
 /**
  * @type {number}
  * @private
  */
 goog.math.Long.TWO_PWR_31_DBL_ =
     goog.math.Long.TWO_PWR_32_DBL_ / 2;
+
 
 /**
  * @type {number}
@@ -211,12 +215,14 @@ goog.math.Long.TWO_PWR_31_DBL_ =
 goog.math.Long.TWO_PWR_48_DBL_ =
     goog.math.Long.TWO_PWR_32_DBL_ * goog.math.Long.TWO_PWR_16_DBL_;
 
+
 /**
  * @type {number}
  * @private
  */
 goog.math.Long.TWO_PWR_64_DBL_ =
     goog.math.Long.TWO_PWR_32_DBL_ * goog.math.Long.TWO_PWR_32_DBL_;
+
 
 /**
  * @type {number}
@@ -226,25 +232,29 @@ goog.math.Long.TWO_PWR_63_DBL_ =
     goog.math.Long.TWO_PWR_64_DBL_ / 2;
 
 
-/** @type {goog.math.Long} */
+/** @type {!goog.math.Long} */
 goog.math.Long.ZERO = goog.math.Long.fromInt(0);
 
-/** @type {goog.math.Long} */
+
+/** @type {!goog.math.Long} */
 goog.math.Long.ONE = goog.math.Long.fromInt(1);
 
-/** @type {goog.math.Long} */
+
+/** @type {!goog.math.Long} */
 goog.math.Long.NEG_ONE = goog.math.Long.fromInt(-1);
 
-/** @type {goog.math.Long} */
+
+/** @type {!goog.math.Long} */
 goog.math.Long.MAX_VALUE =
     goog.math.Long.fromBits(0xFFFFFFFF | 0, 0x7FFFFFFF | 0);
 
-/** @type {goog.math.Long} */
+
+/** @type {!goog.math.Long} */
 goog.math.Long.MIN_VALUE = goog.math.Long.fromBits(0, 0x80000000 | 0);
 
 
 /**
- * @type {goog.math.Long}
+ * @type {!goog.math.Long}
  * @private
  */
 goog.math.Long.TWO_PWR_24_ = goog.math.Long.fromInt(1 << 24);
@@ -457,7 +467,7 @@ goog.math.Long.prototype.compare = function(other) {
 };
 
 
-/** @return {goog.math.Long} The negation of this value. */
+/** @return {!goog.math.Long} The negation of this value. */
 goog.math.Long.prototype.negate = function() {
   if (this.equals(goog.math.Long.MIN_VALUE)) {
     return goog.math.Long.MIN_VALUE;
@@ -470,7 +480,7 @@ goog.math.Long.prototype.negate = function() {
 /**
  * Returns the sum of this and the given Long.
  * @param {goog.math.Long} other Long to add to this one.
- * @return {goog.math.Long} The sum of this and the given Long.
+ * @return {!goog.math.Long} The sum of this and the given Long.
  */
 goog.math.Long.prototype.add = function(other) {
   // Divide each number into 4 chunks of 16 bits, and then sum the chunks.
@@ -504,7 +514,7 @@ goog.math.Long.prototype.add = function(other) {
 /**
  * Returns the difference of this and the given Long.
  * @param {goog.math.Long} other Long to subtract from this.
- * @return {goog.math.Long} The difference of this and the given Long.
+ * @return {!goog.math.Long} The difference of this and the given Long.
  */
 goog.math.Long.prototype.subtract = function(other) {
   return this.add(other.negate());
@@ -514,7 +524,7 @@ goog.math.Long.prototype.subtract = function(other) {
 /**
  * Returns the product of this and the given long.
  * @param {goog.math.Long} other Long to multiply with this.
- * @return {goog.math.Long} The product of this and the other.
+ * @return {!goog.math.Long} The product of this and the other.
  */
 goog.math.Long.prototype.multiply = function(other) {
   if (this.isZero()) {
@@ -586,7 +596,7 @@ goog.math.Long.prototype.multiply = function(other) {
 /**
  * Returns this Long divided by the given one.
  * @param {goog.math.Long} other Long by which to divide.
- * @return {goog.math.Long} This Long divided by the given one.
+ * @return {!goog.math.Long} This Long divided by the given one.
  */
 goog.math.Long.prototype.div = function(other) {
   if (other.isZero()) {
@@ -670,14 +680,14 @@ goog.math.Long.prototype.div = function(other) {
 /**
  * Returns this Long modulo the given one.
  * @param {goog.math.Long} other Long by which to mod.
- * @return {goog.math.Long} This Long modulo the given one.
+ * @return {!goog.math.Long} This Long modulo the given one.
  */
 goog.math.Long.prototype.modulo = function(other) {
   return this.subtract(this.div(other).multiply(other));
 };
 
 
-/** @return {goog.math.Long} The bitwise-NOT of this value. */
+/** @return {!goog.math.Long} The bitwise-NOT of this value. */
 goog.math.Long.prototype.not = function() {
   return goog.math.Long.fromBits(~this.low_, ~this.high_);
 };
@@ -686,7 +696,7 @@ goog.math.Long.prototype.not = function() {
 /**
  * Returns the bitwise-AND of this Long and the given one.
  * @param {goog.math.Long} other The Long with which to AND.
- * @return {goog.math.Long} The bitwise-AND of this and the other.
+ * @return {!goog.math.Long} The bitwise-AND of this and the other.
  */
 goog.math.Long.prototype.and = function(other) {
   return goog.math.Long.fromBits(this.low_ & other.low_,
@@ -697,7 +707,7 @@ goog.math.Long.prototype.and = function(other) {
 /**
  * Returns the bitwise-OR of this Long and the given one.
  * @param {goog.math.Long} other The Long with which to OR.
- * @return {goog.math.Long} The bitwise-OR of this and the other.
+ * @return {!goog.math.Long} The bitwise-OR of this and the other.
  */
 goog.math.Long.prototype.or = function(other) {
   return goog.math.Long.fromBits(this.low_ | other.low_,
@@ -708,7 +718,7 @@ goog.math.Long.prototype.or = function(other) {
 /**
  * Returns the bitwise-XOR of this Long and the given one.
  * @param {goog.math.Long} other The Long with which to XOR.
- * @return {goog.math.Long} The bitwise-XOR of this and the other.
+ * @return {!goog.math.Long} The bitwise-XOR of this and the other.
  */
 goog.math.Long.prototype.xor = function(other) {
   return goog.math.Long.fromBits(this.low_ ^ other.low_,
@@ -719,7 +729,7 @@ goog.math.Long.prototype.xor = function(other) {
 /**
  * Returns this Long with bits shifted to the left by the given amount.
  * @param {number} numBits The number of bits by which to shift.
- * @return {goog.math.Long} This shifted to the left by the given amount.
+ * @return {!goog.math.Long} This shifted to the left by the given amount.
  */
 goog.math.Long.prototype.shiftLeft = function(numBits) {
   numBits &= 63;
@@ -730,8 +740,8 @@ goog.math.Long.prototype.shiftLeft = function(numBits) {
     if (numBits < 32) {
       var high = this.high_;
       return goog.math.Long.fromBits(
-                 low << numBits,
-                 (high << numBits) | (low >>> (32 - numBits)));
+          low << numBits,
+          (high << numBits) | (low >>> (32 - numBits)));
     } else {
       return goog.math.Long.fromBits(0, low << (numBits - 32));
     }
@@ -742,7 +752,7 @@ goog.math.Long.prototype.shiftLeft = function(numBits) {
 /**
  * Returns this Long with bits shifted to the right by the given amount.
  * @param {number} numBits The number of bits by which to shift.
- * @return {goog.math.Long} This shifted to the right by the given amount.
+ * @return {!goog.math.Long} This shifted to the right by the given amount.
  */
 goog.math.Long.prototype.shiftRight = function(numBits) {
   numBits &= 63;
@@ -753,12 +763,12 @@ goog.math.Long.prototype.shiftRight = function(numBits) {
     if (numBits < 32) {
       var low = this.low_;
       return goog.math.Long.fromBits(
-                 (low >>> numBits) | (high << (32 - numBits)),
-                 high >> numBits);
+          (low >>> numBits) | (high << (32 - numBits)),
+          high >> numBits);
     } else {
       return goog.math.Long.fromBits(
-                 high >> (numBits - 32),
-                 high >= 0 ? 0 : -1);
+          high >> (numBits - 32),
+          high >= 0 ? 0 : -1);
     }
   }
 };
@@ -768,7 +778,7 @@ goog.math.Long.prototype.shiftRight = function(numBits) {
  * Returns this Long with bits shifted to the right by the given amount, with
  * the new top bits matching the current sign bit.
  * @param {number} numBits The number of bits by which to shift.
- * @return {goog.math.Long} This shifted to the right by the given amount, with
+ * @return {!goog.math.Long} This shifted to the right by the given amount, with
  *     zeros placed into the new leading bits.
  */
 goog.math.Long.prototype.shiftRightUnsigned = function(numBits) {
@@ -780,8 +790,8 @@ goog.math.Long.prototype.shiftRightUnsigned = function(numBits) {
     if (numBits < 32) {
       var low = this.low_;
       return goog.math.Long.fromBits(
-                 (low >>> numBits) | (high << (32 - numBits)),
-                 high >>> numBits);
+          (low >>> numBits) | (high << (32 - numBits)),
+          high >>> numBits);
     } else if (numBits == 32) {
       return goog.math.Long.fromBits(high, 0);
     } else {

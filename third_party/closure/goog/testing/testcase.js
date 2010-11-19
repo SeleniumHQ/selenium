@@ -21,7 +21,6 @@
  * This file does not compile correctly with --collapse_properties. Use
  * --property_renaming=ALL_UNQUOTED instead.
  *
-*
  */
 
 goog.provide('goog.testing.TestCase');
@@ -414,7 +413,7 @@ goog.testing.TestCase.prototype.isInsideMultiTestRunner = function() {
 
 /**
  * Logs an object to the console, if available.
- * @param {*} val The value to log. Will be ToString'd
+ * @param {*} val The value to log. Will be ToString'd.
  */
 goog.testing.TestCase.prototype.log = function(val) {
   if (!this.isInsideMultiTestRunner() && window.console) {
@@ -590,6 +589,24 @@ goog.testing.TestCase.prototype.getAutoDiscoveryPrefix = function() {
 
 
 /**
+ * @return {number} Time since the last batch of tests was started.
+ * @protected
+ */
+goog.testing.TestCase.prototype.getBatchTime = function() {
+  return this.batchTime_;
+};
+
+
+/**
+ * @param {number} batchTime Time since the last batch of tests was started.
+ * @protected
+ */
+goog.testing.TestCase.prototype.setBatchTime = function(batchTime) {
+  this.batchTime_ = batchTime;
+};
+
+
+/**
  * Creates a {@code goog.testing.TestCase.Test} from an auto-discovered
  *     function.
  * @param {string} name The name of the function.
@@ -657,7 +674,7 @@ goog.testing.TestCase.prototype.autoDiscoverTests = function() {
  * time has execeeded {@link #MAX_RUN_TIME}.
  */
 goog.testing.TestCase.prototype.cycleTests = function() {
-  this.saveMessage('Start')
+  this.saveMessage('Start');
   this.batchTime_ = this.now_();
   var nextTest;
   while ((nextTest = this.next()) && this.running) {
@@ -847,6 +864,7 @@ goog.testing.TestCase.prototype.logError = function(name, opt_e) {
 };
 
 
+
 /**
  * A class representing a single test function.
  * @param {string} name The test name.
@@ -994,6 +1012,7 @@ goog.testing.TestCase.Result.prototype.getSummary = function() {
 goog.testing.TestCase.Result.prototype.isStrict = function() {
   return this.testCase_.testRunner_.isStrict();
 };
+
 
 
 /**

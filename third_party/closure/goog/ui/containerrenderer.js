@@ -15,7 +15,6 @@
 /**
  * @fileoverview Base class for container renderers.
  *
-*
  */
 
 goog.provide('goog.ui.ContainerRenderer');
@@ -111,30 +110,6 @@ goog.ui.ContainerRenderer.prototype.getAriaRole = function() {
 
 
 /**
- * Returns true if the element has a valid tab index (defined as >= 0), false
- * otherwise.  Only elements with a valid tab index can receive focus.
- * @param {Element} element Element to check.
- * @return {boolean} Whether the element has a tab index.
- */
-goog.ui.ContainerRenderer.prototype.hasTabIndex = function(element) {
-  if (element) {
-    // IE returns a value of 0 for an unset tabIndex.  Therefore, we must use
-    // getAttributeNode('tabIndex'), which returns an object with a 'specified'
-    // property if tabIndex is specified.  For more info, see
-    // http://fluidproject.org/blog/2008/01/09/getting-setting-and-removing-tabindex-values-with-javascript/
-    var attrNode = element.getAttributeNode('tabindex');
-    if (attrNode && attrNode.specified) {
-      // TabIndex is specified.
-      var index = element.tabIndex;
-      return goog.isNumber(index) && index >= 0;
-    }
-  }
-  // Either the element is null, or tabIndex is not specified.
-  return false;
-};
-
-
-/**
  * Enables or disables the tab index of the element.  Only elements with a
  * valid tab index can receive focus.
  * @param {Element} element Element whose tab index is to be changed.
@@ -219,7 +194,7 @@ goog.ui.ContainerRenderer.prototype.decorate = function(container, element) {
   // Decorate the element's children, if applicable.  This should happen after
   // the container's own state has been initialized, since how children are
   // decorated may depend on the state of the container.
-  this.decorateChildren(container, element);
+  this.decorateChildren(container, this.getContentElement(element));
 
   return element;
 };
@@ -372,10 +347,10 @@ goog.ui.ContainerRenderer.prototype.getClassNames = function(container) {
   var isHorizontal =
       container.getOrientation() == goog.ui.Container.Orientation.HORIZONTAL;
   var classNames = [
-      baseClass,
-      (isHorizontal ?
-          goog.getCssName(baseClass, 'horizontal') :
-          goog.getCssName(baseClass, 'vertical'))
+    baseClass,
+    (isHorizontal ?
+        goog.getCssName(baseClass, 'horizontal') :
+        goog.getCssName(baseClass, 'vertical'))
   ];
   if (!container.isEnabled()) {
     classNames.push(goog.getCssName(baseClass, 'disabled'));

@@ -15,12 +15,11 @@
 /**
  * @fileoverview A utility class for representing three-dimensional points.
  *
-*
  * Based heavily on coordinate.js by:
-*
  */
 
 goog.provide('goog.math.Coordinate3');
+
 
 
 /**
@@ -55,7 +54,7 @@ goog.math.Coordinate3 = function(opt_x, opt_y, opt_z) {
 /**
  * Returns a new copy of the coordinate.
  *
- * @return {goog.math.Coordinate3} A clone of this coordinate.
+ * @return {!goog.math.Coordinate3} A clone of this coordinate.
  */
 goog.math.Coordinate3.prototype.clone = function() {
   return new goog.math.Coordinate3(this.x, this.y, this.z);
@@ -133,7 +132,7 @@ goog.math.Coordinate3.squaredDistance = function(a, b) {
  *
  * @param {goog.math.Coordinate3} a A Coordinate3.
  * @param {goog.math.Coordinate3} b A Coordinate3.
- * @return {goog.math.Coordinate3} A Coordinate3 representing the difference
+ * @return {!goog.math.Coordinate3} A Coordinate3 representing the difference
  *     between {@code a} and {@code b}.
  */
 goog.math.Coordinate3.difference = function(a, b) {
@@ -144,7 +143,7 @@ goog.math.Coordinate3.difference = function(a, b) {
 /**
  * Returns the contents of this coordinate as a 3 value Array.
  *
- * @return {Array.<number>} A new array.
+ * @return {!Array.<number>} A new array.
  */
 goog.math.Coordinate3.prototype.toArray = function() {
   return [this.x, this.y, this.z];
@@ -157,7 +156,7 @@ goog.math.Coordinate3.prototype.toArray = function() {
  * error is thrown.
  *
  * @param {Array.<number>} a Array of numbers to become a coordinate.
- * @return {goog.math.Coordinate3} A new coordinate from the array values.
+ * @return {!goog.math.Coordinate3} A new coordinate from the array values.
  * @throws {Error} When the oject passed in is not valid.
  */
 goog.math.Coordinate3.fromArray = function(a) {
@@ -167,4 +166,3 @@ goog.math.Coordinate3.fromArray = function(a) {
 
   throw Error('Conversion from an array requires an array of length 3');
 };
-

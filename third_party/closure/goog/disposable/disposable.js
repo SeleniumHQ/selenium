@@ -15,12 +15,12 @@
 /**
  * @fileoverview Implements the disposable interface. The dispose method is used
  * to clean up references and resources.
-*
  */
 
 
 goog.provide('goog.Disposable');
 goog.provide('goog.dispose');
+
 
 
 /**

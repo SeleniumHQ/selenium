@@ -14,11 +14,11 @@
 
 /**
  * @fileoverview A utility class for representing two-dimensional positions.
-*
  */
 
 
 goog.provide('goog.math.Coordinate');
+
 
 
 /**
@@ -81,8 +81,8 @@ goog.math.Coordinate.equals = function(a, b) {
 
 /**
  * Returns the distance between two coordinates.
- * @param {goog.math.Coordinate} a A Coordinate.
- * @param {goog.math.Coordinate} b A Coordinate.
+ * @param {!goog.math.Coordinate} a A Coordinate.
+ * @param {!goog.math.Coordinate} b A Coordinate.
  * @return {number} The distance between {@code a} and {@code b}.
  */
 goog.math.Coordinate.distance = function(a, b) {
@@ -100,8 +100,8 @@ goog.math.Coordinate.distance = function(a, b) {
  * in lower-level languages, but the speed difference is not nearly as
  * pronounced in JavaScript (only a few percent.)
  *
- * @param {goog.math.Coordinate} a A Coordinate.
- * @param {goog.math.Coordinate} b A Coordinate.
+ * @param {!goog.math.Coordinate} a A Coordinate.
+ * @param {!goog.math.Coordinate} b A Coordinate.
  * @return {number} The squared distance between {@code a} and {@code b}.
  */
 goog.math.Coordinate.squaredDistance = function(a, b) {
@@ -114,9 +114,9 @@ goog.math.Coordinate.squaredDistance = function(a, b) {
 /**
  * Returns the difference between two coordinates as a new
  * goog.math.Coordinate.
- * @param {goog.math.Coordinate} a A Coordinate.
- * @param {goog.math.Coordinate} b A Coordinate.
- * @return {goog.math.Coordinate} A Coordinate representing the difference
+ * @param {!goog.math.Coordinate} a A Coordinate.
+ * @param {!goog.math.Coordinate} b A Coordinate.
+ * @return {!goog.math.Coordinate} A Coordinate representing the difference
  *     between {@code a} and {@code b}.
  */
 goog.math.Coordinate.difference = function(a, b) {
@@ -126,9 +126,9 @@ goog.math.Coordinate.difference = function(a, b) {
 
 /**
  * Returns the sum of two coordinates as a new goog.math.Coordinate.
- * @param {goog.math.Coordinate} a A Coordinate.
- * @param {goog.math.Coordinate} b A Coordinate.
- * @return {goog.math.Coordinate} A Coordinate representing the sum of the two
+ * @param {!goog.math.Coordinate} a A Coordinate.
+ * @param {!goog.math.Coordinate} b A Coordinate.
+ * @return {!goog.math.Coordinate} A Coordinate representing the sum of the two
  *     coordinates.
  */
 goog.math.Coordinate.sum = function(a, b) {

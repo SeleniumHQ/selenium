@@ -15,12 +15,12 @@
 /**
  * @fileoverview Progressive Emoji Palette renderer implementation.
  *
-*
  */
 
 goog.provide('goog.ui.emoji.ProgressiveEmojiPaletteRenderer');
 
 goog.require('goog.ui.emoji.EmojiPaletteRenderer');
+
 
 
 /**

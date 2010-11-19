@@ -14,7 +14,6 @@
 
 /**
  * @fileoverview Python style iteration utilities.
-*
  */
 
 
@@ -85,7 +84,6 @@ goog.iter.Iterator.prototype.__iterator__ = function(opt_keys) {
 };
 
 
-
 /**
  * Returns an iterator that knows how to iterate over the values in the object.
  * @param {goog.iter.Iterable} iterable  If the object is an iterator it
@@ -150,7 +148,7 @@ goog.iter.forEach = function(iterable, f, opt_obj) {
                          opt_obj);
     } catch (ex) {
       if (ex !== goog.iter.StopIteration) {
-       throw ex;
+        throw ex;
       }
     }
   } else {

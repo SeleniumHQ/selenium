@@ -25,6 +25,7 @@ goog.require('goog.dom.pattern.AllChildren');
 goog.require('goog.dom.pattern.MatchType');
 
 
+
 /**
  * Pattern object that matches any nodes at or below the current tree depth.
  *
@@ -59,6 +60,7 @@ goog.dom.pattern.ChildMatches.prototype.matches;
  * @private
  */
 goog.dom.pattern.ChildMatches.prototype.minimumMatches_ = 0;
+
 
 /**
  * The child pattern to collect matches from.

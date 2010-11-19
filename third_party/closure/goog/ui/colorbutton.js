@@ -1,4 +1,4 @@
-// Copyright 2010 Google Inc. All Rights Reserved
+// Copyright 2010 The Closure Library Authors. All Rights Reserved
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
  * @fileoverview A color button rendered via
  * {@link goog.ui.ColorButtonRenderer}.
  *
-*
  */
 
 goog.provide('goog.ui.ColorButton');
@@ -24,6 +23,7 @@ goog.provide('goog.ui.ColorButton');
 goog.require('goog.ui.Button');
 goog.require('goog.ui.ColorButtonRenderer');
 goog.require('goog.ui.registry');
+
 
 
 /**

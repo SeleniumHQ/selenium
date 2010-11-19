@@ -19,7 +19,6 @@
  * modifications to support native (when available) textarea resizing and
  * minHeight and maxHeight enforcement.
  *
-*
  * @see ../demos/textarea.html
  */
 
@@ -33,6 +32,7 @@ goog.require('goog.ui.Control');
 goog.require('goog.ui.TextareaRenderer');
 goog.require('goog.userAgent');
 goog.require('goog.userAgent.product');
+
 
 
 /**
@@ -100,7 +100,6 @@ goog.ui.Textarea.prototype.maxHeight_ = 0;
  * @private
  */
 goog.ui.Textarea.prototype.minHeight_ = 0;
-
 
 
 /**
@@ -561,9 +560,9 @@ goog.ui.Textarea.prototype.mouseUpListener_ = function(e) {
   // as it affects the offsetHeight value, even with MsBoxSizing:border-box.
   if (textarea['filters'] && textarea['filters'].length) {
     var dropShadow =
-        textarea.filters.item('DXImageTransform.Microsoft.DropShadow');
+        textarea['filters']['item']('DXImageTransform.Microsoft.DropShadow');
     if (dropShadow) {
-      height -= dropShadow.offX;
+      height -= dropShadow['offX'];
     }
   }
 

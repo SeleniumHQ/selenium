@@ -16,7 +16,6 @@
 /**
  * @fileoverview Abstract API for TrogEdit plugins.
  *
-*
  * @see ../demos/editor/editor.html
  */
 
@@ -30,6 +29,8 @@ goog.require('goog.events.EventTarget');
 goog.require('goog.functions');
 goog.require('goog.object');
 goog.require('goog.reflect');
+
+
 
 /**
  * Abstract API for trogedit plugins.
@@ -273,9 +274,11 @@ goog.editor.Plugin.prototype.handleKeyPress;
  */
 goog.editor.Plugin.prototype.handleKeyUp;
 
+
 /**
  * Handles selection change.
  * @param {!goog.events.BrowserEvent=} opt_e The browser event.
+ * @param {!Node=} opt_target The node the selection changed to.
  * @return {boolean} Whether the event was handled and thus should *not* be
  *     propagated to other plugins.
  */

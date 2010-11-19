@@ -15,7 +15,6 @@
 /**
  * @fileoverview Common CSS class name constants.
  *
-*
  */
 
 goog.provide('goog.ui.INLINE_BLOCK_CLASSNAME');

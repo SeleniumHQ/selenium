@@ -15,8 +15,6 @@
 /**
  * @fileoverview A class for managing the editor toolbar.
  *
-*
-*
  * @see ../../demos/editor/editor.html
  */
 
@@ -26,6 +24,7 @@ goog.require('goog.editor.Field.EventType');
 goog.require('goog.events.EventHandler');
 goog.require('goog.events.EventTarget');
 goog.require('goog.ui.Component.EventType');
+
 
 
 /**

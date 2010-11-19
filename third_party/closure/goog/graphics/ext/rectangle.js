@@ -24,6 +24,7 @@ goog.provide('goog.graphics.ext.Rectangle');
 goog.require('goog.graphics.ext.StrokeAndFillElement');
 
 
+
 /**
  * Wrapper for a graphics rectangle element.
  * @param {goog.graphics.ext.Group} group Parent for this element.

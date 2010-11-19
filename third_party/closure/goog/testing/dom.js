@@ -210,6 +210,7 @@ goog.testing.dom.getExpectedText_ = function(node) {
   return node.nodeValue.match(/^(\[\[.+\]\])?(.*)/)[2];
 };
 
+
 /**
  * Describes the given node.
  * @param {Node} node The node to describe.

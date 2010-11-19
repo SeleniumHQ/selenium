@@ -16,7 +16,6 @@
  * @fileoverview Show hovercards with a delay after the mouse moves over an
  * element of a specified type and with a specific attribute.
  *
-*
  * @see ../demos/hovercard.html
  */
 
@@ -26,6 +25,7 @@ goog.provide('goog.ui.HoverCard.TriggerEvent');
 
 goog.require('goog.dom');
 goog.require('goog.events');
+goog.require('goog.events.EventType');
 goog.require('goog.ui.AdvancedTooltip');
 
 
@@ -207,7 +207,7 @@ goog.ui.HoverCard.prototype.triggerForElement = function(anchorElement,
                                                          opt_pos, opt_data) {
   if (anchorElement == this.currentAnchor_) {
     // Element is already showing, just make sure it doesn't hide.
-    this.clearHideTimer_();
+    this.clearHideTimer();
     return;
   }
   if (anchorElement == this.anchor) {
@@ -222,7 +222,7 @@ goog.ui.HoverCard.prototype.triggerForElement = function(anchorElement,
   var triggerEvent = new goog.ui.HoverCard.TriggerEvent(
       goog.ui.HoverCard.EventType.TRIGGER, this, anchorElement, opt_data);
 
-  if (!this.elements_.contains(anchorElement)) {
+  if (!this.getElements().contains(anchorElement)) {
     this.attach(anchorElement);
     this.tempAttachedAnchors_.push(anchorElement);
   }
@@ -332,7 +332,9 @@ goog.ui.HoverCard.prototype.getAnchorElement = function() {
 
 /**
  * Make sure we detach from temp anchor when we are done displaying hovercard.
- * @private
+ * @protected
+ * @suppress {underscore}
+ * @override
  */
 goog.ui.HoverCard.prototype.onHide_ = function() {
   goog.ui.HoverCard.superClass_.onHide_.call(this);

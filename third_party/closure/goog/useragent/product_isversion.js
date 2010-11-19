@@ -17,7 +17,6 @@
  * This is pulled out of product.js to ensure that only builds that need
  * this functionality actually get it, without having to rely on the compiler
  * to strip out unneeded pieces.
-*
  */
 goog.provide('goog.userAgent.product.isVersion');
 goog.require('goog.userAgent.product');

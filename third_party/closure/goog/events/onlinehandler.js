@@ -23,7 +23,6 @@
  * Note that this class only reflects what the browser tells us and this usually
  * only reflects changes to the File -> Work Offline menu item.
  *
-*
  * @see ../demos/onlinehandler.html
  */
 
@@ -38,6 +37,7 @@ goog.require('goog.Timer');
 goog.require('goog.events.EventHandler');
 goog.require('goog.events.EventTarget');
 goog.require('goog.userAgent');
+
 
 
 /**

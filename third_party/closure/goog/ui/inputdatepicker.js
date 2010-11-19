@@ -17,7 +17,6 @@
  * goog.ui.PopupDatePicker with an input element and handles the input from
  * either.
  *
-*
  * @see ../demos/inputdatepicker.html
  */
 
@@ -29,6 +28,7 @@ goog.require('goog.i18n.DateTimeParse');
 goog.require('goog.string');
 goog.require('goog.ui.Component');
 goog.require('goog.ui.PopupDatePicker');
+
 
 
 /**

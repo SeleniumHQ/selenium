@@ -15,7 +15,6 @@
 /**
  * @fileoverview Class definition for a rounded corner panel.
  * @supported IE 6.0+, Safari 2.0+, Firefox 1.5+, Opera 9.2+.
-*
  * @see ../demos/roundedpanel.html
  */
 
@@ -88,15 +87,15 @@ goog.ui.RoundedPanel.create = function(radius,
  */
 goog.ui.RoundedPanel.Corner = {
   NONE: 0,
-  BOTTOM_LEFT : 2,
-  TOP_LEFT : 4,
-  LEFT : 6, // BOTTOM_LEFT | TOP_LEFT
-  TOP_RIGHT : 8,
-  TOP : 12, // TOP_LEFT | TOP_RIGHT
-  BOTTOM_RIGHT : 1,
-  BOTTOM : 3, // BOTTOM_LEFT | BOTTOM_RIGHT
-  RIGHT : 9, // TOP_RIGHT | BOTTOM_RIGHT
-  ALL : 15 // TOP | BOTTOM
+  BOTTOM_LEFT: 2,
+  TOP_LEFT: 4,
+  LEFT: 6, // BOTTOM_LEFT | TOP_LEFT
+  TOP_RIGHT: 8,
+  TOP: 12, // TOP_LEFT | TOP_RIGHT
+  BOTTOM_RIGHT: 1,
+  BOTTOM: 3, // BOTTOM_LEFT | BOTTOM_RIGHT
+  RIGHT: 9, // TOP_RIGHT | BOTTOM_RIGHT
+  ALL: 15 // TOP | BOTTOM
 };
 
 
@@ -106,10 +105,11 @@ goog.ui.RoundedPanel.Corner = {
  * @private
  */
 goog.ui.RoundedPanel.Classes_ = {
-  BACKGROUND : goog.getCssName('goog-roundedpanel-background'),
-  PANEL : goog.getCssName('goog-roundedpanel'),
-  CONTENT : goog.getCssName('goog-roundedpanel-content')
+  BACKGROUND: goog.getCssName('goog-roundedpanel-background'),
+  PANEL: goog.getCssName('goog-roundedpanel'),
+  CONTENT: goog.getCssName('goog-roundedpanel-content')
 };
+
 
 
 /**
@@ -226,12 +226,12 @@ goog.ui.BaseRoundedPanel.prototype.decorateInternal = function(element) {
 
 /** @inheritDoc */
 goog.ui.BaseRoundedPanel.prototype.disposeInternal = function() {
-  goog.ui.BaseRoundedPanel.superClass_.disposeInternal.call(this);
   if (this.backgroundElement_) {
     this.getDomHelper().removeNode(this.backgroundElement_);
     this.backgroundElement_ = null;
   }
   this.contentElement_ = null;
+  goog.ui.BaseRoundedPanel.superClass_.disposeInternal.call(this);
 };
 
 
@@ -242,6 +242,7 @@ goog.ui.BaseRoundedPanel.prototype.disposeInternal = function() {
 goog.ui.BaseRoundedPanel.prototype.getContentElement = function() {
   return this.contentElement_;
 };
+
 
 
 /**
@@ -366,6 +367,7 @@ goog.ui.CssRoundedPanel.prototype.getStyle_ = function(corner) {
       'WebkitBorder' + cssCorner + 'Radius' :
       'MozBorderRadius' + cssCorner;
 };
+
 
 
 /**

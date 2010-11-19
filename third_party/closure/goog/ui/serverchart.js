@@ -16,7 +16,6 @@
 /**
  * @fileoverview Component for generating chart PNGs using Google Chart Server.
  *
-*
  * @see ../demos/serverchart.html
  */
 
@@ -42,6 +41,7 @@ goog.require('goog.asserts');
 goog.require('goog.events.Event');
 goog.require('goog.string');
 goog.require('goog.ui.Component');
+
 
 
 /**
@@ -239,6 +239,7 @@ goog.ui.ServerChart.prototype.maxValue_ = -Infinity;
  */
 goog.ui.ServerChart.prototype.title_ = null;
 
+
 /**
  * Chart title size.
  * @type {number}
@@ -246,12 +247,14 @@ goog.ui.ServerChart.prototype.title_ = null;
  */
 goog.ui.ServerChart.prototype.titleSize_ = 13.5;
 
+
 /**
  * Chart title color.
  * @type {string}
  * @private
  */
 goog.ui.ServerChart.prototype.titleColor_ = '333333';
+
 
 /**
  * Chart legend.
@@ -1607,6 +1610,7 @@ goog.ui.ServerChart.CHART_VALUES = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' +
 goog.ui.ServerChart.CHART_VALUES_EXTENDED = goog.ui.ServerChart.CHART_VALUES +
                                             '-.';
 
+
 /**
  * Upper bound for extended values
  */
@@ -1765,6 +1769,7 @@ goog.ui.ServerChart.Event = {
    */
   URI_TOO_LONG: 'uritoolong'
 };
+
 
 
 /**

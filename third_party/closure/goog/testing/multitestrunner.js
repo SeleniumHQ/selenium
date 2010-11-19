@@ -18,7 +18,6 @@
  * results aggregated.  The main usecase for the MultiTestRunner is to allow
  * the testing of all tests in a project locally.
  *
-*
  */
 
 goog.provide('goog.testing.MultiTestRunner');
@@ -35,6 +34,7 @@ goog.require('goog.ui.Component');
 goog.require('goog.ui.ServerChart');
 goog.require('goog.ui.ServerChart.ChartType');
 goog.require('goog.ui.TableSorter');
+
 
 
 /**
@@ -533,6 +533,7 @@ goog.testing.MultiTestRunner.prototype.getTestsThatFailed = function() {
   }
   return failedTests;
 };
+
 
 /**
  * Deletes and re-creates the progress table inside the progess element.

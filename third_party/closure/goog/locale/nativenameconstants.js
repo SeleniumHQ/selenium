@@ -19,8 +19,8 @@
  * Please contact i18n team or change the script and regenerate data.
  * Code location: http://go/generate_js_native_names.py
  *
-*
  */
+
 
 /**
  * Namespace for native country and lanugage names

@@ -15,10 +15,6 @@
 /**
  * @fileoverview Utilities for element styles.
  *
-*
-*
-*
-*
  * @see ../demos/inline_block_quirks.html
  * @see ../demos/inline_block_standards.html
  * @see ../demos/style_viewport.html
@@ -81,33 +77,41 @@ goog.style.setStyle_ = function(element, value, style) {
  * explicitly set in script.
  *
  * @param {Element} element Element to get style of.
- * @param {string} style Property to get, css-style (if you have a camel-case
+ * @param {string} property Property to get, css-style (if you have a camel-case
  * property, use element.style[style]).
  * @return {string} Style value.
  */
-goog.style.getStyle = function(element, style) {
-  return element.style[goog.style.toCamelCase(style)];
+goog.style.getStyle = function(element, property) {
+  // element.style is '' for well-known properties which are unset.
+  // For for browser specific styles as 'filter' is undefined
+  // so we need to return '' explicitly to make it consistent across
+  // browsers.
+  return element.style[goog.style.toCamelCase(property)] || '';
 };
 
 
 /**
- * Retrieves a computed style value of a node, or null if the value cannot be
- * computed (which will be the case in Internet Explorer).
+ * Retrieves a computed style value of a node. It returns empty string if the
+ * value cannot be computed (which will be the case in Internet Explorer) or
+ * "none" if the property requested is a SVG one and it has not been
+ * explicitly set (firefox and webkit).
  *
  * @param {Element} element Element to get style of.
- * @param {string} style Property to get (camel-case).
- * @return {?string} Style value.
+ * @param {string} property Property to get (camel-case).
+ * @return {string} Style value.
  */
-goog.style.getComputedStyle = function(element, style) {
+goog.style.getComputedStyle = function(element, property) {
   var doc = goog.dom.getOwnerDocument(element);
   if (doc.defaultView && doc.defaultView.getComputedStyle) {
-    var styles = doc.defaultView.getComputedStyle(element, '');
+    var styles = doc.defaultView.getComputedStyle(element, null);
     if (styles) {
-      return styles[style];
+      // element.style[..] is undefined for browser specific styles
+      // as 'filter'.
+      return styles[property] || styles.getPropertyValue(property);
     }
   }
 
-  return null;
+  return '';
 };
 
 
@@ -248,10 +252,10 @@ goog.style.setPosition = function(el, arg1, opt_arg2) {
   }
 
   // Round to the nearest pixel for buggy sub-pixel support.
-  goog.style.setPixelStyleProperty_('left', buggyGeckoSubPixelPos, el,
-                                    /** @type {number|string} */ (x));
-  goog.style.setPixelStyleProperty_('top', buggyGeckoSubPixelPos, el,
-                                    /** @type {number|string} */ (y));
+  el.style.left = goog.style.getPixelStyleValue_(
+      /** @type {number|string} */ (x), buggyGeckoSubPixelPos);
+  el.style.top = goog.style.getPixelStyleValue_(
+      /** @type {number|string} */ (y), buggyGeckoSubPixelPos);
 };
 
 
@@ -588,7 +592,7 @@ goog.style.getPageOffset = function(el) {
         break;
       }
       parent = parent.offsetParent;
-    } while (parent && parent != el)
+    } while (parent && parent != el);
 
     // Opera & (safari absolute) incorrectly account for body offsetTop.
     if (goog.userAgent.OPERA || (goog.userAgent.WEBKIT &&
@@ -802,24 +806,22 @@ goog.style.setSize = function(element, w, opt_h) {
 
 
 /**
- * Helper function to sets a dimension or position style property of an element.
- * Parameter order is to allow the first two parameters to be bound.
+ * Helper function to create a string to be set into a pixel-value style
+ * property of an element. Can round to the nearest integer value.
  *
- * @param {string} property Property name of style to modify ('width', 'height',
- *     'left', 'top', etc).
+ * @param {string|number} value The style value to be used. If a number,
+ *     'px' will be appended, otherwise the value will be applied directly.
  * @param {boolean} round Whether to round the nearest integer (if property
  *     is a number).
- * @param {Element} element Element to set the size of.
- * @param {string|number} value The value to set.  If a number, 'px' will be
- *     appended, otherwise the value will be applied directly.
+ * @return {string} The string value for the property.
  * @private
  */
-goog.style.setPixelStyleProperty_ = function(property, round, element, value) {
+goog.style.getPixelStyleValue_ = function(value, round) {
   if (typeof value == 'number') {
     value = (round ? Math.round(value) : value) + 'px';
   }
 
-  element.style[property] = /** @type {string} */(value);
+  return value;
 };
 
 
@@ -829,18 +831,20 @@ goog.style.setPixelStyleProperty_ = function(property, round, element, value) {
  * @param {string|number} height The height value to set.  If a number, 'px'
  *     will be appended, otherwise the value will be applied directly.
  */
-goog.style.setHeight = goog.partial(
-    goog.style.setPixelStyleProperty_, 'height', true);
+goog.style.setHeight = function(element, height) {
+  element.style.height = goog.style.getPixelStyleValue_(height, true);
+};
 
 
 /**
  * Set the width of an element.  Sets the element's style property.
  * @param {Element} element Element to set the height of.
- * @param {string|number} height The height value to set.  If a number, 'px'
+ * @param {string|number} width The width value to set.  If a number, 'px'
  *     will be appended, otherwise the value will be applied directly.
  */
-goog.style.setWidth = goog.partial(
-    goog.style.setPixelStyleProperty_, 'width', true);
+goog.style.setWidth = function(element, width) {
+  element.style.width = goog.style.getPixelStyleValue_(width, true);
+};
 
 
 /**
@@ -1596,7 +1600,17 @@ goog.style.getFontFamily = function(el) {
   if (doc.body.createTextRange) {
     var range = doc.body.createTextRange();
     range.moveToElementText(el);
-    font = range.queryCommandValue('FontName');
+    /** @preserveTry */
+    try {
+      font = range.queryCommandValue('FontName');
+    } catch (e) {
+      // This is a workaround for a awkward exception.
+      // On some IE, there is an exception coming from it.
+      // The error description from this exception is:
+      // This window has already been registered as a drop target
+      // This is bogus description, likely due to a bug in ie.
+      font = '';
+    }
   }
   if (!font) {
     // Note if for some reason IE can't derive FontName with a TextRange, we

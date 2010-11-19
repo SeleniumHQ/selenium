@@ -15,9 +15,6 @@
 /**
  * @fileoverview Functions to style text.
  *
-*
- * @author nicksantos@google.com (Nick Santos)
-*
  */
 
 goog.provide('goog.editor.plugins.BasicTextFormatter');
@@ -40,6 +37,7 @@ goog.require('goog.string.Unicode');
 goog.require('goog.style');
 goog.require('goog.ui.editor.messages');
 goog.require('goog.userAgent');
+
 
 
 /**
@@ -474,8 +472,8 @@ goog.editor.plugins.BasicTextFormatter.prototype.cleanContentsHtml =
   if (goog.editor.BrowserFeature.MOVES_STYLE_TO_HEAD) {
     // Safari creates a new <head> element for <style> tags, so prepend their
     // contents to the output.
-    var heads = this.fieldObject.getEditableDomHelper().$$(
-        goog.dom.TagName.HEAD);
+    var heads = this.fieldObject.getEditableDomHelper().
+        getElementsByTagNameAndClass(goog.dom.TagName.HEAD);
     var stylesHtmlArr = [];
 
     // i starts at 1 so we don't copy in the original, legitimate <head>.
@@ -532,6 +530,7 @@ goog.editor.plugins.BasicTextFormatter.prototype.handleKeyboardShortcut =
 
 // Helpers for execCommand
 
+
 /**
  * Regular expression to match BRs in HTML. Saves the BRs' attributes in $1 for
  * use with replace(). In non-IE browsers, does not match BRs adjacent to an
@@ -543,6 +542,7 @@ goog.editor.plugins.BasicTextFormatter.prototype.handleKeyboardShortcut =
 goog.editor.plugins.BasicTextFormatter.BR_REGEXP_ =
     goog.userAgent.IE ? /<br([^\/>]*)\/?>/gi :
                         /<br([^\/>]*)\/?>(?!<\/(div|p)>)/gi;
+
 
 /**
  * Convert BRs in the selection to divs.
@@ -563,7 +563,7 @@ goog.editor.plugins.BasicTextFormatter.prototype.convertBreaksToDivs_ =
   goog.editor.plugins.BasicTextFormatter.BR_REGEXP_.lastIndex = 0;
   // Only mess with the HTML/selection if it contains a BR.
   if (goog.editor.plugins.BasicTextFormatter.BR_REGEXP_.test(
-          parent.innerHTML)) {
+      parent.innerHTML)) {
     // Insert temporary markers to remember the selection.
     var savedRange = range.saveUsingCarets();
 
@@ -592,7 +592,7 @@ goog.editor.plugins.BasicTextFormatter.prototype.convertBreaksToDivs_ =
         if (paragraph.getAttribute(attribute) == value) {
           paragraph.removeAttribute(attribute);
           if (goog.string.isBreakingWhitespace(
-                  goog.dom.getTextContent(paragraph))) {
+              goog.dom.getTextContent(paragraph))) {
             // Prevent the empty blocks from collapsing.
             // A <BR> is preferable because it doesn't result in any text being
             // added to the "blank" line. In IE, however, it is possible to
@@ -1002,6 +1002,7 @@ goog.editor.plugins.BasicTextFormatter.prototype.createLink_ = function(range,
 
 //---------------------------------------------------------------------
 // browser fixes
+
 
 /**
  * The following execCommands are "broken" in some way - in IE they allow
@@ -1567,6 +1568,7 @@ goog.editor.plugins.BasicTextFormatter.SUPPORTED_JUSTIFICATIONS_ = {
   'right': 1,
   'left': 1
 };
+
 
 /**
  * Returns true if the current justification matches the justification

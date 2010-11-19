@@ -23,8 +23,6 @@
  *
  * Tested and verified to work in Gecko 1.9.2+ and WebKit 528+.
  *
-*
-*
  * @see ../demos/css3button.html
  */
 
@@ -38,6 +36,7 @@ goog.require('goog.ui.ButtonRenderer');
 goog.require('goog.ui.ControlContent');
 goog.require('goog.ui.INLINE_BLOCK_CLASSNAME');
 goog.require('goog.ui.registry');
+
 
 
 /**

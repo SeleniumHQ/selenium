@@ -17,7 +17,6 @@
  *
  * Provides extensible functionality for drag & drop behaviour.
  *
-*
  * @see ../demos/drag.html
  * @see ../demos/dragger.html
  */
@@ -37,6 +36,7 @@ goog.require('goog.events.EventType');
 goog.require('goog.math.Coordinate');
 goog.require('goog.math.Rect');
 goog.require('goog.userAgent');
+
 
 
 /**
@@ -411,7 +411,7 @@ goog.fx.Dragger.prototype.setupDragHandlers = function() {
 goog.fx.Dragger.prototype.initializeDrag_ = function(e) {
   var rv = this.dispatchEvent(new goog.fx.DragEvent(
       goog.fx.Dragger.EventType.START, this, e.clientX, e.clientY,
-                                /** @type {goog.events.BrowserEvent} */(e)));
+      /** @type {goog.events.BrowserEvent} */(e)));
   if (rv !== false) {
     this.dragging_ = true;
   }
@@ -548,8 +548,7 @@ goog.fx.Dragger.prototype.onScroll_ = function(e) {
 goog.fx.Dragger.prototype.doDrag = function(e, x, y, dragFromScroll) {
   this.defaultAction(x, y);
   this.dispatchEvent(new goog.fx.DragEvent(
-      goog.fx.Dragger.EventType.DRAG, this, e.clientX, e.clientY,
-          e, x, y));
+      goog.fx.Dragger.EventType.DRAG, this, e.clientX, e.clientY, e, x, y));
 };
 
 
@@ -597,6 +596,7 @@ goog.fx.Dragger.prototype.defaultAction = function(x, y) {
   this.target.style.left = x + 'px';
   this.target.style.top = y + 'px';
 };
+
 
 
 /**

@@ -15,7 +15,6 @@
 /**
  * @fileoverview A menu button control.
  *
-*
  * @see ../demos/menubutton.html
  */
 
@@ -40,6 +39,7 @@ goog.require('goog.ui.ControlContent');
 goog.require('goog.ui.Menu');
 goog.require('goog.ui.MenuButtonRenderer');
 goog.require('goog.ui.registry');
+
 
 
 /**
@@ -77,6 +77,15 @@ goog.inherits(goog.ui.MenuButton, goog.ui.Button);
  * @private
  */
 goog.ui.MenuButton.prototype.menu_;
+
+
+/**
+ * The position element.  If set, use positionElement_ to position the
+ * popup menu instead of the default which is to use the menu button element.
+ * @type {Element|undefined}
+ * @private
+ */
+goog.ui.MenuButton.prototype.positionElement_;
 
 
 /**
@@ -183,6 +192,7 @@ goog.ui.MenuButton.prototype.disposeInternal = function() {
     this.menu_.dispose();
     delete this.menu_;
   }
+  delete this.positionElement_;
   this.timer_.dispose();
 };
 
@@ -392,6 +402,19 @@ goog.ui.MenuButton.prototype.setMenu = function(menu) {
   }
 
   return oldMenu;
+};
+
+
+/**
+ * Sets an element for anchoring the menu.
+ * @param {Element} positionElement New element to use for
+ *     positioning the dropdown menu.  Null to use the default behavior
+ *     of positioning to this menu button.
+ */
+goog.ui.MenuButton.prototype.setPositionElement = function(
+    positionElement) {
+  this.positionElement_ = positionElement;
+  this.positionMenu();
 };
 
 
@@ -622,9 +645,11 @@ goog.ui.MenuButton.prototype.positionMenu = function() {
     return;
   }
 
+  var positionElement = this.positionElement_ || this.getElement();
+
   var anchorCorner = this.isAlignMenuToStart() ?
       goog.positioning.Corner.BOTTOM_START : goog.positioning.Corner.BOTTOM_END;
-  var position = new goog.positioning.MenuAnchoredPosition(this.getElement(),
+  var position = new goog.positioning.MenuAnchoredPosition(positionElement,
       anchorCorner, /* opt_adjust */ !this.scrollOnOverflow_,
       /* opt_resize */ this.scrollOnOverflow_);
 

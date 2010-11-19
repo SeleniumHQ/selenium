@@ -29,7 +29,6 @@
  * @supported IE5, IE6, IE7, Safari3.0, Chrome, FF2.0 (linux) and FF3.0 and
  * Opera (mac and windows).
  *
-*
  * @see ../demos/pastehandler.html
  */
 
@@ -41,7 +40,9 @@ goog.require('goog.debug.Logger');
 goog.require('goog.events.BrowserEvent');
 goog.require('goog.events.EventHandler');
 goog.require('goog.events.EventTarget');
+goog.require('goog.events.EventType');
 goog.require('goog.events.KeyCodes');
+
 
 
 /**

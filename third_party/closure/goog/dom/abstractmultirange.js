@@ -17,7 +17,7 @@
  * sub-ranges.
  *
  * @author robbyw@google.com (Robby Walker)
-*
+ * @author jparent@google.com (Julie Parent)
  */
 
 
@@ -26,6 +26,7 @@ goog.provide('goog.dom.AbstractMultiRange');
 goog.require('goog.array');
 goog.require('goog.dom');
 goog.require('goog.dom.AbstractRange');
+
 
 
 /**

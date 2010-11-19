@@ -16,7 +16,6 @@
  * @fileoverview This file implements a wrapper around the Gears WorkerPool
  * with some extra features.
  *
-*
  */
 
 goog.provide('goog.gears.WorkerPool');
@@ -157,8 +156,8 @@ goog.gears.WorkerPool.prototype.sendMessage = function(message, worker) {
  * @private
  */
 goog.gears.WorkerPool.prototype.handleMessage_ = function(message,
-                                                           senderId,
-                                                           messageObject) {
+                                                          senderId,
+                                                          messageObject) {
   if (!this.isDisposed()) {
     var workers = this.workers_;
     if (!workers[senderId]) {

@@ -15,9 +15,6 @@
 /**
  * @fileoverview Definition of the goog.ui.tree.BaseNode class.
  *
-*
-*
-*
  *
  * This is a based on the webfx tree control. It since been updated to add
  * typeahead support, as well as accessibility support using ARIA framework.
@@ -493,13 +490,15 @@ goog.ui.tree.BaseNode.prototype.getChildAt;
 
 
 /**
- * Returns the children of this node. The caller must not modify the returned
- * collection.
+ * Returns the children of this node.
  * @return {!Array.<!goog.ui.tree.BaseNode>} The children.
  */
 goog.ui.tree.BaseNode.prototype.getChildren = function() {
-  // TODO: This breaks encapsulation, as children_ is private in the superclass.
-  return this.children_ || goog.ui.tree.BaseNode.EMPTY_CHILDREN_;
+  var children = [];
+  this.forEachChild(function(child) {
+    children.push(child);
+  });
+  return children;
 };
 
 
@@ -602,6 +601,15 @@ goog.ui.tree.BaseNode.prototype.getExpanded = function() {
 
 
 /**
+ * Sets the node to be expanded internally, without state change events.
+ * @param {boolean} expanded Whether to expand or close the node.
+ */
+goog.ui.tree.BaseNode.prototype.setExpandedInternal = function(expanded) {
+  this.expanded_ = expanded;
+};
+
+
+/**
  * Sets the node to be expanded.
  * @param {boolean} expanded Whether to expand or close the node.
  */
@@ -668,6 +676,7 @@ goog.ui.tree.BaseNode.prototype.toggle = function() {
   this.setExpanded(!this.getExpanded());
 };
 
+
 /**
  * Expands the node.
  */
@@ -682,7 +691,6 @@ goog.ui.tree.BaseNode.prototype.expand = function() {
 goog.ui.tree.BaseNode.prototype.collapse = function() {
   this.setExpanded(false);
 };
-
 
 
 /**
@@ -805,7 +813,6 @@ goog.ui.tree.BaseNode.prototype.getPixelIndent_ = function() {
  * @protected
  */
 goog.ui.tree.BaseNode.prototype.getRowHtml = function() {
-  var tree = this.getTree();
   var sb = new goog.string.StringBuffer();
   sb.append('<div class="', this.getRowClassName(), '" style="padding-',
       this.isRightToLeft() ? 'right:' : 'left:',
@@ -825,7 +832,7 @@ goog.ui.tree.BaseNode.prototype.getRowHtml = function() {
 goog.ui.tree.BaseNode.prototype.getRowClassName = function() {
   var selectedClass;
   if (this.isSelected()) {
-    selectedClass = ' selected';
+    selectedClass = ' ' + this.config_.cssSelectedRow;
   } else {
     selectedClass = '';
   }
@@ -839,7 +846,6 @@ goog.ui.tree.BaseNode.prototype.getRowClassName = function() {
  */
 goog.ui.tree.BaseNode.prototype.getLabelHtml = function() {
   var toolTip = this.getToolTip();
-  var tree = this.getTree();
   var sb = new goog.string.StringBuffer();
   sb.append('<span class="', this.config_.cssItemLabel, '"',
       (toolTip ? ' title="' + goog.string.htmlEscape(toolTip) + '"' : ''),
@@ -1251,7 +1257,8 @@ goog.ui.tree.BaseNode.prototype.onMouseDown = function(e) {
 /**
  * Handles a click event.
  * @param {!goog.events.BrowserEvent} e The browser event.
- * @private
+ * @protected
+ * @suppress {underscore}
  */
 goog.ui.tree.BaseNode.prototype.onClick_ = goog.events.Event.preventDefault;
 
@@ -1259,7 +1266,8 @@ goog.ui.tree.BaseNode.prototype.onClick_ = goog.events.Event.preventDefault;
 /**
  * Handles a double click event.
  * @param {!goog.events.BrowserEvent} e The browser event.
- * @private
+ * @protected
+ * @suppress {underscore}
  */
 goog.ui.tree.BaseNode.prototype.onDoubleClick_ = function(e) {
   var el = e.target;

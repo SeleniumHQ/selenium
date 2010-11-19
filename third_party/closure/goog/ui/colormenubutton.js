@@ -17,7 +17,7 @@
  * showing the currently selected color in the button caption.
  *
  * @author robbyw@google.com (Robby Walker)
-*
+ * @author attila@google.com (Attila Bodis)
  */
 
 goog.provide('goog.ui.ColorMenuButton');
@@ -31,6 +31,7 @@ goog.require('goog.ui.ControlContent');
 goog.require('goog.ui.Menu');
 goog.require('goog.ui.MenuButton');
 goog.require('goog.ui.registry');
+
 
 
 /**

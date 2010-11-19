@@ -17,7 +17,6 @@
  * with semantics similar to the native HTML <code>&lt;select&gt;</code>
  * element.
  *
-*
  * @see ../demos/select.html
  */
 
@@ -29,6 +28,7 @@ goog.require('goog.ui.ControlContent');
 goog.require('goog.ui.MenuButton');
 goog.require('goog.ui.SelectionModel');
 goog.require('goog.ui.registry');
+
 
 
 /**
@@ -76,6 +76,7 @@ goog.ui.Select.prototype.defaultCaption_ = null;
 goog.ui.Select.prototype.enterDocument = function() {
   goog.ui.Select.superClass_.enterDocument.call(this);
   this.updateCaption_();
+  this.listenToSelectionModelEvents_();
 };
 
 
@@ -343,8 +344,19 @@ goog.ui.Select.prototype.createSelectionModel_ = function(opt_component) {
       this.selectionModel_.addItem(child);
     }, this);
   }
-  this.getHandler().listen(this.selectionModel_, goog.events.EventType.SELECT,
-      this.handleSelectionChange);
+  this.listenToSelectionModelEvents_();
+};
+
+
+/**
+ * Subscribes to events dispatched by the selection model.
+ * @private
+ */
+goog.ui.Select.prototype.listenToSelectionModelEvents_ = function() {
+  if (this.selectionModel_) {
+    this.getHandler().listen(this.selectionModel_, goog.events.EventType.SELECT,
+        this.handleSelectionChange);
+  }
 };
 
 

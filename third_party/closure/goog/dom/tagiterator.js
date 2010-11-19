@@ -25,6 +25,7 @@ goog.require('goog.dom.NodeType');
 goog.require('goog.iter.Iterator');
 goog.require('goog.iter.StopIteration');
 
+
 /**
  * There are three types of token:
  *  <ol>
@@ -42,6 +43,7 @@ goog.dom.TagWalkType = {
   OTHER: 0,
   END_TAG: -1
 };
+
 
 
 /**
@@ -118,9 +120,9 @@ goog.dom.TagIterator.prototype.node = null;
 
 /**
  * The type of this position.
- * @type {goog.dom.TagWalkType?}
+ * @type {goog.dom.TagWalkType}
  */
-goog.dom.TagIterator.prototype.tagType = null;
+goog.dom.TagIterator.prototype.tagType = goog.dom.TagWalkType.OTHER;
 
 
 /**
@@ -288,6 +290,7 @@ goog.dom.TagIterator.prototype.next = function() {
   }
   return node;
 };
+
 
 /**
  * @return {boolean} Whether next has ever been called on this iterator.

@@ -51,7 +51,6 @@
  *   video.setSelected(true);
  * </pre>
  *
-*
  *
  * @supported IE6, FF2+, Safari. Requires flash to actually work.
  *
@@ -69,6 +68,7 @@ goog.require('goog.ui.media.Media');
 goog.require('goog.ui.media.MediaModel');
 goog.require('goog.ui.media.MediaModel.Player');
 goog.require('goog.ui.media.MediaRenderer');
+
 
 
 /**
@@ -190,6 +190,7 @@ goog.ui.media.FlickrSet.prototype.getCssClass = function() {
 };
 
 
+
 /**
  * The {@code goog.ui.media.FlickrAlbum} media data model. It stores a required
  * {@code userId} and {@code setId} fields, sets the flickr Set URL, and
@@ -236,7 +237,7 @@ goog.ui.media.FlickrSetModel = function(userId,
     };
 
   var player = new goog.ui.media.MediaModel.Player(
-      goog.ui.media.FlickrSet.flashUrl_, flashVars)
+      goog.ui.media.FlickrSet.flashUrl_, flashVars);
 
   this.setPlayer(player);
 };

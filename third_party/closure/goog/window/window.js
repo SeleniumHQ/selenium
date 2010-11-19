@@ -14,8 +14,6 @@
 
 /**
  * @fileoverview Utilities for window manipulation.
-*
-*
  */
 
 

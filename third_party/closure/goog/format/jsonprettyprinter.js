@@ -16,7 +16,6 @@
  * @fileoverview Creates a string of a JSON object, properly indented for
  * display.
  *
-*
  */
 
 goog.provide('goog.format.JsonPrettyPrinter');
@@ -28,6 +27,7 @@ goog.require('goog.json.Serializer');
 goog.require('goog.string');
 goog.require('goog.string.StringBuffer');
 goog.require('goog.string.format');
+
 
 
 /**
@@ -247,6 +247,7 @@ goog.format.JsonPrettyPrinter.prototype.printSpaces_ = function(indent,
 };
 
 
+
 /**
  * A container for the delimiting characters used to display the JSON string
  * to a text display.  Each delimiter is a publicly accessible property of
@@ -353,6 +354,7 @@ goog.format.JsonPrettyPrinter.TextDelimiters.prototype.postValue = '';
  * @type {number}
  */
 goog.format.JsonPrettyPrinter.TextDelimiters.prototype.indent = 2;
+
 
 
 /**

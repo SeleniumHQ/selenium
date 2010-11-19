@@ -99,8 +99,6 @@
  * p:     undefined      80 undefined
  * P:     undefined      80 undefined
  *
-*
-*
  * @see ../demos/keyhandler.html
  */
 
@@ -120,14 +118,16 @@ goog.require('goog.userAgent');
 /**
  * A wrapper around an element that you want to listen to keyboard events on.
  * @param {Element|Document=} opt_element The element or document to listen on.
+ * @param {boolean=} opt_capture Whether to listen for browser events in
+ *     capture phase (defaults to false).
  * @constructor
  * @extends {goog.events.EventTarget}
  */
-goog.events.KeyHandler = function(opt_element) {
+goog.events.KeyHandler = function(opt_element, opt_capture) {
   goog.events.EventTarget.call(this);
 
   if (opt_element) {
-    this.attach(opt_element);
+    this.attach(opt_element, opt_capture);
   }
 };
 goog.inherits(goog.events.KeyHandler, goog.events.EventTarget);
@@ -290,6 +290,17 @@ goog.events.KeyHandler.USES_KEYDOWN_ = goog.userAgent.IE ||
  * @private
  */
 goog.events.KeyHandler.prototype.handleKeyDown_ = function(e) {
+
+  // Ctrl-Tab and Alt-Tab can cause the focus to be moved to another window
+  // before we've caught a key-up event.  If the last-key was one of these we
+  // reset the state.
+  if (goog.userAgent.WEBKIT &&
+      (this.lastKey_ == goog.events.KeyCodes.CTRL && !e.ctrlKey ||
+       this.lastKey_ == goog.events.KeyCodes.ALT && !e.altKey)) {
+    this.lastKey_ = -1;
+    this.keyCode_ = -1;
+  }
+
   if (goog.events.KeyHandler.USES_KEYDOWN_ &&
       !goog.events.KeyCodes.firesKeyPressEvent(e.keyCode,
           this.lastKey_, e.shiftKey, e.ctrlKey, e.altKey)) {
@@ -413,8 +424,10 @@ goog.events.KeyHandler.prototype.getElement = function() {
 /**
  * Adds the proper key event listeners to the element.
  * @param {Element|Document} element The element to listen on.
+ * @param {boolean=} opt_capture Whether to listen for browser events in
+ *     capture phase (defaults to false).
  */
-goog.events.KeyHandler.prototype.attach = function(element) {
+goog.events.KeyHandler.prototype.attach = function(element, opt_capture) {
   if (this.keyUpKey_) {
     this.detach();
   }
@@ -423,7 +436,8 @@ goog.events.KeyHandler.prototype.attach = function(element) {
 
   this.keyPressKey_ = goog.events.listen(this.element_,
                                          goog.events.EventType.KEYPRESS,
-                                         this);
+                                         this,
+                                         opt_capture);
 
   // Most browsers (Safari 2 being the notable exception) doesn't include the
   // keyCode in keypress events (IE has the char code in the keyCode field and
@@ -432,14 +446,14 @@ goog.events.KeyHandler.prototype.attach = function(element) {
   this.keyDownKey_ = goog.events.listen(this.element_,
                                         goog.events.EventType.KEYDOWN,
                                         this.handleKeyDown_,
-                                        false,
+                                        opt_capture,
                                         this);
 
 
   this.keyUpKey_ = goog.events.listen(this.element_,
                                       goog.events.EventType.KEYUP,
                                       this.handleKeyup_,
-                                      false,
+                                      opt_capture,
                                       this);
 };
 

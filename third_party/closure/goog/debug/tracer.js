@@ -15,7 +15,6 @@
 /**
  * @fileoverview Definition of the Tracer class and associated classes.
  *
-*
  * @see ../demos/tracer.html
  */
 
@@ -26,6 +25,7 @@ goog.require('goog.debug.Logger');
 goog.require('goog.iter');
 goog.require('goog.structs.Map');
 goog.require('goog.structs.SimplePool');
+
 
 
 /**
@@ -150,6 +150,7 @@ goog.debug.Trace_ = function() {
   this.defaultThreshold_ = 3;
 };
 
+
 /**
  * Logger for the tracer
  * @type {goog.debug.Logger}
@@ -174,18 +175,19 @@ goog.debug.Trace_.EventType = {
   /**
    * Start event type
    */
-  START : 0,
+  START: 0,
 
   /**
    * Stop event type
    */
-  STOP : 1,
+  STOP: 1,
 
   /**
    * Comment event type
    */
-  COMMENT : 2
+  COMMENT: 2
 };
+
 
 
 /**
@@ -229,6 +231,7 @@ goog.debug.Trace_.Stat_.prototype.toString = function() {
 };
 
 
+
 /**
  * Private class used to encapsulate a single event, either the start or stop
  * of a tracer.
@@ -250,7 +253,7 @@ goog.debug.Trace_.Event_ = function() {
  * @return {string} The formatted tracer string.
  */
 goog.debug.Trace_.Event_.prototype.toTraceString = function(startTime, prevTime,
-      indent) {
+    indent) {
   var sb = [];
 
   if (prevTime == -1) {
@@ -311,6 +314,7 @@ goog.debug.Trace_.prototype.initCurrentTrace = function(defaultThreshold) {
   this.reset(defaultThreshold);
 };
 
+
 /**
  * Clears the current trace
  */
@@ -357,7 +361,6 @@ goog.debug.Trace_.prototype.reset = function(defaultThreshold) {
 };
 
 
-
 /**
  * Starts a tracer
  * @param {string} comment A comment used to identify the tracer. Does not
@@ -401,7 +404,7 @@ goog.debug.Trace_.prototype.startTracer = function(comment, opt_type) {
     }
   }
 
-  this.logToSpeedTracer_('Start : ' + comment);
+  this.logToProfilers_('Start : ' + comment);
 
   var event = (/** @type {goog.debug.Trace_.Event_} */
       this.eventPool_.getObject());
@@ -483,7 +486,7 @@ goog.debug.Trace_.prototype.stopTracer = function(id, opt_silenceThreshold) {
     stat.time += elapsed;
   }
   if (stopEvent) {
-    this.logToSpeedTracer_('Stop : ' + stopEvent.comment);
+    this.logToProfilers_('Stop : ' + stopEvent.comment);
 
     stopEvent.totalVarAlloc = this.getTotalVarAlloc();
 
@@ -495,6 +498,7 @@ goog.debug.Trace_.prototype.stopTracer = function(id, opt_silenceThreshold) {
   this.tracerOverheadEnd_ += tracerFinishTime - now;
   return elapsed;
 };
+
 
 /**
  * Sets the ActiveX object that can be used to get GC tracing in IE6.
@@ -590,6 +594,7 @@ goog.debug.Trace_.prototype.getStat_ = function(type) {
   return /** @type {goog.debug.Trace_.Stat_} */(stat);
 };
 
+
 /**
  * Returns a formatted string for the current trace
  * @return {string} A formatted string that shows the timings of the current
@@ -652,6 +657,17 @@ goog.debug.Trace_.prototype.toString = function() {
 
 
 /**
+ * Logs the trace event to profiling tools.
+ * @param {string} msg The message to log.
+ * @private
+ */
+goog.debug.Trace_.prototype.logToProfilers_ = function(msg) {
+  this.logToSpeedTracer_(msg);
+  this.logToMsProfiler_(msg);
+};
+
+
+/**
  * Logs the trace event to speed tracer, if it is available.
  * {@see http://code.google.com/webtoolkit/speedtracer/logging-api.html}
  * @param {string} msg The message to log.
@@ -662,6 +678,21 @@ goog.debug.Trace_.prototype.logToSpeedTracer_ = function(msg) {
   // window.
   if (goog.global['console'] && goog.global['console']['markTimeline']) {
     goog.global['console']['markTimeline'](msg);
+  }
+};
+
+
+/**
+ * Logs the trace event to the Microsoft Profiler.
+ * {@see http://msdn.microsoft.com/en-us/library/dd433074(VS.85).aspx}
+ * @param {string} msg The message to log.
+ * @private
+ */
+goog.debug.Trace_.prototype.logToMsProfiler_ = function(msg) {
+  // Use goog.global because Tracers are used in contexts that may not have a
+  // window.
+  if (goog.global['msWriteProfilerMark']) {
+    goog.global['msWriteProfilerMark'](msg);
   }
 };
 
@@ -682,6 +713,7 @@ goog.debug.Trace_.longToPaddedString_ = function(v) {
   if (v < 10) space = '   ';
   return space + v;
 };
+
 
 /**
  * Return the sec.ms part of time (if time = "20:06:11.566",  "11.566

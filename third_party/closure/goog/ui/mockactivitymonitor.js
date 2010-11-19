@@ -14,13 +14,14 @@
 
 /**
  * @fileoverview Definition of goog.ui.MockActivityMonitor.
-*
  */
 
 goog.provide('goog.ui.MockActivityMonitor');
 
 goog.require('goog.events.EventType');
 goog.require('goog.ui.ActivityMonitor');
+
+
 
 /**
  * A mock implementation of goog.ui.ActivityMonitor for unit testing. Clients

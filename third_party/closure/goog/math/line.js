@@ -25,6 +25,7 @@ goog.require('goog.math');
 goog.require('goog.math.Coordinate');
 
 
+
 /**
  * Object representing a line.
  * @param {number} x0 X coordinate of the start point.
@@ -61,7 +62,7 @@ goog.math.Line = function(x0, y0, x1, y1) {
 
 
 /**
- * @return {goog.math.Line} A copy of this line.
+ * @return {!goog.math.Line} A copy of this line.
  */
 goog.math.Line.prototype.clone = function() {
   return new goog.math.Line(this.x0, this.y0, this.x1, this.y1);
@@ -134,7 +135,7 @@ goog.math.Line.prototype.getClosestLinearInterpolation_ = function(x, opt_y) {
  * return the starting point and for t = 1 we return the end point.  For t < 0
  * or t > 1 we extrapolate along the line defined by the line segment.
  * @param {number} t The interpolation parameter along the line segment.
- * @return {goog.math.Coordinate} The point on the line segment at t.
+ * @return {!goog.math.Coordinate} The point on the line segment at t.
  */
 goog.math.Line.prototype.getInterpolatedPoint = function(t) {
   return new goog.math.Coordinate(
@@ -152,7 +153,7 @@ goog.math.Line.prototype.getInterpolatedPoint = function(t) {
  *     a coordinate object.
  * @param {number=} opt_y The y coordinate of the point - required if x is a
  *     number, ignored if x is a goog.math.Coordinate.
- * @return {goog.math.Coordinate} The point on the line closest to the given
+ * @return {!goog.math.Coordinate} The point on the line closest to the given
  *     point.
  */
 goog.math.Line.prototype.getClosestPoint = function(x, opt_y) {
@@ -167,7 +168,7 @@ goog.math.Line.prototype.getClosestPoint = function(x, opt_y) {
  *     a coordinate object.
  * @param {number=} opt_y The y coordinate of the point - required if x is a
  *     number, ignored if x is a goog.math.Coordinate.
- * @return {goog.math.Coordinate} The point on the line segment closest to the
+ * @return {!goog.math.Coordinate} The point on the line segment closest to the
  *     given point.
  */
 goog.math.Line.prototype.getClosestSegmentPoint = function(x, opt_y) {

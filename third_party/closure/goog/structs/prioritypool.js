@@ -15,7 +15,6 @@
 /**
  * @fileoverview Datastructure: Priority Pool.
  *
-*
  *
  * An extending of Pool that handles queueing and prioritization.
  */
@@ -25,6 +24,7 @@ goog.provide('goog.structs.PriorityPool');
 
 goog.require('goog.structs.Pool');
 goog.require('goog.structs.PriorityQueue');
+
 
 
 /**

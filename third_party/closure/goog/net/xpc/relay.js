@@ -18,7 +18,6 @@
  * fragment identifier, determine the target window object and deliver
  * the data to it.
  *
-*
  */
 
 goog.provide('goog.net.xpc.relay');

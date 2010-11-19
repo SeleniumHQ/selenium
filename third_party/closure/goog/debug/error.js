@@ -14,9 +14,11 @@
 
 /**
  * @fileoverview Provides a base class for custom Error objects such that the
- * stack is corectly maintained.
+ * stack is correctly maintained.
  *
-*
+ * You should never need to throw goog.debug.Error(msg) directly, Error(msg) is
+ * sufficient.
+ *
  */
 
 goog.provide('goog.debug.Error');

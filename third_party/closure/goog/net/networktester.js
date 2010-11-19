@@ -22,6 +22,7 @@ goog.require('goog.Uri');
 goog.require('goog.debug.Logger');
 
 
+
 /**
  * Creates an instance of goog.net.NetworkTester which can be used to test
  * for internet connectivity by seeing if an image can be loaded from
@@ -329,7 +330,7 @@ goog.net.NetworkTester.prototype.onResult = function(succeeded) {
   this.cleanupCallbacks_();
 
   if (succeeded) {
-    this.running_ = false
+    this.running_ = false;
     this.callback_.call(this.handler_, true);
   } else {
     if (this.attempt_ <= this.retries_) {
@@ -340,7 +341,7 @@ goog.net.NetworkTester.prototype.onResult = function(succeeded) {
         this.startNextAttempt_();
       }
     } else {
-      this.running_ = false
+      this.running_ = false;
       this.callback_.call(this.handler_, false);
     }
   }

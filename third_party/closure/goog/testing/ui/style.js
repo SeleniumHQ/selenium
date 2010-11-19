@@ -16,7 +16,6 @@
  * @fileoverview Tools for testing Closure renderers against static markup
  * spec pages.
  *
-*
  */
 
 goog.provide('goog.testing.ui.style');
@@ -25,6 +24,7 @@ goog.require('goog.array');
 goog.require('goog.dom');
 goog.require('goog.dom.classes');
 goog.require('goog.testing.asserts');
+
 
 /**
  * Uses document.write to add an iFrame to the page with the reference path in

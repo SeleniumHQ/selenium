@@ -24,6 +24,7 @@ goog.require('goog.dom.TagWalkType');
 goog.require('goog.dom.pattern.Tag');
 
 
+
 /**
  * Pattern object that matches a closing tag.
  *

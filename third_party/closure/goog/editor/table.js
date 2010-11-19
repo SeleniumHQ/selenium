@@ -21,7 +21,6 @@
  * and merging and splitting cells.
  *
  * @supported IE6+, WebKit 525+, Firefox 2+.
-*
  */
 
 goog.provide('goog.editor.Table');
@@ -34,6 +33,7 @@ goog.require('goog.dom.NodeType');
 goog.require('goog.dom.TagName');
 goog.require('goog.string.Unicode');
 goog.require('goog.style');
+
 
 
 /**
@@ -162,7 +162,7 @@ goog.editor.Table.prototype.insertRow = function(opt_rowIndex) {
     refRow = this.rows[rowIndex - 1];
     insertAfter = true;
   }
-  var newTr = this.dom_.$dom('tr');
+  var newTr = this.dom_.createElement('tr');
   for (var i = 0, cell; cell = refRow.columns[i]; i += 1) {
     // Check whether the existing cell will span this new row.
     // If so, instead of creating a new cell, extend
@@ -408,8 +408,9 @@ goog.editor.Table.prototype.insertCellElement = function(
 goog.editor.Table.prototype.createEmptyTd = function() {
   // TODO(user): more cross-browser testing to determine best
   // and least annoying filler content.
-  return this.dom_.$dom(goog.dom.TagName.TD, {}, goog.string.Unicode.NBSP);
+  return this.dom_.createDom(goog.dom.TagName.TD, {}, goog.string.Unicode.NBSP);
 };
+
 
 
 /**
@@ -424,6 +425,7 @@ goog.editor.TableRow = function(trElement, rowIndex) {
   this.element = trElement;
   this.columns = [];
 };
+
 
 
 /**

@@ -17,7 +17,6 @@
  * show information on how to install Gears if Gears is not already installed,
  * or will offer the option to enable the application for Gears support.
  *
-*
  * @see ../demos/offline.html
  */
 
@@ -39,6 +38,7 @@ goog.require('goog.ui.Dialog');
 goog.require('goog.ui.Dialog.ButtonSet');
 goog.require('goog.ui.Dialog.EventType');
 goog.require('goog.window');
+
 
 
 /**
@@ -575,6 +575,8 @@ goog.ui.OfflineInstallDialogScreen.prototype.handleSelect = function(e) {
 
 // Classes for some of the standard screens
 
+
+
 /**
  * This screen is shown to users that do have Gears installed but have
  * not enabled the current application for offline access.
@@ -980,6 +982,7 @@ goog.ui.OfflineInstallDialog.UpgradeScreen.prototype.setUpgradeDescription =
 };
 
 
+
 /**
  * This screen is shown to users after the window to the Gears download page has
  * been opened.
@@ -1034,6 +1037,7 @@ goog.ui.OfflineInstallDialog.InstallingGearsScreen.prototype.getButtonSet =
   }
   return this.buttonSet_;
 };
+
 
 /**
  * Gets the content for the dialog when the user is suposed to be installing

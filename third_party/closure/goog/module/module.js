@@ -19,14 +19,13 @@
  *
  *   <http://go/js_modules_design>
  *
-*
-*
  */
 
 goog.provide('goog.module');
 
 goog.require('goog.array');
 goog.require('goog.module.Loader');
+
 
 /**
  * Wrapper of goog.module.Loader.require() for use in modules.

@@ -15,7 +15,6 @@
 /**
  * @fileoverview Generic keyboard shortcut handler.
  *
-*
  * @see ../demos/keyboardshortcuts.html
  */
 
@@ -27,9 +26,11 @@ goog.require('goog.Timer');
 goog.require('goog.events');
 goog.require('goog.events.Event');
 goog.require('goog.events.EventTarget');
+goog.require('goog.events.EventType');
 goog.require('goog.events.KeyCodes');
 goog.require('goog.events.KeyNames');
 goog.require('goog.object');
+
 
 
 /**
@@ -498,7 +499,7 @@ goog.ui.KeyboardShortcutHandler.prototype.setGlobalKeys = function(keys) {
  *     regard as shortcuts, even if entered in a textarea or input field.
  */
 goog.ui.KeyboardShortcutHandler.prototype.getGlobalKeys = function() {
-  return goog.object.getKeys(this.globalKeys_)
+  return goog.object.getKeys(this.globalKeys_);
 };
 
 
@@ -652,6 +653,7 @@ goog.ui.KeyboardShortcutHandler.prototype.isPossiblePrintableKey_ =
   return goog.userAgent.WINDOWS && !goog.userAgent.GECKO &&
       e.ctrlKey && e.altKey && !e.shiftKey;
 };
+
 
 /**
  * Handler for when a keypress event is fired on Windows.
@@ -954,6 +956,7 @@ goog.ui.KeyboardShortcutHandler.prototype.isValidShortcut_ = function(event) {
   // Don't allow any additional shortcut keys for textareas or selects.
   return false;
 };
+
 
 
 /**

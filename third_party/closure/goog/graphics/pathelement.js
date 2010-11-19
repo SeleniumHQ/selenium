@@ -15,14 +15,13 @@
 
 /**
  * @fileoverview A thin wrapper around the DOM element for paths.
-*
-*
  */
 
 
 goog.provide('goog.graphics.PathElement');
 
 goog.require('goog.graphics.StrokeAndFillElement');
+
 
 
 /**

@@ -19,10 +19,10 @@
  * For the specific case of 64-bit integers, use goog.math.Long, which is more
  * efficient.
  *
-*
  */
 
-goog.provide('goog.math.Integer')
+goog.provide('goog.math.Integer');
+
 
 
 /**
@@ -47,7 +47,7 @@ goog.provide('goog.math.Integer')
  */
 goog.math.Integer = function(bits, sign) {
   /**
-   * @type {Array.<number>}
+   * @type {!Array.<number>}
    * @private
    */
   this.bits_ = [];
@@ -77,20 +77,20 @@ goog.math.Integer = function(bits, sign) {
 
 /**
  * A cache of the Integer representations of small integer values.
- * @type {Object}
+ * @type {!Object}
  * @private
  */
-goog.math.Integer.INT_CACHE_ = {};
+goog.math.Integer.IntCache_ = {};
 
 
 /**
  * Returns an Integer representing the given (32-bit) integer value.
  * @param {number} value A 32-bit integer value.
- * @return {goog.math.Integer} The corresponding Integer value.
+ * @return {!goog.math.Integer} The corresponding Integer value.
  */
 goog.math.Integer.fromInt = function(value) {
   if (-128 <= value && value < 128) {
-    var cachedObj = goog.math.Integer.INT_CACHE_[value];
+    var cachedObj = goog.math.Integer.IntCache_[value];
     if (cachedObj) {
       return cachedObj;
     }
@@ -98,7 +98,7 @@ goog.math.Integer.fromInt = function(value) {
 
   var obj = new goog.math.Integer([value | 0], value < 0 ? -1 : 0);
   if (-128 <= value && value < 128) {
-    goog.math.Integer.INT_CACHE_[value] = obj;
+    goog.math.Integer.IntCache_[value] = obj;
   }
   return obj;
 };
@@ -108,7 +108,7 @@ goog.math.Integer.fromInt = function(value) {
  * Returns an Integer representing the given value, provided that it is a finite
  * number.  Otherwise, zero is returned.
  * @param {number} value The value in question.
- * @return {goog.math.Integer} The corresponding Integer value.
+ * @return {!goog.math.Integer} The corresponding Integer value.
  */
 goog.math.Integer.fromNumber = function(value) {
   if (isNaN(value) || !isFinite(value)) {
@@ -134,7 +134,7 @@ goog.math.Integer.fromNumber = function(value) {
  * order 32-bit value.
  * @param {Array.<number>} bits The bits of the number, in 32-bit signed pieces,
  *     in little-endian order.
- * @return {goog.math.Integer} The corresponding Integer value.
+ * @return {!goog.math.Integer} The corresponding Integer value.
  */
 goog.math.Integer.fromBits = function(bits) {
   var high = bits[bits.length - 1];
@@ -147,7 +147,7 @@ goog.math.Integer.fromBits = function(bits) {
  * given radix.
  * @param {string} str The textual representation of the Integer.
  * @param {number=} opt_radix The radix in which the text is written.
- * @return {goog.math.Integer} The corresponding Integer value.
+ * @return {!goog.math.Integer} The corresponding Integer value.
  */
 goog.math.Integer.fromString = function(str, opt_radix) {
   if (str.length == 0) {
@@ -194,16 +194,16 @@ goog.math.Integer.fromString = function(str, opt_radix) {
 goog.math.Integer.TWO_PWR_32_DBL_ = (1 << 16) * (1 << 16);
 
 
-/** @type {goog.math.Integer} */
+/** @type {!goog.math.Integer} */
 goog.math.Integer.ZERO = goog.math.Integer.fromInt(0);
 
 
-/** @type {goog.math.Integer} */
+/** @type {!goog.math.Integer} */
 goog.math.Integer.ONE = goog.math.Integer.fromInt(1);
 
 
 /**
- * @type {goog.math.Integer}
+ * @type {!goog.math.Integer}
  * @private
  */
 goog.math.Integer.TWO_PWR_24_ = goog.math.Integer.fromInt(1 << 24);
@@ -420,7 +420,7 @@ goog.math.Integer.prototype.compare = function(other) {
  * Returns an integer with only the first numBits bits of this value, sign
  * extended from the final bit.
  * @param {number} numBits The number of bits by which to shift.
- * @return {goog.math.Integer} The shorted integer value.
+ * @return {!goog.math.Integer} The shorted integer value.
  */
 goog.math.Integer.prototype.shorten = function(numBits) {
   var arr_index = (numBits - 1) >> 5;
@@ -442,7 +442,7 @@ goog.math.Integer.prototype.shorten = function(numBits) {
 };
 
 
-/** @return {goog.math.Integer} The negation of this value. */
+/** @return {!goog.math.Integer} The negation of this value. */
 goog.math.Integer.prototype.negate = function() {
   return this.not().add(goog.math.Integer.ONE);
 };
@@ -451,7 +451,7 @@ goog.math.Integer.prototype.negate = function() {
 /**
  * Returns the sum of this and the given Integer.
  * @param {goog.math.Integer} other The Integer to add to this.
- * @return {goog.math.Integer} The Integer result.
+ * @return {!goog.math.Integer} The Integer result.
  */
 goog.math.Integer.prototype.add = function(other) {
   var len = Math.max(this.bits_.length, other.bits_.length);
@@ -479,7 +479,7 @@ goog.math.Integer.prototype.add = function(other) {
 /**
  * Returns the difference of this and the given Integer.
  * @param {goog.math.Integer} other The Integer to subtract from this.
- * @return {goog.math.Integer} The Integer result.
+ * @return {!goog.math.Integer} The Integer result.
  */
 goog.math.Integer.prototype.subtract = function(other) {
   return this.add(other.negate());
@@ -489,7 +489,7 @@ goog.math.Integer.prototype.subtract = function(other) {
 /**
  * Returns the product of this and the given Integer.
  * @param {goog.math.Integer} other The Integer to multiply against this.
- * @return {goog.math.Integer} The product of this and the other.
+ * @return {!goog.math.Integer} The product of this and the other.
  */
 goog.math.Integer.prototype.multiply = function(other) {
   if (this.isZero()) {
@@ -567,7 +567,7 @@ goog.math.Integer.carry16_ = function(bits, index) {
 /**
  * Returns this Integer divided by the given one.
  * @param {goog.math.Integer} other Th Integer to divide this by.
- * @return {goog.math.Integer} This value divided by the given one.
+ * @return {!goog.math.Integer} This value divided by the given one.
  */
 goog.math.Integer.prototype.divide = function(other) {
   if (other.isZero()) {
@@ -629,14 +629,14 @@ goog.math.Integer.prototype.divide = function(other) {
 /**
  * Returns this Integer modulo the given one.
  * @param {goog.math.Integer} other The Integer by which to mod.
- * @return {goog.math.Integer} This value modulo the given one.
+ * @return {!goog.math.Integer} This value modulo the given one.
  */
 goog.math.Integer.prototype.modulo = function(other) {
   return this.subtract(this.divide(other).multiply(other));
 };
 
 
-/** @return {goog.math.Integer} The bitwise-NOT of this value. */
+/** @return {!goog.math.Integer} The bitwise-NOT of this value. */
 goog.math.Integer.prototype.not = function() {
   var len = this.bits_.length;
   var arr = [];
@@ -650,7 +650,7 @@ goog.math.Integer.prototype.not = function() {
 /**
  * Returns the bitwise-AND of this Integer and the given one.
  * @param {goog.math.Integer} other The Integer to AND with this.
- * @return {goog.math.Integer} The bitwise-AND of this and the other.
+ * @return {!goog.math.Integer} The bitwise-AND of this and the other.
  */
 goog.math.Integer.prototype.and = function(other) {
   var len = Math.max(this.bits_.length, other.bits_.length);
@@ -665,7 +665,7 @@ goog.math.Integer.prototype.and = function(other) {
 /**
  * Returns the bitwise-OR of this Integer and the given one.
  * @param {goog.math.Integer} other The Integer to OR with this.
- * @return {goog.math.Integer} The bitwise-OR of this and the other.
+ * @return {!goog.math.Integer} The bitwise-OR of this and the other.
  */
 goog.math.Integer.prototype.or = function(other) {
   var len = Math.max(this.bits_.length, other.bits_.length);
@@ -680,7 +680,7 @@ goog.math.Integer.prototype.or = function(other) {
 /**
  * Returns the bitwise-XOR of this Integer and the given one.
  * @param {goog.math.Integer} other The Integer to XOR with this.
- * @return {goog.math.Integer} The bitwise-XOR of this and the other.
+ * @return {!goog.math.Integer} The bitwise-XOR of this and the other.
  */
 goog.math.Integer.prototype.xor = function(other) {
   var len = Math.max(this.bits_.length, other.bits_.length);
@@ -695,7 +695,7 @@ goog.math.Integer.prototype.xor = function(other) {
 /**
  * Returns this value with bits shifted to the left by the given amount.
  * @param {number} numBits The number of bits by which to shift.
- * @return {goog.math.Integer} This shifted to the left by the given amount.
+ * @return {!goog.math.Integer} This shifted to the left by the given amount.
  */
 goog.math.Integer.prototype.shiftLeft = function(numBits) {
   var arr_delta = numBits >> 5;
@@ -717,7 +717,7 @@ goog.math.Integer.prototype.shiftLeft = function(numBits) {
 /**
  * Returns this value with bits shifted to the right by the given amount.
  * @param {number} numBits The number of bits by which to shift.
- * @return {goog.math.Integer} This shifted to the right by the given amount.
+ * @return {!goog.math.Integer} This shifted to the right by the given amount.
  */
 goog.math.Integer.prototype.shiftRight = function(numBits) {
   var arr_delta = numBits >> 5;

@@ -16,9 +16,6 @@
  * @fileoverview TrogEdit plugin to handle enter keys by inserting the
  * specified block level tag.
  *
-*
-*
- * @author robbyw@google.com (Robby Walker)
  */
 
 goog.provide('goog.editor.plugins.TagOnEnterHandler');
@@ -36,6 +33,7 @@ goog.require('goog.events.KeyCodes');
 goog.require('goog.string');
 goog.require('goog.style');
 goog.require('goog.userAgent');
+
 
 
 /**
@@ -699,6 +697,7 @@ goog.editor.plugins.TagOnEnterHandler.joinTextNodes_ = function(node,
   }
   return node;
 };
+
 
 /**
  * Replaces leading or trailing spaces of a text node to a single Nbsp.

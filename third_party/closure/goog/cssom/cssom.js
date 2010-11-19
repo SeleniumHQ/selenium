@@ -24,7 +24,6 @@
  *     regardless of whether or not the media is correct or not. Firefox at
  *     least supports CSSRule.type to figure out if it's a media type and then
  *     we could do something interesting, but IE offers no way for us to tell.
-*
  */
 
 goog.provide('goog.cssom');
@@ -94,7 +93,10 @@ goog.cssom.getCssRulesFromStyleSheet = function(styleSheet) {
   } catch (e) {
     // This can happen if we try to access the CSSOM before it's "ready".
     if (e.code == 15) {
-      // Wow, dunno what to do here.
+      // Firefox throws an NS_ERROR_DOM_INVALID_ACCESS_ERR error if a stylesheet
+      // is read before it has been fully parsed. Let the caller know which
+      // stylesheet failed.
+      e.styleSheet = styleSheet;
       throw e;
     }
   }
@@ -126,17 +128,16 @@ goog.cssom.getAllCssStyleSheets = function(opt_styleSheet,
           goog.cssom.getAllCssStyleSheets(styleSheet.imports[i]));
     }
 
-  // In case we get a StyleSheetList object.
-  // http://dev.w3.org/csswg/cssom/#the-stylesheetlist
   } else if (styleSheet.length) {
+    // In case we get a StyleSheetList object.
+    // http://dev.w3.org/csswg/cssom/#the-stylesheetlist
     for (var i = 0, n = styleSheet.length; i < n; i++) {
       goog.array.extend(styleSheetsOutput,
           goog.cssom.getAllCssStyleSheets(styleSheet[i]));
     }
-
-  // We need to walk through rules in browsers which implement .cssRules
-  // to see if there are styleSheets buried in there.
   } else {
+    // We need to walk through rules in browsers which implement .cssRules
+    // to see if there are styleSheets buried in there.
     // If we have a CSSStyleSheet within CssRules.
     var cssRuleList = goog.cssom.getCssRulesFromStyleSheet(styleSheet);
     if (cssRuleList && cssRuleList.length) {
@@ -155,9 +156,9 @@ goog.cssom.getAllCssStyleSheets = function(opt_styleSheet,
     }
   }
 
-  // This is a CSSStyleSheet.
-  if ((styleSheet.type || styleSheet.rules) && (!styleSheet.disabled ||
-      includeDisabled)) {
+  // This is a CSSStyleSheet. (IE uses .rules, W3c and Opera cssRules.)
+  if ((styleSheet.type || styleSheet.rules || styleSheet.cssRules) &&
+      (!styleSheet.disabled || includeDisabled)) {
     styleSheetsOutput.push(styleSheet);
   }
 
@@ -173,12 +174,11 @@ goog.cssom.getAllCssStyleSheets = function(opt_styleSheet,
 goog.cssom.getCssTextFromCssRule = function(cssRule) {
   var cssText = '';
 
-  // W3C
   if (cssRule.cssText) {
-    cssText = cssRule.cssText
-  // IE
+    // W3C.
+    cssText = cssRule.cssText;
   } else if (cssRule.style && cssRule.style.cssText && cssRule.selectorText) {
-    // The spacing here is intended to make the result consistent with
+    // IE: The spacing here is intended to make the result consistent with
     // FF and Webkit.
     // We also remove the special properties that we may have added in
     // getAllCssStyleRules since IE includes those in the cssText.
@@ -296,13 +296,12 @@ goog.cssom.addCssRule = function(cssStyleSheet, cssText, opt_index) {
     var rules = cssStyleSheet.rules || cssStyleSheet.cssRules;
     index = rules.length;
   }
-  // W3C
   if (cssStyleSheet.insertRule) {
+    // W3C.
     cssStyleSheet.insertRule(cssText, index);
 
-  // IE
   } else {
-    // We have to parse the cssRule text to get the selector separated
+    // IE: We have to parse the cssRule text to get the selector separated
     // from the style text.
     // aka Everything that isn't a colon, followed by a colon, then
     // the rest is the style part.
@@ -324,12 +323,12 @@ goog.cssom.addCssRule = function(cssStyleSheet, cssText, opt_index) {
  * @param {number} index The CSSRule's index in the parentStyleSheet.
  */
 goog.cssom.removeCssRule = function(cssStyleSheet, index) {
-  // W3C
   if (cssStyleSheet.deleteRule) {
+    // W3C.
     cssStyleSheet.deleteRule(index);
 
-  // IE
   } else {
+    // IE.
     cssStyleSheet.removeRule(index);
   }
 };
@@ -349,11 +348,11 @@ goog.cssom.addCssText = function(cssText, opt_domHelper) {
   cssNode.type = 'text/css';
   var head = document.getElementsByTagName('head')[0];
   head.appendChild(cssNode);
-  // IE
   if (cssNode.styleSheet) {
+    // IE.
     cssNode.styleSheet.cssText = cssText;
-  // W3C
   } else {
+    // W3C.
     cssText = document.createTextNode(cssText);
     cssNode.appendChild(cssText);
   }
@@ -414,9 +413,8 @@ goog.cssom.getAllCss_ = function(styleSheet, isTextOutput) {
           var res = goog.cssom.getCssTextFromCssRule(cssRule);
           cssOut.push(res);
 
-        // Gets cssRules output, ignoring CSSImportRules.
         } else if (!cssRule.href) {
-
+          // Gets cssRules output, ignoring CSSImportRules.
           if (cssRule.style) {
             // This is a fun little hack to get parentStyleSheet into the rule
             // object for IE since it failed to implement rule.parentStyleSheet.

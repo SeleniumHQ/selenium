@@ -18,12 +18,12 @@
  * See http://www.cit.gu.edu.au/~anthony/info/C/RandomNumbers and
  * http://www.erikoest.dk/rng.htm.
  *
-*
  */
 
 goog.provide('goog.testing.PseudoRandom');
 
 goog.require('goog.Disposable');
+
 
 
 /**
@@ -52,6 +52,7 @@ goog.testing.PseudoRandom = function(opt_seed, opt_install) {
   }
 };
 goog.inherits(goog.testing.PseudoRandom, goog.Disposable);
+
 
 /**
  * Helps create a unique seed.

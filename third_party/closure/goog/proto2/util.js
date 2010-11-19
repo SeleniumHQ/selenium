@@ -14,12 +14,12 @@
 
 /**
  * @fileoverview Utility methods for Protocol Buffer 2 implementation.
-*
  */
 
 goog.provide('goog.proto2.Util');
 
 goog.require('goog.asserts');
+
 
 /**
  * @define {boolean} Defines a PBCHECK constant that can be turned off by
@@ -27,6 +27,7 @@ goog.require('goog.asserts');
  * running even in non-COMPILED builds.
  */
 goog.proto2.Util.PBCHECK = !COMPILED;
+
 
 /**
  * Asserts that the given condition is true, if and only if the PBCHECK

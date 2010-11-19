@@ -15,8 +15,6 @@
 /**
  * @fileoverview Functions for dealing with Date formatting & Parsing,
  * County and language name, TimeZone list.
-*
-*
  */
 
 
@@ -26,6 +24,7 @@
 goog.provide('goog.locale');
 
 goog.require('goog.locale.nativeNameConstants');
+
 
 /**
  * Set currnet locale to the specified one.

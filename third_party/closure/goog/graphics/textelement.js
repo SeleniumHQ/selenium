@@ -15,14 +15,13 @@
 
 /**
  * @fileoverview A thin wrapper around the DOM element for text elements.
-*
-*
  */
 
 
 goog.provide('goog.graphics.TextElement');
 
 goog.require('goog.graphics.StrokeAndFillElement');
+
 
 
 /**

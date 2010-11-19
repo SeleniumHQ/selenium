@@ -16,7 +16,6 @@
  * @fileoverview A custom button renderer that uses CSS voodoo to render a
  * button-like object with fake rounded corners.
  *
-*
  */
 
 goog.provide('goog.ui.CustomButtonRenderer');
@@ -74,6 +73,16 @@ goog.ui.CustomButtonRenderer.prototype.createDom = function(button) {
   };
   return button.getDomHelper().createDom('div', attributes,
       this.createButton(button.getContent(), button.getDomHelper()));
+};
+
+
+/**
+ * Returns the ARIA role to be applied to custom buttons.
+ * @return {goog.dom.a11y.Role|undefined} ARIA role.
+ * @override
+ */
+goog.ui.CustomButtonRenderer.prototype.getAriaRole = function() {
+  return goog.dom.a11y.Role.BUTTON;
 };
 
 

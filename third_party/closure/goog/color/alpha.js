@@ -15,7 +15,6 @@
 /**
  * @fileoverview Utilities related to alpha/transparent colors and alpha color
  * conversion.
-*
  */
 
 goog.provide('goog.color.alpha');
@@ -325,7 +324,7 @@ goog.color.alpha.isNormalizedAlphaHexColor_ = function(str) {
  * @private
  */
 goog.color.alpha.rgbaColorRe_ =
-   /^(?:rgba)?\((0|[1-9]\d{0,2}),\s?(0|[1-9]\d{0,2}),\s?(0|[1-9]\d{0,2}),\s?(0|1|0\.\d{0,10})\)$/i;
+    /^(?:rgba)?\((0|[1-9]\d{0,2}),\s?(0|[1-9]\d{0,2}),\s?(0|[1-9]\d{0,2}),\s?(0|1|0\.\d{0,10})\)$/i;
 
 
 /**
@@ -335,7 +334,7 @@ goog.color.alpha.rgbaColorRe_ =
  * @private
  */
 goog.color.alpha.hslaColorRe_ =
-   /^(?:hsla)\((0|[1-9]\d{0,2}),\s?(0|[1-9]\d{0,2})\%,\s?(0|[1-9]\d{0,2})\%,\s?(0|1|0\.\d{0,10})\)$/i;
+    /^(?:hsla)\((0|[1-9]\d{0,2}),\s?(0|[1-9]\d{0,2})\%,\s?(0|[1-9]\d{0,2})\%,\s?(0|1|0\.\d{0,10})\)$/i;
 
 
 /**

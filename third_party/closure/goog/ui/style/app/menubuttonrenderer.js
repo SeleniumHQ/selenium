@@ -16,8 +16,6 @@
  * @fileoverview Renderer for {@link goog.ui.style.app.MenuButton}s and
  * subclasses.
  *
-*
-*
  */
 
 goog.provide('goog.ui.style.app.MenuButtonRenderer');
@@ -30,6 +28,7 @@ goog.require('goog.ui.ControlContent');
 goog.require('goog.ui.Menu');
 goog.require('goog.ui.MenuRenderer');
 goog.require('goog.ui.style.app.ButtonRenderer');
+
 
 
 /**

@@ -14,8 +14,6 @@
 
 /**
  * @fileoverview A utility class for representing two-dimensional sizes.
-*
-*
  */
 
 
@@ -64,7 +62,7 @@ goog.math.Size.equals = function(a, b) {
 
 
 /**
- * @return {goog.math.Size} A new copy of the Size.
+ * @return {!goog.math.Size} A new copy of the Size.
  */
 goog.math.Size.prototype.clone = function() {
   return new goog.math.Size(this.width, this.height);
@@ -107,6 +105,14 @@ goog.math.Size.prototype.area = function() {
 
 
 /**
+ * @return {number} The perimeter of the size (width + height) * 2.
+ */
+goog.math.Size.prototype.perimeter = function() {
+  return (this.width + this.height) * 2;
+};
+
+
+/**
  * @return {number} The ratio of the size's width to its height.
  */
 goog.math.Size.prototype.aspectRatio = function() {
@@ -125,7 +131,7 @@ goog.math.Size.prototype.isEmpty = function() {
 
 /**
  * Clamps the width and height parameters upward to integer values.
- * @return {goog.math.Size} This size with ceil'd components.
+ * @return {!goog.math.Size} This size with ceil'd components.
  */
 goog.math.Size.prototype.ceil = function() {
   this.width = Math.ceil(this.width);
@@ -135,7 +141,7 @@ goog.math.Size.prototype.ceil = function() {
 
 
 /**
- * @param {goog.math.Size} target The target size.
+ * @param {!goog.math.Size} target The target size.
  * @return {boolean} True if this Size is the same size or smaller than the
  *     target size in both dimensions.
  */
@@ -146,7 +152,7 @@ goog.math.Size.prototype.fitsInside = function(target) {
 
 /**
  * Clamps the width and height parameters downward to integer values.
- * @return {goog.math.Size} This size with floored components.
+ * @return {!goog.math.Size} This size with floored components.
  */
 goog.math.Size.prototype.floor = function() {
   this.width = Math.floor(this.width);
@@ -157,7 +163,7 @@ goog.math.Size.prototype.floor = function() {
 
 /**
  * Rounds the width and height parameters to integer values.
- * @return {goog.math.Size} This size with rounded components.
+ * @return {!goog.math.Size} This size with rounded components.
  */
 goog.math.Size.prototype.round = function() {
   this.width = Math.round(this.width);
@@ -169,7 +175,7 @@ goog.math.Size.prototype.round = function() {
 /**
  * Scales the size uniformly by a factor.
  * @param {number} s The scale factor.
- * @return {goog.math.Size} This Size object after scaling.
+ * @return {!goog.math.Size} This Size object after scaling.
  */
 goog.math.Size.prototype.scale = function(s) {
   this.width *= s;
@@ -183,8 +189,8 @@ goog.math.Size.prototype.scale = function(s) {
  * original aspect ratio will be preserved.
  *
  * This function assumes that both Sizes contain strictly positive dimensions.
- * @param {goog.math.Size} target The target size.
- * @return {goog.math.Size} This Size object, after optional scaling.
+ * @param {!goog.math.Size} target The target size.
+ * @return {!goog.math.Size} This Size object, after optional scaling.
  */
 goog.math.Size.prototype.scaleToFit = function(target) {
   var s = this.aspectRatio() > target.aspectRatio() ?

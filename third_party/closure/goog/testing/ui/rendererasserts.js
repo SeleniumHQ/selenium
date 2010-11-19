@@ -15,13 +15,11 @@
 /**
  * @fileoverview Additional asserts for testing ControlRenderers.
  *
-*
  */
 
 goog.provide('goog.testing.ui.rendererasserts');
 
 goog.require('goog.testing.asserts');
-
 
 
 /**

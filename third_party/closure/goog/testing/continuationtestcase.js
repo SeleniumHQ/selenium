@@ -74,7 +74,6 @@
  * }
  * </pre>
  *
-*
  */
 
 
@@ -87,6 +86,7 @@ goog.require('goog.events.EventHandler');
 goog.require('goog.testing.TestCase');
 goog.require('goog.testing.TestCase.Test');
 goog.require('goog.testing.asserts');
+
 
 
 /**
@@ -217,7 +217,7 @@ goog.testing.ContinuationTestCase.prototype.createNextTest_ = function() {
 goog.testing.ContinuationTestCase.prototype.finishTest_ = function() {
   var err = this.currentTest_.getError();
   if (err) {
-    this.doError(this.currentTest_, err)
+    this.doError(this.currentTest_, err);
   } else {
     this.doSuccess(this.currentTest_);
   }
@@ -343,7 +343,7 @@ goog.testing.ContinuationTestCase.prototype.waitForCondition = function(
     opt_interval,
     opt_maxTimeout) {
 
-  var interval = opt_interval || 100
+  var interval = opt_interval || 100;
   var timeout = opt_maxTimeout || goog.testing.ContinuationTestCase.MAX_TIMEOUT;
 
   var step = this.addStep_(continuation);

@@ -15,7 +15,6 @@
 /**
  * @fileoverview Collection of unitility functions for Unicode character.
  *
-*
  */
 
 goog.provide('goog.i18n.uChar');
@@ -135,6 +134,7 @@ goog.i18n.uChar.toName = function(ch) {
  * Following lines are programatically created.
  * Details: https://sites/cibu/character-picker.
  **/
+
 
 /**
  * Sets up the character map, lazily.  Some characters are indexed by their

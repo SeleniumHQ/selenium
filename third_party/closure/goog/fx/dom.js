@@ -15,7 +15,6 @@
 /**
  * @fileoverview Predefined DHTML animations such as slide, resize and fade.
  *
-*
  * @see ../demos/effects.html
  */
 
@@ -41,6 +40,7 @@ goog.require('goog.events');
 goog.require('goog.fx.Animation');
 goog.require('goog.fx.Animation.EventType');
 goog.require('goog.style');
+
 
 
 /**
@@ -197,7 +197,7 @@ goog.fx.dom.Swipe.prototype.updateStyle = function() {
   var x = this.coords[0];
   var y = this.coords[1];
   this.clip_(Math.round(x), Math.round(y), this.maxWidth_, this.maxHeight_);
-  this.element.style.width = Math.round(x) + 'px'
+  this.element.style.width = Math.round(x) + 'px';
   this.element.style.marginLeft = Math.round(x) - this.maxWidth_ + 'px';
   this.element.style.marginTop = Math.round(y) - this.maxHeight_ + 'px';
 };
@@ -282,7 +282,7 @@ goog.inherits(goog.fx.dom.Resize, goog.fx.dom.PredefinedEffect);
  * @override
  */
 goog.fx.dom.Resize.prototype.updateStyle = function() {
-  this.element.style.width = Math.round(this.coords[0]) + 'px'
+  this.element.style.width = Math.round(this.coords[0]) + 'px';
   this.element.style.height = Math.round(this.coords[1]) + 'px';
 };
 
@@ -435,6 +435,7 @@ goog.fx.dom.FadeIn = function(element, time, opt_acc) {
 goog.inherits(goog.fx.dom.FadeIn, goog.fx.dom.Fade);
 
 
+
 /**
  * Fades an element out from full opacity to completely transparent and then
  * sets the display to 'none'
@@ -511,6 +512,7 @@ goog.fx.dom.BgColorTransform = function(element, start, end, time, opt_acc) {
 };
 goog.inherits(goog.fx.dom.BgColorTransform, goog.fx.dom.PredefinedEffect);
 
+
 /**
  * Animation event handler that will set the background-color of an element
  */
@@ -558,6 +560,7 @@ goog.fx.dom.bgColorFadeIn = function(element, start, time) {
   });
   anim.play();
 };
+
 
 
 /**

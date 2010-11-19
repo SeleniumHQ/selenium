@@ -24,7 +24,6 @@
  * against extremely large deltas, use the setMaxDeltaX and setMaxDeltaY APIs
  * to set maximum values that make sense for your application.
  *
-*
  * @see ../demos/mousewheelhandler.html
  */
 
@@ -37,6 +36,7 @@ goog.require('goog.events.BrowserEvent');
 goog.require('goog.events.EventTarget');
 goog.require('goog.math');
 goog.require('goog.userAgent');
+
 
 
 /**
@@ -192,6 +192,7 @@ goog.events.MouseWheelHandler.prototype.disposeInternal = function() {
   goog.events.unlistenByKey(this.listenKey_);
   delete this.listenKey_;
 };
+
 
 
 /**

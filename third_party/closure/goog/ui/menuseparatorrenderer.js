@@ -15,7 +15,6 @@
 /**
  * @fileoverview Renderer for {@link goog.ui.MenuSeparator}s.
  *
-*
  */
 
 goog.provide('goog.ui.MenuSeparatorRenderer');
@@ -24,6 +23,7 @@ goog.require('goog.dom');
 goog.require('goog.dom.classes');
 goog.require('goog.ui.ControlContent');
 goog.require('goog.ui.ControlRenderer');
+
 
 
 /**

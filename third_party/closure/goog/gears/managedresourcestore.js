@@ -15,8 +15,6 @@
 /**
  * @fileoverview Simple wrapper around a Gears ManagedResourceStore.
  *
-*
-*
  */
 
 goog.provide('goog.gears.ManagedResourceStore');
@@ -29,6 +27,7 @@ goog.require('goog.events.Event');
 goog.require('goog.events.EventTarget');
 goog.require('goog.gears');
 goog.require('goog.string');
+
 
 
 /**
@@ -100,7 +99,7 @@ goog.gears.ManagedResourceStore.UpdateStatus = {
  * @private
  */
 goog.gears.ManagedResourceStore.prototype.logger_ =
-  goog.debug.Logger.getLogger('goog.gears.ManagedResourceStore');
+    goog.debug.Logger.getLogger('goog.gears.ManagedResourceStore');
 
 
 /**

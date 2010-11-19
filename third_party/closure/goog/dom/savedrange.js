@@ -25,6 +25,7 @@ goog.require('goog.Disposable');
 goog.require('goog.debug.Logger');
 
 
+
 /**
  * Abstract interface for a saved range.
  * @constructor

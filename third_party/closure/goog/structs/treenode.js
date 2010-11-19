@@ -16,7 +16,6 @@
  * @fileoverview Generic tree node data structure with arbitrary number of child
  * nodes.
  *
-*
  */
 
 goog.provide('goog.structs.TreeNode');
@@ -100,7 +99,7 @@ goog.structs.TreeNode.prototype.getParent = function() {
  * @return {boolean} Whether the node is a leaf node.
  */
 goog.structs.TreeNode.prototype.isLeaf = function() {
-  return this.getChildren().length == 0;
+  return !this.getChildCount();
 };
 
 
@@ -120,6 +119,14 @@ goog.structs.TreeNode.prototype.getChildren = function() {
  */
 goog.structs.TreeNode.prototype.getChildAt = function(index) {
   return this.getChildren()[index] || null;
+};
+
+
+/**
+ * @return {number} The number of children.
+ */
+goog.structs.TreeNode.prototype.getChildCount = function() {
+  return this.getChildren().length;
 };
 
 

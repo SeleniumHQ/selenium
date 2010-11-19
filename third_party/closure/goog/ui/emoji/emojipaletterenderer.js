@@ -15,7 +15,6 @@
 /**
  * @fileoverview Emoji Palette renderer implementation.
  *
-*
  */
 
 goog.provide('goog.ui.emoji.EmojiPaletteRenderer');
@@ -25,6 +24,7 @@ goog.require('goog.dom.a11y');
 goog.require('goog.ui.PaletteRenderer');
 goog.require('goog.ui.emoji.Emoji');
 goog.require('goog.ui.emoji.SpriteInfo');
+
 
 
 /**
@@ -50,7 +50,6 @@ goog.inherits(goog.ui.emoji.EmojiPaletteRenderer, goog.ui.PaletteRenderer);
  * @private
  */
 goog.ui.emoji.EmojiPaletteRenderer.cellId_ = 0;
-
 
 
 /**

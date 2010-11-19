@@ -14,7 +14,6 @@
 
 /**
  * @fileoverview Action event wrapper implementation.
-*
  */
 
 goog.provide('goog.events.actionEventWrapper');
@@ -24,6 +23,7 @@ goog.require('goog.events.EventHandler');
 goog.require('goog.events.EventType');
 goog.require('goog.events.EventWrapper');
 goog.require('goog.events.KeyCodes');
+
 
 
 /**
@@ -76,10 +76,10 @@ goog.events.ActionEventWrapper_.prototype.listen = function(target, listener,
     opt_capt, opt_scope, opt_eventHandler) {
   var callback = function(e) {
     if (e.type == goog.events.EventType.CLICK &&
-      e.isButton(goog.events.BrowserEvent.MouseButton.LEFT) ||
-      e.type == goog.events.EventType.KEYPRESS && (
-          e.keyCode == goog.events.KeyCodes.ENTER ||
-          e.keyCode == goog.events.KeyCodes.MAC_ENTER)) {
+        e.isButton(goog.events.BrowserEvent.MouseButton.LEFT) ||
+        e.type == goog.events.EventType.KEYPRESS && (
+            e.keyCode == goog.events.KeyCodes.ENTER ||
+            e.keyCode == goog.events.KeyCodes.MAC_ENTER)) {
       listener.call(opt_scope, e);
     }
   }

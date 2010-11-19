@@ -48,7 +48,6 @@
  *   mp3.setSelected(true);
  * </pre>
  *
-*
  *
  * @supported IE6, FF2+, Safari. Requires flash to actually work.
  *
@@ -61,6 +60,7 @@ goog.require('goog.string');
 goog.require('goog.ui.media.FlashObject');
 goog.require('goog.ui.media.Media');
 goog.require('goog.ui.media.MediaRenderer');
+
 
 
 /**
@@ -117,7 +117,7 @@ goog.ui.media.Mp3.CSS_CLASS = goog.getCssName('goog-ui-media-mp3');
  * @private
  */
 goog.ui.media.Mp3.flashUrl_ =
-    'http://www.google.com/reader/ui/3247397568-audio-player.swf';
+    'http://www.google.com/reader/ui/3523697345-audio-player.swf';
 
 
 /**
@@ -134,7 +134,7 @@ goog.ui.media.Mp3.flashUrl_ =
  * @type {RegExp}
  */
 goog.ui.media.Mp3.MATCHER =
-    /(https?:\/\/[a-zA-Z0-9-_%&\/.=:#\+~\(\)]+\.(mp3)+(\?[a-zA-Z0-9-_%&\/.=:#\+~\(\)]+)?)/i;
+    /(https?:\/\/[\w-%&\/.=:#\+~\(\)]+\.(mp3)+(\?[\w-%&\/.=:#\+~\(\)]+)?)/i;
 
 
 /**

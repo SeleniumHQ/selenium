@@ -15,11 +15,11 @@
 
 /**
  * @fileoverview Represents a fill goog.graphics.
-*
  */
 
 
 goog.provide('goog.graphics.Fill');
+
 
 
 /**

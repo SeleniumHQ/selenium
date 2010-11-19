@@ -15,7 +15,6 @@
 /**
  * @fileoverview A menu item class that supports selection state.
  *
-*
  */
 
 goog.provide('goog.ui.Option');
@@ -24,6 +23,7 @@ goog.require('goog.ui.Component.EventType');
 goog.require('goog.ui.ControlContent');
 goog.require('goog.ui.MenuItem');
 goog.require('goog.ui.registry');
+
 
 
 /**

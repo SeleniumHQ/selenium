@@ -24,7 +24,6 @@
  * Implements DataNode to provide the top element in a data registry
  * Prepends '$' to top level data names in path to denote they are root object
  *
-*
  */
 goog.provide('goog.ds.DataManager');
 
@@ -34,6 +33,7 @@ goog.require('goog.ds.Expr');
 goog.require('goog.string');
 goog.require('goog.structs');
 goog.require('goog.structs.Map');
+
 
 
 /**
@@ -116,7 +116,7 @@ goog.ds.DataManager.prototype.aliasDataSource = function(name, dataPath) {
     this.aliasListener_ = goog.bind(this.listenForAlias_, this);
   }
   if (this.aliases_[name]) {
-    var oldPath = this.aliases_[name].getSource()
+    var oldPath = this.aliases_[name].getSource();
     this.removeListeners(this.aliasListener_, oldPath + '/...', name);
   }
   this.aliases_[name] = goog.ds.Expr.create(dataPath);
@@ -329,8 +329,8 @@ goog.ds.DataManager.prototype.addListener = function(fn, dataPath, opt_id) {
     matchingListeners[key] = listenerSpec;
     maxAncestors = 0;
     expr = expr.getParent();
-    this.listenersByFunction_[fnUid][key].items.push({key: key,
-        obj: matchingListeners});
+    this.listenersByFunction_[fnUid][key].items.push(
+        {key: key, obj: matchingListeners});
   }
 };
 
@@ -389,8 +389,9 @@ goog.ds.DataManager.prototype.addIndexedListener = function(fn, dataPath,
     this.indexedListenersByFunction_[fnUid] = {};
   }
   var key = dataPath + ':' + opt_id;
-  this.indexedListenersByFunction_[fnUid][key] = {listener:
-      {dataPath: listenPath, fn: matcher, id: opt_id}};
+  this.indexedListenersByFunction_[fnUid][key] = {
+    listener: {dataPath: listenPath, fn: matcher, id: opt_id}
+  };
 };
 
 
@@ -487,6 +488,7 @@ goog.ds.DataManager.prototype.getListenerCount = function() {
   });
   return count;
 };
+
 
 /**
  * Disables the sending of all data events during the execution of the given

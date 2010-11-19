@@ -19,9 +19,6 @@
  * strings and document.write instead of DOM manipulation, because
  * iframe-loading is a performance bottleneck.
  *
-*
-*
- * @author nicksantos@google.com (Nick Santos)
  */
 
 goog.provide('goog.editor.icontent');
@@ -31,6 +28,7 @@ goog.provide('goog.editor.icontent.FieldStyleInfo');
 goog.require('goog.editor.BrowserFeature');
 goog.require('goog.style');
 goog.require('goog.userAgent');
+
 
 
 /**
@@ -55,6 +53,7 @@ goog.editor.icontent.FieldFormatInfo = function(fieldId, standards, blended,
 };
 
 
+
 /**
  * A data structure for storing simple info about the styles of a field.
  * Only needed in Firefox/Blended mode.
@@ -75,12 +74,14 @@ goog.editor.icontent.FieldStyleInfo = function(wrapper, css) {
  */
 goog.editor.icontent.useStandardsModeIframes_ = false;
 
+
 /**
  * Sets up goog.editor.icontent to always use standards-mode iframes.
  */
 goog.editor.icontent.forceStandardsModeIframes = function() {
   goog.editor.icontent.useStandardsModeIframes_ = true;
 };
+
 
 /**
  * Generate the initial iframe content.
@@ -208,6 +209,7 @@ goog.editor.icontent.getInitialIframeContent_ =
   return html.join('');
 };
 
+
 /**
  * Write the initial iframe content in normal mode.
  * @param {goog.editor.icontent.FieldFormatInfo} info Formatting info about
@@ -243,6 +245,7 @@ goog.editor.icontent.writeNormalInitialBlendedIframe =
   goog.editor.icontent.writeNormalInitialIframe(
       info, bodyHtml, style, iframe);
 };
+
 
 /**
  * Write the initial iframe content in normal mode.

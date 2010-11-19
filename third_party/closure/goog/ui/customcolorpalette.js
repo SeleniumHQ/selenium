@@ -16,7 +16,6 @@
  * @fileoverview A color palette with a button for adding additional colors
  * manually.
  *
-*
  */
 
 goog.provide('goog.ui.CustomColorPalette');
@@ -24,6 +23,7 @@ goog.provide('goog.ui.CustomColorPalette');
 goog.require('goog.color');
 goog.require('goog.dom');
 goog.require('goog.ui.ColorPalette');
+
 
 
 /**
@@ -128,7 +128,7 @@ goog.ui.CustomColorPalette.prototype.promptForCustomColor = function() {
   // TODO(user): This is relatively inefficient.  Consider adding
   // functionality to palette to add individual items after render time.
   var colors = this.getColors();
-  colors.push(color)
+  colors.push(color);
   this.setColors(colors);
 
   // Set the selected color to the new color and notify listeners of the action.

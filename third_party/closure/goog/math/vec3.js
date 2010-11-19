@@ -16,9 +16,7 @@
  * @fileoverview Defines a 3-element vector class that can be used for
  * coordinate math, useful for animation systems and point manipulation.
  *
-*
  * Based heavily on code originally by:
-*
  */
 
 
@@ -26,6 +24,7 @@ goog.provide('goog.math.Vec3');
 
 goog.require('goog.math');
 goog.require('goog.math.Coordinate3');
+
 
 
 /**
@@ -68,7 +67,7 @@ goog.inherits(goog.math.Vec3, goog.math.Coordinate3);
  *
  * http://mathworld.wolfram.com/SpherePointPicking.html
  * Using (6), (7), and (8) to generate coordinates.
- * @return {goog.math.Vec3} A random unit-length vector.
+ * @return {!goog.math.Vec3} A random unit-length vector.
  */
 goog.math.Vec3.randomUnit = function() {
   var theta = Math.random() * Math.PI * 2;
@@ -85,7 +84,7 @@ goog.math.Vec3.randomUnit = function() {
 /**
  * Generates a random vector inside the unit sphere.
  *
- * @return {goog.math.Vec3} A random vector.
+ * @return {!goog.math.Vec3} A random vector.
  */
 goog.math.Vec3.random = function() {
   return new goog.math.Vec3.randomUnit().scale(Math.random());
@@ -96,7 +95,7 @@ goog.math.Vec3.random = function() {
  * Returns a new Vec3 object from a given coordinate.
  *
  * @param {goog.math.Coordinate3} a The coordinate.
- * @return {goog.math.Vec3} A new vector object.
+ * @return {!goog.math.Vec3} A new vector object.
  */
 goog.math.Vec3.fromCoordinate3 = function(a) {
   return new goog.math.Vec3(a.x, a.y, a.z);
@@ -106,7 +105,7 @@ goog.math.Vec3.fromCoordinate3 = function(a) {
 /**
  * Creates a new copy of this Vec3.
  *
- * @return {goog.math.Vec3} A new vector with the same coordinates as this one.
+ * @return {!goog.math.Vec3} A new vector with the same coordinates as this one.
  */
 goog.math.Vec3.prototype.clone = function() {
   return new goog.math.Vec3(this.x, this.y, this.z);
@@ -139,7 +138,7 @@ goog.math.Vec3.prototype.squaredMagnitude = function() {
  * Scales the current vector by a constant.
  *
  * @param {number} s The scale factor.
- * @return {goog.math.Vec3} This vector, scaled.
+ * @return {!goog.math.Vec3} This vector, scaled.
  */
 goog.math.Vec3.prototype.scale = function(s) {
   this.x *= s;
@@ -152,7 +151,7 @@ goog.math.Vec3.prototype.scale = function(s) {
 /**
  * Reverses the sign of the vector. Equivalent to scaling the vector by -1.
  *
- * @return {goog.math.Vec3} This vector, inverted.
+ * @return {!goog.math.Vec3} This vector, inverted.
  */
 goog.math.Vec3.prototype.invert = function() {
   this.x = -this.x;
@@ -165,7 +164,7 @@ goog.math.Vec3.prototype.invert = function() {
 /**
  * Normalizes the current vector to have a magnitude of 1.
  *
- * @return {goog.math.Vec3} This vector, normalized.
+ * @return {!goog.math.Vec3} This vector, normalized.
  */
 goog.math.Vec3.prototype.normalize = function() {
   return this.scale(1 / this.magnitude());
@@ -176,7 +175,7 @@ goog.math.Vec3.prototype.normalize = function() {
  * Adds another vector to this vector in-place.
  *
  * @param {goog.math.Vec3} b The vector to add.
- * @return {goog.math.Vec3} This vector with {@code b} added.
+ * @return {!goog.math.Vec3} This vector with {@code b} added.
  */
 goog.math.Vec3.prototype.add = function(b) {
   this.x += b.x;
@@ -190,7 +189,7 @@ goog.math.Vec3.prototype.add = function(b) {
  * Subtracts another vector from this vector in-place.
  *
  * @param {goog.math.Vec3} b The vector to subtract.
- * @return {goog.math.Vec3} This vector with {@code b} subtracted.
+ * @return {!goog.math.Vec3} This vector with {@code b} subtracted.
  */
 goog.math.Vec3.prototype.subtract = function(b) {
   this.x -= b.x;
@@ -236,7 +235,7 @@ goog.math.Vec3.squaredDistance = goog.math.Coordinate3.squaredDistance;
  * Returns a new 3x1 matrix object from a given coordinate.
  *
  * @param {goog.math.Coordinate3} a The coordinate.
- * @return {goog.math.Matrix} A new matrix object.
+ * @return {!goog.math.Matrix} A new matrix object.
  */
 goog.math.Vec3.toMatrix3x1 = goog.math.Coordinate3.toMatrix3x1;
 
@@ -245,7 +244,7 @@ goog.math.Vec3.toMatrix3x1 = goog.math.Coordinate3.toMatrix3x1;
  * Returns a new 4x1 matrix object from a given coordinate.
  *
  * @param {goog.math.Coordinate3} a The coordinate.
- * @return {goog.math.Matrix} A new matrix object.
+ * @return {!goog.math.Matrix} A new matrix object.
  */
 
 goog.math.Vec3.toMatrix4x1 = goog.math.Coordinate3.toMatrix4x1;
@@ -266,7 +265,7 @@ goog.math.Vec3.equals = goog.math.Coordinate3.equals;
  *
  * @param {goog.math.Vec3} a The first vector.
  * @param {goog.math.Vec3} b The second vector.
- * @return {goog.math.Vec3} The sum vector.
+ * @return {!goog.math.Vec3} The sum vector.
  */
 goog.math.Vec3.sum = function(a, b) {
   return new goog.math.Vec3(a.x + b.x, a.y + b.y, a.z + b.z);
@@ -278,7 +277,7 @@ goog.math.Vec3.sum = function(a, b) {
  *
  * @param {goog.math.Vec3} a The first vector.
  * @param {goog.math.Vec3} b The second vector.
- * @return {goog.math.Vec3} The difference vector.
+ * @return {!goog.math.Vec3} The difference vector.
  */
 goog.math.Vec3.difference = function(a, b) {
   return new goog.math.Vec3(a.x - b.x, a.y - b.y, a.z - b.z);
@@ -302,7 +301,7 @@ goog.math.Vec3.dot = function(a, b) {
  *
  * @param {goog.math.Vec3} a The first vector.
  * @param {goog.math.Vec3} b The second vector.
- * @return {goog.math.Vec3} The cross-product of the two vectors.
+ * @return {!goog.math.Vec3} The cross-product of the two vectors.
  */
 goog.math.Vec3.cross = function(a, b) {
   return new goog.math.Vec3(a.y * b.z - a.z * b.y,
@@ -318,7 +317,7 @@ goog.math.Vec3.cross = function(a, b) {
  * @param {goog.math.Vec3} a Vector a.
  * @param {goog.math.Vec3} b Vector b.
  * @param {number} x The proportion between a and b.
- * @return {goog.math.Vec3} The interpolated vector.
+ * @return {!goog.math.Vec3} The interpolated vector.
  */
 goog.math.Vec3.lerp = function(a, b, x) {
   return new goog.math.Vec3(goog.math.lerp(a.x, b.x, x),

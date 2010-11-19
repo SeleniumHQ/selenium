@@ -17,13 +17,13 @@
  * must be a successfully loaded in order for the entire load to be considered
  * a success.
  *
-*
  */
 
 goog.provide('goog.net.BulkLoaderHelper');
 
 goog.require('goog.Disposable');
 goog.require('goog.debug.Logger');
+
 
 
 /**

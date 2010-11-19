@@ -19,9 +19,6 @@
  * This is a goog.editor.Field, but with blending and sizing capabilities,
  * and avoids using an iframe whenever possible.
  *
-*
- * @author nicksantos@google.com (Nick Santos)
-*
  * @see ../demos/editor/seamlessfield.html
  */
 
@@ -43,6 +40,7 @@ goog.require('goog.editor.node');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('goog.style');
+
 
 
 /**
@@ -70,6 +68,7 @@ goog.editor.SeamlessField.prototype.logger =
     goog.debug.Logger.getLogger('goog.editor.SeamlessField');
 
 // Functions dealing with field sizing.
+
 
 /**
  * Sets the min height of this editable field's iframe. Only used in growing
@@ -243,7 +242,6 @@ goog.editor.SeamlessField.getScrollbarThickness_ = function() {
 };
 
 
-
 /**
  * Sizes the iframe to its container div's width. The width of the div
  * is controlled by its containing context, not by its contents.
@@ -328,6 +326,7 @@ goog.editor.SeamlessField.prototype.releaseSizeIframeLockGecko_ = function() {
 
 // Functions dealing with blending in with the surrounding page.
 
+
 /**
  * String containing the css rules that, if applied to a document's body,
  * would style that body as if it were the original element we made editable.
@@ -394,7 +393,8 @@ goog.editor.SeamlessField.prototype.inheritBlendedCSS = function() {
     return;
   }
   var field = this.getElement();
-  var head = goog.dom.getDomHelper(field).$$('head')[0];
+  var head = goog.dom.getDomHelper(field).getElementsByTagNameAndClass(
+      'head')[0];
   if (head) {
     // We created this <head>, and we know the only thing we put in there
     // is a <style> block.  So it's safe to blow away all the children
@@ -411,6 +411,7 @@ goog.editor.SeamlessField.prototype.inheritBlendedCSS = function() {
 
 
 // Overridden methods.
+
 
 /** @inheritDoc */
 goog.editor.SeamlessField.prototype.usesIframe = function() {

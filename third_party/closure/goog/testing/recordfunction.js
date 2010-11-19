@@ -39,7 +39,6 @@
  * }
  * </pre>
  *
-*
  */
 
 goog.provide('goog.testing.FunctionCall');

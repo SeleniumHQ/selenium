@@ -21,7 +21,6 @@
  * Based on the Custom Buttons 3.1 visual specification, see
  * http://go/custombuttons
  *
-*
  * @see ../demos/imagelessbutton.html
  */
 
@@ -32,6 +31,7 @@ goog.require('goog.ui.ControlContent');
 goog.require('goog.ui.CustomButtonRenderer');
 goog.require('goog.ui.INLINE_BLOCK_CLASSNAME');
 goog.require('goog.ui.registry');
+
 
 
 /**
@@ -46,6 +46,7 @@ goog.ui.ImagelessButtonRenderer = function() {
   goog.ui.CustomButtonRenderer.call(this);
 };
 goog.inherits(goog.ui.ImagelessButtonRenderer, goog.ui.CustomButtonRenderer);
+
 
 /**
  * The singleton instance of this renderer class.

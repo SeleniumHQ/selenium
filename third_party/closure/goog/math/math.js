@@ -14,7 +14,6 @@
 
 /**
  * @fileoverview Additional mathematical functions.
-*
  */
 
 goog.provide('goog.math');
@@ -294,8 +293,8 @@ goog.math.longestCommonSubsequence = function(
 goog.math.sum = function(var_args) {
   return /** @type {number} */ (goog.array.reduce(arguments,
       function(sum, value) {
-    return sum + value;
-  }, 0));
+        return sum + value;
+      }, 0));
 };
 
 

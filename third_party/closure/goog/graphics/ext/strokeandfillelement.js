@@ -24,6 +24,7 @@ goog.provide('goog.graphics.ext.StrokeAndFillElement');
 goog.require('goog.graphics.ext.Element');
 
 
+
 /**
  * Interface for a graphics element that has a stroke and fill.
  * This is the base interface for ellipse, rectangle and other

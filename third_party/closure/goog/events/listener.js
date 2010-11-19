@@ -14,14 +14,16 @@
 
 /**
  * @fileoverview Listener object.
-*
  * @see ../demos/events.html
  */
+
 
 /**
  * Namespace for events
  */
 goog.provide('goog.events.Listener');
+
+
 
 /**
  * Simple class that stores information about a listener

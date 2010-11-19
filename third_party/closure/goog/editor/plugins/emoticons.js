@@ -27,6 +27,7 @@ goog.require('goog.functions');
 goog.require('goog.ui.emoji.Emoji');
 
 
+
 /**
  * Plugin for generating emoticons.
  *

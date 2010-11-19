@@ -183,7 +183,6 @@ goog.editor.range.selectNodeStart = function(node) {
  * @return {goog.dom.AbstractRange} The newly selected range.
  */
 goog.editor.range.placeCursorNextTo = function(node, toLeft) {
-  var dh = goog.dom.getDomHelper(node);
   var parent = node.parentNode;
   var offset = goog.array.indexOf(parent.childNodes, node) +
       (toLeft ? 0 : 1);
@@ -461,6 +460,7 @@ goog.editor.range.intersectsTag = function(range, tagName) {
 };
 
 
+
 /**
  * One endpoint of a range, represented as a Node and and offset.
  * @param {Node} node The node containing the point.
@@ -541,7 +541,6 @@ goog.editor.range.Point.getPointAtEndOfNode = function(node) {
 };
 
 
-
 /**
  * Saves the range by inserting carets into the HTML.
  *
@@ -556,6 +555,7 @@ goog.editor.range.Point.getPointAtEndOfNode = function(node) {
 goog.editor.range.saveUsingNormalizedCarets = function(range) {
   return new goog.editor.range.NormalizedCaretRange_(range);
 };
+
 
 
 /**

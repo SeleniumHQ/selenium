@@ -14,13 +14,13 @@
 
 /**
  * @fileoverview Wrapper class for handling XmlHttpRequests.
-*
  */
 
 
 goog.provide('goog.net.XhrLite');
 
 goog.require('goog.net.XhrIo');
+
 
 
 /**
@@ -31,6 +31,7 @@ goog.require('goog.net.XhrIo');
 goog.net.XhrLite = goog.net.XhrIo;
 
 // Statics are needed to avoid code removal.
+
 
 /**
  * Static send that creates a short lived instance of XhrIo to send the

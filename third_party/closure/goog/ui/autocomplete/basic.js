@@ -16,7 +16,6 @@
  * @fileoverview Factory class to create a simple autocomplete that will match
  * from an array of data.
  *
-*
  * @see ../../demos/autocomplete-basic.html
  */
 
@@ -28,13 +27,14 @@ goog.require('goog.ui.AutoComplete.InputHandler');
 goog.require('goog.ui.AutoComplete.Renderer');
 
 
+
 /**
  * Factory class for building a basic autocomplete widget that autocompletes
  * an inputbox or text area from a data array.
  * @param {Array} data Data array.
  * @param {Element} input Input element or text area.
  * @param {boolean=} opt_multi Whether to allow multiple entries separated with
- * semi-colons or colons.
+ * semi-colons or commas.
  * @param {boolean=} opt_useSimilar use similar matches. e.g. "gost" => "ghost".
  * @constructor
  * @extends {goog.ui.AutoComplete}

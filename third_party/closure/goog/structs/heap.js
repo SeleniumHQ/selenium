@@ -15,7 +15,6 @@
 /**
  * @fileoverview Datastructure: Heap.
  *
-*
  *
  * This file provides the implementation of a Heap datastructure. Smaller keys
  * rise to the top.
@@ -38,6 +37,7 @@ goog.provide('goog.structs.Heap');
 
 goog.require('goog.array');
 goog.require('goog.structs.Node');
+
 
 
 /**
