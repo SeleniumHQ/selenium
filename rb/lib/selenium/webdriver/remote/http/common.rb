@@ -28,6 +28,8 @@ module Selenium
                 puts "   >>> #{payload}"
                 puts "     > #{headers.inspect}"
               end
+            elsif verb == :post
+              headers["Content-Length"] = "0"
             end
 
             request verb, url, headers, payload
