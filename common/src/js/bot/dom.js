@@ -98,7 +98,7 @@ bot.dom.getProperty = function(element, propertyName) {
  * @const
  * @private
  */
-bot.dom.BOOLEAN_ATTRIBUTES_ =  [
+bot.dom.BOOLEAN_ATTRIBUTES_ = [
   'async',
   'autofocus',
   'autoplay',
@@ -174,6 +174,17 @@ bot.dom.getAttribute = function(element, attributeName) {
   }
 
   var attr = element.getAttributeNode(attributeName);
+
+  // IE8/9 in standards mode handles boolean attributes differently (of
+  // course!). This if-statement is nested so the compiler can easily strip it
+  // out when compiled for non-IE browsers.
+  if (goog.userAgent.IE) {
+    if (!attr && goog.userAgent.isVersion(8) &&
+        goog.array.contains(bot.dom.BOOLEAN_ATTRIBUTES_, attributeName)) {
+      attr = element[attributeName];
+    }
+  }
+
   if (!attr) {
     return null;
   }
@@ -264,15 +275,14 @@ bot.dom.getParentElement_ = function(node) {
 /**
  * Retrieves an explicitly-set, inline style value of an element. This returns
  * '' if there isn't a style attribute on the element or if this style property
- * has not been explicitly set in script, or null if no such attribute exists.
+ * has not been explicitly set in script.
  *
  * @param {!Element} elem Element to get the style value from.
  * @param {string} styleName Name of the style property in selector-case.
- * @return {?string} The value of the style property, or null.
+ * @return {string} The value of the style property.
  */
 bot.dom.getInlineStyle = function(elem, styleName) {
-  var value = goog.style.getStyle(elem, styleName);
-  return goog.isDef(value) ? value : null;
+  return goog.style.getStyle(elem, styleName);
 };
 
 
@@ -426,7 +436,7 @@ bot.dom.getVisibleText = function(node) {
           if (prevTextNodeStartsWithSpace) {
             nodeText = nodeText + ' ';
           }
-          if(prevTextNodeEndsWithSpace || thisTextNodeStartsWithSpace ) {
+          if (prevTextNodeEndsWithSpace || thisTextNodeStartsWithSpace) {
             nodeText = ' ' + nodeText;
           }
         }
@@ -434,7 +444,7 @@ bot.dom.getVisibleText = function(node) {
 
       prevTextNodeEndsWithSpace = node.nodeValue.match(/\s$/) ||
           node.nodeValue.match(endsWithNbsp);
-      prevTextNodeStartsWithSpace = node.nodeValue.match(/^\s/)
+      prevTextNodeStartsWithSpace = node.nodeValue.match(/^\s/);
       returnValue += nodeText;
     }
   });
@@ -527,4 +537,60 @@ bot.dom.isBlockLevel_ = function(node) {
   var element = /** @type {!Element} */ (node);
   var display = bot.dom.getEffectiveStyle(element, 'display');
   return display == 'block' || display == 'inline-block';
+};
+
+
+/**
+ * Gets the opacity of a node (x-browser).
+ * This gets the inline style opacity of the node and takes into account the
+ * cascaded or the computed style for this node.
+ *
+ * @param {!Element} elem Element whose opacity has to be found.
+ * @return {number} Opacity between 0 and 1.
+ */
+bot.dom.getOpacity = function(elem) {
+  if (!goog.userAgent.IE) {
+    return bot.dom.getOpacityNonIE_(elem);
+  } else {
+    if (bot.dom.getEffectiveStyle(elem, 'position') == 'relative') {
+      // Filter does not apply to non positioned elements.
+      return 1;
+    }
+
+    var opacityStyle = bot.dom.getEffectiveStyle(elem, 'filter');
+    var groups = opacityStyle.match(/^alpha\(opacity=(\d*)\)/) ||
+        opacityStyle.match(
+        /^progid:DXImageTransform.Microsoft.Alpha\(Opacity=(\d*)\)/);
+
+    if (groups) {
+      return Number(groups[1]) / 100;
+    } else {
+      return 1; // Opaque.
+    }
+  }
+};
+
+/**
+ * Implementation of getOpacity for browsers that do support
+ * the "opacity" style.
+ *
+ * @param {!Element} elem Element whose opacity has to be found.
+ * @return {number} Opacity between 0 and 1.
+ * @private
+ */
+bot.dom.getOpacityNonIE_ = function(elem) {
+  // By default the element is opaque.
+  var elemOpacity = 1;
+
+  var opacityStyle = bot.dom.getEffectiveStyle(elem, 'opacity');
+  if (opacityStyle) {
+    elemOpacity = Number(opacityStyle);
+  }
+
+  // Let's apply the parent opacity to the element.
+  var parentElement = bot.dom.getParentElement_(elem);
+  if (parentElement) {
+    elemOpacity = elemOpacity * bot.dom.getOpacityNonIE_(parentElement);
+  }
+  return elemOpacity;
 };

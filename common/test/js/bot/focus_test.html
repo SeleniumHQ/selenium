@@ -134,6 +134,11 @@
       });
     }
 
+    function testFocusOnHiddenElementThrows() {
+      var element = document.getElementById('invisibleText');
+      assertThrows(goog.partial(bot.action.focusOnElement, element));
+    }
+
   </script>
 </head>
 <body>
@@ -155,6 +160,10 @@
     <div style="border:1px solid black; margin: 5px; padding: 5px; width:50%">
       <div style="border-bottom: 1px solid black">Test Log</div>
       <div id="testLog"></div>
+    </div>
+    <div>
+      <div><strong>Invisible textbox</strong></div>
+      <input id="invisibleText" type="text" style="visibility:hidden"/>
     </div>
     <script>
       function log(msg) {

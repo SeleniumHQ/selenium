@@ -176,6 +176,59 @@ bot.events.newMouseEvent_ = function(element, type, opt_args) {
 };
 
 /**
+ * Data structure representing keyboard event arguments that may be
+ * passed to the fire function.
+ *
+ * @typedef {{keyCode: number, charCode: number}}
+ */
+bot.events.KeyboardArgs;
+
+/**
+ * Initialize a new keyboard event.
+ *
+ * @param {!Element} element The element on which the event will be fired.
+ * @param {!goog.events.EventType} type The type of keyboard event being sent,
+ *   should be KEYPRESS, KEYDOWN, or KEYUP.
+ * @param {!bot.events.KeyboardArgs} args See KeyboardArgs above.
+ *
+ * @return {!Event} An initialized keyboard event, with fields populated from
+ *   opt_args.
+ * @private
+ */
+bot.events.newKeyEvent_ = function(element, type, args) {
+  // TODO(user): handle modifier keys, e.g., shift, ctrl, alt.
+  var keyCode = args['keyCode'] || 0;
+  var charCode = args['charCode'] || 0;
+  var doc = goog.dom.getOwnerDocument(element);
+  var win = goog.dom.getWindow(doc);
+
+  var event;
+  if (goog.userAgent.GECKO) {
+    event = doc.createEvent('KeyboardEvent');
+    event.initKeyEvent(type,
+                       /* bubbles= */ true,
+                       /* cancelable= */true,
+                       /* view= */ win,
+                       /* ctrlKey= */ false,
+                       /* altKey= */ false,
+                       /* shiftKey= */ false,
+                       /* metaKey= */ false,
+                       keyCode,
+                       charCode);
+  } else if (goog.userAgent.IE) {
+    event = doc.createEventObject();
+    event.keyCode = keyCode;
+  } else { // For both WebKit and Opera.
+    event = doc.createEvent('Events');
+    event.initEvent(type, true, true);
+    event.charCode = charCode;
+    event.keyCode = keyCode;
+  }
+
+  return event;
+};
+
+/**
  * Data structure representing arguments that may be passed to the fire
  * function.
  *
@@ -263,6 +316,12 @@ bot.events.INIT_FUNCTIONS_[goog.events.EventType.MOUSEUP] =
     bot.events.newMouseEvent_;
 bot.events.INIT_FUNCTIONS_[goog.events.EventType.CLICK] =
     bot.events.newMouseEvent_;
+bot.events.INIT_FUNCTIONS_[goog.events.EventType.KEYDOWN] =
+    bot.events.newKeyEvent_;
+bot.events.INIT_FUNCTIONS_[goog.events.EventType.KEYPRESS] =
+    bot.events.newKeyEvent_;
+bot.events.INIT_FUNCTIONS_[goog.events.EventType.KEYUP] =
+    bot.events.newKeyEvent_;
 
 /**
  * Dispatch the event in a browser-safe way.
@@ -276,8 +335,8 @@ bot.events.INIT_FUNCTIONS_[goog.events.EventType.CLICK] =
 bot.events.dispatchEvent_ = function(target, type, event) {
   // Amusingly, fireEvent is native code on IE 7-, so we can't just use
   // goog.isFunction
-    if (goog.isFunction(target['fireEvent']) ||
-        goog.isObject(target['fireEvent'])) {
+  if (goog.isFunction(target['fireEvent']) ||
+      goog.isObject(target['fireEvent'])) {
     // when we go this route, window.event is never set to contain the
     // event we have just created.  ideally we could just slide it in
     // as follows in the try-block below, but this normally doesn't
@@ -289,7 +348,7 @@ bot.events.dispatchEvent_ = function(target, type, event) {
       var win = goog.dom.getWindow(doc);
 
       win.event = event;
-    } catch(e) {
+    } catch (e) {
       // work around for http://jira.openqa.org/browse/SEL-280 -- make
       // the event available somewhere:
     }
@@ -304,8 +363,9 @@ bot.events.dispatchEvent_ = function(target, type, event) {
  *
  * @param {!Element} target The element on which to fire the event.
  * @param {!goog.events.EventType} type The type of event.
- * @param {!(bot.events.MouseArgs|bot.events.HtmlArgs)=} opt_args Arguments,
- *     used to initialize the event.
+ * @param {!(bot.events.MouseArgs|bot.events.HtmlArgs|
+ *           bot.events.KeyboardArgs)=} opt_args Arguments, used to initialize
+ *     the event.
  * @return {boolean} Whether the event fired successfully or was cancelled.
  */
 bot.events.fire = function(target, type, opt_args) {
@@ -315,4 +375,3 @@ bot.events.fire = function(target, type, opt_args) {
 
   return bot.events.dispatchEvent_(target, type, event);
 };
-

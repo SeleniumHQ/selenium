@@ -21,9 +21,9 @@
         assertEquals('visibility: visible;', bot.dom.getAttribute(e, 'style'));
       }
 
-      function testInlineStyleReturnsNullForNonexistentProperty() {
+      function testInlineStyleReturnsEmptyStringForNonexistentProperty() {
         var e = bot.locators.findElement({id: 'child'});
-        assertNull(bot.dom.getInlineStyle(e, 'gibberish'));
+        assertEquals('', bot.dom.getInlineStyle(e, 'gibberish'));
       }
 
       function testInlineStyleReturnsEmptyStringForUnspecifiedProperty() {
@@ -55,6 +55,38 @@
         var e = bot.locators.findElement({id: 'child'});
         assertEquals('visible', bot.dom.getEffectiveStyle(e, 'visibility'));
       }
+
+      function testEffectiveStyleDoesNotReturnUnquotedShortMsFilterAsFilter() {
+        var e = bot.locators.findElement({id: 'msFilterUnquotedFilterShort'});
+        assertEquals('', bot.dom.getInlineStyle(e, 'filter'));
+      }
+
+      function testEffectiveStyleDoesNotReturnUnquotedLongMsFilterAsFilter() {
+        var e = bot.locators.findElement({id: 'msFilterUnquotedFilterLong'});
+        assertEquals('', bot.dom.getInlineStyle(e, 'filter'));
+      }
+
+      function testEffectiveStyleReturnsQuotedShortMsFilterAsFilter() {
+        var e = bot.locators.findElement({id: 'msFilterQuotedFilterShort'});
+        if (goog.userAgent.IE && goog.userAgent.isVersion(8)) {
+          assertEquals('alpha(opacity=0)', bot.dom.getInlineStyle(e, 'filter'));
+        } else {
+          // -ms-filters make sense only on IE.
+          assertEquals('', bot.dom.getInlineStyle(e, 'filter'));
+        }
+      }
+
+      function testEffectiveStyleReturnsQuotedLongMsFilterAsFilter() {
+        var e = bot.locators.findElement({id: 'msFilterQuotedFilterLong'});
+        if (goog.userAgent.IE && goog.userAgent.isVersion(8)) {
+          assertEquals('progid:DXImageTransform.Microsoft.Alpha(Opacity=20)',
+              bot.dom.getInlineStyle(e, 'filter'));
+        } else {
+          // -ms-filters make sense only on IE.
+          assertEquals('', bot.dom.getInlineStyle(e, 'filter'));
+        }
+      }
+
     </script>
 
     <style type="text/css">
@@ -64,6 +96,10 @@
       </style>
   </head>
   <body>
+    <div id="msFilterUnquotedFilterShort" style="-ms-filter:alpha(opacity=0)">A div</div>
+    <div id="msFilterUnquotedFilterLong" style="-ms-filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=20)">A div</div>
+    <div id="msFilterQuotedFilterShort" style="-ms-filter:'alpha(opacity=0)'">A div</div>
+    <div id="msFilterQuotedFilterLong" style="-ms-filter:'progid:DXImageTransform.Microsoft.Alpha(Opacity=20)'">A div</div>
 
     <div id="parent" style="visibility: visible">A parent div
       <div id="child" style="visibility: inherit;display:;">A child div</div>

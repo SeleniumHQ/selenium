@@ -20,6 +20,7 @@ goog.require('goog.dom');
 goog.require('goog.dom.NodeType');
 goog.require('goog.object');
 goog.require('goog.string');
+goog.require('goog.userAgent');
 
 // TODO(user): Add support for using sizzle to locate elements
 
@@ -33,7 +34,10 @@ goog.require('goog.string');
  *     such element could be found.
  */
 bot.locators.strategies.css.single = function(target, root) {
-  if (!goog.isFunction(root['querySelector'])) {
+  if (!goog.isFunction(root['querySelector']) &&
+      // IE8 in non-compatibility mode reports querySelector as an object.
+      goog.userAgent.IE && goog.userAgent.isVersion(8) &&
+      !goog.isObject(root['querySelector'])) {
     throw Error('CSS selection is not supported');
   }
 
@@ -62,7 +66,10 @@ bot.locators.strategies.css.single = function(target, root) {
  * @return {!goog.array.ArrayLike} All matching elements, or an empty list.
  */
 bot.locators.strategies.css.many = function(target, root) {
-  if (!goog.isFunction(root['querySelectorAll'])) {
+  if (!goog.isFunction(root['querySelectorAll']) &&
+      // IE8 in non-compatibility mode reports querySelector as an object.
+      goog.userAgent.IE && goog.userAgent.isVersion(8) &&
+      !goog.isObject(root['querySelector'])) {
     throw Error('CSS selection is not supported');
   }
 

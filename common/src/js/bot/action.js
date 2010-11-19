@@ -249,8 +249,10 @@ bot.action.toggle = function(element) {
  *     provided, and different from {@code element}, the active element will
  *     be blurred before focusing on the element.
  */
+
 bot.action.focusOnElement = function(element, opt_activeElement) {
   var activeElement = opt_activeElement || bot.dom.getActiveElement(element);
+  bot.action.checkShown_(element);
 
   if (element != activeElement) {
     // NOTE(user): This check is for browsers that do not support the
@@ -258,7 +260,9 @@ bot.action.focusOnElement = function(element, opt_activeElement) {
     // Safari 3 implicitly blurs the activeElement when we call focus()
     // below, so the blur event still fires on the activeElement.
     if (activeElement) {
-      if (goog.isFunction(activeElement.blur)) {
+      if (goog.isFunction(activeElement.blur) ||
+          // IE seems to report native functions as being objects.
+          goog.userAgent.IE && goog.isObject(activeElement.blur)) {
         activeElement.blur();
       }
 
@@ -272,10 +276,10 @@ bot.action.focusOnElement = function(element, opt_activeElement) {
         goog.dom.getWindow(goog.dom.getOwnerDocument(element)).focus();
       }
     }
-    // In IE, the resulting onfocus event will not be dispatched until
-    // the next event loop (this is undocumented). Same applies to blur().
+    // In IE, blur and focus events fire asynchronously.
     // TODO(user): Does this mean we've entered callback territory?
-    if (goog.isFunction(element.focus)) {
+    if (goog.isFunction(element.focus) ||
+        goog.userAgent.IE && goog.isObject(element.focus)) {
       element.focus();
     }
   }

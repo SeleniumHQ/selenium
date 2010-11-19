@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>keys_test</title>
+  <script type="text/javascript" src="../webdriver-bootstrap.js"></script>
+  <script type="text/javascript">
+    goog.require('bot.events');
+    goog.require('bot.keys');
+    goog.require('goog.events.EventType');
+    goog.require('goog.events.KeyCodes');
+    goog.require('goog.testing.jsunit');
+    goog.require('goog.userAgent');
+  </script>
+  <script type="text/javascript">
+    /**
+     * Sets the value of the given element to its current value plus one.  If
+     * the current value is not a number, replaces it with "1".
+     * @param {string} element_id The xpath of the element whose value
+     *     we increment.
+     */
+    function incrCount(element_id) {
+      element = document.getElementById(element_id);
+      var curVal = element.value ? parseInt(element.value) : 0;
+      element.value = curVal + 1;
+    }
+
+    /*
+     * Types a value into textbox, and makes sure that textbox and textbox_count
+     * have the correct values afterwards.  textbox_count should display the
+     * number of times textbox's oninput (non IE) or onpropertychange (IE) event
+     * fired.
+     * @param {string} input Value to type into textbox.
+     */
+    function runTypingTest(input) {
+      var inputBox = document.getElementById('textbox');
+      var countBox = document.getElementById('textbox_count');
+      inputBox.value = '';
+      countBox.value = '';
+      bot.keys.type(inputBox, input);
+      assertEquals(input, inputBox.value);
+      assertEquals('' + input.length, countBox.value);
+    }
+
+    function testLowerCase() {
+      runTypingTest('abcdefghijklmnopqrstuvwxyz');
+    }
+
+    function testUpperCase() {
+      runTypingTest('ABCDEFGHIJKLMNOPQRSTUVWXYZ');
+    }
+
+    function testNumbers() {
+      runTypingTest('1234567890');
+    }
+
+    function testSymbols() {
+      runTypingTest('`~!@#$%^&*()-_=+[{]}\\|;:\'"",<.>/?');
+    }
+  </script>
+</head>
+<body>
+  The second textbox displays how often some of the events of the first textbox
+  fire. <br>
+  <form action="">
+    <input type="text" id="textbox"
+           oninput="incrCount('textbox_count');"
+           onpropertychange="incrCount('textbox_count');">
+    <input type="text" id="textbox_count">
+  </form>
+</body>
+</html>
+
