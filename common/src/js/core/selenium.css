@@ -258,7 +258,7 @@ button, label {
 #logging-console li.error {
     font-weight: bold;
     color: red;
-    white-space:pre;
+    white-space:pre-wrap;
 }
 
 #logging-console li.warn {
