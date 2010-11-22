@@ -28,10 +28,10 @@ public class MiscTest extends AbstractDriverTestCase {
 
   public void testShouldReportTheCurrentUrlCorrectly() {
     driver.get(pages.simpleTestPage);
-    assertThat(driver.getCurrentUrl(), equalTo(pages.simpleTestPage));
+    assertTrue(pages.simpleTestPage.equalsIgnoreCase(driver.getCurrentUrl()));
 
     driver.get(pages.javascriptPage);
-    assertThat(driver.getCurrentUrl(), equalTo(pages.javascriptPage));
+    assertTrue(pages.javascriptPage.equalsIgnoreCase(driver.getCurrentUrl()));    
   }
 
   @JavascriptEnabled

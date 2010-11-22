@@ -272,6 +272,7 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
     assertNotNull(element);
   }
 
+  @Ignore(value = IE, reason = "IE8 on Win7 is not correctly reporting the query string")
   public void testGetCurrentUrl() {
     driver.get(pages.framesetPage);
 
@@ -284,7 +285,7 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
     driver.get(pages.iframePage);
     assertThat(driver.getCurrentUrl(), equalTo(url));
 
-    
+
     url = appServer.whereIs("formPage.html");
     driver.switchTo().frame("iframe1");
     assertThat(driver.getCurrentUrl(), equalTo(url));
