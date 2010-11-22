@@ -17,9 +17,7 @@ limitations under the License.
 */
 
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Text;
 
 namespace OpenQA.Selenium
 {
@@ -37,7 +35,7 @@ namespace OpenQA.Selenium
     /// <para>
     /// Key properties and methods are <see cref="IWebDriver.Url"/>, which is used to 
     /// load a new web page by setting the property, and the various methods similar 
-    /// to <see cref="FindElement"/>, which is used to find <see cref="IWebElement">IWebElements</see>.
+    /// to <see cref="ISearchContext.FindElement"/>, which is used to find <see cref="IWebElement">IWebElements</see>.
     /// </para>
     /// <para>
     /// You use the interface by instantiate drivers that implement of this interface.
@@ -45,7 +43,7 @@ namespace OpenQA.Selenium
     /// more fully featured browser when there is a requirement for one.
     /// </para>
     /// </remarks>
-    public interface IWebDriver : IDisposable
+    public interface IWebDriver : ISearchContext, IDisposable
     {
         /// <summary>
         /// Gets or sets the URL the browser is currently displaying.
@@ -81,22 +79,6 @@ namespace OpenQA.Selenium
         /// or escaped in the same way as the response sent from the web server. 
         /// </remarks>
         string PageSource { get; }
-
-        /// <summary>
-        /// Finds the first <see cref="IWebElement"/> on the current page using the specified mechanism.
-        /// </summary>
-        /// <param name="mechanism">A <see cref="By"/> object describing the mechanism used to find the element.</param>
-        /// <returns>The first <see cref="IWebElement"/> on the current page matching the criteria.</returns>
-        /// <exception cref="NoSuchElementException">If no matching elements are found.</exception>
-        IWebElement FindElement(By mechanism);
-
-        /// <summary>
-        /// Finds all <see cref="IWebElement"/> on the current page using the specified mechanism.
-        /// </summary>
-        /// <param name="mechanism">A <see cref="By"/> object describing the mechanism used to find the element.</param>
-        /// <returns>A <see cref="ReadOnlyCollection{T}"/> containing the <see cref="IWebElement">IWebElements</see>
-        /// found on the page.</returns>
-        ReadOnlyCollection<IWebElement> FindElements(By mechanism);
 
         /// <summary>
         /// Close the current window, quitting the browser if it is the last window currently open.
