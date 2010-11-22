@@ -1,8 +1,10 @@
 package org.openqa.selenium.chrome;
 
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.Lists;
+
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.Proxy;
-import static org.openqa.selenium.Proxy.ProxyType;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.internal.CircularOutputStream;
 import org.openqa.selenium.remote.internal.SubProcess;
@@ -11,12 +13,10 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.ServerSocket;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.Lists;
+import static org.openqa.selenium.Proxy.ProxyType;
 
 public class ChromeBinary {
 
@@ -27,8 +27,8 @@ public class ChromeBinary {
 
   private final ChromeProfile profile;
   private final ChromeExtension extension;
-  private final int port;
-  private final SubProcess chromeProcess;
+  private int port;
+  private SubProcess chromeProcess;
   
   private List<String> customFlags = new ArrayList<String>();
 
@@ -56,7 +56,10 @@ public class ChromeBinary {
   public ChromeBinary(ChromeProfile profile, ChromeExtension extension, int port) {
     this.profile = profile;
     this.extension = extension;
-    this.port = port == 0 ? findFreePort() : port;
+    this.port = port;
+  }
+
+  private SubProcess prepareProcess() {
     String serverUrl = String.format("http://localhost:%d/chromeCommandExecutor", this.port);
 
     ProcessBuilder builder;
@@ -68,7 +71,7 @@ public class ChromeBinary {
     }
 
     File logFile = getLogFile();
-    this.chromeProcess = logFile == null
+    return logFile == null
         ? new SubProcess(builder)
         : new SubProcess(builder, new CircularOutputStream(logFile));
   }
@@ -76,24 +79,6 @@ public class ChromeBinary {
   private static File getLogFile() {
     String logFile = System.getProperty(CHROME_LOG_FILE_PROPERTY);
     return logFile == null ? null : new File(logFile);
-  }
-
-  private static int findFreePort() {
-    ServerSocket serverSocket = null;
-    try {
-      serverSocket = new ServerSocket(0);
-      return serverSocket.getLocalPort();
-    } catch (IOException e) {
-      throw new WebDriverException(e);
-    } finally {
-      if (serverSocket != null) {
-        try {
-          serverSocket.close();
-        } catch (IOException ignored) {
-          // Oh well
-        }
-      }
-    }
   }
 
   public void addCustomBinaryFlag(String flag) {
@@ -112,10 +97,17 @@ public class ChromeBinary {
     return port;
   }
 
+  public void setPort(int port) {
+    this.port = port;
+  }
+
   /**
    * Starts the Chrome process for WebDriver.
    */
   public void start() {
+    if (chromeProcess == null) {
+      chromeProcess = prepareProcess();
+    }
     chromeProcess.launch();
     try {
       Thread.sleep(BACKOFF_INTERVAL * linearBackoffCoefficient);
@@ -178,7 +170,9 @@ public class ChromeBinary {
    * Kills the Chrome process managed by this instance.
    */
   public void kill() {
-    chromeProcess.shutdown();
+    if (chromeProcess != null) {
+      chromeProcess.shutdown();
+    }
   }
 
   public void incrementBackoffBy(int diff) {

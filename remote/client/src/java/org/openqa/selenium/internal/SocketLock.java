@@ -15,9 +15,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package org.openqa.selenium.firefox.internal;
+package org.openqa.selenium.internal;
 
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.internal.Lock;
 
 import java.io.IOException;
 import java.net.BindException;
@@ -25,7 +26,7 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 
 /**
- * Implements {@link Lock} via an implementation that uses a well-known server socket.
+ * Implements {@link org.openqa.selenium.internal.Lock} via an implementation that uses a well-known server socket.
  * 
  * @author gregory.block@gmail.com (Gregory Block)
  */

@@ -19,16 +19,15 @@ package org.openqa.selenium.firefox.internal;
 
 import junit.framework.TestCase;
 
-import java.net.BindException;
-import java.net.InetSocketAddress;
-import java.net.Socket;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.Assert;
 import org.junit.Test;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.internal.Lock;
 import org.openqa.selenium.internal.PortProber;
+import org.openqa.selenium.internal.SocketLock;
 
 /**
  * Tests for the {@link SocketLock} to make sure I'm not batshit crazy.

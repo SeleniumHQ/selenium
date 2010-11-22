@@ -1,6 +1,12 @@
 package org.openqa.selenium.chrome;
 
+import com.google.common.collect.ImmutableMap;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.internal.Lock;
+import org.openqa.selenium.internal.SocketLock;
 import org.openqa.selenium.remote.BeanToJsonConverter;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.CommandExecutor;
@@ -9,33 +15,78 @@ import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.JsonToBeanConverter;
 import org.openqa.selenium.remote.Response;
 
-import com.google.common.collect.ImmutableMap;
-import org.json.JSONException;
-import org.json.JSONObject;
-import static org.openqa.selenium.remote.DriverCommand.*;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.net.BindException;
+import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import static org.openqa.selenium.remote.DriverCommand.ADD_COOKIE;
+import static org.openqa.selenium.remote.DriverCommand.CLEAR_ELEMENT;
+import static org.openqa.selenium.remote.DriverCommand.CLICK_ELEMENT;
+import static org.openqa.selenium.remote.DriverCommand.CLOSE;
+import static org.openqa.selenium.remote.DriverCommand.DELETE_ALL_COOKIES;
+import static org.openqa.selenium.remote.DriverCommand.DELETE_COOKIE;
+import static org.openqa.selenium.remote.DriverCommand.EXECUTE_SCRIPT;
+import static org.openqa.selenium.remote.DriverCommand.FIND_CHILD_ELEMENT;
+import static org.openqa.selenium.remote.DriverCommand.FIND_CHILD_ELEMENTS;
+import static org.openqa.selenium.remote.DriverCommand.FIND_ELEMENT;
+import static org.openqa.selenium.remote.DriverCommand.FIND_ELEMENTS;
+import static org.openqa.selenium.remote.DriverCommand.GET;
+import static org.openqa.selenium.remote.DriverCommand.GET_ACTIVE_ELEMENT;
+import static org.openqa.selenium.remote.DriverCommand.GET_ALL_COOKIES;
+import static org.openqa.selenium.remote.DriverCommand.GET_COOKIE;
+import static org.openqa.selenium.remote.DriverCommand.GET_CURRENT_URL;
+import static org.openqa.selenium.remote.DriverCommand.GET_CURRENT_WINDOW_HANDLE;
+import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_ATTRIBUTE;
+import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_LOCATION;
+import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_LOCATION_ONCE_SCROLLED_INTO_VIEW;
+import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_SIZE;
+import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_TAG_NAME;
+import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_TEXT;
+import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_VALUE;
+import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_VALUE_OF_CSS_PROPERTY;
+import static org.openqa.selenium.remote.DriverCommand.GET_PAGE_SOURCE;
+import static org.openqa.selenium.remote.DriverCommand.GET_TITLE;
+import static org.openqa.selenium.remote.DriverCommand.GET_WINDOW_HANDLES;
+import static org.openqa.selenium.remote.DriverCommand.GO_BACK;
+import static org.openqa.selenium.remote.DriverCommand.GO_FORWARD;
+import static org.openqa.selenium.remote.DriverCommand.HOVER_OVER_ELEMENT;
+import static org.openqa.selenium.remote.DriverCommand.IMPLICITLY_WAIT;
+import static org.openqa.selenium.remote.DriverCommand.IS_ELEMENT_DISPLAYED;
+import static org.openqa.selenium.remote.DriverCommand.IS_ELEMENT_ENABLED;
+import static org.openqa.selenium.remote.DriverCommand.IS_ELEMENT_SELECTED;
+import static org.openqa.selenium.remote.DriverCommand.QUIT;
+import static org.openqa.selenium.remote.DriverCommand.REFRESH;
+import static org.openqa.selenium.remote.DriverCommand.SCREENSHOT;
+import static org.openqa.selenium.remote.DriverCommand.SEND_KEYS_TO_ELEMENT;
+import static org.openqa.selenium.remote.DriverCommand.SET_ELEMENT_SELECTED;
+import static org.openqa.selenium.remote.DriverCommand.SUBMIT_ELEMENT;
+import static org.openqa.selenium.remote.DriverCommand.SWITCH_TO_FRAME;
+import static org.openqa.selenium.remote.DriverCommand.SWITCH_TO_WINDOW;
+import static org.openqa.selenium.remote.DriverCommand.TOGGLE_ELEMENT;
 
 public class ChromeCommandExecutor implements CommandExecutor {
 
   private static final Logger LOG = Logger.getLogger(ChromeCommandExecutor.class.getName());
+  private static final long DEFAULT_TIMEOUT = TimeUnit.SECONDS.toMicros(120);
 
   private static final int MAX_START_RETRIES = 5;
   private static final String[] ELEMENT_ID_ARG = new String[] {"id"};
   private static final String[] NO_ARGS = new String[] {};
 
-  private final ChromeBinary binary;
+  private ChromeBinary binary;
+  private long timeout = DEFAULT_TIMEOUT;
 
   //Whether the listening thread should listen
   private volatile boolean listen = false;
@@ -104,16 +155,14 @@ public class ChromeCommandExecutor implements CommandExecutor {
   }
 
   /**
-   * Returns whether an instance of Chrome is currently connected
-   * @return whether an instance of Chrome is currently connected
+   * @return Whether an instance of Chrome is currently connected.
    */
   boolean hasClient() {
     return listeningThread != null && listeningThread.hasClient;
   }
   
   /**
-   * Returns the port being listened on
-   * @return the port being listened on
+   * @return the port being listened on.
    */
   public int getPort() {
     return listeningThread == null ? -1 : listeningThread.serverSocket.getLocalPort();
@@ -304,20 +353,66 @@ public class ChromeCommandExecutor implements CommandExecutor {
    * Starts a new instanceof Chrome and waits for a TCP port connection from it.
    */
   public void start() {
-    for (int retries = MAX_START_RETRIES; !hasClient() && retries > 0; retries--) {
-      stop();
-      startListening();
-      binary.start();
-      //In case this attempt fails, we increment how long we wait before sending a command
-      binary.incrementBackoffBy(1);
-    }
-    //The last one attempt succeeded, so we reduce back to that time
-    binary.incrementBackoffBy(-1);
+    Lock lock = newLock();
 
-    if (!hasClient()) {
-      stop();
-      throw new FatalChromeException("Cannot create chrome driver");
+    lock.lock(DEFAULT_TIMEOUT);
+    try {
+      int port = binary.getPort();
+      if (port == 0) {
+        port = determineNextFreePort(SocketLock.DEFAULT_PORT);
+      }
+      binary.setPort(port);
+
+      for (int retries = MAX_START_RETRIES; !hasClient() && retries > 0; retries--) {
+        stop();
+        startListening();
+        binary.start();
+        //In case this attempt fails, we increment how long we wait before sending a command
+        binary.incrementBackoffBy(1);
+      }
+      //The last one attempt succeeded, so we reduce back to that time
+      binary.incrementBackoffBy(-1);
+
+      if (!hasClient()) {
+        stop();
+        throw new FatalChromeException("Cannot create chrome driver");
+      }
+    } catch (IOException e) {
+      throw new WebDriverException(e);
+    } finally {
+      lock.unlock();
     }
+  }
+
+  protected int determineNextFreePort(int port) throws IOException {
+    // Attempt to connect to the given port on the host
+    // If we can't connect, then we're good to use it
+    int newport;
+
+    for (newport = port; newport < port + 200; newport++) {
+      Socket socket = new Socket();
+      InetSocketAddress address = new InetSocketAddress("localhost", newport);
+
+      try {
+        socket.bind(address);
+        return newport;
+      } catch (BindException e) {
+        // Port is already bound. Skip it and continue
+      } finally {
+        socket.close();
+      }
+    }
+
+    throw new WebDriverException(
+        String.format("Cannot find free port in the range %d to %d ", port, newport));
+  }
+
+  protected Lock newLock() {
+    return new SocketLock();
+  }
+
+  public void setTimeout(long timeout) {
+    this.timeout = timeout;
   }
 
   /**

@@ -25,6 +25,8 @@ import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
 import java.net.Socket;
 import java.net.URL;
+
+import org.openqa.selenium.internal.Lock;
 import org.openqa.selenium.networkutils.NetworkUtils;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.ExtensionConnection;
@@ -38,7 +40,7 @@ import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.internal.CircularOutputStream;
 
 import static org.openqa.selenium.firefox.FirefoxProfile.PORT_PREFERENCE;
-import static org.openqa.selenium.firefox.internal.SocketLock.DEFAULT_PORT;
+import static org.openqa.selenium.internal.SocketLock.DEFAULT_PORT;
 
 public class NewProfileExtensionConnection implements CommandExecutor, ExtensionConnection {
   private final static int BUFFER_SIZE = 4096;
@@ -63,7 +65,6 @@ public class NewProfileExtensionConnection implements CommandExecutor, Extension
     this.process = binary;
   }
 
-  @SuppressWarnings({"StringConcatenationInsideStringBufferAppend"})
   public void start() throws IOException {
     int port = 0;
 
