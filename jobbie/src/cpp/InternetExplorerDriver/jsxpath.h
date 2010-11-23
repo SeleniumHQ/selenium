@@ -22,9 +22,9 @@
 
 wchar_t* XPATHJS[] = {
 L"(function(){var ca=void(0);var da={targetFrame:ca,exportInstaller:false,useNative:true,useInnerText:true};var ea;if(window.jsxpath){ea=window.jsxpath;}\n",
-L"else{var fa=document.getElementsByTagName('script');var ga=fa[fa.length-1];var ha=ga.src;ea={};var ia=ha.match(/\\?(.*)$/);if(ia){var ja=ia[1].split('&');for(var i=0,l=ja.length;i<l;i++){var ka=ja[i];var la=ka.split('=');var ma=la[0];var na=la[1];if(na==ca){na==true;}\n",
+L"else{var fa=document.getElementsByTagName('script');ea={};if(fa.length>0){var ga=fa[fa.length-1];var ha=ga.src;var ia=ha.match(/\\?(.*)$/);if(ia){var ja=ia[1].split('&');for(var i=0,l=ja.length;i<l;i++){var ka=ja[i];var la=ka.split('=');var ma=la[0];var na=la[1];if(na==ca){na==true;}\n",
 L"else if(na=='false'||/^-?\\d+$/.test(na)){na=eval(na);}\n",
-L"ea[ma]=na;}}}\n",
+L"ea[ma]=na;}}}}\n",
 L"for(var n in da){if(!(n in ea))ea[n]=da[n];}\n",
 L"ea.hasNative=!!(document.implementation&&document.implementation.hasFeature&&document.implementation.hasFeature(\"XPath\",null));if(ea.hasNative&&ea.useNative&&!ea.exportInstaller){return;}\n",
 L"var oa;var pa;var qa;var ra;var sa;var ta;var va;var wa;var xa;var ya;var za;var Aa;var Ba;var Ca;var Da=new function(){var ua=navigator.userAgent;if(RegExp==ca){if(ua.indexOf(\"Opera\")>=0){this.opera=true;}\n",
