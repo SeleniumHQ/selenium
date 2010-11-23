@@ -17,6 +17,8 @@ limitations under the License.
 
 package org.openqa.selenium.remote;
 
+import com.google.common.collect.Maps;
+
 import org.json.JSONObject;
 
 import java.util.HashMap;
@@ -47,7 +49,7 @@ public class Command {
   }
 
   public Map<String, ?> getParameters() {
-    return parameters;
+    return parameters == null ? new HashMap<String, Object>() : parameters;
   }
 
   @Override

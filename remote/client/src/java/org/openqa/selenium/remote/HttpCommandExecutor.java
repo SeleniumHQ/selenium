@@ -422,7 +422,11 @@ public class HttpCommandExecutor implements CommandExecutor {
 
     private String get(String propertyName, Command command) {
       if ("sessionId".equals(propertyName)) {
-        return command.getSessionId().toString();
+        SessionId id = command.getSessionId();
+        if (id == null) {
+          throw new WebDriverException("Session ID may not be null");
+        }
+        return id.toString();
       }
 
       // Attempt to extract the property name from the parameters
