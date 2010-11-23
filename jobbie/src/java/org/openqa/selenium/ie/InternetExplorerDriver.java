@@ -17,6 +17,7 @@ limitations under the License.
 
 package org.openqa.selenium.ie;
 
+import static java.lang.String.format;
 import static org.openqa.selenium.browserlaunchers.CapabilityType.PROXY;
 import static org.openqa.selenium.ie.ExportedWebDriverFunctions.SUCCESS;
 
@@ -37,6 +38,7 @@ import org.openqa.selenium.Keyboard;
 import org.openqa.selenium.Mouse;
 import org.openqa.selenium.NoSuchWindowException;
 import org.openqa.selenium.OutputType;
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.Speed;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
@@ -73,6 +75,8 @@ public class InternetExplorerDriver implements WebDriver, JavascriptExecutor, Ta
   }
 
   public InternetExplorerDriver(Capabilities caps) {
+    assertOnWindows();
+
     proxyManager = new WindowsProxyManager(true, "webdriver-ie", 0, 0);
     
     prepareProxy(caps);
@@ -85,6 +89,14 @@ public class InternetExplorerDriver implements WebDriver, JavascriptExecutor, Ta
     }
     driver = ptr.getValue();
     keyboard = new InternetExplorerKeyboard(this, lib);
+  }
+
+  protected void assertOnWindows() {
+    Platform current = Platform.getCurrent();
+    if (!current.is(Platform.WINDOWS)) {
+      throw new WebDriverException(
+          format("You appear to be running %s. The IE driver only runs on Windows.", current));
+    }
   }
 
   private void prepareProxy(Capabilities caps) {
@@ -246,7 +258,7 @@ public class InternetExplorerDriver implements WebDriver, JavascriptExecutor, Ta
   public void get(String url) {
     int result = lib.wdGet(driver, new WString(url));
     if (result != SUCCESS) {
-      errors.verifyErrorCode(result, String.format("Cannot get \"%s\": %s", url, result));
+      errors.verifyErrorCode(result, format("Cannot get \"%s\": %s", url, result));
     }
   }
 
