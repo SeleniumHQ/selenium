@@ -319,13 +319,12 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
 
   public String getCurrentUrl() {
     // TODO(simon): Blech. I can see this being baaad
-    Page page = lastPage();
-    if (page == null) {
+    URL url = getRawUrl();
+    if (url == null) {
       return null;
     }
 
-    WebResponse response = page.getWebResponse();
-    return response.getWebRequest().getUrl().toString();
+    return url.toString();
   }
 
   public String getTitle() {
@@ -961,6 +960,16 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
     return currentWindow;
   }
 
+  private URL getRawUrl() {
+    // TODO(simon): I can see this being baaad.
+    Page page = lastPage();
+    if (page == null) {
+      return null;
+    }
+
+    return page.getUrl();
+  }
+
   private class HtmlUnitNavigation implements Navigation {
 
     public void back() {
@@ -1060,7 +1069,7 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
     public void deleteCookieNamed(String name) {
       CookieManager cookieManager = webClient.getCookieManager();
 
-      URL url = lastPage().getUrl();
+      URL url = getRawUrl();
       Set<com.gargoylesoftware.htmlunit.util.Cookie> rawCookies =
           webClient.getCookieManager().getCookies(url);
       for (com.gargoylesoftware.htmlunit.util.Cookie cookie : rawCookies) {
@@ -1079,7 +1088,7 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
     }
 
     public Set<Cookie> getCookies() {
-      URL url = lastPage().getUrl();
+      URL url = getRawUrl();
 
       // The about:blank URL (the default in case no navigation took place)
       // does not have a valid 'hostname' part and cannot be used for creating
@@ -1108,7 +1117,7 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
     }
 
     private String getPath() {
-      return lastPage().getUrl().getPath();
+      return getRawUrl().getPath();
     }
 
     public Speed getSpeed() {
@@ -1127,7 +1136,7 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
     }
 
     private String getDomainForCookie() {
-      URL current = lastPage().getUrl();
+      URL current = getRawUrl();
       return current.getHost();
     }
 
