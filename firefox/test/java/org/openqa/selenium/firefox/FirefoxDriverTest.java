@@ -38,6 +38,7 @@ import org.openqa.selenium.ParallelTestRunner.Worker;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.UnhandledAlertException;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.firefox.internal.ProfilesIni;
@@ -455,6 +456,20 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
     instance.quit();
     instance.quit();
   }
+
+  public void testAnExceptionThrownIfUsingAQuittedInstance() {
+    WebDriver instance = newFirefoxDriver();
+
+    instance.quit();
+    try {
+      instance.get(pages.xhtmlTestPage);
+      fail("Expected an exception to be thrown because the instance is dead.");
+    } catch (WebDriverException e) {
+      assertTrue(e.getMessage().contains("cannot be used after quit"));
+    }
+
+  }
+
 
   private WebDriver newFirefoxDriver() {
     return newFirefoxDriver(new FirefoxProfile());

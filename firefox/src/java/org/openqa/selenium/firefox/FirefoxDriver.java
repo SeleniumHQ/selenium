@@ -336,10 +336,19 @@ public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot, F
     }
 
     public void quit() {
-      connection.quit();
+      if (connection != null) {
+        connection.quit();
+        connection = null;        
+      }
     }
 
     public Response execute(Command command) throws IOException {
+      if (connection == null) {
+        if (command.getName().equals(DriverCommand.QUIT)) {
+          return null;
+        }
+        throw new WebDriverException("The FirefoxDriver cannot be used after quit() was called.");
+      }
       return connection.execute(command);
     }
   }
