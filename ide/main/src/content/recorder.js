@@ -257,6 +257,7 @@ Recorder.decorateEventHandler = function(handlerName, eventName, decorator, opti
 
 Recorder.register = function(observer, window) {
     this.log.debug("register: window=" + window);
+    var pushObserver = true;
 	var recorder = Recorder.get(window);
 	if (!recorder) {
 		recorder = new Recorder(window);
@@ -265,8 +266,19 @@ Recorder.register = function(observer, window) {
             // adding recorder to wrappedJSObject to make it visible from functional test of Selenium IDE itself
             window.wrappedJSObject[Recorder.WINDOW_RECORDER_PROPERTY] = recorder;
         }
-	}
-	recorder.observers.push(observer);
+	}else {
+        //Samit: Fix: Fix Firefox 4 beta 7 recording issues
+        for (var i = 0; i < recorder.observers.length; i++) {
+            if (recorder.observers[i] == observer) {
+                pushObserver = false;
+                recorder.attach();
+                recorder.registerUnloadListener();
+            }
+        }
+    }
+    if (pushObserver) {
+        recorder.observers.push(observer);
+    }
 	this.log.debug("register: observers.length=" + recorder.observers.length);
 	return recorder;
 }
