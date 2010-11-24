@@ -45,6 +45,7 @@ public class Pages {
   public String errorsPage;
   public String dynamicPage;
   public String slowIframes;
+  public String html5Page;
   public String tables;
   public String deletingFrame;
   public String draggableLists;
@@ -79,6 +80,7 @@ public class Pages {
     errorsPage = appServer.whereIs("errors.html");
     dynamicPage = appServer.whereIs("dynamic.html");
     slowIframes = appServer.whereIs("slow_loading_iframes.html");
+    html5Page = appServer.whereIs("html5Page.html");
     tables = appServer.whereIs("tables.html");
 	  deletingFrame = appServer.whereIs("deletingFrame.htm");
     draggableLists = appServer.whereIs("draggableLists.html");

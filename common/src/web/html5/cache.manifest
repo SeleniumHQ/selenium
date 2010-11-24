@@ -1,0 +1,9 @@
+CACHE MANIFEST
+
+red.jpg
+blue.jpg
+green.jpg
+
+CACHE:
+# Additional items to cache.
+yellow.jpg
