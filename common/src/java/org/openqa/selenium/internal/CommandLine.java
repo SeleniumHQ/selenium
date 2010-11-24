@@ -45,6 +45,7 @@ public class CommandLine {
   private volatile Process proc;
   private volatile String allInput;
   private Map<String, String> env = new ConcurrentHashMap<String, String>();
+  private Thread cleanup;
 
   public CommandLine(String executable, String... args) {
     commandAndArgs = new String[args.length + 1];
@@ -169,9 +170,7 @@ public class CommandLine {
       }
     }.start();
 
-    // FIXME: we're leaking the Process instance here
-    // This hook should be removed altogether as it's just hiding bugs.
-    Runtime.getRuntime().addShutdownHook(new Thread() {
+    cleanup = new Thread() {
       @Override
       public void run() {
         if (proc != null) {
@@ -182,7 +181,8 @@ public class CommandLine {
           }
         }
       }
-    });
+    };
+    Runtime.getRuntime().addShutdownHook(cleanup);
 
     return proc;
   }
@@ -195,6 +195,7 @@ public class CommandLine {
       }
 
       exitCode = proc.exitValue();
+      postRunCleanup();
     } catch (InterruptedException e) {
       throw new WebDriverException(e);
     }
@@ -256,7 +257,15 @@ public class CommandLine {
     }
 
     proc.destroy();
+    postRunCleanup();
+  }
+
+  private void postRunCleanup() {
     proc = null;
+    if (cleanup != null) {
+      Runtime.getRuntime().removeShutdownHook(cleanup);
+      cleanup = null;
+    }
   }
 
   private static boolean canExecute(File file) {
