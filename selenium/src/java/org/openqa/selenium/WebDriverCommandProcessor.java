@@ -17,11 +17,12 @@ limitations under the License.
 
 package org.openqa.selenium;
 
-import java.util.Map;
 import com.google.common.base.Supplier;
 import com.google.common.collect.Maps;
+
 import com.thoughtworks.selenium.CommandProcessor;
 import com.thoughtworks.selenium.SeleniumException;
+
 import org.openqa.selenium.internal.seleniumemulation.AddLocationStrategy;
 import org.openqa.selenium.internal.seleniumemulation.AddSelection;
 import org.openqa.selenium.internal.seleniumemulation.AlertOverride;
@@ -122,6 +123,8 @@ import org.openqa.selenium.internal.seleniumemulation.WindowMaximize;
 import org.openqa.selenium.internal.seleniumemulation.Windows;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
+import java.util.Map;
+
 import static org.openqa.selenium.internal.seleniumemulation.SeleniumSelect.Property.ID;
 import static org.openqa.selenium.internal.seleniumemulation.SeleniumSelect.Property.INDEX;
 import static org.openqa.selenium.internal.seleniumemulation.SeleniumSelect.Property.TEXT;
@@ -178,6 +181,9 @@ public class WebDriverCommandProcessor implements CommandProcessor {
   public WebDriverCommandProcessor(String baseUrl, WebDriver driver) {
     this(baseUrl, new ExplodingSupplier());
     this.driver = driver;
+
+    assertDriverSupportsJavascript(driver);
+
     setUpMethodMap();
   }
 
@@ -232,6 +238,8 @@ public class WebDriverCommandProcessor implements CommandProcessor {
     }
 
     driver = maker.get();
+
+    assertDriverSupportsJavascript(driver);
 
     setUpMethodMap();
   }
@@ -291,6 +299,14 @@ public class WebDriverCommandProcessor implements CommandProcessor {
 
   public SeleneseCommand getMethod(String methodName) {
     return seleneseMethods.get(methodName);
+  }
+
+  private void assertDriverSupportsJavascript(WebDriver driver) {
+    // TODO(simon): We're starting to need a "describe" interface for checks
+    // like this.
+    if (driver instanceof JavascriptExecutor) {
+      throw new IllegalStateException("Driver instance must support JS");
+    }
   }
 
   private void setUpMethodMap() {
