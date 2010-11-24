@@ -17,18 +17,7 @@ limitations under the License.
 
 package org.openqa.selenium.android.app;
 
-import org.openqa.selenium.Cookie;
-import org.openqa.selenium.ScreenOrientation;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.android.Logger;
-import org.openqa.selenium.android.events.TouchScreen;
-import org.openqa.selenium.android.events.WebViewAction;
-import org.openqa.selenium.android.intents.Action;
-import org.openqa.selenium.android.intents.IntentReceiver;
-import org.openqa.selenium.android.intents.IntentReceiver.IntentReceiverListener;
-import org.openqa.selenium.android.intents.IntentReceiverRegistrar;
-import org.openqa.selenium.android.intents.IntentSender;
-import org.openqa.selenium.android.sessions.SessionCookieManager;
+import com.google.common.collect.Iterables;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
@@ -41,54 +30,87 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.Window;
 import android.webkit.CookieManager;
-import android.webkit.WebChromeClient;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
-import android.widget.TextView;
+
+import org.openqa.selenium.Cookie;
+import org.openqa.selenium.ScreenOrientation;
+import org.openqa.selenium.android.Logger;
+import org.openqa.selenium.android.events.TouchScreen;
+import org.openqa.selenium.android.events.WebViewAction;
+import org.openqa.selenium.android.intents.Action;
+import org.openqa.selenium.android.intents.IntentReceiver;
+import org.openqa.selenium.android.intents.IntentReceiver.IntentReceiverListener;
+import org.openqa.selenium.android.intents.IntentReceiverRegistrar;
+import org.openqa.selenium.android.intents.IntentSender;
+import org.openqa.selenium.android.sessions.SessionCookieManager;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 /**
- * Main view of a single-session application mode.
+ * Main application activity.
  */
 public class WebDriverActivity extends Activity implements IntentReceiverListener {
   private static final String LOG_TAG = WebDriverActivity.class.getName();
-  private boolean pageHasStartedLoading = false;
 
   // Use for control redirect, contains the last url loaded (updated after each redirect)
   private volatile String lastUrlLoaded;
   private String currentUrl = "";
 
-  private WebView webView;
-  
+  private boolean pageHasStartedLoading = false;
   private SessionCookieManager sessionCookieManager;
-
+  private WebDriverWebView currentView;
+  private WebViewManager viewManager = new WebViewManager();  
   private final IntentReceiverRegistrar intentReg;
-  private final SimpleWebViewJSExecutor jsExecutor;
-  private final SimpleWebChromeClient  chromeClient;
-  private final IntentSender sender;
+  
 
+  private final IntentSender sender = new IntentSender(this);
 
-  public WebDriverActivity() {
-    intentReg = new IntentReceiverRegistrar(this);
-    jsExecutor = new SimpleWebViewJSExecutor();
-    chromeClient = new SimpleWebChromeClient();
-    sender = new IntentSender();
+  public void sendIntent(String action, Object... args) {
+    sender.broadcast(action, args);
   }
   
+  public WebDriverActivity() {
+    intentReg = new IntentReceiverRegistrar(this);
+  }
+
+  public void setCurrentUrl(String url) {
+    currentUrl = url;  
+  }
+  
+  public String currentUrl() {
+    return currentUrl;
+  }
+  
+  public void setLastUrlLoaded(String url) {
+    lastUrlLoaded = url;
+  }
+  
+  public String lastUrlLoaded() {
+    return lastUrlLoaded;
+  }
+  
+  public void setPageHasStartedLoading(boolean value) {
+    pageHasStartedLoading = value;
+  }
+  
+  public WebViewManager viewManager() {
+    return viewManager;
+  }
+  
+  public boolean hasPageStartedLoading() {
+    return pageHasStartedLoading;
+  }
+
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    initAppLayout();
-    initWebViewSettings();
+    displayProgressBar();
+    final WebDriverWebView newView = new WebDriverWebView(this);
+    currentView = newView;
+    
+    viewManager.addView(newView);
+    
+    setContentView(newView);
 
     // This needs to be initialized after the webview
     sessionCookieManager = new SessionCookieManager(this);
@@ -98,37 +120,10 @@ public class WebDriverActivity extends Activity implements IntentReceiverListene
     initIntentReceivers();
   }
 
-  private void initWebViewSettings() {
-    // Gets a handle on the webview
-    webView = (WebView) findViewById(R.id.webview);
-
-    // Clearing the view
-    webView.clearCache(true);
-    webView.clearFormData();
-    webView.clearHistory();
-    webView.clearSslPreferences();
-    webView.clearView();
-
-    // Sets custom webview behavior
-    webView.setWebViewClient(new SimpleWebViewClient());
-    webView.setWebChromeClient(chromeClient);
-    webView.addJavascriptInterface(new CustomJavaScriptInterface(), "webdriver");
-
-    // Webview settings
-    webView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
-    webView.getSettings().setBuiltInZoomControls(true);
-    webView.getSettings().setJavaScriptEnabled(true);
-  }
-
-  private void initAppLayout() {
+  private void displayProgressBar() {
     // Request the progress bar to be shown in the title and set it to 0
     requestWindowFeature(Window.FEATURE_PROGRESS);
-    setProgressBarVisibility(false);
-    setProgress(0);
-
-    setContentView(R.layout.single_session_layout);
-
-    this.setTitle("WebDriver");
+    setProgressBarVisibility(true);
   }
 
   private void initIntentReceivers() {
@@ -151,6 +146,9 @@ public class WebDriverActivity extends Activity implements IntentReceiverListene
     intentReg.registerReceiver(intentWithResult, Action.REMOVE_COOKIE);
     intentReg.registerReceiver(intentWithResult, Action.ROTATE_SCREEN);
     intentReg.registerReceiver(intentWithResult, Action.GET_SCREEN_ORIENTATION);
+    intentReg.registerReceiver(intentWithResult, Action.SWITCH_TO_WINDOW);
+    intentReg.registerReceiver(intentWithResult, Action.GET_CURRENT_WINDOW_HANDLE);
+    intentReg.registerReceiver(intentWithResult, Action.GET_ALL_WINDOW_HANDLES);
   }
 
   @Override
@@ -160,58 +158,24 @@ public class WebDriverActivity extends Activity implements IntentReceiverListene
     super.onDestroy();
   }
   
-  /**
-   * Navigates WebView to a new URL.
-   *
-   * @param url URL to navigate to.
-   */
-  public void navigateTo(String url) {
-    if (url == null) {
-      sendIntent(Action.PAGE_LOADED);
-      return;
-    }
-    //use for redirect control
-    lastUrlLoaded = null;
-
-    if (url.equals(currentUrl)) {
-      webView.reload();
-    }
-    else if (url.length() > 0) {
-      if (url.startsWith("http") || url.startsWith("www")) {
-        webView.loadUrl(url); // This is a URL
-      } else {
-        webView.loadData(url, "text/html", "utf-8"); // This is HTML
-      }
-    }
-  }
-
-  /**
-   * Sets status message of the single-mode view.
-   *
-   * @param status Status message to set.
-   */
-  public void setStatus(String status) {
-    ((TextView) findViewById(R.id.status)).setText(status);
-  }
-  
   public Object onReceiveBroadcast(String action, Object... args) {
     if (Action.GET_URL.equals(action)) {
-      return webView.getUrl();
+      return currentView.getUrl();
     } else if (Action.GET_TITLE.equals(action)) {
-      return webView.getTitle();
+      return currentView.getTitle();
     } else if (Action.TAKE_SCREENSHOT.equals(action)) {
       return takeScreenshot();
     } else if (Action.NAVIGATE.equals(action)) {
-      navigateTo((String) args[0]);
+      currentView.navigateTo((String) args[0]);
     } else if (Action.NAVIGATE_BACK.equals(action)) {
-      webView.goBackOrForward(-1);
+      currentView.goBackOrForward(-1);
     } else if (Action.NAVIGATE_FORWARD.equals(action)) {
-      webView.goBackOrForward(1);
+      currentView.goBackOrForward(1);
     } else if (Action.REFRESH.equals(action)) {
-      webView.reload();
+      currentView.reload();
     } else if (Action.EXECUTE_JAVASCRIPT.equals(action)) {
       if (args.length == 1) {
-        jsExecutor.executeJS((String) args[0]); 
+        currentView.executeJavascript((String) args[0]);
       } else {
         throw new IllegalArgumentException("Error while trying to execute Javascript." +
         "SingleSessionActivity.executeJS takes one argument, but received: "
@@ -219,30 +183,45 @@ public class WebDriverActivity extends Activity implements IntentReceiverListene
       }
     } else if (Action.ADD_COOKIE.equals(action)) {
       Cookie cookie = new Cookie((String) args[0], (String) args[1], (String) args[2]);
-      sessionCookieManager.addCookie(webView.getUrl(), cookie);
+      sessionCookieManager.addCookie(currentView.getUrl(), cookie);
     } else if (Action.GET_ALL_COOKIES.equals(action)) {
-      return sessionCookieManager.getAllCookiesAsString(webView.getUrl());
+      return sessionCookieManager.getAllCookiesAsString(currentView.getUrl());
     } else if (Action.GET_COOKIE.equals(action)) {
-      return sessionCookieManager.getCookie(webView.getUrl(), (String) args[0]);
+      return sessionCookieManager.getCookie(currentView.getUrl(), (String) args[0]);
     } else if (Action.REMOVE_ALL_COOKIES.equals(action)) {
-      sessionCookieManager.removeAllCookies(webView.getUrl());
+      sessionCookieManager.removeAllCookies(currentView.getUrl());
     } else if (Action.REMOVE_COOKIE.equals(action)) {
-      sessionCookieManager.remove(webView.getUrl(), (String) args[0]);
+      sessionCookieManager.remove(currentView.getUrl(), (String) args[0]);
     } else if (Action.SEND_MOTION_EVENT.equals(action)) {
-      TouchScreen.sendMotion(webView, (MotionEvent) args[0], (MotionEvent) args[1]);
+      TouchScreen.sendMotion(currentView, (MotionEvent) args[0], (MotionEvent) args[1]);
       return true;
     } else if (Action.SEND_KEYS.equals(action)) {
       CharSequence[] inputKeys = new CharSequence[args.length];
       for (int i = 0; i < inputKeys.length; i++) {
         inputKeys[i] = args[i].toString();
       }
-      WebViewAction.sendKeys(webView, inputKeys);
+      WebViewAction.sendKeys(currentView, inputKeys);
     } else if (Action.ROTATE_SCREEN.equals(action)) {
       this.setRequestedOrientation(getAndroidScreenOrientation((ScreenOrientation) args[0]));
     } else if (Action.GET_SCREEN_ORIENTATION.equals(action)) {
       return getScreenOrientation();
+    } else if (Action.SWITCH_TO_WINDOW.equals(action)) {
+      return switchToWebView(viewManager.getView((String) args[0]));
+    } else if (Action.GET_CURRENT_WINDOW_HANDLE.equals(action)) {
+      return currentView.getWindowHandle();
+    } else if (Action.GET_ALL_WINDOW_HANDLES.equals(action)) {
+      return  Iterables.toString(viewManager.getAllHandles());
     }
     return null;
+  }
+  
+  private boolean switchToWebView(WebDriverWebView webview) {
+    if (webview == null) {
+      return false;
+    }
+    currentView = webview;
+    setContentView(webview);
+    return true;
   }
   
   private int getAndroidScreenOrientation(ScreenOrientation orientation) {
@@ -256,8 +235,8 @@ public class WebDriverActivity extends Activity implements IntentReceiverListene
    * @return the current layout orientation of webview.
    */
   private ScreenOrientation getScreenOrientation() {
-    int width = webView.getWidth();
-    int height = webView.getHeight();
+    int width = currentView.getWidth();
+    int height = currentView.getHeight();
     if (width > height) {
       return ScreenOrientation.LANDSCAPE;
     } else {
@@ -266,10 +245,10 @@ public class WebDriverActivity extends Activity implements IntentReceiverListene
   }
   
   public byte[] takeScreenshot() {
-    Picture pic = webView.capturePicture();
+    Picture pic = currentView.capturePicture();
     Bitmap bitmap = Bitmap.createBitmap(
-        webView.getWidth() - webView.getVerticalScrollbarWidth(),
-        webView.getHeight(), Config.RGB_565);
+        currentView.getWidth() - currentView.getVerticalScrollbarWidth(),
+        currentView.getHeight(), Config.RGB_565);
     Canvas cv = new Canvas(bitmap);
     cv.drawPicture(pic);
     ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -287,131 +266,5 @@ public class WebDriverActivity extends Activity implements IntentReceiverListene
     }
     byte[] rawPng = stream.toByteArray();
     return rawPng;
-  }
-  
-  private void sendIntent(final String action, final Object... args) {
-    sender.broadcast(this, action, args);
-  }
-
-  /**
-   * Custom module that is added to the WebView's JavaScript engine to enable callbacks to java
-   * code. This is required since WebView doesn't expose the underlying DOM.
-   */
-  final class CustomJavaScriptInterface {
-
-    /**
-     * A callback from JavaScript to Java that passes execution result as a parameter.
-     *
-     * This method is accessible from WebView's JS DOM as windows.webdriver.resultMethod().
-     *
-     * @param result Result that should be returned to Java code from WebView.
-     */
-    public void resultMethod(String result) {
-      jsExecutor.resultAvailable(result);
-    }
-  }
-  
-  /**
-   * Class that wraps synchronization housekeeping of execution of JavaScript code within WebView.
-   */
-  class SimpleWebViewJSExecutor {
-
-    @SuppressWarnings("hiding")
-    private final String logTag = SimpleWebViewJSExecutor.class.getName();
-
-    /**
-     * Executes a given JavaScript code within WebView and returns execution result. <p/> Note:
-     * execution is limited in time to AndroidDriver.INTENT_TIMEOUT to prevent "application
-     * not responding" alerts.
-     *
-     * @param jsCode JavaScript code to execute.
-     */
-    public void executeJS(String jsCode) {
-      webView.loadUrl("javascript:" + jsCode);
-    }
-
-    /**
-     * Callback to report results of JavaScript code execution.
-     *
-     * @param result Results (if returned) or an empty string.
-     */
-    public void resultAvailable(String result) {
-      Logger.log(Log.DEBUG, logTag, "Script finished with result: " + result);
-      sendIntent(Action.JAVASCRIPT_RESULT_AVAILABLE, result);
-    }
-  }
-
-  /**
-   * This class overrides WebView default behavior when loading new URL. It makes sure that the URL
-   * is always loaded by the WebView and updates progress bar according to the page loading
-   * progress.
-   */
-  final class SimpleWebViewClient extends WebViewClient {    
-    @Override
-    public void onPageStarted(WebView view, String url, Bitmap favicon) {
-      super.onPageStarted(view, url, favicon);
-      setProgressBarVisibility(true); // Showing progress bar in title
-      setProgress(0);
-      currentUrl = url;
-      lastUrlLoaded = url;
-      pageHasStartedLoading = true;
-      sendIntent(Action.PAGE_STARTED_LOADING);
-    }
-
-    @Override
-    public void onPageFinished(WebView view, String url) {
-      super.onPageFinished(view, url);
-      setProgressBarVisibility(false); // Hiding progress bar in title
-      lastUrlLoaded = url;
-      
-      // If it is a html fragment or the current url loaded, the page is
-      // not reloaded and the onProgessChanged function is not called.
-      if (url.contains("#") && currentUrl.equals(url.split("#")[0])) {
-        sendIntent(Action.PAGE_LOADED);
-      }
-    }
-  }
-  
-  /**
-   * Subscriber class to be notified when the underlying WebView loads new content or changes
-   * title.
-   */
-  final class SimpleWebChromeClient extends WebChromeClient {
-    private ExecutorService executor = Executors.newSingleThreadExecutor();
-
-    @Override
-    public void onProgressChanged(WebView view, int newProgress) {
-      setStatus(view.getUrl());
-      setProgress(newProgress * 100);  
-      if (newProgress == 100 && lastUrlLoaded != null && lastUrlLoaded.equals(view.getUrl())) {
-        pageHasStartedLoading = false;
-        executor.submit(new PageLoaderManager());
-      }
-    }
-    
-    class PageLoaderManager implements Runnable {      
-      public void run() {
-        ExecutorService thread = Executors.newSingleThreadExecutor();
-        Future<Void> future = thread.submit(new Callable<Void>() {
-          public Void call() throws Exception {
-            while (!pageHasStartedLoading) {
-              continue;
-            }
-            return null;
-          }
-        });
-        try {
-          future.get(500, TimeUnit.MILLISECONDS); // If the future does not time
-          // out, this is a meta redirect, and a page just started loading.
-        } catch (InterruptedException cause) {
-          Thread.currentThread().interrupt();
-        } catch (ExecutionException cause) {
-          executor.shutdown();
-          throw new WebDriverException("Future task interupted.", cause.getCause());
-        } catch (TimeoutException e) {
-          sendIntent(Action.PAGE_LOADED);
-        }
-      }
-    }
   }
 }

@@ -17,6 +17,8 @@ limitations under the License.
 
 package org.openqa.selenium.android.intents;
 
+import android.os.SystemClock;
+
 public interface Action {
   String NAVIGATE = "navigate";
   String GET_TITLE = "getTitle";
@@ -45,4 +47,10 @@ public interface Action {
   String GET_SCREEN_ORIENTATION = "getScreenOrientation";
 
   String ACTIVITY_QUIT = "activityQuit";
+  
+  String SWITCH_TO_WINDOW = "switchToWindow";
+  String GET_CURRENT_WINDOW_HANDLE = "getCurrentWindowHandle";
+  String GET_ALL_WINDOW_HANDLES = "getAllWindowHandles";
+  
+  String NOT_DONE_INDICATOR = Long.toString(SystemClock.uptimeMillis());
 }

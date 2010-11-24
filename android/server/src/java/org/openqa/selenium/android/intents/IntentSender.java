@@ -32,16 +32,18 @@ import java.util.concurrent.Callable;
 public class IntentSender extends BroadcastReceiver implements Callable {
   private static final String LOG_TAG = IntentSender.class.getName();
   private boolean received = false;
+  private final Context sender;
   
   private Object toReturn;
   private String action;
   
   public static final String IS_PARCELABLE = "isParcelable";
   
-  public IntentSender() {
+  public IntentSender(Context sender) {
+    this.sender = sender;
   }
   
-  public synchronized void broadcast(Context sender, String action, Object... args) {
+  public synchronized void broadcast(String action, Object... args) {
     Logger.log(Log.DEBUG, LOG_TAG, String.format("Context: %s, Sending Intent: %s, Args: %s",
         sender.toString(), action, args.length));
     received = false;

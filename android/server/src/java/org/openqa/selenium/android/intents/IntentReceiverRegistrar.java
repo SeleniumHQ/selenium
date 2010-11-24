@@ -45,7 +45,11 @@ public class IntentReceiverRegistrar {
   
   public void unregisterAllReceivers() {
     for (BroadcastReceiver r : receivers) {
-      context.unregisterReceiver(r);
+      try {
+        context.unregisterReceiver(r);
+      } catch (IllegalArgumentException e) {
+        // Ignore, broadcast receiver has already been removed.
+      }
     }
   }
 }

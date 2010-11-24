@@ -34,7 +34,7 @@ import static org.openqa.selenium.Ignore.Driver.SELENESE;
 import static org.openqa.selenium.TestWaiter.waitFor;
 import static org.openqa.selenium.WaitingConditions.elementToExist;
 
-@Ignore(value = {IPHONE, ANDROID}, reason = "The iPhone only supports one window")
+@Ignore(value = {IPHONE}, reason = "The iPhone only supports one window")
 public class WindowSwitchingTest extends AbstractDriverTestCase {
 
   @Ignore({IE, SELENESE})
