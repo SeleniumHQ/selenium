@@ -21,7 +21,9 @@ import com.google.common.base.Splitter;
 import com.google.common.collect.Sets;
 
 import android.content.Context;
-import android.os.SystemClock;
+import android.content.Intent;
+import android.provider.Settings;
+import android.provider.Settings.SettingNotFoundException;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -51,6 +53,7 @@ import org.openqa.selenium.android.intents.IntentSender;
 import org.openqa.selenium.android.sessions.SessionCookieManager;
 import org.openqa.selenium.android.util.JsUtil;
 import org.openqa.selenium.android.util.SimpleTimer;
+import org.openqa.selenium.html5.BrowserConnection;
 import org.openqa.selenium.internal.Base64Encoder;
 import org.openqa.selenium.internal.FindsById;
 import org.openqa.selenium.internal.FindsByLinkText;
@@ -67,7 +70,7 @@ import java.util.concurrent.TimeUnit;
 
 public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, JavascriptExecutor,
     FindsById, FindsByLinkText, FindsByName, FindsByXPath, TakesScreenshot,
-    IntentReceiverListener, Rotatable {
+    IntentReceiverListener, Rotatable, BrowserConnection {
 
   public static final String LOG_TAG = AndroidDriver.class.getName();
   
@@ -642,5 +645,18 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
       }
     }
     return pageHasStartedLoading;
+  }
+
+  public boolean isOnline() {
+    return Settings.System.getInt(getContext().getContentResolver(),
+        Settings.System.AIRPLANE_MODE_ON, 0) == 0;
+  }
+
+  public void setOnline(boolean online) throws WebDriverException {
+    Settings.System.putInt(getContext().getContentResolver(),
+        Settings.System.AIRPLANE_MODE_ON, online ? 0 : 1);
+    Intent intent = new Intent(Intent.ACTION_AIRPLANE_MODE_CHANGED);
+    intent.putExtra("state", !online);
+    getContext().sendBroadcast(intent);
   }
 }
