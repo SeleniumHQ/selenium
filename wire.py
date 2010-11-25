@@ -576,7 +576,109 @@ JSON objects.''').
                     'The element\'s value, or `null` if it does not have a `value` attribute.').
       SetJavadoc('java/org/openqa/selenium/WebElement.html#getValue()',
                  'WebElement#getValue()').
-      Post('Send a sequence of key strokes to an element.').
+      Post('''Send a sequence of key strokes to an element.
+
+Any UTF-8 character may be specified, however, if the server does not support \
+native key events, it should simulate key strokes for a standard US keyboard \
+layout. The Unicode [http://unicode.org/faq/casemap_charprop.html#8 Private Use\
+ Area] code points, 0xE000-0xF8FF, are used to represent pressable, non-text \
+ keys (see table below).
+
+
+<table cellspacing=5 cellpadding=5>
+<tbody><tr><td valign=top>
+|| *Key* || *Code* ||
+|| NULL || U+E000 ||
+|| Cancel || U+E001 ||
+|| Help || U+E002 ||
+|| Back space || U+E003 ||
+|| Tab || U+E004 ||
+|| Clear || U+E005 ||
+|| Return^1^ || U+E006 ||
+|| Enter^1^ || U+E007 ||
+|| Shift || U+E008 ||
+|| Control || U+E009 ||
+|| Alt || U+E00A ||
+|| Pause  || U+E00B ||
+|| Escape || U+E00C ||
+
+</td><td valign=top>
+|| *Key* || *Code* ||
+|| Space || U+E00D ||
+|| Pageup || U+E00E ||
+|| Pagedown || U+E00F ||
+|| End || U+E010 ||
+|| Home || U+E011 ||
+|| Left arrow || U+E012 ||
+|| Up arrow || U+E013 ||
+|| Right arrow || U+E014 ||
+|| Down arrow || U+E015 ||
+|| Insert || U+E016 ||
+|| Delete || U+E017 ||
+|| Semicolon || U+E018 ||
+|| Equals || U+E019 ||
+
+</td><td valign=top>
+|| *Key* || *Code* ||
+|| Numpad 0 || U+E01A ||
+|| Numpad 1 || U+E01B ||
+|| Numpad 2 || U+E01C ||
+|| Numpad 3 || U+E01D ||
+|| Numpad 4 || U+E01E ||
+|| Numpad 5 || U+E01F ||
+|| Numpad 6 || U+E020 ||
+|| Numpad 7 || U+E021 ||
+|| Numpad 8 || U+E022 ||
+|| Numpad 9 || U+E023 ||
+
+</td><td valign=top>
+|| *Key* || *Code* ||
+|| Multiply || U+E024 ||
+|| Add || U+E025 ||
+|| Separator || U+E026 ||
+|| Subtract || U+E027 ||
+|| Decimal || U+E028 ||
+|| Divide || U+E029 ||
+
+</td><td valign=top>
+|| *Key* || *Code* ||
+|| F1 || U+E031 ||
+|| F2 || U+E032 ||
+|| F3 || U+E033 ||
+|| F4 || U+E034 ||
+|| F5 || U+E035 ||
+|| F6 || U+E036 ||
+|| F7 || U+E037 ||
+|| F8 || U+E038 ||
+|| F9 || U+E039 ||
+|| F10 || U+E03A ||
+|| F11 || U+E03B ||
+|| F12 || U+E03C ||
+|| Command/Meta || U+E03D ||
+
+</td></tr>
+<tr><td colspan=5>^1^ The return key is _not the same_ as the \
+[http://en.wikipedia.org/wiki/Enter_key enter key].</td></tr></tbody></table>
+
+The server must process the key sequence as follows:
+  * Each key that appears on the keyboard without requiring modifiers are sent \
+as a keydown followed by a key up.
+  * If the server does not support native events and must simulate key strokes \
+with !JavaScript, it must generate keydown, keypress, and keyup events, in that\
+ order. The keypress event should only be fired when the corresponding key is \
+for a printable character.
+  * If a key requires a modifier key (e.g. "!" on a standard US keyboard), the \
+sequence is: <var>modifier</var> down, <var>key</var> down, <var>key</var> up, \
+<var>modifier</var> up, where <var>key</var> is the ideal unmodified key value \
+(using the previous example, a "1").
+  * Modifier keys (Ctrl, Shift, Alt, and Command/Meta) are assumed to be \
+"sticky"; each modifier should be held down (e.g. only a keydown event) until \
+either the modifier is encountered again in the sequence, or the `NULL` \
+(U+E000) key is encountered.
+  * Each key sequence is terminated with an implicit `NULL` key. Subsequently, \
+all depressed modifier keys must be released (with corresponding keyup events) \
+at the end of the sequence.
+''').
       RequiresVisibility().
       AddJsonParameter('value', '{Array.<string>}',
                        'The sequence of keys to type. An array must be provided. '
@@ -587,10 +689,13 @@ JSON objects.''').
 
   resources.append(
       SessionResource('/session/:sessionId/modifier').
-      Post('Send a modifier key down / up to the active element.').
+      Post('Send an event to the active element to depress or release a '
+           'modifier key.').
       AddJsonParameter('value', '{string}',
-                       'The modifier key event to be sent.'
-                       'The Keys enum specifies the values to send for shift / ctrl / alt.').
+                       'The modifier key event to be sent. This key must be one'
+                       ' Ctrl, Shift, Alt, or Command/Meta, as defined by the '
+                       '[JsonWireProtocol#/session/:sessionId/element/:id/value'
+                       ' send keys] command.').
       AddJsonParameter('isdown', '{boolean}',
                        'Whether to generate a key down or key up.').
       SetJavadoc('java/org/openqa/selenium/Keyboard.html#pressKey(org.openqa.selenium.Keys)',
