@@ -45,7 +45,10 @@ public interface RenderedWebElement extends WebElement {
     /**
      * Simulate hovering the mouse over an element. Note that this method needs native
      * events in order to work as expected.
+     *
+     * @deprecated Use MoveToOffsetAction instead
      */
+    @Deprecated
       public void hover();
 
       /**
@@ -53,14 +56,20 @@ public interface RenderedWebElement extends WebElement {
        * 
        * @param moveRightBy how much to move to the right (negative for moving left)
        * @param moveDownBy how much to move to the bottom (negative for moving up)
+       *
+       * @deprecated Use ClickAndHoldAction, MoveMouseAction and ButtonReleaseAction instead
        */
+      @Deprecated
       void dragAndDropBy(int moveRightBy, int moveDownBy);
       
       /**
        * Drag and drop this element on top of the specified element 
        * 
        * @param element element to be dropped on. Only RenderedElement is supported
+       *
+       * @deprecated Use ClickAndHoldAction, MoveMouseAction and ButtonReleaseAction instead
        */
+      @Deprecated
       void dragAndDropOn(RenderedWebElement element);
 
       /**
