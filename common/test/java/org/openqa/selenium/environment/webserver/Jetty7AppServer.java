@@ -20,20 +20,21 @@ package org.openqa.selenium.environment.webserver;
 import junit.framework.Assert;
 
 import javax.servlet.Servlet;
+import javax.servlet.Filter;
 import java.io.File;
 
-import org.mortbay.jetty.Connector;
-import org.mortbay.jetty.Handler;
-import org.mortbay.jetty.Server;
-import org.mortbay.jetty.nio.SelectChannelConnector;
-import org.mortbay.jetty.security.SslSocketConnector;
-import org.mortbay.jetty.webapp.WebAppContext;
-import org.mortbay.servlet.MultiPartFilter;
+import org.eclipse.jetty.server.Connector;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.handler.ContextHandlerCollection;
+import org.eclipse.jetty.server.nio.SelectChannelConnector;
+import org.eclipse.jetty.server.ssl.SslSocketConnector;
+import org.eclipse.jetty.webapp.WebAppContext;
+import org.eclipse.jetty.servlets.MultiPartFilter;
 import org.openqa.selenium.networkutils.NetworkUtils;
 
 import static org.openqa.selenium.internal.PortProber.findFreePort;
 
-public class Jetty6AppServer implements AppServer {
+public class Jetty7AppServer implements AppServer {
 
   private static final String DEFAULT_CONTEXT_PATH = "/common";
   private static final String JS_SRC_CONTEXT_PATH = "/js/src";
@@ -51,13 +52,14 @@ public class Jetty6AppServer implements AppServer {
   private File thirdPartyJsRoot;
   private final Server server;
   private WebAppContext context;
+  private ContextHandlerCollection handlers;
   private final String hostName;
 
-  public Jetty6AppServer() {
+  public Jetty7AppServer() {
     this(networkUtils.getNonLoopbackAddressOfThisMachine());
   }
   
-  public Jetty6AppServer(String hostName) {
+  public Jetty7AppServer(String hostName) {
     this.hostName = hostName;
     // Be quiet. Unless we want things to be chatty
     if (!Boolean.getBoolean("webdriver.debug")) {
@@ -71,10 +73,14 @@ public class Jetty6AppServer implements AppServer {
     jsTestRoot = findJsTestWebAppRoot();
     thirdPartyJsRoot = findThirdPartyJsWebAppRoot();
 
+    handlers = new ContextHandlerCollection();
+
     context = addWebApplication(DEFAULT_CONTEXT_PATH, path);
     addWebApplication(JS_SRC_CONTEXT_PATH, jsSrcRoot);
     addWebApplication(JS_TEST_CONTEXT_PATH, jsTestRoot);
     addWebApplication(THIRD_PARTY_JS_CONTEXT_PATH, thirdPartyJsRoot);
+
+    server.setHandler(handlers);
 
     addServlet("Redirecter", "/redirect", RedirectServlet.class);
     addServlet("InfinitePagerServer", "/page/*", PageServlet.class);
@@ -82,7 +88,7 @@ public class Jetty6AppServer implements AppServer {
     addServlet("Uploader", "/upload", UploadServlet.class);
     addServlet("Unusual encoding", "/encoding", EncodingServlet.class);
     addServlet("Sleeper", "/sleep", SleepingServlet.class);
-    addFilter(MultiPartFilter.class, "/upload", Handler.DEFAULT);
+    addFilter(MultiPartFilter.class, "/upload", 0 /* DEFAULT dispatches */);
 
     listenOn(findFreePort());
     listenSecurelyOn(findFreePort());
@@ -93,6 +99,7 @@ public class Jetty6AppServer implements AppServer {
   }
 
   protected File findRootOfWebApp() {
+    // TODO(simonstewart): replace this with InProject.locate()
     String[] possiblePaths = {
         "common/src/web",
         "../common/src/web",
@@ -235,13 +242,8 @@ public class Jetty6AppServer implements AppServer {
     }
   }
 
-  public void addFilter(Class<?> filter, String path, int dispatches) {
+  public void addFilter(Class<? extends Filter> filter, String path, int dispatches) {
     context.addFilter(filter, path, dispatches);
-  }
-
-
-  public void addAdditionalWebApplication(String context, String absolutePath) {
-    addWebApplication(context, absolutePath);
   }
 
   private WebAppContext addWebApplication(String contextPath, File rootDir) {
@@ -252,12 +254,16 @@ public class Jetty6AppServer implements AppServer {
     WebAppContext app = new WebAppContext();
     app.setContextPath(contextPath);
     app.setWar(absolutePath);
-    server.addHandler(app);
+    handlers.addHandler(app);
     return app;
   }
 
+  public void addAdditionalWebApplication(String context, String absolutePath) {
+    addWebApplication(context, absolutePath);
+  }
+
   public static void main(String[] args) {
-    Jetty6AppServer server = new Jetty6AppServer("localhost");
+    Jetty7AppServer server = new Jetty7AppServer("localhost");
     server.port = 2310;
     server.start();
   }

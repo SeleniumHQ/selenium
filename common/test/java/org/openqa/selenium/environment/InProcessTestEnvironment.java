@@ -19,14 +19,14 @@ limitations under the License.
 package org.openqa.selenium.environment;
 
 import org.openqa.selenium.environment.webserver.AppServer;
-import org.openqa.selenium.environment.webserver.Jetty6AppServer;
+import org.openqa.selenium.environment.webserver.Jetty7AppServer;
 
 public class InProcessTestEnvironment implements TestEnvironment {
 
   private AppServer appServer;
 
   public InProcessTestEnvironment() {
-    appServer = new Jetty6AppServer();
+    appServer = new Jetty7AppServer();
     appServer.start();
   }
 

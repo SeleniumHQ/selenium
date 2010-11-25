@@ -17,37 +17,38 @@ limitations under the License.
 
 package org.openqa.selenium.environment.webserver;
 
-import org.mortbay.log.Logger;
+import org.eclipse.jetty.util.log.Logger;
 
 public class NullLogger implements Logger  {
   public void disableLogging() {
-    System.setProperty("org.mortbay.jetty.util.log.class", NullLogger.class.getName());
-    System.setProperty("org.mortbay.log.class", NullLogger.class.getName());
+    System.setProperty("org.eclipse.jetty.util.log.class", NullLogger.class.getName());
   }
 
   public boolean isDebugEnabled() {
     return false;
   }
 
-  public void setDebugEnabled(boolean b) {
-  }
+  public void setDebugEnabled(boolean b) {}
 
-  public void info(String s, Object o, Object o1) {
-  }
+  public void debug(String s, Object... o) {}
+  public void debug(String s, Throwable throwable) {}
+  public void debug(Throwable throwable) {}
 
-  public void debug(String s, Throwable throwable) {
-  }
+  public void info(String s, Object... o) {}
+  public void info(String s, Throwable throwable) {}
+  public void info(Throwable throwable) {}
 
-  public void debug(String s, Object o, Object o1) {
-  }
+  public void warn(String s, Object... o) {}
+  public void warn(String s, Throwable throwable) {}
+  public void warn(Throwable throwable) {}
 
-  public void warn(String s, Object o, Object o1) {
-  }
-
-  public void warn(String s, Throwable throwable) {
-  }
-
+  public void ignore(Throwable throwable) {}
+  
   public Logger getLogger(String s) {
     return this;
+  }
+
+  public String getName() {
+    return NullLogger.class.getName();
   }
 }

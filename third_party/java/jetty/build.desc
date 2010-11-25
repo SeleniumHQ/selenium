@@ -7,7 +7,16 @@ java_library(name = "jetty",
 
 java_library(name = "lite",
   deps = [
-    "jetty-6.1.9.jar",
-    "jetty-util-6.1.9.jar",
+    "jetty-continuation-7.2.0.v20101020.jar",
+    "jetty-http-7.2.0.v20101020.jar",
+    "jetty-io-7.2.0.v20101020.jar",
+    "jetty-security-7.2.0.v20101020.jar",
+    "jetty-server-7.2.0.v20101020.jar",
+    "jetty-servlet-7.2.0.v20101020.jar",
+    "jetty-servlets-7.2.0.v20101020.jar",
+    "jetty-util-7.2.0.v20101020.jar",
+    "jetty-webapp-7.2.0.v20101020.jar",
+    "jetty-websocket-7.2.0.v20101020.jar",
+    "jetty-xml-7.2.0.v20101020.jar",
     "//third_party/java/servlet-api"
   ])
