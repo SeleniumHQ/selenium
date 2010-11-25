@@ -765,8 +765,6 @@
         <root url="jar://$PROJECT_DIR$/third_party/java/junit/junit-dep-4.8.1.jar!/" />
         <root url="jar://$PROJECT_DIR$/third_party/java/slf4j/slf4j-api-1.3.1.jar!/" />
         <root url="jar://$PROJECT_DIR$/third_party/java/jasper/jasper-compiler-jdt-5.5.15.jar!/" />
-        <root url="jar://$PROJECT_DIR$/third_party/java/jetty/jetty-6.1.9.jar!/" />
-        <root url="jar://$PROJECT_DIR$/third_party/java/jetty/jetty-util-6.1.9.jar!/" />
         <root url="jar://$PROJECT_DIR$/third_party/java/hamcrest/hamcrest-all-1.1.jar!/" />
         <root url="jar://$PROJECT_DIR$/third_party/java/jasper/jasper-compiler-5.5.15.jar!/" />
         <root url="jar://$PROJECT_DIR$/third_party/java/commons-io/commons-io-1.4.jar!/" />
@@ -779,11 +777,20 @@
         <root url="jar://$PROJECT_DIR$/third_party/java/jmock/jmock-2.4.0.jar!/" />
         <root url="jar://$PROJECT_DIR$/third_party/java/jmock/jmock-junit3-2.4.0.jar!/" />
         <root url="jar://$PROJECT_DIR$/third_party/java/guava-libraries/guava-r06.jar!/" />
+        <root url="jar://$PROJECT_DIR$/third_party/java/jetty/jetty-webapp-7.2.0.v20101020.jar!/" />
+        <root url="jar://$PROJECT_DIR$/third_party/java/jetty/jetty-websocket-7.2.0.v20101020.jar!/" />
+        <root url="jar://$PROJECT_DIR$/third_party/java/jetty/jetty-servlet-7.2.0.v20101020.jar!/" />
+        <root url="jar://$PROJECT_DIR$/third_party/java/jetty/jetty-servlets-7.2.0.v20101020.jar!/" />
+        <root url="jar://$PROJECT_DIR$/third_party/java/jetty/jetty-io-7.2.0.v20101020.jar!/" />
+        <root url="jar://$PROJECT_DIR$/third_party/java/jetty/jetty-util-7.2.0.v20101020.jar!/" />
+        <root url="jar://$PROJECT_DIR$/third_party/java/jetty/jetty-security-7.2.0.v20101020.jar!/" />
+        <root url="jar://$PROJECT_DIR$/third_party/java/jetty/jetty-http-7.2.0.v20101020.jar!/" />
+        <root url="jar://$PROJECT_DIR$/third_party/java/jetty/jetty-server-7.2.0.v20101020.jar!/" />
+        <root url="jar://$PROJECT_DIR$/third_party/java/jetty/jetty-continuation-7.2.0.v20101020.jar!/" />
+        <root url="jar://$PROJECT_DIR$/third_party/java/jetty/jetty-xml-7.2.0.v20101020.jar!/" />
       </CLASSES>
       <JAVADOC />
-      <SOURCES>
-        <root url="jar://$PROJECT_DIR$/third_party/java/junit/junit-4.8.1-src.jar!/" />
-      </SOURCES>
+      <SOURCES />
     </library>
     <library name="htmlunit-runtime">
       <CLASSES>
@@ -792,7 +799,6 @@
         <root url="jar://$PROJECT_DIR$/third_party/java/apache-httpclient/httpcore-4.0.1.jar!/" />
         <root url="jar://$PROJECT_DIR$/third_party/java/apache-httpclient/httpmime-4.0.1.jar!/" />
         <root url="jar://$PROJECT_DIR$/third_party/java/apache-mime4j/apache-mime4j-0.6.jar!/" />
-        <root url="jar://$PROJECT_DIR$/third_party/java/apache-httpclient/httpclient-4.0.1.jar!/" />
         <root url="jar://$PROJECT_DIR$/third_party/java/xml/xercesImpl-2.9.1.jar!/" />
         <root url="jar://$PROJECT_DIR$/third_party/java/xml/xalan-2.7.1.jar!/" />
         <root url="jar://$PROJECT_DIR$/third_party/java/xml/xml-apis-1.3.04.jar!/" />
@@ -802,6 +808,7 @@
         <root url="jar://$PROJECT_DIR$/third_party/java/commons-logging/commons-logging-1.1.1.jar!/" />
         <root url="jar://$PROJECT_DIR$/third_party/java/sac/sac-1.3.jar!/" />
         <root url="jar://$PROJECT_DIR$/third_party/java/cssparser/cssparser-0.9.5.jar!/" />
+        <root url="jar://$PROJECT_DIR$/third_party/java/apache-httpclient/httpclient-4.0.2-src.jar!/" />
       </CLASSES>
       <JAVADOC />
       <SOURCES>

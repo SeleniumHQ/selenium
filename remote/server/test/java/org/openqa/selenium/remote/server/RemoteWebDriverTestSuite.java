@@ -17,23 +17,24 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server;
 
+import com.google.common.collect.Maps;
+
 import junit.extensions.TestSetup;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-import java.io.File;
-import java.net.URL;
-import java.util.Map;
-
-import com.google.common.collect.Maps;
 import org.openqa.selenium.TestSuiteBuilder;
 import org.openqa.selenium.environment.webserver.AppServer;
-import org.openqa.selenium.environment.webserver.Jetty6AppServer;
+import org.openqa.selenium.environment.webserver.Jetty7AppServer;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.HttpRequest;
 import org.openqa.selenium.remote.RemoteWebDriver;
+
+import java.io.File;
+import java.net.URL;
+import java.util.Map;
 
 import static org.openqa.selenium.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.Ignore.Driver.REMOTE;
@@ -84,7 +85,7 @@ public class RemoteWebDriverTestSuite extends TestCase {
 
     @Override
     protected void setUp() throws Exception {
-      appServer = new Jetty6AppServer() {
+      appServer = new Jetty7AppServer() {
         protected File findRootOfWebApp() {
           File common = super.findRootOfWebApp();
           File file = new File(common, "../../../remote/server/src/web");
