@@ -305,7 +305,11 @@ public class WebDriverCommandProcessor implements CommandProcessor {
     // TODO(simon): We're starting to need a "describe" interface for checks
     // like this.
     if (driver instanceof JavascriptExecutor) {
-      throw new IllegalStateException("Driver instance must support JS");
+      throw new IllegalStateException("Driver instance must support JS.");
+    }
+
+    if (!((JavascriptExecutor) driver).isJavascriptEnabled()) {
+      throw new IllegalStateException("JS support must be enabled.");
     }
   }
 
