@@ -263,7 +263,11 @@ public class CommandLine {
   private void postRunCleanup() {
     proc = null;
     if (cleanup != null) {
-      Runtime.getRuntime().removeShutdownHook(cleanup);
+      try {
+        Runtime.getRuntime().removeShutdownHook(cleanup);
+      } catch (IllegalStateException e) {
+        // VM is shutting down
+      }
       cleanup = null;
     }
   }
@@ -333,7 +337,7 @@ public class CommandLine {
         }
       } catch (IOException e) {
         // it's possible that the stream has been closed. That's okay.
-        // Swallow the exception        
+        // Swallow the exception
       } finally {
         try {
           inputOut.close();
