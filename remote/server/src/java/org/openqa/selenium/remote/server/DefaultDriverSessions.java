@@ -34,6 +34,7 @@ import java.util.concurrent.atomic.AtomicLong;
 public class DefaultDriverSessions implements DriverSessions {
   private final DriverFactory factory;
 
+  // TODO(simon): Replace with an actual factory. Or UUIDs.
   private static final AtomicLong sessionKeyFactory = new AtomicLong(System.currentTimeMillis());
 
   private final Map<SessionId, Session> sessionIdToDriver =
