@@ -42,7 +42,7 @@ public class TestIndividualKeyboardActions extends MockObjectTestCase {
   public void testKeyDownAction() {
     final Keys keyToPress = Keys.SHIFT;
 
-    WebDriver driver = new StubDriver() {
+    WebDriver driver = new StubInputDeviceDriver() {
       @Override
       public TargetLocator switchTo() {
         return new StubTargetLocator() {
@@ -70,7 +70,7 @@ public class TestIndividualKeyboardActions extends MockObjectTestCase {
   public void testKeyUpAction() {
     final Keys keyToRelease = Keys.CONTROL;
 
-    WebDriver driver = new StubDriver() {
+    WebDriver driver = new StubInputDeviceDriver() {
       @Override
       public TargetLocator switchTo() {
         return new StubTargetLocator() {
@@ -101,7 +101,7 @@ public class TestIndividualKeyboardActions extends MockObjectTestCase {
       one(dummyKeyboard).sendKeys(keysToSend);
     }});
 
-    WebDriver driver = new StubDriver() {
+    WebDriver driver = new StubInputDeviceDriver() {
       @Override
       public Keyboard getKeyboard() {
         return dummyKeyboard;
@@ -115,7 +115,7 @@ public class TestIndividualKeyboardActions extends MockObjectTestCase {
 
   public void testSendKeysActionOnTheActiveElement() {
 
-    WebDriver driver = new StubDriver() {
+    WebDriver driver = new StubInputDeviceDriver() {
       @Override
       public TargetLocator switchTo() {
         return new StubTargetLocator() {
@@ -143,9 +143,9 @@ public class TestIndividualKeyboardActions extends MockObjectTestCase {
   public void testSendKeysActionOnANonActiveElement() {
     final int[] executeScriptCalls = {0};
 
-    WebDriver driver = new StubDriver() {
+    WebDriver driver = new StubInputDeviceDriver() {
       @Override
-      public TargetLocator switchTo() {
+      public WebDriver.TargetLocator switchTo() {
         return new StubTargetLocator() {
           @Override
           public WebElement activeElement() {
@@ -196,7 +196,7 @@ public class TestIndividualKeyboardActions extends MockObjectTestCase {
   public void testKeyDownActionWithoutAnElement() {
     final Keys keyToPress = Keys.SHIFT;
 
-    WebDriver driver = new StubDriver() {
+    WebDriver driver = new StubInputDeviceDriver() {
       @Override
       public Keyboard getKeyboard() {
         return dummyKeyboard;
@@ -214,7 +214,7 @@ public class TestIndividualKeyboardActions extends MockObjectTestCase {
   public void testKeyUpActionWithoutAnElement() {
     final Keys keyToRelease = Keys.SHIFT;
 
-    WebDriver driver = new StubDriver() {
+    WebDriver driver = new StubInputDeviceDriver() {
       @Override
       public Keyboard getKeyboard() {
         return dummyKeyboard;

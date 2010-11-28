@@ -41,7 +41,7 @@ public class TestIndividualMouseActions extends MockObjectTestCase {
     dummyMouse = mock(Mouse.class);
     dummyElement = mock(WebElement.class);
     dummyRenderedElement = mock(RenderedWebElement.class);
-    fakeDriver = new StubDriver() {
+    fakeDriver = new StubInputDeviceDriver() {
       @Override
       public Mouse getMouse() {
         return dummyMouse;

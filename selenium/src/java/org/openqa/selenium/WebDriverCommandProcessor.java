@@ -304,7 +304,7 @@ public class WebDriverCommandProcessor implements CommandProcessor {
   private void assertDriverSupportsJavascript(WebDriver driver) {
     // TODO(simon): We're starting to need a "describe" interface for checks
     // like this.
-    if (driver instanceof JavascriptExecutor) {
+    if (!(driver instanceof JavascriptExecutor)) {
       throw new IllegalStateException("Driver instance must support JS.");
     }
 

@@ -40,7 +40,7 @@ public class TestActionChainsGenerator extends MockObjectTestCase {
     dummyMouse = mock(Mouse.class);
     dummyKeyboard = mock(Keyboard.class);
     dummyElement = mock(WebElement.class);
-    driver = new StubDriver() {
+    driver = new StubInputDeviceDriver() {
       @Override
       public TargetLocator switchTo() {
         return new StubTargetLocator() {
@@ -59,11 +59,6 @@ public class TestActionChainsGenerator extends MockObjectTestCase {
       @Override
       public Mouse getMouse() {
         return dummyMouse;
-      }
-
-      @Override
-      public Object executeScript(String script, Object... args) {
-        return null;
       }
     };
   }

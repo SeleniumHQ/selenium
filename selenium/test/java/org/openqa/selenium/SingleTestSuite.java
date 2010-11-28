@@ -39,7 +39,7 @@ public class SingleTestSuite extends TestCase {
   private static final String SELENIUM = "org.openqa.selenium.SeleneseBackedWebDriver";
 
   public static Test suite() throws Exception {
-    String driver = IE;
+    String driver = FIREFOX;
 
     System.setProperty("jna.library.path", "..\\build;build");
     System.setProperty("webdriver.selenium.server.port", String.valueOf(findFreePort()));
@@ -54,7 +54,7 @@ public class SingleTestSuite extends TestCase {
         .usingDriver(driver)
         .keepDriverInstance()
         .includeJavascriptTests()
-        .onlyRun("ElementAttributeTest")
+        .onlyRun("WebDriverCommandProcessorTest")
 //        .method("testShouldReturnValueOfOnClickAttribute")
         .exclude(ALL)
         .exclude(Ignore.Driver.IE)
