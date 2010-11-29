@@ -1103,7 +1103,7 @@ Finders.
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#initialize-instance_method" title="#initialize (instance method)">- (Bridge) <strong>initialize</strong> </a>
+      <a href="#initialize-instance_method" title="#initialize (instance method)">- (Bridge) <strong>initialize</strong>(opts = {}) </a>
     
 
     
@@ -1502,7 +1502,7 @@ A new instance of Bridge.
     <div class="method_details first">
   <p class="signature first" id="initialize-instance_method">
   
-    - (<tt><span class='object_link'><a href="" title="Selenium::WebDriver::IE::Bridge (class)">Bridge</a></span></tt>) <strong>initialize</strong> 
+    - (<tt><span class='object_link'><a href="" title="Selenium::WebDriver::IE::Bridge (class)">Bridge</a></span></tt>) <strong>initialize</strong>(opts = {}) 
   
 
   
@@ -1536,14 +1536,14 @@ A new instance of Bridge
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 12</span>
 
-<span class='def def kw'>def</span> <span class='initialize identifier id'>initialize</span>
+<span class='def def kw'>def</span> <span class='initialize identifier id'>initialize</span><span class='lparen token'>(</span><span class='opts identifier id'>opts</span> <span class='assign token'>=</span> <span class='lbrace token'>{</span><span class='rbrace token'>}</span><span class='rparen token'>)</span>
   <span class='ptr_ref identifier id'>ptr_ref</span> <span class='assign token'>=</span> <span class='FFI constant id'>FFI</span><span class='colon2 op'>::</span><span class='MemoryPointer constant id'>MemoryPointer</span><span class='dot token'>.</span><span class='new identifier id'>new</span> <span class='symbol val'>:pointer</span>
 
   <span class='check_error_code identifier id'>check_error_code</span> <span class='Lib constant id'>Lib</span><span class='dot token'>.</span><span class='wdNewDriverInstance identifier id'>wdNewDriverInstance</span><span class='lparen token'>(</span><span class='ptr_ref identifier id'>ptr_ref</span><span class='rparen token'>)</span><span class='comma token'>,</span>
                    <span class='string val'>&quot;could not create driver instance&quot;</span>
 
   <span class='@driver_pointer ivar id'>@driver_pointer</span> <span class='assign token'>=</span> <span class='ptr_ref identifier id'>ptr_ref</span><span class='dot token'>.</span><span class='get_pointer identifier id'>get_pointer</span><span class='lparen token'>(</span><span class='integer val'>0</span><span class='rparen token'>)</span>
-  <span class='@speed ivar id'>@speed</span>          <span class='assign token'>=</span> <span class='symbol val'>:fast</span>
+  <span class='@speed ivar id'>@speed</span>          <span class='assign token'>=</span> <span class='opts identifier id'>opts</span><span class='lbrack token'>[</span><span class='symbol val'>:speed</span><span class='rbrack token'>]</span> <span class='orop op'>||</span> <span class='symbol val'>:fast</span>
 <span class='end end kw'>end</span>
 </pre>
     </td>
@@ -3895,9 +3895,9 @@ Finders
 </div>
     
     <div id="footer">
-  Generated on Sat Oct 09 02:15:02 2010 by 
+  Generated on Mon Nov 29 14:10:35 2010 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.6.1 (ruby-1.8.7).
+  0.6.3 (ruby-1.8.7).
 </div>
 
   </body>

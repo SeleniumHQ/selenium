@@ -93,6 +93,56 @@
         <li class="public ">
   <span class="summary_signature">
     
+      <a href="#closed%3F-instance_method" title="#closed? (instance method)">- (Boolean) <strong>closed?</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>
+Returns true if the server has stopped listening within the given timeout,
+false otherwise.
+</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#connected%3F-instance_method" title="#connected? (instance method)">- (Boolean) <strong>connected?</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>
+Returns true if the server is listening within the given timeout, false
+otherwise.
+</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
       <a href="#initialize-instance_method" title="#initialize (instance method)">- (SocketPoller) <strong>initialize</strong>(host, port, timeout = 0, interval = 0.25) </a>
     
 
@@ -110,30 +160,6 @@
   
     <span class="summary_desc"><div class='inline'><p>
 A new instance of SocketPoller.
-</p>
-</div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#success%3F-instance_method" title="#success? (instance method)">- (Boolean) <strong>success?</strong> </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'><p>
-True if the socket can be connected to.
 </p>
 </div></span>
   
@@ -200,16 +226,17 @@ A new instance of SocketPoller
     
     
       <div class="method_details first">
-  <p class="signature first" id="success?-instance_method">
+  <p class="signature first" id="closed?-instance_method">
   
-    - (<tt>Boolean</tt>) <strong>success?</strong> 
+    - (<tt>Boolean</tt>) <strong>closed?</strong> 
   
 
   
 </p><div class="docstring">
   <div class="discussion">
     <p>
-True if the socket can be connected to
+Returns true if the server has stopped listening within the given timeout,
+false otherwise.
 </p>
 
 
@@ -226,11 +253,59 @@ True if the socket can be connected to
       
       
       
-        &mdash;
-        <div class='inline'><p>
-true if the socket can be connected to
-</p>
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+32
+33
+34</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/socket_poller.rb', line 32</span>
+
+<span class='def def kw'>def</span> <span class='closed? fid id'>closed?</span>
+  <span class='with_timeout identifier id'>with_timeout</span> <span class='lbrace token'>{</span> <span class='not not kw'>not</span> <span class='listening? fid id'>listening?</span> <span class='rbrace token'>}</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
 </div>
+    
+      <div class="method_details ">
+  <p class="signature " id="connected?-instance_method">
+  
+    - (<tt>Boolean</tt>) <strong>connected?</strong> 
+  
+
+  
+</p><div class="docstring">
+  <div class="discussion">
+    <p>
+Returns true if the server is listening within the given timeout, false
+otherwise.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  <h3>Returns:</h3>
+<ul class="return">
+  
+    <li>
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+      
       
     </li>
   
@@ -242,29 +317,15 @@ true if the socket can be connected to
       <pre class="lines">
 
 
-18
-19
-20
 21
 22
-23
-24
-25
-26
-27</pre>
+23</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/socket_poller.rb', line 18</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/socket_poller.rb', line 21</span>
 
-<span class='def def kw'>def</span> <span class='success? fid id'>success?</span>
-  <span class='max_time identifier id'>max_time</span> <span class='assign token'>=</span> <span class='Time constant id'>Time</span><span class='dot token'>.</span><span class='now identifier id'>now</span> <span class='plus op'>+</span> <span class='@timeout ivar id'>@timeout</span>
-
-  <span class='lparen token'>(</span>
-    <span class='return return kw'>return</span> <span class='true true kw'>true</span> <span class='if if_mod kw'>if</span> <span class='can_connect? fid id'>can_connect?</span>
-    <span class='wait identifier id'>wait</span>
-  <span class='rparen token'>)</span> <span class='until until_mod kw'>until</span> <span class='Time constant id'>Time</span><span class='dot token'>.</span><span class='now identifier id'>now</span> <span class='geq op'>&gt;=</span> <span class='max_time identifier id'>max_time</span>
-
-  <span class='false false kw'>false</span>
+<span class='def def kw'>def</span> <span class='connected? fid id'>connected?</span>
+  <span class='with_timeout identifier id'>with_timeout</span> <span class='lbrace token'>{</span> <span class='listening? fid id'>listening?</span> <span class='rbrace token'>}</span>
 <span class='end end kw'>end</span>
 </pre>
     </td>
@@ -277,9 +338,9 @@ true if the socket can be connected to
 </div>
     
     <div id="footer">
-  Generated on Sat Oct 09 02:15:20 2010 by 
+  Generated on Mon Nov 29 14:10:44 2010 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.6.1 (ruby-1.8.7).
+  0.6.3 (ruby-1.8.7).
 </div>
 
   </body>

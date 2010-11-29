@@ -87,7 +87,7 @@
 
 <div id="subclasses">
   <h2>Direct Known Subclasses</h2>
-  <p class="children"><span class='object_link'><a href="../Chrome/Bridge.html" title="Selenium::WebDriver::Chrome::Bridge (class)">Chrome::Bridge</a></span>, <span class='object_link'><a href="../Firefox/Bridge.html" title="Selenium::WebDriver::Firefox::Bridge (class)">Firefox::Bridge</a></span></p>
+  <p class="children"><span class='object_link'><a href="../Android/Bridge.html" title="Selenium::WebDriver::Android::Bridge (class)">Android::Bridge</a></span>, <span class='object_link'><a href="../Chrome/Bridge.html" title="Selenium::WebDriver::Chrome::Bridge (class)">Chrome::Bridge</a></span>, <span class='object_link'><a href="../Firefox/Bridge.html" title="Selenium::WebDriver::Firefox::Bridge (class)">Firefox::Bridge</a></span>, <span class='object_link'><a href="../IPhone/Bridge.html" title="Selenium::WebDriver::IPhone::Bridge (class)">IPhone::Bridge</a></span></p>
 </div>
 
   <h2>Constant Summary</h2>
@@ -2121,12 +2121,12 @@ the appropriate http verb, such as :get, :post, or :delete
       <pre class="lines">
 
 
+304
 305
-306
-307</pre>
+306</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 305</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 304</span>
 
 <span class='def def kw'>def</span> <span class='clearElement identifier id'>clearElement</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='rparen token'>)</span>
   <span class='execute identifier id'>execute</span> <span class='symbol val'>:clearElement</span><span class='comma token'>,</span> <span class='symbol val'>:id</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='element identifier id'>element</span>
@@ -2161,12 +2161,12 @@ Element functions
       <pre class="lines">
 
 
+268
 269
-270
-271</pre>
+270</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 269</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 268</span>
 
 <span class='def def kw'>def</span> <span class='clickElement identifier id'>clickElement</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='rparen token'>)</span>
   <span class='execute identifier id'>execute</span> <span class='symbol val'>:clickElement</span><span class='comma token'>,</span> <span class='symbol val'>:id</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='element identifier id'>element</span>
@@ -2312,12 +2312,12 @@ Element functions
       <pre class="lines">
 
 
+345
 346
-347
-348</pre>
+347</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 346</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 345</span>
 
 <span class='def def kw'>def</span> <span class='dragElement identifier id'>dragElement</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='comma token'>,</span> <span class='rigth_by identifier id'>rigth_by</span><span class='comma token'>,</span> <span class='down_by identifier id'>down_by</span><span class='rparen token'>)</span>
   <span class='execute identifier id'>execute</span> <span class='symbol val'>:dragElement</span><span class='comma token'>,</span> <span class='lbrace token'>{</span><span class='symbol val'>:id</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='element identifier id'>element</span><span class='rbrace token'>}</span><span class='comma token'>,</span> <span class='symbol val'>:x</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='rigth_by identifier id'>rigth_by</span><span class='comma token'>,</span> <span class='symbol val'>:y</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='down_by identifier id'>down_by</span>
@@ -2370,12 +2370,12 @@ Element functions
       <pre class="lines">
 
 
+349
 350
-351
-352</pre>
+351</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 350</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 349</span>
 
 <span class='def def kw'>def</span> <span class='elementEquals identifier id'>elementEquals</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='comma token'>,</span> <span class='other identifier id'>other</span><span class='rparen token'>)</span>
   <span class='execute identifier id'>execute</span> <span class='symbol val'>:elementEquals</span><span class='comma token'>,</span> <span class='symbol val'>:id</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='element identifier id'>element</span><span class='dot token'>.</span><span class='ref identifier id'>ref</span><span class='comma token'>,</span> <span class='symbol val'>:other</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='other identifier id'>other</span><span class='dot token'>.</span><span class='ref identifier id'>ref</span>
@@ -2935,12 +2935,12 @@ Element functions
       <pre class="lines">
 
 
+336
 337
-338
-339</pre>
+338</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 337</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 336</span>
 
 <span class='def def kw'>def</span> <span class='getActiveElement identifier id'>getActiveElement</span>
   <span class='Element constant id'>Element</span><span class='dot token'>.</span><span class='new identifier id'>new</span> <span class='self self kw'>self</span><span class='comma token'>,</span> <span class='element_id_from identifier id'>element_id_from</span><span class='lparen token'>(</span><span class='execute identifier id'>execute</span><span class='lparen token'>(</span><span class='symbol val'>:getActiveElement</span><span class='rparen token'>)</span><span class='rparen token'>)</span>
@@ -3080,12 +3080,12 @@ Element functions
       <pre class="lines">
 
 
+276
 277
-278
-279</pre>
+278</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 277</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 276</span>
 
 <span class='def def kw'>def</span> <span class='getElementAttribute identifier id'>getElementAttribute</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='comma token'>,</span> <span class='name identifier id'>name</span><span class='rparen token'>)</span>
   <span class='execute identifier id'>execute</span> <span class='symbol val'>:getElementAttribute</span><span class='comma token'>,</span> <span class='symbol val'>:id</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='element identifier id'>element</span><span class='comma token'>,</span> <span class='symbol val'>:name</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='name identifier id'>name</span>
@@ -3109,14 +3109,14 @@ Element functions
       <pre class="lines">
 
 
+288
 289
 290
 291
-292
-293</pre>
+292</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 289</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 288</span>
 
 <span class='def def kw'>def</span> <span class='getElementLocation identifier id'>getElementLocation</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='rparen token'>)</span>
   <span class='data identifier id'>data</span> <span class='assign token'>=</span> <span class='execute identifier id'>execute</span> <span class='symbol val'>:getElementLocation</span><span class='comma token'>,</span> <span class='symbol val'>:id</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='element identifier id'>element</span>
@@ -3142,14 +3142,14 @@ Element functions
       <pre class="lines">
 
 
+294
 295
 296
 297
-298
-299</pre>
+298</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 295</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 294</span>
 
 <span class='def def kw'>def</span> <span class='getElementSize identifier id'>getElementSize</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='rparen token'>)</span>
   <span class='data identifier id'>data</span> <span class='assign token'>=</span> <span class='execute identifier id'>execute</span> <span class='symbol val'>:getElementSize</span><span class='comma token'>,</span> <span class='symbol val'>:id</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='element identifier id'>element</span>
@@ -3175,12 +3175,12 @@ Element functions
       <pre class="lines">
 
 
+272
 273
-274
-275</pre>
+274</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 273</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 272</span>
 
 <span class='def def kw'>def</span> <span class='getElementTagName identifier id'>getElementTagName</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='rparen token'>)</span>
   <span class='execute identifier id'>execute</span> <span class='symbol val'>:getElementTagName</span><span class='comma token'>,</span> <span class='symbol val'>:id</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='element identifier id'>element</span>
@@ -3204,12 +3204,12 @@ Element functions
       <pre class="lines">
 
 
+284
 285
-286
-287</pre>
+286</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 285</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 284</span>
 
 <span class='def def kw'>def</span> <span class='getElementText identifier id'>getElementText</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='rparen token'>)</span>
   <span class='execute identifier id'>execute</span> <span class='symbol val'>:getElementText</span><span class='comma token'>,</span> <span class='symbol val'>:id</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='element identifier id'>element</span>
@@ -3233,12 +3233,12 @@ Element functions
       <pre class="lines">
 
 
+280
 281
-282
-283</pre>
+282</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 281</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 280</span>
 
 <span class='def def kw'>def</span> <span class='getElementValue identifier id'>getElementValue</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='rparen token'>)</span>
   <span class='execute identifier id'>execute</span> <span class='symbol val'>:getElementValue</span><span class='comma token'>,</span> <span class='symbol val'>:id</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='element identifier id'>element</span>
@@ -3262,12 +3262,12 @@ Element functions
       <pre class="lines">
 
 
+332
 333
-334
-335</pre>
+334</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 333</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 332</span>
 
 <span class='def def kw'>def</span> <span class='getElementValueOfCssProperty identifier id'>getElementValueOfCssProperty</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='comma token'>,</span> <span class='prop identifier id'>prop</span><span class='rparen token'>)</span>
   <span class='execute identifier id'>execute</span> <span class='symbol val'>:getElementValueOfCssProperty</span><span class='comma token'>,</span> <span class='symbol val'>:id</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='element identifier id'>element</span><span class='comma token'>,</span> <span class='symbol val'>:property_name</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='prop identifier id'>prop</span>
@@ -3494,12 +3494,12 @@ Element functions
       <pre class="lines">
 
 
+341
 342
-343
-344</pre>
+343</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 342</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 341</span>
 
 <span class='def def kw'>def</span> <span class='hoverOverElement identifier id'>hoverOverElement</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='rparen token'>)</span>
   <span class='execute identifier id'>execute</span> <span class='symbol val'>:hoverOverElement</span><span class='comma token'>,</span> <span class='symbol val'>:id</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='element identifier id'>element</span>
@@ -3523,12 +3523,12 @@ Element functions
       <pre class="lines">
 
 
+316
 317
-318
-319</pre>
+318</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 317</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 316</span>
 
 <span class='def def kw'>def</span> <span class='isElementDisplayed identifier id'>isElementDisplayed</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='rparen token'>)</span>
   <span class='execute identifier id'>execute</span> <span class='symbol val'>:isElementDisplayed</span><span class='comma token'>,</span> <span class='symbol val'>:id</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='element identifier id'>element</span>
@@ -3552,12 +3552,12 @@ Element functions
       <pre class="lines">
 
 
+308
 309
-310
-311</pre>
+310</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 309</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 308</span>
 
 <span class='def def kw'>def</span> <span class='isElementEnabled identifier id'>isElementEnabled</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='rparen token'>)</span>
   <span class='execute identifier id'>execute</span> <span class='symbol val'>:isElementEnabled</span><span class='comma token'>,</span> <span class='symbol val'>:id</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='element identifier id'>element</span>
@@ -3581,12 +3581,12 @@ Element functions
       <pre class="lines">
 
 
+312
 313
-314
-315</pre>
+314</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 313</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 312</span>
 
 <span class='def def kw'>def</span> <span class='isElementSelected identifier id'>isElementSelected</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='rparen token'>)</span>
   <span class='execute identifier id'>execute</span> <span class='symbol val'>:isElementSelected</span><span class='comma token'>,</span> <span class='symbol val'>:id</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='element identifier id'>element</span>
@@ -3670,12 +3670,12 @@ Element functions
       <pre class="lines">
 
 
+300
 301
-302
-303</pre>
+302</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 301</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 300</span>
 
 <span class='def def kw'>def</span> <span class='sendKeysToElement identifier id'>sendKeysToElement</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='comma token'>,</span> <span class='string identifier id'>string</span><span class='rparen token'>)</span>
   <span class='execute identifier id'>execute</span> <span class='symbol val'>:sendKeysToElement</span><span class='comma token'>,</span> <span class='lbrace token'>{</span><span class='symbol val'>:id</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='element identifier id'>element</span><span class='rbrace token'>}</span><span class='comma token'>,</span> <span class='lbrace token'>{</span><span class='symbol val'>:value</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string identifier id'>string</span><span class='dot token'>.</span><span class='split identifier id'>split</span><span class='lparen token'>(</span><span class='regexp val'>//</span><span class='u identifier id'>u</span><span class='rparen token'>)</span><span class='rbrace token'>}</span>
@@ -3739,12 +3739,12 @@ Returns the current session ID.
       <pre class="lines">
 
 
+328
 329
-330
-331</pre>
+330</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 329</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 328</span>
 
 <span class='def def kw'>def</span> <span class='setElementSelected identifier id'>setElementSelected</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='rparen token'>)</span>
   <span class='execute identifier id'>execute</span> <span class='symbol val'>:setElementSelected</span><span class='comma token'>,</span> <span class='symbol val'>:id</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='element identifier id'>element</span>
@@ -3855,12 +3855,12 @@ Returns the current session ID.
       <pre class="lines">
 
 
+320
 321
-322
-323</pre>
+322</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 321</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 320</span>
 
 <span class='def def kw'>def</span> <span class='submitElement identifier id'>submitElement</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='rparen token'>)</span>
   <span class='execute identifier id'>execute</span> <span class='symbol val'>:submitElement</span><span class='comma token'>,</span> <span class='symbol val'>:id</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='element identifier id'>element</span>
@@ -3971,12 +3971,12 @@ Returns the current session ID.
       <pre class="lines">
 
 
+324
 325
-326
-327</pre>
+326</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 325</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 324</span>
 
 <span class='def def kw'>def</span> <span class='toggleElement identifier id'>toggleElement</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='rparen token'>)</span>
   <span class='execute identifier id'>execute</span> <span class='symbol val'>:toggleElement</span><span class='comma token'>,</span> <span class='symbol val'>:id</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='element identifier id'>element</span>
@@ -3992,9 +3992,9 @@ Returns the current session ID.
 </div>
     
     <div id="footer">
-  Generated on Sat Oct 09 02:15:12 2010 by 
+  Generated on Mon Nov 29 14:10:42 2010 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.6.1 (ruby-1.8.7).
+  0.6.3 (ruby-1.8.7).
 </div>
 
   </body>

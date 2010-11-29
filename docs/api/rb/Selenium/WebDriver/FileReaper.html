@@ -99,6 +99,27 @@
         <li class="public ">
   <span class="summary_signature">
     
+      <a href="#reap-class_method" title="reap (class method)">+ (Object) <strong>reap</strong>(file) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
       <a href="#reap%21-class_method" title="reap! (class method)">+ (Object) <strong>reap!</strong> </a>
     
 
@@ -219,6 +240,47 @@
 </div>
     
       <div class="method_details ">
+  <p class="signature " id="reap-class_method">
+  
+    + (<tt>Object</tt>) <strong>reap</strong>(file) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+23
+24
+25
+26
+27
+28
+29
+30
+31</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/file_reaper.rb', line 23</span>
+
+<span class='def def kw'>def</span> <span class='reap identifier id'>reap</span><span class='lparen token'>(</span><span class='file identifier id'>file</span><span class='rparen token'>)</span>
+  <span class='return return kw'>return</span> <span class='unless unless_mod kw'>unless</span> <span class='reap? fid id'>reap?</span>
+
+  <span class='unless unless kw'>unless</span> <span class='tmp_files identifier id'>tmp_files</span><span class='dot token'>.</span><span class='include? fid id'>include?</span><span class='lparen token'>(</span><span class='file identifier id'>file</span><span class='rparen token'>)</span>
+    <span class='raise identifier id'>raise</span> <span class='Error constant id'>Error</span><span class='colon2 op'>::</span><span class='WebDriverError constant id'>WebDriverError</span><span class='comma token'>,</span> <span class='dstring node'>&quot;file not added for reaping: #{file.inspect}&quot;</span>
+  <span class='end end kw'>end</span>
+
+  <span class='FileUtils constant id'>FileUtils</span><span class='dot token'>.</span><span class='rm_rf identifier id'>rm_rf</span> <span class='tmp_files identifier id'>tmp_files</span><span class='dot token'>.</span><span class='delete identifier id'>delete</span><span class='lparen token'>(</span><span class='file identifier id'>file</span><span class='rparen token'>)</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
   <p class="signature " id="reap!-class_method">
   
     + (<tt>Object</tt>) <strong>reap!</strong> 
@@ -231,12 +293,12 @@
       <pre class="lines">
 
 
-23
-24
-25</pre>
+33
+34
+35</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/file_reaper.rb', line 23</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/file_reaper.rb', line 33</span>
 
 <span class='def def kw'>def</span> <span class='reap! fid id'>reap!</span>
   <span class='tmp_files identifier id'>tmp_files</span><span class='dot token'>.</span><span class='each identifier id'>each</span> <span class='lbrace token'>{</span> <span class='bitor op'>|</span><span class='file identifier id'>file</span><span class='bitor op'>|</span> <span class='FileUtils constant id'>FileUtils</span><span class='dot token'>.</span><span class='rm_rf identifier id'>rm_rf</span><span class='lparen token'>(</span><span class='file identifier id'>file</span><span class='rparen token'>)</span> <span class='rbrace token'>}</span> <span class='if if_mod kw'>if</span> <span class='reap? fid id'>reap?</span>
@@ -362,9 +424,9 @@
 </div>
     
     <div id="footer">
-  Generated on Sat Oct 09 02:15:18 2010 by 
+  Generated on Mon Nov 29 14:10:44 2010 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.6.1 (ruby-1.8.7).
+  0.6.3 (ruby-1.8.7).
 </div>
 
   </body>

@@ -161,15 +161,25 @@
       <pre class="lines">
 
 
-147
-148
-149</pre>
+150
+151
+152
+153
+154
+155
+156
+157</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chrome/launcher.rb', line 147</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chrome/launcher.rb', line 150</span>
 
 <span class='def def kw'>def</span> <span class='self self kw'>self</span><span class='dot token'>.</span><span class='possible_paths identifier id'>possible_paths</span>
-  <span class='lbrack token'>[</span><span class='Platform constant id'>Platform</span><span class='dot token'>.</span><span class='find_binary identifier id'>find_binary</span><span class='lparen token'>(</span><span class='string val'>&quot;google-chrome&quot;</span><span class='rparen token'>)</span><span class='comma token'>,</span> <span class='Platform constant id'>Platform</span><span class='dot token'>.</span><span class='find_binary identifier id'>find_binary</span><span class='lparen token'>(</span><span class='string val'>&quot;chromium&quot;</span><span class='rparen token'>)</span><span class='comma token'>,</span> <span class='string val'>&quot;/usr/bin/google-chrome&quot;</span><span class='rbrack token'>]</span><span class='dot token'>.</span><span class='compact identifier id'>compact</span>
+  <span class='lbrack token'>[</span>
+    <span class='Platform constant id'>Platform</span><span class='dot token'>.</span><span class='find_binary identifier id'>find_binary</span><span class='lparen token'>(</span><span class='string val'>&quot;google-chrome&quot;</span><span class='rparen token'>)</span><span class='comma token'>,</span>
+    <span class='Platform constant id'>Platform</span><span class='dot token'>.</span><span class='find_binary identifier id'>find_binary</span><span class='lparen token'>(</span><span class='string val'>&quot;chromium&quot;</span><span class='rparen token'>)</span><span class='comma token'>,</span>
+    <span class='Platform constant id'>Platform</span><span class='dot token'>.</span><span class='find_binary identifier id'>find_binary</span><span class='lparen token'>(</span><span class='string val'>&quot;chromium-browser&quot;</span><span class='rparen token'>)</span><span class='comma token'>,</span>
+    <span class='string val'>&quot;/usr/bin/google-chrome&quot;</span>
+  <span class='rbrack token'>]</span><span class='dot token'>.</span><span class='compact identifier id'>compact</span>
 <span class='end end kw'>end</span>
 </pre>
     </td>
@@ -182,9 +192,9 @@
 </div>
     
     <div id="footer">
-  Generated on Sat Oct 09 02:15:16 2010 by 
+  Generated on Mon Nov 29 14:10:43 2010 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.6.1 (ruby-1.8.7).
+  0.6.3 (ruby-1.8.7).
 </div>
 
   </body>

@@ -84,12 +84,6 @@
   
     <dl class="constants">
       
-        <dt id="WAIT_TIMEOUT-constant" class="">WAIT_TIMEOUT =
-          
-        </dt>
-        <dd><pre class="code"><span class='integer val'>90</span>
-</pre></dd>
-      
         <dt id="NO_FOCUS_LIBRARY_NAME-constant" class="">NO_FOCUS_LIBRARY_NAME =
           
         </dt>
@@ -103,6 +97,12 @@
   <span class='lbrack token'>[</span><span class='dstring node'>&quot;#{WebDriver.root}/selenium/webdriver/firefox/native/linux/amd64/#{NO_FOCUS_LIBRARY_NAME}&quot;</span><span class='comma token'>,</span> <span class='dstring node'>&quot;amd64/#{NO_FOCUS_LIBRARY_NAME}&quot;</span><span class='rbrack token'>]</span><span class='comma token'>,</span>
   <span class='lbrack token'>[</span><span class='dstring node'>&quot;#{WebDriver.root}/selenium/webdriver/firefox/native/linux/x86/#{NO_FOCUS_LIBRARY_NAME}&quot;</span><span class='comma token'>,</span> <span class='dstring node'>&quot;x86/#{NO_FOCUS_LIBRARY_NAME}&quot;</span><span class='rbrack token'>]</span><span class='comma token'>,</span>
 <span class='rbrack token'>]</span>
+</pre></dd>
+      
+        <dt id="WAIT_TIMEOUT-constant" class="">WAIT_TIMEOUT =
+          
+        </dt>
+        <dd><pre class="code"><span class='integer val'>90</span>
 </pre></dd>
       
     </dl>
@@ -168,48 +168,6 @@
     </h2>
 
     <ul class="summary">
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#cope_with_mac_strangeness-instance_method" title="#cope_with_mac_strangeness (instance method)">- (Object) <strong>cope_with_mac_strangeness</strong>(args) </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#execute-instance_method" title="#execute (instance method)">- (Object) <strong>execute</strong>(*extra_args) </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
       
         <li class="public ">
   <span class="summary_signature">
@@ -296,12 +254,6 @@
       <pre class="lines">
 
 
-94
-95
-96
-97
-98
-99
 100
 101
 102
@@ -313,10 +265,16 @@
 108
 109
 110
-111</pre>
+111
+112
+113
+114
+115
+116
+117</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/binary.rb', line 94</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/binary.rb', line 100</span>
 
 <span class='def def kw'>def</span> <span class='path identifier id'>path</span>
   <span class='@path ivar id'>@path</span> <span class='opasgn op'>||=</span> <span class='case case kw'>case</span> <span class='Platform constant id'>Platform</span><span class='dot token'>.</span><span class='os identifier id'>os</span>
@@ -370,13 +328,13 @@
       <pre class="lines">
 
 
-89
-90
-91
-92</pre>
+95
+96
+97
+98</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/binary.rb', line 89</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/binary.rb', line 95</span>
 
 <span class='def def kw'>def</span> <span class='path= identifier id'>path=</span><span class='lparen token'>(</span><span class='path identifier id'>path</span><span class='rparen token'>)</span>
   <span class='Platform constant id'>Platform</span><span class='dot token'>.</span><span class='assert_executable identifier id'>assert_executable</span><span class='lparen token'>(</span><span class='path identifier id'>path</span><span class='rparen token'>)</span>
@@ -395,91 +353,7 @@
     
     
       <div class="method_details first">
-  <p class="signature first" id="cope_with_mac_strangeness-instance_method">
-  
-    - (<tt>Object</tt>) <strong>cope_with_mac_strangeness</strong>(args) 
-  
-
-  
-</p><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-34
-35
-36
-37
-38
-39
-40
-41
-42
-43
-44
-45
-46
-47
-48</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/binary.rb', line 34</span>
-
-<span class='def def kw'>def</span> <span class='cope_with_mac_strangeness identifier id'>cope_with_mac_strangeness</span><span class='lparen token'>(</span><span class='args identifier id'>args</span><span class='rparen token'>)</span>
-  <span class='sleep identifier id'>sleep</span> <span class='integer val'>0</span><span class='integer val'>.3</span>
-
-  <span class='if if kw'>if</span> <span class='@process ivar id'>@process</span><span class='dot token'>.</span><span class='crashed? fid id'>crashed?</span>
-    <span class='comment val'># ok, trying a restart</span>
-    <span class='sleep identifier id'>sleep</span> <span class='integer val'>7</span>
-    <span class='execute identifier id'>execute</span><span class='lparen token'>(</span><span class='mult op'>*</span><span class='args identifier id'>args</span><span class='rparen token'>)</span>
-  <span class='end end kw'>end</span>
-
-  <span class='comment val'># ensure we're ok</span>
-  <span class='sleep identifier id'>sleep</span> <span class='integer val'>0</span><span class='integer val'>.3</span>
-  <span class='if if kw'>if</span> <span class='@process ivar id'>@process</span><span class='dot token'>.</span><span class='crashed? fid id'>crashed?</span>
-    <span class='raise identifier id'>raise</span> <span class='Error constant id'>Error</span><span class='colon2 op'>::</span><span class='WebDriverError constant id'>WebDriverError</span><span class='comma token'>,</span> <span class='dstring node'>&quot;unable to start Firefox cleanly, args: #{args.inspect}&quot;</span>
-  <span class='end end kw'>end</span>
-<span class='end end kw'>end</span>
-</pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <p class="signature " id="execute-instance_method">
-  
-    - (<tt>Object</tt>) <strong>execute</strong>(*extra_args) 
-  
-
-  
-</p><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-29
-30
-31
-32</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/binary.rb', line 29</span>
-
-<span class='def def kw'>def</span> <span class='execute identifier id'>execute</span><span class='lparen token'>(</span><span class='mult op'>*</span><span class='extra_args identifier id'>extra_args</span><span class='rparen token'>)</span>
-  <span class='args identifier id'>args</span> <span class='assign token'>=</span> <span class='lbrack token'>[</span><span class='self self kw'>self</span><span class='dot token'>.</span><span class='class identifier id'>class</span><span class='dot token'>.</span><span class='path identifier id'>path</span><span class='comma token'>,</span> <span class='string val'>&quot;-no-remote&quot;</span><span class='comma token'>,</span> <span class='string val'>&quot;--verbose&quot;</span><span class='rbrack token'>]</span> <span class='plus op'>+</span> <span class='extra_args identifier id'>extra_args</span>
-  <span class='@process ivar id'>@process</span> <span class='assign token'>=</span> <span class='ChildProcess constant id'>ChildProcess</span><span class='dot token'>.</span><span class='build identifier id'>build</span><span class='lparen token'>(</span><span class='mult op'>*</span><span class='args identifier id'>args</span><span class='rparen token'>)</span><span class='dot token'>.</span><span class='start identifier id'>start</span>
-<span class='end end kw'>end</span>
-</pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <p class="signature " id="quit-instance_method">
+  <p class="signature first" id="quit-instance_method">
   
     - (<tt>Object</tt>) <strong>quit</strong> 
   
@@ -491,16 +365,16 @@
       <pre class="lines">
 
 
-50
-51
-52
-53
-54
-55
-56</pre>
+33
+34
+35
+36
+37
+38
+39</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/binary.rb', line 50</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/binary.rb', line 33</span>
 
 <span class='def def kw'>def</span> <span class='quit identifier id'>quit</span>
   <span class='return return kw'>return</span> <span class='unless unless_mod kw'>unless</span> <span class='@process ivar id'>@process</span>
@@ -528,7 +402,6 @@
       <pre class="lines">
 
 
-15
 16
 17
 18
@@ -540,16 +413,23 @@
 24
 25
 26
-27</pre>
+27
+28
+29
+30
+31</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/binary.rb', line 15</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/binary.rb', line 16</span>
 
 <span class='def def kw'>def</span> <span class='start_with identifier id'>start_with</span><span class='lparen token'>(</span><span class='profile identifier id'>profile</span><span class='comma token'>,</span> <span class='profile_path identifier id'>profile_path</span><span class='comma token'>,</span> <span class='mult op'>*</span><span class='args identifier id'>args</span><span class='rparen token'>)</span>
   <span class='profile_path identifier id'>profile_path</span> <span class='assign token'>=</span> <span class='profile_path identifier id'>profile_path</span><span class='dot token'>.</span><span class='gsub identifier id'>gsub</span><span class='lparen token'>(</span><span class='string val'>&quot;/&quot;</span><span class='comma token'>,</span> <span class='string val'>&quot;\\&quot;</span><span class='rparen token'>)</span> <span class='if if_mod kw'>if</span> <span class='Platform constant id'>Platform</span><span class='dot token'>.</span><span class='win? fid id'>win?</span>
 
-  <span class='ENV constant id'>ENV</span><span class='lbrack token'>[</span><span class='string val'>'XRE_PROFILE_PATH'</span><span class='rbrack token'>]</span> <span class='assign token'>=</span> <span class='profile_path identifier id'>profile_path</span>
-  <span class='ENV constant id'>ENV</span><span class='lbrack token'>[</span><span class='string val'>'MOZ_NO_REMOTE'</span><span class='rbrack token'>]</span> <span class='assign token'>=</span> <span class='string val'>'1'</span> <span class='comment val'># able to launch multiple instances</span>
+  <span class='ENV constant id'>ENV</span><span class='lbrack token'>[</span><span class='string val'>'XRE_CONSOLE_LOG'</span><span class='rbrack token'>]</span>           <span class='assign token'>=</span> <span class='profile identifier id'>profile</span><span class='dot token'>.</span><span class='log_file identifier id'>log_file</span> <span class='if if_mod kw'>if</span> <span class='profile identifier id'>profile</span><span class='dot token'>.</span><span class='log_file identifier id'>log_file</span>
+  <span class='ENV constant id'>ENV</span><span class='lbrack token'>[</span><span class='string val'>'XRE_PROFILE_PATH'</span><span class='rbrack token'>]</span>          <span class='assign token'>=</span> <span class='profile_path identifier id'>profile_path</span>
+  <span class='ENV constant id'>ENV</span><span class='lbrack token'>[</span><span class='string val'>'MOZ_NO_REMOTE'</span><span class='rbrack token'>]</span>             <span class='assign token'>=</span> <span class='string val'>'1'</span> <span class='comment val'># able to launch multiple instances</span>
+  <span class='ENV constant id'>ENV</span><span class='lbrack token'>[</span><span class='string val'>'MOZ_CRASHREPORTER_DISABLE'</span><span class='rbrack token'>]</span> <span class='assign token'>=</span> <span class='string val'>'1'</span> <span class='comment val'># disable breakpad</span>
+  <span class='ENV constant id'>ENV</span><span class='lbrack token'>[</span><span class='string val'>'NO_EM_RESTART'</span><span class='rbrack token'>]</span>             <span class='assign token'>=</span> <span class='string val'>'1'</span> <span class='comment val'># prevent the binary from detaching from the console</span>
 
   <span class='if if kw'>if</span> <span class='Platform constant id'>Platform</span><span class='dot token'>.</span><span class='linux? fid id'>linux?</span> <span class='andop op'>&amp;&amp;</span> <span class='lparen token'>(</span><span class='profile identifier id'>profile</span><span class='dot token'>.</span><span class='native_events? fid id'>native_events?</span> <span class='orop op'>||</span> <span class='profile identifier id'>profile</span><span class='dot token'>.</span><span class='load_no_focus_lib? fid id'>load_no_focus_lib?</span><span class='rparen token'>)</span>
     <span class='modify_link_library_path identifier id'>modify_link_library_path</span> <span class='profile_path identifier id'>profile_path</span>
@@ -577,12 +457,12 @@
       <pre class="lines">
 
 
-58
-59
-60</pre>
+41
+42
+43</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/binary.rb', line 58</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/binary.rb', line 41</span>
 
 <span class='def def kw'>def</span> <span class='wait identifier id'>wait</span>
   <span class='@process ivar id'>@process</span><span class='dot token'>.</span><span class='poll_for_exit identifier id'>poll_for_exit</span><span class='lparen token'>(</span><span class='WAIT_TIMEOUT constant id'>WAIT_TIMEOUT</span><span class='rparen token'>)</span> <span class='if if_mod kw'>if</span> <span class='@process ivar id'>@process</span>
@@ -598,9 +478,9 @@
 </div>
     
     <div id="footer">
-  Generated on Sat Oct 09 02:15:14 2010 by 
+  Generated on Mon Nov 29 14:10:42 2010 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.6.1 (ruby-1.8.7).
+  0.6.3 (ruby-1.8.7).
 </div>
 
   </body>

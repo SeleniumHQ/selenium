@@ -1,0 +1,1073 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta name="Content-Type" content="text/html; charset=utf-8" />
+<title>Class: Selenium::Client::JavascriptExpressionBuilder</title>
+<link rel="stylesheet" href="../../css/style.css" type="text/css" media="screen" charset="utf-8" />
+<link rel="stylesheet" href="../../css/common.css" type="text/css" media="screen" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  relpath = '../..';
+  if (relpath != '') relpath += '/';
+</script>
+<script type="text/javascript" charset="utf-8" src="../../js/jquery.js"></script>
+<script type="text/javascript" charset="utf-8" src="../../js/app.js"></script>
+
+  </head>
+  <body>
+    <script type="text/javascript" charset="utf-8">
+      if (window.top.frames.main) document.body.className = 'frames';
+    </script>
+    
+    <div id="header">
+      <div id="menu">
+  
+    <a href="../../_index.html">Index (J)</a> &raquo; 
+    <span class='title'><span class='object_link'><a href="../../Selenium.html" title="Selenium (module)">Selenium</a></span></span> &raquo; <span class='title'><span class='object_link'><a href="../Client.html" title="Selenium::Client (module)">Client</a></span></span>
+     &raquo; 
+    <span class="title">JavascriptExpressionBuilder</span>
+  
+  
+  <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
+</div>
+
+      <div id="search">
+  <a id="class_list_link" href="#">Class List</a>
+  <a id="method_list_link" href="#">Method List</a>
+  <a id ="file_list_link" href="#">File List</a>
+</div>
+
+      <div class="clear"></div>
+    </div>
+    
+    <iframe id="search_frame"></iframe>
+    
+    <div id="content"><h1>Class: Selenium::Client::JavascriptExpressionBuilder
+  
+  
+  
+</h1>
+
+<dl class="box">
+  
+    <dt class="r1">Inherits:</dt>
+    <dd class="r1">
+      <span class="inheritName">Object</span>
+      
+        <ul class="fullTree">
+          <li>Object</li>
+          
+            <li class="next">Selenium::Client::JavascriptExpressionBuilder</li>
+          
+        </ul>
+        <a href="#" class="inheritanceTree">show all</a>
+      
+      </dd>
+    
+  
+  
+    
+  
+    
+  
+  
+  
+    <dt class="r2 last">Defined in:</dt>
+    <dd class="r2 last">rb/lib/selenium/client/javascript_expression_builder.rb</dd>
+  
+</dl>
+<div class="clear"></div>
+
+
+
+  <h2>Instance Attribute Summary <small>(<a href="#" class="summary_toggle">collapse</a>)</small></h2>
+  <ul class="summary">
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#script-instance_method" title="#script (instance method)">- (Object) <strong>script</strong> </a>
+    
+
+    
+  </span>
+  
+  
+    <span class="note title readonly">readonly</span>
+    
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>
+Returns the value of attribute script.
+</p>
+</div></span>
+  
+</li>
+
+    
+  </ul>
+
+
+  
+    <h2>
+      Instance Method Summary
+      <small>(<a href="#" class="summary_toggle">collapse</a>)</small>
+    </h2>
+
+    <ul class="summary">
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#append-instance_method" title="#append (instance method)">- (Object) <strong>append</strong>(text) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#element_value_is-instance_method" title="#element_value_is (instance method)">- (Object) <strong>element_value_is</strong>(expected_value) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#element_value_is_not-instance_method" title="#element_value_is_not (instance method)">- (Object) <strong>element_value_is_not</strong>(expected_value) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#find_element-instance_method" title="#find_element (instance method)">- (Object) <strong>find_element</strong>(locator) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#find_text-instance_method" title="#find_text (instance method)">- (Object) <strong>find_text</strong>(pattern, options) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#find_text_in_document-instance_method" title="#find_text_in_document (instance method)">- (Object) <strong>find_text_in_document</strong>(pattern, options) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#find_text_in_element-instance_method" title="#find_text_in_element (instance method)">- (Object) <strong>find_text_in_element</strong>(pattern, options) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#initialize-instance_method" title="#initialize (instance method)">- (JavascriptExpressionBuilder) <strong>initialize</strong>(javascript_framework_name = nil) </a>
+    
+
+    
+  </span>
+  
+    <span class="note title constructor">constructor</span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>
+A new instance of JavascriptExpressionBuilder.
+</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#javascript_framework_for-instance_method" title="#javascript_framework_for (instance method)">- (Object) <strong>javascript_framework_for</strong>(framework_name) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#no_pending_ajax_requests-instance_method" title="#no_pending_ajax_requests (instance method)">- (Object) <strong>no_pending_ajax_requests</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#no_pending_effects-instance_method" title="#no_pending_effects (instance method)">- (Object) <strong>no_pending_effects</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#not_visible-instance_method" title="#not_visible (instance method)">- (Object) <strong>not_visible</strong>(locator) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#quote_escaped-instance_method" title="#quote_escaped (instance method)">- (Object) <strong>quote_escaped</strong>(a_string) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#text_match-instance_method" title="#text_match (instance method)">- (Object) <strong>text_match</strong>(pattern) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#visible-instance_method" title="#visible (instance method)">- (Object) <strong>visible</strong>(locator) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#window_script-instance_method" title="#window_script (instance method)">- (Object) <strong>window_script</strong>(expression) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+    </ul>
+  
+
+<div id="constructor_details" class="method_details_list">
+  <h2>Constructor Details</h2>
+  
+    <div class="method_details first">
+  <p class="signature first" id="initialize-instance_method">
+  
+    - (<tt><span class='object_link'><a href="" title="Selenium::Client::JavascriptExpressionBuilder (class)">JavascriptExpressionBuilder</a></span></tt>) <strong>initialize</strong>(javascript_framework_name = nil) 
+  
+
+  
+</p><div class="docstring">
+  <div class="discussion">
+    <p>
+A new instance of JavascriptExpressionBuilder
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+7
+8
+9
+10</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/javascript_expression_builder.rb', line 7</span>
+
+<span class='def def kw'>def</span> <span class='initialize identifier id'>initialize</span><span class='lparen token'>(</span><span class='javascript_framework_name identifier id'>javascript_framework_name</span><span class='assign token'>=</span><span class='nil nil kw'>nil</span><span class='rparen token'>)</span>
+  <span class='@framework ivar id'>@framework</span> <span class='assign token'>=</span> <span class='javascript_framework_for identifier id'>javascript_framework_for</span><span class='lparen token'>(</span><span class='javascript_framework_name identifier id'>javascript_framework_name</span><span class='rparen token'>)</span> <span class='if if_mod kw'>if</span> <span class='javascript_framework_name identifier id'>javascript_framework_name</span>       
+  <span class='@script ivar id'>@script</span> <span class='assign token'>=</span> <span class='string val'>&quot;&quot;</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+  
+</div>
+
+  <div id="instance_attr_details" class="attr_details">
+    <h2>Instance Attribute Details</h2>
+    
+      
+      <span id=""></span>
+      <span id="script-instance_method"></span>
+      <div class="method_details first">
+  <p class="signature first" id="script-instance_method">
+  
+    - (<tt>Object</tt>) <strong>script</strong>  <span class="extras">(readonly)</span>
+  
+
+  
+</p><div class="docstring">
+  <div class="discussion">
+    <p>
+Returns the value of attribute script
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+5
+6
+7</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/javascript_expression_builder.rb', line 5</span>
+
+<span class='def def kw'>def</span> <span class='script identifier id'>script</span>
+  <span class='@script ivar id'>@script</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
+
+
+  <div id="instance_method_details" class="method_details_list">
+    <h2>Instance Method Details</h2>
+    
+    
+      <div class="method_details first">
+  <p class="signature first" id="append-instance_method">
+  
+    - (<tt>Object</tt>) <strong>append</strong>(text) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+12
+13
+14
+15</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/javascript_expression_builder.rb', line 12</span>
+
+<span class='def def kw'>def</span> <span class='append identifier id'>append</span><span class='lparen token'>(</span><span class='text identifier id'>text</span><span class='rparen token'>)</span>
+  <span class='@script ivar id'>@script</span> <span class='lshft op'>&lt;&lt;</span> <span class='text identifier id'>text</span>
+  <span class='self self kw'>self</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="element_value_is-instance_method">
+  
+    - (<tt>Object</tt>) <strong>element_value_is</strong>(expected_value) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+46
+47
+48</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/javascript_expression_builder.rb', line 46</span>
+
+<span class='def def kw'>def</span> <span class='element_value_is identifier id'>element_value_is</span><span class='lparen token'>(</span><span class='expected_value identifier id'>expected_value</span><span class='rparen token'>)</span>
+  <span class='append identifier id'>append</span> <span class='dstring node'>&quot;(element != null &amp;&amp; element.value == '#{quote_escaped(expected_value)}')&quot;</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="element_value_is_not-instance_method">
+  
+    - (<tt>Object</tt>) <strong>element_value_is_not</strong>(expected_value) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+50
+51
+52</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/javascript_expression_builder.rb', line 50</span>
+
+<span class='def def kw'>def</span> <span class='element_value_is_not identifier id'>element_value_is_not</span><span class='lparen token'>(</span><span class='expected_value identifier id'>expected_value</span><span class='rparen token'>)</span>
+  <span class='append identifier id'>append</span> <span class='dstring node'>&quot;(element == null || element.value != '#{quote_escaped(expected_value)}')&quot;</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="find_element-instance_method">
+  
+    - (<tt>Object</tt>) <strong>find_element</strong>(locator) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+33
+34
+35</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/javascript_expression_builder.rb', line 33</span>
+
+<span class='def def kw'>def</span> <span class='find_element identifier id'>find_element</span><span class='lparen token'>(</span><span class='locator identifier id'>locator</span><span class='rparen token'>)</span>
+  <span class='append identifier id'>append</span>  <span class='string val'>&quot;var element;\n\ntry {\nelement = selenium.browserbot.findElement('\#{quote_escaped(locator)}');\n} catch(e) {\nelement = null;\n}\n&quot;</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="find_text-instance_method">
+  
+    - (<tt>Object</tt>) <strong>find_text</strong>(pattern, options) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+54
+55
+56
+57
+58
+59
+60
+61
+62</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/javascript_expression_builder.rb', line 54</span>
+
+<span class='def def kw'>def</span> <span class='find_text identifier id'>find_text</span><span class='lparen token'>(</span><span class='pattern identifier id'>pattern</span><span class='comma token'>,</span> <span class='options identifier id'>options</span><span class='rparen token'>)</span>
+  <span class='if if kw'>if</span> <span class='options identifier id'>options</span><span class='lbrack token'>[</span><span class='symbol val'>:element</span><span class='rbrack token'>]</span><span class='dot token'>.</span><span class='nil? fid id'>nil?</span>
+    <span class='find_text_in_document identifier id'>find_text_in_document</span> <span class='pattern identifier id'>pattern</span><span class='comma token'>,</span> <span class='options identifier id'>options</span>
+  <span class='else else kw'>else</span>
+    <span class='find_text_in_element identifier id'>find_text_in_element</span> <span class='pattern identifier id'>pattern</span><span class='comma token'>,</span> <span class='options identifier id'>options</span>
+  <span class='end end kw'>end</span>
+
+  <span class='self self kw'>self</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="find_text_in_document-instance_method">
+  
+    - (<tt>Object</tt>) <strong>find_text_in_document</strong>(pattern, options) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/javascript_expression_builder.rb', line 64</span>
+
+<span class='def def kw'>def</span> <span class='find_text_in_document identifier id'>find_text_in_document</span><span class='lparen token'>(</span><span class='pattern identifier id'>pattern</span><span class='comma token'>,</span> <span class='options identifier id'>options</span><span class='rparen token'>)</span>
+  <span class='js_regexp identifier id'>js_regexp</span> <span class='assign token'>=</span> <span class='case case kw'>case</span> <span class='pattern identifier id'>pattern</span>
+  <span class='when when kw'>when</span> <span class='Regexp constant id'>Regexp</span>
+    <span class='pattern identifier id'>pattern</span><span class='dot token'>.</span><span class='inspect identifier id'>inspect</span>
+  <span class='else else kw'>else</span>
+    <span class='dregexp node'>/#{pattern}/</span><span class='dot token'>.</span><span class='inspect identifier id'>inspect</span>
+  <span class='end end kw'>end</span>
+  <span class='append identifier id'>append</span> <span class='string val'>&quot;var text_match;\ntext_match = (null != selenium.browserbot.getCurrentWindow().document.body.innerHTML.match(\#{js_regexp}));\n&quot;</span>
+  
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="find_text_in_element-instance_method">
+  
+    - (<tt>Object</tt>) <strong>find_text_in_element</strong>(pattern, options) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+79
+80
+81
+82
+83
+84</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/javascript_expression_builder.rb', line 79</span>
+
+<span class='def def kw'>def</span> <span class='find_text_in_element identifier id'>find_text_in_element</span><span class='lparen token'>(</span><span class='pattern identifier id'>pattern</span><span class='comma token'>,</span> <span class='options identifier id'>options</span><span class='rparen token'>)</span>
+  <span class='find_element identifier id'>find_element</span><span class='lparen token'>(</span><span class='options identifier id'>options</span><span class='lbrack token'>[</span><span class='symbol val'>:element</span><span class='rbrack token'>]</span><span class='rparen token'>)</span>
+  <span class='append identifier id'>append</span> <span class='string val'>&quot;var text_match;\ntext_match = (element != null &amp;&amp; \#{text_match(pattern)});\n&quot;</span>
+  
+  <span class='self self kw'>self</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="javascript_framework_for-instance_method">
+  
+    - (<tt>Object</tt>) <strong>javascript_framework_for</strong>(framework_name) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/javascript_expression_builder.rb', line 99</span>
+
+<span class='def def kw'>def</span> <span class='javascript_framework_for identifier id'>javascript_framework_for</span><span class='lparen token'>(</span><span class='framework_name identifier id'>framework_name</span><span class='rparen token'>)</span>
+  <span class='case case kw'>case</span> <span class='framework_name identifier id'>framework_name</span><span class='dot token'>.</span><span class='to_sym identifier id'>to_sym</span>
+  <span class='when when kw'>when</span> <span class='symbol val'>:prototype</span>
+    <span class='JavascriptFrameworks constant id'>JavascriptFrameworks</span><span class='colon2 op'>::</span><span class='Prototype constant id'>Prototype</span>
+  <span class='when when kw'>when</span> <span class='symbol val'>:jquery</span>
+    <span class='JavascriptFrameworks constant id'>JavascriptFrameworks</span><span class='colon2 op'>::</span><span class='JQuery constant id'>JQuery</span>
+  <span class='else else kw'>else</span>
+    <span class='raise identifier id'>raise</span> <span class='dstring node'>&quot;Unsupported Javascript Framework: #{framework_name}&quot;</span>
+  <span class='end end kw'>end</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="no_pending_ajax_requests-instance_method">
+  
+    - (<tt>Object</tt>) <strong>no_pending_ajax_requests</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+17
+18
+19</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/javascript_expression_builder.rb', line 17</span>
+
+<span class='def def kw'>def</span> <span class='no_pending_ajax_requests identifier id'>no_pending_ajax_requests</span>
+  <span class='append identifier id'>append</span> <span class='window_script identifier id'>window_script</span><span class='lparen token'>(</span><span class='dstring node'>&quot;#{@framework.ajax_request_tracker} == 0&quot;</span><span class='rparen token'>)</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="no_pending_effects-instance_method">
+  
+    - (<tt>Object</tt>) <strong>no_pending_effects</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+21
+22
+23</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/javascript_expression_builder.rb', line 21</span>
+
+<span class='def def kw'>def</span> <span class='no_pending_effects identifier id'>no_pending_effects</span>
+  <span class='append identifier id'>append</span> <span class='window_script identifier id'>window_script</span><span class='lparen token'>(</span><span class='string val'>&quot;Effect.Queue.size() == 0&quot;</span><span class='rparen token'>)</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="not_visible-instance_method">
+  
+    - (<tt>Object</tt>) <strong>not_visible</strong>(locator) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+29
+30
+31</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/javascript_expression_builder.rb', line 29</span>
+
+<span class='def def kw'>def</span> <span class='not_visible identifier id'>not_visible</span><span class='lparen token'>(</span><span class='locator identifier id'>locator</span><span class='rparen token'>)</span>
+  <span class='append identifier id'>append</span> <span class='dstring node'>&quot;!selenium.isVisible('#{quote_escaped(locator)}')&quot;</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="quote_escaped-instance_method">
+  
+    - (<tt>Object</tt>) <strong>quote_escaped</strong>(a_string) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+114
+115
+116</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/javascript_expression_builder.rb', line 114</span>
+
+<span class='def def kw'>def</span> <span class='quote_escaped identifier id'>quote_escaped</span><span class='lparen token'>(</span><span class='a_string identifier id'>a_string</span><span class='rparen token'>)</span>
+  <span class='a_string identifier id'>a_string</span><span class='dot token'>.</span><span class='gsub identifier id'>gsub</span><span class='lparen token'>(</span><span class='regexp val'>/\\/</span><span class='comma token'>,</span> <span class='string val'>&quot;\\\\\\&quot;</span><span class='rparen token'>)</span><span class='dot token'>.</span><span class='gsub identifier id'>gsub</span><span class='lparen token'>(</span><span class='regexp val'>/'/</span><span class='comma token'>,</span> <span class='string val'>%q&lt;\\\'&gt;</span><span class='rparen token'>)</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="text_match-instance_method">
+  
+    - (<tt>Object</tt>) <strong>text_match</strong>(pattern) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+90
+91
+92
+93
+94
+95
+96
+97</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/javascript_expression_builder.rb', line 90</span>
+
+<span class='def def kw'>def</span> <span class='text_match identifier id'>text_match</span><span class='lparen token'>(</span><span class='pattern identifier id'>pattern</span><span class='rparen token'>)</span>
+  <span class='case case kw'>case</span> <span class='pattern identifier id'>pattern</span>
+  <span class='when when kw'>when</span> <span class='Regexp constant id'>Regexp</span>
+    <span class='dstring node'>&quot;null != element.innerHTML.match(#{pattern.inspect})&quot;</span>
+  <span class='else else kw'>else</span>
+    <span class='dstring node'>&quot;element.innerHTML == '#{quote_escaped(pattern)}'&quot;</span>
+  <span class='end end kw'>end</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="visible-instance_method">
+  
+    - (<tt>Object</tt>) <strong>visible</strong>(locator) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+25
+26
+27</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/javascript_expression_builder.rb', line 25</span>
+
+<span class='def def kw'>def</span> <span class='visible identifier id'>visible</span><span class='lparen token'>(</span><span class='locator identifier id'>locator</span><span class='rparen token'>)</span>
+  <span class='append identifier id'>append</span> <span class='dstring node'>&quot;selenium.isVisible('#{quote_escaped(locator)}')&quot;</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="window_script-instance_method">
+  
+    - (<tt>Object</tt>) <strong>window_script</strong>(expression) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+110
+111
+112</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/javascript_expression_builder.rb', line 110</span>
+
+<span class='def def kw'>def</span> <span class='window_script identifier id'>window_script</span><span class='lparen token'>(</span><span class='expression identifier id'>expression</span><span class='rparen token'>)</span>
+  <span class='dstring node'>&quot;selenium.browserbot.getCurrentWindow().#{expression};&quot;</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
+
+</div>
+    
+    <div id="footer">
+  Generated on Mon Nov 29 14:10:45 2010 by 
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.6.3 (ruby-1.8.7).
+</div>
+
+  </body>
+</html>

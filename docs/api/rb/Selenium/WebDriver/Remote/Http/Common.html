@@ -114,7 +114,7 @@ same as chromium/gecko
         <dt id="DEFAULT_HEADERS-constant" class="">DEFAULT_HEADERS =
           
         </dt>
-        <dd><pre class="code"><span class='lbrace token'>{</span> <span class='string val'>&quot;Accept&quot;</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='CONTENT_TYPE constant id'>CONTENT_TYPE</span><span class='comma token'>,</span> <span class='string val'>&quot;Content-Length&quot;</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;0&quot;</span> <span class='rbrace token'>}</span>
+        <dd><pre class="code"><span class='lbrace token'>{</span> <span class='string val'>&quot;Accept&quot;</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='CONTENT_TYPE constant id'>CONTENT_TYPE</span> <span class='rbrace token'>}</span>
 </pre></dd>
       
     </dl>
@@ -339,7 +339,9 @@ Returns the value of attribute timeout
 31
 32
 33
-34</pre>
+34
+35
+36</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/http/common.rb', line 18</span>
@@ -357,6 +359,8 @@ Returns the value of attribute timeout
       <span class='puts identifier id'>puts</span> <span class='dstring node'>&quot;   &gt;&gt;&gt; #{payload}&quot;</span>
       <span class='puts identifier id'>puts</span> <span class='dstring node'>&quot;     &gt; #{headers.inspect}&quot;</span>
     <span class='end end kw'>end</span>
+  <span class='elsif elsif kw'>elsif</span> <span class='verb identifier id'>verb</span> <span class='eq op'>==</span> <span class='symbol val'>:post</span>
+    <span class='headers identifier id'>headers</span><span class='lbrack token'>[</span><span class='string val'>&quot;Content-Length&quot;</span><span class='rbrack token'>]</span> <span class='assign token'>=</span> <span class='string val'>&quot;0&quot;</span>
   <span class='end end kw'>end</span>
 
   <span class='request identifier id'>request</span> <span class='verb identifier id'>verb</span><span class='comma token'>,</span> <span class='url identifier id'>url</span><span class='comma token'>,</span> <span class='headers identifier id'>headers</span><span class='comma token'>,</span> <span class='payload identifier id'>payload</span>
@@ -372,9 +376,9 @@ Returns the value of attribute timeout
 </div>
     
     <div id="footer">
-  Generated on Sat Oct 09 02:15:18 2010 by 
+  Generated on Mon Nov 29 14:10:44 2010 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.6.1 (ruby-1.8.7).
+  0.6.3 (ruby-1.8.7).
 </div>
 
   </body>
