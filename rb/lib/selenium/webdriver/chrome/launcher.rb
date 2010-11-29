@@ -8,21 +8,6 @@ module Selenium
 
         attr_reader :pid
 
-        def self.launcher(*args)
-          launcher =  case Platform.os
-                      when :windows
-                        WindowsLauncher.new(*args)
-                      when :macosx
-                        MacOSXLauncher.new(*args)
-                      when :unix, :linux
-                        UnixLauncher.new(*args)
-                      else
-                        raise "unknown OS: #{Platform.os}"
-                      end
-
-          launcher
-        end
-
         def initialize(opts = {})
           @default_profile = opts[:default_profile]
           @secure_ssl = !!opts[:secure_ssl]
@@ -74,7 +59,7 @@ module Selenium
 
         def launch_chrome(server_url)
           args = [
-            Platform.wrap_in_quotes_if_necessary(Launcher.binary_path),
+            Platform.wrap_in_quotes_if_necessary(self.class.binary_path),
             "--load-extension=#{Platform.wrap_in_quotes_if_necessary(tmp_extension_dir)}",
             "--activate-on-launch",
             "--disable-hang-monitor",
@@ -122,32 +107,21 @@ module Selenium
           )
         end
 
-        class WindowsLauncher < Launcher
-          def self.possible_paths
-            [
-              registry_path,
-              "#{ENV['USERPROFILE']}\\Local Settings\\Application Data\\Google\\Chrome\\Application\\chrome.exe",
-              "#{ENV['USERPROFILE']}\\AppData\\Local\\Google\\Chrome\\Application\\chrome.exe",
-              "#{Platform.home}\\Local Settings\\Application Data\\Google\\Chrome\\Application\\chrome.exe",
-              "#{Platform.home}\\AppData\\Local\\Google\\Chrome\\Application\\chrome.exe",
-            ].compact
+        class << self
+          def possible_paths
+            case Platform.os
+            when :windows
+              windows_paths
+            when :macosx
+              macosx_paths
+            when :unix, :linux
+              unix_paths
+            else
+              raise "unknown OS: #{Platform.os}"
+            end
           end
 
-          def self.registry_path
-            require "win32/registry"
-
-            reg = Win32::Registry::HKEY_LOCAL_MACHINE.open("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths\\chrome.exe")
-            reg[""]
-          rescue LoadError
-            # older JRuby and IronRuby does not have win32/registry
-            nil
-          rescue Win32::Registry::Error
-            nil
-          end
-        end
-
-        class UnixLauncher < Launcher
-          def self.possible_paths
+          def unix_paths
             [
               Platform.find_binary("google-chrome"),
               Platform.find_binary("chromium"),
@@ -156,16 +130,37 @@ module Selenium
             ].compact
           end
 
-        end
-
-        class MacOSXLauncher < UnixLauncher
-          def self.possible_paths
+          def macosx_paths
             [
              "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
              "#{Platform.home}/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
             ]
           end
-        end
+
+          def windows_paths
+            [
+              windows_registry_path,
+              "#{ENV['USERPROFILE']}\\Local Settings\\Application Data\\Google\\Chrome\\Application\\chrome.exe",
+              "#{ENV['USERPROFILE']}\\AppData\\Local\\Google\\Chrome\\Application\\chrome.exe",
+              "#{Platform.home}\\Local Settings\\Application Data\\Google\\Chrome\\Application\\chrome.exe",
+              "#{Platform.home}\\AppData\\Local\\Google\\Chrome\\Application\\chrome.exe",
+            ].compact
+          end
+
+          def windows_registry_path
+            require "win32/registry"
+
+            reg = Win32::Registry::HKEY_LOCAL_MACHINE.open(
+              "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths\\chrome.exe")
+
+            reg[""]
+          rescue LoadError
+            # older JRuby and IronRuby does not have win32/registry
+            nil
+          rescue Win32::Registry::Error
+            nil
+          end
+        end # class << self
 
       end # Launcher
     end # Chrome

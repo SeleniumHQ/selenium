@@ -6,7 +6,7 @@ module Selenium
       class Bridge < Remote::Bridge
 
         def initialize(opts = {})
-          @launcher = Launcher.launcher(
+          @launcher = Launcher.new(
             :default_profile => opts[:default_profile],
             :secure_ssl      => opts[:secure_ssl]
           )
