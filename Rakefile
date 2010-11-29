@@ -167,6 +167,7 @@ end
 
 task :build => [:all, :iphone, :remote, :selenium]
 
+desc 'Clean build artifacts.'
 task :clean do
   rm_rf 'build/'
   rm_rf 'iphone/build/'
