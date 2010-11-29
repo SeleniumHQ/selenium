@@ -7,16 +7,11 @@ module Selenium
           CONTENT_TYPE    = "application/json"
           DEFAULT_HEADERS = { "Accept" => CONTENT_TYPE }
 
-          class << self
-            attr_accessor :timeout
-          end
-
-          def initialize(url)
-            @server_url = url
-          end
+          attr_accessor :timeout
+          attr_writer :server_url
 
           def call(verb, url, command_hash)
-            url      = @server_url.merge(url) unless url.kind_of?(URI)
+            url      = server_url.merge(url) unless url.kind_of?(URI)
             headers  = DEFAULT_HEADERS.dup
 
             if command_hash
@@ -36,6 +31,10 @@ module Selenium
           end
 
           private
+
+          def server_url
+            @server_url or raise Error::WebDriverError, "server_url not set"
+          end
 
           def request(verb, url, headers, payload)
             raise NotImplementedError, "subclass responsibility"

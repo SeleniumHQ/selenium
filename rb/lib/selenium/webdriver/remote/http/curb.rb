@@ -19,7 +19,7 @@ module Selenium
         #   require 'selenium/webdriver/remote/http/curb'
         #   include Selenium
         #
-        #   driver = WebDriver.for :firefox, :http_client => WebDriver::Remote::Http::Curb
+        #   driver = WebDriver.for :firefox, :http_client => WebDriver::Remote::Http::Curb.new
         #
 
         class Curb < Common
@@ -65,7 +65,7 @@ module Selenium
 
               c.max_redirects   = MAX_REDIRECTS
               c.follow_location = true
-              c.timeout         = self.class.timeout if self.class.timeout
+              c.timeout         = @timeout if @timeout
               c.verbose         = !!$DEBUG
 
               c

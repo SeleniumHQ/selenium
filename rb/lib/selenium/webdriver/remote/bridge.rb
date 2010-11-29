@@ -37,15 +37,16 @@ module Selenium
         # Initializes the bridge with the given server URL.
         #
         # @param url         [String] url for the remote server
-        # @param http_client [Class] an HTTP client class that implements the same interface as DefaultHttpClient
+        # @param http_client [Object] an HTTP client instance that implements the same protocol as Http::Default
         # @param desired_capabilities [Capabilities] an instance of Remote::Capabilities describing the capabilities you want
         #
 
         def initialize(opts = {})
-          opts                 = default_options.merge(opts)
-          http_client_class    = opts.delete(:http_client)
-          desired_capabilities = opts.delete(:desired_capabilities)
-          url                  = opts.delete(:url)
+          opts = opts.dup
+
+          http_client          = opts.delete(:http_client) { Http::Default.new }
+          desired_capabilities = opts.delete(:desired_capabilities) { Capabilities.firefox }
+          url                  = opts.delete(:url) { "http://localhost:4444/wd/hub" }
 
           unless opts.empty?
             raise ArgumentError, "unknown option#{'s' if opts.size != 1}: #{opts.inspect}"
@@ -62,7 +63,9 @@ module Selenium
           uri = URI.parse(url)
           uri.path += "/" unless uri.path =~ /\/$/
 
-          @http         = http_client_class.new uri
+          http_client.server_url = uri
+
+          @http         = http_client
           @capabilities = create_session(desired_capabilities)
         end
 
@@ -404,14 +407,6 @@ module Selenium
 
           puts "-> #{verb.to_s.upcase} #{path}" if $DEBUG
           http.call verb, path, command_hash
-        end
-
-        def default_options
-          {
-            :url                  => "http://localhost:4444/wd/hub",
-            :http_client          => Http::Default,
-            :desired_capabilities => Capabilities.firefox
-          }
         end
 
       end # Bridge

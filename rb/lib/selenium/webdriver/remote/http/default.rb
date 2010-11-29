@@ -10,17 +10,16 @@ module Selenium
           private
 
           def http
-            # ignoring SSL for now
             @http ||= (
-              http = Net::HTTP.new @server_url.host, @server_url.port
-              if @server_url.scheme == "https"
+              http = Net::HTTP.new server_url.host, server_url.port
+              if server_url.scheme == "https"
                 http.use_ssl = true
                 http.verify_mode = OpenSSL::SSL::VERIFY_NONE
               end
 
-              if self.class.timeout
-                http.open_timeout = self.class.timeout
-                http.read_timeout = self.class.timeout
+              if @timeout
+                http.open_timeout = @timeout
+                http.read_timeout = @timeout
               end
 
               http
@@ -54,8 +53,8 @@ module Selenium
           def new_request_for(verb, url, headers)
             req = Net::HTTP.const_get(verb.to_s.capitalize).new(url.path, headers)
 
-            if @server_url.userinfo
-              req.basic_auth @server_url.user, @server_url.password
+            if server_url.userinfo
+              req.basic_auth server_url.user, server_url.password
             end
 
             req
