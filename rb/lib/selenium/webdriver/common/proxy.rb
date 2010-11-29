@@ -34,11 +34,9 @@ module Selenium
       end
 
       def ==(other)
-        return false unless other.kind_of? self.class
-        as_json == other.as_json
+        other.kind_of?(self.class) && as_json == other.as_json
       end
       alias_method :eql?, :==
-
 
       def ftp=(value)
         self.type = :manual
