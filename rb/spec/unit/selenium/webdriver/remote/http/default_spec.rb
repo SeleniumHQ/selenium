@@ -5,12 +5,13 @@ module Selenium
     module Remote
       module Http
         describe Default do
-          after { Default.timeout = nil }
-
           it "uses the timeout set on the class" do
-            Default.timeout = 10
+            client = Default.new
+            client.server_url = URI.parse("http://example.com")
 
-            http = Default.new(URI.parse("http://example.com")).send :http
+            client.timeout = 10
+            http = client.send :http
+
             http.open_timeout.should == 10
             http.read_timeout.should == 10
           end
