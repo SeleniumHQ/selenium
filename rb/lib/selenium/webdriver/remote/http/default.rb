@@ -6,12 +6,13 @@ module Selenium
       module Http
         # @private
         class Default < Common
+          attr_accessor :proxy
 
           private
 
           def http
             @http ||= (
-              http = Net::HTTP.new server_url.host, server_url.port
+              http = new_http_client
               if server_url.scheme == "https"
                 http.use_ssl = true
                 http.verify_mode = OpenSSL::SSL::VERIFY_NONE
@@ -58,6 +59,20 @@ module Selenium
             end
 
             req
+          end
+
+          def new_http_client
+            if @proxy
+              unless @proxy.respond_to?(:http) && url = @proxy.http
+                raise Error::WebDriverError, "expected HTTP proxy, got #{@proxy.inspect}"
+              end
+              proxy = URI.parse(url)
+
+              clazz = Net::HTTP::Proxy(proxy.host, proxy.port, proxy.user, proxy.password)
+              clazz.new(server_url.host, server_url.port)
+            else
+              Net::HTTP.new server_url.host, server_url.port
+            end
           end
 
         end # Default

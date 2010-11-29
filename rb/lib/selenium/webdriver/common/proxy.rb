@@ -109,7 +109,6 @@ module Selenium
 
           proxy
         end
-
       end # class << self
 
     end # Proxy
