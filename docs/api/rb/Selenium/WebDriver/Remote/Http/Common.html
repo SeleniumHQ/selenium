@@ -121,13 +121,13 @@ same as chromium/gecko
   
 
 
-  <h2>Class Attribute Summary <small>(<a href="#" class="summary_toggle">collapse</a>)</small></h2>
+  <h2>Instance Attribute Summary <small>(<a href="#" class="summary_toggle">collapse</a>)</small></h2>
   <ul class="summary">
     
       <li class="public ">
   <span class="summary_signature">
     
-      <a href="#timeout-class_method" title="timeout (class method)">+ (Object) <strong>timeout</strong> </a>
+      <a href="#timeout-instance_method" title="#timeout (instance method)">- (Object) <strong>timeout</strong> </a>
     
 
     
@@ -154,6 +154,39 @@ Returns the value of attribute timeout.
   </ul>
 
 
+  
+    <h2>
+      Class Method Summary
+      <small>(<a href="#" class="summary_toggle">collapse</a>)</small>
+    </h2>
+
+    <ul class="summary">
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#timeout%3D-class_method" title="timeout= (class method)">+ (Object) <strong>timeout=</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>
+deprecated.
+</p>
+</div></span>
+  
+</li>
+
+      
+    </ul>
   
     <h2>
       Instance Method Summary
@@ -183,90 +216,20 @@ Returns the value of attribute timeout.
 </li>
 
       
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#initialize-instance_method" title="#initialize (instance method)">- (Common) <strong>initialize</strong>(url) </a>
-    
-
-    
-  </span>
-  
-    <span class="note title constructor">constructor</span>
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'><p>
-A new instance of Common.
-</p>
-</div></span>
-  
-</li>
-
-      
     </ul>
   
 
-<div id="constructor_details" class="method_details_list">
-  <h2>Constructor Details</h2>
-  
-    <div class="method_details first">
-  <p class="signature first" id="initialize-instance_method">
-  
-    - (<tt><span class='object_link'><a href="" title="Selenium::WebDriver::Remote::Http::Common (class)">Common</a></span></tt>) <strong>initialize</strong>(url) 
-  
 
-  
-</p><div class="docstring">
-  <div class="discussion">
-    <p>
-A new instance of Common
-</p>
-
-
-  </div>
-</div>
-<div class="tags">
-  
-</div><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-14
-15
-16</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/http/common.rb', line 14</span>
-
-<span class='def def kw'>def</span> <span class='initialize identifier id'>initialize</span><span class='lparen token'>(</span><span class='url identifier id'>url</span><span class='rparen token'>)</span>
-  <span class='@server_url ivar id'>@server_url</span> <span class='assign token'>=</span> <span class='url identifier id'>url</span>
-<span class='end end kw'>end</span>
-</pre>
-    </td>
-  </tr>
-</table>
-</div>
-  
-</div>
-
-  <div id="class_attr_details" class="attr_details">
-    <h2>Class Attribute Details</h2>
+  <div id="instance_attr_details" class="attr_details">
+    <h2>Instance Attribute Details</h2>
     
       
-      <span id="timeout=-class_method"></span>
-      <span id="timeout-class_method"></span>
+      <span id="timeout=-instance_method"></span>
+      <span id="timeout-instance_method"></span>
       <div class="method_details first">
-  <p class="signature first" id="timeout-class_method">
+  <p class="signature first" id="timeout-instance_method">
   
-    + (<tt>Object</tt>) <strong>timeout</strong> 
+    - (<tt>Object</tt>) <strong>timeout</strong> 
   
 
   
@@ -287,12 +250,12 @@ Returns the value of attribute timeout
       <pre class="lines">
 
 
-11
-12
-13</pre>
+15
+16
+17</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/http/common.rb', line 11</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/http/common.rb', line 15</span>
 
 <span class='def def kw'>def</span> <span class='timeout identifier id'>timeout</span>
   <span class='@timeout ivar id'>@timeout</span>
@@ -305,6 +268,65 @@ Returns the value of attribute timeout
     
   </div>
 
+
+  <div id="class_method_details" class="method_details_list">
+    <h2>Class Method Details</h2>
+    
+    
+      <div class="method_details first">
+  <p class="signature first" id="timeout=-class_method">
+  
+    + (<tt>Object</tt>) <strong>timeout=</strong> 
+  
+
+  
+</p><div class="docstring">
+  <div class="discussion">
+    <p>
+deprecated.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  <h3>Raises:</h3>
+<ul class="raise">
+  
+    <li>
+      
+        <span class='type'>(<tt><span class='object_link'><a href="../../../WebDriver.html" title="Selenium::WebDriver (module)">Error::WebDriver</a></span></tt>)</span>
+      
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+11
+12
+13</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/http/common.rb', line 11</span>
+
+<span class='def def kw'>def</span> <span class='self self kw'>self</span><span class='dot token'>.</span><span class='timeout identifier id'>timeout</span><span class='assign token'>=</span><span class='lparen token'>(</span><span class='rparen token'>)</span>
+  <span class='raise identifier id'>raise</span> <span class='Error constant id'>Error</span><span class='colon2 op'>::</span><span class='WebDriver constant id'>WebDriver</span><span class='comma token'>,</span> <span class='string val'>&quot;Configuration of HTTP timeouts has changed. See http://code.google.com/p/selenium/wiki/RubyBindings for intructions.&quot;</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
 
   <div id="instance_method_details" class="method_details_list">
     <h2>Instance Method Details</h2>
@@ -347,7 +369,7 @@ Returns the value of attribute timeout
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/http/common.rb', line 18</span>
 
 <span class='def def kw'>def</span> <span class='call identifier id'>call</span><span class='lparen token'>(</span><span class='verb identifier id'>verb</span><span class='comma token'>,</span> <span class='url identifier id'>url</span><span class='comma token'>,</span> <span class='command_hash identifier id'>command_hash</span><span class='rparen token'>)</span>
-  <span class='url identifier id'>url</span>      <span class='assign token'>=</span> <span class='@server_url ivar id'>@server_url</span><span class='dot token'>.</span><span class='merge identifier id'>merge</span><span class='lparen token'>(</span><span class='url identifier id'>url</span><span class='rparen token'>)</span> <span class='unless unless_mod kw'>unless</span> <span class='url identifier id'>url</span><span class='dot token'>.</span><span class='kind_of? fid id'>kind_of?</span><span class='lparen token'>(</span><span class='URI constant id'>URI</span><span class='rparen token'>)</span>
+  <span class='url identifier id'>url</span>      <span class='assign token'>=</span> <span class='server_url identifier id'>server_url</span><span class='dot token'>.</span><span class='merge identifier id'>merge</span><span class='lparen token'>(</span><span class='url identifier id'>url</span><span class='rparen token'>)</span> <span class='unless unless_mod kw'>unless</span> <span class='url identifier id'>url</span><span class='dot token'>.</span><span class='kind_of? fid id'>kind_of?</span><span class='lparen token'>(</span><span class='URI constant id'>URI</span><span class='rparen token'>)</span>
   <span class='headers identifier id'>headers</span>  <span class='assign token'>=</span> <span class='DEFAULT_HEADERS constant id'>DEFAULT_HEADERS</span><span class='dot token'>.</span><span class='dup identifier id'>dup</span>
 
   <span class='if if kw'>if</span> <span class='command_hash identifier id'>command_hash</span>
@@ -376,9 +398,9 @@ Returns the value of attribute timeout
 </div>
     
     <div id="footer">
-  Generated on Mon Nov 29 14:10:44 2010 by 
+  Generated on Tue Nov 30 00:37:31 2010 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.6.3 (ruby-1.8.7).
+  0.6.1 (ruby-1.8.7).
 </div>
 
   </body>

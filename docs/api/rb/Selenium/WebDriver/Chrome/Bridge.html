@@ -486,7 +486,7 @@ A new instance of Bridge
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chrome/bridge.rb', line 8</span>
 
 <span class='def def kw'>def</span> <span class='initialize identifier id'>initialize</span><span class='lparen token'>(</span><span class='opts identifier id'>opts</span> <span class='assign token'>=</span> <span class='lbrace token'>{</span><span class='rbrace token'>}</span><span class='rparen token'>)</span>
-  <span class='@launcher ivar id'>@launcher</span> <span class='assign token'>=</span> <span class='Launcher constant id'>Launcher</span><span class='dot token'>.</span><span class='launcher identifier id'>launcher</span><span class='lparen token'>(</span>
+  <span class='@launcher ivar id'>@launcher</span> <span class='assign token'>=</span> <span class='Launcher constant id'>Launcher</span><span class='dot token'>.</span><span class='new identifier id'>new</span><span class='lparen token'>(</span>
     <span class='symbol val'>:default_profile</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='opts identifier id'>opts</span><span class='lbrack token'>[</span><span class='symbol val'>:default_profile</span><span class='rbrack token'>]</span><span class='comma token'>,</span>
     <span class='symbol val'>:secure_ssl</span>      <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='opts identifier id'>opts</span><span class='lbrack token'>[</span><span class='symbol val'>:secure_ssl</span><span class='rbrack token'>]</span>
   <span class='rparen token'>)</span>
@@ -901,9 +901,9 @@ A new instance of Bridge
 </div>
     
     <div id="footer">
-  Generated on Mon Nov 29 14:10:40 2010 by 
+  Generated on Tue Nov 30 00:37:24 2010 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.6.3 (ruby-1.8.7).
+  0.6.1 (ruby-1.8.7).
 </div>
 
   </body>

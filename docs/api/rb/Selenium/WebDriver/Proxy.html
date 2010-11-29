@@ -799,6 +799,8 @@ Returns the value of attribute type
       <pre class="lines">
 
 
+99
+100
 101
 102
 103
@@ -809,12 +811,10 @@ Returns the value of attribute type
 108
 109
 110
-111
-112
-113</pre>
+111</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/proxy.rb', line 101</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/proxy.rb', line 99</span>
 
 <span class='def def kw'>def</span> <span class='json_create identifier id'>json_create</span><span class='lparen token'>(</span><span class='data identifier id'>data</span><span class='rparen token'>)</span>
   <span class='proxy identifier id'>proxy</span> <span class='assign token'>=</span> <span class='new identifier id'>new</span>
@@ -860,15 +860,13 @@ Returns the value of attribute type
 
 36
 37
-38
-39</pre>
+38</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/proxy.rb', line 36</span>
 
 <span class='def def kw'>def</span> <span class='eq op'>==</span><span class='lparen token'>(</span><span class='other identifier id'>other</span><span class='rparen token'>)</span>
-  <span class='return return kw'>return</span> <span class='false false kw'>false</span> <span class='unless unless_mod kw'>unless</span> <span class='other identifier id'>other</span><span class='dot token'>.</span><span class='kind_of? fid id'>kind_of?</span> <span class='self self kw'>self</span><span class='dot token'>.</span><span class='class identifier id'>class</span>
-  <span class='as_json identifier id'>as_json</span> <span class='eq op'>==</span> <span class='other identifier id'>other</span><span class='dot token'>.</span><span class='as_json identifier id'>as_json</span>
+  <span class='other identifier id'>other</span><span class='dot token'>.</span><span class='kind_of? fid id'>kind_of?</span><span class='lparen token'>(</span><span class='self self kw'>self</span><span class='dot token'>.</span><span class='class identifier id'>class</span><span class='rparen token'>)</span> <span class='andop op'>&amp;&amp;</span> <span class='as_json identifier id'>as_json</span> <span class='eq op'>==</span> <span class='other identifier id'>other</span><span class='dot token'>.</span><span class='as_json identifier id'>as_json</span>
 <span class='end end kw'>end</span>
 </pre>
     </td>
@@ -889,6 +887,8 @@ Returns the value of attribute type
       <pre class="lines">
 
 
+83
+84
 85
 86
 87
@@ -900,12 +900,10 @@ Returns the value of attribute type
 93
 94
 95
-96
-97
-98</pre>
+96</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/proxy.rb', line 85</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/proxy.rb', line 83</span>
 
 <span class='def def kw'>def</span> <span class='as_json identifier id'>as_json</span><span class='lparen token'>(</span><span class='opts identifier id'>opts</span> <span class='assign token'>=</span> <span class='nil nil kw'>nil</span><span class='rparen token'>)</span>
   <span class='json_result identifier id'>json_result</span> <span class='assign token'>=</span> <span class='lbrace token'>{</span>
@@ -932,9 +930,9 @@ Returns the value of attribute type
 </div>
     
     <div id="footer">
-  Generated on Mon Nov 29 14:10:40 2010 by 
+  Generated on Tue Nov 30 00:37:24 2010 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.6.3 (ruby-1.8.7).
+  0.6.1 (ruby-1.8.7).
 </div>
 
   </body>
