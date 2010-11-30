@@ -146,7 +146,7 @@ limitations under the License.
       <menuitem label="&addTestCmd.label;" command="cmd_add" key="add-key" accesskey="D"/>
       <menuseparator/>
       <menuitem label="&newSuiteCmd.label;" command="cmd_new_suite" />
-      <menuitem label="&openSuiteCmd.label;" command="cmd_open_suite" />
+      <menuitem label="&openSuiteCmd.label;" command="cmd_open_suite" id="menu_FileOpenSuite" />
       <menuitem label="&saveSuiteCmd.label;" command="cmd_save_suite" />
       <menuitem label="&saveSuiteAsCmd.label;" command="cmd_save_suite_as" />
       <menu label="&exportSuiteCmd.label;" accesskey="X">
