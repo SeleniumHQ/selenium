@@ -6,16 +6,10 @@ const CI = Components.interfaces;
 
 const CONSOLE = CC["@mozilla.org/consoleservice;1"].getService(CI["nsIConsoleService"]);
 
-function dumpn(message) {
-  try {
-    CONSOLE.logStringMessage(message + "\n");
-  } catch (e) {
-    dump(message + "\n");
-  }
-}
-
 // Spoof implementation
 function DrivenPromptService() {
+  Components.utils.import('resource://fxdriver/modules/utils.js');
+
   // as defined in nsPromptService.h
   var ORIGINAL_PARENT_SERVICE_ID = "{A2112D6A-0E28-421f-B46A-25C0B308CBD0}";
 
@@ -26,7 +20,7 @@ function DrivenPromptService() {
         originalService.QueryInterface(Components.interfaces.nsIPromptService);
   }
 
-  dumpn("Spoofing prompt service");
+  Logger.dumpn("Spoofing prompt service");
 }
 
 // Constants from nsIPromtService.idl
@@ -184,7 +178,7 @@ PromptServiceSpoofModule.prototype.registerSelf = function(aCompMgr, aFileSpec, 
 };
 
 PromptServiceSpoofModule.prototype.unregisterSelf = function(aCompMgr, aLocation, aType) {
-  dumpn("Unregistering\n");
+  Logger.dumpn("Unregistering\n");
   aCompMgr =
   aCompMgr.QueryInterface(Components.interfaces.nsIComponentRegistrar);
   aCompMgr.unregisterFactoryLocation(DRIVEN_PROMPT_SERVICE_CLASS_ID, aLocation);
