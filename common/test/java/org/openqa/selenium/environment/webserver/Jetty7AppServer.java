@@ -56,7 +56,7 @@ public class Jetty7AppServer implements AppServer {
   private final String hostName;
 
   public Jetty7AppServer() {
-    this(networkUtils.getNonLoopbackAddressOfThisMachine());
+    this("localhost");
   }
   
   public Jetty7AppServer(String hostName) {
