@@ -46,4 +46,4 @@ java_library(name = "debug",
     "//firefox", 
     "//common:test"
   ],
-  main = "org.openqa.selenium.environment.webserver.Jetty6AppServer")
+  main = "org.openqa.selenium.environment.webserver.Jetty7AppServer")
