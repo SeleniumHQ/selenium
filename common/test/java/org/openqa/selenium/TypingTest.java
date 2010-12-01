@@ -626,14 +626,5 @@ public class TypingTest extends AbstractDriverTestCase {
     element.sendKeys(Keys.LEFT, Keys.LEFT, "F", Keys.DELETE, Keys.END, "ee!");
 
     assertEquals("Fishee!", element.getText());
-  }
-  
-  @Ignore(SELENESE)
-  public void testShouldBeAbleToSendF5ToPage() {
-    driver.get(pages.xhtmlTestPage);
-
-    driver.switchTo().activeElement().sendKeys(Keys.F5);
-
-    assertThat(driver.getTitle(), equalTo("XHTML Test Page"));
-  }
+  }  
 }

@@ -256,11 +256,7 @@ public class HtmlUnitWebElement implements RenderedWebElement, WrapsDriver,
     switchFocusToThisIfNeeded();
 
     HtmlUnitKeyboard keyboard = (HtmlUnitKeyboard) parent.getKeyboard();
-    if (element instanceof HtmlBody && value.length == 1 && value[0] == Keys.F5) {
-      parent.navigate().refresh();
-    } else {
-      keyboard.sendKeys(element, getValue(), keysContainer);
-    }
+    keyboard.sendKeys(element, getValue(), keysContainer);
 
     if (isInputElement() && keysContainer.wasSubmitKeyFound()) {
       submit();

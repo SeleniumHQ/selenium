@@ -317,10 +317,10 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
     }
   }
   
-  public void testShouldReturnFrameTitleNotWindowTitle() {
+  public void testShouldReturnWindowTitleInAFrameset() {
     driver.get(pages.framesetPage);
     driver.switchTo().frame("third");
-    assertEquals("We Leave From Here", driver.getTitle());
+    assertEquals("Unique title", driver.getTitle());
   }
 
   private void assertFrameNotPresent(WebDriver driver, String locator) {
