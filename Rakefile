@@ -422,16 +422,18 @@ end
 
 task :test_remote_py => [:webdriver_py, :remote_client, :'selenium-server-standalone'] do
   if python? then
-    sh "virtualenv build/python", :verbose => true do |ok, res|
-        if ! ok
-            puts ""
-            puts "PYTHON DEPENDENCY ERROR: Virtualenv not found."
-            puts "Please run '[sudo] pip install virtualenv'"
-            puts ""
-        end
+    py_setup = "build/python/bin/python " + 'setup.py build'
+    py_test_path = 'build/python/bin/py.test'
+
+    if (windows?) then
+      py_test_path = 'build\\python\\Scripts\\py.test.exe'
+      py_setup = 'build\\python\\Scripts\\python ' + 'setup.py build'
     end
-    if File.exists?('build/python/bin/py.test')
-        py_test = 'build/python/bin/py.test'
+
+    sh py_setup , :verbose => true
+    
+    if File.exists?(py_test_path)
+        py_test = py_test_path 
     else
         py_test = 'py.test'
     end
