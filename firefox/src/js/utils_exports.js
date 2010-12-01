@@ -1,1 +1,8 @@
-var EXPORTED_SYMBOLS = [ 'createSwitchFile', 'Utils', 'WebDriverError', 'ErrorCode', 'Logger' ];
+var EXPORTED_SYMBOLS = [
+  'createSwitchFile',
+  'webdriver',
+  'ErrorCode',
+  'Logger',
+  'Utils',
+  'WebDriverError'
+];

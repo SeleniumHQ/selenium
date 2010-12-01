@@ -50,7 +50,19 @@ public class AlertsTest extends AbstractDriverTestCase {
   }
 
   @Ignore
-  public void testShouldAllowUsersToDealWithAnAlertManually() {
+  public void testShouldAllowUsersToAcceptAnAlertManually() throws InterruptedException {
+    driver.get(alertPage);
+
+    driver.findElement(By.id("alert")).click();
+
+    Alert alert = switchToAlert(driver);
+    alert.accept();
+
+    // If we can perform any action, we're good to go
+    assertEquals("Testing Alerts", driver.getTitle());
+  }
+
+  public void testShouldAllowUsersToDismissAnAlertManually() throws InterruptedException {
     driver.get(alertPage);
 
     driver.findElement(By.id("alert")).click();
@@ -61,6 +73,7 @@ public class AlertsTest extends AbstractDriverTestCase {
     // If we can perform any action, we're good to go
     assertEquals("Testing Alerts", driver.getTitle());
   }
+
 
   @Ignore
   public void testShouldThrowAnExceptionIfAnAlertHasNotBeenDealtWith() {

@@ -89,46 +89,60 @@ DrivenPromptService.prototype.findAssociatedDriver_ = function(window) {
   return undefined;
 };
 
-DrivenPromptService.prototype.alert = function(aParent, aDialogTitle, aText) {
+DrivenPromptService.prototype.signalOpenModal_ = function(parent, title, text) {
   // Try to grab the top level window
-  var driver = this.findAssociatedDriver_(aParent);
+  var driver = this.findAssociatedDriver_(parent);
 
   if (driver && driver.response_) {
+    driver.modalOpen = true;
+
     var res = driver.response_;
     res.value = {
-      title: aDialogTitle,
-      text: aText,
-      __webdriverType: 'alert'
+      title: title,
+      text: text
     };
+    res.statusCode = ErrorCode.MODAL_DIALOG_OPENED;
     res.send();
-  } else {
-    // TODO(simon): we should prevent the next command from blocking.
   }
+};
+
+DrivenPromptService.prototype.alert = function(aParent, aDialogTitle, aText) {
+  this.signalOpenModal_(aParent, aDialogTitle, aText);
 
   return this.originalPromptService_.alert(aParent, aDialogTitle, aText);
 };
 
 DrivenPromptService.prototype.alertCheck =
 function(aParent, aDialogTitle, aText, aCheckMsg, aCheckState) {
+  this.signalOpenModal_(aParent, aDialogTitle, aText);
+
   return this.originalPromptService_.alertCheck(aParent, aDialogTitle, aText, aCheckMsg, aCheckState);
 };
 
 DrivenPromptService.prototype.confirm = function(aParent, aDialogTitle, aText) {
+  this.signalOpenModal_(aParent, aDialogTitle, aText);
+
   return this.originalPromptService_.confirm(aParent, aDialogTitle, aText);
 };
 
 DrivenPromptService.prototype.confirmCheck =
 function(aParent, aDialogTitle, aText, aCheckMsg, aCheckState) {
+  this.signalOpenModal_(aParent, aDialogTitle, aText);
+
   return this.originalPromptService_.confirmCheck(aParent, aDialogTitle, aText, aCheckMsg, aCheckState);
 };
 
 DrivenPromptService.prototype.confirmEx =
 function(aParent, aDialogTitle, aText, aButtonFlags, aButton0Title, aButton1Title, aButton2Title, aCheckMsg, aCheckState) {
+  this.signalOpenModal_(aParent, aDialogTitle, aText);
+
   return this.originalPromptService_.confirmEx(aParent, aDialogTitle, aText, aButtonFlags, aButton0Title, aButton1Title, aButton2Title, aCheckMsg, aCheckState);
 };
 
 DrivenPromptService.prototype.prompt =
 function(aParent, aDialogTitle, aText, aValue, aCheckMsg, aCheckState) {
+  this.signalOpenModal_(aParent, aDialogTitle, aText);
+
   return this.originalPromptService_.prompt(aParent, aDialogTitle, aText, aValue, aCheckMsg, aCheckState);
 };
 

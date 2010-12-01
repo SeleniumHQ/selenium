@@ -128,6 +128,7 @@ public class HttpCommandExecutor implements CommandExecutor {
         // This is used for the FirefoxDriver only to dismiss an alert.
         // The Alert API is still experimental and should not be used.
         .put(DISMISS_ALERT, post("/session/:sessionId/dismiss_alert"))
+        .put(ACCEPT_ALERT, post("/session/:sessionId/accept_alert"))
         .put(GO_FORWARD, post("/session/:sessionId/forward"))
         .put(GO_BACK, post("/session/:sessionId/back"))
         .put(REFRESH, post("/session/:sessionId/refresh"))

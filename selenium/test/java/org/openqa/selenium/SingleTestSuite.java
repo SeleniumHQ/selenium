@@ -54,12 +54,12 @@ public class SingleTestSuite extends TestCase {
         .usingDriver(driver)
         .keepDriverInstance()
         .includeJavascriptTests()
-        .onlyRun("FrameSwitchingTest")
-//        .method("testShouldReturnValueOfOnClickAttribute")
+        .onlyRun("AlertsTest")
+        .method("testShouldAllowUsersToDismissAnAlertManually")
         .exclude(ALL)
         .exclude(Ignore.Driver.FIREFOX)
         .outputTestNames()
-        //.leaveRunning()
+        .leaveRunning()
         ;  // Yeah, this look strange :)
 
     if (REMOTE.equals(driver) || REMOTE_IE.equals(driver)) {

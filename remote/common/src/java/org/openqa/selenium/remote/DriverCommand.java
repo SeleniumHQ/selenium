@@ -91,6 +91,7 @@ public interface DriverCommand {
   String ELEMENT_EQUALS = "elementEquals";
 
   String SCREENSHOT = "screenshot";
+  String ACCEPT_ALERT = "acceptAlert";
   String DISMISS_ALERT = "dismissAlert";
   String IMPLICITLY_WAIT = "implicitlyWait";
   

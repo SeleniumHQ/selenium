@@ -49,8 +49,8 @@ webdriver.preconditions.isInHead_ = function(element) {
 /**
  * Guard that checks whether or not the element would be considered visible.
  *
- * @param respond {!Object} The response object.
- * @param parameters {!Object} The arguments to use.
+ * @param {!Document} doc The document to locate the element on.
+ * @param {!Object} parameters The arguments to use.
  */
 webdriver.preconditions.visible = function(doc, parameters) {
   var element = Utils.getElementAt(parameters.id, doc);
@@ -69,8 +69,8 @@ webdriver.preconditions.visible = function(doc, parameters) {
 /**
  * Guard that checks that the element is enabled.
  *
- * @param respond {!Object} The response object.
- * @param parameters {!Object} The arguments to use.
+ * @param {!Document} doc The document to locate the element on.
+ * @param {!Object} parameters The arguments to use.
  */
 webdriver.preconditions.enabled = function(doc, parameters) {
   var element = Utils.getElementAt(parameters.id, doc);
@@ -78,5 +78,31 @@ webdriver.preconditions.enabled = function(doc, parameters) {
   if (!!element.disabled) {
     return new WebDriverError(ErrorCode.INVALID_ELEMENT_STATE,
         'Element is disabled and so may not be used for actions');
+  }
+};
+
+
+/**
+ * Guard to ensure that no modal dialog is open.
+ *
+ * @param {!Object} driver A WebDriver instance.
+ */
+webdriver.preconditions.noAlertPresent = function(driver) {
+  if (driver.modalOpen) {
+    return new WebDriverError(ErrorCode.MODAL_DIALOG_OPEN,
+        'A modal dialog, such as an alert, is open.');
+  }
+};
+
+
+/**
+ * Guard to ensure that no modal dialog is open.
+ *
+ * @param {!Object} driver A WebDriver instance.
+ */
+webdriver.preconditions.alertPresent = function(driver) {
+  if (!driver.modalOpen) {
+    return new WebDriverError(ErrorCode.NO_SUCH_WINDOW,
+        'A modal dialog, such as an alert, is not open.');
   }
 };

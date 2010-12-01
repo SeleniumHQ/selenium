@@ -214,7 +214,8 @@ public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot, F
     // TODO: this needs to be on an interface
 
     public Alert alert() {
-      throw new NoAlertPresentException();
+//      throw new NoAlertPresentException();
+      return new FirefoxAlert();
     }
   }
 
@@ -251,22 +252,19 @@ public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot, F
   }
 
   private class FirefoxAlert implements Alert {
-    private String text;
-
-    public FirefoxAlert(String text) {
-      this.text = text;
+    public FirefoxAlert() {
     }
 
     public void dismiss() {
-      execute(DriverCommand.DISMISS_ALERT, ImmutableMap.of("text", text));
-      currentAlert = null;
+      execute(DriverCommand.DISMISS_ALERT);
     }
 
     public void accept() {
+      execute(DriverCommand.ACCEPT_ALERT);
     }
 
     public String getText() {
-      return text;
+      throw new UnsupportedOperationException("getText");
     }
 
     public void sendKeys(CharSequence... keysToSend) {

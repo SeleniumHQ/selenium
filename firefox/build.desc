@@ -69,7 +69,9 @@ js_binary(name = "atoms",
 js_binary(name = "utils",
   srcs = [
     "src/js/errorcode.js",
+    "src/js/firefox-utils.js",
     "src/js/logging.js",
+    "src/js/modals.js",
     "src/js/utils.js",
     "src/js/utils_exports.js"
   ],
