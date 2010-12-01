@@ -1,19 +1,18 @@
 prune *
 recursive-include common/src/web *.dll *.js *.gif *.html *.cs *.xhtml
 recursive-include common/src/web *.txt *.Config
-recursive-include common/src/py *.py
-recursive-include common/test/py *.py
-recursive-include chrome/src/py *.py
-recursive-include chrome/src/py *.zip
-recursive-include chrome/test/py *.py
-recursive-include firefox/src/py *.py *.xpi
-recursive-include firefox/test/py *.py
-recursive-include jobbie/src/py *.py *.dll
-recursive-include jobbie/test/py *.py
-recursive-include remote/client/src/py *.py
-recursive-include remote/client/test/py *.py
-include selenium/src/py/selenium.py
-include selenium/src/py/__init__.py
+recursive-include py/selenium/webdriver/common *.py
+recursive-include py/test/selenium/webdriver/common *.py
+recursive-include py/selenium/webdriver/chrome *.py *.zip
+recursive-include py/test/selenium/webdiver/chrome *.py
+recursive-include py/selenium/webdriver/firefox *.py *.xpi
+recursive-include py/test/selenium/webdriver/firefox *.py
+recursive-include py/selenium/webdriver/ie *.py *.dll
+recursive-include py/test/selenium/webdriver/ie *.py
+recursive-include py/selenium/webdriver/remote *.py
+recursive-include py/test/selenium/webdriver/remote *.py
+include py/selenium/selenium.py
+include py/selenium/__init__.py
 include __init__.py
 include docs/api/py/index.rst
 recursive-include selenium.egg-info *

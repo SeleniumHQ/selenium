@@ -19,8 +19,8 @@ from setuptools.command.install import install
 
 from os.path import dirname, join, isfile
 from shutil import copy
-import re
 import sys
+
 
 def setup_python3():
     # Taken from "distribute" setup.py
@@ -48,6 +48,7 @@ def setup_python3():
 
     return tmp_src
 
+
 def find_longdesc():
     for path in ("docs/api/py/index.rst", "docs/index.rst"):
         try:
@@ -59,6 +60,7 @@ def find_longdesc():
     print("WARNING: Can't find index.rst")
     return ""
 
+
 def _copy_ext_file(driver, name):
     filename = join("build", driver, name)
     if not isfile(filename):
@@ -66,6 +68,7 @@ def _copy_ext_file(driver, name):
     dest = join(driver, "src", "py")
     copy(filename, dest)
     return 1
+
 
 def _copy_ie_dlls():
     num_copied = 0
@@ -92,49 +95,52 @@ _copy_ext_file("firefox", "webdriver.xpi")
 # FIXME: We need to find a solution for x64, currently IMO the zip contains the
 # Win32 dll
 _copy_ext_file("chrome", "chrome-extension.zip")
-_copy_ie_dlls()
+#_copy_ie_dlls()
 
 setup(
     cmdclass={'install': install},
     name='selenium',
-    version="2.0a5",
+    version="2.0a7",
     description='Python bindings for Selenium',
     long_description=find_longdesc(),
     url='http://code.google.com/p/selenium/',
     src_root=src_root,
     package_dir={
-        'selenium':'.',
-        'selenium.ie': 'jobbie/src/py',
-        'selenium.firefox': 'firefox/src/py',
-        'selenium.chrome' : 'chrome/src/py',
-        'selenium.chrome_tests': 'chrome/test/py',
-        'selenium.common': 'common/src/py',
-        'selenium.docs': 'docs/api/py',
-        'selenium.remote': 'remote/client/src/py',
-        'selenium.common_tests': 'common/test/py',
-        'selenium.common_web': 'common/src/web',
-        'selenium.firefox_tests': 'firefox/test/py',
-        'selenium.ie_tests': 'jobbie/test/py',
-        'selenium.remote_tests': 'remote/client/test/py',
-        'selenium.selenium': 'selenium/src/py',
+        'selenium': 'py/selenium',
+        'selenium.test': 'py/test',
+        'selenium.test.selenium': 'py/test/selenium',
+        'selenium.test.selenium.webdriver': 'py/test/selenium/webdriver',
+        'selenium.test.selenium.webdriver.chrome': 'py/test/selenium/webdriver/chrome',
+        'selenium.test.selenium.webdriver.common': 'py/test/selenium/webdriver/common',
+        'selenium.test.selenium.webdriver.firefox': 'py/test/selenium/webdriver/firefox',
+        'selenium.test.selenium.webdriver.ie': 'py/test/selenium/webdriver/ie',
+        'selenium.test.selenium.webdriver.remote': 'py/test/selenium/webdriver/remote',
+        'selenium.webdriver': 'py/selenium/webdriver',
+        'selenium.webdriver.chrome': 'py/selenium/webdriver/chrome',
+        'selenium.webdriver.common': 'py/selenium/webdriver/common',
+        'selenium.webdriver.firefox': 'py/selenium/webdriver/firefox',
+        'selenium.webdriver.ie': 'py/selenium/webdriver/ie',
+        'selenium.webdriver.remote': 'py/selenium/webdriver/remote',
     },
     packages=['selenium',
-              'selenium.common',
-              'selenium.docs',
-              'selenium.firefox',
-              'selenium.ie',
-              'selenium.chrome',
-              'selenium.remote',
-              'selenium.common_tests',
-              'selenium.common_web',
-              'selenium.firefox_tests',
-              'selenium.ie_tests',
-              'selenium.chrome_tests',
-              'selenium.remote_tests',
-              'selenium.selenium'],
-    package_data = {
-        'selenium.firefox':['*.xpi'],
-        'selenium.ie': ['*.dll'],
+              'selenium.test',
+              'selenium.test.selenium',
+              'selenium.test.selenium.webdriver',
+              'selenium.test.selenium.webdriver.chrome',
+              'selenium.test.selenium.webdriver.common',
+              'selenium.test.selenium.webdriver.firefox',
+              'selenium.test.selenium.webdriver.ie',
+              'selenium.test.selenium.webdriver.remote',
+              'selenium.webdriver',
+              'selenium.webdriver.chrome',
+              'selenium.webdriver.common',
+              'selenium.webdriver.firefox',
+              'selenium.webdriver.ie',
+              'selenium.webdriver.remote', ],
+    package_data={
+        'selenium.webdriver.firefox': ['*.xpi'],
+        'selenium.webdriver.ie': ['*.dll'],
+        'selenium.webdriver.chrome': ['*.zip'],
     },
     include_package_data=True,
     install_requires=['distribute'],
