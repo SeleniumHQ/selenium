@@ -294,6 +294,8 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
     }
   }
 
+  @Ignore(value = FIREFOX,
+      reason = "Reworking alert handling. First step: removing existing broken alert support")
   public void testShouldThrowWhenAlertNotHandled() {
     WebDriver firefox = newFirefoxDriver();
     firefox.get(pages.alertsPage);

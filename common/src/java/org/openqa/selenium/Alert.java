@@ -24,4 +24,6 @@ public interface Alert {
     void accept();
 
     String getText();
+
+    void sendKeys(CharSequence... keysToSend);
 }
