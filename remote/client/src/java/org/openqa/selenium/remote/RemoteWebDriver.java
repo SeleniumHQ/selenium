@@ -17,15 +17,10 @@ limitations under the License.
 
 package org.openqa.selenium.remote;
 
-import java.net.URL;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
-
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Cookie;
@@ -48,10 +43,14 @@ import org.openqa.selenium.internal.FindsByXPath;
 import org.openqa.selenium.remote.internal.JsonToWebElementConverter;
 import org.openqa.selenium.remote.internal.WebElementToJsonConverter;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
+import java.net.URL;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, FindsByXPath,
@@ -172,6 +171,10 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
   }
 
   protected WebElement findElement(String by, String using) {
+    if (using == null) {
+      throw new IllegalArgumentException("Cannot find elements when the selector is null.");
+    }
+
     Response response = execute(DriverCommand.FIND_ELEMENT,
         ImmutableMap.of("using", by, "value", using));
     return (WebElement) response.getValue();
@@ -179,6 +182,10 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
 
   @SuppressWarnings("unchecked")
   protected List<WebElement> findElements(String by, String using) {
+    if (using == null) {
+      throw new IllegalArgumentException("Cannot find elements when the selector is null.");
+    }
+
     Response response = execute(DriverCommand.FIND_ELEMENTS,
         ImmutableMap.of("using", by, "value", using));
     return (List<WebElement>) response.getValue();
