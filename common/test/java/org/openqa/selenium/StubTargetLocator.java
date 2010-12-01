@@ -40,4 +40,8 @@ public class StubTargetLocator implements WebDriver.TargetLocator {
   public WebElement activeElement() {
     throw new UnsupportedOperationException("activeElement()");
   }
+
+  public Alert alert() {
+    throw new UnsupportedOperationException("alert()");
+  }
 }

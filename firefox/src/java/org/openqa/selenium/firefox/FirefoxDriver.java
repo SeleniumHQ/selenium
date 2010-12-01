@@ -77,8 +77,6 @@ public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot, F
   // or will be self signed.
   public static final boolean ASSUME_UNTRUSTED_ISSUER = true;
 
-  private FirefoxAlert currentAlert;
-
   protected FirefoxBinary binary;
 
   public FirefoxDriver() {
@@ -201,22 +199,8 @@ public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot, F
   }
 
   @Override
-  public TargetLocator switchTo() {
-    return new FirefoxTargetLocator();
-  }
-
-  @Override
   public boolean isJavascriptEnabled() {
     return true;
-  }
-
-  private class FirefoxTargetLocator extends RemoteTargetLocator {
-    // TODO: this needs to be on an interface
-
-    public Alert alert() {
-//      throw new NoAlertPresentException();
-      return new FirefoxAlert();
-    }
   }
 
   public <X> X getScreenshotAs(OutputType<X> target) {
@@ -248,25 +232,6 @@ public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot, F
       FileHandler.copy(tmpfile, pngFile);
     } catch (IOException e) {
       throw new WebDriverException(e);
-    }
-  }
-
-  private class FirefoxAlert implements Alert {
-    public void dismiss() {
-      execute(DriverCommand.DISMISS_ALERT);
-    }
-
-    public void accept() {
-      execute(DriverCommand.ACCEPT_ALERT);
-    }
-
-    public String getText() {
-      Response response = execute(DriverCommand.GET_ALERT_TEXT);
-      return response.getValue().toString();
-    }
-
-    public void sendKeys(String keysToSend) {
-      execute(DriverCommand.SET_ALERT_VALUE, ImmutableMap.of("text", keysToSend));
     }
   }
 

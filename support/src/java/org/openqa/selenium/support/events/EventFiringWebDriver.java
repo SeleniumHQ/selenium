@@ -17,6 +17,7 @@ limitations under the License.
 
 package org.openqa.selenium.support.events;
 
+import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.HasInputDevices;
@@ -530,6 +531,10 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
 
     public WebElement activeElement() {
       return targetLocator.activeElement();
+    }
+
+    public Alert alert() {
+      return targetLocator.alert();
     }
   }
 }

@@ -61,6 +61,8 @@ import net.sourceforge.htmlunit.corejs.javascript.Function;
 import net.sourceforge.htmlunit.corejs.javascript.NativeArray;
 import net.sourceforge.htmlunit.corejs.javascript.ScriptableObject;
 import net.sourceforge.htmlunit.corejs.javascript.Undefined;
+
+import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Cookie;
@@ -920,6 +922,10 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
       }
 
       throw new NoSuchElementException("Unable to locate element with focus or body tag");
+    }
+
+    public Alert alert() {
+      throw new UnsupportedOperationException("alert()");
     }
   }
 

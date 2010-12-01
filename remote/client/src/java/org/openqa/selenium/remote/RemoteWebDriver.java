@@ -21,6 +21,8 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+
+import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Cookie;
@@ -513,6 +515,29 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     public WebElement activeElement() {
       Response response = execute(DriverCommand.GET_ACTIVE_ELEMENT);
       return (WebElement) response.getValue();
+    }
+
+    public Alert alert() {
+      return new RemoteAlert();
+    }
+  }
+
+  private class RemoteAlert implements Alert {
+    public void dismiss() {
+      execute(DriverCommand.DISMISS_ALERT);
+    }
+
+    public void accept() {
+      execute(DriverCommand.ACCEPT_ALERT);
+    }
+
+    public String getText() {
+      Response response = execute(DriverCommand.GET_ALERT_TEXT);
+      return response.getValue().toString();
+    }
+
+    public void sendKeys(String keysToSend) {
+      execute(DriverCommand.SET_ALERT_VALUE, ImmutableMap.of("text", keysToSend));
     }
   }
 

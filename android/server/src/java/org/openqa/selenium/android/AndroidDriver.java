@@ -29,6 +29,7 @@ import android.util.Log;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.JavascriptExecutor;
@@ -329,6 +330,10 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
         "} catch(err) {" +
         "  return false;" +
         "}", index);
+    }
+
+    public Alert alert() {
+      throw new UnsupportedOperationException("alert()");
     }
   }
 

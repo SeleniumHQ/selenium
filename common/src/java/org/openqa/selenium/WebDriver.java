@@ -309,7 +309,7 @@ public interface WebDriver extends SearchContext {
     /**
      * Selects either the first frame on the page, or the main document when a page contains iframes.
      *
-	 * @return This driver focused on the top window/first frame.
+     * @return This driver focused on the top window/first frame.
      */
     WebDriver defaultContent();
 
@@ -320,7 +320,12 @@ public interface WebDriver extends SearchContext {
      */
     WebElement activeElement();
 
-//        Alert alert();
+    /**
+     * Switches to the currently active modal dialog for this particular driver instance.
+     *
+     * @return A handle to the dialog.
+     */
+    Alert alert();
   }
 
   interface Navigation {

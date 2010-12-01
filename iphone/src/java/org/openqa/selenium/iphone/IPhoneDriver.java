@@ -19,6 +19,7 @@ package org.openqa.selenium.iphone;
 
 import java.net.URL;
 
+import org.openqa.selenium.Alert;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
@@ -124,6 +125,10 @@ public class IPhoneDriver extends RemoteWebDriver implements TakesScreenshot {
     public WebElement activeElement() {
       return (WebElement) executeScript(
     		  "return document.activeElement || document.body;");
+    }
+
+    public Alert alert() {
+      throw new UnsupportedOperationException("alert()");
     }
   }
 
