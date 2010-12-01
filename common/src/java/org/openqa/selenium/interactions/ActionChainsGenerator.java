@@ -87,4 +87,12 @@ public class ActionChainsGenerator {
     action.addAction(new ContextClickAction(driver, onElement));
     return this;
   }
+
+  public ActionChainsGenerator dragAndDrop(WebElement source, WebElement target) {
+    action.addAction(new MoveMouseAction(driver, source));
+    action.addAction(new ClickAndHoldAction(driver, source));
+    action.addAction(new MoveMouseAction(driver, target));
+    action.addAction(new ButtonReleaseAction(driver, target));
+    return this;
+  }
 }

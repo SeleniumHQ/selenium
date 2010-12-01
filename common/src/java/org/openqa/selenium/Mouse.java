@@ -17,10 +17,8 @@ limitations under the License.
 
 package org.openqa.selenium;
 
-import org.openqa.selenium.WebElement;
-
 /**
- * Interface reperesenting basic Mouse operations.
+ * Interface representing basic Mouse operations.
  *
  */
 public interface Mouse {
