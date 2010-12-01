@@ -255,6 +255,7 @@ DelayedCommand.prototype.checkPreconditions_ = function(preconditions, respond, 
   }
 };
 
+
 /**
  * Attempts to execute the command.  If the window is not ready for the command
  * to execute, will set a timeout to try again.
@@ -287,9 +288,9 @@ DelayedCommand.prototype.executeInternal_ = function() {
       var driverFunction = this.driver_[name];
       var parameters = this.command_.parameters;
 
-      Logger.dumpn('name: ' + name);
-      Logger.dumpn('driverFunction: ' + driverFunction);
-      Logger.dumpn('preconditions: ' + driverFunction.preconditions);
+//      Logger.dumpn('name: ' + name);
+//      Logger.dumpn('driverFunction: ' + driverFunction);
+//      Logger.dumpn('preconditions: ' + driverFunction.preconditions);
 
       var func = goog.bind(driverFunction, this.driver_,
           this.response_, parameters);
