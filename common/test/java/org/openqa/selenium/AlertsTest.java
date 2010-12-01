@@ -63,7 +63,7 @@ public class AlertsTest extends AbstractDriverTestCase {
   }
 
   @Ignore
-  public void testShouldAllowUsersToDismissAnAlertManually() throws InterruptedException {
+  public void testShouldAllowUsersToDismissAnAlertManually() {
     driver.get(alertPage);
 
     driver.findElement(By.id("alert")).click();
@@ -74,7 +74,60 @@ public class AlertsTest extends AbstractDriverTestCase {
     // If we can perform any action, we're good to go
     assertEquals("Testing Alerts", driver.getTitle());
   }
-  
+
+  @Ignore
+  public void testShouldAllowAUserToAcceptAPrompt() {
+    driver.get(alertPage);
+
+    driver.findElement(By.id("prompt")).click();
+
+    Alert alert = switchToAlert(driver);
+    alert.accept();
+
+    // If we can perform any action, we're good to go
+    assertEquals("Testing Alerts", driver.getTitle());
+  }
+
+  @Ignore
+  public void testShouldAllowAUserToDismissAPrompt() {
+    driver.get(alertPage);
+
+    driver.findElement(By.id("prompt")).click();
+
+    Alert alert = switchToAlert(driver);
+    alert.dismiss();
+
+    // If we can perform any action, we're good to go
+    assertEquals("Testing Alerts", driver.getTitle());
+  }
+
+  @Ignore
+  public void testShouldAllowAUserToSetTheValueOfAPrompt() {
+    driver.get(alertPage);
+
+    driver.findElement(By.id("prompt")).click();
+
+    Alert alert = switchToAlert(driver);
+    alert.sendKeys("cheese");
+    alert.accept();
+
+    String result = driver.findElement(By.id("text")).getText();
+    assertEquals("cheese", result);
+  }
+
+  @Ignore
+  public void testShouldAllowTheUserToGetTheTextOfAnAlert() {
+    driver.get(alertPage);
+
+    driver.findElement(By.id("alert")).click();
+
+    Alert alert = switchToAlert(driver);
+    String value = alert.getText();
+    alert.accept();
+
+    assertEquals("cheese", value);
+  }
+
   @Ignore
   public void testShouldThrowAnExceptionIfAnAlertHasNotBeenDealtWith() {
     driver.get(alertPage);

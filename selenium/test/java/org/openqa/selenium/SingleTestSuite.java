@@ -55,7 +55,7 @@ public class SingleTestSuite extends TestCase {
         .keepDriverInstance()
         .includeJavascriptTests()
         .onlyRun("AlertsTest")
-        .method("testShouldAllowUsersToDismissAnAlertManually")
+        .method("testShouldAllowTheUserToGetTheTextOfAnAlert")
         .exclude(ALL)
         .exclude(Ignore.Driver.FIREFOX)
         .outputTestNames()

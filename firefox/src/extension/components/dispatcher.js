@@ -152,6 +152,12 @@ Dispatcher.prototype.init_ = function() {
     on(Request.Method.POST, Dispatcher.executeAs('acceptAlert'));
   this.bind_('/session/:sessionId/dismiss_alert').
     on(Request.Method.POST, Dispatcher.executeAs('dismissAlert'));
+  this.bind_('/session/:sessionId/alert_text').
+    on(Request.Method.GET, Dispatcher.executeAs('getAlertText')).
+    on(Request.Method.POST, Dispatcher.executeAs('setAlertValue'));
+
+  this.bind_('/session/:sessionId/alert_text').
+    on(Request.Method.GET, Dispatcher.executeAs('getAlertText'));
 
   this.bind_('/session/:sessionId/forward').
       on(Request.Method.POST, Dispatcher.executeAs('goForward'));

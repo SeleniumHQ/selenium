@@ -870,8 +870,6 @@ FirefoxDriver.prototype.screenshot = function(respond) {
   respond.send();
 };
 
-
-
 FirefoxDriver.prototype.dismissAlert = function(respond) {
   Logger.dumpn('Dismissing alert');
   webdriver.modals.dismissAlert(this);
@@ -881,5 +879,17 @@ FirefoxDriver.prototype.dismissAlert = function(respond) {
 FirefoxDriver.prototype.acceptAlert = function(respond) {
   Logger.dumpn('Accepting alert');
   webdriver.modals.acceptAlert(this);
+  respond.send();
+};
+
+FirefoxDriver.prototype.getAlertText = function(respond) {
+  Logger.dumpn('Getting alert text');
+  respond.value = webdriver.modals.getText(this);
+  respond.send();
+};
+
+FirefoxDriver.prototype.setAlertValue = function(respond, parameters) {
+  Logger.dumpn('Setting alert text');
+  respond.value = webdriver.modals.setValue(this, parameters['text']);
   respond.send();
 };

@@ -19,9 +19,9 @@ limitations under the License.
 package org.openqa.selenium.firefox;
 
 import com.google.common.collect.ImmutableMap;
+
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.Proxy;
@@ -252,9 +252,6 @@ public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot, F
   }
 
   private class FirefoxAlert implements Alert {
-    public FirefoxAlert() {
-    }
-
     public void dismiss() {
       execute(DriverCommand.DISMISS_ALERT);
     }
@@ -264,11 +261,12 @@ public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot, F
     }
 
     public String getText() {
-      throw new UnsupportedOperationException("getText");
+      Response response = execute(DriverCommand.GET_ALERT_TEXT);
+      return response.getValue().toString();
     }
 
-    public void sendKeys(CharSequence... keysToSend) {
-      throw new UnsupportedOperationException("sendKeys");
+    public void sendKeys(String keysToSend) {
+      execute(DriverCommand.SET_ALERT_VALUE, ImmutableMap.of("text", keysToSend));
     }
   }
 

@@ -63,6 +63,11 @@ webdriver.modals.clearFlag_ = function(driver) {
 };
 
 
+webdriver.modals.setFlag = function(driver, flagValue) {
+  driver.modalOpen = flagValue;
+};
+
+
 webdriver.modals.acceptAlert = function(driver) {
   var modal = webdriver.modals.findModal_();
 
@@ -84,4 +89,18 @@ webdriver.modals.dismissAlert = function(driver) {
 
   button.click();
   webdriver.modals.clearFlag_(driver);
+};
+
+webdriver.modals.getText = function(driver) {
+  var modal = webdriver.modals.findModal_();
+
+  return driver.modalOpen;
+};
+
+webdriver.modals.setValue = function(driver, value) {
+  var modal = webdriver.modals.findModal_();
+
+  var textbox = modal.document.getElementById('loginTextbox');
+  Logger.dump(textbox);
+  textbox.value = value;
 };

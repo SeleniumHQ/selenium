@@ -94,7 +94,7 @@ DrivenPromptService.prototype.signalOpenModal_ = function(parent, title, text) {
   var driver = this.findAssociatedDriver_(parent);
 
   if (driver && driver.response_) {
-    driver.modalOpen = true;
+    webdriver.modals.setFlag(driver, text);
 
     var res = driver.response_;
     res.value = {
