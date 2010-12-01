@@ -29,5 +29,9 @@ android_binary(name = "android-server",
     "//remote/server",
     "//support",
     "//third_party/java/guava-libraries:guava-libraries:uber",
-    "//third_party/java/jetty:lite:uber",
+    "//third_party/java/jetty:lite-android:uber",
   ])
+
+# TODO(kurniady): Change the dependency for jetty to //third_party/java/jetty:lite:uber
+# after we move away form apkbuilder (which currently causes problem with "about.html"
+# resource file in the jar).

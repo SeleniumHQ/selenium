@@ -32,12 +32,12 @@ import android.os.PowerManager;
 import android.util.Log;
 import android.widget.Toast;
 import com.google.common.io.ByteStreams;
-import org.mortbay.jetty.HttpGenerator;
-import org.mortbay.jetty.Server;
-import org.mortbay.jetty.handler.DefaultHandler;
-import org.mortbay.jetty.handler.HandlerList;
-import org.mortbay.jetty.nio.SelectChannelConnector;
-import org.mortbay.jetty.servlet.ServletHolder;
+import org.eclipse.jetty.http.HttpGenerator;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.handler.DefaultHandler;
+import org.eclipse.jetty.server.handler.HandlerList;
+import org.eclipse.jetty.server.nio.SelectChannelConnector;
+import org.eclipse.jetty.servlet.ServletHolder;
 import org.openqa.selenium.android.AndroidDriver;
 import org.openqa.selenium.android.Logger;
 import org.openqa.selenium.android.Platform;
@@ -149,14 +149,14 @@ public class JettyService extends Service {
 
   protected void configureHandlers() {
     if (server != null) {
-      org.mortbay.jetty.servlet.Context root =
-          new org.mortbay.jetty.servlet.Context(server, "/hub",
-              org.mortbay.jetty.servlet.Context.SESSIONS);
+      org.eclipse.jetty.servlet.ServletContextHandler root =
+          new org.eclipse.jetty.servlet.ServletContextHandler(server, "/hub",
+              org.eclipse.jetty.servlet.ServletContextHandler.SESSIONS);
       root.addServlet(new ServletHolder(new AndroidDriverServlet()), "/*");
 
-      org.mortbay.jetty.servlet.Context resources =
-        new org.mortbay.jetty.servlet.Context(server, "/resources",
-            org.mortbay.jetty.servlet.Context.SESSIONS);
+      org.eclipse.jetty.servlet.ServletContextHandler resources =
+        new org.eclipse.jetty.servlet.ServletContextHandler(server, "/resources",
+            org.eclipse.jetty.servlet.ServletContextHandler.SESSIONS);
       resources.addServlet(new ServletHolder(new HttpServlet() {
         @Override
         protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -180,7 +180,8 @@ public class JettyService extends Service {
       }), "/*");
       
       HandlerList handlers = new HandlerList();
-      handlers.setHandlers(new org.mortbay.jetty.Handler[] {resources,root, new DefaultHandler()});
+      handlers.setHandlers(
+          new org.eclipse.jetty.server.Handler[] {resources,root, new DefaultHandler()});
       server.setHandler(handlers);
 
     }

@@ -20,3 +20,8 @@ java_library(name = "lite",
     "jetty-xml-7.2.0.v20101020.jar",
     "//third_party/java/servlet-api"
   ])
+
+java_library(name = "lite-android",
+  deps = [
+    "jetty-lite-7.2.0-repackaged-for-android.jar"
+  ])

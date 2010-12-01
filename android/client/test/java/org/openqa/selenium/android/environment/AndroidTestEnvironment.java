@@ -20,13 +20,13 @@ package org.openqa.selenium.android.environment;
 
 import org.openqa.selenium.environment.TestEnvironment;
 import org.openqa.selenium.environment.webserver.AppServer;
-import org.openqa.selenium.environment.webserver.Jetty6AppServer;
+import org.openqa.selenium.environment.webserver.Jetty7AppServer;
 
 public class AndroidTestEnvironment implements TestEnvironment {
   private AppServer appServer;
 
   public AndroidTestEnvironment() {
-    appServer = new Jetty6AppServer("10.0.2.2");
+    appServer = new Jetty7AppServer("10.0.2.2");
     appServer.start();
   }
 
