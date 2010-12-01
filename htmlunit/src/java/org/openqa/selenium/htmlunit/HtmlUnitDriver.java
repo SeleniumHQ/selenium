@@ -332,6 +332,10 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
     if (page == null || !(page instanceof HtmlPage)) {
       return null; // no page so there is no title
     }
+    if (currentWindow instanceof FrameWindow) {
+      page = ((FrameWindow) currentWindow).getTopWindow().getEnclosedPage();
+    }
+    
     return ((HtmlPage) page).getTitleText();
   }
 

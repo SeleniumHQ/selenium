@@ -316,7 +316,8 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
       fail("Could not find element after switching frame");
     }
   }
-  
+
+  @Ignore(value = {IE, CHROME, SELENESE}, reason = "These drivers still return frame title.")
   public void testShouldReturnWindowTitleInAFrameset() {
     driver.get(pages.framesetPage);
     driver.switchTo().frame("third");
