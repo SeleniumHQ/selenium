@@ -62,6 +62,7 @@ public class AlertsTest extends AbstractDriverTestCase {
     assertEquals("Testing Alerts", driver.getTitle());
   }
 
+  @Ignore
   public void testShouldAllowUsersToDismissAnAlertManually() throws InterruptedException {
     driver.get(alertPage);
 
@@ -73,8 +74,7 @@ public class AlertsTest extends AbstractDriverTestCase {
     // If we can perform any action, we're good to go
     assertEquals("Testing Alerts", driver.getTitle());
   }
-
-
+  
   @Ignore
   public void testShouldThrowAnExceptionIfAnAlertHasNotBeenDealtWith() {
     driver.get(alertPage);
