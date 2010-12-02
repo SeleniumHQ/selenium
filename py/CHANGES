@@ -1,0 +1,4 @@
+Changes since 2010-12-01
+
+* New bindings landed. Change webdriver namespace to "selenium.webdriver"
+
