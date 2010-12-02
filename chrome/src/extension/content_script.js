@@ -827,15 +827,13 @@ function parseWrappedArguments(wrappedArguments) {
  * @param {Array.<*>} passedArgs An array of JSON arguments to pass to the
  *     injected script. DOMElements should be specified as JSON objects of the
  *     form {ELEMENT: string}.
- * @param callback function to call when the result is returned.  Passed a DOMAttrModified event which should be parsed as returnFromJavascriptInPage
+ * @param {function(MessageEvent)} callback Function to call when the result is returned.
  * TODO: Make the callback be passed the parsed result.
  */
 function execute_(script, passedArgs, callback) {
   console.log("executing " + script + ", args: " + JSON.stringify(passedArgs));
-  var func = "function(){" + script + "}";
-  var args;
   try {
-    args = parseWrappedArguments(passedArgs);
+    var args = parseWrappedArguments(passedArgs);
   } catch (ex) {
     ChromeDriverContentScript.port.postMessage({
       response: {
@@ -847,111 +845,54 @@ function execute_(script, passedArgs, callback) {
     return;
   }
 
-  //Add a script tag to the page, containing the script we wish to execute
   var scriptTag = ChromeDriverContentScript.currentDocument.createElement('script');
-  var argsString = JSON.stringify(args).replace(/"/g, "\\\"");
+  scriptTag.setAttribute('type', 'application/javascript');
+  scriptTag.setAttribute('src', chrome.extension.getURL('./evaluate.js'));
+  console.log('created script with src: ', scriptTag.getAttribute('src'));
 
-  // We use the fact that Function.prototype.toString() will decompile this to
-  // its source code so we can inject it into the page in a SCRIPT tag.
-  function executeInjectedScript(fn, argsAsString) {
-    var e = document.createEvent("MutationEvent");
-    var args = JSON.parse(argsAsString);
-    var element = null;
-    for (var i = 0; i < args.length; i++) {
-      if (args[i] && typeof args[i] == 'object' &&
-          args[i].webdriverElementXPath) {
-        //If this is an element (because it has the proper xpath), turn it into
-        //an actual element object
-        args[i] = document.evaluate(args[i].webdriverElementXPath, document,
-            null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
-      }
+  var scriptLoadTimeout = window.setTimeout(function() {
+    scriptTag.parentNode.removeChild(scriptTag);
+    window.removeEventListener('webdriver-evaluate-ready', runScript, true);
+    window.clearTimeout(scriptLoadTimeout);
+
+    console.error('Timed out waiting for our script evaluator to load');
+    // Callback expects a message event.
+    callback({
+      data: JSON.stringify({
+        statusCode: 17,
+        value: {
+          message: 'Timed out waiting for script evaluator to load'
+        }
+      })
+    });
+  }, 10 * 1000);
+
+  function runScript() {
+    scriptTag.parentNode.removeChild(scriptTag);
+    window.removeEventListener('webdriver-evaluate-ready', runScript, true);
+    window.clearTimeout(scriptLoadTimeout);
+
+    console.info('Script evaluator attached and ready; injecting script');
+
+    function handleResponse(e) {
+      window.removeEventListener('webdriver-evaluate-response', handleResponse, true);
+      callback(e);
     }
-    try {
-      var val = fn.apply(window, args);
+    window.addEventListener('webdriver-evaluate-response', handleResponse, true);
 
-      // prepares the injected script result to be converted to json to be sent
-      // back to the content script.
-      function convertResultToJson(result) {
-        switch (typeof result) {
-          case 'string':
-          case 'number':
-          case 'boolean':
-            return result;
-          case 'undefined':
-            return null;
-          case 'object':
-            if (result == null) {
-              return result;
-            }
-            // Result was an array.
-            if (typeof result.length === 'number' &&
-                !(result.propertyIsEnumerable('length'))) {
-              var converted = [];
-              for (var i = 0; i < result.length; i++) {
-                converted.push(convertResultToJson(result[i]));
-              }
-              return converted;
-            }
-            // Result is a DOMNode; make sure it's a DOMElement
-            if (typeof result.nodeType == 'number') {
-              if (result.nodeType != 1) {
-                // Non-valid JSON value; we'll fail over when trying to
-                // stringify this, so fail early.
-                throw Error('Invalid script return type: result.nodeType == ' +
-                    result.nodeType);
-              }
-              var path = '';
-              for (; result && result.nodeType == 1;
-                  result = result.parentNode) {
-                var index = 1;
-                for (var sibling = result.previousSibling; sibling;
-                    sibling = sibling.previousSibling) {
-                  if (sibling.nodeType == 1 && sibling.tagName &&
-                      sibling.tagName == result.tagName) {
-                    index++;
-                  }
-                }
-                path = '/' + result.tagName + '[' + index + ']' + path;
-              }
-              return {webdriverElementXPath: path};
-            }
-            // Result is an object; convert each property.
-            var converted = {};
-            for (var prop in result) {
-              converted[prop] = convertResultToJson(result[prop]);
-            }
-            return converted;
-
-          case 'function':
-          default:
-            throw Error('Invalid script return type: ' + (typeof result));
-        }  // switch
-      }
-
-      val = JSON.stringify({
-        value: convertResultToJson(val)
-      });
-      console.info('returning from injected script: ' + val);
-      //Fire mutation event with newValue set to the JSON of our return value
-      e.initMutationEvent(
-          "DOMAttrModified", true, false, null, null, val, null, 0);
-    } catch (ex) {
-      //Fire mutation event with prevValue set to EXCEPTION to indicate an error
-      //in the script
-      console.error('injected script failed: ' + ex.toString());
-      e.initMutationEvent("DOMAttrModified", true, false, null, "EXCEPTION",
-          null, null, 0);
-    }
-    var scriptTags = document.getElementsByTagName("script");
-    var scriptTag = scriptTags[scriptTags.length - 1];
-    scriptTag.dispatchEvent(e);
-    document.documentElement.removeChild(scriptTag);
+    var data = JSON.stringify({
+      'script': script,
+      'args': args
+    });
+    var e = document.createEvent('MessageEvent');
+    e.initMessageEvent('webdriver-evaluate', /*bubbles=*/true,
+        /*cancelable=*/false, data, /*origin=*/'', /*lastEventId=*/'',
+        /*source=*/window, /*ports=*/null);
+    window.dispatchEvent(e);
   }
+  window.addEventListener('webdriver-evaluate-ready', runScript, true);
 
-  scriptTag.innerHTML =
-      '(' + executeInjectedScript + ')(' + func + ', "' + argsString + '");';
-
-  scriptTag.addEventListener('DOMAttrModified', callback, false);
+  console.info('Injecting script tag');
   ChromeDriverContentScript.currentDocument.documentElement.
       appendChild(scriptTag);
 }
@@ -1010,18 +951,15 @@ function parseReturnValueFromScript(result) {
  * Callback from execute
  */
 function returnFromJavascriptInPage(e) {
-  if (e.prevValue == "EXCEPTION") {
-    ChromeDriverContentScript.port.postMessage({sequenceNumber: ChromeDriverContentScript.currentSequenceNumber,
-        response: {response: "execute", value: {statusCode: 17,
-        value: {message: "Tried to execute bad javascript."}}}});
-    return;
-  }
-  console.log("Got result");
-  console.log("Result was: " + e.newValue);
-  var result = JSON.parse(e.newValue).value;
-  var value = parseReturnValueFromScript(result);
-  console.log("Return value: " + JSON.stringify(value));
-  ChromeDriverContentScript.port.postMessage({sequenceNumber: ChromeDriverContentScript.currentSequenceNumber, response: {response: "execute", value: {statusCode: 0, value: value}}});
+  console.log('Got response: ', e.data);
+  var response = parseReturnValueFromScript(JSON.parse(e.data));
+  ChromeDriverContentScript.port.postMessage({
+    sequenceNumber: ChromeDriverContentScript.currentSequenceNumber,
+    response: {
+      response: "execute",
+      value: response
+    }
+  });
 }
 
 function getFrameNameFromIndex(index) {
