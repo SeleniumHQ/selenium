@@ -157,7 +157,8 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
 
   public String getTitle() {
     Response response = execute(DriverCommand.GET_TITLE);
-    return response.getValue().toString();
+    Object value = response.getValue();
+    return value == null ? "" : value.toString();
   }
 
   public String getCurrentUrl() {
