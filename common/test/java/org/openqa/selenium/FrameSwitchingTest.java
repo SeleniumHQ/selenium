@@ -196,8 +196,7 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
   }
 
   @NoDriverAfterTest
-  @Ignore({FIREFOX, IPHONE, CHROME})
-  //Firefox: Issue 882
+  @Ignore({IPHONE, CHROME})
   public void testClosingTheFinalBrowserWindowShouldNotCauseAnExceptionToBeThrown() {
     driver.get(pages.simpleTestPage);
     try {

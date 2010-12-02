@@ -124,6 +124,23 @@ FirefoxDriver.prototype.close = function(respond) {
       "@mozilla.org/toolkit/app-startup;1", "nsIAppStartup");
   var forceQuit = Components.interfaces.nsIAppStartup.eForceQuit;
 
+  var numOpenWindwos = 0;
+  var allWindows = wm.getEnumerator("navigator:browser");
+  while (allWindows.hasMoreElements()) {
+    numOpenWindwos += 1;
+    allWindows.getNext();
+  }
+
+  // If we're on a Mac we may close all the windows but not quit, so
+  // ensure that we do actually quit. For Windows, if we don't quit,
+  // Firefox will crash. So, whatever the case may be, if that's the last
+  // window - just quit Firefox.
+  if (numOpenWindwos == 1) {
+    respond.send();
+    appService.quit(forceQuit);
+    return;  // The client should catch the fact that the socket suddenly closes    
+  }
+
   // Here we go!
   try {
     var browser = respond.session.getBrowser();
@@ -136,14 +153,6 @@ FirefoxDriver.prototype.close = function(respond) {
   // Send the response so the client doesn't get a connection refused socket
   // error.
   respond.send();
-
-  // If we're on a Mac we might have closed all the windows but not quit, so
-  // ensure that we do actually quit :)
-  var allWindows = wm.getEnumerator("navigator:browser");
-  if (!allWindows.hasMoreElements()) {
-    appService.quit(forceQuit);
-    return;  // The client should catch the fact that the socket suddenly closes
-  }
 };
 
 
