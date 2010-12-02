@@ -229,7 +229,8 @@ class RemoteConnection(object):
             if response.code > 399 and response.code < 500:
                 return {'status': response.code, 'value': response.read()}
             body = response.read().replace('\x00', '').strip()
-            if 'application/json' in response.info().getheader('Content-Type'):
+            content_type = response.info().getheader('Content-Type') or []
+            if 'application/json' in content_type:
                 data = utils.load_json(body.strip())
                 assert type(data) is dict, (
                     'Invalid server response body: %s' % body)
@@ -240,7 +241,7 @@ class RemoteConnection(object):
                 if 'value' not in data:
                     data['value'] = None
                 return data
-            elif 'image/png' in response.info().getheader('Content-Type'):
+            elif 'image/png' in content_type:
                 data = {'status': 0, 'value': body.strip()}
                 return data
         finally:
