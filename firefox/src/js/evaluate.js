@@ -15,7 +15,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-function attachEvaluateListener() {
+(function() {
   var handleEvaluateEvent = function(event) {
     var script = document.getUserData('webdriver-evaluate-script');
 
@@ -43,8 +43,4 @@ function attachEvaluateListener() {
 
   // Make it clear that we're here.
   document.setUserData('webdriver-evaluate-attached', true, null);
-}
-
-(function() {
-  attachEvaluateListener();    
 })();
