@@ -112,9 +112,9 @@ FirefoxDriver.prototype.clickElement = function(respond, parameters) {
 
   Utils.installWindowCloseListener(respond);
 
-  bot.action.click(element);
-
   Utils.installClickListener(respond, WebLoadingListener);
+
+  bot.action.click(element);
 };
 FirefoxDriver.prototype.clickElement.preconditions =
     [ webdriver.preconditions.visible ];
