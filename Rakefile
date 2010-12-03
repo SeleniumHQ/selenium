@@ -77,7 +77,7 @@ task :default => [:test]
 
 
 # TODO(simon): Shatter the build file into subdirectories, then remove these
-task :all => [:'selenium-java']
+task :all => [:'selenium-java', :'android']
 task :all_zip => [:'selenium-java_zip']
 task :chrome => [ "//chrome" ]
 task :common => [ "//common" ]
@@ -101,7 +101,7 @@ task :ide => [ "//ide:selenium-ide" ]
 task :ide_proxy_setup => [ "//common:atoms", "se_ide:setup_proxy" ]
 task :ide_proxy_remove => [ "se_ide:remove_proxy" ]
 
-task :test_android => ["//android/client:test:run"]
+task :test_android => ["//android/client:android_test:run"]
 task :test_common => [ "//common:test" ]
 task :test_chrome => [ "//chrome:test:run" ]
 task :test_htmlunit => [ "//htmlunit:test:run" ]

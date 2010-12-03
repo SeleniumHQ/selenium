@@ -5,7 +5,16 @@ java_library(name = "client",
     "//remote/client"
   ])
 
-android_test(name = "test",
+android_test(name = "android_test",
+  srcs = [ "test/java/**/*.java" ],
+  binary = "//android/server:android-server",
+  deps = [
+   ":client",
+   "//common:test",
+   "//remote/client"
+  ])
+
+java_test(name = "java_test",
   srcs = [ "test/java/**/*.java" ],
   binary = "//android/server:android-server",
   deps = [
