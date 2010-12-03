@@ -24,6 +24,7 @@ import java.util.Map;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Platform;
+import org.openqa.selenium.browserlaunchers.CapabilityType;
 
 import static org.openqa.selenium.browserlaunchers.CapabilityType.BROWSER_NAME;
 import static org.openqa.selenium.browserlaunchers.CapabilityType.PLATFORM;
@@ -157,7 +158,10 @@ public class DesiredCapabilities implements Serializable, Capabilities {
   }
 
   public static DesiredCapabilities internetExplorer() {
-    return new DesiredCapabilities("internet explorer", "", Platform.WINDOWS);
+    DesiredCapabilities capabilities = new DesiredCapabilities(
+        "internet explorer", "", Platform.WINDOWS);
+    capabilities.setCapability(CapabilityType.ForSeleniumServer.ENSURING_CLEAN_SESSION, true);
+    return capabilities;
   }
 
   public static DesiredCapabilities htmlUnit() {
