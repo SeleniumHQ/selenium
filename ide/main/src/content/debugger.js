@@ -50,8 +50,6 @@ function Debugger(editor) {
 		subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium/scripts/selenium-api.js', this.runner);
 		subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium/scripts/selenium-commandhandlers.js', this.runner);
 		subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium/scripts/selenium-executionloop.js', this.runner);
-		// atoms
-		subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium/scripts/atoms.js', this.runner);
 		subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium/scripts/selenium-browserbot.js', this.runner);
 		subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium/scripts/selenium-testrunner-original.js', this.runner);
 
