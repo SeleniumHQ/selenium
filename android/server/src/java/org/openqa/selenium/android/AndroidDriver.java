@@ -23,7 +23,6 @@ import com.google.common.collect.Sets;
 import android.content.Context;
 import android.content.Intent;
 import android.provider.Settings;
-import android.provider.Settings.SettingNotFoundException;
 import android.util.Log;
 
 import org.json.JSONArray;
