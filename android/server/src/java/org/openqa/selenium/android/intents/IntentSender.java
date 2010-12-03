@@ -17,6 +17,8 @@ limitations under the License.
 
 package org.openqa.selenium.android.intents;
 
+import com.google.common.base.Splitter;
+
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -31,6 +33,9 @@ import java.util.concurrent.Callable;
 
 public class IntentSender extends BroadcastReceiver implements Callable {
   private static final String LOG_TAG = IntentSender.class.getName();
+  // Android intents fails to handle extra String arguments longer than 258022.
+  // The value 258022 was determined empirically.
+  private static final int MAX_INTENT_STRING_ARG_LENGTH = 258022;
   private boolean received = false;
   private final Context sender;
   
@@ -38,7 +43,7 @@ public class IntentSender extends BroadcastReceiver implements Callable {
   private String action;
   
   public static final String IS_PARCELABLE = "isParcelable";
-  
+
   public IntentSender(Context sender) {
     this.sender = sender;
   }
@@ -56,7 +61,14 @@ public class IntentSender extends BroadcastReceiver implements Callable {
           intent.putExtra("arg_" + i, (Parcelable) args[i]);
           isParcelable = true;
         } else {
-          intent.putExtra("arg_" + i, (Serializable) args[i]);
+          if (args[i] instanceof String
+              && args[i].toString().length() > MAX_INTENT_STRING_ARG_LENGTH) {
+            intent.putExtra("arg_" + i,
+                (Serializable) Splitter.fixedLength(MAX_INTENT_STRING_ARG_LENGTH).split(
+                    args[i].toString()).iterator().next());
+          } else {
+            intent.putExtra("arg_" + i, (Serializable) args[i]);
+          }
         }
       }
       intent.putExtra(IS_PARCELABLE, isParcelable);
