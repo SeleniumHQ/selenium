@@ -13,6 +13,7 @@
     <orderEntry type="module" module-name="common" exported="" />
     <orderEntry type="library" exported="" name="common-buildtime" level="project" />
     <orderEntry type="library" exported="" name="htmlunit-runtime" level="project" />
+    <orderEntry type="library" name="httpclient" level="project" />
   </component>
 </module>
 
