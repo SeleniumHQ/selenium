@@ -32,21 +32,7 @@ import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
-import com.gargoylesoftware.htmlunit.BrowserVersion;
-import com.gargoylesoftware.htmlunit.CookieManager;
-import com.gargoylesoftware.htmlunit.ElementNotFoundException;
-import com.gargoylesoftware.htmlunit.Page;
-import com.gargoylesoftware.htmlunit.ProxyConfig;
-import com.gargoylesoftware.htmlunit.ScriptResult;
-import com.gargoylesoftware.htmlunit.SgmlPage;
-import com.gargoylesoftware.htmlunit.TopLevelWindow;
-import com.gargoylesoftware.htmlunit.WaitingRefreshHandler;
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.WebResponse;
-import com.gargoylesoftware.htmlunit.WebWindow;
-import com.gargoylesoftware.htmlunit.WebWindowEvent;
-import com.gargoylesoftware.htmlunit.WebWindowListener;
-import com.gargoylesoftware.htmlunit.WebWindowNotFoundException;
+import com.gargoylesoftware.htmlunit.*;
 import com.gargoylesoftware.htmlunit.html.DomNode;
 import com.gargoylesoftware.htmlunit.html.DomNodeList;
 import com.gargoylesoftware.htmlunit.html.FrameWindow;
@@ -83,18 +69,17 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.browserlaunchers.CapabilityType;
 import org.openqa.selenium.browserlaunchers.Proxies;
-import org.openqa.selenium.internal.FindsByCssSelector;
-import org.openqa.selenium.internal.FindsById;
-import org.openqa.selenium.internal.FindsByLinkText;
-import org.openqa.selenium.internal.FindsByName;
-import org.openqa.selenium.internal.FindsByTagName;
-import org.openqa.selenium.internal.FindsByXPath;
+import org.openqa.selenium.internal.*;
+
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecutor,
     FindsById, FindsByLinkText, FindsByXPath, FindsByName, FindsByCssSelector,
     FindsByTagName, HasInputDevices {
+
+  private final AsyncJavascriptExecutor asyncJsExecutor =
+      new AsyncJavascriptExecutor(this, 0, TimeUnit.MILLISECONDS);
 
   private WebClient webClient;
   private WebWindow currentWindow;
@@ -420,6 +405,14 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
         page.getDocumentElement());
 
     return parseNativeJavascriptResult(result);
+  }
+
+  public Object executeAsyncScript(String script, Object... args) {
+    try {
+      return asyncJsExecutor.executeScript(script, args);
+    } catch (ScriptException e) {
+      throw new WebDriverException(e);
+    }
   }
 
   private Object parseArgumentIntoJavsacriptParameter(Object arg) {
@@ -1159,6 +1152,11 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
     public Timeouts implicitlyWait(long time, TimeUnit unit) {
       HtmlUnitDriver.this.implicitWait =
           TimeUnit.MILLISECONDS.convert(Math.max(0, time), unit);
+      return this;
+    }
+
+    public Timeouts setScriptTimeout(long time, TimeUnit unit) {
+      asyncJsExecutor.setTimeout(time, unit);
       return this;
     }
   }

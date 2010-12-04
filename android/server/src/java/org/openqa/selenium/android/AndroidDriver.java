@@ -54,12 +54,7 @@ import org.openqa.selenium.android.sessions.SessionCookieManager;
 import org.openqa.selenium.android.util.JsUtil;
 import org.openqa.selenium.android.util.SimpleTimer;
 import org.openqa.selenium.html5.BrowserConnection;
-import org.openqa.selenium.internal.Base64Encoder;
-import org.openqa.selenium.internal.FindsById;
-import org.openqa.selenium.internal.FindsByLinkText;
-import org.openqa.selenium.internal.FindsByName;
-import org.openqa.selenium.internal.FindsByTagName;
-import org.openqa.selenium.internal.FindsByXPath;
+import org.openqa.selenium.internal.*;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -91,6 +86,9 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
   private final AndroidWebElement element;
   private final JavascriptDomAccessor domAccessor;
   private final IntentSender sender;
+
+  private final AsyncJavascriptExecutor asyncJsExecutor =
+      new AsyncJavascriptExecutor(this, 0, TimeUnit.MILLISECONDS);
 
   private volatile boolean pageHasLoaded = false;
   private volatile boolean pageHasStartedLoading = false;
@@ -353,6 +351,10 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
     return res;
   }
 
+  public Object executeAsyncScript(String script, Object... args) {
+    return asyncJsExecutor.executeScript(script, args);
+  }
+
   private String embedScriptInJsFunction(String script, Object... args) {
     String funcName = "func_" + System.currentTimeMillis();
     String objName = "obj_" + System.currentTimeMillis();
@@ -547,6 +549,11 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
   class AndroidTimeouts implements Timeouts {
     public Timeouts implicitlyWait(long time, TimeUnit unit) {
       implicitWait = TimeUnit.MILLISECONDS.convert(Math.max(0, time), unit);
+      return this;
+    }
+
+    public Timeouts setScriptTimeout(long time, TimeUnit unit) {
+      asyncJsExecutor.setTimeout(time, unit);
       return this;
     }
   }

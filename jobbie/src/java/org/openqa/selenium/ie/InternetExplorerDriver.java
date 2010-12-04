@@ -45,6 +45,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.browserlaunchers.WindowsProxyManager;
+import org.openqa.selenium.internal.AsyncJavascriptExecutor;
 import org.openqa.selenium.internal.FileHandler;
 import org.openqa.selenium.internal.TemporaryFilesystem;
 
@@ -69,6 +70,9 @@ public class InternetExplorerDriver implements WebDriver, JavascriptExecutor, Ta
   private Thread cleanupThread;
   private WindowsProxyManager proxyManager;
   private InternetExplorerKeyboard keyboard;
+
+  private final AsyncJavascriptExecutor asyncJsExecutor =
+      new AsyncJavascriptExecutor(this, 0, TimeUnit.MILLISECONDS);
 
   public InternetExplorerDriver() {
     this(null);
@@ -225,6 +229,10 @@ public class InternetExplorerDriver implements WebDriver, JavascriptExecutor, Ta
     } finally {
       lib.wdFreeScriptArgs(scriptArgs);
     }
+  }
+
+  public Object executeAsyncScript(String script, Object... args) {
+    return asyncJsExecutor.executeScript(script, args);
   }
 
   public boolean isJavascriptEnabled() {
@@ -553,6 +561,11 @@ public class InternetExplorerDriver implements WebDriver, JavascriptExecutor, Ta
       NativeLong timeout = new NativeLong(unit.toMillis(time));
       int result = lib.wdSetImplicitWaitTimeout(driver, timeout);
       errors.verifyErrorCode(result, "Unable to set implicit wait timeout.");
+      return this;
+    }
+
+    public Timeouts setScriptTimeout(long time, TimeUnit unit) {
+      asyncJsExecutor.setTimeout(time, unit);
       return this;
     }
   }

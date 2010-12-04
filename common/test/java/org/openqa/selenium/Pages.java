@@ -53,8 +53,10 @@ public class Pages {
   public String bodyTypingPage;
   public String formSelectionPage;
   public String selectableItemsPage;
+  public String ajaxyPage;
 
   public Pages(AppServer appServer) {
+    ajaxyPage = appServer.whereIs("ajaxy_page.html");
     alertsPage = appServer.whereIs("alerts.html");
     simpleTestPage = appServer.whereIs("simpleTest.html");
     simpleXmlDocument = appServer.whereIs("simple.xml");

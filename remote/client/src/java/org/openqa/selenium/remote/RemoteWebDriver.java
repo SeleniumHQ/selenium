@@ -36,12 +36,7 @@ import org.openqa.selenium.Speed;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.internal.FindsByClassName;
-import org.openqa.selenium.internal.FindsById;
-import org.openqa.selenium.internal.FindsByLinkText;
-import org.openqa.selenium.internal.FindsByName;
-import org.openqa.selenium.internal.FindsByTagName;
-import org.openqa.selenium.internal.FindsByXPath;
+import org.openqa.selenium.internal.*;
 import org.openqa.selenium.remote.internal.JsonToWebElementConverter;
 import org.openqa.selenium.remote.internal.WebElementToJsonConverter;
 
@@ -59,6 +54,8 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     HasInputDevices {
 
   private final ErrorHandler errorHandler = new ErrorHandler();
+  private final AsyncJavascriptExecutor asyncJsExecutor =
+      new AsyncJavascriptExecutor(this, 0, TimeUnit.MILLISECONDS);
 
   private CommandExecutor executor;
   private Capabilities capabilities;
@@ -299,6 +296,10 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     return execute(DriverCommand.EXECUTE_SCRIPT, params).getValue();
   }
 
+  public Object executeAsyncScript(String script, Object... args) {
+    return asyncJsExecutor.executeScript(script, args);
+  }
+
   public boolean isJavascriptEnabled() {
     return capabilities.isJavascriptEnabled();
   }
@@ -462,6 +463,11 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     public Timeouts implicitlyWait(long time, TimeUnit unit) {
       execute(DriverCommand.IMPLICITLY_WAIT, ImmutableMap.of("ms",
           TimeUnit.MILLISECONDS.convert(Math.max(0, time), unit)));
+      return this;
+    }
+
+    public Timeouts setScriptTimeout(long time, TimeUnit unit) {
+      asyncJsExecutor.setTimeout(time, unit);
       return this;
     }
   }

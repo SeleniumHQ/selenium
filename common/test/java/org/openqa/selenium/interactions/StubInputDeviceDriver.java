@@ -37,6 +37,10 @@ public class StubInputDeviceDriver extends StubDriver
     return null;
   }
 
+  public Object executeAsyncScript(String script, Object... args) {
+    return null;
+  }
+
   public boolean isJavascriptEnabled() {
     return false;
   }

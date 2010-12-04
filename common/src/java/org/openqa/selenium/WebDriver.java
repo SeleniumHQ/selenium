@@ -266,6 +266,18 @@ public interface WebDriver extends SearchContext {
      * @return A self reference.
      */
     Timeouts implicitlyWait(long time, TimeUnit unit);
+
+    /**
+     * Sets the amount of time to wait for an asynchronous script to finish
+     * execution before throwing an error. If the timeout is negative, then the
+     * script will be allowed to run indefinitely.
+     *
+     * @param time The timeout value.
+     * @param unit The unit of time.
+     * @return A self reference.
+     * @see JavascriptExecutor#executeAsyncScript(String, Object...)
+     */
+    Timeouts setScriptTimeout(long time, TimeUnit unit);
   }
 
   /**
