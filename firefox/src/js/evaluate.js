@@ -18,25 +18,61 @@ limitations under the License.
 (function() {
   var handleEvaluateEvent = function(event) {
     var script = document.getUserData('webdriver-evaluate-script');
+    var args = document.getUserData('webdriver-evaluate-args');
+    var isAsync = document.getUserData('webdriver-evaluate-async');
+    var timeout = document.getUserData('webdriver-evaluate-timeout');
+    var timeoutId;
 
-    try {
-      var result = eval(script);
-      document.setUserData('webdriver-evaluate-result', result, null);
-      document.setUserData('webdriver-evaluate-code', 0, null);
-    } catch (e) {
-      document.setUserData('webdriver-evaluate-result', e, null);
-      // "Unhandled JS error" == 17
-      document.setUserData('webdriver-evaluate-code', 17, null);
+    function sendResponse(value, status) {
+      if (isAsync) {
+        window.clearTimeout(timeoutId);
+        window.removeEventListener('unload', onunload, false);
+      }
+
+      document.setUserData('webdriver-evaluate-args', null, null);
+      document.setUserData('webdriver-evaluate-async', null, null);
+      document.setUserData('webdriver-evaluate-script', null, null);
+      document.setUserData('webdriver-evaluate-timeout', null, null);
+
+      // Respond
+      document.setUserData('webdriver-evaluate-result', value, null);
+      document.setUserData('webdriver-evaluate-code', status, null);
+
+      var response = document.createEvent('Events');
+      response.initEvent('webdriver-evaluate-response', true, false);
+      document.dispatchEvent(response);
     }
 
-    // Clear up
-    document.setUserData('webdriver-evaluate-script', null, null);
-    document.setUserData('webdriver-evaluate-args', null, null);
+    function onunload() {
+      // "Unhandled JS error" == 17
+      sendResponse(Error('Detected a page unload event; async script execution ' +
+                         'does not work across page loads'), 17);
+    }
 
-    // Respond
-    var response = document.createEvent('Events');
-    response.initEvent('webdriver-evaluate-response', true, false);
-    document.dispatchEvent(response);
+    if (isAsync) {
+      args.push(function(value) {
+        sendResponse(value, 0);
+      });
+      window.addEventListener('unload', onunload, false);
+    }
+
+    var startTime = new Date().getTime();
+    try {
+      var result = new Function(script).apply(null, args);
+      if (isAsync) {
+        timeoutId = window.setTimeout(function() {
+          sendResponse(
+              Error('Timed out waiting for async script result after ' +
+                  (new Date().getTime() - startTime) + 'ms'),
+              28);  // "script timeout" == 28
+        }, timeout);
+      } else {
+        sendResponse(result, 0);
+      }
+    } catch (e) {
+      // "Unhandled JS error" == 17
+      sendResponse(e, 17);
+    }
   };
 
   document.addEventListener('webdriver-evaluate', handleEvaluateEvent, true);

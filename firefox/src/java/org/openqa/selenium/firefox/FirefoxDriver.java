@@ -19,6 +19,8 @@ limitations under the License.
 package org.openqa.selenium.firefox;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.Capabilities;
@@ -26,6 +28,7 @@ import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.browserlaunchers.Proxies;
@@ -43,10 +46,13 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.RemoteWebElement;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.internal.JsonToWebElementConverter;
+import org.openqa.selenium.remote.internal.WebElementToJsonConverter;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import static org.openqa.selenium.OutputType.FILE;
 import static org.openqa.selenium.browserlaunchers.CapabilityType.PROXY;
@@ -199,6 +205,25 @@ public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot, F
   }
 
   @Override
+  public Object executeAsyncScript(String script, Object... args) {
+    if (!isJavascriptEnabled()) {
+      throw new UnsupportedOperationException("You must be using an underlying instance of " +
+          "WebDriver that supports executing javascript");
+    }
+
+    // Escape the quote marks
+    script = script.replaceAll("\"", "\\\"");
+
+    Iterable<Object> convertedArgs = Iterables.transform(
+        Lists.newArrayList(args), new WebElementToJsonConverter());
+
+    Map<String, ?> params = ImmutableMap.of(
+        "script", script, "args", Lists.newArrayList(convertedArgs));
+
+    return execute(DriverCommand.EXECUTE_ASYNC_SCRIPT, params).getValue();
+  }
+
+  @Override
   public boolean isJavascriptEnabled() {
     return true;
   }
@@ -232,6 +257,28 @@ public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot, F
       FileHandler.copy(tmpfile, pngFile);
     } catch (IOException e) {
       throw new WebDriverException(e);
+    }
+  }
+
+  // TODO(jleyba): Get rid of this once all RemoteWebDrivers handle async scripts.
+  @Override
+  public Options manage() {
+    return new FirefoxOptions();
+  }
+
+  private class FirefoxOptions extends RemoteWebDriverOptions {
+    @Override
+    public Timeouts timeouts() {
+      return new FirefoxTimeouts();
+    }
+  }
+
+  private class FirefoxTimeouts extends RemoteTimeouts {
+    @Override
+    public Timeouts setScriptTimeout(long time, TimeUnit unit) {
+      execute(DriverCommand.SET_SCRIPT_TIMEOUT,
+          ImmutableMap.of("ms", TimeUnit.MILLISECONDS.convert(time, unit)));
+      return this;
     }
   }
 

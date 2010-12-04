@@ -135,6 +135,7 @@ public class HttpCommandExecutor implements CommandExecutor {
         .put(GO_BACK, post("/session/:sessionId/back"))
         .put(REFRESH, post("/session/:sessionId/refresh"))
         .put(EXECUTE_SCRIPT, post("/session/:sessionId/execute"))
+        .put(EXECUTE_ASYNC_SCRIPT, post("/session/:sessionId/execute_async"))
         .put(GET_CURRENT_URL, get("/session/:sessionId/url"))
         .put(GET_TITLE, get("/session/:sessionId/title"))
         .put(GET_PAGE_SOURCE, get("/session/:sessionId/source"))
@@ -179,6 +180,7 @@ public class HttpCommandExecutor implements CommandExecutor {
         .put(GET_ELEMENT_VALUE_OF_CSS_PROPERTY,
              get("/session/:sessionId/element/:id/css/:propertyName"))
         .put(IMPLICITLY_WAIT, post("/session/:sessionId/timeouts/implicit_wait"))
+        .put(SET_SCRIPT_TIMEOUT, post("/session/:sessionId/timeouts/async_script"))
         .put(EXECUTE_SQL, post("/session/:sessionId/execute_sql"))
         .put(GET_LOCATION, get("/session/:sessionId/location"))
         .put(SET_LOCATION, post("/session/:sessionId/location"))

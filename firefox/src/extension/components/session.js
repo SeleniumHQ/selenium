@@ -19,7 +19,7 @@
 
 
 /**
- * An active FirefoxDriver session.  
+ * An active FirefoxDriver session.
  * @constructor
  */
 function wdSession() {
@@ -101,6 +101,17 @@ wdSession.prototype.inputSpeed_ = 1;
  * @private
  */
 wdSession.prototype.implicitWait_ = 0;
+
+
+/**
+ * The amount of time, in milliseconds, this session should wait for
+ * asynchronous scripts to finish executing. If set to 0, then the timeout will
+ * not fire until the next event loop after the script is executed. This will
+ * give scripts that employ a 0-based setTimeout to finish.
+ * @type {number}
+ * @private
+ */
+wdSession.prototype.scriptTimeout_ = 0;
 
 
 /** @see nsISupports.QueryInterface */
@@ -242,6 +253,25 @@ wdSession.prototype.setImplicitWait = function(wait) {
 };
 
 
+/**
+ * @return {number} the amount of time, in milliseconds, that asynchronous
+ *     scripts are allowed to run before timing out.
+ */
+wdSession.prototype.getScriptTimeout = function() {
+  return this.scriptTimeout_;
+};
+
+
+/**
+ * Sets the amount of time, in milliseconds, that asynchronous scripts are
+ *     allowed to run before timing out.
+ * @param {number} The new timeout.
+ */
+wdSession.prototype.setScriptTimeout = function(timeout) {
+  this.scriptTimeout_ = Math.max(timeout, 0);
+};
+
+
 ///////////////////////////////////////////////////////////////////
 //
 // nsIFactory functions
@@ -295,7 +325,7 @@ wdSessionModule.prototype.registerSelf = function(aCompMgr, aFileSpec, aLocation
 };
 
 
-/** @see nsIModule.unregisterSelf */ 
+/** @see nsIModule.unregisterSelf */
 wdSessionModule.prototype.unregisterSelf = function(aCompMgr, aLocation) {
   aCompMgr.QueryInterface(Components.interfaces.nsIComponentRegistrar).
       unregisterFactoryLocation(wdSession.CLASS_ID, aLocation);

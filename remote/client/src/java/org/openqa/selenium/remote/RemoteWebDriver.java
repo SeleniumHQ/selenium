@@ -381,7 +381,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
         " remote WebDriver.");
   }
 
-  private class RemoteWebDriverOptions implements Options {
+  protected class RemoteWebDriverOptions implements Options {
 
     public void addCookie(Cookie cookie) {
       execute(DriverCommand.ADD_COOKIE, ImmutableMap.of("cookie", cookie));

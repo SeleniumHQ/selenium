@@ -6,6 +6,7 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.NoSuchFrameException;
 import org.openqa.selenium.NoSuchWindowException;
 import org.openqa.selenium.StaleElementReferenceException;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.UnableToSetCookieException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.XPathLookupException;
@@ -33,6 +34,7 @@ public class ErrorCodes {
   public static final int NO_SUCH_WINDOW = 23;
   public static final int INVALID_COOKIE_DOMAIN = 24;
   public static final int UNABLE_TO_SET_COOKIE = 25;
+  public static final int ASYNC_SCRIPT_TIMEOUT = 28;
 
   // The following error codes are derived straight from HTTP return codes.
   public static final int METHOD_NOT_ALLOWED = 405;
@@ -73,6 +75,8 @@ public class ErrorCodes {
         return UnsupportedOperationException.class;
       case XPATH_LOOKUP_ERROR:
         return XPathLookupException.class;
+      case ASYNC_SCRIPT_TIMEOUT:
+        return TimeoutException.class;
       default:
         return WebDriverException.class;
     }
@@ -105,6 +109,8 @@ public class ErrorCodes {
       return INVALID_ELEMENT_STATE;
     } else if (thrown instanceof XPathLookupException) {
       return XPATH_LOOKUP_ERROR;
+    } else if (thrown instanceof TimeoutException) {
+      return ASYNC_SCRIPT_TIMEOUT;
     } else {
       return UNHANDLED_ERROR;
     }

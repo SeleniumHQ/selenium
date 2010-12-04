@@ -156,14 +156,23 @@ FirefoxDriver.prototype.close = function(respond) {
 };
 
 
-FirefoxDriver.prototype.executeScript = function(respond, parameters) {
+function injectAndExecuteScript(respond, parameters, isAsync, timer) {
   var doc = respond.session.getDocument();
 
-  var rawScript = parameters['script'];
+  var script = parameters['script'];
   var converted = Utils.unwrapParameters(parameters['args'], doc);
-  var me = this;
 
   if (doc.designMode && "on" == doc.designMode.toLowerCase()) {
+    if (isAsync) {
+      respond.sendError(
+          'Document designMode is enabled; advanced operations, ' +
+          'like asynchronous script execution, are not supported. ' +
+          'For more information, see ' +
+          'https://developer.mozilla.org/en/rich-text_editing_in_mozilla#' +
+          'Internet_Explorer_Differences');
+      return;
+    }
+
     // See https://developer.mozilla.org/en/rich-text_editing_in_mozilla#Internet_Explorer_Differences
     Logger.dumpn("Window in design mode, falling back to sandbox: " + doc.designMode);
     var window = respond.session.getWindow();
@@ -203,11 +212,10 @@ FirefoxDriver.prototype.executeScript = function(respond, parameters) {
 
   var runScript = function() {
     doc.setUserData('webdriver-evaluate-args', converted, null);
-
-    var script =
-        'var args = document.getUserData("webdriver-evaluate-args"); ' +
-            '(function() { ' + rawScript + '}).apply(null, args);';
+    doc.setUserData('webdriver-evaluate-async', isAsync, null);
     doc.setUserData('webdriver-evaluate-script', script, null);
+    doc.setUserData('webdriver-evaluate-timeout',
+        respond.session.getScriptTimeout(), null);
 
     var handler = function(event) {
         doc.removeEventListener('webdriver-evaluate-response', handler, true);
@@ -238,14 +246,24 @@ FirefoxDriver.prototype.executeScript = function(respond, parameters) {
       doc.body.appendChild(element);
       element.parentNode.removeChild(element);
     }
-    me.jsTimer.runWhenTrue(checkScriptLoaded, runScript, 10000, scriptLoadTimeOut);
+    timer.runWhenTrue(checkScriptLoaded, runScript, 10000, scriptLoadTimeOut);
   };
 
   var checkDocBodyLoaded = function() {
     return !!doc.body;
   };
 
-  me.jsTimer.runWhenTrue(checkDocBodyLoaded, addListener, 10000, docBodyLoadTimeOut);
+  timer.runWhenTrue(checkDocBodyLoaded, addListener, 10000, docBodyLoadTimeOut);
+};
+
+
+FirefoxDriver.prototype.executeScript = function(respond, parameters) {
+  injectAndExecuteScript(respond, parameters, false, this.jsTimer);
+};
+
+
+FirefoxDriver.prototype.executeAsyncScript = function(respond, parameters) {
+  injectAndExecuteScript(respond, parameters, true, this.jsTimer);
 };
 
 
@@ -845,6 +863,12 @@ FirefoxDriver.prototype.getSpeed = function(respond) {
 
 FirefoxDriver.prototype.implicitlyWait = function(respond, parameters) {
   respond.session.setImplicitWait(parameters.ms);
+  respond.send();
+};
+
+
+FirefoxDriver.prototype.setScriptTimeout = function(respond, parameters) {
+  respond.session.setScriptTimeout(parameters.ms);
   respond.send();
 };
 
