@@ -38,7 +38,7 @@ class ExtensionConnection(RemoteConnection):
     def quit(self, sessionId=None):
         self.execute(Command.QUIT, {'sessionId':sessionId})
         while self.is_connectable():
-            logging.info("waiting to quit")
+            LOGGER.info("waiting to quit")
             time.sleep(1)
 
     def connect(self):

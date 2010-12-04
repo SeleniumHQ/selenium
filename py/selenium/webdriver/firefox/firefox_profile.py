@@ -26,7 +26,7 @@ import utils
 
 DEFAULT_PORT = 7055
 ANONYMOUS_PROFILE_NAME = "WEBDRIVER_ANONYMOUS_PROFILE"
-
+LOGGER = logging.getLogger(__name__)
 
 def get_profile_ini():
     app_data_dir = utils.get_firefox_app_data_dir()
@@ -85,7 +85,7 @@ class FirefoxProfile(object):
 
     def _copy_profile_source(self, source_path):
         """Copy the profile content from source_path source_path."""
-        logging.info("Copying profile from '%s' to '%s'"
+        LOGGER.info("Copying profile from '%s' to '%s'"
                      % (source_path, self.path))
         try:
             shutil.rmtree(self.path)
@@ -124,7 +124,7 @@ class FirefoxProfile(object):
 
         extension_dir = os.path.join(self.path,
                                      "extensions", "fxdriver@googlecode.com")
-        logging.debug("extension_dir : %s" % extension_dir)
+        LOGGER.debug("extension_dir : %s" % extension_dir)
 
         if force_create or not os.path.exists(extension_dir):
             extension_source_path = utils.unzip_to_temp_dir(
@@ -147,8 +147,8 @@ class FirefoxProfile(object):
                 raise Exception(
                     "No extension found at %s" % extension_source_path)
 
-            logging.debug("extension_source_path : %s" % extension_source_path)
-            logging.info("Copying extenstion from '%s' to '%s'"
+            LOGGER.debug("extension_source_path : %s" % extension_source_path)
+            LOGGER.info("Copying extension from '%s' to '%s'"
                 % (extension_source_path, extension_dir))
             try:
                 if os.path.exists(extension_dir):
@@ -160,13 +160,13 @@ class FirefoxProfile(object):
                     os.makedirs(extension_dir)
                     shutil.rmtree(extension_dir)
                 shutil.copytree(extension_source_path, extension_dir)
-                logging.info("Extenstion has been copied from '%s' to '%s'"
+                LOGGER.info("Extenstion has been copied from '%s' to '%s'"
                     % (extension_source_path, extension_dir))
             except OSError, err:
-                logging.info("Fail to install firefox extension. %s" % err)
+                LOGGER.info("Fail to install firefox extension. %s" % err)
 
         else:
-            logging.info("No extension installation required.")
+            LOGGER.info("No extension installation required.")
 
     def remove_lock_file(self):
         for lock_file in [".parentlock", "lock", "parent.lock"]:
@@ -203,7 +203,7 @@ class FirefoxProfile(object):
                 if match:
                     preference[match.group(1)] = match.group(2)
         except IOError:
-            logging.debug("user.js doesn't exist, creating one...")
+            LOGGER.debug("user.js doesn't exist, creating one...")
         #preference.update(self._get_webdriver_prefs())
         if pref:
             preference.update(pref)
@@ -212,14 +212,14 @@ class FirefoxProfile(object):
         for key, value in preference.items():
             user_pref_file.write('user_pref("%s", %s);\n' % (key, value))
         user_pref_file.close()
-        logging.info('user_pref after update:')
-        logging.info(preference)
+        LOGGER.info('user_pref after update:')
+        LOGGER.info(preference)
 
     def _delete_profile_if_exist(self):
         section = self._get_ini_section()
         if not section:
             return
-        logging.info("deleting %s" % self.path)
+        LOGGER.info("deleting %s" % self.path)
         shutil.rmtree(self.path)
 
     def _get_ini_section(self):

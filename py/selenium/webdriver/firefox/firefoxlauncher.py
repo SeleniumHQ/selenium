@@ -25,6 +25,7 @@ from extensionconnection import ExtensionConnection
 import utils
 
 MAX_START_ATTEMPTS = 60
+LOGGER = logging.getLogger(__name__)
 
 class FirefoxLauncher(object):
     """Launches the firefox browser."""
@@ -40,7 +41,7 @@ class FirefoxLauncher(object):
         """
         self.profile = profile
         while self.extension_connection.is_connectable():
-            logging.info("Browser already running, kill it")
+            LOGGER.info("Browser already running, kill it")
             self.extension_connection.connect_and_quit()
             time.sleep(1)
         self._start_from_profile_path(profile.path)
@@ -76,7 +77,7 @@ class FirefoxLauncher(object):
     def _wait_until_connectable(self):
         """Blocks until the extension is connectable in the firefox."""
         while not self.extension_connection.is_connectable():
-            logging.debug("Waiting for browser to launch...")
+            LOGGER.debug("Waiting for browser to launch...")
             if self.process.returncode:
                 # Browser has exited
                 return False

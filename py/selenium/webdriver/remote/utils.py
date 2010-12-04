@@ -28,6 +28,7 @@ if not hasattr(json, 'dumps'):
 
 from selenium.webdriver.common.exceptions import NoSuchElementException
 
+LOGGER = logging.getLogger(__name__)
 
 def format_json(json_struct):
     return json.dumps(json_struct, indent=4)
@@ -72,7 +73,7 @@ def unzip_to_temp_dir(zip_file_name):
         return None
 
     # Unzip the files into a temporary directory
-    logging.info("Extracting zipped file: %s" % zip_file_name)
+    LOGGER.info("Extracting zipped file: %s" % zip_file_name)
     tempdir = tempfile.mkdtemp()
 
     try:
@@ -86,7 +87,7 @@ def unzip_to_temp_dir(zip_file_name):
             dest = os.path.join(tempdir, name)
             if (name.endswith(os.path.sep) and not os.path.exists(dest)):
                 os.mkdir(dest)
-                logging.debug("Directory %s created." % dest)
+                LOGGER.debug("Directory %s created." % dest)
 
         # Copy files
         for zip_name in zf.namelist():
@@ -97,16 +98,15 @@ def unzip_to_temp_dir(zip_file_name):
                     replace("/", os.path.sep))
             dest = os.path.join(tempdir, name)
             if not (name.endswith(os.path.sep)):
-                logging.debug("Copying file %s......" % dest)
+                LOGGER.debug("Copying file %s......" % dest)
                 outfile = open(dest, 'wb')
                 outfile.write(zf.read(zip_name))
                 outfile.close()
-                logging.debug("File %s copied." % dest)
+                LOGGER.debug("File %s copied." % dest)
 
-        logging.info("Unzipped file can be found at %s" % tempdir)
+        LOGGER.info("Unzipped file can be found at %s" % tempdir)
         return tempdir
 
     except IOError, err:
-        logging.error(
-            "Error in extracting webdriver.xpi: %s" % err)
+        LOGGER.error("Error in extracting webdriver.xpi: %s" % err)
         return None

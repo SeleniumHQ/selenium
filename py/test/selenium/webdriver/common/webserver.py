@@ -27,15 +27,17 @@ def updir():
     dirname = os.path.dirname
     return dirname(dirname(__file__))
 
+LOGGER = logging.getLogger(__name__)
 WEBDRIVER = os.environ.get("WEBDRIVER", updir())
 HTML_ROOT = os.path.join(WEBDRIVER, "../../../../../../common/src/web")
 if not os.path.isdir(HTML_ROOT):
     message = ("Can't find 'common_web' directory, try setting WEBDRIVER"
                " environment variable WEBDRIVER:" + WEBDRIVER + "  HTML_ROOT:" + HTML_ROOT )
-    logging.error(message)
+    LOGGER.error(message)
     assert 0, message
 
 DEFAULT_PORT = 8000
+
 
 class HtmlOnlyHandler(BaseHTTPRequestHandler):
     """Http handler."""
@@ -68,7 +70,7 @@ class SimpleWebServer(object):
                 self.port = port
                 break
             except socket.error:
-                logging.debug("port %d is in use, trying to next one"
+                LOGGER.debug("port %d is in use, trying to next one"
                               % port)
                 port += 1
 
@@ -76,7 +78,7 @@ class SimpleWebServer(object):
 
     def _run_web_server(self):
         """Runs the server loop."""
-        logging.debug("web server started")
+        LOGGER.debug("web server started")
         while not self.stop_serving:
             self.server.handle_request()
         self.server.server_close()
@@ -93,7 +95,7 @@ class SimpleWebServer(object):
             urllib.URLopener().open("http://localhost:%d" % self.port)
         except Exception:
             pass
-        logging.info("Shutting down the webserver")
+        LOGGER.info("Shutting down the webserver")
         self.thread.join()
 
 def main(argv=None):

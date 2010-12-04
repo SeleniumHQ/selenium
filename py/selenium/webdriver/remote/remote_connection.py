@@ -20,6 +20,7 @@ import urllib2
 from command import Command
 import utils
 
+LOGGER = logging.getLogger(__name__)
 
 class Request(urllib2.Request):
     """Extends the urllib2.Request to support all HTTP request types."""
@@ -217,7 +218,7 @@ class RemoteConnection(object):
         Returns:
           A dictionary with the server's parsed JSON response.
         """
-        logging.debug('%s %s %s' % (method, url, data))
+        LOGGER.debug('%s %s %s' % (method, url, data))
 
         request = Request(url, data=data, method=method)
         request.add_header('Accept', 'application/json')
