@@ -48,7 +48,9 @@ public class EnvironmentStarter extends TestSetup {
       driver.quit();
     }
 
-    environment.stop();
+    if (environment != null) {
+      environment.stop();
+    }
     GlobalTestEnvironment.set(null);
 
     super.tearDown();
