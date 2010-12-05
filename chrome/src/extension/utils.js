@@ -198,7 +198,7 @@ Utils.fireHtmlEvent = function(element, eventName, callback) {
       + "e.initEvent(arguments[1], true, true); " 
       + "return arguments[0].dispatchEvent(e);";
 
-    execute_(script, args, callback);
+    execute_(script, args, -1, callback);
 };
 
 
@@ -223,7 +223,7 @@ Utils.triggerMouseEvent = function(element, eventType, clientX, clientY) {
         + "event.initMouseEvent(arguments[1], true, true, view, 1, 0, 0, arguments[2], arguments[3], false, false, false, false, 0, arguments[0]);"
         + " arguments[0].dispatchEvent(event);";
 
-    execute_(script, args, function(){});
+    execute_(script, args, -1, function(){});
 };
 
 Utils.trim = function(str) {

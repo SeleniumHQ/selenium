@@ -4,6 +4,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.openqa.selenium.Ignore.Driver.ANDROID;
+import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 
 import org.junit.Test;
@@ -183,6 +184,7 @@ public class ExecutingAsyncJavascriptTest extends AbstractDriverTestCase {
     }
   }
 
+  @Ignore(value = CHROME, reason = "Click is not working")
   @JavascriptEnabled @Test
   public void shouldBeAbleToExecuteAsynchronousScripts() {
     driver.get(pages.ajaxyPage);

@@ -17,25 +17,27 @@ limitations under the License.
 
 package org.openqa.selenium.chrome;
 
-import junit.framework.Assert;
-import junit.framework.Test;
-import junit.framework.TestCase;
+import static org.openqa.selenium.Ignore.Driver.CHROME;
+import static org.openqa.selenium.Ignore.Driver.CHROME_NON_WINDOWS;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-
+import org.openqa.selenium.Build;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.TestSuiteBuilder;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.internal.FileHandler;
 import org.openqa.selenium.internal.InProject;
-import org.openqa.selenium.internal.TemporaryFilesystem;
 
-import static org.openqa.selenium.Ignore.Driver.CHROME;
-import static org.openqa.selenium.Ignore.Driver.CHROME_NON_WINDOWS;
+import junit.framework.Test;
+import junit.framework.TestCase;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 public class ChromeDriverTestSuite extends TestCase {
+  private static boolean runBuild = true;
+
   public static Test suite() throws Exception {
     TestSuiteBuilder builder = new TestSuiteBuilder();
     builder
@@ -59,65 +61,25 @@ public class ChromeDriverTestSuite extends TestCase {
     }
 
     private static ChromeExtension createExtension() {
-      File extensionSrcDir = InProject.locate("chrome/src/extension");
-      File extensionDstDir = TemporaryFilesystem.createTempDir("extension", "folder");
-      String extensionDst;
+      File topDir = InProject.locate("Rakefile").getParentFile();
+      File ext = new File(topDir, "build/chrome/chrome-extension.zip");
+      if (!ext.exists() || runBuild) {
+        ext.delete();
+        new Build().of("//chrome:chrome_extension").go();
+        runBuild = false;
+      }
+
+      File profileDir = null;
       try {
-        extensionDst = extensionDstDir.getCanonicalPath();
-        extensionDstDir.mkdir();
-        for (File file : extensionSrcDir.listFiles()) {
-          FileHandler.copy(file, new File(extensionDst, file.getName()));
-        }
+        FileInputStream stream = new FileInputStream(ext);
+        profileDir = FileHandler.unzip(stream);
+      } catch (FileNotFoundException e) {
+        throw new WebDriverException(e);
       } catch (IOException e) {
         throw new WebDriverException(e);
       }
 
-      File dllToUse = new File(System.getProperty("webdriver.chrome.extensiondir"),
-          "npchromedriver.dll");
-      if (System.getProperty("webdriver.chrome.extensiondir") == null ||
-          !System.getProperty("webdriver.chrome.extensiondir").equals(extensionDstDir.getAbsolutePath()) ||
-          !dllToUse.exists()) {
-        System.setProperty("webdriver.chrome.extensiondir", extensionDst);
-        try {
-          copyDll();
-        } catch (IOException e) {
-          throw new WebDriverException(e);
-        }
-      }
-      return new ChromeExtension(extensionDstDir);
-    }
-
-    private static void copyDll() throws IOException {
-      if (System.getProperty("os.name").startsWith("Windows")) {
-        File topLevel = locateTopLevelProjectDirectory();
-        File dllFrom = new File(System.getProperty("user.dir"),
-            topLevel.getAbsolutePath() + "/build/Win32/Debug/npchromedriver.dll");
-        if (!dllFrom.exists()) {
-          // Fall back to the prebuilt, if possible
-          dllFrom = new File(topLevel, "chrome/prebuilt/Win32/Release/npchromedriver.dll");
-          if (!dllFrom.exists())
-            throw new FileNotFoundException("Could not find " + dllFrom.getCanonicalFile());
-          System.out.println("Falling back to prebuilt chrome DLL");
-        }
-        File dllToUse = new File(System.getProperty("webdriver.chrome.extensiondir"),
-            "npchromedriver.dll");
-        dllToUse.deleteOnExit();
-        FileHandler.copy(dllFrom, dllToUse);
-      }
-    }
-
-    private static File locateTopLevelProjectDirectory() {
-      File dir = new File(".").getAbsoluteFile();
-      do {
-        File rakefile = new File(dir, "Rakefile");
-        if (rakefile.exists()) {
-          return dir;
-        }
-        dir = dir.getParentFile();
-      } while (dir != null);
-
-      Assert.fail("Cannot locate top-level directory");
-      return null;
+      return new ChromeExtension(profileDir);
     }
   }
 }

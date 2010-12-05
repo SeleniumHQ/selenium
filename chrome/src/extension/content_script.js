@@ -97,6 +97,10 @@ function parsePortMessage(message) {
       execute(message.request.script, message.request.args);
       //Sends port message back to background page from its own callback
       break;
+    case "executeAsyncScript":
+      execute(message.request.script, message.request.args, message.asyncTimeout);
+      //Sends port message back to background page from its own callback
+      break;
     case "findChildElement":
     case "findChildElements":
     case "findElement":
@@ -827,10 +831,13 @@ function parseWrappedArguments(wrappedArguments) {
  * @param {Array.<*>} passedArgs An array of JSON arguments to pass to the
  *     injected script. DOMElements should be specified as JSON objects of the
  *     form {ELEMENT: string}.
+ * @param {number} asyncTimeout The amount of time, in milliseconds, to wait
+ *     for an asynchronous script to finish execution before returning an
+ *     error.
  * @param {function(MessageEvent)} callback Function to call when the result is returned.
  * TODO: Make the callback be passed the parsed result.
  */
-function execute_(script, passedArgs, callback) {
+function execute_(script, passedArgs, asyncTimeout, callback) {
   console.log("executing " + script + ", args: " + JSON.stringify(passedArgs));
   try {
     var args = parseWrappedArguments(passedArgs);
@@ -882,7 +889,8 @@ function execute_(script, passedArgs, callback) {
 
     var data = JSON.stringify({
       'script': script,
-      'args': args
+      'args': args,
+      'asyncTimeout': asyncTimeout
     });
     var e = document.createEvent('MessageEvent');
     e.initMessageEvent('webdriver-evaluate', /*bubbles=*/true,
@@ -897,8 +905,10 @@ function execute_(script, passedArgs, callback) {
       appendChild(scriptTag);
 }
 
-function execute(script, passedArgs) {
-  execute_(script, passedArgs, returnFromJavascriptInPage);
+function execute(script, passedArgs, asyncTimeout) {
+  execute_(script, passedArgs,
+           typeof asyncTimeout == 'undefined' ? -1 : asyncTimeout,
+           returnFromJavascriptInPage);
 }
 
 function parseReturnValueFromScript(result) {

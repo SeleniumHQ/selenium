@@ -1,7 +1,6 @@
 package org.openqa.selenium.chrome;
 
-import java.util.List;
-import java.util.Map;
+import static org.openqa.selenium.remote.DriverCommand.SCREENSHOT;
 
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
@@ -9,13 +8,20 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.internal.FindsByCssSelector;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.RemoteWebElement;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.internal.JsonToWebElementConverter;
+import org.openqa.selenium.remote.internal.WebElementToJsonConverter;
 
-import static org.openqa.selenium.remote.DriverCommand.SCREENSHOT;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
+
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 public class ChromeDriver extends RemoteWebDriver implements  TakesScreenshot, FindsByCssSelector {
   
@@ -102,6 +108,25 @@ public class ChromeDriver extends RemoteWebDriver implements  TakesScreenshot, F
   }
 
   @Override
+  public Object executeAsyncScript(String script, Object... args) {
+    if (!isJavascriptEnabled()) {
+      throw new UnsupportedOperationException("You must be using an underlying instance of " +
+          "WebDriver that supports executing javascript");
+    }
+
+    // Escape the quote marks
+    script = script.replaceAll("\"", "\\\"");
+
+    Iterable<Object> convertedArgs = Iterables.transform(
+        Lists.newArrayList(args), new WebElementToJsonConverter());
+
+    Map<String, ?> params = ImmutableMap.of(
+        "script", script, "args", Lists.newArrayList(convertedArgs));
+
+    return execute(DriverCommand.EXECUTE_ASYNC_SCRIPT, params).getValue();
+  }
+
+  @Override
   public boolean isJavascriptEnabled() {
     return true;
   }
@@ -123,5 +148,27 @@ public class ChromeDriver extends RemoteWebDriver implements  TakesScreenshot, F
   public <X> X getScreenshotAs(OutputType<X> target) {
     return target.convertFromBase64Png(execute(SCREENSHOT, ImmutableMap.<String, Object>of())
         .getValue().toString());
+  }
+
+  // TODO(jleyba): Get rid of this once all RemoteWebDrivers handle async scripts.
+  @Override
+  public Options manage() {
+    return new ChromeOptions();
+  }
+
+  private class ChromeOptions extends RemoteWebDriverOptions {
+    @Override
+    public Timeouts timeouts() {
+      return new ChromeTimeouts();
+    }
+  }
+
+  private class ChromeTimeouts extends RemoteTimeouts {
+    @Override
+    public Timeouts setScriptTimeout(long time, TimeUnit unit) {
+      execute(DriverCommand.SET_SCRIPT_TIMEOUT,
+          ImmutableMap.of("ms", TimeUnit.MILLISECONDS.convert(time, unit)));
+      return this;
+    }
   }
 }

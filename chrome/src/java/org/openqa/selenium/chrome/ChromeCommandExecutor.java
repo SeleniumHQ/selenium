@@ -1,42 +1,12 @@
 package org.openqa.selenium.chrome;
 
-import com.google.common.collect.ImmutableMap;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.internal.Lock;
-import org.openqa.selenium.internal.SocketLock;
-import org.openqa.selenium.remote.BeanToJsonConverter;
-import org.openqa.selenium.remote.Command;
-import org.openqa.selenium.remote.CommandExecutor;
-import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.remote.DriverCommand;
-import org.openqa.selenium.remote.JsonToBeanConverter;
-import org.openqa.selenium.remote.Response;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.net.BindException;
-import java.net.InetSocketAddress;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.net.SocketException;
-import java.util.Map;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import static org.openqa.selenium.remote.DriverCommand.ADD_COOKIE;
 import static org.openqa.selenium.remote.DriverCommand.CLEAR_ELEMENT;
 import static org.openqa.selenium.remote.DriverCommand.CLICK_ELEMENT;
 import static org.openqa.selenium.remote.DriverCommand.CLOSE;
 import static org.openqa.selenium.remote.DriverCommand.DELETE_ALL_COOKIES;
 import static org.openqa.selenium.remote.DriverCommand.DELETE_COOKIE;
+import static org.openqa.selenium.remote.DriverCommand.EXECUTE_ASYNC_SCRIPT;
 import static org.openqa.selenium.remote.DriverCommand.EXECUTE_SCRIPT;
 import static org.openqa.selenium.remote.DriverCommand.FIND_CHILD_ELEMENT;
 import static org.openqa.selenium.remote.DriverCommand.FIND_CHILD_ELEMENTS;
@@ -71,10 +41,42 @@ import static org.openqa.selenium.remote.DriverCommand.REFRESH;
 import static org.openqa.selenium.remote.DriverCommand.SCREENSHOT;
 import static org.openqa.selenium.remote.DriverCommand.SEND_KEYS_TO_ELEMENT;
 import static org.openqa.selenium.remote.DriverCommand.SET_ELEMENT_SELECTED;
+import static org.openqa.selenium.remote.DriverCommand.SET_SCRIPT_TIMEOUT;
 import static org.openqa.selenium.remote.DriverCommand.SUBMIT_ELEMENT;
 import static org.openqa.selenium.remote.DriverCommand.SWITCH_TO_FRAME;
 import static org.openqa.selenium.remote.DriverCommand.SWITCH_TO_WINDOW;
 import static org.openqa.selenium.remote.DriverCommand.TOGGLE_ELEMENT;
+
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.internal.Lock;
+import org.openqa.selenium.internal.SocketLock;
+import org.openqa.selenium.remote.BeanToJsonConverter;
+import org.openqa.selenium.remote.Command;
+import org.openqa.selenium.remote.CommandExecutor;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.DriverCommand;
+import org.openqa.selenium.remote.JsonToBeanConverter;
+import org.openqa.selenium.remote.Response;
+
+import com.google.common.collect.ImmutableMap;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.net.BindException;
+import java.net.InetSocketAddress;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.net.SocketException;
+import java.util.Map;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ChromeCommandExecutor implements CommandExecutor {
 
@@ -145,8 +147,10 @@ public class ChromeCommandExecutor implements CommandExecutor {
         .put(GET_PAGE_SOURCE, NO_ARGS)
         .put(GET_TITLE, NO_ARGS)
         .put(EXECUTE_SCRIPT, new String[] {"script", "args"})
+        .put(EXECUTE_ASYNC_SCRIPT, new String[] {"script", "args"})
         .put(SCREENSHOT, NO_ARGS)
         .put(IMPLICITLY_WAIT, new String[] {"ms"})
+        .put(SET_SCRIPT_TIMEOUT, new String[] {"ms"})
         .build();
   }
 

@@ -91,27 +91,64 @@
   }
 
   function handleEvaluateEvent(e) {
+    console.info('webdriver-evaluate: ' + e.data);
     window.removeEventListener('webdriver-evaluate', handleEvaluateEvent, true);
 
     var data = JSON.parse(e.data);
-    var script = new Function(data['script']);
+    var scriptFn = new Function(data['script']);
     var args = unwrap(data['args']);
-    console.log('executing (' + script + ').apply(null, [' + data['args'].join(', ') + '])');
+    var asyncTimeout = data['asyncTimeout'];
+    var isAsync = asyncTimeout >= 0;
 
-    var result = {'statusCode': 0};
-    try {
-      result['value'] = new Function(data['script']).apply(null, args);
-      result['value'] = wrap(result['value']);
-    } catch (e) {
-      result['value'] = {
-        message: e.toString()
-      };
-      result['statusCode'] = 17;  // "Unhandled JS error" == 17
+    var timeoutId;
+    function sendResponse(value, status) {
+      if (isAsync) {
+        window.clearTimeout(timeoutId);
+        window.removeEventListener('unload', onunload, false);
+      }
+
+      if (status) {
+        value = {'message': value.toString()};
+      }
+
+      var result = JSON.stringify(wrap({'statusCode': status, 'value': value}));
+      console.info('returning from injected script: ' + result);
+      dispatchMessage('webdriver-evaluate-response', result);
     }
 
-    result = JSON.stringify(result);
-    console.info('returning from injected script: ' + result);
-    dispatchMessage('webdriver-evaluate-response', result);
+    function onunload() {
+      // "Unhandled JS error" == 17
+      sendResponse(Error('Detected a page unload event; async script execution ' +
+                         'does not work across page loads'), 17);
+    }
+
+    if (isAsync) {
+      args.push(function(value) {
+        sendResponse(value, 0);
+      });
+      window.addEventListener('unload', onunload, false);
+    }
+
+    console.log('executing (' + scriptFn + ').apply(null, [' + args.join(', ') +
+                ']) with timeout ' + asyncTimeout);
+
+    var startTime = new Date().getTime();
+    try {
+      var result = scriptFn.apply(null, args);
+      if (isAsync) {
+        timeoutId = window.setTimeout(function() {
+          sendResponse(
+              Error('Timed out waiting for async script result after ' +
+                  (new Date().getTime() - startTime) + 'ms'),
+              28);  // "script timeout" == 28
+        }, asyncTimeout);
+      } else {
+        sendResponse(result, 0);
+      }
+    } catch (e) {
+      // "Unhandled JS error" == 17
+      sendResponse(e, 17);
+    }
   }
   window.addEventListener('webdriver-evaluate', handleEvaluateEvent, true);
 

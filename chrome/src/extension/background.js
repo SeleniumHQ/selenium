@@ -193,6 +193,14 @@ ChromeDriver.currentlyWaitingUntilGiveUpOnContentScriptLoading;
  */
 ChromeDriver.implicitWait_ = 0;
 
+/**
+ * The amount of time, in milliseconds, to wait for an asynchronous script to
+ * finish executing before returning an error to the client.
+ * @type {number}
+ * @private
+ */
+ChromeDriver.scriptTimeout_ = 0;
+
 //Set ChromeDriver.currentlyWaitingUntilGiveUpOnContentScriptLoading;
 resetCurrentlyWaitingOnContentScriptTime();
 
@@ -502,6 +510,10 @@ function parseRequest(request) {
     ChromeDriver.implicitWait_ = request.ms || 0;
     sendResponseToParsedRequest({status: 0});
     break;
+  case "setScriptTimeout":
+    ChromeDriver.scriptTimeout_ = request.ms || 0;
+    sendResponseToParsedRequest({status: 0});
+    break;
   case "deleteCookie":
     chrome.cookies.remove({url: ChromeDriver.currentUrl, name: request.name});
     sendResponseToParsedRequest({status: 0});
@@ -575,7 +587,8 @@ function parseRequest(request) {
     sendMessageOnActivePortAndAlsoKeepTrackOfIt({
       request: request,
       sequenceNumber: sequenceNumber,
-      implicitWait: ChromeDriver.implicitWait_
+      implicitWait: ChromeDriver.implicitWait_,
+      asyncTimeout: ChromeDriver.scriptTimeout_
     });
     break;
   }
@@ -642,6 +655,7 @@ function parsePortMessage(message, port) {
   case 23: //org.openqa.selenium.NoSuchWindowException
   case 24: //org.openqa.selenium.InvalidCookieDomainException
   case 25: //org.openqa.selenium.UnableToSetCookieException
+  case 28: //org.openqa.selenium.TimeoutException
   case 99: //org.openqa.selenium.WebDriverException [Native event]
     toSend = {status: message.response.value.statusCode, value: null};
     if (message.response.value !== undefined && message.response.value !== null &&
