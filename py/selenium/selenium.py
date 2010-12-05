@@ -1996,6 +1996,9 @@ class selenium:
         """
         return self.get_string("captureNetworkTraffic", [type,])
 
+    def capture_network_traffic(self, type):
+        return self.captureNetworkTraffic(type)
+
     def addCustomRequestHeader(self, key, value):
         """
         Tells the Selenium server to add the specificed key and value as a custom outgoing request header. This only works if the browser is configured to use the built in Selenium proxy.
@@ -2004,6 +2007,9 @@ class selenium:
         'value' the header value.
         """
         return self.do_command("addCustomRequestHeader", [key,value,])
+
+    def add_custom_request_header(self, key, value):
+        return self.addCustomRequestHeader(key, value)
 
     def capture_entire_page_screenshot_to_string(self,kwargs):
         """
