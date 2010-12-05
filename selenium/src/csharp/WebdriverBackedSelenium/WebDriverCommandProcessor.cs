@@ -123,7 +123,7 @@ namespace Selenium
         
         public decimal GetNumber(string command, string[] args)
         {
-            return (decimal)Execute(command, args);
+            return Convert.ToDecimal(Execute(command, args));
         }
         
         public decimal[] GetNumberArray(string command, string[] args)
