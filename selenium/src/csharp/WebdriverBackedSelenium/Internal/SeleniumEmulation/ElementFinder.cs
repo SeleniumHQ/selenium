@@ -80,6 +80,7 @@ namespace Selenium.Internal.SeleniumEmulation
             lookupStrategies.Add("name", new NameLookupStrategy());
             lookupStrategies.Add("xpath", new XPathLookupStrategy());
             lookupStrategies.Add("dom", new DomTraversalLookupStrategy());
+            lookupStrategies.Add("css", new CssSelectorLookupStrategy());
         }
     }
 }
