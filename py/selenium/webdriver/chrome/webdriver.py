@@ -25,7 +25,15 @@ class WebDriver(RemoteWebDriver):
             command_executor=ChromeDriver(),
             browser_name='chrome', platform='ANY', version='',
             javascript_enabled=True)
-
+    
+    def find_element_by_css_selector(self, css_selector):
+        """Find and return an element by CSS selector."""
+        return self._find_element_by("css selector", css_selector)
+    
+    def find_elements_by_css_selector(self, css_selector):
+        """Find and return list of multiple elements by CSS selector."""
+        return self._find_elements_by("css selector", css_selector)
+    
     def start_client(self):
         self.command_executor.start()
 
