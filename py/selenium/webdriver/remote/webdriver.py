@@ -225,6 +225,14 @@ class WebDriver(object):
         """Finds elements by their class name."""
         return self._find_elements_by("class name", name)
 
+    def find_element_by_css_selector(self, css_selector):
+        """Find and return an element by CSS selector."""
+        return self._find_element_by("css selector", css_selector)
+    
+    def find_elements_by_css_selector(self, css_selector):
+        """Find and return list of multiple elements by CSS selector."""
+        return self._find_elements_by("css selector", css_selector)
+
     def execute_script(self, script, *args):
         if len(args) == 1:
             converted_args = args[0]

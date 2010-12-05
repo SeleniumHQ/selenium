@@ -65,14 +65,6 @@ class WebDriver(RemoteWebDriver):
             if command != Command.QUIT:
                 raise e
     
-    def find_element_by_css_selector(self, css_selector):
-        """Find and return an element by CSS selector."""
-        return self._find_element_by("css selector", css_selector)
-    
-    def find_elements_by_css_selector(self, css_selector):
-        """Find and return list of multiple elements by CSS selector."""
-        return self._find_elements_by("css selector", css_selector)
-    
     def set_preference(self, name, value):
         """
         Set a preference in about:config via user.js. Format is name, value.
