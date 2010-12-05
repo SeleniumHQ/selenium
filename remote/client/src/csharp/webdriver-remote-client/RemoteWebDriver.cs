@@ -126,7 +126,7 @@ namespace OpenQA.Selenium.Remote
             get
             {
                 Response commandResponse = Execute(DriverCommand.GetTitle, null);
-                object returnedTitle = commandResponse.Value.ToString();
+                object returnedTitle = commandResponse != null ? commandResponse.Value : "";
                 return returnedTitle.ToString();
             }
         }
@@ -1250,6 +1250,7 @@ namespace OpenQA.Selenium.Remote
             /// </summary>
             public void Refresh()
             {
+                //driver.SwitchTo().DefaultContent();
                 driver.Execute(DriverCommand.Refresh, null);
             }
             #endregion

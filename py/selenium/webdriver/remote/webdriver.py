@@ -171,7 +171,7 @@ class WebDriver(object):
     def get_title(self):
         """Gets the title of the current page."""
         resp = self._execute(Command.GET_TITLE)
-        return resp['value']
+        return resp['value'] if resp['value'] is not None else ""
 
     def find_element_by_id(self, id_):
         """Finds element by id."""
