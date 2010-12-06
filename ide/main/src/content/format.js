@@ -251,7 +251,8 @@ Format.prototype.saveAs = function(testCase, filename, exportTest) {
     try {
         var file = null;
         if (filename == null) {
-            file = showFilePicker(window, Editor.getString("saveTestCaseAs"),
+            //Samit: Enh: Show the name of the test case in the save dialog title
+            file = showFilePicker(window, Editor.getFormattedString("saveTestCaseAs", [testCase.getTitle()]),
                                   Components.interfaces.nsIFilePicker.modeSave,
                                   exportTest ? Format.TEST_CASE_EXPORT_DIRECTORY_PREF : Format.TEST_CASE_DIRECTORY_PREF,
                                   function(fp) {return fp.file;});

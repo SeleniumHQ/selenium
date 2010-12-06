@@ -261,10 +261,18 @@ Application.prototype = {
         if (testCase.content) {
             this.setTestCase(testCase.content);
         } else {
-            this._loadTestCase(testCase.getFile(), function(test) {
-                    test.title = testCase.getTitle(); // load title from suite
-                    testCase.content = test;
-                });
+            try {
+                this._loadTestCase(testCase.getFile(), function(test) {
+                        test.title = testCase.getTitle(); // load title from suite
+                        testCase.content = test;
+                    }, true);
+            } catch(error) {
+                if (error.name && error.name == "NS_ERROR_FILE_NOT_FOUND") {
+                    alert("The test case does not exist. You should probably remove it from the suite. The path specified is " + testCase.getFile().path );
+                }else {
+                    alert("error loading test case: " + error);
+                }
+            }
         }
     },
 
@@ -326,10 +334,11 @@ Application.prototype = {
             }, suppressTestCasePrompt);
     },
 
-    saveNewTestSuite: function() {
+    saveNewTestSuite: function(suppressTestCasePrompt) {
+    	//Samit: Enh: Added suppressTestCasePrompt to allow saving test suite and test cases without a yes/no prompt for each test case
     	return this._saveTestSuiteAs(function(testSuite) {
                 return testSuite.save(true);
-            });
+            }, suppressTestCasePrompt);
     },
 
     _saveTestSuiteAs: function(handler, suppressTestCasePrompt) {

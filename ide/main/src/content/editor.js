@@ -228,6 +228,11 @@ Editor.getString = function(key) {
     return document.getElementById("strings").getString(key);
 };
 
+//Samit: Enh: Support localised strings with parameters
+Editor.getFormattedString = function(key, strArray) {
+    return document.getElementById("strings").getFormattedString(key, strArray);
+};
+
 Editor.controller = {
 	supportsCommand : function(cmd) {
 		//Editor.log.debug("supportsCommand");
@@ -292,8 +297,8 @@ Editor.controller = {
 		case "cmd_open":editor.loadRecentTestCase();break;	
 		case "cmd_new_suite":if (editor.confirmClose()) {editor.app.newTestSuite();}break;	//Samit: Enh: Prompt to save first
 		case "cmd_open_suite":editor.loadRecentSuite();break;	
-		case "cmd_save_suite":editor.app.saveTestSuite();break;
-		case "cmd_save_suite_as":editor.app.saveNewTestSuite();break;
+		case "cmd_save_suite":editor.app.saveTestSuite(true);break;
+		case "cmd_save_suite_as":editor.app.saveNewTestSuite(true);break;
 		case "cmd_selenium_play":
             editor.testSuiteProgress.reset();
             editor.playCurrentTestCase(null, 0, 1);
@@ -633,7 +638,7 @@ Editor.prototype.addCommand = function(command,target,value,window,insertBeforeL
             } else {
                 // popup
                 var windowName = window.name;
-                if (window.name == '') {
+                if (windowName == '') {
 					this.addCommand('selectWindow', 'null', '', window);
                 }else{
 					this.addCommand('selectWindow', "name=" + windowName, '', window);
@@ -654,7 +659,8 @@ Editor.prototype.addCommand = function(command,target,value,window,insertBeforeL
         this.getTestCase().commands.splice(index, 0, command);
         this.view.rowInserted(index);
     } else {
-        this.lastCommandIndex = this.getTestCase().commands.length;
+        //this.lastCommandIndex = this.getTestCase().commands.length;
+        this.lastCommandIndex = this.view.getRecordIndex(); //Samit: Revert patch for issue 419 as it disables recording in the middle of a test script
         this.getTestCase().commands.splice(this.lastCommandIndex, 0, command);
         this.view.rowInserted(this.lastCommandIndex);
         this.timeoutID = setTimeout("editor.clearLastCommand()", 300);
