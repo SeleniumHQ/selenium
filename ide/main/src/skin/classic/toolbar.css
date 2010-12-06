@@ -1,0 +1,11 @@
+/* See license.txt for terms of usage */
+/* Toolbar button for Selenium IDE on Firefox */
+#selenium-ide-button {
+  list-style-image: url(chrome://selenium-ide/skin/selenium-ide-24.png);
+}
+
+toolbar[iconsize="small"] #selenium-ide-button > .toolbarbutton-icon {
+    list-style-image: url(chrome://selenium-ide/skin/selenium-ide-16.png);
+    width: 16px;
+    height: 16px;
+}
