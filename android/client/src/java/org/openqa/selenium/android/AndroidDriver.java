@@ -17,6 +17,8 @@ limitations under the License.
 
 package org.openqa.selenium.android;
 
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Rotatable;
 import org.openqa.selenium.ScreenOrientation;
@@ -29,9 +31,12 @@ import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
 import com.google.common.collect.ImmutableMap;
+import org.openqa.selenium.remote.internal.WebElementToJsonConverter;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * A driver for running tests on an Android device or emulator.
@@ -90,6 +95,42 @@ public class AndroidDriver extends RemoteWebDriver implements TakesScreenshot, R
       return new URL("http://localhost:8080/hub");
     } catch (MalformedURLException e) {
       throw new WebDriverException("Malformed default remote URL: " + e.getMessage());
+    }
+  }
+
+  // TODO(jleyba): Get rid of this once all RemoteWebDrivers handle async scripts.
+  @Override
+  public Object executeAsyncScript(String script, Object... args) {
+    // Escape the quote marks
+    script = script.replaceAll("\"", "\\\"");
+
+    Iterable<Object> convertedArgs = Iterables.transform(
+        Lists.newArrayList(args), new WebElementToJsonConverter());
+
+    Map<String, ?> params = ImmutableMap.of(
+        "script", script, "args", Lists.newArrayList(convertedArgs));
+
+    return execute(DriverCommand.EXECUTE_ASYNC_SCRIPT, params).getValue();
+  }
+
+  @Override
+  public Options manage() {
+    return new AndroidOptions();
+  }
+
+  private class AndroidOptions extends RemoteWebDriverOptions {
+    @Override
+    public Timeouts timeouts() {
+      return new AndroidTimeouts();
+    }
+  }
+
+  private class AndroidTimeouts extends RemoteTimeouts {
+    @Override
+    public Timeouts setScriptTimeout(long time, TimeUnit unit) {
+      execute(DriverCommand.SET_SCRIPT_TIMEOUT,
+          ImmutableMap.of("ms", TimeUnit.MILLISECONDS.convert(time, unit)));
+      return this;
     }
   }
 }

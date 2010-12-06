@@ -28,22 +28,7 @@ import android.util.Log;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.openqa.selenium.Alert;
-import org.openqa.selenium.By;
-import org.openqa.selenium.Cookie;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.NoSuchFrameException;
-import org.openqa.selenium.NoSuchWindowException;
-import org.openqa.selenium.OutputType;
-import org.openqa.selenium.Rotatable;
-import org.openqa.selenium.ScreenOrientation;
-import org.openqa.selenium.SearchContext;
-import org.openqa.selenium.Speed;
-import org.openqa.selenium.TakesScreenshot;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.android.intents.Action;
 import org.openqa.selenium.android.intents.FutureExecutor;
 import org.openqa.selenium.android.intents.IntentReceiver;
@@ -87,9 +72,6 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
   private final JavascriptDomAccessor domAccessor;
   private final IntentSender sender;
 
-  private final AsyncJavascriptExecutor asyncJsExecutor =
-      new AsyncJavascriptExecutor(this, 0, TimeUnit.MILLISECONDS);
-
   private volatile boolean pageHasLoaded = false;
   private volatile boolean pageHasStartedLoading = false;
   private volatile boolean editableAreaIsFocused = false;
@@ -97,7 +79,8 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
   private volatile String jsResult;
   private String currentFrame;
   private long implicitWait = 0;
-  
+  private long asyncScriptTimeout = 0;
+
   public AndroidDriver() {
     // By default currentFrame is the root, i.e. window
     currentFrame = "window";
@@ -343,7 +326,7 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
   }
 
   public Object executeScript(String script, Object... args) {
-    String jsFunction = embedScriptInJsFunction(script, args);
+    String jsFunction = embedScriptInJsFunction(script, false, args);
     executeJavascriptInWebView(jsFunction);
 
     // jsResult is updated by the intent receiver when the JS result is ready. 
@@ -352,53 +335,92 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
   }
 
   public Object executeAsyncScript(String script, Object... args) {
-    return asyncJsExecutor.executeScript(script, args);
+    String jsFunction = embedScriptInJsFunction(script, true, args);
+    executeJavascriptInWebView(jsFunction);
+
+    // jsResult is updated by the intent receiver when the JS result is ready.
+    Object res = checkResultAndConvert(jsResult);
+    return res;
   }
 
-  private String embedScriptInJsFunction(String script, Object... args) {
-    String funcName = "func_" + System.currentTimeMillis();
-    String objName = "obj_" + System.currentTimeMillis();
-    StringBuilder jsFunction = new StringBuilder();
-    jsFunction.append(" try {");
-    StringBuilder toExecute = new StringBuilder();
-    toExecute.append(" var ")
-        .append(objName)
-        .append("=(function(){")
-        .append(script)
-        .append("})(");
-    for (int i = 0; i < args.length; i++) {
-      toExecute.append(JsUtil.convertArgumentToJsObject(args[i])).append(
-          (i == args.length - 1) ? "" : ",");
-    }
-    toExecute.append("); ");
+  private String embedScriptInJsFunction(String script, boolean isAsync, Object... args) {
+    String finalScript = new StringBuilder("(function() {")
+        .append("var isAsync=").append(isAsync).append(";")
+        .append("var timeout=").append(asyncScriptTimeout).append(", timeoutId;")
+        .append("var win=").append(currentFrame).append(";")
+        .append("function sendResponse(value, isError) {")
+        .append("  if (isAsync) {")
+        .append("    win.clearTimeout(timeoutId);")
+        .append("    win.removeEventListener('unload', onunload, false);")
+        .append("  }")
+        .append("  if (isError) {")
+        .append("    window.webdriver.resultMethod('").append(ERROR).append("'+value);")
+        .append("  } else {")
+        .append(wrapAndReturnJsResult("value"))
+        .append("  }")
+        .append("}")
+        .append("function onunload() {")
+        .append("  sendResponse('Detected a page unload event; async script execution")
+        .append("does not work across page loads', true);")
+        .append("}")
+        .append("if (isAsync) {")
+        .append("  win.addEventListener('unload', onunload, false);")
+        .append("}")
+        .append("var startTime = new Date().getTime();")
+        .append("try {")
+        .append("  var result=(function(){").append(script).append("})(")
+        .append(getArgsString(isAsync, args)).append(");")
+        .append("  if (isAsync) {")
+        .append("    timeoutId = win.setTimeout(function() {")
+        .append("      sendResponse('Timed out waiting for async script after ' +")
+        .append("(new Date().getTime() - startTime) + 'ms', true);")
+        .append("    }, timeout);")
+        .append("  } else {")
+        .append("    sendResponse(result, false);")
+        .append("  }")
+        .append("} catch (e) {")
+        .append("  sendResponse(e, true);")
+        .append("}")
+        .append("})()")
+        .toString();
 
+    Logger.log(Log.DEBUG, LOG_TAG, "executeScript executing: " + finalScript);
+    return finalScript;
+  }
+
+  private String getArgsString(boolean isAsync, Object... args) {
+    StringBuilder argsString = new StringBuilder();
+    for (int i = 0; i < args.length; i++) {
+      argsString.append(JsUtil.convertArgumentToJsObject(args[i]))
+          .append((i == args.length - 1) ? "" : ",");
+    }
+    if (isAsync) {
+      if (args.length > 0) {
+        argsString.append(",");
+      }
+      argsString.append("function(value){sendResponse(value,false);}");
+    }
+    return argsString.toString();
+  }
+
+  private String wrapAndReturnJsResult(String objName) {
     // TODO(berrada): Extract this as an atom
-    toExecute.append("if (")
-        .append(objName)
-        .append(" instanceof HTMLElement) {")
+    return new StringBuilder()
+        .append("if (").append(objName).append(" instanceof HTMLElement) {")
         .append(JavascriptDomAccessor.initCacheJs(currentFrame))
-        .append(" var result = []; result.push(" + objName + ");")
+        .append(" var result = []; result.push(").append(objName).append(");")
         .append(JavascriptDomAccessor.ADD_TO_CACHE)
         .append(objName).append("='")
         .append(WEBELEMENT_TYPE)
         .append("'+indices;")
-        .append("}");
-
-    toExecute.append("else {")
+        .append("} else {")
         .append(objName)
         .append("='{" + TYPE + ":'+JSON.stringify(")
         .append(objName).append(")+'}';")
-        .append("}");
-
-    // Callback to get the result passed from JS to Java
-    toExecute.append("window.webdriver.resultMethod(").append(objName).append(");");
-
-    Logger.log(Log.DEBUG, LOG_TAG, "executeScript executing: " + toExecute);
-    jsFunction.append(toExecute);
-
-    // Catch errors
-    jsFunction.append("}catch(err){window.webdriver.resultMethod('" + ERROR + "'+err);}");
-    return jsFunction.toString();
+        .append("}")
+        // Callback to get the result passed from JS to Java
+        .append("window.webdriver.resultMethod(").append(objName).append(");")
+        .toString();
   }
 
   /**
@@ -436,6 +458,9 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
     if (jsResult == null) {
       return null;
     } else if (jsResult.startsWith(ERROR)) {
+      if (jsResult.startsWith(ERROR + "Timed out waiting for async script")) {
+        throw new TimeoutException(jsResult);
+      }
       throw new WebDriverException(jsResult);
     } else if (jsResult.startsWith(WEBELEMENT_TYPE)) {
       return new AndroidWebElement(this, jsResult.substring(7));
@@ -553,7 +578,7 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
     }
 
     public Timeouts setScriptTimeout(long time, TimeUnit unit) {
-      asyncJsExecutor.setTimeout(time, unit);
+      asyncScriptTimeout = TimeUnit.MILLISECONDS.convert(Math.max(0, time), unit);
       return this;
     }
   }

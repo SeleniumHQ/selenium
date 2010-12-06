@@ -13,8 +13,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-@Ignore(value = ANDROID,
-    reason = "Android is way too slow to use the current polling-only technique")
+//@Ignore(value = ANDROID,
+//    reason = "Android is way too slow to use the current polling-only technique")
 public class ExecutingAsyncJavascriptTest extends AbstractDriverTestCase {
 
   private JavascriptExecutor executor;
@@ -39,13 +39,13 @@ public class ExecutingAsyncJavascriptTest extends AbstractDriverTestCase {
   @JavascriptEnabled @Test
   public void shouldBeAbleToReturnJavascriptPrimitivesFromAsyncScripts() {
     driver.get(pages.ajaxyPage);
-    assertNull(executor.executeAsyncScript("arguments[arguments.length - 1](null)"));
-    assertNull(executor.executeAsyncScript("arguments[arguments.length - 1]()"));
+    assertNull(executor.executeAsyncScript("arguments[arguments.length - 1](null);"));
+    assertNull(executor.executeAsyncScript("arguments[arguments.length - 1]();"));
     assertEquals(123,
-        ((Number) executor.executeAsyncScript("arguments[arguments.length - 1](123)")).longValue());
-    assertEquals("abc", executor.executeAsyncScript("arguments[arguments.length - 1]('abc')"));
-    assertFalse((Boolean) executor.executeAsyncScript("arguments[arguments.length - 1](false)"));
-    assertTrue((Boolean) executor.executeAsyncScript("arguments[arguments.length - 1](true)"));
+        ((Number) executor.executeAsyncScript("arguments[arguments.length - 1](123);")).longValue());
+    assertEquals("abc", executor.executeAsyncScript("arguments[arguments.length - 1]('abc');"));
+    assertFalse((Boolean) executor.executeAsyncScript("arguments[arguments.length - 1](false);"));
+    assertTrue((Boolean) executor.executeAsyncScript("arguments[arguments.length - 1](true);"));
   }
 
   @JavascriptEnabled @Test
@@ -71,7 +71,8 @@ public class ExecutingAsyncJavascriptTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled @Test
-  @Ignore(value = {SELENESE}, reason = "Selenium cannot return arrays")
+  @Ignore(value = {ANDROID, SELENESE},
+      reason = "Android does not properly handle arrays; Selenium cannot return arrays")
   public void shouldBeAbleToReturnArraysOfPrimitivesFromAsyncScripts() {
     driver.get(pages.ajaxyPage);
 
@@ -101,7 +102,8 @@ public class ExecutingAsyncJavascriptTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled @Test
-  @Ignore(value = SELENESE, reason = "Selenium cannot return elements from scripts")
+  @Ignore(value = {ANDROID, SELENESE},
+      reason = "Android does not properly handle arrays; Selenium cannot return elements")
   public void shouldBeAbleToReturnArraysOfWebElementsFromAsyncScripts() {
     driver.get(pages.ajaxyPage);
 
@@ -156,7 +158,7 @@ public class ExecutingAsyncJavascriptTest extends AbstractDriverTestCase {
     try {
       executor.executeAsyncScript(
           "var callback = arguments[arguments.length - 1];" +
-          "window.setTimeout(callback, 750);");
+          "window.setTimeout(callback, 1500);");
       fail("Should have thrown a TimeOutException!");
     } catch (TimeoutException exception) {
       // Do nothing.
@@ -184,7 +186,9 @@ public class ExecutingAsyncJavascriptTest extends AbstractDriverTestCase {
     }
   }
 
-  @Ignore(value = CHROME, reason = "Click is not working")
+  @Ignore(value = {ANDROID, CHROME},
+      reason = "Android: Emulator is too slow and latency causes test to fall out of sync with app;"
+          + "Chrome: Click is not working")
   @JavascriptEnabled @Test
   public void shouldBeAbleToExecuteAsynchronousScripts() {
     driver.get(pages.ajaxyPage);

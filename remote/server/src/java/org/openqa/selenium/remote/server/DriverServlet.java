@@ -25,59 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.openqa.selenium.internal.Trace;
-import org.openqa.selenium.remote.server.handler.AddConfig;
-import org.openqa.selenium.remote.server.handler.AddCookie;
-import org.openqa.selenium.remote.server.handler.CaptureScreenshot;
-import org.openqa.selenium.remote.server.handler.ChangeUrl;
-import org.openqa.selenium.remote.server.handler.ClearElement;
-import org.openqa.selenium.remote.server.handler.ClickElement;
-import org.openqa.selenium.remote.server.handler.CloseWindow;
-import org.openqa.selenium.remote.server.handler.DeleteCookie;
-import org.openqa.selenium.remote.server.handler.DeleteNamedCookie;
-import org.openqa.selenium.remote.server.handler.DeleteSession;
-import org.openqa.selenium.remote.server.handler.DescribeElement;
-import org.openqa.selenium.remote.server.handler.DragElement;
-import org.openqa.selenium.remote.server.handler.ElementEquality;
-import org.openqa.selenium.remote.server.handler.ExecuteScript;
-import org.openqa.selenium.remote.server.handler.FindActiveElement;
-import org.openqa.selenium.remote.server.handler.FindChildElement;
-import org.openqa.selenium.remote.server.handler.FindChildElements;
-import org.openqa.selenium.remote.server.handler.FindElement;
-import org.openqa.selenium.remote.server.handler.FindElements;
-import org.openqa.selenium.remote.server.handler.GetAllCookies;
-import org.openqa.selenium.remote.server.handler.GetAllWindowHandles;
-import org.openqa.selenium.remote.server.handler.GetCssProperty;
-import org.openqa.selenium.remote.server.handler.GetCurrentUrl;
-import org.openqa.selenium.remote.server.handler.GetCurrentWindowHandle;
-import org.openqa.selenium.remote.server.handler.GetElementAttribute;
-import org.openqa.selenium.remote.server.handler.GetElementDisplayed;
-import org.openqa.selenium.remote.server.handler.GetElementEnabled;
-import org.openqa.selenium.remote.server.handler.GetElementLocation;
-import org.openqa.selenium.remote.server.handler.GetElementSelected;
-import org.openqa.selenium.remote.server.handler.GetElementSize;
-import org.openqa.selenium.remote.server.handler.GetElementText;
-import org.openqa.selenium.remote.server.handler.GetElementValue;
-import org.openqa.selenium.remote.server.handler.GetMouseSpeed;
-import org.openqa.selenium.remote.server.handler.GetPageSource;
-import org.openqa.selenium.remote.server.handler.GetScreenOrientation;
-import org.openqa.selenium.remote.server.handler.GetSessionCapabilities;
-import org.openqa.selenium.remote.server.handler.GetTagName;
-import org.openqa.selenium.remote.server.handler.GetTitle;
-import org.openqa.selenium.remote.server.handler.GoBack;
-import org.openqa.selenium.remote.server.handler.GoForward;
-import org.openqa.selenium.remote.server.handler.HoverOverElement;
-import org.openqa.selenium.remote.server.handler.ImplicitlyWait;
-import org.openqa.selenium.remote.server.handler.NewSession;
-import org.openqa.selenium.remote.server.handler.RefreshPage;
-import org.openqa.selenium.remote.server.handler.SendKeys;
-import org.openqa.selenium.remote.server.handler.SendModifierKey;
-import org.openqa.selenium.remote.server.handler.SetElementSelected;
-import org.openqa.selenium.remote.server.handler.SetMouseSpeed;
-import org.openqa.selenium.remote.server.handler.Rotate;
-import org.openqa.selenium.remote.server.handler.SubmitElement;
-import org.openqa.selenium.remote.server.handler.SwitchToFrame;
-import org.openqa.selenium.remote.server.handler.SwitchToWindow;
-import org.openqa.selenium.remote.server.handler.ToggleElement;
+import org.openqa.selenium.remote.server.handler.*;
 import org.openqa.selenium.remote.server.handler.html5.ClearLocalStorage;
 import org.openqa.selenium.remote.server.handler.html5.ClearSessionStorage;
 import org.openqa.selenium.remote.server.handler.html5.ExecuteSQL;
@@ -193,6 +141,8 @@ public class DriverServlet extends HttpServlet {
 
     postMapper.bind("/session/:sessionId/execute", ExecuteScript.class)
         .on(ResultType.SUCCESS, new JsonResult(RESPONSE));
+    postMapper.bind("/session/:sessionId/execute_async", ExecuteAsyncScript.class)
+        .on(ResultType.SUCCESS, new JsonResult(RESPONSE));
 
     getMapper.bind("/session/:sessionId/source", GetPageSource.class)
         .on(ResultType.SUCCESS, new JsonResult(RESPONSE));
@@ -288,7 +238,9 @@ public class DriverServlet extends HttpServlet {
 
     postMapper.bind("/session/:sessionId/timeouts/implicit_wait", ImplicitlyWait.class)
         .on(ResultType.SUCCESS, new EmptyResult());
-    
+    postMapper.bind("/session/:sessionId/timeouts/async_script", SetScriptTimeout.class)
+        .on(ResultType.SUCCESS, new EmptyResult());
+
     postMapper.bind("/session/:sessionId/execute_sql", ExecuteSQL.class)
         .on(ResultType.SUCCESS, new JsonResult(RESPONSE));
     
