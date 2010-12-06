@@ -124,10 +124,10 @@ FirefoxDriver.prototype.close = function(respond) {
       "@mozilla.org/toolkit/app-startup;1", "nsIAppStartup");
   var forceQuit = Components.interfaces.nsIAppStartup.eForceQuit;
 
-  var numOpenWindwos = 0;
+  var numOpenWindows = 0;
   var allWindows = wm.getEnumerator("navigator:browser");
   while (allWindows.hasMoreElements()) {
-    numOpenWindwos += 1;
+    numOpenWindows += 1;
     allWindows.getNext();
   }
 
@@ -135,10 +135,21 @@ FirefoxDriver.prototype.close = function(respond) {
   // ensure that we do actually quit. For Windows, if we don't quit,
   // Firefox will crash. So, whatever the case may be, if that's the last
   // window - just quit Firefox.
-  if (numOpenWindwos == 1) {
+  if (numOpenWindows == 1) {
     respond.send();
-    appService.quit(forceQuit);
-    return;  // The client should catch the fact that the socket suddenly closes    
+
+    // Use an nsITimer to give the response time to go out.
+    var event = function(timer) {
+        // Create a switch file so the native events library will
+        // let all events through in case of a close.
+        createSwitchFile("close:<ALL>");
+        appService.quit(forceQuit);
+    };
+
+    this.nstimer = new Timer();
+    this.nstimer.setTimeout(event, 500);
+    
+    return;  // The client should catch the fact that the socket suddenly closes
   }
 
   // Here we go!
