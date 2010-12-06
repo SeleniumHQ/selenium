@@ -88,7 +88,7 @@ limitations under the License.
   </toolbox>
 
   <vbox flex="1">
-    <hbox id="mainhbox" width="100" persist="height width">
+    <hbox id="mainhbox" width="100" persist="height width" flex="1">
       <vbox id="suitePane" persist="height width" />
       <splitter id="suiteTreeSplitter" collapse="before" persist="state">
         <grippy/>
