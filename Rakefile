@@ -98,7 +98,7 @@ task :iphone => [:iphone_server, :iphone_client]
 task :'selenium-server-standalone' => ["//remote/server:server:uber"]
 
 task :ide => [ "//ide:selenium-ide" ]
-task :ide_proxy_setup => [ "//common:atoms", "se_ide:setup_proxy" ]
+task :ide_proxy_setup => [ "//common/src/js/selenium:core", "se_ide:setup_proxy" ]
 task :ide_proxy_remove => [ "se_ide:remove_proxy" ]
 
 task :test_android => ["//android/client:android_test:run"]
