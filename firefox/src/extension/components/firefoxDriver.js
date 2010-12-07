@@ -22,6 +22,9 @@ function FirefoxDriver(server, enableNativeEvents, win) {
   this.enableNativeEvents = enableNativeEvents;
   this.window = win;
 
+  // Default to a two second timeout.
+  this.alertTimeout = 2000;
+
   this.currentX = 0;
   this.currentY = 0;
 
@@ -29,7 +32,6 @@ function FirefoxDriver(server, enableNativeEvents, win) {
   // https://groups.google.com/group/mozilla.dev.apps.firefox/browse_thread/thread/e178d41afa2ccc87?hl=en&pli=1#
   var resources = [
     "atoms.js",
-    "timer.js",
     "utils.js"
   ];
 
@@ -45,7 +47,6 @@ function FirefoxDriver(server, enableNativeEvents, win) {
   FirefoxDriver.listenerScript = Utils.loadUrl("resource://fxdriver/evaluate.js");
 
   this.jsTimer = new Timer();
-
 }
 
 
@@ -98,7 +99,6 @@ FirefoxDriver.prototype.get = function(respond, parameters) {
 
   if (loadEventExpected) {
     new WebLoadingListener(respond.session.getBrowser(), function() {
-      // TODO: Rescue the URI and response code from the event
       var responseText = "";
       // Focus on the top window.
       respond.session.setWindow(respond.session.getBrowser().contentWindow);
@@ -914,26 +914,33 @@ FirefoxDriver.prototype.screenshot = function(respond) {
   respond.send();
 };
 
+
 FirefoxDriver.prototype.dismissAlert = function(respond) {
-  Logger.dumpn('Dismissing alert');
-  webdriver.modals.dismissAlert(this);
-  respond.send();
+  webdriver.modals.dismissAlert(this, this.alertTimeout,
+      webdriver.modals.success(respond),
+      webdriver.modals.errback(respond));
 };
 
 FirefoxDriver.prototype.acceptAlert = function(respond) {
-  Logger.dumpn('Accepting alert');
-  webdriver.modals.acceptAlert(this);
-  respond.send();
+  webdriver.modals.acceptAlert(this, this.alertTimeout,
+      webdriver.modals.success(respond),
+      webdriver.modals.errback(respond));
 };
 
 FirefoxDriver.prototype.getAlertText = function(respond) {
-  Logger.dumpn('Getting alert text');
-  respond.value = webdriver.modals.getText(this);
-  respond.send();
+  var success = function(text) {
+    respond.value = text;
+    respond.send();
+  };
+  respond.value = webdriver.modals.getText(this, this.alertTimeout,
+      success,
+      webdriver.modals.errback(respond));
 };
 
 FirefoxDriver.prototype.setAlertValue = function(respond, parameters) {
-  Logger.dumpn('Setting alert text');
-  respond.value = webdriver.modals.setValue(this, parameters['text']);
-  respond.send();
+  respond.value = webdriver.modals.setValue(this, this.alertTimeout,
+      parameters['text'],
+      webdriver.modals.success(respond),
+      webdriver.modals.errback(respond));
 };
+

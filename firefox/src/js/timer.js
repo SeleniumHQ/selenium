@@ -20,12 +20,12 @@
  * assocuated window.
  */
 
-/**
- * @constructor
- */
-function Timer() {
-  this.timer = null;
-}
+goog.provide('Timer');
+
+
+Timer = function() {
+};
+
 
 /**
  * Set a callback to be executed after a specified time out. The default time
@@ -41,9 +41,9 @@ Timer.prototype.setTimeout = function(callback, opt_timeout) {
   var CI = Components.interfaces;
 
   var timeout = opt_timeout || 10;
-  this.timer = CC['@mozilla.org/timer;1'].createInstance(CI['nsITimer']);
+  var timer = CC['@mozilla.org/timer;1'].createInstance(CI['nsITimer']);
 
-  this.timer.initWithCallback({
+  timer.initWithCallback({
     notify: function() {
       callback.apply(null);
     }
@@ -53,12 +53,12 @@ Timer.prototype.setTimeout = function(callback, opt_timeout) {
 
 /**
  * Wait until a condition is true before calling "callback". On error, call
- * ontimeout.
+ * ontimeout. The callback will be called with the result of condition.
  *
  * Note that "this" is null within the callbacks
  *
  * @param {function():boolean} condition The condition to check.
- * @param {function():undefined} callback The callback to use when condition is
+ * @param {function(*):undefined} callback The callback to use when condition is
  *    true.
  * @param {number} timeout Time to wait in milliseconds.
  * @param {function():undefined} ontimeout Called if condition doesn't become
@@ -70,18 +70,15 @@ Timer.prototype.runWhenTrue = function(condition, callback, timeout, ontimeout) 
   var me = this;
 
   var timed = function () {
-    if (remaining >= 0 && !condition()) {
+    var result = condition();
+    if (remaining >= 0 && !result) {
       remaining -= interval;
       me.setTimeout(timed, interval);
     } else if (remaining <= 0) {
       ontimeout();
     } else {
-      callback();
+      callback(result);
     }
   };
   timed();
 };
-
-
-// Required for Mozilla component importing
-var EXPORTED_SYMBOLS = [ 'Timer' ];

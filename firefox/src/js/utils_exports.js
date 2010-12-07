@@ -3,6 +3,7 @@ var EXPORTED_SYMBOLS = [
   'webdriver',
   'ErrorCode',
   'Logger',
+  'Timer',
   'Utils',
   'WebDriverError'
 ];

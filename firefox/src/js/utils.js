@@ -1068,6 +1068,14 @@ Utils.loadUrl = function(url) {
 Utils.installWindowCloseListener = function (respond) {
   var browser = respond.session.getBrowser();
 
+  // Override the "respond.send" function to remove the observer, otherwise
+  // it'll just get awkward
+  var originalSend = goog.bind(respond.send, respond);
+  respond.send = function() {
+    mediator.unregisterNotification(observer);
+    originalSend();
+  };
+
   // Register a listener for the window closing.
   var observer = {
     observe: function(subject, topic, opt_data) {
@@ -1088,25 +1096,15 @@ Utils.installWindowCloseListener = function (respond) {
 
   var mediator = Utils.getService('@mozilla.org/embedcomp/window-watcher;1', 'nsIWindowWatcher');
   mediator.registerNotification(observer);
-  // Override the "respond.send" function to remove the observer, otherwise
-  // it'll just get awkward
-  var originalSend = goog.bind(respond.send, respond);
-  respond.send = function() {
-    mediator.unregisterNotification(observer);
-    originalSend();
-  };
 };
 
 Utils.installClickListener = function(respond, WebLoadingListener) {
-  var alreadyReplied = false;
   var browser = respond.session.getBrowser();
 
   var clickListener = new WebLoadingListener(browser, function(event) {
-    if (!alreadyReplied) {
-      alreadyReplied = true;
-      Logger.dumpn("New page loading.");
-      respond.send();
-    }
+    alreadyReplied = true;
+    Logger.dumpn("New page loading.");
+    respond.send();
   });
 
   var contentWindow = browser.contentWindow;
@@ -1121,11 +1119,8 @@ Utils.installClickListener = function(respond, WebLoadingListener) {
     var docLoaderService = browser.webProgress;
     if (!docLoaderService.isLoadingDocument) {
       WebLoadingListener.removeListener(browser, clickListener);
-      if (!alreadyReplied) {
-        alreadyReplied = true;
-        Logger.dumpn("Not loading document anymore.");
-        respond.send();
-      }
+      Logger.dumpn("Not loading document anymore.");
+      respond.send();
     }
   };
 

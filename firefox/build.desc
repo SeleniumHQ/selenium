@@ -72,6 +72,7 @@ js_binary(name = "utils",
     "src/js/firefox-utils.js",
     "src/js/logging.js",
     "src/js/modals.js",
+    "src/js/timer.js",
     "src/js/utils.js",
     "src/js/utils_exports.js"
   ],

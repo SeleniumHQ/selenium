@@ -17,7 +17,7 @@ function DrivenPromptService() {
   if (Components.classesByID[ORIGINAL_PARENT_SERVICE_ID]) {
     var originalService = Components.classesByID[ORIGINAL_PARENT_SERVICE_ID].getService();
     this.originalPromptService_ =
-        originalService.QueryInterface(Components.interfaces.nsIPromptService);
+        originalService.QueryInterface(CI.nsIPromptService2);
   }
 
   Logger.dumpn("Spoofing prompt service");
@@ -63,16 +63,10 @@ DrivenPromptService.prototype = {
 DrivenPromptService.prototype.findAssociatedDriver_ = function(window) {
   var ww = CC["@mozilla.org/embedcomp/window-watcher;1"].getService(CI["nsIWindowWatcher"]);
 
-  // There might be an easy answer.
-  var win = ww.getChromeForWindow(window);
-  if (win) {
-    return win;
-  }
-
-  // There isn't. Grab the top window's default view
   var parent = window ? window : ww.activeWindow;
-  if (parent.wrappedJSObject)
+  if (parent.wrappedJSObject) {
     parent = parent.wrappedJSObject;
+  }
   var top = parent.top;
 
   // Now iterate over all open browsers to find the one we belong to
@@ -86,10 +80,11 @@ DrivenPromptService.prototype.findAssociatedDriver_ = function(window) {
   }
 
   // There's no meaningful way we can reach this.
+  Logger.dumpn('Unable to find the associated driver');
   return undefined;
 };
 
-DrivenPromptService.prototype.signalOpenModal_ = function(parent, title, text) {
+DrivenPromptService.prototype.signalOpenModal_ = function(parent, text) {
   // Try to grab the top level window
   var driver = this.findAssociatedDriver_(parent);
 
@@ -98,7 +93,6 @@ DrivenPromptService.prototype.signalOpenModal_ = function(parent, title, text) {
 
     var res = driver.response_;
     res.value = {
-      title: title,
       text: text
     };
     res.statusCode = ErrorCode.MODAL_DIALOG_OPENED;
@@ -107,42 +101,41 @@ DrivenPromptService.prototype.signalOpenModal_ = function(parent, title, text) {
 };
 
 DrivenPromptService.prototype.alert = function(aParent, aDialogTitle, aText) {
-  this.signalOpenModal_(aParent, aDialogTitle, aText);
+  this.signalOpenModal_(aParent, aText);
 
   return this.originalPromptService_.alert(aParent, aDialogTitle, aText);
 };
 
 DrivenPromptService.prototype.alertCheck =
 function(aParent, aDialogTitle, aText, aCheckMsg, aCheckState) {
-  this.signalOpenModal_(aParent, aDialogTitle, aText);
+  this.signalOpenModal_(aParent, aText);
 
   return this.originalPromptService_.alertCheck(aParent, aDialogTitle, aText, aCheckMsg, aCheckState);
 };
 
 DrivenPromptService.prototype.confirm = function(aParent, aDialogTitle, aText) {
-  this.signalOpenModal_(aParent, aDialogTitle, aText);
+  this.signalOpenModal_(aParent, aText);
 
   return this.originalPromptService_.confirm(aParent, aDialogTitle, aText);
 };
 
 DrivenPromptService.prototype.confirmCheck =
 function(aParent, aDialogTitle, aText, aCheckMsg, aCheckState) {
-  this.signalOpenModal_(aParent, aDialogTitle, aText);
+  this.signalOpenModal_(aParent, aText);
 
   return this.originalPromptService_.confirmCheck(aParent, aDialogTitle, aText, aCheckMsg, aCheckState);
 };
 
 DrivenPromptService.prototype.confirmEx =
 function(aParent, aDialogTitle, aText, aButtonFlags, aButton0Title, aButton1Title, aButton2Title, aCheckMsg, aCheckState) {
-  this.signalOpenModal_(aParent, aDialogTitle, aText);
+  this.signalOpenModal_(aParent, aText);
 
   return this.originalPromptService_.confirmEx(aParent, aDialogTitle, aText, aButtonFlags, aButton0Title, aButton1Title, aButton2Title, aCheckMsg, aCheckState);
 };
 
 DrivenPromptService.prototype.prompt =
 function(aParent, aDialogTitle, aText, aValue, aCheckMsg, aCheckState) {
-  this.signalOpenModal_(aParent, aDialogTitle, aText);
-
+  this.signalOpenModal_(aParent, aText);
   return this.originalPromptService_.prompt(aParent, aDialogTitle, aText, aValue, aCheckMsg, aCheckState);
 };
 
@@ -161,7 +154,31 @@ function(aParent, aDialogTitle, aText, aCount, aSelectList, aOutSelection) {
   return this.originalPromptService_.select(aParent, aDialogTitle, aText, aCount, aSelectList, aOutSelection);
 };
 
+
+// nsIPromptService2 functions
+DrivenPromptService.prototype.promptAuth = function(aParent, aChannel, level, authInfo, checkboxLabel, checkValue) {
+  this.signalOpenModal_(aParent, aText);
+  return this.originalPromptService_.promptAuth(aParent, aChannel, level, authInfo, checkboxLabel, checkValue);
+};
+
+DrivenPromptService.prototype.asyncPromptAuth = function(aParent, aChannel, aCallback, aContext, level, authInfo, checkboxLabel,checkValue) {
+  return this.originalPromptService_.asyncPromptAuth(aParent, aChannel, aCallback, aContext, level, authInfo, checkboxLabel,checkValue)
+};
+
+DrivenPromptService.prototype.QueryInterface = function(iid) {
+  if (iid.equals(CI.nsIPromptService2)||
+      iid.equals(CI.nsIPromptService) ||
+      iid.equals(CI.nsISupports)) {
+    return this;
+  }
+
+  Logger.dumpn("nsIPromptService2: " + CI.nsIPromptService2);
+  Logger.dumpn(iid);
+  throw Components.results.NS_ERROR_NO_INTERFACE;
+};
+
 const PROMPT_CONTRACT_ID = "@mozilla.org/embedcomp/prompt-service;1";
+// This is defined by us
 const DRIVEN_PROMPT_SERVICE_CLASS_ID = Components.ID('{e26dbdcd-d3ba-4ded-88c3-6cb07ee3e9e0}');
 
 var service = undefined;
@@ -186,7 +203,7 @@ PromptServiceSpoofModule.prototype.registerSelf = function(aCompMgr, aFileSpec, 
     this.firstTime_ = false;
     throw Components.results.NS_ERROR_FACTORY_REGISTER_AGAIN;
   }
-  aCompMgr = aCompMgr.QueryInterface(Components.interfaces.nsIComponentRegistrar);
+  aCompMgr = aCompMgr.QueryInterface(CI.nsIComponentRegistrar);
   aCompMgr.registerFactoryLocation(
       DRIVEN_PROMPT_SERVICE_CLASS_ID, "Driven prompt service", PROMPT_CONTRACT_ID, aFileSpec, aLocation, aType);
 };
@@ -194,7 +211,7 @@ PromptServiceSpoofModule.prototype.registerSelf = function(aCompMgr, aFileSpec, 
 PromptServiceSpoofModule.prototype.unregisterSelf = function(aCompMgr, aLocation, aType) {
   Logger.dumpn("Unregistering\n");
   aCompMgr =
-  aCompMgr.QueryInterface(Components.interfaces.nsIComponentRegistrar);
+  aCompMgr.QueryInterface(CI.nsIComponentRegistrar);
   aCompMgr.unregisterFactoryLocation(DRIVEN_PROMPT_SERVICE_CLASS_ID, aLocation);
 };
 

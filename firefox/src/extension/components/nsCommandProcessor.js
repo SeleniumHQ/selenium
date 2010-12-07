@@ -245,8 +245,6 @@ DelayedCommand.prototype.checkPreconditions_ = function(preconditions, respond, 
   var toThrow = null;
   var length = preconditions.length;
 
-  Logger.dumpn('length: ' + length);
-
   for (var i = 0; i < length; i++) {
     toThrow = preconditions[i](respond.session.getDocument(), parameters);
     if (toThrow) {
@@ -288,9 +286,7 @@ DelayedCommand.prototype.executeInternal_ = function() {
       var driverFunction = this.driver_[name];
       var parameters = this.command_.parameters;
 
-//      Logger.dumpn('name: ' + name);
-//      Logger.dumpn('driverFunction: ' + driverFunction);
-//      Logger.dumpn('preconditions: ' + driverFunction.preconditions);
+      Logger.dumpn('Executing: ' + name);
 
       var func = goog.bind(driverFunction, this.driver_,
           this.response_, parameters);
@@ -335,7 +331,6 @@ DelayedCommand.prototype.executeInternal_ = function() {
  */
 var nsCommandProcessor = function() {
   Components.utils.import('resource://fxdriver/modules/atoms.js');
-  Components.utils.import('resource://fxdriver/modules/timer.js');
   Components.utils.import('resource://fxdriver/modules/utils.js');
 
   this.wrappedJSObject = this;
