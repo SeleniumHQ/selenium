@@ -283,11 +283,12 @@ objectExtend(TreeView.prototype, {
          */
         rowInserted: function(index) {
             this.log.debug("rowInserted: index=" + index);
+            this.recordIndex++;   //Samit: Fix: Fix the annoying skip over one command when recording in the middle of a script
             this.treebox.rowCountChanged(index, 1);
             this.rowCount++;
             //this.treebox.scrollToRow(this.testCase.commands.length - 1);
             //if (index >= this.recordIndex) {
-            this.recordIndex++;
+            //this.recordIndex++;   //Samit: Fix: Fix the annoying skip over one command when recording in the middle of a script
             //}
             this.treebox.ensureRowIsVisible(index);
         },
