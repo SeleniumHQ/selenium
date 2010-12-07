@@ -2,7 +2,7 @@ module Selenium
   module WebDriver
     module Chrome
 
-      # @private
+      # @api private
       class CommandExecutor
         HTML_TEMPLATE = "HTTP/1.1 200 OK\r\nContent-Length: %d\r\nContent-Type: text/html; charset=UTF-8\r\n\r\n%s"
         JSON_TEMPLATE = "HTTP/1.1 200 OK\r\nContent-Length: %d\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n%s"

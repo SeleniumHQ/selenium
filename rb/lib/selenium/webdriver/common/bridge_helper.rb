@@ -4,7 +4,7 @@ module Selenium
     #
     # Shared across bridges
     #
-    # @private
+    # @api private
     #
 
     module BridgeHelper

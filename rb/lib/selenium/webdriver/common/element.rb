@@ -8,7 +8,7 @@ module Selenium
       #
       # Creates a new Element
       #
-      # @private
+      # @api private
       #
 
       def initialize(bridge, id)
@@ -274,7 +274,7 @@ module Selenium
       #
       # for Find and execute_script
       #
-      # @private
+      # @api private
       #
 
       def ref
@@ -285,7 +285,7 @@ module Selenium
       # Convert to a WebElement JSON Object for transmission over the wire.
       # @see http://code.google.com/p/selenium/wiki/JsonWireProtocol#Basic_Concepts_And_Terms
       #
-      # @private
+      # @api private
       #
 
       def to_json(*args)
@@ -295,7 +295,7 @@ module Selenium
       #
       # For Rails 3 - http://jonathanjulian.com/2010/04/rails-to_json-or-as_json/
       #
-      # @private
+      # @api private
       #
 
       def as_json(opts = nil)

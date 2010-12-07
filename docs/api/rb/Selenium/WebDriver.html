@@ -60,7 +60,7 @@
   
     <dt class="r1 last">Defined in:</dt>
     <dd class="r1 last">rb/lib/selenium/webdriver.rb<span class="defines">,<br />
-  rb/lib/selenium/webdriver/ie.rb,<br /> rb/lib/selenium/webdriver/chrome.rb,<br /> rb/lib/selenium/webdriver/iphone.rb,<br /> rb/lib/selenium/webdriver/remote.rb,<br /> rb/lib/selenium/webdriver/ie/lib.rb,<br /> rb/lib/selenium/webdriver/android.rb,<br /> rb/lib/selenium/webdriver/firefox.rb,<br /> rb/lib/selenium/webdriver/ie/util.rb,<br /> rb/lib/selenium/webdriver/ie/bridge.rb,<br /> rb/lib/selenium/webdriver/common/find.rb,<br /> rb/lib/selenium/webdriver/common/keys.rb,<br /> rb/lib/selenium/webdriver/common/wait.rb,<br /> rb/lib/selenium/webdriver/common/error.rb,<br /> rb/lib/selenium/webdriver/common/proxy.rb,<br /> rb/lib/selenium/webdriver/firefox/util.rb,<br /> rb/lib/selenium/webdriver/chrome/bridge.rb,<br /> rb/lib/selenium/webdriver/common/driver.rb,<br /> rb/lib/selenium/webdriver/common/zipper.rb,<br /> rb/lib/selenium/webdriver/iphone/bridge.rb,<br /> rb/lib/selenium/webdriver/remote/bridge.rb,<br /> rb/lib/selenium/webdriver/android/bridge.rb,<br /> rb/lib/selenium/webdriver/common/element.rb,<br /> rb/lib/selenium/webdriver/common/options.rb,<br /> rb/lib/selenium/webdriver/firefox/binary.rb,<br /> rb/lib/selenium/webdriver/firefox/bridge.rb,<br /> rb/lib/selenium/webdriver/chrome/launcher.rb,<br /> rb/lib/selenium/webdriver/common/platform.rb,<br /> rb/lib/selenium/webdriver/common/timeouts.rb,<br /> rb/lib/selenium/webdriver/firefox/profile.rb,<br /> rb/lib/selenium/webdriver/remote/response.rb,<br /> rb/lib/selenium/webdriver/firefox/launcher.rb,<br /> rb/lib/selenium/webdriver/remote/http/curb.rb,<br /> rb/lib/selenium/webdriver/common/navigation.rb,<br /> rb/lib/selenium/webdriver/firefox/extension.rb,<br /> rb/lib/selenium/webdriver/common/file_reaper.rb,<br /> rb/lib/selenium/webdriver/remote/http/common.rb,<br /> rb/lib/selenium/webdriver/firefox/socket_lock.rb,<br /> rb/lib/selenium/webdriver/remote/capabilities.rb,<br /> rb/lib/selenium/webdriver/remote/server_error.rb,<br /> rb/lib/selenium/webdriver/remote/http/default.rb,<br /> rb/lib/selenium/webdriver/common/bridge_helper.rb,<br /> rb/lib/selenium/webdriver/common/socket_poller.rb,<br /> rb/lib/selenium/webdriver/firefox/profiles_ini.rb,<br /> rb/lib/selenium/webdriver/common/target_locator.rb,<br /> rb/lib/selenium/webdriver/chrome/command_executor.rb,<br /> rb/lib/selenium/webdriver/common/driver_extensions/rotatable.rb,<br /> rb/lib/selenium/webdriver/common/driver_extensions/takes_screenshot.rb</span>
+  rb/lib/selenium/webdriver/ie.rb,<br /> rb/lib/selenium/webdriver/remote.rb,<br /> rb/lib/selenium/webdriver/iphone.rb,<br /> rb/lib/selenium/webdriver/chrome.rb,<br /> rb/lib/selenium/webdriver/ie/lib.rb,<br /> rb/lib/selenium/webdriver/firefox.rb,<br /> rb/lib/selenium/webdriver/android.rb,<br /> rb/lib/selenium/webdriver/ie/util.rb,<br /> rb/lib/selenium/webdriver/ie/bridge.rb,<br /> rb/lib/selenium/webdriver/common/find.rb,<br /> rb/lib/selenium/webdriver/common/keys.rb,<br /> rb/lib/selenium/webdriver/common/wait.rb,<br /> rb/lib/selenium/webdriver/common/proxy.rb,<br /> rb/lib/selenium/webdriver/common/error.rb,<br /> rb/lib/selenium/webdriver/firefox/util.rb,<br /> rb/lib/selenium/webdriver/common/driver.rb,<br /> rb/lib/selenium/webdriver/common/zipper.rb,<br /> rb/lib/selenium/webdriver/iphone/bridge.rb,<br /> rb/lib/selenium/webdriver/remote/bridge.rb,<br /> rb/lib/selenium/webdriver/chrome/bridge.rb,<br /> rb/lib/selenium/webdriver/common/element.rb,<br /> rb/lib/selenium/webdriver/common/options.rb,<br /> rb/lib/selenium/webdriver/firefox/bridge.rb,<br /> rb/lib/selenium/webdriver/firefox/binary.rb,<br /> rb/lib/selenium/webdriver/android/bridge.rb,<br /> rb/lib/selenium/webdriver/common/platform.rb,<br /> rb/lib/selenium/webdriver/common/timeouts.rb,<br /> rb/lib/selenium/webdriver/remote/response.rb,<br /> rb/lib/selenium/webdriver/firefox/profile.rb,<br /> rb/lib/selenium/webdriver/chrome/launcher.rb,<br /> rb/lib/selenium/webdriver/remote/http/curb.rb,<br /> rb/lib/selenium/webdriver/firefox/launcher.rb,<br /> rb/lib/selenium/webdriver/common/navigation.rb,<br /> rb/lib/selenium/webdriver/firefox/extension.rb,<br /> rb/lib/selenium/webdriver/common/file_reaper.rb,<br /> rb/lib/selenium/webdriver/remote/http/common.rb,<br /> rb/lib/selenium/webdriver/remote/server_error.rb,<br /> rb/lib/selenium/webdriver/remote/capabilities.rb,<br /> rb/lib/selenium/webdriver/remote/http/default.rb,<br /> rb/lib/selenium/webdriver/firefox/socket_lock.rb,<br /> rb/lib/selenium/webdriver/common/bridge_helper.rb,<br /> rb/lib/selenium/webdriver/common/socket_poller.rb,<br /> rb/lib/selenium/webdriver/firefox/profiles_ini.rb,<br /> rb/lib/selenium/webdriver/common/target_locator.rb,<br /> rb/lib/selenium/webdriver/chrome/command_executor.rb,<br /> rb/lib/selenium/webdriver/common/driver_extensions/rotatable.rb,<br /> rb/lib/selenium/webdriver/common/driver_extensions/takes_screenshot.rb</span>
 </dd>
   
 </dl>
@@ -92,7 +92,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#for-class_method" title="for (class method)">+ (Object) <strong>for</strong>(*args) </a>
+      <a href="#for-class_method" title="for (class method)">+ (Driver) <strong>for</strong>(*args) </a>
     
 
     
@@ -105,7 +105,10 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'><p>
+Create a new Driver instance with the correct bridge for the given browser.
+</p>
+</div></span>
   
 </li>
 
@@ -123,7 +126,7 @@
   
   
   
-  
+  <span class="private note title">Private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -143,22 +146,98 @@
       <div class="method_details first">
   <p class="signature first" id="for-class_method">
   
-    + (<tt>Object</tt>) <strong>for</strong>(*args) 
+    + (<tt><span class='object_link'><a href="WebDriver/Driver.html" title="Selenium::WebDriver::Driver (class)">Driver</a></span></tt>) <strong>for</strong>(*args) 
   
 
   
 </p><div class="docstring">
   <div class="discussion">
-    
+    <p>
+Create a new Driver instance with the correct bridge for the given browser
+</p>
+
 
   </div>
 </div>
 <div class="tags">
   
+  <div class="examples">
+    <h3>Examples:</h3>
+    
+      <h4><div class='inline'></div></h4>
+      <pre class="example code">
+<span class='WebDriver constant id'>WebDriver</span><span class='dot token'>.</span><span class='for identifier id'>for</span> <span class='symbol val'>:firefox</span><span class='comma token'>,</span> <span class='symbol val'>:profile</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;some-profile&quot;</span>
+<span class='WebDriver constant id'>WebDriver</span><span class='dot token'>.</span><span class='for identifier id'>for</span> <span class='symbol val'>:firefox</span><span class='comma token'>,</span> <span class='symbol val'>:profile</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='Profile constant id'>Profile</span><span class='dot token'>.</span><span class='new identifier id'>new</span>
+<span class='WebDriver constant id'>WebDriver</span><span class='dot token'>.</span><span class='for identifier id'>for</span> <span class='symbol val'>:remote</span><span class='comma token'>,</span>  <span class='symbol val'>:url</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;http://localhost:4444/wd/hub&quot;</span><span class='comma token'>,</span> <span class='symbol val'>:desired_capabilities</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='caps identifier id'>caps</span>
+</pre>
+    
+  </div>
+<h3>Parameters:</h3>
+<ul class="param">
+  
+    <li>
+      
+        <span class='type'>(<tt>:ie</tt>, <tt>:internet_explorer</tt>, <tt>:remote</tt>, <tt>:chrome</tt>, <tt>:firefox</tt>, <tt>:ff</tt>, <tt>:android</tt>, <tt>:iphone</tt>)</span>
+      
+      
+        <span class='name'>browser</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>
+the driver type to use
+</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='type'></span>
+      
+      
+        <span class='name'>*rest</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>
+arguments passed to Bridge.new
+</p>
+</div>
+      
+    </li>
+  
+</ul>
+<h3>Returns:</h3>
+<ul class="return">
+  
+    <li>
+      
+        <span class='type'>(<tt><span class='object_link'><a href="WebDriver/Driver.html" title="Selenium::WebDriver::Driver (class)">Driver</a></span></tt>)</span>
+      
+      
+      
+      
+    </li>
+  
+</ul>
+
   <h3>See Also:</h3>
   <ul class="see">
     
-      <li><span class='object_link'><a href="WebDriver/Driver.html#for-class_method" title="Selenium::WebDriver::Driver.for (method)">Driver.for</a></span></li>
+      <li><span class='object_link'><a href="WebDriver/Remote/Bridge.html" title="Selenium::WebDriver::Remote::Bridge (class)">Selenium::WebDriver::Remote::Bridge</a></span></li>
+    
+      <li><span class='object_link'><a href="WebDriver/Firefox/Bridge.html" title="Selenium::WebDriver::Firefox::Bridge (class)">Selenium::WebDriver::Firefox::Bridge</a></span></li>
+    
+      <li><span class='object_link'><a href="WebDriver/IE/Bridge.html" title="Selenium::WebDriver::IE::Bridge (class)">Selenium::WebDriver::IE::Bridge</a></span></li>
+    
+      <li><span class='object_link'><a href="WebDriver/Chrome/Bridge.html" title="Selenium::WebDriver::Chrome::Bridge (class)">Selenium::WebDriver::Chrome::Bridge</a></span></li>
+    
+      <li><span class='object_link'><a href="WebDriver/Android/Bridge.html" title="Selenium::WebDriver::Android::Bridge (class)">Selenium::WebDriver::Android::Bridge</a></span></li>
+    
+      <li><span class='object_link'><a href="WebDriver/IPhone/Bridge.html" title="Selenium::WebDriver::IPhone::Bridge (class)">Selenium::WebDriver::IPhone::Bridge</a></span></li>
     
   </ul>
 
@@ -168,12 +247,12 @@
       <pre class="lines">
 
 
-51
-52
-53</pre>
+73
+74
+75</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver.rb', line 51</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver.rb', line 73</span>
 
 <span class='def def kw'>def</span> <span class='self self kw'>self</span><span class='dot token'>.</span><span class='for identifier id'>for</span><span class='lparen token'>(</span><span class='mult op'>*</span><span class='args identifier id'>args</span><span class='rparen token'>)</span>
   <span class='WebDriver constant id'>WebDriver</span><span class='colon2 op'>::</span><span class='Driver constant id'>Driver</span><span class='dot token'>.</span><span class='for identifier id'>for</span><span class='lparen token'>(</span><span class='mult op'>*</span><span class='args identifier id'>args</span><span class='rparen token'>)</span>
@@ -197,12 +276,12 @@
       <pre class="lines">
 
 
-43
-44
-45</pre>
+45
+46
+47</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver.rb', line 43</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver.rb', line 45</span>
 
 <span class='def def kw'>def</span> <span class='self self kw'>self</span><span class='dot token'>.</span><span class='root identifier id'>root</span>
   <span class='@root ivar id'>@root</span> <span class='opasgn op'>||=</span> <span class='File constant id'>File</span><span class='dot token'>.</span><span class='expand_path identifier id'>expand_path</span><span class='lparen token'>(</span><span class='File constant id'>File</span><span class='dot token'>.</span><span class='join identifier id'>join</span><span class='lparen token'>(</span><span class='File constant id'>File</span><span class='dot token'>.</span><span class='dirname identifier id'>dirname</span><span class='lparen token'>(</span><span class='__FILE__ __file__ kw'>__FILE__</span><span class='rparen token'>)</span><span class='comma token'>,</span> <span class='string val'>&quot;..&quot;</span><span class='rparen token'>)</span><span class='rparen token'>)</span>
@@ -218,9 +297,9 @@
 </div>
     
     <div id="footer">
-  Generated on Tue Nov 30 00:37:06 2010 by 
+  Generated on Wed Dec 08 00:35:24 2010 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.6.1 (ruby-1.8.7).
+  0.6.3 (ruby-1.8.7).
 </div>
 
   </body>

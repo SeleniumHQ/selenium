@@ -3,7 +3,7 @@ module Selenium
     class Options
 
       #
-      # @private
+      # @api private
       #
 
       def initialize(bridge)

@@ -16,20 +16,9 @@ module Selenium
       class << self
 
         #
-        # Create a new Driver instance with the correct bridge for the given browser
+        # @api private
         #
-        # @param browser [:ie, :internet_explorer, :remote, :chrome, :firefox, :ff]
-        #   the driver type to use
-        # @param *rest
-        #   arguments passed to Bridge.new
-        #
-        # @return [Driver]
-        #
-        # @example
-        #
-        #   Driver.for :firefox, :profile => "some-profile"
-        #   Driver.for :firefox, :profile => Profile.new
-        #   Driver.for :remote,  :url => "http://localhost:4444/wd/hub", :desired_capabilities => caps
+        # @see Selenium::WebDriver.for
         #
 
         def for(browser, *args)
@@ -55,7 +44,8 @@ module Selenium
       end
 
       #
-      # A new Driver instance with the given bridge
+      # A new Driver instance with the given bridge.
+      # End users should use Selenium::WebDriver.for instead of using this directly.
       #
       # @api private
       #
@@ -201,7 +191,7 @@ module Selenium
       # @param [String] script
       #   JavaScript source to execute
       # @param [WebDriver::Element,Integer, Float, Boolean, NilClass, String, Array] *args
-      #   Arguments will be available in the given script as the 'arguments' array.
+      #   Arguments will be available in the given script in the 'arguments' pseudo-array.
       #
       # @return [WebDriver::Element,Integer,Float,Boolean,NilClass,String,Array]
       #   The value returned from the script.
@@ -237,6 +227,8 @@ module Selenium
       # @param  [String,Hash] id or selector
       # @return [WebDriver::Element]
       #
+      # Examples:
+      #
       #   driver['someElementId']    #=> #<WebDriver::Element:0x1011c3b88>
       #   driver[:tag_name => 'div'] #=> #<WebDriver::Element:0x1011c3b88>
       #
@@ -253,7 +245,7 @@ module Selenium
       #
       # for Find
       #
-      # @private
+      # @api private
       #
 
       def ref

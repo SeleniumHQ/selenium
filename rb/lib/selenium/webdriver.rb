@@ -39,12 +39,34 @@ module Selenium
     autoload :Remote,  'selenium/webdriver/remote'
     autoload :Firefox, 'selenium/webdriver/firefox'
 
+    # @api private
+
     def self.root
       @root ||= File.expand_path(File.join(File.dirname(__FILE__), ".."))
     end
 
     #
-    # @see Selenium::WebDriver::Driver.for
+    # Create a new Driver instance with the correct bridge for the given browser
+    #
+    # @param browser [:ie, :internet_explorer, :remote, :chrome, :firefox, :ff, :android, :iphone]
+    #   the driver type to use
+    # @param *rest
+    #   arguments passed to Bridge.new
+    #
+    # @return [Driver]
+    #
+    # @see Selenium::WebDriver::Remote::Bridge
+    # @see Selenium::WebDriver::Firefox::Bridge
+    # @see Selenium::WebDriver::IE::Bridge
+    # @see Selenium::WebDriver::Chrome::Bridge
+    # @see Selenium::WebDriver::Android::Bridge
+    # @see Selenium::WebDriver::IPhone::Bridge
+    #
+    # @example
+    #
+    #   WebDriver.for :firefox, :profile => "some-profile"
+    #   WebDriver.for :firefox, :profile => Profile.new
+    #   WebDriver.for :remote,  :url => "http://localhost:4444/wd/hub", :desired_capabilities => caps
     #
 
     def self.for(*args)

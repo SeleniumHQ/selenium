@@ -3,7 +3,7 @@ require "rbconfig"
 module Selenium
   module WebDriver
 
-    # @private
+    # @api private
     module Platform
 
       module_function

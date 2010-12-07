@@ -7,7 +7,7 @@ module Selenium
       #
       # Low level bridge to the remote server, through which the rest of the API works.
       #
-      # @private
+      # @api private
       #
 
       class Bridge

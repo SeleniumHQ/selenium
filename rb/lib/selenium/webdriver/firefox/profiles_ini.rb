@@ -2,7 +2,7 @@ module Selenium
   module WebDriver
     module Firefox
 
-      # @private
+      # @api private
       class ProfilesIni
 
         def initialize

@@ -2,7 +2,7 @@ module Selenium
   module WebDriver
     module Firefox
 
-      # @private
+      # @api private
       module Util
         module_function
 

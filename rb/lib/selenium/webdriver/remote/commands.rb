@@ -1,4 +1,4 @@
-# @private
+# @api private
 class Selenium::WebDriver::Remote::Bridge
 
   #

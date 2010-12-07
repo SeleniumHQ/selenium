@@ -19,13 +19,13 @@ module Selenium
       end
 
       #
-      # switch to the frame with the given id
+      # switch to the given window handle
       #
-      # If given a block, this method will return to the original window after
+      # If given a block, this method will switch back to the original window after
       # block execution.
       #
       # @param id
-      #   A window handle
+      #   A window handle, obtained through Driver#window_handles
       #
 
       def window(id)

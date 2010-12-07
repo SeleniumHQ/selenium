@@ -1,7 +1,7 @@
 module Selenium
   module WebDriver
 
-    # @private
+    # @api private
     module IE
       DLLS = {
         :win32 => "#{WebDriver.root}/selenium/webdriver/ie/native/win32/InternetExplorerDriver.dll",

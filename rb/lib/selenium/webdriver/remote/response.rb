@@ -2,7 +2,7 @@ module Selenium
   module WebDriver
     module Remote
 
-      # @private
+      # @api private
       class Response
 
         attr_reader :code, :payload

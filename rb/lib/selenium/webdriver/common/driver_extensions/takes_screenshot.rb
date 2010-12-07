@@ -2,7 +2,7 @@ module Selenium
   module WebDriver
 
     #
-    # @private
+    # @api private
     #
 
     module DriverExtensions

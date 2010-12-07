@@ -2,7 +2,7 @@ module Selenium
   module WebDriver
     module Firefox
 
-      # @private
+      # @api private
       class Extension
         EM_NAMESPACE_URI = "http://www.mozilla.org/2004/em-rdf#" # not used?
 

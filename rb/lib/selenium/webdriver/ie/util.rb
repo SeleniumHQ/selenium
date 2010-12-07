@@ -3,7 +3,7 @@ module Selenium
     module IE
 
       #
-      # @private
+      # @api private
       #
 
       module Util

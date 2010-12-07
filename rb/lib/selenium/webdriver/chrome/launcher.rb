@@ -2,7 +2,7 @@ module Selenium
   module WebDriver
     module Chrome
 
-      # @private
+      # @api private
       class Launcher
         include FileUtils
 
@@ -21,7 +21,7 @@ module Selenium
         end
 
         #
-        # @private
+        # @api private
         #
         # @see Chrome.path=
         #

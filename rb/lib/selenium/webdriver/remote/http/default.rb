@@ -4,7 +4,8 @@ module Selenium
   module WebDriver
     module Remote
       module Http
-        # @private
+
+        # @api private
         class Default < Common
           attr_accessor :proxy
 

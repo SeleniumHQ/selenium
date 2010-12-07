@@ -1,5 +1,5 @@
 class Dir
-  # @private
+  # @api private
   def self.mktmpdir(prefix_suffix=nil, tmpdir=nil)
     case prefix_suffix
     when nil

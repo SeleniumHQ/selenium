@@ -5,7 +5,7 @@ module Selenium
     module Firefox
 
       #
-      # @private
+      # @api private
       #
 
       class SocketLock

@@ -2,7 +2,7 @@ module Selenium
   module WebDriver
     module Firefox
 
-      # @private
+      # @api private
       class Binary
 
         NO_FOCUS_LIBRARY_NAME = "x_ignore_nofocus.so"
@@ -87,7 +87,7 @@ module Selenium
         class << self
 
           #
-          # @private
+          # @api private
           #
           # @see Firefox.path=
           #
