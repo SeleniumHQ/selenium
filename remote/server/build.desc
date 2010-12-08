@@ -1,4 +1,12 @@
 java_library(name = "server",
+  main = "org.openqa.selenium.server.SeleniumServer",
+  deps = [
+    "//remote/client:combined",
+    ":server_lite"
+  ])
+
+# Light version of the server for drivers that don't need to depend on all other drivers.
+java_library(name = "server_lite",
   srcs = [ 
     "src/java/org/openqa/selenium/**/*.java",
     "src/java/cybervillains/**/*.java" 
@@ -26,7 +34,8 @@ java_library(name = "server",
     }
   ],
   deps = [
-    "//remote/client:combined",    
+    "//remote/client:client",
+    "//support",
     "//remote/server/src/java/org/openqa:jetty",
     "//third_party/java/bcprov",
     "//third_party/java/servlet-api"
