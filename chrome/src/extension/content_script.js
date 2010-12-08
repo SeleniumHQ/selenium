@@ -76,22 +76,24 @@ function parsePortMessage(message) {
     case "nonNativeClickElement":
       //TODO(danielwh): Focus/blur events for non-native clicking
       element.scrollIntoView(true);
-      //TODO: Work out a way of firing events,
-      //now that synthesising them gives appendMessage errors
-      console.log("mouse downing");
-      Utils.fireMouseEventOn(element, "mousedown");
-        console.log("mouse up");
-      Utils.fireMouseEventOn(element, "mouseup");
-        console.log("mouse click");
-      Utils.fireMouseEventOn(element, "click");
 
-      if (element.click) {
-        console.log("click");
-        execute("try { arguments[0].click(); } catch(e){}", [{
-          type: "ELEMENT", value: addElementToInternalArray(element)
-        }]);
-      }
-      response.value = {statusCode: 0};
+      var script = [
+        'var element = arguments[0];',
+        'function fire(type) {',
+        '  console.log("Firing " + type);',
+        '  var event = element.ownerDocument.createEvent("MouseEvents");',
+        '  event.initMouseEvent(type, true, true,',
+        'element.ownerDocument.defaultView, 1, 0, 0, 0, 0, false, false,',
+        'false, false, 0, element);',
+        '  element.dispatchEvent(event);',
+        '}',
+        'fire("mousedown");',
+        'fire("mouseup");',
+        'fire("click");'
+      ].join('');
+      var args = [{'ELEMENT': addElementToInternalArray(element)}];
+
+      execute(script, args);
       break;
     case "executeScript":
       execute(message.request.script, message.request.args);
