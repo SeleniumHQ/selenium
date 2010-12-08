@@ -20,6 +20,7 @@ package org.openqa.selenium.android.app;
 import android.content.Context;
 import android.graphics.Rect;
 import android.webkit.WebChromeClient;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
@@ -108,9 +109,17 @@ public class WebDriverWebView extends WebView {
     addJavascriptInterface(new JavascriptInterface(javascriptExecutor), "webdriver");
 
     // Webview settings
-    getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
-    getSettings().setSupportMultipleWindows(true);
-    getSettings().setBuiltInZoomControls(true);
-    getSettings().setJavaScriptEnabled(true);
+    WebSettings settings = getSettings();
+    settings.setJavaScriptCanOpenWindowsAutomatically(true);
+    settings.setSupportMultipleWindows(true);
+    settings.setBuiltInZoomControls(true);
+    settings.setJavaScriptEnabled(true);
+    settings.setAppCacheEnabled(true);
+    settings.setDatabaseEnabled(true);
+    settings.setDomStorageEnabled(true);
+    settings.setGeolocationEnabled(true);
+    settings.setJavaScriptCanOpenWindowsAutomatically(true);
+    settings.setSaveFormData(true);
+    settings.setSupportMultipleWindows(true);
   }
 }
