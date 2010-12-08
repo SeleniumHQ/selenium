@@ -1,1 +1,2 @@
-JRuby: jruby-1_5 @ 1e6eaf219 (with Antwrap bundled)
+JRuby: jruby 1.6.0.dev @ 2010-12-08 3510d85
+Bundled gems: Antwrap, json_pure, albacore (see https://gist.github.com/733501) 
