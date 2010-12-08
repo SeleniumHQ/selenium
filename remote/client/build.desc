@@ -30,3 +30,21 @@ java_library(name = "combined",
     "//selenium",
     "//support"
   ])
+
+dotnet_library(name = "dotnet",
+  deps = [
+    "//remote/common:dotnet"
+  ],
+  srcs = "src/csharp/**/*.cs",
+  refs = [
+    "System.dll",
+    "System.Data.dll",
+    "System.Drawing.dll",
+    "System.Xml.dll",
+    "//common:dotnet",
+    "//remote/common:dotnet",
+    "third_party/csharp/json-net-3.5r6/Newtonsoft.Json.dll"
+  ],
+  out = "build/dotnet/WebDriver.Remote.dll",
+  doc = "build/dotnet/WebDriver.Remote.xml"
+)

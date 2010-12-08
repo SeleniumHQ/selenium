@@ -17,6 +17,7 @@ require 'rake-tasks/crazy_fun/mappings/javascript'
 require 'rake-tasks/crazy_fun/mappings/mozilla'
 require 'rake-tasks/crazy_fun/mappings/rake'
 require 'rake-tasks/crazy_fun/mappings/ruby'
+require 'rake-tasks/crazy_fun/mappings/visualstudio'
 
 # The original build rules
 require 'rake-tasks/task-gen'
@@ -57,6 +58,7 @@ JavascriptMappings.new.add_all(crazy_fun)
 MozillaMappings.new.add_all(crazy_fun)
 RakeMappings.new.add_all(crazy_fun)
 RubyMappings.new.add_all(crazy_fun)
+VisualStudioMappings.new.add_all(crazy_fun)
 
 # Not every platform supports building every binary needed, so we sometimes
 # need to fall back to prebuilt binaries. The prebuilt binaries are stored in
@@ -157,7 +159,7 @@ task :test_dotnet => [
 ]
 
 task :test => [ :test_java, :test_rb ]
-if (msbuild?)
+if (msbuild_installed?)
   task :test => [ :test_dotnet ]
 end
 if (python?)
@@ -177,26 +179,27 @@ task :clean do
   Android::Clean.new()
 end
 
-task "ie_win32_dll" => [ "atomic_header", "sizzle_header" ]
-dll(:name => "ie_win32_dll",
-    :src  => [ "common/src/cpp/webdriver-interactions/**/*", "jobbie/src/cpp/InternetExplorerDriver/**/*" ],
-    :solution => "WebDriver.sln",
-    :out  => "Win32/Release/InternetExplorerDriver.dll",
-    :prebuilt => "jobbie/prebuilt")
+#task "ie_win32_dll" => [ "atomic_header", "sizzle_header" ]
+#dll(:name => "ie_win32_dll",
+#    :src  => [ "common/src/cpp/webdriver-interactions/**/*", "jobbie/src/cpp/InternetExplorerDriver/**/*" ],
+#    :solution => "WebDriver.sln",
+#    :out  => "Win32/Release/InternetExplorerDriver.dll",
+#    :prebuilt => "jobbie/prebuilt")
 
-task "ie_x64_dll" => [ "atomic_header", "sizzle_header" ]
-dll(:name => "ie_x64_dll",
-    :src  => [ "common/src/cpp/webdriver-interactions/**/*", "jobbie/src/cpp/InternetExplorerDriver/**/*" ],
-    :solution => "WebDriver.sln",
-    :out  => "x64/Release/InternetExplorerDriver.dll",
-    :prebuilt => "jobbie/prebuilt")
+#task "ie_x64_dll" => [ "atomic_header", "sizzle_header" ]
+#dll(:name => "ie_x64_dll",
+#    :src  => [ "common/src/cpp/webdriver-interactions/**/*", "jobbie/src/cpp/InternetExplorerDriver/**/*" ],
+#    :solution => "WebDriver.sln",
+#    :out  => "x64/Release/InternetExplorerDriver.dll",
+#    :prebuilt => "jobbie/prebuilt")
 
 
-dotnet_library(:name => "dotnet_assemblies",
-               :project => "rake-tasks/msbuild/webdriver.msbuild.proj",
-               :target => "BuildManagedCode")
+#dotnet_library(:name => "dotnet_assemblies",
+#               :project => "rake-tasks/msbuild/webdriver.msbuild.proj",
+#               :target => "BuildManagedCode")
 
-task :dotnet => [ :ie_win32_dll, :ie_x64_dll, :firefox, :chrome, :'dotnet_assemblies' ]
+#task :dotnet => [ :ie_win32_dll, :ie_x64_dll, :firefox, :chrome, :'dotnet_assemblies' ]
+task :dotnet => [ "//jobbie:dotnet", "//remote/client:dotnet", "//firefox:dotnet", "//chrome:dotnet" ]
 
 # Generate a C++ Header file for mapping between magic numbers and #defines
 # in the C++ code.

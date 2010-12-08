@@ -47,3 +47,34 @@ rake_file(
 rake_file(
   name = "remote_runner_html",
   src = "src/js/core/RemoteRunner.html")
+
+dotnet_library(name = "dotnet",
+  srcs = "src/csharp/**/*.cs",
+  refs = [
+    "System.dll",
+    "System.Data.dll",
+    "System.Drawing.dll",
+    "System.Xml.dll"
+  ],
+  out = "build/dotnet/WebDriver.Common.dll",
+  doc = "build/dotnet/WebDriver.Common.xml"
+)
+
+dotnet_library(name = "dotnet-test",
+  srcs = "test/csharp/**/*.cs",
+  refs = [
+    "System.dll",
+    "System.Configuration.dll",
+    "System.Core.dll",
+    "System.Data.dll",
+    "System.Drawing.dll",
+    "System.Xml.dll",
+    "//common:dotnet",
+    "third_party/csharp/cassinidev-3.5.1.8/CassiniDev-console.exe",
+    "third_party/csharp/nunit-2.4.8/bin/nunit.core.dll",
+    "third_party/csharp/nunit-2.4.8/bin/nunit.core.interfaces.dll",
+    "third_party/csharp/nunit-2.4.8/bin/nunit.framework.dll",
+    "third_party/csharp/nunit-2.4.8/bin/nunit.mocks.dll"
+  ],
+  out = "build/dotnet/webdriver-common-test.dll"
+)
