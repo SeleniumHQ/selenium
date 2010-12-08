@@ -2,7 +2,7 @@
 class DotNet < BaseGenerator
   def library(args)
     task args[:name].to_sym => args[:project] do
-      if msbuild?
+      if msbuild_installed?
         sh "msbuild #{args[:project]} /t:#{args[:target]}"
       else
         copy_prebuilt(args[:prebuilt], args[:name])
