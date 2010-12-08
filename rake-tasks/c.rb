@@ -10,7 +10,7 @@ def dll(args)
   
     file out => build_deps_(args[:src]) + deps do
       if (out =~ /\.dll$/)
-        msbuild_legacy(args[:solution], out, args[:prebuilt])
+        msbuild(args[:solution], out, args[:prebuilt])
       elsif (out =~ /\.so$/) 
         is_32_bit = "amd64" != args[:arch]
         gcc(args[:src], out, args[:args], args[:link_args], is_32_bit, args[:prebuilt])
@@ -27,8 +27,8 @@ def dll(args)
   end
 end
 
-def msbuild_legacy(solution, out, prebuilt)
-  if msbuild_installed?
+def msbuild(solution, out, prebuilt)
+  if msbuild?
     if (!File.exists? out) then
       sh "MSBuild.exe #{solution} /verbosity:q /target:Rebuild /property:Configuration=Release /property:Platform=x64", :verbose => false
       sh "MSBuild.exe #{solution} /verbosity:q /target:Rebuild /property:Configuration=Release /property:Platform=Win32", :verbose => false

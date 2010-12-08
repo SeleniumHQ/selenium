@@ -21,61 +21,6 @@ mozilla_extension(name = "chrome_extension",
   ],
   out = "chrome-extension.zip")
 
-#rake_task(name = "chrome_dll",
-#  task_name = "chrome_dll",
-#  out = "build/Win32/Release/npchromedriver.dll")
-
-visualc_library(name = "chrome_dll",
-  platform = "Win32",
-  solution = "WebDriver.sln",
-  target = "npchromedriver",
-  out = "Win32/Release/npchromedriver.dll"
-)
-
-dotnet_library(name = "dotnet",
-  deps = [
-    "//remote/client:dotnet"
-  ],
-  resources = [
-    {":chrome_extension" : "WebDriver.ChromeExt.zip"}
-  ],
-  srcs = "src/csharp/**/*.cs",
-  refs = [
-    "System.dll",
-    "System.Data.dll",
-    "System.Drawing.dll",
-    "System.Xml.dll",
-    "//common:dotnet",
-    "//remote/common:dotnet",
-    "//remote/client:dotnet",
-    "third_party/csharp/dotnetzip-1.9/Ionic.Zip.Reduced.dll"
-  ],
-  out = "build/dotnet/WebDriver.Chrome.dll",
-  doc = "build/dotnet/WebDriver.Chrome.xml"
-)
-
-dotnet_test(name = "dotnet-test",
-  deps = [
-    "//chrome:dotnet",
-    "//common:dotnet-test"
-  ],
-  srcs = "test/csharp/**/*.cs",
-  refs = [
-    "System.dll",
-    "System.Core.dll",
-    "System.Data.dll",
-    "System.Drawing.dll",
-    "System.Xml.dll",
-    "//common:dotnet",
-    "//common:dotnet-test",
-    "//remote/client:dotnet",
-    "//chrome:dotnet",
-    "third_party/csharp/nunit-2.4.8/bin/nunit.framework.dll"
-  ],
-  out = "build/dotnet/webdriver-chrome-test.dll",
-  files = [
-    "test/csharp/webdriver-chrome-test/webdriver-chrome-test.config",
-    "test/csharp/webdriver-chrome-test/webdriver-chrome-test.nunit"
-  ],
-  project = "webdriver-chrome-test.nunit"
-)
+rake_task(name = "chrome_dll",
+  task_name = "chrome_dll",
+  out = "build/Win32/Release/npchromedriver.dll")

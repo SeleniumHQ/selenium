@@ -67,7 +67,7 @@ def python?
   present?("python") || present?("python.exe")
 end
 
-def msbuild_installed?
+def msbuild?
   windows? && present?("msbuild.exe")
 end
 

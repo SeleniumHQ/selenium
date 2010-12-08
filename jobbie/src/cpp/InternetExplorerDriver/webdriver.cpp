@@ -311,14 +311,14 @@ int wdFreeDriver(WebDriver* driver)
 {
 	if (!driver || !driver->ie) return ENOSUCHDRIVER;
 
-    delete driver->ie;
-    delete driver;
-	driver = NULL;
 	try {
 		terminateIe();
 	} catch (...) {
 		// Fine. We're quitting anyway.
 	}
+    delete driver->ie;
+    delete driver;
+	driver = NULL;
 
 	// Let the IE COM instance fade away
 	wait(4000);

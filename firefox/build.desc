@@ -88,67 +88,10 @@ gcc_library(name = "noblur64",
   srcs = [ "src/cpp/linux-specific/*.c" ],
   arch = "amd64")
 
-visualc_library(name = "firefox_dll",
-  platform = "Win32",
-  solution = "WebDriver.sln",
-  target = "webdriver-firefox",
-  out = "Win32/Release/webdriver-firefox.dll"
-)
-
-dotnet_library(name = "dotnet",
-  deps = [
-    "//remote/client:dotnet"
-  ],
-  resources = [
-    {":webdriver" : "WebDriver.FirefoxExt.zip"},
-    {":noblur" : "WebDriver.FirefoxNoFocus.x86.dll"},
-    {":noblur64" : "WebDriver.FirefoxNoFocus.x64.dll"}
-  ],
-  srcs = "src/csharp/**/*.cs",
-  refs = [
-    "System.dll",
-    "System.Data.dll",
-    "System.Drawing.dll",
-    "System.Xml.dll",
-    "//common:dotnet",
-    "//remote/common:dotnet",
-    "//remote/client:dotnet",
-    "third_party/csharp/dotnetzip-1.9/Ionic.Zip.Reduced.dll"
-  ],
-  out = "build/dotnet/WebDriver.Firefox.dll",
-  doc = "build/dotnet/WebDriver.Firefox.xml"
-)
-
-dotnet_test(name = "dotnet-test",
-  deps = [
-    "//firefox:dotnet",
-    "//common:dotnet-test"
-  ],
-  srcs = "test/csharp/**/*.cs",
-  refs = [
-    "System.dll",
-    "System.Core.dll",
-    "System.Data.dll",
-    "System.Drawing.dll",
-    "System.Xml.dll",
-    "//common:dotnet",
-    "//common:dotnet-test",
-    "//remote/client:dotnet",
-    "//firefox:dotnet",
-    "third_party/csharp/nunit-2.4.8/bin/nunit.framework.dll"
-  ],
-  out = "build/dotnet/webdriver-firefox-test.dll",
-  files = [
-    "test/csharp/webdriver-firefox-test/webdriver-firefox-test.config",
-    "test/csharp/webdriver-firefox-test/webdriver-firefox-test.nunit"
-  ],
-  project = "webdriver-firefox-test.nunit"
-)
-
 # Temporary rules while we migrate
-#rake_task(name = "firefox_dll",
-#  task_name = "firefox_dll",
-#  out = "build/Win32/Release/webdriver-firefox.dll")
+rake_task(name = "firefox_dll",
+  task_name = "firefox_dll",
+  out = "build/Win32/Release/webdriver-firefox.dll")
 
 rake_task(name = "libwebdriver_firefox_so",
   task_name = "libwebdriver_firefox_so",

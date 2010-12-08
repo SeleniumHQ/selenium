@@ -37,79 +37,10 @@ rake_task(name = "ie_result_type_cpp",
   task_name = "ie_result_type_cpp",
   out = "jobbie/src/cpp/InternetExplorerDriver/IEReturnTypes.h")
 
-visualc_library(name = "ie_win32_dll",
-  deps = [
-    ":atoms",
-    ":ie_result_type_cpp",
-    ":sizzle"
-  ],
-  platform = "Win32",
-  solution = "WebDriver.sln",
-  target = "InternetExplorerDriver",
-  out = "Win32/Release/InternetExplorerDriver.dll"
-)
+rake_task(name = "ie_win32_dll",
+  task_name = "ie_win32_dll",
+  out = "build/Win32/Release/InternetExplorerDriver.dll")
 
-visualc_library(name = "ie_x64_dll",
-  deps = [
-    ":atoms",
-    ":ie_result_type_cpp",
-    ":sizzle"
-  ],
-  platform = "x64",
-  solution = "WebDriver.sln",
-  target = "InternetExplorerDriver",
-  out = "x64/Release/InternetExplorerDriver.dll"
-)
-
-#rake_task(name = "ie_win32_dll",
-#  task_name = "ie_win32_dll",
-#  out = "build/Win32/Release/InternetExplorerDriver.dll")
-
-#rake_task(name = "ie_x64_dll",
-#  task_name = "ie_x64_dll",
-#  out = "build/x64/Release/InternetExplorerDriver.dll")
-
-dotnet_library(name = "dotnet",
-  deps = [
-    "//common:dotnet"
-  ],
-  resources = [
-    {":ie_win32_dll" : "WebDriver.InternetExplorerDriver.x86.dll"},
-    {":ie_x64_dll" : "WebDriver.InternetExplorerDriver.x64.dll"}
-  ],
-  srcs = "src/csharp/**/*.cs",
-  refs = [
-    "System.dll",
-    "System.Data.dll",
-    "System.Drawing.dll",
-    "System.Xml.dll",
-    "//common:dotnet"
-  ],
-  out = "build/dotnet/WebDriver.IE.dll",
-  doc = "build/dotnet/WebDriver.IE.xml"
-)
-
-dotnet_test(name = "dotnet-test",
-  deps = [
-    "//jobbie:dotnet",
-    "//common:dotnet-test"
-  ],
-  srcs = "test/csharp/**/*.cs",
-  refs = [
-    "System.dll",
-    "System.Core.dll",
-    "System.Data.dll",
-    "System.Drawing.dll",
-    "System.Xml.dll",
-    "//common:dotnet",
-    "//common:dotnet-test",
-    "//jobbie:dotnet",
-    "third_party/csharp/nunit-2.4.8/bin/nunit.framework.dll"
-  ],
-  out = "build/dotnet/webdriver-ie-test.dll",
-  files = [
-    "test/csharp/webdriver-ie-test/webdriver-ie-test.config",
-    "test/csharp/webdriver-ie-test/webdriver-ie-test.nunit"
-  ],
-  project = "webdriver-ie-test.nunit"
-)
+rake_task(name = "ie_x64_dll",
+  task_name = "ie_x64_dll",
+  out = "build/x64/Release/InternetExplorerDriver.dll")
