@@ -149,7 +149,7 @@ task :test_rb => [
 ].compact
 
 task :test_py => [
-  ":test_firefox_py"
+  "test_firefox_py"
 ]
 
 task :test_dotnet => [
