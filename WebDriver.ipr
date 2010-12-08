@@ -365,7 +365,7 @@
         <inspection_tool class="InfiniteLoopStatement" enabled="true" level="ERROR" enabled_by_default="true" />
         <inspection_tool class="InfiniteRecursion" enabled="true" level="ERROR" enabled_by_default="true" />
         <inspection_tool class="InnerClassOnInterface" enabled="true" level="WARNING" enabled_by_default="true">
-          <option name="m_ignoreInnerInterfaces" value="false" />
+          <option name="m_ignoreInnerInterfaces" value="true" />
         </inspection_tool>
         <inspection_tool class="InnerClassVariableHidesOuterClassVariable" enabled="true" level="WARNING" enabled_by_default="true">
           <option name="m_ignoreInvisibleFields" value="true" />
@@ -809,6 +809,8 @@
         <root url="jar://$PROJECT_DIR$/third_party/java/sac/sac-1.3.jar!/" />
         <root url="jar://$PROJECT_DIR$/third_party/java/cssparser/cssparser-0.9.5.jar!/" />
         <root url="jar://$PROJECT_DIR$/third_party/java/apache-httpclient/httpclient-4.0.2-src.jar!/" />
+        <root url="jar://$PROJECT_DIR$/third_party/java/commons-lang/commons-lang-2.4.jar!/" />
+        <root url="jar://$PROJECT_DIR$/third_party/java/commons-collections/commons-collections-3.2.1.jar!/" />
       </CLASSES>
       <JAVADOC />
       <SOURCES>
