@@ -43,6 +43,12 @@ function joinExpression(expression) {
 function assignToVariable(type, variable, expression) {
     return "$" + variable + " = " + expression.toString();
 }
+
+//Samit: Fix: Issue 970 Variable reference missing a '$'
+variableName = function(value) {
+	return "$" + value;
+}
+
 function waitFor(expression) {
     return "for ($second = 0; ; $second++) {\n" +
         indent(1) + 'if ($second >= 60) $this->fail("timeout");\n' +
