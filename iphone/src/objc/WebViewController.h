@@ -16,12 +16,13 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
+#import <sqlite3.h>
 #import <UIKit/UIKit.h>
 
 // The WebViewController manages the iWebDriver's WebView.
 @interface WebViewController : UIViewController<UIWebViewDelegate>
 {
- @private
+@private
   // The spec states that the GET message shouldn't return until the new page
   // is loaded. We need to lock the main thread to implement that. That'll
   // happen by polling [view isLoaded] but we can break early if the delegate
@@ -96,5 +97,14 @@
 
 // Calls the same on the main view controller.
 - (void)describeLastAction:(NSString *)status;
+
+// Get geolocation
+- (id)location;
+
+// Set geolocation
+- (void)setLocation:(NSDictionary *)dict;
+
+// Check if browser connection is alive
+- (NSNumber *)isBrowserOnline;
 
 @end

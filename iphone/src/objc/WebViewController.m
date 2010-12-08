@@ -15,6 +15,7 @@
 //  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
+
 #import "WebViewController.h"
 #import "HTTPServerController.h"
 #import "NSException+WebDriver.h"
@@ -27,6 +28,13 @@
 #import "RootViewController.h"
 #import <QuartzCore/QuartzCore.h>
 #import <QuartzCore/CATransaction.h>
+#import "GeoLocation.h"
+#import "errorcodes.h"
+
+static const NSString* kGeoLocationKey = @"location";
+static const NSString* kGeoLongitudeKey = @"longitude";
+static const NSString* kGeoLatitudeKey = @"latitude";
+static const NSString* kGeoAltitudeKey = @"altitude";
 
 @implementation WebViewController
 
@@ -38,27 +46,27 @@
   [super viewDidLoad];
   [[self webView] setScalesPageToFit:NO];
   [[self webView] setDelegate:self];
-
+  
   loadLock_ = [[NSCondition alloc] init];
   lastJSResult_ = nil;
-	
+		
   // Creating a new session if auto-create is enabled
   if ([[RootViewController sharedInstance] isAutoCreateSession]) {
     [[HTTPServerController sharedInstance]
-      httpResponseForQuery:@"/hub/session"
-                    method:@"POST"
-                  withData:[@"{\"browserName\":\"firefox\",\"platform\":\"ANY\","
-                            "\"javascriptEnabled\":false,\"version\":\"\"}"
-                            dataUsingEncoding:NSASCIIStringEncoding]];
+     httpResponseForQuery:@"/hub/session"
+     method:@"POST"
+     withData:[@"{\"browserName\":\"firefox\",\"platform\":\"ANY\","
+               "\"javascriptEnabled\":false,\"version\":\"\"}"
+               dataUsingEncoding:NSASCIIStringEncoding]];
   }
-
+  
   WebDriverPreferences *preferences = [WebDriverPreferences sharedInstance];
-
+  
   cachePolicy_ = [preferences cache_policy];
   NSURLCache *sharedCache = [NSURLCache sharedURLCache];
   [sharedCache setDiskCapacity:[preferences diskCacheCapacity]];
   [sharedCache setMemoryCapacity:[preferences memoryCacheCapacity]];
-
+  
   if ([[preferences mode] isEqualToString: @"Server"]) {
     HTTPServerController* serverController = [HTTPServerController sharedInstance];
     [serverController setViewController:self];
@@ -92,7 +100,9 @@
   return (UIWebView *)[self view];
 }
 
-- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
+- (BOOL)webView:(UIWebView *)webView 
+   shouldStartLoadWithRequest:(NSURLRequest *)request
+   navigationType:(UIWebViewNavigationType)navigationType {
   NSLog(@"shouldStartLoadWithRequest");
   return YES;
 }
@@ -113,21 +123,17 @@
   
   // Page loading errors are ignored because that's what WebDriver expects.
   NSLog(@"*** WebView failed to load URL with error %@", error);
-	if ([error code] == 101) {
-		NSString *failingURLString = [[error userInfo] objectForKey:
-																	@"NSErrorFailingURLStringKey"];
-		// This is an issue only with simulator as it cannot open tel: url.
-		if ([[failingURLString substringToIndex:4] isEqualToString:@"tel:"]) {
-			UIAlertView *alert = [[UIAlertView alloc] 
-														initWithTitle:@"Cannot Open Page" 
-																	message:@"tel: is not supported in simulator" 
-																 delegate:self 
-												cancelButtonTitle:@"OK"
-												otherButtonTitles:nil];	
-			[alert show];	
-			[alert release];
-		}
-	}	
+  if ([error code] == 101) {
+    NSString *failingURLString = [[error userInfo] objectForKey:
+                                  @"NSErrorFailingURLStringKey"];
+    // This is an issue only with simulator due to lack of support for tel: url.
+    if ([[failingURLString substringToIndex:4] isEqualToString:@"tel:"]) {
+      @throw [NSException webDriverExceptionWithMessage:
+              [NSString stringWithFormat:
+               @"tel: url isn't supported in simulator"]
+                                          andStatusCode:EUNHANDLEDERROR];
+    }
+  }
   [loadLock_ signal];
 }
 
@@ -164,7 +170,7 @@
 - (void)performSelectorOnView:(SEL)selector
                    withObject:(id)value
                 waitUntilLoad:(BOOL)wait {
-
+  
   /* The problem with this method is that the UIWebView never gives us any clear
    * indication of whether or not it's loading and if so, when its done. Asking
    * it to load causes it to begin loading sometime later (isLoading returns NO
@@ -181,7 +187,7 @@
   [[self webView] performSelectorOnMainThread:selector
                                    withObject:value
                                 waitUntilDone:YES];
-
+  
   NSLog(@"loading %d", [[self webView] isLoading]);
   
   if (wait)
@@ -249,9 +255,9 @@
   [CATransaction begin];
   [lastJSResult_ release];
   lastJSResult_ = [[[self webView]
-                   stringByEvaluatingJavaScriptFromString:script] retain];
+                    stringByEvaluatingJavaScriptFromString:script] retain];
   [CATransaction commit];
-
+  
   NSLog(@"jsEval: %@ -> %@", script, lastJSResult_);
 }
 
@@ -268,7 +274,7 @@
                                              arguments:argList]
                       autorelease];
   va_end(argList);
-
+  
   [self performSelectorOnMainThread:@selector(jsEvalInternal:)
                          withObject:script
                       waitUntilDone:YES];
@@ -295,7 +301,6 @@
   return result;
 }
 
-
 - (BOOL)testJsExpression:(NSString *)format, ... {
   if (format == nil) {
     [NSException raise:@"invalidArguments" format:@"Invalid arguments for jsEval"];
@@ -317,7 +322,7 @@
 
 - (BOOL)jsElementIsNullOrUndefined:(NSString *)expression {
   NSString *isNull = [self jsEval:@"%@ === null || %@ === undefined",
-                                   expression, expression];
+                      expression, expression];
   return [isNull isEqualToString:@"true"];
 }
 
@@ -327,10 +332,10 @@
 
 - (NSString *)source {
   return [self jsEval:@"(function() {\n"
-                       "  var div = document.createElement('div');\n"
-                       "  div.appendChild(document.documentElement.cloneNode(true));\n"
-                       "  return div.innerHTML;\n"
-                       "})();"];
+          "  var div = document.createElement('div');\n"
+          "  div.appendChild(document.documentElement.cloneNode(true));\n"
+          "  return div.innerHTML;\n"
+          "})();"];
 }
 
 // Takes a screenshot.
@@ -367,7 +372,6 @@
 }
 
 - (BOOL)pointIsViewable:(CGPoint)point {
-//  NSLog(@"bounds: %@", NSStringFromCGRect([[self webView] bounds]));
   return CGRectContainsPoint([self viewableArea], point);
 }
 
@@ -412,7 +416,7 @@
 - (void)addFirebug {
   // This is the http://getfirebug.com/lite.html bookmarklet
   [self jsEval:
-  @"var firebug=document.createElement('script');\r"
+   @"var firebug=document.createElement('script');\r"
    "firebug.setAttribute('src','http://getfirebug.com/releases/lite/1.2/firebug-lite-compressed.js');\r"
    "document.body.appendChild(firebug);\r"
    "(function() {\r"
@@ -422,6 +426,37 @@
    "  setTimeout(arguments.callee);\r"
    "  }\r"
    "})();"];
+}
+
+// Gets the location
+- (NSDictionary *)location {
+  GeoLocation *locStorage = [GeoLocation sharedManager];
+  CLLocationCoordinate2D coordinate = [locStorage getCoordinate];
+  CLLocationDistance altitude = [locStorage getAltitude];
+
+  return [NSDictionary dictionaryWithObjectsAndKeys:
+          [NSDecimalNumber numberWithDouble:coordinate.longitude], kGeoLongitudeKey,
+          [NSDecimalNumber numberWithDouble:coordinate.latitude], kGeoLatitudeKey, 
+          [NSDecimalNumber numberWithFloat:altitude], kGeoAltitudeKey, nil];
+}
+
+// Sets the location
+- (void)setLocation:(NSDictionary *)dict {
+  NSDictionary *values = [dict objectForKey:kGeoLocationKey];
+  NSDecimalNumber *altitude = [values objectForKey:kGeoAltitudeKey];
+  NSDecimalNumber *longitude = [values objectForKey:kGeoLongitudeKey];
+  NSDecimalNumber *latitude = [values objectForKey:kGeoLatitudeKey];
+  
+  GeoLocation *locStorage = [GeoLocation sharedManager];
+  [locStorage setCoordinate:[longitude doubleValue]
+                   latitude:[latitude doubleValue]];
+  [locStorage setAltitude:[altitude doubleValue]];
+}
+
+// Finds out if browser connection is alive
+- (NSNumber *)isBrowserOnline {
+  BOOL onlineState = [[self jsEval:@"navigator.onLine"] isEqualToString:@"true"];
+  return [NSNumber numberWithBool:onlineState];
 }
 
 @end

@@ -11,16 +11,16 @@
 		17D7163E0FE12CC100CC479E /* HTTPPNGResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 17D715550FE107B500CC479E /* HTTPPNGResponse.m */; };
 		1D3623260D0F684500981E51 /* iWebDriverAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D3623250D0F684500981E51 /* iWebDriverAppDelegate.m */; };
 		1D60589B0D05DD56006BFB54 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; };
-		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
-		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
+		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		280E754D0DD40C5E005A515E /* FlipsideView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 280E754A0DD40C5E005A515E /* FlipsideView.xib */; };
 		280E754F0DD40C5E005A515E /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 280E754C0DD40C5E005A515E /* MainWindow.xib */; };
-		288765590DF743DE002DB57D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765580DF743DE002DB57D /* CoreGraphics.framework */; };
+		288765590DF743DE002DB57D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765580DF743DE002DB57D /* CoreGraphics.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		289233A60DB2D0840083E9F9 /* FlipsideView.m in Sources */ = {isa = PBXBuildFile; fileRef = 289233A30DB2D0840083E9F9 /* FlipsideView.m */; };
 		289233AE0DB2D0DB0083E9F9 /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 289233A90DB2D0DB0083E9F9 /* MainViewController.m */; };
 		289233AF0DB2D0DB0083E9F9 /* RootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 289233AB0DB2D0DB0083E9F9 /* RootViewController.m */; };
 		289233B00DB2D0DB0083E9F9 /* FlipsideViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 289233AD0DB2D0DB0083E9F9 /* FlipsideViewController.m */; };
-		642C489F112260150064EB9C /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 642C489E112260150064EB9C /* QuartzCore.framework */; };
+		642C489F112260150064EB9C /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 642C489E112260150064EB9C /* QuartzCore.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		642C48A4112260480064EB9C /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 642C48A3112260480064EB9C /* QuartzCore.framework */; };
 		644F14ED10AB4EF400858ECA /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 644F14EC10AB4EF400858ECA /* Settings.bundle */; };
 		649AB342121D114A007FE128 /* Timeouts.m in Sources */ = {isa = PBXBuildFile; fileRef = 649AB341121D114A007FE128 /* Timeouts.m */; };
@@ -43,12 +43,17 @@
 		73140F831208D9A500A1F920 /* FlipsideView-iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 73140F801208D9A500A1F920 /* FlipsideView-iPad.xib */; };
 		73140F841208D9A500A1F920 /* MainView-iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 73140F811208D9A500A1F920 /* MainView-iPad.xib */; };
 		73140F851208D9A500A1F920 /* MainWindow-iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 73140F821208D9A500A1F920 /* MainWindow-iPad.xib */; };
+		731C4511128BBF4000261249 /* GeoLocation.m in Sources */ = {isa = PBXBuildFile; fileRef = 731C450E128BBF4000261249 /* GeoLocation.m */; };
+		731C4512128BBF4000261249 /* Storage.m in Sources */ = {isa = PBXBuildFile; fileRef = 731C4510128BBF4000261249 /* Storage.m */; };
+		739E3625122D78A8002D739F /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 739E3624122D78A8002D739F /* CoreLocation.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		73A069371288AD010015202B /* ApplicationCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A069361288AD010015202B /* ApplicationCache.m */; };
+		73D14FCD1289B6540074E63B /* Database.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D14FCC1289B6540074E63B /* Database.m */; };
 		8301250C0EFF044900BA9BE6 /* Session.m in Sources */ = {isa = PBXBuildFile; fileRef = 839988650EE515C90074D106 /* Session.m */; };
 		8311AB7A0F44EF0500921B78 /* selenium-icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 8311AB790F44EF0500921B78 /* selenium-icon.png */; };
 		8316A2120EECE0F700FE869C /* HTTPResponse+Utility.m in Sources */ = {isa = PBXBuildFile; fileRef = 8316A2110EECE0F700FE869C /* HTTPResponse+Utility.m */; };
 		8316A2130EECE0F700FE869C /* HTTPResponse+Utility.m in Sources */ = {isa = PBXBuildFile; fileRef = 8316A2110EECE0F700FE869C /* HTTPResponse+Utility.m */; };
 		831962720F27E79F005D1D21 /* UIResponder+SimulateTouch.m in Sources */ = {isa = PBXBuildFile; fileRef = 831962710F27E79F005D1D21 /* UIResponder+SimulateTouch.m */; };
-		831964A60F29692E005D1D21 /* libCocoaHTTPServer.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8319647B0F29686E005D1D21 /* libCocoaHTTPServer.a */; };
+		831964A60F29692E005D1D21 /* libCocoaHTTPServer.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8319647B0F29686E005D1D21 /* libCocoaHTTPServer.a */; settings = {ATTRIBUTES = (Weak, ); }; };
 		833104800F1EB2F7000A38DB /* NSException+WebDriver.m in Sources */ = {isa = PBXBuildFile; fileRef = 8331047F0F1EB2F7000A38DB /* NSException+WebDriver.m */; };
 		835DF5D70F00C65600F3DD80 /* WebDriverResource.m in Sources */ = {isa = PBXBuildFile; fileRef = 835DF5D60F00C65600F3DD80 /* WebDriverResource.m */; };
 		83615D920EEE47940028DAE5 /* ElementStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 83615D910EEE47940028DAE5 /* ElementStore.m */; };
@@ -94,11 +99,11 @@
 		839D645E0F2EB4CB009645BF /* WebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8399865C0EE3A5000074D106 /* WebViewController.m */; };
 		839D645F0F2EB4CC009645BF /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 289233A90DB2D0DB0083E9F9 /* MainViewController.m */; };
 		839D64600F2EB4D0009645BF /* UIResponder+SimulateTouch.m in Sources */ = {isa = PBXBuildFile; fileRef = 831962710F27E79F005D1D21 /* UIResponder+SimulateTouch.m */; };
-		83B927D30EE354060011DCC4 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83B927D20EE354060011DCC4 /* CFNetwork.framework */; };
+		83B927D30EE354060011DCC4 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83B927D20EE354060011DCC4 /* CFNetwork.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		83E5B3830EFF6DB7004AA772 /* HTTPJSONResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 83E5B30F0EFF6749004AA772 /* HTTPJSONResponse.m */; };
 		83E5B3840EFF6DB7004AA772 /* JSONRESTResource.m in Sources */ = {isa = PBXBuildFile; fileRef = 83E5B3110EFF6749004AA772 /* JSONRESTResource.m */; };
 		FD61E6990FE150E5006E1274 /* WebDriverUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = FD61E6980FE150E5006E1274 /* WebDriverUtilities.m */; };
-		FD61E69E0FE151A4006E1274 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = FD61E69D0FE151A4006E1274 /* libsqlite3.dylib */; };
+		FD61E69E0FE151A4006E1274 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = FD61E69D0FE151A4006E1274 /* libsqlite3.dylib */; settings = {ATTRIBUTES = (Weak, ); }; };
 		FD61E6A90FE151D2006E1274 /* WebDriverPreferences.m in Sources */ = {isa = PBXBuildFile; fileRef = FD61E6A60FE151D2006E1274 /* WebDriverPreferences.m */; };
 		FD61E6AA0FE151D2006E1274 /* WebDriverRequestFetcher.m in Sources */ = {isa = PBXBuildFile; fileRef = FD61E6A80FE151D2006E1274 /* WebDriverRequestFetcher.m */; };
 		FD90B657111690D500BE94EA /* NSObject+SBJSON.m in Sources */ = {isa = PBXBuildFile; fileRef = FD90B64C111690D500BE94EA /* NSObject+SBJSON.m */; };
@@ -171,6 +176,15 @@
 		73140F801208D9A500A1F920 /* FlipsideView-iPad.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = "FlipsideView-iPad.xib"; path = "src/objc/FlipsideView-iPad.xib"; sourceTree = "<group>"; };
 		73140F811208D9A500A1F920 /* MainView-iPad.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = "MainView-iPad.xib"; path = "src/objc/MainView-iPad.xib"; sourceTree = "<group>"; };
 		73140F821208D9A500A1F920 /* MainWindow-iPad.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = "MainWindow-iPad.xib"; path = "src/objc/MainWindow-iPad.xib"; sourceTree = "<group>"; };
+		731C450D128BBF4000261249 /* GeoLocation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GeoLocation.h; sourceTree = "<group>"; };
+		731C450E128BBF4000261249 /* GeoLocation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GeoLocation.m; sourceTree = "<group>"; usesTabs = 0; };
+		731C450F128BBF4000261249 /* Storage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Storage.h; sourceTree = "<group>"; };
+		731C4510128BBF4000261249 /* Storage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Storage.m; sourceTree = "<group>"; tabWidth = 1; usesTabs = 0; };
+		739E3624122D78A8002D739F /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
+		73A069351288AD010015202B /* ApplicationCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ApplicationCache.h; sourceTree = "<group>"; };
+		73A069361288AD010015202B /* ApplicationCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ApplicationCache.m; sourceTree = "<group>"; };
+		73D14FCB1289B6540074E63B /* Database.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Database.h; sourceTree = "<group>"; };
+		73D14FCC1289B6540074E63B /* Database.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Database.m; sourceTree = "<group>"; };
 		8311AB790F44EF0500921B78 /* selenium-icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "selenium-icon.png"; sourceTree = "<group>"; };
 		8316A2100EECE0F700FE869C /* HTTPResponse+Utility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "HTTPResponse+Utility.h"; sourceTree = "<group>"; };
 		8316A2110EECE0F700FE869C /* HTTPResponse+Utility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "HTTPResponse+Utility.m"; sourceTree = "<group>"; };
@@ -258,6 +272,7 @@
 				831964A60F29692E005D1D21 /* libCocoaHTTPServer.a in Frameworks */,
 				FD61E69E0FE151A4006E1274 /* libsqlite3.dylib in Frameworks */,
 				642C489F112260150064EB9C /* QuartzCore.framework in Frameworks */,
+				739E3625122D78A8002D739F /* CoreLocation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -387,6 +402,7 @@
 				1DF5F4DF0D08C38300B7A737 /* UIKit.framework */,
 				1D30AB110D05D00D00671497 /* Foundation.framework */,
 				288765580DF743DE002DB57D /* CoreGraphics.framework */,
+				739E3624122D78A8002D739F /* CoreLocation.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -423,6 +439,10 @@
 		838B332C0F1422F600F72BC4 /* REST Service */ = {
 			isa = PBXGroup;
 			children = (
+				731C450D128BBF4000261249 /* GeoLocation.h */,
+				731C450E128BBF4000261249 /* GeoLocation.m */,
+				731C450F128BBF4000261249 /* Storage.h */,
+				731C4510128BBF4000261249 /* Storage.m */,
 				64D8AA411120B94D001649CC /* SessionRoot.h */,
 				64D8AA421120B94D001649CC /* SessionRoot.m */,
 				839988640EE515C90074D106 /* Session.h */,
@@ -443,6 +463,10 @@
 				838B349D0F14630E00F72BC4 /* Element+FindElement.m */,
 				839049330F1ACEFD001A79B6 /* Attribute.h */,
 				839049340F1ACEFD001A79B6 /* Attribute.m */,
+				73A069351288AD010015202B /* ApplicationCache.h */,
+				73A069361288AD010015202B /* ApplicationCache.m */,
+				73D14FCB1289B6540074E63B /* Database.h */,
+				73D14FCC1289B6540074E63B /* Database.m */,
 			);
 			name = "REST Service";
 			sourceTree = "<group>";
@@ -717,6 +741,10 @@
 				64D8AA4F1120B995001649CC /* NSURLRequest+IgnoreSSL.m in Sources */,
 				64D8AA691120B9EC001649CC /* HTTPVirtualDirectory+Remove.m in Sources */,
 				649AB342121D114A007FE128 /* Timeouts.m in Sources */,
+				73A069371288AD010015202B /* ApplicationCache.m in Sources */,
+				73D14FCD1289B6540074E63B /* Database.m in Sources */,
+				731C4511128BBF4000261249 /* GeoLocation.m in Sources */,
+				731C4512128BBF4000261249 /* Storage.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -786,6 +814,8 @@
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				COCOAHTTPSERVER_HEADERS = "\"$(PROJECT_DIR)/lib/buildtime-src/cocoahttpserver/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/usr/local/include\"";
 				CODE_SIGN_ENTITLEMENTS = "";
+				CODE_SIGN_IDENTITY = "Don't Code Sign";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Don't Code Sign";
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -805,7 +835,9 @@
 					"-ObjC",
 				);
 				PRODUCT_NAME = iWebDriver;
-				SDKROOT = iphoneos3.2;
+				PROVISIONING_PROFILE = "";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
+				SDKROOT = iphonesimulator4.0;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALID_ARCHS = i386;
@@ -817,6 +849,8 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CODE_SIGN_IDENTITY = "Don't Code Sign";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Don't Code Sign";
 				COPY_PHASE_STRIP = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = src/objc/iWebDriver_Prefix.pch;
@@ -834,7 +868,9 @@
 					"-ObjC",
 				);
 				PRODUCT_NAME = iWebDriver;
-				SDKROOT = iphoneos3.2;
+				PROVISIONING_PROFILE = "";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
+				SDKROOT = iphonesimulator4.0;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALID_ARCHS = i386;
@@ -845,7 +881,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CODE_SIGN_IDENTITY = "Don't Code Sign";
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -858,7 +895,10 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/../CocoaHTTPServer/build/Debug\"",
 				);
+				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
+					"-framework",
+					CoreLocation,
 					"-framework",
 					Foundation,
 					"-framework",
@@ -866,7 +906,9 @@
 				);
 				PREBINDING = NO;
 				PRODUCT_NAME = Tests;
-				SDKROOT = iphoneos2.2;
+				PROVISIONING_PROFILE = "";
+				SDKROOT = iphoneos3.2;
+				VALID_ARCHS = i386;
 			};
 			name = Debug;
 		};
@@ -874,7 +916,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CODE_SIGN_IDENTITY = "Don't Code Sign";
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
@@ -887,7 +930,10 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/../CocoaHTTPServer/build/Debug\"",
 				);
+				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
+					"-framework",
+					CoreLocation,
 					"-framework",
 					Foundation,
 					"-framework",
@@ -895,7 +941,9 @@
 				);
 				PREBINDING = NO;
 				PRODUCT_NAME = Tests;
-				SDKROOT = iphoneos2.2;
+				PROVISIONING_PROFILE = "";
+				SDKROOT = iphoneos3.2;
+				VALID_ARCHS = i386;
 				ZERO_LINK = NO;
 			};
 			name = Release;
@@ -913,7 +961,7 @@
 				OBJROOT = "$(SYMROOT)";
 				ONLY_ACTIVE_ARCH = NO;
 				PREBINDING = NO;
-				SDKROOT = iphonesimulator3.2;
+				SDKROOT = iphonesimulator4.0;
 				SKIP_INSTALL = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALID_ARCHS = "";
@@ -933,7 +981,7 @@
 				OBJROOT = "$(SYMROOT)";
 				ONLY_ACTIVE_ARCH = NO;
 				PREBINDING = NO;
-				SDKROOT = iphonesimulator3.2;
+				SDKROOT = iphonesimulator4.0;
 				SKIP_INSTALL = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALID_ARCHS = "";

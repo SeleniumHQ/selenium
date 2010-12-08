@@ -29,14 +29,20 @@
 #import "RootViewController.h"
 #import "Session+ExecuteScript.h"
 #import "SessionRoot.h"
+#import "Storage.h"
 #import "Timeouts.h"
 #import "WebDriverResource.h"
 #import "WebDriverResponse.h"
 #import "WebDriverUtilities.h"
 #import "WebViewController.h"
+#import "ApplicationCache.h"
+#import "Database.h"
+
+static NSString* const LOCAL_STORAGE = @"localStorage";
+static NSString* const SESSION_STORAGE = @"sessionStorage";
 
 @implementation Session
-  
+
 @synthesize elementStore = elementStore_;
 @synthesize sessionId = sessionId_;
 @synthesize implicitWait = implicitWait_;
@@ -63,10 +69,10 @@
   
   [self setIndex:[WebDriverResource
                   resourceWithTarget:self
-                  GETAction:@selector(capabilities)
-                  POSTAction:NULL
-                  PUTAction:NULL
-                  DELETEAction:@selector(deleteSession)]];
+                           GETAction:@selector(capabilities)
+                          POSTAction:NULL
+                           PUTAction:NULL
+                        DELETEAction:@selector(deleteSession)]];
   
   // Set the view to be visible. This is ignored.
   [self setResourceToViewMethodGET:@selector(visible)
@@ -121,35 +127,54 @@
                               POST:@selector(addFirebug)
                           withName:@"firebug"];
   
+  // HTML5 Local WebStorage
+  [self setResource:[Storage storageWithSessionId:sessionId_ 
+                                          andType:LOCAL_STORAGE]
+           withName:@"local_storage"];
+  
+  // HTML5 Session WebStorage
+  [self setResource:[Storage storageWithSessionId:sessionId_ 
+                                          andType:SESSION_STORAGE]
+           withName:@"session_storage"];
+  
+  // HTML5 Get and Set GeoLocation
+  [self setResourceToViewMethodGET:@selector(location)
+                              POST:@selector(setLocation:)
+                          withName:@"location"];
+  
+  // HTML5 Database Storage
+  [self setResource:[Database databaseWithSessionId:sessionId_] 
+           withName:@"execute_sql"];
+  
   // Execute JS function with the given body. This takes an optional second
   // argument which is a list of arguments to the function.
   // Executes (function() { $1 }).apply(null, $2);
   WebDriverResource *executeScript =
-      [WebDriverResource resourceWithTarget:self
-                                  GETAction:NULL
-                                 POSTAction:@selector(executeScript:)];
+  [WebDriverResource resourceWithTarget:self
+                              GETAction:NULL
+                             POSTAction:@selector(executeScript:)];
   [executeScript setAllowOptionalArguments:YES];
   [self setResource:executeScript withName:@"execute"];
   
   // /element will be an ElementStore virtual directory. We also forward 
   // /elements to the element store - getting from there returns multiple
   // element results.
-  elementStore_ = [[ElementStore alloc] initWithSession:self];
+  elementStore_ = [[ElementStore alloc] init];
   [self setResource:elementStore_ withName:@"element"];
   [self setResource:[WebDriverResource
                      resourceWithTarget:elementStore_
-                     GETAction:NULL
-                     POSTAction:@selector(findElements:)]
+                              GETAction:NULL
+                             POSTAction:@selector(findElements:)]
            withName:@"elements"];
   
   [self setResource:[Cookie cookieWithSessionId:sessionId_]
            withName:@"cookie"];
-           
+  
   [self setResource:[Timeouts timeoutsForSession:self]
            withName:@"timeouts"];
   
   [self cleanSessionStatus];
-
+  
   return self;
 }
 
@@ -158,16 +183,22 @@
   [WebDriverUtilities cleanCache];
   [WebDriverUtilities cleanDatabases];
 }
-  
+
 - (id)capabilities {
   NSMutableDictionary *caps = [NSMutableDictionary dictionary];
   [caps setObject:@"mobile safari" forKey:@"browserName"];
   [caps setObject:@"MAC" forKey:@"platform"];
   [caps setValue:[NSNumber numberWithBool:YES]
           forKey:@"javascriptEnabled"];
-  [caps setObject:@"1.0" forKey:@"version"];
+  [caps setValue:[NSNumber numberWithBool:YES]
+          forKey:@"webStorageEnabled"];
+  [caps setValue:[NSNumber numberWithBool:YES]
+          forKey:@"databaseEnabled"];
+  [caps setValue:[NSNumber numberWithBool:YES]
+          forKey:@"locationContextEnabled"];
   [caps setValue:[NSNumber numberWithBool:YES]
           forKey:@"takesScreenshot"];
+  [caps setObject:@"1.0" forKey:@"version"];
   return caps;
 }
 
