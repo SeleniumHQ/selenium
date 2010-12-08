@@ -56,13 +56,18 @@ public class WebDriverException extends RuntimeException {
   }
 
   public String getDriverInformation() {
-    for (StackTraceElement e : getStackTrace()) {
+    return "driver.version: " + getDriverName(getStackTrace());
+  }
+
+  public static String getDriverName(StackTraceElement[] stackTraceElements) {
+    String driverName = "unknown";
+    for (StackTraceElement e : stackTraceElements) {
       if (e.getClassName().endsWith("Driver")) {
         String[] bits = e.getClassName().split("\\.");
-        return "driver.version: " + bits[bits.length - 1];
+        driverName = bits[bits.length - 1];
       }
     }
 
-    return "driver.version: unknown";
+    return driverName;
   }
 }
