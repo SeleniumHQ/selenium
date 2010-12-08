@@ -107,21 +107,11 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
     return domAccessor;
   }
   
-  public String getCurrentFrame() {
-    return currentFrame;
-  }
-  
   public String getCurrentUrl() {
-    if ("window".equals(currentFrame)) {
-      return (String) executeScript("return " + currentFrame + ".location.href");
-    }
     return (String) sendIntent(Action.GET_URL);
   }
 
   public String getTitle() {
-    if (!"window".equals(currentFrame)) {
-      return (String) executeScript("return " + currentFrame + ".document.title");
-    }
     return (String) sendIntent(Action.GET_TITLE);
   }
 
@@ -131,8 +121,7 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
 
   public String getPageSource() {
     return (String) executeScript(
-        "return (new XMLSerializer()).serializeToString("
-            + currentFrame + ".document.documentElement);");
+        "return (new XMLSerializer()).serializeToString(document.documentElement);");
   }
 
   public void close() {
@@ -243,7 +232,7 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
     public WebElement activeElement() {
       Object element = executeScript(
         "try {" +
-          "return " + currentFrame + ".document.activeElement;" +
+          "return document.activeElement;" +
         "} catch (err) {" +
         "  return 'failed_' + err;" +
         "}");
@@ -295,7 +284,7 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
     private boolean isFrameNameOrIdValid(String name) {
       return (Boolean) executeScript(
         "try {" +
-           currentFrame + "." + name + ".document;" +
+        "  window." + name + ".document;" +
         "  return true;" +
         "} catch(err) {" +
         "  return false;" +
@@ -305,7 +294,7 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
     private boolean isFrameIndexValid(int index) {
       return (Boolean) executeScript(
         "try {" +
-           currentFrame + ".frames[arguments[0]].document;" +
+        "  window.frames[arguments[0]].document;" +
         "  return true;" +
         "} catch(err) {" +
         "  return false;" +
@@ -368,7 +357,7 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
         .append("}")
         .append("var startTime = new Date().getTime();")
         .append("try {")
-        .append("  var result=(function(){").append(script).append("})(")
+        .append("  var result=(function(){with(win){").append(script).append("}})(")
         .append(getArgsString(isAsync, args)).append(");")
         .append("  if (isAsync) {")
         .append("    timeoutId = win.setTimeout(function() {")
@@ -407,12 +396,14 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
     // TODO(berrada): Extract this as an atom
     return new StringBuilder()
         .append("if (").append(objName).append(" instanceof HTMLElement) {")
-        .append(JavascriptDomAccessor.initCacheJs(currentFrame))
+        .append("with(").append(currentFrame).append(") {")
+        .append(JavascriptDomAccessor.initCacheJs())
         .append(" var result = []; result.push(").append(objName).append(");")
         .append(JavascriptDomAccessor.ADD_TO_CACHE)
         .append(objName).append("='")
         .append(WEBELEMENT_TYPE)
         .append("'+indices;")
+        .append("}")
         .append("} else {")
         .append(objName)
         .append("='{" + TYPE + ":'+JSON.stringify(")

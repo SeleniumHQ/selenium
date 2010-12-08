@@ -111,20 +111,20 @@ public class JavascriptDomAccessor {
     // TODO(berrada): by default do document.getElementById. Check "contains", and only 
 	// fall back to xpath if that fails. Closure has the ordering code (goog.dom, I think)
     String toExecute =
-        initCacheJs(driver.getCurrentFrame()) + 
+        initCacheJs() + 
         CONTEXT_NODE + 
         "var result = [];" +
-        "if (" + driver.getCurrentFrame() + ".document.getElementById) {" +
-        "  var element = " + driver.getCurrentFrame() +".document.getElementById(arguments[0]);" +
+        "if (document.getElementById) {" +
+        "  var element = document.getElementById(arguments[0]);" +
         "  if (element != null) {" +
         "    result.push(element);" +
         "  }" +
         "} else {" +
         installXPathJs() +
-        "  var it = " + driver.getCurrentFrame() +
         // We use 5 for ResultType.ORDERED_NODE_ITERATOR_TYPE. This constant
         // is not defined in the JS API exposed for versions earlier than 2.0.
-        ".document.evaluate('.//*[@id=\\'' + arguments[0] + '\\']', contextNode, null, 5, null);" + 
+        "  var it = document.evaluate('.//*[@id=\\'' + arguments[0] + '\\']', contextNode, null, " +
+            "5, null);" +
         "  var element = it.iterateNext();" +
         "  if (element == null) {" +
         "    return null;" +
@@ -146,14 +146,14 @@ public class JavascriptDomAccessor {
     if (!"0".equals(elementId)) { // nested elements
       return getElementByXPath(".//*[@name='" + using + "']", elementId);
     }
+    @SuppressWarnings({"unchecked"})
     List<Integer> result = (List<Integer>) driver.executeScript(
-        "var element = " + driver.getCurrentFrame() +
-            ".document.getElementsByName(arguments[0])[0];" +
+        "var element = document.getElementsByName(arguments[0])[0];" +
         "var result = [];" +
         "if (element != null && element.length != 0) {" +
         "  result.push(element);" +
         "}" +
-        initCacheJs(driver.getCurrentFrame()) +
+        initCacheJs() +
         ADD_TO_CACHE +
         "return indices;",
         using);
@@ -165,14 +165,14 @@ public class JavascriptDomAccessor {
     if (!"0".equals(elementId)) { // nested elements
       return getElementsByXpath(".//*[@name='" + using + "']", elementId);
     }
+    @SuppressWarnings({"unchecked"})
     List<Integer> result = (List<Integer>) driver.executeScript(
-        "var elements = " + driver.getCurrentFrame() +
-            ".document.getElementsByName(arguments[0]);" +
+        "var elements = document.getElementsByName(arguments[0]);" +
         "var result = [];" +
         "for (var i = 0; i < elements.length; i++) {" +
         "  result.push(elements[i]);" +
         "}" +
-        initCacheJs(driver.getCurrentFrame()) +
+        initCacheJs() +
         ADD_TO_CACHE +
         "return indices;",
         using);
@@ -180,15 +180,16 @@ public class JavascriptDomAccessor {
   }
 
   public WebElement getElementByTagName(String using, String elementId) {
+    @SuppressWarnings({"unchecked"})
     List<Integer> result = (List<Integer>) driver.executeScript(
-        initCacheJs(driver.getCurrentFrame()) +
+        initCacheJs() +
         CONTEXT_NODE +
         "var element = contextNode.getElementsByTagName(arguments[0])[0];" +
         "var result = [];" +
         "if (element != null && element.length != 0) {" +
         "  result.push(element);" +
         "}" +
-        initCacheJs(driver.getCurrentFrame()) +
+        initCacheJs() +
         ADD_TO_CACHE +
         "return indices;",
         using, elementId);
@@ -197,15 +198,16 @@ public class JavascriptDomAccessor {
   }
  
   public List<WebElement> getElementsByTagName(String using, String elementId) {
+    @SuppressWarnings({"unchecked"})
     List<Integer> result = (List<Integer>) driver.executeScript(
-        initCacheJs(driver.getCurrentFrame()) +
+        initCacheJs() +
         CONTEXT_NODE +
         "var elements = contextNode.getElementsByTagName(arguments[0]);" +
         "var result = [];" +
         "for (var i = 0; i < elements.length; i++) {" +
         "    result.push(elements[i]);" +
         "}" +
-        initCacheJs(driver.getCurrentFrame()) +
+        initCacheJs() +
         ADD_TO_CACHE +
         "return indices;",
         using, elementId);
@@ -214,12 +216,11 @@ public class JavascriptDomAccessor {
   
   public WebElement getElementByXPath(String using, String elementId) {
     String toExecute =
-        initCacheJs(driver.getCurrentFrame()) + 
+        initCacheJs() +
         CONTEXT_NODE + 
         installXPathJs() +
         "var result = [];" +
-        "var it = " + driver.getCurrentFrame() + 
-        ".document.evaluate(arguments[0], contextNode, null, 5, null);" + 
+        "var it = document.evaluate(arguments[0], contextNode, null, 5, null);" + 
         "var element = it.iterateNext();" +
         "if (element == null) {" +
         "  return null;" +
@@ -234,11 +235,10 @@ public class JavascriptDomAccessor {
  
   public List<WebElement> getElementsByXpath(String using, String elementId) {
     String toExecute =
-        initCacheJs(driver.getCurrentFrame()) +
+        initCacheJs() +
         CONTEXT_NODE +
         installXPathJs() +
-        "var it = " + driver.getCurrentFrame() +
-            ".document.evaluate(arguments[0], contextNode, null, 5, null);" +
+        "var it = document.evaluate(arguments[0], contextNode, null, 5, null);" +
         "var result = [];" +
         "var element = it.iterateNext();" +
         "while (element) {" +
@@ -252,8 +252,9 @@ public class JavascriptDomAccessor {
   }
  
   public WebElement getElementByLinkText(String using, String elementId) {
+    @SuppressWarnings({"unchecked"})
     List<Integer> result = (List) driver.executeScript(
-        initCacheJs(driver.getCurrentFrame()) +
+        initCacheJs() +
         CONTEXT_NODE +
         "var links = contextNode.getElementsByTagName('a');" +
         "var result = [];" +
@@ -271,8 +272,9 @@ public class JavascriptDomAccessor {
   }
  
   public List<WebElement> getElementsByLinkText(String using, String elementId) {
+    @SuppressWarnings({"unchecked"})
     List<Integer> result = (List<Integer>) driver.executeScript(
-        initCacheJs(driver.getCurrentFrame()) +
+        initCacheJs() +
         CONTEXT_NODE +
         "var links = contextNode.getElementsByTagName('a');" +
         "var result = [];" +
@@ -288,8 +290,9 @@ public class JavascriptDomAccessor {
   }
   
   public WebElement getElementByPartialLinkText(String using, String elementId) {
+    @SuppressWarnings({"unchecked"})
     List<Integer> result = (List<Integer>) driver.executeScript(
-        initCacheJs(driver.getCurrentFrame()) +
+        initCacheJs() +
         CONTEXT_NODE +
         "var links = contextNode.getElementsByTagName('a');" +
         "var result = [];" +
@@ -307,8 +310,9 @@ public class JavascriptDomAccessor {
   }
   
   public List<WebElement> getElementsByPartialLinkText(String using, String elementId) {
+    @SuppressWarnings({"unchecked"})
     List<Integer> result = (List<Integer>) driver.executeScript(
-        initCacheJs(driver.getCurrentFrame()) +
+        initCacheJs() +
         CONTEXT_NODE +
         "var links = contextNode.getElementsByTagName('a');" +
         "var result = [];" +
@@ -325,7 +329,7 @@ public class JavascriptDomAccessor {
   
   public String getText(String elementId) {
     String result = (String)driver.executeScript(
-        initCacheJs(driver.getCurrentFrame()) +
+        initCacheJs() +
         isElementStaleJs() +
         "if (isStale == false) {" +
         "  return element.innerText;" +
@@ -338,7 +342,7 @@ public class JavascriptDomAccessor {
 
   public String getTagName(String elementId) {
     String result = (String) driver.executeScript(
-        initCacheJs(driver.getCurrentFrame()) +
+        initCacheJs() +
         isElementStaleJs() +
         "if (isStale == false) {" +
         "  return element.tagName;" +
@@ -360,7 +364,7 @@ public class JavascriptDomAccessor {
   // you may well need to add the offsets.
   public Point getCoordinate(String elementId) {
     String result = (String)driver.executeScript(
-        initCacheJs(driver.getCurrentFrame()) +
+        initCacheJs() +
         isElementStaleJs() +
         "if (isStale == false) {" +
           getTopLeftCoordinatesJS() +
@@ -374,7 +378,7 @@ public class JavascriptDomAccessor {
   
   public void blur(String elementId) {
     String result = (String) driver.executeScript(
-        initCacheJs(driver.getCurrentFrame()) +
+        initCacheJs() +
         isElementStaleJs() +
         "if (isStale == false) {" +
         "  element.blur();" +
@@ -389,7 +393,7 @@ public class JavascriptDomAccessor {
     // TODO (berrada): This is equivalent to combining the "bot.dom.getProperty"
     // and "bot.dom.getAttribute" atoms.
     Object result = driver.executeScript(
-        initCacheJs(driver.getCurrentFrame()) +
+        initCacheJs() +
         isElementStaleJs() +
         "if (isStale == false) {" +
         "  if (arguments[1] == 'selected' || arguments[1] == 'checked') {" +
@@ -412,7 +416,7 @@ public class JavascriptDomAccessor {
 
   public Point getSize(String elementId) {
     String result = (String) driver.executeScript(
-      initCacheJs(driver.getCurrentFrame()) +
+      initCacheJs() +
       isElementStaleJs() +
       "if (isStale == false) {" +
         ELEMENT_SIZE +
@@ -428,27 +432,27 @@ public class JavascriptDomAccessor {
   }
 
   public void scrollIfNeeded(String elementId) {
-    String result = (String) driver.executeScript(
-        initCacheJs(driver.getCurrentFrame()) +
+    driver.executeScript(
+        initCacheJs() +
         isElementStaleJs() +
         "if (isStale == true) {" +
         "  return '" + STALE + "';" +
         "}" +
-        isDisplayedJs(driver.getCurrentFrame()) +
+        isDisplayedJs() +
         "if (isDisplayed == false) {" +
           "return '" + NOT_VISIBLE + "';" +
         "}" +
         getTopLeftCoordinatesJS() +
         "var xScroll = 0;" +
         "var yScroll = 0;" +
-        "if (topLeftX < 0 || topLeftX > " + driver.getCurrentFrame() + ".innerWidth) {" +
+        "if (topLeftX < 0 || topLeftX > window.innerWidth) {" +
         "  xScroll = topLeftX - 20;" + // scroll horizontally
         "}" +
-        "if (topLeftY < 0 || topLeftY > " + driver.getCurrentFrame() + ".innerHeight) {" +
+        "if (topLeftY < 0 || topLeftY > window.innerHeight) {" +
         "  yScroll = topLeftY - 20;" + // scroll vertically
         "}" +
         "if (xScroll != 0 || yScroll != 0) {" +
-          driver.getCurrentFrame() + ".scroll(xScroll, yScroll);" +
+        "  window.scroll(xScroll, yScroll);" +
         "}", elementId);
   }
   
@@ -460,12 +464,12 @@ public class JavascriptDomAccessor {
    */
   public Point getCenterCoordinate(String elementId) {
     String result = (String) driver.executeScript(
-      initCacheJs(driver.getCurrentFrame()) +
+      initCacheJs() +
       isElementStaleJs() +
       "if (isStale == true) {" +
       "  return '" + STALE + "';" +
       "}" +
-      isDisplayedJs(driver.getCurrentFrame()) +
+      isDisplayedJs() +
       "if (isDisplayed == false) {" +
         "return '" + NOT_VISIBLE + "';" +
       "}" +
@@ -487,13 +491,13 @@ public class JavascriptDomAccessor {
         "    false, false, false, false, 0, element);" +
         "element.dispatchEvent(event);" +
         "}" +
-        "var doc = " + driver.getCurrentFrame() + ".document.documentElement;" +
+        "var doc = document.documentElement;" +
         "if (arguments[0] in doc.androiddriver_elements) {" +
         "  var element = doc.androiddriver_elements[arguments[0]];" +
         "  triggerMouseEvent(element, 'mouseover');" +
         "  triggerMouseEvent(element, 'mousemove');" +
         "  triggerMouseEvent(element, 'mousedown');" +
-        "  " + driver.getCurrentFrame() + ".document.title = 'checking focus';" +
+        "  document.title = 'checking focus';" +
         "  if (element.ownerDocument.activeElement != element) {" +
         "    if (element.ownerDocument.activeElement) {" +
         "      element.ownerDocument.activeElement.blur();" +
@@ -508,10 +512,10 @@ public class JavascriptDomAccessor {
   
   public void submit(String elementId) {
     driver.executeScript(
-        initCacheJs(driver.getCurrentFrame()) +
+        initCacheJs() +
         isElementStaleJs() +
         "if (isStale == false) {" +
-        "  var doc = " + driver.getCurrentFrame() + ".document.documentElement;" +
+        "  var doc = document.documentElement;" +
         "  if (arguments[0] in doc.androiddriver_elements) {" +
         "    var current = doc.androiddriver_elements[arguments[0]];" +
         "    while (current && current != element.ownerDocument.body) {" +
@@ -532,12 +536,12 @@ public class JavascriptDomAccessor {
   
   public void setSelected(String elementId) {
     String result = (String)driver.executeScript(
-        initCacheJs(driver.getCurrentFrame()) +
+        initCacheJs() +
         isElementStaleJs() +
         "if (isStale == true) {" +
         "  return '" + STALE + "';" +
         "}" +
-        isDisplayedJs(driver.getCurrentFrame()) +
+        isDisplayedJs() +
         "if (isDisplayed == false) {" +
         "  return '" + NOT_VISIBLE + "';" +
         "} else if (element.disabled == true) {" +
@@ -567,7 +571,7 @@ public class JavascriptDomAccessor {
   
   public boolean isSelected(String elementId) {
     Object result = driver.executeScript(
-        initCacheJs(driver.getCurrentFrame()) +
+        initCacheJs() +
         isElementStaleJs() +
         "if (isStale == false) {" +
           IS_SELECTED +
@@ -582,10 +586,10 @@ public class JavascriptDomAccessor {
 
   public boolean toggle(String elementId) {
     Object result = driver.executeScript(
-        initCacheJs(driver.getCurrentFrame()) +
+        initCacheJs() +
         isElementStaleJs() +
         "if (isStale == false) {" +
-          isDisplayedJs(driver.getCurrentFrame()) +
+          isDisplayedJs() +
         "  if (isDisplayed == false) {" +
         "    return '" + NOT_VISIBLE + "';" +
         "  }" +
@@ -608,10 +612,10 @@ public class JavascriptDomAccessor {
   
   public boolean isDisplayed(String elementId) {
     Object result = driver.executeScript(
-        initCacheJs(driver.getCurrentFrame()) +
+        initCacheJs() +
         isElementStaleJs() +
         "if (isStale == false) {" +
-          isDisplayedJs(driver.getCurrentFrame()) +
+          isDisplayedJs() +
           "return isDisplayed;" +
         "}" +
         "return '" + STALE + "';",
@@ -622,15 +626,14 @@ public class JavascriptDomAccessor {
 
   public String getValueOfCssProperty(String using, boolean computedStyle, String elementId) {
     String result = (String) driver.executeScript(
-        initCacheJs(driver.getCurrentFrame()) +
+        initCacheJs() +
         isElementStaleJs() +
         "if (isStale == false) {" +
         (computedStyle ?
         ("  if (element.currentStyle) " +
          "    return element.currentStyle[arguments[1]]; " +
-         "  else if (" + driver.getCurrentFrame() + ".getComputedStyle) " +
-         "    return " + driver.getCurrentFrame() +
-                  ".document.defaultView.getComputedStyle(element, null)" +
+         "  else if (window.getComputedStyle) " +
+         "    return window.document.defaultView.getComputedStyle(element, null)" +
                   ".getPropertyValue(arguments[1]); ")
          :
          "  return element.style." + using + ";") +
@@ -640,17 +643,18 @@ public class JavascriptDomAccessor {
     throwExceptionIfFailed(result);
     return result;
   }
-  
+
   /**
-   * Javascript code to be injected in the webview to initialise the cache.
+   * JavaScript code to be injected in the webview to initialise the cache for
+   * the window in whose context the script will execute.
    */
-  public static String initCacheJs(String currentFrame) {
+  public static String initCacheJs() {
     return
-        "var doc = " + currentFrame + ".document.documentElement;" +
+        "var doc = document.documentElement;" +
         "if (!doc.androiddriver_elements) {" +
         "  doc.androiddriver_elements = {};" +
         "  doc.androiddriver_next_id = 0;" +
-        "  doc.androiddriver_elements[0] = " + currentFrame + ".document;" +
+        "  doc.androiddriver_elements[0] = document;" +
         "}";
   }
 
@@ -664,7 +668,10 @@ public class JavascriptDomAccessor {
     // then it includes the actual xpath library. It calls
     // window.install() to install it.
     return
-        "if (!" + driver.getCurrentFrame() + ".document.evaluate) {" +
+        "if (!document.evaluate) {" +
+        "  var currentWindow = window" +
+        // We need to run the installation code in the main context
+        "  with (window.top) {" +
         "  try {" +
         "    var body = document.getElementsByTagName('body')[0];" +
         "    if (body == undefined) {" +
@@ -682,13 +689,13 @@ public class JavascriptDomAccessor {
         "    if (!window.install) {" +
         "      return '" + FAILED + "_window.install undefined!'" +
         "    }" +
-        "    window.install(" + driver.getCurrentFrame() + ");" +
-        "    if (!" + driver.getCurrentFrame() + ".document.evaluate) {" +
-        "      return '" + FAILED + "_" + driver.getCurrentFrame() +
-                   "' + '.document.evaluate undefined!'};" +
+        "    window.install(currentWindow);" +
+        "    if (!currentWindow.document.evaluate) {" +
+        "      return '" + FAILED + "_document.evaluate undefined!'};" +
         "  } catch (error) {" +
         "    return '" + FAILED + "_' + error;" +
         "  }" +
+        "  }" +  // with(window.top)
         "}";
   }
 
@@ -698,7 +705,7 @@ public class JavascriptDomAccessor {
   private String isElementStaleJs() {
     return
         "var isStale = false;" +
-        "var doc = " + driver.getCurrentFrame() + ".document.documentElement;" +
+        "var doc = document.documentElement;" +
         "if (arguments[0] in doc.androiddriver_elements) {" +
         "  var element = doc.androiddriver_elements[arguments[0]];" +
         "  if (!element) {" +
@@ -729,10 +736,10 @@ public class JavascriptDomAccessor {
         "}";
   }
   
-  private static String isDisplayedJs(String currentFrame) {
+  private static String isDisplayedJs() {
     return 
         "var isDisplayed = true;" +
-        "var body = " + currentFrame + ".document.body; " +
+        "var body = document.body; " +
         "var parent = element;" +
         "while(parent && parent!= body) {" +
         "  if((parent.style && (parent.style.display == 'none'" +
