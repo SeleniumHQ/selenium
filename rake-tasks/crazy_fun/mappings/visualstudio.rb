@@ -127,20 +127,23 @@ module CrazyFunVisualC
       desc_path = args[:out].gsub("/", Platform.dir_separator)
       desc "Build #{desc_path}"
 
-      if !msbuild_installed?
-        copy_prebuilt_dll(fun, args[:out])
-        return
-      end
-
       task_name = task_name(dir, args[:name])
-      target_task = msbuild task_name do |msb|
-        puts "Compiling: #{desc_path}"
-        msb.properties :configuration => :Release, :platform => args[:platform]
-        msb.targets args[:target]
-        msb.solution = "WebDriver.sln"
-        msb.use :net35
-        msb.parameters "/nologo"
-        msb.verbosity = "quiet"
+
+      if !msbuild_installed?
+         # overwrite the msbuild task with one that just copies prebuilts
+         target_task = task task_name do
+           copy_prebuilt_dll(fun, args[:out])
+        end
+      else
+        target_task = msbuild task_name do |msb|
+          puts "Compiling: #{desc_path}"
+          msb.use :net35
+          msb.properties :configuration => :Release, :platform => args[:platform]
+          msb.targets args[:target]
+          msb.solution = "WebDriver.sln"
+          msb.parameters "/nologo"
+          msb.verbosity = "quiet"
+        end
       end
 
       target_task.out = full_path
@@ -153,7 +156,7 @@ module CrazyFunVisualC
       src = fun.find_prebuilt(out)
 
       mkdir_p File.dirname(full_out_path)
-      puts "Falling back to #{src}"
+      puts "Falling back to copy of: #{src}"
       cp src, full_out_path
     end
   end
