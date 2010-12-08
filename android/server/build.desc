@@ -11,7 +11,7 @@ java_library(name = "server",
   ],
   deps = [
     ":r",
-    "//remote/server",
+    "//remote/server:server_lite",
     "//third_party/java/android",
     "//third_party/java/jetty",
     "//third_party/java/guava-libraries",
