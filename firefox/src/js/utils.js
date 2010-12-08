@@ -1100,10 +1100,16 @@ Utils.installWindowCloseListener = function (respond) {
 
 Utils.installClickListener = function(respond, WebLoadingListener) {
   var browser = respond.session.getBrowser();
+  var currentWindow = respond.session.getWindow()
 
-  var clickListener = new WebLoadingListener(browser, function(event) {
-    alreadyReplied = true;
+  var clickListener = new WebLoadingListener(browser, function(webProgress) {
     Logger.dumpn("New page loading.");
+    if (webProgress.DOMWindow != currentWindow
+        && webProgress.DOMWindow == browser.contentWindow) {
+      Logger.dumpn("Detected page load in top window; changing session focus from " +
+                   "frame to new top window.");
+      respond.session.setWindow(browser.contentWindow);
+    }
     respond.send();
   });
 

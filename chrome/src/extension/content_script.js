@@ -7,6 +7,7 @@ ChromeDriverContentScript = {};
 
 ChromeDriverContentScript.internalElementArray = [];
 ChromeDriverContentScript.port = null;
+// TODO(jleyba): Doesn't look like this is needed anymore.
 ChromeDriverContentScript.currentDocument = window.document;
 ChromeDriverContentScript.injectedEmbedElement = null;
 //Record this for async calls (execute), so returner knows what to return
@@ -20,9 +21,8 @@ if (ChromeDriverContentScript.currentDocument.location != "about:blank") {
   //we're on about:blank
   ChromeDriverContentScript.port = chrome.extension.connect({name: window.name});
   ChromeDriverContentScript.port.onMessage.addListener(parsePortMessage);
-  var isFrameset = (ChromeDriverContentScript.currentDocument.getElementsByTagName("frameset").length > 0);
   ChromeDriverContentScript.port.postMessage({response: {response: "newTabInformation",
-      value: {statusCode: "no-op", isFrameset: isFrameset, frameCount: window.frames.length,
+      value: {statusCode: "no-op", frameCount: window.frames.length,
       portName: ChromeDriverContentScript.port.name, isDefaultContent: (window == window.top)}}, sequenceNumber: -1});
 }
 
@@ -144,10 +144,6 @@ function parsePortMessage(message) {
       response.value = {statusCode: 0, value: element.value};
       response.wait = false;
       break;
-    case "getFrameNameFromIndex":
-      //TODO(danielwh): Do this by simply looking it up in window.frames when Chrome is fixed.  Track: crbug.com 20773
-      getFrameNameFromIndex(message.request.index);
-      break;
     case "getPageSource":
       response.value = getSource();
       response.wait = false;
@@ -210,8 +206,9 @@ function parsePortMessage(message) {
       response.value = {statusCode: 0, value: {'ELEMENT':addElementToInternalArray(ChromeDriverContentScript.currentDocument.activeElement).toString()}};
       response.wait = false;
       break;
-    case "switchToNamedIFrameIfOneExists":
-      response.value = switchToNamedIFrameIfOneExists(message.request.name);
+    case "switchToFrame":
+      switchToFrame(message.request.locator);
+      response.value = null;
       response.wait = false;
       break;
     case "submitElement":
@@ -747,17 +744,6 @@ function getStyle(element, style) {
   return rgbToRRGGBB(value);
 }
 
-function switchToNamedIFrameIfOneExists(name) {
-  var iframes = ChromeDriverContentScript.currentDocument.getElementsByTagName("iframe");
-  for (var i = 0; i < iframes.length; ++i) {
-    if (iframes[i].name == name || iframes[i].id == name) {
-      ChromeDriverContentScript.currentDocument = iframes[i].contentDocument;
-      return {statusCode: 0};
-    }
-  }
-  return {statusCode: 8, value: {message: 'Could not find iframe to switch to by name:' + name}};
-}
-
 function sniffForMetaRedirects() {
   for (var i = 0; i < ChromeDriverContentScript.currentDocument.getElementsByTagName("meta").length; ++i) {
     if (ChromeDriverContentScript.currentDocument.getElementsByTagName("meta")[i].hasAttribute("http-equiv") &&
@@ -974,41 +960,160 @@ function returnFromJavascriptInPage(e) {
   });
 }
 
-function getFrameNameFromIndex(index) {
-  var scriptTag = ChromeDriverContentScript.currentDocument.createElement('script');
-  scriptTag.innerText = 'var e = document.createEvent("MutationEvent");' +
-                        'try {' +
-                          'var val = window.frames[' + index + '].name;' +
-                          'e.initMutationEvent("DOMAttrModified", true, false, null, null, val, null, 0);' +
-                        '} catch (exn) {' +
-                          //Fire mutation event with prevValue set to EXCEPTION to indicate an error in the script
-                          'e.initMutationEvent("DOMAttrModified", true, false, null, "EXCEPTION", null, null, 0);' +
-                        '}' +
-                        'document.getElementsByTagName("script")[document.getElementsByTagName("script").length - 1].dispatchEvent(e);' +
-                        'document.getElementsByTagName("html")[0].removeChild(document.getElementsByTagName("script")[document.getElementsByTagName("script").length - 1]);';
-  scriptTag.addEventListener('DOMAttrModified', returnFromGetFrameNameFromIndexJavascriptInPage, false);
-  try {
-    if (ChromeDriverContentScript.currentDocument.getElementsByTagName("frameset").length > 0) {
-      ChromeDriverContentScript.currentDocument.getElementsByTagName("frameset")[0].appendChild(scriptTag);
-    } else {
-      ChromeDriverContentScript.currentDocument.getElementsByTagName("html")[0].appendChild(scriptTag);
-    }
-  } catch (e) {
-    ChromeDriverContentScript.port.postMessage({sequenceNumber: ChromeDriverContentScript.currentSequenceNumber,
-        response: {response: "getFrameNameFromIndex", value: {statusCode: 8,
-        message: "Page seemed not to be a frameset.  Couldn't find frame"}}});
-  }
-}
+function switchToFrame(id) {
+  // We use the fact that Function.prototype.toString() will de-compile this to
+  // its source code so we can inject it into the page in a SCRIPT tag. We have
+  // to execute this within the context of the page since our content script
+  // does not share a JavaScript context with the current page (but we do share
+  // a DOM).
+  var findFrame = function(id) {
+    function findFrameByXPath(xpath) {
+      console.info('Searching for frame element by XPath: ', xpath);
+      var result = document.evaluate(xpath, document, null,
+          XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
 
-function returnFromGetFrameNameFromIndexJavascriptInPage(e) {
-  if (e.prevValue == "EXCEPTION") {
-    ChromeDriverContentScript.port.postMessage({sequenceNumber: ChromeDriverContentScript.currentSequenceNumber,
-        response: {response: "getFrameNameFromIndex", value: {statusCode: 8,
-        value: {message: "No such frame"}}}});
-  } else {
-    ChromeDriverContentScript.port.postMessage({sequenceNumber: ChromeDriverContentScript.currentSequenceNumber,
-        response: {response: "getFrameNameFromIndex", value: {statusCode: "no-op",
-        name: e.newValue}}});
+      if (!result) {
+        throw Error('Failed to find an element: ' + xpath);
+      }
+
+      console.debug('Found frame element ', result);
+      if (result.nodeType != 1 || !/^i?frame$/i.test(result.tagName)) {
+        throw Error('Element is not a frame: ' + result);
+      }
+
+      for (var i = 0; i < window.frames.length; i++) {
+        if (result.contentWindow == window.frames[i]) {
+          console.info('Frame index is: ', i);
+          return i;
+        }
+      }
+    }
+
+    var e = document.createEvent('MutationEvent');
+    var status, index;
+    try {
+      if (typeof id == 'number') {
+        if (id > -1 && id < window.frames.length) {
+          index = id;
+        }
+      } else if (typeof id == 'string') {
+        // We could have a frame name, or an element ID, so use an XPath
+        // expression to find all of the (i)frames on the page. We cannot
+        // iterate over window.frames since we need to check the frame name,
+        // and if the frame is in a different domain, the check will fail.
+
+        // Translate tag name from upper to lower. We only care about frames,
+        // so only translate those characters...
+        var toLower = 'translate(name(), "IFRAME", "iframe")';
+
+        id = JSON.stringify(id);
+        var xpath = [
+          '//*[(', toLower, ' = "frame" or ', toLower, ' = "iframe")',
+          // id was wrapped with JSON.stringify when this function was
+          // compiled, so it will be properly quoted for us.
+          ' and (@name=', id, ' or @id=', id, ')]'
+        ].join('');
+        index = findFrameByXPath(xpath);
+
+      // The only other value frame identifier is a DOM element locator.
+      // Technically, null signals window.top, but that should be handled
+      // by the background page directly.
+      } else if (id && typeof id == 'object' &&
+                 typeof id.ELEMENT == 'string') {
+        index = findFrameByXPath(id.ELEMENT);
+      } else {
+        throw Error('Unsupported frame locator: ' + JSON.stringify(id));
+      }
+
+      if (typeof index == 'number' && index >= 0) {
+        console.info('Located frame at index ' + index);
+        status = 'SUCCESS';
+      } else {
+        // Shouldn't get here.
+        status = 'EXCEPTION';
+        index = 'Failed to find frame';
+      }
+      console.assert(index > -1, 'Failed to find frame');
+    } catch (ex) {
+      console.error('Failed to find frame: ' + ex.stack);
+      status = 'EXCEPTION';
+      index = ex.message;
+    }
+    e.initMutationEvent('DOMAttrModified', true, false, null,
+        status, index, null, 0);
+
+    var scriptTags = document.getElementsByTagName('script');
+    var scriptTag = scriptTags[scriptTags.length - 1];
+    scriptTag.dispatchEvent(e);
+    scriptTag.parentNode.removeChild(scriptTag);
+  };
+
+  if (id && typeof id == 'object' && 'ELEMENT' in id) {
+    console.info('Switching to a frame by a previously located element;' +
+                 ' fetching element: ' + id.ELEMENT);
+    try {
+      var element = internalGetElement(id.ELEMENT);
+      id = {ELEMENT: getXPathOfElement(element)};
+    } catch (ex) {
+      console.error('Error looking up element ', ex.stack);
+      ChromeDriverContentScript.port.postMessage({
+        response: {
+          statusCode: 10,
+          message: (ex.message || ex.toString())
+        },
+        sequenceNumber: ChromeDriverContentScript.currentSequenceNumber
+      });
+      return;
+    }
+  }
+
+  // Stringify the frame locator so it is properly quoted for injection.
+  id = JSON.stringify(id);
+  console.info('Looking up frame: ' + id);
+  var scriptTag = ChromeDriverContentScript.currentDocument.createElement('script');
+  scriptTag.innerHTML = ['(', findFrame, ')(', id, ');'].join('');
+  scriptTag.addEventListener('DOMAttrModified', function(e) {
+    if (e.prevValue == 'EXCEPTION') {
+      ChromeDriverContentScript.port.postMessage({
+        sequenceNumber: ChromeDriverContentScript.currentSequenceNumber,
+        response: {
+          response: 'switchToFrame',
+          value: {
+            statusCode: 8,
+            value: {
+              message: e.newValue
+            }
+          }
+        }
+      });
+    } else {
+      // Found our frame - tell it to activate itself with the background page.
+      // The sendFrameMessage function is defined in content_prescript.js which
+      // is loaded at document_start.
+      sendFrameMessage(parseInt(e.newValue), {
+        sequenceNumber: ChromeDriverContentScript.currentSequenceNumber,
+        request: 'activatePort'
+      });
+    }
+  }, false);
+
+  console.info('Injecting script:\n' + scriptTag.innerText);
+  try {
+    ChromeDriverContentScript.currentDocument.documentElement.appendChild(scriptTag);
+  } catch (ex) {
+    console.error('Error injecting script', ex.stack);
+    ChromeDriverContentScript.port.postMessage({
+      sequenceNumber: ChromeDriverContentScript.currentSequenceNumber,
+      response: {
+        response: 'switchToFrame',
+        value: {
+          statusCode: 8,
+          value: {
+            message: 'Error locating frame: ' + ex.stack
+          }
+        }
+      }
+    });
   }
 }
 

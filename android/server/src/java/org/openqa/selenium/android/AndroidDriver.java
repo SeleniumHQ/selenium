@@ -17,18 +17,23 @@ limitations under the License.
 
 package org.openqa.selenium.android;
 
-import com.google.common.base.Splitter;
-import com.google.common.collect.Sets;
-
-import android.content.Context;
-import android.content.Intent;
-import android.provider.Settings;
-import android.util.Log;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.openqa.selenium.*;
+import org.openqa.selenium.Alert;
+import org.openqa.selenium.By;
+import org.openqa.selenium.Cookie;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.NoSuchFrameException;
+import org.openqa.selenium.NoSuchWindowException;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.Rotatable;
+import org.openqa.selenium.ScreenOrientation;
+import org.openqa.selenium.SearchContext;
+import org.openqa.selenium.Speed;
+import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.android.intents.Action;
 import org.openqa.selenium.android.intents.FutureExecutor;
 import org.openqa.selenium.android.intents.IntentReceiver;
@@ -39,7 +44,22 @@ import org.openqa.selenium.android.sessions.SessionCookieManager;
 import org.openqa.selenium.android.util.JsUtil;
 import org.openqa.selenium.android.util.SimpleTimer;
 import org.openqa.selenium.html5.BrowserConnection;
-import org.openqa.selenium.internal.*;
+import org.openqa.selenium.internal.Base64Encoder;
+import org.openqa.selenium.internal.FindsById;
+import org.openqa.selenium.internal.FindsByLinkText;
+import org.openqa.selenium.internal.FindsByName;
+import org.openqa.selenium.internal.FindsByTagName;
+import org.openqa.selenium.internal.FindsByXPath;
+
+import android.content.Context;
+import android.content.Intent;
+import android.provider.Settings;
+import android.util.Log;
+import com.google.common.base.Splitter;
+import com.google.common.collect.Sets;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -263,6 +283,37 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
       return AndroidDriver.this;
     }
 
+    public WebDriver frame(WebElement frameElement) {
+      String tagName = frameElement.getTagName();
+      if (!tagName.equalsIgnoreCase("iframe") && !tagName.equalsIgnoreCase("frame")) {
+        throw new NoSuchFrameException(
+            "Element is not a frame element: " + frameElement.getTagName());
+      }
+
+      int index = (Integer) executeScript(
+          "var element = arguments[0];" +
+          "var targetWindow = element.contentWindow;" +
+          "if (!targetWindow) { throw Error('No such window!'); }" +
+          // NOTE: this script executes in the context of the current frame, so
+          // window === currentFrame
+          "var numFrames = window.frames.length;" +
+          "for (var i = 0; i < numFrames; i++) {" +
+          "  if (targetWindow == window.frames[i]) {" +
+          "    return i;" +
+          "  }" +
+          "}" +
+          "return -1;",
+          frameElement);
+
+      if (index < 0) {
+        throw new NoSuchFrameException("Unable to locate frame: " + tagName
+            + "; current window: " + currentFrame);
+      }
+
+      currentFrame += ".frames[" + index + "]";
+      return AndroidDriver.this;
+    }
+
     public WebDriver window(String nameOrHandle) {
       boolean success = (Boolean) sendIntent(Action.SWITCH_TO_WINDOW, nameOrHandle);
       if (!success) {
@@ -274,26 +325,46 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
     private void setCurrentFrame(String frameNameOrId) {
       if (frameNameOrId == null) {
         currentFrame = "window";
-      } else if (isFrameNameOrIdValid(frameNameOrId)) {
-        currentFrame += "." + frameNameOrId;
       } else {
-        throw new NoSuchFrameException("Frame not found: " + frameNameOrId);
+        currentFrame += ".frames[" + getIndexForFrameWithNameOrId(frameNameOrId) + "]";
       }
     }
-    
-    private boolean isFrameNameOrIdValid(String name) {
-      return (Boolean) executeScript(
-        "try {" +
-        "  window." + name + ".document;" +
-        "  return true;" +
-        "} catch(err) {" +
-        "  return false;" +
-        "}");
+
+    private int getIndexForFrameWithNameOrId(String name) {
+      int index = (Integer) executeScript(
+          "try {" +
+          "  var foundById = null;" +
+          // NOTE: this script executes in the context of the current frame, so
+          // window === currentFrame
+          "  var frames = window.frames;" +
+          "  var numFrames = frames.length;" +
+          "  for (var i = 0; i < numFrames; i++) {" +
+          "    if (frames[i].name == arguments[0]) {" +
+          "      return i;" +
+          "    } else if (null == foundById && frames[i].frameElement.id == arguments[0]) {" +
+          "      foundById = i;" +
+          "    }" +
+          "  }" +
+          "  if (foundById != null) {" +
+          "    return foundById;" +
+          "  }" +
+          "} catch (ignored) {" +
+          "}" +
+          "return -1;",
+          name);
+
+      if (index < 0) {
+        throw new NoSuchFrameException("Frame not found: " + name);
+      }
+
+      return index;
     }
-    
+
     private boolean isFrameIndexValid(int index) {
       return (Boolean) executeScript(
         "try {" +
+        // NOTE: this script executes in the context of the current frame, so
+        // window === currentFrame
         "  window.frames[arguments[0]].document;" +
         "  return true;" +
         "} catch(err) {" +

@@ -17,11 +17,15 @@ limitations under the License.
 
 package org.openqa.selenium.internal.selenesedriver;
 
-import java.util.Map;
+import org.openqa.selenium.NoSuchFrameException;
+import org.openqa.selenium.WebDriverException;
 
 import com.thoughtworks.selenium.Selenium;
 import com.thoughtworks.selenium.SeleniumException;
-import org.openqa.selenium.NoSuchFrameException;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.util.Map;
 
 public class SwitchToFrame implements SeleneseFunction<Void> {
   public Void apply(Selenium selenium, Map<String, ?> args) {
@@ -32,26 +36,36 @@ public class SwitchToFrame implements SeleneseFunction<Void> {
       return null;
     }
 
-    selenium.selectFrame("relative=top");
-    String allFrames = String.valueOf(id);
-
-    for (String subframe : allFrames.split("\\.")) {
-      try {
-        actuallySwitchFrame(selenium, subframe);
-      } catch (SeleniumException e) {
-        throw new NoSuchFrameException(e.getMessage(), e);
+    try {
+      if (id instanceof Number) {
+        selenium.selectFrame("index=" + ((Number) id).longValue());
+      } else if (id instanceof String) {
+        selenium.selectFrame((String) id);
+      } else if (id instanceof Map) {
+        @SuppressWarnings({"unchecked"})
+        String locator = getLocator((Map<String, ?>) id);
+        selenium.selectFrame(locator);
+      } else {
+        throw new IllegalArgumentException("Illegal frame switch target: (" +
+            id.getClass().getName() + ") " + id);
       }
+    } catch (SeleniumException e) {
+      throw new NoSuchFrameException(e.getMessage(), e);
     }
 
     return null;
   }
 
-  private void actuallySwitchFrame(Selenium selenium, String subframe) {
-    try {
-      int frameNumber = Integer.parseInt(subframe);
-      selenium.selectFrame("index=" + frameNumber);
-    } catch (NumberFormatException e) {
-      selenium.selectFrame(subframe);
+  private String getLocator(Map<String, ?> elementMap) {
+    if (elementMap.containsKey("ELEMENT")) {
+      try {
+        return URLDecoder.decode((String) elementMap.get("ELEMENT"), "utf-8");
+      } catch (UnsupportedEncodingException e) {
+        // Should never happen.
+        throw new WebDriverException(e);
+      }
     }
+    // Should never happen
+    throw new IllegalArgumentException("Map does not define a WebElement");
   }
 }

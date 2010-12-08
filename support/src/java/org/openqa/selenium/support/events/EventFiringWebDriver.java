@@ -537,6 +537,10 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
       return targetLocator.frame(frameName);
     }
 
+    public WebDriver frame(WebElement frameElement) {
+      return targetLocator.frame(frameElement);
+    }
+
     public WebDriver window(String windowName) {
       return targetLocator.window(windowName);
     }

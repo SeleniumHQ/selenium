@@ -111,6 +111,12 @@ public class IPhoneDriver extends RemoteWebDriver implements TakesScreenshot {
     		  "Frame switching is not supported on the iPhone");
     }
 
+    public WebDriver frame(WebElement frameElement) {
+      // is this even possible to do on the iphone?
+      throw new UnsupportedOperationException(
+    		  "Frame switching is not supported on the iPhone");
+    }
+
     public WebDriver window(String windowName) {
       throw new UnsupportedOperationException(
     		  "Window switching is unsupported on the iPhone");

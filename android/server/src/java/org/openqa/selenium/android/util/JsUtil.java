@@ -17,7 +17,9 @@ limitations under the License.
 
 package org.openqa.selenium.android.util;
 
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.android.AndroidWebElement;
+import org.openqa.selenium.internal.WrapsElement;
 
 import java.util.Collection;
 
@@ -43,9 +45,13 @@ public class JsUtil {
       }
       s.append("]");
       return s.toString();
+    } else if (arg instanceof WrapsElement) {
+      WebElement wrapped = ((WrapsElement) arg).getWrappedElement();
+      if (wrapped instanceof AndroidWebElement) {
+        return convertWebElementToJavaScript((AndroidWebElement) wrapped);
+      }
     } else if (arg instanceof AndroidWebElement) {
-      return "window.document.documentElement.androiddriver_elements["
-          + ((AndroidWebElement) arg).getElementId() + "]";
+      return convertWebElementToJavaScript((AndroidWebElement) arg);
     } else if (arg instanceof Number) {
       return String.valueOf(arg);
     } else if (arg instanceof Boolean) {
@@ -57,6 +63,10 @@ public class JsUtil {
     throw new IllegalArgumentException(
         "Argument must be a number, a boolean, a string, a array, a collection, a WebElement: "
             + arg + " is of type " + arg.getClass());
+  }
+
+  private static String convertWebElementToJavaScript(AndroidWebElement element) {
+    return "window.document.documentElement.androiddriver_elements[" + element.getElementId() + "]";
   }
 
   /**

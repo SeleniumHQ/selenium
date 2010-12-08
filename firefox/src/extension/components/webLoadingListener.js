@@ -35,7 +35,7 @@ function WebLoadingListener(browser, toCall) {
       if (flags & STATE_STOP) {
         if (request.URI) {
           WebLoadingListener.removeListener(browser, listener);
-          toCall();
+          toCall(webProgress);
         }
       }
       return 0;

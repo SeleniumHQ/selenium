@@ -298,16 +298,27 @@ public interface WebDriver extends SearchContext {
     WebDriver frame(int index);
 
     /**
-     * Select a frame by its name, id or (zero-based) index. To select sub-frames, simply separate the frame
-     * names/IDs/indexes by dots. As an example "main.child" will select the frame with the name "main" and
-     * then it's child "child". If the given string represents an integer number, then it will be used to
-     * select a frame by its (zero-based) index.
+     * Select a frame by its name or ID. Frames located by matching name
+     * attributes are always given precedence over those matched by ID.
      *
-     * @param nameOrIdOrIndex the name of the frame window, the id of the &lt;frame&gt; or &lt;iframe&gt; element, or the (zero-based) index
+     * @param nameOrId the name of the frame window, the id of the
+     *     &lt;frame&gt; or &lt;iframe&gt; element, or the (zero-based) index
      * @return This driver focused on the given frame
      * @throws NoSuchFrameException If the frame cannot be found
      */
-    WebDriver frame(String nameOrIdOrIndex);
+    WebDriver frame(String nameOrId);
+
+    /**
+     * Select a frame using its previously located {@link WebElement}.
+     *
+     * @param frameElement The frame element to switch to.
+     * @return This driver focused on the given frame.
+     * @throws NoSuchFrameException If the given element is neither an IFRAME
+     *     nor a FRAME element.
+     * @throws StaleElementReferenceException If the WebElement has gone stale.
+     * @see WebDriver#findElement(By)
+     */
+    WebDriver frame(WebElement frameElement);
 
     /**
      * Switch the focus of future commands for this driver to the window with the given name/handle.

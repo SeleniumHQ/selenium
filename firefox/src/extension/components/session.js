@@ -169,16 +169,6 @@ wdSession.prototype.getWindow = function() {
     this.setWindow(win);
   }
 
-  // If we have a frame locator, apply it to verify that the frame is there.
-  if (this.frameLocator_ != null) {
-    var frame = Utils.findFrame(this.chromeWindow_.getBrowser(), this.frameLocator_);
-    if (!frame) {
-      Logger.dumpn("Focused frame has gone, falling back to default content");
-      win = this.chromeWindow_.getBrowser().contentWindow;
-      this.setWindow(win);
-    }
-  }
-
   return win;
 };
 
@@ -201,19 +191,11 @@ wdSession.prototype.setChromeWindow = function(win) {
 
 
 /**
- * Set this session's current window. If the selected window is a frameset,
- * the current window will be adjusted to focus on the first frame.
+ * Set this session's current window.
  * @param {nsIDOMWindow} win The new window.
  */
-wdSession.prototype.setWindow = function(win, opt_frameLocator) {
-  this.frameLocator = opt_frameLocator || null;
-
+wdSession.prototype.setWindow = function(win) {
   this.window_ =  Components.utils.getWeakReference(win);
-  var frames = win.frames;
-  if (frames && frames.length && 'FRAME' == frames[0].frameElement.tagName) {
-    this.window_ = Components.utils.getWeakReference(frames[0]);
-    this.frameLocator_ = 0;
-  }
 };
 
 

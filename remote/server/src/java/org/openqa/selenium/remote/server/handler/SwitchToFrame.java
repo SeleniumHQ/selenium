@@ -17,8 +17,10 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.handler;
 
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.JsonParametersAware;
+import org.openqa.selenium.remote.server.handler.internal.ArgumentConverter;
 import org.openqa.selenium.remote.server.rest.ResultType;
 
 import java.util.Map;
@@ -36,7 +38,7 @@ public class SwitchToFrame extends WebDriverHandler implements JsonParametersAwa
   }
 
   public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
-    setId(allParameters.get("id"));
+    setId(new ArgumentConverter(getKnownElements()).apply(allParameters.get("id")));
   }
 
   public ResultType call() throws Exception {
@@ -44,8 +46,12 @@ public class SwitchToFrame extends WebDriverHandler implements JsonParametersAwa
       getDriver().switchTo().defaultContent();
     } else if (id instanceof Number) {
       getDriver().switchTo().frame(((Number) id).intValue());
-    } else {
+    } else if (id instanceof WebElement) {
+      getDriver().switchTo().frame((WebElement) id);
+    } else if (id instanceof String) {
       getDriver().switchTo().frame((String) id);
+    } else {
+      throw new IllegalArgumentException("Unsupported frame locator: " + id.getClass().getName());
     }
 
     return ResultType.SUCCESS;

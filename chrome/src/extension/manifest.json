@@ -10,6 +10,12 @@
   "content_scripts": [
     {
       "matches": ["http://*/*", "https://*/*", "file:///*"],
+      "js": ["content_prescript.js"],
+      "run_at": "document_start",
+      "all_frames": true
+    },
+    {
+      "matches": ["http://*/*", "https://*/*", "file:///*"],
       "js": ["utils.js", "content_script.js"],
       "run_at": "document_end",
       "all_frames": true

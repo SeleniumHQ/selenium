@@ -645,22 +645,59 @@ FirefoxDriver.prototype.findChildElements = function(respond, parameters) {
 };
 
 
+/**
+ * Changes the command session's focus to a new frame.
+ * @param {Response} respond Object to send the command response with.
+ * @param {{id:?(string|number|{ELEMENT:string})}} parameters A JSON object
+ *     specifying which frame to switch to.
+ */
 FirefoxDriver.prototype.switchToFrame = function(respond, parameters) {
-  var browser = respond.session.getBrowser();
-  if (parameters.id == null) {
-    respond.session.setWindow(respond.session.getBrowser().contentWindow);
-  } else {
-    var frameDoc = Utils.findDocumentInFrame(browser, parameters.id);
-    if (frameDoc) {
-      // "something" keeps a string reference to the frame. Tag it so that we
-      // know later that everything is still fine.
-      respond.session.setWindow(frameDoc.defaultView, parameters.id);
+  var currentWindow = respond.session.getWindow();
+
+  var newWindow = null;
+  if (!goog.isDef(parameters.id) || goog.isNull(parameters.id)) {
+    Logger.dumpn("Switching to default content (topmost frame)");
+    newWindow = respond.session.getBrowser().contentWindow;
+  } else if (goog.isString(parameters.id)) {
+    Logger.dumpn("Switching to frame with name or ID: " + parameters.id);
+    var foundById;
+    var numFrames = currentWindow.frames.length;
+    for (var i = 0; i < numFrames; i++) {
+      var frame = currentWindow.frames[i];
+      var frameElement = frame.frameElement;
+      if (frameElement.name == parameters.id) {
+        newWindow = frame;
+        break;
+      } else if (!foundById && frameElement.id == parameters.id) {
+        foundById = frame;
+      }
+    }
+
+    if (!newWindow && foundById) {
+      newWindow = foundById;
+    }
+  } else if (goog.isNumber(parameters.id)) {
+    Logger.dumpn("Switching to frame by index: " + parameters.id);
+    newWindow = currentWindow.frames[parameters.id];
+  } else if (goog.isObject(parameters.id) && 'ELEMENT' in parameters.id) {
+    Logger.dumpn("Switching to frame by element: " + parameters.id['ELEMENT']);
+    var element = Utils.getElementAt(parameters.id['ELEMENT'],
+        currentWindow.document);
+    if (/^i?frame$/i.test(element.tagName)) {
+      newWindow = element.contentWindow;
     } else {
       throw new WebDriverError(ErrorCode.NO_SUCH_FRAME,
-          "Cannot find frame with id: " + parameters.id);
+          'Element is not a frame element: ' + element.tagName);
     }
   }
-  respond.send();
+
+  if (newWindow) {
+    respond.session.setWindow(newWindow);
+    respond.send();
+  } else {
+    throw new WebDriverError(ErrorCode.NO_SUCH_FRAME,
+        'Unable to locate frame: ' + parameters.id);
+  }
 };
 
 

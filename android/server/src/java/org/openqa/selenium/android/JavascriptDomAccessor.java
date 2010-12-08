@@ -669,7 +669,7 @@ public class JavascriptDomAccessor {
     // window.install() to install it.
     return
         "if (!document.evaluate) {" +
-        "  var currentWindow = window" +
+        "  var currentWindow = window;" +
         // We need to run the installation code in the main context
         "  with (window.top) {" +
         "  try {" +

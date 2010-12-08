@@ -1,5 +1,5 @@
 /* AUTO GENERATED - Do not edit by hand. */
-/* See rake-tasts/ie_code_generator.rb instead. */
+/* See rake-tasks/ie_code_generator.rb instead. */
 package org.openqa.selenium.ie;
 public class IeReturnTypes {
 	public static final int STRING = 1;

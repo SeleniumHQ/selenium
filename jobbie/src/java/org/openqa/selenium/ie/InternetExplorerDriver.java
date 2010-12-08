@@ -395,6 +395,10 @@ public class InternetExplorerDriver implements WebDriver, JavascriptExecutor, Ta
       return InternetExplorerDriver.this;
     }
 
+    public WebDriver frame(WebElement frameElement) {
+      throw new UnsupportedOperationException("Not implemented yet");
+    }
+
     public WebDriver window(String windowName) {
       int result = lib.wdSwitchToWindow(driver, new WString(windowName));
       errors.verifyErrorCode(result, "Unable to locate window: " + windowName);

@@ -81,7 +81,7 @@ public class PageLoadingTest extends AbstractDriverTestCase {
     WebElement pageNumber = driver.findElement(By.xpath("//span[@id='pageNumber']"));
     assertThat(pageNumber.getText().trim(), equalTo("1"));
 
-    driver.switchTo().frame(1);
+    driver.switchTo().defaultContent().switchTo().frame(1);
     pageNumber = driver.findElement(By.xpath("//span[@id='pageNumber']"));
     assertThat(pageNumber.getText().trim(), equalTo("2"));
   }

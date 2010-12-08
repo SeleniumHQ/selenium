@@ -29,6 +29,10 @@ public class StubTargetLocator implements WebDriver.TargetLocator {
     throw new UnsupportedOperationException("frame(String)");
   }
 
+  public WebDriver frame(WebElement frameElement) {
+    throw new UnsupportedOperationException("frame(WebElement)");
+  }
+
   public WebDriver window(String nameOrHandle) {
     throw new UnsupportedOperationException("window(String)");
   }
