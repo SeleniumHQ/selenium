@@ -27,7 +27,8 @@ public interface JavascriptExecutor {
    * If the script has a return value, then the following steps will be taken:
    *
    * <ul> <li>For an HTML element, this method returns a WebElement</li>
-   * <li>For a number, a Long is returned</li>
+   * <li>For a decimal, a Double is returned</li>
+   * <li>For a non-decimal number, a Long is returned</li>
    * <li>For a boolean, a Boolean is returned</li>
    * <li>For all other cases, a String is returned.</li>
    * <li>For an array, return a List&lt;Object&gt; with each object
