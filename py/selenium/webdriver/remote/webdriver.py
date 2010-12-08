@@ -267,7 +267,8 @@ class WebDriver(object):
 
     def get_window_handles(self):
         return self._execute(Command.GET_WINDOW_HANDLES)['value']
-        
+    
+    #Target Locators
     def switch_to_active_element(self):
         """Returns the element with focus, or BODY if nothing has focus."""
         return self._execute(Command.GET_ACTIVE_ELEMENT)['value']
@@ -280,6 +281,11 @@ class WebDriver(object):
         """Switches focus to a frame by index or name."""
         self._execute(Command.SWITCH_TO_FRAME, {'id': index_or_name})
 
+    def switch_to_default_content(self):
+        """Switch to the default frame"""
+        self._execute(Command.SWITCH_TO_FRAME, {'id': None})
+
+    #Navigation 
     def back(self):
         """Goes back in browser history."""
         self._execute(Command.GO_BACK)
@@ -291,6 +297,7 @@ class WebDriver(object):
     def refresh(self):
         """Refreshes the current page."""
         self._execute(Command.REFRESH)
+
     # Options
     def get_cookies(self):
         """Gets all the cookies. Return a set of dicts."""
