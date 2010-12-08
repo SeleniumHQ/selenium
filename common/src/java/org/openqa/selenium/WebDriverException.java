@@ -57,11 +57,9 @@ public class WebDriverException extends RuntimeException {
 
   public String getDriverInformation() {
     for (StackTraceElement e : getStackTrace()) {
-      if (e.getClassName().startsWith("org.openqa.selenium")) {
+      if (e.getClassName().endsWith("Driver")) {
         String[] bits = e.getClassName().split("\\.");
-        if (bits.length > 3 && !"support".equals("bits")) {
-          return "driver.version: " + bits[3];
-        }
+        return "driver.version: " + bits[bits.length - 1];
       }
     }
 
