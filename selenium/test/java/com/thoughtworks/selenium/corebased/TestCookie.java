@@ -2,10 +2,10 @@ package com.thoughtworks.selenium.corebased;
 
 import java.util.regex.Pattern;
 
-import com.thoughtworks.selenium.SeleneseTestNgHelper;
+import com.thoughtworks.selenium.InternalSelenseTestNgBase;
 import org.testng.annotations.Test;
 
-public class TestCookie extends SeleneseTestNgHelper {
+public class TestCookie extends InternalSelenseTestNgBase {
 	@Test public void testCookie() throws Exception {
 		String base = selenium.getEval("parseUrl(canonicalize(absolutify(\"html\", selenium.browserbot.baseUrl))).pathname;");
 		System.out.println(base);

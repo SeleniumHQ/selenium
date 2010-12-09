@@ -1,9 +1,10 @@
 package org.openqa.selenium.thirdparty;
 
-import com.thoughtworks.selenium.SeleneseTestNgHelper;
+import com.thoughtworks.selenium.InternalSelenseTestNgBase;
+
 import org.testng.annotations.Test;
 
-public class TestGomezSuppliedScripts extends SeleneseTestNgHelper {
+public class TestGomezSuppliedScripts extends InternalSelenseTestNgBase {
     @Test
     public void RC108() throws Exception {
         selenium.open("http://www.hrs.com");

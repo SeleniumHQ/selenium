@@ -1,9 +1,9 @@
 package com.thoughtworks.selenium.corebased;
 
-import com.thoughtworks.selenium.SeleneseTestNgHelper;
+import com.thoughtworks.selenium.InternalSelenseTestNgBase;
 import org.testng.annotations.Test;
 
-public class TestUIElementLocators extends SeleneseTestNgHelper {
+public class TestUIElementLocators extends InternalSelenseTestNgBase {
 	@Test public void testUIElementLocators() throws Exception {
 		selenium.addScript("", "uimap");
 		selenium.open("../tests/html/test_locators.html");

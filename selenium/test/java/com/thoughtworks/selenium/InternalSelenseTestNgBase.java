@@ -24,7 +24,7 @@ import org.testng.annotations.Parameters;
 
 import static org.openqa.selenium.DevMode.isInDevMode;
 
-public class SeleneseTestNgHelper extends SeleneseTestBase {
+public class InternalSelenseTestNgBase extends SeleneseTestBase {
   private static Selenium staticSelenium;
 
   @BeforeClass

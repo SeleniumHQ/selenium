@@ -1,9 +1,9 @@
 package com.thoughtworks.selenium.corebased;
 
-import com.thoughtworks.selenium.SeleneseTestNgHelper;
+import com.thoughtworks.selenium.InternalSelenseTestNgBase;
 import org.testng.annotations.Test;
 
-public class TestFunkEventHandling extends SeleneseTestNgHelper {
+public class TestFunkEventHandling extends InternalSelenseTestNgBase {
 	@Test public void testFunkEventHandling() throws Exception {
 		selenium.open("../tests/html/test_funky_event_handling.html");
 		selenium.click("clickMe");

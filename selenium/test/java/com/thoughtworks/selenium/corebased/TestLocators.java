@@ -1,9 +1,10 @@
 package com.thoughtworks.selenium.corebased;
 
-import com.thoughtworks.selenium.SeleneseTestNgHelper;
+import com.thoughtworks.selenium.InternalSelenseTestNgBase;
+
 import org.testng.annotations.Test;
 
-public class TestLocators extends SeleneseTestNgHelper {
+public class TestLocators extends InternalSelenseTestNgBase {
 	@Test public void testLocators() throws Exception {
 		selenium.open("../tests/html/test_locators.html");
 		//  Id location 

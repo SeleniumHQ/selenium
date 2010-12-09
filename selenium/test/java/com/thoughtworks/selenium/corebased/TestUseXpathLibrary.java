@@ -1,9 +1,10 @@
 package com.thoughtworks.selenium.corebased;
 
-import com.thoughtworks.selenium.SeleneseTestNgHelper;
+import com.thoughtworks.selenium.InternalSelenseTestNgBase;
+
 import org.testng.annotations.Test;
 
-public class TestUseXpathLibrary extends SeleneseTestNgHelper {
+public class TestUseXpathLibrary extends InternalSelenseTestNgBase {
 	@Test public void testUseXpathLibrary() throws Exception {
 		selenium.useXpathLibrary("ajaxslt");
 		assertEquals(selenium.getEval("this.browserbot.xpathLibrary"), "ajaxslt");

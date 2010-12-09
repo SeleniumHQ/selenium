@@ -1,9 +1,10 @@
 package com.thoughtworks.selenium.corebased;
 
-import com.thoughtworks.selenium.SeleneseTestNgHelper;
+import com.thoughtworks.selenium.InternalSelenseTestNgBase;
+
 import org.testng.annotations.Test;
 
-public class TestElementIndex extends SeleneseTestNgHelper {
+public class TestElementIndex extends InternalSelenseTestNgBase {
 	@Test public void testElementIndex() throws Exception {
 		selenium.open("../tests/html/test_element_order.html");
 		assertEquals(selenium.getElementIndex("d2"), "1");

@@ -1,9 +1,9 @@
 package com.thoughtworks.selenium.corebased;
 
-import com.thoughtworks.selenium.SeleneseTestNgHelper;
+import com.thoughtworks.selenium.InternalSelenseTestNgBase;
 import org.testng.annotations.Test;
 
-public class TestClickJavascriptHrefChrome extends SeleneseTestNgHelper {
+public class TestClickJavascriptHrefChrome extends InternalSelenseTestNgBase {
 	@Test public void testClickJavascriptHrefChrome() throws Exception {
 		selenium.open("../tests/html/test_click_javascript_chrome_page.html");
 		selenium.click("id=a");

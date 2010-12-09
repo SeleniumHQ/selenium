@@ -1,9 +1,9 @@
 package com.thoughtworks.selenium.corebased;
 
-import com.thoughtworks.selenium.SeleneseTestNgHelper;
+import com.thoughtworks.selenium.InternalSelenseTestNgBase;
 import org.testng.annotations.Test;
 
-public class TestDomainCookie extends SeleneseTestNgHelper {
+public class TestDomainCookie extends InternalSelenseTestNgBase {
 	@Test public void testDomainCookie() throws Exception {
 		String host = selenium.getEval("parseUrl(canonicalize(absolutify(\"html\", selenium.browserbot.baseUrl))).host;");
 		System.out.println(host);

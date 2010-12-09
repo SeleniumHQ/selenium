@@ -1,9 +1,9 @@
 package com.thoughtworks.selenium.corebased;
 
-import com.thoughtworks.selenium.SeleneseTestNgHelper;
+import com.thoughtworks.selenium.InternalSelenseTestNgBase;
 import org.testng.annotations.Test;
 
-public class TestGoBack extends SeleneseTestNgHelper {
+public class TestGoBack extends InternalSelenseTestNgBase {
 	@Test public void testGoBack() throws Exception {
 		selenium.open("../tests/html/test_click_page1.html");
 		verifyEquals(selenium.getTitle(), "Click Page 1");

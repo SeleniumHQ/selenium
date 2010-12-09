@@ -1,9 +1,10 @@
 package com.thoughtworks.selenium.corebased;
 
-import com.thoughtworks.selenium.SeleneseTestNgHelper;
+import com.thoughtworks.selenium.InternalSelenseTestNgBase;
+
 import org.testng.annotations.Test;
 
-public class TestPrompt extends SeleneseTestNgHelper {
+public class TestPrompt extends InternalSelenseTestNgBase {
 	@Test public void testPrompt() throws Exception {
 		selenium.open("../tests/html/test_prompt.html");
 		verifyFalse(selenium.isPromptPresent());

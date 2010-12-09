@@ -1,9 +1,10 @@
 package com.thoughtworks.selenium.thirdparty;
 
-import com.thoughtworks.selenium.SeleneseTestNgHelper;
+import com.thoughtworks.selenium.InternalSelenseTestNgBase;
+
 import org.testng.annotations.Test;
 
-public class GoogleTest extends SeleneseTestNgHelper {
+public class GoogleTest extends InternalSelenseTestNgBase {
 
     @Test
     public void testGoogle() throws Throwable {

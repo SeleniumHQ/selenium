@@ -1,9 +1,10 @@
 package com.thoughtworks.selenium.corebased;
 
-import com.thoughtworks.selenium.SeleneseTestNgHelper;
+import com.thoughtworks.selenium.InternalSelenseTestNgBase;
+
 import org.testng.annotations.Test;
 
-public class TestErrorChecking extends SeleneseTestNgHelper {
+public class TestErrorChecking extends InternalSelenseTestNgBase {
 	@Test public void testErrorChecking() throws Exception {
 		selenium.open("../tests/html/test_click_page1.html");
 		//  These tests should all fail, as they are checking the error checking commands. 

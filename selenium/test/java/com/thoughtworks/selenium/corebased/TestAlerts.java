@@ -2,10 +2,11 @@ package com.thoughtworks.selenium.corebased;
 
 import java.util.regex.Pattern;
 
-import com.thoughtworks.selenium.SeleneseTestNgHelper;
+import com.thoughtworks.selenium.InternalSelenseTestNgBase;
+
 import org.testng.annotations.Test;
 
-public class TestAlerts extends SeleneseTestNgHelper {
+public class TestAlerts extends InternalSelenseTestNgBase {
 	@Test public void testAlerts() throws Exception {
 		selenium.open("../tests/html/test_verify_alert.html");
 		verifyFalse(selenium.isAlertPresent());

@@ -1,9 +1,10 @@
 package com.thoughtworks.selenium.corebased;
 
-import com.thoughtworks.selenium.SeleneseTestNgHelper;
+import com.thoughtworks.selenium.InternalSelenseTestNgBase;
+
 import org.testng.annotations.Test;
 
-public class TestSubmit extends SeleneseTestNgHelper {
+public class TestSubmit extends InternalSelenseTestNgBase {
 	@Test public void testSubmit() throws Exception {
 		selenium.open("../tests/html/test_submit.html");
 		selenium.submit("searchForm");

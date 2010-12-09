@@ -1,9 +1,9 @@
 package com.thoughtworks.selenium.corebased;
 
-import com.thoughtworks.selenium.SeleneseTestNgHelper;
+import com.thoughtworks.selenium.InternalSelenseTestNgBase;
 import org.testng.annotations.Test;
 
-public class TestAddLocationStrategy extends SeleneseTestNgHelper {
+public class TestAddLocationStrategy extends InternalSelenseTestNgBase {
 	@Test public void testAddLocationStrategy() throws Exception {
 		selenium.open("../tests/html/test_click_page1.html");
 		selenium.addLocationStrategy("foo", "return inDocument.getElementById(locator);");

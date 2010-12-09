@@ -1,9 +1,10 @@
 package com.thoughtworks.selenium.corebased;
 
-import com.thoughtworks.selenium.SeleneseTestNgHelper;
+import com.thoughtworks.selenium.InternalSelenseTestNgBase;
+
 import org.testng.annotations.Test;
 
-public class TestQuickOpen extends SeleneseTestNgHelper {
+public class TestQuickOpen extends InternalSelenseTestNgBase {
 	@Test public void testQuickOpen() throws Exception {
 		// <tr>
 		//       <td>setTimeout</td>

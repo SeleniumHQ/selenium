@@ -1,9 +1,10 @@
 package com.thoughtworks.selenium.corebased;
 
-import com.thoughtworks.selenium.SeleneseTestNgHelper;
+import com.thoughtworks.selenium.InternalSelenseTestNgBase;
+
 import org.testng.annotations.Test;
 
-public class TestClickJavascriptHref extends SeleneseTestNgHelper {
+public class TestClickJavascriptHref extends InternalSelenseTestNgBase {
 	@Test public void testClickJavascriptHref() throws Exception {
 		selenium.open("../tests/html/test_click_javascript_page.html");
 		selenium.click("link");

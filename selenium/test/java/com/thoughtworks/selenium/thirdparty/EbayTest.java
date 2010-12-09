@@ -1,9 +1,9 @@
 package com.thoughtworks.selenium.thirdparty;
 
-import com.thoughtworks.selenium.SeleneseTestNgHelper;
+import com.thoughtworks.selenium.InternalSelenseTestNgBase;
 import org.testng.annotations.Test;
 
-public class EbayTest extends SeleneseTestNgHelper {
+public class EbayTest extends InternalSelenseTestNgBase {
     
     @Test
     public void testEbayOpen() throws Throwable {

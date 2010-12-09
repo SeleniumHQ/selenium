@@ -17,7 +17,7 @@
 
 package org.openqa.selenium;
 
-import com.thoughtworks.selenium.SeleneseTestNgHelper;
+import com.thoughtworks.selenium.InternalSelenseTestNgBase;
 import com.thoughtworks.selenium.SeleniumException;
 import com.thoughtworks.selenium.SeleniumLogLevels;
 import org.testng.annotations.Test;
@@ -26,7 +26,7 @@ import org.testng.annotations.Test;
  * @author Paul Hammant
  * @version $Revision: 131 $
  */
-public class RealDealIntegrationTest extends SeleneseTestNgHelper {
+public class RealDealIntegrationTest extends InternalSelenseTestNgBase {
 
     @Test
     public void testWithJavaScript() {

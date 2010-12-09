@@ -1,9 +1,10 @@
 package com.thoughtworks.selenium.thirdparty;
 
-import com.thoughtworks.selenium.SeleneseTestNgHelper;
+import com.thoughtworks.selenium.InternalSelenseTestNgBase;
+
 import org.testng.annotations.Test;
 
-public class AttachFileTest extends SeleneseTestNgHelper {
+public class AttachFileTest extends InternalSelenseTestNgBase {
     
     @Test
     public void testAttachfile() throws Throwable {

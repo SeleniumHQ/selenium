@@ -2,10 +2,11 @@ package com.thoughtworks.selenium.corebased;
 
 import java.util.regex.Pattern;
 
-import com.thoughtworks.selenium.SeleneseTestNgHelper;
+import com.thoughtworks.selenium.InternalSelenseTestNgBase;
+
 import org.testng.annotations.Test;
 
-public class TestSelectWindow extends SeleneseTestNgHelper {
+public class TestSelectWindow extends InternalSelenseTestNgBase {
 	@Test public void testSelectWindow() throws Exception {
 		selenium.open("../tests/html/test_select_window.html");
 		selenium.click("popupPage");

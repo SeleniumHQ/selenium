@@ -1,9 +1,9 @@
 package com.thoughtworks.selenium.corebased;
 
-import com.thoughtworks.selenium.SeleneseTestNgHelper;
+import com.thoughtworks.selenium.InternalSelenseTestNgBase;
 import org.testng.annotations.Test;
 
-public class TestRollup extends SeleneseTestNgHelper {
+public class TestRollup extends InternalSelenseTestNgBase {
 	@Test public void testRollup() throws Exception {
 		selenium.addScript("", "rollup");
 		selenium.open("../tests/html/test_rollup.html");

@@ -2,10 +2,11 @@ package com.thoughtworks.selenium.corebased;
 
 import java.util.regex.Pattern;
 
-import com.thoughtworks.selenium.SeleneseTestNgHelper;
+import com.thoughtworks.selenium.InternalSelenseTestNgBase;
+
 import org.testng.annotations.Test;
 
-public class TestOpen extends SeleneseTestNgHelper {
+public class TestOpen extends InternalSelenseTestNgBase {
 	@Test public void testOpen() throws Exception {
 		selenium.open("../tests/html/test_open.html");
 		verifyTrue(selenium.getLocation().matches("^[\\s\\S]*/tests/html/test_open\\.html$"));

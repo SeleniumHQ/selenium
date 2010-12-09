@@ -2,10 +2,11 @@ package com.thoughtworks.selenium.corebased;
 
 import java.util.regex.Pattern;
 
-import com.thoughtworks.selenium.SeleneseTestNgHelper;
+import com.thoughtworks.selenium.InternalSelenseTestNgBase;
+
 import org.testng.annotations.Test;
 
-public class TestGet extends SeleneseTestNgHelper {
+public class TestGet extends InternalSelenseTestNgBase {
 	@Test public void testGet() throws Exception {
 		//  test API getters 
 		selenium.open("../tests/html/test_get.html");

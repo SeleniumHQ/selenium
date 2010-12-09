@@ -2,10 +2,10 @@ package com.thoughtworks.selenium.corebased;
 
 import java.util.regex.Pattern;
 
-import com.thoughtworks.selenium.SeleneseTestNgHelper;
+import com.thoughtworks.selenium.InternalSelenseTestNgBase;
 import org.testng.annotations.Test;
 
-public class TestJavascriptParameters extends SeleneseTestNgHelper {
+public class TestJavascriptParameters extends InternalSelenseTestNgBase {
 	@Test public void testJavascriptParameters() throws Exception {
 		selenium.open("../tests/html/test_store_value.html");
 		selenium.type("theText", selenium.getEval("[1,2,3,4,5].join(':')"));

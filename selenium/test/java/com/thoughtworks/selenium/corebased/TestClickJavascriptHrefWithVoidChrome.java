@@ -1,9 +1,10 @@
 package com.thoughtworks.selenium.corebased;
 
-import com.thoughtworks.selenium.SeleneseTestNgHelper;
+import com.thoughtworks.selenium.InternalSelenseTestNgBase;
 import org.testng.annotations.Test;
 
-public class TestClickJavascriptHrefWithVoidChrome extends SeleneseTestNgHelper {
+public class TestClickJavascriptHrefWithVoidChrome extends
+    InternalSelenseTestNgBase {
 	@Test public void testClickJavascriptHrefWithVoidChrome() throws Exception {
 		selenium.open("../tests/html/test_click_javascript_href_void_chrome.html");
 		selenium.click("linkWithJavascriptVoidHref");

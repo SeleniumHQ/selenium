@@ -2,10 +2,10 @@ package com.thoughtworks.selenium.corebased;
 
 import java.util.regex.Pattern;
 
-import com.thoughtworks.selenium.SeleneseTestNgHelper;
+import com.thoughtworks.selenium.InternalSelenseTestNgBase;
 import org.testng.annotations.Test;
 
-public class TestPatternMatching extends SeleneseTestNgHelper {
+public class TestPatternMatching extends InternalSelenseTestNgBase {
 	@Test public void testPatternMatching() throws Exception {
 		selenium.open("../tests/html/test_verifications.html");
 		verifyTrue(selenium.getValue("theText").matches("^[\\s\\S]*text[\\s\\S]*$"));

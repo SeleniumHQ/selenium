@@ -1,9 +1,10 @@
 package com.thoughtworks.selenium.corebased;
 
-import com.thoughtworks.selenium.SeleneseTestNgHelper;
+import com.thoughtworks.selenium.InternalSelenseTestNgBase;
+
 import org.testng.annotations.Test;
 
-public class TestProxy extends SeleneseTestNgHelper {
+public class TestProxy extends InternalSelenseTestNgBase {
 	@Test public void testProxy() throws Exception {
 		selenium.open("http://www.yahoo.com/");
 		selenium.type("p", "Selenium");

@@ -1,9 +1,9 @@
 package com.thoughtworks.selenium.corebased;
 
-import com.thoughtworks.selenium.SeleneseTestNgHelper;
+import com.thoughtworks.selenium.InternalSelenseTestNgBase;
 import org.testng.annotations.Test;
 
-public class TestElementOrder extends SeleneseTestNgHelper {
+public class TestElementOrder extends InternalSelenseTestNgBase {
 	@Test public void testElementOrder() throws Exception {
 		selenium.open("../tests/html/test_element_order.html");
 		assertTrue(selenium.isOrdered("s1.1", "d1.1"));

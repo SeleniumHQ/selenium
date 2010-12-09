@@ -2,10 +2,10 @@ package com.thoughtworks.selenium.corebased;
 
 import java.util.regex.Pattern;
 
-import com.thoughtworks.selenium.SeleneseTestNgHelper;
+import com.thoughtworks.selenium.InternalSelenseTestNgBase;
 import org.testng.annotations.Test;
 
-public class TestTextWhitespace extends SeleneseTestNgHelper {
+public class TestTextWhitespace extends InternalSelenseTestNgBase {
 	@Test public void testTextWhitespace() throws Exception {
 		selenium.open("../tests/html/test_text_content.html");
 		verifyEquals(selenium.getText("nonTextMarkup"), "There is non-visible and visible markup here that doesn't change the text content");

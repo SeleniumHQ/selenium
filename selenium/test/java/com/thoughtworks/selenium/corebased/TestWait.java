@@ -1,9 +1,10 @@
 package com.thoughtworks.selenium.corebased;
 
-import com.thoughtworks.selenium.SeleneseTestNgHelper;
+import com.thoughtworks.selenium.InternalSelenseTestNgBase;
+
 import org.testng.annotations.Test;
 
-public class TestWait extends SeleneseTestNgHelper {
+public class TestWait extends InternalSelenseTestNgBase {
 	@Test public void testWait() throws Exception {
 		//  Link click 
 		selenium.open("../tests/html/test_reload_onchange_page.html");

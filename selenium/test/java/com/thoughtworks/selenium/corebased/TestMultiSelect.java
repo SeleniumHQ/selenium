@@ -1,9 +1,9 @@
 package com.thoughtworks.selenium.corebased;
 
-import com.thoughtworks.selenium.SeleneseTestNgHelper;
+import com.thoughtworks.selenium.InternalSelenseTestNgBase;
 import org.testng.annotations.Test;
 
-public class TestMultiSelect extends SeleneseTestNgHelper {
+public class TestMultiSelect extends InternalSelenseTestNgBase {
 	@Test public void testMultiSelect() throws Exception {
 		selenium.open("../tests/html/test_multiselect.html");
 		assertEquals(join(selenium.getSelectedLabels("theSelect"), ','), "Second Option");
