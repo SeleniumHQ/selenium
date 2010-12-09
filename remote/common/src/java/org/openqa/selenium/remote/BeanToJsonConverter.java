@@ -231,6 +231,10 @@ public class BeanToJsonConverter {
       if (readMethod == null)
         continue;
 
+      if (readMethod.getParameterTypes().length > 0) {
+        continue;
+      }
+
       readMethod.setAccessible(true);
 
       Object result = readMethod.invoke(toConvert);
