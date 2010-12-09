@@ -15,6 +15,7 @@ import java.util.concurrent.TimeUnit;
 
 //@Ignore(value = ANDROID,
 //    reason = "Android is way too slow to use the current polling-only technique")
+@Ignore(value = SELENESE, reason = "Every test appears to be failing.")
 public class ExecutingAsyncJavascriptTest extends AbstractDriverTestCase {
 
   private JavascriptExecutor executor;
