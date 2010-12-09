@@ -12,7 +12,8 @@ namespace :se_ide do
       # and now the script dir
       ln_s Dir.glob(base_ide_dir + "/common/src/js/core/scripts/*").select { |fn| not [base_ide_dir + "/common/src/js/core/scripts/selenium-testrunner.js", base_ide_dir + "/common/src/js/core/scripts/user-extensions.js"].include?(fn)},
            "ide/main/src/content/selenium/scripts"
-      ln_s "build/common/src/js/selenium/core.js", "ide/main/src/content/selenium/scripts/atoms.js"
+      cp "build/common/src/js/selenium/core.js", "ide/main/src/content/selenium/scripts/atoms.js"
+      # mv Dir.glob(base_ide_dir + "/ide/main/src/content/selenium/scripts/core.js"), Dir.glob(base_ide_dir + "/ide/main/src/content/selenium/scripts/atoms.js"), :verbose
       mkdir "ide/main/src/content-files"
       ln_s Dir.glob(base_ide_dir + "/common/src/js/core/scripts/selenium-testrunner.js"), "ide/main/src/content-files"
     elsif windows?
@@ -85,6 +86,7 @@ namespace :se_ide do
   task :remove_proxy do
     if unix?
       Dir.glob("ide/**/*").select { |fn| rm fn if File.symlink?(fn) }
+      rm "ide/main/src/content/selenium/scripts/atoms.js"
     elsif windows?
       listoffiles = File.open(base_ide_dir + "/proxy_files.txt", "r")
       listoffiles.each do |f|
