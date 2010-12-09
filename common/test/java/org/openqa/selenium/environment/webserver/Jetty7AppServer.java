@@ -17,20 +17,20 @@ limitations under the License.
 
 package org.openqa.selenium.environment.webserver;
 
-import junit.framework.Assert;
-
-import javax.servlet.Servlet;
-import javax.servlet.Filter;
-import java.io.File;
-
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.server.nio.SelectChannelConnector;
 import org.eclipse.jetty.server.ssl.SslSocketConnector;
-import org.eclipse.jetty.webapp.WebAppContext;
 import org.eclipse.jetty.servlets.MultiPartFilter;
+import org.eclipse.jetty.webapp.WebAppContext;
+import org.openqa.selenium.internal.InProject;
 import org.openqa.selenium.networkutils.NetworkUtils;
+
+import java.io.File;
+
+import javax.servlet.Filter;
+import javax.servlet.Servlet;
 
 import static org.openqa.selenium.internal.PortProber.findFreePort;
 
@@ -42,7 +42,7 @@ public class Jetty7AppServer implements AppServer {
   private static final String THIRD_PARTY_JS_CONTEXT_PATH =
       "/third_party/closure/goog";
 
-  private static final NetworkUtils networkUtils =  new NetworkUtils();
+  private static final NetworkUtils networkUtils = new NetworkUtils();
 
   private int port;
   private int securePort;
@@ -58,7 +58,7 @@ public class Jetty7AppServer implements AppServer {
   public Jetty7AppServer() {
     this("localhost");
   }
-  
+
   public Jetty7AppServer(String hostName) {
     this.hostName = hostName;
     // Be quiet. Unless we want things to be chatty
@@ -99,58 +99,19 @@ public class Jetty7AppServer implements AppServer {
   }
 
   protected File findRootOfWebApp() {
-    // TODO(simonstewart): replace this with InProject.locate()
-    String[] possiblePaths = {
-        "common/src/web",
-        "../common/src/web",
-        "../../common/src/web",
-    };
-
-    File current;
-    for (String potential : possiblePaths) {
-      current = new File(potential);
-      if (current.exists()) {
-        return current;
-      }
-    }
-
-    Assert.assertTrue("Unable to find common web files. These are located in the common directory",
-                      path.exists());
-    return null;
+    return InProject.locate("common/src/web");
   }
 
   private static File findJsSrcWebAppRoot() {
-    return findWebAppRoot(new String[] {
-        "common/src/js",
-        "../common/src/js",
-        "../../common/src/js"
-    });
+    return InProject.locate("common/src/js");
   }
 
   private static File findJsTestWebAppRoot() {
-    return findWebAppRoot(new String[] {
-        "common/test/js",
-        "../common/test/js",
-        "../../common/test/js"
-    });
+    return InProject.locate("common/test/js");
   }
 
   private static File findThirdPartyJsWebAppRoot() {
-    return findWebAppRoot(new String[] {
-        "third_party/closure/goog",
-        "../third_party/closure/goog",
-        "../../third_party/closure/goog"
-    });
-  }
-
-  private static File findWebAppRoot(String[] possiblePaths) {
-    for (String potential : possiblePaths) {
-      File current = new File(potential);
-      if (current.exists()) {
-        return current;
-      }
-    }
-    return null;
+    return InProject.locate("third_party/closure/goog");
   }
 
   public String getHostName() {
@@ -221,7 +182,6 @@ public class Jetty7AppServer implements AppServer {
     this.securePort = port;
   }
 
-
   protected void addListener(Connector listener) {
     server.addConnector(listener);
   }
@@ -234,7 +194,8 @@ public class Jetty7AppServer implements AppServer {
     }
   }
 
-  public void addServlet(String name, String url, Class<? extends Servlet> servletClass) {
+  public void addServlet(String name, String url,
+      Class<? extends Servlet> servletClass) {
     try {
       context.addServlet(servletClass, url);
     } catch (Exception e) {
@@ -242,7 +203,8 @@ public class Jetty7AppServer implements AppServer {
     }
   }
 
-  public void addFilter(Class<? extends Filter> filter, String path, int dispatches) {
+  public void addFilter(Class<? extends Filter> filter, String path,
+      int dispatches) {
     context.addFilter(filter, path, dispatches);
   }
 
@@ -250,7 +212,8 @@ public class Jetty7AppServer implements AppServer {
     return addWebApplication(contextPath, rootDir.getAbsolutePath());
   }
 
-  private WebAppContext addWebApplication(String contextPath, String absolutePath) {
+  private WebAppContext addWebApplication(String contextPath,
+      String absolutePath) {
     WebAppContext app = new WebAppContext();
     app.setContextPath(contextPath);
     app.setWar(absolutePath);
