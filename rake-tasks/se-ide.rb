@@ -12,10 +12,13 @@ namespace :se_ide do
       # and now the script dir
       ln_s Dir.glob(base_ide_dir + "/common/src/js/core/scripts/*").select { |fn| not [base_ide_dir + "/common/src/js/core/scripts/selenium-testrunner.js", base_ide_dir + "/common/src/js/core/scripts/user-extensions.js"].include?(fn)},
            "ide/main/src/content/selenium/scripts"
-      cp "build/common/src/js/selenium/core.js", "ide/main/src/content/selenium/scripts/atoms.js"
-      # mv Dir.glob(base_ide_dir + "/ide/main/src/content/selenium/scripts/core.js"), Dir.glob(base_ide_dir + "/ide/main/src/content/selenium/scripts/atoms.js"), :verbose
       mkdir "ide/main/src/content-files"
       ln_s Dir.glob(base_ide_dir + "/common/src/js/core/scripts/selenium-testrunner.js"), "ide/main/src/content-files"
+      # atoms
+      cp "build/common/src/js/selenium/core.js", "ide/main/src/content/selenium/scripts/atoms.js"
+      # sizzle
+      mkdir "ide/main/src/content/selenium/lib"
+      cp "third_party/js/sizzle/sizzle.js", "ide/main/src/content/selenium/lib/sizzle.js"
     elsif windows?
       # the files in core -- except for the scripts directory which already exists in the target
       f = Dir.glob(base_ide_dir + "/common/src/js/core/*").select { |fn| fn != base_ide_dir + "/common/src/js/core/scripts" }
@@ -30,12 +33,6 @@ namespace :se_ide do
         files << c.gsub(base_ide_dir + "/common/src/js/core/scripts", "ide/main/src/content/selenium/scripts")
         cp c, "ide/main/src/content/selenium/scripts"
       end
-      
-      # create the content-files directory
-      if File.directory? "ide/main/src/content-files"
-      	rm_r "ide/main/src/content-files"
-      end
-      mkdir "ide/main/src/content-files"
 
       # atoms
       f = Dir.glob(base_ide_dir + "/build/common/src/js/selenium/core.js")
@@ -43,7 +40,25 @@ namespace :se_ide do
         files << base_ide_dir + "/build/common/src/js/selenium/core.js"
         cp c, "ide/main/src/content/selenium/scripts/atoms.js"
       end
+      
+      # sizzle
+      if File.directory? "ide/main/src/content/selenium/lib"
+      	rm_r "ide/main/src/content/selenium/lib"
+      end
+      mkdir "ide/main/src/content/selenium/lib"
 
+      f = Dir.glob(base_ide_dir + "/third_party/js/sizzle/sizzle.js")
+      f.each do |c|
+        files << base_ide_dir + "/ide/main/src/content/selenium/lib/sizzle.js"
+        cp c, "ide/main/src/content/selenium/lib/sizzle.js"
+      end
+      
+      # create the content-files directory
+      if File.directory? "ide/main/src/content-files"
+      	rm_r "ide/main/src/content-files"
+      end
+      mkdir "ide/main/src/content-files"
+      
       # and lastly the scriptrunner
       f = Dir.glob(base_ide_dir + "/common/src/js/core/scripts/selenium-testrunner.js")
       f.each do |c|
@@ -86,7 +101,10 @@ namespace :se_ide do
   task :remove_proxy do
     if unix?
       Dir.glob("ide/**/*").select { |fn| rm fn if File.symlink?(fn) }
+      rm_f "ide/main/src/content-files"
       rm "ide/main/src/content/selenium/scripts/atoms.js"
+      rm "ide/main/src/content/selenium/lib/sizzle.js"
+      rm_f "ide/main/src/content/selenium/lib"
     elsif windows?
       listoffiles = File.open(base_ide_dir + "/proxy_files.txt", "r")
       listoffiles.each do |f|
@@ -100,6 +118,7 @@ namespace :se_ide do
       rm base_ide_dir + "/proxy_files.txt"
     end
     rmdir "ide/main/src/content-files"
+    rmdir "ide/main/src/content/selenium/lib"
     rm "ide/main/src/components/SeleniumIDEGenericAutoCompleteSearch.xpt"
   end
 end
