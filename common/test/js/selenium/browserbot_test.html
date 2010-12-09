@@ -6,17 +6,18 @@
     <script type="text/javascript">
       goog.require('bot.dom');
       goog.require('goog.testing.jsunit');
-      goog.require('core.locators');
       goog.require('core.browserbot');
+      goog.require('core.locators');
+      goog.require('core.text');
     </script>
 
     <script type="text/javascript">
       function testShouldDetectWhenTextIsPresent() {
-        assertTrue(core.browserbot.isTextPresent('content'));
+        assertTrue(core.text.isTextPresent('content'));
       }
 
       function testShouldDetectWhenTextIsNotPresent() {
-        assertFalse(core.browserbot.isTextPresent('dance the funky chicken'));
+        assertFalse(core.text.isTextPresent('dance the funky chicken'));
       }
 
       function testShouldBeAbleToDetectIfAnElementIsPresent() {
