@@ -177,22 +177,32 @@ Utils.getText = function(element) {
 /**
  * Fires the event using Utils.fireEvent, and if the event returned true,
  * perform callback, which will be passed on arguments
+ * @param {!Element} element The element to fire the event on.
+ * @param {string} type The type of event to fire.
+ * @param {function()} callback The function to call if the fired event was not
+ *     cancelled by an event listener.
  */
-Utils.fireHtmlEventAndConditionallyPerformAction = function(element, eventName, callback) {
-    Utils.fireHtmlEvent(element, eventName, function(evt) {
-      if (JSON.parse(evt.data)) {
+Utils.fireHtmlEventAndConditionallyPerformAction = function(element, type, callback) {
+    Utils.fireHtmlEvent(element, type, function(response) {
+      if (!response.statusCode) {
         callback();
       }
     });
 };
 
-Utils.fireHtmlEvent = function(element, eventName, callback) {
-    if (callback === undefined) {
-      callback = function() {};
-    }
+
+/**
+ * Fires a HTMLEvents category event on a DOM element.
+ * @param {!Element} element The element to fire the event on.
+ * @param {string} type The type of event to fire.
+ * @param {function({statusCode:number, value:*})=} opt_callback Function to
+ *     call when the script to fire the event has completed.
+ */
+Utils.fireHtmlEvent = function(element, type, opt_callback) {
+    var callback = opt_callback || function() {};
     var args = [
       {"ELEMENT": addElementToInternalArray(element)},
-      eventName
+      type
     ];
 
     // We need to do this because event handlers refer to functions that

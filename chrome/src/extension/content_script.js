@@ -812,7 +812,6 @@ function parseWrappedArguments(wrappedArguments) {
 
 /**
  * Execute arbitrary javascript in the page.
- * Returns by callback to returnFromJavascriptInPage.
  * Yes, this is *horribly* hacky.
  * We can't share objects between content script and page, so have to wrap up arguments as JSON
  * @param {string} script The javascript snippet to execute in the current page.
@@ -822,8 +821,8 @@ function parseWrappedArguments(wrappedArguments) {
  * @param {number} asyncTimeout The amount of time, in milliseconds, to wait
  *     for an asynchronous script to finish execution before returning an
  *     error.
- * @param {function(MessageEvent)} callback Function to call when the result is returned.
- * TODO: Make the callback be passed the parsed result.
+ * @param {function({statusCode:number, value:*})} callback Function to call
+ *     when the script has completed.
  */
 function execute_(script, passedArgs, asyncTimeout, callback) {
   console.log("executing " + script + ", args: " + JSON.stringify(passedArgs));
@@ -851,14 +850,11 @@ function execute_(script, passedArgs, asyncTimeout, callback) {
     window.clearTimeout(scriptLoadTimeout);
 
     console.error('Timed out waiting for our script evaluator to load');
-    // Callback expects a message event.
     callback({
-      data: JSON.stringify({
-        statusCode: 17,
-        value: {
-          message: 'Timed out waiting for script evaluator to load'
-        }
-      })
+      statusCode: 17,
+      value: {
+        message: 'Timed out waiting for script evaluator to load'
+      }
     });
   }, 10 * 1000);
 
@@ -871,7 +867,9 @@ function execute_(script, passedArgs, asyncTimeout, callback) {
 
     function handleResponse(e) {
       window.removeEventListener('webdriver-evaluate-response', handleResponse, true);
-      callback(e);
+      console.log('Got response: ' + e.data);
+      var response = parseReturnValueFromScript(JSON.parse(e.data));
+      callback(response);
     }
     window.addEventListener('webdriver-evaluate-response', handleResponse, true);
 
@@ -894,9 +892,18 @@ function execute_(script, passedArgs, asyncTimeout, callback) {
 }
 
 function execute(script, passedArgs, asyncTimeout) {
+  var callback = function(response) {
+    ChromeDriverContentScript.port.postMessage({
+      sequenceNumber: ChromeDriverContentScript.currentSequenceNumber,
+      response: {
+        response: "execute",
+        value: response
+      }
+    });
+  };
   execute_(script, passedArgs,
            typeof asyncTimeout == 'undefined' ? -1 : asyncTimeout,
-           returnFromJavascriptInPage);
+           callback);
 }
 
 function parseReturnValueFromScript(result) {
@@ -945,21 +952,6 @@ function parseReturnValueFromScript(result) {
   }
 }
 
-/**
- * Callback from execute
- */
-function returnFromJavascriptInPage(e) {
-  console.log('Got response: ', e.data);
-  var response = parseReturnValueFromScript(JSON.parse(e.data));
-  ChromeDriverContentScript.port.postMessage({
-    sequenceNumber: ChromeDriverContentScript.currentSequenceNumber,
-    response: {
-      response: "execute",
-      value: response
-    }
-  });
-}
-
 function switchToFrame(id) {
   // We use the fact that Function.prototype.toString() will de-compile this to
   // its source code so we can inject it into the page in a SCRIPT tag. We have
@@ -967,35 +959,29 @@ function switchToFrame(id) {
   // does not share a JavaScript context with the current page (but we do share
   // a DOM).
   var findFrame = function(id) {
-    function findFrameByXPath(xpath) {
-      console.info('Searching for frame element by XPath: ', xpath);
-      var result = document.evaluate(xpath, document, null,
-          XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
-
-      if (!result) {
-        throw Error('Failed to find an element: ' + xpath);
-      }
-
-      console.debug('Found frame element ', result);
-      if (result.nodeType != 1 || !/^i?frame$/i.test(result.tagName)) {
-        throw Error('Element is not a frame: ' + result);
+    function getFrameIndex(element) {
+      if (element.nodeType != 1 || !/^i?frame$/i.test(element.tagName)) {
+        throw Error('Element is not a frame: ' + element +
+                    '\n  nodeType == ' + element.nodeType +
+                    '\n  tagName == ' + element.tagName);
       }
 
       for (var i = 0; i < window.frames.length; i++) {
-        if (result.contentWindow == window.frames[i]) {
+        if (element.contentWindow == window.frames[i]) {
           console.info('Frame index is: ', i);
           return i;
         }
       }
+      throw Error('Frame is not part of this window\'s DOM');
     }
 
-    var e = document.createEvent('MutationEvent');
-    var status, index;
     try {
       if (typeof id == 'number') {
         if (id > -1 && id < window.frames.length) {
-          index = id;
+          return id;
         }
+        throw Error('Frame index is out of bounds: ' +
+                    id + ' >= ' + window.frames.length);
       } else if (typeof id == 'string') {
         // We could have a frame name, or an element ID, so use an XPath
         // expression to find all of the (i)frames on the page. We cannot
@@ -1013,108 +999,48 @@ function switchToFrame(id) {
           // compiled, so it will be properly quoted for us.
           ' and (@name=', id, ' or @id=', id, ')]'
         ].join('');
-        index = findFrameByXPath(xpath);
+        console.info('Searching for frame element by XPath: ', xpath);
+        var result = document.evaluate(xpath, document, null,
+            XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+        if (!result) {
+          throw Error('Failed to find an element: ' + xpath);
+        }
+        return getFrameIndex(result);
 
-      // The only other value frame identifier is a DOM element locator.
+      // The only other value frame identifier is a DOM element.
       // Technically, null signals window.top, but that should be handled
       // by the background page directly.
-      } else if (id && typeof id == 'object' &&
-                 typeof id.ELEMENT == 'string') {
-        index = findFrameByXPath(id.ELEMENT);
+      } else if (typeof id == 'object' && id.nodeType) {
+        return getFrameIndex(id);
       } else {
-        throw Error('Unsupported frame locator: ' + JSON.stringify(id));
+        throw Error('Unsupported frame locator: (' + (typeof id) + ') ' + id);
       }
-
-      if (typeof index == 'number' && index >= 0) {
-        console.info('Located frame at index ' + index);
-        status = 'SUCCESS';
-      } else {
-        // Shouldn't get here.
-        status = 'EXCEPTION';
-        index = 'Failed to find frame';
-      }
-      console.assert(index > -1, 'Failed to find frame');
     } catch (ex) {
-      console.error('Failed to find frame: ' + ex.stack);
-      status = 'EXCEPTION';
-      index = ex.message;
+      ex.status = 8;  // "No such frame" == 8
+      throw ex;
     }
-    e.initMutationEvent('DOMAttrModified', true, false, null,
-        status, index, null, 0);
-
-    var scriptTags = document.getElementsByTagName('script');
-    var scriptTag = scriptTags[scriptTags.length - 1];
-    scriptTag.dispatchEvent(e);
-    scriptTag.parentNode.removeChild(scriptTag);
   };
 
-  if (id && typeof id == 'object' && 'ELEMENT' in id) {
-    console.info('Switching to a frame by a previously located element;' +
-                 ' fetching element: ' + id.ELEMENT);
-    try {
-      var element = internalGetElement(id.ELEMENT);
-      id = {ELEMENT: getXPathOfElement(element)};
-    } catch (ex) {
-      console.error('Error looking up element ', ex.stack);
-      ChromeDriverContentScript.port.postMessage({
-        response: {
-          statusCode: 10,
-          message: (ex.message || ex.toString())
-        },
-        sequenceNumber: ChromeDriverContentScript.currentSequenceNumber
-      });
-      return;
-    }
-  }
-
-  // Stringify the frame locator so it is properly quoted for injection.
-  id = JSON.stringify(id);
-  console.info('Looking up frame: ' + id);
-  var scriptTag = ChromeDriverContentScript.currentDocument.createElement('script');
-  scriptTag.innerHTML = ['(', findFrame, ')(', id, ');'].join('');
-  scriptTag.addEventListener('DOMAttrModified', function(e) {
-    if (e.prevValue == 'EXCEPTION') {
+  execute_('return (' + findFrame + ').apply(null, arguments);', [id], -1, function(response) {
+    if (response.statusCode) {
       ChromeDriverContentScript.port.postMessage({
         sequenceNumber: ChromeDriverContentScript.currentSequenceNumber,
         response: {
           response: 'switchToFrame',
-          value: {
-            statusCode: 8,
-            value: {
-              message: e.newValue
-            }
-          }
+          value: response
         }
       });
-    } else {
-      // Found our frame - tell it to activate itself with the background page.
-      // The sendFrameMessage function is defined in content_prescript.js which
-      // is loaded at document_start.
-      sendFrameMessage(parseInt(e.newValue), {
-        sequenceNumber: ChromeDriverContentScript.currentSequenceNumber,
-        request: 'activatePort'
-      });
+      return;
     }
-  }, false);
 
-  console.info('Injecting script:\n' + scriptTag.innerText);
-  try {
-    ChromeDriverContentScript.currentDocument.documentElement.appendChild(scriptTag);
-  } catch (ex) {
-    console.error('Error injecting script', ex.stack);
-    ChromeDriverContentScript.port.postMessage({
+    // Found our frame - tell it to activate itself with the background page.
+    // The sendFrameMessage function is defined in content_prescript.js which
+    // is loaded at document_start.
+    sendFrameMessage(response.value, {
       sequenceNumber: ChromeDriverContentScript.currentSequenceNumber,
-      response: {
-        response: 'switchToFrame',
-        value: {
-          statusCode: 8,
-          value: {
-            message: 'Error locating frame: ' + ex.stack
-          }
-        }
-      }
+      request: 'activatePort'
     });
-  }
+  });
 }
 
 /**

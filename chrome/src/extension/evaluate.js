@@ -147,7 +147,7 @@
       }
     } catch (e) {
       // "Unhandled JS error" == 17
-      sendResponse(e, 17);
+      sendResponse(e, e.status || 17);
     }
   }
   window.addEventListener('webdriver-evaluate', handleEvaluateEvent, true);
