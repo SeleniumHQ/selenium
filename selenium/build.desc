@@ -4,7 +4,8 @@ java_library(name = "selenium",
     "//chrome",
     "//jobbie",
     "//firefox",
-    "//support"
+    "//support",
+    "//third_party/java/testng",
   ],
   resources = [
     { "src/java/org/openqa/selenium/internal/seleniumemulation/injectableSelenium.js" : "org/openqa/selenium/internal/seleniumemulation/injectableSelenium.js" },
@@ -26,18 +27,13 @@ java_library(name = "test",
     "//common:test",
     "//selenium:server-with-tests:uber",
     "//third_party/java/easymock",
-    "//third_party/java/testng"
   ])
 
 java_test(name = "test-selenese",
   srcs = [ "test/java/**/*.java" ],
   deps = [
-    "//common:test",
-    "//firefox:test",
-    "//htmlunit",
-    "//selenium:server-with-tests:uber",
-    "//third_party/java/easymock",
-    "//third_party/java/testng"])
+    ":test"
+  ])
 
 java_test(name = "selenium_test",
   srcs = [ "test/java/**/*.java" ],
