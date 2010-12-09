@@ -141,7 +141,7 @@ describe "Driver" do
     end
   end
 
-  describe "#execute_script" do
+  describe "execute script" do
     it "should return strings" do
       driver.navigate.to url_for("xhtmlTest.html")
       driver.execute_script("return document.title;").should == "XHTML Test Page"
@@ -204,6 +204,60 @@ describe "Driver" do
     it "should be able to pass in multiple arguments" do
       driver.navigate.to url_for("javascriptPage.html")
       driver.execute_script("return arguments[0] + arguments[1];", "one", "two").should == "onetwo"
+    end
+  end
+
+  compliant_on :browser => :firefox do
+    describe "alerts" do
+      it "allows the user to accept an alert" do
+        driver.navigate.to url_for("alerts.html")
+        driver.find_element(:id => "alert").click
+
+        driver.switch_to.alert.accept
+
+        driver.title.should == "Testing Alerts"
+      end
+
+      it "allows the user to dismiss an alert" do
+        driver.navigate.to url_for("alerts.html")
+        driver.find_element(:id => "alert").click
+
+        driver.switch_to.alert.dismiss
+
+        driver.title.should == "Testing Alerts"
+      end
+
+      it "allows the user to set the value of a prompt" do
+        driver.navigate.to url_for("alerts.html")
+        driver.find_element(:id => "prompt").click
+
+        alert = driver.switch_to.alert
+        alert.send_keys "cheese"
+        alert.accept
+
+        text = driver.find_element(:id => "text").text
+        text.should == "cheese"
+      end
+
+      it "allows the user to get the text of an alert" do
+        driver.navigate.to url_for("alerts.html")
+        driver.find_element(:id => "alert").click
+
+        alert = driver.switch_to.alert
+        text = alert.text
+        alert.accept
+
+        text.should == "cheese"
+      end
+
+      # it "raises an UnhandledAlertError if an alert has not been dealt with" do
+      #   driver.navigate.to url_for("alerts.html")
+      #   driver.find_element(:id => "alert").click
+      #
+      #   lambda { driver.title }.should raise_error(Selenium::WebDriver::Error::UnhandledAlertError)
+      #
+      #   driver.title.should == "Testing Alerts"
+      # end
     end
   end
 

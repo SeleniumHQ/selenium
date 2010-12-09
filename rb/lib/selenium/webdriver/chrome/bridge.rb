@@ -73,6 +73,10 @@ module Selenium
           element.ref == other.ref
         end
 
+        %w[acceptAlert dismissAlert setAlertValue getAlertText].each do |m|
+          define_method(m) { |*args| raise NotImplementedError }
+        end
+
         private
 
         def execute(command_name, opts = {}, args = nil)

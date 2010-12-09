@@ -68,6 +68,14 @@ module Selenium
         @bridge.switchToDefaultContent
       end
 
+      #
+      # switches to the currently active modal dialog for this particular driver instance
+      #
+
+      def alert
+        Alert.new(@bridge)
+      end
+
     end # TargetLocator
   end # WebDriver
 end  # Selenium

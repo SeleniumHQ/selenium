@@ -104,6 +104,26 @@ module Selenium
           execute :setImplicitWaitTimeout, {}, :ms => milliseconds
         end
 
+        def setScriptTimeout(milliseconds)
+          execute :setScriptTimeout, {}, :ms => milliseconds
+        end
+
+        def acceptAlert
+          execute :acceptAlert
+        end
+
+        def dismissAlert
+          execute :dismissAlert
+        end
+
+        def setAlertValue(keys)
+          execute :setAlertValue, {}, :text => keys.to_s
+        end
+
+        def getAlertText
+          execute :getAlertText
+        end
+
         def goBack
           execute :goBack
         end

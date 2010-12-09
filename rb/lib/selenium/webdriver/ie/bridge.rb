@@ -473,6 +473,14 @@ module Selenium
           Dimension.new width.get_int(0), height.get_int(0)
         end
 
+        %w[acceptAlert dismissAlert setAlertValue getAlertText].each do |m|
+          define_method(m) { |*args| raise NotImplementedError }
+        end
+
+        #
+        # @api private
+        #
+
         def finalize(element_pointer)
           check_error_code Lib.wdeFreeElement(element_pointer),
                            "unable to finalize #{element_pointer} for #{self}"
