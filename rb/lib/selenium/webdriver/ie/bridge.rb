@@ -86,6 +86,10 @@ module Selenium
         end
 
         def switchToFrame(id)
+          if id.kind_of? Element
+            raise NotImplementedError
+          end
+
           check_error_code Lib.wdSwitchToFrame(@driver_pointer, wstring_ptr(id)),
                            "unable to locate frame #{id.inspect}"
         end
