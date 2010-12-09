@@ -4,6 +4,17 @@ describe "WebDriver::TargetLocator" do
   it "should switch to a frame" do
     driver.navigate.to url_for("iframes.html")
     driver.switch_to.frame("iframe1")
+
+    # TODO: expectations?
+  end
+
+  it "should switch to a frame by Element" do
+    driver.navigate.to url_for("iframes.html")
+
+    iframe = driver.find_element(:tag_name => "iframe")
+    driver.switch_to.frame(iframe)
+
+    # TODO: expectations?
   end
 
   it "should switch to a window" do
