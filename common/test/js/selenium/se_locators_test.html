@@ -20,6 +20,7 @@ limitations under the License.
   <title>se_locators_test.html</title>
   <script type="text/javascript" src="../webdriver-bootstrap.js"></script>
   <script type="text/javascript">
+    goog.require('bot.inject.cache');
     goog.require('bot.locators');
     goog.require('goog.testing.jsunit');
     goog.require('core.locators');
@@ -78,6 +79,21 @@ limitations under the License.
       var found = core.locators.findElement("alt=cheesey");
 
       assertEquals(expected, found);
+    }
+
+    function testCanUseWebDriverLocators() {
+      var expected = bot.locators.findElement({id: 'alt'});
+      var found = core.locators.findElement("webdriver=id:alt");
+
+      assertEquals(expected, found);
+    }
+
+    function testWillLookUpStoredElementReferences() {
+      var element = bot.locators.findElement({id: 'alt'});
+      var key = bot.inject.cache.addElement(element);
+
+      var found = core.locators.findElement("stored=" + key);
+      assertEquals(element, found);
     }
   </script>
 </head>

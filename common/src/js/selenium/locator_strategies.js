@@ -21,6 +21,7 @@ limitations under the License.
 
 goog.provide('core.LocatorStrategies');
 
+goog.require('bot.inject.cache');
 goog.require('bot.locators');
 goog.require('core.Error');
 goog.require('core.filters');
@@ -159,6 +160,26 @@ core.LocatorStrategies.name_ = function(locator, opt_doc) {
 };
 
 
+core.LocatorStrategies.stored_ = function(locator, opt_doc) {
+  return bot.inject.cache.getElement(locator, opt_doc);
+};
+
+
+core.LocatorStrategies.webdriver_ = function(locator, opt_doc) {
+  var index = locator.indexOf(':');
+  if (index == -1) {
+    throw new core.Error('WebDriver strategy not found: ' + locator);
+  }
+
+  var how = locator.substring(0, index);
+  var using = locator.substring(index + 1);
+
+  var by = {};
+  by[how] = using;
+
+  return bot.locators.findElement(by, opt_doc);
+};
+
 /**
  * Find an element using xpath.
  *
@@ -187,5 +208,7 @@ core.LocatorStrategies['id'] = core.LocatorStrategies.id_;
 core.LocatorStrategies['identifier'] = core.LocatorStrategies.identifier_;
 core.LocatorStrategies['implicit'] = core.LocatorStrategies.implicit_;
 core.LocatorStrategies['name'] = core.LocatorStrategies.name_;
+core.LocatorStrategies['stored'] = core.LocatorStrategies.stored_;
+core.LocatorStrategies['webdriver'] = core.LocatorStrategies.webdriver_;
 core.LocatorStrategies['xpath'] = core.LocatorStrategies.xpath_;
 
