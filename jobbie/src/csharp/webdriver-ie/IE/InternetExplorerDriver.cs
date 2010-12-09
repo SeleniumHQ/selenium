@@ -1040,6 +1040,16 @@ namespace OpenQA.Selenium.IE
             }
 
             /// <summary>
+            /// Move to a frame element.
+            /// </summary>
+            /// <param name="frameElement">a previously found FRAME or IFRAME element.</param>
+            /// <returns>A WebDriver instance that is currently in use.</returns>
+            public IWebDriver Frame(IWebElement frameElement)
+            {
+                throw new InvalidOperationException("Not yet implemented for the IE driver");
+            }
+
+            /// <summary>
             /// Change to the Window by passing in the name.
             /// </summary>
             /// <param name="windowName">name of the window that you wish to move to.</param>

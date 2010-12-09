@@ -7,6 +7,193 @@ namespace OpenQA.Selenium
     [TestFixture]
     public class FrameSwitchingTest : DriverTestFixture
     {
+        // ----------------------------------------------------------------------------------------------
+        //
+        // Tests that WebDriver doesn't do anything fishy when it navigates to a page with frames.
+        //
+        // ----------------------------------------------------------------------------------------------
+
+        [Test]
+        public void ShouldAlwaysFocusOnTheTopMostFrameAfterANavigationEvent()
+        {
+            driver.Url = framesetPage;
+            IWebElement element = driver.FindElement(By.TagName("frameset"));
+            Assert.IsNotNull(element);
+        }
+
+        [Test]
+        public void ShouldNotAutomaticallySwitchFocusToAnIFrameWhenAPageContainingThemIsLoaded()
+        {
+            driver.Url = iframePage;
+            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(1));
+            IWebElement element = driver.FindElement(By.Id("iframe_page_heading"));
+            Assert.IsNotNull(element);
+        }
+
+        // ----------------------------------------------------------------------------------------------
+        //
+        // Tests that WebDriver can switch to frames as expected.
+        //
+        // ----------------------------------------------------------------------------------------------
+
+        [Test]
+        public void ShouldBeAbleToSwitchToAFrameByItsIndex()
+        {
+            driver.Url = framesetPage;
+            driver.SwitchTo().Frame(1);
+
+            Assert.AreEqual("2", driver.FindElement(By.Id("pageNumber")).Text);
+        }
+
+        [Test]
+        public void ShouldBeAbleToSwitchToAnIframeByItsIndex()
+        {
+            driver.Url = iframePage;
+            driver.SwitchTo().Frame(0);
+
+            Assert.AreEqual("name", driver.FindElement(By.Name("id-name1")).Value);
+        }
+
+        [Test]
+        public void ShouldBeAbleToSwitchToAFrameByItsName()
+        {
+            driver.Url = framesetPage;
+            driver.SwitchTo().Frame("fourth");
+            Assert.AreEqual("child1", driver.FindElement(By.TagName("frame")).GetAttribute("name"));
+
+        }
+
+        [Test]
+        public void ShouldBeAbleToSwitchToAnIframeByItsName()
+        {
+            driver.Url = iframePage;
+            driver.SwitchTo().Frame("iframe1-name");
+            Assert.AreEqual("name", driver.FindElement(By.Name("id-name1")).Value);
+
+        }
+
+        [Test]
+        public void ShouldBeAbleToSwitchToAFrameByItsID()
+        {
+            driver.Url = framesetPage;
+            driver.SwitchTo().Frame("fifth");
+            Assert.AreEqual("Open new window", driver.FindElement(By.Name("windowOne")).Text);
+
+        }
+
+        [Test]
+        public void ShouldBeAbleToSwitchToAnIframeByItsID()
+        {
+            driver.Url = iframePage;
+            driver.SwitchTo().Frame("iframe1");
+            Assert.AreEqual("name", driver.FindElement(By.Name("id-name1")).Value);
+        }
+
+        [Test]
+        public void ShouldBeAbleToSwitchToAFrameUsingAPreviouslyLocatedWebElement()
+        {
+            driver.Url = framesetPage;
+            IWebElement frame = driver.FindElement(By.TagName("frame"));
+            driver.SwitchTo().Frame(frame);
+            Assert.AreEqual("1", driver.FindElement(By.Id("pageNumber")).Text);
+        }
+
+        //  @Ignore(value = SELENESE, reason = "switchTo().frame(WebElement) not supported with Selenium")
+        [Test]
+        public void ShouldBeAbleToSwitchToAnIFrameUsingAPreviouslyLocatedWebElement()
+        {
+            driver.Url = iframePage;
+            IWebElement frame = driver.FindElement(By.TagName("iframe"));
+            driver.SwitchTo().Frame(frame);
+            Assert.AreEqual("name", driver.FindElement(By.Name("id-name1")).Value);
+
+        }
+
+        [Test]
+        [ExpectedException(typeof(NoSuchFrameException))]
+        public void ShouldEnsureElementIsAFrameBeforeSwitching()
+        {
+            driver.Url = framesetPage;
+            IWebElement frame = driver.FindElement(By.TagName("frameset"));
+            driver.SwitchTo().Frame(frame);
+        }
+
+        [Test]
+        public void FrameSearchesShouldBeRelativeToTheCurrentlySelectedFrame()
+        {
+            driver.Url = framesetPage;
+
+            driver.SwitchTo().Frame("second");
+            Assert.AreEqual("2", driver.FindElement(By.Id("pageNumber")).Text);
+
+            try
+            {
+                driver.SwitchTo().Frame("third");
+                Assert.Fail();
+            }
+            catch (NoSuchFrameException)
+            {
+                // Do nothing
+            }
+
+            driver.SwitchTo().DefaultContent();
+            driver.SwitchTo().Frame("third");
+
+            try
+            {
+                driver.SwitchTo().Frame("second");
+                Assert.Fail();
+            }
+            catch (NoSuchFrameException)
+            {
+                // Do nothing
+            }
+
+            driver.SwitchTo().DefaultContent();
+            driver.SwitchTo().Frame("second");
+            Assert.AreEqual("2", driver.FindElement(By.Id("pageNumber")).Text);
+        }
+
+        [Test]
+        public void ShouldSelectChildFramesByChainedCalls()
+        {
+            driver.Url = framesetPage;
+            driver.SwitchTo().Frame("fourth").SwitchTo().Frame("child2");
+            Assert.AreEqual("11", driver.FindElement(By.Id("pageNumber")).Text);
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.IE)]
+        [ExpectedException(typeof(NoSuchFrameException))]
+        public void ShouldThrowFrameNotFoundExceptionLookingUpSubFramesWithSuperFrameNames()
+        {
+            driver.Url = framesetPage;
+            driver.SwitchTo().Frame("fourth");
+            driver.SwitchTo().Frame("second");
+
+        }
+
+        [Test]
+        [ExpectedException(typeof(NoSuchFrameException))]
+        public void ShouldThrowAnExceptionWhenAFrameCannotBeFound()
+        {
+            driver.Url = xhtmlTestPage;
+            driver.SwitchTo().Frame("Nothing here");
+        }
+
+        [Test]
+        [ExpectedException(typeof(NoSuchFrameException))]
+        public void ShouldThrowAnExceptionWhenAFrameCannotBeFoundByIndex()
+        {
+            driver.Url = xhtmlTestPage;
+            driver.SwitchTo().Frame(27);
+        }
+
+        // ----------------------------------------------------------------------------------------------
+        //
+        // General frame handling behavior tests
+        //
+        // ----------------------------------------------------------------------------------------------
         [Test]
         public void ShouldContinueToReferToTheSameFrameOnceItHasBeenSelected()
         {
@@ -17,17 +204,7 @@ namespace OpenQA.Selenium
             checkbox.Toggle();
             checkbox.Submit();
 
-            Assert.AreEqual(driver.FindElement(By.XPath("//p")).Text, "Success!");
-        }
-
-        [Test]
-        public void ShouldAutomaticallyUseTheFirstFrameOnAPage()
-        {
-            driver.Url = framesetPage;
-
-            // Notice that we've not switched to the 0th frame
-            IWebElement pageNumber = driver.FindElement(By.XPath("//span[@id='pageNumber']"));
-            Assert.AreEqual(pageNumber.Text.Trim(), "1");
+            Assert.AreEqual("Success!", driver.FindElement(By.XPath("//p")).Text);
         }
 
         [Test]
@@ -35,20 +212,13 @@ namespace OpenQA.Selenium
         {
             driver.Url = framesetPage;
 
+            driver.SwitchTo().Frame(0);
             driver.FindElement(By.LinkText("top")).Click();
-            
-            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromMilliseconds(1000));
-            
+
+            // TODO(simon): Avoid going too fast when native events are there.
+            System.Threading.Thread.Sleep(1000);
             Assert.AreEqual("XHTML Test Page", driver.Title);
             Assert.AreEqual("XHTML Test Page", driver.FindElement(By.XPath("/html/head/title")).Text);
-        }
-
-        [Test]
-        public void ShouldNotAutomaticallySwitchFocusToAnIFrameWhenAPageContainingThemIsLoaded()
-        {
-            driver.Url = iframePage;
-            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromMilliseconds(500));
-            driver.FindElement(By.Id("iframe_page_heading"));
         }
 
         [Test]
@@ -61,6 +231,7 @@ namespace OpenQA.Selenium
             driver.FindElement(By.Id("iframe_page_heading"));
         }
 
+
         [Test]
         [IgnoreBrowser(Browser.Chrome, "Can't execute script in iframe, track crbug 20773")]
         public void ShouldAllowTheUserToSwitchToAnIFrameAndRemainFocusedOnIt()
@@ -69,10 +240,8 @@ namespace OpenQA.Selenium
             driver.SwitchTo().Frame(0);
 
             driver.FindElement(By.Id("submitButton")).Click();
-            
-            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromMilliseconds(500));
-            
-            String hello = driver.FindElement(By.Id("greeting")).Text;
+
+            string hello = GetTextOfGreetingElement();
             Assert.AreEqual(hello, "Success!");
         }
 
@@ -82,13 +251,15 @@ namespace OpenQA.Selenium
             driver.Url = framesetPage;
             driver.SwitchTo().Frame("third");
 
+            // This should replace frame "third" ...
             driver.FindElement(By.Id("submitButton")).Click();
-            
-            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromMilliseconds(500));
-            
-            String hello = driver.FindElement(By.Id("greeting")).Text;
-            Assert.AreEqual(hello, "Success!");
-            driver.SwitchTo().DefaultContent();
+
+            // driver should still be focused on frame "third" ...
+            Assert.AreEqual("Success!", GetTextOfGreetingElement());
+
+            // Make sure it was really frame "third" which was replaced ...
+            driver.SwitchTo().DefaultContent().SwitchTo().Frame("third");
+            Assert.AreEqual("Success!", GetTextOfGreetingElement());
         }
 
         [Test]
@@ -97,85 +268,18 @@ namespace OpenQA.Selenium
         public void ShouldBeAbleToClickInASubFrame()
         {
             driver.Url = framesetPage;
-            driver.SwitchTo().Frame("sixth.iframe1");
+            driver.SwitchTo().Frame("sixth").SwitchTo().Frame("iframe1");
 
             // This should replaxe frame "iframe1" inside frame "sixth" ...
             driver.FindElement(By.Id("submitButton")).Click();
-            
+
             driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromMilliseconds(500));
             // driver should still be focused on frame "iframe1" inside frame "sixth" ...
-            String hello = driver.FindElement(By.Id("greeting")).Text;
-            Assert.AreEqual(hello, "Success!");
+            Assert.AreEqual("Success!", GetTextOfGreetingElement());
 
             // Make sure it was really frame "iframe1" inside frame "sixth" which was replaced ...
-            driver.SwitchTo().DefaultContent().SwitchTo().Frame("sixth.iframe1");
-            hello = driver.FindElement(By.Id("greeting")).Text;
-            Assert.AreEqual(hello, "Success!");
-        }
-
-        [Test]
-        public void ShouldBeAbleToSelectAFrameByName()
-        {
-            driver.Url = framesetPage;
-
-            driver.SwitchTo().Frame("second");
-            Assert.AreEqual(driver.FindElement(By.Id("pageNumber")).Text, "2");
-
-            driver.SwitchTo().Frame("third");
-            driver.FindElement(By.Id("changeme")).Select();
-
-            driver.SwitchTo().Frame("second");
-            Assert.AreEqual(driver.FindElement(By.Id("pageNumber")).Text, "2");
-        }
-
-        [Test]
-        public void ShouldSelectChildFramesByUsingADotSeparatedString()
-        {
-            driver.Url = framesetPage;
-
-            driver.SwitchTo().Frame("fourth.child2");
-            Assert.AreEqual(driver.FindElement(By.Id("pageNumber")).Text, "11");
-        }
-
-        [Test]
-        [IgnoreBrowser(Browser.IE)]
-        [IgnoreBrowser(Browser.Firefox)]
-        [IgnoreBrowser(Browser.Chrome)]
-        public void ShouldSelectChildFramesByChainedCalls()
-        {
-            driver.Url = framesetPage;
-
-            driver.SwitchTo().Frame("fourth").SwitchTo().Frame("child2");
-            Assert.AreEqual("11", driver.FindElement(By.Id("pageNumber")).Text);
-        }
-
-        [Test]
-        public void ShouldSwitchToChildFramesTreatingNumbersAsIndex()
-        {
-            driver.Url = framesetPage;
-
-            driver.SwitchTo().Frame("fourth.1");
-            Assert.AreEqual(driver.FindElement(By.Id("pageNumber")).Text, "11");
-        }
-
-        [Test]
-        [IgnoreBrowser(Browser.Firefox, "Frame parsing issue with both parent and child as indexes")]
-        public void ShouldSwitchToChildFramesTreatingParentAndChildNumbersAsIndex()
-        {
-            driver.Url = framesetPage;
-
-            driver.SwitchTo().Frame("3.1");
-            Assert.AreEqual(driver.FindElement(By.Id("pageNumber")).Text, "11");
-        }
-
-        [Test]
-        [IgnoreBrowser(Browser.Chrome)]
-        [ExpectedException(typeof(NoSuchFrameException))]
-        public void ShouldThrowFrameNotFoundExceptionLookingUpSubFramesWithSuperFrameNames()
-        {
-            driver.Url = framesetPage;
-            driver.SwitchTo().Frame("fourth.second");
-
+            driver.SwitchTo().DefaultContent().SwitchTo().Frame("sixth").SwitchTo().Frame("iframe1");
+            Assert.AreEqual("Success!", driver.FindElement(By.Id("greeting")).Text);
         }
 
         [Test]
@@ -196,42 +300,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [ExpectedException(typeof(NoSuchFrameException))]
-        public void ShouldThrowAnExceptionWhenAFrameCannotBeFound()
-        {
-            driver.Url = xhtmlTestPage;
-            driver.SwitchTo().Frame("Nothing here");
-        }
-
-        [Test]
-        [ExpectedException(typeof(NoSuchFrameException))]
-        public void ShouldThrowAnExceptionWhenAFrameCannotBeFoundByIndex()
-        {
-            driver.Url = xhtmlTestPage;
-            driver.SwitchTo().Frame(27);
-        }
-
-        [Test]
-        [IgnoreBrowser(Browser.IE, "As yet unimplemented")]
-        public void ShouldBeAbleToSwitchToTopLevelFrameWithDotInNameAssumingNoParentAndChildFrameExistWithTheSameName()
-        {
-            driver.Url = framesetPage;
-            driver.SwitchTo().Frame("seventh.withadot");
-            Assert.AreEqual("3", driver.FindElement(By.Id("pageNumber")).Text);
-        }
-
-        [Test]
-        public void ShouldBeAbleToFindElementsInIframesByName()
-        {
-            driver.Url = iframePage;
-
-            driver.SwitchTo().Frame("iframe1");
-            IWebElement element = driver.FindElement(By.Name("id-name1"));
-
-            Assert.IsNotNull(element);
-        }
-
-        [Test]
         public void ShouldBeAbleToFindElementsInIframesByXPath()
         {
             driver.Url = iframePage;
@@ -243,24 +311,24 @@ namespace OpenQA.Selenium
             Assert.IsNotNull(element);
         }
 
+        //@Ignore(value = IE, reason = "IE8 on Win7 is not correctly reporting the query string")
         [Test]
         public void GetCurrentUrl()
         {
-
             driver.Url = framesetPage;
 
             driver.SwitchTo().Frame("second");
-
-            String url = EnvironmentManager.Instance.UrlBuilder.WhereIs("page/2");
-            Assert.AreEqual(driver.Url, (url + "?title=Fish"));
+            string url = EnvironmentManager.Instance.UrlBuilder.WhereIs("page/2");
+            Assert.AreEqual(url + "?title=Fish", driver.Url);
 
             url = EnvironmentManager.Instance.UrlBuilder.WhereIs("iframes.html");
             driver.Url = iframePage;
-            Assert.AreEqual(driver.Url, url);
+            Assert.AreEqual(url, driver.Url);
+
 
             url = EnvironmentManager.Instance.UrlBuilder.WhereIs("formPage.html");
             driver.SwitchTo().Frame("iframe1");
-            Assert.AreEqual(driver.Url, url);
+            Assert.AreEqual(url, driver.Url);
         }
 
         [Test]
@@ -271,7 +339,7 @@ namespace OpenQA.Selenium
             driver.Url = deletingFrame;
             driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromMilliseconds(1000));
             driver.SwitchTo().Frame("iframe1");
-            
+
             IWebElement killIframe = driver.FindElement(By.Id("killIframe"));
             killIframe.Click();
 
@@ -307,13 +375,78 @@ namespace OpenQA.Selenium
             }
         }
 
+        //@Ignore(value = {IE, CHROME, SELENESE}, reason = "These drivers still return frame title.")
         [Test]
-        public void ShouldReturnFrameTitleNotWindowTitle()
+        public void ShouldReturnWindowTitleInAFrameset()
         {
             driver.Url = framesetPage;
             driver.SwitchTo().Frame("third");
-            Assert.AreEqual("We Leave From Here", driver.Title);
+            Assert.AreEqual("Unique title", driver.Title);
         }
 
+        //  @JavascriptEnabled
+        [Test]
+        public void JavaScriptShouldExecuteInTheContextOfTheCurrentFrame()
+        {
+            IJavaScriptExecutor executor = driver as IJavaScriptExecutor;
+
+            driver.Url = framesetPage;
+            Assert.IsTrue((bool)executor.ExecuteScript("return window === window.top"));
+
+            driver.SwitchTo().Frame("third");
+            Assert.IsTrue((bool)executor.ExecuteScript("return window !== window.top"));
+        }
+
+        // ----------------------------------------------------------------------------------------------
+        //
+        // Frame handling behavior tests not included in Java tests
+        //
+        // ----------------------------------------------------------------------------------------------
+
+        [Test]
+        public void ShouldBeAbleToSelectAFrameByName()
+        {
+            driver.Url = framesetPage;
+
+            driver.SwitchTo().Frame("second");
+            Assert.AreEqual(driver.FindElement(By.Id("pageNumber")).Text, "2");
+
+            driver.SwitchTo().DefaultContent().SwitchTo().Frame("third");
+            driver.FindElement(By.Id("changeme")).Select();
+
+            driver.SwitchTo().DefaultContent().SwitchTo().Frame("second");
+            Assert.AreEqual(driver.FindElement(By.Id("pageNumber")).Text, "2");
+        }
+
+        [Test]
+        public void ShouldBeAbleToFindElementsInIframesByName()
+        {
+            driver.Url = iframePage;
+
+            driver.SwitchTo().Frame("iframe1");
+            IWebElement element = driver.FindElement(By.Name("id-name1"));
+
+            Assert.IsNotNull(element);
+        }
+
+        private string GetTextOfGreetingElement()
+        {
+            string text = string.Empty;
+            DateTime end = DateTime.Now.Add(TimeSpan.FromMilliseconds(3000));
+            while (DateTime.Now < end)
+            {
+                try
+                {
+                    IWebElement element = driver.FindElement(By.Id("greeting"));
+                    text = element.Text;
+                    break;
+                }
+                catch (NoSuchElementException)
+                {
+                }
+            }
+
+            return text;
+        }
     }
 }

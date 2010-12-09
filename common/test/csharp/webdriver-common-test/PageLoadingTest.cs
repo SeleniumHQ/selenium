@@ -74,7 +74,7 @@ namespace OpenQA.Selenium
             IWebElement pageNumber = driver.FindElement(By.XPath("//span[@id='pageNumber']"));
             Assert.AreEqual(pageNumber.Text.Trim(), "1");
 
-            driver.SwitchTo().Frame(1);
+            driver.SwitchTo().DefaultContent().SwitchTo().Frame(1);
             pageNumber = driver.FindElement(By.XPath("//span[@id='pageNumber']"));
             Assert.AreEqual(pageNumber.Text.Trim(), "2");
         }

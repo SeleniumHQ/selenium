@@ -33,12 +33,6 @@ namespace OpenQA.Selenium
         /// <param name="frameIndex">The zero-based index of the frame to select.</param>
         /// <returns>An <see cref="IWebDriver"/> instance focused on the specified frame.</returns>
         /// <exception cref="NoSuchFrameException">If the frame cannot be found.</exception>
-        /// <remarks>The <see cref="Frame(System.Int32)"/> method finds frames by numeric index,
-        /// and the index is zero-based.That is, if a page has three frames, the first frame 
-        /// would be at index "0", the second at index "1" and the third at index "2". Once 
-        /// the frame has been selected, all subsequent calls on the IWebDriver interface are
-        /// made to that frame.
-        /// </remarks>
         IWebDriver Frame(int frameIndex);
 
         /// <summary>
@@ -47,13 +41,16 @@ namespace OpenQA.Selenium
         /// <param name="frameName">The name of the frame to select.</param>
         /// <returns>An <see cref="IWebDriver"/> instance focused on the specified frame.</returns>
         /// <exception cref="NoSuchFrameException">If the frame cannot be found.</exception>
-        /// <remarks>The <see cref="Frame(System.String)"/> method selects a frame by its 
-        /// name or ID. To select sub-frames, simply separate the frame names/IDs by dots.
-        /// As an example "main.child" will select the frame with the name "main" and then
-        /// it's child "child". If a frame name is a number, then it will be treated as 
-        /// selecting a frame as if using <see cref="Frame(System.Int32)"/>.
-        /// </remarks>
         IWebDriver Frame(string frameName);
+
+        /// <summary>
+        /// Select a frame using its previously located <see cref="IWebElement"/>
+        /// </summary>
+        /// <param name="frameElement">The frame element to switch to.</param>
+        /// <returns>An <see cref="IWebDriver"/> instance focused on the specified frame.</returns>
+        /// <exception cref="NoSuchFrameException">If the element is neither a FRAME nor an IFRAME element.</exception>
+        /// <exception cref="StaleElementReferenceException">If the element is no longer valid.</exception>
+        IWebDriver Frame(IWebElement frameElement);
 
         /// <summary>
         /// Switches the focus of future commands for this driver to the window with the given name.

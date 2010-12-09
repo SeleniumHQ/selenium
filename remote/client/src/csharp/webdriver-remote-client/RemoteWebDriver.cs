@@ -1305,6 +1305,33 @@ namespace OpenQA.Selenium.Remote
             }
 
             /// <summary>
+            /// Move to a frame element.
+            /// </summary>
+            /// <param name="frameElement">a previously found FRAME or IFRAME element.</param>
+            /// <returns>A WebDriver instance that is currently in use.</returns>
+            public IWebDriver Frame(IWebElement frameElement)
+            {
+                if (frameElement == null)
+                {
+                    throw new ArgumentNullException("frameElement", "Frame element cannot be null");
+                }
+
+                RemoteWebElement convertedElement = frameElement as RemoteWebElement;
+                if (convertedElement == null)
+                {
+                    throw new ArgumentException("frameElement cannot be converted to RemoteWebElement", "frameElement");
+                }
+
+                Dictionary<string, object> elementDictionary = new Dictionary<string, object>();
+                elementDictionary.Add("ELEMENT", convertedElement.InternalElementId);
+
+                Dictionary<string, object> parameters = new Dictionary<string, object>();
+                parameters.Add("id", elementDictionary);
+                driver.Execute(DriverCommand.SwitchToFrame, parameters);
+                return driver;
+            }
+
+            /// <summary>
             /// Change to the Window by passing in the name
             /// </summary>
             /// <param name="windowName">name of the window that you wish to move to</param>
