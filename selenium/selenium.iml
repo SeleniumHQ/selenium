@@ -16,7 +16,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../third_party/java/testng/testng-5.8-jdk15.jar!/" />
+          <root url="jar://$MODULE_DIR$/../third_party/java/testng/testng-5.14.1.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
