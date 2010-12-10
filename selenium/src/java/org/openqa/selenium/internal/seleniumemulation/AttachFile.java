@@ -17,8 +17,18 @@ limitations under the License.
 
 package org.openqa.selenium.internal.seleniumemulation;
 
+import com.google.common.io.Resources;
+import com.thoughtworks.selenium.SeleniumException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.firefox.internal.Streams;
+import org.openqa.selenium.internal.TemporaryFilesystem;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 public class AttachFile extends SeleneseCommand<Void> {
   private final ElementFinder finder;
@@ -29,9 +39,40 @@ public class AttachFile extends SeleneseCommand<Void> {
 
   @Override
   protected Void handleSeleneseCommand(WebDriver driver, String locator, String value) {
+    File file = downloadFile(value);
+
     WebElement element = finder.findElement(driver, locator);
     element.clear();
+    element.sendKeys(file.getAbsolutePath());
 
-    throw new UnsupportedOperationException("attachFile");
+    return null;
+  }
+
+  private File downloadFile(String name) {
+    URL url = getUrl(name);
+
+    File dir = TemporaryFilesystem.createTempDir("attachFile", "dir");
+    File outputTo = new File(dir, url.getFile());
+    if (!outputTo.getParentFile().mkdirs()) {
+      throw new SeleniumException("Cannot create file for upload: " + outputTo);
+    }
+
+    FileOutputStream fos = null;
+    try {
+      fos = new FileOutputStream(outputTo);
+      Resources.copy(url, fos);
+    } catch (IOException e) {
+
+    }
+
+    return outputTo;
+  }
+
+  private URL getUrl(String name) {
+    try {
+      return new URL(name);
+    } catch (MalformedURLException e) {
+      throw new SeleniumException("Malformed URL: " + name);
+    }
   }
 }
