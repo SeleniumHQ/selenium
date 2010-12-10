@@ -35,7 +35,6 @@
 #import "WebDriverResponse.h"
 #import "WebDriverUtilities.h"
 #import "WebViewController.h"
-#import "ApplicationCache.h"
 #import "Database.h"
 
 static NSString* const LOCAL_STORAGE = @"localStorage";

@@ -46,7 +46,6 @@
 		731C4511128BBF4000261249 /* GeoLocation.m in Sources */ = {isa = PBXBuildFile; fileRef = 731C450E128BBF4000261249 /* GeoLocation.m */; };
 		731C4512128BBF4000261249 /* Storage.m in Sources */ = {isa = PBXBuildFile; fileRef = 731C4510128BBF4000261249 /* Storage.m */; };
 		739E3625122D78A8002D739F /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 739E3624122D78A8002D739F /* CoreLocation.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
-		73A069371288AD010015202B /* ApplicationCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A069361288AD010015202B /* ApplicationCache.m */; };
 		73D14FCD1289B6540074E63B /* Database.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D14FCC1289B6540074E63B /* Database.m */; };
 		8301250C0EFF044900BA9BE6 /* Session.m in Sources */ = {isa = PBXBuildFile; fileRef = 839988650EE515C90074D106 /* Session.m */; };
 		8311AB7A0F44EF0500921B78 /* selenium-icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 8311AB790F44EF0500921B78 /* selenium-icon.png */; };
@@ -181,8 +180,6 @@
 		731C450F128BBF4000261249 /* Storage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Storage.h; sourceTree = "<group>"; };
 		731C4510128BBF4000261249 /* Storage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Storage.m; sourceTree = "<group>"; tabWidth = 1; usesTabs = 0; };
 		739E3624122D78A8002D739F /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
-		73A069351288AD010015202B /* ApplicationCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ApplicationCache.h; sourceTree = "<group>"; };
-		73A069361288AD010015202B /* ApplicationCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ApplicationCache.m; sourceTree = "<group>"; };
 		73D14FCB1289B6540074E63B /* Database.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Database.h; sourceTree = "<group>"; };
 		73D14FCC1289B6540074E63B /* Database.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Database.m; sourceTree = "<group>"; };
 		8311AB790F44EF0500921B78 /* selenium-icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "selenium-icon.png"; sourceTree = "<group>"; };
@@ -463,8 +460,6 @@
 				838B349D0F14630E00F72BC4 /* Element+FindElement.m */,
 				839049330F1ACEFD001A79B6 /* Attribute.h */,
 				839049340F1ACEFD001A79B6 /* Attribute.m */,
-				73A069351288AD010015202B /* ApplicationCache.h */,
-				73A069361288AD010015202B /* ApplicationCache.m */,
 				73D14FCB1289B6540074E63B /* Database.h */,
 				73D14FCC1289B6540074E63B /* Database.m */,
 			);
@@ -741,7 +736,6 @@
 				64D8AA4F1120B995001649CC /* NSURLRequest+IgnoreSSL.m in Sources */,
 				64D8AA691120B9EC001649CC /* HTTPVirtualDirectory+Remove.m in Sources */,
 				649AB342121D114A007FE128 /* Timeouts.m in Sources */,
-				73A069371288AD010015202B /* ApplicationCache.m in Sources */,
 				73D14FCD1289B6540074E63B /* Database.m in Sources */,
 				731C4511128BBF4000261249 /* GeoLocation.m in Sources */,
 				731C4512128BBF4000261249 /* Storage.m in Sources */,
