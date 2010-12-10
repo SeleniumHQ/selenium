@@ -71,7 +71,9 @@ module Selenium
         :f9           => "\xEE\x80\xB9",
         :f10          => "\xEE\x80\xBA",
         :f11          => "\xEE\x80\xBB",
-        :f12          => "\xEE\x80\xBC"
+        :f12          => "\xEE\x80\xBC",
+        :meta         => "\xEE\x80\xBD",
+        :command      => "\xEE\x80\xBD" # alias
       }
 
       def self.[](key)
