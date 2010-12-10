@@ -26,11 +26,11 @@ public class InternalSelenseTestNgBase extends SeleneseTestBase {
 
   @DataProvider(name = "system-properties")
   public Object[][] paramsFromProperties() {
-    Object[][] toReturn = new Object[1][2];
+    Object[][] toReturn = new Object[2][2];
 
     toReturn[0] = new Object[] { "selenium.browser", System.getProperty("selenium.browser") };
     toReturn[1] = new Object[] { "selenium.browser", System.getProperty("selenium.url") };
-
+    
     return toReturn;
   }
 
@@ -49,8 +49,6 @@ public class InternalSelenseTestNgBase extends SeleneseTestBase {
     if (url == null) {
       baseUrl = "http://localhost:" + port + "/selenium-server/tests/";
     }
-
-    System.out.println("Base url: " + baseUrl);
 
     if (getDriverClass(browser) != null) {
       selenium = new WebDriverBackedSelenium(new Supplier<WebDriver>() {
