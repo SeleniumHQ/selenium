@@ -17,11 +17,6 @@ limitations under the License.
 
 package org.openqa.selenium.remote;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Capabilities;
@@ -36,9 +31,19 @@ import org.openqa.selenium.Speed;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.internal.*;
+import org.openqa.selenium.internal.FindsByClassName;
+import org.openqa.selenium.internal.FindsById;
+import org.openqa.selenium.internal.FindsByLinkText;
+import org.openqa.selenium.internal.FindsByName;
+import org.openqa.selenium.internal.FindsByTagName;
+import org.openqa.selenium.internal.FindsByXPath;
 import org.openqa.selenium.remote.internal.JsonToWebElementConverter;
 import org.openqa.selenium.remote.internal.WebElementToJsonConverter;
+
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 import java.net.URL;
 import java.util.Date;
@@ -54,8 +59,6 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     HasInputDevices {
 
   private final ErrorHandler errorHandler = new ErrorHandler();
-  private final AsyncJavascriptExecutor asyncJsExecutor =
-      new AsyncJavascriptExecutor(this, 0, TimeUnit.MILLISECONDS);
 
   private CommandExecutor executor;
   private Capabilities capabilities;
@@ -297,7 +300,21 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
   }
 
   public Object executeAsyncScript(String script, Object... args) {
-    return asyncJsExecutor.executeScript(script, args);
+    if (!isJavascriptEnabled()) {
+      throw new UnsupportedOperationException("You must be using an underlying instance of " +
+          "WebDriver that supports executing javascript");
+    }
+
+    // Escape the quote marks
+    script = script.replaceAll("\"", "\\\"");
+
+    Iterable<Object> convertedArgs = Iterables.transform(
+        Lists.newArrayList(args), new WebElementToJsonConverter());
+
+    Map<String, ?> params = ImmutableMap.of(
+        "script", script, "args", Lists.newArrayList(convertedArgs));
+
+    return execute(DriverCommand.EXECUTE_ASYNC_SCRIPT, params).getValue();
   }
 
   public boolean isJavascriptEnabled() {
@@ -467,7 +484,8 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     }
 
     public Timeouts setScriptTimeout(long time, TimeUnit unit) {
-      asyncJsExecutor.setTimeout(time, unit);
+      execute(DriverCommand.SET_SCRIPT_TIMEOUT,
+          ImmutableMap.of("ms", TimeUnit.MILLISECONDS.convert(time, unit)));
       return this;
     }
   }

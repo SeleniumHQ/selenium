@@ -20,19 +20,11 @@ package org.openqa.selenium;
 import org.openqa.selenium.internal.FindsByCssSelector;
 import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.remote.internal.WebElementToJsonConverter;
-
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 public class SeleneseBackedWebDriver extends RemoteWebDriver implements FindsByCssSelector {
   public SeleneseBackedWebDriver() throws Exception {
@@ -60,41 +52,5 @@ public class SeleneseBackedWebDriver extends RemoteWebDriver implements FindsByC
 
   private static Capabilities describeBrowser() {
     return DesiredCapabilities.firefox();
-  }
-
-  // TODO(jleyba): Get rid of this once all RemoteWebDrivers handle async scripts.
-  @Override
-  public Object executeAsyncScript(String script, Object... args) {
-    // Escape the quote marks
-    script = script.replaceAll("\"", "\\\"");
-
-    Iterable<Object> convertedArgs = Iterables.transform(
-        Lists.newArrayList(args), new WebElementToJsonConverter());
-
-    Map<String, ?> params = ImmutableMap.of(
-        "script", script, "args", Lists.newArrayList(convertedArgs));
-
-    return execute(DriverCommand.EXECUTE_ASYNC_SCRIPT, params).getValue();
-  }
-
-  @Override
-  public Options manage() {
-    return new SeleneseOptions();
-  }
-
-  private class SeleneseOptions extends RemoteWebDriverOptions {
-    @Override
-    public Timeouts timeouts() {
-      return new SeleneseTimeouts();
-    }
-  }
-
-  private class SeleneseTimeouts extends RemoteTimeouts {
-    @Override
-    public Timeouts setScriptTimeout(long time, TimeUnit unit) {
-      execute(DriverCommand.SET_SCRIPT_TIMEOUT,
-          ImmutableMap.of("ms", TimeUnit.MILLISECONDS.convert(time, unit)));
-      return this;
-    }
   }
 }
