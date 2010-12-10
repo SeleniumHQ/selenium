@@ -13,9 +13,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-//@Ignore(value = ANDROID,
-//    reason = "Android is way too slow to use the current polling-only technique")
-@Ignore(value = SELENESE, reason = "Every test appears to be failing.")
 public class ExecutingAsyncJavascriptTest extends AbstractDriverTestCase {
 
   private JavascriptExecutor executor;
@@ -38,15 +35,21 @@ public class ExecutingAsyncJavascriptTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled @Test
-  public void shouldBeAbleToReturnJavascriptPrimitivesFromAsyncScripts() {
+  public void shouldBeAbleToReturnJavascriptPrimitivesFromAsyncScripts_NeitherNullNorUndefined() {
     driver.get(pages.ajaxyPage);
-    assertNull(executor.executeAsyncScript("arguments[arguments.length - 1](null);"));
-    assertNull(executor.executeAsyncScript("arguments[arguments.length - 1]();"));
-    assertEquals(123,
-        ((Number) executor.executeAsyncScript("arguments[arguments.length - 1](123);")).longValue());
+    assertEquals(123, ((Number) executor.executeAsyncScript(
+        "arguments[arguments.length - 1](123);")).longValue());
     assertEquals("abc", executor.executeAsyncScript("arguments[arguments.length - 1]('abc');"));
     assertFalse((Boolean) executor.executeAsyncScript("arguments[arguments.length - 1](false);"));
     assertTrue((Boolean) executor.executeAsyncScript("arguments[arguments.length - 1](true);"));
+  }
+
+  @JavascriptEnabled @Test
+  @Ignore(value = {SELENESE}, reason = "SeleniumRC cannot return null values.")
+  public void shouldBeAbleToReturnJavascriptPrimitivesFromAsyncScripts_NullAndUndefined() {
+    driver.get(pages.ajaxyPage);
+    assertNull(executor.executeAsyncScript("arguments[arguments.length - 1](null)"));
+    assertNull(executor.executeAsyncScript("arguments[arguments.length - 1]()"));
   }
 
   @JavascriptEnabled @Test

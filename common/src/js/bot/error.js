@@ -45,12 +45,14 @@ bot.ErrorCode = {
   INVALID_ELEMENT_STATE: 12,
   UNKNOWN_ERROR: 13,
   ELEMENT_NOT_SELECTABLE: 15,
+  UNHANDLED_JS_ERROR: 17,
   XPATH_LOOKUP_ERROR: 19,
   NO_SUCH_WINDOW: 23,
   INVALID_COOKIE_DOMAIN: 24,
   UNABLE_TO_SET_COOKIE: 25,
   MODAL_DIALOG_OPENED: 26,
-  MODAL_DIALOG_OPEN: 27
+  MODAL_DIALOG_OPEN: 27,
+  SCRIPT_TIMEOUT: 28
 };
 
 
@@ -98,7 +100,10 @@ bot.Error.NAMES_ = goog.object.transpose({
   'XPathLookupError': bot.ErrorCode.XPATH_LOOKUP_ERROR,
   'NoSuchWindowError': bot.ErrorCode.NO_SUCH_WINDOW,
   'InvalidCookieDomainError': bot.ErrorCode.INVALID_COOKIE_DOMAIN,
-  'UnableToSetCookieError': bot.ErrorCode.UNABLE_TO_SET_COOKIE
+  'UnableToSetCookieError': bot.ErrorCode.UNABLE_TO_SET_COOKIE,
+  'ModalDialogOpenedError': bot.ErrorCode.MODAL_DIALOG_OPENED,
+  'ModalDialogOpenError': bot.ErrorCode.MODAL_DIALOG_OPEN,
+  'ScriptTimeoutError': bot.ErrorCode.SCRIPT_TIMEOUT
 });
 
 

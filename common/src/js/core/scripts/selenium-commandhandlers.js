@@ -332,7 +332,14 @@ AccessorHandler.prototype.execute = function(seleniumApi, command) {
 };
 
 function AccessorResult(result) {
+  if (result.terminationCondition) {
+    var self = this;
+    this.terminationCondition = function() {
+      return result.terminationCondition.call(self);
+    };
+  } else {
     this.result = result;
+  }
 }
 
 /**

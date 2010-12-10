@@ -17,21 +17,38 @@ limitations under the License.
 
 package org.openqa.selenium;
 
-import java.io.File;
-import java.net.URL;
-import java.util.Map;
-
-import com.google.common.collect.Maps;
-import com.thoughtworks.selenium.CommandProcessor;
-import com.thoughtworks.selenium.DefaultSelenium;
-import com.thoughtworks.selenium.HttpCommandProcessor;
-import com.thoughtworks.selenium.Selenium;
-import com.thoughtworks.selenium.SeleniumException;
+import static org.openqa.selenium.remote.DriverCommand.CLEAR_ELEMENT;
+import static org.openqa.selenium.remote.DriverCommand.CLICK_ELEMENT;
+import static org.openqa.selenium.remote.DriverCommand.CLOSE;
+import static org.openqa.selenium.remote.DriverCommand.EXECUTE_ASYNC_SCRIPT;
+import static org.openqa.selenium.remote.DriverCommand.EXECUTE_SCRIPT;
+import static org.openqa.selenium.remote.DriverCommand.FIND_ELEMENT;
+import static org.openqa.selenium.remote.DriverCommand.GET;
+import static org.openqa.selenium.remote.DriverCommand.GET_CURRENT_URL;
+import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_ATTRIBUTE;
+import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_TAG_NAME;
+import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_TEXT;
+import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_VALUE;
+import static org.openqa.selenium.remote.DriverCommand.GET_PAGE_SOURCE;
+import static org.openqa.selenium.remote.DriverCommand.GET_TITLE;
+import static org.openqa.selenium.remote.DriverCommand.IMPLICITLY_WAIT;
+import static org.openqa.selenium.remote.DriverCommand.IS_ELEMENT_DISPLAYED;
+import static org.openqa.selenium.remote.DriverCommand.IS_ELEMENT_ENABLED;
+import static org.openqa.selenium.remote.DriverCommand.IS_ELEMENT_SELECTED;
+import static org.openqa.selenium.remote.DriverCommand.NEW_SESSION;
+import static org.openqa.selenium.remote.DriverCommand.QUIT;
+import static org.openqa.selenium.remote.DriverCommand.SEND_KEYS_TO_ELEMENT;
+import static org.openqa.selenium.remote.DriverCommand.SET_ELEMENT_SELECTED;
+import static org.openqa.selenium.remote.DriverCommand.SET_SCRIPT_TIMEOUT;
+import static org.openqa.selenium.remote.DriverCommand.SUBMIT_ELEMENT;
+import static org.openqa.selenium.remote.DriverCommand.SWITCH_TO_FRAME;
+import static org.openqa.selenium.remote.DriverCommand.TOGGLE_ELEMENT;
 
 import org.openqa.selenium.firefox.internal.Executable;
 import org.openqa.selenium.internal.selenesedriver.ClearElement;
 import org.openqa.selenium.internal.selenesedriver.ClickElement;
 import org.openqa.selenium.internal.selenesedriver.Close;
+import org.openqa.selenium.internal.selenesedriver.ExecuteAsyncScript;
 import org.openqa.selenium.internal.selenesedriver.ExecuteScript;
 import org.openqa.selenium.internal.selenesedriver.FindElement;
 import org.openqa.selenium.internal.selenesedriver.GetCurrentUrl;
@@ -61,9 +78,16 @@ import org.openqa.selenium.remote.ErrorCodes;
 import org.openqa.selenium.remote.JsonToBeanConverter;
 import org.openqa.selenium.remote.Response;
 
-import static org.openqa.selenium.remote.DriverCommand.*;
-import static org.openqa.selenium.remote.DriverCommand.CLOSE;
-import static org.openqa.selenium.remote.DriverCommand.SWITCH_TO_FRAME;
+import com.google.common.collect.Maps;
+import com.thoughtworks.selenium.CommandProcessor;
+import com.thoughtworks.selenium.DefaultSelenium;
+import com.thoughtworks.selenium.HttpCommandProcessor;
+import com.thoughtworks.selenium.Selenium;
+import com.thoughtworks.selenium.SeleniumException;
+
+import java.io.File;
+import java.net.URL;
+import java.util.Map;
 
 public class SeleneseCommandExecutor implements CommandExecutor {
   private final ErrorCodes errorCodes;
@@ -130,12 +154,15 @@ public class SeleneseCommandExecutor implements CommandExecutor {
 
   private void prepareCommands() {
     FindElement findElement = new FindElement();
+    ExecuteAsyncScript executeAsyncScript = new ExecuteAsyncScript();
 
     addCommand(CLEAR_ELEMENT, new ClearElement());
     addCommand(CLICK_ELEMENT, new ClickElement());
     addCommand(CLOSE, new Close());
     addCommand(GET_CURRENT_URL, new GetCurrentUrl());
     addCommand(EXECUTE_SCRIPT, new ExecuteScript());
+    addCommand(EXECUTE_ASYNC_SCRIPT, executeAsyncScript);
+    addCommand(SET_SCRIPT_TIMEOUT, executeAsyncScript.setScriptTimeout());
     addCommand(FIND_ELEMENT, findElement);
     addCommand(IMPLICITLY_WAIT, findElement.implicitlyWait());
     addCommand(GET, new GetUrl());
