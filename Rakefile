@@ -325,7 +325,7 @@ end
 # Installs the webdriver python bindings using virtualenv for testing.
 task :webdriver_py do
   if python? then
-    virtualenv = "virtualenv build/python"
+    virtualenv = "virtualenv --no-site-packages build/python"
     pip_install = 'build/python/bin/' + "pip install simplejson py pytest"
     if (windows?) then
        virtualenv = "virtualenv build\\python"
