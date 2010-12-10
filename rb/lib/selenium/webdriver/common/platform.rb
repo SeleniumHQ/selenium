@@ -27,7 +27,7 @@ module Selenium
         @os ||= (
           host_os = RbConfig::CONFIG['host_os']
           case host_os
-          when /mswin|msys|mingw32/
+          when /mswin|msys|mingw32|cygwin/
             :windows
           when /darwin|mac os/
             :macosx

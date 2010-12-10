@@ -15,7 +15,7 @@ rubygem(
   gemdeps = [
     { "json_pure"    : ">= 0"     },
     { "rubyzip"      : ">= 0"     },
-    { "childprocess" : "0.1.4" },
+    { "childprocess" : "~> 0.1.4" },
     { "ffi"          : "~> 0.6.3" }
   ],
   devdeps = [
