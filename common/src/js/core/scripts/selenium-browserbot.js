@@ -1507,6 +1507,18 @@ BrowserBot.prototype.locateElementByDomTraversal = function(domTraversal, docume
 
 BrowserBot.prototype.locateElementByDomTraversal.prefix = "dom";
 
+
+BrowserBot.prototype.locateElementByStoredReference = function(locator, document, window) {
+  return core.locators.findElement("stored=" + locator);
+};
+BrowserBot.prototype.locateElementByStoredReference.prefix = "stored";
+
+
+BrowserBot.prototype.locateElementByWebDriver = function(locator, document, window) {
+  return core.locators.findElement("webdriver=" + locator);
+};
+BrowserBot.prototype.locateElementByStoredReference.prefix = "webdriver";
+
 /**
  * Finds an element identified by the xpath expression. Expressions _must_
  * begin with "//".

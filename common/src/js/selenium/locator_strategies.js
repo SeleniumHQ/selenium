@@ -160,11 +160,43 @@ core.LocatorStrategies.name_ = function(locator, opt_doc) {
 };
 
 
+/**
+ * Find an element by the value of an opaque key.
+ *
+ * @param {string} locator The value of the locator to use.
+ * @param {Document=} opt_doc The document to start the search from.
+ * @return {Element} The located element.
+ * @private
+ */
 core.LocatorStrategies.stored_ = function(locator, opt_doc) {
   return bot.inject.cache.getElement(locator, opt_doc);
 };
 
 
+/**
+ * Map of names used by the remote webdriver protocol and the names used
+ * internally by webdriver.
+ *
+ * @const
+ * @type {string}
+ */
+core.LocatorStrategies.WIRE_PROTOCOL_NAMES_ = {
+  'css selectors': 'css',
+  'class name': 'className',
+  'link text': 'linkText',
+  'partial link text': 'partialLinkText',
+  'tag name': 'tagName'
+};
+
+
+/**
+ * Find an element by delegating to the mechanism used by webdriver.
+ *
+ * @param {string} locator The value of the locator to use.
+ * @param {Document=} opt_doc The document to start the search from.
+ * @return {Element} The located element.
+ * @private
+ */
 core.LocatorStrategies.webdriver_ = function(locator, opt_doc) {
   var index = locator.indexOf(':');
   if (index == -1) {
@@ -175,10 +207,11 @@ core.LocatorStrategies.webdriver_ = function(locator, opt_doc) {
   var using = locator.substring(index + 1);
 
   var by = {};
-  by[how] = using;
+  by[how] = core.LocatorStrategies.WIRE_PROTOCOL_NAMES_[using] || using;
 
   return bot.locators.findElement(by, opt_doc);
 };
+
 
 /**
  * Find an element using xpath.
