@@ -1,13 +1,8 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
 <suite name="selenium-tests" verbose="1">
     <test name="selenium-tests">
-        <groups>
-            <!--<run>-->
-                <!--<include name="single"/>-->
-            <!--</run>-->
-        </groups>
         <packages>
-            <package name="org.openqa.selenium"/>
+            <package name="com.thoughtworks.selenium.corebased"/>
         </packages>
     </test>
 </suite>

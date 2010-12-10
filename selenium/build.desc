@@ -45,6 +45,30 @@ java_test(name = "selenium_test",
   ],
   args = "selenium/test/java/webdriver-selenium-suite.xml")
 
+java_test(name = "firefox-rc-tests",
+  deps = [ ":test" ],
+  main = "org.testng.TestNG",
+  sysproperties = [
+    { "selenium.browser" : "*chrome" },
+  ],
+  args = "selenium/test/java/testng.xml")
+
+java_test(name = "ie-rc-tests",
+  deps = [ ":test" ],
+  main = "org.testng.TestNG",
+  sysproperties = [
+    { "selenium.browser" : "*iexplore" },
+  ],
+  args = "selenium/test/java/testng.xml")
+
+java_test(name = "safari-rc-tests",
+  deps = [ ":test" ],
+  main = "org.testng.TestNG",
+  sysproperties = [
+    { "selenium.browser" : "*safari" },
+  ],
+  args = "selenium/test/java/testng.xml")
+
 java_test(name = "single",
   srcs = [ "test/java/org/openqa/selenium/SingleTestSuite.java" ],
   deps = [
