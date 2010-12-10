@@ -1509,15 +1509,23 @@ BrowserBot.prototype.locateElementByDomTraversal.prefix = "dom";
 
 
 BrowserBot.prototype.locateElementByStoredReference = function(locator, document, window) {
-  return core.locators.findElement("stored=" + locator);
+  try {
+    return core.locators.findElement("stored=" + locator);
+  } catch (e) {
+    return null;
+  }
 };
 BrowserBot.prototype.locateElementByStoredReference.prefix = "stored";
 
 
 BrowserBot.prototype.locateElementByWebDriver = function(locator, document, window) {
-  return core.locators.findElement("webdriver=" + locator);
+  try {
+    return core.locators.findElement("webdriver=" + locator);
+  } catch (e) {
+    return null;
+  }
 };
-BrowserBot.prototype.locateElementByStoredReference.prefix = "webdriver";
+BrowserBot.prototype.locateElementByWebDriver.prefix = "webdriver";
 
 /**
  * Finds an element identified by the xpath expression. Expressions _must_

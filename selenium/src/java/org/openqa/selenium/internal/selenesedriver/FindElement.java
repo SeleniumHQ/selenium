@@ -17,11 +17,13 @@ limitations under the License.
 
 package org.openqa.selenium.internal.selenesedriver;
 
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.WebDriverException;
-
+import com.google.common.base.Charsets;
+import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableMap;
 import com.thoughtworks.selenium.Selenium;
+import com.thoughtworks.selenium.SeleniumException;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.WebDriverException;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -29,7 +31,12 @@ import java.util.Map;
 
 public class FindElement implements SeleneseFunction<Map<String, String>> {
 
+  private final static String SCRIPT =
+      "var e = selenium.browserbot.findElement('%s');" +
+      "bot.inject.cache.addElement(e);";
+
   private long implicitlyWait = 0;
+
 
   public Map<String, String> apply(Selenium selenium, Map<String, ?> args) {
     String how = (String) args.get("using");
@@ -43,7 +50,7 @@ public class FindElement implements SeleneseFunction<Map<String, String>> {
     } else if ("id".equals(how)) {
       locator = "id=" + using;
     } else if ("link text".equals(how)) {
-      locator = "link=" + using; 
+      locator = "link=" + using;
     } else if ("name".equals(how)) {
       locator = "name=" + using;
     } else if ("tag name".equals(how)) {
@@ -55,22 +62,27 @@ public class FindElement implements SeleneseFunction<Map<String, String>> {
     }
 
     if (locator != null) {
+      locator = String.format(SCRIPT, locator.replaceAll("'", "\\\\'"));
+
       long startTime = System.currentTimeMillis();
       do {
-        if (selenium.isElementPresent(locator)) {
-          // Escape the locator
-          try {
-            locator = URLEncoder.encode(locator, "utf-8");
-          } catch (UnsupportedEncodingException e) {
-            // Deeply unlikely if we're running on a conforming JVM
-            throw new RuntimeException(e);
-          }
-          return ImmutableMap.of("ELEMENT", locator);
+        try {
+          String key = selenium.getEval(locator);
+
+          key = URLEncoder.encode(key, "utf-8");
+
+          return ImmutableMap.of("ELEMENT", "stored=" + key);
+        } catch (SeleniumException e) {
+          // Ignore. The element couldn't be found
+        } catch (UnsupportedEncodingException e) {
+          // This really can't happen on a conforming JVM
+          throw Throwables.propagate(e);
         }
       } while (System.currentTimeMillis() - startTime <= implicitlyWait);
     }
 
-    throw new NoSuchElementException("Cannot find element using " + locator);
+    throw new NoSuchElementException(
+        String.format("Cannot find element using %s=%s ", how, using));
   }
 
   public ImplicitWait implicitlyWait() {

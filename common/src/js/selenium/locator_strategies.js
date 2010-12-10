@@ -169,7 +169,11 @@ core.LocatorStrategies.name_ = function(locator, opt_doc) {
  * @private
  */
 core.LocatorStrategies.stored_ = function(locator, opt_doc) {
-  return bot.inject.cache.getElement(locator, opt_doc);
+  try {
+    return bot.inject.cache.getElement(locator, opt_doc);
+  } catch (e) {
+    return null;
+  }
 };
 
 

@@ -39,7 +39,7 @@ public class SingleTestSuite extends TestCase {
   private static final String SELENIUM = "org.openqa.selenium.SeleneseBackedWebDriver";
 
   public static Test suite() throws Exception {
-    String driver = FIREFOX;
+    String driver = SELENIUM;
 
     System.setProperty("jna.library.path", "..\\build;build");
     System.setProperty("webdriver.selenium.server.port", String.valueOf(findFreePort()));
@@ -54,10 +54,10 @@ public class SingleTestSuite extends TestCase {
         .usingDriver(driver)
         .keepDriverInstance()
         .includeJavascriptTests()
-        .onlyRun("AlertsTest")
-        .method("testShouldAllowTheUserToGetTheTextOfAnAlert")
+        .onlyRun("ElementFindingTest")
+//        .method("testShouldIndicateTheElementsThatAreDisabledAreNotEnabled")
         .exclude(ALL)
-        .exclude(Ignore.Driver.FIREFOX)
+        .exclude(Ignore.Driver.SELENESE)
         .outputTestNames()
         .leaveRunning()
         ;  // Yeah, this look strange :)

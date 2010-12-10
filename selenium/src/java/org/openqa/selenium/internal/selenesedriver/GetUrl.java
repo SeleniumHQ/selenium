@@ -18,12 +18,20 @@ limitations under the License.
 package org.openqa.selenium.internal.selenesedriver;
 
 import com.thoughtworks.selenium.Selenium;
+import com.thoughtworks.selenium.SeleniumException;
 
 import java.util.Map;
 
 public class GetUrl implements SeleneseFunction<Void> {
   public Void apply(Selenium selenium, Map<String, ?> args) {
-    selenium.open((String) args.get("url"));
+    selenium.open((String) args.get("url"), "true");
+
+    // WebDriver blocks until the page is loaded.
+    try {
+      selenium.waitForPageToLoad("30");
+    } catch (SeleniumException e) {
+      // Well, we say webdriver blocks, it doesn't always.
+    }
     return null;
   }
 }

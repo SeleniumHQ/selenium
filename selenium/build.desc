@@ -48,6 +48,7 @@ java_test(name = "selenium_test",
 java_test(name = "firefox-rc-tests",
   deps = [ ":test" ],
   main = "org.testng.TestNG",
+  
   sysproperties = [
     { "selenium.browser" : "*chrome" },
   ],
