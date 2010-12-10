@@ -321,6 +321,11 @@ class WebDriver(object):
 
     def add_cookie(self, cookie_dict):
         self._execute(Command.ADD_COOKIE, {'cookie': cookie_dict})
+    
+    # Timeouts
+    def implicitly_wait(self, time_to_wait):
+        """Get the driver to poll for the element """
+        self._execute(Command.IMPLICIT_WAIT, {'ms': time_to_wait*1000})
 
     def _find_element_by(self, by, value):
         return self._execute(Command.FIND_ELEMENT,

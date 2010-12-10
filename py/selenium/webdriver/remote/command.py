@@ -76,3 +76,4 @@ class Command(object):
     GET_ELEMENT_VALUE_OF_CSS_PROPERTY = "getElementValueOfCssProperty"
     ELEMENT_EQUALS = "elementEquals"
     SCREENSHOT = "screenshot"
+    IMPLICIT_WAIT = "implicitlyWait"
