@@ -5,7 +5,7 @@ import com.thoughtworks.selenium.InternalSelenseTestNgBase;
 import org.testng.annotations.Test;
 
 public class TestSubmit extends InternalSelenseTestNgBase {
-	@Test public void testSubmit() throws Exception {
+	@Test(dataProvider = "system-properties") public void testSubmit() throws Exception {
 		selenium.open("../tests/html/test_submit.html");
 		selenium.submit("searchForm");
 		assertEquals(selenium.getAlert(), "onsubmit called");

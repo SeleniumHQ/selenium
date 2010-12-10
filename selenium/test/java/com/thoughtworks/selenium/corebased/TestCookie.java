@@ -6,7 +6,7 @@ import com.thoughtworks.selenium.InternalSelenseTestNgBase;
 import org.testng.annotations.Test;
 
 public class TestCookie extends InternalSelenseTestNgBase {
-	@Test public void testCookie() throws Exception {
+	@Test(dataProvider = "system-properties") public void testCookie() throws Exception {
 		String base = selenium.getEval("parseUrl(canonicalize(absolutify(\"html\", selenium.browserbot.baseUrl))).pathname;");
 		System.out.println(base);
 		selenium.open(base + "/path1/cookie1.html");

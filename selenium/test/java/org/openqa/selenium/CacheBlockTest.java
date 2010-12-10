@@ -7,7 +7,7 @@ import static org.testng.Assert.assertNotNull;
 
 public class CacheBlockTest extends InternalSelenseTestNgBase {
 
-    @Test
+    @Test(dataProvider = "system-properties")
     public void testCacheBlock() throws Exception {
         selenium.open("/selenium-server/cachedContentTest");
         String text = selenium.getBodyText();

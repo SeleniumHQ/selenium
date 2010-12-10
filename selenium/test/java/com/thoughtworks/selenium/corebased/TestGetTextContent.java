@@ -4,7 +4,7 @@ import com.thoughtworks.selenium.InternalSelenseTestNgBase;
 import org.testng.annotations.Test;
 
 public class TestGetTextContent extends InternalSelenseTestNgBase {
-	@Test public void testGetTextContent() throws Exception {
+	@Test(dataProvider = "system-properties") public void testGetTextContent() throws Exception {
 		selenium.open("../tests/html/test_gettextcontent.html");
 		verifyTrue(selenium.isTextPresent("Text1"));
 		verifyFalse(selenium.isTextPresent("Text2"));

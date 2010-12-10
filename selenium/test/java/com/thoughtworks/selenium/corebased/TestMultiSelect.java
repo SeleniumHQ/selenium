@@ -4,7 +4,7 @@ import com.thoughtworks.selenium.InternalSelenseTestNgBase;
 import org.testng.annotations.Test;
 
 public class TestMultiSelect extends InternalSelenseTestNgBase {
-	@Test public void testMultiSelect() throws Exception {
+	@Test(dataProvider = "system-properties") public void testMultiSelect() throws Exception {
 		selenium.open("../tests/html/test_multiselect.html");
 		assertEquals(join(selenium.getSelectedLabels("theSelect"), ','), "Second Option");
 		selenium.select("theSelect", "index=4");

@@ -5,7 +5,7 @@ import com.thoughtworks.selenium.InternalSelenseTestNgBase;
 import org.testng.annotations.Test;
 
 public class TestConfirmations extends InternalSelenseTestNgBase {
-	@Test public void testConfirmations() throws Exception {
+	@Test(dataProvider = "system-properties") public void testConfirmations() throws Exception {
 		selenium.open("../tests/html/test_confirm.html");
 		selenium.chooseCancelOnNextConfirmation();
 		selenium.click("confirmAndLeave");

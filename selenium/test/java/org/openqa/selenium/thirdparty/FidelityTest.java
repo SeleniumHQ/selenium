@@ -8,7 +8,7 @@ public class FidelityTest extends InternalSelenseTestNgBase {
     
     long timeout = 60000;
     
-    @Test
+    @Test(dataProvider = "system-properties")
     public void stockSearch() {
         selenium.open("https://www.fidelity.com/");
         selenium.click("link=Research");

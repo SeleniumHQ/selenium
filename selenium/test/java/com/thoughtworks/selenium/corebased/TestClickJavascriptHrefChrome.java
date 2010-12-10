@@ -4,7 +4,7 @@ import com.thoughtworks.selenium.InternalSelenseTestNgBase;
 import org.testng.annotations.Test;
 
 public class TestClickJavascriptHrefChrome extends InternalSelenseTestNgBase {
-	@Test public void testClickJavascriptHrefChrome() throws Exception {
+	@Test(dataProvider = "system-properties") public void testClickJavascriptHrefChrome() throws Exception {
 		selenium.open("../tests/html/test_click_javascript_chrome_page.html");
 		selenium.click("id=a");
 		verifyEquals(selenium.getAlert(), "a");

@@ -6,7 +6,7 @@ import org.testng.annotations.Test;
 
 public class MultiDomainTest extends InternalSelenseTestNgBase {
 
-    @Test
+    @Test(dataProvider = "system-properties")
     public void testMultipleDomains() {
         // DGF This test isn't REALLY a multi-domain test; we're visiting /selenium-server on multi-domains
         // still, non-PI & non-proxy modes can't pass this test.

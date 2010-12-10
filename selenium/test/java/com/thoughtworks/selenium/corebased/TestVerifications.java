@@ -4,7 +4,7 @@ import com.thoughtworks.selenium.InternalSelenseTestNgBase;
 import org.testng.annotations.Test;
 
 public class TestVerifications extends InternalSelenseTestNgBase {
-	@Test public void testVerifications() throws Exception {
+	@Test(dataProvider = "system-properties") public void testVerifications() throws Exception {
 		selenium.open("../tests/html/test_verifications.html?foo=bar");
 		verifyTrue(selenium.getLocation().matches("^[\\s\\S]*/tests/html/test_verifications\\.html[\\s\\S]*$"));
 		verifyTrue(selenium.getLocation().matches("^[\\s\\S]*/tests/html/test_verifications\\.html[\\s\\S]foo=bar$"));

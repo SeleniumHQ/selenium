@@ -5,7 +5,7 @@ import org.testng.annotations.Test;
 
 public class GoogleVideoTest extends InternalSelenseTestNgBase {
     
-    @Test
+    @Test(dataProvider = "system-properties")
     public void testGoogle() {
         selenium.open("http://video.google.com");
         selenium.type("q", "hello world");

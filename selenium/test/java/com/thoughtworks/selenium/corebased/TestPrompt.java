@@ -5,7 +5,7 @@ import com.thoughtworks.selenium.InternalSelenseTestNgBase;
 import org.testng.annotations.Test;
 
 public class TestPrompt extends InternalSelenseTestNgBase {
-	@Test public void testPrompt() throws Exception {
+	@Test(dataProvider = "system-properties") public void testPrompt() throws Exception {
 		selenium.open("../tests/html/test_prompt.html");
 		verifyFalse(selenium.isPromptPresent());
 		assertFalse(selenium.isPromptPresent());

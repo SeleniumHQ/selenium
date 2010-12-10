@@ -4,7 +4,7 @@ import com.thoughtworks.selenium.InternalSelenseTestNgBase;
 import org.testng.annotations.Test;
 
 public class TestSetSpeed extends InternalSelenseTestNgBase {
-	@Test public void testSetSpeed() throws Exception {
+	@Test(dataProvider = "system-properties") public void testSetSpeed() throws Exception {
 		String lastSpeed = selenium.getSpeed();
 		//  The max value in slider is 1000, but setSpeed command can set higher than this 
 		selenium.setSpeed("1600");

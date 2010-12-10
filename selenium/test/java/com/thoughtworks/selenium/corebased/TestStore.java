@@ -5,7 +5,7 @@ import com.thoughtworks.selenium.InternalSelenseTestNgBase;
 import org.testng.annotations.Test;
 
 public class TestStore extends InternalSelenseTestNgBase {
-	@Test public void testStore() throws Exception {
+	@Test(dataProvider = "system-properties") public void testStore() throws Exception {
 		selenium.open("../tests/html/test_verifications.html");
 		String storedHiddenValue = selenium.getValue("theHidden");
 		String storedSpanText = selenium.getText("theSpan");

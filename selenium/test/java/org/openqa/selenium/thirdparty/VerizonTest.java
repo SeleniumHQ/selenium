@@ -8,7 +8,7 @@ import org.testng.annotations.Test;
 public class VerizonTest extends InternalSelenseTestNgBase {
     private static final String TIMEOUT = "60000";
 
-    @Test
+    @Test(dataProvider = "system-properties")
     public void signUp() {
         if (true) throw new SkipException("This test is too slow!");
         selenium.setTimeout(TIMEOUT);

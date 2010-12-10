@@ -33,7 +33,7 @@ public class SessionExtensionJsTest extends InternalSelenseTestNgBase {
         if (privateSelenium != null) privateSelenium.stop();
     }
 
-    @Test
+    @Test(dataProvider = "system-properties")
     public void expectFailureWhenExtensionNotSet() {
         try {
             runCommands(privateSelenium);
@@ -44,7 +44,7 @@ public class SessionExtensionJsTest extends InternalSelenseTestNgBase {
         }
     }
     
-    @Test
+    @Test(dataProvider = "system-properties")
     public void loadSimpleExtensionJs() {
         // everything is peachy when the extension is set
         privateSelenium.setExtensionJs("var comeGetSome = 'in';");

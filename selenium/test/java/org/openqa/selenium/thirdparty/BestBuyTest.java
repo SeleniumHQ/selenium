@@ -7,7 +7,7 @@ public class BestBuyTest extends InternalSelenseTestNgBase {
 
     public static String TIMEOUT = "30000";
 
-    @Test
+    @Test(dataProvider = "system-properties")
     public void searchAndSignup() {
         selenium.open("http://www.bestbuy.com/");
         selenium.type("st", "Wii");

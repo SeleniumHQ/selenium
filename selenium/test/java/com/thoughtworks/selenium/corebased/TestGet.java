@@ -7,7 +7,7 @@ import com.thoughtworks.selenium.InternalSelenseTestNgBase;
 import org.testng.annotations.Test;
 
 public class TestGet extends InternalSelenseTestNgBase {
-	@Test public void testGet() throws Exception {
+	@Test(dataProvider = "system-properties") public void testGet() throws Exception {
 		//  test API getters 
 		selenium.open("../tests/html/test_get.html");
 		//  IE uppercases the property names of the style. Both Opera and Firefox

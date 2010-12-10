@@ -36,18 +36,13 @@ java_test(name = "test-selenese",
   ])
 
 java_test(name = "selenium_test",
-  srcs = [ "test/java/**/*.java" ],
-  resources = [
-    { "test/java/com/thoughtworks/selenium/testHelpers.js" : "com/thoughtworks/selenium/testHelpers.js" }
-  ],
   deps = [
-    "//common:test",
-    "//htmlunit",
-    "//selenium:server-with-tests:uber",
-    "//third_party/java/easymock",
-    "//third_party/java/testng"
+    ":test",
   ],
   main = "org.testng.TestNG",
+  sysproperties = [
+    { "selenium.browser" : "org.openqa.selenium.firefox.FirefoxDriver" },
+  ],
   args = "selenium/test/java/webdriver-selenium-suite.xml")
 
 java_test(name = "single",

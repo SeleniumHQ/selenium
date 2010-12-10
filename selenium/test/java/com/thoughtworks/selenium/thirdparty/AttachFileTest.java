@@ -6,7 +6,7 @@ import org.testng.annotations.Test;
 
 public class AttachFileTest extends InternalSelenseTestNgBase {
     
-    @Test
+    @Test(dataProvider = "system-properties")
     public void testAttachfile() throws Throwable {
 		selenium.open("http://www.snipshot.com");
 		assertEquals("Snipshot: Edit pictures online", selenium.getTitle());

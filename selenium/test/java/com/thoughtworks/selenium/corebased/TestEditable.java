@@ -5,7 +5,7 @@ import com.thoughtworks.selenium.InternalSelenseTestNgBase;
 import org.testng.annotations.Test;
 
 public class TestEditable extends InternalSelenseTestNgBase {
-	@Test public void testEditable() throws Exception {
+	@Test(dataProvider = "system-properties") public void testEditable() throws Exception {
 		selenium.open("../tests/html/test_editable.html");
 		verifyTrue(selenium.isEditable("normal_text"));
 		verifyTrue(selenium.isEditable("normal_select"));

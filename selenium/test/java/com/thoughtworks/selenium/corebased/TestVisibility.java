@@ -4,7 +4,7 @@ import com.thoughtworks.selenium.InternalSelenseTestNgBase;
 import org.testng.annotations.Test;
 
 public class TestVisibility extends InternalSelenseTestNgBase {
-	@Test public void testVisibility() throws Exception {
+	@Test(dataProvider = "system-properties") public void testVisibility() throws Exception {
 		selenium.open("../tests/html/test_visibility.html");
 		verifyTrue(selenium.isVisible("visibleParagraph"));
 		verifyFalse(selenium.isVisible("hiddenParagraph"));

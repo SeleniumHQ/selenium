@@ -4,7 +4,7 @@ import com.thoughtworks.selenium.InternalSelenseTestNgBase;
 import org.testng.annotations.Test;
 
 public class TestSelectMultiLevelFrame extends InternalSelenseTestNgBase {
-	@Test public void testSelectMultiLevelFrame() throws Exception {
+	@Test(dataProvider = "system-properties") public void testSelectMultiLevelFrame() throws Exception {
 		selenium.open("../tests/html/test_multi_level_frame.html");
 		//  Select first level frame 
 		selenium.selectFrame("frame2");

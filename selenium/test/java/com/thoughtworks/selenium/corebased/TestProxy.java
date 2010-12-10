@@ -5,7 +5,7 @@ import com.thoughtworks.selenium.InternalSelenseTestNgBase;
 import org.testng.annotations.Test;
 
 public class TestProxy extends InternalSelenseTestNgBase {
-	@Test public void testProxy() throws Exception {
+	@Test(dataProvider = "system-properties") public void testProxy() throws Exception {
 		selenium.open("http://www.yahoo.com/");
 		selenium.type("p", "Selenium");
 		selenium.click("searchsubmit");

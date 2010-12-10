@@ -4,7 +4,7 @@ import com.thoughtworks.selenium.InternalSelenseTestNgBase;
 import org.testng.annotations.Test;
 
 public class TestClick extends InternalSelenseTestNgBase {
-	@Test public void testClick() throws Exception {
+	@Test(dataProvider = "system-properties") public void testClick() throws Exception {
 		selenium.open("../tests/html/test_click_page1.html");
 		verifyEquals(selenium.getText("link"), "Click here for next page");
 		selenium.click("link");

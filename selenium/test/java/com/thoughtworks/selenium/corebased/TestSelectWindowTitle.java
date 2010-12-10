@@ -7,7 +7,7 @@ import com.thoughtworks.selenium.InternalSelenseTestNgBase;
 import org.testng.annotations.Test;
 
 public class TestSelectWindowTitle extends InternalSelenseTestNgBase {
-	@Test public void testSelectWindowTitle() throws Exception {
+	@Test(dataProvider = "system-properties") public void testSelectWindowTitle() throws Exception {
 		selenium.open("../tests/html/test_select_window.html");
 		selenium.click("popupPage");
 		selenium.waitForPopUp("myPopupWindow", "5000");

@@ -4,7 +4,7 @@ import com.thoughtworks.selenium.InternalSelenseTestNgBase;
 import org.testng.annotations.Test;
 
 public class TestUIElementLocators extends InternalSelenseTestNgBase {
-	@Test public void testUIElementLocators() throws Exception {
+	@Test(dataProvider = "system-properties") public void testUIElementLocators() throws Exception {
 		selenium.addScript("", "uimap");
 		selenium.open("../tests/html/test_locators.html");
 		verifyEquals(selenium.getText("ui=pageset1::linksWithId()"), "this is the first element");

@@ -55,11 +55,12 @@ public class SeleneseTestNgHelper extends SeleneseTestBase {
     if (!"localhost".equals(host)) {
       return;
     }
-    Selenium screenshotTaker = new DefaultSelenium(
-        host, Integer.parseInt(port), "", "");
+    Selenium screenshotTaker = new DefaultSelenium(host, Integer.parseInt(port),
+        "", "");
     TestRunner tr = (TestRunner) context;
     File outputDirectory = new File(context.getOutputDirectory());
-    tr.addListener(new ScreenshotListener(outputDirectory, screenshotTaker));
+    tr.addListener((IResultListener) new ScreenshotListener(outputDirectory,
+        screenshotTaker));
   }
 
   @AfterMethod

@@ -4,7 +4,8 @@ import com.thoughtworks.selenium.InternalSelenseTestNgBase;
 import org.testng.annotations.Test;
 
 public class TestModalDialog extends InternalSelenseTestNgBase {
-	@Test public void testModalDialog() throws Exception {
+	@Test(dataProvider = "system-properties")
+  public void testModalDialog() throws Exception {
 		selenium.open("../tests/html/test_modal_dialog.html");
 		verifyTrue(selenium.getLocation().matches("^[\\s\\S]*/tests/html/test_modal_dialog\\.html$"));
 		verifyEquals(selenium.getTitle(), "Modal Dialog Host Window");

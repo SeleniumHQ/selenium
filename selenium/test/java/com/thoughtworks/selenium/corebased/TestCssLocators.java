@@ -5,7 +5,7 @@ import com.thoughtworks.selenium.InternalSelenseTestNgBase;
 import org.testng.annotations.Test;
 
 public class TestCssLocators extends InternalSelenseTestNgBase {
-	@Test public void testCssLocators() throws Exception {
+	@Test(dataProvider = "system-properties") public void testCssLocators() throws Exception {
 
 		//         Unimplemented features:
 		//             namespace

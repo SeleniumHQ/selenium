@@ -5,7 +5,7 @@ import org.testng.annotations.Test;
 
 public class EbayTest extends InternalSelenseTestNgBase {
     
-    @Test
+    @Test(dataProvider = "system-properties")
     public void testEbayOpen() throws Throwable {
         // interesting because they use frames served by different domains.  Injected JavaScript
         // which tries to cross frames will be revealed with permission denied errors.

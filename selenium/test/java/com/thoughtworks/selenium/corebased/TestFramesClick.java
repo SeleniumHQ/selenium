@@ -4,7 +4,7 @@ import com.thoughtworks.selenium.InternalSelenseTestNgBase;
 import org.testng.annotations.Test;
 
 public class TestFramesClick extends InternalSelenseTestNgBase {
-	@Test public void testFramesClick() throws Exception {
+	@Test(dataProvider = "system-properties") public void testFramesClick() throws Exception {
 		selenium.open("../tests/html/Frames.html");
 		selenium.selectFrame("mainFrame");
 		selenium.open("../tests/html/test_click_page1.html");

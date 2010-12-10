@@ -5,7 +5,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class TestLargeHtml extends InternalSelenseTestNgBase {
-    @Test public void testLargeHtml() {
+    @Test(dataProvider = "system-properties") public void testLargeHtml() {
         selenium.open("/selenium-server/tests/html/test_large_html.html");
         String source = selenium.getHtmlSource().trim();
         String expectedEndsWith = "</body>";

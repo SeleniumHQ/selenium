@@ -4,7 +4,7 @@ import com.thoughtworks.selenium.InternalSelenseTestNgBase;
 import org.testng.annotations.Test;
 
 public class TestDomainCookie extends InternalSelenseTestNgBase {
-	@Test public void testDomainCookie() throws Exception {
+	@Test(dataProvider = "system-properties") public void testDomainCookie() throws Exception {
 		String host = selenium.getEval("parseUrl(canonicalize(absolutify(\"html\", selenium.browserbot.baseUrl))).host;");
 		System.out.println(host);
 		assertTrue(selenium.getExpression(host).matches("^[\\s\\S]*\\.[\\s\\S]*\\.[\\s\\S]*$"));

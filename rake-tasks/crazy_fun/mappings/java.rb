@@ -140,7 +140,7 @@ class BaseJava < Tasks
     paths.join(".")
   end
   
-  def ant_java_task(task_name, classname, classpath, args = nil)
+  def ant_java_task(task_name, classname, classpath, args = nil, properties = nil)
     # Ugly. We do this because CrazyFunJava.ant.java complains about too many arguments 
     path = Java.org.apache.tools.ant.types.Path.new(CrazyFunJava.ant.project)      
     classpath.all.each do |jar|
@@ -155,7 +155,18 @@ class BaseJava < Tasks
     task.setFork(true)
     task.setClassname(classname)
     task.setClasspath(path)
-    
+
+    if properties
+      properties.each do |map|
+        map.each do |key, value|
+          v = Java.org.apache.tools.ant.types.Environment::Variable.new()
+          v.setKey(key)
+          v.setValue(value)
+          task.addSysproperty(v)
+        end
+      end
+    end
+
     if (args)
       arg = task.createArg()
       arg.setLine(args)
@@ -326,7 +337,7 @@ class RunBinary < BaseJava
     
       CrazyFunJava.ant.project.getBuildListeners().get(0).setMessageOutputLevel(2) if ENV['log']
 
-      ant_java_task(task_name, args[:main], cp)
+      ant_java_task(task_name, args[:main], cp, args[:sysproperties])
     
       CrazyFunJava.ant.project.getBuildListeners().get(0).setMessageOutputLevel(verbose ? 2 : 0)
     end
@@ -362,7 +373,7 @@ class RunTests < BaseJava
       end      
       
       if (args[:main]) 
-        ant_java_task(task_name, args[:main], cp, args[:args])
+        ant_java_task(task_name, args[:main], cp, args[:args], args[:sysproperties])
       else
         tests.each do |test|
           CrazyFunJava.ant.project.getBuildListeners().get(0).setMessageOutputLevel(2) if ENV['log']
@@ -382,6 +393,12 @@ class RunTests < BaseJava
 
             if name =~ /^\./
               name = test
+            end
+
+            if (args[:args])
+              ant.jvmarg do |jarg|
+                jarg.line = args[:args]
+              end
             end
 
             ant.test(:name => name, :todir => 'build/test_logs')

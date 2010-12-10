@@ -4,7 +4,7 @@ import com.thoughtworks.selenium.InternalSelenseTestNgBase;
 import org.testng.annotations.Test;
 
 public class TestFramesOpen extends InternalSelenseTestNgBase {
-	@Test public void testFramesOpen() throws Exception {
+	@Test(dataProvider = "system-properties") public void testFramesOpen() throws Exception {
 		selenium.open("../tests/html/Frames.html");
 		selenium.selectFrame("mainFrame");
 		verifyTrue(selenium.getLocation().matches("^[\\s\\S]*/tests/html/test_open\\.html$"));
