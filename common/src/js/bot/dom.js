@@ -91,8 +91,10 @@ bot.dom.getProperty = function(element, propertyName) {
 
 /**
  * Used to determine whether we should return a boolean value from getAttribute.
- * These are all the attributes listed here with a singleton-valued type:
- * http://www.w3.org/TR/REC-html40/index/attributes.html
+ * These are all extracted from the WHATWG spec:
+ *
+ *   http://www.whatwg.org/specs/web-apps/current-work/
+ *
  * These must all be lower-case.
  *
  * @const
