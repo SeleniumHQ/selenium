@@ -58,8 +58,11 @@ module Selenium
         end
 
         def launch_chrome(server_url)
+          path = self.class.binary_path
+          path = Platform.cygwin_path(path) if Platform.cygwin?
+
           args = [
-            Platform.wrap_in_quotes_if_necessary(self.class.binary_path),
+            Platform.wrap_in_quotes_if_necessary(path),
             "--load-extension=#{Platform.wrap_in_quotes_if_necessary(tmp_extension_dir)}",
             "--activate-on-launch",
             "--disable-hang-monitor",

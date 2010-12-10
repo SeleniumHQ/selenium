@@ -83,8 +83,16 @@ module Selenium
         os == :linux
       end
 
+      def cygwin?
+        RUBY_PLATFORM =~ /cygwin/
+      end
+
       def wrap_in_quotes_if_necessary(str)
         win? ? %{"#{str}"} : str
+      end
+
+      def cygwin_path(path)
+        `cygpath "#{path}"`.strip
       end
 
       def make_writable(file)

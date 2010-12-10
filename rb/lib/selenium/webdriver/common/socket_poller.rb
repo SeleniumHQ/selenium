@@ -35,12 +35,15 @@ module Selenium
 
       private
 
+      SOCKET_ERRORS = [Errno::ECONNREFUSED, Errno::ENOTCONN, SocketError]
+      SOCKET_ERRORS << Errno::EPERM if Platform.cygwin?
+
       def listening?
         # There's a bug in 1.9.1 on Windows where this will succeed even if no
         # one is listening. Users who hit that should upgrade their Ruby.
         TCPSocket.new(@host, @port).close
         true
-      rescue Errno::ECONNREFUSED, Errno::ENOTCONN, SocketError => e
+      rescue *SOCKET_ERRORS => e
         $stderr.puts [@host, @port].inspect if $DEBUG
         false
       end

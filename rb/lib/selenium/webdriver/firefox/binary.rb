@@ -109,6 +109,8 @@ module Selenium
                         raise Error::WebDriverError, "unknown platform: #{Platform.os}"
                       end
 
+            @path = Platform.cygwin_path(@path) if Platform.cygwin?
+
             unless File.file?(@path.to_s)
               raise Error::WebDriverError, "Could not find Firefox binary (os=#{Platform.os}). Make sure Firefox is installed or set the path manually with #{self}.path="
             end
