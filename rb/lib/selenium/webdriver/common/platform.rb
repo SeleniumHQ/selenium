@@ -88,7 +88,7 @@ module Selenium
       end
 
       def wrap_in_quotes_if_necessary(str)
-        win? ? %{"#{str}"} : str
+        win? && !cygwin? ? %{"#{str}"} : str
       end
 
       def cygwin_path(path)
