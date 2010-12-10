@@ -94,10 +94,9 @@ class ImplicitWaitTest(unittest.TestCase):
         elements = self.driver.find_elements_by_class_name("redbox")
         self.assertEqual(0, len(elements))
     
-        
     def _pageURL(self, name):
-        return "http://localhost:2310/common/%s.html" % name
-
+        return "http://localhost:%d/%s.html" % (self.webserver.port, name)
+    
     def _loadSimplePage(self):
         self._loadPage("simpleTest")
 
