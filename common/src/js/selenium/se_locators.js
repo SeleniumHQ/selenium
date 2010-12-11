@@ -69,6 +69,18 @@ core.locators.parseLocator_ = function(locator) {
 
 
 /**
+ * Add a locator strategy to those already known about.
+ *
+ * @param {string} name The name of the strategy.
+ * @param {function(string, Document=):Element} strategy The strategy
+ *   implementation.
+ */
+core.locators.addStrategy = function(name, strategy) {
+  core.LocatorStrategies[name] = strategy;
+};
+
+
+/**
  * Find a locator based on a prefix.
  *
  * @param {string} locatorType The type of locator to use.

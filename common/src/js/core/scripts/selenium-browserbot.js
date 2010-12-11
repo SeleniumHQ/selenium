@@ -1420,6 +1420,30 @@ BrowserBot.prototype.findElement = function(locator, win) {
     return element;
 };
 
+
+/**
+ * Finds a list of elements using the same mechanism as webdriver.
+ *
+ * @param {string} how The finding mechanism to use.
+ * @param {string} using The selector to use.
+ */
+BrowserBot.prototype.findElementsLikeWebDriver = function(how, using) {
+  var by = {};
+  by[how] = using;
+
+  var all = bot.locators.findElements(by, this.getDocument());
+  var toReturn = '';
+
+  for (var i = 0; i < all.length - 1; i++) {
+    toReturn += bot.inject.cache.addElement(all[i]) + ',';
+  }
+  if (all[all.length -1]) {
+    toReturn += bot.inject.cache.addElement(all[all.length - 1]);
+  }
+
+  return toReturn;
+};
+
 /**
  * In non-IE browsers, getElementById() does not search by name.  Instead, we
  * we search separately by id and name.
@@ -1535,6 +1559,20 @@ BrowserBot.prototype.locateElementByXPath = function(xpath, inDocument, inWindow
     return this.xpathEvaluator.selectSingleNode(inDocument, xpath, null,
         this._namespaceResolver);
 };
+
+
+/**
+ * Find many elements using xpath.
+ *
+ * @param {string} xpath XPath expression to search for.
+ * @param {=Document} inDocument The document to search in.
+ * @param {=Window} inWindow The window the document is in.
+ */
+BrowserBot.prototype.locateElementsByXPath = function(xpath, inDocument, inWindow) {
+    return this.xpathEvaluator.selectNodes(inDocument, xpath, null,
+        this._namespaceResolver);
+};
+
 
 BrowserBot.prototype._namespaceResolver = function(prefix) {
     if (prefix == 'html' || prefix == 'xhtml' || prefix == 'x') {

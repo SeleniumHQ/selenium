@@ -180,6 +180,25 @@ function Selenium(browserbot) {
     };
     this.defaultTimeout = Selenium.DEFAULT_TIMEOUT;
     this.mouseSpeed = Selenium.DEFAULT_MOUSE_SPEED;
+
+
+    bot.locators.strategies.add('xpath', {
+      single: function(target, opt_root) {
+        return browserbot.locateElementByXPath(target, opt_root);
+      },
+      many: function(target, opt_root) {
+        return browserbot.locateElementsByXPath(target, opt_root);
+      }
+    });
+
+  bot.locators.strategies.add('css', {
+    single: function(target, opt_root) {
+      return browserbot.locateElementByCss(target, opt_root);
+    },
+    many: function(target, opt_root) {
+      return eval_css(target, opt_root);
+    }
+  });
 }
 
 Selenium.DEFAULT_TIMEOUT = 30 * 1000;
@@ -202,7 +221,7 @@ Selenium.decorateFunctionWithTimeout = function(f, timeout, callback) {
         }
         return f();
     };
-}
+};
 
 Selenium.createForWindow = function(window, proxyInjectionMode) {
     if (!window.location) {

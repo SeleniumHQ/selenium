@@ -230,6 +230,19 @@ limitations under the License.
       var links = bot.locators.findElements({tagName: 'A'});
       assertEquals(7, links.length);
     }
+
+    function testCanAddANewElementLocatingStrategy() {
+      var expected = goog.dom.$('lion');
+      bot.locators.strategies.add('fixed', {
+        single: function() {
+          return expected;
+        }
+      });
+
+      var seen = bot.locators.findElement({fixed: 'ignored'});
+
+      assertEquals(expected, seen);        
+    }
 </script>
 </head>
 <body>

@@ -178,46 +178,6 @@ core.LocatorStrategies.stored_ = function(locator, opt_doc) {
 
 
 /**
- * Map of names used by the remote webdriver protocol and the names used
- * internally by webdriver.
- *
- * @const
- * @type {string}
- */
-core.LocatorStrategies.WIRE_PROTOCOL_NAMES_ = {
-  'css selectors': 'css',
-  'class name': 'className',
-  'link text': 'linkText',
-  'partial link text': 'partialLinkText',
-  'tag name': 'tagName'
-};
-
-
-/**
- * Find an element by delegating to the mechanism used by webdriver.
- *
- * @param {string} locator The value of the locator to use.
- * @param {Document=} opt_doc The document to start the search from.
- * @return {Element} The located element.
- * @private
- */
-core.LocatorStrategies.webdriver_ = function(locator, opt_doc) {
-  var index = locator.indexOf(':');
-  if (index == -1) {
-    throw new core.Error('WebDriver strategy not found: ' + locator);
-  }
-
-  var how = locator.substring(0, index);
-  var using = locator.substring(index + 1);
-
-  var by = {};
-  by[how] = core.LocatorStrategies.WIRE_PROTOCOL_NAMES_[using] || using;
-
-  return bot.locators.findElement(by, opt_doc);
-};
-
-
-/**
  * Find an element using xpath.
  *
  * @param {string} locator The value of the locator to use.
@@ -246,6 +206,4 @@ core.LocatorStrategies['identifier'] = core.LocatorStrategies.identifier_;
 core.LocatorStrategies['implicit'] = core.LocatorStrategies.implicit_;
 core.LocatorStrategies['name'] = core.LocatorStrategies.name_;
 core.LocatorStrategies['stored'] = core.LocatorStrategies.stored_;
-core.LocatorStrategies['webdriver'] = core.LocatorStrategies.webdriver_;
 core.LocatorStrategies['xpath'] = core.LocatorStrategies.xpath_;
-

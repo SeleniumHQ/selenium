@@ -44,7 +44,6 @@ public class ObjectStateAssumptionsTest extends AbstractDriverTestCase {
    * This test case differs from @see testUninitializedWebDriverDoesNotThrowNPE as it initializes
    * WebDriver with an initial call to get(). It also should not fail.
    */
-  @Ignore(SELENESE)
   public void testinitializedWebDriverDoesNotThrowNPE() {
     driver.get(pages.simpleTestPage);
     try {

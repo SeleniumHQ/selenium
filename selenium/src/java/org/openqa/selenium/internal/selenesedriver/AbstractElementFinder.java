@@ -1,0 +1,93 @@
+/*
+Copyright 2010 WebDriver committers
+Copyright 2010 Google Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
+
+package org.openqa.selenium.internal.selenesedriver;
+
+import com.google.common.base.Throwables;
+import com.google.common.collect.ImmutableMap;
+import com.thoughtworks.selenium.Selenium;
+import com.thoughtworks.selenium.SeleniumException;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.List;
+import java.util.Map;
+
+public abstract  class AbstractElementFinder<T> implements SeleneseFunction<T> {
+  private final static Map<String, String> name2strategy =
+      ImmutableMap.of(
+          "class name", "className",
+          "css selector", "css",
+          "link text", "linkText",
+          "partial link text", "partialLinkText",
+          "tag name", "tagName");
+
+  private long implicitlyWait = 0;
+
+  protected abstract T executeFind(Selenium selenium, String how, String using);
+  protected abstract T onFailure(String how, String using);
+
+  protected Map<String, String> newElement(String key) {
+    try {
+      String locator = "stored=" + URLEncoder.encode(key, "utf-8");
+
+      return ImmutableMap.of("ELEMENT", locator);
+    } catch (UnsupportedEncodingException e) {
+      throw Throwables.propagate(e);
+    }
+  }
+
+  public T apply(Selenium selenium, Map<String, ?> args) {
+    String how = convertToStrategyName((String) args.get("using"));
+    String using = (String) args.get("value");
+    using = using.replaceAll("'", "\\\\'");
+
+    long startTime = System.currentTimeMillis();
+    do {
+      try {
+        T result = executeFind(selenium, how, using);
+
+        if (result instanceof List && ((List) result).size() == 0) {
+          continue;
+        }
+
+        return result;
+      } catch (SeleniumException e) {
+        // Ignore. The element couldn't be found
+      }
+    } while (System.currentTimeMillis() - startTime <= implicitlyWait);
+
+    return onFailure(how, using);
+  }
+
+  public ImplicitWait implicitlyWait() {
+    return new ImplicitWait();
+  }
+
+  public class ImplicitWait implements SeleneseFunction<Object> {
+    public Object apply(Selenium selenium, Map<String, ?> args) {
+      AbstractElementFinder.this.implicitlyWait = ((Number) args.get("ms")).longValue();
+      return null;
+    }
+  }
+
+  protected String convertToStrategyName(String using) {
+    String strategy = name2strategy.get(using);
+    return strategy != null ? strategy : using;
+  }
+}

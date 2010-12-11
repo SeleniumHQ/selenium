@@ -170,8 +170,7 @@ public class ElementFindingTest extends AbstractDriverTestCase {
     WebElement element = driver.findElement(By.className("spaceAround"));
     assertThat(element.getText(), equalTo("Spaced out"));
   }
-  
-  @Ignore(SELENESE)
+
   public void testShouldFindElementsByClassWhenItsNameIsSurroundedByWhitespace() {
     driver.get(pages.xhtmlTestPage);
     
@@ -191,7 +190,6 @@ public class ElementFindingTest extends AbstractDriverTestCase {
     }
   }
 
-  @Ignore(SELENESE)
   public void testShouldBeAbleToFindMultipleElementsByXPath() {
     driver.get(pages.xhtmlTestPage);
 
@@ -200,7 +198,6 @@ public class ElementFindingTest extends AbstractDriverTestCase {
     assertTrue(elements.size() > 1);
   }
 
-  @Ignore(SELENESE)
   public void testShouldBeAbleToFindMultipleElementsByLinkText() {
     driver.get(pages.xhtmlTestPage);
 
@@ -209,7 +206,6 @@ public class ElementFindingTest extends AbstractDriverTestCase {
     assertTrue("Expected 2 links, got " + elements.size(), elements.size() == 2);
   }
 
-  @Ignore(SELENESE)
   public void testShouldBeAbleToFindMultipleElementsByPartialLinkText() {
     driver.get(pages.xhtmlTestPage);
 
@@ -229,7 +225,6 @@ public class ElementFindingTest extends AbstractDriverTestCase {
     }
   }
 
-  @Ignore(SELENESE)
   public void testShouldBeAbleToFindMultipleElementsByName() {
     driver.get(pages.nestedPage);
 
@@ -238,7 +233,6 @@ public class ElementFindingTest extends AbstractDriverTestCase {
     assertTrue(elements.size() > 1);
   }
 
-  @Ignore(SELENESE)
   public void testShouldBeAbleToFindMultipleElementsById() {
     driver.get(pages.nestedPage);
 
@@ -247,7 +241,6 @@ public class ElementFindingTest extends AbstractDriverTestCase {
     assertEquals(8, elements.size());
   }
 
-  @Ignore(SELENESE)
   public void testShouldBeAbleToFindMultipleElementsByClassName() {
     driver.get(pages.xhtmlTestPage);
 
@@ -291,7 +284,6 @@ public class ElementFindingTest extends AbstractDriverTestCase {
     }
   }
 
-  @Ignore(SELENESE)
   public void testShouldReturnElementsThatDoNotSupportTheNameProperty() {
     driver.get(pages.nestedPage);
 
@@ -309,7 +301,6 @@ public class ElementFindingTest extends AbstractDriverTestCase {
     }
   }
 
-  @Ignore(SELENESE)
   public void testShouldfindAnElementBasedOnTagName() {
     driver.get(pages.formPage);
 
@@ -318,7 +309,6 @@ public class ElementFindingTest extends AbstractDriverTestCase {
     assertNotNull(element);
   }
 
-  @Ignore(SELENESE)
   public void testShouldfindElementsBasedOnTagName() {
     driver.get(pages.formPage);
 
@@ -430,7 +420,7 @@ public class ElementFindingTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({REMOTE, SELENESE})
+  @Ignore({REMOTE})
   @NeedsFreshDriver
   public void testShouldBeAbleToFindAnElementsByCssSelector() {
     driver.get(pages.xhtmlTestPage);

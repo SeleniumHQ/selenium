@@ -55,7 +55,7 @@ public class SingleTestSuite extends TestCase {
         .keepDriverInstance()
         .includeJavascriptTests()
         .onlyRun("ElementFindingTest")
-//        .method("testShouldIndicateTheElementsThatAreDisabledAreNotEnabled")
+//        .method("testShouldFindElementsByClassWhenItsNameIsSurroundedByWhitespace")
         .exclude(ALL)
         .exclude(Ignore.Driver.SELENESE)
         .outputTestNames()

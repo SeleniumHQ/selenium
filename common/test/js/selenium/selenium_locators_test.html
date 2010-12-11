@@ -52,6 +52,16 @@
         var element = core.locators.findElement('//*[@id = "in_child_frame"]');
         assertEquals('in_child_frame', bot.dom.getAttribute(element, 'id'));
       }
+
+      function testCanAddAStrategy() {
+        var expected = bot.locators.findElement({id: 'find_by_id'});
+        core.locators.addStrategy("foo", function() {
+          return expected;
+        });
+
+        var found = core.locators.findElement('foo=bar');
+        assertEquals(expected, found);
+      }
     </script>
   </head>
   <body>

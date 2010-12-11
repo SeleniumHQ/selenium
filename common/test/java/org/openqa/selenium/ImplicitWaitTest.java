@@ -70,7 +70,6 @@ public class ImplicitWaitTest extends AbstractDriverTestCase {
 
   @Test
   @JavascriptEnabled
-  @Ignore(SELENESE)
   public void testShouldImplicitlyWaitUntilAtLeastOneElementIsFoundWhenSearchingForMany() {
     driver.get(pages.dynamicPage);
     WebElement add = driver.findElement(By.id("adder"));
@@ -85,7 +84,6 @@ public class ImplicitWaitTest extends AbstractDriverTestCase {
 
   @Test
   @JavascriptEnabled
-  @Ignore(SELENESE)
   public void testShouldStillFailToFindElementsWhenImplicitWaitsAreEnabled() {
     driver.get(pages.dynamicPage);
     driver.manage().timeouts().implicitlyWait(500, MILLISECONDS);
@@ -95,7 +93,6 @@ public class ImplicitWaitTest extends AbstractDriverTestCase {
 
   @Test
   @JavascriptEnabled
-  @Ignore(SELENESE)
   public void testShouldReturnAfterFirstAttemptToFindManyAfterDisablingImplicitWaits() {
     driver.get(pages.dynamicPage);
     WebElement add = driver.findElement(By.id("adder"));
@@ -109,7 +106,7 @@ public class ImplicitWaitTest extends AbstractDriverTestCase {
   }
 
   @Test
-  @JavascriptEnabled
+  @JavascriptEnabled          
   @Ignore({ANDROID, CHROME, IE, IPHONE, SELENESE})
   public void testShouldImplicitlyWaitForAnElementToBeVisibleBeforeInteracting() {
     driver.get(pages.dynamicPage);

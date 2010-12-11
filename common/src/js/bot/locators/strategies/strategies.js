@@ -55,6 +55,18 @@ bot.locators.strategies.KNOWN_ = {
   'xpath': bot.locators.strategies.xpath
 };
 
+
+/**
+ * Add or override an existing strategy for locating elements.
+ *
+ * @param {string} name The name of the strategy.
+ * @param {!bot.locators.strategies.strategy} strategy The strategy to use.
+ */
+bot.locators.strategies.add = function(name, strategy) {
+  bot.locators.strategies.KNOWN_[name] = strategy;
+};
+
+
 /**
  * Lookup a particular element finding strategy based on the sole property of
  * the "target". The value of this key is used to locate the element.
