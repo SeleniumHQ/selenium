@@ -336,5 +336,15 @@ namespace OpenQA.Selenium
         /// Represents the function key F12.
         /// </summary>
         public static readonly string F12 = Convert.ToString(Convert.ToChar(0xE03C, CultureInfo.InvariantCulture), CultureInfo.InvariantCulture);
+		
+		/// <summary>
+        /// Represents the function key META.
+        /// </summary>
+        public static readonly string META = Convert.ToString(Convert.ToChar(0xE03D, CultureInfo.InvariantCulture), CultureInfo.InvariantCulture);
+		
+		/// <summary>
+        /// Represents the function key COMMAND.
+        /// </summary>
+        public static readonly string COMMAND = Convert.ToString(Convert.ToChar(0xE03D, CultureInfo.InvariantCulture), CultureInfo.InvariantCulture);
     }
 }
