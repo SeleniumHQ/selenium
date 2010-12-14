@@ -177,6 +177,10 @@ class WebDriver(object):
         """Finds element by id."""
         return self._find_element_by("id", id_)
 
+    def find_elements_by_id(self, id_):
+        """Finds element by id."""
+        return self._find_elements_by("id", id_)
+
     def find_elements_by_xpath(self, xpath):
         """Finds multiple elements by xpath."""
         return self._find_elements_by("xpath", xpath)
