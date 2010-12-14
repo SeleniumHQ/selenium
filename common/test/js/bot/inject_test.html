@@ -210,6 +210,20 @@ limitations under the License.
       }, 250);
       asyncTestCase.waitForAsync('reload');
     }
+
+
+    function testShouldStringifyResultsWhenAskedToDoSo() {
+      var result = bot.inject.executeScript(function() {
+        return arguments[0] + arguments[1];
+      }, ['abc', 123], true);
+
+      assertEquals('string', goog.typeOf(result));
+      var json = goog.json.parse(result);
+      assertTrue('No status: ' + result, 'status' in json);
+      assertTrue('No value: ' + result, 'value' in json);
+      assertEquals(0, json['status']);
+      assertEquals('abc123', json['value']);
+    }
   </script>
 </body>
 </html>
