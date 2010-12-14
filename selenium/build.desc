@@ -94,3 +94,31 @@ java_library(name = "server-with-tests",
     "//common:test",
     "//remote/server"
   ])
+
+dotnet_library(name = "dotnet-core",
+  srcs = "src/csharp/Core/**/*.cs",
+  refs = [
+    "System.dll",
+    "System.Core.dll",
+    "System.Data.dll",
+    "System.Xml.dll",
+    "System.Web.dll"
+  ],
+  out = "build/dotnet/ThoughtWorks.Selenium.Core.dll"
+)
+
+dotnet_library(name = "dotnet",
+  srcs = "src/csharp/WebdriverBackedSelenium/**/*.cs",
+  deps = ["//selenium:dotnet-core"],
+  refs = [
+    "System.dll",
+    "System.Core.dll",
+    "System.Data.dll",
+    "System.Drawing.dll",
+    "System.Xml.dll",
+    "System.Web.dll",
+    "//common:dotnet",
+    "//selenium:dotnet-core"
+  ],
+  out = "build/dotnet/WebDriverBackedSelenium.dll"
+)

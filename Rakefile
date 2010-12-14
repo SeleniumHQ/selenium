@@ -199,7 +199,7 @@ end
 #               :target => "BuildManagedCode")
 
 #task :dotnet => [ :ie_win32_dll, :ie_x64_dll, :firefox, :chrome, :'dotnet_assemblies' ]
-task :dotnet => [ "//jobbie:dotnet", "//remote/client:dotnet", "//firefox:dotnet", "//chrome:dotnet" ]
+task :dotnet => [ "//jobbie:dotnet", "//remote/client:dotnet", "//firefox:dotnet", "//chrome:dotnet", "//selenium:dotnet" ]
 
 # Generate a C++ Header file for mapping between magic numbers and #defines
 # in the C++ code.
