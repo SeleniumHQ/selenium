@@ -18,6 +18,7 @@ import socket
 import subprocess
 import time
 import urllib
+import signal
 from selenium.test.selenium.webdriver.common.webserver import SimpleWebServer
 from selenium.test.selenium.webdriver.common import api_examples
 from selenium import webdriver
@@ -75,6 +76,7 @@ def teardown_module(module):
         pass    
     # FIXME: This does not seem to work, the server process lingers
     try:
-        os.kill(RemoteApiExampleTest.server_proc.pid, 9)
+        os.kill(RemoteApiExampleTest.server_proc.pid, signal.SIGTERM)
+        time.sleep(5)
     except:
         pass

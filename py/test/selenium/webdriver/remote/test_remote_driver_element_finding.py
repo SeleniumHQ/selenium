@@ -1,7 +1,6 @@
-#!/usr/bin/python
-#
-# Copyright 2008-2010 WebDriver committers
-# Copyright 2008-2010 Google Inc.
+#!/usr/bin/env python
+# Copyright 2008-2009 WebDriver committers
+# Copyright 2008-2009 Google Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,17 +13,52 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-
+import os
+import socket
+import subprocess
+import time
+import urllib
+import signal
 from selenium import webdriver
 from selenium.test.selenium.webdriver.common import driver_element_finding_test 
 from selenium.test.selenium.webdriver.common.webserver import SimpleWebServer
 
+SERVER_ADDR = "localhost"
+DEFAULT_PORT = 4444
+
+
+def wait_for_server(url, timeout):
+    start = time.time()
+    while time.time() - start < timeout:
+        try:
+            urllib.urlopen(url)
+            return 1
+        except IOError:
+            time.sleep(0.2)
+
+    return 0
+
+
 def setup_module(module):
+    _socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    url = "http://%s:%d/wd/hub" % (SERVER_ADDR, DEFAULT_PORT)
+    try:
+        _socket.connect((SERVER_ADDR, DEFAULT_PORT))
+        print ("The remote driver server is already running or something else"
+               "is using port %d, continuing..." % DEFAULT_PORT)
+    except:
+        print ("Starting the remote driver server")
+        ChromeDriverElementFindingTests.server_proc = subprocess.Popen(
+            "java -jar build/remote/server/server-standalone.jar",
+            shell=True)
+
+        assert wait_for_server(url, 10), "can't connect"
+        print "Server should be online"
+
     webserver = SimpleWebServer()
     webserver.start()
     ChromeDriverElementFindingTests.webserver = webserver
-    ChromeDriverElementFindingTests.driver = webdriver.connect('chrome')
+    ChromeDriverElementFindingTests.driver = webdriver.connect("remote", browser_name="firefox", platform="ANY")
 
 
 class ChromeDriverElementFindingTests(driver_element_finding_test.DriverElementFindingTests):
@@ -32,5 +66,20 @@ class ChromeDriverElementFindingTests(driver_element_finding_test.DriverElementF
 
 
 def teardown_module(module):
-    ChromeDriverElementFindingTests.driver.quit()
-    ChromeDriverElementFindingTests.webserver.stop()
+    try:
+        ChromeDriverElementFindingTests.driver.quit()
+    except AttributeError:
+        pass
+    try:
+        ChromeDriverElementFindingTests.webserver.stop()
+    except AttributeError:
+        pass    
+    # FIXME: This does not seem to work, the server process lingers
+    try:
+        os.kill(ChromeDriverElementFindingTests.server_proc.pid, signal.SIGTERM)
+        time.sleep(5)
+    except:
+        pass
+
+
+
