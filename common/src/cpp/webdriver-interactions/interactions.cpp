@@ -49,6 +49,9 @@ static HHOOK hook = 0;
 #pragma data_seg()
 #pragma comment(linker, "/section:.LISTENER,rws")
 
+// Left Mouse button pressed?
+static bool leftMouseButtonPressed = false;
+
 void backgroundUnicodeKeyPress(HWND ieWindow, wchar_t c, int pause)
 {
   pause = pause / 3;
@@ -668,6 +671,8 @@ LRESULT mouseDownAt(WINDOW_HANDLE directInputTo, long x, long y, long button)
 {
 	if (!directInputTo) { return ENULLPOINTER; }
 
+	leftMouseButtonPressed = true;
+
 	if (!isSameThreadAs((HWND) directInputTo)) {
 		BOOL toReturn = PostMessage((HWND) directInputTo, WM_LBUTTONDOWN, MK_LBUTTON, MAKELONG(x, y));
 
@@ -682,6 +687,8 @@ LRESULT mouseDownAt(WINDOW_HANDLE directInputTo, long x, long y, long button)
 LRESULT mouseUpAt(WINDOW_HANDLE directInputTo, long x, long y, long button)
 {
 	if (!directInputTo) { return ENULLPOINTER; }
+
+	leftMouseButtonPressed = false;
 
 	SendMessage((HWND) directInputTo, WM_MOUSEMOVE, 0, MAKELPARAM(x, y));
 	if (!isSameThreadAs((HWND) directInputTo)) {
@@ -707,16 +714,18 @@ LRESULT mouseMoveTo(WINDOW_HANDLE handle, long duration, long fromX, long fromY,
   LPRECT r = new RECT();
   GetWindowRect(directInputTo, r);
 
+  WPARAM buttonValue = (leftMouseButtonPressed ? MK_LBUTTON : 0);
+
 	for (int i = 0; i < steps; i++) {
 	  //To avoid integer division rounding and cumulative floating point errors,
 	  //calculate from scratch each time
 	  int currentX = fromX + ((toX - fromX) * ((double)i) / steps);
 		int currentY = fromY + ((toY - fromY) * ((double)i) / steps);
-	  SendMessage(directInputTo, WM_MOUSEMOVE, 0, MAKELPARAM(currentX, currentY));
+	  SendMessage(directInputTo, WM_MOUSEMOVE, buttonValue, MAKELPARAM(currentX, currentY));
 		wait(sleep);
 	}
 	
-	SendMessage(directInputTo, WM_MOUSEMOVE, 0, MAKELPARAM(toX, toY));
+	SendMessage(directInputTo, WM_MOUSEMOVE, buttonValue, MAKELPARAM(toX, toY));
 
   delete r;
   return 0;

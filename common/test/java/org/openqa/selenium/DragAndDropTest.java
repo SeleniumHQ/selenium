@@ -121,4 +121,46 @@ public class DragAndDropTest extends AbstractDriverTestCase {
     elem.dragAndDropBy(moveRightBy, moveDownBy);
     expectedLocation.move(expectedLocation.x + moveRightBy, expectedLocation.y + moveDownBy);
   }
+
+  @JavascriptEnabled
+  @Ignore({HTMLUNIT, CHROME, SELENESE})
+  public void testDragAndDropOnJQueryItems() {
+    driver.get(pages.droppableItems);
+
+    WebElement toDrag = driver.findElement(By.id("draggable"));
+    WebElement dropInto = driver.findElement(By.id("droppable"));
+
+    // Wait until all event handlers are installed.
+    doSleep(500);
+
+    ((RenderedWebElement) toDrag).dragAndDropOn((RenderedWebElement) dropInto);
+
+    String text = dropInto.findElement(By.tagName("p")).getText();
+
+    long waitEndTime = System.currentTimeMillis() + 15000;
+
+    while (!text.equals("Dropped!") && (System.currentTimeMillis() < waitEndTime)) {
+      doSleep(200);
+      text = dropInto.findElement(By.tagName("p")).getText();
+    }
+
+    assertEquals("Dropped!", text);
+
+    WebElement reporter = driver.findElement(By.id("drop_reports"));
+    // Assert that only one mouse click took place and the mouse was moved
+    // during it.
+    String reporterText = reporter.getText();
+    assertTrue("Reporter text:" + reporterText, reporterText.startsWith("start down"));
+    assertTrue("Reporter text:" + reporterText, reporterText.endsWith("up"));
+    assertTrue("Reporter text:" + reporterText, reporterText.contains("move"));
+  }
+
+  private static void doSleep(int ms) {
+    try {
+      Thread.sleep(ms);
+    } catch (InterruptedException e) {
+      throw new RuntimeException("Interrupted: " + e.toString());
+    }
+  }
+
 }

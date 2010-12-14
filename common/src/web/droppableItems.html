@@ -19,6 +19,23 @@
 			}
 		});
 
+        var report_event = function(report_text) {
+          var reportElement = $("#drop_reports");
+          var origText = reportElement.text();
+          reportElement.text(origText + " " + report_text);
+        }
+
+        $('body').mousedown(function() {
+            report_event('down');
+        });
+
+        $('body').mousemove(function() {
+            report_event('move');
+        });
+
+        $('body').mouseup(function() {
+            report_event('up');
+        });
 	});
 	</script>
 </head>
@@ -33,11 +50,15 @@
 	<p>Drop here</p>
 </div>
 
+<div class="test-data">
+  <p id="drop_reports">start</p>
+</div>
+
 </div><!-- End demo -->
 
 <div class="demo-description">
 
-<p>Enable any DOM element to be droppable, a target for draggable elements.</p>
+<p>Taken from the JQuery demo.</p>
 
 </div><!-- End demo-description -->
 </body>
