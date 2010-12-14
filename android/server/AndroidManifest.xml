@@ -29,15 +29,26 @@ limitations under the License.
     <activity android:name=".WebDriverActivity" android:label="Android WebDriver Client">
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
-        <category android:name="android.intent.category.SAMPLE_CODE" />
       </intent-filter>
     </activity>
     <service android:name="org.openqa.selenium.android.server.JettyService"
       android:process=":remote" />
   </application>
+
   <uses-permission android:name="android.permission.INTERNET" />
   <uses-permission android:name="android.permission.WRITE_SETTINGS" />
   <uses-permission android:name="android.permission.INTERNET" />
   <uses-permission android:name="android.permission.WAKE_LOCK" />
-
+  <uses-permission android:name="android.permission.CLEAR_APP_CACHE" />
+  <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+  <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+  <uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION" />
+  <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+  <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
+  <uses-permission android:name="android.permission.CHANGE_CONFIGURATION" />
+  <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+  <uses-permission android:name="android.permission.SET_DEBUG_APP" />
+  <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+  <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+  <uses-permission android:name="android.permission.WRITE_APN_SETTINGS" />
 </manifest>
