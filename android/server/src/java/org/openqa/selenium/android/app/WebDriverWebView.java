@@ -75,7 +75,8 @@ public class WebDriverWebView extends WebView {
   }
   
   public String getWindowName() {
-    javascriptExecutor.executeJS("window.webdriver.resultMethod(window.name);", WebDriverWebView.this);
+    javascriptExecutor.executeJS("window.webdriver.resultMethod(window.name);",
+        WebDriverWebView.this);
     while (Action.NOT_DONE_INDICATOR.equals(javascriptExecutor.getResult())) {
       Sleeper.sleepQuietly(20);
     }
