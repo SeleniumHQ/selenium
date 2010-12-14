@@ -49,8 +49,6 @@ public class AndroidDriverTestSuite extends TestCase {
         .exclude(ANDROID)
         .exclude(REMOTE)
         .includeJavascriptTests()
-        .onlyRun("FrameSwitchingTest")
-//        .onlyRun("PageLoadingTest")
         .create();
   }
 }
