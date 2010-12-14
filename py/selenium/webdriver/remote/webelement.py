@@ -50,13 +50,16 @@ class WebElement(object):
 
     def get_attribute(self, name):
         """Gets the attribute value."""
-        try:
-            resp = self._execute(Command.GET_ELEMENT_ATTRIBUTE, {'name': name})
-            return str(resp['value'])
-        # FIXME: This is a hack around selenium server bad response,
-        # remove this code when it's fixed
-        except AssertionError, e:
-            raise NoSuchAttributeException(name, e)
+        resp = self._execute(Command.GET_ELEMENT_ATTRIBUTE, {'name': name})
+        attributeValue = ''
+        if resp['value'] is None:
+            attributeValue = None
+        else:
+            attributeValue = str(resp['value'])
+            if type(resp['value'] is bool):
+                attributeValue = attributeValue.lower()
+
+        return attributeValue
 
     def toggle(self):
         """Toggles the element state."""
