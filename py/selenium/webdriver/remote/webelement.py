@@ -56,7 +56,7 @@ class WebElement(object):
             attributeValue = None
         else:
             attributeValue = str(resp['value'])
-            if type(resp['value'] is bool):
+            if type(resp['value']) is bool:
                 attributeValue = attributeValue.lower()
 
         return attributeValue
