@@ -265,8 +265,14 @@ module Android
         
         puts "Starting emulator: #{emulator}"
         
-        # We create the emulator with a pre-generated emulator image.
-        Thread.new{ sh "#{emulator} -avd #{avdname} -data build/android/#{emulator_image} -no-audio -no-boot-anim"}
+        # We create the emulator with a pre-generated emulator image.	
+	emulator_options = ""
+	if !linux?
+	  emulator_options += "-no-boot-anim"
+        end
+	command = "#{emulator} -avd #{avdname} -data build/android/#{emulator_image} -no-audio #{emulator_options}"
+	puts "COMMAND: #{command}"
+        Thread.new{ sh "#{emulator} -avd #{avdname} -data build/android/#{emulator_image} -no-audio #{emulator_options}"}
 
         puts "Waiting for emulator to get started"
         adb = File.join(sdk_path, "tools", "adb")
