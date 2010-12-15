@@ -63,7 +63,8 @@ class WebElement(object):
 
     def toggle(self):
         """Toggles the element state."""
-        self._execute(Command.TOGGLE_ELEMENT)
+        resp = self._execute(Command.TOGGLE_ELEMENT)
+        return resp['value']
 
     def is_selected(self):
         """Whether the element is selected."""
