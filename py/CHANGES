@@ -3,3 +3,4 @@ Changes since 2010-12-01
 * New bindings landed. Change webdriver namespace to "selenium.webdriver"
 * Ability to move to default content
 * Implicit Waits
+* Change the API to use properties instead of get_x

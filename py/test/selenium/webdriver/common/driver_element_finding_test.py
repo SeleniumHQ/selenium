@@ -31,39 +31,39 @@ class DriverElementFindingTests(unittest.TestCase):
     def testShouldFindElementById(self):
         self._loadSimplePage()
         e = self.driver.find_element_by_id("oneline")
-        self.assertEqual("A single line of text", e.get_text())
+        self.assertEqual("A single line of text", e.text)
         
 
     def testShouldFindElementByLinkText(self):
         self._loadSimplePage()
         e = self.driver.find_element_by_link_text("link with leading space")
-        self.assertEqual("link with leading space", e.get_text())
+        self.assertEqual("link with leading space", e.text)
         
 
     def testShouldFindElementByName(self):
         self._loadPage("nestedElements")
         e = self.driver.find_element_by_name("div1")
-        self.assertEqual("hello world hello world", e.get_text())
+        self.assertEqual("hello world hello world", e.text)
         
     def testShouldFindElementByXPath(self):
         self._loadSimplePage()
         e = self.driver.find_element_by_xpath("/html/body/p[1]")
-        self.assertEqual("A single line of text", e.get_text())
+        self.assertEqual("A single line of text", e.text)
         
     def testShouldFindElementByClassName(self):
         self._loadPage("nestedElements")
         e = self.driver.find_element_by_class_name("one")
-        self.assertEqual("Span with class of one", e.get_text())
+        self.assertEqual("Span with class of one", e.text)
         
     def testShouldFindElementByPartialLinkText(self):
         self._loadSimplePage()
         e = self.driver.find_element_by_partial_link_text("leading space")
-        self.assertEqual("link with leading space", e.get_text())
+        self.assertEqual("link with leading space", e.text)
         
     def testShouldFindElementByTagName(self):
         self._loadSimplePage()
         e = self.driver.find_element_by_tag_name("H1")
-        self.assertEqual("Heading", e.get_text())
+        self.assertEqual("Heading", e.text)
         
     def testShouldFindElementsById(self):    
         self._loadPage("nestedElements")

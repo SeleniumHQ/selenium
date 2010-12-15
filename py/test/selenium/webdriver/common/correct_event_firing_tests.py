@@ -57,46 +57,46 @@ class CorrectEventFiringTests(unittest.TestCase):
     def testShouldIssueMouseDownEvents(self):
         self._loadPage("javascriptPage")
         self.driver.find_element_by_id("mousedown").click()
-        result = self.driver.find_element_by_id("result").get_text()
+        result = self.driver.find_element_by_id("result").text
         self.assertEqual(result, "mouse down")
 
     def testShouldIssueClickEvents(self):
         self._loadPage("javascriptPage")
         self.driver.find_element_by_id("mouseclick").click()
-        result = self.driver.find_element_by_id("result").get_text()
+        result = self.driver.find_element_by_id("result").text
         self.assertEqual(result, "mouse click")
         
     def testShouldIssueMouseUpEvents(self):
         self._loadPage("javascriptPage")
         self.driver.find_element_by_id("mouseup").click()
-        result = self.driver.find_element_by_id("result").get_text()
+        result = self.driver.find_element_by_id("result").text
         self.assertEqual(result, "mouse up")
 
     def testMouseEventsShouldBubbleUpToContainingElements(self):
         self._loadPage("javascriptPage")
         self.driver.find_element_by_id("child").click()
-        result = self.driver.find_element_by_id("result").get_text()
+        result = self.driver.find_element_by_id("result").text
         self.assertEqual(result, "mouse down")
     
     def testShouldEmitOnChangeEventsWhenSelectingElements(self):
         self._loadPage("javascriptPage")
         # Intentionally not looking up the select tag.  See selenium r7937 for details.
         allOptions = self.driver.find_elements_by_xpath("//select[@id='selector']//option")
-        initialTextValue = self.driver.find_element_by_id("result").get_text()
+        initialTextValue = self.driver.find_element_by_id("result").text
 
         foo = allOptions[0]
         bar = allOptions[1]
 
-        foo.set_selected()
-        self.assertEqual(self.driver.find_element_by_id("result").get_text(), initialTextValue)
-        bar.set_selected()
-        self.assertEqual(self.driver.find_element_by_id("result").get_text(), "bar")
+        foo.select()
+        self.assertEqual(self.driver.find_element_by_id("result").text, initialTextValue)
+        bar.select()
+        self.assertEqual(self.driver.find_element_by_id("result").text, "bar")
 
     def testShouldEmitOnChangeEventsWhenChangingTheStateOfACheckbox(self):
         self._loadPage("javascriptPage")
         checkbox = self.driver.find_element_by_id("checkbox")
-        checkbox.set_selected()
-        self.assertEqual(self.driver.find_element_by_id("result").get_text(), "checkbox thing")
+        checkbox.select()
+        self.assertEqual(self.driver.find_element_by_id("result").text, "checkbox thing")
         
 
     def testShouldEmitClickEventWhenClickingOnATextInputElement(self):
@@ -104,14 +104,14 @@ class CorrectEventFiringTests(unittest.TestCase):
         clicker = self.driver.find_element_by_id("clickField")
         clicker.click()
 
-        self.assertEqual(clicker.get_value(), "Clicked")
+        self.assertEqual(clicker.value, "Clicked")
         
     def testClearingAnElementShouldCauseTheOnChangeHandlerToFire(self):
         self._loadPage("javascriptPage")
         element = self.driver.find_element_by_id("clearMe")
         element.clear()
         result = self.driver.find_element_by_id("result")
-        self.assertEqual(result.get_text(), "Cleared");
+        self.assertEqual(result.text, "Cleared");
 
     # TODO Currently Failing and needs fixing    
     #def testSendingKeysToAnotherElementShouldCauseTheBlurEventToFire(self):
@@ -134,7 +134,7 @@ class CorrectEventFiringTests(unittest.TestCase):
 
     def _assertEventFired(self, eventName):
         result = self.driver.find_element_by_id("result")
-        text = result.get_text()
+        text = result.text
         self.assertTrue(eventName in text, "No " + eventName + " fired: " + text)
 
     def _pageURL(self, name):

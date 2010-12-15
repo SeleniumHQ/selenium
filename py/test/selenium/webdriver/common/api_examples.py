@@ -38,18 +38,18 @@ def not_available_on_remote(func):
 class ApiExampleTest (unittest.TestCase):
     def testGetTitle(self):
         self._loadSimplePage()
-        title = self.driver.get_title()
+        title = self.driver.title
         self.assertEquals("Hello WebDriver", title)
 
     def testGetCurrentUrl(self):
         self._loadSimplePage()
-        url = self.driver.get_current_url()
+        url = self.driver.current_url
         self.assertEquals("http://localhost:%d/simpleTest.html" % self.webserver.port, url)
 
     def testFindElementsByXPath(self):
         self._loadSimplePage()
         elem = self.driver.find_element_by_xpath("//h1")
-        self.assertEquals("Heading", elem.get_text())
+        self.assertEquals("Heading", elem.text)
 
     def testFindElementByXpathThrowNoSuchElementException(self):
         self._loadSimplePage()
@@ -62,12 +62,12 @@ class ApiExampleTest (unittest.TestCase):
         self._loadPage("nestedElements")
         elems = self.driver.find_elements_by_xpath("//option")
         self.assertEquals(48, len(elems))
-        self.assertEquals("One", elems[0].get_value())
+        self.assertEquals("One", elems[0].value)
 
     def testFindElementsByName(self):
         self._loadPage("xhtmlTest")
         elem = self.driver.find_element_by_name("windowOne")
-        self.assertEquals("Open new window", elem.get_text())
+        self.assertEquals("Open new window", elem.text)
 
     def testFindElementsByNameInElementContext(self):
         self._loadPage("nestedElements")
@@ -108,7 +108,7 @@ class ApiExampleTest (unittest.TestCase):
         elem.clear()
         elem.send_keys("some text")
         elem = self.driver.find_element_by_xpath("//form[@name='someForm']/input[@id='username']")
-        self.assertEquals("some text", elem.get_value())
+        self.assertEquals("some text", elem.value)
 
     def testFindElementByTagName(self):
         self._loadPage("simpleTest")
@@ -129,14 +129,14 @@ class ApiExampleTest (unittest.TestCase):
         title_2 = "We Arrive Here"
         self._loadPage("xhtmlTest")
         self.driver.find_element_by_link_text("Open new window").click()
-        self.assertEquals(title_1, self.driver.get_title())
+        self.assertEquals(title_1, self.driver.title)
         try:
-            self.driver.SwitchToWindow("result")
+            self.driver.switch_to_window("result")
         except:
             # This may fail because the window is not loading fast enough, so try again
             time.sleep(1)
             self.driver.switch_to_window("result")
-        self.assertEquals(title_2, self.driver.get_title())
+        self.assertEquals(title_2, self.driver.title)
 
     def testSwitchToFrameByIndex(self):
         self._loadPage("frameset")
@@ -181,11 +181,11 @@ class ApiExampleTest (unittest.TestCase):
     def testNavigate(self):
         self._loadPage("formPage")
         self.driver.find_element_by_id("imageButton").submit()
-        self.assertEquals("We Arrive Here", self.driver.get_title())
+        self.assertEquals("We Arrive Here", self.driver.title)
         self.driver.back()
-        self.assertEquals("We Leave From Here", self.driver.get_title())
+        self.assertEquals("We Leave From Here", self.driver.title)
         self.driver.forward()
-        self.assertEquals("We Arrive Here", self.driver.get_title())
+        self.assertEquals("We Arrive Here", self.driver.title)
 
     def testGetAttribute(self):
         page = "xhtmlTest"

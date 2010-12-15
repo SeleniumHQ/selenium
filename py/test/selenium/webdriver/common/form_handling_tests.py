@@ -34,7 +34,7 @@ class FormHandlingTests(unittest.TestCase):
         self._loadPage("formPage")
         self.driver.find_element_by_id("submitButton").click()
         self.driver.implicitly_wait(5)
-        self.assertEqual(self.driver.get_title(), "We Arrive Here")
+        self.assertEqual(self.driver.title, "We Arrive Here")
         
     def testClickingOnUnclickableElementsDoesNothing(self):    
         self._loadPage("formPage")
@@ -44,25 +44,25 @@ class FormHandlingTests(unittest.TestCase):
         self._loadPage("formPage")
         self.driver.find_element_by_id("imageButton").click()
         self.driver.implicitly_wait(5)
-        self.assertEqual(self.driver.get_title(), "We Arrive Here")
+        self.assertEqual(self.driver.title, "We Arrive Here")
         
     def testShouldBeAbleToSubmitForms(self):
         self._loadPage("formPage")
         self.driver.find_element_by_name("login").submit()
         self.driver.implicitly_wait(5)
-        self.assertEqual(self.driver.get_title(), "We Arrive Here")
+        self.assertEqual(self.driver.title, "We Arrive Here")
         
     def testShouldSubmitAFormWhenAnyInputElementWithinThatFormIsSubmitted(self):
         self._loadPage("formPage")
         self.driver.find_element_by_id("checky").submit()
         self.driver.implicitly_wait(5)
-        self.assertEqual(self.driver.get_title(), "We Arrive Here")
+        self.assertEqual(self.driver.title, "We Arrive Here")
         
     def testShouldSubmitAFormWhenAnyElementWihinThatFormIsSubmitted(self):
         self._loadPage("formPage")
         self.driver.find_element_by_xpath("//form/p").submit()
         self.driver.implicitly_wait(5)
-        self.assertEqual(self.driver.get_title(), "We Arrive Here")
+        self.assertEqual(self.driver.title, "We Arrive Here")
         
     def testShouldNotBeAbleToSubmitAFormThatDoesNotExist(self):
         self._loadPage("formPage")
@@ -79,28 +79,28 @@ class FormHandlingTests(unittest.TestCase):
         textarea = self.driver.find_element_by_id("keyUpArea")
         cheesey = "Brie and cheddar"
         textarea.send_keys(cheesey)
-        self.assertEqual(textarea.get_value(), cheesey)
+        self.assertEqual(textarea.value, cheesey)
         
     def testShouldEnterDataIntoFormFields(self):
         self._loadPage("xhtmlTest")
         element = self.driver.find_element_by_xpath("//form[@name='someForm']/input[@id='username']")
-        originalValue = element.get_value()
+        originalValue = element.value
         self.assertEqual(originalValue, "change")
 
         element.clear()
         element.send_keys("some text")
 
         element = self.driver.find_element_by_xpath("//form[@name='someForm']/input[@id='username']")
-        newFormValue = element.get_value()
+        newFormValue = element.value
         self.assertEqual(newFormValue, "some text")
         
     def testShouldBeAbleToSelectACheckBox(self):
         self._loadPage("formPage")
         checkbox = self.driver.find_element_by_id("checky")
         self.assertEqual(checkbox.is_selected(), False)
-        checkbox.set_selected()
+        checkbox.select()
         self.assertEqual(checkbox.is_selected(), True)
-        checkbox.set_selected()
+        checkbox.select()
         self.assertEqual(checkbox.is_selected(), True)
         
     def testShouldToggleTheCheckedStateOfACheckbox(self):
@@ -126,7 +126,7 @@ class FormHandlingTests(unittest.TestCase):
         radioButton = self.driver.find_element_by_id("nothing")
         self.assertEqual(radioButton.is_enabled(), False)
         try:
-            radioButton.set_selected()
+            radioButton.select()
             self.fail("Expected InvalidElementStateException but didnt get it")
         except InvalidElementStateException, e:
             pass
@@ -137,7 +137,7 @@ class FormHandlingTests(unittest.TestCase):
         self._loadPage("formPage")
         radioButton = self.driver.find_element_by_id("peas")
         self.assertEqual(radioButton.is_selected(), False)
-        radioButton.set_selected()
+        radioButton.select()
         self.assertEqual(radioButton.is_selected(), True)
         
     def testShouldBeAbleToSelectARadioButtonByClickingOnIt(self):
@@ -190,7 +190,7 @@ class FormHandlingTests(unittest.TestCase):
     
         element = self.driver.find_element_by_xpath("//title")
         try:
-            element.set_selected()
+            element.select()
             self.fail("Expected ElementNotSelectableException to have been thrown")
         except InvalidElementStateException, e:
             pass
@@ -201,42 +201,42 @@ class FormHandlingTests(unittest.TestCase):
         self._loadPage("formPage")
         element = self.driver.find_element_by_id("working")
         element.send_keys("Some")
-        value = element.get_value()
+        value = element.value
         self.assertEqual(value, "Some")
 
         element.send_keys(" text")
-        value = element.get_value()
+        value = element.value
         self.assertEqual(value, "Some text")
 
     def testShouldBeAbleToClearTextFromInputElements(self):
         self._loadPage("formPage")
         element = self.driver.find_element_by_id("working")
         element.send_keys("Some text")
-        value = element.get_value()
+        value = element.value
         self.assertTrue(len(value) > 0)
 
         element.clear()
-        value = element.get_value()
+        value = element.value
 
         self.assertEqual(len(value), 0)
 
     def testEmptyTextBoxesShouldReturnAnEmptyStringNotNull(self):
         self._loadPage("formPage")
         emptyTextBox = self.driver.find_element_by_id("working")
-        self.assertEqual(emptyTextBox.get_value(), "")
+        self.assertEqual(emptyTextBox.value, "")
 
         emptyTextArea = self.driver.find_element_by_id("emptyTextArea")
-        self.assertEqual(emptyTextBox.get_value(), "")
+        self.assertEqual(emptyTextBox.value, "")
         
     def testShouldBeAbleToClearTextFromTextAreas(self):
         self._loadPage("formPage")
         element = self.driver.find_element_by_id("withText")
         element.send_keys("Some text")
-        value = element.get_value()
+        value = element.value
         self.assertTrue(len(value) > 0)
 
         element.clear()
-        value = element.get_value()
+        value = element.value
 
         self.assertEqual(len(value), 0)
         
@@ -245,12 +245,12 @@ class FormHandlingTests(unittest.TestCase):
         cheese = self.driver.find_element_by_id("cheese")
         peas = self.driver.find_element_by_id("peas")
 
-        cheese.set_selected()
+        cheese.select()
 
         self.assertEqual(True, cheese.is_selected())
         self.assertEqual(False, peas.is_selected())
 
-        peas.set_selected()
+        peas.select()
 
         self.assertEqual(False, cheese.is_selected())
         self.assertEqual(True, peas.is_selected())

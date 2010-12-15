@@ -89,7 +89,7 @@ class ElementAttributeTests(unittest.TestCase):
         except: 
             pass 
         
-        self.assertEqual("", disabledTextElement1.get_text())
+        self.assertEqual("", disabledTextElement1.text)
 
         disabledTextElement2 = self.driver.find_element_by_id("disabledTextElement2")
         try:
@@ -97,7 +97,7 @@ class ElementAttributeTests(unittest.TestCase):
             self.fail("Should have thrown exception")
         except:
             pass
-        self.assertEqual("", disabledTextElement2.get_text())
+        self.assertEqual("", disabledTextElement2.text)
         
     def testShouldIndicateWhenASelectIsDisabled(self):
         self._loadPage("formPage")
@@ -111,7 +111,7 @@ class ElementAttributeTests(unittest.TestCase):
         self._loadPage("formPage")
         checkbox = self.driver.find_element_by_xpath("//input[@id='checky']")
         self.assertTrue(checkbox.get_attribute("checked") is None)
-        checkbox.set_selected()
+        checkbox.select()
         self.assertEqual("true", checkbox.get_attribute("checked"))
         
     def testShouldReturnTheValueOfSelectedForRadioButtonsEvenIfTheyLackThatAttribute(self):
@@ -124,7 +124,7 @@ class ElementAttributeTests(unittest.TestCase):
         self.assertTrue(initiallyNotSelected.get_attribute("selected") is None, "false")
         self.assertEqual("true", initiallySelected.get_attribute("selected"), "true")
 
-        initiallyNotSelected.set_selected()
+        initiallyNotSelected.select()
         self.assertTrue(neverSelected.get_attribute("selected") is None)
         self.assertEqual("true", initiallyNotSelected.get_attribute("selected"))
         self.assertTrue(initiallySelected.get_attribute("selected") is None)
@@ -160,7 +160,7 @@ class ElementAttributeTests(unittest.TestCase):
         
     def testShouldReturnTheContentsOfATextAreaAsItsValue(self):
         self._loadPage("formPage")
-        value = self.driver.find_element_by_id("withText").get_value()
+        value = self.driver.find_element_by_id("withText").value
         self.assertEqual("Example text", value)
         
     def testShouldTreatReadonlyAsAValue(self):    

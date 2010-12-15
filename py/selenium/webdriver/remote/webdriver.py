@@ -168,7 +168,8 @@ class WebDriver(object):
         """Loads a web page in the current browser."""
         self._execute(Command.GET, {'url': url})
 
-    def get_title(self):
+    @property
+    def title(self):
         """Gets the title of the current page."""
         resp = self._execute(Command.GET_TITLE)
         return resp['value'] if resp['value'] is not None else ""
@@ -247,7 +248,8 @@ class WebDriver(object):
             Command.EXECUTE_SCRIPT,
             {'script': script, 'args':converted_args})['value']
 
-    def get_current_url(self):
+    @property
+    def current_url(self):
         """Gets the current url."""
         return self._execute(Command.GET_CURRENT_URL)['value']
 

@@ -50,8 +50,8 @@ class ChildrenFindingTests(unittest.TestCase):
         element = self.driver.find_element_by_name("form2")
         children = element.find_elements_by_xpath("select/option")
         self.assertEqual(len(children), 8);
-        self.assertEqual(children[0].get_text(), "One")
-        self.assertEqual(children[1].get_text(), "Two")
+        self.assertEqual(children[0].text, "One")
+        self.assertEqual(children[1].text, "Two")
 
     def testShouldNotFindElementsByXpath(self):
         self._loadPage("nestedElements")
@@ -94,7 +94,7 @@ class ChildrenFindingTests(unittest.TestCase):
         self._loadPage("nestedElements")    
         element = self.driver.find_element_by_id("test_id_div")
         child = element.find_element_by_id("test_id")
-        self.assertEqual(child.get_text(), "inside")
+        self.assertEqual(child.text, "inside")
     
     def testShouldFindElementByIdWhenNoMatchInContext(self):
         self._loadPage("nestedElements")
@@ -123,7 +123,7 @@ class ChildrenFindingTests(unittest.TestCase):
         self._loadPage("nestedElements")
         parent = self.driver.find_element_by_name("classes")
         element = parent.find_element_by_class_name("one")
-        self.assertEqual("Find me", element.get_text())
+        self.assertEqual("Find me", element.text)
 
     def testShouldFindElementsByClassName(self):
         self._loadPage("nestedElements")
