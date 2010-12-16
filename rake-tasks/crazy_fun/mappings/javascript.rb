@@ -204,7 +204,7 @@ module Javascript
 
         # Naming convention is CamelCase, not snake_case
         name = args[:name].gsub(/_(.)/) {|match| $1.upcase}
-        wrapper = "var #{name}=function(){%output%; return _.apply(null,arguments);};"
+        wrapper = "function(){%output%; return _.apply(null,arguments);}"
 
         # TODO(simon): Don't hard code things. That's Not Smart
         cmd = calcdeps +

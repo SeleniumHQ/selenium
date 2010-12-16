@@ -47,13 +47,13 @@ public class CompoundMutator implements ScriptMutator {
 
     JavascriptLibrary library = new JavascriptLibrary();
 
-    addMutator(new SeleniumMutator("selenium.isElementPresent", "isElementPresent",
+    addMutator(new SeleniumMutator("selenium.isElementPresent",
         library.getSeleniumScript("isElementPresent.js")));
-    addMutator(new SeleniumMutator("selenium.isTextPresent", "isTextPresent",
+    addMutator(new SeleniumMutator("selenium.isTextPresent",
         library.getSeleniumScript("isTextPresent.js")));
-    addMutator(new SeleniumMutator("selenium.isVisible", "isVisible",
+    addMutator(new SeleniumMutator("selenium.isVisible",
         library.getSeleniumScript("isVisible.js")));
-    addMutator(new SeleniumMutator("selenium.browserbot.findElement", "findElement",
+    addMutator(new SeleniumMutator("selenium.browserbot.findElement",
         library.getSeleniumScript("findElement.js")));
   }
 

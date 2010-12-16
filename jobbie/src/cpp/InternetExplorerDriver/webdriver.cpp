@@ -697,7 +697,10 @@ int wdeGetAttribute(WebDriver* driver, WebElement* element, const wchar_t* name,
 	int res = verifyFresh(element);	if (res != SUCCESS) { return res; }
 
 	try {
-		std::wstring script(L"(function() { return function(){ ");
+		// The atom is just the definition of an anonymous
+		// function: "function() {...}"; Wrap it in another function so we can
+		// invoke it with our arguments without polluting the current namespace.
+		std::wstring script(L"(function() { return (");
 
 		// Read in all the scripts
 		for (int j = 0; GET_ATTRIBUTE[j]; j++) {
@@ -706,12 +709,7 @@ int wdeGetAttribute(WebDriver* driver, WebElement* element, const wchar_t* name,
 		}
 
 		// Now for the magic
-		script += L"var element = arguments[0];\n";
-		script += L"var attributeName = arguments[1];\n";
-		script += L"return getAttribute(element, attributeName);\n";
-
-		// Close things
-		script += L"};})();";
+		script += L").apply(null, arguments);})();";
 
 		ScriptArgs* args;
 		res = wdNewScriptArgs(&args, 2);

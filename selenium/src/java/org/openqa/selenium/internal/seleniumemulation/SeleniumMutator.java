@@ -26,14 +26,12 @@ import java.util.regex.Pattern;
 public class SeleniumMutator implements ScriptMutator {
   private final Pattern pattern;
   private final String method;
-  private final String atomicName;
   private final String atom;
 
-  public SeleniumMutator(String method, String atomicName, String atom) {
+  public SeleniumMutator(String method, String atom) {
     String raw = ".*" + method.replace(".", "\\s*\\.\\s*") + ".*";
     this.pattern = Pattern.compile(raw);
     this.method = method;
-    this.atomicName = atomicName;
     this.atom = atom;
   }
 
@@ -41,15 +39,10 @@ public class SeleniumMutator implements ScriptMutator {
     if (!pattern.matcher(script).matches()) {
       return;
     }
-    
-    // Inject the raw atom.
-    appendTo.append(atom);
-    // Then alias it
-    appendTo.append(method);
-    appendTo.append(" = function() { return ");
 
-    // Set "this" to be the pre-declared selenium object
-    appendTo.append(atomicName).append(".apply(null, arguments);};");
+    // Alias the raw atom and set "this" to be the pre-declared selenium object.
+    appendTo.append(String.format("%s = function() { return (%s).apply(null, arguments);};",
+        method, atom));
   }
 }
 
