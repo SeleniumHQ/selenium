@@ -273,7 +273,16 @@ browser on. Should be one of `{WINDOWS|XP|VISTA|MAC|LINUX|UNIX|ANY}` ||
       Delete('Delete the session.').
       SetJavadoc('java/org/openqa/selenium/WebDriver.html#quit()',
                  'WebDriver#quit()'))
-                 
+
+  resources.append(
+      SessionResource('/session/:sessionId/timeouts/async_script').
+      Post('''Set the amount of time, in milliseconds, that asynchronous \
+scripts executed by `/session/:sessionId/execute_async` are permitted to run \
+before they are aborted and a |Timeout| error is returned to the client.''').
+      AddJsonParameter('ms', '{number}',
+                       'The amount of time, in milliseconds, that time-limited'
+                       ' commands are permitted to run.'))
+
   resources.append(
       SessionResource('/session/:sessionId/timeouts/implicit_wait').
       Post('''Set the amount of time the driver should wait when searching for \
@@ -341,21 +350,65 @@ If this command is never sent, the driver should default to an implicit wait of\
   resources.append(
       SessionResource('/session/:sessionId/execute').
       Post('''
-Inject a snippet of !JavaScript into the page and return its result.  \
-WebElements that should be
-passed to the script as an argument should be specified in the arguments array \
-as WebElement JSON
-arguments. Likewise, any !WebElements in the script result will be returned to \
-the client as
-!WebElement JSON objects.''').
+Inject a snippet of !JavaScript into the page for execution in the context of \
+the currently selected frame. The executed script is assumed to be \
+synchronous and the result of evaluating the script is returned to the client.
+
+The `script` argument defines the script to execute in the form of a \
+function body.  The value returned by that function will be returned to the \
+client.  The function will be invoked with the provided `args` array and the \
+values may be accessed via the `arguments` object in the order specified.
+
+Arguments may be any JSON-primitive, array, or JSON object.  JSON objects that \
+define a !WebElement reference will be converted to the corresponding DOM \
+element. Likewise, any !WebElements in the script result will be returned to \
+the client as !WebElement JSON objects.''').
       AddJsonParameter('script', '{string}', 'The script to execute.').
       AddJsonParameter('args', '{Array.<*>}', 'The script arguments.').
+      AddError('JavaScriptError', 'If the script throws an Error.').
       AddError('StaleElementReference',
-               'If one of the script arguments is a !WebElement that is no '
+               'If one of the script arguments is a !WebElement that is not '
                'attached to the page\'s DOM.').
       SetJavadoc('java/org/openqa/selenium/JavascriptExecutor.html#'
                  'executeScript(java.lang.String,%20java.lang.Object...)',
                  'JavascriptExecutor#executeScript(String, Object...)').
+      SetReturnType('{*}', 'The script result.'))
+
+  resources.append(
+      SessionResource('/session/:sessionId/execute_async').
+      Post('''
+Inject a snippet of !JavaScript into the page for execution in the context of \
+the currently selected frame. The executed script is assumed to be \
+asynchronous and must signal that is done by invoking the provided callback, \
+which is always provided as the final argument to the function.  The value \
+to this callback will be returned to the client.
+
+Asynchronous script commands may not span page loads.  If an `unload` event is \
+fired while waiting for a script result, an error should be returned to the \
+client.
+
+The `script` argument defines the script to execute in teh form of a function \
+body.  The function will be invoked with the provided `args` array and the \
+values may be accessed via the `arguments` object in the order specified. The \
+final argument will always be a callback function that must be invoked to \
+signal that the script has finished.
+
+Arguments may be any JSON-primitive, array, or JSON object.  JSON objects that \
+define a !WebElement reference will be converted to the corresponding DOM \
+element. Likewise, any !WebElements in the script result will be returned to \
+the client as !WebElement JSON objects.''').
+      AddJsonParameter('script', '{string}', 'The script to execute.').
+      AddJsonParameter('args', '{Array.<*>}', 'The script arguments.').
+      AddError('JavaScriptError',
+               'If the script throws an Error or if an `unload` event is '
+               'fired while waiting for the script to finish.').
+      AddError('StaleElementReference',
+               'If one of the script arguments is a !WebElement that is not '
+               'attached to the page\'s DOM.').
+      AddError('Timeout',
+               'If the script callback is not invoked before the timout '
+               'expires. Timeouts are controlled by the '
+               '`/session/:sessionId/timeout/async_script` command.').
       SetReturnType('{*}', 'The script result.'))
 
   resources.append(
@@ -1034,6 +1087,8 @@ disabled element). ||
 processing the command. ||
 || 15 || `ElementIsNotSelectable` || An attempt was made to select an element \
 that cannot be selected. ||
+|| 17 || `JavaScriptError` || An error occurred while executing user supplied \
+!JavaScript. ||
 || 19 || `XPathLookupError` || An error occurred while searching for an \
 element by XPath. ||
 || 23 || `NoSuchWindow` || A request to switch to a different window could \
@@ -1042,6 +1097,7 @@ not be satisfied because the window could not be found. ||
 under a different domain than the current page. ||
 || 25 || `UnableToSetCookie` || A request to set a cookie's value could not \
 be satisfied. ||
+|| 28 || `Timeout` || A command did not complete before its timeout expired. ||
 
 The client should interpret a 404 Not Found response from the server as an \
 "Unknown command" response. All other 4xx and 5xx responses from the server \
