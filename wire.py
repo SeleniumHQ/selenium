@@ -896,6 +896,25 @@ location for correctly generating native events.''').
   print '''#summary A description of the protocol used by WebDriver to \
 communicate with remote instances
 #labels WebDriver
+<wiki:comment>
+==============================================================================
+==============================================================================
+
+DO NOT EDIT THIS WIKI PAGE THROUGH THE UI.
+
+Instead, use http://selenium.googlecode.com/svn/trunk/wire.py
+
+$ svn co https://selenium.googlecode.com/svn/ --depth=empty wire_protocol
+$ cd wire_protocol
+$ svn update --depth=infinity ./wiki
+$ svn update --depth=files ./trunk
+# modify ./trunk/wire.py
+$ python ./trunk/wire.py > ./wiki/JsonWireProtocol.wiki
+$ svn commit ./trunk/wire.py ./wiki/JsonWireProtocol.wiki
+
+==============================================================================
+==============================================================================
+</wiki:comment>
 
 <font size=6>*The !WebDriver Wire Protocol*</font>
 
