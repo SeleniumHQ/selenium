@@ -13,8 +13,8 @@ java_library(name = "server",
     ":r",
     "//remote/server:server_lite",
     "//third_party/java/android",
-    "//third_party/java/jetty",
-    "//third_party/java/guava-libraries",
+    "//third_party/java/jetty:lite-android:uber",
+    "//third_party/java/guava-libraries:guava-libraries:uber",
     "//third_party/java/servlet-api"
   ])
 
