@@ -58,9 +58,6 @@ public interface DriverCommand {
 
   String SWITCH_TO_WINDOW = "switchToWindow";
   String SWITCH_TO_FRAME = "switchToFrame";
-  String SWITCH_TO_FRAME_BY_INDEX = "switchToFrameByIndex";  // TODO(jleyba): standardize Chrome frame switching
-  String SWITCH_TO_FRAME_BY_NAME = "switchToFrameByName";    //
-  String SWITCH_TO_DEFAULT_CONTENT = "switchToDefaultContent";
   String GET_ACTIVE_ELEMENT = "getActiveElement";
 
   String GET_CURRENT_URL = "getCurrentUrl";
