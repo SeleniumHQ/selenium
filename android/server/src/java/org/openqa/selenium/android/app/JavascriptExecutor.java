@@ -17,6 +17,9 @@ limitations under the License.
 
 package org.openqa.selenium.android.app;
 
+import android.util.Log;
+
+import org.openqa.selenium.android.Logger;
 import org.openqa.selenium.android.intents.Action;
 
 /**
@@ -25,9 +28,11 @@ import org.openqa.selenium.android.intents.Action;
 public class JavascriptExecutor {
   private String javascriptResult;
   private final WebDriverActivity context;
+  private final WebDriverWebView webview;
 
-  public JavascriptExecutor(WebDriverActivity context) {
+  public JavascriptExecutor(WebDriverActivity context, WebDriverWebView webview) {
     this.context = context;
+    this.webview = webview;
   }
   
   /**
@@ -37,7 +42,7 @@ public class JavascriptExecutor {
    *
    * @param jsCode JavaScript code to execute.
    */
-  public void executeJS(String jsCode, WebDriverWebView webview) {
+  public void executeJS(String jsCode) {
     javascriptResult = Action.NOT_DONE_INDICATOR;
     webview.loadUrl("javascript:" + jsCode);
   }

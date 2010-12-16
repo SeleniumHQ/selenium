@@ -41,7 +41,7 @@ public class WebDriverWebView extends WebView {
     this.context = (WebDriverActivity) context;
     chromeClient = new WebDriverWebChromeClient((WebDriverActivity) context);
     viewClient = new WebDriverWebViewClient((WebDriverActivity) context);
-    javascriptExecutor = new JavascriptExecutor((WebDriverActivity) context);
+    javascriptExecutor = new JavascriptExecutor((WebDriverActivity) context, this);
     initWebViewSettings();
   }
   
@@ -75,8 +75,7 @@ public class WebDriverWebView extends WebView {
   }
   
   public String getWindowName() {
-    javascriptExecutor.executeJS("window.webdriver.resultMethod(window.name);",
-        WebDriverWebView.this);
+    javascriptExecutor.executeJS("window.webdriver.resultMethod(window.name);");
     while (Action.NOT_DONE_INDICATOR.equals(javascriptExecutor.getResult())) {
       Sleeper.sleepQuietly(20);
     }
@@ -93,7 +92,7 @@ public class WebDriverWebView extends WebView {
   }
   
   public void executeJavascript(String javascript) {
-    javascriptExecutor.executeJS(javascript, this);
+    javascriptExecutor.executeJS(javascript);
   }
   
   private void initWebViewSettings() {
