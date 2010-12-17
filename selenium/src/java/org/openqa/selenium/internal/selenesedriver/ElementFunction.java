@@ -34,4 +34,8 @@ public abstract class ElementFunction<T> implements SeleneseFunction<T> {
       throw new WebDriverException(e);
     }
   }
+
+  protected String escape(String toEscape) {
+    return toEscape.replaceAll("'", "\\\\'");
+  }
 }

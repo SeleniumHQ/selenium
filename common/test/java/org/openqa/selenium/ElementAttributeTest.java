@@ -32,7 +32,6 @@ import java.util.List;
 
 public class ElementAttributeTest extends AbstractDriverTestCase {
 
-  @Ignore(SELENESE)
   public void testShouldReturnNullWhenGettingTheValueOfAnAttributeThatIsNotListed() {
     driver.get(pages.simpleTestPage);
     WebElement head = driver.findElement(By.xpath("/html"));
@@ -48,14 +47,12 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
     assertThat(attribute, is(nullValue()));
   }
 
-  @Ignore(SELENESE)
   public void testShouldReturnEmptyAttributeValuesWhenPresentAndTheValueIsActuallyEmpty() {
     driver.get(pages.simpleTestPage);
     WebElement body = driver.findElement(By.xpath("//body"));
     assertThat(body.getAttribute("style"), equalTo(""));
   }
 
-  @Ignore(SELENESE)
   public void testShouldReturnTheValueOfTheDisabledAttributeAsFalseIfNotSet() {
     driver.get(pages.formPage);
     WebElement inputElement = driver.findElement(By.xpath("//input[@id='working']"));
@@ -67,7 +64,7 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
     assertThat(pElement.isEnabled(), equalTo(true));
   }
 
-  @Ignore(SELENESE)
+  @Ignore(value = SELENESE, reason = "child element finding not implemented")
   public void testShouldReturnTheValueOfTheIndexAttrbuteEvenIfItIsMissing() {
     driver.get(pages.formPage);
 
@@ -96,8 +93,8 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
     WebElement disabledSubmitElement = driver.findElement(By.id("disabledSubmitElement"));
     assertThat(disabledSubmitElement.isEnabled(), is(false));
   }
-  
-  @Ignore(SELENESE)
+
+  @Ignore(value = SELENESE, reason = "sendKeys does not determine whether the element is disabled")
   public void testShouldThrowExceptionIfSendingKeysToElementDisabledUsingRandomDisabledStrings() {
     driver.get(pages.formPage);
     WebElement disabledTextElement1 = driver.findElement(By.id("disabledTextElement1"));
@@ -135,7 +132,6 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
     assertFalse(disabled.isEnabled());
   }
 
-  @Ignore(SELENESE)
   public void testShouldReturnTheValueOfCheckedForACheckboxOnlyIfItIsChecked() {
     driver.get(pages.formPage);
     WebElement checkbox = driver.findElement(By.xpath("//input[@id='checky']"));
@@ -144,7 +140,6 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
     assertThat(checkbox.getAttribute("checked"), equalTo("true"));
   }
 
-  @Ignore(SELENESE)
   public void testShouldOnlyReturnTheValueOfSelectedForRadioButtonsIfItIsSet() {
     driver.get(pages.formPage);
     WebElement neverSelected = driver.findElement(By.id("cheese"));
@@ -161,7 +156,7 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
     assertThat(initiallySelected.getAttribute("selected"), equalTo(null));
   }
 
-  @Ignore(SELENESE)
+  @Ignore(value = SELENESE, reason = "find child elements not implemented")
   public void testShouldReturnTheValueOfSelectedForOptionsOnlyIfTheyAreSelected() {
     driver.get(pages.formPage);
     WebElement selectBox = driver.findElement(By.xpath("//select[@name='selectomatic']"));
@@ -191,7 +186,6 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
     assertThat(value, equalTo("Example text"));
   }
 
-  @Ignore(SELENESE)
   public void testShouldTreatReadonlyAsAValue() {
     driver.get(pages.formPage);
 
@@ -204,7 +198,6 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
     assertFalse(readonly.equals(notReadonly));
   }
   
-  @Ignore(SELENESE)
   public void testShouldGetNumericAtribute() {
     driver.get(pages.formPage);
     WebElement element = driver.findElement(By.id("withText"));
@@ -259,7 +252,7 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
     assertEquals(null, mousedownDiv.getAttribute("onclick"));
   }
 
-  @Ignore(value = {IE}, reason = "IE7 Does not support XHTML")
+  @Ignore(value = {IE}, reason = "IE7 Does not support SVG")
   public void testGetAttributeDoesNotReturnAnObjectForSvgProperties() {
     driver.get(pages.svgPage);
     WebElement svgElement = driver.findElement(By.id("rotate"));

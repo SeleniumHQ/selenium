@@ -1,12 +1,15 @@
 js_deps(name = "atomic_core",
   srcs = [ "**/*.js" ],
-  deps = [ "//common:bot" ])
+  deps = [
+    "//common:bot",
+    "//common/src/js/webdriver:atoms",
+  ])
 
 js_binary(name = "core",
   type = "script",
   closure = "true",
   deps = [
-    ":atomic_core"
+    ":atomic_core",
   ])
 
 js_fragment(name = "findElement",

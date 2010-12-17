@@ -27,6 +27,14 @@ public class GetElementAttribute extends ElementFunction<String> {
     String locator = getLocator(args);
 
     String name = (String) args.get("name");
-    return selenium.getAttribute(locator + "@" + name);
+
+    String script = String.format(
+        "var e = selenium.browserbot.findElement('%s');" +
+        "webdriver.element.getAttribute(e, '%s');",
+        locator, escape(name));
+
+    String result = selenium.getEval(script);
+
+    return "null".equals(result) ? null : result;
   }
 }
