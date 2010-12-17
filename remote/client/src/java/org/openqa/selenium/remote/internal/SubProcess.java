@@ -1,6 +1,6 @@
 package org.openqa.selenium.remote.internal;
 
-import org.openqa.selenium.ProcessUtils;
+import org.openqa.selenium.internal.ProcessUtils;
 import org.openqa.selenium.WebDriverException;
 
 import java.io.IOException;

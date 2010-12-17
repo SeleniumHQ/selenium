@@ -31,7 +31,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.openqa.selenium.Platform;
-import org.openqa.selenium.ProcessUtils;
+import org.openqa.selenium.internal.ProcessUtils;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.internal.Executable;
 import org.openqa.selenium.firefox.internal.Streams;

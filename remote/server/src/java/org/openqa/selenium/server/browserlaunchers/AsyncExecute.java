@@ -19,7 +19,7 @@ package org.openqa.selenium.server.browserlaunchers;
 
 import org.apache.commons.logging.Log;
 import org.openqa.jetty.log.LogFactory;
-import org.openqa.selenium.ProcessUtils;
+import org.openqa.selenium.internal.ProcessUtils;
 import org.openqa.selenium.browserlaunchers.WindowsUtils;
 
 /**

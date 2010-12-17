@@ -18,7 +18,6 @@ limitations under the License.
 package org.openqa.selenium.internal.selenesedriver;
 
 import com.google.common.base.Splitter;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.thoughtworks.selenium.Selenium;
 
