@@ -15,7 +15,6 @@
 
 goog.provide('bot.locators.strategies.id');
 
-goog.require('bot.dom');
 goog.require('goog.array');
 goog.require('goog.dom');
 
@@ -36,14 +35,13 @@ bot.locators.strategies.id.single = function(target, root) {
   }
 
   // On IE getting by ID returns the first match by id _or_ name.
-  if (bot.dom.getAttribute(e, 'id') == target && goog.dom.contains(root, e)) {
+  if (e.id == target && goog.dom.contains(root, e)) {
     return e;
   }
 
   var elements = dom.getElementsByTagNameAndClass('*');
   var element = goog.array.find(elements, function(element) {
-    return bot.dom.getAttribute(element, 'id') == target &&
-            goog.dom.contains(root, element);
+    return element.id == target && goog.dom.contains(root, element);
   });
   return (/**@type{Element}*/element);
 };
@@ -59,6 +57,6 @@ bot.locators.strategies.id.many = function(target, root) {
   var dom = goog.dom.getDomHelper(root);
   var elements = dom.getElementsByTagNameAndClass('*', null, root);
   return goog.array.filter(elements, function(e) {
-    return bot.dom.getAttribute(e, 'id') == target;
+    return e.id == target;
   });
 };
