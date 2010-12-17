@@ -711,11 +711,11 @@ public class JavascriptDomAccessor {
         "  if (!element) {" +
         "    isStale = true;" + 
         "  } else {" +
-        "    var parent = element;" +
-        "    while (parent && parent != doc) {" +
-        "      parent = parent.parentNode;" +
+        "    var aParent = element;" +
+        "    while (aParent && aParent != doc) {" +
+        "      aParent = aParent.parentNode;" +
         "    }" +
-        "    if (parent !== doc) {" +
+        "    if (aParent !== doc) {" +
         "      delete doc.androiddriver_elements[arguments[0]];" +
         "      isStale = true;" +
         "    } else {" +
@@ -740,14 +740,14 @@ public class JavascriptDomAccessor {
     return 
         "var isDisplayed = true;" +
         "var body = document.body; " +
-        "var parent = element;" +
-        "while(parent && parent!= body) {" +
-        "  if((parent.style && (parent.style.display == 'none'" +
-            "|| parent.style.visibility == 'hidden'))" +
+        "var aParent = element;" +
+        "while(aParent && aParent!= body) {" +
+        "  if((aParent.style && (aParent.style.display == 'none'" +
+            "|| aParent.style.visibility == 'hidden'))" +
             "|| (element.type && (element.type == 'hidden'))) {" +
         "    isDisplayed = false;  " +
         "  }" +
-        "  parent = parent.parentNode; " +
+        "  aParent = aParent.parentNode; " +
         "}";
   }
 
