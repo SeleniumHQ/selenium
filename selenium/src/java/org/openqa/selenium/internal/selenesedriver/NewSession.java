@@ -27,6 +27,11 @@ import java.util.Map;
 public class NewSession implements SeleneseFunction<Map<String, Object>> {
   public Map<String, Object> apply(Selenium selenium, Map<String, ?> args) {
     selenium.start();
+
+    // Emulate behaviour of webdriver
+    selenium.useXpathLibrary("javascript-xpath");
+    selenium.allowNativeXpath("true");
+
     Capabilities capabilities = (Capabilities) args.get("desiredCapabilities");
     Map<String, Object> seenCapabilities = new HashMap<String, Object>();
     seenCapabilities.put("browserName", capabilities.getBrowserName());
