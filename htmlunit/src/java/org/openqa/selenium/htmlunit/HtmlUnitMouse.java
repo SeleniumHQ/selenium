@@ -22,6 +22,7 @@ import java.io.IOException;
 import com.gargoylesoftware.htmlunit.ScriptException;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlInput;
+import com.gargoylesoftware.htmlunit.javascript.host.MouseEvent;
 import org.openqa.selenium.Mouse;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
@@ -97,7 +98,9 @@ public class HtmlUnitMouse implements Mouse {
   }
 
   public void mouseDown(HtmlElement element) {
-    element.mouseDown();
+    element.mouseDown(keyboard.isShiftPressed(),
+        keyboard.isCtrlPressed(), keyboard.isAltPressed(),
+        MouseEvent.BUTTON_LEFT);
   }
     
   public void mouseUp(WebElement onElement) {
@@ -106,7 +109,9 @@ public class HtmlUnitMouse implements Mouse {
   }
 
   public void mouseUp(HtmlElement element) {
-    element.mouseUp();
+    element.mouseUp(keyboard.isShiftPressed(),
+        keyboard.isCtrlPressed(), keyboard.isAltPressed(),
+        MouseEvent.BUTTON_LEFT);
   }
 
   public void mouseMove(WebElement toElement) {
@@ -115,8 +120,12 @@ public class HtmlUnitMouse implements Mouse {
   }
 
   public void mouseMove(HtmlElement element) {
-    element.mouseMove();
-    element.mouseOver();
+    element.mouseMove(keyboard.isShiftPressed(),
+        keyboard.isCtrlPressed(), keyboard.isAltPressed(),
+        MouseEvent.BUTTON_LEFT);
+    element.mouseOver(keyboard.isShiftPressed(),
+        keyboard.isCtrlPressed(), keyboard.isAltPressed(),
+        MouseEvent.BUTTON_LEFT);
   }
 
   public void mouseMove(WebElement toElement, long xOffset, long yOffset) {
