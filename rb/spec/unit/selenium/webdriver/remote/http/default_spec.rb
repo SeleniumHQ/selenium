@@ -29,6 +29,8 @@ module Selenium
             http.proxy_port.should == 8080
             http.proxy_user.should == "foo"
             http.proxy_pass.should == "bar"
+
+            http.address.should == "example.com"
           end
 
           it "raises an error if the proxy is not an HTTP proxy" do
