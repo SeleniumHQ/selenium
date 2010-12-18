@@ -8,8 +8,9 @@ module Selenium
           DEFAULT_HEADERS = { "Accept" => CONTENT_TYPE }
 
           # deprecated.
-          def self.timeout=()
-            raise Error::WebDriver, "Configuration of HTTP timeouts has changed. See http://code.google.com/p/selenium/wiki/RubyBindings for intructions."
+          def self.timeout=(timeout)
+            raise Error::WebDriverError,
+              "Configuration of HTTP timeouts has changed. See http://code.google.com/p/selenium/wiki/RubyBindings for updated intructions."
           end
 
           attr_accessor :timeout
