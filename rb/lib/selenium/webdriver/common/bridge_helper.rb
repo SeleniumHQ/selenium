@@ -10,14 +10,17 @@ module Selenium
     module BridgeHelper
 
       def unwrap_script_result(arg)
-        if arg.kind_of?(Array)
+        case arg
+        when Array
           arg.map { |e| unwrap_script_result(e) }
-        else
-          if arg.kind_of?(Hash) && arg.member?("ELEMENT")
-            Element.new self, element_id_from(arg)
+        when Hash
+          if id = element_id_from(arg)
+            Element.new self, id
           else
-            arg
+            arg.each { |k, v| arg[k] = unwrap_script_result(v) }
           end
+        else
+          arg
         end
       end
 
