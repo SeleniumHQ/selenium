@@ -376,11 +376,11 @@ namespace OpenQA.Selenium.Firefox
                 {
                     numberOfRetries++;
                 }
+            }
 
-                if (Directory.Exists(directoryToDelete))
-                {
-                    Console.WriteLine("Unable to delete profile directory '{0}'", directoryToDelete);
-                }
+            if (Directory.Exists(directoryToDelete))
+            {
+                Console.WriteLine("Unable to delete profile directory '{0}'", directoryToDelete);
             }
         } 
 
