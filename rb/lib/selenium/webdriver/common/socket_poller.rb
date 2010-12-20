@@ -1,3 +1,4 @@
+require "selenium/webdriver/common/platform"
 require "socket"
 
 module Selenium
