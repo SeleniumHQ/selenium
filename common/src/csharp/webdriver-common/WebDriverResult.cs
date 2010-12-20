@@ -151,6 +151,11 @@ namespace OpenQA.Selenium
         /// <summary>
         /// A request to set a cookie's value could not be satisfied.
         /// </summary>
-        UnableToSetCookie = 25
+        UnableToSetCookie = 25,
+
+        /// <summary>
+        /// An asynchronous JavaScript execution timed out.
+        /// </summary>
+        AsyncScriptTimeout = 28
     }
 }

@@ -927,6 +927,9 @@ namespace OpenQA.Selenium.Remote
                         case WebDriverResult.UnableToSetCookie:
                             throw new WebDriverException(errorMessage);
 
+                        case WebDriverResult.AsyncScriptTimeout:
+                            throw new TimeoutException(errorMessage);
+
                         default:
                             throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, "{0} ({1})", errorMessage, errorResponse.Status));
                     }
@@ -1131,7 +1134,7 @@ namespace OpenQA.Selenium.Remote
                                 }
 
                                 DateTime? expires = null;
-                                if(cookie.ContainsKey("expiry"))
+                                if(cookie.ContainsKey("expiry") && cookie["expiry"] != null)
                                 {
                                     long seconds = 0;
                                     if (long.TryParse(cookie["expiry"].ToString(), out seconds))
