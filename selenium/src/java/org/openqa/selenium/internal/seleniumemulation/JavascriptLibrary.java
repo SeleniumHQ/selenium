@@ -40,7 +40,12 @@ public class JavascriptLibrary {
       "/org/openqa/selenium/internal/seleniumemulation/htmlutils.js";
 
   public String getSeleniumScript(String name) {
-    return readScript(PREFIX + name);
+    String rawFunction = readScript(PREFIX + name);
+
+    String functionName = name.replace(".js", "");
+
+    return String.format("%s = function() { return (%s).apply(null, arguments);};",
+        functionName, rawFunction);
   }
 
   public void callEmbeddedSelenium(WebDriver driver, String functionName,
