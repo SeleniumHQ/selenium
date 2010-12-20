@@ -165,19 +165,6 @@ public class WebDriverCommandProcessor implements CommandProcessor {
     this(baseUrl, new SuppliesWebDriver(likeThis));
   }
 
-  /**
-   * Wrap an already running webdriver instance. Under no circumstances should
-   * the {@link #start()}  method be called for this instance of the command
-   * processor
-   *
-   * @param driver The driver to wrap
-   * @param baseUrl The URL from which relative URLs should be based on
-   * @deprecated Signature is out of order
-   */
-  public WebDriverCommandProcessor(WebDriver driver, String baseUrl) {
-    this(baseUrl, driver);
-  }
-
   public WebDriverCommandProcessor(String baseUrl, WebDriver driver) {
     this(baseUrl, new ExplodingSupplier());
     this.driver = driver;
