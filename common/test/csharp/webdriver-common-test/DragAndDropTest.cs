@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using NUnit.Framework;
 using System.Drawing;
+using System.Text.RegularExpressions;
 
 namespace OpenQA.Selenium
 {
@@ -116,6 +117,44 @@ namespace OpenQA.Selenium
             {
                 js.ExecuteScript("window.resizeTo(arguments[0], arguments[1]);", width, height);
             }
+        }
+
+        [Test]
+        [Category("Javascript")]
+        [IgnoreBrowser(Browser.HtmlUnit)]
+        [IgnoreBrowser(Browser.Chrome)]
+        public void DragAndDropOnJQueryItems()
+        {
+            driver.Url = droppableItems;
+
+            IWebElement toDrag = driver.FindElement(By.Id("draggable"));
+            IWebElement dropInto = driver.FindElement(By.Id("droppable"));
+
+            // Wait until all event handlers are installed.
+            System.Threading.Thread.Sleep(500);
+
+            ((IRenderedWebElement)toDrag).DragAndDropOn((IRenderedWebElement)dropInto);
+
+            string text = dropInto.FindElement(By.TagName("p")).Text;
+
+            DateTime endTime = DateTime.Now.Add(TimeSpan.FromSeconds(15));
+
+            while (text != "Dropped!" && (DateTime.Now < endTime))
+            {
+                System.Threading.Thread.Sleep(200);
+                text = dropInto.FindElement(By.TagName("p")).Text;
+            }
+
+            Assert.AreEqual("Dropped!", text);
+
+            IWebElement reporter = driver.FindElement(By.Id("drop_reports"));
+            // Assert that only one mouse click took place and the mouse was moved
+            // during it.
+            string reporterText = reporter.Text;
+            Assert.IsTrue(Regex.IsMatch(reporterText, "start( move)* down( move)+ up"));
+            Assert.AreEqual(1, Regex.Matches(reporterText, "down").Count, "Reporter text:" + reporterText);
+            Assert.AreEqual(1, Regex.Matches(reporterText, "up").Count, "Reporter text:" + reporterText);
+            Assert.IsTrue(reporterText.Contains("move"), "Reporter text:" + reporterText);
         }
 
         private Point drag(IRenderedWebElement elem, Point initialLocation, int moveRightBy, int moveDownBy)

@@ -52,6 +52,8 @@ namespace OpenQA.Selenium
         public string deletingFrame = EnvironmentManager.Instance.UrlBuilder.WhereIs("deletingFrame.htm");
         public string ajaxyPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("ajaxy_page.html");
         public string sleepingPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("sleeping.html");
+        public string draggableLists = EnvironmentManager.Instance.UrlBuilder.WhereIs("draggableLists.html");
+        public string droppableItems = EnvironmentManager.Instance.UrlBuilder.WhereIs("droppableItems.html");
 
         protected IWebDriver driver;
 
