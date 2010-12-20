@@ -123,7 +123,7 @@ public class DragAndDropTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({HTMLUNIT, CHROME, SELENESE})
+  @Ignore({HTMLUNIT, CHROME, IE, SELENESE})
   public void testDragAndDropOnJQueryItems() {
     driver.get(pages.droppableItems);
 
