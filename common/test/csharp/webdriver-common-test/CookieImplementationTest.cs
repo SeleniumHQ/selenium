@@ -346,7 +346,12 @@ namespace OpenQA.Selenium
             driver.Url = url;
             driver.Manage().DeleteAllCookies();
 
-            Cookie addCookie = new Cookie("fish", "cod", "/common/animals", DateTime.Now.AddDays(1));
+            // DateTime.Now contains milliseconds; the returned cookie expire date
+            // will not. So we need to truncate the milliseconds.
+            DateTime current = DateTime.Now;
+            DateTime expireDate = new DateTime(current.Year, current.Month, current.Day, current.Hour, current.Minute, current.Second, DateTimeKind.Local).AddDays(1);
+
+            Cookie addCookie = new Cookie("fish", "cod", "/common/animals", expireDate);
             IOptions options = driver.Manage();
             options.AddCookie(addCookie);
 

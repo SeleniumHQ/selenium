@@ -1131,9 +1131,13 @@ namespace OpenQA.Selenium.Remote
                                 }
 
                                 DateTime? expires = null;
-                                if(cookie.ContainsKey("expires"))
+                                if(cookie.ContainsKey("expiry"))
                                 {
-                                    expires = DateTime.Parse(cookie["expires"].ToString());
+                                    long seconds = 0;
+                                    if (long.TryParse(cookie["expiry"].ToString(), out seconds))
+                                    {
+                                        expires = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddSeconds(seconds).ToLocalTime();
+                                    }
                                 }
 
                                 bool secure = bool.Parse(cookie["secure"].ToString());
