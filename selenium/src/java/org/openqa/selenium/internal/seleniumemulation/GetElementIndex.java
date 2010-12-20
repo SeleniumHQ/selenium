@@ -32,10 +32,11 @@ public class GetElementIndex extends SeleneseCommand<Number> {
   @Override
   protected Number handleSeleneseCommand(WebDriver driver, String locator, String value) {
     WebElement element = finder.findElement(driver, locator);
+
     String script =
       "var _isCommentOrEmptyTextNode = function(node) {\n" +
       "    return node.nodeType == 8 || ((node.nodeType == 3) && !(/[^\\t\\n\\r ]/.test(node.data)));\n" +
-      "}\n" +
+      "};\n" +
       "    var element = arguments[0];\n" +
       "    var previousSibling;\n" +
       "    var index = 0;\n" +
@@ -46,6 +47,7 @@ public class GetElementIndex extends SeleneseCommand<Number> {
       "        element = previousSibling;\n" +
       "    }\n" +
       "    return index;";
+
     return (Long) js.executeScript(driver, script, element);
   }
 }

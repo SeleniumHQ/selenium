@@ -181,7 +181,9 @@ public class SeleneseTestBase {
         } else if (s1 instanceof String && s2 instanceof String[]) {
             assertEquals((String)s1, (String[])s2);
         } else if (s1 instanceof String && s2 instanceof Number) {
-            assertEquals((String)s1, ((Number)s2).toString());
+            assertEquals((String)s1, s2.toString());
+        } else if (s1 instanceof Number && s2 instanceof String) {
+            assertEquals(s1.toString(), (String)s2);
         } else if (s1 instanceof String[] && s2 instanceof String[]) {
             String[] sa1 = (String[]) s1;
             String[] sa2 = (String[]) s2;
