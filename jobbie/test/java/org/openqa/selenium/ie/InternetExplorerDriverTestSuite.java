@@ -26,7 +26,6 @@ import org.openqa.selenium.Platform;
 import org.openqa.selenium.TestSuiteBuilder;
 
 import static org.openqa.selenium.Ignore.Driver.IE;
-import static org.openqa.selenium.Ignore.Driver.IE_NEW;
 import static org.openqa.selenium.Platform.WINDOWS;
 
 public class InternetExplorerDriverTestSuite extends TestCase {
@@ -39,9 +38,9 @@ public class InternetExplorerDriverTestSuite extends TestCase {
           .addSourceDir("jobbie")
           .usingDriver(InternetExplorerDriver.class)
           .exclude(IE)
-          .exclude(IE_NEW)
           .includeJavascriptTests()
           .keepDriverInstance()
+          .outputTestNames()
           .create();
     }
 

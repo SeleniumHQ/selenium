@@ -35,7 +35,6 @@ import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.IE;
-import static org.openqa.selenium.Ignore.Driver.IE_NEW;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 import static org.openqa.selenium.TestWaiter.waitFor;
@@ -80,7 +79,6 @@ public class TextHandlingTest extends AbstractDriverTestCase {
     assertThat(text, is("Username:"));
   }
 
-  @Ignore(IE_NEW)
   public void testShouldRepresentABlockLevelElementAsANewline() {
     driver.get(pages.simpleTestPage);
     String text = driver.findElement(By.id("multiline")).getText();
@@ -146,7 +144,7 @@ public class TextHandlingTest extends AbstractDriverTestCase {
 //                "        "));
 //    }
 
-  @Ignore(value = {SELENESE, IPHONE, IE_NEW}, reason = "iPhone: sendKeys is broken")
+  @Ignore(value = {SELENESE, IPHONE, IE}, reason = "iPhone: sendKeys is broken")
   public void testShouldBeAbleToSetMoreThanOneLineOfTextInATextArea() {
     driver.get(pages.formPage);
     WebElement textarea = driver.findElement(By.id("withText"));
@@ -202,7 +200,6 @@ public class TextHandlingTest extends AbstractDriverTestCase {
     assertThat(text, equalTo("beforeSpace afterSpace"));
   }
 
-  @Ignore(IE_NEW)
   public void testShouldHandleSiblingBlockLevelElements() {
     driver.get(pages.simpleTestPage);
 
