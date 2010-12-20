@@ -18,6 +18,8 @@ limitations under the License.
 package org.openqa.selenium;
 
 import java.awt.Point;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static org.openqa.selenium.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.Ignore.Driver.CHROME;
@@ -150,9 +152,11 @@ public class DragAndDropTest extends AbstractDriverTestCase {
     // Assert that only one mouse click took place and the mouse was moved
     // during it.
     String reporterText = reporter.getText();
-    assertTrue("Reporter text:" + reporterText, reporterText.startsWith("start down"));
-    assertTrue("Reporter text:" + reporterText, reporterText.endsWith("up"));
-    assertTrue("Reporter text:" + reporterText, reporterText.contains("move"));
+    Pattern pattern = Pattern.compile("start( move)* down( move)+ up");
+
+    Matcher matcher = pattern.matcher(reporterText);
+    
+    assertTrue("Reporter text:" + reporterText, matcher.matches());
   }
 
   private static void doSleep(int ms) {
