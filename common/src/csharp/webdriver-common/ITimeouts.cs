@@ -46,5 +46,12 @@ namespace OpenQA.Selenium
         /// </para>
         /// </remarks>
         ITimeouts ImplicitlyWait(TimeSpan timeToWait);
+
+        /// <summary>
+        /// Specifies the amount of time the driver should wait when executing JavaScript asynchronously.
+        /// </summary>
+        /// <param name="timeToWait">A <see cref="TimeSpan"/> structure defining the amount of time to wait.</param>
+        /// <returns>A self reference</returns>
+        ITimeouts SetScriptTimeout(TimeSpan timeToWait);
     }
 }

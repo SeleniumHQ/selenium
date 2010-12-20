@@ -6,7 +6,6 @@ namespace OpenQA.Selenium
     [TestFixture]
     public class IeSpecificTests : DriverTestFixture
     {
-
         [Test]
         // TODO(andre.nogueira): Should this be a IE-only test?
         public void ShouldOpenAndCloseBrowserRepeatedly()
@@ -19,18 +18,19 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        public void ShouldSwitchBrowserVisibility()
+        //[Ignore("Temporarily ignoring test until automatic port finding is enabled")]
+        public void ShouldBeAbleToStartMoreThanOneInstanceOfTheIEDriverSimultaneously()
         {
-            /* 
-             * This way we can be sure the visibility
-             * is switched at least once
-             */
-            ((InternetExplorerDriver)driver).Visible = true;
-            Assert.IsTrue(((InternetExplorerDriver)driver).Visible);
-            ((InternetExplorerDriver)driver).Visible = false;
-            Assert.IsFalse(((InternetExplorerDriver)driver).Visible);
-            ((InternetExplorerDriver)driver).Visible = true;
-            Assert.IsTrue(((InternetExplorerDriver)driver).Visible);
+            IWebDriver secondDriver = new InternetExplorerDriver();
+
+            driver.Url = xhtmlTestPage;
+            secondDriver.Url = formsPage;
+
+            Assert.AreEqual("XHTML Test Page", driver.Title);
+            Assert.AreEqual("We Leave From Here", secondDriver.Title);
+
+            // We only need to quit the second driver if the test passes
+            secondDriver.Quit();
         }
     }
 }

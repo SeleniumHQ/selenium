@@ -7,6 +7,7 @@ namespace OpenQA.Selenium
     
     public abstract class DriverTestFixture
     {
+        public string alertsPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("alerts.html");
         public string macbethPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("macbeth.html");
         public string macbethTitle = "Macbeth: Entire Play";
 
@@ -49,6 +50,8 @@ namespace OpenQA.Selenium
         public string dynamicPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("dynamic.html");
         public string tables = EnvironmentManager.Instance.UrlBuilder.WhereIs("tables.html");
         public string deletingFrame = EnvironmentManager.Instance.UrlBuilder.WhereIs("deletingFrame.htm");
+        public string ajaxyPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("ajaxy_page.html");
+        public string sleepingPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("sleeping.html");
 
         protected IWebDriver driver;
 

@@ -171,6 +171,11 @@
         ExecuteScript,
 
         /// <summary>
+        /// Represents ExecuteAsyncScript command
+        /// </summary>
+        ExecuteAsyncScript,
+
+        /// <summary>
         /// Represents GetSpeed command
         /// </summary>
         GetSpeed,
@@ -268,6 +273,11 @@
         /// <summary>
         /// Represents the ImplicitlyWait command
         /// </summary>
-        ImplicitlyWait
+        ImplicitlyWait,
+
+        /// <summary>
+        /// Represents the SetAsyncScriptTimeout command
+        /// </summary>
+        SetAsyncScriptTimeout
     }
 }

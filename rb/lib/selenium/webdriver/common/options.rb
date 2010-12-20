@@ -79,7 +79,7 @@ module Selenium
             :name    => cookie["name"],
             :value   => cookie["value"],
             :path    => cookie["path"],
-            :domain  => strip_port(cookie["domain"]),
+            :domain  => cookie["domain"] && strip_port(cookie["domain"]),
             :expires => cookie["expiry"] && datetime_at(cookie['expiry']),
             :secure  => cookie["secure"]
           }

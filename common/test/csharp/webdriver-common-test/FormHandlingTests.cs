@@ -29,7 +29,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = formsPage;
             driver.FindElement(By.Id("imageButton")).Click();
-            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromMilliseconds(500));
+            System.Threading.Thread.Sleep(500);
             Assert.AreEqual(driver.Title, "We Arrive Here");
         }
 
@@ -86,7 +86,9 @@ namespace OpenQA.Selenium
             IWebElement nestedForm = driver.FindElement(By.Id("nested_form"));
             IWebElement input = nestedForm.FindElement(By.Name("x"));
             input.SendKeys("\n");
-            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromMilliseconds(500));
+            
+            // We are losing the race to get notified of a navigation in IE.
+            System.Threading.Thread.Sleep(500);
             Assert.AreEqual("We Arrive Here", driver.Title);
             Assert.IsTrue(driver.Url.EndsWith("?x=name"));
         }
@@ -99,7 +101,9 @@ namespace OpenQA.Selenium
             IWebElement nestedForm = driver.FindElement(By.Id("nested_form"));
             IWebElement input = nestedForm.FindElement(By.Name("x"));
             input.SendKeys(Keys.Enter);
-            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromMilliseconds(500));
+ 
+            // We are losing the race to get notified of a navigation in IE.
+            System.Threading.Thread.Sleep(500);
             Assert.AreEqual("We Arrive Here", driver.Title);
             Assert.IsTrue(driver.Url.EndsWith("?x=name"));
         }

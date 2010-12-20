@@ -246,7 +246,8 @@ namespace OpenQA.Selenium
             IJavaScriptExecutor javascriptDriver = driver as IJavaScriptExecutor;
             IFindsByCssSelector cssSelectorDriver = driver as IFindsByCssSelector;
 
-            return (cssSelectorDriver != null) && (javascriptDriver != null) && ((bool)javascriptDriver.ExecuteScript("return document['querySelector'] !== undefined;"));
+            // return (cssSelectorDriver != null) && (javascriptDriver != null) && ((bool)javascriptDriver.ExecuteScript("return document['querySelector'] !== undefined;"));
+            return (cssSelectorDriver != null) && (javascriptDriver != null);
         }
     }
 }

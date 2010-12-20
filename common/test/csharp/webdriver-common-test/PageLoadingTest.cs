@@ -89,7 +89,12 @@ namespace OpenQA.Selenium
 
             driver.Navigate().Back();
             // We may have returned to the browser's home page
-            Assert.IsTrue(originalTitle == "We Leave From Here" || driver.Title == "We Leave From Here");
+            Assert.IsTrue(driver.Title == originalTitle || driver.Title == "We Leave From Here");
+            if (driver.Title == originalTitle)
+            {
+                driver.Navigate().Back();
+                Assert.AreEqual(originalTitle, driver.Title);
+            }
         }
 
         [Test]

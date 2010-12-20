@@ -38,6 +38,7 @@ import static org.openqa.selenium.Ignore.Driver.SELENESE;
  * Tests interaction through the advanced gestures API of keyboard handling.
  * 
  */
+@Ignore(IE)
 public class TestBasicKeyboardInterface extends AbstractDriverTestCase {
   @JavascriptEnabled
   @Ignore({ANDROID, FIREFOX, REMOTE, IPHONE, CHROME, SELENESE})

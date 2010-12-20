@@ -20,8 +20,8 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="$(ProjectDir)..\..\..\..\build\$(PlatformName)\$(ConfigurationName)"
-			IntermediateDirectory="$(ProjectDir)..\..\..\..\build\intermediate\$(PlatformName)\$(ConfigurationName)"
+			OutputDirectory="$(SolutionDir)build\$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory="$(SolutionDir)build\intermediate\$(ProjectName)\$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="2"
 			UseOfMFC="1"
 			UseOfATL="1"
@@ -93,8 +93,8 @@
 		</Configuration>
 		<Configuration
 			Name="Debug|x64"
-			OutputDirectory="$(ProjectDir)..\..\..\..\build\$(PlatformName)\$(ConfigurationName)"
-			IntermediateDirectory="$(ProjectDir)..\..\..\..\build\intermediate\$(PlatformName)\$(ConfigurationName)"
+			OutputDirectory="$(SolutionDir)build\$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory="$(SolutionDir)build\intermediate\$(ProjectName)\$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="2"
 			UseOfMFC="1"
 			UseOfATL="1"
@@ -167,8 +167,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="$(ProjectDir)..\..\..\..\build\$(PlatformName)\$(ConfigurationName)"
-			IntermediateDirectory="$(ProjectDir)..\..\..\..\build\intermediate\$(PlatformName)\$(ConfigurationName)"
+			OutputDirectory="$(SolutionDir)build\$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory="$(SolutionDir)build\intermediate\$(ProjectName)\$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="2"
 			UseOfMFC="1"
 			UseOfATL="1"
@@ -243,8 +243,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release|x64"
-			OutputDirectory="$(ProjectDir)..\..\..\..\build\$(PlatformName)\$(ConfigurationName)"
-			IntermediateDirectory="$(ProjectDir)..\..\..\..\build\intermediate\$(PlatformName)\$(ConfigurationName)"
+			OutputDirectory="$(SolutionDir)build\$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory="$(SolutionDir)build\intermediate\$(ProjectName)\$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="2"
 			UseOfMFC="1"
 			UseOfATL="1"
@@ -346,11 +346,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\gecko18\nsIAccessibleDocument.h"
+				RelativePath=".\gecko19\nsIAccessibleDocument.h"
 				>
 			</File>
 			<File
-				RelativePath=".\gecko19\nsIAccessibleDocument.h"
+				RelativePath=".\gecko18\nsIAccessibleDocument.h"
 				>
 			</File>
 			<File

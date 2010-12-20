@@ -30,6 +30,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
 import static org.openqa.selenium.Ignore.Driver.IE;
+import static org.openqa.selenium.Ignore.Driver.IE_NEW;
 import static org.openqa.selenium.Ignore.Driver.REMOTE;
 
 public class RemoteWebDriverIeTestSuite extends TestCase {
@@ -57,6 +58,7 @@ public class RemoteWebDriverIeTestSuite extends TestCase {
             .includeJavascriptTests()
             .usingDriver(RemoteIeWebDriverForTest.class)
             .exclude(IE)
+            .exclude(IE_NEW)
             .exclude(REMOTE)
             .excludePattern(".*IntegrationTest")
             .excludePattern(".*CaptureNetworkTrafficTest")

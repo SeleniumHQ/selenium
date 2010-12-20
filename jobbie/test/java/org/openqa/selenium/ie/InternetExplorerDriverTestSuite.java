@@ -1,6 +1,6 @@
 /*
-Copyright 2007-2009 WebDriver committers
-Copyright 2007-2009 Google Inc.
+Copyright 2007-2010 WebDriver committers
+Copyright 2007-2010 Google Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -26,17 +26,12 @@ import org.openqa.selenium.Platform;
 import org.openqa.selenium.TestSuiteBuilder;
 
 import static org.openqa.selenium.Ignore.Driver.IE;
+import static org.openqa.selenium.Ignore.Driver.IE_NEW;
 import static org.openqa.selenium.Platform.WINDOWS;
 
 public class InternetExplorerDriverTestSuite extends TestCase {
   public static Test suite() throws Exception {
     System.setProperty("webdriver.development", "true");
-    String arch = System.getProperty("os.arch").toLowerCase() + "/";
-    if (arch.contains("64")) {
-      System.setProperty("jna.library.path", "..\\build\\x64\\Debug;build\\x64\\Debug");
-    } else {
-      System.setProperty("jna.library.path", "..\\build\\Win32\\Debug;build\\Win32\\Debug");
-    }
 
     if (Platform.getCurrent().is(WINDOWS)) {
       return new TestSuiteBuilder()
@@ -44,6 +39,7 @@ public class InternetExplorerDriverTestSuite extends TestCase {
           .addSourceDir("jobbie")
           .usingDriver(InternetExplorerDriver.class)
           .exclude(IE)
+          .exclude(IE_NEW)
           .includeJavascriptTests()
           .keepDriverInstance()
           .create();

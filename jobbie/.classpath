@@ -9,5 +9,7 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/selenium-common"/>
 	<classpathentry kind="lib" path="/third-party/java/jna/jna.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/selenium-remote-client"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/selenium-remote-common"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>

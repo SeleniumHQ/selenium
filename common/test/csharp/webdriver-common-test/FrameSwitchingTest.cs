@@ -163,7 +163,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IE)]
         [ExpectedException(typeof(NoSuchFrameException))]
         public void ShouldThrowFrameNotFoundExceptionLookingUpSubFramesWithSuperFrameNames()
         {
@@ -332,7 +331,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IE)]
+        [IgnoreBrowser(Browser.IE, "Button to delete frame does not appear clickable to IE")]
         [IgnoreBrowser(Browser.Chrome)]
         public void ShouldBeAbleToCarryOnWorkingIfTheFrameIsDeletedFromUnderUs()
         {
@@ -375,7 +374,6 @@ namespace OpenQA.Selenium
             }
         }
 
-        //@Ignore(value = {IE, CHROME, SELENESE}, reason = "These drivers still return frame title.")
         [Test]
         public void ShouldReturnWindowTitleInAFrameset()
         {
@@ -384,8 +382,8 @@ namespace OpenQA.Selenium
             Assert.AreEqual("Unique title", driver.Title);
         }
 
-        //  @JavascriptEnabled
         [Test]
+        [IgnoreBrowser(Browser.IE, "window === window.top comparison fails for IE, even when performed manually")]
         public void JavaScriptShouldExecuteInTheContextOfTheCurrentFrame()
         {
             IJavaScriptExecutor executor = driver as IJavaScriptExecutor;

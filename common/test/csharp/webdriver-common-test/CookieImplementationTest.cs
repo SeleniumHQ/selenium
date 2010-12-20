@@ -459,7 +459,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IE, "browsers have not been tested.")]
         [IgnoreBrowser(Browser.Chrome, "Chrome and Selenium, which use JavaScript to retrieve cookies, cannot return expiry info;")]
         public void ShouldReturnACookieWithTheExpiryTheSame()
         {
@@ -478,7 +477,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IE, "browsers have not been tested.")]
         [IgnoreBrowser(Browser.Chrome, "Chrome and Selenium, which use JavaScript to retrieve cookies, cannot return expiry info;")]
         public void ShouldReturnNullBecauseCookieRetainsExpiry()
         {

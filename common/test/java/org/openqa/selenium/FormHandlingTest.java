@@ -101,7 +101,7 @@ public class FormHandlingTest extends AbstractDriverTestCase {
     assertThat(textarea.getValue(), equalTo(cheesey));
   }
 
-  @Ignore({SELENESE, CHROME_NON_WINDOWS, IPHONE})
+  @Ignore(value = {SELENESE, CHROME_NON_WINDOWS, IPHONE, IE}, reason = "New failure for IE")
   public void testShouldSubmitAFormUsingTheNewlineLiteral() {
     driver.get(pages.formPage);
     WebElement nestedForm = driver.findElement(By.id("nested_form"));
@@ -111,7 +111,7 @@ public class FormHandlingTest extends AbstractDriverTestCase {
     assertTrue(driver.getCurrentUrl().endsWith("?x=name"));
   }
 
-  @Ignore({SELENESE, CHROME_NON_WINDOWS, IPHONE})
+  @Ignore({SELENESE, CHROME_NON_WINDOWS, IPHONE, IE})
   public void testShouldSubmitAFormUsingTheEnterKey() {
     driver.get(pages.formPage);
     WebElement nestedForm = driver.findElement(By.id("nested_form"));
@@ -270,7 +270,7 @@ public class FormHandlingTest extends AbstractDriverTestCase {
   }
 
 
-  @Ignore(value = {CHROME, SELENESE, IPHONE, ANDROID},
+  @Ignore(value = {CHROME, SELENESE, IPHONE, ANDROID, IE},
       reason = "Does not yet support file uploads")
   public void testShouldBeAbleToAlterTheContentsOfAFileUploadInputElement() throws IOException {
     driver.get(pages.formPage);

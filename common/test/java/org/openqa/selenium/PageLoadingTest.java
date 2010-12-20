@@ -73,7 +73,7 @@ public class PageLoadingTest extends AbstractDriverTestCase {
     driver.get("http://localhost:3001");
   }
 
-  @Ignore({IPHONE, SELENESE})
+  @Ignore({IE, IPHONE, SELENESE})
   public void testShouldBeAbleToLoadAPageWithFramesetsAndWaitUntilAllFramesAreLoaded() {
     driver.get(pages.framesetPage);
 

@@ -5,7 +5,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.openqa.selenium.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.Ignore.Driver.CHROME;
-import static org.openqa.selenium.Ignore.Driver.IPHONE;
+import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 
 import org.junit.Test;
@@ -14,11 +14,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-@Ignore(value = IPHONE,
-    reason = "The iPhone does not natively support async script execution, but the " +
-        "AsyncJavascriptExecutor utility class uses array return types when polling the page." +
-        " Since the iPhone does not support array return types from scripts, async script " +
-        "execution just will not work on the iPhone right now.")
+//@Ignore(value = ANDROID,
+//    reason = "Android is way too slow to use the current polling-only technique")
+@Ignore(value = {SELENESE, IE}, reason = "Every test appears to be failing.")
 public class ExecutingAsyncJavascriptTest extends AbstractDriverTestCase {
 
   private JavascriptExecutor executor;

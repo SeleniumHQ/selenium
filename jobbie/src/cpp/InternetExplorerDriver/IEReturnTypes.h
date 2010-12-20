@@ -1,5 +1,5 @@
 /* AUTO GENERATED - Do not edit by hand. */
-/* See rake-tasts/ie_code_generator.rb instead. */
+/* See rake-tasks/ie_code_generator.rb instead. */
 #ifndef __IE_RETURN_TYPES_H_
 #define __IE_RETURN_TYPES_H_
 #define TYPE_STRING (1)

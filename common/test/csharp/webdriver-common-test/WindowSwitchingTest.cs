@@ -195,6 +195,8 @@ namespace OpenQA.Selenium
             driver.Url = xhtmlTestPage;
             driver.FindElement(By.LinkText("Open new window")).Click();
 
+            SleepBecauseWindowsTakeTimeToOpen();
+
             string handle1, handle2;
             handle1 = driver.GetWindowHandle();
 
@@ -221,6 +223,8 @@ namespace OpenQA.Selenium
         {
             driver.Url = xhtmlTestPage;
             driver.FindElement(By.LinkText("Open new window")).Click();
+
+            SleepBecauseWindowsTakeTimeToOpen();
 
             string handle1, handle2;
             handle1 = driver.GetWindowHandle();

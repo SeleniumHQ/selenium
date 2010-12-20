@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{388643B5-2270-4E89-99CC-DA761E4E4AC1}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -32,24 +32,6 @@
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>..\..\..\..\build\cli\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
-    <OutputPath>..\..\..\..\build\cli\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core">
@@ -63,26 +45,22 @@
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="IE\NativeDriverLibrary.cs" />
     <Compile Include="IE\NativeMethods.cs" />
-    <Compile Include="IE\SafeScriptResultHandle.cs" />
-    <Compile Include="IE\InternetExplorerWebElementCollection.cs" />
-    <Compile Include="IE\ResultHandler.cs" />
-    <Compile Include="IE\SafeScriptArgsHandle.cs" />
-    <Compile Include="IE\SafeStringCollectionHandle.cs" />
-    <Compile Include="IE\SafeStringWrapperHandle.cs" />
-    <Compile Include="IE\SafeWebElementCollectionHandle.cs" />
-    <Compile Include="IE\StringCollection.cs" />
-    <Compile Include="IE\SafeInternetExplorerWebElementHandle.cs" />
-    <Compile Include="IE\Finder.cs" />
-    <Compile Include="IE\StringWrapper.cs" />
     <Compile Include="IE\InternetExplorerDriver.cs" />
     <Compile Include="IE\InternetExplorerWebElement.cs" />
-    <Compile Include="IE\SafeInternetExplorerDriverHandle.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\common\src\csharp\webdriver-common\WebDriver.Common.csproj">
       <Project>{ABB9B87F-FEEA-410E-ACBF-26479B8C72B0}</Project>
       <Name>WebDriver.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\remote\client\src\csharp\webdriver-remote-client\WebDriver.Remote.csproj">
+      <Project>{32122F8D-CD64-495A-B9B0-5516FF67C79F}</Project>
+      <Name>WebDriver.Remote</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\remote\common\src\csharp\webdriver-remote-common\WebDriver.Remote.Common.csproj">
+      <Project>{C2A1DAE4-BB20-4367-8ADC-D32EEA392D17}</Project>
+      <Name>WebDriver.Remote.Common</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -325,32 +325,20 @@ namespace OpenQA.Selenium.Remote
         /// <param name="script">The JavaScript code to execute.</param>
         /// <param name="args">The arguments to the script.</param>
         /// <returns>The value returned by the script.</returns>
-        public object ExecuteScript(string script, object[] args)
+        public object ExecuteScript(string script, params object[] args)
         {
-            if (!Capabilities.IsJavaScriptEnabled)
-            {
-                throw new NotSupportedException("You must be using an underlying instance of WebDriver that supports executing javascript");
-            }
+            return ExecuteScriptInternal(script, false, args);
+        }
 
-            // Escape the quote marks
-            script = script.Replace("\"", "\\\"");
-
-            object[] convertedArgs = ConvertArgumentsToJavaScriptObjects(args);
-
-            Dictionary<string, object> parameters = new Dictionary<string, object>();
-            parameters.Add("script", script);
-
-            if (convertedArgs != null && convertedArgs.Length > 0)
-            {
-                parameters.Add("args", convertedArgs);
-            }
-            else
-            {
-                parameters.Add("args", new object[] { });
-            }
-
-            Response commandResponse = Execute(DriverCommand.ExecuteScript, parameters);
-            return ParseJavaScriptReturnValue(commandResponse.Value);
+        /// <summary>
+        /// Executes JavaScript asynchronously in the context of the currently selected frame or window.
+        /// </summary>
+        /// <param name="script">The JavaScript code to execute.</param>
+        /// <param name="args">The arguments to the script.</param>
+        /// <returns>The value returned by the script.</returns>
+        public object ExecuteAsyncScript(string script, params object[] args)
+        {
+            return ExecuteScriptInternal(script, true, args);
         }
         #endregion
 
@@ -808,6 +796,35 @@ namespace OpenQA.Selenium.Remote
         #endregion
 
         #region Private methods
+        private object ExecuteScriptInternal(string script, bool async, params object[] args)
+        {
+            if (!Capabilities.IsJavaScriptEnabled)
+            {
+                throw new NotSupportedException("You must be using an underlying instance of WebDriver that supports executing javascript");
+            }
+
+            // Escape the quote marks
+            //script = script.Replace("\"", "\\\"");
+
+            object[] convertedArgs = ConvertArgumentsToJavaScriptObjects(args);
+
+            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            parameters.Add("script", script);
+
+            if (convertedArgs != null && convertedArgs.Length > 0)
+            {
+                parameters.Add("args", convertedArgs);
+            }
+            else
+            {
+                parameters.Add("args", new object[] { });
+            }
+
+            DriverCommand command = async ? DriverCommand.ExecuteAsyncScript : DriverCommand.ExecuteScript;
+            Response commandResponse = Execute(command, parameters);
+            return ParseJavaScriptReturnValue(commandResponse.Value);
+        }
+
         private static object ConvertObjectToJavaScriptObject(object arg)
         {
             RemoteWebElement argAsElement = arg as RemoteWebElement;
@@ -957,7 +974,7 @@ namespace OpenQA.Selenium.Remote
                     toReturn.Add(parsedItem);
                 }
 
-                if (allElementsAreWebElements)
+                if (toReturn.Count > 0 && allElementsAreWebElements)
                 {
                     List<IWebElement> elementList = new List<IWebElement>();
                     foreach (object listItem in toReturn)
@@ -1182,6 +1199,19 @@ namespace OpenQA.Selenium.Remote
                     Dictionary<string, object> parameters = new Dictionary<string, object>();
                     parameters.Add("ms", timeToWait.TotalMilliseconds);
                     Response response = driver.Execute(DriverCommand.ImplicitlyWait, parameters);
+                    return this;
+                }
+
+                /// <summary>
+                /// Specifies the amount of time the driver should wait when executing JavaScript asynchronously.
+                /// </summary>
+                /// <param name="timeToWait">A <see cref="TimeSpan"/> structure defining the amount of time to wait.</param>
+                /// <returns>A self reference</returns>
+                public ITimeouts SetScriptTimeout(TimeSpan timeToWait)
+                {
+                    Dictionary<string, object> parameters = new Dictionary<string, object>();
+                    parameters.Add("ms", timeToWait.TotalMilliseconds);
+                    Response response = driver.Execute(DriverCommand.SetAsyncScriptTimeout, parameters);
                     return this;
                 }
                 #endregion

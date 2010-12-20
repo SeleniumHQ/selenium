@@ -27,9 +27,11 @@ import org.openqa.selenium.environment.webserver.AppServer;
 
 import static org.openqa.selenium.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.Ignore.Driver.IE;
+import static org.openqa.selenium.Ignore.Driver.IE_NEW;
 import static org.openqa.selenium.Ignore.Driver.REMOTE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 
+@Ignore(IE_NEW)
 public class CookieImplementationTest extends AbstractDriverTestCase {
 
   @Override
