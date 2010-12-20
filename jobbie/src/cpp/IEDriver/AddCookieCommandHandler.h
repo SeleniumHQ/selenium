@@ -58,13 +58,14 @@ protected:
 			}
 		}
 
-		Json::Value::iterator it = cookie_value.begin();
-		for (; it != cookie_value.end(); ++it) {
-			std::string key = it.key().asString();
-			std::string value = cookie_value[key].asString();
-			if (value != "") {
-				cookie_string += key + "=" + cookie_value[key].asString() + "; ";
-			}
+		Json::Value domain = cookie_value.get("domain", Json::Value::null);
+		if (!domain.isNull() && domain.isString() && domain.asString() != "") {
+			cookie_string += "domain=" + domain.asString() + "; ";
+		}
+
+		Json::Value path = cookie_value.get("path", Json::Value::null);
+		if (!path.isNull() && path.isString() && path.asString() != "") {
+			cookie_string += "path=" + path.asString() + "; ";
 		}
 
 		BrowserWrapper *browser_wrapper;
