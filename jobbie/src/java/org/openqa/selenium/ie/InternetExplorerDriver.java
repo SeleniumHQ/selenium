@@ -140,6 +140,7 @@ public class InternetExplorerDriver extends RemoteWebDriver implements
             String arch = System.getProperty("os.arch", "")
                 .contains("64") ? "x64" : "Win32";
             List<String> sourcePaths = new ArrayList<String>();
+            sourcePaths.add("build\\" + arch + "\\Debug");
             sourcePaths.add("..\\build\\" + arch + "\\Debug");
             sourcePaths.add("..\\..\\build\\" + arch + "\\Debug");
             boolean copied = false;
@@ -154,7 +155,7 @@ public class InternetExplorerDriver extends RemoteWebDriver implements
             }
             if (!copied) {
               throw new WebDriverException(
-                  "Couldn't find IEDriver.dll");
+                  "Couldn't find IEDriver.dll: " + arch);
             }
           } else {
             throw new WebDriverException(ioe);

@@ -126,13 +126,26 @@ boolean sendKeysToFileUploadAlert(HWND dialogHwnd, const wchar_t* value)
                 curr = SendMessage(editHwnd, WM_GETTEXTLENGTH, 0, 0);
         }
 
-        HWND openHwnd = FindWindowExW(dialogHwnd, NULL, L"Button", L"&Open");
-        if (openHwnd) {
-                SendMessage(openHwnd, WM_LBUTTONDOWN, 0, 0);
-                SendMessage(openHwnd, WM_LBUTTONUP, 0, 0);
-        }
+		// Give IE a chance to realize that it needs to redraw the buttons
+		wait(500);
 
-        return true;
+		HWND openHwnd = NULL;
+		for (int i = 0; i < 10 && !openHwnd; i++) 
+		{
+			openHwnd = FindWindowExW(dialogHwnd, NULL, L"Button", L"&Open");
+			if (openHwnd) {
+                LRESULT value = SendMessage(openHwnd, WM_LBUTTONDOWN, 0, 0);
+                value += SendMessage(openHwnd, WM_LBUTTONUP, 0, 0);
+				if (value == 0) 
+				{
+					return true;
+				}
+			}
+			wait(500);
+		}
+
+		LOG(ERROR) << "Cannot locate okay button in dilaog" << endl;
+        return false;
     }
 
     LOG(WARN) << "No edit found";

@@ -39,10 +39,11 @@ public class SingleTestSuite extends TestCase {
   private static final String SELENIUM = "org.openqa.selenium.SeleneseBackedWebDriver";
 
   public static Test suite() throws Exception {
-    String driver = SELENIUM;
+    String driver = IE;
 
     System.setProperty("jna.library.path", "..\\build;build");
     System.setProperty("webdriver.selenium.server.port", String.valueOf(findFreePort()));
+    System.setProperty("webdriver.development", "true");
 //    System.setProperty("webdriver.debug", "true");
 //    System.setProperty("webdriver.firefox.reap_profile", "false");
 
@@ -54,10 +55,10 @@ public class SingleTestSuite extends TestCase {
         .usingDriver(driver)
         .keepDriverInstance()
         .includeJavascriptTests()
-        .onlyRun("ElementAttributeTest")
+        .onlyRun("UploadTest")
 //        .method("testShouldFindElementsByClassWhenItsNameIsSurroundedByWhitespace")
         .exclude(ALL)
-        .exclude(Ignore.Driver.SELENESE)
+        .exclude(Ignore.Driver.IE)
         .outputTestNames()
         .leaveRunning()
         ;  // Yeah, this look strange :)
