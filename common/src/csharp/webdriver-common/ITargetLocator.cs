@@ -73,5 +73,11 @@ namespace OpenQA.Selenium
         /// <returns>An <see cref="IWebElement"/> instance representing the element 
         /// with the focus, or the body element if no element with focus can be detected.</returns>
         IWebElement ActiveElement();
+
+        /// <summary>
+        /// Switches to the currently active modal dialog for this particular driver instance.
+        /// </summary>
+        /// <returns>A handle to the dialog.</returns>
+        IAlert Alert();
     }
 }

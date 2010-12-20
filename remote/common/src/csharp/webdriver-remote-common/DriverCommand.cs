@@ -268,7 +268,27 @@
         /// <summary>
         /// Represents Screenshot command
         /// </summary>
-        Screenshot, 
+        Screenshot,
+
+        /// <summary>
+        /// Represents the DismissAlert command
+        /// </summary>
+        DismissAlert,
+
+        /// <summary>
+        /// Represents the AcceptAlert command
+        /// </summary>
+        AcceptAlert,
+
+        /// <summary>
+        /// Represents the GetAlertText command
+        /// </summary>
+        GetAlertText,
+
+        /// <summary>
+        /// Represents the SetAlertValue command
+        /// </summary>
+        SetAlertValue,
 
         /// <summary>
         /// Represents the ImplicitlyWait command

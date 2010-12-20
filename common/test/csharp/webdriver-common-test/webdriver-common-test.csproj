@@ -63,6 +63,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AlertsTest.cs" />
     <Compile Include="AssemblyTeardown.cs" />
     <Compile Include="Browser.cs" />
     <Compile Include="ByTest.cs" />

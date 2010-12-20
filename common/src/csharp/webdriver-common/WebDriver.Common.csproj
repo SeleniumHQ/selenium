@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IAlert.cs" />
     <Compile Include="Internal\AsyncJavaScriptExecutor.cs" />
     <Compile Include="By.cs" />
     <Compile Include="Cookie.cs" />

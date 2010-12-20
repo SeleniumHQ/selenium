@@ -1402,7 +1402,70 @@ namespace OpenQA.Selenium.Remote
                 Response response = driver.Execute(DriverCommand.GetActiveElement, null);
                 return driver.GetElementFromResponse(response);
             }
+
+            /// <summary>
+            /// Switches to the currently active modal dialog for this particular driver instance.
+            /// </summary>
+            /// <returns>A handle to the dialog.</returns>
+            public IAlert Alert()
+            {
+                return new RemoteAlert(driver);
+            }
             #endregion
+
+            /// <summary>
+            /// Defines the interface through which the user can manipulate JavaScript alerts.
+            /// </summary>
+            private class RemoteAlert : IAlert
+            {
+                private RemoteWebDriver driver;
+
+                public RemoteAlert(RemoteWebDriver driver)
+                {
+                    this.driver = driver;
+                }
+
+                #region IAlert Members
+                /// <summary>
+                /// Gets the text of the alert.
+                /// </summary>
+                public string Text
+                {
+                    get
+                    {
+                        Response commandResponse = driver.Execute(DriverCommand.GetAlertText, null);
+                        return commandResponse.Value.ToString();
+                    }
+                }
+
+                /// <summary>
+                /// Dismisses the alert.
+                /// </summary>
+                public void Dismiss()
+                {
+                    driver.Execute(DriverCommand.DismissAlert, null);
+                }
+
+                /// <summary>
+                /// Accepts the alert.
+                /// </summary>
+                public void Accept()
+                {
+                    driver.Execute(DriverCommand.AcceptAlert, null);
+                }
+
+                /// <summary>
+                /// Sends keys to the alert.
+                /// </summary>
+                /// <param name="keysToSend">The keystrokes to send.</param>
+                public void SendKeys(string keysToSend)
+                {
+                    Dictionary<string, object> parameters = new Dictionary<string, object>();
+                    parameters.Add("text", keysToSend);
+                    driver.Execute(DriverCommand.SetAlertValue, parameters);
+                }
+                #endregion
+            }
         }
     }
 }

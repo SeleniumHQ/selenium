@@ -54,6 +54,7 @@ namespace OpenQA.Selenium
         public string sleepingPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("sleeping.html");
         public string draggableLists = EnvironmentManager.Instance.UrlBuilder.WhereIs("draggableLists.html");
         public string droppableItems = EnvironmentManager.Instance.UrlBuilder.WhereIs("droppableItems.html");
+        public string alertPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("alerts.html");
 
         protected IWebDriver driver;
 
