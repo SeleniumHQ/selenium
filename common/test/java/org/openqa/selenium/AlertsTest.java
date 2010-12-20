@@ -19,14 +19,12 @@ package org.openqa.selenium;
 
 import java.lang.reflect.Method;
 
-import org.openqa.selenium.environment.GlobalTestEnvironment;
-import org.openqa.selenium.environment.TestEnvironment;
-
 import static org.openqa.selenium.Ignore.Driver.ANDROID;
-import static org.openqa.selenium.Ignore.Driver.CHROME_NON_WINDOWS;
+import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
+import static org.openqa.selenium.Ignore.Driver.REMOTE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 
 public class AlertsTest extends AbstractDriverTestCase {
@@ -37,12 +35,11 @@ public class AlertsTest extends AbstractDriverTestCase {
   protected void setUp() throws Exception {
     super.setUp();
 
-    TestEnvironment environment = GlobalTestEnvironment.get();
     alertPage = environment.getAppServer().whereIs("alerts.html");
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, HTMLUNIT, IE, IPHONE, SELENESE, CHROME_NON_WINDOWS})
+  @Ignore({ANDROID, CHROME, HTMLUNIT, IE, IPHONE, REMOTE, SELENESE})
   public void testShouldBeAbleToOverrideTheWindowAlertMethod() {
     driver.get(alertPage);
 
@@ -52,7 +49,7 @@ public class AlertsTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, HTMLUNIT, IE, IPHONE, SELENESE, CHROME_NON_WINDOWS})
+  @Ignore({ANDROID, CHROME, HTMLUNIT, IE, IPHONE, REMOTE, SELENESE})
   public void testShouldAllowUsersToAcceptAnAlertManually() throws InterruptedException {
     driver.get(alertPage);
 
@@ -66,7 +63,7 @@ public class AlertsTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, HTMLUNIT, IE, IPHONE, SELENESE, CHROME_NON_WINDOWS})
+  @Ignore({ANDROID, CHROME, HTMLUNIT, IE, IPHONE, REMOTE, SELENESE})
   public void testShouldAllowUsersToDismissAnAlertManually() {
     driver.get(alertPage);
 
@@ -80,7 +77,7 @@ public class AlertsTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, HTMLUNIT, IE, IPHONE, SELENESE, CHROME_NON_WINDOWS})
+  @Ignore({ANDROID, CHROME, HTMLUNIT, IE, IPHONE, REMOTE, SELENESE})
   public void testShouldAllowAUserToAcceptAPrompt() {
     driver.get(alertPage);
 
@@ -94,7 +91,7 @@ public class AlertsTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, HTMLUNIT, IE, IPHONE, SELENESE, CHROME_NON_WINDOWS})
+  @Ignore({ANDROID, CHROME, HTMLUNIT, IE, IPHONE, REMOTE, SELENESE})
   public void testShouldAllowAUserToDismissAPrompt() {
     driver.get(alertPage);
 
@@ -108,7 +105,7 @@ public class AlertsTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, HTMLUNIT, IE, IPHONE, SELENESE, CHROME_NON_WINDOWS})
+  @Ignore({ANDROID, CHROME, HTMLUNIT, IE, IPHONE, REMOTE, SELENESE})
   public void testShouldAllowAUserToSetTheValueOfAPrompt() {
     driver.get(alertPage);
 
@@ -123,7 +120,7 @@ public class AlertsTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, HTMLUNIT, IE, IPHONE, SELENESE, CHROME_NON_WINDOWS})
+  @Ignore({ANDROID, CHROME, HTMLUNIT, IE, IPHONE, REMOTE, SELENESE})
   public void testShouldAllowTheUserToGetTheTextOfAnAlert() {
     driver.get(alertPage);
 
