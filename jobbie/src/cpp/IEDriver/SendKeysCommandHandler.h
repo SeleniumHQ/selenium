@@ -199,13 +199,25 @@ private:
 				curr = ::SendMessage(edit_field_window_handle, WM_GETTEXTLENGTH, 0, 0);
 			}
 
-			HWND open_window_handle = ::FindWindowExW(dialog_window_handle, NULL, L"Button", L"&Open");
-			if (open_window_handle) {
-				::SendMessage(open_window_handle, WM_LBUTTONDOWN, 0, 0);
-				::SendMessage(open_window_handle, WM_LBUTTONUP, 0, 0);
+			for (int i = 0; i < 10000; i++) 
+			{
+				HWND open_window_handle = ::FindWindowExW(dialog_window_handle, NULL, L"Button", L"&Open");
+				if (open_window_handle) {
+					LRESULT total = 0;
+					total += ::SendMessage(open_window_handle, WM_LBUTTONDOWN, 0, 0);
+					total += ::SendMessage(open_window_handle, WM_LBUTTONUP, 0, 0);
+
+					if (total == 0)
+					{
+						return true;
+					}
+
+					wait(500);
+				}
 			}
 
-			return true;
+//			LOG(ERROR) << "Unable to set value of file input dialog";
+			return false;
 		}
 
 		//LOG(WARN) << "No edit found";
