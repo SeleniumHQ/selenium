@@ -118,8 +118,6 @@ public class WebDriverWebView extends WebView {
     settings.setDatabaseEnabled(true);
     settings.setDomStorageEnabled(true);
     settings.setGeolocationEnabled(true);
-    settings.setJavaScriptCanOpenWindowsAutomatically(true);
     settings.setSaveFormData(true);
-    settings.setSupportMultipleWindows(true);
   }
 }
