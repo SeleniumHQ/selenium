@@ -32,6 +32,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.internal.FindsByClassName;
+import org.openqa.selenium.internal.FindsByCssSelector;
 import org.openqa.selenium.internal.FindsById;
 import org.openqa.selenium.internal.FindsByLinkText;
 import org.openqa.selenium.internal.FindsByName;
@@ -55,7 +56,8 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
-    FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, FindsByXPath,
+    FindsById, FindsByClassName, FindsByLinkText, FindsByName,
+    FindsByCssSelector, FindsByTagName, FindsByXPath,
     HasInputDevices {
 
   private final ErrorHandler errorHandler = new ErrorHandler();
@@ -240,6 +242,14 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
 
   public List<WebElement> findElementsByClassName(String using) {
     return findElements("class name", using);
+  }
+
+  public WebElement findElementByCssSelector(String using) {
+    return findElement("css selector", using);
+  }
+
+  public List<WebElement> findElementsByCssSelector(String using) {
+    return findElements("css selector", using);
   }
 
   public WebElement findElementByXPath(String using) {

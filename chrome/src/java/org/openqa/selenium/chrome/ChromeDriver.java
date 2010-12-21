@@ -5,8 +5,6 @@ import static org.openqa.selenium.remote.DriverCommand.SCREENSHOT;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.internal.FindsByCssSelector;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.RemoteWebElement;
@@ -15,10 +13,9 @@ import org.openqa.selenium.remote.internal.JsonToWebElementConverter;
 
 import com.google.common.collect.ImmutableMap;
 
-import java.util.List;
 import java.util.Map;
 
-public class ChromeDriver extends RemoteWebDriver implements  TakesScreenshot, FindsByCssSelector {
+public class ChromeDriver extends RemoteWebDriver implements  TakesScreenshot {
   
   //Accept untrusted SSL certificates.
   //TODO: This should probably be a capability, or at least drawn out to be shared with FirefoxDriver
@@ -105,14 +102,6 @@ public class ChromeDriver extends RemoteWebDriver implements  TakesScreenshot, F
   @Override
   public boolean isJavascriptEnabled() {
     return true;
-  }
-
-  public WebElement findElementByCssSelector(String using) {
-    return findElement("css", using);
-  }
-
-  public List<WebElement> findElementsByCssSelector(String using) {
-    return findElements("css", using);
   }
 
   @Override

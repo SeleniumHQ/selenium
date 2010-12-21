@@ -27,12 +27,10 @@ import org.openqa.selenium.Platform;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.browserlaunchers.Proxies;
 import org.openqa.selenium.firefox.internal.NewProfileExtensionConnection;
 import org.openqa.selenium.firefox.internal.ProfilesIni;
 import org.openqa.selenium.internal.FileHandler;
-import org.openqa.selenium.internal.FindsByCssSelector;
 import org.openqa.selenium.internal.Lock;
 import org.openqa.selenium.internal.SocketLock;
 import org.openqa.selenium.remote.Command;
@@ -46,7 +44,6 @@ import org.openqa.selenium.remote.internal.JsonToWebElementConverter;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 
 
 /**
@@ -60,7 +57,7 @@ import java.util.List;
  * When the driver starts, it will make a copy of the profile it is using, rather than using that profile directly.
  * This allows multiple instances of firefox to be started.
  */
-public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot, FindsByCssSelector {
+public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot {
   public static final String BINARY = "firefox_binary";
   public static final String PROFILE = "firefox_profile";
 
@@ -185,14 +182,6 @@ public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot, F
   @Override
   protected FirefoxWebElement newRemoteWebElement() {
     return new FirefoxWebElement(this);
-  }
-
-  public WebElement findElementByCssSelector(String using) {
-    return findElement("css selector", using);
-  }
-
-  public List<WebElement> findElementsByCssSelector(String using) {
-    return findElements("css selector", using);
   }
 
   @Override

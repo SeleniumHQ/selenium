@@ -17,7 +17,6 @@ limitations under the License.
 
 package org.openqa.selenium.ie;
 
-import static java.lang.String.format;
 import static org.openqa.selenium.browserlaunchers.CapabilityType.PROXY;
 
 import java.io.File;
@@ -30,11 +29,9 @@ import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.browserlaunchers.WindowsProxyManager;
 import org.openqa.selenium.internal.AsyncJavascriptExecutor;
 import org.openqa.selenium.internal.FileHandler;
-import org.openqa.selenium.internal.FindsByCssSelector;
 import org.openqa.selenium.internal.PortProber;
 import org.openqa.selenium.internal.TemporaryFilesystem;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -47,8 +44,7 @@ import com.sun.jna.Native;
 import com.sun.jna.Pointer;
 import com.sun.jna.win32.StdCallLibrary;
 
-public class InternetExplorerDriver extends RemoteWebDriver implements
-    FindsByCssSelector {
+public class InternetExplorerDriver extends RemoteWebDriver {
   private Pointer server;
   private IEServer lib;
   private int port;
@@ -95,14 +91,6 @@ public class InternetExplorerDriver extends RemoteWebDriver implements
       }
     });
     startSession(DesiredCapabilities.internetExplorer());
-  }
-
-  public WebElement findElementByCssSelector(String cssSelector) {
-    return findElement("css selector", cssSelector);
-  }
-
-  public List<WebElement> findElementsByCssSelector(String cssSelector) {
-    return findElements("css selector", cssSelector);
   }
 
   protected void startClient() {

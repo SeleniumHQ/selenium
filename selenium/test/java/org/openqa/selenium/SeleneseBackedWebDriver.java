@@ -17,16 +17,14 @@ limitations under the License.
 
 package org.openqa.selenium;
 
-import org.openqa.selenium.internal.FindsByCssSelector;
 import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.List;
 
-public class SeleneseBackedWebDriver extends RemoteWebDriver implements FindsByCssSelector {
+public class SeleneseBackedWebDriver extends RemoteWebDriver {
   public SeleneseBackedWebDriver() throws Exception {
     super(newCommandExecutor(getSeleniumServerUrl(), describeBrowser()),
         describeBrowser());
@@ -40,14 +38,6 @@ public class SeleneseBackedWebDriver extends RemoteWebDriver implements FindsByC
   private static URL getSeleniumServerUrl() throws MalformedURLException {
     String port = System.getProperty("webdriver.selenium.server.port", "5555");
     return new URL("http://localhost:" + port);
-  }
-
-  public WebElement findElementByCssSelector(String using) {
-    return findElement("css selector", using);
-  }
-
-  public List<WebElement> findElementsByCssSelector(String using) {
-    return findElements("css selector", using);
   }
 
   private static Capabilities describeBrowser() {

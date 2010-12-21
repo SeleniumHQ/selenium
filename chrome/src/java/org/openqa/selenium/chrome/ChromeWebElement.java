@@ -1,13 +1,11 @@
 package org.openqa.selenium.chrome;
 
 import java.awt.Point;
-import java.util.List;
 import java.util.Map;
 
 import com.google.common.collect.ImmutableMap;
 import org.openqa.selenium.RenderedWebElement;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.internal.FindsByCssSelector;
 import org.openqa.selenium.internal.Locatable;
 import org.openqa.selenium.internal.WrapsElement;
 import org.openqa.selenium.remote.DriverCommand;
@@ -15,7 +13,7 @@ import org.openqa.selenium.remote.RenderedRemoteWebElement;
 import org.openqa.selenium.remote.Response;
 
 public class ChromeWebElement extends RenderedRemoteWebElement
-    implements Locatable, FindsByCssSelector {
+    implements Locatable {
 
   public ChromeWebElement(ChromeDriver parent) {
     setParent(parent);
@@ -39,14 +37,6 @@ public class ChromeWebElement extends RenderedRemoteWebElement
     int x = ((Long) rawPoint.get("x")).intValue();
     int y = ((Long) rawPoint.get("y")).intValue();
     return new Point(x, y);
-  }
-
-  public WebElement findElementByCssSelector(String using) {
-    return findElement("css", using);
-  }
-
-  public List<WebElement> findElementsByCssSelector(String using) {
-    return findElements("css", using);
   }
 
   @Override

@@ -22,6 +22,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.internal.FindsByClassName;
+import org.openqa.selenium.internal.FindsByCssSelector;
 import org.openqa.selenium.internal.FindsById;
 import org.openqa.selenium.internal.FindsByLinkText;
 import org.openqa.selenium.internal.FindsByName;
@@ -34,7 +35,7 @@ import java.util.List;
 import java.util.Map;
 
 public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById, FindsByName,
-    FindsByTagName, FindsByClassName, FindsByXPath, WrapsDriver {
+    FindsByTagName, FindsByClassName, FindsByCssSelector, FindsByXPath, WrapsDriver {
 
   protected String id;
   protected RemoteWebDriver parent;
@@ -156,6 +157,14 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
 
   public List<WebElement> findElementsByClassName(String using) {
     return findElements("class name", using);
+  }
+
+  public WebElement findElementByCssSelector(String using) {
+    return findElement("css selector", using);
+  }
+
+  public List<WebElement> findElementsByCssSelector(String using) {
+    return findElements("css selector", using);
   }
 
   public WebElement findElementByXPath(String using) {

@@ -22,10 +22,8 @@ import java.awt.Point;
 import java.util.List;
 import java.util.Map;
 
-import org.openqa.selenium.Keys;
 import org.openqa.selenium.RenderedWebElement;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.internal.FindsByCssSelector;
 import org.openqa.selenium.internal.Locatable;
 import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.RenderedRemoteWebElement;
@@ -33,17 +31,9 @@ import org.openqa.selenium.remote.Response;
 
 import com.google.common.collect.ImmutableMap;
 
-public class InternetExplorerElement extends RenderedRemoteWebElement implements RenderedWebElement, Locatable, FindsByCssSelector {
+public class InternetExplorerElement extends RenderedRemoteWebElement implements RenderedWebElement, Locatable {
   public InternetExplorerElement(InternetExplorerDriver parent) {
     setParent(parent);
-  }
-  
-  public WebElement findElementByCssSelector(String cssSelector) {
-    return findElement("css selector", cssSelector);
-  }
-
-  public List<WebElement> findElementsByCssSelector(String cssSelector) {
-    return findElements("css selector", cssSelector);
   }
   
   protected WebElement findElement(String using, String value) {

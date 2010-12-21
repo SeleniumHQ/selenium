@@ -19,13 +19,11 @@ limitations under the License.
 package org.openqa.selenium.firefox;
 
 import java.awt.Point;
-import java.util.List;
 import java.util.Map;
 
 import com.google.common.collect.ImmutableMap;
 import org.openqa.selenium.RenderedWebElement;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.internal.FindsByCssSelector;
 import org.openqa.selenium.internal.Locatable;
 import org.openqa.selenium.internal.WrapsElement;
 import org.openqa.selenium.remote.DriverCommand;
@@ -33,18 +31,10 @@ import org.openqa.selenium.remote.RenderedRemoteWebElement;
 import org.openqa.selenium.remote.Response;
 
 public class FirefoxWebElement extends RenderedRemoteWebElement implements RenderedWebElement,
-    Locatable, FindsByCssSelector {
+    Locatable {
 
     public FirefoxWebElement(FirefoxDriver parent) {
       setParent(parent);
-    }
-
-    public WebElement findElementByCssSelector(String using) {
-      return findElement("css selector", using);
-    }
-
-    public List<WebElement> findElementsByCssSelector(String using) {
-      return findElements("css selector", using);
     }
 
     public Point getLocationOnScreenOnceScrolledIntoView() {
