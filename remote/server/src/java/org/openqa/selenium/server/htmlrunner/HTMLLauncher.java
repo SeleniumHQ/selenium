@@ -6,11 +6,8 @@ package org.openqa.selenium.server.htmlrunner;
 
 import org.apache.commons.logging.Log;
 import org.openqa.jetty.log.LogFactory;
-import org.openqa.selenium.server.BrowserConfigurationOptions;
+import org.openqa.selenium.server.*;
 import org.openqa.selenium.server.BrowserSessionFactory.BrowserSessionInfo;
-import org.openqa.selenium.server.RemoteControlConfiguration;
-import org.openqa.selenium.server.SeleniumCommandTimedOutException;
-import org.openqa.selenium.server.SeleniumServer;
 import org.openqa.selenium.server.browserlaunchers.AsyncExecute;
 import org.openqa.selenium.server.browserlaunchers.BrowserLauncher;
 import org.openqa.selenium.server.browserlaunchers.BrowserLauncherFactory;
@@ -105,6 +102,9 @@ public class HTMLLauncher implements HTMLResultsListener {
         remoteControl.handleHTMLRunnerResults(this);
 
         String sessionId = Long.toString(System.currentTimeMillis() % 1000000);
+        FrameGroupCommandQueueSet.makeQueueSet(
+                sessionId, configuration.getPortDriversShouldContact(), configuration);
+
         BrowserConfigurationOptions browserOptions = new BrowserConfigurationOptions();
         
         configuration.copySettingsIntoBrowserOptions(browserOptions);
