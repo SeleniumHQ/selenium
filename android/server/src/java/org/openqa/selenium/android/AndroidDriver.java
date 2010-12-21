@@ -421,7 +421,7 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
         .append("}")
         .append("function onunload() {")
         .append("  sendResponse('Detected a page unload event; async script execution")
-        .append("does not work across page loads', true);")
+        .append(" does not work across page loads', true);")
         .append("}")
         .append("if (isAsync) {")
         .append("  win.addEventListener('unload', onunload, false);")
