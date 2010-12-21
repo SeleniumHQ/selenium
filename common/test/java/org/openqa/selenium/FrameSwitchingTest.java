@@ -143,7 +143,6 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
     }
   }
 
-  @Ignore(IE)
   public void testFrameSearchesShouldBeRelativeToTheCurrentlySelectedFrame() {
     driver.get(pages.framesetPage);
 
@@ -179,7 +178,6 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
     assertThat(driver.findElement(By.id("pageNumber")).getText(), equalTo("11"));
   }
 
-  @Ignore({IE})
   public void testShouldThrowFrameNotFoundExceptionLookingUpSubFramesWithSuperFrameNames() {
     driver.get(pages.framesetPage);
     driver.switchTo().frame("fourth");
@@ -247,7 +245,6 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
                equalTo("XHTML Test Page"));
   }
 
-  @Ignore(IE)
   public void testShouldAllowAUserToSwitchFromAnIframeBackToTheMainContentOfThePage() {
     driver.get(pages.iframePage);
     driver.switchTo().frame(0);
@@ -273,7 +270,6 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
     return waitFor(elementToExist(driver, "greeting")).getText();
   }
 
-  @Ignore(IE)
   public void testShouldBeAbleToClickInAFrame() {
     driver.get(pages.framesetPage);
     driver.switchTo().frame("third");
@@ -287,7 +283,6 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
     assertThat(getTextOfGreetingElement(), equalTo("Success!"));
   }
 
-  @Ignore(IE)
   public void testShouldBeAbleToClickInASubFrame() {
     driver.get(pages.framesetPage);
     driver.switchTo().frame("sixth")

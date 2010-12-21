@@ -464,6 +464,36 @@ void BrowserWrapper::RemoveScript(IHTMLDocument2 *doc) {
 	}
 }
 
+
+int BrowserWrapper::SetFocusedFrameToTop() {
+	HRESULT hr = S_OK;
+	
+	CComQIPtr<IHTMLDocument2> doc;
+	this->GetDocument(&doc);
+
+	if (!doc) {
+		return ENOSUCHFRAME;
+	}
+
+	CComPtr<IHTMLWindow2> win;
+	hr = doc->get_parentWindow(&win);
+
+	if (FAILED(hr)) {
+		return ENOSUCHFRAME;
+	}
+
+	CComPtr<IHTMLWindow2> interim_result;
+	hr = win->get_top(&interim_result);
+
+	if (FAILED(hr)) {
+		return ENOSUCHFRAME;
+	}
+
+	this->focused_frame_window_ = interim_result.Detach();
+	return SUCCESS;
+}
+
+
 int BrowserWrapper::SetFocusedFrameByElement(IHTMLElement *frame_element) {
 	HRESULT hr = S_OK;
 	if (!frame_element) {

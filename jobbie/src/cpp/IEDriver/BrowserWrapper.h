@@ -80,6 +80,7 @@ public:
 	int AddCookie(std::wstring cookie);
 	int DeleteCookie(std::wstring cookie_name);
 	void AttachToWindowInputQueue(void);
+	int SetFocusedFrameToTop();
 	int SetFocusedFrameByIndex(int frame_index);
 	int SetFocusedFrameByName(std::wstring frame_name);
 	int SetFocusedFrameByElement(IHTMLElement *frame_element);

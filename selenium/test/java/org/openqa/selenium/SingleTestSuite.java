@@ -56,7 +56,7 @@ public class SingleTestSuite extends TestCase {
         .keepDriverInstance()
         .includeJavascriptTests()
         .onlyRun("FrameSwitchingTest")
-//        .method("testShouldFindElementsByClassWhenItsNameIsSurroundedByWhitespace")
+//        .method("testFrameSearchesShouldBeRelativeToTheCurrentlySelectedFrame")
         .exclude(ALL)
         .exclude(Ignore.Driver.IE)
         .outputTestNames()
