@@ -100,7 +100,6 @@ public class WebDriverWebView extends WebView {
     clearCache(true);
     clearFormData();
     clearHistory();
-    clearSslPreferences();
     clearView();
 
     // Sets custom webview behavior
@@ -114,7 +113,8 @@ public class WebDriverWebView extends WebView {
     settings.setSupportMultipleWindows(true);
     settings.setBuiltInZoomControls(true);
     settings.setJavaScriptEnabled(true);
-    settings.setAppCacheEnabled(true);
+    // This setting somehow causes some apps to crash
+    //settings.setAppCacheEnabled(true);
     settings.setDatabaseEnabled(true);
     settings.setDomStorageEnabled(true);
     settings.setGeolocationEnabled(true);
