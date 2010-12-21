@@ -389,14 +389,13 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(IE)
   public void testJavaScriptShouldExecuteInTheContextOfTheCurrentFrame() {
     JavascriptExecutor executor = (JavascriptExecutor) driver;
 
     driver.get(pages.framesetPage);
-    assertTrue((Boolean) executor.executeScript("return window === window.top"));
+    assertTrue((Boolean) executor.executeScript("return window == window.top"));
     driver.switchTo().frame("third");
-    assertTrue((Boolean) executor.executeScript("return window !== window.top"));
+    assertTrue((Boolean) executor.executeScript("return window != window.top"));
   }
 
   private void assertFrameNotPresent(WebDriver driver, String locator) {
