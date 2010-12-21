@@ -383,16 +383,15 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IE, "window === window.top comparison fails for IE, even when performed manually")]
         public void JavaScriptShouldExecuteInTheContextOfTheCurrentFrame()
         {
             IJavaScriptExecutor executor = driver as IJavaScriptExecutor;
 
             driver.Url = framesetPage;
-            Assert.IsTrue((bool)executor.ExecuteScript("return window === window.top"));
+            Assert.IsTrue((bool)executor.ExecuteScript("return window == window.top"));
 
             driver.SwitchTo().Frame("third");
-            Assert.IsTrue((bool)executor.ExecuteScript("return window !== window.top"));
+            Assert.IsTrue((bool)executor.ExecuteScript("return window != window.top"));
         }
 
         // ----------------------------------------------------------------------------------------------

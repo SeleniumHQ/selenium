@@ -15,7 +15,16 @@ public:
 
 protected:
 	void SwitchToFrameCommandHandler::ExecuteInternal(BrowserManager *manager, std::map<std::string, std::string> locator_parameters, std::map<std::string, Json::Value> command_parameters, WebDriverResponse * response) {
-		Json::Value frame_id = command_parameters["id"];
+		Json::Value frame_id = Json::Value::null;
+		std::map<std::string, Json::Value>::iterator it = command_parameters.find("id");
+		// TODO: When issue 1133 is fixed, the else block in the following code
+		// should be uncommented.
+		if (it != command_parameters.end()) {
+			frame_id = it->second;
+		//} else {
+		//	response->SetErrorResponse(400, "Missing parameter: id");
+		//	return;
+		}
 		BrowserWrapper *browser_wrapper;
 		int status_code = manager->GetCurrentBrowser(&browser_wrapper);
 		if (status_code != SUCCESS) {
@@ -23,8 +32,7 @@ protected:
 			return;
 		}
 
-		//std::wstringstream path_stream;
-		if (frame_id == NULL) {
+		if (frame_id.isNull()) {
 			status_code = browser_wrapper->SetFocusedFrameByElement(NULL);
 		} else if (frame_id.isObject()) {
 			Json::Value element_id = frame_id.get("ELEMENT", Json::Value::null);
@@ -42,13 +50,9 @@ protected:
 		} else if (frame_id.isString()) {
 			std::wstring frame_name(CA2W(frame_id.asString().c_str(), CP_UTF8));
 			status_code = browser_wrapper->SetFocusedFrameByName(frame_name);
-			//path_stream << path;
 		} else if(frame_id.isIntegral()) {
-			//path_stream << frame_id.asInt();
 			int frame_index(frame_id.asInt());
 			status_code = browser_wrapper->SetFocusedFrameByIndex(frame_index);
-		} else if (frame_id.isNull()) {
-			status_code = browser_wrapper->SetFocusedFrameByElement(NULL);
 		}
 
 		if (status_code != SUCCESS) {

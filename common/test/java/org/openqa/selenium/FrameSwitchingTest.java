@@ -337,7 +337,6 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
     assertNotNull(element);
   }
 
-  @Ignore(value = IE, reason = "IE8 on Win7 is not correctly reporting the query string")
   public void testGetCurrentUrl() {
     driver.get(pages.framesetPage);
 
@@ -381,7 +380,7 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
     }
   }
 
-  @Ignore(value = {IE, CHROME, SELENESE}, reason = "These drivers still return frame title.")
+  @Ignore(value = {CHROME, SELENESE}, reason = "These drivers still return frame title.")
   public void testShouldReturnWindowTitleInAFrameset() {
     driver.get(pages.framesetPage);
     driver.switchTo().frame("third");
