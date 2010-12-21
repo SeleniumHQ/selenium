@@ -652,7 +652,7 @@ FirefoxDriver.prototype.findChildElements = function(respond, parameters) {
  *     specifying which frame to switch to.
  */
 FirefoxDriver.prototype.switchToFrame = function(respond, parameters) {
-  var currentWindow = respond.session.getWindow();
+  var currentWindow = webdriver.firefox.utils.unwrapXpcOnly(respond.session.getWindow());
 
   var newWindow = null;
   if (!goog.isDef(parameters.id) || goog.isNull(parameters.id)) {

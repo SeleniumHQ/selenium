@@ -86,3 +86,25 @@ webdriver.firefox.utils.unwrap = function(thing) {
 
   return thing;
 };
+
+/**
+ * For Firefox 4, some objects (like the Window) are wrapped to make them safe
+ * to access from privileged code but this hides fields we need, like the
+ * frames array. Remove this wrapping.
+ * See: https://developer.mozilla.org/en/XPCNativeWrapper
+ */
+webdriver.firefox.utils.unwrapXpcOnly = function(thing) {
+  if (XPCNativeWrapper && "unwrap" in XPCNativeWrapper) {
+    try {
+      return XPCNativeWrapper.unwrap(thing);
+    } catch(e) {
+      //Unwrapping will fail for JS literals - numbers, for example. Catch
+      // the exception and proceed, it will eventually be returend as-is.
+      Logger.dumpn("Unwrap From XPC only failed: " + e);
+    }
+
+  }
+  
+  return thing;
+};
+
