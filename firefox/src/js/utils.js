@@ -965,9 +965,7 @@ Utils.isHtmlCollection_ = function(obj) {
 
 
 Utils.wrapResult = function(result, doc) {
-  if (result && result.wrappedJSObject) {
-    result = result.wrappedJSObject;
-  }
+  result = webdriver.firefox.utils.unwrap(result);
 
   // Sophisticated.
   switch (typeof result) {
@@ -1270,7 +1268,6 @@ Utils.findByCss = function(rootNode, theDocument, selector, singular, respond, e
       if (!(theDocument.Sizzle)) {
         if (!Utils['SIZZLE_']) {
           Utils.SIZZLE_ = Utils.loadUrl("resource://fxdriver/sizzle.js");
-          Logger.dumpn(Utils.SIZZLE_);
         }
         params['script'] = Utils.SIZZLE_ +
             "; var results = []; Sizzle(arguments[0], arguments[1], results); delete Sizzle; ";

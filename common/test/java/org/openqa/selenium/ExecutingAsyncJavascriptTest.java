@@ -253,7 +253,7 @@ public class ExecutingAsyncJavascriptTest extends AbstractDriverTestCase {
         "xhr.onreadystatechange = function() {" +
         "  if (xhr.readyState == 4) callback(xhr.responseText);" +
         "};" +
-        "xhr.send();";
+        "xhr.send('');"; // empty string to stop firefox 3 from choking
 
     driver.get(pages.ajaxyPage);
     driver.manage().timeouts().setScriptTimeout(3, TimeUnit.SECONDS);

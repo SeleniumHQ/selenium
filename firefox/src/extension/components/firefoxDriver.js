@@ -231,7 +231,7 @@ function injectAndExecuteScript(respond, parameters, isAsync, timer) {
     var handler = function(event) {
         doc.removeEventListener('webdriver-evaluate-response', handler, true);
 
-        var unwrapped = doc.wrappedJSObject ? doc.wrappedJSObject : doc;
+        var unwrapped = webdriver.firefox.utils.unwrap(doc);
         var result = unwrapped.getUserData('webdriver-evaluate-result');
         respond.value = Utils.wrapResult(result, doc);
         respond.status = doc.getUserData('webdriver-evaluate-code');
