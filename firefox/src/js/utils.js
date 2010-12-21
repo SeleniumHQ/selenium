@@ -224,25 +224,30 @@ Utils.getStyleProperty = function(element, propertyName) {
 };
 
 
-Utils.addToKnownElements = function(element, doc) {
+Utils.addToKnownElements = function(element, rawDoc) {
+  var doc = webdriver.firefox.utils.unwrapFor4(rawDoc);
+  var is4 = webdriver.firefox.utils.isFirefox4();
+  var toCompareWith = is4 ? new XPCNativeWrapper(element) : element;
+
   if (!doc.fxdriver_elements) {
     doc.fxdriver_elements = {};
   }
 
   for (var e in doc.fxdriver_elements) {
-    if (doc.fxdriver_elements[e] == element) {
+    if (doc.fxdriver_elements[e] == toCompareWith) {
       return e;
     }
   }
   
   var id = Utils.getUniqueId();
-  doc.fxdriver_elements[id] = element;
+  doc.fxdriver_elements[id] = toCompareWith;
 
   return id;
 };
 
 
-Utils.getElementAt = function(index, doc) {
+Utils.getElementAt = function(index, rawDoc) {
+  var doc = webdriver.firefox.utils.unwrapFor4(rawDoc);
   var e = doc.fxdriver_elements ? doc.fxdriver_elements[index] : undefined;
   if (e) {
     if (!Utils.isAttachedToDom(e)) {
@@ -255,20 +260,15 @@ Utils.getElementAt = function(index, doc) {
         'Element not found in the cache');
   }
 
-  return e;
+  return webdriver.firefox.utils.unwrapFor4(e);
 };
 
 
 Utils.isAttachedToDom = function(element) {
   // In Firefox 4, our DOM nodes need to be wrapped in XPCNativeWrappers
   function wrapNode(node) {
-    var appInfo = Components.classes['@mozilla.org/xre/app-info;1'].
-        getService(Components.interfaces.nsIXULAppInfo);
-    var versionChecker = Components.
-        classes['@mozilla.org/xpcom/version-comparator;1'].
-        getService(Components.interfaces.nsIVersionComparator);
-    if (versionChecker.compare(appInfo.version, '4') >= 0) {
-      return new XPCNativeWrapper(node);
+    if (webdriver.firefox.utils.isFirefox4()) {
+      return node ? new XPCNativeWrapper(node) : null;
     }
     return node;
   }

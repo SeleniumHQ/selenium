@@ -68,7 +68,6 @@ webdriver.firefox.utils.unwrap = function(thing) {
   }
 
   // unwrap is not available on older branches (3.5 and 3.6) - Bug 533596
-
   if (XPCNativeWrapper && "unwrap" in XPCNativeWrapper) {
     try {
       return XPCNativeWrapper.unwrap(thing);
@@ -108,3 +107,21 @@ webdriver.firefox.utils.unwrapXpcOnly = function(thing) {
   return thing;
 };
 
+
+webdriver.firefox.utils.isFirefox4 = function() {
+  var appInfo = Components.classes['@mozilla.org/xre/app-info;1'].
+        getService(Components.interfaces.nsIXULAppInfo);
+    var versionChecker = Components.
+        classes['@mozilla.org/xpcom/version-comparator;1'].
+        getService(Components.interfaces.nsIVersionComparator);
+
+    return versionChecker.compare(appInfo.version, '4.0b1') >= 0;
+};
+
+
+webdriver.firefox.utils.unwrapFor4 = function(doc) {
+  if (webdriver.firefox.utils.isFirefox4()) {
+    return webdriver.firefox.utils.unwrap(doc);
+  }
+  return doc;
+};
