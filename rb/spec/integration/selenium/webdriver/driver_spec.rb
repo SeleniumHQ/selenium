@@ -225,7 +225,7 @@ describe "Driver" do
     end
   end
 
-  compliant_on :browser => :firefox do
+  compliant_on :driver => :firefox do
     describe "alerts" do
       it "allows the user to accept an alert" do
         driver.navigate.to url_for("alerts.html")
