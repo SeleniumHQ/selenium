@@ -29,6 +29,8 @@ import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.instanceOf;
 import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
@@ -79,7 +81,8 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
     Object result = executeScript("return document.getElementById('id1');");
 
     assertNotNull(result);
-    assertTrue("Expected WebElement, got: " + result.getClass(), result instanceof WebElement);
+    assertThat(result, instanceOf(WebElement.class));
+    assertEquals("a", ((WebElement) result).getTagName().toLowerCase());
   }
 
   @JavascriptEnabled

@@ -245,14 +245,7 @@ Utils.addToKnownElements = function(element, doc) {
 Utils.getElementAt = function(index, doc) {
   var e = doc.fxdriver_elements ? doc.fxdriver_elements[index] : undefined;
   if (e) {
-    // Is this a stale reference?
-    var parent = e;
-    while (parent && parent != e.ownerDocument.documentElement) {
-      parent = parent.parentNode;
-    }
-
-    if (parent !== e.ownerDocument.documentElement) {
-      // Remove from the cache
+    if (!Utils.isAttachedToDom(e)) {
       delete doc.fxdriver_elements[index];
       throw new WebDriverError(ErrorCode.STALE_ELEMENT_REFERENCE,
           'Element is no longer attached to the DOM');
@@ -263,6 +256,30 @@ Utils.getElementAt = function(index, doc) {
   }
 
   return e;
+};
+
+
+Utils.isAttachedToDom = function(element) {
+  // In Firefox 4, our DOM nodes need to be wrapped in XPCNativeWrappers
+  function wrapNode(node) {
+    var appInfo = Components.classes['@mozilla.org/xre/app-info;1'].
+        getService(Components.interfaces.nsIXULAppInfo);
+    var versionChecker = Components.
+        classes['@mozilla.org/xpcom/version-comparator;1'].
+        getService(Components.interfaces.nsIVersionComparator);
+    if (versionChecker.compare(appInfo.version, '4') >= 0) {
+      return new XPCNativeWrapper(node);
+    }
+    return node;
+  }
+
+  var documentElement = wrapNode(element.ownerDocument.documentElement);
+  var parent = wrapNode(element);
+
+  while (parent && parent != documentElement) {
+    parent = wrapNode(parent.parentNode);
+  }
+  return parent == documentElement;
 };
 
 
