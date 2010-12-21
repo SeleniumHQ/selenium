@@ -101,8 +101,13 @@ webdriver.debug.Console.prototype.addLogRecord = function(logRecord) {
   }
 };
 
-if (Components && Components.classes && !webdriver.debug.Console.instance) {
-  webdriver.debug.Console.instance = new webdriver.debug.Console();
+
+try {
+  if (Components && Components.classes && !webdriver.debug.Console.instance) {
+    webdriver.debug.Console.instance = new webdriver.debug.Console();
+  }
+} catch (e) {
+  // this is okay. In an unprivileged context.
 }
 if (webdriver.debug.Console.instance) {
   webdriver.debug.Console.instance.setCapturing(true);

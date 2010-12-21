@@ -182,23 +182,26 @@ function Selenium(browserbot) {
     this.mouseSpeed = Selenium.DEFAULT_MOUSE_SPEED;
 
 
-    bot.locators.strategies.add('xpath', {
-      single: function(target, opt_root) {
-        return browserbot.locateElementByXPath(target, opt_root);
-      },
-      many: function(target, opt_root) {
-        return browserbot.locateElementsByXPath(target, opt_root);
-      }
-    });
+    // TODO(simon): This guard should not be necessary. Remove it,
+    if (bot && bot.locators && bot.locators.strategies && bot.locators.strategies.add) {
+      bot.locators.strategies.add('xpath', {
+        single: function(target, opt_root) {
+          return browserbot.locateElementByXPath(target, opt_root);
+        },
+        many: function(target, opt_root) {
+          return browserbot.locateElementsByXPath(target, opt_root);
+        }
+      });
 
-  bot.locators.strategies.add('css', {
-    single: function(target, opt_root) {
-      return browserbot.locateElementByCss(target, opt_root);
-    },
-    many: function(target, opt_root) {
-      return eval_css(target, opt_root);
+      bot.locators.strategies.add('css', {
+        single: function(target, opt_root) {
+          return browserbot.locateElementByCss(target, opt_root);
+        },
+        many: function(target, opt_root) {
+          return eval_css(target, opt_root);
+        }
+      });
     }
-  });
 }
 
 Selenium.DEFAULT_TIMEOUT = 30 * 1000;
