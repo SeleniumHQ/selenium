@@ -31,7 +31,7 @@ import static org.openqa.selenium.Ignore.Driver.SELENESE;
 import static org.openqa.selenium.TestWaiter.waitFor;
 import static org.openqa.selenium.WaitingConditions.elementToExist;
 
-@Ignore(value = {IE, IPHONE},
+@Ignore(value = {IPHONE},
         reason = "iPhone: Frame switching not supported;\n" +
                  "Others: Implementation not updated to new frame-switching behavior")
 public class FrameSwitchingTest extends AbstractDriverTestCase {
@@ -143,6 +143,7 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
     }
   }
 
+  @Ignore(IE)
   public void testFrameSearchesShouldBeRelativeToTheCurrentlySelectedFrame() {
     driver.get(pages.framesetPage);
 
@@ -246,6 +247,7 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
                equalTo("XHTML Test Page"));
   }
 
+  @Ignore(IE)
   public void testShouldAllowAUserToSwitchFromAnIframeBackToTheMainContentOfThePage() {
     driver.get(pages.iframePage);
     driver.switchTo().frame(0);
@@ -271,6 +273,7 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
     return waitFor(elementToExist(driver, "greeting")).getText();
   }
 
+  @Ignore(IE)
   public void testShouldBeAbleToClickInAFrame() {
     driver.get(pages.framesetPage);
     driver.switchTo().frame("third");
@@ -391,6 +394,7 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Ignore(IE)
   public void testJavaScriptShouldExecuteInTheContextOfTheCurrentFrame() {
     JavascriptExecutor executor = (JavascriptExecutor) driver;
 
