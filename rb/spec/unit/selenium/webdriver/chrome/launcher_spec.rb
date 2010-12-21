@@ -12,12 +12,13 @@ module Selenium
         before { Launcher.instance_variable_set("@binary_path", nil) }
 
         it "uses the user-provided path if set" do
+          Platform.stub!(:os => :unix)
           Platform.stub!(:assert_executable).with("/some/path")
           Chrome.path = "/some/path"
 
           ChildProcess.should_receive(:build).
-          with { |*args| args.first.should == "/some/path" }.
-          and_return(mock_process)
+                       with { |*args| args.first.should == "/some/path" }.
+                       and_return(mock_process)
 
           Launcher.new.launch(nil)
         end
@@ -39,7 +40,7 @@ module Selenium
         end
 
         it "finds the Chrome binary on OS X" do
-          Platform.stub!(:os => :unix)
+          Platform.stub!(:os => :macosx)
           File.should_receive(:exist?).with(instance_of(String)).and_return(true)
 
           Launcher.binary_path.should be_kind_of(String)
