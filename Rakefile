@@ -114,7 +114,7 @@ task :test_jsapi => [ "//jsapi:atoms:run",
                       "//jsapi:selenium_core_emulation:run" ]
 task :test_firefox => [ "//firefox:test:run" ]
 task :test_remote => [ "//remote/server:test:run" ]
-task :test_selenium => [ "//selenium:selenium_test:run", "//selenium:test-selenese:run", :'test_core']
+task :test_selenium => [ :'test-selenium-emulation', "//selenium:test-selenese:run", :'test_core']
 task :test_support => [ "//support:test:run" ]
 task :test_iphone_client => [:'webdriver-iphone-client-test']
 task :test_iphone => [:test_iphone_server, :test_iphone_client]
@@ -122,10 +122,13 @@ task :android => [:android_client, :android_server]
 task :android_client => ['//android/client']
 task :android_server => ['//android/server:android-server']
 
+
 if (windows?)
   task :test_core => [:'test_core_ie']
+  task :'test-selenium-emulation' => ['//selenium:emulation-ie-test:run']
 end
 task :test_core => [:'test_core_firefox']
+task :'test-selenium-emulation' => ['//selenium:emulation-firefox-test:run']
 
 task :test_java => [
   "//support:test:run",

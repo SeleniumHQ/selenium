@@ -35,7 +35,7 @@ java_test(name = "test-selenese",
     ":test"
   ])
 
-java_test(name = "selenium_test",
+java_test(name = "emulation-firefox-test",
   deps = [
     ":test",
   ],
@@ -44,6 +44,17 @@ java_test(name = "selenium_test",
     { "selenium.browser" : "org.openqa.selenium.firefox.FirefoxDriver" },
   ],
   args = "selenium/test/java/webdriver-selenium-suite.xml")
+
+java_test(name = "emulation-ie-test",
+  deps = [
+    ":test",
+  ],
+  main = "org.testng.TestNG",
+  sysproperties = [
+    { "selenium.browser" : "org.openqa.selenium.ie.InternetExplorerDriver" },
+  ],
+  args = "selenium/test/java/webdriver-selenium-suite.xml")
+
 
 java_test(name = "firefox-rc-tests",
   deps = [ ":test" ],
