@@ -34,7 +34,7 @@ final class WebDriverWebViewClient extends WebViewClient {
   public WebDriverWebViewClient(WebDriverActivity context) {
     this.context = context;
   }
-  
+
   @Override
   public void onPageStarted(WebView view, String url, Bitmap favicon) {
     super.onPageStarted(view, url, favicon);
@@ -57,5 +57,11 @@ final class WebDriverWebViewClient extends WebViewClient {
     if (url.contains("#") && context.currentUrl().equals(url.split("#")[0])) {
       context.sendIntent(Action.PAGE_LOADED);
     }
+  }
+
+  @Override
+  public boolean shouldOverrideUrlLoading(WebView view, String url) {
+    view.loadUrl(url);
+    return true;
   }
 }
