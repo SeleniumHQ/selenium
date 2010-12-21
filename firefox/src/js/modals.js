@@ -53,10 +53,7 @@ webdriver.modals.actualFind_ = function(windowMediator) {
 webdriver.modals.findModal_ = function(callback, errback, timeout) {
   var wm = webdriver.firefox.utils.windowMediator();
 
-  Logger.dumpn('creating the timer');
-
   var timer = new Timer();
-  Logger.dumpn('next!');
   timer.runWhenTrue(function() { return webdriver.modals.actualFind_(wm) }, callback, timeout, errback);
 };
 
@@ -80,7 +77,6 @@ webdriver.modals.setFlag = function(driver, flagValue) {
 
 webdriver.modals.acceptAlert = function(driver, timeout, callback, errback) {
   webdriver.modals.findModal_(function(modal) {
-    Logger.dumpn('found modal: ' + modal);
     var button = webdriver.modals.findButton_(modal, "accept");
     button.click();
     webdriver.modals.clearFlag_(driver);

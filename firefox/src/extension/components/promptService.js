@@ -4,20 +4,26 @@
 const CC = Components.classes;
 const CI = Components.interfaces;
 
-const CONSOLE = CC["@mozilla.org/consoleservice;1"].getService(CI["nsIConsoleService"]);
-
 // Spoof implementation
 function DrivenPromptService() {
   Components.utils.import('resource://fxdriver/modules/utils.js');
 
-  // as defined in nsPromptService.h
-  var ORIGINAL_PARENT_SERVICE_ID = "{A2112D6A-0E28-421f-B46A-25C0B308CBD0}";
+  // as defined in nsPromptService.h: used in firefox 3.x
+  var NSPROMPTSERVICE_CID = "{A2112D6A-0E28-421f-B46A-25C0B308CBD0}";
+  // as defined in nsPrompter.js: used in firefox 4.x
+  var NSPROMPTER_CID = "{7ad1b327-6dfa-46ec-9234-f2a620ea7e00}";
 
   // Keep a reference to the original service
-  if (Components.classesByID[ORIGINAL_PARENT_SERVICE_ID]) {
-    var originalService = Components.classesByID[ORIGINAL_PARENT_SERVICE_ID].getService();
+  if (Components.classesByID[NSPROMPTSERVICE_CID]) {
+    Logger.dumpn("Locating original service using Firefox 3.x CID");
+    var originalService = Components.classesByID[NSPROMPTSERVICE_CID].getService();
     this.originalPromptService_ =
         originalService.QueryInterface(CI.nsIPromptService2);
+  } else if (Components.classesByID[NSPROMPTER_CID]) {
+    Logger.dumpn("Locating original service using Firefox 4.x CID");
+    this.originalPromptService_ = Components.classesByID[NSPROMPTER_CID].getService().QueryInterface(CI.nsIPromptService2);
+  } else {
+    Logger.dumpn("Unable to locate original prompt service");
   }
 
   Logger.dumpn("Spoofing prompt service");
@@ -172,8 +178,7 @@ DrivenPromptService.prototype.QueryInterface = function(iid) {
     return this;
   }
 
-  Logger.dumpn("nsIPromptService2: " + CI.nsIPromptService2);
-  Logger.dumpn(iid);
+  Logger.dumpn("Asked to cast to unknown iid: " + iid);
   throw Components.results.NS_ERROR_NO_INTERFACE;
 };
 
