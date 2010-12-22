@@ -23,12 +23,10 @@
 @interface WebViewController : UIViewController<UIWebViewDelegate>
 {
 @private
-  // The spec states that the GET message shouldn't return until the new page
-  // is loaded. We need to lock the main thread to implement that. That'll
-  // happen by polling [view isLoaded] but we can break early if the delegate
-  // methods are fired. Note that subframes may still be being loaded.
-  NSCondition *loadLock_;
-  
+  // Used to track the number of page loads.  The view is considered loaded
+  // when there are no pending page loads.
+  int numPendingPageLoads_;
+
   NSString *lastJSResult_;
 	
   NSURLRequestCachePolicy cachePolicy_;

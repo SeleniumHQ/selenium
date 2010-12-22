@@ -47,7 +47,6 @@ static const NSString* kGeoAltitudeKey = @"altitude";
   [[self webView] setScalesPageToFit:NO];
   [[self webView] setDelegate:self];
   
-  loadLock_ = [[NSCondition alloc] init];
   lastJSResult_ = nil;
 		
   // Creating a new session if auto-create is enabled
@@ -87,7 +86,6 @@ static const NSString* kGeoAltitudeKey = @"altitude";
 
 - (void)dealloc {
   [[self webView] setDelegate:nil];
-  [loadLock_ release];
   [lastJSResult_ release];
   [super dealloc];
 }
@@ -109,11 +107,16 @@ static const NSString* kGeoAltitudeKey = @"altitude";
 
 - (void)webViewDidStartLoad:(UIWebView *)webView {
   NSLog(@"webViewDidStartLoad");
+  @synchronized(self) {
+    numPendingPageLoads_ += 1;
+  }
 }
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView {
   NSLog(@"finished loading");
-  [loadLock_ signal];
+  @synchronized(self) {
+    numPendingPageLoads_ -= 1;
+  }
 }
 
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error {
@@ -134,7 +137,10 @@ static const NSString* kGeoAltitudeKey = @"altitude";
                                           andStatusCode:EUNHANDLEDERROR];
     }
   }
-  [loadLock_ signal];
+
+  @synchronized(self) {
+    numPendingPageLoads_ -= 1;
+  }
 }
 
 #pragma mark Web view controls
@@ -154,11 +160,21 @@ static const NSString* kGeoAltitudeKey = @"altitude";
   // whether the page is loading content.
   
   [NSThread sleepForTimeInterval:0.2f];
-  
+
   while ([[self webView] isLoading]) {
     // Yield.
     [NSThread sleepForTimeInterval:0.01f];
-  }  
+  }
+  
+  // The main view may be loaded, but there may be frames that are still
+  // loading.
+  while (true) {
+    @synchronized(self) {
+      if (numPendingPageLoads_ == 0) {
+        break;
+      }
+    }
+  }
 }
 
 // All method calls on the view need to be done from the main thread to avoid
