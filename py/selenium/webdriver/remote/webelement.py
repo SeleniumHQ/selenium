@@ -29,6 +29,11 @@ class WebElement(object):
         self._id = id_
 
     @property
+    def tag_name(self):
+        """Gets this element's tagName property."""
+        return self._execute(Command.GET_ELEMENT_TAG_NAME)['value']
+
+    @property
     def text(self):
         """Gets the text of the element."""
         return self._execute(Command.GET_ELEMENT_TEXT)['value']
