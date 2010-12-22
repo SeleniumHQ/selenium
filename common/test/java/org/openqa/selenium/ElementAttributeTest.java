@@ -26,6 +26,7 @@ import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.IE;
+import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 
 import java.util.List;
@@ -252,7 +253,8 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
     assertEquals(null, mousedownDiv.getAttribute("onclick"));
   }
 
-  @Ignore(value = {IE}, reason = "IE7 Does not support SVG")
+  @Ignore(value = {IE, IPHONE}, reason = "IE7 Does not support SVG; " +
+      "SVG elements crash the iWebDriver app (issue 1134)")
   public void testGetAttributeDoesNotReturnAnObjectForSvgProperties() {
     driver.get(pages.svgPage);
     WebElement svgElement = driver.findElement(By.id("rotate"));
