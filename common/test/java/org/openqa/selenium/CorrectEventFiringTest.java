@@ -251,7 +251,8 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
   }
   
   @JavascriptEnabled
-  @Ignore(SELENESE)
+  @Ignore(value = {IPHONE, SELENESE},
+      reason = "iPhone: input elements are blurred when the keyboard is closed")
   public void testSendingKeysToAFocusedElementShouldNotBlurThatElement() {
     if (browserNeedsFocusOnThisOs(driver)) {
       System.out.println("Skipping this test because browser demands focus");
