@@ -312,7 +312,7 @@ public class FormHandlingTest extends AbstractDriverTestCase {
   public void testShouldThrowAnExceptionWhenSelectingAnUnselectableElement() {
     driver.get(pages.formPage);
 
-    WebElement element = driver.findElement(By.xpath("//title"));
+    WebElement element = driver.findElement(By.xpath("//div"));
 
     try {
       element.setSelected();
