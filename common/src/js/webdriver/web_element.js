@@ -23,8 +23,10 @@ goog.provide('webdriver.element');
 
 
 goog.require('bot.dom');
+goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.math');
+goog.require('goog.string');
 goog.require('goog.style');
 
 
@@ -189,6 +191,11 @@ webdriver.element.isInHead_ = function(element) {
  */
 webdriver.element.getText = function(element) {
   if (webdriver.element.isInHead_(element)) {
+    var doc = goog.dom.getOwnerDocument(element);
+    if (element.tagName.toUpperCase() == goog.dom.TagName.TITLE &&
+        goog.dom.getWindow(doc) == bot.window_.top) {
+      return goog.string.trim(doc.title);
+    }
     return '';
   }
 

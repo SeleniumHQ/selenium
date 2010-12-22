@@ -129,7 +129,19 @@ limitations under the License.
 
       var broken =  bot.locators.findElement({id: 'disabled'});
       assertEquals("true", webdriver.element.getAttribute(broken, 'disabled'));
-  }
+    }
+
+    function testTheTopWindowsTitleShouldBeConsideredVisibleText() {
+      var title = bot.locators.findElement({tagName: 'title'});
+      assertEquals('web_element_test.html', webdriver.element.getText(title));
+    }
+
+    function testAFrameDocumentsTitleShouldNotBeConsideredVisibleText() {
+      var frameDoc = bot.locators.findElement({id: 'frame_page_frame'}).contentWindow.document;
+      var title = bot.locators.findElement({tagName: 'title'}, frameDoc);
+      assertEquals('frame page', frameDoc.title);
+      assertEquals('', webdriver.element.getText(title));
+    }
   </script>
 </head>
 <body id="body" style="" name="body">
@@ -157,5 +169,6 @@ limitations under the License.
 
 <div style="background-color: green" id="green">This is a green div</div>
 
+<iframe name="frame_page" id="frame_page_frame" src="frame_page.html"></iframe>
 </body>
 </html>
