@@ -271,7 +271,9 @@
 114
 115
 116
-117</pre>
+117
+118
+119</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/binary.rb', line 100</span>
@@ -287,6 +289,8 @@
             <span class='else else kw'>else</span>
               <span class='raise identifier id'>raise</span> <span class='Error constant id'>Error</span><span class='colon2 op'>::</span><span class='WebDriverError constant id'>WebDriverError</span><span class='comma token'>,</span> <span class='dstring node'>&quot;unknown platform: #{Platform.os}&quot;</span>
             <span class='end end kw'>end</span>
+
+  <span class='@path ivar id'>@path</span> <span class='assign token'>=</span> <span class='Platform constant id'>Platform</span><span class='dot token'>.</span><span class='cygwin_path identifier id'>cygwin_path</span><span class='lparen token'>(</span><span class='@path ivar id'>@path</span><span class='rparen token'>)</span> <span class='if if_mod kw'>if</span> <span class='Platform constant id'>Platform</span><span class='dot token'>.</span><span class='cygwin? fid id'>cygwin?</span>
 
   <span class='unless unless kw'>unless</span> <span class='File constant id'>File</span><span class='dot token'>.</span><span class='file? fid id'>file?</span><span class='lparen token'>(</span><span class='@path ivar id'>@path</span><span class='dot token'>.</span><span class='to_s identifier id'>to_s</span><span class='rparen token'>)</span>
     <span class='raise identifier id'>raise</span> <span class='Error constant id'>Error</span><span class='colon2 op'>::</span><span class='WebDriverError constant id'>WebDriverError</span><span class='comma token'>,</span> <span class='dstring node'>&quot;Could not find Firefox binary (os=#{Platform.os}). Make sure Firefox is installed or set the path manually with #{self}.path=&quot;</span>
@@ -482,9 +486,9 @@
 </div>
     
     <div id="footer">
-  Generated on Wed Dec 08 00:36:35 2010 by 
+  Generated on Wed Dec 22 02:59:50 2010 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.6.3 (ruby-1.8.7).
+  0.6.4 (ruby-1.8.7).
 </div>
 
   </body>

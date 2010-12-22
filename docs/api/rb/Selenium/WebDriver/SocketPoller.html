@@ -80,6 +80,19 @@
 <div class="clear"></div>
 
 
+  <h2>Constant Summary</h2>
+  
+    <dl class="constants">
+      
+        <dt id="SOCKET_ERRORS-constant" class="">SOCKET_ERRORS =
+          
+        </dt>
+        <dd><pre class="code"><span class='lbrack token'>[</span><span class='Errno constant id'>Errno</span><span class='colon2 op'>::</span><span class='ECONNREFUSED constant id'>ECONNREFUSED</span><span class='comma token'>,</span> <span class='Errno constant id'>Errno</span><span class='colon2 op'>::</span><span class='ENOTCONN constant id'>ENOTCONN</span><span class='comma token'>,</span> <span class='SocketError constant id'>SocketError</span><span class='rbrack token'>]</span>
+</pre></dd>
+      
+    </dl>
+  
+
 
 
   
@@ -196,15 +209,15 @@ A new instance of SocketPoller
       <pre class="lines">
 
 
-7
 8
 9
 10
 11
-12</pre>
+12
+13</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/socket_poller.rb', line 7</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/socket_poller.rb', line 8</span>
 
 <span class='def def kw'>def</span> <span class='initialize identifier id'>initialize</span><span class='lparen token'>(</span><span class='host identifier id'>host</span><span class='comma token'>,</span> <span class='port identifier id'>port</span><span class='comma token'>,</span> <span class='timeout identifier id'>timeout</span> <span class='assign token'>=</span> <span class='integer val'>0</span><span class='comma token'>,</span> <span class='interval identifier id'>interval</span> <span class='assign token'>=</span> <span class='integer val'>0</span><span class='integer val'>.25</span><span class='rparen token'>)</span>
   <span class='@host ivar id'>@host</span>     <span class='assign token'>=</span> <span class='host identifier id'>host</span>
@@ -263,12 +276,12 @@ false otherwise.
       <pre class="lines">
 
 
-32
 33
-34</pre>
+34
+35</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/socket_poller.rb', line 32</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/socket_poller.rb', line 33</span>
 
 <span class='def def kw'>def</span> <span class='closed? fid id'>closed?</span>
   <span class='with_timeout identifier id'>with_timeout</span> <span class='lbrace token'>{</span> <span class='not not kw'>not</span> <span class='listening? fid id'>listening?</span> <span class='rbrace token'>}</span>
@@ -317,12 +330,12 @@ otherwise.
       <pre class="lines">
 
 
-21
 22
-23</pre>
+23
+24</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/socket_poller.rb', line 21</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/socket_poller.rb', line 22</span>
 
 <span class='def def kw'>def</span> <span class='connected? fid id'>connected?</span>
   <span class='with_timeout identifier id'>with_timeout</span> <span class='lbrace token'>{</span> <span class='listening? fid id'>listening?</span> <span class='rbrace token'>}</span>
@@ -338,9 +351,9 @@ otherwise.
 </div>
     
     <div id="footer">
-  Generated on Wed Dec 08 00:36:47 2010 by 
+  Generated on Wed Dec 22 02:59:51 2010 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.6.3 (ruby-1.8.7).
+  0.6.4 (ruby-1.8.7).
 </div>
 
   </body>

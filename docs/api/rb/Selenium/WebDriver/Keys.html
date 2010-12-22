@@ -151,7 +151,9 @@
   <span class='symbol val'>:f9</span>           <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;\xEE\x80\xB9&quot;</span><span class='comma token'>,</span>
   <span class='symbol val'>:f10</span>          <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;\xEE\x80\xBA&quot;</span><span class='comma token'>,</span>
   <span class='symbol val'>:f11</span>          <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;\xEE\x80\xBB&quot;</span><span class='comma token'>,</span>
-  <span class='symbol val'>:f12</span>          <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;\xEE\x80\xBC&quot;</span>
+  <span class='symbol val'>:f12</span>          <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;\xEE\x80\xBC&quot;</span><span class='comma token'>,</span>
+  <span class='symbol val'>:meta</span>         <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;\xEE\x80\xBD&quot;</span><span class='comma token'>,</span>
+  <span class='symbol val'>:command</span>      <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;\xEE\x80\xBD&quot;</span> <span class='comment val'># alias</span>
 <span class='rbrace token'>}</span>
 </pre></dd>
       
@@ -211,12 +213,12 @@
       <pre class="lines">
 
 
-77
-78
-79</pre>
+79
+80
+81</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/keys.rb', line 77</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/keys.rb', line 79</span>
 
 <span class='def def kw'>def</span> <span class='self self kw'>self</span><span class='dot token'>.</span><span class='lbrack token'>[</span><span class='rbrack token'>]</span><span class='lparen token'>(</span><span class='key identifier id'>key</span><span class='rparen token'>)</span>
   <span class='KEYS constant id'>KEYS</span><span class='lbrack token'>[</span><span class='key identifier id'>key</span><span class='rbrack token'>]</span> <span class='orop op'>||</span> <span class='raise identifier id'>raise</span><span class='lparen token'>(</span><span class='Error constant id'>Error</span><span class='colon2 op'>::</span><span class='UnsupportedOperationError constant id'>UnsupportedOperationError</span><span class='comma token'>,</span> <span class='dstring node'>&quot;no such key #{key.inspect}&quot;</span><span class='rparen token'>)</span>
@@ -232,9 +234,9 @@
 </div>
     
     <div id="footer">
-  Generated on Wed Dec 08 00:36:08 2010 by 
+  Generated on Wed Dec 22 02:59:46 2010 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.6.3 (ruby-1.8.7).
+  0.6.4 (ruby-1.8.7).
 </div>
 
   </body>

@@ -179,12 +179,12 @@ Shared across bridges
       <pre class="lines">
 
 
-24
-25
-26</pre>
+27
+28
+29</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/bridge_helper.rb', line 24</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/bridge_helper.rb', line 27</span>
 
 <span class='def def kw'>def</span> <span class='element_id_from identifier id'>element_id_from</span><span class='lparen token'>(</span><span class='id identifier id'>id</span><span class='rparen token'>)</span>
   <span class='id identifier id'>id</span><span class='lbrack token'>[</span><span class='string val'>'ELEMENT'</span><span class='rbrack token'>]</span>
@@ -208,9 +208,6 @@ Shared across bridges
       <pre class="lines">
 
 
-28
-29
-30
 31
 32
 33
@@ -240,10 +237,13 @@ Shared across bridges
 57
 58
 59
-60</pre>
+60
+61
+62
+63</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/bridge_helper.rb', line 28</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/bridge_helper.rb', line 31</span>
 
 <span class='def def kw'>def</span> <span class='parse_cookie_string identifier id'>parse_cookie_string</span><span class='lparen token'>(</span><span class='str identifier id'>str</span><span class='rparen token'>)</span>
   <span class='result identifier id'>result</span> <span class='assign token'>=</span> <span class='lbrace token'>{</span>
@@ -307,20 +307,26 @@ Shared across bridges
 19
 20
 21
-22</pre>
+22
+23
+24
+25</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/bridge_helper.rb', line 12</span>
 
 <span class='def def kw'>def</span> <span class='unwrap_script_result identifier id'>unwrap_script_result</span><span class='lparen token'>(</span><span class='arg identifier id'>arg</span><span class='rparen token'>)</span>
-  <span class='if if kw'>if</span> <span class='arg identifier id'>arg</span><span class='dot token'>.</span><span class='kind_of? fid id'>kind_of?</span><span class='lparen token'>(</span><span class='Array constant id'>Array</span><span class='rparen token'>)</span>
+  <span class='case case kw'>case</span> <span class='arg identifier id'>arg</span>
+  <span class='when when kw'>when</span> <span class='Array constant id'>Array</span>
     <span class='arg identifier id'>arg</span><span class='dot token'>.</span><span class='map identifier id'>map</span> <span class='lbrace token'>{</span> <span class='bitor op'>|</span><span class='e identifier id'>e</span><span class='bitor op'>|</span> <span class='unwrap_script_result identifier id'>unwrap_script_result</span><span class='lparen token'>(</span><span class='e identifier id'>e</span><span class='rparen token'>)</span> <span class='rbrace token'>}</span>
-  <span class='else else kw'>else</span>
-    <span class='if if kw'>if</span> <span class='arg identifier id'>arg</span><span class='dot token'>.</span><span class='kind_of? fid id'>kind_of?</span><span class='lparen token'>(</span><span class='Hash constant id'>Hash</span><span class='rparen token'>)</span> <span class='andop op'>&amp;&amp;</span> <span class='arg identifier id'>arg</span><span class='dot token'>.</span><span class='member? fid id'>member?</span><span class='lparen token'>(</span><span class='string val'>&quot;ELEMENT&quot;</span><span class='rparen token'>)</span>
-      <span class='Element constant id'>Element</span><span class='dot token'>.</span><span class='new identifier id'>new</span> <span class='self self kw'>self</span><span class='comma token'>,</span> <span class='element_id_from identifier id'>element_id_from</span><span class='lparen token'>(</span><span class='arg identifier id'>arg</span><span class='rparen token'>)</span>
+  <span class='when when kw'>when</span> <span class='Hash constant id'>Hash</span>
+    <span class='if if kw'>if</span> <span class='id identifier id'>id</span> <span class='assign token'>=</span> <span class='element_id_from identifier id'>element_id_from</span><span class='lparen token'>(</span><span class='arg identifier id'>arg</span><span class='rparen token'>)</span>
+      <span class='Element constant id'>Element</span><span class='dot token'>.</span><span class='new identifier id'>new</span> <span class='self self kw'>self</span><span class='comma token'>,</span> <span class='id identifier id'>id</span>
     <span class='else else kw'>else</span>
-      <span class='arg identifier id'>arg</span>
+      <span class='arg identifier id'>arg</span><span class='dot token'>.</span><span class='each identifier id'>each</span> <span class='lbrace token'>{</span> <span class='bitor op'>|</span><span class='k identifier id'>k</span><span class='comma token'>,</span> <span class='v identifier id'>v</span><span class='bitor op'>|</span> <span class='arg identifier id'>arg</span><span class='lbrack token'>[</span><span class='k identifier id'>k</span><span class='rbrack token'>]</span> <span class='assign token'>=</span> <span class='unwrap_script_result identifier id'>unwrap_script_result</span><span class='lparen token'>(</span><span class='v identifier id'>v</span><span class='rparen token'>)</span> <span class='rbrace token'>}</span>
     <span class='end end kw'>end</span>
+  <span class='else else kw'>else</span>
+    <span class='arg identifier id'>arg</span>
   <span class='end end kw'>end</span>
 <span class='end end kw'>end</span>
 </pre>
@@ -334,9 +340,9 @@ Shared across bridges
 </div>
     
     <div id="footer">
-  Generated on Wed Dec 08 00:36:47 2010 by 
+  Generated on Wed Dec 22 02:59:51 2010 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.6.3 (ruby-1.8.7).
+  0.6.4 (ruby-1.8.7).
 </div>
 
   </body>

@@ -553,15 +553,15 @@ Returns the value of attribute pid
       <pre class="lines">
 
 
-133
-134
 135
 136
 137
-138</pre>
+138
+139
+140</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chrome/launcher.rb', line 133</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chrome/launcher.rb', line 135</span>
 
 <span class='def def kw'>def</span> <span class='macosx_paths identifier id'>macosx_paths</span>
   <span class='lbrack token'>[</span>
@@ -588,8 +588,6 @@ Returns the value of attribute pid
       <pre class="lines">
 
 
-111
-112
 113
 114
 115
@@ -599,10 +597,12 @@ Returns the value of attribute pid
 119
 120
 121
-122</pre>
+122
+123
+124</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chrome/launcher.rb', line 111</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chrome/launcher.rb', line 113</span>
 
 <span class='def def kw'>def</span> <span class='possible_paths identifier id'>possible_paths</span>
   <span class='case case kw'>case</span> <span class='Platform constant id'>Platform</span><span class='dot token'>.</span><span class='os identifier id'>os</span>
@@ -635,17 +635,17 @@ Returns the value of attribute pid
       <pre class="lines">
 
 
-124
-125
 126
 127
 128
 129
 130
-131</pre>
+131
+132
+133</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chrome/launcher.rb', line 124</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chrome/launcher.rb', line 126</span>
 
 <span class='def def kw'>def</span> <span class='unix_paths identifier id'>unix_paths</span>
   <span class='lbrack token'>[</span>
@@ -674,27 +674,35 @@ Returns the value of attribute pid
       <pre class="lines">
 
 
-140
-141
 142
 143
 144
 145
 146
 147
-148</pre>
+148
+149
+150
+151
+152
+153
+154</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chrome/launcher.rb', line 140</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chrome/launcher.rb', line 142</span>
 
 <span class='def def kw'>def</span> <span class='windows_paths identifier id'>windows_paths</span>
-  <span class='lbrack token'>[</span>
+  <span class='paths identifier id'>paths</span> <span class='assign token'>=</span> <span class='lbrack token'>[</span>
     <span class='windows_registry_path identifier id'>windows_registry_path</span><span class='comma token'>,</span>
     <span class='dstring node'>&quot;#{ENV['USERPROFILE']}\\Local Settings\\Application Data\\Google\\Chrome\\Application\\chrome.exe&quot;</span><span class='comma token'>,</span>
     <span class='dstring node'>&quot;#{ENV['USERPROFILE']}\\AppData\\Local\\Google\\Chrome\\Application\\chrome.exe&quot;</span><span class='comma token'>,</span>
     <span class='dstring node'>&quot;#{Platform.home}\\Local Settings\\Application Data\\Google\\Chrome\\Application\\chrome.exe&quot;</span><span class='comma token'>,</span>
     <span class='dstring node'>&quot;#{Platform.home}\\AppData\\Local\\Google\\Chrome\\Application\\chrome.exe&quot;</span><span class='comma token'>,</span>
   <span class='rbrack token'>]</span><span class='dot token'>.</span><span class='compact identifier id'>compact</span>
+
+  <span class='paths identifier id'>paths</span><span class='dot token'>.</span><span class='map! fid id'>map!</span> <span class='lbrace token'>{</span> <span class='bitor op'>|</span><span class='path identifier id'>path</span><span class='bitor op'>|</span> <span class='Platform constant id'>Platform</span><span class='dot token'>.</span><span class='cygwin_path identifier id'>cygwin_path</span><span class='lparen token'>(</span><span class='path identifier id'>path</span><span class='rparen token'>)</span> <span class='rbrace token'>}</span> <span class='if if_mod kw'>if</span> <span class='Platform constant id'>Platform</span><span class='dot token'>.</span><span class='cygwin? fid id'>cygwin?</span>
+
+  <span class='paths identifier id'>paths</span>
 <span class='end end kw'>end</span>
 </pre>
     </td>
@@ -715,22 +723,22 @@ Returns the value of attribute pid
       <pre class="lines">
 
 
-150
-151
-152
-153
-154
-155
 156
 157
 158
 159
 160
 161
-162</pre>
+162
+163
+164
+165
+166
+167
+168</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chrome/launcher.rb', line 150</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chrome/launcher.rb', line 156</span>
 
 <span class='def def kw'>def</span> <span class='windows_registry_path identifier id'>windows_registry_path</span>
   <span class='require identifier id'>require</span> <span class='string val'>&quot;win32/registry&quot;</span>
@@ -828,9 +836,9 @@ Returns the value of attribute pid
 </div>
     
     <div id="footer">
-  Generated on Wed Dec 08 00:36:41 2010 by 
+  Generated on Wed Dec 22 02:59:50 2010 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.6.3 (ruby-1.8.7).
+  0.6.4 (ruby-1.8.7).
 </div>
 
   </body>

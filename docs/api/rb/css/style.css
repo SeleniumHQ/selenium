@@ -168,7 +168,7 @@ ul.summary li { margin-bottom: 5px; }
   -moz-border-radius: 3px; -webkit-border-radius: 3px; 
 }
 .summary_signature:hover { background: #eeeeff; cursor: pointer; }
-ul.summary.compact li { display: inline; margin-right: 5px; line-height: 2.6em;}
+ul.summary.compact li { display: inline-block; margin: 0px 5px 0px 0px; line-height: 2.6em;}
 ul.summary.compact .summary_signature { padding: 5px 7px; padding-right: 4px; }
 #content .summary_signature:hover a:link, 
 #content .summary_signature:hover a:visited {

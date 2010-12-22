@@ -616,7 +616,7 @@ list of cookies
       <span class='symbol val'>:name</span>    <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='cookie identifier id'>cookie</span><span class='lbrack token'>[</span><span class='string val'>&quot;name&quot;</span><span class='rbrack token'>]</span><span class='comma token'>,</span>
       <span class='symbol val'>:value</span>   <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='cookie identifier id'>cookie</span><span class='lbrack token'>[</span><span class='string val'>&quot;value&quot;</span><span class='rbrack token'>]</span><span class='comma token'>,</span>
       <span class='symbol val'>:path</span>    <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='cookie identifier id'>cookie</span><span class='lbrack token'>[</span><span class='string val'>&quot;path&quot;</span><span class='rbrack token'>]</span><span class='comma token'>,</span>
-      <span class='symbol val'>:domain</span>  <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='strip_port identifier id'>strip_port</span><span class='lparen token'>(</span><span class='cookie identifier id'>cookie</span><span class='lbrack token'>[</span><span class='string val'>&quot;domain&quot;</span><span class='rbrack token'>]</span><span class='rparen token'>)</span><span class='comma token'>,</span>
+      <span class='symbol val'>:domain</span>  <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='cookie identifier id'>cookie</span><span class='lbrack token'>[</span><span class='string val'>&quot;domain&quot;</span><span class='rbrack token'>]</span> <span class='andop op'>&amp;&amp;</span> <span class='strip_port identifier id'>strip_port</span><span class='lparen token'>(</span><span class='cookie identifier id'>cookie</span><span class='lbrack token'>[</span><span class='string val'>&quot;domain&quot;</span><span class='rbrack token'>]</span><span class='rparen token'>)</span><span class='comma token'>,</span>
       <span class='symbol val'>:expires</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='cookie identifier id'>cookie</span><span class='lbrack token'>[</span><span class='string val'>&quot;expiry&quot;</span><span class='rbrack token'>]</span> <span class='andop op'>&amp;&amp;</span> <span class='datetime_at identifier id'>datetime_at</span><span class='lparen token'>(</span><span class='cookie identifier id'>cookie</span><span class='lbrack token'>[</span><span class='string val'>'expiry'</span><span class='rbrack token'>]</span><span class='rparen token'>)</span><span class='comma token'>,</span>
       <span class='symbol val'>:secure</span>  <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='cookie identifier id'>cookie</span><span class='lbrack token'>[</span><span class='string val'>&quot;secure&quot;</span><span class='rbrack token'>]</span>
     <span class='rbrace token'>}</span>
@@ -901,9 +901,9 @@ the name of the cookie to delete
 </div>
     
     <div id="footer">
-  Generated on Wed Dec 08 00:36:34 2010 by 
+  Generated on Wed Dec 22 02:59:50 2010 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.6.3 (ruby-1.8.7).
+  0.6.4 (ruby-1.8.7).
 </div>
 
   </body>

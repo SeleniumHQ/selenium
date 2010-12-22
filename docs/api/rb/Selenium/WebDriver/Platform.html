@@ -120,6 +120,48 @@
         <li class="public ">
   <span class="summary_signature">
     
+      <a href="#cygwin%3F-instance_method" title="#cygwin? (instance method)">- (Boolean) <strong>cygwin?</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#cygwin_path-instance_method" title="#cygwin_path (instance method)">- (Object) <strong>cygwin_path</strong>(path) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
       <a href="#engine-instance_method" title="#engine (instance method)">- (Object) <strong>engine</strong> </a>
     
 
@@ -412,18 +454,18 @@
       <pre class="lines">
 
 
-94
-95
-96
-97
-98
-99
-100
-101
-102</pre>
+102
+103
+104
+105
+106
+107
+108
+109
+110</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/platform.rb', line 94</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/platform.rb', line 102</span>
 
 <span class='def def kw'>def</span> <span class='assert_executable identifier id'>assert_executable</span><span class='lparen token'>(</span><span class='path identifier id'>path</span><span class='rparen token'>)</span>
   <span class='unless unless kw'>unless</span> <span class='File constant id'>File</span><span class='dot token'>.</span><span class='file? fid id'>file?</span> <span class='path identifier id'>path</span>
@@ -490,6 +532,85 @@
 </div>
     
       <div class="method_details ">
+  <p class="signature " id="cygwin?-instance_method">
+  
+    - (<tt>Boolean</tt>) <strong>cygwin?</strong> 
+  
+
+  
+</p><div class="docstring">
+  <div class="discussion">
+    
+
+  </div>
+</div>
+<div class="tags">
+  <h3>Returns:</h3>
+<ul class="return">
+  
+    <li>
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+86
+87
+88</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/platform.rb', line 86</span>
+
+<span class='def def kw'>def</span> <span class='cygwin? fid id'>cygwin?</span>
+  <span class='RUBY_PLATFORM constant id'>RUBY_PLATFORM</span> <span class='match op'>=~</span> <span class='regexp val'>/cygwin/</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="cygwin_path-instance_method">
+  
+    - (<tt>Object</tt>) <strong>cygwin_path</strong>(path) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+94
+95
+96</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/platform.rb', line 94</span>
+
+<span class='def def kw'>def</span> <span class='cygwin_path identifier id'>cygwin_path</span><span class='lparen token'>(</span><span class='path identifier id'>path</span><span class='rparen token'>)</span>
+  <span class='dxstring node'>`cygpath &quot;#{path}&quot;`</span><span class='dot token'>.</span><span class='strip identifier id'>strip</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
   <p class="signature " id="engine-instance_method">
   
     - (<tt>Object</tt>) <strong>engine</strong> 
@@ -543,22 +664,22 @@
       <pre class="lines">
 
 
-104
-105
-106
-107
-108
-109
-110
-111
 112
 113
 114
 115
-116</pre>
+116
+117
+118
+119
+120
+121
+122
+123
+124</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/platform.rb', line 104</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/platform.rb', line 112</span>
 
 <span class='def def kw'>def</span> <span class='find_binary identifier id'>find_binary</span><span class='lparen token'>(</span><span class='mult op'>*</span><span class='binary_names identifier id'>binary_names</span><span class='rparen token'>)</span>
   <span class='paths identifier id'>paths</span> <span class='assign token'>=</span> <span class='ENV constant id'>ENV</span><span class='lbrack token'>[</span><span class='string val'>'PATH'</span><span class='rbrack token'>]</span><span class='dot token'>.</span><span class='split identifier id'>split</span><span class='lparen token'>(</span><span class='File constant id'>File</span><span class='colon2 op'>::</span><span class='PATH_SEPARATOR constant id'>PATH_SEPARATOR</span><span class='rparen token'>)</span>
@@ -823,12 +944,12 @@
       <pre class="lines">
 
 
-90
-91
-92</pre>
+98
+99
+100</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/platform.rb', line 90</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/platform.rb', line 98</span>
 
 <span class='def def kw'>def</span> <span class='make_writable identifier id'>make_writable</span><span class='lparen token'>(</span><span class='file identifier id'>file</span><span class='rparen token'>)</span>
   <span class='File constant id'>File</span><span class='dot token'>.</span><span class='chmod identifier id'>chmod</span> <span class='integer val'>0766</span><span class='comma token'>,</span> <span class='file identifier id'>file</span>
@@ -877,7 +998,7 @@
   <span class='@os ivar id'>@os</span> <span class='opasgn op'>||=</span> <span class='lparen token'>(</span>
     <span class='host_os identifier id'>host_os</span> <span class='assign token'>=</span> <span class='RbConfig constant id'>RbConfig</span><span class='colon2 op'>::</span><span class='CONFIG constant id'>CONFIG</span><span class='lbrack token'>[</span><span class='string val'>'host_os'</span><span class='rbrack token'>]</span>
     <span class='case case kw'>case</span> <span class='host_os identifier id'>host_os</span>
-    <span class='when when kw'>when</span> <span class='regexp val'>/mswin|msys|mingw32/</span>
+    <span class='when when kw'>when</span> <span class='regexp val'>/mswin|msys|mingw|cygwin|bccwin|wince|emc/</span>
       <span class='symbol val'>:windows</span>
     <span class='when when kw'>when</span> <span class='regexp val'>/darwin|mac os/</span>
       <span class='symbol val'>:macosx</span>
@@ -1059,15 +1180,15 @@
       <pre class="lines">
 
 
-86
-87
-88</pre>
+90
+91
+92</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/platform.rb', line 86</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/platform.rb', line 90</span>
 
 <span class='def def kw'>def</span> <span class='wrap_in_quotes_if_necessary identifier id'>wrap_in_quotes_if_necessary</span><span class='lparen token'>(</span><span class='str identifier id'>str</span><span class='rparen token'>)</span>
-  <span class='win? fid id'>win?</span> <span class='integer val'>? </span><span class='mod op'>%</span><span class='lbrace token'>{</span><span class='dstring node'>&quot;#{str}&quot;</span><span class='rbrace token'>}</span> <span class='colon op'>:</span> <span class='str identifier id'>str</span>
+  <span class='win? fid id'>win?</span> <span class='andop op'>&amp;&amp;</span> <span class='notop op'>!</span><span class='cygwin? fid id'>cygwin?</span> <span class='integer val'>? </span><span class='mod op'>%</span><span class='lbrace token'>{</span><span class='dstring node'>&quot;#{str}&quot;</span><span class='rbrace token'>}</span> <span class='colon op'>:</span> <span class='str identifier id'>str</span>
 <span class='end end kw'>end</span>
 </pre>
     </td>
@@ -1080,9 +1201,9 @@
 </div>
     
     <div id="footer">
-  Generated on Wed Dec 08 00:36:37 2010 by 
+  Generated on Wed Dec 22 02:59:50 2010 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.6.3 (ruby-1.8.7).
+  0.6.4 (ruby-1.8.7).
 </div>
 
   </body>

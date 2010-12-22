@@ -93,8 +93,9 @@ function keyboardShortcuts() {
   if (window.top.frames.main) return;
   $(document).keypress(function(evt) {
     if (evt.altKey || evt.ctrlKey || evt.metaKey || evt.shiftKey) return;
-    if (evt.originalTarget.nodeName == "INPUT" || 
-        evt.originalTarget.nodeName == "TEXTAREA") return;
+    if (typeof evt.orignalTarget !== "undefined" &&  
+        (evt.originalTarget.nodeName == "INPUT" || 
+        evt.originalTarget.nodeName == "TEXTAREA")) return;
     switch (evt.charCode) {
       case 67: case 99:  $('#class_list_link').click(); break;  // 'c'
       case 77: case 109: $('#method_list_link').click(); break; // 'm'

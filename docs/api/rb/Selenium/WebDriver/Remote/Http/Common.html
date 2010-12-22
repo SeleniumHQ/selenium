@@ -165,7 +165,7 @@ Returns the value of attribute timeout.
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#timeout%3D-class_method" title="timeout= (class method)">+ (Object) <strong>timeout=</strong> </a>
+      <a href="#timeout%3D-class_method" title="timeout= (class method)">+ (Object) <strong>timeout=</strong>(timeout) </a>
     
 
     
@@ -250,12 +250,12 @@ Returns the value of attribute timeout
       <pre class="lines">
 
 
-15
 16
-17</pre>
+17
+18</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/http/common.rb', line 15</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/http/common.rb', line 16</span>
 
 <span class='def def kw'>def</span> <span class='timeout identifier id'>timeout</span>
   <span class='@timeout ivar id'>@timeout</span>
@@ -276,7 +276,7 @@ Returns the value of attribute timeout
       <div class="method_details first">
   <p class="signature first" id="timeout=-class_method">
   
-    + (<tt>Object</tt>) <strong>timeout=</strong> 
+    + (<tt>Object</tt>) <strong>timeout=</strong>(timeout) 
   
 
   
@@ -295,7 +295,7 @@ deprecated.
   
     <li>
       
-        <span class='type'>(<tt>Error::WebDriver</tt>)</span>
+        <span class='type'>(<tt><span class='object_link'><a href="../../Error/WebDriverError.html" title="Selenium::WebDriver::Error::WebDriverError (class)">Error::WebDriverError</a></span></tt>)</span>
       
       
       
@@ -312,13 +312,15 @@ deprecated.
 
 11
 12
-13</pre>
+13
+14</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/http/common.rb', line 11</span>
 
-<span class='def def kw'>def</span> <span class='self self kw'>self</span><span class='dot token'>.</span><span class='timeout identifier id'>timeout</span><span class='assign token'>=</span><span class='lparen token'>(</span><span class='rparen token'>)</span>
-  <span class='raise identifier id'>raise</span> <span class='Error constant id'>Error</span><span class='colon2 op'>::</span><span class='WebDriver constant id'>WebDriver</span><span class='comma token'>,</span> <span class='string val'>&quot;Configuration of HTTP timeouts has changed. See http://code.google.com/p/selenium/wiki/RubyBindings for intructions.&quot;</span>
+<span class='def def kw'>def</span> <span class='self self kw'>self</span><span class='dot token'>.</span><span class='timeout identifier id'>timeout</span><span class='assign token'>=</span><span class='lparen token'>(</span><span class='timeout identifier id'>timeout</span><span class='rparen token'>)</span>
+  <span class='raise identifier id'>raise</span> <span class='Error constant id'>Error</span><span class='colon2 op'>::</span><span class='WebDriverError constant id'>WebDriverError</span><span class='comma token'>,</span>
+    <span class='string val'>&quot;Configuration of HTTP timeouts has changed. See http://code.google.com/p/selenium/wiki/RubyBindings for updated intructions.&quot;</span>
 <span class='end end kw'>end</span>
 </pre>
     </td>
@@ -345,7 +347,6 @@ deprecated.
       <pre class="lines">
 
 
-18
 19
 20
 21
@@ -363,10 +364,11 @@ deprecated.
 33
 34
 35
-36</pre>
+36
+37</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/http/common.rb', line 18</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/http/common.rb', line 19</span>
 
 <span class='def def kw'>def</span> <span class='call identifier id'>call</span><span class='lparen token'>(</span><span class='verb identifier id'>verb</span><span class='comma token'>,</span> <span class='url identifier id'>url</span><span class='comma token'>,</span> <span class='command_hash identifier id'>command_hash</span><span class='rparen token'>)</span>
   <span class='url identifier id'>url</span>      <span class='assign token'>=</span> <span class='server_url identifier id'>server_url</span><span class='dot token'>.</span><span class='merge identifier id'>merge</span><span class='lparen token'>(</span><span class='url identifier id'>url</span><span class='rparen token'>)</span> <span class='unless unless_mod kw'>unless</span> <span class='url identifier id'>url</span><span class='dot token'>.</span><span class='kind_of? fid id'>kind_of?</span><span class='lparen token'>(</span><span class='URI constant id'>URI</span><span class='rparen token'>)</span>
@@ -398,9 +400,9 @@ deprecated.
 </div>
     
     <div id="footer">
-  Generated on Wed Dec 08 00:36:43 2010 by 
+  Generated on Wed Dec 22 02:59:51 2010 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.6.3 (ruby-1.8.7).
+  0.6.4 (ruby-1.8.7).
 </div>
 
   </body>

@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
   <head>
     <meta name="Content-Type" content="text/html; charset=utf-8" />
-<title>Class: Selenium::WebDriver::Timeouts</title>
+<title>Class: Selenium::WebDriver::Alert</title>
 <link rel="stylesheet" href="../../css/style.css" type="text/css" media="screen" charset="utf-8" />
 <link rel="stylesheet" href="../../css/common.css" type="text/css" media="screen" charset="utf-8" />
 
@@ -23,10 +23,10 @@
     <div id="header">
       <div id="menu">
   
-    <a href="../../_index.html">Index (T)</a> &raquo; 
+    <a href="../../_index.html">Index (A)</a> &raquo; 
     <span class='title'><span class='object_link'><a href="../../Selenium.html" title="Selenium (module)">Selenium</a></span></span> &raquo; <span class='title'><span class='object_link'><a href="../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span></span>
      &raquo; 
-    <span class="title">Timeouts</span>
+    <span class="title">Alert</span>
   
   
   <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
@@ -43,7 +43,7 @@
     
     <iframe id="search_frame"></iframe>
     
-    <div id="content"><h1>Class: Selenium::WebDriver::Timeouts
+    <div id="content"><h1>Class: Selenium::WebDriver::Alert
   
   
   
@@ -58,7 +58,7 @@
         <ul class="fullTree">
           <li>Object</li>
           
-            <li class="next">Selenium::WebDriver::Timeouts</li>
+            <li class="next">Selenium::WebDriver::Alert</li>
           
         </ul>
         <a href="#" class="inheritanceTree">show all</a>
@@ -74,7 +74,7 @@
   
   
     <dt class="r2 last">Defined in:</dt>
-    <dd class="r2 last">rb/lib/selenium/webdriver/common/timeouts.rb</dd>
+    <dd class="r2 last">rb/lib/selenium/webdriver/common/alert.rb</dd>
   
 </dl>
 <div class="clear"></div>
@@ -93,7 +93,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#implicit_wait%3D-instance_method" title="#implicit_wait= (instance method)">- (Object) <strong>implicit_wait=</strong>(seconds) </a>
+      <a href="#accept-instance_method" title="#accept (instance method)">- (Object) <strong>accept</strong> </a>
     
 
     
@@ -106,10 +106,7 @@
   
 
   
-    <span class="summary_desc"><div class='inline'><p>
-Set the amount of time the driver should wait when searching for elements.
-</p>
-</div></span>
+    <span class="summary_desc"><div class='inline'></div></span>
   
 </li>
 
@@ -117,7 +114,28 @@ Set the amount of time the driver should wait when searching for elements.
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#initialize-instance_method" title="#initialize (instance method)">- (Timeouts) <strong>initialize</strong>(bridge) </a>
+      <a href="#dismiss-instance_method" title="#dismiss (instance method)">- (Object) <strong>dismiss</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#initialize-instance_method" title="#initialize (instance method)">- (Alert) <strong>initialize</strong>(bridge) </a>
     
 
     
@@ -133,7 +151,7 @@ Set the amount of time the driver should wait when searching for elements.
 
   
     <span class="summary_desc"><div class='inline'><p>
-A new instance of Timeouts.
+A new instance of Alert.
 </p>
 </div></span>
   
@@ -143,7 +161,7 @@ A new instance of Timeouts.
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#script_timeout%3D-instance_method" title="#script_timeout= (instance method)">- (Object) <strong>script_timeout=</strong>(seconds) </a>
+      <a href="#send_keys-instance_method" title="#send_keys (instance method)">- (Object) <strong>send_keys</strong>(keys) </a>
     
 
     
@@ -156,11 +174,28 @@ A new instance of Timeouts.
   
 
   
-    <span class="summary_desc"><div class='inline'><p>
-Sets the amount of time to wait for an asynchronous script to finish
-execution before throwing an error.
-</p>
-</div></span>
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#text-instance_method" title="#text (instance method)">- (Object) <strong>text</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
   
 </li>
 
@@ -174,14 +209,14 @@ execution before throwing an error.
     <div class="method_details first">
   <p class="signature first" id="initialize-instance_method">
   
-    - (<tt><span class='object_link'><a href="" title="Selenium::WebDriver::Timeouts (class)">Timeouts</a></span></tt>) <strong>initialize</strong>(bridge) 
+    - (<tt><span class='object_link'><a href="" title="Selenium::WebDriver::Alert (class)">Alert</a></span></tt>) <strong>initialize</strong>(bridge) 
   
 
   
 </p><div class="docstring">
   <div class="discussion">
     <p>
-A new instance of Timeouts
+A new instance of Alert
 </p>
 
 
@@ -200,7 +235,7 @@ A new instance of Timeouts
 7</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/timeouts.rb', line 5</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/alert.rb', line 5</span>
 
 <span class='def def kw'>def</span> <span class='initialize identifier id'>initialize</span><span class='lparen token'>(</span><span class='bridge identifier id'>bridge</span><span class='rparen token'>)</span>
   <span class='@bridge ivar id'>@bridge</span> <span class='assign token'>=</span> <span class='bridge identifier id'>bridge</span>
@@ -219,24 +254,42 @@ A new instance of Timeouts
     
     
       <div class="method_details first">
-  <p class="signature first" id="implicit_wait=-instance_method">
+  <p class="signature first" id="accept-instance_method">
   
-    - (<tt>Object</tt>) <strong>implicit_wait=</strong>(seconds) 
+    - (<tt>Object</tt>) <strong>accept</strong> 
   
 
   
-</p><div class="docstring">
-  <div class="discussion">
-    <p>
-Set the amount of time the driver should wait when searching for elements.
-</p>
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
 
 
-  </div>
+9
+10
+11</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/alert.rb', line 9</span>
+
+<span class='def def kw'>def</span> <span class='accept identifier id'>accept</span>
+  <span class='@bridge ivar id'>@bridge</span><span class='dot token'>.</span><span class='acceptAlert identifier id'>acceptAlert</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
 </div>
-<div class="tags">
+    
+      <div class="method_details ">
+  <p class="signature " id="dismiss-instance_method">
   
-</div><table class="source_code">
+    - (<tt>Object</tt>) <strong>dismiss</strong> 
+  
+
+  
+</p><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
@@ -247,10 +300,10 @@ Set the amount of time the driver should wait when searching for elements.
 15</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/timeouts.rb', line 13</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/alert.rb', line 13</span>
 
-<span class='def def kw'>def</span> <span class='implicit_wait= identifier id'>implicit_wait=</span><span class='lparen token'>(</span><span class='seconds identifier id'>seconds</span><span class='rparen token'>)</span>
-  <span class='@bridge ivar id'>@bridge</span><span class='dot token'>.</span><span class='setImplicitWaitTimeout identifier id'>setImplicitWaitTimeout</span> <span class='seconds identifier id'>seconds</span> <span class='mult op'>*</span> <span class='integer val'>1000</span>
+<span class='def def kw'>def</span> <span class='dismiss identifier id'>dismiss</span>
+  <span class='@bridge ivar id'>@bridge</span><span class='dot token'>.</span><span class='dismissAlert identifier id'>dismissAlert</span>
 <span class='end end kw'>end</span>
 </pre>
     </td>
@@ -259,40 +312,56 @@ Set the amount of time the driver should wait when searching for elements.
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="script_timeout=-instance_method">
+  <p class="signature " id="send_keys-instance_method">
   
-    - (<tt>Object</tt>) <strong>script_timeout=</strong>(seconds) 
+    - (<tt>Object</tt>) <strong>send_keys</strong>(keys) 
   
 
   
-</p><div class="docstring">
-  <div class="discussion">
-    <p>
-Sets the amount of time to wait for an asynchronous script to finish
-execution before throwing an error. If the timeout is negative, then the
-script will be allowed to run indefinitely.
-</p>
-
-
-  </div>
-</div>
-<div class="tags">
-  
-</div><table class="source_code">
+</p><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-23
-24
-25</pre>
+17
+18
+19</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/timeouts.rb', line 23</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/alert.rb', line 17</span>
 
-<span class='def def kw'>def</span> <span class='script_timeout= identifier id'>script_timeout=</span><span class='lparen token'>(</span><span class='seconds identifier id'>seconds</span><span class='rparen token'>)</span>
-  <span class='@bridge ivar id'>@bridge</span><span class='dot token'>.</span><span class='setScriptTimeout identifier id'>setScriptTimeout</span> <span class='seconds identifier id'>seconds</span> <span class='mult op'>*</span> <span class='integer val'>1000</span>
+<span class='def def kw'>def</span> <span class='send_keys identifier id'>send_keys</span><span class='lparen token'>(</span><span class='keys identifier id'>keys</span><span class='rparen token'>)</span>
+  <span class='@bridge ivar id'>@bridge</span><span class='dot token'>.</span><span class='setAlertValue identifier id'>setAlertValue</span> <span class='keys identifier id'>keys</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="text-instance_method">
+  
+    - (<tt>Object</tt>) <strong>text</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+21
+22
+23</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/alert.rb', line 21</span>
+
+<span class='def def kw'>def</span> <span class='text identifier id'>text</span>
+  <span class='@bridge ivar id'>@bridge</span><span class='dot token'>.</span><span class='getAlertText identifier id'>getAlertText</span>
 <span class='end end kw'>end</span>
 </pre>
     </td>
@@ -305,7 +374,7 @@ script will be allowed to run indefinitely.
 </div>
     
     <div id="footer">
-  Generated on Wed Dec 22 02:59:50 2010 by 
+  Generated on Wed Dec 22 02:59:46 2010 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.6.4 (ruby-1.8.7).
 </div>
