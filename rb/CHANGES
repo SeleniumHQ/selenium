@@ -1,7 +1,12 @@
-0.1.2 (????)
+0.1.2 (2010-12-??)
 ============
 
 * Changed frame switching behaviour (http://groups.google.com/group/selenium-developers/browse_thread/thread/8dc7938c35bb3968)
+* IE driver rewrite landed.
+* Initial support for alerts/prompts (in Firefox).
+* Cygwin support.
+* Driver#execute_script now properly wraps elements inside Hashes.
+* Various fixes for Firefox 4.
 
 0.1.1 (2010-11-29)
 ==================
