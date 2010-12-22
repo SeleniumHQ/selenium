@@ -13,7 +13,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-goog.provide('bot.locators.strategies.css');
+// TODO(user): Add support for using sizzle to locate elements
+
+goog.provide('bot.locators.css');
 
 goog.require('goog.array');
 goog.require('goog.dom');
@@ -22,7 +24,6 @@ goog.require('goog.object');
 goog.require('goog.string');
 goog.require('goog.userAgent');
 
-// TODO(user): Add support for using sizzle to locate elements
 
 /**
  * Find an element by using a CSS selector
@@ -33,7 +34,7 @@ goog.require('goog.userAgent');
  * @return {Element} The first matching element found in the DOM, or null if no
  *     such element could be found.
  */
-bot.locators.strategies.css.single = function(target, root) {
+bot.locators.css.single = function(target, root) {
   if (!goog.isFunction(root['querySelector']) &&
       // IE8 in non-compatibility mode reports querySelector as an object.
       goog.userAgent.IE && goog.userAgent.isVersion(8) &&
@@ -57,6 +58,7 @@ bot.locators.strategies.css.single = function(target, root) {
       (/**@type {Element}*/element) : null;
 };
 
+
 /**
  * Find all elements matching a CSS selector.
  *
@@ -65,7 +67,7 @@ bot.locators.strategies.css.single = function(target, root) {
  *     search under.
  * @return {!goog.array.ArrayLike} All matching elements, or an empty list.
  */
-bot.locators.strategies.css.many = function(target, root) {
+bot.locators.css.many = function(target, root) {
   if (!goog.isFunction(root['querySelectorAll']) &&
       // IE8 in non-compatibility mode reports querySelector as an object.
       goog.userAgent.IE && goog.userAgent.isVersion(8) &&

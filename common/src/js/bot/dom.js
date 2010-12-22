@@ -16,12 +16,12 @@
 /**
  * @fileoverview DOM manipulation and querying routines.
  *
- *
  */
 
 goog.provide('bot.dom');
 
 goog.require('bot');
+goog.require('bot.locators.xpath');
 goog.require('goog.array');
 goog.require('goog.dom.NodeIterator');
 goog.require('goog.dom.NodeType');
@@ -29,7 +29,6 @@ goog.require('goog.dom.TagName');
 goog.require('goog.math.Size');
 goog.require('goog.string');
 goog.require('goog.style');
-
 
 
 /**
@@ -355,13 +354,44 @@ bot.dom.isShown = function(elem) {
     throw new Error('Argument to isShown must be of type Element');
   }
 
-  // Shown of options and optgroups taken from the enclosing select.
+  // Option or optgroup is shown iff enclosing select is shown.
   if (bot.dom.isElement_(elem, goog.dom.TagName.OPTION) ||
       bot.dom.isElement_(elem, goog.dom.TagName.OPTGROUP)) {
     var select = /**@type {Element}*/ (goog.dom.getAncestor(elem, function(e) {
       return bot.dom.isElement_(e, goog.dom.TagName.SELECT);
     }));
     return !!select && bot.dom.isShown(select);
+  }
+
+  // Map is shown iff image that uses it is shown.
+  if (bot.dom.isElement_(elem, goog.dom.TagName.MAP)) {
+    if (!elem.name) {
+      return false;
+    }
+    var mapDoc = goog.dom.getOwnerDocument(elem);
+    var mapImage;
+    // TODO(user): Avoid brute-force search once a cross-browser xpath
+    // locator is available.
+    if (mapDoc['evaluate']) {
+      var imageXpath = '//*[@usemap = "#' + elem.name + '"]';
+      // TODO(user): Break dependency of bot.locators on bot.dom,
+      // so bot.locators.findElement can be called here instead.
+      mapImage = bot.locators.xpath.single(imageXpath, mapDoc);
+    } else {
+      mapImage = goog.dom.findNode(mapDoc, function(n) {
+        return bot.dom.isElement_(n) &&
+               bot.dom.getAttribute(n, 'usemap') == '#' + elem.name;
+      });
+    }
+    return !!mapImage && bot.dom.isShown((/** @type {!Element} */ mapImage));
+  }
+
+  // Area is shown iff enclosing map is shown.
+  if (bot.dom.isElement_(elem, goog.dom.TagName.AREA)) {
+    var map = /**@type {Element}*/ (goog.dom.getAncestor(elem, function(e) {
+      return bot.dom.isElement_(e, goog.dom.TagName.MAP);
+    }));
+    return !!map && bot.dom.isShown(map);
   }
 
   // Any hidden input is not shown.
@@ -385,6 +415,11 @@ bot.dom.isShown = function(elem) {
     return !parent || displayed(parent);
   }
   if (!displayed(elem)) {
+    return false;
+  }
+
+  // Any transparent element is not shown.
+  if (bot.dom.getOpacity(elem) == 0) {
     return false;
   }
 
@@ -424,7 +459,6 @@ bot.dom.getVisibleText = function(node) {
   var startsWithNbsp = new RegExp('^' + String.fromCharCode(160), 'gm');
 
   var prevTextNodeEndsWithSpace = false;
-  var prevTextNodeStartsWithSpace = false;
   goog.array.forEach(elements, function(node, i) {
     if (node.nodeType == goog.dom.NodeType.TEXT) {
       var nodeText =
@@ -433,11 +467,8 @@ bot.dom.getVisibleText = function(node) {
         if (bot.dom.isClosestAncestorBlockLevel_(elements, i)) {
           nodeText = '\n' + nodeText;
         } else if (i != 0) { // First element does not need preceding space.
-          var thisTextNodeStartsWithSpace = node.nodeValue.match(/^ /) ||
+          var thisTextNodeStartsWithSpace = node.nodeValue.match(/^\s/) ||
               node.nodeValue.match(startsWithNbsp);
-          if (prevTextNodeStartsWithSpace) {
-            nodeText = nodeText + ' ';
-          }
           if (prevTextNodeEndsWithSpace || thisTextNodeStartsWithSpace) {
             nodeText = ' ' + nodeText;
           }
@@ -446,7 +477,6 @@ bot.dom.getVisibleText = function(node) {
 
       prevTextNodeEndsWithSpace = node.nodeValue.match(/\s$/) ||
           node.nodeValue.match(endsWithNbsp);
-      prevTextNodeStartsWithSpace = node.nodeValue.match(/^\s/);
       returnValue += nodeText;
     }
   });
@@ -571,6 +601,7 @@ bot.dom.getOpacity = function(elem) {
     }
   }
 };
+
 
 /**
  * Implementation of getOpacity for browsers that do support

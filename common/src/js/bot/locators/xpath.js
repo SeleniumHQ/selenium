@@ -13,15 +13,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-goog.provide('bot.locators.strategies.xpath');
+// TODO(user): Add support for browsers without native xpath
+
+goog.provide('bot.locators.xpath');
 
 goog.require('goog.array');
 goog.require('goog.dom');
 goog.require('goog.dom.xml');
 
-
-
-// TODO(user): Add support for browsers without native xpath
 
 /**
  * Find an element by using an xpath expression
@@ -31,7 +30,7 @@ goog.require('goog.dom.xml');
  * @return {Element} The first matching element found in the DOM, or null if no
  *     such element could be found.
  */
-bot.locators.strategies.xpath.single = function(target, root) {
+bot.locators.xpath.single = function(target, root) {
   var node = goog.dom.xml.selectSingleNode(root, target);
 
   if (!node) {
@@ -46,6 +45,7 @@ bot.locators.strategies.xpath.single = function(target, root) {
   return (/**@type{Element}*/node);  // Type verified above.
 };
 
+
 /**
  * Find an element by using an xpath expression
  * @param {string} target The xpath to search for.
@@ -53,7 +53,7 @@ bot.locators.strategies.xpath.single = function(target, root) {
  *     search under.
  * @return {!goog.array.ArrayLike} All matching elements, or an empty list.
  */
-bot.locators.strategies.xpath.many = function(target, root) {
+bot.locators.xpath.many = function(target, root) {
   var nodes = goog.dom.xml.selectNodes(root, target);
 
   // Only return elements
@@ -66,4 +66,3 @@ bot.locators.strategies.xpath.many = function(target, root) {
   // Type-cast to account for an inconsistency in closure type annotations.
   return (/**@type{!goog.array.ArrayLike}*/nodes);
 };
-

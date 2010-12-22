@@ -13,55 +13,37 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-goog.provide('bot.locators.strategies.className');
+goog.provide('bot.locators.tagName');
 
 goog.require('goog.array');
 goog.require('goog.dom');
 goog.require('goog.dom.DomHelper');
-goog.require('goog.string');
 
 
 
 /**
- * Find an element by its class name.
- * @param {string} target The class name to search for.
+ * Find an element by its tag name.
+ * @param {string} target The tag name to search for.
  * @param {!(Document|Element)} root The document or element to perform the
  *     search under.
  * @return {Element} The first matching element found in the DOM, or null if no
  *     such element could be found.
  */
-bot.locators.strategies.className.single = function(target, root) {
-  if (!target) {
-    throw Error('No class name specified');
-  }
-
-  target = goog.string.trim(target);
-  if (target.split(/\s+/).length > 1) {
-    throw Error('Compound class names not permitted');
-  }
-
+bot.locators.tagName.single = function(target, root) {
   var elements = goog.dom.getDomHelper(root).getElementsByTagNameAndClass(
-      /*tagName=*/'*', /*className=*/target, root);
-  return elements.length ? elements[0] : null;
+      target, null, root);
+  return elements[0] || null;
 };
 
+
 /**
- * Find an element by its class name.
- * @param {string} target The class name to search for.
+ * Find all elements with a given tag name.
+ * @param {string} target The tag name to search for.
  * @param {!(Document|Element)} root The document or element to perform the
  *     search under.
- * @return {!goog.array.ArrayLike} All matching elements, or an empty list.
+ * @return {goog.array.ArrayLike} All matching elements, or an empty list.
  */
-bot.locators.strategies.className.many = function(target, root) {
-  if (!target) {
-    throw Error('No class name specified');
-  }
-
-  target = goog.string.trim(target);
-  if (target.split(/\s+/).length > 1) {
-    throw Error('Compound class names not permitted');
-  }
-
+bot.locators.tagName.many = function(target, root) {
   return goog.dom.getDomHelper(root).getElementsByTagNameAndClass(
-      /*tagName=*/'*', /*className=*/target, root);
+      target, null, root);
 };

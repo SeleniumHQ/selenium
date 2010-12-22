@@ -13,15 +13,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-goog.provide('bot.locators.strategies.linkText');
-goog.provide('bot.locators.strategies.partialLinkText');
+goog.provide('bot.locators.linkText');
+goog.provide('bot.locators.partialLinkText');
 
 goog.require('bot');
 goog.require('bot.dom');
 goog.require('goog.array');
 goog.require('goog.dom');
 goog.require('goog.dom.DomHelper');
-
 
 
 /**
@@ -35,8 +34,7 @@ goog.require('goog.dom.DomHelper');
  *     such element could be found.
  * @private
  */
-bot.locators.strategies.linkText.single_ = function(target, root,
-                                                     opt_isPartial) {
+bot.locators.linkText.single_ = function(target, root, opt_isPartial) {
   // TODO(user): Fix this to work for XHTML (which is case sensitive)
   var elements = goog.dom.getDomHelper(root).getElementsByTagNameAndClass(
       goog.dom.TagName.A, /*className=*/null, root);
@@ -59,8 +57,7 @@ bot.locators.strategies.linkText.single_ = function(target, root,
  * @return {goog.array.ArrayLike} All matching elements, or an empty list.
  * @private
  */
-bot.locators.strategies.linkText.many_ = function(target, root,
-                                                   opt_isPartial) {
+bot.locators.linkText.many_ = function(target, root, opt_isPartial) {
   // TODO(user): Fix this to work for XHTML (which is case sensitive)
   var elements = goog.dom.getDomHelper(root).getElementsByTagNameAndClass(
       goog.dom.TagName.A, /*className=*/null, root);
@@ -79,8 +76,8 @@ bot.locators.strategies.linkText.many_ = function(target, root,
  * @return {Element} The first matching element found in the DOM, or null if no
  *     such element could be found.
  */
-bot.locators.strategies.linkText.single = function(target, root) {
-  return bot.locators.strategies.linkText.single_(target, root, false);
+bot.locators.linkText.single = function(target, root) {
+  return bot.locators.linkText.single_(target, root, false);
 };
 
 
@@ -91,8 +88,8 @@ bot.locators.strategies.linkText.single = function(target, root) {
  *     search under.
  * @return {goog.array.ArrayLike} All matching elements, or an empty list.
  */
-bot.locators.strategies.linkText.many = function(target, root) {
-  return bot.locators.strategies.linkText.many_(target, root, false);
+bot.locators.linkText.many = function(target, root) {
+  return bot.locators.linkText.many_(target, root, false);
 };
 
 
@@ -104,8 +101,8 @@ bot.locators.strategies.linkText.many = function(target, root) {
  * @return {Element} The first matching element found in the DOM, or null if no
  *     such element could be found.
  */
-bot.locators.strategies.partialLinkText.single = function(target, root) {
-  return bot.locators.strategies.linkText.single_(target, root, true);
+bot.locators.partialLinkText.single = function(target, root) {
+  return bot.locators.linkText.single_(target, root, true);
 };
 
 
@@ -116,6 +113,6 @@ bot.locators.strategies.partialLinkText.single = function(target, root) {
  *     search under.
  * @return {goog.array.ArrayLike} All matching elements, or an empty list.
  */
-bot.locators.strategies.partialLinkText.many = function(target, root) {
-  return bot.locators.strategies.linkText.many_(target, root, true);
+bot.locators.partialLinkText.many = function(target, root) {
+  return bot.locators.linkText.many_(target, root, true);
 };

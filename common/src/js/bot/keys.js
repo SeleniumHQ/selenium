@@ -1,3 +1,4 @@
+
 // Copyright 2010 WebDriver committers
 // Copyright 2010 Google Inc.
 //
@@ -30,6 +31,7 @@ goog.require('bot.events');
 goog.require('goog.events.EventType');
 goog.require('goog.events.KeyCodes');
 goog.require('goog.userAgent');
+
 
 /**
  * Map from certain characters to their keycodes.
@@ -99,6 +101,7 @@ bot.keys.STR_TO_KEYCODE_MAP_ = function() {
   return dict;
 }();
 
+
 /**
  * Converts a character into its keycode.  This does not yet handle localization
  * (international keyboards may have different keycodes).
@@ -115,6 +118,7 @@ bot.keys.keyCode_ = function(ch) {
 
   return bot.keys.STR_TO_KEYCODE_MAP_[ch] || ch.toUpperCase().charCodeAt(0);
 };
+
 
 /**
  * Send all the browser events related to a single keypress (e.g., keydown,
@@ -143,22 +147,21 @@ bot.keys.sendKey_ = function(element, keyCode, charCode) {
   bot.events.fire(element, goog.events.EventType.KEYDOWN, keyDownParam);
   bot.events.fire(element, goog.events.EventType.KEYPRESS, keyPressParam);
 
-  // Sending the key press event does not actually update input textboxes for
-  // non-Gecko browsers, so we update the input value manually.
-  if (!goog.userAgent.GECKO &&
-      charCode &&
-      element.tagName.toUpperCase() == 'INPUT') {
+  // Firing the key press event for character keys does not actually update
+  // form textboxes on non-Gecko browsers, so we append the character manually.
+  // Except for IE, we also need to fire the input event manually.
+  // TODO(user): Factor out isTextual as an argument to this function,
+  // so it isn't called on each iteration through the loop.
+  if (!goog.userAgent.GECKO && charCode && bot.action.isTextual(element)) {
     element.value += String.fromCharCode(charCode);
+    if (!goog.userAgent.IE) {
+      bot.events.fire(element, goog.events.EventType.INPUT);
+    }
   }
 
   bot.events.fire(element, goog.events.EventType.KEYUP, keyUpParam);
-
-  // Manually fire off events indicating that the element changed.
-  // On some browsers the key events above already do this.
-  if (!goog.userAgent.GECKO && !goog.userAgent.IE) {
-    bot.events.fire(element, goog.events.EventType.INPUT);
-  }
 };
+
 
 /**
  * Sends a series of keyboard events that type the passed in value into an

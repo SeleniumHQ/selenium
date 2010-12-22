@@ -183,8 +183,8 @@ function Selenium(browserbot) {
 
 
     // TODO(simon): This guard should not be necessary. Remove it,
-    if (bot && bot.locators && bot.locators.strategies && bot.locators.strategies.add) {
-      bot.locators.strategies.add('xpath', {
+    if (bot && bot.locators && bot.locators.add) {
+      bot.locators.add('xpath', {
         single: function(target, opt_root) {
           return browserbot.locateElementByXPath(target, opt_root);
         },
@@ -193,7 +193,7 @@ function Selenium(browserbot) {
         }
       });
 
-      bot.locators.strategies.add('css', {
+      bot.locators.add('css', {
         single: function(target, opt_root) {
           return browserbot.locateElementByCss(target, opt_root);
         },

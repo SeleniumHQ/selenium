@@ -233,7 +233,7 @@ limitations under the License.
 
     function testCanAddANewElementLocatingStrategy() {
       var expected = goog.dom.$('lion');
-      bot.locators.strategies.add('fixed', {
+      bot.locators.add('fixed', {
         single: function() {
           return expected;
         }
@@ -241,7 +241,7 @@ limitations under the License.
 
       var seen = bot.locators.findElement({fixed: 'ignored'});
 
-      assertEquals(expected, seen);        
+      assertEquals(expected, seen);
     }
 </script>
 </head>

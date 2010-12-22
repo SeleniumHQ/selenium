@@ -13,10 +13,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-goog.provide('bot.locators.strategies.id');
+goog.provide('bot.locators.id');
 
 goog.require('goog.array');
 goog.require('goog.dom');
+
 
 /**
  * Find an element by using the value of the ID attribute.
@@ -26,7 +27,7 @@ goog.require('goog.dom');
  * @return {Element} The first matching element found in the DOM, or null if no
  *     such element could be found.
  */
-bot.locators.strategies.id.single = function(target, root) {
+bot.locators.id.single = function(target, root) {
   var dom = goog.dom.getDomHelper(root);
 
   var e = dom.getElement(target);
@@ -46,6 +47,7 @@ bot.locators.strategies.id.single = function(target, root) {
   return (/**@type{Element}*/element);
 };
 
+
 /**
  * Find many elements by using the value of the ID attribute.
  * @param {string} target The id to search for.
@@ -53,7 +55,7 @@ bot.locators.strategies.id.single = function(target, root) {
  *     search under.
  * @return {!goog.array.ArrayLike} All matching elements, or an empty list.
  */
-bot.locators.strategies.id.many = function(target, root) {
+bot.locators.id.many = function(target, root) {
   var dom = goog.dom.getDomHelper(root);
   var elements = dom.getElementsByTagNameAndClass('*', null, root);
   return goog.array.filter(elements, function(e) {

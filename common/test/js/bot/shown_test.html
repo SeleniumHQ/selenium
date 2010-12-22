@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 <head>
-  <title>visibility_test.html</title>
+  <title>shown_test.html</title>
   <script src="../webdriver-bootstrap.js"></script>
   <script src="deps.js"></script>
   <script type="text/javascript">
@@ -113,25 +113,69 @@
       assertEquals("Argument to isShown must be of type Element", error.message);
     }
 
+
     function testOptionShownWhenEnclosingSelectShown() {
-      var option = findElement({id: 'showme'});
+      var option = findElement({id: 'shownOption'});
       assertTrue(isShown(option));
     }
 
+
     function testOptionNotShownWhenEnclosingSelectNotShown() {
-      var option = findElement({id: 'hideme'});
+      var option = findElement({id: 'hiddenOption'});
       assertFalse(isShown(option));
     }
 
+
     function testOrphanOptionIsNotShown() {
-      var option = findElement({id: 'orphan'});
+      var option = findElement({id: 'orphanOption'});
       // In some browsers, an orphan option is not rendered at all.
       assertFalse(!!option && isShown(option));
+    }
+
+    function testMapShownWhenImageShown() {
+      var map = findElement({id: 'shownMap'});
+      assertTrue(isShown(map));
+    }
+
+    function testMapNotShownWhenImageNotShown() {
+      var map = findElement({id: 'hiddenImageMap'});
+      assertFalse(isShown(map));
+    }
+
+    function testMapNotShownWhenNoImage() {
+      var map = findElement({id: 'noImageMap'});
+      assertFalse(isShown(map));
+    }
+
+    function testMapNotShownWhenNoName() {
+      var map = findElement({id: 'noNameMap'});
+      assertFalse(isShown(map));
+    }
+
+    function testAreaShownWhenEnclosingMapShown() {
+      var area = findElement({id: 'shownArea'});
+      assertTrue(isShown(area));
+    }
+
+    function testAreaNotShownWhenEnclosingMapNotShown() {
+      var area = findElement({id: 'hiddenArea'});
+      assertFalse(isShown(area));
+    }
+
+    function testOrphanAreaIsNotShown() {
+      var area = findElement({id: 'orphanArea'});
+      // In some browsers, an orphan area is not rendered at all.
+      assertFalse(!!area && isShown(area));
     }
 
     function testElementWithNestedBlockLevelElementShown() {
       var containsNestedBlock = findElement({id: 'containsNestedBlock'});
       assertTrue(isShown(containsNestedBlock));
+    }
+
+    function testZeroOpacityMakesElementNotShown() {
+      var transparent = findElement({id: 'transparent'});
+      assertFalse(isShown(transparent));
     }
   </script>
 
@@ -147,6 +191,10 @@
         }
         #nav li > ul { top: auto; left: auto; }
         #nav li:hover ul, #nav li.over ul{ display: block; background: white; }
+        #transparent {
+          opacity: 0; /* non IE */
+          filter:alpha(opacity=0); /* IE 6+ */
+        }
         #zeroheight, #zerowidth {
           border: 0;
           padding: 0;
@@ -165,6 +213,8 @@
 <body>
 <div>
     <p id="displayed">Displayed</p>
+
+    <p id="transparent">Transparent</p>
 
     <form action="#"><input type="hidden" name="hidden"/></form>
 
@@ -201,12 +251,24 @@
 <p id="suppressedParagraph" style="display: none">A paragraph suppressed using CSS display=none</p>
 
 <select>
-  <option id="showme" style="display:none;visibility:hidden;">
+  <option id="shownOption" style="display:none;visibility:hidden;">
 </select>
 <select style="display:none;">
-  <option id="hideme">
+  <option id="hiddenOption">
 </select>
-<option id="orphan">
+<option id="orphanOption"></option>
+
+<img usemap="#shownMap" src="map.png">
+<map id="shownMap" name="shownMap">
+  <area id="shownArea" shape="rect" coords="0,0,1,1" href="#">
+</map>
+<img usemap="#hiddenImageMap" src="map.png" style="visibility: hidden">
+<map id="hiddenImageMap" name="hiddenImageMap">
+  <area id="hiddenArea" shape="rect" coords="0,0,1,1" href="#">
+</map>
+<map id="noImageMap" name="noImageMap"></map>
+<map id="noNameMap"></map>
+<area id="orphanArea" shape="rect" coords="0,0,1,1" href="#"></area>
 
 <a id="containsNestedBlock" href="#"><div style="display:block;">text</div></a>
 

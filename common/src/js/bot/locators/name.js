@@ -13,7 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-goog.provide('bot.locators.strategies.name');
+goog.provide('bot.locators.name');
 
 goog.require('goog.array');
 goog.require('goog.dom');
@@ -29,7 +29,7 @@ goog.require('goog.dom');
  * @return {Element} The first matching element found in the DOM, or null if no
  *     such element could be found.
  */
-bot.locators.strategies.name.single = function(target, root) {
+bot.locators.name.single = function(target, root) {
   var dom = goog.dom.getDomHelper(root);
   var allElements = dom.getElementsByTagNameAndClass('*', null, root);
   var element = goog.array.find(allElements, function(element) {
@@ -47,7 +47,7 @@ bot.locators.strategies.name.single = function(target, root) {
  *     search under.
  * @return {!goog.array.ArrayLike} All matching elements, or an empty list.
  */
-bot.locators.strategies.name.many = function(target, root) {
+bot.locators.name.many = function(target, root) {
   var dom = goog.dom.getDomHelper(root);
   var allElements = dom.getElementsByTagNameAndClass('*', null, root);
   return goog.array.filter(allElements, function(element) {

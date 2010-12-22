@@ -334,6 +334,20 @@
       assertEquals('', goog.dom.$('textField').value);
     }
 
+    function testClearingAnEmptyPasswordElementShouldNoOp() {
+      goog.dom.$('passwordField').value = '';
+      doNotExpectChangeEvent(goog.dom.$('passwordField'));
+      bot.action.clear(goog.dom.$('passwordField'));
+    }
+
+    function testClearingAPasswordInputElement() {
+      goog.dom.$('passwordField').value = 'foobar';
+      expectChangeEvent(goog.dom.$('passwordField'));
+      bot.action.clear(goog.dom.$('passwordField'));
+      assertChangeFired();
+      assertEquals('', goog.dom.$('passwordField').value);
+    }
+
     function testClearingAnEmptyTextAreaElementShouldNoOp() {
       goog.dom.$('textArea').value = '';
       doNotExpectChangeEvent(goog.dom.$('textArea'));
@@ -354,8 +368,12 @@
       assertThrows(goog.partial(bot.action.clear, element));
     }
 
-    function testShouldNotBeAbleToClearAReadOnlyInputElement() {
+    function testShouldNotBeAbleToClearAReadOnlyTextInput() {
       assertElementCannotBeCleared(goog.dom.$('readOnlyTextField'));
+    }
+
+    function testShouldNotBeAbleToClearAReadOnlyPasswordInput() {
+      assertElementCannotBeCleared(goog.dom.$('readOnlyPasswordField'));
     }
 
     function testShouldNotBeAbleToClearAReadOnlyTextArea() {
@@ -479,8 +497,18 @@
     </div>
 
     <div>
-      <label for="textArea">Read-Only Text area</label>
+      <label for="readOnlyTextArea">Read-Only Text area</label>
       <textarea id="readOnlyTextArea" readonly="readonly"></textarea>
+    </div>
+
+    <div>
+      <label for="passwordField">Password field</label>
+      <input type="password" id="passwordField">
+    </div>
+
+    <div>
+      <label for="readOnlyPasswordField">Read-Only Password field</label>
+      <input type="password" id="readOnlyPasswordField" readonly="readonly">
     </div>
 
     <div>

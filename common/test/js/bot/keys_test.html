@@ -2,7 +2,9 @@
 <html>
 <head>
   <title>keys_test</title>
-  <script type="text/javascript" src="../webdriver-bootstrap.js"></script>
+  <script type="text/javascript"
+          src="../webdriver-bootstrap.js"></script>
+  <script type="text/javascript" src="deps.js"></script>
   <script type="text/javascript">
     goog.require('bot.events');
     goog.require('bot.keys');
@@ -13,15 +15,13 @@
   </script>
   <script type="text/javascript">
     /**
-     * Sets the value of the given element to its current value plus one.  If
-     * the current value is not a number, replaces it with "1".
-     * @param {string} element_id The xpath of the element whose value
-     *     we increment.
+     * Sets the value of the given count box to its current value plus one.
+     * If the current value is not a number, replaces it with "1".
      */
-    function incrCount(element_id) {
-      element = document.getElementById(element_id);
-      var curVal = element.value ? parseInt(element.value) : 0;
-      element.value = curVal + 1;
+    function incrCount() {
+      var countBox = document.getElementById('change_count');
+      var curVal = countBox.value ? parseInt(countBox.value) : 0;
+      countBox.value = curVal + 1;
     }
 
     /*
@@ -32,13 +32,17 @@
      * @param {string} input Value to type into textbox.
      */
     function runTypingTest(input) {
-      var inputBox = document.getElementById('textbox');
-      var countBox = document.getElementById('textbox_count');
-      inputBox.value = '';
-      countBox.value = '';
-      bot.keys.type(inputBox, input);
-      assertEquals(input, inputBox.value);
-      assertEquals('' + input.length, countBox.value);
+      var inputIds = ['textbox', 'password', 'textarea'];
+      var countBox = document.getElementById('change_count');
+
+      for (var i = 0; i < inputIds.length; i++) {
+        var inputBox = document.getElementById(inputIds[i]);
+        inputBox.value = '';
+        countBox.value = '';
+        bot.keys.type(inputBox, input);
+        assertEquals(input, inputBox.value);
+        assertEquals('' + input.length, countBox.value);
+      }
     }
 
     function testLowerCase() {
@@ -63,9 +67,15 @@
   fire. <br>
   <form action="">
     <input type="text" id="textbox"
-           oninput="incrCount('textbox_count');"
-           onpropertychange="incrCount('textbox_count');">
-    <input type="text" id="textbox_count">
+           oninput="incrCount();"
+           onpropertychange="incrCount();">
+    <input type="password" id="password"
+           oninput="incrCount();"
+           onpropertychange="incrCount();">
+    <textarea id="textarea"
+           oninput="incrCount();"
+           onpropertychange="incrCount();"></textarea>
+    <input type="text" id="change_count">
   </form>
 </body>
 </html>

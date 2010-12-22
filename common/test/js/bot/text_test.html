@@ -15,6 +15,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 -->
+<!DOCTYPE html>
 <html>
 <head>
   <title>text_test.html</title>
@@ -142,8 +143,10 @@ limitations under the License.
 
     function testGetVisibleTextShouldNotAddExtraSpaces() {
       var text = getVisibleTextByElementId("descartes");
+      var text2 = getVisibleTextByElementId("abc");
 
       assertEquals("Dubito, ergo cogito, ergo sum.", text);
+      assertEquals("a bc", text2);
     }
 
     function testGetVisibleTestGetTextWithLineBreakForInlineElement() {
@@ -177,6 +180,12 @@ limitations under the License.
       assertEquals("this is the second element", text);
     }
 
+    function testTransparentTextIsIgnored() {
+      var text = getVisibleTextByElementId("opaque");
+
+      assertEquals("Some text", text);
+    }
+
     function assertContains(expectedText, text) {
       assertTrue("Text [" + text + "] does not contain [" + expectedText + "]",
         text.indexOf(expectedText) >= 0);
@@ -193,6 +202,14 @@ limitations under the License.
     }
 
   </script>
+
+  <style type="text/css">
+    .transparent {
+      opacity: 0; /* non IE */
+      filter:alpha(opacity=0); /* IE 6+ */
+    }
+  </style>
+
 </head>
 <body>
   <p id="oneline">A single line of text</p>
@@ -271,7 +288,11 @@ limitations under the License.
   </table>
 
   <span><strong id="descartes">Dubito, <em>ergo cogito</em>, ergo sum.</strong></span>
+  <span id="abc"><b>a</b> <b>b</b>c</span>
 
   <a id="id2" >this is the&nbsp;<b>second</b> <span>element</span></a>
+
+  <div id="opaque">Some <span class="transparent">transparent</span> text</p></div>
+
 </body>
 </html>

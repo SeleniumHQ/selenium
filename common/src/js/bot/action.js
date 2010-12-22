@@ -1,3 +1,4 @@
+
 // Copyright 2010 WebDriver committers
 // Copyright 2010 Google Inc.
 //
@@ -65,23 +66,10 @@ bot.action.checkEnabled_ = function(element) {
 
 
 /**
- * List of input types that support the "selected" or "checked" property.
- * @type {!Array.<string>}
- * @const
- * @private
- */
-bot.action.SELECTABLE_TYPES_ = [
-  'checkbox',
-  'radio'
-];
-
-
-/**
  * @param {!Element} element The element to check.
  * @return {boolean} Whether the element could be checked or selected.
- * @private
  */
-bot.action.isSelectable_ = function(element) {
+bot.action.isSelectable = function(element) {
   var tagName = element.tagName.toUpperCase();
 
   if (tagName == goog.dom.TagName.OPTION) {
@@ -90,7 +78,29 @@ bot.action.isSelectable_ = function(element) {
 
   if (tagName == goog.dom.TagName.INPUT) {
     var type = element.type.toLowerCase();
-    return goog.array.contains(bot.action.SELECTABLE_TYPES_, type);
+    return type == 'checkbox' || type == 'radio';
+  }
+
+  return false;
+};
+
+
+/**
+ * TODO(user): Add support for contentEditable and designMode elements.
+ *
+ * @param {!Element} element The element to check.
+ * @return {boolean} Whether the element accepts user-typed text.
+ */
+bot.action.isTextual = function(element) {
+  var tagName = element.tagName.toUpperCase();
+
+  if (tagName == goog.dom.TagName.TEXTAREA) {
+    return true;
+  }
+
+  if (tagName == goog.dom.TagName.INPUT) {
+    var type = element.type.toLowerCase();
+    return type == 'text' || type == 'password';
   }
 
   return false;
@@ -102,14 +112,12 @@ bot.action.isSelectable_ = function(element) {
  * @return {boolean} Whether the element is checked or selected.
  */
 bot.action.isSelected = function(element) {
-  if (!bot.action.isSelectable_(element)) {
+  if (!bot.action.isSelectable(element)) {
     throw new bot.Error(bot.ErrorCode.ELEMENT_NOT_SELECTABLE,
         'Element is not selectable');
   }
 
   var propertyName = 'selected';
-  var tagName = element.tagName.toUpperCase();
-
   var type = element.type && element.type.toLowerCase();
   if ('checkbox' == type || 'radio' == type) {
     propertyName = 'checked';
@@ -292,26 +300,25 @@ bot.action.focusOnElement = function(element, opt_activeElement) {
  * @param {!Element} element The element to clear.
  */
 bot.action.clear = function(element) {
-  var tagName = element.tagName.toUpperCase();
-  if (tagName == goog.dom.TagName.TEXTAREA ||
-      (tagName == goog.dom.TagName.INPUT && element.type == 'text')) {
-
-    if (bot.dom.getProperty(element, 'readOnly')) {
-      throw new bot.Error(bot.ErrorCode.INVALID_ELEMENT_STATE,
-          'Element is readonly and may not be cleared.');
-    }
-
-    if (element.value != '') {
-      bot.action.checkShown_(element);
-      bot.action.checkEnabled_(element);
-      bot.action.focusOnElement(element);
-
-      element.value = '';
-      bot.events.fire(element, goog.events.EventType.CHANGE);
-    }
+  if (!bot.action.isTextual(element)) {
+    return;
   }
 
-  // TODO(user): Support passwords, checkboxes
+  if (bot.dom.getProperty(element, 'readOnly')) {
+    throw new bot.Error(bot.ErrorCode.INVALID_ELEMENT_STATE,
+        'Element is readonly and may not be cleared.');
+  }
+
+  if (element.value != '') {
+    bot.action.checkShown_(element);
+    bot.action.checkEnabled_(element);
+    bot.action.focusOnElement(element);
+
+    element.value = '';
+    bot.events.fire(element, goog.events.EventType.CHANGE);
+  }
+
+  // TODO(user): Support checkboxes
   // TODO(user): Fail out if clearing a file input
   // TODO(user): Support multiselect (option & optgroup & select)
 };
@@ -326,6 +333,7 @@ bot.action.isForm_ = function(node) {
   return !!node && node.nodeType == goog.dom.NodeType.ELEMENT &&
       node.tagName.toUpperCase() == goog.dom.TagName.FORM;
 };
+
 
 /**
  * Submits the form containing the given element. Note this function triggers
@@ -349,6 +357,7 @@ bot.action.submit = function(element) {
     form.submit();
   }
 };
+
 
 /**
  * Simulates a click sequence on the given {@code element}. A click sequence
