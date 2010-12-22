@@ -21,11 +21,11 @@
 goog.provide('bot.dom');
 
 goog.require('bot');
-goog.require('bot.locators.xpath');
 goog.require('goog.array');
 goog.require('goog.dom.NodeIterator');
 goog.require('goog.dom.NodeType');
 goog.require('goog.dom.TagName');
+goog.require('goog.dom');
 goog.require('goog.math.Size');
 goog.require('goog.string');
 goog.require('goog.style');
@@ -373,7 +373,12 @@ bot.dom.isShown = function(elem) {
     // TODO(user): Avoid brute-force search once a cross-browser xpath
     // locator is available.
     if (mapDoc['evaluate']) {
-      var imageXpath = '//*[@usemap = "#' + elem.name + '"]';
+      // The "//*" XPath syntax can confuse the closure compiler, so we use
+      // the "/descendant::*" syntax instead.
+      // TODO(user): Try to find a reproducible case for the compiler bug.
+      // TODO(user): Restrict to applet, img, input:image, and object nodes.
+      var imageXpath = '/descendant::*[@usemap = "#' + elem.name + '"]';
+
       // TODO(user): Break dependency of bot.locators on bot.dom,
       // so bot.locators.findElement can be called here instead.
       mapImage = bot.locators.xpath.single(imageXpath, mapDoc);
