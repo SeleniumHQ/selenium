@@ -314,7 +314,10 @@ task "rename_core" => "build/ide/selenium"
 task :javadocs => [:common, :firefox, "//htmlunit", :jobbie, :remote, :support, :chrome, :selenium] do
   mkdir_p "build/javadoc"
    sourcepath = ""
-   classpath = "third_party/java/hamcrest/hamcrest-all-1.1.jar"
+   classpath = '.'
+   Dir["third_party/java/*/*.jar"].each do |jar|
+     classpath << ":" + jar
+   end
    %w(common firefox jobbie htmlunit support remote/common remote/client chrome selenium).each do |m|
      sourcepath += ":#{m}/src/java"
    end
