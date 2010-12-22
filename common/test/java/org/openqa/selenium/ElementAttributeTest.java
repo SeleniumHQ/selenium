@@ -40,7 +40,7 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
     assertThat(attribute, is(nullValue()));
   }
 
-  @Ignore(value = {FIREFOX, SELENESE, IE}, reason = "Issue 758")
+  @Ignore(value = {FIREFOX, SELENESE, IE, IPHONE}, reason = "Issue 758")
   public void testShouldReturnNullWhenGettingSrcAttributeOfInvalidImgTag() {
     driver.get(pages.simpleTestPage);
     WebElement img = driver.findElement(By.id("invalidImgTag"));
