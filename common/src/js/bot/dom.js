@@ -21,6 +21,7 @@
 goog.provide('bot.dom');
 
 goog.require('bot');
+goog.require('bot.locators.xpath');
 goog.require('goog.array');
 goog.require('goog.dom.NodeIterator');
 goog.require('goog.dom.NodeType');
