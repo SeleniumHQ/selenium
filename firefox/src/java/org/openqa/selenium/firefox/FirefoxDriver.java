@@ -150,6 +150,10 @@ public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot {
     String suggestedProfile = System.getProperty("webdriver.firefox.profile");
     if (profileToUse == null && suggestedProfile != null) {
       profileToUse = new ProfilesIni().getProfile(suggestedProfile);
+      if (profileToUse == null) {
+        throw new WebDriverException("Firefox profile '" + suggestedProfile 
+                + "' named in system property 'webdriver.firefox.profile' not found");	
+      }
     } else if (profileToUse == null) {
       profileToUse = new FirefoxProfile();
     }
