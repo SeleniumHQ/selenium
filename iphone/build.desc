@@ -2,3 +2,22 @@ java_library(name = "iphone",
   srcs = ["src/java/**/*.java"],
   deps = ["//remote/client"]
   )
+
+js_fragment_header(name = "atoms",
+  deps = [
+    "//common/src/js/webdriver:clear",
+    "//common/src/js/webdriver:click",
+    "//common/src/js/webdriver:execute_script",
+    "//common/src/js/webdriver:find_element",
+    "//common/src/js/webdriver:find_elements",
+    "//common/src/js/webdriver:get_attribute",
+    "//common/src/js/webdriver:get_location",
+    "//common/src/js/webdriver:get_text",
+    "//common/src/js/webdriver:is_displayed",
+    "//common/src/js/webdriver:is_enabled",
+    "//common/src/js/webdriver:is_selected",
+    "//common/src/js/webdriver:set_selected",
+    "//common/src/js/webdriver:submit",
+    "//common/src/js/webdriver:toggle",
+    "//common/src/js/webdriver:type",
+  ])

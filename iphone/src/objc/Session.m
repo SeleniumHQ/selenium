@@ -19,7 +19,6 @@
 #import "Session.h"
 #import "Cookie.h"
 #import "ElementStore.h"
-#import "ElementStore+FindElement.h"
 #import "JSONRESTResource.h"
 #import "HTTPJSONResponse.h"
 #import "HTTPResponse+Utility.h"
@@ -83,13 +82,6 @@ static NSString* const SESSION_STORAGE = @"sessionStorage";
                               POST:@selector(setURL:)
                           withName:@"url"];
   
-  // Evaluate the given javascript string. If the request causes a new page to
-  // load, block until that loading is complete.
-  // Note that this is 'raw' jsEval - as opposed to /execute below.
-  [self setResourceToViewMethodGET:NULL
-                              POST:@selector(jsEvalAndBlock:)
-                          withName:@"eval"];
-  
   // The current title of the web pane.
   [self setResourceToViewMethodGET:@selector(currentTitle)
                               POST:NULL
@@ -97,17 +89,17 @@ static NSString* const SESSION_STORAGE = @"sessionStorage";
   
   // Go back.
   [self setResourceToViewMethodGET:NULL
-                              POST:@selector(back)
+                              POST:@selector(back:)
                           withName:@"back"];
   
   // Go forward.
   [self setResourceToViewMethodGET:NULL
-                              POST:@selector(forward)
+                              POST:@selector(forward:)
                           withName:@"forward"];
   
   // Refresh the page.
   [self setResourceToViewMethodGET:NULL
-                              POST:@selector(refresh)
+                              POST:@selector(refresh:)
                           withName:@"refresh"];
   
   // Get the loaded HTML
@@ -119,13 +111,7 @@ static NSString* const SESSION_STORAGE = @"sessionStorage";
   [self setResourceToViewMethodGET:@selector(screenshot)
                               POST:NULL
                           withName:@"screenshot"];
-  
-  // Load firebug into the webview. This doesn't currently work.
-  // TODO(josephg): find out why firebug doesn't load and fix it.
-  [self setResourceToViewMethodGET:NULL
-                              POST:@selector(addFirebug)
-                          withName:@"firebug"];
-  
+
   // HTML5 Local WebStorage
   [self setResource:[Storage storageWithSessionId:sessionId_ 
                                           andType:LOCAL_STORAGE]
@@ -155,17 +141,12 @@ static NSString* const SESSION_STORAGE = @"sessionStorage";
   [executeScript setAllowOptionalArguments:YES];
   [self setResource:executeScript withName:@"execute"];
   
-  // /element will be an ElementStore virtual directory. We also forward 
-  // /elements to the element store - getting from there returns multiple
-  // element results.
-  elementStore_ = [[ElementStore alloc] init];
-  [self setResource:elementStore_ withName:@"element"];
-  [self setResource:[WebDriverResource
-                     resourceWithTarget:elementStore_
-                              GETAction:NULL
-                             POSTAction:@selector(findElements:)]
-           withName:@"elements"];
-  
+  // |ElementStore| handles the /element virtual directory and all of its
+  // children. It also installs itself on this session for handling the
+  // /elements directory, which is used to find multiple DOM elements on the
+  // page.
+  elementStore_ = [ElementStore elementStoreForSession:self];
+
   [self setResource:[Cookie cookieWithSessionId:sessionId_]
            withName:@"cookie"];
   
@@ -204,7 +185,6 @@ static NSString* const SESSION_STORAGE = @"sessionStorage";
 - (void)deleteSession {
   NSLog( @"Delete session: %d", sessionId_ );
   [contents removeAllObjects];
-  [elementStore_ release];
   // Tell the session root to remove this resource.
   [sessionRoot_ deleteSessionWithId:sessionId_];
 }
@@ -231,6 +211,9 @@ static NSString* const SESSION_STORAGE = @"sessionStorage";
 }
 
 - (id<HTTPResource>)elementWithQuery:(NSString *)query {
+  // Make sure the web view has finished all pending loads before continuing.
+  [[self viewController] waitForLoad];
+
   id<HTTPResource> resource = [super elementWithQuery:query];
   [self configureResource:resource];
   return resource;

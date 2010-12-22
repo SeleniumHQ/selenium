@@ -24,6 +24,16 @@ class JavascriptMappings
     fun.add_mapping("js_fragment", Javascript::AddDependencies.new)
     fun.add_mapping("js_fragment", Javascript::CompileFragment.new)
     fun.add_mapping("js_fragment", Javascript::CreateHeader.new)
+
+    # Compiles a list of |js_fragments| into a C++ header file.
+    # Arguments:
+    #   name - A unique name for the build target.
+    #   srcs - A list of js_fragment dependencies that should be compiled.
+    fun.add_mapping("js_fragment_header", Javascript::CheckFragmentPreconditions.new)
+    fun.add_mapping("js_fragment_header", Javascript::CreateTask.new)
+    fun.add_mapping("js_fragment_header", Javascript::CreateTaskShortName.new)
+    fun.add_mapping("js_fragment_header", Javascript::AddDependencies.new)
+    fun.add_mapping("js_fragment_header", Javascript::ConcatenateHeaders.new)
   end
 end
 
@@ -85,6 +95,13 @@ module Javascript
     end
   end
   
+  class CheckFragmentPreconditions
+    def handle(fun, dir, args)
+      raise StandardError, ":name must be set" if args[:name].nil?
+      raise StandardError, ":deps must be set" if args[:deps].nil?
+    end
+  end
+
   class CreateTaskShortName < BaseJs
     def handle(fun, dir, args)
       name = task_name(dir, args[:name])
@@ -232,6 +249,85 @@ module Javascript
     end
   end
 
+  class GenerateHeader < BaseJs
+
+    MAX_LINE_LENGTH = 80
+    MAX_STR_LENGTH = MAX_LINE_LENGTH - "    L\"\",\n".length
+
+    def write_atom_string_literal(to_file, dir, atom)
+      # Check that the |atom| task actually generates a JavaScript file.
+      atom_task = task_name(dir, atom)
+      atom_file = Rake::Task[atom_task].out
+      raise StandardError,
+          "#{atom_file} is not a JavaScript file" unless atom_file =~ /\.js$/
+
+      # Convert camelCase and snake_case to BIG_SNAKE_CASE
+      uc = File.basename(atom_file).sub(/\.js$/, '')
+      uc.gsub!(/(.)([A-Z][a-z]+)/, '\1_\2')
+      uc.gsub!(/([a-z0-9])([A-Z])/, '\1_\2')
+      atom_upper = uc.upcase
+
+      # Each fragment file should be small (<= 20KB), so just read it all in.
+      contents = IO.read(atom_file).strip
+
+      # Escape the contents of the file so it can be stored as a literal.
+      contents.gsub!(/\\/, "\\\\\\")
+      contents.gsub!(/\t/, "\\t")
+      contents.gsub!(/\n/, "\\n")
+      contents.gsub!(/\f/, "\\f")
+      contents.gsub!(/\r/, "\\r")
+      contents.gsub!(/"/, "\\\"")
+      contents.gsub!(/'/, "'")
+
+      to_file << "\n"
+      to_file << "const wchar_t* const #{atom_upper}[] = {\n"
+
+      # Make the header file play nicely in a terminal: limit lines to 80
+      # characters, but make sure we don't cut off a line in the middle
+      # of an escape sequence.
+      while contents.length > MAX_STR_LENGTH do
+        diff = MAX_STR_LENGTH
+        diff -= 1 while contents[diff-1, 1] =~ /\\/
+
+        line = contents[0, diff]
+        contents.slice!(0..diff - 1)
+        to_file << "    L\"#{line}\",\n"
+      end
+
+      to_file << "    L\"#{contents}\",\n" if contents.length > 0
+      to_file << "    NULL\n"
+      to_file << "};\n"
+    end
+
+    def generate_header(dir, name, task_name, output, js_files)
+      file output => js_files do
+        puts "Preparing: #{task_name} as #{output}"
+        define_guard = "#{name.upcase}_H__"
+
+        output_dir = File.dirname(output)
+        mkdir_p output_dir unless File.exists?(output_dir)
+
+        File.open(output, 'w') do |out|
+          out << "/* AUTO GENERATED - DO NOT EDIT BY HAND */\n"
+          out << "#ifndef #{define_guard}\n"
+          out << "#define #{define_guard}\n"
+          out << "\n"
+          out << "#include <stddef.h>  // For wchar_t.\n"
+          out << "\n"
+          out << "namespace webdriver {\n"
+
+          js_files.each do |js_file|
+            write_atom_string_literal(out, dir, js_file)
+          end
+
+          out << "}\n"
+          out << "#endif  // #{define_guard}\n"
+        end
+      end
+    end
+  end
+
+  # TODO(jleyba): Update this to use GenerateHeader
   class CreateHeader < BaseJs
     def handle(fun, dir, args)
        js = js_name(dir, args[:name])
@@ -268,6 +364,16 @@ module Javascript
 
        Rake::Task[out].out = out
        Rake::Task[task_name].out = out
+    end
+  end
+
+  class ConcatenateHeaders < GenerateHeader
+    def handle(fun, dir, args)
+      js = js_name(dir, args[:name])
+      output = js.sub(/\.js$/, '.h')
+      task_name = task_name(dir, args[:name])
+      generate_header(dir, args[:name], task_name, output, args[:deps])
+      task task_name => [output]
     end
   end
 end

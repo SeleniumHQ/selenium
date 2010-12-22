@@ -99,8 +99,8 @@ static const NSString* kGeoAltitudeKey = @"altitude";
 }
 
 - (BOOL)webView:(UIWebView *)webView 
-   shouldStartLoadWithRequest:(NSURLRequest *)request
-   navigationType:(UIWebViewNavigationType)navigationType {
+    shouldStartLoadWithRequest:(NSURLRequest *)request
+    navigationType:(UIWebViewNavigationType)navigationType {
   NSLog(@"shouldStartLoadWithRequest");
   return YES;
 }
@@ -222,21 +222,21 @@ static const NSString* kGeoAltitudeKey = @"altitude";
                 waitUntilLoad:YES];
 }
 
-- (void)back {
+- (void)back:(NSDictionary*)ignored {
   [self describeLastAction:@"back"];
   [self performSelectorOnView:@selector(goBack)
                    withObject:nil
                 waitUntilLoad:YES];
 }
 
-- (void)forward {
+- (void)forward:(NSDictionary*)ignored {
   [self describeLastAction:@"forward"];
   [self performSelectorOnView:@selector(goForward)
                    withObject:nil
                 waitUntilLoad:YES];
 }
 
-- (void)refresh {
+- (void)refresh:(NSDictionary*)ignored {
   [self describeLastAction:@"refresh"];
   [self performSelectorOnView:@selector(reload)
                    withObject:nil
@@ -298,60 +298,12 @@ static const NSString* kGeoAltitudeKey = @"altitude";
   return [[lastJSResult_ copy] autorelease];
 }
 
-- (NSString *)jsEvalAndBlock:(NSString *)format, ... {
-  if (format == nil) {
-    [NSException raise:@"invalidArguments" format:@"Invalid arguments for jsEval"];
-  }
-  
-  va_list argList;
-  va_start(argList, format);
-  NSString *script = [[[NSString alloc] initWithFormat:format
-                                             arguments:argList]
-                      autorelease];
-  va_end(argList);
-  
-  NSString *result = [self jsEval:@"%@", script];
-  
-  [self waitForLoad];
-  
-  return result;
-}
-
-- (BOOL)testJsExpression:(NSString *)format, ... {
-  if (format == nil) {
-    [NSException raise:@"invalidArguments" format:@"Invalid arguments for jsEval"];
-  }
-  
-  va_list argList;
-  va_start(argList, format);
-  NSString *script = [[[NSString alloc] initWithFormat:format
-                                             arguments:argList]
-                      autorelease];
-  va_end(argList);
-  
-  return [[self jsEval:@"!!(%@)", script] isEqualToString:@"true"];
-}
-
-- (float)floatProperty:(NSString *)property ofObject:(NSString *)jsObject {
-  return [[self jsEval:@"%@.%@", jsObject, property] floatValue];
-}
-
-- (BOOL)jsElementIsNullOrUndefined:(NSString *)expression {
-  NSString *isNull = [self jsEval:@"%@ === null || %@ === undefined",
-                      expression, expression];
-  return [isNull isEqualToString:@"true"];
-}
-
 - (NSString *)currentTitle {
   return [self jsEval:@"document.title"];
 }
 
 - (NSString *)source {
-  return [self jsEval:@"(function() {\n"
-          "  var div = document.createElement('div');\n"
-          "  div.appendChild(document.documentElement.cloneNode(true));\n"
-          "  return div.innerHTML;\n"
-          "})();"];
+  return [self jsEval:@"new XMLSerializer().serializeToString(document);"];
 }
 
 // Takes a screenshot.
@@ -425,23 +377,6 @@ static const NSString* kGeoAltitudeKey = @"altitude";
   
   NSLog(@"simulating a click at %@", NSStringFromCGPoint(pointInViewSpace));
   [[self webView] simulateTapAt:pointInViewSpace];
-}
-
-// I don't know why, but this doesn't work in the current version of
-// mobile safari. (2.2 firmware)
-- (void)addFirebug {
-  // This is the http://getfirebug.com/lite.html bookmarklet
-  [self jsEval:
-   @"var firebug=document.createElement('script');\r"
-   "firebug.setAttribute('src','http://getfirebug.com/releases/lite/1.2/firebug-lite-compressed.js');\r"
-   "document.body.appendChild(firebug);\r"
-   "(function() {\r"
-   "  if(window.firebug.version) {\r"
-   "    firebug.init();\r"
-   "  } else {\r"
-   "  setTimeout(arguments.callee);\r"
-   "  }\r"
-   "})();"];
 }
 
 // Gets the location

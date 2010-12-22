@@ -24,42 +24,39 @@
 
 // This represents the /:session/element 'directory'.
 // All the elements are in /element/X where X is the element's id.
-// The elements are kept in a JS array on the webpage.
-// TODO: Fix memory leak of elements never being destroyed when new pages
-// are navigated to.
+// Elements are cached in a JS object on the current page, ensuring the cache is
+// cleared whenever a new page is loaded.  The keyword "active" is a special
+// element ID reserved for specifying the element which has focus on the page.
 @interface ElementStore : HTTPVirtualDirectory {
- @private
-  int nextElementId_;
-
  @protected
   Session* session_;
-
-  // This is not actually an HTMLElement, but for the purposes of searching
-  // for elements across the whole web page, I'm going to treat it as one.
-  Element *document_;
 }
 
-@property (nonatomic, readonly) Element *document;
 @property (nonatomic, readonly, retain) Session *session;
 
 - (id) initWithSession:(Session*)session;
 
-// Make an element store.
-+ (ElementStore *)elementStore;
+// Make an element store.  Installs itself as the /element and /elements
+// virtual directory handler for the given |session|.
++ (ElementStore *)elementStoreForSession:(Session*)session;
 
-// Create an element from a JS object and add it to the REST interface.
-// The input is a javascript expression which will be evaluated multiple times.
-// You probably should store your complex expression in a variable and pass in
-// that.
-- (Element *)elementFromJSObject:(NSString *)jsObject;
-// Create an array of obj-c elements from the elements stored in the javascript
-// array called container.
-- (NSArray *)elementsFromJSArray:(NSString *)container;
+// Locates the element that currently has focus on the page, falling back to
+// the body element if it cannot be determined.
+// Returns the WebElement JSON dictionary for the located element.
+- (NSDictionary*) getActiveElement:(NSDictionary *)ignored;
 
-// Get javascript locator to access an element with the given id.
-- (NSString *)jsLocatorForElementWithId:(NSString *)elementId;
+// Locates the first element on the page that matches the given |query|. The
+// |query| must have two keys:
+// @li "using" - The locator strategy to use.
+// @li "value" - The value to search for using the strategy.
+// Returns the JSON representation of the located element.
+-(NSDictionary*) findElement:(NSDictionary*)query;
 
-// Get javascript locator for given element
-- (NSString *)jsLocatorForElement:(Element *)element;
+// Locates every element on the page matching the given |query|. The |query|
+// must have two keys:
+// @li "using" - The locator strategy to use.
+// @li "value" - The value to search for using the strategy.
+// Returns an array of elements in their JSON representation.
+-(NSArray*) findElements:(NSDictionary*)query;
 
 @end

@@ -47,6 +47,7 @@
                                               andName:(NSString *)name;
 - (id)initForElement:(Element *)element
              andName:(NSString *)name;
-- (NSString *)getAttribute;
+
+- (id)getAttribute;
 
 @end

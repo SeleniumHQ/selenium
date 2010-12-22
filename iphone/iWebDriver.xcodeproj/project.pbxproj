@@ -20,8 +20,13 @@
 		289233AE0DB2D0DB0083E9F9 /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 289233A90DB2D0DB0083E9F9 /* MainViewController.m */; };
 		289233AF0DB2D0DB0083E9F9 /* RootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 289233AB0DB2D0DB0083E9F9 /* RootViewController.m */; };
 		289233B00DB2D0DB0083E9F9 /* FlipsideViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 289233AD0DB2D0DB0083E9F9 /* FlipsideViewController.m */; };
+		64084BF312B6C6A10049D2FB /* Storage.m in Sources */ = {isa = PBXBuildFile; fileRef = 731C4510128BBF4000261249 /* Storage.m */; };
+		64084BF412B6C6C90049D2FB /* Database.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D14FCC1289B6540074E63B /* Database.m */; };
+		64084BF512B6C6C90049D2FB /* GeoLocation.m in Sources */ = {isa = PBXBuildFile; fileRef = 731C450E128BBF4000261249 /* GeoLocation.m */; };
 		642C489F112260150064EB9C /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 642C489E112260150064EB9C /* QuartzCore.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		642C48A4112260480064EB9C /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 642C48A3112260480064EB9C /* QuartzCore.framework */; };
+		643822F712C032F600F0C7CC /* Element.mm in Sources */ = {isa = PBXBuildFile; fileRef = 643822F612C032F600F0C7CC /* Element.mm */; };
+		643822F812C032F600F0C7CC /* Element.mm in Sources */ = {isa = PBXBuildFile; fileRef = 643822F612C032F600F0C7CC /* Element.mm */; };
 		644F14ED10AB4EF400858ECA /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 644F14EC10AB4EF400858ECA /* Settings.bundle */; };
 		649AB342121D114A007FE128 /* Timeouts.m in Sources */ = {isa = PBXBuildFile; fileRef = 649AB341121D114A007FE128 /* Timeouts.m */; };
 		649AB343121D114A007FE128 /* Timeouts.m in Sources */ = {isa = PBXBuildFile; fileRef = 649AB341121D114A007FE128 /* Timeouts.m */; };
@@ -32,6 +37,18 @@
 		649EDC0610C5986B00E66D06 /* WebDriverPreferences.m in Sources */ = {isa = PBXBuildFile; fileRef = FD61E6A60FE151D2006E1274 /* WebDriverPreferences.m */; };
 		649EDC8510C5988000E66D06 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
 		649EDC8610C5989200E66D06 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = FD61E69D0FE151A4006E1274 /* libsqlite3.dylib */; };
+		64A2262E12C1828000537E73 /* NSData+Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = 64A2262D12C1828000537E73 /* NSData+Base64.m */; };
+		64A2262F12C1828000537E73 /* NSData+Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = 64A2262D12C1828000537E73 /* NSData+Base64.m */; };
+		64BFFCBC12B6EC0D00FEB710 /* NSObject+SBJSON.m in Sources */ = {isa = PBXBuildFile; fileRef = FD90B64C111690D500BE94EA /* NSObject+SBJSON.m */; };
+		64BFFCBD12B6EC0D00FEB710 /* NSString+SBJSON.m in Sources */ = {isa = PBXBuildFile; fileRef = FD90B64E111690D500BE94EA /* NSString+SBJSON.m */; };
+		64BFFCBE12B6EC0D00FEB710 /* SBJSON.m in Sources */ = {isa = PBXBuildFile; fileRef = FD90B650111690D500BE94EA /* SBJSON.m */; };
+		64BFFCBF12B6EC0D00FEB710 /* SBJsonBase.m in Sources */ = {isa = PBXBuildFile; fileRef = FD90B652111690D500BE94EA /* SBJsonBase.m */; };
+		64BFFCC012B6EC0D00FEB710 /* SBJsonParser.m in Sources */ = {isa = PBXBuildFile; fileRef = FD90B654111690D500BE94EA /* SBJsonParser.m */; };
+		64BFFCC112B6EC0D00FEB710 /* SBJsonWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = FD90B656111690D500BE94EA /* SBJsonWriter.m */; };
+		64BFFE5812B8367E00FEB710 /* HTTPVirtualDirectory+ExecuteScript.mm in Sources */ = {isa = PBXBuildFile; fileRef = 64BFFE5712B8367E00FEB710 /* HTTPVirtualDirectory+ExecuteScript.mm */; };
+		64BFFE5912B8367E00FEB710 /* HTTPVirtualDirectory+ExecuteScript.mm in Sources */ = {isa = PBXBuildFile; fileRef = 64BFFE5712B8367E00FEB710 /* HTTPVirtualDirectory+ExecuteScript.mm */; };
+		64BFFF7812B8496E00FEB710 /* HTTPVirtualDirectory+FindElement.mm in Sources */ = {isa = PBXBuildFile; fileRef = 64BFFF7712B8496E00FEB710 /* HTTPVirtualDirectory+FindElement.mm */; };
+		64BFFF7912B8496E00FEB710 /* HTTPVirtualDirectory+FindElement.mm in Sources */ = {isa = PBXBuildFile; fileRef = 64BFFF7712B8496E00FEB710 /* HTTPVirtualDirectory+FindElement.mm */; };
 		64CF265310D190820029D641 /* Cookie.m in Sources */ = {isa = PBXBuildFile; fileRef = 64CF265210D190820029D641 /* Cookie.m */; };
 		64CF265410D190820029D641 /* Cookie.m in Sources */ = {isa = PBXBuildFile; fileRef = 64CF265210D190820029D641 /* Cookie.m */; };
 		64D8AA431120B94D001649CC /* SessionRoot.m in Sources */ = {isa = PBXBuildFile; fileRef = 64D8AA421120B94D001649CC /* SessionRoot.m */; };
@@ -66,12 +83,6 @@
 		836666E10F089177002B05EE /* WebDriverResource.m in Sources */ = {isa = PBXBuildFile; fileRef = 835DF5D60F00C65600F3DD80 /* WebDriverResource.m */; };
 		838B334C0F14254C00F72BC4 /* Session+ExecuteScript.m in Sources */ = {isa = PBXBuildFile; fileRef = 838B334B0F14254C00F72BC4 /* Session+ExecuteScript.m */; };
 		838B334D0F14254C00F72BC4 /* Session+ExecuteScript.m in Sources */ = {isa = PBXBuildFile; fileRef = 838B334B0F14254C00F72BC4 /* Session+ExecuteScript.m */; };
-		838B33750F14286600F72BC4 /* ElementStore+FindElement.m in Sources */ = {isa = PBXBuildFile; fileRef = 838B33740F14286600F72BC4 /* ElementStore+FindElement.m */; };
-		838B33760F14286600F72BC4 /* ElementStore+FindElement.m in Sources */ = {isa = PBXBuildFile; fileRef = 838B33740F14286600F72BC4 /* ElementStore+FindElement.m */; };
-		838B33790F142CE800F72BC4 /* Element.m in Sources */ = {isa = PBXBuildFile; fileRef = 838B33780F142CE800F72BC4 /* Element.m */; };
-		838B337A0F142CE800F72BC4 /* Element.m in Sources */ = {isa = PBXBuildFile; fileRef = 838B33780F142CE800F72BC4 /* Element.m */; };
-		838B349E0F14630E00F72BC4 /* Element+FindElement.m in Sources */ = {isa = PBXBuildFile; fileRef = 838B349D0F14630E00F72BC4 /* Element+FindElement.m */; };
-		838B349F0F14630E00F72BC4 /* Element+FindElement.m in Sources */ = {isa = PBXBuildFile; fileRef = 838B349D0F14630E00F72BC4 /* Element+FindElement.m */; };
 		839049350F1ACEFD001A79B6 /* Attribute.m in Sources */ = {isa = PBXBuildFile; fileRef = 839049340F1ACEFD001A79B6 /* Attribute.m */; };
 		8399863C0EE3A2E70074D106 /* MainView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8399863B0EE3A2E70074D106 /* MainView.xib */; };
 		8399865D0EE3A5000074D106 /* WebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8399865C0EE3A5000074D106 /* WebViewController.m */; };
@@ -160,9 +171,17 @@
 		32CA4F630368D1EE00C91783 /* iWebDriver_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iWebDriver_Prefix.pch; sourceTree = "<group>"; };
 		642C489E112260150064EB9C /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		642C48A3112260480064EB9C /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		643822E812C0305900F0C7CC /* atoms.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = atoms.h; sourceTree = "<group>"; };
+		643822F612C032F600F0C7CC /* Element.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Element.mm; sourceTree = "<group>"; };
 		644F14EC10AB4EF400858ECA /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		649AB340121D114A007FE128 /* Timeouts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Timeouts.h; sourceTree = "<group>"; };
 		649AB341121D114A007FE128 /* Timeouts.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Timeouts.m; sourceTree = "<group>"; };
+		64A2262C12C1828000537E73 /* NSData+Base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+Base64.h"; sourceTree = "<group>"; };
+		64A2262D12C1828000537E73 /* NSData+Base64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+Base64.m"; sourceTree = "<group>"; };
+		64BFFE5612B8367E00FEB710 /* HTTPVirtualDirectory+ExecuteScript.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "HTTPVirtualDirectory+ExecuteScript.h"; sourceTree = "<group>"; };
+		64BFFE5712B8367E00FEB710 /* HTTPVirtualDirectory+ExecuteScript.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "HTTPVirtualDirectory+ExecuteScript.mm"; sourceTree = "<group>"; };
+		64BFFF7612B8496E00FEB710 /* HTTPVirtualDirectory+FindElement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "HTTPVirtualDirectory+FindElement.h"; sourceTree = "<group>"; };
+		64BFFF7712B8496E00FEB710 /* HTTPVirtualDirectory+FindElement.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "HTTPVirtualDirectory+FindElement.mm"; sourceTree = "<group>"; };
 		64CF265110D190820029D641 /* Cookie.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Cookie.h; sourceTree = "<group>"; };
 		64CF265210D190820029D641 /* Cookie.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Cookie.m; sourceTree = "<group>"; };
 		64D8AA411120B94D001649CC /* SessionRoot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SessionRoot.h; sourceTree = "<group>"; };
@@ -203,12 +222,7 @@
 		836160360EF7343B0028DAE5 /* WebDriverResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WebDriverResponse.m; sourceTree = "<group>"; };
 		838B334A0F14254C00F72BC4 /* Session+ExecuteScript.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Session+ExecuteScript.h"; sourceTree = "<group>"; };
 		838B334B0F14254C00F72BC4 /* Session+ExecuteScript.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Session+ExecuteScript.m"; sourceTree = "<group>"; };
-		838B33730F14286600F72BC4 /* ElementStore+FindElement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ElementStore+FindElement.h"; sourceTree = "<group>"; };
-		838B33740F14286600F72BC4 /* ElementStore+FindElement.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "ElementStore+FindElement.m"; sourceTree = "<group>"; };
 		838B33770F142CE800F72BC4 /* Element.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Element.h; sourceTree = "<group>"; };
-		838B33780F142CE800F72BC4 /* Element.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Element.m; sourceTree = "<group>"; };
-		838B349C0F14630E00F72BC4 /* Element+FindElement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Element+FindElement.h"; sourceTree = "<group>"; };
-		838B349D0F14630E00F72BC4 /* Element+FindElement.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Element+FindElement.m"; sourceTree = "<group>"; };
 		839049330F1ACEFD001A79B6 /* Attribute.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Attribute.h; sourceTree = "<group>"; };
 		839049340F1ACEFD001A79B6 /* Attribute.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Attribute.m; sourceTree = "<group>"; };
 		8399863B0EE3A2E70074D106 /* MainView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MainView.xib; sourceTree = "<group>"; };
@@ -305,6 +319,8 @@
 		17D715530FE1078C00CC479E /* HTTP + PNG */ = {
 			isa = PBXGroup;
 			children = (
+				64A2262C12C1828000537E73 /* NSData+Base64.h */,
+				64A2262D12C1828000537E73 /* NSData+Base64.m */,
 				17D715540FE107B500CC479E /* HTTPPNGResponse.h */,
 				17D715550FE107B500CC479E /* HTTPPNGResponse.m */,
 			);
@@ -452,12 +468,8 @@
 				64CF265210D190820029D641 /* Cookie.m */,
 				83615D900EEE47940028DAE5 /* ElementStore.h */,
 				83615D910EEE47940028DAE5 /* ElementStore.m */,
-				838B33730F14286600F72BC4 /* ElementStore+FindElement.h */,
-				838B33740F14286600F72BC4 /* ElementStore+FindElement.m */,
 				838B33770F142CE800F72BC4 /* Element.h */,
-				838B33780F142CE800F72BC4 /* Element.m */,
-				838B349C0F14630E00F72BC4 /* Element+FindElement.h */,
-				838B349D0F14630E00F72BC4 /* Element+FindElement.m */,
+				643822F612C032F600F0C7CC /* Element.mm */,
 				839049330F1ACEFD001A79B6 /* Attribute.h */,
 				839049340F1ACEFD001A79B6 /* Attribute.m */,
 				73D14FCB1289B6540074E63B /* Database.h */,
@@ -469,6 +481,7 @@
 		839986AC0EE3AA720074D106 /* Web server extensions */ = {
 			isa = PBXGroup;
 			children = (
+				643822E812C0305900F0C7CC /* atoms.h */,
 				64D8AA9F1120BAF9001649CC /* errorcodes.h */,
 				FD61E6970FE150E5006E1274 /* WebDriverUtilities.h */,
 				FD61E6980FE150E5006E1274 /* WebDriverUtilities.m */,
@@ -503,6 +516,10 @@
 				839988680EE535750074D106 /* RESTServiceMapping.m */,
 				8361602A0EF72F190028DAE5 /* HTTPVirtualDirectory+AccessViewController.h */,
 				8361602B0EF72F190028DAE5 /* HTTPVirtualDirectory+AccessViewController.m */,
+				64BFFE5612B8367E00FEB710 /* HTTPVirtualDirectory+ExecuteScript.h */,
+				64BFFE5712B8367E00FEB710 /* HTTPVirtualDirectory+ExecuteScript.mm */,
+				64BFFF7612B8496E00FEB710 /* HTTPVirtualDirectory+FindElement.h */,
+				64BFFF7712B8496E00FEB710 /* HTTPVirtualDirectory+FindElement.mm */,
 				836160350EF7343B0028DAE5 /* WebDriverResponse.h */,
 				836160360EF7343B0028DAE5 /* WebDriverResponse.m */,
 				835DF5D50F00C65600F3DD80 /* WebDriverResource.h */,
@@ -574,6 +591,7 @@
 			buildConfigurationList = 1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "iWebDriver" */;
 			buildPhases = (
 				1D60588D0D05DD3D006BFB54 /* Resources */,
+				64BFFD4612B6F42000FEB710 /* ShellScript */,
 				1D60588E0D05DD3D006BFB54 /* Sources */,
 				1D60588F0D05DD3D006BFB54 /* Frameworks */,
 			);
@@ -674,6 +692,19 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		64BFFD4612B6F42000FEB710 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if [ -e ${PROJECT_DIR}/../go ]; then\n  cd ${PROJECT_DIR}/..\n  echo \"Regenerating iPhone atoms header file\"\n\n  HEADER=\"${PROJECT_DIR}/src/objc/atoms.h\"\n  BACKUP=\"${HEADER}.orig\"\n\n  if [ -e ${HEADER} ]; then\n    mv ${HEADER} ${BACKUP}\n  fi\n\n  ./go iphone_atoms\n  BUILD_RESULT=$?\n  if [ $BUILD_RESULT -ne 0 ]; then\n    echo \"Failed to regenerate header file; restoring original\"\n    if [ -e ${BACKUP} ]; then\n      mv ${BACKUP} ${HEADER}\n    fi\n    exit $BUILD_RESULT\n  else\n    if [ -e ${BACKUP} ]; then\n      rm ${BACKUP}\n    fi\n  fi\nelse\n  echo \"Unable to locate \"go\" script; using existing atoms header snapshot\"\nfi\n";
+		};
 		8399890A0EE605A30074D106 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -715,9 +746,6 @@
 				83E5B3840EFF6DB7004AA772 /* JSONRESTResource.m in Sources */,
 				836666E10F089177002B05EE /* WebDriverResource.m in Sources */,
 				838B334D0F14254C00F72BC4 /* Session+ExecuteScript.m in Sources */,
-				838B33760F14286600F72BC4 /* ElementStore+FindElement.m in Sources */,
-				838B337A0F142CE800F72BC4 /* Element.m in Sources */,
-				838B349F0F14630E00F72BC4 /* Element+FindElement.m in Sources */,
 				839049350F1ACEFD001A79B6 /* Attribute.m in Sources */,
 				833104800F1EB2F7000A38DB /* NSException+WebDriver.m in Sources */,
 				831962720F27E79F005D1D21 /* UIResponder+SimulateTouch.m in Sources */,
@@ -739,6 +767,10 @@
 				73D14FCD1289B6540074E63B /* Database.m in Sources */,
 				731C4511128BBF4000261249 /* GeoLocation.m in Sources */,
 				731C4512128BBF4000261249 /* Storage.m in Sources */,
+				64BFFE5912B8367E00FEB710 /* HTTPVirtualDirectory+ExecuteScript.mm in Sources */,
+				64BFFF7812B8496E00FEB710 /* HTTPVirtualDirectory+FindElement.mm in Sources */,
+				643822F712C032F600F0C7CC /* Element.mm in Sources */,
+				64A2262E12C1828000537E73 /* NSData+Base64.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -746,6 +778,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				64BFFCBC12B6EC0D00FEB710 /* NSObject+SBJSON.m in Sources */,
+				64BFFCBD12B6EC0D00FEB710 /* NSString+SBJSON.m in Sources */,
+				64BFFCBE12B6EC0D00FEB710 /* SBJSON.m in Sources */,
+				64BFFCBF12B6EC0D00FEB710 /* SBJsonBase.m in Sources */,
+				64BFFCC012B6EC0D00FEB710 /* SBJsonParser.m in Sources */,
+				64BFFCC112B6EC0D00FEB710 /* SBJsonWriter.m in Sources */,
+				64084BF412B6C6C90049D2FB /* Database.m in Sources */,
+				64084BF512B6C6C90049D2FB /* GeoLocation.m in Sources */,
+				64084BF312B6C6A10049D2FB /* Storage.m in Sources */,
 				649EDC0610C5986B00E66D06 /* WebDriverPreferences.m in Sources */,
 				649EDC0510C5986400E66D06 /* WebDriverRequestFetcher.m in Sources */,
 				649EDC0410C5984B00E66D06 /* RootViewController.m in Sources */,
@@ -766,9 +807,6 @@
 				8301250C0EFF044900BA9BE6 /* Session.m in Sources */,
 				835DF5D70F00C65600F3DD80 /* WebDriverResource.m in Sources */,
 				838B334C0F14254C00F72BC4 /* Session+ExecuteScript.m in Sources */,
-				838B33750F14286600F72BC4 /* ElementStore+FindElement.m in Sources */,
-				838B33790F142CE800F72BC4 /* Element.m in Sources */,
-				838B349E0F14630E00F72BC4 /* Element+FindElement.m in Sources */,
 				839D645A0F2EB4BB009645BF /* HTTPJSONResponse.m in Sources */,
 				17D7163E0FE12CC100CC479E /* HTTPPNGResponse.m in Sources */,
 				839D645B0F2EB4BC009645BF /* JSONRESTResource.m in Sources */,
@@ -782,6 +820,10 @@
 				64D8AA501120B995001649CC /* NSURLRequest+IgnoreSSL.m in Sources */,
 				64D8AA711120B9EC001649CC /* HTTPVirtualDirectory+Remove.m in Sources */,
 				649AB343121D114A007FE128 /* Timeouts.m in Sources */,
+				64BFFE5812B8367E00FEB710 /* HTTPVirtualDirectory+ExecuteScript.mm in Sources */,
+				64BFFF7912B8496E00FEB710 /* HTTPVirtualDirectory+FindElement.mm in Sources */,
+				643822F812C032F600F0C7CC /* Element.mm in Sources */,
+				64A2262F12C1828000537E73 /* NSData+Base64.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

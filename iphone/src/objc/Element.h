@@ -19,68 +19,69 @@
 #import <Foundation/Foundation.h>
 #import "HTTPVirtualDirectory.h"
 
-@class ElementStore;
+@class Session;
 
-// This represents a web element accessible via :session/element/X where X is
-// the element's elementId. (These are numbers indexed from 0, with 0 reserved
-// for the document).
+// This represents a web element accessible via :session/element/X where X is an
+// opaque ID assigned by the server when the element is first located on the
+// page.
 @interface Element : HTTPVirtualDirectory {
  @private
-  // The ID of the element. The element is accessible in JS at
-  // ELEM_ARRAY[id] or in REST at .../session/element/id
-  NSString *elementId_;
-  
-  // A link back to the element store. Needed for creating new elements.
-  // Not retained to avoid a circular dependency.
-  ElementStore *elementStore_;
+  // The opaque ID assigned by the server.
+  NSString* elementId_;
+  Session* session_;
 }
 
 @property (nonatomic, readonly, copy) NSString *elementId;
+@property (nonatomic, readonly, retain) Session *session;
 
 // Designated initializer. Don't call this directly - instead
-// use |elementFromJSObject:inStore:| which will generate an id for the element.
-- (id)initWithId:(NSString *)elementId inStore:(ElementStore *)store;
+// use |elementWithId|.
+- (id)initWithId:(NSString*)elementId
+      andSession:(Session*)session;
 
-// Create a new element from a JSON expression and put the element into the
-// element store specified.
-+ (Element *)elementFromJSObject:(NSString *)object
-                         inStore:(ElementStore *)store;
-
-// Same as |elementFromJSObject:inStore:| above, but using the element's store.
-- (Element *)elementFromJSObject:(NSString *)object;
-
-// Returns the key for the element ID in the dictionary returned by
-// |idDictionary|.
-+ (NSString *)elementIdKey;
+// Create a new element.
++ (Element*)elementWithId:(NSString*)elementId
+               andSession:(Session*)session;
 
 // Get the JSON dictionary with this element's ID for transmission
 // over the wire: |{"ELEMENT": "elementId"}|.
 - (NSDictionary *)idDictionary;
 
-// Get the relative URL for this element (relative to the session).
-- (NSString *)url;
+// Locates the first element under this element that matches the given |query|.
+// The |query| must have two keys:
+// @li "using" - The locator strategy to use.
+// @li "value" - The value to search for using the strategy.
+// Returns the JSON representation of the located element.
+-(NSDictionary*) findElement:(NSDictionary*)query;
 
-// Is this element the document?
-- (BOOL)isDocumentElement;
+// Locates every element on under this element matching the given |query|.
+// The |query| must have two keys:
+// @li "using" - The locator strategy to use.
+// @li "value" - The value to search for using the strategy.
+// Returns an array of elements in their JSON representation.
+-(NSArray*) findElements:(NSDictionary*)query;
 
-// Get a javascript string through which the element can be accessed and used
-// in JS.
-- (NSString *)jsLocator;
-
-// Simulate a click on the element. An |NSDictionary| is passed in through REST,
-// but it is ignored.
-- (void)click:(NSDictionary *)dict;
+// Simulate a click on the element.
+// Dictionary parameters are passed in by REST service, but are redundant
+// with directory ID and are thus ignored.
+- (void)click:(NSDictionary*)ignored;
 
 // Clear the contents of this input field.
-- (void)clear;
+// Dictionary parameters are passed in by REST service, but are redundant
+// with directory ID and are thus ignored.
+- (void)clear:(NSDictionary*)ignored;
 
 // Submit this form, or the form containing this element.
-- (void)submit;
+// Dictionary parameters are passed in by REST service, but are redundant
+// with directory ID and are thus ignored.
+- (void)submit:(NSDictionary*)ignored;
 
 // The text contained in the element.
 - (NSString *)text;
 
 // Type these keys into the element.
+// Dictionary parameters are passed in by REST service, but are redundant
+// with directory ID and are thus ignored.
 - (void)sendKeys:(NSDictionary *)dict;
 
 // Is the element checked?
@@ -89,10 +90,12 @@
 
 // Set the element's checked property.
 // This method is only valid on checkboxes and radio buttons.
-- (void)setChecked:(NSNumber *)numValue;
+- (void)setChecked:(NSDictionary*)ignored;
 
 // Toggle the element's checked property.
 // This method is only valid on checkboxes and radio buttons.
+// Dictionary parameters are passed in by REST service, but are redundant
+// with directory ID and are thus ignored.
 - (void)toggleSelected;
 
 // Is the element enabled?
@@ -101,11 +104,8 @@
 // Is the element displayed on the screen?
 - (NSNumber *)isDisplayed;
 
-// Throws an error if this element is not displayed on the screen.
-- (void) verifyIsDisplayed;
-
 // Get the attribute with the given name.
-- (NSString *)attribute:(NSString *)attributeName;
+- (id)attribute:(NSString *)attributeName;
 
 // Get the tag name of this element, not the value of the name attribute:
 // will return "input" for the element <input name="foo">

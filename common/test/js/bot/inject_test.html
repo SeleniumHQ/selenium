@@ -66,6 +66,14 @@ limitations under the License.
     }
 
 
+    function testShouldDecodeIdsWhenRetrievingFromTheCache() {
+      var id = bot.inject.cache.addElement(document.body);
+      id = encodeURIComponent(id);
+      var el = bot.inject.cache.getElement(id);
+      assertEquals(document.body, el);
+    }
+
+
     function testShouldThrowIfCachedElementIsNoLongerAttachedToTheDom() {
       var div = document.createElement('DIV');
       document.body.appendChild(div);

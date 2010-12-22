@@ -488,6 +488,12 @@ task :test_iphone_server do
   end
 end
 
+file "iphone/src/objc/atoms.h" => ["//iphone:atoms"] do |task|
+  puts "Writing: #{task}"
+  cp "build/iphone/atoms.h", "iphone/src/objc/atoms.h"
+end
+task :iphone_atoms => ["iphone/src/objc/atoms.h"]
+
 file "jobbie/src/cpp/InternetExplorerDriver/atoms.h" => [
   "//common/src/js/webdriver:get_attribute:header",
 ] do |task|

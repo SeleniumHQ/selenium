@@ -28,7 +28,7 @@
   int numPendingPageLoads_;
 
   NSString *lastJSResult_;
-	
+
   NSURLRequestCachePolicy cachePolicy_;
   
   // Pointer to the status / activity label.
@@ -39,6 +39,8 @@
 }
 
 @property (retain, readonly) UIWebView *webView;
+
+- (void)waitForLoad;
 
 - (CGRect)viewableArea;
 - (BOOL)pointIsViewable:(CGPoint)point;
@@ -57,9 +59,9 @@
 // The URL should be specified by the |url| key in the |urlMap|.
 - (void)setURL:(NSDictionary *)urlMap;
 
-- (void)forward;
-- (void)back;
-- (void)refresh;
+- (void)forward:(NSDictionary*)ignored;
+- (void)back:(NSDictionary*)ignored;
+- (void)refresh:(NSDictionary*)ignored;
 
 // Evaluate a javascript string and return the result.
 // Arguments can be passed in in NSFormatter (printf) style.
@@ -69,20 +71,6 @@
 // defined during previous events.
 - (NSString *)jsEval:(NSString *)format, ...;
 
-// Evaluate a javascript string and return the result. Block if the evaluation
-// results in a page reload.
-// Arguments can be passed in in NSFormatter (printf) style.
-- (NSString *)jsEvalAndBlock:(NSString *)format, ...;
-
-// Test if a JS expression evaluates to true
-- (BOOL)testJsExpression:(NSString *)format, ...;
-
-// Get a float property of a javascript object
-- (float)floatProperty:(NSString *)property ofObject:(NSString *)jsObject;
-
-// Test if a JS object is equal to null
-- (BOOL)jsElementIsNullOrUndefined:(NSString *)expression;
-
 // Get the HTML source of the page we've loaded
 - (NSString *)source;
 
@@ -90,8 +78,6 @@
 - (UIImage *)screenshot;
 
 - (void)clickOnPageElementAt:(CGPoint)point;
-
-- (void)addFirebug;
 
 // Calls the same on the main view controller.
 - (void)describeLastAction:(NSString *)status;

@@ -20,7 +20,7 @@
 #import "WebDriverResource.h"
 #import "Element.h"
 #import "WebDriverResponse.h"
-#import "HTTPVirtualDirectory+AccessViewController.h"
+#import "HTTPVirtualDirectory+ExecuteScript.h"
 #import "HTTPStaticResource.h"
 #import "WebViewController.h"
 
@@ -84,12 +84,7 @@
           autorelease];
 }
 
-- (NSString *)getAttribute {
-  if ([name_ isEqualToString:@"disabled"]) {
-    return [[self viewController]
-            jsEval:[NSString stringWithFormat:@"!!%@.disabled",
-                    [element_ jsLocator]]];
-  }
+- (id)getAttribute {
   return [element_ attribute:name_];
 }
 

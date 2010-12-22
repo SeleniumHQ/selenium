@@ -22,10 +22,14 @@
 // This category implements the :context/execute function.
 @interface Session (ExecuteScript)
 
-- (NSString *)convertValueToJavascript:(id)value;
-- (NSString *)convertArrayToJavascript:(NSArray *)array;
-- (NSString *)convertDictionaryToJavascript:(NSDictionary *)dictionary;
-
-- (NSDictionary *)executeScript:(NSDictionary *)arguments;
+// Executes a user supplied snippet of JavaScript. This resource handler expects
+// its |arguments| dictionary to contain two keys:
+//   - script: The script to execute.  The script should be a NSString defining
+//             a function body.
+//   - args: An array of arguments to pass to the script. The arguments may be
+//           referenced from the |script| via the arguments object.
+//
+// Returns the script result.
+- (id)executeScript:(NSDictionary *)arguments;
 
 @end

@@ -159,7 +159,8 @@ bot.inject.unwrapValue = function(value, opt_doc) {
  * <p/>The details of how this actually gets injected for evaluation is left
  * as an implementation detail for clients of this library.
  *
- * @param {Function} fn The injected function to execute.
+ * @param {(function|string)} fn Either the function to execute, or a string
+ *     defining the body of an anonymous function that should be executed.
  * @param {Array.<*>} args An array of wrapped script arguments, as defined by
  *     the WebDriver wire protocol.
  * @param {boolean=} opt_stringify Whether the result should be returned as a
@@ -169,6 +170,10 @@ bot.inject.unwrapValue = function(value, opt_doc) {
  *     is true, the result will be serialized and returned in string format.
  */
 bot.inject.executeScript = function(fn, args, opt_stringify) {
+  if (goog.isString(fn)) {
+    fn = new Function(fn);
+  }
+
   var ret;
   try {
     var unwrappedArgs = (/**@type {Object}*/bot.inject.unwrapValue(args));
@@ -274,6 +279,7 @@ bot.inject.cache.addElement = function(el) {
  * @return {Element} The cached element.
  */
 bot.inject.cache.getElement = function(key, opt_doc) {
+  key = decodeURIComponent(key);
   var doc = opt_doc || document;
   var cache = bot.inject.cache.getCache_(doc);
   if (!goog.object.containsKey(cache, key)) {

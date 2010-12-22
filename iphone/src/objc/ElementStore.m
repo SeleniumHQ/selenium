@@ -17,155 +17,121 @@
 //  limitations under the License.
 
 #import "ElementStore.h"
+
 #import "JSONRESTResource.h"
 #import "HTTPRedirectResponse.h"
 #import "WebViewController.h"
 #import "HTTPVirtualDirectory+AccessViewController.h"
+#import "HTTPVirtualDirectory+ExecuteScript.h"
+#import "HTTPVirtualDirectory+FindElement.h"
 #import "WebDriverResource.h"
-#import "ElementStore+FindElement.h"
 #import "Element.h"
 #import "NSException+WebDriver.h"
 #import "Session.h"
 #import "errorcodes.h"
 
-static const NSString *JSARRAY = @"_WEBDRIVER_ELEM_CACHE";
-
 @implementation ElementStore
 
-@synthesize document = document_;
 @synthesize session = session_;
 
-- (void)configureJSStore {
-  [[self viewController] jsEval:[NSString stringWithFormat:
-                                 @"if (typeof %@ !== 'object') var %@ = [];",
-                                 JSARRAY,
-                                 JSARRAY]];
-}
-
-- (id)init {
-  if (![super init])
-    return nil;
-  
-  [self configureJSStore];
-  
-  [self setIndex:[WebDriverResource resourceWithTarget:self
-                                             GETAction:NULL
-                                            POSTAction:@selector(findElement:)]];
-  
-  document_ = [self elementFromJSObject:@"document"];
-  
-  return self;
-}
-
 - (id)initWithSession:(Session*) session {
-  if (![super init])
+  if (![super init]) {
     return nil;
-  
-  [self configureJSStore];
-  
+  }
+
+  session_ = session;
+
+  // Install ourselves under the session's virtual directory
+  [session setResource:self withName:@"element"];
   [self setIndex:[WebDriverResource resourceWithTarget:self
                                              GETAction:NULL
                                             POSTAction:@selector(findElement:)]];
-  
-  document_ = [self elementFromJSObject:@"document"];
-  session_ = session;
+
+  [session setResource:[WebDriverResource
+                        resourceWithTarget:self
+                                 GETAction:NULL
+                                POSTAction:@selector(findElements:)]
+              withName:@"elements"];
+
+  // Install the special handler that retrieves the active element on the page.
+  [self setResource:[WebDriverResource
+                     resourceWithTarget:self
+                              GETAction:NULL
+                             POSTAction:@selector(getActiveElement:)]
+           withName:@"active"];
   
   return self;
 }
 
 - (void)dealloc {
-  [[self index] release]; 
   [super dealloc];
 }
 
-+ (ElementStore *)elementStore {
-  return [[[self alloc] init] autorelease];
++ (ElementStore *)elementStoreForSession:(Session*)session {
+  return [[[ElementStore alloc] initWithSession:session] autorelease];
 }
 
-- (NSString *)generateElementId {
-  return [NSString stringWithFormat:@"%d", nextElementId_++];
-}
-
-- (NSString *)jsLocatorForElementWithId:(NSString *)elementId {
-  // This is a bit of a hack. Remember that element 0 is always the document.
-  // Sometimes the URL will change and we won't reset ELEM_CACHE[0] = document
-  // again. Instead of setting it, we'll just refer to element 0 as the document
-  // everywhere that it counts.
-  if ([elementId isEqualToString:@"0"])
-    return @"document";
-
-  // If the element is no longer attached to the DOM, remove it from the cache
-  // and throw an error.
-  NSLog(@"Checking if element is stale");
-  NSString *isStale = [[self viewController] jsEval:
-      @"(function(cache, id, currentDocumentElement) {\r"
-       "  if (id in cache) {\r"
-       "    var e = cache[id];\r"
-       "    var parent = e;\r"
-       "    while (parent && parent != currentDocumentElement) {\r"
-       "      parent = parent.parentNode;\r"
-       "    }\r"
-       "    if (parent !== currentDocumentElement) {\r"
-       "      delete cache[id];\r"
-       "      return true;\r"
-       "    }\r"
-       "  }\r"
-       "  return false;\r"
-       "})(%@, %@, window.document.documentElement);\r", JSARRAY, elementId];
-  if (![isStale isEqualToString:@"false"]) {
-    @throw [NSException
-            webDriverExceptionWithMessage:@"Element is stale"
-                            andStatusCode:EOBSOLETEELEMENT];
+// Discard everything after the next '/' or '?' character
+- (NSString *)getNextPathElementInQuery:(NSString *)query {
+  if ([query isEqualToString:@""]) {
+    return query;
   }
-  return [NSString stringWithFormat:@"%@[%@]", JSARRAY, elementId];
-}
 
-- (NSString *)jsLocatorForElement:(Element *)element {
-  return [self jsLocatorForElementWithId:[element elementId]];
-}
-
-// Construct an Element from a javascript object. This stores a reference to the
-// object in a local array, uses the array index as a new element's key and
-// returns the element created.
-- (Element *)elementFromJSObject:(NSString *)jsObject {
-  if ([[self viewController] jsElementIsNullOrUndefined:jsObject])
-    return nil;
-  
-  NSString *elementId = [self generateElementId];
-  Element *element = [[Element alloc] initWithId:elementId inStore:self];
-  [element autorelease];
-
-  [self configureJSStore];
-  
-  // Set the javascript cache to contain the object
-  [[self viewController] jsEval:@"%@ = %@;",
-                           [self jsLocatorForElementWithId:elementId],
-                           jsObject];
-
-  // Add the element to the REST interface
-  [self setResource:element withName:elementId];
-
-  return element;
-}
-
-// Constructs an array of |Element| objects from a javascript array of
-// elements contained in |container|.
-// This method maps the elements in the JS array |container| through
-// |elementFromJSObject:| (above)
-- (NSArray *)elementsFromJSArray:(NSString *)container {
-  NSString *lenStr = [[self viewController] jsEval:@"%@.length", container];
-  int length = [lenStr intValue];
-  
-  NSMutableArray *result = [NSMutableArray arrayWithCapacity:length];
-  for (int i = 0; i < length; i++) {
-    Element *element = [self elementFromJSObject:
-                        [NSString stringWithFormat:@"%@[%d]",
-                                                  container,
-                                                  i]];
-    NSLog(@"Found element with id: '%@'", [element attribute:@"id"]);
-    [result addObject:element];
+  // Discard duplicate '/' characters in the query string to
+  // make up for client bugs.
+  while ([query characterAtIndex:0] == '/') {
+    query = [query substringFromIndex:1];
   }
-  return result;
+
+  NSCharacterSet *separators =
+      [NSCharacterSet characterSetWithCharactersInString:@"/?"];
+  NSRange range = [query rangeOfCharacterFromSet:separators];
+
+  return range.location == NSNotFound
+      ? query
+      : [query substringToIndex:range.location];
+}
+
+// Overrides |elementWithQuery| to redirect a request for an |Element| resource
+// to that specific subdirectory.
+- (id<HTTPResource>)elementWithQuery:(NSString *)query {
+  if ([query length] > 0) {
+    NSString* queriedElement = [self getNextPathElementInQuery:query];
+
+    // Check if there is a already a handler registered for this element.
+    // Note that "active" is a reserved ID whose handler is registered in
+    // this class's initializer.
+    id<HTTPResource> resource = [contents objectForKey:queriedElement];
+    if (resource == nil) {
+      NSLog(@"Adding directory for element %@", queriedElement);
+      // TODO(jleyba): Fix memory leak and remove stale element directories.
+      resource = [Element elementWithId:queriedElement
+                             andSession:session_];
+      [self setResource:resource withName:queriedElement];
+    }
+  }
+  // Need to delegate back to |super| so |Session| can set the session ID on the
+  // response.
+  return [super elementWithQuery:query];
+}
+
+- (NSDictionary*) getActiveElement:(NSDictionary *)ignored {
+  return (NSDictionary*) [self
+      executeJsFunction:@"function() {return document.activeElement || "
+                         "document.body;}"
+               withArgs:[NSArray array]];
+}
+
+-(NSDictionary*) findElement:(NSDictionary*)query {
+  return [self findElement:query
+                      root:nil
+            implicitlyWait:[session_ implicitWait]];
+}
+
+-(NSArray*) findElements:(NSDictionary*)query {
+  return [self findElements:query
+                       root:nil
+             implicitlyWait:[session_ implicitWait]];
 }
 
 @end
