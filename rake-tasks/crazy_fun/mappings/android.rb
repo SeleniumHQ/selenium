@@ -1,4 +1,3 @@
-
 require 'rake-tasks/crazy_fun/mappings/common'
 require 'rake-tasks/crazy_fun/mappings/java'
 
@@ -30,7 +29,31 @@ class AndroidMappings
   end
 end
 
+module SysProperties
+  class AndroidSdk
+    def read_properties()
+      prop = YAML.load_file('./properties.yml')
+      properties = prop["default"]["android"]
+      if (prop[ENV["USER"]])
+        properties = prop[ENV["USER"]]["android"]
+      end
+      properties
+    end
+  end
+end
+
 module Android
+  $sys_properties = SysProperties::AndroidSdk.new
+  $properties = $sys_properties.read_properties()
+  $sdk_path = $properties["androidsdkpath"]
+  $platform =  $properties["androidplatform"]
+  $dx = File.join($sdk_path, "platforms", $platform, "tools", "dx")
+  $adb = File.join($sdk_path, "platform-tools", "adb")
+  $aapt = File.join($sdk_path, "platforms", $platform, "tools", "aapt")
+  $builder = File.join($sdk_path, "tools", "apkbuilder")
+  $android = File.expand_path(File.join($sdk_path, "tools", "android"))
+  $emulator = File.expand_path(File.join($sdk_path, "tools", "emulator"))
+
   class CheckPreconditions
     def handle(fun, dir, args)
       raise StandardError, ":name must be set" if args[:name].nil?
@@ -60,20 +83,16 @@ module Android
     def handle(fun, dir, args)
       artifact_name = output_name(dir, args[:name], "apk")
       t_name = task_name(dir, args[:name])
-      
       file artifact_name
-      
       if (args[:binary])
         task t_name => [args[:binary]]
       end
-      
       desc "Compile an adroid apk"
       task t_name => [artifact_name]
-      
       Rake::Task[t_name].out = artifact_name
     end
   end
-  
+
   class CreateShortNameTask < Tasks
     def handle(fun, dir, args)
       name = task_name(dir, args[:name])
@@ -88,7 +107,7 @@ module Android
       end
     end
   end
-    
+
   class AddDependencies < Tasks
     def handle(fun, dir, args)
       task = Rake::Task[output_name(dir, args[:name], "apk")]
@@ -96,25 +115,10 @@ module Android
       add_dependencies(task, dir, args[:manifest])
     end
   end
-  
+
   class BaseAndroid < Tasks
-    def read_properties()
-      prop = YAML.load_file( './properties.yml' )
-      properties = prop["default"]["android"]
-      if (prop[ENV["USER"]])
-        properties = prop[ENV["USER"]]["android"];
-      end
-      properties
-    end
-    
     def android_installed?()
-      properties = read_properties()
-      
-      sdk_path = properties["androidsdkpath"]
-      platform =  properties["androidplatform"]
-      
-      dx = File.join(sdk_path, "platforms", platform, "tools", "dx")
-      dx = File.expand_path(dx) 
+      dx = File.expand_path($dx)
       File.exists?(dx)
     end
     
@@ -127,31 +131,23 @@ module Android
 
   class RunDx < BaseAndroid
     def handle(fun, dir, args)
-      apk = output_name(dir, args[:name], "apk")      
+      apk = output_name(dir, args[:name], "apk")
       dex_file = dex_file(dir, args[:name])
-      
-      task apk => [dex_file]
-      
-      file dex_file do
-        properties = read_properties()
-        
-        sdk_path = properties["androidsdkpath"]
-        platform =  properties["androidplatform"]
-        dx = File.join(sdk_path, "platforms", platform, "tools", "dx")
 
+      task apk => [dex_file]
+
+      file dex_file do
         mkdir_p File.dirname(dex_file)
 
         if (!android_installed?) 
           File.open(dex_file, 'w') {|f| f.write('')}
+        elsif windows?
+          dx = "java -Xmx512M -Djava.ext.dirs=#{File.join($sdk_path, "platforms", $platform, "tools", "lib")} -jar #{File.join($sdk_path, "platforms", $platform, "tools", "lib","dx.jar")} "
         else
-          dx += " -JXmx512M"
-        
-          if windows?
-            dx = "java -Xmx512M -Djava.ext.dirs=#{File.join(sdk_path, "platforms", platform, "tools", "lib")} -jar #{File.join(sdk_path, "platforms", platform, "tools", "lib","dx.jar")} "
-          end
-        
+          dx = $dx + " -JXmx512M"
+
           puts "Converting: #{task_name(dir, args[:name])} as #{dex_file}"
-        
+
           cmd = "#{dx} --dex --output=#{dex_file} --core-library --positions=lines "
           Rake::Task[apk].prerequisites.each do |dep|
             if (Rake::Task.task_defined?(dep))
@@ -172,17 +168,12 @@ module Android
       res_name = output_name(dir, args[:name], "ap_")
       
       file res_name do
-        properties = read_properties()
-        sdk_path = properties["androidsdkpath"]
-        platform =  properties["androidplatform"]
-
         if (android_installed?)
-          aapt = File.join(sdk_path, "platforms", platform, "tools", "aapt")
-          android_jar = File.expand_path(File.join(sdk_path, "platforms", platform, "android.jar"))
+          android_jar = File.expand_path(File.join($sdk_path, "platforms", $platform, "android.jar"))
           res = File.join(dir, args[:resource_dir])
           manifest = File.join(dir, args[:manifest])
       
-          cmd = "#{aapt} package -f -M #{manifest} -S #{res} -I #{android_jar} -F #{res_name}"
+          cmd = "#{$aapt} package -f -M #{manifest} -S #{res} -I #{android_jar} -F #{res_name}"
           sh cmd
         else
           File.open(res_name, 'w') {|f| f.write('')}
@@ -195,20 +186,13 @@ module Android
   
   class BuildApk < BaseAndroid
     def handle(fun, dir, args)
-      res = output_name(dir, args[:name], "ap_")      
+      res = output_name(dir, args[:name], "ap_")
       apk = output_name(dir, args[:name], "apk")
       dex = dex_file(dir, args[:name])
 
       file apk do
-        properties = read_properties()
-        sdk_path = properties["androidsdkpath"]
-        platform =  properties["androidplatform"]
-        
-        builder = File.join(sdk_path, "tools", "apkbuilder")
-        
         puts "Building #{task_name(dir, args[:name])} as #{apk}"
-        
-        cmd = "#{builder} #{apk} -f #{dex} -z #{res} "
+        cmd = "#{$builder} #{apk} -f #{dex} -z #{res} "
         Rake::Task[apk].prerequisites.each do |dep|
           if (Rake::Task.task_defined?(dep))
             dep = Rake::Task[dep].out
@@ -217,71 +201,56 @@ module Android
             cmd << "-rj #{dep} "
           end
         end
-        
         if (android_installed?)
           sh cmd
-	  copy_to_prebuilt(apk, fun)
+          copy_to_prebuilt(apk, fun)
         else
           puts apk
-	  puts "Android SDK not installed, copying from prebuilt."
+          puts "Android SDK not installed, copying from prebuilt."
           copy_prebuilt(fun, apk)
         end
       end
     end
   end
-  
+
   class RunEmulator < BaseAndroid
     def handle(fun, dir, args)
-      
       name = task_name(dir, args[:name]) + ":run"
-      
       task name do
         puts "Running emulator"
-        
-        properties = read_properties()
-        sdk_path = properties["androidsdkpath"]
-        platform =  properties["androidplatform"]
-        
-        adb = File.join(sdk_path, "tools", "adb")
-        
         jar_name = Rake::Task[task_name(dir, args[:name])].out
-        
         apk = Rake::Task[args[:binary]].out
-        
-        puts "Starting adb server: #{adb}"
-        sh "#{adb} kill-server"
+        puts "Starting adb server: #{$adb}"
+        sh "#{$adb} kill-server"
         sleep 5
-        sh "#{adb} start-server"
+        sh "#{$adb} start-server"
         sleep 5
 
-        android = File.expand_path(File.join(sdk_path, "tools", "android"))
         android_target = properties["androidtarget"].to_s
         puts "Using Android target: " + android_target
         avdname = "debug_rake_#{android_target}"
-        sh "echo no | #{android} create avd --name #{avdname} --target #{android_target} -c 100M --force"
+        sh "echo no | #{$android} create avd --name #{avdname} --target #{android_target} -c 100M --force"
 
-        emulator = File.expand_path(File.join(sdk_path, "tools", "emulator"))
-        emulator_image = "#{platform}-userdata-qemu.img"
-        
-        puts "Starting emulator: #{emulator}"
-        
+        emulator_image = "#{$platform}-userdata-qemu.img"
+
+	puts "Starting emulator: #{emulator}"
+
         # We create the emulator with a pre-generated emulator image.	
-	emulator_options = ""
-	if !linux?
-	  emulator_options += "-no-boot-anim"
+        emulator_options = ""
+        if !linux?
+          emulator_options += "-no-boot-anim"
         end
-	command = "#{emulator} -avd #{avdname} -data build/android/#{emulator_image} -no-audio #{emulator_options}"
+	command = "#{$emulator} -avd #{avdname} -data build/android/#{emulator_image} -no-audio #{emulator_options}"
 	puts "COMMAND: #{command}"
-        Thread.new{ sh "#{emulator} -avd #{avdname} -data build/android/#{emulator_image} -no-audio #{emulator_options}"}
+        Thread.new{ sh "#{$emulator} -avd #{avdname} -data build/android/#{emulator_image} -no-audio #{emulator_options}"}
 
         puts "Waiting for emulator to get started"
-        adb = File.join(sdk_path, "tools", "adb")
-        sh "#{adb} -e wait-for-device"
+        sh "#{$adb} -e wait-for-device"
         sleep 10
 
         puts "Loading package into emulator: #{apk}"
         
-        theoutput = `#{adb} -e install -r #{apk}`
+        theoutput = `#{$adb} -e install -r #{apk}`
         count = 0
         while (not theoutput.to_s.match(/Success/)) and count < 20 do
           puts "Failed to load (emulator not ready?), retrying..."
@@ -291,10 +260,10 @@ module Android
         end
         puts "Loading complete."
         
-        sh "#{adb} shell am start -a android.intent.action.MAIN -n org.openqa.selenium.android.app/.MainActivity"
+        sh "#{$adb} shell am start -a android.intent.action.MAIN -n org.openqa.selenium.android.app/.MainActivity"
         sleep 5
         
-        sh "#{adb} forward tcp:8080 tcp:8080"
+        sh "#{$adb} forward tcp:8080 tcp:8080"
       end
     end
   end  
@@ -306,17 +275,11 @@ module Android
       
       file out => FileList[File.join(dir, args[:resource], "**", "*")] do
         if (android_installed?)
-          properties = read_properties()
-
-          sdk_path = properties["androidsdkpath"]
-          platform =  properties["androidplatform"]
-
-          android_jar = File.expand_path(File.join(sdk_path, "platforms", platform, "android.jar"))
-          aapt = File.join(sdk_path, "platforms", platform, "tools", "aapt")
+          android_jar = File.expand_path(File.join($sdk_path, "platforms", $platform, "android.jar"))
           manifest = File.join(dir, args[:manifest])
           resource = File.join(dir, args[:resource])
           java_r = File.join(dir, args[:out])
-          cmd = "#{aapt} package -f -M #{manifest} -S #{resource} -I #{android_jar} -J #{java_r}"
+	  cmd = "#{$aapt} package -f -M #{manifest} -S #{resource} -I #{android_jar} -J #{java_r}"
           puts "Building #{task_name} as #{out}"
           sh cmd
         end
@@ -334,14 +297,9 @@ module Android
       properties = read_properties()
 
       if (android_installed?)
-        sdk_path = properties["androidsdkpath"]
-        platform =  properties["androidplatform"]
-
-        android = File.expand_path(File.join(sdk_path, "tools", "android"))
         android_target =  "android-" << properties["androidtarget"].to_s
         avdname = "debug_rake_#{android_target}"
-            
-        sh "#{android} delete avd -n #{avdname}"
+        sh "#{$android} delete avd -n #{avdname}"
       end
     end
   end
