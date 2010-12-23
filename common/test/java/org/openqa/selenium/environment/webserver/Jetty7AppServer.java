@@ -88,6 +88,7 @@ public class Jetty7AppServer implements AppServer {
     addServlet("Uploader", "/upload", UploadServlet.class);
     addServlet("Unusual encoding", "/encoding", EncodingServlet.class);
     addServlet("Sleeper", "/sleep", SleepingServlet.class);
+    addServlet("Kill switch", "/quitquitquit", KillSwitchServlet.class);
     addFilter(MultiPartFilter.class, "/upload", 0 /* DEFAULT dispatches */);
 
     listenOn(findFreePort());
