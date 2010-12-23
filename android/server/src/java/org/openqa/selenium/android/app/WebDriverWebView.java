@@ -113,11 +113,13 @@ public class WebDriverWebView extends WebView {
     settings.setSupportMultipleWindows(true);
     settings.setBuiltInZoomControls(true);
     settings.setJavaScriptEnabled(true);
-    // This setting somehow causes some apps to crash
-    //settings.setAppCacheEnabled(true);
+/*    settings.setAppCacheEnabled(true);
+    settings.setAppCacheMaxSize(10*1024*1024);
+    settings.setAppCachePath("");*/
     settings.setDatabaseEnabled(true);
     settings.setDomStorageEnabled(true);
     settings.setGeolocationEnabled(true);
     settings.setSaveFormData(true);
+    settings.setRenderPriority(WebSettings.RenderPriority.HIGH);
   }
 }
