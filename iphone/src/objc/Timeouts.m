@@ -28,6 +28,8 @@
   if (!self) {
     return nil;
   }
+  [self setResource:[ScriptTimeout scriptTimeoutForSession:session]
+           withName:@"async_script"];
   [self setResource:[ImplicitWait implicitWaitForSession:session]
            withName:@"implicit_wait"];
   return self;
@@ -82,6 +84,49 @@
   [session_ setImplicitWait:0];
 }
 
+@end
 
+@implementation ScriptTimeout
+
+- (id)initWithSession:(Session*)session {
+  self = [super init];
+  if (!self) {
+    return nil;
+  }
+  session_ = session;
+  [session_ retain];
+  [self setIndex:
+   [WebDriverResource resourceWithTarget:self
+                               GETAction:@selector(getScriptTimeout)
+                              POSTAction:@selector(setScriptTimeout:)
+                               PUTAction:NULL
+                            DELETEAction:@selector(clearScriptTimeout)]];
+  return self;
+}
+
+- (void) dealloc {
+  [session_ release];
+  [super dealloc];
+}
+
+
++ (ScriptTimeout*) scriptTimeoutForSession:(Session*)session {
+  return [[[ScriptTimeout alloc] initWithSession:session] autorelease];
+}
+
+- (long) getScriptTimeout {
+  return [session_ scriptTimeout];
+}
+
+- (void) setScriptTimeout:(NSDictionary *)params {
+  NSNumber* number = (NSNumber*) [params objectForKey:@"ms"];
+  NSLog(@"Setting script timeouts to %@ms", number);
+  NSTimeInterval wait = [number doubleValue] / 1000.0;
+  [session_ setScriptTimeout:wait];
+}
+
+- (void) clearScriptTimeout {
+  [session_ setScriptTimeout:0];
+}
 
 @end

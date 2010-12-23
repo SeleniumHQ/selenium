@@ -45,4 +45,11 @@
 -(id) executeJsFunction:(NSString*)functionAsString
                withArgs:(NSArray*)args;
 
+// Similar to |executeJsFunction:withArgs:|, except the |script| defines the
+// body of an asynchronous function. The last argument to this function will be
+// a callback which must be invoked to signal the script has finished.
+-(id) executeAsyncJsFunction:(NSString*)script
+                    withArgs:(NSArray*)args
+                 withTimeout:(NSTimeInterval)timeout;
+
 @end

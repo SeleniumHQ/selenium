@@ -24,6 +24,7 @@
 #import "WebDriverPreferences.h"
 #import "WebDriverRequestFetcher.h"
 #import "WebDriverUtilities.h"
+#import "NSString+SBJSON.h"
 #import <objc/runtime.h>
 #import "RootViewController.h"
 #import <QuartzCore/QuartzCore.h>
@@ -101,12 +102,43 @@ static const NSString* kGeoAltitudeKey = @"altitude";
 - (BOOL)webView:(UIWebView *)webView 
     shouldStartLoadWithRequest:(NSURLRequest *)request
     navigationType:(UIWebViewNavigationType)navigationType {
+
+  NSURL* url = [request URL];
+  if ([[url scheme] isEqualToString:@"webdriver"]) {
+    NSLog(@"Received webdriver data from the current page: %@",
+        [url absoluteString]);
+
+    NSString* action = [url host];
+    if (action == nil) {
+      NSLog(@"No action specified; ignoring webdriver:// URL: %@",
+          [url absoluteString]);
+      return NO;
+    }
+
+    NSString* jsonData = @"{}";
+    if ([url query] != nil) {
+      jsonData = [[url query]
+          stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    }
+
+    // TODO: catch malformed query data and broadcast an appropriate error.
+    NSDictionary* data = (NSDictionary*) [jsonData JSONValue];
+    [[NSNotificationCenter defaultCenter]
+        postNotificationName:[NSString stringWithFormat:@"webdriver:%@", action]
+                      object:self
+                    userInfo:data];
+    return NO;
+  }
+
   NSLog(@"shouldStartLoadWithRequest");
   return YES;
 }
 
 - (void)webViewDidStartLoad:(UIWebView *)webView {
   NSLog(@"webViewDidStartLoad");
+  [[NSNotificationCenter defaultCenter]
+      postNotificationName:@"webdriver:pageLoad"
+                    object:self];
   @synchronized(self) {
     numPendingPageLoads_ += 1;
   }

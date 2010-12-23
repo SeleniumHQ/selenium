@@ -23,7 +23,7 @@ goog.require('goog.events.EventType');
 
 
 /**
- * Executes a random snippet of JavaScript that defines the function of a body
+ * Executes a random snippet of JavaScript that defines the body of a function
  * to invoke.  When executing asynchronous scripts, all timeouts will be
  * scheduled with the window in whose context the script is invoked (this
  * ensures timeouts are in sync with that window's event queue).  Furthermore,

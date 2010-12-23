@@ -28,4 +28,10 @@
                         withArgs:[arguments objectForKey:@"args"]];
 }
 
+-(id) executeAsyncScript:(NSDictionary*) arguments {
+  return [self executeAsyncJsFunction:[arguments objectForKey:@"script"]
+                             withArgs:[arguments objectForKey:@"args"]
+                          withTimeout:[self scriptTimeout]];
+}
+
 @end

@@ -28,7 +28,7 @@
   int numPendingPageLoads_;
 
   NSString *lastJSResult_;
-
+ 
   NSURLRequestCachePolicy cachePolicy_;
   
   // Pointer to the status / activity label.

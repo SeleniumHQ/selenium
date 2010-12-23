@@ -29,11 +29,13 @@
   int sessionId_;
   ElementStore* elementStore_;
   NSTimeInterval implicitWait_;
+  NSTimeInterval scriptTimeout_;
 }
 
 @property (nonatomic, readonly) ElementStore* elementStore;
 @property (nonatomic) int sessionId;
 @property (nonatomic) NSTimeInterval implicitWait;
+@property (nonatomic) NSTimeInterval scriptTimeout;
 
 - (id) initWithSessionRootAndSessionId:(SessionRoot*)root
                              sessionId:(int)sessionId;

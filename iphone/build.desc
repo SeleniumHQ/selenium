@@ -20,4 +20,5 @@ js_fragment_header(name = "atoms",
     "//common/src/js/webdriver:submit",
     "//common/src/js/webdriver:toggle",
     "//common/src/js/webdriver:type",
+    "//iphone/src/js:execute_async_script",
   ])

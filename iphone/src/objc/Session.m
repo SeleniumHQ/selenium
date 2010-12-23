@@ -44,6 +44,7 @@ static NSString* const SESSION_STORAGE = @"sessionStorage";
 @synthesize elementStore = elementStore_;
 @synthesize sessionId = sessionId_;
 @synthesize implicitWait = implicitWait_;
+@synthesize scriptTimeout = scriptTimeout_;
 
 // The WebViewController has most of the actual functionality this vdir exposes.
 // We'll just forward most messages there.
@@ -131,15 +132,18 @@ static NSString* const SESSION_STORAGE = @"sessionStorage";
   [self setResource:[Database databaseWithSessionId:sessionId_] 
            withName:@"execute_sql"];
   
-  // Execute JS function with the given body. This takes an optional second
-  // argument which is a list of arguments to the function.
-  // Executes (function() { $1 }).apply(null, $2);
-  WebDriverResource *executeScript =
-  [WebDriverResource resourceWithTarget:self
+  // Execute JS function with the given body.
+  [self setResource:[WebDriverResource
+                     resourceWithTarget:self
                               GETAction:NULL
-                             POSTAction:@selector(executeScript:)];
-  [executeScript setAllowOptionalArguments:YES];
-  [self setResource:executeScript withName:@"execute"];
+                             POSTAction:@selector(executeScript:)]
+           withName:@"execute"];
+ 
+  [self setResource:[WebDriverResource
+                     resourceWithTarget:self
+                              GETAction:NULL
+                             POSTAction:@selector(executeAsyncScript:)]
+           withName:@"execute_async"];
   
   // |ElementStore| handles the /element virtual directory and all of its
   // children. It also installs itself on this session for handling the

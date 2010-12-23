@@ -48,3 +48,18 @@
 - (void)clearImplicitWait;
 
 @end
+
+// This |HTTPVirtualDirectory| 
+@interface ScriptTimeout : HTTPVirtualDirectory {
+  Session* session_;
+}
+
+- (id)initWithSession:(Session*)session;
+
++ (ScriptTimeout*)scriptTimeoutForSession:(Session*)session;
+
+- (long)getScriptTimeout;
+- (void)setScriptTimeout:(NSDictionary *)params;
+- (void)clearScriptTimeout;
+
+@end

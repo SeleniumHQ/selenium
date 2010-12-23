@@ -110,6 +110,9 @@ static NSString* const kElementIdKey = @"ELEMENT";
     
   [self setResource:[Attribute attributeDirectoryForElement:self]
            withName:@"attribute"];
+
+  [self setResource:[ElementComparatorBridge comparatorBridgeFor:self]
+           withName:@"equals"];
   
   return self;
 }
@@ -288,3 +291,82 @@ static NSString* const kElementIdKey = @"ELEMENT";
 }
 
 @end
+
+@implementation ElementComparatorBridge
+
+@synthesize element = element_;
+
+- (id) initFor:(Element*)element {
+  if (![super init]) {
+    return nil;
+  }
+  element_ = element;
+  return self;
+}
+
++ (ElementComparatorBridge*) comparatorBridgeFor:(Element*)element {
+  return [[[ElementComparatorBridge alloc] initFor:element] autorelease];
+}
+
+// Configures a temporary directory to handle /element/:elementId/equals/:other.
+// The directory will remove itself after a singel request.
+- (id<HTTPResource>)elementWithQuery:(NSString *)query {
+  if ([query length] > 0) {
+    NSString* otherId = [query substringFromIndex:1];
+    id<HTTPResource> resource = [contents objectForKey:otherId];
+    if (resource == nil) {
+      NSLog(@"Adding comparator for element %@", otherId);
+      NSDictionary* idDict = [NSDictionary dictionaryWithObject:otherId
+                                                         forKey:kElementIdKey];
+      resource = [[ElementComparator alloc] initFor:self
+                                        compareWith:idDict];
+      [resource autorelease];
+    }
+  }
+  return [super elementWithQuery:query];
+}
+
+@end
+
+@implementation ElementComparator
+
+- (id) initFor:(ElementComparatorBridge*)parentDirectory
+   compareWith:(NSDictionary*)otherElementId {
+  if (![super init]) {
+    return nil;
+  }
+  parentDirectory_ = parentDirectory;
+  otherElementId_ = [otherElementId retain];
+  
+  [parentDirectory_ setResource:[WebDriverResource
+                                 resourceWithTarget:self
+                                          GETAction:@selector(compareElements)
+                                         POSTAction:NULL]
+                       withName:[otherElementId objectForKey:kElementIdKey]];
+  return self;
+}
+
+- (void) dealloc {
+  [otherElementId_ release];
+  [super dealloc];
+}
+
+- (id) compareElements {
+  id result;
+  @try {
+    NSArray* args = [NSArray arrayWithObjects:
+        [[parentDirectory_ element] idDictionary], otherElementId_, nil];
+    result = [self executeJsFunction:
+        @"function(){return arguments[0]==arguments[1];}"
+                          withArgs:args];
+  } @finally {
+    // This is a one shot directory; remove ourselves from the parent directory.
+    NSLog(@"Removing comparator tmp directory");
+    [parentDirectory_ removeResourceWithName:
+        [otherElementId_ objectForKey:kElementIdKey]];
+  }
+  return result;
+}
+
+@end
+

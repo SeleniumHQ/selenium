@@ -112,3 +112,33 @@
 - (NSString *)name;
 
 @end
+
+
+// Directory acts as a bridge, creating subdirectories on demand to handle
+// requests to /session/:id/element/:elementId/equals/:other.
+@interface ElementComparatorBridge : HTTPVirtualDirectory {
+ @private
+  Element* element_;
+}
+
+@property (nonatomic, readonly, retain) Element* element;
+
++ (ElementComparatorBridge*) comparatorBridgeFor:(Element*)element;
+- (id) initFor:(Element*)element;
+
+@end
+
+// Temporary directory that handles element equality comparisons.
+@interface ElementComparator : HTTPVirtualDirectory {
+ @private
+  ElementComparatorBridge* parentDirectory_;
+  NSDictionary* otherElementId_;
+}
+
+- (id) initFor:(ElementComparatorBridge*)parentDirectory
+   compareWith:(NSDictionary*)otherElementId;
+
+- (id) compareElements;
+
+@end
+

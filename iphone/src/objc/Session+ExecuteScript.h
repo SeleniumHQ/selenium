@@ -19,7 +19,8 @@
 #import <Foundation/Foundation.h>
 #import "Session.h"
 
-// This category implements the :context/execute function.
+// This category implements the :context/execute and :context/execute_async
+// functions.
 @interface Session (ExecuteScript)
 
 // Executes a user supplied snippet of JavaScript. This resource handler expects
@@ -31,5 +32,8 @@
 //
 // Returns the script result.
 - (id)executeScript:(NSDictionary *)arguments;
+
+// Executes a user supplied asynchronous JavaScript snippet.
+- (id)executeAsyncScript:(NSDictionary *)arguments;
 
 @end
