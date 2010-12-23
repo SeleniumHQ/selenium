@@ -84,15 +84,18 @@ module Selenium
       end
 
       def cygwin?
-        RUBY_PLATFORM =~ /cygwin/
+        !!(RUBY_PLATFORM =~ /cygwin/)
       end
 
       def wrap_in_quotes_if_necessary(str)
         win? && !cygwin? ? %{"#{str}"} : str
       end
 
-      def cygwin_path(path)
-        `cygpath "#{path}"`.strip
+      def cygwin_path(path, opts = {})
+        flags = []
+        opts.each { |k,v| flags << "--#{k}" if v }
+
+        `cygpath #{flags.join ' '} "#{path}"`.strip
       end
 
       def make_writable(file)
