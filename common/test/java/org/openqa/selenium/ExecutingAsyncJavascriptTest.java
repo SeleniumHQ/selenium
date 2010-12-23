@@ -14,7 +14,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-@Ignore(value = {SELENESE, IE}, reason = "Every test appears to be failing.")
+@Ignore(value = {IE}, reason = "Every test appears to be failing.")
 public class ExecutingAsyncJavascriptTest extends AbstractDriverTestCase {
 
   private JavascriptExecutor executor;
