@@ -262,7 +262,7 @@ class RubyMappings
         dependencies = Array(args[:gemdeps]) + Array(args[:devdeps])
         dependencies.each do |dep|
           name, version = dep.shift
-          ruby :command => "gem", :args => ["install", name, "--version", version, "--no-rdoc", "--no-ri"]
+          sh "gem", "install", name, "--version", version, "--no-rdoc", "--no-ri"
         end
       end
     end
