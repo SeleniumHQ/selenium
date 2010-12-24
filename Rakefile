@@ -1,9 +1,11 @@
+$LOAD_PATH.unshift File.expand_path(".")
+
 require 'rake'
 require 'rake/testtask'
 require 'rake/rdoctask'
-require 'rake-tasks/files.rb'
+require 'rake-tasks/files'
 require 'yaml'
-require 'net/telnet.rb'
+require 'net/telnet'
 
 Rake.application.instance_variable_set "@name", "go"
 verbose false

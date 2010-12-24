@@ -73,7 +73,7 @@ class Tasks
   def add_dependencies(target, dir, all_deps)
     return if all_deps.nil?
 
-    all_deps.each do |dep|
+    Array(all_deps).each do |dep|
       target.enhance dep_type(dir, dep)
     end
   end

@@ -298,7 +298,9 @@ class RubyRunner
       cmd << "-J-Djava.awt.headless=true" if opts[:headless]
     else
       cmd = [find_ruby]
-      JRuby.runtime.instance_config.run_ruby_in_process = false
+      if defined?(JRuby)
+        JRuby.runtime.instance_config.run_ruby_in_process = false
+      end
     end
 
     if opts[:debug]
