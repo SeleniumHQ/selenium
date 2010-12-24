@@ -15,12 +15,10 @@ if (!"".methods.include? :start_with)
 end
 
 module Platform
-  def Platform.windows?
-    @windows ||= !!(/mswin|msys|mingw32/ =~ RbConfig::CONFIG['host_os'])
-  end
+  extend self
 
   def windows?
-   Platform.windows?
+    @windows ||= !!(/mswin|msys|mingw32/ =~ RbConfig::CONFIG['host_os'])
   end
 
   def mac?
@@ -35,15 +33,19 @@ module Platform
     RUBY_PLATFORM.downcase.include?("cygwin")
   end
 
-  def Platform.dir_separator
+  def dir_separator
     File::ALT_SEPARATOR || File::SEPARATOR
   end
 
-  def Platform.env_separator
+  def env_separator
     File::PATH_SEPARATOR
   end
 
-  def Platform.path_for(path)
+  def jruby?
+    RUBY_PLATFORM =~ /java/
+  end
+
+  def path_for(path)
     windows? ? path.gsub("/", Platform.dir_separator) : path
   end
 end
@@ -58,7 +60,7 @@ class Tasks
 
     # Strip any leading ".", "./" or ".\\"
     # I am ashamed
-    use = dir.gsub /\\/, '/'
+    use = dir.gsub(/\\/, '/')
     use = use.sub(/^\./, '').sub(/^\//, '')
 
     "//#{use}:#{name}"

@@ -5,8 +5,7 @@ class RubyMappings
 
     fun.add_mapping "ruby_test", CheckTestArgs.new
     fun.add_mapping "ruby_test", AddTestDefaults.new
-    fun.add_mapping "ruby_test", JRubyTest.new
-    fun.add_mapping "ruby_test", MRITest.new
+    fun.add_mapping "ruby_test", RubyTest.new
     fun.add_mapping "ruby_test", AddTestDependencies.new
 
     fun.add_mapping "rubydocs", RubyDocs.new
@@ -78,66 +77,44 @@ class RubyMappings
 
   class AddTestDependencies < Tasks
     def handle(fun, dir, args)
-      jruby_task = Rake::Task[task_name(dir, "#{args[:name]}-test:jruby")]
-      mri_task   = Rake::Task[task_name(dir, "#{args[:name]}-test:mri")]
+      task = Rake::Task[task_name(dir, "#{args[:name]}-test")]
 
-      # TODO:
-      # Specifying a dependency here isn't ideal, but it's the easiest way to
-      # avoid a lot of duplication in the build files, since this dep only applies to this task.
-      # Maybe add a jruby_dep argument?
-      add_dependencies jruby_task, dir, ["//common:test"]
+      if Platform.jruby?
+        requires = args[:require] + %w[
+          json-jruby.jar
+          rubyzip.jar
+          childprocess.jar
+          ci_reporter.jar
+          rack.jar
+        ].map { |jar| File.join("third_party/jruby", jar) }
+
+        # TODO:
+        # Specifying a dependency here isn't ideal
+        add_dependencies task, dir, ["//common:test"]
+      end
 
       if args.has_key?(:deps)
-        add_dependencies jruby_task, dir, args[:deps]
-        add_dependencies mri_task, dir, args[:deps]
+        add_dependencies task, dir, args[:deps]
       end
     end
   end
 
-  class JRubyTest < Tasks
+  class RubyTest < Tasks
     def handle(fun, dir, args)
-      requires = args[:require] + %w[
-        json-jruby.jar
-        rubyzip.jar
-        childprocess.jar
-        ci_reporter.jar
-        rack.jar
-      ].map { |jar| File.join("third_party/jruby", jar) }
-
-      desc "Run ruby tests for #{args[:name]} (jruby)"
-      t = task task_name(dir, "#{args[:name]}-test:jruby") do
-        puts "Running: #{args[:name]} ruby tests (jruby)"
+      desc "Run ruby tests for #{args[:name]}"
+      t = task task_name(dir, "#{args[:name]}-test") do
+        puts "Running: #{args[:name]} ruby tests"
 
         ENV['WD_SPEC_DRIVER'] = args[:name]
 
-        jruby :include     => args[:include],
-              :require     => requires,
-              :command     => args[:command],
-              :args         => %w[--format CI::Reporter::RSpec],
-              :debug       => !!ENV['DEBUG'],
-              :files       => args[:srcs]
+        ruby :include     => args[:include],
+             :require     => args[:require],
+             :command     => args[:command],
+             :args         => %w[--format CI::Reporter::RSpec],
+             :debug       => !!ENV['DEBUG'],
+             :files       => args[:srcs]
       end
 
-    end
-  end
-
-  class MRITest < Tasks
-    def handle(fun, dir, args)
-      deps = []
-
-      desc "Run ruby tests for #{args[:name]} (mri)"
-      task task_name(dir, "#{args[:name]}-test:mri") => deps do
-        puts "Running: #{args[:name]} ruby tests (mri)"
-
-        ENV['WD_SPEC_DRIVER'] = args[:name]
-
-        ruby :require => args[:require],
-             :include => args[:include],
-             :command => args[:command],
-             :args    => %w[--format CI::Reporter::RSpec],
-             :debug   => !!ENV['DEBUG'],
-             :files   => args[:srcs]
-      end
     end
   end
 
@@ -290,17 +267,13 @@ class RubyRunner
 
   JRUBY_JAR = "third_party/jruby/jruby-complete.jar"
 
-  def self.run(impl, opts)
-    if impl.to_sym == :jruby
-      JRuby.runtime.instance_config.run_ruby_in_process = true
+  def self.run(opts)
+    cmd = ["ruby"]
 
-      cmd = ["ruby"]
+    if Platform.jruby?
+      require 'java'
+      JRuby.runtime.instance_config.run_ruby_in_process = true
       cmd << "-J-Djava.awt.headless=true" if opts[:headless]
-    else
-      cmd = [find_ruby]
-      if defined?(JRuby)
-        JRuby.runtime.instance_config.run_ruby_in_process = false
-      end
     end
 
     if opts[:debug]
@@ -324,25 +297,8 @@ class RubyRunner
 
     sh(*cmd)
   end
-
-  def self.find_ruby
-    return "ruby" unless windows?
-
-    # work around windows/jruby bug by searching the PATH ourselves
-    paths = ENV['PATH'].split(File::PATH_SEPARATOR)
-    paths.each do |path|
-      exe = File.join(path, "ruby.exe")
-      return exe if File.executable?(exe)
-    end
-
-    raise "could not find ruby.exe"
-  end
-end
-
-def jruby(opts)
-  RubyRunner.run :jruby, opts
 end
 
 def ruby(opts)
-  RubyRunner.run :ruby, opts
+  RubyRunner.run opts
 end

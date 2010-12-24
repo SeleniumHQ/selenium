@@ -39,11 +39,9 @@ end
 def present?(arg)
   prefixes = ENV['PATH'].split(File::PATH_SEPARATOR)
 
-  matches = prefixes.select do |prefix|
+  prefixes.any? do |prefix|
     File.exists?(prefix + File::SEPARATOR + arg)
   end
-
-  matches.length > 0
 end
 
 def java?
