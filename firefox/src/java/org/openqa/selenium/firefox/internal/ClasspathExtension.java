@@ -24,6 +24,7 @@ import java.io.OutputStream;
 import java.net.URL;
 
 import com.google.common.io.Closeables;
+import com.google.common.io.Files;
 import com.google.common.io.Resources;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.internal.FileHandler;
@@ -50,14 +51,23 @@ public class ClasspathExtension implements Extension {
     if (!parentDir.exists()) {
       parentDir.mkdirs();
     }
-    URL resourceUrl = Resources.getResource(loadResourcesUsing, loadFrom);
-    OutputStream stream = null;
 
-    try {
-      stream = new FileOutputStream(extractedXpi);
-      Resources.copy(resourceUrl, stream);
-    } finally {
-      Closeables.closeQuietly(stream);
+    if (!Boolean.getBoolean("webdriver.development")) {
+      URL resourceUrl = Resources.getResource(loadResourcesUsing, loadFrom);
+      OutputStream stream = null;
+
+      try {
+        stream = new FileOutputStream(extractedXpi);
+        Resources.copy(resourceUrl, stream);
+      } finally {
+        Closeables.closeQuietly(stream);
+      }
+    } else {
+      File builtXpi = new File("build/firefox/webdriver.xpi");
+      if (!builtXpi.exists()) {
+        throw new RuntimeException("Could not find file: " + builtXpi.getAbsolutePath());
+      }
+      Files.copy(builtXpi, extractedXpi);
     }
     new FileExtension(extractedXpi).writeTo(extensionsDir);
   }
