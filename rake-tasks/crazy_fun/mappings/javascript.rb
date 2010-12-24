@@ -1,4 +1,3 @@
-
 require 'open3'
 require 'rake-tasks/crazy_fun/mappings/common'
 require 'rake-tasks/crazy_fun/mappings/java'
@@ -38,9 +37,9 @@ class JavascriptMappings
 end
 
 module Javascript
-  CrazyFunJava.ant.taskdef(:name => "jscomp",
-    :classname => "com.google.javascript.jscomp.ant.CompileTask",
-    :classpath => "third_party/closure/bin/compiler-20100616.jar")
+  # CrazyFunJava.ant.taskdef :name      => "jscomp",
+  #                          :classname => "com.google.javascript.jscomp.ant.CompileTask",
+  #                          :classpath => "third_party/closure/bin/compiler-20100616.jar"
 
   class BaseJs < Tasks
     attr_reader :calcdeps
