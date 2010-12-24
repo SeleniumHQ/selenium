@@ -35,13 +35,16 @@ class JavaMappings
 end
 
 class Ant
-  # load our bundled version of ant
-  def self.load
-    require 'ant'
-    Dir['third_party/java/ant/*.jar'].each do |jar|
-      $CLASSPATH << jar
-    end
+  def self.load_bundled
+    dir = 'third_party/java/ant'
+
+    Dir[File.join(dir, '*.jar')].each { |jar| require jar }
+
+    # we set ANT_HOME to avoid JRuby trying to load its own Ant
+    ENV['ANT_HOME'] = dir
+    require "ant"
   end
+
 end
 
 module CrazyFunJava
@@ -51,7 +54,7 @@ module CrazyFunJava
       require 'third_party/java/eclipse_compiler/ecj-3.5.2.jar'
       require 'third_party/java/junit/junit-dep-4.8.1.jar'
 
-      Ant.load
+      Ant.load_bundled
 
       ant = Ant.new(:basedir => ".", :name => "selenium")
 
