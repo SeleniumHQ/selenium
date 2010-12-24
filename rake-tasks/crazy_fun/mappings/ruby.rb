@@ -80,16 +80,7 @@ class RubyMappings
       task = Rake::Task[task_name(dir, "#{args[:name]}-test")]
 
       if Platform.jruby?
-        requires = args[:require] + %w[
-          json-jruby.jar
-          rubyzip.jar
-          childprocess.jar
-          ci_reporter.jar
-          rack.jar
-        ].map { |jar| File.join("third_party/jruby", jar) }
-
-        # TODO:
-        # Specifying a dependency here isn't ideal
+        # TODO: # Specifying a dependency here isn't ideal
         add_dependencies task, dir, ["//common:test"]
       end
 
@@ -102,19 +93,34 @@ class RubyMappings
   class RubyTest < Tasks
     def handle(fun, dir, args)
       desc "Run ruby tests for #{args[:name]}"
-      t = task task_name(dir, "#{args[:name]}-test") do
+      task task_name(dir, "#{args[:name]}-test") do
+        STDOUT.sync = true
         puts "Running: #{args[:name]} ruby tests"
+
+        add_jruby_requires(args) if Platform.jruby?
 
         ENV['WD_SPEC_DRIVER'] = args[:name]
 
-        ruby :include     => args[:include],
-             :require     => args[:require],
-             :command     => args[:command],
-             :args         => %w[--format CI::Reporter::RSpec],
-             :debug       => !!ENV['DEBUG'],
-             :files       => args[:srcs]
+        ruby :include => args[:include],
+             :require => args[:require],
+             :command => args[:command],
+             :args    => %w[--format CI::Reporter::RSpec],
+             :debug   => !!ENV['DEBUG'],
+             :files   => args[:srcs]
       end
+    end
 
+    def add_jruby_requires(args)
+      jars = %w[
+        json-jruby.jar
+        rubyzip.jar
+        childprocess.jar
+        ci_reporter.jar
+        rack.jar
+      ].map { |jar| File.join("third_party/jruby", jar) }
+
+      args[:require] ||= []
+      args[:require] += jars
     end
   end
 
@@ -264,8 +270,6 @@ class RubyMappings
 end # RubyMappings
 
 class RubyRunner
-
-  JRUBY_JAR = "third_party/jruby/jruby-complete.jar"
 
   def self.run(opts)
     cmd = ["ruby"]
