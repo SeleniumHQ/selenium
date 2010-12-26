@@ -719,8 +719,8 @@ LRESULT mouseMoveTo(WINDOW_HANDLE handle, long duration, long fromX, long fromY,
 	for (int i = 0; i < steps; i++) {
 	  //To avoid integer division rounding and cumulative floating point errors,
 	  //calculate from scratch each time
-	  int currentX = fromX + ((toX - fromX) * ((double)i) / steps);
-		int currentY = fromY + ((toY - fromY) * ((double)i) / steps);
+	  int currentX = (int)(fromX + ((toX - fromX) * ((double)i) / steps));
+		int currentY = (int)(fromY + ((toY - fromY) * ((double)i) / steps));
 	  SendMessage(directInputTo, WM_MOUSEMOVE, buttonValue, MAKELPARAM(currentX, currentY));
 		wait(sleep);
 	}

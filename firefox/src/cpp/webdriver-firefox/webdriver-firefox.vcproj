@@ -23,7 +23,7 @@
 			OutputDirectory="$(SolutionDir)build\$(PlatformName)\$(ConfigurationName)"
 			IntermediateDirectory="$(SolutionDir)build\intermediate\$(ProjectName)\$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="2"
-			UseOfMFC="1"
+			UseOfMFC="0"
 			UseOfATL="1"
 			CharacterSet="1"
 			>
@@ -45,7 +45,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(ProjectDir)..\..\..\..\third_party\gecko-1.9.0.11\win32\include&quot;;&quot;$(ProjectDir)..\..\..\..\common\src\cpp\webdriver-interactions&quot;"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)third_party\gecko-1.9.0.11\win32\include&quot;;&quot;$(SolutionDir)common\src\cpp\webdriver-interactions&quot;"
 				PreprocessorDefinitions="XP_WIN;XP_WIN32"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -96,7 +96,7 @@
 			OutputDirectory="$(SolutionDir)build\$(PlatformName)\$(ConfigurationName)"
 			IntermediateDirectory="$(SolutionDir)build\intermediate\$(ProjectName)\$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="2"
-			UseOfMFC="1"
+			UseOfMFC="0"
 			UseOfATL="1"
 			CharacterSet="1"
 			>
@@ -119,7 +119,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(ProjectDir)..\..\..\..\third_party\gecko-1.9.0.11\win32\include&quot;;&quot;$(ProjectDir)..\..\..\..\common\src\cpp\webdriver-interactions&quot;"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)third_party\gecko-1.9.0.11\win32\include&quot;;&quot;$(SolutionDir)common\src\cpp\webdriver-interactions&quot;"
 				PreprocessorDefinitions="XP_WIN;XP_WIN32"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -170,7 +170,7 @@
 			OutputDirectory="$(SolutionDir)build\$(PlatformName)\$(ConfigurationName)"
 			IntermediateDirectory="$(SolutionDir)build\intermediate\$(ProjectName)\$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="2"
-			UseOfMFC="1"
+			UseOfMFC="0"
 			UseOfATL="1"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
@@ -194,7 +194,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories="&quot;$(ProjectDir)..\..\..\..\third_party\gecko-1.9.0.11\win32\include&quot;;&quot;$(ProjectDir)..\..\..\..\common\src\cpp\webdriver-interactions&quot;"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)third_party\gecko-1.9.0.11\win32\include&quot;;&quot;$(SolutionDir)common\src\cpp\webdriver-interactions&quot;"
 				PreprocessorDefinitions="XP_WIN;XP_WIN32"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
@@ -246,7 +246,7 @@
 			OutputDirectory="$(SolutionDir)build\$(PlatformName)\$(ConfigurationName)"
 			IntermediateDirectory="$(SolutionDir)build\intermediate\$(ProjectName)\$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="2"
-			UseOfMFC="1"
+			UseOfMFC="0"
 			UseOfATL="1"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
@@ -271,7 +271,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories="&quot;$(ProjectDir)..\..\..\..\third_party\gecko-1.9.0.11\win32\include&quot;;&quot;$(ProjectDir)..\..\..\..\common\src\cpp\webdriver-interactions&quot;"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)third_party\gecko-1.9.0.11\win32\include&quot;;&quot;$(SolutionDir)common\src\cpp\webdriver-interactions&quot;"
 				PreprocessorDefinitions="XP_WIN;XP_WIN32"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
@@ -346,11 +346,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\gecko19\nsIAccessibleDocument.h"
+				RelativePath=".\gecko18\nsIAccessibleDocument.h"
 				>
 			</File>
 			<File
-				RelativePath=".\gecko18\nsIAccessibleDocument.h"
+				RelativePath=".\gecko19\nsIAccessibleDocument.h"
 				>
 			</File>
 			<File

@@ -24,7 +24,7 @@
 			OutputDirectory="$(SolutionDir)build\$(PlatformName)\$(ConfigurationName)"
 			IntermediateDirectory="$(SolutionDir)build\intermediate\$(ProjectName)\$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="2"
-			UseOfMFC="1"
+			UseOfMFC="0"
 			CharacterSet="1"
 			>
 			<Tool
@@ -45,7 +45,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="../../../../third_party;../../../../third_party/npapi;../../../../common/src/cpp/webdriver-interactions"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)third_party&quot;;&quot;$(SolutionDir)third_party\npapi&quot;;&quot;$(SolutionDir)common\src\cpp\webdriver-interactions&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;NPCHROMEDRIVER_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -98,7 +98,7 @@
 			OutputDirectory="$(SolutionDir)build\$(PlatformName)\$(ConfigurationName)"
 			IntermediateDirectory="$(SolutionDir)build\intermediate\$(ProjectName)\$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="2"
-			UseOfMFC="1"
+			UseOfMFC="0"
 			CharacterSet="1"
 			>
 			<Tool
@@ -120,7 +120,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="../../../../third_party;../../../../third_party/npapi;../../../../common/src/cpp/webdriver-interactions"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)third_party&quot;;&quot;$(SolutionDir)third_party\npapi&quot;;&quot;$(SolutionDir)common\src\cpp\webdriver-interactions&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;NPCHROMEDRIVER_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -173,7 +173,7 @@
 			OutputDirectory="$(SolutionDir)build\$(PlatformName)\$(ConfigurationName)"
 			IntermediateDirectory="$(SolutionDir)build\intermediate\$(ProjectName)\$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="2"
-			UseOfMFC="1"
+			UseOfMFC="0"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
 			>
@@ -196,7 +196,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories="../../../../third_party;../../../../third_party/npapi;../../../../common/src/cpp/webdriver-interactions"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)third_party&quot;;&quot;$(SolutionDir)third_party\npapi&quot;;&quot;$(SolutionDir)common\src\cpp\webdriver-interactions&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;NPCHROMEDRIVER_EXPORTS"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
@@ -250,7 +250,7 @@
 			OutputDirectory="$(SolutionDir)build\$(PlatformName)\$(ConfigurationName)"
 			IntermediateDirectory="$(SolutionDir)build\intermediate\$(ProjectName)\$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="2"
-			UseOfMFC="1"
+			UseOfMFC="0"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
 			>
@@ -274,7 +274,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories="../../../../third_party;../../../../third_party/npapi;../../../../common/src/cpp/webdriver-interactions"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)third_party&quot;;&quot;$(SolutionDir)third_party\npapi&quot;;&quot;$(SolutionDir)common\src\cpp\webdriver-interactions&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;NPCHROMEDRIVER_EXPORTS"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
