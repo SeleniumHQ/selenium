@@ -13,7 +13,7 @@ void * event_handler(enum mg_event event_raised,
 }
 
 webdriver::IEDriverServer* StartServer(int port) {
-	char buffer[6];
+	char buffer[10];
 	if (server == NULL) {
 		_itoa_s(port, buffer, 10, 10);
 		char* options[] = { "listening_ports", buffer, "access_control_list", "-0.0.0.0/0,+127.0.0.1", NULL };
