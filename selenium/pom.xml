@@ -20,6 +20,13 @@
 			<version>4.8.1</version>
 			<scope>compile</scope>
 		</dependency>
+		<!-- We need TestNG to compile SeleneseTestNgHelper ... --> 
+		<dependency>
+			<groupId>org.testng</groupId>
+			<artifactId>testng</artifactId>
+			<version>5.14.1</version>
+			<scope>compile</scope>
+		</dependency>
 		<!-- Runtime dependencies ... -->
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
