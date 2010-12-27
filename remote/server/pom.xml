@@ -107,11 +107,11 @@
 									<os family="windows" />
 								</condition>
 								<exec dir="../.." executable="${goExecutable}">
-									<arg value="//remote/server:server" />
+									<arg value="//remote/server:server_lite" />
 								</exec>
 								<!-- 2. Extract everything but the class files and MANIFEST.MF to target/classes ... -->
 								<mkdir dir="target/classes" />
-								<unjar src="../../build/remote/server/server.jar" dest="target/classes">
+								<unjar src="../../build/remote/server/server_lite.jar" dest="target/classes">
 									<patternset>
 										<exclude name="**/*.class" />
 										<exclude name="META-INF/MANIFEST.MF" />
