@@ -32,10 +32,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CassiniDev-console, Version=3.5.1.8, Culture=neutral, PublicKeyToken=f7f6e0b4240c7c27, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\third_party\csharp\cassinidev-3.5.1.8\CassiniDev-console.exe</HintPath>
-    </Reference>
     <Reference Include="nunit.core, Version=2.5.9.10348, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\third_party\csharp\nunit-2.5.9\lib\nunit.core.dll</HintPath>

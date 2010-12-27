@@ -52,10 +52,7 @@ namespace OpenQA.Selenium.Environment
         public string WhereIs(string page)
         {
             string location = string.Empty;
-            if (EnvironmentManager.Instance.WebServer.IsRunning)
-            {
-                location = EnvironmentManager.Instance.WebServer.NormalizedUrl(page);
-            }
+            location = "http://" + hostName + ":" + port + "/" + path + "/" + page;
 
             return location;
         }
@@ -63,12 +60,7 @@ namespace OpenQA.Selenium.Environment
         public string WhereElseIs(string page)
         {
             string location = string.Empty;
-            if (EnvironmentManager.Instance.WebServer.IsRunning)
-            {
-                UriBuilder builder = new UriBuilder(EnvironmentManager.Instance.WebServer.NormalizedUrl(page));
-                builder.Host = alternateHostName;
-                location = builder.Uri.ToString();
-            }
+            location = "http://" + alternateHostName + ":" + port + "/" + path + "/" + page;
 
             return location;
         }
@@ -76,12 +68,7 @@ namespace OpenQA.Selenium.Environment
         public string WhereIsSecure(string page)
         {
             string location = string.Empty;
-            if (EnvironmentManager.Instance.WebServer.IsRunning)
-            {
-                UriBuilder builder = new UriBuilder(EnvironmentManager.Instance.WebServer.NormalizedUrl(page));
-                builder.Scheme = "https";
-                location = builder.Uri.ToString();
-            }
+            location = "https://" + hostName + ":" + port + "/" + path + "/" + page;
 
             return location;
         }

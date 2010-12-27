@@ -49,8 +49,7 @@ namespace OpenQA.Selenium.Environment
             }
 
             info = info.Parent;
-            string websitePath = Path.Combine(info.FullName, string.Concat("common",Path.DirectorySeparatorChar,"src",Path.DirectorySeparatorChar,"web"));
-            webServer = new TestWebServer(websitePath, "common");
+            webServer = new TestWebServer(info.FullName);
         }
 
         ~EnvironmentManager()
