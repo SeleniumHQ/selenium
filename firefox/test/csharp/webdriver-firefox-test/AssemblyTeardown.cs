@@ -1,20 +1,23 @@
 ﻿using NUnit.Framework;
 using OpenQA.Selenium.Environment;
 
-[SetUpFixture]
-// Outside a namespace to affect the entire assembly
-public class MySetUpClass
+namespace OpenQA.Selenium.Firefox.Test
 {
-    [SetUp]
-    void RunBeforeAnyTest()
+    [SetUpFixture]
+    // Outside a namespace to affect the entire assembly
+    public class MySetUpClass
     {
-        EnvironmentManager.Instance.WebServer.Start();
-    }
+        [SetUp]
+        public void RunBeforeAnyTest()
+        {
+            EnvironmentManager.Instance.WebServer.Start();
+        }
 
-    [TearDown]
-    void RunAfterAnyTests()
-    {
-        EnvironmentManager.Instance.CloseCurrentDriver();
-        EnvironmentManager.Instance.WebServer.Stop();
+        [TearDown]
+        public void RunAfterAnyTests()
+        {
+            EnvironmentManager.Instance.CloseCurrentDriver();
+            EnvironmentManager.Instance.WebServer.Stop();
+        }
     }
 }

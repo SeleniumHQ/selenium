@@ -17,33 +17,27 @@ namespace OpenQA.Selenium
         {
             this.needsDriverBefore = needsNewDriverBeforeTest;
             this.needsDriverAfter = needsNewDriverAfterTest;
-
-            this.ExceptionExpected = method.ExceptionExpected;
-            this.ExceptionHandler = method.ExceptionHandler;
-            this.ExpectedExceptionName = method.ExpectedExceptionName;
-            this.ExpectedExceptionType = method.ExpectedExceptionType;
-            this.ExpectedMessage = method.ExpectedMessage;
+            this.ExceptionProcessor = method.ExceptionProcessor;
         }
 
-        public override void Run(TestCaseResult testResult)
+        public override TestResult Run(EventListener listener, ITestFilter filter)
         {
             DriverTestFixture fixtureInstance = base.Parent.Fixture as DriverTestFixture;
-            if (fixtureInstance != null)
+            if (fixtureInstance != null && needsDriverBefore)
             {
-                if (needsDriverBefore)
-                {
-                    EnvironmentManager.Instance.CreateFreshDriver();
-                    fixtureInstance.DriverInstance = EnvironmentManager.Instance.GetCurrentDriver();
-                }
-
-                base.Run(testResult);
-
-                if (needsDriverAfter)
-                {
-                    EnvironmentManager.Instance.CreateFreshDriver();
-                    fixtureInstance.DriverInstance = EnvironmentManager.Instance.GetCurrentDriver();
-                }
+                EnvironmentManager.Instance.CreateFreshDriver();
+                fixtureInstance.DriverInstance = EnvironmentManager.Instance.GetCurrentDriver();
             }
+
+            TestResult result = base.Run(listener, filter);
+
+            if (fixtureInstance != null && needsDriverAfter)
+            {
+                EnvironmentManager.Instance.CreateFreshDriver();
+                fixtureInstance.DriverInstance = EnvironmentManager.Instance.GetCurrentDriver();
+            }
+
+            return result;
         }
     }
 }

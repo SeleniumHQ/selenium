@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using NUnit.Framework;
 
-namespace OpenQA.Selenium.Remote
+namespace OpenQA.Selenium.Remote.Test
 {
     [TestFixture]
     public class RemoteWebDriverSpecificTests : DriverTestFixture

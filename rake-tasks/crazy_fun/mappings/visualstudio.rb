@@ -108,7 +108,7 @@ module CrazyFunDotNet
 
       target = nunit "#{task_name}:run" do |nunit_task|
         puts "Testing: #{task_name}"
-        nunit_task.command = "third_party/csharp/nunit-2.4.8/bin/nunit-console.exe"
+        nunit_task.command = "third_party/csharp/nunit-2.5.9/nunit-console.exe"
         nunit_task.assemblies << [output_dir, args[:project]].join(File::SEPARATOR)
         nunit_task.options << "/nologo"
         copy_resources(dir, args[:files], output_dir)

@@ -1,20 +1,27 @@
 ﻿using NUnit.Framework;
 using OpenQA.Selenium.Environment;
 
-[SetUpFixture]
-// Outside a namespace to affect the entire assembly
-public class AssemblyTeardown
+namespace OpenQA.Selenium
 {
-    [SetUp]
-    void RunBeforeAnyTest()
+    [SetUpFixture]
+    // Outside a namespace to affect the entire assembly
+    public class AssemblyTeardown
     {
-        EnvironmentManager.Instance.WebServer.Start();
-    }
+        public AssemblyTeardown()
+        {
+        }
 
-    [TearDown]
-    void RunAfterAnyTests()
-    {
-        EnvironmentManager.Instance.CloseCurrentDriver();
-        EnvironmentManager.Instance.WebServer.Stop();
+        [SetUp]
+        public void RunBeforeAnyTest()
+        {
+            EnvironmentManager.Instance.WebServer.Start();
+        }
+
+        [TearDown]
+        public void RunAfterAnyTests()
+        {
+            EnvironmentManager.Instance.CloseCurrentDriver();
+            EnvironmentManager.Instance.WebServer.Stop();
+        }
     }
 }

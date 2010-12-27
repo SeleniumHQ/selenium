@@ -28,7 +28,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = ajaxyPage;
             object result = executor.ExecuteAsyncScript("arguments[arguments.length - 1](123);");
-            Assert.IsInstanceOfType(typeof(long), result);
+            Assert.IsInstanceOf<long>(result);
             Assert.AreEqual(123, (long)result);
         }
 
@@ -51,7 +51,7 @@ namespace OpenQA.Selenium
 
             object result = executor.ExecuteAsyncScript("arguments[arguments.length - 1]([]);");
             Assert.IsNotNull(result);
-            Assert.IsInstanceOfType(typeof(ReadOnlyCollection<object>), result);
+            Assert.IsInstanceOf<ReadOnlyCollection<object>>(result);
             Assert.AreEqual(0, ((ReadOnlyCollection<object>)result).Count);
         }
 
@@ -62,7 +62,7 @@ namespace OpenQA.Selenium
 
             object result = executor.ExecuteAsyncScript("arguments[arguments.length - 1](new Array());");
             Assert.IsNotNull(result);
-            Assert.IsInstanceOfType(typeof(ReadOnlyCollection<object>), result);
+            Assert.IsInstanceOf<ReadOnlyCollection<object>>(result);
             Assert.AreEqual(0, ((ReadOnlyCollection<object>)result).Count);
         }
 
@@ -73,7 +73,7 @@ namespace OpenQA.Selenium
 
             object result = executor.ExecuteAsyncScript("arguments[arguments.length - 1]([null, 123, 'abc', true, false]);");
             Assert.IsNotNull(result);
-            Assert.IsInstanceOfType(typeof(ReadOnlyCollection<object>), result);
+            Assert.IsInstanceOf<ReadOnlyCollection<object>>(result);
             ReadOnlyCollection<object> resultList = result as ReadOnlyCollection<object>;
             Assert.AreEqual(5, resultList.Count);
             Assert.IsNull(resultList[0]);
@@ -89,7 +89,7 @@ namespace OpenQA.Selenium
             driver.Url = ajaxyPage;
 
             object result = executor.ExecuteAsyncScript("arguments[arguments.length - 1](document.body);");
-            Assert.IsInstanceOfType(typeof(IWebElement), result);
+            Assert.IsInstanceOf<IWebElement>(result);
             Assert.AreEqual("body", ((IWebElement)result).TagName.ToLower());
         }
 
@@ -100,11 +100,11 @@ namespace OpenQA.Selenium
 
             object result = executor.ExecuteAsyncScript("arguments[arguments.length - 1]([document.body, document.body]);");
             Assert.IsNotNull(result);
-            Assert.IsInstanceOfType(typeof(ReadOnlyCollection<IWebElement>), result);
+            Assert.IsInstanceOf<ReadOnlyCollection<IWebElement>>(result);
             ReadOnlyCollection<IWebElement> resultsList = (ReadOnlyCollection<IWebElement>)result;
             Assert.AreEqual(2, resultsList.Count);
-            Assert.IsInstanceOfType(typeof(IWebElement), resultsList[0]);
-            Assert.IsInstanceOfType(typeof(IWebElement), resultsList[1]);
+            Assert.IsInstanceOf<IWebElement>(resultsList[0]);
+            Assert.IsInstanceOf<IWebElement>(resultsList[1]);
             Assert.AreEqual("body", ((IWebElement)resultsList[0]).TagName.ToLower());
             Assert.AreEqual(((IWebElement)resultsList[0]), ((IWebElement)resultsList[1]));
         }

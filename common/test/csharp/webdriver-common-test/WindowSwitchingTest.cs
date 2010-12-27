@@ -22,6 +22,7 @@ namespace OpenQA.Selenium
             //TODO (jimevan): this is an ugly sleep. Remove when implicit waiting is implemented.
             SleepBecauseWindowsTakeTimeToOpen();
 
+            System.Threading.Thread.Sleep(1000);
             driver.SwitchTo().Window("result");
             Assert.AreEqual("We Arrive Here", driver.Title);
 
@@ -200,6 +201,7 @@ namespace OpenQA.Selenium
             string handle1, handle2;
             handle1 = driver.GetWindowHandle();
 
+            System.Threading.Thread.Sleep(1000);
             driver.SwitchTo().Window("result");
             handle2 = driver.GetWindowHandle();
 

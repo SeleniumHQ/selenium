@@ -79,10 +79,9 @@ namespace OpenQA.Selenium
         private bool IgnoreTestForBrowser(Test test, MemberInfo member)
         {
             bool ignoreTest = false;
-            TestCase testCase = test as TestCase;
             Attribute[] ignoreAttr = Reflect.GetAttributes(member, IgnoreBrowserAttributeTypeFullName, true);
 
-            if (member != null && testCase != null && ignoreAttr != null)
+            if (member != null && ignoreAttr != null)
             {
                 // A test case might be ignored in more than one browser
                 foreach (System.Attribute attr in ignoreAttr)

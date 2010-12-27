@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Text;
 using OpenQA.Selenium;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using System.Collections.ObjectModel;
 
 namespace OpenQA.Selenium

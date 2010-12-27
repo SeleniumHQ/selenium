@@ -26,6 +26,8 @@ import java.io.IOException;
 public class KillSwitchServlet extends HttpServlet {
   @Override
   protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    String res = "<html><head><title>Quitting</title></head><body>Killing JVM</body></html>";
+    resp.getOutputStream().println(res);
     log("Killing JVM");
     System.exit(0);
   }

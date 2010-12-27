@@ -62,6 +62,9 @@ dotnet_library(name = "dotnet",
 
 dotnet_library(name = "dotnet-test",
   srcs = "test/csharp/**/*.cs",
+  deps = [
+    "//common:test"
+  ],
   refs = [
     "System.dll",
     "System.Configuration.dll",
@@ -70,11 +73,10 @@ dotnet_library(name = "dotnet-test",
     "System.Drawing.dll",
     "System.Xml.dll",
     "//common:dotnet",
-    "third_party/csharp/cassinidev-3.5.1.8/CassiniDev-console.exe",
-    "third_party/csharp/nunit-2.4.8/bin/nunit.core.dll",
-    "third_party/csharp/nunit-2.4.8/bin/nunit.core.interfaces.dll",
-    "third_party/csharp/nunit-2.4.8/bin/nunit.framework.dll",
-    "third_party/csharp/nunit-2.4.8/bin/nunit.mocks.dll"
+    "third_party/csharp/nunit-2.5.9/lib/nunit.core.dll",
+    "third_party/csharp/nunit-2.5.9/lib/nunit.core.interfaces.dll",
+    "third_party/csharp/nunit-2.5.9/framework/nunit.framework.dll",
+    "third_party/csharp/nunit-2.5.9/framework/nunit.mocks.dll"
   ],
   out = "build/dotnet/webdriver-common-test.dll"
 )

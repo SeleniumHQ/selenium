@@ -1,7 +1,7 @@
 using NUnit.Framework;
 using OpenQA.Selenium.IE;
 
-namespace OpenQA.Selenium
+namespace OpenQA.Selenium.IE.Test
 {
     [TestFixture]
     public class IeSpecificTests : DriverTestFixture
