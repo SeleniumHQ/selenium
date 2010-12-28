@@ -15,9 +15,6 @@ java_test(name = "test",
   ])
 
 dotnet_library(name = "dotnet",
-  deps = [
-    "//common:dotnet"
-  ],
   srcs = "src/csharp/**/*.cs",
   refs = [
     "System.dll",

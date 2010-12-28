@@ -30,9 +30,10 @@ module CrazyFunDotNet
                 "/filealign:512"]
 
       embedded_resources = []
+      buildable_references = resolve_buildable_references(args[:refs])
 
       target = csc task_name do |csc_task|
-        puts "Compiling: #{full_path}"
+        puts "Compiling: #{task_name} as #{full_path}"
         FileUtils.mkdir_p output_dir
 
         references = resolve_references(dir, args[:refs])
@@ -64,8 +65,9 @@ module CrazyFunDotNet
         copy_resources(dir, to_copy, output_dir)
       end
       
-      add_dependencies(target, dir, args[:deps])
+      add_dependencies(target, dir, buildable_references)
       add_dependencies(target, dir, args[:resources])
+      add_dependencies(target, dir, args[:deps])
 
       target.out = args[:out]
     end
@@ -98,6 +100,18 @@ module CrazyFunDotNet
       end
       return to_copy
     end
+
+    def resolve_buildable_references(refs)
+      buildable_references = []
+      unless refs.nil?
+        refs.each do |reference|
+          if reference.start_with? "//"
+            buildable_references << reference
+          end
+        end
+      end
+      return buildable_references
+    end
   end
 
   class RunDotNetTests < Tasks
@@ -124,7 +138,7 @@ module CrazyFunVisualC
   class VisualCLibrary < Tasks
     def handle(fun, dir, args)
       full_path = File.join("build", args[:out])
-      desc_path = args[:out].gsub("/", Platform.dir_separator)
+      desc_path = full_path.gsub("/", Platform.dir_separator)
       desc "Build #{desc_path}"
 
       task_name = task_name(dir, args[:name])
@@ -136,7 +150,7 @@ module CrazyFunVisualC
         end
       else
         target_task = msbuild task_name do |msb|
-          puts "Compiling: #{desc_path}"
+          puts "Compiling: #{task_name} as #{desc_path}"
           msb.use :net35
           msb.properties :configuration => :Release, :platform => args[:platform]
           msb.targets args[:target]

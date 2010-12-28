@@ -32,9 +32,6 @@ java_library(name = "combined",
   ])
 
 dotnet_library(name = "dotnet",
-  deps = [
-    "//remote/common:dotnet"
-  ],
   srcs = "src/csharp/**/*.cs",
   refs = [
     "System.dll",
@@ -47,4 +44,28 @@ dotnet_library(name = "dotnet",
   ],
   out = "build/dotnet/WebDriver.Remote.dll",
   doc = "build/dotnet/WebDriver.Remote.xml"
+)
+
+dotnet_library(name = "dotnet-test",
+  deps = [
+    "//remote/server:server"
+  ],
+  srcs = "test/csharp/**/*.cs",
+  refs = [
+    "System.dll",
+    "System.Data.dll",
+    "System.Drawing.dll",
+    "System.Xml.dll",
+    "//common:dotnet",
+    "//remote/common:dotnet",
+    "//remote/client:dotnet",
+    "//common:dotnet-test",
+    "third_party/csharp/nunit-2.5.9/framework/nunit.framework.dll"
+  ],
+  out = "build/dotnet/webdriver-remote-test.dll",
+  files = [
+    "test/csharp/webdriver-remote-test/webdriver-remote-test.config",
+    "test/csharp/webdriver-remote-test/webdriver-remote-test.nunit"
+  ],
+  project = "webdriver-remote-test.nunit"
 )

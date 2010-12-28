@@ -97,14 +97,6 @@ visualc_library(name = "firefox_dll",
 )
 
 dotnet_library(name = "dotnet",
-  deps = [
-    "//remote/client:dotnet"
-  ],
-  resources = [
-    {":webdriver" : "WebDriver.FirefoxExt.zip"},
-    {":noblur" : "WebDriver.FirefoxNoFocus.x86.dll"},
-    {":noblur64" : "WebDriver.FirefoxNoFocus.x64.dll"}
-  ],
   srcs = "src/csharp/**/*.cs",
   refs = [
     "System.dll",
@@ -116,15 +108,16 @@ dotnet_library(name = "dotnet",
     "//remote/client:dotnet",
     "third_party/csharp/dotnetzip-1.9/Ionic.Zip.Reduced.dll"
   ],
+  resources = [
+    {":webdriver" : "WebDriver.FirefoxExt.zip"},
+    {":noblur" : "WebDriver.FirefoxNoFocus.x86.dll"},
+    {":noblur64" : "WebDriver.FirefoxNoFocus.x64.dll"}
+  ],
   out = "build/dotnet/WebDriver.Firefox.dll",
   doc = "build/dotnet/WebDriver.Firefox.xml"
 )
 
 dotnet_test(name = "dotnet-test",
-  deps = [
-    "//firefox:dotnet",
-    "//common:dotnet-test"
-  ],
   srcs = "test/csharp/**/*.cs",
   refs = [
     "System.dll",
@@ -133,10 +126,10 @@ dotnet_test(name = "dotnet-test",
     "System.Drawing.dll",
     "System.Xml.dll",
     "//common:dotnet",
-    "//common:dotnet-test",
     "//remote/client:dotnet",
     "//firefox:dotnet",
-    "third_party/csharp/nunit-2.4.8/bin/nunit.framework.dll"
+    "//common:dotnet-test",
+    "third_party/csharp/nunit-2.5.9/framework/nunit.framework.dll"
   ],
   out = "build/dotnet/webdriver-firefox-test.dll",
   files = [

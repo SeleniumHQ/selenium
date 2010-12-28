@@ -120,7 +120,6 @@ dotnet_library(name = "dotnet-core",
 
 dotnet_library(name = "dotnet",
   srcs = "src/csharp/WebdriverBackedSelenium/**/*.cs",
-  deps = ["//selenium:dotnet-core"],
   refs = [
     "System.dll",
     "System.Core.dll",

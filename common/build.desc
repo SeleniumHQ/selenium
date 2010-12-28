@@ -61,10 +61,10 @@ dotnet_library(name = "dotnet",
 )
 
 dotnet_library(name = "dotnet-test",
-  srcs = "test/csharp/**/*.cs",
   deps = [
     "//common:test"
   ],
+  srcs = "test/csharp/**/*.cs",
   refs = [
     "System.dll",
     "System.Configuration.dll",
