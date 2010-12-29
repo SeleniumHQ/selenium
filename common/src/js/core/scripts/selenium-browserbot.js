@@ -1593,6 +1593,18 @@ BrowserBot.prototype.evaluateXPathCount = function(xpath, inDocument) {
 };
 
 /**
+ * Returns the number of css results.
+ */
+BrowserBot.prototype.evaluateCssCount = function(selector, inDocument) {
+    var results = [];
+    var locator = parse_locator(selector);
+    if (locator.type == 'css') {
+        results = eval_css(locator.string, inDocument);
+    }
+    return results.length;
+};
+
+/**
  * Finds a link element with text matching the expression supplied. Expressions must
  * begin with "link:".
  */

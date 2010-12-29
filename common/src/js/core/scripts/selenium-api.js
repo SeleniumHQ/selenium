@@ -2359,13 +2359,25 @@ Selenium.prototype.getExpression = function(expression) {
 
 Selenium.prototype.getXpathCount = function(xpath) {
     /**
+    * Returns the number of nodes that match the specified css selector, eg. "css=table" would give
+    * the number of tables.
+    * 
+    * @param css the css selector to evaluate. do NOT wrap this expression in a 'count()' function; we will do that for you.
+    * @return the number of nodes that match the specified selector
+    */
+    var result = this.browserbot.evaluateXPathCount(xpath, this.browserbot.getDocument());
+    return result;
+}
+
+Selenium.prototype.getCssCount = function(css) {
+    /**
     * Returns the number of nodes that match the specified xpath, eg. "//table" would give
     * the number of tables.
     * 
     * @param xpath the xpath expression to evaluate. do NOT wrap this expression in a 'count()' function; we will do that for you.
     * @return number the number of nodes that match the specified xpath
     */
-    var result = this.browserbot.evaluateXPathCount(xpath, this.browserbot.getDocument());
+    var result = this.browserbot.evaluateCssCount(css, this.browserbot.getDocument());
     return result;
 }
 
