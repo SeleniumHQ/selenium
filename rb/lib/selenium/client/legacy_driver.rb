@@ -1334,6 +1334,15 @@ module Selenium
         end
 
 
+        # Returns the number of nodes that match the specified css selector, eg. "css=table" would give
+        # the number of tables.
+        #
+        # 'css' is the css selector to evaluate. do NOT wrap this expression in a 'count()' function; we will do that for you.
+        def get_css_count(css)
+            return number_command("getCssCount", [css,])
+        end
+
+
         # Temporarily sets the "id" attribute of the specified element, so you can locate it in the future
         # using its ID rather than a slow/complicated XPath.  This ID will disappear once the page is
         # reloaded.
