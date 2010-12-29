@@ -1642,6 +1642,14 @@ class selenium:
         """
         return self.get_number("getXpathCount", [xpath,])
 
+    def get_css_count(self,css):
+        """
+        Returns the number of nodes that match the specified css selector, eg. "css=table" would give
+        the number of tables.
+
+        'css' is the css selector to evaluate. do NOT wrap this expression in a 'count()' function; we will do that for you.
+        """
+        return self.get_number("getCssCount", [css,])
 
     def assign_id(self,locator,identifier):
         """
