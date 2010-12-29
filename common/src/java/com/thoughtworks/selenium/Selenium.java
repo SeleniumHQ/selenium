@@ -968,6 +968,13 @@ the number of tables.
 */
 Number getXpathCount(String xpath);
 
+/** Returns the number of nodes that match the specified css selector, eg. "css=table" would give
+the number of tables.
+@param css the css selector to evaluate. do NOT wrap this expression in a 'count()' function; we will do that for you.
+@return the number of nodes that match the specified selector
+*/
+Number getCssCount(String css);
+
 /** Temporarily sets the "id" attribute of the specified element, so you can locate it in the future
 using its ID rather than a slow/complicated XPath.  This ID will disappear once the page is
 reloaded.

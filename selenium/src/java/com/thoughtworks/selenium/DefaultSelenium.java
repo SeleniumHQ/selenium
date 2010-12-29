@@ -629,6 +629,10 @@ public class DefaultSelenium implements Selenium {
 		return commandProcessor.getNumber("getXpathCount", new String[] {xpath,});
 	}
 
+	public Number getCssCount(String css) {
+		return commandProcessor.getNumber("getCssCount", new String[] {css,});
+	}
+
 	public void assignId(String locator,String identifier) {
 		commandProcessor.doCommand("assignId", new String[] {locator,identifier,});
 	}
