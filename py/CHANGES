@@ -4,3 +4,4 @@ Changes since 2010-12-01
 * Ability to move to default content
 * Implicit Waits
 * Change the API to use properties instead of get_x
+* Changed the Element Finding to match other languages

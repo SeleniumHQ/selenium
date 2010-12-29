@@ -20,6 +20,7 @@ from command import Command
 from webelement import WebElement
 from remote_connection import RemoteConnection
 from errorhandler import ErrorHandler
+from selenium.webdriver.common.by import By
 
 class WebDriver(object):
     """Controls a browser by sending commands to a remote server.
@@ -176,67 +177,67 @@ class WebDriver(object):
 
     def find_element_by_id(self, id_):
         """Finds element by id."""
-        return self._find_element_by("id", id_)
+        return self.find_element(by=By.ID, value=id_)
 
     def find_elements_by_id(self, id_):
         """Finds element by id."""
-        return self._find_elements_by("id", id_)
+        return self.find_elements(by=By.ID, value=id_)
 
     def find_elements_by_xpath(self, xpath):
         """Finds multiple elements by xpath."""
-        return self._find_elements_by("xpath", xpath)
+        return self.find_elements(by=By.XPATH, value=xpath)
 
     def find_element_by_xpath(self, xpath):
         """Finds an element by xpath."""
-        return self._find_element_by("xpath", xpath)
+        return self.find_element(by=By.XPATH, value=xpath)
 
     def find_element_by_link_text(self, link_text):
         """Finds an element by its link text."""
-        return self._find_element_by("link text", link_text)
-
-    def find_element_by_partial_link_text(self, link_text):
-        """Finds an element by a partial match of its link text."""
-        return self._find_element_by("partial link text", link_text)
+        return self.find_element(by=By.LINK_TEXT, value=link_text)
 
     def find_elements_by_link_text(self, link_text):
         """Finds elements by their link text."""
-        return self._find_elements_by("link text", link_text)
+        return self.find_elements(by=By.LINK_TEXT, value=link_text)
+
+    def find_element_by_partial_link_text(self, link_text):
+        """Finds an element by a partial match of its link text."""
+        return self.find_element(by=By.PARTIAL_LINK_TEXT, value=link_text)
 
     def find_elements_by_partial_link_text(self, link_text):
         """Finds elements by a partial match of their link text."""
-        return self._find_elements_by("partial link text", link_text)
+        return self.find_elements(by=By.PARTIAL_LINK_TEXT, value=link_text)
 
     def find_element_by_name(self, name):
         """Finds an element by its name."""
-        return self._find_element_by("name", name)
+        return self.find_element(by=By.NAME, value=name)
 
     def find_elements_by_name(self, name):
         """Finds elements by their name."""
-        return self._find_elements_by("name", name)
+        return self.find_elements(by=By.NAME, value=name)
 
     def find_element_by_tag_name(self, name):
         """Finds an element by its tag name."""
-        return self._find_element_by("tag name", name)
+        return self.find_element(by=By.TAG_NAME, value=name)
 
     def find_elements_by_tag_name(self, name):
         """Finds elements by their tag name."""
-        return self._find_elements_by("tag name", name)
+        return self.find_elements(by=By.TAG_NAME, value=name)
 
     def find_element_by_class_name(self, name):
         """Finds an element by their class name."""
-        return self._find_element_by("class name", name)
+        return self.find_element(by=By.CLASS_NAME, value=name)
 
     def find_elements_by_class_name(self, name):
         """Finds elements by their class name."""
-        return self._find_elements_by("class name", name)
+        return self.find_elements(by=By.CLASS_NAME, value=name)
 
     def find_element_by_css_selector(self, css_selector):
         """Find and return an element by CSS selector."""
-        return self._find_element_by("css selector", css_selector)
+        return self.find_element(by=By.CSS_SELECTOR, value=css_selector)
     
     def find_elements_by_css_selector(self, css_selector):
         """Find and return list of multiple elements by CSS selector."""
-        return self._find_elements_by("css selector", css_selector)
+        return self.find_elements(by=By.CSS_SELECTOR, value=css_selector)
 
     def execute_script(self, script, *args):
         if len(args) == 1:
@@ -333,11 +334,11 @@ class WebDriver(object):
         """Get the driver to poll for the element """
         self._execute(Command.IMPLICIT_WAIT, {'ms': time_to_wait*1000})
 
-    def _find_element_by(self, by, value):
+    def find_element(self, by=By.ID, value=None):
         return self._execute(Command.FIND_ELEMENT,
                              {'using': by, 'value': value})['value']
 
-    def _find_elements_by(self, by, value):
+    def find_elements(self, by=By.ID, value=None):
         return self._execute(Command.FIND_ELEMENTS,
                              {'using': by, 'value': value})['value']
 
