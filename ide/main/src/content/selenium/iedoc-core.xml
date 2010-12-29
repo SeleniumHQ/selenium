@@ -1441,6 +1441,17 @@ the number of tables.</comment>
 
 </function>
 
+<function name="getCssCount">
+
+<return type="number">the number of nodes that match the specified css selector</return>
+
+<param name="css">the css selector to evaluate. do NOT wrap this expression in a 'count()' function; we will do that for you.</param>
+
+<comment>Returns the number of nodes that match the specified selector, eg. "css=table" would give
+the number of tables.</comment>
+
+</function>
+
 <function name="assignId">
 
 <param name="locator">an <a href="#locators">element locator</a> pointing to an element</param>
