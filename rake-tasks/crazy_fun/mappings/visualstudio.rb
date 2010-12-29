@@ -137,7 +137,7 @@ end
 module CrazyFunVisualC
   class VisualCLibrary < Tasks
     def handle(fun, dir, args)
-      full_path = File.join("build", args[:out])
+      full_path = File.join("build", dir, args[:out])
       desc_path = full_path.gsub("/", Platform.dir_separator)
       desc "Build #{desc_path}"
 
@@ -145,9 +145,11 @@ module CrazyFunVisualC
 
       if !msbuild_installed?
          # overwrite the msbuild task with one that just copies prebuilts
-         target_task = task task_name do
-           copy_prebuilt_dll(fun, args[:out])
-        end
+         file full_path do
+           copy_prebuilt(fun, full_path)
+         end
+         
+         target_task = task task_name => full_path
       else
         target_task = msbuild task_name do |msb|
           puts "Compiling: #{task_name} as #{desc_path}"
@@ -163,15 +165,6 @@ module CrazyFunVisualC
       target_task.out = full_path
 
       add_dependencies(target_task, dir, args[:deps])
-    end
-
-    def copy_prebuilt_dll(fun, out)
-      full_out_path = File.join("build", out)
-      src = fun.find_prebuilt(out)
-
-      mkdir_p File.dirname(full_out_path)
-      puts "Falling back to copy of: #{src}"
-      cp src, full_out_path
     end
   end
 end
