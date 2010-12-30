@@ -30,6 +30,9 @@ public class DoubleClickAction extends BaseAction implements Action {
     super(parent, onElement);
   }
 
+  /**
+   * Double-clicks on the given element.
+   */
   public void perform() {
     getMouse().doubleClick(onElement);
   }

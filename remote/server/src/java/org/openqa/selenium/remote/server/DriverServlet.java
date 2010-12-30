@@ -45,6 +45,12 @@ import org.openqa.selenium.remote.server.handler.html5.SetBrowserConnection;
 import org.openqa.selenium.remote.server.handler.html5.SetLocalStorageItem;
 import org.openqa.selenium.remote.server.handler.html5.SetLocationContext;
 import org.openqa.selenium.remote.server.handler.html5.SetSessionStorageItem;
+import org.openqa.selenium.remote.server.handler.interactions.ContextClickElement;
+import org.openqa.selenium.remote.server.handler.interactions.DoubleClickElement;
+import org.openqa.selenium.remote.server.handler.interactions.MouseDownOnElement;
+import org.openqa.selenium.remote.server.handler.interactions.MouseMoveToElement;
+import org.openqa.selenium.remote.server.handler.interactions.MouseUpOnElement;
+import org.openqa.selenium.remote.server.handler.interactions.SendModifierKey;
 import org.openqa.selenium.remote.server.renderer.EmptyResult;
 import org.openqa.selenium.remote.server.renderer.ForwardResult;
 import org.openqa.selenium.remote.server.renderer.JsonErrorExceptionResult;
@@ -171,6 +177,14 @@ public class DriverServlet extends HttpServlet {
 
     postMapper.bind("/session/:sessionId/element/:id/click", ClickElement.class)
         .on(ResultType.SUCCESS, new EmptyResult());
+    postMapper.bind("/session/:sessionId/element/:id/doubleclick", DoubleClickElement.class)
+        .on(ResultType.SUCCESS, new EmptyResult());
+    postMapper.bind("/session/:sessionId/element/:id/contextclick", ContextClickElement.class)
+        .on(ResultType.SUCCESS, new EmptyResult());
+    postMapper.bind("/session/:sessionId/element/:id/buttondown", MouseDownOnElement.class)
+        .on(ResultType.SUCCESS, new EmptyResult());
+    postMapper.bind("/session/:sessionId/element/:id/buttonup", MouseUpOnElement.class)
+        .on(ResultType.SUCCESS, new EmptyResult());
     getMapper.bind("/session/:sessionId/element/:id/text", GetElementText.class)
         .on(ResultType.SUCCESS, new JsonResult(RESPONSE));
     postMapper.bind("/session/:sessionId/element/:id/submit", SubmitElement.class)
@@ -206,6 +220,8 @@ public class DriverServlet extends HttpServlet {
 
     postMapper.bind("/session/:sessionId/element/:id/hover", HoverOverElement.class)
         .on(ResultType.SUCCESS, new EmptyResult());
+    postMapper.bind("/session/:sessionId/element/:id/movehere", MouseMoveToElement.class)
+        .on(ResultType.SUCCESS, new EmptyResult());    
 
     postMapper.bind("/session/:sessionId/element/:id/drag", DragElement.class)
         .on(ResultType.SUCCESS, new EmptyResult());

@@ -31,6 +31,13 @@ public class ButtonReleaseAction extends BaseAction implements Action {
     super(parent, element);
   }
 
+  /**
+   * Releases the mouse button currently left held. This action can be called
+   * for an element different than the one ClickAndHoldAction was called for.
+   * However, if this action is performed out of sequence (without holding
+   * down the mouse button, for example) the results will be different
+   * between browsers.
+   */
   public void perform() {
     getMouse().mouseUp(onElement);
   }

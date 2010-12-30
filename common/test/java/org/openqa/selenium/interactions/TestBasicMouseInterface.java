@@ -39,7 +39,6 @@ import static org.openqa.selenium.Ignore.Driver.SELENESE;
  *
  */
 public class TestBasicMouseInterface extends AbstractDriverTestCase {
-  @Ignore({ANDROID, IE, FIREFOX, REMOTE, IPHONE, CHROME, SELENESE})
   private void performDragAndDropWithMouse() {
     driver.get(pages.draggableLists);
 

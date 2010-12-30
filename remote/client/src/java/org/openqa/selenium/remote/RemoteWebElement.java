@@ -39,9 +39,11 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
 
   protected String id;
   protected RemoteWebDriver parent;
+  protected RemoteWebDriver.RemoteMouse mouse;
 
   public void setParent(RemoteWebDriver parent) {
     this.parent = parent;
+    mouse = (RemoteWebDriver.RemoteMouse) parent.getMouse();
   }
 
   public String getId() {
@@ -53,8 +55,29 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
   }
 
   public void click() {
-    execute(DriverCommand.CLICK_ELEMENT, ImmutableMap.of("id", id));
+    mouse.click(id);
   }
+
+  public void doubleClick() {
+    mouse.doubleClick(id);
+  }
+
+  public void contextClick() {
+    mouse.contextClick(id); 
+  }
+
+  public void mouseDown() {
+    mouse.mouseDown(id);
+  }
+
+  public void mouseUp() {
+    mouse.mouseUp(id);
+  }
+
+  public void moveToHere() {
+    mouse.mouseMove(id);    
+  }
+
 
   public void submit() {
     execute(DriverCommand.SUBMIT_ELEMENT, ImmutableMap.of("id", id));

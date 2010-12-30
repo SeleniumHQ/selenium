@@ -47,7 +47,12 @@ public interface DriverCommand {
 
   String CLEAR_ELEMENT = "clearElement";
   String CLICK_ELEMENT = "clickElement";
+  String DOUBLE_CLICK_ELEMENT = "doubleClickElement";
+  String CONTEXT_CLICK_ELEMENT = "contextClickElement";  
+  String MOUSE_DOWN_ELEMENT = "mouseButtonDownElement";
+  String MOUSE_UP_ELEMENT = "mouseButtonUpElement";
   String HOVER_OVER_ELEMENT = "hoverOverElement";
+  String MOVE_TO_ELEMENT = "moveToElement";
   String SEND_KEYS_TO_ELEMENT = "sendKeysToElement";
   String SEND_MODIFIER_KEY_TO_ACTIVE_ELEMENT = "sendModifierKeyToActiveElement";
   String SUBMIT_ELEMENT = "submitElement";

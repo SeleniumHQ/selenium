@@ -148,6 +148,10 @@ public class HttpCommandExecutor implements CommandExecutor {
         .put(FIND_CHILD_ELEMENT, post("/session/:sessionId/element/:id/element"))
         .put(FIND_CHILD_ELEMENTS, post("/session/:sessionId/element/:id/elements"))
         .put(CLICK_ELEMENT, post("/session/:sessionId/element/:id/click"))
+        .put(DOUBLE_CLICK_ELEMENT, post("/session/:sessionId/element/:id/doubleclick"))
+        .put(CONTEXT_CLICK_ELEMENT, post("/session/:sessionId/element/:id/contextclick"))
+        .put(MOUSE_DOWN_ELEMENT, post("/session/:sessionId/element/:id/buttondown"))
+        .put(MOUSE_UP_ELEMENT, post("/session/:sessionId/element/:id/buttonup"))
         .put(CLEAR_ELEMENT, post("/session/:sessionId/element/:id/clear"))
         .put(SUBMIT_ELEMENT, post("/session/:sessionId/element/:id/submit"))
         .put(GET_ELEMENT_TEXT, get("/session/:sessionId/element/:id/text"))
@@ -161,6 +165,7 @@ public class HttpCommandExecutor implements CommandExecutor {
         .put(IS_ELEMENT_ENABLED, get("/session/:sessionId/element/:id/enabled"))
         .put(IS_ELEMENT_DISPLAYED, get("/session/:sessionId/element/:id/displayed"))
         .put(HOVER_OVER_ELEMENT, post("/session/:sessionId/element/:id/hover"))
+        .put(MOVE_TO_ELEMENT, post("/session/:sessionId/element/:id/movehere"))
         .put(GET_ELEMENT_LOCATION, get("/session/:sessionId/element/:id/location"))
         .put(GET_ELEMENT_LOCATION_ONCE_SCROLLED_INTO_VIEW,
             get("/session/:sessionId/element/:id/location_in_view"))

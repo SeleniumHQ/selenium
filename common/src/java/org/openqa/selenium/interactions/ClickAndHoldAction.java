@@ -30,6 +30,12 @@ public class ClickAndHoldAction extends BaseAction implements Action {
     super(parent, onElement);
   }
 
+  /**
+   * Holds down the mouse button on a selected element. If this action is
+   * called out of sequence (i.e. twice in a row, without releasing the
+   * button after the first action) the results will be different between
+   * browsers.
+   */
   public void perform() {
     getMouse().mouseDown(onElement);
   }

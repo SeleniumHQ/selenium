@@ -69,6 +69,9 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
   protected Process clientProcess;
   private JsonToWebElementConverter converter;
 
+  private final RemoteKeyboard keyboard = new RemoteKeyboard();
+  private final RemoteMouse mouse = new RemoteMouse();
+
   // For cglib
   protected RemoteWebDriver() {
     converter = new JsonToWebElementConverter(this);
@@ -400,12 +403,11 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
   }
 
   public Keyboard getKeyboard() {
-    return new RemoteKeyboard();
+    return keyboard;
   }
 
   public Mouse getMouse() {
-    throw new UnsupportedOperationException("Mouse is not implemented yet for the" +
-        " remote WebDriver.");
+    return mouse;
   }
 
   protected class RemoteWebDriverOptions implements Options {
@@ -598,4 +600,60 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
 
     }
   }
+
+  public class RemoteMouse implements Mouse {
+
+    public void click(WebElement onElement) {
+      onElement.click();
+    }
+
+    public void click(String id) {
+      execute(DriverCommand.CLICK_ELEMENT, ImmutableMap.of("id", id));
+    }
+
+    public void doubleClick(WebElement onElement) {
+      ((RemoteWebElement) onElement).doubleClick();
+    }
+
+    public void doubleClick(String id) {
+      execute(DriverCommand.DOUBLE_CLICK_ELEMENT, ImmutableMap.of("id", id));
+    }
+
+    public void contextClick(WebElement onElement) {
+      ((RemoteWebElement) onElement).contextClick();
+    }
+
+    public void contextClick(String id) {
+      execute(DriverCommand.CONTEXT_CLICK_ELEMENT, ImmutableMap.of("id", id));
+    }
+
+    public void mouseDown(WebElement onElement) {
+      ((RemoteWebElement) onElement).mouseDown();
+    }
+
+    public void mouseDown(String id) {
+      execute(DriverCommand.MOUSE_DOWN_ELEMENT, ImmutableMap.of("id", id));
+    }
+
+    public void mouseUp(WebElement onElement) {
+      ((RemoteWebElement) onElement).mouseUp();
+    }
+
+    public void mouseUp(String id) {
+      execute(DriverCommand.MOUSE_UP_ELEMENT, ImmutableMap.of("id", id));
+    }
+
+    public void mouseMove(WebElement toElement) {
+      ((RemoteWebElement) toElement).moveToHere();
+    }
+
+    public void mouseMove(String id) {
+      execute(DriverCommand.MOVE_TO_ELEMENT, ImmutableMap.of("id", id));
+    }
+
+    public void mouseMove(WebElement toElement, long xOffset, long yOffset) {
+      throw new UnsupportedOperationException("Not supported yet.");
+    }
+  }
+
 }

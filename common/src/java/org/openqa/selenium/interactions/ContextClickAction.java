@@ -30,6 +30,10 @@ public class ContextClickAction extends BaseAction implements Action {
     super(parent, onElement);
   }
 
+  /**
+   * Emulates clicking on the mouse button that would bring up contextual
+   * menus (usually right-clicking).
+   */
   public void perform() {
     getMouse().contextClick(onElement);
   }

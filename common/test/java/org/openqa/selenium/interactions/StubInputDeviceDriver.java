@@ -23,16 +23,7 @@ import org.openqa.selenium.Keyboard;
 import org.openqa.selenium.Mouse;
 import org.openqa.selenium.StubDriver;
 
-public class StubInputDeviceDriver extends StubDriver
-    implements HasInputDevices, JavascriptExecutor {
-  public Keyboard getKeyboard() {
-    return null;
-  }
-
-  public Mouse getMouse() {
-    return null;
-  }
-
+public class StubInputDeviceDriver extends StubDriver implements JavascriptExecutor {
   public Object executeScript(String script, Object... args) {
     return null;
   }

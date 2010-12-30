@@ -33,6 +33,8 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.internal.WrapsDriver;
 import org.openqa.selenium.internal.WrapsElement;
+import org.openqa.selenium.support.events.internal.EventFiringKeyboard;
+import org.openqa.selenium.support.events.internal.EventFiringMouse;
 
 import java.awt.Dimension;
 import java.awt.Point;
@@ -59,6 +61,8 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
     WrapsDriver, HasInputDevices {
 
   private final WebDriver driver;
+  private final EventFiringKeyboard keyboard;
+  private final Mouse mouse;
 
   private final List<WebDriverEventListener> eventListeners = new ArrayList<WebDriverEventListener>();
   private final WebDriverEventListener dispatcher = (WebDriverEventListener) Proxy.newProxyInstance(
@@ -95,6 +99,14 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
         }
       }
     );
+
+    if (driver instanceof HasInputDevices) {
+      keyboard = new EventFiringKeyboard(driver, dispatcher);
+      mouse = new EventFiringMouse(driver, dispatcher);
+    } else {
+      keyboard = null;
+      mouse = null;
+    }
   }
 
   private Class<?>[] extractInterfaces(Object object) {
@@ -257,11 +269,19 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
   }
 
   public Keyboard getKeyboard() {
-    return ((HasInputDevices) driver).getKeyboard();
+    if (keyboard == null) {
+      throw new UnsupportedOperationException("Underlying driver does not implement advanced"
+          + " user interactions yet.");
+    }
+    return keyboard;
   }
 
   public Mouse getMouse() {
-    return ((HasInputDevices) driver).getMouse();
+    if (mouse == null) {
+      throw new UnsupportedOperationException("Underlying driver does not implement advanced"
+          + " user interactions yet.");
+    }
+    return mouse;
   }
 
   private class EventFiringWebElement implements WebElement, WrapsElement, WrapsDriver {

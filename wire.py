@@ -610,6 +610,34 @@ JSON objects.''').
                  'WebElement#click()'))
 
   resources.append(
+      ElementResource('/session/:sessionId/element/:id/buttondown').
+      Post('Click and hold the mouse button on an element.').
+      RequiresVisibility().
+      SetJavadoc('java/org/openqa/selenium/interactions/ClickAndHoldAction.html#perform()',
+                 'ClickAndHoldAction#perform()'))
+
+  resources.append(
+      ElementResource('/session/:sessionId/element/:id/buttonup').
+      Post('Releases the mouse button previously held, on an element.').
+      RequiresVisibility().
+      SetJavadoc('java/org/openqa/selenium/interactions/ButtonReleaseAction.html#perform()',
+                 'ButtonReleaseAction#perform()'))
+
+  resources.append(
+      ElementResource('/session/:sessionId/element/:id/doubleclick').
+      Post('Double-clicks on an element.').
+      RequiresVisibility().
+      SetJavadoc('java/org/openqa/selenium/interactions/DoubleClickAction.html#perform()',
+                 'DoubleClickAction#perform()'))
+
+  resources.append(
+      ElementResource('/session/:sessionId/element/:id/contextclick').
+      Post('Clicking on an element in a way that would bring up contextual menu.').
+      RequiresVisibility().
+      SetJavadoc('java/org/openqa/selenium/interactions/ContextClickAction.html#perform()',
+                 'ContextClickAction#perform()'))
+
+  resources.append(
       ElementResource('/session/:sessionId/element/:id/submit').
       Post('Submit a `FORM` element. The submit command may also be applied to any element that is '
            'a descendant of a `FORM` element.').
@@ -868,6 +896,14 @@ location for correctly generating native events.''').
       RequiresEnabledState().
       SetJavadoc('java/org/openqa/selenium/RenderedWebElement.html#hover()',
                  'RenderedWebElement#hover()'))
+
+  resources.append(
+      ElementResource('/session/:sessionId/element/:id/movehere').
+      Post('Move the mouse to the specified element.').
+      RequiresVisibility().
+      RequiresEnabledState().
+      SetJavadoc('java/org/openqa/selenium/interactions/MoveMouseAction.html#perform()',
+                 'MoveMouseAction#perform()'))
 
   resources.append(
       ElementResource('/session/:sessionId/element/:id/drag').

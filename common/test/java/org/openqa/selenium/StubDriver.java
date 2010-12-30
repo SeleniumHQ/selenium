@@ -20,7 +20,7 @@ package org.openqa.selenium;
 import java.util.List;
 import java.util.Set;
 
-public class StubDriver implements WebDriver {
+public class StubDriver implements WebDriver, HasInputDevices {
   public void get(String url) {
     throw new UnsupportedOperationException("get");
   }
@@ -71,5 +71,13 @@ public class StubDriver implements WebDriver {
 
   public Options manage() {
     throw new UnsupportedOperationException("manage");
+  }
+
+  public Keyboard getKeyboard() {
+    return null;
+  }
+
+  public Mouse getMouse() {
+    return null;
   }
 }
