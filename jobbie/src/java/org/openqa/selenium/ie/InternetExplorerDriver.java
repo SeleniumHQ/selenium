@@ -26,6 +26,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.browserlaunchers.WindowsProxyManager;
@@ -52,7 +53,7 @@ public class InternetExplorerDriver extends RemoteWebDriver {
     setup();
   }
 
-  public InternetExplorerDriver(DesiredCapabilities capabilities) {
+  public InternetExplorerDriver(Capabilities capabilities) {
     assertOnWindows();
 
     proxyManager = new WindowsProxyManager(true, "webdriver-ie", 0, 0);
@@ -161,7 +162,7 @@ public class InternetExplorerDriver extends RemoteWebDriver {
     }
   }
 
-  private void prepareProxy(DesiredCapabilities caps) {
+  private void prepareProxy(Capabilities caps) {
     if (caps == null || caps.getCapability(PROXY) == null) {
       return;
     }
