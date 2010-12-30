@@ -45,10 +45,6 @@ module Selenium
           nil
         end
 
-        def getScreenshot
-          execute :screenshot
-        end
-
       end # Bridge
     end # Firefox
   end # WebDriver

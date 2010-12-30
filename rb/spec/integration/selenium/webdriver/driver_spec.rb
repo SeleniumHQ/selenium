@@ -21,7 +21,7 @@ describe "Driver" do
     end
   end
 
-  compliant_on :driver => [:firefox, :chrome] do
+  compliant_on :driver => [:firefox, :chrome, :ie] do
     it "should save a screenshot" do
       driver.navigate.to url_for("xhtmlTest.html")
       path = "screenshot_tmp.png"

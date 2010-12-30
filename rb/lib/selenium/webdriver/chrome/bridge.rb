@@ -37,10 +37,6 @@ module Selenium
           @launcher.quit
         end
 
-        def getScreenshot
-          execute :screenshot
-        end
-
         def setSpeed(value)
           @speed = value
         end

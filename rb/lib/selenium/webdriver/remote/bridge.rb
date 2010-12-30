@@ -195,6 +195,10 @@ module Selenium
           execute :getSpeed
         end
 
+        def getScreenshot
+          execute :screenshot
+        end
+
         def executeScript(script, *args)
           unless capabilities.javascript_enabled?
             raise Error::UnsupportedOperationError, "underlying webdriver instance does not support javascript"
