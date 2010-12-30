@@ -51,14 +51,17 @@ protected:
 			}
 
 			CComBSTR link_text;
-			if (!SUCCEEDED(element->get_innerText(&link_text))) {
+			HRESULT hr = element->get_innerText(&link_text);
+			if (FAILED(hr)) {
 				continue;
 			}
 
-			std::wstring link_text_string((BSTR)link_text);
-			if (wcsstr(link_text_string.c_str(), criteria.c_str()) && this->IsOrUnder(node, element)) {
-				element.CopyTo(found_element);
-				return SUCCESS;
+			if (link_text) {
+				std::wstring link_text_string((BSTR)link_text);
+				if (wcsstr(link_text_string.c_str(), criteria.c_str()) && this->IsOrUnder(node, element)) {
+					element.CopyTo(found_element);
+					return SUCCESS;
+				}
 			}
 		}
 
@@ -101,13 +104,18 @@ protected:
 			}
 
 			CComBSTR link_text;
-			element->get_innerText(&link_text);
+			HRESULT hr = element->get_innerText(&link_text);
+			if (FAILED(hr)) {
+				continue;
+			}
 
-			std::wstring link_text_string((BSTR)link_text);
-			if (wcsstr(link_text_string.c_str(), criteria.c_str()) && this->IsOrUnder(node, element)) {
-				IHTMLElement *dom_element = NULL;
-				element.CopyTo(&dom_element);
-				found_elements->push_back(dom_element);
+			if (link_text) {
+				std::wstring link_text_string((BSTR)link_text);
+				if (wcsstr(link_text_string.c_str(), criteria.c_str()) && this->IsOrUnder(node, element)) {
+					IHTMLElement *dom_element = NULL;
+					element.CopyTo(&dom_element);
+					found_elements->push_back(dom_element);
+				}
 			}
 		}
 		return SUCCESS;
