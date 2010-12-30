@@ -25,12 +25,10 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.browserlaunchers.WindowsProxyManager;
-import org.openqa.selenium.internal.AsyncJavascriptExecutor;
 import org.openqa.selenium.internal.FileHandler;
 import org.openqa.selenium.internal.PortProber;
 import org.openqa.selenium.internal.TemporaryFilesystem;
@@ -49,9 +47,6 @@ public class InternetExplorerDriver extends RemoteWebDriver {
   private IEServer lib;
   private int port;
   private WindowsProxyManager proxyManager;
-
-  private final AsyncJavascriptExecutor asyncJsExecutor =
-      new AsyncJavascriptExecutor(this, 0, TimeUnit.MILLISECONDS);
 
   public InternetExplorerDriver() {
     setup();
