@@ -23,6 +23,7 @@ import com.google.common.collect.Maps;
 import com.thoughtworks.selenium.CommandProcessor;
 import com.thoughtworks.selenium.SeleniumException;
 
+import org.openqa.selenium.internal.WrapsDriver;
 import org.openqa.selenium.internal.seleniumemulation.AddLocationStrategy;
 import org.openqa.selenium.internal.seleniumemulation.AddSelection;
 import org.openqa.selenium.internal.seleniumemulation.AlertOverride;
@@ -134,7 +135,7 @@ import static org.openqa.selenium.internal.seleniumemulation.SeleniumSelect.Prop
  * A CommandProcessor which delegates commands down to an underlying webdriver
  * instance.
  */
-public class WebDriverCommandProcessor implements CommandProcessor {
+public class WebDriverCommandProcessor implements CommandProcessor, WrapsDriver {
   private final Map<String, SeleneseCommand> seleneseMethods = Maps.newHashMap();
   private final String baseUrl;
   private final Timer timer;
@@ -189,12 +190,18 @@ public class WebDriverCommandProcessor implements CommandProcessor {
 
   /**
    * @return the instance of webdriver that this processor is wrapping.
+   * @deprecated Use {#getWrappedDriver} instead.
    */
+  @Deprecated
   public WebDriver getUnderlyingWebDriver() {
     return driver;
   }
 
-  public String getRemoteControlServerLocation() {
+  public WebDriver getWrappedDriver() {
+    return driver;
+  }
+
+    public String getRemoteControlServerLocation() {
     throw new UnsupportedOperationException();
   }
 

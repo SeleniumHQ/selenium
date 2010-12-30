@@ -19,8 +19,9 @@ package org.openqa.selenium;
 
 import com.google.common.base.Supplier;
 import com.thoughtworks.selenium.DefaultSelenium;
+import org.openqa.selenium.internal.WrapsDriver;
 
-public class WebDriverBackedSelenium extends DefaultSelenium {
+public class WebDriverBackedSelenium extends DefaultSelenium implements WrapsDriver {
   public WebDriverBackedSelenium(Supplier<WebDriver> maker, String baseUrl) {
     super(new WebDriverCommandProcessor(baseUrl, maker));
   }
@@ -29,7 +30,15 @@ public class WebDriverBackedSelenium extends DefaultSelenium {
     super(new WebDriverCommandProcessor(baseUrl, baseDriver));
   }
 
+  /**
+   * @deprecated Use {@link #getWrappedDriver()} instead.
+   */
+  @Deprecated
   public WebDriver getUnderlyingWebDriver() {
+    return getWrappedDriver();
+  }
+
+  public WebDriver getWrappedDriver() {
     return ((WebDriverCommandProcessor) commandProcessor).getUnderlyingWebDriver();
   }
 }
