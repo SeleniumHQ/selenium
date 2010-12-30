@@ -47,8 +47,10 @@ public class Type extends SeleneseCommand<Void> {
     WebElement element = finder.findElement(driver, locator);
 
     // TODO(simon): Log a warning that people should be using "attachFile"
+    String tagName = element.getTagName();
     String elementType = element.getAttribute("type");
-    if (elementType != null && "file".equals(elementType.toLowerCase())) {
+    if ("input".equals(tagName.toLowerCase()) &&
+        elementType != null && "file".equals(elementType.toLowerCase())) {
       element.sendKeys(value);
       return null;
     }
