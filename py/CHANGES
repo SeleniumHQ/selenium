@@ -5,3 +5,4 @@ Changes since 2010-12-01
 * Implicit Waits
 * Change the API to use properties instead of get_x
 * Changed the Element Finding to match other languages
+* Added ability to execute asynchronous scripts from the driver

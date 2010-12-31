@@ -249,6 +249,16 @@ class WebDriver(object):
             Command.EXECUTE_SCRIPT,
             {'script': script, 'args':converted_args})['value']
 
+    def execute_async_script(self, script, *args):
+        if len(args) == 1:
+            converted_args = args[0]
+        else:
+            converted_args = list(args)
+        converted_args = list(args)
+        return self._execute(
+            Command.EXECUTE_ASYNC_SCRIPT,
+            {'script': script, 'args':converted_args})['value']
+
     @property
     def current_url(self):
         """Gets the current url."""
@@ -333,6 +343,11 @@ class WebDriver(object):
     def implicitly_wait(self, time_to_wait):
         """Get the driver to poll for the element """
         self._execute(Command.IMPLICIT_WAIT, {'ms': time_to_wait*1000})
+
+    def set_script_timeout(self, time_to_wait):
+        """Set the timeout that the script should wait before throwing an
+           error"""
+        self._execute(Command.SET_SCRIPT_TIMEOUT, {'ms': time_to_wait*1000})
 
     def find_element(self, by=By.ID, value=None):
         return self._execute(Command.FIND_ELEMENT,

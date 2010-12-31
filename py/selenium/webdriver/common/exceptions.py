@@ -14,6 +14,9 @@
 # limitations under the License.
 
 """Exceptions that may happen in all the webdriver code."""
+class WebDriverException(Exception):
+    def __init__(self, msg=None):
+        Exception.__init__(self, msg)
 
 class ErrorInResponseException(Exception):
     """An error has occurred on the server side.
@@ -65,12 +68,16 @@ class ElementNotSelectableException(Exception):
 
 class InvalidCookieDomainException(Exception):
     def __init__(self, msg=None):
-        Exception.__init__(self, msg)
+        WebDriverException.__init__(self, msg)
 
 class UnableToSetCookieException(Exception):
     def __init__(self, msg=None):
         Exception.__init__(self, msg)
 
 class RemoteDriverServerException(Exception):
+    def __init__(self, msg=None):
+        Exception.__init__(self, msg)
+
+class TimeoutException(Exception):
     def __init__(self, msg=None):
         Exception.__init__(self, msg)

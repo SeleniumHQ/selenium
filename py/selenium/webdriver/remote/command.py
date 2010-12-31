@@ -77,3 +77,5 @@ class Command(object):
     ELEMENT_EQUALS = "elementEquals"
     SCREENSHOT = "screenshot"
     IMPLICIT_WAIT = "implicitlyWait"
+    EXECUTE_ASYNC_SCRIPT = "executeAsyncScript"
+    SET_SCRIPT_TIMEOUT = "setScriptTimeout"

@@ -23,6 +23,8 @@ from selenium.webdriver.common.exceptions import NoSuchWindowException
 from selenium.webdriver.common.exceptions import StaleElementReferenceException
 from selenium.webdriver.common.exceptions import UnableToSetCookieException
 from selenium.webdriver.common.exceptions import ErrorInResponseException
+from selenium.webdriver.common.exceptions import TimeoutException
+from selenium.webdriver.common.exceptions import WebDriverException
 
 
 class ErrorCode(object):
@@ -37,10 +39,12 @@ class ErrorCode(object):
     INVALID_ELEMENT_STATE = 12
     UNKNOWN_ERROR = 13
     ELEMENT_IS_NOT_SELECTABLE = 15
+    JAVASCRIPT_ERROR = 17
     XPATH_LOOKUP_ERROR = 19
     NO_SUCH_WINDOW = 23
     INVALID_COOKIE_DOMAIN = 24
     UNABLE_TO_SET_COOKIE = 25
+    TIMEOUT = 28
 
 
 class ErrorHandler(object):
@@ -76,6 +80,12 @@ class ErrorHandler(object):
             exception_class = InvalidCookieDomainException
         elif status == ErrorCode.UNABLE_TO_SET_COOKIE:
             exception_class = UnableToSetCookieException
+        elif status == ErrorCode.TIMEOUT:
+            exception_class = TimeoutException
+        elif status == ErrorCode.UNKNOWN_ERROR:
+            exception_class = WebDriverException
+        else:
+            exception_class = WebDriverException
         value = response['value']
         if type(value) is str:
             if exception_class == ErrorInResponseException:
