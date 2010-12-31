@@ -32,7 +32,7 @@ public class IsTextPresent extends SeleneseCommand<Boolean> {
     String script = js.getSeleniumScript("isTextPresent.js");
 
     Boolean result = (Boolean) ((JavascriptExecutor) driver).executeScript(
-        script + "; return isTextPresent(arguments[0]);", pattern);
+        "return (" + script + ")(arguments[0]);", pattern);
 
     // Handle the null case
     return Boolean.TRUE == result;

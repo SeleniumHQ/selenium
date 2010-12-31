@@ -39,13 +39,18 @@ public class JavascriptLibrary {
   private static final String htmlUtils =
       "/org/openqa/selenium/internal/seleniumemulation/htmlutils.js";
 
+  /**
+   * Loads the named Selenium script and returns it wrapped in an anonymous
+   * function.
+   *
+   * @param name The script to load.
+   * @return The loaded script wrapped in an anonymous function.
+   */
   public String getSeleniumScript(String name) {
     String rawFunction = readScript(PREFIX + name);
 
-    String functionName = name.replace(".js", "");
-
-    return String.format("%s = function() { return (%s).apply(null, arguments);};",
-        functionName, rawFunction);
+    return String.format("function() { return (%s).apply(null, arguments);}",
+        rawFunction);
   }
 
   public void callEmbeddedSelenium(WebDriver driver, String functionName,

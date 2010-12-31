@@ -17,12 +17,10 @@ limitations under the License.
 
 package org.openqa.selenium;
 
-import com.thoughtworks.selenium.DefaultSelenium;
-import com.thoughtworks.selenium.Selenium;
-import com.thoughtworks.selenium.SeleniumException;
-import com.thoughtworks.selenium.Wait;
-
 import org.openqa.selenium.environment.GlobalTestEnvironment;
+
+import com.thoughtworks.selenium.Selenium;
+import com.thoughtworks.selenium.Wait;
 
 public class WebDriverBackedSeleniumLargeTest extends AbstractDriverTestCase {
 
@@ -78,5 +76,13 @@ public class WebDriverBackedSeleniumLargeTest extends AbstractDriverTestCase {
     } catch (InterruptedException e) {
       fail("This was not expected");
     }
+  }
+
+  public void testShouldBeAbleToInvokeSeleniumCoreElementLocatorsWithGetEval() {
+    selenium.open(pages.simpleTestPage);
+    String tagName =  selenium.getEval(
+        "var el = selenium.browserbot.findElement('id=oneline');" +
+        "el.tagName.toUpperCase();");
+    assertEquals("P", tagName);
   }
 }

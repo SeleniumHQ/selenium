@@ -39,7 +39,7 @@ public class SingleTestSuite extends TestCase {
   private static final String SELENIUM = "org.openqa.selenium.SeleneseBackedWebDriver";
 
   public static Test suite() throws Exception {
-    String driver = IE;
+    String driver = FIREFOX;
 
     System.setProperty("jna.library.path", "..\\build;build");
     System.setProperty("webdriver.selenium.server.port", String.valueOf(findFreePort()));
@@ -55,8 +55,8 @@ public class SingleTestSuite extends TestCase {
         .usingDriver(driver)
         .keepDriverInstance()
         .includeJavascriptTests()
-        .onlyRun("FrameSwitchingTest")
-        .method("testJavaScriptShouldExecuteInTheContextOfTheCurrentFrame")
+        .onlyRun("WebDriverBackedSeleniumLargeTest")
+        .method("testShouldBeAbleToInvokeSeleniumCoreElementLocatorsWithGetEval")
         .exclude(ALL)
         .exclude(Ignore.Driver.IE)
         .outputTestNames()

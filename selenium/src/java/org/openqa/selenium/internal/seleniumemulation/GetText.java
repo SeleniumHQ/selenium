@@ -32,6 +32,6 @@ public class GetText extends SeleneseCommand<String> {
     String getText = library.getSeleniumScript("getText.js");
 
     return (String) ((JavascriptExecutor) driver).executeScript(
-        getText + "; return getText(arguments[0]);", locator);
+        "return (" + getText + ")(arguments[0]);", locator);
   }
 }
