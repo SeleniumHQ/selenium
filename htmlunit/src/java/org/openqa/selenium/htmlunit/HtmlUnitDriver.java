@@ -72,6 +72,7 @@ import com.gargoylesoftware.htmlunit.javascript.host.html.HTMLCollection;
 import com.gargoylesoftware.htmlunit.javascript.host.html.HTMLElement;
 import net.sourceforge.htmlunit.corejs.javascript.Function;
 import net.sourceforge.htmlunit.corejs.javascript.NativeArray;
+import net.sourceforge.htmlunit.corejs.javascript.NativeObject;
 import net.sourceforge.htmlunit.corejs.javascript.ScriptableObject;
 import net.sourceforge.htmlunit.corejs.javascript.Undefined;
 import org.openqa.selenium.internal.WrapsElement;
@@ -85,9 +86,12 @@ import java.net.UnknownHostException;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
@@ -107,6 +111,7 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
   private long scriptTimeout = 0;
   private HtmlUnitKeyboard keyboard;
   private HtmlUnitMouse mouse;
+  private boolean gotPage;
 
   public HtmlUnitDriver(BrowserVersion version) {
     this.version = version;
@@ -144,6 +149,7 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
 
     // Now put us on the home page, like a real browser
     get(webClient.getHomePage());
+    gotPage = false;
     keyboard = new HtmlUnitKeyboard(this);
     mouse = new HtmlUnitMouse(this, keyboard);
   }
@@ -294,6 +300,7 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
       throw new WebDriverException(e);
     }
 
+    gotPage = true;
     pickWindow();
   }
 
@@ -413,11 +420,17 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
           "Javascript is not enabled for this HtmlUnitDriver instance");
     }
 
-    if (!(lastPage() instanceof HtmlPage)) {
+    final Page lastPage = lastPage();
+	if (!(lastPage instanceof HtmlPage)) {
       throw new UnsupportedOperationException("Cannot execute JS against a plain text page");
     }
+	else if (!gotPage) {
+	  // just to make ExecutingJavascriptTest.testShouldThrowExceptionIfExecutingOnNoPage happy
+	  // but does this limitation make sense?
+	  throw new WebDriverException("Can't execute JavaScript before a page has been loaded!");
+	}
 
-    return (HtmlPage) lastPage();
+    return (HtmlPage) lastPage;
   }
 
   private Object parseArgumentIntoJavsacriptParameter(Object arg) {
@@ -475,12 +488,22 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
     }
 
     if (value instanceof Number) {
-      if (value instanceof Float || value instanceof Double) {
-        return ((Number) value).doubleValue();
+      final Number n = (Number) value;
+      final String s = n.toString();
+      if (s.indexOf(".") == -1 || s.endsWith(".0")) { // how safe it is? enough for the unit tests!
+    	  return n.longValue();
       }
-      return ((Number) value).longValue();
+      return n.doubleValue();
     }
 
+    if (value instanceof NativeObject) {
+    	final Map<String, Object> map = new HashMap<String, Object>((NativeObject) value);
+    	for (final Entry<String, Object> e : map.entrySet()) {
+    		e.setValue(parseNativeJavascriptResult(e.getValue()));
+    	}
+    	return map;
+    }
+    
     if (value instanceof NativeArray) {
       final NativeArray array = (NativeArray) value;
 
