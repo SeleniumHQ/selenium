@@ -8,7 +8,7 @@
     <ProjectGuid>{1580564D-B6B8-4BD8-A120-001E3E8E5BE6}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>OpenQa.Selenium</RootNamespace>
+    <RootNamespace>OpenQA.Selenium</RootNamespace>
     <AssemblyName>webdriver-common-test</AssemblyName>
     <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
@@ -75,6 +75,7 @@
     <Compile Include="ElementEqualityTest.cs" />
     <Compile Include="ElementFindingTest.cs" />
     <Compile Include="Environment\EnvironmentManager.cs" />
+    <Compile Include="Environment\RemoteSeleniumServer.cs" />
     <Compile Include="Environment\TestWebServer.cs" />
     <Compile Include="Environment\UrlBuilder.cs" />
     <Compile Include="ExecutingAsyncJavascriptTest.cs" />
@@ -124,8 +125,7 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>copy /y $(TargetDir) $(SolutionDir)build\Win32\$(ConfigurationName)
-$(SolutionDir)build\x64\$(ConfigurationName)
-copy /y $(TargetDir) $(SolutionDir)build\x64\$(ConfigurationName)</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
 </Project>

@@ -94,9 +94,7 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>if not exist $(SolutionDir)build\Win32\$(ConfigurationName) md $(SolutionDir)build\Win32\$(ConfigurationName)
-copy /y $(TargetPath) $(SolutionDir)build\Win32\$(ConfigurationName)
-if not exist $(SolutionDir)build\x64\$(ConfigurationName) md $(SolutionDir)build\x64\$(ConfigurationName)
-copy /y $(TargetPath) $(SolutionDir)build\x64\$(ConfigurationName)</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
 </Project>

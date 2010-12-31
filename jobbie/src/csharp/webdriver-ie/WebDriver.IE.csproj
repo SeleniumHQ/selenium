@@ -72,8 +72,8 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>copy /y $(TargetDir) $(SolutionDir)build\Win32\$(ConfigurationName)
-$(SolutionDir)build\x64\$(ConfigurationName)
-copy /y $(TargetDir) $(SolutionDir)build\x64\$(ConfigurationName)</PostBuildEvent>
+    <PostBuildEvent>REM TODO - need platform detection
+if exist $(SolutionDir)build\jobbie\Win32\$(ConfigurationName)\IEDriver.dll copy /y $(SolutionDir)build\jobbie\Win32\$(ConfigurationName)\IEDriver.dll $(TargetDir)
+if not exist $(SolutionDir)build\jobbie\Win32\$(ConfigurationName)\IEDriver.dll copy /y $(SolutionDir)jobbie\prebuilt\Win32\Release\IEDriver.dll $(TargetDir)</PostBuildEvent>
   </PropertyGroup>
 </Project>

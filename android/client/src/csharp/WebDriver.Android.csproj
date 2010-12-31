@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{EA8B657E-0801-4BE4-837F-DBBB2B4D765E}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -67,9 +67,7 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>if not exist $(SolutionDir)build\Win32\$(ConfigurationName) md $(SolutionDir)build\Win32\$(ConfigurationName)
-copy /y $(TargetPath) $(SolutionDir)build\Win32\$(ConfigurationName)
-if not exist $(SolutionDir)build\x64\$(ConfigurationName) md $(SolutionDir)build\x64\$(ConfigurationName)
-copy /y $(TargetPath) $(SolutionDir)build\x64\$(ConfigurationName)</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
 </Project>

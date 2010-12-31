@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{5E7C67A1-1BF2-4A46-8C29-8A6DCF6E4543}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -85,9 +85,7 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>if not exist $(SolutionDir)build\Win32\$(ConfigurationName) md $(SolutionDir)build\Win32\$(ConfigurationName)
-copy /y $(TargetPath) $(SolutionDir)build\Win32\$(ConfigurationName)
-if not exist $(SolutionDir)build\x64\$(ConfigurationName) md $(SolutionDir)build\x64\$(ConfigurationName)
-copy /y $(TargetPath) $(SolutionDir)build\x64\$(ConfigurationName)</PostBuildEvent>
+    <PostBuildEvent>if exist $(SolutionDir)build\firefox\webdriver.xpi copy /y $(SolutionDir)build\firefox\webdriver.xpi $(TargetDir)
+</PostBuildEvent>
   </PropertyGroup>
 </Project>
