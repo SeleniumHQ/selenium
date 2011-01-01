@@ -16,3 +16,7 @@ build.desc file
 More general help for 'go' ...
 
    ./go --help
+
+Ignore the Maven POM file present in the same directory. It is only used for releasing 
+to jars to Maven Repository (public or local), and is not considered the main build
+mechanism.
