@@ -101,7 +101,7 @@
 						<configuration>
 							<tasks>
 								<!-- 1. Execute rake to build ../build/selenium/selenium.jar ... -->
-								<condition property="goExecutable" value="go.bat" else="go">
+								<condition property="goExecutable" value="go.bat" else="./go">
 									<os family="windows" />
 								</condition>
 								<exec dir=".." executable="${goExecutable}">
@@ -127,7 +127,7 @@
 						<configuration>
 							<tasks>
 								<!-- 1. Execute rake to build ../build/selenium/test.jar ... -->
-								<condition property="goExecutable" value="go.bat" else="go">
+								<condition property="goExecutable" value="go.bat" else="./go">
 									<os family="windows" />
 								</condition>
 								<exec dir=".." executable="${goExecutable}">

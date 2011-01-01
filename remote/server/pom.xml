@@ -103,7 +103,7 @@
 						<configuration>
 							<tasks>
 								<!-- 1. Execute rake to build ../../build/remote/server/server.jar ... -->
-								<condition property="goExecutable" value="go.bat" else="go">
+								<condition property="goExecutable" value="go.bat" else="./go">
 									<os family="windows" />
 								</condition>
 								<exec dir="../.." executable="${goExecutable}">
