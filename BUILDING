@@ -1,5 +1,8 @@
 Selenium 2.0 builds with its own build technology that's good for Windows, Linux and Mac.
 
+Quick intro
+===========
+
 In the same directory as this file, do ...
 
    ./go
@@ -13,10 +16,35 @@ try something like ...
 In this case, jsapi is the module directory, and "atoms" is a target in that directory's 
 build.desc file
 
-More general help for 'go' ...
-
-   ./go --help
+Maven POM files
+===============
 
 Ignore the Maven POM file present in the same directory. It is only used for releasing 
 to jars to Maven Repository (public or local), and is not considered the main build
 mechanism.
+
+Build Output
+============
+
+"./go" only makes a top-level "build" directory. Outputs are placed under that relative 
+to the target name. Which is probably best described with an example. For the target:
+
+  //common/src/js/webdriver:webdriver
+
+The output is found under:
+
+  build/common/src/js/webdriver/webdriver.js
+
+If you watch the build, each step should print where its output is going. Java test 
+outputs appear in one of two places: either under build/test_logs for junit or in 
+build/build_log.xml for TestNG tests. If you'd like the build to be chattier, just 
+append "log=true" to the build command line.
+
+Help with 'Go'
+==============
+
+More general help for 'go' ...
+
+   ./go --help
+
+
