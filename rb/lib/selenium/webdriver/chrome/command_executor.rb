@@ -46,13 +46,13 @@ module Selenium
         end
 
         def uri
-          "http://localhost:#{port}/chromeCommandExecutor"
+          "http://#{Platform.localhost}:#{port}/chromeCommandExecutor"
         end
 
         private
 
         def localhost
-          Platform.ironruby? ? "localhost" : "0.0.0.0" # yeah, weird..
+          Platform.ironruby? ? Platform.localhost : "0.0.0.0" # yeah, weird..
         end
 
         def start_run_loop

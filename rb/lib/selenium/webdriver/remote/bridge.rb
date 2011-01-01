@@ -46,7 +46,7 @@ module Selenium
 
           http_client          = opts.delete(:http_client) { Http::Default.new }
           desired_capabilities = opts.delete(:desired_capabilities) { Capabilities.firefox }
-          url                  = opts.delete(:url) { "http://localhost:4444/wd/hub" }
+          url                  = opts.delete(:url) { "http://#{Platform.localhost}:4444/wd/hub" }
 
           unless opts.empty?
             raise ArgumentError, "unknown option#{'s' if opts.size != 1}: #{opts.inspect}"

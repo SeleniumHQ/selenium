@@ -3,7 +3,7 @@ module Selenium
     module IPhone
       class Bridge < Remote::Bridge
 
-        DEFAULT_URL = "http://localhost:3001/hub/"
+        DEFAULT_URL = "http://#{Platform.localhost}:3001/hub/"
 
         def initialize(opts = nil)
           if opts

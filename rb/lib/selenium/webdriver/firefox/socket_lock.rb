@@ -10,16 +10,6 @@ module Selenium
 
       class SocketLock
 
-        #
-        # Need to be really specific about what host to use
-        #
-        # On os x, "localhost" will resolve to 3 different addresses (see /etc/hosts).
-        # Ruby will loop over these and happily bind to the same port on each one,
-        # making it completely unusable for our purposes.
-        #
-
-        HOST = "127.0.0.1"
-
         def initialize(port, timeout)
           @port    = port
           @timeout = timeout
@@ -54,7 +44,7 @@ module Selenium
         end
 
         def can_lock?
-          @server = TCPServer.new(HOST, @port)
+          @server = TCPServer.new(Platform.localhost, @port)
           ChildProcess.close_on_exec @server
 
           true

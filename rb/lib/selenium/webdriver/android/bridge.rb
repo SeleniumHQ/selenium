@@ -3,7 +3,7 @@ module Selenium
     module Android
       class Bridge < Remote::Bridge
 
-        DEFAULT_URL = "http://localhost:8080/hub"
+        DEFAULT_URL = "http://#{Platform.localhost}:8080/hub"
 
         def initialize(opts = nil)
           if opts

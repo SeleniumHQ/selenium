@@ -1,4 +1,5 @@
 require "rbconfig"
+require "socket"
 
 module Selenium
   module WebDriver
@@ -126,17 +127,28 @@ module Selenium
         nil
       end
 
+      def localhost
+        info = Socket.getaddrinfo "localhost", 80, "AF_INET", Socket::SOCK_STREAM
+
+        if info.empty?
+          raise Error::WebDriverError, "unable to translate 'localhost' for TCP+IPv6"
+        end
+
+        info[0][3]
+      end
+
     end # Platform
   end # WebDriver
 end # Selenium
 
 if __FILE__ == $0
-  p :engine   => Selenium::WebDriver::Platform.engine,
-    :os       => Selenium::WebDriver::Platform.os,
-    :ruby187? => Selenium::WebDriver::Platform.ruby187?,
-    :ruby19?  => Selenium::WebDriver::Platform.ruby19?,
-    :jruby?   => Selenium::WebDriver::Platform.jruby?,
-    :win?     => Selenium::WebDriver::Platform.win?,
-    :home     => Selenium::WebDriver::Platform.home,
-    :bitsize  => Selenium::WebDriver::Platform.bitsize
+  p :engine    => Selenium::WebDriver::Platform.engine,
+    :os        => Selenium::WebDriver::Platform.os,
+    :ruby187?  => Selenium::WebDriver::Platform.ruby187?,
+    :ruby19?   => Selenium::WebDriver::Platform.ruby19?,
+    :jruby?    => Selenium::WebDriver::Platform.jruby?,
+    :win?      => Selenium::WebDriver::Platform.win?,
+    :home      => Selenium::WebDriver::Platform.home,
+    :bitsize   => Selenium::WebDriver::Platform.bitsize,
+    :localhost => Selenium::WebDriver::Platform.localhost
 end

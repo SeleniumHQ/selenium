@@ -8,8 +8,7 @@ module Selenium
 
       class Bridge < Remote::Bridge
 
-        HOST = "localhost"
-
+        HOST            = Platform.localhost
         DEFAULT_PORT    = 5555
         DEFAULT_TIMEOUT = 30
 
@@ -20,11 +19,13 @@ module Selenium
 
           @server_pointer = Lib.start_server @port
 
-          unless SocketPoller.new(HOST, @port, timeout).connected?
+          host = Platform.localhost
+
+          unless SocketPoller.new(host, @port, timeout).connected?
             raise "unable to connect to IE server within #{timeout} seconds"
           end
 
-          super(:url                  => "http://#{HOST}:#{@port}",
+          super(:url                  => "http://#{host}:#{@port}",
                 :desired_capabilities => :internet_explorer)
         end
 
