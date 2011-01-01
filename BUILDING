@@ -1,0 +1,18 @@
+Selenium 2.0 builds with its own build technology that's good for Windows, Linux and Mac.
+
+In the same directory as this file, do ...
+
+   ./go
+
+The order of building modules is determined by the 'go' system itself.  If you want to 
+build an individual module (assuming all dependent modules have previously been build)
+try something like ...
+
+   ./go //jsapi:atoms:run
+
+In this case, jsapi is the module directory, and "atoms" is a target in that directory's 
+build.desc file
+
+More general help for 'go' ...
+
+   ./go --help
