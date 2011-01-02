@@ -73,7 +73,7 @@ module Selenium
           raise ArgumentError, "invalid proxy type: #{type.inspect}, expected one of #{TYPES.keys.inspect}"
         end
 
-        if @type && type != @type
+        if defined?(@type) && type != @type
           raise ArgumentError, "incompatible proxy type #{type.inspect} (already set to #{@type.inspect})"
         end
 
