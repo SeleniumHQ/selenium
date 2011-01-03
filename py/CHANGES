@@ -6,3 +6,7 @@ Changes since 2010-12-01
 * Change the API to use properties instead of get_x
 * Changed the Element Finding to match other languages
 * Added ability to execute asynchronous scripts from the driver
+
+Changes since 2011-01-01
+
+* Ability to get rendered element size

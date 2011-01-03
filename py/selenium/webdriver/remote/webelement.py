@@ -85,10 +85,6 @@ class WebElement(object):
         """Whether the element is enabled."""
         return self._execute(Command.IS_ELEMENT_ENABLED)['value']
 
-    def is_displayed(self):
-        """Whether the element would be visible to a user"""
-        return self._execute(Command.IS_ELEMENT_DISPLAYED)['value']
-
     def find_element_by_id(self, id_):
         """Finds element by id."""
         return self._get_elem_by("id", id_)
@@ -142,6 +138,16 @@ class WebElement(object):
         """Simulates typing into the element."""
         self._execute(Command.SEND_KEYS_TO_ELEMENT, {'value': value})
 
+    # RenderedWebElement Items
+    def is_displayed(self):
+        """Whether the element would be visible to a user"""
+        return self._execute(Command.IS_ELEMENT_DISPLAYED)['value']
+
+    @property
+    def size(self):
+        """ Returns the size of the element """
+        return self._execute(Command.GET_ELEMENT_SIZE)['value']
+
     @property
     def parent(self):
         return self._parent
@@ -150,6 +156,7 @@ class WebElement(object):
     def id(self):
         return self._id
 
+    # Private Methods
     def _execute(self, command, params=None):
         """Executes a command against the underlying HTML element.
 
