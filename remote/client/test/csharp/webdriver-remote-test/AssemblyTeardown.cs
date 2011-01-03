@@ -11,6 +11,10 @@ namespace OpenQA.Selenium.Remote.Test
         public void RunBeforeAnyTest()
         {
             EnvironmentManager.Instance.WebServer.Start();
+            if (EnvironmentManager.Instance.Browser == Browser.Remote)
+            {
+                EnvironmentManager.Instance.RemoteServer.Start();
+            }
         }
 
         [TearDown]
@@ -18,6 +22,10 @@ namespace OpenQA.Selenium.Remote.Test
         {
             EnvironmentManager.Instance.CloseCurrentDriver();
             EnvironmentManager.Instance.WebServer.Stop();
+            if (EnvironmentManager.Instance.Browser == Browser.Remote)
+            {
+                EnvironmentManager.Instance.RemoteServer.Stop();
+            }
         }
     }
 }

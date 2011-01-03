@@ -46,9 +46,9 @@ dotnet_library(name = "dotnet",
   doc = "build/dotnet/WebDriver.Remote.xml"
 )
 
-dotnet_library(name = "dotnet-test",
+dotnet_test(name = "dotnet-test",
   deps = [
-    "//remote/server:server"
+    "//remote/server:server:uber"
   ],
   srcs = "test/csharp/**/*.cs",
   refs = [

@@ -115,7 +115,7 @@ protected:
 							break;
 						}
 						if (timeout_flag > 0) {
-							response->SetErrorResponse(ETIMEOUT, "Timeout expired waiting for async script");
+							response->SetErrorResponse(ESCRIPTTIMEOUT, "Timeout expired waiting for async script");
 							break;
 						}
 					} else {

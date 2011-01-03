@@ -75,16 +75,12 @@ namespace OpenQA.Selenium.Remote
                     writer.WriteValue(string.Empty);
                 }
 
-                writer.WritePropertyName("expiry");
                 if (cookieValue.Expiry != null)
                 {
+                    writer.WritePropertyName("expiry");
                     DateTime zeroDate = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
                     TimeSpan span = cookieValue.Expiry.Value.ToUniversalTime().Subtract(zeroDate);
                     writer.WriteValue(span.TotalSeconds);
-                }
-                else
-                {
-                    writer.WriteNull();
                 }
 
                 writer.WritePropertyName("secure");

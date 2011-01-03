@@ -501,10 +501,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\ErrorCodes.h"
-				>
-			</File>
-			<File
 				RelativePath=".\ExecuteAsyncScriptCommandHandler.h"
 				>
 			</File>

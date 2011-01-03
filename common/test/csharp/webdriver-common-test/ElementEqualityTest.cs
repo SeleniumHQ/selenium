@@ -31,6 +31,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Remote, "Remote elements are not guaranteed to have the same id")]
         public void FindElementHashCodeShouldMatchEquality()
         {
             driver.Url = (simpleTestPage);
@@ -41,6 +42,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Remote, "Remote elements are not guaranteed to have the same id")]
         public void FindElementsHashCodeShouldMatchEquality()
         {
             driver.Url = (simpleTestPage);

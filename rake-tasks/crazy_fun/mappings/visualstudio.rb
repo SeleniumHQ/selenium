@@ -63,6 +63,9 @@ module CrazyFunDotNet
         csc_task.resources embedded_resources
 
         copy_resources(dir, to_copy, output_dir)
+        unless args[:files].nil?
+          copy_resources(dir, args[:files], output_dir)
+        end
       end
       
       add_dependencies(target, dir, buildable_references)
@@ -125,7 +128,6 @@ module CrazyFunDotNet
         nunit_task.command = "third_party/csharp/nunit-2.5.9/nunit-console.exe"
         nunit_task.assemblies << [output_dir, args[:project]].join(File::SEPARATOR)
         nunit_task.options << "/nologo"
-        copy_resources(dir, args[:files], output_dir)
       end
 
       add_dependencies(target, dir, args[:deps])

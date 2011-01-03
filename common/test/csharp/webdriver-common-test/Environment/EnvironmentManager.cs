@@ -16,6 +16,7 @@ namespace OpenQA.Selenium.Environment
         private IWebDriver driver;
         private UrlBuilder urlBuilder;
         private TestWebServer webServer;
+        RemoteSeleniumServer remoteServer;
         private string remoteCapabilities;
 
         private EnvironmentManager()
@@ -50,10 +51,18 @@ namespace OpenQA.Selenium.Environment
 
             info = info.Parent;
             webServer = new TestWebServer(info.FullName);
+            bool autoStartRemoteServer = false;
+            if (browser == Browser.Remote)
+            {
+                autoStartRemoteServer = bool.Parse(GetSettingValue("AutoStartRemoteServer"));
+            }
+
+            remoteServer = new RemoteSeleniumServer(info.FullName, autoStartRemoteServer);
         }
 
         ~EnvironmentManager()
         {
+            remoteServer.Stop();
             webServer.Stop();
             if (driver != null)
             {
@@ -74,6 +83,11 @@ namespace OpenQA.Selenium.Environment
         public TestWebServer WebServer
         {
             get { return webServer; }
+        }
+
+        public RemoteSeleniumServer RemoteServer
+        {
+            get { return remoteServer; }
         }
 
         public string RemoteCapabilities

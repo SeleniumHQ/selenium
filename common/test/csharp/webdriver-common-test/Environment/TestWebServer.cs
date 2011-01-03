@@ -69,7 +69,7 @@ namespace OpenQA.Selenium.Environment
                 webserverProcess.StartInfo.Arguments = "-cp " + string.Join(";", classPath) + " " + webserverClassName;
                 webserverProcess.StartInfo.WorkingDirectory = projectRootPath;
                 webserverProcess.Start();
-                DateTime timeout = DateTime.Now.Add(TimeSpan.FromSeconds(15));
+                DateTime timeout = DateTime.Now.Add(TimeSpan.FromSeconds(30));
                 bool isRunning = false;
                 while (!isRunning && DateTime.Now < timeout)
                 {

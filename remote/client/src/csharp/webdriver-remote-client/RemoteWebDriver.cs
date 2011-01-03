@@ -894,7 +894,7 @@ namespace OpenQA.Selenium.Remote
                             throw new NotSupportedException(errorMessage);
 
                         case WebDriverResult.UnhandledError:
-                            if (errorMessage.Contains("script"))
+                            if (errorMessage.ToLowerInvariant().Contains("script"))
                             {
                                 throw new InvalidOperationException(errorMessage);
                             }
