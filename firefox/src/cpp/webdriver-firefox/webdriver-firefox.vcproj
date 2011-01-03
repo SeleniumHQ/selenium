@@ -199,7 +199,7 @@
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
 				WarningLevel="3"
-				DebugInformationFormat="3"
+				DebugInformationFormat="0"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -214,7 +214,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="nspr4.lib xpcom.lib xpcomglue_s.lib"
 				AdditionalLibraryDirectories="&quot;$(SolutionDir)\third_party\gecko-1.9.0.11\win32\lib&quot;;&quot;$(OutDir)&quot;"
-				GenerateDebugInformation="true"
+				GenerateDebugInformation="false"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 				TargetMachine="1"
@@ -346,11 +346,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\gecko19\nsIAccessibleDocument.h"
+				RelativePath=".\gecko18\nsIAccessibleDocument.h"
 				>
 			</File>
 			<File
-				RelativePath=".\gecko18\nsIAccessibleDocument.h"
+				RelativePath=".\gecko19\nsIAccessibleDocument.h"
 				>
 			</File>
 			<File
