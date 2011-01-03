@@ -39,8 +39,12 @@
   </Target>
   -->
   <ItemGroup>
+    <Compile Include="UI\IClock.cs" />
+    <Compile Include="UI\IWait.cs" />
     <Compile Include="UI\Select.cs" />
+    <Compile Include="UI\SystemClock.cs" />
     <Compile Include="UI\UnexpectedTagNameException.cs" />
+    <Compile Include="UI\WebDriverWait.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\common\src\csharp\webdriver-common\WebDriver.Common.csproj">
@@ -54,6 +58,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>

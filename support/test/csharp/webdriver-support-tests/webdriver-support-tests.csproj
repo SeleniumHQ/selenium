@@ -48,11 +48,15 @@
       <HintPath>..\..\..\..\third_party\csharp\nunit-2.5.9\framework\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="UI\SelectTests.cs" />
+    <Compile Include="UI\WebDriverWaitTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\common\src\csharp\webdriver-common\WebDriver.Common.csproj">

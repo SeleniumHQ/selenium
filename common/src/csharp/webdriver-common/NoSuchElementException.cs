@@ -27,7 +27,7 @@ namespace OpenQA.Selenium
     /// The exception that is thrown when an element is not found.
     /// </summary>
     [Serializable]
-    public class NoSuchElementException : WebDriverException
+    public class NoSuchElementException : NotFoundException
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="NoSuchElementException"/> class.
