@@ -72,8 +72,29 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>REM TODO - need platform detection
-if exist $(SolutionDir)build\jobbie\Win32\$(ConfigurationName)\IEDriver.dll copy /y $(SolutionDir)build\jobbie\Win32\$(ConfigurationName)\IEDriver.dll $(TargetDir)
-if not exist $(SolutionDir)build\jobbie\Win32\$(ConfigurationName)\IEDriver.dll copy /y $(SolutionDir)jobbie\prebuilt\Win32\Release\IEDriver.dll $(TargetDir)</PostBuildEvent>
+    <PostBuildEvent>if PROCESSOR_ARCHITECTURE == x86 and PROCESSOR_ARCHITEW6432 not defined goto x86
+if exist $(SolutionDir)build\jobbie\x64\$(ConfigurationName)\IEDriver.dll (
+  echo Detected 64-bit platform, found 64-bit native binary
+  echo Copying native code from x64 build target
+  copy /y $(SolutionDir)build\jobbie\x64\$(ConfigurationName)\IEDriver.dll $(TargetDir)
+) else (
+  echo Detected 64-bit platform, missing 64-bit native binary
+  echo Copying native code from x64 prebuilt location
+  copy /y $(SolutionDir)jobbie\prebuilt\x64\Release\IEDriver.dll $(TargetDir)
+)
+goto end
+
+:x86
+if exist $(SolutionDir)build\jobbie\Win32\$(ConfigurationName)\IEDriver.dll (
+  echo Detected 32-bit platform, found 32-bit native binary
+  echo Copying native code from Win32 build target
+  copy /y $(SolutionDir)build\jobbie\Win32\$(ConfigurationName)\IEDriver.dll $(TargetDir)
+) else (
+  echo Detected 32-bit platform, missing 32-bit native binary
+  echo Copying native code from Win32 prebuilt location
+  copy /y $(SolutionDir)jobbie\prebuilt\Win32\Release\IEDriver.dll $(TargetDir)
+)
+
+:end</PostBuildEvent>
   </PropertyGroup>
 </Project>
