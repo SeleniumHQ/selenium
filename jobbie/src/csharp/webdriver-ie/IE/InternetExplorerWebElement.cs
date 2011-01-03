@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Globalization;
@@ -23,7 +24,7 @@ namespace OpenQA.Selenium.IE
     /// }
     /// </code>
     /// </example>
-    public class InternetExplorerWebElement : RenderedRemoteWebElement, IFindsByCssSelector
+    public class InternetExplorerWebElement : RenderedRemoteWebElement, ILocatable
     {
         /// <summary>
         /// Initializes a new instance of the InternetExplorerWebElement class.
@@ -35,28 +36,23 @@ namespace OpenQA.Selenium.IE
         {
         }
 
-        #region IFindsByCssSelector Members
+        #region ILocatable Members
         /// <summary>
-        /// Finds the first child element matching the specified CSS selector.
+        /// Gets the point of the element once scrolling has completed
         /// </summary>
-        /// <param name="cssSelector">The CSS selector to match.</param>
-        /// <returns>The first child <see cref="IWebElement"/> matching the criteria.</returns>
-        public IWebElement FindElementByCssSelector(string cssSelector)
+        public Point LocationOnScreenOnceScrolledIntoView
         {
-            return FindElement("css selector", cssSelector);
+            get
+            {
+                Dictionary<string, object> parameters = new Dictionary<string, object>();
+                parameters.Add("id", Id);
+                Response commandResponse = Execute(DriverCommand.GetElementLocationOnceScrolledIntoView, parameters);
+                Dictionary<string, object> rawPoint = (Dictionary<string, object>)commandResponse.Value;
+                int x = Convert.ToInt32(rawPoint["x"], CultureInfo.InvariantCulture);
+                int y = Convert.ToInt32(rawPoint["y"], CultureInfo.InvariantCulture);
+                return new Point(x, y);
+            }
         }
-
-        /// <summary>
-        /// Finds all child elements matching the specified CSS selector.
-        /// </summary>
-        /// <param name="cssSelector">The CSS selector to match.</param>
-        /// <returns>A <see cref="ReadOnlyCollection{T}"/> containing all child
-        /// <see cref="IWebElement">IWebElements</see> matching the criteria.</returns>
-        public ReadOnlyCollection<IWebElement> FindElementsByCssSelector(string cssSelector)
-        {
-            return FindElements("css selector", cssSelector);
-        }
-
         #endregion
     }
 }

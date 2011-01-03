@@ -30,7 +30,7 @@ namespace OpenQA.Selenium.Firefox
     /// <summary>
     /// Allows the user to control elements on a page in Firefox.
     /// </summary>
-    public class FirefoxWebElement : RenderedRemoteWebElement, ILocatable, IFindsByCssSelector
+    public class FirefoxWebElement : RenderedRemoteWebElement, ILocatable
     {
         #region Constructor
         /// <summary>
@@ -65,30 +65,6 @@ namespace OpenQA.Selenium.Firefox
 
                 return locationPoint;
             }
-        }
-
-        #endregion
-
-        #region IFindsByCssSelector Members
-        /// <summary>
-        /// Finds the first element matching the specified CSS selector.
-        /// </summary>
-        /// <param name="cssSelector">The id to match.</param>
-        /// <returns>The first <see cref="IWebElement"/> matching the criteria.</returns>
-        public IWebElement FindElementByCssSelector(string cssSelector)
-        {
-            return FindElement("css selector", cssSelector);
-        }
-
-        /// <summary>
-        /// Finds all elements matching the specified CSS selector.
-        /// </summary>
-        /// <param name="cssSelector">The CSS selector to match.</param>
-        /// <returns>A <see cref="ReadOnlyCollection{T}"/> containing all
-        /// <see cref="IWebElement">IWebElements</see> matching the criteria.</returns>
-        public ReadOnlyCollection<IWebElement> FindElementsByCssSelector(string cssSelector)
-        {
-            return FindElements("css selector", cssSelector);
         }
 
         #endregion

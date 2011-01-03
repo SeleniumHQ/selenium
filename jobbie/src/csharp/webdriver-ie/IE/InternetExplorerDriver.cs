@@ -49,7 +49,7 @@ namespace OpenQA.Selenium.IE
     /// }
     /// </code>
     /// </example>
-    public class InternetExplorerDriver : RemoteWebDriver, IFindsByCssSelector, ITakesScreenshot
+    public class InternetExplorerDriver : RemoteWebDriver, ITakesScreenshot
     {
         private static int port = FindFreePort();
 
@@ -76,40 +76,6 @@ namespace OpenQA.Selenium.IE
         {
             NativeDriverLibrary.Instance.StopServer();
         }
-
-        #region IFindsByCssSelector Members
-        /// <summary>
-        /// Finds the first element matching the specified CSS selector.
-        /// </summary>
-        /// <param name="cssSelector">The CSS selector to match.</param>
-        /// <returns>The first <see cref="IWebElement"/> matching the criteria.</returns>
-        public IWebElement FindElementByCssSelector(string cssSelector)
-        {
-            return FindElement("css selector", cssSelector);
-        }
-
-        /// <summary>
-        /// Finds all elements matching the specified CSS selector.
-        /// </summary>
-        /// <param name="cssSelector">The CSS selector to match.</param>
-        /// <returns>A <see cref="ReadOnlyCollection{T}"/> containing all
-        /// <see cref="IWebElement">IWebElements</see> matching the criteria.</returns>
-        public ReadOnlyCollection<IWebElement> FindElementsByCssSelector(string cssSelector)
-        {
-            return FindElements("css selector", cssSelector);
-        }
-
-        /// <summary>
-        /// Creates a <see cref="RemoteWebElement"/> with the specified ID.
-        /// </summary>
-        /// <param name="elementId">The ID of this element.</param>
-        /// <returns>A <see cref="RemoteWebElement"/> with the specified ID. For the InternetExplorerDriver this will be an <see cref="InternetExplorerWebElement"/>.</returns>
-        protected override RemoteWebElement CreateElement(string elementId)
-        {
-            return new InternetExplorerWebElement(this, elementId);
-        }
-
-        #endregion
 
         #region ITakesScreenshot Members
         /// <summary>

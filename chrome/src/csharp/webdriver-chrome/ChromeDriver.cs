@@ -40,7 +40,7 @@ namespace OpenQA.Selenium.Chrome
     /// }
     /// </code>
     /// </example>
-    public class ChromeDriver : RemoteWebDriver, IFindsByCssSelector, ITakesScreenshot
+    public class ChromeDriver : RemoteWebDriver, ITakesScreenshot
     {
         /// <summary>
         /// Accept untrusted SSL Certificates
@@ -72,28 +72,6 @@ namespace OpenQA.Selenium.Chrome
         private ChromeDriver(ChromeProfile profile, ChromeExtension extension)
             : base(new ChromeCommandExecutor(new ChromeBinary(profile, extension)), DesiredCapabilities.Chrome())
         {
-        }
-        #endregion
-
-        #region IFindsByCssSelector Members
-        /// <summary>
-        /// Finds the first element that matches the CSS Selector
-        /// </summary>
-        /// <param name="cssSelector">CSS Selector</param>
-        /// <returns>A Web Element</returns>
-        public IWebElement FindElementByCssSelector(string cssSelector)
-        {
-            return FindElement("css", cssSelector);
-        }
-
-        /// <summary>
-        /// Finds all the elements that match the CSS Selection
-        /// </summary>
-        /// <param name="cssSelector">CSS Selector</param>
-        /// <returns>A collection of elements that match</returns>
-        public ReadOnlyCollection<IWebElement> FindElementsByCssSelector(string cssSelector)
-        {
-            return FindElements("css", cssSelector);
         }
         #endregion
 

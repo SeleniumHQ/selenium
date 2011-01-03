@@ -39,7 +39,7 @@ namespace OpenQA.Selenium.Remote
     /// }
     /// </code>
     /// </example>
-    public class RemoteWebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFindsById, IFindsByClassName, IFindsByLinkText, IFindsByName, IFindsByTagName, IFindsByXPath, IFindsByPartialLinkText
+    public class RemoteWebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFindsById, IFindsByClassName, IFindsByLinkText, IFindsByName, IFindsByTagName, IFindsByXPath, IFindsByPartialLinkText, IFindsByCssSelector
     {
         #region Private members
         private ICommandExecutor executor;
@@ -582,6 +582,29 @@ namespace OpenQA.Selenium.Remote
         public ReadOnlyCollection<IWebElement> FindElementsByXPath(string xpath)
         {
             return FindElements("xpath", xpath);
+        }
+        #endregion
+
+        #region IFindsByCssSelector Members
+        /// <summary>
+        /// Finds the first element matching the specified CSS selector.
+        /// </summary>
+        /// <param name="cssSelector">The CSS selector to match.</param>
+        /// <returns>The first <see cref="IWebElement"/> matching the criteria.</returns>
+        public IWebElement FindElementByCssSelector(string cssSelector)
+        {
+            return FindElement("css selector", cssSelector);
+        }
+
+        /// <summary>
+        /// Finds all elements matching the specified CSS selector.
+        /// </summary>
+        /// <param name="cssSelector">The CSS selector to match.</param>
+        /// <returns>A <see cref="ReadOnlyCollection{T}"/> containing all
+        /// <see cref="IWebElement">IWebElements</see> matching the criteria.</returns>
+        public ReadOnlyCollection<IWebElement> FindElementsByCssSelector(string cssSelector)
+        {
+            return FindElements("css selector", cssSelector);
         }
         #endregion
 

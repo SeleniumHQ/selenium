@@ -11,7 +11,7 @@ namespace OpenQA.Selenium.Chrome
     /// <summary>
     /// Provides a mechanism to get elements off the page for test
     /// </summary>
-    public class ChromeWebElement : RenderedRemoteWebElement, ILocatable, IFindsByCssSelector
+    public class ChromeWebElement : RenderedRemoteWebElement, ILocatable
     {
         #region Constructor
         /// <summary>
@@ -62,28 +62,6 @@ namespace OpenQA.Selenium.Chrome
         {
             throw new NotImplementedException("Not yet supported in Chrome");
         }
-
-        #region IFindsByCssSelector Members
-        /// <summary>
-        /// Finds the first element that matches the CSS Selector
-        /// </summary>
-        /// <param name="cssSelector">CSS Selector</param>
-        /// <returns>A Web Element</returns>
-        public IWebElement FindElementByCssSelector(string cssSelector)
-        {
-            return FindElement("css", cssSelector);
-        }
-
-        /// <summary>
-        /// Finds all the elements that match the CSS Selection
-        /// </summary>
-        /// <param name="cssSelector">CSS Selector</param>
-        /// <returns>A collection of elements that match</returns>
-        public ReadOnlyCollection<IWebElement> FindElementsByCssSelector(string cssSelector)
-        {
-            return FindElements("css", cssSelector);
-        }
-        #endregion
 
         #region Overrides
         /// <summary>
