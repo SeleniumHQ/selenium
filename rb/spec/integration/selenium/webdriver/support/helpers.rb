@@ -28,6 +28,14 @@ module Selenium
           end
         end
 
+        def long_wait
+          @long_wait ||= Wait.new(:timeout => 30)
+        end
+
+        def short_wait
+          @short_wait ||= Wait.new(:timeout => 3)
+        end
+
       end # Helpers
     end # SpecSupport
   end # WebDriver

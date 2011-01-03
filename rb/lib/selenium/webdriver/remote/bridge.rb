@@ -74,7 +74,7 @@ module Selenium
         end
 
         def driver_extensions
-          []
+          [DriverExtensions::HasInputDevices]
         end
 
         #
@@ -108,6 +108,10 @@ module Selenium
           execute :setScriptTimeout, {}, :ms => milliseconds
         end
 
+        #
+        # alerts
+        #
+
         def acceptAlert
           execute :acceptAlert
         end
@@ -123,6 +127,10 @@ module Selenium
         def getAlertText
           execute :getAlertText
         end
+
+        #
+        # navigation
+        #
 
         def goBack
           execute :goBack
@@ -224,6 +232,8 @@ module Selenium
           execute :deleteAllCookies
         end
 
+        # finding elements
+
         def findElementByClassName(parent, class_name)
           find_element_by 'class name', class_name, parent
         end
@@ -288,12 +298,32 @@ module Selenium
           find_elements_by 'xpath', xpath, parent
         end
 
-        #
-        # Element functions
-        #
-
         def clickElement(element)
           execute :clickElement, :id => element
+        end
+
+        def doubleClickElement(element)
+          execute :doubleClickElement, :id => element
+        end
+
+        def contextClickElement(element)
+          execute :contextClickElement, :id => element
+        end
+
+        def mouseDownElement(element)
+          execute :mouseDownElement, :id => element
+        end
+
+        def mouseUpElement(element)
+          execute :mouseUpElement, :id => element
+        end
+
+        def mouseMoveToElement(element, *offsets)
+          if offsets.any?
+            raise Error::UnsupportedOperationError, "not supported yet"
+          end
+
+          execute :mouseMoveToElement, :id => element
         end
 
         def getElementTagName(element)
@@ -414,7 +444,7 @@ module Selenium
         #
         # executes a command on the remote server via the REST / JSON API.
         #
-        # Returns a WebDriver::Remote::Response instance
+        # @return [WebDriver::Remote::Response]
         #
 
         def raw_execute(command, opts = {}, command_hash = nil)
