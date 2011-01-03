@@ -255,7 +255,7 @@ namespace OpenQA.Selenium
             uploadElement.SendKeys(inputFile.FullName);
 
             System.IO.FileInfo outputFile = new System.IO.FileInfo(uploadElement.Value);
-            Assert.AreEqual(inputFile.FullName, outputFile.FullName);
+            Assert.AreEqual(inputFile.Name, outputFile.Name);
             inputFile.Delete();
         }
 
@@ -265,7 +265,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = formsPage;
 
-            IWebElement element = driver.FindElement(By.XPath("//title"));
+            IWebElement element = driver.FindElement(By.XPath("//div"));
             element.Select();
         }
 

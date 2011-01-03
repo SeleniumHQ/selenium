@@ -29,7 +29,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [Ignore("Web server configuration issue. Upload never completes")]
         [IgnoreBrowser(Browser.Chrome, "File input elements are not supported yet")]
         public void ShouldAllowFileUploading()
         {
