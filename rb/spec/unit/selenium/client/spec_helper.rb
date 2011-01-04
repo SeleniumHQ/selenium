@@ -3,7 +3,6 @@ require "stringio"
 
 # for bamboo
 require "ci/reporter/rspec"
-ENV['CI_REPORTS'] = "build/test_logs"
 
 module SeleniumClientSpecHelper
   def capture_stderr(&blk)

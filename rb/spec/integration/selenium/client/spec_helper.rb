@@ -6,7 +6,6 @@ require File.expand_path("../sample-app/sample_app", __FILE__)
 
 # for bamboo
 require "ci/reporter/rspec"
-ENV['CI_REPORTS'] = "build/test_logs"
 
 class SeleniumClientTestEnvironment
   def initialize

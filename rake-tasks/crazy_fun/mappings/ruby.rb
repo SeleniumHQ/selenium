@@ -100,6 +100,7 @@ class RubyMappings
         add_jruby_requires(args) if Platform.jruby?
 
         ENV['WD_SPEC_DRIVER'] = args[:name]
+        ENV['CI_REPORTS']     = "build/test_logs"
 
         ruby :include => args[:include],
              :require => args[:require],
