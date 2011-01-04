@@ -37,7 +37,7 @@ public class WebDriverWait implements Wait<WebDriver> {
   private final WebDriver driver;
   private final long timeOutInMillis;
   private final long sleepTimeOut;
-  private final static long DEFAULT_SLEEP_TIMEOUT = 500;
+  public final static long DEFAULT_SLEEP_TIMEOUT = 500;
 
   /**
    * @param driver The WebDriver instance to pass to the expected conditions

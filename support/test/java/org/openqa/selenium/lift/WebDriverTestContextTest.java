@@ -29,6 +29,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.lift.find.Finder;
 import org.openqa.selenium.support.ui.Clock;
+import org.openqa.selenium.support.ui.TickingClock;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
@@ -46,7 +47,9 @@ public class WebDriverTestContextTest extends MockObjectTestCase {
 	TestContext context = new WebDriverTestContext(webdriver);
 	RenderedWebElement element = mock(RenderedWebElement.class);
 	Finder<WebElement, WebDriver> finder = mockFinder();
-	Clock clock = mock(Clock.class);
+	private static final int CLOCK_INCREMENT = 300;
+	Clock clock = new TickingClock(CLOCK_INCREMENT);
+	final int TIMEOUT = CLOCK_INCREMENT * 3;
 	
 	public void testIsCreatedWithAWebDriverImplementation() throws Exception {
 		new WebDriverTestContext(webdriver);
@@ -126,53 +129,41 @@ public class WebDriverTestContextTest extends MockObjectTestCase {
 	}
 	
 	public void testSupportsWaitingForElementToAppear() throws Exception {
-		
 		context = new WebDriverTestContext(webdriver, clock);
 		
-		int timeout = 1000;
-		
 		checking(new Expectations() {{ 
-			allowing(clock).now(); will(returnValue(2000L));
 			one(finder).findFrom(webdriver); will(returnValue(oneElement()));
 			one(element).isDisplayed(); will(returnValue(true));
 		}});
 		
-		context.waitFor(finder, timeout);
+		context.waitFor(finder, TIMEOUT);
 	}
 	
 	public void testSupportsWaitingForElementToAppearWithTimeout() throws Exception {
-		
 		context = new WebDriverTestContext(webdriver, clock);
 		
-		int timeout = 1000;
-		
 		checking(new Expectations() {{ 
-			allowing(clock).now(); will(returnValue(2000L));
 			exactly(2).of(finder).findFrom(webdriver); will(returnValue(oneElement()));
 			exactly(2).of(element).isDisplayed(); will(onConsecutiveCalls(returnValue(false), returnValue(true)));
 		}});
 		
-		context.waitFor(finder, timeout);
+		context.waitFor(finder, TIMEOUT);
 	}
 	
 	public void testFailsAssertionIfElementNotDisplayedBeforeTimeout() throws Exception {
-		
 		context = new WebDriverTestContext(webdriver, clock);
 		
-		int timeout = 1000;
-		
 		checking(new Expectations() {{ 
-			exactly(3).of(clock).now(); will(onConsecutiveCalls(returnValue(2000L), returnValue(2001L), returnValue(3000L)));
-			one(finder).findFrom(webdriver); will(returnValue(oneElement()));
-			one(element).isDisplayed(); will(returnValue(false));
+			atLeast(1).of(finder).findFrom(webdriver); will(returnValue(oneElement()));
+			atLeast(1).of(element).isDisplayed(); will(returnValue(false));
 		}});
 		
 		try {
-			context.waitFor(finder, timeout);
+			context.waitFor(finder, TIMEOUT);
 			fail("should have failed as element not displayed before timeout");
 		} catch (AssertionError error) {
 			// expected
-			assertThat(error.getMessage(), containsString("Element was not rendered within 1000ms"));
+			assertThat(error.getMessage(), containsString(String.format("Element was not rendered within %dms", TIMEOUT)));
 		}
 	}
 	

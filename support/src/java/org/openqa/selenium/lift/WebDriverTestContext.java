@@ -25,7 +25,10 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.lift.find.Finder;
 import org.openqa.selenium.support.ui.Clock;
+import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.SystemClock;
+import org.openqa.selenium.support.ui.Wait;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import static org.openqa.selenium.lift.match.NumericalMatchers.atLeast;
 
@@ -120,17 +123,36 @@ public class WebDriverTestContext implements TestContext {
 		throw new java.lang.AssertionError(message);
 	}
 
-	public void waitFor(Finder<WebElement, WebDriver> finder, long timeoutMillis) {
-		long timeoutTime = clock.now() + timeoutMillis;
-		while (clock.now() < timeoutTime) {
-			Collection<WebElement> result = finder.findFrom(driver);
-			for (WebElement webElement : result) {
-				if (((RenderedWebElement) webElement).isDisplayed()) {
-					return; // found it
-				}
-			}
-		}
-		failWith("Element was not rendered within " + timeoutMillis + "ms");
+	public void waitFor(final Finder<WebElement, WebDriver> finder, final long timeoutMillis) {
+	  final ExpectedCondition<Boolean> elementsDisplayedPredicate = new ExpectedCondition<Boolean>() {
+      public Boolean apply(WebDriver driver) {
+        final Collection<WebElement> elements = finder.findFrom(driver);
+        for (WebElement webElement : elements) {
+          if (((RenderedWebElement) webElement).isDisplayed()) {
+            return true;
+          }
+        }
+        return false;
+      }
+	  };
+	  final long sleepTimeout = (timeoutMillis > WebDriverWait.DEFAULT_SLEEP_TIMEOUT) ? WebDriverWait.DEFAULT_SLEEP_TIMEOUT : timeoutMillis / 2;
+	  Wait<WebDriver> wait = new WebDriverWait(clock, driver, millisToSeconds(timeoutMillis), sleepTimeout) {
+	    @Override
+	    protected void throwTimeoutException(String message, Exception lastException) {
+	      failWith("Element was not rendered within " + timeoutMillis + "ms");
+	    }
+	  };
+	  wait.until(elementsDisplayedPredicate);
 	}
+
+  private static long millisToSeconds(final long timeoutMillis) {
+    return ceiling(((double)timeoutMillis) / 1000);
+  }
+  
+  private static long ceiling(final double value) {
+    final long asLong = (long)value;
+    final int additional = value - asLong > 0 ? 1 : 0;
+    return asLong + additional;
+  }
 
 }
