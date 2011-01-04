@@ -45,7 +45,7 @@ namespace OpenQA.Selenium.Support.UI
             throw new ArgumentException("Can only wait on an object or boolean response, tried to use type: " + typeof(TResult));
         }
         
-        private TResult Until<TResult>(Func<IWebDriver, TResult> condition, Func<TResult, bool> check)
+        public TResult Until<TResult>(Func<IWebDriver, TResult> condition, Predicate<TResult> satisfiesCondition)
         {
             var end = clock.LaterBy(timeout);
             NotFoundException lastException = null;
@@ -56,7 +56,7 @@ namespace OpenQA.Selenium.Support.UI
                 {
                     var value = condition.Invoke(driver);
 
-                    if (check(value))
+                    if (satisfiesCondition(value))
                     {
                         return value;
                     }
