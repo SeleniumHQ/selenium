@@ -1,6 +1,6 @@
 require "rubygems"
 require "time"
-require "spec"
+require "rspec"
 require "ci/reporter/rspec"
 ENV['CI_REPORTS'] = "build/test_logs"
 
@@ -27,7 +27,7 @@ class Object
   include WebDriver::SpecSupport::Guards
 end
 
-Spec::Runner.configure do |c|
+RSpec.configure do |c|
   c.include(WebDriver::SpecSupport::Helpers)
   c.before(:suite) do
     if GlobalTestEnv.driver == :remote

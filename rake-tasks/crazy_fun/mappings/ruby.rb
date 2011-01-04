@@ -65,7 +65,7 @@ class RubyMappings
       args[:include] = Array(args[:include])
       args[:include] << "#{dir}/spec"
 
-      args[:command] = args[:command] || "spec"
+      args[:command] = args[:command] || "rspec"
       args[:require] = Array(args[:require])
 
       # move?
@@ -115,7 +115,6 @@ class RubyMappings
         json-jruby.jar
         rubyzip.jar
         childprocess.jar
-        ci_reporter.jar
         rack.jar
       ].map { |jar| File.join("third_party/jruby", jar) }
 

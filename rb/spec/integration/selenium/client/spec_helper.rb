@@ -60,7 +60,7 @@ class SeleniumClientTestEnvironment
 end # SeleniumClientTestEnvironment
 
 
-Spec::Runner.configure do |config|
+RSpec.configure do |config|
 
   config.before(:suite) do
     @test_environment = SeleniumClientTestEnvironment.new.run
@@ -70,12 +70,12 @@ Spec::Runner.configure do |config|
     @test_environment.stop if @test_environment
   end
 
-  config.prepend_before(:each) do
+  config.before(:each) do
     create_selenium_driver
     start_new_browser_session
   end
 
-  config.prepend_after(:each) do
+  config.after(:each) do
     begin
       selenium_driver.stop
     rescue StandardError => e
