@@ -148,6 +148,20 @@ public class AlertsTest extends AbstractDriverTestCase {
     assertEquals("Testing Alerts", driver.getTitle());
   }
 
+  @Ignore
+  public void testAlertShouldNotAllowAdditionalCommandsIfDimissed() {
+    driver.get(alertPage);
+
+    driver.findElement(By.id("alert")).click();
+
+    Alert alert = switchToAlert(driver);
+    alert.dismiss();
+
+    try {
+      alert.getText();
+    } catch (NoAlertPresentException expected) {}
+  }
+
   private Alert switchToAlert(WebDriver driver) {
     WebDriver.TargetLocator locator = driver.switchTo();
 
