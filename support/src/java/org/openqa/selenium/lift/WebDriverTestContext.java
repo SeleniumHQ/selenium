@@ -42,63 +42,63 @@ import java.util.Collection;
  */
 public class WebDriverTestContext implements TestContext {
 
-	private WebDriver driver;
-	private final Clock clock;
+  private WebDriver driver;
+  private final Clock clock;
 
-	public WebDriverTestContext(WebDriver driver) {
-		this(driver, new SystemClock());
-	}
+  public WebDriverTestContext(WebDriver driver) {
+    this(driver, new SystemClock());
+  }
 
-	WebDriverTestContext(WebDriver driver, Clock clock) {
-		this.driver = driver;
-		this.clock = clock;
-	}
-	
-	public void quit() {
-		driver.quit();
-	}
+  WebDriverTestContext(WebDriver driver, Clock clock) {
+    this.driver = driver;
+    this.clock = clock;
+  }
+  
+  public void quit() {
+    driver.quit();
+  }
 
-	public void goTo(String url) {
-		driver.get(url);
-	}
+  public void goTo(String url) {
+    driver.get(url);
+  }
 
-	public void assertPresenceOf(Finder<WebElement, WebDriver> finder) {
-		assertPresenceOf(atLeast(1), finder);
-	}
+  public void assertPresenceOf(Finder<WebElement, WebDriver> finder) {
+    assertPresenceOf(atLeast(1), finder);
+  }
 
-	public void assertPresenceOf(Matcher<Integer> cardinalityConstraint, Finder<WebElement, WebDriver> finder) {
-		Collection<WebElement> foundElements = finder.findFrom(driver);
-		if (!cardinalityConstraint.matches(foundElements.size())) {
-			 Description description = new StringDescription();
-	            description.appendText("\nExpected: ")
-	                       .appendDescriptionOf(cardinalityConstraint)
-	                       .appendText(" ")
-	                       .appendDescriptionOf(finder)
-	                       .appendText("\n     got: ")
-	                       .appendValue(foundElements.size())
-	                       .appendText(" ")
-	                       .appendDescriptionOf(finder)
-	                       .appendText("\n");
-	            
-	            failWith(description.toString());
-		}
-	}
+  public void assertPresenceOf(Matcher<Integer> cardinalityConstraint, Finder<WebElement, WebDriver> finder) {
+    Collection<WebElement> foundElements = finder.findFrom(driver);
+    if (!cardinalityConstraint.matches(foundElements.size())) {
+       Description description = new StringDescription();
+              description.appendText("\nExpected: ")
+                         .appendDescriptionOf(cardinalityConstraint)
+                         .appendText(" ")
+                         .appendDescriptionOf(finder)
+                         .appendText("\n     got: ")
+                         .appendValue(foundElements.size())
+                         .appendText(" ")
+                         .appendDescriptionOf(finder)
+                         .appendText("\n");
+              
+              failWith(description.toString());
+    }
+  }
 
-	public void type(String input, Finder<WebElement, WebDriver> finder) {
-		WebElement element = findOneElementTo("type into", finder);
-		element.sendKeys(input);
-	}
+  public void type(String input, Finder<WebElement, WebDriver> finder) {
+    WebElement element = findOneElementTo("type into", finder);
+    element.sendKeys(input);
+  }
 
-	public void clickOn(Finder<WebElement, WebDriver> finder) {
-		WebElement element = findOneElementTo("click on", finder);
-		element.click();
-	}	
-	
-	public void clickOnFirst(Finder<WebElement, WebDriver> finder) {
-		WebElement element = findFirstElementTo("click on", finder);
-		element.click();
-	}	
-	
+  public void clickOn(Finder<WebElement, WebDriver> finder) {
+    WebElement element = findOneElementTo("click on", finder);
+    element.click();
+  }  
+  
+  public void clickOnFirst(Finder<WebElement, WebDriver> finder) {
+    WebElement element = findFirstElementTo("click on", finder);
+    element.click();
+  }  
+  
   private WebElement findFirstElementTo(String action, Finder<WebElement, WebDriver> finder) {
     Collection<WebElement> foundElements = finder.findFrom(driver);
     if (foundElements.isEmpty()) {
@@ -119,12 +119,12 @@ public class WebDriverTestContext implements TestContext {
     return foundElements.iterator().next();
   }
 
-	private void failWith(String message) throws AssertionError {
-		throw new java.lang.AssertionError(message);
-	}
+  private void failWith(String message) throws AssertionError {
+    throw new java.lang.AssertionError(message);
+  }
 
-	public void waitFor(final Finder<WebElement, WebDriver> finder, final long timeoutMillis) {
-	  final ExpectedCondition<Boolean> elementsDisplayedPredicate = new ExpectedCondition<Boolean>() {
+  public void waitFor(final Finder<WebElement, WebDriver> finder, final long timeoutMillis) {
+    final ExpectedCondition<Boolean> elementsDisplayedPredicate = new ExpectedCondition<Boolean>() {
       public Boolean apply(WebDriver driver) {
         final Collection<WebElement> elements = finder.findFrom(driver);
         for (WebElement webElement : elements) {
@@ -134,16 +134,16 @@ public class WebDriverTestContext implements TestContext {
         }
         return false;
       }
-	  };
-	  final long sleepTimeout = (timeoutMillis > WebDriverWait.DEFAULT_SLEEP_TIMEOUT) ? WebDriverWait.DEFAULT_SLEEP_TIMEOUT : timeoutMillis / 2;
-	  Wait<WebDriver> wait = new WebDriverWait(clock, driver, millisToSeconds(timeoutMillis), sleepTimeout) {
-	    @Override
-	    protected void throwTimeoutException(String message, Exception lastException) {
-	      failWith("Element was not rendered within " + timeoutMillis + "ms");
-	    }
-	  };
-	  wait.until(elementsDisplayedPredicate);
-	}
+    };
+    final long sleepTimeout = (timeoutMillis > WebDriverWait.DEFAULT_SLEEP_TIMEOUT) ? WebDriverWait.DEFAULT_SLEEP_TIMEOUT : timeoutMillis / 2;
+    Wait<WebDriver> wait = new WebDriverWait(clock, driver, millisToSeconds(timeoutMillis), sleepTimeout) {
+      @Override
+      protected void throwTimeoutException(String message, Exception lastException) {
+        failWith("Element was not rendered within " + timeoutMillis + "ms");
+      }
+    };
+    wait.until(elementsDisplayedPredicate);
+  }
 
   private static long millisToSeconds(final long timeoutMillis) {
     return ceiling(((double)timeoutMillis) / 1000);
