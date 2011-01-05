@@ -54,7 +54,7 @@ class ProfileTests(unittest.TestCase):
         driver.add_cookie(utils.convert_cookie_to_json(cookie))
         self.assertEquals(cookie, driver.get_cookies()[0])
         driver.quit()
-        driver = WebDriver()
+        driver = webdriver.connect('firefox')
         self.assertEquals([], driver.get_cookies())
         driver.quit()
 

@@ -8,8 +8,7 @@ from selenium.test.selenium.webdriver.common.utils import require_online
 class CookieTest(unittest.TestCase):
 
     def setUp(self):
-        self.driver.get("http://localhost:%d/simpleTest.html" %
-            self.webserver.port)
+        self._loadPage("simpleTest")
         # Set the cookie to expire in 30 minutes
         timestamp = calendar.timegm(time.gmtime()) + (30 * 60)
         self.COOKIE_A = {"name": "foo",
@@ -49,3 +48,10 @@ class CookieTest(unittest.TestCase):
         self.assertTrue(len(cookie) > 0)
         self.assertEquals("PREF", cookie[0]["name"])
         self.assertTrue("google" in cookie[0]["domain"])
+
+    def _loadPage(self, name):
+        self.driver.get(self._pageURL(name))
+
+    def _pageURL(self, name):
+        return "http://localhost:2310/common/%s.html" % name
+
