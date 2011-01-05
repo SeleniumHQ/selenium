@@ -168,22 +168,12 @@ class RubyMappings
       raise "no :dir for rubygem" unless args[:dir]
       raise "no :version for rubygem" unless args[:version]
 
-      if has_gem_task?
-        define_spec_task      dir, args
-        define_clean_task     dir, args
-        define_build_task     dir, args
-        define_release_task   dir, args
-      end
+      define_spec_task      dir, args
+      define_clean_task     dir, args
+      define_build_task     dir, args
+      define_release_task   dir, args
 
       define_gem_install_task dir, args
-    end
-
-    def has_gem_task?
-      require "rake/gempackagetask"
-
-      true
-    rescue LoadError
-      false
     end
 
     def define_spec_task(dir, args)
