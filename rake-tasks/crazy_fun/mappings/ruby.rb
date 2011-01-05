@@ -126,24 +126,21 @@ class RubyMappings
 
   class RubyDocs
     def handle(fun, dir, args)
-      if have_yard?
-        define_task(dir, args)
-      else
-        define_noop(dir)
-      end
-    end
-
-    def define_task(dir, args)
       files      = args[:files] || raise("no :files specified for rubydocs")
       output_dir = args[:output_dir] || raise("no :output_dir specified for rubydocs")
 
-      files  = Array(files).map { |glob| Dir[glob] }.flatten
+      # we define a wrapper task to avoid calling require "yard" at parse time
+      desc 'Generate Ruby API docs'
+      task "//#{dir}:docs" do |t|
+        raise "yard is not installed, unable to generate docs" unless have_yard?
+        t = YARD::Rake::YardocTask.new { |t|
+          t.files = Array(files).map { |glob| Dir[glob] }.flatten
+          t.options << "--verbose"
+          t.options << "--readme" << args[:readme] if args.has_key?(:readme)
+          t.options << "--output-dir" << output_dir
+        }
 
-      YARD::Rake::YardocTask.new("//#{dir}:docs") do |t|
-        t.files = args[:files]
-        t.options << "--verbose"
-        t.options << "--readme" << args[:readme] if args.has_key?(:readme)
-        t.options << "--output-dir" << output_dir
+        Rake::Task[t.name].invoke
       end
     end
 
@@ -152,12 +149,6 @@ class RubyMappings
       true
     rescue LoadError
       false
-    end
-
-    def define_noop(dir)
-      task "//#{dir}:docs" do
-        abort "YARD is not available."
-      end
     end
   end # RubyDocs
 
