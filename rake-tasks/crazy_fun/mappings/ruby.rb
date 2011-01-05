@@ -179,7 +179,6 @@ class RubyMappings
     end
 
     def has_gem_task?
-      require "rubygems"
       require "rake/gempackagetask"
 
       true
