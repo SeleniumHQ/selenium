@@ -97,6 +97,7 @@ Command.loadAPI = function() {
         if (returns.length > 0) {
           var returnType = new String(returns.item(0).attributes.getNamedItem("type").value);
           returnType = returnType.replace(/string/, "String");
+          returnType = returnType.replace(/number/, "Number");
           def.returnType = returnType;
           def.returnDescription = this.innerHTML(returns.item(0));
         }
