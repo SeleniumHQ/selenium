@@ -441,6 +441,10 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
+				RelativePath=".\AcceptAlertCommandHandler.h"
+				>
+			</File>
+			<File
 				RelativePath=".\AddCookieCommandHandler.h"
 				>
 			</File>
@@ -482,6 +486,10 @@
 			</File>
 			<File
 				RelativePath=".\DeleteCookieCommandHandler.h"
+				>
+			</File>
+			<File
+				RelativePath=".\DismissAlertCommandHandler.h"
 				>
 			</File>
 			<File
@@ -558,6 +566,10 @@
 			</File>
 			<File
 				RelativePath=".\GetActiveElementCommandHandler.h"
+				>
+			</File>
+			<File
+				RelativePath=".\GetAlertTextCommandHandler.h"
 				>
 			</File>
 			<File
@@ -674,6 +686,10 @@
 			</File>
 			<File
 				RelativePath=".\SendKeysCommandHandler.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SendKeysToAlertCommandHandler.h"
 				>
 			</File>
 			<File

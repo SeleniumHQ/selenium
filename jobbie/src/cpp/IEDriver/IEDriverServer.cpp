@@ -435,6 +435,11 @@ void IEDriverServer::PopulateCommandRepository() {
 	this->command_repository_["/session/:sessionid/element/:id/drag"]["POST"] = DragElement;
 	this->command_repository_["/session/:sessionid/screenshot"]["GET"] = Screenshot;
 
+	this->command_repository_["/session/:sessionid/accept_alert"]["POST"] = AcceptAlert;
+	this->command_repository_["/session/:sessionid/dismiss_alert"]["POST"] = DismissAlert;
+	this->command_repository_["/session/:sessionid/alert_text"]["GET"] = GetAlertText;
+	this->command_repository_["/session/:sessionid/alert_text"]["POST"] = SendKeysToAlert;
+
 	/*
 	commandDictionary.Add(DriverCommand.DefineDriverMapping, new CommandInfo(CommandInfo.PostCommand, "/config/drivers"));
 	commandDictionary.Add(DriverCommand.SetBrowserVisible, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/visible"));

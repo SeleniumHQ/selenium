@@ -59,6 +59,11 @@
 #include "ToggleElementCommandHandler.h"
 #include "QuitCommandHandler.h"
 
+#include "AcceptAlertCommandHandler.h"
+#include "DismissAlertCommandHandler.h"
+#include "GetAlertTextCommandHandler.h"
+#include "SendKeysToAlertCommandHandler.h"
+
 namespace webdriver {
 
 LRESULT BrowserManager::OnInit(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
@@ -411,6 +416,12 @@ void BrowserManager::PopulateCommandHandlerRepository() {
 	this->command_handlers_[DeleteCookie] = new DeleteCookieCommandHandler;
 	this->command_handlers_[DeleteAllCookies] = new DeleteAllCookiesCommandHandler;
 	this->command_handlers_[Screenshot] = new ScreenshotCommandHandler;
+
+	this->command_handlers_[AcceptAlert] = new AcceptAlertCommandHandler;
+	this->command_handlers_[DismissAlert] = new DismissAlertCommandHandler;
+	this->command_handlers_[GetAlertText] = new GetAlertTextCommandHandler;
+	this->command_handlers_[SendKeysToAlert] = new SendKeysToAlertCommandHandler;
+
 }
 
 } // namespace webdriver

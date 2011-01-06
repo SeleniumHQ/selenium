@@ -133,7 +133,7 @@ private:
 			while ((dialog_window_handle == ie_main_window_handle) && --max_wait) {
 				ProcessWindowInfo process_win_info;
 				process_win_info.dwProcessId = data->ieProcId;
-				::EnumWindows(SendKeysCommandHandler::FindDialogWindowForProcess, (LPARAM)&process_win_info);
+				::EnumWindows(&BrowserFactory::FindDialogWindowForProcess, (LPARAM)&process_win_info);
 				if (process_win_info.hwndBrowser != NULL) {
 					dialog_window_handle = process_win_info.hwndBrowser;
 				}
@@ -146,33 +146,6 @@ private:
 		}
 
 		return SendKeysToFileUploadAlert(dialog_window_handle, data->text);
-	}
-
-	static BOOL CALLBACK SendKeysCommandHandler::FindDialogWindowForProcess(HWND window_handle, LPARAM arg) {
-		ProcessWindowInfo *process_win_info = (ProcessWindowInfo *)arg;
-
-		// Could this be an Internet Explorer Server window?
-		// 7 == "#32770\0"
-		char name[7];
-		if (GetClassNameA(window_handle, name, 7) == 0) {
-			// No match found. Skip
-			return TRUE;
-		}
-		
-		if (strcmp("#32770", name) != 0) {
-			return TRUE;
-		} else {
-			DWORD process_id = NULL;
-			::GetWindowThreadProcessId(window_handle, &process_id);
-			if (process_win_info->dwProcessId == process_id) {
-				// Once we've found the first Internet Explorer_Server window
-				// for the process we want, we can stop.
-				process_win_info->hwndBrowser = window_handle;
-				return FALSE;
-			}
-		}
-
-		return TRUE;
 	}
 
 	static bool SendKeysToFileUploadAlert(HWND dialog_window_handle, const wchar_t* value) 

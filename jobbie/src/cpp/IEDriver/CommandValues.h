@@ -59,7 +59,12 @@ enum CommandValue
 	ElementEquals,
 	Screenshot, 
 	ImplicitlyWait,
-	SetAsyncScriptTimeout
+	SetAsyncScriptTimeout,
+
+	AcceptAlert,
+	DismissAlert,
+	GetAlertText,
+	SendKeysToAlert,
 };
 
 } // namespace webdriver

@@ -34,6 +34,7 @@ public:
 
 	static BOOL CALLBACK FindBrowserWindow(HWND hwnd, LPARAM param);
 	static BOOL CALLBACK FindChildWindowForProcess(HWND hwnd, LPARAM arg);
+	static BOOL CALLBACK FindDialogWindowForProcess(HWND hwnd, LPARAM arg);
 
 private:
 	int ie_major_version_;

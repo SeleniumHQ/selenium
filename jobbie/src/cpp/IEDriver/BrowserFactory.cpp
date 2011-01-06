@@ -243,6 +243,33 @@ BOOL CALLBACK BrowserFactory::FindChildWindowForProcess(HWND hwnd, LPARAM arg) {
 	return TRUE;
 }
 
+BOOL CALLBACK BrowserFactory::FindDialogWindowForProcess(HWND hwnd, LPARAM arg) {
+	ProcessWindowInfo *process_win_info = (ProcessWindowInfo *)arg;
+
+	// Could this be an dialog window?
+	// 7 == "#32770\0"
+	char name[7];
+	if (GetClassNameA(hwnd, name, 7) == 0) {
+		// No match found. Skip
+		return TRUE;
+	}
+	
+	if (strcmp("#32770", name) != 0) {
+		return TRUE;
+	} else {
+		DWORD process_id = NULL;
+		::GetWindowThreadProcessId(hwnd, &process_id);
+		if (process_win_info->dwProcessId == process_id) {
+			// Once we've found the first dialog (#32770) window
+			// for the process we want, we can stop.
+			process_win_info->hwndBrowser = hwnd;
+			return FALSE;
+		}
+	}
+
+	return TRUE;
+}
+
 void BrowserFactory::GetExecutableLocation() {
 	std::wstring class_id_key = L"SOFTWARE\\Classes\\InternetExplorer.Application\\CLSID";
 

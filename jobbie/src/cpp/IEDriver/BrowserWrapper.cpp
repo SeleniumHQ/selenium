@@ -372,7 +372,7 @@ bool BrowserWrapper::GetEvalMethod(IHTMLDocument2* doc, DISPID* eval_id, bool* a
 		script_tag->put_innerHTML(element_html);
 
 		CComPtr<IHTMLElement> body;
-		doc->get_body(&body);
+		hr = doc->get_body(&body);
 		CComQIPtr<IHTMLDOMNode> node(body);
 		CComQIPtr<IHTMLDOMNode> script_node(script_tag);
 
@@ -638,8 +638,15 @@ void BrowserWrapper::DetachEvents() {
 bool BrowserWrapper::Wait() {
 	bool is_navigating = true;
 
-	//std::cout << "Navigate Events Completed.\r\n";
+	//std::cout << "Navigate Events Completed." << std::endl;
 	this->is_navigation_started_ = false;
+
+	HWND dialog = this->GetActiveDialogWindowHandle();
+	if (dialog != NULL) {
+		//std::cout "Found alert. Aborting wait." << std::endl;
+		this->wait_required_ = false;
+		return true;
+	}
 
 	// Navigate events completed. Waiting for browser.Busy != false...
 	is_navigating = this->is_navigation_started_;
@@ -754,6 +761,20 @@ bool BrowserWrapper::IsDocumentNavigating(IHTMLDocument2 *doc) {
 		}
 	}
 	return is_navigating;
+}
+
+HWND BrowserWrapper::GetActiveDialogWindowHandle() {
+	HWND active_dialog_handle = NULL;
+	DWORD process_id;
+	::GetWindowThreadProcessId(this->GetWindowHandle(), &process_id);
+	ProcessWindowInfo process_win_info;
+	process_win_info.dwProcessId = process_id;
+	process_win_info.hwndBrowser = NULL;
+	::EnumWindows(&BrowserFactory::FindDialogWindowForProcess, (LPARAM)&process_win_info);
+	if (process_win_info.hwndBrowser != NULL) {
+		active_dialog_handle = process_win_info.hwndBrowser;
+	}
+	return active_dialog_handle;
 }
 
 } // namespace webdriver
