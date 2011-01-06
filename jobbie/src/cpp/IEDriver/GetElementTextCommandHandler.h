@@ -1,6 +1,7 @@
 #ifndef WEBDRIVER_IE_GETELEMENTTEXTCOMMANDHANDLER_H_
 #define WEBDRIVER_IE_GETELEMENTTEXTCOMMANDHANDLER_H_
 
+#include "atoms.h"
 #include "BrowserManager.h"
 
 namespace webdriver {
@@ -27,25 +28,41 @@ protected:
 				response->SetErrorResponse(status_code, "Unable to get browser");
 				return;
 			}
-			// HWND window_handle = browser_wrapper->GetWindowHandle();
 
 			ElementWrapper *element_wrapper;
 			status_code = this->GetElement(manager, element_id, &element_wrapper);
 			if (status_code == SUCCESS) {
-				CComBSTR tag_name;
-				element_wrapper->element()->get_tagName(&tag_name);
-				bool is_title = tag_name == L"TITLE";
+				// The atom is just the definition of an anonymous
+				// function: "function() {...}"; Wrap it in another function so we can
+				// invoke it with our arguments without polluting the current namespace.
+				std::wstring script(L"(function() { return (");
 
-				std::wstring text(L"");
-				if (is_title) {
-					text = browser_wrapper->GetTitle();
-					std::string title(CW2A(text.c_str(), CP_UTF8));
-					response->SetResponse(SUCCESS, title);
+				// Read in all the scripts
+				for (int j = 0; GET_TEXT[j]; j++) {
+					script += GET_TEXT[j];
+				}
+
+				// Now for the magic and to close things
+				script += L")})();";
+
+				ScriptWrapper *script_wrapper = new ScriptWrapper(script, 1);
+				script_wrapper->AddArgument(element_wrapper->element());
+				status_code = browser_wrapper->ExecuteScript(script_wrapper);
+
+				CComVariant text_variant;
+				if (status_code == SUCCESS) {
+					::VariantCopy(&text_variant, &script_wrapper->result());
+				}
+
+				delete script_wrapper;
+
+				if (status_code == SUCCESS) {
+					std::wstring text(browser_wrapper->ConvertVariantToWString(&text_variant));
+					std::string text_str(CW2A(text.c_str(), CP_UTF8));
+					response->SetResponse(SUCCESS, text_str);
 					return;
 				} else {
-					text = element_wrapper->GetText();
-					std::string element_text(CW2A(text.c_str(), CP_UTF8));
-					response->SetResponse(SUCCESS, element_text);
+					response->SetErrorResponse(status_code, "Unable to get element text");
 					return;
 				}
 			} else {
