@@ -148,6 +148,11 @@ class WebElement(object):
         """ Returns the size of the element """
         return self._execute(Command.GET_ELEMENT_SIZE)['value']
 
+    def value_of_css_property(self, property_name):
+        """ Returns the value of a CSS property """
+        return self._execute(Command.GET_ELEMENT_VALUE_OF_CSS_PROPERTY,
+                        {'propertyName': property_name})['value']
+
     @property
     def parent(self):
         return self._parent

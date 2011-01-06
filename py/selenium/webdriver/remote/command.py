@@ -79,3 +79,4 @@ class Command(object):
     IMPLICIT_WAIT = "implicitlyWait"
     EXECUTE_ASYNC_SCRIPT = "executeAsyncScript"
     SET_SCRIPT_TIMEOUT = "setScriptTimeout"
+    GET_ELEMENT_VALUE_OF_CSS_PROPERTY = "getElementValueOfCssProperty"
