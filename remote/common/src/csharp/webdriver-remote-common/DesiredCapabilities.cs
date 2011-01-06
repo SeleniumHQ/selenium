@@ -117,6 +117,32 @@ namespace OpenQA.Selenium.Remote
             set { javascriptEnabled = value; }
         }
 
+        /// <summary>
+        /// Gets a value indicating whether the browser has a given capability.
+        /// </summary>
+        /// <param name="capability">The capability ot get.</param>
+        /// <returns>Returns <see langword="true"/> if the browser has the capability; otherwise, <see langword="false"/>.</returns>
+        public bool HasCapability(string capability)
+        {
+            return customCapabilities.ContainsKey(capability);
+        }
+
+        /// <summary>
+        /// Gets a capability of the browser.
+        /// </summary>
+        /// <param name="capability">The capability to get.</param>
+        /// <returns>An object associated with the capability, or <see langword="null"/>
+        /// if the capability is not set on the browser.</returns>
+        public object GetCapability(string capability)
+        {
+            object capabilityValue = null;
+            if (customCapabilities.ContainsKey(capability))
+            {
+                capabilityValue = customCapabilities[capability];
+            }
+
+            return capabilityValue;
+        }
         #endregion
 
         /// <summary>
