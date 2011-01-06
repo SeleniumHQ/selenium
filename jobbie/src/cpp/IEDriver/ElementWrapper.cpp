@@ -117,7 +117,6 @@ int ElementWrapper::GetAttributeValue(std::wstring attribute_name, VARIANT *attr
 	// Read in all the scripts
 	for (int j = 0; GET_ATTRIBUTE[j]; j++) {
 		script += GET_ATTRIBUTE[j];
-		script += L"\n";
 	}
 
 	// Now for the magic and to close things
