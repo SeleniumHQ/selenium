@@ -45,7 +45,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(SolutionDir)third_party\json-cpp\include\json&quot;;&quot;$(SolutionDir)third_party\mongoose&quot;;&quot;$(SolutionDir)common\src\cpp\webdriver-interactions&quot;;&quot;$(ProjectDir)..\InternetExplorerDriver&quot;"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)third_party\json-cpp\include\json&quot;;&quot;$(SolutionDir)third_party\mongoose&quot;;&quot;$(SolutionDir)common\src\cpp\webdriver-interactions&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;IEDRIVER_EXPORTS"
 				MinimalRebuild="false"
 				ExceptionHandling="2"
@@ -124,7 +124,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(SolutionDir)third_party\json-cpp\include\json&quot;;&quot;$(SolutionDir)third_party\mongoose&quot;;&quot;$(SolutionDir)common\src\cpp\webdriver-interactions&quot;;&quot;$(ProjectDir)..\InternetExplorerDriver&quot;"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)third_party\json-cpp\include\json&quot;;&quot;$(SolutionDir)third_party\mongoose&quot;;&quot;$(SolutionDir)common\src\cpp\webdriver-interactions&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;IEDRIVER_EXPORTS"
 				MinimalRebuild="false"
 				ExceptionHandling="2"
@@ -204,7 +204,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="false"
-				AdditionalIncludeDirectories="&quot;$(SolutionDir)third_party\json-cpp\include\json&quot;;&quot;$(SolutionDir)third_party\mongoose&quot;;&quot;$(SolutionDir)common\src\cpp\webdriver-interactions&quot;;&quot;$(ProjectDir)..\InternetExplorerDriver&quot;"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)third_party\json-cpp\include\json&quot;;&quot;$(SolutionDir)third_party\mongoose&quot;;&quot;$(SolutionDir)common\src\cpp\webdriver-interactions&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;IEDRIVER_EXPORTS"
 				ExceptionHandling="2"
 				RuntimeLibrary="0"
@@ -283,7 +283,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="false"
-				AdditionalIncludeDirectories="&quot;$(SolutionDir)third_party\json-cpp\include\json&quot;;&quot;$(SolutionDir)third_party\mongoose&quot;;&quot;$(SolutionDir)common\src\cpp\webdriver-interactions&quot;;&quot;$(ProjectDir)..\InternetExplorerDriver&quot;"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)third_party\json-cpp\include\json&quot;;&quot;$(SolutionDir)third_party\mongoose&quot;;&quot;$(SolutionDir)common\src\cpp\webdriver-interactions&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;IEDRIVER_EXPORTS"
 				ExceptionHandling="2"
 				RuntimeLibrary="0"
@@ -449,6 +449,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\atoms.h"
+				>
+			</File>
+			<File
 				RelativePath=".\BrowserFactory.h"
 				>
 			</File>
@@ -478,6 +482,10 @@
 			</File>
 			<File
 				RelativePath=".\CommandValues.h"
+				>
+			</File>
+			<File
+				RelativePath=".\cookies.h"
 				>
 			</File>
 			<File
@@ -669,6 +677,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\jsxpath.h"
+				>
+			</File>
+			<File
 				RelativePath=".\NewSessionCommandHandler.h"
 				>
 			</File>
@@ -706,6 +718,10 @@
 			</File>
 			<File
 				RelativePath=".\SetSpeedCommandHandler.h"
+				>
+			</File>
+			<File
+				RelativePath=".\sizzle.h"
 				>
 			</File>
 			<File
