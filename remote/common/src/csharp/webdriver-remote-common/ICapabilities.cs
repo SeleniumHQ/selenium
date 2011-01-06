@@ -1,4 +1,6 @@
-﻿namespace OpenQA.Selenium.Remote
+﻿using System.Collections.Generic;
+
+namespace OpenQA.Selenium.Remote
 {
     /// <summary>
     /// Capabilities of the browser that you are going to use
@@ -24,5 +26,7 @@
         /// Gets a value indicating whether the browser is JavaScript enabled
         /// </summary>
         bool IsJavaScriptEnabled { get; }
+
+        Dictionary<string, string> customCapabilities { get; }
     }
 }

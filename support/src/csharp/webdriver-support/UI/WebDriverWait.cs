@@ -26,50 +26,47 @@ namespace OpenQA.Selenium.Support.UI
             this.timeout = timeout;
             this.sleepTimeout = sleepTimeout;
         }
-        
+
         public TResult Until<TResult>(Func<IWebDriver, TResult> condition)
         {
-            //TODO(dawagner): This type-checking is ugly, I'd love a better way...
-            var type = typeof(TResult);
-            if (type.IsClass || type.IsInterface)
+            var resultType = typeof(TResult);
+            if ((resultType.IsValueType && resultType != typeof(bool)) || !resultType.IsSubclassOf(typeof(object)))
             {
-                return Until(condition, x => x != null);
+                throw new ArgumentException("Can only wait on an object or boolean response, tried to use type: " + resultType.ToString(), "condition");
             }
-            if (type.IsValueType)
-            {
-                if (type == typeof(bool))
-                {
-                    return Until(condition, x => Boolean.Parse("" + x));
-                }
-            }
-            throw new ArgumentException("Can only wait on an object or boolean response, tried to use type: " + typeof(TResult));
-        }
-        
-        public TResult Until<TResult>(Func<IWebDriver, TResult> condition, Predicate<TResult> satisfiesCondition)
-        {
-            var end = clock.LaterBy(timeout);
-            NotFoundException lastException = null;
 
-            while (clock.IsNowBefore(end))
+            NotFoundException lastException = null;
+            var endTime = clock.LaterBy(timeout);
+            while (clock.IsNowBefore(endTime))
             {
                 try
                 {
-                    var value = condition.Invoke(driver);
-
-                    if (satisfiesCondition(value))
+                    var result = condition(driver);
+                    if (resultType == typeof(bool))
                     {
-                        return value;
+                        var boolResult = result as bool?;
+                        if (boolResult.HasValue && boolResult.Value)
+                        {
+                            return result;
+                        }
+                    }
+                    else
+                    {
+                        if (result != null)
+                        {
+                            return result;
+                        }
                     }
                 }
-                catch (NotFoundException e) {
-                    // Common case in many conditions, so swallow here, but be ready to
-                    // rethrow if it the element never appears.
+                catch (NotFoundException e)
+                {
                     lastException = e;
                 }
+
                 Thread.Sleep(sleepTimeout);
             }
-            ThrowTimeoutException(String.Format("Timed out after {0} seconds", timeout), lastException);
-            throw new WebDriverException("ThrowTimeoutException should have thrown an exception");
+
+            throw new TimeoutException(string.Format("Timed out after {0} seconds", timeout.TotalSeconds), lastException);
         }
     
         protected virtual void ThrowTimeoutException(string message, Exception lastExcetpion)

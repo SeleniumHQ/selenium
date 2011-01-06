@@ -16,6 +16,8 @@ namespace OpenQA.Selenium.Remote
         private Platform browserPlatform;
         private bool javascriptEnabled;
 
+        private readonly Dictionary<string, object> customCapabilities = new Dictionary<string, object>();
+
         /// <summary>
         /// Initializes a new instance of the DesiredCapabilities class
         /// </summary>
@@ -64,6 +66,14 @@ namespace OpenQA.Selenium.Remote
                 else if (rawAsPlatform != null)
                 {
                     browserPlatform = rawAsPlatform;
+                }
+            }
+            List<string> knownCapabilities = new List<string> {"browserName", "version", "javascriptEnabled", "platform"};
+            foreach (string key in rawMap.Keys)
+            {
+                if (!knownCapabilities.Contains(key))
+                {
+                    customCapabilities[key] = rawMap[key];
                 }
             }
         }
