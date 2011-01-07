@@ -33,6 +33,7 @@ class JavascriptMappings
     fun.add_mapping("js_fragment_header", Javascript::CreateTaskShortName.new)
     fun.add_mapping("js_fragment_header", Javascript::AddDependencies.new)
     fun.add_mapping("js_fragment_header", Javascript::ConcatenateHeaders.new)
+    fun.add_mapping("js_fragment_header", Javascript::CopyHeader.new)
   end
 end
 
@@ -374,6 +375,20 @@ module Javascript
       task_name = task_name(dir, args[:name])
       generate_header(dir, args[:name], task_name, output, args[:deps])
       task task_name => [output]
+    end
+  end
+  
+  class CopyHeader < BaseJs
+    def handle(fun, dir, args)
+      return unless args[:out]
+      
+      js = js_name(dir, args[:name])
+      output = js.sub(/\.js$/, '.h')
+      task_name = task_name(dir, args[:name])
+      task task_name do
+        puts "Writing: #{args[:out]}"
+        cp output, args[:out]
+      end
     end
   end
 end

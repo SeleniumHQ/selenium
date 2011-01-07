@@ -21,9 +21,13 @@ java_test(name = "test",
     "//common:test"
 ])
 
-rake_task(name = "atoms",
-  task_name = "atomic_header",
-  out = "jobbie/src/cpp/InternetExplorerDriver/atoms.h")
+js_fragment_header(name = "atoms",
+  deps = [
+    "//common/src/js/webdriver:get_attribute",
+    "//common/src/js/webdriver:get_text",
+  ],
+  out = "jobbie/src/cpp/IEDriver/atoms.h"
+)
 
 rake_task(name = "sizzle",
   task_name = "sizzle_header",
@@ -84,15 +88,6 @@ visualc_library(name = "ieserver_x64_dll",
   target = "IEDriver",
   out = "x64/Release/IEDriver.dll"
 )
-
-
-#rake_task(name = "ie_win32_dll",
-#  task_name = "ie_win32_dll",
-#  out = "build/Win32/Release/InternetExplorerDriver.dll")
-
-#rake_task(name = "ie_x64_dll",
-#  task_name = "ie_x64_dll",
-#  out = "build/x64/Release/InternetExplorerDriver.dll")
 
 dotnet_library(name = "dotnet",
   srcs = "src/csharp/**/*.cs",

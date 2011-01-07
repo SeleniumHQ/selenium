@@ -184,26 +184,6 @@ task :clean do
   Android::Clean.new()
 end
 
-#task "ie_win32_dll" => [ "atomic_header", "sizzle_header" ]
-#dll(:name => "ie_win32_dll",
-#    :src  => [ "common/src/cpp/webdriver-interactions/**/*", "jobbie/src/cpp/InternetExplorerDriver/**/*" ],
-#    :solution => "WebDriver.sln",
-#    :out  => "Win32/Release/InternetExplorerDriver.dll",
-#    :prebuilt => "jobbie/prebuilt")
-
-#task "ie_x64_dll" => [ "atomic_header", "sizzle_header" ]
-#dll(:name => "ie_x64_dll",
-#    :src  => [ "common/src/cpp/webdriver-interactions/**/*", "jobbie/src/cpp/InternetExplorerDriver/**/*" ],
-#    :solution => "WebDriver.sln",
-#    :out  => "x64/Release/InternetExplorerDriver.dll",
-#    :prebuilt => "jobbie/prebuilt")
-
-
-#dotnet_library(:name => "dotnet_assemblies",
-#               :project => "rake-tasks/msbuild/webdriver.msbuild.proj",
-#               :target => "BuildManagedCode")
-
-#task :dotnet => [ :ie_win32_dll, :ie_x64_dll, :firefox, :chrome, :'dotnet_assemblies' ]
 task :dotnet => [ "//jobbie:dotnet", "//remote/client:dotnet", "//firefox:dotnet", "//chrome:dotnet", "//selenium:dotnet" ]
 
 # Generate a C++ Header file for mapping between magic numbers and #defines
@@ -219,15 +199,6 @@ ie_generate_type_mapping(:name => "ie_result_type_java",
                          :src => "jobbie/src/common/result_types.txt",
                          :type => "java",
                          :out => "java/org/openqa/selenium/ie/IeReturnTypes.java")
-
-dll(:name => "firefox_dll",
-    :src  => [ "common/src/cpp/webdriver-interactions/**/*", "jobbie/src/cpp/webdriver-firefox/**/*" ],
-    :solution => "WebDriver.sln",
-    :out  => "Win32/Release/webdriver-firefox.dll",
-    :deps  => [
-                "//firefox:native_events_xpt",
-              ],
-    :prebuilt => "firefox/prebuilt")
 
 gecko_sdk = "third_party/gecko-1.9.0.11/linux/"
 
@@ -277,12 +248,6 @@ task :'selenium-server_zip' do
   mv "#{temp}/selenium-server.jar", "#{temp}/selenium-server-#{version}.jar"
   sh "cd #{temp} && jar cMf ../selenium-server.zip *"
 end
-
-dll(:name => "chrome_dll",
-    :src  => [ "common/src/cpp/webdriver-interactions/**/*", "chome/src/cpp/**/*" ],
-    :solution => "WebDriver.sln",
-    :out  => 'Win32/Release/npchromedriver.dll',
-    :prebuilt => "chrome/prebuilt")
 
 java_jar(:name => "selenium-core",
          :resources => [
@@ -495,20 +460,6 @@ file "iphone/src/objc/atoms.h" => ["//iphone:atoms"] do |task|
   cp "build/iphone/atoms.h", "iphone/src/objc/atoms.h"
 end
 task :iphone_atoms => ["iphone/src/objc/atoms.h"]
-
-file "jobbie/src/cpp/InternetExplorerDriver/atoms.h" => [
-  "//common/src/js/webdriver:get_attribute:header",
-] do |task|
-  puts "Writing: #{task}"
-  File.open('jobbie/src/cpp/InternetExplorerDriver/atoms.h', 'w') do |f|
-    task.prerequisites.each do |req|
-      puts "Reading: " + req if verbose
-      source = Rake::Task[req].out
-      f << IO.read(source) + "\n"
-    end
-  end
-end
-task :atomic_header => [ "jobbie/src/cpp/InternetExplorerDriver/atoms.h" ]
 
 file "jobbie/src/cpp/InternetExplorerDriver/sizzle.h" => [ "//third_party/js/sizzle:sizzle:header" ] do
   cp "build/third_party/js/sizzle/sizzle.h", "jobbie/src/cpp/InternetExplorerDriver/sizzle.h"
