@@ -7,7 +7,14 @@ namespace Selenium
     {
         public IWebElement Find(OpenQA.Selenium.IWebDriver driver, string use)
         {
-            return driver.FindElement(By.Id(use));
+            try
+            {
+                return new IdLookupStrategy().Find(driver, use);
+            }
+            catch (NoSuchElementException)
+            {
+                return new NameLookupStrategy().Find(driver, use);
+            }
         }
     }
 }

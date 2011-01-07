@@ -24,9 +24,9 @@ namespace Selenium.Internal.SeleniumEmulation
 
         private string ConstructUrl(string appUrl, string path)
         {
-            string urlToOpen = appUrl.Contains("://") ?
-                               appUrl :
-                               baseUrl + (!appUrl.StartsWith("/", StringComparison.Ordinal) ? "/" : string.Empty) + path;
+            string urlToOpen = path.Contains("://") ?
+                               path :
+                               baseUrl + (!path.StartsWith("/", StringComparison.Ordinal) ? "/" : string.Empty) + path;
 
             return urlToOpen;
         }

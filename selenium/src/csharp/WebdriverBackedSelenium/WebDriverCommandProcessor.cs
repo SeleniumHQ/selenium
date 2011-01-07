@@ -18,6 +18,7 @@ limitations under the License.
 using System;
 using System.Collections.Generic;
 using OpenQA.Selenium;
+using Selenium.Internal;
 using Selenium.Internal.SeleniumEmulation;
 
 namespace Selenium
@@ -34,6 +35,8 @@ namespace Selenium
         private Dictionary<string, SeleneseCommand> seleneseMethods = new Dictionary<string, SeleneseCommand>();
         private ElementFinder elementFinder = new ElementFinder();
         private SeleniumOptionSelector select;
+        private CommandTimer timer;
+        private AlertOverride alertOverride;
         #endregion
 
         /// <summary>
@@ -56,6 +59,8 @@ namespace Selenium
             this.driver = baseDriver;
             this.baseUrl = baseUrl;
             this.select = new SeleniumOptionSelector(elementFinder);
+            this.timer = new CommandTimer(30000);
+            this.alertOverride = new AlertOverride();
         }
         
         /// <summary>
@@ -108,7 +113,12 @@ namespace Selenium
         
         public void Stop()
         {
-            driver.Quit();
+            if (driver != null)
+            {
+                driver.Quit();
+            }
+
+            driver = null;
         }
         
         public string GetString(string command, string[] args)
@@ -149,7 +159,8 @@ namespace Selenium
                 throw new NotSupportedException(commandName);
             }
 
-            return command.Apply(driver, args);
+            return timer.Execute(command, driver, args);
+            //return command.Apply(driver, args);
         }
 
         private void PopulateSeleneseMethods()
@@ -179,6 +190,7 @@ namespace Selenium
             seleneseMethods.Add("dragAndDropToObject", new DragAndDropToObject(elementFinder));
             seleneseMethods.Add("fireEvent", new FireEvent(elementFinder));
             seleneseMethods.Add("focus", new FireNamedEvent(elementFinder, "focus"));
+            seleneseMethods.Add("getAlert", new GetAlert(alertOverride));
             seleneseMethods.Add("getAllButtons", new GetAllButtons());
             seleneseMethods.Add("getAllFields", new GetAllFields());
             seleneseMethods.Add("getAllLinks", new GetAllLinks());
@@ -246,7 +258,7 @@ namespace Selenium
             seleneseMethods.Add("setBrowserLogLevel", new NoOp(null));
             seleneseMethods.Add("setContext", new NoOp(null));
             seleneseMethods.Add("setSpeed", new NoOp(null));
-            ////seleneseMethods.Add("setTimeout", new SetTimeout(timer));
+            seleneseMethods.Add("setTimeout", new SetTimeout(timer));
             seleneseMethods.Add("shiftKeyDown", new ShiftKeyDown(keyState));
             seleneseMethods.Add("shiftKeyUp", new ShiftKeyUp(keyState));
             seleneseMethods.Add("submit", new Submit(elementFinder));
