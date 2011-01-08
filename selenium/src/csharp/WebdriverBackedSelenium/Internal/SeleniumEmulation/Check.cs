@@ -11,21 +11,14 @@ namespace Selenium.Internal.SeleniumEmulation
     internal class Check : SeleneseCommand
     {
         private ElementFinder finder;
-        private SeleniumOptionSelector selector;
 
-        //public Check(ElementFinder elementFinder, SeleniumOptionSelector optionSelector)
         public Check(ElementFinder elementFinder)
         {
             finder = elementFinder;
-            //selector = optionSelector;
         }
 
         protected override object HandleSeleneseCommand(IWebDriver driver, string locator, string value)
         {
-            //if (locator.ToLowerInvariant().StartsWith("option "))
-            //{
-            //    selector.Select(driver, 
-            //}
             IWebElement element = finder.FindElement(driver, locator);
             element.Select();
             return null;

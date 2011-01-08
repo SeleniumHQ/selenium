@@ -12,7 +12,6 @@ namespace Selenium.Tests.Environment
     {
         private static readonly EnvironmentManager instance = new EnvironmentManager();
         private Type driverType;
-        private IWebDriver driver;
         SeleniumServer remoteServer;
         private int port = 6000;
 

@@ -75,4 +75,7 @@
     </Content>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>copy /y $(SolutionDir)selenium\src\java\org\openqa\selenium\internal\seleniumemulation\*.js $(TargetDir)</PostBuildEvent>
+  </PropertyGroup>
 </Project>
