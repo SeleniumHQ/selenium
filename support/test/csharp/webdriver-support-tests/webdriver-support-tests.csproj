@@ -55,6 +55,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="PageFactory\PageFactoryBrowserTest.cs" />
     <Compile Include="PageFactory\PageFactoryTest.cs" />
     <Compile Include="UI\SelectTests.cs" />
     <Compile Include="UI\WebDriverWaitTest.cs" />
