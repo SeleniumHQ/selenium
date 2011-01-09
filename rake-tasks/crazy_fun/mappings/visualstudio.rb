@@ -108,7 +108,7 @@ module CrazyFunDotNet
       buildable_references = []
       unless refs.nil?
         refs.each do |reference|
-          if reference.start_with? "//"
+          if reference.to_s.start_with? "//"
             buildable_references << reference
           end
         end
