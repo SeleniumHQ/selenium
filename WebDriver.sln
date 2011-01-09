@@ -64,7 +64,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebDriver.Remote.Common", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebDriver.Support", "support\src\csharp\webdriver-support\WebDriver.Support.csproj", "{A9779443-E254-47E9-B733-8AC6D3662CA6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "webdriver-support-tests", "support\test\csharp\webdriver-support-tests\webdriver-support-tests.csproj", "{1B70379B-5325-4243-8629-5C32802E9826}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "webdriver-support-test", "support\test\csharp\webdriver-support-tests\webdriver-support-test.csproj", "{1B70379B-5325-4243-8629-5C32802E9826}"
 	ProjectSection(ProjectDependencies) = postProject
 		{5E7C67A1-1BF2-4A46-8C29-8A6DCF6E4543} = {5E7C67A1-1BF2-4A46-8C29-8A6DCF6E4543}
 	EndProjectSection
