@@ -247,6 +247,15 @@ namespace OpenQA.Selenium
             return description;
         }
 
+        /// <summary>
+        /// Determines whether the specified <see cref="System.Object">Object</see> is equal 
+        /// to the current <see cref="System.Object">Object</see>.
+        /// </summary>
+        /// <param name="obj">The <see cref="System.Object">Object</see> to compare with the 
+        /// current <see cref="System.Object">Object</see>.</param>
+        /// <returns><see langword="true"/> if the specified <see cref="System.Object">Object</see>
+        /// is equal to the current <see cref="System.Object">Object</see>; otherwise,
+        /// <see langword="false"/>.</returns>
         public override bool Equals(object obj)
         {
             var other = obj as By;
@@ -254,6 +263,10 @@ namespace OpenQA.Selenium
             return other != null && (description.Equals(other.description));
         }
 
+        /// <summary>
+        /// Serves as a hash function for a particular type.
+        /// </summary>
+        /// <returns>A hash code for the current <see cref="System.Object">Object</see>.</returns>
         public override int GetHashCode()
         {
             return description.GetHashCode();
