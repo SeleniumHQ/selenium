@@ -39,6 +39,7 @@
   </Target>
   -->
   <ItemGroup>
+    <Compile Include="PageFactory\CacheLookupAttribute.cs" />
     <Compile Include="PageFactory\FindsByAttribute.cs" />
     <Compile Include="PageFactory\PageFactory.cs" />
     <Compile Include="UI\IClock.cs" />

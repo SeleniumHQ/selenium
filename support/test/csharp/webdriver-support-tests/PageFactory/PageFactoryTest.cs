@@ -6,7 +6,6 @@ namespace OpenQA.Selenium.Support.PageFactory
 {
     [TestFixture]
     //TODO: Extend DriverTestFixture
-    //TODO: Support caching
     public class PageFactoryTest
     {
         private Mockery mocks;
@@ -19,8 +18,14 @@ namespace OpenQA.Selenium.Support.PageFactory
             mocks = new Mockery();
         }
         
-        [TestFixtureTearDown]
+        [TearDown]
         public void TearDown()
+        {
+            mocks.VerifyAllExpectationsHaveBeenMet();
+        }
+        
+        [TestFixtureTearDown]
+        public void FixtureTearDown()
         {
             driver.Quit();
         }
@@ -46,8 +51,6 @@ namespace OpenQA.Selenium.Support.PageFactory
 
             var page = new Page();
             PageFactory.InitElements(mockDriver, page);
-
-            mocks.VerifyAllExpectationsHaveBeenMet();
         }
         
         [Test]
@@ -60,6 +63,29 @@ namespace OpenQA.Selenium.Support.PageFactory
 
             AssertElementFound(page.formElement);
         }
+        
+        [Test]
+        public void FindsElementEachAccess()
+        {
+            var mockElement = mocks.NewMock<IWebElement>();
+            Expect.Exactly(1).On(mockElement).GetProperty("TagName").Will(Return.Value("form"));
+        
+            var mockDriver = mocks.NewMock<IWebDriver>();
+            Expect.Exactly(1).On(mockDriver).Method("FindElement").With(By.Name("someForm")).Will(Return.Value(mockElement));
+
+            var page = new Page();
+
+            PageFactory.InitElements(mockDriver, page);
+
+            AssertElementFound(page.formElement);
+
+            mocks.VerifyAllExpectationsHaveBeenMet();
+
+            Expect.Exactly(1).On(mockElement).GetProperty("TagName").Will(Return.Value("form"));
+            Expect.Exactly(1).On(mockDriver).Method("FindElement").With(By.Name("someForm")).Will(Return.Value(mockElement));
+            
+            AssertElementFound(page.formElement);
+        }
 
         [Test]
         public void FindsPrivateElement()
@@ -70,6 +96,17 @@ namespace OpenQA.Selenium.Support.PageFactory
             PageFactory.InitElements(driver, page);
 
             AssertElementFound(page.GetField());
+        }
+
+        [Test]
+        public void FindsPropertyElement()
+        {
+            driver.Url = xhtmlPage;
+            var page = new ElementAsPropertyPage();
+
+            PageFactory.InitElements(driver, page);
+
+            AssertElementFound(page.formElement);
         }
 
         [Test]
@@ -127,7 +164,7 @@ namespace OpenQA.Selenium.Support.PageFactory
         public void FallsBackOnOtherLocatorsOnFailure()
         {
             var mockElement = mocks.NewMock<IWebElement>();
-            Expect.Once.On(mockElement).Method("get_TagName").WithNoArguments().Will(Return.Value("form"));
+            Expect.Once.On(mockElement).GetProperty("TagName").Will(Return.Value("form"));
         
             var mockDriver = mocks.NewMock<IWebDriver>();
             Expect.AtLeastOnce.On(mockDriver).Method("FindElement").With(By.Name("notthisname")).Will(Throw.Exception(new NoSuchElementException()));
@@ -154,8 +191,40 @@ namespace OpenQA.Selenium.Support.PageFactory
             PageFactory.InitElements(mockDriver, page);
 
             Assert.Throws(typeof(NoSuchElementException), page.formElement.Clear);
+        }
 
-            mocks.VerifyAllExpectationsHaveBeenMet();
+        [Test]
+        public void CachesElement()
+        {
+            var mockElement = mocks.NewMock<IWebElement>();
+            Expect.Exactly(2).On(mockElement).GetProperty("TagName").Will(Return.Value("form"));
+
+            var mockDriver = mocks.NewMock<IWebDriver>();
+            Expect.Once.On(mockDriver).Method("FindElement").With(By.Name("someForm")).Will(Return.Value(mockElement));
+
+            var page = new CachedPage();
+
+            PageFactory.InitElements(mockDriver, page);
+
+            AssertElementFound(page.formElement);
+            AssertElementFound(page.formElement);
+        }
+
+        [Test]
+        public void CachesIfClassMarkedCachedElement()
+        {
+            var mockElement = mocks.NewMock<IWebElement>();
+            Expect.Exactly(2).On(mockElement).GetProperty("TagName").Will(Return.Value("form"));
+
+            var mockDriver = mocks.NewMock<IWebDriver>();
+            Expect.Once.On(mockDriver).Method("FindElement").With(By.Name("someForm")).Will(Return.Value(mockElement));
+
+            var page = new CachedClassPage();
+
+            PageFactory.InitElements(mockDriver, page);
+
+            AssertElementFound(page.formElement);
+            AssertElementFound(page.formElement);
         }
 
         private static void AssertElementFound(IWebElement element)
@@ -204,6 +273,26 @@ namespace OpenQA.Selenium.Support.PageFactory
         private class FailsToFallbackPage
         {
             [FindsBy(Name = "notthisname", TagName = "notthiseither", Id = "stillnotthis")]
+            public IWebElement formElement;
+        }
+
+        private class ElementAsPropertyPage
+        {
+            [FindsBy(Name = "someForm")]
+            public IWebElement formElement { get; set; }
+        }
+
+        private class CachedPage
+        {
+            [FindsBy(Name = "someForm")]
+            [CacheLookup]
+            public IWebElement formElement;
+        }
+
+        [CacheLookup]
+        private class CachedClassPage
+        {
+            [FindsBy(Name = "someForm")]
             public IWebElement formElement;
         }
 

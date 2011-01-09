@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace OpenQA.Selenium.Support.PageFactory
 {
-    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
+    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = false)]
     public class FindsByAttribute : Attribute
     {
         //TODO(dawagner): This duplication is a bit ugly, maybe pass in Bys (or a list of Bys).  Would probably require By to be a struct

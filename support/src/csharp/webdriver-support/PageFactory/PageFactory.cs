@@ -9,23 +9,48 @@ namespace OpenQA.Selenium.Support.PageFactory
     {
         public static void InitElements(IWebDriver driver, object page)
         {
-            var fields = page.GetType().GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static | BindingFlags.FlattenHierarchy);
+            const BindingFlags bindingFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static | BindingFlags.FlattenHierarchy;
+            var type = page.GetType();
+            var fields = type.GetFields(bindingFlags);
+            var properties = type.GetProperties(bindingFlags);
+            var members = new List<MemberInfo>(fields);
+            members.AddRange(properties);
             
-            foreach (var field in fields)
+            foreach (var member in members)
             {
-                var attributes = field.GetCustomAttributes(typeof(FindsByAttribute), true);
+                var attributes = member.GetCustomAttributes(typeof(FindsByAttribute), true);
                 foreach (var attribute in attributes)
                 {
                     var castedAttribute = (FindsByAttribute)attribute;
                     var generator = new ProxyGenerator();
-                    var interceptor = new ProxiedWebElementInterceptor(driver, castedAttribute.Bys);
+
+                    var cacheAttributeType = typeof(CacheLookupAttribute);
+                    var cache = member.GetCustomAttributes(cacheAttributeType, true).Length != 0 || member.DeclaringType.GetCustomAttributes(cacheAttributeType, true).Length != 0;
+                    
+                    var interceptor = new ProxiedWebElementInterceptor(driver, castedAttribute.Bys, cache);
 
                     var options = new ProxyGenerationOptions
                         {
                             BaseTypeForInterfaceProxy = typeof(ProxiedWebElementComparator)
                         };
-                    var proxyElement = generator.CreateInterfaceProxyWithoutTarget(typeof(IWrapsElement), new[] {field.FieldType}, options, interceptor);
-                    field.SetValue(page, proxyElement);
+                    if (member is FieldInfo)
+                    {
+                        var field = member as FieldInfo;
+                        var proxyElement = generator.CreateInterfaceProxyWithoutTarget(typeof (IWrapsElement),
+                                                                                       new[] {field.FieldType},
+                                                                                       options,
+                                                                                       interceptor);
+                        field.SetValue(page, proxyElement);
+                    }
+                    else if (member is PropertyInfo)
+                    {
+                        var property = member as PropertyInfo;
+                        var proxyElement = generator.CreateInterfaceProxyWithoutTarget(typeof(IWrapsElement),
+                                                                                       new[] { property.PropertyType },
+                                                                                       options,
+                                                                                       interceptor);
+                        property.SetValue(page, proxyElement, null);
+                    }
                 }
             }
         }
@@ -34,11 +59,14 @@ namespace OpenQA.Selenium.Support.PageFactory
         {
             private readonly IWebDriver driver;
             private readonly List<By> bys;
+            private readonly bool cache;
+            private IWebElement cachedElement;
 
-            public ProxiedWebElementInterceptor(IWebDriver driver, List<By> bys)
+            public ProxiedWebElementInterceptor(IWebDriver driver, List<By> bys, bool cache)
             {
                 this.driver = driver;
                 this.bys = bys;
+                this.cache = cache;
             }
 
             public void Intercept(IInvocation invocation)
@@ -57,12 +85,17 @@ namespace OpenQA.Selenium.Support.PageFactory
             {
                 get
                 {
+                    if (cache && cachedElement != null)
+                    {
+                        return cachedElement;
+                    }
                     string errorString = null;
                     foreach (var by in bys)
                     {
                         try
                         {
-                            return driver.FindElement(by);
+                            cachedElement = driver.FindElement(by);
+                            return cachedElement;
                         }
                         catch (NoSuchElementException)
                         {
