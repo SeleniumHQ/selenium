@@ -246,5 +246,17 @@ namespace OpenQA.Selenium
         {
             return description;
         }
+
+        public override bool Equals(object obj)
+        {
+            var other = obj as By;
+            //TODO(dawagner): This isn't ideal
+            return other != null && (description.Equals(other.description));
+        }
+
+        public override int GetHashCode()
+        {
+            return description.GetHashCode();
+        }
     }
 }

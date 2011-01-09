@@ -850,7 +850,14 @@ namespace OpenQA.Selenium.Remote
 
         private static object ConvertObjectToJavaScriptObject(object arg)
         {
+            IWrapsElement argAsWrapsElement = arg as IWrapsElement;
             RemoteWebElement argAsElement = arg as RemoteWebElement;
+            
+            if (argAsElement == null && argAsWrapsElement != null)
+            {
+                argAsElement = argAsWrapsElement.WrappedElement as RemoteWebElement;
+            }
+            
             object converted = null;
 
             if (arg is string || arg is float || arg is double || arg is int || arg is long || arg is bool || arg == null)

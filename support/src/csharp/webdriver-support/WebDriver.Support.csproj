@@ -39,6 +39,8 @@
   </Target>
   -->
   <ItemGroup>
+    <Compile Include="PageFactory\FindsByAttribute.cs" />
+    <Compile Include="PageFactory\PageFactory.cs" />
     <Compile Include="UI\IClock.cs" />
     <Compile Include="UI\IWait.cs" />
     <Compile Include="UI\Select.cs" />
@@ -57,6 +59,10 @@
     </PostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Castle.Core, Version=2.5.1.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\third_party\csharp\Castle.Core.2.5.2\Castle.Core.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>

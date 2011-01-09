@@ -55,6 +55,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="PageFactory\PageFactoryTest.cs" />
     <Compile Include="UI\SelectTests.cs" />
     <Compile Include="UI\WebDriverWaitTest.cs" />
   </ItemGroup>
@@ -62,6 +63,18 @@
     <ProjectReference Include="..\..\..\..\common\src\csharp\webdriver-common\WebDriver.Common.csproj">
       <Project>{ABB9B87F-FEEA-410E-ACBF-26479B8C72B0}</Project>
       <Name>WebDriver.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\common\test\csharp\webdriver-common-test\webdriver-common-test.csproj">
+      <Project>{1580564D-B6B8-4BD8-A120-001E3E8E5BE6}</Project>
+      <Name>webdriver-common-test</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\firefox\src\csharp\webdriver-firefox\WebDriver.Firefox.csproj">
+      <Project>{5E7C67A1-1BF2-4A46-8C29-8A6DCF6E4543}</Project>
+      <Name>WebDriver.Firefox</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\remote\client\src\csharp\webdriver-remote-client\WebDriver.Remote.csproj">
+      <Project>{32122F8D-CD64-495A-B9B0-5516FF67C79F}</Project>
+      <Name>WebDriver.Remote</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\src\csharp\webdriver-support\WebDriver.Support.csproj">
       <Project>{A9779443-E254-47E9-B733-8AC6D3662CA6}</Project>
