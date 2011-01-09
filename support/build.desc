@@ -15,3 +15,41 @@ java_test(name = "test",
     "//common:test",
     "//firefox"
   ])
+
+dotnet_library(name = "dotnet",
+  srcs = "src/csharp/**/*.cs",
+  refs = [
+    "System.dll",
+    "System.Core.dll",
+    "System.Data.dll",
+    "System.Drawing.dll",
+    "System.Xml.dll",
+    "//common:dotnet",
+    "third_party/csharp/Castle.Core.2.5.2/Castle.Core.dll"
+  ],
+  out = "build/dotnet/Webdriver.Support.dll",
+  doc = "build/dotnet/Webdriver.Support.xml"
+)
+  
+dotnet_test(name = "dotnet-test",
+  srcs = "test/csharp/**/*.cs",
+  refs = [
+    "System.dll",
+    "System.Core.dll",
+    "System.Data.dll",
+    "System.Drawing.dll",
+    "System.Xml.dll",
+    ":dotnet",
+    "//common:dotnet",
+    "//firefox:dotnet",
+    "//common:dotnet-test",
+    "third_party/csharp/nunit-2.5.9/framework/nunit.framework.dll",
+    "third_party/nmock/NMock2.dll"
+  ],
+  out = "build/dotnet/webdriver-support-test.dll",
+  files = [
+    "test/csharp/webdriver-support-test/webdriver-support-test.config",
+    "test/csharp/webdriver-support-test/webdriver-support-test.nunit"
+  ],
+  project = "webdriver-support-test.nunit"
+)
