@@ -20,15 +20,14 @@ using System.Collections.Generic;
 namespace OpenQA.Selenium.Support.UI
 {
     /// <summary>
-    /// 
+    /// Provides a convenience method for manipulating selections of options in an HTML select element.
     /// </summary>
     public class Select
     {
-
         private readonly IWebElement element;
 
         /// <summary>
-        /// 
+        /// Returns <see langword="true"/> if the parent element supports multiple selections; otherwise, <see langword="false"/>.
         /// </summary>
         public bool Multiple { get; private set; }
 

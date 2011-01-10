@@ -20,6 +20,10 @@ using System.Runtime.Serialization;
 
 namespace OpenQA.Selenium.Support.UI
 {
+    /// <summary>
+    /// The exception thrown when using the Select class on a tag that 
+    /// does not support the HTML select element's selection semantics.
+    /// </summary>
     [Serializable]
     public class UnexpectedTagNameException : Exception
     {

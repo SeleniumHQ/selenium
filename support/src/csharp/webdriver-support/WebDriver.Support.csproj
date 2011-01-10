@@ -9,7 +9,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>OpenQA.Selenium.Support</RootNamespace>
-    <AssemblyName>OpenQA.Selenium.Support</AssemblyName>
+    <AssemblyName>WebDriver.Support</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -17,7 +17,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\..\..\..\build\cli\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -25,10 +25,11 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>..\..\..\..\build\cli\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>..\..\..\..\build\cli\Release\WebDriver.Support.xml</DocumentationFile>
   </PropertyGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -39,6 +40,12 @@
   </Target>
   -->
   <ItemGroup>
+    <Compile Include="Events\EventFiringWebDriver.cs" />
+    <Compile Include="Events\FindElementEventArgs.cs" />
+    <Compile Include="Events\WebDriverExceptionEventArgs.cs" />
+    <Compile Include="Events\WebDriverNavigationEventArgs.cs" />
+    <Compile Include="Events\WebDriverScriptEventArgs.cs" />
+    <Compile Include="Events\WebElementEventArgs.cs" />
     <Compile Include="PageFactory\CacheLookupAttribute.cs" />
     <Compile Include="PageFactory\FindsByAttribute.cs" />
     <Compile Include="PageFactory\PageFactory.cs" />
@@ -69,6 +76,7 @@
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
   </ItemGroup>
 </Project>
