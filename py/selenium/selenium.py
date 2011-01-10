@@ -245,12 +245,15 @@ class selenium:
         return tokens
 
     def get_number(self, verb, args):
-        # FIXME: Talk to the group about this, it should return a number
-        return self.get_string(verb, args)
+        return int(self.get_string(verb, args))
 
     def get_number_array(self, verb, args):
-        # FIXME: Talk to the group about this, it should return a number
-        return self.get_string_array(verb, args)
+        string_array = self.get_string_array(verb, args)
+        num_array = []
+        for i in string_array:
+            num_array.append(int(i))
+
+        return num_array 
 
     def get_boolean(self, verb, args):
         boolstr = self.get_string(verb, args)
