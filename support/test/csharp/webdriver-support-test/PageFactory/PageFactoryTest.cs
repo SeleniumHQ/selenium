@@ -8,14 +8,14 @@ namespace OpenQA.Selenium.Support.PageFactory
     public class PageFactoryTest
     {
         private Mockery mocks;
-        private IWebDriver mockDriver;
+        private ISearchContext mockDriver;
         private IWebElement mockElement;
 
         [SetUp]
         public void SetUp()
         {
             mocks = new Mockery();
-            mockDriver = mocks.NewMock<IWebDriver>();
+            mockDriver = mocks.NewMock<ISearchContext>();
             mockElement = mocks.NewMock<IWebElement>();
         }
         

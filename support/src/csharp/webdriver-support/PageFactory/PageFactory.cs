@@ -7,7 +7,7 @@ namespace OpenQA.Selenium.Support.PageFactory
 {
     public sealed class PageFactory
     {
-        public static void InitElements(IWebDriver driver, object page)
+        public static void InitElements(ISearchContext driver, object page)
         {
             const BindingFlags bindingFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static | BindingFlags.FlattenHierarchy;
             var type = page.GetType();
@@ -57,14 +57,14 @@ namespace OpenQA.Selenium.Support.PageFactory
 
         private sealed class ProxiedWebElementInterceptor : IInterceptor, IWrapsElement
         {
-            private readonly IWebDriver driver;
+            private readonly ISearchContext searchContext;
             private readonly List<By> bys;
             private readonly bool cache;
             private IWebElement cachedElement;
 
-            public ProxiedWebElementInterceptor(IWebDriver driver, List<By> bys, bool cache)
+            public ProxiedWebElementInterceptor(ISearchContext searchContext, List<By> bys, bool cache)
             {
-                this.driver = driver;
+                this.searchContext = searchContext;
                 this.bys = bys;
                 this.cache = cache;
             }
@@ -94,7 +94,7 @@ namespace OpenQA.Selenium.Support.PageFactory
                     {
                         try
                         {
-                            cachedElement = driver.FindElement(by);
+                            cachedElement = searchContext.FindElement(by);
                             return cachedElement;
                         }
                         catch (NoSuchElementException)
