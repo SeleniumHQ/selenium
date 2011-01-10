@@ -66,6 +66,14 @@ module CrazyFunJava
       ant.project.setProperty 'build.compiler', 'org.eclipse.jdt.core.JDTCompilerAdapter'
 
       ant.project.getBuildListeners().get(0).setMessageOutputLevel(verbose ? 2 : 0)
+      ant.project.addBuildListener logger
+
+      at_exit do
+        if File.exists? 'build'
+          final_event = Java.org.apache.tools.ant.BuildEvent.new(ant.project)
+          logger.buildFinished(final_event)
+        end
+      end
 
       ant
     )
@@ -85,15 +93,6 @@ module CrazyFunJava
       logger = Java.org.apache.tools.ant.XmlLogger.new
       logger.setMessageOutputLevel(2)
       logger.buildStarted(nil)
-
-      ant.project.addBuildListener(logger)
-
-      at_exit do
-        if File.exists? 'build'
-          final_event = Java.org.apache.tools.ant.BuildEvent.new(ant.project)
-          logger.buildFinished(final_event)
-        end
-      end
 
       logger
     )
