@@ -128,7 +128,7 @@ dotnet_library(name = "dotnet",
     "System.Xml.dll",
     "System.Web.dll",
     "//common:dotnet",
-    "//selenium:dotnet-core"
+    ":dotnet-core"
   ],
   out = "build/dotnet/WebDriverBackedSelenium.dll"
 )

@@ -33,6 +33,9 @@ dotnet_library(name = "dotnet",
   
 dotnet_test(name = "dotnet-test",
   srcs = "test/csharp/**/*.cs",
+  deps = [
+    "//firefox:dotnet"
+  ],
   refs = [
     "System.dll",
     "System.Core.dll",
@@ -41,7 +44,6 @@ dotnet_test(name = "dotnet-test",
     "System.Xml.dll",
     ":dotnet",
     "//common:dotnet",
-    "//firefox:dotnet",
     "//common:dotnet-test",
     "third_party/csharp/nunit-2.5.9/framework/nunit.framework.dll",
     "third_party/nmock/NMock2.dll"

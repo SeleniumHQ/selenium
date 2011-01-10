@@ -119,7 +119,7 @@ dotnet_test(name = "dotnet-test",
     "//common:dotnet",
     "//remote/common:dotnet",
     "//remote/client:dotnet",
-    "//jobbie:dotnet",
+    ":dotnet",
     "//common:dotnet-test",
     "third_party/csharp/nunit-2.5.9/framework/nunit.framework.dll"
   ],

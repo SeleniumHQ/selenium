@@ -127,7 +127,7 @@ dotnet_test(name = "dotnet-test",
     "System.Xml.dll",
     "//common:dotnet",
     "//remote/client:dotnet",
-    "//firefox:dotnet",
+    ":dotnet",
     "//common:dotnet-test",
     "third_party/csharp/nunit-2.5.9/framework/nunit.framework.dll"
   ],

@@ -31,7 +31,6 @@ module CrazyFunDotNet
 
       embedded_resources = []
       buildable_references = resolve_buildable_references(args[:refs])
-
       target = csc task_name do |csc_task|
         puts "Compiling: #{task_name} as #{full_path}"
         FileUtils.mkdir_p output_dir
@@ -108,7 +107,7 @@ module CrazyFunDotNet
       buildable_references = []
       unless refs.nil?
         refs.each do |reference|
-          if reference.to_s.start_with? "//"
+          if reference.to_s.start_with? "//" or reference.is_a? Symbol
             buildable_references << reference
           end
         end
