@@ -1,7 +1,26 @@
 ﻿using NUnit.Framework;
+using OpenQA.Selenium.Environment;
 
 namespace OpenQA.Selenium.Support.PageFactory
 {
+	//TODO: Move this to a standalone class when more tests rely on the server being up
+	[SetUpFixture]
+	public class SetUpClass
+	{
+		[SetUp]
+		public void RunBeforeAnyTest()
+		{
+			EnvironmentManager.Instance.WebServer.Start();
+		}
+
+		[TearDown]
+		public void RunAfterAnyTests()
+		{
+			EnvironmentManager.Instance.CloseCurrentDriver();
+			EnvironmentManager.Instance.WebServer.Stop();
+		}
+	}
+
     [TestFixture]
     public class PageFactoryBrowserTest : DriverTestFixture
     {
