@@ -98,6 +98,7 @@
     <Compile Include="RenderedWebElementTest.cs" />
     <Compile Include="SelectElementHandlingTest.cs" />
     <Compile Include="StaleElementReferenceTest.cs" />
+    <Compile Include="StubDriver.cs" />
     <Compile Include="TagNameTest.cs" />
     <Compile Include="TakesScreenshotTest.cs" />
     <Compile Include="TargetLocatorTest.cs" />
