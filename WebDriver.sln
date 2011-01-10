@@ -58,7 +58,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebDriver.Chrome", "chrome\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "webdriver-chrome-test", "chrome\test\csharp\webdriver-chrome-test\webdriver-chrome-test.csproj", "{81D664AA-FC03-425E-98A8-B4EAF8236776}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebDriverBackedSelenium", "selenium\src\csharp\WebDriverBackedSelenium\WebDriverBackedSelenium.csproj", "{0EAF6AA9-B712-464B-A11B-FA3CF7577D80}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebdriverBackedSelenium", "selenium\src\csharp\WebdriverBackedSelenium\WebdriverBackedSelenium.csproj", "{0EAF6AA9-B712-464B-A11B-FA3CF7577D80}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebDriver.Remote.Common", "remote\common\src\csharp\webdriver-remote-common\WebDriver.Remote.Common.csproj", "{C2A1DAE4-BB20-4367-8ADC-D32EEA392D17}"
 EndProject
@@ -67,12 +67,16 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebDriver.Android", "android\client\src\csharp\WebDriver.Android.csproj", "{EA8B657E-0801-4BE4-837F-DBBB2B4D765E}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "IEDriver", "jobbie\src\cpp\IEDriver\IEDriver.vcproj", "{BB72383B-427F-4191-B692-E4345A30E33C}"
+	ProjectSection(ProjectDependencies) = postProject
+		{9AEBD612-232D-40CB-BE2C-F2B911FD6228} = {9AEBD612-232D-40CB-BE2C-F2B911FD6228}
+		{320F3BBE-8223-4E7F-ABEE-18D3BD57B1FD} = {320F3BBE-8223-4E7F-ABEE-18D3BD57B1FD}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "json-cpp", "third_party\json-cpp\json-cpp.vcproj", "{320F3BBE-8223-4E7F-ABEE-18D3BD57B1FD}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mongoose", "third_party\mongoose\mongoose.vcproj", "{9AEBD612-232D-40CB-BE2C-F2B911FD6228}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebDriverBackedSeleniumTests", "selenium\test\csharp\WebdriverBackedSeleniumTests\WebDriverBackedSeleniumTests.csproj", "{68CF4628-4148-4627-ACA1-D4C225365D3F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebdriverBackedSeleniumTests", "selenium\test\csharp\WebdriverBackedSeleniumTests\WebdriverBackedSeleniumTests.csproj", "{68CF4628-4148-4627-ACA1-D4C225365D3F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "webdriver-support-test", "support\test\csharp\webdriver-support-test\webdriver-support-test.csproj", "{1B70379B-5325-4243-8629-5C32802E9826}"
 EndProject
