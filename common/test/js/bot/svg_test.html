@@ -48,7 +48,13 @@
   </div>
   <div id="result">Nothing.</div>
   <div id="chart_container" style="width: 400px; height: 220px; border: 1px solid #808080;">
-    <iframe name="chart" src="chart.svg" width="400" height="220" type="image/svg+xml"></iframe>
+    <script>
+      if (!goog.userAgent.IE) {
+        document.write('<iframe name="chart" src="chart.svg" ' +
+                       'width="400" height="220" ' +
+                       'type="image/svg+xml"></iframe>');
+      }
+    </script>
   </div>
   <div style="display: none; position: absolute; top: 230px; left: 410px; white-space: nowrap; font-family: Arial; font-size: 12px;">WOrange</div>
 </body>
