@@ -373,6 +373,13 @@ bool BrowserWrapper::GetEvalMethod(IHTMLDocument2* doc, DISPID* eval_id, bool* a
 
 		CComPtr<IHTMLElement> body;
 		hr = doc->get_body(&body);
+		if (FAILED(hr) || body == NULL) {
+			// We have no body element, so there's nothing more we can do here.
+			// TODO: This may be a transient state of affairs. A wait-and-retry
+			// approach may be successful, but a timeout would be required.
+			return false;
+		}
+
 		CComQIPtr<IHTMLDOMNode> node(body);
 		CComQIPtr<IHTMLDOMNode> script_node(script_tag);
 
