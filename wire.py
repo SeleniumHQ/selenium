@@ -610,34 +610,6 @@ JSON objects.''').
                  'WebElement#click()'))
 
   resources.append(
-      ElementResource('/session/:sessionId/element/:id/buttondown').
-      Post('Click and hold the mouse button on an element.').
-      RequiresVisibility().
-      SetJavadoc('java/org/openqa/selenium/interactions/ClickAndHoldAction.html#perform()',
-                 'ClickAndHoldAction#perform()'))
-
-  resources.append(
-      ElementResource('/session/:sessionId/element/:id/buttonup').
-      Post('Releases the mouse button previously held, on an element.').
-      RequiresVisibility().
-      SetJavadoc('java/org/openqa/selenium/interactions/ButtonReleaseAction.html#perform()',
-                 'ButtonReleaseAction#perform()'))
-
-  resources.append(
-      ElementResource('/session/:sessionId/element/:id/doubleclick').
-      Post('Double-clicks on an element.').
-      RequiresVisibility().
-      SetJavadoc('java/org/openqa/selenium/interactions/DoubleClickAction.html#perform()',
-                 'DoubleClickAction#perform()'))
-
-  resources.append(
-      ElementResource('/session/:sessionId/element/:id/contextclick').
-      Post('Clicking on an element in a way that would bring up contextual menu.').
-      RequiresVisibility().
-      SetJavadoc('java/org/openqa/selenium/interactions/ContextClickAction.html#perform()',
-                 'ContextClickAction#perform()'))
-
-  resources.append(
       ElementResource('/session/:sessionId/element/:id/submit').
       Post('Submit a `FORM` element. The submit command may also be applied to any element that is '
            'a descendant of a `FORM` element.').
@@ -898,14 +870,6 @@ location for correctly generating native events.''').
                  'RenderedWebElement#hover()'))
 
   resources.append(
-      ElementResource('/session/:sessionId/element/:id/movehere').
-      Post('Move the mouse to the specified element.').
-      RequiresVisibility().
-      RequiresEnabledState().
-      SetJavadoc('java/org/openqa/selenium/interactions/MoveMouseAction.html#perform()',
-                 'MoveMouseAction#perform()'))
-
-  resources.append(
       ElementResource('/session/:sessionId/element/:id/drag').
       Post('Drag and drop an element. The distance to drag an element should be specified relative '
            'to the upper-left corner of the page.').
@@ -948,6 +912,57 @@ location for correctly generating native events.''').
       SetJavadoc('java/org/openqa/selenium/Rotatable.html#rotate('
                  'org.openqa.selenium.ScreenOrientation)',
                  'Rotatable#rotate(ScreenOrientation)'))
+
+  resources.append(
+      SessionResource('/session/:sessionId/moveto').
+      Post('Move the mouse by an offset of the specificed element. If no element '
+           'is specified, the move is relative to the current mouse cursor. If an '
+           'element is provided but no offset, the mouse will be moved to the center'
+           ' of the element. If the element is not visible, it will be scrolled into view.').
+      AddJsonParameter('element', '{string}', 'ID of the element to move to. If not specified'
+                       ' or is null, the offset is relative to current position of the mouse.').
+      AddJsonParameter('xoffset', '{number}', 'X offset to move to, relative to the top-left '
+                       'corner of the element. If not specified, the mouse'
+                       ' will move to the middle of the element.').
+      AddJsonParameter('yoffset', '{number}', 'Y offset to move to, relative to the top-left '
+                       'corner of the element. If not specified, the mouse'
+                       ' will move to the middle of the element.').
+      SetJavadoc('java/org/openqa/selenium/interactions/MoveMouseAction.html#perform()',
+                 'MoveMouseAction#perform()'))
+
+  resources.append(
+      SessionResource('/session/:sessionId/click').
+      Post('Click any mouse button (at the coordinates set by the last moveto command). Note '
+           'that calling this command after calling buttondown and before calling button up '
+           '(or any out-of-order interactions sequence) will yield undefined behaviour).').
+      AddJsonParameter('button', '{number}', 'Which button, enum: `{LEFT = 0, MIDDLE = 1 '
+                       ', RIGHT = 2}`. Defaults to the left mouse button if not specified.').
+      SetJavadoc('java/org/openqa/selenium/interactions/ClickAction.html#perform()',
+                 'ClickAction#perform()'))
+
+  resources.append(
+      SessionResource('/session/:sessionId/buttondown').
+      Post('Click and hold the left mouse button (at the coordinates set by the last moveto '
+           'command). Note that the next mouse-related command that should follow is buttondown'
+           ' . Any other mouse command (such as click or another call to buttondown) will yield'
+           ' undefined behaviour.').
+      SetJavadoc('java/org/openqa/selenium/interactions/ClickAndHoldAction.html#perform()',
+                 'ClickAndHoldAction#perform()'))
+
+  resources.append(
+      SessionResource('/session/:sessionId/buttonup').
+      Post('Releases the mouse button previously held (where the mouse is currently at). '
+           'Must be called once for every buttondown command issued. See the note in click and '
+           'buttondown about implications of out-of-order commands.').
+      SetJavadoc('java/org/openqa/selenium/interactions/ButtonReleaseAction.html#perform()',
+                 'ButtonReleaseAction#perform()'))
+
+  resources.append(
+      SessionResource('/session/:sessionId/doubleclick').
+      Post('Double-clicks at the current mouse coordinates (set by moveto).').
+      SetJavadoc('java/org/openqa/selenium/interactions/DoubleClickAction.html#perform()',
+                 'DoubleClickAction#perform()'))
+
 
   # HTML 5 commands -------------------------------------------------------
   #resources.append(
