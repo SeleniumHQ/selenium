@@ -45,7 +45,7 @@ public class MainActivity extends Activity implements IntentReceiverListener {
   // If sending the intent programatically use"
   // intent.putExtra(DEBUG_MODE_ARG, true);
   public static final String DEBUG_MODE_ARG = "debug";
-  private boolean debugMode = false;
+  private boolean debugMode;
 
   public MainActivity() {
     intentReg = new IntentReceiverRegistrar(this);
@@ -58,8 +58,8 @@ public class MainActivity extends Activity implements IntentReceiverListener {
     if (getIntent().hasExtra(DEBUG_MODE_ARG)) {
       String debugArg = getIntent().getStringExtra(DEBUG_MODE_ARG);
       debugMode = Boolean.parseBoolean(debugArg);
+      Logger.setDebugMode(debugMode);
     }
-    Logger.setDebugMode(debugMode);
     
     jettyService = new Intent(this, JettyService.class);
     startService(jettyService);
