@@ -17,11 +17,11 @@ limitations under the License.
 
 package org.openqa.selenium.android.intents;
 
+import com.google.common.collect.Sets;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.IntentFilter;
-
-import com.google.common.collect.Sets;
 
 import java.util.Set;
 

@@ -24,7 +24,7 @@ import android.util.Log;
  */
 public class Logger {
   // Set to false for release apk, true when debugging.
-  public static final boolean DEBUG = false;
+  private static boolean debug = false;
 
   // Should be left to true in release apk.
   public static final boolean ERROR = true;
@@ -35,8 +35,12 @@ public class Logger {
       Log.e(tag, message);
     } else if (INFO && Log.INFO == level) {
       Log.i(tag, message);
-    } else if (DEBUG) {
+    } else if (debug) {
      Log.println(level, tag, message);
     }
+  }
+  
+  public static void setDebugMode(boolean enabled) {
+    debug = enabled;
   }
 }
