@@ -36,5 +36,5 @@
 	<classpathentry kind="lib" path="third_party/java/jetty/jetty-io-7.2.0.v20101020.jar"/>
 	<classpathentry kind="lib" path="third_party/java/jetty/jetty-security-7.2.0.v20101020.jar"/>
 	<classpathentry kind="lib" path="third_party/java/jetty/jetty-server-7.2.0.v20101020.jar"/>
-	<classpathentry kind="output" path="out/production/selenium"/>
+	<classpathentry kind="output" path="build/eclipse/selenium"/>
 </classpath>
