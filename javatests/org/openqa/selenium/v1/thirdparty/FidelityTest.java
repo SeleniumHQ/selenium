@@ -1,0 +1,32 @@
+package org.openqa.selenium.v1.thirdparty;
+
+import com.thoughtworks.selenium.InternalSelenseTestNgBase;
+import com.thoughtworks.selenium.Wait;
+import org.testng.annotations.Test;
+
+public class FidelityTest extends InternalSelenseTestNgBase {
+    
+    long timeout = 60000;
+    
+    @Test(dataProvider = "system-properties")
+    public void stockSearch() {
+        selenium.open("https://www.fidelity.com/");
+        selenium.click("link=Research");
+        selenium.click("link=Quotes");
+        selenium.waitForPageToLoad(Long.toString(timeout));
+        selenium.selectFrame("body");
+        selenium.selectFrame("content");
+        selenium.type("SID_VALUE_ID", "AAPL");
+        selenium.click("submit");
+        selenium.waitForPageToLoad(Long.toString(timeout));
+        selenium.select("research_option0", "label=Charts");
+        new Wait() {
+            @Override
+            public boolean until() {
+                return selenium.isElementPresent("//img[contains(@src,'https://scs.fidelity.com/research/images/go.gif')]");
+            }
+        }.wait("couldn't find go button", 60000);
+        selenium.click("//img[contains(@src,'https://scs.fidelity.com/research/images/go.gif')]");
+        selenium.waitForPageToLoad(Long.toString(timeout));
+    }
+}

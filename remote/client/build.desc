@@ -1,35 +1,3 @@
-java_library(name = "client",
-  srcs = [ "src/java/**/*.java" ],
-  deps = [
-           "//common",
-           "//remote/common",
-           "//third_party/java/apache-httpclient",
-           "//third_party/java/cglib",
-           "//third_party/java/commons-collections",
-           "//third_party/java/commons-lang",
-           "//third_party/java/commons-logging",
-           "//third_party/java/commons-io"
-         ])
-
-java_test(name = "test",
-  srcs = [ "test/java/**/*.java" ],
-  deps = [
-    ":client",
-    "//common:test"
-  ])
-
-java_library(name = "combined",
-  deps = [
-    ":client",
-    "//android/client",
-    "//chrome",
-    "//firefox",
-    "//htmlunit",
-    "//iphone",
-    "//jobbie",
-    "//selenium",
-    "//support"
-  ])
 
 dotnet_library(name = "dotnet",
   srcs = "src/csharp/**/*.cs",

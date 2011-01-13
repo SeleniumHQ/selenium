@@ -12,7 +12,7 @@ class SeleniumClientTestEnvironment
     Thread.abort_on_exception = true
     $stdout.sync              = true
 
-    @jar = File.expand_path("../../../../../../build/selenium/server-with-tests-standalone.jar", __FILE__)
+    @jar = File.expand_path("../../../../../../build/java/org/openqa/selenium/server-with-tests-standalone.jar", __FILE__)
     raise Errno::ENOENT, jar unless File.exist?(@jar)
   end
 

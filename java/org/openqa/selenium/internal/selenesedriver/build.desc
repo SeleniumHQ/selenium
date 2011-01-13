@@ -1,0 +1,8 @@
+
+java_library(name = "selenesedriver",
+  srcs = [
+    "*.java",
+  ],
+  deps = [
+    "//java/com/thoughtworks/selenium",
+  ])

@@ -10,7 +10,7 @@ namespace OpenQA.Selenium.Environment
     public class RemoteSeleniumServer
     {
         private Process webserverProcess;
-        private string serverJarName = @"build\remote\server\server-standalone.jar";
+        private string serverJarName = @"build\java\org\openqa\server\server-standalone.jar";
         private string projectRootPath;
         private bool autoStart;
 

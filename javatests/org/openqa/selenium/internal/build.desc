@@ -1,0 +1,8 @@
+
+java_library(name = "utils",
+  srcs = [
+    "InProject.java",
+  ],
+  deps = [
+    "//java/org/openqa/selenium:webdriver-api",
+  ])

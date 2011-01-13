@@ -1,0 +1,9 @@
+
+java_library(name = "seleniumemulation",
+  srcs = [ "*.java" ],
+  deps = [
+    "//java/com/thoughtworks/selenium",
+    "//java/org/openqa/selenium:webdriver-api",
+    "//third_party/java/guava-libraries",
+  ])
+

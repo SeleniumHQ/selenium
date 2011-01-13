@@ -1,25 +1,3 @@
-# TODO(simon): This should really be "ie"
-java_library(name = "jobbie",
-  srcs  = [ "src/java/**/*.java" ],
-  resources = [
-    {":ieserver_win32_dll" : "x86/IEDriver.dll"},
-    {":ieserver_x64_dll" : "amd64/IEDriver.dll"}
-  ],
-  deps = [
-    ":atoms",
-    ":ie_result_type_cpp",
-    ":ie_result_type_java",
-    ":sizzle",
-    "//remote/client",
-    "//third_party/java/jna",
-  ])
-
-java_test(name = "test",
-  srcs  = [ "test/java/**/*.java" ],
-  deps = [
-    ":jobbie",
-    "//common:test"
-])
 
 js_fragment_header(name = "atoms",
   deps = [

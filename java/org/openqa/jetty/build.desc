@@ -1,0 +1,14 @@
+
+java_library(name = "jetty",
+  srcs = [
+    "**/*.java"
+  ],
+  resources = [
+    { "http/mime.properties" : "org/openqa/jetty/http/mime.properties" },
+    { "http/encoding.properties" : "org/openqa/jetty/http/encoding.properties" },
+  ],
+  deps = [
+    "//third_party/java/commons-logging",
+    "//third_party/java/mx4j",
+    "//third_party/java/servlet-api"
+  ])

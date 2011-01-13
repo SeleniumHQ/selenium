@@ -1,0 +1,8 @@
+
+java_library(name = "htmlunit",
+  srcs = [ "*.java" ],
+  deps = [
+    "//java/org/openqa/selenium:webdriver-api",
+    "//java/org/openqa/selenium/browserlaunchers",
+    "//third_party/java/htmlunit",
+  ])

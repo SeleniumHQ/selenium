@@ -1,0 +1,9 @@
+
+
+java_library(name = "networkutils",
+  srcs = [
+    "*.java",
+  ],
+  deps = [
+    "//java/org/openqa/selenium:webdriver-api",
+  ])

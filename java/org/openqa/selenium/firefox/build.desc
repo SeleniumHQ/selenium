@@ -1,0 +1,16 @@
+java_library(name = "firefox",
+  srcs = [
+    "*.java",
+    "internal/*.java",
+  ],
+  resources = [
+    "//firefox:webdriver",
+    { "//firefox:noblur" : "x86/x_ignore_nofocus.so" },
+    { "//firefox:noblur64" : "amd64/x_ignore_nofocus.so" }
+  ],
+  deps = [
+    "//java/org/openqa/selenium/networkutils",
+    "//java/org/openqa/selenium/remote:client",
+    "//third_party/java/commons-io",
+    "//third_party/java/guava-libraries",
+  ])

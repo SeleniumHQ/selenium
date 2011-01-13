@@ -1,0 +1,70 @@
+java_library(name = "selenium",
+  deps = [
+    ":base",
+    "//java/org/openqa/selenium/htmlunit",
+    "//java/org/openqa/selenium/firefox",
+    "//java/org/openqa/selenium/iphone",
+    "//java/org/openqa/selenium/remote:client",
+  ])
+
+java_library(name = "base",
+  srcs = [
+    "AbstractDriverTestCase.java",
+    "Build.java",
+    "DevMode.java",
+    "DriverTestDecorator.java",
+    "EmptyTest.java",
+    "EnvironmentStarter.java",
+    "Ignore.java",
+    "JavascriptEnabled.java",
+    "JsApiTestCase.java",
+    "Messages.java",
+    "NeedsDriver.java",
+    "NeedsFreshDriver.java",
+    "NoDriverAfterTest.java",
+    "Pages.java",
+    "ParallelTestRunner.java",
+    "StubDriver.java",
+    "StubElement.java",
+    "StubTargetLocator.java",
+    "TestNameDecorator.java",
+    "TestSuiteBuilder.java",
+    "TestWaiter.java",
+    "WaitingConditions.java",
+  ],
+  resources = [
+    { "messages.properties" : "org/openqa/selenium/messages.properties" },
+  ],
+  deps = [
+    "//java/org/openqa/selenium",
+    "//javatests/org/openqa/selenium/environment",
+    "//third_party/java/junit",
+    "//third_party/java/hamcrest",
+  ])
+
+java_library(name = "tests",
+  srcs = [
+    "*Test.java",
+    "browserlaunchers/*Test.java",
+    "html5/*Test.java",
+    "interactions/*.java",
+    "internal/**/*.java",
+    "networkutils/*.java",
+  ],
+  deps = [
+    ":base",
+    "//javatests/org/openqa/selenium/environment",
+    "//third_party/java/commons-io",
+    "//third_party/java/jmock",
+    "//third_party/java/junit",
+  ])
+
+java_library(name = "server-with-tests",
+  main = "org.openqa.selenium.server.SeleniumServer",
+  resources = [
+    { "../../../../../selenium/src/web/tests" : "./" },
+  ],
+  deps = [
+    "//java/org/openqa/selenium/server",
+  ])
+

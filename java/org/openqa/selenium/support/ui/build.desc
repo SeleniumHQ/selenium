@@ -1,0 +1,55 @@
+
+java_library(name = "ui",
+  deps = [
+    ":clock",
+    ":components",
+    ":elements",
+    ":wait"
+  ])
+
+java_library(name = "base",
+  srcs = [
+    "TimeoutException.java",
+  ], deps = [
+    "//java/org/openqa/selenium:webdriver-api",    
+  ])
+
+java_library(name = "clock",
+  srcs = [
+    "Clock.java",
+    "SystemClock.java",
+  ])
+
+java_library(name = "components",
+  srcs = [
+    "LoadableComponent.java",
+    "SlowLoadableComponent.java",
+  ],
+  deps = [
+    ":base",
+    ":clock",
+    "//java/org/openqa/selenium:webdriver-api",
+    "//third_party/java/junit",
+  ])
+
+java_library(name = "elements",
+  srcs = [
+    "Select.java",
+    "UnexpectedTagNameException.java",
+  ],
+  deps = [
+    "//java/org/openqa/selenium:webdriver-api",
+  ])
+
+java_library(name = "wait",
+  srcs = [
+    "ExpectedCondition.java",
+    "Wait.java",
+    "WebDriverWait.java",
+  ],
+  deps = [
+    ":base",
+    ":clock",
+    "//java/org/openqa/selenium:webdriver-api",
+    "//third_party/java/guava-libraries",
+  ])

@@ -1,0 +1,6 @@
+
+java_library(name = "testing",
+  srcs = [ "*.java" ],
+  deps = [
+    "//third_party/java/junit",
+  ])

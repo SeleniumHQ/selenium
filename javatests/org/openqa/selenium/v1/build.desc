@@ -1,0 +1,44 @@
+
+java_library(name = "test-webdriver",
+  srcs = [
+    "internal/**/*.java",
+    "support/*.java",
+  ])
+
+java_library(name = "test-selenium",
+  srcs = [
+    "CacheBlockTest.java",
+    "RealDealIntegrationTest.java",
+    "SessionExtensionJsTest.java",
+    "TestFifteenSecondSleep.java",
+    "TestLargeHtml.java",
+    "TestNativeKeys.java",
+    "thirdparty/*.java",
+  ],
+  deps = [
+    "//java/com/thoughtworks/selenium",
+    "//javatests/com/thoughtworks/selenium:test",
+  ])
+
+java_library(name = "environment",
+  srcs = [
+    "SeleniumTestEnvironment.java",
+  ], deps = [
+    "//javatests/org/openqa/selenium:base",
+    "//javatests/org/openqa/selenium/environment",
+    "//third_party/java/guava-libraries",
+  ])
+
+java_test(name = "selenium-backed-webdriver-test",
+  srcs = [
+    "SeleniumServerStarter.java",
+    "SeleneseBackedWebDriver.java",
+    "SeleneseWebDriverTestSuite.java",
+  ],
+  deps = [
+    "//java/com/thoughtworks/selenium",
+    "//java/org/openqa/selenium:selenium-backed-webdriver",
+    "//javatests/org/openqa/selenium:base",
+    "//javatests/org/openqa/selenium:server-with-tests:uber",
+  ])
+

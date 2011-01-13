@@ -1,0 +1,45 @@
+
+
+# The SelenimCommandTimedOutException never seems to be thrown.
+# TODO(simon): Investigate deleting this.
+
+java_library(name = "api",
+  srcs = [
+    "CommandProcessor.java",
+    "Selenium.java",
+    "SeleniumCommandTimedOutException.java",
+    "SeleniumException.java",
+  ])
+
+# TODO(simon): Break dependency of selenium on webdriver
+java_library(name = "selenium",
+  srcs = [
+    "BrowserConfigurationOptions.java",
+    "DefaultRemoteCommand.java",
+    "DefaultSelenium.java",
+    "HttpCommandProcessor.java",
+    "RemoteCommand.java",
+    "ScreenshotListener.java",
+    "SeleneseTestBase.java",
+    "SeleneseTestCase.java",
+    "SeleneseTestNgHelper.java",
+    "SeleniumLogLevels.java",
+  ],
+  deps = [
+    ":api",
+    ":wait",
+    "//java/com/thoughtworks/selenium/condition",
+    "//java/org/openqa/selenium/remote:common",
+    "//java/org/openqa/selenium:selenium-api",
+    "//third_party/java/junit",
+    "//third_party/java/testng",
+  ])
+
+java_library(name = "wait",
+  srcs = [
+    "Wait.java",
+  ],
+  deps = [
+    ":api",
+    "//java/com/thoughtworks/selenium/condition",
+  ])

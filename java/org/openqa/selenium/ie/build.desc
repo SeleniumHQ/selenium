@@ -1,0 +1,17 @@
+
+java_library(name = "ie",
+  srcs  = [ "*.java" ],
+  resources = [
+    {"//jobbie:ieserver_win32_dll" : "x86/IEDriver.dll"},
+    {"//jobbie:ieserver_x64_dll" : "amd64/IEDriver.dll"}
+  ],
+  deps = [
+    ":ie_result_type_java",
+    "//jobbie:sizzle",
+    "//java/org/openqa/selenium/remote:client",
+    "//third_party/java/jna",
+  ])
+
+rake_task(name = "ie_result_type_java",
+  task_name = "ie_result_type_java",
+  out = "java/org/openqa/selenium/ie/IeReturnTypes.java")

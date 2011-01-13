@@ -65,15 +65,7 @@ module CrazyFunJava
       ant.project.setProperty 'XmlLogger.file', 'build/build_log.xml'
       ant.project.setProperty 'build.compiler', 'org.eclipse.jdt.core.JDTCompilerAdapter'
 
-      ant.project.getBuildListeners().get(0).setMessageOutputLevel(verbose ? 2 : 0)
-      ant.project.addBuildListener logger
-
-      at_exit do
-        if File.exists? 'build'
-          final_event = Java.org.apache.tools.ant.BuildEvent.new(ant.project)
-          logger.buildFinished(final_event)
-        end
-      end
+#      ant.project.getBuildListeners().get(0).setMessageOutputLevel(verbose ? 2 : 0)
 
       ant
     )
@@ -93,6 +85,15 @@ module CrazyFunJava
       logger = Java.org.apache.tools.ant.XmlLogger.new
       logger.setMessageOutputLevel(2)
       logger.buildStarted(nil)
+
+      ant.project.addBuildListener(logger)
+
+      at_exit do
+        if File.exists? 'build'
+          final_event = Java.org.apache.tools.ant.BuildEvent.new(ant.project)
+          logger.buildFinished(final_event)
+        end
+      end
 
       logger
     )
@@ -148,39 +149,22 @@ module CrazyFunJava
       paths.join(".")
     end
 
-    def ant_java_task(task_name, classname, classpath, args = nil, properties = nil)
-      # Ugly. We do this because CrazyFunJava.ant.java complains about too many arguments
-      path = Java.org.apache.tools.ant.types.Path.new(CrazyFunJava.ant.project)
-      classpath.all.each do |jar|
-        elem = path.createPathElement()
-        elem.setPath(jar)
-        path.add(elem)
-      end
-
-      task = Java.org.apache.tools.ant.taskdefs.Java.new()
-      task.setProject(CrazyFunJava.ant.project)
-      task.setTaskName(task_name)
-      task.setFork(true)
-      task.setClassname(classname)
-      task.setClasspath(path)
-
-      if properties
-        properties.each do |map|
+    def ant_java_task(task_name, classname, cp, args = nil, props = {})
+      CrazyFunJava.ant.java :classname => classname, :fork => true do
+        arg :line => args
+        
+        classpath do
+          cp.all.each do |jar|
+            pathelement :location => jar
+          end
+        end
+        
+        props.each do |map|
           map.each do |key, value|
-            v = Java.org.apache.tools.ant.types.Environment::Variable.new()
-            v.setKey(key)
-            v.setValue(value)
-            task.addSysproperty(v)
+            sysproperty :key => key, :value => value
           end
         end
       end
-
-      if (args)
-        arg = task.createArg()
-        arg.setLine(args)
-      end
-
-      task.execute()
     end
 
   end
@@ -353,7 +337,7 @@ module CrazyFunJava
 
         CrazyFunJava.ant.project.getBuildListeners().get(0).setMessageOutputLevel(2) if ENV['log']
 
-        ant_java_task(task_name, args[:main], cp, args[:sysproperties])
+        ant_java_task(task_name, args[:main], cp, nil, args[:sysproperties])
 
         CrazyFunJava.ant.project.getBuildListeners().get(0).setMessageOutputLevel(verbose ? 2 : 0)
       end
@@ -376,6 +360,10 @@ module CrazyFunJava
             next if f.to_s =~ /SingleTestSuite\.java$/
             tests.push f if f.to_s =~ /TestSuite\.java$/
           end
+        end
+
+        if tests.empty?
+
         end
 
         cp = ClassPath.new(task_name)

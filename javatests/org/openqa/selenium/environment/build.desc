@@ -1,0 +1,8 @@
+
+java_library(name = "environment",
+  srcs = [
+    "*.java",
+  ],
+  deps = [
+    "//javatests/org/openqa/selenium/environment/webserver",
+  ])

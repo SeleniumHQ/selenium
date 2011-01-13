@@ -1,0 +1,82 @@
+
+java_test(name = "test",
+  srcs = [
+    "InternalSelenseTestNgBase.java",
+    "WaitTest.java",
+    "WaitTestSuite.java",
+  ],
+  deps = [
+    "//java/org/openqa/selenium:webdriver-backed-selenium",
+    "//java/org/openqa/selenium/firefox",
+    "//java/org/openqa/selenium/ie",
+    "//javatests/com/thoughtworks/selenium/condition:test",
+    "//javatests/org/openqa/selenium/v1:environment",
+    "//third_party/java/guava-libraries",
+    "//third_party/java/junit",
+    "//third_party/java/testng",
+  ])
+
+java_library(name = "rc-tests",
+   srcs = [
+     "*.java",
+   ],
+   resources = [
+     { "testHelpers.js" : "com/thoughtworks/selenium/testHelpers.js" }
+   ],
+   deps = [
+     "//java/com/thoughtworks/selenium",
+     "//java/org/openqa/selenium/server:server-with-tests:uber",
+     "//javatests/com/thoughtworks/selenium/corebased",
+     "//third_party/java/easymock",
+   ])
+
+java_test(name = "firefox-emulation-test",
+  deps = [
+    ":rc-tests",
+  ],
+  main = "org.testng.TestNG",
+  sysproperties = [
+    { "selenium.browser" : "org.openqa.selenium.firefox.FirefoxDriver" },
+  ],
+  args = "javatests/com/thoughtworks/selenium/webdriver-selenium-suite.xml")
+
+java_test(name = "ie-emulation-test",
+  deps = [
+    ":rc-tests",
+  ],
+  main = "org.testng.TestNG",
+  sysproperties = [
+    { "selenium.browser" : "org.openqa.selenium.ie.InternetExplorerDriver" },
+  ],
+  args = "javatests/com/thoughtworks/selenium/webdriver-selenium-suite.xml")
+
+java_test(name = "firefox-rc-test",
+  deps = [
+    ":rc-tests",
+  ],
+  main = "org.testng.TestNG",
+  sysproperties = [
+    { "selenium.browser" : "*firefox" },
+  ],
+  args = "javatests/com/thoughtworks/selenium/testng.xml")
+
+java_test(name = "ie-rc-test",
+  deps = [
+    ":rc-tests",
+  ],
+  main = "org.testng.TestNG",
+  sysproperties = [
+    { "selenium.browser" : "*iexplore" },
+  ],
+  args = "javatests/com/thoughtworks/selenium/testng.xml")
+
+java_test(name = "safari-rc-test",
+  deps = [
+    ":rc-tests",
+  ],
+  main = "org.testng.TestNG",
+  sysproperties = [
+    { "selenium.browser" : "*safari" },
+  ],
+  args = "javatests/com/thoughtworks/selenium/testng.xml")
+

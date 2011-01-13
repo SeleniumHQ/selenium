@@ -1,0 +1,14 @@
+
+java_test(name = "test",
+  srcs = [
+    "*.java",   
+  ],
+  deps = [
+    "//java/org/openqa/selenium/chrome",
+    "//java/org/openqa/selenium/firefox",
+    "//java/org/openqa/selenium/htmlunit",
+    "//java/org/openqa/selenium/ie",
+    "//java/org/openqa/selenium/remote/server",
+    "//javatests/org/openqa/selenium:base",
+    "//javatests/org/openqa/selenium/remote:common-tests",
+  ])

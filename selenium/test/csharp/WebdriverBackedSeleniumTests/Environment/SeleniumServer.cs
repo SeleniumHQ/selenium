@@ -9,7 +9,7 @@ namespace Selenium.Tests.Environment
     public class SeleniumServer
     {
         private Process serverProcess;
-        private string serverJarName = @"build\selenium\server-with-tests-standalone.jar";
+        private string serverJarName = @"build\javatests\org\openqa\selenium\server-with-tests-standalone.jar";
         private string projectRootPath;
         private bool autoStart;
         private int port = 4444;

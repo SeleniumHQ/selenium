@@ -1,0 +1,34 @@
+
+android_r(name = "r",
+  manifest = "AndroidManifest.xml",
+  resource = "res",
+  out = "gen/org/openqa/selenium/android/app")
+
+java_library(name = "server",
+  srcs = [
+    "gen/**/*.java",
+    "src/java/**/*.java"
+  ],
+  deps = [
+    ":r",
+    "//java/org/openqa/selenium/server:server_lite",
+    "//third_party/java/android",
+    "//third_party/java/jetty:lite-android:uber",
+    "//third_party/java/guava-libraries:guava-libraries:uber",
+    "//third_party/java/servlet-api"
+  ])
+
+android_binary(name = "android-server",
+  manifest = "AndroidManifest.xml",
+  resource_dir = "res",
+  deps = [
+    ":server",
+    "//java/org/openqa/selenium/remote:client",
+    "//java/org/openqa/selenium/support",
+    "//third_party/java/guava-libraries:guava-libraries",
+    "//third_party/java/jetty:lite-android:uber",
+  ])
+
+# TODO(kurniady): Change the dependency for jetty to //third_party/java/jetty:lite:uber
+# after we move away form apkbuilder (which currently causes problem with "about.html"
+# resource file in the jar).

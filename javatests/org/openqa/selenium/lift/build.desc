@@ -1,0 +1,14 @@
+
+java_test(name = "test",
+  srcs = [
+    "*.java",
+    "find/*.java",
+  ],
+  deps = [
+    "//java/org/openqa/selenium/lift",
+    "//java/org/openqa/selenium/support/ui:clock",
+    "//javatests/org/openqa/selenium:base",
+    "//third_party/java/hamcrest",
+    "//third_party/java/jmock",
+    "//third_party/java/junit",
+  ])

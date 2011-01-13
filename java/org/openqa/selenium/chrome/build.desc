@@ -1,0 +1,7 @@
+
+java_library(name = "chrome",
+  srcs = [ "*.java" ],
+  deps = [
+    "//java/org/openqa/selenium/remote:client",
+  ],
+ resources = [ "//chrome:chrome_extension" ])

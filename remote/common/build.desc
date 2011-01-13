@@ -1,18 +1,3 @@
-java_library(name = "common",
-  srcs = [ "src/java/**/*.java" ],
-  deps = [
-      "//common",
-      "//third_party/java/commons-codec",
-      "//third_party/java/guava-libraries",
-      "//third_party/java/json"
-    ])
-
-java_test(name = "test",
-  srcs = [ "test/java/**/*.java" ],
-  deps = [
-    ":common",
-    "//common:test"
-  ])
 
 dotnet_library(name = "dotnet",
   srcs = "src/csharp/**/*.cs",

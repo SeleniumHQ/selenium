@@ -1,0 +1,14 @@
+
+java_library(name = "test",
+  srcs = [
+    "*.java",
+    "internal/*.java",
+  ],
+  deps = [
+    "//java/org/openqa/selenium/support:page-factory",
+    "//javatests/org/openqa/selenium:base",
+    "//javatests/org/openqa/selenium/support/ui:clock",
+    "//third_party/java/jmock",
+    "//third_party/java/junit",
+  ])
+  

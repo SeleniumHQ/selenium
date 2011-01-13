@@ -183,8 +183,7 @@ ruby_test(name = "remote",
   ],
   include = ["rb/spec/integration", "build/rb/lib"],
   deps = [
-    "//remote/server:server:uber",
-    "//remote/server:test",
+    "//java/org/openqa/selenium/server:server:uber",
     ":remote"
   ]
 )

@@ -1,0 +1,112 @@
+
+java_library(name = "selenium",
+  deps = [
+    ":webdriver-api",
+    "//java/com/thoughtworks/selenium:api",
+    "//java/org/openqa/selenium/browserlaunchers",
+    "//java/org/openqa/selenium/interactions",
+    "//java/org/openqa/selenium/internal",
+    "//java/org/openqa/selenium/networkutils",
+  ])
+
+java_library(name = "webdriver-api",
+  srcs = [
+    "Alert.java",
+    "By.java",
+    "Capabilities.java",
+    "Cookie.java",
+    "ElementNotVisibleException.java",
+    "HasInputDevices.java",
+    "IllegalLocatorException.java",
+    "InvalidCookieDomainException.java",
+    "JavascriptExecutor.java",
+    "Keyboard.java",
+    "Keys.java",
+    "Mouse.java",
+    "NoAlertPresentException.java",
+    "NoSuchElementException.java",
+    "NoSuchFrameException.java",
+    "NoSuchWindowException.java",
+    "NotFoundException.java",
+    "OutputType.java",
+    "Platform.java",
+    "Proxy.java",
+    "RenderedWebElement.java",
+    "Rotatable.java",
+    "ScreenOrientation.java",
+    "SearchContext.java",
+    "Speed.java",
+    "StaleElementReferenceException.java",
+    "TakesScreenshot.java",
+    "TimeoutException.java",
+    "UnableToSetCookieException.java",
+    "UnhandledAlertException.java",
+    "WebDriver.java",
+    "WebDriverException.java",
+    "WebElement.java",
+    "XPathLookupException.java",
+    "html5/*.java",
+    "internal/Base64Encoder.java",
+    "internal/FindsByClassName.java",
+    "internal/FindsByCssSelector.java",
+    "internal/FindsById.java",
+    "internal/FindsByLinkText.java",
+    "internal/FindsByName.java",
+    "internal/FindsByTagName.java",
+    "internal/FindsByXPath.java",
+    "internal/Lock.java",
+    "internal/SocketLock.java",
+    "internal/WrapsDriver.java",
+    "internal/WrapsElement.java",
+  ],
+  deps = [
+    "//java/org/openqa/selenium/internal:api",
+  ])
+
+# TODO(simon): Break out the selenium emulation from the v1 implementation.
+java_library(name = "selenium-api",
+  srcs = [
+    "ExplodingSupplier.java",
+    "SuppliesWebDriver.java",
+    "WebDriverCommandProcessor.java",
+    "internal/seleniumemulation/**/*.java",
+  ],
+  deps = [
+    ":webdriver-api",
+    "//java/com/thoughtworks/selenium:wait",
+    "//java/org/openqa/selenium/chrome",
+    "//java/org/openqa/selenium/firefox",
+    "//java/org/openqa/selenium/ie",
+    "//java/org/openqa/selenium/internal",
+    "//third_party/java/guava-libraries",
+    "//third_party/java/json",
+  ])
+
+# Circular dependency avoidance technique
+java_library(name = "webdriver-backed-selenium",
+  srcs = [
+    "WebDriverBackedSelenium.java",
+  ],
+  resources = [
+    { "internal/seleniumemulation/injectableSelenium.js" : "org/openqa/selenium/internal/seleniumemulation/injectableSelenium.js" },
+    { "internal/seleniumemulation/htmlutils.js" : "org/openqa/selenium/internal/seleniumemulation/htmlutils.js" },
+    { "//common/src/js/selenium:findElement" : "scripts/selenium/findElement.js" },
+    { "//common/src/js/selenium:getText" : "scripts/selenium/getText.js" },
+    { "//common/src/js/selenium:isElementPresent" : "scripts/selenium/isElementPresent.js" },
+    { "//common/src/js/selenium:isTextPresent" : "scripts/selenium/isTextPresent.js" },
+    { "//common/src/js/selenium:isVisible" : "scripts/selenium/isVisible.js" }
+  ],
+  deps = [
+    ":selenium-api",
+    "//java/com/thoughtworks/selenium",
+  ])
+
+java_library(name = "selenium-backed-webdriver",
+  srcs = [
+    "SeleneseCommandExecutor.java",
+  ],
+  deps = [
+    "//java/org/openqa/selenium/internal/selenesedriver",
+    "//java/org/openqa/selenium/remote:client",
+  ])
+

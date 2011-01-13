@@ -1,0 +1,22 @@
+
+java_library(name = "internal",
+  srcs = [
+    "Cleanly.java",
+    "CommandLine.java",
+    "FileHandler.java",
+    "IOUtils.java",
+    "Maps.java",
+    "PortProber.java",
+    "ProcessUtils.java",
+    "TemporaryFilesystem.java",
+    "Zip.java",
+  ],
+  deps = [
+    "//java/org/openqa/selenium:webdriver-api",
+  ])
+
+java_library(name = "api",
+  srcs = [
+    "Locatable.java",
+    "Trace.java",
+  ])

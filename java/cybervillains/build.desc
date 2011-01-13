@@ -1,0 +1,11 @@
+
+java_library(name = "cybervillains",
+  srcs = [
+    "**/*.java",
+  ],
+  deps = [
+    "//java/org/openqa/jetty",
+    "//third_party/java/bcprov",
+    "//third_party/java/commons-logging",
+  ])
+

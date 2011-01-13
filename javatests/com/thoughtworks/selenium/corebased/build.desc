@@ -1,0 +1,8 @@
+
+java_library(name = "corebased",
+  srcs = [ "*.java" ],
+  deps = [
+    "//java/com/thoughtworks/selenium",
+    "//javatests/com/thoughtworks/selenium:test",
+    "//third_party/java/testng",
+  ])

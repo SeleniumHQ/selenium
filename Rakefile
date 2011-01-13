@@ -66,7 +66,7 @@ VisualStudioMappings.new.add_all(crazy_fun)
 # need to fall back to prebuilt binaries. The prebuilt binaries are stored in
 # a directory structure identical to that used in the "build" folder, but
 # rooted at one of the following locations:
-["android/server/prebuilt", "chrome/prebuilt", "common/prebuilt", "firefox/prebuilt", "jobbie/prebuilt", "ide/main/prebuilt"].each do |pre|
+["android/prebuilt", "chrome/prebuilt", "common/prebuilt", "firefox/prebuilt", "jobbie/prebuilt", "ide/main/prebuilt"].each do |pre|
   crazy_fun.prebuilt_roots << pre
 end
 
@@ -80,65 +80,74 @@ crazy_fun.create_tasks(Dir["**/build.desc"])
 task :default => [:test]
 
 
-# TODO(simon): Shatter the build file into subdirectories, then remove these
 task :all => [:'selenium-java', :'android']
 task :all_zip => [:'selenium-java_zip']
-task :chrome => [ "//chrome" ]
-task :common => [ "//common" ]
+task :chrome => [ "//java/org/openqa/selenium/chrome" ]
 task :common_core => [ "//common:core" ]
-task :htmlunit => [ "//htmlunit" ]
-task :ie => [ "//jobbie" ]
-task :firefox => [ "//firefox" ]
-task :jobbie => [:ie]
+task :htmlunit => [ "//java/org/openqa/selenium/htmlunit" ]
+task :ie => [ "//java/org/openqa/selenium/ie" ]
+task :firefox => [ "//java/org/openqa/selenium/firefox" ]
 task :jsapi => "//jsapi:debug:run"
 task :remote => [:remote_common, :remote_server, :remote_client]
-task :remote_common => ["//remote/common"]
-task :remote_client => ["//remote/client"]
-task :remote_server => ["//remote/server"]
-task :selenium => [ "//selenium" ]
-task :support => [ "//support" ]
-task :iphone_client => ['//iphone']
+task :remote_common => ["//java/org/openqa/selenium/remote:common"]
+task :remote_client => ["//java/org/openqa/selenium/remote:client"]
+task :remote_server => ["//java/org/openqa/selenium/remote/server"]
+task :selenium => [ "//java/org/openqa/selenium" ]
+task :support => [
+  "//java/org/openqa/selenium/lift",
+  "//java/org/openqa/selenium/support",
+]
+task :iphone_client => ['//java/org/openqa/selenium/iphone']
 task :iphone => [:iphone_server, :iphone_client]
-task :'selenium-server-standalone' => ["//remote/server:server:uber"]
+task :'selenium-server-standalone' => ["//java/org/openqa/selenium/remote/server:server:uber"]
 
 task :ide => [ "//ide:selenium-ide" ]
 task :ide_proxy_setup => [ "//common/src/js/selenium:core", "se_ide:setup_proxy" ]
 task :ide_proxy_remove => [ "se_ide:remove_proxy" ]
 
 task :test_android => ["//android/client:android_test:run"]
-task :test_common => [ "//common:test" ]
-task :test_chrome => [ "//chrome:test:run" ]
-task :test_htmlunit => [ "//htmlunit:test:run" ]
-task :test_ie => [ "//jobbie:test:run" ]
-task :test_jobbie => [ "//jobbie:test:run" ]
+task :test_chrome => [ "//javatests/org/openqa/selenium/chrome:test:run" ]
+task :test_htmlunit => [ "//javatests/org/openqa/selenium/htmlunit:test:run" ]
+task :test_ie => [ "//javatests/org/openqa/selenium/ie:test:run" ]
+task :test_jobbie => [ :test_ie ]
 task :test_jsapi => [ "//jsapi:atoms:run",
                       "//jsapi:selenium_core:run",
                       "//jsapi:selenium_core_emulation:run" ]
-task :test_firefox => [ "//firefox:test:run" ]
+task :test_firefox => [ "//javatests/org/openqa/selenium/firefox:test:run" ]
 task :test_remote => [ "//remote/server:test:run" ]
-task :test_selenium => [ :'test-selenium-emulation', "//selenium:test-selenese:run", :'test_core']
-task :test_support => [ "//support:test:run" ]
+task :test_support => [
+  "//javatests/org/openqa/selenium/lift:test:run",
+  "//javatests/org/openqa/selenium/support:test:run"
+]
 task :test_iphone_client => [:'webdriver-iphone-client-test']
 task :test_iphone => [:test_iphone_server, :test_iphone_client]
 task :android => [:android_client, :android_server]
 task :android_client => ['//android/client']
 task :android_server => ['//android/server:android-server']
 
+# TODO(simon): test-core should go first, but it's changing the least for now.
+task :test_selenium => [ :'test-rc', :'test-v1-emulation', :'test-selenium-backed-webdriver', :'test-core']
+
+task :'test-selenium-backed-webdriver' => ['//javatests/org/openqa/selenium/v1:selenium-backed-webdriver-test:run']
+task :'test-v1-emulation' => [ '//javatests/com/thoughtworks/selenium:firefox-emulation-test:run' ]
+task :'test-rc' => [ '//javatests/com/thoughtworks/selenium:firefox-rc-test:run' ]
+task :'test-core' => [:'test-core-firefox']
 
 if (windows?)
-  task :test_core => [:'test_core_ie']
-  task :'test-selenium-emulation' => ['//selenium:emulation-ie-test:run']
+  task :'test-v1-emulation' => ['//javatests/com/thoughtworks/selenium:ie-emulation-test:run']
+  task :'test-rc' => ['//javatests/com/thoughtworks/selenium:ie-rc-test:run']
+  task :'test-core' => [:'test-core-ie']
+#elsif (mac?)
+#  task :'test-rc' => ['//javatests/com/thoughtworks/selenium:safari-rc-test:run']
+#  task :'test-core' => [:'test-core-safari']
 end
-task :test_core => [:'test_core_firefox']
-task :'test-selenium-emulation' => ['//selenium:emulation-firefox-test:run']
 
 task :test_java => [
-  "//support:test:run",
-  "//htmlunit:test:run",
-  "//jsapi:atoms:run",
-  "//firefox:test:run",
-  "//jobbie:test:run",
-  "//remote/server:test:run",
+  "//javatests/org/openqa/selenium/support:test:run",
+  "//javatests/org/openqa/selenium/htmlunit:test:run",
+  "//javatests/org/openqa/selenium/firefox:test:run",
+  "//javatests/org/openqa/selenium/ie:test:run",
+  "//javatests/org/openqa/selenium/remote/server:test:run",
   :test_selenium,
 # Can't be sure that android is installed.
 #  :test_android,
@@ -147,12 +156,12 @@ task :test_java => [
 ]
 
 task :test_rb => [
-  "//rb:unit-test:jruby",
-  "//rb:rc-client-unit-test:jruby",
-  "//rb:firefox-test:jruby",
-  "//rb:remote-test:jruby",
- ("//rb:ie-test:jruby" if windows?),
-#  "//rb:chrome-test:jruby"  # Just not stable enough
+  "//rb:unit-test",
+  "//rb:rc-client-unit-test",
+  "//rb:firefox-test",
+  "//rb:remote-test",
+ ("//rb:ie-test" if windows?),
+#  "//rb:chrome-test"  # Just not stable enough
 ].compact
 
 task :test_py => [
@@ -259,10 +268,10 @@ java_jar(:name => "selenium-core",
  "ie" => "*iexploreproxy",
  "opera" => "*opera",
  "safari" => "*safari"}.each_pair do |k,v|
-  selenium_test(:name => "test_core_#{k}",
+  selenium_test(:name => "test-core-#{k}",
                 :srcs => [ "common/test/js/core/*.js" ],
                 :deps => [
-                  "//remote/server",
+                  "//java/org/openqa/selenium/server:server:uber",
                   :"selenium-core"
                 ],
                 :browser => v )
@@ -491,11 +500,15 @@ def version
   `svn info | grep Revision | awk -F: '{print $2}' | tr -d '[:space:]' | tr -d '\n'`
 end
 
-task :release => ['//remote/server:server:zip', '//remote/client:combined:zip'] do |t|
+task :release => [
+    '//java/org/openqa/selenium/server:server:zip',
+    '//java/org/openqa/selenium/server:server:uber',
+    '//java/org/openqa/selenium/remote:client-combined:zip'
+  ] do |t|
   # Unzip each of the deps and rename the pieces that need renaming
   renames = {
-    "combined-nodeps-srcs.jar" => "selenium-java-#{version}-srcs.jar",
-    "combined-nodeps.jar" => "selenium-java-#{version}.jar",
+    "client-combined-nodeps-srcs.jar" => "selenium-java-#{version}-srcs.jar",
+    "client-combined-nodeps.jar" => "selenium-java-#{version}.jar",
     "server-nodeps-srcs.jar" => "selenium-server-#{version}-srcs.jar",
     "server-nodeps.jar" => "selenium-server-#{version}.jar",
     "server-standalone.jar" => "selenium-server-standalone-#{version}.jar",
@@ -503,6 +516,9 @@ task :release => ['//remote/server:server:zip', '//remote/client:combined:zip'] 
 
   t.prerequisites.each do |pre|
     zip = Rake::Task[pre].out
+    
+    next unless zip =~ /\.zip$/
+    
     temp =  zip + "rename"
     rm_rf temp
     deep = File.join(temp, "/selenium-#{version}")
@@ -515,7 +531,7 @@ task :release => ['//remote/server:server:zip', '//remote/client:combined:zip'] 
 
       mv src, File.join(deep, to)
     end
-    rm_f File.join(deep, "combined-standalone.jar")
+    rm_f File.join(deep, "client-combined-standalone.jar")
     rm zip
     sh "cd #{temp} && jar cMf ../#{zip.split('/')[-1]} *"
 
@@ -523,25 +539,18 @@ task :release => ['//remote/server:server:zip', '//remote/client:combined:zip'] 
   end
 
   mkdir_p "build/dist"
-  cp "build/remote/server/server-standalone.jar", "build/dist/selenium-server-standalone-#{version}.jar"
-  cp "build/remote/client/combined.zip", "build/dist/selenium-java-#{version}.zip"
-  cp "build/remote/server/server.zip", "build/dist/selenium-server-#{version}.zip"
+  cp "build/java/org/openqa/selenium/server/server-standalone.jar", "build/dist/selenium-server-standalone-#{version}.jar"
+  cp "build/java/org/openqa/selenium/server/server.zip", "build/dist/selenium-server-#{version}.zip"
+  cp "build/java/org/openqa/selenium/remote/client-combined.zip", "build/dist/selenium-java-#{version}.zip"
 end
 
 desc 'Build the selenium client jars'
-task 'selenium-java' => 'build/selenium-java.jar'
-file 'build/selenium-java.jar' => '//remote/client:combined:project' do
-  cp 'build/remote/client/combined-nodeps.jar', 'build/selenium-java.jar'
-end
+task 'selenium-java' => '//java/org/openqa/selenium/remote:client-combined:project'
 
 desc 'Build the standalone server'
-task 'selenium-server-standalone' => 'build/selenium-server-standalone.jar'
-file 'build/selenium-server-standalone.jar' => '//remote/server:server:uber' do
-  cp 'build/remote/server/server-standalone.jar', 'build/selenium-server-standalone.jar'
-end
+task 'selenium-server-standalone' => '//java/org/openqa/selenium/server:server:uber'
 
 desc 'Build and package Selenium IDE'
 task :release_ide  => [:ide] do
   cp 'build/ide/selenium-ide.xpi', "build/ide/selenium-ide-#{ide_version}.xpi"
 end
-

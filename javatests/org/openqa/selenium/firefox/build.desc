@@ -1,0 +1,14 @@
+
+java_test(name = "test",
+  srcs = [
+    "*.java",
+    "internal/*.java",
+  ],
+  resources = [
+    {"//third_party/firebug" : "resource/firebug-1.5.0-fx.xpi"}
+  ],
+  deps = [
+    "//java/org/openqa/selenium/firefox",
+    "//javatests/org/openqa/selenium:tests",
+    "//third_party/java/junit",
+  ])

@@ -1,0 +1,16 @@
+
+java_test(name = "test",
+  srcs = [ "*.java" ],
+  deps = [
+    ":server",
+    "//java/org/openqa/selenium/iphone",
+    "//third_party/java/junit",
+  ])
+
+rake_task(name = "server-tests",
+  task_name = "test_iphone_server_tests",
+  out = "iphone/build/Release-iphonesimulator/Tests.app")
+
+rake_task(name = "server",
+  task_name = "iphone_server",
+  out = "iphone/build/Release-iphonesimulator/iWebDriver.app")
