@@ -150,6 +150,7 @@ module CrazyFunJava
     end
 
     def ant_java_task(task_name, classname, cp, args = nil, props = {})
+      sysprops = props || {}
       CrazyFunJava.ant.java :classname => classname, :fork => true do
         arg :line => args
         
@@ -159,7 +160,7 @@ module CrazyFunJava
           end
         end
         
-        props.each do |map|
+        sysprops.each do |map|
           map.each do |key, value|
             sysproperty :key => key, :value => value
           end
