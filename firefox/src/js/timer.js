@@ -18,12 +18,18 @@
 /**
  * @fileoverview An implementation of a timer that can be used without an
  * assocuated window.
+ *
+ * Please note that the client must hold onto the reference
+ * to this timer class for the full duration of the timeout,
+ * or nasty stuff will happen.
+ *
  */
 
 goog.provide('Timer');
 
 
 Timer = function() {
+  this.timer = null;
 };
 
 
@@ -41,9 +47,11 @@ Timer.prototype.setTimeout = function(callback, opt_timeout) {
   var CI = Components.interfaces;
 
   var timeout = opt_timeout || 10;
-  var timer = CC['@mozilla.org/timer;1'].createInstance(CI['nsITimer']);
+  // NO. This cannot be changed to a local variable, Simon.
+  // See documentation on msITimer.
+  this.timer = CC['@mozilla.org/timer;1'].createInstance(CI['nsITimer']);
 
-  timer.initWithCallback({
+  this.timer.initWithCallback({
     notify: function() {
       callback.apply(null);
     }
