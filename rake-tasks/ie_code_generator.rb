@@ -70,7 +70,7 @@ end
 
 def ie_generate_type_mapping(args)
   types_mapping_file = args[:src]
-  generated_file = "jobbie/src/#{args[:out]}"
+  generated_file = "#{args[:out]}"
 
   file generated_file => args[:src] do
     generator = TypeDefinitionsGenerator.new types_mapping_file

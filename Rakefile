@@ -200,7 +200,7 @@ task :dotnet => [ "//jobbie:dotnet", "//remote/client:dotnet", "//firefox:dotnet
 ie_generate_type_mapping(:name => "ie_result_type_cpp",
                          :src => "jobbie/src/common/result_types.txt",
                          :type => "cpp",
-                         :out => "cpp/InternetExplorerDriver/IEReturnTypes.h")
+                         :out => "jobbie/src/cpp/InternetExplorerDriver/IEReturnTypes.h")
 
 # Generate a Java class for mapping between magic numbers and Java static
 # class members describing them.

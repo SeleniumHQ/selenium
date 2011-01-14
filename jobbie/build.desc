@@ -11,10 +11,6 @@ rake_task(name = "sizzle",
   task_name = "sizzle_header",
   out = "jobbie/src/cpp/InternetExplorerDriver/sizzle.h")
 
-rake_task(name = "ie_result_type_java",
-  task_name = "ie_result_type_java",
-  out = "jobbie/src/java/org/openqa/selenium/ie/IeReturnTypes.java")
-
 rake_task(name = "ie_result_type_cpp",
   task_name = "ie_result_type_cpp",
   out = "jobbie/src/cpp/InternetExplorerDriver/IEReturnTypes.h")
