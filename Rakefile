@@ -169,7 +169,7 @@ task :test_py => [
 ]
 
 task :test_dotnet => [
-  "//firefox"
+  "//dotnet:firefox-test"
 ]
 
 task :test => [ :test_java, :test_rb ]
@@ -193,7 +193,7 @@ task :clean do
   Android::Clean.new()
 end
 
-task :dotnet => [ "//jobbie:dotnet", "//remote/client:dotnet", "//firefox:dotnet", "//chrome:dotnet", "//selenium:dotnet", "//support:dotnet" ]
+task :dotnet => [ "//dotnet:ie", "//dotnet:firefox", "//dotnet:chrome", "//dotnet:support", "//dotnet:core", "//dotnet:webdriverbackedselenium" ]
 
 # Generate a C++ Header file for mapping between magic numbers and #defines
 # in the C++ code.

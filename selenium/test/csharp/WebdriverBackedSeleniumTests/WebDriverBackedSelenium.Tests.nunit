@@ -1,6 +1,0 @@
-<NUnitProject>
-	<Settings appbase="." />
-	<Config name="Default" binpathtype="Auto">
-		<assembly path="WebDriverBackedSelenium.Tests.dll" />
-	</Config>
-</NUnitProject>

@@ -1,0 +1,322 @@
+dotnet_library(name = "common",
+  srcs = "src/WebDriver.Common/**/*.cs",
+  refs = [
+    "System.dll",
+    "System.Data.dll",
+    "System.Drawing.dll",
+    "System.Xml.dll"
+  ],
+  out = "build/dotnet/WebDriver.Common.dll",
+  doc = "build/dotnet/WebDriver.Common.xml"
+)
+
+dotnet_library(name = "common-test",
+  deps = [
+    "//javatests/org/openqa/selenium:tests:uber"
+  ],
+  srcs = "test/WebDriver.Common.Tests/**/*.cs",
+  refs = [
+    "System.dll",
+    "System.Configuration.dll",
+    "System.Core.dll",
+    "System.Data.dll",
+    "System.Drawing.dll",
+    "System.Xml.dll",
+    ":common",
+    "third_party/csharp/nunit-2.5.9/lib/nunit.core.dll",
+    "third_party/csharp/nunit-2.5.9/lib/nunit.core.interfaces.dll",
+    "third_party/csharp/nunit-2.5.9/framework/nunit.framework.dll",
+    "third_party/csharp/nunit-2.5.9/framework/nunit.mocks.dll"
+  ],
+  out = "build/dotnet/WebDriver.Common.Tests.dll"
+)
+
+
+dotnet_library(name = "remote-common",
+  srcs = "src/WebDriver.Remote.Common/**/*.cs",
+  refs = [
+    "System.dll",
+    "System.Data.dll",
+    "System.Drawing.dll",
+    "System.Xml.dll",
+    ":common",
+    "third_party/csharp/json-net-3.5r6/Newtonsoft.Json.dll"
+  ],
+  out = "build/dotnet/WebDriver.Remote.Common.dll",
+  doc = "build/dotnet/WebDriver.Remote.Common.xml"
+)
+
+dotnet_library(name = "remote",
+  srcs = "src/WebDriver.Remote/**/*.cs",
+  refs = [
+    "System.dll",
+    "System.Data.dll",
+    "System.Drawing.dll",
+    "System.Xml.dll",
+    ":common",
+    ":remote-common",
+    "third_party/csharp/json-net-3.5r6/Newtonsoft.Json.dll"
+  ],
+  out = "build/dotnet/WebDriver.Remote.dll",
+  doc = "build/dotnet/WebDriver.Remote.xml"
+)
+
+dotnet_test(name = "remote-test",
+  deps = [
+    "//java/org/openqa/selenium/server:server:uber"
+  ],
+  srcs = "test/WebDriver.Remote.Tests/**/*.cs",
+  refs = [
+    "System.dll",
+    "System.Data.dll",
+    "System.Drawing.dll",
+    "System.Xml.dll",
+    ":common",
+    ":remote-common",
+    ":remote",
+    ":common-test",
+    "third_party/csharp/nunit-2.5.9/framework/nunit.framework.dll"
+  ],
+  out = "build/dotnet/WebDriver.Remote.Tests.dll",
+  files = [
+    "test/WebDriver.Remote.Tests/WebDriver.Remote.Tests.config",
+    "test/WebDriver.Remote.Tests/WebDriver.Remote.Tests.nunit"
+  ],
+  project = "WebDriver.Remote.Tests.nunit"
+)
+
+dotnet_library(name = "ie",
+  srcs = "src/WebDriver.IE/**/*.cs",
+  refs = [
+    "System.dll",
+    "System.Data.dll",
+    "System.Drawing.dll",
+    "System.Xml.dll",
+    ":common",
+    ":remote-common",
+    ":remote",
+  ],
+  resources = [
+    {"//jobbie:ieserver_win32_dll" : "WebDriver.InternetExplorerDriver.x86.dll"},
+    {"//jobbie:ieserver_x64_dll" : "WebDriver.InternetExplorerDriver.x64.dll"}
+  ],
+  out = "build/dotnet/WebDriver.IE.dll",
+  doc = "build/dotnet/WebDriver.IE.xml"
+)
+
+dotnet_test(name = "ie-test",
+  srcs = "test/WebDriver.IE.Tests/**/*.cs",
+  refs = [
+    "System.dll",
+    "System.Core.dll",
+    "System.Data.dll",
+    "System.Drawing.dll",
+    "System.Xml.dll",
+    ":common",
+    ":remote-common",
+    ":remote",
+    ":ie",
+    ":common-test",
+    "third_party/csharp/nunit-2.5.9/framework/nunit.framework.dll"
+  ],
+  out = "build/dotnet/WebDriver.IE.Tests.dll",
+  files = [
+    "test/WebDriver.IE.Tests/WebDriver.IE.Tests.config",
+    "test/WebDriver.IE.Tests/WebDriver.IE.Tests.nunit"
+  ],
+  project = "WebDriver.IE.Tests.nunit"
+)
+
+dotnet_library(name = "firefox",
+  srcs = "src/WebDriver.Firefox/**/*.cs",
+  refs = [
+    "System.dll",
+    "System.Data.dll",
+    "System.Drawing.dll",
+    "System.Xml.dll",
+    ":common",
+    ":remote-common",
+    ":remote",
+    "third_party/csharp/dotnetzip-1.9/Ionic.Zip.Reduced.dll"
+  ],
+  resources = [
+    {"//firefox:webdriver" : "WebDriver.FirefoxExt.zip"},
+    {"//firefox:noblur" : "WebDriver.FirefoxNoFocus.x86.dll"},
+    {"//firefox:noblur64" : "WebDriver.FirefoxNoFocus.x64.dll"}
+  ],
+  out = "build/dotnet/WebDriver.Firefox.dll",
+  doc = "build/dotnet/WebDriver.Firefox.xml"
+)
+
+dotnet_test(name = "firefox-test",
+  srcs = "test/WebDriver.Firefox.Tests/**/*.cs",
+  refs = [
+    "System.dll",
+    "System.Core.dll",
+    "System.Data.dll",
+    "System.Drawing.dll",
+    "System.Xml.dll",
+    ":common",
+    ":remote",
+    ":firefox",
+    ":common-test",
+    "third_party/csharp/nunit-2.5.9/framework/nunit.framework.dll"
+  ],
+  out = "build/dotnet/WebDriver.Firefox.Tests.dll",
+  files = [
+    "test/WebDriver.Firefox.Tests/WebDriver.Firefox.Tests.config",
+    "test/WebDriver.Firefox.Tests/WebDriver.Firefox.Tests.nunit"
+  ],
+  project = "WebDriver.Firefox.Tests.nunit"
+)
+
+dotnet_library(name = "chrome",
+  srcs = "src/WebDriver.Chrome/**/*.cs",
+  refs = [
+    "System.dll",
+    "System.Data.dll",
+    "System.Drawing.dll",
+    "System.Xml.dll",
+    ":common",
+    ":remote-common",
+    ":remote",
+    "third_party/csharp/dotnetzip-1.9/Ionic.Zip.Reduced.dll"
+  ],
+  resources = [
+    {"//chrome:chrome_extension" : "WebDriver.ChromeExt.zip"}
+  ],
+  out = "build/dotnet/WebDriver.Chrome.dll",
+  doc = "build/dotnet/WebDriver.Chrome.xml"
+)
+
+dotnet_test(name = "chrome-test",
+  srcs = "test/WebDriver.Chrome.Tests/**/*.cs",
+  refs = [
+    "System.dll",
+    "System.Core.dll",
+    "System.Data.dll",
+    "System.Drawing.dll",
+    "System.Xml.dll",
+    ":common",
+    ":remote",
+    ":chrome",
+    ":common-test",
+    "third_party/csharp/nunit-2.5.9/framework/nunit.framework.dll"
+  ],
+  out = "build/dotnet/WebDriver.Chrome.Tests.dll",
+  files = [
+    "test/WebDriver.Chrome.Tests/WebDriver.Chrome.Tests.config",
+    "test/WebDriver.Chrome.Tests/WebDriver.Chrome.Tests.nunit"
+  ],
+  project = "WebDriver.Chrome.Tests.nunit"
+)
+
+dotnet_library(name = "support",
+  srcs = "src/WebDriver.Support/**/*.cs",
+  refs = [
+    "System.dll",
+    "System.Core.dll",
+    "System.Data.dll",
+    "System.Drawing.dll",
+    "System.Xml.dll",
+    ":common",
+    "third_party/csharp/Castle.Core.2.5.2/Castle.Core.dll"
+  ],
+  out = "build/dotnet/Webdriver.Support.dll",
+  doc = "build/dotnet/Webdriver.Support.xml"
+)
+  
+dotnet_test(name = "support-test",
+  srcs = "test/WebDriver.Support.Tests/**/*.cs",
+  deps = [
+    ":firefox"
+  ],
+  refs = [
+    "System.dll",
+    "System.Core.dll",
+    "System.Data.dll",
+    "System.Drawing.dll",
+    "System.Xml.dll",
+    ":support",
+    ":common",
+    ":common-test",
+    "third_party/csharp/nunit-2.5.9/framework/nunit.framework.dll",
+    "third_party/nmock/NMock2.dll"
+  ],
+  out = "build/dotnet/WebDriver.Support.Tests.dll",
+  files = [
+    "test/WebDriver.Support.Tests/WebDriver.Support.Tests.config",
+    "test/WebDriver.Support.Tests/WebDriver.Support.Tests.nunit"
+  ],
+  project = "WebDriver.Support.Tests.nunit"
+)
+
+dotnet_library(name = "core",
+  srcs = "src/Selenium.Core/**/*.cs",
+  refs = [
+    "System.dll",
+    "System.Core.dll",
+    "System.Data.dll",
+    "System.Xml.dll",
+    "System.Web.dll"
+  ],
+  out = "build/dotnet/ThoughtWorks.Selenium.Core.dll"
+)
+
+dotnet_test(name = "core-test",
+  srcs = "test/Selenium.Core.Tests/**/*.cs",
+  refs = [
+    "System.dll",
+    "System.Core.dll",
+    "System.Data.dll",
+    "System.Xml.dll",
+    "System.Web.dll",
+    ":core",
+    "third_party/csharp/nunit-2.5.9/framework/nunit.framework.dll",
+    "third_party/nmock/nmock.dll"
+  ],
+  out = "build/dotnet/Selenium.Core.Tests.dll",
+  project = "Selenium.Core.Tests.dll"
+)
+
+dotnet_library(name = "webdriverbackedselenium",
+  srcs = "src/Selenium.WebdriverBackedSelenium/**/*.cs",
+  refs = [
+    "System.dll",
+    "System.Core.dll",
+    "System.Data.dll",
+    "System.Drawing.dll",
+    "System.Xml.dll",
+    "System.Web.dll",
+    ":common",
+    ":core"
+  ],
+  out = "build/dotnet/Selenium.WebDriverBackedSelenium.dll"
+)
+
+dotnet_test(name = "webdriverbackedselenium-test",
+  deps = [
+    "//java/org/openqa/selenium/server:server-with-tests:uber",
+    ":ie"
+  ],
+  srcs = "src/Selenium.WebdriverBackedSelenium/**/*.cs",
+  refs = [
+    "System.dll",
+    "System.Core.dll",
+    "System.Data.dll",
+    "System.Drawing.dll",
+    "System.Xml.dll",
+    "System.Web.dll",
+    ":common",
+    ":core",
+    ":webdriverbackedselenium",
+    "third_party/csharp/nunit-2.5.9/framework/nunit.framework.dll",
+  ],
+  out = "build/dotnet/Selenium.WebDriverBackedSelenium.Tests.dll",
+  files = [
+    "test/Selenium.WebDriverBackedSelenium.Tests/testHelpers.js",
+    "test/Selenium.WebDriverBackedSelenium.Tests/Selenium.WebDriverBackedSelenium.Tests.config",
+    "test/Selenium.WebDriverBackedSelenium.Tests/Selenium.WebDriverBackedSelenium.Tests.nunit"
+  ],
+  project = "Selenium.WebDriverBackedSelenium.Tests.nunit"
+)
