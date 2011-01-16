@@ -16,7 +16,7 @@ namespace Selenium.Internal.SeleniumEmulation
 
         protected override object HandleSeleneseCommand(IWebDriver driver, string locator, string value)
         {
-            keyState.ShiftKeyDown = true;
+            keyState.ShiftKeyDown = false;
             return null;
         }
     }
