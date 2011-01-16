@@ -190,6 +190,9 @@
     <Compile Include="Internal\SeleniumEmulation\LookupStrategies\IdentifierLookupStrategy.cs" />
     <Compile Include="Internal\SeleniumEmulation\ILookupStrategy.cs" />
   </ItemGroup>
+  <PropertyGroup>
+    <PostBuildEvent>copy /y $(SolutionDir)java\org\openqa\selenium\internal\seleniumemulation\*.js $(TargetDir)</PostBuildEvent>
+  </PropertyGroup>
   <ItemGroup>
     <Folder Include="Internal\SeleneseDriver\" />
   </ItemGroup>
