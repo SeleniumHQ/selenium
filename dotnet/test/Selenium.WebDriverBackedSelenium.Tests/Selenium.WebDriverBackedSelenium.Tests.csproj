@@ -62,6 +62,7 @@
     <Compile Include="TestClick.cs" />
     <Compile Include="TestEditable.cs" />
     <Compile Include="TestElementIndex.cs" />
+    <Compile Include="TestType.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="testHelpers.js">
