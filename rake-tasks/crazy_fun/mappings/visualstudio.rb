@@ -30,7 +30,8 @@ module CrazyFunDotNet
                 "/filealign:512"]
 
       embedded_resources = []
-      buildable_references = resolve_buildable_references(args[:refs])
+      buildable_references = resolve_buildable_targets(args[:refs])
+      buildable_resources = resolve_buildable_targets(args[:resources])
       target = csc task_name do |csc_task|
         puts "Compiling: #{task_name} as #{full_path}"
         FileUtils.mkdir_p output_dir
@@ -38,15 +39,19 @@ module CrazyFunDotNet
         references = resolve_references(dir, args[:refs])
         to_copy = flag_references_to_copy(references)
 
+        # For each resource key-value pair in the resources Hash, assume
+        # the key to the hash represents the name of the file to embed
+        # as a resource. If the key in the Hash is a Task, the name of
+        # the file to embed should be output of that Task.
         unless args[:resources].nil?
           args[:resources].each do |resource|
-            task_identifier = resource.keys[0]
-            resource_identifier = resource.fetch(task_identifier)
-            resource_task_name = task_name(dir, task_identifier)
+            resource_file = resource.keys[0]
+            resource_identifier = resource.fetch(resource_file)
+            resource_task_name = task_name(dir, resource_file)
             if Rake::Task.task_defined?(resource_task_name)
               resource_file = Rake::Task[resource_task_name].out
-              embedded_resources << "#{resource_file},#{resource_identifier}"
             end
+            embedded_resources << "#{resource_file},#{resource_identifier}"
           end
         end
 
@@ -68,7 +73,7 @@ module CrazyFunDotNet
       end
       
       add_dependencies(target, dir, buildable_references)
-      add_dependencies(target, dir, args[:resources])
+      add_dependencies(target, dir, buildable_resources)
       add_dependencies(target, dir, args[:deps])
 
       target.out = args[:out]
@@ -103,16 +108,16 @@ module CrazyFunDotNet
       return to_copy
     end
 
-    def resolve_buildable_references(refs)
-      buildable_references = []
-      unless refs.nil?
-        refs.each do |reference|
-          if reference.to_s.start_with? "//" or reference.is_a? Symbol
-            buildable_references << reference
+    def resolve_buildable_targets(target_candidates)
+      buildable_targets = []
+      unless target_candidates.nil?
+        target_candidates.each do |target_candidate|
+          if target_candidate.to_s.start_with? "//" or target_candidate.is_a? Symbol
+            buildable_targets << target_candidate
           end
         end
       end
-      return buildable_references
+      return buildable_targets
     end
   end
 

@@ -291,6 +291,10 @@ dotnet_library(name = "webdriverbackedselenium",
     ":common",
     ":core"
   ],
+  resources = [
+    {"java/org/openqa/selenium/internal/seleniumemulation/injectableSelenium.js" : "injectableSelenium.js"},
+    {"java/org/openqa/selenium/internal/seleniumemulation/htmlutils.js" : "htmlutils.js"}
+  ],
   out = "build/dotnet/Selenium.WebDriverBackedSelenium.dll"
 )
 
@@ -299,9 +303,10 @@ dotnet_test(name = "webdriverbackedselenium-test",
     "//java/org/openqa/selenium/server:server-with-tests:uber",
     ":ie"
   ],
-  srcs = "src/Selenium.WebdriverBackedSelenium/**/*.cs",
+  srcs = "test/Selenium.WebdriverBackedSelenium.Tests/**/*.cs",
   refs = [
     "System.dll",
+    "System.Configuration.dll",
     "System.Core.dll",
     "System.Data.dll",
     "System.Drawing.dll",
