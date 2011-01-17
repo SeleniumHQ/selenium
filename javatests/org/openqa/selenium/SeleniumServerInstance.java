@@ -5,14 +5,14 @@ import java.net.URL;
 import java.util.Map;
 
 import com.google.common.collect.Maps;
-import org.openqa.selenium.internal.PortProber;
+import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.HttpRequest;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 import org.openqa.selenium.server.SeleniumServer;
 
 import static org.openqa.selenium.DevMode.isInDevMode;
-import static org.openqa.selenium.internal.PortProber.pollPort;
+import static org.openqa.selenium.net.PortProber.pollPort;
 
 public class SeleniumServerInstance {
   private SeleniumServer seleniumServer;

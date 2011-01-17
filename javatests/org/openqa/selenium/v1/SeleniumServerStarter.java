@@ -5,17 +5,16 @@ import junit.framework.Test;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.Build;
 import org.openqa.selenium.internal.CommandLine;
-import org.openqa.selenium.internal.PortProber;
+import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.net.NetworkUtils;
 
 import static java.util.concurrent.TimeUnit.*;
 import static org.openqa.selenium.TestWaiter.waitFor;
-import static org.openqa.selenium.internal.PortProber.freeLocalPort;
-import static org.openqa.selenium.internal.PortProber.pollPort;
+import static org.openqa.selenium.net.PortProber.freeLocalPort;
+import static org.openqa.selenium.net.PortProber.pollPort;
 
 @SuppressWarnings({"UnusedDeclaration"})
 public class SeleniumServerStarter extends TestSetup {

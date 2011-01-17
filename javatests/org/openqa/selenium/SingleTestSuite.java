@@ -21,7 +21,7 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 
 import static org.openqa.selenium.Ignore.Driver.ALL;
-import static org.openqa.selenium.internal.PortProber.findFreePort;
+import static org.openqa.selenium.net.PortProber.findFreePort;
 
 @SuppressWarnings("unused")
 public class SingleTestSuite extends TestCase {

@@ -32,7 +32,7 @@ import java.io.File;
 import javax.servlet.Filter;
 import javax.servlet.Servlet;
 
-import static org.openqa.selenium.internal.PortProber.findFreePort;
+import static org.openqa.selenium.net.PortProber.findFreePort;
 
 public class Jetty7AppServer implements AppServer {
 

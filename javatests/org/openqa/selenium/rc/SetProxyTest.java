@@ -14,8 +14,8 @@ import org.openqa.selenium.remote.HttpRequest;
 import static org.openqa.selenium.Ignore.Driver.ALL;
 import static org.openqa.selenium.browserlaunchers.CapabilityType.ForSeleniumServer.ENSURING_CLEAN_SESSION;
 import static org.openqa.selenium.browserlaunchers.CapabilityType.PROXY;
-import static org.openqa.selenium.internal.PortProber.findFreePort;
-import static org.openqa.selenium.internal.PortProber.pollPort;
+import static org.openqa.selenium.net.PortProber.findFreePort;
+import static org.openqa.selenium.net.PortProber.pollPort;
 
 // This test only makes sense for IE, but needs a lot of supporting code.
 @Ignore(value = ALL, reason = "Needs to be run manually")

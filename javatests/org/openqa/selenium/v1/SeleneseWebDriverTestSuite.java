@@ -22,7 +22,7 @@ import junit.framework.TestCase;
 import org.openqa.selenium.TestSuiteBuilder;
 
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
-import static org.openqa.selenium.internal.PortProber.findFreePort;
+import static org.openqa.selenium.net.PortProber.findFreePort;
 
 public class SeleneseWebDriverTestSuite extends TestCase {
 

@@ -28,7 +28,7 @@ import org.openqa.selenium.environment.webserver.AppServer;
 import org.openqa.selenium.internal.CommandLine;
 import org.openqa.selenium.internal.FileHandler;
 import org.openqa.selenium.internal.InProject;
-import org.openqa.selenium.internal.PortProber;
+import org.openqa.selenium.net.PortProber;
 
 public class SeleniumTestEnvironment implements TestEnvironment {
   private int port = 4444;

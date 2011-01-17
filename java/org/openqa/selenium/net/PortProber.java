@@ -15,7 +15,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package org.openqa.selenium.internal;
+package org.openqa.selenium.net;
 
 import java.io.IOException;
 import java.net.ConnectException;

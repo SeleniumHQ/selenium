@@ -31,7 +31,7 @@ import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.browserlaunchers.WindowsProxyManager;
 import org.openqa.selenium.internal.FileHandler;
-import org.openqa.selenium.internal.PortProber;
+import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.internal.TemporaryFilesystem;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.HttpCommandExecutor;

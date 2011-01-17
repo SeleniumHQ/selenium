@@ -26,7 +26,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.internal.Lock;
-import org.openqa.selenium.internal.PortProber;
+import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.internal.SocketLock;
 
 /**
