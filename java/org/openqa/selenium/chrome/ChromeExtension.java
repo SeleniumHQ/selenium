@@ -18,7 +18,7 @@ limitations under the License.
 package org.openqa.selenium.chrome;
 
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.internal.FileHandler;
+import org.openqa.selenium.io.FileHandler;
 
 import java.io.File;
 import java.io.FileNotFoundException;

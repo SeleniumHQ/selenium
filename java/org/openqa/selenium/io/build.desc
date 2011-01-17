@@ -1,4 +1,8 @@
 
 java_library(name = "io",
-  srcs = [ "*.java" ])
+  srcs = [ "*.java" ],
+  deps = [
+    "//java/org/openqa/selenium:base",
+    "//java/org/openqa/selenium/internal:codecs",
+  ])
 

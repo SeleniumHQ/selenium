@@ -27,7 +27,7 @@ import com.google.common.io.Closeables;
 import com.google.common.io.Files;
 import com.google.common.io.Resources;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.internal.FileHandler;
+import org.openqa.selenium.io.FileHandler;
 
 public class ClasspathExtension implements Extension {
   private final Class<?> loadResourcesUsing;

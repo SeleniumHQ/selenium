@@ -15,10 +15,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package org.openqa.selenium.internal;
+package org.openqa.selenium.io;
 
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.internal.FileHandler;
 
 import java.io.File;
 import java.io.IOException;

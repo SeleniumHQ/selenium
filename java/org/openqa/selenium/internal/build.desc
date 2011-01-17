@@ -2,11 +2,8 @@
 java_library(name = "internal",
   srcs = [
     "CommandLine.java",
-    "FileHandler.java",
     "Maps.java",
     "ProcessUtils.java",
-    "TemporaryFilesystem.java",
-    "Zip.java",
   ],
   deps = [
     "//java/org/openqa/selenium:webdriver-api",
@@ -18,3 +15,9 @@ java_library(name = "api",
     "Locatable.java",
     "Trace.java",
   ])
+
+java_library(name = "codecs",
+  srcs = [
+    "Base64Encoder.java",
+  ])
+

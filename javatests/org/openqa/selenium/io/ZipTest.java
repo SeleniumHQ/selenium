@@ -1,7 +1,10 @@
-package org.openqa.selenium.internal;
+package org.openqa.selenium.io;
 
 import junit.framework.TestCase;
+import org.openqa.selenium.internal.InProject;
 import org.openqa.selenium.io.Cleanly;
+import org.openqa.selenium.io.TemporaryFilesystem;
+import org.openqa.selenium.io.Zip;
 
 import java.io.File;
 import java.io.FileInputStream;

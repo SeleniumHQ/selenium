@@ -5,8 +5,8 @@ import junit.framework.TestCase;
 import java.io.File;
 import java.io.IOException;
 
-import org.openqa.selenium.internal.FileHandler;
-import org.openqa.selenium.internal.TemporaryFilesystem;
+import org.openqa.selenium.io.FileHandler;
+import org.openqa.selenium.io.TemporaryFilesystem;
 
 public class WindowsProxyManagerUnitTest extends TestCase {
   

@@ -17,7 +17,7 @@ limitations under the License.
 
 // Copyright 2008 Google Inc.  All Rights Reserved.
 
-package org.openqa.selenium.internal;
+package org.openqa.selenium.io;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -32,7 +32,6 @@ import java.lang.reflect.Method;
 import java.nio.channels.FileChannel;
 
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.io.Cleanly;
 
 /**
  * Utility methods for common filesystem activities

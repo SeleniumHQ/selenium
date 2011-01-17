@@ -24,7 +24,7 @@ import org.openqa.selenium.Build;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.TestSuiteBuilder;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.internal.FileHandler;
+import org.openqa.selenium.io.FileHandler;
 import org.openqa.selenium.internal.InProject;
 
 import junit.framework.Test;

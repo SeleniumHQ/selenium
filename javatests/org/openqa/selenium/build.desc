@@ -49,6 +49,7 @@ java_library(name = "tests",
     "html5/*Test.java",
     "interactions/*.java",
     "internal/**/*.java",
+    "io/*.java",
     "net/*.java",
   ],
   deps = [

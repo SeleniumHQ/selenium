@@ -32,8 +32,8 @@ import java.io.IOException;
 import java.util.Iterator;
 
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.internal.FileHandler;
-import org.openqa.selenium.internal.TemporaryFilesystem;
+import org.openqa.selenium.io.FileHandler;
+import org.openqa.selenium.io.TemporaryFilesystem;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 

@@ -21,8 +21,7 @@ import com.google.common.io.Resources;
 import com.thoughtworks.selenium.SeleniumException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.firefox.internal.Streams;
-import org.openqa.selenium.internal.TemporaryFilesystem;
+import org.openqa.selenium.io.TemporaryFilesystem;
 
 import java.io.File;
 import java.io.FileOutputStream;

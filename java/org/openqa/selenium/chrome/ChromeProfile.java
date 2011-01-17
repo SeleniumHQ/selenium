@@ -18,7 +18,7 @@ limitations under the License.
 package org.openqa.selenium.chrome;
 
 import org.openqa.selenium.Proxy;
-import org.openqa.selenium.internal.TemporaryFilesystem;
+import org.openqa.selenium.io.TemporaryFilesystem;
 
 import java.io.File;
 

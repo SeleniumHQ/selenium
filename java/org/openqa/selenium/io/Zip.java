@@ -1,6 +1,8 @@
-package org.openqa.selenium.internal;
+package org.openqa.selenium.io;
 
+import org.openqa.selenium.internal.Base64Encoder;
 import org.openqa.selenium.io.Cleanly;
+import org.openqa.selenium.io.FileHandler;
 
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;

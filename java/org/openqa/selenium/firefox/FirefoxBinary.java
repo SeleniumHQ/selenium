@@ -35,7 +35,7 @@ import org.openqa.selenium.internal.ProcessUtils;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.internal.Executable;
 import org.openqa.selenium.firefox.internal.Streams;
-import org.openqa.selenium.internal.FileHandler;
+import org.openqa.selenium.io.FileHandler;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 

@@ -19,7 +19,6 @@ package org.openqa.selenium.server;
 
 
 import com.google.common.base.Throwables;
-import com.google.common.io.Files;
 import com.google.common.io.Resources;
 import org.apache.commons.logging.Log;
 import org.openqa.jetty.http.HttpConnection;
@@ -30,7 +29,7 @@ import org.openqa.jetty.http.HttpResponse;
 import org.openqa.jetty.http.handler.ResourceHandler;
 import org.openqa.jetty.log.LogFactory;
 import org.openqa.jetty.util.StringUtil;
-import org.openqa.selenium.internal.TemporaryFilesystem;
+import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.server.BrowserSessionFactory.BrowserSessionInfo;
 import org.openqa.selenium.server.browserlaunchers.AsyncExecute;
 import org.openqa.selenium.server.browserlaunchers.BrowserLauncher;

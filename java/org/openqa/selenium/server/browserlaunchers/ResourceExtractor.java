@@ -17,7 +17,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import org.openqa.selenium.browserlaunchers.NullTrace;
-import org.openqa.selenium.internal.FileHandler;
+import org.openqa.selenium.io.FileHandler;
 import org.openqa.selenium.internal.Trace;
 
 import static org.openqa.selenium.server.browserlaunchers.LauncherUtils.getSeleniumResourceAsStream;

@@ -16,7 +16,7 @@ import java.util.logging.Logger;
 
 import com.google.common.annotations.VisibleForTesting;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.internal.TemporaryFilesystem;
+import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.remote.internal.CircularOutputStream;
 import org.openqa.selenium.remote.internal.SubProcess;
 

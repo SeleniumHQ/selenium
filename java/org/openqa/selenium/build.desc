@@ -9,6 +9,11 @@ java_library(name = "selenium",
     "//java/org/openqa/selenium/net",
   ])
 
+java_library(name = "base",
+  srcs = [
+    "WebDriverException.java",
+  ])
+
 java_library(name = "webdriver-api",
   srcs = [
     "Alert.java",
@@ -42,11 +47,9 @@ java_library(name = "webdriver-api",
     "UnableToSetCookieException.java",
     "UnhandledAlertException.java",
     "WebDriver.java",
-    "WebDriverException.java",
     "WebElement.java",
     "XPathLookupException.java",
     "html5/*.java",
-    "internal/Base64Encoder.java",
     "internal/FindsByClassName.java",
     "internal/FindsByCssSelector.java",
     "internal/FindsById.java",
@@ -60,7 +63,9 @@ java_library(name = "webdriver-api",
     "internal/WrapsElement.java",
   ],
   deps = [
+    ":base",
     "//java/org/openqa/selenium/internal:api",
+    "//java/org/openqa/selenium/internal:codecs",
   ])
 
 # TODO(simon): Break out the selenium emulation from the v1 implementation.

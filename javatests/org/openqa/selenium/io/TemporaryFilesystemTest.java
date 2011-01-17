@@ -1,4 +1,4 @@
-package org.openqa.selenium.internal;
+package org.openqa.selenium.io;
 
 import junit.framework.TestCase;
 
@@ -7,6 +7,7 @@ import java.io.IOException;
 
 import org.junit.Test;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.io.TemporaryFilesystem;
 
 public class TemporaryFilesystemTest extends TestCase {
 
