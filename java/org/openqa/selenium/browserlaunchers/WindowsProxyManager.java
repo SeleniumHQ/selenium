@@ -31,6 +31,8 @@ import org.openqa.selenium.io.FileHandler;
 import org.openqa.selenium.internal.Maps;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.internal.Trace;
+import org.openqa.selenium.os.WindowsRegistryException;
+import org.openqa.selenium.os.WindowsUtils;
 
 
 public class WindowsProxyManager {

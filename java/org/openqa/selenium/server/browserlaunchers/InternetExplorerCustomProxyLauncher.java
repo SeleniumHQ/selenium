@@ -20,7 +20,7 @@ import com.google.common.base.Throwables;
 import org.apache.commons.logging.Log;
 import org.openqa.jetty.log.LogFactory;
 import org.openqa.selenium.browserlaunchers.WindowsProxyManager;
-import org.openqa.selenium.browserlaunchers.WindowsUtils;
+import org.openqa.selenium.os.WindowsUtils;
 import org.openqa.selenium.os.CommandLine;
 import org.openqa.selenium.server.ApplicationRegistry;
 import org.openqa.selenium.server.BrowserConfigurationOptions;

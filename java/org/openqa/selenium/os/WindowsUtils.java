@@ -14,7 +14,7 @@
  *  limitations under the License.
  *
  */
-package org.openqa.selenium.browserlaunchers;
+package org.openqa.selenium.os;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.ByteArrayInputStream;
@@ -29,7 +29,7 @@ import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.openqa.selenium.os.CommandLine;
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.internal.NullTrace;
 import org.openqa.selenium.internal.Trace;
 import org.w3c.dom.Document;
@@ -37,12 +37,14 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 
+import static org.openqa.selenium.Platform.WINDOWS;
+
 public class WindowsUtils {
 
   public static Boolean regVersion1 = null;
   
   private static Trace log = new NullTrace();
-  private static final boolean THIS_IS_WINDOWS = File.pathSeparator.equals(";");
+  private static final boolean THIS_IS_WINDOWS = Platform.getCurrent().is(WINDOWS);
   private static String wmic = null;
   private static File wbem = null;
   private static String taskkill = null;

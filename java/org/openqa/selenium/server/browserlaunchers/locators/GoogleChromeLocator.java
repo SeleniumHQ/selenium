@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.server.browserlaunchers.locators;
 
-import org.openqa.selenium.browserlaunchers.WindowsUtils;
+import org.openqa.selenium.os.WindowsUtils;
 
 /**
  * Discovers a valid Google Chrome installation on local system.
@@ -41,7 +41,7 @@ public class GoogleChromeLocator extends SingleBrowserLocator {
     }
 
     protected String[] usualLauncherLocations() {
-        return WindowsUtils.thisIsWindows() ? usualWindowsLauncherLocations() : 
+        return WindowsUtils.thisIsWindows() ? usualWindowsLauncherLocations() :
             usualUnixLauncherLocations();
     }
 

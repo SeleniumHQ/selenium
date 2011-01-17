@@ -20,7 +20,8 @@ package org.openqa.selenium.server.browserlaunchers;
 import org.apache.commons.logging.Log;
 import org.openqa.jetty.log.LogFactory;
 import org.openqa.selenium.os.ProcessUtils;
-import org.openqa.selenium.browserlaunchers.WindowsUtils;
+import org.openqa.selenium.os.WindowsUtils;
+import org.openqa.selenium.os.UnixUtils;
 
 /**
  * Spawn a process and return the process handle so you can close it yourself

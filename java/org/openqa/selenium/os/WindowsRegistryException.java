@@ -1,6 +1,7 @@
-package org.openqa.selenium.browserlaunchers;
+package org.openqa.selenium.os;
 
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.os.WindowsUtils;
 
 @SuppressWarnings("serial")
 public class WindowsRegistryException extends WebDriverException {

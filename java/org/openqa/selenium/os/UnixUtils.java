@@ -2,12 +2,11 @@
  * Created on Oct 13, 2006
  *
  */
-package org.openqa.selenium.server.browserlaunchers;
+package org.openqa.selenium.os;
 
 import java.lang.reflect.Field;
 
 import org.openqa.selenium.Platform;
-import org.openqa.selenium.os.CommandLine;
 import org.openqa.selenium.internal.NullTrace;
 import org.openqa.selenium.internal.Trace;
 

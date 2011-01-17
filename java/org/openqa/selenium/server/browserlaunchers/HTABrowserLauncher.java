@@ -11,7 +11,7 @@ import java.io.IOException;
 
 import org.apache.commons.logging.Log;
 import org.openqa.jetty.log.LogFactory;
-import org.openqa.selenium.browserlaunchers.WindowsUtils;
+import org.openqa.selenium.os.WindowsUtils;
 import org.openqa.selenium.os.CommandLine;
 import org.openqa.selenium.io.FileHandler;
 import org.openqa.selenium.server.BrowserConfigurationOptions;
