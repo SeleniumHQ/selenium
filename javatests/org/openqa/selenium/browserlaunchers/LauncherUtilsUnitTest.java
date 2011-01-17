@@ -1,4 +1,4 @@
-package org.openqa.selenium.server.browserlaunchers;
+package org.openqa.selenium.browserlaunchers;
 
 import junit.framework.TestCase;
 
@@ -8,8 +8,10 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import org.openqa.selenium.browserlaunchers.Proxies;
-import org.openqa.selenium.server.BrowserConfigurationOptions;
+import org.openqa.selenium.remote.DesiredCapabilities;
+
+import static org.openqa.selenium.browserlaunchers.CapabilityType.ForSeleniumServer.AVOIDING_PROXY;
+import static org.openqa.selenium.browserlaunchers.CapabilityType.ForSeleniumServer.ONLY_PROXYING_SELENIUM_TRAFFIC;
 
 public class LauncherUtilsUnitTest extends TestCase {
 
@@ -289,10 +291,10 @@ public class LauncherUtilsUnitTest extends TestCase {
             proxyPacFile.delete();
         }
         try {
-          BrowserConfigurationOptions options = new BrowserConfigurationOptions();
-          options.setAvoidProxy(avoidProxy);
-          options.setOnlyProxySeleniumTraffic(proxySeleniumTrafficOnly);
-          Proxies.makeProxyPAC(parentDir, port, configuredProxy, proxyPort, nonProxyHosts, options.asCapabilities());
+          DesiredCapabilities capabilities = new DesiredCapabilities();
+          capabilities.setCapability(AVOIDING_PROXY, true);
+          capabilities.setCapability(ONLY_PROXYING_SELENIUM_TRAFFIC, true);
+          Proxies.makeProxyPAC(parentDir, port, configuredProxy, proxyPort, nonProxyHosts, capabilities);
         } catch (FileNotFoundException e) {
             fail();
         }

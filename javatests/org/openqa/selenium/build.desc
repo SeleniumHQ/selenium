@@ -55,6 +55,7 @@ java_library(name = "tests",
   ],
   deps = [
     ":base",
+    "//java/org/openqa/selenium/remote:common",
     "//javatests/org/openqa/selenium/environment",
     "//third_party/java/commons-io",
     "//third_party/java/jmock",

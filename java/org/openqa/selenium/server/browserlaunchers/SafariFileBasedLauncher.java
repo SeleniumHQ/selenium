@@ -3,6 +3,7 @@ package org.openqa.selenium.server.browserlaunchers;
 import java.io.File;
 import java.io.IOException;
 
+import org.openqa.selenium.browserlaunchers.LauncherUtils;
 import org.openqa.selenium.io.FileHandler;
 import org.openqa.selenium.server.BrowserConfigurationOptions;
 import org.openqa.selenium.server.RemoteControlConfiguration;

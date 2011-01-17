@@ -2,6 +2,7 @@ package org.openqa.selenium.server.browserlaunchers;
 
 import java.util.UUID;
 
+import org.openqa.selenium.browserlaunchers.AsyncExecute;
 import org.openqa.selenium.server.BrowserConfigurationOptions;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 

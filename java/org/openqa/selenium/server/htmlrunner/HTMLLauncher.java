@@ -8,10 +8,10 @@ import org.apache.commons.logging.Log;
 import org.openqa.jetty.log.LogFactory;
 import org.openqa.selenium.server.*;
 import org.openqa.selenium.server.BrowserSessionFactory.BrowserSessionInfo;
-import org.openqa.selenium.server.browserlaunchers.AsyncExecute;
+import org.openqa.selenium.browserlaunchers.AsyncExecute;
 import org.openqa.selenium.server.browserlaunchers.BrowserLauncher;
 import org.openqa.selenium.server.browserlaunchers.BrowserLauncherFactory;
-import org.openqa.selenium.server.browserlaunchers.LauncherUtils;
+import org.openqa.selenium.browserlaunchers.LauncherUtils;
 
 import java.io.File;
 import java.io.FileWriter;

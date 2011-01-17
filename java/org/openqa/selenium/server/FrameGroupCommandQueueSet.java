@@ -35,7 +35,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.commons.logging.Log;
 import org.openqa.jetty.log.LogFactory;
-import org.openqa.selenium.server.browserlaunchers.LauncherUtils;
+import org.openqa.selenium.browserlaunchers.LauncherUtils;
 
 
 /**

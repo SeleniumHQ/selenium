@@ -1,4 +1,4 @@
-package org.openqa.selenium.server.browserlaunchers;
+package org.openqa.selenium.browserlaunchers;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -19,7 +19,6 @@ import java.util.regex.Pattern;
 
 import com.google.common.base.Throwables;
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.browserlaunchers.Proxies;
 import org.openqa.selenium.internal.NullTrace;
 import org.openqa.selenium.internal.Trace;
 import org.openqa.selenium.io.FileHandler;
@@ -109,7 +108,8 @@ public class LauncherUtils {
     }
   }
 
-  protected static String getQueryString(String url) {
+  // TODO(simon): Should not be public
+  public static String getQueryString(String url) {
     final String query;
 
     try {
@@ -120,7 +120,8 @@ public class LauncherUtils {
     }
   }
 
-  protected static String getDefaultHTMLSuiteUrl(String browserURL, String suiteUrl, boolean multiWindow, int serverPort) {
+  // TODO(simon): Revert back to protected once the abstract browser launcher is in the same package
+  public static String getDefaultHTMLSuiteUrl(String browserURL, String suiteUrl, boolean multiWindow, int serverPort) {
     String url = LauncherUtils.stripStartURL(browserURL);
     String resultsUrl;
     if (serverPort == 0) {
@@ -136,7 +137,8 @@ public class LauncherUtils {
            + "&test=" + urlEncode(suiteUrl);
   }
 
-  protected static String getDefaultRemoteSessionUrl(String startURL, String sessionId, boolean multiWindow, int serverPort, boolean browserSideLog) {
+  // TODO(simon): Reduce visibility once server/browserlaunchers no more
+  public static String getDefaultRemoteSessionUrl(String startURL, String sessionId, boolean multiWindow, int serverPort, boolean browserSideLog) {
     String url = LauncherUtils.stripStartURL(startURL);
     url += "/selenium-server/core/RemoteRunner.html?"
            + "sessionId=" + sessionId
@@ -165,7 +167,8 @@ public class LauncherUtils {
     }
   }
 
-  protected static File extractHTAFile(File dir, int port, String resourceFile, String outFile) {
+  // TODO(simon): Reduce visibility.
+  public static File extractHTAFile(File dir, int port, String resourceFile, String outFile) {
     InputStream input = getSeleniumResourceAsStream(resourceFile);
     BufferedReader br = new BufferedReader(new InputStreamReader(input));
     File hta = new File(dir, outFile);
@@ -220,11 +223,13 @@ public class LauncherUtils {
     }
   }
 
-  protected static void copySingleFile(File sourceFile, File destFile) {
+  // TODO(simon): Replace with something not in LauncherUtils
+  public static void copySingleFile(File sourceFile, File destFile) {
     copySingleFileWithOverwrite(sourceFile, destFile, false);
   }
 
-  protected static void copySingleFileWithOverwrite(File sourceFile, File destFile, boolean overwrite) {
+  // TODO(simon): Replace me
+  public static void copySingleFileWithOverwrite(File sourceFile, File destFile, boolean overwrite) {
     // Ensure that the source is actually a file
     if (!sourceFile.exists()) {
       throw new RuntimeException("Source file does not exist: " + sourceFile);
@@ -246,7 +251,8 @@ public class LauncherUtils {
     }
   }
 
-  protected static void copyDirectory(File source, File dest) {
+  // TODO(simon): Replace me
+  public static void copyDirectory(File source, File dest) {
     try {
       FileHandler.copy(source, dest);
     } catch (IOException e) {
@@ -273,7 +279,8 @@ public class LauncherUtils {
     }
   }
 
-  protected static void generatePacAndPrefJs(File customProfileDir, int port, String homePage,
+  // TODO(simon): Reduce visibility
+  public static void generatePacAndPrefJs(File customProfileDir, int port, String homePage,
       boolean changeMaxConnections, int timeoutInSeconds, Capabilities capabilities)
       throws FileNotFoundException {
 

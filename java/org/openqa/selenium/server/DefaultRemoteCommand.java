@@ -19,7 +19,7 @@ package org.openqa.selenium.server;
 
 import java.util.regex.*;
 
-import org.openqa.selenium.server.browserlaunchers.*;
+import org.openqa.selenium.browserlaunchers.LauncherUtils;
 
 /**
  * The default implementation of the RemoteCommand interface

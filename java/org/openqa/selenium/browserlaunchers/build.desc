@@ -4,8 +4,8 @@ java_library(name = "browserlaunchers",
   deps = [
     "//java/com/thoughtworks/selenium:api",
     "//java/org/openqa/selenium:base",
-    "//java/org/openqa/selenium/internal",
     "//java/org/openqa/selenium/internal:logging",
     "//java/org/openqa/selenium:webdriver-api",
     "//java/org/openqa/selenium/os",
+    "//third_party/java/guava-libraries",
   ])

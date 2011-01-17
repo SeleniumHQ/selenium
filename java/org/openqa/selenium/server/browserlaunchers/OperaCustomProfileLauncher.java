@@ -24,6 +24,8 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.openqa.jetty.log.LogFactory;
+import org.openqa.selenium.browserlaunchers.AsyncExecute;
+import org.openqa.selenium.browserlaunchers.LauncherUtils;
 import org.openqa.selenium.browserlaunchers.Proxies;
 import org.openqa.selenium.os.WindowsUtils;
 import org.openqa.selenium.os.CommandLine;

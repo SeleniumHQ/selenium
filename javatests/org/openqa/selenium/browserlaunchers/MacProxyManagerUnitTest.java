@@ -1,4 +1,4 @@
-package org.openqa.selenium.server.browserlaunchers;
+package org.openqa.selenium.browserlaunchers;
 
 import junit.framework.TestCase;
 
@@ -16,7 +16,8 @@ import java.util.Map;
 import java.util.prefs.AbstractPreferences;
 import java.util.prefs.BackingStoreException;
 
-import org.openqa.selenium.server.browserlaunchers.MacProxyManager.MacNetworkSetupException;
+import org.openqa.selenium.browserlaunchers.MacProxyManager;
+import org.openqa.selenium.browserlaunchers.MacProxyManager.MacNetworkSetupException;
 
 public class MacProxyManagerUnitTest extends TestCase {
     

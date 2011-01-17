@@ -15,10 +15,10 @@
  *
  */
 
-package org.openqa.selenium.server.browserlaunchers;
+package org.openqa.selenium.browserlaunchers;
 
-import org.apache.commons.logging.Log;
-import org.openqa.jetty.log.LogFactory;
+import org.openqa.selenium.internal.NullTrace;
+import org.openqa.selenium.internal.Trace;
 import org.openqa.selenium.os.ProcessUtils;
 import org.openqa.selenium.os.WindowsUtils;
 import org.openqa.selenium.os.UnixUtils;
@@ -31,7 +31,7 @@ import org.openqa.selenium.os.UnixUtils;
  */
 public class AsyncExecute {
 
-  static Log log = LogFactory.getLog(AsyncExecute.class);
+  static Trace log = new NullTrace();
 
   /**
    * Sleeps without explicitly throwing an InterruptedException

@@ -4,7 +4,7 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.logging.Log;
 import org.openqa.jetty.log.LogFactory;
 import org.openqa.selenium.server.IOHelper;
-import org.openqa.selenium.server.browserlaunchers.LauncherUtils;
+import org.openqa.selenium.browserlaunchers.LauncherUtils;
 
 import java.io.File;
 import java.io.IOException;

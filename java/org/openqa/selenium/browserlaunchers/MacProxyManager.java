@@ -14,7 +14,7 @@
  *  limitations under the License.
  *
  */
-package org.openqa.selenium.server.browserlaunchers;
+package org.openqa.selenium.browserlaunchers;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,10 +25,10 @@ import java.util.Set;
 import java.util.prefs.Preferences;
 import java.util.regex.Pattern;
 
-import org.apache.commons.logging.Log;
-import org.openqa.jetty.log.LogFactory;
+import org.openqa.selenium.internal.NullTrace;
+import org.openqa.selenium.internal.Trace;
 import org.openqa.selenium.os.CommandLine;
-import org.openqa.selenium.internal.Maps;
+//import org.openqa.selenium.server.browserlaunchers.LauncherUtils;
 
 /**
  * Class to manage the proxy server on OS X.  It uses the 'networksetup' tool to do
@@ -42,7 +42,7 @@ import org.openqa.selenium.internal.Maps;
  *
  */
 public class MacProxyManager {
-    static Log log = LogFactory.getLog(MacProxyManager.class);
+    static Trace log = new NullTrace();
     
     private static final Pattern SCUTIL_LINE = Pattern.compile("^  (\\S+) : (.*)$");
     private static final Pattern NETWORKSETUP_LISTORDER_LINE = Pattern.compile("\\(Hardware Port: ([^,]*), Device: ([^\\)]*)\\)");
@@ -79,10 +79,10 @@ public class MacProxyManager {
         if (networkService == null) {
             getCurrentNetworkSettings();
         }
-        customProxyPACDir = LauncherUtils.createCustomProfileDir(sessionId);
-        if (customProxyPACDir.exists()) {
-            LauncherUtils.recursivelyDeleteDir(customProxyPACDir);
-        }
+//        customProxyPACDir = LauncherUtils.createCustomProfileDir(sessionId);
+//        if (customProxyPACDir.exists()) {
+//            LauncherUtils.recursivelyDeleteDir(customProxyPACDir);
+//        }
         customProxyPACDir.mkdir();
         log.info("Modifying OS X global network settings...");
         // TODO Disable proxy PAC URL (or, even better, use one!) SRC-364

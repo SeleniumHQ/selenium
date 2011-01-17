@@ -18,7 +18,7 @@ package org.openqa.selenium.server;
 
 import org.openqa.jetty.util.IO;
 import org.openqa.jetty.util.Resource;
-import static org.openqa.selenium.server.browserlaunchers.LauncherUtils.getSeleniumResourceAsStream;
+import static org.openqa.selenium.browserlaunchers.LauncherUtils.getSeleniumResourceAsStream;
 
 import java.io.*;
 import java.net.MalformedURLException;

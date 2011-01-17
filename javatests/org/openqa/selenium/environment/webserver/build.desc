@@ -2,7 +2,6 @@
 java_library(name = "webserver",
   srcs = [ "*.java" ],
   deps = [
-    "//java/org/openqa/selenium/internal",
     "//java/org/openqa/selenium/net",
     "//javatests/org/openqa/selenium/internal:utils",
     "//third_party/java/jetty",

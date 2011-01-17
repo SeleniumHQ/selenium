@@ -4,6 +4,7 @@ import junit.framework.TestCase;
 
 import org.apache.commons.logging.Log;
 import org.openqa.jetty.log.LogFactory;
+import org.openqa.selenium.browserlaunchers.AsyncExecute;
 import org.openqa.selenium.server.BrowserConfigurationOptions;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 

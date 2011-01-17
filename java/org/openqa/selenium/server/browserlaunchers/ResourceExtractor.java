@@ -16,11 +16,12 @@ import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import org.openqa.selenium.browserlaunchers.LauncherUtils;
 import org.openqa.selenium.internal.NullTrace;
 import org.openqa.selenium.io.FileHandler;
 import org.openqa.selenium.internal.Trace;
 
-import static org.openqa.selenium.server.browserlaunchers.LauncherUtils.getSeleniumResourceAsStream;
+import static org.openqa.selenium.browserlaunchers.LauncherUtils.getSeleniumResourceAsStream;
 
 
 public class ResourceExtractor {

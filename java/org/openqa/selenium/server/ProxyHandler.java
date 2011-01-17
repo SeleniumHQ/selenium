@@ -56,7 +56,7 @@ import org.openqa.jetty.util.LineInput;
 import org.openqa.jetty.util.LogSupport;
 import org.openqa.jetty.util.StringMap;
 import org.openqa.jetty.util.URI;
-import org.openqa.selenium.server.browserlaunchers.LauncherUtils;
+import org.openqa.selenium.browserlaunchers.LauncherUtils;
 import org.openqa.selenium.server.browserlaunchers.ResourceExtractor;
 import org.openqa.selenium.server.commands.AddCustomRequestHeaderCommand;
 import org.openqa.selenium.server.commands.CaptureNetworkTrafficCommand;

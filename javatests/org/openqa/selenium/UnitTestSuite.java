@@ -23,8 +23,8 @@ import org.openqa.selenium.server.StaticContentHandlerUnitTest;
 import org.openqa.selenium.server.browserlaunchers.AbstractBrowserLauncherUnitTest;
 import org.openqa.selenium.server.browserlaunchers.BrowserLauncherFactoryUnitTest;
 import org.openqa.selenium.server.browserlaunchers.FirefoxChromeLauncherUnitTest;
-import org.openqa.selenium.server.browserlaunchers.LauncherUtilsUnitTest;
-import org.openqa.selenium.server.browserlaunchers.MacProxyManagerUnitTest;
+import org.openqa.selenium.browserlaunchers.LauncherUtilsUnitTest;
+import org.openqa.selenium.browserlaunchers.MacProxyManagerUnitTest;
 import org.openqa.selenium.server.browserlaunchers.MakeProxyPacUnitTest;
 import org.openqa.selenium.server.mock.MockPIFrameUnitTest;
  

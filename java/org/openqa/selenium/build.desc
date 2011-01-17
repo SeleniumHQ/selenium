@@ -5,7 +5,6 @@ java_library(name = "selenium",
     "//java/com/thoughtworks/selenium:api",
     "//java/org/openqa/selenium/browserlaunchers",
     "//java/org/openqa/selenium/interactions",
-    "//java/org/openqa/selenium/internal",
     "//java/org/openqa/selenium/net",
   ])
 
@@ -82,7 +81,6 @@ java_library(name = "selenium-api",
     "//java/org/openqa/selenium/chrome",
     "//java/org/openqa/selenium/firefox",
     "//java/org/openqa/selenium/ie",
-    "//java/org/openqa/selenium/internal",
     "//third_party/java/guava-libraries",
     "//third_party/java/json",
   ])

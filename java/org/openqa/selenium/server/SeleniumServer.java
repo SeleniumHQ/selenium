@@ -37,13 +37,13 @@ import org.openqa.jetty.http.handler.SecurityHandler;
 import org.openqa.jetty.jetty.Server;
 import org.openqa.jetty.jetty.servlet.ServletHandler;
 import org.openqa.jetty.util.MultiException;
+import org.openqa.selenium.browserlaunchers.AsyncExecute;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.browserlaunchers.WindowsProxyManager;
 import org.openqa.selenium.os.WindowsUtils;
 import org.openqa.selenium.remote.server.DefaultDriverSessions;
 import org.openqa.selenium.remote.server.DriverServlet;
 import org.openqa.selenium.server.BrowserSessionFactory.BrowserSessionInfo;
-import org.openqa.selenium.server.browserlaunchers.AsyncExecute;
 import org.openqa.selenium.server.browserlaunchers.ResourceExtractor;
 import org.openqa.selenium.server.cli.RemoteControlLauncher;
 import org.openqa.selenium.server.htmlrunner.HTMLLauncher;
@@ -53,7 +53,7 @@ import org.openqa.selenium.server.htmlrunner.SingleTestSuiteResourceHandler;
 import org.openqa.selenium.server.log.LoggingManager;
 
 import static java.lang.String.format;
-import static org.openqa.selenium.server.browserlaunchers.LauncherUtils.getSeleniumResourceAsStream;
+import static org.openqa.selenium.browserlaunchers.LauncherUtils.getSeleniumResourceAsStream;
 
 /**
  * Provides a server that can launch/terminate browsers and can receive remote Selenium commands

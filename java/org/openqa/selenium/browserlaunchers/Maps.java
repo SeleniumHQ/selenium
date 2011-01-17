@@ -16,14 +16,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package org.openqa.selenium.internal;
+package org.openqa.selenium.browserlaunchers;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Maps {
+// Deliberately set to package level visibility
+class Maps {
   /**
    * Run the specified pattern on each line of the data to extract a dictionary
    */
@@ -46,9 +47,4 @@ public class Maps {
     }
     return map;
   }
-
-  public static Map<String, String> parseDictionary(String data, Pattern pattern) {
-    return parseDictionary(data, pattern, false);
-  }
-
 }
