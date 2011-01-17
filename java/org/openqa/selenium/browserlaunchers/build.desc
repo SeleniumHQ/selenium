@@ -3,5 +3,8 @@ java_library(name = "browserlaunchers",
   srcs = [ "*.java" ],
   deps = [
     "//java/com/thoughtworks/selenium:api",
+    "//java/org/openqa/selenium:base",
     "//java/org/openqa/selenium/internal",
+    "//java/org/openqa/selenium/internal:logging",
+    "//java/org/openqa/selenium:webdriver-api",
   ])

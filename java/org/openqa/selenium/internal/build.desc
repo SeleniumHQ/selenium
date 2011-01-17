@@ -12,11 +12,16 @@ java_library(name = "internal",
 java_library(name = "api",
   srcs = [
     "Locatable.java",
-    "Trace.java",
   ])
 
 java_library(name = "codecs",
   srcs = [
     "Base64Encoder.java",
+  ])
+
+java_library(name = "logging",
+  srcs = [
+    "NullTrace.java",
+    "Trace.java",
   ])
 

@@ -1,4 +1,4 @@
-package org.openqa.selenium.browserlaunchers;
+package org.openqa.selenium.internal;
 
 import org.openqa.selenium.internal.Trace;
 
