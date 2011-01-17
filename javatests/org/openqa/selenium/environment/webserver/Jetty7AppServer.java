@@ -25,7 +25,7 @@ import org.eclipse.jetty.server.ssl.SslSocketConnector;
 import org.eclipse.jetty.servlets.MultiPartFilter;
 import org.eclipse.jetty.webapp.WebAppContext;
 import org.openqa.selenium.internal.InProject;
-import org.openqa.selenium.networkutils.NetworkUtils;
+import org.openqa.selenium.net.NetworkUtils;
 
 import java.io.File;
 

@@ -1,0 +1,7 @@
+
+java_library(name = "net",
+  srcs = [ "*.java" ],
+  deps = [
+    "//java/org/openqa/selenium/net",
+    "//third_party/java/junit",
+  ]) 

@@ -6,7 +6,7 @@ java_library(name = "selenium",
     "//java/org/openqa/selenium/browserlaunchers",
     "//java/org/openqa/selenium/interactions",
     "//java/org/openqa/selenium/internal",
-    "//java/org/openqa/selenium/networkutils",
+    "//java/org/openqa/selenium/net",
   ])
 
 java_library(name = "webdriver-api",

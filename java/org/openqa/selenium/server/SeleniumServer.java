@@ -37,7 +37,7 @@ import org.openqa.jetty.http.handler.SecurityHandler;
 import org.openqa.jetty.jetty.Server;
 import org.openqa.jetty.jetty.servlet.ServletHandler;
 import org.openqa.jetty.util.MultiException;
-import org.openqa.selenium.networkutils.NetworkUtils;
+import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.browserlaunchers.WindowsProxyManager;
 import org.openqa.selenium.browserlaunchers.WindowsUtils;
 import org.openqa.selenium.remote.server.DefaultDriverSessions;

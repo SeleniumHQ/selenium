@@ -27,7 +27,7 @@ import java.net.Socket;
 import java.net.URL;
 
 import org.openqa.selenium.internal.Lock;
-import org.openqa.selenium.networkutils.NetworkUtils;
+import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.ExtensionConnection;
 import org.openqa.selenium.firefox.FirefoxBinary;

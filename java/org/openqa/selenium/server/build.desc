@@ -56,7 +56,7 @@ java_library(name = "base",
   deps = [
     "//java/cybervillains",
     "//java/org/openqa/selenium/remote/server",
-    "//java/org/openqa/selenium/networkutils",
+    "//java/org/openqa/selenium/net",
     "//java/org/openqa/selenium/support",
     "//java/org/openqa/jetty",
     "//third_party/java/servlet-api"

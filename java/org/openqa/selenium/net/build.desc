@@ -1,6 +1,6 @@
 
 
-java_library(name = "networkutils",
+java_library(name = "net",
   srcs = [
     "*.java",
   ],
