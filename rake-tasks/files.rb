@@ -84,7 +84,7 @@ def copy_prebuilt(prebuilt, out)
   elsif File.exists?(prebuilt)
     puts "Falling back to copy of: #{prebuilt}"
     mkdir_p dir
-    cp_r prebuilt, out
+    cp prebuilt, out
   else
     puts "Unable to locate prebuilt copy of #{out}"
   end
@@ -97,6 +97,10 @@ def copy_to_prebuilt(out, prebuilt)
   if File.directory? src
     cp_r src + "/.", dest
   else
-    cp src, dest
+    if File.exist? prebuilt
+      cp src, prebuilt
+    else
+      cp src, dest
+    end
   end
 end
