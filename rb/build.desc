@@ -128,8 +128,8 @@ ruby_library(name = "ie",
     "lib/selenium/webdriver/ie.rb"
   ],
   resources = [
-    {"../jobbie/prebuilt/Win32/Release/IEDriver.dll" : "rb/lib/selenium/webdriver/ie/native/win32/IEDriver.dll"},
-    {"../jobbie/prebuilt/x64/Release/IEDriver.dll" : "rb/lib/selenium/webdriver/ie/native/x64/IEDriver.dll"}
+    {"../cpp/prebuilt/Win32/Release/IEDriver.dll" : "rb/lib/selenium/webdriver/ie/native/win32/IEDriver.dll"},
+    {"../cpp/prebuilt/x64/Release/IEDriver.dll" : "rb/lib/selenium/webdriver/ie/native/x64/IEDriver.dll"}
   ],
   deps = [
     ":common",

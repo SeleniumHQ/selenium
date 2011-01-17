@@ -145,7 +145,7 @@ class Tasks
   end
 
   def copy_prebuilt(fun, out)
-    src = fun.find_prebuilt(out)
+    src = fun.find_prebuilt(out) or raise "unable to find prebuilt for #{out.inspect}"
 
     mkdir_p File.dirname(out)
     puts "Falling back to #{src}"

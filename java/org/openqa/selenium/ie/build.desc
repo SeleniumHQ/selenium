@@ -2,8 +2,8 @@
 java_library(name = "ie",
   srcs  = [ "*.java" ],
   resources = [
-    {"//jobbie:ie_win32_dll" : "x86/IEDriver.dll"},
-    {"//jobbie:ie_x64_dll" : "amd64/IEDriver.dll"}
+    {"//cpp:ie_win32_dll" : "x86/IEDriver.dll"},
+    {"//cpp:ie_x64_dll" : "amd64/IEDriver.dll"}
   ],
   deps = [
     ":ie_result_type_java",
