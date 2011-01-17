@@ -5,4 +5,7 @@ java_library(name = "selenesedriver",
   ],
   deps = [
     "//java/com/thoughtworks/selenium",
+    "//java/org/openqa/selenium:webdriver-api",
+    "//third_party/java/guava-libraries",
+    "//third_party/java/json",
   ])

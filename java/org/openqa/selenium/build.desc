@@ -107,6 +107,7 @@ java_library(name = "selenium-backed-webdriver",
   ],
   deps = [
     "//java/org/openqa/selenium/internal/selenesedriver",
+    "//java/org/openqa/selenium/firefox",
     "//java/org/openqa/selenium/remote:client",
   ])
 

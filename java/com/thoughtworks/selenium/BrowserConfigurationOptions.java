@@ -3,10 +3,6 @@ package com.thoughtworks.selenium;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.openqa.selenium.remote.BeanToJsonConverter;
-import org.openqa.selenium.remote.JsonToBeanConverter;
-import org.openqa.selenium.browserlaunchers.DoNotUseProxyPac;
-
 /**
  * Contains parameters for a single Selenium browser session.
  * 
@@ -187,24 +183,6 @@ public class BrowserConfigurationOptions {
     
     public String getCommandLineFlags() {
       return get(COMMAND_LINE_FLAGS);
-    }
-
-    public BrowserConfigurationOptions setProxyConfig(DoNotUseProxyPac pac) {
-      put(PROXY_CONFIG, new BeanToJsonConverter().convert(pac));
-      return this;
-    }
-
-    public DoNotUseProxyPac getProxyConfig() {
-      String raw = get(PROXY_CONFIG);
-      if (raw == null) {
-        return null;
-      }
-
-      try {
-        return new JsonToBeanConverter().convert(DoNotUseProxyPac.class, raw);
-      } catch (Exception e) {
-        throw new SeleniumException("Unable to retrieve proxy configuration", e);
-      }
     }
 
     protected boolean canUse(String value) {

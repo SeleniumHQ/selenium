@@ -17,9 +17,6 @@
 
 package com.thoughtworks.selenium;
 
-import org.openqa.selenium.WebDriverCommandProcessor;
-import org.openqa.selenium.remote.DesiredCapabilities;
-
 /** The default implementation of the Selenium interface; <i>end users will primarily interact with this object.</i> */
 public class DefaultSelenium implements Selenium {
 
@@ -57,13 +54,6 @@ public class DefaultSelenium implements Selenium {
     }
 
   private CommandProcessor detectCommandProcessor(String serverHost, int serverPort, String browserStartCommand, String browserURL) {
-    if ("*webdriver".equals(browserStartCommand)) {
-      return new WebDriverCommandProcessor(browserURL);
-    } else if ("*firefox-wd".equals(browserStartCommand)) {
-      return new WebDriverCommandProcessor(browserURL, DesiredCapabilities.firefox());
-    } else if ("*iexplore-wd".equals(browserStartCommand)) {
-      return new WebDriverCommandProcessor(browserURL, DesiredCapabilities.internetExplorer());
-    }
     return new HttpCommandProcessor(serverHost, serverPort, browserStartCommand, browserURL);
   }
 

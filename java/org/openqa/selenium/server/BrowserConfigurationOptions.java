@@ -157,20 +157,7 @@ public class BrowserConfigurationOptions {
   }
 
   public boolean isProxyRequired() {
-    return is("proxyRequired") || getProxyConfig() != null;
-  }
-
-  public DoNotUseProxyPac getProxyConfig() {
-    String raw = get(PROXY_PAC);
-    if (raw == null) {
-      return null;
-    }
-
-    try {
-      return new JsonToBeanConverter().convert(DoNotUseProxyPac.class, raw);
-    } catch (Exception e) {
-      throw new SeleniumException("Unable to retrieve proxy configuration", e);
-    }
+    return is("proxyRequired"); // || getProxyConfig() != null;
   }
 
   public boolean isEnsuringCleanSession() {
