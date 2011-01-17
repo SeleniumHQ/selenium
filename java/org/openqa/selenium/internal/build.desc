@@ -3,7 +3,6 @@ java_library(name = "internal",
   srcs = [
     "CommandLine.java",
     "FileHandler.java",
-    "IOUtils.java",
     "Maps.java",
     "ProcessUtils.java",
     "TemporaryFilesystem.java",

@@ -1,4 +1,4 @@
-package org.openqa.selenium.internal;
+package org.openqa.selenium.io;
 
 import java.io.IOException;
 import java.io.InputStream;

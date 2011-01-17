@@ -1,7 +1,7 @@
 package org.openqa.selenium.internal;
 
 import org.openqa.selenium.Platform;
-import org.openqa.selenium.internal.IOUtils;
+import org.openqa.selenium.io.IOUtils;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
