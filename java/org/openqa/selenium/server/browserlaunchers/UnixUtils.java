@@ -6,19 +6,21 @@ package org.openqa.selenium.server.browserlaunchers;
 
 import java.lang.reflect.Field;
 
-import org.apache.commons.logging.Log;
-import org.openqa.jetty.log.LogFactory;
-import org.openqa.selenium.browserlaunchers.WindowsUtils;
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.internal.CommandLine;
+import org.openqa.selenium.internal.NullTrace;
+import org.openqa.selenium.internal.Trace;
+
+import static org.openqa.selenium.Platform.WINDOWS;
 
 /** Handy utilities for managing Unix/Linux processes */
 public class UnixUtils {
     
-    static Log log = LogFactory.getLog(UnixUtils.class);
+    static Trace log = new NullTrace();
     
     /** retrieves the pid */
     public static int getProcessId(Process p) {
-        if (WindowsUtils.thisIsWindows()) {
+        if (Platform.getCurrent().is(WINDOWS)) {
             throw new IllegalStateException("UnixUtils may not be used on Windows");
         }
         try {
