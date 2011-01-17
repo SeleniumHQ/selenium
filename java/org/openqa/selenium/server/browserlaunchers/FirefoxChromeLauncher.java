@@ -197,7 +197,7 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
     }
 
     LauncherUtils.generatePacAndPrefJs(customProfileDir, getPort(), homePage,
-        changeMaxConnections, getTimeout(), browserConfigurationOptions);
+        changeMaxConnections, getTimeout(), browserConfigurationOptions.asCapabilities());
   }
 
   private String makeCustomProfile(String homePage) throws IOException {

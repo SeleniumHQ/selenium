@@ -18,24 +18,24 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.google.common.base.Throwables;
-import org.apache.commons.logging.Log;
-import org.openqa.jetty.log.LogFactory;
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.browserlaunchers.Proxies;
+import org.openqa.selenium.internal.NullTrace;
+import org.openqa.selenium.internal.Trace;
 import org.openqa.selenium.io.FileHandler;
-import org.openqa.selenium.server.BrowserConfigurationOptions;
-import org.openqa.selenium.server.ClassPathResource;
 
 /**
  * Various static utility functions used to launch browsers
  */
 public class LauncherUtils {
 
-  static Log log = LogFactory.getLog(LauncherUtils.class);
+  static Trace log = new NullTrace();
 
   /**
    * creates an empty temp directory for managing a browser profile
    */
-  protected static File createCustomProfileDir(String sessionId) {
+  // TODO(simon): Change this back to protected once moved into browserlaunchers
+  public static File createCustomProfileDir(String sessionId) {
     final File customProfileDir;
 
     customProfileDir = customProfileDir(sessionId);
@@ -188,7 +188,7 @@ public class LauncherUtils {
   }
 
   public static InputStream getSeleniumResourceAsStream(String resourceFile) {
-    Class clazz = ClassPathResource.class;
+    Class clazz = LauncherUtils.class;
     InputStream input = clazz.getResourceAsStream(resourceFile);
     if (input == null) {
       try {
@@ -274,7 +274,7 @@ public class LauncherUtils {
   }
 
   protected static void generatePacAndPrefJs(File customProfileDir, int port, String homePage,
-      boolean changeMaxConnections, int timeoutInSeconds, BrowserConfigurationOptions options)
+      boolean changeMaxConnections, int timeoutInSeconds, Capabilities capabilities)
       throws FileNotFoundException {
 
 
@@ -283,9 +283,10 @@ public class LauncherUtils {
     // Don't ask if we want to switch default browsers
     out.println("user_pref('browser.shell.checkDefaultBrowser', false);");
 
-    if (options.isProxyRequired()) {
+    // TODO(simon): Remove hard-coded string
+    if (Proxies.isProxyRequired(capabilities)) {
       // Configure us as the local proxy
-      File proxyPAC = Proxies.makeProxyPAC(customProfileDir, port, options.asCapabilities());
+      File proxyPAC = Proxies.makeProxyPAC(customProfileDir, port, capabilities);
       out.println("user_pref('network.proxy.type', 2);");
       out.println("user_pref('network.proxy.autoconfig_url', '"
                   + pathToBrowserURL(proxyPAC.getAbsolutePath()) + "');");

@@ -111,7 +111,7 @@ public class FirefoxCustomProfileLauncher extends AbstractBrowserLauncher {
             LauncherUtils.copySingleFileWithOverwrite(new File(firefoxProfileTemplate, "cert8.db"), new File(customProfileDir, "cert8.db"), true);
         }
 
-        LauncherUtils.generatePacAndPrefJs(customProfileDirectory, getPort(), null, changeMaxConnections, getTimeout(), browserConfigurationOptions);
+        LauncherUtils.generatePacAndPrefJs(customProfileDirectory, getPort(), null, changeMaxConnections, getTimeout(), browserConfigurationOptions.asCapabilities());
     }
 
     /** Implementation identical to that in FirefoxChromeLauncher. **/
