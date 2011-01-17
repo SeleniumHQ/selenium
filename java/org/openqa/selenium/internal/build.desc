@@ -1,7 +1,6 @@
 
 java_library(name = "internal",
   srcs = [
-    "Cleanly.java",
     "CommandLine.java",
     "FileHandler.java",
     "IOUtils.java",
@@ -12,6 +11,7 @@ java_library(name = "internal",
   ],
   deps = [
     "//java/org/openqa/selenium:webdriver-api",
+    "//java/org/openqa/selenium/io",
   ])
 
 java_library(name = "api",

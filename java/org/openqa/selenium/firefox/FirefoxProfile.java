@@ -34,7 +34,7 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.internal.ClasspathExtension;
 import org.openqa.selenium.firefox.internal.Extension;
 import org.openqa.selenium.firefox.internal.FileExtension;
-import org.openqa.selenium.internal.Cleanly;
+import org.openqa.selenium.io.Cleanly;
 import org.openqa.selenium.internal.TemporaryFilesystem;
 import org.openqa.selenium.internal.Zip;
 

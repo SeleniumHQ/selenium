@@ -1,6 +1,7 @@
 package org.openqa.selenium.internal;
 
 import junit.framework.TestCase;
+import org.openqa.selenium.io.Cleanly;
 
 import java.io.File;
 import java.io.FileInputStream;

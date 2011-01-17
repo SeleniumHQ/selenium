@@ -32,6 +32,7 @@ import java.lang.reflect.Method;
 import java.nio.channels.FileChannel;
 
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.io.Cleanly;
 
 /**
  * Utility methods for common filesystem activities

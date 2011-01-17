@@ -1,5 +1,7 @@
 package org.openqa.selenium.internal;
 
+import org.openqa.selenium.io.Cleanly;
+
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
