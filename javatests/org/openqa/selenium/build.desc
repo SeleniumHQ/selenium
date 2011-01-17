@@ -49,7 +49,7 @@ java_library(name = "tests",
     "html5/*Test.java",
     "interactions/*.java",
     "internal/**/*.java",
-    "networkutils/*.java",
+    "net/*.java",
   ],
   deps = [
     ":base",
