@@ -36,6 +36,12 @@ import static org.openqa.selenium.browserlaunchers.CapabilityType.ForSeleniumSer
 import static org.openqa.selenium.browserlaunchers.CapabilityType.PROXY;
 
 public class Proxies {
+  public static final String PROXY_CONFIG = "proxy";
+
+  public static boolean isProxyRequired(Capabilities capabilities) {
+    return capabilities.is("proxyRequired") || capabilities.getCapability(PROXY_CONFIG) != null;
+  }
+
 
   /**
    * Generate a proxy.pac file, configuring a dynamic proxy. <p/> If
