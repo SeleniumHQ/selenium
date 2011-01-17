@@ -1,7 +1,3 @@
-
-mozilla_xpt(name = "native_events_xpt",
-  srcs = [ "src/cpp/webdriver-firefox/nsINativeEvents.idl" ])
-
 mozilla_xpt(name = "command_processor_xpt",
   srcs = [ "src/extension/idl/nsICommandProcessor.idl" ])
 
@@ -21,13 +17,13 @@ mozilla_extension(name = "webdriver",
     "src/extension/components/*.js",
     ":command_processor_xpt",
     ":httpd_xpt",
-    ":native_events_xpt",
+    "//cpp:native_events_xpt",
     ":response_handler_xpt"
   ],
   resources = [
-    { ":firefox_dll" : "platform/WINNT_x86-msvc/components/webdriver-firefox.dll" },
-    { ":libwebdriver_firefox_so" : "platform/Linux_x86-gcc3/components/libwebdriver-firefox.so" },
-    { ":libwebdriver_firefox_so64" : "platform/Linux_x86_64-gcc3/components/libwebdriver-firefox.so" },
+    { "//cpp:firefox_dll" : "platform/WINNT_x86-msvc/components/webdriver-firefox.dll" },
+    { "//cpp:libwebdriver_firefox_so" : "platform/Linux_x86-gcc3/components/libwebdriver-firefox.so" },
+    { "//cpp:libwebdriver_firefox_so64" : "platform/Linux_x86_64-gcc3/components/libwebdriver-firefox.so" },
     { ":atoms" : "resource/modules/atoms.js" },
     { ":utils" : "resource/modules/utils.js" },
     { "src/js/timer.js" : "resource/modules/timer.js" },
@@ -61,31 +57,4 @@ js_binary(name = "utils",
     "//common/src/js/webdriver:atoms"
   ])
 
-gcc_library(name = "noblur",
-  srcs = [ "src/cpp/linux-specific/*.c" ],
-  arch = "i386")
-
-gcc_library(name = "noblur64",
-  srcs = [ "src/cpp/linux-specific/*.c" ],
-  arch = "amd64")
-
-visualc_library(name = "firefox_dll",
-  platform = "Win32",
-  solution = "WebDriver.sln",
-  target = "webdriver-firefox",
-  out = "Win32/Release/webdriver-firefox.dll"
-)
-
-
 # Temporary rules while we migrate
-#rake_task(name = "firefox_dll",
-#  task_name = "firefox_dll",
-#  out = "build/Win32/Release/webdriver-firefox.dll")
-
-rake_task(name = "libwebdriver_firefox_so",
-  task_name = "libwebdriver_firefox_so",
-  out = "build/linux/Release/libwebdriver-firefox.so")
-
-rake_task(name = "libwebdriver_firefox_so64",
-  task_name = "libwebdriver_firefox_so64",
-  out = "build/linux64/Release/libwebdriver-firefox.so")

@@ -24,15 +24,15 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "web", "common\src\web\", "{
 		StartServerOnDebug = "false"
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "InternetExplorerDriver", "jobbie\src\cpp\InternetExplorerDriver\InternetExplorerDriver.vcproj", "{0BC72326-88BE-4369-9077-74AA7B2BE15D}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "InternetExplorerDriver", "cpp\InternetExplorerDriver\InternetExplorerDriver.vcproj", "{0BC72326-88BE-4369-9077-74AA7B2BE15D}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "webdriver-interactions", "common\src\cpp\webdriver-interactions\webdriver-interactions.vcproj", "{87FA39A1-958E-478A-8AB9-6D5E5AAA3886}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "webdriver-interactions", "cpp\webdriver-interactions\webdriver-interactions.vcproj", "{87FA39A1-958E-478A-8AB9-6D5E5AAA3886}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "webdriver-firefox", "firefox\src\cpp\webdriver-firefox\webdriver-firefox.vcproj", "{A9D3BB2D-FD1E-43A2-80F6-F8320682323E}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "webdriver-firefox", "cpp\webdriver-firefox\webdriver-firefox.vcproj", "{A9D3BB2D-FD1E-43A2-80F6-F8320682323E}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "npchromedriver", "chrome\src\cpp\npchromedriver\npchromedriver.vcproj", "{2A4FDEBC-1AB8-4E35-8806-E4CC12285526}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "npchromedriver", "cpp\npchromedriver\npchromedriver.vcproj", "{2A4FDEBC-1AB8-4E35-8806-E4CC12285526}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "IEDriver", "jobbie\src\cpp\IEDriver\IEDriver.vcproj", "{BB72383B-427F-4191-B692-E4345A30E33C}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "IEDriver", "cpp\IEDriver\IEDriver.vcproj", "{BB72383B-427F-4191-B692-E4345A30E33C}"
 	ProjectSection(ProjectDependencies) = postProject
 		{9AEBD612-232D-40CB-BE2C-F2B911FD6228} = {9AEBD612-232D-40CB-BE2C-F2B911FD6228}
 		{320F3BBE-8223-4E7F-ABEE-18D3BD57B1FD} = {320F3BBE-8223-4E7F-ABEE-18D3BD57B1FD}

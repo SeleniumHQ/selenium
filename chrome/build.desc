@@ -2,7 +2,7 @@
 mozilla_extension(name = "chrome_extension",
   srcs  = [ "src/extension/**" ],
   resources = [
-    { ":chrome_dll" : "npchromedriver.dll" },
+    { "//cpp:chrome_dll" : "npchromedriver.dll" },
     { "src/extension/**" : "" }
   ],
   out = "chrome-extension.zip")
@@ -10,11 +10,4 @@ mozilla_extension(name = "chrome_extension",
 #rake_task(name = "chrome_dll",
 #  task_name = "chrome_dll",
 #  out = "build/Win32/Release/npchromedriver.dll")
-
-visualc_library(name = "chrome_dll",
-  platform = "Win32",
-  solution = "WebDriver.sln",
-  target = "npchromedriver",
-  out = "Win32/Release/npchromedriver.dll"
-)
 

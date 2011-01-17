@@ -21,7 +21,7 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="$(SolutionDir)build\chrome\$(PlatformName)\$(ConfigurationName)"
+			OutputDirectory="$(SolutionDir)build\cpp\$(PlatformName)\$(ConfigurationName)"
 			IntermediateDirectory="$(SolutionDir)build\intermediate\$(ProjectName)\$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="2"
 			UseOfMFC="0"
@@ -45,7 +45,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(SolutionDir)third_party&quot;;&quot;$(SolutionDir)third_party\npapi&quot;;&quot;$(SolutionDir)common\src\cpp\webdriver-interactions&quot;"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)third_party&quot;;&quot;$(SolutionDir)third_party\npapi&quot;;&quot;$(SolutionDir)cpp\webdriver-interactions&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;NPCHROMEDRIVER_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -95,7 +95,7 @@
 		</Configuration>
 		<Configuration
 			Name="Debug|x64"
-			OutputDirectory="$(SolutionDir)build\chrome\$(PlatformName)\$(ConfigurationName)"
+			OutputDirectory="$(SolutionDir)build\cpp\$(PlatformName)\$(ConfigurationName)"
 			IntermediateDirectory="$(SolutionDir)build\intermediate\$(ProjectName)\$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="2"
 			UseOfMFC="0"
@@ -120,7 +120,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(SolutionDir)third_party&quot;;&quot;$(SolutionDir)third_party\npapi&quot;;&quot;$(SolutionDir)common\src\cpp\webdriver-interactions&quot;"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)third_party&quot;;&quot;$(SolutionDir)third_party\npapi&quot;;&quot;$(SolutionDir)cpp\webdriver-interactions&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;NPCHROMEDRIVER_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -170,7 +170,7 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="$(SolutionDir)build\chrome\$(PlatformName)\$(ConfigurationName)"
+			OutputDirectory="$(SolutionDir)build\cpp\$(PlatformName)\$(ConfigurationName)"
 			IntermediateDirectory="$(SolutionDir)build\intermediate\$(ProjectName)\$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="2"
 			UseOfMFC="0"
@@ -196,7 +196,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories="&quot;$(SolutionDir)third_party&quot;;&quot;$(SolutionDir)third_party\npapi&quot;;&quot;$(SolutionDir)common\src\cpp\webdriver-interactions&quot;"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)third_party&quot;;&quot;$(SolutionDir)third_party\npapi&quot;;&quot;$(SolutionDir)cpp\webdriver-interactions&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;NPCHROMEDRIVER_EXPORTS"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
@@ -247,7 +247,7 @@
 		</Configuration>
 		<Configuration
 			Name="Release|x64"
-			OutputDirectory="$(SolutionDir)build\chrome\$(PlatformName)\$(ConfigurationName)"
+			OutputDirectory="$(SolutionDir)build\cpp\$(PlatformName)\$(ConfigurationName)"
 			IntermediateDirectory="$(SolutionDir)build\intermediate\$(ProjectName)\$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="2"
 			UseOfMFC="0"
@@ -274,7 +274,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories="&quot;$(SolutionDir)third_party&quot;;&quot;$(SolutionDir)third_party\npapi&quot;;&quot;$(SolutionDir)common\src\cpp\webdriver-interactions&quot;"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)third_party&quot;;&quot;$(SolutionDir)third_party\npapi&quot;;&quot;$(SolutionDir)cpp\webdriver-interactions&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;NPCHROMEDRIVER_EXPORTS"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
@@ -327,7 +327,7 @@
 	<References>
 		<ProjectReference
 			ReferencedProjectIdentifier="{87FA39A1-958E-478A-8AB9-6D5E5AAA3886}"
-			RelativePathToProject=".\common\src\cpp\webdriver-interactions\webdriver-interactions.vcproj"
+			RelativePathToProject=".\cpp\webdriver-interactions\webdriver-interactions.vcproj"
 		/>
 	</References>
 	<Files>

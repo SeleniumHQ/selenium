@@ -66,7 +66,7 @@ VisualStudioMappings.new.add_all(crazy_fun)
 # need to fall back to prebuilt binaries. The prebuilt binaries are stored in
 # a directory structure identical to that used in the "build" folder, but
 # rooted at one of the following locations:
-["android/prebuilt", "chrome/prebuilt", "common/prebuilt", "firefox/prebuilt", "jobbie/prebuilt", "ide/main/prebuilt"].each do |pre|
+["android/prebuilt", "cpp/prebuilt", "ide/main/prebuilt"].each do |pre|
   crazy_fun.prebuilt_roots << pre
 end
 
@@ -200,7 +200,7 @@ task :dotnet => [ "//dotnet:ie", "//dotnet:firefox", "//dotnet:chrome", "//dotne
 ie_generate_type_mapping(:name => "ie_result_type_cpp",
                          :src => "jobbie/src/common/result_types.txt",
                          :type => "cpp",
-                         :out => "jobbie/src/cpp/InternetExplorerDriver/IEReturnTypes.h")
+                         :out => "cpp/IEDriver/IEReturnTypes.h")
 
 # Generate a Java class for mapping between magic numbers and Java static
 # class members describing them.
@@ -212,13 +212,13 @@ ie_generate_type_mapping(:name => "ie_result_type_java",
 gecko_sdk = "third_party/gecko-1.9.0.11/linux/"
 
 dll(:name => "libwebdriver_firefox_so",
-    :src  => FileList.new('common/src/cpp/webdriver-interactions/*_linux*.cpp') +
-             FileList.new('firefox/src/cpp/webdriver-firefox/*.cpp'),
+    :src  => FileList.new('cpp/webdriver-interactions/*_linux*.cpp') +
+             FileList.new('cpp/webdriver-firefox/*.cpp'),
     :arch => "i386",
-    :args => " -DXPCOM_GLUE  -DXPCOM_GLUE_USE_NSPR -I common/src/cpp/webdriver-interactions -I #{gecko_sdk}include -I /usr/include/nspr " + "`pkg-config gtk+-2.0 --cflags`",
+    :args => " -DXPCOM_GLUE  -DXPCOM_GLUE_USE_NSPR -I cpp/webdriver-interactions -I #{gecko_sdk}include -I /usr/include/nspr " + "`pkg-config gtk+-2.0 --cflags`",
     :link_args => "-fno-rtti -fno-exceptions -shared  -fPIC -L#{gecko_sdk}lib -L#{gecko_sdk}bin -Wl,-rpath-link,#{gecko_sdk}bin -lxpcomglue_s -lxpcom -lnspr4 -lrt ",
-    :prebuilt => "firefox/prebuilt",
-    :out  => "linux/Release/libwebdriver-firefox.so")
+    :prebuilt => "cpp/prebuilt/i386/libwebdriver-firefox.so",
+    :out  => "cpp/i386/libwebdriver-firefox.so")
 
 # There is no official 64 bit gecko SDK. Fall back to trying to use the one on
 # system, but be ready for this to fail. I have a Ubuntu machine, so that's
@@ -241,12 +241,13 @@ else
 end
 
 dll(:name => "libwebdriver_firefox_so64",
-    :src  => FileList.new('common/src/cpp/webdriver-interactions/*_linux*.cpp') + FileList.new('firefox/src/cpp/webdriver-firefox/native_events.cpp'),
+    :src  => FileList.new('cpp/webdriver-interactions/*_linux*.cpp') +
+             FileList.new('cpp/webdriver-firefox/native_events.cpp'),
     :arch => "amd64",
-    :args => " -DXPCOM_GLUE  -DXPCOM_GLUE_USE_NSPR -fPIC -fshort-wchar -I common/src/cpp/webdriver-interactions #{local_gecko_include} `pkg-config gtk+-2.0 --cflags` ",
+    :args => " -DXPCOM_GLUE  -DXPCOM_GLUE_USE_NSPR -fPIC -fshort-wchar -I cpp/webdriver-interactions #{local_gecko_include} `pkg-config gtk+-2.0 --cflags` ",
     :link_args => "-Wall -Os #{local_gecko_libs} -lrt `pkg-config gtk+-2.0 --libs` -fno-rtti -fno-exceptions -shared  -fPIC",
-    :prebuilt => "firefox/prebuilt",
-    :out  => "linux64/Release/libwebdriver-firefox.so")
+    :prebuilt => "cpp/prebuilt/amd64/libwebdriver-firefox.so",
+    :out  => "cpp/amd64/libwebdriver-firefox.so")
 
 task :'selenium-server_zip' do
   temp = "build/selenium-server_zip"
@@ -470,10 +471,10 @@ file "iphone/src/objc/atoms.h" => ["//iphone:atoms"] do |task|
 end
 task :iphone_atoms => ["iphone/src/objc/atoms.h"]
 
-file "jobbie/src/cpp/InternetExplorerDriver/sizzle.h" => [ "//third_party/js/sizzle:sizzle:header" ] do
-  cp "build/third_party/js/sizzle/sizzle.h", "jobbie/src/cpp/InternetExplorerDriver/sizzle.h"
+file "cpp/IEDriver/sizzle.h" => [ "//third_party/js/sizzle:sizzle:header" ] do
+  cp "build/third_party/js/sizzle/sizzle.h", "cpp/IEDriver/sizzle.h"
 end
-task :sizzle_header => [ "jobbie/src/cpp/InternetExplorerDriver/sizzle.h" ]
+task :sizzle_header => [ "cpp/IEDriver/sizzle.h" ]
 
 file "common/test/js/deps.js" => FileList["third_party/closure/goog/**/*.js", "common/src/js/**/*.js"] do
   our_cmd = "java -jar third_party/py/jython.jar third_party/closure/bin/calcdeps.py "

@@ -1,0 +1,80 @@
+visualc_library(name = "chrome_dll",
+  platform = "Win32",
+  solution = "WebDriver.sln",
+  target = "npchromedriver",
+  out = "Win32/Release/npchromedriver.dll"
+)
+
+visualc_library(name = "firefox_dll",
+  platform = "Win32",
+  solution = "WebDriver.sln",
+  target = "webdriver-firefox",
+  out = "Win32/Release/webdriver-firefox.dll"
+)
+
+mozilla_xpt(name = "native_events_xpt",
+  srcs = [ "webdriver-firefox/nsINativeEvents.idl" ])
+
+rake_task(name = "libwebdriver_firefox_so",
+  task_name = "libwebdriver_firefox_so",
+  out = "build/cpp/i386/libwebdriver-firefox.so")
+
+rake_task(name = "libwebdriver_firefox_so64",
+  task_name = "libwebdriver_firefox_so64",
+  out = "build/cpp/amd64/libwebdriver-firefox.so")
+
+gcc_library(name = "noblur",
+  srcs = [ "linux-specific/*.c" ],
+  arch = "i386")
+
+gcc_library(name = "noblur64",
+  srcs = [ "linux-specific/*.c" ],
+  arch = "amd64")
+
+visualc_library(name = "ie_win32_dll",
+  deps = [
+    "//jobbie:atoms",
+    "//jobbie:ie_result_type_cpp",
+    "//jobbie:sizzle"
+  ],
+  platform = "Win32",
+  solution = "WebDriver.sln",
+  target = "IEDriver",
+  out = "Win32/Release/IEDriver.dll"
+)
+
+visualc_library(name = "ie_x64_dll",
+  deps = [
+    "//jobbie:atoms",
+    "//jobbie:ie_result_type_cpp",
+    "//jobbie:sizzle"
+  ],
+  platform = "x64",
+  solution = "WebDriver.sln",
+  target = "IEDriver",
+  out = "x64/Release/IEDriver.dll"
+)
+
+visualc_library(name = "ielegacy_win32_dll",
+  deps = [
+    "//jobbie:atoms",
+    "//jobbie:ie_result_type_cpp",
+    "//jobbie:sizzle"
+  ],
+  platform = "Win32",
+  solution = "WebDriver.sln",
+  target = "InternetExplorerDriver",
+  out = "Win32/Release/InternetExplorerDriver.dll"
+)
+
+visualc_library(name = "ielegacy_x64_dll",
+  deps = [
+    "//jobbie:atoms",
+    "//jobbie:ie_result_type_cpp",
+    "//jobbie:sizzle"
+  ],
+  platform = "x64",
+  solution = "WebDriver.sln",
+  target = "InternetExplorerDriver",
+  out = "x64/Release/InternetExplorerDriver.dll"
+)

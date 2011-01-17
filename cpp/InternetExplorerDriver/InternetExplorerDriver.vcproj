@@ -2,9 +2,10 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9.00"
-	Name="webdriver-firefox"
-	ProjectGUID="{A9D3BB2D-FD1E-43A2-80F6-F8320682323E}"
-	RootNamespace="webdriverfirefox"
+	Name="InternetExplorerDriver"
+	ProjectGUID="{0BC72326-88BE-4369-9077-74AA7B2BE15D}"
+	RootNamespace="InternetExplorerDriver"
+	Keyword="Win32Proj"
 	TargetFrameworkVersion="196613"
 	>
 	<Platforms>
@@ -20,12 +21,13 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="$(SolutionDir)build\firefox\$(PlatformName)\$(ConfigurationName)"
+			OutputDirectory="$(SolutionDir)build\$(PlatformName)\$(ConfigurationName)"
 			IntermediateDirectory="$(SolutionDir)build\intermediate\$(ProjectName)\$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="2"
-			UseOfMFC="0"
+			UseOfMFC="1"
 			UseOfATL="1"
 			CharacterSet="1"
+			ManagedExtensions="0"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -45,13 +47,17 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(SolutionDir)third_party\gecko-1.9.0.11\win32\include&quot;;&quot;$(SolutionDir)common\src\cpp\webdriver-interactions&quot;"
-				PreprocessorDefinitions="XP_WIN;XP_WIN32"
-				MinimalRebuild="true"
-				BasicRuntimeChecks="3"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)cpp\webdriver-interactions&quot;"
+				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
+				MinimalRebuild="false"
+				ExceptionHandling="2"
+				BasicRuntimeChecks="0"
 				RuntimeLibrary="1"
+				UsePrecompiledHeader="0"
 				WarningLevel="3"
-				DebugInformationFormat="4"
+				Detect64BitPortabilityProblems="true"
+				DebugInformationFormat="3"
+				CallingConvention="0"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -64,9 +70,12 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="nspr4.lib xpcom.lib xpcomglue_s.lib"
-				AdditionalLibraryDirectories="&quot;$(SolutionDir)\third_party\gecko-1.9.0.11\win32\lib&quot;;&quot;$(OutDir)&quot;"
+				AdditionalDependencies="$(NoInherit)"
+				LinkIncremental="2"
 				GenerateDebugInformation="true"
+				AssemblyDebug="1"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -89,16 +98,18 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
+				CommandLine="copy /Y &quot;$(TargetPath)&quot; &quot;$(TargetDir)..\..&quot;"
 			/>
 		</Configuration>
 		<Configuration
 			Name="Debug|x64"
-			OutputDirectory="$(SolutionDir)build\firefox\$(PlatformName)\$(ConfigurationName)"
+			OutputDirectory="$(SolutionDir)build\$(PlatformName)\$(ConfigurationName)"
 			IntermediateDirectory="$(SolutionDir)build\intermediate\$(ProjectName)\$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="2"
-			UseOfMFC="0"
+			UseOfMFC="1"
 			UseOfATL="1"
 			CharacterSet="1"
+			ManagedExtensions="0"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -119,13 +130,17 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(SolutionDir)third_party\gecko-1.9.0.11\win32\include&quot;;&quot;$(SolutionDir)common\src\cpp\webdriver-interactions&quot;"
-				PreprocessorDefinitions="XP_WIN;XP_WIN32"
-				MinimalRebuild="true"
-				BasicRuntimeChecks="3"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)cpp\webdriver-interactions&quot;"
+				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
+				MinimalRebuild="false"
+				ExceptionHandling="2"
+				BasicRuntimeChecks="0"
 				RuntimeLibrary="1"
+				UsePrecompiledHeader="0"
 				WarningLevel="3"
+				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
+				CallingConvention="0"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -138,9 +153,12 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="nspr4.lib xpcom.lib xpcomglue_s.lib"
-				AdditionalLibraryDirectories="&quot;$(SolutionDir)\third_party\gecko-1.9.0.11\win32\lib&quot;;&quot;$(OutDir)&quot;"
+				AdditionalDependencies="$(NoInherit)"
+				LinkIncremental="2"
 				GenerateDebugInformation="true"
+				AssemblyDebug="1"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				TargetMachine="17"
 			/>
 			<Tool
@@ -163,14 +181,15 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
+				CommandLine="copy /Y &quot;$(TargetPath)&quot; &quot;$(TargetDir)..\..&quot;"
 			/>
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="$(SolutionDir)build\firefox\$(PlatformName)\$(ConfigurationName)"
+			OutputDirectory="$(SolutionDir)build\$(PlatformName)\$(ConfigurationName)"
 			IntermediateDirectory="$(SolutionDir)build\intermediate\$(ProjectName)\$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="2"
-			UseOfMFC="0"
+			UseOfMFC="1"
 			UseOfATL="1"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
@@ -192,14 +211,14 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				Optimization="2"
-				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories="&quot;$(SolutionDir)third_party\gecko-1.9.0.11\win32\include&quot;;&quot;$(SolutionDir)common\src\cpp\webdriver-interactions&quot;"
-				PreprocessorDefinitions="XP_WIN;XP_WIN32"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)cpp\webdriver-interactions&quot;"
+				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
+				ExceptionHandling="2"
 				RuntimeLibrary="0"
-				EnableFunctionLevelLinking="true"
+				UsePrecompiledHeader="0"
 				WarningLevel="3"
-				DebugInformationFormat="0"
+				Detect64BitPortabilityProblems="true"
+				DebugInformationFormat="3"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -212,11 +231,14 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="nspr4.lib xpcom.lib xpcomglue_s.lib"
-				AdditionalLibraryDirectories="&quot;$(SolutionDir)\third_party\gecko-1.9.0.11\win32\lib&quot;;&quot;$(OutDir)&quot;"
-				GenerateDebugInformation="false"
+				AdditionalDependencies="$(NoInherit)"
+				LinkIncremental="1"
+				GenerateDebugInformation="true"
+				SubSystem="1"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -239,14 +261,15 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
+				CommandLine="copy /Y &quot;$(TargetPath)&quot; &quot;$(TargetDir)..\..&quot;"
 			/>
 		</Configuration>
 		<Configuration
 			Name="Release|x64"
-			OutputDirectory="$(SolutionDir)build\firefox\$(PlatformName)\$(ConfigurationName)"
+			OutputDirectory="$(SolutionDir)build\$(PlatformName)\$(ConfigurationName)"
 			IntermediateDirectory="$(SolutionDir)build\intermediate\$(ProjectName)\$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="2"
-			UseOfMFC="0"
+			UseOfMFC="1"
 			UseOfATL="1"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
@@ -269,13 +292,13 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				Optimization="2"
-				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories="&quot;$(SolutionDir)third_party\gecko-1.9.0.11\win32\include&quot;;&quot;$(SolutionDir)common\src\cpp\webdriver-interactions&quot;"
-				PreprocessorDefinitions="XP_WIN;XP_WIN32"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)cpp\webdriver-interactions&quot;"
+				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
+				ExceptionHandling="2"
 				RuntimeLibrary="0"
-				EnableFunctionLevelLinking="true"
+				UsePrecompiledHeader="0"
 				WarningLevel="3"
+				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
 			/>
 			<Tool
@@ -289,11 +312,14 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="nspr4.lib xpcom.lib xpcomglue_s.lib"
-				AdditionalLibraryDirectories="&quot;$(SolutionDir)\third_party\gecko-1.9.0.11\win32\lib&quot;;&quot;$(OutDir)&quot;"
+				AdditionalDependencies="$(NoInherit)"
+				LinkIncremental="1"
 				GenerateDebugInformation="true"
+				SubSystem="1"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				TargetMachine="17"
 			/>
 			<Tool
@@ -316,13 +342,14 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
+				CommandLine="copy /Y &quot;$(TargetPath)&quot; &quot;$(TargetDir)..\..&quot;"
 			/>
 		</Configuration>
 	</Configurations>
 	<References>
 		<ProjectReference
 			ReferencedProjectIdentifier="{87FA39A1-958E-478A-8AB9-6D5E5AAA3886}"
-			RelativePathToProject=".\common\src\cpp\webdriver-interactions\webdriver-interactions.vcproj"
+			RelativePathToProject=".\cpp\webdriver-interactions\webdriver-interactions.vcproj"
 		/>
 	</References>
 	<Files>
@@ -332,7 +359,63 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\native_events.cpp"
+				RelativePath=".\DataMarshaller.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ElementWrapper.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\EventReleaser.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\finder.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\IeSink.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\IEThread.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\IEThreadData.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\IEThreadElement.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\IEThreadExplorer.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\InternetExplorerDriver.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ScopeTracer.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ScreenshotCapture.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\utils.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\webdriver.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\windowHandling.cpp"
 				>
 			</File>
 		</Filter>
@@ -342,27 +425,75 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath=".\native_events.h"
+				RelativePath=".\atoms.h"
 				>
 			</File>
 			<File
-				RelativePath=".\gecko19\nsIAccessibleDocument.h"
+				RelativePath=".\cookies.h"
 				>
 			</File>
 			<File
-				RelativePath=".\gecko18\nsIAccessibleDocument.h"
+				RelativePath=".\DataMarshaller.h"
 				>
 			</File>
 			<File
-				RelativePath=".\nsIAccessibleDocumentWrapper.h"
+				RelativePath=".\ElementWrapper.h"
 				>
 			</File>
 			<File
-				RelativePath=".\nsIBaseWindow.h"
+				RelativePath=".\EventReleaser.h"
 				>
 			</File>
 			<File
-				RelativePath=".\nsINativeEvents.h"
+				RelativePath=".\finder.h"
+				>
+			</File>
+			<File
+				RelativePath=".\IeSink.h"
+				>
+			</File>
+			<File
+				RelativePath=".\IEThread.h"
+				>
+			</File>
+			<File
+				RelativePath=".\IEThreadData.h"
+				>
+			</File>
+			<File
+				RelativePath=".\InternalCustomMessage.h"
+				>
+			</File>
+			<File
+				RelativePath=".\InternetExplorerDriver.h"
+				>
+			</File>
+			<File
+				RelativePath=".\jsxpath.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ScopeTracer.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ScreenshotCapture.h"
+				>
+			</File>
+			<File
+				RelativePath=".\sizzle.h"
+				>
+			</File>
+			<File
+				RelativePath=".\utils.h"
+				>
+			</File>
+			<File
+				RelativePath=".\webdriver.h"
+				>
+			</File>
+			<File
+				RelativePath=".\windowHandling.h"
 				>
 			</File>
 		</Filter>

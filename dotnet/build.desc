@@ -97,8 +97,8 @@ dotnet_library(name = "ie",
     ":remote",
   ],
   resources = [
-    {"//jobbie:ieserver_win32_dll" : "WebDriver.InternetExplorerDriver.x86.dll"},
-    {"//jobbie:ieserver_x64_dll" : "WebDriver.InternetExplorerDriver.x64.dll"}
+    {"//cpp:ie_win32_dll" : "WebDriver.InternetExplorerDriver.x86.dll"},
+    {"//cpp:ie_x64_dll" : "WebDriver.InternetExplorerDriver.x64.dll"}
   ],
   out = "build/dotnet/WebDriver.IE.dll",
   doc = "build/dotnet/WebDriver.IE.xml"
@@ -141,8 +141,8 @@ dotnet_library(name = "firefox",
   ],
   resources = [
     {"//firefox:webdriver" : "WebDriver.FirefoxExt.zip"},
-    {"//firefox:noblur" : "WebDriver.FirefoxNoFocus.x86.dll"},
-    {"//firefox:noblur64" : "WebDriver.FirefoxNoFocus.x64.dll"}
+    {"//cpp:noblur" : "WebDriver.FirefoxNoFocus.x86.dll"},
+    {"//cpp:noblur64" : "WebDriver.FirefoxNoFocus.x64.dll"}
   ],
   out = "build/dotnet/WebDriver.Firefox.dll",
   doc = "build/dotnet/WebDriver.Firefox.xml"

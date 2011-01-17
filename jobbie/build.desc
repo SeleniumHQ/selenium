@@ -4,61 +4,14 @@ js_fragment_header(name = "atoms",
     "//common/src/js/webdriver:get_attribute",
     "//common/src/js/webdriver:get_text",
   ],
-  out = "jobbie/src/cpp/IEDriver/atoms.h"
+  out = "cpp/IEDriver/atoms.h"
 )
 
 rake_task(name = "sizzle",
   task_name = "sizzle_header",
-  out = "jobbie/src/cpp/InternetExplorerDriver/sizzle.h")
+  out = "cpp/IEDriver/sizzle.h")
 
 rake_task(name = "ie_result_type_cpp",
   task_name = "ie_result_type_cpp",
-  out = "jobbie/src/cpp/InternetExplorerDriver/IEReturnTypes.h")
+  out = "cpp/IEDriver/IEReturnTypes.h")
 
-visualc_library(name = "ie_win32_dll",
-  deps = [
-    ":atoms",
-    ":ie_result_type_cpp",
-    ":sizzle"
-  ],
-  platform = "Win32",
-  solution = "WebDriver.sln",
-  target = "InternetExplorerDriver",
-  out = "Win32/Release/InternetExplorerDriver.dll"
-)
-
-visualc_library(name = "ie_x64_dll",
-  deps = [
-    ":atoms",
-    ":ie_result_type_cpp",
-    ":sizzle"
-  ],
-  platform = "x64",
-  solution = "WebDriver.sln",
-  target = "InternetExplorerDriver",
-  out = "x64/Release/InternetExplorerDriver.dll"
-)
-
-visualc_library(name = "ieserver_win32_dll",
-  deps = [
-    ":atoms",
-    ":ie_result_type_cpp",
-    ":sizzle"
-  ],
-  platform = "Win32",
-  solution = "WebDriver.sln",
-  target = "IEDriver",
-  out = "Win32/Release/IEDriver.dll"
-)
-
-visualc_library(name = "ieserver_x64_dll",
-  deps = [
-    ":atoms",
-    ":ie_result_type_cpp",
-    ":sizzle"
-  ],
-  platform = "x64",
-  solution = "WebDriver.sln",
-  target = "IEDriver",
-  out = "x64/Release/IEDriver.dll"
-)

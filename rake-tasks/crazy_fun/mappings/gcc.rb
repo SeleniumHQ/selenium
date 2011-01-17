@@ -30,7 +30,7 @@ class CreateTask < Tasks
   def handle(fun, dir, args)
     name = task_name(dir, args[:name])
     out = Gcc::out_name(dir, args)
-    
+
     task name => out
     Rake::Task[name].out = out
     args[:srcs].each do |src|

@@ -21,7 +21,7 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="$(SolutionDir)build\jobbie\$(PlatformName)\$(ConfigurationName)"
+			OutputDirectory="$(SolutionDir)build\cpp\$(PlatformName)\$(ConfigurationName)"
 			IntermediateDirectory="$(SolutionDir)build\intermediate\$(ProjectName)\$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="2"
 			UseOfATL="1"
@@ -45,7 +45,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(SolutionDir)third_party\json-cpp\include\json&quot;;&quot;$(SolutionDir)third_party\mongoose&quot;;&quot;$(SolutionDir)common\src\cpp\webdriver-interactions&quot;"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)third_party\json-cpp\include\json&quot;;&quot;$(SolutionDir)third_party\mongoose&quot;;&quot;$(SolutionDir)cpp\webdriver-interactions&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;IEDRIVER_EXPORTS"
 				MinimalRebuild="false"
 				ExceptionHandling="2"
@@ -99,7 +99,7 @@
 		</Configuration>
 		<Configuration
 			Name="Debug|x64"
-			OutputDirectory="$(SolutionDir)build\jobbie\$(PlatformName)\$(ConfigurationName)"
+			OutputDirectory="$(SolutionDir)build\cpp\$(PlatformName)\$(ConfigurationName)"
 			IntermediateDirectory="$(SolutionDir)build\intermediate\$(ProjectName)\$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="2"
 			UseOfATL="1"
@@ -124,7 +124,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(SolutionDir)third_party\json-cpp\include\json&quot;;&quot;$(SolutionDir)third_party\mongoose&quot;;&quot;$(SolutionDir)common\src\cpp\webdriver-interactions&quot;"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)third_party\json-cpp\include\json&quot;;&quot;$(SolutionDir)third_party\mongoose&quot;;&quot;$(SolutionDir)cpp\webdriver-interactions&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;IEDRIVER_EXPORTS"
 				MinimalRebuild="false"
 				ExceptionHandling="2"
@@ -178,7 +178,7 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="$(SolutionDir)build\jobbie\$(PlatformName)\$(ConfigurationName)"
+			OutputDirectory="$(SolutionDir)build\cpp\$(PlatformName)\$(ConfigurationName)"
 			IntermediateDirectory="$(SolutionDir)build\intermediate\$(ProjectName)\$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="2"
 			UseOfATL="1"
@@ -204,7 +204,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="false"
-				AdditionalIncludeDirectories="&quot;$(SolutionDir)third_party\json-cpp\include\json&quot;;&quot;$(SolutionDir)third_party\mongoose&quot;;&quot;$(SolutionDir)common\src\cpp\webdriver-interactions&quot;"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)third_party\json-cpp\include\json&quot;;&quot;$(SolutionDir)third_party\mongoose&quot;;&quot;$(SolutionDir)cpp\webdriver-interactions&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;IEDRIVER_EXPORTS"
 				ExceptionHandling="2"
 				RuntimeLibrary="0"
@@ -256,7 +256,7 @@
 		</Configuration>
 		<Configuration
 			Name="Release|x64"
-			OutputDirectory="$(SolutionDir)build\jobbie\$(PlatformName)\$(ConfigurationName)"
+			OutputDirectory="$(SolutionDir)build\cpp\$(PlatformName)\$(ConfigurationName)"
 			IntermediateDirectory="$(SolutionDir)build\intermediate\$(ProjectName)\$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="2"
 			UseOfATL="1"
@@ -283,7 +283,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="false"
-				AdditionalIncludeDirectories="&quot;$(SolutionDir)third_party\json-cpp\include\json&quot;;&quot;$(SolutionDir)third_party\mongoose&quot;;&quot;$(SolutionDir)common\src\cpp\webdriver-interactions&quot;"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)third_party\json-cpp\include\json&quot;;&quot;$(SolutionDir)third_party\mongoose&quot;;&quot;$(SolutionDir)cpp\webdriver-interactions&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;IEDRIVER_EXPORTS"
 				ExceptionHandling="2"
 				RuntimeLibrary="0"
@@ -337,7 +337,7 @@
 	<References>
 		<ProjectReference
 			ReferencedProjectIdentifier="{87FA39A1-958E-478A-8AB9-6D5E5AAA3886}"
-			RelativePathToProject=".\common\src\cpp\webdriver-interactions\webdriver-interactions.vcproj"
+			RelativePathToProject=".\cpp\webdriver-interactions\webdriver-interactions.vcproj"
 		/>
 		<ProjectReference
 			ReferencedProjectIdentifier="{320F3BBE-8223-4E7F-ABEE-18D3BD57B1FD}"

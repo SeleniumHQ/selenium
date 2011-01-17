@@ -5,8 +5,8 @@ java_library(name = "firefox",
   ],
   resources = [
     "//firefox:webdriver",
-    { "//firefox:noblur" : "x86/x_ignore_nofocus.so" },
-    { "//firefox:noblur64" : "amd64/x_ignore_nofocus.so" }
+    { "//cpp:noblur" : "x86/x_ignore_nofocus.so" },
+    { "//cpp:noblur64" : "amd64/x_ignore_nofocus.so" }
   ],
   deps = [
     "//java/org/openqa/selenium/networkutils",
