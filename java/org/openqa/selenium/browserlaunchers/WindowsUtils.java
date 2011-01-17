@@ -29,7 +29,7 @@ import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.openqa.selenium.internal.CommandLine;
+import org.openqa.selenium.os.CommandLine;
 import org.openqa.selenium.internal.NullTrace;
 import org.openqa.selenium.internal.Trace;
 import org.w3c.dom.Document;

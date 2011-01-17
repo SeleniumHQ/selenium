@@ -15,13 +15,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package org.openqa.selenium.internal;
+package org.openqa.selenium.os;
 
 import java.util.HashMap;
 import java.util.Map;
 import junit.framework.TestCase;
 
 import org.junit.Test;
+import org.openqa.selenium.os.CommandLine;
 
 public class CommandLineTest extends TestCase {
 

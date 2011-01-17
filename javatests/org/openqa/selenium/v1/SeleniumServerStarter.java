@@ -7,7 +7,7 @@ import java.io.File;
 import java.io.IOException;
 
 import org.openqa.selenium.Build;
-import org.openqa.selenium.internal.CommandLine;
+import org.openqa.selenium.os.CommandLine;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.net.NetworkUtils;
 

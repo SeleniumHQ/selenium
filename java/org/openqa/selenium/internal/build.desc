@@ -1,7 +1,6 @@
 
 java_library(name = "internal",
   srcs = [
-    "CommandLine.java",
     "Maps.java",
   ],
   deps = [

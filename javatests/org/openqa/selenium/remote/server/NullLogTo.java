@@ -18,6 +18,9 @@ class NullLogTo implements Trace {
   public void error(String message) {
   }
 
+  public void error(String message, Throwable throwable) {
+  }
+
   public void debug(String message) {
   }
 

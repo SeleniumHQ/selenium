@@ -15,7 +15,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package org.openqa.selenium.internal;
+package org.openqa.selenium.os;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;

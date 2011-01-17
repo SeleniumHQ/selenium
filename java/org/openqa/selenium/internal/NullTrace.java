@@ -14,7 +14,23 @@ public class NullTrace implements Trace {
   }
 
   public void warn(String message, Throwable throwable) {
-    StringBuilder missive = new StringBuilder("WARNING: ");
+    logMessage("WARNING: ", message, throwable);
+  }
+
+  public void error(String message) {
+    System.err.println("ERROR: " + message);
+  }
+
+  public void error(String message, Throwable throwable) {
+    logMessage("ERROR: ", message, throwable);
+
+  }
+
+  public void debug(String message) { }
+  public void debug(String message, Throwable throwable) { }
+
+  private void logMessage(String type, String message, Throwable throwable) {
+    StringBuilder missive = new StringBuilder(type);
     missive.append(message);
     if (throwable != null) {
       missive.append(". ").append(throwable.getLocalizedMessage());
@@ -24,11 +40,4 @@ public class NullTrace implements Trace {
       throwable.printStackTrace(System.err);
     }
   }
-
-  public void error(String message) {
-    System.err.println("ERROR: " + message);
-  }
-
-  public void debug(String message) { }
-  public void debug(String message, Throwable throwable) { }
 }

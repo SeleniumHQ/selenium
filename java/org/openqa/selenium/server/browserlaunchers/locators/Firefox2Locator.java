@@ -4,7 +4,7 @@ import java.io.File;
 
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.browserlaunchers.WindowsUtils;
-import org.openqa.selenium.internal.CommandLine;
+import org.openqa.selenium.os.CommandLine;
 
 /**
  * Discovers a valid Firefox 2.x installation on local system.

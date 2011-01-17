@@ -38,4 +38,8 @@ public class JettyLoggingTrace implements Trace {
   public void error(String message) {
     log.error(message);
   }
+
+  public void error(String message, Throwable throwable) {
+    log.error(message, throwable);
+  }
 }

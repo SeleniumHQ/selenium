@@ -7,7 +7,7 @@ package org.openqa.selenium.server.browserlaunchers;
 import java.lang.reflect.Field;
 
 import org.openqa.selenium.Platform;
-import org.openqa.selenium.internal.CommandLine;
+import org.openqa.selenium.os.CommandLine;
 import org.openqa.selenium.internal.NullTrace;
 import org.openqa.selenium.internal.Trace;
 
@@ -41,7 +41,7 @@ public class UnixUtils {
         command.execute();
         String result = command.getStdOut();
         int output = command.getExitCode();
-        log.debug(output);
+        log.debug(String.valueOf(output));
         if (!command.isSuccessful()) {
             throw new RuntimeException("exec return code " + result + ": " + output);
         }

@@ -2,7 +2,7 @@ package org.openqa.selenium.firefox.internal;
 
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.internal.CommandLine;
+import org.openqa.selenium.os.CommandLine;
 import org.openqa.selenium.remote.internal.CircularOutputStream;
 
 import java.io.File;

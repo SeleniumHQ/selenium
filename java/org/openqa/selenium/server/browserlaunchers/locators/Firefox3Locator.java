@@ -2,7 +2,7 @@ package org.openqa.selenium.server.browserlaunchers.locators;
 
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.browserlaunchers.WindowsUtils;
-import org.openqa.selenium.internal.CommandLine;
+import org.openqa.selenium.os.CommandLine;
 
 import java.io.File;
 import java.io.FilenameFilter;

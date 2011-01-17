@@ -25,7 +25,7 @@ import java.util.prefs.Preferences;
 import java.util.regex.Pattern;
 
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.internal.CommandLine;
+import org.openqa.selenium.os.CommandLine;
 import org.openqa.selenium.internal.NullTrace;
 import org.openqa.selenium.io.FileHandler;
 import org.openqa.selenium.internal.Maps;

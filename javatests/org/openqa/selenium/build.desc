@@ -51,6 +51,7 @@ java_library(name = "tests",
     "internal/**/*.java",
     "io/*.java",
     "net/*.java",
+    "os/*.java",
   ],
   deps = [
     ":base",

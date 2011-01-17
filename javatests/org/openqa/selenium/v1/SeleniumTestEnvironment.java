@@ -25,7 +25,7 @@ import org.openqa.selenium.Build;
 import org.openqa.selenium.DevMode;
 import org.openqa.selenium.environment.TestEnvironment;
 import org.openqa.selenium.environment.webserver.AppServer;
-import org.openqa.selenium.internal.CommandLine;
+import org.openqa.selenium.os.CommandLine;
 import org.openqa.selenium.io.FileHandler;
 import org.openqa.selenium.internal.InProject;
 import org.openqa.selenium.net.PortProber;
