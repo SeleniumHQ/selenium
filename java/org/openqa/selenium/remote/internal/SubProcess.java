@@ -1,6 +1,6 @@
 package org.openqa.selenium.remote.internal;
 
-import org.openqa.selenium.internal.ProcessUtils;
+import org.openqa.selenium.os.ProcessUtils;
 import org.openqa.selenium.WebDriverException;
 
 import java.io.IOException;
@@ -16,6 +16,7 @@ import java.util.concurrent.Future;
  *
  * @author jmleyba@gmail.com (Jason Leyba)
  */
+// TODO(simon): Consider moving to oos.os
 public class SubProcess {
 
   private final Object lock = new Object();

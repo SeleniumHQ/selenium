@@ -11,6 +11,7 @@ java_library(name = "selenium",
 
 java_library(name = "base",
   srcs = [
+    "Platform.java",
     "WebDriverException.java",
   ])
 
@@ -34,7 +35,6 @@ java_library(name = "webdriver-api",
     "NoSuchWindowException.java",
     "NotFoundException.java",
     "OutputType.java",
-    "Platform.java",
     "Proxy.java",
     "RenderedWebElement.java",
     "Rotatable.java",

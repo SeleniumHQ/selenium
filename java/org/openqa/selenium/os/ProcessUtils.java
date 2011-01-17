@@ -1,4 +1,4 @@
-package org.openqa.selenium.internal;
+package org.openqa.selenium.os;
 
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.io.IOUtils;

@@ -3,7 +3,6 @@ java_library(name = "internal",
   srcs = [
     "CommandLine.java",
     "Maps.java",
-    "ProcessUtils.java",
   ],
   deps = [
     "//java/org/openqa/selenium:webdriver-api",

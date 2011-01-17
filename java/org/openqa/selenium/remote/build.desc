@@ -52,6 +52,7 @@ java_library(name = "client",
   ],
   deps = [
     ":common",
+    "//java/org/openqa/selenium/os",
     "//third_party/java/apache-httpclient",
     "//third_party/java/cglib",
   ])
