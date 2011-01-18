@@ -151,7 +151,7 @@ import static org.openqa.selenium.browserlaunchers.LauncherUtils.getSeleniumReso
  *
  * @author plightbo
  */
-public class SeleniumServer {
+public class SeleniumServer implements SslCertificateGenerator {
 
     private Log LOGGER;
 

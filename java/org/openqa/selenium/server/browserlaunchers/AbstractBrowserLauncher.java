@@ -32,7 +32,7 @@ public abstract class AbstractBrowserLauncher implements BrowserLauncher {
   public void launchRemoteSession(String browserURL) {
     boolean browserSideLog = browserConfigurationOptions.is("browserSideLog");
     if (browserSideLog) {
-      configuration.getSeleniumServer().generateSSLCertsForLoggingHosts();
+      configuration.getSslCertificateGenerator().generateSSLCertsForLoggingHosts();
     }
     launch(LauncherUtils.getDefaultRemoteSessionUrl(browserURL, sessionId,
         (!browserConfigurationOptions.isSingleWindow()), 0, browserSideLog));

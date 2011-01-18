@@ -3,7 +3,7 @@ package org.openqa.selenium.server.browserlaunchers;
 import org.junit.Test;
 import org.openqa.selenium.server.BrowserConfigurationOptions;
 import org.openqa.selenium.server.RemoteControlConfiguration;
-import org.openqa.selenium.server.SeleniumServer;
+import org.openqa.selenium.server.SslCertificateGenerator;
 
 import static org.easymock.classextension.EasyMock.createStrictMock;
 import static org.easymock.classextension.EasyMock.expectLastCall;
@@ -16,7 +16,7 @@ public class SafariCustomProfileLauncherUnitTest {
 	private AbstractBrowserLauncher launcher;
 	private BrowserConfigurationOptions browserOptions = new BrowserConfigurationOptions();
 	private RemoteControlConfiguration remoteConfiguration = new RemoteControlConfiguration();
-	private SeleniumServer server;
+	private SslCertificateGenerator generator;
 	
 	@Test(expected=InvalidBrowserExecutableException.class)
 	public void constructor_invalidBrowserInstallationCausesException() throws Exception {
@@ -27,11 +27,11 @@ public class SafariCustomProfileLauncherUnitTest {
 	public void launchRemoteSession_generatesSslCertsIfBrowserSideLogEnabled() throws Exception {
 		String location = null;
 		
-		server = createStrictMock(SeleniumServer.class);
-		server.generateSSLCertsForLoggingHosts();
+		generator = createStrictMock(SslCertificateGenerator.class);
+		generator.generateSSLCertsForLoggingHosts();
 		expectLastCall().once();
 		
-		remoteConfiguration.setSeleniumServer(server);
+		remoteConfiguration.setSeleniumServer(generator);
 		browserOptions.set("browserSideLog", true);
 		
 		launcher = new SafariCustomProfileLauncher(browserOptions, remoteConfiguration, "session", location) {
@@ -45,9 +45,9 @@ public class SafariCustomProfileLauncherUnitTest {
 			}
 		};
 		
-		replay(server);
+		replay(generator);
 		launcher.launchRemoteSession("http://url");
-		verify(server);
+		verify(generator);
 	}
 	
 }

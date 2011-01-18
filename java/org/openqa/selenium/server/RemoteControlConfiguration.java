@@ -55,7 +55,7 @@ public class RemoteControlConfiguration {
     private boolean debugMode;
     private boolean browserSideLogEnabled;
     private int jettyThreads = SeleniumServer.DEFAULT_JETTY_THREADS;
-    private SeleniumServer server;
+    private SslCertificateGenerator sslCertGenerator;
     private boolean singleWindow;
     
 
@@ -336,12 +336,12 @@ public class RemoteControlConfiguration {
         this.jettyThreads = jettyThreads;
     }
 
-    public SeleniumServer getSeleniumServer() {
-        return server;
+    public SslCertificateGenerator getSslCertificateGenerator() {
+        return sslCertGenerator;
     }
     
-    public void setSeleniumServer(SeleniumServer server) {
-        this.server = server;
+    public void setSeleniumServer(SslCertificateGenerator server) {
+        this.sslCertGenerator = server;
     }
     
     public void copySettingsIntoBrowserOptions(BrowserConfigurationOptions browserOptions) {

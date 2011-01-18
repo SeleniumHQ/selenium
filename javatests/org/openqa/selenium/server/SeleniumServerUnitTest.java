@@ -21,7 +21,7 @@ public class SeleniumServerUnitTest {
 	public void constructor_setsThisAsSeleniumServerInRemoteControlConfiguration() throws Exception {
 		RemoteControlConfiguration remoteConfiguration = new RemoteControlConfiguration();
 		server = new SeleniumServer(remoteConfiguration);
-		assertEquals(server, remoteConfiguration.getSeleniumServer());
+		assertEquals(server, remoteConfiguration.getSslCertificateGenerator());
 	}
 	
 	@After
