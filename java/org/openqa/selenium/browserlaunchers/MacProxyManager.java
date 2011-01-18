@@ -79,10 +79,10 @@ public class MacProxyManager {
         if (networkService == null) {
             getCurrentNetworkSettings();
         }
-//        customProxyPACDir = LauncherUtils.createCustomProfileDir(sessionId);
-//        if (customProxyPACDir.exists()) {
-//            LauncherUtils.recursivelyDeleteDir(customProxyPACDir);
-//        }
+        customProxyPACDir = LauncherUtils.createCustomProfileDir(sessionId);
+        if (customProxyPACDir.exists()) {
+            LauncherUtils.recursivelyDeleteDir(customProxyPACDir);
+        }
         customProxyPACDir.mkdir();
         log.info("Modifying OS X global network settings...");
         // TODO Disable proxy PAC URL (or, even better, use one!) SRC-364

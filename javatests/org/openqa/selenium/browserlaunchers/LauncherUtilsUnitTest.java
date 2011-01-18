@@ -292,8 +292,8 @@ public class LauncherUtilsUnitTest extends TestCase {
         }
         try {
           DesiredCapabilities capabilities = new DesiredCapabilities();
-          capabilities.setCapability(AVOIDING_PROXY, true);
-          capabilities.setCapability(ONLY_PROXYING_SELENIUM_TRAFFIC, true);
+          capabilities.setCapability(AVOIDING_PROXY, avoidProxy);
+          capabilities.setCapability(ONLY_PROXYING_SELENIUM_TRAFFIC, proxySeleniumTrafficOnly);
           Proxies.makeProxyPAC(parentDir, port, configuredProxy, proxyPort, nonProxyHosts, capabilities);
         } catch (FileNotFoundException e) {
             fail();
