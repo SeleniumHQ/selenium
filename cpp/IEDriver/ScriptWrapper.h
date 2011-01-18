@@ -2,11 +2,17 @@
 #define WEBDRIVER_IE_SCRIPTWRAPPER_H_
 
 #include <string>
-#include "ElementWrapper.h"
+#include "json.h"
 
 using namespace std;
 
 namespace webdriver {
+
+// Forward declaration of classes to avoid
+// circular include files.
+class BrowserWrapper;
+class ElementWrapper;
+class BrowserManager;
 
 class ScriptWrapper
 {
@@ -28,17 +34,22 @@ public:
 	void AddArgument(IHTMLElement *argument);
 	void AddArgument(VARIANT argument);
 
-	bool ResultIsEmpty();
-	bool ResultIsString();
-	bool ResultIsInteger();
-	bool ResultIsBoolean();
-	bool ResultIsDouble();
-	bool ResultIsArray();
-	bool ResultIsElement();
-	bool ResultIsElementCollection();
-	bool ResultIsIDispatch();
+	bool ResultIsEmpty(void);
+	bool ResultIsString(void);
+	bool ResultIsInteger(void);
+	bool ResultIsBoolean(void);
+	bool ResultIsDouble(void);
+	bool ResultIsArray(void);
+	bool ResultIsElement(void);
+	bool ResultIsElementCollection(void);
+	bool ResultIsIDispatch(void);
+
+	int ConvertResultToJsonValue(BrowserManager *manager, Json::Value *value);
 
 private:
+	int GetArrayLength(BrowserWrapper *browser_wrapper, long *length);
+	int GetArrayItem(BrowserWrapper *browser_wrapper, BrowserManager *manager, long index, Json::Value *item);
+
 	unsigned long argument_count_;
 	std::wstring script_;
 	long current_arg_index_;

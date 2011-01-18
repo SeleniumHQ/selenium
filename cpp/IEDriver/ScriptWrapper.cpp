@@ -1,5 +1,6 @@
 #include "StdAfx.h"
 #include "ScriptWrapper.h"
+#include "BrowserManager.h"
 
 namespace webdriver {
 
@@ -120,6 +121,86 @@ bool ScriptWrapper::ResultIsArray() {
 		}
 	}
 	return false;
+}
+
+int ScriptWrapper::ConvertResultToJsonValue(BrowserManager *manager, Json::Value *value) {
+	int status_code = SUCCESS;
+	if (this->ResultIsString()) { 
+		std::string string_value;
+		string_value = CW2A(this->result_.bstrVal, CP_UTF8);
+		*value = string_value;
+	} else if (this->ResultIsInteger()) {
+		*value = this->result_.lVal;
+	} else if (this->ResultIsDouble()) {
+		*value = this->result_.dblVal;
+	} else if (this->ResultIsBoolean()) {
+		*value = this->result_.boolVal == VARIANT_TRUE;
+	} else if (this->ResultIsEmpty()) {
+		*value = Json::Value::null;
+	} else if (this->ResultIsIDispatch()) {
+		if (this->ResultIsArray() || this->ResultIsElementCollection()) {
+			BrowserWrapper *browser_wrapper;
+			manager->GetCurrentBrowser(&browser_wrapper);
+			Json::Value result_array(Json::arrayValue);
+
+			long length = 0;
+			this->GetArrayLength(browser_wrapper, &length);
+
+			for (long i = 0; i < length; ++i) {
+				Json::Value array_item_result;
+				int array_item_status = this->GetArrayItem(browser_wrapper, manager, i, &array_item_result);
+				result_array[i] = array_item_result;
+			}
+			*value = result_array;
+		} else {
+			IHTMLElement *node = (IHTMLElement*) this->result_.pdispVal;
+			ElementWrapper *element_wrapper;
+			manager->AddManagedElement(node, &element_wrapper);
+			*value = element_wrapper->ConvertToJson();
+		}
+	} else {
+		status_code = EUNKNOWNSCRIPTRESULT;
+	}
+	return status_code;
+}
+
+int ScriptWrapper::GetArrayLength(BrowserWrapper *browser_wrapper, long *length) {
+	// Prepare an array for the Javascript execution, containing only one
+	// element - the original returned array from a JS execution.
+	std::wstring get_length_script(L"(function(){return function() {return arguments[0].length;}})();");
+	ScriptWrapper *get_length_script_wrapper = new ScriptWrapper(get_length_script, 1);
+	get_length_script_wrapper->AddArgument(this->result_);
+	int length_result = browser_wrapper->ExecuteScript(get_length_script_wrapper);
+
+	if (length_result != SUCCESS) {
+		return length_result;
+	}
+
+	// Expect the return type to be an integer. A non-integer means this was
+	// not an array after all.
+	if (!get_length_script_wrapper->ResultIsInteger()) {
+		return EUNEXPECTEDJSERROR;
+	}
+
+	*length = get_length_script_wrapper->result().lVal;
+	delete get_length_script_wrapper;
+	return SUCCESS;
+}
+
+int ScriptWrapper::GetArrayItem(BrowserWrapper *browser_wrapper, BrowserManager *manager, long index, Json::Value *item){
+	std::wstring get_array_item_script(L"(function(){return function() {return arguments[0][arguments[1]];}})();"); 
+	ScriptWrapper *get_array_item_script_wrapper = new ScriptWrapper(get_array_item_script, 2);
+	get_array_item_script_wrapper->AddArgument(this->result_);
+	get_array_item_script_wrapper->AddArgument(index);
+	int get_item_result = browser_wrapper->ExecuteScript(get_array_item_script_wrapper);
+	if (get_item_result != SUCCESS) {
+		return get_item_result;
+	}
+
+	Json::Value array_item_result;
+	int array_item_status = get_array_item_script_wrapper->ConvertResultToJsonValue(manager, item);
+	delete get_array_item_script_wrapper;
+	return SUCCESS;
 }
 
 } // namespace webdriver

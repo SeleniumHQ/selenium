@@ -48,7 +48,7 @@ protected:
 				return;
 			} else {
 				Json::Value script_result;
-				this->ConvertScriptResult(script_wrapper, manager, &script_result);
+				script_wrapper->ConvertResultToJsonValue(manager, &script_result);
 				response->SetResponse(SUCCESS, script_result);
 				delete script_wrapper;
 				return;
@@ -87,88 +87,88 @@ protected:
 
 		return status_code;
 	}
-
-	int ExecuteScriptCommandHandler::ConvertScriptResult(ScriptWrapper *script_wrapper, BrowserManager *manager, Json::Value *value) {
-		int status_code = SUCCESS;
-		CComVariant result(script_wrapper->result());
-		if (script_wrapper->ResultIsString()) { 
-			std::string string_value;
-			string_value = CW2A(script_wrapper->result().bstrVal, CP_UTF8);
-			*value = string_value;
-		} else if (script_wrapper->ResultIsInteger()) {
-			*value = script_wrapper->result().lVal;
-		} else if (script_wrapper->ResultIsDouble()) {
-			*value = script_wrapper->result().dblVal;
-		} else if (script_wrapper->ResultIsBoolean()) {
-			*value = script_wrapper->result().boolVal == VARIANT_TRUE;
-		} else if (script_wrapper->ResultIsEmpty()) {
-			*value = Json::Value::null;
-		} else if (script_wrapper->ResultIsIDispatch()) {
-			if (script_wrapper->ResultIsArray() || script_wrapper->ResultIsElementCollection()) {
-				BrowserWrapper *browser_wrapper;
-				manager->GetCurrentBrowser(&browser_wrapper);
-				Json::Value result_array(Json::arrayValue);
-
-				long length = 0;
-				this->GetArrayLength(script_wrapper, browser_wrapper, &length);
-
-				for (long i = 0; i < length; ++i) {
-					Json::Value array_item_result;
-					int array_item_status = this->GetArrayItem(script_wrapper, browser_wrapper, manager, i, &array_item_result);
-					result_array[i] = array_item_result;
-				}
-				*value = result_array;
-			} else {
-				IHTMLElement *node = (IHTMLElement*) script_wrapper->result().pdispVal;
-				ElementWrapper *element_wrapper;
-				manager->AddManagedElement(node, &element_wrapper);
-				*value = element_wrapper->ConvertToJson();
-			}
-		} else {
-			status_code = EUNKNOWNSCRIPTRESULT;
-		}
-		return status_code;
-	}
-
-private:
-	int ExecuteScriptCommandHandler::GetArrayLength(ScriptWrapper *array_script_wrapper, BrowserWrapper *browser_wrapper, long *length) {
-		// Prepare an array for the Javascript execution, containing only one
-		// element - the original returned array from a JS execution.
-		std::wstring get_length_script(L"(function(){return function() {return arguments[0].length;}})();");
-		ScriptWrapper *get_length_script_wrapper = new ScriptWrapper(get_length_script, 1);
-		get_length_script_wrapper->AddArgument(array_script_wrapper->result());
-		int length_result = browser_wrapper->ExecuteScript(get_length_script_wrapper);
-
-		if (length_result != SUCCESS) {
-			return length_result;
-		}
-
-		// Expect the return type to be an integer. A non-integer means this was
-		// not an array after all.
-		if (!get_length_script_wrapper->ResultIsInteger()) {
-			return EUNEXPECTEDJSERROR;
-		}
-
-		*length = get_length_script_wrapper->result().lVal;
-		delete get_length_script_wrapper;
-		return SUCCESS;
-	}
-
-	int ExecuteScriptCommandHandler::GetArrayItem(ScriptWrapper *array_script_wrapper, BrowserWrapper *browser_wrapper, BrowserManager *manager, long index, Json::Value *item){
-		std::wstring get_array_item_script(L"(function(){return function() {return arguments[0][arguments[1]];}})();"); 
-		ScriptWrapper *get_array_item_script_wrapper = new ScriptWrapper(get_array_item_script, 2);
-		get_array_item_script_wrapper->AddArgument(array_script_wrapper->result());
-		get_array_item_script_wrapper->AddArgument(index);
-		int get_item_result = browser_wrapper->ExecuteScript(get_array_item_script_wrapper);
-		if (get_item_result != SUCCESS) {
-			return get_item_result;
-		}
-
-		Json::Value array_item_result;
-		int array_item_status = this->ConvertScriptResult(get_array_item_script_wrapper, manager, item);
-		delete get_array_item_script_wrapper;
-		return SUCCESS;
-	}
+//
+//	int ExecuteScriptCommandHandler::ConvertScriptResult(ScriptWrapper *script_wrapper, BrowserManager *manager, Json::Value *value) {
+//		int status_code = SUCCESS;
+//		CComVariant result(script_wrapper->result());
+//		if (script_wrapper->ResultIsString()) { 
+//			std::string string_value;
+//			string_value = CW2A(script_wrapper->result().bstrVal, CP_UTF8);
+//			*value = string_value;
+//		} else if (script_wrapper->ResultIsInteger()) {
+//			*value = script_wrapper->result().lVal;
+//		} else if (script_wrapper->ResultIsDouble()) {
+//			*value = script_wrapper->result().dblVal;
+//		} else if (script_wrapper->ResultIsBoolean()) {
+//			*value = script_wrapper->result().boolVal == VARIANT_TRUE;
+//		} else if (script_wrapper->ResultIsEmpty()) {
+//			*value = Json::Value::null;
+//		} else if (script_wrapper->ResultIsIDispatch()) {
+//			if (script_wrapper->ResultIsArray() || script_wrapper->ResultIsElementCollection()) {
+//				BrowserWrapper *browser_wrapper;
+//				manager->GetCurrentBrowser(&browser_wrapper);
+//				Json::Value result_array(Json::arrayValue);
+//
+//				long length = 0;
+//				this->GetArrayLength(script_wrapper, browser_wrapper, &length);
+//
+//				for (long i = 0; i < length; ++i) {
+//					Json::Value array_item_result;
+//					int array_item_status = this->GetArrayItem(script_wrapper, browser_wrapper, manager, i, &array_item_result);
+//					result_array[i] = array_item_result;
+//				}
+//				*value = result_array;
+//			} else {
+//				IHTMLElement *node = (IHTMLElement*) script_wrapper->result().pdispVal;
+//				ElementWrapper *element_wrapper;
+//				manager->AddManagedElement(node, &element_wrapper);
+//				*value = element_wrapper->ConvertToJson();
+//			}
+//		} else {
+//			status_code = EUNKNOWNSCRIPTRESULT;
+//		}
+//		return status_code;
+//	}
+//
+//private:
+//	int ExecuteScriptCommandHandler::GetArrayLength(ScriptWrapper *array_script_wrapper, BrowserWrapper *browser_wrapper, long *length) {
+//		// Prepare an array for the Javascript execution, containing only one
+//		// element - the original returned array from a JS execution.
+//		std::wstring get_length_script(L"(function(){return function() {return arguments[0].length;}})();");
+//		ScriptWrapper *get_length_script_wrapper = new ScriptWrapper(get_length_script, 1);
+//		get_length_script_wrapper->AddArgument(array_script_wrapper->result());
+//		int length_result = browser_wrapper->ExecuteScript(get_length_script_wrapper);
+//
+//		if (length_result != SUCCESS) {
+//			return length_result;
+//		}
+//
+//		// Expect the return type to be an integer. A non-integer means this was
+//		// not an array after all.
+//		if (!get_length_script_wrapper->ResultIsInteger()) {
+//			return EUNEXPECTEDJSERROR;
+//		}
+//
+//		*length = get_length_script_wrapper->result().lVal;
+//		delete get_length_script_wrapper;
+//		return SUCCESS;
+//	}
+//
+//	int ExecuteScriptCommandHandler::GetArrayItem(ScriptWrapper *array_script_wrapper, BrowserWrapper *browser_wrapper, BrowserManager *manager, long index, Json::Value *item){
+//		std::wstring get_array_item_script(L"(function(){return function() {return arguments[0][arguments[1]];}})();"); 
+//		ScriptWrapper *get_array_item_script_wrapper = new ScriptWrapper(get_array_item_script, 2);
+//		get_array_item_script_wrapper->AddArgument(array_script_wrapper->result());
+//		get_array_item_script_wrapper->AddArgument(index);
+//		int get_item_result = browser_wrapper->ExecuteScript(get_array_item_script_wrapper);
+//		if (get_item_result != SUCCESS) {
+//			return get_item_result;
+//		}
+//
+//		Json::Value array_item_result;
+//		int array_item_status = this->ConvertScriptResult(get_array_item_script_wrapper, manager, item);
+//		delete get_array_item_script_wrapper;
+//		return SUCCESS;
+//	}
 };
 
 } // namespace webdriver

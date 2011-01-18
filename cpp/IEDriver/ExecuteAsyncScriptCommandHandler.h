@@ -104,7 +104,7 @@ protected:
 				while (true) {
 					Json::Value polling_result;
 					status_code = browser_wrapper->ExecuteScript(polling_script_wrapper);
-					this->ConvertScriptResult(polling_script_wrapper, manager, &polling_result);
+					polling_script_wrapper->ConvertResultToJsonValue(manager, &polling_result);
 					
 					Json::UInt index = 0;
 					std::string narrow_pending_id(CW2A(pending_id.c_str(), CP_UTF8));
