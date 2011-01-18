@@ -1,3 +1,3 @@
 
 java_library(name = "guava-libraries",
-  deps = [ "guava-r06.jar" ])
+  deps = [ "guava-r07.jar" ])
