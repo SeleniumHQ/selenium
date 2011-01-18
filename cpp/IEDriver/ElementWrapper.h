@@ -22,7 +22,6 @@ public:
 	bool IsSelected(void);
 	bool IsCheckBox(void);
 	bool IsRadioButton(void);
-	std::wstring GetText(void);
 	int Click(void);
 	int Hover(void);
 	int DragBy(int offset_x, int offset_y, int drag_speed);

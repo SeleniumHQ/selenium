@@ -441,43 +441,6 @@ int ElementWrapper::GetLocation(HWND containing_window_handle, long* left, long*
 	return SUCCESS;
 }
 
-std::wstring ElementWrapper::GetText() {
-	CComBSTR tag_name;
-	this->element_->get_tagName(&tag_name);
-	bool is_pre = tag_name == L"PRE";
-
-	CComQIPtr<IHTMLDOMNode> node(this->element_);
-	std::wstring element_text(L"");
-	this->ExtractElementText(element_text, node, is_pre);
-
-	/* Trim leading and trailing whitespace and line breaks. */
-	std::wstring::const_iterator it_start = element_text.begin();
-	while (it_start != element_text.end() && iswspace(*it_start)) {
-		++it_start;
-	}
-
-	std::wstring::const_iterator it_end = element_text.end();
-	while (it_start < it_end) {
-		--it_end;
-		if (!iswspace(*it_end)) {
-			++it_end;
-			break;
-		}
-	}
-
-	// The decision has been made that line break strings
-	// from Remote servers will normalize on the line-feed
-	// as the line ending. Thus, we need to replace CR-LF
-	// pairs with single LF characters.
-	std::wstring to_return(it_start, it_end);
-	size_t cr_lf_pos = to_return.find(L"\r\n");
-	while (cr_lf_pos != std::wstring::npos) {
-		to_return.replace(cr_lf_pos, 2, L"\n");
-		cr_lf_pos = to_return.find(L"\r\n");
-	}
-	return to_return;
-}
-
 bool ElementWrapper::IsSelected() {
 	CComQIPtr<IHTMLOptionElement> option(this->element_);
 	if (option) {
