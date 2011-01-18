@@ -6,6 +6,7 @@ java_library(name = "browserlaunchers",
     "//java/org/openqa/selenium:base",
     "//java/org/openqa/selenium/internal:logging",
     "//java/org/openqa/selenium:webdriver-api",
+    "//java/org/openqa/selenium/net",
     "//java/org/openqa/selenium/os",
     "//third_party/java/guava-libraries",
   ])

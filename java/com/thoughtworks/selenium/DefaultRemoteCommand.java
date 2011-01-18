@@ -17,8 +17,7 @@
 
 package com.thoughtworks.selenium;
 
-import java.io.*;
-import java.net.*;
+import org.openqa.selenium.net.Urls;
 
 /**
  * The default implementation of the RemoteCommand interface
@@ -50,13 +49,13 @@ public class DefaultRemoteCommand implements RemoteCommand {
 
     public String getCommandURLString() {
         StringBuffer sb = new StringBuffer("cmd=");
-        sb.append(urlEncode(command));
+      sb.append(Urls.urlEncode(command));
         if (args == null) return sb.toString();
         for (int i = 0; i < args.length; i++) {
             sb.append('&');
             sb.append(Integer.toString(i+1));
             sb.append('=');
-            sb.append(urlEncode(args[i]));
+          sb.append(Urls.urlEncode(args[i]));
         }
         return sb.toString();
     }
@@ -74,18 +73,5 @@ public class DefaultRemoteCommand implements RemoteCommand {
         }
         return new DefaultRemoteCommand(values[FIRSTINDEX], new String[] {values[SECONDINDEX], values[THIRDINDEX]});
     }
-    
-    /** Encodes the text as an URL using UTF-8.
-     * 
-     * @param text the text too encode
-     * @return the encoded URI string
-     * @see URLEncoder#encode(java.lang.String, java.lang.String)
-     */
-    public static String urlEncode(String text) {
-        try {
-            return URLEncoder.encode(text, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
-        }
-    }
+
 }

@@ -35,7 +35,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.commons.logging.Log;
 import org.openqa.jetty.log.LogFactory;
-import org.openqa.selenium.browserlaunchers.LauncherUtils;
+import org.openqa.selenium.net.Urls;
 
 
 /**
@@ -825,7 +825,7 @@ public class FrameGroupCommandQueueSet {
         openUrl.append(portDriversShouldContact);
         openUrl.append("/selenium-server/core/InjectedRemoteRunner.html");
       } else {
-        openUrl.append(LauncherUtils.stripStartURL(baseUrl));
+        openUrl.append(Urls.toProtocolHostAndPort(baseUrl));
       }
       try {
         doCommand("open", openUrl.toString(), ""); // will close out subframes

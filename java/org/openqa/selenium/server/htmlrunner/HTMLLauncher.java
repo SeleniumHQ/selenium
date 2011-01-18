@@ -6,12 +6,12 @@ package org.openqa.selenium.server.htmlrunner;
 
 import org.apache.commons.logging.Log;
 import org.openqa.jetty.log.LogFactory;
+import org.openqa.selenium.net.Urls;
 import org.openqa.selenium.server.*;
 import org.openqa.selenium.server.BrowserSessionFactory.BrowserSessionInfo;
 import org.openqa.selenium.browserlaunchers.AsyncExecute;
 import org.openqa.selenium.server.browserlaunchers.BrowserLauncher;
 import org.openqa.selenium.server.browserlaunchers.BrowserLauncherFactory;
-import org.openqa.selenium.browserlaunchers.LauncherUtils;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -161,7 +161,7 @@ public class HTMLLauncher implements HTMLResultsListener {
         if (browser.startsWith("*chrome") || browser.startsWith("*firefox") || browser.startsWith("*iehta")  || browser.startsWith("*iexplore") ) {
             suiteURL = "http://localhost:" + remoteControl.getConfiguration().getPortDriversShouldContact() + "/selenium-server/tests/" + suiteFile.getName();
         } else {
-            suiteURL = LauncherUtils.stripStartURL(browserURL) + "/selenium-server/tests/" + suiteFile.getName();
+          suiteURL = Urls.toProtocolHostAndPort(browserURL) + "/selenium-server/tests/" + suiteFile.getName();
         }
     	return runHTMLSuite(browser, browserURL, suiteURL, outputFile, timeoutInSeconds, multiWindow, "info");
     }

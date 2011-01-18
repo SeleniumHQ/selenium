@@ -19,7 +19,7 @@ package org.openqa.selenium.server;
 
 import java.util.regex.*;
 
-import org.openqa.selenium.browserlaunchers.LauncherUtils;
+import org.openqa.selenium.net.Urls;
 
 /**
  * The default implementation of the RemoteCommand interface
@@ -54,7 +54,7 @@ public class DefaultRemoteCommand implements RemoteCommand {
     }
 
     public String getCommandURLString() {
-        return "cmd=" + LauncherUtils.urlEncode(command) + "&1=" + LauncherUtils.urlEncode(field) + "&2=" + LauncherUtils.urlEncode(value);
+      return "cmd=" + Urls.urlEncode(command) + "&1=" + Urls.urlEncode(field) + "&2=" + Urls.urlEncode(value);
     }
     
     public String getJSONString() {

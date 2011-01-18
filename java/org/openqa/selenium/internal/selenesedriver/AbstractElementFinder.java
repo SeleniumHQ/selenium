@@ -22,11 +22,14 @@ import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableMap;
 import com.thoughtworks.selenium.Selenium;
 import com.thoughtworks.selenium.SeleniumException;
+import org.openqa.selenium.net.Urls;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.List;
 import java.util.Map;
+
+import static org.openqa.selenium.net.Urls.urlEncode;
 
 public abstract  class AbstractElementFinder<T> implements SeleneseFunction<T> {
   private final static Map<String, String> name2strategy =
@@ -43,13 +46,8 @@ public abstract  class AbstractElementFinder<T> implements SeleneseFunction<T> {
   protected abstract T onFailure(String how, String using);
 
   protected Map<String, String> newElement(String key) {
-    try {
-      String locator = "stored=" + URLEncoder.encode(key, "utf-8");
-
-      return ImmutableMap.of("ELEMENT", locator);
-    } catch (UnsupportedEncodingException e) {
-      throw Throwables.propagate(e);
-    }
+    String locator = "stored=" + urlEncode(key);
+    return ImmutableMap.of("ELEMENT", locator);
   }
 
   public T apply(Selenium selenium, Map<String, ?> args) {

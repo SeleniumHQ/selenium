@@ -29,6 +29,7 @@ java_library(name = "selenium",
     ":api",
     ":wait",
     "//java/com/thoughtworks/selenium/condition",
+    "//java/org/openqa/selenium/net",
     "//third_party/java/junit",
     "//third_party/java/testng",
   ])

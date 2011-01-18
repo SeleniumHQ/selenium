@@ -17,6 +17,8 @@
 
 package com.thoughtworks.selenium;
 
+import org.openqa.selenium.net.Urls;
+
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -204,7 +206,7 @@ public class HttpCommandProcessor implements CommandProcessor {
         sb.append(command);
         if (sessionId != null) {
             sb.append("&sessionId=");
-            sb.append(DefaultRemoteCommand.urlEncode(sessionId));
+          sb.append(Urls.urlEncode(sessionId));
         }
         return sb.toString();
     }

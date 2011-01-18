@@ -10,10 +10,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
-import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -22,6 +20,7 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.internal.NullTrace;
 import org.openqa.selenium.internal.Trace;
 import org.openqa.selenium.io.FileHandler;
+import org.openqa.selenium.net.Urls;
 
 /**
  * Various static utility functions used to launch browsers
@@ -88,26 +87,6 @@ public class LauncherUtils {
   }
 
 
-  /**
-   * Strips the specified URL so it only includes a protocal, hostname and
-   * port
-   *
-   * @throws MalformedURLException
-   */
-  public static String stripStartURL(String url) {
-    try {
-      URL u = new URL(url);
-      String path = u.getPath();
-      if (path != null && !"".equals(path) && !path.endsWith("/")) {
-        log.warn("It looks like your baseUrl (" + url
-                 + ") is pointing to a file, not a directory (it doesn't end with a /).  We're going to have to strip off the last part of the pathname.");
-      }
-      return u.getProtocol() + "://" + u.getAuthority();
-    } catch (MalformedURLException e) {
-      throw new RuntimeException(e);
-    }
-  }
-
   // TODO(simon): Should not be public
   public static String getQueryString(String url) {
     final String query;
@@ -122,7 +101,7 @@ public class LauncherUtils {
 
   // TODO(simon): Revert back to protected once the abstract browser launcher is in the same package
   public static String getDefaultHTMLSuiteUrl(String browserURL, String suiteUrl, boolean multiWindow, int serverPort) {
-    String url = LauncherUtils.stripStartURL(browserURL);
+    String url = Urls.toProtocolHostAndPort(browserURL);
     String resultsUrl;
     if (serverPort == 0) {
       resultsUrl = "../postResults";
@@ -132,18 +111,18 @@ public class LauncherUtils {
     return url + "/selenium-server/core/TestRunner.html?auto=true"
            + "&multiWindow=" + multiWindow
            + "&defaultLogLevel=info"
-           + "&baseUrl=" + urlEncode(browserURL)
+           + "&baseUrl=" + Urls.urlEncode(browserURL)
            + "&resultsUrl=" + resultsUrl
-           + "&test=" + urlEncode(suiteUrl);
+           + "&test=" + Urls.urlEncode(suiteUrl);
   }
 
   // TODO(simon): Reduce visibility once server/browserlaunchers no more
   public static String getDefaultRemoteSessionUrl(String startURL, String sessionId, boolean multiWindow, int serverPort, boolean browserSideLog) {
-    String url = LauncherUtils.stripStartURL(startURL);
+    String url = Urls.toProtocolHostAndPort(startURL);
     url += "/selenium-server/core/RemoteRunner.html?"
            + "sessionId=" + sessionId
            + "&multiWindow=" + multiWindow
-           + "&baseUrl=" + urlEncode(startURL)
+           + "&baseUrl=" + Urls.urlEncode(startURL)
            + "&debugMode=" + browserSideLog;
     if (serverPort != 0) {
       url += "&driverUrl=http://localhost:" + serverPort + "/selenium-server/driver/";
@@ -151,21 +130,6 @@ public class LauncherUtils {
     return url;
   }
 
-
-  /**
-   * Encodes the text as an URL using UTF-8.
-   *
-   * @param text the text too encode
-   * @return the encoded URI string
-   * @see URLEncoder#encode(java.lang.String, java.lang.String)
-   */
-  public static String urlEncode(String text) {
-    try {
-      return URLEncoder.encode(text, "UTF-8");
-    } catch (UnsupportedEncodingException e) {
-      throw new RuntimeException(e);
-    }
-  }
 
   // TODO(simon): Reduce visibility.
   public static File extractHTAFile(File dir, int port, String resourceFile, String outFile) {

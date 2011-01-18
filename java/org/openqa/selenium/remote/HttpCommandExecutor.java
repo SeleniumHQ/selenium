@@ -55,6 +55,7 @@ import org.apache.http.protocol.ExecutionContext;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.net.Urls;
 
 import static org.apache.http.protocol.ExecutionContext.HTTP_TARGET_HOST;
 import static org.openqa.selenium.remote.DriverCommand.*;
@@ -449,12 +450,7 @@ public class HttpCommandExecutor implements CommandExecutor {
       // Attempt to extract the property name from the parameters
       Object value = command.getParameters().get(propertyName);
       if (value != null) {
-        try {
-          return URLEncoder.encode(String.valueOf(value), "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-          // Can never happen. UTF-8 ships with java
-          return String.valueOf(value);
-        }
+        return Urls.urlEncode(String.valueOf(value));
       }
       return null;
     }
