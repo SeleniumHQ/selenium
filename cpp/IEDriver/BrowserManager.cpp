@@ -10,13 +10,7 @@
 #include "ElementEqualsCommandHandler.h"
 #include "ExecuteAsyncScriptCommandHandler.h"
 #include "ExecuteScriptCommandHandler.h"
-#include "FindByClassNameElementFinder.h"
 #include "FindByCssSelectorElementFinder.h"
-#include "FindByIdElementFinder.h"
-#include "FindByLinkTextElementFinder.h"
-#include "FindByNameElementFinder.h"
-#include "FindByPartialLinkTextElementFinder.h"
-#include "FindByTagNameElementFinder.h"
 #include "FindByXPathElementFinder.h"
 #include "FindChildElementCommandHandler.h"
 #include "FindChildElementsCommandHandler.h"
@@ -354,14 +348,16 @@ void BrowserManager::BrowserQuittingEventHandler(std::wstring browser_id) {
 }
 
 void BrowserManager::PopulateElementFinderRepository(void) {
-	this->element_finders_[L"id"] = new FindByIdElementFinder;
-	this->element_finders_[L"name"] = new FindByNameElementFinder;
-	this->element_finders_[L"tag name"] = new FindByTagNameElementFinder;
-	this->element_finders_[L"link text"] = new FindByLinkTextElementFinder;
-	this->element_finders_[L"partial link text"] = new FindByPartialLinkTextElementFinder;
-	this->element_finders_[L"class name"] = new FindByClassNameElementFinder;
-	this->element_finders_[L"xpath"] = new FindByXPathElementFinder;
-	this->element_finders_[L"css selector"] = new FindByCssSelectorElementFinder;
+	// TODO (JimEvans): This is left over from a previous method of finding
+	// elements. This needs to be completely refactored.
+	this->element_finders_[L"id"] = new ElementFinder(L"id");
+	this->element_finders_[L"name"] = new ElementFinder(L"name");
+	this->element_finders_[L"tag name"] = new ElementFinder(L"tagName");
+	this->element_finders_[L"link text"] = new ElementFinder(L"linkText");
+	this->element_finders_[L"partial link text"] = new ElementFinder(L"partialLinkText");
+	this->element_finders_[L"class name"] = new ElementFinder(L"className");
+	this->element_finders_[L"xpath"] = new FindByXPathElementFinder(L"xpath");
+	this->element_finders_[L"css selector"] = new FindByCssSelectorElementFinder(L"css");
 }
 
 void BrowserManager::PopulateCommandHandlerRepository() {

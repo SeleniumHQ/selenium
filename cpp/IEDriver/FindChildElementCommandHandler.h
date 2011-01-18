@@ -42,7 +42,7 @@ protected:
 			status_code = this->GetElement(manager, element_id, &parent_element_wrapper);
 
 			if (status_code == SUCCESS) {
-				ElementWrapper *found_element;
+				Json::Value found_element;
 
 				int timeout(manager->implicit_wait_timeout());
 				clock_t end = clock() + (timeout / 1000 * CLOCKS_PER_SEC);
@@ -59,7 +59,7 @@ protected:
 				} while (clock() < end);
 
 				if (status_code == SUCCESS) {
-					response->SetResponse(SUCCESS, found_element->ConvertToJson());
+					response->SetResponse(SUCCESS, found_element);
 					return;
 				} else {
 					response->SetErrorResponse(status_code, "Unable to find element with " + command_parameters["using"].asString() + " == " + command_parameters["value"].asString());

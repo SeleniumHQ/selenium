@@ -114,8 +114,12 @@ bool ScriptWrapper::ResultIsArray() {
 			// see if this object has a length attribute. This does not seem necessary
 			// now.
 			// (For future reference, GUID is {C59C6B12-F6C1-11CF-8835-00A0C911E8B2})
+			//
+			// If the name is DispStaticNodeList, we can be pretty sure it's an array
+			// (or at least has array semantics). It is unclear to what extent checking
+			// for DispStaticNodeList is supported behaviour.
 			typeinfo->ReleaseTypeAttr(type_attr);
-			if (name == L"JScriptTypeInfo") {
+			if (name == L"JScriptTypeInfo" || name == L"DispStaticNodeList") {
 				return true;
 			}
 		}

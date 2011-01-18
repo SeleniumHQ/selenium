@@ -23,7 +23,6 @@ protected:
 			response->SetErrorResponse(400, "Missing parameter: value");
 			return;
 		} else {
-			ElementWrapper *found_element;
 			std::wstring mechanism = CA2W(command_parameters["using"].asString().c_str(), CP_UTF8);
 			std::wstring value = CA2W(command_parameters["value"].asString().c_str(), CP_UTF8);
 
@@ -40,6 +39,7 @@ protected:
 				end += 1 * CLOCKS_PER_SEC;
 			}
 
+			Json::Value found_element;
 			do {
 				status_code = finder->FindElement(manager, NULL, value, &found_element);
 				if (status_code == SUCCESS) {
@@ -48,7 +48,7 @@ protected:
 			} while (clock() < end);
 			
 			if (status_code == SUCCESS) {
-				response->SetResponse(SUCCESS, found_element->ConvertToJson());
+				response->SetResponse(SUCCESS, found_element);
 				return;
 			} else {
 				response->SetErrorResponse(status_code, "Unable to find element with " + command_parameters["using"].asString() + " == " + command_parameters["value"].asString());

@@ -8,15 +8,20 @@ namespace webdriver {
 
 class FindByCssSelectorElementFinder : public ElementFinder {
 public:
-	FindByCssSelectorElementFinder(void) {
+	FindByCssSelectorElementFinder(std::wstring locator) : ElementFinder(locator) {
 	}
 
 	virtual ~FindByCssSelectorElementFinder(void) {
 	}
 
-protected:
-	int FindByCssSelectorElementFinder::FindElementInternal(BrowserWrapper *browser, IHTMLElement *parent_element, std::wstring criteria, IHTMLElement **found_element) {
+	int FindByCssSelectorElementFinder::FindElement(BrowserManager *manager, ElementWrapper *parent_wrapper, std::wstring criteria, Json::Value *found_element) {
 		int result = ENOSUCHELEMENT;
+
+		BrowserWrapper *browser;
+		result = manager->GetCurrentBrowser(&browser);
+		if (result != SUCCESS) {
+			return result;
+		}
 
 		std::wstring script(L"(function() { return function(){");
 		for (int i = 0; SIZZLE[i]; i++) {
@@ -31,8 +36,8 @@ protected:
 
 		ScriptWrapper *script_wrapper = new ScriptWrapper(script, 2);
 		script_wrapper->AddArgument(criteria);
-		if (parent_element) {
-			CComPtr<IHTMLElement> parent(parent_element);
+		if (parent_wrapper) {
+			CComPtr<IHTMLElement> parent(parent_wrapper->element());
 			IHTMLElement* parent_element_copy;
 			parent.CopyTo(&parent_element_copy);
 			script_wrapper->AddArgument(parent_element_copy);
@@ -40,10 +45,10 @@ protected:
 		result = browser->ExecuteScript(script_wrapper);
 
 		if (result == SUCCESS) {
-			if (script_wrapper->ResultIsEmpty()) {
+			if (!script_wrapper->ResultIsElement()) {
 				result = ENOSUCHELEMENT;
 			} else {
-				*found_element = (IHTMLElement*)script_wrapper->result().pdispVal;
+				result = script_wrapper->ConvertResultToJsonValue(manager, found_element);
 			}
 		}
 		delete script_wrapper;
@@ -51,9 +56,14 @@ protected:
 		return result;
 	}
 
-	int FindByCssSelectorElementFinder::FindElementsInternal(BrowserWrapper *browser, IHTMLElement *parent_element, std::wstring criteria, std::vector<IHTMLElement*> *found_elements)
-	{
+	int FindByCssSelectorElementFinder::FindElements(BrowserManager *manager, ElementWrapper *parent_wrapper, std::wstring criteria, Json::Value *found_elements) {
 		int result = ENOSUCHELEMENT;
+
+		BrowserWrapper *browser;
+		result = manager->GetCurrentBrowser(&browser);
+		if (result != SUCCESS) {
+			return result;
+		}
 
 		std::wstring script(L"(function() { return function(){");
 		for (int i = 0; SIZZLE[i]; i++) {
@@ -68,9 +78,9 @@ protected:
 
 		ScriptWrapper *script_wrapper = new ScriptWrapper(script, 2);
 		script_wrapper->AddArgument(criteria);
-		if (parent_element) {
+		if (parent_wrapper) {
 			// Use a copy for the parent element?
-			CComPtr<IHTMLElement> parent(parent_element);
+			CComPtr<IHTMLElement> parent(parent_wrapper->element());
 			IHTMLElement* parent_element_copy;
 			parent.CopyTo(&parent_element_copy);
 			script_wrapper->AddArgument(parent_element_copy);
@@ -94,8 +104,9 @@ protected:
 					get_element_script_wrapper->AddArgument(snapshot);
 					get_element_script_wrapper->AddArgument(i);
 					result = browser->ExecuteScript(get_element_script_wrapper);
-					IHTMLElement *found_element = (IHTMLElement *)get_element_script_wrapper->result().pdispVal;
-					found_elements->push_back(found_element);
+					Json::Value json_element;
+					get_element_script_wrapper->ConvertResultToJsonValue(manager, &json_element);
+					found_elements->append(json_element);
 					delete get_element_script_wrapper;
 				}
 			}

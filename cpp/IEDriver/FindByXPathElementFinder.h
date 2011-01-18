@@ -8,15 +8,20 @@ namespace webdriver {
 
 class FindByXPathElementFinder : public ElementFinder {
 public:
-	FindByXPathElementFinder(void) {
+	FindByXPathElementFinder(std::wstring locator) : ElementFinder(locator) {
 	}
 
 	virtual ~FindByXPathElementFinder(void) {
 	}
 
-protected:
-	int FindByXPathElementFinder::FindElementInternal(BrowserWrapper *browser, IHTMLElement *parent_element, std::wstring criteria, IHTMLElement **found_element) {
+	int FindByXPathElementFinder::FindElement(BrowserManager *manager, ElementWrapper *parent_wrapper, std::wstring criteria, Json::Value *found_element) {
 		int result = ENOSUCHELEMENT;
+
+		BrowserWrapper *browser;
+		result = manager->GetCurrentBrowser(&browser);
+		if (result != SUCCESS) {
+			return result;
+		}
 
 		result = this->InjectXPathEngine(browser);
 		// TODO(simon): Why does the injecting sometimes fail?
@@ -26,7 +31,7 @@ protected:
 
 		// Call it
 		std::wstring query;
-		if (parent_element) {
+		if (parent_wrapper) {
 			query += L"(function() { return function(){var res = document.__webdriver_evaluate(arguments[0], arguments[1], null, 7, null); return res.snapshotItem(0) ;};})();";
 		} else {
 			query += L"(function() { return function(){var res = document.__webdriver_evaluate(arguments[0], document, null, 7, null); return res.snapshotLength != 0 ? res.snapshotItem(0) : undefined ;};})();";
@@ -34,8 +39,8 @@ protected:
 
 		ScriptWrapper *script_wrapper = new ScriptWrapper(query, 2);
 		script_wrapper->AddArgument(criteria);
-		if (parent_element) {
-			CComPtr<IHTMLElement> parent(parent_element);
+		if (parent_wrapper) {
+			CComPtr<IHTMLElement> parent(parent_wrapper->element());
 			IHTMLElement* parent_element_copy;
 			parent.CopyTo(&parent_element_copy);
 			script_wrapper->AddArgument(parent_element_copy);
@@ -43,10 +48,10 @@ protected:
 		result = browser->ExecuteScript(script_wrapper);
 
 		if (result == SUCCESS) {
-			if (script_wrapper->ResultIsEmpty()) {
+			if (!script_wrapper->ResultIsElement()) {
 				result = ENOSUCHELEMENT;
 			} else {
-				*found_element = (IHTMLElement*)script_wrapper->result().pdispVal;
+				result = script_wrapper->ConvertResultToJsonValue(manager, found_element);
 			}
 		}
 		delete script_wrapper;
@@ -54,10 +59,14 @@ protected:
 		return result;
 	}
 
-	int FindByXPathElementFinder::FindElementsInternal(BrowserWrapper *browser, IHTMLElement *parent_element, std::wstring criteria, std::vector<IHTMLElement*> *found_elements)
-	{
+	int FindByXPathElementFinder::FindElements(BrowserManager *manager, ElementWrapper *parent_wrapper, std::wstring criteria, Json::Value *found_elements) {
 		int result = ENOSUCHELEMENT;
 
+		BrowserWrapper *browser;
+		result = manager->GetCurrentBrowser(&browser);
+		if (result != SUCCESS) {
+			return result;
+		}
 		result = this->InjectXPathEngine(browser);
 		// TODO(simon): Why does the injecting sometimes fail?
 		if (result != SUCCESS) {
@@ -66,7 +75,7 @@ protected:
 
 		// Call it
 		std::wstring query;
-		if (parent_element) {
+		if (parent_wrapper) {
 			query += L"(function() { return function() {var res = document.__webdriver_evaluate(arguments[0], arguments[1], null, 7, null); return res;};})();";
 		} else {
 			query += L"(function() { return function() {var res = document.__webdriver_evaluate(arguments[0], document, null, 7, null); return res;};})();";
@@ -74,9 +83,9 @@ protected:
 
 		ScriptWrapper *script_wrapper = new ScriptWrapper(query, 2);
 		script_wrapper->AddArgument(criteria);
-		if (parent_element) {
+		if (parent_wrapper) {
 			// Use a copy for the parent element?
-			CComPtr<IHTMLElement> parent(parent_element);
+			CComPtr<IHTMLElement> parent(parent_wrapper->element());
 			IHTMLElement* parent_element_copy;
 			parent.CopyTo(&parent_element_copy);
 			script_wrapper->AddArgument(parent_element_copy);
@@ -100,8 +109,9 @@ protected:
 					get_element_script_wrapper->AddArgument(snapshot);
 					get_element_script_wrapper->AddArgument(i);
 					result = browser->ExecuteScript(get_element_script_wrapper);
-					IHTMLElement *found_element = (IHTMLElement *)get_element_script_wrapper->result().pdispVal;
-					found_elements->push_back(found_element);
+					Json::Value json_element;
+					get_element_script_wrapper->ConvertResultToJsonValue(manager, &json_element);
+					found_elements->append(json_element);
 					delete get_element_script_wrapper;
 				}
 			}

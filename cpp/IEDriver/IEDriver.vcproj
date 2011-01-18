@@ -525,31 +525,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\FindByClassNameElementFinder.h"
-				>
-			</File>
-			<File
 				RelativePath=".\FindByCssSelectorElementFinder.h"
-				>
-			</File>
-			<File
-				RelativePath=".\FindByIdElementFinder.h"
-				>
-			</File>
-			<File
-				RelativePath=".\FindByLinkTextElementFinder.h"
-				>
-			</File>
-			<File
-				RelativePath=".\FindByNameElementFinder.h"
-				>
-			</File>
-			<File
-				RelativePath=".\FindByPartialLinkTextElementFinder.h"
-				>
-			</File>
-			<File
-				RelativePath=".\FindByTagNameElementFinder.h"
 				>
 			</File>
 			<File

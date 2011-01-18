@@ -23,7 +23,6 @@ protected:
 			response->SetErrorResponse(400, "Missing parameter: value");
 			return;
 		} else {
-			std::vector<ElementWrapper *> found_elements;
 			std::wstring mechanism = CA2W(command_parameters["using"].asString().c_str(), CP_UTF8);
 			std::wstring value = CA2W(command_parameters["value"].asString().c_str(), CP_UTF8);
 
@@ -40,20 +39,18 @@ protected:
 				end += 1 * CLOCKS_PER_SEC;
 			}
 
+			Json::Value found_elements(Json::arrayValue);
 			do {
 				status_code = finder->FindElements(manager, NULL, value, &found_elements);
 				if (status_code == SUCCESS && found_elements.size() > 0) {
 					break;
+				} else {
+					::Sleep(100);
 				}
 			} while (clock() < end);
 
 			if (status_code == SUCCESS) {
-				Json::Value element_array(Json::arrayValue);
-				for (unsigned int i = 0; i < found_elements.size(); ++i) {
-					element_array[i] = found_elements[i]->ConvertToJson();
-				}
-
-				response->SetResponse(SUCCESS, element_array);
+				response->SetResponse(SUCCESS, found_elements);
 				return;
 			}
 		}

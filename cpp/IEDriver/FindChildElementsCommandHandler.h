@@ -42,7 +42,7 @@ protected:
 			status_code = this->GetElement(manager, element_id, &parent_element_wrapper);
 
 			if (status_code == SUCCESS) {
-				std::vector<ElementWrapper *> found_elements;
+				Json::Value found_elements(Json::arrayValue);
 
 				int timeout(manager->implicit_wait_timeout());
 				clock_t end = clock() + (timeout / 1000 * CLOCKS_PER_SEC);
@@ -59,12 +59,7 @@ protected:
 				} while (clock() < end);
 
 				if (status_code == SUCCESS) {
-					Json::Value element_array(Json::arrayValue);
-					for (unsigned int i = 0; i < found_elements.size(); ++i) {
-						element_array[i] = found_elements[i]->ConvertToJson();
-					}
-
-					response->SetResponse(SUCCESS, element_array);
+					response->SetResponse(SUCCESS, found_elements);
 					return;
 				}
 			} else {
