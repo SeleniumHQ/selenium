@@ -26,6 +26,8 @@ import com.gargoylesoftware.htmlunit.javascript.host.MouseEvent;
 import org.openqa.selenium.Mouse;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.internal.Locatable;
+import org.openqa.selenium.interactions.internal.Coordinates;
 
 /**
  * Implements mouse operations using the HtmlUnit WebDriver.
@@ -34,17 +36,18 @@ import org.openqa.selenium.WebElement;
 public class HtmlUnitMouse implements Mouse {
   private final HtmlUnitDriver parent;
   private final HtmlUnitKeyboard keyboard;
+  private HtmlElement currentActiveElement = null;
 
   public HtmlUnitMouse(HtmlUnitDriver parent, HtmlUnitKeyboard keyboard) {
     this.parent = parent;
     this.keyboard = keyboard;
   }
 
-  public void click(WebElement onElement) {
-    onElement.click();
-  }
+  public void click(Coordinates elementCoordinates) {
+    HtmlElement element = (HtmlElement) elementCoordinates.getAuxiliry();
 
-  public void click(HtmlElement element) {
+    moveOutIfNeeded(element);
+
     try {
       if (parent.isJavascriptEnabled()) {
         if (!(element instanceof HtmlInput)) {
@@ -57,6 +60,7 @@ public class HtmlUnitMouse implements Mouse {
 
       element.click(keyboard.isShiftPressed(),
           keyboard.isCtrlPressed(), keyboard.isAltPressed());
+      updateActiveElement(element);
     } catch (IOException e) {
       throw new WebDriverException(e);
     } catch (ScriptException e) {
@@ -66,60 +70,91 @@ public class HtmlUnitMouse implements Mouse {
     }    
   }
 
-  public void doubleClick(WebElement onElement) {
-    HtmlUnitWebElement htmlElem = (HtmlUnitWebElement) onElement;
-    htmlElem.doubleClick();    
+  private void moveOutIfNeeded(HtmlElement element) {
+    if ((currentActiveElement != element)) {
+      if (currentActiveElement != null) {
+        currentActiveElement.mouseOver(keyboard.isShiftPressed(),
+            keyboard.isCtrlPressed(), keyboard.isAltPressed(), MouseEvent.BUTTON_LEFT);
+
+        currentActiveElement.mouseOut(keyboard.isShiftPressed(),
+            keyboard.isCtrlPressed(), keyboard.isAltPressed(), MouseEvent.BUTTON_LEFT);
+
+        currentActiveElement.blur();
+      }
+
+      if (element != null) {
+        mouseMove(element);
+      }
+    }
   }
 
-  public void doubleClick(HtmlElement element) {
+  private void updateActiveElement(HtmlElement element) {
+    if (element != null) {
+      currentActiveElement = element;
+    }
+  }
+
+  public void click(Coordinates where, long xOffset, long yOffset) {
+    click(where);
+  }
+
+  public void doubleClick(Coordinates elementCoordinates) {
+    HtmlElement element = (HtmlElement) elementCoordinates.getAuxiliry();
+
+    moveOutIfNeeded(element);
+
     // Send the state of modifier keys to the dblClick method.
     try {
       element.dblClick(keyboard.isShiftPressed(),
           keyboard.isCtrlPressed(), keyboard.isAltPressed());
+      updateActiveElement(element);
     } catch (IOException e) {
       //TODO(eran.mes): What should we do in case of error?
       e.printStackTrace();
     }
   }
 
-  public void contextClick(WebElement onElement) {
-    HtmlUnitWebElement htmlElem = (HtmlUnitWebElement) onElement;
-    htmlElem.mouseContextClick();
-  }
+  public void contextClick(Coordinates elementCoordinates) {
+    HtmlElement element = (HtmlElement) elementCoordinates.getAuxiliry();
 
-  public void contextClick(HtmlElement element) {
+    moveOutIfNeeded(element);
+
     element.rightClick(keyboard.isShiftPressed(),
         keyboard.isCtrlPressed(), keyboard.isAltPressed());
+
+    updateActiveElement(element);
   }
 
-  public void mouseDown(WebElement onElement) {
-    HtmlUnitWebElement htmlElem = (HtmlUnitWebElement) onElement;
-    htmlElem.mouseDown();
-  }
+  public void mouseDown(Coordinates elementCoordinates) {
+    HtmlElement element = (HtmlElement) elementCoordinates.getAuxiliry();
 
-  public void mouseDown(HtmlElement element) {
+    moveOutIfNeeded(element);
+
     element.mouseDown(keyboard.isShiftPressed(),
         keyboard.isCtrlPressed(), keyboard.isAltPressed(),
         MouseEvent.BUTTON_LEFT);
-  }
-    
-  public void mouseUp(WebElement onElement) {
-    HtmlUnitWebElement htmlElem = (HtmlUnitWebElement) onElement;
-    htmlElem.mouseUp();
+
+    updateActiveElement(element);
   }
 
-  public void mouseUp(HtmlElement element) {
+  public void mouseUp(Coordinates elementCoordinates) {
+    HtmlElement element = (HtmlElement) elementCoordinates.getAuxiliry();
+
+    moveOutIfNeeded(element);
+
     element.mouseUp(keyboard.isShiftPressed(),
         keyboard.isCtrlPressed(), keyboard.isAltPressed(),
         MouseEvent.BUTTON_LEFT);
+
+    updateActiveElement(element);
   }
 
-  public void mouseMove(WebElement toElement) {
-    HtmlUnitWebElement htmlElem = (HtmlUnitWebElement) toElement;
-    htmlElem.moveToHere();
+  public void mouseMove(Coordinates elementCoordinates) {
+    HtmlElement element = (HtmlElement) elementCoordinates.getAuxiliry();
+    mouseMove(element);
   }
 
-  public void mouseMove(HtmlElement element) {
+  private void mouseMove(HtmlElement element) {
     element.mouseMove(keyboard.isShiftPressed(),
         keyboard.isCtrlPressed(), keyboard.isAltPressed(),
         MouseEvent.BUTTON_LEFT);
@@ -128,7 +163,8 @@ public class HtmlUnitMouse implements Mouse {
         MouseEvent.BUTTON_LEFT);
   }
 
-  public void mouseMove(WebElement toElement, long xOffset, long yOffset) {
+
+  public void mouseMove(Coordinates where, long xOffset, long yOffset) {
     throw new UnsupportedOperationException("Moving to arbitrary X,Y coordinates not supported.");
   }
 }

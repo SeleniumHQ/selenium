@@ -16,9 +16,6 @@ limitations under the License.
 */
 package org.openqa.selenium;
 
-import java.awt.Dimension;
-import java.awt.Point;
-
 import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.IE;

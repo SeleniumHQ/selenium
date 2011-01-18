@@ -17,17 +17,17 @@ limitations under the License.
 
 package org.openqa.selenium.interactions;
 
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.interactions.internal.BaseAction;
+import org.openqa.selenium.Mouse;
+import org.openqa.selenium.internal.Locatable;
+import org.openqa.selenium.interactions.internal.MouseRelatedAction;
 
 /**
  * Presses the left mouse button without releasing it.
  *
  */
-public class ClickAndHoldAction extends BaseAction implements Action {
-  public ClickAndHoldAction(WebDriver parent, WebElement onElement) {
-    super(parent, onElement);
+public class ClickAndHoldAction extends MouseRelatedAction implements Action {
+  public ClickAndHoldAction(Mouse mouse, Locatable locationProvider) {
+    super(mouse, locationProvider);
   }
 
   /**
@@ -37,6 +37,7 @@ public class ClickAndHoldAction extends BaseAction implements Action {
    * browsers.
    */
   public void perform() {
-    getMouse().mouseDown(onElement);
+    moveToLocation();
+    mouse.mouseDown(getActionLocation());
   }
 }

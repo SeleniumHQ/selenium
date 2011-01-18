@@ -18,9 +18,6 @@ limitations under the License.
 
 package org.openqa.selenium;
 
-import java.awt.Dimension;
-import java.awt.Point;
-
 import org.hamcrest.Matchers;
 import org.openqa.selenium.internal.Locatable;
 

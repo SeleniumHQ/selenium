@@ -23,10 +23,11 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.internal.WrapsElement;
 import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.KnownElements;
+import org.openqa.selenium.remote.server.handler.WebDriverHandler;
 import org.openqa.selenium.remote.server.handler.WebElementHandler;
 import org.openqa.selenium.remote.server.rest.ResultType;
 
-public class MouseDownOnElement extends WebElementHandler {
+public class MouseDownOnElement extends WebDriverHandler {
 
   public MouseDownOnElement(DriverSessions sessions) {
     super(sessions);
@@ -34,12 +35,13 @@ public class MouseDownOnElement extends WebElementHandler {
 
   public ResultType call() throws Exception {
     Mouse m = ((HasInputDevices) getDriver()).getMouse();
-    m.mouseDown(getElement());
+    //TODO(eran): implement
+    //m.mouseDown(getElement());
     return ResultType.SUCCESS;
   }
   
   @Override
   public String toString() {
-    return String.format("[mousedown: %s]", getElementAsString());
+    return String.format("[mousedown: %s]", "nothing");
   }
 }

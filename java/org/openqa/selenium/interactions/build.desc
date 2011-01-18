@@ -1,9 +1,15 @@
 
+java_library(name = "api",
+  srcs = [
+    "Action.java",
+  ])
+
 java_library(name = "interactions",
-  srcs = [ 
+  srcs = [
     "*.java",
     "internal/*.java",
   ],
-  deps = [ 
+  deps = [
     "//java/org/openqa/selenium:webdriver-api",
   ])
+

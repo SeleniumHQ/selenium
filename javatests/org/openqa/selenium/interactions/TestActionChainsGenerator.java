@@ -19,38 +19,38 @@ package org.openqa.selenium.interactions;
 
 import org.jmock.Expectations;
 import org.jmock.integration.junit3.MockObjectTestCase;
+import org.openqa.selenium.ActionChainsGenerator;
+import org.openqa.selenium.HasInputDevices;
 import org.openqa.selenium.Keyboard;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.Mouse;
-import org.openqa.selenium.StubTargetLocator;
+import org.openqa.selenium.StubRenderedWebElement;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.StubDriver;
+import org.openqa.selenium.interactions.internal.Coordinates;
 
 /**
  * Tests the builder for user actions.
  */
 public class TestActionChainsGenerator extends MockObjectTestCase {
-  private WebElement dummyElement;
+  private WebElement dummyLocatableElement;
   private Mouse dummyMouse;
   private Keyboard dummyKeyboard;
   private WebDriver driver;
+  private Coordinates dummyCoordinates;
 
   public void setUp() {
     dummyMouse = mock(Mouse.class);
     dummyKeyboard = mock(Keyboard.class);
-    dummyElement = mock(WebElement.class);
-    driver = new StubInputDeviceDriver() {
+    dummyCoordinates = mock(Coordinates.class);
+    dummyLocatableElement = new StubRenderedWebElement() {
       @Override
-      public TargetLocator switchTo() {
-        return new StubTargetLocator() {
-          @Override
-          public WebElement activeElement() {
-            return dummyElement;
-          }
-        };
+      public Coordinates getCoordinates() {
+        return dummyCoordinates;
       }
+    };
 
+    driver = new StubInputDeviceDriver() {
       @Override
       public Keyboard getKeyboard() {
         return dummyKeyboard;
@@ -60,18 +60,23 @@ public class TestActionChainsGenerator extends MockObjectTestCase {
       public Mouse getMouse() {
         return dummyMouse;
       }
+
+      @Override
+      public ActionChainsGenerator actionsBuilder() {
+        return new DefaultActionChainsGenerator(this);
+      }
     };
   }
 
   public void testCreatingAllKeyboardActions() {
 
-    checking(new Expectations() {{
+    checking(new Expectations() {{      
       one(dummyKeyboard).pressKey(Keys.SHIFT);
       one(dummyKeyboard).sendKeys("abc");
       one(dummyKeyboard).releaseKey(Keys.CONTROL);
     }});
 
-    ActionChainsGenerator builder = new ActionChainsGenerator(driver);
+    ActionChainsGenerator builder = ((HasInputDevices) driver).actionsBuilder();
 
     builder.keyDown(Keys.SHIFT).sendKeys("abc").keyUp(Keys.CONTROL);
 
@@ -81,14 +86,15 @@ public class TestActionChainsGenerator extends MockObjectTestCase {
     assertEquals("Expected 3 keyboard actions", 3, returnedAction.getNumberOfActions());
   }
 
-  public void testSupplyingAnElement() {
+  public void testProvidingAnElementToKeyboardActions() {
     checking(new Expectations() {{
+      one(dummyMouse).click(dummyCoordinates);
       one(dummyKeyboard).pressKey(Keys.SHIFT);
     }});
 
-    ActionChainsGenerator builder = new ActionChainsGenerator(driver).onElement(dummyElement);
+    ActionChainsGenerator builder = ((HasInputDevices) driver).actionsBuilder();
 
-    builder.keyDown(Keys.SHIFT);
+    builder.keyDown(dummyLocatableElement, Keys.SHIFT);
 
     CompositeAction returnedAction = (CompositeAction) builder.build();
     returnedAction.perform();
@@ -97,18 +103,35 @@ public class TestActionChainsGenerator extends MockObjectTestCase {
   }
 
   public void testSupplyingIndividualElementsToKeyboardActions() {
-    final WebElement dummyElement2 = mock(WebElement.class, "dummy2");
-    final WebElement dummyElement3 = mock(WebElement.class, "dummy3");
+    final Coordinates dummyCoordinates2 = mock(Coordinates.class, "dummy2");
+    final Coordinates dummyCoordinates3 = mock(Coordinates.class, "dummy3");
+
+    final WebElement dummyElement2 = new StubRenderedWebElement() {
+      @Override
+      public Coordinates getCoordinates() {
+        return dummyCoordinates2;
+      }
+    };
+
+    final WebElement dummyElement3 = new StubRenderedWebElement() {
+      @Override
+      public Coordinates getCoordinates() {
+        return dummyCoordinates3;
+      }
+    };
 
     checking(new Expectations() {{
+      one(dummyMouse).click(dummyCoordinates);
       one(dummyKeyboard).pressKey(Keys.SHIFT);
+      one(dummyMouse).click(dummyCoordinates2);
       one(dummyKeyboard).sendKeys("abc");
+      one(dummyMouse).click(dummyCoordinates3);
       one(dummyKeyboard).releaseKey(Keys.CONTROL);
     }});
 
-    ActionChainsGenerator builder = new ActionChainsGenerator(driver);
+    ActionChainsGenerator builder = ((HasInputDevices) driver).actionsBuilder();
 
-    builder.keyDown(dummyElement, Keys.SHIFT)
+    builder.keyDown(dummyLocatableElement, Keys.SHIFT)
         .sendKeys(dummyElement2, "abc")
         .keyUp(dummyElement3, Keys.CONTROL);
 
@@ -121,22 +144,27 @@ public class TestActionChainsGenerator extends MockObjectTestCase {
 
   public void testCreatingAllMouseActions() {
     checking(new Expectations() {{
-      one(dummyMouse).mouseDown(dummyElement);
-      one(dummyMouse).mouseUp(dummyElement);
-      one(dummyMouse).click(dummyElement);
-      one(dummyMouse).doubleClick(dummyElement);
-      one(dummyMouse).mouseMove(dummyElement);
-      one(dummyMouse).contextClick(dummyElement);
+      one(dummyMouse).mouseMove(dummyCoordinates);
+      one(dummyMouse).mouseDown(dummyCoordinates);
+      one(dummyMouse).mouseMove(dummyCoordinates);
+      one(dummyMouse).mouseUp(dummyCoordinates);
+      one(dummyMouse).mouseMove(dummyCoordinates);
+      one(dummyMouse).click(dummyCoordinates);
+      one(dummyMouse).mouseMove(dummyCoordinates);
+      one(dummyMouse).doubleClick(dummyCoordinates);
+      one(dummyMouse).mouseMove(dummyCoordinates);
+      one(dummyMouse).mouseMove(dummyCoordinates);
+      one(dummyMouse).contextClick(dummyCoordinates);
     }});
 
-    ActionChainsGenerator builder = new ActionChainsGenerator(driver);
+    DefaultActionChainsGenerator builder = new DefaultActionChainsGenerator(driver);
 
-    builder.clickAndHold(dummyElement)
-        .release(dummyElement)
-        .click(dummyElement)
-        .doubleClick(dummyElement)
-        .moveToElement(dummyElement)
-        .contextClick(dummyElement);
+    builder.clickAndHold(dummyLocatableElement)
+        .release(dummyLocatableElement)
+        .click(dummyLocatableElement)
+        .doubleClick(dummyLocatableElement)
+        .moveToElement(dummyLocatableElement)
+        .contextClick(dummyLocatableElement);
 
     CompositeAction returnedAction = (CompositeAction) builder.build();
     returnedAction.perform();

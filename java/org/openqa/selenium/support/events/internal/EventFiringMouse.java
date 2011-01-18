@@ -6,6 +6,7 @@ import org.openqa.selenium.Mouse;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.internal.WrapsElement;
+import org.openqa.selenium.interactions.internal.Coordinates;
 import org.openqa.selenium.support.events.WebDriverEventListener;
 
 /**
@@ -22,43 +23,31 @@ public class EventFiringMouse implements Mouse {
     this.mouse = ((HasInputDevices) this.driver).getMouse();
   }
 
-  private WebElement getWrappedElement(WebElement proxyElement) {
-    WebElement originalElement = proxyElement;
-    while (originalElement instanceof WrapsElement) {
-      originalElement = ((WrapsElement) originalElement).getWrappedElement();
-    }
-
-    return originalElement;
+  public void click(Coordinates where) {
+    mouse.click(where);
   }
 
-  public void click(WebElement onElement) {
-    WebElement unwrappedElement = getWrappedElement(onElement);
-    dispatcher.beforeClickOn(unwrappedElement, driver);
-    mouse.click(unwrappedElement);
-    dispatcher.afterClickOn(unwrappedElement, driver);
+  public void doubleClick(Coordinates where) {
+    mouse.doubleClick(where);
   }
 
-  public void doubleClick(WebElement onElement) {
-    mouse.doubleClick(getWrappedElement(onElement));
+  public void mouseDown(Coordinates where) {
+    mouse.mouseDown(where);
   }
 
-  public void mouseDown(WebElement onElement) {
-    mouse.mouseDown(getWrappedElement(onElement));
+  public void mouseUp(Coordinates where) {
+    mouse.mouseUp(where);
   }
 
-  public void mouseUp(WebElement onElement) {
-    mouse.mouseUp(getWrappedElement(onElement));
+  public void mouseMove(Coordinates where) {
+    mouse.mouseMove(where);
   }
 
-  public void mouseMove(WebElement toElement) {
-    mouse.mouseMove(getWrappedElement(toElement));
+  public void mouseMove(Coordinates where, long xOffset, long yOffset) {
+    mouse.mouseMove(where, xOffset, yOffset);
   }
 
-  public void mouseMove(WebElement toElement, long xOffset, long yOffset) {
-    mouse.mouseMove(getWrappedElement(toElement), xOffset, yOffset);
-  }
-
-  public void contextClick(WebElement onElement) {
-    mouse.contextClick(getWrappedElement(onElement));
+  public void contextClick(Coordinates where) {
+    mouse.contextClick(where);
   }
 }

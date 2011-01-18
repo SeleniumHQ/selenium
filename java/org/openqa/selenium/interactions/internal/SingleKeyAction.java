@@ -18,6 +18,8 @@ limitations under the License.
 package org.openqa.selenium.interactions.internal;
 
 import org.openqa.selenium.*;
+import org.openqa.selenium.internal.Locatable;
+import org.openqa.selenium.interactions.internal.KeysRelatedAction;
 
 /**
  * Used both by KeyDownAction and KeyUpAction
@@ -27,12 +29,12 @@ public abstract class SingleKeyAction extends KeysRelatedAction {
   protected final Keys key;
   private static final Keys[] MODIFIER_KEYS = {Keys.SHIFT, Keys.CONTROL, Keys.ALT};
 
-  protected SingleKeyAction(WebDriver parent, Keys key) {
-    this(parent, null, key);
+  protected SingleKeyAction(Keyboard keyboard, Mouse mouse, Keys key) {
+    this(keyboard, mouse, null, key);
   }
 
-  protected SingleKeyAction(WebDriver parent, WebElement toElement, Keys key) {
-    super(parent, toElement);
+  protected SingleKeyAction(Keyboard keyboard, Mouse mouse, Locatable locationProvider, Keys key) {
+    super(keyboard, mouse, locationProvider);
     this.key = key;
     boolean isModifier = false;
     for (Keys modifier : MODIFIER_KEYS) {

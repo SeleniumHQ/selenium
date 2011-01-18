@@ -80,4 +80,8 @@ public class StubDriver implements WebDriver, HasInputDevices {
   public Mouse getMouse() {
     return null;
   }
+
+  public ActionChainsGenerator actionsBuilder() {
+    return null;
+  }
 }

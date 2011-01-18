@@ -20,6 +20,7 @@ package org.openqa.selenium.interactions;
 import java.util.List;
 
 import org.openqa.selenium.AbstractDriverTestCase;
+import org.openqa.selenium.ActionChainsGenerator;
 import org.openqa.selenium.By;
 import org.openqa.selenium.HasInputDevices;
 import org.openqa.selenium.Ignore;
@@ -51,12 +52,13 @@ public class CombinedInputActionsTest extends AbstractDriverTestCase {
 
     List<WebElement> options = driver.findElements(By.tagName("option"));
 
-    CompositeAction selectThreeOptions = new CompositeAction();
-    selectThreeOptions.addAction(new ClickAction(driver, options.get(1)))
-        .addAction(new KeyDownAction(driver, Keys.SHIFT))
-        .addAction(new ClickAction(driver, options.get(2)))
-        .addAction(new ClickAction(driver, options.get(3)))
-        .addAction(new KeyUpAction(driver, Keys.SHIFT));
+    ActionChainsGenerator actionsBuilder = ((HasInputDevices) driver).actionsBuilder();
+    Action selectThreeOptions = actionsBuilder.click(options.get(1))
+        .keyDown(Keys.SHIFT)
+        .click(options.get(2))
+        .click(options.get(3))
+        .keyUp(Keys.SHIFT)
+        .build();
 
     selectThreeOptions.perform();
 
@@ -79,19 +81,21 @@ public class CombinedInputActionsTest extends AbstractDriverTestCase {
 
     List<WebElement> listItems = driver.findElements(By.tagName("li"));
 
-    CompositeAction selectThreeItems = new CompositeAction();
-    selectThreeItems.addAction(new KeyDownAction(driver, Keys.CONTROL))
-        .addAction(new ClickAction(driver, listItems.get(1)))
-        .addAction(new ClickAction(driver, listItems.get(3)))
-        .addAction(new ClickAction(driver, listItems.get(5)))
-        .addAction(new KeyUpAction(driver, Keys.CONTROL));
+    ActionChainsGenerator actionsBuilder = ((HasInputDevices) driver).actionsBuilder();
+    Action selectThreeItems = actionsBuilder.keyDown(Keys.CONTROL)
+        .click(listItems.get(1))
+        .click(listItems.get(3))
+        .click(listItems.get(5))
+        .keyUp(Keys.CONTROL)
+        .build();
 
     selectThreeItems.perform();
 
     assertEquals("#item2 #item4 #item6", reportingElement.getText());
 
     // Now click on another element, make sure that's the only one selected.
-    (new ClickAction(driver, listItems.get(6))).perform();
+    actionsBuilder = ((HasInputDevices) driver).actionsBuilder();
+    actionsBuilder.click(listItems.get(6)).build().perform();
     assertEquals("#item7", reportingElement.getText());
   }
 }

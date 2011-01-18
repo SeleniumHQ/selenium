@@ -17,19 +17,25 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import org.openqa.selenium.interactions.internal.Coordinates;
+
 /**
  * Interface representing basic Mouse operations.
  *
  */
 public interface Mouse {
-  void click(WebElement onElement);
-  void doubleClick(WebElement onElement);
-  void mouseDown(WebElement onElement);
-  void mouseUp(WebElement onElement);
-  void mouseMove(WebElement toElement);
+  void click(Coordinates where);
+
+  void doubleClick(Coordinates where);
+
+  void mouseDown(Coordinates where);
+  void mouseUp(Coordinates where);
+
+  void mouseMove(Coordinates where);
   /* Offset from the current location of the mouse pointer. */
-  void mouseMove(WebElement toElement, long xOffset, long yOffset);
+  void mouseMove(Coordinates where, long xOffset, long yOffset);
   // Right-clicks an element. 
-  void contextClick(WebElement onElement);
+  void contextClick(Coordinates where);
+  
   // TODO: Scroll wheel support
 }

@@ -17,30 +17,27 @@ limitations under the License.
 
 package org.openqa.selenium.interactions.internal;
 
-import org.openqa.selenium.HasInputDevices;
-import org.openqa.selenium.Keyboard;
-import org.openqa.selenium.Mouse;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.internal.Locatable;
 
 /**
  * Base class for all actions.
  */
 public abstract class BaseAction {
-  protected final WebDriver parent;
-  protected final WebElement onElement;
+  protected final Locatable where;
 
-  protected BaseAction(WebDriver parent, WebElement onElement) {
-    this.parent = parent;
-    this.onElement = onElement;
+  /**
+   * Common c'tor - a locatable element is provided.
+   * @param actionLocation provider of coordinates for the action.
+   */
+  protected BaseAction(Locatable actionLocation) {
+    this.where = actionLocation;
   }
 
-  protected Keyboard getKeyboard() {
-    return ((HasInputDevices) parent).getKeyboard();
+  /**
+   * No locatable element provided - action in the context of the previous
+   * action.
+   */
+  protected BaseAction() {
+    this.where = null;
   }
-
-  protected Mouse getMouse() {
-    return ((HasInputDevices) parent).getMouse();
-  }
-
 }

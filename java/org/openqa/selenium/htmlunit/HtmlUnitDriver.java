@@ -18,6 +18,7 @@ limitations under the License.
 
 package org.openqa.selenium.htmlunit;
 
+import org.openqa.selenium.ActionChainsGenerator;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Capabilities;
@@ -39,6 +40,7 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.browserlaunchers.CapabilityType;
 import org.openqa.selenium.browserlaunchers.Proxies;
+import org.openqa.selenium.interactions.DefaultActionChainsGenerator;
 import org.openqa.selenium.internal.FindsByCssSelector;
 import org.openqa.selenium.internal.FindsById;
 import org.openqa.selenium.internal.FindsByLinkText;
@@ -468,6 +470,10 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
 
   public Mouse getMouse() {
     return mouse;
+  }
+
+  public ActionChainsGenerator actionsBuilder() {
+    return new DefaultActionChainsGenerator(this);
   }
 
   protected interface JavaScriptResultsCollection {

@@ -15,6 +15,7 @@ java_library(name = "common",
   ],
   deps = [
     "//java/org/openqa/selenium:webdriver-api",
+    "//java/org/openqa/selenium/interactions",
     "//java/org/openqa/selenium/browserlaunchers",
     "//third_party/java/guava-libraries",
     "//third_party/java/json",

@@ -17,10 +17,13 @@ limitations under the License.
 
 package org.openqa.selenium.interactions;
 
+import org.openqa.selenium.Mouse;
 import org.openqa.selenium.RenderedWebElement;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.internal.Locatable;
 import org.openqa.selenium.interactions.internal.BaseAction;
+import org.openqa.selenium.interactions.internal.MouseRelatedAction;
 
 import java.awt.*;
 
@@ -28,27 +31,17 @@ import java.awt.*;
  * Move the mouse to a location within the element provided. The coordinates
  * provided specify the offset from the top-left corner of the element.
  */
-public class MoveToOffsetAction extends BaseAction implements Action {
+public class MoveToOffsetAction extends MouseRelatedAction implements Action {
   private final int xOffset;
   private final int yOffset;
 
-  public MoveToOffsetAction(WebDriver parent, WebElement toElement, int x, int y) {
-    super(parent, toElement);
-    if (!(toElement instanceof RenderedWebElement)) {
-      throw new ElementNotDisplayedException(String.format("Element %s has no screen " +
-          "coordinates, use a driver that renders elements on screen.", toElement));
-    }
+  public MoveToOffsetAction(Mouse mouse, Locatable locationProvider, int x, int y) {
+    super(mouse, locationProvider);
     xOffset = x;
     yOffset = y;
   }
 
   public void perform() {
-    Dimension elementSize = ((RenderedWebElement) onElement).getSize();
-    if ((elementSize.getHeight() < yOffset) ||
-        (elementSize.getWidth() < xOffset)) {
-      throw new MoveOutsideBoundriesException(String.format("Attempted mouse move outside Element" +
-          "boundries. Coordinates: x %d y %d, element size: %s", xOffset, yOffset, elementSize));
-    }
-    getMouse().mouseMove(onElement, xOffset, yOffset);
+    mouse.mouseMove(getActionLocation(), xOffset, yOffset);
   }
 }

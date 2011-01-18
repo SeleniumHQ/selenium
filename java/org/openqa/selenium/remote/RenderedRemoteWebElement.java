@@ -20,13 +20,17 @@ limitations under the License.
 package org.openqa.selenium.remote;
 
 import com.google.common.collect.ImmutableMap;
-import org.openqa.selenium.RenderedWebElement;
 
-import java.awt.Dimension;
-import java.awt.Point;
+import org.openqa.selenium.Dimension;
+import org.openqa.selenium.Point;
+import org.openqa.selenium.RenderedWebElement;
+import org.openqa.selenium.internal.Locatable;
+import org.openqa.selenium.interactions.internal.Coordinates;
+
 import java.util.Map;
 
-public class RenderedRemoteWebElement extends RemoteWebElement implements RenderedWebElement {
+public class RenderedRemoteWebElement extends RemoteWebElement implements RenderedWebElement,
+    Locatable {
   public boolean isDisplayed() {
     Response response = parent.execute(DriverCommand.IS_ELEMENT_DISPLAYED, ImmutableMap.of("id", id));
     return (Boolean) response.getValue();
@@ -69,5 +73,36 @@ public class RenderedRemoteWebElement extends RemoteWebElement implements Render
     Response response = parent.execute(DriverCommand.GET_ELEMENT_VALUE_OF_CSS_PROPERTY,
         ImmutableMap.of("id", id, "propertyName", propertyName));
     return (String) response.getValue();
+  }
+
+  public Point getLocationOnScreenOnceScrolledIntoView() {
+    Response response = execute(DriverCommand.GET_ELEMENT_LOCATION_ONCE_SCROLLED_INTO_VIEW,
+        ImmutableMap.of("id", getId()));
+
+    @SuppressWarnings("unchecked")
+    Map<String, Number> mapped = (Map<String, Number>) response.getValue();
+
+    return new Point(mapped.get("x").intValue(), mapped.get("y").intValue());
+  }
+
+  public Coordinates getCoordinates() {
+    return new Coordinates() {
+
+      public Point getLocationOnScreen() {
+        return getLocationOnScreenOnceScrolledIntoView();
+      }
+
+      public Point getLocationInViewPort() {
+        throw new UnsupportedOperationException("Not supported yet.");
+      }
+
+      public Point getLocationInDOM() {
+        throw new UnsupportedOperationException("Not supported yet.");
+      }
+
+      public Object getAuxiliry() {
+        return getId();
+      }
+    };
   }
 }

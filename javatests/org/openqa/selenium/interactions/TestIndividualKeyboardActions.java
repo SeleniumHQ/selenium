@@ -20,6 +20,8 @@ package org.openqa.selenium.interactions;
 import org.jmock.Expectations;
 import org.jmock.integration.junit3.MockObjectTestCase;
 import org.openqa.selenium.*;
+import org.openqa.selenium.internal.Locatable;
+import org.openqa.selenium.interactions.internal.Coordinates;
 
 /**
  * Unit test for all simple keyboard actions.
@@ -27,205 +29,104 @@ import org.openqa.selenium.*;
  */
 public class TestIndividualKeyboardActions extends MockObjectTestCase {
   private Keyboard dummyKeyboard;
-  private WebElement dummyElement;
-  private WebDriver dummyDriver;
-  final String keysToSend = "hello";
-  private WebElement dummyActiveElement;
+  private Mouse dummyMouse;
+  private Coordinates dummyCoordinates;
+  private Locatable locatableElement;
+    final String keysToSend = "hello";
 
   public void setUp() {
     dummyKeyboard = mock(Keyboard.class);
-    dummyElement = mock(WebElement.class, "element");
-    dummyDriver = mock(WebDriver.class);
-    dummyActiveElement = mock(WebElement.class, "activeElement");
-  }
+    dummyMouse = mock(Mouse.class);
+    dummyCoordinates = mock(Coordinates.class);
 
-  public void testKeyDownAction() {
-    final Keys keyToPress = Keys.SHIFT;
-
-    WebDriver driver = new StubInputDeviceDriver() {
+    locatableElement = new StubRenderedWebElement() {
       @Override
-      public TargetLocator switchTo() {
-        return new StubTargetLocator() {
-          @Override
-          public WebElement activeElement() {
-            return dummyElement;
-          }
-        };
-      }
-
-      @Override
-      public Keyboard getKeyboard() {
-        return dummyKeyboard;
+      public Coordinates getCoordinates() {
+        return dummyCoordinates;
       }
     };
+  }
+
+  public void testKeyDownActionWithoutProvidedElement() {
+    final Keys keyToPress = Keys.SHIFT;
 
     checking(new Expectations() {{
       one(dummyKeyboard).pressKey(keyToPress);
     }});
    
-    KeyDownAction keyDown = new KeyDownAction(driver, dummyElement, keyToPress);
+    KeyDownAction keyDown = new KeyDownAction(dummyKeyboard, dummyMouse, keyToPress);
     keyDown.perform();
   }
 
-  public void testKeyUpAction() {
+  public void testKeyDownActionOnAnElement() {
+    final Keys keyToPress = Keys.SHIFT;
+
+    checking(new Expectations() {{
+      one(dummyMouse).click(dummyCoordinates);
+      one(dummyKeyboard).pressKey(keyToPress);
+    }});
+
+    KeyDownAction keyDown = new KeyDownAction(dummyKeyboard, dummyMouse,
+        locatableElement, keyToPress);
+
+    keyDown.perform();
+  }
+
+
+  public void testKeyUpActionWithoutProvidedElement() {
     final Keys keyToRelease = Keys.CONTROL;
-
-    WebDriver driver = new StubInputDeviceDriver() {
-      @Override
-      public TargetLocator switchTo() {
-        return new StubTargetLocator() {
-          @Override
-          public WebElement activeElement() {
-            return dummyElement;
-          }
-        };
-      }
-
-      @Override
-      public Keyboard getKeyboard() {
-        return dummyKeyboard;
-      }
-    };
 
     checking(new Expectations() {{
       one(dummyKeyboard).releaseKey(keyToRelease);
     }});
 
-    KeyUpAction keyUp = new KeyUpAction(driver, dummyElement, keyToRelease);
+    KeyUpAction keyUp = new KeyUpAction(dummyKeyboard, dummyMouse, keyToRelease);
     keyUp.perform();
   }
 
-  public void testSendKeysActionOnNullElement() {
+  public void testKeyUpOnAnAnElement() {
+    final Keys keyToRelease = Keys.SHIFT;
 
     checking(new Expectations() {{
-      one(dummyKeyboard).sendKeys(keysToSend);
+      one(dummyMouse).click(dummyCoordinates);
+      one(dummyKeyboard).releaseKey(keyToRelease);
     }});
 
-    WebDriver driver = new StubInputDeviceDriver() {
-      @Override
-      public Keyboard getKeyboard() {
-        return dummyKeyboard;
-      }
-    };
-
-    SendKeysAction sendKeys = new SendKeysAction(driver, keysToSend);
-    sendKeys.perform();
-
+    KeyUpAction upAction = new KeyUpAction(dummyKeyboard, dummyMouse,
+        locatableElement, keyToRelease);
+    upAction.perform();
   }
 
-  public void testSendKeysActionOnTheActiveElement() {
 
-    WebDriver driver = new StubInputDeviceDriver() {
-      @Override
-      public TargetLocator switchTo() {
-        return new StubTargetLocator() {
-          @Override
-          public WebElement activeElement() {
-            return dummyElement;
-          }
-        };
-      }
-
-      @Override
-      public Keyboard getKeyboard() {
-        return dummyKeyboard;
-      }
-    };
-
+  public void testSendKeysActionWithoutProvidedElement() {
     checking(new Expectations() {{
       one(dummyKeyboard).sendKeys(keysToSend);
     }});
 
-    SendKeysAction sendKeys = new SendKeysAction(driver, dummyElement, keysToSend);
+    SendKeysAction sendKeys = new SendKeysAction(dummyKeyboard, dummyMouse, keysToSend);
     sendKeys.perform();
   }
 
-  public void testSendKeysActionOnANonActiveElement() {
-    final int[] executeScriptCalls = {0};
-
-    WebDriver driver = new StubInputDeviceDriver() {
-      @Override
-      public WebDriver.TargetLocator switchTo() {
-        return new StubTargetLocator() {
-          @Override
-          public WebElement activeElement() {
-            return dummyActiveElement;
-          }
-        };
-      }
-
-      @Override
-      public Object executeScript(String script, Object... args) {
-        executeScriptCalls[0] += 1;
-        if (executeScriptCalls[0] == 1) {
-          assertEquals("Expecting dummyActiveElement", args[0], dummyActiveElement);
-        } else {
-          assertEquals("Expecting dummyElement", args[0], dummyElement);
-        }
-
-        return null;
-      }
-
-      @Override
-      public Keyboard getKeyboard() {
-        return dummyKeyboard;
-      }
-    };
-
+  public void testSendKeysActionOnAnElement() {
     checking(new Expectations() {{
+      one(dummyMouse).click(dummyCoordinates);
       one(dummyKeyboard).sendKeys(keysToSend);
     }});
 
-    SendKeysAction sendKeys = new SendKeysAction(driver, dummyElement, keysToSend);
+    SendKeysAction sendKeys = new SendKeysAction(dummyKeyboard, dummyMouse,
+        locatableElement, keysToSend);
     sendKeys.perform();
-
-    assertEquals("Should have seen two calls to executeScript", executeScriptCalls[0], 2);
   }
 
   public void testKeyDownActionFailsOnNonModifier() {
     final Keys keyToPress = Keys.BACK_SPACE;
 
     try {
-      KeyDownAction keyDown = new KeyDownAction(dummyDriver, dummyElement, keyToPress);
+      KeyDownAction keyDown = new KeyDownAction(dummyKeyboard, dummyMouse,
+          locatableElement, keyToPress);
       fail();
     } catch (IllegalArgumentException e) {
       assertTrue(e.getMessage().contains("modifier keys"));
     }
-  }
-
-  public void testKeyDownActionWithoutAnElement() {
-    final Keys keyToPress = Keys.SHIFT;
-
-    WebDriver driver = new StubInputDeviceDriver() {
-      @Override
-      public Keyboard getKeyboard() {
-        return dummyKeyboard;
-      }
-    };
-
-    checking(new Expectations() {{
-      one(dummyKeyboard).pressKey(keyToPress);
-    }});
-
-    KeyDownAction downAction = new KeyDownAction(driver, keyToPress);
-    downAction.perform();
-  }
-
-  public void testKeyUpActionWithoutAnElement() {
-    final Keys keyToRelease = Keys.SHIFT;
-
-    WebDriver driver = new StubInputDeviceDriver() {
-      @Override
-      public Keyboard getKeyboard() {
-        return dummyKeyboard;
-      }
-    };
-
-    checking(new Expectations() {{
-      one(dummyKeyboard).releaseKey(keyToRelease);
-    }});
-
-    KeyUpAction upAction = new KeyUpAction(driver, keyToRelease);
-    upAction.perform();
   }
 }

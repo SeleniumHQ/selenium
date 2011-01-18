@@ -17,18 +17,21 @@ limitations under the License.
 
 package org.openqa.selenium.interactions;
 
+import org.openqa.selenium.Mouse;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.internal.Locatable;
 import org.openqa.selenium.interactions.internal.BaseAction;
+import org.openqa.selenium.interactions.internal.MouseRelatedAction;
 
 /**
  * Releases the left mouse button
  *
  */
 
-public class ButtonReleaseAction extends BaseAction implements Action {
-  public ButtonReleaseAction(WebDriver parent, WebElement element) {
-    super(parent, element);
+public class ButtonReleaseAction extends MouseRelatedAction implements Action {
+  public ButtonReleaseAction(Mouse mouse, Locatable locationProvider) {
+    super(mouse, locationProvider);
   }
 
   /**
@@ -39,6 +42,7 @@ public class ButtonReleaseAction extends BaseAction implements Action {
    * between browsers.
    */
   public void perform() {
-    getMouse().mouseUp(onElement);
+    moveToLocation();
+    mouse.mouseUp(getActionLocation());
   }
 }

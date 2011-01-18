@@ -17,9 +17,6 @@ limitations under the License.
 
 package org.openqa.selenium;
 
-import java.awt.Dimension;
-import java.awt.Point;
-
 public interface RenderedWebElement extends WebElement {
 
   /**

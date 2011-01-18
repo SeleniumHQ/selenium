@@ -17,6 +17,7 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+
 /**
  * Interface implemented by each driver that allows access to the raw input devices.
  *
@@ -24,4 +25,5 @@ package org.openqa.selenium;
 public interface HasInputDevices {
   Keyboard getKeyboard();
   Mouse getMouse();
+  ActionChainsGenerator actionsBuilder();
 }

@@ -17,7 +17,6 @@ limitations under the License.
 
 package org.openqa.selenium;
 
-import java.awt.Point;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

@@ -45,9 +45,11 @@ import com.gargoylesoftware.htmlunit.javascript.host.Event;
 import net.sourceforge.htmlunit.corejs.javascript.Undefined;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.ElementNotVisibleException;
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.Point;
 import org.openqa.selenium.RenderedWebElement;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
@@ -58,13 +60,13 @@ import org.openqa.selenium.internal.FindsById;
 import org.openqa.selenium.internal.FindsByLinkText;
 import org.openqa.selenium.internal.FindsByTagName;
 import org.openqa.selenium.internal.FindsByXPath;
+import org.openqa.selenium.internal.Locatable;
 import org.openqa.selenium.internal.WrapsDriver;
 import org.openqa.selenium.internal.WrapsElement;
+import org.openqa.selenium.interactions.internal.Coordinates;
 import org.w3c.dom.Attr;
 import org.w3c.dom.NamedNodeMap;
 
-import java.awt.Dimension;
-import java.awt.Point;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -76,7 +78,7 @@ import java.util.regex.Pattern;
 
 public class HtmlUnitWebElement implements RenderedWebElement, WrapsDriver,
     FindsById, FindsByLinkText, FindsByXPath, FindsByTagName,
-    FindsByCssSelector {
+    FindsByCssSelector, Locatable {
 
   protected final HtmlUnitDriver parent;
   protected final HtmlElement element;
@@ -94,7 +96,7 @@ public class HtmlUnitWebElement implements RenderedWebElement, WrapsDriver,
   public void click() {
     verifyCanInteractWithElement();
     HtmlUnitMouse mouse = (HtmlUnitMouse) parent.getMouse();
-    mouse.click(getElement());
+    mouse.click(getCoordinates());
   }
 
   public void submit() {
@@ -845,35 +847,28 @@ public class HtmlUnitWebElement implements RenderedWebElement, WrapsDriver,
     return parent;
   }
 
-  public void doubleClick() {
-    verifyCanInteractWithElement();
-    HtmlUnitMouse mouse = (HtmlUnitMouse) parent.getMouse();
-    mouse.doubleClick(getElement());    
+  public Point getLocationOnScreenOnceScrolledIntoView() {
+    return getLocation();
   }
 
-  public void mouseDown() {
-    verifyCanInteractWithElement();
-    HtmlUnitMouse mouse = (HtmlUnitMouse) parent.getMouse();
-    mouse.mouseDown(getElement());
-  }
+  public Coordinates getCoordinates() {
+    return new Coordinates() {
 
-  public void mouseUp() {
-    verifyCanInteractWithElement();
-    HtmlUnitMouse mouse = (HtmlUnitMouse) parent.getMouse();
-    mouse.mouseUp(getElement());
-  }
+      public Point getLocationOnScreen() {
+        throw new UnsupportedOperationException("Not displayed, no screen location.");
+      }
 
-  public void moveToHere() {
-    verifyCanInteractWithElement();
-    HtmlUnitMouse mouse = (HtmlUnitMouse) parent.getMouse();
+      public Point getLocationInViewPort() {
+        return getLocation();
+      }
 
-    mouse.mouseMove(getElement());
-  }
+      public Point getLocationInDOM() {
+        return getLocation();
+      }
 
-  public void mouseContextClick() {
-    verifyCanInteractWithElement();
-    HtmlUnitMouse mouse = (HtmlUnitMouse) parent.getMouse();
-
-    mouse.contextClick(getElement());
+      public Object getAuxiliry() {
+        return getElement(); 
+      }
+    };
   }
 }

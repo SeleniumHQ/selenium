@@ -18,34 +18,16 @@ limitations under the License.
 
 package org.openqa.selenium.firefox;
 
-import java.awt.Point;
-import java.util.Map;
-
-import com.google.common.collect.ImmutableMap;
 import org.openqa.selenium.RenderedWebElement;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.internal.Locatable;
 import org.openqa.selenium.internal.WrapsElement;
-import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.RenderedRemoteWebElement;
-import org.openqa.selenium.remote.Response;
 
-public class FirefoxWebElement extends RenderedRemoteWebElement implements RenderedWebElement,
-    Locatable {
+public class FirefoxWebElement extends RenderedRemoteWebElement implements RenderedWebElement {
 
-    public FirefoxWebElement(FirefoxDriver parent) {
-      setParent(parent);
-    }
-
-    public Point getLocationOnScreenOnceScrolledIntoView() {
-            Response response = execute(DriverCommand.GET_ELEMENT_LOCATION_ONCE_SCROLLED_INTO_VIEW,
-                ImmutableMap.of("id", getId()));
-
-            @SuppressWarnings("unchecked")
-            Map<String, Number> mapped = (Map<String, Number>) response.getValue();
-
-            return new Point(mapped.get("x").intValue(), mapped.get("y").intValue());
-    }
+  public FirefoxWebElement(FirefoxDriver parent) {
+    setParent(parent);
+  }
 
   @Override
   public boolean equals(Object obj) {

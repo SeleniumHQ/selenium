@@ -18,10 +18,14 @@ limitations under the License.
 package org.openqa.selenium.interactions;
 
 import org.openqa.selenium.AbstractDriverTestCase;
+import org.openqa.selenium.ActionChainsGenerator;
 import org.openqa.selenium.By;
+import org.openqa.selenium.HasInputDevices;
 import org.openqa.selenium.Ignore;
 import org.openqa.selenium.JavascriptEnabled;
+import org.openqa.selenium.Keyboard;
 import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -40,6 +44,10 @@ import static org.openqa.selenium.Ignore.Driver.SELENESE;
  */
 @Ignore(IE)
 public class TestBasicKeyboardInterface extends AbstractDriverTestCase {
+  private ActionChainsGenerator getBuilder(WebDriver driver) {
+    return ((HasInputDevices) driver).actionsBuilder();
+  }
+
   @JavascriptEnabled
   @Ignore({ANDROID, FIREFOX, REMOTE, IPHONE, CHROME, SELENESE})
   public void testBasicKeyboardInput() {
@@ -47,7 +55,7 @@ public class TestBasicKeyboardInterface extends AbstractDriverTestCase {
 
     WebElement keyReporter = driver.findElement(By.id("keyReporter"));
 
-    SendKeysAction sendLowercase = new SendKeysAction(driver, keyReporter, "abc def");
+    Action sendLowercase = getBuilder(driver).sendKeys(keyReporter, "abc def").build();
 
     sendLowercase.perform();
 
@@ -62,7 +70,7 @@ public class TestBasicKeyboardInterface extends AbstractDriverTestCase {
 
     WebElement keysEventInput = driver.findElement(By.id("theworks"));
 
-    KeyDownAction pressShift = new KeyDownAction(driver, keysEventInput, Keys.SHIFT);
+    Action pressShift = getBuilder(driver).keyDown(keysEventInput, Keys.SHIFT).build();
 
     pressShift.perform();
 
@@ -78,7 +86,7 @@ public class TestBasicKeyboardInterface extends AbstractDriverTestCase {
     driver.get(pages.javascriptPage);
     WebElement keysEventInput = driver.findElement(By.id("theworks"));
 
-    KeyDownAction pressShift = new KeyDownAction(driver, keysEventInput, Keys.SHIFT);
+    Action pressShift = getBuilder(driver).keyDown(keysEventInput, Keys.SHIFT).build();
     pressShift.perform();
 
     WebElement keyLoggingElement = driver.findElement(By.id("result"));
@@ -87,7 +95,7 @@ public class TestBasicKeyboardInterface extends AbstractDriverTestCase {
     assertTrue("Key down should be isolated for this test to be meaningful. " +
         "Got events: " + eventsText, eventsText.endsWith("keydown"));
 
-    KeyUpAction releaseShift = new KeyUpAction(driver, keysEventInput, Keys.SHIFT);
+    Action releaseShift = getBuilder(driver).keyUp(keysEventInput, Keys.SHIFT).build();
 
     releaseShift.perform();
 
@@ -105,13 +113,13 @@ public class TestBasicKeyboardInterface extends AbstractDriverTestCase {
 
     keysEventInput.click();
 
-    KeyDownAction pressShift = new KeyDownAction(driver, keysEventInput, Keys.SHIFT);
+    Action pressShift = getBuilder(driver).keyDown(keysEventInput, Keys.SHIFT).build();
     pressShift.perform();
 
-    SendKeysAction sendLowercase = new SendKeysAction(driver, keysEventInput, "ab");
+    Action sendLowercase = getBuilder(driver).sendKeys(keysEventInput, "ab").build();
     sendLowercase.perform();
 
-    KeyUpAction releaseShift = new KeyUpAction(driver, keysEventInput, Keys.SHIFT);
+    Action releaseShift = getBuilder(driver).keyUp(keysEventInput, Keys.SHIFT).build();
     releaseShift.perform();
 
     WebElement keyLoggingElement = driver.findElement(By.id("result"));
@@ -127,7 +135,7 @@ public class TestBasicKeyboardInterface extends AbstractDriverTestCase {
   public void testSendingKeysToActiveElement() {
     driver.get(pages.bodyTypingPage);
 
-    SendKeysAction someKeys = new SendKeysAction(driver, "ab");
+    Action someKeys = getBuilder(driver).sendKeys("ab").build();
     someKeys.perform();
 
     WebElement bodyLoggingElement = driver.findElement(By.id("body_result"));
@@ -145,7 +153,7 @@ public class TestBasicKeyboardInterface extends AbstractDriverTestCase {
 
     keyReporter.click();
 
-    SendKeysAction sendLowercase = new SendKeysAction(driver, "abc def");
+    Action sendLowercase = getBuilder(driver).sendKeys("abc def").build();
 
     sendLowercase.perform();
 

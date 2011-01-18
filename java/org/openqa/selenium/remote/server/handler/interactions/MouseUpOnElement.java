@@ -23,10 +23,11 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.internal.WrapsElement;
 import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.KnownElements;
+import org.openqa.selenium.remote.server.handler.WebDriverHandler;
 import org.openqa.selenium.remote.server.handler.WebElementHandler;
 import org.openqa.selenium.remote.server.rest.ResultType;
 
-public class MouseUpOnElement extends WebElementHandler {
+public class MouseUpOnElement extends WebDriverHandler {
 
   public MouseUpOnElement(DriverSessions sessions) {
     super(sessions);
@@ -34,12 +35,13 @@ public class MouseUpOnElement extends WebElementHandler {
 
   public ResultType call() throws Exception {
     Mouse m = ((HasInputDevices) getDriver()).getMouse();
-    m.mouseUp(getElement());
+    //TODO(eran): implement
+    //m.mouseUp(getElement());
     return ResultType.SUCCESS;
   }
   
   @Override
   public String toString() {
-    return String.format("[mouseup: %s]", getElementAsString());
+    return String.format("[mouseup: %s]", "nothing");
   }
 }

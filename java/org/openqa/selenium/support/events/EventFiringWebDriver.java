@@ -17,27 +17,29 @@ limitations under the License.
 
 package org.openqa.selenium.support.events;
 
+import org.openqa.selenium.ActionChainsGenerator;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Cookie;
+import org.openqa.selenium.Dimension;
 import org.openqa.selenium.HasInputDevices;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keyboard;
 import org.openqa.selenium.Mouse;
 import org.openqa.selenium.OutputType;
+import org.openqa.selenium.Point;
 import org.openqa.selenium.RenderedWebElement;
 import org.openqa.selenium.Speed;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.DefaultActionChainsGenerator;
 import org.openqa.selenium.internal.WrapsDriver;
 import org.openqa.selenium.internal.WrapsElement;
 import org.openqa.selenium.support.events.internal.EventFiringKeyboard;
 import org.openqa.selenium.support.events.internal.EventFiringMouse;
 
-import java.awt.Dimension;
-import java.awt.Point;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -282,6 +284,10 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
           + " user interactions yet.");
     }
     return mouse;
+  }
+
+  public ActionChainsGenerator actionsBuilder() {
+    return new DefaultActionChainsGenerator(this);
   }
 
   private class EventFiringWebElement implements WebElement, WrapsElement, WrapsDriver {

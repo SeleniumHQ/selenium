@@ -18,10 +18,10 @@ limitations under the License.
 
 package org.openqa.selenium.ie;
 
-import java.awt.Point;
 import java.util.List;
 import java.util.Map;
 
+import org.openqa.selenium.Point;
 import org.openqa.selenium.RenderedWebElement;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.internal.Locatable;
@@ -31,7 +31,7 @@ import org.openqa.selenium.remote.Response;
 
 import com.google.common.collect.ImmutableMap;
 
-public class InternetExplorerElement extends RenderedRemoteWebElement implements RenderedWebElement, Locatable {
+public class InternetExplorerElement extends RenderedRemoteWebElement implements RenderedWebElement {
   public InternetExplorerElement(InternetExplorerDriver parent) {
     setParent(parent);
   }
@@ -47,15 +47,5 @@ public class InternetExplorerElement extends RenderedRemoteWebElement implements
     Response response = execute(DriverCommand.FIND_CHILD_ELEMENTS,
         ImmutableMap.of("id", id, "using", using, "value", value));
     return (List<WebElement>) response.getValue();
-  }
-  
-  public Point getLocationOnScreenOnceScrolledIntoView() {
-    Response response = execute(DriverCommand.GET_ELEMENT_LOCATION_ONCE_SCROLLED_INTO_VIEW,
-        ImmutableMap.of("id", getId()));
-
-    @SuppressWarnings("unchecked")
-    Map<String, Number> mapped = (Map<String, Number>) response.getValue();
-
-    return new Point(mapped.get("x").intValue(), mapped.get("y").intValue());
   }
 }

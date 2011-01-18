@@ -17,8 +17,7 @@ limitations under the License.
 
 package org.openqa.selenium.internal.seleniumemulation;
 
-import java.awt.Dimension;
-
+import org.openqa.selenium.Dimension;
 import org.openqa.selenium.RenderedWebElement;
 import org.openqa.selenium.WebDriver;
 

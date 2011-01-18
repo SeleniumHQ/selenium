@@ -18,9 +18,12 @@ limitations under the License.
 package org.openqa.selenium.interactions;
 
 import org.openqa.selenium.AbstractDriverTestCase;
+import org.openqa.selenium.ActionChainsGenerator;
 import org.openqa.selenium.By;
+import org.openqa.selenium.HasInputDevices;
 import org.openqa.selenium.Ignore;
 import org.openqa.selenium.JavascriptEnabled;
+import org.openqa.selenium.Mouse;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -39,6 +42,10 @@ import static org.openqa.selenium.Ignore.Driver.SELENESE;
  *
  */
 public class TestBasicMouseInterface extends AbstractDriverTestCase {
+  private ActionChainsGenerator getBuilder(WebDriver driver) {
+    return ((HasInputDevices) driver).actionsBuilder();
+  }
+
   private void performDragAndDropWithMouse() {
     driver.get(pages.draggableLists);
 
@@ -47,14 +54,15 @@ public class TestBasicMouseInterface extends AbstractDriverTestCase {
     WebElement toDrag = driver.findElement(By.id("rightitem-3"));
     WebElement dragInto = driver.findElement(By.id("sortable1"));
 
-    ClickAndHoldAction holdItem = new ClickAndHoldAction(driver, toDrag);
+    Action holdItem = getBuilder(driver).clickAndHold(toDrag).build();
 
-    MoveMouseAction moveToSpecificItem = new MoveMouseAction(driver,
-        driver.findElement(By.id("leftitem-4")));
+    Action moveToSpecificItem = getBuilder(driver)
+        .moveToElement(driver.findElement(By.id("leftitem-4")))
+        .build();
 
-    MoveMouseAction moveToOtherList = new MoveMouseAction(driver, dragInto);
+    Action moveToOtherList = getBuilder(driver).moveToElement(dragInto).build();
 
-    ButtonReleaseAction drop = new ButtonReleaseAction(driver, dragInto);
+    Action drop = getBuilder(driver).release(dragInto).build();
 
     assertEquals("Nothing happened.", dragReporter.getText());
 
@@ -114,12 +122,13 @@ public class TestBasicMouseInterface extends AbstractDriverTestCase {
     WebElement toDrag = driver.findElement(By.id("draggable"));
     WebElement dropInto = driver.findElement(By.id("droppable"));
 
-    ClickAndHoldAction holdDrag = new ClickAndHoldAction(driver, toDrag);
+    Action holdDrag = getBuilder(driver).clickAndHold(toDrag).build();
 
-    MoveMouseAction move = new MoveMouseAction(driver, dropInto);
+    Action move = getBuilder(driver)
+        .moveToElement(dropInto).build();
 
-    ButtonReleaseAction drop = new ButtonReleaseAction(driver, dropInto);
-
+    Action drop = getBuilder(driver).release(dropInto).build();
+    
     holdDrag.perform();
     move.perform();
     drop.perform();
@@ -137,7 +146,7 @@ public class TestBasicMouseInterface extends AbstractDriverTestCase {
 
     WebElement toDoubleClick = driver.findElement(By.id("doubleClickField"));
 
-    DoubleClickAction dblClick = new DoubleClickAction(driver, toDoubleClick);
+    Action dblClick = getBuilder(driver).doubleClick(toDoubleClick).build();
 
     dblClick.perform();
     assertEquals("Value should change to DoubleClicked.", "DoubleClicked",
@@ -151,7 +160,7 @@ public class TestBasicMouseInterface extends AbstractDriverTestCase {
 
     WebElement toContextClick = driver.findElement(By.id("doubleClickField"));
 
-    ContextClickAction contextClick = new ContextClickAction (driver, toContextClick );
+    Action contextClick = getBuilder(driver).contextClick(toContextClick).build();
 
     contextClick.perform();
     assertEquals("Value should change to ContextClicked.", "ContextClicked",

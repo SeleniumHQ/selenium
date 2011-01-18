@@ -17,9 +17,11 @@ limitations under the License.
 
 package org.openqa.selenium.interactions;
 
+import org.openqa.selenium.Mouse;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.Keyboard;
+import org.openqa.selenium.internal.Locatable;
 import org.openqa.selenium.interactions.internal.KeysRelatedAction;
 
 /**
@@ -29,19 +31,18 @@ import org.openqa.selenium.interactions.internal.KeysRelatedAction;
 public class SendKeysAction extends KeysRelatedAction implements Action {
   private final CharSequence[] keysToSend;
 
-  public SendKeysAction(WebDriver parent, WebElement toElement, CharSequence... keysToSend) {
-    super(parent, toElement);
+  public SendKeysAction(Keyboard keyboard, Mouse mouse, Locatable locationProvider,
+      CharSequence... keysToSend) {
+    super(keyboard, mouse, locationProvider);
     this.keysToSend = keysToSend;
   }
 
-  public SendKeysAction(WebDriver parent, CharSequence... keysToSend) {
-    this(parent, null, keysToSend);
+  public SendKeysAction(Keyboard keyboard, Mouse mouse, CharSequence... keysToSend) {
+    this(keyboard, mouse, null, keysToSend);
   }
 
   public void perform() {
     focusOnElement();
-
-    Keyboard keyboard = getKeyboard();
     
     keyboard.sendKeys(keysToSend);
   }

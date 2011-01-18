@@ -20,12 +20,9 @@ package org.openqa.selenium.interactions;
 import org.jmock.Expectations;
 import org.jmock.integration.junit3.MockObjectTestCase;
 import org.openqa.selenium.Mouse;
-import org.openqa.selenium.RenderedWebElement;
-import org.openqa.selenium.StubDriver;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-
-import java.awt.*;
+import org.openqa.selenium.StubRenderedWebElement;
+import org.openqa.selenium.internal.Locatable;
+import org.openqa.selenium.interactions.internal.Coordinates;
 
 /**
  * Unit test for all simple keyboard actions.
@@ -33,110 +30,134 @@ import java.awt.*;
  */
 public class TestIndividualMouseActions extends MockObjectTestCase {
   private Mouse dummyMouse;
-  private WebElement dummyElement;
-  private RenderedWebElement dummyRenderedElement;
-  private WebDriver fakeDriver;
+  private Locatable locatableElement;
+  private Coordinates dummyCoordinates;
 
   public void setUp() {
     dummyMouse = mock(Mouse.class);
-    dummyElement = mock(WebElement.class);
-    dummyRenderedElement = mock(RenderedWebElement.class);
-    fakeDriver = new StubInputDeviceDriver() {
+    dummyCoordinates = mock(Coordinates.class);
+
+    locatableElement = new StubRenderedWebElement() {
       @Override
-      public Mouse getMouse() {
-        return dummyMouse;
+      public Coordinates getCoordinates() {
+        return dummyCoordinates;
       }
     };
   }
 
   public void testMouseClickAndHoldAction() {
     checking(new Expectations() {{
-      one(dummyMouse).mouseDown(dummyElement);
+      one(dummyMouse).mouseMove(dummyCoordinates);
+      one(dummyMouse).mouseDown(dummyCoordinates);
     }});
 
-    ClickAndHoldAction action = new ClickAndHoldAction(fakeDriver, dummyElement);
+    ClickAndHoldAction action = new ClickAndHoldAction(dummyMouse, locatableElement);
     action.perform();
   }
 
-  public void testMouseReleaseAction() {
+  public void testMouseClickAndHoldActionOnCurrentLocation() {
     checking(new Expectations() {{
-      one(dummyMouse).mouseUp(dummyElement);
+      one(dummyMouse).mouseDown(null);
     }});
 
-    ButtonReleaseAction action = new ButtonReleaseAction(fakeDriver, dummyElement);
+    ClickAndHoldAction action = new ClickAndHoldAction(dummyMouse, null);
+    action.perform();
+  }
+
+
+  public void testMouseReleaseAction() {
+    checking(new Expectations() {{
+      one(dummyMouse).mouseMove(dummyCoordinates);
+      one(dummyMouse).mouseUp(dummyCoordinates);
+    }});
+
+    ButtonReleaseAction action = new ButtonReleaseAction(dummyMouse, locatableElement);
+    action.perform();
+  }
+
+  public void testMouseReleaseActionOnCurrentLocation() {
+    checking(new Expectations() {{
+      one(dummyMouse).mouseUp(null);
+    }});
+
+    ButtonReleaseAction action = new ButtonReleaseAction(dummyMouse, null);
     action.perform();
   }
 
 
   public void testMouseClickAction() {
     checking(new Expectations() {{
-      one(dummyMouse).click(dummyElement);
+      one(dummyMouse).mouseMove(dummyCoordinates);
+      one(dummyMouse).click(dummyCoordinates);
     }});
 
-    ClickAction action = new ClickAction(fakeDriver, dummyElement);
+    ClickAction action = new ClickAction(dummyMouse, locatableElement);
+    action.perform();
+  }
+
+  public void testMouseClickActionOnCurrentLocation() {
+    checking(new Expectations() {{
+      one(dummyMouse).click(null);
+    }});
+
+    ClickAction action = new ClickAction(dummyMouse, null);
     action.perform();
   }
 
   public void testMouseDoubleClickAction() {
     checking(new Expectations() {{
-      one(dummyMouse).doubleClick(dummyElement);
+      one(dummyMouse).mouseMove(dummyCoordinates);
+      one(dummyMouse).doubleClick(dummyCoordinates);
     }});
 
-    DoubleClickAction action = new DoubleClickAction(fakeDriver, dummyElement);
+    DoubleClickAction action = new DoubleClickAction(dummyMouse, locatableElement);
     action.perform();
   }
+
+  public void testMouseDoubleClickActionOnCurrentLocation() {
+    checking(new Expectations() {{
+      one(dummyMouse).doubleClick(null);
+    }});
+
+    DoubleClickAction action = new DoubleClickAction(dummyMouse, null);
+    action.perform();
+  }
+
 
   public void testMouseMoveAction() {
     checking(new Expectations() {{
-      one(dummyMouse).mouseMove(dummyElement);
+      one(dummyMouse).mouseMove(dummyCoordinates);
     }});
 
-    MoveMouseAction action = new MoveMouseAction(fakeDriver, dummyElement);
+    MoveMouseAction action = new MoveMouseAction(dummyMouse, locatableElement);
     action.perform();
-  }
-
-  public void testMouseMoveToCoordinatesFailsOnNonRenderedWebElement() {
-    try {
-      MoveToOffsetAction action = new MoveToOffsetAction(fakeDriver, dummyElement, 20, 20);
-      fail("Was not supposed to do a move to offset not on a RenderedWebElement");
-    } catch (ElementNotDisplayedException e) {
-      // Expected
-    }
   }
 
   public void testMouseMoveActionToCoordinatesInElement() {
     checking(new Expectations() {{
-      one(dummyRenderedElement).getSize();
-      will(returnValue(new Dimension(50, 50)));
-      one(dummyMouse).mouseMove(dummyRenderedElement, 20, 20);
+      one(dummyMouse).mouseMove(dummyCoordinates, 20, 20);
     }});
 
-    MoveToOffsetAction action = new MoveToOffsetAction(fakeDriver, dummyRenderedElement, 20, 20);
+    MoveToOffsetAction action = new MoveToOffsetAction(dummyMouse, locatableElement, 20, 20);
     action.perform();
-  }
-
-  public void testMouseMoveActionToCoordinatesOutsideElementFails() {
-    checking(new Expectations() {{
-      one(dummyRenderedElement).getSize();
-      will(returnValue(new Dimension(20, 20)));
-    }});
-
-    try {
-      MoveToOffsetAction action = new MoveToOffsetAction(fakeDriver, dummyRenderedElement, 50, 50);
-      action.perform();
-      fail("Was not supposed to be able to move outside element boundries.");
-    } catch (MoveOutsideBoundriesException e) {
-      //Expected.
-    }
-
   }
 
   public void testMouseContextClickAction() {
     checking(new Expectations() {{
-      one(dummyMouse).contextClick(dummyElement);
+      one(dummyMouse).mouseMove(dummyCoordinates);      
+      one(dummyMouse).contextClick(dummyCoordinates);
     }});
 
-    ContextClickAction action = new ContextClickAction(fakeDriver, dummyElement);
+    ContextClickAction action = new ContextClickAction(dummyMouse, locatableElement);
+    action.perform();
+  }
+
+  public void testMouseContextClickActionOnCurrentLocation() {
+    checking(new Expectations() {{
+      one(dummyMouse).contextClick(null);
+    }});
+
+    ContextClickAction action = new ContextClickAction(dummyMouse, null);
     action.perform();
   }
 

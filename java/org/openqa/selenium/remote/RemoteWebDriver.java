@@ -17,6 +17,7 @@ limitations under the License.
 
 package org.openqa.selenium.remote;
 
+import org.openqa.selenium.ActionChainsGenerator;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Capabilities;
@@ -31,6 +32,7 @@ import org.openqa.selenium.Speed;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.DefaultActionChainsGenerator;
 import org.openqa.selenium.internal.FindsByClassName;
 import org.openqa.selenium.internal.FindsByCssSelector;
 import org.openqa.selenium.internal.FindsById;
@@ -38,6 +40,7 @@ import org.openqa.selenium.internal.FindsByLinkText;
 import org.openqa.selenium.internal.FindsByName;
 import org.openqa.selenium.internal.FindsByTagName;
 import org.openqa.selenium.internal.FindsByXPath;
+import org.openqa.selenium.interactions.internal.Coordinates;
 import org.openqa.selenium.remote.internal.JsonToWebElementConverter;
 import org.openqa.selenium.remote.internal.WebElementToJsonConverter;
 
@@ -410,6 +413,11 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     return mouse;
   }
 
+  public ActionChainsGenerator actionsBuilder() {
+    //TODO(eranm): change this to use a different action chains generator.
+    return new DefaultActionChainsGenerator(this);
+  }
+
   protected class RemoteWebDriverOptions implements Options {
 
     public void addCookie(Cookie cookie) {
@@ -653,6 +661,34 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
 
     public void mouseMove(WebElement toElement, long xOffset, long yOffset) {
       throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void click(Coordinates where) {
+      //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public void doubleClick(Coordinates where) {
+      //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public void mouseDown(Coordinates where) {
+      //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public void mouseUp(Coordinates where) {
+      //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public void mouseMove(Coordinates where) {
+      //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public void mouseMove(Coordinates where, long xOffset, long yOffset) {
+      //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public void contextClick(Coordinates where) {
+      //To change body of implemented methods use File | Settings | File Templates.
     }
   }
 

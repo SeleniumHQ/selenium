@@ -17,7 +17,8 @@ limitations under the License.
 
 package org.openqa.selenium.internal;
 
-import java.awt.*;
+import org.openqa.selenium.*;
+import org.openqa.selenium.interactions.internal.Coordinates;
 
 public interface Locatable {
   /**
@@ -26,5 +27,7 @@ public interface Locatable {
    *
    * @return The top lefthand corner location on the screen, or null if the element is not visible
    */
-  Point getLocationOnScreenOnceScrolledIntoView();
+  org.openqa.selenium.Point getLocationOnScreenOnceScrolledIntoView();
+
+  Coordinates getCoordinates();
 }

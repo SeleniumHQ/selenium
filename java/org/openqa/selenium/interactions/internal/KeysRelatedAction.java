@@ -20,28 +20,27 @@ package org.openqa.selenium.interactions.internal;
 import org.openqa.selenium.HasInputDevices;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keyboard;
+import org.openqa.selenium.Mouse;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.internal.Locatable;
 
 /**
  * Represents a general action related to keyboard input.
  */
 public abstract class KeysRelatedAction extends BaseAction {
-  protected KeysRelatedAction(WebDriver parent, WebElement toElement) {
-    super(parent, toElement);
+  protected final Keyboard keyboard;
+  protected final Mouse mouse;
+
+  protected KeysRelatedAction(Keyboard keyboard, Mouse mouse, Locatable locationProvider) {
+    super(locationProvider);
+    this.keyboard = keyboard;
+    this.mouse = mouse;
   }
 
   protected void focusOnElement() {
-    if (onElement != null) {
-      WebElement activeElement = parent.switchTo().activeElement();
-      if (!onElement.equals(activeElement)) {
-        ((JavascriptExecutor) parent).executeScript("arguments[0].blur();", activeElement);
-        ((JavascriptExecutor) parent).executeScript("arguments[0].focus();", onElement);
-      }
+    if (where != null) {
+      mouse.click(where.getCoordinates());
     }
   }
-
-  protected Keyboard getKeyboard() {
-    return ((HasInputDevices) parent).getKeyboard();
-  }  
 }

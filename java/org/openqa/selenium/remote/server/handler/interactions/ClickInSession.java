@@ -19,29 +19,25 @@ package org.openqa.selenium.remote.server.handler.interactions;
 
 import org.openqa.selenium.HasInputDevices;
 import org.openqa.selenium.Mouse;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.internal.WrapsElement;
 import org.openqa.selenium.remote.server.DriverSessions;
-import org.openqa.selenium.remote.server.KnownElements;
 import org.openqa.selenium.remote.server.handler.WebDriverHandler;
-import org.openqa.selenium.remote.server.handler.WebElementHandler;
 import org.openqa.selenium.remote.server.rest.ResultType;
 
-public class MouseMoveToElement extends WebDriverHandler {
+public class ClickInSession extends WebDriverHandler {
 
-  public MouseMoveToElement(DriverSessions sessions) {
+  public ClickInSession(DriverSessions sessions) {
     super(sessions);
   }
 
   public ResultType call() throws Exception {
     Mouse m = ((HasInputDevices) getDriver()).getMouse();
-    //TODO(eran): Implement
-    //m.mouseMove(getElement());
+    //TODO(eran): implement
+    //m.click(getElement());
     return ResultType.SUCCESS;
   }
   
   @Override
   public String toString() {
-    return String.format("[mousemove: %s]", "nothing");
+    return String.format("[click: %s]", "nothing");
   }
 }

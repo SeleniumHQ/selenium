@@ -17,17 +17,20 @@ limitations under the License.
 
 package org.openqa.selenium.interactions;
 
+import org.openqa.selenium.Mouse;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.internal.Locatable;
 import org.openqa.selenium.interactions.internal.BaseAction;
+import org.openqa.selenium.interactions.internal.MouseRelatedAction;
 
 /**
  * Context-clicks an element
  *
  */
-public class ContextClickAction extends BaseAction implements Action {
-  public ContextClickAction(WebDriver parent, WebElement onElement) {
-    super(parent, onElement);
+public class ContextClickAction extends MouseRelatedAction implements Action {
+  public ContextClickAction(Mouse mouse, Locatable where) {
+    super(mouse, where);
   }
 
   /**
@@ -35,7 +38,8 @@ public class ContextClickAction extends BaseAction implements Action {
    * menus (usually right-clicking).
    */
   public void perform() {
-    getMouse().contextClick(onElement);
+    moveToLocation();
+    mouse.contextClick(getActionLocation());
   }
 
 }

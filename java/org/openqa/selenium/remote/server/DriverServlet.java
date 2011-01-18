@@ -45,6 +45,7 @@ import org.openqa.selenium.remote.server.handler.html5.SetBrowserConnection;
 import org.openqa.selenium.remote.server.handler.html5.SetLocalStorageItem;
 import org.openqa.selenium.remote.server.handler.html5.SetLocationContext;
 import org.openqa.selenium.remote.server.handler.html5.SetSessionStorageItem;
+import org.openqa.selenium.remote.server.handler.interactions.ClickInSession;
 import org.openqa.selenium.remote.server.handler.interactions.ContextClickElement;
 import org.openqa.selenium.remote.server.handler.interactions.DoubleClickElement;
 import org.openqa.selenium.remote.server.handler.interactions.MouseDownOnElement;
@@ -177,13 +178,15 @@ public class DriverServlet extends HttpServlet {
 
     postMapper.bind("/session/:sessionId/element/:id/click", ClickElement.class)
         .on(ResultType.SUCCESS, new EmptyResult());
-    postMapper.bind("/session/:sessionId/element/:id/doubleclick", DoubleClickElement.class)
+    postMapper.bind("/session/:sessionId/click", ClickInSession.class)
+            .on(ResultType.SUCCESS, new EmptyResult());
+    postMapper.bind("/session/:sessionId/doubleclick", DoubleClickElement.class)
         .on(ResultType.SUCCESS, new EmptyResult());
-    postMapper.bind("/session/:sessionId/element/:id/contextclick", ContextClickElement.class)
+    postMapper.bind("/session/:sessionId/contextclick", ContextClickElement.class)
         .on(ResultType.SUCCESS, new EmptyResult());
-    postMapper.bind("/session/:sessionId/element/:id/buttondown", MouseDownOnElement.class)
+    postMapper.bind("/session/:sessionId/buttondown", MouseDownOnElement.class)
         .on(ResultType.SUCCESS, new EmptyResult());
-    postMapper.bind("/session/:sessionId/element/:id/buttonup", MouseUpOnElement.class)
+    postMapper.bind("/session/:sessionId/buttonup", MouseUpOnElement.class)
         .on(ResultType.SUCCESS, new EmptyResult());
     getMapper.bind("/session/:sessionId/element/:id/text", GetElementText.class)
         .on(ResultType.SUCCESS, new JsonResult(RESPONSE));
@@ -375,12 +378,12 @@ public class DriverServlet extends HttpServlet {
       DriverServlet.this.log("WARN: " + message, throwable);
     }
 
-    public void error(String message) {
-      log("ERROR: " + message);
-    }
-
     public void error(String message, Throwable throwable) {
       DriverServlet.this.log("ERROR: " + message, throwable);
+    }
+
+    public void error(String message) {
+      log("ERROR: " + message);
     }
 
     public void debug(String message) {

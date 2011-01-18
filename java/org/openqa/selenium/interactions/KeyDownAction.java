@@ -18,6 +18,7 @@ limitations under the License.
 package org.openqa.selenium.interactions;
 
 import org.openqa.selenium.*;
+import org.openqa.selenium.internal.Locatable;
 import org.openqa.selenium.interactions.internal.SingleKeyAction;
 
 /**
@@ -25,18 +26,16 @@ import org.openqa.selenium.interactions.internal.SingleKeyAction;
  *
  */
 public class KeyDownAction extends SingleKeyAction implements Action {
-  public KeyDownAction(WebDriver parent, WebElement toElement, Keys key) {
-    super(parent, toElement, key);
+  public KeyDownAction(Keyboard keyboard, Mouse mouse, Locatable locationProvider, Keys key) {
+    super(keyboard, mouse, locationProvider, key);
   }
 
-  public KeyDownAction(WebDriver parent, Keys key) {
-    super(parent, key);
+  public KeyDownAction(Keyboard keyboard, Mouse mouse, Keys key) {
+    super(keyboard, mouse, key);
   }
 
   public void perform() {
     focusOnElement();
-
-    Keyboard keyboard = getKeyboard();
     
     keyboard.pressKey(key);
   }
