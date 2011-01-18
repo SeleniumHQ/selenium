@@ -264,7 +264,7 @@ public class ResultConfig {
     //
     // Of course, if we only have one item in our chain, go ahead and return.
     ErrorCodes ec = new ErrorCodes();
-    Iterator<Throwable> reversedChain = Iterables.reverse(chain).iterator();
+    Iterator<Throwable> reversedChain = Lists.reverse(chain).iterator();
     Throwable rootCause = reversedChain.next();
     if (!reversedChain.hasNext() || ec.isMappableError(rootCause)) {
       return rootCause;
