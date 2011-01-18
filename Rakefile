@@ -105,7 +105,7 @@ task :ide => [ "//ide:selenium-ide" ]
 task :ide_proxy_setup => [ "//common/src/js/selenium:core", "se_ide:setup_proxy" ]
 task :ide_proxy_remove => [ "se_ide:remove_proxy" ]
 
-task :test_android => ["//android/client:android_test:run"]
+task :test_android => ["//javatests/org/openqa/selenium/android:android-test:run"]
 task :test_chrome => [ "//javatests/org/openqa/selenium/chrome:test:run" ]
 task :test_htmlunit => [ "//javatests/org/openqa/selenium/htmlunit:test:run" ]
 task :test_ie => [ "//javatests/org/openqa/selenium/ie:test:run" ]
@@ -122,8 +122,8 @@ task :test_support => [
 task :test_iphone_client => [:'webdriver-iphone-client-test']
 task :test_iphone => [:test_iphone_server, :test_iphone_client]
 task :android => [:android_client, :android_server]
-task :android_client => ['//android/client']
-task :android_server => ['//android/server:android-server']
+task :android_client => ['//java/org/openqa/selenium/android']
+task :android_server => ['//android:android-server']
 
 # TODO(simon): test-core should go first, but it's changing the least for now.
 task :test_selenium => [ :'test-rc', :'test-v1-emulation', :'test-selenium-backed-webdriver', :'test-core']
