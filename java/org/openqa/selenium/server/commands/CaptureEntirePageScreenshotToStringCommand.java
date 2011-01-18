@@ -3,6 +3,8 @@ package org.openqa.selenium.server.commands;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.logging.Log;
 import org.openqa.jetty.log.LogFactory;
+import org.openqa.selenium.internal.Trace;
+import org.openqa.selenium.internal.TraceFactory;
 import org.openqa.selenium.server.IOHelper;
 import org.openqa.selenium.browserlaunchers.LauncherUtils;
 
@@ -23,7 +25,7 @@ import java.util.List;
 public class CaptureEntirePageScreenshotToStringCommand extends Command {
 
     public static final String ID = "captureEntirePageScreenshotToString";
-    private static final Log LOGGER = LogFactory.getLog(CaptureScreenshotToStringCommand.class);
+    private static final Trace LOGGER = TraceFactory.getTrace(CaptureScreenshotToStringCommand.class);
     
     private final String kwargs;
     private final String sessionId;

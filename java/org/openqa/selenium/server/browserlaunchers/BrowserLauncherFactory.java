@@ -18,6 +18,8 @@ package org.openqa.selenium.server.browserlaunchers;
 
 import org.apache.commons.logging.Log;
 import org.openqa.jetty.log.LogFactory;
+import org.openqa.selenium.internal.Trace;
+import org.openqa.selenium.internal.TraceFactory;
 import org.openqa.selenium.server.BrowserConfigurationOptions;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 
@@ -35,7 +37,7 @@ import java.util.regex.Pattern;
  */
 public class BrowserLauncherFactory {
 
-  private static Log LOGGER = LogFactory.getLog(BrowserLauncherFactory.class);
+  private static Trace LOGGER = TraceFactory.getTrace(BrowserLauncherFactory.class);
 
   private static final Pattern CUSTOM_PATTERN = Pattern.compile("^\\*?custom( .*)?$");
 

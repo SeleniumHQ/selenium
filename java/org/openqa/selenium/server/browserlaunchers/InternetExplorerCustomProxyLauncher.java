@@ -22,6 +22,8 @@ import org.openqa.jetty.log.LogFactory;
 import org.openqa.selenium.browserlaunchers.AsyncExecute;
 import org.openqa.selenium.browserlaunchers.LauncherUtils;
 import org.openqa.selenium.browserlaunchers.WindowsProxyManager;
+import org.openqa.selenium.internal.Trace;
+import org.openqa.selenium.internal.TraceFactory;
 import org.openqa.selenium.os.WindowsUtils;
 import org.openqa.selenium.os.CommandLine;
 import org.openqa.selenium.server.ApplicationRegistry;
@@ -34,7 +36,7 @@ import java.io.IOException;
 
 public class InternetExplorerCustomProxyLauncher extends AbstractBrowserLauncher {
 
-  private static final Log LOGGER = LogFactory.getLog(InternetExplorerCustomProxyLauncher.class);
+  private static final Trace LOGGER = TraceFactory.getTrace(InternetExplorerCustomProxyLauncher.class);
 
   private File customProxyPACDir;
   private String[] cmdarray;

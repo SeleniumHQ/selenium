@@ -23,6 +23,8 @@ import org.apache.commons.logging.Log;
 import org.openqa.jetty.log.LogFactory;
 import org.openqa.selenium.browserlaunchers.AsyncExecute;
 import org.openqa.selenium.browserlaunchers.LauncherUtils;
+import org.openqa.selenium.internal.Trace;
+import org.openqa.selenium.internal.TraceFactory;
 import org.openqa.selenium.os.CommandLine;
 import org.openqa.selenium.server.ApplicationRegistry;
 import org.openqa.selenium.server.BrowserConfigurationOptions;
@@ -31,7 +33,7 @@ import org.openqa.selenium.server.browserlaunchers.locators.Firefox2or3Locator;
 
 public class FirefoxCustomProfileLauncher extends AbstractBrowserLauncher {
 
-    private static final Log LOGGER = LogFactory.getLog(FirefoxCustomProfileLauncher.class);
+    private static final Trace LOGGER = TraceFactory.getTrace(FirefoxCustomProfileLauncher.class);
 
     private boolean closed = false;
     private BrowserInstallation browserInstallation;

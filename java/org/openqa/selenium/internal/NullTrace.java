@@ -1,7 +1,5 @@
 package org.openqa.selenium.internal;
 
-import org.openqa.selenium.internal.Trace;
-
 public class NullTrace implements Trace {
   public void info(String message) { }
 
@@ -26,6 +24,7 @@ public class NullTrace implements Trace {
 
   }
 
+  public void debug(Throwable e) { } 
   public void debug(String message) { }
   public void debug(String message, Throwable throwable) { }
 

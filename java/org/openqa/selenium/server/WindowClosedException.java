@@ -2,12 +2,14 @@ package org.openqa.selenium.server;
 
 import org.apache.commons.logging.Log;
 import org.openqa.jetty.log.LogFactory;
+import org.openqa.selenium.internal.Trace;
+import org.openqa.selenium.internal.TraceFactory;
 
 public class WindowClosedException extends RemoteCommandException {
 
 	public static final String WINDOW_CLOSED_ERROR = "Current window or frame is closed!";
 	private static final long serialVersionUID = 1L;
-	static Log log = LogFactory.getLog(WindowClosedException.class);
+	static Trace log = TraceFactory.getTrace(WindowClosedException.class);
 	
 	public WindowClosedException() {
 		super(WINDOW_CLOSED_ERROR, WINDOW_CLOSED_ERROR);

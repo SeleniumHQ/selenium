@@ -27,6 +27,8 @@ import org.openqa.jetty.log.LogFactory;
 import org.openqa.selenium.browserlaunchers.AsyncExecute;
 import org.openqa.selenium.browserlaunchers.LauncherUtils;
 import org.openqa.selenium.browserlaunchers.Proxies;
+import org.openqa.selenium.internal.Trace;
+import org.openqa.selenium.internal.TraceFactory;
 import org.openqa.selenium.os.WindowsUtils;
 import org.openqa.selenium.os.CommandLine;
 import org.openqa.selenium.server.BrowserConfigurationOptions;
@@ -34,7 +36,7 @@ import org.openqa.selenium.server.RemoteControlConfiguration;
 
 public class OperaCustomProfileLauncher extends AbstractBrowserLauncher {
 
-    static Log log = LogFactory.getLog(OperaCustomProfileLauncher.class);
+    static Trace log = TraceFactory.getTrace(OperaCustomProfileLauncher.class);
     // TODO What is this really?
     private static final String DEFAULT_NONWINDOWS_LOCATION = "/Applications/Opera.app/Contents/MacOS/opera";
 

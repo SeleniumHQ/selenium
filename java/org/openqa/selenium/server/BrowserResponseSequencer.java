@@ -5,11 +5,11 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import org.apache.commons.logging.Log;
-import org.openqa.jetty.log.LogFactory;
+import org.openqa.selenium.internal.Trace;
+import org.openqa.selenium.internal.TraceFactory;
 
 public class BrowserResponseSequencer {
-	static Log log = LogFactory.getLog(BrowserResponseSequencer.class);
+	static Trace log = TraceFactory.getTrace(BrowserResponseSequencer.class);
 	int num = 0;
 	final Lock lock;
 	final Condition numIncreased;

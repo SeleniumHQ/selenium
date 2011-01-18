@@ -2,6 +2,8 @@ package org.openqa.selenium.server.commands;
 
 import org.apache.commons.logging.Log;
 import org.openqa.jetty.log.LogFactory;
+import org.openqa.selenium.internal.Trace;
+import org.openqa.selenium.internal.TraceFactory;
 import org.openqa.selenium.server.FrameGroupCommandQueueSet;
 
 import java.util.List;
@@ -13,7 +15,7 @@ public class SeleniumCoreCommand extends Command {
 
 
     public static final String CAPTURE_ENTIRE_PAGE_SCREENSHOT_ID = "captureEntirePageScreenshot";
-    private static final Log LOGGER = LogFactory.getLog(SeleniumCoreCommand.class);
+    private static final Trace LOGGER = TraceFactory.getTrace(SeleniumCoreCommand.class);
     private final String id;
     private final List<String> values;
     private final String sessionId;

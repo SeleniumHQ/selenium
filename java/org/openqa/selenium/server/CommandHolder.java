@@ -17,8 +17,8 @@
 
 package org.openqa.selenium.server;
 
-import org.apache.commons.logging.Log;
-import org.openqa.jetty.log.LogFactory;
+import org.openqa.selenium.internal.Trace;
+import org.openqa.selenium.internal.TraceFactory;
 
 /**
  * <p>Holds the command to be next run in the browser</p>
@@ -28,7 +28,7 @@ import org.openqa.jetty.log.LogFactory;
  */
 public class CommandHolder {
 
-    private static final Log logger = LogFactory.getLog(CommandHolder.class);
+    private static final Trace logger = TraceFactory.getTrace(CommandHolder.class);
     private static final int defaultTimeout = 10; // seconds
     private static final RemoteCommand poisonCommand
             = new DefaultRemoteCommand("CommandHolder.POISION", "", "");

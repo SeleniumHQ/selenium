@@ -29,6 +29,8 @@ import org.openqa.jetty.log.LogFactory;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.browserlaunchers.AsyncExecute;
 import org.openqa.selenium.browserlaunchers.LauncherUtils;
+import org.openqa.selenium.internal.Trace;
+import org.openqa.selenium.internal.TraceFactory;
 import org.openqa.selenium.os.CommandLine;
 import org.openqa.selenium.server.ApplicationRegistry;
 import org.openqa.selenium.server.BrowserConfigurationOptions;
@@ -48,7 +50,7 @@ import org.openqa.selenium.server.browserlaunchers.locators.GoogleChromeLocator;
  */
 public class GoogleChromeLauncher extends AbstractBrowserLauncher {
 
-    private static final Log LOGGER = LogFactory.getLog(GoogleChromeLauncher.class);
+    private static final Trace LOGGER = TraceFactory.getTrace(GoogleChromeLauncher.class);
 
     private BrowserInstallation browserInstallation;
 

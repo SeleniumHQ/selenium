@@ -22,6 +22,8 @@ import java.security.*;
 import org.apache.commons.logging.*;
 import org.openqa.jetty.log.LogFactory;
 import org.openqa.jetty.util.*;
+import org.openqa.selenium.internal.Trace;
+import org.openqa.selenium.internal.TraceFactory;
 
 
 /* ------------------------------------------------------------ */
@@ -47,7 +49,7 @@ import org.openqa.jetty.util.*;
  */
 public class FutureFileResource extends URLResource
 {
-	private static Log log = LogFactory.getLog(Credential.class);
+	private static Trace log = TraceFactory.getTrace(Credential.class);
     private static boolean __checkAliases;
     static
     {
@@ -95,7 +97,8 @@ public class FutureFileResource extends URLResource
         }
         catch (Exception e)
         {
-            LogSupport.ignore(log,e);
+          // TODO(simon): Why?
+//            LogSupport.ignore(log,e);
             try
             {
                 // Assume that File.toURL produced unencoded chars. So try
@@ -106,7 +109,8 @@ public class FutureFileResource extends URLResource
             }
             catch (Exception e2)
             {
-                LogSupport.ignore(log,e2);
+              // TODO(simon): Why?
+//                LogSupport.ignore(log,e2);
 
                 // Still can't get the file.  Doh! try good old hack!
                 checkConnection();
@@ -179,7 +183,7 @@ public class FutureFileResource extends URLResource
                 
                 _aliasChecked=true;
                 
-                if (_alias!=null && log.isDebugEnabled())
+                if (_alias!=null)
                 {
                     log.debug("ALIAS abs="+abs);
                     log.debug("ALIAS can="+can);

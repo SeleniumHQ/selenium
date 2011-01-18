@@ -2,6 +2,8 @@ package org.openqa.selenium.server.browserlaunchers.locators;
 
 import org.apache.commons.logging.Log;
 import org.openqa.jetty.log.LogFactory;
+import org.openqa.selenium.internal.Trace;
+import org.openqa.selenium.internal.TraceFactory;
 import org.openqa.selenium.server.browserlaunchers.BrowserInstallation;
 
 /**
@@ -9,7 +11,7 @@ import org.openqa.selenium.server.browserlaunchers.BrowserInstallation;
  */
 public class Firefox2or3Locator implements BrowserLocator {
 
-    private static Log LOGGER = LogFactory.getLog(Firefox2or3Locator.class);
+    private static Trace LOGGER = TraceFactory.getTrace(Firefox2or3Locator.class);
 
     public BrowserInstallation findBrowserLocationOrFail() {
         LOGGER.debug("Dicovering Firefox 2...");

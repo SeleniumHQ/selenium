@@ -30,6 +30,8 @@ import org.openqa.jetty.http.handler.ResourceHandler;
 import org.openqa.jetty.log.LogFactory;
 import org.openqa.jetty.util.StringUtil;
 import org.openqa.selenium.browserlaunchers.AsyncExecute;
+import org.openqa.selenium.internal.Trace;
+import org.openqa.selenium.internal.TraceFactory;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.server.BrowserSessionFactory.BrowserSessionInfo;
 import org.openqa.selenium.server.browserlaunchers.BrowserLauncher;
@@ -72,7 +74,7 @@ import java.util.Vector;
  */
 @SuppressWarnings("serial")
 public class SeleniumDriverResourceHandler extends ResourceHandler {
-  static final Log LOGGER = LogFactory.getLog(SeleniumDriverResourceHandler.class);
+  static final Trace LOGGER = TraceFactory.getTrace(SeleniumDriverResourceHandler.class);
   static Log browserSideLog =
       LogFactory.getLog(SeleniumDriverResourceHandler.class.getName() + ".browserSideLog");
 

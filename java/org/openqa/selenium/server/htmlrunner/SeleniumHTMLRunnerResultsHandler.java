@@ -21,6 +21,8 @@ import org.openqa.jetty.http.HttpRequest;
 import org.openqa.jetty.http.HttpResponse;
 import org.openqa.jetty.log.LogFactory;
 import org.openqa.jetty.util.StringUtil;
+import org.openqa.selenium.internal.Trace;
+import org.openqa.selenium.internal.TraceFactory;
 
 /**
  * Handles results of HTMLRunner (aka TestRunner, FITRunner) in automatic mode.
@@ -32,7 +34,7 @@ import org.openqa.jetty.util.StringUtil;
  */
 @SuppressWarnings("serial")
 public class SeleniumHTMLRunnerResultsHandler implements HttpHandler {
-    static Log log = LogFactory.getLog(SeleniumHTMLRunnerResultsHandler.class);
+    static Trace log = TraceFactory.getTrace(SeleniumHTMLRunnerResultsHandler.class);
     
     HttpContext context;
     List<HTMLResultsListener> listeners;

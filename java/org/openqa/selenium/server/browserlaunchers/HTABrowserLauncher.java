@@ -13,6 +13,8 @@ import org.apache.commons.logging.Log;
 import org.openqa.jetty.log.LogFactory;
 import org.openqa.selenium.browserlaunchers.AsyncExecute;
 import org.openqa.selenium.browserlaunchers.LauncherUtils;
+import org.openqa.selenium.internal.Trace;
+import org.openqa.selenium.internal.TraceFactory;
 import org.openqa.selenium.os.WindowsUtils;
 import org.openqa.selenium.os.CommandLine;
 import org.openqa.selenium.io.FileHandler;
@@ -24,7 +26,7 @@ import org.openqa.selenium.server.browserlaunchers.locators.InternetExplorerLoca
 //EB - Why doesn't this class extend AbstractBrowserLauncher
 //DGF - because it would override every method of ABL.
 public class HTABrowserLauncher implements BrowserLauncher {
-    static Log log = LogFactory.getLog(HTABrowserLauncher.class);
+    static Trace log = TraceFactory.getTrace(HTABrowserLauncher.class);
     private String sessionId;
     private File dir;
     private String htaCommandPath;

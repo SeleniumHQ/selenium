@@ -11,6 +11,10 @@ public class JettyLoggingTrace implements Trace {
     log = LogFactory.getLog(classToLog);
   }
 
+  public void debug(Throwable e) {
+    log.debug(e);
+  }
+
   public void debug(String message) {
     log.debug(message);
   }

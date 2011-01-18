@@ -2,6 +2,8 @@ package org.openqa.selenium.server;
 
 import org.apache.commons.logging.Log;
 import org.openqa.jetty.log.LogFactory;
+import org.openqa.selenium.internal.Trace;
+import org.openqa.selenium.internal.TraceFactory;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
@@ -14,7 +16,7 @@ import java.io.OutputStream;
  */
 public class IOHelper {
 
-    private static final Log LOGGER = LogFactory.getLog(IOHelper.class);
+    private static final Trace LOGGER = TraceFactory.getTrace(IOHelper.class);
     private static final int DEFAULT_COPY_BUFFER_SIZE = 1024;
 
     public static void close(InputStream stream) {

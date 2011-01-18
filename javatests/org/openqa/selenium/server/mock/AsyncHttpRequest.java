@@ -9,6 +9,8 @@ import java.net.URL;
 
 import org.apache.commons.logging.Log;
 import org.openqa.jetty.log.LogFactory;
+import org.openqa.selenium.internal.Trace;
+import org.openqa.selenium.internal.TraceFactory;
 
 /**
  * Base class to perform out-of-thread HTTP requests.  We use these to start a request X,
@@ -23,7 +25,7 @@ public abstract class AsyncHttpRequest {
     Thread thread;
     public static final int DEFAULT_TIMEOUT = 30000; //0 = infinite, good for debugging
     protected AsyncHttpRequest() {};
-    static Log log = LogFactory.getLog(AsyncHttpRequest.class);
+    static Trace log = TraceFactory.getTrace(AsyncHttpRequest.class);
     
     /** reusable "constructor" to be used by child classes */
     protected static <T extends AsyncHttpRequest> T constructRequest(T request, String name, String url, String body, int timeoutInMillis) {

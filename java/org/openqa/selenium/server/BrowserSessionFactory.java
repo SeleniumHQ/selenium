@@ -1,8 +1,8 @@
 package org.openqa.selenium.server;
 
 
-import org.apache.commons.logging.Log;
-import org.openqa.jetty.log.LogFactory;
+import org.openqa.selenium.internal.Trace;
+import org.openqa.selenium.internal.TraceFactory;
 import org.openqa.selenium.server.browserlaunchers.BrowserLauncher;
 import org.openqa.selenium.server.browserlaunchers.BrowserLauncherFactory;
 import org.openqa.selenium.server.browserlaunchers.InvalidBrowserExecutableException;
@@ -31,7 +31,7 @@ public class BrowserSessionFactory {
     private static final long DEFAULT_CLEANUP_INTERVAL = 300000; // 5 minutes.
     private static final long DEFAULT_MAX_IDLE_SESSION_TIME = 600000; // 10 minutes
 
-    private static Log LOGGER = LogFactory.getLog(BrowserSessionFactory.class);
+    private static Trace LOGGER = TraceFactory.getTrace(BrowserSessionFactory.class);
 
     // cached, unused, already-launched browser sessions.
     protected final Set<BrowserSessionInfo> availableSessions =

@@ -16,9 +16,11 @@ import org.openqa.jetty.http.HttpRequest;
 import org.openqa.jetty.http.HttpResponse;
 import org.openqa.jetty.log.LogFactory;
 import org.openqa.jetty.util.IO;
+import org.openqa.selenium.internal.Trace;
+import org.openqa.selenium.internal.TraceFactory;
 
 public class InjectionHelper {
-    static Log log = LogFactory.getLog(InjectionHelper.class);
+    static Trace log = TraceFactory.getTrace(InjectionHelper.class);
     private static boolean failOnError = true;
     private static boolean browserSideLogEnabled = true;
     private static boolean INJECT_SCRIPT_TAGS = true;
@@ -53,9 +55,7 @@ public class InjectionHelper {
             jsStateInitializersBySessionId.remove(sessionId);
             sessionIdToUniqueId.put(sessionId, uniqueId);
         }
-        if (log.isDebugEnabled()) {
-            log.debug("Saving JavaScript state for session " + sessionId + "/" + uniqueId + " " + jsVarName + ": " + jsStateInitializer); 
-        }
+        log.debug("Saving JavaScript state for session " + sessionId + "/" + uniqueId + " " + jsVarName + ": " + jsStateInitializer);
         if (!jsStateInitializersBySessionId.containsKey(sessionId)) {
             jsStateInitializersBySessionId.put(sessionId, new HashMap<String, String>());
         }
@@ -82,10 +82,8 @@ public class InjectionHelper {
             final String jsStateInitializer = entry.getValue();
             sb.append(jsStateInitializer)
             .append('\n');
-            if (log.isDebugEnabled()) {
-                log.debug("Restoring JavaScript state for session " + sessionId + "/" + uniqueId 
-                        + ": key=" + jsVarName + ": " + jsStateInitializer); 
-            }
+            log.debug("Restoring JavaScript state for session " + sessionId + "/" + uniqueId
+                    + ": key=" + jsVarName + ": " + jsStateInitializer);
         }
         return sb.toString();
     }
@@ -209,16 +207,12 @@ public class InjectionHelper {
 
         long bytesCopied = len;
 
-        if (log.isDebugEnabled()) {
-            log.debug(url + " (InjectionHelper looking)");
-        }
+        log.debug(url + " (InjectionHelper looking)");
         if (!isKnownToBeHtml) {
             bytesCopied += ModifiedIO.copy(in, out);
         }
         else {
-            if (log.isDebugEnabled()) {
-                log.debug("injecting...");
-            }
+            log.debug("injecting...");
             response.removeField("Content-Length"); // added js will make it wrong, lead to page getting truncated
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             if (INJECT_SCRIPT_TAGS) {

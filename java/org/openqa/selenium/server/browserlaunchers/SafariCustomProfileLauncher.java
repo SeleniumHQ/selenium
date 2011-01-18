@@ -23,6 +23,8 @@ import org.openqa.selenium.browserlaunchers.AsyncExecute;
 import org.openqa.selenium.browserlaunchers.LauncherUtils;
 import org.openqa.selenium.browserlaunchers.MacProxyManager;
 import org.openqa.selenium.browserlaunchers.WindowsProxyManager;
+import org.openqa.selenium.internal.Trace;
+import org.openqa.selenium.internal.TraceFactory;
 import org.openqa.selenium.os.WindowsUtils;
 import org.openqa.selenium.os.CommandLine;
 import org.openqa.selenium.server.ApplicationRegistry;
@@ -37,7 +39,7 @@ import static org.openqa.selenium.Platform.MAC;
 
 public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
 
-  private final static Log LOGGER = LogFactory.getLog(SafariCustomProfileLauncher.class);
+  private final static Trace LOGGER = TraceFactory.getTrace(SafariCustomProfileLauncher.class);
 
   private static final String REDIRECT_TO_GO_TO_SELENIUM = "redirect_to_go_to_selenium.htm";
 

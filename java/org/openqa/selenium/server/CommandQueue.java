@@ -22,6 +22,8 @@ import java.util.concurrent.atomic.*;
 
 import org.apache.commons.logging.Log;
 import org.openqa.jetty.log.LogFactory;
+import org.openqa.selenium.internal.Trace;
+import org.openqa.selenium.internal.TraceFactory;
 
 /**
  * <p>Schedules and coordinates commands to be run.</p>
@@ -31,7 +33,7 @@ import org.openqa.jetty.log.LogFactory;
  * @version $Revision: 734 $
  */
 public class CommandQueue {
-    private static Log log = LogFactory.getLog(CommandQueue.class);
+    private static Trace log = TraceFactory.getTrace(CommandQueue.class);
     private static AtomicInteger millisecondDelayBetweenOperations =
         new AtomicInteger((System.getProperty("selenium.slowMode")==null) 
             ? 0 : Integer.parseInt(System.getProperty("selenium.slowMode")));
@@ -143,17 +145,13 @@ public class CommandQueue {
             throw new IllegalStateException("unexpected result " + prevResult);
           }
         if (command.startsWith("wait")) {
-          if (log.isDebugEnabled()) {
-              log.debug("Page load beat the wait command.  Leave the result to be picked up below");
-          }
+          log.debug("Page load beat the wait command.  Leave the result to be picked up below");
         } else {
-          if (log.isDebugEnabled()) {
-            // In proxy injection mode, a single command could cause multiple pages to
-            // reload.  Each of these reloads causes a result.  This means that the usual one-to-one
-            // relationship between commands and results can go out of whack.  To avoid this, we
-            // discard results for which no thread is waiting:
-            log.debug("Apparently a page load result preceded the command; will ignore it...");
-          }
+          // In proxy injection mode, a single command could cause multiple pages to
+          // reload.  Each of these reloads causes a result.  This means that the usual one-to-one
+          // relationship between commands and results can go out of whack.  To avoid this, we
+          // discard results for which no thread is waiting:
+          log.debug("Apparently a page load result preceded the command; will ignore it...");
           resultHolder.poisonPollers(); // overwrite result
         }
       }
@@ -218,9 +216,7 @@ public class CommandQueue {
             // that a page reloads without having been explicitly asked to do so (e.g., an event 
             // in one frame causes reloads in others).
             if (commandResult.startsWith("OK")) {
-              if (log.isDebugEnabled()) {
-                log.debug("Saw page load no one was waiting for.");
-              }
+              log.debug("Saw page load no one was waiting for.");
               boolean putUnexpectedResult = resultHolder.putResult(commandResult);
               if (!putUnexpectedResult) {
                 throw new IllegalStateException(
@@ -264,9 +260,7 @@ public class CommandQueue {
             .append(queueId);
         String s = sb.toString();
         if (s.endsWith("null")) {
-            if (log.isDebugEnabled()) {
-                log.debug("caller identification came in ending with null");
-            }
+            log.debug("caller identification came in ending with null");
         }
         return s;
     }

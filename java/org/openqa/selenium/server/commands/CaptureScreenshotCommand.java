@@ -2,6 +2,8 @@ package org.openqa.selenium.server.commands;
 
 import org.apache.commons.logging.Log;
 import org.openqa.jetty.log.LogFactory;
+import org.openqa.selenium.internal.Trace;
+import org.openqa.selenium.internal.TraceFactory;
 import org.openqa.selenium.server.RobotRetriever;
 
 import javax.imageio.ImageIO;
@@ -21,7 +23,7 @@ import java.util.concurrent.TimeoutException;
 public class CaptureScreenshotCommand extends Command {
 
     public static final String ID = "captureScreenshot";
-    private static final Log LOGGER = LogFactory.getLog(CaptureScreenshotCommand.class);
+    private static final Trace LOGGER = TraceFactory.getTrace(CaptureScreenshotCommand.class);
 
     private final File file;
     

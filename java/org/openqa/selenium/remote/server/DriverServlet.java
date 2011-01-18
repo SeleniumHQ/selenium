@@ -386,6 +386,10 @@ public class DriverServlet extends HttpServlet {
       log("ERROR: " + message);
     }
 
+    public void debug(Throwable e) {
+      DriverServlet.this.log("DEBUG: ", e);
+    }
+
     public void debug(String message) {
       log("DEBUG: " + message);
     }

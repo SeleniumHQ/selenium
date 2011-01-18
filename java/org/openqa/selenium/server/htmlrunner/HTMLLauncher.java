@@ -6,6 +6,8 @@ package org.openqa.selenium.server.htmlrunner;
 
 import org.apache.commons.logging.Log;
 import org.openqa.jetty.log.LogFactory;
+import org.openqa.selenium.internal.Trace;
+import org.openqa.selenium.internal.TraceFactory;
 import org.openqa.selenium.net.Urls;
 import org.openqa.selenium.server.*;
 import org.openqa.selenium.server.BrowserSessionFactory.BrowserSessionInfo;
@@ -26,7 +28,7 @@ import java.io.IOException;
  */
 public class HTMLLauncher implements HTMLResultsListener {
 
-    static Log log = LogFactory.getLog(HTMLLauncher.class);
+    static Trace log = TraceFactory.getTrace(HTMLLauncher.class);
     private SeleniumServer remoteControl;
     private HTMLTestResults results;
 

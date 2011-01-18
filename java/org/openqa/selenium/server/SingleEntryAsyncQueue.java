@@ -24,6 +24,8 @@ import static java.lang.System.*;
 
 import org.apache.commons.logging.Log;
 import org.openqa.jetty.log.LogFactory;
+import org.openqa.selenium.internal.Trace;
+import org.openqa.selenium.internal.TraceFactory;
 
 /**
  * <p>Holds the command to be next run in the browser</p>
@@ -37,7 +39,7 @@ import org.openqa.jetty.log.LogFactory;
  */
 public class SingleEntryAsyncQueue<T> {
     public static final long MILLISECONDS = 1000L;
-    private static final Log logger = LogFactory.getLog(SingleEntryAsyncQueue.class);
+    private static final Trace logger = TraceFactory.getTrace(SingleEntryAsyncQueue.class);
     private final AtomicReference<T> poisonData;
     private final int timeoutInSeconds;
     private final ArrayBlockingQueue<T> holder;

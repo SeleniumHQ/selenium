@@ -38,6 +38,7 @@ import org.openqa.jetty.jetty.Server;
 import org.openqa.jetty.jetty.servlet.ServletHandler;
 import org.openqa.jetty.util.MultiException;
 import org.openqa.selenium.browserlaunchers.AsyncExecute;
+import org.openqa.selenium.internal.TraceFactory;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.browserlaunchers.WindowsProxyManager;
 import org.openqa.selenium.os.WindowsUtils;
@@ -202,6 +203,7 @@ public class SeleniumServer implements SslCertificateGenerator {
         ResourceExtractor.traceWith(new JettyLoggingTrace(ResourceExtractor.class));
         WindowsProxyManager.traceWith(new JettyLoggingTrace(WindowsProxyManager.class));
         WindowsUtils.traceWith(new JettyLoggingTrace(WindowsUtils.class));
+        TraceFactory.setGenerator(new JettyLoggingGenerator());
 
         System.setProperty("org.openqa.jetty.http.HttpRequest.maxFormContentSize", "0"); // default max is 200k; zero is infinite
         seleniumProxy = new SeleniumServer(slowResourceProperty(), configuration);
@@ -222,7 +224,7 @@ public class SeleniumServer implements SslCertificateGenerator {
 
     /**
      * Prepares a Jetty server with its HTTP handlers.
-     *                               p
+     *
      * @param slowResources should the webserver return static resources more slowly?
      *        (Note that this will not slow down ordinary RC test runs; this setting is used to debug Selenese HTML tests.)
      * @param configuration  Remote Control configuration. Cannot be null.

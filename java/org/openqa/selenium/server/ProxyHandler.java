@@ -57,6 +57,8 @@ import org.openqa.jetty.util.LogSupport;
 import org.openqa.jetty.util.StringMap;
 import org.openqa.jetty.util.URI;
 import org.openqa.selenium.browserlaunchers.LauncherUtils;
+import org.openqa.selenium.internal.Trace;
+import org.openqa.selenium.internal.TraceFactory;
 import org.openqa.selenium.server.browserlaunchers.ResourceExtractor;
 import org.openqa.selenium.server.commands.AddCustomRequestHeaderCommand;
 import org.openqa.selenium.server.commands.CaptureNetworkTrafficCommand;
@@ -74,7 +76,7 @@ import org.openqa.selenium.server.commands.CaptureNetworkTrafficCommand;
  * @version $Id: ProxyHandler.java,v 1.34 2005/10/05 13:32:59 gregwilkins Exp $
  */
 public class ProxyHandler extends AbstractHttpHandler {
-    private static Log log = LogFactory.getLog(ProxyHandler.class);
+    private static Trace log = TraceFactory.getTrace(ProxyHandler.class);
 
     protected Set<String> _proxyHostsWhiteList;
     protected Set<String> _proxyHostsBlackList;
@@ -302,7 +304,6 @@ public class ProxyHandler extends AbstractHttpHandler {
         }
         catch (Exception e) {
             log.debug("Could not proxy " + uri, e);
-            LogSupport.ignore(log, e);
             if (!response.isCommitted())
                 response.sendError(HttpResponse.__400_Bad_Request, "Could not proxy " + uri + "\n" + e);
         }
@@ -334,8 +335,7 @@ public class ProxyHandler extends AbstractHttpHandler {
         CaptureNetworkTrafficCommand.Entry entry = new CaptureNetworkTrafficCommand.Entry(request.getMethod(), url.toString());
         entry.addRequestHeaders(request);
 
-        if (log.isDebugEnabled())
-            log.debug("PROXY URL=" + url);
+        log.debug("PROXY URL=" + url);
 
         URLConnection connection = url.openConnection();
         connection.setAllowUserInteraction(false);
@@ -430,7 +430,8 @@ public class ProxyHandler extends AbstractHttpHandler {
             connection.connect();
         }
         catch (Exception e) {
-            LogSupport.ignore(log, e);
+            // TODO(simon): Whhhaaaat?
+            // LogSupport.ignore(log, e);
         }
 
         InputStream proxy_in = null;
@@ -449,9 +450,7 @@ public class ProxyHandler extends AbstractHttpHandler {
             response.setReason(http.getResponseMessage());
 
             String contentType = http.getContentType();
-            if (log.isDebugEnabled()) {
-                log.debug("Content-Type is: " + contentType);
-            }
+            log.debug("Content-Type is: " + contentType);
         }
 
         if (proxy_in == null) {
@@ -459,7 +458,8 @@ public class ProxyHandler extends AbstractHttpHandler {
                 proxy_in = connection.getInputStream();
             }
             catch (Exception e) {
-                LogSupport.ignore(log, e);
+                // TODO(simon): Whhaaattt?
+//                LogSupport.ignore(log, e);
                 proxy_in = http.getErrorStream();
             }
         }
@@ -566,9 +566,7 @@ public class ProxyHandler extends AbstractHttpHandler {
         URI uri = request.getURI();
 
         try {
-            if (log.isDebugEnabled()) {
-                log.debug("CONNECT: " + uri);
-            }
+            log.debug("CONNECT: " + uri);
             InetAddrPort addrPort;
             // When logging, we'll attempt to send messages to hosts that don't exist
             if (uri.toString().endsWith(".selenium.doesnotexist:443")) {
@@ -731,7 +729,7 @@ public class ProxyHandler extends AbstractHttpHandler {
                 Socket chain_socket = new Socket(chained_proxy_host, chained_proxy_port);
                 chain_socket.setSoTimeout(timeoutMS);
                 chain_socket.setTcpNoDelay(true);
-                if (log.isDebugEnabled()) log.debug("chain proxy socket=" + chain_socket);
+                log.debug("chain proxy socket=" + chain_socket);
 
                 LineInput line_in = new LineInput(chain_socket.getInputStream());
                 byte[] connect = request.toString().getBytes(org.openqa.jetty.util.StringUtil.__ISO_8859_1);

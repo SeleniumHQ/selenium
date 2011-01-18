@@ -35,6 +35,8 @@ import java.util.HashMap;
 import org.apache.commons.logging.Log;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.openqa.jetty.log.LogFactory;
+import org.openqa.selenium.internal.Trace;
+import org.openqa.selenium.internal.TraceFactory;
 
 /**
  * This is the main entry point into the Cybervillains CA.
@@ -60,7 +62,7 @@ import org.openqa.jetty.log.LogFactory;
  */
 public class KeyStoreManager {
 	
-    static Log log = LogFactory.getLog(KeyStoreManager.class);
+  static Trace log = TraceFactory.getTrace(KeyStoreManager.class);
 	private final String CERTMAP_SER_FILE = "certmap.ser";
 	private final String SUBJMAP_SER_FILE = "subjmap.ser";
 	
@@ -282,7 +284,7 @@ public class KeyStoreManager {
 				signingCert = CertificateCreator.createTypicalMasterCert(caKeypair);
 				
 				log.debug("Done generating signing cert");
-				log.debug(signingCert);
+				log.debug(String.valueOf(signingCert));
 				
 				_ks.load(null, _keystorepass);
 				
@@ -324,7 +326,7 @@ public class KeyStoreManager {
 		else
 		{
 			log.debug("Successfully loaded keystore.");
-			log.debug(_caCert);
+			log.debug(String.valueOf(_caCert));
 			
 		}
 		

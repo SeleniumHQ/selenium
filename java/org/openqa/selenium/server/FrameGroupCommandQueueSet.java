@@ -35,6 +35,8 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.commons.logging.Log;
 import org.openqa.jetty.log.LogFactory;
+import org.openqa.selenium.internal.Trace;
+import org.openqa.selenium.internal.TraceFactory;
 import org.openqa.selenium.net.Urls;
 
 
@@ -44,7 +46,7 @@ import org.openqa.selenium.net.Urls;
  * @author nelsons
  */
 public class FrameGroupCommandQueueSet {
-    private static final Log LOGGER = LogFactory.getLog(FrameGroupCommandQueueSet.class);
+    private static final Trace LOGGER = TraceFactory.getTrace(FrameGroupCommandQueueSet.class);
 
     static private final Map<String, FrameGroupCommandQueueSet> queueSets = new ConcurrentHashMap<String, FrameGroupCommandQueueSet>();
     static private Lock dataLock = new ReentrantLock(); //
@@ -249,16 +251,12 @@ public class FrameGroupCommandQueueSet {
     public CommandQueue getCommandQueue(String uniqueId) {
       CommandQueue q = uniqueIdToCommandQueue.get(uniqueId);
       if (q==null) {
-		if (LOGGER.isDebugEnabled()) {
-          LOGGER.debug("---------allocating new CommandQueue for " + uniqueId);
-        }            
-         
-		q = new CommandQueue(sessionId, uniqueId, millisecondDelayBetweenOperations.get(), configuration);
+        LOGGER.debug("---------allocating new CommandQueue for " + uniqueId);
+
+    		q = new CommandQueue(sessionId, uniqueId, millisecondDelayBetweenOperations.get(), configuration);
         uniqueIdToCommandQueue.put(uniqueId, q);
       } else {
-          if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("---------retrieving CommandQueue for " + uniqueId);
-          }
+        LOGGER.debug("---------retrieving CommandQueue for " + uniqueId);
       }
       return uniqueIdToCommandQueue.get(uniqueId);
     }
@@ -730,15 +728,11 @@ public class FrameGroupCommandQueueSet {
         dataLock.lock();
         try {       
           if (justLoaded) {
-            if (LOGGER.isDebugEnabled()) {
-              LOGGER.debug(frameAddress + " marked as just loaded");
-            }
+            LOGGER.debug(frameAddress + " marked as just loaded");
             frameAddressToJustLoaded.put(frameAddress, true);
           }
           else {
-            if (LOGGER.isDebugEnabled()) {
-              LOGGER.debug(frameAddress + " marked as NOT just loaded");
-            }
+            LOGGER.debug(frameAddress + " marked as NOT just loaded");
             frameAddressToJustLoaded.remove(frameAddress);
           }
           resultArrivedOnAnyQueue.signalAll();
@@ -757,9 +751,7 @@ public class FrameGroupCommandQueueSet {
       this.currentSeleniumWindowName = frameAddress.getWindowName();
       this.currentLocalFrameAddress = frameAddress.getLocalFrameAddress();
       markWhetherJustLoaded(uniqueId, false);
-      if (LOGGER.isDebugEnabled()) {
-        LOGGER.debug("Current uniqueId set to " + uniqueId + ", frameAddress = " + frameAddress);
-      }
+      LOGGER.debug("Current uniqueId set to " + uniqueId + ", frameAddress = " + frameAddress);
     }
 
     public static FrameAddress makeFrameAddress(String seleniumWindowName, String localFrameAddress) {
@@ -800,9 +792,7 @@ public class FrameGroupCommandQueueSet {
               continue;
             }
             if (frameAddress.getLocalFrameAddress().equals(DEFAULT_LOCAL_FRAME_ADDRESS)) {
-              if (LOGGER.isDebugEnabled()) {
-                  LOGGER.debug("Trying to close " + frameAddress);
-              }
+              LOGGER.debug("Trying to close " + frameAddress);
               try {
                   q.doCommandWithoutWaitingForAResponse("close", "", "");
               } catch (WindowClosedException e) {

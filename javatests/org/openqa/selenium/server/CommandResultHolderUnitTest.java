@@ -7,6 +7,8 @@ import java.util.logging.Logger;
 
 import org.apache.commons.logging.Log;
 import org.openqa.jetty.log.LogFactory;
+import org.openqa.selenium.internal.Trace;
+import org.openqa.selenium.internal.TraceFactory;
 import org.openqa.selenium.server.log.LoggingManager;
 import org.openqa.selenium.server.log.StdOutHandler;
 import org.openqa.selenium.server.log.TerseFormatter;
@@ -15,7 +17,7 @@ import org.openqa.selenium.testworker.TrackableThread;
 
 public class CommandResultHolderUnitTest extends TestCase {
 
-  private static Log log = LogFactory.getLog(CommandResultHolderUnitTest.class);
+  private static Trace log = TraceFactory.getTrace(CommandResultHolderUnitTest.class);
 
   private static final String sessionId = "1";
   private static final String testResult = "OK";

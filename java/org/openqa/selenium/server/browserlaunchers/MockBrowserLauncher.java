@@ -13,6 +13,8 @@ import java.net.URL;
 
 import org.apache.commons.logging.Log;
 import org.openqa.jetty.log.LogFactory;
+import org.openqa.selenium.internal.Trace;
+import org.openqa.selenium.internal.TraceFactory;
 import org.openqa.selenium.server.BrowserConfigurationOptions;
 import org.openqa.selenium.server.DefaultRemoteCommand;
 import org.openqa.selenium.server.RemoteCommand;
@@ -25,7 +27,7 @@ public class MockBrowserLauncher implements BrowserLauncher, Runnable {
     private static final String CHINESE_TEXT = "\u4E2D\u6587";
     private static final String KOREAN_TEXT = "\uC5F4\uC5D0";
     private static final String ROMANCE_TEXT = "\u00FC\u00F6\u00E4\u00DC\u00D6\u00C4 \u00E7\u00E8\u00E9 \u00BF\u00F1 \u00E8\u00E0\u00F9\u00F2";
-    static Log log = LogFactory.getLog(MockBrowserLauncher.class);
+    static Trace log = TraceFactory.getTrace(MockBrowserLauncher.class);
     private final String sessionId;
     private Thread browser;
     private boolean interrupted = false;

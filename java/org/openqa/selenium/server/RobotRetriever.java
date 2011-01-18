@@ -9,10 +9,12 @@ import java.util.concurrent.TimeoutException;
 
 import org.apache.commons.logging.Log;
 import org.openqa.jetty.log.LogFactory;
+import org.openqa.selenium.internal.Trace;
+import org.openqa.selenium.internal.TraceFactory;
 
 public class RobotRetriever {
 
-    private static final Log LOGGER = LogFactory.getLog(RobotRetriever.class);
+    private static final Trace LOGGER = TraceFactory.getTrace(RobotRetriever.class);
     private static Robot robot;
 
     private static class Retriever implements Callable<Robot> {

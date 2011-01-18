@@ -3,6 +3,8 @@ package org.openqa.selenium.server.browserlaunchers.locators;
 import org.apache.commons.logging.Log;
 import org.openqa.jetty.log.LogFactory;
 import org.openqa.selenium.browserlaunchers.LauncherUtils;
+import org.openqa.selenium.internal.Trace;
+import org.openqa.selenium.internal.TraceFactory;
 import org.openqa.selenium.os.WindowsUtils;
 import org.openqa.selenium.os.CommandLine;
 import org.openqa.selenium.server.browserlaunchers.*;
@@ -14,7 +16,7 @@ import java.io.File;
  */
 public abstract class SingleBrowserLocator implements BrowserLocator {
 
-    private static final Log LOGGER = LogFactory.getLog(BrowserLocator.class);
+    private static final Trace LOGGER = TraceFactory.getTrace(BrowserLocator.class);
 
     public BrowserInstallation findBrowserLocationOrFail() {
         final BrowserInstallation location;
@@ -30,9 +32,7 @@ public abstract class SingleBrowserLocator implements BrowserLocator {
     public BrowserInstallation findBrowserLocation() {
         final BrowserInstallation defaultPath;
 
-        if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Discovering " + browserName() + "...");
-        }
+        LOGGER.debug("Discovering " + browserName() + "...");
         defaultPath = findAtADefaultLocation();
         if (null != defaultPath) {
             return defaultPath;
@@ -139,9 +139,7 @@ public abstract class SingleBrowserLocator implements BrowserLocator {
         if (null == launcher) {
             return  null;
         }
-        if (LOGGER.isDebugEnabled()) {
-          LOGGER.debug("Checking whether " + browserName() + " launcher at :'" + launcher + "' is valid...");
-        }
+        LOGGER.debug("Checking whether " + browserName() + " launcher at :'" + launcher + "' is valid...");
         if (!launcher.exists()) {
             return null;
         }
@@ -150,9 +148,7 @@ public abstract class SingleBrowserLocator implements BrowserLocator {
             LOGGER.warn("Caution: '" + launcher.getAbsolutePath() +"': file is a script file, not a real executable.  The browser environment is no longer fully under RC control");
         }
 
-        if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Discovered valid " + browserName() + " launcher  : '" + launcher + "'");
-        }
+        LOGGER.debug("Discovered valid " + browserName() + " launcher  : '" + launcher + "'");
 
 
         return new BrowserInstallation(launcher.getAbsolutePath(), computeLibraryPath(launcher));
