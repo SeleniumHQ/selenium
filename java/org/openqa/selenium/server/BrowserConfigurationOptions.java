@@ -103,15 +103,6 @@ public class BrowserConfigurationOptions {
     }
   }
 
-  public boolean isCommandLineFlagsSet() {
-    String value = options.get("commandLineFlags");
-    if (value == null) {
-      return false;
-    } else {
-      return true;
-    }
-  }
-
   public String getCommandLineFlags() {
     return options.get("commandLineFlags");
   }
@@ -124,10 +115,6 @@ public class BrowserConfigurationOptions {
     return Integer.parseInt(value);
   }
 
-  public boolean isAvoidingProxy() {
-    return is(AVOIDING_PROXY);
-  }
-
   public void setAvoidProxy(boolean avoidProxy) {
     set(AVOIDING_PROXY, avoidProxy);
   }
@@ -136,28 +123,12 @@ public class BrowserConfigurationOptions {
     set(ONLY_PROXYING_SELENIUM_TRAFFIC, onlyProxySeleniumTraffic);
   }
 
-  public boolean isOnlyProxyingSeleniumTraffic() {
-    return is(ONLY_PROXYING_SELENIUM_TRAFFIC);
-  }
-
   public void setProxyEverything(boolean proxyEverything) {
     set(PROXYING_EVERYTHING, proxyEverything);
   }
 
-  public boolean isProxyingEverything() {
-    return is(PROXYING_EVERYTHING);
-  }
-
   public void setProxyRequired(boolean proxyRequired) {
     set("proxyRequired", proxyRequired);
-  }
-
-  public boolean isProxyRequired() {
-    return is("proxyRequired"); // || getProxyConfig() != null;
-  }
-
-  public boolean isEnsuringCleanSession() {
-    return is(ENSURING_CLEAN_SESSION);
   }
 
   public boolean is(String key) {
