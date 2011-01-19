@@ -156,15 +156,10 @@ public class HttpCommandExecutor implements CommandExecutor {
         .put(FIND_CHILD_ELEMENT, post("/session/:sessionId/element/:id/element"))
         .put(FIND_CHILD_ELEMENTS, post("/session/:sessionId/element/:id/elements"))
         .put(CLICK_ELEMENT, post("/session/:sessionId/element/:id/click"))
-        .put(DOUBLE_CLICK_ELEMENT, post("/session/:sessionId/element/:id/doubleclick"))
-        .put(CONTEXT_CLICK_ELEMENT, post("/session/:sessionId/element/:id/contextclick"))
-        .put(MOUSE_DOWN_ELEMENT, post("/session/:sessionId/element/:id/buttondown"))
-        .put(MOUSE_UP_ELEMENT, post("/session/:sessionId/element/:id/buttonup"))
         .put(CLEAR_ELEMENT, post("/session/:sessionId/element/:id/clear"))
         .put(SUBMIT_ELEMENT, post("/session/:sessionId/element/:id/submit"))
         .put(GET_ELEMENT_TEXT, get("/session/:sessionId/element/:id/text"))
         .put(SEND_KEYS_TO_ELEMENT, post("/session/:sessionId/element/:id/value"))
-        .put(SEND_MODIFIER_KEY_TO_ACTIVE_ELEMENT, post("/session/:sessionId/modifier"))
         .put(GET_ELEMENT_VALUE, get("/session/:sessionId/element/:id/value"))
         .put(GET_ELEMENT_TAG_NAME, get("/session/:sessionId/element/:id/name"))
         .put(IS_ELEMENT_SELECTED, get("/session/:sessionId/element/:id/selected"))
@@ -173,7 +168,6 @@ public class HttpCommandExecutor implements CommandExecutor {
         .put(IS_ELEMENT_ENABLED, get("/session/:sessionId/element/:id/enabled"))
         .put(IS_ELEMENT_DISPLAYED, get("/session/:sessionId/element/:id/displayed"))
         .put(HOVER_OVER_ELEMENT, post("/session/:sessionId/element/:id/hover"))
-        .put(MOVE_TO_ELEMENT, post("/session/:sessionId/element/:id/movehere"))
         .put(GET_ELEMENT_LOCATION, get("/session/:sessionId/element/:id/location"))
         .put(GET_ELEMENT_LOCATION_ONCE_SCROLLED_INTO_VIEW,
             get("/session/:sessionId/element/:id/location_in_view"))
@@ -218,6 +212,15 @@ public class HttpCommandExecutor implements CommandExecutor {
         
         .put(GET_SCREEN_ORIENTATION, get("/session/:sessionId/orientation"))
         .put(SET_SCREEN_ORIENTATION, post("/session/:sessionId/orientation"))
+
+        // Interactions-related commands.
+        .put(CLICK, post("/session/:sessionId/click"))
+        .put(DOUBLE_CLICK, post("/session/:sessionId/doubleclick"))
+        .put(MOUSE_DOWN, post("/session/:sessionId/buttondown"))
+        .put(MOUSE_UP, post("/session/:sessionId/buttonup"))
+        .put(MOVE_TO, post("/session/:sessionId/moveto"))
+        .put(SEND_MODIFIER_KEY_TO_ACTIVE_ELEMENT, post("/session/:sessionId/modifier"))
+
         .build();
   }
 

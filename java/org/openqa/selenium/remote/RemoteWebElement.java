@@ -55,29 +55,8 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
   }
 
   public void click() {
-    mouse.click(id);
+    execute(DriverCommand.CLICK_ELEMENT, ImmutableMap.of("id", id));
   }
-
-  public void doubleClick() {
-    mouse.doubleClick(id);
-  }
-
-  public void contextClick() {
-    mouse.contextClick(id); 
-  }
-
-  public void mouseDown() {
-    mouse.mouseDown(id);
-  }
-
-  public void mouseUp() {
-    mouse.mouseUp(id);
-  }
-
-  public void moveToHere() {
-    mouse.mouseMove(id);    
-  }
-
 
   public void submit() {
     execute(DriverCommand.SUBMIT_ELEMENT, ImmutableMap.of("id", id));

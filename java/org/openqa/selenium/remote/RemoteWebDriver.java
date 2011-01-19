@@ -610,86 +610,67 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
   }
 
   public class RemoteMouse implements Mouse {
+    private Map<String, Object> paramsFromCoordinates(Coordinates where) {
+      Map<String, Object> params = Maps.newHashMap();
 
-    public void click(WebElement onElement) {
-      onElement.click();
+      if (where != null) {
+        String id = (String) where.getAuxiliry();
+        params.put("element", id);
+      }
+
+      return params;
     }
 
-    public void click(String id) {
-      execute(DriverCommand.CLICK_ELEMENT, ImmutableMap.of("id", id));
-    }
-
-    public void doubleClick(WebElement onElement) {
-      ((RemoteWebElement) onElement).doubleClick();
-    }
-
-    public void doubleClick(String id) {
-      execute(DriverCommand.DOUBLE_CLICK_ELEMENT, ImmutableMap.of("id", id));
-    }
-
-    public void contextClick(WebElement onElement) {
-      ((RemoteWebElement) onElement).contextClick();
-    }
-
-    public void contextClick(String id) {
-      execute(DriverCommand.CONTEXT_CLICK_ELEMENT, ImmutableMap.of("id", id));
-    }
-
-    public void mouseDown(WebElement onElement) {
-      ((RemoteWebElement) onElement).mouseDown();
-    }
-
-    public void mouseDown(String id) {
-      execute(DriverCommand.MOUSE_DOWN_ELEMENT, ImmutableMap.of("id", id));
-    }
-
-    public void mouseUp(WebElement onElement) {
-      ((RemoteWebElement) onElement).mouseUp();
-    }
-
-    public void mouseUp(String id) {
-      execute(DriverCommand.MOUSE_UP_ELEMENT, ImmutableMap.of("id", id));
-    }
-
-    public void mouseMove(WebElement toElement) {
-      ((RemoteWebElement) toElement).moveToHere();
-    }
-
-    public void mouseMove(String id) {
-      execute(DriverCommand.MOVE_TO_ELEMENT, ImmutableMap.of("id", id));
-    }
-
-    public void mouseMove(WebElement toElement, long xOffset, long yOffset) {
-      throw new UnsupportedOperationException("Not supported yet.");
+    private void moveIfNeeded(Coordinates where) {
+      if (where != null) {
+        mouseMove(where);
+      }
     }
 
     public void click(Coordinates where) {
-      //To change body of implemented methods use File | Settings | File Templates.
-    }
+      moveIfNeeded(where);
 
-    public void doubleClick(Coordinates where) {
-      //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    public void mouseDown(Coordinates where) {
-      //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    public void mouseUp(Coordinates where) {
-      //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    public void mouseMove(Coordinates where) {
-      //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    public void mouseMove(Coordinates where, long xOffset, long yOffset) {
-      //To change body of implemented methods use File | Settings | File Templates.
+      execute(DriverCommand.CLICK_ELEMENT, ImmutableMap.of("button", 0));
     }
 
     public void contextClick(Coordinates where) {
-      //To change body of implemented methods use File | Settings | File Templates.
+      moveIfNeeded(where);
+
+      execute(DriverCommand.CLICK_ELEMENT, ImmutableMap.of("button", 2));
     }
+
+    public void doubleClick(Coordinates where) {
+      moveIfNeeded(where);
+
+      execute(DriverCommand.DOUBLE_CLICK);
+    }
+
+    public void mouseDown(Coordinates where) {
+      moveIfNeeded(where);
+
+      execute(DriverCommand.MOUSE_DOWN);
+    }
+
+    public void mouseUp(Coordinates where) {
+      moveIfNeeded(where);
+
+      execute(DriverCommand.MOUSE_UP);
+    }
+
+    public void mouseMove(Coordinates where) {
+      Map<String, Object> moveParams = paramsFromCoordinates(where);
+
+      execute(DriverCommand.MOVE_TO, moveParams);
+    }
+
+    public void mouseMove(Coordinates where, long xOffset, long yOffset) {
+      Map<String, Object> moveParams = paramsFromCoordinates(where);
+      moveParams.put("xoffset", xOffset);
+      moveParams.put("yoffset", yOffset);
+
+      execute(DriverCommand.MOVE_TO, moveParams);
+    }
+
   }
 
 }

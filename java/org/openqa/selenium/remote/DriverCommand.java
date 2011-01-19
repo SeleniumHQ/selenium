@@ -47,12 +47,7 @@ public interface DriverCommand {
 
   String CLEAR_ELEMENT = "clearElement";
   String CLICK_ELEMENT = "clickElement";
-  String DOUBLE_CLICK_ELEMENT = "doubleClickElement";
-  String CONTEXT_CLICK_ELEMENT = "contextClickElement";  
-  String MOUSE_DOWN_ELEMENT = "mouseButtonDownElement";
-  String MOUSE_UP_ELEMENT = "mouseButtonUpElement";
   String HOVER_OVER_ELEMENT = "hoverOverElement";
-  String MOVE_TO_ELEMENT = "moveToElement";
   String SEND_KEYS_TO_ELEMENT = "sendKeysToElement";
   String SEND_MODIFIER_KEY_TO_ACTIVE_ELEMENT = "sendModifierKeyToActiveElement";
   String SUBMIT_ELEMENT = "submitElement";
@@ -127,4 +122,13 @@ public interface DriverCommand {
   
   String SET_SCREEN_ORIENTATION = "setScreenOrientation";
   String GET_SCREEN_ORIENTATION = "getScreenOrientation";
+
+  // These belong to the Advanced user interactions - an element is
+  // optional for these commands.
+  String CLICK = "mouseClick";
+  String DOUBLE_CLICK = "mouseDoubleClick";
+  String MOUSE_DOWN = "mouseButtonDown";
+  String MOUSE_UP = "mouseButtonUp";
+  String MOVE_TO = "mouseMoveTo";
+  String SEND_KEYS_TO_SESSION = "sendKeys";
 }
