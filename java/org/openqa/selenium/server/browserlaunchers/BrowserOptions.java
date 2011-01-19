@@ -20,6 +20,8 @@ package org.openqa.selenium.server.browserlaunchers;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
+import java.util.concurrent.TimeUnit;
+
 public class BrowserOptions {
   private BrowserOptions() {
     // Utility class
@@ -27,5 +29,26 @@ public class BrowserOptions {
 
   public static boolean isSingleWindow(Capabilities capabilities) {
     return capabilities.is("singleWindow");
+  }
+
+  public static String getExecutablePath(Capabilities capabilities) {
+    return (String) capabilities.getCapability("executablePath");
+  }
+
+  public static String getProfile(Capabilities capabilities) {
+    return (String) capabilities.getCapability("profile");
+  }
+
+  public static String getCommandLineFlags(Capabilities capabilities) {
+    return (String) capabilities.getCapability("commandLineFlags");
+  }
+
+  public static long getTimeoutInSeconds(Capabilities capabilities) {
+    String value = (String) capabilities.getCapability("timeoutInSeconds");
+    if (value == null) {
+      return TimeUnit.MINUTES.toSeconds(30);
+    }
+
+    return Long.parseLong(value);
   }
 }

@@ -48,16 +48,17 @@ public abstract class AbstractBrowserLauncher implements BrowserLauncher {
     return configuration.getPortDriversShouldContact();
   }
 
-  protected int getTimeout() {
+  protected long getTimeout() {
     if (browserConfigurationOptions.isTimeoutSet()) {
-      return browserConfigurationOptions.getTimeoutInSeconds();
+      return BrowserOptions.getTimeoutInSeconds(browserConfigurationOptions.asCapabilities());
     } else {
       return configuration.getTimeoutInSeconds();
     }
   }
 
   protected String getCommandLineFlags() {
-    String cmdLineFlags = browserConfigurationOptions.getCommandLineFlags();
+    String cmdLineFlags = BrowserOptions
+        .getCommandLineFlags(browserConfigurationOptions.asCapabilities());
     if (cmdLineFlags != null) {
       return cmdLineFlags;
     } else {

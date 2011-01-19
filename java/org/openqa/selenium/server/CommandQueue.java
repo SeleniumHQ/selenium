@@ -39,7 +39,7 @@ public class CommandQueue {
             ? 0 : Integer.parseInt(System.getProperty("selenium.slowMode")));
     private static AtomicInteger idGenerator = new AtomicInteger(0);
     
-    private final AtomicInteger defaultTimeout;
+    private final AtomicLong defaultTimeout;
     private static AtomicInteger retryTimeout = new AtomicInteger(10);;
 
     private final BrowserResponseSequencer browserResponseSequencer;
@@ -66,7 +66,7 @@ public class CommandQueue {
             = new ConcurrentHashMap<String, Boolean>();
         idGenerator.incrementAndGet();
         commandHolder = new CommandHolder(uniqueId, retryTimeout.get());
-        defaultTimeout = new AtomicInteger(configuration.getTimeoutInSeconds());
+        defaultTimeout = new AtomicLong(configuration.getTimeoutInSeconds());
         retryTimeout.set(configuration.getRetryTimeoutInSeconds());
 
         resultHolder = new CommandResultHolder(uniqueId, defaultTimeout.get());

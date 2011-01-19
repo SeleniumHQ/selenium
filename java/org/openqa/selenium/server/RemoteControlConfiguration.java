@@ -46,7 +46,7 @@ public class RemoteControlConfiguration {
     private String logOutFileName;
     private String forcedBrowserMode;
     private boolean honorSystemProxy;
-    private int timeoutInSeconds;
+    private long timeoutInSeconds;
     private int retryTimeoutInSeconds;
     /** useful for situations where Selenium is being invoked programatically and the outside container wants to own logging */
     private boolean dontTouchLogging = false;
@@ -268,7 +268,7 @@ public class RemoteControlConfiguration {
         return !honorSystemProxy;
     }
 
-    public int getTimeoutInSeconds() {
+    public long getTimeoutInSeconds() {
         return timeoutInSeconds;
     }
 

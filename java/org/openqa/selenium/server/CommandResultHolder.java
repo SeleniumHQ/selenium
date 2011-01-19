@@ -38,7 +38,7 @@ public class CommandResultHolder {
 	private final String queueId;
 	private final SingleEntryAsyncQueue<String> holder;
     
-    public CommandResultHolder(String queueId, int timeoutInSeconds) {
+    public CommandResultHolder(String queueId, long timeoutInSeconds) {
       holder = new SingleEntryAsyncQueue<String>(timeoutInSeconds);
       holder.setPoison(poisonResult);
       this.queueId = queueId;

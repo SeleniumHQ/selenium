@@ -47,7 +47,7 @@ public class HTMLLauncher implements HTMLResultsListener {
      * @return PASS or FAIL
      * @throws IOException if we can't write the output file
      */
-    public String runHTMLSuite(String browser, String browserURL, String suiteURL, File outputFile, int timeoutInSeconds, boolean multiWindow) throws IOException {
+    public String runHTMLSuite(String browser, String browserURL, String suiteURL, File outputFile, long timeoutInSeconds, boolean multiWindow) throws IOException {
         return runHTMLSuite(browser, browserURL, suiteURL, outputFile,
                 timeoutInSeconds, multiWindow, "info");
     }
@@ -89,7 +89,7 @@ public class HTMLLauncher implements HTMLResultsListener {
      * @return PASS or FAIL
      * @throws IOException if we can't write the output file
      */
-    private String runHTMLSuite(String browser, String browserURL, String suiteURL, File outputFile, int timeoutInSeconds, boolean multiWindow, String defaultLogLevel) throws IOException {
+    private String runHTMLSuite(String browser, String browserURL, String suiteURL, File outputFile, long timeoutInSeconds, boolean multiWindow, String defaultLogLevel) throws IOException {
         outputFile.createNewFile();
         if (!outputFile.canWrite()) {
         	throw new IOException("Can't write to outputFile: " + outputFile.getAbsolutePath());
@@ -148,7 +148,7 @@ public class HTMLLauncher implements HTMLResultsListener {
      * @return PASSED or FAIL
      * @throws IOException if we can't write the output file
      */
-    public String runHTMLSuite(String browser, String browserURL, File suiteFile, File outputFile, int timeoutInSeconds, boolean multiWindow) throws IOException {
+    public String runHTMLSuite(String browser, String browserURL, File suiteFile, File outputFile, long timeoutInSeconds, boolean multiWindow) throws IOException {
         if (browser == null) throw new IllegalArgumentException("browser may not be null");
         if (!suiteFile.exists()) {
     		throw new IOException("Can't find HTML Suite file:" + suiteFile.getAbsolutePath());

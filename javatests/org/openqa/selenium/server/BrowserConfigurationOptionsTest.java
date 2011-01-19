@@ -4,6 +4,7 @@ package org.openqa.selenium.server;
 import junit.framework.TestCase;
 
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.server.browserlaunchers.BrowserOptions;
 
 import static org.openqa.selenium.browserlaunchers.CapabilityType.ForSeleniumServer.AVOIDING_PROXY;
 
@@ -15,26 +16,26 @@ public class BrowserConfigurationOptionsTest extends TestCase {
 
   public void testInitializationWithGoodSingleOption() {
     BrowserConfigurationOptions options = new BrowserConfigurationOptions("profile=foo");
-    assertEquals("foo", options.getProfile());
+    assertEquals("foo", BrowserOptions.getProfile(options.asCapabilities()));
     assertTrue(options.hasOptions());
   }
 
   public void testInitializationWithGoodSingleOptionAndWhitespace() {
     BrowserConfigurationOptions options = new BrowserConfigurationOptions("profile= foo bar");
-    assertEquals("foo bar", options.getProfile());
+    assertEquals("foo bar", BrowserOptions.getProfile(options.asCapabilities()));
     assertTrue(options.hasOptions());
   }
 
   public void testInitializationWithBadSingleOption() {
     BrowserConfigurationOptions options = new BrowserConfigurationOptions("profile_foo");
-    assertNull(options.getProfile());
+    assertNull(BrowserOptions.getProfile(options.asCapabilities()));
     assertFalse(options.hasOptions());
   }
 
   public void testInitializationWithGoodOptionsAndWhitespace() {
     BrowserConfigurationOptions options =
         new BrowserConfigurationOptions("profile=foo ; unknown=bar");
-    assertEquals("foo", options.getProfile());
+    assertEquals("foo", BrowserOptions.getProfile(options.asCapabilities()));
     assertTrue(options.hasOptions());
   }
 

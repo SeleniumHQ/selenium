@@ -245,7 +245,7 @@ public class LauncherUtils {
 
   // TODO(simon): Reduce visibility
   public static void generatePacAndPrefJs(File customProfileDir, int port, String homePage,
-      boolean changeMaxConnections, int timeoutInSeconds, Capabilities capabilities)
+      boolean changeMaxConnections, long timeoutInSeconds, Capabilities capabilities)
       throws FileNotFoundException {
 
 

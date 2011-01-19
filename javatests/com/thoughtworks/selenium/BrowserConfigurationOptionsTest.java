@@ -104,8 +104,8 @@ public class BrowserConfigurationOptionsTest extends TestCase {
 			.setBrowserExecutablePath(execPath);
 		org.openqa.selenium.server.BrowserConfigurationOptions serverOptions =
 			new org.openqa.selenium.server.BrowserConfigurationOptions(bco.toString());
-		assertEquals(profile, serverOptions.getProfile());
-		assertEquals(execPath, serverOptions.getExecutablePath());
+    assertEquals(profile, BrowserOptions.getProfile(serverOptions.asCapabilities()));
+    assertEquals(execPath, BrowserOptions.getExecutablePath(serverOptions.asCapabilities()));
 		assertTrue(BrowserOptions.isSingleWindow(serverOptions.asCapabilities()));
 	}
 	

@@ -26,6 +26,7 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.browserlaunchers.DoNotUseProxyPac;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.JsonToBeanConverter;
+import org.openqa.selenium.server.browserlaunchers.BrowserOptions;
 
 import static org.openqa.selenium.browserlaunchers.CapabilityType.ForSeleniumServer.AVOIDING_PROXY;
 import static org.openqa.selenium.browserlaunchers.CapabilityType.ForSeleniumServer.ENSURING_CLEAN_SESSION;
@@ -72,10 +73,6 @@ public class BrowserConfigurationOptions {
     return sb.toString();
   }
 
-  public String getProfile() {
-    return options.get("profile");
-  }
-
   public boolean hasOptions() {
     return hasOptions;
   }
@@ -83,10 +80,6 @@ public class BrowserConfigurationOptions {
   public void setSingleWindow(Boolean singleWindow) {
     options.put("singleWindow", singleWindow.toString());
     hasOptions = true;
-  }
-
-  public String getExecutablePath() {
-    return options.get("executablePath");
   }
 
   public void setExecutablePath(String executablePath) {
@@ -101,18 +94,6 @@ public class BrowserConfigurationOptions {
     } else {
       return true;
     }
-  }
-
-  public String getCommandLineFlags() {
-    return options.get("commandLineFlags");
-  }
-
-  public int getTimeoutInSeconds() {
-    String value = options.get("timeoutInSeconds");
-    if (value == null) {
-      return RemoteControlConfiguration.DEFAULT_TIMEOUT_IN_SECONDS;
-    }
-    return Integer.parseInt(value);
   }
 
   public void setAvoidProxy(boolean avoidProxy) {

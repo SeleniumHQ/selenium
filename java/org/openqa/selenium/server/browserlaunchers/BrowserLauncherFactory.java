@@ -16,8 +16,6 @@
  */
 package org.openqa.selenium.server.browserlaunchers;
 
-import org.apache.commons.logging.Log;
-import org.openqa.jetty.log.LogFactory;
 import org.openqa.selenium.internal.Trace;
 import org.openqa.selenium.internal.TraceFactory;
 import org.openqa.selenium.server.BrowserConfigurationOptions;
@@ -83,7 +81,7 @@ public class BrowserLauncherFactory {
     }
     String executablePath = null;
     if (browserOptions.hasOptions()) {
-      executablePath = browserOptions.getExecutablePath();
+      executablePath = BrowserOptions.getExecutablePath(browserOptions.asCapabilities());
     } else {
       configuration.copySettingsIntoBrowserOptions(browserOptions);
     }

@@ -17,15 +17,14 @@
 
 package org.openqa.selenium.server;
 
+import static java.lang.System.currentTimeMillis;
+
+import org.openqa.selenium.internal.Trace;
+import org.openqa.selenium.internal.TraceFactory;
+
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
-import static java.lang.System.*;
-
-import org.apache.commons.logging.Log;
-import org.openqa.jetty.log.LogFactory;
-import org.openqa.selenium.internal.Trace;
-import org.openqa.selenium.internal.TraceFactory;
 
 /**
  * <p>Holds the command to be next run in the browser</p>
@@ -41,16 +40,16 @@ public class SingleEntryAsyncQueue<T> {
     public static final long MILLISECONDS = 1000L;
     private static final Trace logger = TraceFactory.getTrace(SingleEntryAsyncQueue.class);
     private final AtomicReference<T> poisonData;
-    private final int timeoutInSeconds;
+    private final long timeoutInSeconds;
     private final ArrayBlockingQueue<T> holder;
 
-    public SingleEntryAsyncQueue(int timeoutInSecs) {
+    public SingleEntryAsyncQueue(long timeoutInSecs) {
         timeoutInSeconds = timeoutInSecs;
         holder = new ArrayBlockingQueue<T>(1);
         poisonData = new AtomicReference<T>();
     }
 
-    public int getTimeoutInSeconds() {
+    public long getTimeoutInSeconds() {
         return timeoutInSeconds;
     }
 
