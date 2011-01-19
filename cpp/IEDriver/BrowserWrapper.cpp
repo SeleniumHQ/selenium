@@ -582,6 +582,15 @@ int BrowserWrapper::SetFocusedFrameByIndex(int frame_index) {
 }
 
 HWND BrowserWrapper::GetWindowHandle() {
+	// If, for some reason, the window handle is no longer valid,
+	// set the member variable to NULL so that we can reacquire
+	// the valid window handle. Note that this can happen when
+	// browsing from one type of content to another, like from
+	// HTML to a transformed XML page that renders content.
+	if (!::IsWindow(this->window_handle_)) {
+		this->window_handle_ = NULL;
+	}
+
 	if (this->window_handle_ == NULL) {
 		this->window_handle_ = this->factory_->GetTabWindowHandle(this->browser_);
 	}

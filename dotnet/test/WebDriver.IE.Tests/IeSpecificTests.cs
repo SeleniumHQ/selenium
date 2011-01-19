@@ -1,5 +1,7 @@
 using NUnit.Framework;
 using OpenQA.Selenium.IE;
+using System;
+using OpenQA.Selenium.Environment;
 
 namespace OpenQA.Selenium.IE
 {
@@ -31,6 +33,22 @@ namespace OpenQA.Selenium.IE
 
             // We only need to quit the second driver if the test passes
             secondDriver.Quit();
+        }
+
+        [Test]
+        public void ShouldBeAbleToBrowseTransformedXml()
+        {
+            driver.Url = xhtmlTestPage;
+            driver.FindElement(By.Id("linkId")).Click();
+
+            // Using transformed XML (Issue 1203)
+            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("transformable.xml");
+            driver.FindElement(By.Id("x")).Click();
+            Assert.AreEqual("XHTML Test Page", driver.Title);
+
+            // Act on the result page to make sure the window handling is still valid.
+            driver.FindElement(By.Id("linkId")).Click();
+            Assert.AreEqual("We Arrive Here", driver.Title);
         }
     }
 }
