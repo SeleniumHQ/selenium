@@ -17,6 +17,8 @@ limitations under the License.
 
 package org.openqa.selenium.htmlunit;
 
+import com.google.common.base.Preconditions;
+
 import java.io.IOException;
 
 import com.gargoylesoftware.htmlunit.ScriptException;
@@ -26,6 +28,7 @@ import com.gargoylesoftware.htmlunit.javascript.host.MouseEvent;
 import org.openqa.selenium.Mouse;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.InvalidCoordinatesException;
 import org.openqa.selenium.internal.Locatable;
 import org.openqa.selenium.interactions.internal.Coordinates;
 
@@ -43,8 +46,22 @@ public class HtmlUnitMouse implements Mouse {
     this.keyboard = keyboard;
   }
 
+  private HtmlElement getElementForOperation(Coordinates potentialCoordinates) {
+    if (potentialCoordinates != null) {
+      return (HtmlElement) potentialCoordinates.getAuxiliry();
+    }
+
+    if (currentActiveElement == null) {
+      throw new InvalidCoordinatesException("About to perform an interaction that relies"
+          + " on the active element, but there isn't one.");
+    }
+
+    return currentActiveElement;
+  }
+
+
   public void click(Coordinates elementCoordinates) {
-    HtmlElement element = (HtmlElement) elementCoordinates.getAuxiliry();
+    HtmlElement element = getElementForOperation(elementCoordinates);
 
     moveOutIfNeeded(element);
 
@@ -99,7 +116,7 @@ public class HtmlUnitMouse implements Mouse {
   }
 
   public void doubleClick(Coordinates elementCoordinates) {
-    HtmlElement element = (HtmlElement) elementCoordinates.getAuxiliry();
+    HtmlElement element = getElementForOperation(elementCoordinates);
 
     moveOutIfNeeded(element);
 
@@ -115,7 +132,7 @@ public class HtmlUnitMouse implements Mouse {
   }
 
   public void contextClick(Coordinates elementCoordinates) {
-    HtmlElement element = (HtmlElement) elementCoordinates.getAuxiliry();
+    HtmlElement element = getElementForOperation(elementCoordinates);
 
     moveOutIfNeeded(element);
 
@@ -126,7 +143,7 @@ public class HtmlUnitMouse implements Mouse {
   }
 
   public void mouseDown(Coordinates elementCoordinates) {
-    HtmlElement element = (HtmlElement) elementCoordinates.getAuxiliry();
+    HtmlElement element = getElementForOperation(elementCoordinates);
 
     moveOutIfNeeded(element);
 
@@ -138,7 +155,7 @@ public class HtmlUnitMouse implements Mouse {
   }
 
   public void mouseUp(Coordinates elementCoordinates) {
-    HtmlElement element = (HtmlElement) elementCoordinates.getAuxiliry();
+    HtmlElement element = getElementForOperation(elementCoordinates);
 
     moveOutIfNeeded(element);
 
@@ -150,8 +167,12 @@ public class HtmlUnitMouse implements Mouse {
   }
 
   public void mouseMove(Coordinates elementCoordinates) {
+    Preconditions.checkNotNull(elementCoordinates);
     HtmlElement element = (HtmlElement) elementCoordinates.getAuxiliry();
-    mouseMove(element);
+
+    moveOutIfNeeded(element);
+
+    updateActiveElement(element);
   }
 
   private void mouseMove(HtmlElement element) {

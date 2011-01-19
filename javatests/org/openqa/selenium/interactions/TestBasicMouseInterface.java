@@ -164,4 +164,43 @@ public class TestBasicMouseInterface extends AbstractDriverTestCase {
     assertEquals("Value should change to ContextClicked.", "ContextClicked",
         toContextClick.getValue());
   }
+
+  @JavascriptEnabled
+  @Ignore({ANDROID, IE, FIREFOX, REMOTE, IPHONE, CHROME, SELENESE})
+  public void testMoveAndClick() {
+    driver.get(pages.javascriptPage);
+
+    WebElement toClick = driver.findElement(By.id("clickField"));
+
+    Action contextClick = getBuilder(driver).moveToElement(toClick).click().build();
+
+    contextClick.perform();
+    assertEquals("Value should change to Clicked.", "Clicked",
+        toClick.getValue());
+  }
+
+  @JavascriptEnabled
+  @Ignore({ANDROID, IE, FIREFOX, REMOTE, IPHONE, CHROME, SELENESE})
+  public void testCannotMoveToANullLocator() {
+    driver.get(pages.javascriptPage);
+
+    try {
+      Action contextClick = getBuilder(driver).moveToElement(null).build();
+      
+      contextClick.perform();
+      fail("Shouldn't be allowed to click on null element.");
+    } catch (IllegalArgumentException expected) {
+      // Expected.
+    }
+
+    try {
+      getBuilder(driver).click().build().perform();
+      fail("Shouldn't be allowed to click without a context.");
+    } catch (InvalidCoordinatesException expected) {
+      // expected
+    }
+
+  }
+
+
 }

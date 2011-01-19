@@ -152,8 +152,7 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
     // Now put us on the home page, like a real browser
     get(webClient.getHomePage());
     gotPage = false;
-    keyboard = new HtmlUnitKeyboard(this);
-    mouse = new HtmlUnitMouse(this, keyboard);
+    resetKeyboardAndMouseState();
   }
 
   public HtmlUnitDriver() {
@@ -304,6 +303,12 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
 
     gotPage = true;
     pickWindow();
+    resetKeyboardAndMouseState();
+  }
+
+  private void resetKeyboardAndMouseState() {
+    keyboard = new HtmlUnitKeyboard(this);
+    mouse = new HtmlUnitMouse(this, keyboard);  
   }
 
   protected void pickWindow() {
