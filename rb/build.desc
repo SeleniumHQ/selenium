@@ -19,7 +19,7 @@ rubygem(
     { "ffi"          : "~> 0.6.3" }
   ],
   devdeps = [
-    { "rspec"       : "1.3.0"    },
+    { "rspec"       : "~> 2.0"   },
     { "rack"        : "~> 1.0"   },
     { "ci_reporter" : "~> 1.6.2" }
   ],
