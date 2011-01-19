@@ -26,7 +26,7 @@ public abstract class AbstractBrowserLauncher implements BrowserLauncher {
 
   public void launchHTMLSuite(String suiteUrl, String browserURL) {
     launch(LauncherUtils.getDefaultHTMLSuiteUrl(browserURL, suiteUrl,
-        (!browserConfigurationOptions.isSingleWindow()), 0));
+        (!BrowserOptions.isSingleWindow(browserConfigurationOptions.asCapabilities())), 0));
   }
 
   public void launchRemoteSession(String browserURL) {
@@ -35,7 +35,7 @@ public abstract class AbstractBrowserLauncher implements BrowserLauncher {
       configuration.getSslCertificateGenerator().generateSSLCertsForLoggingHosts();
     }
     launch(LauncherUtils.getDefaultRemoteSessionUrl(browserURL, sessionId,
-        (!browserConfigurationOptions.isSingleWindow()), 0, browserSideLog));
+        (!BrowserOptions.isSingleWindow(browserConfigurationOptions.asCapabilities())), 0, browserSideLog));
   }
 
   protected abstract void launch(String url);

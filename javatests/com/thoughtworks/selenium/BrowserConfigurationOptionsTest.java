@@ -2,6 +2,8 @@ package com.thoughtworks.selenium;
 
 import junit.framework.TestCase;
 
+import org.openqa.selenium.server.browserlaunchers.BrowserOptions;
+
 public class BrowserConfigurationOptionsTest extends TestCase {
 
 	public void testCanUseWithValidArg() {
@@ -104,7 +106,7 @@ public class BrowserConfigurationOptionsTest extends TestCase {
 			new org.openqa.selenium.server.BrowserConfigurationOptions(bco.toString());
 		assertEquals(profile, serverOptions.getProfile());
 		assertEquals(execPath, serverOptions.getExecutablePath());
-		assertTrue(serverOptions.isSingleWindow());
+		assertTrue(BrowserOptions.isSingleWindow(serverOptions.asCapabilities()));
 	}
 	
 }

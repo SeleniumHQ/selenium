@@ -9,8 +9,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import org.apache.commons.logging.Log;
-import org.openqa.jetty.log.LogFactory;
 import org.openqa.selenium.browserlaunchers.AsyncExecute;
 import org.openqa.selenium.browserlaunchers.LauncherUtils;
 import org.openqa.selenium.internal.Trace;
@@ -150,7 +148,7 @@ public class HTABrowserLauncher implements BrowserLauncher {
     }
 
     public void launchHTMLSuite(String suiteUrl, String browserURL) {
-        launch(LauncherUtils.getDefaultHTMLSuiteUrl(browserURL, suiteUrl, (!browserOptions.isSingleWindow()), getPort()), "TestRunner.hta");
+        launch(LauncherUtils.getDefaultHTMLSuiteUrl(browserURL, suiteUrl, (!BrowserOptions.isSingleWindow(browserOptions.asCapabilities())), getPort()), "TestRunner.hta");
     }
 
     private int getPort() {
@@ -161,7 +159,7 @@ public class HTABrowserLauncher implements BrowserLauncher {
      * Note that the browserConfigurationOptions object is ignored; This browser configuration is not supported for IE
      */
     public void launchRemoteSession(String url) {
-        launch(LauncherUtils.getDefaultRemoteSessionUrl(url, sessionId, (!browserOptions.isSingleWindow()), getPort(), browserOptions.is("browserSideLog")), "RemoteRunner.hta");
+        launch(LauncherUtils.getDefaultRemoteSessionUrl(url, sessionId, (!BrowserOptions.isSingleWindow(browserOptions.asCapabilities())), getPort(), browserOptions.is("browserSideLog")), "RemoteRunner.hta");
     }
 
 }

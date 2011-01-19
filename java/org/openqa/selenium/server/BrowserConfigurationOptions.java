@@ -80,10 +80,6 @@ public class BrowserConfigurationOptions {
     return hasOptions;
   }
 
-  public boolean isSingleWindow() {
-    return is("singleWindow");
-  }
-
   public void setSingleWindow(Boolean singleWindow) {
     options.put("singleWindow", singleWindow.toString());
     hasOptions = true;

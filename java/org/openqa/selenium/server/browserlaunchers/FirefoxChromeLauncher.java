@@ -22,8 +22,6 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.apache.commons.logging.Log;
-import org.openqa.jetty.log.LogFactory;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.browserlaunchers.AsyncExecute;
 import org.openqa.selenium.browserlaunchers.LauncherUtils;
@@ -400,14 +398,14 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
           suiteUrl.replaceFirst("^TestPrompt\\.html\\?", "chrome://src/content/TestPrompt.html?");
     }
     launch(LauncherUtils.getDefaultHTMLSuiteUrl(browserURL, suiteUrl,
-        (!browserConfigurationOptions.isSingleWindow()), getPort()));
+        (!BrowserOptions.isSingleWindow(browserConfigurationOptions.asCapabilities())), getPort()));
   }
 
   @Override
   // need to specify an absolute driverUrl
   public void launchRemoteSession(String browserURL) {
     launch(LauncherUtils.getDefaultRemoteSessionUrl(browserURL, sessionId,
-        (!browserConfigurationOptions.isSingleWindow()), getPort(),
+        (!BrowserOptions.isSingleWindow(browserConfigurationOptions.asCapabilities())), getPort(),
         browserConfigurationOptions.is("browserSideLog")));
   }
 
