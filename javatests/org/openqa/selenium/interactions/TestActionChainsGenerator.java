@@ -19,7 +19,6 @@ package org.openqa.selenium.interactions;
 
 import org.jmock.Expectations;
 import org.jmock.integration.junit3.MockObjectTestCase;
-import org.openqa.selenium.ActionChainsGenerator;
 import org.openqa.selenium.HasInputDevices;
 import org.openqa.selenium.Keyboard;
 import org.openqa.selenium.Keys;

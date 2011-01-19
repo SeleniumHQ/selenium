@@ -18,12 +18,10 @@ limitations under the License.
 package org.openqa.selenium.interactions;
 
 import org.openqa.selenium.AbstractDriverTestCase;
-import org.openqa.selenium.ActionChainsGenerator;
 import org.openqa.selenium.By;
 import org.openqa.selenium.HasInputDevices;
 import org.openqa.selenium.Ignore;
 import org.openqa.selenium.JavascriptEnabled;
-import org.openqa.selenium.Mouse;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;

@@ -20,14 +20,11 @@ package org.openqa.selenium.interactions;
 import java.util.List;
 
 import org.openqa.selenium.AbstractDriverTestCase;
-import org.openqa.selenium.ActionChainsGenerator;
 import org.openqa.selenium.By;
 import org.openqa.selenium.HasInputDevices;
 import org.openqa.selenium.Ignore;
 import org.openqa.selenium.JavascriptEnabled;
-import org.openqa.selenium.Keyboard;
 import org.openqa.selenium.Keys;
-import org.openqa.selenium.Mouse;
 import org.openqa.selenium.WebElement;
 
 import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;

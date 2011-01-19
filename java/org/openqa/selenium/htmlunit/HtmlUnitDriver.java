@@ -18,7 +18,7 @@ limitations under the License.
 
 package org.openqa.selenium.htmlunit;
 
-import org.openqa.selenium.ActionChainsGenerator;
+import org.openqa.selenium.interactions.ActionChainsGenerator;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Capabilities;
