@@ -229,6 +229,7 @@ public class Jetty7AppServer implements AppServer {
   public static void main(String[] args) {
     Jetty7AppServer server = new Jetty7AppServer("localhost");
     server.port = 2310;
+    System.out.println("Starting server on port " + server.port);
     server.start();
   }
 }
