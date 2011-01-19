@@ -454,13 +454,17 @@ module Selenium
           path[':session_id'] = @session_id if path.include?(":session_id")
 
           begin
-            opts.each { |key, value| path[key.inspect] = URI.escape(value.to_s)}
+            opts.each { |key, value| path[key.inspect] = escaper.escape(value.to_s)}
           rescue IndexError
             raise ArgumentError, "#{opts.inspect} invalid for #{command.inspect}"
           end
 
           puts "-> #{verb.to_s.upcase} #{path}" if $DEBUG
           http.call verb, path, command_hash
+        end
+
+        def escaper
+          @escaper ||= defined?(URI::Parser) ? URI::Parser.new : URI
         end
 
       end # Bridge
