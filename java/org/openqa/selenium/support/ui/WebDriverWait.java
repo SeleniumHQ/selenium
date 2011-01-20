@@ -49,6 +49,16 @@ public class WebDriverWait implements Wait<WebDriver> {
   }
 
   /**
+   * @param driver The WebDriver instance to pass to the expected conditions
+   * @param timeOutInSeconds The timeout in seconds when an expectation is
+   * called
+   * @param sleepInMillis The duration in milliseconds to sleep between polls.
+   */
+  public WebDriverWait(WebDriver driver, long timeOutInSeconds, long sleepInMillis) {
+    this(new SystemClock(), driver, timeOutInSeconds, sleepInMillis);
+  }
+
+  /**
    * @param clock The clock to use when measuring the timeout
    * @param driver The WebDriver instance to pass to the expected conditions
    * @param timeOutInSeconds The timeout in seconds when an expectation is
