@@ -6,9 +6,12 @@
   <script src="deps.js"></script>
   <script type="text/javascript">
     goog.require('bot.action');
+    goog.require('goog.debug.DivConsole');
+    goog.require('goog.debug.Logger');
     goog.require('goog.dom');
     goog.require('goog.events');
     goog.require('goog.events.EventType');
+    goog.require('goog.style');
     goog.require('goog.testing.jsunit');
   </script>
   <script type="text/javascript">
@@ -16,15 +19,44 @@
 
     var clicker;
     var clickLocation;
+    var divConsole;
+    var log = goog.debug.Logger.getLogger('click_test');
 
-    function setUpPage() {
-      clicker = goog.dom.$('clicker');
-      clickLocation = goog.style.getBounds(clicker);
+    function resetClicker() {
+      divConsole.clear();
+      goog.style.showElement(clicker, true);
+      goog.events.removeAll(clicker);
+      goog.events.listen(clicker,
+          [goog.events.EventType.MOUSEOVER,
+           goog.events.EventType.MOUSEMOVE,
+           goog.events.EventType.MOUSEDOWN,
+           goog.events.EventType.MOUSEUP,
+           goog.events.EventType.CLICK,
+           goog.events.EventType.BLUR,
+           goog.events.EventType.FOCUS],
+          function(e) {
+            log.info(e.type);
+          });
+      blurClicker();
     }
 
+    function blurClicker() {
+      clicker.blur();
+      goog.dom.$('focusSink').focus();
+    }
+
+    function hideClickerOn(eventType) {
+      goog.events.listen(clicker, eventType, function() {
+        goog.style.showElement(clicker, false);
+      });
+    }
+
+    function setUp() {
+      blurClicker();
+    }
 
     function tearDown() {
-      goog.events.removeAll(clicker);
+      resetClicker();
     }
 
 
@@ -82,11 +114,68 @@
       bot.action.click(clicker);
       assertArrayEquals(expectedEvents, events);
     }
+
+    // http://code.google.com/p/selenium/issues/detail?id=1207
+    function testShouldRespondCorrectlyIfElementIsHiddenMidClickSequence() {
+      function runTest(expectedEvents) {
+        resetClicker();
+
+        var hideOn = expectedEvents[expectedEvents.length - 1];
+        var events = [];
+        goog.events.listen(clicker,
+            [goog.events.EventType.MOUSEOVER,
+             goog.events.EventType.MOUSEMOVE,
+             goog.events.EventType.MOUSEDOWN,
+             goog.events.EventType.FOCUS,
+             goog.events.EventType.MOUSEUP,
+             goog.events.EventType.CLICK],
+            function(e) {
+              events.push(e.type);
+            });
+        hideClickerOn(hideOn);
+
+        assertTrue('Should start shown', bot.dom.isShown(clicker));
+        bot.action.click(clicker);
+        assertFalse('Should end not shown', bot.dom.isShown(clicker));
+        assertArrayEquals(expectedEvents, events);
+      }
+
+      runTest([goog.events.EventType.MOUSEOVER]);
+      runTest([goog.events.EventType.MOUSEOVER,
+               goog.events.EventType.MOUSEMOVE]);
+      runTest([goog.events.EventType.MOUSEOVER,
+               goog.events.EventType.MOUSEMOVE,
+               goog.events.EventType.MOUSEDOWN]);
+      runTest([goog.events.EventType.MOUSEOVER,
+               goog.events.EventType.MOUSEMOVE,
+               goog.events.EventType.MOUSEDOWN,
+               goog.events.EventType.FOCUS]);
+      runTest([goog.events.EventType.MOUSEOVER,
+               goog.events.EventType.MOUSEMOVE,
+               goog.events.EventType.MOUSEDOWN,
+               goog.events.EventType.FOCUS,
+               goog.events.EventType.MOUSEUP]);
+      runTest([goog.events.EventType.MOUSEOVER,
+               goog.events.EventType.MOUSEMOVE,
+               goog.events.EventType.MOUSEDOWN,
+               goog.events.EventType.FOCUS,
+               goog.events.EventType.MOUSEUP,
+               goog.events.EventType.CLICK]);
+    }
   </script>
 </head>
 <body>
   <form action="javascript:void(0)">
+    <label for="focusSink">Focus sink:</label><input id="focusSink" type="text"/><br/>
     <label for="clicker">Click me:</label><input id="clicker" type="checkbox"/><br/>
+    <div id="log"></div>
+    <script>
+clicker = goog.dom.$('clicker');
+clickLocation = goog.style.getBounds(clicker);
+
+divConsole = new goog.debug.DivConsole(goog.dom.$('log'));
+divConsole.setCapturing(true);
+    </script>
   </form>
   <div id="noHeight" style="height:0; line-height:0;">&nbsp;</div>
 </body>

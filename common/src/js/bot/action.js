@@ -405,10 +405,33 @@ bot.action.click = function(element) {
     'related': undefined
   };
 
+  // Abort the click sequence if any of the event listeners hide
+  // the element. Open question: the remaining click events should be fired
+  // somewhere, but where?
   bot.events.fire(element, goog.events.EventType.MOUSEOVER);
+  if (!bot.dom.isShown(element)) {
+    return;
+  }
+
   bot.events.fire(element, goog.events.EventType.MOUSEMOVE, coords);
+  if (!bot.dom.isShown(element)) {
+    return;
+  }
+
   bot.events.fire(element, goog.events.EventType.MOUSEDOWN, coords);
+  if (!bot.dom.isShown(element)) {
+    return;
+  }
+
   bot.action.focusOnElement(element, activeElement);
+  if (!bot.dom.isShown(element)) {
+    return;
+  }
+
   bot.events.fire(element, goog.events.EventType.MOUSEUP, coords);
+  if (!bot.dom.isShown(element)) {
+    return;
+  }
+
   bot.events.fire(element, goog.events.EventType.CLICK, coords);
 };
