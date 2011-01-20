@@ -208,7 +208,7 @@ options.header =
     indents(1) + "public void setUp() throws Exception {\n" +
     indents(2) + "WebDriver driver = new FirefoxDriver();\n" +
     indents(2) + 'String baseUrl = "${baseURL}";\n' +
-    indents(2) + 'Selenium selenium = new WebDriverBackedSelenium(driver, baseUrl);' +
+    indents(2) + 'Selenium selenium = new WebDriverBackedSelenium(driver, baseUrl);\n' +
     indents(2) + "selenium.start();\n" +
     indents(1) + "}\n" +
     "\n" +
