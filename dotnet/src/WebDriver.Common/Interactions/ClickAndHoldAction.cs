@@ -17,7 +17,7 @@ namespace OpenQA.Selenium.Interactions
         public void Perform()
         {
             this.MoveToLocation();
-            this.Mouse.MouseUp(this.ActionLocation);
+            this.Mouse.MouseDown(this.ActionLocation);
         }
 
         #endregion

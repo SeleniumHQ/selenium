@@ -1639,7 +1639,7 @@ namespace OpenQA.Selenium.Remote
                 string elementId = where.AuxilliaryLocator.ToString();
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
                 parameters.Add("element", elementId);
-                driver.Execute(DriverCommand.MouseClick, parameters);
+                driver.Execute(DriverCommand.MouseMoveTo, parameters);
             }
 
             /// <summary>
