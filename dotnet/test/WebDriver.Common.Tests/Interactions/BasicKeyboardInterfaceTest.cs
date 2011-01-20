@@ -11,7 +11,7 @@ namespace OpenQA.Selenium.Interactions
     public class BasicKeyboardInterfaceTest : DriverTestFixture
     {
         [Test]
-        public void testBasicKeyboardInput()
+        public void ShouldAllowBasicKeyboardInput()
         {
             driver.Url = javascriptPage;
 
@@ -26,7 +26,7 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
-        public void testSendingKeyDownOnly()
+        public void ShouldAllowSendingKeyDownOnly()
         {
             driver.Url = javascriptPage;
 
@@ -42,7 +42,7 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
-        public void testSendingKeyUp()
+        public void ShouldAllowSendingKeyUp()
         {
             driver.Url = javascriptPage;
             IWebElement keysEventInput = driver.FindElement(By.Id("theworks"));
@@ -64,7 +64,7 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
-        public void testSendingKeysWithShiftPressed()
+        public void ShouldAllowSendingKeysWithShiftPressed()
         {
             driver.Url = javascriptPage;
 
@@ -88,7 +88,7 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
-        public void testSendingKeysToActiveElement()
+        public void ShouldAllowSendingKeysToActiveElement()
         {
             driver.Url = bodyTypingPage;
 
@@ -103,7 +103,7 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
-        public void testBasicKeyboardInputOnActiveElement()
+        public void ShouldAllowBasicKeyboardInputOnActiveElement()
         {
             driver.Url = javascriptPage;
 

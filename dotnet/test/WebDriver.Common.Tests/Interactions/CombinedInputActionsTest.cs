@@ -12,7 +12,7 @@ namespace OpenQA.Selenium.Interactions
     public class CombinedInputActionsTest : DriverTestFixture
     {
         [Test]
-        public void testClickingOnFormElements()
+        public void ShouldAllowClickingOnFormElements()
         {
             driver.Url = formSelectionPage;
 
@@ -34,7 +34,7 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
-        public void testSelectingMultipleItems()
+        public void ShouldAllowSelectingMultipleItems()
         {
             driver.Url = selectableItemsPage;
 
