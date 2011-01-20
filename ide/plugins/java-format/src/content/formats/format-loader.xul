@@ -14,5 +14,6 @@
         ide_api.addPluginProvidedFormatter("junit3formatter", "JUnit 3 (Remote Control)", "chrome://java-formatters/content/formats/java-rc.js");
         ide_api.addPluginProvidedFormatter("junit4formatter", "JUnit 4 (Remote Control)", "chrome://java-formatters/content/formats/java-rc-junit4.js");
         ide_api.addPluginProvidedFormatter("testngformatter", "TestNG (Remote Control)", "chrome://java-formatters/content/formats/java-rc-testng.js");
+        ide_api.addPluginProvidedFormatter("backedjunit4formatter", "JUnit 4 (WebDriver Backed)", "chrome://java-formatters/content/formats/java-backed-junit4.js");
     </html:script>
 </overlay>
