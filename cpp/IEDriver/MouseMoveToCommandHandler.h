@@ -75,7 +75,7 @@ private:
 				*y_coordinate = element_y;
 			} else {
 				*x_coordinate = element_x + (element_width / 2);
-				*x_coordinate = element_y + (element_height / 2);
+				*y_coordinate = element_y + (element_height / 2);
 			}
 		}
 
