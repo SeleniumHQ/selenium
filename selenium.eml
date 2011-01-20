@@ -32,9 +32,6 @@
 	<lib name="httpmime-4.0.1.jar" scope="COMPILE">
 		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/apache-httpclient/httpmime-4.0.1.jar!/"/>
 	</lib>
-	<lib name="guava-r06.jar" scope="COMPILE">
-		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/guava-libraries/guava-r06.jar!/"/>
-	</lib>
 	<lib name="cglib-nodep-2.1_3.jar" scope="COMPILE">
 		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/cglib/cglib-nodep-2.1_3.jar!/"/>
 	</lib>
@@ -112,5 +109,10 @@
 	</lib>
 	<lib name="jetty-servlet-7.2.0.v20101020.jar" scope="COMPILE">
 		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/jetty/jetty-servlet-7.2.0.v20101020.jar!/"/>
+	</lib>
+	<lib name="$MODULE_DIR$/third_party/java/guava-libraries/guava-r07.jar" scope="COMPILE">
+		<srcroot url="jar://$MODULE_DIR$/third_party/java/guava-libraries/guava-r07-src.jar!/"/>
+		<relative-module-src project-related="jar://$PROJECT_DIR$/third_party/java/guava-libraries/guava-r07-src.jar!/"/>
+		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/guava-libraries/guava-r07.jar!/"/>
 	</lib>
 </component>
