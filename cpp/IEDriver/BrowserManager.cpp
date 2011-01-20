@@ -58,6 +58,13 @@
 #include "GetAlertTextCommandHandler.h"
 #include "SendKeysToAlertCommandHandler.h"
 
+#include "SendModifierKeyCommandHandler.h"
+#include "MouseMoveToCommandHandler.h"
+#include "MouseClickCommandHandler.h"
+#include "MouseDoubleClickCommandHandler.h"
+#include "MouseButtonDownCommandHandler.h"
+#include "MouseButtonUpCommandHandler.h"
+
 namespace webdriver {
 
 LRESULT BrowserManager::OnInit(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
@@ -92,6 +99,8 @@ LRESULT BrowserManager::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& 
 	this->serialized_response_ = L"";
 	this->speed_ = 0;
 	this->implicit_wait_timeout_ = 0;
+	this->last_known_mouse_x_ = 0;
+	this->last_known_mouse_y_ = 0;
 	return 0;
 }
 
@@ -418,6 +427,12 @@ void BrowserManager::PopulateCommandHandlerRepository() {
 	this->command_handlers_[GetAlertText] = new GetAlertTextCommandHandler;
 	this->command_handlers_[SendKeysToAlert] = new SendKeysToAlertCommandHandler;
 
+	this->command_handlers_[SendModifierKey] = new SendModifierKeyCommandHandler;
+	this->command_handlers_[MouseMoveTo] = new MouseMoveToCommandHandler;
+	this->command_handlers_[MouseClick] = new MouseClickCommandHandler;
+	this->command_handlers_[MouseDoubleClick] = new MouseDoubleClickCommandHandler;
+	this->command_handlers_[MouseButtonDown] = new MouseButtonDownCommandHandler;
+	this->command_handlers_[MouseButtonUp] = new MouseButtonUpCommandHandler;
 }
 
 } // namespace webdriver

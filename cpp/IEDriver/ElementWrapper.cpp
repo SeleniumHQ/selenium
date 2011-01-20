@@ -64,7 +64,7 @@ int ElementWrapper::Click() {
 			return static_cast<int>(result);
 		}
 		
-		result = clickAt(containing_window_handle, click_x, click_y, MOUSEBUTTON_LFET);
+		result = clickAt(containing_window_handle, click_x, click_y, MOUSEBUTTON_LEFT);
 		if (result != SUCCESS) {
 			return static_cast<int>(result);
 		}
@@ -99,9 +99,9 @@ int ElementWrapper::DragBy(int offset_x, int offset_y, int drag_speed) {
 		long click_y = y + (h ? h / 2 : 0);
 
 		// Create a mouse move, mouse down, mouse up OS event
-		LRESULT lresult = mouseDownAt(containing_window_handle, click_x, click_y, MOUSEBUTTON_LFET);
+		LRESULT lresult = mouseDownAt(containing_window_handle, click_x, click_y, MOUSEBUTTON_LEFT);
 		lresult = mouseMoveTo(containing_window_handle, (long)drag_speed, click_x, click_y, click_x + offset_x, click_y + offset_y);
-		lresult = mouseUpAt(containing_window_handle, click_x + offset_x, click_y + offset_y, MOUSEBUTTON_LFET);
+		lresult = mouseUpAt(containing_window_handle, click_x + offset_x, click_y + offset_y, MOUSEBUTTON_LEFT);
 	}
 	return status_code;
 }

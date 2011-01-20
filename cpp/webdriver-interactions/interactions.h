@@ -41,7 +41,7 @@ limitations under the License.
 // NOTE: These values correspond to GDK mouse button values.
 // If these values are changed, native events for linux *will* be broken
 // *unless* interactions_linux_mouse.cpp is updated.
-#define MOUSEBUTTON_LFET (1)
+#define MOUSEBUTTON_LEFT (1)
 #define MOUSEBUTTON_MIDDLE (2)
 #define MOUSEBUTTON_RIGHT (3)
 

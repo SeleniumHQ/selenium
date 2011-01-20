@@ -93,6 +93,12 @@ public:
 	int async_script_timeout(void) { return this->async_script_timeout_; }
 	void set_async_script_timeout(int timeout) { this->async_script_timeout_ = timeout; }
 
+	long last_known_mouse_x(void) { return this->last_known_mouse_x_; }
+	void set_last_known_mouse_x(long x_coordinate) { this->last_known_mouse_x_ = x_coordinate; }
+
+	long last_known_mouse_y(void) { return this->last_known_mouse_y_; }
+	void set_last_known_mouse_y(long y_coordinate) { this->last_known_mouse_y_ = y_coordinate; }
+
 private:
 	void NewBrowserEventHandler(BrowserWrapper* wrapper);
 	void BrowserQuittingEventHandler(std::wstring browser_id);
@@ -121,6 +127,9 @@ private:
 	int browser_quitting_event_id_;
 	std::tr1::unordered_map<int, WebDriverCommandHandler*> command_handlers_;
 	bool is_waiting_;
+
+	long last_known_mouse_x_;
+	long last_known_mouse_y_;
 };
 
 } // namespace webdriver

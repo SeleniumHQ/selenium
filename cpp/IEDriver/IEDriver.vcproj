@@ -657,6 +657,26 @@
 				>
 			</File>
 			<File
+				RelativePath=".\MouseButtonDownCommandHandler.h"
+				>
+			</File>
+			<File
+				RelativePath=".\MouseButtonUpCommandHandler.h"
+				>
+			</File>
+			<File
+				RelativePath=".\MouseClickCommandHandler.h"
+				>
+			</File>
+			<File
+				RelativePath=".\MouseDoubleClickCommandHandler.h"
+				>
+			</File>
+			<File
+				RelativePath=".\MouseMoveToCommandHandler.h"
+				>
+			</File>
+			<File
 				RelativePath=".\NewSessionCommandHandler.h"
 				>
 			</File>
@@ -678,6 +698,10 @@
 			</File>
 			<File
 				RelativePath=".\SendKeysToAlertCommandHandler.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SendModifierKeyCommandHandler.h"
 				>
 			</File>
 			<File

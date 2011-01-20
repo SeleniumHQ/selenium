@@ -65,6 +65,13 @@ enum CommandValue
 	DismissAlert,
 	GetAlertText,
 	SendKeysToAlert,
+
+	SendModifierKey,
+	MouseMoveTo,
+	MouseClick,
+	MouseDoubleClick,
+	MouseButtonDown,
+	MouseButtonUp
 };
 
 } // namespace webdriver

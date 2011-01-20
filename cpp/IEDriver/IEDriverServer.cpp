@@ -440,6 +440,13 @@ void IEDriverServer::PopulateCommandRepository() {
 	this->command_repository_["/session/:sessionid/alert_text"]["GET"] = GetAlertText;
 	this->command_repository_["/session/:sessionid/alert_text"]["POST"] = SendKeysToAlert;
 
+	this->command_repository_["session/:sessionid/modifier"]["POST"] = SendModifierKey;
+	this->command_repository_["session/:sessionid/moveto"]["POST"] = MouseMoveTo;
+	this->command_repository_["session/:sessionid/click"]["POST"] = MouseClick;
+	this->command_repository_["session/:sessionid/doubleclick"]["POST"] = MouseDoubleClick;
+	this->command_repository_["session/:sessionid/buttondown"]["POST"] = MouseButtonDown;
+	this->command_repository_["session/:sessionid/buttonup"]["POST"] = MouseButtonUp;
+
 	/*
 	commandDictionary.Add(DriverCommand.DefineDriverMapping, new CommandInfo(CommandInfo.PostCommand, "/config/drivers"));
 	commandDictionary.Add(DriverCommand.SetBrowserVisible, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/visible"));
