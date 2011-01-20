@@ -298,6 +298,14 @@
         /// <summary>
         /// Represents the SetAsyncScriptTimeout command
         /// </summary>
-        SetAsyncScriptTimeout
+        SetAsyncScriptTimeout, 
+
+        MouseClick,
+        MouseDoubleClick,
+        MouseDown,
+        MouseUp,
+        MouseMoveTo,
+        SendModifierKeyToActiveElement,
+        SendKeysToSession
     }
 }

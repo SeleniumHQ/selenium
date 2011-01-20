@@ -30,7 +30,7 @@ namespace OpenQA.Selenium.Firefox
     /// <summary>
     /// Allows the user to control elements on a page in Firefox.
     /// </summary>
-    public class FirefoxWebElement : RenderedRemoteWebElement, ILocatable
+    public class FirefoxWebElement : RenderedRemoteWebElement
     {
         #region Constructor
         /// <summary>
@@ -42,31 +42,6 @@ namespace OpenQA.Selenium.Firefox
             : base(parentDriver, id)
         {
         }
-        #endregion
-
-        #region ILocatable Members
-        /// <summary>
-        /// Gets the location of this element on the screen, scrolling it into view
-        /// if it is not currently on the screen.
-        /// </summary>
-        public Point LocationOnScreenOnceScrolledIntoView
-        {
-            get
-            {
-                Point locationPoint = new Point();
-                Dictionary<string, object> parameters = new Dictionary<string, object>();
-                parameters.Add("id", Id);
-                Response result = Execute(DriverCommand.GetElementLocationOnceScrolledIntoView, parameters);
-                Dictionary<string, object> locationObject = result.Value as Dictionary<string, object>;
-                if (locationObject != null)
-                {
-                    locationPoint = new Point(int.Parse(locationObject["x"].ToString(), CultureInfo.InvariantCulture), int.Parse(locationObject["y"].ToString(), CultureInfo.InvariantCulture));
-                }
-
-                return locationPoint;
-            }
-        }
-
         #endregion
 
         #region Overrides

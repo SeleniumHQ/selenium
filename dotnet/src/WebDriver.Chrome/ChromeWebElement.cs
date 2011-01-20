@@ -11,7 +11,7 @@ namespace OpenQA.Selenium.Chrome
     /// <summary>
     /// Provides a mechanism to get elements off the page for test
     /// </summary>
-    public class ChromeWebElement : RenderedRemoteWebElement, ILocatable
+    public class ChromeWebElement : RenderedRemoteWebElement
     {
         #region Constructor
         /// <summary>
@@ -22,25 +22,6 @@ namespace OpenQA.Selenium.Chrome
         public ChromeWebElement(ChromeDriver parent, string elementId)
             : base(parent, elementId)
         {
-        }
-        #endregion
-
-        #region ILocatable Members
-        /// <summary>
-        /// Gets the point of the element once scrolling has completed
-        /// </summary>
-        public Point LocationOnScreenOnceScrolledIntoView
-        {
-            get
-            {
-                Dictionary<string, object> parameters = new Dictionary<string, object>();
-                parameters.Add("id", Id);
-                Response commandResponse = Execute(DriverCommand.GetElementLocationOnceScrolledIntoView, parameters);
-                Dictionary<string, object> rawPoint = (Dictionary<string, object>)commandResponse.Value;
-                int x = Convert.ToInt32(rawPoint["x"], CultureInfo.InvariantCulture);
-                int y = Convert.ToInt32(rawPoint["y"], CultureInfo.InvariantCulture);
-                return new Point(x, y);
-            }
         }
         #endregion
 

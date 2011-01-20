@@ -8,7 +8,7 @@
     <ProjectGuid>{ABB9B87F-FEEA-410E-ACBF-26479B8C72B0}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>OpenQa.Selenium</RootNamespace>
+    <RootNamespace>OpenQA.Selenium</RootNamespace>
     <AssemblyName>WebDriver.Common</AssemblyName>
     <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
@@ -42,6 +42,28 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IAlert.cs" />
+    <Compile Include="IHasInputDevices.cs" />
+    <Compile Include="IKeyboard.cs" />
+    <Compile Include="IMouse.cs" />
+    <Compile Include="Interactions\ButtonReleaseAction.cs" />
+    <Compile Include="Interactions\ClickAction.cs" />
+    <Compile Include="Interactions\ClickAndHoldAction.cs" />
+    <Compile Include="Interactions\CompositeAction.cs" />
+    <Compile Include="Interactions\ContextClickAction.cs" />
+    <Compile Include="Interactions\KeyUpAction.cs" />
+    <Compile Include="Interactions\KeyDownAction.cs" />
+    <Compile Include="Interactions\MoveToOffsetAction.cs" />
+    <Compile Include="Interactions\MoveMouseAction.cs" />
+    <Compile Include="Interactions\DoubleClickAction.cs" />
+    <Compile Include="Interactions\DefaultActionSequenceBuilder.cs" />
+    <Compile Include="Interactions\IAction.cs" />
+    <Compile Include="Interactions\IActionSequenceBuilder.cs" />
+    <Compile Include="Interactions\Internal\ICoordinates.cs" />
+    <Compile Include="Interactions\Internal\WebDriverAction.cs" />
+    <Compile Include="Interactions\Internal\KeyboardAction.cs" />
+    <Compile Include="Interactions\Internal\MouseAction.cs" />
+    <Compile Include="Interactions\Internal\SingleKeyAction.cs" />
+    <Compile Include="Interactions\SendKeysAction.cs" />
     <Compile Include="Internal\AsyncJavaScriptExecutor.cs" />
     <Compile Include="By.cs" />
     <Compile Include="Cookie.cs" />

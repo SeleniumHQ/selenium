@@ -128,6 +128,17 @@ namespace OpenQA.Selenium.Remote
             commandDictionary.Add(DriverCommand.SetAlertValue, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/alert_text"));
             commandDictionary.Add(DriverCommand.ImplicitlyWait, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/timeouts/implicit_wait"));
             commandDictionary.Add(DriverCommand.SetAsyncScriptTimeout, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/timeouts/async_script"));
+
+            // Advanced interactions commands
+            commandDictionary.Add(DriverCommand.MouseClick, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/click"));
+            commandDictionary.Add(DriverCommand.MouseDoubleClick, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/doubleclick"));
+            commandDictionary.Add(DriverCommand.MouseDown, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/buttondown"));
+            commandDictionary.Add(DriverCommand.MouseUp, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/buttonup"));
+            commandDictionary.Add(DriverCommand.MouseMoveTo, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/moveto"));
+            commandDictionary.Add(DriverCommand.SendModifierKeyToActiveElement, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/modifier"));
+
+            // TODO: add command for SendKeysToSession
+            // commandDictionary.Add(DriverCommand.SendKeysToSession, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/keys"));
         }
         #endregion
     }

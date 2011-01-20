@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
+using OpenQA.Selenium.Interactions.Internal;
 
 namespace OpenQA.Selenium
 {
@@ -33,5 +34,7 @@ namespace OpenQA.Selenium
         /// if it is not currently on the screen.
         /// </summary>
         Point LocationOnScreenOnceScrolledIntoView { get; }
+
+        ICoordinates Coordinates { get; }
     }
 }

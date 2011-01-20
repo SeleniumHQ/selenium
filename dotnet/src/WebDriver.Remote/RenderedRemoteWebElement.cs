@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
+using OpenQA.Selenium.Interactions.Internal;
 
 namespace OpenQA.Selenium.Remote
 {
     /// <summary>
     /// Provides a mechanism to find Rendered Elements on the page
     /// </summary>
-    public class RenderedRemoteWebElement : RemoteWebElement, IRenderedWebElement
+    public class RenderedRemoteWebElement : RemoteWebElement, IRenderedWebElement, ILocatable
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="RenderedRemoteWebElement"/> class.
@@ -20,7 +21,7 @@ namespace OpenQA.Selenium.Remote
         {
         }
 
-        #region IRenderedWebElement Members
+        #region IRenderedWebElement Properties
         /// <summary>
         /// Gets the Location of an element and returns a Point object
         /// </summary>
@@ -68,7 +69,33 @@ namespace OpenQA.Selenium.Remote
                 return (bool)commandResponse.Value;
             }
         }
+        #endregion
 
+        #region ILocatable Properties
+        /// <summary>
+        /// Gets the point of the element once scrolling has completed
+        /// </summary>
+        public Point LocationOnScreenOnceScrolledIntoView
+        {
+            get
+            {
+                Dictionary<string, object> parameters = new Dictionary<string, object>();
+                parameters.Add("id", Id);
+                Response commandResponse = Execute(DriverCommand.GetElementLocationOnceScrolledIntoView, parameters);
+                Dictionary<string, object> rawPoint = (Dictionary<string, object>)commandResponse.Value;
+                int x = Convert.ToInt32(rawPoint["x"], CultureInfo.InvariantCulture);
+                int y = Convert.ToInt32(rawPoint["y"], CultureInfo.InvariantCulture);
+                return new Point(x, y);
+            }
+        }
+
+        public ICoordinates Coordinates
+        {
+            get { return new RemoteCoordinates(this); }
+        }
+        #endregion
+
+        #region IRenderedWebElement Methods
         /// <summary>
         /// Method to return the value of a CSS Property
         /// </summary>
@@ -119,5 +146,39 @@ namespace OpenQA.Selenium.Remote
         }
 
         #endregion
+
+        private class RemoteCoordinates : ICoordinates
+        {
+            RenderedRemoteWebElement element;
+
+            public RemoteCoordinates(RenderedRemoteWebElement element)
+            {
+                this.element = element;
+            }
+
+            #region ICoordinates Members
+            public Point LocationOnScreen
+            {
+                get { return element.LocationOnScreenOnceScrolledIntoView; }
+            }
+
+            public Point LocationInViewPort
+            {
+                get { throw new NotImplementedException(); }
+            }
+
+            public Point LocationInDOM
+            {
+                get { throw new NotImplementedException(); }
+            }
+
+            public object AuxilliaryLocator
+            {
+                get { return element.Id; }
+            }
+
+            #endregion
+        }
+
     }
 }

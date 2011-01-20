@@ -44,6 +44,8 @@ namespace OpenQA.Selenium.IE
             // Using transformed XML (Issue 1203)
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("transformable.xml");
             driver.FindElement(By.Id("x")).Click();
+            // Sleep is required; driver may not be fast enough after this Click().
+            System.Threading.Thread.Sleep(2000);
             Assert.AreEqual("XHTML Test Page", driver.Title);
 
             // Act on the result page to make sure the window handling is still valid.

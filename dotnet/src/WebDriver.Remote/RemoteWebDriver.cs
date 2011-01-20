@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using OpenQA.Selenium.Internal;
+using System.Drawing;
+using OpenQA.Selenium.Interactions.Internal;
+using OpenQA.Selenium.Interactions;
 
 namespace OpenQA.Selenium.Remote
 {
@@ -39,7 +42,7 @@ namespace OpenQA.Selenium.Remote
     /// }
     /// </code>
     /// </example>
-    public class RemoteWebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFindsById, IFindsByClassName, IFindsByLinkText, IFindsByName, IFindsByTagName, IFindsByXPath, IFindsByPartialLinkText, IFindsByCssSelector
+    public class RemoteWebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFindsById, IFindsByClassName, IFindsByLinkText, IFindsByName, IFindsByTagName, IFindsByXPath, IFindsByPartialLinkText, IFindsByCssSelector, IHasInputDevices
     {
         #region Private members
         private ICommandExecutor executor;
@@ -141,6 +144,32 @@ namespace OpenQA.Selenium.Remote
                 Response commandResponse = Execute(DriverCommand.GetPageSource, null);
                 return commandResponse.Value.ToString();
             }
+        }
+        #endregion
+
+        #region IHasInputDevices Members
+        /// <summary>
+        /// Gets an <see cref="IKeyboard"/> object for sending keystrokes to the browser.
+        /// </summary>
+        public IKeyboard Keyboard
+        {
+            get { return new RemoteKeyboard(this); }
+        }
+
+        /// <summary>
+        /// Gets an <see cref="IMouse"/> object for sending mouse commands to the browser.
+        /// </summary>
+        public IMouse Mouse
+        {
+            get { return new RemoteMouse(this); }
+        }
+
+        /// <summary>
+        /// Gets an <see cref="IActionSequenceGenerator"/> object for building actions to send to the browser.
+        /// </summary>
+        public IActionSequenceBuilder ActionBuilder
+        {
+            get { return new DefaultActionSequenceBuilder(this); }
         }
         #endregion
 
@@ -1495,6 +1524,159 @@ namespace OpenQA.Selenium.Remote
                     driver.Execute(DriverCommand.SetAlertValue, parameters);
                 }
                 #endregion
+            }
+
+        }
+
+        /// <summary>
+        /// Defines the interface through which the user can execute advanced keyboard interactions.
+        /// </summary>
+        private class RemoteKeyboard : IKeyboard
+        {
+            private RemoteWebDriver driver;
+
+            public RemoteKeyboard(RemoteWebDriver driver)
+            {
+                this.driver = driver;
+            }
+
+            #region IKeyboard Members
+            /// <summary>
+            /// Sends a sequence of keystrokes to the target.
+            /// </summary>
+            /// <param name="keySequence">A string representing the keystrokes to send.</param>
+            public void SendKeys(string keySequence)
+            {
+                driver.SwitchTo().ActiveElement().SendKeys(keySequence);
+            }
+
+            /// <summary>
+            /// Presses a key.
+            /// </summary>
+            /// <param name="keyToPress">The key value representing the key to press.</param>
+            /// <remarks>The key value must be one of the values from the <see cref="Keys"/> class.</remarks>
+            public void PressKey(string keyToPress)
+            {
+                Dictionary<string, object> parameters = new Dictionary<string, object>();
+                parameters.Add("value", keyToPress);
+                parameters.Add("isdown", true);
+                driver.Execute(DriverCommand.SendModifierKeyToActiveElement, parameters);
+            }
+
+            /// <summary>
+            /// Releases a key.
+            /// </summary>
+            /// <param name="keyToRelease">The key value representing the key to release.</param>
+            /// <remarks>The key value must be one of the values from the <see cref="Keys"/> class.</remarks>
+            public void ReleaseKey(string keyToRelease)
+            {
+                Dictionary<string, object> parameters = new Dictionary<string, object>();
+                parameters.Add("value", keyToRelease);
+                parameters.Add("isdown", false);
+                driver.Execute(DriverCommand.SendModifierKeyToActiveElement, parameters);
+            }
+            #endregion
+        }
+
+        /// <summary>
+        /// Defines the interface through which the user can execute advanced mouse interactions.
+        /// </summary>
+        private class RemoteMouse : IMouse
+        {
+            private RemoteWebDriver driver;
+
+            public RemoteMouse(RemoteWebDriver driver)
+            {
+                this.driver = driver;
+            }
+
+            #region IMouse Members
+            /// <summary>
+            /// Clicks at a set of coordinates using the primary mouse button.
+            /// </summary>
+            /// <param name="where">An <see cref="ICoordinates"/> describing where to click.</param>
+            public void Click(ICoordinates where)
+            {
+                MoveIfNeeded(where);
+                Dictionary<string, object> parameters = new Dictionary<string, object>();
+                parameters.Add("button", 0);
+                driver.Execute(DriverCommand.MouseClick, parameters);
+            }
+
+            /// <summary>
+            /// Double-clicks at a set of coordinates.
+            /// </summary>
+            /// <param name="where">A <see cref="ICoordinates"/> describing where to double-click.</param>
+            public void DoubleClick(ICoordinates where)
+            {
+                driver.Execute(DriverCommand.MouseDoubleClick, null);
+            }
+
+            /// <summary>
+            /// Presses the primary mouse button at a set of coordinates.
+            /// </summary>
+            /// <param name="where">A <see cref="ICoordinates"/> describing where to press the mouse button down.</param>
+            public void MouseDown(ICoordinates where)
+            {
+                driver.Execute(DriverCommand.MouseDown, null);
+            }
+
+            /// <summary>
+            /// Releases the primary mouse button at a set of coordinates.
+            /// </summary>
+            /// <param name="where">A <see cref="ICoordinates"/> describing where to release the mouse button.</param>
+            public void MouseUp(ICoordinates where)
+            {
+                driver.Execute(DriverCommand.MouseUp, null);
+            }
+
+            /// <summary>
+            /// Moves the mouse to the specified set of coordinates.
+            /// </summary>
+            /// <param name="where">A <see cref="ICoordinates"/> describing where to move the mouse to.</param>
+            public void MouseMove(ICoordinates where)
+            {
+                string elementId = where.AuxilliaryLocator.ToString();
+                Dictionary<string, object> parameters = new Dictionary<string, object>();
+                parameters.Add("element", elementId);
+                driver.Execute(DriverCommand.MouseClick, parameters);
+            }
+
+            /// <summary>
+            /// Moves the mouse to the specified set of coordinates.
+            /// </summary>
+            /// <param name="where">A <see cref="ICoordinates"/> describing where to click.</param>
+            /// <param name="xOffset">A horizontal offset from the coordinates specified in <paramref name="where"/>.</param>
+            /// <param name="yOffset">A vertical offset from the coordinates specified in <paramref name="where"/>.</param>
+            public void MouseMove(ICoordinates where, int xOffset, int yOffset)
+            {
+                string elementId = where.AuxilliaryLocator.ToString();
+                Dictionary<string, object> parameters = new Dictionary<string, object>();
+                parameters.Add("element", elementId);
+                parameters.Add("xoffset", xOffset);
+                parameters.Add("yoffset", yOffset);
+                driver.Execute(DriverCommand.MouseMoveTo, parameters);
+            }
+
+            /// <summary>
+            /// Clicks at a set of coordinates using the secondary mouse button.
+            /// </summary>
+            /// <param name="where">A <see cref="ICoordinates"/> describing where to click.</param>
+            public void ContextClick(ICoordinates where)
+            {
+                MoveIfNeeded(where);
+                Dictionary<string, object> parameters = new Dictionary<string, object>();
+                parameters.Add("button", 2);
+                driver.Execute(DriverCommand.MouseClick, parameters);
+            }
+            #endregion
+
+            private void MoveIfNeeded(ICoordinates where)
+            {
+                if (where != null)
+                {
+                    MouseMove(where);
+                }
             }
         }
     }

@@ -340,11 +340,17 @@ namespace OpenQA.Selenium
 		/// <summary>
         /// Represents the function key META.
         /// </summary>
-        public static readonly string META = Convert.ToString(Convert.ToChar(0xE03D, CultureInfo.InvariantCulture), CultureInfo.InvariantCulture);
+        public static readonly string Meta = Convert.ToString(Convert.ToChar(0xE03D, CultureInfo.InvariantCulture), CultureInfo.InvariantCulture);
 		
 		/// <summary>
         /// Represents the function key COMMAND.
         /// </summary>
-        public static readonly string COMMAND = Convert.ToString(Convert.ToChar(0xE03D, CultureInfo.InvariantCulture), CultureInfo.InvariantCulture);
+        public static readonly string Command = Convert.ToString(Convert.ToChar(0xE03D, CultureInfo.InvariantCulture), CultureInfo.InvariantCulture);
+
+        public static bool IsKey(string candidate)
+        {
+            // TODO (JimEvans): Test to see if the string is one of the keys we know about.
+            return true;
+        }
     }
 }

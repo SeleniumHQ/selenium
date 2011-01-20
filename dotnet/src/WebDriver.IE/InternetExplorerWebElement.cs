@@ -24,7 +24,7 @@ namespace OpenQA.Selenium.IE
     /// }
     /// </code>
     /// </example>
-    public class InternetExplorerWebElement : RenderedRemoteWebElement, ILocatable
+    public class InternetExplorerWebElement : RenderedRemoteWebElement
     {
         /// <summary>
         /// Initializes a new instance of the InternetExplorerWebElement class.
@@ -35,24 +35,5 @@ namespace OpenQA.Selenium.IE
             : base(parent, id)
         {
         }
-
-        #region ILocatable Members
-        /// <summary>
-        /// Gets the point of the element once scrolling has completed
-        /// </summary>
-        public Point LocationOnScreenOnceScrolledIntoView
-        {
-            get
-            {
-                Dictionary<string, object> parameters = new Dictionary<string, object>();
-                parameters.Add("id", Id);
-                Response commandResponse = Execute(DriverCommand.GetElementLocationOnceScrolledIntoView, parameters);
-                Dictionary<string, object> rawPoint = (Dictionary<string, object>)commandResponse.Value;
-                int x = Convert.ToInt32(rawPoint["x"], CultureInfo.InvariantCulture);
-                int y = Convert.ToInt32(rawPoint["y"], CultureInfo.InvariantCulture);
-                return new Point(x, y);
-            }
-        }
-        #endregion
     }
 }
