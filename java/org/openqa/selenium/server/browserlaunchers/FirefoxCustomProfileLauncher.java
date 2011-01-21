@@ -54,7 +54,6 @@ public class FirefoxCustomProfileLauncher extends AbstractBrowserLauncher {
     public FirefoxCustomProfileLauncher(BrowserConfigurationOptions browserOptions, RemoteControlConfiguration configuration, String sessionId, BrowserInstallation browserInstallation) {
         super(sessionId, configuration, browserOptions);
         browserOptions.setProxyEverything(false);
-        browserOptions.setAvoidProxy(true);
         browserOptions.setOnlyProxySeleniumTraffic(true);
         init();
         this.browserInstallation = browserInstallation;
