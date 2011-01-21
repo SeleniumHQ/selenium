@@ -12,12 +12,12 @@ namespace :se_ide do
       # and now the script dir
       ln_s Dir.glob(base_ide_dir + "/common/src/js/core/scripts/*").select { |fn| not [base_ide_dir + "/common/src/js/core/scripts/selenium-testrunner.js", base_ide_dir + "/common/src/js/core/scripts/user-extensions.js"].include?(fn)},
            "ide/main/src/content/selenium/scripts"
-      mkdir "ide/main/src/content-files"
+      # mkdir "ide/main/src/content-files"
       ln_s Dir.glob(base_ide_dir + "/common/src/js/core/scripts/selenium-testrunner.js"), "ide/main/src/content-files"
       # atoms
       cp "build/common/src/js/selenium/core.js", "ide/main/src/content/selenium/scripts/atoms.js"
       # sizzle
-      mkdir "ide/main/src/content/selenium/lib"
+      # mkdir "ide/main/src/content/selenium/lib"
       cp "third_party/js/sizzle/sizzle.js", "ide/main/src/content/selenium/lib/sizzle.js"
     elsif windows?
       # the files in core -- except for the scripts directory which already exists in the target
