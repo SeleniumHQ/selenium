@@ -3,7 +3,6 @@ java_library(name = "support",
   deps = [
     ":page-factory",
     "//java/org/openqa/selenium/support/events",
-    "//java/org/openqa/selenium/support/testing",
     "//java/org/openqa/selenium/support/ui",
   ])
 
