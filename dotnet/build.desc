@@ -260,7 +260,8 @@ dotnet_library(name = "core",
     "System.Xml.dll",
     "System.Web.dll"
   ],
-  out = "build/dotnet/ThoughtWorks.Selenium.Core.dll"
+  out = "build/dotnet/ThoughtWorks.Selenium.Core.dll",
+  doc = "build/dotnet/ThoughtWorks.Selenium.Core.xml"
 )
 
 dotnet_test(name = "core-test",
@@ -295,7 +296,8 @@ dotnet_library(name = "webdriverbackedselenium",
     {"java/org/openqa/selenium/internal/seleniumemulation/injectableSelenium.js" : "injectableSelenium.js"},
     {"java/org/openqa/selenium/internal/seleniumemulation/htmlutils.js" : "htmlutils.js"}
   ],
-  out = "build/dotnet/Selenium.WebDriverBackedSelenium.dll"
+  out = "build/dotnet/Selenium.WebDriverBackedSelenium.dll",
+  doc = "build/dotnet/Selenium.WebDriverBackedSelenium.xml"
 )
 
 dotnet_test(name = "webdriverbackedselenium-test",
