@@ -12,3 +12,4 @@ Changes since 2011-01-01
 * Ability to get rendered element size
 * Ability to get CSS Value on a webelement
 * Corrected Element finding from the element
+* Alert and Prompt handling

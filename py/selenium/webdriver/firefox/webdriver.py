@@ -53,7 +53,7 @@ class WebDriver(RemoteWebDriver):
 
     def _execute(self, command, params=None):
         try:
-            return RemoteWebDriver._execute(self, command, params)
+            return RemoteWebDriver.execute(self, command, params)
         except ErrorInResponseException, e:
             # Legacy behavior: calling close() multiple times should not raise
             # an error

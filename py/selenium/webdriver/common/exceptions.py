@@ -18,66 +18,53 @@ class WebDriverException(Exception):
     def __init__(self, msg=None):
         Exception.__init__(self, msg)
 
-class ErrorInResponseException(Exception):
+class ErrorInResponseException(WebDriverException):
     """An error has occurred on the server side.
 
     This may happen when communicating with the firefox extension
     or the remote driver server."""
     def __init__(self, response, msg):
-        Exception.__init__(self, msg)
+        WebDriverException.__init__(self, msg)
         self.response = response
 
-class InvalidSwitchToTargetException(Exception):
+class InvalidSwitchToTargetException(WebDriverException):
     """The frame or window target to be switched doesn't exist."""
-    def __init__(self, msg=None):
-        Exception.__init__(self, msg)
+    pass
 
 class NoSuchFrameException(InvalidSwitchToTargetException):
-    def __init__(self, msg=None):
-        InvalidSwitchToTargetException.__init__(self, msg)
+    pass
 
 class NoSuchWindowException(InvalidSwitchToTargetException):
-    def __init__(self, msg=None):
-        InvalidSwitchToTargetException.__init__(self, msg)
+    pass
 
-class NoSuchElementException(Exception):
+class NoSuchElementException(WebDriverException):
     """find_element_by_* can't find the element."""
-    def __init__(self, msg=None):
-        Exception.__init__(self, msg)
+    pass
 
-class NoSuchAttributeException(Exception):
+class NoSuchAttributeException(WebDriverException):
     """find_element_by_* can't find the element."""
-    def __init__(self, msg=None):
-        Exception.__init__(self, msg)
+    pass
 
-class StaleElementReferenceException(Exception):
-    def __init__(self, msg=None):
-        Exception.__init__(self, msg)
+class StaleElementReferenceException(WebDriverException):
+    pass
 
-class ElementNotVisibleException(Exception):
-    def __init__(self, msg=None):
-        Exception.__init__(self, msg)
+class ElementNotVisibleException(WebDriverException):
+    pass
 
-class InvalidElementStateException(Exception):
-    def __init__(self, msg=None):
-        Exception.__init__(self, msg)
+class InvalidElementStateException(WebDriverException):
+    pass
 
-class ElementNotSelectableException(Exception):
-    def __init__(self, msg=None):
-        Exception.__init__(self, msg)
+class ElementNotSelectableException(WebDriverException):
+    pass
 
-class InvalidCookieDomainException(Exception):
-    def __init__(self, msg=None):
-        WebDriverException.__init__(self, msg)
+class InvalidCookieDomainException(WebDriverException):
+    pass
 
-class UnableToSetCookieException(Exception):
-    def __init__(self, msg=None):
-        Exception.__init__(self, msg)
+class UnableToSetCookieException(WebDriverException):
+    pass
 
-class RemoteDriverServerException(Exception):
-    def __init__(self, msg=None):
-        Exception.__init__(self, msg)
+class RemoteDriverServerException(WebDriverException):
+    pass
 
-class TimeoutException(Exception):
-    def __init__(self, msg=None):
-        Exception.__init__(self, msg)
+class TimeoutException(WebDriverException):
+    pass

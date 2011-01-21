@@ -194,7 +194,15 @@ class RemoteConnection(object):
             Command.SET_SCRIPT_TIMEOUT:
                 ('POST', '/session/$sessionId/timeouts/async_script'),
             Command.GET_ELEMENT_VALUE_OF_CSS_PROPERTY:
-                ('GET', '/session/$sessionId/element/$id/css/$propertyName')}
+                ('GET', '/session/$sessionId/element/$id/css/$propertyName'),
+            Command.DISMISS_ALERT:
+                ('POST', '/session/$sessionId/dismiss_alert'),
+            Command.ACCEPT_ALERT:
+                ('POST', '/session/$sessionId/accept_alert'),
+            Command.SET_ALERT_VALUE:
+                ('POST', '/session/$sessionId/alert_text'),
+            Command.GET_ALERT_TEXT:
+                ('GET', '/session/$sessionId/alert_text')}
 
     def execute(self, command, params):
         """Send a command to the remote server.

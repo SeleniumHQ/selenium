@@ -80,3 +80,9 @@ class Command(object):
     EXECUTE_ASYNC_SCRIPT = "executeAsyncScript"
     SET_SCRIPT_TIMEOUT = "setScriptTimeout"
     GET_ELEMENT_VALUE_OF_CSS_PROPERTY = "getElementValueOfCssProperty"
+
+    #Alerts
+    DISMISS_ALERT = "dismissAlert"
+    ACCEPT_ALERT = "acceptAlert"
+    SET_ALERT_VALUE = "setAlertValue"
+    GET_ALERT_TEXT = "getAlertText"
