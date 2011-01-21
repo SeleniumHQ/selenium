@@ -114,7 +114,7 @@ task :test_jsapi => [ "//jsapi:atoms:run",
                       "//jsapi:selenium_core:run",
                       "//jsapi:selenium_core_emulation:run" ]
 task :test_firefox => [ "//javatests/org/openqa/selenium/firefox:test:run" ]
-task :test_remote => [ "//remote/server:test:run" ]
+task :test_remote => [ "//javatests/org/openqa/selenium/remote/server:test:run" ]
 task :test_support => [
   "//javatests/org/openqa/selenium/lift:test:run",
   "//javatests/org/openqa/selenium/support:test:run"
