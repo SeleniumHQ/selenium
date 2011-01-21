@@ -320,6 +320,8 @@ function formatCommand(command) {
 		} else if ('store' == command.command) {
 			addDeclaredVar(command.value);
 			line = statement(assignToVariable('String', command.value, xlateArgument(command.target)));
+	    } else if (this.set && command.command.match(/^set/)) {
+	        line = set(command.command, command.target);
 		} else if (command.command.match(/^(assert|verify)Selected$/)) {
 			var optionLocator = command.value;
 			var flavor = 'Label';
