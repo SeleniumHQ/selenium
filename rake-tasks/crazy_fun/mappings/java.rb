@@ -363,6 +363,10 @@ module CrazyFunJava
           end
         end
 
+        if tests.empty? and args[:srcs][0] == "SingleTestSuite.java"
+          tests.push to_filelist(dir, "SingleTestSuite.java")[0]
+        end
+
         if tests.empty?
 
         end

@@ -64,6 +64,15 @@ java_library(name = "tests",
     "//third_party/java/junit",
   ])
 
+java_test(name = "single",
+  srcs = [
+    "SingleTestSuite.java",
+  ],
+  deps = [
+    ":tests",
+    "//java/org/openqa/selenium/server",
+  ])
+
 java_library(name = "server-with-tests",
   main = "org.openqa.selenium.server.SeleniumServer",
   resources = [
@@ -72,4 +81,3 @@ java_library(name = "server-with-tests",
   deps = [
     "//java/org/openqa/selenium/server",
   ])
-
