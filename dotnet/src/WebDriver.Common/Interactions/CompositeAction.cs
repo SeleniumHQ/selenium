@@ -4,7 +4,7 @@ using System.Text;
 
 namespace OpenQA.Selenium.Interactions
 {
-    public class CompositeAction : IAction
+    internal class CompositeAction : IAction
     {
         private List<IAction> actionsList = new List<IAction>();
 

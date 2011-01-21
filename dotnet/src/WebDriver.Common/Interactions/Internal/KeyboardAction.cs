@@ -4,7 +4,7 @@ using System.Text;
 
 namespace OpenQA.Selenium.Interactions.Internal
 {
-    public class KeyboardAction : WebDriverAction
+    internal class KeyboardAction : WebDriverAction
     {
         private IKeyboard keyboard;
         private IMouse mouse;

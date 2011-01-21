@@ -5,7 +5,7 @@ using OpenQA.Selenium.Interactions.Internal;
 
 namespace OpenQA.Selenium.Interactions
 {
-    public class ContextClickAction : MouseAction, IAction
+    internal class ContextClickAction : MouseAction, IAction
     {
         public ContextClickAction(IMouse mouse, ILocatable actionTarget)
             : base(mouse, actionTarget)

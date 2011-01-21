@@ -347,6 +347,11 @@ namespace OpenQA.Selenium
         /// </summary>
         public static readonly string Command = Convert.ToString(Convert.ToChar(0xE03D, CultureInfo.InvariantCulture), CultureInfo.InvariantCulture);
 
+        /// <summary>
+        /// Gets a value indicating whether the specified string is a string defining a command key.
+        /// </summary>
+        /// <param name="candidate">The string to be evaluated.</param>
+        /// <returns><see langword="true"/> if the string is a defined command key; otherwise, <see langword="false"/>.</returns>
         public static bool IsKey(string candidate)
         {
             // TODO (JimEvans): Test to see if the string is one of the keys we know about.

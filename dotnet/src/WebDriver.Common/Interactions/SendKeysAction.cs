@@ -5,7 +5,7 @@ using OpenQA.Selenium.Interactions.Internal;
 
 namespace OpenQA.Selenium.Interactions
 {
-    public class SendKeysAction : KeyboardAction, IAction
+    internal class SendKeysAction : KeyboardAction, IAction
     {
         private string keysToSend;
 

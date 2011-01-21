@@ -300,12 +300,39 @@
         /// </summary>
         SetAsyncScriptTimeout, 
 
+        /// <summary>
+        /// Represents the MouseClick command.
+        /// </summary>
         MouseClick,
+
+        /// <summary>
+        /// Represents the MouseDoubleClick command.
+        /// </summary>
         MouseDoubleClick,
+
+        /// <summary>
+        /// Represents the MouseDown command.
+        /// </summary>
         MouseDown,
+
+        /// <summary>
+        /// Represents the MouseUp command.
+        /// </summary>
         MouseUp,
+
+        /// <summary>
+        /// Represents the MouseMoveTo command.
+        /// </summary>
         MouseMoveTo,
+
+        /// <summary>
+        /// Represents the SendModifierKeyToActiveElement command.
+        /// </summary>
         SendModifierKeyToActiveElement,
+
+        /// <summary>
+        /// Represents the SendKeysToSession command.
+        /// </summary>
         SendKeysToSession
     }
 }

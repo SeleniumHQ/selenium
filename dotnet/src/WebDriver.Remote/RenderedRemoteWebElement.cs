@@ -89,6 +89,10 @@ namespace OpenQA.Selenium.Remote
             }
         }
 
+        /// <summary>
+        /// Gets the coordinates identifying the location of this element using
+        /// various frames of reference.
+        /// </summary>
         public ICoordinates Coordinates
         {
             get { return new RemoteCoordinates(this); }

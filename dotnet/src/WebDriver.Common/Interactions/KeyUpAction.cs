@@ -5,7 +5,7 @@ using OpenQA.Selenium.Interactions.Internal;
 
 namespace OpenQA.Selenium.Interactions
 {
-    public class KeyUpAction : SingleKeyAction, IAction
+    internal class KeyUpAction : SingleKeyAction, IAction
     {
         public KeyUpAction(IKeyboard keyboard, IMouse mouse, ILocatable actionTarget, string key)
             : base(keyboard, mouse, actionTarget, key)

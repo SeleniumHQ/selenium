@@ -44,9 +44,11 @@
     <Optimize>true</Optimize>
     <WarningLevel>4</WarningLevel>
     <OutputPath>..\..\..\build\cli\Release\</OutputPath>
+    <DocumentationFile>..\..\..\build\cli\Release\Selenium.WebDriverBackedSelenium.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <OutputPath>..\..\..\build\cli\Debug\</OutputPath>
+    <DocumentationFile>..\..\..\build\cli\Debug\Selenium.WebDriverBackedSelenium.xml</DocumentationFile>
   </PropertyGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

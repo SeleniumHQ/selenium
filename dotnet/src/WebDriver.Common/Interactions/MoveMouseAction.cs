@@ -5,7 +5,7 @@ using OpenQA.Selenium.Interactions.Internal;
 
 namespace OpenQA.Selenium.Interactions
 {
-    public class MoveMouseAction : MouseAction, IAction
+    internal class MoveMouseAction : MouseAction, IAction
     {
         public MoveMouseAction(IMouse mouse, ILocatable actionTarget)
             : base(mouse, actionTarget)

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace OpenQA.Selenium.Interactions.Internal
 {
-    public abstract class WebDriverAction
+    internal abstract class WebDriverAction
     {
         private ILocatable where;
 

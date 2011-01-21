@@ -4,7 +4,7 @@ using System.Text;
 
 namespace OpenQA.Selenium.Interactions.Internal
 {
-    public class SingleKeyAction : KeyboardAction
+    internal class SingleKeyAction : KeyboardAction
     {
         private static readonly List<string> modifierKeys = new List<string>() { Keys.Shift, Keys.Control, Keys.Alt };
         string key;

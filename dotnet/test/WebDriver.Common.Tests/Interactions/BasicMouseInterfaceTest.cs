@@ -166,7 +166,7 @@ namespace OpenQA.Selenium.Interactions
                 driver.FindElement(locator);
                 return true;
             }
-            catch (NoSuchElementException e)
+            catch (NoSuchElementException)
             {
                 return false;
             }

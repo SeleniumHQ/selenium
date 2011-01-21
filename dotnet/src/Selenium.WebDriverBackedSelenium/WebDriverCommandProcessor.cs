@@ -89,28 +89,46 @@ namespace Selenium
             return val.ToString();
         }
         
+        /// <summary>
+        /// Sets the script to use as user extensions.
+        /// </summary>
+        /// <param name="extensionJs">The script to use as user extensions.</param>
         public void SetExtensionJs(string extensionJs)
         {
             throw new NotImplementedException();
         }
         
+        /// <summary>
+        /// Starts the command processor.
+        /// </summary>
         public void Start()
         {
             PopulateSeleneseMethods();
         }
 
+        /// <summary>
+        /// Starts the command processor using the specified options.
+        /// </summary>
+        /// <param name="optionsString">A string representing the options to use.</param>
         public void Start(string optionsString)
         {
             //Not porting this till other process is decided
             throw new NotImplementedException("This is not been ported to WebDriverBackedSelenium");
         }
 
+        /// <summary>
+        /// Starts the command processor using the specified options.
+        /// </summary>
+        /// <param name="optionsObject">An object representing the options to use.</param>
         public void Start(Object optionsObject)
         {
             //Not porting this till other process is decided
             throw new NotImplementedException("This is not been ported to WebDriverBackedSelenium");
         }
         
+        /// <summary>
+        /// Stops the command processor.
+        /// </summary>
         public void Stop()
         {
             if (driver != null)
@@ -121,31 +139,67 @@ namespace Selenium
             driver = null;
         }
         
+        /// <summary>
+        /// Gets a string from the command processor.
+        /// </summary>
+        /// <param name="command">The command to send.</param>
+        /// <param name="args">The arguments of the command.</param>
+        /// <returns>The result of the command.</returns>
         public string GetString(string command, string[] args)
         {
             return (string)Execute(command, args);
         }
-        
+
+        /// <summary>
+        /// Gets a string array from the command processor.
+        /// </summary>
+        /// <param name="command">The command to send.</param>
+        /// <param name="args">The arguments of the command.</param>
+        /// <returns>The result of the command.</returns>
         public string[] GetStringArray(string command, string[] args)
         {
             throw new NotImplementedException();
         }
-        
+
+        /// <summary>
+        /// Gets a number from the command processor.
+        /// </summary>
+        /// <param name="command">The command to send.</param>
+        /// <param name="args">The arguments of the command.</param>
+        /// <returns>The result of the command.</returns>
         public decimal GetNumber(string command, string[] args)
         {
             return Convert.ToDecimal(Execute(command, args));
         }
         
+        /// <summary>
+        /// Gets a number array from the command processor.
+        /// </summary>
+        /// <param name="command">The command to send.</param>
+        /// <param name="args">The arguments of the command.</param>
+        /// <returns>The result of the command.</returns>
         public decimal[] GetNumberArray(string command, string[] args)
         {
             throw new NotImplementedException();
         }
-        
+
+        /// <summary>
+        /// Gets a boolean value from the command processor.
+        /// </summary>
+        /// <param name="command">The command to send.</param>
+        /// <param name="args">The arguments of the command.</param>
+        /// <returns>The result of the command.</returns>
         public bool GetBoolean(string command, string[] args)
         {
             return (bool)Execute(command, args);
         }
         
+        /// <summary>
+        /// Gets an array of boolean values from the command processor.
+        /// </summary>
+        /// <param name="command">The command to send.</param>
+        /// <param name="args">The arguments of the command.</param>
+        /// <returns>The result of the command.</returns>
         public bool[] GetBooleanArray(string command, string[] args)
         {
             throw new NotImplementedException();

@@ -5,7 +5,7 @@ using OpenQA.Selenium.Interactions.Internal;
 
 namespace OpenQA.Selenium.Interactions
 {
-    public class ClickAndHoldAction : MouseAction, IAction
+    internal class ClickAndHoldAction : MouseAction, IAction
     {
         public ClickAndHoldAction(IMouse mouse, ILocatable actionTarget)
             : base(mouse, actionTarget)

@@ -83,22 +83,22 @@ namespace Selenium.Internal.SeleniumEmulation
             }
         }
 
-        /**
-         * Selects the only <code>_blank</code> window. A window open with
-         * <code>target='_blank'</code> will have a <code>window.name = null</code>.
-         * <p/>
-         * <p>This method assumes that there will only be one single
-         * <code>_blank</code> window and selects the first one with no name.
-         * Therefore if for any reasons there are multiple windows with
-         * <code>window.name = null</code> the first found one will be selected.
-         * <p/>
-         * <p>If none of the windows have <code>window.name = null</code> the last
-         * selected one will be re-selected and a {@link SeleniumException} will
-         * be thrown.
-         *
-         * @throws NoSuchWindowException if no window with
-         *                               <code>window.name = null</code> is found.
-         */
+        /// <summary>
+        /// Selects the only <code>_blank</code> window. A window open with
+        /// <code>target='_blank'</code> will have a <code>window.name = null</code>. 
+        /// </summary>
+        /// <param name="driver">The driver to use to select the window.</param>
+        /// <remarks>
+        /// <para>This method assumes that there will only be one single
+         /// <code>_blank</code> window and selects the first one with no name.
+         /// Therefore if for any reasons there are multiple windows with
+         /// <code>window.name = null</code> the first found one will be selected.
+         /// </para>
+         /// <para>If none of the windows have <code>window.name = null</code> the last
+         /// selected one will be re-selected and a <see cref="SeleniumException"/> will
+         /// be thrown.
+         /// </para>
+         /// </remarks>
         public void SelectBlankWindow(IWebDriver driver)
         {
             string current = driver.GetWindowHandle();

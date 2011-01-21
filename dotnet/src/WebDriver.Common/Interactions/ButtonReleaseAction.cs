@@ -5,7 +5,7 @@ using OpenQA.Selenium.Interactions.Internal;
 
 namespace OpenQA.Selenium.Interactions
 {
-    public class ButtonReleaseAction : MouseAction, IAction
+    internal class ButtonReleaseAction : MouseAction, IAction
     {
         public ButtonReleaseAction(IMouse mouse, ILocatable actionTarget)
             : base(mouse, actionTarget)

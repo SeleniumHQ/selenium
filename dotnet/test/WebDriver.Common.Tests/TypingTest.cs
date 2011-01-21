@@ -675,6 +675,7 @@ namespace OpenQA.Selenium
         [Category("Javascript")]
         [IgnoreBrowser(Browser.HtmlUnit)]
         [IgnoreBrowser(Browser.Chrome, "See crbug 20773")]
+        [IgnoreBrowser(Browser.IE, "IE does not place cursor at end of line, causing extra spaces in output")]
         public void NonPrintableCharactersShouldWorkWithContentEditableOrDesignModeSet()
         {
             driver.Url = richTextPage;

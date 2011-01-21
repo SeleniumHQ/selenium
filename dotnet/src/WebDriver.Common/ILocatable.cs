@@ -35,6 +35,10 @@ namespace OpenQA.Selenium
         /// </summary>
         Point LocationOnScreenOnceScrolledIntoView { get; }
 
+        /// <summary>
+        /// Gets the coordinates identifying the location of this element using
+        /// various frames of reference.
+        /// </summary>
         ICoordinates Coordinates { get; }
     }
 }

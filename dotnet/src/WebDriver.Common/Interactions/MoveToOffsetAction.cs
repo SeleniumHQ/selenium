@@ -5,7 +5,7 @@ using OpenQA.Selenium.Interactions.Internal;
 
 namespace OpenQA.Selenium.Interactions
 {
-    public class MoveToOffsetAction : MouseAction, IAction
+    internal class MoveToOffsetAction : MouseAction, IAction
     {
         private int xOffset;
         private int yOffset;

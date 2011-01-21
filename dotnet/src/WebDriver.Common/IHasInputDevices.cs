@@ -21,7 +21,7 @@ namespace OpenQA.Selenium
         IMouse Mouse { get; }
 
         /// <summary>
-        /// Gets an <see cref="IActionSequenceGenerator"/> object for building actions to send to the browser.
+        /// Gets an <see cref="IActionSequenceBuilder"/> object for building actions to send to the browser.
         /// </summary>
         IActionSequenceBuilder ActionBuilder { get; }
     }

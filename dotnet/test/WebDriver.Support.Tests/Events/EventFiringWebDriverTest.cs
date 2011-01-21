@@ -126,7 +126,7 @@ FindElementCompleted from IWebDriver By.XPath: //link[@type = 'text/css']
                 firingDriver.FindElement(By.Id("foo"));
                 Assert.Fail("Expected exception to be propogated");
             }
-            catch (NoSuchElementException e)
+            catch (NoSuchElementException)
             {
                 // Fine
             }

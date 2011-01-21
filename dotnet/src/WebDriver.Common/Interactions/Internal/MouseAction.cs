@@ -4,7 +4,7 @@ using System.Text;
 
 namespace OpenQA.Selenium.Interactions.Internal
 {
-    public class MouseAction : WebDriverAction
+    internal class MouseAction : WebDriverAction
     {
         private IMouse mouse;
 
