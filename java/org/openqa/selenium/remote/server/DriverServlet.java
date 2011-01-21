@@ -216,6 +216,9 @@ public class DriverServlet extends HttpServlet {
         .on(ResultType.SUCCESS, new JsonResult(RESPONSE));
     getMapper.bind("/session/:sessionId/element/:id/location", GetElementLocation.class)
         .on(ResultType.SUCCESS, new JsonResult(RESPONSE));
+    getMapper.bind("/session/:sessionId/element/:id/location_in_view",
+        GetElementLocationInView.class)
+        .on(ResultType.SUCCESS, new JsonResult(RESPONSE));
     getMapper.bind("/session/:sessionId/element/:id/size", GetElementSize.class)
         .on(ResultType.SUCCESS, new JsonResult(RESPONSE));
     getMapper.bind("/session/:sessionId/element/:id/css/:propertyName", GetCssProperty.class)

@@ -35,6 +35,8 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.DefaultActionChainsGenerator;
+import org.openqa.selenium.interactions.internal.Coordinates;
+import org.openqa.selenium.internal.Locatable;
 import org.openqa.selenium.internal.WrapsDriver;
 import org.openqa.selenium.internal.WrapsElement;
 import org.openqa.selenium.support.events.internal.EventFiringKeyboard;
@@ -415,7 +417,8 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
     }
   }
 
-  private class EventFiringRenderedWebElement extends EventFiringWebElement implements RenderedWebElement {
+  private class EventFiringRenderedWebElement extends EventFiringWebElement implements
+      RenderedWebElement, Locatable {
     private final RenderedWebElement delegate;
 
     public EventFiringRenderedWebElement(WebElement element) {
@@ -449,6 +452,14 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
 
     public String getValueOfCssProperty(String propertyName) {
       return delegate.getValueOfCssProperty(propertyName);
+    }
+
+    public Point getLocationOnScreenOnceScrolledIntoView() {
+      return ((Locatable) delegate).getLocationOnScreenOnceScrolledIntoView();
+    }
+
+    public Coordinates getCoordinates() {
+      return ((Locatable) delegate).getCoordinates();
     }
   }
 
