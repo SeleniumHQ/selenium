@@ -33,8 +33,7 @@
     </ConfigurationOverrideFile>
     <DefineConstants>
     </DefineConstants>
-    <DocumentationFile>
-    </DocumentationFile>
+    <DocumentationFile>..\..\..\build\cli\Debug\ThoughtWorks.Selenium.Core.xml</DocumentationFile>
     <DebugSymbols>true</DebugSymbols>
     <FileAlignment>4096</FileAlignment>
     <NoStdLib>false</NoStdLib>
@@ -52,7 +51,7 @@
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>..\..\..\build\cli\Release\</OutputPath>
     <BaseAddress>285212672</BaseAddress>
-    <DocumentationFile>..\..\..\build\cli\Release\Core.xml</DocumentationFile>
+    <DocumentationFile>..\..\..\build\cli\Release\ThoughtWorks.Selenium.Core.xml</DocumentationFile>
     <FileAlignment>4096</FileAlignment>
     <DebugType>full</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>

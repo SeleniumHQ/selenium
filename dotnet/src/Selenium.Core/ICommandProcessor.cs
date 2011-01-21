@@ -39,10 +39,16 @@ namespace Selenium
 		/// Starts a new Selenium testing session
 		/// </summary>
 		void Start();
-
-	    void Start(string optionsString);
-
-	    void Start(Object optionsObject);
+        /// <summary>
+        /// Starts a new Selenium testing session with the specified options
+        /// </summary>
+        /// <param name="optionsString">a string representing the options to start the session with.</param>
+        void Start(string optionsString);
+        /// <summary>
+        /// Starts a new Selenium testing session with the specified options
+        /// </summary>
+        /// <param name="optionsObject">an Options object representing the options to start the session with.</param>
+        void Start(Object optionsObject);
 		/// <summary>
 		/// Ends the current Selenium testing session (normally killing the browser)
 		/// </summary>

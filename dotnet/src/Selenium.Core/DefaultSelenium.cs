@@ -78,7 +78,9 @@ namespace Selenium
 	// This part of the file is hard-coded in the XSL
 	public class DefaultSelenium : ISelenium
 	{
-	
+        /// <summary>
+        /// An ICommandProcessor object used to process the commands.
+        /// </summary>
 		protected ICommandProcessor commandProcessor;
 		/// <summary>
 		/// Uses a CommandBridgeClient, specifying a server host/port, a command to launch the browser, and a starting URL for the browser.
