@@ -40,13 +40,39 @@ int ElementWrapper::IsDisplayed(bool *result) {
 }
 
 bool ElementWrapper::IsEnabled() {
-	CComQIPtr<IHTMLElement3> elem3(this->element_);
-	if (!elem3) {
-		return false;
+	//CComQIPtr<IHTMLElement3> elem3(this->element_);
+	//if (!elem3) {
+	//	return false;
+	//}
+	//VARIANT_BOOL is_disabled;
+	//elem3->get_disabled(&is_disabled);
+	//return !is_disabled;
+	bool result(false);
+
+	// The atom is just the definition of an anonymous
+	// function: "function() {...}"; Wrap it in another function so we can
+	// invoke it with our arguments without polluting the current namespace.
+	std::wstring script(L"(function() { return (");
+
+	// Read in all the scripts
+	for (int j = 0; IS_ENABLED[j]; j++) {
+		script += IS_ENABLED[j];
 	}
-	VARIANT_BOOL is_disabled;
-	elem3->get_disabled(&is_disabled);
-	return !is_disabled;
+
+	// Now for the magic and to close things
+	script += L")})();";
+
+	ScriptWrapper *script_wrapper = new ScriptWrapper(script, 1);
+	script_wrapper->AddArgument(this->element_);
+	int status_code = this->browser_->ExecuteScript(script_wrapper);
+
+	if (status_code == SUCCESS) {
+		result = script_wrapper->result().boolVal == VARIANT_TRUE;
+	}
+
+	delete script_wrapper;
+
+	return result;
 }
 
 int ElementWrapper::Click() {
@@ -654,47 +680,47 @@ int ElementWrapper::IsNodeDisplayed(IHTMLDOMNode *node, bool* result) {
 }
 
 int ElementWrapper::IsElementDisplayed(IHTMLElement *element, bool *result) {
-	//CComQIPtr<IHTMLInputHiddenElement> hidden(element);
-	//if (hidden) {
-	//	*result = false;
-	//	return SUCCESS;
-	//}
-
-	//bool displayed;
-	//int value = this->StyleIndicatesDisplayed(element, &displayed);
-
-	//if (value != SUCCESS) {
-	//	return value;
-	//}
-
-	//*result = displayed && this->StyleIndicatesVisible(element);
-	//return SUCCESS;
-	int status_code = SUCCESS;
-
-	// The atom is just the definition of an anonymous
-	// function: "function() {...}"; Wrap it in another function so we can
-	// invoke it with our arguments without polluting the current namespace.
-	std::wstring script(L"(function() { return (");
-
-	// Read in all the scripts
-	for (int j = 0; IS_DISPLAYED[j]; j++) {
-		script += IS_DISPLAYED[j];
+	CComQIPtr<IHTMLInputHiddenElement> hidden(element);
+	if (hidden) {
+		*result = false;
+		return SUCCESS;
 	}
 
-	// Now for the magic and to close things
-	script += L")})();";
+	bool displayed;
+	int value = this->StyleIndicatesDisplayed(element, &displayed);
 
-	ScriptWrapper *script_wrapper = new ScriptWrapper(script, 1);
-	script_wrapper->AddArgument(this->element_);
-	status_code = this->browser_->ExecuteScript(script_wrapper);
-
-	if (status_code == SUCCESS) {
-		*result = script_wrapper->result().boolVal == VARIANT_TRUE;
+	if (value != SUCCESS) {
+		return value;
 	}
 
-	delete script_wrapper;
-
+	*result = displayed && this->StyleIndicatesVisible(element);
 	return SUCCESS;
+	//int status_code = SUCCESS;
+
+	//// The atom is just the definition of an anonymous
+	//// function: "function() {...}"; Wrap it in another function so we can
+	//// invoke it with our arguments without polluting the current namespace.
+	//std::wstring script(L"(function() { return (");
+
+	//// Read in all the scripts
+	//for (int j = 0; IS_DISPLAYED[j]; j++) {
+	//	script += IS_DISPLAYED[j];
+	//}
+
+	//// Now for the magic and to close things
+	//script += L")})();";
+
+	//ScriptWrapper *script_wrapper = new ScriptWrapper(script, 1);
+	//script_wrapper->AddArgument(this->element_);
+	//status_code = this->browser_->ExecuteScript(script_wrapper);
+
+	//if (status_code == SUCCESS) {
+	//	*result = script_wrapper->result().boolVal == VARIANT_TRUE;
+	//}
+
+	//delete script_wrapper;
+
+	//return SUCCESS;
 }
 
 void ElementWrapper::FireEvent(IHTMLDOMNode* fire_event_on, LPCWSTR event_name) {
