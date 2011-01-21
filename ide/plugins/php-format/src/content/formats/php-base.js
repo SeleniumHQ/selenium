@@ -1,12 +1,5 @@
-/**
- * Format for Selenium Remote Control PHP client.
- * Thanks to Sonic.
- */
-
 var subScriptLoader = Components.classes["@mozilla.org/moz/jssubscript-loader;1"].getService(Components.interfaces.mozIJSSubScriptLoader);
 subScriptLoader.loadSubScript('chrome://selenium-ide/content/formats/remoteControl.js', this);
-
-this.name = "php-rc";
 
 function testMethodName(testName) {
     return "test" + capitalize(testName);
@@ -46,8 +39,8 @@ function assignToVariable(type, variable, expression) {
 
 //Samit: Fix: Issue 970 Variable reference missing a '$'
 variableName = function(value) {
-	return "$" + value;
-}
+    return "$" + value;
+};
 
 function waitFor(expression) {
     return "for ($second = 0; ; $second++) {\n" +
@@ -156,46 +149,25 @@ function formatComment(comment) {
 
 this.options = {
     receiver: "$this",
-	environment: "*chrome",
-    header: 
-        '<?php\n' +
-        '\n' +
-        "require_once 'PHPUnit/Extensions/SeleniumTestCase.php';\n" +
-        '\n' +
-        'class Example extends PHPUnit_Extensions_SeleniumTestCase\n' +
-        '{\n' +
-        '  protected function setUp()\n' +
-        '  {\n' +
-        '    ${receiver}->setBrowser("${environment}");\n' +
-        '    ${receiver}->setBrowserUrl("${baseURL}");\n' +
-        '  }\n' +
-        '\n' +
-        '  public function testMyTestCase()\n' +
-        '  {\n',
-
-    footer:
-        '  }\n' +
-        '}\n' +
-        "?>",
+    environment: "*chrome",
     indent: "2",
     initialIndents: '2'
 };
 
-
 this.configForm = 
     '<description>Variable for Selenium instance</description>' +
     '<textbox id="options_receiver" />' +
-	'<description>Environment</description>' +
-	'<textbox id="options_environment" />' +
-	'<description>Indent</description>' +
-	'<menulist id="options_indent"><menupopup>' +
-	'<menuitem label="Tab" value="tab"/>' +
-	'<menuitem label="1 space" value="1"/>' +
-	'<menuitem label="2 spaces" value="2"/>' +
-	'<menuitem label="3 spaces" value="3"/>' +
-	'<menuitem label="4 spaces" value="4"/>' +
-	'<menuitem label="5 spaces" value="5"/>' +
-	'<menuitem label="6 spaces" value="6"/>' +
-	'<menuitem label="7 spaces" value="7"/>' +
-	'<menuitem label="8 spaces" value="8"/>' +
-	'</menupopup></menulist>';
+    '<description>Environment</description>' +
+    '<textbox id="options_environment" />' +
+    '<description>Indent</description>' +
+    '<menulist id="options_indent"><menupopup>' +
+    '<menuitem label="Tab" value="tab"/>' +
+    '<menuitem label="1 space" value="1"/>' +
+    '<menuitem label="2 spaces" value="2"/>' +
+    '<menuitem label="3 spaces" value="3"/>' +
+    '<menuitem label="4 spaces" value="4"/>' +
+    '<menuitem label="5 spaces" value="5"/>' +
+    '<menuitem label="6 spaces" value="6"/>' +
+    '<menuitem label="7 spaces" value="7"/>' +
+    '<menuitem label="8 spaces" value="8"/>' +
+    '</menupopup></menulist>';
