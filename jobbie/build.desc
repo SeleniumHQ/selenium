@@ -5,6 +5,7 @@ js_fragment_header(name = "atoms",
     "//common/src/js/webdriver:get_text",
     "//common/src/js/webdriver:find_element",
     "//common/src/js/webdriver:find_elements",
+    "//common/src/js/webdriver:is_displayed",
   ],
   out = "cpp/IEDriver/atoms.h"
 )
