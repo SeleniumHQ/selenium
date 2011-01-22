@@ -37,7 +37,6 @@ public class InternetExplorerDriverTestSuite extends TestCase {
           .addSourceDir("common")
           .addSourceDir("jobbie")
           .usingDriver(InternetExplorerDriver.class)
-          .onlyRun("ExecutingJavascriptTest")
           .exclude(IE)
           .includeJavascriptTests()
           .keepDriverInstance()
