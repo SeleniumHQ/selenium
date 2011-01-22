@@ -344,19 +344,32 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   @Ignore(SELENESE)
-  public void testShouldBeAbleToPassAnArrayAsArgument() {
+  public void testPassingArrayAsOnlyArgumentFlattensArray() {
     if (!(driver instanceof JavascriptExecutor)) {
       return;
     }
 
     driver.get(pages.javascriptPage);
-    Object[] array = new Object[]{"zero", 1, true, 3.14159};
-    long length = (Long) executeScript("return arguments[0].length", array);
+    Object[] array = new Object[]{"zero", 1, true, 3.14159, false};
+    String value = (String) executeScript("return arguments[0]", array);
+    assertEquals(array[0], value);
+  }
+
+  @JavascriptEnabled
+  @Ignore({IE, FIREFOX, REMOTE, SELENESE})
+  public void testShouldBeAbleToPassAnArrayAsAdditionalArgument() {
+    if (!(driver instanceof JavascriptExecutor)) {
+      return;
+    }
+
+    driver.get(pages.javascriptPage);
+    Object[] array = new Object[]{"zero", 1, true, 3.14159, false};
+    long length = (Long) executeScript("return arguments[1].length", "string", array);
     assertEquals(array.length, length);
   }
 
   @JavascriptEnabled
-  @Ignore({IE, SELENESE})
+  @Ignore({IE, REMOTE, SELENESE})
   public void testShouldBeAbleToPassACollectionAsArgument() {
     if (!(driver instanceof JavascriptExecutor)) {
       return;
