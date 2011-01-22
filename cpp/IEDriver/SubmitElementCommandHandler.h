@@ -1,6 +1,7 @@
 #ifndef WEBDRIVER_IE_SUBMITELEMENTCOMMANDHANDLER_H_
 #define WEBDRIVER_IE_SUBMITELEMENTCOMMANDHANDLER_H_
 
+#include "atoms.h"
 #include "BrowserManager.h"
 
 namespace webdriver {
@@ -31,34 +32,46 @@ protected:
 			ElementWrapper *element_wrapper;
 			status_code = this->GetElement(manager, element_id, &element_wrapper);
 			if (status_code == SUCCESS) {
-				CComQIPtr<IHTMLFormElement> form(element_wrapper->element());
-				if (form) {
-					form->submit();
-				} else {
-					CComQIPtr<IHTMLInputElement> input(element_wrapper->element());
-					if (input) {
-						CComBSTR type_name;
-						input->get_type(&type_name);
+				// Use native events if we can. If not, use the automation atom.
+				bool handled_with_native_events(false);
+				CComQIPtr<IHTMLInputElement> input(element_wrapper->element());
+				if (input) {
+					CComBSTR type_name;
+					input->get_type(&type_name);
 
-						std::wstring type((BSTR)type_name);
+					std::wstring type((BSTR)type_name);
 
-						if (_wcsicmp(L"submit", type.c_str()) == 0 || _wcsicmp(L"image", type.c_str()) == 0) {
-							element_wrapper->Click();
-						} else {
-							CComPtr<IHTMLFormElement> form2;
-							input->get_form(&form2);
-							form2->submit();
-						}
-					} else {
-						this->FindParentForm(element_wrapper->element(), &form);
-						if (!form) {
-							response->SetErrorResponse(EUNHANDLEDERROR, "Unable to find the containing form");
-							return;
-						}
-						form->submit();
+					if (_wcsicmp(L"submit", type.c_str()) == 0 || _wcsicmp(L"image", type.c_str()) == 0) {
+						element_wrapper->Click();
+						browser_wrapper->set_wait_required(true);
+						handled_with_native_events = true;
 					}
 				}
-				browser_wrapper->set_wait_required(true);
+
+				if (!handled_with_native_events) {
+					// The atom is just the definition of an anonymous
+					// function: "function() {...}"; Wrap it in another function so we can
+					// invoke it with our arguments without polluting the current namespace.
+					std::wstring script(L"(function() { return (");
+
+					// Read in all the scripts
+					for (int j = 0; SUBMIT[j]; j++) {
+						script += SUBMIT[j];
+					}
+
+					// Now for the magic and to close things
+					script += L")})();";
+
+					ScriptWrapper *script_wrapper = new ScriptWrapper(script, 1);
+					script_wrapper->AddArgument(element_wrapper);
+					int status_code = browser_wrapper->ExecuteScript(script_wrapper);
+					delete script_wrapper;
+
+					if (status_code != SUCCESS) {
+						response->SetErrorResponse(status_code, "Error submitting when not using native events");
+						return;
+					}
+				}
 				response->SetResponse(SUCCESS, Json::Value::null);
 				return;
 			} else {
