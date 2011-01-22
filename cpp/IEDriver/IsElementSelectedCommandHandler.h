@@ -27,18 +27,35 @@ protected:
 				response->SetErrorResponse(status_code, "Unable to get browser");
 				return;
 			}
-			// HWND window_handle = browser_wrapper->GetWindowHandle();
+
+			// The atom is just the definition of an anonymous
+			// function: "function() {...}"; Wrap it in another function so we can
+			// invoke it with our arguments without polluting the current namespace.
+			std::wstring script(L"(function() { return (");
+
+			// Read in all the scripts
+			for (int j = 0; IS_SELECTED[j]; j++) {
+				script += IS_SELECTED[j];
+			}
+
+			// Now for the magic and to close things
+			script += L")})();";
 
 			ElementWrapper *element_wrapper;
 			status_code = this->GetElement(manager, element_id, &element_wrapper);
 			if (status_code == SUCCESS) {
-				CComVariant value_variant;
-				status_code = element_wrapper->GetAttributeValue(L"selected", &value_variant);
+				ScriptWrapper *script_wrapper = new ScriptWrapper(script, 1);
+				script_wrapper->AddArgument(element_wrapper);
+				status_code = browser_wrapper->ExecuteScript(script_wrapper);
+
+				Json::Value selected_value(false);
 				if (status_code == SUCCESS) {
-					std::wstring value(browser_wrapper->ConvertVariantToWString(&value_variant));
-					bool selected = wcscmp(L"true", value.c_str()) == 0 ? 1 : 0;
-					response->SetResponse(SUCCESS, selected);
-					return;
+					if (script_wrapper->ResultIsBoolean()) {
+						script_wrapper->ConvertResultToJsonValue(manager, &selected_value);
+						response->SetResponse(SUCCESS, selected_value);
+					} else {
+						response->SetErrorResponse(EUNHANDLEDERROR, "Script determining if element is selected did not return boolean");
+					}
 				} else {
 					response->SetErrorResponse(status_code, "Error determining if element is selected");
 					return;
