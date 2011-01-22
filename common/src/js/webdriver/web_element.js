@@ -116,9 +116,11 @@ webdriver.element.getAttribute = function(element, attribute) {
     return webdriver.element.isSelected(element) ? "true" : null;
   }
 
-  // Our tests suggest that returning the attribute is desirable for links,
+  // Our tests suggest that returning the attribute is desirable for
+  // the href attribute of <a> tags and the src attribute of <img> tags,
   // but we normally attempt to get the property value before the attribute.
-  var isLink =  element.tagName && goog.dom.TagName.A == element.tagName.toUpperCase()
+  var isLink = element.tagName && goog.dom.TagName.A == element.tagName.toUpperCase();
+  var isImg = element.tagName && goog.dom.TagName.IMG == element.tagName.toUpperCase();
 
   var property;
   try {
@@ -127,7 +129,8 @@ webdriver.element.getAttribute = function(element, attribute) {
     // Leaves property undefined or null
   }
 
-  // 1- Prefer the attribute over the property for links
+  // 1- Prefer the attribute over the property for
+  // the href attribute of <a> tags and the src attribute of <img> tags.
   //
   // 2- Call getAttribute if getProperty fails,
   // i.e. property is null or undefined.
@@ -139,7 +142,7 @@ webdriver.element.getAttribute = function(element, attribute) {
   // 3- When property is an object we fall back to the
   // actual attribute instead.
   // See issue http://code.google.com/p/selenium/issues/detail?id=966
-  if ((name == 'href' && isLink) || !goog.isDefAndNotNull(property) || goog.isObject(property)) {
+  if ((name == 'href' && isLink) || (name == 'src' && isImg) || !goog.isDefAndNotNull(property) || goog.isObject(property)) {
     value = bot.dom.getAttribute(element, attribute);
   } else {
     value = property;
