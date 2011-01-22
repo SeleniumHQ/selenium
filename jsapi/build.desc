@@ -5,23 +5,23 @@
 java_test(name = "test",
   srcs = [ "test/java/org/openqa/selenium/JsApiTestSuite.java" ],
   deps = [ 
-    "//firefox", 
-    "//chrome",
-    "//common:test"])
+    "//java/org/openqa/selenium/firefox", 
+    "//java/org/openqa/selenium/chrome",
+    "//javatests/org/openqa/selenium:tests"])
 
 java_test(name = "atoms",
   srcs = [ "test/java/org/openqa/selenium/AtomsTestSuite.java" ],
   deps = [
-    "//firefox",
-    "//common:test"])
+    "//java/org/openqa/selenium/firefox",
+    "//javatests/org/openqa/selenium:tests"])
 
 # This target is for testing the emulation of selenium core in WebDrivedBackedSelenium.
 java_test(name = "selenium_core_emulation",
   srcs = [ "test/java/org/openqa/selenium/CoreTestSuite.java" ],
   deps = [
-    "//firefox",
+    "//java/org/openqa/selenium/firefox",
     "//common/src/js/selenium:core",
-    "//common:test"])
+    "//javatests/org/openqa/selenium:tests"])
 
 # This is used for testing selenium core itself. This test suite is currently
 # woefully small, but should grow as more legacy code is replaced with the
@@ -29,21 +29,21 @@ java_test(name = "selenium_core_emulation",
 java_test(name = "selenium_core",
           srcs = [ "test/java/org/openqa/selenium/SeleniumCoreTestSuite.java" ],
           deps = [
-            "//firefox",
-            "//common:test"])
+            "//java/org/openqa/selenium/firefox",
+            "//javatests/org/openqa/selenium:tests"])
 
 java_test(name = "webdriver_fragments",
   srcs = [ "test/java/org/openqa/selenium/WebDriverFragmentsTestSuite.java" ],
   deps = [
-    "//firefox",
-    "//common:test"])
+    "//java/org/openqa/selenium/firefox",
+    "//javatests/org/openqa/selenium:tests"])
 
 # Simply starts the Jetty6AppServer for manually testing the JS API tests.
 # After starting, open a browser to http://localhost:$PORT/js/test, where $PORT
 # is the port the server was started on.
 java_library(name = "debug",
   deps = [ 
-    "//firefox", 
-    "//common:test"
+    "//java/org/openqa/selenium/firefox", 
+    "//javatests/org/openqa/selenium:tests",
   ],
   main = "org.openqa.selenium.environment.webserver.Jetty7AppServer")
