@@ -185,6 +185,7 @@ public class TextHandlingTest extends AbstractDriverTestCase {
     assertThat(text, equalTo(""));
   }
 
+  @Ignore
   public void testShouldReturnEmptyStringWhenTagIsSelfClosing() {
     driver.get(pages.xhtmlTestPage);
 
