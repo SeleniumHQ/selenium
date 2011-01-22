@@ -343,7 +343,7 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({IE, SELENESE})
+  @Ignore(SELENESE)
   public void testShouldBeAbleToPassAnArrayAsArgument() {
     if (!(driver instanceof JavascriptExecutor)) {
       return;
