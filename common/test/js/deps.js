@@ -14,7 +14,7 @@ goog.addDependency("../../../js/src/webdriver.js", ['webdriver.WebDriver', 'webd
 goog.addDependency("../../../js/src/webelement.js", ['webdriver.WebElement'], ['goog.array', 'webdriver.By.Locator', 'webdriver.By.Strategy', 'webdriver.CommandName', 'webdriver.Future']);
 goog.addDependency("../../../js/src/bot/action.js", ['bot.action'], ['bot.Error', 'bot.ErrorCode', 'bot.dom', 'bot.events', 'goog.array', 'goog.dom', 'goog.dom.NodeType', 'goog.dom.TagName', 'goog.events.EventType', 'goog.userAgent']);
 goog.addDependency("../../../js/src/bot/bot.js", ['bot'], []);
-goog.addDependency("../../../js/src/bot/dom.js", ['bot.dom'], ['bot', 'bot.locators.xpath', 'goog.array', 'goog.dom.NodeIterator', 'goog.dom.NodeType', 'goog.dom.TagName', 'goog.math.Size', 'goog.string', 'goog.style']);
+goog.addDependency("../../../js/src/bot/dom.js", ['bot.dom'], ['bot', 'bot.locators.xpath', 'goog.array', 'goog.dom.NodeIterator', 'goog.dom.NodeType', 'goog.dom.TagName', 'goog.dom', 'goog.math.Size', 'goog.string', 'goog.style']);
 goog.addDependency("../../../js/src/bot/error.js", ['bot.Error', 'bot.ErrorCode'], ['goog.debug.Error', 'goog.object']);
 goog.addDependency("../../../js/src/bot/events.js", ['bot.events'], ['bot.dom', 'goog.dom', 'goog.events.EventType', 'goog.userAgent']);
 goog.addDependency("../../../js/src/bot/inject.js", ['bot.inject', 'bot.inject.cache'], ['bot.Error', 'bot.ErrorCode', 'goog.array', 'goog.dom', 'goog.dom.NodeType', 'goog.json', 'goog.object']);
@@ -81,7 +81,7 @@ goog.addDependency("../../../js/src/selenium/se_locators.js", ['core.locators', 
 goog.addDependency("../../../js/src/selenium/testbase.js", [], []);
 goog.addDependency("../../../js/src/selenium/text.js", ['core.text'], ['bot.dom', 'core.locators', 'core.patternMatcher', 'goog.dom.NodeType', 'goog.string', 'goog.userAgent']);
 goog.addDependency("../../../js/src/webdriver/logging.js", ['webdriver.debug.Console'], ['goog.debug.LogManager', 'goog.debug.Logger.Level', 'goog.debug.TextFormatter']);
-goog.addDependency("../../../js/src/webdriver/web_element.js", ['webdriver.element'], ['bot.dom', 'goog.dom.TagName', 'goog.math', 'goog.style']);
+goog.addDependency("../../../js/src/webdriver/web_element.js", ['webdriver.element'], ['bot.dom', 'goog.dom', 'goog.dom.TagName', 'goog.math', 'goog.string', 'goog.style']);
 goog.addDependency("../../../js/test/deps.js", [], []);
 goog.addDependency("../../../js/test/fakecommandprocessor.js", ['webdriver.FakeCommandProcessor'], ['goog.structs.Map', 'goog.testing.asserts', 'webdriver.AbstractCommandProcessor']);
 goog.addDependency("../../../js/test/testbase.js", [], ['goog.Uri', 'goog.dom', 'goog.events', 'goog.math.Coordinate', 'goog.math.Size', 'goog.string', 'goog.userAgent', 'webdriver.Key', 'webdriver.WebElement', 'webdriver.asserts', 'webdriver.factory', 'webdriver.jsunit']);
