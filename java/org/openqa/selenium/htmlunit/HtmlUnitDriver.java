@@ -582,16 +582,15 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
   }
 
   public WebElement findElementByLinkText(String selector) {
-    int equalsIndex = selector.indexOf('=') + 1;
-    String expectedText = selector.substring(equalsIndex).trim();
-
     if (!(lastPage() instanceof HtmlPage)) {
       throw new IllegalStateException("Cannot find links for " + lastPage());
     }
 
+    String expectedText = selector.trim();
+
     List<HtmlAnchor> anchors = ((HtmlPage) lastPage()).getAnchors();
     for (HtmlAnchor anchor : anchors) {
-      if (expectedText.equals(anchor.asText())) {
+      if (expectedText.equals(anchor.asText().trim())) {
         return newHtmlUnitWebElement(anchor);
       }
     }
@@ -609,12 +608,11 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
       return elements;
     }
 
-    int equalsIndex = selector.indexOf('=') + 1;
-    String expectedText = selector.substring(equalsIndex).trim();
+    String expectedText = selector.trim();
 
     List<HtmlAnchor> anchors = ((HtmlPage) lastPage()).getAnchors();
     for (HtmlAnchor anchor : anchors) {
-      if (expectedText.equals(anchor.asText())) {
+      if (expectedText.equals(anchor.asText().trim())) {
         elements.add(newHtmlUnitWebElement(anchor));
       }
     }

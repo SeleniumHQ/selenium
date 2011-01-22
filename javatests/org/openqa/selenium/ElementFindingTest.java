@@ -225,6 +225,48 @@ public class ElementFindingTest extends AbstractDriverTestCase {
     }
   }
 
+  @Ignore(SELENESE)
+  public void testShouldFindElementByLinkTextContainingEqualsSign() {
+    driver.get(pages.xhtmlTestPage);
+
+    try {
+      WebElement element = driver.findElement(By.linkText("Link=equalssign"));
+      assertEquals("linkWithEqualsSign", element.getAttribute("id"));
+    } catch (NoSuchElementException e) {
+      fail("Expected element to be found");
+    }
+  }
+
+  @Ignore(SELENESE)
+  public void testShouldFindElementByPartialLinkTextContainingEqualsSign() {
+    driver.get(pages.xhtmlTestPage);
+
+    try {
+      WebElement element = driver.findElement(By.partialLinkText("Link="));
+      assertEquals("linkWithEqualsSign", element.getAttribute("id"));
+    } catch (NoSuchElementException e) {
+      fail("Expected element to be found");
+    }
+  }
+
+  @Ignore(SELENESE)
+  public void testShouldFindElementsByLinkTextContainingEqualsSign() {
+    driver.get(pages.xhtmlTestPage);
+
+    List<WebElement> elements = driver.findElements(By.linkText("Link=equalssign"));
+    assertEquals(1, elements.size());
+    assertEquals("linkWithEqualsSign", elements.get(0).getAttribute("id"));
+  }
+
+  @Ignore(SELENESE)
+  public void testShouldFindElementsByPartialLinkTextContainingEqualsSign() {
+    driver.get(pages.xhtmlTestPage);
+
+    List<WebElement> elements = driver.findElements(By.partialLinkText("Link="));
+    assertEquals(1, elements.size());
+    assertEquals("linkWithEqualsSign", elements.get(0).getAttribute("id"));
+  }
+
   public void testShouldBeAbleToFindMultipleElementsByName() {
     driver.get(pages.nestedPage);
 
