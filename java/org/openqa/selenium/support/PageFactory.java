@@ -50,6 +50,17 @@ public class PageFactory {
    * there will be an element that can be located using the xpath expression
    * "//*[@id='submit']" or "//*[@name='submit']"
    *
+   * Any WebElement in the class will be proxied as a WebElement.  You will 
+   * not be able to cast this as a RenderedWebElement.  If you want to access 
+   * the field as a RenderedWebElement, you should declare the field as a 
+   * RenderedWebElement, i.e. 
+   *
+   * <code>
+   * public class Page {
+   *     private RenderedWebElement submit;
+   * }
+   * </code>
+   *
    * By default, the element is looked up each and every time a method is called
    * upon it. To change this behaviour, simply annnotate the field with the
    * {@link @org.openqa.selenium.support.CacheLookup}. To change how the
