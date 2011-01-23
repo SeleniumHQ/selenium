@@ -15,7 +15,7 @@
  *
  */
 
-package org.openqa.selenium.server.browserlaunchers;
+package org.openqa.selenium.browserlaunchers;
 
 
 /**

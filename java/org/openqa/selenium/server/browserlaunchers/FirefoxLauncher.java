@@ -16,6 +16,7 @@
  */
 package org.openqa.selenium.server.browserlaunchers;
 
+import org.openqa.selenium.browserlaunchers.BrowserLauncher;
 import org.openqa.selenium.browserlaunchers.locators.*;
 import org.openqa.selenium.server.ApplicationRegistry;
 import org.openqa.selenium.server.BrowserConfigurationOptions;

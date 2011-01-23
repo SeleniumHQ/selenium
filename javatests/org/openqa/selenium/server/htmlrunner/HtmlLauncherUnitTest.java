@@ -6,10 +6,10 @@ import java.io.IOException;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.openqa.selenium.browserlaunchers.BrowserLauncher;
 import org.openqa.selenium.server.BrowserConfigurationOptions;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 import org.openqa.selenium.server.SeleniumServer;
-import org.openqa.selenium.server.browserlaunchers.BrowserLauncher;
 
 import static org.easymock.classextension.EasyMock.anyObject;
 import static org.easymock.classextension.EasyMock.createMock;

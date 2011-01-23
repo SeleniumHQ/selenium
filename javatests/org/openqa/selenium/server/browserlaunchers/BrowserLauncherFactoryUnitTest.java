@@ -2,6 +2,7 @@ package org.openqa.selenium.server.browserlaunchers;
 
 import junit.framework.TestCase;
 
+import org.openqa.selenium.browserlaunchers.BrowserLauncher;
 import org.openqa.selenium.server.BrowserConfigurationOptions;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 

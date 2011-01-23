@@ -1,6 +1,11 @@
 
 java_library(name = "browserlaunchers",
-  srcs = [ "*.java" ],
+  srcs = [
+    "BrowserLauncher.java",
+    "MacProxyManager.java",
+    "Maps.java",
+    "WindowsProxyManager.java",
+  ],
   deps = [
     "//java/com/thoughtworks/selenium:api",
     "//java/org/openqa/selenium:base",

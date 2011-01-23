@@ -3,7 +3,7 @@ package org.openqa.selenium.server;
 
 import org.openqa.selenium.internal.Trace;
 import org.openqa.selenium.internal.TraceFactory;
-import org.openqa.selenium.server.browserlaunchers.BrowserLauncher;
+import org.openqa.selenium.browserlaunchers.BrowserLauncher;
 import org.openqa.selenium.server.browserlaunchers.BrowserLauncherFactory;
 import org.openqa.selenium.server.browserlaunchers.InvalidBrowserExecutableException;
 import org.openqa.selenium.server.log.LoggingManager;

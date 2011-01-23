@@ -11,8 +11,7 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import org.apache.commons.logging.Log;
-import org.openqa.jetty.log.LogFactory;
+import org.openqa.selenium.browserlaunchers.BrowserLauncher;
 import org.openqa.selenium.internal.Trace;
 import org.openqa.selenium.internal.TraceFactory;
 import org.openqa.selenium.server.BrowserConfigurationOptions;

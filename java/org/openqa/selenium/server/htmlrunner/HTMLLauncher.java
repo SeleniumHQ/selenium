@@ -4,15 +4,13 @@
  */
 package org.openqa.selenium.server.htmlrunner;
 
-import org.apache.commons.logging.Log;
-import org.openqa.jetty.log.LogFactory;
 import org.openqa.selenium.internal.Trace;
 import org.openqa.selenium.internal.TraceFactory;
 import org.openqa.selenium.net.Urls;
 import org.openqa.selenium.server.*;
 import org.openqa.selenium.server.BrowserSessionFactory.BrowserSessionInfo;
 import org.openqa.selenium.browserlaunchers.AsyncExecute;
-import org.openqa.selenium.server.browserlaunchers.BrowserLauncher;
+import org.openqa.selenium.browserlaunchers.BrowserLauncher;
 import org.openqa.selenium.server.browserlaunchers.BrowserLauncherFactory;
 
 import java.io.File;
