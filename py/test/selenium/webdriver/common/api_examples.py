@@ -138,27 +138,12 @@ class ApiExampleTest (unittest.TestCase):
             self.driver.switch_to_window("result")
         self.assertEquals(title_2, self.driver.title)
 
-    def testSwitchToFrameByIndex(self):
-        self._loadPage("frameset")
-        self.driver.switch_to_frame(2)
-        self.driver.switch_to_frame(0)
-        self.driver.switch_to_frame(2)
-        checkbox = self.driver.find_element_by_id("checky")
-        checkbox.toggle()
-        checkbox.submit()
-
     def testSwitchFrameByName(self):
         self._loadPage("frameset")
         self.driver.switch_to_frame("third")
         checkbox = self.driver.find_element_by_id("checky")
         checkbox.toggle()
         checkbox.submit()
-
-    def testGetPageSource(self):
-        self._loadSimplePage()
-        source = self.driver.get_page_source()
-        matches = re.findall(r'<html>.*</html>', source, re.DOTALL | re.I)
-        self.assertTrue(len(matches) > 0)
 
     def testIsEnabled(self):
         self._loadPage("formPage")
@@ -242,14 +227,6 @@ class ApiExampleTest (unittest.TestCase):
         not_visible = self.driver.find_element_by_id("hidden").is_displayed()
         self.assertTrue(visible, "Should be visible")
         self.assertFalse(not_visible, "Should not be visible")
-
-    @not_available_on_remote
-    def testScreenshot(self):
-        self._loadPage("simpleTest")
-        file_name = os.path.join(tempfile.mkdtemp(), "screenshot.png")
-        self.driver.save_screenshot(file_name)
-        self.assertTrue(os.path.exists(file_name))
-        shutil.rmtree(os.path.dirname(file_name))
 
     def _pageURL(self, name):
         return "http://localhost:%d/%s.html" % (self.webserver.port, name)
