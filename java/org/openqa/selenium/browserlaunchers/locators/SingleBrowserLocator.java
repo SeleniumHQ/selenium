@@ -87,8 +87,7 @@ public abstract class SingleBrowserLocator implements BrowserLocator {
         return retrieveValidInstallationPath(CommandLine.findExecutable(fileName));
     }
 
-    // TODO(simon): Make this protected once all the locators are moved here
-    public String couldNotFindAnyInstallationMessage() {
+    protected String couldNotFindAnyInstallationMessage() {
         return browserName() + " could not be found in the path!\n" +
                 "Please add the directory containing '" + humanFriendlyLauncherFileNames() + "' to your PATH environment\n" +
                 "variable, or explicitly specify a path to " + browserName() + " like this:\n" +

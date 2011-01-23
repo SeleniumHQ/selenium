@@ -11,6 +11,7 @@ import java.io.IOException;
 
 import org.openqa.selenium.browserlaunchers.AsyncExecute;
 import org.openqa.selenium.browserlaunchers.LauncherUtils;
+import org.openqa.selenium.browserlaunchers.locators.InternetExplorerLocator;
 import org.openqa.selenium.internal.Trace;
 import org.openqa.selenium.internal.TraceFactory;
 import org.openqa.selenium.os.WindowsUtils;
@@ -19,7 +20,6 @@ import org.openqa.selenium.io.FileHandler;
 import org.openqa.selenium.server.BrowserConfigurationOptions;
 import org.openqa.selenium.server.FrameGroupCommandQueueSet;
 import org.openqa.selenium.server.RemoteControlConfiguration;
-import org.openqa.selenium.server.browserlaunchers.locators.InternetExplorerLocator;
 
 //EB - Why doesn't this class extend AbstractBrowserLauncher
 //DGF - because it would override every method of ABL.

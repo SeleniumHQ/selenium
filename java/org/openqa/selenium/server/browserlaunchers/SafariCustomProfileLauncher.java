@@ -19,6 +19,7 @@ package org.openqa.selenium.server.browserlaunchers;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.browserlaunchers.*;
 import org.openqa.selenium.browserlaunchers.locators.BrowserInstallation;
+import org.openqa.selenium.browserlaunchers.locators.SafariLocator;
 import org.openqa.selenium.internal.Trace;
 import org.openqa.selenium.internal.TraceFactory;
 import org.openqa.selenium.os.WindowsUtils;
@@ -26,7 +27,6 @@ import org.openqa.selenium.os.CommandLine;
 import org.openqa.selenium.server.ApplicationRegistry;
 import org.openqa.selenium.server.BrowserConfigurationOptions;
 import org.openqa.selenium.server.RemoteControlConfiguration;
-import org.openqa.selenium.server.browserlaunchers.locators.SafariLocator;
 
 import java.io.*;
 
