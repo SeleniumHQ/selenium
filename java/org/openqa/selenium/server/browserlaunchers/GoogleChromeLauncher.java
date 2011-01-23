@@ -24,10 +24,9 @@ import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.openqa.jetty.log.LogFactory;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.browserlaunchers.AsyncExecute;
+import org.openqa.selenium.browserlaunchers.locators.BrowserInstallation;
 import org.openqa.selenium.browserlaunchers.LauncherUtils;
 import org.openqa.selenium.internal.Trace;
 import org.openqa.selenium.internal.TraceFactory;

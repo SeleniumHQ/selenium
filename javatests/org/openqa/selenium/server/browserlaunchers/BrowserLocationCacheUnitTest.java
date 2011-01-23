@@ -2,7 +2,8 @@ package org.openqa.selenium.server.browserlaunchers;
 
 import junit.framework.TestCase;
 
-import org.openqa.selenium.server.browserlaunchers.locators.BrowserLocator;
+import org.openqa.selenium.browserlaunchers.locators.BrowserInstallation;
+import org.openqa.selenium.browserlaunchers.locators.BrowserLocator;
 
 /**
  * {@link BrowserInstallationCache} unit test class.

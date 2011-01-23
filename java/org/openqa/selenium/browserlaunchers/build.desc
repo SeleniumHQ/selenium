@@ -9,4 +9,11 @@ java_library(name = "browserlaunchers",
     "//java/org/openqa/selenium/net",
     "//java/org/openqa/selenium/os",
     "//third_party/java/guava-libraries",
+  ],
+  deps = [
+    "//java/com/thoughtworks/selenium:api",
+    "//java/org/openqa/selenium/browserlaunchers/locators",
+    "//java/org/openqa/selenium/internal:logging",
+    "//java/org/openqa/selenium/net",
+    "//java/org/openqa/selenium/os",
   ])

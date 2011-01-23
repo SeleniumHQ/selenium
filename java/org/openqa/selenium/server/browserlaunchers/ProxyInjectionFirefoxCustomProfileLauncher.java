@@ -1,5 +1,6 @@
 package org.openqa.selenium.server.browserlaunchers;
 
+import org.openqa.selenium.browserlaunchers.locators.BrowserInstallation;
 import org.openqa.selenium.server.ApplicationRegistry;
 import org.openqa.selenium.server.BrowserConfigurationOptions;
 import org.openqa.selenium.server.RemoteControlConfiguration;

@@ -17,9 +17,8 @@
 package org.openqa.selenium.server.browserlaunchers;
 
 import com.google.common.base.Throwables;
-import org.apache.commons.logging.Log;
-import org.openqa.jetty.log.LogFactory;
 import org.openqa.selenium.browserlaunchers.AsyncExecute;
+import org.openqa.selenium.browserlaunchers.locators.BrowserInstallation;
 import org.openqa.selenium.browserlaunchers.LauncherUtils;
 import org.openqa.selenium.browserlaunchers.WindowsProxyManager;
 import org.openqa.selenium.internal.Trace;

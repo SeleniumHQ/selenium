@@ -1,6 +1,7 @@
 package org.openqa.selenium.server.browserlaunchers;
 
 import org.junit.Test;
+import org.openqa.selenium.browserlaunchers.locators.BrowserInstallation;
 import org.openqa.selenium.server.BrowserConfigurationOptions;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 import org.openqa.selenium.server.SslCertificateGenerator;

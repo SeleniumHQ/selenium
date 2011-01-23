@@ -1,7 +1,7 @@
-package org.openqa.selenium.server.browserlaunchers;
+package org.openqa.selenium.browserlaunchers.locators;
 
 /**
- * Encapsulate useful settings of a browser installation discovered with a {@link org.openqa.selenium.server.browserlaunchers.locators.BrowserLocator}
+ * Encapsulate useful settings of a browser installation discovered with a {@link org.openqa.selenium.browserlaunchers.locators.BrowserLocator}
  */
 public class BrowserInstallation {
 

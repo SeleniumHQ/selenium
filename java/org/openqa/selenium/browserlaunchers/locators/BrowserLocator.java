@@ -1,6 +1,4 @@
-package org.openqa.selenium.server.browserlaunchers.locators;
-
-import org.openqa.selenium.server.browserlaunchers.BrowserInstallation;
+package org.openqa.selenium.browserlaunchers.locators;
 
 /**
  * Discovers a valid browser installation on local system.

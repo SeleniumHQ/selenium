@@ -1,6 +1,7 @@
 package org.openqa.selenium.server.browserlaunchers;
 
-import org.openqa.selenium.server.browserlaunchers.locators.BrowserLocator;
+import org.openqa.selenium.browserlaunchers.locators.BrowserInstallation;
+import org.openqa.selenium.browserlaunchers.locators.BrowserLocator;
 
 import java.util.Map;
 import java.util.HashMap;

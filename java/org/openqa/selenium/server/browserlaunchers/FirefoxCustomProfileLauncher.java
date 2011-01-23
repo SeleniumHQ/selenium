@@ -19,9 +19,8 @@ package org.openqa.selenium.server.browserlaunchers;
 import java.io.File;
 import java.io.IOException;
 
-import org.apache.commons.logging.Log;
-import org.openqa.jetty.log.LogFactory;
 import org.openqa.selenium.browserlaunchers.AsyncExecute;
+import org.openqa.selenium.browserlaunchers.locators.BrowserInstallation;
 import org.openqa.selenium.browserlaunchers.LauncherUtils;
 import org.openqa.selenium.internal.Trace;
 import org.openqa.selenium.internal.TraceFactory;
