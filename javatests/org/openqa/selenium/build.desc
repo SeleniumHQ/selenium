@@ -71,6 +71,7 @@ java_test(name = "single",
   deps = [
     ":tests",
     "//java/org/openqa/selenium/server",
+    "//javatests/org/openqa/selenium/v1:selenium-backed-webdriver-test",
   ])
 
 java_library(name = "server-with-tests",

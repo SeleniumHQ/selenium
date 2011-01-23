@@ -36,10 +36,10 @@ public class SingleTestSuite extends TestCase {
   private static final String IE = "org.openqa.selenium.ie.InternetExplorerDriver";
   private static final String REMOTE = "org.openqa.selenium.remote.server.RemoteWebDriverTestSuite$RemoteWebDriverForTest";
   private static final String REMOTE_IE = "org.openqa.selenium.remote.server.RemoteWebDriverIeTestSuite$RemoteIeWebDriverForTest";
-  private static final String SELENIUM = "org.openqa.selenium.SeleneseBackedWebDriver";
+  private static final String SELENIUM = "org.openqa.selenium.v1.SeleneseBackedWebDriver";
 
   public static Test suite() throws Exception {
-    String driver = FIREFOX;
+    String driver = SELENIUM;
 
     System.setProperty("jna.library.path", "..\\build;build");
     System.setProperty("webdriver.selenium.server.port", String.valueOf(findFreePort()));
@@ -55,8 +55,8 @@ public class SingleTestSuite extends TestCase {
         .usingDriver(driver)
         .keepDriverInstance()
         .includeJavascriptTests()
-        .onlyRun("WebDriverBackedSeleniumLargeTest")
-        .method("testShouldBeAbleToInvokeSeleniumCoreElementLocatorsWithGetEval")
+        .onlyRun("ElementAttributeTest")
+        .method("testShouldIndicateTheElementsThatAreDisabledAreNotEnabled")
         .exclude(ALL)
         .exclude(Ignore.Driver.IE)
         .outputTestNames()
@@ -68,7 +68,7 @@ public class SingleTestSuite extends TestCase {
           "org.openqa.selenium.remote.server.RemoteWebDriverTestSuite$RemoteDriverServerStarter");
     } else if (SELENIUM.equals(driver)) {
       builder.addSuiteDecorator(
-          "org.openqa.selenium.SeleniumServerStarter");
+          "org.openqa.selenium.v1.SeleniumServerStarter");
     }
 
     builder.addSuiteDecorator("org.openqa.selenium.TestNameDecorator");
