@@ -28,12 +28,13 @@ import java.util.Map;
 import com.thoughtworks.selenium.SeleniumException;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Proxy;
+import org.openqa.selenium.remote.DesiredCapabilities;
 
-import static org.openqa.selenium.browserlaunchers.CapabilityType.ForSeleniumServer;
-import static org.openqa.selenium.browserlaunchers.CapabilityType.ForSeleniumServer.AVOIDING_PROXY;
-import static org.openqa.selenium.browserlaunchers.CapabilityType.ForSeleniumServer.ONLY_PROXYING_SELENIUM_TRAFFIC;
-import static org.openqa.selenium.browserlaunchers.CapabilityType.ForSeleniumServer.PROXYING_EVERYTHING;
-import static org.openqa.selenium.browserlaunchers.CapabilityType.PROXY;
+import static org.openqa.selenium.remote.CapabilityType.ForSeleniumServer;
+import static org.openqa.selenium.remote.CapabilityType.ForSeleniumServer.AVOIDING_PROXY;
+import static org.openqa.selenium.remote.CapabilityType.ForSeleniumServer.ONLY_PROXYING_SELENIUM_TRAFFIC;
+import static org.openqa.selenium.remote.CapabilityType.ForSeleniumServer.PROXYING_EVERYTHING;
+import static org.openqa.selenium.remote.CapabilityType.PROXY;
 
 public class Proxies {
   public static final String PROXY_CONFIG = "proxy";
@@ -147,5 +148,36 @@ public class Proxies {
 
   public static boolean isOnlyProxyingSelenium(Capabilities capabilities) {
     return !isProxyingAllTraffic(capabilities);
+  }
+
+  public static Capabilities setProxyEverything(Capabilities source, boolean isProxyingEverything) {
+    DesiredCapabilities toReturn = newDesiredCapabilities(source);
+    toReturn.setCapability(PROXYING_EVERYTHING, isProxyingEverything);
+    return toReturn;
+  }
+
+  public static Capabilities setAvoidProxy(Capabilities source, boolean avoidProxy) {
+    DesiredCapabilities toReturn = newDesiredCapabilities(source);
+    toReturn.setCapability(AVOIDING_PROXY, avoidProxy);
+    return toReturn;
+  }
+
+  public static Capabilities setOnlyProxySeleniumTraffic(Capabilities source, boolean onlyProxySeleniumTraffic) {
+    DesiredCapabilities toReturn = newDesiredCapabilities(source);
+    toReturn.setCapability(ONLY_PROXYING_SELENIUM_TRAFFIC, onlyProxySeleniumTraffic);
+    return toReturn;
+  }
+
+  public static Capabilities setProxyRequired(Capabilities source, boolean proxyRequired) {
+    DesiredCapabilities toReturn = newDesiredCapabilities(source);
+    toReturn.setCapability("proxyRequired", proxyRequired);
+    return toReturn;
+  }
+
+  private static DesiredCapabilities newDesiredCapabilities(Capabilities source) {
+    if (source instanceof DesiredCapabilities) {
+      return (DesiredCapabilities) source;
+    }
+    return new DesiredCapabilities(source);
   }
 }

@@ -1,4 +1,13 @@
 
+java_library(name = "base",
+  srcs = [
+    "CapabilityType.java",
+    "DesiredCapabilities.java",
+  ],
+  deps = [
+    "//java/org/openqa/selenium:webdriver-api",
+  ])
+
 java_library(name = "common",
   srcs = [
     "BeanToJsonConverter.java",
@@ -14,7 +23,8 @@ java_library(name = "common",
     "SimplePropertyDescriptor.java",
   ],
   deps = [
-    "//java/org/openqa/selenium:webdriver-api",
+    ":base",
+
     "//java/org/openqa/selenium/interactions",
     "//java/org/openqa/selenium/browserlaunchers",
     "//third_party/java/guava-libraries",

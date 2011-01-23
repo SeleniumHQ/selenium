@@ -15,14 +15,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package org.openqa.selenium.browserlaunchers;
+package org.openqa.selenium.remote;
 
 /**
  * Commonly seen remote webdriver capabilities.
- *
- * @deprecated Use {@link org.openqa.selenium.remote.CapabilityType}
  */
-@Deprecated
 public interface CapabilityType {
   String BROWSER_NAME = "browserName";
   String PLATFORM = "platform";

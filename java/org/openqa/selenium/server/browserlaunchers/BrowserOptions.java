@@ -18,13 +18,41 @@ limitations under the License.
 package org.openqa.selenium.server.browserlaunchers;
 
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.browserlaunchers.Proxies;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.util.concurrent.TimeUnit;
 
 public class BrowserOptions {
+  private static final String OPTIONS_SET = "optionsSet";
+
   private BrowserOptions() {
     // Utility class
+  }
+
+  public static Capabilities newBrowserOptions() {
+    DesiredCapabilities caps = new DesiredCapabilities();
+
+    return Proxies.setProxyRequired(caps, true);
+  }
+
+  public static Capabilities newBrowserOptions(String browserConfiguration) {
+    DesiredCapabilities caps = new DesiredCapabilities();
+
+    //"name=value;name=value"
+    String[] optionsPairList = browserConfiguration.split(";");
+    for (int i = 0; i < optionsPairList.length; i++) {
+      String[] option = optionsPairList[i].split("=", 2);
+      if (2 == option.length) {
+        String optionsName = option[0].trim();
+        String optionValue = option[1].trim();
+        caps.setCapability(optionsName, optionValue);
+      }
+    }
+    caps.setCapability(OPTIONS_SET, true);
+
+    Capabilities toReturn = Proxies.setProxyRequired(caps, true);
+    return toReturn;
   }
 
   public static boolean isSingleWindow(Capabilities capabilities) {
@@ -50,5 +78,34 @@ public class BrowserOptions {
     }
 
     return Long.parseLong(value);
+  }
+
+  public static boolean hasOptionsSet(Capabilities caps) {
+    boolean options = false;
+
+    options |= isSingleWindow(caps);
+    options |= getExecutablePath(caps) != null;
+    options |= caps.is(OPTIONS_SET);
+
+    return options;
+  }
+
+  public static Capabilities setSingleWindow(Capabilities source, boolean singleWindow) {
+    DesiredCapabilities toReturn = newDesiredCapabilities(source);
+    toReturn.setCapability("singleWindow", singleWindow);
+    return toReturn;
+  }
+
+  public static Capabilities setExecutablePath(Capabilities source, String executablePath) {
+    DesiredCapabilities toReturn = newDesiredCapabilities(source);
+    toReturn.setCapability("executablePath", executablePath);
+    return toReturn;
+  }
+
+  private static DesiredCapabilities newDesiredCapabilities(Capabilities source) {
+    if (source instanceof DesiredCapabilities) {
+      return (DesiredCapabilities) source;
+    }
+    return new DesiredCapabilities(source);
   }
 }
