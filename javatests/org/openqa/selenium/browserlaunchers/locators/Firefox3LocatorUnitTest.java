@@ -1,9 +1,10 @@
-package org.openqa.selenium.server.browserlaunchers.locators;
+package org.openqa.selenium.browserlaunchers.locators;
 
 import junit.framework.TestCase;
+import org.openqa.selenium.browserlaunchers.locators.Firefox3Locator;
 
 /**
- * {@link org.openqa.selenium.server.browserlaunchers.locators.Firefox3Locator} unit test class.
+ * {@link org.openqa.selenium.browserlaunchers.locators.Firefox3Locator} unit test class.
  */
 public class Firefox3LocatorUnitTest extends TestCase {
 

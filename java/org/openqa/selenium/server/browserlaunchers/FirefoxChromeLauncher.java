@@ -26,13 +26,13 @@ import org.openqa.selenium.Platform;
 import org.openqa.selenium.browserlaunchers.AsyncExecute;
 import org.openqa.selenium.browserlaunchers.locators.BrowserInstallation;
 import org.openqa.selenium.browserlaunchers.LauncherUtils;
+import org.openqa.selenium.browserlaunchers.locators.Firefox2or3Locator;
 import org.openqa.selenium.internal.Trace;
 import org.openqa.selenium.internal.TraceFactory;
 import org.openqa.selenium.os.CommandLine;
 import org.openqa.selenium.server.ApplicationRegistry;
 import org.openqa.selenium.server.BrowserConfigurationOptions;
 import org.openqa.selenium.server.RemoteControlConfiguration;
-import org.openqa.selenium.server.browserlaunchers.locators.Firefox2or3Locator;
 
 public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
   private static final Trace LOGGER = TraceFactory.getTrace(FirefoxChromeLauncher.class);

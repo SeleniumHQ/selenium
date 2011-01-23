@@ -19,7 +19,7 @@ package org.openqa.selenium.server.browserlaunchers;
 import org.openqa.selenium.server.ApplicationRegistry;
 import org.openqa.selenium.server.BrowserConfigurationOptions;
 import org.openqa.selenium.server.RemoteControlConfiguration;
-import org.openqa.selenium.server.browserlaunchers.locators.Firefox3Locator;
+import org.openqa.selenium.browserlaunchers.locators.Firefox3Locator;
 
 public class Firefox3Launcher extends FirefoxChromeLauncher {
 

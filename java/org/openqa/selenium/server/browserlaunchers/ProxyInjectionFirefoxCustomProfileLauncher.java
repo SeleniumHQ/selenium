@@ -1,10 +1,10 @@
 package org.openqa.selenium.server.browserlaunchers;
 
 import org.openqa.selenium.browserlaunchers.locators.BrowserInstallation;
+import org.openqa.selenium.browserlaunchers.locators.Firefox2or3Locator;
 import org.openqa.selenium.server.ApplicationRegistry;
 import org.openqa.selenium.server.BrowserConfigurationOptions;
 import org.openqa.selenium.server.RemoteControlConfiguration;
-import org.openqa.selenium.server.browserlaunchers.locators.Firefox2or3Locator;
 
 /**
  * launcher for Firefox under proxy injection mode

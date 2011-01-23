@@ -1,4 +1,4 @@
-package org.openqa.selenium.server.browserlaunchers.locators;
+package org.openqa.selenium.browserlaunchers.locators;
 
 import java.io.File;
 

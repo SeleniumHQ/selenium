@@ -1,7 +1,5 @@
-package org.openqa.selenium.server.browserlaunchers.locators;
+package org.openqa.selenium.browserlaunchers.locators;
 
-import org.openqa.selenium.browserlaunchers.locators.BrowserInstallation;
-import org.openqa.selenium.browserlaunchers.locators.BrowserLocator;
 import org.openqa.selenium.internal.Trace;
 import org.openqa.selenium.internal.TraceFactory;
 

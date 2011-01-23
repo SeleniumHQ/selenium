@@ -28,7 +28,7 @@ import org.openqa.selenium.os.CommandLine;
 import org.openqa.selenium.server.ApplicationRegistry;
 import org.openqa.selenium.server.BrowserConfigurationOptions;
 import org.openqa.selenium.server.RemoteControlConfiguration;
-import org.openqa.selenium.server.browserlaunchers.locators.Firefox2or3Locator;
+import org.openqa.selenium.browserlaunchers.locators.Firefox2or3Locator;
 
 public class FirefoxCustomProfileLauncher extends AbstractBrowserLauncher {
 
