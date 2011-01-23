@@ -1,8 +1,6 @@
-package org.openqa.selenium.server.browserlaunchers.locators;
+package org.openqa.selenium.browserlaunchers.locators;
 
-import org.openqa.selenium.browserlaunchers.locators.BrowserInstallation;
 import org.openqa.selenium.browserlaunchers.LauncherUtils;
-import org.openqa.selenium.browserlaunchers.locators.BrowserLocator;
 import org.openqa.selenium.internal.Trace;
 import org.openqa.selenium.internal.TraceFactory;
 import org.openqa.selenium.os.WindowsUtils;
@@ -89,7 +87,8 @@ public abstract class SingleBrowserLocator implements BrowserLocator {
         return retrieveValidInstallationPath(CommandLine.findExecutable(fileName));
     }
 
-    protected String couldNotFindAnyInstallationMessage() {
+    // TODO(simon): Make this protected once all the locators are moved here
+    public String couldNotFindAnyInstallationMessage() {
         return browserName() + " could not be found in the path!\n" +
                 "Please add the directory containing '" + humanFriendlyLauncherFileNames() + "' to your PATH environment\n" +
                 "variable, or explicitly specify a path to " + browserName() + " like this:\n" +

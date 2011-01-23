@@ -46,7 +46,7 @@ java_library(name = "base",
 java_library(name = "tests",
   srcs = [
     "*Test.java",
-    "browserlaunchers/*Test.java",
+    "browserlaunchers/**/*Test.java",
     "html5/*Test.java",
     "interactions/*.java",
     "internal/**/*.java",

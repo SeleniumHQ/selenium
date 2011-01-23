@@ -11,9 +11,27 @@ java_library(name = "browserlaunchers",
     "//third_party/java/guava-libraries",
   ],
   deps = [
+    ":launcher-utils",
     "//java/com/thoughtworks/selenium:api",
     "//java/org/openqa/selenium/browserlaunchers/locators",
     "//java/org/openqa/selenium/internal:logging",
     "//java/org/openqa/selenium/net",
     "//java/org/openqa/selenium/os",
+  ])
+
+java_library(name = "launcher-utils",
+  srcs = [
+    "AsyncExecute.java",
+    "CapabilityType.java",
+    "DoNotUseProxyPac.java",
+    "LauncherUtils.java",
+    "Proxies.java",
+  ],
+  deps = [
+    "//java/com/thoughtworks/selenium:api",
+    "//java/org/openqa/selenium:webdriver-api",
+    "//java/org/openqa/selenium/io",
+    "//java/org/openqa/selenium/net",
+    "//java/org/openqa/selenium/os",
+    "//third_party/java/guava-libraries",
   ])

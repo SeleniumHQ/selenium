@@ -1,5 +1,6 @@
 package org.openqa.selenium.server.browserlaunchers.locators;
 
+import org.openqa.selenium.browserlaunchers.locators.SingleBrowserLocator;
 import org.openqa.selenium.os.WindowsUtils;
 
 /**
