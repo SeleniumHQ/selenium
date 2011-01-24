@@ -32,21 +32,42 @@ protected:
 			ElementWrapper *element_wrapper;
 			status_code = this->GetElement(manager, element_id, &element_wrapper);
 			if (status_code == SUCCESS) {
-				bool displayed;
-				status_code = element_wrapper->IsDisplayed(&displayed);
-				if (status_code == SUCCESS) {
-					long height, width;
-					element_wrapper->element()->get_offsetHeight(&height);
-					element_wrapper->element()->get_offsetWidth(&width);
-					Json::Value response_value;
-					response_value["width"] = width;
-					response_value["height"] = height;
-					response->SetResponse(SUCCESS, response_value);
-					return;
-				} else {
-					response->SetErrorResponse(status_code, "Element is not displayed.");
-					return;
+				// The atom is just the definition of an anonymous
+				// function: "function() {...}"; Wrap it in another function so we can
+				// invoke it with our arguments without polluting the current namespace.
+				std::wstring script(L"(function() { return (");
+
+				// Read in all the scripts
+				for (int j = 0; GET_SIZE[j]; j++) {
+					script += GET_SIZE[j];
 				}
+				
+				// Now for the magic and to close things
+				script += L")})();";
+
+				ScriptWrapper *script_wrapper = new ScriptWrapper(script, 1);
+				script_wrapper->AddArgument(element_wrapper);
+				int status_code = browser_wrapper->ExecuteScript(script_wrapper);
+
+				// TODO (JimEvans): Find a way to collapse this and the atom
+				// call into a single JS function.
+				std::wstring size_script(L"(function() { return function(){ return [arguments[0].width, arguments[0].height];};})();");
+				ScriptWrapper *size_script_wrapper = new ScriptWrapper(size_script, 1);
+				size_script_wrapper->AddArgument(script_wrapper->result());
+				status_code = browser_wrapper->ExecuteScript(size_script_wrapper);
+
+				Json::Value size_array;
+				size_script_wrapper->ConvertResultToJsonValue(manager, &size_array);
+
+				delete size_script_wrapper;
+				delete script_wrapper;
+
+				Json::UInt index = 0;
+				Json::Value response_value;
+				response_value["width"] = size_array[index];
+				++index;
+				response_value["height"] = size_array[index];
+				response->SetResponse(SUCCESS, response_value);
 			} else {
 				response->SetErrorResponse(status_code, "Element is no longer valid");
 				return;
