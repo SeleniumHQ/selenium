@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src/java"/>
+	<classpathentry kind="src" path="test/java"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
+	<classpathentry kind="src" path="gen"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="/third_party/java/guava-libraries/guava-r07.jar"/>
+	<classpathentry kind="lib" path="/third_party/java/jetty/jetty-lite-7.2.0-repackaged-for-android.jar"/>
+	<classpathentry kind="lib" path="/third_party/java/json/json-20080701.jar"/>
+        <classpathentry kind="lib" path="../build/java/org/openqa/jetty/jetty.jar"/>
+	<classpathentry kind="lib" path="../build/java/org/openqa/selenium/remote/client.jar"/>
+	<classpathentry kind="lib" path="../build/java/org/openqa/selenium/remote/server/server.jar"/>
+	<classpathentry kind="lib" path="../build/java/org/openqa/selenium/base.jar"/>
+	<classpathentry kind="lib" path="../build/java/org/openqa/selenium/internal/codecs.jar"/>
+	<classpathentry kind="lib" path="../build/java/org/openqa/selenium/internal/logging.jar"/>
+	<classpathentry kind="lib" path="../build/java/org/openqa/selenium/webdriver-api.jar"/>
+	<classpathentry kind="lib" path="../build/java/org/openqa/selenium/remote/common.jar"/>
+	<classpathentry kind="lib" path="../build/java/org/openqa/selenium/browserlaunchers/launcher-utils.jar"/>
+	<classpathentry kind="lib" path="../build/java/org/openqa/selenium/support/events/events.jar"/>
+	<classpathentry kind="output" path="build"/>
+</classpath>
