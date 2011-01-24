@@ -1460,7 +1460,16 @@ namespace Selenium
 		{
 			return commandProcessor.GetNumber("getXpathCount", new String[] {xpath,});
 		}
-
+		
+		/// <summary>Returns the number of nodes that match the specified css, eg. "css=table" would give
+		/// the number of tables.
+		/// </summary>
+		/// <param name="cssLocator">the css path expression to evaluate. do NOT wrap this expression in a 'count()' function; we will do that for you.</param>
+		/// <returns>the number of nodes that match the specified css locator</returns>
+		public Decimal GetCSSCount(String cssLocator)
+		{
+			return commandProcessor.GetNumber("getCssCount", new String[] {cssLocator,});
+		}
 
 		/// <summary>Temporarily sets the "id" attribute of the specified element, so you can locate it in the future
 		/// using its ID rather than a slow/complicated XPath.  This ID will disappear once the page is
