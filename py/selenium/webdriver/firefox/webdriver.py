@@ -18,7 +18,7 @@ import httplib
 from selenium.webdriver.common.exceptions import ErrorInResponseException
 from selenium.webdriver.remote.command import Command
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
-from selenium.webdriver.firefox.webelement import WebElement
+from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.firefox.firefoxlauncher import FirefoxLauncher
 from selenium.webdriver.firefox.firefox_profile import FirefoxProfile
 from selenium.webdriver.firefox.extensionconnection import ExtensionConnection
