@@ -27,10 +27,8 @@ import static org.openqa.selenium.Ignore.Driver.CHROME_NON_WINDOWS;
 import static org.openqa.selenium.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.IE;
-import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 
-@Ignore(value = IPHONE, reason = "sendKeys is broken on the iPhone")
 public class TypingTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
