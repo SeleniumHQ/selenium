@@ -310,7 +310,7 @@ module CrazyFunJava
 
       file jar do
         CrazyFunJava.ant.jar(:jarfile => jar, :basedir => temp_dir(dir, args[:name]),
-            :excludes => '.svn') do |ant|
+            :excludes => '.svn', :duplicate => 'preserve') do |ant|
           if (args[:main])
             ant.manifest do |ant|
               ant.attribute(:name => 'Main-Class', :value => args[:main])
@@ -525,7 +525,7 @@ module CrazyFunJava
         cp = ClassPath.new(jar_name(dir, args[:name])).all
         cp.push(jar_name(dir, args[:name])) if args[:srcs]
 
-        CrazyFunJava.ant.jarjar(:jarfile => jar) do |ant|
+        CrazyFunJava.ant.jarjar(:jarfile => jar, :duplicate => 'preserve') do |ant|
           cp.each do |j|
             ant.zipfileset(:src => j, :excludes => "META-INF/BCKEY.DSA,META-INF/BCKEY.SF")
           end
