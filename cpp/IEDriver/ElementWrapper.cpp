@@ -36,7 +36,32 @@ Json::Value ElementWrapper::ConvertToJson() {
 }
 
 int ElementWrapper::IsDisplayed(bool *result) {
-	return this->IsElementDisplayed(this->element_, result);
+	int status_code = SUCCESS;
+
+	// The atom is just the definition of an anonymous
+	// function: "function() {...}"; Wrap it in another function so we can
+	// invoke it with our arguments without polluting the current namespace.
+	std::wstring script(L"(function() { return (");
+
+	// Read in all the scripts
+	for (int j = 0; IS_DISPLAYED[j]; j++) {
+		script += IS_DISPLAYED[j];
+	}
+
+	// Now for the magic and to close things
+	script += L")})();";
+
+	ScriptWrapper *script_wrapper = new ScriptWrapper(script, 1);
+	script_wrapper->AddArgument(this->element_);
+	status_code = this->browser_->ExecuteScript(script_wrapper);
+
+	if (status_code == SUCCESS) {
+		*result = script_wrapper->result().boolVal == VARIANT_TRUE;
+	}
+
+	delete script_wrapper;
+
+	return status_code;
 }
 
 bool ElementWrapper::IsEnabled() {
@@ -421,35 +446,6 @@ bool ElementWrapper::IsRadioButton() {
 	CComBSTR type_name;
 	input->get_type(&type_name);
 	return _wcsicmp((LPCWSTR)((BSTR)type_name), L"radio") == 0;
-}
-
-int ElementWrapper::IsElementDisplayed(IHTMLElement *element, bool *result) {
-	int status_code = SUCCESS;
-
-	// The atom is just the definition of an anonymous
-	// function: "function() {...}"; Wrap it in another function so we can
-	// invoke it with our arguments without polluting the current namespace.
-	std::wstring script(L"(function() { return (");
-
-	// Read in all the scripts
-	for (int j = 0; IS_DISPLAYED[j]; j++) {
-		script += IS_DISPLAYED[j];
-	}
-
-	// Now for the magic and to close things
-	script += L")})();";
-
-	ScriptWrapper *script_wrapper = new ScriptWrapper(script, 1);
-	script_wrapper->AddArgument(this->element_);
-	status_code = this->browser_->ExecuteScript(script_wrapper);
-
-	if (status_code == SUCCESS) {
-		*result = script_wrapper->result().boolVal == VARIANT_TRUE;
-	}
-
-	delete script_wrapper;
-
-	return status_code;
 }
 
 void ElementWrapper::FireEvent(IHTMLDOMNode* fire_event_on, LPCWSTR event_name) {

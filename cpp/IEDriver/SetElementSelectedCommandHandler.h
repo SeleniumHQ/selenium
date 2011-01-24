@@ -43,41 +43,32 @@ protected:
 						response->SetErrorResponse(EELEMENTNOTDISPLAYED, "Cannot select hidden element");
 						return;
 					} else {
-						/* TODO(malcolmr): Why not: if (isSelected()) return; ? Do we really need to
-						   re-set 'checked=true' for checkbox and do effectively nothing for select?
-						   Maybe we should check for disabled elements first? */
-
+						bool requires_native_click(false);
+						CComBSTR attribute_name;
 						if (element_wrapper->IsCheckBox()) {
-							if (!element_wrapper->IsSelected()) {
-								element_wrapper->Click();
-								browser_wrapper->set_wait_required(true);
-							}
-
-							CComBSTR checked(L"checked");
-							CComBSTR is_true(L"true");
-							CComVariant is_checked(is_true);
-							element_wrapper->element()->setAttribute(checked, is_checked, 0);
-
-							if (currently_selected != element_wrapper->IsSelected()) {
-								CComQIPtr<IHTMLDOMNode> check_box_node(element_wrapper->element());
-								element_wrapper->FireEvent(check_box_node, L"onchange");
-							}
-							response->SetResponse(SUCCESS, Json::Value::null);
-							return;
+							requires_native_click = true;
+							attribute_name = L"checked";
 						} else if (element_wrapper->IsRadioButton()) {
+							requires_native_click = true;
+							attribute_name = L"selected";
+						}
+
+						// TODO(malcolmr): Why not: if (isSelected()) return; ? Do we really need to
+						// re-set 'checked=true' for checkbox and do effectively nothing for select?
+						// Maybe we should check for disabled elements first?
+						if (requires_native_click) {
 							if (!element_wrapper->IsSelected()) {
 								element_wrapper->Click();
 								browser_wrapper->set_wait_required(true);
 							}
 
-							CComBSTR selected(L"selected");
 							CComBSTR is_true(L"true");
-							CComVariant select(is_true);
-							element_wrapper->element()->setAttribute(selected, select, 0);
+							CComVariant attribute_value(is_true);
+							element_wrapper->element()->setAttribute(attribute_name, attribute_value, 0);
 
 							if (currently_selected != element_wrapper->IsSelected()) {
-								CComQIPtr<IHTMLDOMNode> radio_button_node(element_wrapper->element());
-								element_wrapper->FireEvent(radio_button_node, L"onchange");
+								CComQIPtr<IHTMLDOMNode> element_node(element_wrapper->element());
+								element_wrapper->FireEvent(element_node, L"onchange");
 							}
 							response->SetResponse(SUCCESS, Json::Value::null);
 							return;

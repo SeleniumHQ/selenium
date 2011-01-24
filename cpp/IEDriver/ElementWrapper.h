@@ -32,7 +32,6 @@ public:
 
 private:
 	int GetLocation(HWND containing_window_handle, long* left, long* right, long* top, long* bottom);
-	int IsElementDisplayed(IHTMLElement *element, bool* result);
 
 	std::wstring element_id_;
 	IHTMLElement *element_;
