@@ -45,6 +45,12 @@ js_fragment(name = "get_location",
   function = "goog.style.getPageOffset",
   deps = [ "//common:bot" ])
 
+# TODO(simon): I'm not convinced this is right
+js_fragment(name = "get_size",
+  module = "goog.style",
+  function = "goog.style.getSize",
+  deps = [ "//common:bot" ])
+
 js_fragment(name = "get_text",
   module = "webdriver.element",
   function = "webdriver.element.getText",
