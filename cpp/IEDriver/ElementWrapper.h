@@ -32,13 +32,6 @@ public:
 
 private:
 	int GetLocation(HWND containing_window_handle, long* left, long* right, long* top, long* bottom);
-	bool StyleIndicatesVisible(IHTMLElement* element);
-	int StyleIndicatesDisplayed(IHTMLElement *element, bool* displayed);
-	void ExtractElementText(std::wstring& toReturn, IHTMLDOMNode* node, bool isPreformatted);
-	void CollapsingAppend(std::wstring& s, const std::wstring& s2);
-	std::wstring CollapseWhitespace(CComBSTR& comtext);
-	bool IsBlockLevel(IHTMLDOMNode *node);
-	int IsNodeDisplayed(IHTMLDOMNode *node, bool* result);
 	int IsElementDisplayed(IHTMLElement *element, bool* result);
 
 	std::wstring element_id_;
