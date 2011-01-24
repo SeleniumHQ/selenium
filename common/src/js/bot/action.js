@@ -100,7 +100,7 @@ bot.action.isTextual = function(element) {
 
   if (tagName == goog.dom.TagName.INPUT) {
     var type = element.type.toLowerCase();
-    return type == 'text' || type == 'password';
+    return type == 'text' || type == 'password' || type == 'email';
   }
 
   return false;

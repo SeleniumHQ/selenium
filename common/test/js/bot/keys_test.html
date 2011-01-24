@@ -32,7 +32,7 @@
      * @param {string} input Value to type into textbox.
      */
     function runTypingTest(input) {
-      var inputIds = ['textbox', 'password', 'textarea'];
+      var inputIds = ['textbox', 'password', 'email', 'textarea'];
       var countBox = document.getElementById('change_count');
 
       for (var i = 0; i < inputIds.length; i++) {
@@ -70,6 +70,9 @@
            oninput="incrCount();"
            onpropertychange="incrCount();">
     <input type="password" id="password"
+           oninput="incrCount();"
+           onpropertychange="incrCount();">
+    <input type="email" id="email"
            oninput="incrCount();"
            onpropertychange="incrCount();">
     <textarea id="textarea"

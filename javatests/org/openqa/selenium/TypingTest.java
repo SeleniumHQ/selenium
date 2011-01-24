@@ -625,4 +625,12 @@ public class TypingTest extends AbstractDriverTestCase {
 
     assertEquals("Fishee!", element.getText());
   }  
+
+  @JavascriptEnabled
+  public void testShouldBeAbleToTypeOnAnEmailInputField() {
+    driver.get(pages.formPage);
+    WebElement email = driver.findElement(By.id("email"));
+    email.sendKeys("foobar");
+    assertThat(email.getValue(), equalTo("foobar"));
+  }
 }
