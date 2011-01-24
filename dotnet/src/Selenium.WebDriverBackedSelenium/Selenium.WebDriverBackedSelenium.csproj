@@ -1,8 +1,8 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <ProjectGuid>{0EAF6AA9-B712-464B-A11B-FA3CF7577D80}</ProjectGuid>
-    <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <OutputType>Library</OutputType>
     <RootNamespace>Selenium</RootNamespace>
@@ -49,8 +49,14 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <OutputPath>..\..\..\build\cli\Debug\</OutputPath>
     <DocumentationFile>..\..\..\build\cli\Debug\Selenium.WebDriverBackedSelenium.xml</DocumentationFile>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <WarningLevel>4</WarningLevel>
+    <Optimize>false</Optimize>
+    <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
   </PropertyGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core">
@@ -191,11 +197,13 @@
     <Compile Include="Internal\SeleniumEmulation\LookupStrategies\ClassLookupStrategy.cs" />
     <Compile Include="Internal\SeleniumEmulation\LookupStrategies\IdentifierLookupStrategy.cs" />
     <Compile Include="Internal\SeleniumEmulation\ILookupStrategy.cs" />
+    <Compile Include="Internal\SeleniumEmulation\GetCssCount.cs" />
   </ItemGroup>
   <PropertyGroup>
     <PostBuildEvent>copy /y $(SolutionDir)java\org\openqa\selenium\internal\seleniumemulation\*.js $(TargetDir)</PostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
-    <Folder Include="Internal\SeleneseDriver\" />
+    <Folder Include="..\WebdriverBackedSelenium\Internal\SeleneseDriver\" />
+    <Folder Include="Internal\" />
   </ItemGroup>
 </Project>

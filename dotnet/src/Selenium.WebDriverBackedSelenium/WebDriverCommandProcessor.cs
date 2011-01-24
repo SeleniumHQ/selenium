@@ -277,6 +277,7 @@ namespace Selenium
             seleneseMethods.Add("getTitle", new GetTitle());
             seleneseMethods.Add("getValue", new GetValue(elementFinder));
             seleneseMethods.Add("getXpathCount", new GetXpathCount());
+			seleneseMethods.Add("getCssCount", new GetCssCount());
             seleneseMethods.Add("goBack", new GoBack());
             seleneseMethods.Add("highlight", new Highlight(elementFinder));
             seleneseMethods.Add("isChecked", new IsChecked(elementFinder));
