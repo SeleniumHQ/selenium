@@ -32,143 +32,151 @@ import static org.hamcrest.core.IsNull.notNullValue;
 import static org.hamcrest.core.IsNull.nullValue;
 
 public class PageFactoryTest extends MockObjectTestCase {
-    private WebDriver driver = null;
 
-    public void testShouldProxyElementsInAnInstantiatedPage() {
-        PublicPage page = new PublicPage();
+  private WebDriver driver = null;
 
-        assertThat(page.q, is(nullValue()));
+  public void testShouldProxyElementsInAnInstantiatedPage() {
+    PublicPage page = new PublicPage();
 
-        PageFactory.initElements(driver, page);
+    assertThat(page.q, is(nullValue()));
 
-        assertThat(page.q, is(notNullValue()));
-    }
+    PageFactory.initElements(driver, page);
 
-    public void testShouldInsertProxiesForPublicWebElements() {
-        PublicPage page = PageFactory.initElements(driver, PublicPage.class);
+    assertThat(page.q, is(notNullValue()));
+  }
 
-        assertThat(page.q, is(notNullValue()));
-    }
+  public void testShouldInsertProxiesForPublicWebElements() {
+    PublicPage page = PageFactory.initElements(driver, PublicPage.class);
 
-    public void testShouldProxyElementsFromParentClassesToo() {
-        ChildPage page = new ChildPage();
+    assertThat(page.q, is(notNullValue()));
+  }
 
-        PageFactory.initElements(driver, page);
+  public void testShouldProxyElementsFromParentClassesToo() {
+    ChildPage page = new ChildPage();
 
-        assertThat(page.q, is(notNullValue()));
-        assertThat(page.submit, is(notNullValue()));
-    }
+    PageFactory.initElements(driver, page);
 
-    public void testShouldProxyRenderedWebElementFields() {
-      PublicPage page = PageFactory.initElements(driver, PublicPage.class);
+    assertThat(page.q, is(notNullValue()));
+    assertThat(page.submit, is(notNullValue()));
+  }
 
-      assertThat(page.rendered, is(notNullValue()));
-    }
+  public void testShouldProxyRenderedWebElementFields() {
+    PublicPage page = PageFactory.initElements(driver, PublicPage.class);
 
-    public void testShouldProxyPrivateElements() {
-        PrivatePage page = new PrivatePage();
+    assertThat(page.rendered, is(notNullValue()));
+  }
 
-        PageFactory.initElements(driver, page);
+  public void testShouldProxyPrivateElements() {
+    PrivatePage page = new PrivatePage();
 
-        assertThat(page.getField(), is(notNullValue()));
-    }
+    PageFactory.initElements(driver, page);
 
-    public void testShouldUseAConstructorThatTakesAWebDriverAsAnArgument() {
-        driver = mock(WebDriver.class);
+    assertThat(page.getField(), is(notNullValue()));
+  }
 
-        ConstructedPage page = PageFactory.initElements(driver, ConstructedPage.class);
+  public void testShouldUseAConstructorThatTakesAWebDriverAsAnArgument() {
+    driver = mock(WebDriver.class);
 
-        assertThat(driver, equalTo(page.driver));
-    }
+    ConstructedPage page = PageFactory.initElements(driver, ConstructedPage.class);
 
-    public void testShouldNotDecorateFieldsWhenTheFieldDecoratorReturnsNull() {
-      PublicPage page = new PublicPage();
-      // Assign not-null values
-      WebElement q = mock(WebElement.class);
-      page.q = q;
+    assertThat(driver, equalTo(page.driver));
+  }
 
-      PageFactory.initElements(new FieldDecorator() {
-        public Object decorate(ClassLoader loader, Field field) {
-          return null;
-        }
-      }, page);
+  public void testShouldNotDecorateFieldsWhenTheFieldDecoratorReturnsNull() {
+    PublicPage page = new PublicPage();
+    // Assign not-null values
+    WebElement q = mock(WebElement.class);
+    page.q = q;
 
-      assertThat(page.q, equalTo(q));
-    }
-
-    public void testTriesToDecorateNonWebElements() {
-      NonWebElementsPage page = new NonWebElementsPage();
-      // Assign not-null values
-
-      PageFactory.initElements(new FieldDecorator() {
-        public Object decorate(ClassLoader loader, Field field) {
-          return new Integer(5);
-        }
-      }, page);
-
-      assertThat(page.num, equalTo(new Integer(5)));
-    }
-
-    public void testShouldComplainWhenMoreThanOneFindByAttributeIsSet() {
-      GrottyPage page = new GrottyPage();
-
-      try {
-        PageFactory.initElements((WebDriver) null, page);
-        fail("Should not have allowed page to be initialised");
-      } catch (IllegalArgumentException e) {
-        // this is expected
+    PageFactory.initElements(new FieldDecorator() {
+      public Object decorate(ClassLoader loader, Field field) {
+        return null;
       }
-    }
+    }, page);
 
-    public void testShouldComplainWhenMoreThanOneFindByShortFormAttributeIsSet() {
-      GrottyPage2 page = new GrottyPage2();
+    assertThat(page.q, equalTo(q));
+  }
 
-      try {
-        PageFactory.initElements((WebDriver) null, page);
-        fail("Should not have allowed page to be initialised");
-      } catch (IllegalArgumentException e) {
-        // this is expected
+  public void testTriesToDecorateNonWebElements() {
+    NonWebElementsPage page = new NonWebElementsPage();
+    // Assign not-null values
+
+    PageFactory.initElements(new FieldDecorator() {
+      public Object decorate(ClassLoader loader, Field field) {
+        return new Integer(5);
       }
+    }, page);
+
+    assertThat(page.num, equalTo(new Integer(5)));
+  }
+
+  public void testShouldComplainWhenMoreThanOneFindByAttributeIsSet() {
+    GrottyPage page = new GrottyPage();
+
+    try {
+      PageFactory.initElements((WebDriver) null, page);
+      fail("Should not have allowed page to be initialised");
+    } catch (IllegalArgumentException e) {
+      // this is expected
     }
+  }
 
-    public static class PublicPage {
-    		@FindBy(name = "q")
-        public WebElement q;
+  public void testShouldComplainWhenMoreThanOneFindByShortFormAttributeIsSet() {
+    GrottyPage2 page = new GrottyPage2();
 
-        public RenderedWebElement rendered;
+    try {
+      PageFactory.initElements((WebDriver) null, page);
+      fail("Should not have allowed page to be initialised");
+    } catch (IllegalArgumentException e) {
+      // this is expected
     }
+  }
 
-    public static class ChildPage extends PublicPage {
-        public WebElement submit;
+  public static class PublicPage {
+
+    @FindBy(name = "q")
+    public WebElement q;
+
+    public RenderedWebElement rendered;
+  }
+
+  public static class ChildPage extends PublicPage {
+
+    public WebElement submit;
+  }
+
+  public static class ConstructedPage {
+
+    public WebDriver driver;
+
+    public ConstructedPage(WebDriver driver) {
+      this.driver = driver;
     }
+  }
 
-    public static class ConstructedPage {
-        public WebDriver driver;
+  public static class PrivatePage {
 
-        public ConstructedPage(WebDriver driver) {
-            this.driver = driver;
-        }
+    private WebElement allMine = null;
+
+    public WebElement getField() {
+      return allMine;
     }
+  }
 
-    public static class PrivatePage {
-        private WebElement allMine = null;
+  public static class GrottyPage {
 
-        public WebElement getField() {
-            return allMine;
-        }
-    }
+    @FindBy(how = How.XPATH, using = "//body", id = "cheese")
+    private WebElement one;
+  }
 
-    public static class GrottyPage {
-      @FindBy(how = How.XPATH, using = "//body", id = "cheese")
-      private WebElement one;
-    }
+  public static class GrottyPage2 {
 
-    public static class GrottyPage2 {
-      @FindBy(xpath = "//body", id = "cheese")
-      private WebElement two;
-    }
+    @FindBy(xpath = "//body", id = "cheese")
+    private WebElement two;
+  }
 
-    public static class NonWebElementsPage {
-      public Integer num;
-    }
+  public static class NonWebElementsPage {
+
+    public Integer num;
+  }
 }
