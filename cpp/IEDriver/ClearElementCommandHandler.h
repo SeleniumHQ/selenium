@@ -1,6 +1,7 @@
 #ifndef WEBDRIVER_IE_CLEARELEMENTCOMMANDHANDLER_H_
 #define WEBDRIVER_IE_CLEARELEMENTCOMMANDHANDLER_H_
 
+#include "atoms.h"
 #include "BrowserManager.h"
 
 namespace webdriver {
@@ -35,41 +36,29 @@ protected:
 			status_code = this->GetElement(manager, element_id, &element_wrapper);
 			if (status_code == SUCCESS)
 			{
-				CComQIPtr<IHTMLElement2> element2(element_wrapper->element());
-				if (!element2) {
-					response->SetErrorResponse(EUNHANDLEDERROR, "Cannot cast element to IHTMLElement2");
-					return;
-				} else {
-					// TODO: Check HRESULT values for errors.
-					HRESULT hr = S_OK;
-					CComQIPtr<IHTMLTextAreaElement> text_area(element_wrapper->element());
-					CComQIPtr<IHTMLInputElement> input_element(element_wrapper->element());
-					CComBSTR v;
-					if (text_area) {
-						hr = text_area->get_value(&v);
-					}
-					if (input_element) {
-						hr = input_element->get_value(&v);
-					}
-					bool fire_change = v.Length() > 0;
+				// The atom is just the definition of an anonymous
+				// function: "function() {...}"; Wrap it in another function so we can
+				// invoke it with our arguments without polluting the current namespace.
+				std::wstring script(L"(function() { return (");
 
-					hr = element2->focus();
-
-					CComBSTR empty_value(L"");
-					if (text_area) hr = text_area->put_value(empty_value);
-					if (input_element) hr = input_element->put_value(empty_value);
-					
-					if (fire_change) {
-						CComQIPtr<IHTMLDOMNode> node(element_wrapper->element());
-						element_wrapper->FireEvent(node, L"onchange");
-					}
-
-					hr = element2->blur();
-					browser_wrapper->AttachToWindowInputQueue();
-
-					LRESULT lr;
-					::SendMessageTimeoutW(window_handle, WM_SETTEXT, 0, (LPARAM) L"", SMTO_ABORTIFHUNG, 3000, (PDWORD_PTR)&lr);
+				// Read in all the scripts
+				for (int j = 0; CLEAR[j]; j++) {
+					script += CLEAR[j];
 				}
+
+				// Now for the magic and to close things
+				script += L")})();";
+
+				ScriptWrapper *script_wrapper = new ScriptWrapper(script, 1);
+				script_wrapper->AddArgument(element_wrapper);
+				status_code = browser_wrapper->ExecuteScript(script_wrapper);
+				delete script_wrapper;
+				if (status_code != SUCCESS) {
+					response->SetErrorResponse(EUNHANDLEDERROR, "Element is no longer valid");
+					return;
+				}
+
+				response->SetResponse(SUCCESS, Json::Value::null);
 			} else {
 				response->SetErrorResponse(status_code, "Element is no longer valid");
 				return;
