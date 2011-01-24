@@ -394,7 +394,6 @@ bool ElementWrapper::IsSelected() {
 	script_wrapper->AddArgument(this->element_);
 	int status_code = this->browser_->ExecuteScript(script_wrapper);
 
-	Json::Value selected_value(false);
 	if (status_code == SUCCESS && script_wrapper->ResultIsBoolean()) {
 		selected = script_wrapper->result().boolVal == VARIANT_TRUE;
 	}
