@@ -162,7 +162,6 @@ int ElementWrapper::GetAttributeValue(std::wstring attribute_name, VARIANT *attr
 	return SUCCESS;
 }
 
-
 int ElementWrapper::GetLocationOnceScrolledIntoView(long *x, long *y, long *width, long *height) {
     CComPtr<IHTMLDOMNode2> node;
 	HRESULT hr = this->element_->QueryInterface(&node);
@@ -680,47 +679,47 @@ int ElementWrapper::IsNodeDisplayed(IHTMLDOMNode *node, bool* result) {
 }
 
 int ElementWrapper::IsElementDisplayed(IHTMLElement *element, bool *result) {
-	CComQIPtr<IHTMLInputHiddenElement> hidden(element);
-	if (hidden) {
-		*result = false;
-		return SUCCESS;
-	}
-
-	bool displayed;
-	int value = this->StyleIndicatesDisplayed(element, &displayed);
-
-	if (value != SUCCESS) {
-		return value;
-	}
-
-	*result = displayed && this->StyleIndicatesVisible(element);
-	return SUCCESS;
-	//int status_code = SUCCESS;
-
-	//// The atom is just the definition of an anonymous
-	//// function: "function() {...}"; Wrap it in another function so we can
-	//// invoke it with our arguments without polluting the current namespace.
-	//std::wstring script(L"(function() { return (");
-
-	//// Read in all the scripts
-	//for (int j = 0; IS_DISPLAYED[j]; j++) {
-	//	script += IS_DISPLAYED[j];
+	//CComQIPtr<IHTMLInputHiddenElement> hidden(element);
+	//if (hidden) {
+	//	*result = false;
+	//	return SUCCESS;
 	//}
 
-	//// Now for the magic and to close things
-	//script += L")})();";
+	//bool displayed;
+	//int value = this->StyleIndicatesDisplayed(element, &displayed);
 
-	//ScriptWrapper *script_wrapper = new ScriptWrapper(script, 1);
-	//script_wrapper->AddArgument(this->element_);
-	//status_code = this->browser_->ExecuteScript(script_wrapper);
-
-	//if (status_code == SUCCESS) {
-	//	*result = script_wrapper->result().boolVal == VARIANT_TRUE;
+	//if (value != SUCCESS) {
+	//	return value;
 	//}
 
-	//delete script_wrapper;
-
+	//*result = displayed && this->StyleIndicatesVisible(element);
 	//return SUCCESS;
+	int status_code = SUCCESS;
+
+	// The atom is just the definition of an anonymous
+	// function: "function() {...}"; Wrap it in another function so we can
+	// invoke it with our arguments without polluting the current namespace.
+	std::wstring script(L"(function() { return (");
+
+	// Read in all the scripts
+	for (int j = 0; IS_DISPLAYED[j]; j++) {
+		script += IS_DISPLAYED[j];
+	}
+
+	// Now for the magic and to close things
+	script += L")})();";
+
+	ScriptWrapper *script_wrapper = new ScriptWrapper(script, 1);
+	script_wrapper->AddArgument(this->element_);
+	status_code = this->browser_->ExecuteScript(script_wrapper);
+
+	if (status_code == SUCCESS) {
+		*result = script_wrapper->result().boolVal == VARIANT_TRUE;
+	}
+
+	delete script_wrapper;
+
+	return SUCCESS;
 }
 
 void ElementWrapper::FireEvent(IHTMLDOMNode* fire_event_on, LPCWSTR event_name) {
