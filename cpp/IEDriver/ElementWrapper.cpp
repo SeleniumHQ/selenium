@@ -40,13 +40,6 @@ int ElementWrapper::IsDisplayed(bool *result) {
 }
 
 bool ElementWrapper::IsEnabled() {
-	//CComQIPtr<IHTMLElement3> elem3(this->element_);
-	//if (!elem3) {
-	//	return false;
-	//}
-	//VARIANT_BOOL is_disabled;
-	//elem3->get_disabled(&is_disabled);
-	//return !is_disabled;
 	bool result(false);
 
 	// The atom is just the definition of an anonymous
@@ -467,22 +460,30 @@ int ElementWrapper::GetLocation(HWND containing_window_handle, long* left, long*
 }
 
 bool ElementWrapper::IsSelected() {
-	CComQIPtr<IHTMLOptionElement> option(this->element_);
-	if (option) {
-		VARIANT_BOOL is_selected;
-		option->get_selected(&is_selected);
-		return is_selected == VARIANT_TRUE;
+	bool selected(false);
+	// The atom is just the definition of an anonymous
+	// function: "function() {...}"; Wrap it in another function so we can
+	// invoke it with our arguments without polluting the current namespace.
+	std::wstring script(L"(function() { return (");
+
+	// Read in all the scripts
+	for (int j = 0; IS_SELECTED[j]; j++) {
+		script += IS_SELECTED[j];
+	}
+	
+	// Now for the magic and to close things
+	script += L")})();";
+
+	ScriptWrapper *script_wrapper = new ScriptWrapper(script, 1);
+	script_wrapper->AddArgument(this->element_);
+	int status_code = this->browser_->ExecuteScript(script_wrapper);
+
+	Json::Value selected_value(false);
+	if (status_code == SUCCESS && script_wrapper->ResultIsBoolean()) {
+		selected = script_wrapper->result().boolVal == VARIANT_TRUE;
 	}
 
-	if (this->IsCheckBox() || this->IsRadioButton()) {
-		CComQIPtr<IHTMLInputElement> input(this->element_);
-
-		VARIANT_BOOL is_checked;
-		input->get_checked(&is_checked);
-		return is_checked == VARIANT_TRUE;
-	}
-
-	return false;
+	return selected;
 }
 
 bool ElementWrapper::IsCheckBox() {
@@ -679,21 +680,6 @@ int ElementWrapper::IsNodeDisplayed(IHTMLDOMNode *node, bool* result) {
 }
 
 int ElementWrapper::IsElementDisplayed(IHTMLElement *element, bool *result) {
-	//CComQIPtr<IHTMLInputHiddenElement> hidden(element);
-	//if (hidden) {
-	//	*result = false;
-	//	return SUCCESS;
-	//}
-
-	//bool displayed;
-	//int value = this->StyleIndicatesDisplayed(element, &displayed);
-
-	//if (value != SUCCESS) {
-	//	return value;
-	//}
-
-	//*result = displayed && this->StyleIndicatesVisible(element);
-	//return SUCCESS;
 	int status_code = SUCCESS;
 
 	// The atom is just the definition of an anonymous
@@ -719,7 +705,7 @@ int ElementWrapper::IsElementDisplayed(IHTMLElement *element, bool *result) {
 
 	delete script_wrapper;
 
-	return SUCCESS;
+	return status_code;
 }
 
 void ElementWrapper::FireEvent(IHTMLDOMNode* fire_event_on, LPCWSTR event_name) {
