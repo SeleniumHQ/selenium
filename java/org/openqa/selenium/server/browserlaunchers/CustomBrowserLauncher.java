@@ -19,10 +19,9 @@ package org.openqa.selenium.server.browserlaunchers;
 
 import java.io.IOException;
 
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.browserlaunchers.AsyncExecute;
 import org.openqa.selenium.server.RemoteControlConfiguration;
-
-import org.openqa.selenium.server.BrowserConfigurationOptions;
 
 
 
@@ -37,7 +36,7 @@ public class CustomBrowserLauncher extends AbstractBrowserLauncher{
     protected String commandPath;
     
     /** Specifies a command path to run */
-    public CustomBrowserLauncher(String commandPath, String sessionId, RemoteControlConfiguration configuration, BrowserConfigurationOptions browserOptions) {
+    public CustomBrowserLauncher(String commandPath, String sessionId, RemoteControlConfiguration configuration, Capabilities browserOptions) {
         super(sessionId, configuration, browserOptions);
         this.commandPath = commandPath;
         this.sessionId = sessionId;

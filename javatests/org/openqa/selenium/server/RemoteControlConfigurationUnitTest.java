@@ -4,6 +4,8 @@ import java.io.File;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.server.browserlaunchers.BrowserOptions;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -232,7 +234,7 @@ public class RemoteControlConfigurationUnitTest {
     }
 
     @Test public void remoteControlConfigurationWillBeCopiedIntoBrowserOptions() throws Exception {
-    	final BrowserConfigurationOptions browserOptions = new BrowserConfigurationOptions();
+    	final Capabilities browserOptions = BrowserOptions.newBrowserOptions();
     	
     	String fileName = "file";
     	int timeOut = 5;
@@ -259,21 +261,22 @@ public class RemoteControlConfigurationUnitTest {
     	configuration.setEnsureCleanSession(ensureCleanSession);
     	configuration.setAvoidProxy(avoidProxy);
     	configuration.setBrowserSideLogEnabled(browserSideLogEnabled);
-    	
-    	configuration.copySettingsIntoBrowserOptions(browserOptions);
-    	
-    	assertEquals(fileName, browserOptions.get("firefoxProfileTemplate"));
-    	assertEquals(Integer.toString(timeOut), browserOptions.get("timeoutInSeconds"));
-    	assertEquals(Boolean.toString(honorSystemProxy), browserOptions.get("honorSystemProxy"));
-    	assertEquals(dontInjectRegex, browserOptions.get("dontInjectRegex"));
-    	assertEquals(Boolean.toString(trustAllSSLCertificates), browserOptions.get("trustAllSSLCertificates"));
-    	assertEquals(newuserExtensions.getName(), browserOptions.get("userExtensions"));
-    	assertEquals(Boolean.toString(useUserJSInjection), browserOptions.get("userJSInjection"));
-    	assertEquals(Boolean.toString(useProxyInjectionMode), browserOptions.get("proxyInjectionMode"));
-    	assertEquals(Boolean.toString(useSingleWindow), browserOptions.get("singleWindow"));
-    	assertEquals(Boolean.toString(ensureCleanSession), browserOptions.get("ensureCleanSession"));
-    	assertEquals(Boolean.toString(avoidProxy), browserOptions.get("avoidProxy"));
-    	assertEquals(Boolean.toString(browserSideLogEnabled), browserOptions.get("browserSideLog"));
+
+      Capabilities caps = configuration
+          .copySettingsIntoBrowserOptions(browserOptions);
+
+      assertEquals(fileName, caps.getCapability("firefoxProfileTemplate"));
+    	assertEquals(Integer.toString(timeOut), caps.getCapability("timeoutInSeconds"));
+    	assertEquals(Boolean.toString(honorSystemProxy), caps.getCapability("honorSystemProxy"));
+    	assertEquals(dontInjectRegex, caps.getCapability("dontInjectRegex"));
+    	assertEquals(Boolean.toString(trustAllSSLCertificates), caps.getCapability("trustAllSSLCertificates"));
+    	assertEquals(newuserExtensions.getName(), caps.getCapability("userExtensions"));
+    	assertEquals(Boolean.toString(useUserJSInjection), caps.getCapability("userJSInjection"));
+    	assertEquals(Boolean.toString(useProxyInjectionMode), caps.getCapability("proxyInjectionMode"));
+    	assertEquals(Boolean.toString(useSingleWindow), caps.getCapability("singleWindow"));
+    	assertEquals(Boolean.toString(ensureCleanSession), caps.getCapability("ensureCleanSession"));
+    	assertEquals(Boolean.toString(avoidProxy), caps.getCapability("avoidProxy"));
+    	assertEquals(Boolean.toString(browserSideLogEnabled), caps.getCapability("browserSideLog"));
     }
     
 }

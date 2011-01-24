@@ -1,5 +1,8 @@
 package org.openqa.selenium.server;
 
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.remote.DesiredCapabilities;
+
 import java.io.File;
 
 /**
@@ -344,19 +347,30 @@ public class RemoteControlConfiguration {
         this.sslCertGenerator = server;
     }
     
-    public void copySettingsIntoBrowserOptions(BrowserConfigurationOptions browserOptions) {
-        browserOptions.setSafely("timeoutInSeconds", timeoutInSeconds);
-        browserOptions.setSafely("honorSystemProxy", honorSystemProxy);
-        browserOptions.setSafely("firefoxProfileTemplate", firefoxProfileTemplate);
-        browserOptions.setSafely("dontInjectRegex", dontInjectRegex);
-        browserOptions.setSafely("trustAllSSLCertificates", trustAllSSLCertificates);
-        browserOptions.setSafely("userJSInjection", userJSInjection);
-        browserOptions.setSafely("userExtensions", userExtensions);
-        browserOptions.setSafely("proxyInjectionMode", proxyInjectionModeArg);
-        browserOptions.setSafely("singleWindow", singleWindow);
-        browserOptions.setSafely("ensureCleanSession", ensureCleanSession);
-        browserOptions.setSafely("avoidProxy", avoidProxy);
-        browserOptions.setSafely("browserSideLog", browserSideLogEnabled);
+    public Capabilities copySettingsIntoBrowserOptions(Capabilities source) {
+        DesiredCapabilities capabilities = new DesiredCapabilities(source);
+
+        setSafely(capabilities, "timeoutInSeconds", timeoutInSeconds);
+        setSafely(capabilities, "honorSystemProxy", honorSystemProxy);
+        setSafely(capabilities, "firefoxProfileTemplate", firefoxProfileTemplate);
+        setSafely(capabilities, "dontInjectRegex", dontInjectRegex);
+        setSafely(capabilities, "trustAllSSLCertificates", trustAllSSLCertificates);
+        setSafely(capabilities, "userJSInjection", userJSInjection);
+        setSafely(capabilities, "userExtensions", userExtensions);
+        setSafely(capabilities, "proxyInjectionMode", proxyInjectionModeArg);
+        setSafely(capabilities, "singleWindow", singleWindow);
+        setSafely(capabilities, "ensureCleanSession", ensureCleanSession);
+        setSafely(capabilities, "avoidProxy", avoidProxy);
+        setSafely(capabilities, "browserSideLog", browserSideLogEnabled);
+
+        return capabilities;
     }
-    
+
+    private void setSafely(DesiredCapabilities caps, String key, Object value) {
+      if (value == null || caps.getCapability(key) != null) {
+        return;
+      }
+
+      caps.setCapability(key, value);
+    }
 }

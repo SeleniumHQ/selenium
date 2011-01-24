@@ -17,22 +17,23 @@
 package org.openqa.selenium.server.browserlaunchers;
 
 
-import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.browserlaunchers.AsyncExecute;
-import org.openqa.selenium.browserlaunchers.locators.BrowserInstallation;
 import org.openqa.selenium.browserlaunchers.LauncherUtils;
+import org.openqa.selenium.browserlaunchers.Proxies;
+import org.openqa.selenium.browserlaunchers.locators.BrowserInstallation;
 import org.openqa.selenium.browserlaunchers.locators.Firefox2or3Locator;
 import org.openqa.selenium.internal.Trace;
 import org.openqa.selenium.internal.TraceFactory;
 import org.openqa.selenium.os.CommandLine;
 import org.openqa.selenium.server.ApplicationRegistry;
-import org.openqa.selenium.server.BrowserConfigurationOptions;
 import org.openqa.selenium.server.RemoteControlConfiguration;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
   private static final Trace LOGGER = TraceFactory.getTrace(FirefoxChromeLauncher.class);
@@ -43,11 +44,9 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
   private BrowserInstallation browserInstallation;
   private Process process = null;
 
-//  private AsyncExecute shell = new AsyncExecute();
-
   private boolean changeMaxConnections = false;
 
-  public FirefoxChromeLauncher(BrowserConfigurationOptions browserOptions, RemoteControlConfiguration configuration, String sessionId, String browserString)
+  public FirefoxChromeLauncher(Capabilities browserOptions, RemoteControlConfiguration configuration, String sessionId, String browserString)
       throws InvalidBrowserExecutableException {
     this(browserOptions, configuration,
         sessionId, ApplicationRegistry.instance()
@@ -59,7 +58,7 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
     }
   }
 
-  public FirefoxChromeLauncher(BrowserConfigurationOptions browserOptions, RemoteControlConfiguration configuration, String sessionId, BrowserInstallation browserInstallation) {
+  public FirefoxChromeLauncher(Capabilities browserOptions, RemoteControlConfiguration configuration, String sessionId, BrowserInstallation browserInstallation) {
     super(sessionId, configuration, browserOptions);
 
     if (browserInstallation == null) {
@@ -142,7 +141,7 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
     File firefoxProfileTemplate = null;
 
     String relativeProfile = BrowserOptions
-        .getProfile(browserConfigurationOptions.asCapabilities());
+        .getProfile(browserConfigurationOptions);
     if (relativeProfile == null) {
       relativeProfile = "";
     }
@@ -157,7 +156,7 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
             + "' does not exist");
       }
     } else {
-      firefoxProfileTemplate = browserConfigurationOptions.getFile("firefoxProfileTemplate");
+      firefoxProfileTemplate = BrowserOptions.getFile(browserConfigurationOptions, "firefoxProfileTemplate");
     }
 
     if (firefoxProfileTemplate != null) {
@@ -192,16 +191,16 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
   }
 
   protected void generatePacAndPrefJs(String homePage) throws IOException {
-    browserConfigurationOptions.setProxyRequired(false);
+    browserConfigurationOptions = Proxies.setProxyRequired(browserConfigurationOptions, false);
     if (browserConfigurationOptions.is("captureNetworkTraffic") ||
         browserConfigurationOptions.is("addCustomRequestHeaders") ||
         browserConfigurationOptions.is("trustAllSSLCertificates")) {
-      browserConfigurationOptions.setProxyEverything(true);
-      browserConfigurationOptions.setProxyRequired(true);
+      browserConfigurationOptions = Proxies.setProxyEverything(browserConfigurationOptions, true);
+      browserConfigurationOptions = Proxies.setProxyRequired(browserConfigurationOptions, true);
     }
 
     LauncherUtils.generatePacAndPrefJs(customProfileDir, getPort(), homePage,
-        changeMaxConnections, getTimeout(), browserConfigurationOptions.asCapabilities());
+        changeMaxConnections, getTimeout(), browserConfigurationOptions);
   }
 
   private String makeCustomProfile(String homePage) throws IOException {
@@ -400,14 +399,14 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
           suiteUrl.replaceFirst("^TestPrompt\\.html\\?", "chrome://src/content/TestPrompt.html?");
     }
     launch(LauncherUtils.getDefaultHTMLSuiteUrl(browserURL, suiteUrl,
-        (!BrowserOptions.isSingleWindow(browserConfigurationOptions.asCapabilities())), getPort()));
+        (!BrowserOptions.isSingleWindow(browserConfigurationOptions)), getPort()));
   }
 
   @Override
   // need to specify an absolute driverUrl
   public void launchRemoteSession(String browserURL) {
     launch(LauncherUtils.getDefaultRemoteSessionUrl(browserURL, sessionId,
-        (!BrowserOptions.isSingleWindow(browserConfigurationOptions.asCapabilities())), getPort(),
+        (!BrowserOptions.isSingleWindow(browserConfigurationOptions)), getPort(),
         browserConfigurationOptions.is("browserSideLog")));
   }
 

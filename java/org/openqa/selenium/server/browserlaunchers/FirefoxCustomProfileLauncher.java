@@ -16,19 +16,20 @@
  */
 package org.openqa.selenium.server.browserlaunchers;
 
-import java.io.File;
-import java.io.IOException;
-
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.browserlaunchers.AsyncExecute;
-import org.openqa.selenium.browserlaunchers.locators.BrowserInstallation;
 import org.openqa.selenium.browserlaunchers.LauncherUtils;
+import org.openqa.selenium.browserlaunchers.Proxies;
+import org.openqa.selenium.browserlaunchers.locators.BrowserInstallation;
+import org.openqa.selenium.browserlaunchers.locators.Firefox2or3Locator;
 import org.openqa.selenium.internal.Trace;
 import org.openqa.selenium.internal.TraceFactory;
 import org.openqa.selenium.os.CommandLine;
 import org.openqa.selenium.server.ApplicationRegistry;
-import org.openqa.selenium.server.BrowserConfigurationOptions;
 import org.openqa.selenium.server.RemoteControlConfiguration;
-import org.openqa.selenium.browserlaunchers.locators.Firefox2or3Locator;
+
+import java.io.File;
+import java.io.IOException;
 
 public class FirefoxCustomProfileLauncher extends AbstractBrowserLauncher {
 
@@ -41,7 +42,7 @@ public class FirefoxCustomProfileLauncher extends AbstractBrowserLauncher {
     private static boolean alwaysChangeMaxConnections = false;
     protected boolean changeMaxConnections = alwaysChangeMaxConnections;
 
-    public FirefoxCustomProfileLauncher(BrowserConfigurationOptions browserOptions, RemoteControlConfiguration configuration, String sessionId, String browserLaunchLocation) throws InvalidBrowserExecutableException {
+    public FirefoxCustomProfileLauncher(Capabilities browserOptions, RemoteControlConfiguration configuration, String sessionId, String browserLaunchLocation) throws InvalidBrowserExecutableException {
         this(browserOptions, configuration,
                 sessionId, ApplicationRegistry.instance().browserInstallationCache().locateBrowserInstallation(
                         "firefoxproxy", browserLaunchLocation, new Firefox2or3Locator()));
@@ -50,10 +51,10 @@ public class FirefoxCustomProfileLauncher extends AbstractBrowserLauncher {
         }
     }
 
-    public FirefoxCustomProfileLauncher(BrowserConfigurationOptions browserOptions, RemoteControlConfiguration configuration, String sessionId, BrowserInstallation browserInstallation) {
+    public FirefoxCustomProfileLauncher(Capabilities browserOptions, RemoteControlConfiguration configuration, String sessionId, BrowserInstallation browserInstallation) {
         super(sessionId, configuration, browserOptions);
-        browserOptions.setProxyEverything(false);
-        browserOptions.setOnlyProxySeleniumTraffic(true);
+        browserConfigurationOptions = Proxies.setProxyEverything(browserConfigurationOptions, false);
+        browserConfigurationOptions = Proxies.setOnlyProxySeleniumTraffic(browserConfigurationOptions, true);
         init();
         this.browserInstallation = browserInstallation;
     }
@@ -102,7 +103,7 @@ public class FirefoxCustomProfileLauncher extends AbstractBrowserLauncher {
     }
 
     private void makeCustomProfile(File customProfileDirectory) throws IOException {
-        File firefoxProfileTemplate = browserConfigurationOptions.getFile("firefoxProfileTemplate");
+        File firefoxProfileTemplate = BrowserOptions.getFile(browserConfigurationOptions, "firefoxProfileTemplate");
         if (firefoxProfileTemplate != null) {
             LauncherUtils.copyDirectory(firefoxProfileTemplate, customProfileDir);
         }
@@ -113,7 +114,7 @@ public class FirefoxCustomProfileLauncher extends AbstractBrowserLauncher {
             LauncherUtils.copySingleFileWithOverwrite(new File(firefoxProfileTemplate, "cert8.db"), new File(customProfileDir, "cert8.db"), true);
         }
 
-        LauncherUtils.generatePacAndPrefJs(customProfileDirectory, getPort(), null, changeMaxConnections, getTimeout(), browserConfigurationOptions.asCapabilities());
+        LauncherUtils.generatePacAndPrefJs(customProfileDirectory, getPort(), null, changeMaxConnections, getTimeout(), browserConfigurationOptions);
     }
 
     /** Implementation identical to that in FirefoxChromeLauncher. **/

@@ -7,9 +7,9 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.browserlaunchers.LauncherUtils;
 import org.openqa.selenium.browserlaunchers.Proxies;
-import org.openqa.selenium.server.BrowserConfigurationOptions;
 
 public class MakeProxyPacUnitTest extends TestCase {
     public MakeProxyPacUnitTest(String name) {
@@ -32,11 +32,11 @@ public class MakeProxyPacUnitTest extends TestCase {
     }
 
     private String makeProxyPAC() throws IOException {
-      BrowserConfigurationOptions options = new BrowserConfigurationOptions();
-      options.setOnlyProxySeleniumTraffic(proxySeleniumTrafficOnly);
-      options.setAvoidProxy(avoidProxy);
+      Capabilities options = BrowserOptions.newBrowserOptions();
+      options = Proxies.setOnlyProxySeleniumTraffic(options, proxySeleniumTrafficOnly);
+      options = Proxies.setAvoidProxy(options, avoidProxy);
       Proxies
-          .makeProxyPAC(parentDir, 4444, httpProxyHost, httpProxyPort, httpNonProxyHosts, options.asCapabilities());
+          .makeProxyPAC(parentDir, 4444, httpProxyHost, httpProxyPort, httpNonProxyHosts, options);
       return readEntirePacFile();
     }
     private String readEntirePacFile() throws IOException {

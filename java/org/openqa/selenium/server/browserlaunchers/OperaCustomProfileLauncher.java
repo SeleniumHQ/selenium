@@ -16,23 +16,21 @@
  */
 package org.openqa.selenium.server.browserlaunchers;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.util.regex.Pattern;
-
-import org.apache.commons.logging.Log;
-import org.openqa.jetty.log.LogFactory;
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.browserlaunchers.AsyncExecute;
 import org.openqa.selenium.browserlaunchers.LauncherUtils;
 import org.openqa.selenium.browserlaunchers.Proxies;
 import org.openqa.selenium.internal.Trace;
 import org.openqa.selenium.internal.TraceFactory;
-import org.openqa.selenium.os.WindowsUtils;
 import org.openqa.selenium.os.CommandLine;
-import org.openqa.selenium.server.BrowserConfigurationOptions;
+import org.openqa.selenium.os.WindowsUtils;
 import org.openqa.selenium.server.RemoteControlConfiguration;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.util.regex.Pattern;
 
 public class OperaCustomProfileLauncher extends AbstractBrowserLauncher {
 
@@ -58,7 +56,7 @@ public class OperaCustomProfileLauncher extends AbstractBrowserLauncher {
     	return new File(CommandLine.findExecutable(commandPath));
     }
     
-    public OperaCustomProfileLauncher(BrowserConfigurationOptions browserOptions, RemoteControlConfiguration configuration, String sessionId, String browserLaunchLocation) {
+    public OperaCustomProfileLauncher(Capabilities browserOptions, RemoteControlConfiguration configuration, String sessionId, String browserLaunchLocation) {
         super(sessionId, configuration, browserOptions);
         commandPath = browserLaunchLocation == null ? findBrowserLaunchLocation() : browserLaunchLocation;
         this.sessionId = sessionId;
@@ -149,7 +147,7 @@ public class OperaCustomProfileLauncher extends AbstractBrowserLauncher {
         if (simple) return customProfileDir;
 
       File proxyPAC = Proxies
-          .makeProxyPAC(customProfileDir, getPort(), browserConfigurationOptions.asCapabilities());
+          .makeProxyPAC(customProfileDir, getPort(), browserConfigurationOptions);
 
         // TODO Do we want to make these preferences configurable somehow?
         File opera6ini = new File(customProfileDir, "opera6.ini");
@@ -320,7 +318,7 @@ public class OperaCustomProfileLauncher extends AbstractBrowserLauncher {
     }
 
     public static void main(String[] args) throws Exception {
-        OperaCustomProfileLauncher l = new OperaCustomProfileLauncher(new BrowserConfigurationOptions(), new RemoteControlConfiguration(), "CUSTFF", null);
+        OperaCustomProfileLauncher l = new OperaCustomProfileLauncher(BrowserOptions.newBrowserOptions(), new RemoteControlConfiguration(), "CUSTFF", null);
         l.launch("http://www.google.com");
         int seconds = 15;
         System.out.println("Killing browser in " + Integer.toString(seconds) + " seconds");

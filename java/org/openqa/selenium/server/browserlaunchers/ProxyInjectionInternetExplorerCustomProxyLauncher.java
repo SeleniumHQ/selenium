@@ -1,6 +1,7 @@
 package org.openqa.selenium.server.browserlaunchers;
 
-import org.openqa.selenium.server.BrowserConfigurationOptions;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.browserlaunchers.Proxies;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 
 import java.io.IOException;
@@ -21,17 +22,18 @@ public class ProxyInjectionInternetExplorerCustomProxyLauncher
     extends InternetExplorerCustomProxyLauncher {
   private static boolean alwaysChangeMaxConnections = true;
 
-  public ProxyInjectionInternetExplorerCustomProxyLauncher(BrowserConfigurationOptions browserOptions,
+  public ProxyInjectionInternetExplorerCustomProxyLauncher(Capabilities browserOptions,
                                                            RemoteControlConfiguration configuration, String sessionId, String browserLaunchLocation) {
 
     super(browserOptions, configuration, sessionId, browserLaunchLocation);
-    browserOptions.setProxyEverything(true);
+    this.browserConfigurationOptions =
+        Proxies.setProxyEverything(this.browserConfigurationOptions, true);
   }
 
   @Override
   protected void changeRegistrySettings() throws IOException {
     wpm.setChangeMaxConnections(alwaysChangeMaxConnections);
-    wpm.changeRegistrySettings(browserConfigurationOptions.asCapabilities());
+    wpm.changeRegistrySettings(browserConfigurationOptions);
   }
 
   public static void setChangeMaxConnections(boolean changeMaxConnections) {

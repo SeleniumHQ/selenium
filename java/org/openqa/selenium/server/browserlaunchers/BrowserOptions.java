@@ -21,6 +21,7 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.browserlaunchers.Proxies;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
+import java.io.File;
 import java.util.concurrent.TimeUnit;
 
 public class BrowserOptions {
@@ -47,9 +48,9 @@ public class BrowserOptions {
         String optionsName = option[0].trim();
         String optionValue = option[1].trim();
         caps.setCapability(optionsName, optionValue);
+        caps.setCapability(OPTIONS_SET, true);
       }
     }
-    caps.setCapability(OPTIONS_SET, true);
 
     Capabilities toReturn = Proxies.setProxyRequired(caps, true);
     return toReturn;
@@ -76,13 +77,17 @@ public class BrowserOptions {
   }
 
   public static long getTimeoutInSeconds(Capabilities capabilities) {
-    String value = (String) capabilities.getCapability("timeoutInSeconds");
+    Object value = capabilities.getCapability("timeoutInSeconds");
 
     if (value == null) {
       return 0;
     }
 
-    return Long.parseLong(value);
+    if (value instanceof Long) {
+      return (Long) value;
+    }
+
+    return Long.parseLong(String.valueOf(value));
   }
 
   public static boolean hasOptionsSet(Capabilities caps) {
@@ -112,5 +117,13 @@ public class BrowserOptions {
       return (DesiredCapabilities) source;
     }
     return new DesiredCapabilities(source);
+  }
+
+  public static File getFile(Capabilities capabilities, String key) {
+    String value = (String) capabilities.getCapability(key);
+    if (value == null) {
+      return null;
+    }
+    return new File(value);
   }
 }

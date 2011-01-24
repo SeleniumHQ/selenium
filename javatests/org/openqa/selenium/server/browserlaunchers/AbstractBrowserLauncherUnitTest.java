@@ -2,7 +2,7 @@ package org.openqa.selenium.server.browserlaunchers;
 
 import junit.framework.TestCase;
 
-import org.openqa.selenium.server.BrowserConfigurationOptions;
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 
 /**
@@ -12,10 +12,10 @@ public class AbstractBrowserLauncherUnitTest extends TestCase {
 
     public void testGetConfigurationReturnsConfigurationProvidedInConstructor() {
         final RemoteControlConfiguration theConfiguration;
-        final BrowserConfigurationOptions browserOptions;
+        final Capabilities browserOptions;
 
         theConfiguration = new RemoteControlConfiguration();
-        browserOptions = new BrowserConfigurationOptions();
+        browserOptions = BrowserOptions.newBrowserOptions();
         AbstractBrowserLauncher launcher = new AbstractBrowserLauncher(null, theConfiguration, browserOptions) {
             protected void launch(String url) {
                 throw new UnsupportedOperationException("Should never be called");

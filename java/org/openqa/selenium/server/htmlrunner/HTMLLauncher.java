@@ -4,14 +4,17 @@
  */
 package org.openqa.selenium.server.htmlrunner;
 
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.internal.Trace;
 import org.openqa.selenium.internal.TraceFactory;
 import org.openqa.selenium.net.Urls;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.server.*;
 import org.openqa.selenium.server.BrowserSessionFactory.BrowserSessionInfo;
 import org.openqa.selenium.browserlaunchers.AsyncExecute;
 import org.openqa.selenium.browserlaunchers.BrowserLauncher;
 import org.openqa.selenium.server.browserlaunchers.BrowserLauncherFactory;
+import org.openqa.selenium.server.browserlaunchers.BrowserOptions;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -50,7 +53,7 @@ public class HTMLLauncher implements HTMLResultsListener {
                 timeoutInSeconds, multiWindow, "info");
     }
     
-    protected BrowserLauncher getBrowserLauncher(String browser, String sessionId, RemoteControlConfiguration configuration, BrowserConfigurationOptions browserOptions) {
+    protected BrowserLauncher getBrowserLauncher(String browser, String sessionId, RemoteControlConfiguration configuration, Capabilities browserOptions) {
     	BrowserLauncherFactory blf = new BrowserLauncherFactory();
     	return blf.getBrowserLauncher(browser, sessionId, configuration, browserOptions);
     }
@@ -105,11 +108,8 @@ public class HTMLLauncher implements HTMLResultsListener {
         FrameGroupCommandQueueSet.makeQueueSet(
                 sessionId, configuration.getPortDriversShouldContact(), configuration);
 
-        BrowserConfigurationOptions browserOptions = new BrowserConfigurationOptions();
-        
-        configuration.copySettingsIntoBrowserOptions(browserOptions);
-        
-        browserOptions.setSingleWindow(!multiWindow);
+        Capabilities browserOptions = configuration.copySettingsIntoBrowserOptions(new DesiredCapabilities());
+        browserOptions = BrowserOptions.setSingleWindow(browserOptions, !multiWindow);
         
         BrowserLauncher launcher = getBrowserLauncher(browser, sessionId, configuration, browserOptions);
         BrowserSessionInfo sessionInfo = new BrowserSessionInfo(sessionId, 

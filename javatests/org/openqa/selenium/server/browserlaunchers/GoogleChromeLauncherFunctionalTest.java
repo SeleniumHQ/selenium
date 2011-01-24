@@ -18,7 +18,6 @@
 package org.openqa.selenium.server.browserlaunchers;
 
 import org.openqa.selenium.browserlaunchers.AsyncExecute;
-import org.openqa.selenium.server.BrowserConfigurationOptions;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 
 /**
@@ -34,7 +33,7 @@ public class GoogleChromeLauncherFunctionalTest {
     public void testCanLaunchASingleBrowser() {
         final GoogleChromeLauncher launcher;
 
-        launcher = new GoogleChromeLauncher(new BrowserConfigurationOptions(), new RemoteControlConfiguration(), "aSessionId", (String) null);
+        launcher = new GoogleChromeLauncher(BrowserOptions.newBrowserOptions(), new RemoteControlConfiguration(), "aSessionId", (String) null);
         launcher.launch("http://www.google.com/");
         AsyncExecute.sleepTightInSeconds(5);
         launcher.close();
@@ -44,8 +43,8 @@ public class GoogleChromeLauncherFunctionalTest {
         final GoogleChromeLauncher firstLauncher;
         final GoogleChromeLauncher secondLauncher;
 
-        firstLauncher = new GoogleChromeLauncher(new BrowserConfigurationOptions(), new RemoteControlConfiguration(), "firstSessionId", (String) null);
-        secondLauncher = new GoogleChromeLauncher(new BrowserConfigurationOptions(), new RemoteControlConfiguration(), "secondSessionId", (String) null);
+        firstLauncher = new GoogleChromeLauncher(BrowserOptions.newBrowserOptions(), new RemoteControlConfiguration(), "firstSessionId", (String) null);
+        secondLauncher = new GoogleChromeLauncher(BrowserOptions.newBrowserOptions(), new RemoteControlConfiguration(), "secondSessionId", (String) null);
 
         firstLauncher.launch("http://www.google.com/");
         AsyncExecute.sleepTightInSeconds(5);
@@ -60,8 +59,8 @@ public class GoogleChromeLauncherFunctionalTest {
         final GoogleChromeLauncher firstLauncher;
         final GoogleChromeLauncher secondLauncher;
 
-        firstLauncher = new GoogleChromeLauncher(new BrowserConfigurationOptions(), new RemoteControlConfiguration(), "firstSessionId", (String) null);
-        secondLauncher = new GoogleChromeLauncher(new BrowserConfigurationOptions(), new RemoteControlConfiguration(), "secondSessionId", (String) null);
+        firstLauncher = new GoogleChromeLauncher(BrowserOptions.newBrowserOptions(), new RemoteControlConfiguration(), "firstSessionId", (String) null);
+        secondLauncher = new GoogleChromeLauncher(BrowserOptions.newBrowserOptions(), new RemoteControlConfiguration(), "secondSessionId", (String) null);
 
         firstLauncher.launch("http://www.google.com/");
         secondLauncher.launch("http://www.google.com/");

@@ -1,21 +1,22 @@
 package org.openqa.selenium.server.browserlaunchers;
 
-import org.junit.Test;
-import org.openqa.selenium.browserlaunchers.locators.BrowserInstallation;
-import org.openqa.selenium.server.BrowserConfigurationOptions;
-import org.openqa.selenium.server.RemoteControlConfiguration;
-import org.openqa.selenium.server.SslCertificateGenerator;
-
 import static org.easymock.classextension.EasyMock.createStrictMock;
 import static org.easymock.classextension.EasyMock.expectLastCall;
 import static org.easymock.classextension.EasyMock.replay;
 import static org.easymock.classextension.EasyMock.verify;
 
+import org.junit.Test;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.browserlaunchers.locators.BrowserInstallation;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.server.RemoteControlConfiguration;
+import org.openqa.selenium.server.SslCertificateGenerator;
+
 
 public class SafariCustomProfileLauncherUnitTest {
 	
 	private AbstractBrowserLauncher launcher;
-	private BrowserConfigurationOptions browserOptions = new BrowserConfigurationOptions();
+	private Capabilities browserOptions = BrowserOptions.newBrowserOptions();
 	private RemoteControlConfiguration remoteConfiguration = new RemoteControlConfiguration();
 	private SslCertificateGenerator generator;
 	
@@ -33,7 +34,7 @@ public class SafariCustomProfileLauncherUnitTest {
 		expectLastCall().once();
 		
 		remoteConfiguration.setSeleniumServer(generator);
-		browserOptions.set("browserSideLog", true);
+		((DesiredCapabilities) browserOptions).setCapability("browserSideLog", true);
 		
 		launcher = new SafariCustomProfileLauncher(browserOptions, remoteConfiguration, "session", location) {
 			@Override

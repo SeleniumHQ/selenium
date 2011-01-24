@@ -20,6 +20,7 @@ package org.openqa.selenium.server;
 
 import com.google.common.base.Throwables;
 import com.google.common.io.Resources;
+
 import org.apache.commons.logging.Log;
 import org.openqa.jetty.http.HttpConnection;
 import org.openqa.jetty.http.HttpException;
@@ -29,19 +30,27 @@ import org.openqa.jetty.http.HttpResponse;
 import org.openqa.jetty.http.handler.ResourceHandler;
 import org.openqa.jetty.log.LogFactory;
 import org.openqa.jetty.util.StringUtil;
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.browserlaunchers.AsyncExecute;
+import org.openqa.selenium.browserlaunchers.BrowserLauncher;
 import org.openqa.selenium.internal.Trace;
 import org.openqa.selenium.internal.TraceFactory;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.server.BrowserSessionFactory.BrowserSessionInfo;
-import org.openqa.selenium.browserlaunchers.BrowserLauncher;
 import org.openqa.selenium.server.browserlaunchers.BrowserLauncherFactory;
+import org.openqa.selenium.server.browserlaunchers.BrowserOptions;
 import org.openqa.selenium.server.browserlaunchers.InvalidBrowserExecutableException;
-import org.openqa.selenium.server.commands.*;
+import org.openqa.selenium.server.commands.AddCustomRequestHeaderCommand;
+import org.openqa.selenium.server.commands.CaptureEntirePageScreenshotToStringCommand;
+import org.openqa.selenium.server.commands.CaptureNetworkTrafficCommand;
+import org.openqa.selenium.server.commands.CaptureScreenshotCommand;
+import org.openqa.selenium.server.commands.CaptureScreenshotToStringCommand;
+import org.openqa.selenium.server.commands.RetrieveLastRemoteControlLogsCommand;
+import org.openqa.selenium.server.commands.SeleniumCoreCommand;
 import org.openqa.selenium.server.htmlrunner.HTMLLauncher;
 import org.openqa.selenium.server.log.LoggingManager;
 
-import java.awt.*;
+import java.awt.Robot;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -412,7 +421,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         String browserConfigurations = values.size() > 3 ? values.get(3) : "";
         try {
           sessionId = getNewBrowserSession(browserString, values.get(1), extensionJs,
-              new BrowserConfigurationOptions(browserConfigurations));
+              BrowserOptions.newBrowserOptions(browserConfigurations));
           setDomain(sessionId, values.get(1));
           results = "OK," + sessionId;
         } catch (RemoteCommandException rce) {
@@ -554,7 +563,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
           String newSessionId = generateNewSessionId();
           BrowserLauncher simpleLauncher = browserLauncherFactory
               .getBrowserLauncher(browser, newSessionId, remoteControl.getConfiguration(),
-                  new BrowserConfigurationOptions());
+                  BrowserOptions.newBrowserOptions());
           String baseUrl = "http://localhost:" + remoteControl.getPort();
           remoteControl.registerBrowserSession(new BrowserSessionInfo(
               newSessionId, browser, baseUrl, simpleLauncher, null));
@@ -771,7 +780,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
   }
 
   protected String getNewBrowserSession(String browserString, String startURL, String extensionJs,
-                                        BrowserConfigurationOptions browserConfigurations)
+                                        Capabilities browserConfigurations)
       throws RemoteCommandException {
     BrowserSessionInfo sessionInfo = browserSessionFactory
         .getNewBrowserSession(browserString, startURL, extensionJs,

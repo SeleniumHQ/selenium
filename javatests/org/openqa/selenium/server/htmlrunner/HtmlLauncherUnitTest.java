@@ -1,16 +1,5 @@
 package org.openqa.selenium.server.htmlrunner;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.openqa.selenium.browserlaunchers.BrowserLauncher;
-import org.openqa.selenium.server.BrowserConfigurationOptions;
-import org.openqa.selenium.server.RemoteControlConfiguration;
-import org.openqa.selenium.server.SeleniumServer;
-
 import static org.easymock.classextension.EasyMock.anyObject;
 import static org.easymock.classextension.EasyMock.createMock;
 import static org.easymock.classextension.EasyMock.createNiceMock;
@@ -19,6 +8,18 @@ import static org.easymock.classextension.EasyMock.expect;
 import static org.easymock.classextension.EasyMock.expectLastCall;
 import static org.easymock.classextension.EasyMock.replay;
 import static org.easymock.classextension.EasyMock.verify;
+import static org.junit.Assert.fail;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.browserlaunchers.BrowserLauncher;
+import org.openqa.selenium.server.RemoteControlConfiguration;
+import org.openqa.selenium.server.SeleniumServer;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class HtmlLauncherUnitTest {
 	
@@ -37,7 +38,7 @@ public class HtmlLauncherUnitTest {
 			final BrowserLauncher browserLauncher = createNiceMock(BrowserLauncher.class);
 			
 			@Override
-			protected BrowserLauncher getBrowserLauncher(String browser, String sessionId, RemoteControlConfiguration configuration, BrowserConfigurationOptions browserOptions) {
+			protected BrowserLauncher getBrowserLauncher(String browser, String sessionId, RemoteControlConfiguration configuration, Capabilities browserOptions) {
 				return browserLauncher;
 			}
 			
@@ -78,11 +79,12 @@ public class HtmlLauncherUnitTest {
 		expectOutputFileBehavior();
 		
 		// Expect copying options
-		configuration.copySettingsIntoBrowserOptions((BrowserConfigurationOptions)anyObject());
-		expectLastCall().once();
-		
-		executeAndVerify();
-		
+//		configuration.copySettingsIntoBrowserOptions((Capabilities) anyObject());
+//		expectLastCall().once();
+//
+//		executeAndVerify();
+
+    fail("Please fix me");
 	}
 	
 	@Test
@@ -94,7 +96,7 @@ public class HtmlLauncherUnitTest {
 			final FileWriter writer = createMock(FileWriter.class);
 			
 			@Override
-			protected BrowserLauncher getBrowserLauncher(String browser, String sessionId, RemoteControlConfiguration configuration, BrowserConfigurationOptions browserOptions) {
+			protected BrowserLauncher getBrowserLauncher(String browser, String sessionId, RemoteControlConfiguration configuration, Capabilities browserOptions) {
 				return browserLauncher;
 			}
 			

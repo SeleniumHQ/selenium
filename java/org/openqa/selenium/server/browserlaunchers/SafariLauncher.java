@@ -16,17 +16,17 @@
  */
 package org.openqa.selenium.server.browserlaunchers;
 
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.browserlaunchers.BrowserLauncher;
-import org.openqa.selenium.server.BrowserConfigurationOptions;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 
 public class SafariLauncher implements BrowserLauncher {
 
     final BrowserLauncher realLauncher;
     
-    public SafariLauncher(BrowserConfigurationOptions browserOptions, RemoteControlConfiguration configuration, String sessionId, String browserLaunchLocation) {
+    public SafariLauncher(Capabilities browserOptions, RemoteControlConfiguration configuration, String sessionId, String browserLaunchLocation) {
 
-        String mode = browserOptions.get("mode");
+        String mode = (String) browserOptions.getCapability("mode");
         if (mode == null) mode = "filebased";
         if ("default".equals(mode)) mode = "filebased";
         

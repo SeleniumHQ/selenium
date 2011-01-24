@@ -1,9 +1,9 @@
 package org.openqa.selenium.server.browserlaunchers;
 
 
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.browserlaunchers.BrowserLauncher;
 import org.openqa.selenium.browserlaunchers.LauncherUtils;
-import org.openqa.selenium.server.BrowserConfigurationOptions;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 
 /**
@@ -16,18 +16,17 @@ public abstract class AbstractBrowserLauncher implements BrowserLauncher {
 
   protected String sessionId;
   private RemoteControlConfiguration configuration;
-  protected BrowserConfigurationOptions browserConfigurationOptions;
+  protected Capabilities browserConfigurationOptions;
 
-  public AbstractBrowserLauncher(String sessionId, RemoteControlConfiguration configuration, BrowserConfigurationOptions browserOptions) {
+  public AbstractBrowserLauncher(String sessionId, RemoteControlConfiguration configuration, Capabilities browserOptions) {
     this.sessionId = sessionId;
     this.configuration = configuration;
-    configuration.copySettingsIntoBrowserOptions(browserOptions);
-    this.browserConfigurationOptions = browserOptions;
+    this.browserConfigurationOptions = configuration.copySettingsIntoBrowserOptions(browserOptions);
   }
 
   public void launchHTMLSuite(String suiteUrl, String browserURL) {
     launch(LauncherUtils.getDefaultHTMLSuiteUrl(browserURL, suiteUrl,
-        (!BrowserOptions.isSingleWindow(browserConfigurationOptions.asCapabilities())), 0));
+        (!BrowserOptions.isSingleWindow(browserConfigurationOptions)), 0));
   }
 
   public void launchRemoteSession(String browserURL) {
@@ -36,7 +35,7 @@ public abstract class AbstractBrowserLauncher implements BrowserLauncher {
       configuration.getSslCertificateGenerator().generateSSLCertsForLoggingHosts();
     }
     launch(LauncherUtils.getDefaultRemoteSessionUrl(browserURL, sessionId,
-        (!BrowserOptions.isSingleWindow(browserConfigurationOptions.asCapabilities())), 0, browserSideLog));
+        (!BrowserOptions.isSingleWindow(browserConfigurationOptions)), 0, browserSideLog));
   }
 
   protected abstract void launch(String url);
@@ -50,8 +49,8 @@ public abstract class AbstractBrowserLauncher implements BrowserLauncher {
   }
 
   protected long getTimeout() {
-    if (browserConfigurationOptions.isTimeoutSet()) {
-      return BrowserOptions.getTimeoutInSeconds(browserConfigurationOptions.asCapabilities());
+    if (BrowserOptions.isTimeoutSet(browserConfigurationOptions)) {
+      return BrowserOptions.getTimeoutInSeconds(browserConfigurationOptions);
     } else {
       return configuration.getTimeoutInSeconds();
     }
@@ -59,7 +58,7 @@ public abstract class AbstractBrowserLauncher implements BrowserLauncher {
 
   protected String getCommandLineFlags() {
     String cmdLineFlags = BrowserOptions
-        .getCommandLineFlags(browserConfigurationOptions.asCapabilities());
+        .getCommandLineFlags(browserConfigurationOptions);
     if (cmdLineFlags != null) {
       return cmdLineFlags;
     } else {

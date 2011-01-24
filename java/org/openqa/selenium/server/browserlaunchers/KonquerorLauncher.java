@@ -1,8 +1,8 @@
 package org.openqa.selenium.server.browserlaunchers;
 
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.browserlaunchers.AsyncExecute;
 import org.openqa.selenium.browserlaunchers.Proxies;
-import org.openqa.selenium.server.BrowserConfigurationOptions;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 
 import java.io.File;
@@ -21,7 +21,7 @@ public class KonquerorLauncher extends AbstractBrowserLauncher {
 
     private String browserLaunchLocation;
 
-    public KonquerorLauncher(BrowserConfigurationOptions browserOptions, RemoteControlConfiguration configuration, String sessionId, String browserLaunchLocation) {
+    public KonquerorLauncher(Capabilities browserOptions, RemoteControlConfiguration configuration, String sessionId, String browserLaunchLocation) {
         super(sessionId, configuration, browserOptions);
         this.browserLaunchLocation = browserLaunchLocation;
     }
@@ -42,7 +42,7 @@ public class KonquerorLauncher extends AbstractBrowserLauncher {
 
 
       File pacFile = Proxies.makeProxyPAC(new File(KONQUEROR_PROFILE_DEST_LOCATION), getPort(),
-          browserConfigurationOptions.asCapabilities());
+          browserConfigurationOptions);
 
         File kioslaverc = new File(KONQUEROR_PROFILE_DEST_LOCATION, "kioslaverc");
         PrintStream out = new PrintStream(new FileOutputStream(kioslaverc));

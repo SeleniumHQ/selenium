@@ -7,8 +7,10 @@ import java.util.Set;
 import java.util.logging.Handler;
 import java.util.logging.Logger;
 
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.server.BrowserSessionFactory.BrowserSessionInfo;
 import org.openqa.selenium.server.browserlaunchers.BrowserLauncherFactory;
+import org.openqa.selenium.server.browserlaunchers.BrowserOptions;
 import org.openqa.selenium.server.browserlaunchers.DummyLauncher;
 import org.openqa.selenium.server.log.LoggingManager;
 import org.openqa.selenium.server.log.StdOutHandler;
@@ -58,7 +60,7 @@ public class BrowserSessionFactoryUnitTest extends TestCase {
         configuration = new RemoteControlConfiguration();
         configuration.setTimeoutInSeconds(1);
         
-        BrowserConfigurationOptions bco = new BrowserConfigurationOptions();
+        Capabilities bco = BrowserOptions.newBrowserOptions();
         
         BrowserSessionFactory factory = new BrowserSessionFactory(blf) {
         	@Override
@@ -74,7 +76,7 @@ public class BrowserSessionFactoryUnitTest extends TestCase {
         };
         
         expect(blf.getBrowserLauncher(isA(String.class), isA(String.class), 
-                isA(RemoteControlConfiguration.class), isA(BrowserConfigurationOptions.class))).andReturn(launcherMock);
+                isA(RemoteControlConfiguration.class), isA(Capabilities.class))).andReturn(launcherMock);
         launcherMock.launchRemoteSession("");
         expectLastCall().once();
         replay(launcherMock);

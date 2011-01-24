@@ -1,16 +1,16 @@
 package org.openqa.selenium.server.browserlaunchers;
 
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.browserlaunchers.LauncherUtils;
+import org.openqa.selenium.io.FileHandler;
+import org.openqa.selenium.server.RemoteControlConfiguration;
+
 import java.io.File;
 import java.io.IOException;
 
-import org.openqa.selenium.browserlaunchers.LauncherUtils;
-import org.openqa.selenium.io.FileHandler;
-import org.openqa.selenium.server.BrowserConfigurationOptions;
-import org.openqa.selenium.server.RemoteControlConfiguration;
-
 public class SafariFileBasedLauncher extends SafariCustomProfileLauncher {
 
-    public SafariFileBasedLauncher(BrowserConfigurationOptions browserOptions,
+    public SafariFileBasedLauncher(Capabilities browserOptions,
                                    RemoteControlConfiguration configuration, String sessionId, String browserLaunchLocation) {
         super(browserOptions, configuration, sessionId, browserLaunchLocation);
     }
@@ -44,7 +44,7 @@ public class SafariFileBasedLauncher extends SafariCustomProfileLauncher {
             coreDir.mkdirs();
             ResourceExtractor.extractResourcePath(SafariFileBasedLauncher.class, "/core", coreDir);
             // custom user-extensions
-            userExtensions = browserConfigurationOptions.getFile("userExtensions");
+            userExtensions = BrowserOptions.getFile(browserConfigurationOptions, "userExtensions");
             if (userExtensions != null) {
                 userExtensionsJavascriptFile = new File(coreDir, "scripts/user-extensions.js");
                 FileHandler.copy(userExtensions, userExtensionsJavascriptFile);

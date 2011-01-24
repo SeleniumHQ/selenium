@@ -1,7 +1,7 @@
 package org.openqa.selenium.server.mock;
 
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.browserlaunchers.BrowserLauncher;
-import org.openqa.selenium.server.BrowserConfigurationOptions;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 
 /** Unlike the MockBrowserLauncher which acts like a real canned browser,
@@ -16,7 +16,7 @@ public class DummyBrowserLauncher implements BrowserLauncher {
 
     private static String sessionId;
     
-    public DummyBrowserLauncher(BrowserConfigurationOptions browserOptions, RemoteControlConfiguration configuration, String sessionId, String command) {
+    public DummyBrowserLauncher(Capabilities browserOptions, RemoteControlConfiguration configuration, String sessionId, String command) {
         DummyBrowserLauncher.sessionId = sessionId;
     }
    

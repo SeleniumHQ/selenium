@@ -1,14 +1,5 @@
 package org.openqa.selenium.server.browserlaunchers;
 
-import java.io.File;
-import java.io.InputStream;
-import java.io.OutputStream;
-
-import org.junit.Test;
-import org.openqa.selenium.browserlaunchers.locators.BrowserInstallation;
-import org.openqa.selenium.server.BrowserConfigurationOptions;
-import org.openqa.selenium.server.RemoteControlConfiguration;
-
 import static org.easymock.classextension.EasyMock.createMock;
 import static org.easymock.classextension.EasyMock.expect;
 import static org.easymock.classextension.EasyMock.replay;
@@ -18,9 +9,19 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import org.junit.Test;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.browserlaunchers.locators.BrowserInstallation;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.server.RemoteControlConfiguration;
+
+import java.io.File;
+import java.io.InputStream;
+import java.io.OutputStream;
+
 public class FirefoxChromeLauncherUnitTest {
 	
-	final BrowserConfigurationOptions browserOptions = new BrowserConfigurationOptions();
+	final Capabilities browserOptions = BrowserOptions.newBrowserOptions();
 	final RemoteControlConfiguration configuration = new RemoteControlConfiguration();
 	
 	// AH: This is the inverse of what it used to be - as the former test only assured an NPE I changed it
@@ -28,7 +29,7 @@ public class FirefoxChromeLauncherUnitTest {
 	public void testInvalidBrowserStringCausesChromeLauncherToThrowException() {
 		
 		try {			
-			new FirefoxChromeLauncher(new BrowserConfigurationOptions(),null,null, "invalid");
+			new FirefoxChromeLauncher(BrowserOptions.newBrowserOptions(),null,null, "invalid");
 			fail("No exception thrown");
 		} catch(InvalidBrowserExecutableException ibee) {
 			assertEquals("The specified path to the browser executable is invalid.", ibee.getMessage());
@@ -40,7 +41,7 @@ public class FirefoxChromeLauncherUnitTest {
 		BrowserInstallation browserInstallation = null;
 		
 		try {			
-			new FirefoxChromeLauncher(new BrowserConfigurationOptions(), null, null, browserInstallation);
+			new FirefoxChromeLauncher(BrowserOptions.newBrowserOptions(), null, null, browserInstallation);
 			fail("No exception thrown");
 		} catch(InvalidBrowserExecutableException ibee) {
 			assertEquals("The specified path to the browser executable is invalid.", ibee.getMessage());
@@ -101,7 +102,7 @@ public class FirefoxChromeLauncherUnitTest {
     
     @Test
     public void copyCert8db_copyiesOnlyIfFileExists() throws Exception {
-    	BrowserConfigurationOptions browserOptions = new BrowserConfigurationOptions();
+    	Capabilities browserOptions = BrowserOptions.newBrowserOptions();
     	RemoteControlConfiguration configuration = new RemoteControlConfiguration();
     	File firefoxProfileTemplate = new File("x");
     	final File certFile = createMock(File.class);
@@ -137,9 +138,9 @@ public class FirefoxChromeLauncherUnitTest {
     		protected void copyDirectory(File sourceDir, File destDir) {
     		}
     	};
-    	
-    	browserOptions.set("firefoxProfileTemplate", "profileTemplate");
-    	
+
+      ((DesiredCapabilities) browserOptions).setCapability("firefoxProfileTemplate", "profileTemplate");
+
     	File result = launcher.initProfileTemplate();
     	
     	assertEquals("profileTemplate", result.getName());
@@ -167,7 +168,7 @@ public class FirefoxChromeLauncherUnitTest {
     	replay(profileTemplate);
     	
     	configuration.setProfilesLocation(profileTemplate);
-    	browserOptions.set("profile", "profile");
+    	((DesiredCapabilities) browserOptions).setCapability("profile", "profile");
     	
     	File result = launcher.initProfileTemplate();
     	verify(profileTemplate);
@@ -182,7 +183,7 @@ public class FirefoxChromeLauncherUnitTest {
       private boolean throwProcessKillException = true;
       
       public FirefoxChromeLauncherStubbedForShutdown() {
-        super(new BrowserConfigurationOptions(), new RemoteControlConfiguration(), "testsession", (String)null);
+        super(BrowserOptions.newBrowserOptions(), new RemoteControlConfiguration(), "testsession", (String)null);
       }
       
       public void haveProcessKillThrowException(boolean doThrow) {

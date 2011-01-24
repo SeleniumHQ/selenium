@@ -4,20 +4,20 @@
  */
 package org.openqa.selenium.server.browserlaunchers;
 
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.browserlaunchers.BrowserLauncher;
+import org.openqa.selenium.internal.Trace;
+import org.openqa.selenium.internal.TraceFactory;
+import org.openqa.selenium.server.DefaultRemoteCommand;
+import org.openqa.selenium.server.RemoteCommand;
+import org.openqa.selenium.server.RemoteControlConfiguration;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
-
-import org.openqa.selenium.browserlaunchers.BrowserLauncher;
-import org.openqa.selenium.internal.Trace;
-import org.openqa.selenium.internal.TraceFactory;
-import org.openqa.selenium.server.BrowserConfigurationOptions;
-import org.openqa.selenium.server.DefaultRemoteCommand;
-import org.openqa.selenium.server.RemoteCommand;
-import org.openqa.selenium.server.RemoteControlConfiguration;
 
 public class MockBrowserLauncher implements BrowserLauncher, Runnable {
 
@@ -33,9 +33,9 @@ public class MockBrowserLauncher implements BrowserLauncher, Runnable {
     private String uniqueId;
     private int sequenceNumber = 0;
     private final RemoteControlConfiguration configuration;
-    private final BrowserConfigurationOptions browserOptions;
+    private final Capabilities browserOptions;
         
-    public MockBrowserLauncher(BrowserConfigurationOptions browserOptions, RemoteControlConfiguration configuration, String sessionId, String command) {
+    public MockBrowserLauncher(Capabilities browserOptions, RemoteControlConfiguration configuration, String sessionId, String command) {
         this.sessionId = sessionId;
         this.uniqueId = "mock";
         this.configuration = configuration;

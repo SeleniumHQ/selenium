@@ -6,7 +6,6 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import org.openqa.selenium.server.BrowserConfigurationOptions;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 
 public class FirefoxCustomProfileLauncherUnitTest extends TestCase {
@@ -63,7 +62,7 @@ public class FirefoxCustomProfileLauncherUnitTest extends TestCase {
       private boolean throwProcessKillException = true;
       
       public FirefoxCustomProfileLauncherStubbedForShutdown() {
-        super(new BrowserConfigurationOptions(), new RemoteControlConfiguration(), "testsession", (String)null);
+        super(BrowserOptions.newBrowserOptions(), new RemoteControlConfiguration(), "testsession", (String)null);
       }
       
       public void haveProcessKillThrowException(boolean doThrow) {

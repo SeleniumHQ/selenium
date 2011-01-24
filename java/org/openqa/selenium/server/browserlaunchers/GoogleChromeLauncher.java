@@ -17,24 +17,24 @@
 
 package org.openqa.selenium.server.browserlaunchers;
 
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.Platform;
+import org.openqa.selenium.browserlaunchers.AsyncExecute;
+import org.openqa.selenium.browserlaunchers.LauncherUtils;
+import org.openqa.selenium.browserlaunchers.locators.BrowserInstallation;
+import org.openqa.selenium.browserlaunchers.locators.GoogleChromeLocator;
+import org.openqa.selenium.internal.Trace;
+import org.openqa.selenium.internal.TraceFactory;
+import org.openqa.selenium.os.CommandLine;
+import org.openqa.selenium.server.ApplicationRegistry;
+import org.openqa.selenium.server.RemoteControlConfiguration;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Map;
-
-import org.openqa.selenium.Platform;
-import org.openqa.selenium.browserlaunchers.AsyncExecute;
-import org.openqa.selenium.browserlaunchers.locators.BrowserInstallation;
-import org.openqa.selenium.browserlaunchers.LauncherUtils;
-import org.openqa.selenium.browserlaunchers.locators.GoogleChromeLocator;
-import org.openqa.selenium.internal.Trace;
-import org.openqa.selenium.internal.TraceFactory;
-import org.openqa.selenium.os.CommandLine;
-import org.openqa.selenium.server.ApplicationRegistry;
-import org.openqa.selenium.server.BrowserConfigurationOptions;
-import org.openqa.selenium.server.RemoteControlConfiguration;
 
 /**
  * Browser launcher for Google Chrome.
@@ -57,13 +57,13 @@ public class GoogleChromeLauncher extends AbstractBrowserLauncher {
 
     private Process process;
 
-    public GoogleChromeLauncher(BrowserConfigurationOptions browserOptions, RemoteControlConfiguration configuration,
+    public GoogleChromeLauncher(Capabilities browserOptions, RemoteControlConfiguration configuration,
                                 String sessionId, String browserLaunchLocation) {
         this(browserOptions, configuration, sessionId, ApplicationRegistry.instance().browserInstallationCache().
              locateBrowserInstallation("googlechrome", browserLaunchLocation, new GoogleChromeLocator()));
     }
 
-    public GoogleChromeLauncher(BrowserConfigurationOptions browserOptions, RemoteControlConfiguration configuration,
+    public GoogleChromeLauncher(Capabilities browserOptions, RemoteControlConfiguration configuration,
                                 String sessionId, BrowserInstallation browserInstallation) {
         super(sessionId, configuration, browserOptions);
         this.browserInstallation = browserInstallation;

@@ -4,23 +4,23 @@
  */
 package org.openqa.selenium.server.browserlaunchers;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.browserlaunchers.AsyncExecute;
 import org.openqa.selenium.browserlaunchers.BrowserLauncher;
 import org.openqa.selenium.browserlaunchers.LauncherUtils;
 import org.openqa.selenium.browserlaunchers.locators.InternetExplorerLocator;
 import org.openqa.selenium.internal.Trace;
 import org.openqa.selenium.internal.TraceFactory;
-import org.openqa.selenium.os.WindowsUtils;
-import org.openqa.selenium.os.CommandLine;
 import org.openqa.selenium.io.FileHandler;
-import org.openqa.selenium.server.BrowserConfigurationOptions;
+import org.openqa.selenium.os.CommandLine;
+import org.openqa.selenium.os.WindowsUtils;
 import org.openqa.selenium.server.FrameGroupCommandQueueSet;
 import org.openqa.selenium.server.RemoteControlConfiguration;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
 //EB - Why doesn't this class extend AbstractBrowserLauncher
 //DGF - because it would override every method of ABL.
@@ -32,9 +32,9 @@ public class HTABrowserLauncher implements BrowserLauncher {
     private Process htaProcess;
     private Process iexploreProcess;
     private RemoteControlConfiguration configuration;
-    private BrowserConfigurationOptions browserOptions;
+    private Capabilities browserOptions;
     
-    public HTABrowserLauncher(BrowserConfigurationOptions browserOptions, RemoteControlConfiguration configuration,
+    public HTABrowserLauncher(Capabilities browserOptions, RemoteControlConfiguration configuration,
                               String sessionId, String browserLaunchLocation) {
         if (browserLaunchLocation == null) {
             browserLaunchLocation = findHTALaunchLocation();
@@ -149,7 +149,7 @@ public class HTABrowserLauncher implements BrowserLauncher {
     }
 
     public void launchHTMLSuite(String suiteUrl, String browserURL) {
-        launch(LauncherUtils.getDefaultHTMLSuiteUrl(browserURL, suiteUrl, (!BrowserOptions.isSingleWindow(browserOptions.asCapabilities())), getPort()), "TestRunner.hta");
+        launch(LauncherUtils.getDefaultHTMLSuiteUrl(browserURL, suiteUrl, (!BrowserOptions.isSingleWindow(browserOptions)), getPort()), "TestRunner.hta");
     }
 
     private int getPort() {
@@ -160,7 +160,7 @@ public class HTABrowserLauncher implements BrowserLauncher {
      * Note that the browserConfigurationOptions object is ignored; This browser configuration is not supported for IE
      */
     public void launchRemoteSession(String url) {
-        launch(LauncherUtils.getDefaultRemoteSessionUrl(url, sessionId, (!BrowserOptions.isSingleWindow(browserOptions.asCapabilities())), getPort(), browserOptions.is("browserSideLog")), "RemoteRunner.hta");
+        launch(LauncherUtils.getDefaultRemoteSessionUrl(url, sessionId, (!BrowserOptions.isSingleWindow(browserOptions)), getPort(), browserOptions.is("browserSideLog")), "RemoteRunner.hta");
     }
 
 }

@@ -19,8 +19,8 @@ package org.openqa.selenium.server.browserlaunchers;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.browserlaunchers.Proxies;
-import org.openqa.selenium.server.BrowserConfigurationOptions;
 
 public class ProxyUtilsTest {
   @Test public void modelExpectedProxyingBehavior() {
@@ -43,12 +43,12 @@ public class ProxyUtilsTest {
     for (int i = 0; i < bigTableOfTruth.length; i++) {
       boolean[] row = bigTableOfTruth[i];
 
-      BrowserConfigurationOptions options = new BrowserConfigurationOptions();
-      options.setOnlyProxySeleniumTraffic(row[0]);
-      options.setAvoidProxy(row[1]);
-      options.setProxyEverything(row[2]);
+      Capabilities options = BrowserOptions.newBrowserOptions();
+      options = Proxies.setOnlyProxySeleniumTraffic(options, row[0]);
+      options = Proxies.setAvoidProxy(options, row[1]);
+      options = Proxies.setProxyEverything(options, row[2]);
 
-      Assert.assertEquals("Failure on row: " + i, row[3], Proxies.isProxyingAllTraffic(options.asCapabilities()));
+      Assert.assertEquals("Failure on row: " + i, row[3], Proxies.isProxyingAllTraffic(options));
     }
 
   }

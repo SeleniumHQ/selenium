@@ -5,7 +5,6 @@ import junit.framework.TestCase;
 import org.apache.commons.logging.Log;
 import org.openqa.jetty.log.LogFactory;
 import org.openqa.selenium.browserlaunchers.AsyncExecute;
-import org.openqa.selenium.server.BrowserConfigurationOptions;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 
 /**
@@ -20,7 +19,7 @@ public class SafariLauncherIntegrationTest extends TestCase {
     public void testLauncherWithDefaultConfiguration() throws Exception {
         final SafariCustomProfileLauncher launcher;
 
-        launcher = new SafariCustomProfileLauncher(new BrowserConfigurationOptions(), new RemoteControlConfiguration(), "CUST", null);
+        launcher = new SafariCustomProfileLauncher(BrowserOptions.newBrowserOptions(), new RemoteControlConfiguration(), "CUST", null);
         launcher.launch("http://www.google.com");
         int seconds = 15;
         LOGGER.info("Killing browser in " + Integer.toString(seconds) + " seconds");
@@ -36,7 +35,7 @@ public class SafariLauncherIntegrationTest extends TestCase {
         configuration = new RemoteControlConfiguration();
         configuration.setHonorSystemProxy(true);
         
-        launcher = new SafariCustomProfileLauncher(new BrowserConfigurationOptions(), configuration, "CUST", null);
+        launcher = new SafariCustomProfileLauncher(BrowserOptions.newBrowserOptions(), configuration, "CUST", null);
         launcher.launch("http://www.google.com");
         int seconds = 15;
         LOGGER.info("Killing browser in " + Integer.toString(seconds) + " seconds");

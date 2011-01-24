@@ -1,6 +1,7 @@
 package org.openqa.selenium.server.browserlaunchers;
 
-import org.openqa.selenium.server.BrowserConfigurationOptions;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.browserlaunchers.Proxies;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 
 import java.io.IOException;
@@ -20,17 +21,17 @@ import java.io.IOException;
 public class ProxyInjectionSafariCustomProfileLauncher extends SafariCustomProfileLauncher {
   private static boolean alwaysChangeMaxConnections = true;
 
-  public ProxyInjectionSafariCustomProfileLauncher(BrowserConfigurationOptions browserOptions,
+  public ProxyInjectionSafariCustomProfileLauncher(Capabilities browserOptions,
                                                    RemoteControlConfiguration configuration, String sessionId, String browserLaunchLocation) {
 
     super(browserOptions, configuration, sessionId, browserLaunchLocation);
-    browserOptions.setProxyEverything(true);
+    browserConfigurationOptions = Proxies.setProxyEverything(browserConfigurationOptions, true);
   }
 
   @Override
   protected void changeRegistrySettings() throws IOException {
     wpm.setChangeMaxConnections(alwaysChangeMaxConnections);
-    wpm.changeRegistrySettings(browserConfigurationOptions.asCapabilities());
+    wpm.changeRegistrySettings(browserConfigurationOptions);
   }
 
   public static void setChangeMaxConnections(boolean changeMaxConnections) {

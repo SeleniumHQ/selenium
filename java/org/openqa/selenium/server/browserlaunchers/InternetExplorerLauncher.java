@@ -16,8 +16,8 @@
  */
 package org.openqa.selenium.server.browserlaunchers;
 
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.browserlaunchers.BrowserLauncher;
-import org.openqa.selenium.server.BrowserConfigurationOptions;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 
 public class InternetExplorerLauncher implements BrowserLauncher {
@@ -25,9 +25,9 @@ public class InternetExplorerLauncher implements BrowserLauncher {
     final BrowserLauncher realLauncher;
     static final String DEFAULT_MODE="iehta";
     
-    public InternetExplorerLauncher(BrowserConfigurationOptions browserOptions, RemoteControlConfiguration configuration, String sessionId, String browserLaunchLocation) {
+    public InternetExplorerLauncher(Capabilities browserOptions, RemoteControlConfiguration configuration, String sessionId, String browserLaunchLocation) {
 
-        String mode = browserOptions.get("mode");
+        String mode = (String) browserOptions.getCapability("mode");
         if (mode == null) mode = DEFAULT_MODE;
         if ("default".equals(mode)) mode = DEFAULT_MODE;
         

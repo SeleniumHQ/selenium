@@ -3,7 +3,6 @@ package org.openqa.selenium.server.browserlaunchers;
 import java.util.UUID;
 
 import org.openqa.selenium.browserlaunchers.AsyncExecute;
-import org.openqa.selenium.server.BrowserConfigurationOptions;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 
 /**
@@ -12,14 +11,14 @@ import org.openqa.selenium.server.RemoteControlConfiguration;
 public class FirefoxCustomProfileLauncherIntegrationTest extends LauncherFunctionalTestCase {
 
     public void testLauncherWithDefaultConfiguration() throws Exception {
-        launchBrowser(new FirefoxCustomProfileLauncher(new BrowserConfigurationOptions(), new RemoteControlConfiguration(), "CUSTFFCHROME", (String) null));
+        launchBrowser(new FirefoxCustomProfileLauncher(BrowserOptions.newBrowserOptions(), new RemoteControlConfiguration(), "CUSTFFCHROME", (String) null));
     }
 
     public void testLaunchTwoBrowsersInARowWithDefaultConfiguration() throws Exception {
         final RemoteControlConfiguration configuration = new RemoteControlConfiguration();
 
-        launchBrowser(new FirefoxCustomProfileLauncher(new BrowserConfigurationOptions(), configuration, "CUSTFFCHROME", (String) null));
-        launchBrowser(new FirefoxCustomProfileLauncher(new BrowserConfigurationOptions(), configuration, "CUSTFFCHROME", (String) null));
+        launchBrowser(new FirefoxCustomProfileLauncher(BrowserOptions.newBrowserOptions(), configuration, "CUSTFFCHROME", (String) null));
+        launchBrowser(new FirefoxCustomProfileLauncher(BrowserOptions.newBrowserOptions(), configuration, "CUSTFFCHROME", (String) null));
     }
 
     public void testLaunchMultipleBrowsersConcurrentlyWithDefaultConfiguration() {
@@ -71,7 +70,7 @@ public class FirefoxCustomProfileLauncherIntegrationTest extends LauncherFunctio
         public void run() {
         	System.out.println("Thread: " + Thread.currentThread().getName());
         	String sessionId = "TEST" + UUID.randomUUID().toString().replace("-", "");
-        	new FirefoxCustomProfileLauncher(new BrowserConfigurationOptions(), new RemoteControlConfiguration(), sessionId, (String)null).launch("http://www.google.com");
+        	new FirefoxCustomProfileLauncher(BrowserOptions.newBrowserOptions(), new RemoteControlConfiguration(), sessionId, (String)null).launch("http://www.google.com");
         }
     };
     

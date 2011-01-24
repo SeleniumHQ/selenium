@@ -7,6 +7,7 @@ import java.util.Vector;
 
 import org.junit.Test;
 import org.openqa.jetty.http.HttpResponse;
+import org.openqa.selenium.server.browserlaunchers.BrowserOptions;
 import org.openqa.selenium.server.commands.CaptureEntirePageScreenshotToStringCommand;
 import org.openqa.selenium.server.commands.CaptureScreenshotToStringCommand;
 import org.openqa.selenium.server.commands.RetrieveLastRemoteControlLogsCommand;
@@ -68,7 +69,7 @@ public class SeleniumDriverResourceHandlerUnitTest {
     server.start();
     SeleniumDriverResourceHandler sdrh = new SeleniumDriverResourceHandler(server);
     try {
-      sdrh.getNewBrowserSession("*mock", null, "", new BrowserConfigurationOptions());
+      sdrh.getNewBrowserSession("*mock", null, "", BrowserOptions.newBrowserOptions());
       fail("Launch should have failed");
     } catch (RemoteCommandException rce) {
       // passes.

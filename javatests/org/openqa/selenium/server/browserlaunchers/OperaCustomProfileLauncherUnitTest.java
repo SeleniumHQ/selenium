@@ -1,19 +1,19 @@
 package org.openqa.selenium.server.browserlaunchers;
 
-import java.io.File;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
-import org.openqa.selenium.server.BrowserConfigurationOptions;
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 
-import static org.junit.Assert.assertEquals;
+import java.io.File;
 
 public class OperaCustomProfileLauncherUnitTest {
 
 	@Test
 	public void constructor_triesToFindBrowserLocationIfNullSpecified() throws Exception {
 		RemoteControlConfiguration remoteConfiguration = new RemoteControlConfiguration();
-		BrowserConfigurationOptions browserOptions = new BrowserConfigurationOptions();
+		Capabilities browserOptions = BrowserOptions.newBrowserOptions();
 		
 		OperaCustomProfileLauncher launcher = new OperaCustomProfileLauncher(browserOptions, remoteConfiguration, "session", null) {
 			@Override

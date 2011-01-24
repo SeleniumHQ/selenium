@@ -1,6 +1,7 @@
 package org.openqa.selenium.server;
 
 
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.internal.Trace;
 import org.openqa.selenium.internal.TraceFactory;
 import org.openqa.selenium.browserlaunchers.BrowserLauncher;
@@ -81,7 +82,7 @@ public class BrowserSessionFactory {
      * @throws RemoteCommandException
      */
     public BrowserSessionInfo getNewBrowserSession(String browserString, String startURL,
-        String extensionJs, BrowserConfigurationOptions browserConfigurations, RemoteControlConfiguration configuration)
+        String extensionJs, Capabilities browserConfigurations, RemoteControlConfiguration configuration)
         throws RemoteCommandException {
         return getNewBrowserSession(browserString, startURL, extensionJs,
                 browserConfigurations, 
@@ -102,7 +103,7 @@ public class BrowserSessionFactory {
      * @throws RemoteCommandException
      */
     protected BrowserSessionInfo getNewBrowserSession(String browserString, String startURL,
-        String extensionJs, BrowserConfigurationOptions browserConfigurations, 
+        String extensionJs, Capabilities browserConfigurations,
         boolean useCached, boolean ensureClean, RemoteControlConfiguration configuration) throws RemoteCommandException {
 
         BrowserSessionInfo sessionInfo = null;
@@ -343,7 +344,7 @@ public class BrowserSessionFactory {
      *                                request work in the required amount of time.
      */
     protected BrowserSessionInfo createNewRemoteSession(String browserString, String startURL,
-        String extensionJs, BrowserConfigurationOptions browserConfiguration, boolean ensureClean, RemoteControlConfiguration configuration)
+        String extensionJs, Capabilities browserConfiguration, boolean ensureClean, RemoteControlConfiguration configuration)
         throws RemoteCommandException {
 
         final FrameGroupCommandQueueSet queueSet;

@@ -16,21 +16,28 @@
  */
 package org.openqa.selenium.server.browserlaunchers;
 
+import static org.openqa.selenium.Platform.MAC;
+
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Platform;
-import org.openqa.selenium.browserlaunchers.*;
+import org.openqa.selenium.browserlaunchers.AsyncExecute;
+import org.openqa.selenium.browserlaunchers.LauncherUtils;
+import org.openqa.selenium.browserlaunchers.MacProxyManager;
+import org.openqa.selenium.browserlaunchers.WindowsProxyManager;
 import org.openqa.selenium.browserlaunchers.locators.BrowserInstallation;
 import org.openqa.selenium.browserlaunchers.locators.SafariLocator;
 import org.openqa.selenium.internal.Trace;
 import org.openqa.selenium.internal.TraceFactory;
-import org.openqa.selenium.os.WindowsUtils;
 import org.openqa.selenium.os.CommandLine;
+import org.openqa.selenium.os.WindowsUtils;
 import org.openqa.selenium.server.ApplicationRegistry;
-import org.openqa.selenium.server.BrowserConfigurationOptions;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 
-import java.io.*;
-
-import static org.openqa.selenium.Platform.MAC;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
 
 
 public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
@@ -55,7 +62,7 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
         "safari", browserLaunchLocation, new SafariLocator());
   }
 
-  public SafariCustomProfileLauncher(BrowserConfigurationOptions browserOptions, RemoteControlConfiguration configuration, String sessionId, String browserLaunchLocation) {
+  public SafariCustomProfileLauncher(Capabilities browserOptions, RemoteControlConfiguration configuration, String sessionId, String browserLaunchLocation) {
     super(sessionId, configuration, browserOptions);
 
     this.browserInstallation = locateSafari(browserLaunchLocation);
@@ -236,7 +243,7 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
   }
 
   protected void changeRegistrySettings() throws IOException {
-    wpm.changeRegistrySettings(browserConfigurationOptions.asCapabilities());
+    wpm.changeRegistrySettings(browserConfigurationOptions);
   }
 
   private void createSystemProxyManager(String sessionId) {

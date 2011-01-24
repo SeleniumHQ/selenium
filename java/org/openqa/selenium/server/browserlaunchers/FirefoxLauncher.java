@@ -16,10 +16,10 @@
  */
 package org.openqa.selenium.server.browserlaunchers;
 
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.browserlaunchers.BrowserLauncher;
 import org.openqa.selenium.browserlaunchers.locators.*;
 import org.openqa.selenium.server.ApplicationRegistry;
-import org.openqa.selenium.server.BrowserConfigurationOptions;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 import org.openqa.selenium.browserlaunchers.locators.Firefox2or3Locator;
 
@@ -27,11 +27,11 @@ public class FirefoxLauncher implements BrowserLauncher {
 
   final BrowserLauncher realLauncher;
 
-  public FirefoxLauncher(BrowserConfigurationOptions browserOptions, RemoteControlConfiguration configuration, String sessionId, String browserLaunchLocation)
+  public FirefoxLauncher(Capabilities browserOptions, RemoteControlConfiguration configuration, String sessionId, String browserLaunchLocation)
       throws InvalidBrowserExecutableException {
     String browserName = "firefox";
     BrowserLocator locator = new Firefox2or3Locator();
-    String version = browserOptions.get("version");
+    String version = (String) browserOptions.getCapability("version");
     if ("2".equals(version)) {
       browserName = "firefox2";
       locator = new Firefox2Locator();
@@ -40,7 +40,7 @@ public class FirefoxLauncher implements BrowserLauncher {
       browserName = "firefox3";
       locator = new Firefox3Locator();
     }
-    String mode = browserOptions.get("mode");
+    String mode = (String) browserOptions.getCapability("mode");
     if (mode == null) {
       mode = "chrome";
     }
