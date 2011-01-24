@@ -71,10 +71,15 @@ public class BrowserOptions {
     return (String) capabilities.getCapability("commandLineFlags");
   }
 
+  public static boolean isTimeoutSet(Capabilities capabilities) {
+    return getTimeoutInSeconds(capabilities) != 0;
+  }
+
   public static long getTimeoutInSeconds(Capabilities capabilities) {
     String value = (String) capabilities.getCapability("timeoutInSeconds");
+
     if (value == null) {
-      return TimeUnit.MINUTES.toSeconds(30);
+      return 0;
     }
 
     return Long.parseLong(value);
