@@ -187,8 +187,9 @@ desc 'Clean build artifacts.'
 task :clean do
   rm_rf 'build/'
   rm_rf 'iphone/build/'
-  rm_rf 'android/server/bin/'
-  rm_rf 'android/server/build/'
+  rm_rf 'android/bin/'
+  rm_rf 'android/build/'
+  rm_rf 'android/libs/'
   rm_rf 'android/client/bin/'
   Android::Clean.new()
 end
