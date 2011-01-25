@@ -72,6 +72,26 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
+        public void ShouldBeAbleToExecuteSimpleJavascriptAndReturnAStringArray()
+        {
+            if (!(driver is IJavaScriptExecutor))
+            {
+                return;
+            }
+
+            driver.Url = javascriptPage;
+            List<object> expectedResult = new List<object>();
+            expectedResult.Add("zero");
+            expectedResult.Add("one");
+            expectedResult.Add("two");
+            object result = ExecuteScript("return ['zero', 'one', 'two'];");
+            Assert.IsTrue(result is ReadOnlyCollection<object>, "result was: " + result + " (" + result.GetType().Name + ")");
+            ReadOnlyCollection<object> list = (ReadOnlyCollection<object>)result;
+            //Assert.IsTrue(CompareLists(expectedResult, list));
+        }
+
+        [Test]
+        [Category("Javascript")]
         public void ShouldBeAbleToExecuteSimpleJavascriptAndReturnAnArray()
         {
             if (!(driver is IJavaScriptExecutor))
@@ -90,6 +110,78 @@ namespace OpenQA.Selenium
             Assert.IsTrue(result is ReadOnlyCollection<object>, "result was: " + result + " (" + result.GetType().Name + ")");
             ReadOnlyCollection<object> list = (ReadOnlyCollection<object>)result;
             //Assert.IsTrue(CompareLists(expectedResult, list));
+        }
+
+        [Test]
+        [Category("Javascript")]
+        [IgnoreBrowser(Browser.IE)]
+        public void ShouldBeAbleToExecuteJavascriptAndReturnABasicObjectLiteral()
+        {
+            if (!(driver is IJavaScriptExecutor))
+            {
+                return;
+            }
+
+            driver.Url = javascriptPage;
+
+            object result = ExecuteScript("return {abc: '123', tired: false};");
+            Assert.IsTrue(result is Dictionary<string, object>, "result was: " + result.GetType().ToString());
+            Dictionary<string, object> map = (Dictionary<string, object>)result;
+
+            Dictionary<string, object> expected = new Dictionary<string, object>();
+            expected.Add("abc", "123");
+            expected.Add("tired", false);
+
+            Assert.AreEqual(expected.Count, map.Count, "Expected:<" + expected.Count + ">, but was:<" + map.Count + ">");
+            foreach (string expectedKey in expected.Keys)
+            {
+                Assert.IsTrue(map.ContainsKey(expectedKey));
+                Assert.AreEqual(expected[expectedKey], map[expectedKey]);
+            }
+        }
+
+        [Test]
+        [Category("Javascript")]
+        [IgnoreBrowser(Browser.IE)]
+        public void ShouldBeAbleToExecuteSimpleJavascriptAndReturnAnObjectLiteral()
+        {
+            if (!(driver is IJavaScriptExecutor))
+            {
+                return;
+            }
+
+            driver.Url = javascriptPage;
+
+            Dictionary<string, object> person = new Dictionary<string, object>();
+            person.Add("first", "John");
+            person.Add("last", "Doe");
+            Dictionary<string, object> expectedResult = new Dictionary<string, object>();
+            expectedResult.Add("foo", "bar");
+            expectedResult.Add("baz", new object[] { "a", "b", "c" });
+            expectedResult.Add("person", person);
+
+            object result = ExecuteScript(
+                "return {foo:'bar', baz: ['a', 'b', 'c'], " +
+                    "person: {first: 'John',last: 'Doe'}};");
+            Assert.IsTrue(result is Dictionary<string, object>, "result was: " + result.GetType().ToString());
+
+            Dictionary<string, object> map = (Dictionary<string, object>)result;
+            Assert.AreEqual(3, map.Count, "Expected:<" + expectedResult.Count + ">, but was:<" + map.Count + ">");
+            foreach (string expectedKey in expectedResult.Keys)
+            {
+                Assert.IsTrue(map.ContainsKey(expectedKey));
+            }
+
+            Assert.AreEqual("bar", map["foo"]);
+            //assertEquals(expectedResult.keySet(), map.keySet());
+            //assertEquals("bar", map.get("foo"));
+            //assertTrue(compareLists((List<?>) expectedResult.get("baz"),
+            //    (List<?>) map.get("baz")));
+
+            //Map<String, String> person = (Map<String, String>) map.get("person");
+            //assertEquals(2, person.size());
+            //assertEquals("John", person.get("first"));
+            //assertEquals("Doe", person.get("last"));
         }
 
         [Test]
@@ -313,7 +405,7 @@ namespace OpenQA.Selenium
             text = driver.FindElement(By.Id("result")).Text;
             Assert.AreEqual("2147483647", text);
 
-            ExecuteScript(function, - 2147483646, -1);
+            ExecuteScript(function, -2147483646, -1);
             text = driver.FindElement(By.Id("result")).Text;
             Assert.AreEqual("-2147483647", text);
 
@@ -401,7 +493,22 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        public void ShouldBeAbleToPassAnArrayAsArgument()
+        public void ShouldBeAbleToPassMoreThanOneWebElementAsArguments()
+        {
+            if (!(driver is IJavaScriptExecutor))
+                return;
+
+            driver.Url = javascriptPage;
+            IWebElement button = driver.FindElement(By.Id("plainButton"));
+            IWebElement dynamo = driver.FindElement(By.Id("dynamo"));
+            string value = (string)ExecuteScript("arguments[0]['flibble'] = arguments[0].getAttribute('id'); return arguments[0]['flibble'] + arguments[1].innerHTML;", button, dynamo);
+
+            Assert.AreEqual("plainButtonWhat's for dinner?", value);
+        }
+
+        [Test]
+        [Category("Javascript")]
+        public void PassingArrayAsOnlyArgumentShouldFlattenArray()
         {
             if (!(driver is IJavaScriptExecutor))
             {
@@ -416,18 +523,42 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        public void ShouldBeAbleToPassMoreThanOneWebElementAsArguments()
+        [IgnoreBrowser(Browser.IE)]
+        [IgnoreBrowser(Browser.Firefox)]
+        [IgnoreBrowser(Browser.Remote)]
+        public void ShouldBeAbleToPassAnArrayAsAdditionalArgument()
         {
             if (!(driver is IJavaScriptExecutor))
+            {
                 return;
+            }
 
             driver.Url = javascriptPage;
-            IWebElement button = driver.FindElement(By.Id("plainButton"));
-            IWebElement dynamo = driver.FindElement(By.Id("dynamo"));
-            string value = (string)ExecuteScript("arguments[0]['flibble'] = arguments[0].getAttribute('id'); return arguments[0]['flibble'] + arguments[1].innerHTML;", button, dynamo);
-
-            Assert.AreEqual("plainButtonWhat's for dinner?", value);
+            object[] array = new object[] { "zero", 1, true, 3.14159, false };
+            long length = (long)ExecuteScript("return arguments[1].length", "string", array);
+            Assert.AreEqual(array.Length, length);
         }
+
+        [Test]
+        [Category("Javascript")]
+        [IgnoreBrowser(Browser.IE)]
+        [IgnoreBrowser(Browser.Remote)]
+        public void ShouldBeAbleToPassACollectionAsArgument()
+        {
+            if (!(driver is IJavaScriptExecutor))
+            {
+                return;
+            }
+
+            driver.Url = javascriptPage;
+            List<object> collection = new List<object>();
+            collection.Add("Cheddar");
+            collection.Add("Brie");
+            collection.Add(7);
+            long length = (long)ExecuteScript("return arguments[0].length", collection);
+            Assert.AreEqual(collection.Count, length);
+        }
+
 
         [Test]
         [Category("Javascript")]
@@ -449,7 +580,7 @@ namespace OpenQA.Selenium
                 return;
 
             driver.Url = javascriptPage;
-            
+
             IWebElement dynamo = driver.FindElement(By.Id("dynamo"));
             string result = (string)ExecuteScript("return arguments[0].innerHTML + arguments[1].toString() + arguments[2].toString() + arguments[3] + arguments[4]",
                 dynamo,
@@ -541,6 +672,19 @@ namespace OpenQA.Selenium
             {
                 Assert.Fail("Expected an exception to be caught");
             }
+        }
+
+        [Test]
+        [Category("Javascript")]
+        public void testShouldBeAbleToCreateAPersistentValue()
+        {
+            driver.Url = formsPage;
+
+            ExecuteScript("document.alerts = []");
+            ExecuteScript("document.alerts.push('hello world');");
+            string text = (string)ExecuteScript("return document.alerts.shift()");
+
+            Assert.AreEqual("hello world", text);
         }
 
         private object ExecuteScript(String script, params Object[] args)
