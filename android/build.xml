@@ -45,9 +45,7 @@
 
     <property name="third_party.location" value="../third_party"/>
     <property name="build.location" value="../build" />
-    <delete>
-      <fileset dir="libs/" />
-    </delete>
+
     <copy file="${build.location}/java/org/openqa/jetty/jetty.jar" tofile="libs/jetty.jar" />
     <copy file="${build.location}/java/org/openqa/selenium/remote/client.jar" tofile="libs/remote-client.jar" />
     <copy file="${build.location}/java/org/openqa/selenium/remote/server/server.jar" tofile="libs/remote-server.jar" />
@@ -102,5 +100,4 @@
              - customize to your needs.
     -->
     <setup />
-
 </project>
