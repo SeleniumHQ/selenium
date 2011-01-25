@@ -114,7 +114,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        //[IgnoreBrowser(Browser.IE)]
         public void ShouldBeAbleToExecuteJavascriptAndReturnABasicObjectLiteral()
         {
             if (!(driver is IJavaScriptExecutor))
@@ -142,7 +141,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        //[IgnoreBrowser(Browser.IE)]
         public void ShouldBeAbleToExecuteSimpleJavascriptAndReturnAnObjectLiteral()
         {
             if (!(driver is IJavaScriptExecutor))
@@ -531,7 +529,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        //[IgnoreBrowser(Browser.IE)]
+        [IgnoreBrowser(Browser.IE)]
         [IgnoreBrowser(Browser.Firefox)]
         [IgnoreBrowser(Browser.Remote)]
         public void ShouldBeAbleToPassAnArrayAsAdditionalArgument()
@@ -549,7 +547,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        //[IgnoreBrowser(Browser.IE)]
+        [IgnoreBrowser(Browser.IE)]
         [IgnoreBrowser(Browser.Remote)]
         public void ShouldBeAbleToPassACollectionAsArgument()
         {
