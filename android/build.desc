@@ -11,10 +11,12 @@ java_library(name = "server",
   ],
   deps = [
     ":r",
+    "//java/org/openqa/selenium/remote:client",
+    "//java/org/openqa/selenium/support",
     "//java/org/openqa/selenium/server:server_lite",
     "//third_party/java/android",
     "//third_party/java/jetty:lite-android:uber",
-    "//third_party/java/guava-libraries:guava-libraries:uber",
+    "//third_party/java/guava-libraries:guava-libraries",
     "//third_party/java/servlet-api"
   ])
 
@@ -25,8 +27,10 @@ android_binary(name = "android-server",
     ":server",
     "//java/org/openqa/selenium/remote:client",
     "//java/org/openqa/selenium/support",
-    "//third_party/java/guava-libraries:guava-libraries",
+    "//java/org/openqa/selenium/server:server_lite",
+    "//third_party/java/android",
     "//third_party/java/jetty:lite-android:uber",
+    "//third_party/java/guava-libraries:guava-libraries",
   ])
 
 # TODO(kurniady): Change the dependency for jetty to //third_party/java/jetty:lite:uber
