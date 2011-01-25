@@ -24,7 +24,7 @@ def setup_module(module):
     webserver = SimpleWebServer()
     webserver.start()
     FirefoxStaleReferenceTests.webserver = webserver
-    FirefoxStaleReferenceTests.driver = webdriver.connect('chrome')
+    FirefoxStaleReferenceTests.driver = webdriver.connect('firefox')
 
 
 class FirefoxStaleReferenceTests(stale_reference_tests.StaleReferenceTests):
