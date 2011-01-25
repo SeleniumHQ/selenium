@@ -17,7 +17,11 @@ limitations under the License.
 
 package org.openqa.selenium.remote;
 
-import org.openqa.selenium.interactions.ActionChainsGenerator;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Capabilities;
@@ -32,7 +36,9 @@ import org.openqa.selenium.Speed;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.ActionChainsGenerator;
 import org.openqa.selenium.interactions.DefaultActionChainsGenerator;
+import org.openqa.selenium.interactions.internal.Coordinates;
 import org.openqa.selenium.internal.FindsByClassName;
 import org.openqa.selenium.internal.FindsByCssSelector;
 import org.openqa.selenium.internal.FindsById;
@@ -40,14 +46,8 @@ import org.openqa.selenium.internal.FindsByLinkText;
 import org.openqa.selenium.internal.FindsByName;
 import org.openqa.selenium.internal.FindsByTagName;
 import org.openqa.selenium.internal.FindsByXPath;
-import org.openqa.selenium.interactions.internal.Coordinates;
 import org.openqa.selenium.remote.internal.JsonToWebElementConverter;
 import org.openqa.selenium.remote.internal.WebElementToJsonConverter;
-
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 
 import java.net.URL;
 import java.util.Date;
@@ -69,7 +69,6 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
   private Capabilities capabilities;
   private SessionId sessionId;
 
-  protected Process clientProcess;
   private JsonToWebElementConverter converter;
 
   private final RemoteKeyboard keyboard = new RemoteKeyboard();
@@ -386,9 +385,11 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     Response response;
 
     try {
+      log(sessionId, command.getName(), command);
       response = executor.execute(command);
 
       if (response == null) {
+        log(sessionId, command.getName(), response);
         return null;
       }
 
@@ -396,9 +397,12 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
       // {"ELEMENT": id} to RemoteWebElements.
       Object value = converter.apply(response.getValue());
       response.setValue(value);
+      log(sessionId, command.getName(), response);
     } catch (RuntimeException e) {
+      log(sessionId, command.getName(), e);
       throw e;
     } catch (Exception e) {
+      log(sessionId, command.getName(), e);
       throw new WebDriverException(e);
     }
 
@@ -415,6 +419,17 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
 
   public Mouse getMouse() {
     return mouse;
+  }
+
+  /**
+   * Override this to be notified at key points in the execution of a command.
+   *
+   * @param sessionId the session id.
+   * @param commandName the command that is being executed.
+   * @param toLog any data that might be interesting.
+   */
+  protected void log(SessionId sessionId, String commandName, Object toLog) {
+    // By default do nothing
   }
 
   public ActionChainsGenerator actionsBuilder() {
@@ -676,5 +691,4 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     }
 
   }
-
 }
