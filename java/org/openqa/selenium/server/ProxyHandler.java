@@ -22,10 +22,13 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStreamWriter;
+import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Enumeration;
@@ -301,6 +304,54 @@ public class ProxyHandler extends AbstractHttpHandler {
             }
 
             proxyPlainTextRequest(url, pathInContext, pathParams, request, response);
+        }
+        catch (UnknownHostException e){
+          log.info("Couldn't proxy to " + uri + " because host not found");
+          response.setStatus(400);
+          String host = uri.getHost();
+          response.setReason("Host " + host + " not found");
+          OutputStreamWriter out = new OutputStreamWriter(response.getOutputStream());
+          out.write("<html>" +
+              "<head><title>Problem loading page</title></head>" +
+              "<body style=\"background-color:#F0F0F0; font-family: sans-serif\">" +
+              "<div style=\"margin:auto; margin-top: 3em;width:600px; background-color:#FFF; padding:30px;border: 1px solid #DDD\">" +
+              "<h1 style=\"font-size: 18px;border-bottom:thin solid #DDD\">Server not found</h1>" +
+              "<p style=\"border-bottom: 1px solid #DDD; padding-bottom: 20px\">Selenium can't find the server at "+host+"</p>" +
+              "<ul style=\"list-style: square outside none;font-size:13px\">" +
+              "<li style=\"margin-bottom:6px;\">Check the address for typing errors such as ww.example.com instead of www.example.com</li>" +
+              "<li style=\"margin-bottom:6px;\">If you are unable to load any pages, check your computer's network connection.</li>" +
+              "<li style=\"margin-bottom:6px;\">If your computer or network is protected by a firewall or proxy, make sure that your browser is permitted to access the Web.</li>" +
+              "</ul>" +
+              "</div>" +
+              "</body>");
+          out.close();
+          response.getOutputStream().close();
+        }
+        catch (ConnectException e){
+          log.info("Couldn't proxy to " + uri + " because host not listening");
+          response.setStatus(400);
+          String host = uri.getHost();
+          if(uri.getPort() > 0){
+              host = host + ":" + uri.getPort();
+          }
+          response.setReason("Couldn't connect to " + host);
+          OutputStreamWriter out = new OutputStreamWriter(response.getOutputStream());
+          out.write("<html>" +
+              "<head><title>Problem loading page</title></head>" +
+              "<body style=\"background-color:#F0F0F0; font-family: sans-serif\">" +
+              "<div style=\"margin:auto; margin-top: 3em;width:600px; background-color:#FFF; padding:30px;border: 1px solid #DDD\">" +
+              "<h1 style=\"font-size: 18px;border-bottom:thin solid #DDD\">Unable to connect</h1>" +
+              "<p style=\"border-bottom: 1px solid #DDD; padding-bottom: 20px\">Selenium can't establish a connection to the server at "+host+"</p>" +
+              "<ul style=\"list-style: square outside none;font-size:13px\">" +
+              "<li style=\"margin-bottom:6px;\">The site could be temporarily unavailable or too busy. Try again in a few moments.</li>" +
+              "<li style=\"margin-bottom:6px;\">If you are unable to load any pages, check your computer's network connection.</li>" +
+              "<li style=\"margin-bottom:6px;\">If your computer or network is protected by a firewall or proxy, make sure that your browser is permitted to access the Web.</li>" +
+              "</ul>" +
+              "</div>" +
+              "</body>");
+          
+          out.close();
+          response.getOutputStream().close();
         }
         catch (Exception e) {
             log.debug("Could not proxy " + uri, e);
