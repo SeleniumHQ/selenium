@@ -41,7 +41,6 @@ protected:
 				return;
 			}
 
-			//status_code = browser_wrapper->ExecuteScript(script_wrapper);
 			status_code = script_wrapper->Execute();
 
 			if (status_code != SUCCESS) {

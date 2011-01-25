@@ -94,7 +94,6 @@ protected:
 				return;
 			}
 
-			//status_code = browser_wrapper->ExecuteScript(async_script_wrapper);
 			status_code = async_script_wrapper->Execute();
 
 			if (status_code != SUCCESS) {
@@ -104,7 +103,6 @@ protected:
 				ScriptWrapper *polling_script_wrapper = new ScriptWrapper(browser_wrapper, polling_script, 0);
 				while (true) {
 					Json::Value polling_result;
-					//status_code = browser_wrapper->ExecuteScript(polling_script_wrapper);
 					status_code = polling_script_wrapper->Execute();
 					polling_script_wrapper->ConvertResultToJsonValue(manager, &polling_result);
 					

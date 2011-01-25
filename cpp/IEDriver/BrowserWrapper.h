@@ -73,7 +73,6 @@ public:
 
 	bool Wait(void);
 	void GetDocument(IHTMLDocument2 **doc);
-	// int ExecuteScript(ScriptWrapper *script_wrapper);
 	HWND GetWindowHandle(void);
 	std::wstring GetTitle(void);
 	std::wstring GetCookies(void);
@@ -98,9 +97,6 @@ private:
 	void DetachEvents(void);
 	bool IsDocumentNavigating(IHTMLDocument2 *doc);
 	bool IsHtmlPage(IHTMLDocument2 *doc);
-	//bool GetEvalMethod(IHTMLDocument2* doc, DISPID* eval_id, bool* added);
-	//void RemoveScript(IHTMLDocument2* doc);
-	//bool CreateAnonymousFunction(IDispatch* script_engine, DISPID eval_id, const std::wstring *script, VARIANT* result);
 
 	CComPtr<IHTMLWindow2> focused_frame_window_;
 	CComPtr<IWebBrowser2> browser_;

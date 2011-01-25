@@ -51,7 +51,6 @@ protected:
 
 				ScriptWrapper *script_wrapper = new ScriptWrapper(browser_wrapper, script, 1);
 				script_wrapper->AddArgument(element_wrapper);
-				//status_code = browser_wrapper->ExecuteScript(script_wrapper);
 				status_code = script_wrapper->Execute();
 				delete script_wrapper;
 				if (status_code != SUCCESS) {

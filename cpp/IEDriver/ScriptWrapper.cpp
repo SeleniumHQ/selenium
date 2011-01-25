@@ -102,7 +102,7 @@ bool ScriptWrapper::ResultIsElement() {
 }
 
 bool ScriptWrapper::ResultIsArray() {
-	std::wstring type_name = this->GetObjectTypeName();
+	std::wstring type_name = this->GetResultObjectTypeName();
 
 	// If the name is DispStaticNodeList, we can be pretty sure it's an array
 	// (or at least has array semantics). It is unclear to what extent checking
@@ -111,16 +111,30 @@ bool ScriptWrapper::ResultIsArray() {
 		return true;
 	}
 
-	// If the name is JScriptTypeInfo then *assume* this is a Javascript array.
-	// Note that Javascript can return functions which will have the same
-	// type - the only way to be sure is to run some more Javascript code to
-	// see if this object has a length attribute. This does not seem necessary
-	// now.
-	// (For future reference, GUID is {C59C6B12-F6C1-11CF-8835-00A0C911E8B2})
+	// If the name is JScriptTypeInfo then this *may* be a Javascript array.
+	// Note that strictly speaking, to determine if the result is *actually*
+	// a JavaScript array object, we should also be testing to see if
+	// propertyIsEnumerable('length') == false, but that does not find the
+	// array-like objects returned by some of the calls we make to the Google
+	// Closure library.
+	// IMPORTANT: Using this script, user-defined objects with a length
+	// property defined will be seen as arrays instead of objects.
+	if (type_name == L"JScriptTypeInfo") {
+		const std::wstring script = L"(function() { return function(){ return arguments[0] && arguments[0].hasOwnProperty('length') && typeof arguments[0] === 'object' && typeof arguments[0].length === 'number';};})();";
+		ScriptWrapper *is_array_wrapper = new ScriptWrapper(this->browser_, script, 1);
+		is_array_wrapper->AddArgument(this->result_);
+		is_array_wrapper->Execute();
+		return is_array_wrapper->result().boolVal == VARIANT_TRUE;
+	}
+
+	return false;
+}
+
+bool ScriptWrapper::ResultIsObject() {
+	std::wstring type_name = this->GetResultObjectTypeName();
 	if (type_name == L"JScriptTypeInfo") {
 		return true;
 	}
-
 	return false;
 }
 
@@ -265,22 +279,6 @@ int ScriptWrapper::Execute() {
 	return SUCCESS;
 }
 
-std::wstring ScriptWrapper::GetObjectTypeName() {
-	std::wstring name(L"");
-	if (this->result_.vt == VT_DISPATCH) {
-		CComPtr<ITypeInfo> typeinfo;
-		HRESULT get_type_info_result = this->result_.pdispVal->GetTypeInfo(0, LOCALE_USER_DEFAULT, &typeinfo);
-		TYPEATTR* type_attr;
-		CComBSTR name_bstr;
-		if (SUCCEEDED(get_type_info_result) && SUCCEEDED(typeinfo->GetTypeAttr(&type_attr))
-			&& SUCCEEDED(typeinfo->GetDocumentation(-1, &name_bstr, 0, 0, 0))) {
-			typeinfo->ReleaseTypeAttr(type_attr);
-			name = name_bstr.Copy();
-		}
-	}
-	return name;
-}
-
 int ScriptWrapper::ConvertResultToJsonValue(BrowserManager *manager, Json::Value *value) {
 	int status_code = SUCCESS;
 	if (this->ResultIsString()) { 
@@ -297,19 +295,45 @@ int ScriptWrapper::ConvertResultToJsonValue(BrowserManager *manager, Json::Value
 		*value = Json::Value::null;
 	} else if (this->ResultIsIDispatch()) {
 		if (this->ResultIsArray() || this->ResultIsElementCollection()) {
-			BrowserWrapper *browser_wrapper;
-			manager->GetCurrentBrowser(&browser_wrapper);
 			Json::Value result_array(Json::arrayValue);
 
 			long length = 0;
-			status_code = this->GetArrayLength(browser_wrapper, &length);
+			status_code = this->GetArrayLength(&length);
 
 			for (long i = 0; i < length; ++i) {
 				Json::Value array_item_result;
-				int array_item_status = this->GetArrayItem(browser_wrapper, manager, i, &array_item_result);
+				int array_item_status = this->GetArrayItem(manager, i, &array_item_result);
 				result_array[i] = array_item_result;
 			}
 			*value = result_array;
+		} else if (this->ResultIsObject()) {
+			Json::Value result_object;
+
+			std::wstring property_name_list(L"");
+			status_code = this->GetPropertyNameList(&property_name_list);
+
+			std::vector<std::wstring> property_names;
+			size_t end_position(0);
+			size_t start_position(0);
+			while (true) {
+				std::wstring property_name(L"");
+				end_position = property_name_list.find_first_of(L",", start_position);
+				if(end_position == std::wstring::npos) {
+					property_names.push_back(property_name_list.substr(start_position, property_name_list.size() - start_position));
+					break;
+				} else {
+					property_names.push_back(property_name_list.substr(start_position, end_position - start_position));
+					start_position = end_position + 1;
+				}
+			}
+
+			for (long i = 0; i < property_names.size(); ++i) {
+				Json::Value property_value_result;
+				int property_value_status = this->GetPropertyValue(manager, property_names[i], &property_value_result);
+				std::string name(CW2A(property_names[i].c_str(), CP_UTF8));
+				result_object[name] = property_value_result;
+			}
+			*value = result_object;
 		} else {
 			IHTMLElement *node = (IHTMLElement*) this->result_.pdispVal;
 			ElementWrapper *element_wrapper;
@@ -322,13 +346,65 @@ int ScriptWrapper::ConvertResultToJsonValue(BrowserManager *manager, Json::Value
 	return status_code;
 }
 
-int ScriptWrapper::GetArrayLength(BrowserWrapper *browser_wrapper, long *length) {
+std::wstring ScriptWrapper::GetResultObjectTypeName() {
+	std::wstring name(L"");
+	if (this->result_.vt == VT_DISPATCH) {
+		CComPtr<ITypeInfo> typeinfo;
+		HRESULT get_type_info_result = this->result_.pdispVal->GetTypeInfo(0, LOCALE_USER_DEFAULT, &typeinfo);
+		TYPEATTR* type_attr;
+		CComBSTR name_bstr;
+		if (SUCCEEDED(get_type_info_result) && SUCCEEDED(typeinfo->GetTypeAttr(&type_attr))
+			&& SUCCEEDED(typeinfo->GetDocumentation(-1, &name_bstr, 0, 0, 0))) {
+			typeinfo->ReleaseTypeAttr(type_attr);
+			name = name_bstr.Copy();
+		}
+	}
+	return name;
+}
+
+int ScriptWrapper::GetPropertyNameList(std::wstring *property_names) {
+	// Loop through the properties, appending the name of each one to the string.
+	std::wstring get_names_script(L"(function(){return function() { var name_list = ''; for (var name in arguments[0]) { if (name_list.length > 0) name_list+= ','; name_list += name } return name_list;}})();");
+	ScriptWrapper *get_names_script_wrapper = new ScriptWrapper(this->browser_, get_names_script, 1);
+	get_names_script_wrapper->AddArgument(this->result_);
+	int get_names_result = get_names_script_wrapper->Execute();
+
+	if (get_names_result != SUCCESS) {
+		return get_names_result;
+	}
+
+	// Expect the return type to be an integer. A non-integer means this was
+	// not an array after all.
+	if (!get_names_script_wrapper->ResultIsString()) {
+		return EUNEXPECTEDJSERROR;
+	}
+
+	*property_names = get_names_script_wrapper->result().bstrVal;
+	delete get_names_script_wrapper;
+	return SUCCESS;
+}
+
+int ScriptWrapper::GetPropertyValue(BrowserManager *manager, std::wstring property_name, Json::Value *property_value){
+	std::wstring get_value_script(L"(function(){return function() {return arguments[0][arguments[1]];}})();"); 
+	ScriptWrapper *get_value_script_wrapper = new ScriptWrapper(this->browser_, get_value_script, 2);
+	get_value_script_wrapper->AddArgument(this->result_);
+	get_value_script_wrapper->AddArgument(property_name);
+	int get_value_result = get_value_script_wrapper->Execute();
+	if (get_value_result != SUCCESS) {
+		return get_value_result;
+	}
+
+	int property_value_status = get_value_script_wrapper->ConvertResultToJsonValue(manager, property_value);
+	delete get_value_script_wrapper;
+	return SUCCESS;
+}
+
+int ScriptWrapper::GetArrayLength(long *length) {
 	// Prepare an array for the Javascript execution, containing only one
 	// element - the original returned array from a JS execution.
 	std::wstring get_length_script(L"(function(){return function() {return arguments[0].length;}})();");
 	ScriptWrapper *get_length_script_wrapper = new ScriptWrapper(this->browser_, get_length_script, 1);
 	get_length_script_wrapper->AddArgument(this->result_);
-	//int length_result = browser_wrapper->ExecuteScript(get_length_script_wrapper);
 	int length_result = get_length_script_wrapper->Execute();
 
 	if (length_result != SUCCESS) {
@@ -346,18 +422,16 @@ int ScriptWrapper::GetArrayLength(BrowserWrapper *browser_wrapper, long *length)
 	return SUCCESS;
 }
 
-int ScriptWrapper::GetArrayItem(BrowserWrapper *browser_wrapper, BrowserManager *manager, long index, Json::Value *item){
+int ScriptWrapper::GetArrayItem(BrowserManager *manager, long index, Json::Value *item){
 	std::wstring get_array_item_script(L"(function(){return function() {return arguments[0][arguments[1]];}})();"); 
 	ScriptWrapper *get_array_item_script_wrapper = new ScriptWrapper(this->browser_, get_array_item_script, 2);
 	get_array_item_script_wrapper->AddArgument(this->result_);
 	get_array_item_script_wrapper->AddArgument(index);
-	//int get_item_result = browser_wrapper->ExecuteScript(get_array_item_script_wrapper);
 	int get_item_result = get_array_item_script_wrapper->Execute();
 	if (get_item_result != SUCCESS) {
 		return get_item_result;
 	}
 
-	Json::Value array_item_result;
 	int array_item_status = get_array_item_script_wrapper->ConvertResultToJsonValue(manager, item);
 	delete get_array_item_script_wrapper;
 	return SUCCESS;
@@ -421,8 +495,7 @@ bool ScriptWrapper::CreateAnonymousFunction(IDispatch* script_engine, DISPID eva
 
 	HRESULT hr = script_engine->Invoke(eval_id, IID_NULL, LOCALE_USER_DEFAULT, DISPATCH_METHOD, &parameters, result, &exception, 0);
 	if (FAILED(hr)) {
-		if (DISP_E_EXCEPTION == hr) 
-		{
+		if (DISP_E_EXCEPTION == hr) {
 			// LOGHR(INFO, hr) << "Exception message was: " << _bstr_t(exception.bstrDescription) << ": " << _bstr_t(script);
 		} else {
 			// LOGHR(DEBUG, hr) << "Failed to compile: " << script;

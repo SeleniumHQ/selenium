@@ -47,7 +47,6 @@ protected:
 
 				ScriptWrapper *script_wrapper = new ScriptWrapper(browser_wrapper, script, 1);
 				script_wrapper->AddArgument(element_wrapper);
-				//int status_code = browser_wrapper->ExecuteScript(script_wrapper);
 				int status_code = script_wrapper->Execute();
 
 				// TODO (JimEvans): Find a way to collapse this and the atom
@@ -55,7 +54,6 @@ protected:
 				std::wstring size_script(L"(function() { return function(){ return [arguments[0].width, arguments[0].height];};})();");
 				ScriptWrapper *size_script_wrapper = new ScriptWrapper(browser_wrapper, size_script, 1);
 				size_script_wrapper->AddArgument(script_wrapper->result());
-				//status_code = browser_wrapper->ExecuteScript(size_script_wrapper);
 				status_code = size_script_wrapper->Execute();
 
 				Json::Value size_array;

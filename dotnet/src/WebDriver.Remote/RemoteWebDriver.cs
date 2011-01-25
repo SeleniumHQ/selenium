@@ -6,6 +6,7 @@ using OpenQA.Selenium.Internal;
 using System.Drawing;
 using OpenQA.Selenium.Interactions.Internal;
 using OpenQA.Selenium.Interactions;
+using System.Collections;
 
 namespace OpenQA.Selenium.Remote
 {
@@ -881,6 +882,7 @@ namespace OpenQA.Selenium.Remote
         {
             IWrapsElement argAsWrapsElement = arg as IWrapsElement;
             RemoteWebElement argAsElement = arg as RemoteWebElement;
+            IEnumerable argAsEnumerable = arg as IEnumerable;
             
             if (argAsElement == null && argAsWrapsElement != null)
             {
@@ -898,6 +900,23 @@ namespace OpenQA.Selenium.Remote
                 Dictionary<string, object> elementDictionary = new Dictionary<string, object>();
                 elementDictionary.Add("ELEMENT", argAsElement.InternalElementId);
                 converted = elementDictionary;
+            }
+            else if (argAsEnumerable != null)
+            {
+                List<object> objectList = new List<object>();
+                foreach (object item in argAsEnumerable)
+                {
+                    if (item is string || item is float || item is double || item is int || item is long || item is bool || item == null)
+                    {
+                        objectList.Add(item);
+                    }
+                    else
+                    {
+                        throw new ArgumentException("Only primitives may be used as elements in collections used as arguments for JavaScript functions.");
+                    }
+                }
+
+                converted = objectList.ToArray();
             }
             else
             {
@@ -1017,6 +1036,14 @@ namespace OpenQA.Selenium.Remote
                 }
                 else
                 {
+                    // Recurse through the dictionary, re-parsing each value.
+                    string[] keyCopy = new string[resultAsDictionary.Keys.Count];
+                    resultAsDictionary.Keys.CopyTo(keyCopy, 0);
+                    foreach (string key in keyCopy)
+                    {
+                        resultAsDictionary[key] = ParseJavaScriptReturnValue(resultAsDictionary[key]);
+                    }
+
                     returnValue = resultAsDictionary;
                 }
             }

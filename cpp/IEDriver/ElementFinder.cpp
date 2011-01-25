@@ -17,7 +17,6 @@ int ElementFinder::FindElement(BrowserManager *manager, ElementWrapper *parent_w
 	if (status_code == SUCCESS) {
 		std::wstring criteria_object_script = L"(function() { return function(){ return  { " + this->locator_ + L" : \"" + criteria + L"\" }; };})();";
 		ScriptWrapper *criteria_wrapper = new ScriptWrapper(browser, criteria_object_script, 0);
-		// status_code = browser->ExecuteScript(criteria_wrapper);
 		status_code = criteria_wrapper->Execute();
 		if (status_code == SUCCESS) {
 			CComVariant criteria_object;
@@ -42,7 +41,6 @@ int ElementFinder::FindElement(BrowserManager *manager, ElementWrapper *parent_w
 				script_wrapper->AddArgument(parent_wrapper->element());
 			}
 
-			// status_code = browser->ExecuteScript(script_wrapper);
 			status_code = script_wrapper->Execute();
 			if (status_code == SUCCESS && script_wrapper->ResultIsElement()) {
 				script_wrapper->ConvertResultToJsonValue(manager, found_element);
@@ -64,7 +62,6 @@ int ElementFinder::FindElements(BrowserManager *manager, ElementWrapper *parent_
 	if (status_code == SUCCESS) {
 		std::wstring criteria_object_script = L"(function() { return function(){ return  { " + this->locator_ + L" : \"" + criteria + L"\" }; };})();";
 		ScriptWrapper *criteria_wrapper = new ScriptWrapper(browser, criteria_object_script, 0);
-		// status_code = browser->ExecuteScript(criteria_wrapper);
 		status_code = criteria_wrapper->Execute();
 		if (status_code == SUCCESS) {
 			CComVariant criteria_object;
@@ -89,7 +86,6 @@ int ElementFinder::FindElements(BrowserManager *manager, ElementWrapper *parent_
 				script_wrapper->AddArgument(parent_wrapper->element());
 			}
 
-			// status_code = browser->ExecuteScript(script_wrapper);
 			status_code = script_wrapper->Execute();
 			if (status_code == SUCCESS) {
 				if (script_wrapper->ResultIsArray() || script_wrapper->ResultIsElementCollection()) {

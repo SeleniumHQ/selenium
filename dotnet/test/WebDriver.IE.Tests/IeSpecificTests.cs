@@ -52,5 +52,14 @@ namespace OpenQA.Selenium.IE
             driver.FindElement(By.Id("linkId")).Click();
             Assert.AreEqual("We Arrive Here", driver.Title);
         }
+
+        public void ShouldGetCorrectEventsForRadioButton()
+        {
+            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("selectchangeevent.html");
+            driver.FindElement(By.Id("radio")).Select();
+
+            Assert.AreEqual("",
+                    '[' + driver.FindElement(By.Id("myTextarea")).Value + ']');
+        }
     }
 }

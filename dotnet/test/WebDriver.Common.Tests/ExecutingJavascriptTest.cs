@@ -87,7 +87,7 @@ namespace OpenQA.Selenium
             object result = ExecuteScript("return ['zero', 'one', 'two'];");
             Assert.IsTrue(result is ReadOnlyCollection<object>, "result was: " + result + " (" + result.GetType().Name + ")");
             ReadOnlyCollection<object> list = (ReadOnlyCollection<object>)result;
-            //Assert.IsTrue(CompareLists(expectedResult, list));
+            Assert.IsTrue(CompareLists(expectedResult.AsReadOnly(), list));
         }
 
         [Test]
@@ -105,16 +105,16 @@ namespace OpenQA.Selenium
             List<object> subList = new List<object>();
             subList.Add(true);
             subList.Add(false);
-            expectedResult.Add(subList);
+            expectedResult.Add(subList.AsReadOnly());
             object result = ExecuteScript("return ['zero', [true, false]];");
             Assert.IsTrue(result is ReadOnlyCollection<object>, "result was: " + result + " (" + result.GetType().Name + ")");
             ReadOnlyCollection<object> list = (ReadOnlyCollection<object>)result;
-            //Assert.IsTrue(CompareLists(expectedResult, list));
+            Assert.IsTrue(CompareLists(expectedResult.AsReadOnly(), list));
         }
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.IE)]
+        //[IgnoreBrowser(Browser.IE)]
         public void ShouldBeAbleToExecuteJavascriptAndReturnABasicObjectLiteral()
         {
             if (!(driver is IJavaScriptExecutor))
@@ -142,7 +142,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.IE)]
+        //[IgnoreBrowser(Browser.IE)]
         public void ShouldBeAbleToExecuteSimpleJavascriptAndReturnAnObjectLiteral()
         {
             if (!(driver is IJavaScriptExecutor))
@@ -152,13 +152,14 @@ namespace OpenQA.Selenium
 
             driver.Url = javascriptPage;
 
-            Dictionary<string, object> person = new Dictionary<string, object>();
-            person.Add("first", "John");
-            person.Add("last", "Doe");
+            Dictionary<string, object> expectedPerson = new Dictionary<string, object>();
+            expectedPerson.Add("first", "John");
+            expectedPerson.Add("last", "Doe");
             Dictionary<string, object> expectedResult = new Dictionary<string, object>();
             expectedResult.Add("foo", "bar");
-            expectedResult.Add("baz", new object[] { "a", "b", "c" });
-            expectedResult.Add("person", person);
+            List<object> subList = new List<object>() { "a", "b", "c" };
+            expectedResult.Add("baz", subList.AsReadOnly());
+            expectedResult.Add("person", expectedPerson);
 
             object result = ExecuteScript(
                 "return {foo:'bar', baz: ['a', 'b', 'c'], " +
@@ -173,15 +174,12 @@ namespace OpenQA.Selenium
             }
 
             Assert.AreEqual("bar", map["foo"]);
-            //assertEquals(expectedResult.keySet(), map.keySet());
-            //assertEquals("bar", map.get("foo"));
-            //assertTrue(compareLists((List<?>) expectedResult.get("baz"),
-            //    (List<?>) map.get("baz")));
+            Assert.IsTrue(CompareLists((ReadOnlyCollection<object>)expectedResult["baz"], (ReadOnlyCollection<object>)map["baz"]));
 
-            //Map<String, String> person = (Map<String, String>) map.get("person");
-            //assertEquals(2, person.size());
-            //assertEquals("John", person.get("first"));
-            //assertEquals("Doe", person.get("last"));
+            Dictionary<string, object> person = (Dictionary<string, object>) map["person"];
+            Assert.AreEqual(2, person.Count);
+            Assert.AreEqual("John", person["first"]);
+            Assert.AreEqual("Doe", person["last"]);
         }
 
         [Test]
@@ -193,29 +191,39 @@ namespace OpenQA.Selenium
             object x = ExecuteScript(script, element);
         }
 
-        //private boolean CompareLists(List<object> first, List<object> second)
-        //{
-        //  if (first.Count != second.Count) 
-        //  {
-        //    return false;
-        //  }
-        //  for (int i = 0; i < first.Count; ++i) {
-        //    if (first[i] is List<?>) {
-        //      if (!(second instanceof List<?>)) {
-        //        return false;
-        //      } else {
-        //        if (!compareLists((List<?>) first.get(i), (List<?>) second.get(i))) {
-        //          return false;
-        //        }
-        //      }
-        //    } else {
-        //      if (!first.get(i).equals(second.get(i))) {
-        //        return false;
-        //      }
-        //    }
-        //  }
-        //  return true;
-        //}
+        private bool CompareLists(ReadOnlyCollection<object> first, ReadOnlyCollection<object> second)
+        {
+            if (first.Count != second.Count)
+            {
+                return false;
+            }
+
+            for (int i = 0; i < first.Count; ++i)
+            {
+                if (first[i] is ReadOnlyCollection<object>)
+                {
+                    if (!(second[i] is ReadOnlyCollection<object>))
+                    {
+                        return false;
+                    }
+                    else
+                    {
+                        if (!CompareLists((ReadOnlyCollection<object>)first[i], (ReadOnlyCollection<object>)second[i]))
+                        {
+                            return false;
+                        }
+                    }
+                }
+                else
+                {
+                    if (!first[i].Equals(second[i]))
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
 
         [Test]
         [Category("Javascript")]
@@ -523,7 +531,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.IE)]
+        //[IgnoreBrowser(Browser.IE)]
         [IgnoreBrowser(Browser.Firefox)]
         [IgnoreBrowser(Browser.Remote)]
         public void ShouldBeAbleToPassAnArrayAsAdditionalArgument()
@@ -541,7 +549,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.IE)]
+        //[IgnoreBrowser(Browser.IE)]
         [IgnoreBrowser(Browser.Remote)]
         public void ShouldBeAbleToPassACollectionAsArgument()
         {
@@ -676,7 +684,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        public void testShouldBeAbleToCreateAPersistentValue()
+        public void ShouldBeAbleToCreateAPersistentValue()
         {
             driver.Url = formsPage;
 

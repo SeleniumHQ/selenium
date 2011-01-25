@@ -40,6 +40,7 @@ public:
 	bool ResultIsBoolean(void);
 	bool ResultIsDouble(void);
 	bool ResultIsArray(void);
+	bool ResultIsObject(void);
 	bool ResultIsElement(void);
 	bool ResultIsElementCollection(void);
 	bool ResultIsIDispatch(void);
@@ -48,12 +49,14 @@ public:
 	int ConvertResultToJsonValue(BrowserManager *manager, Json::Value *value);
 
 private:
-	int GetArrayLength(BrowserWrapper *browser_wrapper, long *length);
-	int GetArrayItem(BrowserWrapper *browser_wrapper, BrowserManager *manager, long index, Json::Value *item);
-	std::wstring GetObjectTypeName(void);
+	int GetArrayLength(long *length);
+	int GetArrayItem(BrowserManager *manager, long index, Json::Value *item);
+	int GetPropertyNameList(std::wstring *property_names);
+	int GetPropertyValue(BrowserManager *manager, std::wstring property_name, Json::Value *property_value);
+	std::wstring GetResultObjectTypeName(void);
 	bool GetEvalMethod(IHTMLDocument2* doc, DISPID* eval_id, bool* added);
-	void RemoveScript(IHTMLDocument2* doc);
 	bool CreateAnonymousFunction(IDispatch* script_engine, DISPID eval_id, const std::wstring *script, VARIANT* result);
+	void RemoveScript(IHTMLDocument2* doc);
 
 	BrowserWrapper *browser_;
 	unsigned long argument_count_;

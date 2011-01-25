@@ -42,7 +42,6 @@ public:
 			parent.CopyTo(&parent_element_copy);
 			script_wrapper->AddArgument(parent_element_copy);
 		}
-		//result = browser->ExecuteScript(script_wrapper);
 		result = script_wrapper->Execute();
 
 		if (result == SUCCESS) {
@@ -87,14 +86,12 @@ public:
 			script_wrapper->AddArgument(parent_element_copy);
 		}
 
-		//result = browser->ExecuteScript(script_wrapper);
 		result = script_wrapper->Execute();
 		CComVariant snapshot = script_wrapper->result();
 
 		std::wstring get_element_count_script = L"(function(){return function() {return arguments[0].length;}})();";
 		ScriptWrapper *get_element_count_script_wrapper = new ScriptWrapper(browser, get_element_count_script, 1);
 		get_element_count_script_wrapper->AddArgument(snapshot);
-		//result = browser->ExecuteScript(get_element_count_script_wrapper);
 		result = get_element_count_script_wrapper->Execute();
 		if (result == SUCCESS) {
 			if (!get_element_count_script_wrapper->ResultIsInteger()) {
@@ -106,7 +103,6 @@ public:
 					ScriptWrapper *get_element_script_wrapper = new	ScriptWrapper(browser, get_next_element_script, 2);
 					get_element_script_wrapper->AddArgument(snapshot);
 					get_element_script_wrapper->AddArgument(i);
-					//result = browser->ExecuteScript(get_element_script_wrapper);
 					result = get_element_script_wrapper->Execute();
 					Json::Value json_element;
 					get_element_script_wrapper->ConvertResultToJsonValue(manager, &json_element);
