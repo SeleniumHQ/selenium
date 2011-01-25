@@ -6,9 +6,11 @@ module Selenium
       class Bridge < Remote::Bridge
 
         def initialize(opts = {})
-          @launcher   = create_launcher(opts)
+          port        = opts.fetch  :port, DEFAULT_PORT)
+          profile     = opts.delete :profile
+          http_client = opts.delete :http_client
 
-          http_client = opts.delete(:http_client)
+          @launcher   = create_launcher(port, profile)
 
           unless opts.empty?
             raise ArgumentError, "unknown option#{'s' if opts.size != 1}: #{opts.inspect}"
@@ -43,12 +45,8 @@ module Selenium
 
         private
 
-        def create_launcher(opts)
-          Launcher.new(
-            Binary.new,
-            opts.delete(:port) || DEFAULT_PORT,
-            opts.delete(:profile)
-          )
+        def create_launcher(port, profile)
+          Launcher.new Binary.new, port, profile
         end
 
       end # Bridge
