@@ -6,7 +6,7 @@ module Selenium
       class Bridge < Remote::Bridge
 
         def initialize(opts = {})
-          port        = opts.fetch  :port, DEFAULT_PORT)
+          port        = opts.fetch  :port, DEFAULT_PORT
           profile     = opts.delete :profile
           http_client = opts.delete :http_client
 
