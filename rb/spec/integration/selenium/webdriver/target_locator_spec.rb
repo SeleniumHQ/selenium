@@ -93,7 +93,7 @@ describe "WebDriver::TargetLocator" do
     driver.switch_to.active_element.should be_an_instance_of(WebDriver::Element)
   end
 
-  compliant_on :browser => :firefox do
+  compliant_on :browser => nil do
     describe "alerts" do
       it "allows the user to accept an alert" do
         driver.navigate.to url_for("alerts.html")
