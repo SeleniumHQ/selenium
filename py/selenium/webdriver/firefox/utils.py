@@ -118,13 +118,18 @@ def get_firefox_start_cmd():
         # Maybe iceweasel (Debian) is another candidate...
         for ffname in ["firefox2", "firefox", "firefox-3.0", "firefox-4.0"]:
             LOGGER.debug("Searching for '%s'...", ffname)
-            process = Popen(["which", ffname], stdout=PIPE)
-            cmd = process.communicate()[0].strip()
-            if cmd != "":
-                LOGGER.debug("Using %s", cmd)
-                start_cmd = cmd
+            start_cmd = which(ffname)
+            if start_cmd is not None:
                 break
     return start_cmd
+
+def which(fname):
+    """Returns the fully qualified path by searching Path of the given name"""
+    for pe in os.environ['PATH'].split(os.pathsep):
+        checkname = os.path.join(pe, fname)
+        if os.access(checkname, os.X_OK):
+            return checkname
+    return None
 
 def get_firefox_app_data_dir():
     """Return the path to the firefox application data."""
