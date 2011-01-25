@@ -45,16 +45,18 @@ protected:
 				// Now for the magic and to close things
 				script += L")})();";
 
-				ScriptWrapper *script_wrapper = new ScriptWrapper(script, 1);
+				ScriptWrapper *script_wrapper = new ScriptWrapper(browser_wrapper, script, 1);
 				script_wrapper->AddArgument(element_wrapper);
-				int status_code = browser_wrapper->ExecuteScript(script_wrapper);
+				// int status_code = browser_wrapper->ExecuteScript(script_wrapper);
+				int status_code = script_wrapper->Execute();
 
 				// TODO (JimEvans): Find a way to collapse this and the atom
 				// call into a single JS function.
 				std::wstring location_script(L"(function() { return function(){ return [arguments[0].x, arguments[0].y];};})();");
-				ScriptWrapper *location_script_wrapper = new ScriptWrapper(location_script, 1);
+				ScriptWrapper *location_script_wrapper = new ScriptWrapper(browser_wrapper, location_script, 1);
 				location_script_wrapper->AddArgument(script_wrapper->result());
-				status_code = browser_wrapper->ExecuteScript(location_script_wrapper);
+				//status_code = browser_wrapper->ExecuteScript(location_script_wrapper);
+				status_code = location_script_wrapper->Execute();
 
 				Json::Value location_array;
 				location_script_wrapper->ConvertResultToJsonValue(manager, &location_array);

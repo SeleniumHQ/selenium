@@ -17,7 +17,7 @@ class BrowserManager;
 class ScriptWrapper
 {
 public:
-	ScriptWrapper(std::wstring script, unsigned long argument_count);
+	ScriptWrapper(BrowserWrapper *browser, std::wstring script, unsigned long argument_count);
 	~ScriptWrapper(void);
 
 	std::wstring script() { return this->script_; }
@@ -44,12 +44,18 @@ public:
 	bool ResultIsElementCollection(void);
 	bool ResultIsIDispatch(void);
 
+	int Execute(void);
 	int ConvertResultToJsonValue(BrowserManager *manager, Json::Value *value);
 
 private:
 	int GetArrayLength(BrowserWrapper *browser_wrapper, long *length);
 	int GetArrayItem(BrowserWrapper *browser_wrapper, BrowserManager *manager, long index, Json::Value *item);
+	std::wstring GetObjectTypeName(void);
+	bool GetEvalMethod(IHTMLDocument2* doc, DISPID* eval_id, bool* added);
+	void RemoveScript(IHTMLDocument2* doc);
+	bool CreateAnonymousFunction(IDispatch* script_engine, DISPID eval_id, const std::wstring *script, VARIANT* result);
 
+	BrowserWrapper *browser_;
 	unsigned long argument_count_;
 	std::wstring script_;
 	long current_arg_index_;

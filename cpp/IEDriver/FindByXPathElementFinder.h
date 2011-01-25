@@ -37,7 +37,7 @@ public:
 			query += L"(function() { return function(){var res = document.__webdriver_evaluate(arguments[0], document, null, 7, null); return res.snapshotLength != 0 ? res.snapshotItem(0) : undefined ;};})();";
 		}
 
-		ScriptWrapper *script_wrapper = new ScriptWrapper(query, 2);
+		ScriptWrapper *script_wrapper = new ScriptWrapper(browser, query, 2);
 		script_wrapper->AddArgument(criteria);
 		if (parent_wrapper) {
 			CComPtr<IHTMLElement> parent(parent_wrapper->element());
@@ -45,7 +45,8 @@ public:
 			parent.CopyTo(&parent_element_copy);
 			script_wrapper->AddArgument(parent_element_copy);
 		}
-		result = browser->ExecuteScript(script_wrapper);
+		//result = browser->ExecuteScript(script_wrapper);
+		result = script_wrapper->Execute();
 
 		if (result == SUCCESS) {
 			if (!script_wrapper->ResultIsElement()) {
@@ -81,7 +82,7 @@ public:
 			query += L"(function() { return function() {var res = document.__webdriver_evaluate(arguments[0], document, null, 7, null); return res;};})();";
 		}
 
-		ScriptWrapper *script_wrapper = new ScriptWrapper(query, 2);
+		ScriptWrapper *script_wrapper = new ScriptWrapper(browser, query, 2);
 		script_wrapper->AddArgument(criteria);
 		if (parent_wrapper) {
 			// Use a copy for the parent element?
@@ -91,13 +92,15 @@ public:
 			script_wrapper->AddArgument(parent_element_copy);
 		}
 
-		result = browser->ExecuteScript(script_wrapper);
+		//result = browser->ExecuteScript(script_wrapper);
+		result = script_wrapper->Execute();
 		CComVariant snapshot = script_wrapper->result();
 
 		std::wstring get_element_count_script = L"(function(){return function() {return arguments[0].snapshotLength;}})();";
-		ScriptWrapper *get_element_count_script_wrapper = new ScriptWrapper(get_element_count_script, 1);
+		ScriptWrapper *get_element_count_script_wrapper = new ScriptWrapper(browser, get_element_count_script, 1);
 		get_element_count_script_wrapper->AddArgument(snapshot);
-		result = browser->ExecuteScript(get_element_count_script_wrapper);
+		//result = browser->ExecuteScript(get_element_count_script_wrapper);
+		result = get_element_count_script_wrapper->Execute();
 		if (result == SUCCESS) {
 			if (!get_element_count_script_wrapper->ResultIsInteger()) {
 				result = EUNEXPECTEDJSERROR;
@@ -105,10 +108,11 @@ public:
 				long length = get_element_count_script_wrapper->result().lVal;
 				std::wstring get_next_element_script(L"(function(){return function() {return arguments[0].iterateNext();}})();");
 				for (long i = 0; i < length; ++i) {
-					ScriptWrapper *get_element_script_wrapper = new	ScriptWrapper(get_next_element_script, 2);
+					ScriptWrapper *get_element_script_wrapper = new	ScriptWrapper(browser, get_next_element_script, 2);
 					get_element_script_wrapper->AddArgument(snapshot);
 					get_element_script_wrapper->AddArgument(i);
-					result = browser->ExecuteScript(get_element_script_wrapper);
+					//result = browser->ExecuteScript(get_element_script_wrapper);
+					result = get_element_script_wrapper->Execute();
 					Json::Value json_element;
 					get_element_script_wrapper->ConvertResultToJsonValue(manager, &json_element);
 					found_elements->append(json_element);
@@ -135,8 +139,9 @@ private:
 		//std::string jsx(CW2A(script.c_str(), CP_UTF8));
 		//std::cout << "\n\n" << jsx << "\n\n";
 
-		ScriptWrapper *script_wrapper = new ScriptWrapper(script, 0);
-		int status_code = browser_wrapper->ExecuteScript(script_wrapper);
+		ScriptWrapper *script_wrapper = new ScriptWrapper(browser_wrapper, script, 0);
+		//int status_code = browser_wrapper->ExecuteScript(script_wrapper);
+		int status_code = script_wrapper->Execute();
 		delete script_wrapper;
 
 		return status_code;

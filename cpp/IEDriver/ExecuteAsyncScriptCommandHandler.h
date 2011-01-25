@@ -87,23 +87,25 @@ protected:
 				return;
 			}
 
-			ScriptWrapper *async_script_wrapper = new ScriptWrapper(async_script, json_args.size());
+			ScriptWrapper *async_script_wrapper = new ScriptWrapper(browser_wrapper, async_script, json_args.size());
 			status_code = this->PopulateArgumentArray(manager, async_script_wrapper, json_args);
 			if (status_code != SUCCESS) {
 				response->SetErrorResponse(status_code, "Error setting arguments for script");
 				return;
 			}
 
-			status_code = browser_wrapper->ExecuteScript(async_script_wrapper);
+			//status_code = browser_wrapper->ExecuteScript(async_script_wrapper);
+			status_code = async_script_wrapper->Execute();
 
 			if (status_code != SUCCESS) {
 				response->SetErrorResponse(status_code, "JavaScript error in async script.");
 				return;
 			} else {
-				ScriptWrapper *polling_script_wrapper = new ScriptWrapper(polling_script, 0);
+				ScriptWrapper *polling_script_wrapper = new ScriptWrapper(browser_wrapper, polling_script, 0);
 				while (true) {
 					Json::Value polling_result;
-					status_code = browser_wrapper->ExecuteScript(polling_script_wrapper);
+					//status_code = browser_wrapper->ExecuteScript(polling_script_wrapper);
+					status_code = polling_script_wrapper->Execute();
 					polling_script_wrapper->ConvertResultToJsonValue(manager, &polling_result);
 					
 					Json::UInt index = 0;

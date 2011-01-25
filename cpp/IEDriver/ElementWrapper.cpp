@@ -51,9 +51,10 @@ int ElementWrapper::IsDisplayed(bool *result) {
 	// Now for the magic and to close things
 	script += L")})();";
 
-	ScriptWrapper *script_wrapper = new ScriptWrapper(script, 1);
+	ScriptWrapper *script_wrapper = new ScriptWrapper(this->browser_, script, 1);
 	script_wrapper->AddArgument(this->element_);
-	status_code = this->browser_->ExecuteScript(script_wrapper);
+	// status_code = this->browser_->ExecuteScript(script_wrapper);
+	status_code = script_wrapper->Execute();
 
 	if (status_code == SUCCESS) {
 		*result = script_wrapper->result().boolVal == VARIANT_TRUE;
@@ -80,9 +81,10 @@ bool ElementWrapper::IsEnabled() {
 	// Now for the magic and to close things
 	script += L")})();";
 
-	ScriptWrapper *script_wrapper = new ScriptWrapper(script, 1);
+	ScriptWrapper *script_wrapper = new ScriptWrapper(this->browser_, script, 1);
 	script_wrapper->AddArgument(this->element_);
-	int status_code = this->browser_->ExecuteScript(script_wrapper);
+	//int status_code = this->browser_->ExecuteScript(script_wrapper);
+	int status_code = script_wrapper->Execute();
 
 	if (status_code == SUCCESS) {
 		result = script_wrapper->result().boolVal == VARIANT_TRUE;
@@ -166,10 +168,11 @@ int ElementWrapper::GetAttributeValue(std::wstring attribute_name, VARIANT *attr
 	// Now for the magic and to close things
 	script += L")})();";
 
-	ScriptWrapper *script_wrapper = new ScriptWrapper(script, 2);
+	ScriptWrapper *script_wrapper = new ScriptWrapper(this->browser_, script, 2);
 	script_wrapper->AddArgument(this->element_);
 	script_wrapper->AddArgument(attribute_name);
-	status_code = this->browser_->ExecuteScript(script_wrapper);
+	// status_code = this->browser_->ExecuteScript(script_wrapper);
+	status_code = script_wrapper->Execute();
 
 	if (status_code == SUCCESS) {
 		::VariantCopy(attribute_value, &script_wrapper->result());
@@ -415,9 +418,10 @@ bool ElementWrapper::IsSelected() {
 	// Now for the magic and to close things
 	script += L")})();";
 
-	ScriptWrapper *script_wrapper = new ScriptWrapper(script, 1);
+	ScriptWrapper *script_wrapper = new ScriptWrapper(this->browser_, script, 1);
 	script_wrapper->AddArgument(this->element_);
-	int status_code = this->browser_->ExecuteScript(script_wrapper);
+	// int status_code = this->browser_->ExecuteScript(script_wrapper);
+	int status_code = script_wrapper->Execute();
 
 	if (status_code == SUCCESS && script_wrapper->ResultIsBoolean()) {
 		selected = script_wrapper->result().boolVal == VARIANT_TRUE;

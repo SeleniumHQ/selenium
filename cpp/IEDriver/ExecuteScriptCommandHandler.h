@@ -34,14 +34,15 @@ protected:
 				return;
 			}
 
-			ScriptWrapper *script_wrapper = new ScriptWrapper(script, json_args.size());
+			ScriptWrapper *script_wrapper = new ScriptWrapper(browser_wrapper, script, json_args.size());
 			status_code = this->PopulateArgumentArray(manager, script_wrapper, json_args);
 			if (status_code != SUCCESS) {
 				response->SetErrorResponse(status_code, "Error setting arguments for script");
 				return;
 			}
 
-			status_code = browser_wrapper->ExecuteScript(script_wrapper);
+			//status_code = browser_wrapper->ExecuteScript(script_wrapper);
+			status_code = script_wrapper->Execute();
 
 			if (status_code != SUCCESS) {
 				response->SetErrorResponse(status_code, "JavaScript error");
