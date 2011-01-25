@@ -6,11 +6,7 @@ module Selenium
       class Bridge < Remote::Bridge
 
         def initialize(opts = {})
-          @launcher   = Launcher.new(
-            Binary.new,
-            opts.delete(:port) || DEFAULT_PORT,
-            opts.delete(:profile)
-          )
+          @launcher   = create_launcher(opts)
 
           http_client = opts.delete(:http_client)
 
@@ -43,6 +39,16 @@ module Selenium
           @launcher.quit
 
           nil
+        end
+
+        private
+
+        def create_launcher(opts)
+          Launcher.new(
+            Binary.new,
+            opts.delete(:port) || DEFAULT_PORT,
+            opts.delete(:profile)
+          )
         end
 
       end # Bridge
