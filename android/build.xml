@@ -42,7 +42,28 @@
       <pathelement path="${sdk.dir}/tools/lib/apkbuilder.jar" />
       <pathelement path="${sdk.dir}/tools/lib/jarutils.jar" />
     </path>
-    <taskdef name="setup"
+
+    <property name="third_party.location" value="../third_party"/>
+    <property name="build.location" value="../build" />
+    <delete>
+      <fileset dir="libs/" />
+    </delete>
+    <copy file="${build.location}/java/org/openqa/jetty/jetty.jar" tofile="libs/jetty.jar" />
+    <copy file="${build.location}/java/org/openqa/selenium/remote/client.jar" tofile="libs/remote-client.jar" />
+    <copy file="${build.location}/java/org/openqa/selenium/remote/server/server.jar" tofile="libs/remote-server.jar" />
+    <copy file="${build.location}/java/org/openqa/selenium/base.jar" tofile="libs/base.jar" />
+    <copy file="${build.location}/java/org/openqa/selenium/internal/codecs.jar" tofile="libs/codecs.jar" />
+    <copy file="${build.location}/java/org/openqa/selenium/internal/logging.jar" tofile="libs/logging.jar" />
+    <copy file="${build.location}/java/org/openqa/selenium/webdriver-api.jar" tofile="libs/webdriver-api.jar" />
+    <copy file="${build.location}/java/org/openqa/selenium/remote/common.jar" tofile="libs/webdriver-common.jar" />
+    <copy file="${build.location}/java/org/openqa/selenium/browserlaunchers/launcher-utils.jar" tofile="libs/launcher-utils.jar" />
+    <copy file="${build.location}/java/org/openqa/selenium/support/events/events.jar" tofile="libs/events.jar" />
+    <copy file="${third_party.location}/java/guava-libraries/guava-r07.jar" todir="libs/"  />
+    <copy file="${third_party.location}/java/jetty/jetty-lite-7.2.0-repackaged-for-android.jar" todir="libs/" />
+    <copy file="${third_party.location}/java/json/json-20080701.jar" todir="libs/" />
+    <copy file="${third_party.location}/java/junit/junit-dep-4.8.1.jar" todir="libs/" />
+
+	  <taskdef name="setup"
         classname="com.android.ant.SetupTask"
         classpathref="android.antlibs" />
 
