@@ -23,7 +23,7 @@ namespace OpenQA.Selenium.Firefox
         public FirefoxProfileManager()
         {
             string appDataDirectory = GetApplicationDataDirectory();
-            ReadProfiles(appDataDirectory);
+            this.ReadProfiles(appDataDirectory);
         }
         #endregion
 
@@ -36,7 +36,7 @@ namespace OpenQA.Selenium.Firefox
         {
             get
             {
-                List<FirefoxProfile> profileList = new List<FirefoxProfile>(profiles.Values);
+                List<FirefoxProfile> profileList = new List<FirefoxProfile>(this.profiles.Values);
                 return new ReadOnlyCollection<FirefoxProfile>(profileList);
             }
         } 
@@ -54,9 +54,9 @@ namespace OpenQA.Selenium.Firefox
             FirefoxProfile profile = null;
             if (!string.IsNullOrEmpty(profileName))
             {
-                if (profiles.ContainsKey(profileName))
+                if (this.profiles.ContainsKey(profileName))
                 {
-                    profile = profiles[profileName];
+                    profile = this.profiles[profileName];
 
                     if (profile.Port == 0)
                     {
@@ -117,7 +117,7 @@ namespace OpenQA.Selenium.Firefox
                         }
 
                         FirefoxProfile profile = new FirefoxProfile(fullPath, true);
-                        profiles.Add(name, profile);
+                        this.profiles.Add(name, profile);
                     }
                 }
             }

@@ -44,7 +44,7 @@ namespace OpenQA.Selenium.Firefox
         /// <param name="pathToFirefoxBinary">Full path and file name to the Firefox executable.</param>
         public FirefoxBinary(string pathToFirefoxBinary)
         {
-            executable = new Executable(pathToFirefoxBinary);
+            this.executable = new Executable(pathToFirefoxBinary);
         } 
         #endregion
 
@@ -54,8 +54,8 @@ namespace OpenQA.Selenium.Firefox
         /// </summary>
         public long TimeoutInMilliseconds
         {
-            get { return timeoutInMilliseconds; }
-            set { timeoutInMilliseconds = value; }
+            get { return this.timeoutInMilliseconds; }
+            set { this.timeoutInMilliseconds = value; }
         }
 
         /// <summary>
@@ -66,12 +66,12 @@ namespace OpenQA.Selenium.Firefox
         {
             get
             {
-                if (process == null)
+                if (this.process == null)
                 {
                     return null;
                 }
 
-                return stream.ReadToEnd();
+                return this.stream.ReadToEnd();
             }
         } 
         #endregion
@@ -82,7 +82,7 @@ namespace OpenQA.Selenium.Firefox
         /// </summary>
         internal Executable BinaryExecutable
         {
-            get { return executable; }
+            get { return this.executable; }
         }
 
         /// <summary>
@@ -99,7 +99,7 @@ namespace OpenQA.Selenium.Firefox
         /// </summary>
         protected Dictionary<string, string> ExtraEnvironmentVariables
         {
-            get { return extraEnv; }
+            get { return this.extraEnv; }
         } 
         #endregion
 
@@ -116,14 +116,14 @@ namespace OpenQA.Selenium.Firefox
             }
 
             string profileAbsPath = profile.ProfileDirectory;
-            SetEnvironmentProperty("XRE_PROFILE_PATH", profileAbsPath);
-            SetEnvironmentProperty("MOZ_NO_REMOTE", "1");
-            SetEnvironmentProperty("MOZ_CRASHREPORTER_DISABLE", "1"); // Disable Breakpad
-			SetEnvironmentProperty("NO_EM_RESTART", "1"); // Prevent the binary from detaching from the console
+            this.SetEnvironmentProperty("XRE_PROFILE_PATH", profileAbsPath);
+            this.SetEnvironmentProperty("MOZ_NO_REMOTE", "1");
+            this.SetEnvironmentProperty("MOZ_CRASHREPORTER_DISABLE", "1"); // Disable Breakpad
+            this.SetEnvironmentProperty("NO_EM_RESTART", "1"); // Prevent the binary from detaching from the console
 
             if (IsOnLinux && (profile.EnableNativeEvents || profile.AlwaysLoadNoFocusLibrary))
             {
-                ModifyLinkLibraryPath(profile);
+                this.ModifyLinkLibraryPath(profile);
             }
 
             StringBuilder commandLineArgs = new StringBuilder("--verbose");
@@ -133,22 +133,22 @@ namespace OpenQA.Selenium.Firefox
             }
 
             Process builder = new Process();
-            builder.StartInfo.FileName = BinaryExecutable.ExecutablePath;
+            builder.StartInfo.FileName = this.BinaryExecutable.ExecutablePath;
             builder.StartInfo.Arguments = commandLineArgs.ToString();
             builder.StartInfo.UseShellExecute = false;
             builder.StartInfo.RedirectStandardError = true;
             builder.StartInfo.RedirectStandardOutput = true;
 
-            foreach (string environmentVar in extraEnv.Keys)
+            foreach (string environmentVar in this.extraEnv.Keys)
             {
-                builder.StartInfo.EnvironmentVariables.Add(environmentVar, extraEnv[environmentVar]);
+                builder.StartInfo.EnvironmentVariables.Add(environmentVar, this.extraEnv[environmentVar]);
             }
 
-            BinaryExecutable.SetLibraryPath(builder);
+            this.BinaryExecutable.SetLibraryPath(builder);
 
-            StartFirefoxProcess(builder);
+            this.StartFirefoxProcess(builder);
 
-            CopeWithTheStrangenessOfTheMac(builder);
+            this.CopeWithTheStrangenessOfTheMac(builder);
 
             // startOutputWatcher();
         }
@@ -165,13 +165,13 @@ namespace OpenQA.Selenium.Firefox
                 throw new WebDriverException(string.Format(CultureInfo.InvariantCulture, "You must set both the property name and value: {0}, {1}", propertyName, value));
             }
 
-            if (extraEnv.ContainsKey(propertyName))
+            if (this.extraEnv.ContainsKey(propertyName))
             {
-                extraEnv[propertyName] = value;
+                this.extraEnv[propertyName] = value;
             }
             else
             {
-                extraEnv.Add(propertyName, value);
+                this.extraEnv.Add(propertyName, value);
             }
         }
 
@@ -182,16 +182,16 @@ namespace OpenQA.Selenium.Firefox
         public void CreateProfile(string profileName)
         {
             Process builder = new Process();
-            builder.StartInfo.FileName = executable.ExecutablePath;
+            builder.StartInfo.FileName = this.executable.ExecutablePath;
             builder.StartInfo.Arguments = "--verbose -CreateProfile " + profileName;
             builder.StartInfo.RedirectStandardError = true;
             builder.StartInfo.EnvironmentVariables.Add("MOZ_NO_REMOTE", "1");
-            if (stream == null)
+            if (this.stream == null)
             {
-                stream = builder.StandardOutput;
+                this.stream = builder.StandardOutput;
             }
 
-            StartFirefoxProcess(builder);
+            this.StartFirefoxProcess(builder);
         }
 
         /// <summary>
@@ -199,7 +199,7 @@ namespace OpenQA.Selenium.Firefox
         /// </summary>
         public void WaitForProcessExit()
         {
-            process.WaitForExit();
+            this.process.WaitForExit();
         }
 
         /// <summary>
@@ -208,10 +208,10 @@ namespace OpenQA.Selenium.Firefox
         /// <param name="profile">The <see cref="FirefoxProfile"/> to use to initialize the binary.</param>
         public void Clean(FirefoxProfile profile)
         {
-            StartProfile(profile, new string[] { "-silent" });
+            this.StartProfile(profile, new string[] { "-silent" });
             try
             {
-                WaitForProcessExit();
+                this.WaitForProcessExit();
             }
             catch (ThreadInterruptedException e)
             {
@@ -244,15 +244,15 @@ namespace OpenQA.Selenium.Firefox
             // Suicide watch: First,  a second to see if the process will die on 
             // it's own (we will likely have asked the process to kill itself just 
             // before calling this method).
-            if (!process.HasExited)
+            if (!this.process.HasExited)
             {
                 System.Threading.Thread.Sleep(1000);
             }
 
             // Murder option: The process is still alive, so kill it.
-            if (!process.HasExited)
+            if (!this.process.HasExited)
             {
-                process.Kill();
+                this.process.Kill();
             }
         }
 
@@ -262,7 +262,7 @@ namespace OpenQA.Selenium.Firefox
         /// <returns>A <see cref="System.String">String</see> that represents the current <see cref="System.Object">Object</see>.</returns>
         public override string ToString()
         {
-            return "FirefoxBinary(" + executable.ExecutablePath + ")";
+            return "FirefoxBinary(" + this.executable.ExecutablePath + ")";
         }
 
         /// <summary>
@@ -271,11 +271,11 @@ namespace OpenQA.Selenium.Firefox
         /// <param name="builder">A <see cref="Process"/> object used to start Firefox.</param>
         protected void StartFirefoxProcess(Process builder)
         {
-            process = builder;
-            process.Start();
-            if (stream == null)
+            this.process = builder;
+            this.process.Start();
+            if (this.stream == null)
             {
-                stream = builder.StandardOutput;
+                this.stream = builder.StandardOutput;
             }
         }
 
@@ -356,11 +356,11 @@ namespace OpenQA.Selenium.Firefox
                 newLdLibPath += existingLdLibPath;
             }
 
-            SetEnvironmentProperty("LD_LIBRARY_PATH", newLdLibPath);
+            this.SetEnvironmentProperty("LD_LIBRARY_PATH", newLdLibPath);
 
             // Set LD_PRELOAD to x_ignore_nofocus.so - this will be taken automagically
             // from the LD_LIBRARY_PATH
-            SetEnvironmentProperty("LD_PRELOAD", NoFocusLibraryName);
+            this.SetEnvironmentProperty("LD_PRELOAD", NoFocusLibraryName);
         }
 
         private void CopeWithTheStrangenessOfTheMac(Process builder)
@@ -374,7 +374,7 @@ namespace OpenQA.Selenium.Firefox
                 try
                 {
                     System.Threading.Thread.Sleep(300);
-                    if (process.ExitCode == 0)
+                    if (this.process.ExitCode == 0)
                     {
                         return;
                     }
@@ -383,7 +383,7 @@ namespace OpenQA.Selenium.Firefox
                     // TODO(simon): This is utterly bogus. We should do something far smarter
                     System.Threading.Thread.Sleep(10000);
 
-                    StartFirefoxProcess(builder);
+                    this.StartFirefoxProcess(builder);
                 }
                 catch (ThreadStateException)
                 {
@@ -395,14 +395,14 @@ namespace OpenQA.Selenium.Firefox
                 {
                     Sleep(300);
 
-                    if (process.ExitCode == 0)
+                    if (this.process.ExitCode == 0)
                     {
                         return;
                     }
 
                     StringBuilder message = new StringBuilder("Unable to start firefox cleanly.\n");
-                    message.Append(ConsoleOutput).Append("\n");
-                    message.Append("Exit value: ").Append(process.ExitCode.ToString(CultureInfo.InvariantCulture)).Append("\n");
+                    message.Append(this.ConsoleOutput).Append("\n");
+                    message.Append("Exit value: ").Append(this.process.ExitCode.ToString(CultureInfo.InvariantCulture)).Append("\n");
                     message.Append("Ran from: ").Append(builder.StartInfo.FileName).Append("\n");
                     throw new WebDriverException(message.ToString());
                 }

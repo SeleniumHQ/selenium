@@ -27,7 +27,7 @@ namespace OpenQA.Selenium.Firefox
                 throw new ArgumentException(string.Format(CultureInfo.InvariantCulture, "Preference values must be plain strings: {0}: {1}", key, value));
             }
 
-            additionalPrefs.Add(key, string.Format(CultureInfo.InvariantCulture, "\"{0}\"", value));
+            this.additionalPrefs.Add(key, string.Format(CultureInfo.InvariantCulture, "\"{0}\"", value));
         }
 
         /// <summary>
@@ -37,7 +37,7 @@ namespace OpenQA.Selenium.Firefox
         /// <param name="value">A <see cref="System.Int32"/> value give the preference.</param>
         internal void SetPreference(string key, int value)
         {
-            additionalPrefs.Add(key, value.ToString(CultureInfo.InvariantCulture));
+            this.additionalPrefs.Add(key, value.ToString(CultureInfo.InvariantCulture));
         }
 
         /// <summary>
@@ -47,7 +47,7 @@ namespace OpenQA.Selenium.Firefox
         /// <param name="value">A <see cref="System.Boolean"/> value give the preference.</param>
         internal void SetPreference(string key, bool value)
         {
-            additionalPrefs.Add(key, value.ToString().ToLowerInvariant());
+            this.additionalPrefs.Add(key, value.ToString().ToLowerInvariant());
         }
 
         /// <summary>
@@ -61,15 +61,15 @@ namespace OpenQA.Selenium.Firefox
         {
             // This allows the user to add additional preferences, or update ones that already
             // exist.
-            foreach (string additionalPreference in additionalPrefs.Keys)
+            foreach (string additionalPreference in this.additionalPrefs.Keys)
             {
                 if (preferencesToAdd.ContainsKey(additionalPreference))
                 {
-                    preferencesToAdd[additionalPreference] = additionalPrefs[additionalPreference];
+                    preferencesToAdd[additionalPreference] = this.additionalPrefs[additionalPreference];
                 }
                 else
                 {
-                    preferencesToAdd.Add(additionalPreference, additionalPrefs[additionalPreference]);
+                    preferencesToAdd.Add(additionalPreference, this.additionalPrefs[additionalPreference]);
                 }
             }
         } 

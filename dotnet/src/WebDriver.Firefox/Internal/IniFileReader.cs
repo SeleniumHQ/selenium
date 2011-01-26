@@ -45,7 +45,7 @@ namespace OpenQA.Selenium.Firefox.Internal
                     {
                         if (!string.IsNullOrEmpty(sectionName))
                         {
-                            iniFileStore.Add(sectionName, section);
+                            this.iniFileStore.Add(sectionName, section);
                         }
 
                         sectionName = iniFileLine.Substring(1, iniFileLine.Length - 2).ToUpperInvariant();
@@ -66,7 +66,7 @@ namespace OpenQA.Selenium.Firefox.Internal
                 }
             }
 
-            iniFileStore.Add(sectionName, section);
+            this.iniFileStore.Add(sectionName, section);
         } 
         #endregion
 
@@ -78,7 +78,7 @@ namespace OpenQA.Selenium.Firefox.Internal
         {
             get
             {
-                List<string> keyList = new List<string>(iniFileStore.Keys);
+                List<string> keyList = new List<string>(this.iniFileStore.Keys);
                 return new ReadOnlyCollection<string>(keyList);
             }
         } 
@@ -107,12 +107,12 @@ namespace OpenQA.Selenium.Firefox.Internal
 
             string lowerCaseValueName = valueName.ToUpperInvariant();
 
-            if (!iniFileStore.ContainsKey(lowerCaseSectionName))
+            if (!this.iniFileStore.ContainsKey(lowerCaseSectionName))
             {
                 throw new ArgumentException("Section does not exist: " + sectionName, "sectionName");
             }
 
-            Dictionary<string, string> section = iniFileStore[lowerCaseSectionName];
+            Dictionary<string, string> section = this.iniFileStore[lowerCaseSectionName];
 
             if (!section.ContainsKey(lowerCaseValueName))
             {

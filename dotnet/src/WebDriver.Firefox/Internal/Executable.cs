@@ -30,7 +30,7 @@ namespace OpenQA.Selenium.Firefox.Internal
                 // It should exist and be a file.
                 if (File.Exists(userSpecifiedBinaryPath))
                 {
-                    binaryLocation = userSpecifiedBinaryPath;
+                    this.binaryLocation = userSpecifiedBinaryPath;
                     return;
                 }
 
@@ -39,9 +39,9 @@ namespace OpenQA.Selenium.Firefox.Internal
                     userSpecifiedBinaryPath);
             }
 
-            if (binaryInDefaultLocationForPlatform != null && File.Exists(binaryInDefaultLocationForPlatform))
+            if (this.binaryInDefaultLocationForPlatform != null && File.Exists(this.binaryInDefaultLocationForPlatform))
             {
-                binaryLocation = binaryInDefaultLocationForPlatform;
+                this.binaryLocation = this.binaryInDefaultLocationForPlatform;
                 return;
             }
 
@@ -56,7 +56,7 @@ namespace OpenQA.Selenium.Firefox.Internal
         /// </summary>
         public string ExecutablePath
         {
-            get { return binaryLocation; }
+            get { return this.binaryLocation; }
         } 
         #endregion
 
@@ -84,9 +84,8 @@ namespace OpenQA.Selenium.Firefox.Internal
             }
 
             // Last, add the contents of the specified system property, defaulting to the binary's path.
-
             // On Snow Leopard, beware of problems the sqlite library    
-            string firefoxLibraryPath = Path.GetFullPath(binaryLocation);
+            string firefoxLibraryPath = Path.GetFullPath(this.binaryLocation);
             if (Platform.CurrentPlatform.IsPlatformType(PlatformType.MacOSX) && Platform.CurrentPlatform.MinorVersion > 5)
             {
                 libraryPath.Append(libraryPath).Append(Path.PathSeparator);
@@ -143,27 +142,27 @@ namespace OpenQA.Selenium.Firefox.Internal
                     }
                 }
             }
-			else
-			{
-				// Mac Search Paths
-				string[] paths = new string[]
-				{
-					"/Applications/Firefox.app/Contents/MacOS/firefox-bin",
-            		string.Concat("/Users/", Environment.UserName, "/Applications/Firefox.app/Contents/MacOS/firefox-bin")	
-				};
-				
+            else
+            {
+                // Mac Search Paths
+                string[] paths = new string[]
+                {
+                    "/Applications/Firefox.app/Contents/MacOS/firefox-bin",
+                    string.Concat("/Users/", Environment.UserName, "/Applications/Firefox.app/Contents/MacOS/firefox-bin")
+                };
+                
                 foreach (string path in paths)
                 {
-                 	FileInfo firefoxBinary = new FileInfo(path);
+                    FileInfo firefoxBinary = new FileInfo(path);
                     if (firefoxBinary.Exists)
                     {
-                    	binary = firefoxBinary.FullName;
+                        binary = firefoxBinary.FullName;
                         break;
                     }
-				}
-			}
+                }
+            }
             
-			if (string.IsNullOrEmpty(binary))
+            if (string.IsNullOrEmpty(binary))
             {
                 // Use "which firefox" for non-Windows OS.
                 Process proc = new Process();

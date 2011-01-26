@@ -31,8 +31,8 @@ namespace OpenQA.Selenium.Firefox.Internal
         public SocketLock(int lockPort)
         {
             this.lockPort = lockPort;
-            lockSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            PreventSocketInheritance();
+            this.lockSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            this.PreventSocketInheritance();
         }
         #endregion
 
@@ -57,7 +57,7 @@ namespace OpenQA.Selenium.Firefox.Internal
                 }
             }
 
-            IPEndPoint address = new IPEndPoint(endPointAddress, lockPort);
+            IPEndPoint address = new IPEndPoint(endPointAddress, this.lockPort);
 
             // Calculate the 'exit time' for our wait loop.
             DateTime maxWait = DateTime.Now.AddMilliseconds(timeoutInMilliseconds);
@@ -67,7 +67,7 @@ namespace OpenQA.Selenium.Firefox.Internal
             {
                 try
                 {
-                    if (IsLockFree(address))
+                    if (this.IsLockFree(address))
                     {
                         return;
                     }
@@ -85,7 +85,7 @@ namespace OpenQA.Selenium.Firefox.Internal
             }
             while (DateTime.Now < maxWait);
 
-            throw new WebDriverException(string.Format(CultureInfo.InvariantCulture, "Unable to bind to locking port {0} within {1} ms", lockPort, timeoutInMilliseconds));
+            throw new WebDriverException(string.Format(CultureInfo.InvariantCulture, "Unable to bind to locking port {0} within {1} ms", this.lockPort, timeoutInMilliseconds));
         }
 
         /// <summary>
@@ -95,7 +95,7 @@ namespace OpenQA.Selenium.Firefox.Internal
         {
             try
             {
-                lockSocket.Close();
+                this.lockSocket.Close();
             }
             catch (IOException e)
             {
@@ -110,9 +110,9 @@ namespace OpenQA.Selenium.Firefox.Internal
         /// </summary>
         public void Dispose()
         {
-            if (lockSocket != null && lockSocket.Connected)
+            if (this.lockSocket != null && this.lockSocket.Connected)
             {
-                lockSocket.Close();
+                this.lockSocket.Close();
             }
 
             GC.SuppressFinalize(this);
@@ -124,7 +124,7 @@ namespace OpenQA.Selenium.Firefox.Internal
         {
             try
             {
-                lockSocket.Bind(address);
+                this.lockSocket.Bind(address);
                 return true;
             }
             catch (SocketException)
@@ -138,7 +138,7 @@ namespace OpenQA.Selenium.Firefox.Internal
             // TODO (JimEvans): Handle the non-Windows case.
             if (Platform.CurrentPlatform.IsPlatformType(PlatformType.Windows))
             {
-                NativeMethods.SetHandleInformation(lockSocket.Handle, NativeMethods.HandleInformation.Inherit | NativeMethods.HandleInformation.ProtectFromClose, NativeMethods.HandleInformation.None);
+                NativeMethods.SetHandleInformation(this.lockSocket.Handle, NativeMethods.HandleInformation.Inherit | NativeMethods.HandleInformation.ProtectFromClose, NativeMethods.HandleInformation.None);
             }
         }
         #endregion

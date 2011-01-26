@@ -134,7 +134,7 @@ namespace OpenQA.Selenium.Firefox
         /// </summary>
         protected FirefoxBinary Binary
         {
-            get { return binary; }
+            get { return this.binary; }
         }
 
         /// <summary>
@@ -142,7 +142,7 @@ namespace OpenQA.Selenium.Firefox
         /// </summary>
         protected FirefoxProfile Profile
         {
-            get { return profile; }
+            get { return this.profile; }
         }
         #endregion
 

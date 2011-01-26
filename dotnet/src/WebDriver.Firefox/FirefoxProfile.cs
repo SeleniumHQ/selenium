@@ -63,20 +63,20 @@ namespace OpenQA.Selenium.Firefox
         /// <param name="profileIsNamed">A value indicating whether the profile is a named profile.</param>
         internal FirefoxProfile(string profileDirectory, bool profileIsNamed)
         {
-            profileDir = profileDirectory;
-            extensionsDir = Path.Combine(profileDir, "extensions");
-            userPrefs = Path.Combine(profileDir, "user.js");
+            this.profileDir = profileDirectory;
+            this.extensionsDir = Path.Combine(this.profileDir, "extensions");
+            this.userPrefs = Path.Combine(this.profileDir, "user.js");
 
-            profilePort = FirefoxDriver.DefaultPort;
-            enableNativeEvents = FirefoxDriver.DefaultEnableNativeEvents;
-            acceptUntrustedCerts = FirefoxDriver.AcceptUntrustedCertificates;
+            this.profilePort = FirefoxDriver.DefaultPort;
+            this.enableNativeEvents = FirefoxDriver.DefaultEnableNativeEvents;
+            this.acceptUntrustedCerts = FirefoxDriver.AcceptUntrustedCertificates;
 
-            if (!Directory.Exists(profileDir))
+            if (!Directory.Exists(this.profileDir))
             {
-                throw new WebDriverException(string.Format(CultureInfo.InvariantCulture, "Profile directory does not exist: {0}", profileDir));
+                throw new WebDriverException(string.Format(CultureInfo.InvariantCulture, "Profile directory does not exist: {0}", this.profileDir));
             }
 
-            isNamedProfile = profileIsNamed;
+            this.isNamedProfile = profileIsNamed;
         } 
         #endregion
 
@@ -86,8 +86,8 @@ namespace OpenQA.Selenium.Firefox
         /// </summary>
         public int Port
         {
-            get { return profilePort; }
-            set { profilePort = value; }
+            get { return this.profilePort; }
+            set { this.profilePort = value; }
         }
 
         /// <summary>
@@ -95,7 +95,7 @@ namespace OpenQA.Selenium.Firefox
         /// </summary>
         public string ProfileDirectory
         {
-            get { return profileDir; }
+            get { return this.profileDir; }
         }
 
         /// <summary>
@@ -103,8 +103,8 @@ namespace OpenQA.Selenium.Firefox
         /// </summary>
         public bool EnableNativeEvents
         {
-            get { return enableNativeEvents; }
-            set { enableNativeEvents = value; }
+            get { return this.enableNativeEvents; }
+            set { this.enableNativeEvents = value; }
         }
 
         /// <summary>
@@ -114,8 +114,8 @@ namespace OpenQA.Selenium.Firefox
         /// <remarks>The <see cref="AlwaysLoadNoFocusLibrary"/> property is only used on Linux.</remarks>
         public bool AlwaysLoadNoFocusLibrary
         {
-            get { return loadNoFocusLibrary; }
-            set { loadNoFocusLibrary = value; }
+            get { return this.loadNoFocusLibrary; }
+            set { this.loadNoFocusLibrary = value; }
         }
 
         /// <summary>
@@ -123,8 +123,8 @@ namespace OpenQA.Selenium.Firefox
         /// </summary>
         public bool AcceptUntrustedCertificates
         {
-            get { return acceptUntrustedCerts; }
-            set { acceptUntrustedCerts = value; }
+            get { return this.acceptUntrustedCerts; }
+            set { this.acceptUntrustedCerts = value; }
         }
 
         /// <summary>
@@ -134,8 +134,8 @@ namespace OpenQA.Selenium.Firefox
         {
             get
             {
-                string macAndLinuxLockFile = Path.Combine(profileDir, ".parentlock");
-                string windowsLockFile = Path.Combine(profileDir, "parent.lock");
+                string macAndLinuxLockFile = Path.Combine(this.profileDir, ".parentlock");
+                string windowsLockFile = Path.Combine(this.profileDir, "parent.lock");
 
                 return File.Exists(macAndLinuxLockFile) || File.Exists(windowsLockFile);
             }
@@ -150,13 +150,13 @@ namespace OpenQA.Selenium.Firefox
         /// profile, even if the extension is already installed; otherwise, <see langword="false"/></param>
         public void AddExtension(bool forceAddition)
         {
-            string extensionLocation = Path.Combine(extensionsDir, ExtensionName);
+            string extensionLocation = Path.Combine(this.extensionsDir, ExtensionName);
             if (!forceAddition && File.Exists(extensionLocation))
             {
                 return;
             }
-         
-            AddExtension(ExtensionFileName);
+
+            this.AddExtension(ExtensionFileName);
         }
 
         /// <summary>
@@ -165,7 +165,7 @@ namespace OpenQA.Selenium.Firefox
         /// <param name="extensionToInstall">The path to the new extension</param>
         public void AddExtension(string extensionToInstall)
         {
-            InstallExtension(extensionToInstall);
+            this.InstallExtension(extensionToInstall);
         }
 
         /// <summary>
@@ -175,7 +175,7 @@ namespace OpenQA.Selenium.Firefox
         /// <param name="value">A <see cref="System.String"/> value to add to the profile.</param>
         public void SetPreference(string name, string value)
         {
-            profileAdditionalPrefs.SetPreference(name, value);
+            this.profileAdditionalPrefs.SetPreference(name, value);
         }
 
         /// <summary>
@@ -185,7 +185,7 @@ namespace OpenQA.Selenium.Firefox
         /// <param name="value">A <see cref="System.Int32"/> value to add to the profile.</param>
         public void SetPreference(string name, int value)
         {
-            profileAdditionalPrefs.SetPreference(name, value);
+            this.profileAdditionalPrefs.SetPreference(name, value);
         }
 
         /// <summary>
@@ -195,7 +195,7 @@ namespace OpenQA.Selenium.Firefox
         /// <param name="value">A <see cref="System.Boolean"/> value to add to the profile.</param>
         public void SetPreference(string name, bool value)
         {
-            profileAdditionalPrefs.SetPreference(name, value);
+            this.profileAdditionalPrefs.SetPreference(name, value);
         }
 
         /// <summary>
@@ -203,18 +203,18 @@ namespace OpenQA.Selenium.Firefox
         /// </summary>
         public void UpdateUserPreferences()
         {
-            if (profilePort == 0)
+            if (this.profilePort == 0)
             {
                 throw new WebDriverException("You must set the port to listen on before updating user.js");
             }
 
-            Dictionary<string, string> prefs = ReadExistingPreferences();
+            Dictionary<string, string> prefs = this.ReadExistingPreferences();
 
-            if (File.Exists(userPrefs))
+            if (File.Exists(this.userPrefs))
             {
                 try
                 {
-                    File.Delete(userPrefs);
+                    File.Delete(this.userPrefs);
                 }
                 catch (Exception e)
                 {
@@ -222,7 +222,7 @@ namespace OpenQA.Selenium.Firefox
                 }
             }
 
-            profileAdditionalPrefs.AppendPreferencesTo(prefs);
+            this.profileAdditionalPrefs.AppendPreferencesTo(prefs);
 
             // Normal settings to facilitate testing
             AddDefaultPreference(prefs, "app.update.auto", "false");
@@ -240,7 +240,7 @@ namespace OpenQA.Selenium.Firefox
             AddDefaultPreference(prefs, "browser.tabs.warnOnClose", "false");
             AddDefaultPreference(prefs, "browser.tabs.warnOnOpen", "false");
             AddDefaultPreference(prefs, "dom.disable_open_during_load", "false");
-			AddDefaultPreference(prefs, "dom.max_script_run_time", "30");
+            AddDefaultPreference(prefs, "dom.max_script_run_time", "30");
             AddDefaultPreference(prefs, "extensions.update.enabled", "false");
             AddDefaultPreference(prefs, "extensions.update.notifyUser", "false");
             AddDefaultPreference(prefs, "network.manage-offline-status", "false");
@@ -257,22 +257,22 @@ namespace OpenQA.Selenium.Firefox
             AddDefaultPreference(prefs, "security.warn_viewing_mixed.show_once", "false");
             AddDefaultPreference(prefs, "signon.rememberSignons", "false");
             AddDefaultPreference(prefs, "startup.homepage_welcome_url", "\"about:blank\"");
-			AddDefaultPreference(prefs, "toolkit.networkmanager.disable", "true");
+            AddDefaultPreference(prefs, "toolkit.networkmanager.disable", "true");
 
             // Which port should we listen on?
-            AddDefaultPreference(prefs, "webdriver_firefox_port", profilePort.ToString(CultureInfo.InvariantCulture));
+            AddDefaultPreference(prefs, "webdriver_firefox_port", this.profilePort.ToString(CultureInfo.InvariantCulture));
 
             // Should we use native events?
-            AddDefaultPreference(prefs, "webdriver_enable_native_events", enableNativeEvents.ToString().ToLowerInvariant());
+            AddDefaultPreference(prefs, "webdriver_enable_native_events", this.enableNativeEvents.ToString().ToLowerInvariant());
 
             // Should we accept untrusted certificates or not?
-            AddDefaultPreference(prefs, "webdriver_accept_untrusted_certs", acceptUntrustedCerts.ToString().ToLowerInvariant());
+            AddDefaultPreference(prefs, "webdriver_accept_untrusted_certs", this.acceptUntrustedCerts.ToString().ToLowerInvariant());
 
             // Settings to facilitate debugging the driver
             AddDefaultPreference(prefs, "javascript.options.showInConsole", "true"); // Logs errors in chrome files to the Error Console.
             AddDefaultPreference(prefs, "browser.dom.window.dump.enabled", "true");  // Enables the use of the dump() statement
 
-            WriteNewPreferences(prefs);
+            this.WriteNewPreferences(prefs);
         }
 
         /// <summary>
@@ -283,7 +283,7 @@ namespace OpenQA.Selenium.Firefox
         /// succeeds.</remarks>
         public void DeleteExtensionsCache()
         {
-            DirectoryInfo ex = new DirectoryInfo(extensionsDir);
+            DirectoryInfo ex = new DirectoryInfo(this.extensionsDir);
             string cacheFile = Path.Combine(ex.Parent.FullName, "extensions.cache");
             if (File.Exists(cacheFile))
             {
@@ -303,13 +303,13 @@ namespace OpenQA.Selenium.Firefox
             // To clean the profile, if it existed before we start, just 
             // remove the extension. Otherwise, kill the profile.
             string directoryToDelete = string.Empty;
-            if (isNamedProfile)
+            if (this.isNamedProfile)
             {
-                directoryToDelete = extensionsDir;
+                directoryToDelete = this.extensionsDir;
             }
             else
             {
-                directoryToDelete = profileDir;
+                directoryToDelete = this.profileDir;
             }
 
             DeleteDirectory(directoryToDelete);
@@ -324,7 +324,7 @@ namespace OpenQA.Selenium.Firefox
         /// representing the preferences to write.</param>
         protected void WriteNewPreferences(Dictionary<string, string> preferences)
         {
-            using (TextWriter writer = File.CreateText(userPrefs))
+            using (TextWriter writer = File.CreateText(this.userPrefs))
             {
                 foreach (string prefKey in preferences.Keys)
                 {
@@ -449,7 +449,7 @@ namespace OpenQA.Selenium.Firefox
             }
 
             string id = ReadIdFromInstallRdf(tempFileName);
-            string extensionDirectory = Path.Combine(extensionsDir, id);
+            string extensionDirectory = Path.Combine(this.extensionsDir, id);
 
             if (Directory.Exists(extensionDirectory))
             {
@@ -457,7 +457,7 @@ namespace OpenQA.Selenium.Firefox
             }
 
             Directory.CreateDirectory(extensionDirectory);
-            CopyDirectory(tempFileName, extensionDirectory);
+            this.CopyDirectory(tempFileName, extensionDirectory);
             Directory.Delete(tempFileName, true);
         }
 
@@ -481,7 +481,7 @@ namespace OpenQA.Selenium.Firefox
 
                 foreach (DirectoryInfo directoryEntry in sourceDirectoryInfo.GetDirectories())
                 {
-                    if (!CopyDirectory(directoryEntry.FullName, Path.Combine(destinationDirectoryInfo.FullName, directoryEntry.Name)))
+                    if (!this.CopyDirectory(directoryEntry.FullName, Path.Combine(destinationDirectoryInfo.FullName, directoryEntry.Name)))
                     {
                         copyComplete = false;
                     }
@@ -503,9 +503,9 @@ namespace OpenQA.Selenium.Firefox
 
             try
             {
-                if (File.Exists(userPrefs))
+                if (File.Exists(this.userPrefs))
                 {
-                    string[] fileLines = File.ReadAllLines(userPrefs);
+                    string[] fileLines = File.ReadAllLines(this.userPrefs);
                     foreach (string line in fileLines)
                     {
                         if (line.StartsWith("user_pref(\"", StringComparison.OrdinalIgnoreCase))

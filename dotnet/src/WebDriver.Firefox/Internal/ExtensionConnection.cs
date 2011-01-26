@@ -52,10 +52,10 @@ namespace OpenQA.Selenium.Firefox.Internal
                 this.process.Clean(profile);
                 this.process.StartProfile(profile, null);
 
-                SetAddress(host, portToUse);
+                this.SetAddress(host, portToUse);
 
                 // TODO (JimEvans): Get a better url algorithm.
-                executor = new HttpCommandExecutor(new Uri(string.Format(CultureInfo.InvariantCulture, "http://{0}:{1}/hub/", host, portToUse)));
+                this.executor = new HttpCommandExecutor(new Uri(string.Format(CultureInfo.InvariantCulture, "http://{0}:{1}/hub/", host, portToUse)));
             }
             finally
             {
@@ -70,7 +70,7 @@ namespace OpenQA.Selenium.Firefox.Internal
         /// </summary>
         public void Start()
         {
-            ConnectToBrowser(this.process.TimeoutInMilliseconds);
+            this.ConnectToBrowser(this.process.TimeoutInMilliseconds);
         }
 
         /// <summary>
@@ -80,8 +80,8 @@ namespace OpenQA.Selenium.Firefox.Internal
         {
             // This should only be called after the QUIT command has been sent,
             // so go ahead and clean up our process and profile.
-            process.Quit();
-            profile.Clean();
+            this.process.Quit();
+            this.profile.Clean();
         }
         #endregion
 
@@ -93,7 +93,7 @@ namespace OpenQA.Selenium.Firefox.Internal
         /// <returns>A response from the browser</returns>
         public Response Execute(Command commandToExecute)
         {
-            return executor.Execute(commandToExecute);
+            return this.executor.Execute(commandToExecute);
         }
         #endregion
 
@@ -172,7 +172,7 @@ namespace OpenQA.Selenium.Firefox.Internal
         {
             if (string.Compare("localhost", host, StringComparison.OrdinalIgnoreCase) == 0)
             {
-                addresses = ObtainLoopbackAddresses(port);
+                this.addresses = ObtainLoopbackAddresses(port);
             }
             else
             {
@@ -190,7 +190,7 @@ namespace OpenQA.Selenium.Firefox.Internal
                 }
 
                 IPEndPoint hostEndPoint = new IPEndPoint(endPointAddress, port);
-                addresses.Add(hostEndPoint);
+                this.addresses.Add(hostEndPoint);
             }
         }
 
@@ -203,7 +203,7 @@ namespace OpenQA.Selenium.Firefox.Internal
             DateTime waitUntil = DateTime.Now.AddMilliseconds(timeToWaitInMilliSeconds);
             while (!IsSocketConnected(extensionSocket) && waitUntil > DateTime.Now)
             {
-                foreach (IPEndPoint addr in addresses)
+                foreach (IPEndPoint addr in this.addresses)
                 {
                     try
                     {
