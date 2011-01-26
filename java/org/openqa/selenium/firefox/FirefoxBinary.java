@@ -343,8 +343,12 @@ public class FirefoxBinary {
           }
         } while (n != -1);
       } catch (IOException e) {
-        System.err.print("ERROR: Could not read from stdout of " + process + ": ");
-        e.printStackTrace(System.err);
+        if ("Stream closed".equals(e.getMessage())) {
+          // We can and should ignore this IOException, see http://code.google.com/p/selenium/issues/detail?id=1159
+        } else {
+          System.err.print("ERROR: Could not read from stdout of " + process + ": ");
+          e.printStackTrace(System.err);
+        }
       } finally {
         if (stdoutOfWatchedProcess != null) {
           try {
