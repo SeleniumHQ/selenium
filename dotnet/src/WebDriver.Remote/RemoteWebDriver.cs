@@ -1,12 +1,11 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
-using OpenQA.Selenium.Internal;
-using System.Drawing;
-using OpenQA.Selenium.Interactions.Internal;
 using OpenQA.Selenium.Interactions;
-using System.Collections;
+using OpenQA.Selenium.Interactions.Internal;
+using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium.Remote
 {
@@ -59,9 +58,9 @@ namespace OpenQA.Selenium.Remote
         /// <param name="desiredCapabilities">An <see cref="ICapabilities"/> object containing the desired capabilities of the browser.</param>
         public RemoteWebDriver(ICommandExecutor commandExecutor, ICapabilities desiredCapabilities)
         {
-            executor = commandExecutor;
-            StartClient();
-            StartSession(desiredCapabilities);
+            this.executor = commandExecutor;
+            this.StartClient();
+            this.StartSession(desiredCapabilities);
         }
 
         /// <summary>
@@ -95,7 +94,7 @@ namespace OpenQA.Selenium.Remote
         {
             get
             {
-                Response commandResponse = Execute(DriverCommand.GetCurrentUrl, null);
+                Response commandResponse = this.Execute(DriverCommand.GetCurrentUrl, null);
                 return commandResponse.Value.ToString();
             }
 
@@ -111,7 +110,7 @@ namespace OpenQA.Selenium.Remote
 
                 try
                 {
-                    Execute(DriverCommand.Get, parameters);
+                    this.Execute(DriverCommand.Get, parameters);
                 }
                 catch (WebDriverException)
                 {
@@ -129,8 +128,8 @@ namespace OpenQA.Selenium.Remote
         {
             get
             {
-                Response commandResponse = Execute(DriverCommand.GetTitle, null);
-                object returnedTitle = commandResponse != null ? commandResponse.Value : "";
+                Response commandResponse = this.Execute(DriverCommand.GetTitle, null);
+                object returnedTitle = commandResponse != null ? commandResponse.Value : string.Empty;
                 return returnedTitle.ToString();
             }
         }
@@ -142,7 +141,7 @@ namespace OpenQA.Selenium.Remote
         {
             get
             {
-                Response commandResponse = Execute(DriverCommand.GetPageSource, null);
+                Response commandResponse = this.Execute(DriverCommand.GetPageSource, null);
                 return commandResponse.Value.ToString();
             }
         }
@@ -180,7 +179,7 @@ namespace OpenQA.Selenium.Remote
         /// </summary>
         public ICapabilities Capabilities
         {
-            get { return capabilities; }
+            get { return this.capabilities; }
         }
 
         /// <summary>
@@ -188,7 +187,7 @@ namespace OpenQA.Selenium.Remote
         /// </summary>
         public bool IsJavaScriptEnabled
         {
-            get { return capabilities.IsJavaScriptEnabled; }
+            get { return this.capabilities.IsJavaScriptEnabled; }
         }
         #endregion
 
@@ -198,7 +197,7 @@ namespace OpenQA.Selenium.Remote
         /// </summary>
         protected ICommandExecutor CommandExecutor
         {
-            get { return executor; }
+            get { return this.executor; }
         }
 
         /// <summary>
@@ -206,7 +205,7 @@ namespace OpenQA.Selenium.Remote
         /// </summary>
         protected SessionId SessionId
         {
-            get { return sessionId; }
+            get { return this.sessionId; }
         }
         #endregion
 
@@ -248,7 +247,7 @@ namespace OpenQA.Selenium.Remote
         /// </summary>
         public void Close()
         {
-            Execute(DriverCommand.Close, null);
+            this.Execute(DriverCommand.Close, null);
         }
 
         /// <summary>
@@ -258,11 +257,11 @@ namespace OpenQA.Selenium.Remote
         {
             try
             {
-                Execute(DriverCommand.Quit, null);
+                this.Execute(DriverCommand.Quit, null);
             }
             finally
             {
-                Dispose();
+                this.Dispose();
             }
         }
 
@@ -322,7 +321,7 @@ namespace OpenQA.Selenium.Remote
         /// </example>
         public ReadOnlyCollection<string> GetWindowHandles()
         {
-            Response commandResponse = Execute(DriverCommand.GetWindowHandles, null);
+            Response commandResponse = this.Execute(DriverCommand.GetWindowHandles, null);
             object[] handles = (object[])commandResponse.Value;
             List<string> handleList = new List<string>();
             foreach (object handle in handles)
@@ -343,7 +342,7 @@ namespace OpenQA.Selenium.Remote
         /// </example>
         public string GetWindowHandle()
         {
-            Response commandResponse = Execute(DriverCommand.GetCurrentWindowHandle, null);
+            Response commandResponse = this.Execute(DriverCommand.GetCurrentWindowHandle, null);
             return commandResponse.Value.ToString();
         }
         #endregion
@@ -357,7 +356,7 @@ namespace OpenQA.Selenium.Remote
         /// <returns>The value returned by the script.</returns>
         public object ExecuteScript(string script, params object[] args)
         {
-            return ExecuteScriptInternal(script, false, args);
+            return this.ExecuteScriptInternal(script, false, args);
         }
 
         /// <summary>
@@ -368,7 +367,7 @@ namespace OpenQA.Selenium.Remote
         /// <returns>The value returned by the script.</returns>
         public object ExecuteAsyncScript(string script, params object[] args)
         {
-            return ExecuteScriptInternal(script, true, args);
+            return this.ExecuteScriptInternal(script, true, args);
         }
         #endregion
 
@@ -386,7 +385,7 @@ namespace OpenQA.Selenium.Remote
         /// </example>
         public IWebElement FindElementById(string id)
         {
-            return FindElement("id", id);
+            return this.FindElement("id", id);
         }
 
         /// <summary>
@@ -402,7 +401,7 @@ namespace OpenQA.Selenium.Remote
         /// </example>
         public ReadOnlyCollection<IWebElement> FindElementsById(string id)
         {
-            return FindElements("id", id);
+            return this.FindElements("id", id);
         }
 
         #endregion
@@ -421,7 +420,7 @@ namespace OpenQA.Selenium.Remote
         /// </example>
         public IWebElement FindElementByClassName(string className)
         {
-            return FindElement("class name", className);
+            return this.FindElement("class name", className);
         }
 
         /// <summary>
@@ -437,7 +436,7 @@ namespace OpenQA.Selenium.Remote
         /// </example>
         public ReadOnlyCollection<IWebElement> FindElementsByClassName(string className)
         {
-            return FindElements("class name", className);
+            return this.FindElements("class name", className);
         }
 
         #endregion
@@ -456,7 +455,7 @@ namespace OpenQA.Selenium.Remote
         /// </example>
         public IWebElement FindElementByLinkText(string linkText)
         {
-            return FindElement("link text", linkText);
+            return this.FindElement("link text", linkText);
         }
 
         /// <summary>
@@ -472,7 +471,7 @@ namespace OpenQA.Selenium.Remote
         /// </example>
         public ReadOnlyCollection<IWebElement> FindElementsByLinkText(string linkText)
         {
-            return FindElements("link text", linkText);
+            return this.FindElements("link text", linkText);
         }
 
         #endregion
@@ -491,7 +490,7 @@ namespace OpenQA.Selenium.Remote
         /// </example>
         public IWebElement FindElementByPartialLinkText(string partialLinkText)
         {
-            return FindElement("partial link text", partialLinkText);
+            return this.FindElement("partial link text", partialLinkText);
         }
 
         /// <summary>
@@ -507,7 +506,7 @@ namespace OpenQA.Selenium.Remote
         /// </example>
         public ReadOnlyCollection<IWebElement> FindElementsByPartialLinkText(string partialLinkText)
         {
-            return FindElements("partial link text", partialLinkText);
+            return this.FindElements("partial link text", partialLinkText);
         }
 
         #endregion
@@ -526,7 +525,7 @@ namespace OpenQA.Selenium.Remote
         /// </example>
         public IWebElement FindElementByName(string name)
         {
-            return FindElement("name", name);
+            return this.FindElement("name", name);
         }
 
         /// <summary>
@@ -542,7 +541,7 @@ namespace OpenQA.Selenium.Remote
         /// </example>
         public ReadOnlyCollection<IWebElement> FindElementsByName(string name)
         {
-            return FindElements("name", name);
+            return this.FindElements("name", name);
         }
 
         #endregion
@@ -561,7 +560,7 @@ namespace OpenQA.Selenium.Remote
         /// </example>
         public IWebElement FindElementByTagName(string tagName)
         {
-            return FindElement("tag name", tagName);
+            return this.FindElement("tag name", tagName);
         }
 
         /// <summary>
@@ -577,7 +576,7 @@ namespace OpenQA.Selenium.Remote
         /// </example>
         public ReadOnlyCollection<IWebElement> FindElementsByTagName(string tagName)
         {
-            return FindElements("tag name", tagName);
+            return this.FindElements("tag name", tagName);
         }
         #endregion
 
@@ -595,7 +594,7 @@ namespace OpenQA.Selenium.Remote
         /// </example>
         public IWebElement FindElementByXPath(string xpath)
         {
-            return FindElement("xpath", xpath);
+            return this.FindElement("xpath", xpath);
         }
 
         /// <summary>
@@ -611,7 +610,7 @@ namespace OpenQA.Selenium.Remote
         /// </example>
         public ReadOnlyCollection<IWebElement> FindElementsByXPath(string xpath)
         {
-            return FindElements("xpath", xpath);
+            return this.FindElements("xpath", xpath);
         }
         #endregion
 
@@ -623,7 +622,7 @@ namespace OpenQA.Selenium.Remote
         /// <returns>The first <see cref="IWebElement"/> matching the criteria.</returns>
         public IWebElement FindElementByCssSelector(string cssSelector)
         {
-            return FindElement("css selector", cssSelector);
+            return this.FindElement("css selector", cssSelector);
         }
 
         /// <summary>
@@ -634,7 +633,7 @@ namespace OpenQA.Selenium.Remote
         /// <see cref="IWebElement">IWebElements</see> matching the criteria.</returns>
         public ReadOnlyCollection<IWebElement> FindElementsByCssSelector(string cssSelector)
         {
-            return FindElements("css selector", cssSelector);
+            return this.FindElements("css selector", cssSelector);
         }
         #endregion
 
@@ -645,7 +644,7 @@ namespace OpenQA.Selenium.Remote
         /// </summary>
         public void Dispose()
         {
-            Dispose(true);
+            this.Dispose(true);
             GC.SuppressFinalize(this);
         }
 
@@ -660,7 +659,7 @@ namespace OpenQA.Selenium.Remote
         /// <returns>WebDriver Response</returns>
         internal Response InternalExecute(DriverCommand driverCommandToExecute, Dictionary<string, object> parameters)
         {
-            return Execute(driverCommandToExecute, parameters);
+            return this.Execute(driverCommandToExecute, parameters);
         }
 
         /// <summary>
@@ -680,7 +679,7 @@ namespace OpenQA.Selenium.Remote
             if (elementDictionary != null)
             {
                 string id = (string)elementDictionary["ELEMENT"];
-                element = CreateElement(id);
+                element = this.CreateElement(id);
             }
 
             return element;
@@ -701,7 +700,7 @@ namespace OpenQA.Selenium.Remote
                 if (elementDictionary != null)
                 {
                     string id = (string)elementDictionary["ELEMENT"];
-                    RemoteWebElement element = CreateElement(id);
+                    RemoteWebElement element = this.CreateElement(id);
                     toReturn.Add(element);
                 }
             }
@@ -717,8 +716,8 @@ namespace OpenQA.Selenium.Remote
         /// <param name="disposing">if its in the process of disposing</param>
         protected virtual void Dispose(bool disposing)
         {
-            sessionId = null;
-            StopClient();
+            this.sessionId = null;
+            this.StopClient();
         }
 
         /// <summary>
@@ -729,10 +728,9 @@ namespace OpenQA.Selenium.Remote
         {
             Dictionary<string, object> parameters = new Dictionary<string, object>();
             parameters.Add("desiredCapabilities", desiredCapabilities);
-            Response response = Execute(DriverCommand.NewSession, parameters);
+            Response response = this.Execute(DriverCommand.NewSession, parameters);
 
             Dictionary<string, object> rawCapabilities = (Dictionary<string, object>)response.Value;
-            DesiredCapabilities returnedCapabilities = new DesiredCapabilities();
 
             string browser = (string)rawCapabilities["browserName"];
             string version = (string)rawCapabilities["version"];
@@ -747,10 +745,11 @@ namespace OpenQA.Selenium.Remote
                 platform = new Platform(PlatformType.Any);
             }
 
+            DesiredCapabilities returnedCapabilities = new DesiredCapabilities(browser, version, platform);
             returnedCapabilities.IsJavaScriptEnabled = (bool)rawCapabilities["javascriptEnabled"];
             returnedCapabilities.Platform = platform;
-            capabilities = returnedCapabilities;
-            sessionId = new SessionId(response.SessionId);
+            this.capabilities = returnedCapabilities;
+            this.sessionId = new SessionId(response.SessionId);
         }
 
         /// <summary>
@@ -761,13 +760,13 @@ namespace OpenQA.Selenium.Remote
         /// <returns>A <see cref="Response"/> containing information about the success or failure of the command and any data returned by the command.</returns>
         protected virtual Response Execute(DriverCommand driverCommandToExecute, Dictionary<string, object> parameters)
         {
-            Command commandToExecute = new Command(sessionId, driverCommandToExecute, parameters);
+            Command commandToExecute = new Command(this.sessionId, driverCommandToExecute, parameters);
 
             Response commandResponse = new Response();
 
             try
             {
-                commandResponse = executor.Execute(commandToExecute);
+                commandResponse = this.executor.Execute(commandToExecute);
             }
             catch (System.Net.WebException e)
             {
@@ -808,8 +807,8 @@ namespace OpenQA.Selenium.Remote
             Dictionary<string, object> parameters = new Dictionary<string, object>();
             parameters.Add("using", mechanism);
             parameters.Add("value", value);
-            Response commandResponse = Execute(DriverCommand.FindElement, parameters);
-            return GetElementFromResponse(commandResponse);
+            Response commandResponse = this.Execute(DriverCommand.FindElement, parameters);
+            return this.GetElementFromResponse(commandResponse);
         }
 
         /// <summary>
@@ -823,8 +822,8 @@ namespace OpenQA.Selenium.Remote
             Dictionary<string, object> parameters = new Dictionary<string, object>();
             parameters.Add("using", mechanism);
             parameters.Add("value", value);
-            Response commandResponse = Execute(DriverCommand.FindElements, parameters);
-            return GetElementsFromResponse(commandResponse);
+            Response commandResponse = this.Execute(DriverCommand.FindElements, parameters);
+            return this.GetElementsFromResponse(commandResponse);
         }
 
         /// <summary>
@@ -835,7 +834,7 @@ namespace OpenQA.Selenium.Remote
         protected virtual RemoteWebElement CreateElement(string elementId)
         {
             RemoteWebElement toReturn;
-            if (capabilities.IsJavaScriptEnabled)
+            if (this.capabilities.IsJavaScriptEnabled)
             {
                 toReturn = new RenderedRemoteWebElement(this, elementId);
             }
@@ -849,35 +848,6 @@ namespace OpenQA.Selenium.Remote
         #endregion
 
         #region Private methods
-        private object ExecuteScriptInternal(string script, bool async, params object[] args)
-        {
-            if (!Capabilities.IsJavaScriptEnabled)
-            {
-                throw new NotSupportedException("You must be using an underlying instance of WebDriver that supports executing javascript");
-            }
-
-            // Escape the quote marks
-            //script = script.Replace("\"", "\\\"");
-
-            object[] convertedArgs = ConvertArgumentsToJavaScriptObjects(args);
-
-            Dictionary<string, object> parameters = new Dictionary<string, object>();
-            parameters.Add("script", script);
-
-            if (convertedArgs != null && convertedArgs.Length > 0)
-            {
-                parameters.Add("args", convertedArgs);
-            }
-            else
-            {
-                parameters.Add("args", new object[] { });
-            }
-
-            DriverCommand command = async ? DriverCommand.ExecuteAsyncScript : DriverCommand.ExecuteScript;
-            Response commandResponse = Execute(command, parameters);
-            return ParseJavaScriptReturnValue(commandResponse.Value);
-        }
-
         private static object ConvertObjectToJavaScriptObject(object arg)
         {
             IWrapsElement argAsWrapsElement = arg as IWrapsElement;
@@ -1019,6 +989,34 @@ namespace OpenQA.Selenium.Remote
             }
         }
 
+        private object ExecuteScriptInternal(string script, bool async, params object[] args)
+        {
+            if (!this.Capabilities.IsJavaScriptEnabled)
+            {
+                throw new NotSupportedException("You must be using an underlying instance of WebDriver that supports executing javascript");
+            }
+
+            // Escape the quote marks
+            // script = script.Replace("\"", "\\\"");
+            object[] convertedArgs = ConvertArgumentsToJavaScriptObjects(args);
+
+            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            parameters.Add("script", script);
+
+            if (convertedArgs != null && convertedArgs.Length > 0)
+            {
+                parameters.Add("args", convertedArgs);
+            }
+            else
+            {
+                parameters.Add("args", new object[] { });
+            }
+
+            DriverCommand command = async ? DriverCommand.ExecuteAsyncScript : DriverCommand.ExecuteScript;
+            Response commandResponse = this.Execute(command, parameters);
+            return this.ParseJavaScriptReturnValue(commandResponse.Value);
+        }
+
         private object ParseJavaScriptReturnValue(object responseValue)
         {
             object returnValue = null;
@@ -1031,7 +1029,7 @@ namespace OpenQA.Selenium.Remote
                 if (resultAsDictionary.ContainsKey("ELEMENT"))
                 {
                     string id = (string)resultAsDictionary["ELEMENT"];
-                    RemoteWebElement element = CreateElement(id);
+                    RemoteWebElement element = this.CreateElement(id);
                     returnValue = element;
                 }
                 else
@@ -1041,7 +1039,7 @@ namespace OpenQA.Selenium.Remote
                     resultAsDictionary.Keys.CopyTo(keyCopy, 0);
                     foreach (string key in keyCopy)
                     {
-                        resultAsDictionary[key] = ParseJavaScriptReturnValue(resultAsDictionary[key]);
+                        resultAsDictionary[key] = this.ParseJavaScriptReturnValue(resultAsDictionary[key]);
                     }
 
                     returnValue = resultAsDictionary;
@@ -1053,7 +1051,7 @@ namespace OpenQA.Selenium.Remote
                 List<object> toReturn = new List<object>();
                 foreach (object item in resultAsArray)
                 {
-                    object parsedItem = ParseJavaScriptReturnValue(item);
+                    object parsedItem = this.ParseJavaScriptReturnValue(item);
                     IWebElement parsedItemAsElement = parsedItem as IWebElement;
                     if (parsedItemAsElement == null)
                     {
@@ -1112,7 +1110,7 @@ namespace OpenQA.Selenium.Remote
             {
                 get
                 {
-                    Response response = driver.Execute(DriverCommand.GetSpeed, null);
+                    Response response = this.driver.Execute(DriverCommand.GetSpeed, null);
 
                     return Speed.FromString(response.Value.ToString());
                 }
@@ -1121,7 +1119,7 @@ namespace OpenQA.Selenium.Remote
                 {
                     Dictionary<string, object> parameters = new Dictionary<string, object>();
                     parameters.Add("speed", value.Description.ToUpperInvariant());
-                    driver.Execute(DriverCommand.SetSpeed, parameters);
+                    this.driver.Execute(DriverCommand.SetSpeed, parameters);
                 }
             }
 
@@ -1133,7 +1131,7 @@ namespace OpenQA.Selenium.Remote
             {
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
                 parameters.Add("cookie", cookie);
-                driver.Execute(DriverCommand.AddCookie, parameters);
+                this.driver.Execute(DriverCommand.AddCookie, parameters);
             }
 
             /// <summary>
@@ -1144,7 +1142,7 @@ namespace OpenQA.Selenium.Remote
             {
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
                 parameters.Add("name", name);
-                driver.Execute(DriverCommand.DeleteCookie, parameters);
+                this.driver.Execute(DriverCommand.DeleteCookie, parameters);
             }
 
             /// <summary>
@@ -1153,7 +1151,7 @@ namespace OpenQA.Selenium.Remote
             /// <param name="cookie">An object that represents a copy of the cookie that needs to be deleted</param>
             public void DeleteCookie(Cookie cookie)
             {
-                DeleteCookieNamed(cookie.Name);
+                this.DeleteCookieNamed(cookie.Name);
             }
 
             /// <summary>
@@ -1161,7 +1159,7 @@ namespace OpenQA.Selenium.Remote
             /// </summary>
             public void DeleteAllCookies()
             {
-                driver.Execute(DriverCommand.DeleteAllCookies, null);
+                this.driver.Execute(DriverCommand.DeleteAllCookies, null);
             }
 
             /// <summary>
@@ -1172,7 +1170,7 @@ namespace OpenQA.Selenium.Remote
             public Cookie GetCookieNamed(string name)
             {
                 Cookie cookieToReturn = null;
-                ReadOnlyCollection<Cookie> allCookies = GetCookies();
+                ReadOnlyCollection<Cookie> allCookies = this.GetCookies();
                 foreach (Cookie currentCookie in allCookies)
                 {
                     if (name.Equals(currentCookie.Name))
@@ -1192,7 +1190,7 @@ namespace OpenQA.Selenium.Remote
             public ReadOnlyCollection<Cookie> GetCookies()
             {
                 List<Cookie> toReturn = new List<Cookie>();
-                object returned = driver.Execute(DriverCommand.GetAllCookies, null).Value;
+                object returned = this.driver.Execute(DriverCommand.GetAllCookies, null).Value;
 
                 try
                 {
@@ -1220,7 +1218,7 @@ namespace OpenQA.Selenium.Remote
                                 }
 
                                 DateTime? expires = null;
-                                if(cookie.ContainsKey("expiry") && cookie["expiry"] != null)
+                                if (cookie.ContainsKey("expiry") && cookie["expiry"] != null)
                                 {
                                     long seconds = 0;
                                     if (long.TryParse(cookie["expiry"].ToString(), out seconds))
@@ -1230,7 +1228,7 @@ namespace OpenQA.Selenium.Remote
                                 }
 
                                 bool secure = bool.Parse(cookie["secure"].ToString());
-                                toReturn.Add(new ReturnedCookie(name, value, domain, path, expires, secure, new Uri(driver.Url)));
+                                toReturn.Add(new ReturnedCookie(name, value, domain, path, expires, secure, new Uri(this.driver.Url)));
                             }
                         }
                     }
@@ -1249,7 +1247,7 @@ namespace OpenQA.Selenium.Remote
             /// <returns>An object implementing the <see cref="ITimeouts"/> interface.</returns>
             public ITimeouts Timeouts()
             {
-                return new RemoteTimeouts(driver);
+                return new RemoteTimeouts(this.driver);
             }
 
             /// <summary>
@@ -1291,7 +1289,7 @@ namespace OpenQA.Selenium.Remote
                 {
                     Dictionary<string, object> parameters = new Dictionary<string, object>();
                     parameters.Add("ms", timeToWait.TotalMilliseconds);
-                    Response response = driver.Execute(DriverCommand.ImplicitlyWait, parameters);
+                    this.driver.Execute(DriverCommand.ImplicitlyWait, parameters);
                     return this;
                 }
 
@@ -1304,7 +1302,7 @@ namespace OpenQA.Selenium.Remote
                 {
                     Dictionary<string, object> parameters = new Dictionary<string, object>();
                     parameters.Add("ms", timeToWait.TotalMilliseconds);
-                    Response response = driver.Execute(DriverCommand.SetAsyncScriptTimeout, parameters);
+                    this.driver.Execute(DriverCommand.SetAsyncScriptTimeout, parameters);
                     return this;
                 }
                 #endregion
@@ -1334,7 +1332,7 @@ namespace OpenQA.Selenium.Remote
             /// </summary>
             public void Back()
             {
-                driver.Execute(DriverCommand.GoBack, null);
+                this.driver.Execute(DriverCommand.GoBack, null);
             }
 
             /// <summary>
@@ -1342,7 +1340,7 @@ namespace OpenQA.Selenium.Remote
             /// </summary>
             public void Forward()
             {
-                driver.Execute(DriverCommand.GoForward, null);
+                this.driver.Execute(DriverCommand.GoForward, null);
             }
 
             /// <summary>
@@ -1351,7 +1349,7 @@ namespace OpenQA.Selenium.Remote
             /// <param name="url">String of where you want the browser to go to</param>
             public void GoToUrl(string url)
             {
-                driver.Url = url;
+                this.driver.Url = url;
             }
 
             /// <summary>
@@ -1365,7 +1363,7 @@ namespace OpenQA.Selenium.Remote
                     throw new ArgumentNullException("url", "URL cannot be null.");
                 }
 
-                driver.Url = url.ToString();
+                this.driver.Url = url.ToString();
             }
 
             /// <summary>
@@ -1373,8 +1371,8 @@ namespace OpenQA.Selenium.Remote
             /// </summary>
             public void Refresh()
             {
-                //driver.SwitchTo().DefaultContent();
-                driver.Execute(DriverCommand.Refresh, null);
+                // driver.SwitchTo().DefaultContent();
+                this.driver.Execute(DriverCommand.Refresh, null);
             }
             #endregion
         }
@@ -1405,8 +1403,8 @@ namespace OpenQA.Selenium.Remote
             {
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
                 parameters.Add("id", frameIndex);
-                driver.Execute(DriverCommand.SwitchToFrame, parameters);
-                return driver;
+                this.driver.Execute(DriverCommand.SwitchToFrame, parameters);
+                return this.driver;
             }
 
             /// <summary>
@@ -1423,8 +1421,8 @@ namespace OpenQA.Selenium.Remote
 
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
                 parameters.Add("id", frameName);
-                driver.Execute(DriverCommand.SwitchToFrame, parameters);
-                return driver;
+                this.driver.Execute(DriverCommand.SwitchToFrame, parameters);
+                return this.driver;
             }
 
             /// <summary>
@@ -1450,8 +1448,8 @@ namespace OpenQA.Selenium.Remote
 
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
                 parameters.Add("id", elementDictionary);
-                driver.Execute(DriverCommand.SwitchToFrame, parameters);
-                return driver;
+                this.driver.Execute(DriverCommand.SwitchToFrame, parameters);
+                return this.driver;
             }
 
             /// <summary>
@@ -1463,8 +1461,8 @@ namespace OpenQA.Selenium.Remote
             {
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
                 parameters.Add("name", windowName);
-                driver.Execute(DriverCommand.SwitchToWindow, parameters);
-                return driver;
+                this.driver.Execute(DriverCommand.SwitchToWindow, parameters);
+                return this.driver;
             }
 
             /// <summary>
@@ -1475,8 +1473,8 @@ namespace OpenQA.Selenium.Remote
             {
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
                 parameters.Add("id", null);
-                driver.Execute(DriverCommand.SwitchToFrame, parameters);
-                return driver;
+                this.driver.Execute(DriverCommand.SwitchToFrame, parameters);
+                return this.driver;
             }
 
             /// <summary>
@@ -1485,8 +1483,8 @@ namespace OpenQA.Selenium.Remote
             /// <returns>Element that is active</returns>
             public IWebElement ActiveElement()
             {
-                Response response = driver.Execute(DriverCommand.GetActiveElement, null);
-                return driver.GetElementFromResponse(response);
+                Response response = this.driver.Execute(DriverCommand.GetActiveElement, null);
+                return this.driver.GetElementFromResponse(response);
             }
 
             /// <summary>
@@ -1495,7 +1493,7 @@ namespace OpenQA.Selenium.Remote
             /// <returns>A handle to the dialog.</returns>
             public IAlert Alert()
             {
-                return new RemoteAlert(driver);
+                return new RemoteAlert(this.driver);
             }
             #endregion
 
@@ -1506,6 +1504,10 @@ namespace OpenQA.Selenium.Remote
             {
                 private RemoteWebDriver driver;
 
+                /// <summary>
+                /// Initializes a new instance of the <see cref="RemoteAlert"/> class.
+                /// </summary>
+                /// <param name="driver">The <see cref="RemoteWebDriver"/> for which the alerts will be managed.</param>
                 public RemoteAlert(RemoteWebDriver driver)
                 {
                     this.driver = driver;
@@ -1519,7 +1521,7 @@ namespace OpenQA.Selenium.Remote
                 {
                     get
                     {
-                        Response commandResponse = driver.Execute(DriverCommand.GetAlertText, null);
+                        Response commandResponse = this.driver.Execute(DriverCommand.GetAlertText, null);
                         return commandResponse.Value.ToString();
                     }
                 }
@@ -1529,7 +1531,7 @@ namespace OpenQA.Selenium.Remote
                 /// </summary>
                 public void Dismiss()
                 {
-                    driver.Execute(DriverCommand.DismissAlert, null);
+                    this.driver.Execute(DriverCommand.DismissAlert, null);
                 }
 
                 /// <summary>
@@ -1537,7 +1539,7 @@ namespace OpenQA.Selenium.Remote
                 /// </summary>
                 public void Accept()
                 {
-                    driver.Execute(DriverCommand.AcceptAlert, null);
+                    this.driver.Execute(DriverCommand.AcceptAlert, null);
                 }
 
                 /// <summary>
@@ -1548,11 +1550,10 @@ namespace OpenQA.Selenium.Remote
                 {
                     Dictionary<string, object> parameters = new Dictionary<string, object>();
                     parameters.Add("text", keysToSend);
-                    driver.Execute(DriverCommand.SetAlertValue, parameters);
+                    this.driver.Execute(DriverCommand.SetAlertValue, parameters);
                 }
                 #endregion
             }
-
         }
 
         /// <summary>
@@ -1562,6 +1563,10 @@ namespace OpenQA.Selenium.Remote
         {
             private RemoteWebDriver driver;
 
+            /// <summary>
+            /// Initializes a new instance of the <see cref="RemoteKeyboard"/> class.
+            /// </summary>
+            /// <param name="driver">The <see cref="RemoteWebDriver"/> for which the keyboard will be managed.</param>
             public RemoteKeyboard(RemoteWebDriver driver)
             {
                 this.driver = driver;
@@ -1574,7 +1579,7 @@ namespace OpenQA.Selenium.Remote
             /// <param name="keySequence">A string representing the keystrokes to send.</param>
             public void SendKeys(string keySequence)
             {
-                driver.SwitchTo().ActiveElement().SendKeys(keySequence);
+                this.driver.SwitchTo().ActiveElement().SendKeys(keySequence);
             }
 
             /// <summary>
@@ -1587,7 +1592,7 @@ namespace OpenQA.Selenium.Remote
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
                 parameters.Add("value", keyToPress);
                 parameters.Add("isdown", true);
-                driver.Execute(DriverCommand.SendModifierKeyToActiveElement, parameters);
+                this.driver.Execute(DriverCommand.SendModifierKeyToActiveElement, parameters);
             }
 
             /// <summary>
@@ -1600,7 +1605,7 @@ namespace OpenQA.Selenium.Remote
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
                 parameters.Add("value", keyToRelease);
                 parameters.Add("isdown", false);
-                driver.Execute(DriverCommand.SendModifierKeyToActiveElement, parameters);
+                this.driver.Execute(DriverCommand.SendModifierKeyToActiveElement, parameters);
             }
             #endregion
         }
@@ -1612,6 +1617,10 @@ namespace OpenQA.Selenium.Remote
         {
             private RemoteWebDriver driver;
 
+            /// <summary>
+            /// Initializes a new instance of the <see cref="RemoteMouse"/> class.
+            /// </summary>
+            /// <param name="driver">The <see cref="RemoteWebDriver"/> for which the mouse will be managed.</param>
             public RemoteMouse(RemoteWebDriver driver)
             {
                 this.driver = driver;
@@ -1624,10 +1633,10 @@ namespace OpenQA.Selenium.Remote
             /// <param name="where">An <see cref="ICoordinates"/> describing where to click.</param>
             public void Click(ICoordinates where)
             {
-                MoveIfNeeded(where);
+                this.MoveIfNeeded(where);
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
                 parameters.Add("button", 0);
-                driver.Execute(DriverCommand.MouseClick, parameters);
+                this.driver.Execute(DriverCommand.MouseClick, parameters);
             }
 
             /// <summary>
@@ -1636,7 +1645,7 @@ namespace OpenQA.Selenium.Remote
             /// <param name="where">A <see cref="ICoordinates"/> describing where to double-click.</param>
             public void DoubleClick(ICoordinates where)
             {
-                driver.Execute(DriverCommand.MouseDoubleClick, null);
+                this.driver.Execute(DriverCommand.MouseDoubleClick, null);
             }
 
             /// <summary>
@@ -1645,7 +1654,7 @@ namespace OpenQA.Selenium.Remote
             /// <param name="where">A <see cref="ICoordinates"/> describing where to press the mouse button down.</param>
             public void MouseDown(ICoordinates where)
             {
-                driver.Execute(DriverCommand.MouseDown, null);
+                this.driver.Execute(DriverCommand.MouseDown, null);
             }
 
             /// <summary>
@@ -1654,7 +1663,7 @@ namespace OpenQA.Selenium.Remote
             /// <param name="where">A <see cref="ICoordinates"/> describing where to release the mouse button.</param>
             public void MouseUp(ICoordinates where)
             {
-                driver.Execute(DriverCommand.MouseUp, null);
+                this.driver.Execute(DriverCommand.MouseUp, null);
             }
 
             /// <summary>
@@ -1666,23 +1675,23 @@ namespace OpenQA.Selenium.Remote
                 string elementId = where.AuxiliaryLocator.ToString();
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
                 parameters.Add("element", elementId);
-                driver.Execute(DriverCommand.MouseMoveTo, parameters);
+                this.driver.Execute(DriverCommand.MouseMoveTo, parameters);
             }
 
             /// <summary>
             /// Moves the mouse to the specified set of coordinates.
             /// </summary>
             /// <param name="where">A <see cref="ICoordinates"/> describing where to click.</param>
-            /// <param name="xOffset">A horizontal offset from the coordinates specified in <paramref name="where"/>.</param>
-            /// <param name="yOffset">A vertical offset from the coordinates specified in <paramref name="where"/>.</param>
-            public void MouseMove(ICoordinates where, int xOffset, int yOffset)
+            /// <param name="offsetX">A horizontal offset from the coordinates specified in <paramref name="where"/>.</param>
+            /// <param name="offsetY">A vertical offset from the coordinates specified in <paramref name="where"/>.</param>
+            public void MouseMove(ICoordinates where, int offsetX, int offsetY)
             {
                 string elementId = where.AuxiliaryLocator.ToString();
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
                 parameters.Add("element", elementId);
-                parameters.Add("xoffset", xOffset);
-                parameters.Add("yoffset", yOffset);
-                driver.Execute(DriverCommand.MouseMoveTo, parameters);
+                parameters.Add("xoffset", offsetX);
+                parameters.Add("yoffset", offsetY);
+                this.driver.Execute(DriverCommand.MouseMoveTo, parameters);
             }
 
             /// <summary>
@@ -1691,10 +1700,10 @@ namespace OpenQA.Selenium.Remote
             /// <param name="where">A <see cref="ICoordinates"/> describing where to click.</param>
             public void ContextClick(ICoordinates where)
             {
-                MoveIfNeeded(where);
+                this.MoveIfNeeded(where);
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
                 parameters.Add("button", 2);
-                driver.Execute(DriverCommand.MouseClick, parameters);
+                this.driver.Execute(DriverCommand.MouseClick, parameters);
             }
             #endregion
 
@@ -1702,7 +1711,7 @@ namespace OpenQA.Selenium.Remote
             {
                 if (where != null)
                 {
-                    MouseMove(where);
+                    this.MouseMove(where);
                 }
             }
         }

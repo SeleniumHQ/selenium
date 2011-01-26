@@ -43,8 +43,8 @@ namespace OpenQA.Selenium.Remote
                 addressOfRemoteServer = new Uri(addressOfRemoteServer.ToString() + "/");
             }
 
-            remoteServerUri = addressOfRemoteServer;
-            serverResponseTimeout = timeout;
+            this.remoteServerUri = addressOfRemoteServer;
+            this.serverResponseTimeout = timeout;
 
             // In the .NET Framework, HttpWebRequest responses with an error code are limited
             // to 64k by default. Since the remote server error responses include a screenshot,
@@ -65,8 +65,8 @@ namespace OpenQA.Selenium.Remote
         public Response Execute(Command commandToExecute)
         {
             CommandInfo info = CommandInfoRepository.Instance.GetCommandInfo(commandToExecute.Name);
-            HttpWebRequest request = info.CreateWebRequest(remoteServerUri, commandToExecute);
-            request.Timeout = (int)serverResponseTimeout.TotalMilliseconds;
+            HttpWebRequest request = info.CreateWebRequest(this.remoteServerUri, commandToExecute);
+            request.Timeout = (int)this.serverResponseTimeout.TotalMilliseconds;
             request.Accept = RequestAcceptHeader;
             if (request.Method == CommandInfo.PostCommand)
             {

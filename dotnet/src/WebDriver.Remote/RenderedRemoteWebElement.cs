@@ -144,45 +144,63 @@ namespace OpenQA.Selenium.Remote
         /// <param name="element">Element you wish to drop on</param>
         public virtual void DragAndDropOn(IRenderedWebElement element)
         {
-            Point currentLocation = Location;
+            Point currentLocation = this.Location;
             Point destination = element.Location;
-            DragAndDropBy(destination.X - currentLocation.X, destination.Y - currentLocation.Y);
+            this.DragAndDropBy(destination.X - currentLocation.X, destination.Y - currentLocation.Y);
         }
 
         #endregion
 
+        /// <summary>
+        /// Provides methods specifying the location of the element.
+        /// </summary>
         private class RemoteCoordinates : ICoordinates
         {
-            RenderedRemoteWebElement element;
+            private RenderedRemoteWebElement element;
 
+            /// <summary>
+            /// Initializes a new instance of the <see cref="RemoteCoordinates"/> class.
+            /// </summary>
+            /// <param name="element">The <see cref="RenderedRemoteWebElement"/> used to show the coordinates.</param>
             public RemoteCoordinates(RenderedRemoteWebElement element)
             {
                 this.element = element;
             }
 
             #region ICoordinates Members
+            /// <summary>
+            /// Gets the location of an element in absolute screen coordinates.
+            /// </summary>
             public Point LocationOnScreen
             {
-                get { return element.LocationOnScreenOnceScrolledIntoView; }
+                get { return this.element.LocationOnScreenOnceScrolledIntoView; }
             }
 
+            /// <summary>
+            /// Gets the location of an element relative to the origin of the view port.
+            /// </summary>
             public Point LocationInViewport
             {
                 get { throw new NotImplementedException(); }
             }
 
+            /// <summary>
+            /// Gets the location of an element's position within the HTML DOM.
+            /// </summary>
             public Point LocationInDom
             {
                 get { throw new NotImplementedException(); }
             }
 
+            /// <summary>
+            /// Gets a locator providing a user-defined location for this element, in this case, the internal ID.
+            /// </summary>
             public object AuxiliaryLocator
             {
-                get { return element.Id; }
+                get { return this.element.Id; }
             }
 
             #endregion
         }
-
     }
 }

@@ -24,8 +24,8 @@ namespace OpenQA.Selenium.Remote
         /// <param name="id">The ID assigned to the element.</param>
         internal RemoteWebElement(RemoteWebDriver parentDriver, string id)
         {
-            driver = parentDriver;
-            elementId = id;
+            this.driver = parentDriver;
+            this.elementId = id;
         }
         #endregion
 
@@ -35,7 +35,7 @@ namespace OpenQA.Selenium.Remote
         /// </summary>
         public IWebDriver WrappedDriver
         {
-            get { return driver; }
+            get { return this.driver; }
         }
         #endregion
 
@@ -48,8 +48,8 @@ namespace OpenQA.Selenium.Remote
             get
             {
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
-                parameters.Add("id", elementId);
-                Response commandResponse = Execute(DriverCommand.GetElementTagName, parameters);
+                parameters.Add("id", this.elementId);
+                Response commandResponse = this.Execute(DriverCommand.GetElementTagName, parameters);
                 return commandResponse.Value.ToString();
             }
         }
@@ -62,8 +62,8 @@ namespace OpenQA.Selenium.Remote
             get
             {
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
-                parameters.Add("id", elementId);
-                Response commandResponse = Execute(DriverCommand.GetElementText, parameters);
+                parameters.Add("id", this.elementId);
+                Response commandResponse = this.Execute(DriverCommand.GetElementText, parameters);
                 return commandResponse.Value.ToString();
             }
         }
@@ -76,8 +76,8 @@ namespace OpenQA.Selenium.Remote
             get
             {
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
-                parameters.Add("id", elementId);
-                Response commandResponse = Execute(DriverCommand.GetElementValue, parameters);
+                parameters.Add("id", this.elementId);
+                Response commandResponse = this.Execute(DriverCommand.GetElementValue, parameters);
                 return commandResponse.Value.ToString();
             }
         }
@@ -90,8 +90,8 @@ namespace OpenQA.Selenium.Remote
             get
             {
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
-                parameters.Add("id", elementId);
-                Response commandResponse = Execute(DriverCommand.IsElementEnabled, parameters);
+                parameters.Add("id", this.elementId);
+                Response commandResponse = this.Execute(DriverCommand.IsElementEnabled, parameters);
                 return (bool)commandResponse.Value;
             }
         }
@@ -104,8 +104,8 @@ namespace OpenQA.Selenium.Remote
             get
             {
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
-                parameters.Add("id", elementId);
-                Response commandResponse = Execute(DriverCommand.IsElementSelected, parameters);
+                parameters.Add("id", this.elementId);
+                Response commandResponse = this.Execute(DriverCommand.IsElementSelected, parameters);
                 return (bool)commandResponse.Value;
             }
         }
@@ -124,7 +124,7 @@ namespace OpenQA.Selenium.Remote
         /// same value, one scoped as internal, the other as protected.</remarks>
         internal string InternalElementId
         {
-            get { return elementId; }
+            get { return this.elementId; }
         }
         #endregion
 
@@ -141,7 +141,7 @@ namespace OpenQA.Selenium.Remote
         /// same value, one scoped as internal, the other as protected.</remarks>
         protected string Id
         {
-            get { return elementId; }
+            get { return this.elementId; }
         }
         #endregion
 
@@ -152,8 +152,8 @@ namespace OpenQA.Selenium.Remote
         public void Select()
         {
             Dictionary<string, object> parameters = new Dictionary<string, object>();
-            parameters.Add("id", elementId);
-            Execute(DriverCommand.SetElementSelected, parameters);
+            parameters.Add("id", this.elementId);
+            this.Execute(DriverCommand.SetElementSelected, parameters);
         }
 
         /// <summary>
@@ -162,8 +162,8 @@ namespace OpenQA.Selenium.Remote
         public void Clear()
         {
             Dictionary<string, object> parameters = new Dictionary<string, object>();
-            parameters.Add("id", elementId);
-            Execute(DriverCommand.ClearElement, parameters);
+            parameters.Add("id", this.elementId);
+            this.Execute(DriverCommand.ClearElement, parameters);
         }
 
         /// <summary>
@@ -177,9 +177,9 @@ namespace OpenQA.Selenium.Remote
             // single character to each element of the array. Thus, we must use ToCharArray()
             // to get the same effect.
             Dictionary<string, object> parameters = new Dictionary<string, object>();
-            parameters.Add("id", elementId);
+            parameters.Add("id", this.elementId);
             parameters.Add("value", text.ToCharArray());
-            Execute(DriverCommand.SendKeysToElement, parameters);
+            this.Execute(DriverCommand.SendKeysToElement, parameters);
         }
 
         /// <summary>
@@ -189,8 +189,8 @@ namespace OpenQA.Selenium.Remote
         public void Submit()
         {
             Dictionary<string, object> parameters = new Dictionary<string, object>();
-            parameters.Add("id", elementId);
-            Execute(DriverCommand.SubmitElement, parameters);
+            parameters.Add("id", this.elementId);
+            this.Execute(DriverCommand.SubmitElement, parameters);
         }
 
         /// <summary>
@@ -201,8 +201,8 @@ namespace OpenQA.Selenium.Remote
         public void Click()
         {
             Dictionary<string, object> parameters = new Dictionary<string, object>();
-            parameters.Add("id", elementId);
-            Execute(DriverCommand.ClickElement, parameters);
+            parameters.Add("id", this.elementId);
+            this.Execute(DriverCommand.ClickElement, parameters);
         }
 
         /// <summary>
@@ -213,9 +213,9 @@ namespace OpenQA.Selenium.Remote
         public string GetAttribute(string attributeName)
         {
             Dictionary<string, object> parameters = new Dictionary<string, object>();
-            parameters.Add("id", elementId);
+            parameters.Add("id", this.elementId);
             parameters.Add("name", attributeName);
-            Response commandResponse = Execute(DriverCommand.GetElementAttribute, parameters);
+            Response commandResponse = this.Execute(DriverCommand.GetElementAttribute, parameters);
             string attributeValue = string.Empty;
             if (commandResponse.Value == null)
             {
@@ -242,8 +242,8 @@ namespace OpenQA.Selenium.Remote
         public bool Toggle()
         {
             Dictionary<string, object> parameters = new Dictionary<string, object>();
-            parameters.Add("id", elementId);
-            Response commandResponse = Execute(DriverCommand.ToggleElement, parameters);
+            parameters.Add("id", this.elementId);
+            Response commandResponse = this.Execute(DriverCommand.ToggleElement, parameters);
             return (bool)commandResponse.Value;
         }
 
@@ -282,7 +282,7 @@ namespace OpenQA.Selenium.Remote
         /// </example>
         public IWebElement FindElementByLinkText(string linkText)
         {
-            return FindElement("link text", linkText);
+            return this.FindElement("link text", linkText);
         }
 
         /// <summary>
@@ -298,7 +298,7 @@ namespace OpenQA.Selenium.Remote
         /// </example>
         public ReadOnlyCollection<IWebElement> FindElementsByLinkText(string linkText)
         {
-            return FindElements("link text", linkText);
+            return this.FindElements("link text", linkText);
         }
 
         #endregion
@@ -317,7 +317,7 @@ namespace OpenQA.Selenium.Remote
         /// </example>
         public IWebElement FindElementById(string id)
         {
-            return FindElement("id", id);
+            return this.FindElement("id", id);
         }
 
         /// <summary>
@@ -333,7 +333,7 @@ namespace OpenQA.Selenium.Remote
         /// </example>
         public ReadOnlyCollection<IWebElement> FindElementsById(string id)
         {
-            return FindElements("id", id);
+            return this.FindElements("id", id);
         }
 
         #endregion
@@ -352,7 +352,7 @@ namespace OpenQA.Selenium.Remote
         /// </example>
         public IWebElement FindElementByName(string name)
         {
-            return FindElement("name", name);
+            return this.FindElement("name", name);
         }
 
         /// <summary>
@@ -368,7 +368,7 @@ namespace OpenQA.Selenium.Remote
         /// </example>
         public ReadOnlyCollection<IWebElement> FindElementsByName(string name)
         {
-            return FindElements("name", name);
+            return this.FindElements("name", name);
         }
 
         #endregion
@@ -387,7 +387,7 @@ namespace OpenQA.Selenium.Remote
         /// </example>
         public IWebElement FindElementByTagName(string tagName)
         {
-            return FindElement("tag name", tagName);
+            return this.FindElement("tag name", tagName);
         }
 
         /// <summary>
@@ -403,7 +403,7 @@ namespace OpenQA.Selenium.Remote
         /// </example>
         public ReadOnlyCollection<IWebElement> FindElementsByTagName(string tagName)
         {
-            return FindElements("tag name", tagName);
+            return this.FindElements("tag name", tagName);
         }
         #endregion
 
@@ -421,7 +421,7 @@ namespace OpenQA.Selenium.Remote
         /// </example>
         public IWebElement FindElementByClassName(string className)
         {
-            return FindElement("class name", className);
+            return this.FindElement("class name", className);
         }
 
         /// <summary>
@@ -437,7 +437,7 @@ namespace OpenQA.Selenium.Remote
         /// </example>
         public ReadOnlyCollection<IWebElement> FindElementsByClassName(string className)
         {
-            return FindElements("class name", className);
+            return this.FindElements("class name", className);
         }
         #endregion
 
@@ -455,7 +455,7 @@ namespace OpenQA.Selenium.Remote
         /// </example>
         public IWebElement FindElementByXPath(string xpath)
         {
-            return FindElement("xpath", xpath);
+            return this.FindElement("xpath", xpath);
         }
 
         /// <summary>
@@ -471,7 +471,7 @@ namespace OpenQA.Selenium.Remote
         /// </example>
         public ReadOnlyCollection<IWebElement> FindElementsByXPath(string xpath)
         {
-            return FindElements("xpath", xpath);
+            return this.FindElements("xpath", xpath);
         }
         #endregion
 
@@ -489,7 +489,7 @@ namespace OpenQA.Selenium.Remote
         /// </example>
         public IWebElement FindElementByPartialLinkText(string partialLinkText)
         {
-            return FindElement("partial link text", partialLinkText);
+            return this.FindElement("partial link text", partialLinkText);
         }
 
         /// <summary>
@@ -505,7 +505,7 @@ namespace OpenQA.Selenium.Remote
         /// </example>
         public ReadOnlyCollection<IWebElement> FindElementsByPartialLinkText(string partialLinkText)
         {
-            return FindElements("partial link text", partialLinkText);
+            return this.FindElements("partial link text", partialLinkText);
         }
         #endregion
 
@@ -517,7 +517,7 @@ namespace OpenQA.Selenium.Remote
         /// <returns>The first <see cref="IWebElement"/> matching the criteria.</returns>
         public IWebElement FindElementByCssSelector(string cssSelector)
         {
-            return FindElement("css selector", cssSelector);
+            return this.FindElement("css selector", cssSelector);
         }
 
         /// <summary>
@@ -528,7 +528,7 @@ namespace OpenQA.Selenium.Remote
         /// <see cref="IWebElement">IWebElements</see> matching the criteria.</returns>
         public ReadOnlyCollection<IWebElement> FindElementsByCssSelector(string cssSelector)
         {
-            return FindElements("css selector", cssSelector);
+            return this.FindElements("css selector", cssSelector);
         }
         #endregion
 
@@ -539,7 +539,7 @@ namespace OpenQA.Selenium.Remote
         /// <returns>Interger of the hash code for the element</returns>
         public override int GetHashCode()
         {
-            return elementId.GetHashCode();
+            return this.elementId.GetHashCode();
         }
 
         /// <summary>
@@ -568,10 +568,10 @@ namespace OpenQA.Selenium.Remote
             }
 
             Dictionary<string, object> parameters = new Dictionary<string, object>();
-            parameters.Add("id", elementId);
+            parameters.Add("id", this.elementId);
             parameters.Add("other", otherAsElement.Id);
 
-            Response response = Execute(DriverCommand.ElementEquals, parameters);
+            Response response = this.Execute(DriverCommand.ElementEquals, parameters);
             object value = response.Value;
             return value != null && value is bool && (bool)value;
         }
@@ -587,11 +587,11 @@ namespace OpenQA.Selenium.Remote
         protected IWebElement FindElement(string mechanism, string value)
         {
             Dictionary<string, object> parameters = new Dictionary<string, object>();
-            parameters.Add("id", elementId);
+            parameters.Add("id", this.elementId);
             parameters.Add("using", mechanism);
             parameters.Add("value", value);
-            Response commandResponse = Execute(DriverCommand.FindChildElement, parameters);
-            return driver.GetElementFromResponse(commandResponse);
+            Response commandResponse = this.Execute(DriverCommand.FindChildElement, parameters);
+            return this.driver.GetElementFromResponse(commandResponse);
         }
 
         /// <summary>
@@ -603,11 +603,11 @@ namespace OpenQA.Selenium.Remote
         protected ReadOnlyCollection<IWebElement> FindElements(string mechanism, string value)
         {
             Dictionary<string, object> parameters = new Dictionary<string, object>();
-            parameters.Add("id", elementId);
+            parameters.Add("id", this.elementId);
             parameters.Add("using", mechanism);
             parameters.Add("value", value);
-            Response commandResponse = Execute(DriverCommand.FindChildElements, parameters);
-            return driver.GetElementsFromResponse(commandResponse);
+            Response commandResponse = this.Execute(DriverCommand.FindChildElements, parameters);
+            return this.driver.GetElementsFromResponse(commandResponse);
         }
 
         /// <summary>
@@ -618,7 +618,7 @@ namespace OpenQA.Selenium.Remote
         /// <returns>The <see cref="Response"/> object containing the result of the command execution.</returns>
         protected Response Execute(DriverCommand commandToExecute, Dictionary<string, object> parameters)
         {
-            return driver.InternalExecute(commandToExecute, parameters);
+            return this.driver.InternalExecute(commandToExecute, parameters);
         }
         #endregion
     }
