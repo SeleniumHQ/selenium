@@ -26,7 +26,9 @@ import java.io.OutputStreamWriter;
 import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
+import java.net.Proxy;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.net.URL;
@@ -389,6 +391,17 @@ public class ProxyHandler extends AbstractHttpHandler {
         log.debug("PROXY URL=" + url);
 
         URLConnection connection = url.openConnection();
+        if(System.getProperty("http.proxyHost") != null &&
+                System.getProperty("https.proxyHost") == null &&
+                 "https".equals(url.getProtocol())) {
+            /* Proxy HTTPS connections even if https.proxyHost isn't set because that's
+               what Selenium used to do. */
+            String proxyHost = System.getProperty("http.proxyHost");
+            int proxyPort = Integer.getInteger("http.proxyPort");
+            InetSocketAddress proxyAddress = new InetSocketAddress(proxyHost, proxyPort);
+            connection = url.openConnection(new Proxy(Proxy.Type.HTTP, proxyAddress));
+        }
+
         connection.setAllowUserInteraction(false);
 
         if (proxyInjectionMode) {
@@ -766,64 +779,10 @@ public class ProxyHandler extends AbstractHttpHandler {
     /* ------------------------------------------------------------ */
     protected HttpTunnel newHttpTunnel(HttpRequest request, HttpResponse response, InetAddress iaddr, int port, int timeoutMS) throws IOException {
         try {
-            Socket socket = null;
-            InputStream in = null;
-
-            String chained_proxy_host = System.getProperty("http.proxyHost");
-            if (chained_proxy_host == null) {
-                socket = new Socket(iaddr, port);
-                socket.setSoTimeout(timeoutMS);
-                socket.setTcpNoDelay(true);
-            } else {
-                int chained_proxy_port = Integer.getInteger("http.proxyPort", 8888).intValue();
-
-                Socket chain_socket = new Socket(chained_proxy_host, chained_proxy_port);
-                chain_socket.setSoTimeout(timeoutMS);
-                chain_socket.setTcpNoDelay(true);
-                log.debug("chain proxy socket=" + chain_socket);
-
-                LineInput line_in = new LineInput(chain_socket.getInputStream());
-                byte[] connect = request.toString().getBytes(org.openqa.jetty.util.StringUtil.__ISO_8859_1);
-                chain_socket.getOutputStream().write(connect);
-
-                String chain_response_line = line_in.readLine();
-                HttpFields chain_response = new HttpFields();
-                chain_response.read(line_in);
-
-                // decode response
-                int space0 = chain_response_line.indexOf(' ');
-                if (space0 > 0 && space0 + 1 < chain_response_line.length()) {
-                    int space1 = chain_response_line.indexOf(' ', space0 + 1);
-
-                    if (space1 > space0) {
-                        int code = Integer.parseInt(chain_response_line.substring(space0 + 1, space1));
-
-                        if (code >= 200 && code < 300) {
-                            socket = chain_socket;
-                            in = line_in;
-                        } else {
-                            Enumeration iter = chain_response.getFieldNames();
-                            while (iter.hasMoreElements()) {
-                                String name = (String) iter.nextElement();
-                                if (!_DontProxyHeaders.containsKey(name)) {
-                                    Enumeration values = chain_response.getValues(name);
-                                    while (values.hasMoreElements()) {
-                                        String value = (String) values.nextElement();
-                                        response.setField(name, value);
-                                    }
-                                }
-                            }
-                            response.sendError(code);
-                            if (!chain_socket.isClosed())
-                                chain_socket.close();
-                        }
-                    }
-                }
-            }
-
-            if (socket == null)
-                return null;
-            return new HttpTunnel(socket, in, null);
+            Socket socket = new Socket(iaddr, port);
+            socket.setSoTimeout(timeoutMS);
+            socket.setTcpNoDelay(true);
+            return new HttpTunnel(socket, null, null);
         }
         catch (IOException e) {
             log.debug(e);

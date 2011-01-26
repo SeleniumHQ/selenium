@@ -34,25 +34,37 @@ public class SeleniumTestEnvironment implements TestEnvironment {
   private int port = 4444;
   private CommandLine command;
 
-  public SeleniumTestEnvironment() {
-    try {
-      if (DevMode.isInDevMode()) {
-        new Build().of("//selenium:server-with-tests:uber").go();
-        copyAtomsToSeleniumBuildDir();
+  public SeleniumTestEnvironment(int port, String... extraArgs) {
+      this(extraArgs);
+      this.port = port;
+  }
+
+  public SeleniumTestEnvironment(String... extraArgs){
+      try {
+        if (DevMode.isInDevMode()) {
+          new Build().of("//java/org/openqa/selenium/server:server-with-tests:uber").go();
+//          copyAtomsToSeleniumBuildDir();
+        }
+
+        File seleniumJar = InProject.locate("build/java/org/openqa/selenium/server/server-with-tests-standalone.jar");
+        String[] args = {"-jar", seleniumJar.getAbsolutePath(), "-port", "" + port};
+        if(extraArgs != null) {
+            String[] allArgs = new String[args.length+extraArgs.length];
+            System.arraycopy(args, 0, allArgs, 0, args.length);
+            System.arraycopy(extraArgs, 0, allArgs, args.length, extraArgs.length);
+            args = allArgs;
+        }
+        command = new CommandLine("java", args);
+        command.executeAsync();
+
+        PortProber.pollPort(port);
+      } catch (Exception e) {
+        throw new RuntimeException(e);
       }
-
-      File seleniumJar = InProject.locate("build/java/org/openqa/selenium/server/server-with-tests-standalone.jar");
-      command = new CommandLine("java", "-jar", seleniumJar.getAbsolutePath(), "-port", "" + port);
-      command.executeAsync();
-
-      PortProber.pollPort(port);
-    } catch (Exception e) {
-      throw new RuntimeException(e);
-    }
   }
 
   private void copyAtomsToSeleniumBuildDir() throws IOException {
-    File classes = InProject.locate("selenium/build/classes");
+    File classes = InProject.locate("build/classes");
     File scriptsDir = new File(classes, "scripts/selenium");
     FileHandler.createDir(scriptsDir);
 
