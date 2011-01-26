@@ -19,7 +19,7 @@ namespace OpenQA.Selenium.Chrome
         {
             "/usr/bin/google-chrome",
             "/usr/bin/chromium",
-			"/usr/bin/chromium-browser",
+            "/usr/bin/chromium-browser",
             "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
             string.Concat("/Users/", Environment.UserName, "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome")
         };
@@ -34,7 +34,6 @@ namespace OpenQA.Selenium.Chrome
         private Process chromeProcess;
         private int listeningPort;
         private StringBuilder customArgs = new StringBuilder();
-
 
         /// <summary>
         /// Initializes a new instance of the ChromeBinary class using the given <see cref="ChromeProfile"/> and <see cref="ChromeExtension"/>.
@@ -58,7 +57,7 @@ namespace OpenQA.Selenium.Chrome
             this.extension = extension;
             if (port == 0)
             {
-                FindFreePort();
+                this.FindFreePort();
             }
             else
             {
@@ -71,16 +70,7 @@ namespace OpenQA.Selenium.Chrome
         /// </summary>
         public int Port
         {
-            get { return listeningPort; }
-        }
-
-        /// <summary>
-        /// Adds custom arguments to the command line.
-        /// </summary>
-        /// <param name="customArgs">The arguments to add.</param>
-        public void AddCustomArgs(string customArgs)
-        {
-            this.customArgs.Append(" ").Append(customArgs);
+            get { return this.listeningPort; }
         }
 
         private static string ChromePathFromRegistry
@@ -88,7 +78,7 @@ namespace OpenQA.Selenium.Chrome
             get
             {
                 return Registry.LocalMachine.OpenSubKey(
-                                    "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths\\chrome.exe").GetValue("").
+                                    "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths\\chrome.exe").GetValue(string.Empty).
                                     ToString();
             }
         }
@@ -98,7 +88,7 @@ namespace OpenQA.Selenium.Chrome
             get
             {
                 StringBuilder argumentString = new StringBuilder();
-                argumentString.Append(" --load-extension=\"").Append(extension.ExtensionDirectory).Append("\"");
+                argumentString.Append(" --load-extension=\"").Append(this.extension.ExtensionDirectory).Append("\"");
                 argumentString.Append(" --activate-on-launch");
                 argumentString.Append(" --homepage=about:blank");
                 argumentString.Append(" --no-first-run");
@@ -106,15 +96,15 @@ namespace OpenQA.Selenium.Chrome
                 argumentString.Append(" --disable-popup-blocking");
                 argumentString.Append(" --disable-prompt-on-repost");
                 argumentString.Append(" --no-default-browser-check ");
-                argumentString.Append(profile.UntrustedCertificatesFlag);
-                argumentString.Append(customArgs);
+                argumentString.Append(this.profile.UntrustedCertificatesCommandLineArgument);
+                argumentString.Append(this.customArgs);
 
                 if (this.profile != ChromeProfile.DefaultProfile)
                 {
-                    argumentString.Append(" --user-data-dir=\"").Append(profile.ProfileDirectory).Append("\"");
+                    argumentString.Append(" --user-data-dir=\"").Append(this.profile.ProfileDirectory).Append("\"");
                 }
 
-                argumentString.Append(" ").Append(string.Format(CultureInfo.InvariantCulture, LocalCommandExecutorServerUrl, listeningPort));
+                argumentString.Append(" ").Append(string.Format(CultureInfo.InvariantCulture, LocalCommandExecutorServerUrl, this.listeningPort));
 
                 return argumentString.ToString();
             }
@@ -130,6 +120,15 @@ namespace OpenQA.Selenium.Chrome
         }
 
         /// <summary>
+        /// Adds custom arguments to the command line.
+        /// </summary>
+        /// <param name="customArguments">The arguments to add.</param>
+        public void AddCustomArguments(string customArguments)
+        {
+            this.customArgs.Append(" ").Append(customArguments);
+        }
+
+        /// <summary>
         ///  Starts the Chrome process for WebDriver. Assumes the passed directories exist.
         /// </summary>
         /// <exception cref="WebDriverException">When it can't launch will throw an error</exception>
@@ -141,7 +140,7 @@ namespace OpenQA.Selenium.Chrome
                 string commandLineArguments = this.Arguments;
                 ProcessStartInfo startInfo = new ProcessStartInfo(chromeFileLocation, commandLineArguments);
                 startInfo.UseShellExecute = false;
-                chromeProcess = Process.Start(startInfo);
+                this.chromeProcess = Process.Start(startInfo);
             }
             catch (IOException e)
             { // TODO(AndreNogueira): Check exception type thrown when process.start fails
@@ -156,22 +155,22 @@ namespace OpenQA.Selenium.Chrome
         /// </summary>
         public void Kill()
         {
-            if ((chromeProcess != null) && !chromeProcess.HasExited)
+            if ((this.chromeProcess != null) && !this.chromeProcess.HasExited)
             {
                 // Ask nicely to close.
-                chromeProcess.CloseMainWindow();
-                chromeProcess.WaitForExit(ShutdownWaitInterval);
+                this.chromeProcess.CloseMainWindow();
+                this.chromeProcess.WaitForExit(ShutdownWaitInterval);
 
                 // If it still hasn't closed, be rude.
-                if (!chromeProcess.HasExited)
+                if (!this.chromeProcess.HasExited)
                 {
-                    chromeProcess.Kill();
+                    this.chromeProcess.Kill();
                 }
 
-                chromeProcess = null;
-                if (profile.DeleteProfileOnExit)
+                this.chromeProcess = null;
+                if (this.profile.DeleteProfileOnExit)
                 {
-                    DeleteProfileDirectory(profile.ProfileDirectory);
+                    DeleteProfileDirectory(this.profile.ProfileDirectory);
                 }
             }
         }
@@ -294,7 +293,7 @@ namespace OpenQA.Selenium.Chrome
             IPEndPoint socketEndPoint = new IPEndPoint(IPAddress.Any, 0);
             portSocket.Bind(socketEndPoint);
             socketEndPoint = (IPEndPoint)portSocket.LocalEndPoint;
-            listeningPort = socketEndPoint.Port;
+            this.listeningPort = socketEndPoint.Port;
             portSocket.Close();
         }
     }

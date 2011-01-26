@@ -45,7 +45,7 @@ namespace OpenQA.Selenium.Chrome
         /// <summary>
         /// Accept untrusted SSL Certificates
         /// </summary>
-        public static readonly bool AcceptUntrustedCertficates = true;
+        public static readonly bool AcceptUntrustedCertificates = true;
 
         #region Constructors
         /// <summary>
@@ -59,6 +59,7 @@ namespace OpenQA.Selenium.Chrome
         /// <summary>
         /// Initializes a new instance of the ChromeDriver class with the required Chrome Binary
         /// </summary>
+        /// <param name="chromeBinary">A <see cref="ChromeBinary"/> object to launch.</param>
         public ChromeDriver(ChromeBinary chromeBinary)
             : base(new ChromeCommandExecutor(chromeBinary), DesiredCapabilities.Chrome())
         {
@@ -83,7 +84,7 @@ namespace OpenQA.Selenium.Chrome
         public Screenshot GetScreenshot()
         {
             // Get the screenshot as base64.
-            Response screenshotResponse = Execute(DriverCommand.Screenshot, null);
+            Response screenshotResponse = this.Execute(DriverCommand.Screenshot, null);
             string base64 = screenshotResponse.Value.ToString();
 
             // ... and convert it.
@@ -129,8 +130,8 @@ namespace OpenQA.Selenium.Chrome
             {
                 // Exceptions may leave the extension hung, or in an
                 // inconsistent state, so we restart Chrome
-                StopClient();
-                StartClient();
+                this.StopClient();
+                this.StartClient();
             }
             catch (FatalChromeException)
             {
@@ -138,8 +139,8 @@ namespace OpenQA.Selenium.Chrome
                 // so we restart Chrome. There is also a legitimate success condition
                 // where navigating to about:blank does not cause the extension to 
                 // write a response back to the driver.
-                StopClient();
-                StartClient();
+                this.StopClient();
+                this.StartClient();
             }
 
             return commandResponse;

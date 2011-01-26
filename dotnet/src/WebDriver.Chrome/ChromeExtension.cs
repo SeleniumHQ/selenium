@@ -49,7 +49,7 @@ namespace OpenQA.Selenium.Chrome
         /// </summary>
         public string ExtensionDirectory
         {
-            get { return directory; }
+            get { return this.directory; }
         }
 
         /// <summary>

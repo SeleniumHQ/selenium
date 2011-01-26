@@ -28,7 +28,7 @@ namespace OpenQA.Selenium.Chrome
         public ChromeProfile(string directory)
         {
             this.directory = directory;
-            acceptUntrustedCerts = ChromeDriver.AcceptUntrustedCertficates;
+            this.acceptUntrustedCerts = ChromeDriver.AcceptUntrustedCertificates;
         }
 
         /// <summary>
@@ -63,7 +63,7 @@ namespace OpenQA.Selenium.Chrome
         /// </summary>
         public string ProfileDirectory
         {
-            get { return directory; }
+            get { return this.directory; }
         }
 
         /// <summary>
@@ -71,29 +71,34 @@ namespace OpenQA.Selenium.Chrome
         /// </summary>
         public bool DeleteProfileOnExit
         {
-            get { return deleteProfileOnExit; }
-            set { deleteProfileOnExit = value; }
+            get { return this.deleteProfileOnExit; }
+            set { this.deleteProfileOnExit = value; }
         }
 
         /// <summary>
         /// Gets a value of the UntrustedCertificatesFlag that is used when starting the browser
         /// </summary>
-        public string UntrustedCertificatesFlag
+        public string UntrustedCertificatesCommandLineArgument
         {
             get
             {
-                return acceptUntrustedCerts ? " --ignore-certificate-errors " : string.Empty;
+                return this.acceptUntrustedCerts ? " --ignore-certificate-errors " : string.Empty;
             }
         }
 
         /// <summary>
-        /// Sets a value indicating where to accept untrusted certificates or not
+        /// Gets or sets a value indicating whether to accept untrusted certificates or not
         /// </summary>
         public bool AcceptUntrustedCertificates
         {
+            get
+            {
+                return this.acceptUntrustedCerts;
+            }
+
             set
             {
-                acceptUntrustedCerts = value;
+                this.acceptUntrustedCerts = value;
             }
         }
 

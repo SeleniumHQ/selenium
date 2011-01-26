@@ -36,8 +36,8 @@ namespace OpenQA.Selenium.Chrome
         /// <param name="binary">The <see cref="ChromeBinary"/> in which the commands are executed.</param>
         internal ChromeCommandExecutor(ChromeBinary binary)
         {
-            executorBinary = binary;
-            InitializeCommandNameMap();
+            this.executorBinary = binary;
+            this.InitializeCommandNameMap();
         }
         #endregion
 
@@ -67,7 +67,7 @@ namespace OpenQA.Selenium.Chrome
         /// </summary>
         public bool HasClient
         {
-            get { return executorHasClient; }
+            get { return this.executorHasClient; }
         }
        
         #endregion
@@ -79,20 +79,20 @@ namespace OpenQA.Selenium.Chrome
         public void Start()
         {
             int retries = MaxStartRetries;
-            while (retries > 0 && !HasClient)
+            while (retries > 0 && !this.HasClient)
             {
-                Stop();
+                this.Stop();
                 try
                 {
-                    StartListening();
-                    executorBinary.Start();
+                    this.StartListening();
+                    this.executorBinary.Start();
                 }
                 catch (IOException e)
                 {
                     throw new WebDriverException("Could not start client", e);
                 }
 
-                if (!HasClient)
+                if (!this.HasClient)
                 {
                     // In case this attempt fails, we increment how long we wait before sending a command
                     ChromeBinary.IncrementStartWaitInterval(1);
@@ -103,9 +103,9 @@ namespace OpenQA.Selenium.Chrome
 
             // The last one attempt succeeded, so we reduce back to that time
             // chromeBinary.IncrementBackoffBy(-1);
-            if (!HasClient)
+            if (!this.HasClient)
             {
-                Stop();
+                this.Stop();
                 throw new FatalChromeException("Cannot create chrome driver");
             }
         }
@@ -115,8 +115,8 @@ namespace OpenQA.Selenium.Chrome
         /// </summary>
         public void Stop()
         {
-            StopListening();
-            executorBinary.Kill();
+            this.StopListening();
+            this.executorBinary.Kill();
         }
 
         /// <summary>
@@ -133,14 +133,14 @@ namespace OpenQA.Selenium.Chrome
                 Dictionary<string, object> capabilitiesMap = new Dictionary<string, object>();
                 capabilitiesMap.Add("browserName", capabilities.BrowserName);
                 capabilitiesMap.Add("version", capabilities.Version);
-                capabilitiesMap.Add("platform", capabilities.Platform.Type.ToString());
+                capabilitiesMap.Add("platform", capabilities.Platform.PlatformType.ToString());
                 capabilitiesMap.Add("javascriptEnabled", true);
                 commandResponse.Value = capabilitiesMap;
             }
             else
             {
-                SendMessage(commandToExecute);
-                commandResponse = HandleResponse();
+                this.SendMessage(commandToExecute);
+                commandResponse = this.HandleResponse();
             }
 
             return commandResponse;
@@ -153,7 +153,7 @@ namespace OpenQA.Selenium.Chrome
         /// </summary>
         public void Dispose()
         {
-            Dispose(true);
+            this.Dispose(true);
             GC.SuppressFinalize(this);
         }
 
@@ -166,14 +166,14 @@ namespace OpenQA.Selenium.Chrome
         {
             if (disposing)
             {
-                if (mainListener != null && mainListener.IsListening)
+                if (this.mainListener != null && this.mainListener.IsListening)
                 {
-                    mainListener.Close();
+                    this.mainListener.Close();
                 }
 
-                if (postRequestReceived != null)
+                if (this.postRequestReceived != null)
                 {
-                    postRequestReceived.Close();
+                    this.postRequestReceived.Close();
                 }
             }
         }
@@ -192,10 +192,10 @@ namespace OpenQA.Selenium.Chrome
         /// </summary>
         private void StartListening()
         {
-            mainListener = new HttpListener();
-            mainListener.Prefixes.Add(string.Format(CultureInfo.InvariantCulture, "http://localhost:{0}/", executorBinary.Port));
-            mainListener.Start();
-            mainListener.BeginGetContext(new AsyncCallback(OnClientConnect), mainListener);
+            this.mainListener = new HttpListener();
+            this.mainListener.Prefixes.Add(string.Format(CultureInfo.InvariantCulture, "http://localhost:{0}/", this.executorBinary.Port));
+            this.mainListener.Start();
+            this.mainListener.BeginGetContext(new AsyncCallback(this.OnClientConnect), this.mainListener);
         }
 
         /// <summary>
@@ -203,14 +203,14 @@ namespace OpenQA.Selenium.Chrome
         /// </summary>
         private void StopListening()
         {
-            executorHasClient = false;
-            pendingRequestQueue.Clear();
-            if (mainListener != null)
+            this.executorHasClient = false;
+            this.pendingRequestQueue.Clear();
+            if (this.mainListener != null)
             {
-                if (mainListener.IsListening)
+                if (this.mainListener.IsListening)
                 {
-                    mainListener.Stop();
-                    mainListener.Abort();
+                    this.mainListener.Stop();
+                    this.mainListener.Abort();
                 }
             }
         }
@@ -219,23 +219,23 @@ namespace OpenQA.Selenium.Chrome
         {
             // Wait for a POST request to be pending from the Chrome extension.
             // When one is received, get the packet from the queue.
-            bool signalReceived = postRequestReceived.WaitOne(TimeSpan.FromSeconds(ExtensionTimeoutInSeconds));
+            this.postRequestReceived.WaitOne(TimeSpan.FromSeconds(ExtensionTimeoutInSeconds));
 
-            if (pendingRequestQueue.Count == 0)
+            if (this.pendingRequestQueue.Count == 0)
             {
                 throw new FatalChromeException("No pending requests from the extension in the queue");
             }
 
             // ExtensionRequestPacket packet = pendingRequestQueue.Dequeue();
-            ExtensionRequestPacket packet = pendingRequestQueue[0];
-            pendingRequestQueue.RemoveAt(0);
+            ExtensionRequestPacket packet = this.pendingRequestQueue[0];
+            this.pendingRequestQueue.RemoveAt(0);
 
             // Get the parameter names to correctly serialize the command to JSON.
-            commandToExecute.Parameters.Add("request", commandNameMap[commandToExecute.Name]);
+            commandToExecute.Parameters.Add("request", this.commandNameMap[commandToExecute.Name]);
             string commandStringToSend = commandToExecute.ParametersAsJsonString;
 
             // Send the response to the Chrome extension.
-            Send(packet, commandStringToSend, "application/json; charset=UTF-8");
+            this.Send(packet, commandStringToSend, "application/json; charset=UTF-8");
         }
 
         private Response HandleResponse()
@@ -243,15 +243,15 @@ namespace OpenQA.Selenium.Chrome
             // Wait for a POST request to be pending from the Chrome extension.
             // Note that we need to leave the packet in the queue for the next
             // send message.
-            postRequestReceived.WaitOne(TimeSpan.FromSeconds(ExtensionTimeoutInSeconds));
+            this.postRequestReceived.WaitOne(TimeSpan.FromSeconds(ExtensionTimeoutInSeconds));
 
-            if (pendingRequestQueue.Count == 0)
+            if (this.pendingRequestQueue.Count == 0)
             {
                 throw new FatalChromeException("Expected a response from the extension, but none was found");
             }
 
             // ExtensionRequestPacket packet = pendingRequestQueue.Peek();
-            ExtensionRequestPacket packet = pendingRequestQueue[0];
+            ExtensionRequestPacket packet = this.pendingRequestQueue[0];
 
             // Parse the packet content, and deserialize from a JSON object.
             string responseString = ParseResponse(packet.Content);
@@ -280,14 +280,14 @@ namespace OpenQA.Selenium.Chrome
             try
             {
                 HttpListener listener = (HttpListener)asyncResult.AsyncState;
-                executorHasClient = true;
+                this.executorHasClient = true;
 
                 // Here we complete/end the BeginGetContext() asynchronous call
                 // by calling EndGetContext() - which returns the reference to
                 // a new HttpListenerContext object. Then we can set up a new
                 // thread to listen for the next connection.
                 HttpListenerContext workerContext = listener.EndGetContext(asyncResult);
-                IAsyncResult newResult = listener.BeginGetContext(new AsyncCallback(OnClientConnect), listener);
+                listener.BeginGetContext(new AsyncCallback(this.OnClientConnect), listener);
                 
                 ExtensionRequestPacket packet = new ExtensionRequestPacket(workerContext);
 
@@ -295,14 +295,14 @@ namespace OpenQA.Selenium.Chrome
                 if (packet.PacketType == ChromeExtensionPacketType.Get)
                 {
                     // Console.WriteLine("Received GET request from from {0}", packet.ID);
-                    Send(packet, HostPageHtml, "text/html");
+                    this.Send(packet, HostPageHtml, "text/html");
                 }
                 else
                 {
                     // Console.WriteLine("Received from {0}:\n{1}", packet.ID, packet.Content);
                     // pendingRequestQueue.Enqueue(packet);
-                    pendingRequestQueue.Add(packet);
-                    postRequestReceived.Set();
+                    this.pendingRequestQueue.Add(packet);
+                    this.postRequestReceived.Set();
                 }
 
                 // Console.WriteLine("ID {0} disconnected.", packet.ID);
@@ -320,7 +320,7 @@ namespace OpenQA.Selenium.Chrome
                 // When we shut the HttpListener down, there will always still be
                 // a thread pending listening for a request. If there is no client
                 // connected, we may have a real problem here.
-                if (!executorHasClient)
+                if (!this.executorHasClient)
                 {
                     Console.WriteLine(hle.Message);
                 }
@@ -334,7 +334,7 @@ namespace OpenQA.Selenium.Chrome
                 // Console.WriteLine("Sending to {0}:\n{1}", packet.ID, data);
                 // Reset the signal so that the processor will wait for another
                 // POST message.
-                postRequestReceived.Reset();
+                this.postRequestReceived.Reset();
             }
 
             byte[] byteData = Encoding.UTF8.GetBytes(data);
@@ -349,70 +349,70 @@ namespace OpenQA.Selenium.Chrome
 
         private void InitializeCommandNameMap()
         {
-            commandNameMap = new Dictionary<DriverCommand, string>();
-            commandNameMap.Add(DriverCommand.NewSession, "newSession");
+            this.commandNameMap = new Dictionary<DriverCommand, string>();
+            this.commandNameMap.Add(DriverCommand.NewSession, "newSession");
 
-            commandNameMap.Add(DriverCommand.Close, "close");
-            commandNameMap.Add(DriverCommand.Quit, "quit");
+            this.commandNameMap.Add(DriverCommand.Close, "close");
+            this.commandNameMap.Add(DriverCommand.Quit, "quit");
 
-            commandNameMap.Add(DriverCommand.Get, "get");
-            commandNameMap.Add(DriverCommand.GoBack, "goBack");
-            commandNameMap.Add(DriverCommand.GoForward, "goForward");
-            commandNameMap.Add(DriverCommand.Refresh, "refresh");
+            this.commandNameMap.Add(DriverCommand.Get, "get");
+            this.commandNameMap.Add(DriverCommand.GoBack, "goBack");
+            this.commandNameMap.Add(DriverCommand.GoForward, "goForward");
+            this.commandNameMap.Add(DriverCommand.Refresh, "refresh");
 
-            commandNameMap.Add(DriverCommand.AddCookie, "addCookie");
-            commandNameMap.Add(DriverCommand.GetAllCookies, "getCookies");
-            commandNameMap.Add(DriverCommand.DeleteCookie, "deleteCookie");
-            commandNameMap.Add(DriverCommand.DeleteAllCookies, "deleteAllCookies");
+            this.commandNameMap.Add(DriverCommand.AddCookie, "addCookie");
+            this.commandNameMap.Add(DriverCommand.GetAllCookies, "getCookies");
+            this.commandNameMap.Add(DriverCommand.DeleteCookie, "deleteCookie");
+            this.commandNameMap.Add(DriverCommand.DeleteAllCookies, "deleteAllCookies");
 
-            commandNameMap.Add(DriverCommand.FindElement, "findElement");
-            commandNameMap.Add(DriverCommand.FindElements, "findElements");
-            commandNameMap.Add(DriverCommand.FindChildElement, "findChildElement");
-            commandNameMap.Add(DriverCommand.FindChildElements, "findChildElements");
+            this.commandNameMap.Add(DriverCommand.FindElement, "findElement");
+            this.commandNameMap.Add(DriverCommand.FindElements, "findElements");
+            this.commandNameMap.Add(DriverCommand.FindChildElement, "findChildElement");
+            this.commandNameMap.Add(DriverCommand.FindChildElements, "findChildElements");
 
-            commandNameMap.Add(DriverCommand.ClearElement, "clearElement");
-            commandNameMap.Add(DriverCommand.ClickElement, "clickElement");
-            commandNameMap.Add(DriverCommand.HoverOverElement, "hoverOverElement");
-            commandNameMap.Add(DriverCommand.SendKeysToElement, "sendKeysToElement");
-            commandNameMap.Add(DriverCommand.SubmitElement, "submitElement");
-            commandNameMap.Add(DriverCommand.ToggleElement, "toggleElement");
+            this.commandNameMap.Add(DriverCommand.ClearElement, "clearElement");
+            this.commandNameMap.Add(DriverCommand.ClickElement, "clickElement");
+            this.commandNameMap.Add(DriverCommand.HoverOverElement, "hoverOverElement");
+            this.commandNameMap.Add(DriverCommand.SendKeysToElement, "sendKeysToElement");
+            this.commandNameMap.Add(DriverCommand.SubmitElement, "submitElement");
+            this.commandNameMap.Add(DriverCommand.ToggleElement, "toggleElement");
 
-            commandNameMap.Add(DriverCommand.GetCurrentWindowHandle, "getCurrentWindowHandle");
-            commandNameMap.Add(DriverCommand.GetWindowHandles, "getWindowHandles");
+            this.commandNameMap.Add(DriverCommand.GetCurrentWindowHandle, "getCurrentWindowHandle");
+            this.commandNameMap.Add(DriverCommand.GetWindowHandles, "getWindowHandles");
 
-            commandNameMap.Add(DriverCommand.SwitchToWindow, "switchToWindow");
-            commandNameMap.Add(DriverCommand.SwitchToFrame, "switchToFrame");
-            commandNameMap.Add(DriverCommand.GetActiveElement, "getActiveElement");
+            this.commandNameMap.Add(DriverCommand.SwitchToWindow, "switchToWindow");
+            this.commandNameMap.Add(DriverCommand.SwitchToFrame, "switchToFrame");
+            this.commandNameMap.Add(DriverCommand.GetActiveElement, "getActiveElement");
 
-            commandNameMap.Add(DriverCommand.GetCurrentUrl, "getCurrentUrl");
-            commandNameMap.Add(DriverCommand.GetPageSource, "getPageSource");
-            commandNameMap.Add(DriverCommand.GetTitle, "getTitle");
+            this.commandNameMap.Add(DriverCommand.GetCurrentUrl, "getCurrentUrl");
+            this.commandNameMap.Add(DriverCommand.GetPageSource, "getPageSource");
+            this.commandNameMap.Add(DriverCommand.GetTitle, "getTitle");
 
-            commandNameMap.Add(DriverCommand.ExecuteScript, "executeScript");
+            this.commandNameMap.Add(DriverCommand.ExecuteScript, "executeScript");
 
-            commandNameMap.Add(DriverCommand.GetSpeed, "getSpeed");
-            commandNameMap.Add(DriverCommand.SetSpeed, "setSpeed");
+            this.commandNameMap.Add(DriverCommand.GetSpeed, "getSpeed");
+            this.commandNameMap.Add(DriverCommand.SetSpeed, "setSpeed");
 
-            commandNameMap.Add(DriverCommand.SetBrowserVisible, "setBrowserVisible");
-            commandNameMap.Add(DriverCommand.IsBrowserVisible, "isBrowserVisible");
+            this.commandNameMap.Add(DriverCommand.SetBrowserVisible, "setBrowserVisible");
+            this.commandNameMap.Add(DriverCommand.IsBrowserVisible, "isBrowserVisible");
 
-            commandNameMap.Add(DriverCommand.GetElementText, "getElementText");
-            commandNameMap.Add(DriverCommand.GetElementValue, "getElementValue");
-            commandNameMap.Add(DriverCommand.GetElementTagName, "getElementTagName");
-            commandNameMap.Add(DriverCommand.SetElementSelected, "setElementSelected");
-            commandNameMap.Add(DriverCommand.DragElement, "dragElement");
-            commandNameMap.Add(DriverCommand.IsElementSelected, "isElementSelected");
-            commandNameMap.Add(DriverCommand.IsElementEnabled, "isElementEnabled");
-            commandNameMap.Add(DriverCommand.IsElementDisplayed, "isElementDisplayed");
-            commandNameMap.Add(DriverCommand.GetElementLocation, "getElementLocation");
-            commandNameMap.Add(DriverCommand.GetElementLocationOnceScrolledIntoView, "getElementLocationOnceScrolledIntoView");
-            commandNameMap.Add(DriverCommand.GetElementSize, "getElementSize");
-            commandNameMap.Add(DriverCommand.GetElementAttribute, "getElementAttribute");
-            commandNameMap.Add(DriverCommand.GetElementValueOfCssProperty, "getElementValueOfCssProperty");
-            commandNameMap.Add(DriverCommand.ElementEquals, "elementEquals");
+            this.commandNameMap.Add(DriverCommand.GetElementText, "getElementText");
+            this.commandNameMap.Add(DriverCommand.GetElementValue, "getElementValue");
+            this.commandNameMap.Add(DriverCommand.GetElementTagName, "getElementTagName");
+            this.commandNameMap.Add(DriverCommand.SetElementSelected, "setElementSelected");
+            this.commandNameMap.Add(DriverCommand.DragElement, "dragElement");
+            this.commandNameMap.Add(DriverCommand.IsElementSelected, "isElementSelected");
+            this.commandNameMap.Add(DriverCommand.IsElementEnabled, "isElementEnabled");
+            this.commandNameMap.Add(DriverCommand.IsElementDisplayed, "isElementDisplayed");
+            this.commandNameMap.Add(DriverCommand.GetElementLocation, "getElementLocation");
+            this.commandNameMap.Add(DriverCommand.GetElementLocationOnceScrolledIntoView, "getElementLocationOnceScrolledIntoView");
+            this.commandNameMap.Add(DriverCommand.GetElementSize, "getElementSize");
+            this.commandNameMap.Add(DriverCommand.GetElementAttribute, "getElementAttribute");
+            this.commandNameMap.Add(DriverCommand.GetElementValueOfCssProperty, "getElementValueOfCssProperty");
+            this.commandNameMap.Add(DriverCommand.ElementEquals, "elementEquals");
 
-            commandNameMap.Add(DriverCommand.Screenshot, "screenshot");
-            commandNameMap.Add(DriverCommand.ImplicitlyWait, "implicitlyWait");
+            this.commandNameMap.Add(DriverCommand.Screenshot, "screenshot");
+            this.commandNameMap.Add(DriverCommand.ImplicitlyWait, "implicitlyWait");
         }
         #endregion
 
@@ -432,19 +432,19 @@ namespace OpenQA.Selenium.Chrome
             /// <param name="currentContext">Current HTTP Context in use</param>
             public ExtensionRequestPacket(HttpListenerContext currentContext)
             {
-                packetContext = currentContext;
+                this.packetContext = currentContext;
 
-                if (string.Compare(packetContext.Request.HttpMethod, "get", StringComparison.OrdinalIgnoreCase) == 0)
+                if (string.Compare(this.packetContext.Request.HttpMethod, "get", StringComparison.OrdinalIgnoreCase) == 0)
                 {
-                    extensionPacketType = ChromeExtensionPacketType.Get;
+                    this.extensionPacketType = ChromeExtensionPacketType.Get;
                 }
                 else
                 {
-                    extensionPacketType = ChromeExtensionPacketType.Post;
+                    this.extensionPacketType = ChromeExtensionPacketType.Post;
                 }
 
                 DateTime readTimeout = DateTime.Now.AddSeconds(10);
-                HttpListenerRequest request = packetContext.Request;
+                HttpListenerRequest request = this.packetContext.Request;
                 int length = (int)request.ContentLength64;
                 byte[] packetDataBuffer = new byte[length];
                 int totalBytesRead = request.InputStream.Read(packetDataBuffer, 0, length);
@@ -453,7 +453,7 @@ namespace OpenQA.Selenium.Chrome
                     totalBytesRead += request.InputStream.Read(packetDataBuffer, totalBytesRead, length - totalBytesRead);
                 }
 
-                content = Encoding.UTF8.GetString(packetDataBuffer);
+                this.content = Encoding.UTF8.GetString(packetDataBuffer);
             }
 
             /// <summary>
@@ -461,7 +461,7 @@ namespace OpenQA.Selenium.Chrome
             /// </summary>
             public Guid ID
             {
-                get { return packetId; }
+                get { return this.packetId; }
             }
 
             /// <summary>
@@ -469,7 +469,7 @@ namespace OpenQA.Selenium.Chrome
             /// </summary>
             public ChromeExtensionPacketType PacketType
             {
-                get { return extensionPacketType; }
+                get { return this.extensionPacketType; }
             }
 
             /// <summary>
@@ -477,7 +477,7 @@ namespace OpenQA.Selenium.Chrome
             /// </summary>
             public HttpListenerContext Context
             {
-                get { return packetContext; }
+                get { return this.packetContext; }
             }
 
             /// <summary>
@@ -485,7 +485,7 @@ namespace OpenQA.Selenium.Chrome
             /// </summary>
             public string Content
             {
-                get { return content; }
+                get { return this.content; }
             }
         }
     }
