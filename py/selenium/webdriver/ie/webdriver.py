@@ -28,24 +28,31 @@ import time
 import os
 
 DEFAULT_TIMEOUT = 30
-DEFAULT_PORT = 5555
+DEFAULT_PORT = 0
 
 class WebDriver(RemoteWebDriver):
 
     def __init__(self, port=DEFAULT_PORT, timeout=DEFAULT_TIMEOUT):
+        self.port = port
+        if self.port == 0:
+            free_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            free_socket.bind((socket.gethostname(), 0))
+            self.port = free_socket.getsockname()[1]
+            free_socket.close()
+        
         # Create IE Driver instance of the unmanaged code
         self.iedriver = CDLL(os.path.join(os.path.dirname(__file__), "IEDriver.dll"))
-        self.ptr = self.iedriver.StartServer(port)
+        self.ptr = self.iedriver.StartServer(self.port)
 
         seconds = 0
         while not self._is_connectable():
 	    seconds += 1
 	    if seconds > DEFAULT_TIMEOUT:
-                raise RunTimeError("Unable to connect to IE")
+                raise RuntimeError("Unable to connect to IE")
             time.sleep(1)
 
         RemoteWebDriver.__init__(self,
-			    command_executor='http://localhost:%d' % port,
+			    command_executor='http://localhost:%d' % self.port,
 			    browser_name='ie',
 			    platform='WINDOWS', version='')
     
@@ -54,7 +61,7 @@ class WebDriver(RemoteWebDriver):
         try:
             socket_ = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             socket_.settimeout(1)
-            socket_.connect(("localhost", DEFAULT_PORT))
+            socket_.connect(("localhost", self.port))
             socket_.close()
             return True
         except socket.error:
