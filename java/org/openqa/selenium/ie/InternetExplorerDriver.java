@@ -123,10 +123,11 @@ public class InternetExplorerDriver extends RemoteWebDriver {
           if (Boolean.getBoolean("webdriver.development")) {
             String arch = System.getProperty("os.arch", "")
                 .contains("64") ? "x64" : "Win32";
+
             List<String> sourcePaths = new ArrayList<String>();
-            sourcePaths.add("build\\" + arch + "\\Debug");
-            sourcePaths.add("..\\build\\" + arch + "\\Debug");
-            sourcePaths.add("..\\..\\build\\" + arch + "\\Debug");
+            sourcePaths.add("build\\cpp\\" + arch + "\\Debug");
+            sourcePaths.add("..\\build\\cpp\\" + arch + "\\Debug");
+            sourcePaths.add("..\\..\\build\\cpp\\" + arch + "\\Debug");
             boolean copied = false;
             for (String path : sourcePaths) {
               File sourceFile = new File(path, "IEDriver.dll");
