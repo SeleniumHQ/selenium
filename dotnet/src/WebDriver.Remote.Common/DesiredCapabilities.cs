@@ -222,7 +222,7 @@ namespace OpenQA.Selenium.Remote
         /// <returns>String of capabilites being used</returns>
         public override string ToString()
         {
-            return string.Format(CultureInfo.InvariantCulture, "Capabilities [BrowserName={0}, IsJavaScriptEnabled={1}, Platform={2}, Version={3}]", name, javascriptEnabled, browserPlatform.Type.ToString(), browserVersion);
+            return string.Format(CultureInfo.InvariantCulture, "Capabilities [BrowserName={0}, IsJavaScriptEnabled={1}, Platform={2}, Version={3}]", name, javascriptEnabled, browserPlatform.PlatformType.ToString(), browserVersion);
         }
 
         /// <summary>
@@ -253,7 +253,7 @@ namespace OpenQA.Selenium.Remote
                 return false;
             }
 
-            if (!browserPlatform.IsPlatformType(other.Platform.Type))
+            if (!browserPlatform.IsPlatformType(other.Platform.PlatformType))
             {
                 return false;
             }

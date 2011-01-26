@@ -1663,7 +1663,7 @@ namespace OpenQA.Selenium.Remote
             /// <param name="where">A <see cref="ICoordinates"/> describing where to move the mouse to.</param>
             public void MouseMove(ICoordinates where)
             {
-                string elementId = where.AuxilliaryLocator.ToString();
+                string elementId = where.AuxiliaryLocator.ToString();
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
                 parameters.Add("element", elementId);
                 driver.Execute(DriverCommand.MouseMoveTo, parameters);
@@ -1677,7 +1677,7 @@ namespace OpenQA.Selenium.Remote
             /// <param name="yOffset">A vertical offset from the coordinates specified in <paramref name="where"/>.</param>
             public void MouseMove(ICoordinates where, int xOffset, int yOffset)
             {
-                string elementId = where.AuxilliaryLocator.ToString();
+                string elementId = where.AuxiliaryLocator.ToString();
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
                 parameters.Add("element", elementId);
                 parameters.Add("xoffset", xOffset);

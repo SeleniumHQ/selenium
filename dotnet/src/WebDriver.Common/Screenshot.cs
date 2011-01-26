@@ -13,7 +13,7 @@ namespace OpenQA.Selenium
     public class Screenshot
     {
         private string base64Encoded = string.Empty;
-        private byte[] byteArray = null;
+        private byte[] byteArray;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Screenshot"/> class.
@@ -21,8 +21,8 @@ namespace OpenQA.Selenium
         /// <param name="base64EncodedScreenshot">The image of the page as a Base64-encoded string.</param>
         public Screenshot(string base64EncodedScreenshot)
         {
-            base64Encoded = base64EncodedScreenshot;
-            byteArray = Convert.FromBase64String(base64Encoded);
+            this.base64Encoded = base64EncodedScreenshot;
+            this.byteArray = Convert.FromBase64String(this.base64Encoded);
         }
 
         /// <summary>
@@ -30,7 +30,7 @@ namespace OpenQA.Selenium
         /// </summary>
         public string AsBase64EncodedString
         {
-            get { return base64Encoded; }
+            get { return this.base64Encoded; }
         }
 
         /// <summary>
@@ -38,7 +38,7 @@ namespace OpenQA.Selenium
         /// </summary>
         public byte[] AsByteArray
         {
-            get { return byteArray; }
+            get { return this.byteArray; }
         }
 
         /// <summary>
@@ -49,7 +49,7 @@ namespace OpenQA.Selenium
         /// to save the image to.</param>
         public void SaveAsFile(string fileName, ImageFormat format)
         {
-            using (MemoryStream imageStream = new MemoryStream(byteArray))
+            using (MemoryStream imageStream = new MemoryStream(this.byteArray))
             {
                 Image screenshotImage = Image.FromStream(imageStream);
                 screenshotImage.Save(fileName, format);
@@ -62,7 +62,7 @@ namespace OpenQA.Selenium
         /// <returns>A <see cref="System.String">String</see> that represents the current <see cref="System.Object">Object</see>.</returns>
         public override string ToString()
         {
-            return base64Encoded;
+            return this.base64Encoded;
         }
     }
 }

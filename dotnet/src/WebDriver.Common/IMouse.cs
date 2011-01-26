@@ -45,15 +45,16 @@ namespace OpenQA.Selenium
         /// Moves the mouse to the specified set of coordinates.
         /// </summary>
         /// <param name="where">A <see cref="ICoordinates"/> describing where to click.</param>
-        /// <param name="xOffset">A horizontal offset from the coordinates specified in <paramref name="where"/>.</param>
-        /// <param name="yOffset">A vertical offset from the coordinates specified in <paramref name="where"/>.</param>
-        void MouseMove(ICoordinates where, int xOffset, int yOffset);
+        /// <param name="offsetX">A horizontal offset from the coordinates specified in <paramref name="where"/>.</param>
+        /// <param name="offsetY">A vertical offset from the coordinates specified in <paramref name="where"/>.</param>
+        void MouseMove(ICoordinates where, int offsetX, int offsetY);
 
         /// <summary>
         /// Clicks at a set of coordinates using the secondary mouse button.
         /// </summary>
         /// <param name="where">A <see cref="ICoordinates"/> describing where to click.</param>
         void ContextClick(ICoordinates where);
+
         // TODO: Scroll wheel support
     }
 }

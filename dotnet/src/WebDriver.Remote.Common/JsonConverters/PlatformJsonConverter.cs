@@ -50,7 +50,7 @@ namespace OpenQA.Selenium.Remote
             Platform platformValue = value as Platform;
             if (platformValue != null)
             {
-                writer.WriteValue(platformValue.Type.ToString("G").ToUpper(CultureInfo.InvariantCulture));
+                writer.WriteValue(platformValue.PlatformType.ToString("G").ToUpper(CultureInfo.InvariantCulture));
             }
         }
     }

@@ -1,4 +1,22 @@
-﻿using System;
+﻿/* Copyright notice and license
+Copyright 2007-2011 WebDriver committers
+Copyright 2007-2011 Google Inc.
+Portions copyright 2007 ThoughtWorks, Inc
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -22,8 +40,8 @@ namespace OpenQA.Selenium.Interactions
             IHasInputDevices inputDevicesDriver = driver as IHasInputDevices;
             if (inputDevicesDriver != null)
             {
-                keyboard = inputDevicesDriver.Keyboard;
-                mouse = inputDevicesDriver.Mouse;
+                this.keyboard = inputDevicesDriver.Keyboard;
+                this.mouse = inputDevicesDriver.Mouse;
             }
         }
 
@@ -33,7 +51,8 @@ namespace OpenQA.Selenium.Interactions
         /// </summary>
         /// <param name="theKey">The key to be sent.</param>
         /// <returns>A self-reference to this <see cref="DefaultActionSequenceBuilder"/>.</returns>
-        /// <remarks>The key being sent must be in the <see cref="Keys"/> enum.</remarks>
+        /// <exception cref="ArgumentException">If the key sent is not is not one 
+        /// of <see cref="Keys.Shift"/>, <see cref="Keys.Control"/>, or <see cref="Keys.Alt"/>.</exception>
         public IActionSequenceBuilder KeyDown(string theKey)
         {
             return this.KeyDown(null, theKey);
@@ -45,16 +64,12 @@ namespace OpenQA.Selenium.Interactions
         /// <param name="element">The element to which to send the key command.</param>
         /// <param name="theKey">The key to be sent.</param>
         /// <returns>A self-reference to this <see cref="DefaultActionSequenceBuilder"/>.</returns>
-        /// <exception cref="ArgumentException">If the key sent is not part of the <see cref="Keys"/> class.</exception>
+        /// <exception cref="ArgumentException">If the key sent is not is not one 
+        /// of <see cref="Keys.Shift"/>, <see cref="Keys.Control"/>, or <see cref="Keys.Alt"/>.</exception>
         public IActionSequenceBuilder KeyDown(IWebElement element, string theKey)
         {
-            if (!Keys.IsKey(theKey))
-            {
-                throw new ArgumentException("Key to be sent must be one of the Keys class", "theKey");
-            }
-
             ILocatable target = element as ILocatable;
-            action.AddAction(new KeyDownAction(this.keyboard, this.mouse, target, theKey));
+            this.action.AddAction(new KeyDownAction(this.keyboard, this.mouse, target, theKey));
             return this;
         }
 
@@ -63,7 +78,8 @@ namespace OpenQA.Selenium.Interactions
         /// </summary>
         /// <param name="theKey">The key to be sent.</param>
         /// <returns>A self-reference to this <see cref="DefaultActionSequenceBuilder"/>.</returns>
-        /// <remarks>The key being sent must be in the <see cref="Keys"/> enum.</remarks>
+        /// <exception cref="ArgumentException">If the key sent is not is not one 
+        /// of <see cref="Keys.Shift"/>, <see cref="Keys.Control"/>, or <see cref="Keys.Alt"/>.</exception>
         public IActionSequenceBuilder KeyUp(string theKey)
         {
             return this.KeyUp(null, theKey);
@@ -75,16 +91,12 @@ namespace OpenQA.Selenium.Interactions
         /// <param name="element">The element to which to send the key command.</param>
         /// <param name="theKey">The key to be sent.</param>
         /// <returns>A self-reference to this <see cref="DefaultActionSequenceBuilder"/>.</returns>
-        /// <remarks>The key being sent must be in the <see cref="Keys"/> enum.</remarks>
+        /// <exception cref="ArgumentException">If the key sent is not is not one 
+        /// of <see cref="Keys.Shift"/>, <see cref="Keys.Control"/>, or <see cref="Keys.Alt"/>.</exception>
         public IActionSequenceBuilder KeyUp(IWebElement element, string theKey)
         {
-            if (!Keys.IsKey(theKey))
-            {
-                throw new ArgumentException("Key to be sent must be one of the Keys class", "theKey");
-            }
-
             ILocatable target = element as ILocatable;
-            action.AddAction(new KeyUpAction(this.keyboard, this.mouse, target, theKey));
+            this.action.AddAction(new KeyUpAction(this.keyboard, this.mouse, target, theKey));
             return this;
         }
 
@@ -107,7 +119,7 @@ namespace OpenQA.Selenium.Interactions
         public IActionSequenceBuilder SendKeys(IWebElement element, string keysToSend)
         {
             ILocatable target = element as ILocatable;
-            action.AddAction(new SendKeysAction(this.keyboard, this.mouse, target, keysToSend));
+            this.action.AddAction(new SendKeysAction(this.keyboard, this.mouse, target, keysToSend));
             return this;
         }
 
@@ -119,7 +131,7 @@ namespace OpenQA.Selenium.Interactions
         public IActionSequenceBuilder ClickAndHold(IWebElement onElement)
         {
             ILocatable target = onElement as ILocatable;
-            action.AddAction(new ClickAndHoldAction(this.mouse, target));
+            this.action.AddAction(new ClickAndHoldAction(this.mouse, target));
             return this;
         }
 
@@ -131,7 +143,7 @@ namespace OpenQA.Selenium.Interactions
         public IActionSequenceBuilder Release(IWebElement onElement)
         {
             ILocatable target = onElement as ILocatable;
-            action.AddAction(new ButtonReleaseAction(this.mouse, target));
+            this.action.AddAction(new ButtonReleaseAction(this.mouse, target));
             return this;
         }
 
@@ -143,7 +155,7 @@ namespace OpenQA.Selenium.Interactions
         public IActionSequenceBuilder Click(IWebElement onElement)
         {
             ILocatable target = onElement as ILocatable;
-            action.AddAction(new ClickAction(this.mouse, target));
+            this.action.AddAction(new ClickAction(this.mouse, target));
             return this;
         }
 
@@ -164,7 +176,7 @@ namespace OpenQA.Selenium.Interactions
         public IActionSequenceBuilder DoubleClick(IWebElement onElement)
         {
             ILocatable target = onElement as ILocatable;
-            action.AddAction(new DoubleClickAction(this.mouse, target));
+            this.action.AddAction(new DoubleClickAction(this.mouse, target));
             return this;
         }
 
@@ -176,7 +188,7 @@ namespace OpenQA.Selenium.Interactions
         public IActionSequenceBuilder MoveToElement(IWebElement toElement)
         {
             ILocatable target = toElement as ILocatable;
-            action.AddAction(new MoveMouseAction(this.mouse, target));
+            this.action.AddAction(new MoveMouseAction(this.mouse, target));
             return this;
         }
 
@@ -184,25 +196,25 @@ namespace OpenQA.Selenium.Interactions
         /// Moves the mouse to the specified offset of the top-left corner of the specified element.
         /// </summary>
         /// <param name="toElement">The element to which to move the mouse.</param>
-        /// <param name="xOffset">The horizontal offset to which to move the mouse.</param>
-        /// <param name="yOffset">The vertical offset to which to move the mouse.</param>
+        /// <param name="offsetX">The horizontal offset to which to move the mouse.</param>
+        /// <param name="offsetY">The vertical offset to which to move the mouse.</param>
         /// <returns>A self-reference to this <see cref="DefaultActionSequenceBuilder"/>.</returns>
-        public IActionSequenceBuilder MoveToElement(IWebElement toElement, int xOffset, int yOffset)
+        public IActionSequenceBuilder MoveToElement(IWebElement toElement, int offsetX, int offsetY)
         {
             ILocatable target = toElement as ILocatable;
-            action.AddAction(new MoveToOffsetAction(this.mouse, target, xOffset, yOffset));
+            this.action.AddAction(new MoveToOffsetAction(this.mouse, target, offsetX, offsetY));
             return this;
         }
 
         /// <summary>
         /// Moves the mouse to the specified offset of the last known mouse coordinates.
         /// </summary>
-        /// <param name="xOffset">The horizontal offset to which to move the mouse.</param>
-        /// <param name="yOffset">The vertical offset to which to move the mouse.</param>
+        /// <param name="offsetX">The horizontal offset to which to move the mouse.</param>
+        /// <param name="offsetY">The vertical offset to which to move the mouse.</param>
         /// <returns>A self-reference to this <see cref="DefaultActionSequenceBuilder"/>.</returns>
-        public IActionSequenceBuilder MoveByOffset(int xOffset, int yOffset)
+        public IActionSequenceBuilder MoveByOffset(int offsetX, int offsetY)
         {
-            return this.MoveToElement(null, xOffset, yOffset);
+            return this.MoveToElement(null, offsetX, offsetY);
         }
 
         /// <summary>
@@ -213,7 +225,7 @@ namespace OpenQA.Selenium.Interactions
         public IActionSequenceBuilder ContextClick(IWebElement onElement)
         {
             ILocatable target = onElement as ILocatable;
-            action.AddAction(new ContextClickAction(this.mouse, target));
+            this.action.AddAction(new ContextClickAction(this.mouse, target));
             return this;
         }
 
@@ -228,9 +240,9 @@ namespace OpenQA.Selenium.Interactions
             ILocatable startElement = source as ILocatable;
             ILocatable endElement = target as ILocatable;
 
-            action.AddAction(new ClickAndHoldAction(this.mouse, startElement));
-            action.AddAction(new MoveMouseAction(this.mouse, endElement));
-            action.AddAction(new ButtonReleaseAction(this.mouse, endElement));
+            this.action.AddAction(new ClickAndHoldAction(this.mouse, startElement));
+            this.action.AddAction(new MoveMouseAction(this.mouse, endElement));
+            this.action.AddAction(new ButtonReleaseAction(this.mouse, endElement));
             return this;
         }
 
@@ -240,8 +252,8 @@ namespace OpenQA.Selenium.Interactions
         /// <returns>A composite <see cref="IAction"/> which can be used to perform the actions.</returns>
         public IAction Build()
         {
-            CompositeAction toReturn = action;
-            action = null;
+            CompositeAction toReturn = this.action;
+            this.action = null;
             return toReturn;
         }
         #endregion

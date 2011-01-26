@@ -129,7 +129,7 @@ namespace OpenQA.Selenium
         /// </summary>
         public string Name
         {
-            get { return cookieName; }
+            get { return this.cookieName; }
         }
 
         /// <summary>
@@ -137,7 +137,7 @@ namespace OpenQA.Selenium
         /// </summary>
         public string Value
         {
-            get { return cookieValue; }
+            get { return this.cookieValue; }
         }
 
         /// <summary>
@@ -145,7 +145,7 @@ namespace OpenQA.Selenium
         /// </summary>
         public string Domain
         {
-            get { return cookieDomain; }
+            get { return this.cookieDomain; }
         }
 
         /// <summary>
@@ -153,7 +153,7 @@ namespace OpenQA.Selenium
         /// </summary>
         public virtual string Path
         {
-            get { return cookiePath; }
+            get { return this.cookiePath; }
         }
 
         /// <summary>
@@ -169,7 +169,7 @@ namespace OpenQA.Selenium
         /// </summary>
         public DateTime? Expiry
         {
-            get { return cookieExpiry; }
+            get { return this.cookieExpiry; }
         }
 
         /// <summary>
@@ -178,10 +178,10 @@ namespace OpenQA.Selenium
         /// <returns>A string representation of the cookie.</returns>
         public override string ToString()
         {
-            return cookieName + "=" + cookieValue
-                + (cookieExpiry == null ? string.Empty : "; expires=" + cookieExpiry.Value.ToUniversalTime().ToString("ddd MM dd yyyy hh:mm:ss UTC", CultureInfo.InvariantCulture))
-                    + (string.IsNullOrEmpty(cookiePath) ? string.Empty : "; path=" + cookiePath)
-                    + (string.IsNullOrEmpty(cookieDomain) ? string.Empty : "; domain=" + cookieDomain);
+            return this.cookieName + "=" + this.cookieValue
+                + (this.cookieExpiry == null ? string.Empty : "; expires=" + this.cookieExpiry.Value.ToUniversalTime().ToString("ddd MM dd yyyy hh:mm:ss UTC", CultureInfo.InvariantCulture))
+                    + (string.IsNullOrEmpty(this.cookiePath) ? string.Empty : "; path=" + this.cookiePath)
+                    + (string.IsNullOrEmpty(this.cookieDomain) ? string.Empty : "; domain=" + this.cookieDomain);
             ////                + (isSecure ? ";secure;" : "");
         }
 
@@ -209,12 +209,12 @@ namespace OpenQA.Selenium
                 return false;
             }
 
-            if (!cookieName.Equals(cookie.cookieName))
+            if (!this.cookieName.Equals(cookie.cookieName))
             {
                 return false;
             }
 
-            return !(cookieValue != null ? !cookieValue.Equals(cookie.cookieValue) : cookie.Value != null);
+            return !(this.cookieValue != null ? !this.cookieValue.Equals(cookie.cookieValue) : cookie.Value != null);
         }
 
         /// <summary>
@@ -223,12 +223,12 @@ namespace OpenQA.Selenium
         /// <returns>A hash code for the current <see cref="System.Object">Object</see>.</returns>
         public override int GetHashCode()
         {
-            return cookieName.GetHashCode();
+            return this.cookieName.GetHashCode();
         }
 
-        private string StripPort(string domain)
+        private static string StripPort(string domain)
         {
-            return (string.IsNullOrEmpty(domain)) ? null : domain.Split(':')[0];
+            return string.IsNullOrEmpty(domain) ? null : domain.Split(':')[0];
         }
     }
 }

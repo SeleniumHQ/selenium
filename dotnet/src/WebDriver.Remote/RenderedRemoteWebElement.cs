@@ -166,17 +166,17 @@ namespace OpenQA.Selenium.Remote
                 get { return element.LocationOnScreenOnceScrolledIntoView; }
             }
 
-            public Point LocationInViewPort
+            public Point LocationInViewport
             {
                 get { throw new NotImplementedException(); }
             }
 
-            public Point LocationInDOM
+            public Point LocationInDom
             {
                 get { throw new NotImplementedException(); }
             }
 
-            public object AuxilliaryLocator
+            public object AuxiliaryLocator
             {
                 get { return element.Id; }
             }

@@ -47,8 +47,8 @@ namespace OpenQA.Selenium
 
         private Speed(string description, int timeout)
         {
-            speedDescription = description;
-            speedTimeout = timeout;
+            this.speedDescription = description;
+            this.speedTimeout = timeout;
         }
 
         /// <summary>
@@ -56,7 +56,7 @@ namespace OpenQA.Selenium
         /// </summary>
         public int Timeout
         {
-            get { return speedTimeout; }
+            get { return this.speedTimeout; }
         }
 
         /// <summary>
@@ -64,7 +64,7 @@ namespace OpenQA.Selenium
         /// </summary>
         public string Description
         {
-            get { return speedDescription; }
+            get { return this.speedDescription; }
         }
 
         /// <summary>
@@ -94,7 +94,7 @@ namespace OpenQA.Selenium
         /// <returns>A hash code for the current <see cref="System.Object">Object</see>.</returns>
         public override int GetHashCode()
         {
-            return speedDescription.GetHashCode();
+            return this.speedDescription.GetHashCode();
         }
 
         /// <summary>
@@ -112,10 +112,10 @@ namespace OpenQA.Selenium
             Speed otherObject = obj as Speed;
             if (otherObject != null)
             {
-                isEqual = string.Compare(otherObject.Description, speedDescription, StringComparison.OrdinalIgnoreCase) == 0;
+                isEqual = string.Compare(otherObject.Description, this.speedDescription, StringComparison.OrdinalIgnoreCase) == 0;
             }
 
-            return base.Equals(obj);
+            return isEqual;
         }
     }
 }

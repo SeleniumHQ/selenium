@@ -71,11 +71,11 @@ namespace OpenQA.Selenium
         /// Any version of the Linux operating system.
         /// </summary>
         Linux,
-		
+        
         /// <summary>
         /// Any version using the Darwin packaging system (OS X).
         /// </summary>
-		Darwin
+        Darwin
     }
 
     /// <summary>
@@ -94,35 +94,35 @@ namespace OpenQA.Selenium
         /// <param name="typeValue">The platform type.</param>
         public Platform(PlatformType typeValue)
         {
-            platformTypeValue = typeValue;
+            this.platformTypeValue = typeValue;
         }
 
         private Platform()
         {
-            major = Environment.OSVersion.Version.Major;
-            minor = Environment.OSVersion.Version.Minor;
+            this.major = Environment.OSVersion.Version.Major;
+            this.minor = Environment.OSVersion.Version.Minor;
 
             switch (Environment.OSVersion.Platform)
             {
                 case PlatformID.Win32NT:
-                    if (major == 5)
+                    if (this.major == 5)
                     {
-                        platformTypeValue = PlatformType.XP;
+                        this.platformTypeValue = PlatformType.XP;
                     }
-                    else if (major == 6)
+                    else if (this.major == 6)
                     {
-                        platformTypeValue = PlatformType.Vista;
+                        this.platformTypeValue = PlatformType.Vista;
                     }
                     
                     break;
 
                 // Thanks to a bug in Mono Mac and Linux will be treated the same  https://bugzilla.novell.com/show_bug.cgi?id=515570 but adding this in case
                 case PlatformID.MacOSX:
-                    platformTypeValue = PlatformType.MacOSX;
+                    this.platformTypeValue = PlatformType.MacOSX;
                     break;
 
                 case PlatformID.Unix:
-                    platformTypeValue = PlatformType.Unix;
+                    this.platformTypeValue = PlatformType.Unix;
                     break;
             }
         }
@@ -148,7 +148,7 @@ namespace OpenQA.Selenium
         /// </summary>
         public int MajorVersion
         {
-            get { return major; }
+            get { return this.major; }
         }
 
         /// <summary>
@@ -156,15 +156,15 @@ namespace OpenQA.Selenium
         /// </summary>
         public int MinorVersion
         {
-            get { return minor; }
+            get { return this.minor; }
         }
 
         /// <summary>
         /// Gets the type of the platform.
         /// </summary>
-        public PlatformType Type
+        public PlatformType PlatformType
         {
-            get { return platformTypeValue; }
+            get { return this.platformTypeValue; }
         }
 
         /// <summary>
@@ -182,28 +182,28 @@ namespace OpenQA.Selenium
                     break;
 
                 case PlatformType.Windows:
-                    platformIsType = platformTypeValue == PlatformType.Windows || platformTypeValue == PlatformType.XP || platformTypeValue == PlatformType.Vista;
+                    platformIsType = this.platformTypeValue == PlatformType.Windows || this.platformTypeValue == PlatformType.XP || this.platformTypeValue == PlatformType.Vista;
                     break;
 
                 case PlatformType.Vista:
-                    platformIsType = platformTypeValue == PlatformType.Windows || platformTypeValue == PlatformType.Vista;
+                    platformIsType = this.platformTypeValue == PlatformType.Windows || this.platformTypeValue == PlatformType.Vista;
                     break;
 
                 case PlatformType.XP:
-                    platformIsType = platformTypeValue == PlatformType.Windows || platformTypeValue == PlatformType.XP;
+                    platformIsType = this.platformTypeValue == PlatformType.Windows || this.platformTypeValue == PlatformType.XP;
                     break;
 
                 // Thanks to a bug in Mono Mac and Linux need to be treated the same  https://bugzilla.novell.com/show_bug.cgi?id=515570 but adding this in case
                 case PlatformType.MacOSX:
-                    platformIsType = platformTypeValue == PlatformType.MacOSX || platformTypeValue == PlatformType.Darwin;
+                    platformIsType = this.platformTypeValue == PlatformType.MacOSX || this.platformTypeValue == PlatformType.Darwin;
                     break;
 
                 case PlatformType.Linux:
-                    platformIsType = platformTypeValue == PlatformType.Linux || platformTypeValue == PlatformType.Unix;
+                    platformIsType = this.platformTypeValue == PlatformType.Linux || this.platformTypeValue == PlatformType.Unix;
                     break;
 
                 default:
-                    platformIsType = platformTypeValue == compareTo;
+                    platformIsType = this.platformTypeValue == compareTo;
                     break;
             }
 

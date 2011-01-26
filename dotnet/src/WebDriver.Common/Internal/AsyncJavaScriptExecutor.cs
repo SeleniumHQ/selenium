@@ -1,7 +1,26 @@
-﻿using System;
+﻿/* Copyright notice and license
+Copyright 2007-2011 WebDriver committers
+Copyright 2007-2011 Google Inc.
+Portions copyright 2007 ThoughtWorks, Inc
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
+using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Collections.ObjectModel;
+using System.Globalization;
+using System.Text;
 
 namespace OpenQA.Selenium.Internal
 {
@@ -9,7 +28,6 @@ namespace OpenQA.Selenium.Internal
     /// Utility class used to execute "asynchronous" scripts. This class should
     /// only be used by browsers that do not natively support asynchronous
     /// script execution.
-    /// 
     /// <para>Warning: this class is intended for internal use
     /// only. This class will be removed without warning after all
     /// native asynchronous implemenations have been completed.
@@ -17,9 +35,6 @@ namespace OpenQA.Selenium.Internal
     /// </summary>
     public class AsyncJavaScriptExecutor
     {
-        private IJavaScriptExecutor executor;
-        private TimeSpan timeout = TimeSpan.FromMilliseconds(0);
-
         private const string AsyncScriptTemplate = @"document.__$webdriverPageId = '{0}';
 var timeoutId = window.setTimeout(function() {{
   window.setTimeout(function() {{
@@ -52,6 +67,10 @@ if (document.__$webdriverPageId != '{1}') {{
   return [pendingId, document.__$webdriverAsyncTimeout];
 }}
 ";
+
+        private IJavaScriptExecutor executor;
+        private TimeSpan timeout = TimeSpan.FromMilliseconds(0);
+
         /// <summary>
         /// Initializes a new instance of the <see cref="AsyncJavaScriptExecutor"/> class.
         /// </summary>
@@ -66,8 +85,8 @@ if (document.__$webdriverPageId != '{1}') {{
         /// </summary>
         public TimeSpan Timeout
         {
-            get { return timeout; }
-            set { timeout = value; }
+            get { return this.timeout; }
+            set { this.timeout = value; }
         }
 
         /// <summary>
@@ -81,7 +100,7 @@ if (document.__$webdriverPageId != '{1}') {{
         /// <exception cref="TimeoutException">if the timeout expires during the JavaScript execution.</exception>
         public object ExecuteScript(string script, object[] args)
         {
-            if (!executor.IsJavaScriptEnabled)
+            if (!this.executor.IsJavaScriptEnabled)
             {
                 throw new InvalidOperationException(
                     "The underlying JavascriptExecutor must have JavaScript enabled");
@@ -91,17 +110,17 @@ if (document.__$webdriverPageId != '{1}') {{
             // loaded while waiting for the script result.
             string pageId = Guid.NewGuid().ToString();
 
-            string asyncScript = string.Format(AsyncScriptTemplate, pageId, timeout.TotalMilliseconds, script);
+            string asyncScript = string.Format(CultureInfo.InvariantCulture, AsyncScriptTemplate, pageId, this.timeout.TotalMilliseconds, script);
 
             // This is used by our polling function to return a result that indicates the script has
             // neither finished nor timed out yet.
             string pendingId = Guid.NewGuid().ToString();
 
-            string pollFunction = string.Format(PollingScriptTemplate, pendingId, pageId);
+            string pollFunction = string.Format(CultureInfo.InvariantCulture, PollingScriptTemplate, pendingId, pageId);
 
             // Execute the async script.
             DateTime startTime = DateTime.Now;
-            executor.ExecuteScript(asyncScript, args);
+            this.executor.ExecuteScript(asyncScript, args);
 
             // Finally, enter a loop running the poll function. This loop will run until one of the
             // following occurs:
@@ -111,7 +130,7 @@ if (document.__$webdriverPageId != '{1}') {{
             // javascript event loop.
             while (true)
             {
-                object result = executor.ExecuteScript(pollFunction);
+                object result = this.executor.ExecuteScript(pollFunction);
                 ReadOnlyCollection<object> resultList = result as ReadOnlyCollection<object>;
                 if (resultList != null && resultList.Count == 2 && pendingId == resultList[0].ToString())
                 {
@@ -135,6 +154,7 @@ if (document.__$webdriverPageId != '{1}') {{
                 {
                     return result;
                 }
+
                 System.Threading.Thread.Sleep(100);
             }
         }

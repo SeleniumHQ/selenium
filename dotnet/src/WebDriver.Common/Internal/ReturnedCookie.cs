@@ -61,11 +61,19 @@ namespace OpenQA.Selenium.Internal
         }
 
         /// <summary>
+        /// Gets the current URL the browser is viewing.
+        /// </summary>
+        public string CurrentHost
+        {
+            get { return this.currentHost; }
+        }
+
+        /// <summary>
         /// Gets a value determining if the cookie is secure.
         /// </summary>
         public override bool Secure
         {
-            get { return isSecure; }
+            get { return this.isSecure; }
         }
 
         /// <summary>
@@ -78,7 +86,7 @@ namespace OpenQA.Selenium.Internal
                 + (Expiry == null ? string.Empty : "; expires=" + Expiry.Value.ToUniversalTime().ToString("ddd MM/dd/yyyy HH:mm:ss UTC", CultureInfo.InvariantCulture))
                     + (string.IsNullOrEmpty(Path) ? string.Empty : "; path=" + Path)
                     + (string.IsNullOrEmpty(Domain) ? string.Empty : "; domain=" + Domain)
-                    + (isSecure ? ";secure;" : string.Empty);
+                    + (this.isSecure ? ";secure;" : string.Empty);
         }
     }
 }

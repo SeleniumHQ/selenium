@@ -1,4 +1,22 @@
-﻿using System;
+﻿/* Copyright notice and license
+Copyright 2007-2011 WebDriver committers
+Copyright 2007-2011 Google Inc.
+Portions copyright 2007 ThoughtWorks, Inc
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -10,6 +28,7 @@ namespace OpenQA.Selenium.Interactions
     public interface IActionSequenceBuilder
     {
         //// Keyboard-related actions.
+
         /// <summary>
         /// Sends a modifier key down message to the browser.
         /// </summary>
@@ -60,6 +79,7 @@ namespace OpenQA.Selenium.Interactions
         IActionSequenceBuilder SendKeys(IWebElement element, string keysToSend);
 
         //// Mouse-related actions.
+       
         /// <summary>
         /// Clicks and holds the mouse button down on the specified element.
         /// </summary>
@@ -105,18 +125,18 @@ namespace OpenQA.Selenium.Interactions
         /// Moves the mouse to the specified offset of the top-left corner of the specified element.
         /// </summary>
         /// <param name="toElement">The element to which to move the mouse.</param>
-        /// <param name="xOffset">The horizontal offset to which to move the mouse.</param>
-        /// <param name="yOffset">The vertical offset to which to move the mouse.</param>
+        /// <param name="offsetX">The horizontal offset to which to move the mouse.</param>
+        /// <param name="offsetY">The vertical offset to which to move the mouse.</param>
         /// <returns>A self-reference to this <see cref="IActionSequenceBuilder"/>.</returns>
-        IActionSequenceBuilder MoveToElement(IWebElement toElement, int xOffset, int yOffset);
+        IActionSequenceBuilder MoveToElement(IWebElement toElement, int offsetX, int offsetY);
 
         /// <summary>
         /// Moves the mouse to the specified offset of the last known mouse coordinates.
         /// </summary>
-        /// <param name="xOffset">The horizontal offset to which to move the mouse.</param>
-        /// <param name="yOffset">The vertical offset to which to move the mouse.</param>
+        /// <param name="offsetX">The horizontal offset to which to move the mouse.</param>
+        /// <param name="offsetY">The vertical offset to which to move the mouse.</param>
         /// <returns>A self-reference to this <see cref="IActionSequenceBuilder"/>.</returns>
-        IActionSequenceBuilder MoveByOffset(int xOffset, int yOffset);
+        IActionSequenceBuilder MoveByOffset(int offsetX, int offsetY);
 
         /// <summary>
         /// Right-clicks the mouse on the specified element.
