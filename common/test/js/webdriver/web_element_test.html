@@ -142,6 +142,11 @@ limitations under the License.
       assertEquals('frame page', frameDoc.title);
       assertEquals('', webdriver.element.getText(title));
     }
+
+    function testCanGetVisibleText() {
+      var para = bot.locators.findElement({id: 'has_id'});
+      assertEquals('This has an ID', webdriver.element.getText(para));
+    }
   </script>
 </head>
 <body id="body" style="" name="body">
