@@ -27,7 +27,7 @@ namespace OpenQA.Selenium.Remote
         {
             if (sessionId != null)
             {
-                responseSessionId = sessionId.ToString();
+                this.responseSessionId = sessionId.ToString();
             }
         }
 
@@ -38,8 +38,8 @@ namespace OpenQA.Selenium.Remote
         [JsonProperty("value")]
         public object Value
         {
-            get { return responseValue; }
-            set { responseValue = value; }
+            get { return this.responseValue; }
+            set { this.responseValue = value; }
         }
 
         /// <summary>
@@ -48,8 +48,8 @@ namespace OpenQA.Selenium.Remote
         [JsonProperty("sessionId")]
         public string SessionId
         {
-            get { return responseSessionId; }
-            set { responseSessionId = value; }
+            get { return this.responseSessionId; }
+            set { this.responseSessionId = value; }
         }
 
         /// <summary>
@@ -58,8 +58,8 @@ namespace OpenQA.Selenium.Remote
         [JsonProperty("status")]
         public WebDriverResult Status
         {
-            get { return responseStatus; }
-            set { responseStatus = value; }
+            get { return this.responseStatus; }
+            set { this.responseStatus = value; }
         }
 
         /// <summary>
@@ -87,7 +87,7 @@ namespace OpenQA.Selenium.Remote
         /// <returns>A string with the Session ID, status value, and the value from JSON.</returns>
         public override string ToString()
         {
-            return string.Format(CultureInfo.InvariantCulture, "({0} {1}: {2})", SessionId, Status, Value);
+            return string.Format(CultureInfo.InvariantCulture, "({0} {1}: {2})", this.SessionId, this.Status, this.Value);
         }
     }
 }

@@ -47,7 +47,7 @@ namespace OpenQA.Selenium.Remote
         /// </summary>
         public string ResourcePath
         {
-            get { return resourcePath; }
+            get { return this.resourcePath; }
         }
 
         /// <summary>
@@ -55,7 +55,7 @@ namespace OpenQA.Selenium.Remote
         /// </summary>
         public string Method
         {
-            get { return method; }
+            get { return this.method; }
         }
 
         /// <summary>
@@ -67,7 +67,7 @@ namespace OpenQA.Selenium.Remote
         public HttpWebRequest CreateWebRequest(Uri baseUri, Command commandToExecute)
         {
             HttpWebRequest request = null;
-            string[] urlParts = resourcePath.Split(new string[] { "/" }, StringSplitOptions.RemoveEmptyEntries);
+            string[] urlParts = this.resourcePath.Split(new string[] { "/" }, StringSplitOptions.RemoveEmptyEntries);
             for (int i = 0; i < urlParts.Length; i++)
             {
                 string urlPart = urlParts[i];
@@ -83,7 +83,7 @@ namespace OpenQA.Selenium.Remote
             if (uriCreateSucceeded)
             {
                 request = HttpWebRequest.Create(fullUri) as HttpWebRequest;
-                request.Method = method;
+                request.Method = this.method;
             }
             else
             {

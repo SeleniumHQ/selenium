@@ -30,13 +30,13 @@ namespace OpenQA.Selenium.Remote
         /// <param name="parameters">Parameters for that command</param>
         public Command(SessionId sessionId, DriverCommand name, Dictionary<string, object> parameters)
         {
-            commandSessionId = sessionId;
+            this.commandSessionId = sessionId;
             if (parameters != null)
             {
-                commandParameters = parameters;
+                this.commandParameters = parameters;
             }
 
-            commandName = name;
+            this.commandName = name;
         }
 
         /// <summary>
@@ -44,7 +44,7 @@ namespace OpenQA.Selenium.Remote
         /// </summary>
         public SessionId SessionId
         {
-            get { return commandSessionId; }
+            get { return this.commandSessionId; }
         }
 
         /// <summary>
@@ -52,7 +52,7 @@ namespace OpenQA.Selenium.Remote
         /// </summary>
         public DriverCommand Name
         {
-            get { return commandName; }
+            get { return this.commandName; }
         }
 
         /// <summary>
@@ -60,7 +60,7 @@ namespace OpenQA.Selenium.Remote
         /// </summary>
         public Dictionary<string, object> Parameters
         {
-            get { return commandParameters; }
+            get { return this.commandParameters; }
         }
 
         /// <summary>
@@ -71,9 +71,9 @@ namespace OpenQA.Selenium.Remote
             get
             {
                 string parametersString = string.Empty;
-                if (commandParameters != null && commandParameters.Count > 0)
+                if (this.commandParameters != null && this.commandParameters.Count > 0)
                 {
-                    parametersString = JsonConvert.SerializeObject(commandParameters, new JsonConverter[] { new PlatformJsonConverter(), new CookieJsonConverter(), new CharArrayJsonConverter() });
+                    parametersString = JsonConvert.SerializeObject(this.commandParameters, new JsonConverter[] { new PlatformJsonConverter(), new CookieJsonConverter(), new CharArrayJsonConverter() });
                 }
 
                 return parametersString;
@@ -86,7 +86,7 @@ namespace OpenQA.Selenium.Remote
         /// <returns>A string representation of the Command Object</returns>
         public override string ToString()
         {
-            return string.Concat("[", SessionId, "]: ", Name, " ", Parameters.ToString());
+            return string.Concat("[", this.SessionId, "]: ", this.Name, " ", this.Parameters.ToString());
         }
 
         /// <summary>

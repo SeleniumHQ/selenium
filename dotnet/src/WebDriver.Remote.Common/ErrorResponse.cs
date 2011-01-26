@@ -27,16 +27,16 @@ namespace OpenQA.Selenium.Remote
         /// the properties of this <see cref="ErrorResponse"/>.</param>
         public ErrorResponse(Dictionary<string, object> responseValue)
         {
-            message = responseValue["message"].ToString();
+            this.message = responseValue["message"].ToString();
 
             if (responseValue.ContainsKey("screen"))
             {
-                screenshot = responseValue["screen"].ToString();
+                this.screenshot = responseValue["screen"].ToString();
             }
 
             if (responseValue.ContainsKey("class"))
             {
-                className = responseValue["class"].ToString();
+                this.className = responseValue["class"].ToString();
             }
 
             if (responseValue.ContainsKey("stackTrace"))
@@ -54,7 +54,7 @@ namespace OpenQA.Selenium.Remote
                         }
                     }
 
-                    stackTrace = stackTraceList.ToArray();
+                    this.stackTrace = stackTraceList.ToArray();
                 }
             }
         }
@@ -65,8 +65,8 @@ namespace OpenQA.Selenium.Remote
         [JsonProperty("message")]
         public string Message
         {
-            get { return message; }
-            set { message = value; }
+            get { return this.message; }
+            set { this.message = value; }
         }
 
         /// <summary>
@@ -75,8 +75,8 @@ namespace OpenQA.Selenium.Remote
         [JsonProperty("class")]
         public string ClassName
         {
-            get { return className; }
-            set { className = value; }
+            get { return this.className; }
+            set { this.className = value; }
         }
 
         /// <summary>
@@ -86,8 +86,8 @@ namespace OpenQA.Selenium.Remote
         public string Screenshot
         {
             // TODO: (JimEvans) Change this to return an Image.
-            get { return screenshot; }
-            set { screenshot = value; }
+            get { return this.screenshot; }
+            set { this.screenshot = value; }
         }
 
         /// <summary>
@@ -96,8 +96,8 @@ namespace OpenQA.Selenium.Remote
         [JsonProperty("stackTrace")]
         public StackTraceElement[] StackTrace
         {
-            get { return stackTrace; }
-            set { stackTrace = value; }
+            get { return this.stackTrace; }
+            set { this.stackTrace = value; }
         }
     }
 }

@@ -49,6 +49,7 @@ namespace OpenQA.Selenium.Remote
 
             writer.WriteEndArray();
         }
+
         /// <summary>
         /// Method not implemented
         /// </summary>

@@ -13,7 +13,7 @@
         /// <param name="opaqueKey">Key for the session in use</param>
         public SessionId(string opaqueKey)
         {
-            sessionOpaqueKey = opaqueKey;
+            this.sessionOpaqueKey = opaqueKey;
         }
 
         /// <summary>
@@ -22,7 +22,7 @@
         /// <returns>The key in use</returns>
         public override string ToString()
         {
-            return sessionOpaqueKey;
+            return this.sessionOpaqueKey;
         }
 
         /// <summary>
@@ -31,7 +31,7 @@
         /// <returns>The hashcode of the key</returns>
         public override int GetHashCode()
         {
-            return sessionOpaqueKey.GetHashCode();
+            return this.sessionOpaqueKey.GetHashCode();
         }
 
         /// <summary>
@@ -45,7 +45,7 @@
             SessionId other = obj as SessionId;
             if (other != null)
             {
-                objectsAreEqual = sessionOpaqueKey.Equals(other.sessionOpaqueKey);
+                objectsAreEqual = this.sessionOpaqueKey.Equals(other.sessionOpaqueKey);
             }
 
             return objectsAreEqual;

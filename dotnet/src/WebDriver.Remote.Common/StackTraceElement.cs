@@ -30,22 +30,22 @@ namespace OpenQA.Selenium.Remote
         {
             if (elementAttributes.ContainsKey("className"))
             {
-                className = elementAttributes["className"].ToString();
+                this.className = elementAttributes["className"].ToString();
             }
 
             if (elementAttributes.ContainsKey("methodName"))
             {
-                methodName = elementAttributes["methodName"].ToString();
+                this.methodName = elementAttributes["methodName"].ToString();
             }
 
             if (elementAttributes.ContainsKey("lineNumber"))
             {
-                lineNumber = Convert.ToInt32(elementAttributes["lineNumber"], CultureInfo.InvariantCulture);
+                this.lineNumber = Convert.ToInt32(elementAttributes["lineNumber"], CultureInfo.InvariantCulture);
             }
 
             if (elementAttributes.ContainsKey("fileName"))
             {
-                fileName = elementAttributes["fileName"].ToString();
+                this.fileName = elementAttributes["fileName"].ToString();
             }
         }
 
@@ -55,8 +55,8 @@ namespace OpenQA.Selenium.Remote
         [JsonProperty("fileName")]
         public string FileName
         {
-            get { return fileName; }
-            set { fileName = value; }
+            get { return this.fileName; }
+            set { this.fileName = value; }
         }
 
         /// <summary>
@@ -65,8 +65,8 @@ namespace OpenQA.Selenium.Remote
         [JsonProperty("className")]
         public string ClassName
         {
-            get { return className; }
-            set { className = value; }
+            get { return this.className; }
+            set { this.className = value; }
         }
 
         /// <summary>
@@ -75,8 +75,8 @@ namespace OpenQA.Selenium.Remote
         [JsonProperty("lineNumber")]
         public int LineNumber
         {
-            get { return lineNumber; }
-            set { lineNumber = value; }
+            get { return this.lineNumber; }
+            set { this.lineNumber = value; }
         }
 
         /// <summary>
@@ -85,8 +85,8 @@ namespace OpenQA.Selenium.Remote
         [JsonProperty("methodName")]
         public string MethodName
         {
-            get { return methodName; }
-            set { methodName = value; }
+            get { return this.methodName; }
+            set { this.methodName = value; }
         }
 
         /// <summary>
@@ -95,7 +95,7 @@ namespace OpenQA.Selenium.Remote
         /// <returns>A string representation of the object.</returns>
         public override string ToString()
         {
-            return string.Format(CultureInfo.InvariantCulture, "at {0}.{1} ({2), {3}", className, methodName, fileName, lineNumber);
+            return string.Format(CultureInfo.InvariantCulture, "at {0}.{1} ({2), {3}", this.className, this.methodName, this.fileName, this.lineNumber);
         }
     }
 }

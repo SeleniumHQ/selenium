@@ -29,7 +29,7 @@ namespace OpenQA.Selenium.Remote
         /// <returns>Object created from JSON</returns>
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            return ProcessToken(reader);
+            return this.ProcessToken(reader);
         }
 
         /// <summary>
@@ -54,7 +54,7 @@ namespace OpenQA.Selenium.Remote
                 {
                     string elementKey = reader.Value.ToString();
                     reader.Read();
-                    dictionaryValue.Add(elementKey, ProcessToken(reader));
+                    dictionaryValue.Add(elementKey, this.ProcessToken(reader));
                 }
 
                 processedObject = dictionaryValue;
@@ -64,7 +64,7 @@ namespace OpenQA.Selenium.Remote
                 List<object> arrayValue = new List<object>();
                 while (reader.Read() && reader.TokenType != JsonToken.EndArray)
                 {
-                    arrayValue.Add(ProcessToken(reader));
+                    arrayValue.Add(this.ProcessToken(reader));
                 }
 
                 processedObject = arrayValue.ToArray();
