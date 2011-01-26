@@ -225,6 +225,8 @@ class selenium:
 
     def get_string_array(self, verb, args):
         csv = self.get_string(verb, args)
+        if not csv:
+            return []
         token = ""
         tokens = []
         escape = False
