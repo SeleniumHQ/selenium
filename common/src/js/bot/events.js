@@ -28,8 +28,6 @@ goog.require('goog.events.EventType');
 goog.require('goog.userAgent');
 
 
-
-
 /**
  * Enumeration of mouse buttons that can be pressed.
  *
@@ -40,6 +38,7 @@ bot.events.Button = {
   MIDDLE: (goog.userAgent.IE ? 4 : 1),
   RIGHT: (goog.userAgent.IE ? 2 : 2)
 };
+
 
 /**
  * The related target field is only useful for mouseover, mouseout, dragenter
@@ -57,6 +56,7 @@ bot.events.RELATED_TARGET_EVENTS_ = [
   goog.events.EventType.MOUSEOUT
 ];
 
+
 /**
  * @typedef {{x: (number|undefined),
  *            y: (number|undefined),
@@ -69,6 +69,7 @@ bot.events.RELATED_TARGET_EVENTS_ = [
  *            related: (Element|undefined)}}
  */
 bot.events.MouseArgs;
+
 
 /**
  * Initialize a new mouse event. The opt_args can be used to pass in extra
@@ -99,7 +100,7 @@ bot.events.MouseArgs;
  *
  * @param {!Element} element The element on which the event will be fired.
  * @param {!goog.events.EventType} type One of the goog.events.EventType values.
- * @param {!bot.events.MouseArgs} opt_args See above.
+ * @param {!bot.events.MouseArgs=} opt_args See above.
  * @return {!Event} An initialized mouse event, with fields populated from
  *   opt_args.
  * @private
@@ -108,26 +109,22 @@ bot.events.newMouseEvent_ = function(element, type, opt_args) {
   var doc = goog.dom.getOwnerDocument(element);
   var win = goog.dom.getWindow(doc);
 
-  opt_args = opt_args || {};
-
+  var args = opt_args || {};
   // Use string indexes so we can be compiled aggressively
-  var x = opt_args['x'] || 0;
-  var y = opt_args['y'] || 0;
-  var button = opt_args['button'] || bot.events.Button.LEFT;
-
-  var canBubble = opt_args['bubble'] || true;
+  var x = args['x'] || 0;
+  var y = args['y'] || 0;
+  var button = args['button'] || bot.events.Button.LEFT;
+  var canBubble = args['bubble'] || true;
   // Only useful for mouseover, mouseout, dragenter and dragexit
   // https://developer.mozilla.org/en/DOM/event.relatedTarget
-
   var relatedTarget = null;
   if (goog.array.contains(bot.events.RELATED_TARGET_EVENTS_, type)) {
-    relatedTarget = opt_args['related'] || null;
+    relatedTarget = args['related'] || null;
   }
-
-  var alt = !!opt_args['alt'];
-  var control = !!opt_args['control'];
-  var shift = !!opt_args['shift'];
-  var meta = !!opt_args['meta'];
+  var alt = !!args['alt'];
+  var control = !!args['control'];
+  var shift = !!args['shift'];
+  var meta = !!args['meta'];
 
   var event;
   // IE path first
@@ -175,13 +172,20 @@ bot.events.newMouseEvent_ = function(element, type, opt_args) {
   return event;
 };
 
+
 /**
  * Data structure representing keyboard event arguments that may be
  * passed to the fire function.
  *
- * @typedef {{keyCode: number, charCode: number}}
+ * @typedef {{keyCode: (number|undefined),
+ *            charCode: (number|undefined),
+ *            alt: (boolean|undefined),
+ *            ctrl: (boolean|undefined),
+ *            shift: (boolean|undefined),
+ *            meta: (boolean|undefined)}}
  */
 bot.events.KeyboardArgs;
+
 
 /**
  * Initialize a new keyboard event.
@@ -189,18 +193,22 @@ bot.events.KeyboardArgs;
  * @param {!Element} element The element on which the event will be fired.
  * @param {!goog.events.EventType} type The type of keyboard event being sent,
  *   should be KEYPRESS, KEYDOWN, or KEYUP.
- * @param {!bot.events.KeyboardArgs} args See KeyboardArgs above.
- *
+ * @param {!bot.events.KeyboardArgs=} opt_args See above.
  * @return {!Event} An initialized keyboard event, with fields populated from
  *   opt_args.
  * @private
  */
-bot.events.newKeyEvent_ = function(element, type, args) {
-  // TODO(user): handle modifier keys, e.g., shift, ctrl, alt.
-  var keyCode = args['keyCode'] || 0;
-  var charCode = args['charCode'] || 0;
+bot.events.newKeyEvent_ = function(element, type, opt_args) {
   var doc = goog.dom.getOwnerDocument(element);
   var win = goog.dom.getWindow(doc);
+
+  var args = opt_args || {};
+  var keyCode = args['keyCode'] || 0;
+  var charCode = args['charCode'] || 0;
+  var alt = !!args['alt'];
+  var control = !!args['ctrl'];
+  var shift = !!args['shift'];
+  var meta = !!args['meta'];
 
   var event;
   if (goog.userAgent.GECKO) {
@@ -209,31 +217,43 @@ bot.events.newKeyEvent_ = function(element, type, args) {
                        /* bubbles= */ true,
                        /* cancelable= */true,
                        /* view= */ win,
-                       /* ctrlKey= */ false,
-                       /* altKey= */ false,
-                       /* shiftKey= */ false,
-                       /* metaKey= */ false,
+                       control,
+                       alt,
+                       shift,
+                       meta,
                        keyCode,
                        charCode);
   } else if (goog.userAgent.IE) {
     event = doc.createEventObject();
     event.keyCode = keyCode;
+    event.altKey = alt;
+    event.ctrlKey = control;
+    event.metaKey = meta;
+    event.shiftKey = shift;
   } else { // For both WebKit and Opera.
     event = doc.createEvent('Events');
     event.initEvent(type, true, true);
     event.charCode = charCode;
     event.keyCode = keyCode;
+    event.altKey = alt;
+    event.ctrlKey = control;
+    event.metaKey = meta;
+    event.shiftKey = shift;
   }
 
   return event;
 };
 
+
 /**
  * Data structure representing arguments that may be passed to the fire
  * function.
  *
- * @typedef {{bubble: boolean, alt: boolean, control: boolean,
- *             shift: boolean, meta: boolean}}
+ * @typedef {{bubble: (boolean|undefined),
+ *            alt: (boolean|undefined),
+ *            control: (boolean|undefined),
+ *            shift: (boolean|undefined),
+ *            meta: (boolean|undefined)}}
  */
 bot.events.HtmlArgs;
 
@@ -268,14 +288,12 @@ bot.events.newHtmlEvent_ = function(element, type, opt_args) {
   var doc = goog.dom.getOwnerDocument(element);
   var win = goog.dom.getWindow(doc);
 
-  opt_args = opt_args || {};
-
-  var canBubble = opt_args['bubble'] !== false;
-
-  var alt = !!opt_args['alt'];
-  var control = !!opt_args['control'];
-  var shift = !!opt_args['shift'];
-  var meta = !!opt_args['meta'];
+  var args = opt_args || {};
+  var canBubble = args['bubble'] !== false;
+  var alt = !!args['alt'];
+  var control = !!args['control'];
+  var shift = !!args['shift'];
+  var meta = !!args['meta'];
 
   var event;
   if (element['fireEvent'] && doc && doc['createEventObject']) {
@@ -287,7 +305,6 @@ bot.events.newHtmlEvent_ = function(element, type, opt_args) {
   } else {
     event = doc.createEvent('HTMLEvents');
     event.initEvent(type, canBubble, true);
-
     event.shiftKey = shift;
     event.metaKey = meta;
     event.altKey = alt;
@@ -297,13 +314,24 @@ bot.events.newHtmlEvent_ = function(element, type, opt_args) {
   return event;
 };
 
+
 /**
  * Maps symbolic names to functions used to initialize the event.
  *
+ * @type {!Object.<goog.events.EventType,
+ *        function(!Element, !goog.events.EventType, ...): !Event>}
  * @private
  * @const
  */
 bot.events.INIT_FUNCTIONS_ = {};
+bot.events.INIT_FUNCTIONS_[goog.events.EventType.CLICK] =
+    bot.events.newMouseEvent_;
+bot.events.INIT_FUNCTIONS_[goog.events.EventType.KEYDOWN] =
+    bot.events.newKeyEvent_;
+bot.events.INIT_FUNCTIONS_[goog.events.EventType.KEYPRESS] =
+    bot.events.newKeyEvent_;
+bot.events.INIT_FUNCTIONS_[goog.events.EventType.KEYUP] =
+    bot.events.newKeyEvent_;
 bot.events.INIT_FUNCTIONS_[goog.events.EventType.MOUSEDOWN] =
     bot.events.newMouseEvent_;
 bot.events.INIT_FUNCTIONS_[goog.events.EventType.MOUSEMOVE] =
@@ -314,14 +342,7 @@ bot.events.INIT_FUNCTIONS_[goog.events.EventType.MOUSEOVER] =
     bot.events.newMouseEvent_;
 bot.events.INIT_FUNCTIONS_[goog.events.EventType.MOUSEUP] =
     bot.events.newMouseEvent_;
-bot.events.INIT_FUNCTIONS_[goog.events.EventType.CLICK] =
-    bot.events.newMouseEvent_;
-bot.events.INIT_FUNCTIONS_[goog.events.EventType.KEYDOWN] =
-    bot.events.newKeyEvent_;
-bot.events.INIT_FUNCTIONS_[goog.events.EventType.KEYPRESS] =
-    bot.events.newKeyEvent_;
-bot.events.INIT_FUNCTIONS_[goog.events.EventType.KEYUP] =
-    bot.events.newKeyEvent_;
+
 
 /**
  * Dispatch the event in a browser-safe way.
@@ -357,6 +378,7 @@ bot.events.dispatchEvent_ = function(target, type, event) {
     return target.dispatchEvent((/**@type {Event} */event));
   }
 };
+
 
 /**
  * Fire a named event on a particular element.

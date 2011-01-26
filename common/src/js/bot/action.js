@@ -34,7 +34,7 @@ goog.require('goog.dom.NodeType');
 goog.require('goog.dom.TagName');
 goog.require('goog.events.EventType');
 goog.require('goog.userAgent');
-
+goog.require('goog.Uri');
 
 
 /**
@@ -70,13 +70,11 @@ bot.action.checkEnabled_ = function(element) {
  * @return {boolean} Whether the element could be checked or selected.
  */
 bot.action.isSelectable = function(element) {
-  var tagName = element.tagName.toUpperCase();
-
-  if (tagName == goog.dom.TagName.OPTION) {
+  if (bot.dom.isElement(element, goog.dom.TagName.OPTION)) {
     return true;
   }
 
-  if (tagName == goog.dom.TagName.INPUT) {
+  if (bot.dom.isElement(element, goog.dom.TagName.INPUT)) {
     var type = element.type.toLowerCase();
     return type == 'checkbox' || type == 'radio';
   }
@@ -92,15 +90,13 @@ bot.action.isSelectable = function(element) {
  * @return {boolean} Whether the element accepts user-typed text.
  */
 bot.action.isTextual = function(element) {
-  var tagName = element.tagName.toUpperCase();
-
-  if (tagName == goog.dom.TagName.TEXTAREA) {
+  if (bot.dom.isElement(element, goog.dom.TagName.TEXTAREA)) {
     return true;
   }
 
-  if (tagName == goog.dom.TagName.INPUT) {
+  if (bot.dom.isElement(element, goog.dom.TagName.INPUT)) {
     var type = element.type.toLowerCase();
-    return type == 'text' || type == 'password' || type == 'email';
+    return type == 'text' || type == 'password';
   }
 
   return false;
@@ -133,8 +129,7 @@ bot.action.isSelected = function(element) {
  * @private
  */
 bot.action.isSelectElement_ = function(node) {
-  return node.nodeType == goog.dom.NodeType.ELEMENT &&
-      node.tagName.toUpperCase() == goog.dom.TagName.SELECT;
+  return bot.dom.isElement(node, goog.dom.TagName.SELECT);
 };
 
 
@@ -213,18 +208,13 @@ bot.action.setSelected = function(element, selected) {
   bot.action.checkEnabled_(element);
   bot.action.checkShown_(element);
 
-  switch (element.tagName.toUpperCase()) {
-    case goog.dom.TagName.INPUT:
-      bot.action.selectInputElement_(element, selected);
-      break;
-
-    case goog.dom.TagName.OPTION:
-      bot.action.selectOptionElement_(element, selected);
-      break;
-
-    default:
-      throw new bot.Error(bot.ErrorCode.ELEMENT_NOT_SELECTABLE,
-          'You may not select an unselectable element: ' + element.tagName);
+  if (bot.dom.isElement(element, goog.dom.TagName.INPUT)) {
+    bot.action.selectInputElement_(element, selected);
+  } else if (bot.dom.isElement(element, goog.dom.TagName.OPTION)) {
+    bot.action.selectOptionElement_(element, selected);
+  } else {
+    throw new bot.Error(bot.ErrorCode.ELEMENT_NOT_SELECTABLE,
+        'You may not select an unselectable element: ' + element.tagName);
   }
 };
 
@@ -238,7 +228,7 @@ bot.action.setSelected = function(element, selected) {
  * @see bot.action.isSelected
  */
 bot.action.toggle = function(element) {
-  if (element.tagName.toUpperCase() == goog.dom.TagName.INPUT &&
+  if (bot.dom.isElement(element, goog.dom.TagName.INPUT) &&
       'radio' == element.type) {
     throw new bot.Error(bot.ErrorCode.INVALID_ELEMENT_STATE,
         'You may not toggle a radio button');
@@ -330,8 +320,7 @@ bot.action.clear = function(element) {
  * @private
  */
 bot.action.isForm_ = function(node) {
-  return !!node && node.nodeType == goog.dom.NodeType.ELEMENT &&
-      node.tagName.toUpperCase() == goog.dom.TagName.FORM;
+  return bot.dom.isElement(node, goog.dom.TagName.FORM);
 };
 
 
@@ -425,13 +414,81 @@ bot.action.click = function(element) {
 
   bot.action.focusOnElement(element, activeElement);
   if (!bot.dom.isShown(element)) {
-    return;
+    return;  
   }
 
   bot.events.fire(element, goog.events.EventType.MOUSEUP, coords);
   if (!bot.dom.isShown(element)) {
     return;
   }
+  
+  var performDefault =
+      bot.events.fire(element, goog.events.EventType.CLICK, coords);
 
-  bot.events.fire(element, goog.events.EventType.CLICK, coords);
+  if (goog.userAgent.IE || goog.userAgent.GECKO) {
+    if (performDefault) {
+      var anchor = /**@type {Element}*/ (goog.dom.getAncestor(element,
+          function(e) {
+            return bot.dom.isElement(e, goog.dom.TagName.A);
+          }, true));
+
+      if (anchor && anchor.href) {
+        bot.action.followHref_(anchor);
+      }
+    }
+  }
+};
+
+/**
+ * Explicitly follows the href of an anchor.
+ *
+ * @param {!Element} anchorElement An anchor element.
+ * @private
+ */
+bot.action.followHref_ = function(anchorElement) {
+  var targetHref = anchorElement.href;
+  var owner = goog.dom.getWindow(goog.dom.getOwnerDocument(anchorElement));
+  owner.location.href = goog.Uri.resolve(owner.location.href, targetHref);
+};
+
+
+/**
+ * Go back in the browser history. The number of pages to go back can
+ * optionally be specified and defaults to 1.
+ *
+ * @param {number=} opt_numPages Number of pages to go back.
+ */
+bot.action.back = function(opt_numPages) {
+  var numPages = bot.action.checkNumPages_(opt_numPages);
+  bot.getWindow().history.go(-numPages);
+};
+
+
+/**
+ * Go forward in the browser history. The number of pages to go forward can
+ * optionally be specified and defaults to 1.
+ *
+ * @param {number=} opt_numPages Number of pages to go forward.
+ */
+bot.action.forward = function(opt_numPages) {
+  var numPages = bot.action.checkNumPages_(opt_numPages);
+  bot.getWindow().history.go(numPages);
+};
+
+
+/**
+ * @param {number=} opt_numPages Number of pages to move in history.
+ * @return {number} Correct number of pages to move in history.
+ */
+bot.action.checkNumPages_ = function(opt_numPages) {
+  var numPages = goog.isDef(opt_numPages) ? opt_numPages : 1;
+  if (numPages <= 0) {
+    throw new bot.Error(bot.ErrorCode.UNKNOWN_ERROR,
+        'number of pages must be positive');
+  }
+  if (numPages >= bot.getWindow().history.length) {
+    throw new bot.Error(bot.ErrorCode.UNKNOWN_ERROR,
+        'number of pages must be less than the length of the browser history');
+  }
+  return numPages;
 };

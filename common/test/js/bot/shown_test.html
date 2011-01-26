@@ -5,8 +5,10 @@
   <script src="../webdriver-bootstrap.js"></script>
   <script src="deps.js"></script>
   <script type="text/javascript">
+    goog.require('bot');
     goog.require('bot.dom');
     goog.require('bot.locators');
+    goog.require('goog.dom');
     goog.require('goog.testing.ExpectedFailures');
     goog.require('goog.testing.jsunit');
     goog.require('goog.userAgent');
@@ -177,6 +179,39 @@
       var transparent = findElement({id: 'transparent'});
       assertFalse(isShown(transparent));
     }
+
+    function testTitleOfTopWindowShown() {
+      var title = findElement({tagName: 'title'});
+      assertTrue(isShown(title));
+
+      // Try as we might, the title is still shown.
+      title.style.visibility = 'hidden';
+      title.style.display = 'none';
+      title.style.opacity = '0';
+      title.style.filter = 'alpha(opacity=0)';
+      title.width = 0;
+      title.height = 0;
+      assertTrue(isShown(title));
+    }
+
+    function testTitleOfFrameWindowNotShown() {
+      var iframe = findElement({id: 'iframe'});
+      var iframeDoc = goog.dom.getFrameContentDocument(iframe);
+      var iframeTitle = findElement({tagName: 'title'}, iframeDoc);
+      assertFalse(isShown(iframeTitle));
+    }
+
+    function testTitleOfFrameWindowShownWhenItIsBotWindow() {
+      var iframe = findElement({id: 'iframe'});
+      var iframeWin = goog.dom.getFrameContentWindow(iframe);
+      var iframeDoc = goog.dom.getFrameContentDocument(iframe);
+      var iframeTitle = findElement({tagName: 'title'}, iframeDoc);
+
+      var originalWindow = bot.getWindow();
+      bot.setWindow(iframeWin);
+      assertTrue(isShown(iframeTitle));
+      bot.setWindow(originalWindow);
+    }
   </script>
 
   <style type="text/css">
@@ -262,7 +297,7 @@
 <map id="shownMap" name="shownMap">
   <area id="shownArea" shape="rect" coords="0,0,1,1" href="#">
 </map>
-<img usemap="#hiddenImageMap" src="map.png" style="visibility: hidden">
+<img usemap="#hiddenImageMap" src="testdata/map.png" style="visibility: hidden">
 <map id="hiddenImageMap" name="hiddenImageMap">
   <area id="hiddenArea" shape="rect" coords="0,0,1,1" href="#">
 </map>
@@ -271,6 +306,8 @@
 <area id="orphanArea" shape="rect" coords="0,0,1,1" href="#"></area>
 
 <a id="containsNestedBlock" href="#"><div style="display:block;">text</div></a>
+
+<iframe id="iframe" src="testdata/iframe_page.html"></iframe>
 
 </body>
 </html>

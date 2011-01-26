@@ -20,7 +20,6 @@ goog.require('goog.dom');
 goog.require('goog.dom.DomHelper');
 
 
-
 /**
  * Find an element by its tag name.
  * @param {string} target The tag name to search for.

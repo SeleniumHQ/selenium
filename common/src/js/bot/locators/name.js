@@ -15,9 +15,9 @@
 
 goog.provide('bot.locators.name');
 
+goog.require('bot.dom');
 goog.require('goog.array');
 goog.require('goog.dom');
-
 
 
 /**
@@ -33,7 +33,7 @@ bot.locators.name.single = function(target, root) {
   var dom = goog.dom.getDomHelper(root);
   var allElements = dom.getElementsByTagNameAndClass('*', null, root);
   var element = goog.array.find(allElements, function(element) {
-    return element.getAttribute('name') == target || element.name == target;
+    return bot.dom.getAttribute(element, 'name') == target;
   });
   return (/**@type{Element}*/element);
 };
@@ -51,6 +51,6 @@ bot.locators.name.many = function(target, root) {
   var dom = goog.dom.getDomHelper(root);
   var allElements = dom.getElementsByTagNameAndClass('*', null, root);
   return goog.array.filter(allElements, function(element) {
-    return element.getAttribute('name') == target || element.name == target;
+    return bot.dom.getAttribute(element, 'name') == target;
   });
 };

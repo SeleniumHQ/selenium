@@ -66,3 +66,4 @@ bot.locators.xpath.many = function(target, root) {
   // Type-cast to account for an inconsistency in closure type annotations.
   return (/**@type{!goog.array.ArrayLike}*/nodes);
 };
+

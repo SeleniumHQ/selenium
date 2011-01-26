@@ -3,6 +3,7 @@
 <head>
   <title>focus_test.html</title>
   <script src="../webdriver-bootstrap.js"></script>
+  <script src="./window_focus.js"></script>
   <script src="deps.js"></script>
   <script type="text/javascript">
     goog.require('bot.action');
@@ -88,6 +89,15 @@
     }
 
     function testShouldBeAbleToFocusOnAnElement() {
+      // NOTE(user): Test does not work on IE 8 with the new IE Driver,
+      // I suspect due to something similar to
+      // http://support.microsoft.com/kb/973528
+      if (goog.userAgent.IE && goog.userAgent.isVersion('8')) {
+        return;
+      }
+      if (!isWindowFocused()) {
+        return;
+      }
       recordBlurAndFocus(text1);
       recordBlurAndFocus(text2);
 
@@ -116,6 +126,10 @@
     }
 
     function testShouldRetainFocusIfElementIsAlreadyActive() {
+      if (!isWindowFocused()) {
+        return;
+      }
+
       recordBlurAndFocus(text1);
       recordBlurAndFocus(text2);
 

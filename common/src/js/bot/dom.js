@@ -16,6 +16,7 @@
 /**
  * @fileoverview DOM manipulation and querying routines.
  *
+ *
  */
 
 goog.provide('bot.dom');
@@ -26,7 +27,6 @@ goog.require('goog.array');
 goog.require('goog.dom.NodeIterator');
 goog.require('goog.dom.NodeType');
 goog.require('goog.dom.TagName');
-goog.require('goog.dom');
 goog.require('goog.math.Size');
 goog.require('goog.string');
 goog.require('goog.style');
@@ -44,13 +44,15 @@ bot.dom.getActiveElement = function(nodeOrWindow) {
 
 
 /**
+ * Returns whether the given node is an element and, optionally, whether it has
+ * the given tag name. If the tag name is not provided, returns true if the node
+ * is an element, regardless of the tag name.h
+ *
  * @param {Node} node The node to test.
- * @param {goog.dom.TagName=} opt_tagName Tag name to test the node for; if not
- *     provided, return value is true for any element regardless of tag name.
+ * @param {goog.dom.TagName=} opt_tagName Tag name to test the node for.
  * @return {boolean} Whether the node is an element with the given tag name.
- * @private
  */
-bot.dom.isElement_ = function(node, opt_tagName) {
+bot.dom.isElement = function(node, opt_tagName) {
   return !!node && node.nodeType == goog.dom.NodeType.ELEMENT &&
       (!opt_tagName || node.tagName.toUpperCase() == opt_tagName);
 };
@@ -270,7 +272,7 @@ bot.dom.getParentElement_ = function(node) {
          elem.nodeType != goog.dom.NodeType.DOCUMENT_FRAGMENT) {
     elem = elem.parentNode;
   }
-  return (/** @type {Element} */ bot.dom.isElement_(elem) ? elem : null);
+  return (/** @type {Element} */ bot.dom.isElement(elem) ? elem : null);
 };
 
 
@@ -351,21 +353,27 @@ bot.dom.getElementSize_ = function(element) {
  * @return {boolean} Whether or not the element would be visible.
  */
 bot.dom.isShown = function(elem) {
-  if (!bot.dom.isElement_(elem)) {
+  if (!bot.dom.isElement(elem)) {
     throw new Error('Argument to isShown must be of type Element');
   }
 
+  // Title elements are shown if and only if they belong to the bot window.
+  if (bot.dom.isElement(elem, goog.dom.TagName.TITLE)) {
+    var titleWindow = goog.dom.getWindow(goog.dom.getOwnerDocument(elem));
+    return titleWindow == bot.getWindow();
+  }
+
   // Option or optgroup is shown iff enclosing select is shown.
-  if (bot.dom.isElement_(elem, goog.dom.TagName.OPTION) ||
-      bot.dom.isElement_(elem, goog.dom.TagName.OPTGROUP)) {
+  if (bot.dom.isElement(elem, goog.dom.TagName.OPTION) ||
+      bot.dom.isElement(elem, goog.dom.TagName.OPTGROUP)) {
     var select = /**@type {Element}*/ (goog.dom.getAncestor(elem, function(e) {
-      return bot.dom.isElement_(e, goog.dom.TagName.SELECT);
+      return bot.dom.isElement(e, goog.dom.TagName.SELECT);
     }));
     return !!select && bot.dom.isShown(select);
   }
 
   // Map is shown iff image that uses it is shown.
-  if (bot.dom.isElement_(elem, goog.dom.TagName.MAP)) {
+  if (bot.dom.isElement(elem, goog.dom.TagName.MAP)) {
     if (!elem.name) {
       return false;
     }
@@ -374,18 +382,13 @@ bot.dom.isShown = function(elem) {
     // TODO(user): Avoid brute-force search once a cross-browser xpath
     // locator is available.
     if (mapDoc['evaluate']) {
-      // The "//*" XPath syntax can confuse the closure compiler, so we use
-      // the "/descendant::*" syntax instead.
-      // TODO(user): Try to find a reproducible case for the compiler bug.
-      // TODO(user): Restrict to applet, img, input:image, and object nodes.
-      var imageXpath = '/descendant::*[@usemap = "#' + elem.name + '"]';
-
+      var imageXpath = '//*[@usemap = "#' + elem.name + '"]';
       // TODO(user): Break dependency of bot.locators on bot.dom,
       // so bot.locators.findElement can be called here instead.
       mapImage = bot.locators.xpath.single(imageXpath, mapDoc);
     } else {
       mapImage = goog.dom.findNode(mapDoc, function(n) {
-        return bot.dom.isElement_(n) &&
+        return bot.dom.isElement(n) &&
                bot.dom.getAttribute(n, 'usemap') == '#' + elem.name;
       });
     }
@@ -393,15 +396,15 @@ bot.dom.isShown = function(elem) {
   }
 
   // Area is shown iff enclosing map is shown.
-  if (bot.dom.isElement_(elem, goog.dom.TagName.AREA)) {
+  if (bot.dom.isElement(elem, goog.dom.TagName.AREA)) {
     var map = /**@type {Element}*/ (goog.dom.getAncestor(elem, function(e) {
-      return bot.dom.isElement_(e, goog.dom.TagName.MAP);
+      return bot.dom.isElement(e, goog.dom.TagName.MAP);
     }));
     return !!map && bot.dom.isShown(map);
   }
 
   // Any hidden input is not shown.
-  if (bot.dom.isElement_(elem, goog.dom.TagName.INPUT) &&
+  if (bot.dom.isElement(elem, goog.dom.TagName.INPUT) &&
       elem.type.toLowerCase() == 'hidden') {
     return false;
   }
@@ -440,7 +443,7 @@ bot.dom.isShown = function(elem) {
     // We compensate for that bug by assuming an element has a positive size if
     // any of its children have positive size.
     return goog.userAgent.WEBKIT && goog.array.some(e.childNodes, function(n) {
-      return bot.dom.isElement_(n) && positiveSize(n);
+      return bot.dom.isElement(n) && positiveSize(n);
     });
   }
   if (!positiveSize(elem)) {
@@ -566,10 +569,10 @@ bot.dom.isClosestAncestorBlockLevel_ = function(elements, nodeIndex) {
  * @private
  */
 bot.dom.isBlockLevel_ = function(node) {
-  if (bot.dom.isElement_(node, goog.dom.TagName.BR)) {
+  if (bot.dom.isElement(node, goog.dom.TagName.BR)) {
     return true;
   }
-  if (!bot.dom.isElement_(node)) {
+  if (!bot.dom.isElement(node)) {
     return false;
   }
   var element = /** @type {!Element} */ (node);

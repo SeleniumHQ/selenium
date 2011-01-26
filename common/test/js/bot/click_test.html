@@ -3,9 +3,11 @@
 <head>
   <title>click_test.html</title>
   <script src="../webdriver-bootstrap.js"></script>
+  <script src="./window_focus.js"></script>
   <script src="deps.js"></script>
   <script type="text/javascript">
     goog.require('bot.action');
+    goog.require('bot.locators');
     goog.require('goog.debug.DivConsole');
     goog.require('goog.debug.Logger');
     goog.require('goog.dom');
@@ -15,11 +17,11 @@
     goog.require('goog.testing.jsunit');
   </script>
   <script type="text/javascript">
-
-
     var clicker;
     var clickLocation;
     var divConsole;
+
+    var findElement = bot.locators.findElement;
     var log = goog.debug.Logger.getLogger('click_test');
 
     function resetClicker() {
@@ -56,7 +58,7 @@
     }
 
     function tearDown() {
-      resetClicker();
+       resetClicker();
     }
 
 
@@ -84,9 +86,12 @@
 
 
     // TODO(user): This test demands that firefox has focus
-    function xtestShouldFocusOnAnElementBeforeFinishingClickSequence() {
-      // This test will fail if the browser is Firefox and it does not have 
+    function testShouldFocusOnAnElementBeforeFinishingClickSequence() {
+      // This test will fail if the browser is Firefox and it does not have
       // focus (when launching the tests on Mac, this is the case by default).
+      if (!isWindowFocused()) {
+        return;
+      }
       var focused = false;
       clicker.blur();
       goog.dom.$('noHeight').focus();
@@ -113,6 +118,21 @@
       });
       bot.action.click(clicker);
       assertArrayEquals(expectedEvents, events);
+    }
+
+
+    function testClickExecutesDefaultHandler() {
+      var clickTarget = findElement({id: 'clickTarget'});
+      // Make sure no other event listeners are interfering.
+      goog.events.removeAll(clickTarget);
+
+      // Use a random value as we don't want to keep an old
+      // misleading hash in the url.
+      var targetHref = '#' + Math.random();
+      clickTarget.href = targetHref;
+
+      bot.action.click(clickTarget);
+      assertEquals(targetHref, window.location.hash);
     }
 
     // http://code.google.com/p/selenium/issues/detail?id=1207
@@ -146,21 +166,166 @@
       runTest([goog.events.EventType.MOUSEOVER,
                goog.events.EventType.MOUSEMOVE,
                goog.events.EventType.MOUSEDOWN]);
-      runTest([goog.events.EventType.MOUSEOVER,
-               goog.events.EventType.MOUSEMOVE,
-               goog.events.EventType.MOUSEDOWN,
-               goog.events.EventType.FOCUS]);
-      runTest([goog.events.EventType.MOUSEOVER,
-               goog.events.EventType.MOUSEMOVE,
-               goog.events.EventType.MOUSEDOWN,
-               goog.events.EventType.FOCUS,
-               goog.events.EventType.MOUSEUP]);
-      runTest([goog.events.EventType.MOUSEOVER,
-               goog.events.EventType.MOUSEMOVE,
-               goog.events.EventType.MOUSEDOWN,
-               goog.events.EventType.FOCUS,
-               goog.events.EventType.MOUSEUP,
-               goog.events.EventType.CLICK]);
+      if (isWindowFocused()) {
+        alert(windowFocused);
+        runTest([goog.events.EventType.MOUSEOVER,
+                 goog.events.EventType.MOUSEMOVE,
+                 goog.events.EventType.MOUSEDOWN,
+                 goog.events.EventType.FOCUS]);
+        runTest([goog.events.EventType.MOUSEOVER,
+                 goog.events.EventType.MOUSEMOVE,
+                 goog.events.EventType.MOUSEDOWN,
+                 goog.events.EventType.FOCUS,
+                 goog.events.EventType.MOUSEUP]);
+        runTest([goog.events.EventType.MOUSEOVER,
+                 goog.events.EventType.MOUSEMOVE,
+                 goog.events.EventType.MOUSEDOWN,
+                 goog.events.EventType.FOCUS,
+                 goog.events.EventType.MOUSEUP,
+                 goog.events.EventType.CLICK]);
+        }
+    }
+
+    function testClickOnANestedElementExecutesDefaultHandler() {
+      var parent = findElement({id: 'clickTargetWithAChild'});
+
+      // Use a random value as we don't want to keep an old
+      // misleading hash in the url.
+      var targetHref = '#' + Math.random();
+      parent.href = targetHref;
+
+      var clickTarget = goog.dom.getFirstElementChild(parent);
+      bot.action.click(clickTarget);
+      assertEquals(targetHref, window.location.hash);
+    }
+
+
+    function testClickOnAnAbsoluteUrlInAnIframeExecutesDefaultHandler() {
+      var iframe = findElement({id: 'iframe'});
+      var iframeWindow = goog.dom.getFrameContentWindow(iframe);
+      var domHelper = goog.dom.getDomHelper(iframeWindow);
+      var clickTarget = domHelper.getElement('iframeClickTarget');
+
+      // Use a random value as we don't want to keep an old
+      // misleading hash in the url.
+      var targetHref = goog.Uri.resolve(iframeWindow.location,
+          '#' + Math.random()).toString();
+
+      // Let's make sure it is an absolute url.
+      assertContains('http', targetHref);
+
+      clickTarget.href = targetHref;
+      bot.action.click(clickTarget);
+      assertEquals(targetHref, iframeWindow.location.href);
+    }
+
+
+    function testClickOnAnAbsoluteServerPathAnchorInAnIframeExecutesDefaultHandler() {
+      var iframe = findElement({id: 'iframe'});
+      var iframeWindow = goog.dom.getFrameContentWindow(iframe);
+      var domHelper = goog.dom.getDomHelper(iframeWindow);
+      var clickTarget = domHelper.getElement('iframeClickTarget');
+
+      // Use a random value as we don't want to keep an old
+      // misleading hash in the url.
+      var expectedEnding = Math.random();
+      var targetHref =
+        '../testdata/click_iframe.html#' + expectedEnding;
+      clickTarget.href = targetHref;
+      bot.action.click(clickTarget);
+      assertContains(expectedEnding, iframeWindow.location.href);
+    }
+
+
+    function testClickOnAnRelativeServerPathAnchorInAnIframeExecutesDefaultHandler() {
+      var iframe = findElement({id: 'iframe'});
+      var iframeWindow = goog.dom.getFrameContentWindow(iframe);
+      var domHelper = goog.dom.getDomHelper(iframeWindow);
+      var clickTarget = domHelper.getElement('iframeClickTarget');
+
+      // Use a random value as we don't want to keep an old
+      // misleading hash in the url.
+      var targetHref = 'click_iframe.html#' + Math.random();
+      clickTarget.href = targetHref;
+      bot.action.click(clickTarget);
+      assertContains(targetHref, iframeWindow.location.href);
+    }
+
+
+    function testClickOnAnHashOnlyAnchorInAnIframeExecutesDefaultHandler() {
+      var iframe = findElement({id: 'iframe'});
+      var iframeWindow = goog.dom.getFrameContentWindow(iframe);
+      var domHelper = goog.dom.getDomHelper(iframeWindow);
+      var clickTarget = domHelper.getElement('iframeClickTarget');
+
+      // Use a random value as we don't want to keep an old
+      // misleading hash in the url.
+      var targetHref = '#' + Math.random();
+      clickTarget.href = targetHref;
+      bot.action.click(clickTarget);
+      assertEquals(targetHref, iframeWindow.location.hash);
+    }
+
+
+    function testClickOnAnNestedElementInAnIframeExecutesDefaultHandler() {
+      var iframe = findElement({id: 'iframe'});
+      var iframeWindow = goog.dom.getFrameContentWindow(iframe);
+      var domHelper = goog.dom.getDomHelper(iframeWindow);
+      var parent = domHelper.getElement('iframeClickTargetWithAChild');
+      var clickTarget = goog.dom.getFirstElementChild(parent);
+
+      // Use a random value as we don't want to keep an old
+      // misleading hash in the url.
+      var targetHref = '#' + Math.random();
+      parent.href = targetHref;
+      bot.action.click(clickTarget);
+      assertEquals(targetHref, iframeWindow.location.hash);
+    }
+
+    function testClickDoesNotFollowLinkWhenEventDefaultPrevented() {
+      var clickTarget = findElement({id: 'clickTarget'});
+      // Make sure no other event listeners are interfering.
+      goog.events.removeAll(clickTarget);
+
+      var previousLocation = window.location.href;
+      clickTarget.href = '#' + Math.random();
+      goog.events.listen(clickTarget, goog.events.EventType.CLICK, function(e) {
+        e.preventDefault();
+      });
+
+      bot.action.click(clickTarget);
+      assertEquals(previousLocation, window.location.href);
+    }
+
+
+    function testClickDoesNotFollowLinkWhenEventDefaltPreventedWithInlineHandler() {
+      var clickTarget = findElement({id: 'clickTargetWithInlineHandler'});
+
+      var previousLocation = window.location.href;
+      clickTarget.href = '#' + Math.random();
+
+      bot.action.click(clickTarget);
+      assertEquals(previousLocation, window.location.href);
+    }
+
+
+    function testClickDoesNotFollowLinkWhenNoHrefIsGiven() {
+      var clickTarget = findElement({id: 'clickTargetWithNoHref'});
+      // Make sure no other event listeners are interfering.
+      goog.events.removeAll(clickTarget);
+      var previousLocation = window.location.href;
+
+      bot.action.click(clickTarget);
+      assertEquals(previousLocation, window.location.href);
+    }
+
+
+    function testClickOnANestedElelementDoesNotFollowLinkWhenNoHrefIsGiven() {
+      var clickTarget = findElement({id: 'clickTargetWithAChildAndNoHref'});
+
+      var previousLocation = window.location.href;
+      bot.action.click(clickTarget);
+      assertContains(previousLocation, window.location.href);
     }
   </script>
 </head>
@@ -170,13 +335,21 @@
     <label for="clicker">Click me:</label><input id="clicker" type="checkbox"/><br/>
     <div id="log"></div>
     <script>
-clicker = goog.dom.$('clicker');
-clickLocation = goog.style.getBounds(clicker);
+      clicker = goog.dom.$('clicker');
+      clickLocation = goog.style.getBounds(clicker);
 
-divConsole = new goog.debug.DivConsole(goog.dom.$('log'));
-divConsole.setCapturing(true);
-    </script>
+      divConsole = new goog.debug.DivConsole(goog.dom.$('log'));
+      divConsole.setCapturing(true);
+    </script>    
   </form>
   <div id="noHeight" style="height:0; line-height:0;">&nbsp;</div>
+  <a id="clickTarget">Click me!</a>
+  <a id="clickTargetWithNoHref">Click me!</a>
+  <a id="clickTargetWithAChild">Click <strong>the nested</strong> element</span></a>
+  <a id="clickTargetWithAChildAndNoHref">Click <strong>the nested</strong> element with no href</span></a>
+  <a id="clickTargetWithInlineHandler" onclick="return false;">Click me, I will not follow the link!</a>
+  <iframe id="iframe" src="testdata/click_iframe.html">
+
+  </iframe>
 </body>
 </html>

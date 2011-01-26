@@ -23,12 +23,32 @@
 goog.provide('bot');
 
 
-
 /**
  * Frameworks using the atoms keep track of which window or frame is currently
- * being used for command execution. This may change independantly of
+ * being used for command execution. This may change independently of
  * goog.global, even though this provides a sensible default value.
+ *
+ * @type {!Window}
  * @private
  */
 bot.window_ = goog.global;
 
+
+/**
+ * Returns the window currently being used for command execution.
+ *
+ * @return {!Window} The window for command execution.
+ */
+bot.getWindow = function() {
+  return bot.window_;
+};
+
+
+/**
+ * Sets the window to be used for command execution.
+ *
+ * @param {!Window} win The window for command execution.
+ */
+bot.setWindow = function(win) {
+  bot.window_ = win;
+};
