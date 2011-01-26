@@ -24,7 +24,7 @@ def setup_module(module):
     webserver = SimpleWebServer()
     webserver.start()
     IeStaleReferenceTests.webserver = webserver
-    IeStaleReferenceTests.driver = webdriver.connect('chrome')
+    IeStaleReferenceTests.driver = webdriver.connect('ie')
 
 
 class IeStaleReferenceTests(stale_reference_tests.StaleReferenceTests):
