@@ -529,7 +529,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.IE)]
         [IgnoreBrowser(Browser.Firefox)]
         [IgnoreBrowser(Browser.Remote)]
         public void ShouldBeAbleToPassAnArrayAsAdditionalArgument()
@@ -547,7 +546,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.IE)]
         [IgnoreBrowser(Browser.Remote)]
         public void ShouldBeAbleToPassACollectionAsArgument()
         {
@@ -575,7 +573,7 @@ namespace OpenQA.Selenium
                 return;
 
             driver.Url = javascriptPage;
-            ExecuteScript("return arguments[0];", new List<IWebElement>());
+            ExecuteScript("return arguments[0];", driver);
         }
 
         [Test]

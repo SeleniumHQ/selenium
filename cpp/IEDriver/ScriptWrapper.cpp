@@ -327,7 +327,7 @@ int ScriptWrapper::ConvertResultToJsonValue(BrowserManager *manager, Json::Value
 				}
 			}
 
-			for (long i = 0; i < property_names.size(); ++i) {
+			for (size_t i = 0; i < property_names.size(); ++i) {
 				Json::Value property_value_result;
 				int property_value_status = this->GetPropertyValue(manager, property_names[i], &property_value_result);
 				std::string name(CW2A(property_names[i].c_str(), CP_UTF8));
