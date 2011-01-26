@@ -38,6 +38,7 @@
       <class name="com.thoughtworks.selenium.corebased.TestWait"/>
       <class name="com.thoughtworks.selenium.corebased.TestWaitForNot"/>
       <class name="com.thoughtworks.selenium.corebased.TestXPathLocators"/>
+      <class name="com.thoughtworks.selenium.corebased.TestGettingValueOfCheckbox"/>
     </classes>
   </test>
 </suite>

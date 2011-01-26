@@ -18,6 +18,7 @@ limitations under the License.
 package org.openqa.selenium.internal.seleniumemulation;
 
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 
 public class GetValue extends SeleneseCommand<String> {
   private final ElementFinder finder;
@@ -28,6 +29,18 @@ public class GetValue extends SeleneseCommand<String> {
 
   @Override
   protected String handleSeleneseCommand(WebDriver driver, String locator, String ignored) {
-    return finder.findElement(driver, locator).getValue();
+    WebElement element = finder.findElement(driver, locator);
+    // Special-case handling for checkboxes: The Selenium API returs "on" for
+    // checked checkboxes and off for unchecked ones. WebDriver will return "null" for
+    // the "checked" attribute if the checkbox is not-checked, "true" otherwise.
+    if (element.getTagName().equals("input") && element.getAttribute("type").equals("checkbox")) {
+      if (element.getAttribute("checked") == null) {
+        return "off";
+      } else {
+        return "on";
+      }      
+    }
+
+    return element.getValue();
   }
 }
