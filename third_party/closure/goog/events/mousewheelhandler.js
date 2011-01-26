@@ -134,12 +134,15 @@ goog.events.MouseWheelHandler.prototype.handleEvent = function(e) {
       wheelDeltaScaleFactor = 40;
     }
 
-    detail = -be.wheelDelta / wheelDeltaScaleFactor;
+    detail = goog.events.MouseWheelHandler.smartScale_(
+        -be.wheelDelta, wheelDeltaScaleFactor);
     if (goog.isDef(be.wheelDeltaX)) {
       // Webkit has two properties to indicate directional scroll, and
       // can scroll both directions at once.
-      deltaX = -be.wheelDeltaX / wheelDeltaScaleFactor;
-      deltaY = -be.wheelDeltaY / wheelDeltaScaleFactor;
+      deltaX = goog.events.MouseWheelHandler.smartScale_(
+          -be.wheelDeltaX, wheelDeltaScaleFactor);
+      deltaY = goog.events.MouseWheelHandler.smartScale_(
+          -be.wheelDeltaY, wheelDeltaScaleFactor);
     } else {
       deltaY = detail;
     }
@@ -180,6 +183,39 @@ goog.events.MouseWheelHandler.prototype.handleEvent = function(e) {
     this.dispatchEvent(newEvent);
   } finally {
     newEvent.dispose();
+  }
+};
+
+
+/**
+ * Helper for scaling down a mousewheel delta by a scale factor, if appropriate.
+ * @param {number} mouseWheelDelta Delta from a mouse wheel event. Expected to
+ *     be an integer.
+ * @param {number} scaleFactor Factor to scale the delta down by. Expected to
+ *     be an integer.
+ * @return {number} Scaled-down delta value, or the original delta if the
+ *     scaleFactor does not appear to be applicable.
+ * @private
+ */
+goog.events.MouseWheelHandler.smartScale_ = function(mouseWheelDelta,
+    scaleFactor) {
+  // The basic problem here is that in Webkit on Mac, we can get two very
+  // different types of mousewheel events: from continuous devices (touchpads,
+  // Mighty Mouse) or non-continuous devices (normal wheel mice).
+  //
+  // Non-continuous devices in Webkit Mac get their wheel deltas scaled up to
+  // behave like IE. Continuous devices return much smaller unscaled values
+  // (which most of the time will not be cleanly divisible by the IE scale
+  // factor), so we should not try to normalize them down.
+  //
+  // Detailed discussion:
+  //   https://bugs.webkit.org/show_bug.cgi?id=29601
+  //   http://trac.webkit.org/browser/trunk/WebKit/chromium/src/mac/WebInputEventFactory.mm#L1063
+  if (goog.userAgent.WEBKIT && goog.userAgent.MAC &&
+      (mouseWheelDelta % scaleFactor) != 0) {
+    return mouseWheelDelta;
+  } else {
+    return mouseWheelDelta / scaleFactor;
   }
 };
 

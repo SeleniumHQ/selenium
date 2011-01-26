@@ -71,6 +71,13 @@ goog.editor.SeamlessField.prototype.logger =
 
 
 /**
+ * The key used for listening for the "dragover" event.
+ * @type {number?}
+ */
+goog.editor.SeamlessField.prototype.listenForDragOverEventKey_;
+
+
+/**
  * Sets the min height of this editable field's iframe. Only used in growing
  * mode when an iframe is used. This will cause an immediate field sizing to
  * update the field if necessary based on the new min height.
@@ -484,7 +491,9 @@ goog.editor.SeamlessField.prototype.dispatchBlur = function() {
       !goog.editor.BrowserFeature.CLEARS_SELECTION_WHEN_FOCUS_LEAVES) {
     var win = this.getEditableDomHelper().getWindow();
     var dragging = false;
-    goog.events.listenOnce(win.document.body, 'dragover',
+    goog.events.unlistenByKey(this.listenForDragOverEventKey_);
+    this.listenForDragOverEventKey_ = goog.events.listenOnce(
+        win.document.body, 'dragover',
         function() {
           dragging = true;
         });
@@ -700,4 +709,12 @@ goog.editor.SeamlessField.prototype.restoreDom = function() {
   if (this.usesIframe()) {
     goog.dom.removeNode(this.getEditableIframe());
   }
+};
+
+
+/** @inheritDoc */
+goog.editor.SeamlessField.prototype.disposeInternal = function() {
+  goog.events.unlistenByKey(this.listenForDragOverEventKey_);
+
+  goog.base(this, 'disposeInternal');
 };

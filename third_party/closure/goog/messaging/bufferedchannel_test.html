@@ -13,6 +13,7 @@ See the COPYING file for details.
   Closure Unit Tests - goog.messaging.BufferedChannel
 </title>
 <script src="../base.js"></script>
+<script src="../../../third_party/closure/goog/deps.js"></script>
 <script>
   goog.require('goog.debug.Console');
   goog.require('goog.debug.Logger');
@@ -21,9 +22,9 @@ See the COPYING file for details.
   goog.require('goog.messaging.BufferedChannel');
   goog.require('goog.testing.MockClock');
   goog.require('goog.testing.MockControl');
+  goog.require('goog.testing.async.MockControl');
   goog.require('goog.testing.jsunit');
   goog.require('goog.testing.messaging.MockMessageChannel');
-  goog.require('goog.testing.mockmatchers');
 </script>
 </head>
 <body>
@@ -32,13 +33,13 @@ See the COPYING file for details.
 
 if (goog.global.console) new goog.debug.Console().setCapturing(true);
 
-var channel;
 var clock = new goog.testing.MockClock();
 var messages = [
   {serviceName: 'firstService', payload: 'firstPayload'},
   {serviceName: 'secondService', payload: 'secondPayload'}
 ];
 var mockControl = new goog.testing.MockControl();
+var asyncMockControl = new goog.testing.async.MockControl(mockControl);
 
 
 function setUpPage() {
@@ -54,8 +55,6 @@ function setUpPage() {
 
 function setUp() {
   clock.install();
-  channel = new goog.messaging.BufferedChannel(
-      new goog.testing.messaging.MockMessageChannel(mockControl));
 }
 
 
@@ -79,30 +78,38 @@ function assertMessageArraysEqual(ma1, ma2) {
 
 
 function testDelegationToWrappedChannel() {
-  var mockMessageChannel = mockControl.createStrictMock(
-      goog.messaging.MessageChannel);
-  var fakeService = function() {};
+  var mockChannel = new goog.testing.messaging.MockMessageChannel(mockControl);
+  var channel = new goog.messaging.BufferedChannel(mockChannel);
 
-  mockMessageChannel.registerService(
-      goog.messaging.BufferedChannel.PEER_READY_SERVICE_NAME_,
-      goog.testing.mockmatchers.isFunction);
-  mockMessageChannel.connect(goog.testing.mockmatchers.isFunction);
-  mockMessageChannel.isConnected().$returns(true);
-  mockMessageChannel.registerDefaultService(fakeService);
-  mockMessageChannel.send('message', 'payload');
+  channel.registerDefaultService(
+      asyncMockControl.asyncAssertEquals(
+          'default service should be delegated',
+          'defaultServiceName', 'default service payload'));
+  channel.registerService(
+      'normalServiceName',
+      asyncMockControl.asyncAssertEquals(
+          'normal service should be delegated',
+          'normal service payload'));
+  mockChannel.send(
+      goog.messaging.BufferedChannel.USER_CHANNEL_NAME_ + ':message',
+      'payload');
 
   mockControl.$replayAll();
-  var channel = new goog.messaging.BufferedChannel(mockMessageChannel);
   channel.peerReady_ = true;  // Prevent buffering so we delegate send calls.
-  channel.connect();
-  assertTrue(channel.isConnected());
-  channel.registerDefaultService(fakeService);
+  mockChannel.receive(
+      goog.messaging.BufferedChannel.USER_CHANNEL_NAME_ + ':defaultServiceName',
+      'default service payload');
+  mockChannel.receive(
+      goog.messaging.BufferedChannel.USER_CHANNEL_NAME_ + ':normalServiceName',
+      'normal service payload');
   channel.send('message', 'payload');
   mockControl.$verifyAll();
 }
 
 
 function testOptionalConnectCallbackExecutes() {
+  var mockChannel = new goog.testing.messaging.MockMessageChannel(mockControl);
+  var channel = new goog.messaging.BufferedChannel(mockChannel);
   var mockConnectCb = mockControl.createFunctionMock('mockConnectCb');
   mockConnectCb();
 
@@ -113,9 +120,13 @@ function testOptionalConnectCallbackExecutes() {
 
 
 function testSendExceptionsInOnTickStopsTimerAndReraises() {
+  var mockChannel = new goog.testing.messaging.MockMessageChannel(mockControl);
+  var channel = new goog.messaging.BufferedChannel(mockChannel);
+
   var errorMessage = 'errorMessage';
-  channel.messageChannel_.send(
-      goog.messaging.BufferedChannel.PEER_READY_SERVICE_NAME_,
+  mockChannel.send(
+      goog.messaging.BufferedChannel.CONTROL_CHANNEL_NAME_ + ':' +
+        goog.messaging.BufferedChannel.PEER_READY_SERVICE_NAME_,
       /* payload */ '').$throws(Error(errorMessage));
   channel.timer_.enabled = true;
 
@@ -130,6 +141,9 @@ function testSendExceptionsInOnTickStopsTimerAndReraises() {
 
 
 function testPollingIntervalDefaultAndOverride() {
+  var mockChannel = new goog.testing.messaging.MockMessageChannel(mockControl);
+  var channel = new goog.messaging.BufferedChannel(mockChannel);
+
   assertEquals(
       goog.messaging.BufferedChannel.DEFAULT_INTERVAL_MILLIS_,
       channel.timer_.getInterval());
@@ -140,35 +154,29 @@ function testPollingIntervalDefaultAndOverride() {
 }
 
 
-function testRegisteringServiceWithReservedNameThrows() {
-  var exception = assertThrows(function() {
-    channel.registerService(
-        goog.messaging.BufferedChannel.PEER_READY_SERVICE_NAME_,
-        function() {});
-  });
-  assertContains(
-      goog.messaging.BufferedChannel.PEER_READY_SERVICE_NAME_,
-      exception.message);
-}
-
-
 function testBidirectionalCommunicationBuffersUntilReadyPingsSucceed() {
   var mockChannel1 = new goog.testing.messaging.MockMessageChannel(mockControl);
   var mockChannel2 = new goog.testing.messaging.MockMessageChannel(mockControl);
   var bufferedChannel1 = new goog.messaging.BufferedChannel(mockChannel1);
   var bufferedChannel2 = new goog.messaging.BufferedChannel(mockChannel2);
-  mockChannel1.send('setPeerReady_', '').$does(function() {
+  mockChannel1.send(
+      goog.messaging.BufferedChannel.CONTROL_CHANNEL_NAME_ + ':setPeerReady_',
+      '').$does(function() {
     bufferedChannel1.setPeerReady_();
   });
-  mockChannel2.send('setPeerReady_', '').$does(function() {
+  mockChannel2.send(
+      goog.messaging.BufferedChannel.CONTROL_CHANNEL_NAME_ + ':setPeerReady_',
+      '').$does(function() {
     bufferedChannel2.setPeerReady_();
   });
-  mockChannel1.send(messages[0].serviceName, messages[0].payload);
-  mockChannel2.send(messages[1].serviceName, messages[1].payload);
+  mockChannel1.send(goog.messaging.BufferedChannel.USER_CHANNEL_NAME_ + ':' +
+                    messages[0].serviceName,
+                    messages[0].payload);
+  mockChannel2.send(goog.messaging.BufferedChannel.USER_CHANNEL_NAME_ + ':' +
+                    messages[1].serviceName,
+                    messages[1].payload);
 
   mockControl.$replayAll();
-  bufferedChannel1.connect();
-  bufferedChannel2.connect();
   bufferedChannel1.send(messages[0].serviceName, messages[0].payload);
   bufferedChannel2.send(messages[1].serviceName, messages[1].payload);
   assertMessageArraysEqual([messages[0]], bufferedChannel1.buffer_);

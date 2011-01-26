@@ -23,6 +23,7 @@ goog.provide('goog.debug.ErrorReporter.ExceptionEvent');
 
 goog.require('goog.debug');
 goog.require('goog.debug.ErrorHandler');
+goog.require('goog.debug.Logger');
 goog.require('goog.events');
 goog.require('goog.events.Event');
 goog.require('goog.events.EventTarget');

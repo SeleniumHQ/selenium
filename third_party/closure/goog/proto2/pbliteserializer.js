@@ -58,7 +58,7 @@ goog.inherits(goog.proto2.PbLiteSerializer, goog.proto2.LazyDeserializer);
  *
  * @param {goog.proto2.Message} message The message to be serialized.
  *
- * @return {Object} The serialized form of the message.
+ * @return {!Array} The serialized form of the message.
  */
 goog.proto2.PbLiteSerializer.prototype.serialize = function(message) {
   var descriptor = message.getDescriptor();
@@ -99,7 +99,7 @@ goog.proto2.PbLiteSerializer.prototype.serialize = function(message) {
 
 /** @inheritDoc */
 goog.proto2.PbLiteSerializer.prototype.deserializeField =
-  function(message, field, value) {
+    function(message, field, value) {
 
   if (value == null) {
     // Since value double-equals null, it may be either null or undefined.
@@ -125,8 +125,8 @@ goog.proto2.PbLiteSerializer.prototype.deserializeField =
 
 /** @inheritDoc */
 goog.proto2.PbLiteSerializer.prototype.getSerializedValue =
-  function(field, value) {
-  if (field.getFieldType() == goog.proto2.Message.FieldType.BOOL) {
+    function(field, value) {
+  if (field.getFieldType() == goog.proto2.FieldDescriptor.FieldType.BOOL) {
     // Booleans are serialized in numeric form.
     return value ? 1 : 0;
   }
@@ -138,9 +138,9 @@ goog.proto2.PbLiteSerializer.prototype.getSerializedValue =
 
 /** @inheritDoc */
 goog.proto2.PbLiteSerializer.prototype.getDeserializedValue =
-  function(field, value) {
+    function(field, value) {
 
-  if (field.getFieldType() == goog.proto2.Message.FieldType.BOOL) {
+  if (field.getFieldType() == goog.proto2.FieldDescriptor.FieldType.BOOL) {
     // Booleans are serialized in numeric form.
     return value === 1;
   }

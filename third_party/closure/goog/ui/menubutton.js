@@ -152,6 +152,15 @@ goog.ui.MenuButton.prototype.originalSize_;
 
 
 /**
+ * Do we render the drop down menu as a sibling to the label, or at the end
+ * of the current dom?
+ * @type {!boolean}
+ * @private
+ */
+goog.ui.MenuButton.prototype.renderMenuAsSibling_ = false;
+
+
+/**
  * Sets up event handlers specific to menu buttons.
  * @override
  */
@@ -209,7 +218,7 @@ goog.ui.MenuButton.prototype.handleMouseDown = function(e) {
   goog.ui.MenuButton.superClass_.handleMouseDown.call(this, e);
   if (this.isActive()) {
     // The component was allowed to activate; toggle menu visibility.
-    this.setOpen(!this.isOpen());
+    this.setOpen(!this.isOpen(), e);
     if (this.menu_) {
       this.menu_.setMouseButtonPressed(this.isOpen());
     }
@@ -582,6 +591,23 @@ goog.ui.MenuButton.prototype.setFocusablePopupMenu = function(focusable) {
 
 
 /**
+ * Sets whether to render the menu as a sibling element of the button.
+ * Normally, the menu is a child of document.body.  This option is useful if
+ * you need the menu to inherit styles from a common parent element, or if you
+ * otherwise need it to share a parent element for desired event handling.  One
+ * example of the latter is if the parent is in a goog.ui.Popup, to ensure that
+ * clicks on the menu are considered being within the popup.
+ * @param {boolean} renderMenuAsSibling Whether we render the menu at the end
+ *     of the dom or as a sibling to the button/label that renders the drop
+ *     down.
+ */
+goog.ui.MenuButton.prototype.setRenderMenuAsSibling = function(
+    renderMenuAsSibling) {
+  this.renderMenuAsSibling_ = renderMenuAsSibling;
+};
+
+
+/**
  * Reveals the menu and hooks up menu-specific event handling.
  * @deprecated Use {@link #setOpen} instead.
  */
@@ -602,15 +628,21 @@ goog.ui.MenuButton.prototype.hideMenu = function() {
 /**
  * Opens or closes the attached popup menu.
  * @param {boolean} open Whether to open or close the menu.
+ * @param {goog.events.Event=} opt_e Mousedown event that caused the menu to
+ *     be opened.
  * @override
  */
-goog.ui.MenuButton.prototype.setOpen = function(open) {
+goog.ui.MenuButton.prototype.setOpen = function(open, opt_e) {
   goog.ui.MenuButton.superClass_.setOpen.call(this, open);
   if (this.menu_ && this.hasState(goog.ui.Component.State.OPENED) == open) {
     if (open) {
       if (!this.menu_.isInDocument()) {
-        // Lazily render the menu if needed.
-        this.menu_.render();
+        if (this.renderMenuAsSibling_) {
+          this.menu_.render(/** @type {?Element} */ (
+              this.getElement().parentNode));
+        } else {
+          this.menu_.render();
+        }
       }
       this.viewportBox_ =
           goog.style.getVisibleRectForElement(this.getElement());
@@ -630,7 +662,7 @@ goog.ui.MenuButton.prototype.setOpen = function(open) {
         }
       }
     }
-    this.menu_.setVisible(open);
+    this.menu_.setVisible(open, false, opt_e);
     this.attachPopupListeners_(open);
   }
 };

@@ -20,8 +20,8 @@
  */
 
 goog.provide('goog.crypt.base64');
-
 goog.require('goog.crypt');
+goog.require('goog.userAgent');
 
 // Static lookup maps, lazily populated by init_()
 
@@ -83,6 +83,20 @@ goog.crypt.base64.ENCODED_VALS =
  */
 goog.crypt.base64.ENCODED_VALS_WEBSAFE =
     goog.crypt.base64.ENCODED_VALS_BASE + '-_.';
+
+
+/**
+ * Whether this browser supports the atob and btoa functions. This extension
+ * started at Mozilla but is now implemented by many browsers. We use the
+ * ASSUME_* variables to avoid pulling in the full useragent detection library
+ * but still allowing the standard per-browser compilations.
+ *
+ * @type {boolean}
+ */
+goog.crypt.base64.HAS_NATIVE_SUPPORT = goog.userAgent.GECKO ||
+                                       goog.userAgent.WEBKIT ||
+                                       goog.userAgent.OPERA ||
+                                       typeof(goog.global.atob) == 'function';
 
 
 /**
@@ -148,7 +162,7 @@ goog.crypt.base64.encodeByteArray = function(input, opt_webSafe) {
 goog.crypt.base64.encodeString = function(input, opt_webSafe) {
   // Shortcut for Mozilla browsers that implement
   // a native base64 encoder in the form of "btoa/atob"
-  if (typeof goog.global.btoa == 'function' && !opt_webSafe) {
+  if (goog.crypt.base64.HAS_NATIVE_SUPPORT && !opt_webSafe) {
     return goog.global.btoa(input);
   }
   return goog.crypt.base64.encodeByteArray(
@@ -167,7 +181,7 @@ goog.crypt.base64.encodeString = function(input, opt_webSafe) {
 goog.crypt.base64.decodeString = function(input, opt_webSafe) {
   // Shortcut for Mozilla browsers that implement
   // a native base64 encoder in the form of "btoa/atob"
-  if (typeof goog.global.atob == 'function' && !opt_webSafe) {
+  if (goog.crypt.base64.HAS_NATIVE_SUPPORT && !opt_webSafe) {
     return goog.global.atob(input);
   }
   return goog.crypt.byteArrayToString(

@@ -1868,7 +1868,8 @@ goog.editor.Field.prototype.isSelectionEditable = function() {
  * @private
  */
 goog.editor.Field.cancelLinkClick_ = function(e) {
-  if (goog.dom.getAncestorByTagNameAndClass(e.target, goog.dom.TagName.A)) {
+  if (goog.dom.getAncestorByTagNameAndClass(
+          /** @type {Node} */ (e.target), goog.dom.TagName.A)) {
     e.preventDefault();
   }
 };
@@ -1916,7 +1917,7 @@ goog.editor.Field.prototype.handleMouseUp_ = function(e) {
      * up-to-date selection range. Save the event's target to be sent with it
      * (it's safer than saving a copy of the event itself).
      */
-    this.selectionChangeTarget_ = e.target;
+    this.selectionChangeTarget_ = /** @type {Node} */ (e.target);
     this.selectionChangeTimer_.start();
   }
 };

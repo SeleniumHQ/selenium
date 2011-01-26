@@ -48,6 +48,7 @@ goog.provide('goog.events.BrowserEvent.MouseButton');
 goog.require('goog.events.BrowserFeature');
 goog.require('goog.events.Event');
 goog.require('goog.events.EventType');
+goog.require('goog.reflect');
 goog.require('goog.userAgent');
 
 
@@ -84,9 +85,8 @@ goog.events.BrowserEvent.MouseButton = {
 /**
  * Static data for mapping mouse buttons.
  * @type {Array.<number>}
- * @private
  */
-goog.events.BrowserEvent.IEButtonMap_ = [
+goog.events.BrowserEvent.IEButtonMap = [
   1, // LEFT
   4, // MIDDLE
   2  // RIGHT
@@ -239,7 +239,10 @@ goog.events.BrowserEvent.prototype.event_ = null;
  */
 goog.events.BrowserEvent.prototype.init = function(e, opt_currentTarget) {
   var type = this.type = e.type;
-  this.target = e.target || e.srcElement;
+
+  // TODO(nicksantos): Change this.target to type EventTarget.
+  this.target = /** @type {Node} */ (e.target) || e.srcElement;
+
   this.currentTarget = opt_currentTarget;
 
   var relatedTarget = /** @type {Node} */ (e.relatedTarget);
@@ -251,7 +254,7 @@ goog.events.BrowserEvent.prototype.init = function(e, opt_currentTarget) {
     if (goog.userAgent.GECKO) {
       /** @preserveTry */
       try {
-        relatedTarget = relatedTarget.nodeName && relatedTarget;
+        goog.reflect.sinkValue(relatedTarget.nodeName);
       } catch (err) {
         relatedTarget = null;
       }
@@ -311,11 +314,27 @@ goog.events.BrowserEvent.prototype.isButton = function(button) {
       return button == goog.events.BrowserEvent.MouseButton.LEFT;
     } else {
       return !!(this.event_.button &
-          goog.events.BrowserEvent.IEButtonMap_[button]);
+          goog.events.BrowserEvent.IEButtonMap[button]);
     }
   } else {
     return this.event_.button == button;
   }
+};
+
+
+/**
+ * Whether this has an "action"-producing mouse button.
+ *
+ * By definition, this includes left-click on windows/linux, and left-click
+ * without the ctrl key on Macs.
+ *
+ * @return {boolean} The result.
+ */
+goog.events.BrowserEvent.prototype.isMouseActionButton = function() {
+  // Webkit does not ctrl+click to be a right-click, so we
+  // normalize it to behave like Gecko and Opera.
+  return this.isButton(goog.events.BrowserEvent.MouseButton.LEFT) &&
+      !(goog.userAgent.WEBKIT && goog.userAgent.MAC && this.ctrlKey);
 };
 
 

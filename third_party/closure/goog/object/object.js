@@ -220,6 +220,34 @@ goog.object.getKeys = function(obj) {
 
 
 /**
+ * Get a value from an object multiple levels deep.  This is useful for
+ * pulling values from deeply nested objects, such as JSON responses.
+ * Example usage: getValueByKeys(jsonObj, 'foo', 'entries', 3)
+ *
+ * @param {!Object} obj An object to get the value from.  Can be array-like.
+ * @param {...(string|number|!Array.<number|string>)} var_args A number of keys
+ *     (as strings, or nubmers, for array-like objects).  Can also be
+ *     specified as a single array of keys.
+ * @return {*} The resulting value.  If, at any point, the value for a key
+ *     is undefined, returns undefined.
+ */
+goog.object.getValueByKeys = function(obj, var_args) {
+  var isArrayLike = goog.isArrayLike(var_args);
+  var keys = isArrayLike ? var_args : arguments;
+
+  // Start with the 2nd parameter for the variable parameters syntax.
+  for (var i = isArrayLike ? 0 : 1; i < keys.length; i++) {
+    obj = obj[keys[i]];
+    if (!goog.isDef(obj)) {
+      break;
+    }
+  }
+
+  return obj;
+};
+
+
+/**
  * Whether the object/map/hash contains the given key.
  *
  * @param {Object} obj The object in which to look for key.
@@ -306,10 +334,8 @@ goog.object.isEmpty = function(obj) {
  * @param {Object} obj The object to clear.
  */
 goog.object.clear = function(obj) {
-  // Some versions of IE has problems if we delete keys from the beginning
-  var keys = goog.object.getKeys(obj);
-  for (var i = keys.length - 1; i >= 0; i--) {
-    goog.object.remove(obj, keys[i]);
+  for (var i in obj) {
+    delete obj[i];
   }
 };
 

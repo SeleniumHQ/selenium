@@ -186,7 +186,7 @@ goog.testing.MockControl.prototype.createMethodMock = function(
  * {@link goog.testing.createConstructorMock} for details.
  * @param {Object} scope The scope of the constructor to be mocked out.
  * @param {string} constructorName The name of the function we're going to mock.
- * @return {goog.testing.MethodMock} The mocked method.
+ * @return {goog.testing.MockInterface} The mocked method.
  */
 goog.testing.MockControl.prototype.createConstructorMock = function(
     scope, constructorName) {
@@ -200,7 +200,7 @@ goog.testing.MockControl.prototype.createConstructorMock = function(
  * Creates a controlled GlobalFunctionMock.  Passes its arguments through to the
  * GlobalFunctionMock constructor.
  * @param {string} functionName The name of the function we're going to mock.
- * @return {goog.testing.GlobalFunctionMock} The mocked function.
+ * @return {goog.testing.MockInterface} The mocked function.
  */
 goog.testing.MockControl.prototype.createGlobalFunctionMock = function(
     functionName) {

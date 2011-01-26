@@ -1000,14 +1000,14 @@ function testGetAncestorByTagNameOnly() {
 function testGetAncestorByClassNameNoMatch() {
   var elem = goog.dom.getElement('nestedElement');
   assertNull(
-      goog.dom.getAncestorByTagNameAndClass(elem, null, 'bogusClassName'));
+      goog.dom.getAncestorByClass(elem, 'bogusClassName'));
 }
 
 function testGetAncestorByClassName() {
   var elem = goog.dom.getElement('nestedElement');
   var expected = goog.dom.getElement('testAncestorP');
   assertEquals(expected,
-      goog.dom.getAncestorByTagNameAndClass(elem, null, 'testAncestor'));
+      goog.dom.getAncestorByClass(elem, 'testAncestor'));
 }
 
 function testGetAncestorByTagNameAndClass() {

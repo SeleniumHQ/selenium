@@ -41,7 +41,10 @@
   cursor: pointer;
   font-size: 120%;
   font-weight: bold;
-  padding: 8px 15px 8px 8px;
+
+  /* Add padding on the right to ensure the close button has room. */
+  padding: 8px 31px 8px 8px;
+
   position: relative;
   _zoom: 1; /* Ensures proper width in IE6 RTL. */
 }

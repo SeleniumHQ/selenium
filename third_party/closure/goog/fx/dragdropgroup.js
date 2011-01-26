@@ -23,6 +23,7 @@
 
 goog.provide('goog.fx.DragDropGroup');
 
+goog.require('goog.dom');
 goog.require('goog.fx.AbstractDragDrop');
 goog.require('goog.fx.DragDropItem');
 
@@ -70,6 +71,24 @@ goog.fx.DragDropGroup.prototype.addDragDropItem = function(item) {
   this.items_.push(item);
   if (this.isInitialized()) {
     this.initItem(item);
+  }
+};
+
+
+/**
+ * Remove item from drag object.
+ *
+ * @param {Element|string} element Dom Node, or string representation of node
+ *     id, that was previously added with addItem().
+ */
+goog.fx.DragDropGroup.prototype.removeItem = function(element) {
+  element = goog.dom.getElement(element);
+  for (var item, i = 0; item = this.items_[i]; i++) {
+    if (item.element == element) {
+      this.items_.splice(i, 1);
+      this.disposeItem(item);
+      break;
+    }
   }
 };
 

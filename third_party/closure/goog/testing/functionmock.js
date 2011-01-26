@@ -34,9 +34,9 @@ goog.require('goog.testing.StrictMock');
 /**
  * Class used to mock a function. Useful for mocking closures and anonymous
  * callbacks etc. Creates a function object that extends goog.testing.StrictMock
- * @param {string=} opt_functionName the optional name of the function to mock
+ * @param {string=} opt_functionName The optional name of the function to mock
  *     set to '[anonymous mocked function]' if not passed in.
- * @return {goog.testing.MockInterface}
+ * @return {goog.testing.MockInterface} The mocked function.
  * @suppress {missingProperties} Mocks do not fit in the type system well.
  */
 goog.testing.FunctionMock = function(opt_functionName) {
@@ -55,15 +55,15 @@ goog.testing.FunctionMock = function(opt_functionName) {
  * Mocks an existing function. Creates a goog.testing.FunctionMock
  * and registers it in the given scope with the name specified by functionName.
  * @param {Object} scope The scope of the method to be mocked out.
- * @param {string} functionName the name of the function we're going to mock.
- * @return {goog.testing.MockInterface}
+ * @param {string} functionName The name of the function we're going to mock.
+ * @return {goog.testing.MockInterface} The mocked method.
  */
 goog.testing.MethodMock = function(scope, functionName) {
   if (!(functionName in scope)) {
-    throw new Error(functionName + ' is not a property of the given scope.');
+    throw Error(functionName + ' is not a property of the given scope.');
   }
 
-  var fn = new goog.testing.FunctionMock(functionName);
+  var fn = goog.testing.FunctionMock(functionName);
 
   fn.$propertyReplacer_ = new goog.testing.PropertyReplacer();
   fn.$propertyReplacer_.set(scope, functionName, fn);
@@ -85,19 +85,19 @@ goog.testing.MethodMock.$tearDown = function() {
 /**
  * Mocks a global / top-level function. Creates a goog.testing.MethodMock
  * in the global scope with the name specified by functionName.
- * @param {string} functionName the name of the function we're going to mock.
- * @return {goog.testing.MockInterface}
+ * @param {string} functionName The name of the function we're going to mock.
+ * @return {goog.testing.MockInterface} The mocked global function.
  */
 goog.testing.GlobalFunctionMock = function(functionName) {
-  return new goog.testing.MethodMock(goog.global, functionName);
+  return goog.testing.MethodMock(goog.global, functionName);
 };
 
 
 /**
- * Mocks a function. Convenience method for new goog.testing.FunctionMock
- * @param {string=} opt_functionName the optional name of the function to mock
+ * Convenience method for creating a mock for a function.
+ * @param {string=} opt_functionName The optional name of the function to mock
  *     set to '[anonymous mocked function]' if not passed in.
- * @return {goog.testing.MockInterface} the mocked function.
+ * @return {goog.testing.MockInterface} The mocked function.
  */
 goog.testing.createFunctionMock = function(opt_functionName) {
   return goog.testing.FunctionMock(opt_functionName);
@@ -107,8 +107,8 @@ goog.testing.createFunctionMock = function(opt_functionName) {
 /**
  * Convenience method for creating a mock for a method.
  * @param {Object} scope The scope of the method to be mocked out.
- * @param {string} functionName the name of the function we're going to mock.
- * @return {goog.testing.MockInterface} the mocked global function.
+ * @param {string} functionName The name of the function we're going to mock.
+ * @return {goog.testing.MockInterface} The mocked global function.
  */
 goog.testing.createMethodMock = function(scope, functionName) {
   return goog.testing.MethodMock(scope, functionName);
@@ -124,13 +124,13 @@ goog.testing.createMethodMock = function(scope, functionName) {
  * first, then the mock framework will be unable to examine the prototype chain
  * when creating the mock instance.
  * @param {Object} scope The scope of the constructor to be mocked out.
- * @param {string} constructorName the name of the constructor we're going to
+ * @param {string} constructorName The name of the constructor we're going to
  *     mock.
- * @return {goog.testing.MethodMock} the mocked constructor.
+ * @return {goog.testing.MockInterface} The mocked constructor.
  */
 goog.testing.createConstructorMock = function(scope, constructorName) {
   var realConstructor = scope[constructorName];
-  var constructorMock = new goog.testing.MethodMock(scope, constructorName);
+  var constructorMock = goog.testing.MethodMock(scope, constructorName);
 
   // Copy class members from the real constructor to the mock. Do not copy
   // the closure superClass_ property (see goog.inherits), the built-in
@@ -149,9 +149,9 @@ goog.testing.createConstructorMock = function(scope, constructorName) {
 
 /**
  * Convenience method for creating a mocks for a global / top-level function.
- * @param {string} functionName the name of the function we're going to mock.
- * @return {goog.testing.GlobalFunctionMock} the mocked global function.
+ * @param {string} functionName The name of the function we're going to mock.
+ * @return {goog.testing.MockInterface} The mocked global function.
  */
 goog.testing.createGlobalFunctionMock = function(functionName) {
-  return new goog.testing.GlobalFunctionMock(functionName);
+  return goog.testing.GlobalFunctionMock(functionName);
 };

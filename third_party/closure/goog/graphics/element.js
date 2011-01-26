@@ -122,18 +122,7 @@ goog.graphics.Element.prototype.getTransform = function() {
 };
 
 
-/**
- * Adds an event listener to the element.
- *
- * @param {string} type The type of the event to listen for.
- * @param {Function} handler The function to handle the event. The handler can
- *     also be an object that implements the handleEvent method which takes the
- *     event object as argument.
- * @param {boolean=} opt_capture In DOM-compliant browsers, this determines
- *     whether the listener is fired during the capture or bubble phase of the
- *     event.
- * @param {Object=} opt_handlerScope Object in whose scope to call the listener.
- */
+/** @inheritDoc */
 goog.graphics.Element.prototype.addEventListener = function(
     type, handler, opt_capture, opt_handlerScope) {
   goog.events.listen(this.element_, type, handler, opt_capture,
@@ -141,20 +130,7 @@ goog.graphics.Element.prototype.addEventListener = function(
 };
 
 
-/**
- * Removes an event listener from the element. The handler must be the
- * same object as the one added. If the handler has not been added then
- * nothing is done.
- *
- * @param {string} type The type of the event to listen for.
- * @param {Function} handler The function to handle the event. The handler can
- *     can also be an object that implements thehandleEvent method which takes
- *     the event obejct as argument.
- * @param {boolean=} opt_capture In DOM-compliant browsers, this determines
- *     whether the listener is fired during the capture or bubble phase of the
- *     event.
- * @param {Object=} opt_handlerScope Object in whose scope to call the listener.
- */
+/** @inheritDoc */
 goog.graphics.Element.prototype.removeEventListener = function(
     type, handler, opt_capture, opt_handlerScope) {
   goog.events.unlisten(this.element_, type, handler, opt_capture,
@@ -162,9 +138,7 @@ goog.graphics.Element.prototype.removeEventListener = function(
 };
 
 
-/**
- * Unattaches listeners from this element.
- */
+/** @inheritDoc */
 goog.graphics.Element.prototype.disposeInternal = function() {
   goog.graphics.Element.superClass_.disposeInternal.call(this);
   goog.events.removeAll(this.element_);

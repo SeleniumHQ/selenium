@@ -332,7 +332,7 @@ goog.fx.Dragger.prototype.startDrag = function(e) {
       // it does not make sense to check for the button if user is already
       // dragging.
       (e.type != goog.events.EventType.MOUSEDOWN ||
-      e.isButton(goog.events.BrowserEvent.MouseButton.LEFT))) {
+          e.isMouseActionButton())) {
     if (this.hysteresisDistanceSquared_ == 0) {
       this.initializeDrag_(e);
       if (this.dragging_) {

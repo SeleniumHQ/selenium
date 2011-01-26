@@ -128,6 +128,16 @@ goog.events.EventHandler.key_ = null;
 
 
 /**
+ * Utility array used to unify the cases of listening for an array of types
+ * and listening for a single event, without using recursion or allocating
+ * an array each time.
+ * @type {Array.<string>}
+ * @private
+ */
+goog.events.EventHandler.typeArray_ = [];
+
+
+/**
  * Listen to an event on a DOM node or EventTarget.  If the function is omitted
  * then the EventHandler's handleEvent method will be used.
  * @param {goog.events.EventTarget|EventTarget} src Event source.
@@ -143,13 +153,13 @@ goog.events.EventHandler.key_ = null;
 goog.events.EventHandler.prototype.listen = function(src, type, opt_fn,
                                                      opt_capture,
                                                      opt_handler) {
-  if (goog.isArray(type)) {
-    for (var i = 0; i < type.length; i++) {
-      this.listen(src, type[i], opt_fn, opt_capture, opt_handler);
-    }
-  } else {
+  if (!goog.isArray(type)) {
+    goog.events.EventHandler.typeArray_[0] = /** @type {string} */(type);
+    type = goog.events.EventHandler.typeArray_;
+  }
+  for (var i = 0; i < type.length; i++) {
     var key = (/** @type {number} */
-        goog.events.listen(src, type, opt_fn || this,
+        goog.events.listen(src, type[i], opt_fn || this,
                            opt_capture || false,
                            opt_handler || this.handler_ || this));
     this.recordListenerKey_(key);

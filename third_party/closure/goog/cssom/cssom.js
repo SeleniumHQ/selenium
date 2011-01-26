@@ -204,7 +204,7 @@ goog.cssom.getCssTextFromCssRule = function(cssRule) {
 goog.cssom.getCssRuleIndexInParentStyleSheet = function(cssRule,
     opt_parentStyleSheet) {
   // Look for our special style.ruleIndex property from getAllCss.
-  if (cssRule.style['-closure-rule-index']) {
+  if (cssRule.style && cssRule.style['-closure-rule-index']) {
     return cssRule.style['-closure-rule-index'];
   }
 

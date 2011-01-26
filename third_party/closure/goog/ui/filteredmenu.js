@@ -422,7 +422,7 @@ goog.ui.FilteredMenu.prototype.filterItems_ = function(str) {
 
   var matcher = new RegExp('(^|[- ,_/.:])' +
       goog.string.regExpEscape(str), 'i');
-  for (var child, i = this.filterFromIndex_; child = this.children_[i]; i++) {
+  for (var child, i = this.filterFromIndex_; child = this.getChildAt(i); i++) {
     if (child instanceof goog.ui.FilterObservingMenuItem) {
       child.callObserver(str);
     } else if (!this.hasPersistentVisibility(child)) {

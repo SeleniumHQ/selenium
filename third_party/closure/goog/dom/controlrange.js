@@ -402,7 +402,8 @@ goog.dom.ControlRangeIterator = function(range) {
   if (range) {
     this.elements_ = range.getSortedElements();
     this.startNode_ = this.elements_.shift();
-    this.endNode_ = goog.array.peek(this.elements_) || this.startNode_;
+    this.endNode_ = /** @type {Node} */ (goog.array.peek(this.elements_)) ||
+        this.startNode_;
   }
 
   goog.dom.RangeIterator.call(this, this.startNode_, false);

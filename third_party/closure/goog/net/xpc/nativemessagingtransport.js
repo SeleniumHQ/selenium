@@ -77,7 +77,7 @@ goog.net.xpc.NativeMessagingTransport.prototype.initialized_ = false;
  * @type {number}
  */
 goog.net.xpc.NativeMessagingTransport.prototype.transportType =
-  goog.net.xpc.TransportTypes.NATIVE_MESSAGING;
+    goog.net.xpc.TransportTypes.NATIVE_MESSAGING;
 
 
 /**
@@ -150,7 +150,7 @@ goog.net.xpc.NativeMessagingTransport.messageReceived_ = function(msgEvt) {
   //  - channel has become stale (e.g. caching iframes and back clicks)
   var channel = goog.net.xpc.channels_[channelName];
   if (channel) {
-    channel.deliver_(service, payload);
+    channel.deliver_(service, payload, msgEvt.getBrowserEvent().origin);
     return true;
   }
 
@@ -262,7 +262,7 @@ goog.net.xpc.NativeMessagingTransport.prototype.send = function(service,
  * Disposes of the transport.
  */
 goog.net.xpc.NativeMessagingTransport.prototype.disposeInternal = function() {
-  goog.net.xpc.NativeMessagingTransport.superClass_.disposeInternal.call(this);
+  goog.base(this, 'disposeInternal');
   if (this.initialized_) {
     var listenWindow = this.getWindow();
     var uid = goog.getUid(listenWindow);

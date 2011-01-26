@@ -42,6 +42,7 @@ goog.require('goog.events.Event');
 goog.require('goog.events.EventType');
 goog.require('goog.events.KeyCodes');
 goog.require('goog.object');
+goog.require('goog.style');
 goog.require('goog.userAgent');
 
 
@@ -81,10 +82,20 @@ goog.object.extend(
 /**
  * A static helper function that sets the mouse position to the event.
  * @param {Event} event A simulated native event.
- * @param {goog.math.Coordinate=} opt_coords Mouse position. Defaults to (0, 0).
+ * @param {goog.math.Coordinate=} opt_coords Mouse position. Defaults to event's
+ * target's position (if available), otherwise (0, 0).
  * @private
  */
 goog.testing.events.setEventClientXY_ = function(event, opt_coords) {
+  if (!opt_coords && event.target &&
+      event.target.nodeType == goog.dom.NodeType.ELEMENT) {
+    try {
+      opt_coords =
+          goog.style.getClientPosition(/** @type {Element} **/ (event.target));
+    } catch (ex) {
+      // IE sometimes throws if it can't get the position.
+    }
+  }
   event.clientX = opt_coords ? opt_coords.x : 0;
   event.clientY = opt_coords ? opt_coords.y : 0;
 };
@@ -96,7 +107,8 @@ goog.testing.events.setEventClientXY_ = function(event, opt_coords) {
  * @param {EventTarget} target The target for the event.
  * @param {goog.events.BrowserEvent.MouseButton=} opt_button Mouse button;
  *     defaults to {@code goog.events.BrowserEvent.MouseButton.LEFT}.
- * @param {goog.math.Coordinate=} opt_coords Mouse position. Defaults to (0, 0).
+ * @param {goog.math.Coordinate=} opt_coords Mouse position. Defaults to event's
+ * target's position (if available), otherwise (0, 0).
  * @param {Object=} opt_eventProperties Event properties to be mixed into the
  *     BrowserEvent.
  * @return {boolean} The returnValue of the sequence: false if preventDefault()
@@ -118,7 +130,8 @@ goog.testing.events.fireClickSequence =
  * Simulates the sequence of events fired by the browser when the user double-
  * clicks the given target.
  * @param {EventTarget} target The target for the event.
- * @param {goog.math.Coordinate=} opt_coords Mouse position. Defaults to (0, 0).
+ * @param {goog.math.Coordinate=} opt_coords Mouse position. Defaults to event's
+ * target's position (if available), otherwise (0, 0).
  * @param {Object=} opt_eventProperties Event properties to be mixed into the
  *     BrowserEvent.
  * @return {boolean} The returnValue of the sequence: false if preventDefault()
@@ -216,9 +229,10 @@ goog.testing.events.fireNonAsciiKeySequence = function(
 
 
 /**
- * @param {goog.testing.events.Event} e
+ * @param {goog.testing.events.Event} e The event.
  * @return {boolean} Whether this is the Gecko/Mac's Meta-C/V/X, which
  *     is broken and requires special handling.
+ * @private
  */
 goog.testing.events.isBrokenGeckoMacActionKey_ = function(e) {
   return goog.userAgent.MAC && goog.userAgent.GECKO &&
@@ -233,7 +247,8 @@ goog.testing.events.isBrokenGeckoMacActionKey_ = function(e) {
  * @param {EventTarget} target The target for the event.
  * @param {EventTarget} relatedTarget The related target for the event (e.g.,
  *     the node that the mouse is being moved out of).
- * @param {goog.math.Coordinate=} opt_coords Mouse position. Defaults to (0, 0).
+ * @param {goog.math.Coordinate=} opt_coords Mouse position. Defaults to event's
+ * target's position (if available), otherwise (0, 0).
  * @return {boolean} The returnValue of the event: false if preventDefault() was
  *     called on it, true otherwise.
  */
@@ -250,7 +265,8 @@ goog.testing.events.fireMouseOverEvent = function(target, relatedTarget,
 /**
  * Simulates a mousemove event on the given target.
  * @param {EventTarget} target The target for the event.
- * @param {goog.math.Coordinate=} opt_coords Mouse position. Defaults to (0, 0).
+ * @param {goog.math.Coordinate=} opt_coords Mouse position. Defaults to event's
+ * target's position (if available), otherwise (0, 0).
  * @return {boolean} The returnValue of the event: false if preventDefault() was
  *     called on it, true otherwise.
  */
@@ -268,7 +284,8 @@ goog.testing.events.fireMouseMoveEvent = function(target, opt_coords) {
  * @param {EventTarget} target The target for the event.
  * @param {EventTarget} relatedTarget The related target for the event (e.g.,
  *     the node that the mouse is being moved into).
- * @param {goog.math.Coordinate=} opt_coords Mouse position. Defaults to (0, 0).
+ * @param {goog.math.Coordinate=} opt_coords Mouse position. Defaults to event's
+ * target's position (if available), otherwise (0, 0).
  * @return {boolean} The returnValue of the event: false if preventDefault() was
  *     called on it, true otherwise.
  */
@@ -287,7 +304,8 @@ goog.testing.events.fireMouseOutEvent = function(target, relatedTarget,
  * @param {EventTarget} target The target for the event.
  * @param {goog.events.BrowserEvent.MouseButton=} opt_button Mouse button;
  *     defaults to {@code goog.events.BrowserEvent.MouseButton.LEFT}.
- * @param {goog.math.Coordinate=} opt_coords Mouse position. Defaults to (0, 0).
+ * @param {goog.math.Coordinate=} opt_coords Mouse position. Defaults to event's
+ * target's position (if available), otherwise (0, 0).
  * @param {Object=} opt_eventProperties Event properties to be mixed into the
  *     BrowserEvent.
  * @return {boolean} The returnValue of the event: false if preventDefault() was
@@ -298,7 +316,7 @@ goog.testing.events.fireMouseDownEvent =
 
   var button = opt_button || goog.events.BrowserEvent.MouseButton.LEFT;
   button = goog.userAgent.IE ?
-      goog.events.BrowserEvent.IEButtonMap_[button] : button;
+      goog.events.BrowserEvent.IEButtonMap[button] : button;
   return goog.testing.events.fireMouseButtonEvent_(
       goog.events.EventType.MOUSEDOWN, target, button, opt_coords,
       opt_eventProperties);
@@ -310,7 +328,8 @@ goog.testing.events.fireMouseDownEvent =
  * @param {EventTarget} target The target for the event.
  * @param {goog.events.BrowserEvent.MouseButton=} opt_button Mouse button;
  *     defaults to {@code goog.events.BrowserEvent.MouseButton.LEFT}.
- * @param {goog.math.Coordinate=} opt_coords Mouse position. Defaults to (0, 0).
+ * @param {goog.math.Coordinate=} opt_coords Mouse position. Defaults to event's
+ * target's position (if available), otherwise (0, 0).
  * @param {Object=} opt_eventProperties Event properties to be mixed into the
  *     BrowserEvent.
  * @return {boolean} The returnValue of the event: false if preventDefault() was
@@ -320,7 +339,7 @@ goog.testing.events.fireMouseUpEvent =
     function(target, opt_button, opt_coords, opt_eventProperties) {
   var button = opt_button || goog.events.BrowserEvent.MouseButton.LEFT;
   button = goog.userAgent.IE ?
-      goog.events.BrowserEvent.IEButtonMap_[button] : button;
+      goog.events.BrowserEvent.IEButtonMap[button] : button;
   return goog.testing.events.fireMouseButtonEvent_(
       goog.events.EventType.MOUSEUP, target, button, opt_coords,
       opt_eventProperties);
@@ -333,7 +352,8 @@ goog.testing.events.fireMouseUpEvent =
  * @param {EventTarget} target The target for the event.
  * @param {goog.events.BrowserEvent.MouseButton=} opt_button Mouse button;
  *     defaults to {@code goog.events.BrowserEvent.MouseButton.LEFT}.
- * @param {goog.math.Coordinate=} opt_coords Mouse position. Defaults to (0, 0).
+ * @param {goog.math.Coordinate=} opt_coords Mouse position. Defaults to event's
+ * target's position (if available), otherwise (0, 0).
  * @param {Object=} opt_eventProperties Event properties to be mixed into the
  *     BrowserEvent.
  * @return {boolean} The returnValue of the event: false if preventDefault() was
@@ -351,7 +371,8 @@ goog.testing.events.fireClickEvent =
  * with the left mouse button since no browser supports double-clicking with
  * any other buttons.
  * @param {EventTarget} target The target for the event.
- * @param {goog.math.Coordinate=} opt_coords Mouse position. Defaults to (0, 0).
+ * @param {goog.math.Coordinate=} opt_coords Mouse position. Defaults to event's
+ * target's position (if available), otherwise (0, 0).
  * @param {Object=} opt_eventProperties Event properties to be mixed into the
  *     BrowserEvent.
  * @return {boolean} The returnValue of the event: false if preventDefault() was
@@ -374,7 +395,8 @@ goog.testing.events.fireDoubleClickEvent =
  * @param {EventTarget} target The target for the event.
  * @param {number=} opt_button Mouse button; defaults to
  *     {@code goog.events.BrowserEvent.MouseButton.LEFT}.
- * @param {goog.math.Coordinate=} opt_coords Mouse position. Defaults to (0, 0).
+ * @param {goog.math.Coordinate=} opt_coords Mouse position. Defaults to event's
+ * target's position (if available), otherwise (0, 0).
  * @param {Object=} opt_eventProperties Event properties to be mixed into the
  *     BrowserEvent.
  * @return {boolean} The returnValue of the event: false if preventDefault() was
@@ -397,16 +419,20 @@ goog.testing.events.fireMouseButtonEvent_ =
 /**
  * Simulates a contextmenu event on the given target.
  * @param {EventTarget} target The target for the event.
- * @param {goog.math.Coordinate=} opt_coords Mouse position. Defaults to (0, 0).
+ * @param {goog.math.Coordinate=} opt_coords Mouse position. Defaults to event's
+ * target's position (if available), otherwise (0, 0).
  * @return {boolean} The returnValue of the event: false if preventDefault() was
  *     called on it, true otherwise.
  */
 goog.testing.events.fireContextMenuEvent = function(target, opt_coords) {
-  var button = goog.events.BrowserEvent.MouseButton.RIGHT;
+  var button = (goog.userAgent.MAC && goog.userAgent.WEBKIT) ?
+      goog.events.BrowserEvent.MouseButton.LEFT :
+      goog.events.BrowserEvent.MouseButton.RIGHT;
   var contextmenu =
       new goog.testing.events.Event(goog.events.EventType.CONTEXTMENU, target);
   contextmenu.button = goog.userAgent.IE ?
-      goog.events.BrowserEvent.IEButtonMap_[button] : button;
+      goog.events.BrowserEvent.IEButtonMap[button] : button;
+  contextmenu.ctrlKey = goog.userAgent.MAC;
   goog.testing.events.setEventClientXY_(contextmenu, opt_coords);
   return goog.testing.events.fireBrowserEvent(contextmenu);
 };
@@ -416,22 +442,43 @@ goog.testing.events.fireContextMenuEvent = function(target, opt_coords) {
  * Simulates a mousedown, contextmenu, and the mouseup on the given event
  * target, with the right mouse button.
  * @param {EventTarget} target The target for the event.
- * @param {goog.math.Coordinate=} opt_coords Mouse position. Defaults to (0, 0).
+ * @param {goog.math.Coordinate=} opt_coords Mouse position. Defaults to event's
+ * target's position (if available), otherwise (0, 0).
  * @return {boolean} The returnValue of the sequence: false if preventDefault()
  *     was called on any of the events, true otherwise.
  */
 goog.testing.events.fireContextMenuSequence = function(target, opt_coords) {
+  var props = goog.userAgent.MAC ? {ctrlKey: true} : {};
+  var button = (goog.userAgent.MAC && goog.userAgent.WEBKIT) ?
+      goog.events.BrowserEvent.MouseButton.LEFT :
+      goog.events.BrowserEvent.MouseButton.RIGHT;
+
   var result = goog.testing.events.fireMouseDownEvent(target,
-      goog.events.BrowserEvent.MouseButton.RIGHT, opt_coords);
+      button, opt_coords, props);
   if (goog.userAgent.WINDOWS) {
+    // All browsers are consistent on Windows.
     result &= goog.testing.events.fireMouseUpEvent(target,
-                  goog.events.BrowserEvent.MouseButton.RIGHT, opt_coords) &
+                  button, opt_coords) &
               goog.testing.events.fireContextMenuEvent(target, opt_coords);
   } else {
     result &= goog.testing.events.fireContextMenuEvent(target, opt_coords);
-    if (goog.userAgent.GECKO) {
-      result &= goog.testing.events.fireMouseUpEvent(target,
-          goog.events.BrowserEvent.MouseButton.RIGHT, opt_coords);
+
+    // GECKO on Mac and Linux always fires the mouseup after the contextmenu.
+
+    // WEBKIT is really weird.
+    //
+    // On Linux, it sometimes fires mouseup, but most of the time doesn't.
+    // It's really hard to reproduce consistently. I think there's some
+    // internal race condition. If contextmenu is preventDefaulted, then
+    // mouseup always fires.
+    //
+    // On Mac, it always fires mouseup and then fires a click.
+    result &= goog.testing.events.fireMouseUpEvent(target,
+        button, opt_coords, props);
+
+    if (goog.userAgent.WEBKIT && goog.userAgent.MAC) {
+      result &= goog.testing.events.fireClickEvent(
+          target, button, opt_coords, props);
     }
   }
   return !!result;

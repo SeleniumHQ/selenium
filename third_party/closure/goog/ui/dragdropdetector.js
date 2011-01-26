@@ -455,7 +455,7 @@ goog.ui.DragDropDetector.prototype.trackMouse_ = function(e) {
   this.mousePosition_.y = e.clientY;
 
   // Check if the event is coming from within the iframe.
-  if (goog.dom.getOwnerDocument(e.target) != document) {
+  if (goog.dom.getOwnerDocument(/** @type {Node} */ (e.target)) != document) {
     var iframePosition = goog.style.getClientPosition(this.element_);
     this.mousePosition_.x += iframePosition.x;
     this.mousePosition_.y += iframePosition.y;

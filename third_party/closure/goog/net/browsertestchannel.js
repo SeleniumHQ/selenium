@@ -86,6 +86,15 @@ goog.net.BrowserTestChannel.prototype.receivedIntermediateResult_ = false;
 
 
 /**
+ * The time when the test request was started. We use timing in IE as
+ * a heuristic for whether we're behind a buffering proxy.
+ * @type {?number}
+ * @private
+ */
+goog.net.BrowserTestChannel.prototype.startTime_ = null;
+
+
+/**
  * The time for of the first result part. We use timing in IE as a
  * heuristic for whether we're behind a buffering proxy.
  * @type {?number}
@@ -201,6 +210,25 @@ goog.net.BrowserTestChannel.BLOCKED_PAUSE_BETWEEN_RETRIES_ = 2000;
 
 
 /**
+ * @define {boolean} Whether to allow the test to complete as soon as
+ *     the channel appears unbuffered.
+ * TODO(user) Change default to true once this is deployed and
+ *     verified as not causing issues in Gcomm/Supermoles.
+ */
+goog.net.BrowserTestChannel.ALLOW_EARLY_NON_BUFFERED_DETECTION = false;
+
+
+/**
+ * Time between chunks in the test connection that indicates that we
+ * are not behind a buffering proxy. This value should be less than or
+ * equals to the time between chunks sent from the server.
+ * @type {number}
+ * @private
+ */
+goog.net.BrowserTestChannel.MIN_TIME_EXPECTED_BETWEEN_DATA_ = 500;
+
+
+/**
  * Sets extra HTTP headers to add to all the requests sent to the server.
  *
  * @param {Object} extraHeaders The HTTP headers.
@@ -230,6 +258,7 @@ goog.net.BrowserTestChannel.prototype.connect = function(path) {
   this.request_.xmlHttpGet(sendDataUri, false /* decodeChunks */,
       null /* hostPrefix */, true /* opt_noClose */);
   this.state_ = goog.net.BrowserTestChannel.State_.INIT;
+  this.startTime_ = goog.now();
 };
 
 
@@ -332,7 +361,7 @@ goog.net.BrowserTestChannel.prototype.abort = function() {
  * @return {boolean} Whether the channel is closed.
  */
 goog.net.BrowserTestChannel.prototype.isClosed = function() {
- return false;
+  return false;
 };
 
 
@@ -363,11 +392,7 @@ goog.net.BrowserTestChannel.prototype.onRequestData =
           goog.net.ChannelRequest.Error.BAD_DATA);
       return;
     }
-    if (this.channel_.getAllowHostPrefix()) {
-      this.hostPrefix_ = respArray[0];
-    } else {
-      this.hostPrefix_ = null;
-    }
+    this.hostPrefix_ = this.channel_.correctHostPrefix(respArray[0]);
     this.blockedPrefix_ = respArray[1];
   } else if (this.state_ ==
              goog.net.BrowserTestChannel.State_.CONNECTION_TESTING) {
@@ -383,6 +408,17 @@ goog.net.BrowserTestChannel.prototype.onRequestData =
             goog.net.BrowserChannel.Stat.TEST_STAGE_TWO_DATA_ONE);
         this.receivedIntermediateResult_ = true;
         this.firstTime_ = goog.now();
+        if (this.checkForEarlyNonBuffered_()) {
+          // If early chunk detection is on, and we passed the tests,
+          // assume HTTP_OK, cancel the test and turn on noproxy mode.
+          this.lastStatusCode_ = 200;
+          this.request_.cancel();
+          this.channelDebug_.debug(
+              'Test connection succeeded; using streaming connection');
+          goog.net.BrowserChannel.notifyStatEvent(
+              goog.net.BrowserChannel.Stat.NOPROXY);
+          this.channel_.testConnectionFinished(this, true);
+        }
       } else {
         goog.net.BrowserChannel.notifyStatEvent(
             goog.net.BrowserChannel.Stat.TEST_STAGE_TWO_DATA_BOTH);
@@ -494,4 +530,23 @@ goog.net.BrowserTestChannel.prototype.shouldUseSecondaryDomains = function() {
 goog.net.BrowserTestChannel.prototype.isActive =
     function(browserChannel) {
   return this.channel_.isActive();
+};
+
+
+/**
+ * @return {boolean} True if test stage 2 detected a non-buffered
+ *     channel early and early no buffering detection is enabled.
+ * @private
+ */
+goog.net.BrowserTestChannel.prototype.checkForEarlyNonBuffered_ =
+    function() {
+  var ms = this.firstTime_ - this.startTime_;
+
+  // we always get Trident responses in separate calls to
+  // onRequestData, so we have to check the time that the first came in
+  // and verify that the data arrived before the second portion could
+  // have been sent. For all other browser's we skip the timing test.
+  return (!goog.userAgent.IE || ms <
+      goog.net.BrowserTestChannel.MIN_TIME_EXPECTED_BETWEEN_DATA_) &&
+      goog.net.BrowserTestChannel.ALLOW_EARLY_NON_BUFFERED_DETECTION;
 };

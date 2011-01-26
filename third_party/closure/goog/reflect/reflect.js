@@ -13,10 +13,7 @@
 // limitations under the License.
 
 /**
- * @fileoverview Syntax for object literal casts.
- *
- * Use this if you have an object literal whose keys need to have the same names
- * as the properties of some class even after they are renamed by the compiler.
+ * @fileoverview Useful compiler idioms.
  *
  */
 
@@ -26,6 +23,11 @@ goog.provide('goog.reflect');
 /**
  * Syntax for object literal casts.
  * @see http://go/jscompiler-renaming
+ * @see http://code.google.com/p/closure-compiler/wiki/
+ *      ExperimentalTypeBasedPropertyRenaming
+ *
+ * Use this if you have an object literal whose keys need to have the same names
+ * as the properties of some class even after they are renamed by the compiler.
  *
  * @param {!Function} type Type to cast to.
  * @param {Object} object Object literal to cast.
@@ -34,3 +36,15 @@ goog.provide('goog.reflect');
 goog.reflect.object = function(type, object) {
   return object;
 };
+
+
+/**
+ * To assert to the compiler that an operation is needed when it would other
+ * wise be stripped. For example:
+ * <code>
+ *     // Force a layout
+ *     goog.reflect.sinkValue(dialog.offsetHeight);
+ * </code>
+ * @type {Function}
+ */
+goog.reflect.sinkValue = new Function('a', 'return a');

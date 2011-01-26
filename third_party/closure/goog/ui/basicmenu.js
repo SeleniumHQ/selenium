@@ -529,7 +529,7 @@ goog.ui.BasicMenu.prototype.onDocumentMouseDown_ = function(e) {
   // Mousedown on anchor element, set clickToClose_ to true to prevent the
   // mouseup event from opening the menu.
   if (this.anchorElement_ == e.target ||
-      goog.dom.contains(this.anchorElement_, e.target)) {
+      goog.dom.contains(this.anchorElement_, /** @type {Node} */ (e.target))) {
     this.clickToClose_ = true;
   }
 

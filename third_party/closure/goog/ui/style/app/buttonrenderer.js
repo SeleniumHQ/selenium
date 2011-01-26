@@ -119,11 +119,15 @@ goog.ui.style.app.ButtonRenderer.prototype.createButton = function(content,
     dom) {
   var baseClass = this.getStructuralCssClass();
   var inlineBlock = goog.ui.INLINE_BLOCK_CLASSNAME + ' ';
-  return dom.createDom('div', inlineBlock + baseClass + '-outer-box',
-      dom.createDom('div', inlineBlock + baseClass + '-inner-box',
-          dom.createDom('div', baseClass + '-pos',
-              dom.createDom('div', baseClass + '-top-shadow', '\u00A0'),
-              dom.createDom('div', baseClass + '-content', content))));
+  return dom.createDom(
+      'div', inlineBlock + goog.getCssName(baseClass, 'outer-box'),
+      dom.createDom(
+          'div', inlineBlock + goog.getCssName(baseClass, 'inner-box'),
+          dom.createDom('div', goog.getCssName(baseClass, 'pos'),
+              dom.createDom(
+                  'div', goog.getCssName(baseClass, 'top-shadow'), '\u00A0'),
+              dom.createDom(
+                  'div', goog.getCssName(baseClass, 'content'), content))));
 };
 
 
@@ -139,25 +143,26 @@ goog.ui.style.app.ButtonRenderer.prototype.createButton = function(content,
 goog.ui.style.app.ButtonRenderer.prototype.hasBoxStructure = function(
     button, element) {
   // TODO(nicksantos): should this use goog.dom.classes?
+  var baseClass = this.getStructuralCssClass();
   var outer = button.getDomHelper().getFirstElementChild(element);
   if (outer &&
       outer.className.indexOf(
-          goog.getCssName('goog-button-base-outer-box')) != -1) {
+          goog.getCssName(baseClass, 'outer-box')) != -1) {
     var inner = button.getDomHelper().getFirstElementChild(outer);
     if (inner &&
         inner.className.indexOf(
-            goog.getCssName('goog-button-base-inner-box')) != -1) {
+            goog.getCssName(baseClass, 'inner-box')) != -1) {
       var pos = button.getDomHelper().getFirstElementChild(inner);
       if (pos &&
           pos.className.indexOf(
-              goog.getCssName('goog-button-base-pos')) != -1) {
+              goog.getCssName(baseClass, 'pos')) != -1) {
         var shadow = button.getDomHelper().getFirstElementChild(pos);
         if (shadow && shadow.className.indexOf(
-                goog.getCssName('goog-button-base-top-shadow')) != -1) {
+                goog.getCssName(baseClass, 'top-shadow')) != -1) {
           var content = button.getDomHelper().getNextElementSibling(shadow);
           if (content &&
               content.className.indexOf(
-                  goog.getCssName('goog-button-base-content')) != -1) {
+                  goog.getCssName(baseClass, 'content')) != -1) {
             // We have a proper box structure.
             return true;
           }

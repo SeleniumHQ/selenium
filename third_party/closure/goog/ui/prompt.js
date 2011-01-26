@@ -199,12 +199,12 @@ goog.ui.Prompt.prototype.createDom = function() {
 
   // add input box to the content
   var attrs = {
-      'className': goog.getCssName(cls, 'userInput'),
-      'value': this.defaultValue_};
+    'className': goog.getCssName(cls, 'userInput'),
+    'value': this.defaultValue_};
   if (this.rows_ == 1) {
     // If rows == 1 then use an input element.
     this.userInputEl_ = /** @type {HTMLInputElement} */
-      (this.getDomHelper().createDom('input', attrs));
+        (this.getDomHelper().createDom('input', attrs));
     this.userInputEl_.type = 'text';
     if (this.cols_) {
       this.userInputEl_.size = this.cols_;
@@ -237,16 +237,24 @@ goog.ui.Prompt.prototype.createDom = function() {
  */
 goog.ui.Prompt.prototype.setVisible = function(visible) {
   goog.ui.Dialog.prototype.setVisible.call(this, visible);
-
   if (visible) {
     this.isClosing_ = false;
     this.userInputEl_.value = this.defaultValue_;
-    if (goog.userAgent.OPERA) {
-      // select() doesn't focus <input> elements in Opera.
-      this.userInputEl_.focus();
-    }
-    this.userInputEl_.select();
+    this.focus();
   }
+};
+
+
+/**
+ * Overrides setFocus to put focus on the input element.
+ * @override
+ */
+goog.ui.Prompt.prototype.focus = function() {
+  if (goog.userAgent.OPERA) {
+    // select() doesn't focus <input> elements in Opera.
+    this.userInputEl_.focus();
+  }
+  this.userInputEl_.select();
 };
 
 

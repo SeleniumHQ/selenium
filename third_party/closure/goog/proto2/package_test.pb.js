@@ -23,8 +23,6 @@ goog.provide('someprotopackage.TestPackageTypes');
 goog.require('goog.proto2.Message');
 goog.require('proto2.TestAllTypes');
 
-
-
 /**
  * Message TestPackageTypes.
  * @constructor

@@ -593,8 +593,8 @@ goog.testing.MultiTestRunner.prototype.createDom = function() {
   el.appendChild(this.statsEl_);
 
   this.logTabEl_ = this.dom_.createDom('div', null, 'Log');
-  this.logTabEl_.className =
-      goog.getCssName('goog-testrunner-logtab goog-testrunner-activetab');
+  this.logTabEl_.className = goog.getCssName('goog-testrunner-logtab') + ' ' +
+      goog.getCssName('goog-testrunner-activetab');
   el.appendChild(this.logTabEl_);
 
   this.reportTabEl_ = this.dom_.createDom('div', null, 'Report');

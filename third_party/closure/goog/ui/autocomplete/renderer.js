@@ -403,8 +403,8 @@ goog.ui.AutoComplete.Renderer.prototype.maybeCreateElement_ = function() {
     goog.events.listen(el, goog.events.EventType.MOUSEDOWN,
                        this.handleMouseDown_, false, this);
     goog.events.listen(this.dom_.getDocument(),
-                       goog.events.EventType.CLICK,
-                       this.handleDocumentClick_, false, this);
+                       goog.events.EventType.MOUSEDOWN,
+                       this.handleDocumentMousedown_, false, this);
     goog.events.listen(el, goog.events.EventType.MOUSEOVER,
                        this.handleMouseOver_, false, this);
   }
@@ -524,7 +524,8 @@ goog.ui.AutoComplete.Renderer.prototype.disposeInternal = function() {
     goog.events.unlisten(this.element_, goog.events.EventType.MOUSEDOWN,
         this.handleMouseDown_, false, this);
     goog.events.unlisten(this.dom_.getDocument(),
-        goog.events.EventType.CLICK, this.handleDocumentClick_, false, this);
+        goog.events.EventType.MOUSEDOWN, this.handleDocumentMousedown_, false,
+        this);
     goog.events.unlisten(this.element_, goog.events.EventType.MOUSEOVER,
         this.handleMouseOver_, false, this);
     this.dom_.removeNode(this.element_);
@@ -791,7 +792,9 @@ goog.ui.AutoComplete.Renderer.prototype.handleMouseDown_ = function(e) {
  * @param {Object} e The document click event.
  * @private
  */
-goog.ui.AutoComplete.Renderer.prototype.handleDocumentClick_ = function(e) {
+goog.ui.AutoComplete.Renderer.prototype.handleDocumentMousedown_ = function(e) {
+  // Note that clicks inside the input itself are handled here, too, giving the
+  // effect that you can dismiss the autocomplete by re-clicking on the input.
   this.dispatchEvent(goog.ui.AutoComplete.EventType.DISMISS);
 };
 

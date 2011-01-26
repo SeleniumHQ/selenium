@@ -124,6 +124,10 @@ goog.ui.media.Media = function(dataModel, opt_renderer, opt_domHelper) {
   // e.preventDefault(), because it was not allowing the event to reach the
   // flash player. figure out a better way to not e.preventDefault().
   this.setAllowTextSelection(true);
+
+  // Media items don't use RTL styles, so avoid accessing computed styles to
+  // figure out if the control is RTL.
+  this.setRightToLeft(false);
 };
 goog.inherits(goog.ui.media.Media, goog.ui.Control);
 

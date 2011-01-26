@@ -120,7 +120,7 @@ goog.gears.FakeWorkerPool_.prototype.createWorker =
   // We cannot just set these to undefined because the properties are read
   // only. We therefore use a with statement to hide them to the scope.
   doc.write('<script>with ({window: undefined, document: undefined, ' +
-            'navigator: undefined}) {' + code + '}</script>');
+            'navigator: undefined}) {' + code + '}</' + 'script>');
   doc.close();
 
   return id;

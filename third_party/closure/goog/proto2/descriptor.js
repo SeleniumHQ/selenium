@@ -40,7 +40,7 @@ goog.proto2.Metadata = goog.typedef;
  *      this descriptor describes.
  * @param {!goog.proto2.Metadata} metadata The metadata about the message that
  *      will be used to construct this descriptor.
- * @param {Array.<goog.proto2.FieldDescriptor>} fields The fields of the
+ * @param {Array.<!goog.proto2.FieldDescriptor>} fields The fields of the
  *      message described by this descriptor.
  *
  * @constructor
@@ -73,7 +73,7 @@ goog.proto2.Descriptor = function(messageType, metadata, fields) {
 
   /**
    * The fields of the message described by this descriptor.
-   * @type {Object}
+   * @type {!Object.<number, !goog.proto2.FieldDescriptor>}
    * @private
    */
   this.fields_ = {};
@@ -123,14 +123,22 @@ goog.proto2.Descriptor.prototype.getContainingType = function() {
  * Returns the fields in the message described by this descriptor ordered by
  * tag.
  *
- * @return {Array.<goog.proto2.FieldDescriptor>} The array of field descriptors.
+ * @return {!Array.<!goog.proto2.FieldDescriptor>} The array of field
+ *     descriptors.
  */
 goog.proto2.Descriptor.prototype.getFields = function() {
-  var fields = goog.object.getValues(this.fields_);
-
-  goog.array.sort(fields, function(fieldA, fieldB) {
+  /**
+   * @param {!goog.proto2.FieldDescriptor} fieldA First field.
+   * @param {!goog.proto2.FieldDescriptor} fieldB Second field.
+   * @return {number} Negative if fieldA's tag number is smaller, positive
+   *     if greater, zero if the same.
+   */
+  function tagComparator(fieldA, fieldB) {
     return fieldA.getTag() - fieldB.getTag();
-  });
+  };
+
+  var fields = goog.object.getValues(this.fields_);
+  goog.array.sort(fields, tagComparator);
 
   return fields;
 };
@@ -140,7 +148,7 @@ goog.proto2.Descriptor.prototype.getFields = function() {
  * Returns the fields in the message as a key/value map, where the key is
  * the tag number of the field.
  *
- * @return {Object} The field map.
+ * @return {!Object.<number, !goog.proto2.FieldDescriptor>} The field map.
  */
 goog.proto2.Descriptor.prototype.getFieldsMap = function() {
   return goog.object.clone(this.fields_);
@@ -154,13 +162,13 @@ goog.proto2.Descriptor.prototype.getFieldsMap = function() {
  *
  * @param {string} name The field name for which to search.
  *
- * @return {goog.proto2.FieldDescriptor?} The field found, if any.
+ * @return {goog.proto2.FieldDescriptor} The field found, if any.
  */
 goog.proto2.Descriptor.prototype.findFieldByName = function(name) {
-  var valueFound =
-    goog.object.findValue(this.fields_, function(field, key, obj) {
-      return field.getName() == name;
-    });
+  var valueFound = goog.object.findValue(this.fields_,
+      function(field, key, obj) {
+        return field.getName() == name;
+      });
 
   return /** @type {goog.proto2.FieldDescriptor} */ (valueFound) || null;
 };
@@ -175,7 +183,7 @@ goog.proto2.Descriptor.prototype.findFieldByName = function(name) {
  */
 goog.proto2.Descriptor.prototype.findFieldByTag = function(tag) {
   goog.proto2.Util.assert(goog.string.isNumeric(tag));
-  return this.fields_[tag] || null;
+  return this.fields_[parseInt(tag, 10)] || null;
 };
 
 

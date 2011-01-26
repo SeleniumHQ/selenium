@@ -265,13 +265,12 @@ goog.ui.SubMenu.prototype.setVisible = function(visible, opt_force) {
  * @private
  */
 goog.ui.SubMenu.prototype.dismissSiblings_ = function() {
-  var items = this.getParent().getItems();
-  for (var i = 0; i < items.length; i++) {
-    if (items[i] != this && typeof items[i].dismissSubMenu == 'function') {
-      items[i].dismissSubMenu();
-      items[i].clearTimers();
+  this.getParent().forEachChild(function(child) {
+    if (child != this && typeof child.dismissSubMenu == 'function') {
+      child.dismissSubMenu();
+      child.clearTimers();
     }
-  }
+  }, this);
 };
 
 

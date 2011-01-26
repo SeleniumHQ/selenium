@@ -95,6 +95,15 @@ goog.testing.recordFunction = function(opt_f) {
     return calls[calls.length - 1] || null;
   };
 
+  /**
+   * Returns and removes the last call of the recorded function.
+   * @return {goog.testing.FunctionCall} Last call of the recorded function or
+   *     null if it hasn't been called.
+   */
+  recordedFunction.popLastCall = function() {
+    return calls.pop() || null;
+  };
+
   return recordedFunction;
 };
 
@@ -156,6 +165,16 @@ goog.testing.FunctionCall.prototype.getThis = function() {
  */
 goog.testing.FunctionCall.prototype.getArguments = function() {
   return this.arguments_;
+};
+
+
+/**
+ * Returns the nth argument of the called function.
+ * @param {number} index 0-based index of the argument.
+ * @return {*} The argument value or undefined if there is no such argument.
+ */
+goog.testing.FunctionCall.prototype.getArgument = function(index) {
+  return this.arguments_[index];
 };
 
 

@@ -446,6 +446,10 @@ goog.ui.PopupMenu.prototype.showAtElement = function(element, targetCorner,
  * Hides the menu.
  */
 goog.ui.PopupMenu.prototype.hide = function() {
+  if (!this.isVisible()) {
+    return;
+  }
+
   // setVisible dispatches a goog.ui.Component.EventType.HIDE event, which may
   // be canceled to prevent the menu from being hidden.
   this.setVisible(false);

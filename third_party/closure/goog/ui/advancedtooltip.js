@@ -356,7 +356,8 @@ goog.ui.AdvancedTooltip.prototype.handleTooltipMouseOver = function(event) {
  * @return {number} Hide delay to use.
  */
 goog.ui.AdvancedTooltip.prototype.getHideDelayMs = function() {
-  return this.tracking_ ? this.cursorTrackingHideDelayMs_ : this.hideDelayMs_;
+  return this.tracking_ ? this.cursorTrackingHideDelayMs_ :
+      goog.base(this, 'getHideDelayMs');
 };
 
 

@@ -19,6 +19,7 @@
 
 
 goog.provide('goog.array');
+goog.provide('goog.array.ArrayLike');
 
 goog.require('goog.asserts');
 
@@ -810,17 +811,24 @@ goog.array.slice = function(arr, start, opt_end) {
  *     array will remain unchanged.
  */
 goog.array.removeDuplicates = function(arr, opt_rv) {
-  var rv = opt_rv || arr;
+  var returnArray = opt_rv || arr;
+
   var seen = {}, cursorInsert = 0, cursorRead = 0;
   while (cursorRead < arr.length) {
     var current = arr[cursorRead++];
-    var uid = goog.isObject(current) ? goog.getUid(current) : current;
-    if (!Object.prototype.hasOwnProperty.call(seen, uid)) {
-      seen[uid] = true;
-      rv[cursorInsert++] = current;
+
+    // Prefix each type with a single character representing the type to
+    // prevent conflicting keys (e.g. true and 'true').
+    var key = goog.isObject(current) ?
+        'o' + goog.getUid(current) :
+        (typeof current).charAt(0) + current;
+
+    if (!Object.prototype.hasOwnProperty.call(seen, key)) {
+      seen[key] = true;
+      returnArray[cursorInsert++] = current;
     }
   }
-  rv.length = cursorInsert;
+  returnArray.length = cursorInsert;
 };
 
 

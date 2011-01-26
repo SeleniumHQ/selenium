@@ -61,6 +61,9 @@ goog.proto2.FieldDescriptor = function(messageType, tag, metadata) {
   this.name_ = metadata.name;
 
   /** @type {*} */
+  metadata.repeated;
+
+  /** @type {*} */
   metadata.required;
 
   /**
@@ -79,7 +82,7 @@ goog.proto2.FieldDescriptor = function(messageType, tag, metadata) {
 
   /**
    * The field type of this field.
-   * @type {goog.proto2.Message.FieldType}
+   * @type {goog.proto2.FieldDescriptor.FieldType}
    * @private
    */
   this.fieldType_ = metadata.fieldType;
@@ -94,12 +97,59 @@ goog.proto2.FieldDescriptor = function(messageType, tag, metadata) {
   this.nativeType_ = metadata.type;
 
   /**
+   * Is it permissible on deserialization to convert between numbers and
+   * well-formed strings?  Is true for 64-bit integral field types, false for
+   * all other field types.
+   * @type {boolean}
+   * @private
+   */
+  this.deserializationConversionPermitted_ = false;
+
+  switch (this.fieldType_) {
+    case goog.proto2.FieldDescriptor.FieldType.INT64:
+    case goog.proto2.FieldDescriptor.FieldType.UINT64:
+    case goog.proto2.FieldDescriptor.FieldType.FIXED64:
+    case goog.proto2.FieldDescriptor.FieldType.SFIXED64:
+    case goog.proto2.FieldDescriptor.FieldType.SINT64:
+      this.deserializationConversionPermitted_ = true;
+      break;
+  }
+
+  /**
    * The default value of this field, if different from the default, default
    * value.
    * @type {*}
    * @private
    */
   this.defaultValue_ = metadata.defaultValue;
+};
+
+
+/**
+ * An enumeration defining the possible field types.
+ * Should be a mirror of that defined in descriptor.h.
+ *
+ * @enum {number}
+ */
+goog.proto2.FieldDescriptor.FieldType = {
+  DOUBLE: 1,
+  FLOAT: 2,
+  INT64: 3,
+  UINT64: 4,
+  INT32: 5,
+  FIXED64: 6,
+  FIXED32: 7,
+  BOOL: 8,
+  STRING: 9,
+  GROUP: 10,
+  MESSAGE: 11,
+  BYTES: 12,
+  UINT32: 13,
+  ENUM: 14,
+  SFIXED32: 15,
+  SFIXED64: 16,
+  SINT32: 17,
+  SINT64: 18
 };
 
 
@@ -141,11 +191,11 @@ goog.proto2.FieldDescriptor.prototype.getDefaultValue = function() {
     // This will be (0, false, "") for (number, boolean, string) and will
     // be a new instance of a group/message if the field is a message type.
     var nativeType = this.nativeType_;
-    if (nativeType == Boolean) {
+    if (nativeType === Boolean) {
       this.defaultValue_ = false;
-    } else if (nativeType == Number) {
+    } else if (nativeType === Number) {
       this.defaultValue_ = 0;
-    } else if (nativeType == String) {
+    } else if (nativeType === String) {
       this.defaultValue_ = '';
     } else {
       this.defaultValue_ = new nativeType;
@@ -158,7 +208,7 @@ goog.proto2.FieldDescriptor.prototype.getDefaultValue = function() {
 
 /**
  * Returns the field type of the field described by this descriptor.
- * @return {goog.proto2.Message.FieldType} The field type.
+ * @return {goog.proto2.FieldDescriptor.FieldType} The field type.
  */
 goog.proto2.FieldDescriptor.prototype.getFieldType = function() {
   return this.fieldType_;
@@ -177,18 +227,37 @@ goog.proto2.FieldDescriptor.prototype.getNativeType = function() {
 
 
 /**
+ * Returns true if simple conversions between numbers and strings are permitted
+ * during deserialization for this field.
+ *
+ * @return {boolean} Whether conversion is permitted.
+ */
+goog.proto2.FieldDescriptor.prototype.deserializationConversionPermitted =
+    function() {
+  return this.deserializationConversionPermitted_;
+};
+
+
+/**
  * Returns the descriptor of the message type of this field. Only valid
  * for fields of type GROUP and MESSAGE.
  *
  * @return {goog.proto2.Descriptor} The message descriptor.
  */
 goog.proto2.FieldDescriptor.prototype.getFieldMessageType = function() {
-  goog.proto2.Util.assert(
-      this.fieldType_ == goog.proto2.Message.FieldType.MESSAGE ||
-      this.fieldType_ == goog.proto2.Message.FieldType.GROUP,
-      'Expected message or group');
+  goog.proto2.Util.assert(this.isCompositeType(), 'Expected message or group');
 
   return this.nativeType_.descriptor_;
+};
+
+
+/**
+ * @return {boolean} True if the field stores composite data or repeated
+ *     composite data (message or group).
+ */
+goog.proto2.FieldDescriptor.prototype.isCompositeType = function() {
+  return this.fieldType_ == goog.proto2.FieldDescriptor.FieldType.MESSAGE ||
+      this.fieldType_ == goog.proto2.FieldDescriptor.FieldType.GROUP;
 };
 
 

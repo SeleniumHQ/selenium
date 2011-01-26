@@ -18,9 +18,26 @@
  */
 
 
+goog.provide('goog.net.Cookies');
 goog.provide('goog.net.cookies');
 
 goog.require('goog.userAgent');
+
+
+
+/**
+ * A class for handling browser cookies.
+ * @param {Document} context The context document to get/set cookies on.
+ * @constructor
+ */
+goog.net.Cookies = function(context) {
+  /**
+   * The context document to get/set cookies on
+   * @type {Document}
+   * @private
+   */
+  this.document_ = context;
+};
 
 
 /**
@@ -30,7 +47,7 @@ goog.require('goog.userAgent');
  * browsers/proxies that interpret 4K as 4000 rather than 4096.
  * @type {number}
  */
-goog.net.cookies.MAX_COOKIE_LENGTH = 3950;
+goog.net.Cookies.MAX_COOKIE_LENGTH = 3950;
 
 
 /**
@@ -38,7 +55,7 @@ goog.net.cookies.MAX_COOKIE_LENGTH = 3950;
  * @type {RegExp}
  * @private
  */
-goog.net.cookies.SPLIT_RE_ = /\s*;\s*/;
+goog.net.Cookies.SPLIT_RE_ = /\s*;\s*/;
 
 
 /**
@@ -47,27 +64,27 @@ goog.net.cookies.SPLIT_RE_ = /\s*;\s*/;
  * @type {string}
  * @private
  */
-goog.net.cookies.TEST_COOKIE_NAME_ = 'COOKIES_TEST_';
+goog.net.Cookies.TEST_COOKIE_NAME_ = 'COOKIES_TEST_';
 
 
 /**
  * Returns true if cookies are enabled.
  * @return {boolean} True if cookies are enabled.
  */
-goog.net.cookies.isEnabled = function() {
-  var isEnabled = goog.net.cookies.isNavigatorCookieEnabled_();
+goog.net.Cookies.prototype.isEnabled = function() {
+  var isEnabled = this.isNavigatorCookieEnabled_();
 
   if (isEnabled && goog.userAgent.WEBKIT) {
     // Chrome has a bug where it will report cookies as enabled even if they
     // are not, see http://code.google.com/p/chromium/issues/detail?id=1850 .
     // To work around, we set a unique cookie, then check for it.
-    var cookieName = goog.net.cookies.TEST_COOKIE_NAME_ + goog.now();
+    var cookieName = goog.net.Cookies.TEST_COOKIE_NAME_ + goog.now();
     goog.net.cookies.set(cookieName, '1');
-    if (!goog.net.cookies.get(cookieName)) {
+    if (!this.get(cookieName)) {
       return false;
     }
     // Remove temp cookie.
-    goog.net.cookies.remove(cookieName);
+    this.remove(cookieName);
   }
 
   return isEnabled;
@@ -94,7 +111,7 @@ goog.net.cookies.isEnabled = function() {
  * @see <a href="http://tools.ietf.org/html/rfc2109">RFC 2109</a>
  * @see <a href="http://tools.ietf.org/html/rfc2965">RFC 2965</a>
  */
-goog.net.cookies.isValidName = function(name) {
+goog.net.Cookies.prototype.isValidName = function(name) {
   return !(/[;=\s]/.test(name));
 };
 
@@ -111,7 +128,7 @@ goog.net.cookies.isValidName = function(name) {
  * @see <a href="http://tools.ietf.org/html/rfc2109">RFC 2109</a>
  * @see <a href="http://tools.ietf.org/html/rfc2965">RFC 2965</a>
  */
-goog.net.cookies.isValidValue = function(value) {
+goog.net.Cookies.prototype.isValidValue = function(value) {
   return !(/[;\r\n]/.test(value));
 };
 
@@ -141,12 +158,12 @@ goog.net.cookies.isValidValue = function(value) {
  * @param {boolean=} opt_secure Whether the cookie should only be sent over
  *     a secure channel.
  */
-goog.net.cookies.set = function(
+goog.net.Cookies.prototype.set = function(
     name, value, opt_maxAge, opt_path, opt_domain, opt_secure) {
-  if (!goog.net.cookies.isValidName(name)) {
+  if (!this.isValidName(name)) {
     throw Error('Invalid cookie name "' + name + '"');
   }
-  if (!goog.net.cookies.isValidValue(value)) {
+  if (!this.isValidValue(value)) {
     throw Error('Invalid cookie value "' + value + '"');
   }
 
@@ -180,8 +197,8 @@ goog.net.cookies.set = function(
     expiresStr = ';expires=' + futureDate.toUTCString();
   }
 
-  goog.net.cookies.setCookie_(name + '=' + value + domainStr + pathStr +
-                              expiresStr + secureStr);
+  this.setCookie_(name + '=' + value + domainStr + pathStr +
+                  expiresStr + secureStr);
 };
 
 
@@ -192,9 +209,9 @@ goog.net.cookies.set = function(
  * @return {string|undefined}  The value of the cookie. If no cookie is set this
  *     returns opt_default or undefined if opt_default is not provided.
  */
-goog.net.cookies.get = function(name, opt_default) {
+goog.net.Cookies.prototype.get = function(name, opt_default) {
   var nameEq = name + '=';
-  var parts = goog.net.cookies.getParts_();
+  var parts = this.getParts_();
   for (var i = 0, part; part = parts[i]; i++) {
     if (part.indexOf(nameEq) == 0) {
       return part.substr(nameEq.length);
@@ -215,9 +232,9 @@ goog.net.cookies.get = function(name, opt_default) {
  *     null (i.e. cookie at full request host name).
  * @return {boolean} Whether the cookie existed before it was removed.
  */
-goog.net.cookies.remove = function(name, opt_path, opt_domain) {
-  var rv = goog.net.cookies.containsKey(name);
-  goog.net.cookies.set(name, '', 0, opt_path, opt_domain);
+goog.net.Cookies.prototype.remove = function(name, opt_path, opt_domain) {
+  var rv = this.containsKey(name);
+  this.set(name, '', 0, opt_path, opt_domain);
   return rv;
 };
 
@@ -226,8 +243,8 @@ goog.net.cookies.remove = function(name, opt_path, opt_domain) {
  * Gets the names for all the cookies.
  * @return {Array.<string>} An array with the names of the cookies.
  */
-goog.net.cookies.getKeys = function() {
-  return goog.net.cookies.getKeyValues_().keys;
+goog.net.Cookies.prototype.getKeys = function() {
+  return this.getKeyValues_().keys;
 };
 
 
@@ -235,28 +252,28 @@ goog.net.cookies.getKeys = function() {
  * Gets the values for all the cookies.
  * @return {Array.<string>} An array with the values of the cookies.
  */
-goog.net.cookies.getValues = function() {
-  return goog.net.cookies.getKeyValues_().values;
+goog.net.Cookies.prototype.getValues = function() {
+  return this.getKeyValues_().values;
 };
 
 
 /**
  * @return {boolean} Whether there are any cookies for this document.
  */
-goog.net.cookies.isEmpty = function() {
-  return !goog.net.cookies.getCookie_();
+goog.net.Cookies.prototype.isEmpty = function() {
+  return !this.getCookie_();
 };
 
 
 /**
  * @return {number} The number of cookies for this document.
  */
-goog.net.cookies.getCount = function() {
-  var cookie = goog.net.cookies.getCookie_();
+goog.net.Cookies.prototype.getCount = function() {
+  var cookie = this.getCookie_();
   if (!cookie) {
     return 0;
   }
-  return goog.net.cookies.getParts_().length;
+  return this.getParts_().length;
 };
 
 
@@ -265,10 +282,10 @@ goog.net.cookies.getCount = function() {
  * @param {string} key The name of the cookie to test for.
  * @return {boolean} Whether there is a cookie by that name.
  */
-goog.net.cookies.containsKey = function(key) {
+goog.net.Cookies.prototype.containsKey = function(key) {
   // substring will return empty string if the key is not found, so the get
   // function will only return undefined
-  return goog.isDef(goog.net.cookies.get(key));
+  return goog.isDef(this.get(key));
 };
 
 
@@ -278,9 +295,9 @@ goog.net.cookies.containsKey = function(key) {
  * @param {string} value  The value to check for.
  * @return {boolean} Whether there is a cookie with that value.
  */
-goog.net.cookies.containsValue = function(value) {
+goog.net.Cookies.prototype.containsValue = function(value) {
   // this O(n) in any case so lets do the trivial thing.
-  var values = goog.net.cookies.getKeyValues_().values;
+  var values = this.getKeyValues_().values;
   for (var i = 0; i < values.length; i++) {
     if (values[i] == value) {
       return true;
@@ -295,10 +312,10 @@ goog.net.cookies.containsValue = function(value) {
  * cookies from the current path and domain.  If there are cookies set using a
  * subpath and/or another domain these will still be there.
  */
-goog.net.cookies.clear = function() {
-  var keys = goog.net.cookies.getKeyValues_().keys;
+goog.net.Cookies.prototype.clear = function() {
+  var keys = this.getKeyValues_().keys;
   for (var i = keys.length - 1; i >= 0; i--) {
-    goog.net.cookies.remove(keys[i]);
+    this.remove(keys[i]);
   }
 };
 
@@ -309,8 +326,8 @@ goog.net.cookies.clear = function() {
  * @param {string} s The cookie string to set.
  * @private
  */
-goog.net.cookies.setCookie_ = function(s) {
-  document.cookie = s;
+goog.net.Cookies.prototype.setCookie_ = function(s) {
+  this.document_.cookie = s;
 };
 
 
@@ -320,8 +337,8 @@ goog.net.cookies.setCookie_ = function(s) {
  * @return {?string} Returns the {@code document.cookie}.
  * @private
  */
-goog.net.cookies.getCookie_ = function() {
-  return document.cookie;
+goog.net.Cookies.prototype.getCookie_ = function() {
+  return this.document_.cookie;
 };
 
 
@@ -329,9 +346,9 @@ goog.net.cookies.getCookie_ = function() {
  * @return {!Array.<string>} The cookie split on semi colons.
  * @private
  */
-goog.net.cookies.getParts_ = function() {
-  return (goog.net.cookies.getCookie_() || '').
-      split(goog.net.cookies.SPLIT_RE_);
+goog.net.Cookies.prototype.getParts_ = function() {
+  return (this.getCookie_() || '').
+      split(goog.net.Cookies.SPLIT_RE_);
 };
 
 
@@ -340,7 +357,7 @@ goog.net.cookies.getParts_ = function() {
  * @return {boolean} The value of navigator.cookieEnabled.
  * @private
  */
-goog.net.cookies.isNavigatorCookieEnabled_ = function() {
+goog.net.Cookies.prototype.isNavigatorCookieEnabled_ = function() {
   return navigator.cookieEnabled;
 };
 
@@ -350,8 +367,8 @@ goog.net.cookies.isNavigatorCookieEnabled_ = function() {
  * @return {Object} An object with keys and values.
  * @private
  */
-goog.net.cookies.getKeyValues_ = function() {
-  var parts = goog.net.cookies.getParts_();
+goog.net.Cookies.prototype.getKeyValues_ = function() {
+  var parts = this.getParts_();
   var keys = [], values = [], index, part;
   for (var i = 0; part = parts[i]; i++) {
     index = part.indexOf('=');
@@ -366,3 +383,19 @@ goog.net.cookies.getKeyValues_ = function() {
   }
   return {keys: keys, values: values};
 };
+
+
+/**
+ * A static default instance.
+ * @type {goog.net.Cookies}
+ */
+goog.net.cookies = new goog.net.Cookies(document);
+
+
+/**
+ * Define the constant on the instance in order not to break many references to
+ * it.
+ * @type {number}
+ * @deprecated Use goog.net.Cookies.MAX_COOKIE_LENGTH instead.
+ */
+goog.net.cookies.MAX_COOKIE_LENGTH = goog.net.Cookies.MAX_COOKIE_LENGTH;

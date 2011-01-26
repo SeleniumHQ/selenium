@@ -51,7 +51,8 @@ goog.addSingletonGetter(goog.ui.style.app.MenuButtonRenderer);
  * by this renderer.
  * @type {string}
  */
-goog.ui.style.app.MenuButtonRenderer.CSS_CLASS = 'goog-menu-button';
+goog.ui.style.app.MenuButtonRenderer.CSS_CLASS =
+    goog.getCssName('goog-menu-button');
 
 
 /**
@@ -61,13 +62,27 @@ goog.ui.style.app.MenuButtonRenderer.CSS_CLASS = 'goog-menu-button';
  * @type {Array.<Array.<string>>}
  */
 goog.ui.style.app.MenuButtonRenderer.IE6_CLASS_COMBINATIONS = [
-  ['goog-button-base-rtl', 'goog-menu-button'],
-  ['goog-button-base-hover', 'goog-menu-button'],
-  ['goog-button-base-focused', 'goog-menu-button'],
-  ['goog-button-base-disabled', 'goog-menu-button'],
-  ['goog-button-base-active', 'goog-menu-button'],
-  ['goog-button-base-open', 'goog-menu-button'],
-  ['goog-button-base-active', 'goog-button-base-open', 'goog-menu-button']
+  [goog.getCssName('goog-button-base-rtl'),
+   goog.getCssName('goog-menu-button')],
+
+  [goog.getCssName('goog-button-base-hover'),
+   goog.getCssName('goog-menu-button')],
+
+  [goog.getCssName('goog-button-base-focused'),
+   goog.getCssName('goog-menu-button')],
+
+  [goog.getCssName('goog-button-base-disabled'),
+   goog.getCssName('goog-menu-button')],
+
+  [goog.getCssName('goog-button-base-active'),
+   goog.getCssName('goog-menu-button')],
+
+  [goog.getCssName('goog-button-base-open'),
+   goog.getCssName('goog-menu-button')],
+
+  [goog.getCssName('goog-button-base-active'),
+   goog.getCssName('goog-button-base-open'),
+   goog.getCssName('goog-menu-button')]
 ];
 
 
@@ -191,7 +206,7 @@ goog.ui.style.app.MenuButtonRenderer.prototype.createContentWithDropdown =
  * @return {Element} Dropdown element.
  */
 goog.ui.style.app.MenuButtonRenderer.prototype.createDropdown = function(dom) {
-  return dom.createDom('div', this.getCssClass() + '-dropdown');
+  return dom.createDom('div', goog.getCssName(this.getCssClass(), 'dropdown'));
 };
 
 

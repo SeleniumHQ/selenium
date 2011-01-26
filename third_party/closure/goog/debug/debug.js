@@ -199,28 +199,50 @@ goog.debug.exposeException = function(err, opt_fn) {
  */
 goog.debug.normalizeErrorObject = function(err) {
   var href = goog.getObjectByName('window.location.href');
-  return (typeof err == 'string') ?
-      {
-        'message': err,
-        'name': 'Unknown error',
-        'lineNumber': 'Not available',
-        'fileName': href,
-        'stack': 'Not available'
-      } :
+  if (goog.isString(err)) {
+    return {
+      'message': err,
+      'name': 'Unknown error',
+      'lineNumber': 'Not available',
+      'fileName': href,
+      'stack': 'Not available'
+    };
+  }
 
-      // The IE Error object contains only the name and the message
-      // The Safari Error object uses the line and sourceURL fields
-      (!err.lineNumber || !err.fileName || !err.stack) ?
-      {
-        'message': err.message,
-        'name': err.name,
-        'lineNumber': err.lineNumber || err.line || 'Not available',
-        'fileName': err.fileName || err.filename || err.sourceURL || href,
-        'stack': err.stack || 'Not available'
-      } :
+  var lineNumber, fileName;
+  var threwError = false;
 
-      // Standards error object
-      err;
+  try {
+    lineNumber = err.lineNumber || err.line || 'Not available';
+  } catch (e) {
+    // Firefox 2 sometimes throws an error when accessing 'lineNumber':
+    // Message: Permission denied to get property UnnamedClass.lineNumber
+    lineNumber = 'Not available';
+    threwError = true;
+  }
+
+  try {
+    fileName = err.fileName || err.filename || err.sourceURL || href;
+  } catch (e) {
+    // Firefox 2 may also throw an error when accessing 'filename'.
+    fileName = 'Not available';
+    threwError = true;
+  }
+
+  // The IE Error object contains only the name and the message.
+  // The Safari Error object uses the line and sourceURL fields.
+  if (threwError || !err.lineNumber || !err.fileName || !err.stack) {
+    return {
+      'message': err.message,
+      'name': err.name,
+      'lineNumber': lineNumber,
+      'fileName': fileName,
+      'stack': err.stack || 'Not available'
+    };
+  }
+
+  // Standards error object
+  return err;
 };
 
 

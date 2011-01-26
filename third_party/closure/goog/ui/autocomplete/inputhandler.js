@@ -563,7 +563,7 @@ goog.ui.AutoComplete.InputHandler.prototype.disposeInternal = function() {
   this.eh_.dispose();
   delete this.eh_;
   this.activateHandler_.dispose();
-  this.activateHandler_ = null;
+  this.keyHandler_.dispose();
 };
 
 

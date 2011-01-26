@@ -199,8 +199,14 @@ goog.net.ImageLoader.prototype.onNetworkEvent_ = function(evt) {
     }
   }
 
-  // Redispatch the event on behalf of the image.
+  // Redispatch the event on behalf of the image. Note that the external
+  // listener may dispose this instance.
   this.dispatchEvent({type: evt.type, target: image});
+
+  if (this.isDisposed()) {
+    // If instance was disposed by listener, exit this function.
+    return;
+  }
 
   // Remove the image from the map.
   goog.object.remove(this.images_, image.id);

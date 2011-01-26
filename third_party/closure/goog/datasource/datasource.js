@@ -15,7 +15,8 @@
 /**
  * @fileoverview Generic rich data access API.
  *
- * See http://wiki/Main/ClientDataSource
+ * Abstraction for data sources that allows listening for changes at different
+ * levels of the data tree and updating the data via XHR requests
  *
  */
 

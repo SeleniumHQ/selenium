@@ -153,6 +153,19 @@ goog.net.xpc.CfgFields = {
 
 
 /**
+ * Config properties that need to be URL sanitized.
+ * @type {Array}.<string>
+ */
+goog.net.xpc.UriCfgFields = [
+  goog.net.xpc.CfgFields.PEER_URI,
+  goog.net.xpc.CfgFields.LOCAL_RELAY_URI,
+  goog.net.xpc.CfgFields.PEER_RELAY_URI,
+  goog.net.xpc.CfgFields.LOCAL_POLL_URI,
+  goog.net.xpc.CfgFields.PEER_POLL_URI
+];
+
+
+/**
  * @enum {number}
  */
 goog.net.xpc.ChannelStates = {
@@ -164,15 +177,10 @@ goog.net.xpc.ChannelStates = {
 
 /**
  * The name of the transport service (used for internal signalling).
- *
- * This begins with an % to ensure that it isn't the same as any URL-encoded
- * string. Since XPC URL-encodes user service names, this means it won't cause
- * any collisions.
- *
  * @type {string}
  * @private
  */
-goog.net.xpc.TRANSPORT_SERVICE_ = '%tp';
+goog.net.xpc.TRANSPORT_SERVICE_ = 'tp';
 
 
 /**

@@ -66,7 +66,7 @@ goog.require('goog.dom');
  */
 goog.net.Jsonp = function(uri, opt_callbackParamName) {
   /**
-   * The uri_ object will be used to encode the paylod that is sent to the
+   * The uri_ object will be used to encode the payload that is sent to the
    * server.
    * @type {goog.Uri}
    * @private
@@ -143,13 +143,16 @@ goog.net.Jsonp.prototype.getRequestTimeout = function() {
  * URL parameter will be sent in the request, and the script element
  * will be cleaned up after the timeout.
  *
- * @param {Object} payload Name-value pairs.
+ * @param {Object=} opt_payload Name-value pairs.  If given, these will be
+ *     added as parameters to the supplied URI as GET parameters to the
+ *     given server URI.
  *
  * @param {Function=} opt_replyCallback A function expecting one
  *     argument, called when the reply arrives, with the response data.
  *
  * @param {Function=} opt_errorCallback A function expecting one
- *     argument, called on timeout, with the payload.
+ *     argument, called on timeout, with the payload (if given), otherwise
+ *     null.
  *
  * @param {string=} opt_callbackParamValue Value to be used as the
  *     parameter value for the callback parameter (callbackParamName).
@@ -162,10 +165,12 @@ goog.net.Jsonp.prototype.getRequestTimeout = function() {
  * @return {Object} A request descriptor that may be used to cancel this
  *     transmission, or null, if the message may not be cancelled.
  */
-goog.net.Jsonp.prototype.send = function(payload,
+goog.net.Jsonp.prototype.send = function(opt_payload,
                                          opt_replyCallback,
                                          opt_errorCallback,
                                          opt_callbackParamValue) {
+
+  var payload = opt_payload || null;
 
   // This is a safeguard that we don't accidentally call appendChild
   // on a null.
@@ -178,7 +183,7 @@ goog.net.Jsonp.prototype.send = function(payload,
 
   var id = opt_callbackParamValue ||
       '_' + (goog.net.Jsonp.scriptCounter_++).toString(36) +
-       goog.now().toString(36);
+      goog.now().toString(36);
 
   if (!goog.global[goog.net.Jsonp.CALLBACKS]) {
     goog.global[goog.net.Jsonp.CALLBACKS] = {};
@@ -195,7 +200,9 @@ goog.net.Jsonp.prototype.send = function(payload,
 
   // Create a new Uri object onto which this payload will be added
   var uri = this.uri_.clone();
-  goog.net.Jsonp.addPayloadToUri_(payload, uri);
+  if (payload) {
+    goog.net.Jsonp.addPayloadToUri_(payload, uri);
+  }
 
   if (opt_replyCallback) {
     var reply = goog.net.Jsonp.newReplyHandler_(id, script, opt_replyCallback,
@@ -232,7 +239,7 @@ goog.net.Jsonp.prototype.cancel = function(request) {
 
     if (scriptNode && scriptNode.tagName == 'SCRIPT' &&
         typeof goog.global[goog.net.Jsonp.CALLBACKS][request.id_] ==
-           'function') {
+        'function') {
       request.timeout_ && goog.global.clearTimeout(request.timeout_);
       goog.net.Jsonp.cleanup_(request.id_, scriptNode, false);
     }
@@ -329,21 +336,22 @@ goog.net.Jsonp.cleanup_ = function(id, scriptNode, deleteReplyHandler) {
 
 
 /**
- * Returns URL encoded payload. The payload is assumed to be a list of
- * value name pairs, in the form {"foo": 1, "bar": true, ...}.
+ * Returns URL encoded payload. The payload should be a map of name-value
+ * pairs, in the form {"foo": 1, "bar": true, ...}.  If the map is empty,
+ * the URI will be unchanged.
  *
  * <p>The method uses hasOwnProperty() to assure the properties are on the
  * object, not on its prototype.
  *
- * @param {Object} payload A list of value name pairs to be encoded.
+ * @param {!Object} payload A map of value name pairs to be encoded.
  *     A value may be specified as an array, in which case a query parameter
  *     will be created for each value, e.g.:
  *     {"foo": [1,2]} will encode to "foo=1&foo=2".
  *
- * @param {goog.Uri} uri A Uri object onto which the payload key value pairs
+ * @param {!goog.Uri} uri A Uri object onto which the payload key value pairs
  *     will be encoded.
  *
- * @return {goog.Uri} A reference to the Uri sent as a parameter.
+ * @return {!goog.Uri} A reference to the Uri sent as a parameter.
  * @private
  */
 goog.net.Jsonp.addPayloadToUri_ = function(payload, uri) {

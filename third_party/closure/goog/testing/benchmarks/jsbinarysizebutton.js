@@ -19,6 +19,8 @@
  *
  */
 
+goog.provide('goog.ui.benchmarks.jsbinarysizebutton');
+
 goog.require('goog.array');
 goog.require('goog.dom');
 goog.require('goog.events');

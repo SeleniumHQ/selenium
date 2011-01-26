@@ -255,7 +255,7 @@ goog.module.ModuleManager.prototype.setAllModuleInfo = function(infoMap) {
  */
 goog.module.ModuleManager.prototype.setAllModuleInfoString = function(
     opt_info) {
-  if (!opt_info) {
+  if (!goog.isString(opt_info)) {
     // The call to this method is generated in two steps, the argument is added
     // after some of the compilation passes.  This means that the initial code
     // doesn't have any arguments and causes compiler errors.  We make it
@@ -644,7 +644,7 @@ goog.module.ModuleManager.prototype.execOnLoad = function(
     callbackWrapper = moduleInfo.registerCallback(fn, opt_handler);
     if (opt_userInitiated) {
       this.logger_.info('User initiated module already loading: ' + moduleId);
-      this.userInitiatedLoadingModuleIds_.push(moduleId);
+      this.addUserIntiatedLoadingModule_(moduleId);
       this.dispatchActiveIdleChangeIfNeeded_();
     }
   } else {
@@ -653,7 +653,7 @@ goog.module.ModuleManager.prototype.execOnLoad = function(
     if (!opt_noLoad) {
       if (opt_userInitiated) {
         this.logger_.info('User initiated module load: ' + moduleId);
-        this.userInitiatedLoadingModuleIds_.push(moduleId);
+        this.addUserIntiatedLoadingModule_(moduleId);
       }
       this.logger_.info('Initiating module load: ' + moduleId);
       this.loadModuleOrEnqueue_(moduleId);
@@ -686,7 +686,7 @@ goog.module.ModuleManager.prototype.load = function(
     moduleInfo.registerErrback(d.errback, d);
     if (opt_userInitiated) {
       this.logger_.info('User initiated module already loading: ' + moduleId);
-      this.userInitiatedLoadingModuleIds_.push(moduleId);
+      this.addUserIntiatedLoadingModule_(moduleId);
       this.dispatchActiveIdleChangeIfNeeded_();
     }
 
@@ -696,7 +696,7 @@ goog.module.ModuleManager.prototype.load = function(
     moduleInfo.registerErrback(d.errback, d);
     if (opt_userInitiated) {
       this.logger_.info('User initiated module load: ' + moduleId);
-      this.userInitiatedLoadingModuleIds_.push(moduleId);
+      this.addUserIntiatedLoadingModule_(moduleId);
     } else {
       this.logger_.info('Initiating module load: ' + moduleId);
     }
@@ -704,6 +704,21 @@ goog.module.ModuleManager.prototype.load = function(
   }
 
   return d;
+};
+
+
+/**
+ * Ensures that the module with the given id is listed as a user-initiated
+ * module that is being loaded. This method guarantees that a module will never
+ * get listed more than once.
+ * @param {string} id Identifier of the module.
+ * @private
+ */
+goog.module.ModuleManager.prototype.addUserIntiatedLoadingModule_ = function(
+    id) {
+  if (!goog.array.contains(this.userInitiatedLoadingModuleIds_, id)) {
+    this.userInitiatedLoadingModuleIds_.push(id);
+  }
 };
 
 

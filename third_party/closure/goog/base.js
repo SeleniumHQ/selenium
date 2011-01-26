@@ -199,7 +199,7 @@ goog.getObjectByName = function(name, opt_obj) {
   var parts = name.split('.');
   var cur = opt_obj || goog.global;
   for (var part; part = parts.shift(); ) {
-    if (cur[part]) {
+    if (goog.isDefAndNotNull(cur[part])) {
       cur = cur[part];
     } else {
       return null;
@@ -313,6 +313,18 @@ goog.global.CLOSURE_NO_DEPS;
 
 
 /**
+ * A function to import a single script. This is meant to be overridden when
+ * Closure is being run in non-HTML contexts, such as web workers. It's defined
+ * in the global scope so that it can be set before base.js is loaded, which
+ * allows deps.js to be imported properly.
+ *
+ * The function is passed the script source, which is a relative URI. It should
+ * return true if the script was imported, false otherwise.
+ */
+goog.global.CLOSURE_IMPORT_SCRIPT;
+
+
+/**
  * Null function used for default values of callbacks, etc.
  * @return {void} Nothing.
  */
@@ -409,21 +421,21 @@ if (!COMPILED) {
    * @private
    */
   goog.findBasePath_ = function() {
-    if (!goog.inHtmlDocument_()) {
-      return;
-    }
-    var doc = goog.global.document;
     if (goog.global.CLOSURE_BASE_PATH) {
       goog.basePath = goog.global.CLOSURE_BASE_PATH;
       return;
+    } else if (!goog.inHtmlDocument_()) {
+      return;
     }
+    var doc = goog.global.document;
     var scripts = doc.getElementsByTagName('script');
     // Search backwards since the current script is in almost all cases the one
     // that has base.js.
     for (var i = scripts.length - 1; i >= 0; --i) {
       var src = scripts[i].src;
-      var l = src.length;
-      if (src.substr(l - 7) == 'base.js') {
+      var qmark = src.lastIndexOf('?');
+      var l = qmark == -1 ? src.length : qmark;
+      if (src.substr(l - 7, 7) == 'base.js') {
         goog.basePath = src.substr(0, l - 7);
         return;
       }
@@ -432,25 +444,43 @@ if (!COMPILED) {
 
 
   /**
-   * Writes a script tag if, and only if, that script hasn't already been added
-   * to the document.  (Must be called at execution time)
+   * Imports a script if, and only if, that script hasn't already been imported.
+   * (Must be called at execution time)
    * @param {string} src Script source.
    * @private
    */
-  goog.writeScriptTag_ = function(src) {
-    if (goog.inHtmlDocument_() &&
-        !goog.dependencies_.written[src]) {
+  goog.importScript_ = function(src) {
+    var importScript = goog.global.CLOSURE_IMPORT_SCRIPT ||
+        goog.writeScriptTag_;
+    if (!goog.dependencies_.written[src] && importScript(src)) {
       goog.dependencies_.written[src] = true;
+    }
+  };
+
+
+  /**
+   * The default implementation of the import function. Writes a script tag to
+   * import the script.
+   *
+   * @param {string} src The script source.
+   * @return {boolean} True if the script was imported, false otherwise.
+   * @private
+   */
+  goog.writeScriptTag_ = function(src) {
+    if (goog.inHtmlDocument_()) {
       var doc = goog.global.document;
-      doc.write('<script type="text/javascript" src="' +
-                src + '"></' + 'script>');
+      doc.write(
+          '<script type="text/javascript" src="' + src + '"></' + 'script>');
+      return true;
+    } else {
+      return false;
     }
   };
 
 
   /**
    * Resolves dependencies based on the dependencies added using addDependency
-   * and calls writeScriptTag_ in the correct order.
+   * and calls importScript_ in the correct order.
    * @private
    */
   goog.writeScripts_ = function() {
@@ -503,7 +533,7 @@ if (!COMPILED) {
 
     for (var i = 0; i < scripts.length; i++) {
       if (scripts[i]) {
-        goog.writeScriptTag_(goog.basePath + scripts[i]);
+        goog.importScript_(goog.basePath + scripts[i]);
       } else {
         throw Error('Undefined script input');
       }
@@ -530,7 +560,7 @@ if (!COMPILED) {
 
   // Allow projects to manage the deps files themselves.
   if (!goog.global.CLOSURE_NO_DEPS) {
-    goog.writeScriptTag_(goog.basePath + 'deps.js');
+    goog.importScript_(goog.basePath + 'deps.js');
   }
 }
 
@@ -1146,31 +1176,41 @@ goog.cssNameMapping_;
 
 
 /**
+ * Optional obfuscation style for CSS class names. Should be set to either
+ * 'BY_WHOLE' or 'BY_PART' if defined.
+ * @type {string|undefined}
+ * @private
+ * @see goog.setCssNameMapping
+ */
+goog.cssNameMappingStyle_;
+
+
+/**
  * Handles strings that are intended to be used as CSS class names.
  *
- * Without JS Compiler the arguments are simple joined with a hyphen and passed
- * through unaltered.
+ * This function works in tandem with @see goog.setCssNameMapping.
  *
- * With the JS Compiler the arguments are inlined, e.g:
+ * Without any mapping set, the arguments are simple joined with a
+ * hyphen and passed through unaltered.
+ *
+ * When there is a mapping, there are two possible styles in which
+ * these mappings are used. In the BY_PART style, each part (i.e. in
+ * between hyphens) of the passed in css name is rewritten according
+ * to the map. In the BY_WHOLE style, the full css name is looked up in
+ * the map directly. If a rewrite is not specified by the map, the
+ * compiler will output a warning.
+ *
+ * When the mapping is passed to the compiler, it will replace calls
+ * to goog.getCssName with the strings from the mapping, e.g.
  *     var x = goog.getCssName('foo');
  *     var y = goog.getCssName(this.baseClass, 'active');
  *  becomes:
  *     var x= 'foo';
  *     var y = this.baseClass + '-active';
  *
- * If a CSS renaming map is passed to the compiler it will replace symbols in
- * the classname.  If one argument is passed it will be processed, if two are
- * passed only the modifier will be processed, as it is assumed the first
+ * If one argument is passed it will be processed, if two are passed
+ * only the modifier will be processed, as it is assumed the first
  * argument was generated as a result of calling goog.getCssName.
- *
- * Names are split on 'hyphen' and processed in parts such that the following
- * are equivalent:
- *   var base = goog.getCssName('baseclass');
- *   goog.getCssName(base, 'modifier');
- *   goog.getCSsName('baseclass-modifier');
- *
- * If any part does not appear in the renaming map a warning is logged and the
- * original, unobfuscated class name is inlined.
  *
  * @param {string} className The class name.
  * @param {string=} opt_modifier A modifier to be appended to the class name.
@@ -1178,9 +1218,46 @@ goog.cssNameMapping_;
  *     the modifier.
  */
 goog.getCssName = function(className, opt_modifier) {
-  var cssName = className + (opt_modifier ? '-' + opt_modifier : '');
-  return (goog.cssNameMapping_ && (cssName in goog.cssNameMapping_)) ?
-      goog.cssNameMapping_[cssName] : cssName;
+  var getMapping = function(cssName) {
+    return goog.cssNameMapping_[cssName];
+  };
+
+  var renameByParts = function(cssName) {
+    // Remap all the parts individually.
+    var parts = cssName.split('-');
+    var mapped = [];
+    for (var i = 0; i < parts.length; i++) {
+      var mapping = getMapping(parts[i]);
+      if (!mapping) {
+        // If any of the parts fail to match,
+        // just return the whole string unmodified.
+        // The compiler will emit a warning about this.
+        return cssName;
+      }
+      mapped.push(mapping);
+    }
+    return mapped.join('-');
+  };
+
+  var renameByWhole = function(cssName) {
+    return getMapping(cssName) || cssName;
+  };
+
+  var rename;
+  if (goog.cssNameMapping_) {
+    rename = goog.cssNameMappingStyle_ == 'BY_WHOLE' ?
+        renameByWhole : renameByParts;
+  } else {
+    rename = function(a) {
+      return a;
+    };
+  }
+
+  if (opt_modifier) {
+    return className + '-' + rename(opt_modifier);
+  } else {
+    return rename(className);
+  }
 };
 
 
@@ -1188,14 +1265,13 @@ goog.getCssName = function(className, opt_modifier) {
  * Sets the map to check when returning a value from goog.getCssName(). Example:
  * <pre>
  * goog.setCssNameMapping({
- *   "goog-menu": "a",
- *   "goog-menu-disabled": "a-b",
- *   "CSS_LOGO": "b",
- *   "hidden": "c"
+ *   "goog": "a",
+ *   "disabled": "b",
  * });
  *
+ * var x = goog.getCssName('goog');
  * // The following evaluates to: "a a-b".
- * goog.getCssName('goog-menu') + ' ' + goog.getCssName('goog-menu', 'disabled')
+ * goog.getCssName('goog') + ' ' + goog.getCssName(x, 'disabled')
  * </pre>
  * When declared as a map of string literals to string literals, the JSCompiler
  * will replace all calls to goog.getCssName() using the supplied map if the
@@ -1204,9 +1280,13 @@ goog.getCssName = function(className, opt_modifier) {
  * @param {!Object} mapping A map of strings to strings where keys are possible
  *     arguments to goog.getCssName() and values are the corresponding values
  *     that should be returned.
+ * @param {string=} style The style of css name mapping. There are two valid
+ *     options: 'BY_PART', and 'BY_WHOLE'.
+ * @see goog.getCssName for a description.
  */
-goog.setCssNameMapping = function(mapping) {
+goog.setCssNameMapping = function(mapping, style) {
   goog.cssNameMapping_ = mapping;
+  goog.cssNameMappingStyle_ = style;
 };
 
 

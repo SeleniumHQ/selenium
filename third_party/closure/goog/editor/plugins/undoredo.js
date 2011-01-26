@@ -521,7 +521,7 @@ goog.editor.plugins.UndoRedo.prototype.refreshCurrentState = function(
  */
 goog.editor.plugins.UndoRedo.prototype.handleBeforeChange_ = function(e) {
   if (this.inProgressUndo_) {
-    // We are in between a previous undo and it's delayed change event.
+    // We are in between a previous undo and its delayed change event.
     // Continuing here clobbers the redo stack.
     // This does mean that if you are trying to undo/redo really quickly, it
     // will be gated by the speed of delayed change events.

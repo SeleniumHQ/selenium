@@ -226,7 +226,8 @@ goog.editor.ClickToEditWrapper.prototype.shouldHandleMouseEvent_ = function(e) {
 goog.editor.ClickToEditWrapper.prototype.handleClick_ = function(e) {
   // If the user clicked on a link in an uneditable field,
   // we want to cancel the click.
-  var anchorAncestor = goog.dom.getAncestorByTagNameAndClass(e.target,
+  var anchorAncestor = goog.dom.getAncestorByTagNameAndClass(
+      /** @type {Node} */ (e.target),
       goog.dom.TagName.A);
   if (anchorAncestor) {
     e.preventDefault();

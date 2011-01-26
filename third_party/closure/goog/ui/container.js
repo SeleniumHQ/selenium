@@ -389,7 +389,7 @@ goog.ui.Container.prototype.enterDocument = function() {
       listen(goog.dom.getOwnerDocument(elem), goog.events.EventType.MOUSEUP,
           this.handleDocumentMouseUp).
 
-      // Handle mouse events on behalf of cpresently2ontrols in the container.
+      // Handle mouse events on behalf of controls in the container.
       listen(elem, [
         goog.events.EventType.MOUSEDOWN,
         goog.events.EventType.MOUSEUP,

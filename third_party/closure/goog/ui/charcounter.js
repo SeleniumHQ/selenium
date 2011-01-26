@@ -35,7 +35,8 @@ goog.require('goog.events.InputHandler');
  *
  * @extends {goog.events.EventTarget}
  * @param {HTMLInputElement|HTMLTextAreaElement} elInput Input or text area
- *     element to count the number of characters in.
+ *     element to count the number of characters in.  You can pass in null
+ *     for this if you don't want to expose the number of chars remaining.
  * @param {Element} elCount HTML element to display the remaining number of
  *     characters in.
  * @param {number} maxLength The maximum length.
@@ -181,10 +182,12 @@ goog.ui.CharCounter.prototype.checkLength_ = function() {
     this.elInput_.scrollLeft = scrollLeft;
   }
 
-  var incremental = this.display_ == goog.ui.CharCounter.Display.INCREMENTAL;
-  goog.dom.setTextContent(
-      this.elCount_,
-      /** @type {string} */(incremental ? count : this.maxLength_ - count));
+  if (this.elCount_) {
+    var incremental = this.display_ == goog.ui.CharCounter.Display.INCREMENTAL;
+    goog.dom.setTextContent(
+        this.elCount_,
+        /** @type {string} */(incremental ? count : this.maxLength_ - count));
+  }
 };
 
 

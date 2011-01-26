@@ -285,7 +285,7 @@ goog.json.Serializer.prototype.serializeObject_ = function(obj, sb) {
   sb.push('{');
   var sep = '';
   for (var key in obj) {
-    if (obj.hasOwnProperty(key)) {
+    if (Object.prototype.hasOwnProperty.call(obj, key)) {
       var value = obj[key];
       // Skip functions.
       // TODO(ptucker) Should we return something for function properties?

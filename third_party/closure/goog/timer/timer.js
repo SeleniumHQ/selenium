@@ -152,7 +152,7 @@ goog.Timer.prototype.setInterval = function(interval) {
 
 
 /**
- * Callback for the setInterval used by the timer
+ * Callback for the setTimeout used by the timer
  * @private
  */
 goog.Timer.prototype.tick_ = function() {

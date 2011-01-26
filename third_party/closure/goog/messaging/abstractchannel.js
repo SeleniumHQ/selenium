@@ -1,0 +1,169 @@
+// Copyright 2010 The Closure Library Authors. All Rights Reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS-IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+/**
+ * @fileoverview An abstract superclass for message channels that handles the
+ * repetitive details of registering and dispatching to services. This is more
+ * useful for full-fledged channels than for decorators, since decorators
+ * generally delegate service registering anyway.
+ *
+ */
+
+
+goog.provide('goog.messaging.AbstractChannel');
+
+goog.require('goog.Disposable');
+goog.require('goog.debug');
+goog.require('goog.debug.Logger');
+goog.require('goog.json');
+goog.require('goog.messaging.MessageChannel'); // interface
+
+
+
+/**
+ * Creates an abstract message channel.
+ *
+ * @constructor
+ * @extends {goog.Disposable}
+ * @implements {goog.messaging.MessageChannel}
+ */
+goog.messaging.AbstractChannel = function() {
+  goog.base(this);
+
+  /**
+   * The services registered for this channel.
+   * @type {Object.<string, {callback: Function, jsonEncoded: boolean}>}
+   * @private
+   */
+  this.services_ = {};
+};
+goog.inherits(goog.messaging.AbstractChannel, goog.Disposable);
+
+
+/**
+ * The default service to be run when no other services match.
+ *
+ * @type {?function(string, (string|!Object))}
+ * @private
+ */
+goog.messaging.AbstractChannel.prototype.defaultService_;
+
+
+/**
+ * Logger for this class.
+ * @type {goog.debug.Logger}
+ * @protected
+ */
+goog.messaging.AbstractChannel.prototype.logger =
+    goog.debug.Logger.getLogger('goog.messaging.AbstractChannel');
+
+
+/**
+ * Immediately calls opt_connectCb if given, and is otherwise a no-op. If
+ * subclasses have configuration that needs to happen before the channel is
+ * connected, they should override this and {@link #isConnected}.
+ * @inheritDoc
+ */
+goog.messaging.AbstractChannel.prototype.connect = function(opt_connectCb) {
+  if (opt_connectCb) {
+    opt_connectCb();
+  }
+};
+
+
+/**
+ * Always returns true. If subclasses have configuration that needs to happen
+ * before the channel is connected, they should override this and
+ * {@link #connect}.
+ * @inheritDoc
+ */
+goog.messaging.AbstractChannel.prototype.isConnected = function() {
+  return true;
+};
+
+
+/** @inheritDoc */
+goog.messaging.AbstractChannel.prototype.registerService =
+    function(serviceName, callback, opt_jsonEncoded) {
+  this.services_[serviceName] = {
+    callback: callback,
+    jsonEncoded: !!opt_jsonEncoded
+  };
+};
+
+
+/** @inheritDoc */
+goog.messaging.AbstractChannel.prototype.registerDefaultService =
+    function(callback) {
+  this.defaultService_ = callback;
+};
+
+
+/** @inheritDoc */
+goog.messaging.AbstractChannel.prototype.send = goog.abstractMethod;
+
+
+/**
+ * Delivers a message to the appropriate service. This is meant to be called by
+ * subclasses when they receive messages.
+ *
+ * This method takes into account both explicitly-registered and default
+ * services, as well as making sure that JSON payloads are decoded when
+ * necessary. If the subclass is capable of passing objects as payloads, those
+ * objects can be passed in to this method directly. Otherwise, the (potentially
+ * JSON-encoded) strings should be passed in.
+ *
+ * @param {string} serviceName The name of the service receiving the message.
+ * @param {string|!Object} payload The contents of the message.
+ * @protected
+ */
+goog.messaging.AbstractChannel.prototype.deliver = function(
+    serviceName, payload) {
+  var service = this.services_[serviceName];
+  if (!service) {
+    if (this.defaultService_) {
+      var callback = goog.partial(this.defaultService_, serviceName);
+      var jsonEncoded = goog.isObject(payload);
+      service = {callback: callback, jsonEncoded: jsonEncoded};
+    } else {
+      this.logger.warning('Unknown service name "' + serviceName + '" ' +
+                          '(payload: ' + goog.debug.deepExpose(payload) + ')');
+      return;
+    }
+  }
+
+  if (service.jsonEncoded && goog.isString(payload)) {
+    try {
+      payload = goog.json.parse(payload);
+    } catch (err) {
+      this.logger.warning('Expected JSON payload for ' + serviceName +
+                          ', was "' + payload + '"');
+      return;
+    }
+  } else if (!service.jsonEncoded && !goog.isString(payload)) {
+    payload = goog.json.serialize(payload);
+  }
+
+  service.callback(payload);
+};
+
+
+/** @inheritDoc */
+goog.messaging.AbstractChannel.prototype.disposeInternal = function() {
+  goog.base(this, 'disposeInternal');
+  goog.dispose(this.logger);
+  delete this.logger;
+  delete this.services_;
+  delete this.defaultService_;
+};

@@ -1697,6 +1697,26 @@ goog.net.BrowserChannel.prototype.shouldRetryBackChannel_ = function(
 
 
 /**
+ * Decides which host prefix should be used, if any.  If there is a handler,
+ * allows the handler to validate a host prefix provided by the server, and
+ * optionally override it.
+ * @param {?string} serverHostPrefix The host prefix provided by the server.
+ * @return {?string} The host prefix to actually use, if any. Will return null
+ *     if the use of host prefixes was disabled via setAllowHostPrefix().
+ */
+goog.net.BrowserChannel.prototype.correctHostPrefix = function(
+    serverHostPrefix) {
+  if (this.allowHostPrefix_) {
+    if (this.handler_) {
+      return this.handler_.correctHostPrefix(serverHostPrefix);
+    }
+    return serverHostPrefix;
+  }
+  return null;
+};
+
+
+/**
  * Handles the timer that indicates that our backchannel is no longer able to
  * successfully receive data from the server.
  * @private
@@ -1866,11 +1886,7 @@ goog.net.BrowserChannel.prototype.onInput_ = function(respArray) {
     if (this.state_ == goog.net.BrowserChannel.State.OPENING) {
       if (nextArray[0] == 'c') {
         this.sid_ = nextArray[1];
-        if (this.allowHostPrefix_) {
-          this.hostPrefix_ = nextArray[2];
-        } else {
-          this.hostPrefix_ = null;
-        }
+        this.hostPrefix_ = this.correctHostPrefix(nextArray[2]);
         var negotiatedVersion = nextArray[3];
         if (goog.isDefAndNotNull(negotiatedVersion)) {
           this.channelVersion_ = negotiatedVersion;
@@ -2409,4 +2425,17 @@ goog.net.BrowserChannel.Handler.prototype.isActive = function(browserChannel) {
 goog.net.BrowserChannel.Handler.prototype.badMapError =
     function(browserChannel, map) {
   return;
+};
+
+
+/**
+ * Allows the handler to override a host prefix provided by the server.  Will
+ * be called whenever the channel has received such a prefix and is considering
+ * its use.
+ * @param {?string} serverHostPrefix The host prefix provided by the server.
+ * @return {?string} The host prefix the client should use.
+ */
+goog.net.BrowserChannel.Handler.prototype.correctHostPrefix =
+    function(serverHostPrefix) {
+  return serverHostPrefix;
 };

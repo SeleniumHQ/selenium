@@ -541,8 +541,10 @@ goog.fx.dom.BgColorTransform.prototype.updateStyle = function() {
  * @param {Element} element Dom Node to be used in the animation.
  * @param {Array.<number>} start 3D Array for RGB of start color.
  * @param {number} time Length of animation in milliseconds.
+ * @param {goog.events.EventHandler=} opt_eventHandler Optional event handler
+ *     to use when listening for events.
  */
-goog.fx.dom.bgColorFadeIn = function(element, start, time) {
+goog.fx.dom.bgColorFadeIn = function(element, start, time, opt_eventHandler) {
   var initialBgColor = element.style.backgroundColor || '';
   var computedBgColor = goog.style.getBackgroundColor(element);
   var end;
@@ -555,9 +557,19 @@ goog.fx.dom.bgColorFadeIn = function(element, start, time) {
   }
 
   var anim = new goog.fx.dom.BgColorTransform(element, start, end, time);
-  goog.events.listen(anim, goog.fx.Animation.EventType.END, function() {
+
+  function setBgColor() {
     element.style.backgroundColor = initialBgColor;
-  });
+  }
+
+  if (opt_eventHandler) {
+    opt_eventHandler.listen(
+        anim, goog.fx.Animation.EventType.END, setBgColor);
+  } else {
+    goog.events.listen(
+        anim, goog.fx.Animation.EventType.END, setBgColor);
+  }
+
   anim.play();
 };
 
