@@ -272,30 +272,37 @@ BOOL CALLBACK BrowserFactory::FindDialogWindowForProcess(HWND hwnd, LPARAM arg) 
 
 void BrowserFactory::GetExecutableLocation() {
 	std::wstring class_id_key = L"SOFTWARE\\Classes\\InternetExplorer.Application\\CLSID";
+	std::wstring class_id;
 
-	// TODO: error checking.
-	DWORD required_buffer_size;
-	HKEY class_id_key_handle;
-	::RegOpenKeyEx(HKEY_LOCAL_MACHINE, class_id_key.c_str(), 0, KEY_QUERY_VALUE, &class_id_key_handle);
-	::RegQueryValueEx(class_id_key_handle, NULL, NULL, NULL, NULL, &required_buffer_size);
-	std::vector<TCHAR> class_id_buffer(required_buffer_size);
-	::RegQueryValueEx(class_id_key_handle, NULL, NULL, NULL, (LPBYTE)&class_id_buffer[0], &required_buffer_size);
-	::RegCloseKey(class_id_key_handle);
-	std::wstring class_id = &class_id_buffer[0];
+	if (this->GetRegistryValue(HKEY_LOCAL_MACHINE, class_id_key, L"", &class_id)) {
+		std::wstring location_key = L"SOFTWARE\\Classes\\CLSID\\" + class_id + L"\\LocalServer32";
+		std::wstring executable_location;
 
-	std::wstring location_key = L"SOFTWARE\\Classes\\CLSID\\" + class_id + L"\\LocalServer32";
-
-	HKEY location_key_handle;
-	::RegOpenKeyEx(HKEY_LOCAL_MACHINE, location_key.c_str(), 0, KEY_QUERY_VALUE, &location_key_handle);
-	::RegQueryValueEx(location_key_handle, NULL, NULL, NULL, NULL, &required_buffer_size);
-	std::vector<TCHAR> location_buffer(required_buffer_size);
-	::RegQueryValueEx(location_key_handle, NULL, NULL, NULL, (LPBYTE)&location_buffer[0], &required_buffer_size);
-	::RegCloseKey(location_key_handle);
-	this->ie_executable_location_ = &location_buffer[0];
-	if (this->ie_executable_location_.substr(0, 1) == L"\"") {
-		this->ie_executable_location_.erase(0, 1);
-		this->ie_executable_location_.erase(this->ie_executable_location_.size() - 1, 1);
+		if (this->GetRegistryValue(HKEY_LOCAL_MACHINE, location_key, L"", &executable_location)) {
+			this->ie_executable_location_ = executable_location;
+			if (this->ie_executable_location_.substr(0, 1) == L"\"") {
+				this->ie_executable_location_.erase(0, 1);
+				this->ie_executable_location_.erase(this->ie_executable_location_.size() - 1, 1);
+			}
+		}
 	}
+}
+
+bool BrowserFactory::GetRegistryValue(HKEY root_key, std::wstring subkey, std::wstring value_name, std::wstring *value) {
+	bool value_retrieved(false);
+	DWORD required_buffer_size;
+	HKEY key_handle;
+	if (ERROR_SUCCESS == ::RegOpenKeyEx(root_key, subkey.c_str(), 0, KEY_QUERY_VALUE, &key_handle)) {
+		if (ERROR_SUCCESS == ::RegQueryValueEx(key_handle, value_name.c_str(), NULL, NULL, NULL, &required_buffer_size)) {
+			std::vector<TCHAR> value_buffer(required_buffer_size);
+			if (ERROR_SUCCESS == ::RegQueryValueEx(key_handle, value_name.c_str(), NULL, NULL, (LPBYTE)&value_buffer[0], &required_buffer_size)) {
+				*value = &value_buffer[0];
+				value_retrieved = true;
+			}
+		}
+		::RegCloseKey(key_handle);
+	}
+	return value_retrieved;
 }
 
 void BrowserFactory::GetIEVersion() {

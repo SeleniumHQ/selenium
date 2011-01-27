@@ -205,12 +205,25 @@ bool BrowserWrapper::IsHtmlPage(IHTMLDocument2* doc) {
 		return false;
 	}
 
-	if (!SUCCEEDED(type.ToLower())) {
+	// To be technically correct, we should look up the extension specified
+	// for the text/html MIME type first (located in the "Extension" value of
+	// HKEY_CLASSES_ROOT\MIME\Database\Content Type\text/html), but that should
+	// always resolve to ".htm" anyway. From the extension, we can find the 
+	// browser-specific subkey of HKEY_CLASSES_ROOT, the default value of which
+	// should contain the browser-specific friendly name of the MIME type for
+	// HTML documents, which is what IHTMLDocument2::get_mimeType() returns.
+	std::wstring document_type_key_name;
+	if (!this->factory_->GetRegistryValue(HKEY_CLASSES_ROOT, L".htm", L"", &document_type_key_name)) {
+		return false;
+	}
+
+	std::wstring mime_type_name;
+	if (!this->factory_->GetRegistryValue(HKEY_CLASSES_ROOT, document_type_key_name, L"", &mime_type_name)) {
 		return false;
 	}
 
 	std::wstring type_string((BSTR)type);
-	return wcsstr(type_string.c_str(), L"html") != NULL;
+	return type_string == mime_type_name;
 }
 
 int BrowserWrapper::SetFocusedFrameByElement(IHTMLElement *frame_element) {
