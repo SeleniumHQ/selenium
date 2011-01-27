@@ -4,6 +4,17 @@
  */
 package org.openqa.selenium.server.browserlaunchers;
 
+import static org.openqa.selenium.browserlaunchers.LauncherUtils.getSeleniumResourceAsStream;
+
+import com.google.common.io.ByteStreams;
+import com.google.common.io.Closeables;
+import com.google.common.io.Resources;
+
+import org.openqa.selenium.browserlaunchers.LauncherUtils;
+import org.openqa.selenium.internal.NullTrace;
+import org.openqa.selenium.internal.Trace;
+import org.openqa.selenium.io.FileHandler;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -16,29 +27,15 @@ import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import org.openqa.selenium.browserlaunchers.LauncherUtils;
-import org.openqa.selenium.internal.NullTrace;
-import org.openqa.selenium.io.FileHandler;
-import org.openqa.selenium.internal.Trace;
-
-import static org.openqa.selenium.browserlaunchers.LauncherUtils.getSeleniumResourceAsStream;
-
 
 public class ResourceExtractor {
     private static Trace log = new NullTrace();
-    private static final int BUF_SIZE = 8192;
-    
-    public static File extractResourcePath(String resourcePath, File dest) throws IOException {
-        return extractResourcePath(ResourceExtractor.class, resourcePath, dest);
-    }
-    
+
     public static File extractResourcePath(Class cl, String resourcePath, File dest)
             throws IOException {
         boolean alwaysExtract = true;
-        URL url = cl.getResource(resourcePath);
-        if (url == null) {
-            throw new IllegalArgumentException("Resource not found: " + resourcePath);
-        }
+
+        URL url = Resources.getResource(cl, resourcePath);
         if ("jar".equalsIgnoreCase(url.getProtocol())) {
             File jarFile = getJarFileFromUrl(url);
             extractResourcePathFromJar(cl, jarFile, resourcePath, dest);
@@ -96,7 +93,7 @@ public class ResourceExtractor {
             throw new IllegalArgumentException("This is not a Jar URL:"
                     + url.toString());
         String resourceFilePath = url.getFile();
-        int index = resourceFilePath.indexOf("!");
+        int index = resourceFilePath.lastIndexOf("!");
         if (index == -1) {
             throw new RuntimeException("Bug! " + url.toExternalForm()
                     + " does not have a '!'");
@@ -113,25 +110,10 @@ public class ResourceExtractor {
     
     private static void copyStream(InputStream in, OutputStream out) throws IOException {
         try {
-            
-            byte[] buffer = new byte[BUF_SIZE];
-            int count = 0;
-            do {
-                out.write(buffer, 0, count);
-                count = in.read(buffer, 0, buffer.length);
-            } while (count != -1);
+          ByteStreams.copy(in, out);
         } finally {
-            if (out != null) {
-                try {
-                    out.close();
-                } catch (IOException e) {}
-            }
-            if (in != null) {
-                try {
-                    in.close();
-                } catch (IOException e) {}
-            }
+          Closeables.close(out, true);
+          Closeables.close(in, true);
         }
-
     }
 }
