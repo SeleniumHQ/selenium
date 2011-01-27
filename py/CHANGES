@@ -14,3 +14,4 @@ Changes since 2011-01-01
 * Corrected Element finding from the element
 * Alert and Prompt handling
 * Improved IEDriver
+* Basic Authentication support for Selenium 2

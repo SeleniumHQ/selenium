@@ -16,6 +16,7 @@
 import logging
 import string
 import urllib2
+import urlparse
 
 from command import Command
 import utils
@@ -235,11 +236,31 @@ class RemoteConnection(object):
         """
         LOGGER.debug('%s %s %s' % (method, url, data))
 
-        request = Request(url, data=data, method=method)
+        parsed_url = urlparse.urlparse(url)
+        auth = None
+        password_manager = None
+        if parsed_url.username:
+            netloc = parsed_url.hostname
+            if parsed_url.port:
+                netloc += ":%s" % parsed_url.port
+            cleaned_url = urlparse.urlunparse((parsed_url.scheme, netloc, parsed_url.path,
+                parsed_url.params, parsed_url.query, parsed_url.fragment))
+            password_manager = urllib2.HTTPPasswordMgrWithDefaultRealm()
+            password_manager.add_password(None, "%s://%s" % (parsed_url.scheme, netloc), parsed_url.username, parsed_url.password)
+            request = Request(cleaned_url, data=data, method=method)
+        else:
+            request = Request(url, data=data, method=method)
+
+
         request.add_header('Accept', 'application/json')
 
-        opener = urllib2.build_opener(urllib2.HTTPRedirectHandler(),
-                                      HttpErrorHandler())
+        if password_manager:
+            opener = urllib2.build_opener(urllib2.HTTPRedirectHandler(),
+                                          HttpErrorHandler(),
+                                          urllib2.HTTPBasicAuthHandler(password_manager))
+        else:
+            opener = urllib2.build_opener(urllib2.HTTPRedirectHandler(),
+                                          HttpErrorHandler())
         response = opener.open(request)
         try:
             if response.code > 399 and response.code < 500:
