@@ -5,7 +5,7 @@ var setupModule = function(module) {
 };
 
 var testRunSuite = function () {
-    browser.click(new elementslib.Elem(browser.menus.Tools['menu_ToolsPopupItem']));
+    browser.click(new elementslib.Elem(browser.menus.Tools['menuToolsSeleniumIDE']));
     Utils.handleWindow("type", "global:selenium-ide", function(browser) {}, true);
     selenium = new mozmill.controller.MozMillController(mozmill.utils.getWindowByType("global:selenium-ide"));
 

@@ -15,7 +15,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 
-<!DOCTYPE overlay SYSTEM "chrome://selenium-ide/locale/selenium-ide.dtd"> 
+<!DOCTYPE overlay SYSTEM "chrome://selenium-ide/locale/selenium-ide.dtd">
 
 <overlay id="selenium-ide-overlay" 
   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
@@ -31,7 +31,7 @@ limitations under the License.
   </menupopup>
 
   <menupopup id="menu_ToolsPopup">
-    <menuitem id="menu_ToolsPopupItem"
+    <menuitem id="menuToolsSeleniumIDE"
               label="Selenium IDE"
               oncommand="SeleniumIDE.Loader.openRecorder();"
               insertbefore="sanitizeSeparator,prefSep"
