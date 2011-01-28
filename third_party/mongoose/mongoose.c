@@ -801,7 +801,7 @@ static int pthread_cond_wait(pthread_cond_t *cv, pthread_mutex_t *mutex) {
   HANDLE handles[] = {cv->signal, cv->broadcast};
   ReleaseMutex(*mutex);
   WaitForMultipleObjects(2, handles, FALSE, INFINITE);
-  return ReleaseMutex(*mutex) == 0 ? -1 : 0;
+  return WaitForSingleObject(*mutex, INFINITE) == WAIT_OBJECT_0? 0 : -1;
 }
 
 static int pthread_cond_signal(pthread_cond_t *cv) {
