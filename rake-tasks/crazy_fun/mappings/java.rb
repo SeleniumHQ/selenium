@@ -65,14 +65,15 @@ module CrazyFunJava
       ant.project.setProperty 'XmlLogger.file', 'build/build_log.xml'
       ant.project.setProperty 'build.compiler', 'org.eclipse.jdt.core.JDTCompilerAdapter'
 
-#      ant.project.getBuildListeners().get(0).setMessageOutputLevel(verbose ? 2 : 0)
+      ant.project.getBuildListeners().get(0).setMessageOutputLevel(verbose ? 2 : 0)
+      ant.project.addBuildListener logger
 
       ant
     )
   end
 
   def self.import(class_name)
-    if RUBY_PLATFORM == 'java'
+    if RUBY_PLATFORM == 'java'      
       clazz = include_class(class_name)
     else
       clazz = Rjb::import(class_name)
@@ -85,8 +86,6 @@ module CrazyFunJava
       logger = Java.org.apache.tools.ant.XmlLogger.new
       logger.setMessageOutputLevel(2)
       logger.buildStarted(nil)
-
-      ant.project.addBuildListener(logger)
 
       at_exit do
         if File.exists? 'build'
