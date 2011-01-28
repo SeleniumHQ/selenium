@@ -72,6 +72,7 @@ java_test(name = "single",
     ":tests",
     "//java/org/openqa/selenium/server",
     "//javatests/org/openqa/selenium/v1:selenium-backed-webdriver-test",
+    "//javatests/org/openqa/selenium/firefox:test",
   ])
 
 java_library(name = "server-with-tests",
