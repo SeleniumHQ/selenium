@@ -31,8 +31,13 @@ goog.require('goog.dom.xml');
  *     such element could be found.
  */
 bot.locators.xpath.single = function(target, root) {
-  var node = goog.dom.xml.selectSingleNode(root, target);
-
+  try {
+    var node = goog.dom.xml.selectSingleNode(root, target);
+  } catch (e) {
+    // selectSingleNode throws when the document object
+    // is not defined in the context in which it executes.
+    return null;
+  }
   if (!node) {
     return null;
   }
