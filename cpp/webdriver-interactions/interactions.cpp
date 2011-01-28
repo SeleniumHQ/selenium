@@ -46,6 +46,8 @@ static bool pressed = false;
 // was held down by these calls and should generate upper-case chars.
 static bool shiftPressed = false;
 static HHOOK hook = 0;
+static HINSTANCE moduleHandle = NULL;
+
 #pragma data_seg()
 #pragma comment(linker, "/section:.LISTENER,rws")
 
@@ -289,7 +291,6 @@ static HKL attachInputToIEThread(HWND directInputTo)
 	DWORD currThreadId = GetCurrentThreadId();
 	DWORD ieWinThreadId = GetWindowThreadProcessId(directInputTo, NULL);
 
-	HINSTANCE moduleHandle;
 	GetModuleHandleEx(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS, (LPCTSTR)
 			&sendKeys, &moduleHandle);
 
@@ -311,6 +312,10 @@ static void detachInputFromIEThread(HWND directInputTo)
 
 	if (hook) {
 		UnhookWindowsHookEx(hook);
+	}
+
+	if (moduleHandle) {
+		FreeLibrary(moduleHandle);
 	}
 
 	if (ieWinThreadId != currThreadId) {
