@@ -113,11 +113,11 @@ int IEDriverServer::ProcessRequest(struct mg_connection *conn, const struct mg_r
 
 			std::wstring serialized_command = L"{ \"command\" : " + command_value + L", \"locator\" : " + locator_parameters + L", \"parameters\" : " + request_body + L" }";
 			std::wstring serialized_response = this->SendCommandToManager(session_id, serialized_command);
-			return_code = this->SendResponseToBrowser(conn, request_info, serialized_response);
-
 			if (command == Quit) {
 				this->ShutDownSession(session_id);
 			}
+
+			return_code = this->SendResponseToBrowser(conn, request_info, serialized_response);
 		}
 	}
 

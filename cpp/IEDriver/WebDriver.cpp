@@ -28,3 +28,11 @@ void StopServer(webdriver::IEDriverServer *myserver) {
 	delete server;
 	server = NULL;
 }
+
+int GetServerSessionCount() {
+	int session_count(0);
+	if (server != NULL) {
+		session_count = server->session_count();
+	}
+	return session_count;
+}

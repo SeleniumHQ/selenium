@@ -46,6 +46,7 @@
   <ItemGroup>
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="NativeDriverLibrary.cs" />
+    <Compile Include="NativeLibrarySafeHandle.cs" />
     <Compile Include="NativeMethods.cs" />
     <Compile Include="InternetExplorerDriver.cs" />
     <Compile Include="InternetExplorerWebElement.cs" />

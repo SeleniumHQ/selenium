@@ -1,12 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Net;
 using System.Net.Sockets;
-using System.Runtime.InteropServices;
 using System.Text;
-using OpenQA.Selenium.Internal;
 using OpenQA.Selenium.Remote;
 
 namespace OpenQA.Selenium.IE
@@ -52,6 +49,7 @@ namespace OpenQA.Selenium.IE
     public class InternetExplorerDriver : RemoteWebDriver, ITakesScreenshot
     {
         private static int port = FindFreePort();
+        private NativeDriverLibrary nativeLibrary = new NativeDriverLibrary();
 
         /// <summary>
         /// Initializes a new instance of the InternetExplorerDriver class.
@@ -59,22 +57,6 @@ namespace OpenQA.Selenium.IE
         public InternetExplorerDriver()
             : base(new Uri("http://localhost:" + port.ToString(CultureInfo.InvariantCulture)), DesiredCapabilities.InternetExplorer())
         {
-        }
-
-        /// <summary>
-        /// Starts the command executor, enabling communication with the browser.
-        /// </summary>
-        protected override void StartClient()
-        {
-            NativeDriverLibrary.Instance.StartServer(port);
-        }
-
-        /// <summary>
-        /// Stops the command executor, ending further communication with the browser.
-        /// </summary>
-        protected override void StopClient()
-        {
-            NativeDriverLibrary.Instance.StopServer();
         }
 
         #region ITakesScreenshot Members
@@ -91,8 +73,25 @@ namespace OpenQA.Selenium.IE
             // ... and convert it.
             return new Screenshot(base64);
         }
-
         #endregion
+
+        /// <summary>
+        /// Starts the command executor, enabling communication with the browser.
+        /// </summary>
+        protected override void StartClient()
+        {
+            this.nativeLibrary.StartServer(port);
+        }
+
+        /// <summary>
+        /// Stops the command executor, ending further communication with the browser.
+        /// </summary>
+        protected override void StopClient()
+        {
+            // StopClient is called by RemoteWebDriver.Dispose, so we should be
+            // okay calling lib.Dispose() here.
+            this.nativeLibrary.Dispose();
+        }
 
         private static int FindFreePort()
         {

@@ -20,6 +20,7 @@ public:
 	IEDriverServer(int port);
 	virtual ~IEDriverServer(void);
 	int ProcessRequest(struct mg_connection *conn, const struct mg_request_info *request_info);
+	int session_count(void) { return static_cast<int>(this->sessions_.size()); }
 
 private:
 	int LookupCommand(std::string uri, std::string http_verb, std::wstring *session_id, std::wstring *locator);

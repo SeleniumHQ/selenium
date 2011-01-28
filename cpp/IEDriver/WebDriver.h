@@ -18,6 +18,7 @@ struct mg_context *ctx;
 int handler_result_code;
 EXPORT webdriver::IEDriverServer* StartServer(int port);
 EXPORT void StopServer(webdriver::IEDriverServer* myserver);
+EXPORT int GetServerSessionCount();
 
 #ifdef __cplusplus
 }
