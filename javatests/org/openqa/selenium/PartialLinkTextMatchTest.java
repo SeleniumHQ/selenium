@@ -36,7 +36,7 @@ public class PartialLinkTextMatchTest extends AbstractDriverTestCase {
     assertEquals("link with formatting tags", res.getText());
   }
 
-  @Ignore({IE, REMOTE, SELENESE})
+  @Ignore({IE, REMOTE})
   public void testLinkWithLeadingSpaces() {
     driver.get(pages.simpleTestPage);
     WebElement elem = driver.findElement(By.id("links"));
@@ -46,7 +46,7 @@ public class PartialLinkTextMatchTest extends AbstractDriverTestCase {
     assertEquals("link with leading space", res.getText());
   }
 
-  @Ignore({IE, REMOTE, SELENESE})
+  @Ignore({IE, REMOTE})
   public void testLinkWithTrailingSpace() {
     driver.get(pages.simpleTestPage);
     WebElement elem = driver.findElement(By.id("links"));
@@ -57,7 +57,7 @@ public class PartialLinkTextMatchTest extends AbstractDriverTestCase {
     assertEquals("link with trailing space", res.getText());
   }
 
-  @Ignore({IE, REMOTE, SELENESE})
+  @Ignore({IE, REMOTE})
   public void testFindMultipleElements() {
     driver.get(pages.simpleTestPage);
     WebElement elem = driver.findElement(By.id("links"));

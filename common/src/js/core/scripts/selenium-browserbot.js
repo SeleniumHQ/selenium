@@ -1426,12 +1426,13 @@ BrowserBot.prototype.findElement = function(locator, win) {
  *
  * @param {string} how The finding mechanism to use.
  * @param {string} using The selector to use.
+ * @param {Document|Element} root The root of the search path.
  */
-BrowserBot.prototype.findElementsLikeWebDriver = function(how, using) {
+BrowserBot.prototype.findElementsLikeWebDriver = function(how, using, root) {
   var by = {};
   by[how] = using;
 
-  var all = bot.locators.findElements(by, this.getDocument());
+  var all = bot.locators.findElements(by, root);
   var toReturn = '';
 
   for (var i = 0; i < all.length - 1; i++) {

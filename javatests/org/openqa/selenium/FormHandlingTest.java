@@ -37,7 +37,6 @@ import java.io.IOException;
 
 public class FormHandlingTest extends AbstractDriverTestCase {
 
-  @Ignore(SELENESE)
   public void testShouldClickOnSubmitInputElements() {
     driver.get(pages.formPage);
     driver.findElement(By.id("submitButton")).click();

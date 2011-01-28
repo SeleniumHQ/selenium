@@ -40,5 +40,6 @@ java_test(name = "selenium-backed-webdriver-test",
     "//java/org/openqa/selenium:selenium-backed-webdriver",
     "//javatests/org/openqa/selenium:base",
     "//javatests/org/openqa/selenium:server-with-tests:uber",
+    "//javatests/org/openqa/selenium:tests",
   ])
 

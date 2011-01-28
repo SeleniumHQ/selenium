@@ -17,8 +17,8 @@ limitations under the License.
 
 package org.openqa.selenium.internal.selenesedriver;
 
-import com.google.common.collect.ImmutableMap;
 import com.thoughtworks.selenium.Selenium;
+
 import org.openqa.selenium.NoSuchElementException;
 
 import java.util.Map;
@@ -27,12 +27,12 @@ public class FindElement extends AbstractElementFinder<Map<String, String>> {
 
   private final static String SCRIPT =
       "var by = {}; by['%s'] = '%s'; " +
-      "var e = bot.locators.findElement(by, selenium.browserbot.getDocument());" +
+      "var e = bot.locators.findElement(by, %s);" +
       "bot.inject.cache.addElement(e);";
 
   @Override
-  protected Map<String, String> executeFind(Selenium selenium, String how, String using) {
-    String locator = String.format(SCRIPT, how, using);
+  protected Map<String, String> executeFind(Selenium selenium, String how, String using, String parentLocator) {
+    String locator = String.format(SCRIPT, how, using, parentLocator);
 
     String key = selenium.getEval(locator);
     return newElement(key);

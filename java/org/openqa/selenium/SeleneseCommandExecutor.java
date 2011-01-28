@@ -17,12 +17,44 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import static org.openqa.selenium.remote.DriverCommand.CLEAR_ELEMENT;
+import static org.openqa.selenium.remote.DriverCommand.CLICK_ELEMENT;
+import static org.openqa.selenium.remote.DriverCommand.CLOSE;
+import static org.openqa.selenium.remote.DriverCommand.EXECUTE_ASYNC_SCRIPT;
+import static org.openqa.selenium.remote.DriverCommand.EXECUTE_SCRIPT;
+import static org.openqa.selenium.remote.DriverCommand.FIND_CHILD_ELEMENT;
+import static org.openqa.selenium.remote.DriverCommand.FIND_CHILD_ELEMENTS;
+import static org.openqa.selenium.remote.DriverCommand.FIND_ELEMENT;
+import static org.openqa.selenium.remote.DriverCommand.FIND_ELEMENTS;
+import static org.openqa.selenium.remote.DriverCommand.GET;
+import static org.openqa.selenium.remote.DriverCommand.GET_CURRENT_URL;
+import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_ATTRIBUTE;
+import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_TAG_NAME;
+import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_TEXT;
+import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_VALUE;
+import static org.openqa.selenium.remote.DriverCommand.GET_PAGE_SOURCE;
+import static org.openqa.selenium.remote.DriverCommand.GET_TITLE;
+import static org.openqa.selenium.remote.DriverCommand.IMPLICITLY_WAIT;
+import static org.openqa.selenium.remote.DriverCommand.IS_ELEMENT_DISPLAYED;
+import static org.openqa.selenium.remote.DriverCommand.IS_ELEMENT_ENABLED;
+import static org.openqa.selenium.remote.DriverCommand.IS_ELEMENT_SELECTED;
+import static org.openqa.selenium.remote.DriverCommand.NEW_SESSION;
+import static org.openqa.selenium.remote.DriverCommand.QUIT;
+import static org.openqa.selenium.remote.DriverCommand.SEND_KEYS_TO_ELEMENT;
+import static org.openqa.selenium.remote.DriverCommand.SET_ELEMENT_SELECTED;
+import static org.openqa.selenium.remote.DriverCommand.SET_SCRIPT_TIMEOUT;
+import static org.openqa.selenium.remote.DriverCommand.SUBMIT_ELEMENT;
+import static org.openqa.selenium.remote.DriverCommand.SWITCH_TO_FRAME;
+import static org.openqa.selenium.remote.DriverCommand.TOGGLE_ELEMENT;
+
 import com.google.common.collect.Maps;
+
 import com.thoughtworks.selenium.CommandProcessor;
 import com.thoughtworks.selenium.DefaultSelenium;
 import com.thoughtworks.selenium.HttpCommandProcessor;
 import com.thoughtworks.selenium.Selenium;
 import com.thoughtworks.selenium.SeleniumException;
+
 import org.openqa.selenium.firefox.internal.Executable;
 import org.openqa.selenium.internal.selenesedriver.ClearElement;
 import org.openqa.selenium.internal.selenesedriver.ClickElement;
@@ -61,34 +93,6 @@ import org.openqa.selenium.remote.Response;
 import java.io.File;
 import java.net.URL;
 import java.util.Map;
-
-import static org.openqa.selenium.remote.DriverCommand.CLEAR_ELEMENT;
-import static org.openqa.selenium.remote.DriverCommand.CLICK_ELEMENT;
-import static org.openqa.selenium.remote.DriverCommand.CLOSE;
-import static org.openqa.selenium.remote.DriverCommand.EXECUTE_ASYNC_SCRIPT;
-import static org.openqa.selenium.remote.DriverCommand.EXECUTE_SCRIPT;
-import static org.openqa.selenium.remote.DriverCommand.FIND_ELEMENT;
-import static org.openqa.selenium.remote.DriverCommand.FIND_ELEMENTS;
-import static org.openqa.selenium.remote.DriverCommand.GET;
-import static org.openqa.selenium.remote.DriverCommand.GET_CURRENT_URL;
-import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_ATTRIBUTE;
-import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_TAG_NAME;
-import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_TEXT;
-import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_VALUE;
-import static org.openqa.selenium.remote.DriverCommand.GET_PAGE_SOURCE;
-import static org.openqa.selenium.remote.DriverCommand.GET_TITLE;
-import static org.openqa.selenium.remote.DriverCommand.IMPLICITLY_WAIT;
-import static org.openqa.selenium.remote.DriverCommand.IS_ELEMENT_DISPLAYED;
-import static org.openqa.selenium.remote.DriverCommand.IS_ELEMENT_ENABLED;
-import static org.openqa.selenium.remote.DriverCommand.IS_ELEMENT_SELECTED;
-import static org.openqa.selenium.remote.DriverCommand.NEW_SESSION;
-import static org.openqa.selenium.remote.DriverCommand.QUIT;
-import static org.openqa.selenium.remote.DriverCommand.SEND_KEYS_TO_ELEMENT;
-import static org.openqa.selenium.remote.DriverCommand.SET_ELEMENT_SELECTED;
-import static org.openqa.selenium.remote.DriverCommand.SET_SCRIPT_TIMEOUT;
-import static org.openqa.selenium.remote.DriverCommand.SUBMIT_ELEMENT;
-import static org.openqa.selenium.remote.DriverCommand.SWITCH_TO_FRAME;
-import static org.openqa.selenium.remote.DriverCommand.TOGGLE_ELEMENT;
 
 public class SeleneseCommandExecutor implements CommandExecutor {
   private final ErrorCodes errorCodes;
@@ -167,6 +171,8 @@ public class SeleneseCommandExecutor implements CommandExecutor {
     addCommand(EXECUTE_SCRIPT, new ExecuteScript());
     addCommand(EXECUTE_ASYNC_SCRIPT, executeAsyncScript);
     addCommand(SET_SCRIPT_TIMEOUT, executeAsyncScript.setScriptTimeout());
+    addCommand(FIND_CHILD_ELEMENT, findElement);
+    addCommand(FIND_CHILD_ELEMENTS, findElements);
     addCommand(FIND_ELEMENT, findElement);
     addCommand(FIND_ELEMENTS, findElements);
     addCommand(IMPLICITLY_WAIT, timeouts);

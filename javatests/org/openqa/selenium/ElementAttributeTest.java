@@ -65,7 +65,6 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
     assertThat(pElement.isEnabled(), equalTo(true));
   }
 
-  @Ignore(value = SELENESE, reason = "child element finding not implemented")
   public void testShouldReturnTheValueOfTheIndexAttrbuteEvenIfItIsMissing() {
     driver.get(pages.formPage);
 
@@ -158,7 +157,6 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
     assertThat(initiallySelected.getAttribute("selected"), equalTo(null));
   }
 
-  @Ignore(value = SELENESE, reason = "find child elements not implemented")
   public void testShouldReturnTheValueOfSelectedForOptionsOnlyIfTheyAreSelected() {
     driver.get(pages.formPage);
     WebElement selectBox = driver.findElement(By.xpath("//select[@name='selectomatic']"));

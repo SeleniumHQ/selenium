@@ -27,12 +27,12 @@ import java.util.Map;
 public class FindElements extends AbstractElementFinder<List<Map<String, String>>> {
 
   private static final String SCRIPT =
-      "selenium.browserbot.findElementsLikeWebDriver('%s', '%s');";
+      "selenium.browserbot.findElementsLikeWebDriver('%s', '%s', %s);";
 
   @Override
-  protected List<Map<String, String>> executeFind(Selenium selenium, String how, String using) {
+  protected List<Map<String, String>> executeFind(Selenium selenium, String how, String using, String parentLocator) {
     String result =
-        selenium.getEval(String.format(SCRIPT, how, using));
+        selenium.getEval(String.format(SCRIPT, how, using, parentLocator));
 
     Iterable<String> allKeys = Splitter.on(",").split(result);
     List<Map<String, String>> toReturn = Lists.newArrayList();

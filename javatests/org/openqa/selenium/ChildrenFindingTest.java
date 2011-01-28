@@ -27,15 +27,17 @@ import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.REMOTE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 
-@Ignore(SELENESE)
+
 public class ChildrenFindingTest extends AbstractDriverTestCase {
+  @Ignore(value = SELENESE, reason = "Selenium expects xpaths to start with a leading //")
   public void testFindElementByXPath() {
     driver.get(pages.nestedPage);
     WebElement element = driver.findElement(By.name("form2"));
     WebElement child = element.findElement(By.xpath("select"));
     assertThat(child.getAttribute("id"), is("2"));
   }
-  
+
+  @Ignore(value = SELENESE, reason = "Filtering not happening as expected")
   public void testFindingElementsOnElementByXPathShouldFindTopLevelElements() {
     driver.get(pages.simpleTestPage);
     WebElement parent = driver.findElement(By.id("multiline"));
@@ -44,6 +46,7 @@ public class ChildrenFindingTest extends AbstractDriverTestCase {
     assertEquals(allPs.size(), children.size());
   }
 
+  @Ignore(value = SELENESE, reason = "Selenium expects xpaths to start with a leading //")
   public void testFindingDotSlashElementsOnElementByXPathShouldFindNotTopLevelElements() {
     driver.get(pages.simpleTestPage);
     WebElement parent = driver.findElement(By.id("multiline"));
@@ -63,6 +66,7 @@ public class ChildrenFindingTest extends AbstractDriverTestCase {
     fail();
   }
 
+  @Ignore(value = SELENESE, reason = "Selenium expects xpaths to start with a leading //")
   public void testfindElementsByXPath() {
     driver.get(pages.nestedPage);
     WebElement element = driver.findElement(By.name("form2"));

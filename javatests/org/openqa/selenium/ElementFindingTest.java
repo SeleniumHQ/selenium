@@ -23,7 +23,6 @@ import java.util.concurrent.Callable;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.REMOTE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
@@ -109,7 +108,6 @@ public class ElementFindingTest extends AbstractDriverTestCase {
     }
   }
 
-  @Ignore(SELENESE)
   public void testShouldBeAbleToFindChildrenOfANode() {
     driver.get(pages.xhtmlTestPage);
     List<WebElement> elements = driver.findElements(By.xpath("/html/head"));
@@ -118,7 +116,6 @@ public class ElementFindingTest extends AbstractDriverTestCase {
     assertThat(importedScripts.size(), equalTo(2));
   }
 
-  @Ignore(SELENESE)
   public void testReturnAnEmptyListWhenThereAreNoChildrenOfANode() {
     driver.get(pages.xhtmlTestPage);
     WebElement table = driver.findElement(By.id("table"));
@@ -127,7 +124,7 @@ public class ElementFindingTest extends AbstractDriverTestCase {
     assertThat(rows.size(), equalTo(0));
   }
 
-  @Ignore(SELENESE)
+  @Ignore(value = SELENESE, reason = "Value returned as 'off'")
   public void testShouldFindElementsByName() {
     driver.get(pages.formPage);
 
@@ -214,7 +211,6 @@ public class ElementFindingTest extends AbstractDriverTestCase {
     assertTrue(elements.size() == 2);
   }
 
-  @Ignore(SELENESE)
   public void testShouldBeAbleToFindElementByPartialLinkText() {
     driver.get(pages.xhtmlTestPage);
 
@@ -225,7 +221,6 @@ public class ElementFindingTest extends AbstractDriverTestCase {
     }
   }
 
-  @Ignore(SELENESE)
   public void testShouldFindElementByLinkTextContainingEqualsSign() {
     driver.get(pages.xhtmlTestPage);
 
@@ -237,7 +232,6 @@ public class ElementFindingTest extends AbstractDriverTestCase {
     }
   }
 
-  @Ignore(SELENESE)
   public void testShouldFindElementByPartialLinkTextContainingEqualsSign() {
     driver.get(pages.xhtmlTestPage);
 
@@ -249,7 +243,6 @@ public class ElementFindingTest extends AbstractDriverTestCase {
     }
   }
 
-  @Ignore(SELENESE)
   public void testShouldFindElementsByLinkTextContainingEqualsSign() {
     driver.get(pages.xhtmlTestPage);
 
@@ -258,7 +251,6 @@ public class ElementFindingTest extends AbstractDriverTestCase {
     assertEquals("linkWithEqualsSign", elements.get(0).getAttribute("id"));
   }
 
-  @Ignore(SELENESE)
   public void testShouldFindElementsByPartialLinkTextContainingEqualsSign() {
     driver.get(pages.xhtmlTestPage);
 
@@ -308,14 +300,12 @@ public class ElementFindingTest extends AbstractDriverTestCase {
     assertThat(element.getValue(), is("id"));
   }
 
-  @Ignore(SELENESE)
   public void testShouldFindGrandChildren() {
     driver.get(pages.formPage);
     WebElement form = driver.findElement(By.id("nested_form"));
     form.findElement(By.name("x"));
   }
 
-  @Ignore(SELENESE)
   public void testShouldNotFindElementOutSideTree() {
     driver.get(pages.formPage);
     WebElement element = driver.findElement(By.name("login"));
@@ -469,7 +459,6 @@ public class ElementFindingTest extends AbstractDriverTestCase {
     driver.findElements(By.cssSelector("p"));
   }
 
-  @Ignore(SELENESE)
   public void testFindingByXPathShouldNotIncludeParentElementIfSameTagType() {
     driver.get(pages.xhtmlTestPage);
     WebElement parent = driver.findElement(By.id("my_span"));

@@ -18,18 +18,18 @@ limitations under the License.
 
 package org.openqa.selenium.internal.selenesedriver;
 
-import com.google.common.base.Throwables;
+import static org.openqa.selenium.net.Urls.urlEncode;
+
 import com.google.common.collect.ImmutableMap;
+
 import com.thoughtworks.selenium.Selenium;
 import com.thoughtworks.selenium.SeleniumException;
-import org.openqa.selenium.net.Urls;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.List;
 import java.util.Map;
-
-import static org.openqa.selenium.net.Urls.urlEncode;
 
 public abstract  class AbstractElementFinder<T> implements SeleneseFunction<T> {
   private final static Map<String, String> name2strategy =
@@ -42,7 +42,7 @@ public abstract  class AbstractElementFinder<T> implements SeleneseFunction<T> {
 
   private long implicitlyWait = 0;
 
-  protected abstract T executeFind(Selenium selenium, String how, String using);
+  protected abstract T executeFind(Selenium selenium, String how, String using, String parentLocator);
   protected abstract T onFailure(String how, String using);
 
   protected Map<String, String> newElement(String key) {
@@ -53,12 +53,24 @@ public abstract  class AbstractElementFinder<T> implements SeleneseFunction<T> {
   public T apply(Selenium selenium, Map<String, ?> args) {
     String how = convertToStrategyName((String) args.get("using"));
     String using = (String) args.get("value");
+    String parentLocator = (String) args.get("id");
+
+    if (parentLocator == null) {
+      parentLocator = "selenium.browserbot.getDocument()";
+    } else {
+      try {
+        parentLocator = "selenium.browserbot.findElement('" + URLDecoder.decode(parentLocator, "UTF-8") + "')";
+      } catch (UnsupportedEncodingException e) {
+        e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+      }
+    }
+
     using = using.replaceAll("'", "\\\\'");
 
     long startTime = System.currentTimeMillis();
     do {
       try {
-        T result = executeFind(selenium, how, using);
+        T result = executeFind(selenium, how, using, parentLocator);
 
         if (result instanceof List && ((List) result).size() == 0) {
           continue;
