@@ -26,24 +26,19 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.Platform;
-import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.*;
 import org.openqa.selenium.browserlaunchers.WindowsProxyManager;
 import org.openqa.selenium.io.FileHandler;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.io.TemporaryFilesystem;
-import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.remote.HttpCommandExecutor;
-import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.remote.RemoteWebElement;
+import org.openqa.selenium.remote.*;
 import org.openqa.selenium.remote.internal.JsonToWebElementConverter;
 
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;
 import com.sun.jna.win32.StdCallLibrary;
 
-public class InternetExplorerDriver extends RemoteWebDriver {
+public class InternetExplorerDriver extends RemoteWebDriver implements TakesScreenshot {
   private Pointer server;
   private IEServer lib;
   private int port;
@@ -64,6 +59,13 @@ public class InternetExplorerDriver extends RemoteWebDriver {
   public InternetExplorerDriver(int port) {
     this.port = port;
     setup();
+  }
+
+  public <X> X getScreenshotAs(OutputType<X> target) {
+    // Get the screenshot as base64.
+    String base64 = execute(DriverCommand.SCREENSHOT).getValue().toString();
+    // ... and convert it.
+    return target.convertFromBase64Png(base64);
   }
 
   protected void assertOnWindows() {
