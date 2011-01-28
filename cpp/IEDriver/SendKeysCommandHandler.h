@@ -77,7 +77,6 @@ protected:
 
 				CComQIPtr<IHTMLElement> element(element_wrapper->element());
 
-				browser_wrapper->AttachToWindowInputQueue();
 				element->scrollIntoView(CComVariant(VARIANT_TRUE));
 
 				CComQIPtr<IHTMLInputFileElement> file(element);

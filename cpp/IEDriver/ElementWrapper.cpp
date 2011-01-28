@@ -204,7 +204,6 @@ int ElementWrapper::GetLocationOnceScrolledIntoView(long *x, long *y, long *widt
         return EELEMENTNOTENABLED;
     }
 
-	this->browser_->AttachToWindowInputQueue();
 	HWND containing_window_handle(this->browser_->GetWindowHandle());
 
 	long top, left, bottom, right = 0;

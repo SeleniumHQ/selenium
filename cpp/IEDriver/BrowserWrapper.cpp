@@ -178,27 +178,6 @@ int BrowserWrapper::DeleteCookie(std::wstring cookie_name) {
 	return status_code;
 }
 
-void BrowserWrapper::AttachToWindowInputQueue() {
-	// This function should not be necessary, but it is
-	// for cases like sending backspaces to input elements
-	// (which are often interpreted as backspace keystrokes
-	// to the window, which will navigate back in the history).
-	HWND top_level_window_handle = NULL;
-	this->browser_->get_HWND(reinterpret_cast<SHANDLE_PTR*>(&top_level_window_handle));
-
-	DWORD ie_thread_id = ::GetWindowThreadProcessId(top_level_window_handle, NULL);
-	DWORD current_thread_id = ::GetCurrentThreadId();
-    if( ie_thread_id != current_thread_id ) {
-		::AttachThreadInput(current_thread_id, ie_thread_id, true);
-    }
-
-	::SetActiveWindow(top_level_window_handle);
-
-	if(ie_thread_id != current_thread_id ) {
-		::AttachThreadInput(current_thread_id, ie_thread_id, false);
-    }
-}
-
 bool BrowserWrapper::IsHtmlPage(IHTMLDocument2* doc) {
 	CComBSTR type;
 	if (!SUCCEEDED(doc->get_mimeType(&type))) {
