@@ -11,6 +11,7 @@ using System.Text;
 using OpenQA.Selenium;
 using OpenQA.Selenium.IE;
 using OpenQA.Selenium.Remote;
+using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium.IE
 {
@@ -23,49 +24,30 @@ namespace OpenQA.Selenium.IE
         private const string LibraryName = "IEDriver.dll";
         private const string StartServerFunctionName = "StartServer";
         private const string StopServerFunctionName = "StopServer";
+        private const string NativeLibraryResourceTemplate = "WebDriver.InternetExplorerDriver.{0}.dll";
         #endregion
 
         #region Private member variables
-        private static NativeDriverLibrary libraryInstance;
-        private static object lockObject = new object();
         private static Random tempFileGenerator = new Random();
+        private static object lockObject = new object();
+        private static NativeDriverLibrary libraryInstance;
 
         private IntPtr nativeLibraryHandle = IntPtr.Zero;
         private IntPtr serverHandle = IntPtr.Zero;
+        private string nativeLibraryPath = string.Empty;
         private int refCount;
-        #endregion
-
-        #region Constructor/Destructor
-        /// <summary>
-        /// Prevents a default instance of the <see cref="NativeDriverLibrary"/> class from being created.
-        /// </summary>
-        /// <remarks>This is a singleton class, so it does not require instantiation by consumers. They
-        /// should use the Instance property instead.</remarks>
-        private NativeDriverLibrary()
-        {
-            string nativeLibraryPath = GetNativeLibraryPath();
-            nativeLibraryHandle = NativeMethods.LoadLibrary(nativeLibraryPath);
-            int errorCode = Marshal.GetLastWin32Error();
-            if (nativeLibraryHandle == IntPtr.Zero)
-            {
-                throw new WebDriverException(string.Format(CultureInfo.InvariantCulture, "An error (code: {0}) occured while attempting to load the native code library", errorCode));
-            }
-
-        }
         #endregion
 
         #region Private delegates
         private delegate IntPtr StartServerFunction(int port);
         private delegate void StopServerFunction(IntPtr serverHandle);
-        //private delegate void StartServerFunction(int port);
-        //private delegate void StopServerFunction();
         #endregion
 
-        #region Singleton instance property
-        /// <summary>
-        /// Gets the singleton instance of the <see cref="NativeDriverLibrary"/> class.
-        /// </summary>
-        internal static NativeDriverLibrary Instance
+        private NativeDriverLibrary()
+        {
+        }
+
+        public static NativeDriverLibrary Instance
         {
             get
             {
@@ -75,21 +57,22 @@ namespace OpenQA.Selenium.IE
                     {
                         libraryInstance = new NativeDriverLibrary();
                     }
-
-                    return libraryInstance;
                 }
+
+                return libraryInstance;
             }
         }
-        #endregion
 
         public void StartServer(int port)
         {
             //if (serverHandle == IntPtr.Zero || refCount == 0)
             if (refCount == 0)
             {
+                ExtractNativeLibrary();
+                LoadNativeLibrary();
+
                 IntPtr functionPointer = NativeMethods.GetProcAddress(nativeLibraryHandle, StartServerFunctionName);
                 StartServerFunction startServerFunction = Marshal.GetDelegateForFunctionPointer(functionPointer, typeof(StartServerFunction)) as StartServerFunction;
-                //startServerFunction(port);
                 serverHandle = startServerFunction(port);
                 if (serverHandle == IntPtr.Zero)
                 {
@@ -108,8 +91,12 @@ namespace OpenQA.Selenium.IE
                 IntPtr functionPointer = NativeMethods.GetProcAddress(nativeLibraryHandle, StopServerFunctionName);
                 StopServerFunction stopServerFunction = Marshal.GetDelegateForFunctionPointer(functionPointer, typeof(StopServerFunction)) as StopServerFunction;
                 stopServerFunction(serverHandle);
-                //stopServerFunction();
                 serverHandle = IntPtr.Zero;
+
+                if (UnloadNativeLibrary())
+                {
+                    DeleteLibraryDirectory();
+                }
             }
         }
 
@@ -119,20 +106,44 @@ namespace OpenQA.Selenium.IE
             // We're compiled as Any CPU, which will run as a 64-bit process
             // on 64-bit OS, and 32-bit process on 32-bit OS. Thus, checking
             // the size of IntPtr is good enough.
-            string resourceName = "WebDriver.InternetExplorerDriver.{0}.dll";
+            string resourceName = string.Empty;
             if (IntPtr.Size == 8)
             {
-                resourceName = string.Format(CultureInfo.InvariantCulture, resourceName, "x64");
+                resourceName = string.Format(CultureInfo.InvariantCulture, NativeLibraryResourceTemplate, "x64");
             }
             else
             {
-                resourceName = string.Format(CultureInfo.InvariantCulture, resourceName, "x86");
+                resourceName = string.Format(CultureInfo.InvariantCulture, NativeLibraryResourceTemplate, "x86");
             }
 
             return resourceName;
         }
 
-        private static void ExtractNativeLibrary(string nativeLibraryPath, Stream libraryStream)
+        private void LoadNativeLibrary()
+        {
+            nativeLibraryHandle = NativeMethods.LoadLibrary(nativeLibraryPath);
+            if (nativeLibraryHandle == IntPtr.Zero)
+            {
+                int errorCode = Marshal.GetLastWin32Error();
+                throw new WebDriverException(string.Format(CultureInfo.InvariantCulture, "An error (code: {0}) occured while attempting to load the native code library", errorCode));
+            }
+        }
+
+        private bool UnloadNativeLibrary()
+        {
+            bool libraryFreed = NativeMethods.FreeLibrary(nativeLibraryHandle);
+            int retryCount = 0;
+            while (!libraryFreed && retryCount < 10)
+            {
+                System.Threading.Thread.Sleep(500);
+                libraryFreed = NativeMethods.FreeLibrary(nativeLibraryHandle);
+                retryCount++;
+            }
+
+            return libraryFreed;
+        }
+
+        private void WriteNativeLibraryFile(Stream libraryStream)
         {
             FileStream outputStream = File.Create(nativeLibraryPath);
             byte[] buffer = new byte[1000];
@@ -147,46 +158,24 @@ namespace OpenQA.Selenium.IE
             libraryStream.Close();
         }
 
-        private static string GetNativeLibraryPath()
+        private void ExtractNativeLibrary()
         {
-            Assembly executingAssembly = Assembly.GetExecutingAssembly();
-            string currentDirectory = executingAssembly.Location;
-
-            // If we're shadow copying,. fiddle with 
-            // the codebase instead 
-            if (AppDomain.CurrentDomain.ShadowCopyFiles)
+            string nativeLibraryFolderName = string.Format(CultureInfo.InvariantCulture, "webdriver{0}libs", tempFileGenerator.Next());
+            string nativeLibraryDirectory = Path.Combine(Path.GetTempPath(), nativeLibraryFolderName);
+            if (!Directory.Exists(nativeLibraryDirectory))
             {
-                Uri uri = new Uri(executingAssembly.CodeBase);
-                currentDirectory = uri.LocalPath;
+                Directory.CreateDirectory(nativeLibraryDirectory);
             }
 
-            string nativeLibraryPath = Path.Combine(Path.GetDirectoryName(currentDirectory), LibraryName);
-            if (!File.Exists(nativeLibraryPath))
-            {
-                string resourceName = GetNativeLibraryResourceName();
-
-                if (executingAssembly.GetManifestResourceInfo(resourceName) == null)
-                {
-                    throw new WebDriverException("The native code library (InternetExplorerDriver.dll) could not be found in the current directory nor as an embedded resource.");
-                }
-
-                string nativeLibraryFolderName = string.Format(CultureInfo.InvariantCulture, "webdriver{0}libs", tempFileGenerator.Next());
-                string nativeLibraryDirectory = Path.Combine(Path.GetTempPath(), nativeLibraryFolderName);
-                if (!Directory.Exists(nativeLibraryDirectory))
-                {
-                    Directory.CreateDirectory(nativeLibraryDirectory);
-                }
-
-                nativeLibraryPath = Path.Combine(nativeLibraryDirectory, LibraryName);
-                Stream libraryStream = executingAssembly.GetManifestResourceStream(resourceName);
-                ExtractNativeLibrary(nativeLibraryPath, libraryStream);
-            }
-
-            return nativeLibraryPath;
+            nativeLibraryPath = Path.Combine(nativeLibraryDirectory, LibraryName);
+            string resourceName = GetNativeLibraryResourceName();
+            Stream libraryStream = ResourceUtilities.GetResourceStream(LibraryName, resourceName);
+            WriteNativeLibraryFile(libraryStream);
         }
 
-        private static void DeleteLibraryDirectory(string nativeLibraryDirectory)
+        private void DeleteLibraryDirectory()
         {
+            string nativeLibraryDirectory = Path.GetDirectoryName(nativeLibraryPath);
             int numberOfRetries = 0;
             while (Directory.Exists(nativeLibraryDirectory) && numberOfRetries < 10)
             {
@@ -210,11 +199,11 @@ namespace OpenQA.Selenium.IE
                 {
                     numberOfRetries++;
                 }
+            }
 
-                if (Directory.Exists(nativeLibraryDirectory))
-                {
-                    Console.WriteLine("Unable to delete native library directory '{0}'", nativeLibraryDirectory);
-                }
+            if (Directory.Exists(nativeLibraryDirectory))
+            {
+                Console.WriteLine("Unable to delete native library directory '{0}'", nativeLibraryDirectory);
             }
         }
         #endregion

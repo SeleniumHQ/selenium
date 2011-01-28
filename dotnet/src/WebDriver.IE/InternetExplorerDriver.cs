@@ -57,7 +57,7 @@ namespace OpenQA.Selenium.IE
         /// Initializes a new instance of the InternetExplorerDriver class.
         /// </summary>
         public InternetExplorerDriver()
-            : base(new Uri("http://localhost:" + port.ToString()), DesiredCapabilities.InternetExplorer())
+            : base(new Uri("http://localhost:" + port.ToString(CultureInfo.InvariantCulture)), DesiredCapabilities.InternetExplorer())
         {
         }
 
