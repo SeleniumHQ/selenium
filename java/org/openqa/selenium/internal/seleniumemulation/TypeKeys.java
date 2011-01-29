@@ -33,6 +33,9 @@ public class TypeKeys extends SeleneseCommand<Void> {
   protected Void handleSeleneseCommand(WebDriver driver, String locator, String value) {
     alertOverride.replaceAlertMethod(driver);
 
+    value = value.replace("\\10", Keys.ENTER);
+    value = value.replace("\\13", Keys.RETURN);
+    value = value.replace("\\27", Keys.ESCAPE);
     value = value.replace("\\38", Keys.ARROW_UP);
     value = value.replace("\\40", Keys.ARROW_DOWN);
     value = value.replace("\\37", Keys.ARROW_LEFT);
