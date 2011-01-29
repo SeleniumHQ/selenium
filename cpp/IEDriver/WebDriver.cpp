@@ -36,3 +36,15 @@ int GetServerSessionCount() {
 	}
 	return session_count;
 }
+
+int GetServerPort() {
+	int server_port(0);
+	if (server != NULL) {
+		server_port = server->port();
+	}
+	return server_port;
+}
+
+bool ServerIsRunning() {
+	return server != NULL;
+}

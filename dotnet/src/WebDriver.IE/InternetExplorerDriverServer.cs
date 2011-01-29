@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Runtime.InteropServices;
 using System.Text;
 using OpenQA.Selenium.Internal;
 
@@ -11,51 +10,110 @@ namespace OpenQA.Selenium.IE
     /// <summary>
     /// Provides a wrapper for the native-code Internet Explorer driver library.
     /// </summary>
-    internal class NativeDriverLibrary : IDisposable
+    internal class InternetExplorerDriverServer : IDisposable
     {
         #region Private constants
         private const string LibraryName = "IEDriver.dll";
         private const string StartServerFunctionName = "StartServer";
         private const string StopServerFunctionName = "StopServer";
         private const string GetServerSessionCountFunctionName = "GetServerSessionCount";
+        private const string GetServerPortFunctionName = "GetServerPort";
+        private const string ServerIsRunningFunctionName = "ServerIsRunning";
         private const string NativeLibraryResourceTemplate = "WebDriver.InternetExplorerDriver.{0}.dll";
         #endregion
 
-        #region Private member variables
         private static Random tempFileGenerator = new Random();
-        private static NativeLibrarySafeHandle nativeLibraryHandle;
-        private static object lockObject = new object();
-
-        private IntPtr serverHandle = IntPtr.Zero;
+        private static NativeLibrary library;
         private string nativeLibraryPath = string.Empty;
-        #endregion
+        private IntPtr serverHandle = IntPtr.Zero;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="InternetExplorerDriverServer"/> class.
+        /// </summary>
+        public InternetExplorerDriverServer()
+        {
+            // Only one copy of the native code library should be loaded into
+            // the process at any given time.
+            if (!LibraryIsLoaded)
+            {
+                this.ExtractNativeLibrary();
+                library = new NativeLibrary(this.nativeLibraryPath);
+            }
+        }
 
         #region Private delegates
         private delegate IntPtr StartServerFunction(int port);
 
         private delegate void StopServerFunction(IntPtr serverHandle);
-        
+
         private delegate int GetServerSessionCountFunction();
+
+        private delegate int GetServerPortFunction();
+        
+        private delegate bool ServerIsRunningFunction();
         #endregion
 
         /// <summary>
-        /// Starts the HTTP server that drives the browser.
+        /// Gets a value indicating whether the unmanaged native code library has been loaded.
         /// </summary>
-        /// <param name="port">The port on which to communicate with the server.</param>
-        public void StartServer(int port)
+        public static bool LibraryIsLoaded
         {
-            this.LoadNativeLibrary();
-            IntPtr functionPointer = NativeMethods.GetProcAddress(nativeLibraryHandle, StartServerFunctionName);
-            StartServerFunction startServerFunction = Marshal.GetDelegateForFunctionPointer(functionPointer, typeof(StartServerFunction)) as StartServerFunction;
-            this.serverHandle = startServerFunction(port);
-            if (this.serverHandle == IntPtr.Zero)
+            get { return library != null; }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the Internet Explorer driver server is running.
+        /// </summary>
+        public static bool IsRunning
+        {
+            get
             {
-                throw new WebDriverException("An error occured while attempting to start the HTTP server");
+                bool running = false;
+                if (LibraryIsLoaded)
+                {
+                    ServerIsRunningFunction isRunningFunction = library.GetUnmanagedFunction(ServerIsRunningFunctionName, typeof(ServerIsRunningFunction)) as ServerIsRunningFunction;
+                    if (isRunningFunction != null)
+                    {
+                        running = isRunningFunction();
+                    }
+                }
+
+                return running;
             }
         }
 
         /// <summary>
-        /// Releases all resources used by the NativeDriverLibrary class.
+        /// Starts the server, communicating on the specified port, if it is not already running
+        /// </summary>
+        /// <param name="port">The port on which the server should listen for requests.</param>
+        /// <returns>The port on which the server is actually listening for requests.</returns>
+        /// <remarks>If the server has already been started, there is no need to start it
+        /// again. We can leverage the already-running server, and the port it is listening
+        /// on.</remarks>
+        public int Start(int port)
+        {
+            if (IsRunning)
+            {
+                GetServerPortFunction getPortFunction = library.GetUnmanagedFunction(GetServerPortFunctionName, typeof(GetServerPortFunction)) as GetServerPortFunction;
+                if (getPortFunction != null)
+                {
+                    port = getPortFunction();
+                }
+            }
+            else
+            {
+                StartServerFunction startFunction = library.GetUnmanagedFunction(StartServerFunctionName, typeof(StartServerFunction)) as StartServerFunction;
+                if (startFunction != null)
+                {
+                    this.serverHandle = startFunction(port);
+                }
+            }
+
+            return port;
+        }
+
+        /// <summary>
+        /// Releases all resources used by this InternetExplorerDriverServer.
         /// </summary>
         public void Dispose()
         {
@@ -64,32 +122,38 @@ namespace OpenQA.Selenium.IE
         }
 
         /// <summary>
-        /// Releases the unmanaged resources used by the NativeDriverLibrary class 
-        /// specifying whether to perform a normal dispose operation.
+        /// Releases all resources used by this InternetExplorerDriverServer.
         /// </summary>
-        /// <param name="disposing"><see langword="true"/> for a normal dispose
-        /// operation; <see langword="false"/> to finalize the library.</param>
+        /// <param name="disposing"><see langword="true"/> to dispose of managed and unmanaged resources;
+        /// <see langword="false"/> to only dispose of unmanaged resources.</param>
         protected virtual void Dispose(bool disposing)
         {
-            if (!nativeLibraryHandle.IsInvalid)
+            if (disposing)
             {
-                IntPtr sessionCountFunctionPointer = NativeMethods.GetProcAddress(nativeLibraryHandle, GetServerSessionCountFunctionName);
-                GetServerSessionCountFunction getSessionCountFunction = Marshal.GetDelegateForFunctionPointer(sessionCountFunctionPointer, typeof(GetServerSessionCountFunction)) as GetServerSessionCountFunction;
-                int sessionCount = getSessionCountFunction();
-
-                if (sessionCount == 0)
+                if (LibraryIsLoaded && IsRunning)
                 {
-                    IntPtr functionPointer = NativeMethods.GetProcAddress(nativeLibraryHandle, StopServerFunctionName);
-                    StopServerFunction stopServerFunction = Marshal.GetDelegateForFunctionPointer(functionPointer, typeof(StopServerFunction)) as StopServerFunction;
-                    stopServerFunction(this.serverHandle);
-                    this.serverHandle = IntPtr.Zero;
+                    GetServerSessionCountFunction getSessionCountFunction = library.GetUnmanagedFunction(GetServerSessionCountFunctionName, typeof(GetServerSessionCountFunction)) as GetServerSessionCountFunction;
+                    if (getSessionCountFunction != null)
+                    {
+                        int sessionCount = getSessionCountFunction();
+                        if (sessionCount == 0)
+                        {
+                            StopServerFunction stopFunction = library.GetUnmanagedFunction(StopServerFunctionName, typeof(StopServerFunction)) as StopServerFunction;
+                            if (stopFunction != null)
+                            {
+                                stopFunction(this.serverHandle);
+                                this.serverHandle = IntPtr.Zero;
+                            }
 
-                    this.UnloadNativeLibrary();
+                            library.Dispose();
+                            library = null;
+                            this.DeleteLibraryDirectory();
+                        }
+                    }
                 }
             }
         }
 
-        #region Private methods
         private static string GetNativeLibraryResourceName()
         {
             // We're compiled as Any CPU, which will run as a 64-bit process
@@ -106,42 +170,6 @@ namespace OpenQA.Selenium.IE
             }
 
             return resourceName;
-        }
-
-        private void LoadNativeLibrary()
-        {
-            int errorCode = 0;
-            lock (lockObject)
-            {
-                if (nativeLibraryHandle == null || nativeLibraryHandle.IsInvalid)
-                {
-                    this.ExtractNativeLibrary();
-                    nativeLibraryHandle = NativeMethods.LoadLibrary(this.nativeLibraryPath);
-                    errorCode = Marshal.GetLastWin32Error();
-                }
-            }
-
-            if (nativeLibraryHandle.IsInvalid)
-            {
-                throw new WebDriverException(string.Format(CultureInfo.InvariantCulture, "An error (code: {0}) occured while attempting to load the native code library", errorCode));
-            }
-        }
-
-        private void UnloadNativeLibrary()
-        {
-            if (!nativeLibraryHandle.IsClosed)
-            {
-                nativeLibraryHandle.Dispose();
-            }
-
-            // CONSIDER: Do we want to throw if we aren't able to free the
-            // library? This code is called from Dispose(), so we really
-            // shouldn't throw.
-            if (nativeLibraryHandle.IsClosed)
-            {
-                nativeLibraryHandle = null;
-                this.DeleteLibraryDirectory();
-            }
         }
 
         private void WriteNativeLibraryFile(Stream libraryStream)
@@ -207,6 +235,5 @@ namespace OpenQA.Selenium.IE
                 Console.WriteLine("Unable to delete native library directory '{0}'", nativeLibraryDirectory);
             }
         }
-        #endregion
     }
 }

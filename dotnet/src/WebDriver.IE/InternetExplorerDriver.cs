@@ -48,14 +48,23 @@ namespace OpenQA.Selenium.IE
     /// </example>
     public class InternetExplorerDriver : RemoteWebDriver, ITakesScreenshot
     {
-        private static int port = FindFreePort();
-        private NativeDriverLibrary nativeLibrary = new NativeDriverLibrary();
+        private static int serverPort;
+        private InternetExplorerDriverServer server = new InternetExplorerDriverServer();
 
         /// <summary>
         /// Initializes a new instance of the InternetExplorerDriver class.
         /// </summary>
         public InternetExplorerDriver()
-            : base(new Uri("http://localhost:" + port.ToString(CultureInfo.InvariantCulture)), DesiredCapabilities.InternetExplorer())
+            : this(0)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the InternetExplorerDriver class for the specified port.
+        /// </summary>
+        /// <param name="port">The port to use to communicate with the IE server.</param>
+        public InternetExplorerDriver(int port)
+            : base(CreateServerUri(port), DesiredCapabilities.InternetExplorer())
         {
         }
 
@@ -80,7 +89,10 @@ namespace OpenQA.Selenium.IE
         /// </summary>
         protected override void StartClient()
         {
-            this.nativeLibrary.StartServer(port);
+            if (!InternetExplorerDriverServer.IsRunning)
+            {
+                this.server.Start(serverPort);
+            }
         }
 
         /// <summary>
@@ -90,7 +102,22 @@ namespace OpenQA.Selenium.IE
         {
             // StopClient is called by RemoteWebDriver.Dispose, so we should be
             // okay calling lib.Dispose() here.
-            this.nativeLibrary.Dispose();
+            this.server.Dispose();
+        }
+
+        private static Uri CreateServerUri(int port)
+        {
+            if (serverPort == 0)
+            {
+                if (port == 0)
+                {
+                    port = FindFreePort();
+                }
+
+                serverPort = port;
+            }
+
+            return new Uri("http://localhost:" + serverPort.ToString(CultureInfo.InvariantCulture));
         }
 
         private static int FindFreePort()

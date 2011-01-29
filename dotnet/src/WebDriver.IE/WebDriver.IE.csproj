@@ -45,12 +45,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GlobalSuppressions.cs" />
-    <Compile Include="NativeDriverLibrary.cs" />
+    <Compile Include="InternetExplorerDriverServer.cs" />
     <Compile Include="NativeLibrarySafeHandle.cs" />
     <Compile Include="NativeMethods.cs" />
     <Compile Include="InternetExplorerDriver.cs" />
     <Compile Include="InternetExplorerWebElement.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="NativeLibrary.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\WebDriver.Common\WebDriver.Common.csproj">

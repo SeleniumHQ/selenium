@@ -19,6 +19,8 @@ int handler_result_code;
 EXPORT webdriver::IEDriverServer* StartServer(int port);
 EXPORT void StopServer(webdriver::IEDriverServer* myserver);
 EXPORT int GetServerSessionCount();
+EXPORT bool ServerIsRunning();
+EXPORT int GetServerPort();
 
 #ifdef __cplusplus
 }
