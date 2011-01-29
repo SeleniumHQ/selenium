@@ -348,6 +348,12 @@ module Selenium
           Point.new data['x'], data['y']
         end
 
+        def getElementLocationOnceScrolledIntoView(element)
+          data = execute :getElementLocationOnceScrolledIntoView, :id => element
+
+          Point.new data['x'], data['y']
+        end
+
         def getElementSize(element)
           data = execute :getElementSize, :id => element
 

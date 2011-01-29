@@ -88,8 +88,16 @@ describe "Element" do
     driver.navigate.to url_for("xhtmlTest.html")
     loc = driver.find_element(:class, "header").location
 
-    loc.x.should >= 0
-    loc.y.should >= 0
+    loc.x.should >= 1
+    loc.y.should >= 1
+  end
+
+  it "should get location once scrolled into view" do
+    driver.navigate.to url_for("javascriptPage.html")
+    loc = driver.find_element(:id, 'keyUp').location_once_scrolled_into_view
+
+    loc.x.should >= 1
+    loc.y.should >= 1
   end
 
   it "should get size" do

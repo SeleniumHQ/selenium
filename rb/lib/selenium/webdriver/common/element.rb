@@ -214,6 +214,16 @@ module Selenium
       end
 
       #
+      # Determine an element's location on the screen once it has been scrolled into view.
+      #
+      # @return [WebDriver::Point]
+      #
+
+      def location_once_scrolled_into_view
+        bridge.getElementLocationOnceScrolledIntoView @id
+      end
+
+      #
       # Get the size of this element
       #
       # @return [WebDriver::Dimension]
