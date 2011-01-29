@@ -581,7 +581,7 @@ function parseRequest(request) {
 }
 
 function getScreenshot() {
-  chrome.tabs.captureVisibleTab(null, getScreenshotResult);
+  chrome.tabs.captureVisibleTab(null, {format: 'png'}, getScreenshotResult);
 }
 
 function getScreenshotResult(snapshotDataUrl) {
