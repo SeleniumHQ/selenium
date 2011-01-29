@@ -17,6 +17,10 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+/**
+ * @deprecated This enum doesn't provide the necessary control
+ */
+@Deprecated
 public enum Speed {
     SLOW(1000), 
     MEDIUM(500), 
