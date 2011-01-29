@@ -6,29 +6,56 @@ module Selenium
         @bridge = bridge
       end
 
-      def click(element)
-        @bridge.clickElement element.ref
+      def click(element = nil)
+        move_if_needed element
+        @bridge.click
       end
 
-      def double_click(element)
-        @bridge.doubleClickElement element.ref
+      def double_click(element = nil)
+        move_if_needed element
+        @bridge.doubleClick
       end
 
-      def context_click(element)
-        @bridge.contextClickElement element.ref
+      def context_click(element = nil)
+        move_if_needed element
+        @bridge.contextClick
       end
 
-      def down(element)
-        @bridge.mouseDownElement element.ref
+      def down(element = nil)
+        move_if_needed element
+        @bridge.mouseDown
       end
 
-      def up(element)
-        @bridge.mouseUpElement element.ref
+      def up(element = nil)
+        move_if_needed element
+        @bridge.mouseUp
       end
 
-      def move(element, x_offset = nil, y_offset = nil)
-        @bridge.mouseMoveToElement element.ref,
-                                   x_offset, y_offset
+      #
+      # Move the mouse.
+      #
+      # Examples:
+      #
+      #   driver.mouse.move_to(element)
+      #   driver.mouse.move_to(element, 5, 5)
+      #
+
+      def move_to(element, down_by = nil, right_by = nil)
+        unless element.kind_of? Element
+          raise TypeError, "expected #{Element}, got #{element.inspect}:#{element.class}"
+        end
+
+        @bridge.mouseMoveTo element.ref, down_by, right_by
+      end
+
+      def move_by(down_by, right_by)
+        @bridge.mouseMoveTo nil, down_by, right_by
+      end
+
+      private
+
+      def move_if_needed(element)
+        move_to element if element
       end
 
     end # Mouse

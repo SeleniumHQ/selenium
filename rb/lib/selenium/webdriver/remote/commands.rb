@@ -70,6 +70,6 @@ class Selenium::WebDriver::Remote::Bridge
   command :doubleClick,                            :post,    "session/:session_id/doubleclick"
   command :mouseDown,                              :post,    "session/:session_id/buttondown"
   command :mouseUp,                                :post,    "session/:session_id/buttonup"
-  command :mouseMoveTo,                            :post,    "session/:sessionId/moveto"
-  command :sendModifierKeyToActiveElement,         :post,    "session/:sessionId/modifier"
+  command :mouseMoveTo,                            :post,    "session/:session_id/moveto"
+  command :sendModifierKeyToActiveElement,         :post,    "session/:session_id/modifier"
 end

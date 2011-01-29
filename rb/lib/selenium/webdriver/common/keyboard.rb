@@ -3,7 +3,6 @@ module Selenium
     class Keyboard
 
       def initialize(bridge)
-        raise Error::UnsupportedOperationError, "not implemented yet"
         @bridge = bridge
       end
 
@@ -11,12 +10,37 @@ module Selenium
         @bridge.getActiveElement.send_keys(*keys)
       end
 
+      #
+      # Release a modifier key
+      #
+      # @see Selenium::WebDriver::Keys
+      #
+
       def press(key)
-        @bridge.sendModifierKeyToActiveElement key, true
+        assert_modifier key
+        @bridge.sendModifierKeyToActiveElement Keys[key], true
       end
 
+      #
+      # Release a modifier key
+      #
+      # @see Selenium::WebDriver::Keys
+      #
+
       def release(key)
-        @bridge.sendModifierKeyToActiveElement key, false
+        assert_modifier key
+        @bridge.sendModifierKeyToActiveElement Keys[key], false
+      end
+
+      private
+
+      MODIFIERS = [:control, :shift, :alt, :command, :meta]
+
+      def assert_modifier(key)
+        unless MODIFIERS.include? key
+          raise Error::UnsupportedOperationError,
+            "#{key.inspect} is not a modifier key, expected one of #{MODIFIERS.inspect}"
+        end
       end
 
     end # Keyboard

@@ -36,6 +36,10 @@ module Selenium
           @short_wait ||= Wait.new(:timeout => 3)
         end
 
+        def wait(timeout = 10)
+          Wait.new(:timeout => timeout)
+        end
+
       end # Helpers
     end # SpecSupport
   end # WebDriver

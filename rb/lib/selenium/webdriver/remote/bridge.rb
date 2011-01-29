@@ -302,28 +302,38 @@ module Selenium
           execute :clickElement, :id => element
         end
 
-        def doubleClickElement(element)
-          execute :doubleClickElement, :id => element
+        def click
+          execute :click, {}, :button => 0
         end
 
-        def contextClickElement(element)
-          execute :contextClickElement, :id => element
+        def doubleClick
+          execute :doubleClick
         end
 
-        def mouseDownElement(element)
-          execute :mouseDownElement, :id => element
+        def contextClick
+          execute :click, {}, :button => 2
         end
 
-        def mouseUpElement(element)
-          execute :mouseUpElement, :id => element
+        def mouseDown
+          execute :mouseDown
         end
 
-        def mouseMoveToElement(element, *offsets)
-          if offsets.any?
-            raise Error::UnsupportedOperationError, "not supported yet"
+        def mouseUp
+          execute :mouseUp
+        end
+
+        def mouseMoveTo(element, x = nil, y = nil)
+          params = { :element => element }
+
+          if x && y
+            params.merge!(:xoffset => x, :yoffset => y)
           end
 
-          execute :mouseMoveToElement, :id => element
+          execute :mouseMoveTo, {}, params
+        end
+
+        def sendModifierKeyToActiveElement(key, down)
+          execute :sendModifierKeyToActiveElement, {}, :value => key, :isdown => down
         end
 
         def getElementTagName(element)
