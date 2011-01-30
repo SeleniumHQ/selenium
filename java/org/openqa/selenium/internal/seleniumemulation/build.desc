@@ -4,6 +4,7 @@ java_library(name = "seleniumemulation",
   deps = [
     "//java/com/thoughtworks/selenium",
     "//java/org/openqa/selenium:webdriver-api",
+    "//java/org/openqa/selenium/io",
     "//third_party/java/guava-libraries",
   ])
 
