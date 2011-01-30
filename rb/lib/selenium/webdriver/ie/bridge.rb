@@ -13,20 +13,30 @@ module Selenium
         DEFAULT_TIMEOUT = 30
 
         def initialize(opts = {})
-          timeout = opts[:timeout] || DEFAULT_TIMEOUT
-          @port   = opts[:port] || DEFAULT_PORT
-          @speed  = opts[:speed] || :fast
+          timeout     = opts.delete(:timeout) { DEFAULT_TIMEOUT }
+          @port       = opts.delete(:port) { DEFAULT_PORT }
+          @speed      = opts.delete(:speed) { :fast }
+          http_client = opts.delete(:http_client)
+
+          unless opts.empty?
+            raise ArgumentError, "unknown option#{'s' if opts.size != 1}: #{opts.inspect}"
+          end
 
           @server_pointer = Lib.start_server @port
 
           host = Platform.localhost
-
           unless SocketPoller.new(host, @port, timeout).connected?
-            raise "unable to connect to IE server within #{timeout} seconds"
+            raise Error::WebDriverError, "unable to connect to IE server within #{timeout} seconds"
           end
 
-          super(:url                  => "http://#{host}:#{@port}",
-                :desired_capabilities => :internet_explorer)
+          remote_opts = {
+            :url => "http://#{host}:#{@port}",
+            :desired_capabilities => :firefox
+          }
+
+          remote_opts.merge!(:http_client => http_client) if http_client
+
+          super(remote_opts)
         end
 
         def browser
