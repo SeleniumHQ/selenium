@@ -17,17 +17,9 @@ limitations under the License.
 
 package org.openqa.selenium.remote;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.util.Map;
-
 import com.google.common.collect.ImmutableMap;
 import org.apache.http.Header;
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.auth.AuthScope;
@@ -45,17 +37,23 @@ import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.client.RequestWrapper;
 import org.apache.http.impl.conn.SingleClientConnManager;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.CoreConnectionPNames;
 import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.BasicHttpContext;
-import org.apache.http.protocol.ExecutionContext;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.net.Urls;
+
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.Map;
 
 import static org.apache.http.protocol.ExecutionContext.HTTP_TARGET_HOST;
 import static org.openqa.selenium.remote.DriverCommand.*;
@@ -248,7 +246,9 @@ public class HttpCommandExecutor implements CommandExecutor {
 
       response = followRedirects(client, context, response, /* redirect count */0);
 
-      return createResponse(response, context);
+      final EntityWithEncoding entityWithEncoding = new EntityWithEncoding(response.getEntity());
+
+      return createResponse(response, context, entityWithEncoding);
     } catch (NullPointerException e) {
       // swallow an NPE on quit. It indicates that the sessionID is null
       // which is what we expect to be the case.
@@ -257,8 +257,6 @@ public class HttpCommandExecutor implements CommandExecutor {
       } else {
         throw e;
       }
-    } finally {
-      releaseConnection(context);
     }
   }
 
@@ -282,7 +280,10 @@ public class HttpCommandExecutor implements CommandExecutor {
       uri = buildUri(context, location);
 
       // Make sure that the previous connection is freed.
-      releaseConnection(context);
+      HttpEntity httpEntity = response.getEntity();
+      if (httpEntity != null){
+        httpEntity.consumeContent();
+      }
 
       HttpGet get = new HttpGet(uri);
       setAcceptHeader(get);
@@ -314,13 +315,46 @@ public class HttpCommandExecutor implements CommandExecutor {
         && response.containsHeader("location");
   }
 
-  private Response createResponse(HttpResponse httpResponse, HttpContext context) throws IOException {
-    Response response = null;
+  class EntityWithEncoding {
+    private final String charSet;
+    private final byte[] content;
+
+    EntityWithEncoding(HttpEntity entity)
+            throws IOException {
+      if (entity != null) {
+        content = EntityUtils.toByteArray(entity);
+        charSet = EntityUtils.getContentCharSet(entity);
+        entity.consumeContent();
+      } else {
+        content = new byte[0];
+        charSet = null;
+      }
+
+    }
+
+    public String getContentString()
+            throws UnsupportedEncodingException {
+      return new String(content, charSet != null ? charSet : "utf-8");
+    }
+
+    public byte[] getContent() {
+      return content;
+    }
+
+    public boolean hasEntityContent(){
+      return content != null;
+    }
+  }
+
+
+
+  private Response createResponse(HttpResponse httpResponse, HttpContext context, EntityWithEncoding entityWithEncoding) throws IOException {
+    final Response response;
 
     Header header = httpResponse.getFirstHeader("Content-Type");
 
     if (header != null && header.getValue().startsWith("application/json")) {
-      String responseAsText = EntityUtils.toString(httpResponse.getEntity(), "utf-8");
+      String responseAsText = entityWithEncoding.getContentString();
 
       try {
         response = new JsonToBeanConverter().convert(Response.class, responseAsText);
@@ -338,11 +372,9 @@ public class HttpCommandExecutor implements CommandExecutor {
       response = new Response();
 
       if (header != null && header.getValue().startsWith("image/png")) {
-        response.setValue(EntityUtils.toByteArray(httpResponse.getEntity()));
-      } else if (httpResponse.getEntity() != null) {
-        response.setValue(EntityUtils.toString(httpResponse.getEntity(), "utf-8"));
-      } else {
-        releaseConnection(context);
+        response.setValue(entityWithEncoding.getContent());
+      } else if (entityWithEncoding.hasEntityContent()) {
+        response.setValue(entityWithEncoding.getContentString());
       }
 
       HttpHost finalHost = (HttpHost) context.getAttribute(HTTP_TARGET_HOST);
@@ -381,20 +413,6 @@ public class HttpCommandExecutor implements CommandExecutor {
       }
     }
     return response;
-  }
-    
-  // I can't help but feel that this is less helpful than it could be
-  private void releaseConnection(HttpContext context) throws IOException {
-    HttpUriRequest request = (HttpUriRequest) context.getAttribute(ExecutionContext.HTTP_REQUEST);
-
-    if (request == null) {
-      return;
-    }
-
-    if (request instanceof RequestWrapper) {
-      request = (HttpUriRequest) ((RequestWrapper) request).getOriginal();
-    }
-    request.abort();
   }
 
   private static CommandInfo get(String url) {
