@@ -110,9 +110,9 @@
 	<lib name="jetty-servlet-7.2.0.v20101020.jar" scope="COMPILE">
 		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/jetty/jetty-servlet-7.2.0.v20101020.jar!/"/>
 	</lib>
-	<lib name="guava-r07.jar" scope="COMPILE">
-		<srcroot url="jar://$MODULE_DIR$/third_party/java/guava-libraries/guava-r07-src.jar!/"/>
-		<relative-module-src project-related="jar://$PROJECT_DIR$/third_party/java/guava-libraries/guava-r07-src.jar!/"/>
-		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/guava-libraries/guava-r07.jar!/"/>
+	<lib name="$MODULE_DIR$/third_party/java/guava-libraries/guava-r08.jar" scope="COMPILE">
+		<srcroot url="jar://$MODULE_DIR$/third_party/java/guava-libraries/guava-r08-src.jar!/"/>
+		<relative-module-src project-related="jar://$PROJECT_DIR$/third_party/java/guava-libraries/guava-r08-src.jar!/"/>
+		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/guava-libraries/guava-r08.jar!/"/>
 	</lib>
 </component>
