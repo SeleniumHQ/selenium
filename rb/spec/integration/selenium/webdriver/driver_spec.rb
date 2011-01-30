@@ -21,31 +21,29 @@ describe "Driver" do
     end
   end
 
-  compliant_on :driver => [:firefox, :chrome, :ie] do
-    it "should save a screenshot" do
-      driver.navigate.to url_for("xhtmlTest.html")
-      path = "screenshot_tmp.png"
+  it "should save a screenshot" do
+    driver.navigate.to url_for("xhtmlTest.html")
+    path = "screenshot_tmp.png"
 
-      begin
-        driver.save_screenshot path
-        File.exist?(path).should be_true # sic
-        File.size(path).should > 0
-      ensure
-        File.delete(path) if File.exist?(path)
-      end
+    begin
+      driver.save_screenshot path
+      File.exist?(path).should be_true # sic
+      File.size(path).should > 0
+    ensure
+      File.delete(path) if File.exist?(path)
     end
+  end
 
-    it "should return a screenshot in the specified format" do
-      driver.navigate.to url_for("xhtmlTest.html")
+  it "should return a screenshot in the specified format" do
+    driver.navigate.to url_for("xhtmlTest.html")
 
-      ss = driver.screenshot_as(:png)
-      ss.should be_kind_of(String)
-      ss.size.should > 0
-    end
+    ss = driver.screenshot_as(:png)
+    ss.should be_kind_of(String)
+    ss.size.should > 0
+  end
 
-    it "raises an error when given an unknown format" do
-      lambda { driver.screenshot_as(:jpeg) }.should raise_error(WebDriver::Error::UnsupportedOperationError)
-    end
+  it "raises an error when given an unknown format" do
+    lambda { driver.screenshot_as(:jpeg) }.should raise_error(WebDriver::Error::UnsupportedOperationError)
   end
 
   describe "one element" do
