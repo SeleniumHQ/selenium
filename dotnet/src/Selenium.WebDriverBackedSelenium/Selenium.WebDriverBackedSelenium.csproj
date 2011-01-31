@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <ProjectGuid>{0EAF6AA9-B712-464B-A11B-FA3CF7577D80}</ProjectGuid>
@@ -199,9 +199,6 @@
     <Compile Include="Internal\SeleniumEmulation\GetCssCount.cs" />
   </ItemGroup>
   <PropertyGroup>
-    <PostBuildEvent>copy /y $(SolutionDir)java\org\openqa\selenium\internal\seleniumemulation\*.js $(TargetDir)</PostBuildEvent>
+    <PostBuildEvent>copy /y $(SolutionDir)javasrc\org\openqa\selenium\internal\seleniumemulation\*.js $(TargetDir)</PostBuildEvent>
   </PropertyGroup>
-  <ItemGroup>
-    <Folder Include="Internal\" />
-  </ItemGroup>
 </Project>
