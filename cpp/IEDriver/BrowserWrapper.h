@@ -82,6 +82,7 @@ public:
 	int SetFocusedFrameByName(std::wstring frame_name);
 	int SetFocusedFrameByElement(IHTMLElement *frame_element);
 	HWND GetActiveDialogWindowHandle(void);
+	bool IsFrameFocused(void);
 
 	std::wstring ConvertVariantToWString(VARIANT *to_convert);
 

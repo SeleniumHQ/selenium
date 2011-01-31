@@ -63,6 +63,10 @@ void BrowserWrapper::GetDocument(IHTMLDocument2 **doc) {
 	}
 }
 
+bool BrowserWrapper::IsFrameFocused() {
+	return this->focused_frame_window_ != NULL;
+}
+
 std::wstring BrowserWrapper::GetTitle() {
 	CComPtr<IDispatch> dispatch;
 	HRESULT hr = this->browser_->get_Document(&dispatch);
@@ -184,16 +188,30 @@ bool BrowserWrapper::IsHtmlPage(IHTMLDocument2* doc) {
 		return false;
 	}
 
-	// To be technically correct, we should look up the extension specified
-	// for the text/html MIME type first (located in the "Extension" value of
-	// HKEY_CLASSES_ROOT\MIME\Database\Content Type\text/html), but that should
-	// always resolve to ".htm" anyway. From the extension, we can find the 
-	// browser-specific subkey of HKEY_CLASSES_ROOT, the default value of which
-	// should contain the browser-specific friendly name of the MIME type for
-	// HTML documents, which is what IHTMLDocument2::get_mimeType() returns.
-	std::wstring document_type_key_name;
-	if (!this->factory_->GetRegistryValue(HKEY_CLASSES_ROOT, L".htm", L"", &document_type_key_name)) {
-		return false;
+	std::wstring document_type_key_name(L"");
+	if (this->factory_->GetRegistryValue(HKEY_CURRENT_USER, L"Software\\Microsoft\\Windows\\Shell\\Associations\\UrlAssociations\\http\\UserChoice", L"Progid", &document_type_key_name)) {
+		// Look for the user-customization under Vista/Windows 7 first. If it's
+		// IE, set the document friendly name lookup key to 'htmlfile'. If not,
+		// set it to blank so that we can look up the proper HTML type.
+		if (document_type_key_name == L"IE.HTTP") {
+			document_type_key_name = L"htmlfile";
+		} else {
+			document_type_key_name = L"";
+		}
+	}
+
+	if (document_type_key_name == L"") {
+		// To be technically correct, we should look up the extension specified
+		// for the text/html MIME type first (located in the "Extension" value
+		// of HKEY_CLASSES_ROOT\MIME\Database\Content Type\text/html), but that
+		// should always resolve to ".htm" anyway. From the extension, we can 
+		// find the browser-specific subkey of HKEY_CLASSES_ROOT, the default 
+		// value of which should contain the browser-specific friendly name of
+		// the MIME type for HTML documents, which is what 
+		// IHTMLDocument2::get_mimeType() returns.
+		if (!this->factory_->GetRegistryValue(HKEY_CLASSES_ROOT, L".htm", L"", &document_type_key_name)) {
+			return false;
+		}
 	}
 
 	std::wstring mime_type_name;
