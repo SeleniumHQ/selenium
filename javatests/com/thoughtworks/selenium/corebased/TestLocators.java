@@ -5,7 +5,7 @@ import com.thoughtworks.selenium.InternalSelenseTestNgBase;
 import org.testng.annotations.Test;
 
 public class TestLocators extends InternalSelenseTestNgBase {
-	@Test(dataProvider = "system-properties")
+	@Test
   public void testLocators() throws Exception {
 		selenium.open("../tests/html/test_locators.html");
 		//  Id location 

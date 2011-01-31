@@ -6,7 +6,7 @@ import com.thoughtworks.selenium.InternalSelenseTestNgBase;
 import org.testng.annotations.Test;
 
 public class TestPatternMatching extends InternalSelenseTestNgBase {
-	@Test(dataProvider = "system-properties") public void testPatternMatching() throws Exception {
+	@Test public void testPatternMatching() throws Exception {
 		selenium.open("../tests/html/test_verifications.html");
 		verifyTrue(selenium.getValue("theText").matches("^[\\s\\S]*text[\\s\\S]*$"));
 		verifyTrue(selenium.getValue("theHidden").matches("^[\\s\\S]* hidden value$"));

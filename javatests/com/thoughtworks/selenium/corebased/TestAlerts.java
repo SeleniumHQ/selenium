@@ -7,7 +7,7 @@ import com.thoughtworks.selenium.InternalSelenseTestNgBase;
 import org.testng.annotations.Test;
 
 public class TestAlerts extends InternalSelenseTestNgBase {
-	@Test(dataProvider = "system-properties")
+	@Test
   public void testAlerts() throws Exception {
 		selenium.open("../tests/html/test_verify_alert.html");
 		verifyFalse(selenium.isAlertPresent());

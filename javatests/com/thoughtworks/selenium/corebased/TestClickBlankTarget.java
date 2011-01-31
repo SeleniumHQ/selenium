@@ -4,7 +4,7 @@ import com.thoughtworks.selenium.InternalSelenseTestNgBase;
 import org.testng.annotations.Test;
 
 public class TestClickBlankTarget extends InternalSelenseTestNgBase {
-	@Test(dataProvider = "system-properties")
+	@Test
   public void testClickBlankTarget() throws Exception {
 		selenium.open("../tests/html/Frames.html");
 		selenium.selectFrame("bottomFrame");
@@ -31,7 +31,9 @@ public class TestClickBlankTarget extends InternalSelenseTestNgBase {
 		selenium.click("popupBlank");
 		selenium.waitForPopUp("_blank", "10000");
 		selenium.selectWindow("_blank");
+    System.out.println("At the end");
 		verifyEquals(selenium.getTitle(), "Select Window Popup");
 		selenium.close();
+    selenium.selectWindow("null");
 	}
 }

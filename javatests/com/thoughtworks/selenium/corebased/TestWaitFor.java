@@ -6,7 +6,7 @@ import com.thoughtworks.selenium.InternalSelenseTestNgBase;
 import org.testng.annotations.Test;
 
 public class TestWaitFor extends InternalSelenseTestNgBase {
-	@Test(dataProvider = "system-properties") public void testWaitFor() throws Exception {
+	@Test public void testWaitFor() throws Exception {
 		selenium.open("../tests/html/test_async_event.html");
 		assertEquals(selenium.getValue("theField"), "oldValue");
 		selenium.click("theButton");

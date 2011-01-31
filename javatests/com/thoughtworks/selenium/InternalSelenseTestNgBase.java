@@ -24,27 +24,16 @@ import java.net.URL;
 public class InternalSelenseTestNgBase extends SeleneseTestBase {
   private static Selenium staticSelenium;
 
-  @DataProvider(name = "system-properties")
-  public Object[][] paramsFromProperties() {
-    Object[][] toReturn = new Object[2][2];
-
-    toReturn[0] = new Object[] { "selenium.browser", System.getProperty("selenium.browser") };
-    toReturn[1] = new Object[] { "selenium.browser", System.getProperty("selenium.url") };
-    
-    return toReturn;
-  }
-
   @BeforeTest
   @Parameters({"selenium.url", "selenium.browser"})
   public void startBrowser(@Optional String url, @Optional String browserString)
       throws Exception {
     startSeleniumServer();
 
-    final String browser =
-        browserString == null ? runtimeBrowserString() : browserString;
+    final String browser = System.getProperty("selenium.browser", runtimeBrowserString());
     int port = getDefaultPort();
 
-    String baseUrl = url;
+    String baseUrl = System.getProperty("selenium.url");
 
     if (url == null) {
       baseUrl = "http://localhost:" + port + "/selenium-server/tests/";
@@ -97,6 +86,11 @@ public class InternalSelenseTestNgBase extends SeleneseTestBase {
       selenium.stop();
       selenium.start();
     }
+  }
+
+  @BeforeMethod
+  public void returnFocusToMainWindow() {
+    selenium.selectWindow("");
   }
 
   @BeforeMethod

@@ -5,7 +5,7 @@ import com.thoughtworks.selenium.InternalSelenseTestNgBase;
 import org.testng.annotations.Test;
 
 public class TestElementIndex extends InternalSelenseTestNgBase {
-	@Test(dataProvider = "system-properties") public void testElementIndex() throws Exception {
+	@Test public void testElementIndex() throws Exception {
 		selenium.open("../tests/html/test_element_order.html");
 		assertEquals(selenium.getElementIndex("d2"), "1");
 		assertEquals(selenium.getElementIndex("d1.1.1"), "0");

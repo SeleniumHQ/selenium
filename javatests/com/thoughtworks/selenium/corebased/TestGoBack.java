@@ -4,7 +4,7 @@ import com.thoughtworks.selenium.InternalSelenseTestNgBase;
 import org.testng.annotations.Test;
 
 public class TestGoBack extends InternalSelenseTestNgBase {
-	@Test(dataProvider = "system-properties") public void testGoBack() throws Exception {
+	@Test public void testGoBack() throws Exception {
 		selenium.open("../tests/html/test_click_page1.html");
 		verifyEquals(selenium.getTitle(), "Click Page 1");
 		//  Click a regular link 

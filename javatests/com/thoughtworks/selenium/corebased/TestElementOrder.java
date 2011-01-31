@@ -4,7 +4,7 @@ import com.thoughtworks.selenium.InternalSelenseTestNgBase;
 import org.testng.annotations.Test;
 
 public class TestElementOrder extends InternalSelenseTestNgBase {
-	@Test(dataProvider = "system-properties")
+	@Test
   public void testElementOrder() throws Exception {
 		selenium.open("../tests/html/test_element_order.html");
 		assertTrue(selenium.isOrdered("s1.1", "d1.1"));

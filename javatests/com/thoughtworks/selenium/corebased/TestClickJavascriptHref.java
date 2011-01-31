@@ -5,7 +5,7 @@ import com.thoughtworks.selenium.InternalSelenseTestNgBase;
 import org.testng.annotations.Test;
 
 public class TestClickJavascriptHref extends InternalSelenseTestNgBase {
-	@Test(dataProvider = "system-properties") public void testClickJavascriptHref() throws Exception {
+	@Test public void testClickJavascriptHref() throws Exception {
 		selenium.open("../tests/html/test_click_javascript_page.html");
 		selenium.click("link");
 		verifyEquals(selenium.getAlert(), "link clicked: foo");

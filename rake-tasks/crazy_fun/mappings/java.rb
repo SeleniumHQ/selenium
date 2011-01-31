@@ -61,11 +61,15 @@ module CrazyFunJava
       ant.taskdef :name      => 'jarjar',
                   :classname => 'com.tonicsystems.jarjar.JarJarTask',
                   :classpath => 'third_party/java/jarjar/jarjar-1.0.jar'
+      ant.taskdef :resource  => 'testngtasks',
+                  :classpath => 'third_party/java/testng/testng-5.14.1.jar'
 
       ant.project.setProperty 'XmlLogger.file', 'build/build_log.xml'
       ant.project.setProperty 'build.compiler', 'org.eclipse.jdt.core.JDTCompilerAdapter'
 
-      ant.project.getBuildListeners().get(0).setMessageOutputLevel(verbose ? 2 : 0)
+      unless ENV['log']
+        ant.project.getBuildListeners().get(0).setMessageOutputLevel(verbose ? 2 : 0)
+      end
       ant.project.addBuildListener logger
 
       ant
@@ -189,7 +193,7 @@ module CrazyFunJava
       name = task_name(dir, args[:name])
       task name
 
-      if args[:srcs]
+      if args[:srcs] or args[:resources]
         jar_name = jar_name(dir, args[:name])
         file jar_name
       else
@@ -235,7 +239,7 @@ module CrazyFunJava
 
   class TidyTempDir < BaseJava
     def handle(fun, dir, args)
-      return if args[:srcs].nil?
+      return if args[:srcs].nil? and args[:resources].nil?
 
       file jar_name(dir, args[:name]) do
         rm_rf temp_dir(dir, args[:name])
@@ -245,7 +249,7 @@ module CrazyFunJava
 
   class Javac < BaseJava
     def handle(fun, dir, args)
-      return if args[:srcs].nil?
+      return if args[:srcs].nil? and args[:resources].nil?
 
       jar = jar_name(dir, args[:name])
       out_dir = temp_dir(dir, args[:name])
@@ -263,22 +267,25 @@ module CrazyFunJava
             ant.pathelement(:location => jar)
           end
         end
-        CrazyFunJava.ant.javac(
-          :srcdir               => '.',
-          :destdir              => out_dir,
-          :includeAntRuntime    => false,
-  			  :optimize             => true,
-  			  :debug                => true,
-  			  :nowarn               => true,
-  			  :source               => '1.5',
-  			  :target               => '1.5'
-  			) { |ant|
-          ant.classpath(:refid => "#{args[:name]}.path")
 
-          args[:srcs].each do |src_glob|
-            ant.include(:name => [dir, src_glob].join(File::SEPARATOR))
-          end
-        }
+        if args[:srcs]
+          CrazyFunJava.ant.javac(
+            :srcdir               => '.',
+            :destdir              => out_dir,
+            :includeAntRuntime    => false,
+  			:optimize             => true,
+  			:debug                => true,
+  			:nowarn               => true,
+    		:source               => '1.5',
+            :target               => '1.5'
+  		  ) { |ant|
+            ant.classpath(:refid => "#{args[:name]}.path")
+
+            args[:srcs].each do |src_glob|
+              ant.include(:name => [dir, src_glob].join(File::SEPARATOR))
+            end
+          }
+        end
       end
 
       desc "Build #{jar}"
@@ -303,7 +310,7 @@ module CrazyFunJava
 
   class Jar < BaseJava
     def handle(fun, dir, args)
-      return if args[:srcs].nil?
+      return if args[:srcs].nil? and args[:resources].nil?
 
       jar = jar_name(dir, args[:name])
 
@@ -380,7 +387,17 @@ module CrazyFunJava
           tests = [ args[:test_suite] ]
         end
 
-        if (args[:main])
+        if ("org.testng.TestNG" == args[:main])
+          CrazyFunJava.ant.testng :outputdir => "build/test_logs", :haltOnFailure => true do |ant|
+            ant.classpath do |ant_cp|
+                cp.all.each do |jar|
+                  ant_cp.pathelement(:location => jar)
+                end
+            end
+
+            ant.xmlfileset :dir => dir, :includes => args[:args] 
+          end
+        elsif (args[:main])
           ant_java_task(task_name, args[:main], cp, args[:args], args[:sysproperties])
         else
           tests.each do |test|
@@ -507,14 +524,12 @@ module CrazyFunJava
     def handle(fun, dir, args)
       jar = custom_name(dir, args[:name], "standalone")
 
-      if (args[:srcs])
-        deps = jar_name(dir, args[:name])
-      else
-        deps = args[:deps].collect do |dep|
-          real_file = File.join(dir, dep.to_s)
-          File.exists?(real_file) ? real_file : task_name(dir, dep)
-        end
+      listed_deps = args[:deps] || []
+      deps = listed_deps.collect do |dep|
+        real_file = File.join(dir, dep.to_s)
+        File.exists?(real_file) ? real_file : task_name(dir, dep)
       end
+      deps << jar_name(dir, args[:name]) if (args[:srcs] or args[:resources])
 
       file jar => deps do
         puts "Uber-jar: #{task_name(dir, args[:name])} as #{jar}"
@@ -522,7 +537,7 @@ module CrazyFunJava
         mkdir_p File.dirname(jar)
 
         cp = ClassPath.new(jar_name(dir, args[:name])).all
-        cp.push(jar_name(dir, args[:name])) if args[:srcs]
+        cp.push(jar_name(dir, args[:name])) if args[:srcs] or args[:resources]
 
         CrazyFunJava.ant.jarjar(:jarfile => jar, :duplicate => 'preserve') do |ant|
           cp.each do |j|

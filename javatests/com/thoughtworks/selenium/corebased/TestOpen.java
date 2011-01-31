@@ -7,7 +7,7 @@ import com.thoughtworks.selenium.InternalSelenseTestNgBase;
 import org.testng.annotations.Test;
 
 public class TestOpen extends InternalSelenseTestNgBase {
-	@Test(dataProvider = "system-properties") public void testOpen() throws Exception {
+	@Test public void testOpen() throws Exception {
 		selenium.open("../tests/html/test_open.html");
 		verifyTrue(selenium.getLocation().matches("^[\\s\\S]*/tests/html/test_open\\.html$"));
 		//  Should really split these verifications into their own test file.

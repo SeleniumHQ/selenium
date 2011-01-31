@@ -4,7 +4,7 @@ import com.thoughtworks.selenium.InternalSelenseTestNgBase;
 import org.testng.annotations.Test;
 
 public class TestSelect extends InternalSelenseTestNgBase {
-	@Test(dataProvider = "system-properties") public void testSelect() throws Exception {
+	@Test public void testSelect() throws Exception {
 		selenium.open("../tests/html/test_select.html");
 		assertTrue(selenium.isSomethingSelected("theSelect"));
 		assertEquals(selenium.getSelectedLabel("theSelect"), "Second Option");;

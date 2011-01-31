@@ -6,7 +6,7 @@ import com.thoughtworks.selenium.InternalSelenseTestNgBase;
 import org.testng.annotations.Test;
 
 public class TestJavascriptParameters extends InternalSelenseTestNgBase {
-	@Test(dataProvider = "system-properties")
+	@Test
   public void testJavascriptParameters() throws Exception {
 		selenium.open("../tests/html/test_store_value.html");
 		selenium.type("theText", selenium.getEval("[1,2,3,4,5].join(':')"));

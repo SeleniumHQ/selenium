@@ -2051,7 +2051,7 @@ function XPathEvaluator(newDefaultEngineName) {
         
         engines[name] = engine;
         return true;
-    }
+    };
     
     this.getRegisteredEngine = function(name) {
         return engines[name];
@@ -2075,11 +2075,11 @@ function XPathEvaluator(newDefaultEngineName) {
     
     this.setAllowNativeXPath = function(allow) {
         allowNativeXPath = allow;
-    }
+    };
     
     this.isAllowNativeXPath = function() {
         return allowNativeXPath;
-    }
+    };
     
     this.setIgnoreAttributesWithoutValue = function(ignore) {
         ignoreAttributesWithoutValue = ignore;
@@ -2200,7 +2200,11 @@ function eval_xpath(xpath, inDocument, opts)
  */
 function eval_css(locator, inDocument) {
     var results = [];
-    window.Sizzle(locator, inDocument, results);
+    try {
+      window.Sizzle(locator, inDocument, results);
+    } catch (ignored) {
+      // Presumably poor formatting
+    }
     return results;
 }
 

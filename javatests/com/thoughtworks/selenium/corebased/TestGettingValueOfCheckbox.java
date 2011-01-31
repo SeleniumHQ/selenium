@@ -4,7 +4,7 @@ import com.thoughtworks.selenium.InternalSelenseTestNgBase;
 import org.testng.annotations.Test;
 
 public class TestGettingValueOfCheckbox extends InternalSelenseTestNgBase {
-	@Test(dataProvider = "system-properties") public void testGettingValueOfCheckbox() throws Exception {
+	@Test public void testGettingValueOfCheckbox() throws Exception {
     selenium.open("../tests/html/test_submit.html");
 
     String elementLocator = "name=okayToSubmit";

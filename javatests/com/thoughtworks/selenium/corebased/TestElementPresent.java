@@ -4,7 +4,7 @@ import com.thoughtworks.selenium.InternalSelenseTestNgBase;
 import org.testng.annotations.Test;
 
 public class TestElementPresent extends InternalSelenseTestNgBase {
-	@Test(dataProvider = "system-properties") public void testElementPresent() throws Exception {
+	@Test public void testElementPresent() throws Exception {
 		selenium.open("../tests/html/test_element_present.html");
 		assertTrue(selenium.isElementPresent("aLink"));
 		selenium.click("removeLinkAfterAWhile");

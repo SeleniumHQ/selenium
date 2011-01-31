@@ -4,7 +4,7 @@ import com.thoughtworks.selenium.InternalSelenseTestNgBase;
 import org.testng.annotations.Test;
 
 public class TestCursorPosition extends InternalSelenseTestNgBase {
-	@Test(dataProvider = "system-properties") public void testCursorPosition() throws Exception {
+	@Test public void testCursorPosition() throws Exception {
 		selenium.open("../tests/html/test_type_page1.html");
 		try { assertEquals(selenium.getCursorPosition("username"), "8"); fail("expected failure"); } catch (Throwable e) {}
 		selenium.windowFocus();

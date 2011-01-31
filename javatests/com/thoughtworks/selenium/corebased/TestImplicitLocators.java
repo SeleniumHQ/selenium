@@ -5,7 +5,7 @@ import com.thoughtworks.selenium.InternalSelenseTestNgBase;
 import org.testng.annotations.Test;
 
 public class TestImplicitLocators extends InternalSelenseTestNgBase {
-	@Test(dataProvider = "system-properties")
+	@Test
   public void testImplicitLocators() throws Exception {
 		selenium.open("../tests/html/test_locators.html");
 		verifyEquals(selenium.getText("id1"), "this is the first element");

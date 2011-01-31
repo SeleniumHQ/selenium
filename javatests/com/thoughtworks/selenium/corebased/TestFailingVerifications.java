@@ -4,7 +4,7 @@ import com.thoughtworks.selenium.InternalSelenseTestNgBase;
 import org.testng.annotations.Test;
 
 public class TestFailingVerifications extends InternalSelenseTestNgBase {
-	@Test(dataProvider = "system-properties") public void testFailingVerifications() throws Exception {
+	@Test public void testFailingVerifications() throws Exception {
 		selenium.open("../tests/html/test_verifications.html");
 		try { assertTrue(selenium.getLocation().matches("^[\\s\\S]*/tests/html/not_test_verifications\\.html$")); fail("expected failure"); } catch (Throwable e) {}
 		try { assertEquals(selenium.getValue("theText"), "not the text value"); fail("expected failure"); } catch (Throwable e) {}

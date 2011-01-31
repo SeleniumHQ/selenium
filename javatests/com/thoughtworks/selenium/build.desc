@@ -12,7 +12,7 @@ java_test(name = "test",
     "//java/org/openqa/selenium/firefox",
     "//java/org/openqa/selenium/ie",
     "//java/org/openqa/selenium/server",
-    "//java/org/openqa/selenium/server:server-with-tests:uber",
+    "//javatests/org/openqa/selenium:server-with-tests:uber",
     "//javatests/com/thoughtworks/selenium/condition:test",
     "//javatests/org/openqa/selenium/v1:environment",
     "//third_party/java/guava-libraries",
@@ -42,7 +42,7 @@ java_test(name = "firefox-emulation-test",
   sysproperties = [
     { "selenium.browser" : "org.openqa.selenium.firefox.FirefoxDriver" },
   ],
-  args = "javatests/com/thoughtworks/selenium/webdriver-selenium-suite.xml")
+  args = "webdriver-selenium-suite.xml")
 
 java_test(name = "ie-emulation-test",
   deps = [
@@ -52,7 +52,7 @@ java_test(name = "ie-emulation-test",
   sysproperties = [
     { "selenium.browser" : "org.openqa.selenium.ie.InternetExplorerDriver" },
   ],
-  args = "javatests/com/thoughtworks/selenium/webdriver-selenium-suite.xml")
+  args = "webdriver-selenium-suite.xml")
 
 java_test(name = "firefox-rc-test",
   deps = [
@@ -62,7 +62,7 @@ java_test(name = "firefox-rc-test",
   sysproperties = [
     { "selenium.browser" : "*firefox" },
   ],
-  args = "javatests/com/thoughtworks/selenium/testng.xml")
+  args = "testng.xml")
 
 java_test(name = "ie-rc-test",
   deps = [
@@ -72,7 +72,7 @@ java_test(name = "ie-rc-test",
   sysproperties = [
     { "selenium.browser" : "*iexplore" },
   ],
-  args = "javatests/com/thoughtworks/selenium/testng.xml")
+  args = "testng.xml")
 
 java_test(name = "safari-rc-test",
   deps = [
@@ -82,5 +82,5 @@ java_test(name = "safari-rc-test",
   sysproperties = [
     { "selenium.browser" : "*safari" },
   ],
-  args = "javatests/com/thoughtworks/selenium/testng.xml")
+  args = "testng.xml")
 

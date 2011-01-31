@@ -42,11 +42,10 @@ public class SeleniumTestEnvironment implements TestEnvironment {
   public SeleniumTestEnvironment(String... extraArgs){
       try {
         if (DevMode.isInDevMode()) {
-          new Build().of("//java/org/openqa/selenium/server:server-with-tests:uber").go();
-//          copyAtomsToSeleniumBuildDir();
+          new Build().of("//javatests/org/openqa/selenium:server-with-tests:uber").go();
         }
 
-        File seleniumJar = InProject.locate("build/java/org/openqa/selenium/server/server-with-tests-standalone.jar");
+        File seleniumJar = InProject.locate("build/javatests/org/openqa/selenium/server-with-tests-standalone.jar");
         String[] args = {"-jar", seleniumJar.getAbsolutePath(), "-port", "" + port};
         if(extraArgs != null) {
             String[] allArgs = new String[args.length+extraArgs.length];
@@ -62,25 +61,6 @@ public class SeleniumTestEnvironment implements TestEnvironment {
         throw new RuntimeException(e);
       }
   }
-
-  private void copyAtomsToSeleniumBuildDir() throws IOException {
-    File classes = InProject.locate("build/classes");
-    File scriptsDir = new File(classes, "scripts/selenium");
-    FileHandler.createDir(scriptsDir);
-
-    File sourceDir = InProject.locate("build/common/src/js/selenium");
-    String[] sources = new String[] {
-        "findElement.js",
-        "isElementPresent.js",
-        "isTextPresent.js",
-        "isVisible.js",
-    };
-
-    for (String source : sources) {
-      Files.copy(new File(sourceDir, source), new File(scriptsDir, source));
-    }
-  }
-
 
   public AppServer getAppServer() {
     throw new UnsupportedOperationException("getAppServer");

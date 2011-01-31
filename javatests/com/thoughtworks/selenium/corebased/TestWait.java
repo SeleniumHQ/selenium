@@ -5,7 +5,7 @@ import com.thoughtworks.selenium.InternalSelenseTestNgBase;
 import org.testng.annotations.Test;
 
 public class TestWait extends InternalSelenseTestNgBase {
-	@Test(dataProvider = "system-properties") public void testWait() throws Exception {
+	@Test public void testWait() throws Exception {
 		//  Link click 
 		selenium.open("../tests/html/test_reload_onchange_page.html");
 		selenium.click("theLink");

@@ -6,7 +6,7 @@ import com.thoughtworks.selenium.InternalSelenseTestNgBase;
 import org.testng.annotations.Test;
 
 public class TestTextWhitespace extends InternalSelenseTestNgBase {
-	@Test(dataProvider = "system-properties") public void testTextWhitespace() throws Exception {
+	@Test public void testTextWhitespace() throws Exception {
 		selenium.open("../tests/html/test_text_content.html");
 		verifyEquals(selenium.getText("nonTextMarkup"), "There is non-visible and visible markup here that doesn't change the text content");
 		//  Match exactly the same space characters 
