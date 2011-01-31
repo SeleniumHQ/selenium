@@ -267,7 +267,8 @@ public abstract class By {
 
       /**
        * Finds elements via the driver's underlying W3 Selector engine. If the browser does not
-       * implement the Selector API an exception will be thrown.
+       * implement the Selector API, a best effort is made to emulate the API. In this case,
+       * we strive for at least CSS2 support, but offer no guarantees.
        */
       public static By cssSelector(final String selector) {
         if (selector == null)
