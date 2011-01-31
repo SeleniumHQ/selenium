@@ -16,7 +16,8 @@ webdriver::IEDriverServer* StartServer(int port) {
 	char buffer[10];
 	if (server == NULL) {
 		_itoa_s(port, buffer, 10, 10);
-		char* options[] = { "listening_ports", buffer, "access_control_list", "-0.0.0.0/0,+127.0.0.1", NULL };
+		//char* options[] = { "listening_ports", buffer, "access_control_list", "-0.0.0.0/0,+127.0.0.1", NULL };
+		char* options[] = { "listening_ports", buffer, "access_control_list", "-0.0.0.0/0,+127.0.0.1", "enable_keep_alive", "yes", NULL };
 		server = new webdriver::IEDriverServer(port);
 		ctx = mg_start(event_handler, (const char **)options);
 	}
