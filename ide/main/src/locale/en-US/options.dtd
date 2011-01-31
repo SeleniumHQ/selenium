@@ -1,6 +1,6 @@
 <!ENTITY options.title "Selenium IDE Options">
 <!ENTITY options.encoding.description "Encoding of test files">
-<!ENTITY options.timeout.description "Default timeout value of recorded command">
+<!ENTITY options.timeout.description "Default timeout value of recorded command in milliseconds (30s = 30000ms)">
 <!ENTITY options.userExtensionsPaths.description "Selenium Core extensions (user-extensions.js)">
 <!ENTITY options.ideExtensionsPaths.description "Selenium IDE extensions">
 <!ENTITY options.extensions.tip "Tips for extensions: Close and reopen Selenium IDE window to make changes effect. You can specify multiple files separated by commas.">
