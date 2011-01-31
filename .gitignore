@@ -19,3 +19,6 @@ iphone/build/
 /build/
 android/client/bin/
 android/server/bin/
+cpp/IEDriver/IEReturnTypes.h
+java/org/openqa/selenium/ie/IeReturnTypes.java
+
