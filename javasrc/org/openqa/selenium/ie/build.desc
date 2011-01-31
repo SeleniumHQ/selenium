@@ -15,4 +15,4 @@ java_library(name = "ie",
 
 rake_task(name = "ie_result_type_java",
   task_name = "ie_result_type_java",
-  out = "java/org/openqa/selenium/ie/IeReturnTypes.java")
+  out = "javasrc/org/openqa/selenium/ie/IeReturnTypes.java")

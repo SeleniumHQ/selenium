@@ -82,24 +82,24 @@ task :default => [:test]
 
 task :all => [:'selenium-java', :'android']
 task :all_zip => [:'selenium-java_zip']
-task :chrome => [ "//java/org/openqa/selenium/chrome" ]
+task :chrome => [ "//javasrc/org/openqa/selenium/chrome" ]
 task :common_core => [ "//common:core" ]
-task :htmlunit => [ "//java/org/openqa/selenium/htmlunit" ]
-task :ie => [ "//java/org/openqa/selenium/ie" ]
+task :htmlunit => [ "//javasrc/org/openqa/selenium/htmlunit" ]
+task :ie => [ "//javasrc/org/openqa/selenium/ie" ]
 task :firefox => [ "//java/org/openqa/selenium/firefox" ]
 task :jsapi => "//jsapi:debug:run"
 task :remote => [:remote_common, :remote_server, :remote_client]
-task :remote_common => ["//java/org/openqa/selenium/remote:common"]
-task :remote_client => ["//java/org/openqa/selenium/remote:client"]
-task :remote_server => ["//java/org/openqa/selenium/remote/server"]
-task :selenium => [ "//java/org/openqa/selenium" ]
+task :remote_common => ["//javasrc/org/openqa/selenium/remote:common"]
+task :remote_client => ["//javasrc/org/openqa/selenium/remote:client"]
+task :remote_server => ["//javasrc/org/openqa/selenium/remote/server"]
+task :selenium => [ "//javasrc/org/openqa/selenium" ]
 task :support => [
-  "//java/org/openqa/selenium/lift",
-  "//java/org/openqa/selenium/support",
+  "//javasrc/org/openqa/selenium/lift",
+  "//javasrc/org/openqa/selenium/support",
 ]
-task :iphone_client => ['//java/org/openqa/selenium/iphone']
+task :iphone_client => ['//javasrc/org/openqa/selenium/iphone']
 task :iphone => [:iphone_server, :iphone_client]
-task :'selenium-server-standalone' => ["//java/org/openqa/selenium/remote/server:server:uber"]
+task :'selenium-server-standalone' => ["//javasrc/org/openqa/selenium/remote/server:server:uber"]
 
 task :ide => [ "//ide:selenium-ide" ]
 task :ide_proxy_setup => [ "//common/src/js/selenium:core", "se_ide:setup_proxy" ]
@@ -122,7 +122,7 @@ task :test_support => [
 task :test_iphone_client => [:'webdriver-iphone-client-test']
 task :test_iphone => [:test_iphone_server, :test_iphone_client]
 task :android => [:android_client, :android_server]
-task :android_client => ['//java/org/openqa/selenium/android']
+task :android_client => ['//javasrc/org/openqa/selenium/android']
 task :android_server => ['//android:android-server']
 
 # TODO(simon): test-core should go first, but it's changing the least for now.
@@ -208,7 +208,7 @@ ie_generate_type_mapping(:name => "ie_result_type_cpp",
 ie_generate_type_mapping(:name => "ie_result_type_java",
                          :src => "jobbie/src/common/result_types.txt",
                          :type => "java",
-                         :out => "java/org/openqa/selenium/ie/IeReturnTypes.java")
+                         :out => "javasrc/org/openqa/selenium/ie/IeReturnTypes.java")
 
 gecko_sdk = "third_party/gecko-1.9.0.11/linux/"
 
@@ -541,9 +541,9 @@ task :release => [
   end
 
   mkdir_p "build/dist"
-  cp "build/java/org/openqa/selenium/server/server-standalone.jar", "build/dist/selenium-server-standalone-#{version}.jar"
-  cp "build/java/org/openqa/selenium/server/server.zip", "build/dist/selenium-server-#{version}.zip"
-  cp "build/java/org/openqa/selenium/remote/client-combined.zip", "build/dist/selenium-java-#{version}.zip"
+  cp "build/javasrc/org/openqa/selenium/server/server-standalone.jar", "build/dist/selenium-server-standalone-#{version}.jar"
+  cp "build/javasrc/org/openqa/selenium/server/server.zip", "build/dist/selenium-server-#{version}.zip"
+  cp "build/javasrc/org/openqa/selenium/remote/client-combined.zip", "build/dist/selenium-java-#{version}.zip"
 end
 
 desc 'Build the selenium client jars'
