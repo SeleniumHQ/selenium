@@ -21,10 +21,27 @@ package org.openqa.selenium.internal.selenesedriver;
 import java.util.Map;
 
 import com.thoughtworks.selenium.Selenium;
+import com.thoughtworks.selenium.SeleniumException;
 
 public class Close implements SeleneseFunction<Void> {
   public Void apply(Selenium selenium, Map<String, ?> args) {
     selenium.close();
+
+    // WebDriver quits the browser once all windows are closed.
+    String[] allWindowIds = selenium.getAllWindowIds();
+    if (allWindowIds.length == 1) {
+      boolean open = true;
+      try {
+        // Hilariously, this script will detonate if the window has been closed
+        selenium.getEval("selenium.browserbot.getCurrentWindow().closed");
+      } catch (SeleniumException e) {
+        open = false;
+      }
+
+      if (!open) {
+        selenium.stop();
+      }
+    }
 
     return null;
   }

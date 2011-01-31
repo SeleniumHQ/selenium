@@ -39,7 +39,7 @@ public class SingleTestSuite extends TestCase {
   private static final String SELENIUM = "org.openqa.selenium.v1.SeleneseBackedWebDriver";
 
   public static Test suite() throws Exception {
-    String driver = FIREFOX_TEST;
+    String driver = SELENIUM;
 
     System.setProperty("jna.library.path", "..\\build;build");
     System.setProperty("webdriver.selenium.server.port", String.valueOf(findFreePort()));
@@ -55,10 +55,10 @@ public class SingleTestSuite extends TestCase {
         .usingDriver(driver)
         .keepDriverInstance()
         .includeJavascriptTests()
-        .onlyRun("PageLoadingTest")
-        .method("testShouldBeAbleToAccessPagesWithAnInsecureSslCertificate")
+        .onlyRun("FrameSwitchingTest")
+        .method("testClosingTheFinalBrowserWindowShouldNotCauseAnExceptionToBeThrown")
         .exclude(ALL)
-        .exclude(Ignore.Driver.FIREFOX)
+        .exclude(Ignore.Driver.SELENESE)
         .outputTestNames()
         .leaveRunning()
         ;  // Yeah, this look strange :)
