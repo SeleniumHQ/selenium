@@ -2,7 +2,7 @@
 java_library(name = "webserver",
   srcs = [ "*.java" ],
   deps = [
-    "//java/org/openqa/selenium/net",
+    "//javasrc/org/openqa/selenium/net",
     "//javatests/org/openqa/selenium/internal:utils",
     "//third_party/java/jetty",
     "//third_party/java/servlet-api",

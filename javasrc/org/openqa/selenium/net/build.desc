@@ -1,0 +1,10 @@
+
+
+java_library(name = "net",
+  srcs = [
+    "*.java",
+  ],
+  deps = [
+    "//javasrc/org/openqa/selenium:webdriver-api",
+    "//javasrc/org/openqa/selenium/internal:logging",
+  ])

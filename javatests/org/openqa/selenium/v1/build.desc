@@ -16,7 +16,7 @@ java_library(name = "test-selenium",
     "thirdparty/*.java",
   ],
   deps = [
-    "//java/com/thoughtworks/selenium",
+    "//javasrc/com/thoughtworks/selenium",
     "//javatests/com/thoughtworks/selenium:test",
   ])
 
@@ -36,8 +36,8 @@ java_test(name = "selenium-backed-webdriver-test",
     "SeleneseWebDriverTestSuite.java",
   ],
   deps = [
-    "//java/com/thoughtworks/selenium",
-    "//java/org/openqa/selenium:selenium-backed-webdriver",
+    "//javasrc/com/thoughtworks/selenium",
+    "//javasrc/org/openqa/selenium:selenium-backed-webdriver",
     "//javatests/org/openqa/selenium:base",
     "//javatests/org/openqa/selenium:server-with-tests:uber",
     "//javatests/org/openqa/selenium:tests",

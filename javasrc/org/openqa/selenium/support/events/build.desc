@@ -1,0 +1,10 @@
+
+java_library(name = "events",
+  srcs = [
+    "*.java",
+    "internal/*.java",
+  ],
+  deps = [
+    "//javasrc/org/openqa/selenium:webdriver-api",
+    "//javasrc/org/openqa/selenium/interactions",
+  ])

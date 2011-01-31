@@ -63,7 +63,7 @@ dotnet_library(name = "remote",
 
 dotnet_test(name = "remote-test",
   deps = [
-    "//java/org/openqa/selenium/server:server:uber"
+    "//javasrc/org/openqa/selenium/server:server:uber"
   ],
   srcs = "test/WebDriver.Remote.Tests/**/*.cs",
   refs = [
@@ -302,7 +302,7 @@ dotnet_library(name = "webdriverbackedselenium",
 
 dotnet_test(name = "webdriverbackedselenium-test",
   deps = [
-    "//java/org/openqa/selenium/server:server-with-tests:uber",
+    "//javasrc/org/openqa/selenium/server:server-with-tests:uber",
     ":ie"
   ],
   srcs = "test/Selenium.WebdriverBackedSelenium.Tests/**/*.cs",

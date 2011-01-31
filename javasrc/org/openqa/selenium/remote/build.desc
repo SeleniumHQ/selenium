@@ -1,0 +1,84 @@
+
+java_library(name = "base",
+  srcs = [
+    "CapabilityType.java",
+    "DesiredCapabilities.java",
+  ],
+  deps = [
+    "//javasrc/org/openqa/selenium:webdriver-api",
+  ])
+
+java_library(name = "common",
+  srcs = [
+    "BeanToJsonConverter.java",
+    "Command.java",
+    "DesiredCapabilities.java",
+    "DriverCommand.java",
+    "ErrorCodes.java",
+    "JsonException.java",
+    "JsonToBeanConverter.java",
+    "PropertyMunger.java",
+    "Response.java",
+    "SessionId.java",
+    "SimplePropertyDescriptor.java",
+  ],
+  deps = [
+    ":base",
+
+    "//javasrc/org/openqa/selenium/interactions",
+    "//javasrc/org/openqa/selenium/browserlaunchers",
+    "//third_party/java/guava-libraries",
+    "//third_party/java/json",
+  ])
+
+java_library(name = "client",
+  srcs = [
+    "AddFindsByCss.java",
+    "AddFindsChildByCss.java",
+    "AddRotatable.java",
+    "AddTakesScreenshot.java",
+    "Augmenter.java",
+    "AugmenterProvider.java",
+    "CommandExecutor.java",
+    "ErrorHandler.java",
+    "ExecuteMethod.java",
+    "HttpCommandExecutor.java",
+    "InterfaceImplementation.java",
+    "RemoteWebDriver.java",
+    "RemoteWebElement.java",
+    "RenderedRemoteWebElement.java",
+    "ReusingSocketSocketFactory.java",
+    "ScreenshotException.java",
+    "html5/AddApplicationCache.java",
+    "html5/AddBrowserConnection.java",
+    "html5/AddDatabaseStorage.java",
+    "html5/AddLocationContext.java",
+    "html5/AddWebStorage.java",
+    "internal/CircularOutputStream.java",
+    "internal/JsonToWebElementConverter.java",
+    "internal/OutputWatcher.java",
+    "internal/SubProcess.java",
+    "internal/WebElementToJsonConverter.java",
+  ],
+  deps = [
+    ":common",
+    "//javasrc/org/openqa/selenium/os",
+    "//third_party/java/apache-httpclient",
+    "//third_party/java/cglib",
+  ])
+
+java_library(name = "client-combined",
+  deps = [
+    ":client",
+    "//javasrc/com/thoughtworks/selenium:selenium",
+    "//javasrc/org/openqa/selenium/android",
+    "//javasrc/org/openqa/selenium/chrome",
+    "//javasrc/org/openqa/selenium/htmlunit",
+    "//javasrc/org/openqa/selenium/firefox",
+    "//javasrc/org/openqa/selenium/ie",
+    "//javasrc/org/openqa/selenium/iphone",
+    "//javasrc/org/openqa/selenium:selenium-api",
+    "//javasrc/org/openqa/selenium:selenium-backed-webdriver",
+    "//javasrc/org/openqa/selenium/support",
+    "//javasrc/org/openqa/selenium:webdriver-backed-selenium",
+  ])

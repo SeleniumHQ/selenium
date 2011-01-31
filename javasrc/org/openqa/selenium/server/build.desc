@@ -1,0 +1,64 @@
+java_library(name = "server",
+  main = "org.openqa.selenium.server.SeleniumServer",
+  deps = [
+    "//javasrc/org/openqa/selenium/chrome",
+    "//javasrc/org/openqa/selenium/firefox",
+    "//javasrc/org/openqa/selenium/htmlunit",
+    "//javasrc/org/openqa/selenium/ie",
+    "//javasrc/org/openqa/selenium/iphone",
+    ":server_lite"
+  ])
+
+java_library(name = "server-with-tests",
+  main = "org.openqa.selenium.server.SeleniumServer",
+  srcs = [
+    "SeleniumServer.java",
+  ],
+  resources = [
+    { "../../../../../selenium/src/web/tests" : "./" }
+  ],
+  deps = [
+    ":server"
+  ])
+
+# Light version of the server for drivers that don't need to depend on all other drivers.
+# We need at least one source file in here to make this build the JAR
+# TODO(simon): Only resources should be fine
+java_library(name = "server_lite",
+  main = "org.openqa.selenium.server.SeleniumServer",
+  srcs = [ "SeleniumServer.java", ],
+  resources = [
+    "customProfileDirCUSTFF",
+    "customProfileDirCUSTFFCHROME",
+    "hudsuckr",
+    "killableprocess",
+    "konqueror",
+    "opera",
+    "sslSupport",
+    "VERSION.txt",
+    "//common:js_core",
+    "//common:js_jsunit",
+    {
+      "//common:test_runner_html" : "core/TestRunner.hta",
+      "//common:remote_runner_html" : "core/RemoteRunner.hta",
+      "//common/src/js/selenium:core" : "core/scripts/atoms.js",
+      "//third_party/js/sizzle" : "core/lib/sizzle.js"
+    }
+  ],
+  deps = [
+    ":base",
+  ])
+
+java_library(name = "base",
+  srcs = [
+    "**/*.java",
+  ],
+  deps = [
+    "//javasrc/cybervillains",
+    "//javasrc/org/openqa/selenium/remote/server",
+    "//javasrc/org/openqa/selenium/net",
+    "//javasrc/org/openqa/selenium/support",
+    "//javasrc/org/openqa/jetty",
+    "//third_party/java/servlet-api"
+  ])
+

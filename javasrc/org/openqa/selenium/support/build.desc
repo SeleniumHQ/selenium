@@ -1,0 +1,23 @@
+
+java_library(name = "support",
+  deps = [
+    ":page-factory",
+    "//javasrc/org/openqa/selenium/support/events",
+    "//javasrc/org/openqa/selenium/support/ui",
+  ])
+
+java_library(name = "page-factory",
+  srcs = [
+    "ByIdOrName.java",
+    "CacheLookup.java",
+    "FindBy.java",
+    "FindBys.java",
+    "How.java",
+    "PageFactory.java",
+    "pagefactory/*.java",
+    "pagefactory/internal/*.java",
+  ],
+  deps = [
+    "//javasrc/org/openqa/selenium:webdriver-api",
+    "//javasrc/org/openqa/selenium/support/ui:components",
+  ])

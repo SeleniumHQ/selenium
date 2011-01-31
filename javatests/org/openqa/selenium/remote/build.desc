@@ -9,7 +9,7 @@ java_test(name = "common-tests",
     "RemoteCommonTestSuite.java",
   ],
   deps = [
-    "//java/org/openqa/selenium/remote:common",
+    "//javasrc/org/openqa/selenium/remote:common",
     "//javatests/org/openqa/selenium:tests",
     "//third_party/java/apache-httpclient",
     "//third_party/java/junit",
@@ -23,7 +23,7 @@ java_test(name = "client-tests",
     "internal/CircularOutputStreamTest.java",
   ],
   deps = [
-    "//java/org/openqa/selenium/remote:client",
+    "//javasrc/org/openqa/selenium/remote:client",
     "//javatests/org/openqa/selenium:tests",
     "//third_party/java/junit",  
   ])

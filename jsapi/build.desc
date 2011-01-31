@@ -5,21 +5,21 @@
 java_test(name = "test",
   srcs = [ "test/java/org/openqa/selenium/JsApiTestSuite.java" ],
   deps = [ 
-    "//java/org/openqa/selenium/firefox", 
-    "//java/org/openqa/selenium/chrome",
+    "//javasrc/org/openqa/selenium/firefox",
+    "//javasrc/org/openqa/selenium/chrome",
     "//javatests/org/openqa/selenium:tests"])
 
 java_test(name = "atoms",
   srcs = [ "test/java/org/openqa/selenium/AtomsTestSuite.java" ],
   deps = [
-    "//java/org/openqa/selenium/firefox",
+    "//javasrc/org/openqa/selenium/firefox",
     "//javatests/org/openqa/selenium:tests"])
 
 # This target is for testing the emulation of selenium core in WebDrivedBackedSelenium.
 java_test(name = "selenium_core_emulation",
   srcs = [ "test/java/org/openqa/selenium/CoreTestSuite.java" ],
   deps = [
-    "//java/org/openqa/selenium/firefox",
+    "//javasrc/org/openqa/selenium/firefox",
     "//common/src/js/selenium:core",
     "//javatests/org/openqa/selenium:tests"])
 
@@ -29,13 +29,13 @@ java_test(name = "selenium_core_emulation",
 java_test(name = "selenium_core",
           srcs = [ "test/java/org/openqa/selenium/SeleniumCoreTestSuite.java" ],
           deps = [
-            "//java/org/openqa/selenium/firefox",
+            "//javasrc/org/openqa/selenium/firefox",
             "//javatests/org/openqa/selenium:tests"])
 
 java_test(name = "webdriver_fragments",
   srcs = [ "test/java/org/openqa/selenium/WebDriverFragmentsTestSuite.java" ],
   deps = [
-    "//java/org/openqa/selenium/firefox",
+    "//javasrc/org/openqa/selenium/firefox",
     "//javatests/org/openqa/selenium:tests"])
 
 # Simply starts the Jetty6AppServer for manually testing the JS API tests.
@@ -43,7 +43,7 @@ java_test(name = "webdriver_fragments",
 # is the port the server was started on.
 java_library(name = "debug",
   deps = [ 
-    "//java/org/openqa/selenium/firefox", 
+    "//javasrc/org/openqa/selenium/firefox", 
     "//javatests/org/openqa/selenium:tests",
   ],
   main = "org.openqa.selenium.environment.webserver.Jetty7AppServer")

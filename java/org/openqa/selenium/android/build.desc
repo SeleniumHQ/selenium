@@ -1,9 +1,0 @@
-
-java_library(name = "android",
-  srcs = [
-    "AndroidDriver.java",
-  ], 
-  deps = [
-    "//java/org/openqa/selenium/remote:client",
-  ])
-

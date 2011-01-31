@@ -2,7 +2,7 @@
 java_test(name = "test",
   srcs = [ "*.java" ],
   deps = [
-    "//java/com/thoughtworks/selenium/condition",
-    "//java/com/thoughtworks/selenium:wait",
+    "//javasrc/com/thoughtworks/selenium/condition",
+    "//javasrc/com/thoughtworks/selenium:wait",
     "//third_party/java/junit",
   ])

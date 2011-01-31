@@ -1,0 +1,121 @@
+
+java_library(name = "selenium",
+  deps = [
+    ":webdriver-api",
+    "//javasrc/com/thoughtworks/selenium:api",
+    "//javasrc/org/openqa/selenium/browserlaunchers",
+    "//javasrc/org/openqa/selenium/interactions",
+    "//javasrc/org/openqa/selenium/net",
+  ])
+
+java_library(name = "base",
+  srcs = [
+    "Capabilities.java",
+    "Platform.java",
+    "WebDriverException.java",
+  ])
+
+java_library(name = "webdriver-api",
+  srcs = [
+    "Alert.java",
+    "By.java",
+    "Cookie.java",
+    "Dimension.java",
+    "ElementNotVisibleException.java",
+    "HasInputDevices.java",
+    "IllegalLocatorException.java",
+    "InvalidCookieDomainException.java",
+    "JavascriptExecutor.java",
+    "Keyboard.java",
+    "Keys.java",
+    "Mouse.java",
+    "NoAlertPresentException.java",
+    "NoSuchElementException.java",
+    "NoSuchFrameException.java",
+    "NoSuchWindowException.java",
+    "NotFoundException.java",
+    "OutputType.java",
+    "Point.java",
+    "Proxy.java",
+    "RenderedWebElement.java",
+    "Rotatable.java",
+    "ScreenOrientation.java",
+    "SearchContext.java",
+    "Speed.java",
+    "StaleElementReferenceException.java",
+    "TakesScreenshot.java",
+    "TimeoutException.java",
+    "UnableToSetCookieException.java",
+    "UnhandledAlertException.java",
+    "WebDriver.java",
+    "WebElement.java",
+    "XPathLookupException.java",
+    "html5/*.java",
+    "interactions/internal/Coordinates.java",
+    "interactions/ActionChainsGenerator.java",
+    "internal/FindsByClassName.java",
+    "internal/FindsByCssSelector.java",
+    "internal/FindsById.java",
+    "internal/FindsByLinkText.java",
+    "internal/FindsByName.java",
+    "internal/FindsByTagName.java",
+    "internal/FindsByXPath.java",
+    "internal/Locatable.java",
+    "internal/Lock.java",
+    "internal/SocketLock.java",
+    "internal/WrapsDriver.java",
+    "internal/WrapsElement.java",
+  ],
+  deps = [
+    ":base",
+    "//javasrc/org/openqa/selenium/interactions:api",
+    "//javasrc/org/openqa/selenium/internal:codecs",
+  ])
+
+# TODO(simon): Break out the selenium emulation from the v1 implementation.
+java_library(name = "selenium-api",
+  srcs = [
+    "ExplodingSupplier.java",
+    "SuppliesWebDriver.java",
+    "WebDriverCommandProcessor.java",
+    "internal/seleniumemulation/**/*.java",
+  ],
+  deps = [
+    ":webdriver-api",
+    "//javasrc/com/thoughtworks/selenium:wait",
+    "//javasrc/org/openqa/selenium/chrome",
+    "//javasrc/org/openqa/selenium/firefox",
+    "//javasrc/org/openqa/selenium/ie",
+    "//third_party/java/guava-libraries",
+    "//third_party/java/json",
+  ])
+
+# Circular dependency avoidance technique
+java_library(name = "webdriver-backed-selenium",
+  srcs = [
+    "WebDriverBackedSelenium.java",
+  ],
+  resources = [
+    { "internal/seleniumemulation/injectableSelenium.js" : "org/openqa/selenium/internal/seleniumemulation/injectableSelenium.js" },
+    { "internal/seleniumemulation/htmlutils.js" : "org/openqa/selenium/internal/seleniumemulation/htmlutils.js" },
+    { "//common/src/js/selenium:findElement" : "scripts/selenium/findElement.js" },
+    { "//common/src/js/selenium:getText" : "scripts/selenium/getText.js" },
+    { "//common/src/js/selenium:isElementPresent" : "scripts/selenium/isElementPresent.js" },
+    { "//common/src/js/selenium:isTextPresent" : "scripts/selenium/isTextPresent.js" },
+    { "//common/src/js/selenium:isVisible" : "scripts/selenium/isVisible.js" }
+  ],
+  deps = [
+    ":selenium-api",
+    "//javasrc/com/thoughtworks/selenium",
+  ])
+
+java_library(name = "selenium-backed-webdriver",
+  srcs = [
+    "SeleneseCommandExecutor.java",
+  ],
+  deps = [
+    "//javasrc/org/openqa/selenium/internal/selenesedriver",
+    "//javasrc/org/openqa/selenium/firefox",
+    "//javasrc/org/openqa/selenium/remote:client",
+  ])
+

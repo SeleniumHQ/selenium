@@ -273,7 +273,7 @@ java_jar(:name => "selenium-core",
   selenium_test(:name => "test-core-#{k}",
                 :srcs => [ "common/test/js/core/*.js" ],
                 :deps => [
-                  "//java/org/openqa/selenium/server:server:uber",
+                  "//javasrc/org/openqa/selenium/server:server:uber",
                   :"selenium-core"
                 ],
                 :browser => v )
@@ -503,9 +503,9 @@ def version
 end
 
 task :release => [
-    '//java/org/openqa/selenium/server:server:zip',
-    '//java/org/openqa/selenium/server:server:uber',
-    '//java/org/openqa/selenium/remote:client-combined:zip'
+    '//javasrc/org/openqa/selenium/server:server:zip',
+    '//javasrc/org/openqa/selenium/server:server:uber',
+    '//javasrc/org/openqa/selenium/remote:client-combined:zip'
   ] do |t|
   # Unzip each of the deps and rename the pieces that need renaming
   renames = {
@@ -547,10 +547,10 @@ task :release => [
 end
 
 desc 'Build the selenium client jars'
-task 'selenium-java' => '//java/org/openqa/selenium/remote:client-combined:project'
+task 'selenium-java' => '//javasrc/org/openqa/selenium/remote:client-combined:project'
 
 desc 'Build the standalone server'
-task 'selenium-server-standalone' => '//java/org/openqa/selenium/server:server:uber'
+task 'selenium-server-standalone' => '//javasrc/org/openqa/selenium/server:server:uber'
 
 desc 'Build and package Selenium IDE'
 task :release_ide  => [:ide] do
