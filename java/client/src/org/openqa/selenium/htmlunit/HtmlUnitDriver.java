@@ -164,6 +164,16 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
     setJavascriptEnabled(enableJavascript);
   }
 
+  /**
+   * Note: There are two configuration modes for the HtmlUnitDriver using this
+   * constructor. The first is where the browserName is "firefox",
+   * "internet explorer" and browserVersion denotes the desired version.
+   * The second one is where the browserName is "htmlunit" and the
+   * browserVersion denotes the required browser AND its version. In this
+   * mode the browserVersion could either be "firefox" for Firefox or
+   * "internet explorer-7" for IE 7. The Remote WebDriver uses the second mode
+   * - the first mode is deprecated and should not be used.
+   */
   public HtmlUnitDriver(Capabilities capabilities) {
     this(determineBrowserVersion(capabilities));
 
@@ -185,15 +195,35 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
     }
   }
 
-  private static BrowserVersion determineBrowserVersion(Capabilities capabilities) {
-    String browserName = capabilities.getBrowserName();
+  // Package visibility for testing
+  static BrowserVersion determineBrowserVersion(Capabilities capabilities) {
+    String browserName = null;
+    String browserVersion = null;
+
+    String[] splitVersion = capabilities.getVersion().split("-");
+    if (splitVersion.length > 1) {
+      browserVersion = splitVersion[1];
+      browserName = splitVersion[0];
+    } else {
+      browserName = capabilities.getVersion();
+      browserVersion = "";
+    }
+
+    // This is for backwards compatibility - in case there are users who are trying to
+    // configure the HtmlUnitDriver by using the c'tor with capabilities.
+    if (! capabilities.getBrowserName().equals("htmlunit")) {
+      browserName = capabilities.getBrowserName();
+      browserVersion = capabilities.getVersion();
+    }
+
     if ("firefox".equals(browserName)) {
       return BrowserVersion.FIREFOX_3;
     }
+    
     if ("internet explorer".equals(browserName)) {
       // Try and convert the version
       try {
-        int version = Integer.parseInt(capabilities.getVersion());
+        int version = Integer.parseInt(browserVersion);
         switch (version) {
           case 6:
             return BrowserVersion.INTERNET_EXPLORER_6;
@@ -201,11 +231,14 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
             return BrowserVersion.INTERNET_EXPLORER_7;
           case 8:
             return BrowserVersion.INTERNET_EXPLORER_8;
+          default:
+            return BrowserVersion.INTERNET_EXPLORER_8;
         }
       } catch (NumberFormatException e) {
         return BrowserVersion.INTERNET_EXPLORER_8;
       }
     }
+
     return BrowserVersion.getDefault();
   }
 
