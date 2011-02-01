@@ -69,7 +69,7 @@ java_library(name = "remote",
 
 java_library(name = "client-combined",
   deps = [
-    ":client",
+    ":remote",
     "//java/client/src/com/thoughtworks/selenium:selenium",
     "//java/client/src/org/openqa/selenium/android",
     "//java/client/src/org/openqa/selenium/chrome",
