@@ -4,8 +4,10 @@
 
 namespace webdriver {
 
-ScriptWrapper::ScriptWrapper(BrowserWrapper *browser, std::wstring script, unsigned long argument_count) {
-	this->browser_ = browser;
+// ScriptWrapper::ScriptWrapper(BrowserWrapper *browser, std::wstring script, unsigned long argument_count) {
+ScriptWrapper::ScriptWrapper(IHTMLDocument2 *document, std::wstring script, unsigned long argument_count) {
+	// this->browser_ = browser;
+	this->script_engine_host_ = document;
 	this->script_ = script;
 	this->argument_count_ = argument_count;
 	this->current_arg_index_ = 0;
@@ -121,7 +123,8 @@ bool ScriptWrapper::ResultIsArray() {
 	// property defined will be seen as arrays instead of objects.
 	if (type_name == L"JScriptTypeInfo") {
 		const std::wstring script = L"(function() { return function(){ return arguments[0] && arguments[0].hasOwnProperty('length') && typeof arguments[0] === 'object' && typeof arguments[0].length === 'number';};})();";
-		ScriptWrapper *is_array_wrapper = new ScriptWrapper(this->browser_, script, 1);
+		// ScriptWrapper *is_array_wrapper = new ScriptWrapper(this->browser_, script, 1);
+		ScriptWrapper *is_array_wrapper = new ScriptWrapper(this->script_engine_host_, script, 1);
 		is_array_wrapper->AddArgument(this->result_);
 		is_array_wrapper->Execute();
 		return is_array_wrapper->result().boolVal == VARIANT_TRUE;
@@ -141,15 +144,15 @@ bool ScriptWrapper::ResultIsObject() {
 int ScriptWrapper::Execute() {
 	VARIANT result;
 
-	CComPtr<IHTMLDocument2> doc;
-	this->browser_->GetDocument(&doc);
-	if (!doc) {
-		// LOG(WARN) << "Unable to get document reference";
-		return EUNEXPECTEDJSERROR;
-	}
+	//CComPtr<IHTMLDocument2> doc;
+	//this->browser_->GetDocument(&doc);
+	//if (!doc) {
+	//	// LOG(WARN) << "Unable to get document reference";
+	//	return EUNEXPECTEDJSERROR;
+	//}
 
 	CComPtr<IDispatch> script_engine;
-	HRESULT hr = doc->get_Script(&script_engine);
+	HRESULT hr = this->script_engine_host_->get_Script(&script_engine);
 	if (FAILED(hr)) {
 		// LOGHR(WARN, hr) << "Cannot obtain script engine";
 		return EUNEXPECTEDJSERROR;
@@ -157,12 +160,14 @@ int ScriptWrapper::Execute() {
 
 	DISPID eval_id;
 	bool added;
-	bool ok = this->GetEvalMethod(doc, &eval_id, &added);
+	//bool ok = this->GetEvalMethod(doc, &eval_id, &added);
+	bool ok = this->GetEvalMethod(this->script_engine_host_, &eval_id, &added);
 
 	if (!ok) {
 		// LOG(WARN) << "Unable to locate eval method";
 		if (added) { 
-			this->RemoveScript(doc); 
+			// this->RemoveScript(doc); 
+			this->RemoveScript(this->script_engine_host_); 
 		}
 		return EUNEXPECTEDJSERROR;
 	}
@@ -173,7 +178,8 @@ int ScriptWrapper::Execute() {
 		// a page refresh has occured. *sigh*
 		//LOG(DEBUG) << "Cannot create anonymous function: " << _bstr_t(script) << endl;
 		if (added) { 
-			this->RemoveScript(doc); 
+			// this->RemoveScript(doc); 
+			this->RemoveScript(this->script_engine_host_); 
 		}
 		return EUNEXPECTEDJSERROR;
 	}
@@ -183,7 +189,8 @@ int ScriptWrapper::Execute() {
 		::VariantClear(&result);
 		result.vt = VT_EMPTY;
 		if (added) { 
-			this->RemoveScript(doc); 
+			//this->RemoveScript(doc); 
+			this->RemoveScript(this->script_engine_host_); 
 		}
 		return SUCCESS;
 	}
@@ -194,7 +201,8 @@ int ScriptWrapper::Execute() {
 	hr = temp_function.pdispVal->GetIDsOfNames(IID_NULL, &call_member_name, 1, LOCALE_USER_DEFAULT, &call_member_id);
 	if (FAILED(hr)) {
 		if (added) { 
-			this->RemoveScript(doc); 
+			//this->RemoveScript(doc); 
+			this->RemoveScript(this->script_engine_host_); 
 		}
 		//LOGHR(DEBUG, hr) << "Cannot locate call method on anonymous function: " << _bstr_t(script) << endl;
 		return EUNEXPECTEDJSERROR;
@@ -211,10 +219,12 @@ int ScriptWrapper::Execute() {
 	call_parameters.cArgs = nargs + 1;
 
 	CComPtr<IHTMLWindow2> win;
-	hr = doc->get_parentWindow(&win);
+	//hr = doc->get_parentWindow(&win);
+	hr = this->script_engine_host_->get_parentWindow(&win);
 	if (FAILED(hr)) {
 		if (added) { 
-			this->RemoveScript(doc); 
+			//this->RemoveScript(doc); 
+			this->RemoveScript(this->script_engine_host_); 
 		}
 		//LOGHR(WARN, hr) << "Cannot get parent window";
 		return EUNEXPECTEDJSERROR;
@@ -244,7 +254,8 @@ int ScriptWrapper::Execute() {
 		} else {
 			//LOGHR(DEBUG, hr) << "Failed to execute: " << _bstr_t(script);
 			if (added) { 
-				this->RemoveScript(doc); 
+				// this->RemoveScript(doc); 
+				this->RemoveScript(this->script_engine_host_); 
 			}
 			return EUNEXPECTEDJSERROR;
 		}
@@ -271,7 +282,8 @@ int ScriptWrapper::Execute() {
 	this->result_ = result;
 
 	if (added) { 
-		this->RemoveScript(doc); 
+		//this->RemoveScript(doc); 
+		this->RemoveScript(this->script_engine_host_); 
 	}
 
 	delete[] vargs;
@@ -365,7 +377,7 @@ std::wstring ScriptWrapper::GetResultObjectTypeName() {
 int ScriptWrapper::GetPropertyNameList(std::wstring *property_names) {
 	// Loop through the properties, appending the name of each one to the string.
 	std::wstring get_names_script(L"(function(){return function() { var name_list = ''; for (var name in arguments[0]) { if (name_list.length > 0) name_list+= ','; name_list += name } return name_list;}})();");
-	ScriptWrapper *get_names_script_wrapper = new ScriptWrapper(this->browser_, get_names_script, 1);
+	ScriptWrapper *get_names_script_wrapper = new ScriptWrapper(this->script_engine_host_, get_names_script, 1);
 	get_names_script_wrapper->AddArgument(this->result_);
 	int get_names_result = get_names_script_wrapper->Execute();
 
@@ -386,7 +398,7 @@ int ScriptWrapper::GetPropertyNameList(std::wstring *property_names) {
 
 int ScriptWrapper::GetPropertyValue(BrowserManager *manager, std::wstring property_name, Json::Value *property_value){
 	std::wstring get_value_script(L"(function(){return function() {return arguments[0][arguments[1]];}})();"); 
-	ScriptWrapper *get_value_script_wrapper = new ScriptWrapper(this->browser_, get_value_script, 2);
+	ScriptWrapper *get_value_script_wrapper = new ScriptWrapper(this->script_engine_host_, get_value_script, 2);
 	get_value_script_wrapper->AddArgument(this->result_);
 	get_value_script_wrapper->AddArgument(property_name);
 	int get_value_result = get_value_script_wrapper->Execute();
@@ -403,7 +415,7 @@ int ScriptWrapper::GetArrayLength(long *length) {
 	// Prepare an array for the Javascript execution, containing only one
 	// element - the original returned array from a JS execution.
 	std::wstring get_length_script(L"(function(){return function() {return arguments[0].length;}})();");
-	ScriptWrapper *get_length_script_wrapper = new ScriptWrapper(this->browser_, get_length_script, 1);
+	ScriptWrapper *get_length_script_wrapper = new ScriptWrapper(this->script_engine_host_, get_length_script, 1);
 	get_length_script_wrapper->AddArgument(this->result_);
 	int length_result = get_length_script_wrapper->Execute();
 
@@ -424,7 +436,7 @@ int ScriptWrapper::GetArrayLength(long *length) {
 
 int ScriptWrapper::GetArrayItem(BrowserManager *manager, long index, Json::Value *item){
 	std::wstring get_array_item_script(L"(function(){return function() {return arguments[0][arguments[1]];}})();"); 
-	ScriptWrapper *get_array_item_script_wrapper = new ScriptWrapper(this->browser_, get_array_item_script, 2);
+	ScriptWrapper *get_array_item_script_wrapper = new ScriptWrapper(this->script_engine_host_, get_array_item_script, 2);
 	get_array_item_script_wrapper->AddArgument(this->result_);
 	get_array_item_script_wrapper->AddArgument(index);
 	int get_item_result = get_array_item_script_wrapper->Execute();

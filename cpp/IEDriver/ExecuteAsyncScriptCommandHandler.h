@@ -87,7 +87,9 @@ protected:
 				return;
 			}
 
-			ScriptWrapper *async_script_wrapper = new ScriptWrapper(browser_wrapper, async_script, json_args.size());
+			CComPtr<IHTMLDocument2> doc;
+			browser_wrapper->GetDocument(&doc);
+			ScriptWrapper *async_script_wrapper = new ScriptWrapper(doc, async_script, json_args.size());
 			status_code = this->PopulateArgumentArray(manager, async_script_wrapper, json_args);
 			if (status_code != SUCCESS) {
 				response->SetErrorResponse(status_code, "Error setting arguments for script");
@@ -100,7 +102,7 @@ protected:
 				response->SetErrorResponse(status_code, "JavaScript error in async script.");
 				return;
 			} else {
-				ScriptWrapper *polling_script_wrapper = new ScriptWrapper(browser_wrapper, polling_script, 0);
+				ScriptWrapper *polling_script_wrapper = new ScriptWrapper(doc, polling_script, 0);
 				while (true) {
 					Json::Value polling_result;
 					status_code = polling_script_wrapper->Execute();

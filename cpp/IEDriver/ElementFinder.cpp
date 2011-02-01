@@ -16,7 +16,9 @@ int ElementFinder::FindElement(BrowserManager *manager, ElementWrapper *parent_w
 	int status_code = manager->GetCurrentBrowser(&browser);
 	if (status_code == SUCCESS) {
 		std::wstring criteria_object_script = L"(function() { return function(){ return  { " + this->locator_ + L" : \"" + criteria + L"\" }; };})();";
-		ScriptWrapper *criteria_wrapper = new ScriptWrapper(browser, criteria_object_script, 0);
+		CComPtr<IHTMLDocument2> doc;
+		browser->GetDocument(&doc);
+		ScriptWrapper *criteria_wrapper = new ScriptWrapper(doc, criteria_object_script, 0);
 		status_code = criteria_wrapper->Execute();
 		if (status_code == SUCCESS) {
 			CComVariant criteria_object;
@@ -35,7 +37,7 @@ int ElementFinder::FindElement(BrowserManager *manager, ElementWrapper *parent_w
 			// Now for the magic and to close things
 			script += L")})();";
 
-			ScriptWrapper *script_wrapper = new ScriptWrapper(browser, script, 2);
+			ScriptWrapper *script_wrapper = new ScriptWrapper(doc, script, 2);
 			script_wrapper->AddArgument(criteria_object);
 			if (parent_wrapper) {
 				script_wrapper->AddArgument(parent_wrapper->element());
@@ -61,7 +63,9 @@ int ElementFinder::FindElements(BrowserManager *manager, ElementWrapper *parent_
 	int status_code = manager->GetCurrentBrowser(&browser);
 	if (status_code == SUCCESS) {
 		std::wstring criteria_object_script = L"(function() { return function(){ return  { " + this->locator_ + L" : \"" + criteria + L"\" }; };})();";
-		ScriptWrapper *criteria_wrapper = new ScriptWrapper(browser, criteria_object_script, 0);
+		CComPtr<IHTMLDocument2> doc;
+		browser->GetDocument(&doc);
+		ScriptWrapper *criteria_wrapper = new ScriptWrapper(doc, criteria_object_script, 0);
 		status_code = criteria_wrapper->Execute();
 		if (status_code == SUCCESS) {
 			CComVariant criteria_object;
@@ -80,7 +84,7 @@ int ElementFinder::FindElements(BrowserManager *manager, ElementWrapper *parent_
 			// Now for the magic and to close things
 			script += L")})();";
 
-			ScriptWrapper *script_wrapper = new ScriptWrapper(browser, script, 2);
+			ScriptWrapper *script_wrapper = new ScriptWrapper(doc, script, 2);
 			script_wrapper->AddArgument(criteria_object);
 			if (parent_wrapper) {
 				script_wrapper->AddArgument(parent_wrapper->element());

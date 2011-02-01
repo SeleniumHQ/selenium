@@ -34,7 +34,9 @@ public:
 		script += L"return results.length > 0 ? results[0] : null;";
 		script += L"};})();";
 
-		ScriptWrapper *script_wrapper = new ScriptWrapper(browser, script, 2);
+		CComPtr<IHTMLDocument2> doc;
+		browser->GetDocument(&doc);
+		ScriptWrapper *script_wrapper = new ScriptWrapper(doc, script, 2);
 		script_wrapper->AddArgument(criteria);
 		if (parent_wrapper) {
 			CComPtr<IHTMLElement> parent(parent_wrapper->element());
@@ -76,7 +78,9 @@ public:
 		script += L"return results;";
 		script += L"};})();";
 
-		ScriptWrapper *script_wrapper = new ScriptWrapper(browser, script, 2);
+		CComPtr<IHTMLDocument2> doc;
+		browser->GetDocument(&doc);
+		ScriptWrapper *script_wrapper = new ScriptWrapper(doc, script, 2);
 		script_wrapper->AddArgument(criteria);
 		if (parent_wrapper) {
 			// Use a copy for the parent element?
@@ -90,7 +94,7 @@ public:
 		CComVariant snapshot = script_wrapper->result();
 
 		std::wstring get_element_count_script = L"(function(){return function() {return arguments[0].length;}})();";
-		ScriptWrapper *get_element_count_script_wrapper = new ScriptWrapper(browser, get_element_count_script, 1);
+		ScriptWrapper *get_element_count_script_wrapper = new ScriptWrapper(doc, get_element_count_script, 1);
 		get_element_count_script_wrapper->AddArgument(snapshot);
 		result = get_element_count_script_wrapper->Execute();
 		if (result == SUCCESS) {
@@ -100,7 +104,7 @@ public:
 				long length = get_element_count_script_wrapper->result().lVal;
 				std::wstring get_next_element_script = L"(function(){return function() {return arguments[0][arguments[1]];}})();";
 				for (long i = 0; i < length; ++i) {
-					ScriptWrapper *get_element_script_wrapper = new	ScriptWrapper(browser, get_next_element_script, 2);
+					ScriptWrapper *get_element_script_wrapper = new ScriptWrapper(doc, get_next_element_script, 2);
 					get_element_script_wrapper->AddArgument(snapshot);
 					get_element_script_wrapper->AddArgument(i);
 					result = get_element_script_wrapper->Execute();

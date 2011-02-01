@@ -51,7 +51,9 @@ int ElementWrapper::IsDisplayed(bool *result) {
 	// Now for the magic and to close things
 	script += L")})();";
 
-	ScriptWrapper *script_wrapper = new ScriptWrapper(this->browser_, script, 1);
+	CComPtr<IHTMLDocument2> doc;
+	this->browser_->GetDocument(&doc);
+	ScriptWrapper *script_wrapper = new ScriptWrapper(doc, script, 1);
 	script_wrapper->AddArgument(this->element_);
 	status_code = script_wrapper->Execute();
 
@@ -80,9 +82,10 @@ bool ElementWrapper::IsEnabled() {
 	// Now for the magic and to close things
 	script += L")})();";
 
-	ScriptWrapper *script_wrapper = new ScriptWrapper(this->browser_, script, 1);
+	CComPtr<IHTMLDocument2> doc;
+	this->browser_->GetDocument(&doc);
+	ScriptWrapper *script_wrapper = new ScriptWrapper(doc, script, 1);
 	script_wrapper->AddArgument(this->element_);
-	//int status_code = this->browser_->ExecuteScript(script_wrapper);
 	int status_code = script_wrapper->Execute();
 
 	if (status_code == SUCCESS) {
@@ -167,7 +170,9 @@ int ElementWrapper::GetAttributeValue(std::wstring attribute_name, VARIANT *attr
 	// Now for the magic and to close things
 	script += L")})();";
 
-	ScriptWrapper *script_wrapper = new ScriptWrapper(this->browser_, script, 2);
+	CComPtr<IHTMLDocument2> doc;
+	this->browser_->GetDocument(&doc);
+	ScriptWrapper *script_wrapper = new ScriptWrapper(doc, script, 2);
 	script_wrapper->AddArgument(this->element_);
 	script_wrapper->AddArgument(attribute_name);
 	status_code = script_wrapper->Execute();
@@ -205,10 +210,9 @@ int ElementWrapper::GetLocationOnceScrolledIntoView(long *x, long *y, long *widt
     }
 
 	HWND containing_window_handle(this->browser_->GetWindowHandle());
-
-	long top, left, bottom, right = 0;
-	result = this->GetLocation(containing_window_handle, &left, &right, &top, &bottom);
-	if (result != SUCCESS) {
+	long top = 0, left = 0, element_width = 0, element_height = 0;
+	result = this->GetLocation(&left, &top, &element_width, &element_height);
+	if (result != SUCCESS || !this->IsClickPointInViewPort(containing_window_handle, left, top, element_width, element_height)) {
 		// Scroll the element into view
 		//LOG(DEBUG) << "Will need to scroll element into view";
 		HRESULT hr = this->element_->scrollIntoView(CComVariant(VARIANT_TRUE));
@@ -217,186 +221,22 @@ int ElementWrapper::GetLocationOnceScrolledIntoView(long *x, long *y, long *widt
 			return EOBSOLETEELEMENT;
 		}
 
-		result = this->GetLocation(containing_window_handle, &left, &right, &top, &bottom);
+		result = this->GetLocation(&left, &top, &element_width, &element_height);
+		if (result != SUCCESS) {
+			return result;
+		}
+
+		if (!this->IsClickPointInViewPort(containing_window_handle, left, top, element_width, element_height)) {
+			return EELEMENTNOTDISPLAYED;
+		}
 	}
 
-	if (result != SUCCESS) {
-		return result;
-	}
+	//LOG(DEBUG) << "(x, y, w, h): " << left << ", " << top << ", " << element_width << ", " << element_height << endl;
 
-	long element_width = right - left;
-	long element_height = bottom - top;
-
-    long click_x = left;
-	long click_y = top;
-
-	//LOG(DEBUG) << "(x, y, w, h): " << clickX << ", " << clickY << ", " << elementWidth << ", " << elementHeight << endl;
-
-    if (element_height == 0 || element_width == 0)  {
-        //LOG(DEBUG) << "Element would not be visible because it lacks height and/or width.";
-        return EELEMENTNOTDISPLAYED;
-    }
-
-	// This is a little funky.
-	//if (ieRelease > 7)
-	//{
-	//	clickX += 2;
-	//	clickY += 2;
-	//}
-
-	*x = click_x;
-	*y = click_y;
+	*x = left;
+	*y = top;
 	*width = element_width;
 	*height = element_height;
-
-
-    CComPtr<IDispatch> owner_doc_dispatch;
-    hr = node->get_ownerDocument(&owner_doc_dispatch);
-	if (FAILED(hr)) {
-		//LOG(WARN) << "Unable to locate owning document";
-		return ENOSUCHDOCUMENT;
-	}
-    CComQIPtr<IHTMLDocument3> owner_doc(owner_doc_dispatch);
-	if (!owner_doc) {
-		//LOG(WARN) << "Found document but it's not the expected type";
-		return ENOSUCHDOCUMENT;
-	}
-
-    CComPtr<IHTMLElement> doc_element;
-    hr = owner_doc->get_documentElement(&doc_element);
-	if (FAILED(hr)) {
-		//LOG(WARN) << "Unable to locate document element";
-		return ENOSUCHDOCUMENT;
-	}
-
-    CComQIPtr<IHTMLElement2> e2(doc_element);
-    if (!e2) {
-        //LOG(WARN) << "Unable to get underlying html element from the document";
-        return EUNHANDLEDERROR;
-    }
-
-    CComQIPtr<IHTMLDocument2> doc2(owner_doc);
-	if (!doc2) {
-		//LOG(WARN) << "Have the owning document, but unable to process";
-		return ENOSUCHDOCUMENT;
-	}
-
-    long client_left, client_top;
-    e2->get_clientLeft(&client_left);
-    e2->get_clientTop(&client_top);
-
-    click_x += client_left;
-    click_y += client_top;
-
-    // We now know the location of the element within its frame.
-    // Where is the frame in relation to the HWND, though?
-    // The ieWindow is the ultimate container, without chrome,
-    // so if we know its location, we can subtract the screenLeft and screenTop
-    // of the window.
-
-    WINDOWINFO win_info;
-    GetWindowInfo(containing_window_handle, &win_info);
-    click_x -= win_info.rcWindow.left;
-    click_y -= win_info.rcWindow.top;
-
-    CComPtr<IHTMLWindow2> win2;
-    hr = doc2->get_parentWindow(&win2);
-	if (FAILED(hr)) {
-		//LOG(WARN) << "Cannot obtain parent window";
-		return ENOSUCHWINDOW;
-	}
-    CComQIPtr<IHTMLWindow3> win3(win2);
-	if (!win3) {
-		//LOG(WARN) << "Can't obtain parent window";
-		return ENOSUCHWINDOW;
-	}
-    long screen_left, screen_top;
-    hr = win3->get_screenLeft(&screen_left);
-	if (FAILED(hr)) {
-		//LOG(WARN) << "Unable to determine left corner of window";
-		return ENOSUCHWINDOW;
-	}
-    hr = win3->get_screenTop(&screen_top);
-	if (FAILED(hr)) {
-		//LOG(WARN) << "Unable to determine top edge of window";
-		return ENOSUCHWINDOW;
-	}
-
-    click_x += screen_left;
-    click_y += screen_top;
-
-    *x = click_x;
-    *y = click_y;
-	return SUCCESS;
-}
-
-int ElementWrapper::GetLocation(HWND containing_window_handle, long* left, long* right, long* top, long* bottom) {
-	*top, *left, *bottom, *right = 0;
-
-	//wait(100);
-
-	// getBoundingClientRect. Note, the docs talk about this possibly being off by 2,2
-    // and Jon Resig mentions some problems too. For now, we'll hope for the best
-    // http://ejohn.org/blog/getboundingclientrect-is-awesome/
-
-    CComPtr<IHTMLElement2> element2;
-	HRESULT hr = this->element_->QueryInterface(&element2);
-	if (FAILED(hr)) {
-		//LOGHR(WARN, hr) << "Unable to cast element to correct type";
-		return EOBSOLETEELEMENT;
-	}
-
-    CComPtr<IHTMLRect> rect;
-	hr = element2->getBoundingClientRect(&rect);
-    if (FAILED(hr)) {
-		//LOGHR(WARN, hr) << "Cannot figure out where the element is on screen";
-		return EUNHANDLEDERROR;
-    }
-
-	long t, b, l, r = 0;
-
-    rect->get_top(&t);
-    rect->get_left(&l);
-	rect->get_bottom(&b);
-    rect->get_right(&r);
-
-	// On versions of IE prior to 8 on Vista, if the element is out of the 
-	// viewport this would seem to return 0,0,0,0. IE 8 returns position in 
-	// the DOM regardless of whether it's in the browser viewport.
-
-	// Handle the easy case first: does the element have size
-	long w = r - l;
-	long h = b - t;
-	if (w < 0 || h < 0) { return EELEMENTNOTDISPLAYED; }
-
-	// The element has a location, but is it in the viewport?
-	// Turns out that the dimensions given (at least on IE 8 on vista)
-	// are relative to the view port so get the dimensions of the window
-	WINDOWINFO win_info;
-	if (!::GetWindowInfo(containing_window_handle, &win_info)) {
-		//LOG(WARN) << "Cannot determine size of window";
-		return EELEMENTNOTDISPLAYED;
-	}
-    long win_width = win_info.rcClient.right - win_info.rcClient.left;
-    long win_height = win_info.rcClient.bottom - win_info.rcClient.top;
-
-	// Hurrah! Now we know what the visible area of the viewport is
-	// Is the element visible in the X axis?
-	if (l < 0 || l > win_width) {
-		return EELEMENTNOTDISPLAYED;
-	}
-
-	// And in the Y?
-	if (t < 0 || t > win_height) {
-		return EELEMENTNOTDISPLAYED;
-	}
-
-	// TODO(simon): we should clip the size returned to the viewport
-	*left = l;
-	*right = r;
-	*top = t;
-	*bottom = b;
-
 	return SUCCESS;
 }
 
@@ -415,7 +255,9 @@ bool ElementWrapper::IsSelected() {
 	// Now for the magic and to close things
 	script += L")})();";
 
-	ScriptWrapper *script_wrapper = new ScriptWrapper(this->browser_, script, 1);
+	CComPtr<IHTMLDocument2> doc;
+	this->browser_->GetDocument(&doc);
+	ScriptWrapper *script_wrapper = new ScriptWrapper(doc, script, 1);
 	script_wrapper->AddArgument(this->element_);
 	int status_code = script_wrapper->Execute();
 
@@ -466,6 +308,165 @@ void ElementWrapper::FireEvent(IHTMLDOMNode* fire_event_on, LPCWSTR event_name) 
 
 	CComQIPtr<IHTMLElement3> element3(fire_event_on);
 	element3->fireEvent(on_change, &eventref, &cancellable);
+}
+
+int ElementWrapper::GetLocation(long *x, long *y, long *width, long *height) {
+	*x = 0, *y = 0, *width = 0, *height = 0;
+
+	CComPtr<IHTMLElement2> element2;
+	HRESULT hr = this->element_->QueryInterface(&element2);
+	if (FAILED(hr)) {
+		//LOGHR(WARN, hr) << "Unable to cast element to correct type";
+		return EOBSOLETEELEMENT;
+	}
+
+    CComPtr<IHTMLRect> rect;
+	hr = element2->getBoundingClientRect(&rect);
+    if (FAILED(hr)) {
+		//LOGHR(WARN, hr) << "Cannot figure out where the element is on screen";
+		return EUNHANDLEDERROR;
+    }
+
+	long top = 0, bottom = 0, left = 0, right = 0;
+
+    rect->get_top(&top);
+    rect->get_left(&left);
+	rect->get_bottom(&bottom);
+    rect->get_right(&right);
+
+	// On versions of IE prior to 8 on Vista, if the element is out of the 
+	// viewport this would seem to return 0,0,0,0. IE 8 returns position in 
+	// the DOM regardless of whether it's in the browser viewport.
+
+	// Handle the easy case first: does the element have size
+	long w = right - left;
+	long h = bottom - top;
+	if (w <= 0 || h <= 0) { return EELEMENTNOTDISPLAYED; }
+
+	long scroll_left, scroll_top = 0;
+	element2->get_scrollLeft(&scroll_left);
+	element2->get_scrollTop(&scroll_top);
+	left += scroll_left;
+	top += scroll_top;
+
+	long frame_offset_x = 0, frame_offset_y = 0;
+	this->GetFrameOffset(&frame_offset_x, &frame_offset_y);
+	left += frame_offset_x;
+	top += frame_offset_y;
+
+	*x = left;
+	*y = top;
+	*width = w;
+	*height = h;
+
+	return SUCCESS;
+}
+
+int ElementWrapper::GetFrameOffset(long *x, long *y) {
+    CComPtr<IHTMLDOMNode2> node;
+	HRESULT hr = this->element_->QueryInterface(&node);
+
+    CComPtr<IDispatch> owner_doc_dispatch;
+    hr = node->get_ownerDocument(&owner_doc_dispatch);
+	if (FAILED(hr)) {
+		//LOG(WARN) << "Unable to locate owning document";
+		return ENOSUCHDOCUMENT;
+	}
+
+    CComQIPtr<IHTMLDocument2> owner_doc(owner_doc_dispatch);
+	if (!owner_doc) {
+		//LOG(WARN) << "Found document but it's not the expected type";
+		return ENOSUCHDOCUMENT;
+	}
+
+	CComPtr<IHTMLWindow2> owner_doc_window;
+	hr = owner_doc->get_parentWindow(&owner_doc_window);
+	if (!owner_doc_window) {
+		//LOG(WARN) << "Unable to get parent window";
+		return ENOSUCHDOCUMENT;
+	}
+
+	CComPtr<IHTMLWindow2> parent_window;
+	hr = owner_doc_window->get_parent(&parent_window);
+	if (parent_window && !owner_doc_window.IsEqualObject(parent_window)) {
+		CComPtr<IHTMLDocument2> parent_doc;
+		hr = parent_window->get_document(&parent_doc);
+
+		CComPtr<IHTMLFramesCollection2> frames;
+		hr = parent_doc->get_frames(&frames);
+
+		long frame_count(0);
+		hr = frames->get_length(&frame_count);
+		CComVariant index;
+		index.vt = VT_I4;
+		for (long i = 0; i < frame_count; ++i) {
+			// See if the document in each frame is this element's 
+			// owner document.
+			index.lVal = i;
+			CComVariant result;
+			hr = frames->item(&index, &result);
+			CComQIPtr<IHTMLWindow2> frame_window(result.pdispVal);
+			if (!frame_window) {
+				// Frame is not an HTML frame.
+				continue;
+			}
+
+			CComPtr<IHTMLDocument2> frame_doc;
+			hr = frame_window->get_document(&frame_doc);
+
+			if (frame_doc.IsEqualObject(owner_doc)) {
+				// The document in this frame *is* this element's owner
+				// document. Get the frameElement property of the document's
+				// containing window (which is itself an HTML element, either
+				// a frame or an iframe). Then get the x and y coordinates of
+				// that frame element.
+				std::wstring script = L"(function(){ return function() { return arguments[0].frameElement };})();";
+				ScriptWrapper *script_wrapper = new ScriptWrapper(frame_doc, script, 1);
+				CComVariant window_variant(frame_window);
+				script_wrapper->AddArgument(window_variant);
+				script_wrapper->Execute();
+				CComQIPtr<IHTMLElement> frame_element(script_wrapper->result().pdispVal);
+				delete script_wrapper;
+
+				// Wrap the element so we can find its location.
+				ElementWrapper *element_wrapper = new ElementWrapper(frame_element, this->browser_);
+				long frame_x, frame_y, frame_width, frame_height;
+				int result = element_wrapper->GetLocation(&frame_x, &frame_y, &frame_width, &frame_height);
+				if (result == SUCCESS) {
+					*x = frame_x;
+					*y = frame_y;
+				}
+				break;
+			}
+		}
+	}
+	return SUCCESS;
+}
+
+bool ElementWrapper::IsClickPointInViewPort(HWND containing_window_handle, long x, long y, long width, long height) {
+	long click_x = x + (width / 2);
+	long click_y = y + (height / 2);
+
+	WINDOWINFO window_info;
+	if (!::GetWindowInfo(containing_window_handle, &window_info)) {
+		//LOG(WARN) << "Cannot determine size of window";
+		return false;
+	}
+
+    long window_width = window_info.rcClient.right - window_info.rcClient.left;
+    long window_height = window_info.rcClient.bottom - window_info.rcClient.top;
+
+	// Hurrah! Now we know what the visible area of the viewport is
+	// Is the element visible in the X axis?
+	if (click_x < 0 || click_x > window_width) {
+		return false;
+	}
+
+	// And in the Y?
+	if (click_y < 0 || click_y > window_height) {
+		return false;
+	}
+	return true;
 }
 
 } // namespace webdriver

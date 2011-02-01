@@ -97,6 +97,7 @@ private:
 	void DetachEvents(void);
 	bool IsDocumentNavigating(IHTMLDocument2 *doc);
 	bool IsHtmlPage(IHTMLDocument2 *doc);
+	bool GetDocumentFromWindow(IHTMLWindow2 *window, IHTMLDocument2 **doc);
 
 	CComPtr<IHTMLWindow2> focused_frame_window_;
 	CComPtr<IWebBrowser2> browser_;

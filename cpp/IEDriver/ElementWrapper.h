@@ -31,7 +31,9 @@ public:
 	IHTMLElement *element(void) { return this->element_; }
 
 private:
-	int GetLocation(HWND containing_window_handle, long* left, long* right, long* top, long* bottom);
+	int GetLocation(long *x, long *y, long *width, long *height);
+	bool IsClickPointInViewPort(HWND containing_window_handle, long x, long y, long width, long height);
+	int GetFrameOffset(long *x, long *y);
 
 	std::wstring element_id_;
 	IHTMLElement *element_;

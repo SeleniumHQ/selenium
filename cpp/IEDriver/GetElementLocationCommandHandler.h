@@ -45,14 +45,16 @@ protected:
 				// Now for the magic and to close things
 				script += L")})();";
 
-				ScriptWrapper *script_wrapper = new ScriptWrapper(browser_wrapper, script, 1);
+				CComPtr<IHTMLDocument2> doc;
+				browser_wrapper->GetDocument(&doc);
+				ScriptWrapper *script_wrapper = new ScriptWrapper(doc, script, 1);
 				script_wrapper->AddArgument(element_wrapper);
 				int status_code = script_wrapper->Execute();
 
 				// TODO (JimEvans): Find a way to collapse this and the atom
 				// call into a single JS function.
 				std::wstring location_script(L"(function() { return function(){ return [arguments[0].x, arguments[0].y];};})();");
-				ScriptWrapper *location_script_wrapper = new ScriptWrapper(browser_wrapper, location_script, 1);
+				ScriptWrapper *location_script_wrapper = new ScriptWrapper(doc, location_script, 1);
 				location_script_wrapper->AddArgument(script_wrapper->result());
 				status_code = location_script_wrapper->Execute();
 

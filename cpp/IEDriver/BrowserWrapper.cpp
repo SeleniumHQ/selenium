@@ -56,8 +56,8 @@ void BrowserWrapper::GetDocument(IHTMLDocument2 **doc) {
 	}
 
 	if (window) {
-		HRESULT hr = window->get_document(doc);
-		if (FAILED(hr)) {
+		bool result = this->GetDocumentFromWindow(window, doc);
+		if (!result) {
 			//LOGHR(WARN, hr) << "Cannot get document";
 		}
 	}
@@ -174,7 +174,9 @@ int BrowserWrapper::DeleteCookie(std::wstring cookie_name) {
 		script += DELETECOOKIES[i];
 	}
 
-	ScriptWrapper *script_wrapper = new ScriptWrapper(this, script, 1);
+	CComPtr<IHTMLDocument2> doc;
+	this->GetDocument(&doc);
+	ScriptWrapper *script_wrapper = new ScriptWrapper(doc, script, 1);
 	script_wrapper->AddArgument(cookie_name);
 	int status_code = script_wrapper->Execute();
 	delete script_wrapper;
@@ -500,20 +502,7 @@ bool BrowserWrapper::IsDocumentNavigating(IHTMLDocument2 *doc) {
 			}
 
 			CComPtr<IHTMLDocument2> frame_document;
-			hr = window->get_document(&frame_document);
-			if (hr == E_ACCESSDENIED) {
-				// Cross-domain documents may throw Access Denied. If so,
-				// get the document through the IWebBrowser2 interface.
-				CComPtr<IWebBrowser2> frame_browser;
-				CComQIPtr<IServiceProvider> service_provider(window);
-				hr = service_provider->QueryService(IID_IWebBrowserApp, &frame_browser);
-				if (SUCCEEDED(hr))
-				{
-					CComQIPtr<IDispatch> frame_document_dispatch;
-					hr = frame_browser->get_Document(&frame_document_dispatch);
-					hr = frame_document_dispatch->QueryInterface(&frame_document);
-				}
-			}
+			this->GetDocumentFromWindow(window, &frame_document);
 
 			is_navigating = this->is_navigation_started_;
 			if (is_navigating) {
@@ -528,6 +517,35 @@ bool BrowserWrapper::IsDocumentNavigating(IHTMLDocument2 *doc) {
 		}
 	}
 	return is_navigating;
+}
+
+bool BrowserWrapper::GetDocumentFromWindow(IHTMLWindow2 *window, IHTMLDocument2 **doc) {
+	HRESULT hr = window->get_document(doc);
+	if (SUCCEEDED(hr)) {
+		return true;
+	}
+
+	if (hr == E_ACCESSDENIED) {
+		// Cross-domain documents may throw Access Denied. If so,
+		// get the document through the IWebBrowser2 interface.
+		CComPtr<IWebBrowser2> window_browser;
+		CComQIPtr<IServiceProvider> service_provider(window);
+		hr = service_provider->QueryService(IID_IWebBrowserApp, &window_browser);
+		if (FAILED(hr)) {
+			return false;
+		}
+		CComQIPtr<IDispatch> document_dispatch;
+		hr = window_browser->get_Document(&document_dispatch);
+		if (FAILED(hr)) {
+			return false;
+		}
+		hr = document_dispatch->QueryInterface(doc);
+		if (FAILED(hr)) {
+			return false;
+		}
+		return true;
+	}
+	return false;
 }
 
 HWND BrowserWrapper::GetActiveDialogWindowHandle() {

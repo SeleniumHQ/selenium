@@ -34,7 +34,9 @@ protected:
 				return;
 			}
 
-			ScriptWrapper *script_wrapper = new ScriptWrapper(browser_wrapper, script, json_args.size());
+			CComPtr<IHTMLDocument2> doc;
+			browser_wrapper->GetDocument(&doc);
+			ScriptWrapper *script_wrapper = new ScriptWrapper(doc, script, json_args.size());
 			status_code = this->PopulateArgumentArray(manager, script_wrapper, json_args);
 			if (status_code != SUCCESS) {
 				response->SetErrorResponse(status_code, "Error setting arguments for script");
@@ -120,7 +122,9 @@ protected:
 		BrowserWrapper *browser;
 		manager->GetCurrentBrowser(&browser);
 
-		ScriptWrapper *array_script_wrapper = new ScriptWrapper(browser, array_script, array_size);
+		CComPtr<IHTMLDocument2> doc;
+		browser->GetDocument(&doc);
+		ScriptWrapper *array_script_wrapper = new ScriptWrapper(doc, array_script, array_size);
 		for (Json::UInt index = 0; index < array_size; ++index) {
 			status_code = this->AddArgument(manager, array_script_wrapper, array_value[index]);
 			if (status_code != SUCCESS) {
@@ -161,7 +165,9 @@ protected:
 		BrowserWrapper *browser;
 		manager->GetCurrentBrowser(&browser);
 
-		ScriptWrapper *object_script_wrapper = new ScriptWrapper(browser, object_script, counter);
+		CComPtr<IHTMLDocument2> doc;
+		browser->GetDocument(&doc);
+		ScriptWrapper *object_script_wrapper = new ScriptWrapper(doc, object_script, counter);
 		for (Json::Value::iterator it = object_value.begin(); it != object_value.end(); ++it) {
 			status_code = this->AddArgument(manager, object_script_wrapper, object_value[it.memberName()]);
 			if (status_code != SUCCESS) {

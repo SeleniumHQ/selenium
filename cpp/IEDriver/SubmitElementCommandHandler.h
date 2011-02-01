@@ -62,7 +62,9 @@ protected:
 					// Now for the magic and to close things
 					script += L")})();";
 
-					ScriptWrapper *script_wrapper = new ScriptWrapper(browser_wrapper, script, 1);
+					CComPtr<IHTMLDocument2> doc;
+					browser_wrapper->GetDocument(&doc);
+					ScriptWrapper *script_wrapper = new ScriptWrapper(doc, script, 1);
 					script_wrapper->AddArgument(element_wrapper);
 					int status_code = script_wrapper->Execute();
 					delete script_wrapper;

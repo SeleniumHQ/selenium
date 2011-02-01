@@ -17,7 +17,7 @@ class BrowserManager;
 class ScriptWrapper
 {
 public:
-	ScriptWrapper(BrowserWrapper *browser, std::wstring script, unsigned long argument_count);
+	ScriptWrapper(IHTMLDocument2 *document, std::wstring script, unsigned long argument_count);
 	~ScriptWrapper(void);
 
 	std::wstring script() { return this->script_; }
@@ -58,7 +58,8 @@ private:
 	bool CreateAnonymousFunction(IDispatch* script_engine, DISPID eval_id, const std::wstring *script, VARIANT* result);
 	void RemoveScript(IHTMLDocument2* doc);
 
-	BrowserWrapper *browser_;
+	// BrowserWrapper *browser_;
+	IHTMLDocument2 *script_engine_host_;
 	unsigned long argument_count_;
 	std::wstring script_;
 	long current_arg_index_;
