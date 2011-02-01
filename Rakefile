@@ -143,7 +143,7 @@ if (windows?)
 end
 
 task :test_java => [
-  "//javatests/org/openqa/selenium/support:test:run",
+  "//java/client/test/org/openqa/selenium/support:test:run",
   "//java/client/test/org/openqa/selenium/htmlunit:test:run",
   "//java/client/test/org/openqa/selenium/firefox:test:run",
   "//java/client/test/org/openqa/selenium/ie:test:run",
