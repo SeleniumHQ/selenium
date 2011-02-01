@@ -334,7 +334,7 @@ task :test_ie_py => :webdriver_py do
   win = windows?
   if win != nil then
     if python? then
-      cp 'jobbie\\prebuilt\\Win32\\Release\\InternetExplorerDriver.dll', "py\\selenium\\webdriver\\ie", :verbose => true
+      cp 'cpp\\prebuilt\\Win32\\Release\\IEDriver.dll', "py\\selenium\\webdriver\\ie", :verbose => true
       sh "build\\python\\Scripts\\python setup.py build", :verbose => true
     
       if File.exists?('build\\python\\Scripts\\py.test.exe')
@@ -345,7 +345,7 @@ task :test_ie_py => :webdriver_py do
     
       test_dir = Dir.glob('build/lib**/selenium/test/selenium/webdriver/ie').first
       sh py_test, test_dir, :verbose => true
-      rm "py\\selenium\\webdriver\\ie\\InternetExplorerDriver.dll"
+      rm "py\\selenium\\webdriver\\ie\\IEDriver.dll"
     end
   end
 end
