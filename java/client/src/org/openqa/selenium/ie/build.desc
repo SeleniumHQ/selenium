@@ -9,7 +9,7 @@ java_library(name = "ie",
     ":ie_result_type_java",
     "//jobbie:sizzle",
     "//javasrc/org/openqa/selenium/net",
-    "//javasrc/org/openqa/selenium/remote:client",
+    "//java/client/src/org/openqa/selenium/remote",
     "//third_party/java/jna",
   ])
 

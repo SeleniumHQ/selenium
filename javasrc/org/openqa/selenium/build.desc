@@ -83,9 +83,9 @@ java_library(name = "selenium-api",
   deps = [
     ":webdriver-api",
     "//javasrc/com/thoughtworks/selenium:wait",
-    "//javasrc/org/openqa/selenium/chrome",
-    "//javasrc/org/openqa/selenium/firefox",
-    "//javasrc/org/openqa/selenium/ie",
+    "//java/client/src/org/openqa/selenium/chrome",
+    "//java/client/src/org/openqa/selenium/firefox",
+    "//java/client/src/org/openqa/selenium/ie",
     "//third_party/java/guava-libraries",
     "//third_party/java/json",
   ])
@@ -115,7 +115,7 @@ java_library(name = "selenium-backed-webdriver",
   ],
   deps = [
     "//javasrc/org/openqa/selenium/internal/selenesedriver",
-    "//javasrc/org/openqa/selenium/firefox",
-    "//javasrc/org/openqa/selenium/remote:client",
+    "//java/client/src/org/openqa/selenium/firefox",
+    "//java/client/src/org/openqa/selenium/remote",
   ])
 

@@ -38,6 +38,6 @@ java_library(name = "launcher-utils",
     "//javasrc/org/openqa/selenium/io",
     "//javasrc/org/openqa/selenium/net",
     "//javasrc/org/openqa/selenium/os",
-    "//javasrc/org/openqa/selenium/remote:base",
+    "//java/client/src/org/openqa/selenium/remote:base",
     "//third_party/java/guava-libraries",
   ])

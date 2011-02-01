@@ -3,7 +3,7 @@ java_test(name = "test",
   srcs = [ "*.java" ],
   deps = [
     ":server",
-    "//javasrc/org/openqa/selenium/iphone",
+    "//java/client/src/org/openqa/selenium/iphone",
     "//third_party/java/junit",
   ])
 

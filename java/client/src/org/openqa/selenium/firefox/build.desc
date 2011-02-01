@@ -11,7 +11,7 @@ java_library(name = "firefox",
   deps = [
     "//javasrc/org/openqa/selenium/io",
     "//javasrc/org/openqa/selenium/net",
-    "//javasrc/org/openqa/selenium/remote:client",
+    "//java/client/src/org/openqa/selenium/remote",
     "//third_party/java/commons-io",
     "//third_party/java/guava-libraries",
   ])

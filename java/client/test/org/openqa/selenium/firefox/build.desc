@@ -8,7 +8,7 @@ java_test(name = "test",
     {"//third_party/firebug" : "resource/firebug-1.5.0-fx.xpi"}
   ],
   deps = [
-    "//javasrc/org/openqa/selenium/firefox",
+    "//java/client/src/org/openqa/selenium/firefox",
     "//javatests/org/openqa/selenium:tests",
     "//third_party/java/junit",
   ])

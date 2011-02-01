@@ -2,9 +2,9 @@ java_library(name = "selenium",
   deps = [
     ":base",
     "//java/client/src/org/openqa/selenium/htmlunit",
-    "//javasrc/org/openqa/selenium/firefox",
-    "//javasrc/org/openqa/selenium/iphone",
-    "//javasrc/org/openqa/selenium/remote:client",
+    "//java/client/src/org/openqa/selenium/firefox",
+    "//java/client/src/org/openqa/selenium/iphone",
+    "//java/client/src/org/openqa/selenium/remote",
   ])
 
 java_library(name = "base",
@@ -56,7 +56,7 @@ java_library(name = "tests",
   ],
   deps = [
     ":base",
-    "//javasrc/org/openqa/selenium/remote:common",
+    "//java/client/src/org/openqa/selenium/remote:common",
     "//javasrc/org/openqa/selenium/interactions",
     "//javasrc/org/openqa/selenium/internal/seleniumemulation",
     "//javatests/org/openqa/selenium/environment",

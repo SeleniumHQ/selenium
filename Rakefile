@@ -82,22 +82,22 @@ task :default => [:test]
 
 task :all => [:'selenium-java', :'android']
 task :all_zip => [:'selenium-java_zip']
-task :chrome => [ "//javasrc/org/openqa/selenium/chrome" ]
+task :chrome => [ "//java/client/src/org/openqa/selenium/chrome" ]
 task :common_core => [ "//common:core" ]
 task :htmlunit => [ "//java/client/src/org/openqa/selenium/htmlunit" ]
-task :ie => [ "//javasrc/org/openqa/selenium/ie" ]
-task :firefox => [ "//java/org/openqa/selenium/firefox" ]
+task :ie => [ "//java/client/src/org/openqa/selenium/ie" ]
+task :firefox => [ "//java/client/src/org/openqa/selenium/firefox" ]
 task :jsapi => "//jsapi:debug:run"
 task :remote => [:remote_common, :remote_server, :remote_client]
 task :remote_common => ["//javasrc/org/openqa/selenium/remote:common"]
-task :remote_client => ["//javasrc/org/openqa/selenium/remote:client"]
+task :remote_client => ["//java/client/src/org/openqa/selenium/remote"]
 task :remote_server => ["//javasrc/org/openqa/selenium/remote/server"]
 task :selenium => [ "//javasrc/org/openqa/selenium" ]
 task :support => [
   "//javasrc/org/openqa/selenium/lift",
   "//javasrc/org/openqa/selenium/support",
 ]
-task :iphone_client => ['//javasrc/org/openqa/selenium/iphone']
+task :iphone_client => ['//java/client/src/org/openqa/selenium/iphone']
 task :iphone => [:iphone_server, :iphone_client]
 task :'selenium-server-standalone' => ["//javasrc/org/openqa/selenium/remote/server:server:uber"]
 
@@ -105,15 +105,15 @@ task :ide => [ "//ide:selenium-ide" ]
 task :ide_proxy_setup => [ "//common/src/js/selenium:core", "se_ide:setup_proxy" ]
 task :ide_proxy_remove => [ "se_ide:remove_proxy" ]
 
-task :test_android => ["//javatests/org/openqa/selenium/android:android-test:run"]
-task :test_chrome => [ "//javatests/org/openqa/selenium/chrome:test:run" ]
+task :test_android => ["//java/client/test/org/openqa/selenium/android:android-test:run"]
+task :test_chrome => [ "//java/client/test/org/openqa/selenium/chrome:test:run" ]
 task :test_htmlunit => [ "//java/client/test/org/openqa/selenium/htmlunit:test:run" ]
-task :test_ie => [ "//javatests/org/openqa/selenium/ie:test:run" ]
+task :test_ie => [ "//java/client/test/org/openqa/selenium/ie:test:run" ]
 task :test_jobbie => [ :test_ie ]
 task :test_jsapi => [ "//jsapi:atoms:run",
                       "//jsapi:selenium_core:run",
                       "//jsapi:selenium_core_emulation:run" ]
-task :test_firefox => [ "//javatests/org/openqa/selenium/firefox:test:run" ]
+task :test_firefox => [ "//java/client/test/org/openqa/selenium/firefox:test:run" ]
 task :test_remote => [ "//javatests/org/openqa/selenium/remote/server:test:run" ]
 task :test_support => [
   "//javatests/org/openqa/selenium/lift:test:run",
@@ -122,7 +122,7 @@ task :test_support => [
 task :test_iphone_client => [:'webdriver-iphone-client-test']
 task :test_iphone => [:test_iphone_server, :test_iphone_client]
 task :android => [:android_client, :android_server]
-task :android_client => ['//javasrc/org/openqa/selenium/android']
+task :android_client => ['//java/client/src/org/openqa/selenium/android']
 task :android_server => ['//android:android-server']
 
 # TODO(simon): test-core should go first, but it's changing the least for now.
@@ -145,8 +145,8 @@ end
 task :test_java => [
   "//javatests/org/openqa/selenium/support:test:run",
   "//java/client/test/org/openqa/selenium/htmlunit:test:run",
-  "//javatests/org/openqa/selenium/firefox:test:run",
-  "//javatests/org/openqa/selenium/ie:test:run",
+  "//java/client/test/org/openqa/selenium/firefox:test:run",
+  "//java/client/test/org/openqa/selenium/ie:test:run",
   "//javatests/org/openqa/selenium/remote/server:test:run",
   :test_selenium,
 # Can't be sure that android is installed.
@@ -208,7 +208,7 @@ ie_generate_type_mapping(:name => "ie_result_type_cpp",
 ie_generate_type_mapping(:name => "ie_result_type_java",
                          :src => "jobbie/src/common/result_types.txt",
                          :type => "java",
-                         :out => "javasrc/org/openqa/selenium/ie/IeReturnTypes.java")
+                         :out => "java/client/src/org/openqa/selenium/ie/IeReturnTypes.java")
 
 gecko_sdk = "third_party/gecko-1.9.0.11/linux/"
 

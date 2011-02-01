@@ -1,11 +1,11 @@
 java_library(name = "server",
   main = "org.openqa.selenium.server.SeleniumServer",
   deps = [
-    "//javasrc/org/openqa/selenium/chrome",
-    "//javasrc/org/openqa/selenium/firefox",
+    "//java/client/src/org/openqa/selenium/chrome",
+    "//java/client/src/org/openqa/selenium/firefox",
     "//java/client/src/org/openqa/selenium/htmlunit",
-    "//javasrc/org/openqa/selenium/ie",
-    "//javasrc/org/openqa/selenium/iphone",
+    "//java/client/src/org/openqa/selenium/ie",
+    "//java/client/src/org/openqa/selenium/iphone",
     ":server_lite"
   ])
 

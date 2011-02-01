@@ -2,5 +2,5 @@
 java_library(name = "iphone",
   srcs = [ "*.java" ],
   deps = [
-    "//javasrc/org/openqa/selenium/remote:client",
+    "//java/client/src/org/openqa/selenium/remote",
   ])
