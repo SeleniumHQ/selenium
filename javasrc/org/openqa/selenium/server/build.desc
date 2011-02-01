@@ -58,7 +58,7 @@ java_library(name = "base",
     "//javasrc/org/openqa/selenium/remote/server",
     "//javasrc/org/openqa/selenium/net",
     "//javasrc/org/openqa/selenium/support",
-    "//javasrc/org/openqa/jetty",
+    "//java/server/src/org/openqa/jetty",
     "//third_party/java/servlet-api"
   ])
 
