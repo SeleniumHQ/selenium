@@ -230,7 +230,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
     assertNull("Looks like delete all cookies doesn't", driver.manage().getCookieNamed("name"));
 
     // Replace the first part of the name with a period
-    String shorter = name.replaceFirst(".*?\\.", ".");
+    String shorter = name.replaceFirst(".*?\\.", "");
     Cookie cookie =
         new Cookie("name", "value", shorter, "/", new Date(System.currentTimeMillis() + 100000));
 

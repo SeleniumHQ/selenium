@@ -38,7 +38,7 @@ java_library(name = "base",
   ],
   deps = [
     "//java/client/src/org/openqa/selenium",
-    "//javatests/org/openqa/selenium/environment",
+    "//java/client/test/org/openqa/selenium/environment",
     "//third_party/java/junit",
     "//third_party/java/hamcrest",
   ])
@@ -59,7 +59,7 @@ java_library(name = "tests",
     "//java/client/src/org/openqa/selenium/remote:common",
     "//java/client/src/org/openqa/selenium/interactions",
     "//java/client/src/org/openqa/selenium/internal/seleniumemulation",
-    "//javatests/org/openqa/selenium/environment",
+    "//java/client/test/org/openqa/selenium/environment",
     "//third_party/java/commons-io",
     "//third_party/java/easymock",
     "//third_party/java/jmock",
@@ -75,13 +75,4 @@ java_test(name = "single",
     "//java/server/src/org/openqa/selenium/server",
     "//javatests/org/openqa/selenium/v1:selenium-backed-webdriver-test",
     "//java/client/test/org/openqa/selenium/firefox:test",
-  ])
-
-java_library(name = "server-with-tests",
-  main = "org.openqa.selenium.server.SeleniumServer",
-  resources = [
-    { "../../../../selenium/src/web/tests" : "./" },
-  ],
-  deps = [
-    "//java/server/src/org/openqa/selenium/server",
   ])

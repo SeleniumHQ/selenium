@@ -9,6 +9,6 @@ java_test(name = "test",
   ],
   deps = [
     "//java/client/src/org/openqa/selenium/firefox",
-    "//javatests/org/openqa/selenium:tests",
+    "//java/client/test/org/openqa/selenium:tests",
     "//third_party/java/junit",
   ])

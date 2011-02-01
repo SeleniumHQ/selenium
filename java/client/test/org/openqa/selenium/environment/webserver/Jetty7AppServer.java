@@ -172,7 +172,7 @@ public class Jetty7AppServer implements AppServer {
   }
 
   protected File getKeyStore() {
-    return InProject.locate("javatests/keystore");
+    return InProject.locate("java/client/test/keystore");
   }
 
   public void listenOn(int port) {

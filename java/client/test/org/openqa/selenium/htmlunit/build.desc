@@ -2,5 +2,5 @@ java_test(name = "test",
   srcs = [ "*.java" ],
   deps = [
     "//java/client/src/org/openqa/selenium/htmlunit",
-    "//javatests/org/openqa/selenium:tests"
+    "//java/client/test/org/openqa/selenium:tests"
   ])

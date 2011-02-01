@@ -3,6 +3,6 @@ java_test(name = "test",
   srcs = [ "*.java" ],
   deps = [
     "//java/client/src/org/openqa/selenium/ie",
-    "//javatests/org/openqa/selenium:tests",
+    "//java/client/test/org/openqa/selenium:tests",
     "//third_party/java/junit",
 ])

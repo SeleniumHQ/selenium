@@ -12,7 +12,7 @@ dotnet_library(name = "common",
 
 dotnet_library(name = "common-test",
   deps = [
-    "//javatests/org/openqa/selenium:tests:uber"
+    "//java/client/test/org/openqa/selenium:tests:uber"
   ],
   srcs = "test/WebDriver.Common.Tests/**/*.cs",
   refs = [

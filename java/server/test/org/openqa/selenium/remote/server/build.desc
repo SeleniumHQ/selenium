@@ -9,6 +9,6 @@ java_test(name = "test",
     "//java/client/src/org/openqa/selenium/htmlunit",
     "//java/client/src/org/openqa/selenium/ie",
     "//java/server/src/org/openqa/selenium/remote/server",
-    "//javatests/org/openqa/selenium:base",
+    "//java/client/test/org/openqa/selenium:base",
     "//java/client/test/org/openqa/selenium/remote:common-tests",
   ])

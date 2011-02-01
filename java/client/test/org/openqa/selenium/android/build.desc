@@ -19,5 +19,5 @@ java_library(name = "base",
   ],
   deps = [
     "//java/client/src/org/openqa/selenium/android",
-    "//javatests/org/openqa/selenium:base",
+    "//java/client/test/org/openqa/selenium:base",
   ])

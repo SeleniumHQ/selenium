@@ -114,7 +114,7 @@ task :test_jsapi => [ "//jsapi:atoms:run",
                       "//jsapi:selenium_core:run",
                       "//jsapi:selenium_core_emulation:run" ]
 task :test_firefox => [ "//java/client/test/org/openqa/selenium/firefox:test:run" ]
-task :test_remote => [ "//javatests/org/openqa/selenium/remote/server:test:run" ]
+task :test_remote => [ "//java/server/test/org/openqa/selenium/remote/server:test:run" ]
 task :test_support => [
   "//java/client/test/org/openqa/selenium/lift:test:run",
   "//java/client/test/org/openqa/selenium/support:test:run"
@@ -128,7 +128,7 @@ task :android_server => ['//android:android-server']
 # TODO(simon): test-core should go first, but it's changing the least for now.
 task :test_selenium => [ :'test-rc', :'test-v1-emulation', :'test-selenium-backed-webdriver', :'test-core']
 
-task :'test-selenium-backed-webdriver' => ['//javatests/org/openqa/selenium/v1:selenium-backed-webdriver-test:run']
+task :'test-selenium-backed-webdriver' => ['//java/client/test/org/openqa/selenium/v1:selenium-backed-webdriver-test:run']
 task :'test-v1-emulation' => [ '//java/client/test/com/thoughtworks/selenium:firefox-emulation-test:run' ]
 task :'test-rc' => [ '//java/client/test/com/thoughtworks/selenium:firefox-rc-test:run' ]
 task :'test-core' => [:'test-core-firefox']
@@ -147,7 +147,7 @@ task :test_java => [
   "//java/client/test/org/openqa/selenium/htmlunit:test:run",
   "//java/client/test/org/openqa/selenium/firefox:test:run",
   "//java/client/test/org/openqa/selenium/ie:test:run",
-  "//javatests/org/openqa/selenium/remote/server:test:run",
+  "//java/server/test/org/openqa/selenium/remote/server:test:run",
   :test_selenium,
 # Can't be sure that android is installed.
 #  :test_android,

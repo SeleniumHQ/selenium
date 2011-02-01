@@ -93,10 +93,6 @@ public class RemoteWebDriverTestSuite extends TestCase {
               String.format("file exists %s and is: %s", file.exists(), file.getAbsolutePath()));
           return file;
         }
-
-        protected File getKeyStore() {
-          return InProject.locate("javatests/keystore");
-        }
       };
       appServer.listenOn(6000);
       appServer.listenSecurelyOn(7000);

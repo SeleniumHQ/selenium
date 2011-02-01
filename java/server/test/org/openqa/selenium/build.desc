@@ -1,0 +1,9 @@
+
+java_library(name = "server-with-tests",
+  main = "org.openqa.selenium.server.SeleniumServer",
+  resources = [
+    { "../../../../../../selenium/src/web/tests" : "./" },
+  ],
+  deps = [
+    "//java/server/src/org/openqa/selenium/server",
+  ])

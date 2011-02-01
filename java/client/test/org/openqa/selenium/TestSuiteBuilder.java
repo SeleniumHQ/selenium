@@ -59,7 +59,8 @@ public class TestSuiteBuilder {
     jsTestDir = new File(baseDir, "common/test/js");
     assertThat(jsTestDir.isDirectory(), is(true));
 
-    sourceDirs.add(new File(baseDir, "javatests"));
+    sourceDirs.add(new File(baseDir, "java/client/test"));
+    sourceDirs.add(new File(baseDir, "java/server/test"));
   }
 
   public TestSuiteBuilder addSourceDir(String dirName) {
@@ -139,6 +140,7 @@ public class TestSuiteBuilder {
     File[] files = dir.listFiles();
     for (File file : files) {
       if (file.isDirectory()) {
+        System.out.println("Examining: " + file);
         addTestsRecursively(suite, file);
       } else {
         addTestsFromFile(suite, file);
@@ -229,7 +231,7 @@ public class TestSuiteBuilder {
 
     if (isIgnored(method)) {
       System.err.println("Ignoring: "
-                         + method.getDeclaringClass() + "."
+                         + method.getDeclaringClass() + ""
                          + method.getName() + ": "
                          + method.getAnnotation(Ignore.class).reason());
       return false;

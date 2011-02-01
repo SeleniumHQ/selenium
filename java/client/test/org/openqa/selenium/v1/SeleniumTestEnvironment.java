@@ -42,10 +42,10 @@ public class SeleniumTestEnvironment implements TestEnvironment {
   public SeleniumTestEnvironment(String... extraArgs){
       try {
         if (DevMode.isInDevMode()) {
-          new Build().of("//javatests/org/openqa/selenium:server-with-tests:uber").go();
+          new Build().of("//java/server/test/org/openqa/selenium:server-with-tests:uber").go();
         }
 
-        File seleniumJar = InProject.locate("build/javatests/org/openqa/selenium/server-with-tests-standalone.jar");
+        File seleniumJar = InProject.locate("build/java/server/test/org/openqa/selenium/server-with-tests-standalone.jar");
         String[] args = {"-jar", seleniumJar.getAbsolutePath(), "-port", "" + port};
         if(extraArgs != null) {
             String[] allArgs = new String[args.length+extraArgs.length];

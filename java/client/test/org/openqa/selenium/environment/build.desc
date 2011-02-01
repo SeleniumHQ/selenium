@@ -4,5 +4,5 @@ java_library(name = "environment",
     "*.java",
   ],
   deps = [
-    "//javatests/org/openqa/selenium/environment/webserver",
+    "//java/client/test/org/openqa/selenium/environment/webserver",
   ])

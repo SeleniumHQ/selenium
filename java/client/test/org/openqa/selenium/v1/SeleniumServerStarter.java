@@ -20,7 +20,7 @@ import static org.openqa.selenium.net.PortProber.pollPort;
 public class SeleniumServerStarter extends TestSetup {
 
   private static final NetworkUtils networkUtils = new NetworkUtils();
-  private static final String SELENIUM_JAR = "build/javatests/org/openqa/selenium/server-with-tests-standalone.jar";
+  private static final String SELENIUM_JAR = "build/java/server/test/org/openqa/selenium/server-with-tests-standalone.jar";
   private CommandLine command;
 
   public SeleniumServerStarter(Test test) {
@@ -33,7 +33,7 @@ public class SeleniumServerStarter extends TestSetup {
     File seleniumJar = findSeleniumJar();
 
     if (!seleniumJar.exists()) {
-      new Build().of("//javatests/org/openqa/selenium:server-with-tests:uber").go();
+      new Build().of("//java/server/test/org/openqa/selenium:server-with-tests:uber").go();
       if (!seleniumJar.exists()) {
         throw new IllegalStateException("Cannot locate selenium jar");
       }
