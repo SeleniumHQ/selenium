@@ -10,6 +10,7 @@ import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.UnableToSetCookieException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.XPathLookupException;
+import org.openqa.selenium.interactions.InvalidCoordinatesException;
 
 /**
  * Defines common error codes for the wire protocol.
@@ -35,6 +36,7 @@ public class ErrorCodes {
   public static final int INVALID_COOKIE_DOMAIN = 24;
   public static final int UNABLE_TO_SET_COOKIE = 25;
   public static final int ASYNC_SCRIPT_TIMEOUT = 28;
+  public static final int INVALID_ELEMENT_COORDINATES = 29;
 
   // The following error codes are derived straight from HTTP return codes.
   public static final int METHOD_NOT_ALLOWED = 405;
@@ -77,6 +79,8 @@ public class ErrorCodes {
         return XPathLookupException.class;
       case ASYNC_SCRIPT_TIMEOUT:
         return TimeoutException.class;
+      case INVALID_ELEMENT_COORDINATES:
+        return InvalidCoordinatesException.class;
       default:
         return WebDriverException.class;
     }
@@ -111,6 +115,8 @@ public class ErrorCodes {
       return XPATH_LOOKUP_ERROR;
     } else if (thrown instanceof TimeoutException) {
       return ASYNC_SCRIPT_TIMEOUT;
+    } else if (thrown instanceof InvalidCoordinatesException) {
+      return INVALID_ELEMENT_COORDINATES;
     } else {
       return UNHANDLED_ERROR;
     }

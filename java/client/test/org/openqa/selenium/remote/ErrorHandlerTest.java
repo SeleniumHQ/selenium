@@ -30,6 +30,7 @@ import org.openqa.selenium.NoSuchWindowException;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.XPathLookupException;
+import org.openqa.selenium.interactions.InvalidCoordinatesException;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.startsWith;
@@ -70,6 +71,8 @@ public class ErrorHandlerTest extends TestCase {
         ErrorCodes.INVALID_ELEMENT_STATE, UnsupportedOperationException.class);
     assertThrowsCorrectExceptionType(
         ErrorCodes.XPATH_LOOKUP_ERROR, XPathLookupException.class);
+    assertThrowsCorrectExceptionType(ErrorCodes.INVALID_ELEMENT_COORDINATES,
+        InvalidCoordinatesException.class);
   }
 
   private void assertThrowsCorrectExceptionType(

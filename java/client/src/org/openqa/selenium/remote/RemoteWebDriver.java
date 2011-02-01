@@ -649,13 +649,13 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     public void click(Coordinates where) {
       moveIfNeeded(where);
 
-      execute(DriverCommand.CLICK_ELEMENT, ImmutableMap.of("button", 0));
+      execute(DriverCommand.CLICK, ImmutableMap.of("button", 0));
     }
 
     public void contextClick(Coordinates where) {
       moveIfNeeded(where);
 
-      execute(DriverCommand.CLICK_ELEMENT, ImmutableMap.of("button", 2));
+      execute(DriverCommand.CLICK, ImmutableMap.of("button", 2));
     }
 
     public void doubleClick(Coordinates where) {

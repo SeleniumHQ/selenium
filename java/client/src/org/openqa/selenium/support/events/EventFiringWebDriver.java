@@ -65,8 +65,6 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
     WrapsDriver, HasInputDevices {
 
   private final WebDriver driver;
-  private final EventFiringKeyboard keyboard;
-  private final Mouse mouse;
 
   private final List<WebDriverEventListener> eventListeners = new ArrayList<WebDriverEventListener>();
   private final WebDriverEventListener dispatcher = (WebDriverEventListener) Proxy.newProxyInstance(
@@ -103,14 +101,6 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
         }
       }
     );
-
-    if (driver instanceof HasInputDevices) {
-      keyboard = new EventFiringKeyboard(driver, dispatcher);
-      mouse = new EventFiringMouse(driver, dispatcher);
-    } else {
-      keyboard = null;
-      mouse = null;
-    }
   }
 
   private Class<?>[] extractInterfaces(Object object) {
@@ -273,19 +263,21 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
   }
 
   public Keyboard getKeyboard() {
-    if (keyboard == null) {
+    if (driver instanceof HasInputDevices) {
+      return new EventFiringKeyboard(driver, dispatcher);
+    } else {
       throw new UnsupportedOperationException("Underlying driver does not implement advanced"
           + " user interactions yet.");
     }
-    return keyboard;
   }
 
   public Mouse getMouse() {
-    if (mouse == null) {
+    if (driver instanceof HasInputDevices) {
+      return new EventFiringMouse(driver, dispatcher);
+    } else {
       throw new UnsupportedOperationException("Underlying driver does not implement advanced"
           + " user interactions yet.");
     }
-    return mouse;
   }
 
   public ActionChainsGenerator actionsBuilder() {

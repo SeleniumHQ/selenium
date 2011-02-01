@@ -24,21 +24,20 @@ import org.openqa.selenium.remote.server.handler.WebDriverHandler;
 import org.openqa.selenium.remote.server.handler.WebElementHandler;
 import org.openqa.selenium.remote.server.rest.ResultType;
 
-public class DoubleClickElement extends WebDriverHandler {
+public class DoubleClickInSession extends WebDriverHandler {
 
-  public DoubleClickElement(DriverSessions sessions) {
+  public DoubleClickInSession(DriverSessions sessions) {
     super(sessions);
   }
 
   public ResultType call() throws Exception {
-    Mouse m = ((HasInputDevices) getDriver()).getMouse();
-    //TODO(eran): implement
-    //m.doubleClick(getElement());
+    Mouse mouse = ((HasInputDevices) getDriver()).getMouse();
+    mouse.doubleClick(null);
     return ResultType.SUCCESS;
   }
   
   @Override
   public String toString() {
-    return String.format("[mouseup: %s]", "nothing");
+    return String.format("[doubleclick: no args]");
   }
 }

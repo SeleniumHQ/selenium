@@ -46,11 +46,10 @@ import org.openqa.selenium.remote.server.handler.html5.SetLocalStorageItem;
 import org.openqa.selenium.remote.server.handler.html5.SetLocationContext;
 import org.openqa.selenium.remote.server.handler.html5.SetSessionStorageItem;
 import org.openqa.selenium.remote.server.handler.interactions.ClickInSession;
-import org.openqa.selenium.remote.server.handler.interactions.ContextClickElement;
-import org.openqa.selenium.remote.server.handler.interactions.DoubleClickElement;
-import org.openqa.selenium.remote.server.handler.interactions.MouseDownOnElement;
-import org.openqa.selenium.remote.server.handler.interactions.MouseMoveToElement;
-import org.openqa.selenium.remote.server.handler.interactions.MouseUpOnElement;
+import org.openqa.selenium.remote.server.handler.interactions.DoubleClickInSession;
+import org.openqa.selenium.remote.server.handler.interactions.MouseDown;
+import org.openqa.selenium.remote.server.handler.interactions.MouseMoveToLocation;
+import org.openqa.selenium.remote.server.handler.interactions.MouseUp;
 import org.openqa.selenium.remote.server.handler.interactions.SendModifierKey;
 import org.openqa.selenium.remote.server.renderer.EmptyResult;
 import org.openqa.selenium.remote.server.renderer.ForwardResult;
@@ -178,16 +177,6 @@ public class DriverServlet extends HttpServlet {
 
     postMapper.bind("/session/:sessionId/element/:id/click", ClickElement.class)
         .on(ResultType.SUCCESS, new EmptyResult());
-    postMapper.bind("/session/:sessionId/click", ClickInSession.class)
-            .on(ResultType.SUCCESS, new EmptyResult());
-    postMapper.bind("/session/:sessionId/doubleclick", DoubleClickElement.class)
-        .on(ResultType.SUCCESS, new EmptyResult());
-    postMapper.bind("/session/:sessionId/contextclick", ContextClickElement.class)
-        .on(ResultType.SUCCESS, new EmptyResult());
-    postMapper.bind("/session/:sessionId/buttondown", MouseDownOnElement.class)
-        .on(ResultType.SUCCESS, new EmptyResult());
-    postMapper.bind("/session/:sessionId/buttonup", MouseUpOnElement.class)
-        .on(ResultType.SUCCESS, new EmptyResult());
     getMapper.bind("/session/:sessionId/element/:id/text", GetElementText.class)
         .on(ResultType.SUCCESS, new JsonResult(RESPONSE));
     postMapper.bind("/session/:sessionId/element/:id/submit", SubmitElement.class)
@@ -226,9 +215,6 @@ public class DriverServlet extends HttpServlet {
 
     postMapper.bind("/session/:sessionId/element/:id/hover", HoverOverElement.class)
         .on(ResultType.SUCCESS, new EmptyResult());
-    postMapper.bind("/session/:sessionId/element/:id/movehere", MouseMoveToElement.class)
-        .on(ResultType.SUCCESS, new EmptyResult());    
-
     postMapper.bind("/session/:sessionId/element/:id/drag", DragElement.class)
         .on(ResultType.SUCCESS, new EmptyResult());
 
@@ -310,6 +296,17 @@ public class DriverServlet extends HttpServlet {
     getMapper.bind("/session/:sessionId/orientation", GetScreenOrientation.class)
         .on(ResultType.SUCCESS, new JsonResult(RESPONSE));
     postMapper.bind("/session/:sessionId/orientation", Rotate.class)
+        .on(ResultType.SUCCESS, new EmptyResult());
+
+    postMapper.bind("/session/:sessionId/moveto", MouseMoveToLocation.class)
+        .on(ResultType.SUCCESS, new EmptyResult());
+    postMapper.bind("/session/:sessionId/click", ClickInSession.class)
+            .on(ResultType.SUCCESS, new EmptyResult());
+    postMapper.bind("/session/:sessionId/doubleclick", DoubleClickInSession.class)
+        .on(ResultType.SUCCESS, new EmptyResult());
+    postMapper.bind("/session/:sessionId/buttondown", MouseDown.class)
+        .on(ResultType.SUCCESS, new EmptyResult());
+    postMapper.bind("/session/:sessionId/buttonup", MouseUp.class)
         .on(ResultType.SUCCESS, new EmptyResult());
   }
 

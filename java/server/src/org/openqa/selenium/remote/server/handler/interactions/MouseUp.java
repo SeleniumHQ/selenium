@@ -27,21 +27,20 @@ import org.openqa.selenium.remote.server.handler.WebDriverHandler;
 import org.openqa.selenium.remote.server.handler.WebElementHandler;
 import org.openqa.selenium.remote.server.rest.ResultType;
 
-public class MouseMoveToElement extends WebDriverHandler {
+public class MouseUp extends WebDriverHandler {
 
-  public MouseMoveToElement(DriverSessions sessions) {
+  public MouseUp(DriverSessions sessions) {
     super(sessions);
   }
 
   public ResultType call() throws Exception {
-    Mouse m = ((HasInputDevices) getDriver()).getMouse();
-    //TODO(eran): Implement
-    //m.mouseMove(getElement());
+    Mouse mouse = ((HasInputDevices) getDriver()).getMouse();
+    mouse.mouseUp(null);
     return ResultType.SUCCESS;
   }
   
   @Override
   public String toString() {
-    return String.format("[mousemove: %s]", "nothing");
+    return String.format("[mouseup: %s]", "nothing");
   }
 }
