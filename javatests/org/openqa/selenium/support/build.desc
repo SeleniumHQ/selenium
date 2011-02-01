@@ -5,7 +5,7 @@ java_test(name = "test",
     "SupportTestSuite.java",
   ],
   deps = [
-    "//javasrc/org/openqa/selenium/firefox",
+    "//java/client/src/org/openqa/selenium/firefox",
     "//javasrc/org/openqa/selenium/support",
     "//javatests/org/openqa/selenium:base",
     "//javatests/org/openqa/selenium/support/events:test",
