@@ -69,7 +69,7 @@ java_library(name = "webdriver-api",
   deps = [
     ":base",
     "//javasrc/org/openqa/selenium/interactions:api",
-    "//javasrc/org/openqa/selenium/internal:codecs",
+    "//java/client/src/org/openqa/selenium/internal:codecs",
   ])
 
 # TODO(simon): Break out the selenium emulation from the v1 implementation.

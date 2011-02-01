@@ -3,6 +3,6 @@ java_library(name = "io",
   srcs = [ "*.java" ],
   deps = [
     "//javasrc/org/openqa/selenium:base",
-    "//javasrc/org/openqa/selenium/internal:codecs",
+    "//java/client/src/org/openqa/selenium/internal:codecs",
   ])
 
