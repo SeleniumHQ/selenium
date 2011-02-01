@@ -84,7 +84,7 @@ task :all => [:'selenium-java', :'android']
 task :all_zip => [:'selenium-java_zip']
 task :chrome => [ "//javasrc/org/openqa/selenium/chrome" ]
 task :common_core => [ "//common:core" ]
-task :htmlunit => [ "//javasrc/org/openqa/selenium/htmlunit" ]
+task :htmlunit => [ "//java/client/src/org/openqa/selenium/htmlunit" ]
 task :ie => [ "//javasrc/org/openqa/selenium/ie" ]
 task :firefox => [ "//java/org/openqa/selenium/firefox" ]
 task :jsapi => "//jsapi:debug:run"
@@ -107,7 +107,7 @@ task :ide_proxy_remove => [ "se_ide:remove_proxy" ]
 
 task :test_android => ["//javatests/org/openqa/selenium/android:android-test:run"]
 task :test_chrome => [ "//javatests/org/openqa/selenium/chrome:test:run" ]
-task :test_htmlunit => [ "//javatests/org/openqa/selenium/htmlunit:test:run" ]
+task :test_htmlunit => [ "//java/client/test/org/openqa/selenium/htmlunit:test:run" ]
 task :test_ie => [ "//javatests/org/openqa/selenium/ie:test:run" ]
 task :test_jobbie => [ :test_ie ]
 task :test_jsapi => [ "//jsapi:atoms:run",
@@ -144,7 +144,7 @@ end
 
 task :test_java => [
   "//javatests/org/openqa/selenium/support:test:run",
-  "//javatests/org/openqa/selenium/htmlunit:test:run",
+  "//java/client/test/org/openqa/selenium/htmlunit:test:run",
   "//javatests/org/openqa/selenium/firefox:test:run",
   "//javatests/org/openqa/selenium/ie:test:run",
   "//javatests/org/openqa/selenium/remote/server:test:run",

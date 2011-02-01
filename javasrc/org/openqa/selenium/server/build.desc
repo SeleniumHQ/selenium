@@ -3,7 +3,7 @@ java_library(name = "server",
   deps = [
     "//javasrc/org/openqa/selenium/chrome",
     "//javasrc/org/openqa/selenium/firefox",
-    "//javasrc/org/openqa/selenium/htmlunit",
+    "//java/client/src/org/openqa/selenium/htmlunit",
     "//javasrc/org/openqa/selenium/ie",
     "//javasrc/org/openqa/selenium/iphone",
     ":server_lite"

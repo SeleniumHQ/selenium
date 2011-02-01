@@ -4,6 +4,7 @@
 	<exclude-output/>
 	<contentEntry url="file://$MODULE_DIR$">
 		<testFolder url="file://$MODULE_DIR$/javatests"/>
+		<testFolder url="file://$MODULE_DIR$/java/client/test"/>
 	</contentEntry>
 	<lib name="junit-dep-4.8.1.jar" scope="COMPILE">
 		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/junit/junit-dep-4.8.1.jar!/"/>
