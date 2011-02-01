@@ -72,9 +72,9 @@ java_test(name = "single",
   ],
   deps = [
     ":tests",
-    "//javasrc/org/openqa/selenium/server",
+    "//java/server/src/org/openqa/selenium/server",
     "//javatests/org/openqa/selenium/v1:selenium-backed-webdriver-test",
-    "//javatests/org/openqa/selenium/firefox:test",
+    "//java/client/test/org/openqa/selenium/firefox:test",
   ])
 
 java_library(name = "server-with-tests",
@@ -83,5 +83,5 @@ java_library(name = "server-with-tests",
     { "../../../../selenium/src/web/tests" : "./" },
   ],
   deps = [
-    "//javasrc/org/openqa/selenium/server",
+    "//java/server/src/org/openqa/selenium/server",
   ])

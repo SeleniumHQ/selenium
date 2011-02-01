@@ -15,7 +15,7 @@ java_library(name = "server-with-tests",
     "SeleniumServer.java",
   ],
   resources = [
-    { "../../../../../selenium/src/web/tests" : "./" }
+    { "../../../../../../../selenium/src/web/tests" : "./" }
   ],
   deps = [
     ":server"
@@ -55,7 +55,7 @@ java_library(name = "base",
   ],
   deps = [
     "//java/server/src/cybervillains",
-    "//javasrc/org/openqa/selenium/remote/server",
+    "//java/server/src/org/openqa/selenium/remote/server",
     "//java/client/src/org/openqa/selenium/net",
     "//java/client/src/org/openqa/selenium/support",
     "//java/server/src/org/openqa/jetty",

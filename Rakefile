@@ -91,7 +91,7 @@ task :jsapi => "//jsapi:debug:run"
 task :remote => [:remote_common, :remote_server, :remote_client]
 task :remote_common => ["//java/client/src/org/openqa/selenium/remote:common"]
 task :remote_client => ["//java/client/src/org/openqa/selenium/remote"]
-task :remote_server => ["//javasrc/org/openqa/selenium/remote/server"]
+task :remote_server => ["//java/server/src/org/openqa/selenium/remote/server"]
 task :selenium => [ "//java/client/src/org/openqa/selenium" ]
 task :support => [
   "//java/client/src/org/openqa/selenium/lift",
@@ -99,7 +99,7 @@ task :support => [
 ]
 task :iphone_client => ['//java/client/src/org/openqa/selenium/iphone']
 task :iphone => [:iphone_server, :iphone_client]
-task :'selenium-server-standalone' => ["//javasrc/org/openqa/selenium/remote/server:server:uber"]
+task :'selenium-server-standalone' => ["//java/server/src/org/openqa/selenium/remote/server:server:uber"]
 
 task :ide => [ "//ide:selenium-ide" ]
 task :ide_proxy_setup => [ "//common/src/js/selenium:core", "se_ide:setup_proxy" ]
@@ -273,7 +273,7 @@ java_jar(:name => "selenium-core",
   selenium_test(:name => "test-core-#{k}",
                 :srcs => [ "common/test/js/core/*.js" ],
                 :deps => [
-                  "//javasrc/org/openqa/selenium/server:server:uber",
+                  "//java/server/src/org/openqa/selenium/server:server:uber",
                   :"selenium-core"
                 ],
                 :browser => v )
@@ -503,9 +503,9 @@ def version
 end
 
 task :release => [
-    '//javasrc/org/openqa/selenium/server:server:zip',
-    '//javasrc/org/openqa/selenium/server:server:uber',
-    '//javasrc/org/openqa/selenium/remote:client-combined:zip'
+    '//java/server/src/org/openqa/selenium/server:server:zip',
+    '//java/server/src/org/openqa/selenium/server:server:uber',
+    '//java/client/src/org/openqa/selenium/remote:client-combined:zip'
   ] do |t|
   # Unzip each of the deps and rename the pieces that need renaming
   renames = {
@@ -541,16 +541,16 @@ task :release => [
   end
 
   mkdir_p "build/dist"
-  cp "build/javasrc/org/openqa/selenium/server/server-standalone.jar", "build/dist/selenium-server-standalone-#{version}.jar"
-  cp "build/javasrc/org/openqa/selenium/server/server.zip", "build/dist/selenium-server-#{version}.zip"
-  cp "build/javasrc/org/openqa/selenium/remote/client-combined.zip", "build/dist/selenium-java-#{version}.zip"
+  cp "build/java/server/src/org/openqa/selenium/server/server-standalone.jar", "build/dist/selenium-server-standalone-#{version}.jar"
+  cp "build/java/server/src/org/openqa/selenium/server/server.zip", "build/dist/selenium-server-#{version}.zip"
+  cp "build/java/client/src/org/openqa/selenium/remote/client-combined.zip", "build/dist/selenium-java-#{version}.zip"
 end
 
 desc 'Build the selenium client jars'
-task 'selenium-java' => '//javasrc/org/openqa/selenium/remote:client-combined:project'
+task 'selenium-java' => '//java/client/src/org/openqa/selenium/remote:client-combined:project'
 
 desc 'Build the standalone server'
-task 'selenium-server-standalone' => '//javasrc/org/openqa/selenium/server:server:uber'
+task 'selenium-server-standalone' => '//java/server/src/org/openqa/selenium/server:server:uber'
 
 desc 'Build and package Selenium IDE'
 task :release_ide  => [:ide] do
