@@ -140,7 +140,6 @@ public class TestSuiteBuilder {
     File[] files = dir.listFiles();
     for (File file : files) {
       if (file.isDirectory()) {
-        System.out.println("Examining: " + file);
         addTestsRecursively(suite, file);
       } else {
         addTestsFromFile(suite, file);
