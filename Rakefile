@@ -33,7 +33,7 @@ require 'rake-tasks/selenium'
 require 'rake-tasks/se-ide'
 require 'rake-tasks/ie_code_generator'
 
-version = "2.0b1"
+version = "2.0b2"
 ide_version = "1.0.11"
 
 # The build system used by webdriver is layered on top of rake, and we call it
