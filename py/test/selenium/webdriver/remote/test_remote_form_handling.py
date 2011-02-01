@@ -58,7 +58,7 @@ def setup_module(module):
     webserver = SimpleWebServer()
     webserver.start()
     RemoteFormHandlingTests.webserver = webserver
-    RemoteFormHandlingTests.driver = webdriver.connect("remote", browser_name="firefox", platform="ANY")
+    RemoteFormHandlingTests.driver = webdriver.Remote(browser_name="firefox", platform="ANY")
 
 
 class RemoteFormHandlingTests(form_handling_tests.FormHandlingTests):

@@ -24,7 +24,7 @@ def setup_module(module):
     webserver = SimpleWebServer()
     webserver.start()
     IeImplicitWaitTest.webserver = webserver
-    IeImplicitWaitTest.driver = webdriver.connect('ie')
+    IeImplicitWaitTest.driver = webdriver.Ie()
 
 
 class IeImplicitWaitTest(implicit_waits_tests.ImplicitWaitTest):

@@ -24,7 +24,7 @@ def setup_module(module):
     webserver = SimpleWebServer()
     webserver.start()
     IeCorrectEventFiringTests.webserver = webserver
-    IeCorrectEventFiringTests.driver = webdriver.connect('ie')
+    IeCorrectEventFiringTests.driver = webdriver.Ie()
 
 
 class IeCorrectEventFiringTests(correct_event_firing_tests.CorrectEventFiringTests):

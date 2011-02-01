@@ -58,7 +58,7 @@ def setup_module(module):
     webserver = SimpleWebServer()
     webserver.start()
     RemoteChildrenFindingTests.webserver = webserver
-    RemoteChildrenFindingTests.driver = webdriver.connect("remote", browser_name="firefox", platform="ANY")
+    RemoteChildrenFindingTests.driver = webdriver.Remote(browser_name="firefox", platform="ANY")
 
 
 class RemoteChildrenFindingTests(children_finding_tests.ChildrenFindingTests):

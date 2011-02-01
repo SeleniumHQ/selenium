@@ -24,7 +24,7 @@ def setup_module(module):
     webserver = SimpleWebServer()
     webserver.start()
     FirefoxSelectElementHandlingTests.webserver = webserver
-    FirefoxSelectElementHandlingTests.driver = webdriver.connect('firefox')
+    FirefoxSelectElementHandlingTests.driver = webdriver.Firefox()
 
 
 class FirefoxSelectElementHandlingTests(select_element_handling_tests.SelectElementHandlingTests):

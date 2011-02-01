@@ -25,7 +25,7 @@ def setup_module(module):
     webserver = SimpleWebServer()
     webserver.start()
     FirefoxCookieTest.webserver = webserver
-    FirefoxCookieTest.driver = webdriver.connect('firefox')
+    FirefoxCookieTest.driver = webdriver.Firefox()
 
 
 class FirefoxCookieTest(cookie_tests.CookieTest):

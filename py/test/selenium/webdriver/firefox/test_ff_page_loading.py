@@ -24,7 +24,7 @@ def setup_module(module):
     webserver = SimpleWebServer()
     webserver.start()
     FirefoxPageLoadingTests.webserver = webserver
-    FirefoxPageLoadingTests.driver = webdriver.connect('firefox')
+    FirefoxPageLoadingTests.driver = webdriver.Firefox()
 
 
 class FirefoxPageLoadingTests(page_loading_tests.PageLoadingTests):

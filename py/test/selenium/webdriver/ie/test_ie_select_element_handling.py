@@ -24,7 +24,7 @@ def setup_module(module):
     webserver = SimpleWebServer()
     webserver.start()
     IeSelectElementHandlingTests.webserver = webserver
-    IeSelectElementHandlingTests.driver = webdriver.connect('ie')
+    IeSelectElementHandlingTests.driver = webdriver.Ie()
 
 
 class IeSelectElementHandlingTests(select_element_handling_tests.SelectElementHandlingTests):

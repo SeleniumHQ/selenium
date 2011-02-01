@@ -24,7 +24,7 @@ def setup_module(module):
     webserver = SimpleWebServer()
     webserver.start()
     IeExecutingAsyncJavaScriptTests.webserver = webserver
-    IeExecutingAsyncJavaScriptTests.driver = webdriver.connect('ie')
+    IeExecutingAsyncJavaScriptTests.driver = webdriver.Ie()
 
 
 class IeExecutingAsyncJavaScriptTests(executing_async_javascript_test.ExecutingAsyncJavaScriptTests):

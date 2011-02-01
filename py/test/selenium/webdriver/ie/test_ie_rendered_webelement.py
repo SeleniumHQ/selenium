@@ -24,7 +24,7 @@ def setup_module(module):
     webserver = SimpleWebServer()
     webserver.start()
     IeRenderedWebElementTests.webserver = webserver
-    IeRenderedWebElementTests.driver = webdriver.connect('ie')
+    IeRenderedWebElementTests.driver = webdriver.Ie()
 
 
 class IeRenderedWebElementTests(rendered_webelement_tests.RenderedWebElementTests):

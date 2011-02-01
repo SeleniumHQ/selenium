@@ -24,7 +24,7 @@ def setup_module(module):
     webserver = SimpleWebServer()
     webserver.start()
     ChromeTextHandlingTests.webserver = webserver
-    ChromeTextHandlingTests.driver = webdriver.connect('chrome')
+    ChromeTextHandlingTests.driver = webdriver.Chrome()
 
 
 class ChromeTextHandlingTests(text_handling_tests.TextHandlingTests):

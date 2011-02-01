@@ -24,7 +24,7 @@ def setup_module(module):
     webserver = SimpleWebServer()
     webserver.start()
     IeExecutingJavaScriptTests.webserver = webserver
-    IeExecutingJavaScriptTests.driver = webdriver.connect('ie')
+    IeExecutingJavaScriptTests.driver = webdriver.Ie()
 
 
 class IeExecutingJavaScriptTests(executing_javascript_test.ExecutingJavaScriptTests):

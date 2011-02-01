@@ -24,7 +24,7 @@ def setup_module(module):
     webserver = SimpleWebServer()
     webserver.start()
     FirefoxFormHandlingTests.webserver = webserver
-    FirefoxFormHandlingTests.driver = webdriver.connect('firefox')
+    FirefoxFormHandlingTests.driver = webdriver.Firefox()
 
 
 class FirefoxFormHandlingTests(form_handling_tests.FormHandlingTests):

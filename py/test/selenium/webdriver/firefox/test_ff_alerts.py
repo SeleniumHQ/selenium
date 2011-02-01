@@ -24,7 +24,7 @@ def setup_module(module):
     webserver = SimpleWebServer()
     webserver.start()
     FirefoxAlertsTest.webserver = webserver
-    FirefoxAlertsTest.driver = webdriver.connect('firefox')
+    FirefoxAlertsTest.driver = webdriver.Firefox()
 
 
 class FirefoxAlertsTest(alerts_tests.AlertsTest):

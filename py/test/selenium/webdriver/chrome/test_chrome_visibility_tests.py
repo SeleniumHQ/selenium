@@ -24,7 +24,7 @@ def setup_module(module):
     webserver = SimpleWebServer()
     webserver.start()
     ChromeVisibilityTests.webserver = webserver
-    ChromeVisibilityTests.driver = webdriver.connect('chrome')
+    ChromeVisibilityTests.driver = webdriver.Chrome()
 
 
 class ChromeVisibilityTests(visibility_tests.VisibilityTests):

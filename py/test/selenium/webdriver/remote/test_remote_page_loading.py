@@ -58,7 +58,7 @@ def setup_module(module):
     webserver = SimpleWebServer()
     webserver.start()
     RemotePageLoadingTests.webserver = webserver
-    RemotePageLoadingTests.driver = webdriver.connect("remote", browser_name="firefox", platform="ANY")
+    RemotePageLoadingTests.driver = webdriver.Remote(browser_name="firefox", platform="ANY")
 
 
 class RemotePageLoadingTests(page_loading_tests.PageLoadingTests):

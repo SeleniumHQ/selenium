@@ -24,7 +24,7 @@ def setup_module(module):
     webserver = SimpleWebServer()
     webserver.start()
     IePageLoadingTests.webserver = webserver
-    IePageLoadingTests.driver = webdriver.connect('ie')
+    IePageLoadingTests.driver = webdriver.Ie()
 
 
 class IePageLoadingTests(page_loading_tests.PageLoadingTests):

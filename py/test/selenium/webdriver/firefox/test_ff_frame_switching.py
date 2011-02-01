@@ -24,7 +24,7 @@ def setup_module(module):
     webserver = SimpleWebServer()
     webserver.start()
     FirefoxFrameSwitchingTest.webserver = webserver
-    FirefoxFrameSwitchingTest.driver = webdriver.connect('firefox')
+    FirefoxFrameSwitchingTest.driver = webdriver.Firefox()
 
 
 class FirefoxFrameSwitchingTest(frame_switching_tests.FrameSwitchingTest):

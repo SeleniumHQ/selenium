@@ -24,7 +24,7 @@ def setup_module(module):
     webserver = SimpleWebServer()
     webserver.start()
     ChromeDriverElementFindingTests.webserver = webserver
-    ChromeDriverElementFindingTests.driver = webdriver.connect('chrome')
+    ChromeDriverElementFindingTests.driver = webdriver.Chrome()
 
 
 class ChromeDriverElementFindingTests(driver_element_finding_test.DriverElementFindingTests):

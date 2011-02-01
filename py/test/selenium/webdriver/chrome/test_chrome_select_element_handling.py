@@ -24,7 +24,7 @@ def setup_module(module):
     webserver = SimpleWebServer()
     webserver.start()
     ChromeApiExampleTest.webserver = webserver
-    ChromeApiExampleTest.driver = webdriver.connect('chrome')
+    ChromeApiExampleTest.driver = webdriver.Chrome()
 
 
 class ChromeApiExampleTest(api_examples.ApiExampleTest):

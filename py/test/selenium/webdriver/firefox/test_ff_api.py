@@ -24,7 +24,7 @@ def setup_module(module):
     webserver = SimpleWebServer()
     webserver.start()
     FirefoxApiExampleTest.webserver = webserver
-    FirefoxApiExampleTest.driver = webdriver.connect('firefox')
+    FirefoxApiExampleTest.driver = webdriver.Firefox()
 
 
 class FirefoxApiExampleTest(api_examples.ApiExampleTest):

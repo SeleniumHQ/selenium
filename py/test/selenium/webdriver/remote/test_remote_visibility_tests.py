@@ -58,7 +58,7 @@ def setup_module(module):
     webserver = SimpleWebServer()
     webserver.start()
     RemoteVisibilityTests.webserver = webserver
-    RemoteVisibilityTests.driver = webdriver.connect("remote", browser_name="firefox", platform="ANY")
+    RemoteVisibilityTests.driver = webdriver.Remote(browser_name="firefox", platform="ANY")
 
 
 class RemoteVisibilityTests(visibility_tests.VisibilityTests):

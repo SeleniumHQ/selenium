@@ -24,7 +24,7 @@ def setup_module(module):
     webserver = SimpleWebServer()
     webserver.start()
     FirefoxExecutingJavaScriptTests.webserver = webserver
-    FirefoxExecutingJavaScriptTests.driver = webdriver.connect('firefox')
+    FirefoxExecutingJavaScriptTests.driver = webdriver.Firefox()
 
 
 class FirefoxExecutingJavaScriptTests(executing_javascript_test.ExecutingJavaScriptTests):

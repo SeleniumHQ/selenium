@@ -24,7 +24,7 @@ def setup_module(module):
     webserver = SimpleWebServer()
     webserver.start()
     ChromePageLoadingTests.webserver = webserver
-    ChromePageLoadingTests.driver = webdriver.connect('chrome')
+    ChromePageLoadingTests.driver = webdriver.Chrome()
 
 
 class ChromePageLoadingTests(page_loading_tests.PageLoadingTests):

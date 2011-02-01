@@ -24,7 +24,7 @@ def setup_module(module):
     webserver = SimpleWebServer()
     webserver.start()
     ChromeElementAttributeTests.webserver = webserver
-    ChromeElementAttributeTests.driver = webdriver.connect('chrome')
+    ChromeElementAttributeTests.driver = webdriver.Chrome()
 
 
 class ChromeElementAttributeTests(element_attribute_tests.ElementAttributeTests):

@@ -24,7 +24,7 @@ def setup_module(module):
     webserver = SimpleWebServer()
     webserver.start()
     FirefoxImplicitWaitTest.webserver = webserver
-    FirefoxImplicitWaitTest.driver = webdriver.connect('firefox')
+    FirefoxImplicitWaitTest.driver = webdriver.Firefox()
 
 
 class FirefoxImplicitWaitTest(implicit_waits_tests.ImplicitWaitTest):

@@ -24,7 +24,7 @@ def setup_module(module):
     webserver = SimpleWebServer()
     webserver.start()
     ChromeCorrectEventFiringTests.webserver = webserver
-    ChromeCorrectEventFiringTests.driver = webdriver.connect('chrome')
+    ChromeCorrectEventFiringTests.driver = webdriver.Chrome()
 
 
 class ChromeCorrectEventFiringTests(correct_event_firing_tests.CorrectEventFiringTests):

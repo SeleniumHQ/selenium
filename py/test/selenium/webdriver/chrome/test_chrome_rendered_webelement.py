@@ -24,7 +24,7 @@ def setup_module(module):
     webserver = SimpleWebServer()
     webserver.start()
     ChromeRenderedWebElementTests.webserver = webserver
-    ChromeRenderedWebElementTests.driver = webdriver.connect('chrome')
+    ChromeRenderedWebElementTests.driver = webdriver.Chrome()
 
 
 class ChromeRenderedWebElementTests(rendered_webelement_tests.RenderedWebElementTests):

@@ -24,7 +24,7 @@ def setup_module(module):
     webserver = SimpleWebServer()
     webserver.start()
     FirefoxVisibilityTests.webserver = webserver
-    FirefoxVisibilityTests.driver = webdriver.connect('firefox')
+    FirefoxVisibilityTests.driver = webdriver.Firefox()
 
 
 class FirefoxVisibilityTests(visibility_tests.VisibilityTests):

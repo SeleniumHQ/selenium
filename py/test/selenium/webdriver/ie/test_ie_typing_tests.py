@@ -24,7 +24,7 @@ def setup_module(module):
     webserver = SimpleWebServer()
     webserver.start()
     IeTypingTests.webserver = webserver
-    IeTypingTests.driver = webdriver.connect('ie')
+    IeTypingTests.driver = webdriver.Ie()
 
 
 class IeTypingTests(typing_tests.TypingTests):

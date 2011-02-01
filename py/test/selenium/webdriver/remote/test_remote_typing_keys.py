@@ -58,7 +58,7 @@ def setup_module(module):
     webserver = SimpleWebServer()
     webserver.start()
     RemoteTypingTests.webserver = webserver
-    RemoteTypingTests.driver = webdriver.connect("remote", browser_name="firefox", platform="ANY")
+    RemoteTypingTests.driver = webdriver.Remote(browser_name="firefox", platform="ANY")
 
 
 class RemoteTypingTests(typing_tests.TypingTests):

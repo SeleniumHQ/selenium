@@ -24,7 +24,7 @@ def setup_module(module):
     webserver = SimpleWebServer()
     webserver.start()
     ChromeChildrenFindingTest.webserver = webserver
-    ChromeChildrenFindingTest.driver = webdriver.connect('chrome')
+    ChromeChildrenFindingTest.driver = webdriver.Chrome()
 
 
 class ChromeChildrenFindingTest(children_finding_tests.ChildrenFindingTests):

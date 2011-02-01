@@ -24,7 +24,7 @@ def setup_module(module):
     webserver = SimpleWebServer()
     webserver.start()
     ChromeFormHandlingTests.webserver = webserver
-    ChromeFormHandlingTests.driver = webdriver.connect('chrome')
+    ChromeFormHandlingTests.driver = webdriver.Chrome()
 
 
 class ChromeFormHandlingTests(form_handling_tests.FormHandlingTests):

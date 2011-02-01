@@ -24,7 +24,7 @@ def setup_module(module):
     webserver = SimpleWebServer()
     webserver.start()
     FirefoxChildrenFindingTest.webserver = webserver
-    FirefoxChildrenFindingTest.driver = webdriver.connect('firefox')
+    FirefoxChildrenFindingTest.driver = webdriver.Firefox()
 
 
 class FirefoxChildrenFindingTest(children_finding_tests.ChildrenFindingTests):

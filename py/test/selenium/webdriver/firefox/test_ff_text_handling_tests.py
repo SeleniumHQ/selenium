@@ -24,7 +24,7 @@ def setup_module(module):
     webserver = SimpleWebServer()
     webserver.start()
     FirefoxTextHandlingTests.webserver = webserver
-    FirefoxTextHandlingTests.driver = webdriver.connect('firefox')
+    FirefoxTextHandlingTests.driver = webdriver.Firefox()
 
 
 class FirefoxTextHandlingTests(text_handling_tests.TextHandlingTests):

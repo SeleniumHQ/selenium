@@ -24,7 +24,7 @@ def setup_module(module):
     webserver = SimpleWebServer()
     webserver.start()
     IeChildrenFindingTest.webserver = webserver
-    IeChildrenFindingTest.driver = webdriver.connect('ie')
+    IeChildrenFindingTest.driver = webdriver.Ie()
 
 
 class IeChildrenFindingTest(children_finding_tests.ChildrenFindingTests):

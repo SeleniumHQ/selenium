@@ -24,7 +24,7 @@ def setup_module(module):
     webserver = SimpleWebServer()
     webserver.start()
     ChromeStaleReferenceTests.webserver = webserver
-    ChromeStaleReferenceTests.driver = webdriver.connect('chrome')
+    ChromeStaleReferenceTests.driver = webdriver.Chrome()
 
 
 class ChromeStaleReferenceTests(stale_reference_tests.StaleReferenceTests):

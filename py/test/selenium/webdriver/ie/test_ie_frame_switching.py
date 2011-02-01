@@ -24,7 +24,7 @@ def setup_module(module):
     webserver = SimpleWebServer()
     webserver.start()
     IeFrameSwitchingTest.webserver = webserver
-    IeFrameSwitchingTest.driver = webdriver.connect('ie')
+    IeFrameSwitchingTest.driver = webdriver.Ie()
 
 
 class IeFrameSwitchingTest(frame_switching_tests.FrameSwitchingTest):

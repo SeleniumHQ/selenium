@@ -24,7 +24,7 @@ def setup_module(module):
     webserver = SimpleWebServer()
     webserver.start()
     IeApiExampleTest.webserver = webserver
-    IeApiExampleTest.driver = webdriver.connect('ie')
+    IeApiExampleTest.driver = webdriver.Ie()
 
 
 class IeApiExampleTest(api_examples.ApiExampleTest):

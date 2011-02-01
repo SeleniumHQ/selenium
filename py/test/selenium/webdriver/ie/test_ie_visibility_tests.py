@@ -24,7 +24,7 @@ def setup_module(module):
     webserver = SimpleWebServer()
     webserver.start()
     IeVisibilityTests.webserver = webserver
-    IeVisibilityTests.driver = webdriver.connect('ie')
+    IeVisibilityTests.driver = webdriver.Ie()
 
 
 class IeVisibilityTests(visibility_tests.VisibilityTests):

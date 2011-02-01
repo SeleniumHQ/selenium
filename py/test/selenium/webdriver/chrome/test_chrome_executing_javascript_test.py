@@ -24,7 +24,7 @@ def setup_module(module):
     webserver = SimpleWebServer()
     webserver.start()
     ChromeExecutingJavaScriptTests.webserver = webserver
-    ChromeExecutingJavaScriptTests.driver = webdriver.connect('chrome')
+    ChromeExecutingJavaScriptTests.driver = webdriver.Chrome()
 
 
 class ChromeExecutingJavaScriptTests(executing_javascript_test.ExecutingJavaScriptTests):

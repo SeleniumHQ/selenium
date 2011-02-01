@@ -24,7 +24,7 @@ def setup_module(module):
     webserver = SimpleWebServer()
     webserver.start()
     FirefoxCorrectEventFiringTests.webserver = webserver
-    FirefoxCorrectEventFiringTests.driver = webdriver.connect('firefox')
+    FirefoxCorrectEventFiringTests.driver = webdriver.Firefox()
 
 
 class FirefoxCorrectEventFiringTests(correct_event_firing_tests.CorrectEventFiringTests):

@@ -24,7 +24,7 @@ def setup_module(module):
     webserver = SimpleWebServer()
     webserver.start()
     FirefoxTypingTests.webserver = webserver
-    FirefoxTypingTests.driver = webdriver.connect('firefox')
+    FirefoxTypingTests.driver = webdriver.Firefox()
 
 
 class FirefoxTypingTests(typing_tests.TypingTests):

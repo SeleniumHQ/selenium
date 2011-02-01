@@ -24,7 +24,7 @@ def setup_module(module):
     webserver = SimpleWebServer()
     webserver.start()
     IeFormHandlingTests.webserver = webserver
-    IeFormHandlingTests.driver = webdriver.connect('ie')
+    IeFormHandlingTests.driver = webdriver.Ie()
 
 
 class IeFormHandlingTests(form_handling_tests.FormHandlingTests):

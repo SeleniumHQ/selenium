@@ -24,7 +24,7 @@ def setup_module(module):
     webserver = SimpleWebServer()
     webserver.start()
     ChromeImplicitWaitTest.webserver = webserver
-    ChromeImplicitWaitTest.driver = webdriver.connect('chrome')
+    ChromeImplicitWaitTest.driver = webdriver.Chrome()
 
 
 class ChromeImplicitWaitTest(implicit_waits_tests.ImplicitWaitTest):
