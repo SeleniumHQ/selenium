@@ -19,6 +19,7 @@ package org.openqa.selenium.remote.server;
 
 import org.openqa.selenium.AbstractDriverTestCase;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Ignore;
 import org.openqa.selenium.JavascriptEnabled;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
@@ -29,10 +30,12 @@ import org.openqa.selenium.remote.Augmenter;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.ScreenshotException;
 
+import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.OutputType.BASE64;
 
 public class RemoteWebDriverTest extends AbstractDriverTestCase {
 
+  @Ignore(HTMLUNIT)
   public void testShouldBeAbleToGrabASnapshotOnException() {
     driver.get(pages.simpleTestPage);
 
@@ -54,6 +57,7 @@ public class RemoteWebDriverTest extends AbstractDriverTestCase {
     assertTrue(((JavascriptExecutor) driver).isJavascriptEnabled());
   }
 
+  @Ignore(HTMLUNIT)
   public void testCanAugmentWebDriverInstanceIfNecessary() {
     if (!(driver instanceof RemoteWebDriver)) {
       System.out.println("Skipping test: driver is not a remote webdriver");

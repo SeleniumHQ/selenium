@@ -167,10 +167,17 @@ public class DesiredCapabilities implements Serializable, Capabilities {
     return new DesiredCapabilities("htmlunit", "", Platform.ANY);
   }
 
+  public static DesiredCapabilities htmlUnitWithJavascript() {
+    DesiredCapabilities htmlUnitWithJS =
+        new DesiredCapabilities("htmlunit", "firefox", Platform.ANY);
+    htmlUnitWithJS.setJavascriptEnabled(true);
+    return htmlUnitWithJS;
+  }
+
   public static DesiredCapabilities iphone() {
     return new DesiredCapabilities("iphone", "", Platform.MAC);
   }
-  
+
   public static DesiredCapabilities chrome() {
     return new DesiredCapabilities("chrome", "", Platform.ANY);
   }
