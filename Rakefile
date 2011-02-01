@@ -94,8 +94,8 @@ task :remote_client => ["//java/client/src/org/openqa/selenium/remote"]
 task :remote_server => ["//javasrc/org/openqa/selenium/remote/server"]
 task :selenium => [ "//javasrc/org/openqa/selenium" ]
 task :support => [
-  "//javasrc/org/openqa/selenium/lift",
-  "//javasrc/org/openqa/selenium/support",
+  "//java/client/src/org/openqa/selenium/lift",
+  "//java/client/src/org/openqa/selenium/support",
 ]
 task :iphone_client => ['//java/client/src/org/openqa/selenium/iphone']
 task :iphone => [:iphone_server, :iphone_client]
@@ -116,8 +116,8 @@ task :test_jsapi => [ "//jsapi:atoms:run",
 task :test_firefox => [ "//java/client/test/org/openqa/selenium/firefox:test:run" ]
 task :test_remote => [ "//javatests/org/openqa/selenium/remote/server:test:run" ]
 task :test_support => [
-  "//javatests/org/openqa/selenium/lift:test:run",
-  "//javatests/org/openqa/selenium/support:test:run"
+  "//java/client/test/org/openqa/selenium/lift:test:run",
+  "//java/client/test/org/openqa/selenium/support:test:run"
 ]
 task :test_iphone_client => [:'webdriver-iphone-client-test']
 task :test_iphone => [:test_iphone_server, :test_iphone_client]

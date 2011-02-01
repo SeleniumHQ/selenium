@@ -2,7 +2,7 @@
 java_library(name = "test",
   srcs = [ "*.java" ],
   deps = [
-    "//javasrc/org/openqa/selenium/support/events",
+    "//java/client/src/org/openqa/selenium/support/events",
     "//javatests/org/openqa/selenium:base",
     "//third_party/java/jmock",
   ])

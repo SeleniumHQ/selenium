@@ -5,9 +5,9 @@ java_library(name = "test",
     "internal/*.java",
   ],
   deps = [
-    "//javasrc/org/openqa/selenium/support:page-factory",
+    "//java/client/src/org/openqa/selenium/support:page-factory",
     "//javatests/org/openqa/selenium:base",
-    "//javatests/org/openqa/selenium/support/ui:clock",
+    "//java/client/test/org/openqa/selenium/support/ui:clock",
     "//third_party/java/jmock",
     "//third_party/java/junit",
   ])

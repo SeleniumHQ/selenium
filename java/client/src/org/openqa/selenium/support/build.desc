@@ -2,8 +2,8 @@
 java_library(name = "support",
   deps = [
     ":page-factory",
-    "//javasrc/org/openqa/selenium/support/events",
-    "//javasrc/org/openqa/selenium/support/ui",
+    "//java/client/src/org/openqa/selenium/support/events",
+    "//java/client/src/org/openqa/selenium/support/ui",
   ])
 
 java_library(name = "page-factory",
@@ -19,5 +19,5 @@ java_library(name = "page-factory",
   ],
   deps = [
     "//javasrc/org/openqa/selenium:webdriver-api",
-    "//javasrc/org/openqa/selenium/support/ui:components",
+    "//java/client/src/org/openqa/selenium/support/ui:components",
   ])

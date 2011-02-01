@@ -5,7 +5,7 @@ java_library(name = "test",
   ],
   deps = [
     ":clock",
-    "//javasrc/org/openqa/selenium/support/ui",
+    "//java/client/src/org/openqa/selenium/support/ui",
     "//javatests/org/openqa/selenium:base",
     "//third_party/java/jmock",
   ])
@@ -16,5 +16,5 @@ java_library(name = "clock",
     "TickingClock.java",
   ],
   deps = [
-    "//javasrc/org/openqa/selenium/support/ui:clock",
+    "//java/client/src/org/openqa/selenium/support/ui:clock",
   ])

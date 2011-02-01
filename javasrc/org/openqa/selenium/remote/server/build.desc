@@ -20,7 +20,7 @@ java_library(name = "server",
   deps = [
     "//javasrc/org/openqa/selenium:webdriver-api",
     "//java/client/src/org/openqa/selenium/remote",
-    "//javasrc/org/openqa/selenium/support/events",
+    "//java/client/src/org/openqa/selenium/support/events",
     "//third_party/java/guava-libraries",
     "//third_party/java/servlet-api",
   ])
