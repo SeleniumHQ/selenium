@@ -5,7 +5,7 @@ java_library(name = "base",
     "DesiredCapabilities.java",
   ],
   deps = [
-    "//javasrc/org/openqa/selenium:webdriver-api",
+    "//java/client/src/org/openqa/selenium:webdriver-api",
   ])
 
 java_library(name = "common",
@@ -25,8 +25,8 @@ java_library(name = "common",
   deps = [
     ":base",
 
-    "//javasrc/org/openqa/selenium/interactions",
-    "//javasrc/org/openqa/selenium/browserlaunchers",
+    "//java/client/src/org/openqa/selenium/interactions",
+    "//java/client/src/org/openqa/selenium/browserlaunchers",
     "//third_party/java/guava-libraries",
     "//third_party/java/json",
   ])
@@ -62,7 +62,7 @@ java_library(name = "remote",
   ],
   deps = [
     ":common",
-    "//javasrc/org/openqa/selenium/os",
+    "//java/client/src/org/openqa/selenium/os",
     "//third_party/java/apache-httpclient",
     "//third_party/java/cglib",
   ])
@@ -70,15 +70,15 @@ java_library(name = "remote",
 java_library(name = "client-combined",
   deps = [
     ":client",
-    "//javasrc/com/thoughtworks/selenium:selenium",
+    "//java/client/src/com/thoughtworks/selenium:selenium",
     "//java/client/src/org/openqa/selenium/android",
     "//java/client/src/org/openqa/selenium/chrome",
     "//java/client/src/org/openqa/selenium/htmlunit",
     "//java/client/src/org/openqa/selenium/firefox",
     "//java/client/src/org/openqa/selenium/ie",
     "//java/client/src/org/openqa/selenium/iphone",
-    "//javasrc/org/openqa/selenium:selenium-api",
-    "//javasrc/org/openqa/selenium:selenium-backed-webdriver",
+    "//java/client/src/org/openqa/selenium:selenium-api",
+    "//java/client/src/org/openqa/selenium:selenium-backed-webdriver",
     "//java/client/src/org/openqa/selenium/support",
-    "//javasrc/org/openqa/selenium:webdriver-backed-selenium",
+    "//java/client/src/org/openqa/selenium:webdriver-backed-selenium",
   ])

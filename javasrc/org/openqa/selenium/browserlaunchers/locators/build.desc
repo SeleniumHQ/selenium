@@ -1,8 +1,0 @@
-
-java_library(name = "locators",
-  srcs = [ "*.java" ],
-  deps = [
-    "//javasrc/org/openqa/selenium/browserlaunchers:launcher-utils",
-    "//java/client/src/org/openqa/selenium/internal:logging",
-    "//javasrc/org/openqa/selenium/os",
-  ])

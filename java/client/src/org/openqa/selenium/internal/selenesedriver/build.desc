@@ -1,0 +1,11 @@
+
+java_library(name = "selenesedriver",
+  srcs = [
+    "*.java",
+  ],
+  deps = [
+    "//java/client/src/com/thoughtworks/selenium",
+    "//java/client/src/org/openqa/selenium:webdriver-api",
+    "//third_party/java/guava-libraries",
+    "//third_party/java/json",
+  ])

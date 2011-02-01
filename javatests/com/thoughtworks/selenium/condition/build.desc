@@ -1,8 +1,0 @@
-
-java_test(name = "test",
-  srcs = [ "*.java" ],
-  deps = [
-    "//javasrc/com/thoughtworks/selenium/condition",
-    "//javasrc/com/thoughtworks/selenium:wait",
-    "//third_party/java/junit",
-  ])

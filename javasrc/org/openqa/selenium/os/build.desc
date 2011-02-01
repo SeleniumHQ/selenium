@@ -1,9 +1,0 @@
-
-java_library(name = "os",
-  srcs = [ "*.java" ],
-  deps = [
-    "//javasrc/org/openqa/selenium:base",
-    "//java/client/src/org/openqa/selenium/internal:logging",
-    "//javasrc/org/openqa/selenium/io",
-  ])
-

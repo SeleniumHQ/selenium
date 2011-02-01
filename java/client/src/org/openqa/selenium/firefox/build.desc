@@ -9,8 +9,8 @@ java_library(name = "firefox",
     { "//cpp:noblur64" : "amd64/x_ignore_nofocus.so" }
   ],
   deps = [
-    "//javasrc/org/openqa/selenium/io",
-    "//javasrc/org/openqa/selenium/net",
+    "//java/client/src/org/openqa/selenium/io",
+    "//java/client/src/org/openqa/selenium/net",
     "//java/client/src/org/openqa/selenium/remote",
     "//third_party/java/commons-io",
     "//third_party/java/guava-libraries",

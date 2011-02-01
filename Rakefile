@@ -89,10 +89,10 @@ task :ie => [ "//java/client/src/org/openqa/selenium/ie" ]
 task :firefox => [ "//java/client/src/org/openqa/selenium/firefox" ]
 task :jsapi => "//jsapi:debug:run"
 task :remote => [:remote_common, :remote_server, :remote_client]
-task :remote_common => ["//javasrc/org/openqa/selenium/remote:common"]
+task :remote_common => ["//java/client/src/org/openqa/selenium/remote:common"]
 task :remote_client => ["//java/client/src/org/openqa/selenium/remote"]
 task :remote_server => ["//javasrc/org/openqa/selenium/remote/server"]
-task :selenium => [ "//javasrc/org/openqa/selenium" ]
+task :selenium => [ "//java/client/src/org/openqa/selenium" ]
 task :support => [
   "//java/client/src/org/openqa/selenium/lift",
   "//java/client/src/org/openqa/selenium/support",
@@ -129,16 +129,16 @@ task :android_server => ['//android:android-server']
 task :test_selenium => [ :'test-rc', :'test-v1-emulation', :'test-selenium-backed-webdriver', :'test-core']
 
 task :'test-selenium-backed-webdriver' => ['//javatests/org/openqa/selenium/v1:selenium-backed-webdriver-test:run']
-task :'test-v1-emulation' => [ '//javatests/com/thoughtworks/selenium:firefox-emulation-test:run' ]
-task :'test-rc' => [ '//javatests/com/thoughtworks/selenium:firefox-rc-test:run' ]
+task :'test-v1-emulation' => [ '//java/client/test/com/thoughtworks/selenium:firefox-emulation-test:run' ]
+task :'test-rc' => [ '//java/client/test/com/thoughtworks/selenium:firefox-rc-test:run' ]
 task :'test-core' => [:'test-core-firefox']
 
 if (windows?)
-  task :'test-v1-emulation' => ['//javatests/com/thoughtworks/selenium:ie-emulation-test:run']
-  task :'test-rc' => ['//javatests/com/thoughtworks/selenium:ie-rc-test:run']
+  task :'test-v1-emulation' => ['//java/client/test/com/thoughtworks/selenium:ie-emulation-test:run']
+  task :'test-rc' => ['//java/client/test/com/thoughtworks/selenium:ie-rc-test:run']
   task :'test-core' => [:'test-core-ie']
 #elsif (mac?)
-#  task :'test-rc' => ['//javatests/com/thoughtworks/selenium:safari-rc-test:run']
+#  task :'test-rc' => ['//java/client/test/com/thoughtworks/selenium:safari-rc-test:run']
 #  task :'test-core' => [:'test-core-safari']
 end
 

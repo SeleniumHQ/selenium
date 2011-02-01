@@ -11,7 +11,7 @@ java_library(name = "base",
   srcs = [
     "TimeoutException.java",
   ], deps = [
-    "//javasrc/org/openqa/selenium:webdriver-api",
+    "//java/client/src/org/openqa/selenium:webdriver-api",
   ])
 
 java_library(name = "clock",
@@ -28,7 +28,7 @@ java_library(name = "components",
   deps = [
     ":base",
     ":clock",
-    "//javasrc/org/openqa/selenium:webdriver-api",
+    "//java/client/src/org/openqa/selenium:webdriver-api",
     "//third_party/java/junit",
   ])
 
@@ -38,7 +38,7 @@ java_library(name = "elements",
     "UnexpectedTagNameException.java",
   ],
   deps = [
-    "//javasrc/org/openqa/selenium:webdriver-api",
+    "//java/client/src/org/openqa/selenium:webdriver-api",
   ])
 
 java_library(name = "wait",
@@ -50,6 +50,6 @@ java_library(name = "wait",
   deps = [
     ":base",
     ":clock",
-    "//javasrc/org/openqa/selenium:webdriver-api",
+    "//java/client/src/org/openqa/selenium:webdriver-api",
     "//third_party/java/guava-libraries",
   ])

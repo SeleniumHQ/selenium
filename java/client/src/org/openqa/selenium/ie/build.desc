@@ -8,7 +8,7 @@ java_library(name = "ie",
   deps = [
     ":ie_result_type_java",
     "//jobbie:sizzle",
-    "//javasrc/org/openqa/selenium/net",
+    "//java/client/src/org/openqa/selenium/net",
     "//java/client/src/org/openqa/selenium/remote",
     "//third_party/java/jna",
   ])
