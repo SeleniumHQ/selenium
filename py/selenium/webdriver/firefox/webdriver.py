@@ -23,6 +23,7 @@ from selenium.webdriver.firefox.firefoxlauncher import FirefoxLauncher
 from selenium.webdriver.firefox.firefox_profile import FirefoxProfile
 from selenium.webdriver.firefox.extensionconnection import ExtensionConnection
 import urllib2
+import socket
 
 
 class WebDriver(RemoteWebDriver):
@@ -38,18 +39,27 @@ class WebDriver(RemoteWebDriver):
                    recommended to pass in a FirefoxProfile object)
           timeout: the amount of time to wait for extension socket
         """
+        port = self._free_port()
         self.browser = FirefoxLauncher()
         if type(profile) == str:
             # This is to be Backward compatible because we used to take a
             # profile name
-            profile = FirefoxProfile(name=profile)
+            profile = FirefoxProfile(name=profile, port=port)
         if not profile:
-            profile = FirefoxProfile()
+            profile = FirefoxProfile(port=port)
         self.browser.launch_browser(profile)
         RemoteWebDriver.__init__(self,
             command_executor=ExtensionConnection(timeout),
             browser_name='firefox', platform='ANY', version='',
             javascript_enabled=True)
+
+    def _free_port(self):
+        port = 0
+        free_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        free_socket.bind((socket.gethostname(), 0))
+        port = free_socket.getsockname()[1]
+        free_socket.close()
+        return port
 
     def _execute(self, command, params=None):
         try:
