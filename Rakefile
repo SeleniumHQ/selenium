@@ -296,10 +296,11 @@ task :javadocs => [:common, :firefox, :htmlunit, :jobbie, :remote, :support, :ch
    Dir["third_party/java/*/*.jar"].each do |jar|
      classpath << ":" + jar
    end
-#   %w(common firefox jobbie htmlunit support remote/common remote/client chrome selenium).each do |m|
-#     sourcepath += "java"
-#   end
-   cmd = "javadoc -d build/javadoc -sourcepath java -classpath #{classpath} -subpackages org.openqa.selenium -subpackages com.thoughtworks"
+   [File.join(%w(java client src))].each do |m|
+     sourcepath += File::PATH_SEPARATOR + m
+   end
+   p sourcepath
+   cmd = "javadoc -d build/javadoc -sourcepath #{sourcepath} -classpath #{classpath} -subpackages org.openqa.selenium -subpackages com.thoughtworks"
    if (windows?)
      cmd = cmd.gsub(/\//, "\\").gsub(/:/, ";")
    end
