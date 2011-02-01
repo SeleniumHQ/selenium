@@ -199,6 +199,6 @@
     <Compile Include="Internal\SeleniumEmulation\GetCssCount.cs" />
   </ItemGroup>
   <PropertyGroup>
-    <PostBuildEvent>copy /y $(SolutionDir)javasrc\org\openqa\selenium\internal\seleniumemulation\*.js $(TargetDir)</PostBuildEvent>
+    <PostBuildEvent>copy /y $(SolutionDir)java\client\src\org\openqa\selenium\internal\seleniumemulation\*.js $(TargetDir)</PostBuildEvent>
   </PropertyGroup>
 </Project>
