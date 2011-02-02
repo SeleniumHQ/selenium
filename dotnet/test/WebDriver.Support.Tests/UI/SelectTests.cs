@@ -52,7 +52,7 @@ namespace OpenQA.Selenium.Support.UI
             Stub.On(webElement).Method("GetAttribute").Will(Return.Value("multiple"));
             Expect.Once.On(webElement).Method("FindElements").Will(Return.Value(new ReadOnlyCollection<IWebElement>(options)));
             
-            Assert.AreEqual(options, new SelectElement(webElement).GetOptions());
+            Assert.AreEqual(options, new SelectElement(webElement).Options);
             mocks.VerifyAllExpectationsHaveBeenMet();
         }
 
@@ -71,7 +71,7 @@ namespace OpenQA.Selenium.Support.UI
             Stub.On(notSelected).GetProperty("Selected").Will(Return.Value(false));
             Expect.Once.On(webElement).Method("FindElements").Will(Return.Value(new ReadOnlyCollection<IWebElement>(options)));
 
-            IWebElement option = new SelectElement(webElement).GetSelected();
+            IWebElement option = new SelectElement(webElement).SelectedOption;
             Assert.AreEqual(selected, option);
             mocks.VerifyAllExpectationsHaveBeenMet();
         }
@@ -91,7 +91,7 @@ namespace OpenQA.Selenium.Support.UI
             Stub.On(notSelected).GetProperty("Selected").Will(Return.Value(false));
             Expect.Once.On(webElement).Method("FindElements").Will(Return.Value(new ReadOnlyCollection<IWebElement>(options)));
 
-            IList<IWebElement> returnedOption = new SelectElement(webElement).GetAllSelectedOption();
+            IList<IWebElement> returnedOption = new SelectElement(webElement).AllSelectedOptions;
             Assert.That(returnedOption.Count == 1);
             Assert.AreEqual(selected, returnedOption[0]);
             mocks.VerifyAllExpectationsHaveBeenMet();
@@ -347,8 +347,7 @@ namespace OpenQA.Selenium.Support.UI
         }
 
         [Test]
-        [ExpectedException(typeof(NoSuchElementException))]
-        public void ThrowNoSuchElementExceptionWhenNoOptionSelected()
+        public void ShouldReturnNullWhenNoOptionSelected()
         {
             IWebElement selected = mocks.NewMock<IWebElement>();
             IWebElement notSelected = mocks.NewMock<IWebElement>();
@@ -360,9 +359,8 @@ namespace OpenQA.Selenium.Support.UI
             Stub.On(notSelected).GetProperty("Selected").Will(Return.Value(false));
             Expect.Once.On(webElement).Method("FindElements").Will(Return.Value(new ReadOnlyCollection<IWebElement>(options)));
 
-            new SelectElement(webElement).GetSelected();
-
+            SelectElement element = new SelectElement(webElement);
+            Assert.IsNull(element.SelectedOption);
         }
-
     }
 }

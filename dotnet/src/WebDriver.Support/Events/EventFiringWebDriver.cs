@@ -171,7 +171,7 @@ namespace OpenQA.Selenium.Support.Events
 
             set
             {
-                WebDriverNavigationEventArgs e = new WebDriverNavigationEventArgs(this.driver, new Uri(value));
+                WebDriverNavigationEventArgs e = new WebDriverNavigationEventArgs(this.driver, value);
                 this.OnNavigating(e);
                 this.driver.Url = value;
                 this.OnNavigated(e);

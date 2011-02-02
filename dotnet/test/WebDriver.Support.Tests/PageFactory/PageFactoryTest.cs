@@ -2,7 +2,7 @@
 using NMock2;
 using NUnit.Framework;
 
-namespace OpenQA.Selenium.Support.PageFactory
+namespace OpenQA.Selenium.Support.PageObjects
 {
     [TestFixture]
     public class PageFactoryTest

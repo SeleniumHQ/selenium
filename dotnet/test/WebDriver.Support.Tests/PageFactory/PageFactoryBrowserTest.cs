@@ -1,7 +1,7 @@
 ﻿using NUnit.Framework;
 using OpenQA.Selenium.Environment;
 
-namespace OpenQA.Selenium.Support.PageFactory
+namespace OpenQA.Selenium.Support.PageObjects
 {
 	//TODO: Move this to a standalone class when more tests rely on the server being up
 	[SetUpFixture]
