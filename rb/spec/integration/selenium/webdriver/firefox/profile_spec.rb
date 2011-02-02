@@ -7,11 +7,13 @@ module Selenium
       describe Profile do
         let(:profile) { Profile.new }
 
-        def read_generated_prefs
+        def read_generated_prefs(from = nil)
           io = StringIO.new
 
-          File.should_receive(:open).and_yield(io)
-          profile.layout_on_disk
+          File.stub(:open).and_yield(io)
+          prof = from || profile()
+
+          prof.layout_on_disk
 
           io.string
         end
@@ -25,6 +27,14 @@ module Selenium
           string.should include('user_pref("foo.number", 123)')
           string.should include('user_pref("foo.boolean", true)')
           string.should include(%{user_pref("foo.string", "bar")})
+        end
+
+        it "should be serializable to JSON" do
+          profile['foo.boolean'] = true
+
+          new_profile = Profile.from_json(profile.to_json)
+          string = read_generated_prefs(new_profile)
+          string.should include('user_pref("foo.boolean", true)')
         end
 
         it "should not let user override defaults" do

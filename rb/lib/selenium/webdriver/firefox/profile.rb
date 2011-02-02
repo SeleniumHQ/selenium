@@ -49,14 +49,18 @@ module Selenium
             @secure_ssl        = DEFAULT_SECURE_SSL
             @untrusted_issuer  = DEFAULT_ASSUME_UNTRUSTED_ISSUER
             @load_no_focus_lib = DEFAULT_LOAD_NO_FOCUS_LIB
+
+            @additional_prefs  = {}
           else
-            @native_events     = model_prefs[WEBDRIVER_PREFS[:native_events]] == "true"
-            @secure_ssl        = model_prefs[WEBDRIVER_PREFS[:untrusted_certs]] != "true" # FIXME: 'untrusted_certs' vs 'secure_ssl'
-            @untrusted_issuer  = model_prefs[WEBDRIVER_PREFS[:untrusted_issuer]] == "true"
-            @load_no_focus_lib = model_prefs[WEBDRIVER_PREFS[:load_no_focus_lib]] == "true" # not stored in profile atm, so will always be false.
+            # TODO: clean this up
+            @native_events     = model_prefs.delete(WEBDRIVER_PREFS[:native_events]) == "true"
+            @secure_ssl        = model_prefs.delete(WEBDRIVER_PREFS[:untrusted_certs]) != "true"
+            @untrusted_issuer  = model_prefs.delete(WEBDRIVER_PREFS[:untrusted_issuer]) == "true"
+            @load_no_focus_lib = model_prefs.delete(WEBDRIVER_PREFS[:load_no_focus_lib]) == "true" # not stored in profile atm, so will always be false.
+
+            @additional_prefs  = model_prefs
           end
 
-          @additional_prefs  = {}
           @extensions        = {}
         end
 

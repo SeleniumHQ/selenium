@@ -16,7 +16,8 @@ module Selenium
                       :takes_screenshot,
                       :rotatable,
                       :version,
-                      :browser_name
+                      :browser_name,
+                      :firefox_profile
 
         alias_method :css_selectors_enabled?, :css_selectors_enabled
         alias_method :javascript_enabled?   , :javascript_enabled
@@ -108,6 +109,10 @@ module Selenium
         # @option :native_events         [Boolean] does this driver use native events?
         # @option :proxy                 [Selenium::WebDriver::Proxy, Hash] proxy configuration
         #
+        # Firefox-specific options:
+        #
+        # @option :firefox_profile       [Selenium::WebDriver::Firefox::Profile] the firefox profile to use
+        #
         # @api public
         #
 
@@ -120,6 +125,7 @@ module Selenium
           @takes_screenshot      = opts[:takes_screenshot]      || false
           @native_events         = opts[:native_events]         || false
           @rotatable             = opts[:rotatable]             || false
+          @firefox_profile       = opts[:firefox_profile]
 
           self.proxy             = opts[:proxy]
         end
@@ -147,10 +153,11 @@ module Selenium
             "cssSelectorsEnabled" => css_selectors_enabled?,
             "takesScreenshot"     => takes_screenshot?,
             "nativeEvents"        => native_events?,
-            "rotatable"           => rotatable?
+            "rotatable"           => rotatable?,
           }
 
-          hash["proxy"] = proxy.as_json if proxy
+          hash["proxy"]           = proxy.as_json if proxy
+          hash['firefox_profile'] = firefox_profile.as_json['zip'] if firefox_profile
 
           hash
         end
