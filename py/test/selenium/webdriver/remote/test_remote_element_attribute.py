@@ -50,7 +50,7 @@ def setup_module(module):
     except:
         print ("Starting the remote driver server")
         RemoteElementAttributeTests.server_proc = subprocess.Popen(
-            "java -jar build/java/org/openqa/selenium/server/server-standalone.jar",
+            "java -jar build/java/server/src/org/openqa/selenium/server/server-standalone.jar",
             shell=True)
 
         assert wait_for_server(url, 10), "can't connect"
@@ -59,7 +59,7 @@ def setup_module(module):
     webserver = SimpleWebServer()
     webserver.start()
     RemoteElementAttributeTests.webserver = webserver
-    RemoteElementAttributeTests.driver = webdriver.connect("remote", browser_name="firefox", platform="ANY")
+    RemoteElementAttributeTests.driver = webdriver.Remote(browser_name="firefox", platform="ANY")
 
 
 class RemoteElementAttributeTests(element_attribute_tests.ElementAttributeTests):

@@ -40,7 +40,8 @@ class WebDriver(object):
           this instance's session.
     """
 
-    def __init__(self, command_executor, browser_name, platform, version='',
+    def __init__(self, command_executor='http://localhost:4444/wd/hub',
+                browser_name='', platform='', version='',
                  javascript_enabled=True):
         """Create a new driver that will issue commands using the wire protocol.
 
@@ -383,25 +384,3 @@ class WebDriver(object):
         is useful in embedded images in HTML."""
         return self.execute(Command.SCREENSHOT)['value']
 
-
-def connect(driver_name, server_address, path, browser_name, version, platform, javascript_enabled):
-    """Convenience function to connect to a server
-       Args:
-           name - A string indicating which browser to request a new
-               session for from the remote server.  Should be one of
-               {mobile safari|firefox|internet explorer|htmlunit|chrome}.
-           version - A string indicating a specific browser version to request,
-               or an empty string ot use any available browser. Defaults to the
-               empty string.
-           server - Server location (without path). Defaults to
-               "http://localhost:4444".
-           platform - A string indicating the desired platform to request from
-               the remote server. Should be one of
-               {WINDOWS|XP|VISTA|MAC|LINUX|UNIX|ANY} or None. Defaults to None.
-           javascript_enabled - Whether the requested browser should support
-               JavaScript.  Defaults to True.
-           path - path in server url. Defaults to "/wd/hub/"
-    """
-    url = "%s%s" % (server_address, path)
-    wd = WebDriver(url, browser_name, platform, version, javascript_enabled)
-    return wd

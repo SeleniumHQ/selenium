@@ -18,13 +18,4 @@
 from firefox.webdriver import WebDriver as Firefox
 from chrome.webdriver import WebDriver as Chrome
 from ie.webdriver import WebDriver as Ie
-from remote import webdriver as Remote
-
-
-#    if driver_name.lower() == 'remote':
-##        if not path.startswith("/"):
-#            path = "/" + path
-#        if not server_address.startswith("http://"):
-#            server_address = "http://" + server_address
-#        wd = remote_driver.connect(driver_name, server_address, path, browser_name, version, platform, javascript_enabled)
-#        return wd
+from remote.webdriver import WebDriver as Remote
