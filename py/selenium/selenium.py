@@ -758,7 +758,7 @@ class selenium:
         """
         self.do_command("submit", [formLocator,])
 
-    def open(self,url,ignoreResponseCode=False):
+    def open(self,url,ignoreResponseCode=True):
         """
         Opens an URL in the test frame. This accepts both relative and absolute
         URLs.
