@@ -15,5 +15,5 @@ end
 
 require "ffi"
 
-require "selenium/webdriver/ie/lib"
+require "selenium/webdriver/ie/server"
 require "selenium/webdriver/ie/bridge"

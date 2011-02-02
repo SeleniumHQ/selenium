@@ -14,15 +14,15 @@ module Selenium
 
         def initialize(opts = {})
           timeout     = opts.delete(:timeout) { DEFAULT_TIMEOUT }
-          @port       = opts.delete(:port) { DEFAULT_PORT }
-          @speed      = opts.delete(:speed) { :fast }
+          port        = opts.delete(:port) { DEFAULT_PORT }
           http_client = opts.delete(:http_client)
 
           unless opts.empty?
             raise ArgumentError, "unknown option#{'s' if opts.size != 1}: #{opts.inspect}"
           end
 
-          @server_pointer = Lib.start_server @port
+          @server = Server.new
+          @port   = @server.start Integer(port)
 
           host = Platform.localhost
           unless SocketPoller.new(host, @port, timeout).connected?
@@ -49,7 +49,7 @@ module Selenium
 
         def quit
           super
-          Lib.stop_server(@server_pointer)
+          @server.stop
 
           nil
         end
