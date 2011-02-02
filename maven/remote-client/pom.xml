@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.seleniumhq.selenium</groupId>
+		<artifactId>selenium-parent</artifactId>
+		<version>2.0-SNAPSHOT</version>
+	</parent>
+	<artifactId>selenium-remote-client</artifactId>
+	<name>selenium-remote-client</name>
+
+	<dependencies>
+		<dependency>
+			<groupId>cglib</groupId>
+			<artifactId>cglib-nodep</artifactId>
+			<version>2.1_3</version>
+		</dependency>
+		<dependency>
+			<groupId>org.seleniumhq.selenium</groupId>
+			<artifactId>selenium-remote-common</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>4.0.2</version>
+		</dependency>
+	</dependencies>
+
+    <build>
+        <plugins>
+            <!-- See http://maven.apache.org/plugins/maven-antrun-plugin -->
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy_java_files</id>
+                        <phase>generate-sources</phase>
+                        <configuration>
+                            <tasks>
+                                <delete dir="src/main/java" />
+                                <copy todir="src/main/java">
+                                    <fileset dir="../../java/client/src">
+                                        <include name="org/openqa/selenium/remote/**/*.java" />
+                                        <exclude name="org/openqa/selenium/remote/BeanToJsonConverter.java" />
+                                        <exclude name="org/openqa/selenium/remote/CapabilityType.java" />
+                                        <exclude name="org/openqa/selenium/remote/Command.java" />
+                                        <exclude name="org/openqa/selenium/remote/DesiredCapabilities.java" />
+                                        <exclude name="org/openqa/selenium/remote/DriverCommand.java" />
+                                        <exclude name="org/openqa/selenium/remote/ErrorCodes.java" />
+                                        <exclude name="org/openqa/selenium/remote/JsonException.java" />
+                                        <exclude name="org/openqa/selenium/remote/JsonToBeanConverter.java" />
+                                        <exclude name="org/openqa/selenium/remote/PropertyMunger.java" />
+                                        <exclude name="org/openqa/selenium/remote/Response.java" />
+                                        <exclude name="org/openqa/selenium/remote/SessionId.java" />
+                                        <exclude name="org/openqa/selenium/remote/SimplePropertyDescriptor.java" />
+                                    </fileset>
+                                </copy>
+                            </tasks>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

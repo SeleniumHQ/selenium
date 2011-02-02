@@ -11,6 +11,7 @@
 	<name>selenium-parent</name>
 	<description>Browser automation framework</description>
 	<url>http://selenium.googlecode.com/</url>
+
 	<licenses>
 		<license>
 			<name>The Apache Software License, Version 2.0</name>
@@ -18,11 +19,13 @@
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
+
 	<scm>
 		<connection>scm:svn:http://selenium.googlecode.com/svn</connection> 
 		<developerConnection>scm:svn:https://selenium.googlecode.com/svn</developerConnection>
 		<url>http://selenium.googlecode.com/svn</url>
 	</scm>
+
 	<developers>
 		<developer> 
 			<id>simon.m.stewart</id> 
@@ -31,21 +34,49 @@
 				<role>Owner</role> 
 			</roles> 
 		</developer> 
-		<developer> 
-			<id>plightbo</id> 
-			<name>Patrick Lightbody</name> 
-			<roles> 
-				<role>Owner</role> 
-			</roles> 
-		</developer> 
-		<developer> 
+        <developer>
+            <id>dawagner</id>
+            <name>Daniel Wagner-Hall</name>
+            <roles>
+                <role>Committer</role>
+            </roles>
+        </developer>
+        <developer>
+            <id>eran.mes@gmail.com</id>
+            <name>Eran Mes</name>
+            <roles>
+                <role>Committer</role>
+            </roles>
+        </developer>
+        <developer>
+            <id>james.h.evans.jr</id>
+            <name>Jim Evans</name>
+            <roles>
+                <role>Committer</role>
+            </roles>
+        </developer>
+        <developer>
+            <id>jari.bakken</id>
+            <name>Jari Bakken</name>
+            <roles>
+                <role>Committer</role>
+            </roles>
+        </developer>
+		<developer>
 			<id>michael.tamm2</id> 
 			<name>Michael Tamm</name> 
 			<roles> 
 				<role>Committer</role> 
 			</roles> 
-		</developer> 
-		<!-- A complete list can be found here: http://code.google.com/p/selenium/people/list --> 
+		</developer>
+        <developer>
+            <id>theautomatedtester</id>
+            <name>David Burns</name>
+            <roles>
+                <role>Committer</role>
+            </roles>
+        </developer>
+		<!-- A complete list can be found here: http://code.google.com/p/selenium/people/list -->
 	</developers>
 
 	<profiles>
@@ -71,59 +102,25 @@
 	</profiles>
 
 	<modules>
-		<module>android/client</module>
+<!--
 		<module>chrome</module>
 		<module>common</module>
+-->
 		<module>firefox</module>
+<!--
 		<module>htmlunit</module>
 		<module>iphone</module>
 		<module>jobbie</module>
-		<module>remote/common</module>
-		<module>remote/client</module>
+-->
+		<module>remote-common</module>
+		<module>remote-client</module>
+<!--
 		<module>remote/server</module>
 		<module>selenium</module>
 		<module>support</module>
+-->
+        <module>webdriver-api</module>
 	</modules>
-
-	<dependencies>
-		<!-- Test dependencies ... -->
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.8.1</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.hamcrest</groupId>
-			<artifactId>hamcrest-all</artifactId>
-			<version>1.1</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.jmock</groupId>
-			<artifactId>jmock-junit3</artifactId>
-			<version>2.4.0</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.jetty</groupId>
-			<artifactId>jetty-servlets</artifactId>
-			<version>7.2.0.v20101020</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.jetty</groupId>
-			<artifactId>jetty-webapp</artifactId>
-			<version>7.2.0.v20101020</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>commons-io</groupId>
-			<artifactId>commons-io</artifactId>
-			<version>1.4</version>
-			<scope>test</scope>
-		</dependency>
-	</dependencies>
 
 	<build>
 		<pluginManagement>
@@ -135,8 +132,17 @@
 						<encoding>Windows-1252</encoding>
 						<source>1.5</source>
 						<target>1.5</target>
+                        <optimize>true</optimize>
+                        <debug>true</debug>
 					</configuration>
 				</plugin>
+                <!-- See http://maven.apache.org/plugins/maven-surefire-plugin -->
+                <plugin>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <configuration>
+                        <skipTests>true</skipTests>
+                    </configuration>
+                </plugin>
 			</plugins>
 		</pluginManagement>
 	</build>
