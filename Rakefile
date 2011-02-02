@@ -101,7 +101,7 @@ task :iphone_client => ['//java/client/src/org/openqa/selenium/iphone']
 task :iphone => [:iphone_server, :iphone_client]
 task :'selenium-server-standalone' => ["//java/server/src/org/openqa/selenium/remote/server:server:uber"]
 
-task :ide => [ "//ide:selenium-ide" ]
+task :ide => [ "//ide:selenium-ide-multi" ]
 task :ide_proxy_setup => [ "//common/src/js/selenium:core", "se_ide:setup_proxy" ]
 task :ide_proxy_remove => [ "se_ide:remove_proxy" ]
 
@@ -199,14 +199,14 @@ task :dotnet => [ "//dotnet:ie", "//dotnet:firefox", "//dotnet:chrome", "//dotne
 # Generate a C++ Header file for mapping between magic numbers and #defines
 # in the C++ code.
 ie_generate_type_mapping(:name => "ie_result_type_cpp",
-                         :src => "jobbie/src/common/result_types.txt",
+                         :src => "cpp/IEDriver/result_types.txt",
                          :type => "cpp",
                          :out => "cpp/IEDriver/IEReturnTypes.h")
 
 # Generate a Java class for mapping between magic numbers and Java static
 # class members describing them.
 ie_generate_type_mapping(:name => "ie_result_type_java",
-                         :src => "jobbie/src/common/result_types.txt",
+                         :src => "cpp/IEDriver/result_types.txt",
                          :type => "java",
                          :out => "java/client/src/org/openqa/selenium/ie/IeReturnTypes.java")
 
@@ -478,9 +478,9 @@ file "cpp/IEDriver/sizzle.h" => [ "//third_party/js/sizzle:sizzle:header" ] do
 end
 task :sizzle_header => [ "cpp/IEDriver/sizzle.h" ]
 
-file "common/test/js/deps.js" => FileList["third_party/closure/goog/**/*.js", "common/src/js/**/*.js"] do
+file "javascript/deps.js" => FileList["third_party/closure/goog/**/*.js", "javascript/**/*.js"] do
   our_cmd = "java -jar third_party/py/jython.jar third_party/closure/bin/calcdeps.py "
-  our_cmd << "--output_mode=deps --path=common/src/js --path=common/test/js "
+  our_cmd << "--output_mode=deps --path=javascript "
   our_cmd << "--dep=third_party/closure/goog"
 
   # Generate the deps. The file paths will be as they appear on the filesystem,
@@ -493,11 +493,11 @@ file "common/test/js/deps.js" => FileList["third_party/closure/goog/**/*.js", "c
       line = line.gsub("\\\\", "/")
       output << line.gsub(/common\/(.*)\/js/, 'js/\1')
     end
-  File.open("common/test/js/deps.js", "w") do |f| f.write(output); end
+  File.open("javascript/deps.js", "w") do |f| f.write(output); end
 end
 
 desc "Calculate dependencies required for testing the automation atoms"
-task :calcdeps => "common/test/js/deps.js"
+task :calcdeps => "javascript/deps.js"
 
 def version
   `svn info | grep Revision | awk -F: '{print $2}' | tr -d '[:space:]' | tr -d '\n'`

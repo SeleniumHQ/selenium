@@ -1,6 +1,6 @@
 js_deps(name = "atoms",
   srcs = "**/*.js",
-  deps = "//common:bot")
+  deps = "//javascript/atoms:deps")
 
 js_fragment(name = "execute_async_script",
   module = "webdriver.iphone",

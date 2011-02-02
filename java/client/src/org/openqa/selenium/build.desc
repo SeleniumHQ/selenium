@@ -98,11 +98,11 @@ java_library(name = "webdriver-backed-selenium",
   resources = [
     { "internal/seleniumemulation/injectableSelenium.js" : "org/openqa/selenium/internal/seleniumemulation/injectableSelenium.js" },
     { "internal/seleniumemulation/htmlutils.js" : "org/openqa/selenium/internal/seleniumemulation/htmlutils.js" },
-    { "//common/src/js/selenium:findElement" : "scripts/selenium/findElement.js" },
-    { "//common/src/js/selenium:getText" : "scripts/selenium/getText.js" },
-    { "//common/src/js/selenium:isElementPresent" : "scripts/selenium/isElementPresent.js" },
-    { "//common/src/js/selenium:isTextPresent" : "scripts/selenium/isTextPresent.js" },
-    { "//common/src/js/selenium:isVisible" : "scripts/selenium/isVisible.js" }
+    { "//javascript/selenium-atoms:findElement" : "scripts/selenium/findElement.js" },
+    { "//javascript/selenium-atoms:getText" : "scripts/selenium/getText.js" },
+    { "//javascript/selenium-atoms:isElementPresent" : "scripts/selenium/isElementPresent.js" },
+    { "//javascript/selenium-atoms:isTextPresent" : "scripts/selenium/isTextPresent.js" },
+    { "//javascript/selenium-atoms:isVisible" : "scripts/selenium/isVisible.js" }
   ],
   deps = [
     ":selenium-api",

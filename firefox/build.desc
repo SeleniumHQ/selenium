@@ -41,7 +41,7 @@ js_binary(name = "atoms",
     "src/js/preconditions.js",
     "src/js/exported_symbols.js"
   ],
-  deps = [ "//common/src/js/webdriver:atoms" ])
+  deps = [ "//javascript/webdriver-atoms:deps" ])
 
 js_binary(name = "utils",
   srcs = [
@@ -54,7 +54,7 @@ js_binary(name = "utils",
     "src/js/utils_exports.js"
   ],
   deps = [
-    "//common/src/js/webdriver:atoms"
+    "//javascript/webdriver-atoms:deps"
   ])
 
 # Temporary rules while we migrate

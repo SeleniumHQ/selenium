@@ -1,0 +1,122 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <title>history_test.html</title>
+  <script src="../../webdriver-bootstrap.js"></script>
+  <script src="deps.js"></script>
+  <script type="text/javascript">
+    goog.require('bot');
+    goog.require('bot.action');
+    goog.require('bot.locators');
+    goog.require('goog');
+    goog.require('goog.dom');
+    goog.require('goog.events');
+    goog.require('goog.testing.AsyncTestCase');
+    goog.require('goog.testing.jsunit');
+  </script>
+</head>
+<body>
+<iframe id="frame"></iframe>
+<script type="text/javascript">
+  var asyncTestCase = goog.testing.AsyncTestCase.createAndInstall();
+  var frame = bot.locators.findElement({'id': 'frame'});
+
+  // A bug in prior versions of WebKit (persisting into Safari 5) causes the
+  // initial page of an iframe to not enter the browser history, so we
+  // initialize the iframe to a dummy page and the test cases here do not make
+  // any assertions about this page being in the browser history.
+  continueAfterLoad('waiting for initial page load', goog.nullFunction);
+  frame.src = 'testdata/history_page0.html';
+
+  function continueAfterLoad(desc, fn) {
+    asyncTestCase.waitForAsync(desc);
+    // For some reason, a load event is not fired on the frame's window,
+    // only the frame itself, after back and forward history calls.
+    goog.events.listenOnce(frame, 'load', function() {
+      // After the onload event, wait a cycle for page to enter browser history.
+      window.setTimeout(function() {
+        asyncTestCase.continueTesting();
+        fn();
+      }, 0);
+    });
+  }
+
+  function setUp() {
+    bot.setWindow(goog.dom.getFrameContentWindow(frame));
+  }
+
+  function load(url, fn) {
+    continueAfterLoad('waiting for url to load', fn);
+    bot.getWindow().location = url;
+  }
+
+  function back(numPages, fn) {
+    continueAfterLoad('waiting for browser to go back', fn);
+    bot.action.back(numPages);
+  }
+
+  function forward(numPages, fn) {
+    continueAfterLoad('waiting for browser to go forward', fn);
+    bot.action.forward(numPages);
+  }
+
+  function assertUrlContains(str) {
+    assertContains(str, bot.getWindow().location.href);
+  }
+
+  function testErrorThrownWhenNumPagesNonPositive() {
+    var fakeWindow = { history: {} };
+    bot.setWindow(fakeWindow);
+
+    fakeWindow.history.length = 0;
+    assertThrows(bot.action.back);
+    assertThrows(bot.action.forward);
+
+    fakeWindow.history.length = -1;
+    assertThrows(bot.action.back);
+    assertThrows(bot.action.forward);
+  }
+
+  function testErrorThrowWhenNumPagesNotLessThanHistoryLength() {
+    var fakeWindow = { history: {} };
+    bot.setWindow(fakeWindow);
+
+    fakeWindow.history.length = 1;
+    assertThrows(bot.action.back);
+    assertThrows(bot.action.forward);
+
+    fakeWindow.history.length = 2;
+    assertThrows(goog.partial(bot.action.back, 3));
+    assertThrows(goog.partial(bot.action.forward, 3));
+  }
+
+  function testBackForwardOnePage() {
+    load('testdata/history_page1.html', function() {
+      load('testdata/history_page2.html', function() {
+        back(1, function() {
+          assertUrlContains('history_page1.html');
+          forward(1, function() {
+            assertUrlContains('history_page2.html');
+          });
+        });
+      });
+    });
+  }
+
+  function testBackForwardMultiplePages() {
+    load('testdata/history_page1.html', function() {
+      load('testdata/history_page2.html', function() {
+        load('testdata/history_page3.html', function() {
+          back(2, function() {
+            assertUrlContains('history_page1.html');
+            forward(2, function() {
+              assertUrlContains('history_page3.html');
+            });
+          });
+        });
+      });
+    });
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<!--
+Copyright 2010 WebDriver committers
+Copyright 2010 Google Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<html>
+<head>
+  <title>text_test.html</title>
+  <script src="../../webdriver-bootstrap.js"></script>
+  <script type="text/javascript" src="deps.js"></script>
+  <script type="text/javascript">
+    goog.require('bot.dom');
+    goog.require('bot.locators');
+    goog.require('goog.testing.jsunit');
+  </script>
+
+  <script type="text/javascript">
+
+    function testGetVisibleTextShouldReturnOneLineText() {
+      var text = getVisibleTextByElementId('oneline');
+
+      assertEquals("A single line of text", text);
+    }
+
+    function testGetVisibleTextShouldReturnMultilineText() {
+      var text = getVisibleTextByElementId('multiline');
+
+      assertContains("A div containing", text);
+      assertContains("More than one line of text", text);
+      assertContains("and block level elements", text);
+    }
+
+    function testGetVisibleTextShouldIgnoreScriptElements() {
+      var text = getVisibleTextByElementId('script');
+
+      assertEquals("Some text that contains script tags", text)
+    }
+
+    function testGetVisibleTextShouldRepresentABlockLevelElementAsANewline() {
+      var text = getVisibleTextByElementId('multiline');
+
+      assertStartsWith("A div containing\n", text);
+      assertContains("More than one line of text\n", text);
+      assertEndsWith("and block level elements", text);
+    }
+
+    function testGetVisibleShouldCollapseMultipleWhitespacesIntoASingleSpace() {
+      var text = getVisibleTextByElementId('lotsofspaces');
+
+      assertEquals("This line has lots of spaces.", text)
+    }
+
+    function testGetVisibleTextShouldConvertNonBreakingSpaceInASpaceChar() {
+      var text = getVisibleTextByElementId('nbsp');
+
+      assertEquals("This line has a non-breaking space", text);
+    }
+
+    function getVisibleTextByElementId(id) {
+      var e = bot.locators.findElement({id: id});
+      return bot.dom.getVisibleText(e);
+    }
+
+    function testGetVisibleTextShouldCollapseNonBreakingSpaces() {
+      var text = getVisibleTextByElementId("nbspandspaces");
+      assertEquals("This line has a non-breaking space and spaces", text);
+    }
+
+    function testGetVisibleTextInlineElementsShouldNotAffectReturnedText() {
+      var text = getVisibleTextByElementId("inline");
+
+      assertEquals("This line has text within elements that are meant" +
+          " to be displayed inline", text);
+    }
+
+    function testGetVisibleTextShouldReturnTheEntireTextOfInlineElements() {
+      var text = getVisibleTextByElementId("span");
+
+      assertEquals("An inline element", text);
+    }
+
+    function testGetVisibleTextShouldReturnEmptyStringWhenTextIsOnlySpaces() {
+      var text = getVisibleTextByElementId("spaces");
+
+      assertEquals("", text);
+    }
+
+    function testGetVisibleTextShouldReturnEmptyStringWhenTextIsEmpty() {
+      var text = getVisibleTextByElementId("empty");
+
+      assertEquals("", text);
+    }
+
+    function testGetVisibleTextShouldReturnEmptyStringWhenTagIsSelfClosing() {
+      var text = getVisibleTextByElementId("self-closed");
+
+      assertEquals("", text);
+    }
+
+    function testGetVisibleTextShouldNotTrimSpacesWhenLineWraps() {
+      var text = getVisibleTextByElementId("wrappingtd");
+
+      assertEquals("beforeSpace afterSpace", text);
+    }
+
+    function testGetVisibleTextShouldHandleSiblingBlockLevelElements() {
+      var text = getVisibleTextByElementId("twoblocks");
+
+      assertEquals("Some text\nSome more text", text);
+    }
+
+    function testGetVisibleTextShouldHandleNestedBlockLevelElements() {
+      var text = getVisibleTextByElementId("nestedblocks");
+
+      assertEquals("Cheese\nSome text\nSome more text\nand also\nBrie", text);
+    }
+
+    function testGetVisibleTextShouldHandleWhitespaceInInlineElements() {
+      var text = getVisibleTextByElementId("inlinespan");
+
+      assertEquals("line has text", text);
+    }
+
+    function testGetVisibleTextShouldHandleLackOfSpacesBetweenInlineElements() {
+      var text = getVisibleTextByElementId("inlinenospaces");
+      assertEquals("oooOooo", text);
+      var text2 = getVisibleTextByElementId("inlinenospaces2");
+      assertEquals("A B", text2);
+    }
+
+    function testGetVisibleTextShouldNotAddExtraSpaces() {
+      var text = getVisibleTextByElementId("descartes");
+      var text2 = getVisibleTextByElementId("abc");
+
+      assertEquals("Dubito, ergo cogito, ergo sum.", text);
+      assertEquals("a bc", text2);
+    }
+
+    function testGetVisibleTestGetTextWithLineBreakForInlineElement() {
+      var text = getVisibleTextByElementId("label1");
+      assertContains("foo\nbar", text);
+    }
+
+    function testGetVisibleTextShouldOnlyIncludeVisibleText() {
+      var empty = getVisibleTextByElementId("suppressedParagraph");
+      var explicit = getVisibleTextByElementId("outer");
+
+      assertEquals("", empty);
+      assertEquals("sub-element that is explicitly visible", explicit);
+    }
+
+    function testGetVisibleTextOnAnchorsWithWhitespaces() {
+      var text = getVisibleTextByElementId("links");
+
+      assertEquals("link with leading space " + "link with trailing space " +
+          "link with formatting tags", text);
+    }
+
+    function testGetVisibleTextHandlesTrailingWhitespaces() {
+      var text = getVisibleTextByElementId("trailingSpaces");
+      assertEquals("1 2 3 4", text);
+    }
+
+    function testKeepsNonBreakingSpacesBeforeATag() {
+      var text = getVisibleTextByElementId("id2");
+
+      assertEquals("this is the second element", text);
+    }
+
+    function testTransparentTextIsIgnored() {
+      var text = getVisibleTextByElementId("opaque");
+
+      assertEquals("Some text", text);
+    }
+
+    function assertContains(expectedText, text) {
+      assertTrue("Text [" + text + "] does not contain [" + expectedText + "]",
+        text.indexOf(expectedText) >= 0);
+    }
+
+    function assertStartsWith(expectedText, text) {
+      assertTrue("Text [" + text + "] does not start with [" + expectedText +
+          "]", text.indexOf(expectedText) == 0);
+    }
+
+    function assertEndsWith(expectedText, text) {
+      assertTrue("Text [" + text + "] does not end with [" + expectedText + "]",
+        text.lastIndexOf(expectedText) == text.length - expectedText.length);
+    }
+
+  </script>
+
+  <style type="text/css">
+    .transparent {
+      opacity: 0; /* non IE */
+      filter:alpha(opacity=0); /* IE 6+ */
+    }
+  </style>
+
+</head>
+<body>
+  <p id="oneline">A single line of text</p>
+
+  <div id="multiline">
+  <div>
+      <p>A div containing</p>
+      More than one line of text<br/>
+
+      <div>and block level elements</div>
+  </div>
+</div>
+  <span id="span">An inline element</span>
+
+  <p id="lotsofspaces">This line has lots
+
+      of spaces.
+  </p>
+
+  <p id="nbsp">This line has a&nbsp;non-breaking space</p>
+
+  <p id="spaces">        </p>
+
+  <p id="empty"></p>
+
+  <p id="self-closed" />
+
+  <p id="suppressedParagraph" style="display: none">A paragraph suppressed using CSS display=none</p>
+
+  <p id="outer" style="visibility: hidden">A <b id="visibleSubElement" style="visibility: visible">sub-element that is explicitly visible</b> using CSS visibility=visible</p>
+
+  <p id="script">Some text<script>function shouldIgnoreMe() {}</script> that contains script tags</p>
+  <p id="nbspandspaces">This line has a &nbsp; non-breaking space and spaces</p>
+
+  <p id="inline">This <span id="inlinespan">    line has <em>text</em>  </span> within elements that are meant to be displayed
+      <!-- not as a block but --> inline</p>
+
+  <p id="preformatted">This section has a <pre>preformatted
+      text block
+    within in
+          </pre>
+  </p>
+
+  <div id="twoblocks"><p>Some text</p><p>Some more text</p></div>
+
+  <div id="nestedblocks">Cheese <div><p>Some text</p><div><p>Some more text</p><p>and also</p></div></div>Brie</div>
+
+  <div id="collapsingtext"><span></span><div>Hello, world</div><span></span></div>
+
+  <div id="inlinenospaces">ooo<strong>O</strong>ooo</div>
+  <div id="inlinenospaces2"><span>A <span></span>B</span></div>
+
+  <form action="resultPage.html">
+      <p>
+          <input type="checkbox" id="checkbox1">
+          <label id="label1" for="checkbox1">foo<br />bar</label>
+      </p>
+  </form>
+
+  <div id="links">
+    <a href="">   link with leading space</a>
+    <a href="" id="linkWithTrailingSpace">link with trailing space
+    </a>
+    <a href=""><b>link with formatting tags</b></a>
+  </div>
+<div id="trailingSpaces">
+1
+<a href="">2</a>
+3
+<a href="">4</a></div>
+
+  <table>
+      <tbody>
+          <tr><td id="wrappingtd" style="width: 10px;"><span>beforeSpace</span><span> </span><span>afterSpace</span></td></tr>
+      </tbody>
+  </table>
+
+  <span><strong id="descartes">Dubito, <em>ergo cogito</em>, ergo sum.</strong></span>
+  <span id="abc"><b>a</b> <b>b</b>c</span>
+
+  <a id="id2" >this is the&nbsp;<b>second</b> <span>element</span></a>
+
+  <div id="opaque">Some <span class="transparent">transparent</span> text</p></div>
+
+</body>
+</html>

@@ -20,7 +20,7 @@ java_test(name = "selenium_core_emulation",
   srcs = [ "test/java/org/openqa/selenium/CoreTestSuite.java" ],
   deps = [
     "//java/client/src/org/openqa/selenium/firefox",
-    "//common/src/js/selenium:core",
+    "//javascript/selenium-atoms",
     "//java/client/test/org/openqa/selenium:tests"])
 
 # This is used for testing selenium core itself. This test suite is currently

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>script_async_test.html</title>
+  <script src="../../webdriver-bootstrap.js"></script>
+  <script type="text/javascript">
+    goog.require('bot.script');
+    goog.require('bot.locators');
+    goog.require('goog.testing.AsyncTestCase');
+    goog.require('goog.testing.jsunit');
+  </script>
+</head>
+<body>
+<script type="application/javascript">
+  var TEST_CASE = goog.testing.AsyncTestCase.createAndInstall();
+  var testWindow;
+
+  function setUp() {
+    testWindow = window.open('');
+    assertNotNull(testWindow);
+    assertNotUndefined(testWindow);
+    goog.global.onload = function() {
+      fail('Unexpected onload call');
+    };
+  }
+
+  function tearDown() {
+    testWindow.close();
+    testWindow = null;
+  }
+
+  function testSynchronizesTimeoutsWithGivenWindow() {
+    var script = 'var callback = arguments[arguments.length - 1];' +
+                 'var count = 0;' +
+                 'window.setTimeout(function() {count += 1;}, 250);' +
+                 'window.setTimeout(function() {count += 2;}, 250);' +
+                 'window.setTimeout(function() {callback(count);}, 250);';
+
+    TEST_CASE.waitForAsync('bot.script.execute');
+    bot.script.execute(script, [], 250,
+        function(count) {
+          TEST_CASE.continueTesting();
+          assertEquals(3, count);
+        },
+        fail, testWindow);
+  }
+
+
+  function testShouldExecuteInTheContextOfTheProvidedWindow() {
+    TEST_CASE.waitForAsync('waiting for test window to load page');
+    goog.global.onload = function(window) {
+      assertEquals('wrong window', testWindow, window);
+
+      TEST_CASE.waitForAsync('bot.script.execute');
+      bot.script.execute(
+          'arguments[arguments.length - 1](document.title);', [], 0,
+          function(title) {
+            TEST_CASE.continueTesting();
+            assertEquals('script_data', title);
+          }, fail, testWindow);
+    };
+    testWindow.location = './script_data.html';
+  }
+
+
+  function testCanDetectPageUnloadEventsAndFailsTheScriptWhenTheyOccur() {
+    var navigateTo = window.location.protocol + '//' + window.location.host;
+    var script = 'window.location = "' + navigateTo + '"';
+
+    TEST_CASE.waitForAsync('waiting for test window to load page');
+    goog.global.onload = function(window) {
+      assertEquals('wrong window', testWindow, window);
+
+      TEST_CASE.waitForAsync('bot.script.execute');
+      bot.script.execute(script, [], 250,
+          function() {
+            fail('Expected to get an unload error');
+          },
+          function(e) {
+            TEST_CASE.continueTesting();
+            assertTrue(e.message, /Detected a page unload event;/.test(e.message));
+          },
+          testWindow);
+    };
+    testWindow.location = './script_data.html';
+  }
+</script>
+</body>
+</html>

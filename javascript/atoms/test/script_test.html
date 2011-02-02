@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>script_test.html</title>
+    <script src="../../webdriver-bootstrap.js"></script>
+    <script type="text/javascript">
+      goog.require('bot.script');
+      goog.require('bot.locators');
+      goog.require('goog.testing.MockClock');
+      goog.require('goog.testing.jsunit');
+    </script>
+    <script type="text/javascript">
+      var IS_SYNCHRONOUS = -1;
+      var clock;
+
+      function setUp() {
+        clock = new goog.testing.MockClock();
+        clock.install();
+      }
+
+      function tearDown() {
+        clock.uninstall();
+      }
+
+      function throwFailure(e) {
+        throw e;
+      }
+
+      function expectedFailure() {
+        fail('Expected the script to fail!');
+      }
+
+      function testShouldBeAbleToExecuteASimpleScript() {
+        var called = false;
+        bot.script.execute('return 1 + 2;', [], IS_SYNCHRONOUS,
+            function(value) {
+              assertEquals(3, value);
+              called = true;
+            }, throwFailure);
+        assertTrue(called);
+      }
+
+
+      function testFailsScriptIfThereIsASyntaxError() {
+        var called = false;
+        bot.script.execute('function)(', [], IS_SYNCHRONOUS, expectedFailure,
+            function() {
+              called = true;
+            });
+        assertTrue(called);
+      }
+
+
+      function testPropagatesErrorsThrownByScriptWithGenericStatusCodeIfOneIsNotSet() {
+        var called = false;
+        bot.script.execute('throw Error("boom");', [], IS_SYNCHRONOUS,
+            expectedFailure, function(e) {
+              assertEquals(bot.ErrorCode.UNHANDLED_JS_ERROR, e.code);
+              assertEquals('boom', e.message);
+              called = true;
+            });
+        assertTrue(called);
+      }
+
+
+      function testPropagatesErrorsWithProvidedStatusCode() {
+        var called = false;
+        bot.script.execute('var e = Error("boom"); e.code=7; throw e;', [],
+            IS_SYNCHRONOUS, expectedFailure, function(e) {
+              assertEquals(7, e.code);
+              assertEquals('boom', e.message);
+              called = true;
+            });
+        assertTrue(called);
+      }
+
+
+      function testCanPassArgumentsToScript() {
+        var called = false;
+        bot.script.execute('return arguments[0].tagName.toLowerCase() + 123;',
+            [document.body, 123], IS_SYNCHRONOUS, function(value) {
+              assertEquals('body123', value);
+              called = true;
+            }, throwFailure);
+        assertTrue(called);
+      }
+
+      function testShouldNotTimeoutIfCallbackInvokedImmediately() {
+        var called = false;
+        bot.script.execute('return arguments[arguments.length -1](123);', [], 0,
+            function(value) {
+              assertEquals(123, value);
+              called = true;
+            }, throwFailure);
+        assertTrue(called);
+        clock.tick();  // Make sure "throwFailure" is not called.
+      }
+
+      function testShouldNotTimeoutIfCallbackInvokedJustBeforeTimeoutEventLoop() {
+        var called = false;
+        bot.script.execute(
+            'var callback = arguments[arguments.length - 1];' +
+            'window.setTimeout(function() {callback();}, 250);',
+            [], 250, function() {called = true;}, throwFailure);
+        assertFalse(called);
+        clock.tick(250);
+        assertTrue(called);
+        clock.tick();  // Make sure "throwFailure" is not called.
+      }
+
+      function testShouldCancelTimeoutTimerAfterScriptReturns() {
+        var called = false;
+        bot.script.execute(
+            'var callback = arguments[arguments.length - 1];' +
+            'window.setTimeout(function() {callback();}, 250);',
+            [], 750, function() {called = true;}, throwFailure);
+        assertFalse(called);
+        clock.tick(250);
+        assertTrue(called);
+        clock.tick(750);  // Make sure "throwFailure" is not called.
+      }
+
+      function testShouldBeAbleToTimeoutScripts() {
+        var called = false;
+        bot.script.execute('return 1+2;', [], 250, expectedFailure, function(e) {
+          assertEquals(bot.ErrorCode.SCRIPT_TIMEOUT, e.code);
+          called = true;
+        });
+        assertFalse(called);
+        clock.tick(251);
+        assertTrue(called);
+      }
+    </script>
+  </head>
+  <body>
+  </body>
+</html>

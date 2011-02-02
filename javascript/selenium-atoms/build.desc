@@ -1,0 +1,37 @@
+
+js_deps(name = "deps",
+  srcs = [ "**/*.js" ],
+  deps = [
+    "//javascript/atoms:deps",
+    "//javascript/webdriver-atoms:deps",
+  ])
+
+js_binary(name = "selenium-atoms",
+  deps = [
+    ":deps",
+  ])
+
+js_fragment(name = "findElement",
+  module = "core.locators",
+  function = "core.locators.findElement",
+  srcs = [":deps"])
+
+js_fragment(name = "getText",
+  module = "core.text",
+  function = "core.text.getText",
+  srcs = [":deps"])
+
+js_fragment(name = "isElementPresent",
+  module = "core.locators",
+  function = "core.locators.isElementPresent",
+  srcs = [":deps"])
+
+js_fragment(name = "isTextPresent",
+  module = "core.text",
+  function = "core.text.isTextPresent",
+  srcs = [":deps"])
+  
+js_fragment(name = "isVisible",
+  module = "core.browserbot",
+  function = "core.browserbot.isVisible",
+  srcs = [":deps"])

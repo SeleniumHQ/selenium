@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!-- Integration tests for bot.inject.executeScript and bot.script.execute -->
+  <title>inject_script_test.html</title>
+  <script src="../../webdriver-bootstrap.js"></script>
+  <script type="text/javascript">
+    goog.require('bot.inject');
+    goog.require('bot.script');
+    goog.require('bot.locators');
+    goog.require('goog.testing.AsyncTestCase');
+    goog.require('goog.testing.jsunit');
+  </script>
+</head>
+<body>
+<script type="application/javascript">
+  var TEST_CASE = goog.testing.AsyncTestCase.createAndInstall();
+
+  function executeAsyncScript(script, args, timeout, callback) {
+    TEST_CASE.waitForAsync('bot.script.execute');
+    bot.script.execute(script, args, timeout,
+      /*onSuccess=*/function(value) {
+        TEST_CASE.continueTesting();
+        callback(bot.ErrorCode.SUCCESS, value);
+      },
+      /*onFailure=*/function(err) {
+        TEST_CASE.continueTesting();
+        callback(err.code || bot.ErrorCode.UNHANDLED_JS_ERROR, {
+          'message': err.message
+        });
+      });
+  }
+
+  function assertSuccess(status, value) {
+    assertEquals(bot.ErrorCode.SUCCESS, status);
+  }
+
+  function testShouldNotTimeoutIfCallbackInvokedImmediately() {
+    executeAsyncScript('arguments[arguments.length - 1](123);', [], 0,
+        function(status, value) {
+          assertSuccess(status, value);
+          assertEquals(123, value);
+        });
+  }
+
+  function testShouldBeAbleToReturnJavascriptPrimitivesFromAsyncScripts() {
+    function runTest(script, callback) {
+      executeAsyncScript(script, [], 0, function(status, value) {
+        assertSuccess(status, value);
+        callback(value);
+      });
+    }
+
+    runTest('arguments[arguments.length - 1](123);', goog.partial(assertEquals, 123));
+    runTest('arguments[arguments.length - 1]("abc");', goog.partial(assertEquals, 'abc'));
+    runTest('arguments[arguments.length - 1](true);', assertTrue);
+    runTest('arguments[arguments.length - 1](false);', assertFalse);
+    runTest('arguments[arguments.length - 1](null);', assertNull);
+    runTest('arguments[arguments.length - 1](undefined);', assertUndefined);
+    runTest('arguments[arguments.length - 1]();', assertUndefined);
+  }
+
+  function testShouldBeAbleToReturnAnArrayLiteralFromAnAsyncScript() {
+    executeAsyncScript('arguments[arguments.length - 1]([])', [], 0,
+        function(status, value) {
+          assertSuccess(status, value);
+          assertArrayEquals([], value);
+        });
+  }
+
+  function testShouldBeAbleToReturnAnArrayObjectFromAnAsyncScript() {
+    executeAsyncScript('arguments[arguments.length - 1](new Array())', [], 0,
+        function(status, value) {
+          assertSuccess(status, value);
+          assertArrayEquals([], value);
+        });
+  }
+
+  function testShouldBeAbleToReturnArraysOfPrimitivesFromAsyncScripts() {
+    executeAsyncScript(
+        'arguments[arguments.length - 1]([null, 123, "abc", true, false])', [], 0,
+        function(status, value) {
+          assertSuccess(status, value);
+          assertArrayEquals([null, 123, 'abc', true, false], value);
+        });
+  }
+</script>
+</body>
+</html>

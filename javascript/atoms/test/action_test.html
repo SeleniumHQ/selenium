@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>action_test.html</title>
+  <script src="../../webdriver-bootstrap.js"></script>
+  <script type="text/javascript">
+    goog.require('bot.action');
+    goog.require('goog.Uri');
+    goog.require('goog.events');
+    goog.require('goog.events.EventType');
+    goog.require('goog.testing.AsyncTestCase');
+    goog.require('goog.testing.jsunit');
+  </script>
+  <script type="text/javascript">
+    var asyncTestCase = null;
+    var submitted = goog.nullFunction;
+
+    var counts;
+    var listeningTo;
+
+    function setUp() {
+      counts = {};
+      listeningTo = [];
+    }
+
+    function tearDown() {
+      while (listeningTo.length) {
+        goog.events.removeAll(listeningTo.shift());
+      }
+
+      submitted = goog.nullFunction;
+    }
+
+    function expectAndCancelEvent(eventType, expectedTarget) {
+      counts[eventType] = 0;
+      listeningTo.push(expectedTarget);
+      goog.events.listen(expectedTarget, eventType,
+          function(e) {
+            assertEquals('Not the expected ' + eventType + ' event target',
+                expectedTarget, e.target);
+            e.stopPropagation();
+            e.preventDefault();
+            counts[eventType] += 1;
+          });
+    }
+
+    function expectEvent(eventType, expectedTarget) {
+      counts[eventType] = 0;
+      listeningTo.push(expectedTarget);
+      goog.events.listen(expectedTarget, eventType,
+          function(e) {
+            assertEquals('Not the expected ' + eventType + ' event target',
+                expectedTarget, e.target);
+            counts[eventType] += 1;
+          });
+    }
+
+    var expectChangeEvent = goog.partial(expectEvent,
+        goog.events.EventType.CHANGE);
+
+    var expectSubmitEvent = goog.partial(expectEvent,
+        goog.events.EventType.SUBMIT);
+
+    function assertEventFired(eventType, opt_count) {
+      var count = opt_count || 1;
+      assertEquals(eventType + ' event not fired expected # of times!',
+          count, counts[eventType]);
+    }
+
+    var assertChangeFired = goog.partial(assertEventFired,
+        goog.events.EventType.CHANGE);
+
+    var assertSubmitFired = goog.partial(assertEventFired,
+        goog.events.EventType.SUBMIT);
+
+    function doNotExpectEvent(eventType, expectedTarget) {
+      listeningTo.push(expectedTarget);
+      goog.events.listen(expectedTarget, eventType, goog.partial(fail,
+          'Was not expecting a ' + eventType + ' event to be fired'));
+    }
+
+    var doNotExpectChangeEvent = goog.partial(doNotExpectEvent,
+        goog.events.EventType.CHANGE);
+    var doNotExpectSubmitEvent = goog.partial(doNotExpectEvent,
+        goog.events.EventType.SUBMIT);
+
+    function testShouldNotBeAbleToSelectChildrenOfHead() {
+      var title = document.getElementsByTagName(goog.dom.TagName.TITLE);
+      assertThrows(goog.partial(bot.action.setSelected, title, true));
+      assertThrows(goog.partial(bot.action.setSelected, title, false));
+
+      var head = document.getElementsByTagName(goog.dom.TagName.HEAD);
+      assertThrows(goog.partial(bot.action.setSelected, head, true));
+      assertThrows(goog.partial(bot.action.setSelected, head, false));
+    }
+
+    function testShouldNotBeAbleToSelectUnselectableElements() {
+      assertThrows(goog.partial(bot.action.setSelected, document, true));
+      assertThrows(goog.partial(bot.action.setSelected, document.body, true));
+      assertThrows(goog.partial(bot.action.setSelected,
+          goog.dom.$('textField'), true));
+    }
+
+    function testShouldNotBeAbleToSelectAnOptionThatIsNotInASelect() {
+      var option = goog.dom.$('nogo-option');
+      assertThrows(goog.partial(bot.action.setSelected, option, true));
+      assertThrows(goog.partial(bot.action.setSelected, option, false));
+    }
+
+    function testShouldBeAbleToSelectAnOptionFromASingleSelect() {
+      var ss = goog.dom.$('singleSelect');
+      var index = ss.selectedIndex == 0 ? 1 : 0;
+      var notSelected = ss.options[index];
+      expectChangeEvent(ss);
+      bot.action.setSelected(notSelected, true);
+      assertChangeFired();
+      assertEquals(index, ss.selectedIndex);
+    }
+
+    function testShouldNotBeAbleToDeselectAnOptionFromASingleSelect() {
+      var ss = goog.dom.$('singleSelect');
+      var option = ss.options[ss.selectedIndex];
+      assertThrows(goog.partial(bot.action.setSelected, option, false));
+    }
+
+    function testShouldDoNothingIfOptionIsAlreadyInTheDesiredState() {
+      var ss = goog.dom.$('singleSelect');
+      var selected = ss.options[ss.selectedIndex];
+
+      doNotExpectChangeEvent(ss);
+      bot.action.setSelected(selected, true);
+    }
+
+
+    function testShouldNotBeAbleToDeselectAnOptionInASingleSelectEvenIfItIsAlreadyUnselected() {
+      var ss = goog.dom.$('singleSelect');
+      var notSelected = ss.options[ss.selectedIndex == 0 ? 1 : 0];
+      assertThrows(goog.partial(bot.action.setSelected, notSelected, false));
+    }
+
+    function testShouldNotBeAbleToSelectFromADisabledSelect() {
+      var ds = goog.dom.$('disabledSelect');
+      var selected = ds.options[ds.selectedIndex];
+      var notSelected = ds.options[ds.selectedIndex == 0 ? 1 : 0];
+
+      doNotExpectChangeEvent(ds);
+
+      assertThrows(goog.partial(bot.action.setSelected, selected, false));
+      assertThrows(goog.partial(bot.action.setSelected, notSelected, true));
+    }
+
+    function testShouldBeAbleToSelectAnEnabledOptionFromASelectThatHasADisabledOptionInIt() {
+      var select = goog.dom.$('disabledOption');
+      var index = select.selectedIndex == 0 ? 2 : 0;
+      var notSelected = select.options[index];
+      expectChangeEvent(select);
+      bot.action.setSelected(notSelected, true);
+      assertChangeFired();
+      assertEquals(index, select.selectedIndex);
+    }
+
+    function testShouldNotBeAbleToSelectADisabledOption() {
+      var select = goog.dom.$('disabledOption');
+      var disabledOption = select.options[1];
+      doNotExpectChangeEvent(select);
+      assertThrows(goog.partial(bot.action.setSelected, disabledOption, true));
+      assertThrows(goog.partial(bot.action.setSelected, disabledOption, false));
+    }
+
+    function testShouldBeAbleToSelectMultipleOptionsFromAMultiSelect() {
+      var ms = goog.dom.$('multiSelect');
+      var apples = ms.options[0];
+      var oranges = ms.options[1];
+      var cherries = ms.options[2];
+
+      assertFalse(bot.action.isSelected(oranges));
+      assertFalse(bot.action.isSelected(cherries));
+
+      expectChangeEvent(ms);
+      bot.action.setSelected(oranges, true);
+      bot.action.setSelected(cherries, true);
+      assertChangeFired(2);
+    }
+
+    function testShouldBeAbleToDeselectOptionsInAMultiSelect() {
+      var ms = goog.dom.$('multiSelect2');
+      var red = ms.options[0];
+      var green = ms.options[1];
+      var blue = ms.options[2];
+
+      expectChangeEvent(ms);
+
+      assertTrue(bot.action.isSelected(red));
+      bot.action.setSelected(red, false);
+      assertFalse(bot.action.isSelected(red));
+
+      assertTrue(bot.action.isSelected(green));
+      bot.action.setSelected(green, false);
+      assertFalse(bot.action.isSelected(green));
+
+      assertTrue(bot.action.isSelected(blue));
+      bot.action.setSelected(blue, false);
+      assertFalse(bot.action.isSelected(blue));
+
+      assertChangeFired(3);
+    }
+
+    function testShouldBeAbleToToggleOptionsInAMultiSelect() {
+      var ms = goog.dom.$('multiSelect2');
+      var red = ms.options[0];
+
+      var state = bot.action.isSelected(red);
+      expectChangeEvent(ms);
+
+      assertEquals(!state, bot.action.toggle(red));
+      assertEquals(state, bot.action.toggle(red));
+      assertEquals(!state, bot.action.toggle(red));
+      assertChangeFired(3);
+    }
+
+    function testShouldNotBeAbleToSelectADisabledCheckbox() {
+      var cb = goog.dom.$('check4');
+      doNotExpectChangeEvent(cb);
+      assertThrows(goog.partial(bot.action.setSelected, cb, true));
+      assertThrows(goog.partial(bot.action.setSelected, cb, false));
+    }
+
+    function testShouldBeAbleToToggleCheckboxes() {
+      var cb1 = goog.dom.$('check1');
+      var state = bot.action.isSelected(cb1);
+
+      expectChangeEvent(cb1);
+
+      assertEquals(!state, bot.action.toggle(cb1));
+      assertEquals(state, bot.action.toggle(cb1));
+      assertEquals(!state, bot.action.toggle(cb1));
+
+      assertChangeFired(3);
+    }
+
+    function testShouldBeAbleToSelectMultipleCheckboxesFromTheSameGroup() {
+      var cb1 = goog.dom.$('check1');
+      var cb2 = goog.dom.$('check2');
+      var cb3 = goog.dom.$('check3');
+
+      bot.action.setSelected(cb1, false);
+      bot.action.setSelected(cb2, false);
+      bot.action.setSelected(cb3, false);
+      assertFalse(bot.action.isSelected(cb1));
+      assertFalse(bot.action.isSelected(cb2));
+      assertFalse(bot.action.isSelected(cb3));
+
+      expectChangeEvent(cb1);
+      bot.action.setSelected(cb1, true);
+      assertChangeFired();
+      assertTrue(bot.action.isSelected(cb1));
+      assertFalse(bot.action.isSelected(cb2));
+      assertFalse(bot.action.isSelected(cb3));
+
+      expectChangeEvent(cb2);
+      bot.action.setSelected(cb2, true);
+      assertChangeFired();
+      assertTrue(bot.action.isSelected(cb1));
+      assertTrue(bot.action.isSelected(cb2));
+      assertFalse(bot.action.isSelected(cb3));
+
+      expectChangeEvent(cb3);
+      bot.action.setSelected(cb3, true);
+      assertChangeFired();
+      assertTrue(bot.action.isSelected(cb1));
+      assertTrue(bot.action.isSelected(cb2));
+      assertTrue(bot.action.isSelected(cb3));
+    }
+
+    function testShouldNotBeAbleToDeselectARadioButton() {
+      var radio = goog.dom.$('selectedRadio');
+      doNotExpectChangeEvent(radio);
+      assertThrows(goog.partial(bot.action.setSelected, radio, false));
+    }
+
+    function testShouldNotBeAbleToManipulateADisabledRadiobutton() {
+      var radio = goog.dom.$('disabledRadio');
+      doNotExpectChangeEvent(radio);
+      assertThrows(goog.partial(bot.action.setSelected, radio, false));
+    }
+
+    function testSelectingARadioButtonShouldDeselectTheOthersInTheGroup() {
+      var r1 = goog.dom.$('radio1');
+      var r2 = goog.dom.$('radio2');
+      var r3 = goog.dom.$('radio3');
+
+      assertFalse('precondition failed', bot.action.isSelected(r1));
+      assertFalse('precondition failed', bot.action.isSelected(r2));
+      assertFalse('precondition failed', bot.action.isSelected(r3));
+
+      expectChangeEvent(r2);
+      bot.action.setSelected(r2, true);
+      assertChangeFired();
+      assertFalse(bot.action.isSelected(r1));
+      assertTrue(bot.action.isSelected(r2));
+      assertFalse(bot.action.isSelected(r3));
+
+      expectChangeEvent(r3);
+      bot.action.setSelected(r3, true);
+      assertChangeFired();
+      assertFalse(bot.action.isSelected(r1));
+      assertFalse(bot.action.isSelected(r2));
+      assertTrue(bot.action.isSelected(r3));
+
+      expectChangeEvent(r1);
+      bot.action.setSelected(r1, true);
+      assertChangeFired();
+      assertTrue(bot.action.isSelected(r1));
+      assertFalse(bot.action.isSelected(r2));
+      assertFalse(bot.action.isSelected(r3));
+    }
+
+    function testClearingANonClearableElementShouldNoOp() {
+      bot.action.clear(document.body);
+    }
+
+    function testClearingAnEmptyTextInputElementShouldNoOp() {
+      goog.dom.$('textField').value = '';
+      doNotExpectChangeEvent(goog.dom.$('textField'));
+      bot.action.clear(goog.dom.$('textField'));
+    }
+
+    function testClearingATextInputElement() {
+      goog.dom.$('textField').value = 'foobar';
+      expectChangeEvent(goog.dom.$('textField'));
+      bot.action.clear(goog.dom.$('textField'));
+      assertChangeFired();
+      assertEquals('', goog.dom.$('textField').value);
+    }
+
+    function testClearingAnEmptyPasswordElementShouldNoOp() {
+      goog.dom.$('passwordField').value = '';
+      doNotExpectChangeEvent(goog.dom.$('passwordField'));
+      bot.action.clear(goog.dom.$('passwordField'));
+    }
+
+    function testClearingAPasswordInputElement() {
+      goog.dom.$('passwordField').value = 'foobar';
+      expectChangeEvent(goog.dom.$('passwordField'));
+      bot.action.clear(goog.dom.$('passwordField'));
+      assertChangeFired();
+      assertEquals('', goog.dom.$('passwordField').value);
+    }
+
+    function testClearingAnEmptyTextAreaElementShouldNoOp() {
+      goog.dom.$('textArea').value = '';
+      doNotExpectChangeEvent(goog.dom.$('textArea'));
+      bot.action.clear(goog.dom.$('textArea'));
+    }
+
+    function testClearingATextAreaInputElement() {
+      goog.dom.$('textArea').value = 'foobar';
+      expectChangeEvent(goog.dom.$('textArea'));
+      bot.action.clear(goog.dom.$('textArea'));
+      assertChangeFired();
+      assertEquals('', goog.dom.$('textArea').value);
+    }
+
+    function assertElementCannotBeCleared(element) {
+      element.value = 'foo';
+      element.readOnly = true;
+      assertThrows(goog.partial(bot.action.clear, element));
+    }
+
+    function testShouldNotBeAbleToClearAReadOnlyTextInput() {
+      assertElementCannotBeCleared(goog.dom.$('readOnlyTextField'));
+    }
+
+    function testShouldNotBeAbleToClearAReadOnlyPasswordInput() {
+      assertElementCannotBeCleared(goog.dom.$('readOnlyPasswordField'));
+    }
+
+    function testShouldNotBeAbleToClearAReadOnlyTextArea() {
+      assertElementCannotBeCleared(goog.dom.$('readOnlyTextArea'));
+    }
+
+    function testSubmittingANonFormElementShouldResultInAnError() {
+      assertThrows(goog.partial(bot.action.submit, document.body));
+    }
+
+    function testShouldNotSubmitIfSubmitEventIsCancelled() {
+      var form = goog.dom.$('form_one');
+      expectAndCancelEvent(goog.events.EventType.SUBMIT, form);
+
+      var wasSubmitted = false;
+      goog.global.submitted = function() {
+        wasSubmitted = true;
+      };
+
+      bot.action.submit(form);
+      assertSubmitFired();
+      assertFalse(wasSubmitted);
+    }
+
+    function testShouldSubmitIfSubmitEventIsNotCancelled() {
+      var form = goog.dom.$('form_one');
+      expectSubmitEvent(form);
+
+      goog.global.submitted = function() {
+        asyncTestCase.continueTesting();
+      };
+
+      // Firefox executes submit() in the next event loop, so we must go async.
+      asyncTestCase.waitForAsync('if this times out, the form did not submit');
+      bot.action.submit(form);
+      assertSubmitFired();
+    }
+
+    function testShouldBeAbleToSubmitFromAnyElementThatIsAChildOfTheForm() {
+      var form = goog.dom.$('form_one');
+      expectSubmitEvent(form);
+
+      goog.global.submitted = function() {
+        asyncTestCase.continueTesting();
+      };
+
+      // Firefox executes submit() in the next event loop, so we must go async.
+      asyncTestCase.waitForAsync('if this times out, the form did not submit');
+      bot.action.submit(goog.dom.$('typer'));
+      assertSubmitFired();
+    }
+
+  </script>
+</head>
+<body>
+  <form id="form_one" action="javascript:submitted()">
+    <label for="typer">Type here: </label><input type="text" id="typer"/>
+    <input type="submit" id="submit-button" value="Submit!"/>
+  </form>
+  <form action="javascript:void(0)">
+    <div>
+      <option id="nogo-option" value="nogo">Option not in a select</option>
+    </div>
+
+    <div>
+      <label for="singleSelect">Single option select</label>
+      <select id="singleSelect">
+        <option value="foo">FOO</option>
+        <option value="bar" selected>BAR</option>
+      </select>
+    </div>
+
+    <div>
+      <label for="disabledSelect">Disabled select</label>
+      <select id="disabledSelect" disabled>
+        <option value="1">1</option>
+        <option value="2">2</option>
+      </select>
+    </div>
+
+    <div>
+      <label for="disabledOption">Select with disabled option</label>
+      <select id="disabledOption">
+        <option value="1" selected>1</option>
+        <option value="2" disabled>2</option>
+        <option value="3">2</option>
+      </select>
+    </div>
+
+    <div>
+      <label for="multiSelect">Multi-select</label>
+      <select id="multiSelect" multiple>
+        <option value="apples" selected>apples</option>
+        <option value="oranges">oranges</option>
+        <option value="cherries">cherries</option>
+      </select>
+    </div>
+
+    <div>
+      <label for="multiSelect2">Another Multi-select</label>
+      <select id="multiSelect2" multiple>
+        <option value="red" selected>red</option>
+        <option value="green" selected>green</option>
+        <option value="blue" selected>blue</option>
+      </select>
+    </div>
+
+    <div>
+      <label for="textField">Text field</label>
+      <input type="text" id="textField"/>
+    </div>
+
+    <div>
+      <label for="readOnlyTextField">Read-Only Text field</label>
+      <input type="text" id="readOnlyTextField" readonly="readonly"/>
+    </div>
+
+    <div>
+      <label for="textArea">Text area</label>
+      <textarea id="textArea"></textarea>
+    </div>
+
+    <div>
+      <label for="readOnlyTextArea">Read-Only Text area</label>
+      <textarea id="readOnlyTextArea" readonly="readonly"></textarea>
+    </div>
+
+    <div>
+      <label for="passwordField">Password field</label>
+      <input type="password" id="passwordField">
+    </div>
+
+    <div>
+      <label for="readOnlyPasswordField">Read-Only Password field</label>
+      <input type="password" id="readOnlyPasswordField" readonly="readonly">
+    </div>
+
+    <div>
+      <div><strong>Checkboxes</strong></div>
+      <label for="check1">Strike 1</label>
+      <input type="checkbox" id="check1" name="checkBoxes" value="Strike One"/>
+      <label for="check2">Strike 2</label>
+      <input type="checkbox" id="check2" name="checkBoxes" value="Strike Two"/>
+      <label for="check3">Strike 3</label>
+      <input type="checkbox" id="check3" name="checkBoxes"
+             value="Strike Three"/>
+      <label for="check4">Disabled</label>
+      <input type="checkbox" id="check4" name="checkBoxes"
+             value="Strike Four" disabled/>
+    </div>
+
+    <div>
+      <label for="selectedRadio">Selected radiobutton</label>
+      <input id="selectedRadio" type="radio" value="Pre-selected" checked/>
+    </div>
+
+    <div>
+      <label for="disabledRadio">Disabled radiobutton</label>
+      <input id="disabledRadio" type="radio" value="Disabled radio" disabled/>
+    </div>
+
+    <div>
+      <div><strong>Radiobuttons</strong></div>
+      <label for="radio1" selected>Radio 1</label>
+      <input id="radio1" type="radio" name="radiogroup" value="Radio1"/>
+      <label for="radio2">Radio 2</label>
+      <input id="radio2" type="radio" name="radiogroup" value="Radio2"/>
+      <label for="radio3">Radio 3</label>
+      <input id="radio3" type="radio" name="radiogroup" value="Radio3"/>
+    </div>
+  </form>
+  <script>
+    asyncTestCase = goog.testing.AsyncTestCase.createAndInstall();
+  </script>
+</body>
+</html>

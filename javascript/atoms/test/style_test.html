@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>style_test.html</title>
+    <script src="../../webdriver-bootstrap.js"></script>
+    <script src="deps.js"></script>
+    <script type="text/javascript">
+      goog.require('bot.dom');
+      goog.require('bot.locators');
+      goog.require('goog.testing.jsunit');
+    </script>
+
+    <script type="text/javascript">
+      function testStyleAttributeReturnsCssText() {
+        var e = bot.locators.findElement({id: 'child'});
+        assertEquals('visibility: inherit;', bot.dom.getAttribute(e, 'style'));
+      }
+
+      function testStyleAttributeReturnsWithTrailingSemicolon() {
+        var e = bot.locators.findElement({id: 'parent'});
+        assertEquals('visibility: visible;', bot.dom.getAttribute(e, 'style'));
+      }
+
+      function testInlineStyleReturnsEmptyStringForNonexistentProperty() {
+        var e = bot.locators.findElement({id: 'child'});
+        assertEquals('', bot.dom.getInlineStyle(e, 'gibberish'));
+      }
+
+      function testInlineStyleReturnsEmptyStringForUnspecifiedProperty() {
+        var e = bot.locators.findElement({id: 'child'});
+        assertEquals('', bot.dom.getInlineStyle(e, 'display'));
+      }
+
+      function testInlineStyleReturnsEmptyStringForCssSpecifiedProperty() {
+        var e = bot.locators.findElement({id: 'child'});
+        assertEquals('', bot.dom.getInlineStyle(e, 'height'));
+      }
+
+      function testInlineStyleReturnsInlineProperty() {
+        var e = bot.locators.findElement({id: 'child'});
+        assertEquals('inherit', bot.dom.getInlineStyle(e, 'visibility'));
+      }
+
+      function testEffectiveStyleReturnsInlineProperty() {
+        var e = bot.locators.findElement({id: 'parent'});
+        assertEquals('visible', bot.dom.getEffectiveStyle(e, 'visibility'));
+      }
+
+      function testEffectiveStyleReturnsCssSpecifiedProperty() {
+        var e = bot.locators.findElement({id: 'child'});
+        assertEquals('20px', bot.dom.getEffectiveStyle(e, 'height'));
+      }
+
+      function testEffectiveStyleReturnsInheritedProperty() {
+        var e = bot.locators.findElement({id: 'child'});
+        assertEquals('visible', bot.dom.getEffectiveStyle(e, 'visibility'));
+      }
+
+      function testEffectiveStyleDoesNotReturnUnquotedShortMsFilterAsFilter() {
+        var e = bot.locators.findElement({id: 'msFilterUnquotedFilterShort'});
+        assertEquals('', bot.dom.getInlineStyle(e, 'filter'));
+      }
+
+      function testEffectiveStyleDoesNotReturnUnquotedLongMsFilterAsFilter() {
+        var e = bot.locators.findElement({id: 'msFilterUnquotedFilterLong'});
+        assertEquals('', bot.dom.getInlineStyle(e, 'filter'));
+      }
+
+      function testEffectiveStyleReturnsQuotedShortMsFilterAsFilter() {
+        var e = bot.locators.findElement({id: 'msFilterQuotedFilterShort'});
+        if (goog.userAgent.IE && goog.userAgent.isVersion(8)) {
+          assertEquals('alpha(opacity=0)', bot.dom.getInlineStyle(e, 'filter'));
+        } else {
+          // -ms-filters make sense only on IE.
+          assertEquals('', bot.dom.getInlineStyle(e, 'filter'));
+        }
+      }
+
+      function testEffectiveStyleReturnsQuotedLongMsFilterAsFilter() {
+        var e = bot.locators.findElement({id: 'msFilterQuotedFilterLong'});
+        if (goog.userAgent.IE && goog.userAgent.isVersion(8)) {
+          assertEquals('progid:DXImageTransform.Microsoft.Alpha(Opacity=20)',
+              bot.dom.getInlineStyle(e, 'filter'));
+        } else {
+          // -ms-filters make sense only on IE.
+          assertEquals('', bot.dom.getInlineStyle(e, 'filter'));
+        }
+      }
+
+    </script>
+
+    <style type="text/css">
+      #child {
+        height: 20px
+      }
+      </style>
+  </head>
+  <body>
+    <div id="msFilterUnquotedFilterShort" style="-ms-filter:alpha(opacity=0)">A div</div>
+    <div id="msFilterUnquotedFilterLong" style="-ms-filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=20)">A div</div>
+    <div id="msFilterQuotedFilterShort" style="-ms-filter:'alpha(opacity=0)'">A div</div>
+    <div id="msFilterQuotedFilterLong" style="-ms-filter:'progid:DXImageTransform.Microsoft.Alpha(Opacity=20)'">A div</div>
+
+    <div id="parent" style="visibility: visible">A parent div
+      <div id="child" style="visibility: inherit;display:;">A child div</div>
+    </div>
+
+  </body>
+</html>

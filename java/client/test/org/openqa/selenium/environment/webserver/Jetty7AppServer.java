@@ -37,8 +37,7 @@ import static org.openqa.selenium.net.PortProber.findFreePort;
 public class Jetty7AppServer implements AppServer {
 
   private static final String DEFAULT_CONTEXT_PATH = "/common";
-  private static final String JS_SRC_CONTEXT_PATH = "/js/src";
-  private static final String JS_TEST_CONTEXT_PATH = "/js/test";
+  private static final String JS_SRC_CONTEXT_PATH = "/javascript";
   private static final String THIRD_PARTY_JS_CONTEXT_PATH =
       "/third_party/closure/goog";
 
@@ -48,7 +47,6 @@ public class Jetty7AppServer implements AppServer {
   private int securePort;
   private File path;
   private File jsSrcRoot;
-  private File jsTestRoot;
   private File thirdPartyJsRoot;
   private final Server server;
   private WebAppContext context;
@@ -70,14 +68,12 @@ public class Jetty7AppServer implements AppServer {
 
     path = findRootOfWebApp();
     jsSrcRoot = findJsSrcWebAppRoot();
-    jsTestRoot = findJsTestWebAppRoot();
     thirdPartyJsRoot = findThirdPartyJsWebAppRoot();
 
     handlers = new ContextHandlerCollection();
 
     context = addWebApplication(DEFAULT_CONTEXT_PATH, path);
     addWebApplication(JS_SRC_CONTEXT_PATH, jsSrcRoot);
-    addWebApplication(JS_TEST_CONTEXT_PATH, jsTestRoot);
     addWebApplication(THIRD_PARTY_JS_CONTEXT_PATH, thirdPartyJsRoot);
 
     server.setHandler(handlers);
@@ -95,20 +91,12 @@ public class Jetty7AppServer implements AppServer {
     listenSecurelyOn(findFreePort());
   }
 
-  public File getJsTestRoot() {
-    return jsTestRoot;
-  }
-
   protected File findRootOfWebApp() {
     return InProject.locate("common/src/web");
   }
 
   private static File findJsSrcWebAppRoot() {
-    return InProject.locate("common/src/js");
-  }
-
-  private static File findJsTestWebAppRoot() {
-    return InProject.locate("common/test/js");
+    return InProject.locate("javascript");
   }
 
   private static File findThirdPartyJsWebAppRoot() {

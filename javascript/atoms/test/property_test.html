@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<!--
+Copyright 2010 WebDriver committers
+Copyright 2010 Google Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<html>
+<head>
+  <title>property_test.html</title>
+  <script src="../../webdriver-bootstrap.js"></script>
+  <script type="text/javascript" src="deps.js"></script>
+  <script type="text/javascript">
+    goog.require('bot.dom');
+    goog.require('bot.locators');
+    goog.require('goog.events.EventType');
+    goog.require('goog.testing.jsunit');
+  </script>
+
+  <script type="text/javascript">
+    function testShouldIndicateWhetherAPropertyIsAvailableOnAnElement() {
+      var chips = bot.locators.findElement({id: 'chips'});
+
+      assertTrue('Chips has the "selected" property, but not the attribute',
+                 goog.isDef(bot.dom.getProperty(chips, 'selected')));
+    }
+
+    function testSelectedShouldBeFalseIfNotSet() {
+      var chips = bot.locators.findElement({id: 'chips'});
+
+      var result = bot.dom.getProperty(chips, 'selected');
+      assertTrue(goog.isBoolean(result));
+      assertFalse(result);
+    }
+
+    function testSelectedShouldBeReturnedAsABooleanWhenValueNotOnAttribute() {
+      var e = bot.locators.findElement({id: 'peas'});
+
+      var result = bot.dom.getProperty(e, 'selected');
+      assertTrue(goog.isBoolean(result));
+      assertTrue(result);
+    }
+
+    function testShouldAliasClassNameProperty() {
+      var e = bot.locators.findElement({id: 'brie'});
+
+      assertEquals('tasty', bot.dom.getProperty(e, 'class'));
+      assertEquals('tasty', bot.dom.getProperty(e, 'className'));
+    }
+  </script>
+</head>
+<body>
+  <div name="cheese1" id="cheddar" unknown="lovely">Cheddar</div>
+  <div name="cheese2" id="brie" class="tasty">Brie</div>
+  <div name="cheese3" id="gouda" empty="">Gouda</div>
+
+  <form action="#" method="get" name="myform">
+    <select name="fish_supper">
+      <option value="fish">Fish</option>
+      <option id="chips" value="chips">Chips</option>
+      <option id="peas"  value="peas" selected>Mushy Peas</option>
+      <option value="gravy">Gravy</option>
+    </select>
+  </form>
+</body>
+</html>

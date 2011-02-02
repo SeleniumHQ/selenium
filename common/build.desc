@@ -5,16 +5,6 @@ rake_task(
   out = "common/src/js/extension/dommessenger.js"
 )
 
-js_deps(name = "bot",
-  srcs = [ "src/js/bot/**/*.js" ])
-
-js_binary(name = "atoms",
-  type = "script",
-  closure = "true",
-  deps = [
-    ":bot"
-  ])
-
 rake_file(
   name = "js_core",
   src = "src/js/core")
@@ -22,11 +12,3 @@ rake_file(
 rake_file(
   name = "js_jsunit",
   src = "src/js/jsunit")
-
-rake_file(
-  name = "test_runner_html",
-  src = "src/js/core/TestRunner.html")
-
-rake_file(
-  name = "remote_runner_html",
-  src = "src/js/core/RemoteRunner.html")

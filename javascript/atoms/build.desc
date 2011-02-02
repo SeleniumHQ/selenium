@@ -1,0 +1,12 @@
+
+js_binary(name = "atoms",
+  deps = [
+    ":deps",
+  ])
+
+js_deps(name = "deps",
+  srcs = [
+    "*.js",
+    "locators/*.js",
+  ])
+

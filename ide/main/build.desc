@@ -15,7 +15,7 @@ mozilla_extension(name = "selenium-ide",
     { "src/locale" : "chrome" },
     { ":rename_core" : "chrome/content"},
     { "src/chrome/icons" : "chrome" },
-    { "//common/src/js/selenium:core" : "chrome/content/selenium/scripts/atoms.js"},
+    { "//javascript/selenium-atoms" : "chrome/content/selenium/scripts/atoms.js"},
     { "//third_party/js/sizzle" : "chrome/content/selenium/lib/sizzle.js" }
   ],
   chrome = "src/chrome.manifest.production",

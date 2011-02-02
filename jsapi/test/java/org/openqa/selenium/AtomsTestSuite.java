@@ -13,13 +13,13 @@ public class AtomsTestSuite {
   public static Test suite() {
     TestSuite suite = new TestSuite();
 
-    File testDir = InProject.locate("common/test/js/bot");
+    File testDir = InProject.locate("javascript/atoms/test");
 
      for (File file : testDir.listFiles(new TestSuiteBuilder.TestFilenameFilter())) {
       String path = file.getAbsolutePath()
           .replace(testDir.getAbsolutePath() + File.separator, "")
           .replace(File.separator, "/");
-      TestCase test = new JsApiTestCase("/js/test/bot/" + path);
+      TestCase test = new JsApiTestCase("/javascript/atoms/test/" + path);
       suite.addTest(new DriverTestDecorator(test, FirefoxDriver.class,
           /*keepDriver=*/true, /*freshDriver=*/false, /*refreshDriver=*/false));
     }

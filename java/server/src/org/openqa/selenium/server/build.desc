@@ -36,17 +36,11 @@ java_library(name = "server_lite",
     "opera",
     "sslSupport",
     "VERSION.txt",
-    "//common:js_core",
     "//common:js_jsunit",
-    {
-      "//common:test_runner_html" : "core/TestRunner.hta",
-      "//common:remote_runner_html" : "core/RemoteRunner.hta",
-      "//common/src/js/selenium:core" : "core/scripts/atoms.js",
-      "//third_party/js/sizzle" : "core/lib/sizzle.js"
-    }
   ],
   deps = [
     ":base",
+    "//javascript/selenium-core",
   ])
 
 java_library(name = "base",

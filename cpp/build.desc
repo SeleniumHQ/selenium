@@ -33,9 +33,9 @@ gcc_library(name = "noblur64",
 
 visualc_library(name = "ie_win32_dll",
   deps = [
-    "//jobbie:atoms",
-    "//jobbie:ie_result_type_cpp",
-    "//jobbie:sizzle"
+    ":atoms",
+    ":ie_result_type_cpp",
+    ":sizzle"
   ],
   platform = "Win32",
   solution = "WebDriver.sln",
@@ -45,9 +45,9 @@ visualc_library(name = "ie_win32_dll",
 
 visualc_library(name = "ie_x64_dll",
   deps = [
-    "//jobbie:atoms",
-    "//jobbie:ie_result_type_cpp",
-    "//jobbie:sizzle"
+    ":atoms",
+    ":ie_result_type_cpp",
+    ":sizzle"
   ],
   platform = "x64",
   solution = "WebDriver.sln",
@@ -57,9 +57,9 @@ visualc_library(name = "ie_x64_dll",
 
 visualc_library(name = "ielegacy_win32_dll",
   deps = [
-    "//jobbie:atoms",
-    "//jobbie:ie_result_type_cpp",
-    "//jobbie:sizzle"
+    ":atoms",
+    ":ie_result_type_cpp",
+    ":sizzle"
   ],
   platform = "Win32",
   solution = "WebDriver.sln",
@@ -69,12 +69,37 @@ visualc_library(name = "ielegacy_win32_dll",
 
 visualc_library(name = "ielegacy_x64_dll",
   deps = [
-    "//jobbie:atoms",
-    "//jobbie:ie_result_type_cpp",
-    "//jobbie:sizzle"
+    ":atoms",
+    ":ie_result_type_cpp",
+    ":sizzle"
   ],
   platform = "x64",
   solution = "WebDriver.sln",
   target = "InternetExplorerDriver",
   out = "x64/Release/InternetExplorerDriver.dll"
 )
+
+js_fragment_header(name = "atoms",
+  deps = [
+    "//javascript/webdriver-atoms:clear",
+    "//javascript/webdriver-atoms:find_element",
+    "//javascript/webdriver-atoms:find_elements",
+    "//javascript/webdriver-atoms:get_attribute",
+    "//javascript/webdriver-atoms:get_location",
+    "//javascript/webdriver-atoms:get_size",
+    "//javascript/webdriver-atoms:get_text",
+    "//javascript/webdriver-atoms:is_displayed",
+    "//javascript/webdriver-atoms:is_enabled",
+    "//javascript/webdriver-atoms:is_selected",
+    "//javascript/webdriver-atoms:submit",
+  ],
+  out = "cpp/IEDriver/atoms.h"
+)
+
+rake_task(name = "sizzle",
+  task_name = "sizzle_header",
+  out = "cpp/IEDriver/sizzle.h")
+
+rake_task(name = "ie_result_type_cpp",
+  task_name = "ie_result_type_cpp",
+  out = "cpp/IEDriver/IEReturnTypes.h")
