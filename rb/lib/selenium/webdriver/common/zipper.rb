@@ -37,7 +37,6 @@ module Selenium
 
             zos.put_next_entry(entry)
             zos << File.read(file)
-            p :added => file, :as => entry
           end
 
           zos.close
