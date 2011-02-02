@@ -156,7 +156,7 @@ module Javascript
         t = Rake::Task[task_name(dir, args[:name])]
         
         js_files = build_deps(output, Rake::Task[output], []).uniq
-        
+
         mkdir_p File.dirname(output)
         File.open(output, 'w') do |f|
           js_files.each do |dep|
@@ -232,12 +232,13 @@ module Javascript
             "-f \"--output_wrapper='#{wrapper}'\" " <<
             "-f \"--compilation_level=ADVANCED_OPTIMIZATIONS\" " <<
             "-p third_party/closure/goog/ " <<
+            "-p javascript " <<
             "-p common/src/js " <<
             "-p iphone/src/js " <<
             "-i #{temp} "
 
         mkdir_p File.dirname(output)
-        
+
         execute cmd
 
         rm_f temp
