@@ -16,6 +16,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 using System;
+using System.Globalization;
 using System.Threading;
 
 namespace OpenQA.Selenium.Support.UI
@@ -78,12 +79,12 @@ namespace OpenQA.Selenium.Support.UI
             }
 
             NotFoundException lastException = null;
-            var endTime = clock.LaterBy(timeout);
-            while (clock.IsNowBefore(endTime))
+            var endTime = this.clock.LaterBy(this.timeout);
+            while (this.clock.IsNowBefore(endTime))
             {
                 try
                 {
-                    var result = condition(driver);
+                    var result = condition(this.driver);
                     if (resultType == typeof(bool))
                     {
                         var boolResult = result as bool?;
@@ -105,20 +106,20 @@ namespace OpenQA.Selenium.Support.UI
                     lastException = e;
                 }
 
-                Thread.Sleep(sleepInterval);
+                Thread.Sleep(this.sleepInterval);
             }
 
-            throw new TimeoutException(string.Format("Timed out after {0} seconds", timeout.TotalSeconds), lastException);
+            throw new TimeoutException(string.Format(CultureInfo.InvariantCulture, "Timed out after {0} seconds", this.timeout.TotalSeconds), lastException);
         }
 
         /// <summary>
         /// Throws a <see cref="TimeoutException"/> with the given message.
         /// </summary>
         /// <param name="message">The message of the exception.</param>
-        /// <param name="lastExcetpion">The last exception thrown by the condition.</param>
-        protected virtual void ThrowTimeoutException(string message, Exception lastExcetpion)
+        /// <param name="lastException">The last exception thrown by the condition.</param>
+        protected virtual void ThrowTimeoutException(string message, Exception lastException)
         {
-            throw new TimeoutException(message, lastExcetpion);
+            throw new TimeoutException(message, lastException);
         }
     }
 }

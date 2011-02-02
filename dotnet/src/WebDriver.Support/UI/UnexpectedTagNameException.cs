@@ -16,6 +16,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 using System;
+using System.Globalization;
 using System.Runtime.Serialization;
 
 namespace OpenQA.Selenium.Support.UI
@@ -34,7 +35,7 @@ namespace OpenQA.Selenium.Support.UI
         /// <param name="expected">The tag name that was expected.</param>
         /// <param name="actual">The actual tag name of the element.</param>
         public UnexpectedTagNameException(string expected, string actual)
-            : base(string.Format("Element should have been {0} but was {1}", expected, actual ))
+            : base(string.Format(CultureInfo.InvariantCulture, "Element should have been {0} but was {1}", expected, actual))
         {
         }
 
@@ -49,13 +50,12 @@ namespace OpenQA.Selenium.Support.UI
         /// Initializes a new instance of the <see cref="UnexpectedTagNameException"/> class with 
         /// a specified error message.
         /// </summary>
-        /// <param name="message"></param>
+        /// <param name="message">The message of the exception</param>
         public UnexpectedTagNameException(string message) 
             : base(message)
         {
         }
 
-        
         /// <summary>
         /// Initializes a new instance of the <see cref="UnexpectedTagNameException"/> class with
         /// a specified error message and a reference to the inner exception that is the
@@ -80,6 +80,5 @@ namespace OpenQA.Selenium.Support.UI
             : base(info, context)
         {
         }
-
     }
 }

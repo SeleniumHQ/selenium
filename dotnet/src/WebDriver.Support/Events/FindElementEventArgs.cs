@@ -58,7 +58,7 @@ namespace OpenQA.Selenium.Support.Events
         /// </summary>
         public IWebDriver Driver
         {
-            get { return driver; }
+            get { return this.driver; }
         }
 
         /// <summary>
@@ -66,7 +66,7 @@ namespace OpenQA.Selenium.Support.Events
         /// </summary>
         public IWebElement Element
         {
-            get { return element; }
+            get { return this.element; }
         }
 
         /// <summary>
@@ -74,7 +74,7 @@ namespace OpenQA.Selenium.Support.Events
         /// </summary>
         public By FindMethod
         {
-            get { return method; }
+            get { return this.method; }
         }
     }
 }

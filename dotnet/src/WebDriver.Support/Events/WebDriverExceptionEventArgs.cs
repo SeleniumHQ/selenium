@@ -45,7 +45,7 @@ namespace OpenQA.Selenium.Support.Events
         /// </summary>
         public Exception ThrownException
         {
-            get { return thrownException; }
+            get { return this.thrownException; }
         }
 
         /// <summary>
@@ -53,7 +53,7 @@ namespace OpenQA.Selenium.Support.Events
         /// </summary>
         public IWebDriver Driver
         {
-            get { return driver; }
+            get { return this.driver; }
         }
     }
 }

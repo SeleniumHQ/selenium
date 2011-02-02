@@ -30,7 +30,7 @@ namespace OpenQA.Selenium.Support.Events
         private IWebElement element;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="WebDriverScriptEventArgs"/> class.
+        /// Initializes a new instance of the <see cref="WebElementEventArgs"/> class.
         /// </summary>
         /// <param name="driver">The WebDriver instance used for the action.</param>
         /// <param name="element">The element used for the action.</param>
@@ -45,7 +45,7 @@ namespace OpenQA.Selenium.Support.Events
         /// </summary>
         public IWebDriver Driver
         {
-            get { return driver; }
+            get { return this.driver; }
         }
 
         /// <summary>
@@ -53,7 +53,7 @@ namespace OpenQA.Selenium.Support.Events
         /// </summary>
         public IWebElement Element
         {
-            get { return element; }
+            get { return this.element; }
         }
     }
 }

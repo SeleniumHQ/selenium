@@ -26,7 +26,7 @@ namespace OpenQA.Selenium.Support.Events
     /// </summary>
     public class WebDriverNavigationEventArgs : EventArgs
     {
-        private string url;
+        private Uri url;
         private IWebDriver driver;
 
         /// <summary>
@@ -34,7 +34,7 @@ namespace OpenQA.Selenium.Support.Events
         /// </summary>
         /// <param name="driver">The WebDriver instance used in navigation.</param>
         public WebDriverNavigationEventArgs(IWebDriver driver)
-            :this(driver, string.Empty)
+            : this(driver, (Uri)null)
         {
         }
 
@@ -44,6 +44,16 @@ namespace OpenQA.Selenium.Support.Events
         /// <param name="driver">The WebDriver instance used in navigation.</param>
         /// <param name="url">The URL navigated to by the driver.</param>
         public WebDriverNavigationEventArgs(IWebDriver driver, string url)
+            : this(driver, new Uri(url))
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="WebDriverNavigationEventArgs"/> class.
+        /// </summary>
+        /// <param name="driver">The WebDriver instance used in navigation.</param>
+        /// <param name="url">The URL navigated to by the driver.</param>
+        public WebDriverNavigationEventArgs(IWebDriver driver, Uri url)
         {
             this.url = url;
             this.driver = driver;
@@ -52,9 +62,9 @@ namespace OpenQA.Selenium.Support.Events
         /// <summary>
         /// Gets the URL navigated to by the driver.
         /// </summary>
-        public string Url
+        public Uri Url
         {
-            get { return url; }
+            get { return this.url; }
         }
 
         /// <summary>
@@ -62,7 +72,7 @@ namespace OpenQA.Selenium.Support.Events
         /// </summary>
         public IWebDriver Driver
         {
-            get { return driver; }
+            get { return this.driver; }
         }
     }
 }

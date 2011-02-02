@@ -45,7 +45,7 @@ namespace OpenQA.Selenium.Support.Events
         /// </summary>
         public IWebDriver Driver
         {
-            get { return driver; }
+            get { return this.driver; }
         }
 
         /// <summary>
@@ -53,7 +53,7 @@ namespace OpenQA.Selenium.Support.Events
         /// </summary>
         public string Script
         {
-            get { return script; }
+            get { return this.script; }
         }
     }
 }

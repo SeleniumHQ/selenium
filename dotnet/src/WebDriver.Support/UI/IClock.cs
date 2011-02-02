@@ -39,8 +39,8 @@ namespace OpenQA.Selenium.Support.UI
         /// <summary>
         /// Gets a value indicating whether the current date and time is before the specified date and time.
         /// </summary>
-        /// <param name="then">The date and time values to compare the current date and time values to.</param>
+        /// <param name="otherDateTime">The date and time values to compare the current date and time values to.</param>
         /// <returns><see langword="true"/> if the current date and time is before the specified date and time; otherwise, <see langword="false"/>.</returns>
-        bool IsNowBefore(DateTime then);
+        bool IsNowBefore(DateTime otherDateTime);
     }
 }

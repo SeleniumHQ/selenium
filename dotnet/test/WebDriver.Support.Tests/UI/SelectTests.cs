@@ -23,7 +23,7 @@ namespace OpenQA.Selenium.Support.UI
         public void ThrowUnexpectedTagNameExceptionWhenNotSelectTag()
         {
             Stub.On(webElement).GetProperty("TagName").Will(Return.Value("form"));
-            new Select(webElement);
+            new SelectElement(webElement);
         }
 
         [Test]
@@ -32,7 +32,7 @@ namespace OpenQA.Selenium.Support.UI
             Stub.On(webElement).GetProperty("TagName").Will(Return.Value("select"));
             Stub.On(webElement).Method("GetAttribute").Will(Return.Value(null));
             
-            Assert.IsFalse(new Select(webElement).Multiple);
+            Assert.IsFalse(new SelectElement(webElement).IsMultiple);
         }
 
         [Test]
@@ -41,7 +41,7 @@ namespace OpenQA.Selenium.Support.UI
             Stub.On(webElement).GetProperty("TagName").Will(Return.Value("select"));
             Stub.On(webElement).Method("GetAttribute").Will(Return.Value("multiple"));
             
-            Assert.IsTrue(new Select(webElement).Multiple);  
+            Assert.IsTrue(new SelectElement(webElement).IsMultiple);  
         }
 
         [Test]
@@ -52,7 +52,7 @@ namespace OpenQA.Selenium.Support.UI
             Stub.On(webElement).Method("GetAttribute").Will(Return.Value("multiple"));
             Expect.Once.On(webElement).Method("FindElements").Will(Return.Value(new ReadOnlyCollection<IWebElement>(options)));
             
-            Assert.AreEqual(options, new Select(webElement).GetOptions());
+            Assert.AreEqual(options, new SelectElement(webElement).GetOptions());
             mocks.VerifyAllExpectationsHaveBeenMet();
         }
 
@@ -71,7 +71,7 @@ namespace OpenQA.Selenium.Support.UI
             Stub.On(notSelected).GetProperty("Selected").Will(Return.Value(false));
             Expect.Once.On(webElement).Method("FindElements").Will(Return.Value(new ReadOnlyCollection<IWebElement>(options)));
 
-            IWebElement option = new Select(webElement).GetSelected();
+            IWebElement option = new SelectElement(webElement).GetSelected();
             Assert.AreEqual(selected, option);
             mocks.VerifyAllExpectationsHaveBeenMet();
         }
@@ -91,7 +91,7 @@ namespace OpenQA.Selenium.Support.UI
             Stub.On(notSelected).GetProperty("Selected").Will(Return.Value(false));
             Expect.Once.On(webElement).Method("FindElements").Will(Return.Value(new ReadOnlyCollection<IWebElement>(options)));
 
-            IList<IWebElement> returnedOption = new Select(webElement).GetAllSelectedOption();
+            IList<IWebElement> returnedOption = new SelectElement(webElement).GetAllSelectedOption();
             Assert.That(returnedOption.Count == 1);
             Assert.AreEqual(selected, returnedOption[0]);
             mocks.VerifyAllExpectationsHaveBeenMet();
@@ -111,7 +111,7 @@ namespace OpenQA.Selenium.Support.UI
             Expect.Once.On(webElement).Method("FindElements").Will(Return.Value(new ReadOnlyCollection<IWebElement>(options)));
 
 
-            new Select(webElement).SelectByText("Select Me");
+            new SelectElement(webElement).SelectByText("Select Me");
             mocks.VerifyAllExpectationsHaveBeenMet();
         }
 
@@ -129,7 +129,7 @@ namespace OpenQA.Selenium.Support.UI
             Expect.Once.On(webElement).Method("FindElements").Will(Return.Value(new ReadOnlyCollection<IWebElement>(options)));
 
 
-            new Select(webElement).SelectByValue("Select Me");
+            new SelectElement(webElement).SelectByValue("Select Me");
             mocks.VerifyAllExpectationsHaveBeenMet();
         }
 
@@ -147,7 +147,7 @@ namespace OpenQA.Selenium.Support.UI
             Expect.Once.On(webElement).Method("FindElements").Will(Return.Value(new ReadOnlyCollection<IWebElement>(options)));
 
 
-            new Select(webElement).SelectByIndex(2);
+            new SelectElement(webElement).SelectByIndex(2);
             mocks.VerifyAllExpectationsHaveBeenMet();
         }
 
@@ -169,7 +169,7 @@ namespace OpenQA.Selenium.Support.UI
             Expect.Once.On(webElement).Method("FindElements").Will(Return.Value(new ReadOnlyCollection<IWebElement>(options)));
 
 
-            new Select(webElement).SelectByText("Select Me");
+            new SelectElement(webElement).SelectByText("Select Me");
             mocks.VerifyAllExpectationsHaveBeenMet();
         }
 
@@ -191,7 +191,7 @@ namespace OpenQA.Selenium.Support.UI
             Expect.Once.On(webElement).Method("FindElements").Will(Return.Value(new ReadOnlyCollection<IWebElement>(options)));
 
 
-            new Select(webElement).SelectByValue("Select Me");
+            new SelectElement(webElement).SelectByValue("Select Me");
             mocks.VerifyAllExpectationsHaveBeenMet();
         }
 
@@ -213,7 +213,7 @@ namespace OpenQA.Selenium.Support.UI
             Expect.Once.On(webElement).Method("FindElements").Will(Return.Value(new ReadOnlyCollection<IWebElement>(options)));
 
 
-            new Select(webElement).SelectByIndex(2);
+            new SelectElement(webElement).SelectByIndex(2);
             mocks.VerifyAllExpectationsHaveBeenMet();
         }
 
@@ -232,7 +232,7 @@ namespace OpenQA.Selenium.Support.UI
             Expect.Once.On(webElement).Method("FindElements").Will(Return.Value(new ReadOnlyCollection<IWebElement>(options)));
 
 
-            new Select(webElement).DeselectByText("Deselect Me");
+            new SelectElement(webElement).DeselectByText("Deselect Me");
             mocks.VerifyAllExpectationsHaveBeenMet();
         }
 
@@ -251,7 +251,7 @@ namespace OpenQA.Selenium.Support.UI
             Expect.Once.On(webElement).Method("FindElements").Will(Return.Value(new ReadOnlyCollection<IWebElement>(options)));
 
 
-            new Select(webElement).DeselectByValue("Deselect Me");
+            new SelectElement(webElement).DeselectByValue("Deselect Me");
             mocks.VerifyAllExpectationsHaveBeenMet();
         }
 
@@ -270,7 +270,7 @@ namespace OpenQA.Selenium.Support.UI
             Expect.Once.On(webElement).Method("FindElements").Will(Return.Value(new ReadOnlyCollection<IWebElement>(options)));
 
 
-            new Select(webElement).DeselectByIndex(2);
+            new SelectElement(webElement).DeselectByIndex(2);
             mocks.VerifyAllExpectationsHaveBeenMet();
         }
 
@@ -294,7 +294,7 @@ namespace OpenQA.Selenium.Support.UI
             Expect.Once.On(webElement).Method("FindElements").Will(Return.Value(new ReadOnlyCollection<IWebElement>(options)));
 
 
-            new Select(webElement).DeselectByText("Deselect Me");
+            new SelectElement(webElement).DeselectByText("Deselect Me");
             mocks.VerifyAllExpectationsHaveBeenMet();
         }
 
@@ -318,7 +318,7 @@ namespace OpenQA.Selenium.Support.UI
             Expect.Once.On(webElement).Method("FindElements").Will(Return.Value(new ReadOnlyCollection<IWebElement>(options)));
 
 
-            new Select(webElement).DeselectByValue("Deselect Me");
+            new SelectElement(webElement).DeselectByValue("Deselect Me");
             mocks.VerifyAllExpectationsHaveBeenMet();
         }
 
@@ -342,7 +342,7 @@ namespace OpenQA.Selenium.Support.UI
             Expect.Once.On(webElement).Method("FindElements").Will(Return.Value(new ReadOnlyCollection<IWebElement>(options)));
 
 
-            new Select(webElement).DeselectByIndex(2);
+            new SelectElement(webElement).DeselectByIndex(2);
             mocks.VerifyAllExpectationsHaveBeenMet();
         }
 
@@ -360,7 +360,7 @@ namespace OpenQA.Selenium.Support.UI
             Stub.On(notSelected).GetProperty("Selected").Will(Return.Value(false));
             Expect.Once.On(webElement).Method("FindElements").Will(Return.Value(new ReadOnlyCollection<IWebElement>(options)));
 
-            new Select(webElement).GetSelected();
+            new SelectElement(webElement).GetSelected();
 
         }
 

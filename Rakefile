@@ -548,7 +548,7 @@ task :release => [
 end
 
 desc 'Build the selenium client jars'
-task 'selenium-java' => '//java/client/src/org/openqa/selenium/remote:client-combined:project'
+task 'selenium-java' => '//java/client/src/org/openqa/selenium:client-combined:project'
 
 desc 'Build the standalone server'
 task 'selenium-server-standalone' => '//java/server/src/org/openqa/selenium/server:server:uber'
