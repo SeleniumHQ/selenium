@@ -18,8 +18,13 @@ var CommandBuilders = {};
 
 CommandBuilders.builders = [];
 
-CommandBuilders.add = function(commandType, func) {
-	this.builders.push({builder: func, commandType: commandType});
+//Add new type of command to the context menu (right-click menu) in Selenium IDE
+CommandBuilders.add = function(commandType, func, executeFunc) {    //Samit: Enh: added support for Execute callback functions for util command builders
+    if (commandType != 'util') {
+	    this.builders.push({builder: func, commandType: commandType});
+    }else {
+        this.builders.push({builder: func, commandType: commandType, execute: executeFunc});
+    }
 }
 
 CommandBuilders.getRecorder = function(window) {
@@ -27,12 +32,39 @@ CommandBuilders.getRecorder = function(window) {
 }
 
 CommandBuilders.callBuilder = function(builder, window) {
-	var command = builder.builder.call(this, window);
-	['name', 'target', 'value'].forEach(function(name) {
-			if (command[name] == null) command[name] = '';
-		});
-	command.window = window;
-	return command;
+	try {
+		var command = builder.builder.call(this, window);
+		if (command) {
+			['name', 'target', 'value'].forEach(function(name) {
+					if (command[name] == null) command[name] = '';
+				});
+			command.window = window;
+		}
+		return command;
+	}catch (error) {
+		//TODO: Improve error handling by notifying a plugin crash analysis tool?
+		//TODO: At least logging a plugin crash message
+	}
+}
+
+//Samit: Enh: Call the Execute callback function for the util command builders and return the commands array
+CommandBuilders.callBuilderExecute = function(builder, utilCommand) {
+    if (builder.commandType == 'util') {
+    	try {
+    		var commands = builder.execute.call(this, utilCommand);
+	        if (commands) {
+		        commands.forEach(function(command) {
+		            ['name', 'target', 'value'].forEach(function(name) {
+		                    if (command[name] == null) command[name] = '';
+		                });
+		        });
+	        }
+	        return commands;
+    	}catch (error) {
+    		//TODO: Improve error handling by notifying a plugin crash analysis tool?
+    		//TODO: At least logging a plugin crash message
+    	}
+    }
 }
 
 /*

@@ -25,11 +25,26 @@ SeleniumIDE.Overlay.NUM_RECENT_COMMANDS = 8;
 SeleniumIDE.Overlay.appendCheck = function(event) {
     var command = event.target._Selenium_IDE_command;
     if (command) {
-        if (command.command.match(/^store/)) {
-            command[command.valueProperty] = window.prompt(SeleniumIDE.Overlay.getString("askForVariableName"));
+        if (command.builder.commandType == 'util') {    //Samit: Enh: Added support for util command builders
+            // The 'execute' function of the util command builder will return an array of commands to be added to the script
+            // The array can be empty if no commands are to be added
+            var topEditor = SeleniumIDE.Loader.getTopEditor(); 
+            var commands = topEditor.window.CommandBuilders.callBuilderExecute(command.builder, command);
+            if (commands) {
+                for (var i=0; i< commands.length; i++) {
+                    // Add commands to the script
+                    topEditor.addCommand(commands[i].command, commands[i].target, commands[i].value, command.window);
+                }
+            }
+            // add the util commands to the recent commands list
+            SeleniumIDE.Overlay.addRecentCommand(command.command);
+        } else {
+            if (command.command.match(/^store/)) {
+                command[command.valueProperty] = window.prompt(SeleniumIDE.Overlay.getString("askForVariableName"));
+            }
+            SeleniumIDE.Loader.getTopEditor().addCommand(command.command, command.target, command.value, command.window);
+            SeleniumIDE.Overlay.addRecentCommand(command.command);
         }
-        SeleniumIDE.Loader.getTopEditor().addCommand(command.command, command.target, command.value, command.window);
-        SeleniumIDE.Overlay.addRecentCommand(command.command);
     }
 }
 
@@ -59,7 +74,7 @@ SeleniumIDE.Overlay.addRecentCommand = function(id) {
     SeleniumIDE.Preferences.setString('recentCommands', checks.join(','));
 }
 
-SeleniumIDE.Overlay.testRecorderPopup = function(event) {
+SeleniumIDE.Overlay.populateRecorderPopup = function(event) {   //Samit: Ref: Changed testRecorderPopup to populateRecorderPopup, it is not a test any more
     var showAll;
     if (event.target.id == "contentAreaContextMenu") {
         showAll = false;
@@ -87,7 +102,7 @@ SeleniumIDE.Overlay.testRecorderPopup = function(event) {
         
         var recentCommands = self.getRecentCommands();
         var menuitems;
-        var prefixList = ['action', 'assert', 'verify', 'waitFor', 'store'];
+        var prefixList = ['action', 'util', 'assert', 'verify', 'waitFor', 'store']; //Samit: Enh: Added support for util command builders
 
         if (showAll) {
             menuitems = {};
@@ -108,14 +123,14 @@ SeleniumIDE.Overlay.testRecorderPopup = function(event) {
             var focusedWindow = contextMenu.ownerDocument.commandDispatcher.focusedWindow;
             var command = CommandBuilders.callBuilder(builder, focusedWindow);
 
-            if (builder.commandType == 'action') {
+            if (builder.commandType == 'action' || builder.commandType == 'util') { //Samit: Enh: Added support for util command builders
                 command.builder = builder;
                 if (showAll || recentCommands.indexOf(command.command) >= 0) {
-                    items('action').push(self.createCheckMenuItem((showAll ? 'all-' : ''), command));
+                    items(builder.commandType).push(self.createCheckMenuItem((showAll ? 'all-' : ''), command));
                 }
             } else {
                 prefixList.forEach(function(prefix) {
-                        if ('action' == prefix) return;
+                        if ('action' == prefix || 'util' == prefix) return; //Samit: Enh: skip util command builders
                         var newCommand = {};
                         for (prop in command) {
                             newCommand[prop] = command[prop];
@@ -147,7 +162,7 @@ SeleniumIDE.Overlay.testRecorderPopup = function(event) {
         if (showAll) {
             var first = true;
             prefixList.forEach(function(prefix) {
-                    if (!first) {
+                    if (!first && menuitems[prefix].length > 0) {   //Samit: Enh: Suppress separators for empty util command types
                         contextMenu.appendChild(self.createMenuSeparator(prefix));
                     }
                     menuitems[prefix].forEach(function(item) {
@@ -217,7 +232,7 @@ SeleniumIDE.Overlay.onContentLoaded = function(event) {
     
     var contextMenu = window.document.getElementById("contentAreaContextMenu");
     if (contextMenu) {
-        contextMenu.addEventListener("popupshowing", SeleniumIDE.Overlay.testRecorderPopup, false);
+        contextMenu.addEventListener("popupshowing", SeleniumIDE.Overlay.populateRecorderPopup, false);
         contextMenu.addEventListener("command", SeleniumIDE.Overlay.appendCheck, false);
     }
 }
