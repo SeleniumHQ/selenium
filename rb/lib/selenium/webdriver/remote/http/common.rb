@@ -16,6 +16,10 @@ module Selenium
           attr_accessor :timeout
           attr_writer :server_url
 
+          def initialize
+            @timeout = nil
+          end
+
           def call(verb, url, command_hash)
             url      = server_url.merge(url) unless url.kind_of?(URI)
             headers  = DEFAULT_HEADERS.dup
