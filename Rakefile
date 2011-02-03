@@ -92,6 +92,7 @@ task :remote => [:remote_common, :remote_server, :remote_client]
 task :remote_common => ["//java/client/src/org/openqa/selenium/remote:common"]
 task :remote_client => ["//java/client/src/org/openqa/selenium/remote"]
 task :remote_server => ["//java/server/src/org/openqa/selenium/remote/server"]
+task :server_lite => ["//java/server/src/org/openqa/selenium/server:server_lite"]
 task :selenium => [ "//java/client/src/org/openqa/selenium" ]
 task :support => [
   "//java/client/src/org/openqa/selenium/lift",

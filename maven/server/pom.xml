@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.seleniumhq.selenium</groupId>
+        <artifactId>selenium-parent</artifactId>
+        <version>2.0-SNAPSHOT</version>
+    </parent>
+    <artifactId>selenium-server</artifactId>
+    <name>selenium-server</name>
+
+    <dependencies>
+<!--
+        <dependency>
+            <groupId>ant</groupId>
+            <artifactId>ant</artifactId> 
+            <version>1.6.5</version>
+        </dependency>
+-->
+        <dependency>
+            <groupId>bouncycastle</groupId>
+            <artifactId>bcprov-jdk15</artifactId>
+            <version>135</version>
+        </dependency>
+        <dependency>
+            <groupId>mx4j</groupId>
+            <artifactId>mx4j-tools</artifactId>
+            <version>3.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mortbay.jetty</groupId>
+            <artifactId>servlet-api-2.5</artifactId>
+            <version>6.1.9</version>
+        </dependency>
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-chrome-driver</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-firefox-driver</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-htmlunit-driver</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-ie-driver</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+<!--
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-iphone-driver</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+-->
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-support</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!-- See http://maven.apache.org/plugins/maven-antrun-plugin -->
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy_java_files</id>
+                        <phase>generate-sources</phase>
+                        <configuration>
+                            <tasks>
+                                <delete dir="src/main/java" />
+                                <copy todir="src/main/java">
+                                    <fileset dir="../../java/server/src" />
+                                </copy>
+                            </tasks>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>copy_resources</id>
+                        <phase>generate-resources</phase>
+                        <configuration>
+                            <tasks>
+                                <!-- Extract everything but the *.class files and MANIFEST.MF from server_lite.jar to target/classes ... -->
+                                <unjar src="../../build/java/server/src/org/openqa/selenium/server/server_lite.jar" dest="target/classes">
+                                    <patternset>
+                                        <exclude name="**/*.class" />
+                                        <exclude name="META-INF/MANIFEST.MF" />
+                                    </patternset>
+                                </unjar>
+                                <!-- Copy everything but the *.java files from the java/server/src  directory to target/classes ... -->
+                                <copy todir="target/classes">
+                                    <fileset dir="../../java/server/src">
+                                        <exclude name="**/*.java" />
+                                    </fileset>
+                                </copy>
+                            </tasks>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

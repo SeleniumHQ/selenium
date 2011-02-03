@@ -1,39 +1,39 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-	<modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
 
-	<groupId>org.seleniumhq.selenium</groupId>
-	<artifactId>selenium-parent</artifactId>
-	<version>2.0-SNAPSHOT</version>
-	<packaging>pom</packaging>
+    <groupId>org.seleniumhq.selenium</groupId>
+    <artifactId>selenium-parent</artifactId>
+    <version>2.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
 
-	<name>selenium-parent</name>
-	<description>Browser automation framework</description>
-	<url>http://selenium.googlecode.com/</url>
+    <name>selenium-parent</name>
+    <description>Browser automation framework</description>
+    <url>http://selenium.googlecode.com/</url>
 
-	<licenses>
-		<license>
-			<name>The Apache Software License, Version 2.0</name>
-			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-			<distribution>repo</distribution>
-		</license>
-	</licenses>
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
 
-	<scm>
-		<connection>scm:svn:http://selenium.googlecode.com/svn</connection> 
-		<developerConnection>scm:svn:https://selenium.googlecode.com/svn</developerConnection>
-		<url>http://selenium.googlecode.com/svn</url>
-	</scm>
+    <scm>
+        <connection>scm:svn:http://selenium.googlecode.com/svn</connection> 
+        <developerConnection>scm:svn:https://selenium.googlecode.com/svn</developerConnection>
+        <url>http://selenium.googlecode.com/svn</url>
+    </scm>
 
-	<developers>
-		<developer> 
-			<id>simon.m.stewart</id> 
-			<name>Simon Stewart</name> 
-			<roles> 
-				<role>Owner</role> 
-			</roles> 
-		</developer> 
+    <developers>
+        <developer> 
+            <id>simon.m.stewart</id> 
+            <name>Simon Stewart</name> 
+            <roles> 
+                <role>Owner</role> 
+            </roles> 
+        </developer> 
         <developer>
             <id>dawagner</id>
             <name>Daniel Wagner-Hall</name>
@@ -62,13 +62,13 @@
                 <role>Committer</role>
             </roles>
         </developer>
-		<developer>
-			<id>michael.tamm2</id> 
-			<name>Michael Tamm</name> 
-			<roles> 
-				<role>Committer</role> 
-			</roles> 
-		</developer>
+        <developer>
+            <id>michael.tamm2</id> 
+            <name>Michael Tamm</name> 
+            <roles> 
+                <role>Committer</role> 
+            </roles> 
+        </developer>
         <developer>
             <id>theautomatedtester</id>
             <name>David Burns</name>
@@ -76,66 +76,115 @@
                 <role>Committer</role>
             </roles>
         </developer>
-		<!-- A complete list can be found here: http://code.google.com/p/selenium/people/list -->
-	</developers>
+        <!-- A complete list can be found here: http://code.google.com/p/selenium/people/list -->
+    </developers>
 
-	<profiles>
-		<profile>
-			<id>sign</id>
-			<build>
-				<plugins>
-					<!-- See http://maven.apache.org/plugins/maven-gpg-plugin/ -->
-					<plugin>
-						<artifactId>maven-gpg-plugin</artifactId>
-						<executions>
-							<execution>
-								<phase>install</phase>
-									<goals>
-										<goal>sign</goal>
-									</goals>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
+    <profiles>
+        <profile>
+            <id>sign</id>
+            <build>
+                <plugins>
+                    <!-- See http://maven.apache.org/plugins/maven-gpg-plugin/ -->
+                    <plugin>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <phase>install</phase>
+                                    <goals>
+                                        <goal>sign</goal>
+                                    </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
-	<modules>
+    <modules>
+        <module>api</module>
+        <module>common</module>
+        <module>chrome</module>
+        <module>firefox</module>
+        <module>htmlunit</module>
+        <module>ie</module>
 <!--
-		<module>chrome</module>
-		<module>common</module>
+        <module>selenium</module>
+        <module>server</module>
 -->
-		<module>firefox</module>
-<!--
-		<module>htmlunit</module>
-		<module>iphone</module>
-		<module>jobbie</module>
--->
-		<module>remote-common</module>
-		<module>remote-client</module>
-<!--
-		<module>remote/server</module>
-		<module>selenium</module>
-		<module>support</module>
--->
-        <module>webdriver-api</module>
-	</modules>
+        <module>support</module>
+    </modules>
 
-	<build>
-		<pluginManagement>
-			<plugins>
-				<!-- See http://maven.apache.org/plugins/maven-compiler-plugin -->
-				<plugin>
-					<artifactId>maven-compiler-plugin</artifactId>
-					<configuration>
-						<encoding>Windows-1252</encoding>
-						<source>1.5</source>
-						<target>1.5</target>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>cglib</groupId>
+                <artifactId>cglib-nodep</artifactId>
+                <version>2.1_3</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>r07</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>1.4</version>
+            </dependency>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>4.8.1</version>
+            </dependency>
+            <dependency>
+                <groupId>net.java.dev.jna</groupId>
+                <artifactId>jna</artifactId>
+                <version>3.2.2</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpclient</artifactId>
+                <version>4.0.2</version>
+            </dependency>
+            <dependency>
+                <groupId>org.json</groupId>
+                <artifactId>json</artifactId>
+                <version>20080701</version>
+            </dependency>
+            <dependency>
+                <groupId>org.testng</groupId>
+                <artifactId>testng</artifactId>
+                <version>5.14.1</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <!-- See http://maven.apache.org/plugins/maven-clean-plugin -->
+                <plugin>
+                    <artifactId>maven-clean-plugin</artifactId>
+                    <configuration>
+                        <filesets>
+                            <fileset>
+                                <directory>src</directory>
+                            </fileset>
+                        </filesets>
+                    </configuration>
+                </plugin>
+                <!-- See http://maven.apache.org/plugins/maven-compiler-plugin -->
+                <plugin>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <configuration>
+                        <encoding>Windows-1252</encoding>
+                        <source>1.5</source>
+                        <target>1.5</target>
                         <optimize>true</optimize>
                         <debug>true</debug>
-					</configuration>
-				</plugin>
+                    </configuration>
+                </plugin>
                 <!-- See http://maven.apache.org/plugins/maven-surefire-plugin -->
                 <plugin>
                     <artifactId>maven-surefire-plugin</artifactId>
@@ -143,19 +192,19 @@
                         <skipTests>true</skipTests>
                     </configuration>
                 </plugin>
-			</plugins>
-		</pluginManagement>
-	</build>
+            </plugins>
+        </pluginManagement>
+    </build>
 
-	<distributionManagement>
-		<snapshotRepository>
-			<id>sonatype-nexus-snapshots</id>
-			<url>http://oss.sonatype.org/content/repositories/snapshots</url>
-		</snapshotRepository>
-		<repository>
-			<id>sonatype-nexus-staging</id>
-			<url>http://oss.sonatype.org/service/local/staging/deploy/maven2</url> 
-		</repository>
-	</distributionManagement>
+    <distributionManagement>
+        <snapshotRepository>
+            <id>sonatype-nexus-snapshots</id>
+            <url>http://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>sonatype-nexus-staging</id>
+            <url>http://oss.sonatype.org/service/local/staging/deploy/maven2</url> 
+        </repository>
+    </distributionManagement>
 
 </project>
