@@ -111,7 +111,12 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
     command.setDynamicLibraryPath(browserInstallation.libraryPath());
     LOGGER.info("Preparing Firefox profile...");
     command.execute();
-    waitForFullProfileToBeCreated(20 * 1000);
+    try {
+      waitForFullProfileToBeCreated(20 * 1000);
+    } catch (RuntimeException e) {
+      command.destroy();
+      throw e;
+    }
   }
 
   protected CommandLine prepareCommand(String... commands) {
