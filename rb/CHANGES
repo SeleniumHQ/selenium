@@ -1,6 +1,19 @@
 0.1.3 (???)
 ============
 
+* Screenshot support in the IE and Remote drivers.
+* Fixed paths for IE DLLs on Cygwin.
+* Several crashing bugs fixed in the IE driver.
+* Fix #1152 by avoiding IPv6 loopback.
+* Added Mouse and Keyboard classes, accessible as Driver#{mouse,keyboard}. Considered experimental (IE + HtmlUnit only at the moment).
+* Automation atoms now used extensively in the IE driver.
+* Firefox::Bridge is now easier to extend (i.e. with a custom launcher).
+* Add S::W::Remote::Http::Persistent (currently only usable with the remote server).
+* IE driver passes along options like the other remote drivers, enabling user-specified HTTP clients.
+* :firefox_profile added to Remote::Capabilities, enabling passing a profile to remote Firefoxes.
+* IE driver now supports launching multiple instances of the browser.
+* Remove some Ruby warnings (uninitialized ivars, URI.escape).
+
 
 0.1.2 (2010-12-22)
 ============
