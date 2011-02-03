@@ -266,17 +266,5 @@ namespace OpenQA.Selenium.Firefox
                 Assert.Fail("Interrupted");
             }
         }
-
-        [Test]
-        public void TestBasicFunc()
-        {
-            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(5));
-            driver.Url = "http://www.google.com/webhp?hl=en&as_qdr=all";
-            IWebElement e = driver.FindElement(By.Name("q"));
-            e.Click();
-            IWebElement e2 = driver.FindElement(By.Name("btnG"));
-            e2.Click();
-            driver.FindElement(By.ClassName("hd"));
-        }
     }
 }
