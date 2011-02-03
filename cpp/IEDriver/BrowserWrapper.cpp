@@ -502,7 +502,7 @@ bool BrowserWrapper::IsDocumentNavigating(IHTMLDocument2 *doc) {
 			}
 
 			CComPtr<IHTMLDocument2> frame_document;
-			this->GetDocumentFromWindow(window, &frame_document);
+			bool is_valid_frame_document = this->GetDocumentFromWindow(window, &frame_document);
 
 			is_navigating = this->is_navigation_started_;
 			if (is_navigating) {
@@ -510,9 +510,11 @@ bool BrowserWrapper::IsDocumentNavigating(IHTMLDocument2 *doc) {
 			}
 
 			// Recursively call to wait for the frame document to complete
-			is_navigating = this->IsDocumentNavigating(frame_document);
-			if (is_navigating) {
-				break;
+			if (is_valid_frame_document) {
+				is_navigating = this->IsDocumentNavigating(frame_document);
+				if (is_navigating) {
+					break;
+			}
 			}
 		}
 	}
