@@ -6,25 +6,37 @@ using OpenQA.Selenium;
 
 namespace Selenium.Internal.SeleniumEmulation
 {
+    /// <summary>
+    /// Provides methods for selecting a window.
+    /// </summary>
     internal class WindowSelector
     {
         private Dictionary<string, string> lastFrame = new Dictionary<string, string>();
         private string originalWindowHandle;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="WindowSelector"/> class.
+        /// </summary>
+        /// <param name="driver">The <see cref="IWebDriver"/> used in selecting the windows.</param>
         public WindowSelector(IWebDriver driver)
         {
-            originalWindowHandle = driver.GetWindowHandle();
+            this.originalWindowHandle = driver.GetWindowHandle();
         }
 
+        /// <summary>
+        /// Selects a window.
+        /// </summary>
+        /// <param name="driver">The <see cref="IWebDriver"/> used in selecting the windows.</param>
+        /// <param name="windowId">The window ID to select.</param>
         public void SelectWindow(IWebDriver driver, string windowId)
         {
             if (windowId == "null")
             {
-                driver.SwitchTo().Window(originalWindowHandle);
+                driver.SwitchTo().Window(this.originalWindowHandle);
             }
             else if (windowId == "_blank")
             {
-                SelectBlankWindow(driver);
+                this.SelectBlankWindow(driver);
             }
             else
             {
@@ -49,32 +61,37 @@ namespace Selenium.Internal.SeleniumEmulation
                 }
             }
 
-            if (lastFrame.ContainsKey(driver.GetWindowHandle()))
+            if (this.lastFrame.ContainsKey(driver.GetWindowHandle()))
             {
                 // If the frame has gone, fall back
                 try
                 {
-                    SelectFrame(driver, lastFrame[driver.GetWindowHandle()]);
+                    this.SelectFrame(driver, this.lastFrame[driver.GetWindowHandle()]);
                 }
                 catch (SeleniumException)
                 {
-                    lastFrame.Remove(driver.GetWindowHandle());
+                    this.lastFrame.Remove(driver.GetWindowHandle());
                 }
             }
         }
 
+        /// <summary>
+        /// Selects a frame.
+        /// </summary>
+        /// <param name="driver">The <see cref="IWebDriver"/> used in selecting the windows.</param>
+        /// <param name="locator">The locator used to select the frame.</param>
         public void SelectFrame(IWebDriver driver, string locator)
         {
             if (locator == "relative=top")
             {
                 driver.SwitchTo().DefaultContent();
-                lastFrame.Remove(driver.GetWindowHandle());
+                this.lastFrame.Remove(driver.GetWindowHandle());
                 return;
             }
 
             try
             {
-                lastFrame.Add(driver.GetWindowHandle(), locator);
+                this.lastFrame.Add(driver.GetWindowHandle(), locator);
                 driver.SwitchTo().Frame(locator);
             }
             catch (NoSuchFrameException e)
@@ -90,15 +107,15 @@ namespace Selenium.Internal.SeleniumEmulation
         /// <param name="driver">The driver to use to select the window.</param>
         /// <remarks>
         /// <para>This method assumes that there will only be one single
-         /// <code>_blank</code> window and selects the first one with no name.
-         /// Therefore if for any reasons there are multiple windows with
-         /// <code>window.name = null</code> the first found one will be selected.
-         /// </para>
-         /// <para>If none of the windows have <code>window.name = null</code> the last
-         /// selected one will be re-selected and a <see cref="SeleniumException"/> will
-         /// be thrown.
-         /// </para>
-         /// </remarks>
+        /// <code>_blank</code> window and selects the first one with no name.
+        /// Therefore if for any reasons there are multiple windows with
+        /// <code>window.name = null</code> the first found one will be selected.
+        /// </para>
+        /// <para>If none of the windows have <code>window.name = null</code> the last
+        /// selected one will be re-selected and a <see cref="SeleniumException"/> will
+        /// be thrown.
+        /// </para>
+        /// </remarks>
         public void SelectBlankWindow(IWebDriver driver)
         {
             string current = driver.GetWindowHandle();
@@ -110,7 +127,7 @@ namespace Selenium.Internal.SeleniumEmulation
                 // the original window will never be a _blank window, so don't even look at it
                 // this is also important to skip, because the original/root window won't have
                 // a name either, so if we didn't know better we might think it's a _blank popup!
-                if (handle == originalWindowHandle)
+                if (handle == this.originalWindowHandle)
                 {
                     continue;
                 }

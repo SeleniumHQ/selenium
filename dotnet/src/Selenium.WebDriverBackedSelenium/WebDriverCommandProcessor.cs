@@ -17,6 +17,7 @@ limitations under the License.
 */
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using OpenQA.Selenium;
 using Selenium.Internal;
 using Selenium.Internal.SeleniumEmulation;
@@ -58,9 +59,9 @@ namespace Selenium
         {
             this.driver = baseDriver;
             this.baseUrl = baseUrl;
-            this.select = new SeleniumOptionSelector(elementFinder);
+            this.select = new SeleniumOptionSelector(this.elementFinder);
             this.timer = new CommandTimer(30000);
-            this.alertOverride = new AlertOverride();
+            this.alertOverride = new AlertOverride(baseDriver);
         }
         
         /// <summary>
@@ -80,7 +81,7 @@ namespace Selenium
         /// commands may return data from the browser</returns>
         public string DoCommand(string command, string[] args)
         {
-            object val = Execute(command, args);
+            object val = this.Execute(command, args);
             if (val == null)
             {
                 return null;
@@ -103,7 +104,7 @@ namespace Selenium
         /// </summary>
         public void Start()
         {
-            PopulateSeleneseMethods();
+            this.PopulateSeleneseMethods();
         }
 
         /// <summary>
@@ -112,7 +113,7 @@ namespace Selenium
         /// <param name="optionsString">A string representing the options to use.</param>
         public void Start(string optionsString)
         {
-            //Not porting this till other process is decided
+            // Not porting this till other process is decided
             throw new NotImplementedException("This is not been ported to WebDriverBackedSelenium");
         }
 
@@ -120,9 +121,9 @@ namespace Selenium
         /// Starts the command processor using the specified options.
         /// </summary>
         /// <param name="optionsObject">An object representing the options to use.</param>
-        public void Start(Object optionsObject)
+        public void Start(object optionsObject)
         {
-            //Not porting this till other process is decided
+            // Not porting this till other process is decided
             throw new NotImplementedException("This is not been ported to WebDriverBackedSelenium");
         }
         
@@ -131,12 +132,12 @@ namespace Selenium
         /// </summary>
         public void Stop()
         {
-            if (driver != null)
+            if (this.driver != null)
             {
-                driver.Quit();
+                this.driver.Quit();
             }
 
-            driver = null;
+            this.driver = null;
         }
         
         /// <summary>
@@ -147,7 +148,7 @@ namespace Selenium
         /// <returns>The result of the command.</returns>
         public string GetString(string command, string[] args)
         {
-            return (string)Execute(command, args);
+            return (string)this.Execute(command, args);
         }
 
         /// <summary>
@@ -169,7 +170,7 @@ namespace Selenium
         /// <returns>The result of the command.</returns>
         public decimal GetNumber(string command, string[] args)
         {
-            return Convert.ToDecimal(Execute(command, args));
+            return Convert.ToDecimal(this.Execute(command, args), CultureInfo.InvariantCulture);
         }
         
         /// <summary>
@@ -191,7 +192,7 @@ namespace Selenium
         /// <returns>The result of the command.</returns>
         public bool GetBoolean(string command, string[] args)
         {
-            return (bool)Execute(command, args);
+            return (bool)this.Execute(command, args);
         }
         
         /// <summary>
@@ -208,125 +209,130 @@ namespace Selenium
         private object Execute(string commandName, string[] args)
         {
             SeleneseCommand command;
-            if (!seleneseMethods.TryGetValue(commandName, out command))
+            if (!this.seleneseMethods.TryGetValue(commandName, out command))
             {
                 throw new NotSupportedException(commandName);
             }
 
-            return timer.Execute(command, driver, args);
-            //return command.Apply(driver, args);
+            // return command.Apply(driver, args);
+            return this.timer.Execute(command, this.driver, args);
         }
 
         private void PopulateSeleneseMethods()
         {
             KeyState keyState = new KeyState();
-            WindowSelector windows = new WindowSelector(driver);
+            WindowSelector windows = new WindowSelector(this.driver);
 
             // Note the we use the names used by the CommandProcessor
-            seleneseMethods.Add("addLocationStrategy", new AddLocationStrategy(elementFinder));
-            seleneseMethods.Add("addSelection", new AddSelection(elementFinder, select));
-            seleneseMethods.Add("altKeyDown", new AltKeyDown(keyState));
-            seleneseMethods.Add("altKeyUp", new AltKeyUp(keyState));
-            seleneseMethods.Add("assignId", new AssignId(elementFinder));
-            seleneseMethods.Add("attachFile", new AttachFile(elementFinder));
-            seleneseMethods.Add("captureScreenshotToString", new CaptureScreenshotToString());
-            seleneseMethods.Add("click", new Click(elementFinder));
-            seleneseMethods.Add("check", new Check(elementFinder));
-            seleneseMethods.Add("close", new Close());
-            seleneseMethods.Add("createCookie", new CreateCookie());
-            seleneseMethods.Add("controlKeyDown", new ControlKeyDown(keyState));
-            seleneseMethods.Add("controlKeyUp", new ControlKeyUp(keyState));
-            seleneseMethods.Add("deleteAllVisibleCookies", new DeleteAllVisibleCookies());
-            seleneseMethods.Add("deleteCookie", new DeleteCookie());
-            seleneseMethods.Add("doubleClick", new DoubleClick(elementFinder));
-            seleneseMethods.Add("dragdrop", new DragAndDrop(elementFinder));
-            seleneseMethods.Add("dragAndDrop", new DragAndDrop(elementFinder));
-            seleneseMethods.Add("dragAndDropToObject", new DragAndDropToObject(elementFinder));
-            seleneseMethods.Add("fireEvent", new FireEvent(elementFinder));
-            seleneseMethods.Add("focus", new FireNamedEvent(elementFinder, "focus"));
-            seleneseMethods.Add("getAlert", new GetAlert(alertOverride));
-            seleneseMethods.Add("getAllButtons", new GetAllButtons());
-            seleneseMethods.Add("getAllFields", new GetAllFields());
-            seleneseMethods.Add("getAllLinks", new GetAllLinks());
-            seleneseMethods.Add("getAllWindowTitles", new GetAllWindowTitles());
-            seleneseMethods.Add("getAttribute", new GetAttribute(elementFinder));
-            seleneseMethods.Add("getAttributeFromAllWindows", new GetAttributeFromAllWindows());
-            seleneseMethods.Add("getBodyText", new GetBodyText());
-            seleneseMethods.Add("getCookie", new GetCookie());
-            seleneseMethods.Add("getCookieByName", new GetCookieByName());
-            seleneseMethods.Add("getElementHeight", new GetElementHeight(elementFinder));
-            seleneseMethods.Add("getElementIndex", new GetElementIndex(elementFinder));
-            seleneseMethods.Add("getElementPositionLeft", new GetElementPositionLeft(elementFinder));
-            seleneseMethods.Add("getElementPositionTop", new GetElementPositionTop(elementFinder));
-            seleneseMethods.Add("getElementWidth", new GetElementWidth(elementFinder));
-            seleneseMethods.Add("getEval", new GetEval(baseUrl));
-            seleneseMethods.Add("getHtmlSource", new GetHtmlSource());
-            seleneseMethods.Add("getLocation", new GetLocation());
-            seleneseMethods.Add("getSelectedId", new FindFirstSelectedOptionProperty(select, SeleniumOptionSelector.Property.ID));
-            seleneseMethods.Add("getSelectedIds", new FindSelectedOptionProperties(select, SeleniumOptionSelector.Property.ID));
-            seleneseMethods.Add("getSelectedIndex", new FindFirstSelectedOptionProperty(select, SeleniumOptionSelector.Property.Index));
-            seleneseMethods.Add("getSelectedIndexes", new FindSelectedOptionProperties(select, SeleniumOptionSelector.Property.Index));
-            seleneseMethods.Add("getSelectedLabel", new FindFirstSelectedOptionProperty(select, SeleniumOptionSelector.Property.Text));
-            seleneseMethods.Add("getSelectedLabels", new FindSelectedOptionProperties(select, SeleniumOptionSelector.Property.Text));
-            seleneseMethods.Add("getSelectedValue", new FindFirstSelectedOptionProperty(select, SeleniumOptionSelector.Property.Value));
-            seleneseMethods.Add("getSelectedValues", new FindSelectedOptionProperties(select, SeleniumOptionSelector.Property.Value));
-            seleneseMethods.Add("getSelectOptions", new GetSelectOptions(select));
-            seleneseMethods.Add("getSpeed", new NoOp("0"));
-            seleneseMethods.Add("getTable", new GetTable(elementFinder));
-            seleneseMethods.Add("getText", new GetText(elementFinder));
-            seleneseMethods.Add("getTitle", new GetTitle());
-            seleneseMethods.Add("getValue", new GetValue(elementFinder));
-            seleneseMethods.Add("getXpathCount", new GetXpathCount());
-			seleneseMethods.Add("getCssCount", new GetCssCount());
-            seleneseMethods.Add("goBack", new GoBack());
-            seleneseMethods.Add("highlight", new Highlight(elementFinder));
-            seleneseMethods.Add("isChecked", new IsChecked(elementFinder));
-            seleneseMethods.Add("isCookiePresent", new IsCookiePresent());
-            seleneseMethods.Add("isEditable", new IsEditable(elementFinder));
-            seleneseMethods.Add("isElementPresent", new IsElementPresent(elementFinder));
-            seleneseMethods.Add("isOrdered", new IsOrdered(elementFinder));
-            seleneseMethods.Add("isSomethingSelected", new IsSomethingSelected(select));
-            seleneseMethods.Add("isTextPresent", new IsTextPresent());
-            seleneseMethods.Add("isVisible", new IsVisible(elementFinder));
-            seleneseMethods.Add("keyDown", new KeyEvent(elementFinder, keyState, "doKeyDown"));
-            seleneseMethods.Add("keyPress", new TypeKeys(elementFinder));
-            seleneseMethods.Add("keyUp", new KeyEvent(elementFinder, keyState, "doKeyUp"));
-            seleneseMethods.Add("metaKeyDown", new MetaKeyDown(keyState));
-            seleneseMethods.Add("metaKeyUp", new MetaKeyUp(keyState));
-            seleneseMethods.Add("mouseOver", new MouseEvent(elementFinder, "mouseover"));
-            seleneseMethods.Add("mouseOut", new MouseEvent(elementFinder, "mouseout"));
-            seleneseMethods.Add("mouseDown", new MouseEvent(elementFinder, "mousedown"));
-            seleneseMethods.Add("mouseDownAt", new MouseEventAt(elementFinder, "mousedown"));
-            seleneseMethods.Add("mouseMove", new MouseEvent(elementFinder, "mousemove"));
-            seleneseMethods.Add("mouseMoveAt", new MouseEventAt(elementFinder, "mousemove"));
-            seleneseMethods.Add("mouseUp", new MouseEvent(elementFinder, "mouseup"));
-            seleneseMethods.Add("mouseUpAt", new MouseEventAt(elementFinder, "mouseup"));
-            seleneseMethods.Add("open", new Open(baseUrl));
-            seleneseMethods.Add("openWindow", new OpenWindow(new GetEval(baseUrl)));
-            seleneseMethods.Add("refresh", new Refresh());
-            seleneseMethods.Add("removeAllSelections", new RemoveAllSelections(elementFinder));
-            seleneseMethods.Add("removeSelection", new RemoveSelection(elementFinder, select));
-            seleneseMethods.Add("runScript", new RunScript());
-            seleneseMethods.Add("select", new SelectOption(select));
-            seleneseMethods.Add("selectFrame", new SelectFrame(windows));
-            seleneseMethods.Add("selectWindow", new SelectWindow(windows));
-            seleneseMethods.Add("setBrowserLogLevel", new NoOp(null));
-            seleneseMethods.Add("setContext", new NoOp(null));
-            seleneseMethods.Add("setSpeed", new NoOp(null));
-            seleneseMethods.Add("setTimeout", new SetTimeout(timer));
-            seleneseMethods.Add("shiftKeyDown", new ShiftKeyDown(keyState));
-            seleneseMethods.Add("shiftKeyUp", new ShiftKeyUp(keyState));
-            seleneseMethods.Add("submit", new Submit(elementFinder));
-            seleneseMethods.Add("type", new Selenium.Internal.SeleniumEmulation.Type(elementFinder, keyState));
-            seleneseMethods.Add("typeKeys", new TypeKeys(elementFinder));
-            seleneseMethods.Add("uncheck", new Uncheck(elementFinder));
-            seleneseMethods.Add("useXpathLibrary", new NoOp(null));
-            seleneseMethods.Add("waitForCondition", new WaitForCondition());
-            seleneseMethods.Add("waitForFrameToLoad", new NoOp(null));
-            seleneseMethods.Add("waitForPageToLoad", new WaitForPageToLoad());
-            seleneseMethods.Add("waitForPopUp", new WaitForPopup(windows));
-            seleneseMethods.Add("windowFocus", new WindowFocus());
-            seleneseMethods.Add("windowMaximize", new WindowMaximize());
+            this.seleneseMethods.Add("addLocationStrategy", new AddLocationStrategy(this.elementFinder));
+            this.seleneseMethods.Add("addSelection", new AddSelection(this.elementFinder, this.select));
+            this.seleneseMethods.Add("altKeyDown", new AltKeyDown(keyState));
+            this.seleneseMethods.Add("altKeyUp", new AltKeyUp(keyState));
+            this.seleneseMethods.Add("assignId", new AssignId(this.elementFinder));
+            this.seleneseMethods.Add("attachFile", new AttachFile(this.elementFinder));
+            this.seleneseMethods.Add("captureScreenshotToString", new CaptureScreenshotToString());
+            this.seleneseMethods.Add("click", new Click(this.alertOverride, this.elementFinder));
+            this.seleneseMethods.Add("check", new Check(this.alertOverride, this.elementFinder));
+            this.seleneseMethods.Add("chooseCancelOnNextConfirmation", new SetNextConfirmationState(false));
+            this.seleneseMethods.Add("chooseOkOnNextConfirmation", new SetNextConfirmationState(true));
+            this.seleneseMethods.Add("close", new Close());
+            this.seleneseMethods.Add("createCookie", new CreateCookie());
+            this.seleneseMethods.Add("controlKeyDown", new ControlKeyDown(keyState));
+            this.seleneseMethods.Add("controlKeyUp", new ControlKeyUp(keyState));
+            this.seleneseMethods.Add("deleteAllVisibleCookies", new DeleteAllVisibleCookies());
+            this.seleneseMethods.Add("deleteCookie", new DeleteCookie());
+            this.seleneseMethods.Add("doubleClick", new DoubleClick(this.elementFinder));
+            this.seleneseMethods.Add("dragdrop", new DragAndDrop(this.elementFinder));
+            this.seleneseMethods.Add("dragAndDrop", new DragAndDrop(this.elementFinder));
+            this.seleneseMethods.Add("dragAndDropToObject", new DragAndDropToObject(this.elementFinder));
+            this.seleneseMethods.Add("fireEvent", new FireEvent(this.elementFinder));
+            this.seleneseMethods.Add("focus", new FireNamedEvent(this.elementFinder, "focus"));
+            this.seleneseMethods.Add("getAlert", new GetAlert(this.alertOverride));
+            this.seleneseMethods.Add("getAllButtons", new GetAllButtons());
+            this.seleneseMethods.Add("getAllFields", new GetAllFields());
+            this.seleneseMethods.Add("getAllLinks", new GetAllLinks());
+            this.seleneseMethods.Add("getAllWindowTitles", new GetAllWindowTitles());
+            this.seleneseMethods.Add("getAttribute", new GetAttribute(this.elementFinder));
+            this.seleneseMethods.Add("getAttributeFromAllWindows", new GetAttributeFromAllWindows());
+            this.seleneseMethods.Add("getBodyText", new GetBodyText());
+            this.seleneseMethods.Add("getConfirmation", new GetConfirmation(this.alertOverride));
+            this.seleneseMethods.Add("getCookie", new GetCookie());
+            this.seleneseMethods.Add("getCookieByName", new GetCookieByName());
+            this.seleneseMethods.Add("getElementHeight", new GetElementHeight(this.elementFinder));
+            this.seleneseMethods.Add("getElementIndex", new GetElementIndex(this.elementFinder));
+            this.seleneseMethods.Add("getElementPositionLeft", new GetElementPositionLeft(this.elementFinder));
+            this.seleneseMethods.Add("getElementPositionTop", new GetElementPositionTop(this.elementFinder));
+            this.seleneseMethods.Add("getElementWidth", new GetElementWidth(this.elementFinder));
+            this.seleneseMethods.Add("getEval", new GetEval(this.baseUrl));
+            this.seleneseMethods.Add("getHtmlSource", new GetHtmlSource());
+            this.seleneseMethods.Add("getLocation", new GetLocation());
+            this.seleneseMethods.Add("getSelectedId", new FindFirstSelectedOptionProperty(this.select, SeleniumOptionSelector.Property.ID));
+            this.seleneseMethods.Add("getSelectedIds", new FindSelectedOptionProperties(this.select, SeleniumOptionSelector.Property.ID));
+            this.seleneseMethods.Add("getSelectedIndex", new FindFirstSelectedOptionProperty(this.select, SeleniumOptionSelector.Property.Index));
+            this.seleneseMethods.Add("getSelectedIndexes", new FindSelectedOptionProperties(this.select, SeleniumOptionSelector.Property.Index));
+            this.seleneseMethods.Add("getSelectedLabel", new FindFirstSelectedOptionProperty(this.select, SeleniumOptionSelector.Property.Text));
+            this.seleneseMethods.Add("getSelectedLabels", new FindSelectedOptionProperties(this.select, SeleniumOptionSelector.Property.Text));
+            this.seleneseMethods.Add("getSelectedValue", new FindFirstSelectedOptionProperty(this.select, SeleniumOptionSelector.Property.Value));
+            this.seleneseMethods.Add("getSelectedValues", new FindSelectedOptionProperties(this.select, SeleniumOptionSelector.Property.Value));
+            this.seleneseMethods.Add("getSelectOptions", new GetSelectOptions(this.select));
+            this.seleneseMethods.Add("getSpeed", new NoOp("0"));
+            this.seleneseMethods.Add("getTable", new GetTable(this.elementFinder));
+            this.seleneseMethods.Add("getText", new GetText(this.elementFinder));
+            this.seleneseMethods.Add("getTitle", new GetTitle());
+            this.seleneseMethods.Add("getValue", new GetValue(this.elementFinder));
+            this.seleneseMethods.Add("getXpathCount", new GetXpathCount());
+            this.seleneseMethods.Add("getCssCount", new GetCssCount());
+            this.seleneseMethods.Add("goBack", new GoBack());
+            this.seleneseMethods.Add("highlight", new Highlight(this.elementFinder));
+            this.seleneseMethods.Add("isAlertPresent", new IsAlertPresent(this.alertOverride));
+            this.seleneseMethods.Add("isChecked", new IsChecked(this.elementFinder));
+            this.seleneseMethods.Add("isConfirmationPresent", new IsConfirmationPresent(this.alertOverride));
+            this.seleneseMethods.Add("isCookiePresent", new IsCookiePresent());
+            this.seleneseMethods.Add("isEditable", new IsEditable(this.elementFinder));
+            this.seleneseMethods.Add("isElementPresent", new IsElementPresent(this.elementFinder));
+            this.seleneseMethods.Add("isOrdered", new IsOrdered(this.elementFinder));
+            this.seleneseMethods.Add("isSomethingSelected", new IsSomethingSelected(this.select));
+            this.seleneseMethods.Add("isTextPresent", new IsTextPresent());
+            this.seleneseMethods.Add("isVisible", new IsVisible(this.elementFinder));
+            this.seleneseMethods.Add("keyDown", new KeyEvent(this.elementFinder, keyState, "doKeyDown"));
+            this.seleneseMethods.Add("keyPress", new TypeKeys(this.alertOverride, this.elementFinder));
+            this.seleneseMethods.Add("keyUp", new KeyEvent(this.elementFinder, keyState, "doKeyUp"));
+            this.seleneseMethods.Add("metaKeyDown", new MetaKeyDown(keyState));
+            this.seleneseMethods.Add("metaKeyUp", new MetaKeyUp(keyState));
+            this.seleneseMethods.Add("mouseOver", new MouseEvent(this.elementFinder, "mouseover"));
+            this.seleneseMethods.Add("mouseOut", new MouseEvent(this.elementFinder, "mouseout"));
+            this.seleneseMethods.Add("mouseDown", new MouseEvent(this.elementFinder, "mousedown"));
+            this.seleneseMethods.Add("mouseDownAt", new MouseEventAt(this.elementFinder, "mousedown"));
+            this.seleneseMethods.Add("mouseMove", new MouseEvent(this.elementFinder, "mousemove"));
+            this.seleneseMethods.Add("mouseMoveAt", new MouseEventAt(this.elementFinder, "mousemove"));
+            this.seleneseMethods.Add("mouseUp", new MouseEvent(this.elementFinder, "mouseup"));
+            this.seleneseMethods.Add("mouseUpAt", new MouseEventAt(this.elementFinder, "mouseup"));
+            this.seleneseMethods.Add("open", new Open(this.baseUrl));
+            this.seleneseMethods.Add("openWindow", new OpenWindow(new GetEval(this.baseUrl)));
+            this.seleneseMethods.Add("refresh", new Refresh());
+            this.seleneseMethods.Add("removeAllSelections", new RemoveAllSelections(this.elementFinder));
+            this.seleneseMethods.Add("removeSelection", new RemoveSelection(this.elementFinder, this.select));
+            this.seleneseMethods.Add("runScript", new RunScript());
+            this.seleneseMethods.Add("select", new SelectOption(this.alertOverride, this.select));
+            this.seleneseMethods.Add("selectFrame", new SelectFrame(windows));
+            this.seleneseMethods.Add("selectWindow", new SelectWindow(windows));
+            this.seleneseMethods.Add("setBrowserLogLevel", new NoOp(null));
+            this.seleneseMethods.Add("setContext", new NoOp(null));
+            this.seleneseMethods.Add("setSpeed", new NoOp(null));
+            this.seleneseMethods.Add("setTimeout", new SetTimeout(this.timer));
+            this.seleneseMethods.Add("shiftKeyDown", new ShiftKeyDown(keyState));
+            this.seleneseMethods.Add("shiftKeyUp", new ShiftKeyUp(keyState));
+            this.seleneseMethods.Add("submit", new Submit(this.elementFinder));
+            this.seleneseMethods.Add("type", new Selenium.Internal.SeleniumEmulation.Type(this.alertOverride, this.elementFinder, keyState));
+            this.seleneseMethods.Add("typeKeys", new TypeKeys(this.alertOverride, this.elementFinder));
+            this.seleneseMethods.Add("uncheck", new Uncheck(this.elementFinder));
+            this.seleneseMethods.Add("useXpathLibrary", new NoOp(null));
+            this.seleneseMethods.Add("waitForCondition", new WaitForCondition());
+            this.seleneseMethods.Add("waitForFrameToLoad", new NoOp(null));
+            this.seleneseMethods.Add("waitForPageToLoad", new WaitForPageToLoad());
+            this.seleneseMethods.Add("waitForPopUp", new WaitForPopup(windows));
+            this.seleneseMethods.Add("windowFocus", new WindowFocus());
+            this.seleneseMethods.Add("windowMaximize", new WindowMaximize());
         }
     }
 }

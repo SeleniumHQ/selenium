@@ -16,28 +16,35 @@ namespace Selenium.Internal.SeleniumEmulation
         private readonly Regex MaxAgeRegex = new Regex("max_age=(\\d+)");
         private readonly Regex PathRegex = new Regex("path=([^\\s,]+)[,]?");
 
+        /// <summary>
+        /// Handles the command.
+        /// </summary>
+        /// <param name="driver">The driver used to execute the command.</param>
+        /// <param name="locator">The first parameter to the command.</param>
+        /// <param name="value">The second parameter to the command.</param>
+        /// <returns>The result of the command.</returns>
         protected override object HandleSeleneseCommand(IWebDriver driver, string locator, string value)
         {
-            if (!NameValuePairRegex.IsMatch(locator))
+            if (!this.NameValuePairRegex.IsMatch(locator))
             {
                 throw new SeleniumException("Invalid parameter: " + locator);
             }
 
-            Match nameValueMatch = NameValuePairRegex.Match(locator);
+            Match nameValueMatch = this.NameValuePairRegex.Match(locator);
             string cookieName = nameValueMatch.Groups[0].Value;
             string cookieValue = nameValueMatch.Groups[1].Value;
 
             DateTime? maxAge = null;
-            if (MaxAgeRegex.IsMatch(value))
+            if (this.MaxAgeRegex.IsMatch(value))
             {
-                Match maxAgeMatch = MaxAgeRegex.Match(value);
+                Match maxAgeMatch = this.MaxAgeRegex.Match(value);
                 maxAge = DateTime.Now.AddSeconds(int.Parse(maxAgeMatch.Groups[0].Value, CultureInfo.InvariantCulture));
             }
 
             string path = string.Empty;
-            if (PathRegex.IsMatch(value))
+            if (this.PathRegex.IsMatch(value))
             {
-                Match pathMatch = PathRegex.Match(value);
+                Match pathMatch = this.PathRegex.Match(value);
                 path = pathMatch.Groups[0].Value;
                 try
                 {
@@ -52,7 +59,7 @@ namespace Selenium.Internal.SeleniumEmulation
                 }
             }
 
-            Cookie cookie = new Cookie(cookieName, value, path, maxAge);
+            Cookie cookie = new Cookie(cookieName, cookieValue, path, maxAge);
             driver.Manage().AddCookie(cookie);
 
             return null;

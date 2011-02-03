@@ -293,8 +293,8 @@ dotnet_library(name = "webdriverbackedselenium",
     ":core"
   ],
   resources = [
-    {"java/org/openqa/selenium/internal/seleniumemulation/injectableSelenium.js" : "injectableSelenium.js"},
-    {"java/org/openqa/selenium/internal/seleniumemulation/htmlutils.js" : "htmlutils.js"}
+    {"java/client/src/org/openqa/selenium/internal/seleniumemulation/injectableSelenium.js" : "injectableSelenium.js"},
+    {"java/client/src/org/openqa/selenium/internal/seleniumemulation/htmlutils.js" : "htmlutils.js"}
   ],
   out = "build/dotnet/Selenium.WebDriverBackedSelenium.dll",
   doc = "build/dotnet/Selenium.WebDriverBackedSelenium.xml"

@@ -7,44 +7,62 @@ using Selenium.Internal.SeleniumEmulation;
 
 namespace Selenium.Internal
 {
+    /// <summary>
+    /// Provides a timer for running SeleneseCommands
+    /// </summary>
     internal class CommandTimer
     {
         private int timeout;
-        private object commandResult = null;
+        private object commandResult;
         private SeleneseCommand command;
         private IWebDriver driver;
         private string[] args;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CommandTimer"/> class.
+        /// </summary>
+        /// <param name="timeout">The timeout, in milliseconds, of the command.</param>
         public CommandTimer(int timeout)
         {
             this.timeout = timeout;
         }
 
+        /// <summary>
+        /// Gets or sets the timeout for running the command, in milliseconds.
+        /// </summary>
         public int Timeout
         {
-            get { return timeout; }
-            set { timeout = value; }
+            get { return this.timeout; }
+            set { this.timeout = value; }
         }
 
-        public object Execute(SeleneseCommand command, IWebDriver driver, string[] args)
+        /// <summary>
+        /// Executes a command.
+        /// </summary>
+        /// <param name="commandToExecute">The <see cref="SeleneseCommand"/> to execute.</param>
+        /// <param name="commandDriver">The <see cref="IWebDriver"/> to use in executing the command.</param>
+        /// <param name="commandArguments">An array of strings containng the command arguments.</param>
+        /// <returns>The result of the command.</returns>
+        /// <remarks>This method executes the command on a separate thread.</remarks>
+        public object Execute(SeleneseCommand commandToExecute, IWebDriver commandDriver, string[] commandArguments)
         {
-            this.command = command;
-            this.driver = driver;
-            this.args = args;
-            Thread executionThread = new Thread(RunCommand);
+            this.command = commandToExecute;
+            this.driver = commandDriver;
+            this.args = commandArguments;
+            Thread executionThread = new Thread(this.RunCommand);
             executionThread.Start();
-            executionThread.Join(timeout);
+            executionThread.Join(this.timeout);
             if (executionThread.IsAlive)
             {
                 throw new SeleniumException("Timed out running command");
             }
 
-            return commandResult;
+            return this.commandResult;
         }
 
         private void RunCommand()
         {
-            commandResult = command.Apply(driver, args);
+            this.commandResult = this.command.Apply(this.driver, this.args);
         }
     }
 }

@@ -19,7 +19,7 @@ namespace Selenium.Internal.SeleniumEmulation
         /// <param name="elementFinder">An <see cref="ElementFinder"/> object used to locate elements.</param>
         public AddLocationStrategy(ElementFinder elementFinder)
         {
-            finder = elementFinder;
+            this.finder = elementFinder;
         }
 
         /// <summary>
@@ -32,7 +32,7 @@ namespace Selenium.Internal.SeleniumEmulation
         protected override object HandleSeleneseCommand(IWebDriver driver, string locator, string value)
         {
             UserLookupStrategy strategy = new UserLookupStrategy(value);
-            finder.AddStrategy(locator, strategy);
+            this.finder.AddStrategy(locator, strategy);
 
             return null;
         }
@@ -50,7 +50,7 @@ namespace Selenium.Internal.SeleniumEmulation
             /// <param name="functionDefinition">A JavaScript function that returns a web element.</param>
             public UserLookupStrategy(string functionDefinition)
             {
-                strategyFunctionDefinition = functionDefinition;
+                this.strategyFunctionDefinition = functionDefinition;
             }
 
             #region ILookupStrategy Members
@@ -62,10 +62,10 @@ namespace Selenium.Internal.SeleniumEmulation
             /// <returns>An <see cref="IWebElement"/> that matches the criteria.</returns>
             public IWebElement Find(IWebDriver driver, string use)
             {
-                string finderScript = string.Format(CultureInfo.InvariantCulture, @"(function(locator, inWindow, inDocument) {{ {0} }}).call(this,'{1}', window, document)", strategyFunctionDefinition, use);
+                string finderScript = string.Format(CultureInfo.InvariantCulture, @"(function(locator, inWindow, inDocument) {{ {0} }}).call(this,'{1}', window, document)", this.strategyFunctionDefinition, use);
                 IJavaScriptExecutor scriptExecutor = driver as IJavaScriptExecutor;
 
-                return scriptExecutor.ExecuteScript(finderScript, strategyFunctionDefinition, use) as IWebElement;
+                return scriptExecutor.ExecuteScript(finderScript, this.strategyFunctionDefinition, use) as IWebElement;
             }
 
             #endregion

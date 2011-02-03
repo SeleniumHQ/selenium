@@ -5,11 +5,28 @@ using OpenQA.Selenium;
 
 namespace Selenium.Internal
 {
+    /// <summary>
+    /// Provides methods for overriding the JavaScript alert() and confirm() methods.
+    /// </summary>
     internal class AlertOverride
     {
-        public void ReplaceAlertMethod(IWebDriver driver)
+        private IWebDriver driver;
+
+        /// <summary>
+        /// Initializes a new instance of the AlertOverride class.
+        /// </summary>
+        /// <param name="driver">The driver to use in overriding the JavaScript alert() and confirm() methods.</param>
+        public AlertOverride(IWebDriver driver)
         {
-            ((IJavaScriptExecutor)driver).ExecuteScript(
+            this.driver = driver;
+        }
+
+        /// <summary>
+        /// Replaces the JavaScript alert() and confirm() methods.
+        /// </summary>
+        public void ReplaceAlertMethod()
+        {
+            ((IJavaScriptExecutor)this.driver).ExecuteScript(
               "if (window.__webdriverAlerts) { return; } " +
               "window.__webdriverAlerts = []; " +
               "window.alert = function(msg) { window.__webdriverAlerts.push(msg); }; " +
@@ -20,18 +37,20 @@ namespace Selenium.Internal
               "  var res = window.__webdriverNextConfirm; " +
               "  window.__webdriverNextConfirm = true; " +
               "  return res; " +
-              "};"
-            );
+              "};");
         }
 
-        public string GetNextAlert(IWebDriver driver)
+        /// <summary>
+        /// Gets the next JavaScript alert message.
+        /// </summary>
+        /// <returns>The text of the next alert message.</returns>
+        public string GetNextAlert()
         {
-            string result = (string)((IJavaScriptExecutor)driver).ExecuteScript(
+            string result = (string)((IJavaScriptExecutor)this.driver).ExecuteScript(
               "if (!window.__webdriverAlerts) { return null }; " +
               "var t = window.__webdriverAlerts.shift();" +
               "if (t) { t = t.replace(/\\n/g, ' '); } " +
-              "return t;"
-            );
+              "return t;");
 
             if (result == null)
             {
@@ -41,21 +60,27 @@ namespace Selenium.Internal
             return result;
         }
 
-        public bool IsAlertPresent(IWebDriver driver)
+        /// <summary>
+        /// Gets a value indicating whether a JavaScript alert is present.
+        /// </summary>
+        /// <returns><see langword="true"/> if an alert is present; otherwise <see langword="false"/>.</returns>
+        public bool IsAlertPresent()
         {
-            bool alertPresent = (bool)((IJavaScriptExecutor)driver).ExecuteScript(
-              "return window.__webdriverAlerts && window.__webdriverAlerts.length > 0;"
-            );
+            bool alertPresent = (bool)((IJavaScriptExecutor)this.driver).ExecuteScript(
+              "return window.__webdriverAlerts && window.__webdriverAlerts.length > 0;");
 
             return alertPresent;
         }
 
-        public string GetNextConfirmation(IWebDriver driver)
+        /// <summary>
+        /// Gets the next JavaScript confirm message.
+        /// </summary>
+        /// <returns>The text of the next confirm message.</returns>
+        public string GetNextConfirmation()
         {
-            string result = (string)((IJavaScriptExecutor)driver).ExecuteScript(
+            string result = (string)((IJavaScriptExecutor)this.driver).ExecuteScript(
                 "if (!window.__webdriverConfirms) { return null; } " +
-                "return window.__webdriverConfirms.shift();"
-            );
+                "return window.__webdriverConfirms.shift();");
 
             if (result == null)
             {
@@ -65,11 +90,14 @@ namespace Selenium.Internal
             return result;
         }
 
-        public bool IsConfirmationPresent(IWebDriver driver)
+        /// <summary>
+        /// Gets a value indicating whether a JavaScript confirm is present.
+        /// </summary>
+        /// <returns><see langword="true"/> if an confirm is present; otherwise <see langword="false"/>.</returns>
+        public bool IsConfirmationPresent()
         {
-            bool confirmPresent = (bool)((IJavaScriptExecutor)driver).ExecuteScript(
-              "return window.__webdriverConfirms && window.__webdriverConfirms.length > 0;"
-            );
+            bool confirmPresent = (bool)((IJavaScriptExecutor)this.driver).ExecuteScript(
+              "return window.__webdriverConfirms && window.__webdriverConfirms.length > 0;");
 
             return confirmPresent;
         }

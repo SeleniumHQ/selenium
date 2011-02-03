@@ -6,6 +6,9 @@ using System.Threading;
 
 namespace Selenium.Internal.SeleniumEmulation
 {
+    /// <summary>
+    /// Provides methods to wait for a condition to be true.
+    /// </summary>
     internal abstract class Waiter
     {
         /** The amount of time to wait before giving up; the default is 30 seconds */
@@ -14,6 +17,9 @@ namespace Selenium.Internal.SeleniumEmulation
         /** The interval to pause between checking; the default is 500 milliseconds */
         private const long DefaultInterval = 500L;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Waiter"/> class.
+        /// </summary>
         public Waiter()
         {
         }
@@ -24,7 +30,7 @@ namespace Selenium.Internal.SeleniumEmulation
         /// <param name="message">the failure message</param>
         public void Wait(string message)
         {
-            Wait(message, DefaultTimeout, DefaultInterval);
+            this.Wait(message, DefaultTimeout, DefaultInterval);
         }
 
         /// <summary>
@@ -35,7 +41,7 @@ namespace Selenium.Internal.SeleniumEmulation
         /// <exception cref="WaitTimedOutException">if "Until" doesn't return true Until the timeout</exception>
         public void Wait(string message, long timeoutInMilliseconds)
         {
-            Wait(message, timeoutInMilliseconds, DefaultInterval);
+            this.Wait(message, timeoutInMilliseconds, DefaultInterval);
         }
 
         /// <summary>
@@ -47,8 +53,7 @@ namespace Selenium.Internal.SeleniumEmulation
         /// <exception cref="WaitTimedOutException">if "Until" doesn't return true Until the timeout</exception>
         public void Wait(string message, long timeoutInMilliseconds, long intervalInMilliseconds)
         {
-            DateTime end = DateTime.Now.AddMilliseconds(timeoutInMilliseconds);
-            ParameterizedThreadStart executionFunction = new ParameterizedThreadStart(CheckForConditionUntilTimeout);
+            ParameterizedThreadStart executionFunction = new ParameterizedThreadStart(this.CheckForConditionUntilTimeout);
             Thread workerThread = new Thread(executionFunction);
             workerThread.Name = "WebDriver";
             workerThread.Start(intervalInMilliseconds);
@@ -69,20 +74,32 @@ namespace Selenium.Internal.SeleniumEmulation
         private void CheckForConditionUntilTimeout(object intervalInMilliseconds)
         {
             long sleepInterval = (long)intervalInMilliseconds;
-            if (!Until())
+            if (!this.Until())
             {
                 Thread.Sleep(TimeSpan.FromMilliseconds(sleepInterval));
             }
         }
 
+        /// <summary>
+        /// The exception that is thrown when the time allotted for a wait has expired.
+        /// </summary>
         [Serializable]
         public class WaitTimedOutException : Exception
         {
+            /// <summary>
+            /// Initializes a new instance of the <see cref="WaitTimedOutException"/> class with the specified error message.
+            /// </summary>
+            /// <param name="message">The message used as part of the exception.</param>
             public WaitTimedOutException(string message)
                 : base(message)
             {
             }
 
+            /// <summary>
+            /// Initializes a new instance of the <see cref="WaitTimedOutException"/> class with serialized data.
+            /// </summary>
+            /// <param name="info">The <see cref="SerializationInfo"/> object that contains serialized object data about the exception being thrown.</param>
+            /// <param name="context">The <see cref="StreamingContext"/> object that contains contextual information about the source or destination.</param>
             protected WaitTimedOutException(SerializationInfo info, StreamingContext context)
                 : base(info, context)
             {

@@ -1,16 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Text;
 using OpenQA.Selenium;
 
 namespace Selenium.Internal.SeleniumEmulation
 {
     /// <summary>
-    /// Defines the command for the getAllButtons keyword.
+    /// Defines the command for the isConfirmationPresent keyword.
     /// </summary>
-    internal class GetAllButtons : SeleneseCommand
+    internal class IsConfirmationPresent : SeleneseCommand
     {
+        private AlertOverride alertOverride;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="IsConfirmationPresent"/> class.
+        /// </summary>
+        /// <param name="alertOverride">An <see cref="AlertOverride"/> object used to handle JavaScript alerts.</param>
+        public IsConfirmationPresent(AlertOverride alertOverride)
+        {
+            this.alertOverride = alertOverride;
+        }
+
         /// <summary>
         /// Handles the command.
         /// </summary>
@@ -20,19 +30,7 @@ namespace Selenium.Internal.SeleniumEmulation
         /// <returns>The result of the command.</returns>
         protected override object HandleSeleneseCommand(IWebDriver driver, string locator, string value)
         {
-            ReadOnlyCollection<IWebElement> allInputs = driver.FindElements(By.XPath("//input"));
-            List<string> ids = new List<string>();
-
-            foreach (IWebElement input in allInputs)
-            {
-                string type = input.GetAttribute("type").ToUpperInvariant();
-                if (type == "BUTTON" || type == "SUBMIT" || type == "RESET")
-                {
-                    ids.Add(input.GetAttribute("id"));
-                }
-            }
-
-            return ids.ToArray();
+            return this.alertOverride.IsConfirmationPresent();
         }
     }
 }

@@ -2,26 +2,24 @@
 using System.Collections.Generic;
 using System.Text;
 using OpenQA.Selenium;
+using Selenium.Internal.SeleniumEmulation;
 
 namespace Selenium.Internal.SeleniumEmulation
 {
     /// <summary>
-    /// Defines the command for the check keyword.
+    /// Defines the command for the setNextConfirmationState keyword.
     /// </summary>
-    internal class Check : SeleneseCommand
+    internal class SetNextConfirmationState : SeleneseCommand
     {
-        private ElementFinder finder;
-        private AlertOverride alert;
+        private bool result;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Check"/> class.
+        /// Initializes a new instance of the <see cref="SetNextConfirmationState"/> class.
         /// </summary>
-        /// <param name="alert">An <see cref="AlertOverride"/> object used to handle JavaScript alerts.</param>
-        /// <param name="elementFinder">An <see cref="ElementFinder"/> used to find the element on which to execute the command.</param>
-        public Check(AlertOverride alert, ElementFinder elementFinder)
+        /// <param name="result"><see langword="true"/> to click OK the next confirmation; <see langword="false"/> to click Cancel.</param>
+        public SetNextConfirmationState(bool result)
         {
-            this.finder = elementFinder;
-            this.alert = alert;
+            this.result = result;
         }
 
         /// <summary>
@@ -33,9 +31,7 @@ namespace Selenium.Internal.SeleniumEmulation
         /// <returns>The result of the command.</returns>
         protected override object HandleSeleneseCommand(IWebDriver driver, string locator, string value)
         {
-            this.alert.ReplaceAlertMethod();
-            IWebElement element = this.finder.FindElement(driver, locator);
-            element.Select();
+            ((IJavaScriptExecutor)driver).ExecuteScript("window.__webdriverNextConfirm = arguments[0]", this.result);
             return null;
         }
     }

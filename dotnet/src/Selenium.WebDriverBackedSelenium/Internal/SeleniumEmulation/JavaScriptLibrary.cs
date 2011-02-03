@@ -7,11 +7,21 @@ using OpenQA.Selenium.Internal;
 
 namespace Selenium.Internal.SeleniumEmulation
 {
+    /// <summary>
+    /// Provides the internal JavaScript library.
+    /// </summary>
     internal static class JavaScriptLibrary
     {
         private const string InjectableSeleniumResourceName = "injectableSelenium.js";
         private const string HtmlUtilsResourceName = "htmlutils.js";
 
+        /// <summary>
+        /// Calls the embedded selenium library in a web page.
+        /// </summary>
+        /// <param name="driver">The <see cref="IWebDriver"/> object used to call the script.</param>
+        /// <param name="functionName">The function name to call.</param>
+        /// <param name="element">An <see cref="IWebElement"/> used as an argument to the JavaScript function.</param>
+        /// <param name="values">An array of values containing additional arguments to the function.</param>
         public static void CallEmbeddedSelenium(IWebDriver driver, string functionName, IWebElement element, params object[] values)
         {
             StringBuilder builder = new StringBuilder(ReadScript(InjectableSeleniumResourceName));
@@ -24,6 +34,14 @@ namespace Selenium.Internal.SeleniumEmulation
             ((IJavaScriptExecutor)driver).ExecuteScript(builder.ToString(), args.ToArray());
         }
 
+        /// <summary>
+        /// Calls the embedded HTML utilities library in a web page.
+        /// </summary>
+        /// <param name="driver">The <see cref="IWebDriver"/> object used to call the script.</param>
+        /// <param name="functionName">The function name to call.</param>
+        /// <param name="element">An <see cref="IWebElement"/> used as an argument to the JavaScript function.</param>
+        /// <param name="values">An array of values containing additional arguments to the function.</param>
+        /// <returns>The result of the script</returns>
         public static object CallEmbeddedHtmlUtils(IWebDriver driver, string functionName, IWebElement element, params object[] values)
         {
             StringBuilder builder = new StringBuilder(ReadScript(HtmlUtilsResourceName));
@@ -37,6 +55,13 @@ namespace Selenium.Internal.SeleniumEmulation
             return ((IJavaScriptExecutor)driver).ExecuteScript(builder.ToString(), args.ToArray());
         }
 
+        /// <summary>
+        /// Executes a script in a web page.
+        /// </summary>
+        /// <param name="driver">The <see cref="IWebDriver"/> object used to call the script.</param>
+        /// <param name="script">The script to run.</param>
+        /// <param name="args">An array of values containing additional arguments to the function.</param>
+        /// <returns>The result of the script</returns>
         public static object ExecuteScript(IWebDriver driver, string script, params object[] args)
         {
             IJavaScriptExecutor executor = driver as IJavaScriptExecutor;

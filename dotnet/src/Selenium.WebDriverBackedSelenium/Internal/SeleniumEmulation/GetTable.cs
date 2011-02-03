@@ -7,16 +7,30 @@ using OpenQA.Selenium;
 
 namespace Selenium.Internal.SeleniumEmulation
 {
+    /// <summary>
+    /// Defines the command for the getTable keyword.
+    /// </summary>
     internal class GetTable : SeleneseCommand
     {
         private static readonly Regex TableParts = new Regex("(.*)\\.(\\d+)\\.(\\d+)");
         private ElementFinder finder;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GetTable"/> class.
+        /// </summary>
+        /// <param name="elementFinder">An <see cref="ElementFinder"/> used to find the element on which to execute the command.</param>
         public GetTable(ElementFinder elementFinder)
         {
             this.finder = elementFinder;
         }
 
+        /// <summary>
+        /// Handles the command.
+        /// </summary>
+        /// <param name="driver">The driver used to execute the command.</param>
+        /// <param name="locator">The first parameter to the command.</param>
+        /// <param name="value">The second parameter to the command.</param>
+        /// <returns>The result of the command.</returns>
         protected override object HandleSeleneseCommand(IWebDriver driver, string locator, string value)
         {
             string tableString = string.Empty;
@@ -31,7 +45,7 @@ namespace Selenium.Internal.SeleniumEmulation
             long row = int.Parse(tableMatch.Groups[1].Value, CultureInfo.InvariantCulture);
             long col = int.Parse(tableMatch.Groups[2].Value, CultureInfo.InvariantCulture);
 
-            IWebElement table = finder.FindElement(driver, tableName);
+            IWebElement table = this.finder.FindElement(driver, tableName);
 
             string script =
                 "var table = arguments[0]; var row = arguments[1]; var col = arguments[2];" +
@@ -43,7 +57,7 @@ namespace Selenium.Internal.SeleniumEmulation
             IWebElement elementReturned = returnValue as IWebElement;
             if (elementReturned != null)
             {
-                tableString = ((IWebElement)returnValue).Text.Trim();
+                tableString = elementReturned.Text.Trim();
             }
             else
             {

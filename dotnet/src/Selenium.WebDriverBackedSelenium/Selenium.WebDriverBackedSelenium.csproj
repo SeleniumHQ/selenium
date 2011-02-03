@@ -77,14 +77,18 @@
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Internal\AlertOverride.cs" />
     <Compile Include="Internal\CommandTimer.cs" />
+    <Compile Include="Internal\SeleniumEmulation\IsConfirmationPresent.cs" />
     <Compile Include="Internal\SeleniumEmulation\FilterFunctions\BaseFilterFunction.cs" />
     <Compile Include="Internal\SeleniumEmulation\FilterFunctions\ValueFilterFunction.cs" />
     <Compile Include="Internal\SeleniumEmulation\FilterFunctions\IndexFilterFunction.cs" />
     <Compile Include="Internal\SeleniumEmulation\FilterFunctions\NameFilterFunction.cs" />
     <Compile Include="Internal\SeleniumEmulation\GetAlert.cs" />
+    <Compile Include="Internal\SeleniumEmulation\GetConfirmation.cs" />
     <Compile Include="Internal\SeleniumEmulation\IFilterFunction.cs" />
+    <Compile Include="Internal\SeleniumEmulation\IsAlertPresent.cs" />
     <Compile Include="Internal\SeleniumEmulation\LookupStrategies\CssSelectorLookupStrategy.cs" />
     <Compile Include="Internal\SeleniumEmulation\SetTimeout.cs" />
+    <Compile Include="Internal\SeleniumEmulation\SetNextConfirmationState.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Internal\SeleniumEmulation\AddLocationStrategy.cs" />
     <Compile Include="Internal\SeleniumEmulation\AddSelection.cs" />
@@ -199,6 +203,7 @@
     <Compile Include="Internal\SeleniumEmulation\GetCssCount.cs" />
   </ItemGroup>
   <PropertyGroup>
-    <PostBuildEvent>copy /y $(SolutionDir)java\client\src\org\openqa\selenium\internal\seleniumemulation\*.js $(TargetDir)</PostBuildEvent>
+    <PostBuildEvent>copy /y $(SolutionDir)java\client\src\org\openqa\selenium\internal\seleniumemulation\injectableSelenium.js $(TargetDir)
+copy /y $(SolutionDir)java\client\src\org\openqa\selenium\internal\seleniumemulation\htmlutils.js $(TargetDir)</PostBuildEvent>
   </PropertyGroup>
 </Project>
