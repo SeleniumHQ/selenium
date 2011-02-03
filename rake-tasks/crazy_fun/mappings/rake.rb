@@ -37,7 +37,7 @@ module CrazyFunRake
       # The "one output rule" means that the srcs must either be a directory
       # or a single file.
       all_files = FileList[File.join(dir, args[:src])]
-      raise StandardError, "src must be a single file or directory" unless all_files.length == 1
+      raise StandardError, "src must be a single file or directory (#{dir}, #{args.inspect})" unless all_files.length == 1
     end
   end
 
