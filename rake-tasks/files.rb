@@ -70,6 +70,7 @@ def copy_prebuilt(prebuilt, out)
   elsif File.directory? prebuilt
     from = prebuilt + "/" + out
     from = from.sub(/\/build\//, "/")
+
     if (File.exists?(from))
       puts "Falling back to copy of: #{from}"
       mkdir_p dir

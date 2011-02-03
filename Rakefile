@@ -66,7 +66,7 @@ VisualStudioMappings.new.add_all(crazy_fun)
 # need to fall back to prebuilt binaries. The prebuilt binaries are stored in
 # a directory structure identical to that used in the "build" folder, but
 # rooted at one of the following locations:
-["android/prebuilt", "cpp/prebuilt", "ide/main/prebuilt", "firefox/prebuilt"].each do |pre|
+["android/prebuilt", "cpp/prebuilt", "ide/main/prebuilt", "javascript/firefox-driver/prebuilt"].each do |pre|
   crazy_fun.prebuilt_roots << pre
 end
 
@@ -378,9 +378,9 @@ task :test_chrome_py => [:webdriver_py, :chrome] do
   end
 end
 
-task :test_firefox_py => [:webdriver_py, :firefox, "//firefox:webdriver"] do
+task :test_firefox_py => [:webdriver_py, :firefox, "//javascript/firefox-driver:webdriver"] do
   if python? then
-    xpi_zip_build = 'build/firefox/webdriver.xpi'
+    xpi_zip_build = 'build/javascript/firefox-driver/webdriver.xpi'
     firefox_py_home = "py/selenium/webdriver/firefox/"
     py_test_path = 'build/python/bin/py.test'
     py_setup = "build/python/bin/python " + 'setup.py build'

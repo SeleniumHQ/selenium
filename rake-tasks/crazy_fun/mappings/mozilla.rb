@@ -6,10 +6,12 @@ class MozillaMappings
   def add_all(fun)
     fun.add_mapping("mozilla_xpt", Mozilla::Xpt::CheckPreconditions.new)
     fun.add_mapping("mozilla_xpt", Mozilla::Xpt::CreateTask.new)
+    fun.add_mapping("mozilla_xpt", Mozilla::Xpt::CreateShortNameTask.new)
     fun.add_mapping("mozilla_xpt", Mozilla::Xpt::Compile.new)
     
     fun.add_mapping("mozilla_extension", Mozilla::Xpi::CheckPreconditions.new)
     fun.add_mapping("mozilla_extension", Mozilla::Xpi::CreateTask.new)
+    fun.add_mapping("mozilla_extension", Mozilla::Xpi::CreateShortNameTask.new)
     fun.add_mapping("mozilla_extension", Mozilla::Xpi::AddDependencies.new)
     fun.add_mapping("mozilla_extension", Mozilla::Xpi::Build.new)
     
@@ -62,11 +64,25 @@ class CreateTask < BaseXpt
     Rake::Task[task_name].out = xpt
   end
 end
-  
+
+class CreateShortNameTask < BaseXpt
+  def handle(fun, dir, args)
+    name = task_name(dir, args[:name])
+
+    if (name.end_with? "#{args[:name]}:#{args[:name]}")
+      name = name.sub(/:.*$/, "")
+      task name => task_name(dir, args[:name])
+
+      if (!args[:srcs].nil?)
+        Rake::Task[name].out = xpt_name(dir, args)
+      end
+    end
+  end
+end
+
 class Compile < BaseXpt
   def handle(fun, dir, args)
     xpt = xpt_name(dir, args)
-
     
     file xpt do
       puts "Building: #{task_name(dir, args[:name])} as #{xpt}"
@@ -145,6 +161,22 @@ class CreateTask < BaseXpi
     Rake::Task[task_name].out = xpi
   end
 end
+
+class CreateShortNameTask < BaseXpi
+  def handle(fun, dir, args)
+    name = task_name(dir, args[:name])
+
+    if (name.end_with? "#{args[:name]}:#{args[:name]}")
+      name = name.sub(/:.*$/, "")
+      task name => task_name(dir, args[:name])
+
+      if (!args[:srcs].nil?)
+        Rake::Task[name].out = xpi_name(dir, args)
+      end
+    end
+  end
+end
+
   
 class AddDependencies < BaseXpi
   def handle(fun, dir, args)

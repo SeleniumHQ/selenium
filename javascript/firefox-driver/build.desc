@@ -1,20 +1,20 @@
 mozilla_xpt(name = "command_processor_xpt",
-  srcs = [ "src/extension/idl/nsICommandProcessor.idl" ])
+  srcs = [ "extension/idl/nsICommandProcessor.idl" ])
 
 mozilla_xpt(name = "response_handler_xpt",
-  srcs = [ "src/extension/idl/nsIResponseHandler.idl" ])
+  srcs = [ "extension/idl/nsIResponseHandler.idl" ])
 
 mozilla_xpt(name = "httpd_xpt",
-  srcs = [ "src/extension/idl/nsIHttpServer.idl" ])
+  srcs = [ "extension/idl/nsIHttpServer.idl" ])
 
 mozilla_extension(name = "webdriver",
   content = [
-    "src/extension/content/**/*.js",
-    "src/extension/content/fxdriver.xul",
+    "extension/content/**/*.js",
+    "extension/content/fxdriver.xul",
     "//common:dom_messenger"
   ],
   components = [
-    "src/extension/components/*.js",
+    "extension/components/*.js",
     ":command_processor_xpt",
     ":httpd_xpt",
     "//cpp:native_events_xpt",
@@ -26,35 +26,34 @@ mozilla_extension(name = "webdriver",
     { "//cpp:libwebdriver_firefox_so64" : "platform/Linux_x86_64-gcc3/components/libwebdriver-firefox.so" },
     { ":atoms" : "resource/modules/atoms.js" },
     { ":utils" : "resource/modules/utils.js" },
-    { "src/js/timer.js" : "resource/modules/timer.js" },
-    { "src/js/evaluate.js" : "resource/evaluate.js" },
+    { "js/timer.js" : "resource/modules/timer.js" },
+    { "js/evaluate.js" : "resource/evaluate.js" },
     { "//third_party/js/sizzle" : "resource/sizzle.js" }
   ],
-  chrome = "src/extension/chrome.manifest",
-  install = "src/extension/install.rdf")
+  chrome = "extension/chrome.manifest",
+  install = "extension/install.rdf")
 
 # Needed because the closure library doesn't have the EXPORTED_SYMBOLS variable
 # required by the loader in firefox
 js_binary(name = "atoms",
   srcs = [
-    "src/js/firefox-utils.js",
-    "src/js/preconditions.js",
-    "src/js/exported_symbols.js"
+    "js/firefox-utils.js",
+    "js/preconditions.js",
+    "js/exported_symbols.js"
   ],
   deps = [ "//javascript/webdriver-atoms:deps" ])
 
 js_binary(name = "utils",
   srcs = [
-    "src/js/errorcode.js",
-    "src/js/firefox-utils.js",
-    "src/js/logging.js",
-    "src/js/modals.js",
-    "src/js/timer.js",
-    "src/js/utils.js",
-    "src/js/utils_exports.js"
+    "js/errorcode.js",
+    "js/firefox-utils.js",
+    "js/logging.js",
+    "js/modals.js",
+    "js/timer.js",
+    "js/utils.js",
+    "js/utils_exports.js"
   ],
   deps = [
     "//javascript/webdriver-atoms:deps"
   ])
 
-# Temporary rules while we migrate

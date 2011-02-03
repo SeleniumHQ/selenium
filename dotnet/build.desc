@@ -140,7 +140,7 @@ dotnet_library(name = "firefox",
     "third_party/csharp/dotnetzip-1.9/Ionic.Zip.Reduced.dll"
   ],
   resources = [
-    {"//firefox:webdriver" : "WebDriver.FirefoxExt.zip"},
+    {"//javascript/firefox-driver:webdriver" : "WebDriver.FirefoxExt.zip"},
     {"//cpp:noblur" : "WebDriver.FirefoxNoFocus.x86.dll"},
     {"//cpp:noblur64" : "WebDriver.FirefoxNoFocus.x64.dll"}
   ],

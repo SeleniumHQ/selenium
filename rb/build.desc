@@ -106,7 +106,7 @@ ruby_library(name = "firefox",
     "lib/selenium/webdriver/firefox.rb"
   ],
   resources = [
-    { "//firefox:webdriver" : "rb/lib/selenium/webdriver/firefox/extension/webdriver.xpi"},
+    { "//javascript/firefox-driver:webdriver" : "rb/lib/selenium/webdriver/firefox/extension/webdriver.xpi"},
     { "//cpp:noblur"    : "rb/lib/selenium/webdriver/firefox/native/linux/x86/x_ignore_nofocus.so" },
     { "//cpp:noblur64"  : "rb/lib/selenium/webdriver/firefox/native/linux/amd64/x_ignore_nofocus.so" }
   ],

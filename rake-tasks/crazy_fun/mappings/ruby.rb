@@ -81,7 +81,7 @@ class RubyMappings
 
       if Platform.jruby?
         # TODO: # Specifying a dependency here isn't ideal
-        add_dependencies task, dir, ["//javatests/org/openqa/selenium/environment"]
+        add_dependencies task, dir, ["//java/client/test/org/openqa/selenium/environment"]
       end
 
       if args.has_key?(:deps)
