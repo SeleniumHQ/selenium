@@ -30,6 +30,7 @@
 <!ENTITY baseURLTextbox.tooltip "Enter the URL of the website you are testing. Used for playing &quot;open&quot; command.">
 
 <!ENTITY fileMenu.label "File">
+<!ENTITY runMenu.label "Actions">
 <!ENTITY optionsMenu.label "Options">
 
 <!ENTITY command.label "Command">

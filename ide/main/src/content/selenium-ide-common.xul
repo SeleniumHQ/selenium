@@ -85,6 +85,7 @@ limitations under the License.
     <command id="cmd_selenium_breakpoint" oncommand="goDoCommand('cmd_selenium_breakpoint')"/>
     <command id="cmd_selenium_startpoint" oncommand="goDoCommand('cmd_selenium_startpoint')"/>
     <command id="cmd_selenium_exec_command" oncommand="goDoCommand('cmd_selenium_exec_command')"/>
+    <command id="cmd_selenium_testcase_clear" oncommand="goDoCommand('cmd_selenium_testcase_clear')"/>
     <command id="cmd_selenium_rollup" oncommand="goDoCommand('cmd_selenium_rollup')"/>
     <command id="cmd_selenium_reload" oncommand="goDoCommand('cmd_selenium_reload')"/>
   </commandset>
@@ -112,7 +113,7 @@ limitations under the License.
       <menuitem label="&contextMenu.insertCommand.label;" oncommand="window.editor.treeView.insertCommand()" accesskey="I"/>
       <menuitem label="&contextMenu.insertComment.label;" oncommand="window.editor.treeView.insertComment()" accesskey="M"/>
       <menuseparator/>
-      <menuitem label="&contextMenu.clear.label;" oncommand="window.editor.clear()" accesskey="A"/>
+      <menuitem label="&contextMenu.clear.label;" command="cmd_selenium_testcase_clear" accesskey="A"/>
       <menuseparator/>
       <menuitem label="&contextMenu.breakpoint.label;" command="cmd_selenium_breakpoint" key="breakpoint-key" accesskey="B"/>
       <menuitem label="&contextMenu.startpoint.label;" command="cmd_selenium_startpoint" key="startpoint-key" accesskey="S"/>
@@ -124,9 +125,11 @@ limitations under the License.
       <menuitem label="&contextMenu.delete.label;" command="cmd_delete" />
       <menuitem label="&testCaseProperties.label;" oncommand="window.editor.suiteTreeView.editProperties()"/>
     </menupopup>
+      <!-- Samit: Ref: Commented as could not find any usages
     <menupopup id="popupSeleniumCommands">
       <menuitem label="&contextMenu.clear.label;" oncommand="window.editor.clear()" accesskey="A"/>
     </menupopup>
+    -->
   </popupset>
 
   <menu id="fileMenu" label="&fileMenu.label;" accesskey="F">
@@ -144,6 +147,7 @@ limitations under the License.
       </menu>
       <menuseparator/>
       <menuitem label="&addTestCmd.label;" command="cmd_add" key="add-key" accesskey="D"/>
+      <menuitem label="&testCaseProperties.label;" oncommand="window.editor.suiteTreeView.editProperties()"/>
       <menuseparator/>
       <menuitem label="&newSuiteCmd.label;" command="cmd_new_suite" />
       <menuitem label="&openSuiteCmd.label;" command="cmd_open_suite" id="menu_FileOpenSuite" />
@@ -170,6 +174,26 @@ limitations under the License.
       <menuitem id="menu_delete"/>
       <menuseparator/>
       <menuitem id="menu_selectAll"/>
+      <menuseparator/>
+      <menuitem label="&contextMenu.insertCommand.label;" oncommand="window.editor.treeView.insertCommand()" accesskey="I"/>
+      <menuitem label="&contextMenu.insertComment.label;" oncommand="window.editor.treeView.insertComment()" accesskey="M"/>
+    </menupopup>
+  </menu>
+  <menu id="runMenu" label="&runMenu.label;" accesskey="A"><!-- Samit: Enh: Provide the actions available from the toolbar and context menus via the normal menu -->
+    <menupopup id="run-popup" onpopupshowing="document.getElementById('menu_record').setAttribute('checked', $('record-button').checked);">
+      <menuitem id="menu_record" label="&recordButton.tooltip;" type="checkbox" checked="true" oncommand="window.editor.toggleRecordingEnabled(document.getElementById('menu_record').getAttribute('checked'));" accesskey="R"/>
+      <menuseparator/>
+      <menuitem label="&playSuiteButton.tooltip;" command="cmd_selenium_play_suite" accesskey="P"/>
+      <menuitem label="&playButton.tooltip;" command="cmd_selenium_play"/>
+      <menuitem label="&pauseButton.tooltip;" command="cmd_selenium_pause"/>
+      <menuitem label="&stepButton.tooltip;" command="cmd_selenium_step"/>
+      <menuseparator/>
+      <menuitem label="&speedSliderFast.label;" oncommand="window.editor.updateInterval(-100)" accesskey="+"/>
+      <menuitem label="&speedSliderSlow.label;" oncommand="window.editor.updateInterval(100)" accesskey="-"/>
+      <menuseparator/>
+      <menuitem label="&contextMenu.breakpoint.label;" oncommand="window.editor.treeView.setBreakpoint()" accesskey="B"/>
+      <menuitem label="&contextMenu.startpoint.label;" oncommand="window.editor.treeView.setStartPoint()" accesskey="S"/>
+      <menuitem label="&contextMenu.execCommand.label;" oncommand="window.editor.treeView.executeCurrentCommand()" accesskey="E"/>
     </menupopup>
   </menu>
   <menu id="optionsMenu" label="&optionsMenu.label;" accesskey="O">

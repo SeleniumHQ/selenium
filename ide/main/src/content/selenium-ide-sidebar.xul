@@ -49,6 +49,7 @@ limitations under the License.
   <toolbox>
     <menubar id="menubar">
       <menu id="fileMenu" />
+      <menu id="runMenu" />
       <menu id="menu_edit" />
       <menu id="optionsMenu" />
     </menubar>

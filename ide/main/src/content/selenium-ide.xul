@@ -54,6 +54,7 @@ limitations under the License.
     <menubar id="menubar">
       <menu id="fileMenu" />
       <menu id="menu_edit" />
+      <menu id="runMenu" />
       <menu id="optionsMenu" />
       <menu id="windowMenu"/>
       <menu id="helpMenu">

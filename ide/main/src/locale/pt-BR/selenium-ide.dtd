@@ -30,6 +30,7 @@
 <!ENTITY baseURLTextbox.tooltip "Informe a URL do website a ser testado. Este valor é usado para executar o comando &quot;open.&quot;">
 
 <!ENTITY fileMenu.label "Arquivo">
+<!ENTITY runMenu.label "Ações">
 <!ENTITY optionsMenu.label "Opções">
 
 <!ENTITY command.label "Comando">

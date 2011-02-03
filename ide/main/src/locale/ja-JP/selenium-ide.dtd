@@ -30,6 +30,7 @@
 <!ENTITY baseURLTextbox.tooltip "テストを実施するWebサイトの URL を入力してください。&quot;open&quot; コマンドの実行に使われます。">
 
 <!ENTITY fileMenu.label "ファイル">
+<!ENTITY runMenu.label "アクション">
 <!ENTITY optionsMenu.label "オプション">
 
 <!ENTITY command.label "コマンド">

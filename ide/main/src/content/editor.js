@@ -249,6 +249,7 @@ Editor.controller = {
 		case "cmd_selenium_play_suite":
 		case "cmd_selenium_pause":
 		case "cmd_selenium_step":
+        case "cmd_selenium_testcase_clear":
         case "cmd_selenium_rollup":
         case "cmd_selenium_reload":
 			return true;
@@ -267,6 +268,7 @@ Editor.controller = {
 		case "cmd_save":
 		case "cmd_save_suite":
 		case "cmd_save_suite_as":
+        case "cmd_selenium_testcase_clear":
 			return true;
         case "cmd_selenium_play":
             return editor.app.isPlayable() && editor.selDebugger.state != Debugger.PLAYING;
@@ -299,6 +301,7 @@ Editor.controller = {
 		case "cmd_open_suite":editor.loadRecentSuite();break;	
 		case "cmd_save_suite":editor.app.saveTestSuite(true);break;
 		case "cmd_save_suite_as":editor.app.saveNewTestSuite(true);break;
+        case "cmd_selenium_testcase_clear": editor.clear();break;
 		case "cmd_selenium_play":
             editor.testSuiteProgress.reset();
             editor.playCurrentTestCase(null, 0, 1);
@@ -982,6 +985,18 @@ Editor.prototype.cleanupAutoComplete = function() {
             Editor.GENERIC_AUTOCOMPLETE.clearCandidates(XulUtils.toXPCOMString(this.autoCompleteSearchParams[id]));
         }
     }
+}
+
+Editor.prototype.updateInterval = function(milliseconds) {  //Samit: Enh: Support for speed slider from menu
+    var newpos = this.getInterval() + milliseconds;
+    var maxpos = parseInt(document.getElementById("speedSlider").getAttribute("maxpos"));
+    if (newpos > maxpos) {
+        newpos = maxpos;
+    }
+    if (newpos < 0) {
+        newpos = 0;
+    }
+    this.setInterval(newpos);
 }
 
 Editor.prototype.setInterval = function(milliseconds) {

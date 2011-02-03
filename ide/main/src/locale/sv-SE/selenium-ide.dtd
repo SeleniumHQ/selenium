@@ -30,6 +30,7 @@
 <!ENTITY baseURLTextbox.tooltip "Ange URL till webbplatsen du testar. Används för att spela upp kommandot &quot;open&quot;.">
 
 <!ENTITY fileMenu.label "Arkiv">
+<!ENTITY runMenu.label "Aktiviteter">
 <!ENTITY optionsMenu.label "Alternativ">
 
 <!ENTITY command.label "Kommando">

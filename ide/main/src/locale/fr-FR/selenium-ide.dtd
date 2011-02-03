@@ -30,6 +30,7 @@
 <!ENTITY baseURLTextbox.tooltip "Saisissez l'URL du site que vous testez. Utilis&#233;e pour ex&#233;cuter la commande &quot;open&quot;.">
 
 <!ENTITY fileMenu.label "Fichier">
+<!ENTITY runMenu.label "Actions">
 <!ENTITY optionsMenu.label "Options">
 
 <!ENTITY command.label "Commande">
