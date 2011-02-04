@@ -14,7 +14,7 @@
     <dependencies>
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
-            <artifactId>webdriver-common</artifactId>
+            <artifactId>selenium-webdriver-common</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
