@@ -12,6 +12,10 @@ class open(base.BaseCommand):
       toLoad = url
     self.driver.get(toLoad)
     
+class go_back(base.BaseCommand):
+  def __call__(self):
+    self.driver.back()
+
 class stop(base.BaseCommand):
   def __call__(self  , *args, **kwargs):
     self.driver.quit()
