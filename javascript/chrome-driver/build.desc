@@ -1,0 +1,11 @@
+
+mozilla_extension(name = "chrome-driver",
+  srcs  = [ 
+    "*",
+    "icons/*",
+  ],
+  resources = [
+    { "//cpp:chrome_dll" : "npchromedriver.dll" },
+    { "**" : "./" }
+  ],
+  out = "chrome-extension.zip")
