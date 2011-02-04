@@ -8,8 +8,8 @@
         <artifactId>selenium-parent</artifactId>
         <version>2.0-SNAPSHOT</version>
     </parent>
-    <artifactId>selenium-common</artifactId>
-    <name>selenium-common</name>
+    <artifactId>selenium-webdriver-common</artifactId>
+    <name>selenium-webdriver-common</name>
 
     <dependencies>
         <dependency>
@@ -22,7 +22,7 @@
         </dependency>
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
-            <artifactId>selenium-api</artifactId>
+            <artifactId>selenium-webdriver-api</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -43,7 +43,7 @@
                         <configuration>
                             <tasks>
                                 <delete dir="src/main/java" />
-                                <copy todir="src/main/java">
+                                <copy todir="src/main/java" includeEmptyDirs="false">
                                     <fileset dir="../../java/client/src">
                                         <include name="org/openqa/selenium/browserlaunchers/**/*.java" />
                                         <include name="org/openqa/selenium/io/**/*.java" />

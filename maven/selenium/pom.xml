@@ -18,14 +18,6 @@
             <artifactId>junit</artifactId>
             <optional>true</optional>
         </dependency>
-        <!-- We need TestNG for SeleneseTestNgHelper ... -->
-        <dependency>
-            <groupId>org.testng</groupId>
-            <artifactId>testng</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <!-- Runtime dependencies ... -->
-<!--
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-chrome-driver</artifactId>
@@ -36,13 +28,11 @@
             <artifactId>selenium-htmlunit-driver</artifactId>
             <version>${project.version}</version>
         </dependency>
--->
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-firefox-driver</artifactId>
             <version>${project.version}</version>
         </dependency>
-<!--
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-ie-driver</artifactId>
@@ -50,52 +40,47 @@
         </dependency>
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
-            <artifactId>selenium-iphone-driver</artifactId>
-            <version>${project.version}</version>
-        </dependency>
--->
-        <dependency>
-            <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-support</artifactId>
             <version>${project.version}</version>
+        </dependency>
+        <!-- We need TestNG for SeleneseTestNgHelper ... -->
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <optional>true</optional>
         </dependency>
     </dependencies>
 
     <build>
-        <sourceDirectory>src/java</sourceDirectory>
-        <testSourceDirectory>test/java</testSourceDirectory>
         <plugins>
             <!-- See http://maven.apache.org/plugins/maven-antrun-plugin -->
             <plugin>
                 <artifactId>maven-antrun-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>create_selenium_resources</id>
-                        <phase>generate-resources</phase>
+                        <id>copy_java_files</id>
+                        <phase>generate-sources</phase>
                         <configuration>
                             <tasks>
-                                <!-- 1. Execute rake to build ../build/selenium/selenium.jar ... -->
-                                <condition property="goExecutable" value="go.bat" else="./go">
-                                    <os family="windows" />
-                                </condition>
-                                <exec dir=".." executable="${goExecutable}">
-                                    <arg value="//selenium:selenium" />
-                                </exec>
-                                <!-- Extract everything but the *.class files and MANIFEST.MF from selenium.jar to target/classes ... -->
-                                <unjar src="../../build/java/client/src/org/openqa/selenium/server/server_lite.jar" dest="target/classes">
-                                    <patternset>
-                                        <exclude name="**/*.class" />
-                                        <exclude name="META-INF/MANIFEST.MF" />
-                                    </patternset>
-                                </unjar>
-                                <!-- 2. Extract everything but the class files and MANIFEST.MF to target/classes ... -->
-                                <mkdir dir="target/classes" />
-                                <unjar src="../build/selenium/selenium.jar" dest="target/classes">
-                                    <patternset>
-                                        <exclude name="**/*.class" />
-                                        <exclude name="META-INF/MANIFEST.MF" />
-                                    </patternset>
-                                </unjar>
+                                <delete dir="src/main/java" />
+                                <copy todir="src/main/java" includeEmptyDirs="false">
+                                    <fileset dir="../../java/client/src">
+                                        <include name="**/*.java" />
+                                        <not>
+                                            <or>
+                                                <present targetdir="../api/src/main/java" />
+                                                <present targetdir="../chrome/src/main/java" />
+                                                <present targetdir="../common/src/main/java" />
+                                                <present targetdir="../firefox/src/main/java" />
+                                                <present targetdir="../htmlunit/src/main/java" />
+                                                <present targetdir="../ie/src/main/java" />
+                                                <present targetdir="../support/src/main/java" />
+                                            </or>
+                                        </not>
+                                        <exclude name="org/openqa/selenium/android/**" />
+                                        <exclude name="org/openqa/selenium/iphone/**" />
+                                    </fileset>
+                                </copy>
                             </tasks>
                         </configuration>
                         <goals>
@@ -103,23 +88,14 @@
                         </goals>
                     </execution>
                     <execution>
-                        <id>create_selenium_test_resources</id>
-                        <phase>generate-test-resources</phase>
+                        <id>copy_resources</id>
+                        <phase>generate-resources</phase>
                         <configuration>
                             <tasks>
-                                <!-- 1. Execute rake to build ../build/selenium/test.jar ... -->
-                                <condition property="goExecutable" value="go.bat" else="./go">
-                                    <os family="windows" />
-                                </condition>
-                                <exec dir=".." executable="${goExecutable}">
-                                    <arg value="//selenium:test" />
-                                </exec>
-                                <!-- 2. Extract everything but the class files and MANIFEST.MF to target/test-classes ... -->
-                                <mkdir dir="target/test-classes" />
-                                <unjar src="../build/selenium/test.jar" dest="target/test-classes">
+                                <!-- Extract scripts from client-combined-nodeps.jar to target/classes ... -->
+                                <unjar src="../../build/java/client/src/org/openqa/selenium/client-combined-nodeps.jar" dest="target/classes">
                                     <patternset>
-                                        <exclude name="**/*.class" />
-                                        <exclude name="META-INF/MANIFEST.MF" />
+                                        <include name="scripts/selenium/*.js" />
                                     </patternset>
                                 </unjar>
                             </tasks>
@@ -129,17 +105,6 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
-            <!-- See http://maven.apache.org/plugins/maven-surefire-plugin -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <configuration>
-                    <includes>
-                        <include>**/*TestSuite.java</include>
-                        <exclude>**/SingleTestSuite.java</exclude>
-                    </includes>
-                </configuration>
             </plugin>
         </plugins>
     </build>

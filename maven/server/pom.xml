@@ -12,13 +12,6 @@
     <name>selenium-server</name>
 
     <dependencies>
-<!--
-        <dependency>
-            <groupId>ant</groupId>
-            <artifactId>ant</artifactId> 
-            <version>1.6.5</version>
-        </dependency>
--->
         <dependency>
             <groupId>bouncycastle</groupId>
             <artifactId>bcprov-jdk15</artifactId>
@@ -54,13 +47,6 @@
             <artifactId>selenium-ie-driver</artifactId>
             <version>${project.version}</version>
         </dependency>
-<!--
-        <dependency>
-            <groupId>org.seleniumhq.selenium</groupId>
-            <artifactId>selenium-iphone-driver</artifactId>
-            <version>${project.version}</version>
-        </dependency>
--->
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-support</artifactId>
@@ -80,8 +66,10 @@
                         <configuration>
                             <tasks>
                                 <delete dir="src/main/java" />
-                                <copy todir="src/main/java">
-                                    <fileset dir="../../java/server/src" />
+                                <copy todir="src/main/java" includeEmptyDirs="false">
+                                    <fileset dir="../../java/server/src">
+                                        <include name="**/*.java" />
+                                    </fileset>
                                 </copy>
                             </tasks>
                         </configuration>
@@ -101,10 +89,11 @@
                                         <exclude name="META-INF/MANIFEST.MF" />
                                     </patternset>
                                 </unjar>
-                                <!-- Copy everything but the *.java files from the java/server/src  directory to target/classes ... -->
-                                <copy todir="target/classes">
+                                <!-- Copy everything but the *.java and build.desc files from the java/server/src directory to target/classes ... -->
+                                <copy todir="target/classes" includeEmptyDirs="false">
                                     <fileset dir="../../java/server/src">
                                         <exclude name="**/*.java" />
+                                        <exclude name="**/build.desc" />
                                     </fileset>
                                 </copy>
                             </tasks>

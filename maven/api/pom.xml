@@ -8,8 +8,8 @@
         <artifactId>selenium-parent</artifactId>
         <version>2.0-SNAPSHOT</version>
     </parent>
-    <artifactId>selenium-api</artifactId>
-    <name>selenium-api</name>
+    <artifactId>selenium-webdriver-api</artifactId>
+    <name>selenium-webdriver-api</name>
 
     <dependencies>
         <dependency>
@@ -30,7 +30,7 @@
                         <configuration>
                             <tasks>
                                 <delete dir="src/main/java" />
-                                <copy todir="src/main/java">
+                                <copy todir="src/main/java" includeEmptyDirs="false">
                                     <fileset dir="../../java/client/src">
                                         <include name="com/thoughtworks/selenium/SeleniumException.java" />
                                         <include name="org/openqa/selenium/*.java" />

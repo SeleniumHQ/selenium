@@ -14,7 +14,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
-			<artifactId>selenium-common</artifactId>
+			<artifactId>selenium-webdriver-common</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 	</dependencies>
@@ -31,7 +31,7 @@
                         <configuration>
                             <tasks>
                                 <delete dir="src/main/java" />
-                                <copy todir="src/main/java">
+                                <copy todir="src/main/java" includeEmptyDirs="false">
                                     <fileset dir="../../java/client/src">
                                         <include name="org/openqa/selenium/chrome/**/*.java" />
                                     </fileset>

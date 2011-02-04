@@ -108,10 +108,8 @@
         <module>firefox</module>
         <module>htmlunit</module>
         <module>ie</module>
-<!--
         <module>selenium</module>
         <module>server</module>
--->
         <module>support</module>
     </modules>
 
@@ -146,6 +144,11 @@
                 <groupId>org.apache.httpcomponents</groupId>
                 <artifactId>httpclient</artifactId>
                 <version>4.0.2</version>
+            </dependency>
+            <dependency>
+                <groupId>org.hamcrest</groupId>
+                <artifactId>hamcrest-all</artifactId>
+                <version>1.1</version>
             </dependency>
             <dependency>
                 <groupId>org.json</groupId>
