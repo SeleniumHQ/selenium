@@ -19,7 +19,7 @@ __docformat__ = "restructuredtext en"
 import httplib
 import urllib
 
-class selenium:
+class selenium(object):
     """
     Defines an object that runs Selenium commands.
     
