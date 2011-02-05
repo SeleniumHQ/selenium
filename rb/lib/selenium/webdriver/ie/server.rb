@@ -39,7 +39,7 @@ module Selenium
         end
 
         def stop
-          return unless session_count == 0
+          return if session_count != 0 || @handle.nil?
           self.class.stop_server @handle
           @handle = nil
         end
