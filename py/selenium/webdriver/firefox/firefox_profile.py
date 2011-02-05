@@ -82,6 +82,7 @@ class FirefoxProfile(object):
     def initialize(self):
         self.remove_lock_file()
         self.add_extension(True, extension_zip_path=self.extension_path)
+        self._update_user_preference({"webdriver.firefox_port" :  self.port})
 
     def _copy_profile_source(self, source_path):
         """Copy the profile content from source_path source_path."""
@@ -207,7 +208,7 @@ class FirefoxProfile(object):
         #preference.update(self._get_webdriver_prefs())
         if pref:
             preference.update(pref)
-        preference["webdriver.firefox_port"] = self.port
+        
         user_pref_file = open(user_pref_file_name, "w")
         for key, value in preference.items():
             user_pref_file.write('user_pref("%s", %s);\n' % (key, value))
