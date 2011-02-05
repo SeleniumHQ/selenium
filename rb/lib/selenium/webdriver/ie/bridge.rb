@@ -31,7 +31,7 @@ module Selenium
 
           remote_opts = {
             :url => "http://#{host}:#{@port}",
-            :desired_capabilities => :firefox
+            :desired_capabilities => :internet_explorer
           }
 
           remote_opts.merge!(:http_client => http_client) if http_client

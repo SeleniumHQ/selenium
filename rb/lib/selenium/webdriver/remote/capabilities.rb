@@ -43,6 +43,7 @@ module Selenium
               :platform     => :windows
             }.merge(opts))
           end
+          alias_method :ie, :internet_explorer
 
           def htmlunit(opts = {})
             new({
