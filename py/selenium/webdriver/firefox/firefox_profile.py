@@ -82,7 +82,7 @@ class FirefoxProfile(object):
     def initialize(self):
         self.remove_lock_file()
         self.add_extension(True, extension_zip_path=self.extension_path)
-        self._update_user_preference({"webdriver.firefox_port" :  self.port})
+        self._update_user_preference(pref = {"webdriver.firefox_port" :  self.port})
 
     def _copy_profile_source(self, source_path):
         """Copy the profile content from source_path source_path."""
@@ -192,6 +192,17 @@ class FirefoxProfile(object):
     def _launch_in_silent(self):
         os.environ["XRE_PROFILE_PATH"] = self.anonymous_profile_dir
         subprocess.Popen([utils.get_firefox_start_cmd(), "-silent"]).wait()
+
+    def set_preferences(self, name, value):
+        """
+        Set a preference in about:config via user.js. Format is name, value.
+        For example, set_preference("app.update.auto", "false")
+        """
+        self._update_user_preference(pref = { name : value })
+
+    def get_preferences(self):
+        """ Return our list of preferences that we have set in about:config """
+        return self.prefs
 
     def _update_user_preference(self, pref=None):
         """Updates the user.js with the configurations needed by webdriver."""
