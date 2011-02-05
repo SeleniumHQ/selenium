@@ -19,27 +19,27 @@ describe "Driver" do
       driver.navigate.refresh
       driver.find_element(:id, 'dynamo').text.should == "What's for dinner?"
     end
-  end
 
-  it "should save a screenshot" do
-    driver.navigate.to url_for("xhtmlTest.html")
-    path = "screenshot_tmp.png"
+    it "should save a screenshot" do
+      driver.navigate.to url_for("xhtmlTest.html")
+      path = "screenshot_tmp.png"
 
-    begin
-      driver.save_screenshot path
-      File.exist?(path).should be_true # sic
-      File.size(path).should > 0
-    ensure
-      File.delete(path) if File.exist?(path)
+      begin
+        driver.save_screenshot path
+        File.exist?(path).should be_true # sic
+        File.size(path).should > 0
+      ensure
+        File.delete(path) if File.exist?(path)
+      end
     end
-  end
 
-  it "should return a screenshot in the specified format" do
-    driver.navigate.to url_for("xhtmlTest.html")
+    it "should return a screenshot in the specified format" do
+      driver.navigate.to url_for("xhtmlTest.html")
 
-    ss = driver.screenshot_as(:png)
-    ss.should be_kind_of(String)
-    ss.size.should > 0
+      ss = driver.screenshot_as(:png)
+      ss.should be_kind_of(String)
+      ss.size.should > 0
+    end
   end
 
   it "raises an error when given an unknown format" do
