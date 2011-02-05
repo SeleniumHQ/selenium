@@ -105,7 +105,7 @@ class RubyMappings
         ruby :include => args[:include],
              :require => args[:require],
              :command => args[:command],
-             :args    => %w[--format CI::Reporter::RSpec],
+             :args    => %w[--format CI::Reporter::RSpec --format s --color],
              :debug   => !!ENV['DEBUG'],
              :files   => args[:srcs]
       end
