@@ -1,0 +1,6 @@
+
+js_deps(name = "shared-extension",
+  srcs = [
+    "src/*.js",
+  ])
+

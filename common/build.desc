@@ -1,6 +1,0 @@
-
-rake_task(
-  name = "dom_messenger",
-  task_name = "common/src/js/extension/dommessenger.js",
-  out = "common/src/js/extension/dommessenger.js"
-)
