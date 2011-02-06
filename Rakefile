@@ -353,7 +353,7 @@ end
 
 task :test_chrome_py => [:webdriver_py, :chrome] do
   if python? then
-    chrome_zip_build = 'build/chrome/chrome-extension.zip'
+    chrome_zip_build = 'build/javascript/chrome-driver/chrome-extension.zip'
     chrome_py_home = "py/selenium/webdriver/chrome/"
     py_test_path = 'build/python/bin/py.test'
     py_setup = "build/python/bin/python " + 'setup.py build'
