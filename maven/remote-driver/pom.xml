@@ -8,8 +8,8 @@
         <artifactId>selenium-parent</artifactId>
         <version>2.0-SNAPSHOT</version>
     </parent>
-    <artifactId>selenium-webdriver-common</artifactId>
-    <name>selenium-webdriver-common</name>
+    <artifactId>selenium-remote-driver</artifactId>
+    <name>selenium-remote-driver</name>
 
     <dependencies>
         <dependency>
@@ -22,7 +22,7 @@
         </dependency>
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
-            <artifactId>selenium-webdriver-api</artifactId>
+            <artifactId>selenium-api</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

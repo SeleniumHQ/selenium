@@ -14,7 +14,7 @@
     <dependencies>
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
-            <artifactId>selenium-webdriver-api</artifactId>
+            <artifactId>selenium-api</artifactId>
             <version>${project.version}</version>
         </dependency>
         <!-- Hamcrest is needed for the classes in the org.openqa.selenium.lift package ... -->

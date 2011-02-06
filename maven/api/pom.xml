@@ -8,8 +8,8 @@
         <artifactId>selenium-parent</artifactId>
         <version>2.0-SNAPSHOT</version>
     </parent>
-    <artifactId>selenium-webdriver-api</artifactId>
-    <name>selenium-webdriver-api</name>
+    <artifactId>selenium-api</artifactId>
+    <name>selenium-api</name>
 
     <dependencies>
         <dependency>
@@ -32,9 +32,13 @@
                                 <delete dir="src/main/java" />
                                 <copy todir="src/main/java" includeEmptyDirs="false">
                                     <fileset dir="../../java/client/src">
+                                        <include name="com/thoughtworks/selenium/BrowserConfigurationOptions.java" />
+                                        <include name="com/thoughtworks/selenium/CommandProcessor.java" />
+                                        <include name="com/thoughtworks/selenium/Selenium.java" />
+                                        <include name="com/thoughtworks/selenium/SeleniumCommandTimedOutException.java" />
                                         <include name="com/thoughtworks/selenium/SeleniumException.java" />
+                                        <include name="com/thoughtworks/selenium/SeleniumLogLevels.java" />
                                         <include name="org/openqa/selenium/*.java" />
-                                        <exclude name="org/openqa/selenium/ExplodingSupplier.java" />
                                         <exclude name="org/openqa/selenium/SeleneseCommandExecutor.java" />
                                         <exclude name="org/openqa/selenium/SuppliesWebDriver.java" />
                                         <exclude name="org/openqa/selenium/WebDriverBackedSelenium.java" />

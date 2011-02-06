@@ -10,103 +10,19 @@
     </parent>
     <artifactId>selenium</artifactId>
     <name>selenium</name>
+    <packaging>pom</packaging>
 
     <dependencies>
-        <!-- We need JUnit for SeleneseTestCase ... -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <optional>true</optional>
-        </dependency>
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
-            <artifactId>selenium-chrome-driver</artifactId>
+            <artifactId>selenium-remote-control</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
-            <artifactId>selenium-htmlunit-driver</artifactId>
+            <artifactId>selenium-server</artifactId>
             <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.seleniumhq.selenium</groupId>
-            <artifactId>selenium-firefox-driver</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.seleniumhq.selenium</groupId>
-            <artifactId>selenium-ie-driver</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.seleniumhq.selenium</groupId>
-            <artifactId>selenium-support</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <!-- We need TestNG for SeleneseTestNgHelper ... -->
-        <dependency>
-            <groupId>org.testng</groupId>
-            <artifactId>testng</artifactId>
-            <optional>true</optional>
         </dependency>
     </dependencies>
-
-    <build>
-        <plugins>
-            <!-- See http://maven.apache.org/plugins/maven-antrun-plugin -->
-            <plugin>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>copy_java_files</id>
-                        <phase>generate-sources</phase>
-                        <configuration>
-                            <tasks>
-                                <delete dir="src/main/java" />
-                                <copy todir="src/main/java" includeEmptyDirs="false">
-                                    <fileset dir="../../java/client/src">
-                                        <include name="**/*.java" />
-                                        <not>
-                                            <or>
-                                                <present targetdir="../api/src/main/java" />
-                                                <present targetdir="../chrome/src/main/java" />
-                                                <present targetdir="../common/src/main/java" />
-                                                <present targetdir="../firefox/src/main/java" />
-                                                <present targetdir="../htmlunit/src/main/java" />
-                                                <present targetdir="../ie/src/main/java" />
-                                                <present targetdir="../support/src/main/java" />
-                                            </or>
-                                        </not>
-                                        <exclude name="org/openqa/selenium/android/**" />
-                                        <exclude name="org/openqa/selenium/iphone/**" />
-                                    </fileset>
-                                </copy>
-                            </tasks>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>copy_resources</id>
-                        <phase>generate-resources</phase>
-                        <configuration>
-                            <tasks>
-                                <!-- Extract scripts from client-combined-nodeps.jar to target/classes ... -->
-                                <unjar src="../../build/java/client/src/org/openqa/selenium/client-combined-nodeps.jar" dest="target/classes">
-                                    <patternset>
-                                        <include name="scripts/selenium/*.js" />
-                                    </patternset>
-                                </unjar>
-                            </tasks>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
 
 </project>

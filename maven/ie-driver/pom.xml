@@ -18,7 +18,7 @@
         </dependency>
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
-            <artifactId>selenium-webdriver-common</artifactId>
+            <artifactId>selenium-remote-driver</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>
@@ -47,7 +47,7 @@
                         </goals>
                     </execution>
                     <execution>
-                        <id>copy_resources</id>
+                        <id>copy_resource_files</id>
                         <phase>generate-resources</phase>
                         <configuration>
                             <tasks>
