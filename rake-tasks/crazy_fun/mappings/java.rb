@@ -395,6 +395,13 @@ module CrazyFunJava
                 end
             end
 
+            sysprops = args[:sysproperties] || []
+            sysprops.each do |map|
+              map.each do |key, value|
+                ant.sysproperty :key => key, :value => value
+              end
+            end
+
             ant.xmlfileset :dir => dir, :includes => args[:args] 
           end
         elsif (args[:main])
