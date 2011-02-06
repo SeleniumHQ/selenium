@@ -3,27 +3,23 @@ using OpenQA.Selenium.Environment;
 
 namespace OpenQA.Selenium.Support.PageObjects
 {
-    //TODO: Move this to a standalone class when more tests rely on the server being up
-    [SetUpFixture]
-    public class SetUpClass
+    [TestFixture]
+    public class PageFactoryBrowserTest : DriverTestFixture
     {
-        [SetUp]
+        //TODO: Move these to a standalone class when more tests rely on the server being up
+        [TestFixtureSetUp]
         public void RunBeforeAnyTest()
         {
             EnvironmentManager.Instance.WebServer.Start();
         }
-
-        [TearDown]
+        
+        [TestFixtureTearDown]
         public void RunAfterAnyTests()
         {
             EnvironmentManager.Instance.CloseCurrentDriver();
             EnvironmentManager.Instance.WebServer.Stop();
         }
-    }
-
-    [TestFixture]
-    public class PageFactoryBrowserTest : DriverTestFixture
-    {
+        
         [Test]
         public void FindsRenderedElement()
         {
@@ -68,7 +64,7 @@ namespace OpenQA.Selenium.Support.PageObjects
 
         private class RenderedPage
         {
-            [FindsBy(Name = "someForm")]
+            [FindsBy(How = How.Name, Using = "someForm")]
             public IRenderedWebElement formElement;
         }
 

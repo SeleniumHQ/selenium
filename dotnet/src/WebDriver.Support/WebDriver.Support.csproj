@@ -48,8 +48,10 @@
     <Compile Include="Events\WebDriverScriptEventArgs.cs" />
     <Compile Include="Events\WebElementEventArgs.cs" />
     <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="PageObjects\ByFactory.cs" />
     <Compile Include="PageObjects\CacheLookupAttribute.cs" />
     <Compile Include="PageObjects\FindsByAttribute.cs" />
+    <Compile Include="PageObjects\How.cs" />
     <Compile Include="PageObjects\PageFactory.cs" />
     <Compile Include="PageObjects\WebElementProxyComparer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

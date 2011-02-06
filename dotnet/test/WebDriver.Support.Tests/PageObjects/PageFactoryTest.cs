@@ -76,40 +76,41 @@ namespace OpenQA.Selenium.Support.PageObjects
             var mockElement2 = mocks.NewMock<IWebElement>();
             Expect.Once.On(mockDriver).Method("FindElement").With(By.TagName("body")).Will(Return.Value(mockElement2));
             Expect.Once.On(mockElement2).GetProperty("TagName").Will(Return.Value("body"));
-        
+
             var page = new ChildPage();
 
             AssertFindsElement(page, () => page.formElement);
             AssertFoundElement(page.childElement, "body");
         }
-        
-        [Test]
-        public void FallsBackOnOtherLocatorsOnFailure()
-        {
-            Expect.Once.On(mockDriver).Method("FindElement").With(By.Name("notthisname")).Will(Throw.Exception(new NoSuchElementException()));
-            Expect.Once.On(mockDriver).Method("FindElement").With(By.TagName("form")).Will(Return.Value(mockElement));
-            Expect.Never.On(mockDriver).Method("FindElement").With(By.Id("notthiseither")).Will(Return.Value(mockElement));
 
-            Expect.Once.On(mockElement).GetProperty("TagName").Will(Return.Value("form"));
+        //TODO: Implement FindBys
+        //[Test]
+        //public void FallsBackOnOtherLocatorsOnFailure()
+        //{
+        //    Expect.Once.On(mockDriver).Method("FindElement").With(By.Name("notthisname")).Will(Throw.Exception(new NoSuchElementException()));
+        //    Expect.Once.On(mockDriver).Method("FindElement").With(By.TagName("form")).Will(Return.Value(mockElement));
+        //    Expect.Never.On(mockDriver).Method("FindElement").With(By.Id("notthiseither")).Will(Return.Value(mockElement));
 
-            var page = new FallsbackPage();
-            PageFactory.InitElements(mockDriver, page);
+        //    Expect.Once.On(mockElement).GetProperty("TagName").Will(Return.Value("form"));
 
-            AssertFoundElement(page.formElement);
-        }
+        //    var page = new FallsbackPage();
+        //    PageFactory.InitElements(mockDriver, page);
 
-        [Test]
-        public void ThrowsIfAllLocatorsFail()
-        {
-            Expect.Once.On(mockDriver).Method("FindElement").With(By.Name("notthisname")).Will(Throw.Exception(new NoSuchElementException()));
-            Expect.Once.On(mockDriver).Method("FindElement").With(By.TagName("notthiseither")).Will(Throw.Exception(new NoSuchElementException()));
-            Expect.Once.On(mockDriver).Method("FindElement").With(By.Id("stillnotthis")).Will(Throw.Exception(new NoSuchElementException()));
+        //    AssertFoundElement(page.formElement);
+        //}
 
-            var page = new FailsToFallbackPage();
-            PageFactory.InitElements(mockDriver, page);
+        //[Test]
+        //public void ThrowsIfAllLocatorsFail()
+        //{
+        //    Expect.Once.On(mockDriver).Method("FindElement").With(By.Name("notthisname")).Will(Throw.Exception(new NoSuchElementException()));
+        //    Expect.Once.On(mockDriver).Method("FindElement").With(By.TagName("notthiseither")).Will(Throw.Exception(new NoSuchElementException()));
+        //    Expect.Once.On(mockDriver).Method("FindElement").With(By.Id("stillnotthis")).Will(Throw.Exception(new NoSuchElementException()));
 
-            Assert.Throws(typeof(NoSuchElementException), page.formElement.Clear);
-        }
+        //    var page = new FailsToFallbackPage();
+        //    PageFactory.InitElements(mockDriver, page);
+
+        //    Assert.Throws(typeof(NoSuchElementException), page.formElement.Clear);
+        //}
 
         [Test]
         public void CachesElement()
@@ -185,13 +186,13 @@ namespace OpenQA.Selenium.Support.PageObjects
 
         internal class Page
         {
-            [FindsBy(Name = "someForm")]
+            [FindsBy(How = How.Name, Using = "someForm")]
             public IWebElement formElement;
         }
 
         private class PrivatePage
         {
-            [FindsBy(Name = "someForm")]
+            [FindsBy(How = How.Name, Using = "someForm")]
             private IWebElement formElement;
 
             public IWebElement GetField()
@@ -202,31 +203,31 @@ namespace OpenQA.Selenium.Support.PageObjects
 
         private class ChildPage : Page
         {
-            [FindsBy(TagName = "body")]
+            [FindsBy(How = How.TagName, Using = "body")]
             public IWebElement childElement;
         }
 
-        private class FallsbackPage
-        {
-            [FindsBy(Name = "notthisname", TagName = "form", Id = "notthiseither")]
-            public IWebElement formElement;
-        }
+        //private class FallsbackPage
+        //{
+        //    [FindsBy(Name = "notthisname", TagName = "form", Id = "notthiseither")]
+        //    public IWebElement formElement;
+        //}
 
-        private class FailsToFallbackPage
-        {
-            [FindsBy(Name = "notthisname", TagName = "notthiseither", Id = "stillnotthis")]
-            public IWebElement formElement;
-        }
+        //private class FailsToFallbackPage
+        //{
+        //    [FindsBy(Name = "notthisname", TagName = "notthiseither", Id = "stillnotthis")]
+        //    public IWebElement formElement;
+        //}
 
         private class ElementAsPropertyPage
         {
-            [FindsBy(Name = "someForm")]
+            [FindsBy(How = How.Name, Using = "someForm")]
             public IWebElement FormElement { get; set; }
         }
 
         private class CachedPage
         {
-            [FindsBy(Name = "someForm")]
+            [FindsBy(How = How.Name, Using = "someForm")]
             [CacheLookup]
             public IWebElement formElement;
         }
@@ -234,7 +235,7 @@ namespace OpenQA.Selenium.Support.PageObjects
         [CacheLookup]
         private class CachedClassPage
         {
-            [FindsBy(Name = "someForm")]
+            [FindsBy(How = How.Name, Using = "someForm")]
             public IWebElement formElement;
         }
 

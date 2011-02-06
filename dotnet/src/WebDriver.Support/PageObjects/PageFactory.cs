@@ -42,7 +42,7 @@ namespace OpenQA.Selenium.Support.PageObjects
                     var cacheAttributeType = typeof(CacheLookupAttribute);
                     var cache = member.GetCustomAttributes(cacheAttributeType, true).Length != 0 || member.DeclaringType.GetCustomAttributes(cacheAttributeType, true).Length != 0;
                     
-                    var interceptor = new ProxiedWebElementInterceptor(driver, castedAttribute.FindMethods, cache);
+                    var interceptor = new ProxiedWebElementInterceptor(driver, castedAttribute.Bys, cache);
 
                     var options = new ProxyGenerationOptions
                         {
@@ -81,7 +81,7 @@ namespace OpenQA.Selenium.Support.PageObjects
         private sealed class ProxiedWebElementInterceptor : IInterceptor, IWrapsElement
         {
             private readonly ISearchContext searchContext;
-            private readonly List<By> bys;
+            private readonly IEnumerable<By> bys;
             private readonly bool cache;
             private IWebElement cachedElement;
 
@@ -91,7 +91,7 @@ namespace OpenQA.Selenium.Support.PageObjects
             /// <param name="searchContext">The driver used to search for element.</param>
             /// <param name="bys">The list of methods by which to search for the elements.</param>
             /// <param name="cache"><see langword="true"/> to cache the lookup to the element; otherwise, <see langword="false"/>.</param>
-            public ProxiedWebElementInterceptor(ISearchContext searchContext, List<By> bys, bool cache)
+            public ProxiedWebElementInterceptor(ISearchContext searchContext, IEnumerable<By> bys, bool cache)
             {
                 this.searchContext = searchContext;
                 this.bys = bys;
