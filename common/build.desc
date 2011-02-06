@@ -4,11 +4,3 @@ rake_task(
   task_name = "common/src/js/extension/dommessenger.js",
   out = "common/src/js/extension/dommessenger.js"
 )
-
-rake_file(
-  name = "js_core",
-  src = "src/js/core")
-
-rake_file(
-  name = "js_jsunit",
-  src = "src/js/jsunit")
