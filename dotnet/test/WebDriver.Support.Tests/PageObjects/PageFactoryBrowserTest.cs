@@ -3,23 +3,23 @@ using OpenQA.Selenium.Environment;
 
 namespace OpenQA.Selenium.Support.PageObjects
 {
-	//TODO: Move this to a standalone class when more tests rely on the server being up
-	[SetUpFixture]
-	public class SetUpClass
-	{
-		[SetUp]
-		public void RunBeforeAnyTest()
-		{
-			EnvironmentManager.Instance.WebServer.Start();
-		}
+    //TODO: Move this to a standalone class when more tests rely on the server being up
+    [SetUpFixture]
+    public class SetUpClass
+    {
+        [SetUp]
+        public void RunBeforeAnyTest()
+        {
+            EnvironmentManager.Instance.WebServer.Start();
+        }
 
-		[TearDown]
-		public void RunAfterAnyTests()
-		{
-			EnvironmentManager.Instance.CloseCurrentDriver();
-			EnvironmentManager.Instance.WebServer.Stop();
-		}
-	}
+        [TearDown]
+        public void RunAfterAnyTests()
+        {
+            EnvironmentManager.Instance.CloseCurrentDriver();
+            EnvironmentManager.Instance.WebServer.Stop();
+        }
+    }
 
     [TestFixture]
     public class PageFactoryBrowserTest : DriverTestFixture
