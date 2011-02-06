@@ -237,7 +237,7 @@ if pkg_config_gecko
   cflags_cmd = open("| pkg-config --cflags libxul")
   local_gecko_include = cflags_cmd.readline.gsub "\n", ""
 else
-  print 'No Gecko SDK detected. Install xulrunner-dev (xulrunner-devel for macports) to compile 64-bit Firefox extension.'
+  puts 'No Gecko SDK detected. Install xulrunner-dev (xulrunner-devel for macports) to compile 64-bit Firefox extension.'
   local_gecko_include = ""
   local_gecko_libs = ""
 end
