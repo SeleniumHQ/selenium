@@ -60,7 +60,10 @@ module Selenium
             elsif code == 204
               Response.new(code)
             else
-              raise Error::WebDriverError, "unexpected content type: #{content_type.inspect} (#{code})\n#{body}"
+              msg = "unexpected response, code=#{code}, content-type=#{content_type.inspect}"
+              msg << "\n#{body}" unless body.empty?
+
+              raise Error::WebDriverError, msg
             end
           end
 
