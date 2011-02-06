@@ -11,6 +11,11 @@ module Selenium
 
           private
 
+          def initialize
+            super
+            @proxy = nil
+          end
+
           def http
             @http ||= (
               http = new_http_client
