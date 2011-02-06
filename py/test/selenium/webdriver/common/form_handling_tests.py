@@ -27,6 +27,8 @@ from selenium.webdriver.common.exceptions import NoSuchFrameException
 from selenium.webdriver.common.exceptions import InvalidElementStateException
 from selenium.webdriver.common.exceptions import ElementNotSelectableException
 
+from selenium.webdriver.common.exceptions import WebDriverException 
+
 
 class FormHandlingTests(unittest.TestCase):
 
@@ -127,11 +129,11 @@ class FormHandlingTests(unittest.TestCase):
         self.assertEqual(radioButton.is_enabled(), False)
         try:
             radioButton.select()
-            self.fail("Expected InvalidElementStateException but didnt get it")
-        except InvalidElementStateException, e:
+            self.fail("Expected WebDriverException but didnt get it")
+        except WebDriverException, e:
             pass
         except Exception, e:
-            self.fail("Expected InvalidElementStateException but got " + str(e))
+            self.fail("Expected WebDriverException but got " + str(type(e)))
         
     def testShouldBeAbleToSelectARadioButton(self):
         self._loadPage("formPage")
@@ -191,11 +193,11 @@ class FormHandlingTests(unittest.TestCase):
         element = self.driver.find_element_by_xpath("//title")
         try:
             element.select()
-            self.fail("Expected ElementNotSelectableException to have been thrown")
-        except InvalidElementStateException, e:
+            self.fail("Expected WebDriverException to have been thrown")
+        except WebDriverException, e:
             pass
         except Exception, e:
-            self.fail("Expected InvalidElementStateException but got " + str(e))
+            self.fail("Expected WebDriverException but got " + str(type(e)))
         
     def testSendingKeyboardEventsShouldAppendTextInInputs(self):    
         self._loadPage("formPage")
