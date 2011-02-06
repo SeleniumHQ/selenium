@@ -261,12 +261,6 @@ task :'selenium-server_zip' do
   sh "cd #{temp} && jar cMf ../selenium-server.zip *"
 end
 
-java_jar(:name => "selenium-core",
-         :resources => [
-           {"selenium/test/js/**" => "tests"},
-           "common/src/js/core"
-         ])
-
 {"firefox" => "*chrome",
  "ie" => "*iexploreproxy",
  "opera" => "*opera",
@@ -274,8 +268,7 @@ java_jar(:name => "selenium-core",
   selenium_test(:name => "test-core-#{k}",
                 :srcs => [ "common/test/js/core/*.js" ],
                 :deps => [
-                  "//java/server/src/org/openqa/selenium/server:server:uber",
-                  :"selenium-core"
+                  "//java/server/test/org/openqa/selenium:server-with-tests:uber",
                 ],
                 :browser => v )
 end
