@@ -56,8 +56,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Events\EventFiringWebDriverTest.cs" />
-    <Compile Include="PageFactory\PageFactoryBrowserTest.cs" />
-    <Compile Include="PageFactory\PageFactoryTest.cs" />
+    <Compile Include="PageObjects\PageFactoryBrowserTest.cs" />
+    <Compile Include="PageObjects\PageFactoryTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UI\SelectTests.cs" />
     <Compile Include="UI\WebDriverWaitTest.cs" />
