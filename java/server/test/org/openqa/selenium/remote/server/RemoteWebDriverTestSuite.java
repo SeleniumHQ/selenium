@@ -19,16 +19,20 @@ package org.openqa.selenium.remote.server;
 
 import com.google.common.collect.Maps;
 
+import com.google.common.io.Files;
+import com.google.common.io.Resources;
 import junit.extensions.TestSetup;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
+import org.openqa.selenium.Build;
 import org.openqa.selenium.TestSuiteBuilder;
 import org.openqa.selenium.environment.webserver.AppServer;
 import org.openqa.selenium.environment.webserver.Jetty7AppServer;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.internal.InProject;
+import org.openqa.selenium.net.Urls;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.HttpRequest;
 import org.openqa.selenium.remote.RemoteWebDriver;
