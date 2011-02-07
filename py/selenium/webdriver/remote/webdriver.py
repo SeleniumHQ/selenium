@@ -347,7 +347,7 @@ class WebDriver(object):
     
     # Timeouts
     def implicitly_wait(self, time_to_wait):
-        """Get the driver to poll for the element """
+        """Set the implicit time out for use by later actions """
         self.execute(Command.IMPLICIT_WAIT, {'ms': time_to_wait*1000})
 
     def set_script_timeout(self, time_to_wait):
