@@ -9,6 +9,7 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverBackedSelenium;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
+import org.openqa.selenium.internal.WrapsDriver;
 import org.openqa.selenium.v1.SeleniumTestEnvironment;
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
@@ -101,14 +102,13 @@ public class InternalSelenseTestNgBase extends SeleneseTestBase {
     }
 
     // We need to be a on page where we can execute JS
-    ((WebDriverBackedSelenium) selenium).getUnderlyingWebDriver()
-        .get("http://localhost:4444/selenium-server");
+    WebDriver driver = ((WrapsDriver) selenium).getWrappedDriver();
+    driver.get("http://localhost:4444/selenium-server");
 
     try {
       URL scriptUrl = Resources.getResource(getClass(), "/com/thoughtworks/selenium/testHelpers.js");
       String script = Resources.toString(scriptUrl, Charsets.UTF_8);
 
-      WebDriver driver = ((WebDriverBackedSelenium) selenium).getUnderlyingWebDriver();
       ((JavascriptExecutor) driver).executeScript(script);
     } catch (IOException e) {
       Assert.fail("Cannot read script", e);
@@ -117,6 +117,6 @@ public class InternalSelenseTestNgBase extends SeleneseTestBase {
 
   @AfterMethod
   public void checkVerifications() throws Exception {
-    tearDown();
+    checkForVerificationErrors();
   }
 }
