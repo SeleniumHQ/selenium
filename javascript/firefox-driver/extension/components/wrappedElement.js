@@ -19,7 +19,7 @@
 
 Components.utils.import('resource://fxdriver/modules/atoms.js');
 // TODO(simon): Port this hack back into closure proper
-goog.userAgent.GECKO = true;
+//goog.userAgent.GECKO = true;
 
 var FirefoxDriver = FirefoxDriver || function(){};
 
