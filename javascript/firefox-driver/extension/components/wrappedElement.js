@@ -18,6 +18,8 @@
 
 
 Components.utils.import('resource://fxdriver/modules/atoms.js');
+// TODO(simon): Port this hack back into closure proper
+goog.userAgent.GECKO = true;
 
 var FirefoxDriver = FirefoxDriver || function(){};
 
@@ -114,6 +116,7 @@ FirefoxDriver.prototype.clickElement = function(respond, parameters) {
 
   Utils.installClickListener(respond, WebLoadingListener);
 
+  Logger.dumpn("Clicking");
   bot.action.click(element);
 };
 FirefoxDriver.prototype.clickElement.preconditions =
