@@ -182,11 +182,10 @@
                 <plugin>
                     <artifactId>maven-compiler-plugin</artifactId>
                     <configuration>
-                        <encoding>Windows-1252</encoding>
                         <source>1.5</source>
                         <target>1.5</target>
-                        <optimize>true</optimize>
                         <debug>true</debug>
+                        <optimize>true</optimize>
                     </configuration>
                 </plugin>
                 <!-- See http://maven.apache.org/plugins/maven-surefire-plugin -->

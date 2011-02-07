@@ -18,11 +18,13 @@
             <version>${project.version}</version>
         </dependency>
         <!-- Hamcrest is needed for the classes in the org.openqa.selenium.lift package ... -->
+        <!--
         <dependency>
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest-all</artifactId>
             <optional>true</optional>
         </dependency>
+        -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -44,8 +46,11 @@
                                 <delete dir="src/main/java" />
                                 <copy todir="src/main/java" includeEmptyDirs="false">
                                     <fileset dir="../../java/client/src">
+                                        <!--
                                         <include name="org/openqa/selenium/lift/**/*.java" />
+                                        -->
                                         <include name="org/openqa/selenium/support/**/*.java" />
+                                        <exclude name="org/openqa/selenium/support/testing/*.java" />
                                     </fileset>
                                 </copy>
                             </tasks>

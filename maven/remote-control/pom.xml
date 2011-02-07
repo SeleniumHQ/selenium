@@ -77,8 +77,11 @@
                                                 <present targetdir="../support/src/main/java" />
                                             </or>
                                         </not>
+                                        <exclude name="org/openqa/selenium/internal/ReturnedCookie.java" />
                                         <exclude name="org/openqa/selenium/android/**" />
                                         <exclude name="org/openqa/selenium/iphone/**" />
+                                        <exclude name="org/openqa/selenium/lift/**" />
+                                        <exclude name="org/openqa/selenium/support/testing/*.java" />
                                     </fileset>
                                 </copy>
                             </tasks>
