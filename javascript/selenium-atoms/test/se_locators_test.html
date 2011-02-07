@@ -88,6 +88,13 @@ limitations under the License.
       var found = core.locators.findElement("stored=" + key);
       assertEquals(element, found);
     }
+
+    function testImplicitSearchesByNameUseFilters() {
+      var element = bot.locators.findElement({id: 'option-chilli'});
+      var found = core.locators.findElement('option chilli');
+
+      assertEquals(element, found);
+    }
   </script>
 </head>
 <body>
@@ -98,10 +105,18 @@ limitations under the License.
     <input type="radio" name="cheese" value="brie">Brie
     <input type="radio" name="cheese" value="cheddar">Cheddar
     <input type="radio" name="cheese" value="stilton" id="cheese">Stilton
+
+    <fieldset>
+      <legend>Options</legend>
+      <input type="checkbox" id="option-cheese" name="option" value="cheese" checked="yes"> Cheese<br/>
+      <input type="checkbox" id="option-chilli" name="option" value="chilli"> Chilli Flakes<br/>
+    </fieldset>
   </form>
 
   <div id="classy" class="find_me">Tasty, tasty cheese.</div>
 
   <img src="#" alt="cheesey" id="alt">
+
+
 </body>
 </html>

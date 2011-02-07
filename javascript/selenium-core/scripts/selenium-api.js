@@ -798,7 +798,7 @@ Selenium.prototype.findToggleButton = function(locator) {
         Assert.fail("Element " + locator + " is not a toggle-button.");
     }
     return element;
-}
+};
 
 Selenium.prototype.doCheck = function(locator) {
     /**

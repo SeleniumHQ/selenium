@@ -126,11 +126,8 @@ core.LocatorStrategies.id_ = function(locator, opt_doc) {
  * @private
  */
 core.LocatorStrategies.identifier_ = function(locator, opt_doc) {
-  var idSelector = {'id': locator};
-  var nameSelector = {'name': locator};
-
-  return bot.locators.findElement(idSelector, opt_doc) ||
-         bot.locators.findElement(nameSelector, opt_doc);
+  return core.LocatorStrategies['id'](locator, opt_doc) ||
+         core.LocatorStrategies['name'](locator, opt_doc);
 };
 
 
