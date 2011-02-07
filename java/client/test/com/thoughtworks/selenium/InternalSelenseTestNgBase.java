@@ -11,6 +11,7 @@ import org.openqa.selenium.WebDriverBackedSelenium;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.v1.SeleniumTestEnvironment;
 import org.testng.Assert;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeTest;
@@ -112,5 +113,10 @@ public class InternalSelenseTestNgBase extends SeleneseTestBase {
     } catch (IOException e) {
       Assert.fail("Cannot read script", e);
     }
+  }
+
+  @AfterMethod
+  public void checkVerifications() throws Exception {
+    tearDown();
   }
 }
