@@ -12,11 +12,31 @@ function set(name, value) {
     }
 }
 
+Equals.prototype.verify = function() {
+    if (this.e2.toString().indexOf("getText") != -1) {
+        return verifyText(this.e1.toString(), this.e2.toString());
+    }
+    return verify(this.assert());
+};
+
+function verifyText(want, got) {
+    return '$this->verifyText("' + got.slice(got.indexOf('"') +1, got.lastIndexOf('"')) + '", ' + want + '")';
+}
+
+function verifyTrue(expression) {
+    if (expression.toString().indexOf("isTextPresent") != -1) {
+        return verifyTextPresent(expression);
+    }
+    return verify(assertTrue(expression));
+}
+
+function verifyTextPresent(expression) {
+    e = expression.toString();
+    return  '$this->verifyTextPresent("' + e.slice(e.indexOf('"') +1, e.lastIndexOf('"')) + '");';
+}
+
 options.header =
     '<?php\n' +
-    '\n' +
-    "require_once 'PHPUnit/Extensions/SeleniumTestCase.php';\n" +
-    '\n' +
     'class Example extends PHPUnit_Extensions_SeleniumTestCase\n' +
     '{\n' +
     indents(1) + 'protected function setUp()\n' +

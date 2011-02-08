@@ -12,12 +12,16 @@ function set(name, value) {
     }
 }
 
+function verifyTrue(expression) {
+    return verify(assertTrue(expression));
+}
+
 options.header =
     '<?php\n' +
     '\n' +
     "require_once 'Testing/Selenium.php';\n" +
     '\n' +
-    'class Example extends PHPUnit_Extensions_SeleniumTestCase\n' +
+    'class Example extends PHPUnit_Framework_TestCase\n' +
     '{\n' +
     indents(1) + 'protected function setUp()\n' +
     indents(1) + '{\n' +

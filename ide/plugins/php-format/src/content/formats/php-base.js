@@ -21,10 +21,6 @@ function verify(statement) {
         "}";
 }
 
-function verifyTrue(expression) {
-    return verify(assertTrue(expression));
-}
-
 function verifyFalse(expression) {
     return verify(assertFalse(expression));
 }
