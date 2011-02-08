@@ -59,6 +59,7 @@ goog.require('goog.ui.registry');
  */
 goog.ui.SplitBehavior = function(first, second, opt_behaviorHandler,
     opt_eventType, opt_domHelper) {
+  goog.Disposable.call(this);
 
   /**
    * @type {goog.ui.Control}

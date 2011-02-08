@@ -1587,7 +1587,6 @@ goog.ui.Dialog.ButtonSet.prototype.setButtonEnabled = function(key, enabled) {
  * @param {boolean} enabled True to enable; false to disable.
  */
 goog.ui.Dialog.ButtonSet.prototype.setAllButtonsEnabled = function(enabled) {
-  var defaultButton = this.getDefault();
   var allButtons = this.getAllButtons();
   for (var i = 0, button; button = allButtons[i]; i++) {
     button.disabled = !enabled;

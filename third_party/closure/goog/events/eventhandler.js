@@ -76,6 +76,7 @@ goog.require('goog.structs.SimplePool');
  * @extends {goog.Disposable}
  */
 goog.events.EventHandler = function(opt_handler) {
+  goog.Disposable.call(this);
   this.handler_ = opt_handler;
 };
 goog.inherits(goog.events.EventHandler, goog.Disposable);

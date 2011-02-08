@@ -782,12 +782,12 @@ goog.net.ChannelRequest.prototype.tridentGet_ = function(usingSecondaryDomain) {
   this.trident_ = new ActiveXObject('htmlfile');
 
   var hostname = '';
-  var body = '<html>';
+  var body = '<html><body>';
   if (usingSecondaryDomain) {
     hostname = window.location.hostname;
     body += '<script>document.domain="' + hostname + '"</scr' + 'ipt>';
   }
-  body += '</html>';
+  body += '</body></html>';
 
   this.trident_.open();
   this.trident_.write(body);
@@ -799,7 +799,7 @@ goog.net.ChannelRequest.prototype.tridentGet_ = function(usingSecondaryDomain) {
       goog.bind(this.onTridentDone_, this, false);
 
   var div = this.trident_.createElement('div');
-  this.trident_.appendChild(div);
+  this.trident_.parentWindow.document.body.appendChild(div);
   this.requestUri_ = this.baseUri_.clone();
   this.requestUri_.setParameterValue('DOMAIN', hostname);
   this.requestUri_.setParameterValue('t', this.retryId_);

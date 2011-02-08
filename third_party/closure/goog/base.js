@@ -581,7 +581,30 @@ goog.typeOf = function(value) {
   var s = typeof value;
   if (s == 'object') {
     if (value) {
-      // We cannot use constructor == Array or instanceof Array because
+      // Check these first, so we can avoid calling Object.prototype.toString if
+      // possible.
+      //
+      // IE improperly marshals tyepof across execution contexts, but a
+      // cross-context object will still return false for "instanceof Object".
+      if (value instanceof Array) {
+        return 'array';
+      } else if (value instanceof Object) {
+        return s;
+      }
+
+      // HACK: In order to use an Object prototype method on the arbitrary
+      //   value, the compiler requires the value be cast to type Object,
+      //   even though the ECMA spec explicitly allows it.
+      var className = Object.prototype.toString.call(
+          /** @type {Object} */ (value));
+      // In Firefox 3.6, attempting to access iframe window objects' length
+      // property throws an NS_ERROR_FAILURE, so we need to special-case it
+      // here.
+      if (className == '[object Window]') {
+        return 'object';
+      }
+
+      // We cannot always use constructor == Array or instanceof Array because
       // different frames have different Array objects. In IE6, if the iframe
       // where the array was created is destroyed, the array loses its
       // prototype. Then dereferencing val.splice here throws an exception, so
@@ -599,20 +622,7 @@ goog.typeOf = function(value) {
       //         "[object ", Result(1), and "]".
       //      3. Return Result(2).
       // and this behavior survives the destruction of the execution context.
-      if (value instanceof Array ||  // Works quickly in same execution context.
-          // If value is from a different execution context then
-          // !(value instanceof Object), which lets us early out in the common
-          // case when value is from the same context but not an array.
-          // The {if (value)} check above means we don't have to worry about
-          // undefined behavior of Object.prototype.toString on null/undefined.
-          //
-          // HACK: In order to use an Object prototype method on the arbitrary
-          //   value, the compiler requires the value be cast to type Object,
-          //   even though the ECMA spec explicitly allows it.
-          (!(value instanceof Object) &&
-           (Object.prototype.toString.call(
-               /** @type {Object} */ (value)) == '[object Array]') ||
-
+      if ((className == '[object Array]' ||
            // In IE all non value types are wrapped as objects across window
            // boundaries (not iframe though) so we have to do object detection
            // for this edge case
@@ -638,9 +648,7 @@ goog.typeOf = function(value) {
       // (it appears just as an object) so we cannot use just typeof val ==
       // 'function'. However, if the object has a call property, it is a
       // function.
-      if (!(value instanceof Object) &&
-          (Object.prototype.toString.call(
-              /** @type {Object} */ (value)) == '[object Function]' ||
+      if ((className == '[object Function]' ||
           typeof value.call != 'undefined' &&
           typeof value.propertyIsEnumerable != 'undefined' &&
           !value.propertyIsEnumerable('call'))) {

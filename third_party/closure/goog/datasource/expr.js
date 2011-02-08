@@ -194,11 +194,6 @@ goog.ds.Expr.prototype.getValue = function(opt_ds) {
   if (opt_ds == null) {
     opt_ds = goog.ds.DataManager.getInstance();
   } else if (this.isAbsolute_) {
-
-    // TODO(user): Remove once JSCompiler's undefined properties warnings
-    // don't error for guarded properties.
-    var magicProps = {getDataRoot: 0};
-
     opt_ds = opt_ds.getDataRoot ? opt_ds.getDataRoot() :
         goog.ds.DataManager.getInstance();
   }

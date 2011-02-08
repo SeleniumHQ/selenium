@@ -43,6 +43,8 @@ goog.require('goog.Timer');
  * @extends {goog.Disposable}
  */
 goog.async.Delay = function(listener, opt_interval, opt_handler) {
+  goog.Disposable.call(this);
+
   /**
    * The function that will be invoked after a delay.
    * @type {Function}

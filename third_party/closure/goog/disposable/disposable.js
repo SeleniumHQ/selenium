@@ -30,7 +30,54 @@ goog.provide('goog.dispose');
  * interface.
  * @constructor
  */
-goog.Disposable = function() {};
+goog.Disposable = function() {
+  if (goog.Disposable.ENABLE_MONITORING) {
+    goog.Disposable.instances_[goog.getUid(this)] = this;
+  }
+};
+
+
+/**
+ * @define {boolean} Whether to enable the monitoring of the goog.Disposable
+ *     instances. Switching on the monitoring is only recommended for debugging
+ *     because it has a significant impact on performance and memory usage.
+ *     If switched off, the monitoring code compiles down to 0 bytes.
+ *     The monitoring expects that all disposable objects call the
+ *     {@code goog.Disposable} base constructor.
+ */
+goog.Disposable.ENABLE_MONITORING = false;
+
+
+/**
+ * Maps the unique ID of every undisposed {@code goog.Disposable} object to
+ * the object itself.
+ * @type {!Object.<number, !goog.Disposable>}
+ * @private
+ */
+goog.Disposable.instances_ = {};
+
+
+/**
+ * @return {!Array.<!goog.Disposable>} All {@code goog.Disposable} objects that
+ *     haven't been disposed of.
+ */
+goog.Disposable.getUndisposedObjects = function() {
+  var ret = [];
+  for (var id in goog.Disposable.instances_) {
+    if (goog.Disposable.instances_.hasOwnProperty(id)) {
+      ret.push(goog.Disposable.instances_[Number(id)]);
+    }
+  }
+  return ret;
+};
+
+
+/**
+ * Clears the registry of undisposed objects but doesn't dispose of them.
+ */
+goog.Disposable.clearUndisposedObjects = function() {
+  goog.Disposable.instances_ = {};
+};
 
 
 /**
@@ -61,6 +108,8 @@ goog.Disposable.prototype.getDisposed = goog.Disposable.prototype.isDisposed;
  * {@link #disposeInternal}. Classes that extend {@code goog.Disposable} should
  * override {@link #disposeInternal} in order to delete references to COM
  * objects, DOM nodes, and other disposable objects.
+ *
+ * @return {void} Nothing.
  */
 goog.Disposable.prototype.dispose = function() {
   if (!this.disposed_) {
@@ -68,6 +117,15 @@ goog.Disposable.prototype.dispose = function() {
     // gets disposed recursively.
     this.disposed_ = true;
     this.disposeInternal();
+    if (goog.Disposable.ENABLE_MONITORING) {
+      var uid = goog.getUid(this);
+      if (!goog.Disposable.instances_.hasOwnProperty(uid)) {
+        throw Error(this + ' did not call the goog.Disposable base ' +
+            'constructor or was disposed of after a clearUndisposedObjects ' +
+            'call');
+      }
+      delete goog.Disposable.instances_[uid];
+    }
   }
 };
 

@@ -115,7 +115,7 @@ goog.proto2.Descriptor.prototype.getContainingType = function() {
     return null;
   }
 
-  return this.containingType_.descriptor_;
+  return this.containingType_.getDescriptor();
 };
 
 

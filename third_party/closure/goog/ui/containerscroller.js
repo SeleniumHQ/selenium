@@ -46,6 +46,7 @@ goog.require('goog.ui.Container.EventType');
  * @extends {goog.Disposable}
  */
 goog.ui.ContainerScroller = function(container) {
+  goog.Disposable.call(this);
 
   /**
    * The container that we are bestowing scroll behavior on.

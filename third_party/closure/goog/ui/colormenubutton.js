@@ -191,14 +191,17 @@ goog.ui.ColorMenuButton.prototype.handleMenuAction = function(e) {
  * Opens or closes the menu.  Overrides {@link goog.ui.MenuButton#setOpen} by
  * generating a default color menu on the fly if needed.
  * @param {boolean} open Whether to open or close the menu.
+ * @param {goog.events.Event=} opt_e Mousedown event that caused the menu to
+ *     be opened.
+ * @override
  */
-goog.ui.ColorMenuButton.prototype.setOpen = function(open) {
+goog.ui.ColorMenuButton.prototype.setOpen = function(open, opt_e) {
   if (open && this.getItemCount() == 0) {
     this.setMenu(
         goog.ui.ColorMenuButton.newColorMenu(null, this.getDomHelper()));
     this.setValue(/** @type {?string} */ (this.getValue()));
   }
-  goog.ui.ColorMenuButton.superClass_.setOpen.call(this, open);
+  goog.ui.ColorMenuButton.superClass_.setOpen.call(this, open, opt_e);
 };
 
 

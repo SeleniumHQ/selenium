@@ -94,10 +94,12 @@ function _trueTypeOf(something) {
         }
         break;
     }
+  } catch(e) {
+
   } finally {
     result = result.substr(0, 1).toUpperCase() + result.substr(1);
-    return result;
   }
+  return result;
 }
 
 function _displayStringForValue(aVar) {

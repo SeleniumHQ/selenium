@@ -396,6 +396,8 @@ goog.ui.OfflineInstallDialog.prototype.disposeInternal = function() {
  * @extends {goog.Disposable}
  */
 goog.ui.OfflineInstallDialogScreen = function(dialog, type) {
+  goog.Disposable.call(this);
+
   /**
    * @type {goog.ui.OfflineInstallDialog}
    * @protected
@@ -834,9 +836,10 @@ goog.ui.OfflineInstallDialog.InstallScreen.prototype.getContent = function() {
      * @desc One of the steps to perform in order to enable offline access.
      * @hidden
      */
-    var MSG_OFFLINE_DIALOG_COME_BACK = goog.getMsg('Come back to {$appUrl}!',
-        {'appUrl': '<span class="' + this.appUrlClassName_ + '">' +
-            this.dialog_.getAppUrl() + '</span>'});
+    var MSG_OFFLINE_DIALOG_COME_BACK = goog.getMsg('Come back to {$appUrl}!', {
+      'appUrl': '<span class="' + this.appUrlClassName_ + '">' +
+          this.dialog_.getAppUrl() + '</span>'
+    });
     sb.append(this.getStepHtml_(3, MSG_OFFLINE_DIALOG_COME_BACK));
 
     // Close the enclosing element.

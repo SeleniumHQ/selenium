@@ -98,6 +98,10 @@ goog.testing.events.setEventClientXY_ = function(event, opt_coords) {
   }
   event.clientX = opt_coords ? opt_coords.x : 0;
   event.clientY = opt_coords ? opt_coords.y : 0;
+
+  // Pretend the browser window is at (0, 0).
+  event.screenX = event.clientX;
+  event.screenY = event.clientY;
 };
 
 

@@ -50,6 +50,8 @@ goog.require('goog.events.EventType');
  * @extends {goog.Disposable}
  */
 goog.editor.ClickToEditWrapper = function(fieldObj) {
+  goog.Disposable.call(this);
+
   /**
    * The field this wrapper interacts with.
    * @type {goog.editor.Field}

@@ -496,6 +496,35 @@ function testIsNodeLike() {
              goog.dom.isNodeLike({nodeType: 1}));
 }
 
+function testIsWindow() {
+  var global = goog.global;
+  var frame = window.frames['frame'];
+  var otherWindow = window.open('', 'blank');
+  var object = {window: goog.global};
+  var nullVar = null;
+  var notDefined;
+
+  try {
+    // Use try/finally to ensure that we clean up the window we open, even if an
+    // assertion fails or something else goes wrong.
+    assertTrue('global object in HTML context should be a window',
+               goog.dom.isWindow(goog.global));
+    assertTrue('iframe window should be a window', goog.dom.isWindow(frame));
+    if (otherWindow) {
+      assertTrue('other window should be a window',
+                 goog.dom.isWindow(otherWindow));
+    }
+    assertFalse('object should not be a window', goog.dom.isWindow(object));
+    assertFalse('null should not be a window', goog.dom.isWindow(nullVar));
+    assertFalse('undefined should not be a window',
+                goog.dom.isWindow(notDefined));
+  } finally {
+    if (otherWindow) {
+      otherWindow.close();
+    }
+  }
+}
+
 function testGetOwnerDocument() {
   assertEquals(goog.dom.getOwnerDocument($('p1')), document);
   assertEquals(goog.dom.getOwnerDocument(document.body), document);

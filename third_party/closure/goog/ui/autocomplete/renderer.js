@@ -203,11 +203,6 @@ goog.ui.AutoComplete.Renderer = function(opt_parentNode, opt_customRenderer,
    * @private
    */
    this.topAlign_ = false;
-
-  // TODO(user): Remove once JSCompiler's undefined properties warnings
-  // don't error for guarded properties.
-  var magicProps = { renderRow: 0 };
-
 };
 goog.inherits(goog.ui.AutoComplete.Renderer, goog.events.EventTarget);
 

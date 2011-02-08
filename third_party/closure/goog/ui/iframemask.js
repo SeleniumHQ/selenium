@@ -45,6 +45,7 @@ goog.require('goog.style');
  * @extends {goog.Disposable}
  */
 goog.ui.IframeMask = function(opt_domHelper, opt_iframePool) {
+  goog.Disposable.call(this);
 
   /**
    * The DOM helper for this document.

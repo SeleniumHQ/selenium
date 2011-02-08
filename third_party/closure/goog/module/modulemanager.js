@@ -438,7 +438,7 @@ goog.module.ModuleManager.prototype.
     d.callback(this.moduleContext_);
   } else {
     moduleInfo.registerCallback(d.callback, d);
-    moduleInfo.registerErrback(d.errback, d);
+    moduleInfo.registerErrback(function(err) { d.errback(Error(err)); });
     if (!this.isModuleLoading(id)) {
       this.loadModuleOrEnqueue_(id);
     }
@@ -683,7 +683,7 @@ goog.module.ModuleManager.prototype.load = function(
   } else if (this.isModuleLoading(moduleId)) {
     this.logger_.info(moduleId + ' module already loading');
     moduleInfo.registerCallback(d.callback, d);
-    moduleInfo.registerErrback(d.errback, d);
+    moduleInfo.registerErrback(function(err) { d.errback(Error(err)); });
     if (opt_userInitiated) {
       this.logger_.info('User initiated module already loading: ' + moduleId);
       this.addUserIntiatedLoadingModule_(moduleId);
@@ -693,7 +693,7 @@ goog.module.ModuleManager.prototype.load = function(
   } else {
     this.logger_.info('Registering callback for module: ' + moduleId);
     moduleInfo.registerCallback(d.callback, d);
-    moduleInfo.registerErrback(d.errback, d);
+    moduleInfo.registerErrback(function(err) { d.errback(Error(err)); });
     if (opt_userInitiated) {
       this.logger_.info('User initiated module load: ' + moduleId);
       this.addUserIntiatedLoadingModule_(moduleId);

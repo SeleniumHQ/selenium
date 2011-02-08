@@ -784,26 +784,25 @@ goog.events.getTotalListenerCount = function() {
  *     true.
  */
 goog.events.dispatchEvent = function(src, e) {
+  var type = e.type || e;
+  var map = goog.events.listenerTree_;
+  if (!(type in map)) {
+    return true;
+  }
+
   // If accepting a string or object, create a custom event object so that
   // preventDefault and stopPropagation work with the event.
   if (goog.isString(e)) {
     e = new goog.events.Event(e, src);
   } else if (!(e instanceof goog.events.Event)) {
     var oldEvent = e;
-    e = new goog.events.Event(e.type, src);
+    e = new goog.events.Event(type, src);
     goog.object.extend(e, oldEvent);
   } else {
     e.target = e.target || src;
   }
 
   var rv = 1, ancestors;
-
-  var type = e.type;
-  var map = goog.events.listenerTree_;
-
-  if (!(type in map)) {
-    return true;
-  }
 
   map = map[type];
   var hasCapture = true in map;

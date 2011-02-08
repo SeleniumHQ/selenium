@@ -40,6 +40,8 @@ goog.require('goog.ui.AutoComplete');
  * @extends {goog.Disposable}
  */
 goog.ui.AutoComplete.RemoteArrayMatcher = function(url, opt_noSimilar) {
+  goog.Disposable.call(this);
+
   /**
    * The base URL for the ajax call.  The token and max_matches are added as
    * query params.

@@ -21,6 +21,7 @@
  */
 
 goog.provide('goog.fx.AbstractDragDrop');
+goog.provide('goog.fx.AbstractDragDrop.EventType');
 goog.provide('goog.fx.DragDropEvent');
 goog.provide('goog.fx.DragDropItem');
 

@@ -18,6 +18,9 @@
  * Their existence also makes it possible to mock the FileSystem API for testing
  * in browsers that don't support it natively.
  *
+ * When adding public functions to anything under this namespace, be sure to add
+ * its mock counterpart to goog.testing.fs.
+ *
  */
 
 goog.provide('goog.fs');
@@ -100,7 +103,7 @@ goog.fs.getPersistent = function(size) {
  * @return {string} The URL for the object.
  */
 goog.fs.createObjectUrl = function(blob) {
-  return goog.global.createObjectUrl(blob);
+  return goog.fs.getUrlObject_().createObjectURL(blob);
 };
 
 
@@ -110,7 +113,34 @@ goog.fs.createObjectUrl = function(blob) {
  * @param {string} url The URL to revoke.
  */
 goog.fs.revokeObjectUrl = function(url) {
-  goog.global.revokeObjectUrl(url);
+  goog.fs.getUrlObject_().revokeObjectURL(url);
+};
+
+
+/**
+ * Get the object that has the createObjectURL and revokeObjectURL functions for
+ * this browser.
+ *
+ * @return {!{createObjectURL: (function(Blob): string),
+ *            revokeObjectURL: function(string)}} The object for this browser.
+ * @private
+ */
+goog.fs.getUrlObject_ = function() {
+  // This is what the spec says to do
+  // http://dev.w3.org/2006/webapi/FileAPI/#dfn-createObjectURL
+  if (goog.isDef(goog.global.URL) &&
+      goog.isDef(goog.global.URL.createObjectURL)) {
+    return goog.global.URL;
+  // This is what Chrome does (as of 10.0.648.6 dev)
+  } else if (goog.isDef(goog.global.webkitURL) &&
+             goog.isDef(goog.global.webkitURL.createObjectURL)) {
+    return goog.global.webkitURL;
+  // This is what the spec used to say to do
+  } else if (goog.isDef(goog.global.createObjectURL)) {
+    return goog.global;
+  } else {
+    throw Error('This browser doesn\'t seem to support blob URLs');
+  }
 };
 
 

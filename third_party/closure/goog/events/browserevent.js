@@ -239,6 +239,7 @@ goog.events.BrowserEvent.prototype.event_ = null;
  */
 goog.events.BrowserEvent.prototype.init = function(e, opt_currentTarget) {
   var type = this.type = e.type;
+  goog.events.Event.call(this, type);
 
   // TODO(nicksantos): Change this.target to type EventTarget.
   this.target = /** @type {Node} */ (e.target) || e.srcElement;

@@ -35,6 +35,8 @@ goog.require('goog.dom.TagName');
  * @constructor
  */
 goog.dom.NodeOffset = function(node, baseNode) {
+  goog.Disposable.call(this);
+
   /**
    * A stack of childNode offsets.
    * @type {Array.<number>}

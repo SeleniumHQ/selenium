@@ -1,4 +1,4 @@
-// Copyright 2009 The Closure Library Authors. All Rights Reserved.
+// Copyright 2011 The Closure Library Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -30,7 +30,6 @@ goog.provide('goog.i18n.DateTimeSymbolsExt');
 goog.provide('goog.i18n.DateTimeSymbols_aa');
 goog.provide('goog.i18n.DateTimeSymbols_aa_DJ');
 goog.provide('goog.i18n.DateTimeSymbols_aa_ER');
-goog.provide('goog.i18n.DateTimeSymbols_aa_ER_SAAHO');
 goog.provide('goog.i18n.DateTimeSymbols_aa_ET');
 goog.provide('goog.i18n.DateTimeSymbols_af');
 goog.provide('goog.i18n.DateTimeSymbols_af_NA');
@@ -59,8 +58,11 @@ goog.provide('goog.i18n.DateTimeSymbols_as');
 goog.provide('goog.i18n.DateTimeSymbols_as_IN');
 goog.provide('goog.i18n.DateTimeSymbols_az');
 goog.provide('goog.i18n.DateTimeSymbols_az_AZ');
+goog.provide('goog.i18n.DateTimeSymbols_az_Arab');
+goog.provide('goog.i18n.DateTimeSymbols_az_Arab_IR');
 goog.provide('goog.i18n.DateTimeSymbols_az_Cyrl');
 goog.provide('goog.i18n.DateTimeSymbols_az_Cyrl_AZ');
+goog.provide('goog.i18n.DateTimeSymbols_az_IR');
 goog.provide('goog.i18n.DateTimeSymbols_az_Latn');
 goog.provide('goog.i18n.DateTimeSymbols_az_Latn_AZ');
 goog.provide('goog.i18n.DateTimeSymbols_be');
@@ -78,7 +80,6 @@ goog.provide('goog.i18n.DateTimeSymbols_byn_ER');
 goog.provide('goog.i18n.DateTimeSymbols_ca_ES');
 goog.provide('goog.i18n.DateTimeSymbols_cch');
 goog.provide('goog.i18n.DateTimeSymbols_cch_NG');
-goog.provide('goog.i18n.DateTimeSymbols_cop');
 goog.provide('goog.i18n.DateTimeSymbols_cs_CZ');
 goog.provide('goog.i18n.DateTimeSymbols_cy');
 goog.provide('goog.i18n.DateTimeSymbols_cy_GB');
@@ -228,10 +229,10 @@ goog.provide('goog.i18n.DateTimeSymbols_ku');
 goog.provide('goog.i18n.DateTimeSymbols_ku_Arab');
 goog.provide('goog.i18n.DateTimeSymbols_ku_Arab_IQ');
 goog.provide('goog.i18n.DateTimeSymbols_ku_Arab_IR');
-goog.provide('goog.i18n.DateTimeSymbols_ku_Arab_SY');
 goog.provide('goog.i18n.DateTimeSymbols_ku_IQ');
 goog.provide('goog.i18n.DateTimeSymbols_ku_IR');
 goog.provide('goog.i18n.DateTimeSymbols_ku_Latn');
+goog.provide('goog.i18n.DateTimeSymbols_ku_Latn_SY');
 goog.provide('goog.i18n.DateTimeSymbols_ku_Latn_TR');
 goog.provide('goog.i18n.DateTimeSymbols_ku_SY');
 goog.provide('goog.i18n.DateTimeSymbols_ku_TR');
@@ -419,7 +420,6 @@ goog.provide('goog.i18n.DateTimeSymbols_zu_ZA');
 
 goog.require('goog.i18n.DateTimeSymbols');
 
-
 /**
  * Date/time formatting symbols for locale aa.
  */
@@ -452,7 +452,6 @@ goog.i18n.DateTimeSymbols_aa = {
   AMPMS: ['saaku', 'carra'],
   DATEFORMATS: ['EEEE, MMMM dd, y', 'dd MMMM y', 'dd-MMM-y', 'dd/MM/yy'],
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -491,7 +490,6 @@ goog.i18n.DateTimeSymbols_aa_DJ = {
   AMPMS: ['saaku', 'carra'],
   DATEFORMATS: ['EEEE, MMMM dd, y', 'dd MMMM y', 'dd-MMM-y', 'dd/MM/yy'],
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 5,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 1
@@ -502,45 +500,6 @@ goog.i18n.DateTimeSymbols_aa_DJ = {
  * Date/time formatting symbols for locale aa_ER.
  */
 goog.i18n.DateTimeSymbols_aa_ER = goog.i18n.DateTimeSymbols_aa;
-
-
-/**
- * Date/time formatting symbols for locale aa_ER_SAAHO.
- */
-goog.i18n.DateTimeSymbols_aa_ER_SAAHO = {
-  ERAS: ['Yaasuusuk Duma', 'Yaasuusuk Wadir'],
-  ERANAMES: ['Yaasuusuk Duma', 'Yaasuusuk Wadir'],
-  NARROWMONTHS: ['Q', 'N', 'C', 'A', 'C', 'Q', 'Q', 'L', 'W', 'D', 'X', 'K'],
-  STANDALONENARROWMONTHS: ['Q', 'N', 'C', 'A', 'C', 'Q', 'Q', 'L', 'W', 'D',
-      'X', 'K'],
-  MONTHS: ['Qunxa Garablu', 'Kudo', 'Ciggilta Kudo', 'Agda Baxis', 'Caxah Alsa',
-      'Qasa Dirri', 'Qado Dirri', 'Liiqen', 'Waysu', 'Diteli', 'Ximoli',
-      'Kaxxa Garablu'],
-  STANDALONEMONTHS: ['Qunxa Garablu', 'Kudo', 'Ciggilta Kudo', 'Agda Baxis',
-      'Caxah Alsa', 'Qasa Dirri', 'Qado Dirri', 'Liiqen', 'Waysu', 'Diteli',
-      'Ximoli', 'Kaxxa Garablu'],
-  SHORTMONTHS: ['Qun', 'Nah', 'Cig', 'Agd', 'Cax', 'Qas', 'Qad', 'Leq', 'Way',
-      'Dit', 'Xim', 'Kax'],
-  STANDALONESHORTMONTHS: ['Qun', 'Nah', 'Cig', 'Agd', 'Cax', 'Qas', 'Qad',
-      'Leq', 'Way', 'Dit', 'Xim', 'Kax'],
-  WEEKDAYS: ['Naba Sambat', 'Sani', 'Salus', 'Rabuq', 'Camus', 'Jumqata',
-      'Qunxa Sambat'],
-  STANDALONEWEEKDAYS: ['Naba Sambat', 'Sani', 'Salus', 'Rabuq', 'Camus',
-      'Jumqata', 'Qunxa Sambat'],
-  SHORTWEEKDAYS: ['Nab', 'San', 'Sal', 'Rab', 'Cam', 'Jum', 'Qun'],
-  STANDALONESHORTWEEKDAYS: ['Nab', 'San', 'Sal', 'Rab', 'Cam', 'Jum', 'Qun'],
-  NARROWWEEKDAYS: ['A', 'E', 'T', 'A', 'K', 'G', 'S'],
-  STANDALONENARROWWEEKDAYS: ['A', 'E', 'T', 'A', 'K', 'G', 'S'],
-  SHORTQUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
-  QUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
-  AMPMS: ['saaku', 'carra'],
-  DATEFORMATS: ['EEEE, MMMM dd, y', 'dd MMMM y', 'dd-MMM-y', 'dd/MM/yy'],
-  TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
-  FIRSTDAYOFWEEK: 5,
-  WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 1
-};
 
 
 /**
@@ -555,9 +514,9 @@ goog.i18n.DateTimeSymbols_aa_ET = goog.i18n.DateTimeSymbols_aa;
 goog.i18n.DateTimeSymbols_af = {
   ERAS: ['v.C.', 'n.C.'],
   ERANAMES: ['voor Christus', 'na Christus'],
-  NARROWMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
-  STANDALONENARROWMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10',
-      '11', '12'],
+  NARROWMONTHS: ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D'],
+  STANDALONENARROWMONTHS: ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O',
+      'N', 'D'],
   MONTHS: ['Januarie', 'Februarie', 'Maart', 'April', 'Mei', 'Junie', 'Julie',
       'Augustus', 'September', 'Oktober', 'November', 'Desember'],
   STANDALONEMONTHS: ['Januarie', 'Februarie', 'Maart', 'April', 'Mei', 'Junie',
@@ -572,14 +531,13 @@ goog.i18n.DateTimeSymbols_af = {
       'Vrydag', 'Saterdag'],
   SHORTWEEKDAYS: ['So', 'Ma', 'Di', 'Wo', 'Do', 'Vr', 'Sa'],
   STANDALONESHORTWEEKDAYS: ['So', 'Ma', 'Di', 'Wo', 'Do', 'Vr', 'Sa'],
-  NARROWWEEKDAYS: ['1', '2', '3', '4', '5', '6', '7'],
-  STANDALONENARROWWEEKDAYS: ['1', '2', '3', '4', '5', '6', '7'],
+  NARROWWEEKDAYS: ['S', 'M', 'D', 'W', 'D', 'V', 'S'],
+  STANDALONENARROWWEEKDAYS: ['S', 'M', 'D', 'W', 'D', 'V', 'S'],
   SHORTQUARTERS: ['K1', 'K2', 'K3', 'K4'],
   QUARTERS: ['1ste kwartaal', '2de kwartaal', '3de kwartaal', '4de kwartaal'],
   AMPMS: ['vm.', 'nm.'],
-  DATEFORMATS: ['EEEE dd MMMM y', 'dd MMMM y', 'dd MMM y', 'yyyy/MM/dd'],
+  DATEFORMATS: ['EEEE dd MMMM y', 'dd MMMM y', 'dd MMM y', 'yyyy-MM-dd'],
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'd MMMM', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -592,9 +550,9 @@ goog.i18n.DateTimeSymbols_af = {
 goog.i18n.DateTimeSymbols_af_NA = {
   ERAS: ['v.C.', 'n.C.'],
   ERANAMES: ['voor Christus', 'na Christus'],
-  NARROWMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
-  STANDALONENARROWMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10',
-      '11', '12'],
+  NARROWMONTHS: ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D'],
+  STANDALONENARROWMONTHS: ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O',
+      'N', 'D'],
   MONTHS: ['Januarie', 'Februarie', 'Maart', 'April', 'Mei', 'Junie', 'Julie',
       'Augustus', 'September', 'Oktober', 'November', 'Desember'],
   STANDALONEMONTHS: ['Januarie', 'Februarie', 'Maart', 'April', 'Mei', 'Junie',
@@ -609,14 +567,13 @@ goog.i18n.DateTimeSymbols_af_NA = {
       'Vrydag', 'Saterdag'],
   SHORTWEEKDAYS: ['So', 'Ma', 'Di', 'Wo', 'Do', 'Vr', 'Sa'],
   STANDALONESHORTWEEKDAYS: ['So', 'Ma', 'Di', 'Wo', 'Do', 'Vr', 'Sa'],
-  NARROWWEEKDAYS: ['1', '2', '3', '4', '5', '6', '7'],
-  STANDALONENARROWWEEKDAYS: ['1', '2', '3', '4', '5', '6', '7'],
+  NARROWWEEKDAYS: ['S', 'M', 'D', 'W', 'D', 'V', 'S'],
+  STANDALONENARROWWEEKDAYS: ['S', 'M', 'D', 'W', 'D', 'V', 'S'],
   SHORTQUARTERS: ['K1', 'K2', 'K3', 'K4'],
   QUARTERS: ['1ste kwartaal', '2de kwartaal', '3de kwartaal', '4de kwartaal'],
   AMPMS: ['vm.', 'nm.'],
   DATEFORMATS: ['EEEE d MMMM y', 'd MMMM y', 'd MMM y', 'yyyy-MM-dd'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'd MMMM', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -665,7 +622,6 @@ goog.i18n.DateTimeSymbols_ak = {
   AMPMS: ['AN', 'EW'],
   DATEFORMATS: ['EEEE, y MMMM dd', 'y MMMM d', 'y MMM d', 'yy/MM/dd'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -683,7 +639,7 @@ goog.i18n.DateTimeSymbols_ak_GH = goog.i18n.DateTimeSymbols_ak;
  */
 goog.i18n.DateTimeSymbols_am_ET = {
   ERAS: ['ዓ/ዓ', 'ዓ/ም'],
-  ERANAMES: ['ዓ/ዓ', 'ዓ/ም'],
+  ERANAMES: ['ዓመተ ዓለም', 'ዓመተ ምሕረት'],
   NARROWMONTHS: ['ጃ', 'ፌ', 'ማ', 'ኤ', 'ሜ', 'ጁ', 'ጁ', 'ኦ', 'ሴ',
       'ኦ', 'ኖ', 'ዲ'],
   STANDALONENARROWMONTHS: ['ጃ', 'ፌ', 'ማ', 'ኤ', 'ሜ', 'ጁ', 'ጁ',
@@ -714,10 +670,8 @@ goog.i18n.DateTimeSymbols_am_ET = {
   SHORTQUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
   QUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
   AMPMS: ['ጡዋት', 'ከሳዓት'],
-  DATEFORMATS: ['EEEE፣ dd MMMM ቀን y G', 'dd MMMM y', 'MMM d y',
-      'dd/MM/yy'],
-  TIMEFORMATS: ['hh:mm:ss a zzzz', 'hh:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
+  DATEFORMATS: ['EEEE, d MMMM y', 'd MMMM y', 'd MMM y', 'dd/MM/yyyy'],
+  TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 5,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 1
@@ -764,7 +718,6 @@ goog.i18n.DateTimeSymbols_ar_AE = {
   DATEFORMATS: ['EEEE، d MMMM، y', 'd MMMM، y', 'dd‏/MM‏/yyyy',
       'd‏/M‏/yyyy'],
   TIMEFORMATS: ['zzzz h:mm:ss a', 'z h:mm:ss a', 'h:mm:ss a', 'h:mm a'],
-  AVAILABLEFORMATS: {'Md': 'd/‏M', 'MMMMd': 'd MMMM', 'MMMd': 'd MMM'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [4, 5],
   FIRSTWEEKCUTOFFDAY: 3
@@ -811,7 +764,6 @@ goog.i18n.DateTimeSymbols_ar_BH = {
   DATEFORMATS: ['EEEE، d MMMM، y', 'd MMMM، y', 'dd‏/MM‏/yyyy',
       'd‏/M‏/yyyy'],
   TIMEFORMATS: ['zzzz h:mm:ss a', 'z h:mm:ss a', 'h:mm:ss a', 'h:mm a'],
-  AVAILABLEFORMATS: {'Md': 'd/‏M', 'MMMMd': 'd MMMM', 'MMMd': 'd MMM'},
   FIRSTDAYOFWEEK: 5,
   WEEKENDRANGE: [4, 5],
   FIRSTWEEKCUTOFFDAY: 1
@@ -855,10 +807,8 @@ goog.i18n.DateTimeSymbols_ar_DZ = {
   QUARTERS: ['الربع الأول', 'الربع الثاني',
       'الربع الثالث', 'الربع الرابع'],
   AMPMS: ['ص', 'م'],
-  DATEFORMATS: ['EEEE، d MMMM، y', 'd MMMM، y', 'dd‏/MM‏/yyyy',
-      'd‏/M‏/yyyy'],
+  DATEFORMATS: ['EEEE، d MMMM، y', 'd MMMM، y', 'yyyy/MM/dd', 'yyyy/M/d'],
   TIMEFORMATS: ['zzzz h:mm:ss a', 'z h:mm:ss a', 'h:mm:ss a', 'h:mm a'],
-  AVAILABLEFORMATS: {'Md': 'd/‏M', 'MMMMd': 'd MMMM', 'MMMd': 'd MMM'},
   FIRSTDAYOFWEEK: 5,
   WEEKENDRANGE: [3, 4],
   FIRSTWEEKCUTOFFDAY: 1
@@ -905,7 +855,6 @@ goog.i18n.DateTimeSymbols_ar_EG = {
   DATEFORMATS: ['EEEE، d MMMM، y', 'd MMMM، y', 'dd‏/MM‏/yyyy',
       'd‏/M‏/yyyy'],
   TIMEFORMATS: ['zzzz h:mm:ss a', 'z h:mm:ss a', 'h:mm:ss a', 'h:mm a'],
-  AVAILABLEFORMATS: {'Md': 'd/‏M', 'MMMMd': 'd MMMM', 'MMMd': 'd MMM'},
   FIRSTDAYOFWEEK: 5,
   WEEKENDRANGE: [4, 5],
   FIRSTWEEKCUTOFFDAY: 1
@@ -952,7 +901,6 @@ goog.i18n.DateTimeSymbols_ar_IQ = {
   DATEFORMATS: ['EEEE، d MMMM، y', 'd MMMM، y', 'dd‏/MM‏/yyyy',
       'd‏/M‏/yyyy'],
   TIMEFORMATS: ['zzzz h:mm:ss a', 'z h:mm:ss a', 'h:mm:ss a', 'h:mm a'],
-  AVAILABLEFORMATS: {'Md': 'd/‏M', 'MMMMd': 'd MMMM', 'MMMd': 'd MMM'},
   FIRSTDAYOFWEEK: 5,
   WEEKENDRANGE: [4, 5],
   FIRSTWEEKCUTOFFDAY: 1
@@ -1003,7 +951,6 @@ goog.i18n.DateTimeSymbols_ar_JO = {
   DATEFORMATS: ['EEEE، d MMMM، y', 'd MMMM، y', 'dd‏/MM‏/yyyy',
       'd‏/M‏/yyyy'],
   TIMEFORMATS: ['zzzz h:mm:ss a', 'z h:mm:ss a', 'h:mm:ss a', 'h:mm a'],
-  AVAILABLEFORMATS: {'Md': 'd/‏M', 'MMMMd': 'd MMMM', 'MMMd': 'd MMM'},
   FIRSTDAYOFWEEK: 5,
   WEEKENDRANGE: [4, 5],
   FIRSTWEEKCUTOFFDAY: 1
@@ -1050,7 +997,6 @@ goog.i18n.DateTimeSymbols_ar_KW = {
   DATEFORMATS: ['EEEE، d MMMM، y', 'd MMMM، y', 'dd‏/MM‏/yyyy',
       'd‏/M‏/yyyy'],
   TIMEFORMATS: ['zzzz h:mm:ss a', 'z h:mm:ss a', 'h:mm:ss a', 'h:mm a'],
-  AVAILABLEFORMATS: {'Md': 'd/‏M', 'MMMMd': 'd MMMM', 'MMMd': 'd MMM'},
   FIRSTDAYOFWEEK: 5,
   WEEKENDRANGE: [3, 4],
   FIRSTWEEKCUTOFFDAY: 1
@@ -1068,19 +1014,19 @@ goog.i18n.DateTimeSymbols_ar_LB = {
   STANDALONENARROWMONTHS: ['ي', 'ف', 'م', 'أ', 'و', 'ن', 'ل', 'غ', 'س',
       'ك', 'ب', 'د'],
   MONTHS: ['كانون الثاني', 'شباط', 'آذار', 'نيسان',
-      'نوار', 'حزيران', 'تموز', 'آب', 'أيلول',
+      'أيار', 'حزيران', 'تموز', 'آب', 'أيلول',
       'تشرين الأول', 'تشرين الثاني',
       'كانون الأول'],
   STANDALONEMONTHS: ['كانون الثاني', 'شباط', 'آذار',
-      'نيسان', 'نوار', 'حزيران', 'تموز', 'آب',
+      'نيسان', 'أيار', 'حزيران', 'تموز', 'آب',
       'أيلول', 'تشرين الأول', 'تشرين الثاني',
       'كانون الأول'],
   SHORTMONTHS: ['كانون الثاني', 'شباط', 'آذار', 'نيسان',
-      'نوار', 'حزيران', 'تموز', 'آب', 'أيلول',
+      'أيار', 'حزيران', 'تموز', 'آب', 'أيلول',
       'تشرين الأول', 'تشرين الثاني',
       'كانون الأول'],
   STANDALONESHORTMONTHS: ['كانون الثاني', 'شباط', 'آذار',
-      'نيسان', 'نوار', 'حزيران', 'تموز', 'آب',
+      'نيسان', 'أيار', 'حزيران', 'تموز', 'آب',
       'أيلول', 'تشرين الأول', 'تشرين الثاني',
       'كانون الأول'],
   WEEKDAYS: ['الأحد', 'الإثنين', 'الثلاثاء',
@@ -1101,7 +1047,6 @@ goog.i18n.DateTimeSymbols_ar_LB = {
   DATEFORMATS: ['EEEE، d MMMM، y', 'd MMMM، y', 'dd‏/MM‏/yyyy',
       'd‏/M‏/yyyy'],
   TIMEFORMATS: ['zzzz h:mm:ss a', 'z h:mm:ss a', 'h:mm:ss a', 'h:mm a'],
-  AVAILABLEFORMATS: {'Md': 'd/‏M', 'MMMMd': 'd MMMM', 'MMMd': 'd MMM'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -1148,7 +1093,6 @@ goog.i18n.DateTimeSymbols_ar_LY = {
   DATEFORMATS: ['EEEE، d MMMM، y', 'd MMMM، y', 'dd‏/MM‏/yyyy',
       'd‏/M‏/yyyy'],
   TIMEFORMATS: ['zzzz h:mm:ss a', 'z h:mm:ss a', 'h:mm:ss a', 'h:mm a'],
-  AVAILABLEFORMATS: {'Md': 'd/‏M', 'MMMMd': 'd MMMM', 'MMMd': 'd MMM'},
   FIRSTDAYOFWEEK: 5,
   WEEKENDRANGE: [4, 5],
   FIRSTWEEKCUTOFFDAY: 1
@@ -1192,10 +1136,8 @@ goog.i18n.DateTimeSymbols_ar_MA = {
   QUARTERS: ['الربع الأول', 'الربع الثاني',
       'الربع الثالث', 'الربع الرابع'],
   AMPMS: ['ص', 'م'],
-  DATEFORMATS: ['EEEE، d MMMM، y', 'd MMMM، y', 'dd‏/MM‏/yyyy',
-      'd‏/M‏/yyyy'],
+  DATEFORMATS: ['EEEE، d MMMM، y', 'd MMMM، y', 'yyyy/MM/dd', 'yyyy/M/d'],
   TIMEFORMATS: ['zzzz h:mm:ss a', 'z h:mm:ss a', 'h:mm:ss a', 'h:mm a'],
-  AVAILABLEFORMATS: {'Md': 'd/‏M', 'MMMMd': 'd MMMM', 'MMMd': 'd MMM'},
   FIRSTDAYOFWEEK: 5,
   WEEKENDRANGE: [4, 5],
   FIRSTWEEKCUTOFFDAY: 1
@@ -1242,7 +1184,6 @@ goog.i18n.DateTimeSymbols_ar_OM = {
   DATEFORMATS: ['EEEE، d MMMM، y', 'd MMMM، y', 'dd‏/MM‏/yyyy',
       'd‏/M‏/yyyy'],
   TIMEFORMATS: ['zzzz h:mm:ss a', 'z h:mm:ss a', 'h:mm:ss a', 'h:mm a'],
-  AVAILABLEFORMATS: {'Md': 'd/‏M', 'MMMMd': 'd MMMM', 'MMMd': 'd MMM'},
   FIRSTDAYOFWEEK: 5,
   WEEKENDRANGE: [3, 4],
   FIRSTWEEKCUTOFFDAY: 1
@@ -1289,7 +1230,6 @@ goog.i18n.DateTimeSymbols_ar_QA = {
   DATEFORMATS: ['EEEE، d MMMM، y', 'd MMMM، y', 'dd‏/MM‏/yyyy',
       'd‏/M‏/yyyy'],
   TIMEFORMATS: ['zzzz h:mm:ss a', 'z h:mm:ss a', 'h:mm:ss a', 'h:mm a'],
-  AVAILABLEFORMATS: {'Md': 'd/‏M', 'MMMMd': 'd MMMM', 'MMMd': 'd MMM'},
   FIRSTDAYOFWEEK: 5,
   WEEKENDRANGE: [4, 5],
   FIRSTWEEKCUTOFFDAY: 1
@@ -1336,7 +1276,6 @@ goog.i18n.DateTimeSymbols_ar_SA = {
   DATEFORMATS: ['EEEE، d MMMM، y', 'd MMMM، y', 'dd‏/MM‏/yyyy',
       'd‏/M‏/yyyy'],
   TIMEFORMATS: ['zzzz h:mm:ss a', 'z h:mm:ss a', 'h:mm:ss a', 'h:mm a'],
-  AVAILABLEFORMATS: {'Md': 'd/‏M', 'MMMMd': 'd MMMM', 'MMMd': 'd MMM'},
   FIRSTDAYOFWEEK: 5,
   WEEKENDRANGE: [3, 4],
   FIRSTWEEKCUTOFFDAY: 1
@@ -1383,7 +1322,6 @@ goog.i18n.DateTimeSymbols_ar_SD = {
   DATEFORMATS: ['EEEE، d MMMM، y', 'd MMMM، y', 'dd‏/MM‏/yyyy',
       'd‏/M‏/yyyy'],
   TIMEFORMATS: ['zzzz h:mm:ss a', 'z h:mm:ss a', 'h:mm:ss a', 'h:mm a'],
-  AVAILABLEFORMATS: {'Md': 'd/‏M', 'MMMMd': 'd MMMM', 'MMMd': 'd MMM'},
   FIRSTDAYOFWEEK: 5,
   WEEKENDRANGE: [3, 4],
   FIRSTWEEKCUTOFFDAY: 1
@@ -1401,19 +1339,19 @@ goog.i18n.DateTimeSymbols_ar_SY = {
   STANDALONENARROWMONTHS: ['ي', 'ف', 'م', 'أ', 'و', 'ن', 'ل', 'غ', 'س',
       'ك', 'ب', 'د'],
   MONTHS: ['كانون الثاني', 'شباط', 'آذار', 'نيسان',
-      'نوار', 'حزيران', 'تموز', 'آب', 'أيلول',
+      'أيار', 'حزيران', 'تموز', 'آب', 'أيلول',
       'تشرين الأول', 'تشرين الثاني',
       'كانون الأول'],
   STANDALONEMONTHS: ['كانون الثاني', 'شباط', 'آذار',
-      'نيسان', 'نوار', 'حزيران', 'تموز', 'آب',
+      'نيسان', 'أيار', 'حزيران', 'تموز', 'آب',
       'أيلول', 'تشرين الأول', 'تشرين الثاني',
       'كانون الأول'],
   SHORTMONTHS: ['كانون الثاني', 'شباط', 'آذار', 'نيسان',
-      'نوار', 'حزيران', 'تموز', 'آب', 'أيلول',
+      'أيار', 'حزيران', 'تموز', 'آب', 'أيلول',
       'تشرين الأول', 'تشرين الثاني',
       'كانون الأول'],
   STANDALONESHORTMONTHS: ['كانون الثاني', 'شباط', 'آذار',
-      'نيسان', 'نوار', 'حزيران', 'تموز', 'آب',
+      'نيسان', 'أيار', 'حزيران', 'تموز', 'آب',
       'أيلول', 'تشرين الأول', 'تشرين الثاني',
       'كانون الأول'],
   WEEKDAYS: ['الأحد', 'الإثنين', 'الثلاثاء',
@@ -1434,7 +1372,6 @@ goog.i18n.DateTimeSymbols_ar_SY = {
   DATEFORMATS: ['EEEE، d MMMM، y', 'd MMMM، y', 'dd‏/MM‏/yyyy',
       'd‏/M‏/yyyy'],
   TIMEFORMATS: ['zzzz h:mm:ss a', 'z h:mm:ss a', 'h:mm:ss a', 'h:mm a'],
-  AVAILABLEFORMATS: {'Md': 'd/‏M', 'MMMMd': 'd MMMM', 'MMMd': 'd MMM'},
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [4, 5],
   FIRSTWEEKCUTOFFDAY: 2
@@ -1478,10 +1415,8 @@ goog.i18n.DateTimeSymbols_ar_TN = {
   QUARTERS: ['الربع الأول', 'الربع الثاني',
       'الربع الثالث', 'الربع الرابع'],
   AMPMS: ['ص', 'م'],
-  DATEFORMATS: ['EEEE، d MMMM، y', 'd MMMM، y', 'dd‏/MM‏/yyyy',
-      'd‏/M‏/yyyy'],
+  DATEFORMATS: ['EEEE، d MMMM، y', 'd MMMM، y', 'yyyy/MM/dd', 'yyyy/M/d'],
   TIMEFORMATS: ['zzzz h:mm:ss a', 'z h:mm:ss a', 'h:mm:ss a', 'h:mm a'],
-  AVAILABLEFORMATS: {'Md': 'd/‏M', 'MMMMd': 'd MMMM', 'MMMd': 'd MMM'},
   FIRSTDAYOFWEEK: 5,
   WEEKENDRANGE: [4, 5],
   FIRSTWEEKCUTOFFDAY: 1
@@ -1528,7 +1463,6 @@ goog.i18n.DateTimeSymbols_ar_YE = {
   DATEFORMATS: ['EEEE، d MMMM، y', 'd MMMM، y', 'dd‏/MM‏/yyyy',
       'd‏/M‏/yyyy'],
   TIMEFORMATS: ['zzzz h:mm:ss a', 'z h:mm:ss a', 'h:mm:ss a', 'h:mm a'],
-  AVAILABLEFORMATS: {'Md': 'd/‏M', 'MMMMd': 'd MMMM', 'MMMd': 'd MMM'},
   FIRSTDAYOFWEEK: 5,
   WEEKENDRANGE: [3, 4],
   FIRSTWEEKCUTOFFDAY: 1
@@ -1544,17 +1478,16 @@ goog.i18n.DateTimeSymbols_as = {
   NARROWMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
   STANDALONENARROWMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10',
       '11', '12'],
-  MONTHS: ['জানুয়াৰী', 'ফেব্ৰুয়াৰী',
+  MONTHS: ['জানুৱাৰী', 'ফেব্ৰুৱাৰী',
       'মাৰ্চ', 'এপ্ৰিল', 'মে', 'জুন',
-      'জুলাই', 'আগষ্ট', 'সেপ্টেম্বৰ',
-      'অক্টোবৰ', 'নভেম্বৰ',
-      'ডিসেম্বৰ'],
-  STANDALONEMONTHS: ['জানুয়াৰী',
-      'ফেব্ৰুয়াৰী', 'মাৰ্চ',
-      'এপ্ৰিল', 'মে', 'জুন', 'জুলাই',
-      'আগষ্ট', 'সেপ্টেম্বৰ',
-      'অক্টোবৰ', 'নভেম্বৰ',
-      'ডিসেম্বৰ'],
+      'জুলাই', 'আগষ্ট', 'ছেপ্তেম্বৰ',
+      'অক্টোবৰ', 'নৱেম্বৰ',
+      'ডিচেম্বৰ'],
+  STANDALONEMONTHS: ['জানুৱাৰী',
+      'ফেব্ৰুৱাৰী', 'মাৰ্চ', 'এপ্ৰিল',
+      'মে', 'জুন', 'জুলাই', 'আগষ্ট',
+      'ছেপ্তেম্বৰ', 'অক্টোবৰ',
+      'নৱেম্বৰ', 'ডিচেম্বৰ'],
   SHORTMONTHS: ['জানু', 'ফেব্ৰু', 'মাৰ্চ',
       'এপ্ৰিল', 'মে', 'জুন', 'জুলাই', 'আগ',
       'সেপ্ট', 'অক্টো', 'নভে', 'ডিসে'],
@@ -1576,12 +1509,15 @@ goog.i18n.DateTimeSymbols_as = {
       'বুধ', 'বৃহষ্পতি', 'শুক্ৰ', 'শনি'],
   NARROWWEEKDAYS: ['1', '2', '3', '4', '5', '6', '7'],
   STANDALONENARROWWEEKDAYS: ['1', '2', '3', '4', '5', '6', '7'],
-  SHORTQUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
-  QUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
-  AMPMS: ['পূৰ্বা', 'অপ'],
+  SHORTQUARTERS: ['প্ৰথম প্ৰহৰ',
+      'দ্বিতীয় প্ৰহৰ',
+      'তৃতীয় প্ৰহৰ', 'চতুৰ্থ প্ৰহৰ'],
+  QUARTERS: ['প্ৰথম প্ৰহৰ',
+      'দ্বিতীয় প্ৰহৰ',
+      'তৃতীয় প্ৰহৰ', 'চতুৰ্থ প্ৰহৰ'],
+  AMPMS: ['পূৰ্বাহ্ণ', 'অপৰাহ্ণ'],
   DATEFORMATS: ['EEEE, d MMMM, y', 'd MMMM, y', 'dd-MM-yyyy', 'd-M-yyyy'],
   TIMEFORMATS: ['h.mm.ss a zzzz', 'h.mm.ss a z', 'h.mm.ss a', 'h.mm. a'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'd MMMM', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [6, 6],
   FIRSTWEEKCUTOFFDAY: 2
@@ -1624,7 +1560,6 @@ goog.i18n.DateTimeSymbols_az = {
   AMPMS: ['AM', 'PM'],
   DATEFORMATS: ['EEEE, d, MMMM, y', 'd MMMM , y', 'd MMM, y', 'yy/MM/dd'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 2
@@ -1635,6 +1570,18 @@ goog.i18n.DateTimeSymbols_az = {
  * Date/time formatting symbols for locale az_AZ.
  */
 goog.i18n.DateTimeSymbols_az_AZ = goog.i18n.DateTimeSymbols_az;
+
+
+/**
+ * Date/time formatting symbols for locale az_Arab.
+ */
+goog.i18n.DateTimeSymbols_az_Arab = goog.i18n.DateTimeSymbols_az;
+
+
+/**
+ * Date/time formatting symbols for locale az_Arab_IR.
+ */
+goog.i18n.DateTimeSymbols_az_Arab_IR = goog.i18n.DateTimeSymbols_az;
 
 
 /**
@@ -1671,7 +1618,6 @@ goog.i18n.DateTimeSymbols_az_Cyrl = {
   AMPMS: ['AM', 'PM'],
   DATEFORMATS: ['EEEE, d, MMMM, y', 'd MMMM , y', 'd MMM, y', 'yy/MM/dd'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 2
@@ -1682,6 +1628,12 @@ goog.i18n.DateTimeSymbols_az_Cyrl = {
  * Date/time formatting symbols for locale az_Cyrl_AZ.
  */
 goog.i18n.DateTimeSymbols_az_Cyrl_AZ = goog.i18n.DateTimeSymbols_az_Cyrl;
+
+
+/**
+ * Date/time formatting symbols for locale az_IR.
+ */
+goog.i18n.DateTimeSymbols_az_IR = goog.i18n.DateTimeSymbols_az;
 
 
 /**
@@ -1700,7 +1652,7 @@ goog.i18n.DateTimeSymbols_az_Latn_AZ = goog.i18n.DateTimeSymbols_az;
  * Date/time formatting symbols for locale be.
  */
 goog.i18n.DateTimeSymbols_be = {
-  ERAS: ['да н.е.', 'н.е.'],
+  ERAS: ['да н.э.', 'н.э.'],
   ERANAMES: ['да н.э.', 'н.э.'],
   NARROWMONTHS: ['с', 'л', 'с', 'к', 'т', 'ч', 'л', 'ж', 'в', 'к',
       'л', 'с'],
@@ -1735,7 +1687,6 @@ goog.i18n.DateTimeSymbols_be = {
   AMPMS: ['да палудня', 'пасля палудня'],
   DATEFORMATS: ['EEEE, d MMMM y', 'd MMMM y', 'd.M.yyyy', 'd.M.yy'],
   TIMEFORMATS: ['HH.mm.ss zzzz', 'HH.mm.ss z', 'HH.mm.ss', 'HH.mm'],
-  AVAILABLEFORMATS: {'Md': 'd.M', 'MMMMd': 'MMMM d', 'MMMd': 'd MMM'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -1786,7 +1737,6 @@ goog.i18n.DateTimeSymbols_bg_BG = {
   AMPMS: ['пр. об.', 'сл. об.'],
   DATEFORMATS: ['dd MMMM y, EEEE', 'dd MMMM y', 'dd.MM.yyyy', 'dd.MM.yy'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'd MMMM', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -1851,7 +1801,6 @@ goog.i18n.DateTimeSymbols_bn_BD = {
   AMPMS: ['am', 'pm'],
   DATEFORMATS: ['EEEE, d MMMM, y', 'd MMMM, y', 'd MMM, y', 'd/M/yy'],
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
-  AVAILABLEFORMATS: {'Md': 'd/M', 'MMMMd': 'd MMMM', 'MMMd': 'd MMM'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -1906,17 +1855,14 @@ goog.i18n.DateTimeSymbols_bn_IN = {
   NARROWWEEKDAYS: ['র', 'সো', 'ম', 'বু', 'বৃ', 'শু', 'শ'],
   STANDALONENARROWWEEKDAYS: ['র', 'সো', 'ম', 'বু', 'বৃ',
       'শু', 'শ'],
-  SHORTQUARTERS: ['চতুর্থাংশ ১',
-      'চতুর্থাংশ ২', 'চতুর্থাংশ ৩',
-      'চতুর্থাংশ ৪'],
-  QUARTERS: ['প্রথম চতুর্থাংশ',
-      'দ্বিতীয় চতুর্থাংশ',
+  SHORTQUARTERS: ['ত্রৈমাসিক', 'ষাণ্মাসিক',
+      'চতুর্থাংশ ৩', 'বার্ষিক'],
+  QUARTERS: ['ত্রৈমাসিক', 'ষাণ্মাসিক',
       'তৃতীয় চতুর্থাংশ',
-      'চতুর্থ চতুর্থাংশ'],
+      'বার্ষিক'],
   AMPMS: ['am', 'pm'],
   DATEFORMATS: ['EEEE, d MMMM, y', 'd MMMM, y', 'd MMM, y', 'd/M/yy'],
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
-  AVAILABLEFORMATS: {'Md': 'd/M', 'MMMMd': 'd MMMM', 'MMMd': 'd MMM'},
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [6, 6],
   FIRSTWEEKCUTOFFDAY: 2
@@ -1989,7 +1935,6 @@ goog.i18n.DateTimeSymbols_bo = {
       'སྦྱི་ལོ་y MMMMའི་ཙེས་dད',
       'y ལོ་འི་MMMཙེས་d', 'yyyy-MM-dd'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 2
@@ -2014,32 +1959,31 @@ goog.i18n.DateTimeSymbols_bo_IN = goog.i18n.DateTimeSymbols_bo;
 goog.i18n.DateTimeSymbols_bs = {
   ERAS: ['BC', 'AD'],
   ERANAMES: ['BC', 'AD'],
-  NARROWMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
-  STANDALONENARROWMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10',
-      '11', '12'],
-  MONTHS: ['Januar', 'Februar', 'Mart', 'April', 'Maj', 'Juni', 'Juli',
-      'Avgust', 'Septembar', 'Oktobar', 'Novembar', 'Decembar'],
-  STANDALONEMONTHS: ['Januar', 'Februar', 'Mart', 'April', 'Maj', 'Juni',
-      'Juli', 'Avgust', 'Septembar', 'Oktobar', 'Novembar', 'Decembar'],
-  SHORTMONTHS: ['Jan', 'Feb', 'Mar', 'Apr', 'Maj', 'Jun', 'Jul', 'Avg', 'Sep',
-      'Okt', 'Nov', 'Dec'],
-  STANDALONESHORTMONTHS: ['Jan', 'Feb', 'Mar', 'Apr', 'Maj', 'Jun', 'Jul',
-      'Avg', 'Sep', 'Okt', 'Nov', 'Dec'],
-  WEEKDAYS: ['Nedjelja', 'Ponedjeljak', 'Utorak', 'Srijeda', 'Četvrtak',
-      'Petak', 'Subota'],
-  STANDALONEWEEKDAYS: ['Nedjelja', 'Ponedjeljak', 'Utorak', 'Srijeda',
-      'Četvrtak', 'Petak', 'Subota'],
-  SHORTWEEKDAYS: ['Ned', 'Pon', 'Uto', 'Sri', 'Čet', 'Pet', 'Sub'],
-  STANDALONESHORTWEEKDAYS: ['Ned', 'Pon', 'Uto', 'Sri', 'Čet', 'Pet', 'Sub'],
+  NARROWMONTHS: ['j', 'f', 'm', 'a', 'm', 'j', 'j', 'a', 's', 'o', 'n', 'd'],
+  STANDALONENARROWMONTHS: ['j', 'f', 'm', 'a', 'm', 'j', 'j', 'a', 's', 'o',
+      'n', 'd'],
+  MONTHS: ['januar', 'februar', 'mart', 'april', 'maj', 'juni', 'juli',
+      'avgust', 'septembar', 'oktobar', 'novembar', 'decembar'],
+  STANDALONEMONTHS: ['januar', 'februar', 'mart', 'april', 'maj', 'juni',
+      'juli', 'avgust', 'septembar', 'oktobar', 'novembar', 'decembar'],
+  SHORTMONTHS: ['jan', 'feb', 'mar', 'apr', 'maj', 'jun', 'jul', 'avg', 'sep',
+      'okt', 'nov', 'dec'],
+  STANDALONESHORTMONTHS: ['jan', 'feb', 'mar', 'apr', 'maj', 'jun', 'jul',
+      'avg', 'sep', 'okt', 'nov', 'dec'],
+  WEEKDAYS: ['nedjelja', 'ponedjeljak', 'utorak', 'srijeda', 'četvrtak',
+      'petak', 'subota'],
+  STANDALONEWEEKDAYS: ['nedjelja', 'ponedjeljak', 'utorak', 'srijeda',
+      'četvrtak', 'petak', 'subota'],
+  SHORTWEEKDAYS: ['ned', 'pon', 'uto', 'sri', 'čet', 'pet', 'sub'],
+  STANDALONESHORTWEEKDAYS: ['ned', 'pon', 'uto', 'sri', 'čet', 'pet', 'sub'],
   NARROWWEEKDAYS: ['1', '2', '3', '4', '5', '6', '7'],
   STANDALONENARROWWEEKDAYS: ['1', '2', '3', '4', '5', '6', '7'],
   SHORTQUARTERS: ['K1', 'K2', 'K3', 'K4'],
   QUARTERS: ['Prvi kvartal', 'Drugi kvartal', 'Treći kvartal',
       'Četvrti kvartal'],
   AMPMS: ['AM', 'PM'],
-  DATEFORMATS: ['EEEE, y MMMM dd', 'y MMMM d', 'y MMM d', 'yy/MM/dd'],
+  DATEFORMATS: ['EEEE, dd. MMMM y.', 'dd. MMMM y.', 'dd.MM.y.', 'dd.MM.yy.'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -2094,7 +2038,6 @@ goog.i18n.DateTimeSymbols_byn = {
   DATEFORMATS: ['EEEE፡ dd MMMM ግርጋ y G', 'dd MMMM y', 'dd-MMM-y',
       'dd/MM/yy'],
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -2112,8 +2055,8 @@ goog.i18n.DateTimeSymbols_byn_ER = goog.i18n.DateTimeSymbols_byn;
  */
 goog.i18n.DateTimeSymbols_ca_ES = {
   ERAS: ['aC', 'dC'],
-  ERANAMES: ['aC', 'dC'],
-  NARROWMONTHS: ['g', 'f', 'm', 'a', 'm', 'j', 'j', 'a', 's', 'o', 'n', 'd'],
+  ERANAMES: ['abans de Crist', 'després de Crist'],
+  NARROWMONTHS: ['G', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D'],
   STANDALONENARROWMONTHS: ['g', 'f', 'm', 'a', 'm', 'j', 'j', 'a', 's', 'o',
       'n', 'd'],
   MONTHS: ['de gener', 'de febrer', 'de març', 'd’abril', 'de maig',
@@ -2121,17 +2064,18 @@ goog.i18n.DateTimeSymbols_ca_ES = {
       'de novembre', 'de desembre'],
   STANDALONEMONTHS: ['gener', 'febrer', 'març', 'abril', 'maig', 'juny',
       'juliol', 'agost', 'setembre', 'octubre', 'novembre', 'desembre'],
-  SHORTMONTHS: ['gen.', 'febr.', 'març', 'abr.', 'maig', 'juny', 'jul.', 'ag.',
-      'set.', 'oct.', 'nov.', 'des.'],
+  SHORTMONTHS: ['de gen.', 'de febr.', 'de març', 'd’abr.', 'de maig',
+      'de juny', 'de jul.', 'd’ag.', 'de set.', 'd’oct.', 'de nov.',
+      'de des.'],
   STANDALONESHORTMONTHS: ['gen.', 'febr.', 'març', 'abr.', 'maig', 'juny',
       'jul.', 'ag.', 'set.', 'oct.', 'nov.', 'des.'],
   WEEKDAYS: ['diumenge', 'dilluns', 'dimarts', 'dimecres', 'dijous',
       'divendres', 'dissabte'],
-  STANDALONEWEEKDAYS: ['diumenge', 'dilluns', 'dimarts', 'dimecres', 'dijous',
-      'divendres', 'dissabte'],
+  STANDALONEWEEKDAYS: ['Diumenge', 'Dilluns', 'Dimarts', 'Dimecres', 'Dijous',
+      'Divendres', 'dissabte'],
   SHORTWEEKDAYS: ['dg.', 'dl.', 'dt.', 'dc.', 'dj.', 'dv.', 'ds.'],
   STANDALONESHORTWEEKDAYS: ['dg', 'dl', 'dt', 'dc', 'dj', 'dv', 'ds'],
-  NARROWWEEKDAYS: ['g', 'l', 't', 'c', 'j', 'v', 's'],
+  NARROWWEEKDAYS: ['G', 'l', 'T', 'C', 'J', 'V', 'S'],
   STANDALONENARROWWEEKDAYS: ['g', 'l', 't', 'c', 'j', 'v', 's'],
   SHORTQUARTERS: ['1T', '2T', '3T', '4T'],
   QUARTERS: ['1r trimestre', '2n trimestre', '3r trimestre', '4t trimestre'],
@@ -2139,7 +2083,6 @@ goog.i18n.DateTimeSymbols_ca_ES = {
   DATEFORMATS: ['EEEE d MMMM \'de\' y', 'd MMMM \'de\' y', 'dd/MM/yyyy',
       'dd/MM/yy'],
   TIMEFORMATS: ['H:mm:ss zzzz', 'H:mm:ss z', 'H:mm:ss', 'H:mm'],
-  AVAILABLEFORMATS: {'Md': 'd/M', 'MMMMd': 'd MMMM', 'MMMd': 'd MMM'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -2179,7 +2122,6 @@ goog.i18n.DateTimeSymbols_cch = {
   AMPMS: ['AM', 'PM'],
   DATEFORMATS: ['EEEE, y MMMM dd', 'y MMMM d', 'y MMM d', 'yy/MM/dd'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -2190,39 +2132,6 @@ goog.i18n.DateTimeSymbols_cch = {
  * Date/time formatting symbols for locale cch_NG.
  */
 goog.i18n.DateTimeSymbols_cch_NG = goog.i18n.DateTimeSymbols_cch;
-
-
-/**
- * Date/time formatting symbols for locale cop.
- */
-goog.i18n.DateTimeSymbols_cop = {
-  ERAS: ['BCE', 'CE'],
-  ERANAMES: ['BCE', 'CE'],
-  NARROWMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
-  STANDALONENARROWMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10',
-      '11', '12'],
-  MONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
-  STANDALONEMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11',
-      '12'],
-  SHORTMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
-  STANDALONESHORTMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10',
-      '11', '12'],
-  WEEKDAYS: ['1', '2', '3', '4', '5', '6', '7'],
-  STANDALONEWEEKDAYS: ['1', '2', '3', '4', '5', '6', '7'],
-  SHORTWEEKDAYS: ['1', '2', '3', '4', '5', '6', '7'],
-  STANDALONESHORTWEEKDAYS: ['1', '2', '3', '4', '5', '6', '7'],
-  NARROWWEEKDAYS: ['1', '2', '3', '4', '5', '6', '7'],
-  STANDALONENARROWWEEKDAYS: ['1', '2', '3', '4', '5', '6', '7'],
-  SHORTQUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
-  QUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
-  AMPMS: ['AM', 'PM'],
-  DATEFORMATS: ['EEEE, y MMMM dd', 'y MMMM d', 'y MMM d', 'yy/MM/dd'],
-  TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
-  FIRSTDAYOFWEEK: 0,
-  WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
-};
 
 
 /**
@@ -2255,8 +2164,7 @@ goog.i18n.DateTimeSymbols_cs_CZ = {
       '4. čtvrtletí'],
   AMPMS: ['dop.', 'odp.'],
   DATEFORMATS: ['EEEE, d. MMMM y', 'd. MMMM y', 'd.M.yyyy', 'd.M.yy'],
-  TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'H:mm:ss', 'H:mm'],
-  AVAILABLEFORMATS: {'Md': 'd.M', 'MMMMd': 'd. MMMM', 'MMMd': 'MMM d'},
+  TIMEFORMATS: ['H:mm:ss zzzz', 'H:mm:ss z', 'H:mm:ss', 'H:mm'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -2291,9 +2199,8 @@ goog.i18n.DateTimeSymbols_cy = {
   SHORTQUARTERS: ['Ch1', 'Ch2', 'Ch3', 'Ch4'],
   QUARTERS: ['Chwarter 1af', '2il chwarter', '3ydd chwarter', '4ydd chwarter'],
   AMPMS: ['AM', 'PM'],
-  DATEFORMATS: ['EEEE, dd MMMM y', 'dd MMMM y', 'd MMM y', 'dd/MM/yyyy'],
-  TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
-  AVAILABLEFORMATS: {'Md': 'd/M', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
+  DATEFORMATS: ['EEEE, d MMMM y', 'd MMMM y', 'd MMM y', 'dd/MM/yyyy'],
+  TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -2335,8 +2242,7 @@ goog.i18n.DateTimeSymbols_da_DK = {
   QUARTERS: ['1. kvartal', '2. kvartal', '3. kvartal', '4. kvartal'],
   AMPMS: ['f.m.', 'e.m.'],
   DATEFORMATS: ['EEEE \'den\' d. MMMM y', 'd. MMM y', 'dd/MM/yyyy', 'dd/MM/yy'],
-  TIMEFORMATS: ['HH.mm.ss zzzz', 'HH:mm:ss z', 'HH.mm.ss', 'HH.mm'],
-  AVAILABLEFORMATS: {'Md': 'd/M', 'MMMMd': 'd. MMMM', 'MMMd': 'd. MMM'},
+  TIMEFORMATS: ['HH.mm.ss zzzz', 'HH.mm.ss z', 'HH.mm.ss', 'HH.mm'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -2358,14 +2264,14 @@ goog.i18n.DateTimeSymbols_de_BE = {
       'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'],
   SHORTMONTHS: ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep',
       'Okt', 'Nov', 'Dez'],
-  STANDALONESHORTMONTHS: ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul',
+  STANDALONESHORTMONTHS: ['Jan.', 'Feb.', 'Mär', 'Apr.', 'Mai', 'Juni', 'Jul',
       'Aug', 'Sep', 'Okt', 'Nov', 'Dez'],
   WEEKDAYS: ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag',
       'Freitag', 'Samstag'],
   STANDALONEWEEKDAYS: ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch',
       'Donnerstag', 'Freitag', 'Samstag'],
   SHORTWEEKDAYS: ['Son', 'Mon', 'Die', 'Mit', 'Don', 'Fre', 'Sam'],
-  STANDALONESHORTWEEKDAYS: ['Son', 'Mon', 'Die', 'Mit', 'Don', 'Fre', 'Sam'],
+  STANDALONESHORTWEEKDAYS: ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'],
   NARROWWEEKDAYS: ['S', 'M', 'D', 'M', 'D', 'F', 'S'],
   STANDALONENARROWWEEKDAYS: ['S', 'M', 'D', 'M', 'D', 'F', 'S'],
   SHORTQUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
@@ -2374,7 +2280,6 @@ goog.i18n.DateTimeSymbols_de_BE = {
   DATEFORMATS: ['EEEE d MMMM y', 'd MMMM y', 'dd.MM.yyyy', 'd/MM/yy'],
   TIMEFORMATS: ['HH \'h\' mm \'min\' ss \'s\' zzzz', 'HH:mm:ss z', 'HH:mm:ss',
       'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'd.M.', 'MMMMd': 'd MMMM', 'MMMd': 'd. MMM'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -2396,14 +2301,14 @@ goog.i18n.DateTimeSymbols_de_DE = {
       'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'],
   SHORTMONTHS: ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep',
       'Okt', 'Nov', 'Dez'],
-  STANDALONESHORTMONTHS: ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul',
+  STANDALONESHORTMONTHS: ['Jan.', 'Feb.', 'Mär', 'Apr.', 'Mai', 'Juni', 'Jul',
       'Aug', 'Sep', 'Okt', 'Nov', 'Dez'],
   WEEKDAYS: ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag',
       'Freitag', 'Samstag'],
   STANDALONEWEEKDAYS: ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch',
       'Donnerstag', 'Freitag', 'Samstag'],
   SHORTWEEKDAYS: ['So.', 'Mo.', 'Di.', 'Mi.', 'Do.', 'Fr.', 'Sa.'],
-  STANDALONESHORTWEEKDAYS: ['So.', 'Mo.', 'Di.', 'Mi.', 'Do.', 'Fr.', 'Sa.'],
+  STANDALONESHORTWEEKDAYS: ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'],
   NARROWWEEKDAYS: ['S', 'M', 'D', 'M', 'D', 'F', 'S'],
   STANDALONENARROWWEEKDAYS: ['S', 'M', 'D', 'M', 'D', 'F', 'S'],
   SHORTQUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
@@ -2411,7 +2316,6 @@ goog.i18n.DateTimeSymbols_de_DE = {
   AMPMS: ['vorm.', 'nachm.'],
   DATEFORMATS: ['EEEE, d. MMMM y', 'd. MMMM y', 'dd.MM.yyyy', 'dd.MM.yy'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'd.M.', 'MMMMd': 'd. MMMM', 'MMMd': 'd. MMM'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -2433,14 +2337,14 @@ goog.i18n.DateTimeSymbols_de_LI = {
       'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'],
   SHORTMONTHS: ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep',
       'Okt', 'Nov', 'Dez'],
-  STANDALONESHORTMONTHS: ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul',
+  STANDALONESHORTMONTHS: ['Jan.', 'Feb.', 'Mär', 'Apr.', 'Mai', 'Juni', 'Jul',
       'Aug', 'Sep', 'Okt', 'Nov', 'Dez'],
   WEEKDAYS: ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag',
       'Freitag', 'Samstag'],
   STANDALONEWEEKDAYS: ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch',
       'Donnerstag', 'Freitag', 'Samstag'],
   SHORTWEEKDAYS: ['So.', 'Mo.', 'Di.', 'Mi.', 'Do.', 'Fr.', 'Sa.'],
-  STANDALONESHORTWEEKDAYS: ['So.', 'Mo.', 'Di.', 'Mi.', 'Do.', 'Fr.', 'Sa.'],
+  STANDALONESHORTWEEKDAYS: ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'],
   NARROWWEEKDAYS: ['S', 'M', 'D', 'M', 'D', 'F', 'S'],
   STANDALONENARROWWEEKDAYS: ['S', 'M', 'D', 'M', 'D', 'F', 'S'],
   SHORTQUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
@@ -2448,7 +2352,6 @@ goog.i18n.DateTimeSymbols_de_LI = {
   AMPMS: ['vorm.', 'nachm.'],
   DATEFORMATS: ['EEEE, d. MMMM y', 'd. MMMM y', 'dd.MM.yyyy', 'dd.MM.yy'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'd.M.', 'MMMMd': 'd. MMMM', 'MMMd': 'd. MMM'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -2470,14 +2373,14 @@ goog.i18n.DateTimeSymbols_de_LU = {
       'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'],
   SHORTMONTHS: ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep',
       'Okt', 'Nov', 'Dez'],
-  STANDALONESHORTMONTHS: ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul',
+  STANDALONESHORTMONTHS: ['Jan.', 'Feb.', 'Mär', 'Apr.', 'Mai', 'Juni', 'Jul',
       'Aug', 'Sep', 'Okt', 'Nov', 'Dez'],
   WEEKDAYS: ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag',
       'Freitag', 'Samstag'],
   STANDALONEWEEKDAYS: ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch',
       'Donnerstag', 'Freitag', 'Samstag'],
   SHORTWEEKDAYS: ['So.', 'Mo.', 'Di.', 'Mi.', 'Do.', 'Fr.', 'Sa.'],
-  STANDALONESHORTWEEKDAYS: ['So.', 'Mo.', 'Di.', 'Mi.', 'Do.', 'Fr.', 'Sa.'],
+  STANDALONESHORTWEEKDAYS: ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'],
   NARROWWEEKDAYS: ['S', 'M', 'D', 'M', 'D', 'F', 'S'],
   STANDALONENARROWWEEKDAYS: ['S', 'M', 'D', 'M', 'D', 'F', 'S'],
   SHORTQUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
@@ -2485,7 +2388,6 @@ goog.i18n.DateTimeSymbols_de_LU = {
   AMPMS: ['vorm.', 'nachm.'],
   DATEFORMATS: ['EEEE, d. MMMM y', 'd. MMMM y', 'dd.MM.yyyy', 'dd.MM.yy'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'd.M.', 'MMMMd': 'd. MMMM', 'MMMd': 'd. MMM'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -2518,7 +2420,6 @@ goog.i18n.DateTimeSymbols_dv = {
   AMPMS: ['AM', 'PM'],
   DATEFORMATS: ['EEEE d MMMM y', 'd MMMM y', 'dd-MM-yyyy', 'd-M-yy'],
   TIMEFORMATS: ['hh:mm:ss a zzzz', 'hh:mm:ss a z', 'hh:mm:ss a', 'hh:mm a'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'd MMMM', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 4,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 0
@@ -2601,7 +2502,6 @@ goog.i18n.DateTimeSymbols_dz = {
       'ཆུ་ཚོད་ h སྐར་མ་ mm སྐར་ཆཱ་ ss a z',
       'ཆུ་ཚོད་h:mm:ss a',
       'ཆུ་ཚོད་ h སྐར་མ་ mm a'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -2619,7 +2519,7 @@ goog.i18n.DateTimeSymbols_dz_BT = goog.i18n.DateTimeSymbols_dz;
  */
 goog.i18n.DateTimeSymbols_ee = {
   ERAS: ['HY', 'YŊ'],
-  ERANAMES: ['Hafi Yesu Va Do ŋgɔ na Yesu', 'Yesu Ŋɔli'],
+  ERANAMES: ['Hafi Yesu Va Do ŋgɔ', 'Yesu Ŋɔli'],
   NARROWMONTHS: ['D', 'D', 'T', 'A', 'D', 'M', 'S', 'D', 'A', 'K', 'A', 'D'],
   STANDALONENARROWMONTHS: ['D', 'D', 'T', 'A', 'D', 'M', 'S', 'D', 'A', 'K',
       'A', 'D'],
@@ -2643,9 +2543,8 @@ goog.i18n.DateTimeSymbols_ee = {
   SHORTQUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
   QUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
   AMPMS: ['AN', 'EW'],
-  DATEFORMATS: ['EEEE, y MMMM dd', 'y MMMM d', 'y MMM d', 'yy/MM/dd'],
-  TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
+  DATEFORMATS: ['EEEE, d MMMM y', 'd MMMM y', 'd MMM y', 'dd/MM/yyyy'],
+  TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -2700,9 +2599,8 @@ goog.i18n.DateTimeSymbols_el_CY = {
   QUARTERS: ['1ο τρίμηνο', '2ο τρίμηνο', '3ο τρίμηνο',
       '4ο τρίμηνο'],
   AMPMS: ['π.μ.', 'μ.μ.'],
-  DATEFORMATS: ['EEEE, dd MMMM y', 'dd MMMM y', 'dd MMM y', 'dd/MM/yyyy'],
+  DATEFORMATS: ['EEEE, d MMMM y', 'd MMMM y', 'd MMM y', 'd/M/yy'],
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
-  AVAILABLEFORMATS: {'Md': 'd/M', 'MMMMd': 'd MMMM', 'MMMd': 'd MMM'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -2745,9 +2643,8 @@ goog.i18n.DateTimeSymbols_el_GR = {
   QUARTERS: ['1ο τρίμηνο', '2ο τρίμηνο', '3ο τρίμηνο',
       '4ο τρίμηνο'],
   AMPMS: ['π.μ.', 'μ.μ.'],
-  DATEFORMATS: ['EEEE, dd MMMM y', 'dd MMMM y', 'dd MMM y', 'dd/MM/yyyy'],
+  DATEFORMATS: ['EEEE, d MMMM y', 'd MMMM y', 'd MMM y', 'd/M/yy'],
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
-  AVAILABLEFORMATS: {'Md': 'd/M', 'MMMMd': 'd MMMM', 'MMMd': 'd MMM'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -2764,18 +2661,18 @@ goog.i18n.DateTimeSymbols_el_POLYTON = {
       'Ν', 'Δ'],
   STANDALONENARROWMONTHS: ['Ι', 'Φ', 'Μ', 'Α', 'Μ', 'Ι', 'Ι', 'Α', 'Σ',
       'Ο', 'Ν', 'Δ'],
-  MONTHS: ['Ἰανουαρίου', 'Φεβρουαρίου', 'Μαρτίου',
-      'Ἀπριλίου', 'Μαΐου', 'Ἰουνίου', 'Ἰουλίου',
+  MONTHS: ['Ιανουαρίου', 'Φεβρουαρίου', 'Μαρτίου',
+      'Απριλίου', 'Μαΐου', 'Ιουνίου', 'Ιουλίου',
       'Αὐγούστου', 'Σεπτεμβρίου', 'Ὀκτωβρίου',
       'Νοεμβρίου', 'Δεκεμβρίου'],
-  STANDALONEMONTHS: ['Ἰανουάριος', 'Φεβρουάριος',
-      'Μάρτιος', 'Ἀπρίλιος', 'Μάιος', 'Ἰούνιος',
-      'Ἰούλιος', 'Αὔγουστος', 'Σεπτέμβριος',
+  STANDALONEMONTHS: ['Ιανουάριος', 'Φεβρουάριος',
+      'Μάρτιος', 'Απρίλιος', 'Μάιος', 'Ιούνιος',
+      'Ιούλιος', 'Αὔγουστος', 'Σεπτέμβριος',
       'Ὀκτώβριος', 'Νοέμβριος', 'Δεκέμβριος'],
-  SHORTMONTHS: ['Ἰαν', 'Φεβ', 'Μαρ', 'Ἀπρ', 'Μαϊ', 'Ἰουν',
-      'Ἰουλ', 'Αὐγ', 'Σεπ', 'Ὀκτ', 'Νοε', 'Δεκ'],
-  STANDALONESHORTMONTHS: ['Ἰαν', 'Φεβ', 'Μαρ', 'Ἀπρ', 'Μαϊ',
-      'Ἰουν', 'Ἰουλ', 'Αὐγ', 'Σεπ', 'Ὀκτ', 'Νοε',
+  SHORTMONTHS: ['Ιαν', 'Φεβ', 'Μαρ', 'Απρ', 'Μαϊ', 'Ιουν',
+      'Ιουλ', 'Αὐγ', 'Σεπ', 'Ὀκτ', 'Νοε', 'Δεκ'],
+  STANDALONESHORTMONTHS: ['Ιαν', 'Φεβ', 'Μαρ', 'Απρ', 'Μαϊ',
+      'Ιουν', 'Ιουλ', 'Αὐγ', 'Σεπ', 'Ὀκτ', 'Νοε',
       'Δεκ'],
   WEEKDAYS: ['Κυριακή', 'Δευτέρα', 'Τρίτη', 'Τετάρτη',
       'Πέμπτη', 'Παρασκευή', 'Σάββατο'],
@@ -2791,9 +2688,8 @@ goog.i18n.DateTimeSymbols_el_POLYTON = {
   QUARTERS: ['1ο τρίμηνο', '2ο τρίμηνο', '3ο τρίμηνο',
       '4ο τρίμηνο'],
   AMPMS: ['π.μ.', 'μ.μ.'],
-  DATEFORMATS: ['EEEE, dd MMMM y', 'dd MMMM y', 'dd MMM y', 'dd/MM/yyyy'],
+  DATEFORMATS: ['EEEE, d MMMM y', 'd MMMM y', 'd MMM y', 'd/M/yy'],
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
-  AVAILABLEFORMATS: {'Md': 'd/M', 'MMMMd': 'd MMMM', 'MMMd': 'd MMM'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -2830,7 +2726,6 @@ goog.i18n.DateTimeSymbols_en_AS = {
   AMPMS: ['AM', 'PM'],
   DATEFORMATS: ['EEEE, MMMM d, y', 'MMMM d, y', 'MMM d, y', 'M/d/yy'],
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
-  AVAILABLEFORMATS: {'Md': 'M/d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 2
@@ -2868,7 +2763,6 @@ goog.i18n.DateTimeSymbols_en_BE = {
   DATEFORMATS: ['EEEE d MMMM y', 'd MMM y', 'dd MMM y', 'dd/MM/yy'],
   TIMEFORMATS: ['HH \'h\' mm \'min\' ss \'s\' zzzz', 'HH:mm:ss z', 'HH:mm:ss',
       'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'M/d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -2905,7 +2799,6 @@ goog.i18n.DateTimeSymbols_en_BW = {
   AMPMS: ['AM', 'PM'],
   DATEFORMATS: ['EEEE dd MMMM y', 'dd MMMM y', 'MMM d, y', 'dd/MM/yy'],
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
-  AVAILABLEFORMATS: {'Md': 'M/d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 2
@@ -2942,7 +2835,6 @@ goog.i18n.DateTimeSymbols_en_BZ = {
   AMPMS: ['AM', 'PM'],
   DATEFORMATS: ['dd MMMM y', 'dd MMMM y', 'dd-MMM-y', 'dd/MM/yy'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'M/d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -2977,9 +2869,8 @@ goog.i18n.DateTimeSymbols_en_CA = {
   SHORTQUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
   QUARTERS: ['1st quarter', '2nd quarter', '3rd quarter', '4th quarter'],
   AMPMS: ['AM', 'PM'],
-  DATEFORMATS: ['EEEE, MMMM d, y', 'MMMM d, y', 'yyyy-MM-dd', 'yy-MM-dd'],
+  DATEFORMATS: ['EEEE, d MMMM, y', 'd MMMM, y', 'yyyy-MM-dd', 'yy-MM-dd'],
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
-  AVAILABLEFORMATS: {'Md': 'M/d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 2
@@ -3038,7 +2929,6 @@ goog.i18n.DateTimeSymbols_en_Dsrt = {
   AMPMS: ['𐐈𐐣', '𐐑𐐣'],
   DATEFORMATS: ['EEEE, MMMM d, y', 'MMMM d, y', 'MMM d, y', 'M/d/yy'],
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
-  AVAILABLEFORMATS: {'Md': 'M/d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -3081,7 +2971,6 @@ goog.i18n.DateTimeSymbols_en_GU = {
   AMPMS: ['AM', 'PM'],
   DATEFORMATS: ['EEEE, MMMM d, y', 'MMMM d, y', 'MMM d, y', 'M/d/yy'],
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
-  AVAILABLEFORMATS: {'Md': 'M/d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 2
@@ -3116,9 +3005,8 @@ goog.i18n.DateTimeSymbols_en_HK = {
   SHORTQUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
   QUARTERS: ['1st quarter', '2nd quarter', '3rd quarter', '4th quarter'],
   AMPMS: ['AM', 'PM'],
-  DATEFORMATS: ['EEEE, MMMM d, y', 'MMMM d, y', 'MMM d, y', 'M/d/yy'],
+  DATEFORMATS: ['EEEE, d MMMM, y', 'd MMMM, y', 'd MMM, y', 'd/M/yy'],
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
-  AVAILABLEFORMATS: {'Md': 'M/d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 2
@@ -3153,9 +3041,8 @@ goog.i18n.DateTimeSymbols_en_JM = {
   SHORTQUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
   QUARTERS: ['1st quarter', '2nd quarter', '3rd quarter', '4th quarter'],
   AMPMS: ['AM', 'PM'],
-  DATEFORMATS: ['EEEE, MMMM d, y', 'MMMM d, y', 'MMM d, y', 'M/d/yy'],
+  DATEFORMATS: ['EEEE, MMMM d, y', 'MMMM d, y', 'MMM d, y', 'd/M/yy'],
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
-  AVAILABLEFORMATS: {'Md': 'M/d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 2
@@ -3192,7 +3079,6 @@ goog.i18n.DateTimeSymbols_en_MH = {
   AMPMS: ['AM', 'PM'],
   DATEFORMATS: ['EEEE, MMMM d, y', 'MMMM d, y', 'MMM d, y', 'M/d/yy'],
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
-  AVAILABLEFORMATS: {'Md': 'M/d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 2
@@ -3229,7 +3115,6 @@ goog.i18n.DateTimeSymbols_en_MP = {
   AMPMS: ['AM', 'PM'],
   DATEFORMATS: ['EEEE, MMMM d, y', 'MMMM d, y', 'MMM d, y', 'M/d/yy'],
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
-  AVAILABLEFORMATS: {'Md': 'M/d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 2
@@ -3266,7 +3151,6 @@ goog.i18n.DateTimeSymbols_en_MT = {
   AMPMS: ['AM', 'PM'],
   DATEFORMATS: ['EEEE, d MMMM y', 'dd MMMM y', 'dd MMM y', 'dd/MM/yyyy'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'M/d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 2
@@ -3303,7 +3187,6 @@ goog.i18n.DateTimeSymbols_en_NA = {
   AMPMS: ['AM', 'PM'],
   DATEFORMATS: ['EEEE, MMMM d, y', 'MMMM d, y', 'MMM d, y', 'M/d/yy'],
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
-  AVAILABLEFORMATS: {'Md': 'M/d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -3340,7 +3223,6 @@ goog.i18n.DateTimeSymbols_en_NZ = {
   AMPMS: ['AM', 'PM'],
   DATEFORMATS: ['EEEE, d MMMM y', 'd MMMM y', 'd/MM/yyyy', 'd/MM/yy'],
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
-  AVAILABLEFORMATS: {'Md': 'd/M', 'MMMMd': 'd MMMM', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 2
@@ -3377,7 +3259,6 @@ goog.i18n.DateTimeSymbols_en_PH = {
   AMPMS: ['AM', 'PM'],
   DATEFORMATS: ['EEEE, MMMM d, y', 'MMMM d, y', 'MMM d, y', 'M/d/yy'],
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
-  AVAILABLEFORMATS: {'Md': 'M/d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 2
@@ -3414,7 +3295,6 @@ goog.i18n.DateTimeSymbols_en_PK = {
   AMPMS: ['AM', 'PM'],
   DATEFORMATS: ['EEEE d MMMM y', 'd MMMM y', 'dd-MMM-y', 'dd/MM/yy'],
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
-  AVAILABLEFORMATS: {'Md': 'M/d', 'MMMMd': 'd MMMM', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 2
@@ -3471,7 +3351,6 @@ goog.i18n.DateTimeSymbols_en_Shaw = {
   AMPMS: ['𐑨𐑥', '𐑐𐑥'],
   DATEFORMATS: ['EEEE, MMMM d, y', 'MMMM d, y', 'MMM d, y', 'M/d/yy'],
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
-  AVAILABLEFORMATS: {'Md': 'M/d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -3508,7 +3387,6 @@ goog.i18n.DateTimeSymbols_en_TT = {
   AMPMS: ['AM', 'PM'],
   DATEFORMATS: ['EEEE, MMMM d, y', 'MMMM d, y', 'MMM d, y', 'M/d/yy'],
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
-  AVAILABLEFORMATS: {'Md': 'M/d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 2
@@ -3545,7 +3423,6 @@ goog.i18n.DateTimeSymbols_en_UM = {
   AMPMS: ['AM', 'PM'],
   DATEFORMATS: ['EEEE, MMMM d, y', 'MMMM d, y', 'MMM d, y', 'M/d/yy'],
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
-  AVAILABLEFORMATS: {'Md': 'M/d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 2
@@ -3582,7 +3459,6 @@ goog.i18n.DateTimeSymbols_en_VI = {
   AMPMS: ['AM', 'PM'],
   DATEFORMATS: ['EEEE, MMMM d, y', 'MMMM d, y', 'MMM d, y', 'M/d/yy'],
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
-  AVAILABLEFORMATS: {'Md': 'M/d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 2
@@ -3619,7 +3495,6 @@ goog.i18n.DateTimeSymbols_en_ZW = {
   AMPMS: ['AM', 'PM'],
   DATEFORMATS: ['EEEE dd MMMM y', 'dd MMMM y', 'dd MMM,y', 'd/M/yyyy'],
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
-  AVAILABLEFORMATS: {'Md': 'd/M', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 2
@@ -3659,7 +3534,6 @@ goog.i18n.DateTimeSymbols_eo = {
       'yy-MM-dd'],
   TIMEFORMATS: ['H-\'a\' \'horo\' \'kaj\' m:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss',
       'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -3698,7 +3572,6 @@ goog.i18n.DateTimeSymbols_es_AR = {
   DATEFORMATS: ['EEEE d \'de\' MMMM \'de\' y', 'd \'de\' MMMM \'de\' y',
       'dd/MM/yyyy', 'dd/MM/yy'],
   TIMEFORMATS: ['HH\'h\'\'\'mm:ss zzzz', 'H:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'd/M', 'MMMMd': 'd \'de\' MMMM', 'MMMd': 'd MMM'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -3737,7 +3610,6 @@ goog.i18n.DateTimeSymbols_es_BO = {
   DATEFORMATS: ['EEEE d \'de\' MMMM \'de\' y', 'd \'de\' MMMM \'de\' y',
       'dd/MM/yyyy', 'dd/MM/yy'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'd/M', 'MMMMd': 'd \'de\' MMMM', 'MMMd': 'd MMM'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -3776,7 +3648,6 @@ goog.i18n.DateTimeSymbols_es_CL = {
   DATEFORMATS: ['EEEE d \'de\' MMMM \'de\' y', 'd \'de\' MMMM \'de\' y',
       'dd-MM-yyyy', 'dd-MM-yy'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'H:mm:ss z', 'H:mm:ss', 'H:mm'],
-  AVAILABLEFORMATS: {'Md': 'd/M', 'MMMMd': 'd \'de\' MMMM', 'MMMd': 'd MMM'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -3815,7 +3686,6 @@ goog.i18n.DateTimeSymbols_es_CO = {
   DATEFORMATS: ['EEEE d \'de\' MMMM \'de\' y', 'd \'de\' MMMM \'de\' y',
       'd/MM/yyyy', 'd/MM/yy'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'H:mm:ss z', 'H:mm:ss', 'H:mm'],
-  AVAILABLEFORMATS: {'Md': 'd/M', 'MMMMd': 'd \'de\' MMMM', 'MMMd': 'd MMM'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -3854,7 +3724,6 @@ goog.i18n.DateTimeSymbols_es_CR = {
   DATEFORMATS: ['EEEE d \'de\' MMMM \'de\' y', 'd \'de\' MMMM \'de\' y',
       'dd/MM/yyyy', 'dd/MM/yy'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'd/M', 'MMMMd': 'd \'de\' MMMM', 'MMMd': 'd MMM'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -3893,7 +3762,6 @@ goog.i18n.DateTimeSymbols_es_DO = {
   DATEFORMATS: ['EEEE d \'de\' MMMM \'de\' y', 'd \'de\' MMMM \'de\' y',
       'dd/MM/yyyy', 'dd/MM/yy'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'd/M', 'MMMMd': 'd \'de\' MMMM', 'MMMd': 'd MMM'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -3932,7 +3800,6 @@ goog.i18n.DateTimeSymbols_es_EC = {
   DATEFORMATS: ['EEEE d \'de\' MMMM \'de\' y', 'd \'de\' MMMM \'de\' y',
       'dd/MM/yyyy', 'dd/MM/yy'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'H:mm:ss z', 'H:mm:ss', 'H:mm'],
-  AVAILABLEFORMATS: {'Md': 'd/M', 'MMMMd': 'd \'de\' MMMM', 'MMMd': 'd MMM'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -3971,7 +3838,6 @@ goog.i18n.DateTimeSymbols_es_ES = {
   DATEFORMATS: ['EEEE d \'de\' MMMM \'de\' y', 'd \'de\' MMMM \'de\' y',
       'dd/MM/yyyy', 'dd/MM/yy'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'd/M', 'MMMMd': 'd \'de\' MMMM', 'MMMd': 'd MMM'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -4010,7 +3876,6 @@ goog.i18n.DateTimeSymbols_es_GT = {
   DATEFORMATS: ['EEEE d \'de\' MMMM \'de\' y', 'd \'de\' MMMM \'de\' y',
       'd/MM/yyyy', 'd/MM/yy'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'd/M', 'MMMMd': 'd \'de\' MMMM', 'MMMd': 'd MMM'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -4049,7 +3914,6 @@ goog.i18n.DateTimeSymbols_es_HN = {
   DATEFORMATS: ['EEEE dd \'de\' MMMM \'de\' y', 'dd \'de\' MMMM \'de\' y',
       'dd/MM/yyyy', 'dd/MM/yy'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'd/M', 'MMMMd': 'd \'de\' MMMM', 'MMMd': 'd MMM'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -4088,7 +3952,6 @@ goog.i18n.DateTimeSymbols_es_MX = {
   DATEFORMATS: ['EEEE d \'de\' MMMM \'de\' y', 'd \'de\' MMMM \'de\' y',
       'dd/MM/yyyy', 'dd/MM/yy'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'd/M', 'MMMMd': 'd \'de\' MMMM', 'MMMd': 'd MMM'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -4127,7 +3990,6 @@ goog.i18n.DateTimeSymbols_es_NI = {
   DATEFORMATS: ['EEEE d \'de\' MMMM \'de\' y', 'd \'de\' MMMM \'de\' y',
       'dd/MM/yyyy', 'dd/MM/yy'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'd/M', 'MMMMd': 'd \'de\' MMMM', 'MMMd': 'd MMM'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -4166,7 +4028,6 @@ goog.i18n.DateTimeSymbols_es_PA = {
   DATEFORMATS: ['EEEE d \'de\' MMMM \'de\' y', 'd \'de\' MMMM \'de\' y',
       'MM/dd/yyyy', 'MM/dd/yy'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'd/M', 'MMMMd': 'd \'de\' MMMM', 'MMMd': 'd MMM'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -4204,8 +4065,7 @@ goog.i18n.DateTimeSymbols_es_PE = {
   AMPMS: ['a.m.', 'p.m.'],
   DATEFORMATS: ['EEEE d \'de\' MMMM \'de\' y', 'd \'de\' MMMM \'de\' y',
       'dd/MM/yyyy', 'd/MM/yy'],
-  TIMEFORMATS: ['HH\'H\'mm\'\'ss" zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'd/M', 'MMMMd': 'd \'de\' MMMM', 'MMMd': 'd MMM'},
+  TIMEFORMATS: ['HH\'H\'mm\'\'ss\'\' zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -4244,7 +4104,6 @@ goog.i18n.DateTimeSymbols_es_PR = {
   DATEFORMATS: ['EEEE d \'de\' MMMM \'de\' y', 'd \'de\' MMMM \'de\' y',
       'MM/dd/yyyy', 'MM/dd/yy'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'd/M', 'MMMMd': 'd \'de\' MMMM', 'MMMd': 'd MMM'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -4283,7 +4142,6 @@ goog.i18n.DateTimeSymbols_es_PY = {
   DATEFORMATS: ['EEEE d \'de\' MMMM \'de\' y', 'd \'de\' MMMM \'de\' y',
       'dd/MM/yyyy', 'dd/MM/yy'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'd/M', 'MMMMd': 'd \'de\' MMMM', 'MMMd': 'd MMM'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -4322,7 +4180,6 @@ goog.i18n.DateTimeSymbols_es_SV = {
   DATEFORMATS: ['EEEE d \'de\' MMMM \'de\' y', 'd \'de\' MMMM \'de\' y',
       'dd/MM/yyyy', 'dd/MM/yy'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'd/M', 'MMMMd': 'd \'de\' MMMM', 'MMMd': 'd MMM'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -4361,7 +4218,6 @@ goog.i18n.DateTimeSymbols_es_US = {
   DATEFORMATS: ['EEEE d \'de\' MMMM \'de\' y', 'd \'de\' MMMM \'de\' y',
       'MMM d, y', 'M/d/yy'],
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
-  AVAILABLEFORMATS: {'Md': 'M/d', 'MMMMd': 'd \'de\' MMMM', 'MMMd': 'd MMM'},
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 2
@@ -4400,7 +4256,6 @@ goog.i18n.DateTimeSymbols_es_UY = {
   DATEFORMATS: ['EEEE d \'de\' MMMM \'de\' y', 'd \'de\' MMMM \'de\' y',
       'dd/MM/yyyy', 'dd/MM/yy'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'd/M', 'MMMMd': 'd \'de\' MMMM', 'MMMd': 'd MMM'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -4439,7 +4294,6 @@ goog.i18n.DateTimeSymbols_es_VE = {
   DATEFORMATS: ['EEEE d \'de\' MMMM \'de\' y', 'd \'de\' MMMM \'de\' y',
       'dd/MM/yyyy', 'dd/MM/yy'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'd/M', 'MMMMd': 'd \'de\' MMMM', 'MMMd': 'd MMM'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -4452,9 +4306,9 @@ goog.i18n.DateTimeSymbols_es_VE = {
 goog.i18n.DateTimeSymbols_et_EE = {
   ERAS: ['e.m.a.', 'm.a.j.'],
   ERANAMES: ['enne meie aega', 'meie aja järgi'],
-  NARROWMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
-  STANDALONENARROWMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10',
-      '11', '12'],
+  NARROWMONTHS: ['J', 'V', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D'],
+  STANDALONENARROWMONTHS: ['J', 'V', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O',
+      'N', 'D'],
   MONTHS: ['jaanuar', 'veebruar', 'märts', 'aprill', 'mai', 'juuni', 'juuli',
       'august', 'september', 'oktoober', 'november', 'detsember'],
   STANDALONEMONTHS: ['jaanuar', 'veebruar', 'märts', 'aprill', 'mai', 'juuni',
@@ -4469,14 +4323,13 @@ goog.i18n.DateTimeSymbols_et_EE = {
       'neljapäev', 'reede', 'laupäev'],
   SHORTWEEKDAYS: ['P', 'E', 'T', 'K', 'N', 'R', 'L'],
   STANDALONESHORTWEEKDAYS: ['P', 'E', 'T', 'K', 'N', 'R', 'L'],
-  NARROWWEEKDAYS: ['1', '2', '3', '4', '5', '6', '7'],
-  STANDALONENARROWWEEKDAYS: ['1', '2', '3', '4', '5', '6', '7'],
+  NARROWWEEKDAYS: ['P', 'E', 'T', 'K', 'N', 'R', 'L'],
+  STANDALONENARROWWEEKDAYS: ['P', 'E', 'T', 'K', 'N', 'R', 'L'],
   SHORTQUARTERS: ['K1', 'K2', 'K3', 'K4'],
   QUARTERS: ['1. kvartal', '2. kvartal', '3. kvartal', '4. kvartal'],
-  AMPMS: ['AM', 'PM'],
-  DATEFORMATS: ['EEEE, d, MMMM y', 'd MMMM y', 'dd.MM.yyyy', 'dd.MM.yy'],
-  TIMEFORMATS: ['H:mm:ss zzzz', 'H:mm:ss z', 'H:mm:ss', 'H:mm'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'd MMMM', 'MMMd': 'MMM d'},
+  AMPMS: ['enne keskpäeva', 'pärast keskpäeva'],
+  DATEFORMATS: ['EEEE, d. MMMM y', 'd. MMMM y', 'dd.MM.yyyy', 'dd.MM.yy'],
+  TIMEFORMATS: ['H:mm.ss zzzz', 'H:mm.ss z', 'H:mm.ss', 'H:mm'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -4515,7 +4368,6 @@ goog.i18n.DateTimeSymbols_eu_ES = {
   DATEFORMATS: ['EEEE, y\'eko\' MMMM\'ren\' dd\'a\'',
       'y\'eko\' MMM\'ren\' dd\'a\'', 'y MMM d', 'yyyy-MM-dd'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -4526,7 +4378,7 @@ goog.i18n.DateTimeSymbols_eu_ES = {
  * Date/time formatting symbols for locale fa_AF.
  */
 goog.i18n.DateTimeSymbols_fa_AF = {
-  ERAS: ['ق.م.', 'م.'],
+  ERAS: ['ق.م.', 'ب. م.'],
   ERANAMES: ['قبل از میلاد', 'میلادی'],
   NARROWMONTHS: ['ج', 'ف', 'م', 'ا', 'م', 'ج', 'ج', 'ا', 'س', 'ا',
       'ن', 'د'],
@@ -4558,9 +4410,8 @@ goog.i18n.DateTimeSymbols_fa_AF = {
   QUARTERS: ['سه‌ماههٔ اول', 'سه‌ماههٔ دوم',
       'سه‌ماههٔ سوم', 'سه‌ماههٔ چهارم'],
   AMPMS: ['قبل از ظهر', 'بعد از ظهر'],
-  DATEFORMATS: ['EEEE d MMMM y', 'd MMMM y', 'yyyy/M/d', 'yy/M/d'],
+  DATEFORMATS: ['EEEE, MMMM d, y', 'MMMM d, y', 'MMM d, y', 'M/d/yy'],
   TIMEFORMATS: ['H:mm:ss (zzzz)', 'H:mm:ss (z)', 'H:mm:ss', 'H:mm'],
-  AVAILABLEFORMATS: {'Md': 'M/d', 'MMMMd': 'd LLLL', 'MMMd': 'd LLL'},
   FIRSTDAYOFWEEK: 5,
   WEEKENDRANGE: [3, 4],
   FIRSTWEEKCUTOFFDAY: 1
@@ -4571,21 +4422,21 @@ goog.i18n.DateTimeSymbols_fa_AF = {
  * Date/time formatting symbols for locale fa_IR.
  */
 goog.i18n.DateTimeSymbols_fa_IR = {
-  ERAS: ['ق.م.', 'م.'],
+  ERAS: ['ق.م.', 'ب. م.'],
   ERANAMES: ['قبل از میلاد', 'میلادی'],
-  NARROWMONTHS: ['ژ', 'ف', 'م', 'آ', 'م', 'ژ', 'ژ', 'ا', 'س', 'ا',
+  NARROWMONTHS: ['ژ', 'ف', 'م', 'آ', 'می', 'ژ', 'ژ', 'ا', 'س', 'ا',
       'ن', 'د'],
-  STANDALONENARROWMONTHS: ['ژ', 'ف', 'م', 'آ', 'م', 'ژ', 'ژ', 'ا', 'س',
-      'ا', 'ن', 'د'],
-  MONTHS: ['ژانویهٔ', 'فوریهٔ', 'مارس', 'آوریل', 'مهٔ',
-      'ژوئن', 'ژوئیهٔ', 'اوت', 'سپتامبر', 'اکتبر',
+  STANDALONENARROWMONTHS: ['ژ', 'ف', 'م', 'آ', 'می', 'ژ', 'ژ', 'ا',
+      'س', 'ا', 'ن', 'د'],
+  MONTHS: ['ژانویهٔ', 'فوریهٔ', 'مارس', 'آوریل', 'می',
+      'جون', 'جولای', 'آگوست', 'سپتامبر', 'اکتبر',
       'نوامبر', 'دسامبر'],
   STANDALONEMONTHS: ['ژانویه', 'فوریه', 'مارس', 'آوریل',
       'مه', 'ژوئن', 'ژوئیه', 'اوت', 'سپتامبر',
       'اکتبر', 'نوامبر', 'دسامبر'],
   SHORTMONTHS: ['ژانویهٔ', 'فوریهٔ', 'مارس', 'آوریل',
-      'مهٔ', 'ژوئن', 'ژوئیهٔ', 'اوت', 'سپتامبر',
-      'اکتبر', 'نوامبر', 'دسامبر'],
+      'می', 'جون', 'جولای', 'اوت', 'سپتامبر', 'اکتبر',
+      'نوامبر', 'دسامبر'],
   STANDALONESHORTMONTHS: ['ژانویه', 'فوریه', 'مارس',
       'آوریل', 'مه', 'ژوئن', 'ژوئیه', 'اوت',
       'سپتامبر', 'اکتبر', 'نوامبر', 'دسامبر'],
@@ -4603,9 +4454,8 @@ goog.i18n.DateTimeSymbols_fa_IR = {
   QUARTERS: ['سه‌ماههٔ اول', 'سه‌ماههٔ دوم',
       'سه‌ماههٔ سوم', 'سه‌ماههٔ چهارم'],
   AMPMS: ['قبل از ظهر', 'بعد از ظهر'],
-  DATEFORMATS: ['EEEE d MMMM y', 'd MMMM y', 'yyyy/M/d', 'yy/M/d'],
+  DATEFORMATS: ['EEEE, MMMM d, y', 'MMMM d, y', 'MMM d, y', 'M/d/yy'],
   TIMEFORMATS: ['H:mm:ss (zzzz)', 'H:mm:ss (z)', 'H:mm:ss', 'H:mm'],
-  AVAILABLEFORMATS: {'Md': 'M/d', 'MMMMd': 'd LLLL', 'MMMd': 'd LLL'},
   FIRSTDAYOFWEEK: 5,
   WEEKENDRANGE: [3, 4],
   FIRSTWEEKCUTOFFDAY: 1
@@ -4644,9 +4494,8 @@ goog.i18n.DateTimeSymbols_fi_FI = {
   QUARTERS: ['1. neljännes', '2. neljännes', '3. neljännes',
       '4. neljännes'],
   AMPMS: ['ap.', 'ip.'],
-  DATEFORMATS: ['EEEE d. MMMM y', 'd. MMMM y', 'd.M.yyyy', 'd.M.yyyy'],
+  DATEFORMATS: ['cccc d. MMMM y', 'd. MMMM y', 'd.M.yyyy', 'd.M.yyyy'],
   TIMEFORMATS: ['H.mm.ss zzzz', 'H.mm.ss z', 'H.mm.ss', 'H.mm'],
-  AVAILABLEFORMATS: {'Md': 'd.M.', 'MMMMd': 'd. MMMM', 'MMMd': 'd. MMM'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -4683,7 +4532,6 @@ goog.i18n.DateTimeSymbols_fil_PH = {
   AMPMS: ['AM', 'PM'],
   DATEFORMATS: ['EEEE, MMMM dd y', 'MMMM d, y', 'MMM d, y', 'M/d/yy'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 2
@@ -4696,9 +4544,9 @@ goog.i18n.DateTimeSymbols_fil_PH = {
 goog.i18n.DateTimeSymbols_fo = {
   ERAS: ['f.Kr.', 'e.Kr.'],
   ERANAMES: ['fyrir Krist', 'eftir Krist'],
-  NARROWMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
-  STANDALONENARROWMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10',
-      '11', '12'],
+  NARROWMONTHS: ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D'],
+  STANDALONENARROWMONTHS: ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O',
+      'N', 'D'],
   MONTHS: ['januar', 'februar', 'mars', 'apríl', 'mai', 'juni', 'juli',
       'august', 'september', 'oktober', 'november', 'desember'],
   STANDALONEMONTHS: ['januar', 'februar', 'mars', 'apríl', 'mai', 'juni',
@@ -4714,14 +4562,13 @@ goog.i18n.DateTimeSymbols_fo = {
   SHORTWEEKDAYS: ['sun', 'mán', 'týs', 'mik', 'hós', 'frí', 'ley'],
   STANDALONESHORTWEEKDAYS: ['sun', 'mán', 'týs', 'mik', 'hós', 'frí',
       'ley'],
-  NARROWWEEKDAYS: ['1', '2', '3', '4', '5', '6', '7'],
-  STANDALONENARROWWEEKDAYS: ['1', '2', '3', '4', '5', '6', '7'],
+  NARROWWEEKDAYS: ['S', 'M', 'T', 'M', 'H', 'F', 'L'],
+  STANDALONENARROWWEEKDAYS: ['S', 'M', 'T', 'M', 'H', 'F', 'L'],
   SHORTQUARTERS: ['K1', 'K2', 'K3', 'K4'],
   QUARTERS: ['1. kvartal', '2. kvartal', '3. kvartal', '4. kvartal'],
-  AMPMS: ['AM', 'PM'],
+  AMPMS: ['um fyrrapartur', 'um seinnapartur'],
   DATEFORMATS: ['EEEE dd MMMM y', 'd. MMM y', 'dd-MM-yyyy', 'dd-MM-yy'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'MMMM d', 'MMMd': 'd. MMM'},
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 2
@@ -4766,7 +4613,6 @@ goog.i18n.DateTimeSymbols_fr_BE = {
   DATEFORMATS: ['EEEE d MMMM y', 'd MMMM y', 'd MMM y', 'd/MM/yy'],
   TIMEFORMATS: ['H \'h\' mm \'min\' ss \'s\' zzzz', 'HH:mm:ss z', 'HH:mm:ss',
       'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'd/M', 'MMMMd': 'd MMMM', 'MMMd': 'd MMM'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -4804,7 +4650,6 @@ goog.i18n.DateTimeSymbols_fr_CH = {
   AMPMS: ['AM', 'PM'],
   DATEFORMATS: ['EEEE, d MMMM y', 'd MMMM y', 'd MMM y', 'dd.MM.yy'],
   TIMEFORMATS: ['HH.mm:ss \'h\' zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'd/M', 'MMMMd': 'd MMMM', 'MMMd': 'd MMM'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -4842,7 +4687,6 @@ goog.i18n.DateTimeSymbols_fr_FR = {
   AMPMS: ['AM', 'PM'],
   DATEFORMATS: ['EEEE d MMMM y', 'd MMMM y', 'd MMM y', 'dd/MM/yy'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'd/M', 'MMMMd': 'd MMMM', 'MMMd': 'd MMM'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -4880,7 +4724,6 @@ goog.i18n.DateTimeSymbols_fr_LU = {
   AMPMS: ['AM', 'PM'],
   DATEFORMATS: ['EEEE d MMMM y', 'd MMMM y', 'd MMM y', 'dd/MM/yy'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'd/M', 'MMMMd': 'd MMMM', 'MMMd': 'd MMM'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -4918,7 +4761,6 @@ goog.i18n.DateTimeSymbols_fr_MC = {
   AMPMS: ['AM', 'PM'],
   DATEFORMATS: ['EEEE d MMMM y', 'd MMMM y', 'd MMM y', 'dd/MM/yy'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'd/M', 'MMMMd': 'd MMMM', 'MMMd': 'd MMM'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -4956,7 +4798,6 @@ goog.i18n.DateTimeSymbols_fr_SN = {
   AMPMS: ['AM', 'PM'],
   DATEFORMATS: ['EEEE d MMMM y', 'd MMMM y', 'd MMM y', 'dd/MM/yy'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'd/M', 'MMMMd': 'd MMMM', 'MMMd': 'd MMM'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -4995,7 +4836,6 @@ goog.i18n.DateTimeSymbols_fur = {
   DATEFORMATS: ['EEEE d \'di\' MMMM \'dal\' y', 'd \'di\' MMMM \'dal\' y',
       'dd/MM/yyyy', 'dd/MM/yy'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'd/M', 'MMMMd': 'd \'di\' MMMM', 'MMMd': 'd MMM'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -5041,7 +4881,6 @@ goog.i18n.DateTimeSymbols_ga = {
   AMPMS: ['a.m.', 'p.m.'],
   DATEFORMATS: ['EEEE d MMMM y', 'd MMMM y', 'd MMM y', 'dd/MM/yyyy'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'd/M', 'MMMMd': 'd MMMM', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 2
@@ -5082,7 +4921,6 @@ goog.i18n.DateTimeSymbols_gaa = {
   AMPMS: ['LB', 'SN'],
   DATEFORMATS: ['EEEE, y MMMM dd', 'y MMMM d', 'y MMM d', 'yy/MM/dd'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -5111,20 +4949,20 @@ goog.i18n.DateTimeSymbols_gez = {
   STANDALONEMONTHS: ['ጠሐረ', 'ከተተ', 'መገበ', 'አኀዘ',
       'ግንባት', 'ሠንየ', 'ሐመለ', 'ነሐሰ', 'ከረመ',
       'ጠቀመ', 'ኀደረ', 'ኀሠሠ'],
-  SHORTMONTHS: ['ጠሐረ', 'ከተተ', 'መገበ', 'አኀዘ', 'ግንባ',
-      'ሠንየ', 'ሐመለ', 'ነሐሰ', 'ከረመ', 'ጠቀመ',
-      'ኀደረ', 'ኀሠሠ'],
+  SHORTMONTHS: ['ጠሐረ', 'ከተተ', 'መገበ', 'አኀዘ',
+      'ግንባት', 'ሠንየ', 'ሐመለ', 'ነሐሰ', 'ከረመ',
+      'ጠቀመ', 'ኀደረ', 'ኀሠሠ'],
   STANDALONESHORTMONTHS: ['ጠሐረ', 'ከተተ', 'መገበ', 'አኀዘ',
-      'ግንባ', 'ሠንየ', 'ሐመለ', 'ነሐሰ', 'ከረመ',
+      'ግንባት', 'ሠንየ', 'ሐመለ', 'ነሐሰ', 'ከረመ',
       'ጠቀመ', 'ኀደረ', 'ኀሠሠ'],
   WEEKDAYS: ['እኁድ', 'ሰኑይ', 'ሠሉስ', 'ራብዕ', 'ሐሙስ',
       'ዓርበ', 'ቀዳሚት'],
   STANDALONEWEEKDAYS: ['እኁድ', 'ሰኑይ', 'ሠሉስ', 'ራብዕ',
       'ሐሙስ', 'ዓርበ', 'ቀዳሚት'],
   SHORTWEEKDAYS: ['እኁድ', 'ሰኑይ', 'ሠሉስ', 'ራብዕ',
-      'ሐሙስ', 'ዓርበ', 'ቀዳሚ'],
+      'ሐሙስ', 'ዓርበ', 'ቀዳሚት'],
   STANDALONESHORTWEEKDAYS: ['እኁድ', 'ሰኑይ', 'ሠሉስ', 'ራብዕ',
-      'ሐሙስ', 'ዓርበ', 'ቀዳሚ'],
+      'ሐሙስ', 'ዓርበ', 'ቀዳሚት'],
   NARROWWEEKDAYS: ['እ', 'ሰ', 'ሠ', 'ራ', 'ሐ', 'ዓ', 'ቀ'],
   STANDALONENARROWWEEKDAYS: ['እ', 'ሰ', 'ሠ', 'ራ', 'ሐ', 'ዓ', 'ቀ'],
   SHORTQUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
@@ -5133,7 +4971,6 @@ goog.i18n.DateTimeSymbols_gez = {
   DATEFORMATS: ['EEEE፥ dd MMMM መዓልት y G', 'dd MMMM y', 'dd-MMM-y',
       'dd/MM/yy'],
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -5182,7 +5019,6 @@ goog.i18n.DateTimeSymbols_gl_ES = {
   AMPMS: ['AM', 'PM'],
   DATEFORMATS: ['EEEE dd MMMM y', 'dd MMMM y', 'd MMM, y', 'dd/MM/yy'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'd-M', 'MMMMd': 'd MMMM', 'MMMd': 'd MMM'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -5219,7 +5055,6 @@ goog.i18n.DateTimeSymbols_gsw_CH = {
   AMPMS: ['vorm.', 'nam.'],
   DATEFORMATS: ['EEEE, d. MMMM y', 'd. MMMM y', 'dd.MM.yyyy', 'dd.MM.yy'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'd.M.', 'MMMMd': 'd. MMMM', 'MMMd': 'd. MMM'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -5230,7 +5065,8 @@ goog.i18n.DateTimeSymbols_gsw_CH = {
  * Date/time formatting symbols for locale gu_IN.
  */
 goog.i18n.DateTimeSymbols_gu_IN = {
-  ERAS: ['BCE', 'CE'],
+  ERAS: ['ઈલુના જન્મ પહેસાં',
+      'ઇસવીસન'],
   ERANAMES: ['ઈસવીસન પૂર્વે', 'ઇસવીસન'],
   NARROWMONTHS: ['જા', 'ફે', 'મા', 'એ', 'મે', 'જૂ',
       'જુ', 'ઑ', 'સ', 'ઑ', 'ન', 'ડિ'],
@@ -5268,17 +5104,15 @@ goog.i18n.DateTimeSymbols_gu_IN = {
       'શ'],
   STANDALONENARROWWEEKDAYS: ['ર', 'સો', 'મં', 'બુ', 'ગુ',
       'શુ', 'શ'],
-  SHORTQUARTERS: ['ત્રિમાસિક ૧',
+  SHORTQUARTERS: ['પેહલા હંત 1',
       'ત્રિમાસિક ૨', 'ત્રિમાસિક ૩',
-      'ત્રિમાસિક ૪'],
-  QUARTERS: ['પહલી ત્રિમાસિક',
-      'બીજી ત્રિમાસિક',
-      'ત્રીજી ત્રિમાસિક',
-      'ચૌથી ત્રિમાસિક'],
-  AMPMS: ['am', 'pm'],
+      'ચૌતા હંત 4'],
+  QUARTERS: ['પેહલા હંત 1', 'ડૂસઋા હંત 2',
+      'તીસઋા હંત 3', 'ચૌતા હંત 4'],
+  AMPMS: ['પૂર્વ મધ્યાહ્ન',
+      'ઉત્તર મધ્યાહ્ન'],
   DATEFORMATS: ['EEEE, d MMMM, y', 'd MMMM, y', 'd MMM, y', 'd-MM-yy'],
   TIMEFORMATS: ['hh:mm:ss a zzzz', 'hh:mm:ss a z', 'hh:mm:ss a', 'hh:mm a'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'd MMMM', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [6, 6],
   FIRSTWEEKCUTOFFDAY: 2
@@ -5318,7 +5152,6 @@ goog.i18n.DateTimeSymbols_gv = {
   AMPMS: ['a.m.', 'p.m.'],
   DATEFORMATS: ['EEEE dd MMMM y', 'dd MMMM y', 'MMM dd, y', 'dd/MM/yy'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -5335,33 +5168,33 @@ goog.i18n.DateTimeSymbols_gv_GB = goog.i18n.DateTimeSymbols_gv;
  * Date/time formatting symbols for locale ha.
  */
 goog.i18n.DateTimeSymbols_ha = {
-  ERAS: ['GM', 'M'],
-  ERANAMES: ['Gabanin Miladi', 'Miladi'],
+  ERAS: ['KHAI', 'BHAI'],
+  ERANAMES: ['Kafin haihuwar annab', 'Bayan haihuwar annab'],
   NARROWMONTHS: ['J', 'F', 'M', 'A', 'M', 'Y', 'Y', 'A', 'S', 'O', 'N', 'D'],
   STANDALONENARROWMONTHS: ['J', 'F', 'M', 'A', 'M', 'Y', 'Y', 'A', 'S', 'O',
       'N', 'D'],
-  MONTHS: ['Janairu', 'Fabrairu', 'Maris', 'Afrilu', 'Mayu', 'Yuni', 'Yuli',
-      'Augusta', 'Satumba', 'Oktoba', 'Nuwamba', 'Disamba'],
-  STANDALONEMONTHS: ['Janairu', 'Fabrairu', 'Maris', 'Afrilu', 'Mayu', 'Yuni',
-      'Yuli', 'Augusta', 'Satumba', 'Oktoba', 'Nuwamba', 'Disamba'],
-  SHORTMONTHS: ['Jan', 'Fab', 'Mar', 'Afr', 'May', 'Yun', 'Yul', 'Aug', 'Sat',
+  MONTHS: ['Janairu', 'Faburairu', 'Maris', 'Afirilu', 'Mayu', 'Yuni', 'Yuli',
+      'Agusta', 'Satumba', 'Oktoba', 'Nuwamba', 'Disamba'],
+  STANDALONEMONTHS: ['Janairu', 'Faburairu', 'Maris', 'Afirilu', 'Mayu', 'Yuni',
+      'Yuli', 'Agusta', 'Satumba', 'Oktoba', 'Nuwamba', 'Disamba'],
+  SHORTMONTHS: ['Jan', 'Fab', 'Mar', 'Afi', 'May', 'Yun', 'Yul', 'Agu', 'Sat',
       'Okt', 'Nuw', 'Dis'],
-  STANDALONESHORTMONTHS: ['Jan', 'Fab', 'Mar', 'Afr', 'May', 'Yun', 'Yul',
-      'Aug', 'Sat', 'Okt', 'Nuw', 'Dis'],
-  WEEKDAYS: ['Lahadi', 'Litini', 'Talata', 'Laraba', 'Alhamis', 'Jumma\'a',
+  STANDALONESHORTMONTHS: ['Jan', 'Fab', 'Mar', 'Afi', 'May', 'Yun', 'Yul',
+      'Agu', 'Sat', 'Okt', 'Nuw', 'Dis'],
+  WEEKDAYS: ['Lahadi', 'Litinin', 'Talata', 'Laraba', 'Alhamis', 'Jumma\'a',
       'Asabar'],
-  STANDALONEWEEKDAYS: ['Lahadi', 'Litini', 'Talata', 'Laraba', 'Alhamis',
+  STANDALONEWEEKDAYS: ['Lahadi', 'Litinin', 'Talata', 'Laraba', 'Alhamis',
       'Jumma\'a', 'Asabar'],
-  SHORTWEEKDAYS: ['Lah', 'Lit', 'Tal', 'Lar', 'Alh', 'Jum', 'Asa'],
-  STANDALONESHORTWEEKDAYS: ['Lah', 'Lit', 'Tal', 'Lar', 'Alh', 'Jum', 'Asa'],
+  SHORTWEEKDAYS: ['Lh', 'Li', 'Ta', 'Lr', 'Al', 'Ju', 'As'],
+  STANDALONESHORTWEEKDAYS: ['Lh', 'Li', 'Ta', 'Lr', 'Al', 'Ju', 'As'],
   NARROWWEEKDAYS: ['L', 'L', 'T', 'L', 'A', 'J', 'A'],
   STANDALONENARROWWEEKDAYS: ['L', 'L', 'T', 'L', 'A', 'J', 'A'],
-  SHORTQUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
-  QUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
+  SHORTQUARTERS: ['K1', 'K2', 'K3', 'K4'],
+  QUARTERS: ['Kwata na ɗaya', 'Kwata na biyu', 'Kwata na uku',
+      'Kwata na huɗu'],
   AMPMS: ['AM', 'PM'],
   DATEFORMATS: ['EEEE, d MMMM, y', 'd MMMM, y', 'd MMM, y', 'd/M/yy'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'd MMMM', 'MMMd': 'd MMM'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -5402,12 +5235,12 @@ goog.i18n.DateTimeSymbols_ha_Arab = {
       'أَلْح', 'جُم', 'أَسَ'],
   NARROWWEEKDAYS: ['L', 'L', 'T', 'L', 'A', 'J', 'A'],
   STANDALONENARROWWEEKDAYS: ['L', 'L', 'T', 'L', 'A', 'J', 'A'],
-  SHORTQUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
-  QUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
+  SHORTQUARTERS: ['K1', 'K2', 'K3', 'K4'],
+  QUARTERS: ['Kwata na ɗaya', 'Kwata na biyu', 'Kwata na uku',
+      'Kwata na huɗu'],
   AMPMS: ['A.M.', 'P.M.'],
   DATEFORMATS: ['EEEE, d MMMM, y', 'd MMMM, y', 'd MMM, y', 'd/M/yy'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'd MMMM', 'MMMd': 'd MMM'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -5502,12 +5335,12 @@ goog.i18n.DateTimeSymbols_ha_SD = {
       'أَلْح', 'جُم', 'أَسَ'],
   NARROWWEEKDAYS: ['L', 'L', 'T', 'L', 'A', 'J', 'A'],
   STANDALONENARROWWEEKDAYS: ['L', 'L', 'T', 'L', 'A', 'J', 'A'],
-  SHORTQUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
-  QUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
+  SHORTQUARTERS: ['K1', 'K2', 'K3', 'K4'],
+  QUARTERS: ['Kwata na ɗaya', 'Kwata na biyu', 'Kwata na uku',
+      'Kwata na huɗu'],
   AMPMS: ['A.M.', 'P.M.'],
   DATEFORMATS: ['EEEE, d MMMM, y', 'd MMMM, y', 'd MMM, y', 'd/M/yy'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'd MMMM', 'MMMd': 'd MMM'},
   FIRSTDAYOFWEEK: 5,
   WEEKENDRANGE: [3, 4],
   FIRSTWEEKCUTOFFDAY: 1
@@ -5545,7 +5378,6 @@ goog.i18n.DateTimeSymbols_haw = {
   AMPMS: ['AM', 'PM'],
   DATEFORMATS: ['EEEE, d MMMM y', 'd MMMM y', 'd MMM y', 'd/M/yy'],
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
-  AVAILABLEFORMATS: {'Md': 'd/M', 'MMMMd': 'd MMMM', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -5575,27 +5407,27 @@ goog.i18n.DateTimeSymbols_he_IL = {
       'אוקטובר', 'נובמבר', 'דצמבר'],
   SHORTMONTHS: ['ינו', 'פבר', 'מרס', 'אפר', 'מאי', 'יונ',
       'יול', 'אוג', 'ספט', 'אוק', 'נוב', 'דצמ'],
-  STANDALONESHORTMONTHS: ['ינו', 'פבר', 'מרס', 'אפר', 'מאי',
-      'יונ', 'יול', 'אוג', 'ספט', 'אוק', 'נוב', 'דצמ'],
+  STANDALONESHORTMONTHS: ['ינו׳', 'פבר׳', 'מרס', 'אפר׳',
+      'מאי', 'יונ׳', 'יול׳', 'אוג׳', 'ספט׳', 'אוק׳',
+      'נוב׳', 'דצמ׳'],
   WEEKDAYS: ['יום ראשון', 'יום שני', 'יום שלישי',
       'יום רביעי', 'יום חמישי', 'יום שישי',
       'יום שבת'],
   STANDALONEWEEKDAYS: ['יום ראשון', 'יום שני',
       'יום שלישי', 'יום רביעי', 'יום חמישי',
       'יום שישי', 'יום שבת'],
-  SHORTWEEKDAYS: ['יום א\'', 'יום ב\'', 'יום ג\'', 'יום ד\'',
-      'יום ה\'', 'יום ו\'', 'שבת'],
-  STANDALONESHORTWEEKDAYS: ['יום א\'', 'יום ב\'', 'יום ג\'',
-      'יום ד\'', 'יום ה\'', 'יום ו\'', 'שבת'],
+  SHORTWEEKDAYS: ['יום א׳', 'יום ב׳', 'יום ג׳', 'יום ד׳',
+      'יום ה׳', 'יום ו׳', 'שבת'],
+  STANDALONESHORTWEEKDAYS: ['יום א׳', 'יום ב׳', 'יום ג׳',
+      'יום ד׳', 'יום ה׳', 'יום ו׳', 'שבת'],
   NARROWWEEKDAYS: ['א', 'ב', 'ג', 'ד', 'ה', 'ו', 'ש'],
   STANDALONENARROWWEEKDAYS: ['א', 'ב', 'ג', 'ד', 'ה', 'ו', 'ש'],
   SHORTQUARTERS: ['רבעון 1', 'רבעון 2', 'רבעון 3',
       'רבעון 4'],
   QUARTERS: ['רבעון 1', 'רבעון 2', 'רבעון 3', 'רבעון 4'],
-  AMPMS: ['לפנה"צ', 'אחה"צ'],
-  DATEFORMATS: ['EEEE, d בMMMM y', 'd בMMMM y', 'dd/MM/yyyy', 'dd/MM/yy'],
+  AMPMS: ['לפנה״צ', 'אחה״צ'],
+  DATEFORMATS: ['EEEE, d בMMMM y', 'd בMMMM y', 'd בMMM yyyy', 'dd/MM/yy'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'd/M', 'MMMMd': 'd בMMMM', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [4, 5],
   FIRSTWEEKCUTOFFDAY: 2
@@ -5629,29 +5461,28 @@ goog.i18n.DateTimeSymbols_hi_IN = {
       'जुलाई', 'अगस्त', 'सितम्बर',
       'अक्तूबर', 'नवम्बर', 'दिसम्बर'],
   WEEKDAYS: ['रविवार', 'सोमवार',
-      'मंगलवार', 'बुधवार', 'गुरुवार',
-      'शुक्रवार', 'शनिवार'],
+      'मंगलवार', 'बुधवार',
+      'बृहस्पतिवार', 'शुक्रवार',
+      'शनिवार'],
   STANDALONEWEEKDAYS: ['रविवार', 'सोमवार',
-      'मंगलवार', 'बुधवार', 'गुरुवार',
-      'शुक्रवार', 'शनिवार'],
-  SHORTWEEKDAYS: ['रवि', 'सोम', 'मंगल', 'बुध',
-      'गुरु', 'शुक्र', 'शनि'],
-  STANDALONESHORTWEEKDAYS: ['रवि', 'सोम', 'मंगल',
-      'बुध', 'गुरु', 'शुक्र', 'शनि'],
+      'मंगलवार', 'बुधवार',
+      'बृहस्पतिवार', 'शुक्रवार',
+      'शनिवार'],
+  SHORTWEEKDAYS: ['रवि.', 'सोम.', 'मंगल.', 'बुध.',
+      'बृह.', 'शुक्र.', 'शनि.'],
+  STANDALONESHORTWEEKDAYS: ['रवि.', 'सोम.', 'मंगल.',
+      'बुध.', 'बृह.', 'शुक्र.', 'शनि.'],
   NARROWWEEKDAYS: ['र', 'सो', 'मं', 'बु', 'गु', 'शु',
       'श'],
   STANDALONENARROWWEEKDAYS: ['र', 'सो', 'मं', 'बु', 'गु',
       'शु', 'श'],
-  SHORTQUARTERS: ['प्रथम चौथाई',
-      'द्वितीय चौथाई',
-      'तृतीय चौथाई', 'चतुर्थ चौथाई'],
-  QUARTERS: ['प्रथम चौथाई',
-      'द्वितीय चौथाई',
-      'तृतीय चौथाई', 'चतुर्थ चौथाई'],
-  AMPMS: ['AM', 'PM'],
+  SHORTQUARTERS: ['तिमाही', 'दूसरी तिमाही',
+      'तीसरी तिमाही', 'चौथी तिमाही'],
+  QUARTERS: ['तिमाही', 'दूसरी तिमाही',
+      'तीसरी तिमाही', 'चौथी तिमाही'],
+  AMPMS: ['पूर्वाह्न', 'अपराह्न'],
   DATEFORMATS: ['EEEE, d MMMM y', 'd MMMM y', 'dd-MM-yyyy', 'd-M-yy'],
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
-  AVAILABLEFORMATS: {'Md': 'd/M', 'MMMMd': 'd MMMM', 'MMMd': 'd MMM'},
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [6, 6],
   FIRSTWEEKCUTOFFDAY: 2
@@ -5662,7 +5493,7 @@ goog.i18n.DateTimeSymbols_hi_IN = {
  * Date/time formatting symbols for locale hr_HR.
  */
 goog.i18n.DateTimeSymbols_hr_HR = {
-  ERAS: ['pr.n.e.', 'AD'],
+  ERAS: ['p. n. e.', 'A. D.'],
   ERANAMES: ['Prije Krista', 'Poslije Krista'],
   NARROWMONTHS: ['1.', '2.', '3.', '4.', '5.', '6.', '7.', '8.', '9.', '10.',
       '11.', '12.'],
@@ -5673,10 +5504,10 @@ goog.i18n.DateTimeSymbols_hr_HR = {
   STANDALONEMONTHS: ['siječanj', 'veljača', 'ožujak', 'travanj', 'svibanj',
       'lipanj', 'srpanj', 'kolovoz', 'rujan', 'listopad', 'studeni',
       'prosinac'],
-  SHORTMONTHS: ['01.', '02.', '03.', '04.', '05.', '06.', '07.', '08.', '09.',
-      '10.', '11.', '12.'],
-  STANDALONESHORTMONTHS: ['01.', '02.', '03.', '04.', '05.', '06.', '07.',
-      '08.', '09.', '10.', '11.', '12.'],
+  SHORTMONTHS: ['sij', 'velj', 'ožu', 'tra', 'svi', 'lip', 'srp', 'kol', 'ruj',
+      'lis', 'stu', 'pro'],
+  STANDALONESHORTMONTHS: ['sij', 'velj', 'ožu', 'tra', 'svi', 'lip', 'srp',
+      'kol', 'ruj', 'lis', 'stu', 'pro'],
   WEEKDAYS: ['nedjelja', 'ponedjeljak', 'utorak', 'srijeda', 'četvrtak',
       'petak', 'subota'],
   STANDALONEWEEKDAYS: ['nedjelja', 'ponedjeljak', 'utorak', 'srijeda',
@@ -5688,9 +5519,9 @@ goog.i18n.DateTimeSymbols_hr_HR = {
   SHORTQUARTERS: ['1kv', '2kv', '3kv', '4kv'],
   QUARTERS: ['1. kvartal', '2. kvartal', '3. kvartal', '4. kvartal'],
   AMPMS: ['AM', 'PM'],
-  DATEFORMATS: ['EEEE, d. MMMM y.', 'd. MMMM y.', 'd.M.yyyy.', 'dd.MM.yyyy.'],
+  DATEFORMATS: ['EEEE, d. MMMM y.', 'd. MMMM y.', 'd. M. yyyy.',
+      'dd. MM. yyyy.'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'd.M.', 'MMMMd': 'd. MMMM', 'MMMd': 'd.MMM.'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -5729,7 +5560,6 @@ goog.i18n.DateTimeSymbols_hu_HU = {
   AMPMS: ['de.', 'du.'],
   DATEFORMATS: ['y. MMMM d., EEEE', 'y. MMMM d.', 'yyyy.MM.dd.', 'yyyy.MM.dd.'],
   TIMEFORMATS: ['H:mm:ss zzzz', 'H:mm:ss z', 'H:mm:ss', 'H:mm'],
-  AVAILABLEFORMATS: {'Md': 'M. d.', 'MMMMd': 'MMMM d.', 'MMMd': 'MMM d.'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -5740,23 +5570,23 @@ goog.i18n.DateTimeSymbols_hu_HU = {
  * Date/time formatting symbols for locale hy.
  */
 goog.i18n.DateTimeSymbols_hy = {
-  ERAS: ['Ք․Ա․', 'Ք․Ե․'],
-  ERANAMES: ['Ք․Ա․', 'Ք․Ե․'],
+  ERAS: ['Մ․Թ․Ա․', 'Մ․Թ․'],
+  ERANAMES: ['Մ․Թ․Ա․', 'Մ․Թ․'],
   NARROWMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
   STANDALONENARROWMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10',
       '11', '12'],
-  MONTHS: ['Յունուար', 'Փետրուար', 'Մարտ', 'Ապրիլ',
-      'Մայիս', 'Յունիս', 'Յուլիս', 'Օգոստոս',
+  MONTHS: ['Հունվար', 'Փետրվար', 'Մարտ', 'Ապրիլ',
+      'Մայիս', 'Հունիս', 'Հուլիս', 'Օգոստոս',
       'Սեպտեմբեր', 'Հոկտեմբեր', 'Նոյեմբեր',
       'Դեկտեմբեր'],
-  STANDALONEMONTHS: ['Յունուար', 'Փետրուար', 'Մարտ',
-      'Ապրիլ', 'Մայիս', 'Յունիս', 'Յուլիս',
+  STANDALONEMONTHS: ['Հունվար', 'Փետրվար', 'Մարտ',
+      'Ապրիլ', 'Մայիս', 'Հունիս', 'Հուլիս',
       'Օգոստոս', 'Սեպտեմբեր', 'Հոկտեմբեր',
       'Նոյեմբեր', 'Դեկտեմբեր'],
-  SHORTMONTHS: ['Յնր', 'Փտր', 'Մրտ', 'Ապր', 'Մյս', 'Յնս',
-      'Յլս', 'Օգս', 'Սեպ', 'Հոկ', 'Նոյ', 'Դեկ'],
-  STANDALONESHORTMONTHS: ['Յնր', 'Փտր', 'Մրտ', 'Ապր', 'Մյս',
-      'Յնս', 'Յլս', 'Օգս', 'Սեպ', 'Հոկ', 'Նոյ', 'Դեկ'],
+  SHORTMONTHS: ['Հնվ', 'Փտվ', 'Մրտ', 'Ապր', 'Մյս', 'Հնս',
+      'Հլս', 'Օգս', 'Սեպ', 'Հոկ', 'Նոյ', 'Դեկ'],
+  STANDALONESHORTMONTHS: ['Հնվ', 'Փտվ', 'Մրտ', 'Ապր', 'Մյս',
+      'Հնս', 'Հլս', 'Օգս', 'Սեպ', 'Հոկ', 'Նոյ', 'Դեկ'],
   WEEKDAYS: ['Կիրակի', 'Երկուշաբթի', 'Երեքշաբթի',
       'Չորեքշաբթի', 'Հինգշաբթի', 'Ուրբաթ',
       'Շաբաթ'],
@@ -5771,10 +5601,9 @@ goog.i18n.DateTimeSymbols_hy = {
   STANDALONENARROWWEEKDAYS: ['1', '2', '3', '4', '5', '6', '7'],
   SHORTQUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
   QUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
-  AMPMS: ['Առ․', 'Եր․'],
+  AMPMS: ['Առ․', 'Կե․'],
   DATEFORMATS: ['EEEE, MMMM d, y', 'MMMM dd, y', 'MMM d, y', 'MM/dd/yy'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -5819,7 +5648,6 @@ goog.i18n.DateTimeSymbols_ia = {
   AMPMS: ['a.m.', 'p.m.'],
   DATEFORMATS: ['EEEE, y MMMM dd', 'y MMMM d', 'y MMM d', 'yy/MM/dd'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -5830,33 +5658,32 @@ goog.i18n.DateTimeSymbols_ia = {
  * Date/time formatting symbols for locale id_ID.
  */
 goog.i18n.DateTimeSymbols_id_ID = {
-  ERAS: ['BCE', 'CE'],
-  ERANAMES: ['BCE', 'CE'],
-  NARROWMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
-  STANDALONENARROWMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10',
-      '11', '12'],
+  ERAS: ['SM', 'M'],
+  ERANAMES: ['SM', 'M'],
+  NARROWMONTHS: ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D'],
+  STANDALONENARROWMONTHS: ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O',
+      'N', 'D'],
   MONTHS: ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli',
       'Agustus', 'September', 'Oktober', 'November', 'Desember'],
   STANDALONEMONTHS: ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
       'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'],
-  SHORTMONTHS: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep',
+  SHORTMONTHS: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agt', 'Sep',
       'Okt', 'Nov', 'Des'],
   STANDALONESHORTMONTHS: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul',
-      'Agu', 'Sep', 'Okt', 'Nov', 'Des'],
+      'Agt', 'Sep', 'Okt', 'Nov', 'Des'],
   WEEKDAYS: ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'],
   STANDALONEWEEKDAYS: ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat',
       'Sabtu'],
   SHORTWEEKDAYS: ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'],
   STANDALONESHORTWEEKDAYS: ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'],
-  NARROWWEEKDAYS: ['1', '2', '3', '4', '5', '6', '7'],
-  STANDALONENARROWWEEKDAYS: ['1', '2', '3', '4', '5', '6', '7'],
+  NARROWWEEKDAYS: ['M', 'S', 'S', 'R', 'K', 'J', 'S'],
+  STANDALONENARROWWEEKDAYS: ['M', 'S', 'S', 'R', 'K', 'J', 'S'],
   SHORTQUARTERS: ['K1', 'K2', 'K3', 'K4'],
   QUARTERS: ['kuartal pertama', 'kuartal kedua', 'kuartal ketiga',
       'kuartal keempat'],
-  AMPMS: ['AM', 'PM'],
+  AMPMS: ['pagi', 'malam'],
   DATEFORMATS: ['EEEE, dd MMMM yyyy', 'd MMMM yyyy', 'd MMM yyyy', 'dd/MM/yy'],
   TIMEFORMATS: ['H:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -5890,12 +5717,11 @@ goog.i18n.DateTimeSymbols_ig = {
       'Sat'],
   NARROWWEEKDAYS: ['1', '2', '3', '4', '5', '6', '7'],
   STANDALONENARROWWEEKDAYS: ['1', '2', '3', '4', '5', '6', '7'],
-  SHORTQUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
-  QUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
+  SHORTQUARTERS: ['Ọ1', 'Ọ2', 'Ọ3', 'Ọ4'],
+  QUARTERS: ['Ọkara 1', 'Ọkara 2', 'Ọkara 3', 'Ọkara 4'],
   AMPMS: ['A.M.', 'P.M.'],
-  DATEFORMATS: ['EEEE, y MMMM dd', 'y MMMM d', 'y MMM d', 'yy/MM/dd'],
-  TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
+  DATEFORMATS: ['EEEE, d MMMM y', 'd MMMM y', 'd MMM y', 'dd/MM/yyyy'],
+  TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -5939,7 +5765,6 @@ goog.i18n.DateTimeSymbols_ii = {
   AMPMS: ['ꎸꄑ', 'ꁯꋒ'],
   DATEFORMATS: ['EEEE, y MMMM dd', 'y MMMM d', 'y MMM d', 'yyyy-MM-dd'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -5958,7 +5783,7 @@ goog.i18n.DateTimeSymbols_ii_CN = goog.i18n.DateTimeSymbols_ii;
 goog.i18n.DateTimeSymbols_is_IS = {
   ERAS: ['fyrir Krist', 'eftir Krist'],
   ERANAMES: ['fyrir Krist', 'eftir Krist'],
-  NARROWMONTHS: ['j', 'f', 'm', 'a', 'm', 'j', 'j', 'á', 's', 'o', 'n', 'd'],
+  NARROWMONTHS: ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'Á', 'S', 'O', 'N', 'D'],
   STANDALONENARROWMONTHS: ['j', 'f', 'm', 'a', 'm', 'j', 'j', 'á', 's', 'o',
       'n', 'd'],
   MONTHS: ['janúar', 'febrúar', 'mars', 'apríl', 'maí', 'júní', 'júlí',
@@ -5976,7 +5801,7 @@ goog.i18n.DateTimeSymbols_is_IS = {
   SHORTWEEKDAYS: ['sun', 'mán', 'þri', 'mið', 'fim', 'fös', 'lau'],
   STANDALONESHORTWEEKDAYS: ['sun', 'mán', 'þri', 'mið', 'fim', 'fös',
       'lau'],
-  NARROWWEEKDAYS: ['s', 'm', 'þ', 'm', 'f', 'f', 'l'],
+  NARROWWEEKDAYS: ['S', 'M', 'Þ', 'M', 'F', 'F', 'L'],
   STANDALONENARROWWEEKDAYS: ['s', 'm', 'þ', 'm', 'f', 'f', 'l'],
   SHORTQUARTERS: ['F1', 'F2', 'F3', 'F4'],
   QUARTERS: ['1st fjórðungur', '2nd fjórðungur', '3rd fjórðungur',
@@ -5984,7 +5809,6 @@ goog.i18n.DateTimeSymbols_is_IS = {
   AMPMS: ['f.h.', 'e.h.'],
   DATEFORMATS: ['EEEE, d. MMMM y', 'd. MMMM y', 'd.M.yyyy', 'd.M.yyyy'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'd.M', 'MMMMd': 'd. MMMM', 'MMMd': 'd. MMM'},
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 2
@@ -6021,8 +5845,7 @@ goog.i18n.DateTimeSymbols_it_CH = {
   QUARTERS: ['1o trimestre', '2o trimestre', '3o trimestre', '4o trimestre'],
   AMPMS: ['m.', 'p.'],
   DATEFORMATS: ['EEEE, d MMMM y', 'd MMMM y', 'd-MMM-y', 'dd.MM.yy'],
-  TIMEFORMATS: ['HH.mm:ss \'h\' zzzz', 'HH.mm.ss z', 'HH.mm.ss', 'HH.mm'],
-  AVAILABLEFORMATS: {'Md': 'd/M', 'MMMMd': 'd MMMM', 'MMMd': 'd MMM'},
+  TIMEFORMATS: ['HH.mm:ss \'h\' zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -6059,8 +5882,7 @@ goog.i18n.DateTimeSymbols_it_IT = {
   QUARTERS: ['1o trimestre', '2o trimestre', '3o trimestre', '4o trimestre'],
   AMPMS: ['m.', 'p.'],
   DATEFORMATS: ['EEEE d MMMM y', 'dd MMMM y', 'dd/MMM/y', 'dd/MM/yy'],
-  TIMEFORMATS: ['HH.mm.ss zzzz', 'HH.mm.ss z', 'HH.mm.ss', 'HH.mm'],
-  AVAILABLEFORMATS: {'Md': 'd/M', 'MMMMd': 'd MMMM', 'MMMd': 'd MMM'},
+  TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -6105,9 +5927,8 @@ goog.i18n.DateTimeSymbols_iu = {
   SHORTQUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
   QUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
   AMPMS: ['AM', 'PM'],
-  DATEFORMATS: ['EEEE, y MMMM dd', 'y MMMM d', 'y MMM d', 'yy/MM/dd'],
+  DATEFORMATS: ['EEEE, y MMMM dd', 'y MMMM d', 'y MMM d', 'yyyy-MM-dd'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 2
@@ -6144,8 +5965,7 @@ goog.i18n.DateTimeSymbols_ja_JP = {
       '第4四半期'],
   AMPMS: ['午前', '午後'],
   DATEFORMATS: ['y年M月d日EEEE', 'y年M月d日', 'yyyy/MM/dd', 'yy/MM/dd'],
-  TIMEFORMATS: ['H時mm分ss秒 zzzz', 'HH:mm:ss z', 'H:mm:ss', 'H:mm'],
-  AVAILABLEFORMATS: {'Md': 'M/d', 'MMMMd': 'M月d日', 'MMMd': 'M月d日'},
+  TIMEFORMATS: ['H時mm分ss秒 zzzz', 'H:mm:ss z', 'H:mm:ss', 'H:mm'],
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 2
@@ -6201,7 +6021,6 @@ goog.i18n.DateTimeSymbols_ka = {
   AMPMS: ['დილის', 'საღამოს'],
   DATEFORMATS: ['EEEE, y MMMM dd', 'y MMMM d', 'y MMM d', 'yy/MM/dd'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 2
@@ -6247,7 +6066,6 @@ goog.i18n.DateTimeSymbols_kaj = {
   AMPMS: ['A.M.', 'P.M.'],
   DATEFORMATS: ['EEEE, y MMMM dd', 'y MMMM d', 'y MMM d', 'yy/MM/dd'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -6265,40 +6083,36 @@ goog.i18n.DateTimeSymbols_kaj_NG = goog.i18n.DateTimeSymbols_kaj;
  */
 goog.i18n.DateTimeSymbols_kam = {
   ERAS: ['MY', 'IY'],
-  ERANAMES: ['mbee wa yesu', 'IY'],
-  NARROWMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
-  STANDALONENARROWMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10',
-      '11', '12'],
-  MONTHS: ['Mwei wa mbee', 'Mwei wa keli', 'Mwei wa katatu', 'Mwei wa kanne',
-      'Mwei wa katano', 'Mwei wa thanthatu', 'Mwei wa muonza', 'Mwei wa nyanya',
-      'Mwei wa kenda', 'Mwei wa ikumi', 'Mwei wa ikumi na imwe',
-      'Mwei wa ikumi na ili'],
-  STANDALONEMONTHS: ['Mwei wa mbee', 'Mwei wa keli', 'Mwei wa katatu',
-      'Mwei wa kanne', 'Mwei wa katano', 'Mwei wa thanthatu', 'Mwei wa muonza',
-      'Mwei wa nyanya', 'Mwei wa kenda', 'Mwei wa ikumi',
-      'Mwei wa ikumi na imwe', 'Mwei wa ikumi na ili'],
-  SHORTMONTHS: ['Mwei wa mbee', 'Mwei wa keli', 'Mwei wa katatu',
-      'Mwei wa kanne', 'Mwei wa katano', 'Mwei wa thanthatu', 'Mwei wa muonza',
-      'Mwei wa nyanya', 'Mwei wa kenda', 'Mwei wa ikumi',
-      'Mwei wa ikumi na imwe', 'Mwei wa ikumi na ili'],
-  STANDALONESHORTMONTHS: ['Mwei wa mbee', 'Mwei wa keli', 'Mwei wa katatu',
-      'Mwei wa kanne', 'Mwei wa katano', 'Mwei wa thanthatu', 'Mwei wa muonza',
-      'Mwei wa nyanya', 'Mwei wa kenda', 'Mwei wa ikumi',
-      'Mwei wa ikumi na imwe', 'Mwei wa ikumi na ili'],
-  WEEKDAYS: ['Jumapili', 'Jumatatu', 'Jumanne', 'Jumatano', 'Alamisi', 'Ijumaa',
-      'Jumamosi'],
-  STANDALONEWEEKDAYS: ['Jumapili', 'Jumatatu', 'Jumanne', 'Jumatano', 'Alamisi',
-      'Ijumaa', 'Jumamosi'],
-  SHORTWEEKDAYS: ['Jpl', 'Jtt', 'Jnn', 'Jtn', 'Alh', 'Ijm', 'Jms'],
-  STANDALONESHORTWEEKDAYS: ['Jpl', 'Jtt', 'Jnn', 'Jtn', 'Alh', 'Ijm', 'Jms'],
-  NARROWWEEKDAYS: ['1', '2', '3', '4', '5', '6', '7'],
-  STANDALONENARROWWEEKDAYS: ['1', '2', '3', '4', '5', '6', '7'],
-  SHORTQUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
-  QUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
-  AMPMS: ['AM', 'PM'],
-  DATEFORMATS: ['EEEE, y MMMM dd', 'y MMMM d', 'y MMM d', 'yy/MM/dd'],
-  TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
+  ERANAMES: ['Mbee wa Yesũ', 'Ĩtina wa Yesũ'],
+  NARROWMONTHS: ['M', 'K', 'K', 'K', 'K', 'T', 'M', 'N', 'K', 'Ĩ', 'Ĩ', 'Ĩ'],
+  STANDALONENARROWMONTHS: ['M', 'K', 'K', 'K', 'K', 'T', 'M', 'N', 'K', 'Ĩ',
+      'Ĩ', 'Ĩ'],
+  MONTHS: ['Mwai wa mbee', 'Mwai wa kelĩ', 'Mwai wa katatũ', 'Mwai wa kana',
+      'Mwai wa katano', 'Mwai wa thanthatũ', 'Mwai wa muonza',
+      'Mwai wa nyaanya', 'Mwai wa kenda', 'Mwai wa ĩkumi',
+      'Mwai wa ĩkumi na ĩmwe', 'Mwai wa ĩkumi na ilĩ'],
+  STANDALONEMONTHS: ['Mwai wa mbee', 'Mwai wa kelĩ', 'Mwai wa katatũ',
+      'Mwai wa kana', 'Mwai wa katano', 'Mwai wa thanthatũ', 'Mwai wa muonza',
+      'Mwai wa nyaanya', 'Mwai wa kenda', 'Mwai wa ĩkumi',
+      'Mwai wa ĩkumi na ĩmwe', 'Mwai wa ĩkumi na ilĩ'],
+  SHORTMONTHS: ['Mbe', 'Kel', 'Ktũ', 'Kan', 'Ktn', 'Tha', 'Moo', 'Nya', 'Knd',
+      'Ĩku', 'Ĩkm', 'Ĩkl'],
+  STANDALONESHORTMONTHS: ['Mbe', 'Kel', 'Ktũ', 'Kan', 'Ktn', 'Tha', 'Moo',
+      'Nya', 'Knd', 'Ĩku', 'Ĩkm', 'Ĩkl'],
+  WEEKDAYS: ['Wa kyumwa', 'Wa kwambĩlĩlya', 'Wa kelĩ', 'Wa katatũ',
+      'Wa kana', 'Wa katano', 'Wa thanthatũ'],
+  STANDALONEWEEKDAYS: ['Wa kyumwa', 'Wa kwambĩlĩlya', 'Wa kelĩ',
+      'Wa katatũ', 'Wa kana', 'Wa katano', 'Wa thanthatũ'],
+  SHORTWEEKDAYS: ['Wky', 'Wkw', 'Wkl', 'Wtũ', 'Wkn', 'Wtn', 'Wth'],
+  STANDALONESHORTWEEKDAYS: ['Wky', 'Wkw', 'Wkl', 'Wtũ', 'Wkn', 'Wtn', 'Wth'],
+  NARROWWEEKDAYS: ['Y', 'W', 'E', 'A', 'A', 'A', 'A'],
+  STANDALONENARROWWEEKDAYS: ['Y', 'W', 'E', 'A', 'A', 'A', 'A'],
+  SHORTQUARTERS: ['L1', 'L2', 'L3', 'L4'],
+  QUARTERS: ['Lovo ya mbee', 'Lovo ya kelĩ', 'Lovo ya katatũ',
+      'Lovo ya kana'],
+  AMPMS: ['Ĩyakwakya', 'Ĩyawĩoo'],
+  DATEFORMATS: ['EEEE, d MMMM y', 'd MMMM y', 'd MMM y', 'dd/MM/yyyy'],
+  TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -6342,7 +6156,6 @@ goog.i18n.DateTimeSymbols_kcg = {
   AMPMS: ['AM', 'PM'],
   DATEFORMATS: ['EEEE, y MMMM dd', 'y MMMM d', 'y MMM d', 'yy/MM/dd'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -6387,7 +6200,6 @@ goog.i18n.DateTimeSymbols_kfo = {
   AMPMS: ['AM', 'PM'],
   DATEFORMATS: ['EEEE, y MMMM dd', 'y MMMM d', 'y MMM d', 'yy/MM/dd'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -6437,7 +6249,6 @@ goog.i18n.DateTimeSymbols_kk = {
   DATEFORMATS: ['EEEE, d MMMM y \'ж\'.', 'd MMMM y \'ж\'.', 'dd.MM.yyyy',
       'dd.MM.yy'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -6466,11 +6277,12 @@ goog.i18n.DateTimeSymbols_kk_KZ = goog.i18n.DateTimeSymbols_kk;
  * Date/time formatting symbols for locale kl.
  */
 goog.i18n.DateTimeSymbols_kl = {
-  ERAS: ['BCE', 'CE'],
-  ERANAMES: ['BCE', 'CE'],
-  NARROWMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
-  STANDALONENARROWMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10',
-      '11', '12'],
+  ERAS: ['Kr.in.si.', 'Kr.in.king.'],
+  ERANAMES: ['Kristusip inunngornerata siornagut',
+      'Kristusip inunngornerata kingornagut'],
+  NARROWMONTHS: ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D'],
+  STANDALONENARROWMONTHS: ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O',
+      'N', 'D'],
   MONTHS: ['januari', 'februari', 'martsi', 'aprili', 'maji', 'juni', 'juli',
       'augustusi', 'septemberi', 'oktoberi', 'novemberi', 'decemberi'],
   STANDALONEMONTHS: ['januari', 'februari', 'martsi', 'aprili', 'maji', 'juni',
@@ -6485,14 +6297,13 @@ goog.i18n.DateTimeSymbols_kl = {
       'pingasunngorneq', 'sisamanngorneq', 'tallimanngorneq', 'arfininngorneq'],
   SHORTWEEKDAYS: ['sab', 'ata', 'mar', 'pin', 'sis', 'tal', 'arf'],
   STANDALONESHORTWEEKDAYS: ['sab', 'ata', 'mar', 'pin', 'sis', 'tal', 'arf'],
-  NARROWWEEKDAYS: ['1', '2', '3', '4', '5', '6', '7'],
-  STANDALONENARROWWEEKDAYS: ['1', '2', '3', '4', '5', '6', '7'],
+  NARROWWEEKDAYS: ['S', 'A', 'M', 'P', 'S', 'T', 'A'],
+  STANDALONENARROWWEEKDAYS: ['S', 'A', 'M', 'P', 'S', 'T', 'A'],
   SHORTQUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
   QUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
-  AMPMS: ['AM', 'PM'],
-  DATEFORMATS: ['EEEE dd MMMM y', 'dd MMMM y', 'MMM dd, y', 'dd/MM/yy'],
+  AMPMS: ['ulloqeqqata-tungaa', 'ulloqeqqata-kingorna'],
+  DATEFORMATS: ['EEEE dd MMMM y', 'dd MMMM y', 'MMM dd, y', 'yyyy-MM-dd'],
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 2
@@ -6551,7 +6362,6 @@ goog.i18n.DateTimeSymbols_km = {
   TIMEFORMATS: ['H ម៉ោង m នាទី ss វិនាទី​ zzzz',
       'H ម៉ោង m នាទី ss វិនាទី​z', 'H:mm:ss',
       'H:mm'],
-  AVAILABLEFORMATS: {'Md': 'd/M', 'MMMMd': 'd MMMM', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -6608,13 +6418,13 @@ goog.i18n.DateTimeSymbols_kn_IN = {
       'ಶ'],
   STANDALONENARROWWEEKDAYS: ['ರ', 'ಸೋ', 'ಮಂ', 'ಬು', 'ಗು',
       'ಶು', 'ಶ'],
-  SHORTQUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
+  SHORTQUARTERS: ['ಒಂದು 1', 'ಎರಡು 2', 'ಮೂರು 3',
+      'ನಾಲೃಕ 4'],
   QUARTERS: ['ಒಂದು 1', 'ಎರಡು 2', 'ಮೂರು 3',
       'ನಾಲೃಕ 4'],
   AMPMS: ['am', 'pm'],
   DATEFORMATS: ['EEEE d MMMM y', 'd MMMM y', 'd MMM y', 'd-M-yy'],
   TIMEFORMATS: ['hh:mm:ss a zzzz', 'hh:mm:ss a z', 'hh:mm:ss a', 'hh:mm a'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'd MMMM', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [6, 6],
   FIRSTWEEKCUTOFFDAY: 2
@@ -6653,9 +6463,8 @@ goog.i18n.DateTimeSymbols_ko_KR = {
   AMPMS: ['오전', '오후'],
   DATEFORMATS: ['y년 M월 d일 EEEE', 'y년 M월 d일', 'yyyy. M. d.',
       'yy. M. d.'],
-  TIMEFORMATS: ['a hh시 mm분 ss초 zzzz', 'a hh시 mm분 ss초 z',
-      'a h:mm:ss', 'a h:mm'],
-  AVAILABLEFORMATS: {'Md': 'M. d.', 'MMMMd': 'MMMM d일', 'MMMd': 'MMM d일'},
+  TIMEFORMATS: ['a h시 m분 s초 zzzz', 'a h시 m분 s초 z', 'a h:mm:ss',
+      'a h:mm'],
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 2
@@ -6683,13 +6492,13 @@ goog.i18n.DateTimeSymbols_kok = {
       'मे', 'जून', 'जुलै', 'ओगस्ट',
       'सेप्टेंबर', 'ओक्टोबर',
       'नोव्हेंबर', 'डिसेंबर'],
-  SHORTMONTHS: ['जानेवारी', 'फेबृवारी',
+  SHORTMONTHS: ['जानेवारी', 'फेब्रुवारी',
       'मार्च', 'एप्रिल', 'मे', 'जून',
       'जुलै', 'ओगस्ट', 'सेप्टेंबर',
       'ओक्टोबर', 'नोव्हेंबर',
       'डिसेंबर'],
   STANDALONESHORTMONTHS: ['जानेवारी',
-      'फेबृवारी', 'मार्च', 'एप्रिल',
+      'फेब्रुवारी', 'मार्च', 'एप्रिल',
       'मे', 'जून', 'जुलै', 'ओगस्ट',
       'सेप्टेंबर', 'ओक्टोबर',
       'नोव्हेंबर', 'डिसेंबर'],
@@ -6710,7 +6519,6 @@ goog.i18n.DateTimeSymbols_kok = {
   AMPMS: ['म.पू.', 'म.नं.'],
   DATEFORMATS: ['EEEE d MMMM y', 'd MMMM y', 'dd-MM-yyyy', 'd-M-yy'],
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'd MMMM', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [6, 6],
   FIRSTWEEKCUTOFFDAY: 2
@@ -6747,9 +6555,8 @@ goog.i18n.DateTimeSymbols_kpe = {
   SHORTQUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
   QUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
   AMPMS: ['AM', 'PM'],
-  DATEFORMATS: ['EEEE, y MMMM dd', 'y MMMM d', 'y MMM d', 'yy/MM/dd'],
+  DATEFORMATS: ['EEEE, y MMMM dd', 'y MMMM d', 'y MMM d', 'yyyy-MM-dd'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -6798,7 +6605,6 @@ goog.i18n.DateTimeSymbols_ku = {
   AMPMS: ['AM', 'PM'],
   DATEFORMATS: ['EEEE, y MMMM dd', 'y MMMM d', 'y MMM d', 'yyyy-MM-dd'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 5,
   WEEKENDRANGE: [4, 5],
   FIRSTWEEKCUTOFFDAY: 1
@@ -6821,12 +6627,6 @@ goog.i18n.DateTimeSymbols_ku_Arab_IQ = goog.i18n.DateTimeSymbols_ku;
  * Date/time formatting symbols for locale ku_Arab_IR.
  */
 goog.i18n.DateTimeSymbols_ku_Arab_IR = goog.i18n.DateTimeSymbols_ku;
-
-
-/**
- * Date/time formatting symbols for locale ku_Arab_SY.
- */
-goog.i18n.DateTimeSymbols_ku_Arab_SY = goog.i18n.DateTimeSymbols_ku;
 
 
 /**
@@ -6870,13 +6670,18 @@ goog.i18n.DateTimeSymbols_ku_Latn = {
   SHORTQUARTERS: ['Ç1', 'Ç2', 'Ç3', 'Ç4'],
   QUARTERS: ['Ç1', 'Ç2', 'Ç3', 'Ç4'],
   AMPMS: ['BN', 'PN'],
-  DATEFORMATS: ['EEEE, y MMMM dd', 'y MMMM d', 'y MMM d', 'yy/MM/dd'],
+  DATEFORMATS: ['EEEE, y MMMM dd', 'y MMMM d', 'y MMM d', 'yyyy-MM-dd'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
 };
+
+
+/**
+ * Date/time formatting symbols for locale ku_Latn_SY.
+ */
+goog.i18n.DateTimeSymbols_ku_Latn_SY = goog.i18n.DateTimeSymbols_ku_Latn;
 
 
 /**
@@ -6888,7 +6693,38 @@ goog.i18n.DateTimeSymbols_ku_Latn_TR = goog.i18n.DateTimeSymbols_ku_Latn;
 /**
  * Date/time formatting symbols for locale ku_SY.
  */
-goog.i18n.DateTimeSymbols_ku_SY = goog.i18n.DateTimeSymbols_ku;
+goog.i18n.DateTimeSymbols_ku_SY = {
+  ERAS: ['BZ', 'PZ'],
+  ERANAMES: ['BZ', 'PZ'],
+  NARROWMONTHS: ['ç', 's', 'a', 'n', 'g', 'h', '7', '8', '9', '10', '11',
+      '12'],
+  STANDALONENARROWMONTHS: ['ç', 's', 'a', 'n', 'g', 'h', '7', '8', '9', '10',
+      '11', '12'],
+  MONTHS: ['çile', 'sibat', 'adar', 'nîsan', 'gulan', 'hezîran', '7', '8',
+      '9', '10', '11', '12'],
+  STANDALONEMONTHS: ['çile', 'sibat', 'adar', 'nîsan', 'gulan', 'hezîran',
+      '7', '8', '9', '10', '11', '12'],
+  SHORTMONTHS: ['çil', 'sib', 'adr', 'nîs', 'gul', 'hez', 'tîr', '8', '9',
+      '10', '11', '12'],
+  STANDALONESHORTMONTHS: ['çil', 'sib', 'adr', 'nîs', 'gul', 'hez', 'tîr',
+      '8', '9', '10', '11', '12'],
+  WEEKDAYS: ['yekşem', 'duşem', 'şê', 'çarşem', 'pêncşem', 'în',
+      'şemî'],
+  STANDALONEWEEKDAYS: ['yekşem', 'duşem', 'şê', 'çarşem', 'pêncşem',
+      'în', 'şemî'],
+  SHORTWEEKDAYS: ['yş', 'dş', 'sş', 'çş', 'pş', 'în', 'ş'],
+  STANDALONESHORTWEEKDAYS: ['yş', 'dş', 'sş', 'çş', 'pş', 'în', 'ş'],
+  NARROWWEEKDAYS: ['y', 'd', 's', 'ç', 'p', 'î', 'ş'],
+  STANDALONENARROWWEEKDAYS: ['y', 'd', 's', 'ç', 'p', 'î', 'ş'],
+  SHORTQUARTERS: ['Ç1', 'Ç2', 'Ç3', 'Ç4'],
+  QUARTERS: ['Ç1', 'Ç2', 'Ç3', 'Ç4'],
+  AMPMS: ['BN', 'PN'],
+  DATEFORMATS: ['EEEE, y MMMM dd', 'y MMMM d', 'y MMM d', 'yyyy-MM-dd'],
+  TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
+  FIRSTDAYOFWEEK: 6,
+  WEEKENDRANGE: [4, 5],
+  FIRSTWEEKCUTOFFDAY: 2
+};
 
 
 /**
@@ -6920,9 +6756,8 @@ goog.i18n.DateTimeSymbols_ku_TR = {
   SHORTQUARTERS: ['Ç1', 'Ç2', 'Ç3', 'Ç4'],
   QUARTERS: ['Ç1', 'Ç2', 'Ç3', 'Ç4'],
   AMPMS: ['BN', 'PN'],
-  DATEFORMATS: ['EEEE, y MMMM dd', 'y MMMM d', 'y MMM d', 'yy/MM/dd'],
+  DATEFORMATS: ['EEEE, y MMMM dd', 'y MMMM d', 'y MMM d', 'yyyy-MM-dd'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -6961,7 +6796,6 @@ goog.i18n.DateTimeSymbols_kw = {
   AMPMS: ['a.m.', 'p.m.'],
   DATEFORMATS: ['EEEE d MMMM y', 'd MMMM y', 'd MMM y', 'dd/MM/yyyy'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'd MMMM', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -6998,9 +6832,8 @@ goog.i18n.DateTimeSymbols_ky = {
   SHORTQUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
   QUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
   AMPMS: ['AM', 'PM'],
-  DATEFORMATS: ['EEEE, y MMMM dd', 'y MMMM d', 'y MMM d', 'yy/MM/dd'],
+  DATEFORMATS: ['EEEE, y MMMM dd', 'y MMMM d', 'y MMM d', 'yyyy-MM-dd'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 2
@@ -7052,7 +6885,6 @@ goog.i18n.DateTimeSymbols_ln_CD = {
   AMPMS: ['AM', 'PM'],
   DATEFORMATS: ['EEEE, y MMMM dd', 'y MMMM d', 'y MMM d', 'yy/MM/dd'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -7098,7 +6930,6 @@ goog.i18n.DateTimeSymbols_ln_CG = {
   AMPMS: ['AM', 'PM'],
   DATEFORMATS: ['EEEE, y MMMM dd', 'y MMMM d', 'y MMM d', 'yy/MM/dd'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -7148,7 +6979,6 @@ goog.i18n.DateTimeSymbols_lo = {
   DATEFORMATS: ['EEEEທີ d MMMM G y', 'd MMMM y', 'd MMM y', 'd/M/yyyy'],
   TIMEFORMATS: ['Hໂມງ mນາທີ ss ວິນາທີzzzz',
       'H ໂມງ mນາທີss z', 'H:mm:ss', 'H:mm'],
-  AVAILABLEFORMATS: {'Md': 'd/M', 'MMMMd': 'd MMMM', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 2
@@ -7170,21 +7000,21 @@ goog.i18n.DateTimeSymbols_lt_LT = {
   NARROWMONTHS: ['S', 'V', 'K', 'B', 'G', 'B', 'L', 'R', 'R', 'S', 'L', 'G'],
   STANDALONENARROWMONTHS: ['S', 'V', 'K', 'B', 'G', 'B', 'L', 'R', 'R', 'S',
       'L', 'G'],
-  MONTHS: ['sausio', 'vasario', 'kovo', 'balandžio', 'gegužės', 'birželio',
-      'liepos', 'rugpjūčio', 'rugsėjo', 'spalio', 'lapkričio', 'gruodžio'],
+  MONTHS: ['sausis', 'vasaris', 'kovas', 'balandis', 'gegužė', 'birželis',
+      'liepa', 'rugpjūtis', 'rugsėjis', 'spalis', 'lapkritis', 'gruodis'],
   STANDALONEMONTHS: ['Sausis', 'Vasaris', 'Kovas', 'Balandis', 'Gegužė',
       'Birželis', 'Liepa', 'Rugpjūtis', 'Rugsėjis', 'Spalis', 'Lapkritis',
       'Gruodis'],
   SHORTMONTHS: ['Sau', 'Vas', 'Kov', 'Bal', 'Geg', 'Bir', 'Lie', 'Rgp', 'Rgs',
       'Spl', 'Lap', 'Grd'],
-  STANDALONESHORTMONTHS: ['Sau', 'Vas', 'Kov', 'Bal', 'Geg', 'Bir', 'Lie',
-      'Rgp', 'Rgs', 'Spl', 'Lap', 'Grd'],
+  STANDALONESHORTMONTHS: ['Saus.', 'Vas.', 'kov', 'Bal.', 'Geg.', 'Bir.',
+      'Liep.', 'Rugpj.', 'Rugs.', 'Spal.', 'Lapkr.', 'Gruod.'],
   WEEKDAYS: ['sekmadienis', 'pirmadienis', 'antradienis', 'trečiadienis',
       'ketvirtadienis', 'penktadienis', 'šeštadienis'],
   STANDALONEWEEKDAYS: ['sekmadienis', 'pirmadienis', 'antradienis',
       'trečiadienis', 'ketvirtadienis', 'penktadienis', 'šeštadienis'],
   SHORTWEEKDAYS: ['Sk', 'Pr', 'An', 'Tr', 'Kt', 'Pn', 'Št'],
-  STANDALONESHORTWEEKDAYS: ['Sk', 'Pr', 'An', 'Tr', 'Kt', 'Pn', 'Št'],
+  STANDALONESHORTWEEKDAYS: ['Sk', 'Pi', 'A', 'T', 'K', 'Pe', 'Š'],
   NARROWWEEKDAYS: ['S', 'P', 'A', 'T', 'K', 'P', 'Š'],
   STANDALONENARROWWEEKDAYS: ['S', 'P', 'A', 'T', 'K', 'P', 'Š'],
   SHORTQUARTERS: ['K1', 'K2', 'K3', 'K4'],
@@ -7194,7 +7024,6 @@ goog.i18n.DateTimeSymbols_lt_LT = {
   DATEFORMATS: ['y \'m\'. MMMM d \'d\'.,EEEE', 'y \'m\'. MMMM d \'d\'.',
       'yyyy.MM.dd', 'yyyy-MM-dd'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -7230,11 +7059,10 @@ goog.i18n.DateTimeSymbols_lv_LV = {
   SHORTQUARTERS: ['C1', 'C2', 'C3', 'C4'],
   QUARTERS: ['1. ceturksnis', '2. ceturksnis', '3. ceturksnis',
       '4. ceturksnis'],
-  AMPMS: ['AM', 'PM'],
+  AMPMS: ['priekšpusdienā', 'pēcpusdienā'],
   DATEFORMATS: ['EEEE, y. \'gada\' d. MMMM', 'y. \'gada\' d. MMMM',
       'y. \'gada\' d. MMM', 'dd.MM.yy'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'dd.mm.', 'MMMMd': 'd. MMMM', 'MMMd': 'd. MMM'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -7274,11 +7102,11 @@ goog.i18n.DateTimeSymbols_mk = {
   NARROWWEEKDAYS: ['н', 'п', 'в', 'с', 'ч', 'п', 'с'],
   STANDALONENARROWWEEKDAYS: ['н', 'п', 'в', 'с', 'ч', 'п', 'с'],
   SHORTQUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
-  QUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
+  QUARTERS: ['прво тромесечје', 'второ тромесечје',
+      'трето тромесечје', 'четврто тромесечје'],
   AMPMS: ['претпладне', 'попладне'],
   DATEFORMATS: ['EEEE, dd MMMM y', 'dd MMMM y', 'dd.M.yyyy', 'dd.M.yy'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -7295,7 +7123,7 @@ goog.i18n.DateTimeSymbols_mk_MK = goog.i18n.DateTimeSymbols_mk;
  * Date/time formatting symbols for locale ml_IN.
  */
 goog.i18n.DateTimeSymbols_ml_IN = {
-  ERAS: ['ക്രി.മു.', 'ക്രി.പി.'],
+  ERAS: ['ക്രി.മൂ', 'ക്രി.പി.'],
   ERANAMES: ['ക്രിസ്തുവിനു് മുമ്പ്‌',
       'ക്രിസ്തുവിന് പിന്‍പ്'],
   NARROWMONTHS: ['ജ', 'ഫെ', 'മാ', 'ഏ', 'മേ', 'ജൂ', 'ജൂ',
@@ -7304,12 +7132,12 @@ goog.i18n.DateTimeSymbols_ml_IN = {
       'ജൂ', 'ഓ', 'സെ', 'ഒ', 'ന', 'ഡി'],
   MONTHS: ['ജനുവരി', 'ഫെബ്രുവരി',
       'മാര്‍ച്ച്', 'ഏപ്രില്‍', 'മേയ്',
-      'ജൂണ്‍', 'ജൂലൈ', 'ഓഗസ്റ്റ്',
+      'ജൂണ്‍', 'ജൂലൈ', 'ആഗസ്റ്റ്',
       'സെപ്റ്റംബര്‍', 'ഒക്ടോബര്‍',
       'നവംബര്‍', 'ഡിസംബര്‍'],
   STANDALONEMONTHS: ['ജനുവരി', 'ഫെബ്രുവരി',
       'മാര്‍ച്ച്', 'ഏപ്രില്‍', 'മേയ്',
-      'ജൂണ്‍', 'ജൂലൈ', 'ഓഗസ്റ്റ്',
+      'ജൂണ്‍', 'ജൂലൈ', 'ആഗസ്റ്റ്',
       'സെപ്റ്റംബര്‍', 'ഒക്ടോബര്‍',
       'നവംബര്‍', 'ഡിസംബര്‍'],
   SHORTMONTHS: ['ജനു', 'ഫെബ്രു', 'മാര്‍',
@@ -7342,10 +7170,9 @@ goog.i18n.DateTimeSymbols_ml_IN = {
   QUARTERS: ['ഒന്നാം പാദം',
       'രണ്ടാം പാദം', 'മൂന്നാം പാദം',
       'നാലാം പാദം'],
-  AMPMS: ['am', 'pm'],
+  AMPMS: ['രാവിലെ', 'വൈകുന്നേരം'],
   DATEFORMATS: ['y, MMMM d, EEEE', 'y, MMMM d', 'y, MMM d', 'dd/MM/yy'],
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
-  AVAILABLEFORMATS: {'Md': 'd/M', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [6, 6],
   FIRSTWEEKCUTOFFDAY: 2
@@ -7384,9 +7211,8 @@ goog.i18n.DateTimeSymbols_mn = {
   QUARTERS: ['дөрөвний нэг', 'дөрөвний хоёр',
       'дөрөвний гурав', 'дөрөвний дөрөв'],
   AMPMS: ['AM', 'PM'],
-  DATEFORMATS: ['EEEE, y MMMM dd', 'y MMMM d', 'y MMM d', 'yy/MM/dd'],
+  DATEFORMATS: ['EEEE, y MMMM dd', 'y MMMM d', 'y MMM d', 'yyyy-MM-dd'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 2
@@ -7481,7 +7307,6 @@ goog.i18n.DateTimeSymbols_mr_IN = {
   AMPMS: ['am', 'pm'],
   DATEFORMATS: ['EEEE d MMMM y', 'd MMMM y', 'd MMM y', 'd-M-yy'],
   TIMEFORMATS: ['h-mm-ss a zzzz', 'h-mm-ss a z', 'h-mm-ss a', 'h-mm a'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'd MMMM', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [6, 6],
   FIRSTWEEKCUTOFFDAY: 2
@@ -7515,9 +7340,8 @@ goog.i18n.DateTimeSymbols_ms_BN = {
   SHORTQUARTERS: ['S1', 'S2', 'S3', 'S4'],
   QUARTERS: ['suku pertama', 'suku kedua', 'suku ketiga', 'suku keempat'],
   AMPMS: ['AM', 'PM'],
-  DATEFORMATS: ['dd MMMM y', 'dd MMMM y', 'dd/MM/yyyy', 'dd/MM/yyyy'],
-  TIMEFORMATS: ['h:mm:ss aa zzzz', 'H:mm:ss z', 'H:mm:ss', 'H:mm'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
+  DATEFORMATS: ['dd MMMM y', 'd MMMM y', 'dd/MM/yyyy', 'd/MM/yy'],
+  TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -7551,9 +7375,8 @@ goog.i18n.DateTimeSymbols_ms_MY = {
   SHORTQUARTERS: ['S1', 'S2', 'S3', 'S4'],
   QUARTERS: ['suku pertama', 'suku kedua', 'suku ketiga', 'suku keempat'],
   AMPMS: ['AM', 'PM'],
-  DATEFORMATS: ['EEEE dd MMM y', 'dd MMMM y', 'dd MMM y', 'dd/MM/yyyy'],
-  TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
+  DATEFORMATS: ['EEEE, d MMMM y', 'd MMMM y', 'dd/MM/yyyy', 'd/MM/yy'],
+  TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -7591,7 +7414,6 @@ goog.i18n.DateTimeSymbols_mt_MT = {
   DATEFORMATS: ['EEEE, d \'ta\'’ MMMM y', 'd \'ta\'’ MMMM y', 'dd MMM y',
       'dd/MM/yyyy'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'd \'ta\'’ MMMM', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 2
@@ -7646,7 +7468,6 @@ goog.i18n.DateTimeSymbols_my = {
   AMPMS: ['နံနက်', 'ညနေ'],
   DATEFORMATS: ['EEEE, y MMMM dd', 'y MMMM d', 'y MMM d', 'yy/MM/dd'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -7681,16 +7502,14 @@ goog.i18n.DateTimeSymbols_nb = {
   STANDALONEWEEKDAYS: ['søndag', 'mandag', 'tirsdag', 'onsdag', 'torsdag',
       'fredag', 'lørdag'],
   SHORTWEEKDAYS: ['søn.', 'man.', 'tir.', 'ons.', 'tor.', 'fre.', 'lør.'],
-  STANDALONESHORTWEEKDAYS: ['søn.', 'man.', 'tir.', 'ons.', 'tor.', 'fre.',
-      'lør.'],
+  STANDALONESHORTWEEKDAYS: ['sø.', 'ma.', 'ti.', 'on.', 'to.', 'fr.', 'lø.'],
   NARROWWEEKDAYS: ['S', 'M', 'T', 'O', 'T', 'F', 'L'],
   STANDALONENARROWWEEKDAYS: ['S', 'M', 'T', 'O', 'T', 'F', 'L'],
   SHORTQUARTERS: ['K1', 'K2', 'K3', 'K4'],
   QUARTERS: ['1. kvartal', '2. kvartal', '3. kvartal', '4. kvartal'],
   AMPMS: ['AM', 'PM'],
   DATEFORMATS: ['EEEE d. MMMM y', 'd. MMMM y', 'd. MMM y', 'dd.MM.yy'],
-  TIMEFORMATS: ['\'kl\'. HH.mm.ss zzzz', 'HH.mm.ss z', 'HH.mm.ss', 'HH.mm'],
-  AVAILABLEFORMATS: {'Md': 'd.M.', 'MMMMd': 'd. MMMM', 'MMMd': 'd. MMM'},
+  TIMEFORMATS: ['\'kl\'. HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -7729,7 +7548,6 @@ goog.i18n.DateTimeSymbols_nds = {
   AMPMS: ['AM', 'PM'],
   DATEFORMATS: ['EEEE, y MMMM dd', 'y MMMM d', 'y MMM d', 'yyyy-MM-dd'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -7780,14 +7598,15 @@ goog.i18n.DateTimeSymbols_ne = {
       'बुध', 'बिही', 'शुक्र', 'शनि'],
   NARROWWEEKDAYS: ['१', '२', '३', '४', '५', '६', '७'],
   STANDALONENARROWWEEKDAYS: ['१', '२', '३', '४', '५', '६', '७'],
-  SHORTQUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
+  SHORTQUARTERS: ['पहिलो सत्र',
+      'दोस्रो सत्र', 'तेस्रो सत्र',
+      'चौथो सत्र'],
   QUARTERS: ['पहिलो सत्र', 'दोस्रो सत्र',
       'तेस्रो सत्र', 'चौथो सत्र'],
   AMPMS: ['पूर्व मध्यान्ह',
       'उत्तर मध्यान्ह'],
-  DATEFORMATS: ['EEEE, y MMMM dd', 'y MMMM d', 'y MMM d', 'yy/MM/dd'],
+  DATEFORMATS: ['EEEE, y MMMM dd', 'y MMMM d', 'y MMM d', 'yyyy-MM-dd'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -7797,7 +7616,52 @@ goog.i18n.DateTimeSymbols_ne = {
 /**
  * Date/time formatting symbols for locale ne_IN.
  */
-goog.i18n.DateTimeSymbols_ne_IN = goog.i18n.DateTimeSymbols_ne;
+goog.i18n.DateTimeSymbols_ne_IN = {
+  ERAS: ['ईसा पूर्व', 'सन्'],
+  ERANAMES: ['ईसा पूर्व', 'सन्'],
+  NARROWMONTHS: ['१', '२', '३', '४', '५', '६', '७', '८', '९',
+      '१०', '११', '१२'],
+  STANDALONENARROWMONTHS: ['१', '२', '३', '४', '५', '६', '७',
+      '८', '९', '१०', '११', '१२'],
+  MONTHS: ['जनवरी', 'फरवरी', 'मार्च',
+      'अप्रेल', 'मई', 'जुन', 'जुलाई',
+      'अगस्त', 'सेप्टेम्बर',
+      'अक्टोबर', 'नोभेम्बर',
+      'दिसम्बर'],
+  STANDALONEMONTHS: ['जनवरी', 'फरवरी', 'मार्च',
+      'अप्रेल', 'मई', 'जुन', 'जुलाई',
+      'अगस्त', 'सेप्टेम्बर',
+      'अक्टोबर', 'नोभेम्बर',
+      'दिसम्बर'],
+  SHORTMONTHS: ['जन', 'फेब', 'मार्च', 'अप्रि',
+      'मे', 'जुन', 'जुला', 'अग', 'सेप्ट',
+      'अक्टो', 'नोभे', 'डिसे'],
+  STANDALONESHORTMONTHS: ['जन', 'फेब', 'मार्च',
+      'अप्रि', 'मे', 'जुन', 'जुला', 'अग',
+      'सेप्ट', 'अक्टो', 'नोभे', 'डिसे'],
+  WEEKDAYS: ['आइतवार', 'सोमवार',
+      'मङ्गलवार', 'बुधवार', 'बिहीवार',
+      'शुक्रवार', 'शनिवार'],
+  STANDALONEWEEKDAYS: ['आइतवार', 'सोमवार',
+      'मङ्गलवार', 'बुधवार', 'बिहीवार',
+      'शुक्रवार', 'शनिवार'],
+  SHORTWEEKDAYS: ['आइत', 'सोम', 'मङ्गल', 'बुध',
+      'बिही', 'शुक्र', 'शनि'],
+  STANDALONESHORTWEEKDAYS: ['आइत', 'सोम', 'मङ्गल',
+      'बुध', 'बिही', 'शुक्र', 'शनि'],
+  NARROWWEEKDAYS: ['१', '२', '३', '४', '५', '६', '७'],
+  STANDALONENARROWWEEKDAYS: ['१', '२', '३', '४', '५', '६', '७'],
+  SHORTQUARTERS: ['पहिलो पाउ', 'दोस्रो पाउ',
+      'तेस्रो पाउ', 'चौथो पाउ'],
+  QUARTERS: ['पहिलो पाउ', 'दोस्रो पाउ',
+      'तेस्रो पाउ', 'चौथो पाउ'],
+  AMPMS: ['पूर्वाह्न', 'अपराह्न'],
+  DATEFORMATS: ['EEEE, y MMMM dd', 'y MMMM d', 'y MMM d', 'yyyy-MM-dd'],
+  TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
+  FIRSTDAYOFWEEK: 6,
+  WEEKENDRANGE: [6, 6],
+  FIRSTWEEKCUTOFFDAY: 2
+};
 
 
 /**
@@ -7811,7 +7675,7 @@ goog.i18n.DateTimeSymbols_ne_NP = goog.i18n.DateTimeSymbols_ne;
  */
 goog.i18n.DateTimeSymbols_nl_BE = {
   ERAS: ['v. Chr.', 'n. Chr.'],
-  ERANAMES: ['Voor Christus', 'Anno Domini'],
+  ERANAMES: ['Voor Christus', 'na Christus'],
   NARROWMONTHS: ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D'],
   STANDALONENARROWMONTHS: ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O',
       'N', 'D'],
@@ -7821,8 +7685,8 @@ goog.i18n.DateTimeSymbols_nl_BE = {
       'juli', 'augustus', 'september', 'oktober', 'november', 'december'],
   SHORTMONTHS: ['jan.', 'feb.', 'mrt.', 'apr.', 'mei', 'jun.', 'jul.', 'aug.',
       'sep.', 'okt.', 'nov.', 'dec.'],
-  STANDALONESHORTMONTHS: ['jan.', 'feb.', 'mrt.', 'apr.', 'mei', 'jun.', 'jul.',
-      'aug.', 'sep.', 'okt.', 'nov.', 'dec.'],
+  STANDALONESHORTMONTHS: ['jan', 'feb', 'mrt', 'apr', 'mei', 'jun', 'jul',
+      'aug', 'sep', 'okt', 'nov', 'dec'],
   WEEKDAYS: ['zondag', 'maandag', 'dinsdag', 'woensdag', 'donderdag', 'vrijdag',
       'zaterdag'],
   STANDALONEWEEKDAYS: ['zondag', 'maandag', 'dinsdag', 'woensdag', 'donderdag',
@@ -7836,7 +7700,6 @@ goog.i18n.DateTimeSymbols_nl_BE = {
   AMPMS: ['AM', 'PM'],
   DATEFORMATS: ['EEEE d MMMM y', 'd MMMM y', 'd-MMM-y', 'd/MM/yy'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'd-M', 'MMMMd': 'd MMMM', 'MMMd': 'd-MMM'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -7848,7 +7711,7 @@ goog.i18n.DateTimeSymbols_nl_BE = {
  */
 goog.i18n.DateTimeSymbols_nl_NL = {
   ERAS: ['v. Chr.', 'n. Chr.'],
-  ERANAMES: ['Voor Christus', 'Anno Domini'],
+  ERANAMES: ['Voor Christus', 'na Christus'],
   NARROWMONTHS: ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D'],
   STANDALONENARROWMONTHS: ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O',
       'N', 'D'],
@@ -7858,8 +7721,8 @@ goog.i18n.DateTimeSymbols_nl_NL = {
       'juli', 'augustus', 'september', 'oktober', 'november', 'december'],
   SHORTMONTHS: ['jan.', 'feb.', 'mrt.', 'apr.', 'mei', 'jun.', 'jul.', 'aug.',
       'sep.', 'okt.', 'nov.', 'dec.'],
-  STANDALONESHORTMONTHS: ['jan.', 'feb.', 'mrt.', 'apr.', 'mei', 'jun.', 'jul.',
-      'aug.', 'sep.', 'okt.', 'nov.', 'dec.'],
+  STANDALONESHORTMONTHS: ['jan', 'feb', 'mrt', 'apr', 'mei', 'jun', 'jul',
+      'aug', 'sep', 'okt', 'nov', 'dec'],
   WEEKDAYS: ['zondag', 'maandag', 'dinsdag', 'woensdag', 'donderdag', 'vrijdag',
       'zaterdag'],
   STANDALONEWEEKDAYS: ['zondag', 'maandag', 'dinsdag', 'woensdag', 'donderdag',
@@ -7873,7 +7736,6 @@ goog.i18n.DateTimeSymbols_nl_NL = {
   AMPMS: ['AM', 'PM'],
   DATEFORMATS: ['EEEE d MMMM y', 'd MMMM y', 'd MMM y', 'dd-MM-yy'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'd-M', 'MMMMd': 'd MMMM', 'MMMd': 'd-MMM'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -7909,8 +7771,7 @@ goog.i18n.DateTimeSymbols_nn = {
   QUARTERS: ['1. kvartal', '2. kvartal', '3. kvartal', '4. kvartal'],
   AMPMS: ['formiddag', 'ettermiddag'],
   DATEFORMATS: ['EEEE d. MMMM y', 'd. MMMM y', 'd. MMM. y', 'dd.MM.yy'],
-  TIMEFORMATS: ['\'kl\'. HH.mm.ss zzzz', 'HH.mm.ss z', 'HH.mm.ss', 'HH.mm'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'd. MMMM', 'MMMd': 'MMM d'},
+  TIMEFORMATS: ['\'kl\'. HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -7952,9 +7813,8 @@ goog.i18n.DateTimeSymbols_nr = {
   SHORTQUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
   QUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
   AMPMS: ['AM', 'PM'],
-  DATEFORMATS: ['EEEE, y MMMM dd', 'y MMMM d', 'y MMM d', 'yy/MM/dd'],
+  DATEFORMATS: ['EEEE, y MMMM dd', 'y MMMM d', 'y MMM d', 'yyyy-MM-dd'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -7971,8 +7831,8 @@ goog.i18n.DateTimeSymbols_nr_ZA = goog.i18n.DateTimeSymbols_nr;
  * Date/time formatting symbols for locale nso.
  */
 goog.i18n.DateTimeSymbols_nso = {
-  ERAS: ['BC', 'AD'],
-  ERANAMES: ['BC', 'AD'],
+  ERAS: ['BCE', 'CE'],
+  ERANAMES: ['BCE', 'CE'],
   NARROWMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
   STANDALONENARROWMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10',
       '11', '12'],
@@ -7996,9 +7856,8 @@ goog.i18n.DateTimeSymbols_nso = {
   SHORTQUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
   QUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
   AMPMS: ['AM', 'PM'],
-  DATEFORMATS: ['EEEE, y MMMM dd', 'y MMMM d', 'y MMM d', 'yy/MM/dd'],
+  DATEFORMATS: ['EEEE, y MMMM dd', 'y MMMM d', 'y MMM d', 'yyyy-MM-dd'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -8015,8 +7874,8 @@ goog.i18n.DateTimeSymbols_nso_ZA = goog.i18n.DateTimeSymbols_nso;
  * Date/time formatting symbols for locale ny.
  */
 goog.i18n.DateTimeSymbols_ny = {
-  ERAS: ['BC', 'AD'],
-  ERANAMES: ['BC', 'AD'],
+  ERAS: ['BCE', 'CE'],
+  ERANAMES: ['BCE', 'CE'],
   NARROWMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
   STANDALONENARROWMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10',
       '11', '12'],
@@ -8039,9 +7898,8 @@ goog.i18n.DateTimeSymbols_ny = {
   SHORTQUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
   QUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
   AMPMS: ['AM', 'PM'],
-  DATEFORMATS: ['EEEE, y MMMM dd', 'y MMMM d', 'y MMM d', 'yy/MM/dd'],
+  DATEFORMATS: ['EEEE, y MMMM dd', 'y MMMM d', 'y MMM d', 'yyyy-MM-dd'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -8087,7 +7945,6 @@ goog.i18n.DateTimeSymbols_oc = {
   AMPMS: ['AM', 'PM'],
   DATEFORMATS: ['EEEE, y MMMM dd', 'y MMMM d', 'y MMM d', 'yyyy-MM-dd'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -8132,7 +7989,6 @@ goog.i18n.DateTimeSymbols_om = {
   AMPMS: ['WD', 'WB'],
   DATEFORMATS: ['EEEE, MMMM d, y', 'dd MMMM y', 'dd-MMM-y', 'dd/MM/yy'],
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -8200,7 +8056,6 @@ goog.i18n.DateTimeSymbols_or_IN = {
   AMPMS: ['am', 'pm'],
   DATEFORMATS: ['EEEE, d MMMM y', 'd MMMM y', 'd MMM y', 'd-M-yy'],
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [6, 6],
   FIRSTWEEKCUTOFFDAY: 2
@@ -8211,7 +8066,7 @@ goog.i18n.DateTimeSymbols_or_IN = {
  * Date/time formatting symbols for locale pa.
  */
 goog.i18n.DateTimeSymbols_pa = {
-  ERAS: ['BCE', 'CE'],
+  ERAS: ['ਈਸਾਪੂਰਵ', 'ਸੰਨ'],
   ERANAMES: ['ਈਸਾਪੂਰਵ', 'ਸੰਨ'],
   NARROWMONTHS: ['ਜ', 'ਫ', 'ਮਾ', 'ਅ', 'ਮ', 'ਜੂ', 'ਜੁ',
       'ਅ', 'ਸ', 'ਅ', 'ਨ', 'ਦ'],
@@ -8247,14 +8102,15 @@ goog.i18n.DateTimeSymbols_pa = {
       'ਸ਼ੁੱ', 'ਸ਼'],
   STANDALONENARROWWEEKDAYS: ['ਐ', 'ਸੋ', 'ਮੰ', 'ਬੁੱ', 'ਵੀ',
       'ਸ਼ੁੱ', 'ਸ਼'],
-  SHORTQUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
+  SHORTQUARTERS: ['ਪਹਿਲਾਂ ਚੌਥਾਈ',
+      'ਦੂਜਾ ਚੌਥਾਈ', 'ਤੀਜਾ ਚੌਥਾਈ',
+      'ਚੌਥਾ ਚੌਥਾਈ'],
   QUARTERS: ['ਪਹਿਲਾਂ ਚੌਥਾਈ',
       'ਦੂਜਾ ਚੌਥਾਈ', 'ਤੀਜਾ ਚੌਥਾਈ',
       'ਚੌਥਾ ਚੌਥਾਈ'],
   AMPMS: ['ਸਵੇਰੇ', 'ਸ਼ਾਮ'],
   DATEFORMATS: ['EEEE, dd MMMM y', 'd MMMM y', 'd MMM y', 'dd/MM/yyyy'],
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
-  AVAILABLEFORMATS: {'Md': 'd/M', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [6, 6],
   FIRSTWEEKCUTOFFDAY: 2
@@ -8265,7 +8121,7 @@ goog.i18n.DateTimeSymbols_pa = {
  * Date/time formatting symbols for locale pa_Arab.
  */
 goog.i18n.DateTimeSymbols_pa_Arab = {
-  ERAS: ['BCE', 'CE'],
+  ERAS: ['ਈਸਾਪੂਰਵ', 'ਸੰਨ'],
   ERANAMES: ['ايساپورو', 'سں'],
   NARROWMONTHS: ['ਜ', 'ਫ', 'ਮਾ', 'ਅ', 'ਮ', 'ਜੂ', 'ਜੁ',
       'ਅ', 'ਸ', 'ਅ', 'ਨ', 'ਦ'],
@@ -8295,13 +8151,13 @@ goog.i18n.DateTimeSymbols_pa_Arab = {
       'ਸ਼ੁੱ', 'ਸ਼'],
   STANDALONENARROWWEEKDAYS: ['ਐ', 'ਸੋ', 'ਮੰ', 'ਬੁੱ', 'ਵੀ',
       'ਸ਼ੁੱ', 'ਸ਼'],
-  SHORTQUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
+  SHORTQUARTERS: ['چوتھاي پہلاں', 'چوتھاي دوجا',
+      'چوتھاي تيجا', 'چوتھاي چوتھا'],
   QUARTERS: ['چوتھاي پہلاں', 'چوتھاي دوجا',
       'چوتھاي تيجا', 'چوتھاي چوتھا'],
   AMPMS: ['ਸਵੇਰੇ', 'ਸ਼ਾਮ'],
   DATEFORMATS: ['EEEE, dd MMMM y', 'd MMMM y', 'd MMM y', 'dd/MM/yyyy'],
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
-  AVAILABLEFORMATS: {'Md': 'd/M', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -8336,7 +8192,7 @@ goog.i18n.DateTimeSymbols_pa_IN = goog.i18n.DateTimeSymbols_pa;
  * Date/time formatting symbols for locale pa_PK.
  */
 goog.i18n.DateTimeSymbols_pa_PK = {
-  ERAS: ['BCE', 'CE'],
+  ERAS: ['ਈਸਾਪੂਰਵ', 'ਸੰਨ'],
   ERANAMES: ['ايساپورو', 'سں'],
   NARROWMONTHS: ['ਜ', 'ਫ', 'ਮਾ', 'ਅ', 'ਮ', 'ਜੂ', 'ਜੁ',
       'ਅ', 'ਸ', 'ਅ', 'ਨ', 'ਦ'],
@@ -8366,13 +8222,13 @@ goog.i18n.DateTimeSymbols_pa_PK = {
       'ਸ਼ੁੱ', 'ਸ਼'],
   STANDALONENARROWWEEKDAYS: ['ਐ', 'ਸੋ', 'ਮੰ', 'ਬੁੱ', 'ਵੀ',
       'ਸ਼ੁੱ', 'ਸ਼'],
-  SHORTQUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
+  SHORTQUARTERS: ['چوتھاي پہلاں', 'چوتھاي دوجا',
+      'چوتھاي تيجا', 'چوتھاي چوتھا'],
   QUARTERS: ['چوتھاي پہلاں', 'چوتھاي دوجا',
       'چوتھاي تيجا', 'چوتھاي چوتھا'],
   AMPMS: ['ਸਵੇਰੇ', 'ਸ਼ਾਮ'],
   DATEFORMATS: ['EEEE, dd MMMM y', 'd MMMM y', 'd MMM y', 'dd/MM/yyyy'],
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
-  AVAILABLEFORMATS: {'Md': 'd/M', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 2
@@ -8410,9 +8266,8 @@ goog.i18n.DateTimeSymbols_pl_PL = {
   SHORTQUARTERS: ['K1', 'K2', 'K3', 'K4'],
   QUARTERS: ['I kwartał', 'II kwartał', 'III kwartał', 'IV kwartał'],
   AMPMS: ['AM', 'PM'],
-  DATEFORMATS: ['EEEE, d MMMM y', 'd MMMM y', 'dd-MM-yyyy', 'dd-MM-yy'],
+  DATEFORMATS: ['EEEE, d MMMM y', 'd MMMM y', 'd MMM y', 'dd.MM.yyyy'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'd.M', 'MMMMd': 'd MMMM', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -8434,16 +8289,20 @@ goog.i18n.DateTimeSymbols_ps = {
   STANDALONEMONTHS: ['جنوري', 'فبروري', 'مارچ', 'اپریل',
       'می', 'جون', 'جولای', 'اګست', 'سپتمبر',
       'اکتوبر', 'نومبر', 'دسمبر'],
-  SHORTMONTHS: ['1', '2', '3', '4', 'مـی', 'جون', '7', '8', '9', '10',
-      '11', '12'],
-  STANDALONESHORTMONTHS: ['1', '2', '3', '4', 'مـی', 'جون', '7', '8', '9',
-      '10', '11', '12'],
+  SHORTMONTHS: ['جنوري', 'فبروري', 'مارچ', 'اپریل', 'می',
+      'جون', 'جولای', 'اګست', 'سپتمبر', 'اکتوبر',
+      'نومبر', 'دسمبر'],
+  STANDALONESHORTMONTHS: ['جنوري', 'فبروري', 'مارچ',
+      'اپریل', 'می', 'جون', 'جولای', 'اګست', 'سپتمبر',
+      'اکتوبر', 'نومبر', 'دسمبر'],
   WEEKDAYS: ['یکشنبه', 'دوشنبه', 'سه‌شنبه',
       'چهارشنبه', 'پنجشنبه', 'جمعه', 'شنبه'],
   STANDALONEWEEKDAYS: ['یکشنبه', 'دوشنبه', 'سه‌شنبه',
       'چهارشنبه', 'پنجشنبه', 'جمعه', 'شنبه'],
-  SHORTWEEKDAYS: ['1', '2', '3', '4', '5', '6', '7'],
-  STANDALONESHORTWEEKDAYS: ['1', '2', '3', '4', '5', '6', '7'],
+  SHORTWEEKDAYS: ['یکشنبه', 'دوشنبه', 'سه‌شنبه',
+      'چهارشنبه', 'پنجشنبه', 'جمعه', 'شنبه'],
+  STANDALONESHORTWEEKDAYS: ['یکشنبه', 'دوشنبه', 'سه‌شنبه',
+      'چهارشنبه', 'پنجشنبه', 'جمعه', 'شنبه'],
   NARROWWEEKDAYS: ['1', '2', '3', '4', '5', '6', '7'],
   STANDALONENARROWWEEKDAYS: ['1', '2', '3', '4', '5', '6', '7'],
   SHORTQUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
@@ -8451,7 +8310,6 @@ goog.i18n.DateTimeSymbols_ps = {
   AMPMS: ['غ.م.', 'غ.و.'],
   DATEFORMATS: ['EEEE د y د MMMM d', 'د y د MMMM d', 'd MMM y', 'yyyy/M/d'],
   TIMEFORMATS: ['H:mm:ss (zzzz)', 'H:mm:ss (z)', 'H:mm:ss', 'H:mm'],
-  AVAILABLEFORMATS: {'Md': 'M/d', 'MMMMd': 'd MMMM', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 5,
   WEEKENDRANGE: [3, 4],
   FIRSTWEEKCUTOFFDAY: 1
@@ -8496,7 +8354,6 @@ goog.i18n.DateTimeSymbols_ro_MD = {
   AMPMS: ['AM', 'PM'],
   DATEFORMATS: ['EEEE, d MMMM y', 'd MMMM y', 'dd.MM.yyyy', 'dd.MM.yyyy'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'd.M', 'MMMMd': 'd MMMM', 'MMMd': 'd MMM'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -8535,7 +8392,6 @@ goog.i18n.DateTimeSymbols_ro_RO = {
   AMPMS: ['AM', 'PM'],
   DATEFORMATS: ['EEEE, d MMMM y', 'd MMMM y', 'dd.MM.yyyy', 'dd.MM.yyyy'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'd.M', 'MMMMd': 'd MMMM', 'MMMd': 'd MMM'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -8570,7 +8426,7 @@ goog.i18n.DateTimeSymbols_ru_RU = {
   STANDALONEWEEKDAYS: ['Воскресенье', 'Понедельник',
       'Вторник', 'Среда', 'Четверг', 'Пятница',
       'Суббота'],
-  SHORTWEEKDAYS: ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'],
+  SHORTWEEKDAYS: ['вс', 'пн', 'вт', 'ср', 'чт', 'пт', 'сб'],
   STANDALONESHORTWEEKDAYS: ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт',
       'Сб'],
   NARROWWEEKDAYS: ['В', 'П', 'В', 'С', 'Ч', 'П', 'С'],
@@ -8579,10 +8435,9 @@ goog.i18n.DateTimeSymbols_ru_RU = {
   QUARTERS: ['1-й квартал', '2-й квартал',
       '3-й квартал', '4-й квартал'],
   AMPMS: ['AM', 'PM'],
-  DATEFORMATS: ['EEEE, d MMMM y \'г\'.', 'd MMMM y \'г\'.', 'dd.MM.yyyy',
+  DATEFORMATS: ['EEEE, d MMMM y \'г\'.', 'd MMMM y \'г\'.', 'dd.MM.yyyy',
       'dd.MM.yy'],
   TIMEFORMATS: ['H:mm:ss zzzz', 'H:mm:ss z', 'H:mm:ss', 'H:mm'],
-  AVAILABLEFORMATS: {'Md': 'd.M', 'MMMMd': 'd MMMM', 'MMMd': 'd MMM'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -8617,7 +8472,7 @@ goog.i18n.DateTimeSymbols_ru_UA = {
   STANDALONEWEEKDAYS: ['Воскресенье', 'Понедельник',
       'Вторник', 'Среда', 'Четверг', 'Пятница',
       'Суббота'],
-  SHORTWEEKDAYS: ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'],
+  SHORTWEEKDAYS: ['вс', 'пн', 'вт', 'ср', 'чт', 'пт', 'сб'],
   STANDALONESHORTWEEKDAYS: ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт',
       'Сб'],
   NARROWWEEKDAYS: ['В', 'П', 'В', 'С', 'Ч', 'П', 'С'],
@@ -8626,9 +8481,8 @@ goog.i18n.DateTimeSymbols_ru_UA = {
   QUARTERS: ['1-й квартал', '2-й квартал',
       '3-й квартал', '4-й квартал'],
   AMPMS: ['AM', 'PM'],
-  DATEFORMATS: ['EEEE, d MMMM y \'г\'.', 'd MMMM y', 'd MMM y', 'dd.MM.yy'],
+  DATEFORMATS: ['EEEE, d MMMM y \'г\'.', 'd MMMM y', 'd MMM y', 'dd.MM.yy'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'd.M', 'MMMMd': 'd MMMM', 'MMMd': 'd MMM'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -8668,7 +8522,6 @@ goog.i18n.DateTimeSymbols_rw = {
   AMPMS: ['AM', 'PM'],
   DATEFORMATS: ['EEEE, y MMMM dd', 'y MMMM d', 'y MMM d', 'yy/MM/dd'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -8707,7 +8560,6 @@ goog.i18n.DateTimeSymbols_sa = {
   AMPMS: ['AM', 'PM'],
   DATEFORMATS: ['EEEE d MMMM y', 'd MMMM y', 'dd-MM-yyyy', 'd-MM-yy'],
   TIMEFORMATS: ['hh:mm:ss a zzzz', 'hh:mm:ss a z', 'hh:mm:ss a', 'hh:mm a'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'd MMMM', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -8747,14 +8599,13 @@ goog.i18n.DateTimeSymbols_se = {
   SHORTWEEKDAYS: ['sotn', 'vuos', 'maŋ', 'gask', 'duor', 'bear', 'láv'],
   STANDALONESHORTWEEKDAYS: ['sotn', 'vuos', 'maŋ', 'gask', 'duor', 'bear',
       'láv'],
-  NARROWWEEKDAYS: ['s', 'v', 'm', 'g', 'd', 'b', 'L'],
-  STANDALONENARROWWEEKDAYS: ['s', 'v', 'm', 'g', 'd', 'b', 'L'],
-  SHORTQUARTERS: ['Q1', 'K2', 'Q3', 'Q4'],
+  NARROWWEEKDAYS: ['S', 'V', 'M', 'G', 'D', 'B', 'L'],
+  STANDALONENARROWWEEKDAYS: ['S', 'V', 'M', 'G', 'D', 'B', 'L'],
+  SHORTQUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
   QUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
-  AMPMS: ['AM', 'PM'],
-  DATEFORMATS: ['EEEE, y MMMM dd', 'y MMMM d', 'y MMM d', 'yy/MM/dd'],
+  AMPMS: ['iđitbeaivet', 'eahketbeaivet'],
+  DATEFORMATS: ['EEEE, y MMMM dd', 'y MMMM d', 'y MMM d', 'yyyy-MM-dd'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -8765,8 +8616,8 @@ goog.i18n.DateTimeSymbols_se = {
  * Date/time formatting symbols for locale se_FI.
  */
 goog.i18n.DateTimeSymbols_se_FI = {
-  ERAS: ['BCE', 'm.Kr.'],
-  ERANAMES: ['BCE', 'maŋŋel Kristtusa'],
+  ERAS: ['o.Kr.', 'm.Kr.'],
+  ERANAMES: ['ovdal Kristtusa', 'maŋŋel Kristtusa'],
   NARROWMONTHS: ['O', 'G', 'N', 'C', 'M', 'G', 'S', 'B', 'Č', 'G', 'S', 'J'],
   STANDALONENARROWMONTHS: ['O', 'G', 'N', 'C', 'M', 'G', 'S', 'B', 'Č', 'G',
       'S', 'J'],
@@ -8785,16 +8636,16 @@ goog.i18n.DateTimeSymbols_se_FI = {
       'bearjadahke', 'laavadahke'],
   STANDALONEWEEKDAYS: ['aejlege', 'måanta', 'däjsta', 'gaskevahkoe',
       'dåarsta', 'bearjadahke', 'laavadahke'],
-  SHORTWEEKDAYS: ['1', '2', '3', '4', '5', '6', '7'],
-  STANDALONESHORTWEEKDAYS: ['1', '2', '3', '4', '5', '6', '7'],
+  SHORTWEEKDAYS: ['sotn', 'vuos', 'maŋ', 'gask', 'duor', 'bear', 'láv'],
+  STANDALONESHORTWEEKDAYS: ['sotn', 'vuos', 'maŋ', 'gask', 'duor', 'bear',
+      'láv'],
   NARROWWEEKDAYS: ['S', 'M', 'D', 'G', 'D', 'B', 'L'],
   STANDALONENARROWWEEKDAYS: ['S', 'M', 'D', 'G', 'D', 'B', 'L'],
-  SHORTQUARTERS: ['Q1', 'K2', 'Q3', 'Q4'],
+  SHORTQUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
   QUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
-  AMPMS: ['AM', 'PM'],
-  DATEFORMATS: ['EEEE, y MMMM dd', 'y MMMM d', 'y MMM d', 'yy/MM/dd'],
+  AMPMS: ['iđitbeaivet', 'eahketbeaivet'],
+  DATEFORMATS: ['EEEE, y MMMM dd', 'y MMMM d', 'y MMM d', 'yyyy-MM-dd'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -8837,7 +8688,6 @@ goog.i18n.DateTimeSymbols_sh = {
   AMPMS: ['pre podne', 'popodne'],
   DATEFORMATS: ['EEEE, dd. MMMM y.', 'dd. MMMM y.', 'dd.MM.y.', 'd.M.yy.'],
   TIMEFORMATS: ['HH.mm.ss zzzz', 'HH.mm.ss z', 'HH.mm.ss', 'HH.mm'],
-  AVAILABLEFORMATS: {'Md': 'd/M', 'MMMMd': 'MMMM d.', 'MMMd': 'MMM d.'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -8912,7 +8762,6 @@ goog.i18n.DateTimeSymbols_si = {
   AMPMS: ['පෙ.ව.', 'ප.ව.'],
   DATEFORMATS: ['EEEE, y MMMM d', 'y MMMM d', 'y MMM d', 'yyyy/MM/dd'],
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -8931,17 +8780,15 @@ goog.i18n.DateTimeSymbols_si_LK = goog.i18n.DateTimeSymbols_si;
 goog.i18n.DateTimeSymbols_sid = {
   ERAS: ['YIA', 'YIG'],
   ERANAMES: ['YIA', 'YIG'],
-  NARROWMONTHS: ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D'],
-  STANDALONENARROWMONTHS: ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O',
-      'N', 'D'],
-  MONTHS: ['January', 'February', 'March', 'April', 'May', 'June', 'July',
-      'August', 'September', 'October', 'November', 'December'],
-  STANDALONEMONTHS: ['January', 'February', 'March', 'April', 'May', 'June',
-      'July', 'August', 'September', 'October', 'November', 'December'],
-  SHORTMONTHS: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep',
-      'Oct', 'Nov', 'Dec'],
-  STANDALONESHORTMONTHS: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul',
-      'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+  NARROWMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
+  STANDALONENARROWMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10',
+      '11', '12'],
+  MONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
+  STANDALONEMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11',
+      '12'],
+  SHORTMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
+  STANDALONESHORTMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10',
+      '11', '12'],
   WEEKDAYS: ['Sambata', 'Sanyo', 'Maakisanyo', 'Roowe', 'Hamuse', 'Arbe',
       'Qidaame'],
   STANDALONEWEEKDAYS: ['Sambata', 'Sanyo', 'Maakisanyo', 'Roowe', 'Hamuse',
@@ -8955,7 +8802,6 @@ goog.i18n.DateTimeSymbols_sid = {
   AMPMS: ['soodo', 'hawwaro'],
   DATEFORMATS: ['EEEE, MMMM dd, y', 'dd MMMM y', 'dd-MMM-y', 'dd/MM/yy'],
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -8999,7 +8845,6 @@ goog.i18n.DateTimeSymbols_sk_SK = {
   AMPMS: ['dopoludnia', 'popoludní'],
   DATEFORMATS: ['EEEE, d. MMMM y', 'd. MMMM y', 'd.M.yyyy', 'd.M.yyyy'],
   TIMEFORMATS: ['H:mm:ss zzzz', 'H:mm:ss z', 'H:mm:ss', 'H:mm'],
-  AVAILABLEFORMATS: {'Md': 'd.M.', 'MMMMd': 'd. MMMM', 'MMMd': 'd. MMM'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -9019,8 +8864,8 @@ goog.i18n.DateTimeSymbols_sl_SI = {
       'avgust', 'september', 'oktober', 'november', 'december'],
   STANDALONEMONTHS: ['januar', 'februar', 'marec', 'april', 'maj', 'junij',
       'julij', 'avgust', 'september', 'oktober', 'november', 'december'],
-  SHORTMONTHS: ['jan', 'feb', 'mar', 'apr', 'maj', 'jun', 'jul', 'avg', 'sep',
-      'okt', 'nov', 'dec'],
+  SHORTMONTHS: ['jan.', 'feb.', 'mar.', 'apr.', 'maj', 'jun.', 'jul.', 'avg.',
+      'sep.', 'okt.', 'nov.', 'dec.'],
   STANDALONESHORTMONTHS: ['jan', 'feb', 'mar', 'apr', 'maj', 'jun', 'jul',
       'avg', 'sep', 'okt', 'nov', 'dec'],
   WEEKDAYS: ['nedelja', 'ponedeljek', 'torek', 'sreda', 'četrtek', 'petek',
@@ -9035,9 +8880,8 @@ goog.i18n.DateTimeSymbols_sl_SI = {
   QUARTERS: ['1. četrtletje', '2. četrtletje', '3. četrtletje',
       '4. četrtletje'],
   AMPMS: ['dop.', 'pop.'],
-  DATEFORMATS: ['EEEE, dd. MMMM y', 'dd. MMMM y', 'd. MMM. yyyy', 'd. MM. yy'],
-  TIMEFORMATS: ['H:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'd. M.', 'MMMMd': 'd. MMMM', 'MMMd': 'MMM d'},
+  DATEFORMATS: ['EEEE, dd. MMMM y', 'dd. MMMM y', 'd. MMM yyyy', 'd. MM. yy'],
+  TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -9048,8 +8892,8 @@ goog.i18n.DateTimeSymbols_sl_SI = {
  * Date/time formatting symbols for locale so.
  */
 goog.i18n.DateTimeSymbols_so = {
-  ERAS: ['Ciise ka hor', 'Ciise ka dib'],
-  ERANAMES: ['Ciise ka hor', 'Ciise ka dib'],
+  ERAS: ['CK', 'CD'],
+  ERANAMES: ['Ciise ka hor (CS)', 'Ciise ka dib (CS)'],
   NARROWMONTHS: ['K', 'L', 'S', 'A', 'S', 'L', 'T', 'S', 'S', 'T', 'K', 'L'],
   STANDALONENARROWMONTHS: ['K', 'L', 'S', 'A', 'S', 'L', 'T', 'S', 'S', 'T',
       'K', 'L'],
@@ -9065,20 +8909,19 @@ goog.i18n.DateTimeSymbols_so = {
       'Tob', 'KIT', 'LIT'],
   STANDALONESHORTMONTHS: ['Kob', 'Lab', 'Sad', 'Afr', 'Sha', 'Lix', 'Tod',
       'Sid', 'Sag', 'Tob', 'KIT', 'LIT'],
-  WEEKDAYS: ['Axad', 'Isniin', 'Salaaso', 'Arbaco', 'Khamiis', 'Jimco',
+  WEEKDAYS: ['Axad', 'Isniin', 'Talaado', 'Arbaco', 'Khamiis', 'Jimco',
       'Sabti'],
-  STANDALONEWEEKDAYS: ['Axad', 'Isniin', 'Salaaso', 'Arbaco', 'Khamiis',
+  STANDALONEWEEKDAYS: ['Axad', 'Isniin', 'Talaado', 'Arbaco', 'Khamiis',
       'Jimco', 'Sabti'],
-  SHORTWEEKDAYS: ['Axa', 'Isn', 'Sal', 'Arb', 'Kha', 'Jim', 'Sab'],
-  STANDALONESHORTWEEKDAYS: ['Axa', 'Isn', 'Sal', 'Arb', 'Kha', 'Jim', 'Sab'],
-  NARROWWEEKDAYS: ['A', 'I', 'S', 'A', 'K', 'J', 'S'],
-  STANDALONENARROWWEEKDAYS: ['A', 'I', 'S', 'A', 'K', 'J', 'S'],
-  SHORTQUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
-  QUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
-  AMPMS: ['sn', 'gn'],
+  SHORTWEEKDAYS: ['Axd', 'Isn', 'Tal', 'Arb', 'Kha', 'Jim', 'Sab'],
+  STANDALONESHORTWEEKDAYS: ['Axd', 'Isn', 'Tal', 'Arb', 'Kha', 'Jim', 'Sab'],
+  NARROWWEEKDAYS: ['A', 'I', 'T', 'A', 'K', 'J', 'S'],
+  STANDALONENARROWWEEKDAYS: ['A', 'I', 'T', 'A', 'K', 'J', 'S'],
+  SHORTQUARTERS: ['R1', 'R2', 'R3', 'R4'],
+  QUARTERS: ['Rubaca 1aad', 'Rubaca 2aad', 'Rubaca 3aad', 'Rubaca 4aad'],
+  AMPMS: ['sn.', 'gn.'],
   DATEFORMATS: ['EEEE, MMMM dd, y', 'dd MMMM y', 'dd-MMM-y', 'dd/MM/yy'],
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 5,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 1
@@ -9139,7 +8982,6 @@ goog.i18n.DateTimeSymbols_sq_AL = {
   AMPMS: ['PD', 'MD'],
   DATEFORMATS: ['EEEE, dd MMMM y', 'dd MMMM y', 'yyyy-MM-dd', 'yy-MM-dd'],
   TIMEFORMATS: ['h.mm.ss.a zzzz', 'h.mm.ss.a z', 'h.mm.ss.a', 'h.mm.a'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'd MMMM', 'MMMd': 'd MMM'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -9150,7 +8992,7 @@ goog.i18n.DateTimeSymbols_sq_AL = {
  * Date/time formatting symbols for locale sr_BA.
  */
 goog.i18n.DateTimeSymbols_sr_BA = {
-  ERAS: ['п. н. е.', 'н. е'],
+  ERAS: ['п. н. е.', 'н. е.'],
   ERANAMES: ['Пре нове ере', 'Нове ере'],
   NARROWMONTHS: ['ј', 'ф', 'м', 'а', 'м', 'ј', 'ј', 'а', 'с', 'о',
       'н', 'д'],
@@ -9184,7 +9026,6 @@ goog.i18n.DateTimeSymbols_sr_BA = {
   TIMEFORMATS: [
       'HH \'часова\', mm \'минута\', ss \'секунди\' zzzz',
       'HH.mm.ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'd/M', 'MMMMd': 'MMMM d.', 'MMMd': 'MMM d.'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -9195,7 +9036,7 @@ goog.i18n.DateTimeSymbols_sr_BA = {
  * Date/time formatting symbols for locale sr_CS.
  */
 goog.i18n.DateTimeSymbols_sr_CS = {
-  ERAS: ['п. н. е.', 'н. е'],
+  ERAS: ['п. н. е.', 'н. е.'],
   ERANAMES: ['Пре нове ере', 'Нове ере'],
   NARROWMONTHS: ['ј', 'ф', 'м', 'а', 'м', 'ј', 'ј', 'а', 'с', 'о',
       'н', 'д'],
@@ -9227,7 +9068,6 @@ goog.i18n.DateTimeSymbols_sr_CS = {
   AMPMS: ['пре подне', 'поподне'],
   DATEFORMATS: ['EEEE, dd. MMMM y.', 'dd. MMMM y.', 'dd.MM.y.', 'd.M.yy.'],
   TIMEFORMATS: ['HH.mm.ss zzzz', 'HH.mm.ss z', 'HH.mm.ss', 'HH.mm'],
-  AVAILABLEFORMATS: {'Md': 'd/M', 'MMMMd': 'MMMM d.', 'MMMd': 'MMM d.'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -9238,7 +9078,7 @@ goog.i18n.DateTimeSymbols_sr_CS = {
  * Date/time formatting symbols for locale sr_Cyrl.
  */
 goog.i18n.DateTimeSymbols_sr_Cyrl = {
-  ERAS: ['п. н. е.', 'н. е'],
+  ERAS: ['п. н. е.', 'н. е.'],
   ERANAMES: ['Пре нове ере', 'Нове ере'],
   NARROWMONTHS: ['ј', 'ф', 'м', 'а', 'м', 'ј', 'ј', 'а', 'с', 'о',
       'н', 'д'],
@@ -9270,7 +9110,6 @@ goog.i18n.DateTimeSymbols_sr_Cyrl = {
   AMPMS: ['пре подне', 'поподне'],
   DATEFORMATS: ['EEEE, dd. MMMM y.', 'dd. MMMM y.', 'dd.MM.y.', 'd.M.yy.'],
   TIMEFORMATS: ['HH.mm.ss zzzz', 'HH.mm.ss z', 'HH.mm.ss', 'HH.mm'],
-  AVAILABLEFORMATS: {'Md': 'd/M', 'MMMMd': 'MMMM d.', 'MMMd': 'MMM d.'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -9281,7 +9120,7 @@ goog.i18n.DateTimeSymbols_sr_Cyrl = {
  * Date/time formatting symbols for locale sr_Cyrl_BA.
  */
 goog.i18n.DateTimeSymbols_sr_Cyrl_BA = {
-  ERAS: ['п. н. е.', 'н. е'],
+  ERAS: ['п. н. е.', 'н. е.'],
   ERANAMES: ['Пре нове ере', 'Нове ере'],
   NARROWMONTHS: ['ј', 'ф', 'м', 'а', 'м', 'ј', 'ј', 'а', 'с', 'о',
       'н', 'д'],
@@ -9315,7 +9154,6 @@ goog.i18n.DateTimeSymbols_sr_Cyrl_BA = {
   TIMEFORMATS: [
       'HH \'часова\', mm \'минута\', ss \'секунди\' zzzz',
       'HH.mm.ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'd/M', 'MMMMd': 'MMMM d.', 'MMMd': 'MMM d.'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -9376,7 +9214,6 @@ goog.i18n.DateTimeSymbols_sr_Latn = {
   AMPMS: ['pre podne', 'popodne'],
   DATEFORMATS: ['EEEE, dd. MMMM y.', 'dd. MMMM y.', 'dd.MM.y.', 'd.M.yy.'],
   TIMEFORMATS: ['HH.mm.ss zzzz', 'HH.mm.ss z', 'HH.mm.ss', 'HH.mm'],
-  AVAILABLEFORMATS: {'Md': 'd/M', 'MMMMd': 'MMMM d.', 'MMMd': 'MMM d.'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -9425,7 +9262,6 @@ goog.i18n.DateTimeSymbols_sr_Latn_ME = {
   AMPMS: ['pre podne', 'popodne'],
   DATEFORMATS: ['EEEE, dd. MMMM y.', 'd.MM.yyyy.', 'dd.MM.y.', 'd.M.yy.'],
   TIMEFORMATS: ['HH.mm.ss zzzz', 'HH.mm.ss z', 'HH.mm.ss', 'HH.mm'],
-  AVAILABLEFORMATS: {'Md': 'd/M', 'MMMMd': 'MMMM d.', 'MMMd': 'MMM d.'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -9474,7 +9310,6 @@ goog.i18n.DateTimeSymbols_sr_ME = {
   AMPMS: ['pre podne', 'popodne'],
   DATEFORMATS: ['EEEE, dd. MMMM y.', 'd.MM.yyyy.', 'dd.MM.y.', 'd.M.yy.'],
   TIMEFORMATS: ['HH.mm.ss zzzz', 'HH.mm.ss z', 'HH.mm.ss', 'HH.mm'],
-  AVAILABLEFORMATS: {'Md': 'd/M', 'MMMMd': 'MMMM d.', 'MMMd': 'MMM d.'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -9485,7 +9320,7 @@ goog.i18n.DateTimeSymbols_sr_ME = {
  * Date/time formatting symbols for locale sr_RS.
  */
 goog.i18n.DateTimeSymbols_sr_RS = {
-  ERAS: ['п. н. е.', 'н. е'],
+  ERAS: ['п. н. е.', 'н. е.'],
   ERANAMES: ['Пре нове ере', 'Нове ере'],
   NARROWMONTHS: ['ј', 'ф', 'м', 'а', 'м', 'ј', 'ј', 'а', 'с', 'о',
       'н', 'д'],
@@ -9517,7 +9352,6 @@ goog.i18n.DateTimeSymbols_sr_RS = {
   AMPMS: ['пре подне', 'поподне'],
   DATEFORMATS: ['EEEE, dd. MMMM y.', 'dd. MMMM y.', 'dd.MM.y.', 'd.M.yy.'],
   TIMEFORMATS: ['HH.mm.ss zzzz', 'HH.mm.ss z', 'HH.mm.ss', 'HH.mm'],
-  AVAILABLEFORMATS: {'Md': 'd/M', 'MMMMd': 'MMMM d.', 'MMMd': 'MMM d.'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -9528,7 +9362,7 @@ goog.i18n.DateTimeSymbols_sr_RS = {
  * Date/time formatting symbols for locale sr_YU.
  */
 goog.i18n.DateTimeSymbols_sr_YU = {
-  ERAS: ['п. н. е.', 'н. е'],
+  ERAS: ['п. н. е.', 'н. е.'],
   ERANAMES: ['Пре нове ере', 'Нове ере'],
   NARROWMONTHS: ['ј', 'ф', 'м', 'а', 'м', 'ј', 'ј', 'а', 'с', 'о',
       'н', 'д'],
@@ -9560,7 +9394,6 @@ goog.i18n.DateTimeSymbols_sr_YU = {
   AMPMS: ['пре подне', 'поподне'],
   DATEFORMATS: ['EEEE, dd. MMMM y.', 'dd. MMMM y.', 'dd.MM.y.', 'd.M.yy.'],
   TIMEFORMATS: ['HH.mm.ss zzzz', 'HH.mm.ss z', 'HH.mm.ss', 'HH.mm'],
-  AVAILABLEFORMATS: {'Md': 'd/M', 'MMMMd': 'MMMM d.', 'MMMd': 'MMM d.'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -9571,8 +9404,8 @@ goog.i18n.DateTimeSymbols_sr_YU = {
  * Date/time formatting symbols for locale ss.
  */
 goog.i18n.DateTimeSymbols_ss = {
-  ERAS: ['BC', 'AD'],
-  ERANAMES: ['BC', 'AD'],
+  ERAS: ['BCE', 'CE'],
+  ERANAMES: ['BCE', 'CE'],
   NARROWMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
   STANDALONENARROWMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10',
       '11', '12'],
@@ -9597,9 +9430,8 @@ goog.i18n.DateTimeSymbols_ss = {
   SHORTQUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
   QUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
   AMPMS: ['AM', 'PM'],
-  DATEFORMATS: ['EEEE, y MMMM dd', 'y MMMM d', 'y MMM d', 'yy/MM/dd'],
+  DATEFORMATS: ['EEEE, y MMMM dd', 'y MMMM d', 'y MMM d', 'yyyy-MM-dd'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -9622,8 +9454,8 @@ goog.i18n.DateTimeSymbols_ss_ZA = goog.i18n.DateTimeSymbols_ss;
  * Date/time formatting symbols for locale st.
  */
 goog.i18n.DateTimeSymbols_st = {
-  ERAS: ['BC', 'AD'],
-  ERANAMES: ['BC', 'AD'],
+  ERAS: ['BCE', 'CE'],
+  ERANAMES: ['BCE', 'CE'],
   NARROWMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
   STANDALONENARROWMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10',
       '11', '12'],
@@ -9648,9 +9480,8 @@ goog.i18n.DateTimeSymbols_st = {
   SHORTQUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
   QUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
   AMPMS: ['AM', 'PM'],
-  DATEFORMATS: ['EEEE, y MMMM dd', 'y MMMM d', 'y MMM d', 'yy/MM/dd'],
+  DATEFORMATS: ['EEEE, y MMMM dd', 'y MMMM d', 'y MMM d', 'yyyy-MM-dd'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -9699,9 +9530,9 @@ goog.i18n.DateTimeSymbols_sv_FI = {
   QUARTERS: ['1:a kvartalet', '2:a kvartalet', '3:e kvartalet',
       '4:e kvartalet'],
   AMPMS: ['fm', 'em'],
-  DATEFORMATS: ['EEEE d MMMM y', 'd MMMM y', 'd MMM y', 'yyyy-MM-dd'],
-  TIMEFORMATS: ['\'kl\'. HH.mm.ss zzzz', 'HH.mm.ss z', 'HH.mm.ss', 'HH.mm'],
-  AVAILABLEFORMATS: {'Md': 'd/M', 'MMMMd': 'd MMMM', 'MMMd': 'd MMM'},
+  DATEFORMATS: ['EEEE\'en\' \'den\' d:\'e\' MMMM y', 'd MMMM y', 'd MMM y',
+      'yyyy-MM-dd'],
+  TIMEFORMATS: ['\'kl\'. HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -9738,9 +9569,9 @@ goog.i18n.DateTimeSymbols_sv_SE = {
   QUARTERS: ['1:a kvartalet', '2:a kvartalet', '3:e kvartalet',
       '4:e kvartalet'],
   AMPMS: ['fm', 'em'],
-  DATEFORMATS: ['EEEE d MMMM y', 'd MMMM y', 'd MMM y', 'yyyy-MM-dd'],
-  TIMEFORMATS: ['\'kl\'. HH.mm.ss zzzz', 'HH.mm.ss z', 'HH.mm.ss', 'HH.mm'],
-  AVAILABLEFORMATS: {'Md': 'd/M', 'MMMMd': 'd MMMM', 'MMMd': 'd MMM'},
+  DATEFORMATS: ['EEEE\'en\' \'den\' d:\'e\' MMMM y', 'd MMMM y', 'd MMM y',
+      'yyyy-MM-dd'],
+  TIMEFORMATS: ['\'kl\'. HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -9753,9 +9584,9 @@ goog.i18n.DateTimeSymbols_sv_SE = {
 goog.i18n.DateTimeSymbols_sw_KE = {
   ERAS: ['KK', 'BK'],
   ERANAMES: ['Kabla ya Kristo', 'Baada ya Kristo'],
-  NARROWMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
-  STANDALONENARROWMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10',
-      '11', '12'],
+  NARROWMONTHS: ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D'],
+  STANDALONENARROWMONTHS: ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O',
+      'N', 'D'],
   MONTHS: ['Januari', 'Februari', 'Machi', 'Aprili', 'Mei', 'Juni', 'Julai',
       'Agosti', 'Septemba', 'Oktoba', 'Novemba', 'Desemba'],
   STANDALONEMONTHS: ['Januari', 'Februari', 'Machi', 'Aprili', 'Mei', 'Juni',
@@ -9768,16 +9599,15 @@ goog.i18n.DateTimeSymbols_sw_KE = {
       'Ijumaa', 'Jumamosi'],
   STANDALONEWEEKDAYS: ['Jumapili', 'Jumatatu', 'Jumanne', 'Jumatano',
       'Alhamisi', 'Ijumaa', 'Jumamosi'],
-  SHORTWEEKDAYS: ['Jpi', 'Jtt', 'Jnn', 'Jtn', 'Alh', 'Iju', 'Jmo'],
-  STANDALONESHORTWEEKDAYS: ['Jpi', 'Jtt', 'Jnn', 'Jtn', 'Alh', 'Iju', 'Jmo'],
-  NARROWWEEKDAYS: ['1', '2', '3', '4', '5', '6', '7'],
-  STANDALONENARROWWEEKDAYS: ['1', '2', '3', '4', '5', '6', '7'],
+  SHORTWEEKDAYS: ['J2', 'J3', 'J4', 'J5', 'Alh', 'Ij', 'J1'],
+  STANDALONESHORTWEEKDAYS: ['J2', 'J3', 'J4', 'J5', 'Alh', 'Ij', 'J1'],
+  NARROWWEEKDAYS: ['2', '3', '4', '5', 'A', 'I', '1'],
+  STANDALONENARROWWEEKDAYS: ['2', '3', '4', '5', 'A', 'I', '1'],
   SHORTQUARTERS: ['R1', 'R2', 'R3', 'R4'],
-  QUARTERS: ['robo ya kwanza', 'robo ya pili', 'robo ya tatu', 'robo ya nne'],
-  AMPMS: ['AM', 'PM'],
-  DATEFORMATS: ['EEEE, y MMMM dd', 'y MMMM d', 'y MMM d', 'yy/MM/dd'],
-  TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
+  QUARTERS: ['Robo 1', 'Robo 2', 'Robo 3', 'Robo 4'],
+  AMPMS: ['asubuhi', 'alasiri'],
+  DATEFORMATS: ['EEEE, d MMMM y', 'd MMMM y', 'd MMM y', 'dd/MM/yyyy'],
+  TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 5,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 1
@@ -9790,9 +9620,9 @@ goog.i18n.DateTimeSymbols_sw_KE = {
 goog.i18n.DateTimeSymbols_sw_TZ = {
   ERAS: ['KK', 'BK'],
   ERANAMES: ['Kabla ya Kristo', 'Baada ya Kristo'],
-  NARROWMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
-  STANDALONENARROWMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10',
-      '11', '12'],
+  NARROWMONTHS: ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D'],
+  STANDALONENARROWMONTHS: ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O',
+      'N', 'D'],
   MONTHS: ['Januari', 'Februari', 'Machi', 'Aprili', 'Mei', 'Juni', 'Julai',
       'Agosti', 'Septemba', 'Oktoba', 'Novemba', 'Desemba'],
   STANDALONEMONTHS: ['Januari', 'Februari', 'Machi', 'Aprili', 'Mei', 'Juni',
@@ -9805,16 +9635,15 @@ goog.i18n.DateTimeSymbols_sw_TZ = {
       'Ijumaa', 'Jumamosi'],
   STANDALONEWEEKDAYS: ['Jumapili', 'Jumatatu', 'Jumanne', 'Jumatano',
       'Alhamisi', 'Ijumaa', 'Jumamosi'],
-  SHORTWEEKDAYS: ['Jpi', 'Jtt', 'Jnn', 'Jtn', 'Alh', 'Iju', 'Jmo'],
-  STANDALONESHORTWEEKDAYS: ['Jpi', 'Jtt', 'Jnn', 'Jtn', 'Alh', 'Iju', 'Jmo'],
-  NARROWWEEKDAYS: ['1', '2', '3', '4', '5', '6', '7'],
-  STANDALONENARROWWEEKDAYS: ['1', '2', '3', '4', '5', '6', '7'],
+  SHORTWEEKDAYS: ['J2', 'J3', 'J4', 'J5', 'Alh', 'Ij', 'J1'],
+  STANDALONESHORTWEEKDAYS: ['J2', 'J3', 'J4', 'J5', 'Alh', 'Ij', 'J1'],
+  NARROWWEEKDAYS: ['2', '3', '4', '5', 'A', 'I', '1'],
+  STANDALONENARROWWEEKDAYS: ['2', '3', '4', '5', 'A', 'I', '1'],
   SHORTQUARTERS: ['R1', 'R2', 'R3', 'R4'],
-  QUARTERS: ['robo ya kwanza', 'robo ya pili', 'robo ya tatu', 'robo ya nne'],
-  AMPMS: ['AM', 'PM'],
-  DATEFORMATS: ['EEEE, y MMMM dd', 'y MMMM d', 'y MMM d', 'yy/MM/dd'],
-  TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
+  QUARTERS: ['Robo 1', 'Robo 2', 'Robo 3', 'Robo 4'],
+  AMPMS: ['asubuhi', 'alasiri'],
+  DATEFORMATS: ['EEEE, d MMMM y', 'd MMMM y', 'd MMM y', 'dd/MM/yyyy'],
+  TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -9852,8 +9681,7 @@ goog.i18n.DateTimeSymbols_syr = {
   QUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
   AMPMS: ['AM', 'PM'],
   DATEFORMATS: ['dd MMMM, y', 'dd MMMM, y', 'dd/MM/yyyy', 'dd/MM/yyyy'],
-  TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss', 'h:mm'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
+  TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -9879,14 +9707,14 @@ goog.i18n.DateTimeSymbols_ta_IN = {
       'ஜூ', 'ஆ', 'செ', 'அ', 'ந', 'டி'],
   MONTHS: ['ஜனவரி', 'பிப்ரவரி', 'மார்ச்',
       'ஏப்ரல்', 'மே', 'ஜூன்', 'ஜூலை',
-      'ஆகஸ்ட்', 'செப்டம்பர்',
+      'ஆகஸ்ட்', 'செப்டெம்ப்ர்',
       'அக்டோபர்', 'நவம்பர்',
       'டிசம்பர்'],
   STANDALONEMONTHS: ['ஜனவரி', 'பிப்ரவரி',
       'மார்ச்', 'ஏப்ரல்', 'மே', 'ஜூன்',
-      'ஜூலை', 'ஆகஸ்ட்', 'செப்டம்பர்',
-      'அக்டோபர்', 'நவம்பர்',
-      'டிசம்பர்'],
+      'ஜூலை', 'ஆகஸ்ட்',
+      'செப்டெம்ப்ர்', 'அக்டோபர்',
+      'நவம்பர்', 'டிசம்பர்'],
   SHORTMONTHS: ['ஜன.', 'பிப்.', 'மார்.', 'ஏப்.',
       'மே', 'ஜூன்', 'ஜூலை', 'ஆக.', 'செப்.',
       'அக்.', 'நவ.', 'டிச.'],
@@ -9915,7 +9743,6 @@ goog.i18n.DateTimeSymbols_ta_IN = {
   AMPMS: ['am', 'pm'],
   DATEFORMATS: ['EEEE, d MMMM, y', 'd MMMM, y', 'd MMM, y', 'd-M-yy'],
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'd MMMM', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [6, 6],
   FIRSTWEEKCUTOFFDAY: 2
@@ -9926,7 +9753,7 @@ goog.i18n.DateTimeSymbols_ta_IN = {
  * Date/time formatting symbols for locale te_IN.
  */
 goog.i18n.DateTimeSymbols_te_IN = {
-  ERAS: ['BCE', 'CE'],
+  ERAS: ['ఈసాపూర్వ.', 'సన్.'],
   ERANAMES: ['ఈసాపూర్వ.', 'సన్.'],
   NARROWMONTHS: ['జ', 'ఫి', 'మ', 'ఎ', 'మె', 'జు', 'జు',
       'ఆ', 'సె', 'అ', 'న', 'డి'],
@@ -9967,13 +9794,13 @@ goog.i18n.DateTimeSymbols_te_IN = {
   NARROWWEEKDAYS: ['ఆ', 'సో', 'మ', 'భు', 'గు', 'శు', 'శ'],
   STANDALONENARROWWEEKDAYS: ['ఆ', 'సో', 'మ', 'భు', 'గు',
       'శు', 'శ'],
-  SHORTQUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
+  SHORTQUARTERS: ['ఒకటి 1', 'రెండు 2', 'మూడు 3',
+      'నాలుగు 4'],
   QUARTERS: ['ఒకటి 1', 'రెండు 2', 'మూడు 3',
       'నాలుగు 4'],
-  AMPMS: ['am', 'pm'],
+  AMPMS: ['ఉ', 'సా'],
   DATEFORMATS: ['EEEE d MMMM y', 'd MMMM y', 'd MMM y', 'dd-MM-yy'],
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'd MMMM', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [6, 6],
   FIRSTWEEKCUTOFFDAY: 2
@@ -10014,7 +9841,6 @@ goog.i18n.DateTimeSymbols_tg = {
   AMPMS: ['пе. чо.', 'па. чо.'],
   DATEFORMATS: ['EEEE, y MMMM dd', 'y MMMM d', 'y MMM d', 'yy/MM/dd'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -10046,9 +9872,8 @@ goog.i18n.DateTimeSymbols_th_TH = {
   ERAS: ['ปีก่อน ค.ศ.', 'ค.ศ.'],
   ERANAMES: ['ปีก่อนคริสต์ศักราช',
       'คริสต์ศักราช'],
-  NARROWMONTHS: ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.',
-      'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.',
-      'พ.ย.', 'ธ.ค.'],
+  NARROWMONTHS: ['ม', 'ก', 'ม', 'ม', 'พ', 'ม', 'ก', 'ส', 'ก',
+      'ต', 'พ', 'ธ'],
   STANDALONENARROWMONTHS: ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.',
       'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.',
       'พ.ย.', 'ธ.ค.'],
@@ -10090,7 +9915,6 @@ goog.i18n.DateTimeSymbols_th_TH = {
       'H นาฬิกา m นาที ss วินาที zzzz',
       'H นาฬิกา m นาที ss วินาที z', 'H:mm:ss',
       'H:mm'],
-  AVAILABLEFORMATS: {'Md': 'd/M', 'MMMMd': 'd MMMM', 'MMMd': 'd MMM'},
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 2
@@ -10124,10 +9948,10 @@ goog.i18n.DateTimeSymbols_ti = {
       'ዓርቢ', 'ቀዳም'],
   STANDALONEWEEKDAYS: ['ሰንበት', 'ሰኑይ', 'ሠሉስ', 'ረቡዕ',
       'ኃሙስ', 'ዓርቢ', 'ቀዳም'],
-  SHORTWEEKDAYS: ['ሰንበ', 'ሰኑይ', 'ሠሉስ', 'ረቡዕ',
+  SHORTWEEKDAYS: ['ሰንበት', 'ሰኑይ', 'ሠሉስ', 'ረቡዕ',
       'ኃሙስ', 'ዓርቢ', 'ቀዳም'],
-  STANDALONESHORTWEEKDAYS: ['ሰንበ', 'ሰኑይ', 'ሠሉስ', 'ረቡዕ',
-      'ኃሙስ', 'ዓርቢ', 'ቀዳም'],
+  STANDALONESHORTWEEKDAYS: ['ሰንበት', 'ሰኑይ', 'ሠሉስ',
+      'ረቡዕ', 'ኃሙስ', 'ዓርቢ', 'ቀዳም'],
   NARROWWEEKDAYS: ['ሰ', 'ሰ', 'ሠ', 'ረ', 'ኃ', 'ዓ', 'ቀ'],
   STANDALONENARROWWEEKDAYS: ['ሰ', 'ሰ', 'ሠ', 'ረ', 'ኃ', 'ዓ', 'ቀ'],
   SHORTQUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
@@ -10136,7 +9960,6 @@ goog.i18n.DateTimeSymbols_ti = {
   DATEFORMATS: ['EEEE፣ dd MMMM መዓልቲ y G', 'dd MMMM y', 'dd-MMM-y',
       'dd/MM/yy'],
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 5,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 1
@@ -10169,10 +9992,10 @@ goog.i18n.DateTimeSymbols_ti_ER = {
       'ዓርቢ', 'ቀዳም'],
   STANDALONEWEEKDAYS: ['ሰንበት', 'ሰኑይ', 'ሰሉስ', 'ረቡዕ',
       'ሓሙስ', 'ዓርቢ', 'ቀዳም'],
-  SHORTWEEKDAYS: ['ሰንበ', 'ሰኑይ', 'ሰሉስ', 'ረቡዕ',
+  SHORTWEEKDAYS: ['ሰንበት', 'ሰኑይ', 'ሰሉስ', 'ረቡዕ',
       'ሓሙስ', 'ዓርቢ', 'ቀዳም'],
-  STANDALONESHORTWEEKDAYS: ['ሰንበ', 'ሰኑይ', 'ሰሉስ', 'ረቡዕ',
-      'ሓሙስ', 'ዓርቢ', 'ቀዳም'],
+  STANDALONESHORTWEEKDAYS: ['ሰንበት', 'ሰኑይ', 'ሰሉስ',
+      'ረቡዕ', 'ሓሙስ', 'ዓርቢ', 'ቀዳም'],
   NARROWWEEKDAYS: ['ሰ', 'ሰ', 'ሠ', 'ረ', 'ኃ', 'ዓ', 'ቀ'],
   STANDALONENARROWWEEKDAYS: ['ሰ', 'ሰ', 'ሠ', 'ረ', 'ኃ', 'ዓ', 'ቀ'],
   SHORTQUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
@@ -10181,7 +10004,6 @@ goog.i18n.DateTimeSymbols_ti_ER = {
   DATEFORMATS: ['EEEE፡ dd MMMM መዓልቲ y G', 'dd MMMM y', 'dd-MMM-y',
       'dd/MM/yy'],
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 5,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 1
@@ -10233,7 +10055,6 @@ goog.i18n.DateTimeSymbols_tig = {
   DATEFORMATS: ['EEEE፡ dd MMMM ዮም y G', 'dd MMMM y', 'dd-MMM-y',
       'dd/MM/yy'],
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -10276,7 +10097,6 @@ goog.i18n.DateTimeSymbols_tl_PH = {
   AMPMS: ['AM', 'PM'],
   DATEFORMATS: ['EEEE, MMMM dd y', 'MMMM d, y', 'MMM d, y', 'M/d/yy'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 2
@@ -10287,8 +10107,8 @@ goog.i18n.DateTimeSymbols_tl_PH = {
  * Date/time formatting symbols for locale tn.
  */
 goog.i18n.DateTimeSymbols_tn = {
-  ERAS: ['BC', 'AD'],
-  ERANAMES: ['BC', 'AD'],
+  ERAS: ['BCE', 'CE'],
+  ERANAMES: ['BCE', 'CE'],
   NARROWMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
   STANDALONENARROWMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10',
       '11', '12'],
@@ -10313,9 +10133,8 @@ goog.i18n.DateTimeSymbols_tn = {
   SHORTQUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
   QUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
   AMPMS: ['AM', 'PM'],
-  DATEFORMATS: ['EEEE, y MMMM dd', 'y MMMM d', 'y MMM d', 'yy/MM/dd'],
+  DATEFORMATS: ['EEEE, y MMMM dd', 'y MMMM d', 'y MMM d', 'yyyy-MM-dd'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -10338,29 +10157,28 @@ goog.i18n.DateTimeSymbols_to = {
   STANDALONENARROWMONTHS: ['S', 'F', 'M', 'E', 'M', 'S', 'S', 'A', 'S', 'O',
       'N', 'T'],
   MONTHS: ['Sānuali', 'Fēpueli', 'Maʻasi', 'ʻEpeleli', 'Mē', 'Sune',
-      'Siulai', 'ʻAokosi', 'Sēpitema', 'ʻOkatopa', 'Nōvema', 'Tisema'],
+      'Siulai', 'ʻAokosi', 'Sepitema', 'ʻOkatopa', 'Nōvema', 'Tīsema'],
   STANDALONEMONTHS: ['Sānuali', 'Fēpueli', 'Maʻasi', 'ʻEpeleli', 'Mē',
-      'Sune', 'Siulai', 'ʻAokosi', 'Sēpitema', 'ʻOkatopa', 'Nōvema',
-      'Tisema'],
+      'Sune', 'Siulai', 'ʻAokosi', 'Sepitema', 'ʻOkatopa', 'Nōvema',
+      'Tīsema'],
   SHORTMONTHS: ['Sān', 'Fēp', 'Maʻa', 'ʻEpe', 'Mē', 'Sun', 'Siu', 'ʻAok',
-      'Sēp', 'ʻOka', 'Nōv', 'Tis'],
+      'Sep', 'ʻOka', 'Nōv', 'Tīs'],
   STANDALONESHORTMONTHS: ['Sān', 'Fēp', 'Maʻa', 'ʻEpe', 'Mē', 'Sun', 'Siu',
-      'ʻAok', 'Sēp', 'ʻOka', 'Nōv', 'Tis'],
-  WEEKDAYS: ['Sāpate', 'Mōnite', 'Tusite', 'Pulelulu', 'Tuʻapulelulu',
+      'ʻAok', 'Sep', 'ʻOka', 'Nōv', 'Tīs'],
+  WEEKDAYS: ['Sāpate', 'Mōnite', 'Tūsite', 'Pulelulu', 'Tuʻapulelulu',
       'Falaite', 'Tokonaki'],
-  STANDALONEWEEKDAYS: ['Sāpate', 'Mōnite', 'Tusite', 'Pulelulu',
+  STANDALONEWEEKDAYS: ['Sāpate', 'Mōnite', 'Tūsite', 'Pulelulu',
       'Tuʻapulelulu', 'Falaite', 'Tokonaki'],
-  SHORTWEEKDAYS: ['Sāp', 'Mōn', 'Tus', 'Pul', 'Tuʻa', 'Fal', 'Tok'],
-  STANDALONESHORTWEEKDAYS: ['Sāp', 'Mōn', 'Tus', 'Pul', 'Tuʻa', 'Fal',
+  SHORTWEEKDAYS: ['Sāp', 'Mōn', 'Tūs', 'Pul', 'Tuʻa', 'Fal', 'Tok'],
+  STANDALONESHORTWEEKDAYS: ['Sāp', 'Mōn', 'Tūs', 'Pul', 'Tuʻa', 'Fal',
       'Tok'],
   NARROWWEEKDAYS: ['S', 'M', 'T', 'P', 'T', 'F', 'T'],
   STANDALONENARROWWEEKDAYS: ['S', 'M', 'T', 'P', 'T', 'F', 'T'],
   SHORTQUARTERS: ['K1', 'K2', 'K3', 'K4'],
   QUARTERS: ['kuata ʻuluaki', 'kuata ua', 'kuata tolu', 'kuata fā'],
-  AMPMS: ['HH', 'EA'],
-  DATEFORMATS: ['EEEE d MMMM y', 'd MMMM y', 'd MMM y', 'dd-MM-yyyy'],
+  AMPMS: ['AM', 'PM'],
+  DATEFORMATS: ['EEEE d MMMM y', 'd MMMM y', 'd MMM y', 'd/M/yy'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'd-M', 'MMMMd': 'd MMMM', 'MMMd': 'd MMM'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -10403,7 +10221,6 @@ goog.i18n.DateTimeSymbols_tr_TR = {
   AMPMS: ['AM', 'PM'],
   DATEFORMATS: ['dd MMMM y EEEE', 'dd MMMM y', 'dd MMM y', 'dd MM yyyy'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'dd/MM', 'MMMMd': 'dd MMMM', 'MMMd': 'dd MMM'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -10446,7 +10263,6 @@ goog.i18n.DateTimeSymbols_trv = {
   AMPMS: ['Brax kndaax', 'Baubau kndaax'],
   DATEFORMATS: ['EEEE, y MMMM dd', 'y MMMM d', 'y MMM d', 'yyyy-MM-dd'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -10463,8 +10279,8 @@ goog.i18n.DateTimeSymbols_trv_TW = goog.i18n.DateTimeSymbols_trv;
  * Date/time formatting symbols for locale ts.
  */
 goog.i18n.DateTimeSymbols_ts = {
-  ERAS: ['BC', 'AD'],
-  ERANAMES: ['BC', 'AD'],
+  ERAS: ['BCE', 'CE'],
+  ERANAMES: ['BCE', 'CE'],
   NARROWMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
   STANDALONENARROWMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10',
       '11', '12'],
@@ -10492,7 +10308,6 @@ goog.i18n.DateTimeSymbols_ts = {
   AMPMS: ['AM', 'PM'],
   DATEFORMATS: ['EEEE, y MMMM dd', 'y MMMM d', 'y MMM d', 'yyyy-MM-dd'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -10531,7 +10346,6 @@ goog.i18n.DateTimeSymbols_tt = {
   AMPMS: ['AM', 'PM'],
   DATEFORMATS: ['d MMMM y', 'd MMMM y', 'dd.MM.yyyy', 'dd.MM.yyyy'],
   TIMEFORMATS: ['h:mm:ss a zzzz', 'H:mm:ss z', 'H:mm:ss', 'H:mm'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'd MMMM', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -10570,7 +10384,6 @@ goog.i18n.DateTimeSymbols_ug = {
   AMPMS: ['AM', 'PM'],
   DATEFORMATS: ['EEEE, y MMMM dd', 'y MMMM d', 'y MMM d', 'yyyy-MM-dd'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 2
@@ -10633,7 +10446,6 @@ goog.i18n.DateTimeSymbols_uk_UA = {
   DATEFORMATS: ['EEEE, d MMMM y \'р\'.', 'd MMMM y \'р\'.', 'd MMM y',
       'dd.MM.yy'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'd MMMM', 'MMMd': 'd MMM'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -10671,7 +10483,7 @@ goog.i18n.DateTimeSymbols_ur_IN = {
   STANDALONESHORTWEEKDAYS: ['اتوار', 'پير', 'منگل', 'بده',
       'جمعرات', 'جمعہ', 'ہفتہ'],
   NARROWWEEKDAYS: ['ا', 'پ', 'م', 'ب', 'ج', 'ج', 'ہ'],
-  STANDALONENARROWWEEKDAYS: ['1', '2', '3', '4', '5', '6', '7'],
+  STANDALONENARROWWEEKDAYS: ['ا', 'پ', 'م', 'ب', 'ج', 'ج', 'ہ'],
   SHORTQUARTERS: ['1سہ ماہی', '2سہ ماہی', '3سہ ماہی',
       '4سہ ماہی'],
   QUARTERS: ['پہلی سہ ماہی', 'دوسری سہ ماہی',
@@ -10679,7 +10491,6 @@ goog.i18n.DateTimeSymbols_ur_IN = {
   AMPMS: ['قبل دوپہر', 'بعد دوپہر'],
   DATEFORMATS: ['EEEE, d, MMMM y', 'd, MMMM y', 'd, MMM y', 'd/M/yy'],
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [6, 6],
   FIRSTWEEKCUTOFFDAY: 2
@@ -10717,7 +10528,7 @@ goog.i18n.DateTimeSymbols_ur_PK = {
   STANDALONESHORTWEEKDAYS: ['اتوار', 'پير', 'منگل', 'بده',
       'جمعرات', 'جمعہ', 'ہفتہ'],
   NARROWWEEKDAYS: ['ا', 'پ', 'م', 'ب', 'ج', 'ج', 'ہ'],
-  STANDALONENARROWWEEKDAYS: ['1', '2', '3', '4', '5', '6', '7'],
+  STANDALONENARROWWEEKDAYS: ['ا', 'پ', 'م', 'ب', 'ج', 'ج', 'ہ'],
   SHORTQUARTERS: ['1سہ ماہی', '2سہ ماہی', '3سہ ماہی',
       '4سہ ماہی'],
   QUARTERS: ['پہلی سہ ماہی', 'دوسری سہ ماہی',
@@ -10725,7 +10536,6 @@ goog.i18n.DateTimeSymbols_ur_PK = {
   AMPMS: ['قبل دوپہر', 'بعد دوپہر'],
   DATEFORMATS: ['EEEE, d, MMMM y', 'd, MMMM y', 'd, MMM y', 'd/M/yy'],
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 2
@@ -10771,7 +10581,6 @@ goog.i18n.DateTimeSymbols_uz = {
   AMPMS: ['AM', 'PM'],
   DATEFORMATS: ['EEEE, y MMMM dd', 'y MMMM d', 'y MMM d', 'yy/MM/dd'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 2
@@ -10812,7 +10621,6 @@ goog.i18n.DateTimeSymbols_uz_AF = {
   DATEFORMATS: ['y نچی ییل d نچی MMMM EEEE کونی',
       'd نچی MMMM y', 'd MMM y', 'yyyy/M/d'],
   TIMEFORMATS: ['H:mm:ss (zzzz)', 'H:mm:ss (z)', 'H:mm:ss', 'H:mm'],
-  AVAILABLEFORMATS: {'Md': 'M/d', 'MMMMd': 'd نچی MMMM', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 5,
   WEEKENDRANGE: [3, 4],
   FIRSTWEEKCUTOFFDAY: 1
@@ -10853,7 +10661,6 @@ goog.i18n.DateTimeSymbols_uz_Arab = {
   DATEFORMATS: ['y نچی ییل d نچی MMMM EEEE کونی',
       'd نچی MMMM y', 'd MMM y', 'yyyy/M/d'],
   TIMEFORMATS: ['H:mm:ss (zzzz)', 'H:mm:ss (z)', 'H:mm:ss', 'H:mm'],
-  AVAILABLEFORMATS: {'Md': 'M/d', 'MMMMd': 'd نچی MMMM', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -10915,7 +10722,6 @@ goog.i18n.DateTimeSymbols_uz_Latn = {
   AMPMS: ['AM', 'PM'],
   DATEFORMATS: ['EEEE, y MMMM dd', 'y MMMM d', 'y MMM d', 'yy/MM/dd'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 2
@@ -10938,8 +10744,8 @@ goog.i18n.DateTimeSymbols_uz_UZ = goog.i18n.DateTimeSymbols_uz;
  * Date/time formatting symbols for locale ve.
  */
 goog.i18n.DateTimeSymbols_ve = {
-  ERAS: ['BC', 'AD'],
-  ERANAMES: ['BC', 'AD'],
+  ERAS: ['BCE', 'CE'],
+  ERANAMES: ['BCE', 'CE'],
   NARROWMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
   STANDALONENARROWMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10',
       '11', '12'],
@@ -10965,9 +10771,8 @@ goog.i18n.DateTimeSymbols_ve = {
   QUARTERS: ['Kotara ya u thoma', 'Kotara ya vhuvhili', 'Kotara ya vhuraru',
       'Kotara ya vhuṋa'],
   AMPMS: ['AM', 'PM'],
-  DATEFORMATS: ['EEEE, y MMMM dd', 'y MMMM d', 'y MMM d', 'yy/MM/dd'],
+  DATEFORMATS: ['EEEE, y MMMM dd', 'y MMMM d', 'y MMM d', 'yyyy-MM-dd'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -11008,15 +10813,14 @@ goog.i18n.DateTimeSymbols_vi_VN = {
   SHORTWEEKDAYS: ['CN', 'Th 2', 'Th 3', 'Th 4', 'Th 5', 'Th 6', 'Th 7'],
   STANDALONESHORTWEEKDAYS: ['CN', 'Th 2', 'Th 3', 'Th 4', 'Th 5', 'Th 6',
       'Th 7'],
-  NARROWWEEKDAYS: ['1', '2', '3', '4', '5', '6', '7'],
-  STANDALONENARROWWEEKDAYS: ['1', '2', '3', '4', '5', '6', '7'],
+  NARROWWEEKDAYS: ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'],
+  STANDALONENARROWWEEKDAYS: ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'],
   SHORTQUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
   QUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
   AMPMS: ['SA', 'CH'],
   DATEFORMATS: ['EEEE, \'ngày\' dd MMMM \'năm\' y',
       '\'Ngày\' dd \'tháng\' M \'năm\' y', 'dd-MM-yyyy', 'dd/MM/yyyy'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'd-M', 'MMMMd': 'd MMMM', 'MMMd': 'd MMM'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -11062,7 +10866,6 @@ goog.i18n.DateTimeSymbols_wal = {
   DATEFORMATS: ['EEEE፥ dd MMMM ጋላሳ y G', 'dd MMMM y', 'dd-MMM-y',
       'dd/MM/yy'],
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -11101,7 +10904,6 @@ goog.i18n.DateTimeSymbols_wo = {
   AMPMS: ['AM', 'PM'],
   DATEFORMATS: ['EEEE, y MMMM dd', 'y MMMM d', 'y MMM d', 'yyyy-MM-dd'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -11157,7 +10959,6 @@ goog.i18n.DateTimeSymbols_xh = {
   AMPMS: ['AM', 'PM'],
   DATEFORMATS: ['EEEE, y MMMM dd', 'y MMMM d', 'y MMM d', 'yyyy-MM-dd'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -11194,24 +10995,23 @@ goog.i18n.DateTimeSymbols_yo = {
       'Ìgbé', 'Ẹ̀bibi', 'Òkúdu', 'Agẹmọ', 'Ògún', 'Owewe',
       'Ọ̀wàrà', 'Bélú', 'Ọ̀pẹ̀'],
   WEEKDAYS: ['Ọjọ́ Àìkú', 'Ọjọ́ Ajé', 'Ọjọ́ Ìsẹ́gun',
-      'Ọjọ́rú', 'Ọjọ́ Àṣẹ̀ṣẹ̀dáiyé', 'Ọjọ́ Ẹtì',
+      'Ọjọ́rú', 'Ọjọ́bọ', 'Ọjọ́ Ẹtì',
       'Ọjọ́ Àbámẹ́ta'],
   STANDALONEWEEKDAYS: ['Ọjọ́ Àìkú', 'Ọjọ́ Ajé',
-      'Ọjọ́ Ìsẹ́gun', 'Ọjọ́rú',
-      'Ọjọ́ Àṣẹ̀ṣẹ̀dáiyé', 'Ọjọ́ Ẹtì',
-      'Ọjọ́ Àbámẹ́ta'],
+      'Ọjọ́ Ìsẹ́gun', 'Ọjọ́rú', 'Ọjọ́bọ',
+      'Ọjọ́ Ẹtì', 'Ọjọ́ Àbámẹ́ta'],
   SHORTWEEKDAYS: ['Àìkú', 'Ajé', 'Ìsẹ́gun', 'Ọjọ́rú',
-      'Àṣẹ̀ṣẹ̀dáiyé', 'Ẹtì', 'Àbámẹ́ta'],
+      'Ọjọ́bọ', 'Ẹtì', 'Àbámẹ́ta'],
   STANDALONESHORTWEEKDAYS: ['Àìkú', 'Ajé', 'Ìsẹ́gun', 'Ọjọ́rú',
-      'Àṣẹ̀ṣẹ̀dáiyé', 'Ẹtì', 'Àbámẹ́ta'],
+      'Ọjọ́bọ', 'Ẹtì', 'Àbámẹ́ta'],
   NARROWWEEKDAYS: ['1', '2', '3', '4', '5', '6', '7'],
   STANDALONENARROWWEEKDAYS: ['1', '2', '3', '4', '5', '6', '7'],
-  SHORTQUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
-  QUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
-  AMPMS: ['àárọ̀', 'ọ̀sán'],
-  DATEFORMATS: ['EEEE, y MMMM dd', 'y MMMM d', 'y MMM d', 'yyyy-MM-dd'],
-  TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
+  SHORTQUARTERS: ['K1', 'K2', 'K3', 'K4'],
+  QUARTERS: ['Kọ́tà Kínní', 'Kọ́tà Kejì', 'Kọ́à Keta',
+      'Kọ́tà Kẹrin'],
+  AMPMS: ['Àárọ̀', 'Ọ̀sán'],
+  DATEFORMATS: ['EEEE, d MMMM y', 'd MMMM y', 'd MMM y', 'dd/MM/yyyy'],
+  TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -11257,9 +11057,7 @@ goog.i18n.DateTimeSymbols_zh_Hans = {
   QUARTERS: ['第1季度', '第2季度', '第3季度', '第4季度'],
   AMPMS: ['上午', '下午'],
   DATEFORMATS: ['y年M月d日EEEE', 'y年M月d日', 'yyyy-M-d', 'yy-M-d'],
-  TIMEFORMATS: ['zzzzah时mm分ss秒', 'zah时mm分ss秒', 'ahh:mm:ss',
-      'ah:mm'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'MMMMd日', 'MMMd': 'MMMd日'},
+  TIMEFORMATS: ['zzzzah时mm分ss秒', 'zah时mm分ss秒', 'ah:mm:ss', 'ah:mm'],
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 2
@@ -11317,8 +11115,7 @@ goog.i18n.DateTimeSymbols_zh_Hans_SG = {
   QUARTERS: ['第1季度', '第2季度', '第3季度', '第4季度'],
   AMPMS: ['上午', '下午'],
   DATEFORMATS: ['y年M月d日EEEE', 'y年M月d日', 'yyyy-M-d', 'dd/MM/yy'],
-  TIMEFORMATS: ['zzzzah时mm分ss秒', 'ahh:mm:ssz', 'ahh:mm:ss', 'ahh:mm'],
-  AVAILABLEFORMATS: {'Md': 'M月d日', 'MMMMd': 'MMMMd日', 'MMMd': 'MMMd日'},
+  TIMEFORMATS: ['zzzzah时mm分ss秒', 'ahh:mm:ssz', 'ah:mm:ss', 'ahh:mm'],
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 2
@@ -11358,7 +11155,6 @@ goog.i18n.DateTimeSymbols_zh_Hant = {
   AMPMS: ['上午', '下午'],
   DATEFORMATS: ['y年M月d日EEEE', 'y年M月d日', 'yyyy/M/d', 'yy/M/d'],
   TIMEFORMATS: ['zzzzah時mm分ss秒', 'zah時mm分ss秒', 'ah:mm:ss', 'ah:mm'],
-  AVAILABLEFORMATS: {'Md': 'M/d', 'MMMMd': 'MMMMd日', 'MMMd': 'MMMd日'},
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 2
@@ -11400,7 +11196,6 @@ goog.i18n.DateTimeSymbols_zh_Hant_HK = {
       'yy年M月d日'],
   TIMEFORMATS: ['zzzzah時mm分ss秒', 'zah時mm分ss秒', 'ahh:mm:ss',
       'ah:mm'],
-  AVAILABLEFORMATS: {'Md': 'M/d', 'MMMMd': 'MMMMd日', 'MMMd': 'MMMd日'},
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 2
@@ -11442,7 +11237,6 @@ goog.i18n.DateTimeSymbols_zh_Hant_MO = {
       'yy年M月d日'],
   TIMEFORMATS: ['zzzzah時mm分ss秒', 'zah時mm分ss秒', 'ahh:mm:ss',
       'ah:mm'],
-  AVAILABLEFORMATS: {'Md': 'M/d', 'MMMMd': 'MMMMd日', 'MMMd': 'MMMd日'},
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 2
@@ -11490,7 +11284,6 @@ goog.i18n.DateTimeSymbols_zh_MO = {
       'yy年M月d日'],
   TIMEFORMATS: ['zzzzah時mm分ss秒', 'zah時mm分ss秒', 'ahh:mm:ss',
       'ah:mm'],
-  AVAILABLEFORMATS: {'Md': 'M/d', 'MMMMd': 'MMMMd日', 'MMMd': 'MMMd日'},
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 2
@@ -11530,8 +11323,7 @@ goog.i18n.DateTimeSymbols_zh_SG = {
   QUARTERS: ['第1季度', '第2季度', '第3季度', '第4季度'],
   AMPMS: ['上午', '下午'],
   DATEFORMATS: ['y年M月d日EEEE', 'y年M月d日', 'yyyy-M-d', 'dd/MM/yy'],
-  TIMEFORMATS: ['zzzzah时mm分ss秒', 'ahh:mm:ssz', 'ahh:mm:ss', 'ahh:mm'],
-  AVAILABLEFORMATS: {'Md': 'M月d日', 'MMMMd': 'MMMMd日', 'MMMd': 'MMMd日'},
+  TIMEFORMATS: ['zzzzah时mm分ss秒', 'ahh:mm:ssz', 'ah:mm:ss', 'ahh:mm'],
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 2
@@ -11542,8 +11334,8 @@ goog.i18n.DateTimeSymbols_zh_SG = {
  * Date/time formatting symbols for locale zu.
  */
 goog.i18n.DateTimeSymbols_zu = {
-  ERAS: ['BC', 'AD'],
-  ERANAMES: ['BC', 'AD'],
+  ERAS: ['BCE', 'CE'],
+  ERANAMES: ['BCE', 'CE'],
   NARROWMONTHS: ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D'],
   STANDALONENARROWMONTHS: ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O',
       'N', 'D'],
@@ -11569,7 +11361,6 @@ goog.i18n.DateTimeSymbols_zu = {
   AMPMS: ['AM', 'PM'],
   DATEFORMATS: ['EEEE dd MMMM y', 'd MMMM y', 'd MMM y', 'yyyy-MM-dd'],
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
-  AVAILABLEFORMATS: {'Md': 'M-d', 'MMMMd': 'MMMM d', 'MMMd': 'MMM d'},
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
@@ -11595,10 +11386,6 @@ if (goog.LOCALE == 'aa_DJ' || goog.LOCALE == 'aa-DJ') {
 
 if (goog.LOCALE == 'aa_ER' || goog.LOCALE == 'aa-ER') {
   goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_aa;
-}
-
-if (goog.LOCALE == 'aa_ER_SAAHO' || goog.LOCALE == 'aa-ER-SAAHO') {
-  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_aa_ER_SAAHO;
 }
 
 if (goog.LOCALE == 'aa_ET' || goog.LOCALE == 'aa-ET') {
@@ -11713,12 +11500,24 @@ if (goog.LOCALE == 'az_AZ' || goog.LOCALE == 'az-AZ') {
   goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_az;
 }
 
+if (goog.LOCALE == 'az_Arab' || goog.LOCALE == 'az-Arab') {
+  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_az;
+}
+
+if (goog.LOCALE == 'az_Arab_IR' || goog.LOCALE == 'az-Arab-IR') {
+  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_az;
+}
+
 if (goog.LOCALE == 'az_Cyrl' || goog.LOCALE == 'az-Cyrl') {
   goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_az_Cyrl;
 }
 
 if (goog.LOCALE == 'az_Cyrl_AZ' || goog.LOCALE == 'az-Cyrl-AZ') {
   goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_az_Cyrl;
+}
+
+if (goog.LOCALE == 'az_IR' || goog.LOCALE == 'az-IR') {
+  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_az;
 }
 
 if (goog.LOCALE == 'az_Latn' || goog.LOCALE == 'az-Latn') {
@@ -11787,10 +11586,6 @@ if (goog.LOCALE == 'cch') {
 
 if (goog.LOCALE == 'cch_NG' || goog.LOCALE == 'cch-NG') {
   goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_cch;
-}
-
-if (goog.LOCALE == 'cop') {
-  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_cop;
 }
 
 if (goog.LOCALE == 'cs_CZ' || goog.LOCALE == 'cs-CZ') {
@@ -12389,10 +12184,6 @@ if (goog.LOCALE == 'ku_Arab_IR' || goog.LOCALE == 'ku-Arab-IR') {
   goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_ku;
 }
 
-if (goog.LOCALE == 'ku_Arab_SY' || goog.LOCALE == 'ku-Arab-SY') {
-  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_ku;
-}
-
 if (goog.LOCALE == 'ku_IQ' || goog.LOCALE == 'ku-IQ') {
   goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_ku;
 }
@@ -12405,12 +12196,16 @@ if (goog.LOCALE == 'ku_Latn' || goog.LOCALE == 'ku-Latn') {
   goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_ku_Latn;
 }
 
+if (goog.LOCALE == 'ku_Latn_SY' || goog.LOCALE == 'ku-Latn-SY') {
+  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_ku_Latn;
+}
+
 if (goog.LOCALE == 'ku_Latn_TR' || goog.LOCALE == 'ku-Latn-TR') {
   goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_ku_Latn;
 }
 
 if (goog.LOCALE == 'ku_SY' || goog.LOCALE == 'ku-SY') {
-  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_ku;
+  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_ku_SY;
 }
 
 if (goog.LOCALE == 'ku_TR' || goog.LOCALE == 'ku-TR') {
@@ -12542,7 +12337,7 @@ if (goog.LOCALE == 'ne') {
 }
 
 if (goog.LOCALE == 'ne_IN' || goog.LOCALE == 'ne-IN') {
-  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_ne;
+  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_ne_IN;
 }
 
 if (goog.LOCALE == 'ne_NP' || goog.LOCALE == 'ne-NP') {

@@ -43,7 +43,8 @@ goog.messaging.AbstractChannel = function() {
 
   /**
    * The services registered for this channel.
-   * @type {Object.<string, {callback: Function, jsonEncoded: boolean}>}
+   * @type {Object.<string, {callback: function((string|!Object)),
+                             jsonEncoded: boolean}>}
    * @private
    */
   this.services_ = {};
@@ -130,32 +131,71 @@ goog.messaging.AbstractChannel.prototype.send = goog.abstractMethod;
  */
 goog.messaging.AbstractChannel.prototype.deliver = function(
     serviceName, payload) {
-  var service = this.services_[serviceName];
+  var service = this.getService(serviceName, payload);
   if (!service) {
-    if (this.defaultService_) {
-      var callback = goog.partial(this.defaultService_, serviceName);
-      var jsonEncoded = goog.isObject(payload);
-      service = {callback: callback, jsonEncoded: jsonEncoded};
-    } else {
-      this.logger.warning('Unknown service name "' + serviceName + '" ' +
-                          '(payload: ' + goog.debug.deepExpose(payload) + ')');
-      return;
-    }
+    return;
   }
 
-  if (service.jsonEncoded && goog.isString(payload)) {
+  payload = this.decodePayload(serviceName, payload, service.jsonEncoded);
+  if (goog.isDefAndNotNull(payload)) {
+    service.callback(payload);
+  }
+};
+
+
+/**
+ * Find the service object for a given service name. If there's no service
+ * explicitly registered, but there is a default service, a service object is
+ * constructed for it.
+ *
+ * @param {string} serviceName The name of the service receiving the message.
+ * @param {string|!Object} payload The contents of the message.
+ * @return {?{callback: function((string|!Object)), jsonEncoded: boolean}} The
+ *     service object for the given service, or null if none was found.
+ * @protected
+ */
+goog.messaging.AbstractChannel.prototype.getService = function(
+    serviceName, payload) {
+  var service = this.services_[serviceName];
+  if (service) {
+    return service;
+  } else if (this.defaultService_) {
+    var callback = goog.partial(this.defaultService_, serviceName);
+    var jsonEncoded = goog.isObject(payload);
+    return {callback: callback, jsonEncoded: jsonEncoded};
+  }
+
+  this.logger.warning('Unknown service name "' + serviceName + '"');
+  return null;
+};
+
+
+/**
+ * Converts the message payload into the format expected by the registered
+ * service (either JSON or string).
+ *
+ * @param {string} serviceName The name of the service receiving the message.
+ * @param {string|!Object} payload The contents of the message.
+ * @param {boolean} jsonEncoded Whether the service expects JSON or a plain
+ *     string.
+ * @return {string|Object} The payload in the format expected by the service, or
+ *     null if something went wrong.
+ * @protected
+ */
+goog.messaging.AbstractChannel.prototype.decodePayload = function(
+    serviceName, payload, jsonEncoded) {
+  if (jsonEncoded && goog.isString(payload)) {
     try {
-      payload = goog.json.parse(payload);
+      return goog.json.parse(payload);
     } catch (err) {
       this.logger.warning('Expected JSON payload for ' + serviceName +
                           ', was "' + payload + '"');
-      return;
+      return null;
     }
-  } else if (!service.jsonEncoded && !goog.isString(payload)) {
-    payload = goog.json.serialize(payload);
+  } else if (!jsonEncoded && !goog.isString(payload)) {
+    return goog.json.serialize(payload);
   }
-
-  service.callback(payload);
+  return payload;
 };
 
 

@@ -37,6 +37,7 @@ goog.testing.editor.TestHelper = function(root) {
   if (!root) {
     throw Error('Null root');
   }
+  goog.Disposable.call(this);
 
   /**
    * Convenience variable for root DOM element.
@@ -50,8 +51,7 @@ goog.testing.editor.TestHelper = function(root) {
    * @type {string}
    * @private
    */
-   this.savedHtml_ = '';
-
+  this.savedHtml_ = '';
 };
 goog.inherits(goog.testing.editor.TestHelper, goog.Disposable);
 

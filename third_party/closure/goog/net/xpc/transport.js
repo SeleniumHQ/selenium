@@ -33,6 +33,8 @@ goog.require('goog.net.xpc');
  * @extends {goog.Disposable};
  */
 goog.net.xpc.Transport = function(opt_domHelper) {
+  goog.Disposable.call(this);
+
   /**
    * The dom helper to use for finding the window objects to reference.
    * @type {goog.dom.DomHelper}

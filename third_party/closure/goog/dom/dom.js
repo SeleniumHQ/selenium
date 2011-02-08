@@ -1166,6 +1166,17 @@ goog.dom.isNodeLike = function(obj) {
 
 
 /**
+ * Returns true if the specified value is a Window object. This includes the
+ * global window for HTML pages, and iframe windows.
+ * @param {*} obj Variable to test.
+ * @return {boolean} Whether the variable is a window.
+ */
+goog.dom.isWindow = function(obj) {
+  return goog.isObject(obj) && obj['window'] == obj;
+};
+
+
+/**
  * Whether a node contains another node.
  * @param {Node} parent The node that should contain the other node.
  * @param {Node} descendant The node to test presence of.
@@ -1597,6 +1608,8 @@ goog.dom.getTextContent = function(node) {
 
   // Strip &shy; entities. goog.format.insertWordBreaks inserts them in Opera.
   textContent = textContent.replace(/ \xAD /g, ' ').replace(/\xAD/g, '');
+  // Strip &#8203; entities. goog.format.insertWordBreaks inserts them in IE8.
+  textContent = textContent.replace(/\u200B/g, '');
 
   // Skip this replacement on IE, which automatically turns &nbsp; into ' '
   // and / +/ into ' ' when reading innerText.

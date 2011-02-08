@@ -1032,27 +1032,27 @@ goog.i18n.DateTimeParse.MyDate_.prototype.calcDate_ =
     date.setDate(orgDate);
   }
 
-  if (this.hours == undefined) {
-    this.hours = date.getHours();
-  }
-
-  // adjust ampm
-  if (this.ampm != undefined && this.ampm > 0) {
-    if (this.hours < 12) {
+  if (goog.isFunction(date.setHours)) {
+    if (this.hours == undefined) {
+      this.hours = date.getHours();
+    }
+    // adjust ampm
+    if (this.ampm != undefined && this.ampm > 0 && this.hours < 12) {
       this.hours += 12;
     }
+    date.setHours(this.hours);
   }
-  date.setHours(this.hours);
 
-  if (this.minutes != undefined) {
+  if (goog.isFunction(date.setMinutes) && this.minutes != undefined) {
     date.setMinutes(this.minutes);
   }
 
-  if (this.seconds != undefined) {
+  if (goog.isFunction(date.setSeconds) && this.seconds != undefined) {
     date.setSeconds(this.seconds);
   }
 
-  if (this.milliseconds != undefined) {
+  if (goog.isFunction(date.setMilliseconds) &&
+      this.milliseconds != undefined) {
     date.setMilliseconds(this.milliseconds);
   }
 

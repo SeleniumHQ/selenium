@@ -376,9 +376,12 @@ goog.ui.Select.prototype.updateCaption_ = function() {
  * Opens or closes the menu.  Overrides {@link goog.ui.MenuButton#setOpen} by
  * highlighting the currently selected option on open.
  * @param {boolean} open Whether to open or close the menu.
+ * @param {goog.events.Event=} opt_e Mousedown event that caused the menu to
+ *     be opened.
+ * @override
  */
-goog.ui.Select.prototype.setOpen = function(open) {
-  goog.ui.Select.superClass_.setOpen.call(this, open);
+goog.ui.Select.prototype.setOpen = function(open, opt_e) {
+  goog.ui.Select.superClass_.setOpen.call(this, open, opt_e);
 
   if (this.isOpen()) {
     this.getMenu().setHighlightedIndex(this.getSelectedIndex());

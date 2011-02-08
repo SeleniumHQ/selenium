@@ -104,6 +104,28 @@ goog.structs.TreeNode.prototype.isLeaf = function() {
 
 
 /**
+ * Tells if the node is the last child of its parent. This method helps how to
+ * connect the tree nodes with lines: L shapes should be used before the last
+ * children and |- shapes before the rest. Schematic tree visualization:
+ *
+ * <pre>
+ * Node1
+ * |-Node2
+ * | L-Node3
+ * |   |-Node4
+ * |   L-Node5
+ * L-Node6
+ * </pre>
+ *
+ * @return {boolean} Whether the node has parent and is the last child of it.
+ */
+goog.structs.TreeNode.prototype.isLastChild = function() {
+  var parent = this.getParent();
+  return Boolean(parent && this == goog.array.peek(parent.getChildren()));
+};
+
+
+/**
  * @return {!Array.<!goog.structs.TreeNode>} Immutable child nodes.
  */
 goog.structs.TreeNode.prototype.getChildren = function() {
