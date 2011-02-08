@@ -76,94 +76,14 @@ prologue (FILE* out_f, XEvent *eventp, char *event_name)
 }
 
 static void
-dump (FILE* out_f, char *str, int len)
-{
-    fprintf(out_f, "(");
-    len--;
-    while (len-- > 0)
-        fprintf(out_f, "%02x ", (unsigned char) *str++);
-    fprintf(out_f, "%02x)", (unsigned char) *str++);
-}
-
-static void
 do_KeyPress (FILE* out_f, XEvent *eventp)
 {
     XKeyEvent *e = (XKeyEvent *) eventp;
-    KeySym ks;
-    KeyCode kc = 0;
-    Bool kc_set = False;
-    char *ksname;
-    int nbytes, nmbbytes = 0;
-    char str[256+1];
-    static char *buf = NULL;
-    static int bsize = 8;
-    //Status status;
 
-    if (buf == NULL)
-      buf = malloc (bsize);
-
-    //nbytes = XLookupString (e, str, 256, &ks, NULL);
-
-    /* not supposed to call XmbLookupString on a key release event */
-    /*
-    if (e->type == KeyPress && xic) {
-        do {
-            nmbbytes = XmbLookupString (xic, e, buf, bsize - 1, &ks, &status);
-            buf[nmbbytes] = '\0';
-
-            if (status == XBufferOverflow) {
-                bsize = nmbbytes + 1;
-                buf = realloc (buf, bsize);
-            }
-        } while (status == XBufferOverflow);
-    }
-    */
-
-    ksname = "NotResolved";
-    /*
-    if (ks == NoSymbol)
-	ksname = "NoSymbol";
-    else {
-	if (!(ksname = XKeysymToString (ks)))
-	    ksname = "(no name)";
-	kc = XKeysymToKeycode(dpy, ks);
-	kc_set = True;
-    }
-    */
-	
     fprintf(out_f,"    root 0x%lx, subw 0x%lx, time %lu, (%d,%d), root:(%d,%d),\n",
-	    e->root, e->subwindow, e->time, e->x, e->y, e->x_root, e->y_root);
-    fprintf(out_f,"    state 0x%x, keycode %u (keysym 0x%lx, %s), same_screen %s,\n",
-	    e->state, e->keycode, (unsigned long) ks, ksname,
-	    e->same_screen ? Yes : No);
-    if (kc_set && e->keycode != kc)
-	fprintf(out_f,"    XKeysymToKeycode returns keycode: %u\n",kc);
-    if (nbytes < 0) nbytes = 0;
-    if (nbytes > 256) nbytes = 256;
-    str[nbytes] = '\0';
-    fprintf(out_f,"    XLookupString gives %d bytes: ", nbytes);
-    if (nbytes > 0) {
-        dump (out_f, str, nbytes);
-        fprintf(out_f," \"%s\"\n", str);
-    } else {
-    	fprintf(out_f,"\n");
-    }
-
-    /* not supposed to call XmbLookupString on a key release event */
-    if (e->type == KeyPress && xic) {
-        fprintf(out_f,"    XmbLookupString gives %d bytes: ", nmbbytes);
-        if (nmbbytes > 0) {
-           dump (out_f, buf, nmbbytes);
-           fprintf(out_f," \"%s\"\n", buf);
-        } else {
-    	   fprintf(out_f,"\n");
-        }
-    }
-
-    /*
-    fprintf(out_f,"    XFilterEvent returns: %s\n", 
-	    XFilterEvent (eventp, e->window) ? "True" : "False");
-            */
+            e->root, e->subwindow, e->time, e->x, e->y, e->x_root, e->y_root);
+    fprintf(out_f,"    state 0x%x, keycode %u, same_screen %s,\n",
+            e->state, e->keycode, e->same_screen ? Yes : No);
 }
 
 static void
