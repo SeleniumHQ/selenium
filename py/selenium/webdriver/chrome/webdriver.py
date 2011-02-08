@@ -22,7 +22,8 @@ from driver import ChromeDriver
 class WebDriver(RemoteWebDriver):
     def __init__(self):
         RemoteWebDriver.__init__(self,
-            command_executor=ChromeDriver(),
+            command_executor=ChromeDriver(custom_profile=None, 
+            untrusted_certificates=False),
             browser_name='chrome', platform='ANY', version='',
             javascript_enabled=True)
     
