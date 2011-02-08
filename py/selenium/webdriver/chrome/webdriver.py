@@ -40,20 +40,3 @@ class WebDriver(RemoteWebDriver):
         image = self._execute(Command.SCREENSHOT)['value']
         with open(jpeg_file, "w") as fo:
             fo.write(image.decode("base64"))
-
-
-def _test():
-    wd = RemoteWebDriver.connect('*chrome')
-    wd.get("http://www.google.com")
-    print "Current URL: %s" % wd.get_current_url()
-    print "2 + 2 = %s" % wd.execute_script("return 2 + 2;")
-    q = wd.find_element_by_name("q")
-    q.send_keys("Sauce Labs")
-    b = wd.find_element_by_name("btnG")
-    b.click()
-    wd.save_screenshot("google.jpg")
-    print "Screenshot saved to google.jpg"
-    wd.quit()
-
-if __name__ == "__main__":
-    _test()
