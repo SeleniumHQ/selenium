@@ -1590,7 +1590,7 @@ Selenium.prototype.getSelectedIndexes = function(selectLocator) {
    * @return string[] an array of all selected option indexes in the specified select drop-down
    */
     return this.findSelectedOptionProperties(selectLocator, "index");
-}
+};
 
 Selenium.prototype.getSelectedIndex = function(selectLocator) {
     /** Gets option index (option number, starting at 0) for selected option in the specified select element.
@@ -1599,7 +1599,7 @@ Selenium.prototype.getSelectedIndex = function(selectLocator) {
    * @return string the selected option index in the specified select drop-down
    */
     return this.findSelectedOptionProperty(selectLocator, "index");
-}
+};
 
 Selenium.prototype.getSelectedIds = function(selectLocator) {
     /** Gets all option element IDs for selected options in the specified select or multi-select element.
@@ -1608,7 +1608,7 @@ Selenium.prototype.getSelectedIds = function(selectLocator) {
    * @return string[] an array of all selected option IDs in the specified select drop-down
    */
     return this.findSelectedOptionProperties(selectLocator, "id");
-}
+};
 
 Selenium.prototype.getSelectedId = function(selectLocator) {
     /** Gets option element ID for selected option in the specified select element.
@@ -1617,7 +1617,7 @@ Selenium.prototype.getSelectedId = function(selectLocator) {
    * @return string the selected option ID in the specified select drop-down
    */
     return this.findSelectedOptionProperty(selectLocator, "id");
-}
+};
 
 Selenium.prototype.isSomethingSelected = function(selectLocator) {
     /** Determines whether some option in a drop-down menu is selected.
@@ -1639,7 +1639,7 @@ Selenium.prototype.isSomethingSelected = function(selectLocator) {
         }
     }
     return false;
-}
+};
 
 Selenium.prototype.findSelectedOptionProperties = function(locator, property) {
    var element = this.browserbot.findElement(locator);
@@ -1658,7 +1658,7 @@ Selenium.prototype.findSelectedOptionProperties = function(locator, property) {
     }
     if (selectedOptions.length == 0) Assert.fail("No option selected");
     return selectedOptions;
-}
+};
 
 Selenium.prototype.findSelectedOptionProperty = function(locator, property) {
     var selectedOptions = this.findSelectedOptionProperties(locator, property);
@@ -1666,7 +1666,7 @@ Selenium.prototype.findSelectedOptionProperty = function(locator, property) {
         Assert.fail("More than one selected option!");
     }
     return selectedOptions[0];
-}
+};
 
 Selenium.prototype.getSelectOptions = function(selectLocator) {
     /** Gets all option labels in the specified select drop-down.
