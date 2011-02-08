@@ -107,6 +107,7 @@
         <module>firefox-driver</module>
         <module>htmlunit-driver</module>
         <module>ie-driver</module>
+        <module>iphone-driver</module>
         <module>remote-control</module>
         <module>remote-driver</module>
         <module>selenium</module>

@@ -40,7 +40,7 @@
         </dependency>
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
-            <artifactId>selenium-support</artifactId>
+            <artifactId>selenium-iphone-driver</artifactId>
             <version>${project.version}</version>
         </dependency>
         <!-- We need TestNG for SeleneseTestNgHelper ... -->
@@ -73,15 +73,12 @@
                                                 <present targetdir="../firefox-driver/src/main/java" />
                                                 <present targetdir="../htmlunit-driver/src/main/java" />
                                                 <present targetdir="../ie-driver/src/main/java" />
+                                                <present targetdir="../iphone-driver/src/main/java" />
                                                 <present targetdir="../remote-driver/src/main/java" />
                                                 <present targetdir="../support/src/main/java" />
                                             </or>
                                         </not>
-                                        <exclude name="org/openqa/selenium/internal/ReturnedCookie.java" />
                                         <exclude name="org/openqa/selenium/android/**" />
-                                        <exclude name="org/openqa/selenium/iphone/**" />
-                                        <exclude name="org/openqa/selenium/lift/**" />
-                                        <exclude name="org/openqa/selenium/support/testing/*.java" />
                                     </fileset>
                                 </copy>
                             </tasks>

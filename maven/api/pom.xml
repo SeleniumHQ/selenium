@@ -49,7 +49,6 @@
                                         <include name="org/openqa/selenium/html5/*.java" />
                                         <include name="org/openqa/selenium/interactions/**/*.java" />
                                         <include name="org/openqa/selenium/internal/*.java" />
-                                        <exclude name="org/openqa/selenium/internal/ReturnedCookie.java" />
                                         <include name="org/openqa/selenium/remote/CapabilityType.java" />
                                         <include name="org/openqa/selenium/remote/DesiredCapabilities.java" />
                                     </fileset>
