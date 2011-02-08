@@ -46,7 +46,11 @@ module Javascript
     attr_reader :calcdeps
 
     def initialize()
-      @calcdeps = "java -jar third_party/py/jython.jar third_party/closure/bin/calcdeps.py " +
+      py = "java -jar third_party/py/jthyon.jar"
+      if (python?) 
+        py = "python"
+      end
+      @calcdeps = "#{py} third_party/closure/bin/calcdeps.py " +
                   "-c third_party/closure/bin/compiler-20100616.jar "
     end
 
