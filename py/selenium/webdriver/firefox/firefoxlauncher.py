@@ -23,6 +23,7 @@ import time
 import os
 from extensionconnection import ExtensionConnection
 import utils
+import signal
 
 MAX_START_ATTEMPTS = 60
 LOGGER = logging.getLogger(__name__)
@@ -64,7 +65,7 @@ class FirefoxLauncher(object):
         """
         try:
             if self.process:
-                os.kill(self.process.pid, 9)
+                os.kill(self.process.pid, signal.SIGTERM)
         except AttributeError:
             # kill may not be available under windows environment
             pass
