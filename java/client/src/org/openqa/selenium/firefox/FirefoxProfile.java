@@ -445,7 +445,7 @@ public class FirefoxProfile {
   }
 
   public void clean(File profileDir) {
-    TemporaryFilesystem.deleteTempDir(profileDir);
+    TemporaryFilesystem.getDefaultTmpFS().deleteTempDir(profileDir);
   }
 
   public String toJson() throws IOException {
@@ -455,7 +455,7 @@ public class FirefoxProfile {
   }
 
   public static FirefoxProfile fromJson(String json) throws IOException {
-    File dir = TemporaryFilesystem.createTempDir("webdriver", "duplicated");
+    File dir = TemporaryFilesystem.getDefaultTmpFS().createTempDir("webdriver", "duplicated");
 
     new Zip().unzip(json, dir);
 
@@ -475,7 +475,8 @@ public class FirefoxProfile {
    */
   public File layoutOnDisk() {
       try {
-        File profileDir = TemporaryFilesystem.createTempDir("anonymous", "webdriver-profile");
+        File profileDir = TemporaryFilesystem.getDefaultTmpFS()
+            .createTempDir("anonymous", "webdriver-profile");
         File userPrefs = new File(profileDir, "user.js");
 
         copyModel(model, profileDir);

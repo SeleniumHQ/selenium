@@ -68,7 +68,7 @@ public class FileExtension implements Extension {
     FileHandler.createDir(extensionDirectory);
     FileHandler.makeWritable(extensionDirectory);
     FileHandler.copy(root, extensionDirectory );
-    TemporaryFilesystem.deleteTempDir(root);
+    TemporaryFilesystem.getDefaultTmpFS().deleteTempDir(root);
   }
 
   private File obtainRootDirectory(File extensionToInstall) throws IOException {

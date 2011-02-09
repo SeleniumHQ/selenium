@@ -84,7 +84,7 @@ public class ChromeProfile {
    * @return File object for the created directory.
    */
   private static File createProfileDir() {
-    File tempProfileDir = TemporaryFilesystem.createTempDir("profile", "");
+    File tempProfileDir = TemporaryFilesystem.getDefaultTmpFS().createTempDir("profile", "");
 
     System.setProperty(REAP_PROFILE_PROPERTY, "false");
     return tempProfileDir;

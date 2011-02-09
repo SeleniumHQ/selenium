@@ -109,7 +109,7 @@ public class ProfilesIni {
       return null;
 
     // Make a copy of the profile to use
-    File tempDir = TemporaryFilesystem.createTempDir("userprofile", "copy");
+    File tempDir = TemporaryFilesystem.getDefaultTmpFS().createTempDir("userprofile", "copy");
     try {
       FileHandler.copy(profileDir, tempDir);
 

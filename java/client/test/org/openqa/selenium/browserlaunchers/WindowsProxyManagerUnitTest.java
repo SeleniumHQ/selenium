@@ -122,7 +122,7 @@ public class WindowsProxyManagerUnitTest extends TestCase {
   }
   
   private File getNonexistentDir() {
-    File destDir = TemporaryFilesystem.createTempDir("rc-wpmt-dest", "tmp");
+    File destDir = TemporaryFilesystem.getDefaultTmpFS().createTempDir("rc-wpmt-dest", "tmp");
     destDir.delete();
     assertFalse(destDir.exists());
     return destDir;

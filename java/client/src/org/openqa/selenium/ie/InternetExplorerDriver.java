@@ -116,7 +116,7 @@ public class InternetExplorerDriver extends RemoteWebDriver implements TakesScre
         return;
       }
 
-      File parentDir = TemporaryFilesystem.createTempDir("webdriver",
+      File parentDir = TemporaryFilesystem.getDefaultTmpFS().createTempDir("webdriver",
           "libs");
       try {
         FileHandler.copyResource(parentDir, getClass(), "IEDriver.dll");

@@ -62,10 +62,10 @@ public class FileHandlerTest extends TestCase {
   }
 
   @Test public void testFileCopyCanFilterBySuffix() throws IOException {
-    File source = TemporaryFilesystem.createTempDir("filehandler", "source");
+    File source = TemporaryFilesystem.getDefaultTmpFS().createTempDir("filehandler", "source");
     File textFile = File.createTempFile("example", ".txt", source);
     File xmlFile = File.createTempFile("example", ".xml", source);
-    File dest = TemporaryFilesystem.createTempDir("filehandler", "dest");
+    File dest = TemporaryFilesystem.getDefaultTmpFS().createTempDir("filehandler", "dest");
 
     FileHandler.copy(source, dest, ".txt");
 

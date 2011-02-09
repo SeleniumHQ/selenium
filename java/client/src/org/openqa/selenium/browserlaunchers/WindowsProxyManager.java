@@ -62,7 +62,7 @@ public class WindowsProxyManager {
     this.customPACappropriate = customPACappropriate;
     this.port = port;
 
-    customProxyPACDir = TemporaryFilesystem.createTempDir(sessionId, "");
+    customProxyPACDir = TemporaryFilesystem.getDefaultTmpFS().createTempDir(sessionId, "");
 
     init();
   }

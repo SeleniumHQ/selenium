@@ -688,7 +688,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
     File tmpFile = new File(parent, name);
 
     if (tmpFile.exists()) {
-      File tmpDir = TemporaryFilesystem.createTempDir("selenium", "upload");
+      File tmpDir = TemporaryFilesystem.getDefaultTmpFS().createTempDir("selenium", "upload");
       tmpFile = new File(tmpDir, name);
     }
 

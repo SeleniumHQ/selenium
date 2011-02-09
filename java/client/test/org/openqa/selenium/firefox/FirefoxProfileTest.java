@@ -163,7 +163,7 @@ public class FirefoxProfileTest extends TestCase {
 
     assertNotNull(json);
 
-    File dir = TemporaryFilesystem.createTempDir("webdriver", "duplicated");
+    File dir = TemporaryFilesystem.getDefaultTmpFS().createTempDir("webdriver", "duplicated");
     new Zip().unzip(json, dir);
 
     File prefs = new File(dir, "user.js");

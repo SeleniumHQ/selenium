@@ -30,18 +30,35 @@ import java.util.concurrent.CopyOnWriteArraySet;
  * @author gblock@google.com (Gregory Block)
  */
 public class TemporaryFilesystem {
-  private static final Set<File> temporaryFiles = new CopyOnWriteArraySet<File>();
-  private static final File baseDir = new File(System.getProperty("java.io.tmpdir"));
-  private static final Thread shutdownHook = new Thread() {
+  private final Set<File> temporaryFiles = new CopyOnWriteArraySet<File>();
+  private final File baseDir;
+  private final Thread shutdownHook = new Thread() {
     @Override public void run() {
       deleteTemporaryFiles();
     }
   };
 
-  /**
-   * Add the static initialization hook; verify java.io.tmpdir is writable.
-   */
-  static {
+  private static TemporaryFilesystem instance;
+
+  public static TemporaryFilesystem getDefaultTmpFS() {
+    if (instance == null) {
+      synchronized (TemporaryFilesystem.class) {
+        if (instance == null) {
+          instance = new TemporaryFilesystem(System.getProperty("java.io.tmpdir"));
+        }
+      }
+    }
+    
+    return instance;
+  }
+
+  public static TemporaryFilesystem getTmpFsBasedOn(String directory) {
+    return new TemporaryFilesystem(directory);
+  }
+
+  private TemporaryFilesystem(String baseTempDir) {
+    baseDir = new File(baseTempDir);
+
     Runtime.getRuntime().addShutdownHook(shutdownHook);
 
     if (!baseDir.exists()) {
@@ -50,10 +67,7 @@ public class TemporaryFilesystem {
     if (!baseDir.canWrite()) {
       throw new WebDriverException("Unable to write to tmp dir: " + baseDir.getAbsolutePath());
     }
-  }
 
-  private TemporaryFilesystem() {
-    // Static utility class, no public constructor.
   }
 
   /**
@@ -63,7 +77,7 @@ public class TemporaryFilesystem {
    * @param suffix the suffix to use when creating the temporary directory
    * @return the temporary directory to create
    */
-  public static File createTempDir(String prefix, String suffix) {
+  public File createTempDir(String prefix, String suffix) {
     try {
       // Create a tempfile, and delete it.
       File file = File.createTempFile(prefix, suffix, baseDir);
@@ -92,7 +106,7 @@ public class TemporaryFilesystem {
    * @param file the file to delete
    * @throws WebDriverException if interrupted
    */
-  public static void deleteTempDir(File file) {
+  public void deleteTempDir(File file) {
     if (!shouldReap()) {
       return;
     }
@@ -106,7 +120,7 @@ public class TemporaryFilesystem {
   /**
    * Perform the operation that a shutdown hook would have.
    */
-  public static void deleteTemporaryFiles() {
+  public void deleteTemporaryFiles() {
     if (!shouldReap()) {
       return;
     }
@@ -125,7 +139,7 @@ public class TemporaryFilesystem {
    *
    * @return true if reaping is enabled.
    */
-  static boolean shouldReap() {
+  boolean shouldReap() {
     String reap = System.getProperty("webdriver.reap_profile", "true");
     return Boolean.valueOf(reap);
   }

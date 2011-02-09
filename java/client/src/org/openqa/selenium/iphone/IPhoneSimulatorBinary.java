@@ -60,7 +60,7 @@ public class IPhoneSimulatorBinary extends SubProcess {
    * Temporary directory used to store all generated iPhone Simulator scripts.
    */
   private static final File SCRIPT_DIRECTORY =
-      TemporaryFilesystem.createTempDir("webdriver", "iWebDriver");
+      TemporaryFilesystem.getDefaultTmpFS().createTempDir("webdriver", "iWebDriver");
 
   /**
    * Utility script used to kill the iWebDriver process when

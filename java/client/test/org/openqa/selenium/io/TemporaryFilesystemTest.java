@@ -2,18 +2,28 @@ package org.openqa.selenium.io;
 
 import junit.framework.TestCase;
 
+import org.junit.Test;
+import org.openqa.selenium.WebDriverException;
+
 import java.io.File;
 import java.io.IOException;
 
-import org.junit.Test;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.io.TemporaryFilesystem;
-
 public class TemporaryFilesystemTest extends TestCase {
+  private TemporaryFilesystem tmpFs;
+
+  @Override
+  protected void setUp() throws Exception {
+    super.setUp();
+    
+    File baseForTest = new File(System.getProperty("java.io.tmpdir"),  "tmpTest");
+    baseForTest.mkdir();
+
+    tmpFs = TemporaryFilesystem.getTmpFsBasedOn(baseForTest.getAbsolutePath());
+  }
 
   @Test
   public void testCanCreateTempFiles() {
-    File tmp = TemporaryFilesystem.createTempDir("TemporaryFilesystem", "canCreate");
+    File tmp = tmpFs.createTempDir("TemporaryFilesystem", "canCreate");
     try {
       assertTrue(tmp.exists());
     } catch (WebDriverException e) {
@@ -24,43 +34,43 @@ public class TemporaryFilesystemTest extends TestCase {
 
   @Test
   public void testFilesystemCleanupDeletesDirs() {
-    if (!TemporaryFilesystem.shouldReap()) {
+    if (!tmpFs.shouldReap()) {
       System.out.println("Reaping of files disabled - " +
                          "ignoring testFilesystemCleanupDeletesDirs");
       return;
     }
-    File tmp = TemporaryFilesystem.createTempDir("TemporaryFilesystem", "fcdd");
+    File tmp = tmpFs.createTempDir("TemporaryFilesystem", "fcdd");
     assertTrue(tmp.exists());
 
-    TemporaryFilesystem.deleteTemporaryFiles();
+    tmpFs.deleteTemporaryFiles();
     assertFalse(tmp.exists());
   }
 
   @Test
   public void testFilesystemCleanupDeletesRecursive() throws IOException {
-    if (!TemporaryFilesystem.shouldReap()) {
+    if (!tmpFs.shouldReap()) {
       System.out.println("Reaping of files disabled - " +
                          "ignoring testFilesystemCleanupDeletesRecursive");
       return;
     }
-    File tmp = TemporaryFilesystem.createTempDir("TemporaryFilesystem", "fcdr");
+    File tmp = tmpFs.createTempDir("TemporaryFilesystem", "fcdr");
     createDummyFilesystemContent(tmp);
 
-    TemporaryFilesystem.deleteTemporaryFiles();
+    tmpFs.deleteTemporaryFiles();
     assertFalse(tmp.exists());
   }
 
   @Test
   public void testSpecificDeleteRequestHonored() throws IOException {
-    if (!TemporaryFilesystem.shouldReap()) {
+    if (!tmpFs.shouldReap()) {
       System.out.println("Reaping of files disabled - " +
                          "ignoring testSpecificDeleteRequestHonored");
       return;
     }
-    File tmp = TemporaryFilesystem.createTempDir("TemporaryFilesystem", "sdrh");
+    File tmp = tmpFs.createTempDir("TemporaryFilesystem", "sdrh");
     createDummyFilesystemContent(tmp);
 
-    TemporaryFilesystem.deleteTempDir(tmp);
+    tmpFs.deleteTempDir(tmp);
 
     assertFalse(tmp.exists());
   }
@@ -70,7 +80,7 @@ public class TemporaryFilesystemTest extends TestCase {
     File tempFile = File.createTempFile("TemporaryFilesystem", "dndaf");
     assertTrue(tempFile.exists());
     try {
-      TemporaryFilesystem.deleteTempDir(tempFile);
+      tmpFs.deleteTempDir(tempFile);
       assertTrue(tempFile.exists());
     } finally {
       tempFile.delete();
@@ -79,12 +89,13 @@ public class TemporaryFilesystemTest extends TestCase {
 
   @Test
   public void testShouldReapDefaultsTrue() {
-    if (!TemporaryFilesystem.shouldReap()) {
+    if (!tmpFs.shouldReap()) {
       System.out.println("Reaping of files disabled - " +
                          "ignoring testShouldReapDefaultsTrue");
       return;
     }
-    assertTrue(TemporaryFilesystem.shouldReap());
+    
+    assertTrue(tmpFs.shouldReap());
   }
 
   private void createDummyFilesystemContent(File dir) throws IOException {

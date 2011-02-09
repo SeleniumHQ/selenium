@@ -17,20 +17,25 @@ public class ZipTest extends TestCase {
   private File inputDir;
   private File outputDir;
   private Zip zip;
+  private TemporaryFilesystem tmpFs;
 
   @Override
   protected void setUp() throws Exception {
     super.setUp();
 
-    inputDir = TemporaryFilesystem.createTempDir("input", "ziptest");
-    outputDir = TemporaryFilesystem.createTempDir("output", "ziptest");
+    File baseForTest = new File(System.getProperty("java.io.tmpdir"),  "tmpTest");
+    baseForTest.mkdir();
+    tmpFs = TemporaryFilesystem.getTmpFsBasedOn(baseForTest.getAbsolutePath());
+
+    inputDir = tmpFs.createTempDir("input", "ziptest");
+    outputDir = tmpFs.createTempDir("output", "ziptest");
 
     zip = new Zip();
   }
 
   @Override
   protected void tearDown() throws Exception {
-    TemporaryFilesystem.deleteTemporaryFiles();
+    tmpFs.deleteTemporaryFiles();
 
     super.tearDown();
   }
