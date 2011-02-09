@@ -237,7 +237,6 @@ module Javascript
             "-f \"--compilation_level=ADVANCED_OPTIMIZATIONS\" " <<
             "-p third_party/closure/goog/ " <<
             "-p javascript " <<
-            "-p common/src/js " <<
             "-p iphone/src/js " <<
             "-i #{temp} "
 
