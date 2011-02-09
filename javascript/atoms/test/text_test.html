@@ -173,6 +173,11 @@ limitations under the License.
       assertEquals("1 2 3 4", text);
     }
 
+    function testGetVisibleTextHandlesTrailingBreaks() {
+      var text = getVisibleTextByElementId("trailingBreaks");
+      assertEquals("a\nb", text);
+    }
+
     function testKeepsNonBreakingSpacesBeforeATag() {
       var text = getVisibleTextByElementId("id2");
 
@@ -280,6 +285,10 @@ limitations under the License.
 3
 <a href="">4</a></div>
 
+<div id="trailingBreaks">
+<span>a<br></span><span>b</span>
+</div>
+
   <table>
       <tbody>
           <tr><td id="wrappingtd" style="width: 10px;"><span>beforeSpace</span><span> </span><span>afterSpace</span></td></tr>
@@ -291,7 +300,7 @@ limitations under the License.
 
   <a id="id2" >this is the&nbsp;<b>second</b> <span>element</span></a>
 
-  <div id="opaque">Some <span class="transparent">transparent</span> text</p></div>
+  <div id="opaque">Some <span class="transparent">transparent</span> text</div>
 
 </body>
 </html>

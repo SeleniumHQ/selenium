@@ -443,6 +443,12 @@ bot.dom.isShown = function(elem) {
     if (size.height > 0 && size.width > 0) {
       return true;
     }
+    // Elements with only whitespace text content, e.g. "<div>&nbsp;</div>",
+    // report zero size even though they take up space and can be interacted
+    // with, so workaround this explicitly.
+    if (e.innerText || e.textContent) {
+      return true;
+    }
     // A bug in WebKit causes it to report zero size for elements with nested
     // block-level elements: https://bugs.webkit.org/show_bug.cgi?id=28810
     // We compensate for that bug by assuming an element has a positive size if
@@ -460,129 +466,86 @@ bot.dom.isShown = function(elem) {
 
 
 /**
- * Returns the text the user would see in the browser. Tags are stripped and
- * spaces are trimmed.
- *
- * @param {!Node} node The node to use.
- * @return {string} The visible text or an empty string.
+ * @param {!Element} elem The element to consider.
+ * @return {string} visible text.
  */
-bot.dom.getVisibleText = function(node) {
-  var returnValue = '';
-  var elements = bot.dom.flattenDescendants_(node);
-  var endsWithNbsp = new RegExp(String.fromCharCode(160) + '$', 'gm');
-  var startsWithNbsp = new RegExp('^' + String.fromCharCode(160), 'gm');
+bot.dom.getVisibleText = function(elem) {
+  var lines = [''];
+  bot.dom.appendVisibleTextLinesFromElement_(elem, lines);
+  lines = goog.array.map(lines, goog.string.trim);
+  return goog.string.trim(lines.join('\n'));
+};
 
-  var prevTextNodeEndsWithSpace = false;
-  goog.array.forEach(elements, function(node, i) {
-    if (node.nodeType == goog.dom.NodeType.TEXT) {
-      var nodeText =
-          goog.string.trim(bot.dom.getVisibleTextFromTextNode_(node));
-      if (nodeText.length) {
-        if (bot.dom.isClosestAncestorBlockLevel_(elements, i)) {
-          nodeText = '\n' + nodeText;
-        } else if (i != 0) { // First element does not need preceding space.
-          var thisTextNodeStartsWithSpace = node.nodeValue.match(/^\s/) ||
-              node.nodeValue.match(startsWithNbsp);
-          if (prevTextNodeEndsWithSpace || thisTextNodeStartsWithSpace) {
-            nodeText = ' ' + nodeText;
-          }
-        }
+
+/**
+ * @param {!Element} elem Element.
+ * @param {!Array.<string>} lines Accumulated visible lines of text.
+ * @private
+ */
+bot.dom.appendVisibleTextLinesFromElement_ = function(elem, lines) {
+  // TODO (gdennis): Add cases here for <title> and textual form elements.
+  if (bot.dom.isElement(elem, goog.dom.TagName.BR)) {
+    lines.push('');
+  } else {
+    var blockElem = bot.dom.hasBlockStyle_(elem);
+    // Add a newline before block elems when there is text on the current line.
+    if (blockElem && goog.array.peek(lines)) {
+      lines.push('');
+    }
+    goog.array.forEach(elem.childNodes, function(node) {
+      if (node.nodeType == goog.dom.NodeType.TEXT) {
+        var textNode = (/** @type {!Text} */ node);
+        bot.dom.appendVisibleTextLinesFromTextNode_(textNode, lines);
+      } else if (bot.dom.isElement(node)) {
+        var elem = (/** @type {!Element} */ node);
+        bot.dom.appendVisibleTextLinesFromElement_(elem, lines);
       }
-
-      prevTextNodeEndsWithSpace = node.nodeValue.match(/\s$/) ||
-          node.nodeValue.match(endsWithNbsp);
-      returnValue += nodeText;
+    });
+    // Add a newline after block elems when there is text on the current line.
+    if (blockElem && goog.array.peek(lines)) {
+      lines.push('');
     }
-  });
-  // Remove any double spacing that could have been added by
-  // concatenating spaces in different tags.
-  returnValue = goog.string.trim(returnValue.replace(/ +/g, ' '));
-  return returnValue;
+  }
 };
 
 
 /**
- * Returns a sorted array containing all the descendant nodes of the given one.
- *
- * @param {!Node} node The node to use.
- * @return {!Array.<!Node>} The node's descendants.
+ * @param {!Element} elem Element.
+ * @return {boolean} Whether the element has a block style.
  * @private
  */
-bot.dom.flattenDescendants_ = function(node) {
-  var i = new goog.dom.NodeIterator(node);
-  try {
-    i.next(); // Skip root element;
-    return (/** @type {!Array.<!Node>} */goog.iter.toArray(i));
-  } catch (e) {
-    // NodeIterator throws StopIteration once there are no more elements.
-  }
-
-  return [];
-};
-
-
-/**
- * @param {!Node} textNode A node named '#text'.
- * @return {string} The visible text of the given text node or an empty
- *      string.
- * @private
- */
-bot.dom.getVisibleTextFromTextNode_ = function(textNode) {
-  if (textNode.nodeType != goog.dom.NodeType.TEXT) {
-    throw new Error('Cannot extract text from a node whose type is not #text');
-  }
-
-  if (goog.string.collapseWhitespace(textNode.nodeValue) == ' ') {
-    return ' ';
-  }
-
-  var parentElement = bot.dom.getParentElement_(textNode);
-  if (parentElement && bot.dom.isShown(parentElement)) {
-    var textToAdd = textNode.nodeValue;
-    textToAdd =
-        textToAdd.replace(new RegExp(String.fromCharCode(160), 'gm'), ' ');
-    textToAdd = goog.string.collapseWhitespace(textToAdd);
-    return textToAdd;
-  }
-  return '';
-};
-
-
-/**
- * @param {goog.array.ArrayLike} elements An array of nodes, as returned by
- *      bot.dom.flattenDescendants_.
- * @param {number} nodeIndex The index of the node whose ancestor we want to
- *      check.
- * @return {boolean} Whether the closest ancestor is block level.
- * @private
- */
-bot.dom.isClosestAncestorBlockLevel_ = function(elements, nodeIndex) {
-  for (var i = nodeIndex - 1; i >= 0; i--) {
-    var node = elements[i];
-    if (node.nodeType == goog.dom.NodeType.TEXT) {
-      continue;
-    }
-    return bot.dom.isBlockLevel_(node);
-  }
-  return false;
-};
-
-
-/**
- * @param {!Node} node Node to examine.
- * @return {boolean} Whether or not the node is a block level element.
- * @private
- */
-bot.dom.isBlockLevel_ = function(node) {
-  if (bot.dom.isElement(node, goog.dom.TagName.BR)) {
-    return true;
-  }
-  if (!bot.dom.isElement(node)) {
-    return false;
-  }
-  var element = /** @type {!Element} */ (node);
-  var display = bot.dom.getEffectiveStyle(element, 'display');
+bot.dom.hasBlockStyle_ = function(elem) {
+  var display = bot.dom.getEffectiveStyle(elem, 'display');
   return display == 'block' || display == 'inline-block';
+};
+
+
+/**
+ * @const
+ * @type {!RegExp}
+ * @private
+ */
+bot.dom.HTML_WHITESPACE_REGEXP_ = new RegExp(
+    '[\\s\\xa0' + String.fromCharCode(160) + ']+', 'g');
+
+
+/**
+ * @param {!Text} textNode Text node.
+ * @param {!Array.<string>} lines Accumulated visible lines of text.
+ * @private
+ */
+bot.dom.appendVisibleTextLinesFromTextNode_ = function(textNode, lines) {
+  var parentElement = bot.dom.getParentElement_(textNode);
+  if (!parentElement || !bot.dom.isShown(parentElement)) {
+    return;
+  }
+  var text = textNode.nodeValue.replace(bot.dom.HTML_WHITESPACE_REGEXP_, ' ');
+  var currLine = lines.pop();
+  if (goog.string.endsWith(currLine, ' ') &&
+      goog.string.startsWith(text, ' ')) {
+    text = text.substr(1);
+  }
+  lines.push(currLine + text);
 };
 
 
