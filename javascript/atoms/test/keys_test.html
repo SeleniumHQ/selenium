@@ -53,7 +53,8 @@
     function runTypingTest(input, opt_finalValue, opt_finalCount,
                            opt_inputIds, opt_initValue) {
       var inputIds =
-          opt_inputIds ? opt_inputIds : ['textbox', 'password', 'textarea'];
+          opt_inputIds ? opt_inputIds :
+                         ['textbox', 'password', 'email', 'search', 'textarea'];
       var countBox = document.getElementById('change_count');
       var finalValue = opt_finalValue ? opt_finalValue : input;
       var finalCount = opt_finalCount ? opt_finalCount : finalValue.length;
@@ -265,6 +266,12 @@
            oninput="incrCount();"
            onpropertychange="incrCount();"/>
     <input type="password" id="password"
+           oninput="incrCount();"
+           onpropertychange="incrCount();"/>
+    <input type="email" id="email"
+           oninput="incrCount();"
+           onpropertychange="incrCount();"/>
+    <input type="search" id="search"
            oninput="incrCount();"
            onpropertychange="incrCount();"/>
     <textarea id="textarea"

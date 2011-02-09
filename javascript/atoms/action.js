@@ -96,7 +96,8 @@ bot.action.isTextual = function(element) {
 
   if (bot.dom.isElement(element, goog.dom.TagName.INPUT)) {
     var type = element.type.toLowerCase();
-    return type == 'text' || type == 'password';
+    return type == 'text' || type == 'password' ||
+           type == 'email' || type == 'search';
   }
 
   return false;
@@ -414,14 +415,14 @@ bot.action.click = function(element) {
 
   bot.action.focusOnElement(element, activeElement);
   if (!bot.dom.isShown(element)) {
-    return;  
+    return;
   }
 
   bot.events.fire(element, goog.events.EventType.MOUSEUP, coords);
   if (!bot.dom.isShown(element)) {
     return;
   }
-  
+
   var performDefault =
       bot.events.fire(element, goog.events.EventType.CLICK, coords);
 
