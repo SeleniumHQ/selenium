@@ -38,13 +38,27 @@ goog.require('goog.Uri');
 
 
 /**
+ * Determines if an element is shown on the page and may be manipulated by the
+ * user. This computation does not factor in the element's opacity, as users
+ * may click on invisible elements.
+ * @param {!Element} element The element to check.
+ * @return {boolean} Whether the element is visible and may be manipulated.
+ * @see bot.dom.isShown.
+ * @private
+ */
+bot.action.isShown_ = function(element) {
+  return bot.dom.isShown(element, /*ignoreOpacity=*/true);
+};
+
+
+/**
  * Throws an error if an element is not currently displayed.
  * @param {!Element} element The element to check.
  * @see bot.dom.isShown
  * @private
  */
 bot.action.checkShown_ = function(element) {
-  if (!bot.dom.isShown(element)) {
+  if (!bot.action.isShown_(element)) {
     throw new bot.Error(bot.ErrorCode.ELEMENT_NOT_VISIBLE,
         'Element is not currently visible and may not be manipulated');
   }
@@ -399,27 +413,27 @@ bot.action.click = function(element) {
   // the element. Open question: the remaining click events should be fired
   // somewhere, but where?
   bot.events.fire(element, goog.events.EventType.MOUSEOVER);
-  if (!bot.dom.isShown(element)) {
+  if (!bot.action.isShown_(element)) {
     return;
   }
 
   bot.events.fire(element, goog.events.EventType.MOUSEMOVE, coords);
-  if (!bot.dom.isShown(element)) {
+  if (!bot.action.isShown_(element)) {
     return;
   }
 
   bot.events.fire(element, goog.events.EventType.MOUSEDOWN, coords);
-  if (!bot.dom.isShown(element)) {
+  if (!bot.action.isShown_(element)) {
     return;
   }
 
   bot.action.focusOnElement(element, activeElement);
-  if (!bot.dom.isShown(element)) {
+  if (!bot.action.isShown_(element)) {
     return;
   }
 
   bot.events.fire(element, goog.events.EventType.MOUSEUP, coords);
-  if (!bot.dom.isShown(element)) {
+  if (!bot.action.isShown_(element)) {
     return;
   }
 

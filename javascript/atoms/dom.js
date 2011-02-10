@@ -350,9 +350,11 @@ bot.dom.getElementSize_ = function(element) {
  * considered shown iff they have a enclosing select element that is shown.
  *
  * @param {!Element} elem The element to consider.
+ * @param {boolean=} opt_ignoreOpacity Whether to ignore the element's opacity
+ *     when determining whether it is shown; defaults to false.
  * @return {boolean} Whether or not the element would be visible.
  */
-bot.dom.isShown = function(elem) {
+bot.dom.isShown = function(elem, opt_ignoreOpacity) {
   if (!bot.dom.isElement(elem)) {
     throw new Error('Argument to isShown must be of type Element');
   }
@@ -433,7 +435,7 @@ bot.dom.isShown = function(elem) {
   }
 
   // Any transparent element is not shown.
-  if (bot.dom.getOpacity(elem) == 0) {
+  if (!opt_ignoreOpacity && bot.dom.getOpacity(elem) == 0) {
     return false;
   }
 
