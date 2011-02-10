@@ -36,7 +36,7 @@ module Selenium
             entry = file.sub("#{path}/", '')
 
             zos.put_next_entry(entry)
-            zos << File.read(file)
+            zos << File.read(file, "rb")
           end
 
           zos.close
