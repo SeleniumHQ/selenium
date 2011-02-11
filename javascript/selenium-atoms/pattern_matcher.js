@@ -145,7 +145,7 @@ core.patternMatcher.Strategy;
 core.patternMatcher.KNOWN_STRATEGIES_ = {
   'exact': core.patternMatcher.exact_,
   'glob': core.patternMatcher.glob_,
-  'globContains': core.patternMatcher.globContains_,
+  'globcontains': core.patternMatcher.globContains_,
   'regex': core.patternMatcher.regexp_,
   'regexi': core.patternMatcher.regexpi_,
   'regexpi': core.patternMatcher.regexpi_,
@@ -163,12 +163,12 @@ core.patternMatcher.against = function(pattern) {
   // by default
   var strategyName = 'glob';
 
-  var result = /^([a-z-]+):(.*)/.exec(pattern);
+  var result = /^([a-zA-Z-]+):(.*)/.exec(pattern);
   if (result) {
     var possibleNewStrategyName = result[1];
     var possibleNewPattern = result[2];
-    if (core.patternMatcher.KNOWN_STRATEGIES_[possibleNewStrategyName]) {
-      strategyName = possibleNewStrategyName;
+    if (core.patternMatcher.KNOWN_STRATEGIES_[possibleNewStrategyName.toLowerCase()]) {
+      strategyName = possibleNewStrategyName.toLowerCase();
       pattern = possibleNewPattern;
     }
   }
@@ -182,7 +182,7 @@ core.patternMatcher.against = function(pattern) {
     if (pattern.indexOf('glob:') == 0) {
       pattern = pattern.substring('glob:'.length); // strip off 'glob:'
     }
-    matchStrategy = core.patternMatcher.KNOWN_STRATEGIES_['globContains'];
+    matchStrategy = core.patternMatcher.KNOWN_STRATEGIES_['glob'];
   } else {
     if (strategyName == 'exact' && pattern.indexOf('exact:') == 0) {
       pattern = pattern.substring('exact:'.length); // strip off 'exact:'
@@ -190,7 +190,9 @@ core.patternMatcher.against = function(pattern) {
   }
 
   // Here we go
-  return goog.partial(matchStrategy, pattern);
+  var matcher = goog.partial(matchStrategy, pattern);
+  matcher.strategyName = strategyName;
+  return matcher;
 };
 
 

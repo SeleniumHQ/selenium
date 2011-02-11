@@ -24,6 +24,7 @@ limitations under the License.
     goog.require('bot.locators');
     goog.require('goog.testing.jsunit');
     goog.require('core.locators');
+    goog.require('core.text');
   </script>
 
   <script type="text/javascript">
@@ -95,6 +96,17 @@ limitations under the License.
 
       assertEquals(element, found);
     }
+
+    function testCanFindElementsByLinkText() {
+      var element = bot.locators.findElement({id: 'link'});
+      var found = core.locators.findElement('link=this is a link');
+
+      assertEquals(element, found);
+    }
+
+    function testShouldRecurseIntoSubFramesInTheSameDomain() {
+      
+    }
   </script>
 </head>
 <body>
@@ -117,6 +129,6 @@ limitations under the License.
 
   <img src="#" alt="cheesey" id="alt">
 
-
+  Find me! <a id="link" href="#">this is a link</a>
 </body>
 </html>

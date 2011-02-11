@@ -183,8 +183,16 @@ core.LocatorStrategies.stored_ = function(locator, opt_doc) {
  * @private
  */
 core.LocatorStrategies.xpath_ = function(locator, opt_doc) {
+  var trailingSlash = goog.string.endsWith(locator, '/');
   var selector = {'xpath': locator};
 
+
+  var element = bot.locators.findElement(selector, opt_doc);
+  if (element || !trailingSlash) {
+    return element;
+  }
+
+  selector = {'xpath': locator.substring(0, locator.length - 1)};
   return bot.locators.findElement(selector, opt_doc);
 };
 

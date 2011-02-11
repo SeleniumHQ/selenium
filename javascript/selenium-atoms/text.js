@@ -25,6 +25,7 @@ goog.provide('core.text');
 goog.require('bot.dom');
 goog.require('core.locators');
 goog.require('core.patternMatcher');
+goog.require('goog.dom');
 goog.require('goog.dom.NodeType');
 goog.require('goog.string');
 goog.require('goog.userAgent');
@@ -187,5 +188,28 @@ core.text.isTextPresent = function(pattern) {
   var allText = core.text.getBodyText();
 
   var patternMatcher = core.patternMatcher.against(pattern);
+  if (patternMatcher.strategyName == "glob") {
+    if (pattern.indexOf("glob:") == 0) {
+      pattern = pattern.substring("glob:".length); // strip off "glob:"
+    }
+    patternMatcher = core.patternMatcher.against('globContains:' + pattern);
+  }
   return patternMatcher(allText);
 };
+
+
+core.text.linkLocator = function(locator, opt_doc) {
+  var doc = opt_doc || goog.dom.getOwnerDocument(bot.getWindow());
+
+  var links = doc.getElementsByTagName('a');
+
+  for (var i = 0; i < links.length; i++) {
+    var element = links[i];
+    var text = core.text.getText(element);
+    if (core.patternMatcher.matches(locator, text)) {
+      return element;
+    }
+  }
+  return null;
+};
+core.locators.addStrategy('link', core.text.linkLocator);

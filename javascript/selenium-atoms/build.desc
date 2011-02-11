@@ -16,9 +16,29 @@ js_fragment(name = "findElement",
   function = "core.locators.findElement",
   srcs = [":deps"])
 
+js_fragment(name = "findOption",
+  module = "core.select.option",
+  function = "core.select.option.findOption",
+  srcs = [":deps"])
+
+js_fragment(name = "getAttribute",
+  module = "core.element",
+  function = "core.element.getAttribute",
+  srcs = [":deps"])
+
 js_fragment(name = "getText",
   module = "core.text",
   function = "core.text.getText",
+  srcs = [":deps"])
+
+js_fragment(name = "linkLocator",
+  module = "core.text",
+  function = "core.text.linkLocator",
+  srcs = [":deps"])
+
+js_fragment(name = "isSomethingSelected",
+  module = "core.select",
+  function = "core.select.isSomethingSelected",
   srcs = [":deps"])
 
 js_fragment(name = "isElementPresent",
