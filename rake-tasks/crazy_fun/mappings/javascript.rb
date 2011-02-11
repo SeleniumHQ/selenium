@@ -313,6 +313,19 @@ module Javascript
         mkdir_p output_dir unless File.exists?(output_dir)
 
         File.open(output, 'w') do |out|
+          out << "// Copyright 2011 WebDriver committers\n"
+          out << "// Licensed under the Apache License, Version 2.0 (the \"License\");\n"
+          out << "// you may not use this file except in compliance with the License.\n"
+          out << "// You may obtain a copy of the License at\n"
+          out << "//\n"
+          out << "//     http://www.apache.org/licenses/LICENSE-2.0\n"
+          out << "//\n"
+          out << "// Unless required by applicable law or agreed to in writing, software\n"
+          out << "// distributed under the License is distributed on an \"AS IS\" BASIS,\n"
+          out << "// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n"
+          out << "// See the License for the specific language governing permissions and\n"
+          out << "// limitations under the License.\n"
+          out << "\n"
           out << "/* AUTO GENERATED - DO NOT EDIT BY HAND */\n"
           out << "#ifndef #{define_guard}\n"
           out << "#define #{define_guard}\n"
