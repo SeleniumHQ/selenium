@@ -280,6 +280,7 @@ public class FirefoxProfile {
     prefs.put("browser.EULA.3.accepted", "true");
     prefs.put("browser.link.open_external", "2");
     prefs.put("browser.link.open_newwindow", "2");
+    prefs.put("browser.offline", "false");
     prefs.put("browser.safebrowsing.enabled", "false");
     prefs.put("browser.search.update", "false");
     prefs.put("browser.sessionstore.resume_from_crash", "false");
