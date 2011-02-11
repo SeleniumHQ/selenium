@@ -43,7 +43,7 @@ limitations under the License.
 (function() {
   var scripts = document.getElementsByTagName('script');
   var directoryPath = './';
-  var thisFile = 'test-bootstrap.js';
+  var thisFile = 'test_bootstrap.js';
 
   for (var i = 0; i < scripts.length; i++) {
     var src = scripts[i].src;
