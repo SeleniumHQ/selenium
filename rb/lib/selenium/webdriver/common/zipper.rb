@@ -26,7 +26,7 @@ module Selenium
       end
 
       def self.zip(path)
-        tmp_zip = Tempfile.new("webdriver-zip")
+        tmp_zip = Tempfile.new("webdriver-zip", :mode => File::BINARY)
 
         begin
           zos = Zip::ZipOutputStream.new(tmp_zip.path)
@@ -45,7 +45,7 @@ module Selenium
           zos.close
           tmp_zip.rewind
 
-          [tmp_zip.read].pack("m")
+          Base64.encode64(tmp_zip.read)
         ensure
           tmp_zip.close
         end

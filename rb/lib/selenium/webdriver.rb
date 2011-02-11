@@ -1,7 +1,8 @@
+require "childprocess"
 require "tmpdir"
 require "fileutils"
 require "date"
-require "childprocess"
+require 'base64'
 
 have_lib = lambda { |lib|
   begin

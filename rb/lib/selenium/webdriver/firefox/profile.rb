@@ -85,9 +85,10 @@ module Selenium
         end
 
         def self.from_json(json)
-          zip_file = Tempfile.new("webdriver-profile-duplicate-#{json.hash}")
+          zip_file = Tempfile.new("webdriver-profile-duplicate-#{json.hash}", :mode => File::BINARY)
 
-          zip_file << JSON.parse(json)['zip'].unpack("m")[0]
+          data = JSON.parse(json).fetch('zip')
+          zip_file << Base64.decode64(data)
           zip_file.close
 
           new(Zipper.unzip(zip_file.path))
