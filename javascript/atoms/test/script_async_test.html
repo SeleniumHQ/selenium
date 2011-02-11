@@ -2,7 +2,7 @@
 <html>
 <head>
   <title>script_async_test.html</title>
-  <script src="../../webdriver-bootstrap.js"></script>
+  <script src="test_bootstrap.js"></script>
   <script type="text/javascript">
     goog.require('bot.script');
     goog.require('bot.locators');
@@ -59,7 +59,7 @@
             assertEquals('script_data', title);
           }, fail, testWindow);
     };
-    testWindow.location = './script_data.html';
+    testWindow.location = './testdata/script_data.html';
   }
 
 
@@ -82,7 +82,7 @@
           },
           testWindow);
     };
-    testWindow.location = './script_data.html';
+    testWindow.location = './testdata/script_data.html';
   }
 </script>
 </body>
