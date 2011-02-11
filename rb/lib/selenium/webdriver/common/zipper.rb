@@ -1,6 +1,7 @@
 require 'zip/zip'
-require 'tempfile'
+require 'fileutils'
 require 'find'
+require 'base64'
 
 module Selenium
   module WebDriver
@@ -26,28 +27,22 @@ module Selenium
       end
 
       def self.zip(path)
-        tmp_zip = Tempfile.new("webdriver-zip")
+        temp_file = "#{Dir.mktmpdir}/webdriver-profile.zip"
 
         begin
-          zos = Zip::ZipOutputStream.new(tmp_zip.path)
+          Zip::ZipFile.open(temp_file, Zip::ZipFile::CREATE) do |zip|
+            ::Find.find(path) do |file|
+              next if File.directory?(file)
+              entry = file.sub("#{path}/", '')
 
-          ::Find.find(path) do |file|
-            next if File.directory?(file)
-            entry = file.sub("#{path}/", '')
-
-            zos.put_next_entry(entry)
-            File.open(file, "rb") do |io|
-              zos << io.read
+              zip.add entry, file
             end
-
           end
 
-          zos.close
-          tmp_zip.rewind
-
-          [tmp_zip.read].pack("m")
+          mem_buf = File.open(temp_file, "rb") { |io| io.read }
+          Base64.encode64(mem_buf)
         ensure
-          tmp_zip.close
+          FileUtils.rm_rf temp_file
         end
       end
 
