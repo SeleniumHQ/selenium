@@ -69,7 +69,6 @@
       });
     }
 
-
     function testCountElementsAsVisibleIfStylePropertyHasBeenSet() {
       var shown = findElement({id: 'visibleSubElement'});
       assertTrue(isShown(shown));
@@ -83,19 +82,22 @@
 
     function testElementWithZeroHeightIsNotConsideredDisplayed() {
       // IE6 doesn't render the element correctly for the test to work.
-      if (goog.userAgent.IE && !goog.userAgent.product.isVersion(6)) {
-        var zeroHeight = findElement({id: 'zeroheight'});
-        assertFalse(isShown(zeroHeight));
+      if (goog.userAgent.IE && goog.userAgent.product.isVersion(6)) {
+        return;
       }
+      var zeroHeight = findElement({id: 'zeroheight'});
+      assertFalse(isShown(zeroHeight));
     }
 
 
     function testElementWithZeroWidthIsNotConsideredDisplayed() {
       // IE6 doesn't render the element correctly for the test to work.
-      if (goog.userAgent.IE && !goog.userAgent.product.isVersion(6)) {
-        var zeroWidth = findElement({id: 'zerowidth'});
-        assertFalse(isShown(zeroWidth));
+      if (goog.userAgent.IE && goog.userAgent.product.isVersion(6)) {
+        return;
       }
+
+      var zeroWidth = findElement({id: 'zerowidth'});
+      assertFalse(isShown(zeroWidth));
     }
 
 

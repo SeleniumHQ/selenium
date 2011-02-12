@@ -114,6 +114,12 @@ limitations under the License.
       assertEquals("beforeSpace afterSpace", text);
     }
 
+    function testGetVisibleTextCorrectlyHandlesAnEntireTable() {
+      var text = getVisibleTextByElementId("wrappingtable");
+
+      assertEquals("beforeSpace afterSpace", text);
+    }
+
     function testGetVisibleTextShouldHandleSiblingBlockLevelElements() {
       var text = getVisibleTextByElementId("twoblocks");
 
@@ -204,6 +210,14 @@ limitations under the License.
         text.lastIndexOf(expectedText) == text.length - expectedText.length);
     }
 
+    // http://code.google.com/p/selenium/issues/detail?id=1293
+    function testBugExposedByIssue1293() {
+      var spaces = getVisibleTextByElementId('spaces');
+      assertEquals('', spaces);
+
+      var table = getVisibleTextByElementId('wrappingtd');
+      assertEquals('beforeSpace afterSpace', table);
+    }
   </script>
 
   <style type="text/css">
@@ -288,7 +302,7 @@ limitations under the License.
 <span>a<br></span><span>b</span>
 </div>
 
-  <table>
+  <table id="wrappingtable">
       <tbody>
           <tr><td id="wrappingtd" style="width: 10px;"><span>beforeSpace</span><span> </span><span>afterSpace</span></td></tr>
       </tbody>

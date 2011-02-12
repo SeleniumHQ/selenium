@@ -442,6 +442,7 @@ bot.dom.isShown = function(elem, opt_ignoreOpacity) {
   // Any element without positive size dimensions is not shown.
   function positiveSize(e) {
     var size = bot.dom.getElementSize_(e);
+
     if (size.height > 0 && size.width > 0) {
       return true;
     }
@@ -449,7 +450,10 @@ bot.dom.isShown = function(elem, opt_ignoreOpacity) {
     // report zero size even though they take up space and can be interacted
     // with, so workaround this explicitly.
     if (e.innerText || e.textContent) {
-      return true;
+      var text = e.innerText || e.textContent;
+      if (bot.dom.JUST_HTML_WHITESPACE_REGEXP_.test(text)) {
+        return true;
+      }
     }
     // A bug in WebKit causes it to report zero size for elements with nested
     // block-level elements: https://bugs.webkit.org/show_bug.cgi?id=28810
@@ -472,6 +476,7 @@ bot.dom.isShown = function(elem, opt_ignoreOpacity) {
  * @return {string} visible text.
  */
 bot.dom.getVisibleText = function(elem) {
+//  Logger.dump(elem);
   var lines = [''];
   bot.dom.appendVisibleTextLinesFromElement_(elem, lines);
   lines = goog.array.map(lines, goog.string.trim);
@@ -499,8 +504,8 @@ bot.dom.appendVisibleTextLinesFromElement_ = function(elem, lines) {
         var textNode = (/** @type {!Text} */ node);
         bot.dom.appendVisibleTextLinesFromTextNode_(textNode, lines);
       } else if (bot.dom.isElement(node)) {
-        var elem = (/** @type {!Element} */ node);
-        bot.dom.appendVisibleTextLinesFromElement_(elem, lines);
+        var castElem = (/** @type {!Element} */ node);
+        bot.dom.appendVisibleTextLinesFromElement_(castElem, lines);
       }
     });
     // Add a newline after block elems when there is text on the current line.
@@ -524,11 +529,28 @@ bot.dom.hasBlockStyle_ = function(elem) {
 
 /**
  * @const
+ * @@type {string}
+ * @private
+ */
+bot.dom.HTML_WHITESPACE_ = '[\\s\\xa0' + String.fromCharCode(160) + ']+';
+
+/**
+ * @const
  * @type {!RegExp}
  * @private
  */
 bot.dom.HTML_WHITESPACE_REGEXP_ = new RegExp(
-    '[\\s\\xa0' + String.fromCharCode(160) + ']+', 'g');
+    bot.dom.HTML_WHITESPACE_, 'g');
+
+
+/**
+ * @const
+ * @type {!RegExp}
+ * @private
+ */
+bot.dom.JUST_HTML_WHITESPACE_REGEXP_ = new RegExp(
+    '^' + bot.dom.HTML_WHITESPACE_ + '$', 'g');
+
 
 
 /**
@@ -538,7 +560,12 @@ bot.dom.HTML_WHITESPACE_REGEXP_ = new RegExp(
  */
 bot.dom.appendVisibleTextLinesFromTextNode_ = function(textNode, lines) {
   var parentElement = bot.dom.getParentElement_(textNode);
+  var shown = !bot.dom.isShown(parentElement);
   if (!parentElement || !bot.dom.isShown(parentElement)) {
+    // Without this additional check to isShown, issue 1293 kicks into life
+    // http://code.google.com/p/selenium/issues/detail?id=1293
+    // TODO(simon): This is a terrible 'fix'.
+    bot.dom.isShown(parentElement);
     return;
   }
   var text = textNode.nodeValue.replace(bot.dom.HTML_WHITESPACE_REGEXP_, ' ');

@@ -41,14 +41,7 @@ import static org.openqa.selenium.TestWaiter.waitFor;
 
 public class TextHandlingTest extends AbstractDriverTestCase {
 
-  private String newLine;
-
-  @Override
-  protected void setUp() throws Exception {
-    super.setUp();
-
-    newLine = "\n";
-  }
+  private final String newLine = "\n";
 
   public void testShouldReturnTheTextContentOfASingleElementWithNoChildren() {
     driver.get(pages.simpleTestPage);
@@ -192,7 +185,7 @@ public class TextHandlingTest extends AbstractDriverTestCase {
     String text = driver.findElement(By.id("self-closed")).getText();
     assertThat(text, equalTo(""));
   }
-  
+
   @Ignore({HTMLUNIT, IE, CHROME, SELENESE})
   public void testShouldNotTrimSpacesWhenLineWraps() {
     driver.get(pages.simpleTestPage);
