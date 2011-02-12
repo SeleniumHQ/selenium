@@ -9,7 +9,6 @@ class JavascriptMappings
     fun.add_mapping("js_deps", Javascript::CreateTaskShortName.new)
     fun.add_mapping("js_deps", Javascript::AddDependencies.new)
     fun.add_mapping("js_deps", Javascript::WriteOutput.new)
-    fun.add_mapping("js_deps", Javascript::CreateHeader.new)
     
     fun.add_mapping("js_binary", Javascript::CheckPreconditions.new)
     fun.add_mapping("js_binary", Javascript::CreateTask.new)
@@ -22,7 +21,6 @@ class JavascriptMappings
     fun.add_mapping("js_fragment", Javascript::CreateTaskShortName.new)
     fun.add_mapping("js_fragment", Javascript::AddDependencies.new)
     fun.add_mapping("js_fragment", Javascript::CompileFragment.new)
-    fun.add_mapping("js_fragment", Javascript::CreateHeader.new)
 
     # Compiles a list of |js_fragments| into a C++ header file.
     # Arguments:
@@ -342,46 +340,6 @@ module Javascript
           out << "#endif  // #{define_guard}\n"
         end
       end
-    end
-  end
-
-  # TODO(jleyba): Update this to use GenerateHeader
-  class CreateHeader < BaseJs
-    def handle(fun, dir, args)
-       js = js_name(dir, args[:name])
-       out = js.sub(/\.js$/, '.h')
-       task_name = task_name(dir, args[:name]) + ":header"
-
-       file out => [js] do
-         puts "Preparing: #{task_name} as #{out}"
-
-         upper = args[:name].upcase
-         mkdir_p File.dirname(out)
-
-         File.open(js, "r") do |from|
-           File.open(out, "w") do |to|
-             to << "/* AUTO GENERATED - Do not edit by hand. */\n"
-             to << "/* See rake-tasks/crazy_fun/mappings/javascript.rb for generator. */\n\n"
-             to << "#ifndef #{upper}_H\n"
-             to << "#define #{upper}_H\n\n"
-             to << "const wchar_t* #{upper}[] = {\n"
-
-             while line = from.gets
-               converted = line.chomp.gsub(/\\/, "\\\\\\").gsub(/"/, "\\\"")
-               to << "L\"#{converted}\",\n"
-             end
-
-             to << "NULL\n"
-             to << "};\n\n"
-             to << "#endif\n"
-           end
-         end
-       end
-
-       task task_name => [out]
-
-       Rake::Task[out].out = out
-       Rake::Task[task_name].out = out
     end
   end
 
