@@ -9,6 +9,7 @@ class JavascriptMappings
     fun.add_mapping("js_deps", Javascript::CreateTaskShortName.new)
     fun.add_mapping("js_deps", Javascript::AddDependencies.new)
     fun.add_mapping("js_deps", Javascript::WriteOutput.new)
+    fun.add_mapping("js_deps", Javascript::CreateHeader.new)
     
     fun.add_mapping("js_binary", Javascript::CheckPreconditions.new)
     fun.add_mapping("js_binary", Javascript::CreateTask.new)
@@ -259,8 +260,12 @@ module Javascript
 
     def write_atom_string_literal(to_file, dir, atom)
       # Check that the |atom| task actually generates a JavaScript file.
-      atom_task = task_name(dir, atom)
-      atom_file = Rake::Task[atom_task].out
+      if (File.exists?(atom))
+        atom_file = atom
+      else
+        atom_task = task_name(dir, atom)
+        atom_file = Rake::Task[atom_task].out
+      end
       raise StandardError,
           "#{atom_file} is not a JavaScript file" unless atom_file =~ /\.js$/
 
@@ -364,6 +369,16 @@ module Javascript
         puts "Writing: #{args[:out]}"
         cp output, args[:out]
       end
+    end
+  end
+
+  class CreateHeader < GenerateHeader
+    def handle(fun, dir, args)
+      js = js_name(dir, args[:name])
+      out = js.sub(/\.js$/, '.h')
+      task_name = task_name(dir, args[:name]) + ":header"
+      generate_header(dir, args[:name], task_name, out, [js])
+      task task_name => [out]
     end
   end
 end
