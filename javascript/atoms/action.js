@@ -440,7 +440,8 @@ bot.action.click = function(element) {
   var performDefault =
       bot.events.fire(element, goog.events.EventType.CLICK, coords);
 
-  if (goog.userAgent.IE || goog.userAgent.GECKO) {
+  if ((goog.userAgent.IE || goog.userAgent.GECKO) &&
+      !bot.events.isFirefoxExtension()) {
     if (performDefault) {
       var anchor = /**@type {Element}*/ (goog.dom.getAncestor(element,
           function(e) {
@@ -454,6 +455,19 @@ bot.action.click = function(element) {
   }
 };
 
+
+bot.events.isFirefoxExtension = function() {
+  try {
+    // Instantiate something the way that an extension could
+    Components.classes['@mozilla.org/uuid-generator;1'].
+        getService(Components.interfaces.nsIUUIDGenerator);
+    return true;
+  } catch (e) {
+    return false;
+  }
+};
+
+
 /**
  * Explicitly follows the href of an anchor.
  *
@@ -463,7 +477,14 @@ bot.action.click = function(element) {
 bot.action.followHref_ = function(anchorElement) {
   var targetHref = anchorElement.href;
   var owner = goog.dom.getWindow(goog.dom.getOwnerDocument(anchorElement));
-  owner.location.href = goog.Uri.resolve(owner.location.href, targetHref);
+
+  var destination = goog.Uri.resolve(owner.location.href, targetHref);
+
+  if (anchorElement.target) {
+    owner.open(destination, anchorElement.target);
+  } else {
+    owner.location.href = destination;
+  }
 };
 
 
